@@ -1563,14 +1563,12 @@
     </section>
     <section class="olPanel" data-panel="other">
       <div class="olHead">
-        <h1>Other</h1>
-        <p>Visual components that aren&rsquo;t organs. Nothing here yet.</p>
+        <h1>Milestones</h1>
+        <p>The health journey as three states of one body, built from the same cloud
+           and the same component as the organs &mdash; what changes between them is
+           which system is lit and how it moves.</p>
       </div>
-      <div class="olEmpty">
-        <span class="olEmptyMark"></span>
-        <p>This section is empty. Components added here will sit on the same tile
-           grid as the organs, so anything built against that shape drops straight in.</p>
-      </div>
+      <div class="olGrid" id="olOther"></div>
     </section>
   </main>
 </div>
@@ -1634,6 +1632,58 @@
     c.lineWidth = 17;
     c.beginPath(); c.moveTo(157, 186); c.lineTo(149, 296); c.stroke();
     c.beginPath(); c.moveTo(183, 186); c.lineTo(191, 296); c.stroke();
+  }
+
+  // ---- milestone bodies: upper half of a torso, same stroke-as-volume style ----
+  function drawUpperBody(c){
+    c.lineCap = 'round';
+    c.beginPath(); c.arc(170, 66, 30, 0, 6.2832); c.fill();          // head
+    c.lineWidth = 26;                                                 // neck
+    c.beginPath(); c.moveTo(170, 92); c.lineTo(170, 122); c.stroke();
+    c.beginPath();                                                    // shoulders -> waist
+    c.moveTo(170, 116);
+    c.bezierCurveTo(208, 118, 234, 134, 242, 160);
+    c.bezierCurveTo(250, 190, 242, 228, 234, 262);
+    c.lineTo(106, 262);
+    c.bezierCurveTo(98, 228, 90, 190, 98, 160);
+    c.bezierCurveTo(106, 134, 132, 118, 170, 116);
+    c.closePath(); c.fill();
+    c.lineWidth = 24;                                                 // upper arms
+    c.beginPath(); c.moveTo(112, 156); c.lineTo(96, 244); c.stroke();
+    c.beginPath(); c.moveTo(228, 156); c.lineTo(244, 244); c.stroke();
+  }
+  // 01 baseline: the circulatory tree, read once to establish where things stand
+  function drawVessels(c){
+    c.lineCap = 'round';
+    c.lineWidth = 10;
+    c.beginPath(); c.moveTo(170, 128); c.lineTo(170, 250); c.stroke();
+    c.lineWidth = 6;
+    for (const [y, dx] of [[150, 46], [178, 52], [206, 48], [230, 38]]){
+      c.beginPath(); c.moveTo(170, y); c.quadraticCurveTo(170 - dx * 0.55, y + 3, 170 - dx, y + 17); c.stroke();
+      c.beginPath(); c.moveTo(170, y); c.quadraticCurveTo(170 + dx * 0.55, y + 3, 170 + dx, y + 17); c.stroke();
+    }
+    c.lineWidth = 5;
+    c.beginPath(); c.moveTo(170, 132); c.lineTo(157, 100); c.stroke();
+    c.beginPath(); c.moveTo(170, 132); c.lineTo(183, 100); c.stroke();
+  }
+  // 02 treatment: two systems singled out for intervention and re-test
+  function drawFocus(c){
+    c.beginPath(); c.ellipse(145, 170, 31, 27, -0.12, 0, 6.2832); c.fill();
+    c.beginPath(); c.ellipse(200, 216, 28, 23, 0.10, 0, 6.2832); c.fill();
+  }
+  // 03 ongoing: one closed circuit, evenly weighted - nothing singled out
+  function drawBalance(c){
+    c.lineCap = 'round';
+    c.lineWidth = 7;
+    c.beginPath();
+    c.moveTo(170, 124);
+    c.bezierCurveTo(216, 136, 230, 180, 218, 224);
+    c.bezierCurveTo(208, 252, 132, 252, 122, 224);
+    c.bezierCurveTo(110, 180, 124, 136, 170, 124);
+    c.closePath(); c.stroke();
+    for (const [x, y] of [[170, 124], [222, 168], [218, 224], [170, 246], [122, 224], [118, 168]]){
+      c.beginPath(); c.arc(x, y, 9, 0, 6.2832); c.fill();
+    }
   }
 
   function drawHeart(c){
@@ -1858,7 +1908,7 @@
 
   // ---------- sample a silhouette into a volumetric point cloud ----------
   // tf places the organ at its anatomical spot inside the ghost body
-  function buildCloud(draw, depthPx, sizeMul, tf){
+  function buildCloud(draw, depthPx, sizeMul, tf, normRef){
     octx.save();
     octx.clearRect(0, 0, S, S);
     octx.fillStyle = '#fff'; octx.strokeStyle = '#fff';
@@ -1880,9 +1930,12 @@
         }
       }
     }
-    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    let cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    // normRef pins this mask to another cloud's framing, so an overlay lands
+    // where it belongs on the body instead of being re-centred and blown up
     const maxDim = Math.max(maxX - minX, maxY - minY) || 1;
-    const s = (1.55 / maxDim) * sizeMul;
+    let s = (1.55 / maxDim) * sizeMul;
+    if (normRef){ cx = normRef.cx; cy = normRef.cy; s = normRef.s; }
 
     // depth from distance to silhouette edge, so volumes read rounded
     function edgeDist(x, y){
@@ -1925,7 +1978,10 @@
       out[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th) * 0.8 + tf.y;
       out[i * 3 + 2] = r * Math.cos(ph) * 0.6;
     }
-    return { pos: out, edge, norm: { cx, cy, k: s * tf.s, tx: tf.x, ty: tf.y } };
+    // mask coverage: how much silhouette this shape actually occupies
+    let area = 0;
+    for (let i = 0; i < S * S; i++) area += mask[i];
+    return { pos: out, edge, area, s, norm: { cx, cy, k: s * tf.s, tx: tf.x, ty: tf.y } };
   }
 
   // faint outline of the body, sampled from the silhouette's edge only
@@ -2363,7 +2419,9 @@
     if (flowRT[i]) return flowRT[i];
     const pr = FLOW_PRESETS[i];
     if (!pr) return null;
-    const nm = clouds[i].norm;
+    return flowRT[i] = buildFlowRT(pr, clouds[i].norm);
+  }
+  function buildFlowRT(pr, nm){
     const paths = pr.paths.map(pts => {
       const x = [], y = [], cum = [0];
       for (const p of pts){
@@ -2377,7 +2435,7 @@
       }
       return { x, y, cum, total: tot || 1 };
     });
-    return flowRT[i] = { paths, k: nm.k };
+    return { paths, k: nm.k };
   }
   let flowTintFor = -1;
   // neural impulses: four fixed dot-channels, each carrying one packet at a
@@ -3341,11 +3399,14 @@
   // ---------- organ-age bottom sheets: one independent instance per frame,
   // each with its own 2D particle carousel so both can be open at once ----------
   const pts2DCache = {};
-  function pts2D(organIdx, dense){
-    const key = organIdx + (dense ? 'd' : '');
+  function pts2D(organIdx, dense){ return samplePts(clouds[organIdx], 'o' + organIdx, dense ? 2600 : 560); }
+  // one dot per unit of silhouette, so a visual's dot count reflects its own size
+  const DOT_DENSITY = 0.052;
+  function dotTarget(cl){ return Math.max(120, Math.round(cl.area * DOT_DENSITY)); }
+  function samplePts(cl, id, target){
+    const key = id + '@' + target;
     if (pts2DCache[key]) return pts2DCache[key];
-    const cl = clouds[organIdx];
-    const step = Math.ceil((N - AMB) / (dense ? 2600 : 560));
+    const step = Math.max(1, Math.ceil((N - AMB) / target));
     const pts = [];
     for (let i = 0; i < N - AMB; i += step){
       pts.push({
@@ -3361,9 +3422,8 @@
   }
   // the ambient strays the engine feeds into the organ; same tail of the cloud
   const ambCache = {};
-  function ambPts2D(organIdx){
-    if (ambCache[organIdx]) return ambCache[organIdx];
-    const cl = clouds[organIdx];
+  function ambPts2D(cl, id){
+    if (ambCache[id]) return ambCache[id];
     const step = Math.max(1, Math.ceil(AMB / 150));
     const pts = [];
     for (let i = N - AMB; i < N; i += step){
@@ -3375,7 +3435,7 @@
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]
       });
     }
-    return (ambCache[organIdx] = pts);
+    return (ambCache[id] = pts);
   }
   const fract = v => v - Math.floor(v);
   function smoothstep(e0, e1, x){
@@ -3395,17 +3455,30 @@
     const ctx = c.getContext('2d');
     const view = {
       idx: organIdx,
-      dense: !!opts.dense,
+      cl: opts.cloud || clouds[organIdx],
+      key: opts.key || ('o' + organIdx),
+      target: opts.target || (opts.dense ? 2600 : 560),
       fill: opts.fill != null ? opts.fill : 0.58,
       dot: opts.dot != null ? opts.dot : 1.05,
       breathe: opts.breathe != null ? opts.breathe : 0.012,
       jitter: opts.jitter != null ? opts.jitter : 1.6,
-      every: opts.every || 1,   // draw every Nth sample: density without the full cost
-      beat: opts.beat != null ? opts.beat : ORGANS[organIdx].label === 'Heart',
+      beat: opts.beat != null ? opts.beat : (organIdx != null && ORGANS[organIdx] && ORGANS[organIdx].label === 'Heart'),
       feed: opts.feed !== false, // ambient matter spiralling in, as in the concept
       still: !!opts.still || reduced,
+      flowPreset: opts.flowPreset || null,
+      flow: opts.flow !== false,   // follows the top bar's Flow chip
+      flowN: opts.flowN || 120,
+      alpha: opts.alpha != null ? opts.alpha : 1,
       canvas: c,
-      setOrgan(i){ view.idx = i; },
+      setOrgan(i){ view.idx = i; view.cl = clouds[i]; view.key = 'o' + i; view._rt = null; },
+      // the dots this visual is actually made of, for the tile's reference line
+      dotCount(){
+        const body = samplePts(view.cl, view.key, view.target).length;
+        const amb = (view.feed && !view.still) ? ambPts2D(view.cl, view.key).length : 0;
+        const pr = view.flowPreset || FLOW_PRESETS[view.idx];
+        const flow = (view.flow && pr) ? view.flowN : 0;
+        return body + amb + flow;
+      },
       frame(t){
         const w = host.clientWidth, h = host.clientHeight;
         if (!w || !h || !t || host.offsetParent === null) return; // hidden: don't burn a frame
@@ -3426,24 +3499,58 @@
         // the light theme inks the cloud dark, the way the engine re-inks its own
         const ink = document.body.classList.contains('light') ? [58, 45, 34] : null;
         const drift = view.still ? 0 : 0.006 * view.jitter * sc;
-        const cloud = pts2D(view.idx, view.dense);
-        for (let i = 0; i < cloud.length; i += view.every){
+        const cloud = samplePts(view.cl, view.key, view.target);
+        for (let i = 0; i < cloud.length; i++){
           const q = cloud[i];
           // the shader's idle drift, in organ-local units so it scales with the tile
           const jx = drift * Math.sin(T * 0.8 + q.sz * 6.28);
           const jy = drift * Math.cos(T * 0.7 + q.sz * 9.42);
           const tw = 0.62 + 0.38 * Math.sin(T * 1.8 + q.sz * 21.0);
           const cr = ink ? ink[0] : q.cr, cg = ink ? ink[1] : q.cg, cb = ink ? ink[2] : q.cb;
-          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (q.a * tw).toFixed(3) + ')';
+          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (q.a * tw * view.alpha).toFixed(3) + ')';
           ctx.beginPath();
           ctx.arc(ox + q.x * sc + jx, oy - q.y * sc + jy, q.r * view.dot, 0, 6.2832);
           ctx.fill();
+        }
+        // internal flow: the same presets and path maths the engine runs, so a
+        // library tile streams like its organ does in the concept
+        if (view.flow && flowOn && !view.still){
+          const pr = view.flowPreset || FLOW_PRESETS[view.idx];
+          const rt = pr && (view.flowPreset
+            ? (view._rt = view._rt || buildFlowRT(pr, view.cl.norm))
+            : getFlowRT(view.idx));
+          if (rt){
+            const tone = 'rgba(' + ((pr.tone[0] * 255) | 0) + ',' + ((pr.tone[1] * 255) | 0) +
+                         ',' + ((pr.tone[2] * 255) | 0) + ',';
+            for (let f = 0; f < view.flowN; f++){
+              const P = rt.paths[flowPick[f] % rt.paths.length];
+              const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
+              const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
+              const fa = Math.min(1, pr.op * 1.35) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+              if (fa <= 0.012) continue;
+              const d = u * P.total;
+              let k = 0;
+              while (k < P.cum.length - 2 && P.cum[k + 1] < d) k++;
+              const segLen = (P.cum[k + 1] - P.cum[k]) || 1;
+              const st = (d - P.cum[k]) / segLen;
+              const ax = P.x[k], ay = P.y[k], bx = P.x[k + 1], by = P.y[k + 1];
+              let fx = ax + (bx - ax) * st, fy = ay + (by - ay) * st;
+              const ddx = (bx - ax) / segLen, ddy = (by - ay) / segLen;
+              const off = flowLane[f] * pr.width * rt.k
+                        + Math.sin(T * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
+              fx += -ddy * off; fy += ddx * off;
+              ctx.fillStyle = ink ? 'rgba(58,45,34,' + fa.toFixed(3) + ')' : tone + fa.toFixed(3) + ')';
+              ctx.beginPath();
+              ctx.arc(ox + fx * sc, oy - fy * sc, view.dot * 1.15, 0, 6.2832);
+              ctx.fill();
+            }
+          }
         }
         if (!view.feed || view.still) return;
         // feeding: ambient matter spirals in on curved orbits, accelerates near
         // the surface, is absorbed, and is reborn faint at the rim
         const aDrift = 0.006 * (view.jitter + 2.2) * sc;
-        for (const q of ambPts2D(view.idx)){
+        for (const q of ambPts2D(view.cl, view.key)){
           const grp = fract(q.sy * 3.7) < 0.25 ? 1 : 0;
           const uq = grp ? Math.floor(q.sz * 5) / 5 + 0.09 : q.sz;
           const cyc = fract(T / 9 + uq);
@@ -3457,7 +3564,7 @@
           const ry = (-sn * q.x + cs * q.y) * k;
           const tw = 0.62 + 0.38 * Math.sin(T * 1.8 + q.sz * 21.0);
           const cr = ink ? ink[0] : q.cr, cg = ink ? ink[1] : q.cg, cb = ink ? ink[2] : q.cb;
-          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (q.a * tw * feedA).toFixed(3) + ')';
+          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (q.a * tw * feedA * view.alpha).toFixed(3) + ')';
           ctx.beginPath();
           ctx.arc(ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
                   oy - ry * sc + aDrift * Math.cos(T * 0.7 + q.sz * 9.42),
@@ -3493,10 +3600,74 @@
         b2.classList.toggle('on', on);
         if (on) b2.setAttribute('aria-current', 'page'); else b2.removeAttribute('aria-current');
       });
+      if (want === 'other') buildMilestones();
       panels.forEach(pn => pn.classList.toggle('on', pn.dataset.panel === want));
       main.scrollTop = 0;   // each section starts at its own top
     }));
   })();
+  // ---- milestone visuals: the health journey, on the same body ----
+  // One torso cloud shared by all three; each stage differs by the accent layer
+  // mounted over it and the way that layer flows.
+  const MILESTONES = [
+    {
+      code: '01', name: 'Baseline', sub: 'Blood panel / diagnostics',
+      note: 'The circulatory system read once, end to end, to establish where the body stands.',
+      accent: drawVessels, accentDepth: 22,
+      flow: { paths: [[[170,128],[170,170],[170,212],[170,250]],
+                      [[170,150],[124,167]], [[170,150],[216,167]],
+                      [[170,206],[122,223]], [[170,206],[218,223]]],
+              loop: 10, op: 0.6, width: 3.5, turb: 1.2, tone: [0.93,0.55,0.50] }
+    },
+    {
+      code: '02', name: 'Treatment', sub: 'Review / re-test',
+      note: 'Two systems singled out from the baseline, acted on, then measured again.',
+      accent: drawFocus, accentDepth: 30,
+      flow: { paths: [[[170,128],[158,150],[145,170]], [[145,170],[152,196],[200,216]],
+                      [[200,216],[186,190],[170,150]]],
+              loop: 7, op: 0.7, width: 4, turb: 1.0, tone: [0.95,0.66,0.46] }
+    },
+    {
+      code: '03', name: 'Ongoing', sub: 'Continuous health monitoring',
+      note: 'One closed circuit, evenly weighted — nothing singled out, nothing left unwatched.',
+      accent: drawBalance, accentDepth: 24,
+      flow: { paths: [[[170,124],[216,150],[222,190],[214,226],[170,246],[126,226],[118,190],[124,150],[170,124]]],
+              loop: 13, op: 0.55, width: 3, turb: 0.8, tone: [0.86,0.74,0.62] }
+    }
+  ];
+  // built on first view: the Other panel costs nothing until it is opened
+  let bodyCloud = null;
+  function buildMilestones(){
+    const grid = document.getElementById('olOther');
+    if (!grid || grid.dataset.built) return;
+    grid.dataset.built = '1';
+    bodyCloud = bodyCloud || buildCloud(drawUpperBody, 44, 1.02, { s: 1, x: 0, y: 0 });
+    MILESTONES.forEach(m => {
+      const cell = document.createElement('div');
+      cell.className = 'olCell';
+      cell.innerHTML =
+        '<div class="olStage"></div>' +
+        '<div class="olIdx">' + m.code + '</div>' +
+        '<div class="olName">' + m.name + '</div>' +
+        '<div class="olSpec"><span class="olPts"></span><span>' + m.sub + '</span></div>' +
+        '<div class="olUse">' + m.note + '</div>';
+      grid.appendChild(cell);
+      const stage = cell.querySelector('.olStage');
+      // the body reads quiet; the accent layer over it carries the stage
+      const base = makeOrganView(stage, null, {
+        cloud: bodyCloud, key: 'body', target: dotTarget(bodyCloud),
+        fill: 0.46, dot: 0.9, beat: false, flow: false, alpha: 0.34
+      });
+      const aCloud = buildCloud(m.accent, m.accentDepth, 1.02, { s: 1, x: 0, y: 0 },
+        { cx: bodyCloud.norm.cx, cy: bodyCloud.norm.cy, s: bodyCloud.s });
+      const accent = makeOrganView(stage, null, {
+        cloud: aCloud, key: 'ms' + m.code, target: dotTarget(aCloud),
+        fill: 0.46, dot: 1.25, beat: false, feed: false,
+        flowPreset: m.flow, flowN: 90
+      });
+      cell.querySelector('.olPts').textContent = (base.dotCount() + accent.dotCount()) + ' pts';
+    });
+  }
+
   (function buildLibrary(){
     const grid = document.getElementById('olGrid');
     if (!grid) return;
@@ -3508,11 +3679,11 @@
         '<div class="olStage"></div>' +
         '<div class="olIdx">' + String(i).padStart(2, '0') + '</div>' +
         '<div class="olName">' + o.label + '</div>' +
-        '<div class="olSpec"><span>' + Math.ceil(pts2D(i, true).length / 2) + ' pts</span>' +
-          '<span>r ' + o.r + '</span></div>' +
+        '<div class="olSpec"><span class="olPts"></span></div>' +
         '<div class="olUse">' + (used.length ? used.join(' &middot; ') : 'Not mapped to a health system') + '</div>';
       grid.appendChild(cell);
-      makeOrganView(cell.querySelector('.olStage'), i, { dense: true, every: 2, fill: 0.46, dot: 1.0 });
+      const v = makeOrganView(cell.querySelector('.olStage'), i, { target: dotTarget(clouds[i]), fill: 0.46, dot: 1.0 });
+      cell.querySelector('.olPts').textContent = v.dotCount() + ' pts';
     });
   })();
   function makeSheet(hostPhone){
