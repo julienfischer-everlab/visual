@@ -29,7 +29,7 @@ python3 -m http.server 8734
 5. **Card flip** — frosted rotating card carousel (backdrop-blur, per-card Y rotation)
 6. **Mobile (Hero static)** — bento layout with the mini organ carousel, metrics carousel (ApoB / heart rate / steps / sleep), side-by-side Overview frame, and the organ-age bottom sheets
 7. **Grid** — full-screen 3×3 anatomical plate, all organs alive with per-organ flow
-8. **Library** — an internal component workbench behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts, with the health systems it serves) and **Milestones** (Baseline / Treatment / Ongoing as three states of one upper body). Every tile reports the dot count that visual is actually made of.
+8. **Library** — an internal component workbench behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts, with the health systems it serves) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication and Supplements as states of one upper body). Every tile reports the dot count that visual is actually made of.
 
 ## Tweaks (top bar)
 
@@ -54,9 +54,12 @@ python3 -m http.server 8734
   absorbed — and the organ's own internal flow — so an isolated organ moves the
   way it does in the concept. Dot counts run at a constant density
   (`DOT_DENSITY`), so a tile's figure reflects the silhouette's real size.
-- Milestone visuals share one upper-body cloud; each stage is an accent cloud
+- Milestone visuals share an upper-body cloud; each stage is an accent cloud
   mounted over it, pinned to the body's framing via `buildCloud`'s `normRef`,
-  with its own flow preset.
+  with its own flow preset. The body sits at low alpha so the lit system reads;
+  accents sample at 3x density so their forms resolve at card size. Activity
+  swaps in a second body with the arms out of symmetry — the only stage whose
+  posture differs.
   The Library and the Overview card are instances of it.
 - The mobile bottom sheets and small cards use lightweight 2D-canvas particle
   renderers sampled from the same clouds, so several organs can animate

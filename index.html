@@ -1652,6 +1652,61 @@
     c.beginPath(); c.moveTo(112, 156); c.lineTo(96, 244); c.stroke();
     c.beginPath(); c.moveTo(228, 156); c.lineTo(244, 244); c.stroke();
   }
+  // a walking posture: same body, arms swung out of symmetry
+  function drawUpperBodyActive(c){
+    c.lineCap = 'round';
+    c.beginPath(); c.arc(175, 64, 30, 0, 6.2832); c.fill();
+    c.lineWidth = 26;
+    c.beginPath(); c.moveTo(174, 90); c.lineTo(171, 122); c.stroke();
+    c.beginPath();
+    c.moveTo(171, 116);
+    c.bezierCurveTo(209, 118, 235, 134, 243, 160);
+    c.bezierCurveTo(251, 190, 243, 228, 235, 262);
+    c.lineTo(107, 262);
+    c.bezierCurveTo(99, 228, 91, 190, 99, 160);
+    c.bezierCurveTo(107, 134, 133, 118, 171, 116);
+    c.closePath(); c.fill();
+    c.lineWidth = 24;
+    c.beginPath(); c.moveTo(113, 156); c.lineTo(126, 238); c.stroke();  // swung forward
+    c.beginPath(); c.moveTo(229, 156); c.lineTo(253, 226); c.stroke();  // swung back
+  }
+  // 04 nutrition: whole-food forms gathered at the gut, taken up into the body
+  function drawNutrition(c){
+    c.beginPath(); c.arc(146, 216, 21, 0, 6.2832); c.fill();
+    c.beginPath(); c.arc(192, 210, 17, 0, 6.2832); c.fill();
+    c.beginPath(); c.ellipse(168, 247, 17, 13, 0.22, 0, 6.2832); c.fill();
+    c.lineCap = 'round'; c.lineWidth = 4;                    // one stem each: whole food, not fruit
+    c.beginPath(); c.moveTo(148, 200); c.lineTo(152, 187); c.stroke();
+    c.beginPath(); c.moveTo(189, 196); c.lineTo(186, 185); c.stroke();
+  }
+  // 05 activity: a stride cadence and the swing that carries it
+  function drawActivity(c){
+    c.lineCap = 'round';
+    // the walk reads below the body, where the marks have clear ground
+    for (const [x, y, r] of [[120,277,10],[153,267,11],[187,275,11],[220,265,12]]){
+      c.beginPath(); c.ellipse(x, y, r, r * 0.55, 0.26, 0, 6.2832); c.fill();
+    }
+    c.lineWidth = 5;   // the swing stays thin so the steps lead
+    c.beginPath(); c.moveTo(129, 176); c.quadraticCurveTo(150, 200, 136, 222); c.stroke();
+    c.beginPath(); c.moveTo(214, 176); c.quadraticCurveTo(236, 200, 221, 222); c.stroke();
+  }
+  // 06 medication: one capsule, working on one system
+  function drawMedication(c){
+    c.lineCap = 'round';
+    c.lineWidth = 30;
+    c.beginPath(); c.moveTo(148, 166); c.lineTo(184, 194); c.stroke();
+  }
+  // 07 supplements: several small forms, taken up broadly rather than aimed
+  function drawSupplements(c){
+    c.lineCap = 'round';
+    c.lineWidth = 13;
+    c.beginPath(); c.moveTo(130, 182); c.lineTo(156, 200); c.stroke();
+    c.beginPath(); c.moveTo(188, 172); c.lineTo(214, 190); c.stroke();
+    c.beginPath(); c.moveTo(152, 226); c.lineTo(180, 241); c.stroke();
+    for (const [x, y] of [[124,214],[215,220],[170,156],[142,247],[201,247],[187,148]]){
+      c.beginPath(); c.arc(x, y, 5, 0, 6.2832); c.fill();
+    }
+  }
   // 01 baseline: the circulatory tree, read once to establish where things stand
   function drawVessels(c){
     c.lineCap = 'round';
@@ -3632,15 +3687,51 @@
       accent: drawBalance, accentDepth: 24,
       flow: { paths: [[[170,124],[216,150],[222,190],[214,226],[170,246],[126,226],[118,190],[124,150],[170,124]]],
               loop: 13, op: 0.55, width: 3, turb: 0.8, tone: [0.86,0.74,0.62] }
+    },
+    {
+      code: '04', name: 'Nutrition', sub: 'Whole food / intake',
+      note: 'Food gathered at the gut and taken up through the body as nutrients.',
+      accent: drawNutrition, accentDepth: 28,
+      flow: { paths: [[[168,232],[170,196],[170,158],[170,130]],
+                      [[148,218],[141,182],[127,152]], [[189,211],[199,180],[214,152]],
+                      [[168,232],[152,206],[136,182]]],
+              loop: 11, op: 0.6, width: 3.5, turb: 1.1, tone: [0.93,0.74,0.48] }
+    },
+    {
+      code: '05', name: 'Activity', sub: 'Everyday movement',
+      note: 'A walking cadence and the swing that carries it — daily movement, not training.',
+      accent: drawActivity, accentDepth: 24, body: drawUpperBodyActive,
+      flow: { paths: [[[112,279],[153,267],[187,275],[228,263]],
+                      [[129,176],[150,200],[136,222]], [[214,176],[236,200],[221,222]]],
+              loop: 8, op: 0.62, width: 3, turb: 0.9, tone: [0.92,0.67,0.58] }
+    },
+    {
+      code: '06', name: 'Medication', sub: 'Targeted treatment',
+      note: 'One capsule, held against the body, working on a single system.',
+      accent: drawMedication, accentDepth: 34,
+      flow: { paths: [[[166,180],[178,196],[186,220]], [[166,180],[150,198],[142,222]],
+                      [[166,180],[172,158],[170,134]]],
+              loop: 9, op: 0.68, width: 3, turb: 0.8, tone: [0.95,0.60,0.52] }
+    },
+    {
+      code: '07', name: 'Supplements', sub: 'Daily support',
+      note: 'Several small forms taken up broadly across the body, rather than aimed at one system.',
+      accent: drawSupplements, accentDepth: 26,
+      flow: { paths: [[[143,192],[158,206],[168,228]], [[199,182],[186,202],[172,226]],
+                      [[167,232],[170,200],[170,168]], [[124,214],[146,208],[168,214]],
+                      [[215,220],[194,214],[172,218]]],
+              loop: 12, op: 0.58, width: 3, turb: 1.0, tone: [0.93,0.80,0.58] }
     }
   ];
   // built on first view: the Other panel costs nothing until it is opened
-  let bodyCloud = null;
+  const bodyClouds = {};
+  function bodyCloudFor(fn, key){
+    return bodyClouds[key] || (bodyClouds[key] = buildCloud(fn, 44, 1.02, { s: 1, x: 0, y: 0 }));
+  }
   function buildMilestones(){
     const grid = document.getElementById('olOther');
     if (!grid || grid.dataset.built) return;
     grid.dataset.built = '1';
-    bodyCloud = bodyCloud || buildCloud(drawUpperBody, 44, 1.02, { s: 1, x: 0, y: 0 });
     MILESTONES.forEach(m => {
       const cell = document.createElement('div');
       cell.className = 'olCell';
@@ -3652,15 +3743,17 @@
         '<div class="olUse">' + m.note + '</div>';
       grid.appendChild(cell);
       const stage = cell.querySelector('.olStage');
+      const bodyKey = m.body ? 'active' : 'still';
+      const bCloud = bodyCloudFor(m.body || drawUpperBody, bodyKey);
       // the body reads quiet; the accent layer over it carries the stage
       const base = makeOrganView(stage, null, {
-        cloud: bodyCloud, key: 'body', target: dotTarget(bodyCloud),
+        cloud: bCloud, key: 'body' + bodyKey, target: dotTarget(bCloud),
         fill: 0.46, dot: 0.9, beat: false, flow: false, alpha: 0.34
       });
       const aCloud = buildCloud(m.accent, m.accentDepth, 1.02, { s: 1, x: 0, y: 0 },
-        { cx: bodyCloud.norm.cx, cy: bodyCloud.norm.cy, s: bodyCloud.s });
+        { cx: bCloud.norm.cx, cy: bCloud.norm.cy, s: bCloud.s });
       const accent = makeOrganView(stage, null, {
-        cloud: aCloud, key: 'ms' + m.code, target: dotTarget(aCloud),
+        cloud: aCloud, key: 'ms' + m.code, target: dotTarget(aCloud) * 3,
         fill: 0.46, dot: 1.25, beat: false, feed: false,
         flowPreset: m.flow, flowN: 90
       });
