@@ -1,0 +1,3763 @@
+# Particle Organs — Design Spec
+
+A living particle-anatomy concept for Everlab: one WebGL particle system morphs between nine organ silhouettes across seven switchable experience modes (Card Nav, Pill Nav, Desktop dashboard, two Mobile variations, Card flip, Grid), with three themes (burgundy dark, warm light, pure black), voxel render mode, organ flow/feeding systems, and an organ-age bottom sheet.
+
+Deployed: https://particle-organs.vercel.app
+
+## Source (self-contained HTML)
+
+```html
+<meta charset="utf-8">
+<title>Particle morph &mdash; organ concept demo</title>
+<style>
+  :root{
+    --bg:#240908;
+    --ink:#c49b93;
+    --ink-bright:#f2e5e0;
+    --pill:#38130f;
+    --pill-line:#57241d;
+    --accent:#c98a95;
+  }
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    overflow:hidden;
+    font-family:'Suisse Intl','SuisseIntl',"Suisse Int'l",'Helvetica Neue',Helvetica,Arial,sans-serif;
+    color:var(--ink);
+  }
+  canvas{display:block;position:fixed;inset:0;}
+  /* minimal shadcn-style control bar: zinc palette, one quiet row */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:10;
+    display:flex;align-items:center;gap:24px;
+    padding:8px 16px;
+    background:#09090b;border-bottom:1px solid #1f1f22;
+  }
+  .topbar, .topbar *{box-shadow:none !important;filter:none !important;}
+  .tweaks{display:flex;align-items:center;gap:16px;flex-wrap:nowrap;flex:1;}
+  .tweaks .lbl{
+    font-size:11.5px;font-weight:500;color:#71717a;
+    letter-spacing:0;text-transform:none;opacity:1;
+  }
+  .topbar select{
+    font:inherit;font-size:12px;font-weight:500;color:#e4e4e7;
+    background:#131316 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23a1a1aa' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>") no-repeat right 10px center;
+    border:1px solid #232326;border-radius:8px;padding:6px 28px 6px 12px;
+    -webkit-appearance:none;appearance:none;cursor:pointer;outline:none;
+  }
+  .topbar select:hover{border-color:#3f3f46;}
+  .topbar .seg{
+    display:flex;gap:2px;border:1px solid #232326;background:#131316;
+    border-radius:8px;padding:3px;
+  }
+  .topbar .seg button{
+    font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;
+    color:#a1a1aa;border-radius:6px;padding:4px 12px;
+    transition:color .15s,background .15s;
+  }
+  .topbar .seg button:hover{color:#e4e4e7;}
+  .topbar .seg button[aria-pressed="true"]{color:#09090b;background:#fafafa;}
+  .topbar input[type="range"]{
+    -webkit-appearance:none;appearance:none;width:110px;height:4px;border-radius:2px;
+    background:#27272a;outline:none;cursor:pointer;
+  }
+  .topbar input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+    background:#fafafa;border:0;cursor:pointer;
+  }
+  .topbar input[type="range"]::-moz-range-thumb{
+    width:13px;height:13px;border-radius:50%;background:#fafafa;border:0;
+  }
+  .topbar .chip{
+    font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;
+    color:#a1a1aa;border:1px solid #232326;border-radius:8px;padding:5px 13px;
+    transition:color .15s,background .15s,border-color .15s;
+  }
+  .topbar .chip[aria-pressed="true"]{color:#fafafa;background:#1c1c20;border-color:#3f3f46;}
+  .seg{display:flex;border:1px solid var(--pill-line);border-radius:999px;overflow:hidden;}
+  .seg button{
+    font:inherit;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink);background:transparent;border:0;cursor:pointer;
+    padding:7px 14px;transition:color .2s,background .2s;
+  }
+  .seg button[aria-pressed="true"]{color:var(--ink-bright);background:#43181c;}
+  .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .tweaks input[type="range"]{width:110px;accent-color:var(--accent);cursor:pointer;}
+  .chip{
+    font:inherit;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink);background:transparent;border:1px solid var(--pill-line);
+    border-radius:999px;padding:7px 14px;cursor:pointer;
+    transition:color .2s,border-color .2s;
+  }
+  .chip[aria-pressed="true"]{color:var(--ink-bright);border-color:var(--accent);}
+  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .carousel{
+    position:fixed;left:0;right:0;bottom:0;
+    display:flex;gap:10px;
+    padding:14px calc(50vw - 78px) 22px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 14%,#000 86%,transparent 100%);
+    mask-image:linear-gradient(to right,transparent 0,#000 14%,#000 86%,transparent 100%);
+  }
+  .carousel::-webkit-scrollbar{display:none;}
+  .card{
+    flex:0 0 156px;
+    font:inherit;text-align:left;color:var(--ink);
+    background:rgba(56,19,15,.55);border:1.5px solid transparent;
+    border-radius:16px;padding:13px 14px 14px;cursor:pointer;
+    transition:border-color .25s,background .25s;
+  }
+  .card > *{opacity:.5;transition:opacity .25s;}
+  .card:hover{background:rgba(67,24,28,.8);}
+  .card:hover > *,
+  .card[aria-pressed="true"] > *{opacity:1;}
+  .card:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .card[aria-pressed="true"]{
+    border-color:var(--ink-bright);background:rgba(67,24,28,.95);
+  }
+  .card .top{
+    display:flex;justify-content:space-between;align-items:baseline;gap:6px;
+    font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  }
+  .card .badge{color:#96b183;letter-spacing:.03em;}
+  .card .age{
+    display:block;font-size:27px;font-weight:500;color:var(--ink-bright);
+    margin:9px 0 2px;font-variant-numeric:tabular-nums;letter-spacing:-0.01em;
+  }
+  .card .name{display:block;font-size:12px;letter-spacing:0;}
+  .card .bar{
+    display:block;position:relative;height:4px;border-radius:2px;
+    background:#57241d;margin-top:11px;
+  }
+  .card .bar i{
+    position:absolute;top:0;height:100%;border-radius:2px;
+    background:#96b183;right:50%;
+  }
+  .card .bar .dot{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:6px;height:6px;border-radius:50%;background:var(--ink-bright);
+  }
+  .card.aged .badge{color:#d99a5b;}
+  .card.aged .bar i{background:#d99a5b;right:auto;left:50%;}
+  /* pill-nav variants */
+  .pillui{
+    position:fixed;left:0;right:0;bottom:0;z-index:5;
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+    padding:10px 20px 24px;pointer-events:none;
+  }
+  .pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;pointer-events:auto;margin-top:34px;}
+  .pill{
+    font:inherit;font-size:12px;color:var(--ink);
+    background:rgba(56,19,15,.55);border:1.5px solid transparent;border-radius:999px;
+    padding:8px 15px;cursor:pointer;display:flex;align-items:center;gap:8px;
+    transition:border-color .25s,background .25s,color .25s;
+  }
+  .pill .dot{width:7px;height:7px;border-radius:50%;flex:none;}
+  .pill:hover{background:rgba(67,24,28,.8);}
+  .pill[aria-pressed="true"]{
+    border-color:var(--ink-bright);background:rgba(67,24,28,.95);color:var(--ink-bright);
+  }
+  .pill:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  /* per-digit odometer: each digit column is its own masked wheel;
+     digits fade into depth toward the top and bottom of each column */
+  .ageBig{
+    position:relative;height:132px;
+    display:flex;align-items:center;justify-content:center;
+    font-variant-numeric:tabular-nums;
+  }
+  .ageBig .dcol{
+    position:relative;height:100%;width:1ch;overflow:hidden;
+    font-size:92px;font-weight:500;color:var(--ink-bright);line-height:1;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 26%,#000 74%,transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 0,#000 26%,#000 74%,transparent 100%);
+  }
+  .ageBig .dcol + .dcol{margin-left:-6px;}
+  .ageBig .dg{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    will-change:transform;
+  }
+  #arcA{
+    overflow:visible;
+    -webkit-mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
+    mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
+  }
+  .status{text-align:center;transition:opacity .22s;min-height:24px;margin-top:-20px;}
+  .status .organ{font-size:24px;letter-spacing:-1px;color:var(--ink-bright);font-weight:500;}
+  .status .word{font-size:13px;font-weight:400;color:rgba(242,229,224,.6);margin-top:3px;}
+  .status .word b{font-weight:500;}
+  .status p{margin:6px auto 0;font-size:12px;color:var(--ink);max-width:340px;line-height:1.5;}
+  /* biomarker annotation: animated scientific callout, art-directed per organ */
+  .note{
+    position:fixed;left:0;top:0;pointer-events:none;z-index:6;
+    transition:opacity .2s;
+  }
+  .note svg{display:block;overflow:visible;}
+  .note .txt{
+    position:absolute;bottom:70px;
+    color:#e0cfc8;white-space:nowrap;line-height:1;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .note .txt .cursor, .note .txt2 .cursor{
+    display:inline-block;width:8px;height:11px;background:currentColor;
+    margin-left:3px;vertical-align:-1px;
+  }
+  .note .txt2{
+    position:absolute;bottom:70px;
+    color:#d99a5b;white-space:nowrap;line-height:1;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    opacity:0;transition:opacity .35s;
+  }
+  body.m0 .pillui{display:none;}
+  body.m1 .carousel{display:none;}
+  body.m2 .carousel{display:none;}
+  body.m2 canvas#field{z-index:2;border-radius:18px;}
+  body.m2 .note{display:none;}
+  body.m2 .pillui{z-index:5;padding:0;gap:0;display:flex;}
+  body.m2 .pills{display:none;}
+  body.m2 #arcA{order:1;transform:scale(.52);margin:-20px 0 -60px;}
+  body.m1 #ageBig{margin-top:16px;}
+  body.m2 #ageBig{order:2;height:64px;}
+  body.m2 #ageBig .dcol{font-size:34px;}
+  body.m2 #ageBig .dcol + .dcol{margin-left:-1px;}
+  body.m2 #status{order:3;margin-top:-10px;min-height:18px;}
+  body.m2 #status .word{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  }
+  #situTitle .oname{display:none;}
+  .dash .olist{
+    position:absolute;left:24px;top:56px;width:calc(54% - 48px);z-index:3;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  }
+  .dash .olist .or{
+    display:flex;align-items:center;gap:9px;cursor:pointer;
+    padding:10px 2px;border-bottom:1px solid rgba(242,229,224,.08);
+    color:rgba(242,229,224,.2);transition:color .2s;
+  }
+  .dash .olist .or:last-child{border-bottom:none;}
+  .dash .olist .or:hover{color:rgba(242,229,224,.85);}
+  .dash .olist .or.on{color:#f2e5e0;}
+  .dash .olist .or .nm{flex:1;}
+  .dash .olist .or .ag{font-size:12px;}
+  .dash .olist .dot{width:8px;height:8px;border-radius:50%;flex:none;}
+
+  /* ---- In situ: the concept inside the product dashboard ---- */
+  .dash{
+    position:fixed;left:0;right:0;bottom:0;top:57px;display:none;overflow:auto;z-index:1;
+    background:#0d0d0c;color:#ececec;
+  }
+  body.m2 .dash{display:block;}
+  .dash *{box-sizing:border-box;}
+  .dash .side{
+    position:fixed;left:0;top:57px;bottom:0;width:224px;
+    background:#111110;border-right:1px solid #1f1f1e;padding:26px 20px;
+    font-size:13.5px;color:#bdbdb9;
+  }
+  .dash .side .logo{font-size:17px;font-weight:600;color:#ececec;margin-bottom:34px;}
+  .dash .side .nv{padding:9px 10px;border-radius:8px;margin-bottom:2px;}
+  .dash .side .nv.on{background:#1e1e1c;color:#ececec;}
+  .dash{padding-left:224px;}
+  .dash main{margin:0 auto;padding:64px 40px 60px;max-width:1160px;}
+  .dash h1{font-size:26px;font-weight:500;letter-spacing:-0.5px;margin:0 0 22px;}
+  .dash h1 span{color:#8b8b86;}
+  .dash .dgrid{display:grid;grid-template-columns:1fr 1.26fr;gap:16px;align-items:stretch;height:400px;}
+  .dash .dleft{display:flex;flex-direction:column;gap:16px;min-height:0;}
+  .dash .dcard.bcard{flex:1;display:flex;flex-direction:column;border-radius:20px;padding:24px;border:none;background:#252522;}
+  .dash .bcard .legend{margin-top:auto;}
+  .dash .dcard.scard{display:flex;flex-direction:column;border-radius:20px;padding:24px;height:168px;border:none;background:#252522;}
+  .dash .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;color:#8b8b86;font-size:13px;}
+  .dash .bars{display:flex;align-items:flex-end;gap:2px;}
+  .dash .bars i{width:4px;background:#ececec;border-radius:1px;font-style:normal;}
+  .dash .inf{
+    display:inline-block;width:14px;height:14px;border:1px solid #4a4a46;border-radius:50%;
+    font-size:9px;line-height:13px;text-align:center;color:#8b8b86;
+    vertical-align:6px;margin-left:6px;font-style:normal;font-weight:400;
+  }
+  .dash .dcard{background:#161615;border:none;border-radius:16px;padding:20px;}
+  .dash .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;}
+  .dash .big{font-size:30px;font-weight:500;margin-top:6px;}
+  .dash .legend{display:flex;gap:26px;margin-top:22px;font-size:12px;color:#bdbdb9;}
+  .dash .legend b{display:block;font-size:17px;color:#ececec;font-weight:600;}
+  .dash .legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;font-style:normal;}
+  .dash .meterbar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:12px;background:#2a2a28;}
+  .dash .meterbar span{height:100%;}
+  .dash .drow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0;}
+  .dash .organ{padding:0;position:relative;background:#331110;border-color:#2c1512;min-height:0;border-radius:20px;}
+  .dash .istats{
+    position:absolute;left:20px;top:20px;bottom:20px;width:352px;z-index:3;
+    display:flex;flex-direction:column;gap:12px;justify-content:flex-start;
+  }
+  .dash .icard{
+    background:rgba(24,11,9,.78);border:1px solid rgba(87,36,29,.5);
+    border-radius:14px;padding:16px;color:#e8dcd7;
+  }
+  .dash .icard .lbl{color:rgba(242,229,224,.55);}
+  .dash .irow{display:grid;grid-template-columns:1.05fr 1fr;gap:12px;}
+  .dash .mini{
+    height:12px;margin-top:16px;border-radius:2px;
+    background:repeating-linear-gradient(to right,rgba(242,229,224,.35) 0 1px,transparent 1px 6px);
+  }
+  .dash .ilist{
+    position:absolute;right:20px;top:50%;transform:translateY(-50%);z-index:3;
+    display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:var(--ink);
+  }
+  .dash .ilist .li{
+    display:flex;align-items:center;gap:8px;cursor:pointer;
+    padding:6px 12px;border-radius:999px;border:1px solid transparent;
+    transition:color .2s,border-color .2s;
+  }
+  .dash .ilist .li:hover{color:var(--ink-bright);}
+  .dash .ilist .li.on{color:var(--ink-bright);border-color:var(--ink-bright);}
+  .dash .ilist .dot{width:6px;height:6px;border-radius:50%;flex:none;}
+  .dash .filters{display:flex;gap:8px;margin:26px 0 18px;font-size:12.5px;color:#bdbdb9;flex-wrap:wrap;}
+  .dash .fchip{border:1px solid #2a2a28;border-radius:10px;padding:9px 14px;display:flex;gap:7px;align-items:center;}
+  .dash .fchip.on{border-color:#ececec;color:#ececec;}
+  .dash .fchip i{width:8px;height:8px;border-radius:3px;font-style:normal;}
+  .dash .st{border-radius:8px;padding:5px 11px;font-size:12.5px;justify-self:start;}
+  .dash .st.ok{background:#17251a;color:#9fc98f;}
+  .dash .st.sub{background:#272113;color:#d9c66b;}
+  .dash .recs{margin-top:14px;}
+  .dash .grp{display:grid;grid-template-columns:230px 1fr;gap:0 26px;padding:30px 6px;border-top:1px solid #1f1f1e;}
+  .dash .grp:first-child{border-top:0;}
+  .dash .grp h3{font-size:14.5px;margin:2px 0 8px;font-weight:600;}
+  .dash .grp .gd{font-size:12.5px;color:#8b8b86;line-height:1.55;max-width:210px;}
+  .dash .brow{
+    display:grid;grid-template-columns:1.35fr .6fr .55fr 90px 130px 96px;
+    align-items:center;gap:16px;padding:16px 0;
+    border-bottom:1px solid #1c1c1b;font-size:13.5px;color:#e4e4e0;
+  }
+  .dash .brow:last-child{border-bottom:0;}
+  .dash .brow .g{color:#8b8b86;font-size:13px;}
+  .dash .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;}
+  .dash .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
+  .dash .rng .s1{width:34px;background:#8fae7e;}
+  .dash .rng .s2{width:26px;background:#d9c66b;}
+  .dash .rng .s3{width:26px;background:#cf6b5b;}
+  .dash .rng .mk{
+    position:absolute;top:-2px;left:1px;width:0;height:0;border:4px solid transparent;
+    border-top:6px solid #ececec;background:none;border-radius:0;
+  }
+  #situTitle{position:fixed;z-index:5;display:none;pointer-events:none;}
+  #situTitle .slbl{
+    font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:rgba(242,229,224,.6);
+  }
+  #situTitle .oname{
+    font-size:30px;font-weight:500;letter-spacing:-1px;
+    color:var(--ink-bright);margin-top:6px;
+  }
+  body.m2 #situTitle{display:block;}
+  body.m2 .pillui{z-index:5;padding:0;gap:0;display:flex;}
+  body.m2 .pills{margin-top:0;gap:6px;justify-content:flex-start;padding-left:22px;}
+  body.m2 .pill{padding:5px 11px;font-size:11px;}
+
+  /* ---- Mobile: the hero as a swipe carousel inside a phone frame ---- */
+  body.m3, body.m6{background:#000;}
+  body.m3 .carousel, body.m3 .note, body.m6 .carousel, body.m6 .note{display:none;}
+  /* the device: titanium band, display bezel, side buttons */
+  #phoneShell{display:none;}
+  body.m3 #phoneShell, body.m6 #phoneShell{
+    display:block;position:fixed;z-index:1;
+    left:50%;top:calc(50% + 22px);transform:translate(-50%,-50%);
+    --phH:min(calc(100vh - 108px), 880px);
+    height:var(--phH);width:calc(var(--phH) * 0.478);
+    border-radius:62px;padding:6px;box-sizing:border-box;
+    background:linear-gradient(145deg,#54545a,#2b2b2f 28%,#3f3f45 55%,#54545a 82%,#232327);
+    box-shadow:inset 0 0 1.5px rgba(255,255,255,.5), 0 30px 90px rgba(0,0,0,.35);
+  }
+  .pbtn{position:absolute;background:linear-gradient(180deg,#4c4c52,#333338);}
+  .pbtn.act{left:-2px;top:154px;width:3px;height:32px;border-radius:2px 0 0 2px;}
+  .pbtn.vup{left:-2.5px;top:216px;width:3.5px;height:58px;border-radius:3px 0 0 3px;}
+  .pbtn.vdn{left:-2.5px;top:286px;width:3.5px;height:58px;border-radius:3px 0 0 3px;}
+  .pbtn.pwr{right:-2.5px;top:246px;width:3.5px;height:96px;border-radius:0 3px 3px 0;}
+  #phone, #phone2{
+    position:relative;
+    display:flex;flex-direction:column;width:100%;height:100%;
+    background:#0d0d0c;border-radius:56px;overflow:hidden;color:#ececec;
+    border:5px solid #000;box-sizing:border-box;
+  }
+  #phone *{box-sizing:border-box;}
+  .mstatus{display:flex;align-items:center;justify-content:space-between;padding:18px 34px 4px;flex:none;}
+  .mstatus .tm{font-size:15px;font-weight:600;color:#fff;letter-spacing:.02em;}
+  .mstatus .isl{position:absolute;left:50%;transform:translateX(-50%);top:13px;width:96px;height:27px;background:#000;border-radius:16px;border:1px solid #1a1a19;}
+  .mscroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-bottom:26px;}
+  .mscroll::-webkit-scrollbar{display:none;}
+  .mtitle{display:flex;align-items:center;justify-content:space-between;padding:16px 13px 0;}
+  .mtitle{padding-bottom:16px;}
+  .mtitle h2{margin:0;font-size:24px;font-weight:500;letter-spacing:-0.4px;color:#ececec;}
+  .mtitle .cbtn{display:inline-block;width:36px;height:36px;border-radius:50%;background:#1c1c1b;border:1px solid #2c2c2a;margin-left:8px;}
+  /* fixed-height hero carousel; a sliver of the next card signals swipe */
+  .mcar{
+    display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;flex:none;
+    padding:0 13px;
+    height:398px;scrollbar-width:none;overscroll-behavior-x:contain;
+  }
+  .mcar::-webkit-scrollbar{display:none;}
+  .mcar{cursor:grab;user-select:none;-webkit-user-select:none;}
+  .mcar:active{cursor:grabbing;}
+  .mcard{
+    flex:0 0 calc(100% - 22px);scroll-snap-align:start;
+    border-radius:22px;height:100%;overflow:hidden;position:relative;
+  }
+  .mdots{display:flex;gap:5px;justify-content:center;align-items:center;padding:14px 0 2px;flex:none;}
+  .mdots i{height:6px;border-radius:3px;background:#ececec;display:block;}
+  /* card 1 — the snapshot slide: three surfaces, one carousel piece */
+  .mcard.msnap{background:transparent;display:flex;flex-direction:column;gap:12px;}
+  .msn{background:rgba(255,255,255,.04);border-radius:22px;padding:22px;display:flex;flex-direction:column;}
+  .msnap .mc1{flex:1;}
+  #phone .mc1 .legend{margin-top:auto;}
+  #phone .mc1 .meterbar{margin-bottom:2px;}
+  .msnap .mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:none;height:158px;}
+  #phone .lbl, #phone2 .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;}
+  #phone .big, #phone2 .big{font-size:28px;font-weight:500;margin-top:6px;color:#ececec;}
+  #phone .inf{
+    display:inline-block;width:14px;height:14px;border:1px solid #4a4a46;border-radius:50%;
+    font-size:9px;line-height:13px;text-align:center;color:#8b8b86;
+    vertical-align:6px;margin-left:5px;font-style:normal;font-weight:400;
+  }
+  #phone .legend{display:flex;gap:18px;margin-top:20px;font-size:11.5px;color:#bdbdb9;white-space:nowrap;}
+  #phone .legend b{display:block;font-size:16px;color:#ececec;font-weight:600;}
+  #phone .legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;font-style:normal;}
+  #phone .meterbar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:12px;background:#2a2a28;}
+  #phone .meterbar span{height:100%;}
+  #phone .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;color:#8b8b86;font-size:12.5px;}
+  #phone .bars{display:flex;align-items:flex-end;gap:2px;}
+  #phone .bars i{width:4px;background:#ececec;border-radius:1px;font-style:normal;}
+  /* card 2 — the organ-age experience, adapted for mobile */
+  .mcard.morgan{background:#331110;display:flex;flex-direction:column;padding:18px 0 0;}
+  .morgan .mhead{padding:2px 20px 0;flex:none;}
+  .morgan .slbl2{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,229,224,.6);text-align:center;}
+  .morgan .moname{font-size:16px;font-weight:500;letter-spacing:-0.3px;color:#f2e5e0;text-align:center;flex:none;transition:opacity .22s;}
+  #mSlot{flex:1;position:relative;min-height:110px;}
+  #mGauge{flex:none;}
+  body.m3 canvas#field{position:absolute;z-index:1;}
+  body.m3 .pillui{display:none;}
+  /* centered stack: organ visual, then [‹ hero age + name ›], then the arc */
+  body.m3 #ageBig{height:60px;justify-content:center;flex:none;}
+  body.m3 #ageBig .dcol{font-size:44px;}
+  body.m3 #ageBig .dcol + .dcol{margin-left:-2px;}
+  /* caption rides under the organ name in the bottom group */
+  body.m3 #status{margin:2px 0 0;min-height:0;text-align:center;}
+  body.m3 #status .word{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:9px;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;
+  }
+  /* the arc sits directly below the organ visual */
+  #mGauge{display:flex;justify-content:center;}
+  body.m3 #arcA{transform:scale(.58);margin:-2px 0 -58px;flex:none;}
+  /* organ switcher arrows flank the age + name group */
+  .mAgeRow{display:flex;align-items:center;justify-content:center;gap:20px;padding:0 20px;flex:none;margin-bottom:36px;}
+  .mAgeCol{display:flex;flex-direction:column;align-items:center;min-width:130px;}
+  .mAgeCol .moname{margin-top:-4px;}
+  .mnbtn{
+    width:27px;height:27px;border-radius:50%;cursor:pointer;flex:none;
+    background:rgba(255,255,255,.04);border:none;
+    color:#f2e5e0;display:flex;align-items:center;justify-content:center;
+    padding:0;transition:background .2s;
+  }
+  .mnbtn:hover{background:rgba(255,255,255,.1);}
+  .mnbtn svg{display:block;width:5px;height:9px;}
+  /* page content below the hero */
+  .msel{
+    margin:16px 13px 0;border:1px solid #2a2a28;border-radius:12px;
+    padding:14px 16px;display:flex;justify-content:space-between;align-items:center;
+    font-size:14px;color:#ececec;
+  }
+  .mchips{display:flex;gap:8px;overflow-x:auto;padding:12px 13px 2px;scrollbar-width:none;overscroll-behavior-x:contain;font-size:12.5px;color:#bdbdb9;}
+  .mchips::-webkit-scrollbar{display:none;}
+  #phone .fchip{border:1px solid #2a2a28;border-radius:10px;padding:9px 13px;display:flex;gap:7px;align-items:center;flex:none;}
+  #phone .fchip.on{border-color:#ececec;color:#ececec;}
+  #phone .fchip i{width:8px;height:8px;border-radius:3px;font-style:normal;}
+  .mrecs{padding:8px 13px 0;}
+  .mrecs h3{font-size:14.5px;margin:14px 0 6px;font-weight:600;color:#ececec;}
+  .mrecs .gd{font-size:12.5px;color:#8b8b86;line-height:1.55;margin-bottom:4px;}
+  .mbrow{
+    display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;
+    padding:14px 0;border-bottom:1px solid #1c1c1b;font-size:14px;color:#e4e4e0;
+  }
+  .mbrow .g{color:#8b8b86;font-size:12.5px;}
+  #phone .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;justify-self:end;}
+  #phone .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
+  #phone .rng .s1{width:34px;background:#8fae7e;}
+  #phone .rng .s2{width:26px;background:#d9c66b;}
+  #phone .rng .s3{width:26px;background:#cf6b5b;}
+  #phone .rng .mk{
+    position:absolute;top:-2px;left:1px;width:0;height:0;border:4px solid transparent;
+    border-top:6px solid #ececec;background:none;border-radius:0;
+  }
+  #phone .st{border-radius:8px;padding:5px 11px;font-size:12px;justify-self:end;}
+  #phone .st.ok{background:#17251a;color:#9fc98f;}
+  #phone .st.sub{background:#272113;color:#d9c66b;}
+
+  /* ---- Spatial: dimensional cover-flow of living organ cards ---- */
+  #spatial{
+    position:fixed;inset:0;display:none;z-index:2;
+    perspective:1100px;touch-action:none;
+    user-select:none;-webkit-user-select:none;cursor:grab;
+  }
+  #spatial:active{cursor:grabbing;}
+  body.m4 #spatial{display:block;}
+  body.m4 .carousel, body.m4 .pillui, body.m4 .note{display:none;}
+  /* organs render above the cards: transparent canvas, input passes through */
+  body.m4 canvas#field{z-index:3;pointer-events:none;}
+  .spCard{
+    position:absolute;left:50%;top:50%;box-sizing:border-box;
+    border-radius:44px;
+    background:rgba(62,19,16,.68);
+    border:none;box-shadow:none;
+    -webkit-backdrop-filter:blur(128px);backdrop-filter:blur(128px);
+    display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+    padding:26px 22px 30px;
+    will-change:transform,opacity;pointer-events:none;
+  }
+  .spCard .nm{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(242,229,224,.6);}
+  .spCard .spBot{display:flex;flex-direction:column;align-items:center;}
+  .spCard .num{font-size:54px;font-weight:500;color:var(--ink-bright);letter-spacing:-2px;line-height:1;}
+  .spCard .sub{
+    font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:rgba(242,229,224,.45);margin-top:7px;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  .spCard .diff{font-size:12px;margin-top:8px;font-weight:500;}
+
+  /* ---- Grid: a full-screen table of organs, hairline dividers only ---- */
+  #grid{
+    position:fixed;left:0;right:0;top:40px;bottom:0;
+    display:none;z-index:2;overflow:hidden;
+    grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:0;
+    border:1px solid rgba(242,229,224,.07);
+  }
+  body.m5 #grid{display:grid;}
+  body.m5 .carousel, body.m5 .pillui, body.m5 .note{display:none;}
+  .gCell{
+    border:0;border-radius:0;background:transparent;
+    display:flex;flex-direction:column;justify-content:space-between;padding:16px 20px;
+    box-sizing:border-box;cursor:default;
+    user-select:none;-webkit-user-select:none;
+    opacity:.32;transition:opacity 1.1s ease;
+  }
+  .gCell:hover{opacity:1;}
+  .gCell:not(:nth-child(3n)){border-right:1px solid rgba(242,229,224,.06);}
+  .gCell:nth-child(-n+6){border-bottom:1px solid rgba(242,229,224,.06);}
+  .gCell .nm{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(242,229,224,.55);}
+  .gCell .bot{display:flex;align-items:baseline;gap:8px;}
+  .gCell .num{font-size:44px;font-weight:500;color:var(--ink-bright);letter-spacing:-1.5px;line-height:1;}
+  .gCell .diff{font-size:10.5px;font-weight:500;}
+
+  /* ---- Bento mobile: three hero cards, mini organ-age window ---- */
+  #mBento{display:none;flex-direction:column;gap:12px;padding:0 13px;flex:none;}
+  body.m6 #mBento{display:flex;}
+  body.m6 .mcar, body.m6 .mdots, body.m6 .pillui{display:none;}
+  body.m6 canvas#field{position:absolute;z-index:1;}
+  #mBento > .msn:first-child{min-height:208px;}
+  #mBento > .msn:first-child .legend{margin-top:auto;}
+  .mbrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  #mBento .mbrow2 .big{font-size:20px;margin-top:2px;}
+  .msCar{
+    position:relative;overflow:hidden;padding:0;
+    touch-action:pan-y;user-select:none;-webkit-user-select:none;
+  }
+  .msSlide{
+    position:absolute;inset:0;padding:22px;display:flex;flex-direction:column;
+    will-change:transform,opacity;
+  }
+  .msDots{
+    position:absolute;left:0;right:0;bottom:12px;
+    display:flex;gap:3px;align-items:center;justify-content:center;z-index:2;
+  }
+  .msHead{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+  .msHead .lbl{flex:1;}
+  .msHead .inf{margin-left:auto;vertical-align:0;}
+  .mstat{margin-top:6px;font-size:12px;font-weight:500;color:#e0784a;}
+  .msDiv{border-top:1px solid rgba(242,229,224,.09);margin:12px 0 10px;}
+  .msTr{display:flex;justify-content:space-between;font-size:10.5px;color:#8b8b86;}
+  .msTr b{color:#e0784a;font-weight:500;}
+  .msChart{margin-top:auto;padding-bottom:14px;}
+  .msChart svg{display:block;width:100%;height:42px;margin-top:8px;}
+  body.light .msDiv{border-top-color:rgba(46,31,26,.12);}
+  .mtag{
+    align-self:flex-start;margin-top:8px;font-size:10.5px;font-weight:500;
+    padding:4px 10px;border-radius:999px;
+    background:rgba(242,229,224,.1);color:rgba(242,229,224,.7);
+  }
+  .mtag.warn{background:rgba(217,137,91,.16);color:#d9895b;}
+  body.light .mtag{background:rgba(46,31,26,.07);color:rgba(46,31,26,.65);}
+  body.light .mtag.warn{background:rgba(176,106,40,.14);color:#a5661f;}
+  .mhr{margin-top:auto;padding-bottom:14px;}
+  .mhr svg{display:block;width:100%;height:52px;}
+  .mhrlb{display:flex;justify-content:space-between;font-size:10px;color:#8b8b86;margin-top:8px;}
+  .mslp{margin-top:auto;padding-bottom:14px;}
+  .mslp .sgs{display:flex;gap:3px;height:10px;}
+  .mslp .sgs i{border-radius:5px;background:#ececec;display:block;}
+  .mslp .sglb{display:flex;justify-content:space-between;font-size:10px;color:#8b8b86;margin-top:8px;}
+  body.light .mhr svg path, body.light .mhr svg circle{stroke:#3a2d22;fill:none;}
+  body.light .mhr svg circle{fill:#3a2d22;}
+  body.light .mslp .sgs i{background:#3a2d22;}
+  .mwk{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:6px;}
+  .mwk{padding-bottom:14px;}
+  .mwk .wb{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:64px;justify-content:flex-end;}
+  .mwk .wb i{width:7px;border-radius:4px;background:#ececec;display:block;}
+  .mwk .wb span{font-size:9px;color:#8b8b86;}
+  body.light .mwk .wb i{background:#3a2d22;}
+  body.light .mwk .wb span{color:#9b8a75;}
+  .mbrow2 .msn{height:252px;box-sizing:border-box;}
+  .msn.morganMini{
+    background:#331110;position:relative;cursor:pointer;overflow:hidden;
+    touch-action:pan-y;user-select:none;-webkit-user-select:none;
+  }
+  .morganMini .lbl{position:relative;z-index:2;color:rgba(242,229,224,.6);}
+  #mbSlot{position:absolute;inset:0;}
+  .mbTrack{position:absolute;left:0;right:0;top:22px;bottom:22px;z-index:2;pointer-events:none;}
+  .mbItem{
+    position:absolute;left:22px;right:22px;top:0;
+    display:flex;flex-direction:column;will-change:transform,opacity;
+  }
+  #phone .mbItem .lbl{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    color:rgba(242,229,224,.55);
+  }
+  body.light #phone .mbItem .lbl{color:rgba(46,31,26,.55);}
+  .mbDots{
+    position:absolute;left:0;right:0;bottom:16px;z-index:2;
+    display:flex;gap:3px;align-items:center;justify-content:center;
+  }
+  .mbDots i{width:3px;height:3px;border-radius:2px;background:rgba(242,229,224,.32);transition:all .3s;}
+  .mbDots i.on{width:9px;background:#f2e5e0;}
+  body.light .msn.morganMini{background:#f3e2d8;}
+  body.light .morganMini .lbl{color:rgba(46,31,26,.6);}
+  body.light .morganMini .mbName{color:#2e1f1a;}
+  body.light .morganMini .mbAge{color:rgba(46,31,26,.55);}
+  body.light .mbDots i{background:rgba(46,31,26,.3);}
+  body.light .mbDots i.on{background:#2e1f1a;}
+
+  /* ---- Organ Age bottom sheet: immersive header + responsive body ---- */
+  .shWrap{position:absolute;inset:0;z-index:6;display:none;}
+  .shDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .4s;}
+  .sheet{
+    position:absolute;left:0;right:0;bottom:0;top:32%;
+    background:#280707;border-radius:26px 26px 0 0;overflow:hidden;
+    display:flex;flex-direction:column;
+    transform:translateY(103%);
+    transition:transform .5s cubic-bezier(.32,.72,.28,1);
+  }
+  .shWrap.on .shDim{opacity:1;}
+  .shWrap.on .sheet{transform:translateY(0);}
+  .shHead{
+    position:relative;height:46%;flex:none;background:transparent;
+    overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;
+  }
+  .shHandle{
+    position:absolute;left:50%;top:9px;transform:translateX(-50%);
+    width:34px;height:4px;border-radius:2px;background:rgba(242,229,224,.3);z-index:3;
+  }
+  .shClose{
+    position:absolute;right:16px;top:16px;z-index:3;
+    width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;
+    background:rgba(242,229,224,.14);color:#f2e5e0;font:inherit;font-size:12px;
+  }
+  .shSlot{position:absolute;inset:0;}
+  .shSlot canvas{position:absolute;inset:0;display:block;}
+  .shTrack{display:none;}
+  .shItem{position:absolute;display:none;}
+  .shBody{
+    flex:1;padding:62px 28px 0;text-align:center;color:#ececec;
+    transition:opacity .22s ease,transform .22s ease;overflow-y:auto;
+  }
+  .shBody.sw{opacity:0;transform:translateY(8px);}
+  .shBody h3{margin:0;font-size:25px;font-weight:500;color:#f2e5e0;letter-spacing:-0.5px;line-height:1.15;}
+  .shSub{font-size:25px;color:rgba(242,229,224,.5);margin:2px 0 12px;letter-spacing:-0.5px;line-height:1.15;}
+  .shBody p{margin:0;font-size:14px;line-height:1.6;color:rgba(242,229,224,.55);}
+  .shDots{position:static !important;justify-content:center;padding:50px 0 0;flex:none;}
+  .shDots i{width:8px;height:8px;border-radius:4px;}
+  .shDots i.on{width:28px;}
+  .shDots i.on{width:16px;}
+  .shHome{
+    flex:none;width:110px;height:4px;border-radius:2px;
+    background:rgba(242,229,224,.22);margin:8px auto 40px;
+  }
+    body.light .sheet{background:#f3e2d8;}
+  body.light .shHead{background:transparent;}
+  body.light .shSub{color:rgba(46,31,26,.5);}
+  body.light .shHome{background:rgba(46,31,26,.22);}
+  body.light .shItem .yl{color:rgba(46,31,26,.55);}
+  body.light .shItem .nm{color:#2e1f1a;}
+  body.light .shBody{color:#33291f;}
+  body.light .shBody h3{color:#2e1f1a;}
+  body.light .shBody p{color:#9b8a75;}
+  body.light .shChips span{color:#6b5c4a;border-color:#ddd3bf;}
+  body.light .shChips span.hl{color:#2e241c;border-color:#2e241c;}
+  body.light .shCta{background:rgba(46,31,26,.07);color:#2e241c;}
+
+  /* ---- Overview frame: a sibling screen in the same language ---- */
+  #phoneShell2{display:none;}
+  body.m6 #phoneShell{left:calc(50% - 42px);transform:translate(-100%,-50%);}
+  body.m6 #phoneShell2{
+    display:block;position:fixed;z-index:1;
+    left:calc(50% + 42px);top:calc(50% + 22px);transform:translate(0,-50%);
+    --phH:min(calc(100vh - 108px), 880px);
+    height:var(--phH);width:calc(var(--phH) * 0.478);
+    border-radius:62px;padding:6px;box-sizing:border-box;
+    background:linear-gradient(145deg,#54545a,#2b2b2f 28%,#3f3f45 55%,#54545a 82%,#232327);
+    box-shadow:inset 0 0 1.5px rgba(255,255,255,.5), 0 30px 90px rgba(0,0,0,.35);
+  }
+  #phone2 .mtitle h2 span{color:#8b8b86;font-weight:400;}
+  .ovsec{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 13px 10px;font-size:16px;font-weight:500;color:#ececec;
+  }
+  .ovsec .see{
+    font-size:11px;color:#8b8b86;display:flex;align-items:center;gap:5px;font-weight:400;
+  }
+  .ovsec .see b{
+    background:#e6a96b;color:#241505;border-radius:8px;padding:1px 6px;
+    font-size:10px;font-weight:500;
+  }
+  .ovhero{
+    margin:0 13px;background:#331110;border-radius:22px;padding:20px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .ovhero .tag{
+    align-self:flex-start;background:rgba(242,229,224,.1);color:#e8dcd7;
+    font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    border-radius:999px;padding:4px 10px;
+  }
+  .ovhero h3{margin:6px 0 0;font-size:20px;font-weight:500;color:#f2e5e0;line-height:1.25;}
+  .ovhero h3 span{color:rgba(242,229,224,.45);}
+  .ovhero .d{font-size:11.5px;color:rgba(242,229,224,.55);line-height:1.5;}
+  .ovhero .svc{display:flex;flex-direction:column;margin-top:2px;}
+  .ovhero .svc div{
+    padding:9px 0;border-bottom:1px solid rgba(242,229,224,.08);
+    font-size:12px;color:rgba(242,229,224,.85);
+  }
+  .ovhero .svc div:last-child{border-bottom:none;color:rgba(242,229,224,.45);}
+  .ovbtn{
+    background:rgba(242,229,224,.1);color:#f2e5e0;border:none;border-radius:999px;
+    font:inherit;font-size:12.5px;font-weight:500;padding:11px 0;text-align:center;
+  }
+  .ovrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 13px 0;}
+  .ovrow2 .msn{height:150px;}
+  .ovrow2 .mono{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:auto;
+  }
+  .ovtasks{margin:0 13px;background:rgba(255,255,255,.04);border-radius:22px;padding:4px 16px;}
+  .ovtask{
+    display:flex;align-items:center;gap:12px;padding:13px 0;
+    border-bottom:1px solid rgba(242,229,224,.07);
+  }
+  .ovtask:last-child{border-bottom:none;}
+  .ovtask .ic{width:26px;height:26px;border-radius:8px;background:rgba(242,229,224,.08);flex:none;}
+  .ovtask .tx{flex:1;}
+  .ovtask .tx b{display:block;font-size:12px;font-weight:500;color:#ececec;}
+  .ovtask .tx span{font-size:10.5px;color:#8b8b86;}
+  .ovtask .go{
+    background:#ececec;color:#0d0d0c;border-radius:999px;font-size:11px;font-weight:500;
+    padding:7px 14px;flex:none;
+  }
+  .ovdisc{
+    margin:0 13px;background:#331110;border-radius:22px;padding:20px;position:relative;
+    overflow:hidden;display:flex;flex-direction:column;gap:12px;
+    background-image:radial-gradient(rgba(242,229,224,.14) 1px, transparent 1.2px);
+    background-size:7px 7px;background-position:center 40%;
+  }
+  .ovdisc .mono{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:9px;letter-spacing:.16em;color:#8fae7e;
+  }
+  .ovdisc h4{margin:0;font-size:17px;font-weight:500;color:#f2e5e0;line-height:1.3;}
+  .ovdisc h4 span{color:rgba(242,229,224,.5);}
+  .ovcar{
+    display:flex;gap:12px;overflow-x:auto;padding:0 13px;
+    scrollbar-width:none;overscroll-behavior-x:contain;
+  }
+  .ovcar::-webkit-scrollbar{display:none;}
+  .ovcard{
+    flex:0 0 86%;background:#1b1b19;border-radius:22px;padding:18px;
+    display:flex;flex-direction:column;gap:10px;min-height:380px;box-sizing:border-box;
+  }
+  .ovcard.red{background:#280707;}
+  .oclab{display:flex;align-items:center;justify-content:space-between;}
+  .oclab span{display:flex;align-items:center;gap:7px;font-size:12px;color:#8b8b86;}
+  .oclab span i{width:7px;height:7px;border-radius:50%;background:#8b8b86;}
+  .oclab .ocx{
+    width:26px;height:26px;border-radius:50%;background:rgba(242,229,224,.1);
+    color:#e8dcd7;font-size:10px;display:flex;align-items:center;justify-content:center;
+  }
+  .ovcard h4{margin:0;font-size:16px;font-weight:500;color:#f2e5e0;line-height:1.35;}
+  .ovcard h4 span{color:rgba(242,229,224,.5);}
+  .ovOrgan{flex:1;min-height:150px;position:relative;}
+  .ovOrgan canvas{position:absolute;inset:0;display:block;}
+  .ovcdots{display:flex;gap:6px;justify-content:center;align-items:center;padding:0;margin-top:24px;}
+  .ovcdots i{width:8px;height:8px;border-radius:4px;background:rgba(236,236,236,.25);}
+  .ovcdots i.on{width:24px;background:#ececec;}
+  body.light .ovcard{background:#fdfaf3;}
+  body.light .ovcard.red{background:#f3e2d8;}
+  body.light .ovcard h4{color:#2e1f1a;}
+  body.light .ovcdots i{background:rgba(46,31,26,.25);}
+  body.light .ovcdots i.on{background:#2e241c;}
+  .ovplan{margin:0 13px;}
+  .ovact{
+    display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(242,229,224,.07);
+    align-items:flex-start;
+  }
+  .ovact:last-child{border-bottom:none;}
+  .ovact .ph{width:52px;height:52px;border-radius:12px;flex:none;}
+  .ovact .tx{flex:1;}
+  .ovact .tx b{display:block;font-size:12.5px;font-weight:500;color:#ececec;}
+  .ovact .tx span{font-size:10.5px;color:#8b8b86;line-height:1.45;display:block;margin-top:2px;}
+  .ovact .pr{
+    display:inline-block;margin-top:6px;font-size:10px;color:#a9c4de;
+    background:rgba(122,164,203,.12);border-radius:6px;padding:2px 7px;
+  }
+  .ovact .go{
+    background:transparent;border:1px solid rgba(242,229,224,.25);color:#ececec;
+    border-radius:999px;font-size:11px;font-weight:500;padding:6px 13px;flex:none;margin-top:6px;
+  }
+  .ovtl{
+    margin:6px 13px 20px;display:block;text-align:center;
+    background:rgba(255,255,255,.06);border-radius:999px;color:#ececec;
+    font-size:12.5px;font-weight:500;padding:12px 0;
+  }
+  .ovtab{
+    flex:none;display:flex;justify-content:space-around;align-items:center;
+    padding:10px 8px 16px;border-top:1px solid #1c1c1b;
+  }
+  .ovtab div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:8.5px;color:#7a7a76;}
+  .ovtab div i{width:13px;height:13px;border-radius:4px;background:#3a3a37;}
+  .ovtab div.on{color:#ececec;}
+  .ovtab div.on i{background:#ececec;}
+  body.light .ovhero, body.light .ovdisc{background-color:#f3e2d8;}
+  body.light .ovhero h3, body.light .ovdisc h4, body.light .ovsec{color:#2e1f1a;}
+  body.light .ovtasks{background:rgba(46,31,26,.05);}
+  body.light .ovtask .tx b, body.light .ovact .tx b{color:#2e241c;}
+  body.light .ovtask .go{background:#2e241c;color:#f4efed;}
+  body.light .ovtl{background:rgba(46,31,26,.07);color:#2e241c;}
+  body.light .ovtab{border-top-color:#e7ddc9;}
+
+  /* ---- Black theme: pure-black ground, signature red kept as accent ---- */
+  body.black{
+    --bg:#050505;
+    --pill:#161616;
+    --pill-line:#2a2a2a;
+  }
+  body.black .pill{background:rgba(255,255,255,.06);}
+  body.black .pill:hover{background:rgba(255,255,255,.11);}
+  body.black .pill[aria-pressed="true"]{background:rgba(255,255,255,.14);}
+  body.black .card{background:rgba(255,255,255,.05);}
+  body.black .card:hover{background:rgba(255,255,255,.09);}
+  body.black .card[aria-pressed="true"]{background:rgba(255,255,255,.12);}
+  body.black .card .bar{background:#333;}
+  body.black .spCard{background:rgba(40,7,7,.62);}
+  body.black.m3, body.black.m6{background:#000;}
+
+  /* ---- Light theme: warm cream, deep warm brown ink, same world ---- */
+  body.light{
+    --bg:#f4efed;
+    --ink:#8a6f63;
+    --ink-bright:#2e1f1a;
+    --pill:#ece2d2;
+    --pill-line:#d8c9b4;
+    --accent:#b4574e;
+  }
+  /* smooth theme crossfade: applied briefly while switching */
+  body.theming, body.theming *{
+    transition:background-color .55s ease,color .55s ease,
+      border-color .55s ease,fill .55s ease,stroke .55s ease !important;
+  }
+  body.light .status .word{color:rgba(46,31,26,.66);}
+  body.light .pill{background:rgba(255,255,255,.5);}
+  body.light .pill:hover{background:rgba(255,255,255,.8);}
+  body.light .pill[aria-pressed="true"]{background:#fff;}
+  body.light .card{background:rgba(255,255,255,.5);}
+  body.light .card:hover{background:rgba(255,255,255,.75);}
+  body.light .card[aria-pressed="true"]{background:rgba(255,255,255,.92);}
+  body.light .card .bar{background:#ddd0ba;}
+  body.light .note .txt{color:#5b4438;}
+  body.light .note .txt2{color:#a5661f;}
+  body.light .note path{stroke:rgba(96,66,55,.4);}
+  body.light #arcA text{fill:#6d5548;}
+  /* desktop dashboard */
+  body.light .dash{background:#f6f1e8;color:#33291f;}
+  body.light .dash .side{background:#faf5ec;border-right-color:#e7ddc9;color:#6b5c4a;}
+  body.light .dash .side .logo{color:#2e241c;}
+  body.light .dash .side .nv.on{background:#ece4d3;color:#2e241c;}
+  body.light .dash h1 span{color:#9b8a75;}
+  body.light .dash .dcard, body.light .dash .dcard.bcard, body.light .dash .dcard.scard{background:#fdfaf3;}
+  body.light .dash .lbl{color:#9b8a75;}
+  body.light .dash .legend{color:#6b5c4a;}
+  body.light .dash .legend b{color:#2e241c;}
+  body.light .dash .meterbar{background:#e9e1cf;}
+  body.light .dash .foot{color:#9b8a75;}
+  body.light .dash .bars i{background:#4a3a2c;}
+  body.light .dash .inf{border-color:#d6cab6;color:#9b8a75;}
+  body.light .dash .fchip{border-color:#ddd3bf;color:#6b5c4a;}
+  body.light .dash .fchip.on{border-color:#33291f;color:#33291f;}
+  body.light .dash .brow{color:#3a2f24;border-bottom-color:#ece4d4;}
+  body.light .dash .brow .g{color:#9b8a75;}
+  body.light .dash .grp{border-top-color:#e9e1cf;}
+  body.light .dash .grp .gd{color:#9b8a75;}
+  body.light .dash .st.ok{background:#e5efdb;color:#55763f;}
+  body.light .dash .st.sub{background:#f3ead0;color:#8f7327;}
+  body.light .dash .organ{background:#f3e2d8;}
+  body.light .dash .olist .or{color:rgba(46,31,26,.28);border-bottom-color:rgba(46,31,26,.1);}
+  body.light .dash .olist .or:hover, body.light .dash .olist .or.on{color:#2e1f1a;}
+  body.light #situTitle .slbl{color:rgba(46,31,26,.6);}
+  /* mobile phone screen (device shell stays hardware) */
+  body.light.m3, body.light.m6{background:#000;}
+  body.light #phone, body.light #phone2{background:#f7f2e9;color:#33291f;}
+  body.light .mstatus .tm{color:#111;}
+  body.light .mstatus svg{fill:#111;}
+  body.light .mtitle h2{color:#2e1f1a;}
+  body.light .mtitle .cbtn{background:#e9e1d0;border-color:#ddd3bf;}
+  body.light .msn{background:rgba(46,31,26,.055);}
+  body.light #phone .lbl, body.light #phone2 .lbl{color:#9b8a75;}
+  body.light #phone .big, body.light #phone2 .big{color:#2e1f1a;}
+  body.light #phone .legend{color:#6b5c4a;}
+  body.light #phone .legend b{color:#2e241c;}
+  body.light #phone .meterbar{background:#e6ddca;}
+  body.light #phone .foot{color:#9b8a75;}
+  body.light #phone .bars i{background:#4a3a2c;}
+  body.light #phone .inf{border-color:#d6cab6;color:#9b8a75;}
+  body.light .msel{border-color:#ddd3bf;color:#2e241c;}
+  body.light .msel svg path{stroke:#9b8a75;}
+  body.light .mchips{color:#6b5c4a;}
+  body.light #phone .fchip{border-color:#ddd3bf;}
+  body.light #phone .fchip.on{border-color:#2e241c;color:#2e241c;}
+  body.light .mrecs h3{color:#2e1f1a;}
+  body.light .mrecs .gd{color:#9b8a75;}
+  body.light .mbrow{color:#3a2f24;border-bottom-color:#ece4d4;}
+  body.light .mbrow .g{color:#9b8a75;}
+  body.light #phone .st.ok{background:#e5efdb;color:#55763f;}
+  body.light #phone .st.sub{background:#f3ead0;color:#8f7327;}
+  body.light .morgan{background:#f3e2d8 !important;}
+  body.light .morgan .slbl2{color:rgba(46,31,26,.6);}
+  body.light .mnbtn{background:rgba(46,31,26,.07);color:#2e1f1a;}
+  body.light .mnbtn:hover{background:rgba(46,31,26,.14);}
+  body.light .mdots i{background:#4a3a2c;}
+  /* card flip */
+  body.light .spCard{background:rgba(255,252,246,.55);}
+  body.light .spCard .nm{color:rgba(46,31,26,.55);}
+  /* grid */
+  body.light #grid{border-color:rgba(46,31,26,.1);}
+  body.light .gCell:not(:nth-child(3n)){border-right-color:rgba(46,31,26,.09);}
+  body.light .gCell:nth-child(-n+6){border-bottom-color:rgba(46,31,26,.09);}
+  body.light .gCell .nm{color:rgba(46,31,26,.55);}
+  body.light .gCell:hover{background:rgba(46,31,26,.03);}
+
+  .nogl{
+    position:fixed;inset:0;display:none;place-items:center;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  }
+</style>
+
+<canvas id="field"></canvas>
+
+<div class="topbar">
+  <div class="tweaks">
+    <span class="lbl">Version</span>
+    <select id="versionSel" aria-label="Version"></select>
+    <span class="lbl">Density</span>
+    <input type="range" id="densR" min="25" max="100" value="100" aria-label="Particle density">
+    <span class="lbl">Particles size</span>
+    <input type="range" id="sizeR" min="50" max="180" value="160" aria-label="Particles size">
+    <button class="chip" id="flowChip" aria-pressed="true">Flow</button>
+    <button class="chip" id="voxChip" aria-pressed="false">Voxels</button>
+    <button class="chip" id="themeChip" aria-pressed="false" aria-label="Light mode" title="Light mode">&#9789;</button>
+  </div>
+</div>
+<div class="carousel" id="carousel" role="group" aria-label="Health metrics"></div>
+
+<div class="note" id="note" style="opacity:0">
+  <svg width="190" height="60" aria-hidden="true">
+    <path id="notePath" fill="none" stroke="rgba(196,155,147,.28)" stroke-width="0.75"/>
+  </svg>
+  <div class="txt" id="noteTxt"><span id="noteTypeTxt"></span><span class="cursor" id="noteCursor"></span></div>
+  <div class="txt2" id="noteTxt2"><span id="noteTypeTxt2"></span><span class="cursor" id="noteCursor2"></span></div>
+</div>
+<div class="dash" aria-hidden="true">
+  <aside class="side">
+    <div class="logo" style="display:flex;align-items:center;gap:9px;">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g fill="#ececec"><rect x="3" y="2" width="12" height="2.6" rx="1.3"/><rect x="1" y="7.7" width="16" height="2.6" rx="1.3"/><rect x="3" y="13.4" width="12" height="2.6" rx="1.3"/></g></svg>
+      <span>everlab</span>
+    </div>
+    <div class="nv">Overview</div>
+    <div class="nv on">Biomarkers</div>
+    <div class="nv">Plan</div>
+    <div class="nv">Services</div>
+    <div class="nv">Reports</div>
+    <div class="nv">Timeline</div>
+  </aside>
+  <main>
+    <h1><span>Here's a snapshot</span> of your health.</h1>
+    <div class="dgrid">
+      <div class="dleft">
+        <div class="dcard bcard">
+          <div style="display:flex;justify-content:flex-start;align-items:flex-start;gap:64px;">
+            <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
+            <div><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:14px;font-weight:400">years old</span></div></div>
+          </div>
+          <div class="legend">
+            <div><b>81</b><i style="background:#8fae7e"></i>Optimal</div>
+            <div><b>9</b><i style="background:#d9c66b"></i>Suboptimal</div>
+            <div><b>6</b><i style="background:#cf6b5b"></i>Out of range</div>
+          </div>
+          <div class="meterbar">
+            <span style="width:64%;background:#8fae7e"></span>
+            <span style="width:14%;background:#d9c66b"></span>
+            <span style="width:12%;background:#cf6b5b"></span>
+          </div>
+        </div>
+        <div class="drow">
+          <div class="dcard scard">
+            <div class="lbl">Steps</div>
+            <div class="big" style="font-size:24px">2,568 <span class="inf">i</span></div>
+            <div class="foot"><span>Today</span><span class="bars"><i style="height:8px"></i><i style="height:12px"></i><i style="height:9px"></i><i style="height:16px"></i></span></div>
+          </div>
+          <div class="dcard scard">
+            <div class="lbl">Heart rate</div>
+            <div class="big" style="font-size:24px">72 <span style="font-size:13px;font-weight:400">bpm</span> <span class="inf">i</span></div>
+            <div class="foot"><span>Today</span><span class="bars"><i style="height:8px"></i><i style="height:12px"></i><i style="height:9px"></i><i style="height:16px"></i></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="dcard organ" id="organSlot">
+        <div class="olist" id="olist"></div>
+      </div>
+    </div>
+    <div class="filters">
+      <div class="fchip on"><b>81</b> All</div>
+      <div class="fchip"><i style="background:#8fae7e"></i><b>81</b> Optimal</div>
+      <div class="fchip"><i style="background:#d9c66b"></i><b>9</b> Suboptimal</div>
+      <div class="fchip"><i style="background:#cf6b5b"></i><b>6</b> Out of range</div>
+    </div>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <linearGradient id="sgrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#cf6b5b"/>
+          <stop offset=".55" stop-color="#d9c66b"/>
+          <stop offset="1" stop-color="#8fae7e"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="recs">
+      <div class="grp">
+        <div><h3>Liver Health</h3><div class="gd">Biomarkers that indicate liver health and function, critical in metabolic processes.</div></div>
+        <div>
+          <div class="brow"><span>Biomarker name</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
+            <svg width="76" height="24" viewBox="0 0 76 24"><path d="M2 16 C8 20 12 10 18 14 C24 18 28 8 34 12 C40 16 44 18 50 10 C56 4 60 12 66 6 C70 3 73 6 74 5" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+            <span class="st ok">Optimal</span></div>
+          <div class="brow"><span>Serum aspartate transaminase (AST)</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
+            <svg width="76" height="24" viewBox="0 0 76 24"><path d="M2 18 C8 14 12 20 18 12 C24 6 28 16 34 10 C40 6 44 14 50 12 C56 10 60 8 66 7 C70 6 73 5 74 5" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+            <span class="st ok">Optimal</span></div>
+          <div class="brow"><span>Serum alkaline phosphatase (ALP)</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
+            <span></span>
+            <span class="rng"><i class="mk" style="left:36px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+            <span class="st sub">Suboptimal</span></div>
+          <div class="brow"><span>Serum gamma-GT (GGT)</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
+            <svg width="76" height="24" viewBox="0 0 76 24"><path d="M2 14 C8 18 12 12 18 16 C24 20 28 10 34 14 C40 18 44 8 50 12 C56 15 60 6 66 8 C70 9 73 5 74 4" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+            <span class="st ok">Optimal</span></div>
+        </div>
+      </div>
+      <div class="grp">
+        <div><h3>Liver Health</h3><div class="gd">Biomarkers that indicate liver health and function, critical in metabolic processes.</div></div>
+        <div>
+          <div class="brow"><span>Biomarker name</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
+            <svg width="76" height="24" viewBox="0 0 76 24"><path d="M2 16 C8 20 12 10 18 14 C24 18 28 8 34 12 C40 16 44 18 50 10 C56 4 60 12 66 6 C70 3 73 6 74 5" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+            <span class="st ok">Optimal</span></div>
+          <div class="brow"><span>Serum alkaline phosphatase (ALP)</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
+            <span></span>
+            <span class="rng"><i class="mk" style="left:36px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+            <span class="st sub">Suboptimal</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="situTitle">
+  <div class="slbl">How your organs are aging</div>
+  <div class="oname" id="situOrgan">Gut</div>
+</div>
+
+<div id="phoneShell" aria-hidden="true">
+  <span class="pbtn act"></span><span class="pbtn vup"></span><span class="pbtn vdn"></span><span class="pbtn pwr"></span>
+  <div id="phone">
+  <div class="mstatus">
+    <span class="tm">9:41</span>
+    <span class="isl"></span>
+    <svg width="66" height="12" viewBox="0 0 66 12" fill="#fff" aria-hidden="true">
+      <rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/>
+      <rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1"/>
+      <path d="M29 4.6a8.4 8.4 0 0 1 11 0l-1.6 1.9a5.9 5.9 0 0 0-7.8 0Zm2.6 3.1a4.4 4.4 0 0 1 5.8 0l-2.9 3.4Z"/>
+      <rect x="46" y="2" width="17" height="8" rx="2.5" fill="none" stroke="#fff" stroke-opacity=".5"/>
+      <rect x="47.5" y="3.5" width="12" height="5" rx="1.4"/>
+      <rect x="64" y="4.5" width="1.6" height="3" rx="0.8" fill-opacity=".5"/>
+    </svg>
+  </div>
+  <div class="mscroll" id="mScroll">
+    <div class="mtitle">
+      <h2>Health insights</h2>
+    </div>
+    <div id="mBento">
+      <div class="msn">
+        <div style="display:flex;justify-content:flex-start;align-items:flex-start;gap:40px;">
+          <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
+          <div><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:13px;font-weight:400">years old</span></div></div>
+        </div>
+        <div class="legend">
+          <div><b>81</b><i style="background:#8fae7e"></i>Optimal</div>
+          <div><b>9</b><i style="background:#d9c66b"></i>Suboptimal</div>
+          <div><b>6</b><i style="background:#cf6b5b"></i>Out of range</div>
+        </div>
+        <div class="meterbar">
+          <span style="width:64%;background:#8fae7e"></span>
+          <span style="width:14%;background:#d9c66b"></span>
+          <span style="width:12%;background:#cf6b5b"></span>
+        </div>
+      </div>
+      <div class="mbrow2">
+        <div class="msn msCar" id="msCar">
+          <div class="msSlide">
+            <div class="msHead">
+              <svg width="13" height="13" viewBox="0 0 13 13"><rect x="1" y="1" width="11" height="11" rx="3.5" fill="#c76a4a"/></svg>
+              <span class="lbl">ApoB</span><span class="inf">i</span>
+            </div>
+            <div class="big">132 <span style="font-size:12px;font-weight:400">mg/dL</span></div>
+            <div class="mtag warn">Elevated</div>
+            <div class="msDiv"></div>
+            <div class="msTr"><span>Change</span><b>+18 mg/dL</b></div>
+            <div class="msChart">
+              <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                <line x1="0" y1="26" x2="120" y2="26" stroke="rgba(242,229,224,.2)" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M24 26 L104 10 L104 26 Z" fill="rgba(224,120,74,.16)"/>
+                <line x1="24" y1="26" x2="104" y2="10" stroke="#e0784a" stroke-width="1.5"/>
+                <circle cx="24" cy="26" r="3" fill="#8b8b86"/>
+                <circle cx="104" cy="10" r="3.5" fill="#e0784a"/>
+              </svg>
+              <div class="mhrlb"><span>114 &middot; 3 mo</span><span>132 &middot; Today</span></div>
+            </div>
+          </div>
+          <div class="msSlide">
+            <div class="msHead">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 11 2.2 6.7a2.6 2.6 0 0 1 3.7-3.7l.6.6.6-.6a2.6 2.6 0 0 1 3.7 3.7Z" stroke="#ececec" stroke-width="1.2"/></svg>
+              <span class="lbl">Heart rate</span><span class="inf">i</span>
+            </div>
+            <div class="big">72 <span style="font-size:12px;font-weight:400">bpm</span></div>
+            <div class="mstat">To monitor</div>
+            <div class="msDiv"></div>
+            <div class="msTr"><span>Trend (7d)</span><b>+6 bpm</b></div>
+            <div class="msChart">
+              <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                <line x1="0" y1="32" x2="120" y2="32" stroke="rgba(242,229,224,.2)" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M0 30 C10 31 16 27 26 28 C36 29 42 24 52 25 C62 26 68 20 78 21 C88 22 94 15 104 14 C110 13 114 12 117 11"
+                  fill="none" stroke="#e0784a" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="117" cy="11" r="3.5" fill="none" stroke="#e0784a" stroke-width="1.8"/>
+              </svg>
+              <div class="mhrlb"><span>72 bpm</span><span>Your avg.</span></div>
+            </div>
+          </div>
+          <div class="msSlide">
+            <div class="msHead">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="#ececec"><circle cx="3" cy="10" r="1.6"/><circle cx="6.5" cy="6" r="1.6"/><circle cx="10" cy="2.5" r="1.6"/></svg>
+              <span class="lbl">Steps</span><span class="inf">i</span>
+            </div>
+            <div class="big">2,568</div>
+            <div class="mstat" style="color:#8fae7e">On track</div>
+            <div class="msDiv"></div>
+            <div class="mwk">
+              <div class="wb"><i style="height:88%"></i><span>M</span></div>
+              <div class="wb"><i style="height:64%;opacity:.55"></i><span>T</span></div>
+              <div class="wb"><i style="height:48%;opacity:.3"></i><span>W</span></div>
+              <div class="wb"><i style="height:76%"></i><span>T</span></div>
+              <div class="wb"><i style="height:84%"></i><span>F</span></div>
+              <div class="wb"><i style="height:56%;opacity:.3"></i><span>S</span></div>
+              <div class="wb"><i style="height:94%"></i><span>S</span></div>
+            </div>
+          </div>
+          <div class="msSlide">
+            <div class="msHead">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="#ececec"><path d="M11.5 8.2A5.2 5.2 0 0 1 4.8 1.5a5.2 5.2 0 1 0 6.7 6.7Z"/></svg>
+              <span class="lbl">Sleep</span><span class="inf">i</span>
+            </div>
+            <div class="big">6h 12m</div>
+            <div class="mstat">Below optimal</div>
+            <div class="msDiv"></div>
+            <div class="msTr"><span>Trend (7d)</span><b>-1h 08m</b></div>
+            <div class="msChart">
+              <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                <line x1="0" y1="34" x2="120" y2="34" stroke="rgba(242,229,224,.2)" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M0 10 C10 9 16 14 26 13 C36 12 42 18 52 19 C62 20 68 24 78 23 C88 22 94 28 104 29 C110 30 114 31 117 31"
+                  fill="none" stroke="#e0784a" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="117" cy="31" r="3.5" fill="none" stroke="#e0784a" stroke-width="1.8"/>
+              </svg>
+              <div class="mhrlb"><span>7h 20m</span><span>Your avg.</span></div>
+            </div>
+          </div>
+          <div class="mbDots msDots" id="msDots"></div>
+        </div>
+        <div class="msn morganMini" id="mOrgCard">
+          <div class="mbTrack" id="mbTrack"></div>
+          <div id="mbSlot"></div>
+          <div class="mbDots" id="mbDots"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mcar" id="mCar">
+      <div class="mcard msnap">
+        <div class="msn mc1">
+          <div style="display:flex;justify-content:flex-start;align-items:flex-start;gap:40px;">
+            <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
+            <div><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:13px;font-weight:400">years old</span></div></div>
+          </div>
+          <div class="legend">
+            <div><b>81</b><i style="background:#8fae7e"></i>Optimal</div>
+            <div><b>9</b><i style="background:#d9c66b"></i>Suboptimal</div>
+            <div><b>6</b><i style="background:#cf6b5b"></i>Out of range</div>
+          </div>
+          <div class="meterbar">
+            <span style="width:64%;background:#8fae7e"></span>
+            <span style="width:14%;background:#d9c66b"></span>
+            <span style="width:12%;background:#cf6b5b"></span>
+          </div>
+        </div>
+        <div class="mrow">
+          <div class="msn">
+            <div class="lbl">Steps</div>
+            <div class="big" style="font-size:22px">2,568 <span class="inf">i</span></div>
+            <div class="foot"><span>Today</span><span class="bars"><i style="height:8px"></i><i style="height:12px"></i><i style="height:9px"></i><i style="height:16px"></i></span></div>
+          </div>
+          <div class="msn">
+            <div class="lbl">Heart rate</div>
+            <div class="big" style="font-size:22px">72 <span style="font-size:12px;font-weight:400">bpm</span> <span class="inf">i</span></div>
+            <div class="foot"><span>Today</span><span class="bars"><i style="height:8px"></i><i style="height:12px"></i><i style="height:9px"></i><i style="height:16px"></i></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mcard morgan">
+        <div class="mhead">
+          <div class="slbl2">How your organs are aging</div>
+        </div>
+        <div id="mSlot"></div>
+        <div id="mGauge"></div>
+        <div class="mAgeRow">
+          <button class="mnbtn" id="mPrev" aria-label="Previous organ"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M6 1 1 6l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="mAgeCol"><div class="moname" id="mOrgName">Heart</div></div>
+          <button class="mnbtn" id="mNext" aria-label="Next organ"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="mdots" id="mDots"><i></i><i></i></div>
+    <div class="msel">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+    <div class="mchips">
+      <div class="fchip on"><b>81</b>&nbsp;All</div>
+      <div class="fchip"><i style="background:#8fae7e"></i><b>81</b>&nbsp;Optimal</div>
+      <div class="fchip"><i style="background:#d9c66b"></i><b>9</b>&nbsp;Suboptimal</div>
+      <div class="fchip"><i style="background:#cf6b5b"></i><b>6</b>&nbsp;Out of range</div>
+    </div>
+    <div class="mrecs">
+      <h3>Liver Health</h3>
+      <div class="gd">Biomarkers that indicate liver health and function, critical in metabolic processes.</div>
+      <div class="mbrow">
+        <span>Serum bilirubin</span>
+        <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+        <span class="g">18.0 ng/dL &nbsp;|&nbsp; Dec 2024</span>
+        <span class="st ok">Optimal</span>
+      </div>
+      <div class="mbrow">
+        <span>Serum aspartate transaminase (AST)</span>
+        <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+        <span class="g">18.0 ng/dL &nbsp;|&nbsp; Dec 2024</span>
+        <span class="st ok">Optimal</span>
+      </div>
+      <div class="mbrow">
+        <span>Serum alkaline phosphatase (ALP)</span>
+        <span class="rng"><i class="mk" style="left:36px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+        <span class="g">18.0 ng/dL &nbsp;|&nbsp; Dec 2024</span>
+        <span class="st sub">Suboptimal</span>
+      </div>
+      <div class="mbrow" style="border-bottom:none">
+        <span>Serum gamma-GT (GGT)</span>
+        <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
+        <span class="g">18.0 ng/dL &nbsp;|&nbsp; Dec 2024</span>
+        <span class="st ok">Optimal</span>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div id="phoneShell2" aria-hidden="true">
+  <span class="pbtn act"></span><span class="pbtn vup"></span><span class="pbtn vdn"></span><span class="pbtn pwr"></span>
+  <div id="phone2">
+    <div class="mstatus">
+      <span class="tm">9:41</span>
+      <span class="isl"></span>
+      <svg width="66" height="12" viewBox="0 0 66 12" fill="#fff" aria-hidden="true">
+        <rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/>
+        <rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1"/>
+        <path d="M29 4.6a8.4 8.4 0 0 1 11 0l-1.6 1.9a5.9 5.9 0 0 0-7.8 0Zm2.6 3.1a4.4 4.4 0 0 1 5.8 0l-2.9 3.4Z"/>
+        <rect x="46" y="2" width="17" height="8" rx="2.5" fill="none" stroke="#fff" stroke-opacity=".5"/>
+        <rect x="47.5" y="3.5" width="12" height="5" rx="1.4"/>
+      </svg>
+    </div>
+    <div class="mscroll">
+      <div class="mtitle"><h2>Welcome back, <span>Julien</span></h2></div>
+      <div class="ovhero">
+        <div class="tag">Next step</div>
+        <h3>Sarah's <span>Personalised Health Program</span></h3>
+        <div class="d">Here are the services your Everlab doctor has recommended, brought together into a customised plan to support your health goals.</div>
+        <div class="svc">
+          <div>Hormone Balance Panel</div>
+          <div>Weight Management Program (GLP-1)</div>
+          <div>Thyroid &amp; Energy Check</div>
+          <div>+ 6 more</div>
+        </div>
+        <div class="ovbtn">Review my plan</div>
+      </div>
+      <div class="ovrow2">
+        <div class="msn">
+          <div class="lbl">Health insights</div>
+          <div class="big">75</div>
+          <div class="mono" style="color:rgba(242,229,224,.5)">Biomarkers</div>
+        </div>
+        <div class="msn" style="background:#331110">
+          <div class="lbl" style="color:rgba(242,229,224,.6)">Biological age</div>
+          <div class="big" style="color:#f2e5e0">42</div>
+          <div class="mono" style="color:#8fae7e">8 years younger</div>
+        </div>
+      </div>
+      <div class="ovsec">Tasks to complete <span class="see">See all <b>12</b></span></div>
+      <div class="ovtasks">
+        <div class="ovtask"><span class="ic"></span><span class="tx"><b>Book your onboarding consult</b><span>Small description</span></span><span class="go">Book</span></div>
+        <div class="ovtask"><span class="ic"></span><span class="tx"><b>Complete your health profile</b><span>Small description</span></span><span class="go">Start</span></div>
+        <div class="ovtask"><span class="ic"></span><span class="tx"><b>Schedule your pathology test</b><span>Small description</span></span><span class="go">Book</span></div>
+      </div>
+      <div class="ovsec">Your next actions <span class="see">See all <b>12</b></span></div>
+      <div class="ovcar">
+        <div class="ovcard red">
+          <div class="oclab"><span><i></i>Explore</span><span class="ocx">&#10005;</span></div>
+          <h4>Your health insights go deeper. <span>Discover your organ age.</span></h4>
+          <div class="ovOrgan" id="ovOrgan"></div>
+          <div class="ovbtn">Discover organ age</div>
+        </div>
+        <div class="ovcard">
+          <div class="oclab"><span><i></i>News</span></div>
+          <h4>A new longevity study was published this week.</h4>
+          <div style="flex:1"></div>
+          <div class="ovbtn">Read the summary</div>
+        </div>
+      </div>
+      <div class="ovcdots"><i class="on"></i><i></i><i></i></div>
+      <div class="ovsec">Your action plan</div>
+      <div class="ovplan">
+        <div class="ovact"><span class="ph" style="background:#22150f"></span><span class="tx"><b>Onboarding Consult</b><span>Speak with an Everlab doctor about trends within your existing data.</span><span class="pr">Protocol</span></span><span class="go">Book</span></div>
+        <div class="ovact"><span class="ph" style="background:#3a1512"></span><span class="tx"><b>Pathology Test</b><span>Visit an Everlab or partner clinic to complete your pathology tests.</span><span class="pr">Protocol</span></span><span class="go">Book</span></div>
+        <div class="ovact"><span class="ph" style="background:#1d1d1b"></span><span class="tx"><b>Dexa Scan</b><span>Get your full body composition scan at a partner clinic.</span><span class="pr">Protocol</span></span><span class="go">View</span></div>
+        <div class="ovact"><span class="ph" style="background:#241a14"></span><span class="tx"><b>Physical Assessment</b><span>A 90 minute longevity focused physical assessment.</span><span class="pr">Protocol</span></span><span class="go">View</span></div>
+      </div>
+      <div class="ovtl">See full timeline &nearr;</div>
+    </div>
+    <div class="ovtab">
+      <div class="on"><i></i>Overview</div>
+      <div><i></i>Biomarkers</div>
+      <div><i></i>Plan</div>
+      <div><i></i>Services</div>
+      <div><i></i>More</div>
+    </div>
+  </div>
+</div>
+
+<div id="spatial" aria-hidden="true"></div>
+<div id="grid" aria-hidden="true"></div>
+
+<div class="pillui" id="pillui">
+  <div class="ageBig" id="ageBig" aria-hidden="true"></div>
+  <div class="status" id="status">
+    <div class="word" id="statusWord"></div>
+  </div>
+  <svg id="arcA" width="660" height="171" viewBox="0 -14 440 114" aria-hidden="true"></svg>
+  <div class="pills" id="pills" role="group" aria-label="Organ"></div>
+</div>
+<div class="nogl" id="nogl">WebGL unavailable in this browser</div>
+
+<script>
+(() => {
+  'use strict';
+  const canvas = document.getElementById('field');
+  // alpha:true so Card flip can layer sharp organs OVER the frosted cards
+  const gl = canvas.getContext('webgl', { antialias: true, alpha: true });
+  if (!gl){ document.getElementById('nogl').style.display = 'grid'; return; }
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const N = 9000;
+  const AMB = 350; // ambient strays that float around the organ, never joining it
+  const STAG = 0.35;                  // stagger fraction of the timeline
+
+  // navigation modes, switchable from the top bar
+  const MODES = [
+    { name: 'Card Nav', dur: 1800, ease: 1, pix: 1.35 }, // card carousel, hard S-curve pace
+    { name: 'Pill Nav', dur: 850,  ease: 0, pix: 1.35 }, // pill chips, arc below the organ
+    { name: 'Desktop',  dur: 850,  ease: 0, pix: 1.35 }, // organ card inside the product dashboard
+    { name: 'Mobile (Hero carousel)', dur: 850, ease: 0, pix: 1.35 }, // hero swipe carousel in a phone frame
+    { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 }, // rotating card carousel of organs
+    { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 }, // outlined 3-across organ grid
+    { name: 'Mobile (Hero static)',   dur: 850, ease: 0, pix: 1.35 }, // mobile bento with a mini organ card
+  ];
+  let version = 0;
+  let DUR = reduced ? 300 : MODES[version].dur;
+
+  // ---------- muted warm palette on burgundy (rgb 0..1) ----------
+  const PALETTE = [
+    [[0.690,0.314,0.314], 28], // muted red
+    [[0.788,0.541,0.584], 24], // dusty pink
+    [[0.812,0.490,0.420], 18], // soft coral
+    [[0.663,0.541,0.722], 14], // warm lavender
+    [[0.541,0.290,0.322],  8], // rosewood depth
+    [[0.941,0.878,0.816],  8], // pale cream highlight
+  ];
+  function pickColor(){
+    let r = Math.random() * 100;
+    for (const [c, w] of PALETTE){ if ((r -= w) <= 0) return c; }
+    return PALETTE[0][0];
+  }
+
+  // ---------- organ silhouettes drawn to an offscreen canvas ----------
+  const S = 340;
+  const off = document.createElement('canvas');
+  off.width = S; off.height = S;
+  const octx = off.getContext('2d', { willReadFrequently: true });
+
+  function drawHuman(c){
+    c.lineCap = 'round';
+    c.beginPath(); c.arc(170, 46, 21, 0, 6.2832); c.fill();
+    c.lineWidth = 52; c.beginPath(); c.moveTo(170, 92); c.lineTo(170, 168); c.stroke();
+    c.lineWidth = 14;
+    c.beginPath(); c.moveTo(141, 100); c.lineTo(126, 178); c.stroke();
+    c.beginPath(); c.moveTo(199, 100); c.lineTo(214, 178); c.stroke();
+    c.lineWidth = 17;
+    c.beginPath(); c.moveTo(157, 186); c.lineTo(149, 296); c.stroke();
+    c.beginPath(); c.moveTo(183, 186); c.lineTo(191, 296); c.stroke();
+  }
+
+  function drawHeart(c){
+    c.lineCap = 'round';
+    c.lineWidth = 32;
+    c.beginPath(); c.moveTo(190, 105); c.bezierCurveTo(185, 58, 215, 42, 245, 62); c.stroke();
+    c.lineWidth = 10;
+    c.beginPath(); c.moveTo(200, 54); c.lineTo(194, 26); c.stroke();
+    c.beginPath(); c.moveTo(218, 48); c.lineTo(218, 20); c.stroke();
+    c.beginPath(); c.moveTo(236, 54); c.lineTo(243, 27); c.stroke();
+    c.lineWidth = 26;
+    c.beginPath(); c.moveTo(162, 108); c.bezierCurveTo(150, 82, 136, 66, 114, 60); c.stroke();
+    c.lineWidth = 22;
+    c.beginPath(); c.moveTo(237, 108); c.lineTo(252, 58); c.stroke();
+    c.beginPath();
+    c.moveTo(135, 102);
+    c.bezierCurveTo(185, 70, 240, 82, 262, 118);
+    c.bezierCurveTo(288, 160, 280, 218, 240, 258);
+    c.bezierCurveTo(218, 280, 180, 296, 152, 296);
+    c.bezierCurveTo(118, 268, 98, 220, 100, 172);
+    c.bezierCurveTo(101, 140, 112, 116, 135, 102);
+    c.fill();
+    c.globalCompositeOperation = 'destination-out';
+    c.lineWidth = 6;
+    c.beginPath(); c.moveTo(152, 118); c.bezierCurveTo(182, 152, 202, 202, 196, 262); c.stroke();
+  }
+
+  function drawBrain(c){
+    c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(45, 165);
+    c.bezierCurveTo(40, 85, 115, 32, 185, 40);
+    c.bezierCurveTo(255, 48, 298, 105, 294, 158);
+    c.bezierCurveTo(291, 190, 272, 207, 246, 212);
+    c.bezierCurveTo(205, 226, 120, 230, 86, 214);
+    c.bezierCurveTo(58, 202, 47, 186, 45, 165);
+    c.fill();
+    c.beginPath(); c.ellipse(238, 240, 52, 36, -0.25, 0, 6.2832); c.fill();
+    c.beginPath(); c.moveTo(183, 226); c.bezierCurveTo(178, 254, 170, 274, 158, 298);
+    c.lineWidth = 26; c.stroke();
+    c.globalCompositeOperation = 'destination-out';
+    c.lineWidth = 6;
+    const folds = [
+      [[68,178],[118,150],[158,162],[202,148]],
+      [[78,122],[108,92],[130,128],[162,98]],
+      [[138,62],[158,92],[190,70],[212,100]],
+      [[218,78],[238,108],[250,128],[272,138]],
+      [[98,192],[128,172],[158,192],[190,182]],
+      [[208,182],[228,162],[248,182],[266,170]],
+      [[60,150],[80,130],[92,158],[112,138]],
+    ];
+    for (const [a, b1, b2, d] of folds){
+      c.beginPath(); c.moveTo(a[0], a[1]);
+      c.bezierCurveTo(b1[0], b1[1], b2[0], b2[1], d[0], d[1]);
+      c.stroke();
+    }
+    c.lineWidth = 7;
+    c.beginPath(); c.moveTo(192, 220); c.bezierCurveTo(222, 228, 252, 222, 288, 230); c.stroke();
+    c.lineWidth = 3;
+    for (const [x1, y1, x2, y2] of [[214,232,228,262],[234,226,247,260],[254,228,264,256]]){
+      c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    }
+  }
+
+  function drawLiver(c){
+    // anterior view: big dome-topped right lobe (viewer left) reaching low,
+    // thin left lobe tapering to a tip on the viewer's right
+    c.beginPath();
+    c.moveTo(50, 142);
+    c.bezierCurveTo(58, 94, 118, 70, 178, 76);
+    c.bezierCurveTo(236, 82, 282, 108, 296, 148);
+    c.bezierCurveTo(299, 162, 290, 174, 270, 180);
+    c.bezierCurveTo(232, 190, 178, 196, 138, 214);
+    c.bezierCurveTo(102, 232, 60, 212, 50, 142);
+    c.fill();
+    // falciform ligament groove, offset between the lobes
+    c.globalCompositeOperation = 'destination-out';
+    c.lineCap = 'round'; c.lineWidth = 5;
+    c.beginPath(); c.moveTo(206, 80); c.bezierCurveTo(210, 116, 214, 150, 212, 186); c.stroke();
+  }
+
+  function drawKidneys(c){
+    // right kidney (viewer left) sits slightly lower
+    c.beginPath(); c.ellipse(120, 182, 40, 64, 0.12, 0, 6.2832); c.fill();
+    c.beginPath(); c.ellipse(222, 168, 40, 64, -0.12, 0, 6.2832); c.fill();
+    c.globalCompositeOperation = 'destination-out';
+    // hilum notches on the inner edges
+    c.beginPath(); c.ellipse(158, 186, 20, 26, 0.1, 0, 6.2832); c.fill();
+    c.beginPath(); c.ellipse(184, 172, 20, 26, -0.1, 0, 6.2832); c.fill();
+  }
+
+  function drawLungs(c){
+    c.lineCap = 'round';
+    c.lineWidth = 14;
+    c.beginPath(); c.moveTo(170, 34); c.lineTo(170, 82); c.stroke();
+    c.lineWidth = 11;
+    c.beginPath(); c.moveTo(170, 82); c.lineTo(142, 108); c.stroke();
+    c.beginPath(); c.moveTo(170, 82); c.lineTo(198, 108); c.stroke();
+    c.beginPath(); c.ellipse(122, 195, 55, 98, 0.06, 0, 6.2832); c.fill();
+    c.beginPath(); c.ellipse(218, 195, 52, 95, -0.06, 0, 6.2832); c.fill();
+    c.globalCompositeOperation = 'destination-out';
+    // mediastinum gap + cardiac notch
+    c.beginPath(); c.ellipse(170, 205, 17, 85, 0, 0, 6.2832); c.fill();
+    c.beginPath(); c.arc(196, 242, 20, 0, 6.2832); c.fill();
+  }
+
+  // brain + spinal cord + branching nerves
+  function drawNerves(c){
+    c.lineCap = 'round';
+    c.beginPath(); c.ellipse(170, 55, 44, 31, 0, 0, 6.2832); c.fill();
+    c.lineWidth = 10;
+    c.beginPath(); c.moveTo(170, 82); c.lineTo(170, 272); c.stroke();
+    c.lineWidth = 4;
+    for (const [y, dx] of [[105,32],[130,40],[155,44],[180,42],[205,38],[230,30],[252,24]]){
+      c.beginPath(); c.moveTo(170, y); c.lineTo(170 - dx, y + 16); c.stroke();
+      c.beginPath(); c.moveTo(170, y); c.lineTo(170 + dx, y + 16); c.stroke();
+      c.lineWidth = 3;
+      c.beginPath(); c.moveTo(170 - dx, y + 16); c.lineTo(170 - dx - 10, y + 30); c.stroke();
+      c.beginPath(); c.moveTo(170 + dx, y + 16); c.lineTo(170 + dx + 10, y + 30); c.stroke();
+      c.lineWidth = 4;
+    }
+  }
+
+  // immune cells: one large cell with nucleus, satellites around it
+  function drawCells(c){
+    c.beginPath(); c.arc(170, 168, 56, 0, 6.2832); c.fill();
+    const sats = [[100,112,26],[242,116,24],[92,222,22],[246,226,26],[168,66,21],[172,270,22],[58,168,17],[282,170,17],[226,58,13],[112,278,13]];
+    for (const [x, y, r] of sats){ c.beginPath(); c.arc(x, y, r, 0, 6.2832); c.fill(); }
+    c.globalCompositeOperation = 'destination-out';
+    c.beginPath(); c.arc(170, 168, 22, 0, 6.2832); c.fill();
+  }
+
+  // lumbar spine segment: stacked vertebral bodies with discs and
+  // transverse processes reaching out on both sides
+  // a multipolar neuron in the classic anatomical-plate style: dense
+  // irregular soma, long tapering dendrite trunks forking at their tips,
+  // a branching tuft below, and one thin smooth axon sweeping off right
+  function drawNeuron(c){
+    c.lineCap = 'round';
+    const limb = (pts, w0, w1) => {
+      for (let k = 0; k < pts.length - 1; k++){
+        c.lineWidth = w0 + (w1 - w0) * (k / Math.max(1, pts.length - 2));
+        c.beginPath();
+        c.moveTo(pts[k][0], pts[k][1]);
+        c.lineTo(pts[k+1][0], pts[k+1][1]);
+        c.stroke();
+      }
+    };
+    // soma
+    c.beginPath();
+    const cx = 150, cy = 152;
+    for (let i = 0; i <= 26; i++){
+      const a = i / 26 * 6.2832;
+      const r = 42 + 9 * Math.sin(a * 3 + 0.9) + 5 * Math.sin(a * 5 + 2.1);
+      const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r * 0.94;
+      i ? c.lineTo(x, y) : c.moveTo(x, y);
+    }
+    c.closePath(); c.fill();
+    // dendrite trunks, thick at the soma, forking at the far ends
+    limb([[122,118],[86,80],[56,46]], 14, 7);            // up-left
+    limb([[56,46],[30,30]], 6, 4); limb([[56,46],[62,14]], 6, 4);
+    limb([[86,80],[48,88]], 7, 4);
+    limb([[152,108],[162,68],[152,30]], 13, 7);          // up
+    limb([[152,30],[130,10]], 6, 4); limb([[152,30],[172,6]], 6, 4);
+    limb([[162,68],[192,40]], 7, 4); limb([[192,40],[212,20]], 4.5, 3.5);
+    limb([[194,136],[252,118],[302,104]], 14, 8);        // right, the long p arm
+    limb([[302,104],[330,84]], 7, 4); limb([[302,104],[334,114]], 7, 4);
+    limb([[252,118],[282,142]], 7, 4);
+    limb([[106,162],[62,176],[22,186]], 12, 6);          // left
+    limb([[22,186],[6,172]], 5, 3.5); limb([[22,186],[8,204]], 5, 3.5);
+    limb([[116,190],[76,230],[42,266]], 13, 7);          // lower-left
+    limb([[42,266],[16,286]], 6, 4); limb([[42,266],[52,296]], 6, 4);
+    // bottom tuft: a fan of finer processes, like the plate's n' region
+    limb([[140,198],[128,246],[118,300]], 10, 4);
+    limb([[128,246],[104,282]], 5, 3);
+    limb([[152,202],[154,254],[148,312]], 9, 4);
+    limb([[164,198],[178,244],[190,290]], 8, 4);
+    limb([[178,244],[200,268]], 4.5, 3);
+    // axon (np): one thin smooth line sweeping right and down
+    c.lineWidth = 3;
+    c.beginPath();
+    c.moveTo(176, 184);
+    c.bezierCurveTo(232, 212, 284, 218, 336, 244);
+    c.stroke();
+  }
+
+  function drawBone(c){
+    c.lineCap = 'round';
+    for (let i = 0; i < 5; i++){
+      const y = 62 + i * 50;
+      c.beginPath(); c.ellipse(170, y, 40, 19, 0, 0, 6.2832); c.fill();
+      c.lineWidth = 11;
+      c.beginPath(); c.moveTo(132, y + 2); c.lineTo(106, y + 12); c.stroke();
+      c.beginPath(); c.moveTo(208, y + 2); c.lineTo(234, y + 12); c.stroke();
+      if (i < 4){ c.beginPath(); c.ellipse(170, y + 26, 30, 7, 0, 0, 6.2832); c.fill(); }
+    }
+  }
+
+  // intestines: colon frame (ascending, transverse, descending, sigmoid)
+  // with small-intestine coils filling the centre
+  function drawGut(c){
+    c.lineCap = 'round'; c.lineJoin = 'round';
+    c.lineWidth = 30;
+    c.beginPath();
+    c.moveTo(88, 240);
+    c.lineTo(86, 120);
+    c.bezierCurveTo(88, 92, 120, 82, 150, 86);
+    c.bezierCurveTo(190, 90, 230, 84, 252, 100);
+    c.bezierCurveTo(262, 112, 262, 130, 260, 150);
+    c.lineTo(258, 218);
+    c.bezierCurveTo(255, 245, 230, 252, 205, 248);
+    c.bezierCurveTo(185, 246, 175, 258, 173, 275);
+    c.lineTo(171, 298);
+    c.stroke();
+    c.beginPath(); c.arc(88, 250, 19, 0, 6.2832); c.fill(); // cecum pouch
+    c.lineWidth = 17;
+    c.beginPath(); c.moveTo(120, 128); c.bezierCurveTo(160, 116, 200, 134, 228, 122); c.stroke();
+    c.beginPath(); c.moveTo(118, 158); c.bezierCurveTo(150, 176, 185, 146, 226, 162); c.stroke();
+    c.beginPath(); c.moveTo(122, 192); c.bezierCurveTo(155, 178, 195, 206, 228, 190); c.stroke();
+    c.beginPath(); c.moveTo(130, 222); c.bezierCurveTo(160, 232, 190, 214, 218, 226); c.stroke();
+  }
+
+  // ---------- sample a silhouette into a volumetric point cloud ----------
+  // tf places the organ at its anatomical spot inside the ghost body
+  function buildCloud(draw, depthPx, sizeMul, tf){
+    octx.save();
+    octx.clearRect(0, 0, S, S);
+    octx.fillStyle = '#fff'; octx.strokeStyle = '#fff';
+    draw(octx);
+    octx.restore();
+    octx.globalCompositeOperation = 'source-over';
+    const alpha = octx.getImageData(0, 0, S, S).data;
+    const mask = new Uint8Array(S * S);
+    for (let i = 0; i < S * S; i++) mask[i] = alpha[i * 4 + 3] > 120 ? 1 : 0;
+
+    const pts = [];
+    let minX = S, maxX = 0, minY = S, maxY = 0;
+    for (let y = 0; y < S; y += 2){
+      for (let x = 0; x < S; x += 2){
+        if (mask[y * S + x]){
+          pts.push(x, y);
+          if (x < minX) minX = x; if (x > maxX) maxX = x;
+          if (y < minY) minY = y; if (y > maxY) maxY = y;
+        }
+      }
+    }
+    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    const maxDim = Math.max(maxX - minX, maxY - minY) || 1;
+    const s = (1.55 / maxDim) * sizeMul;
+
+    // depth from distance to silhouette edge, so volumes read rounded
+    function edgeDist(x, y){
+      for (let r = 2; r <= 22; r += 2){
+        if (x - r < 0 || x + r >= S || y - r < 0 || y + r >= S) return r;
+        if (!mask[y * S + (x - r)] || !mask[y * S + (x + r)] ||
+            !mask[(y - r) * S + x] || !mask[(y + r) * S + x] ||
+            !mask[(y - r) * S + (x - r)] || !mask[(y - r) * S + (x + r)] ||
+            !mask[(y + r) * S + (x - r)] || !mask[(y + r) * S + (x + r)]) return r;
+      }
+      return 22;
+    }
+
+    const out = new Float32Array(N * 3);
+    const edge = new Float32Array(N).fill(1);
+    const M = pts.length / 2;
+    for (let i = 0; i < N; i++){
+      // bias toward the shell: prefer points near the silhouette edge,
+      // and push depth toward the front/back surface of the volume
+      let px = 0, py = 0, d = 22;
+      for (let tries = 0; tries < 30; tries++){
+        const j = (Math.random() * M) | 0;
+        px = pts[j * 2]; py = pts[j * 2 + 1];
+        d = edgeDist(px, py);
+        if (Math.random() < 0.07 + 0.93 * Math.exp(-d / 3.5)) break;
+      }
+      // edge particles read brighter so the silhouette stays crisp
+      edge[i] = 0.72 + 0.48 * Math.exp(-d / 6);
+      const zmax = depthPx * Math.sqrt(d / 22);
+      const zsign = Math.random() < 0.5 ? -1 : 1;
+      out[i * 3]     = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s + tf.x;
+      out[i * 3 + 1] = -(py - cy + (Math.random() - 0.5) * 2) * s * tf.s + tf.y;
+      out[i * 3 + 2] = zsign * zmax * Math.pow(Math.random(), 0.3) * s * tf.s;
+    }
+    // ambient strays: a loose shell of drifting particles around the organ
+    for (let i = N - AMB; i < N; i++){
+      const r = (0.55 + Math.random() * 0.75) * tf.s;
+      const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
+      out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;
+      out[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th) * 0.8 + tf.y;
+      out[i * 3 + 2] = r * Math.cos(ph) * 0.6;
+    }
+    return { pos: out, edge, norm: { cx, cy, k: s * tf.s, tx: tf.x, ty: tf.y } };
+  }
+
+  // faint outline of the body, sampled from the silhouette's edge only
+  function buildGhost(count){
+    octx.save();
+    octx.clearRect(0, 0, S, S);
+    octx.fillStyle = '#fff'; octx.strokeStyle = '#fff';
+    drawHuman(octx);
+    octx.restore();
+    octx.globalCompositeOperation = 'source-over';
+    const alpha = octx.getImageData(0, 0, S, S).data;
+    const mask = new Uint8Array(S * S);
+    for (let i = 0; i < S * S; i++) mask[i] = alpha[i * 4 + 3] > 120 ? 1 : 0;
+    const edge = [];
+    let minX = S, maxX = 0, minY = S, maxY = 0;
+    for (let y = 2; y < S - 2; y += 2){
+      for (let x = 2; x < S - 2; x += 2){
+        if (!mask[y * S + x]) continue;
+        if (x < minX) minX = x; if (x > maxX) maxX = x;
+        if (y < minY) minY = y; if (y > maxY) maxY = y;
+        if (!mask[y * S + x - 2] || !mask[y * S + x + 2] ||
+            !mask[(y - 2) * S + x] || !mask[(y + 2) * S + x]) edge.push(x, y);
+      }
+    }
+    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    const maxDim = Math.max(maxX - minX, maxY - minY) || 1;
+    const s = (1.55 / maxDim) * 1.12;
+    const out = new Float32Array(count * 3);
+    const M = edge.length / 2;
+    for (let i = 0; i < count; i++){
+      const j = (Math.random() * M) | 0;
+      out[i * 3]     = (edge[j * 2]     - cx + (Math.random() - 0.5) * 2) * s;
+      out[i * 3 + 1] = -(edge[j * 2 + 1] - cy + (Math.random() - 0.5) * 2) * s;
+      out[i * 3 + 2] = (Math.random() - 0.5) * 0.03;
+    }
+    return out;
+  }
+
+  // every organ shares the same centred position — no anatomical placement,
+  // no camera travel or angle change between organs
+  const ORGANS = [
+    { label: 'Brain',   cloud: () => buildCloud(drawBrain,   52, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Nerves',  cloud: () => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Lungs',   cloud: () => buildCloud(drawLungs,   46, 1.02, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Heart',   cloud: () => buildCloud(drawHeart,   55, 0.88, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Cells',   cloud: () => buildCloud(drawCells,   42, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Bone',    cloud: () => buildCloud(drawBone,    24, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Gut',     cloud: () => buildCloud(drawGut,     30, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Liver',   cloud: () => buildCloud(drawLiver,   42, 0.95, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Kidneys', cloud: () => buildCloud(drawKidneys, 34, 0.90, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+  ];
+  const clouds = ORGANS.map(o => o.cloud());
+  const GB = 1200;
+  const ghostPts = buildGhost(GB);
+  const FSTART = N + GB;   // flow layer sits after organ + ambient + ghost
+  const FLOWN = 700;
+  const TOT = FSTART + FLOWN;
+
+  // ---------- GL program ----------
+  const VS = `
+    attribute vec3 aPosA;
+    attribute vec3 aPosB;
+    attribute float aEdgeA; // brightness near the silhouette edge, per organ
+    attribute float aEdgeB;
+    attribute vec4 aSeed;   // x stagger, y curve angle, z noise phase, w size
+    attribute vec4 aColor;
+    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight;
+    uniform vec2 uPan; // per-draw clip-space offset (spatial card placement)
+    uniform vec3 uCenter;
+    uniform vec2 uCA;   // organ centre the A positions belong to
+    uniform vec2 uCB;   // organ centre the B positions belong to
+    uniform mat3 uRot;
+    uniform vec2 uView;
+    varying vec4 vColor;
+    uniform float uEase;
+    float ease(float p){
+      // uEase 0: gentle sine S-curve; 1: hard quint S-curve
+      float soft = 0.5 - 0.5 * cos(3.14159 * p);
+      float hard = p < 0.5 ? 16.0 * p * p * p * p * p
+                           : 1.0 - pow(-2.0 * p + 2.0, 5.0) / 2.0;
+      return mix(soft, hard, uEase);
+    }
+    void main(){
+      // flow dots morph with everyone else; their flag hijacks aSeed.x,
+      // so they derive a stagger of their own from the noise phase
+      float flowP = aSeed.x < -1.5 ? 1.0 : 0.0;
+      float st = mix(aSeed.x, fract(aSeed.z * 7.31), flowP);
+      float lp = clamp((uP - st * ${STAG}) / ${1 - STAG}, 0.0, 1.0);
+      float e = ease(lp);
+      // interpolate in organ-local space: the cloud breaks apart and reforms
+      // in place while the camera glides underneath — no directional travel
+      vec3 la = aPosA - vec3(uCA, 0.0);
+      vec3 lb = aPosB - vec3(uCB, 0.0);
+      vec3 pos = mix(la, lb, e) + vec3(uCenter.x, uCenter.y, 0.0);
+      // mid-flight the cloud puffs outward before resolving
+      float arc = sin(3.14159 * e);
+      vec3 dir = normalize(vec3(cos(aSeed.y), sin(aSeed.y), cos(aSeed.y * 1.7)) + 0.001);
+      pos += dir * arc * (0.10 + 0.25 * fract(aSeed.y * 7.13)) * min(distance(la, lb) + 0.15, 1.0);
+      // idle drift, never fully static; ambient strays wander much more, the ghost barely
+      float amb = aSeed.w < 0.0 ? 1.0 : 0.0;
+      float ghost = (aSeed.x < -0.5 && aSeed.x > -1.5) ? 1.0 : 0.0;
+      // feeding: ambient matter spirals inward on curved orbits, accelerates
+      // near the surface, is absorbed, and is reborn faint at the rim —
+      // the organ continuously pulls material into itself
+      float feedA = 1.0;
+      if (amb > 0.5){
+        float grp = step(fract(aSeed.y * 3.7), 0.25);          // some arrive as clusters
+        float uq = mix(aSeed.z, floor(aSeed.z * 5.0) / 5.0 + 0.09, grp);
+        float cyc = fract(uTime / 9.0 + uq);
+        float fall = cyc * cyc * (1.1 + 0.5 * fract(aSeed.y * 5.3));
+        float sw = (fract(aSeed.y * 2.9) - 0.5) * 2.6 * cyc;
+        float cs = cos(sw), sn = sin(sw);
+        vec3 rel = pos - vec3(uCenter.x, uCenter.y, 0.0);
+        rel = vec3(mat2(cs, -sn, sn, cs) * rel.xy, rel.z);
+        rel *= mix(1.3, 0.3, min(1.0, fall));
+        pos = rel + vec3(uCenter.x, uCenter.y, 0.0);
+        feedA = smoothstep(0.0, 0.14, cyc) * (1.0 - smoothstep(0.85, 0.98, cyc));
+      }
+      pos += (uJitter * (1.0 - 0.7 * ghost) + amb * 2.2) * 0.006 * vec3(
+        sin(uTime * 0.8 + aSeed.z * 6.28),
+        cos(uTime * 0.7 + aSeed.z * 9.42),
+        sin(uTime * 0.9 + aSeed.z * 3.71));
+      // pulse scales the organ around its own anatomical center; ghost stays still
+      float pw = (1.0 - ghost) * (1.0 - smoothstep(uOrgR * 1.6, uOrgR * 2.4, distance(pos, uCenter)));
+      pos = uCenter + (pos - uCenter) * mix(1.0, uScale, pw);
+      // camera: look at the organ's anatomical spot and zoom to it
+      pos = uRot * ((pos - vec3(uCenter.x, uCenter.y, 0.0)) * uZoom);
+      float persp = 1.0 / (1.0 - pos.z * 0.22);
+      gl_Position = vec4(pos.x * persp * uView.x + uPan.x, pos.y * persp * uView.y + uYOff + uPan.y, 0.0, 1.0);
+      gl_PointSize = abs(aSeed.w) * persp * uPix * pow(uZoom, 0.35) * mix(1.0, 1.35, uSq);
+      float tw = 0.62 + 0.38 * sin(uTime * 1.8 + aSeed.z * 21.0);
+      // voxel mode: quieter shimmer — data, not sparkle
+      tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
+      // age halo on the shell: orange when older (uWarm > 0), green when younger (uWarm < 0)
+      float halo = (1.0 - ghost) * (1.0 - flowP) * abs(uWarm)
+                 * smoothstep(uOrgR * 0.45, uOrgR, length(mix(aPosA, aPosB, e) - uCenter))
+                 * (0.45 + 0.55 * fract(aSeed.y * 3.17));
+      vec3 haloCol = uWarm > 0.0 ? vec3(0.87, 0.56, 0.30) : vec3(0.55, 0.73, 0.48);
+      vec3 rgb = mix(aColor.rgb, haloCol, halo);
+      // light theme: dark, mostly desaturated ink with a trace of warmth
+      vec3 lrgb = mix(rgb, vec3(dot(rgb, vec3(0.4, 0.4, 0.2))), 0.6) * 0.38 + vec3(0.02);
+      rgb = mix(rgb, lrgb, uLight);
+      float ga = mix(1.0, uGhost * 0.38, ghost);
+      float ef = mix(aEdgeA, aEdgeB, mix(e, 1.0, flowP));
+      // density control: a stable per-particle lottery thins the cloud live
+      float keep = mix(step(fract(aSeed.z * 39.7), uDens), 1.0, max(ghost, flowP));
+      float fv = mix(1.0, uFlowVis, flowP);
+      // voxel mode: depth-weighted brightness so the volume reads in layers
+      float da = mix(1.0, clamp(persp, 0.72, 1.2), uSq);
+      vColor = vec4(rgb, aColor.a * tw * (1.0 + 0.35 * halo) * ga * ef * keep * fv * uAlpha * da * feedA);
+    }`;
+  const FS = `
+    precision mediump float;
+    varying vec4 vColor;
+    uniform highp float uSq;
+    void main(){
+      vec2 c = gl_PointCoord * 2.0 - 1.0;
+      if (uSq > 0.5){
+        // tiny square voxel with a barely-soft edge
+        float m = max(abs(c.x), abs(c.y));
+        gl_FragColor = vec4(vColor.rgb, vColor.a * smoothstep(1.0, 0.92, m));
+      } else {
+        float d = dot(c, c);
+        if (d > 1.0) discard;
+        gl_FragColor = vec4(vColor.rgb, vColor.a * smoothstep(1.0, 0.55, d));
+      }
+    }`;
+
+  function shader(type, src){
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src); gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+    return sh;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, shader(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  gl.useProgram(prog);
+
+  const U = {};
+  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView'])
+    U[n] = gl.getUniformLocation(prog, n);
+  gl.uniform2f(U.uPan, 0, 0);
+  gl.uniform1f(U.uAlpha, 1);
+  gl.uniform1f(U.uSq, 0);
+  gl.uniform1f(U.uLight, 0);
+
+  // ---------- buffers ----------
+  const posA = new Float32Array(TOT * 3);
+  const posB = new Float32Array(TOT * 3);
+  const seeds = new Float32Array(TOT * 4);
+  const colors = new Float32Array(TOT * 4);
+  for (let i = 0; i < N; i++){
+    // opening state: loose scatter sphere
+    const r = 0.2 + Math.pow(Math.random(), 0.5) * 1.1;
+    const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
+    posA[i*3]   = r * Math.sin(ph) * Math.cos(th);
+    posA[i*3+1] = r * Math.sin(ph) * Math.sin(th);
+    posA[i*3+2] = r * Math.cos(ph) * 0.5;
+    seeds[i*4]   = Math.random();               // stagger
+    seeds[i*4+1] = Math.random() * 6.2832;      // curve direction
+    seeds[i*4+2] = Math.random();               // noise phase
+    seeds[i*4+3] = 0.55 + Math.pow(Math.random(), 1.6) * 1.5; // size
+    const c = pickColor();
+    colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
+    colors[i*4+3] = 0.45 + Math.random() * 0.55;
+  }
+  // mark ambient strays: negative size flags them in the shader, fainter + drifting more
+  for (let i = N - AMB; i < N; i++){
+    seeds[i*4+3] = -(0.5 + Math.random() * 0.9);
+    colors[i*4+3] *= 0.6;
+  }
+  // ghost body: static outline particles, flagged by negative stagger
+  for (let i = N; i < FSTART; i++){
+    const g = (i - N) * 3;
+    posA[i*3] = posB[i*3] = ghostPts[g];
+    posA[i*3+1] = posB[i*3+1] = ghostPts[g+1];
+    posA[i*3+2] = posB[i*3+2] = ghostPts[g+2];
+    seeds[i*4]   = -1;
+    seeds[i*4+1] = Math.random() * 6.2832;
+    seeds[i*4+2] = Math.random();
+    seeds[i*4+3] = 0.5 + Math.random() * 0.4;
+    colors[i*4] = 0.941; colors[i*4+1] = 0.878; colors[i*4+2] = 0.816;
+    colors[i*4+3] = 0.8;
+  }
+  // flow layer: soft dots that travel along internal organ paths (positions
+  // are computed on the CPU each frame and streamed into the posB slice)
+  const flowPick = new Uint8Array(FLOWN);
+  const flowU0 = new Float32Array(FLOWN);
+  const flowLane = new Float32Array(FLOWN);
+  const flowZ = new Float32Array(FLOWN);
+  const flowSpd = new Float32Array(FLOWN);
+  for (let f = 0; f < FLOWN; f++){
+    const i = FSTART + f;
+    flowPick[f] = (Math.random() * 16) | 0;
+    flowU0[f] = Math.random();
+    // quantised lanes: particles align into 2-3 parallel strands, like vessels
+    flowLane[f] = ((Math.random() * 3) | 0) - 1 + (Math.random() - 0.5) * 0.3;
+    flowZ[f] = Math.random() * 2 - 1;
+    flowSpd[f] = 0.8 + Math.random() * 0.4; // layered velocities, organic not uniform
+    seeds[i*4]   = -2;                       // flow flag
+    seeds[i*4+1] = Math.random() * 6.2832;
+    seeds[i*4+2] = Math.random();
+    seeds[i*4+3] = 1.1 + Math.random() * 0.9;
+    colors[i*4+3] = 0;
+  }
+
+  posB.set(clouds[0].pos);
+  const edgeA = new Float32Array(TOT).fill(1);
+  const edgeB = new Float32Array(TOT).fill(1);
+  edgeA.set(clouds[0].edge);
+  edgeB.set(clouds[0].edge);
+
+  function attr(name, arr, size, usage){
+    const loc = gl.getAttribLocation(prog, name);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, arr, usage);
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
+    return buf;
+  }
+  const bufA = attr('aPosA', posA, 3, gl.DYNAMIC_DRAW);
+  const bufB = attr('aPosB', posB, 3, gl.DYNAMIC_DRAW);
+  const bufEA = attr('aEdgeA', edgeA, 1, gl.DYNAMIC_DRAW);
+  const bufEB = attr('aEdgeB', edgeB, 1, gl.DYNAMIC_DRAW);
+  attr('aSeed', seeds, 4, gl.STATIC_DRAW);
+  const bufC = attr('aColor', colors, 4, gl.DYNAMIC_DRAW);
+
+  // spatial mode: every organ gets its own static buffers, so several
+  // live organs can be drawn at once — no remounting, ever
+  const orgBuf = clouds.map(cl => {
+    const pos = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, pos);
+    gl.bufferData(gl.ARRAY_BUFFER, cl.pos, gl.STATIC_DRAW);
+    const edge = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, edge);
+    gl.bufferData(gl.ARRAY_BUFFER, cl.edge, gl.STATIC_DRAW);
+    return { pos, edge };
+  });
+  const LOC = {
+    a: gl.getAttribLocation(prog, 'aPosA'),
+    b: gl.getAttribLocation(prog, 'aPosB'),
+    ea: gl.getAttribLocation(prog, 'aEdgeA'),
+    eb: gl.getAttribLocation(prog, 'aEdgeB'),
+  };
+  function bindCloud(k){
+    // k = organ index for a static cloud, -1 for the live morph buffers
+    gl.bindBuffer(gl.ARRAY_BUFFER, k < 0 ? bufA : orgBuf[k].pos);
+    gl.vertexAttribPointer(LOC.a, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, k < 0 ? bufB : orgBuf[k].pos);
+    gl.vertexAttribPointer(LOC.b, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, k < 0 ? bufEA : orgBuf[k].edge);
+    gl.vertexAttribPointer(LOC.ea, 1, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, k < 0 ? bufEB : orgBuf[k].edge);
+    gl.vertexAttribPointer(LOC.eb, 1, gl.FLOAT, false, 0, 0);
+  }
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.disable(gl.DEPTH_TEST);
+  gl.clearColor(0.141, 0.035, 0.031, 1);
+
+  // ---------- morph state ----------
+  let current = 0;
+  let morphStart = performance.now();
+  let uPnow = 0;
+
+  const easeJS = p => {
+    const soft = 0.5 - 0.5 * Math.cos(Math.PI * p);
+    const hard = p < 0.5 ? 16 * Math.pow(p, 5) : 1 - Math.pow(-2 * p + 2, 5) / 2;
+    return MODES[version].ease ? hard : soft;
+  };
+
+  // freeze current in-flight positions into posA (mirrors the shader math)
+  function freezeInto(arr){
+    for (let i = 0; i < N; i++){
+      const lp = Math.min(1, Math.max(0, (uPnow - seeds[i*4] * STAG) / (1 - STAG)));
+      const e = easeJS(lp);
+      const arc = Math.sin(Math.PI * e);
+      const ang = seeds[i*4+1];
+      let dx = Math.cos(ang), dy = Math.sin(ang), dz = Math.cos(ang * 1.7);
+      const dl = Math.hypot(dx, dy, dz) || 1; dx/=dl; dy/=dl; dz/=dl;
+      const i3 = i * 3;
+      const lax = posA[i3] - morphCA.x, lay = posA[i3+1] - morphCA.y, laz = posA[i3+2];
+      const lbx = posB[i3] - morphCB.x, lby = posB[i3+1] - morphCB.y, lbz = posB[i3+2];
+      const dist = Math.min(Math.hypot(lbx - lax, lby - lay, lbz - laz) + 0.15, 1.0);
+      const amp = arc * (0.10 + 0.25 * ((ang * 7.13) % 1)) * dist;
+      arr[i3]   = lax + (lbx - lax) * e + cenX + dx * amp;
+      arr[i3+1] = lay + (lby - lay) * e + cenY + dy * amp;
+      arr[i3+2] = laz + (lbz - laz) * e + dz * amp;
+      edgeA[i] += (edgeB[i] - edgeA[i]) * e;
+    }
+    // ghost slice never morphs — carry it through unchanged
+    arr.set(posA.subarray(N * 3, FSTART * 3), N * 3);
+    // flow dots freeze mid-flight exactly where the shader places them,
+    // mirroring the flow stagger derived from the noise phase
+    for (let g = FSTART; g < TOT; g++){
+      const st = (seeds[g*4+2] * 7.31) % 1;
+      const lp = Math.min(1, Math.max(0, (uPnow - st * STAG) / (1 - STAG)));
+      const e = easeJS(lp);
+      const arc = Math.sin(Math.PI * e);
+      const ang = seeds[g*4+1];
+      let dx = Math.cos(ang), dy = Math.sin(ang), dz = Math.cos(ang * 1.7);
+      const dl = Math.hypot(dx, dy, dz) || 1; dx/=dl; dy/=dl; dz/=dl;
+      const g3 = g * 3;
+      const lax = posA[g3] - morphCA.x, lay = posA[g3+1] - morphCA.y, laz = posA[g3+2];
+      const lbx = posB[g3] - morphCB.x, lby = posB[g3+1] - morphCB.y, lbz = posB[g3+2];
+      const dist = Math.min(Math.hypot(lbx - lax, lby - lay, lbz - laz) + 0.15, 1.0);
+      const amp = arc * (0.10 + 0.25 * ((ang * 7.13) % 1)) * dist;
+      arr[g3]   = lax + (lbx - lax) * e + cenX + dx * amp;
+      arr[g3+1] = lay + (lby - lay) * e + cenY + dy * amp;
+      arr[g3+2] = laz + (lbz - laz) * e + dz * amp;
+    }
+  }
+
+  const scratch = new Float32Array(TOT * 3);
+  function setOrgan(i){
+    if (i === current && uPnow >= 1) return;
+    freezeInto(scratch);
+    posA.set(scratch);
+    // frozen positions are absolute around the current camera centre
+    morphCA = { x: cenX, y: cenY };
+    morphCB = { x: ORGANS[i].x, y: ORGANS[i].y };
+    posB.set(clouds[i].pos);
+    edgeB.set(clouds[i].edge);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufA);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, posA);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, posB);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufEA);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, edgeA);
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufEB);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, edgeB);
+    current = i;
+    morphStart = performance.now();
+    buttons.forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
+    noteSwap();
+    const b = buttons[i];
+    glideCarousel(b.offsetLeft + b.offsetWidth / 2 - carousel.clientWidth / 2);
+  }
+
+  // rAF-driven glide on the same S-curve as the state change
+  // (native smooth scrollTo is unreliable with snap containers)
+  let scrollAnim = 0;
+  function glideCarousel(target){
+    cancelAnimationFrame(scrollAnim);
+    const from = carousel.scrollLeft;
+    const start = performance.now();
+    const dur = reduced ? 1 : 750;
+    const step = now => {
+      const p = Math.min(1, (now - start) / dur);
+      // gentle cubic in-out: the strip drifts to centre, never snaps
+      const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      carousel.scrollLeft = from + (target - from) * e;
+      if (p < 1 && performance.now() - userScrollAt > 100) scrollAnim = requestAnimationFrame(step);
+    };
+    scrollAnim = requestAnimationFrame(step);
+  }
+
+  // ---------- OrganFlow: internal flow presets per organ ----------
+  // Shared system: paths in silhouette space + config; rendering is generic.
+  const CELL_ORBIT = Array.from({ length: 9 }, (_, j) => {
+    const a = j / 8 * Math.PI * 2;
+    return [170 + 95 * Math.cos(a), 168 + 78 * Math.sin(a)];
+  });
+  const FLOW_PRESETS = [
+    { paths: [[[70,160],[110,90],[180,62],[250,92],[285,150]], [[90,195],[150,150],[220,150],[268,185]]],
+      loop: 10, op: 0.65, width: 4, turb: 1.8, tone: [0.90,0.62,0.64] },            // brain: vascular perfusion
+    { paths: [[[302,104],[252,118],[194,136],[158,152],[176,184],[240,214],[290,222],[336,244]],
+              [[56,46],[86,80],[122,118],[148,148],[176,184],[250,216],[336,244]],
+              [[152,30],[162,68],[152,108],[150,148],[176,184],[250,216],[336,244]],
+              [[42,266],[76,230],[116,190],[146,152],[176,184],[240,214],[336,244]]],
+      pulse: true, loop: 8, op: 0.5, width: 2.5, turb: 0.6, tone: [0.90,0.80,0.94] }, // neuron: impulse bursts
+    { paths: [[[170,34],[170,82],[142,108],[122,165],[118,215]], [[170,34],[170,82],[198,108],[214,165],[218,210]]],
+      loop: 9,  op: 0.55, width: 5, turb: 2.5, tone: [0.97,0.93,0.86] },            // lungs: airflow (lighter tone)
+    { paths: [[[250,60],[236,110],[224,170],[198,242],[158,288]], [[158,288],[148,230],[158,160],[184,118],[196,62]], [[162,108],[138,78],[114,60]]],
+      loop: 8,  op: 0.72, width: 4, turb: 1.5, tone: [0.93,0.55,0.50] },            // heart: vascular flow
+    { paths: [CELL_ORBIT],
+      loop: 12, op: 0.55, width: 6, turb: 3,   tone: [0.94,0.90,0.84] },            // immune: patrol orbit
+    { paths: [[[170,290],[170,44]]],
+      loop: 11, op: 0.60, width: 4, turb: 1.5, tone: [0.92,0.74,0.56] },            // bone: perfusion along the spine
+    { paths: [[[120,128],[228,126],[120,160],[226,164],[124,194],[226,192],[130,224],[218,226]],
+              [[88,240],[86,120],[150,86],[250,100],[258,214],[206,248],[172,296]]],
+      loop: 12, op: 0.65, width: 5, turb: 2,   tone: [0.92,0.66,0.52] },            // gut: peristaltic flow
+    { paths: [[[62,140],[130,118],[200,122],[262,142],[290,160]], [[72,182],[150,172],[228,180],[268,176]]],
+      loop: 10, op: 0.65, width: 5, turb: 2,   tone: [0.90,0.55,0.48] },            // liver: perfusion
+    { paths: [[[102,128],[94,178],[112,222],[148,190]], [[240,116],[248,166],[234,210],[194,176]]],
+      loop: 9,  op: 0.65, width: 4, turb: 1.5, tone: [0.92,0.58,0.56] },            // kidneys: filtration
+  ];
+  const flowRT = {};
+  function getFlowRT(i){
+    if (flowRT[i]) return flowRT[i];
+    const pr = FLOW_PRESETS[i];
+    if (!pr) return null;
+    const nm = clouds[i].norm;
+    const paths = pr.paths.map(pts => {
+      const x = [], y = [], cum = [0];
+      for (const p of pts){
+        x.push((p[0] - nm.cx) * nm.k + nm.tx);
+        y.push(-(p[1] - nm.cy) * nm.k + nm.ty);
+      }
+      let tot = 0;
+      for (let j = 1; j < x.length; j++){
+        tot += Math.hypot(x[j] - x[j-1], y[j] - y[j-1]);
+        cum.push(tot);
+      }
+      return { x, y, cum, total: tot || 1 };
+    });
+    return flowRT[i] = { paths, k: nm.k };
+  }
+  let flowTintFor = -1;
+  // neural impulses: four fixed dot-channels, each carrying one packet at a
+  // time — bursts fire with jittered stagger, sometimes splitting across
+  // branches, then the nerve goes quiet before the next volley
+  const pulseCh = [null, null, null, null];
+  let nextBurstAt = 0;
+  function updatePulses(t, rt){
+    for (let c = 0; c < 4; c++)
+      if (pulseCh[c] && t > pulseCh[c].t0 + pulseCh[c].dur * 1.2) pulseCh[c] = null;
+    if (t < nextBurstAt) return;
+    const free = [];
+    for (let c = 0; c < 4; c++) if (!pulseCh[c]) free.push(c);
+    if (!free.length) return;
+    const n = Math.min(free.length, 2 + (Math.random() * 3 | 0));
+    let last = 0;
+    for (let k = 0; k < n; k++){
+      const p = (Math.random() * rt.paths.length) | 0;
+      const dur = 320 + Math.random() * 240;
+      pulseCh[free[k]] = { p, t0: t + last, dur };
+      // occasionally the impulse splits onto a second branch at once
+      if (k + 1 < n && Math.random() < 0.3){
+        k++;
+        pulseCh[free[k]] = { p: (p + 1) % rt.paths.length, t0: t + last, dur: dur * 1.05 };
+      }
+      last += 130 + Math.random() * 340;
+    }
+    nextBurstAt = t + last + 800 + Math.random() * 1400;
+  }
+  // grid mode: every organ flows at once — the flow slice is partitioned
+  // into nine per-organ groups, each streaming its own preset paths
+  const GFN = Math.floor(FLOWN / 9);
+  function updateFlowGrid(t){
+    flowTintFor = -1; // single-organ tint cache is stale after this
+    const time = t / 1000;
+    for (let g = 0; g < ORGANS.length; g++){
+      const pr = FLOW_PRESETS[g];
+      const rt = getFlowRT(g);
+      if (!pr || !rt) continue;
+      for (let k = 0; k < GFN; k++){
+        const f = g * GFN + k, gi = FSTART + f;
+        const P = rt.paths[flowPick[f] % rt.paths.length];
+        const u = (flowU0[f] + time * flowSpd[f] / (pr.loop * 2)) % 1;
+        const d = u * P.total;
+        let s = 0;
+        while (s < P.cum.length - 2 && P.cum[s+1] < d) s++;
+        const segLen = (P.cum[s+1] - P.cum[s]) || 1;
+        const st = (d - P.cum[s]) / segLen;
+        const ax = P.x[s], ay = P.y[s], bx = P.x[s+1], by = P.y[s+1];
+        let x = ax + (bx - ax) * st, y = ay + (by - ay) * st;
+        const dxn = (bx - ax) / segLen, dyn = (by - ay) / segLen;
+        const off = flowLane[f] * pr.width * rt.k
+                  + Math.sin(time * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
+        x += -dyn * off; y += dxn * off;
+        const i3 = gi * 3;
+        posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 24 * rt.k;
+        const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
+        colors[gi*4] = pr.tone[0]; colors[gi*4+1] = pr.tone[1]; colors[gi*4+2] = pr.tone[2];
+        colors[gi*4+3] = Math.min(1, pr.op * 1.2) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+      }
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
+    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
+    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
+  }
+  function updateFlow(t){
+    const pr = FLOW_PRESETS[current];
+    const rt = getFlowRT(current);
+    if (!pr || !rt) return;
+    if (flowTintFor !== current){
+      flowTintFor = current;
+      for (let f = 0; f < FLOWN; f++){
+        const i4 = (FSTART + f) * 4;
+        colors[i4] = pr.tone[0]; colors[i4+1] = pr.tone[1]; colors[i4+2] = pr.tone[2];
+      }
+    }
+    if (pr.pulse){
+      updatePulses(t, rt);
+      for (let f = 0; f < FLOWN; f++){
+        const gi = FSTART + f;
+        const pu = pulseCh[f % 4];
+        let a = 0;
+        if (pu && t >= pu.t0){
+          // each dot trails the packet head by its stable slot; the trail
+          // dies away fast behind the head — a glow, not a stream
+          const slot = flowU0[f];
+          const u = (t - pu.t0) / pu.dur - slot * 0.15;
+          if (u > 0 && u < 1){
+            const P = rt.paths[pu.p % rt.paths.length];
+            const d = u * P.total;
+            let s = 0;
+            while (s < P.cum.length - 2 && P.cum[s+1] < d) s++;
+            const segLen = (P.cum[s+1] - P.cum[s]) || 1;
+            const st = (d - P.cum[s]) / segLen;
+            const px = P.x[s], py = P.y[s], qx = P.x[s+1], qy = P.y[s+1];
+            let x = px + (qx - px) * st, y = py + (qy - py) * st;
+            const dxn = (qx - px) / segLen, dyn = (qy - py) / segLen;
+            const off = flowLane[f] * pr.width * rt.k * 0.5;
+            x += -dyn * off; y += dxn * off;
+            const i3 = gi * 3;
+            posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 14 * rt.k;
+            a = Math.min(1, pr.op * 1.4) * Math.pow(1 - slot, 1.8)
+              * Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.1);
+          }
+        }
+        colors[gi*4+3] = a;
+      }
+      gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
+      gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
+      gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
+      gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
+      return;
+    }
+    const time = t / 1000;
+    for (let f = 0; f < FLOWN; f++){
+      const gi = FSTART + f;
+      const P = rt.paths[flowPick[f] % rt.paths.length];
+      const u = (flowU0[f] + time * flowSpd[f] / (pr.loop * 2)) % 1;
+      const d = u * P.total;
+      let s = 0;
+      while (s < P.cum.length - 2 && P.cum[s+1] < d) s++;
+      const segLen = (P.cum[s+1] - P.cum[s]) || 1;
+      const st = (d - P.cum[s]) / segLen;
+      const ax = P.x[s], ay = P.y[s], bx = P.x[s+1], by = P.y[s+1];
+      let x = ax + (bx - ax) * st, y = ay + (by - ay) * st;
+      const dx = (bx - ax) / segLen, dy = (by - ay) / segLen;
+      const off = flowLane[f] * pr.width * rt.k
+                + Math.sin(time * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
+      x += -dy * off; y += dx * off;
+      const i3 = gi * 3;
+      posB[i3] = x; posB[i3+1] = y;
+      posB[i3+2] = flowZ[f] * 28 * rt.k; // embedded in the volume
+      // ends fade so the loop never visibly resets; deeper dots are softer
+      const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
+      colors[gi*4+3] = Math.min(1, pr.op * 1.35) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
+    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
+    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
+  }
+
+  // ---------- carousel of health cards ----------
+  const carousel = document.getElementById('carousel');
+  const CARDS = [
+    { name: 'Mental health',        age: 30, delta: -4, bio: 14 },
+    { name: 'Brain + nerve health', age: 28, delta: -6, bio: 11 },
+    { name: 'Lung health',          age: 40, delta: 6,  bio: 16, bioOut: 2 },
+    { name: 'Heart health',         age: 31, delta: -3, bio: 18 },
+    { name: 'Immune health',        age: 31, delta: -3, bio: 12 },
+    { name: 'Muscle + bone health', age: 36, delta: 2,  bio: 9,  bioOut: 4 },
+    { name: 'Gut health',           age: 29, delta: -5, bio: 15 },
+    { name: 'Metabolic health',     age: 38, delta: 4,  bio: 13, bioOut: 3 },
+    { name: 'Kidney health',        age: 30, delta: -4, bio: 10 },
+  ];
+  let hoverBoost = 0;
+  let programmaticScroll = false, progT = 0;
+  const buttons = ORGANS.map((o, i) => {
+    const d = CARDS[i];
+    const b = document.createElement('button');
+    b.className = 'card' + (d.delta > 0 ? ' aged' : '');
+    b.setAttribute('aria-pressed', String(i === 0));
+    b.innerHTML =
+      '<span class="top"><span>' + o.label + '</span>' +
+      '<span class="badge">' + (d.delta > 0 ? '+' : '') + d.delta + ' yrs</span></span>' +
+      '<span class="age">' + d.age + '</span>' +
+      '<span class="name">' + d.name + '</span>' +
+      '<span class="bar"><i style="width:' + Math.round(Math.min(Math.abs(d.delta), 6) / 6 * 46) + '%"></i><span class="dot"></span></span>';
+    b.addEventListener('click', () => { lastManual = performance.now(); setOrgan(i); });
+    b.addEventListener('pointerenter', () => { hoverBoost = 1; });
+    b.addEventListener('pointerleave', () => { hoverBoost = 0; });
+    carousel.appendChild(b);
+    return b;
+  });
+
+  // scrolling the carousel activates the card nearest its center
+  // scroll-driven selection counts only when the user is actually driving the
+  // carousel — programmatic scrollIntoView can never re-trigger selection
+  let userScrollAt = -1e9, scrollT = 0;
+  const noteUserScroll = () => { userScrollAt = performance.now(); };
+  carousel.addEventListener('wheel', noteUserScroll, { passive: true });
+  carousel.addEventListener('touchmove', noteUserScroll, { passive: true });
+  carousel.addEventListener('pointerdown', noteUserScroll);
+  carousel.addEventListener('scroll', () => {
+    if (performance.now() - userScrollAt > 800) return;
+    clearTimeout(scrollT);
+    scrollT = setTimeout(() => {
+      const r = carousel.getBoundingClientRect();
+      const mid = r.left + r.width / 2;
+      let best = 0, bd = 1e9;
+      buttons.forEach((c, i) => {
+        const cr = c.getBoundingClientRect();
+        const d = Math.abs(cr.left + cr.width / 2 - mid);
+        if (d < bd){ bd = d; best = i; }
+      });
+      if (best !== current){ lastManual = performance.now(); setOrgan(best); }
+    }, 140);
+  });
+
+  // ---------- pill nav: chips + age-gap arc (modes 1 & 2) ----------
+  const pillui = document.getElementById('pillui');
+  const statusEl = document.getElementById('status');
+  const statusWord = document.getElementById('statusWord');
+  const NSVG = 'http://www.w3.org/2000/svg';
+
+  // the full collection of health areas, in product order
+  const PILL = [
+    { label: 'Heart',         organIdx: 3, delta: -3, bio: 18 },
+    { label: 'Mental',        organIdx: 0, delta:  0, bio: 14 },
+    { label: 'Brain + nerve', organIdx: 1, delta: -6, bio: 11 },
+    { label: 'Lung',          organIdx: 2, delta:  8, bio: 16, bioOut: 2 },
+    { label: 'Immune',        organIdx: 4, delta: -3, bio: 12 },
+    { label: 'Muscle + bone', organIdx: 5, delta:  2, bio: 9,  bioOut: 4 },
+    { label: 'Gut',           organIdx: 6, delta: -5, bio: 15 },
+    { label: 'Metabolic',     organIdx: 7, delta:  4, bio: 13, bioOut: 3 },
+    { label: 'Kidney',        organIdx: 8, delta: -1, bio: 10, bioOut: 1 },
+  ];
+  let pillCurrent = 0;
+  let arcFrom = PILL[0].delta, arcTo = PILL[0].delta, arcNow = PILL[0].delta;
+  let arcStart = -1e9, statusT = 0, ageT = 0, mNameT = 0, mbT = 0;
+  let bSlideDir = 1, bAnimT0 = -1e9, bAnimType = 'slide', bAnimFrom = 0, bNextFrom = 0;
+
+  // semantic color along the -10..+15 scale
+  const C_GREEN = [143,174,126], C_NEUT = [181,154,147], C_ORANGE = [217,137,91], C_RED = [208,106,82];
+  const lerpC = (a, b, t) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t];
+  function ageColor(v){
+    // decisive semantics: any younger value is green, any older is orange->red
+    let c;
+    if (v <= -0.05) c = C_GREEN;
+    else if (v >= 0.05) c = lerpC(C_ORANGE, C_RED, Math.min(1, v / 15));
+    else c = C_NEUT;
+    return 'rgb(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ')';
+  }
+
+  function el(name, attrs, parent){
+    const e = document.createElementNS(NSVG, name);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  }
+
+  // --- age arc: a measurement instrument. The centre tick is the user's
+  // chronological age; the scale shows absolute ages; only the gap between
+  // the baseline and the organ age takes colour.
+  const CHRONO = 40; // demo user's chronological age
+  const arcASvg = document.getElementById('arcA');
+  const AG = { cx: 220, cy: 354, R: 340, amax: Math.asin(204 / 340) };
+  // symmetric scale: -15..+15 years, so the chronological age sits dead centre
+  function ptA(v, r){
+    const a = -AG.amax + 2 * AG.amax * ((v + 15) / 30);
+    r = r || AG.R;
+    return [AG.cx + r * Math.sin(a), AG.cy - r * Math.cos(a)];
+  }
+  let indA;
+  const tickEls = [];
+  (function buildArcA(){
+    // soft blur on the outer ticks so the scale dissolves at both ends
+    const defs = el('defs', {}, arcASvg);
+    const f1 = el('filter', { id: 'tb1', x: '-60%', y: '-60%', width: '220%', height: '220%' }, defs);
+    el('feGaussianBlur', { stdDeviation: 0.8 }, f1);
+    const f2 = el('filter', { id: 'tb2', x: '-80%', y: '-80%', width: '260%', height: '260%' }, defs);
+    el('feGaussianBlur', { stdDeviation: 1.8 }, f2);
+    // uniform bar ticks, no track line: the instrument IS the ticks.
+    // Half-year increments, all the same height; inactive ticks fade toward the ends.
+    for (let v = -15; v <= 15; v += 0.5){
+      const whole = Number.isInteger(v);
+      const age = CHRONO + v;
+      const zero = v === 0;
+      const major = whole && age % 5 === 0;
+      const len = 13;
+      const a = ptA(v, AG.R), b = ptA(v, AG.R - len);
+      const rel = Math.abs(v) / 15; // 0 centre, 1 ends
+      const baseOp = Math.max(0.02, 0.03 + 0.26 * (1 - Math.pow(rel, 1.4)));
+      const line = el('line', {
+        x1: a[0], y1: a[1], x2: b[0], y2: b[1],
+        stroke: '#c49b93',
+        'stroke-width': 1.1, 'stroke-linecap': 'round',
+        opacity: baseOp,
+      }, arcASvg);
+      tickEls.push({ v, line, zero, baseOp });
+      if (major && Math.abs(age - CHRONO) < 15){
+        const p = ptA(v, AG.R - 30);
+        const t = el('text', {
+          x: p[0], y: p[1], 'text-anchor': 'middle',
+          'font-size': zero ? 11 : 9, 'font-weight': zero ? 500 : 400,
+          fill: zero ? '#f2e5e0' : '#c49b93', opacity: zero ? 0.95 : 0.42, 'font-family': 'inherit',
+        }, arcASvg);
+        t.textContent = age;
+      }
+    }
+    // indicator rides just outside the ticks, like a gauge needle head
+    indA = el('circle', { r: 4, fill: ageColor(arcNow) }, arcASvg);
+  })();
+
+  // per-digit odometer: every digit is its own wheel with an unwrapped
+  // continuous value, so 8→4 downward visibly travels 8→7→6→5→4 rather
+  // than crossfading. Each wheel gets slightly different damping and a
+  // small stagger per transition; re-selecting mid-roll extends the
+  // wheel's target instead of restarting, so interrupts never jump.
+  const ageBigEl = document.getElementById('ageBig');
+  let ageCols = [];
+  function buildAgeCols(str){
+    ageBigEl.innerHTML = '';
+    ageCols = str.split('').map(d => {
+      const col = document.createElement('span');
+      col.className = 'dcol';
+      const spans = [];
+      for (let j = 0; j < 5; j++){
+        const s = document.createElement('span');
+        s.className = 'dg';
+        col.appendChild(s); spans.push(s);
+      }
+      ageBigEl.appendChild(col);
+      return { spans, cur: +d, target: +d, k: 0.11, readyAt: 0 };
+    });
+  }
+  buildAgeCols(String(CHRONO + PILL[0].delta));
+  function setAge(age, dir){
+    if (!dir) dir = 1;
+    const str = String(age);
+    if (str.length !== ageCols.length){ buildAgeCols(str); return; }
+    const now = performance.now();
+    for (let i = 0; i < ageCols.length; i++){
+      const c = ageCols[i], t = +str[i];
+      // unwrapped target ≡ digit (mod 10), reached travelling in dir —
+      // extending the previous target keeps interrupted rolls continuous
+      const m = (((t - c.target) % 10) + 10) % 10;
+      const prev = c.target;
+      c.target = dir > 0 ? c.target + m : c.target - ((10 - m) % 10);
+      if (c.target !== prev){
+        c.k = 0.095 + Math.random() * 0.045;           // ~450-700ms settle
+        if (Math.abs(prev - c.cur) < 0.01)             // stagger only from rest,
+          c.readyAt = now + i * 30 + Math.random() * 25; // never pause a live wheel
+      }
+    }
+  }
+
+  // biomarker annotation: connector line draws out from the organ, then the
+  // count resolves from a blur. Placement is art-directed per organ.
+  const noteEl = document.getElementById('note');
+  const noteTxt = document.getElementById('noteTxt');
+  const notePath = document.getElementById('notePath');
+  // connector anchor in organ-radius units + which side the callout extends
+  const NOTE_POS = [
+    { side: 'r', ax:  0.60, ay: -0.72 }, // brain
+    { side: 'r', ax:  0.52, ay: -0.40 }, // nerves
+    { side: 'r', ax:  0.66, ay: -0.62 }, // lungs
+    { side: 'l', ax: -0.72, ay: -0.30 }, // heart
+    { side: 'l', ax: -0.60, ay: -0.62 }, // cells
+    { side: 'r', ax:  0.52, ay: -0.62 }, // bone
+    { side: 'r', ax:  0.92, ay: -0.38 }, // gut
+    { side: 'r', ax:  0.62, ay: -0.55 }, // liver
+    { side: 'l', ax: -0.62, ay: -0.58 }, // kidneys
+  ];
+  const noteTypeTxt = document.getElementById('noteTypeTxt');
+  const noteCursor = document.getElementById('noteCursor');
+  const noteTxt2 = document.getElementById('noteTxt2');
+  const noteTypeTxt2 = document.getElementById('noteTypeTxt2');
+  const noteCursor2 = document.getElementById('noteCursor2');
+  let noteT1 = 0, noteT2 = 0, typeIv = 0, blinkIv = 0;
+  // square-cursor reveal: the chip starts as a filled square, then types on
+  let noteTimers = [];
+  function clearNoteTimers(){ noteTimers.forEach(t => clearInterval(t)); noteTimers = []; }
+  // generic square-cursor typer; cursor fades (keeps width) when done
+  function typeInto(txtEl, curEl, str, done){
+    txtEl.textContent = '';
+    curEl.style.opacity = 1;
+    let i = 0;
+    const iv = setInterval(() => {
+      i++;
+      txtEl.textContent = str.slice(0, i);
+      if (i >= str.length){
+        clearInterval(iv);
+        let b = 0;
+        const bl = setInterval(() => {
+          b++;
+          curEl.style.opacity = b % 2 ? 0 : 1;
+          if (b >= 4){ clearInterval(bl); curEl.style.opacity = 0; if (done) done(); }
+        }, 180);
+        noteTimers.push(bl);
+      }
+    }, 34);
+    noteTimers.push(iv);
+  }
+  function typeNote(str, outStr){
+    clearNoteTimers();
+    noteCursor2.style.opacity = 0;
+    typeInto(noteTypeTxt, noteCursor, str, () => {
+      if (outStr) typeInto(noteTypeTxt2, noteCursor2, outStr);
+    });
+  }
+  function revealNote(){
+    if (!W || !H){ noteT1 = setTimeout(revealNote, 500); return; } // wait for a real viewport
+    const conf = NOTE_POS[current];
+    const n = version === 0 ? CARDS[current].bio : PILL[pillCurrent].bio;
+    const phrase = n + ' biomarkers tested';
+    const R = 0.265 * effDim;
+    const bottomUI = version === 0 ? carousel : pillui;
+    const topHn = version === 2 ? 0 : (document.querySelector('.topbar').offsetHeight || 0);
+    const ocx = canvOX + W / 2;
+    const ocy = canvOY + H / 2 - ((bottomUI.offsetHeight || 0) - topHn) / 2 + (version === 1 ? 80 : 0);
+    const x = ocx + conf.ax * R, y = ocy + conf.ay * R;
+    // single inclined connector, standing off the organ by a 24px safe gap
+    const GAP = 24 * 0.7071;
+    if (version === 2){
+      // in situ: a fixed dashboard label inside the card, no connector line
+      notePath.style.display = 'none';
+      noteEl.style.left = (canvOX + 26) + 'px';
+      noteEl.style.top = (canvOY + H * 0.42) + 'px';
+      noteTxt.style.left = '0px';
+      noteTxt.style.right = 'auto';
+    } else if (conf.side === 'r'){
+      notePath.style.display = '';
+      notePath.setAttribute('d', 'M 4 56 L 44 16');
+      noteEl.style.left = (x + GAP - 4) + 'px';
+      noteTxt.style.left = '52px';
+      noteTxt.style.right = 'auto';
+    } else {
+      notePath.style.display = '';
+      notePath.setAttribute('d', 'M 116 56 L 76 16');
+      noteEl.style.left = (x - GAP - 116) + 'px';
+      noteTxt.style.left = 'auto';
+      noteTxt.style.right = '68px';
+    }
+    // optional second line: outdated biomarker count in orange
+    const outN = version === 0 ? CARDS[current].bioOut : PILL[pillCurrent].bioOut;
+    const outStr = outN ? outN + ' outdated' : '';
+    noteTxt2.style.opacity = 1; // container stays visible; text types in later
+    if (outStr){
+      // reserve the final width so the second line also types left-to-right
+      noteCursor2.style.opacity = 1;
+      noteTypeTxt2.textContent = outStr;
+      noteTxt2.style.width = 'auto';
+      noteTxt2.style.width = noteTxt2.offsetWidth + 'px';
+    } else {
+      noteTxt2.style.width = 'auto';
+    }
+    noteTypeTxt2.textContent = '';
+    noteCursor2.style.opacity = 0;
+    noteTxt.style.bottom = outN ? '88px' : '70px';
+    if (version === 2 || conf.side === 'r'){
+      noteTxt2.style.left = version === 2 ? '0px' : '52px'; noteTxt2.style.right = 'auto';
+    } else {
+      noteTxt2.style.left = 'auto'; noteTxt2.style.right = '68px';
+    }
+    // reserve the final width up-front so text always types left-to-right,
+    // even when the chip is anchored on its right edge
+    noteCursor.style.opacity = 1;
+    noteTypeTxt.textContent = phrase;
+    noteTxt.style.width = 'auto';
+    const chipW = noteTxt.offsetWidth;
+    noteTxt.style.width = chipW + 'px';
+    noteTypeTxt.textContent = '';
+    if (version === 2){
+      // stay inside the dashboard card
+      const lNow = parseFloat(noteEl.style.left);
+      noteEl.style.left = Math.min(Math.max(lNow, canvOX + 10), canvOX + W - 200) + 'px';
+    }
+    if (version !== 2) noteEl.style.top = Math.max(68, y - GAP - 56) + 'px';
+    // stage 1: the line draws outward from the organ
+    const L = notePath.getTotalLength();
+    notePath.style.transition = 'none';
+    notePath.style.strokeDasharray = L;
+    notePath.style.strokeDashoffset = L;
+    // stage 2 prep: chip hidden until the line lands
+    noteTxt.style.opacity = 0;
+    noteTypeTxt.textContent = '';
+    noteEl.style.opacity = 1;
+    clearTimeout(noteT2);
+    noteT2 = setTimeout(() => {
+      notePath.style.transition = 'stroke-dashoffset 450ms cubic-bezier(.4,0,.2,1)';
+      notePath.style.strokeDashoffset = 0;
+      noteT2 = setTimeout(() => {
+        noteTxt.style.opacity = 1; // the empty chip reads as a solid square...
+        typeNote(phrase, outStr);  // ...then both lines type on behind the cursor
+      }, 340);
+    }, 30);
+  }
+  function noteSwap(){
+    clearTimeout(noteT1);
+    clearTimeout(noteT2);
+    noteEl.style.opacity = 0;
+    noteT1 = setTimeout(revealNote, DUR * 0.8);
+  }
+  noteT1 = setTimeout(revealNote, 1600); // first reveal once the opening gather settles
+
+  function updateStatus(d){
+    const n = Math.abs(d.delta);
+    statusWord.textContent = d.delta === 0
+      ? (version >= 2 ? 'On par with your age' : 'Matches your current age')
+      : version >= 2
+        ? n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older')
+        : n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older') + ' than your current age';
+  }
+
+  const pillsWrap = document.getElementById('pills');
+  const pillBtns = PILL.map((d, i) => {
+    const b = document.createElement('button');
+    b.className = 'pill';
+    b.setAttribute('aria-pressed', String(i === 0));
+    const dotCol = d.delta < 0 ? '#8fae7e' : d.delta > 0 ? '#d9895b' : '#b59a93';
+    b.innerHTML = '<span class="dot" style="background:' + dotCol + '"></span>' + d.label;
+    b.addEventListener('click', () => { lastManual = performance.now(); selectPill(i); });
+    b.addEventListener('pointerenter', () => { hoverBoost = 1; });
+    b.addEventListener('pointerleave', () => { hoverBoost = 0; });
+    pillsWrap.appendChild(b);
+    return b;
+  });
+  updateStatus(PILL[0]);
+
+  const situOrgan = document.getElementById('situOrgan');
+
+  // in-situ organ-age list: every area with its age, active row highlighted
+  const olistEl = document.getElementById('olist');
+  const olistRows = PILL.map((d, i) => {
+    const r = document.createElement('div');
+    r.className = 'or' + (i === 0 ? ' on' : '');
+    const dotCol = d.delta < 0 ? '#8fae7e' : d.delta > 0 ? '#d9895b' : '#b59a93';
+    r.innerHTML = '<span class="dot" style="background:' + dotCol + '"></span>' +
+      '<span class="nm">' + d.label + ' health</span>' +
+      '<span class="ag">' + (CHRONO + d.delta) + '</span>';
+    r.addEventListener('click', () => { lastManual = performance.now(); selectPill(i); });
+    olistEl.appendChild(r);
+    return r;
+  });
+
+  function selectPill(i){
+    const bPrev = pillCurrent;
+    pillCurrent = i;
+    // bento mini card: carousel-style slide direction + title crossfade
+    if (version === 6) bxT = i; // the mini carousel glides to the selection
+    pillBtns.forEach((p, j) => p.setAttribute('aria-pressed', String(j === i)));
+    olistRows.forEach((r, j) => r.classList.toggle('on', j === i));
+    situOrgan.textContent = PILL[i].label;
+    // mobile organ name crossfades to the new label
+    const mn = document.getElementById('mOrgName');
+    mn.style.opacity = 0;
+    clearTimeout(mNameT);
+    mNameT = setTimeout(() => { mn.textContent = PILL[i].label; mn.style.opacity = 1; }, 220);
+    mbDots.forEach((s2, j) => s2.classList.toggle('on', j === i));
+    const d = PILL[i];
+    const dir = Math.sign(d.delta - arcTo) || 0;
+    // the indicator travels from wherever it is now — never resets to zero
+    arcFrom = arcNow;
+    arcTo = d.delta;
+    arcStart = performance.now();
+    // sequenced: the arc sweeps first, the wheels start rolling as it lands
+    clearTimeout(ageT);
+    ageT = setTimeout(() => setAge(CHRONO + d.delta, dir), DUR * 0.75);
+    setOrgan(d.organIdx);
+    statusEl.style.opacity = 0;
+    clearTimeout(statusT);
+    statusT = setTimeout(() => { updateStatus(d); statusEl.style.opacity = 1; }, 220);
+    noteSwap(); // always re-place the annotation, even when the organ is unchanged
+  }
+
+  // ---------- tweak panel ----------
+  document.body.classList.add('m0');
+  const versionSel = document.getElementById('versionSel');
+  MODES.forEach((v, i) => {
+    const o = document.createElement('option');
+    o.value = String(i);
+    o.textContent = v.name;
+    versionSel.appendChild(o);
+  });
+  versionSel.value = String(version);
+  versionSel.addEventListener('change', () => setMode(+versionSel.value));
+  function setMode(m){
+    version = m;
+    DUR = reduced ? 300 : MODES[m].dur;
+    document.body.className = 'm' + m + (lightOn ? ' light' : '') + (blackOn ? ' black' : '');
+    // mobile embeds the canvas + gauge stack inside the carousel's organ
+    // card, so the phone's own scrolling and swiping clip them naturally
+    if (m === 6){
+      document.getElementById('mbSlot').appendChild(canvas);
+      bx = bxT = pillCurrent; // carousel enters on the active organ
+    } else if (m === 3){
+      document.getElementById('mSlot').appendChild(canvas);
+      // stack: visual, arc, then [arrows around age + name + caption]
+      document.getElementById('mGauge').appendChild(document.getElementById('arcA'));
+      const mac = document.querySelector('.mAgeCol');
+      mac.insertBefore(document.getElementById('ageBig'), document.getElementById('mOrgName'));
+      mac.appendChild(document.getElementById('status'));
+      // always enter the carousel on the first card
+      const mc = document.getElementById('mCar');
+      mc.scrollLeft = 0;
+      setTimeout(() => { mc.scrollLeft = 0; }, 120);
+    } else {
+      if (canvas.parentNode !== document.body)
+        document.body.insertBefore(canvas, document.querySelector('.topbar'));
+      if (pillui.parentNode !== document.body) document.body.appendChild(pillui);
+      // restore the gauge stack's original order inside the pill UI
+      const pl = document.getElementById('pills');
+      pillui.insertBefore(document.getElementById('ageBig'), pl);
+      pillui.insertBefore(document.getElementById('status'), pl);
+      pillui.insertBefore(document.getElementById('arcA'), pl);
+    }
+    // the organ cards are a touch lighter than the full-bleed burgundy;
+    // card flip clears transparent so organs float above the frosted cards
+    if (m === 4) gl.clearColor(0, 0, 0, 0);
+    else if (m === 2 || m === 3 || m === 6) gl.clearColor(0.20, 0.067, 0.063, 1);
+    else gl.clearColor(0.141, 0.035, 0.031, 1);
+    if (m === 4) spTarget = pillCurrent; // card flip picks up the active organ
+    versionSel.value = String(m);
+    resize(); // re-measures the bottom UI
+    // let the new layout settle before measuring positions for the sync
+    if (m > 0) setTimeout(() => { resize(); selectPill(pillCurrent); }, 60);
+    else noteSwap(); // re-place the annotation for the card layout
+  }
+  let lastManual = -1e9;
+  let lastCycle = performance.now();
+  const CYCLE = 5000, MANUAL_HOLD = 14000;
+
+  // ---------- pointer parallax ----------
+  const look = { x: 0, y: 0, tx: 0, ty: 0 };
+  addEventListener('pointermove', e => {
+    look.tx = (e.clientX / innerWidth - 0.5);
+    look.ty = (e.clientY / innerHeight - 0.5);
+  });
+
+  // ---------- resize ----------
+  let W = 0, H = 0, dpr = 1, effDim = 700, canvOX = 0, canvOY = 0;
+  function resize(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    // the dashboard starts exactly where the bar ends — no background sliver
+    const tbH = document.querySelector('.topbar').offsetHeight || 0;
+    document.querySelector('.dash').style.top = tbH + 'px';
+    document.querySelector('.dash .side').style.top = tbH + 'px';
+    document.getElementById('grid').style.top = tbH + 'px';
+    if (version === 2){
+      // in situ: the canvas becomes the dashboard's organ card
+      const slot = document.getElementById('organSlot').getBoundingClientRect();
+      // organ + gauge + age on the card's left; the organ-age list on the right
+      // organ-age list on the card's left; organ + gauge + age on the right
+      const listW = Math.min(390, slot.width * 0.54);
+      canvOX = slot.left + listW; canvOY = slot.top;
+      W = Math.max(220, slot.width - listW); H = Math.max(220, slot.height);
+      canvas.style.left = canvOX + 'px'; canvas.style.top = slot.top + 'px';
+      pillui.style.left = canvOX + 'px';
+      pillui.style.top = (slot.bottom - 208) + 'px';
+      pillui.style.width = W + 'px';
+      pillui.style.right = 'auto'; pillui.style.bottom = 'auto';
+      const st = document.getElementById('situTitle');
+      st.style.right = 'auto';
+      st.style.left = (slot.left + 24) + 'px';
+      st.style.top = (slot.top + 24) + 'px';
+    } else if (version === 6){
+      // bento: canvas fills the mini organ card
+      const r = document.getElementById('mbSlot').getBoundingClientRect();
+      canvOX = r.left; canvOY = r.top;
+      W = Math.max(120, Math.round(r.width)); H = Math.max(120, Math.round(r.height));
+      canvas.style.left = '0'; canvas.style.top = '0';
+      pillui.style.left = ''; pillui.style.top = '';
+      pillui.style.width = ''; pillui.style.right = ''; pillui.style.bottom = '';
+    } else if (version === 3){
+      // mobile: canvas lives inside the organ card's slot; the DOM moves it
+      const r = document.getElementById('mSlot').getBoundingClientRect();
+      canvOX = r.left; canvOY = r.top;
+      W = Math.max(180, Math.round(r.width)); H = Math.max(140, Math.round(r.height));
+      canvas.style.left = '0'; canvas.style.top = '0';
+      pillui.style.left = ''; pillui.style.top = '';
+      pillui.style.width = ''; pillui.style.right = ''; pillui.style.bottom = '';
+    } else {
+      canvOX = 0; canvOY = 0;
+      W = innerWidth; H = innerHeight;
+      canvas.style.left = '0'; canvas.style.top = '0';
+      pillui.style.left = '0'; pillui.style.top = 'auto';
+      pillui.style.width = 'auto'; pillui.style.right = '0'; pillui.style.bottom = '0';
+    }
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    // the organ scales with the height actually available between the top bar
+    // and the bottom UI, so it always fits regardless of the stack's size
+    const bottomUI = version === 0 ? carousel : pillui;
+    const topH = version >= 2 ? 0 : (document.querySelector('.topbar').offsetHeight || 0);
+    // mobile: the gauge stack sits below the slot, not over it
+    const botH = (version === 3 || version === 6) ? 0 : (bottomUI.offsetHeight || 0);
+    effDim = Math.min(W, Math.max(220, H - topH - botH));
+    gl.uniform2f(U.uView, 0.78 * effDim / W, 0.78 * effDim / H);
+    gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700));
+    // pill mode: organ sits 80px lower for breathing room under the top bar
+    gl.uniform1f(U.uYOff, (botH - topH - (version === 1 ? 96 : version === 3 ? 26 : version === 6 ? 40 : 0)) / H);
+  }
+  addEventListener('resize', resize);
+  resize();
+  // in-situ: keep the fixed overlays glued to the organ card while scrolling
+  function situFollow(){
+    if (version !== 2) return;
+    const slot = document.getElementById('organSlot').getBoundingClientRect();
+    const listW = Math.min(390, slot.width * 0.54);
+    canvOX = slot.left + listW; canvOY = slot.top;
+    canvas.style.left = canvOX + 'px'; canvas.style.top = slot.top + 'px';
+    pillui.style.left = canvOX + 'px';
+    pillui.style.top = (slot.bottom - 208) + 'px';
+    const st = document.getElementById('situTitle');
+    st.style.left = (slot.left + 24) + 'px';
+    st.style.top = (slot.top + 24) + 'px';
+  }
+  document.querySelector('.dash').addEventListener('scroll',
+    () => requestAnimationFrame(situFollow), { passive: true });
+  // mobile: pagination dots and card fades track the carousel continuously —
+  // the inactive card sits dimmed and fades up as it becomes active
+  const mCar = document.getElementById('mCar');
+  const mDots = document.getElementById('mDots').children;
+  function mCarUpdate(){
+    const max = Math.max(1, mCar.scrollWidth - mCar.clientWidth);
+    const p = Math.min(1, Math.max(0, mCar.scrollLeft / max));
+    mDots[0].style.width = (18 - 12 * p) + 'px';
+    mDots[0].style.opacity = (1 - 0.68 * p).toFixed(3);
+    mDots[1].style.width = (6 + 12 * p) + 'px';
+    mDots[1].style.opacity = (0.32 + 0.68 * p).toFixed(3);
+    mCar.children[0].style.opacity = (1 - 0.62 * p).toFixed(3);
+    mCar.children[1].style.opacity = (0.38 + 0.62 * p).toFixed(3);
+  }
+  mCarUpdate();
+  // organ switcher arrows on the mobile card
+  document.getElementById('mPrev').addEventListener('click', () => {
+    lastManual = performance.now();
+    selectPill((pillCurrent + PILL.length - 1) % PILL.length);
+  });
+  document.getElementById('mNext').addEventListener('click', () => {
+    lastManual = performance.now();
+    selectPill((pillCurrent + 1) % PILL.length);
+  });
+  // ---------- spatial cover-flow ----------
+  const spWrap = document.getElementById('spatial');
+  const spCards = PILL.map(d => {
+    const el = document.createElement('div');
+    el.className = 'spCard';
+    const n = Math.abs(d.delta);
+    const diff = d.delta === 0 ? 'On par with your age'
+      : n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older');
+    const dc = d.delta < 0 ? '#8fae7e' : d.delta > 0 ? '#d9895b' : 'rgba(242,229,224,.55)';
+    el.innerHTML = '<div class="nm">' + d.label + '</div>' +
+      '<div class="spBot"><div class="num">' + (CHRONO + d.delta) + '</div>' +
+      '<div class="diff" style="color:' + dc + '">' + diff + '</div></div>';
+    spWrap.appendChild(el);
+    return el;
+  });
+  let spX = 0, spTarget = 0, spDrag = null, spVel = 0;
+  const spSpacing = () => innerWidth < 640 ? innerWidth * 0.52 : Math.min(250, innerWidth * 0.21);
+  spWrap.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    spDrag = { px: e.clientX, x: spX, lt: performance.now() };
+    spVel = 0;
+    lastManual = performance.now();
+  });
+  addEventListener('pointermove', e => {
+    if (!spDrag) return;
+    // the strip follows the pointer directly; springs only on release
+    const nx = spDrag.x - (e.clientX - spDrag.px) / spSpacing();
+    const now = performance.now();
+    const dt = Math.max(1, now - spDrag.lt);
+    spVel = 0.7 * spVel + 0.3 * ((nx - spX) / dt);
+    spDrag.lt = now;
+    spX = Math.max(-0.35, Math.min(PILL.length - 0.65, nx));
+  });
+  addEventListener('pointerup', () => {
+    if (!spDrag) return;
+    spDrag = null;
+    // inertia: a velocity fling carries into the target choice
+    spTarget = Math.max(0, Math.min(PILL.length - 1, Math.round(spX + spVel * 260)));
+    pillCurrent = spTarget;
+  });
+  function spatialFrame(t){
+    uPnow = 1;
+    if (!spDrag){
+      spX += (spTarget - spX) * 0.085;             // soft settle spring
+      if (Math.abs(spTarget - spX) < 0.0004) spX = spTarget;
+    }
+    const act = Math.max(0, Math.min(PILL.length - 1, Math.round(spX)));
+    current = PILL[act].organIdx;                   // flow follows the centre card
+    const mob = innerWidth < 640;
+    const cw = mob ? innerWidth * 0.74 : Math.min(340, innerWidth * 0.32);
+    const ch = mob ? Math.min(innerHeight * 0.62, cw * 1.42) : Math.min(470, innerHeight * 0.72);
+    const SPX = spSpacing();
+    const PERSP = 1100, VIS = mob ? 1.9 : 2.6;
+    gl.uniform1f(U.uP, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    // farthest cards first so nearer organs draw over them
+    const order = [];
+    for (let i = 0; i < PILL.length; i++){
+      const d = i - spX, ad = Math.abs(d);
+      if (ad > VIS){ spCards[i].style.display = 'none'; continue; }
+      order.push([ad, i, d]);
+    }
+    order.sort((a, b) => b[0] - a[0]);
+    for (const [ad, i, d] of order){
+      const el = spCards[i];
+      const zpx = -ad * 60;
+      const p = PERSP / (PERSP - zpx);
+      const xpx = Math.sign(d) * Math.pow(ad, 0.92) * SPX;
+      // reference motion: cards swing hard on their own axis — near
+      // edge-on at the sides, flat at centre, turning as they travel
+      const scale = 1 / (1 + 0.1 * ad);
+      const rot = Math.max(-78, Math.min(78, -d * 55));
+      // fade steps: 1 centred, .25 beside the active card, .125 at the edges
+      const op = ad <= 1 ? 1 - 0.75 * ad : Math.max(0.125, 0.25 - 0.125 * (ad - 1));
+      const blur = Math.min(9, 10 * Math.max(0, ad - 0.12));
+      el.style.display = 'flex';
+      el.style.width = cw + 'px'; el.style.height = ch + 'px';
+      el.style.margin = (-ch / 2) + 'px 0 0 ' + (-cw / 2) + 'px';
+      el.style.transform = 'translate3d(' + xpx.toFixed(1) + 'px,0,' + zpx.toFixed(1) +
+        'px) rotateY(' + rot.toFixed(2) + 'deg) scale(' + scale.toFixed(4) + ')';
+      el.style.opacity = op.toFixed(3);
+      el.style.filter = blur > 0.2 ? 'blur(' + blur.toFixed(1) + 'px)' : 'none';
+      el.style.zIndex = String(60 - Math.round(ad * 10));
+      // the organ floats over its card, turning on the same axis
+      const org = ORGANS[PILL[i].organIdx];
+      const effX = xpx * p, effS = scale * p;
+      const bright = op; // organs fade in step with their cards
+      const ry = rot * Math.PI / 180;
+      const cyr = Math.cos(ry), syr = Math.sin(ry);
+      gl.uniformMatrix3fv(U.uRot, false, [cyr, 0, -syr, 0, 1, 0, syr, 0, cyr]);
+      gl.uniform2f(U.uPan, effX * 2 / W, (ch * 0.055 * effS) * 2 / H);
+      gl.uniform1f(U.uAlpha, bright);
+      gl.uniform1f(U.uZoom, (cw / effDim) * 0.62 / org.r * effS);
+      gl.uniform1f(U.uWarm,
+        (PILL[i].delta > 0 ? 1 : PILL[i].delta < 0 ? -1 : 0) *
+        Math.min(1, Math.abs(PILL[i].delta) / 7) * bright);
+      gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul * (0.7 + 0.3 * effS));
+      bindCloud(PILL[i].organIdx);
+      gl.drawArrays(gl.POINTS, 0, N);
+      // the flow layer lives in the main buffers; it rides the centre card
+      if (PILL[i].organIdx === current && ad < 0.6 && flowVis > 0.015){
+        bindCloud(-1);
+        gl.drawArrays(gl.POINTS, FSTART, FLOWN);
+      }
+    }
+    bindCloud(-1);
+    gl.uniform2f(U.uPan, 0, 0);
+    gl.uniform1f(U.uAlpha, 1);
+  }
+
+  // ---------- outlined organ grid ----------
+  const gridWrap = document.getElementById('grid');
+  const gridCells = PILL.map((d, i) => {
+    const el = document.createElement('div');
+    el.className = 'gCell';
+    const n = Math.abs(d.delta);
+    const diff = d.delta === 0 ? 'On par'
+      : n + ' yr' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older');
+    const dc = d.delta < 0 ? '#8fae7e' : d.delta > 0 ? '#d9895b' : 'rgba(242,229,224,.55)';
+    el.innerHTML = '<div class="nm">' + d.label + '</div>' +
+      '<div class="bot"><span class="num">' + (CHRONO + d.delta) + '</span>' +
+      '<span class="diff" style="color:' + dc + '">' + diff + '</span></div>';
+    gridWrap.appendChild(el);
+    return el;
+  });
+  // bento mini organ card: tiny dots, internal swipe, tap opens the full view
+  const mbDotsEl = document.getElementById('mbDots');
+  const mbDots = PILL.map((d, i) => {
+    const el = document.createElement('i');
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      lastManual = performance.now();
+      selectPill(i);
+    });
+    mbDotsEl.appendChild(el);
+    return el;
+  });
+  const mOrgCard = document.getElementById('mOrgCard');
+  // each organ is a complete slide: title + age + visual travel together
+  const mbTrackEl = document.getElementById('mbTrack');
+  const mbItems = PILL.map(d => {
+    const el = document.createElement('div');
+    el.className = 'mbItem';
+    el.innerHTML = '<span class="lbl">' + (CHRONO + d.delta) + ' years old</span>' +
+      '<span class="big">' + d.label + '</span>';
+    mbTrackEl.appendChild(el);
+    return el;
+  });
+
+  // native-feeling internal carousel: a continuous track position in slide
+  // units; slides track the finger 1:1, neighbours enter from the sides,
+  // 50% + velocity decides the snap, edges rubber-band
+  let bx = 0, bxT = 0, bxDrag = null, bxV = 0;
+  function bentoFrame(t){
+    uPnow = 1;
+    gl.uniform1f(U.uP, 1);
+    if (!bxDrag){
+      bx += (bxT - bx) * 0.16;                 // magnetic settle, ~350ms
+      if (Math.abs(bxT - bx) < 0.002) bx = bxT;
+    }
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    const items = mbItems;
+    const cw = Math.max(1, mOrgCard.offsetWidth);
+    for (let k = 0; k < PILL.length; k++){
+      const d = k - bx;
+      const vis = Math.abs(d) <= 1.2;
+      // slide content: moves and crossfades 1:1 with swipe progress
+      const el = items[k];
+      if (!vis){ el.style.display = 'none'; }
+      else {
+        el.style.display = '';
+        el.style.transform = 'translateX(' + (d * cw).toFixed(1) + 'px)';
+        el.style.opacity = Math.max(0, 1 - Math.abs(d)).toFixed(3);
+      }
+      if (!vis) continue;
+      gl.uniform2f(U.uPan, d * 2.05, 0);
+      gl.uniform1f(U.uAlpha, Math.max(0, 1 - Math.abs(d)));
+      gl.uniform1f(U.uWarm,
+        (PILL[k].delta > 0 ? 1 : PILL[k].delta < 0 ? -1 : 0) *
+        Math.min(1, Math.abs(PILL[k].delta) / 7));
+      bindCloud(PILL[k].organIdx);
+      gl.drawArrays(gl.POINTS, 0, N);
+    }
+    bindCloud(-1);
+    gl.uniform2f(U.uPan, 0, 0);
+  }
+  mOrgCard.addEventListener('pointerdown', e => {
+    bxDrag = { x: e.clientX, y: e.clientY, bx0: bx, s0: Math.round(bxT),
+               lt: performance.now(), horiz: null, pid: e.pointerId };
+    bxV = 0;
+  });
+  mOrgCard.addEventListener('pointermove', e => {
+    if (!bxDrag) return;
+    const dx = e.clientX - bxDrag.x, dy = e.clientY - bxDrag.y;
+    if (bxDrag.horiz === null){
+      // horizontal intent drives the carousel; vertical stays native scroll
+      if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy)){
+        bxDrag.horiz = true;
+        try { mOrgCard.setPointerCapture(bxDrag.pid); } catch (err) {}
+      } else if (Math.abs(dy) > 10){ bxDrag = null; return; }
+      else return;
+    }
+    const w = Math.max(1, mOrgCard.offsetWidth);
+    let nx = bxDrag.bx0 - dx / w;              // 1:1 with the finger
+    // rubber-band past the ends — never expose empty space
+    if (nx < 0) nx = nx * 0.28;
+    if (nx > PILL.length - 1) nx = (PILL.length - 1) + (nx - (PILL.length - 1)) * 0.28;
+    const now = performance.now();
+    bxV = 0.7 * bxV + 0.3 * ((nx - bx) / Math.max(1, now - bxDrag.lt));
+    bxDrag.lt = now;
+    bx = nx;
+  });
+  mOrgCard.addEventListener('pointerup', e => {
+    if (!bxDrag) return;
+    const d = bxDrag; bxDrag = null;
+    if (e.target.closest('.mbDots')) return;
+    if (d.horiz === null){
+      sheetL.open(pillCurrent); // plain tap: expand into the organ-age sheet
+      return;
+    }
+    lastManual = performance.now();
+    const delta = bx - d.s0;
+    let target = d.s0;
+    if (delta > 0.5) target = d.s0 + Math.ceil(delta - 0.5);
+    else if (delta < -0.5) target = d.s0 + Math.floor(delta + 0.5);
+    else if (Math.abs(bxV) > 0.0016 && Math.abs(delta) > 0.08)
+      target = d.s0 + (bxV > 0 ? 1 : -1);     // intentional flick advances
+    target = Math.max(0, Math.min(PILL.length - 1, target));
+    if (target !== pillCurrent) selectPill(target); // dots + title update on selection
+    else bxT = target;
+  });
+  // ---------- organ-age bottom sheets: one independent instance per frame,
+  // each with its own 2D particle carousel so both can be open at once ----------
+  const pts2DCache = {};
+  function pts2D(organIdx, dense){
+    const key = organIdx + (dense ? 'd' : '');
+    if (pts2DCache[key]) return pts2DCache[key];
+    const cl = clouds[organIdx];
+    const step = Math.ceil((N - AMB) / (dense ? 2600 : 560));
+    const pts = [];
+    for (let i = 0; i < N - AMB; i += step){
+      pts.push({
+        x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
+        r: 0.9 + (i % 5) * 0.26,
+        cr: (colors[i * 4] * 255) | 0, cg: (colors[i * 4 + 1] * 255) | 0, cb: (colors[i * 4 + 2] * 255) | 0,
+        a: colors[i * 4 + 3] * (0.45 + 0.55 * cl.edge[i]),
+        ph: Math.random() * 6.28, sp: 0.5 + Math.random()
+      });
+    }
+    return (pts2DCache[key] = pts);
+  }
+  function makeSheet(hostPhone){
+    const wrap = document.createElement('div');
+    wrap.className = 'shWrap';
+    wrap.innerHTML =
+      '<div class="shDim"></div>' +
+      '<div class="sheet">' +
+        '<div class="shHead">' +
+          '<div class="shSlot"></div>' +
+          '<div class="shHandle"></div>' +
+          '<button class="shClose" aria-label="Close">&#10005;</button>' +
+        '</div>' +
+        '<div class="mbDots shDots"></div>' +
+        '<div class="shBody"><h3></h3><div class="shSub"></div><p></p></div>' +
+        '<div class="shHome"></div>' +
+      '</div>';
+    hostPhone.appendChild(wrap);
+    const q = sel => wrap.querySelector(sel);
+    const head = q('.shHead'), body = q('.shBody'), sheet = q('.sheet');
+    const dots = PILL.map((d, i) => {
+      const el = document.createElement('i');
+      el.addEventListener('click', e => { e.stopPropagation(); go(i); });
+      q('.shDots').appendChild(el);
+      return el;
+    });
+    const c2 = document.createElement('canvas');
+    q('.shSlot').appendChild(c2);
+    const ctx2 = c2.getContext('2d');
+    let open = false, sx = 0, sxT = 0, sv = 0, drag = null, bodyT = 0, cur = 0;
+    function writeBody(i, instant){
+      const d = PILL[i];
+      const age = CHRONO + d.delta, nm = d.label.toLowerCase();
+      const n = Math.abs(d.delta);
+      const put = () => {
+        q('h3').textContent = 'Your ' + nm + ' age is ' + age;
+        q('.shSub').textContent = d.delta === 0
+          ? 'On par with your current age'
+          : n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older') + ' than your current age';
+        q('p').textContent = d.delta > 0
+          ? 'Your ' + nm + ' health is currently ageing slightly faster than your biological age. Focusing on the related biomarkers can help bring it back in line.'
+          : d.delta < 0
+            ? 'Your ' + nm + ' health is ageing slower than your biological age. Keep doing what you are doing \u2014 the related biomarkers are working in your favour.'
+            : 'Your ' + nm + ' health is ageing in step with your biological age.';
+      };
+      if (instant){ put(); return; }
+      clearTimeout(bodyT);
+      body.classList.add('sw');
+      bodyT = setTimeout(() => { put(); body.classList.remove('sw'); }, 210);
+    }
+    function go(i){
+      i = Math.max(0, Math.min(PILL.length - 1, i));
+      sxT = i;
+      if (i !== cur){
+        cur = i;
+        writeBody(i, false);
+        dots.forEach((el, j) => el.classList.toggle('on', j === i));
+      }
+    }
+    function draw(t){
+      if (!open) return;
+      requestAnimationFrame(draw);
+      const w = head.clientWidth, h = head.clientHeight;
+      if (!w) return;
+      if (c2.width !== w * 2){ c2.width = w * 2; c2.height = h * 2; c2.style.width = w + 'px'; c2.style.height = h + 'px'; }
+      if (!drag){
+        sx += (sxT - sx) * 0.16;
+        if (Math.abs(sxT - sx) < 0.002) sx = sxT;
+      }
+      ctx2.clearRect(0, 0, c2.width, c2.height);
+      const T = t / 1000;
+      const sc = Math.min(c2.width, c2.height) * 0.5 * (1 + 0.02 * Math.sin(T * 1.6));
+      const oy = c2.height * 0.55 + 44;
+      for (let k = 0; k < PILL.length; k++){
+        const dd = k - sx;
+        if (Math.abs(dd) > 1.2) continue;
+        const ox = c2.width / 2 + dd * c2.width;
+        const ga = Math.max(0, 1 - Math.abs(dd));
+        for (const qp of pts2D(PILL[k].organIdx, true)){
+          const jx = Math.sin(T * 0.8 * qp.sp + qp.ph) * 3.2;
+          const jy = Math.cos(T * 0.7 * qp.sp + qp.ph * 1.7) * 3.2;
+          const tw = 0.55 + 0.45 * Math.sin(T * 1.8 + qp.ph * 3);
+          ctx2.fillStyle = 'rgba(' + qp.cr + ',' + qp.cg + ',' + qp.cb + ',' + (qp.a * tw * ga).toFixed(2) + ')';
+          ctx2.beginPath();
+          ctx2.arc(ox + qp.x * sc + jx, oy - qp.y * sc + jy, qp.r * 1.05, 0, 6.2832);
+          ctx2.fill();
+        }
+        // feeding ambient: matter spiralling inward, like the engine's organs
+        for (let j = 0; j < 70; j++){
+          const u0 = (j * 0.618 + k * 0.37) % 1;
+          const cyc = ((T / 9 + u0) % 1 + 1) % 1;
+          const fall = cyc * cyc;
+          const ang = j * 2.399 + (j % 2 ? 1 : -1) * 1.3 * cyc;
+          const rr = (0.65 + ((j * 0.317) % 1) * 0.6) * (1.3 - fall);
+          const fe = Math.min(1, cyc / 0.14) * (1 - Math.min(1, Math.max(0, (cyc - 0.85) / 0.13)));
+          ctx2.fillStyle = 'rgba(220,190,180,' + (0.4 * fe * ga).toFixed(2) + ')';
+          ctx2.beginPath();
+          ctx2.arc(ox + Math.cos(ang) * rr * sc, oy + Math.sin(ang) * rr * sc * 0.85, 1.6, 0, 6.2832);
+          ctx2.fill();
+        }
+      }
+    }
+    // header gestures: horizontal carousel, vertical dismiss
+    head.addEventListener('pointerdown', e => {
+      if (e.target.closest('.shClose')) return;
+      drag = { x: e.clientX, y: e.clientY, sx0: sx, s0: Math.round(sxT),
+               lt: performance.now(), mode: null, pid: e.pointerId };
+      sv = 0;
+    });
+    head.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (drag.mode === null){
+        if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy)) drag.mode = 'h';
+        else if (dy > 10 && Math.abs(dy) > Math.abs(dx)) drag.mode = 'v';
+        else return;
+        try { head.setPointerCapture(drag.pid); } catch (err) {}
+        if (drag.mode === 'v') sheet.style.transition = 'none';
+      }
+      if (drag.mode === 'h'){
+        const w = Math.max(1, head.offsetWidth);
+        let nx = drag.sx0 - dx / w;
+        if (nx < 0) nx = nx * 0.28;
+        if (nx > PILL.length - 1) nx = (PILL.length - 1) + (nx - (PILL.length - 1)) * 0.28;
+        const now = performance.now();
+        sv = 0.7 * sv + 0.3 * ((nx - sx) / Math.max(1, now - drag.lt));
+        drag.lt = now;
+        sx = nx;
+      } else {
+        sheet.style.transform = 'translateY(' + Math.max(0, dy) + 'px)';
+      }
+    });
+    head.addEventListener('pointerup', e => {
+      if (!drag) return;
+      const d = drag; drag = null;
+      if (d.mode === 'v'){
+        sheet.style.transition = '';
+        if (e.clientY - d.y > 120) api.close();
+        else sheet.style.transform = '';
+        return;
+      }
+      if (d.mode !== 'h') return;
+      const delta = sx - d.s0;
+      let target = d.s0;
+      if (delta > 0.5) target = d.s0 + Math.ceil(delta - 0.5);
+      else if (delta < -0.5) target = d.s0 + Math.floor(delta + 0.5);
+      else if (Math.abs(sv) > 0.0016 && Math.abs(delta) > 0.08)
+        target = d.s0 + (sv > 0 ? 1 : -1);
+      go(target);
+      sxT = Math.max(0, Math.min(PILL.length - 1, target));
+    });
+    const api = {
+      open(startIdx){
+        if (open) { go(startIdx); return; }
+        open = true;
+        cur = startIdx;
+        sx = sxT = startIdx;
+        writeBody(startIdx, true);
+        dots.forEach((el, j) => el.classList.toggle('on', j === startIdx));
+        wrap.style.display = 'block';
+        requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
+        requestAnimationFrame(draw);
+      },
+      close(){
+        if (!open) return;
+        open = false;
+        wrap.classList.remove('on');
+        sheet.style.transform = '';
+        setTimeout(() => { wrap.style.display = 'none'; }, 480);
+      }
+    };
+    q('.shClose').addEventListener('click', api.close);
+    q('.shDim').addEventListener('click', api.close);
+    return api;
+  }
+  // steps / heart rate / sleep: the left bento card is its own mini carousel
+  (function(){
+    const carEl = document.getElementById('msCar');
+    if (!carEl) return;
+    const slides = [].slice.call(carEl.querySelectorAll('.msSlide'));
+    const dotsEl = document.getElementById('msDots');
+    let x = 0, tx = 0, v = 0, dr = null;
+    const dots = slides.map((sl, i) => {
+      const el = document.createElement('i');
+      el.addEventListener('click', e => { e.stopPropagation(); tx = i; setDots(i); });
+      dotsEl.appendChild(el);
+      return el;
+    });
+    function setDots(i){ dots.forEach((el, j) => el.classList.toggle('on', j === i)); }
+    setDots(0);
+    (function loop(){
+      requestAnimationFrame(loop);
+      if (!dr){ x += (tx - x) * 0.16; if (Math.abs(tx - x) < 0.002) x = tx; }
+      const w = Math.max(1, carEl.offsetWidth);
+      slides.forEach((el, k) => {
+        const d = k - x;
+        if (Math.abs(d) > 1.2){ el.style.display = 'none'; return; }
+        el.style.display = '';
+        el.style.transform = 'translateX(' + (d * w).toFixed(1) + 'px)';
+        el.style.opacity = Math.max(0, 1 - Math.abs(d)).toFixed(3);
+      });
+    })();
+    carEl.addEventListener('pointerdown', e => {
+      dr = { x: e.clientX, y: e.clientY, x0: x, s0: Math.round(tx),
+             lt: performance.now(), mode: null, pid: e.pointerId };
+      v = 0;
+    });
+    carEl.addEventListener('pointermove', e => {
+      if (!dr) return;
+      const dx = e.clientX - dr.x, dy = e.clientY - dr.y;
+      if (dr.mode === null){
+        if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy)){
+          dr.mode = 'h';
+          try { carEl.setPointerCapture(dr.pid); } catch (err) {}
+        } else if (Math.abs(dy) > 10){ dr = null; return; }
+        else return;
+      }
+      const w = Math.max(1, carEl.offsetWidth);
+      let nx = dr.x0 - dx / w;
+      if (nx < 0) nx = nx * 0.28;
+      if (nx > slides.length - 1) nx = (slides.length - 1) + (nx - (slides.length - 1)) * 0.28;
+      const now = performance.now();
+      v = 0.7 * v + 0.3 * ((nx - x) / Math.max(1, now - dr.lt));
+      dr.lt = now;
+      x = nx;
+    });
+    carEl.addEventListener('pointerup', e => {
+      if (!dr) return;
+      const d = dr; dr = null;
+      if (d.mode !== 'h') return;
+      const delta = x - d.s0;
+      let t2 = d.s0;
+      if (delta > 0.5) t2 = d.s0 + Math.ceil(delta - 0.5);
+      else if (delta < -0.5) t2 = d.s0 + Math.floor(delta + 0.5);
+      else if (Math.abs(v) > 0.0016 && Math.abs(delta) > 0.08)
+        t2 = d.s0 + (v > 0 ? 1 : -1);
+      tx = Math.max(0, Math.min(slides.length - 1, t2));
+      setDots(tx);
+    });
+  })();
+  const sheetL = makeSheet(document.getElementById('phone'));
+  const sheetR = makeSheet(document.getElementById('phone2'));
+  // overview: a live mini particle heart on its own 2D canvas
+  (function(){
+    const host = document.getElementById('ovOrgan');
+    if (!host) return;
+    const c2 = document.createElement('canvas');
+    host.appendChild(c2);
+    const ctx2 = c2.getContext('2d');
+    const pts = pts2D(3, true); // heart, engine-density
+    (function draw(t){
+      requestAnimationFrame(draw);
+      const w = host.clientWidth, h = host.clientHeight;
+      if (!w || !t) return;
+      if (c2.width !== w * 2){ c2.width = w * 2; c2.height = h * 2; c2.style.width = w + 'px'; c2.style.height = h + 'px'; }
+      ctx2.clearRect(0, 0, c2.width, c2.height);
+      const T = t / 1000;
+      const sc = Math.min(c2.width, c2.height) * 0.58 * (1 + 0.012 * Math.sin(T * 1.6));
+      const ox = c2.width / 2, oy = c2.height / 2;
+      for (const q of pts){
+        const jx = Math.sin(T * 0.8 * q.sp + q.ph) * 1.6;
+        const jy = Math.cos(T * 0.7 * q.sp + q.ph * 1.7) * 1.6;
+        const tw = 0.62 + 0.38 * Math.sin(T * 1.8 + q.ph * 3);
+        ctx2.fillStyle = 'rgba(' + q.cr + ',' + q.cg + ',' + q.cb + ',' + (q.a * tw).toFixed(2) + ')';
+        ctx2.beginPath();
+        ctx2.arc(ox + q.x * sc + jx, oy - q.y * sc + jy, q.r * 1.05, 0, 6.2832);
+        ctx2.fill();
+      }
+    })(0);
+    document.querySelector('.ovcard.red').addEventListener('click', e => {
+      if (e.target.closest('.ocx')) return; // the dismiss X never opens it
+      sheetR.open(0); // heart first
+    });
+  })();
+  // hover: cell and its organ fade together, .5 resting -> 1 hovered
+  const gHov = new Array(PILL.length).fill(0);
+  const gA = new Array(PILL.length).fill(0.32);
+  gridCells.forEach((el, i) => {
+    el.addEventListener('mouseenter', () => { gHov[i] = 1; });
+    el.addEventListener('mouseleave', () => { gHov[i] = 0; });
+  });
+  function gridFrame(t){
+    uPnow = 1;
+    gl.uniform1f(U.uP, 1);
+    // the grid is a static plate: no pointer parallax, no heartbeat pulse
+    gl.uniformMatrix3fv(U.uRot, false, [1, 0, 0, 0, 1, 0, 0, 0, 1]);
+    gl.uniform1f(U.uScale, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    for (let i = 0; i < PILL.length; i++){
+      const r = gridCells[i].getBoundingClientRect();
+      const org = ORGANS[PILL[i].organIdx];
+      const cx = r.left + r.width / 2 - W / 2;
+      const cy = H / 2 - (r.top + r.height / 2);
+      gl.uniform2f(U.uPan, cx * 2 / W, (cy + r.height * 0.05) * 2 / H);
+      gA[i] += ((gHov[i] ? 1 : 0.32) - gA[i]) * 0.038; // smooth hover fade
+      // particles accumulate brightness where they overlap, so a linear
+      // alpha reads far brighter than the text — square it to match
+      gl.uniform1f(U.uAlpha, Math.pow(gA[i], 2));
+      gl.uniform1f(U.uZoom, (Math.min(r.width, r.height) / effDim) * 0.6 / org.r);
+      gl.uniform1f(U.uWarm,
+        (PILL[i].delta > 0 ? 1 : PILL[i].delta < 0 ? -1 : 0) *
+        Math.min(1, Math.abs(PILL[i].delta) / 7) * 0.85);
+      gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul * 0.85);
+      bindCloud(PILL[i].organIdx);
+      gl.drawArrays(gl.POINTS, 0, N);
+      if (flowVis > 0.015){
+        // each cell draws only its own partition of the flow slice
+        bindCloud(-1);
+        gl.drawArrays(gl.POINTS, FSTART + PILL[i].organIdx * GFN, GFN);
+      }
+    }
+    bindCloud(-1);
+    gl.uniform2f(U.uPan, 0, 0);
+    gl.uniform1f(U.uAlpha, 1);
+  }
+
+  // snapping is done by hand: native scroll-snap kept re-snapping to a
+  // stale remembered card whenever the odometer touched layout. Touch and
+  // trackpad scroll natively and glide-snap on scroll-end; mice get a
+  // drag-to-swipe emulation with the same glide.
+  (function(){
+    const max = () => mCar.scrollWidth - mCar.clientWidth; // one-step carousel
+    let drag = null, glideId = 0, settleT = 0, gliding = false;
+    function glideTo(target){
+      cancelAnimationFrame(glideId);
+      const start = mCar.scrollLeft, d = target - start, t0 = performance.now();
+      if (Math.abs(d) < 1){ mCar.scrollLeft = target; gliding = false; return; }
+      gliding = true;
+      (function stepFn(){
+        const p = Math.min(1, (performance.now() - t0) / 420);
+        mCar.scrollLeft = start + d * (1 - Math.pow(1 - p, 3));
+        if (p < 1) glideId = requestAnimationFrame(stepFn);
+        else gliding = false;
+      })();
+    }
+    mCar.addEventListener('scroll', () => {
+      requestAnimationFrame(mCarUpdate);
+      if (drag || gliding) return;
+      // scroll-end snap for touch/trackpad momentum
+      clearTimeout(settleT);
+      settleT = setTimeout(() => {
+        if (drag || gliding) return;
+        glideTo(mCar.scrollLeft > max() / 2 ? max() : 0);
+      }, 130);
+    }, { passive: true });
+    mCar.addEventListener('pointerdown', e => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      drag = { x: e.clientX, l: mCar.scrollLeft, moved: false };
+      cancelAnimationFrame(glideId); gliding = false;
+    });
+    addEventListener('pointermove', e => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      if (Math.abs(dx) > 6) drag.moved = true;
+      if (drag.moved) mCar.scrollLeft = drag.l - dx;
+    });
+    addEventListener('pointerup', e => {
+      if (!drag) return;
+      const d = drag; drag = null;
+      if (!d.moved) return;
+      const dx = e.clientX - d.x;
+      const from = d.l > max() / 2 ? 1 : 0;
+      const to = dx < -40 ? 1 : dx > 40 ? 0 : from;
+      glideTo(to * max());
+    });
+  })();
+
+  // ---------- frame loop ----------
+  let jitter = reduced ? 0 : 1;
+  let beatBlend = 0;
+  let warmNow = 0;
+  let dens = 1, sizeMul = 1.6;
+  document.getElementById('densR').addEventListener('input', e => { dens = e.target.value / 100; });
+  document.getElementById('sizeR').addEventListener('input', e => { sizeMul = e.target.value / 100; });
+  // voxel render system: same clouds and morphs, square data cells
+  let voxOn = false, voxNow = 0;
+  const voxChip = document.getElementById('voxChip');
+  voxChip.addEventListener('click', () => {
+    voxOn = !voxOn;
+    voxChip.setAttribute('aria-pressed', String(voxOn));
+  });
+  // theme cycle: burgundy dark -> warm light -> pure black -> back
+  let themeState = 0, lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
+  const themeChip = document.getElementById('themeChip');
+  themeChip.addEventListener('click', () => {
+    themeState = (themeState + 1) % 3;
+    lightOn = themeState === 1;
+    blackOn = themeState === 2;
+    themeChip.textContent = themeState === 0 ? '\u263E' : themeState === 1 ? '\u2600' : '\u2B24';
+    themeChip.setAttribute('aria-pressed', String(themeState !== 0));
+    document.body.classList.toggle('light', lightOn);
+    document.body.classList.toggle('black', blackOn);
+    document.body.classList.add('theming');
+    clearTimeout(themingT);
+    themingT = setTimeout(() => document.body.classList.remove('theming'), 700);
+  });
+  const tickBase = () => lightOn ? '#8a6a5c' : '#c49b93';
+  let flowOn = true, flowVis = 0;
+  const flowChip = document.getElementById('flowChip');
+  flowChip.addEventListener('click', () => {
+    flowOn = !flowOn;
+    flowChip.setAttribute('aria-pressed', String(flowOn));
+  });
+  let cenX = 0, cenY = 0, orgR = ORGANS[0].r, ghostVis = 0, zoomNow = 1, situCheck = 0;
+  let camMark = -1;
+  const camFrom = { x: 0, y: 0, r: ORGANS[0].r, z: 1 };
+  let morphCA = { x: 0, y: 0 };
+  let morphCB = { x: ORGANS[0].x, y: ORGANS[0].y };
+  const rot = new Float32Array(9);
+
+  function frame(t){
+    // auto-switch every 5s in every mode; never restart a morph mid-flight
+    if (!reduced && uPnow >= 1 &&
+        t - lastCycle > CYCLE && t - lastManual > MANUAL_HOLD){
+      lastCycle = t;
+      if (version === 0) setOrgan((current + 1) % ORGANS.length);
+      else if (version === 4){
+        spTarget = (spTarget + 1) % PILL.length;
+        pillCurrent = spTarget;
+      }
+      else if (version === 5){
+        pillCurrent = (pillCurrent + 1) % PILL.length;
+        current = PILL[pillCurrent].organIdx; // the flow scans across the grid
+      }
+      else selectPill((pillCurrent + 1) % PILL.length);
+    }
+
+    uPnow = Math.min(1, (t - morphStart) / DUR);
+
+    // heartbeat when the heart is showing; slow breathing otherwise
+    const u = (t % 1100) / 1100;
+    const pump = 0.028 * Math.exp(-Math.pow(u - 0.10, 2) / 0.004)
+               + 0.016 * Math.exp(-Math.pow(u - 0.32, 2) / 0.006);
+    const breath = 0.010 * Math.sin(t * 0.0009);
+    beatBlend += ((ORGANS[current].label === 'Heart' ? 1 : 0) - beatBlend) * 0.03;
+    const scale = reduced ? 1 : 1 + beatBlend * pump + (1 - beatBlend) * breath;
+
+    // transition + hover raise the cloud's energy
+    const arcGlobal = Math.sin(Math.PI * uPnow);
+    const targetJitter = reduced ? 0 : 1 + hoverBoost * 1.6 + arcGlobal * 2.2;
+    jitter += (targetJitter - jitter) * 0.06;
+
+    // gentle yaw drift + pointer parallax, camera stays stable
+    look.x += (look.tx - look.x) * 0.04;
+    look.y += (look.ty - look.y) * 0.04;
+    const ry = look.x * 1.05;
+    const rx = -look.y * 0.7;
+    const cy_ = Math.cos(ry), sy_ = Math.sin(ry);
+    const cx_ = Math.cos(rx), sx_ = Math.sin(rx);
+    // rotY then rotX
+    rot[0] = cy_;        rot[1] = 0;    rot[2] = -sy_;
+    rot[3] = sx_ * sy_;  rot[4] = cx_;  rot[5] = sx_ * cy_;
+    rot[6] = cx_ * sy_;  rot[7] = -sx_; rot[8] = cx_ * cy_;
+
+    // signed age halo: older organs glow orange, younger ones green
+    const warmDelta = version === 0 ? CARDS[current].delta : PILL[pillCurrent].delta;
+    const warmTarget = Math.max(-1, Math.min(1, warmDelta / 6));
+    warmNow += (warmTarget - warmNow) * 0.025;
+    gl.uniform1f(U.uWarm, warmNow);
+
+    // camera rides the same S-curve timeline as the morph
+    const org = ORGANS[current];
+    if (morphStart !== camMark){
+      camMark = morphStart;
+      camFrom.x = cenX; camFrom.y = cenY; camFrom.r = orgR; camFrom.z = zoomNow;
+    }
+    const k2 = easeJS(uPnow);
+    cenX = camFrom.x + (org.x - camFrom.x) * k2;
+    cenY = camFrom.y + (org.y - camFrom.y) * k2;
+    orgR = camFrom.r + (org.r - camFrom.r) * k2;
+    zoomNow = camFrom.z + ((version === 1 ? 0.74 : version === 2 ? 0.82 : version === 3 ? 0.7 : version === 6 ? 0.69 : 0.68) / org.r - camFrom.z) * k2;
+    ghostVis += (0 - ghostVis) * 0.05; // body context retired: no ghost outline
+    gl.uniform1f(U.uEase, reduced ? 1 : MODES[version].ease);
+    gl.uniform3f(U.uCenter, cenX, cenY, 0);
+    gl.uniform2f(U.uCA, morphCA.x, morphCA.y);
+    gl.uniform2f(U.uCB, morphCB.x, morphCB.y);
+    gl.uniform1f(U.uOrgR, orgR);
+    gl.uniform1f(U.uGhost, ghostVis);
+    gl.uniform1f(U.uZoom, zoomNow);
+
+    gl.uniform1f(U.uP, uPnow);
+    gl.uniform1f(U.uTime, t * 0.001);
+    gl.uniform1f(U.uScale, scale);
+    gl.uniform1f(U.uJitter, jitter);
+    gl.uniformMatrix3fv(U.uRot, false, rot);
+
+    // in situ: self-heal card geometry (layout settles late, dashboard scrolls)
+    if (version === 2 && t - situCheck > 800){
+      situCheck = t;
+      const r = document.getElementById('organSlot').getBoundingClientRect();
+      if (Math.abs(r.left - canvOX) > 2 || Math.abs(r.width - W) > 2) resize();
+    }
+
+    // per-digit odometer roll — each wheel damps toward its own target;
+    // spans are recycled around round(cur) so the strip is endless
+    {
+      const D = (ageBigEl.offsetHeight || 100) * 0.8;
+      for (const c of ageCols){
+        if (t >= c.readyAt){
+          c.cur += (c.target - c.cur) * c.k;
+          if (Math.abs(c.target - c.cur) < 0.002) c.cur = c.target;
+        }
+        const base = Math.round(c.cur);
+        for (let j = 0; j < 5; j++){
+          const n = base + j - 2, s = c.spans[j];
+          const dg = ((n % 10) + 10) % 10;
+          if (s._d !== dg){ s.textContent = dg; s._d = dg; }
+          s.style.transform = 'translateY(' + ((n - c.cur) * D).toFixed(2) + 'px)';
+        }
+      }
+    }
+
+    // pill mode: the arc indicator travels in step with the particle morph,
+    // on a harder S-curve than the particles for a precise instrument feel
+    if (version >= 1 && indA){
+      const ap = Math.min(1, Math.max(0, (t - arcStart) / DUR));
+      const ae = ap < 0.5 ? 16 * Math.pow(ap, 5) : 1 - Math.pow(-2 * ap + 2, 5) / 2;
+      arcNow = arcFrom + (arcTo - arcFrom) * ae;
+      const col = ageColor(arcNow);
+      const p = ptA(arcNow, AG.R + 13);
+      indA.setAttribute('cx', p[0]);
+      indA.setAttribute('cy', p[1]);
+      indA.setAttribute('fill', col);
+      // only the ticks between the baseline (centre) and the organ age take colour
+      const lo = Math.min(0, arcNow), hi = Math.max(0, arcNow);
+      const active = hi - lo > 0.08;
+      const span = Math.max(0.001, Math.abs(arcNow));
+      for (const tk of tickEls){
+        const inGap = active && !tk.zero && tk.v >= lo - 0.01 && tk.v <= hi + 0.01;
+        if (inGap){
+          // fade in from the normal inactive level over the first 30%, intense after
+          const p = Math.min(1, Math.abs(tk.v) / span);
+          const ramp = p < 0.3 ? tk.baseOp + (p / 0.3) * (0.95 - tk.baseOp) : 0.95;
+          tk.line.setAttribute('stroke', col);
+          tk.line.setAttribute('opacity', ramp);
+        } else {
+          tk.line.setAttribute('stroke', tickBase());
+          tk.line.setAttribute('opacity', tk.baseOp);
+        }
+      }
+    }
+
+    gl.uniform1f(U.uDens, dens);
+    gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul);
+    voxNow += ((voxOn ? 1 : 0) - voxNow) * 0.08;
+    gl.uniform1f(U.uSq, voxNow);
+    // theme crossfade: particles re-ink and the clear colour glides between
+    // the burgundy and cream worlds in step with the CSS transition
+    if (version < 4){
+      gl.uniform2f(U.uPan, 0, 0);
+      gl.uniform1f(U.uAlpha, 1);
+    }
+    lightNow += ((lightOn ? 1 : 0) - lightNow) * 0.16;
+    blackNow += ((blackOn ? 1 : 0) - blackNow) * 0.16;
+    gl.uniform1f(U.uLight, lightNow);
+    if (version !== 4){
+      const cardMode = (version === 2 || version === 3 || version === 6);
+      const dk = cardMode ? [0.20, 0.067, 0.063] : [0.141, 0.035, 0.031];
+      const lt = cardMode ? [0.953, 0.886, 0.847] : [0.957, 0.937, 0.929];
+      const bk = cardMode ? [0.157, 0.027, 0.027] : [0.02, 0.02, 0.02];
+      const r0 = dk[0] + (lt[0] - dk[0]) * lightNow;
+      const g0 = dk[1] + (lt[1] - dk[1]) * lightNow;
+      const b0 = dk[2] + (lt[2] - dk[2]) * lightNow;
+      gl.clearColor(
+        r0 + (bk[0] - r0) * blackNow,
+        g0 + (bk[1] - g0) * blackNow,
+        b0 + (bk[2] - b0) * blackNow, 1);
+    } else {
+      gl.clearColor(0, 0, 0, 0);
+    }
+    // flow dots morph with the cloud, so they stay visible throughout —
+    // they scatter into the environment and regroup as the next streams
+    const fvT = (flowOn && !reduced) ? 1 : 0;
+    flowVis += (fvT - flowVis) * 0.05;
+    gl.uniform1f(U.uFlowVis, flowVis);
+    if (flowVis > 0.015){
+      if (version === 5) updateFlowGrid(t);
+      else updateFlow(t);
+    }
+
+    if (version === 4){
+      spatialFrame(t);
+    } else if (version === 5){
+      gridFrame(t);
+    } else if (version === 6){
+      bentoFrame(t);
+    } else {
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.POINTS, 0, TOT);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+```
