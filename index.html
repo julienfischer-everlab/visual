@@ -660,13 +660,6 @@
   body.light .mbDots i{background:rgba(46,31,26,.3);}
   body.light .mbDots i.on{background:#2e1f1a;}
 
-  /* a younger organ swaps the red ground for a very dark green, cross-faded */
-  .sheet.younger{background:#061a11;}
-  .msn.morganMini{transition:background-color .55s ease;}
-  .msn.morganMini.younger{background:#0b2116;}
-  body.light .sheet.younger{background:#e4efe5;}
-  body.light .msn.morganMini.younger{background:#e4efe5;}
-
   /* ---- Signal insight sheet: scrollable, opened from the metric card ---- */
   .sgSheet{top:6%;background:#1c0605;}
   body.light .sgSheet{background:#f6ece6;}
@@ -741,7 +734,7 @@
     background:#280707;border-radius:26px 26px 0 0;overflow:hidden;
     display:flex;flex-direction:column;
     transform:translateY(103%);
-    transition:transform .5s cubic-bezier(.32,.72,.28,1), background-color .55s ease;
+    transition:transform .5s cubic-bezier(.32,.72,.28,1);
   }
   .shWrap.on .shDim{opacity:1;}
   .shWrap.on .sheet{transform:translateY(0);}
@@ -3167,8 +3160,6 @@
       if (Math.abs(bxT - bx) < 0.002) bx = bxT;
     }
     gl.clear(gl.COLOR_BUFFER_BIT);
-    // card corners sit outside the canvas, so the CSS ground follows the verdict too
-    mOrgCard.classList.toggle('younger', PILL[Math.max(0, Math.min(PILL.length - 1, Math.round(bx)))].delta < 0);
     const items = mbItems;
     const cw = Math.max(1, mOrgCard.offsetWidth);
     for (let k = 0; k < PILL.length; k++){
@@ -3289,7 +3280,6 @@
     let open = false, sx = 0, sxT = 0, sv = 0, drag = null, bodyT = 0, cur = 0;
     function writeBody(i, instant){
       const d = PILL[i];
-      sheet.classList.toggle('younger', d.delta < 0);
       const age = CHRONO + d.delta, nm = d.label.toLowerCase();
       const n = Math.abs(d.delta);
       const put = () => {
@@ -3826,7 +3816,6 @@
   });
   // theme cycle: burgundy dark -> warm light -> pure black -> back
   let themeState = 0, lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
-  let youthNow = 0; // 0 = older/on par (red ground), 1 = younger (green ground)
   const themeChip = document.getElementById('themeChip');
   themeChip.addEventListener('click', () => {
     themeState = (themeState + 1) % 3;
@@ -4001,19 +3990,12 @@
     gl.uniform1f(U.uLight, lightNow);
     if (version !== 4){
       const cardMode = (version === 2 || version === 3 || version === 6);
-      // the ground turns green while the organ on show is younger than its owner
-      const yIdx = (version === 6 ? Math.round(bx) : pillCurrent);
-      const yOrgan = PILL[Math.max(0, Math.min(PILL.length - 1, yIdx))];
-      youthNow += (((yOrgan && yOrgan.delta < 0) ? 1 : 0) - youthNow) * 0.05;
-      const mix = (u, v, t) => u + (v - u) * t;
-      const dkR = cardMode ? [0.20, 0.067, 0.063] : [0.141, 0.035, 0.031];
-      const dkG = cardMode ? [0.043, 0.129, 0.086] : [0.024, 0.086, 0.055];
-      const ltR = cardMode ? [0.953, 0.886, 0.847] : [0.957, 0.937, 0.929];
-      const ltG = cardMode ? [0.894, 0.937, 0.898] : [0.914, 0.945, 0.921];
+      const dk = cardMode ? [0.20, 0.067, 0.063] : [0.141, 0.035, 0.031];
+      const lt = cardMode ? [0.953, 0.886, 0.847] : [0.957, 0.937, 0.929];
       const bk = cardMode ? [0.157, 0.027, 0.027] : [0.02, 0.02, 0.02];
-      const r0 = mix(mix(dkR[0], dkG[0], youthNow), mix(ltR[0], ltG[0], youthNow), lightNow);
-      const g0 = mix(mix(dkR[1], dkG[1], youthNow), mix(ltR[1], ltG[1], youthNow), lightNow);
-      const b0 = mix(mix(dkR[2], dkG[2], youthNow), mix(ltR[2], ltG[2], youthNow), lightNow);
+      const r0 = dk[0] + (lt[0] - dk[0]) * lightNow;
+      const g0 = dk[1] + (lt[1] - dk[1]) * lightNow;
+      const b0 = dk[2] + (lt[2] - dk[2]) * lightNow;
       gl.clearColor(
         r0 + (bk[0] - r0) * blackNow,
         g0 + (bk[1] - g0) * blackNow,
