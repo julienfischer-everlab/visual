@@ -29,6 +29,7 @@ python3 -m http.server 8734
 5. **Card flip** — frosted rotating card carousel (backdrop-blur, per-card Y rotation)
 6. **Mobile (Hero static)** — bento layout with the mini organ carousel, metrics carousel (ApoB / heart rate / steps / sleep), side-by-side Overview frame, and the organ-age bottom sheets
 7. **Grid** — full-screen 3×3 anatomical plate, all organs alive with per-organ flow
+8. **Library** — every organ isolated on its own tile: the master component each surface mounts, with the health systems it serves
 
 ## Tweaks (top bar)
 
@@ -45,6 +46,10 @@ python3 -m http.server 8734
 - Per-organ static GPU buffers allow many live organs at once (Grid, Card flip).
 - Organ silhouettes are drawn as 2D canvas paths and sampled — see
   `drawBrain`, `drawNeuron`, `drawHeart`, … in the source.
+- `makeOrganView(host, organIdx, opts)` is the master component for a lone
+  organ: it mounts a canvas, draws from the shared `pts2D` cloud, and every
+  instance runs off one shared rAF, skipping any whose host is off-screen.
+  The Library and the Overview card are instances of it.
 - The mobile bottom sheets and small cards use lightweight 2D-canvas particle
   renderers sampled from the same clouds, so several organs can animate
   independently of the WebGL context.

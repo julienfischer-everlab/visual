@@ -525,6 +525,47 @@
   }
   body.m5 #grid{display:grid;}
   body.m5 .carousel, body.m5 .pillui, body.m5 .note{display:none;}
+
+  /* ---- Organ library: the master component, one tile per organ ---- */
+  .olib{display:none;position:fixed;inset:0;z-index:8;overflow-y:auto;background:var(--bg);}
+  body.m7 .olib{display:block;}
+  body.m7 #field, body.m7 .carousel, body.m7 .pillui, body.m7 .note{display:none;}
+  .olHead{max-width:880px;margin:0 auto;padding:60px 28px 28px;}
+  .olHead h1{
+    margin:0 0 10px;font-size:27px;font-weight:500;letter-spacing:-.6px;color:#f2e5e0;
+  }
+  .olHead p{margin:0;font-size:13.5px;line-height:1.6;color:rgba(242,229,224,.5);max-width:60ch;}
+  .olGrid{
+    max-width:880px;margin:0 auto;padding:0 28px 72px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;
+  }
+  .olCell{
+    background:rgba(255,255,255,.04);border-radius:20px;padding:16px;
+    display:flex;flex-direction:column;
+  }
+  .olStage{position:relative;height:190px;margin-bottom:14px;}
+  .olCell canvas{position:absolute;inset:0;display:block;width:100%;height:100%;}
+  .olIdx{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:10px;letter-spacing:.1em;color:rgba(242,229,224,.35);
+  }
+  .olName{font-size:15px;font-weight:500;color:#f2e5e0;margin:3px 0 5px;}
+  .olSpec{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:10px;color:rgba(242,229,224,.4);display:flex;gap:10px;flex-wrap:wrap;
+  }
+  .olUse{
+    margin-top:9px;padding-top:9px;border-top:1px solid rgba(242,229,224,.08);
+    font-size:10.5px;line-height:1.5;color:rgba(242,229,224,.45);
+  }
+  body.light .olHead h1{color:#2e1f1a;}
+  body.light .olHead p{color:#7d6b58;}
+  body.light .olCell{background:rgba(46,31,26,.05);}
+  body.light .olIdx{color:rgba(46,31,26,.4);}
+  body.light .olName{color:#2e1f1a;}
+  body.light .olSpec{color:rgba(46,31,26,.45);}
+  body.light .olUse{color:rgba(46,31,26,.5);border-top-color:rgba(46,31,26,.1);}
+  body.black .olCell{background:rgba(255,255,255,.05);}
   .gCell{
     border:0;border-radius:0;background:transparent;
     display:flex;flex-direction:column;justify-content:space-between;padding:16px 20px;
@@ -1467,6 +1508,15 @@
   <svg id="arcA" width="660" height="171" viewBox="0 -14 440 114" aria-hidden="true"></svg>
   <div class="pills" id="pills" role="group" aria-label="Organ"></div>
 </div>
+<div class="olib" id="oLib">
+  <div class="olHead">
+    <h1>Organ library</h1>
+    <p>Every organ in the experience, isolated. Each tile is one instance of the
+       same component, drawn from the shared point cloud &mdash; change the source
+       and every surface that uses it follows.</p>
+  </div>
+  <div class="olGrid" id="olGrid"></div>
+</div>
 <div class="nogl" id="nogl">WebGL unavailable in this browser</div>
 
 <script>
@@ -1491,6 +1541,7 @@
     { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 }, // rotating card carousel of organs
     { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 }, // outlined 3-across organ grid
     { name: 'Mobile (Hero static)',   dur: 850, ease: 0, pix: 1.35 }, // mobile bento with a mini organ card
+    { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 }, // the isolated-organ component library
   ];
   let version = 0;
   let DUR = reduced ? 300 : MODES[version].dur;
@@ -3250,6 +3301,86 @@
     }
     return (pts2DCache[key] = pts);
   }
+  // ---- organ view: the master component every isolated organ is an instance of ----
+  // One definition of what a lone organ looks and behaves like, drawn from the
+  // shared cloud, so a change to the silhouette or the palette reaches every
+  // surface that mounts one. All instances share a single rAF so nine of them
+  // cost one frame loop, and any instance whose host is off-screen is skipped.
+  const organViews = [];
+  function makeOrganView(host, organIdx, opts){
+    opts = opts || {};
+    const c = document.createElement('canvas');
+    host.appendChild(c);
+    const ctx = c.getContext('2d');
+    const view = {
+      idx: organIdx,
+      dense: !!opts.dense,
+      fill: opts.fill != null ? opts.fill : 0.58,
+      dot: opts.dot != null ? opts.dot : 1.05,
+      breathe: opts.breathe != null ? opts.breathe : 0.012,
+      jitter: opts.jitter != null ? opts.jitter : 1.6,
+      every: opts.every || 1,   // draw every Nth sample: density without the full cost
+      canvas: c,
+      setOrgan(i){ view.idx = i; },
+      frame(t){
+        const w = host.clientWidth, h = host.clientHeight;
+        if (!w || !h || !t || host.offsetParent === null) return; // hidden: don't burn a frame
+        if (c.width !== w * 2 || c.height !== h * 2){
+          c.width = w * 2; c.height = h * 2;
+          c.style.width = w + 'px'; c.style.height = h + 'px';
+        }
+        ctx.clearRect(0, 0, c.width, c.height);
+        const T = t / 1000;
+        const sc = Math.min(c.width, c.height) * view.fill * (1 + view.breathe * Math.sin(T * 1.6));
+        const ox = c.width / 2, oy = c.height / 2;
+        // the light theme inks the cloud dark, the way the engine re-inks its own
+        const ink = document.body.classList.contains('light') ? [58, 45, 34] : null;
+        const cloud = pts2D(view.idx, view.dense);
+        for (let i = 0; i < cloud.length; i += view.every){
+          const q = cloud[i];
+          const jx = Math.sin(T * 0.8 * q.sp + q.ph) * view.jitter;
+          const jy = Math.cos(T * 0.7 * q.sp + q.ph * 1.7) * view.jitter;
+          const tw = 0.62 + 0.38 * Math.sin(T * 1.8 + q.ph * 3);
+          const cr = ink ? ink[0] : q.cr, cg = ink ? ink[1] : q.cg, cb = ink ? ink[2] : q.cb;
+          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + (q.a * tw).toFixed(2) + ')';
+          ctx.beginPath();
+          ctx.arc(ox + q.x * sc + jx, oy - q.y * sc + jy, q.r * view.dot, 0, 6.2832);
+          ctx.fill();
+        }
+      }
+    };
+    organViews.push(view);
+    return view;
+  }
+  (function organTick(t){
+    requestAnimationFrame(organTick);
+    for (let i = 0; i < organViews.length; i++) organViews[i].frame(t);
+  })(0);
+
+  // ---- the library: every organ isolated, one instance of the component each ----
+  // Which experiences mount each organ, so the tile says what it is a master of.
+  const ORGAN_USED_BY = PILL.reduce((m, d) => {
+    (m[d.organIdx] = m[d.organIdx] || []).push(d.label);
+    return m;
+  }, {});
+  (function buildLibrary(){
+    const grid = document.getElementById('olGrid');
+    if (!grid) return;
+    ORGANS.forEach((o, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'olCell';
+      const used = ORGAN_USED_BY[i] || [];
+      cell.innerHTML =
+        '<div class="olStage"></div>' +
+        '<div class="olIdx">' + String(i).padStart(2, '0') + '</div>' +
+        '<div class="olName">' + o.label + '</div>' +
+        '<div class="olSpec"><span>' + Math.ceil(pts2D(i, true).length / 2) + ' pts</span>' +
+          '<span>r ' + o.r + '</span></div>' +
+        '<div class="olUse">' + (used.length ? used.join(' &middot; ') : 'Not mapped to a health system') + '</div>';
+      grid.appendChild(cell);
+      makeOrganView(cell.querySelector('.olStage'), i, { dense: true, every: 2, fill: 0.46, dot: 1.0 });
+    });
+  })();
   function makeSheet(hostPhone){
     const wrap = document.createElement('div');
     wrap.className = 'shWrap';
@@ -3679,29 +3810,7 @@
   (function(){
     const host = document.getElementById('ovOrgan');
     if (!host) return;
-    const c2 = document.createElement('canvas');
-    host.appendChild(c2);
-    const ctx2 = c2.getContext('2d');
-    const pts = pts2D(3, true); // heart, engine-density
-    (function draw(t){
-      requestAnimationFrame(draw);
-      const w = host.clientWidth, h = host.clientHeight;
-      if (!w || !t) return;
-      if (c2.width !== w * 2){ c2.width = w * 2; c2.height = h * 2; c2.style.width = w + 'px'; c2.style.height = h + 'px'; }
-      ctx2.clearRect(0, 0, c2.width, c2.height);
-      const T = t / 1000;
-      const sc = Math.min(c2.width, c2.height) * 0.58 * (1 + 0.012 * Math.sin(T * 1.6));
-      const ox = c2.width / 2, oy = c2.height / 2;
-      for (const q of pts){
-        const jx = Math.sin(T * 0.8 * q.sp + q.ph) * 1.6;
-        const jy = Math.cos(T * 0.7 * q.sp + q.ph * 1.7) * 1.6;
-        const tw = 0.62 + 0.38 * Math.sin(T * 1.8 + q.ph * 3);
-        ctx2.fillStyle = 'rgba(' + q.cr + ',' + q.cg + ',' + q.cb + ',' + (q.a * tw).toFixed(2) + ')';
-        ctx2.beginPath();
-        ctx2.arc(ox + q.x * sc + jx, oy - q.y * sc + jy, q.r * 1.05, 0, 6.2832);
-        ctx2.fill();
-      }
-    })(0);
+    makeOrganView(host, 3, { dense: true }); // overview: heart, at engine density
     document.querySelector('.ovcard.red').addEventListener('click', e => {
       if (e.target.closest('.ocx')) return; // the dismiss X never opens it
       sheetR.open(0); // heart first
