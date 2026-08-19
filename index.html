@@ -1635,30 +1635,36 @@
   }
 
   // ---- milestone objects: each stage as a standalone form, like an organ ----
-  // 01 baseline: the vascular tree, read end to end
-  function drawVessels(c){
+  // 01 baseline: the drawn sample - slender tube, stopper, filled to its level
+  function drawBloodTube(c){
     c.lineCap = 'round';
-    c.lineWidth = 16;
-    c.beginPath(); c.moveTo(170, 62); c.lineTo(170, 272); c.stroke();
-    c.lineWidth = 11;
-    for (const [y, dx, dy] of [[96,64,26],[140,76,28],[184,74,26],[226,60,24]]){
-      c.beginPath(); c.moveTo(170, y); c.quadraticCurveTo(170 - dx * 0.55, y + 2, 170 - dx, y + dy); c.stroke();
-      c.beginPath(); c.moveTo(170, y); c.quadraticCurveTo(170 + dx * 0.55, y + 2, 170 + dx, y + dy); c.stroke();
-    }
+    c.lineWidth = 64;
+    c.beginPath(); c.moveTo(170, 130); c.lineTo(170, 262); c.stroke();   // slender body
+    c.lineWidth = 94;
+    c.beginPath(); c.moveTo(170, 94); c.lineTo(170, 106); c.stroke();    // stopper, clearly wider
+    c.globalCompositeOperation = 'destination-out';
     c.lineWidth = 7;
-    for (const [x, y, ex, ey] of [[106,122,74,154],[234,122,266,154],[94,168,64,200],[246,168,276,200]]){
-      c.beginPath(); c.moveTo(x, y); c.lineTo(ex, ey); c.stroke();
-    }
+    c.beginPath(); c.moveTo(120, 122); c.lineTo(220, 122); c.stroke();   // under the stopper
+    c.beginPath(); c.moveTo(134, 192); c.lineTo(206, 192); c.stroke();   // the fill level
   }
-  // 02 treatment: the same measure taken twice, the second lighter
-  function drawFocus(c){
-    c.lineCap = 'round';
-    c.lineWidth = 19;
-    c.beginPath(); c.arc(132, 172, 64, 0, 6.2832); c.stroke();
-    c.lineWidth = 11;
-    c.beginPath(); c.arc(216, 168, 54, 0, 6.2832); c.stroke();
-    c.beginPath(); c.arc(132, 172, 17, 0, 6.2832); c.fill();
-    c.beginPath(); c.arc(216, 168, 11, 0, 6.2832); c.fill();
+  // 02 treatment: the fluid bag and its line
+  function drawIVBag(c){
+    c.lineCap = 'round'; c.lineJoin = 'round';
+    c.lineWidth = 9;
+    c.beginPath(); c.arc(170, 84, 15, Math.PI, 0); c.stroke();           // hanger
+    c.beginPath();                                                        // pouch
+    c.moveTo(124, 114); c.lineTo(216, 114);
+    c.quadraticCurveTo(232, 114, 232, 132); c.lineTo(232, 244);
+    c.quadraticCurveTo(232, 262, 216, 262); c.lineTo(124, 262);
+    c.quadraticCurveTo(108, 262, 108, 244); c.lineTo(108, 132);
+    c.quadraticCurveTo(108, 114, 124, 114); c.closePath(); c.fill();
+    c.lineWidth = 20;
+    c.beginPath(); c.moveTo(170, 262); c.lineTo(170, 286); c.stroke();   // outlet
+    c.lineWidth = 8;
+    c.beginPath(); c.moveTo(170, 286); c.quadraticCurveTo(200, 302, 222, 294); c.stroke();
+    c.globalCompositeOperation = 'destination-out';
+    c.lineWidth = 7;
+    c.beginPath(); c.moveTo(112, 150); c.lineTo(228, 150); c.stroke();   // the fill level
   }
   // 03 ongoing: one closed circuit, evenly weighted
   function drawBalance(c){
@@ -1670,14 +1676,18 @@
       c.beginPath(); c.arc(170 + 94 * Math.cos(a), 170 + 94 * Math.sin(a), 16, 0, 6.2832); c.fill();
     }
   }
-  // 04 nutrition: whole foods, gathered
-  function drawNutrition(c){
-    c.beginPath(); c.arc(128, 180, 48, 0, 6.2832); c.fill();
-    c.beginPath(); c.arc(214, 150, 39, 0, 6.2832); c.fill();
-    c.beginPath(); c.ellipse(192, 236, 41, 31, 0.2, 0, 6.2832); c.fill();
-    c.lineCap = 'round'; c.lineWidth = 9;
-    c.beginPath(); c.moveTo(128, 132); c.lineTo(137, 98); c.stroke();
-    c.beginPath(); c.moveTo(214, 111); c.lineTo(208, 84); c.stroke();
+  // 04 nutrition: an apple
+  function drawApple(c){
+    c.lineCap = 'round';
+    c.beginPath(); c.arc(142, 192, 60, 0, 6.2832); c.fill();             // left lobe
+    c.beginPath(); c.arc(198, 192, 60, 0, 6.2832); c.fill();             // right lobe
+    c.beginPath(); c.ellipse(170, 224, 62, 48, 0, 0, 6.2832); c.fill();  // the base
+    c.globalCompositeOperation = 'destination-out';
+    c.beginPath(); c.ellipse(170, 132, 27, 17, 0, 0, 6.2832); c.fill();  // the dimple
+    c.globalCompositeOperation = 'source-over';
+    c.lineWidth = 9;
+    c.beginPath(); c.moveTo(170, 142); c.quadraticCurveTo(177, 114, 191, 100); c.stroke();
+    c.beginPath(); c.ellipse(214, 106, 25, 13, -0.45, 0, 6.2832); c.fill();  // leaf
   }
   // 05 activity: a stride, rising
   function drawActivity(c){
@@ -3635,17 +3645,17 @@
   const MILESTONES = [
     {
       code: '01', name: 'Baseline', sub: 'Blood panel / diagnostics',
-      note: 'The vascular tree read once, end to end, to establish where things stand.',
-      accent: drawVessels, depth: 26,
-      flow: { paths: [[[170,62],[170,150],[170,220],[170,272]],[[170,96],[140,104],[106,122],[74,154]],[[170,96],[200,104],[234,122],[266,154]],[[170,184],[132,190],[94,168],[64,200]],[[170,184],[208,190],[246,168],[276,200]]],
-              loop: 10, op: 0.6, width: 4, turb: 1.4, tone: [0.93,0.55,0.5] }
+      note: 'A drawn sample — the panel every baseline starts from.',
+      accent: drawBloodTube, depth: 30,
+      flow: { paths: [[[170,238],[170,200],[170,178]],[[150,232],[150,196],[152,178]],[[190,232],[190,196],[188,178]]],
+              loop: 9, op: 0.62, width: 3.5, turb: 1.0, tone: [0.93,0.42,0.4] }
     },
     {
       code: '02', name: 'Treatment', sub: 'Review / re-test',
-      note: 'The same measure taken twice — acted on after the first read, then checked again.',
-      accent: drawFocus, depth: 30,
-      flow: { paths: [[[132,108],[196,172],[132,236],[68,172],[132,108]],[[216,114],[270,168],[216,222],[162,168],[216,114]]],
-              loop: 9, op: 0.62, width: 3.5, turb: 1.2, tone: [0.95,0.66,0.46] }
+      note: 'Fluid on a line: the treatment given, then reviewed.',
+      accent: drawIVBag, depth: 30,
+      flow: { paths: [[[170,170],[170,230],[170,272],[170,290],[200,300],[220,294]],[[146,180],[152,232],[168,274]],[[194,180],[188,232],[172,274]]],
+              loop: 11, op: 0.6, width: 3.5, turb: 0.9, tone: [0.95,0.72,0.56] }
     },
     {
       code: '03', name: 'Ongoing', sub: 'Continuous health monitoring',
@@ -3656,10 +3666,10 @@
     },
     {
       code: '04', name: 'Nutrition', sub: 'Whole food / intake',
-      note: 'Whole foods gathered, and the nutrients drawn out of them.',
-      accent: drawNutrition, depth: 32,
-      flow: { paths: [[[128,180],[171,164],[214,150]],[[214,150],[204,194],[192,236]],[[192,236],[158,210],[128,180]],[[128,132],[137,98]]],
-              loop: 11, op: 0.6, width: 4, turb: 1.2, tone: [0.93,0.74,0.48] }
+      note: 'An apple — the simplest version of what goes in.',
+      accent: drawApple, depth: 36,
+      flow: { paths: [[[170,150],[214,192],[170,246],[126,192],[170,150]],[[170,180],[170,236]]],
+              loop: 12, op: 0.58, width: 4, turb: 1.2, tone: [0.93,0.6,0.44] }
     },
     {
       code: '05', name: 'Activity', sub: 'Everyday movement',
