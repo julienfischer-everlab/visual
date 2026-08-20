@@ -348,8 +348,9 @@
   body.m2 .pill{padding:5px 11px;font-size:11px;}
 
   /* ---- Mobile: the hero as a swipe carousel inside a phone frame ---- */
-  body.m3, body.m6{background:#000;}
-  body.m3 .carousel, body.m3 .note, body.m6 .carousel, body.m6 .note{display:none;}
+  body.m3, body.m6, body.m7{background:#000;}
+  body.m3 .carousel, body.m3 .note, body.m6 .carousel, body.m6 .note,
+  body.m7 .carousel, body.m7 .note, body.m7 .pillui, body.m7 #field{display:none;}
   /* the device: titanium band, display bezel, side buttons */
   #phoneShell{display:none;}
   body.m3 #phoneShell, body.m6 #phoneShell{
@@ -529,7 +530,7 @@
   /* ---- Organ library: the master component, one tile per organ ---- */
   .olib{display:none;position:fixed;inset:0;z-index:8;background:var(--bg);
     padding-top:43px;box-sizing:border-box;}
-  body.m7 .olib{display:flex;}
+  body.m8 .olib{display:flex;}
   /* persistent nav: this is a workbench, so it stays quiet and out of the way */
   .olNav{
     width:208px;flex:none;padding:26px 12px 26px 20px;box-sizing:border-box;
@@ -566,7 +567,7 @@
   body.light .olNavItem:hover, body.light .olNavItem.on{color:#2e1f1a;background:rgba(46,31,26,.06);}
   body.light .olEmpty p{color:rgba(46,31,26,.45);}
   body.light .olEmptyMark{border-color:rgba(46,31,26,.22);}
-  body.m7 #field, body.m7 .carousel, body.m7 .pillui, body.m7 .note{display:none;}
+  body.m8 #field, body.m8 .carousel, body.m8 .pillui, body.m8 .note{display:none;}
   .olHead{max-width:880px;margin:0;padding:34px 28px 26px;}
   .olHead h1{
     margin:0 0 10px;font-size:27px;font-weight:500;letter-spacing:-.6px;color:#f2e5e0;
@@ -907,10 +908,10 @@
 
   /* ---- Overview frame: a sibling screen in the same language ---- */
   #phoneShell2{display:none;}
-  body.m6 #phoneShell{left:calc(50% - 42px);transform:translate(-100%,-50%);}
-  body.m6 #phoneShell2{
+  /* Overview is its own screen now, so each mode shows one phone, centred */
+  body.m7 #phoneShell2{
     display:block;position:fixed;z-index:1;
-    left:calc(50% + 42px);top:calc(50% + 22px);transform:translate(0,-50%);
+    left:50%;top:calc(50% + 22px);transform:translate(-50%,-50%);
     --phH:min(calc(100vh - 108px), 880px);
     height:var(--phH);width:calc(var(--phH) * 0.478);
     border-radius:62px;padding:6px;box-sizing:border-box;
@@ -1065,7 +1066,7 @@
   body.black .card[aria-pressed="true"]{background:rgba(255,255,255,.12);}
   body.black .card .bar{background:#333;}
   body.black .spCard{background:rgba(40,7,7,.62);}
-  body.black.m3, body.black.m6{background:#000;}
+  body.black.m3, body.black.m6, body.black.m7{background:#000;}
 
   /* ---- Light theme: warm cream, deep warm brown ink, same world ---- */
   body.light{
@@ -1634,11 +1635,12 @@
   const MODES = [
     { name: 'Card Nav', dur: 1800, ease: 1, pix: 1.35 }, // card carousel, hard S-curve pace
     { name: 'Pill Nav', dur: 850,  ease: 0, pix: 1.35 }, // pill chips, arc below the organ
-    { name: 'Desktop',  dur: 850,  ease: 0, pix: 1.35 }, // organ card inside the product dashboard
+    { name: 'Desktop (biomarker)', dur: 850, ease: 0, pix: 1.35 }, // organ card inside the product dashboard
     { name: 'Mobile (Hero carousel)', dur: 850, ease: 0, pix: 1.35 }, // hero swipe carousel in a phone frame
     { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 }, // rotating card carousel of organs
     { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 }, // outlined 3-across organ grid
-    { name: 'Mobile (Hero static)',   dur: 850, ease: 0, pix: 1.35 }, // mobile bento with a mini organ card
+    { name: 'Mobile (biomarkers)', dur: 850, ease: 0, pix: 1.35 }, // mobile bento with a mini organ card
+    { name: 'Mobile (overview)',   dur: 850, ease: 0, pix: 1.35 }, // the Overview frame on its own
     { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 }, // the isolated-organ component library
   ];
   let version = 0;
