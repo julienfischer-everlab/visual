@@ -862,6 +862,49 @@
   body.light .shChips span.hl{color:#2e241c;border-color:#2e241c;}
   body.light .shCta{background:rgba(46,31,26,.07);color:#2e241c;}
 
+  /* ---- Organ age: a full-screen modal, not a sheet ---- */
+  .sheet.shModal{
+    top:0;border-radius:0;background:#280707;
+    transform:translateY(100%);
+    transition:transform .52s cubic-bezier(.32,.72,.28,1);
+  }
+  .shWrap.on .sheet.shModal{transform:translateY(0);}
+  .shModal .shClose{position:absolute;right:16px;top:16px;z-index:4;}
+  /* the organ takes the whole upper half, with nothing crowding it */
+  .shStage{
+    flex:1;position:relative;min-height:0;
+    touch-action:none;user-select:none;-webkit-user-select:none;
+  }
+  .shModal .shSlot{position:absolute;inset:0;}
+  .shModal .shSlot canvas{position:absolute;inset:0;display:block;}
+  .shCarousel{
+    flex:none;overflow:hidden;padding-bottom:2px;
+    touch-action:pan-y;user-select:none;-webkit-user-select:none;
+  }
+  .shTrack{display:flex;align-items:stretch;will-change:transform;}
+  .shCard{
+    flex:none;box-sizing:border-box;text-align:left;
+    background:rgba(242,229,224,.06);border-radius:20px;padding:18px 20px 20px;
+  }
+  .shCard .nm{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:rgba(242,229,224,.45);
+  }
+  .shCard h3{
+    margin:9px 0 0;font-size:21px;font-weight:500;color:#f2e5e0;
+    letter-spacing:-.4px;line-height:1.15;
+  }
+  .shCard .sub{margin:3px 0 10px;font-size:15px;line-height:1.25;color:rgba(242,229,224,.5);letter-spacing:-.2px;}
+  .shCard p{margin:0;font-size:12px;line-height:1.5;color:rgba(242,229,224,.42);}
+  .shModal .shDots{padding:16px 0 0;}
+  body.light .sheet.shModal{background:#f3e2d8;}
+  body.light .shModal .shClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
+  body.light .shCard{background:rgba(46,31,26,.05);}
+  body.light .shCard .nm{color:rgba(46,31,26,.45);}
+  body.light .shCard h3{color:#2e1f1a;}
+  body.light .shCard .sub{color:rgba(46,31,26,.55);}
+  body.light .shCard p{color:rgba(46,31,26,.45);}
+
   /* ---- Overview frame: a sibling screen in the same language ---- */
   #phoneShell2{display:none;}
   body.m6 #phoneShell{left:calc(50% - 42px);transform:translate(-100%,-50%);}
@@ -3769,23 +3812,45 @@
     });
   })();
   function makeSheet(hostPhone){
+    const PAD = 20, PEEK = 28, GAP = 12;   // 28px of the next card stays in view
     const wrap = document.createElement('div');
     wrap.className = 'shWrap';
     wrap.innerHTML =
-      '<div class="shDim"></div>' +
-      '<div class="sheet">' +
-        '<div class="shHead">' +
-          '<div class="shSlot"></div>' +
-          '<div class="shHandle"></div>' +
-          '<button class="shClose" aria-label="Close">&#10005;</button>' +
-        '</div>' +
+      '<div class="sheet shModal">' +
+        '<button class="shClose" aria-label="Close">&#10005;</button>' +
+        '<div class="shStage"><div class="shSlot"></div></div>' +
+        '<div class="shCarousel"><div class="shTrack"></div></div>' +
         '<div class="mbDots shDots"></div>' +
-        '<div class="shBody"><h3></h3><div class="shSub"></div><p></p></div>' +
         '<div class="shHome"></div>' +
       '</div>';
     hostPhone.appendChild(wrap);
     const q = sel => wrap.querySelector(sel);
-    const head = q('.shHead'), body = q('.shBody'), sheet = q('.sheet');
+    const sheet = q('.sheet'), stage = q('.shStage');
+    const carousel = q('.shCarousel'), track = q('.shTrack');
+
+    function cardHTML(d){
+      const age = CHRONO + d.delta, nm = d.label.toLowerCase();
+      const n = Math.abs(d.delta);
+      const sub = d.delta === 0
+        ? 'On par with your current age'
+        : n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older') + ' than your current age';
+      const note = d.delta > 0
+        ? 'Your ' + nm + ' health is ageing faster than your biological age. The related biomarkers are where to focus.'
+        : d.delta < 0
+          ? 'Your ' + nm + ' health is ageing slower than your biological age. Keep doing what you are doing.'
+          : 'Your ' + nm + ' health is ageing in step with your biological age.';
+      return '<div class="nm">' + d.label + '</div>' +
+             '<h3>Your ' + nm + ' age is ' + age + '</h3>' +
+             '<div class="sub">' + sub + '</div>' +
+             '<p>' + note + '</p>';
+    }
+    const cards = PILL.map(d => {
+      const el = document.createElement('article');
+      el.className = 'shCard';
+      el.innerHTML = cardHTML(d);
+      track.appendChild(el);
+      return el;
+    });
     const dots = PILL.map((d, i) => {
       const el = document.createElement('i');
       el.addEventListener('click', e => { e.stopPropagation(); go(i); });
@@ -3795,50 +3860,50 @@
     const c2 = document.createElement('canvas');
     q('.shSlot').appendChild(c2);
     const ctx2 = c2.getContext('2d');
-    let open = false, sx = 0, sxT = 0, sv = 0, drag = null, bodyT = 0, cur = 0;
-    function writeBody(i, instant){
-      const d = PILL[i];
-      const age = CHRONO + d.delta, nm = d.label.toLowerCase();
-      const n = Math.abs(d.delta);
-      const put = () => {
-        q('h3').textContent = 'Your ' + nm + ' age is ' + age;
-        q('.shSub').textContent = d.delta === 0
-          ? 'On par with your current age'
-          : n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older') + ' than your current age';
-        q('p').textContent = d.delta > 0
-          ? 'Your ' + nm + ' health is currently ageing slightly faster than your biological age. Focusing on the related biomarkers can help bring it back in line.'
-          : d.delta < 0
-            ? 'Your ' + nm + ' health is ageing slower than your biological age. Keep doing what you are doing \u2014 the related biomarkers are working in your favour.'
-            : 'Your ' + nm + ' health is ageing in step with your biological age.';
-      };
-      if (instant){ put(); return; }
-      clearTimeout(bodyT);
-      body.classList.add('sw');
-      bodyT = setTimeout(() => { put(); body.classList.remove('sw'); }, 210);
+    let open = false, sx = 0, sxT = 0, sv = 0, drag = null, cur = 0, step = 1;
+
+    function layout(){
+      const W = carousel.clientWidth;
+      if (!W) return;
+      const cardW = Math.max(120, W - PAD - PEEK - GAP);
+      track.style.paddingLeft = PAD + 'px';
+      track.style.gap = GAP + 'px';
+      cards.forEach(el => { el.style.width = cardW + 'px'; });
+      step = cardW + GAP;
+    }
+    // one place decides where the track sits and which card reads as selected
+    function place(){
+      track.style.transform = 'translateX(' + (-sx * step).toFixed(1) + 'px)';
+      for (let k = 0; k < cards.length; k++)
+        cards[k].style.opacity = (1 - 0.6 * Math.min(1, Math.abs(k - sx))).toFixed(3);
     }
     function go(i){
       i = Math.max(0, Math.min(PILL.length - 1, i));
       sxT = i;
       if (i !== cur){
         cur = i;
-        writeBody(i, false);
         dots.forEach((el, j) => el.classList.toggle('on', j === i));
       }
     }
     function draw(t){
       if (!open) return;
       requestAnimationFrame(draw);
-      const w = head.clientWidth, h = head.clientHeight;
+      const w = stage.clientWidth, h = stage.clientHeight;
       if (!w) return;
-      if (c2.width !== w * 2){ c2.width = w * 2; c2.height = h * 2; c2.style.width = w + 'px'; c2.style.height = h + 'px'; }
+      if (c2.width !== w * 2 || c2.height !== h * 2){
+        c2.width = w * 2; c2.height = h * 2;
+        c2.style.width = w + 'px'; c2.style.height = h + 'px';
+        layout();
+      }
       if (!drag){
-        sx += (sxT - sx) * 0.16;
+        sx += (sxT - sx) * 0.16;                    // weighted settle
         if (Math.abs(sxT - sx) < 0.002) sx = sxT;
       }
+      place();                                       // card and organ move together
       ctx2.clearRect(0, 0, c2.width, c2.height);
       const T = t / 1000;
-      const sc = Math.min(c2.width, c2.height) * 0.5 * (1 + 0.02 * Math.sin(T * 1.6));
-      const oy = c2.height * 0.55 + 44;
+      const sc = Math.min(c2.width, c2.height) * 0.40;   // room to breathe
+      const oy = c2.height * 0.52;
       for (let k = 0; k < PILL.length; k++){
         const dd = k - sx;
         if (Math.abs(dd) > 1.2) continue;
@@ -3853,7 +3918,6 @@
           ctx2.arc(ox + qp.x * sc + jx, oy - qp.y * sc + jy, qp.r * 1.05, 0, 6.2832);
           ctx2.fill();
         }
-        // feeding ambient: matter spiralling inward, like the engine's organs
         for (let j = 0; j < 70; j++){
           const u0 = (j * 0.618 + k * 0.37) % 1;
           const cyc = ((T / 9 + u0) % 1 + 1) % 1;
@@ -3868,64 +3932,70 @@
         }
       }
     }
-    // header gestures: horizontal carousel, vertical dismiss
-    head.addEventListener('pointerdown', e => {
-      if (e.target.closest('.shClose')) return;
+
+    // the cards carry the horizontal gesture; the organ above follows them
+    carousel.addEventListener('pointerdown', e => {
       drag = { x: e.clientX, y: e.clientY, sx0: sx, s0: Math.round(sxT),
                lt: performance.now(), mode: null, pid: e.pointerId };
       sv = 0;
     });
-    head.addEventListener('pointermove', e => {
+    carousel.addEventListener('pointermove', e => {
       if (!drag) return;
       const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
       if (drag.mode === null){
-        if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy)) drag.mode = 'h';
-        else if (dy > 10 && Math.abs(dy) > Math.abs(dx)) drag.mode = 'v';
+        if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy)){
+          drag.mode = 'h';
+          try { carousel.setPointerCapture(drag.pid); } catch (err) {}
+        } else if (Math.abs(dy) > 10){ drag = null; return; }
         else return;
-        try { head.setPointerCapture(drag.pid); } catch (err) {}
-        if (drag.mode === 'v') sheet.style.transition = 'none';
       }
-      if (drag.mode === 'h'){
-        const w = Math.max(1, head.offsetWidth);
-        let nx = drag.sx0 - dx / w;
-        if (nx < 0) nx = nx * 0.28;
-        if (nx > PILL.length - 1) nx = (PILL.length - 1) + (nx - (PILL.length - 1)) * 0.28;
-        const now = performance.now();
-        sv = 0.7 * sv + 0.3 * ((nx - sx) / Math.max(1, now - drag.lt));
-        drag.lt = now;
-        sx = nx;
-      } else {
-        sheet.style.transform = 'translateY(' + Math.max(0, dy) + 'px)';
-      }
+      let nx = drag.sx0 - dx / step;                 // 1:1 with the finger
+      if (nx < 0) nx = nx * 0.28;                    // rubber-band at the ends
+      if (nx > PILL.length - 1) nx = (PILL.length - 1) + (nx - (PILL.length - 1)) * 0.28;
+      const now = performance.now();
+      sv = 0.7 * sv + 0.3 * ((nx - sx) / Math.max(1, now - drag.lt));
+      drag.lt = now;
+      sx = nx;
     });
-    head.addEventListener('pointerup', e => {
+    carousel.addEventListener('pointerup', e => {
       if (!drag) return;
       const d = drag; drag = null;
-      if (d.mode === 'v'){
-        sheet.style.transition = '';
-        if (e.clientY - d.y > 120) api.close();
-        else sheet.style.transform = '';
-        return;
-      }
       if (d.mode !== 'h') return;
       const delta = sx - d.s0;
       let target = d.s0;
-      if (delta > 0.5) target = d.s0 + Math.ceil(delta - 0.5);
+      if (delta > 0.5) target = d.s0 + Math.ceil(delta - 0.5);        // past halfway: next
       else if (delta < -0.5) target = d.s0 + Math.floor(delta + 0.5);
       else if (Math.abs(sv) > 0.0016 && Math.abs(delta) > 0.08)
-        target = d.s0 + (sv > 0 ? 1 : -1);
+        target = d.s0 + (sv > 0 ? 1 : -1);                            // a flick still carries
       go(target);
-      sxT = Math.max(0, Math.min(PILL.length - 1, target));
     });
+    // the empty space above still swipes the modal away
+    stage.addEventListener('pointerdown', e => {
+      if (e.target.closest('.shClose')) return;
+      drag = { x: e.clientX, y: e.clientY, lt: performance.now(), mode: 'v', pid: e.pointerId };
+      sheet.style.transition = 'none';
+    });
+    stage.addEventListener('pointermove', e => {
+      if (!drag || drag.mode !== 'v') return;
+      sheet.style.transform = 'translateY(' + Math.max(0, e.clientY - drag.y) + 'px)';
+    });
+    stage.addEventListener('pointerup', e => {
+      if (!drag || drag.mode !== 'v') return;
+      const d = drag; drag = null;
+      sheet.style.transition = '';
+      if (e.clientY - d.y > 140) api.close();
+      else sheet.style.transform = '';
+    });
+
     const api = {
       open(startIdx){
         if (open) { go(startIdx); return; }
         open = true;
         cur = startIdx;
         sx = sxT = startIdx;
-        writeBody(startIdx, true);
         dots.forEach((el, j) => el.classList.toggle('on', j === startIdx));
         wrap.style.display = 'block';
+        layout(); place();
         requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
         requestAnimationFrame(draw);
       },
@@ -3934,11 +4004,10 @@
         open = false;
         wrap.classList.remove('on');
         sheet.style.transform = '';
-        setTimeout(() => { wrap.style.display = 'none'; }, 480);
+        setTimeout(() => { wrap.style.display = 'none'; }, 520);
       }
     };
     q('.shClose').addEventListener('click', api.close);
-    q('.shDim').addEventListener('click', api.close);
     return api;
   }
   // steps / heart rate / sleep: the left bento card is its own mini carousel

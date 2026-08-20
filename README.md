@@ -27,7 +27,7 @@ python3 -m http.server 8734
 3. **Desktop** — the Everlab dashboard with the organ-age card in situ
 4. **Mobile (Hero carousel)** — iPhone frame, swipeable hero cards
 5. **Card flip** — frosted rotating card carousel (backdrop-blur, per-card Y rotation)
-6. **Mobile (Hero static)** — bento layout with the mini organ carousel, metrics carousel (ApoB / heart rate / steps / sleep), side-by-side Overview frame, and the organ-age bottom sheets
+6. **Mobile (Hero static)** — bento layout with the mini organ carousel, metrics carousel (ApoB / heart rate / steps / sleep), side-by-side Overview frame, the signal insight sheet, and the full-screen organ-age modal
 7. **Grid** — full-screen 3×3 anatomical plate, all organs alive with per-organ flow
 8. **Library** — an internal component workbench behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts, with the health systems it serves) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication and Supplements, each a standalone object). Every tile reports the dot count that visual is actually made of.
 
