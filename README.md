@@ -52,8 +52,11 @@ python3 -m http.server 8734
   It reproduces the engine's own motion — the shader's idle drift, the
   heartbeat/breathing pulse, and the ambient matter that spirals in and is
   absorbed — and the organ's own internal flow — so an isolated organ moves the
-  way it does in the concept. Dot counts run at a constant density
-  (`DOT_DENSITY`), so a tile's figure reflects the silhouette's real size.
+  way it does in the concept. Dot counts run at a constant density measured in
+  *rendered* area (`cl.area * cl.s^2 * DOT_DENSITY`) — every cloud is scaled to
+  fit its frame, so silhouette area alone would give shapes with a bigger
+  bounding box more dots per visible pixel. Every visual carries the same dots
+  per unit of form.
 - Milestone visuals are standalone objects, built exactly like an organ: one
   silhouette through `buildCloud`, one `makeOrganView`, its own flow preset.
   Nothing about them is special-cased.

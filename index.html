@@ -3431,9 +3431,14 @@
   // each with its own 2D particle carousel so both can be open at once ----------
   const pts2DCache = {};
   function pts2D(organIdx, dense){ return samplePts(clouds[organIdx], 'o' + organIdx, dense ? 2600 : 560); }
-  // one dot per unit of silhouette, so a visual's dot count reflects its own size
-  const DOT_DENSITY = 0.075;
-  function dotTarget(cl){ return Math.max(120, Math.round(cl.area * DOT_DENSITY)); }
+  // Constant dot density *on screen*. Every cloud is scaled to fit its frame by
+  // 1.55/maxDim, so silhouette area alone is the wrong measure — a shape with a
+  // bigger bounding box would end up with more dots per rendered pixel. Area
+  // scaled by s^2 is the area the tile actually shows.
+  const DOT_DENSITY = 1250;
+  function dotTarget(cl){
+    return Math.max(120, Math.round(cl.area * cl.s * cl.s * DOT_DENSITY));
+  }
   function samplePts(cl, id, target){
     const key = id + '@' + target;
     if (pts2DCache[key]) return pts2DCache[key];
@@ -3713,7 +3718,7 @@
       const view = makeOrganView(stage, null, {
         cloud: cl, key: 'ms' + m.code, target: dotTarget(cl),
         fill: 0.46, dot: 1.0, beat: false,
-        flowPreset: m.flow, flowN: 110
+        flowPreset: m.flow
       });
       cell.querySelector('.olPts').textContent = view.dotCount() + ' pts';
     });
