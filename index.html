@@ -1635,36 +1635,47 @@
   }
 
   // ---- milestone objects: each stage as a standalone form, like an organ ----
-  // 01 baseline: the drawn sample - slender tube, stopper, filled to its level
+  // 01 baseline: a test tube, blood standing in the bottom of it.
+  // The glass is stroked and the blood is filled, so the sample reads as a
+  // solid volume held inside a thin vessel.
   function drawBloodTube(c){
-    c.lineCap = 'round';
-    c.lineWidth = 64;
-    c.beginPath(); c.moveTo(170, 130); c.lineTo(170, 262); c.stroke();   // slender body
-    c.lineWidth = 94;
-    c.beginPath(); c.moveTo(170, 94); c.lineTo(170, 106); c.stroke();    // stopper, clearly wider
-    c.globalCompositeOperation = 'destination-out';
-    c.lineWidth = 7;
-    c.beginPath(); c.moveTo(120, 122); c.lineTo(220, 122); c.stroke();   // under the stopper
-    c.beginPath(); c.moveTo(134, 192); c.lineTo(206, 192); c.stroke();   // the fill level
-  }
-  // 02 treatment: the fluid bag and its line
-  function drawIVBag(c){
     c.lineCap = 'round'; c.lineJoin = 'round';
     c.lineWidth = 9;
-    c.beginPath(); c.arc(170, 84, 15, Math.PI, 0); c.stroke();           // hanger
-    c.beginPath();                                                        // pouch
-    c.moveTo(124, 114); c.lineTo(216, 114);
-    c.quadraticCurveTo(232, 114, 232, 132); c.lineTo(232, 244);
-    c.quadraticCurveTo(232, 262, 216, 262); c.lineTo(124, 262);
-    c.quadraticCurveTo(108, 262, 108, 244); c.lineTo(108, 132);
-    c.quadraticCurveTo(108, 114, 124, 114); c.closePath(); c.fill();
-    c.lineWidth = 20;
-    c.beginPath(); c.moveTo(170, 262); c.lineTo(170, 286); c.stroke();   // outlet
-    c.lineWidth = 8;
-    c.beginPath(); c.moveTo(170, 286); c.quadraticCurveTo(200, 302, 222, 294); c.stroke();
+    c.beginPath();                                    // the glass
+    c.moveTo(137, 82);
+    c.lineTo(137, 222);
+    c.quadraticCurveTo(137, 266, 170, 266);
+    c.quadraticCurveTo(203, 266, 203, 222);
+    c.lineTo(203, 82);
+    c.stroke();
+    c.beginPath(); c.moveTo(126, 82); c.lineTo(214, 82); c.stroke();   // rim
+    c.beginPath();                                    // the blood standing in it
+    c.moveTo(142, 168);
+    c.lineTo(142, 222);
+    c.quadraticCurveTo(142, 261, 170, 261);
+    c.quadraticCurveTo(198, 261, 198, 222);
+    c.lineTo(198, 168);
+    c.closePath(); c.fill();
+  }
+  // 02 treatment: a syringe, kept compact so it reads at tile size
+  function drawSyringe(c){
+    c.lineJoin = 'round';
+    c.lineCap = 'butt';
+    c.lineWidth = 64;
+    c.beginPath(); c.moveTo(132, 212); c.lineTo(222, 122); c.stroke();   // barrel
+    c.lineCap = 'round';
+    c.lineWidth = 16;
+    c.beginPath(); c.moveTo(132, 212); c.lineTo(104, 240); c.stroke();   // plunger rod
+    c.lineWidth = 14;
+    c.beginPath(); c.moveTo(84, 220); c.lineTo(124, 260); c.stroke();    // thumb pad
+    c.beginPath(); c.moveTo(106, 186); c.lineTo(158, 238); c.stroke();   // finger flange
+    c.lineWidth = 26;
+    c.beginPath(); c.moveTo(222, 122); c.lineTo(238, 106); c.stroke();   // hub
+    c.lineWidth = 9;
+    c.beginPath(); c.moveTo(238, 106); c.lineTo(272, 72); c.stroke();    // needle
     c.globalCompositeOperation = 'destination-out';
     c.lineWidth = 7;
-    c.beginPath(); c.moveTo(112, 150); c.lineTo(228, 150); c.stroke();   // the fill level
+    c.beginPath(); c.moveTo(160, 162); c.lineTo(194, 196); c.stroke();   // the dose line
   }
   // 03 ongoing: one closed circuit, evenly weighted
   function drawBalance(c){
@@ -1689,12 +1700,22 @@
     c.beginPath(); c.moveTo(170, 142); c.quadraticCurveTo(177, 114, 191, 100); c.stroke();
     c.beginPath(); c.ellipse(214, 106, 25, 13, -0.45, 0, 6.2832); c.fill();  // leaf
   }
-  // 05 activity: a stride, rising
-  function drawActivity(c){
-    c.lineCap = 'round';
-    for (const [x, y, r] of [[64,258,25],[118,231,28],[174,204,31],[232,175,34]]){
-      c.beginPath(); c.ellipse(x, y, r, r * 0.56, 0.32, 0, 6.2832); c.fill();
+  // 05 activity: two feet mid-stride
+  function drawFoot(c, x, y, rot){
+    c.save();
+    c.translate(x, y); c.rotate(rot);
+    c.beginPath(); c.ellipse(0, -16, 30, 40, 0, 0, 6.2832); c.fill();    // sole
+    c.beginPath(); c.ellipse(2, 44, 21, 26, 0, 0, 6.2832); c.fill();     // heel
+    c.lineCap = 'round'; c.lineWidth = 14;
+    c.beginPath(); c.moveTo(19, 6); c.quadraticCurveTo(25, 24, 17, 36); c.stroke();  // lateral arch
+    for (const [tx, ty, tr] of [[-22,-54,8],[-6,-61,7],[8,-59,6.2],[20,-53,5.6],[30,-44,5]]){
+      c.beginPath(); c.arc(tx, ty, tr, 0, 6.2832); c.fill();             // toes
     }
+    c.restore();
+  }
+  function drawFeet(c){
+    drawFoot(c, 98, 230, -0.30);    // trailing
+    drawFoot(c, 228, 122, -0.30);   // leading
   }
   // 06 medication: one capsule, seam and all
   function drawMedication(c){
@@ -1918,23 +1939,28 @@
   function drawGut(c){
     c.lineCap = 'round'; c.lineJoin = 'round';
     c.lineWidth = 30;
-    c.beginPath();
-    c.moveTo(88, 240);
-    c.lineTo(86, 120);
-    c.bezierCurveTo(88, 92, 120, 82, 150, 86);
-    c.bezierCurveTo(190, 90, 230, 84, 252, 100);
-    c.bezierCurveTo(262, 112, 262, 130, 260, 150);
-    c.lineTo(258, 218);
-    c.bezierCurveTo(255, 245, 230, 252, 205, 248);
-    c.bezierCurveTo(185, 246, 175, 258, 173, 275);
-    c.lineTo(171, 298);
+    c.beginPath();                                        // colon: bowed, asymmetric
+    c.moveTo(84, 234);
+    c.bezierCurveTo(76, 190, 82, 144, 94, 116);
+    c.bezierCurveTo(108, 90, 136, 80, 164, 88);
+    c.bezierCurveTo(198, 98, 232, 82, 252, 106);
+    c.bezierCurveTo(268, 126, 256, 152, 262, 178);
+    c.bezierCurveTo(268, 208, 250, 240, 222, 248);
+    c.bezierCurveTo(198, 254, 180, 250, 173, 270);
+    c.bezierCurveTo(169, 282, 172, 292, 169, 302);
     c.stroke();
-    c.beginPath(); c.arc(88, 250, 19, 0, 6.2832); c.fill(); // cecum pouch
-    c.lineWidth = 17;
-    c.beginPath(); c.moveTo(120, 128); c.bezierCurveTo(160, 116, 200, 134, 228, 122); c.stroke();
-    c.beginPath(); c.moveTo(118, 158); c.bezierCurveTo(150, 176, 185, 146, 226, 162); c.stroke();
-    c.beginPath(); c.moveTo(122, 192); c.bezierCurveTo(155, 178, 195, 206, 228, 190); c.stroke();
-    c.beginPath(); c.moveTo(130, 222); c.bezierCurveTo(160, 232, 190, 214, 218, 226); c.stroke();
+    c.beginPath(); c.arc(86, 246, 19, 0, 6.2832); c.fill();   // cecum pouch
+    c.lineWidth = 16;                                      // small intestine: one loose coil
+    c.beginPath();
+    c.moveTo(122, 130);
+    c.bezierCurveTo(158, 108, 192, 142, 228, 120);
+    c.bezierCurveTo(248, 110, 242, 152, 210, 158);
+    c.bezierCurveTo(178, 165, 138, 138, 114, 168);
+    c.bezierCurveTo(98, 190, 138, 202, 170, 193);
+    c.bezierCurveTo(202, 184, 234, 178, 235, 203);
+    c.bezierCurveTo(236, 226, 194, 218, 166, 229);
+    c.bezierCurveTo(144, 237, 122, 229, 115, 214);
+    c.stroke();
   }
 
   // ---------- sample a silhouette into a volumetric point cloud ----------
@@ -3652,15 +3678,15 @@
       code: '01', name: 'Baseline', sub: 'Blood panel / diagnostics',
       note: 'A drawn sample — the panel every baseline starts from.',
       accent: drawBloodTube, depth: 30,
-      flow: { paths: [[[170,238],[170,200],[170,178]],[[150,232],[150,196],[152,178]],[[190,232],[190,196],[188,178]]],
-              loop: 9, op: 0.62, width: 3.5, turb: 1.0, tone: [0.93,0.42,0.4] }
+      flow: { paths: [[[156,252],[156,200],[158,176]],[[184,252],[184,200],[182,176]],[[170,256],[170,214],[170,176]]],
+              loop: 10, op: 0.6, width: 3, turb: 0.8, tone: [0.93,0.42,0.40] }
     },
     {
       code: '02', name: 'Treatment', sub: 'Review / re-test',
-      note: 'Fluid on a line: the treatment given, then reviewed.',
-      accent: drawIVBag, depth: 30,
-      flow: { paths: [[[170,170],[170,230],[170,272],[170,290],[200,300],[220,294]],[[146,180],[152,232],[168,274]],[[194,180],[188,232],[172,274]]],
-              loop: 11, op: 0.6, width: 3.5, turb: 0.9, tone: [0.95,0.72,0.56] }
+      note: 'A dose drawn and given, then measured again.',
+      accent: drawSyringe, depth: 34,
+      flow: { paths: [[[126,218],[177,167],[222,122],[272,72]],[[150,194],[200,144]]],
+              loop: 8, op: 0.66, width: 3, turb: 0.7, tone: [0.95,0.72,0.56] }
     },
     {
       code: '03', name: 'Ongoing', sub: 'Continuous health monitoring',
@@ -3678,10 +3704,10 @@
     },
     {
       code: '05', name: 'Activity', sub: 'Everyday movement',
-      note: 'A rising stride — everyday movement, not training.',
-      accent: drawActivity, depth: 26,
-      flow: { paths: [[[52,266],[118,231],[174,204],[246,168]]],
-              loop: 8, op: 0.62, width: 4, turb: 1.0, tone: [0.92,0.67,0.58] }
+      note: 'Two feet mid-stride — everyday movement, not training.',
+      accent: drawFeet, depth: 30,
+      flow: { paths: [[[86,272],[160,196],[240,116]],[[98,230],[228,122]]],
+              loop: 9, op: 0.6, width: 3.5, turb: 1.0, tone: [0.92,0.67,0.58] }
     },
     {
       code: '06', name: 'Medication', sub: 'Targeted treatment',
