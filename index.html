@@ -1785,9 +1785,10 @@
         <p>Every organ in the experience, isolated. Each tile is one instance of the
            same component, drawn from the shared point cloud &mdash; change the source
            and every surface that uses it follows.</p>
-        <p class="olHint">Every visual downloads as a
-           <strong>1920&times;1920 PNG</strong> from the &#8595; in its top-right corner,
-           rendered in whichever theme the page is currently in.</p>
+        <p class="olHint">Every visual downloads from the &#8595; in its top-right
+           corner as a <strong>transparent PNG</strong>, no smaller than
+           1920&times;1920 &mdash; the frame on screen, dot for dot, inked for
+           whichever theme the page is in.</p>
       </div>
       <div class="olGrid" id="olGrid"></div>
     </section>
@@ -1797,9 +1798,10 @@
         <p>The health journey as seven standalone objects, built from the same cloud
            builder and the same component as the organs &mdash; same material, same
            motion, same scale.</p>
-        <p class="olHint">Every visual downloads as a
-           <strong>1920&times;1920 PNG</strong> from the &#8595; in its top-right corner,
-           rendered in whichever theme the page is currently in.</p>
+        <p class="olHint">Every visual downloads from the &#8595; in its top-right
+           corner as a <strong>transparent PNG</strong>, no smaller than
+           1920&times;1920 &mdash; the frame on screen, dot for dot, inked for
+           whichever theme the page is in.</p>
       </div>
       <div class="olGrid" id="olOther"></div>
     </section>
@@ -3742,18 +3744,8 @@
   }
   // ---- asset export: any visual, as a square PNG at print resolution ----
   const DL_SIZE = 1920;              // the floor the assets are specified at
-  // The tile is see-through, so an export has to be laid on the same stack of
-  // backgrounds the tile actually sits on — which is what makes a light-mode
-  // asset a different image from a dark-mode one.
-  function groundStack(el){
-    const out = [];
-    for (let n = el; n && n.nodeType === 1; n = n.parentElement){
-      const bg = getComputedStyle(n).backgroundColor;
-      if (bg && bg !== 'transparent' && !/^rgba\(0, 0, 0, 0\)$/.test(bg)) out.push(bg);
-    }
-    out.push(getComputedStyle(document.body).backgroundColor || '#111');
-    return out.reverse();            // outermost first, so inner cards paint over
-  }
+  // The ground stays transparent — what the theme changes is the ink the dots
+  // are drawn with, so a light-mode asset is still a different image.
   function slug(s){
     return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'asset';
   }
@@ -3840,6 +3832,7 @@
           c.width = w * dpr; c.height = h * dpr;
           c.style.width = w + 'px'; c.style.height = h + 'px';
         }
+        view._lastT = t;                      // the export replays this exact frame
         ctx.clearRect(0, 0, c.width, c.height);
         view.paint(ctx, c.width, c.height, t, 1);
       },
@@ -3958,28 +3951,31 @@
           px.fill();
         }
       },
-      // an export-resolution still, drawn on the same ground the tile sits on
-      exportCanvas(size, grounds){
+      // The same frame at export resolution, on a transparent ground. The
+      // canvas keeps the live tile's proportions and scales by one factor, so
+      // nothing is cropped or padded: it is the picture on screen, enlarged.
+      // minSide is the floor for BOTH dimensions.
+      exportCanvas(minSide){
+        const w = c.width, h = c.height;
+        if (!w || !h) return null;
+        const k = minSide / Math.min(w, h);
         const ec = document.createElement('canvas');
-        ec.width = ec.height = size;
-        const ex = ec.getContext('2d');
-        (grounds || []).forEach(col => {
-          if (!col || col === 'transparent') return;
-          ex.fillStyle = col; ex.fillRect(0, 0, size, size);
-        });
-        const live = Math.min(c.width, c.height) || size;
-        view.paint(ex, size, size, performance.now(), size / live);
+        ec.width = Math.round(w * k);
+        ec.height = Math.round(h * k);
+        view.paint(ec.getContext('2d'), ec.width, ec.height, view._lastT || performance.now(), k);
         return ec;
       },
-      // the asset, as the viewer currently sees it: current theme, current cloud
       // the name follows whatever the view is showing now, not what it was built with
       label(){
         return opts.name
           || (view.idx != null && ORGANS[view.idx] ? ORGANS[view.idx].label : 'visual');
       },
+      // the asset exactly as the viewer sees it: same frame, same dots, same
+      // framing, transparent ground, at no less than DL_SIZE on either side
       async download(){
-        const cv = view.exportCanvas(DL_SIZE, groundStack(host));
-        await savePNG(slug(view.label()) + '-' + themeName() + '-' + DL_SIZE + '.png',
+        const cv = view.exportCanvas(DL_SIZE);
+        if (!cv) return;
+        await savePNG(slug(view.label()) + '-' + themeName() + '-' + cv.width + 'x' + cv.height + '.png',
                       await toBlob(cv));
       }
     };
