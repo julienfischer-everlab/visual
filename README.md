@@ -63,6 +63,16 @@ python3 -m http.server 8734
   silhouette through `buildCloud`, one `makeOrganView`, its own flow preset.
   Nothing about them is special-cased.
   The Library and the Overview card are instances of it.
+- **Asset export.** Every `makeOrganView` instance can render itself as a
+  1920x1920 PNG. `paint(px, W, H, t, rk)` is the renderer, independent of any
+  one canvas: `rk` scales the dot radius with the surface, so an export is the
+  same picture at higher resolution rather than a sparser one. `exportCanvas`
+  lays the tile's own stack of backgrounds down first (`groundStack` walks the
+  ancestors), which is what makes a light-mode asset a genuinely different
+  image from a dark-mode one. The download control sits in the top-right of
+  each visual; pass `dl: false` to suppress it. Saving goes through the
+  Artifact `downloads` capability when the page runs as an artifact, and falls
+  back to an `<a download>` when it does not.
 - The mobile bottom sheets and small cards use lightweight 2D-canvas particle
   renderers sampled from the same clouds, so several organs can animate
   independently of the WebGL context.

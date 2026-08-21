@@ -702,11 +702,38 @@
   .imPrimary .imInfo, body.light .imPrimary .imInfo{
     border-color:rgba(23,8,7,.38);color:rgba(23,8,7,.62);
   }
+  /* ---- download: one per visual, top-right, out of the way until wanted ---- */
+  .dlBtn{
+    position:absolute;top:6px;right:6px;z-index:4;
+    width:26px;height:26px;padding:0;border:0;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(242,229,224,.09);color:rgba(242,229,224,.62);
+    cursor:pointer;opacity:.34;transform:translateY(-2px);
+    transition:opacity .18s ease,transform .18s ease,background .18s ease,color .18s ease;
+  }
+  .dlBtn svg{width:14px;height:14px;display:block;}
+  .olCell:hover .dlBtn,.dlHost:hover .dlBtn,
+  .dlBtn:focus-visible,.dlBtn.is-busy,.dlBtn.is-done,.dlBtn.is-fail{
+    opacity:1;transform:none;
+  }
+  .dlBtn:hover{background:rgba(242,229,224,.16);color:#f2e5e0;}
+  .dlBtn:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
+  .dlBtn.is-busy{opacity:.5;cursor:progress;}
+  .dlBtn.is-done{background:rgba(122,196,140,.22);color:#9ad8a8;}
+  .dlBtn.is-fail{background:rgba(226,110,92,.22);color:#f0a394;}
+  body.light .dlBtn{background:rgba(46,31,26,.08);color:rgba(46,31,26,.6);}
+  body.light .dlBtn:hover{background:rgba(46,31,26,.15);color:#2e1f1a;}
+  /* no hover to reveal it on touch, so it just stays */
+  @media (hover:none){ .dlBtn{opacity:1;transform:none;} }
   .olHead{max-width:880px;margin:0;padding:34px 28px 26px;}
   .olHead h1{
     margin:0 0 10px;font-size:27px;font-weight:500;letter-spacing:-.6px;color:#f2e5e0;
   }
   .olHead p{margin:0;font-size:13.5px;line-height:1.6;color:rgba(242,229,224,.5);max-width:60ch;}
+  .olHead .olHint{margin-top:9px;font-size:12px;color:rgba(242,229,224,.36);}
+  .olHead .olHint strong{font-weight:500;color:rgba(242,229,224,.6);}
+  body.light .olHead .olHint{color:rgba(46,31,26,.5);}
+  body.light .olHead .olHint strong{color:#2e1f1a;}
   .olGrid{
     max-width:880px;margin:0;padding:0 28px 72px;
     display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;
@@ -1758,6 +1785,9 @@
         <p>Every organ in the experience, isolated. Each tile is one instance of the
            same component, drawn from the shared point cloud &mdash; change the source
            and every surface that uses it follows.</p>
+        <p class="olHint">Every visual downloads as a
+           <strong>1920&times;1920 PNG</strong> from the &#8595; in its top-right corner,
+           rendered in whichever theme the page is currently in.</p>
       </div>
       <div class="olGrid" id="olGrid"></div>
     </section>
@@ -1767,6 +1797,9 @@
         <p>The health journey as seven standalone objects, built from the same cloud
            builder and the same component as the organs &mdash; same material, same
            motion, same scale.</p>
+        <p class="olHint">Every visual downloads as a
+           <strong>1920&times;1920 PNG</strong> from the &#8595; in its top-right corner,
+           rendered in whichever theme the page is currently in.</p>
       </div>
       <div class="olGrid" id="olOther"></div>
     </section>
@@ -3707,6 +3740,52 @@
     const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
     return t * t * (3 - 2 * t);
   }
+  // ---- asset export: any visual, as a square PNG at print resolution ----
+  const DL_SIZE = 1920;              // the floor the assets are specified at
+  // The tile is see-through, so an export has to be laid on the same stack of
+  // backgrounds the tile actually sits on — which is what makes a light-mode
+  // asset a different image from a dark-mode one.
+  function groundStack(el){
+    const out = [];
+    for (let n = el; n && n.nodeType === 1; n = n.parentElement){
+      const bg = getComputedStyle(n).backgroundColor;
+      if (bg && bg !== 'transparent' && !/^rgba\(0, 0, 0, 0\)$/.test(bg)) out.push(bg);
+    }
+    out.push(getComputedStyle(document.body).backgroundColor || '#111');
+    return out.reverse();            // outermost first, so inner cards paint over
+  }
+  function slug(s){
+    return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'asset';
+  }
+  function themeName(){
+    return document.body.classList.contains('light') ? 'light'
+         : document.body.classList.contains('black') ? 'black' : 'dark';
+  }
+  // Resolved once: null means this view cannot hand a file to the viewer, and
+  // we fall back to a plain anchor (which works when the page is opened as a
+  // local file or on an ordinary host, but not inside the Artifact sandbox).
+  let dlNS;
+  async function dlReady(){
+    if (dlNS !== undefined) return dlNS;
+    try {
+      dlNS = (window.claude && typeof claude.use === 'function')
+        ? await claude.use('downloads') : null;
+    } catch (e){ dlNS = null; }
+    return dlNS;
+  }
+  function toBlob(canvas){
+    return new Promise(res => canvas.toBlob(res, 'image/png'));
+  }
+  async function savePNG(filename, blob){
+    const ns = await dlReady();
+    if (ns && ns.save){ await ns.save({ filename: filename, data: blob }); return; }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
   // ---- organ view: the master component every isolated organ is an instance of ----
   // One definition of what a lone organ looks and behaves like, drawn from the
   // shared cloud, so a change to the silhouette or the palette reaches every
@@ -3762,6 +3841,13 @@
           c.style.width = w + 'px'; c.style.height = h + 'px';
         }
         ctx.clearRect(0, 0, c.width, c.height);
+        view.paint(ctx, c.width, c.height, t, 1);
+      },
+      // Render one frame into any context at any size. rk scales the dot radius
+      // with the canvas, so an export is the same picture at a higher
+      // resolution rather than a sparser one. It composites onto whatever is
+      // already in the context — the caller clears, or lays a ground first.
+      paint(px, W, H, t, rk){
         const T = t / 1000;
         // same pulse the engine runs: the heart beats, everything else breathes
         const u = (t % 1100) / 1100;
@@ -3769,8 +3855,8 @@
           ? 1 + 0.028 * Math.exp(-Math.pow(u - 0.10, 2) / 0.004)
               + 0.016 * Math.exp(-Math.pow(u - 0.32, 2) / 0.006)
           : 1 + 0.010 * Math.sin(t * 0.0009);
-        const sc = Math.min(c.width, c.height) * view.fill * (view.still ? 1 : pulse);
-        const ox = c.width / 2, oy = c.height / 2;
+        const sc = Math.min(W, H) * view.fill * (view.still ? 1 : pulse);
+        const ox = W / 2, oy = H / 2;
         // the light theme inks the cloud dark, the way the engine re-inks its own
         const ink = document.body.classList.contains('light') ? [58, 45, 34] : null;
         const drift = view.still ? 0 : 0.006 * view.jitter * sc;
@@ -3804,11 +3890,11 @@
           const jy = drift * Math.cos(T * 0.7 + q.sz * 9.42);
           const tw = 0.80 + 0.20 * Math.sin(T * 1.8 + q.sz * 21.0);
           const cr = ink ? ink[0] : q.cr, cg = ink ? ink[1] : q.cg, cb = ink ? ink[2] : q.cb;
-          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' +
+          px.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' +
             Math.min(1, q.a * tw * view.alpha * 1.3).toFixed(3) + ')';
-          ctx.beginPath();
-          ctx.arc(ox + qx * sc + jx, oy - qy * sc + jy, q.r * view.dot, 0, 6.2832);
-          ctx.fill();
+          px.beginPath();
+          px.arc(ox + qx * sc + jx, oy - qy * sc + jy, q.r * rk * view.dot, 0, 6.2832);
+          px.fill();
         }
         if (view.morph) return;      // no flow or feeding while the cloud is in flight
         // internal flow: the same presets and path maths the engine runs, so a
@@ -3838,10 +3924,10 @@
               const off = flowLane[f] * pr.width * rt.k
                         + Math.sin(T * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
               fx += -ddy * off; fy += ddx * off;
-              ctx.fillStyle = ink ? 'rgba(58,45,34,' + fa.toFixed(3) + ')' : tone + fa.toFixed(3) + ')';
-              ctx.beginPath();
-              ctx.arc(ox + fx * sc, oy - fy * sc, view.dot * 1.15, 0, 6.2832);
-              ctx.fill();
+              px.fillStyle = ink ? 'rgba(58,45,34,' + fa.toFixed(3) + ')' : tone + fa.toFixed(3) + ')';
+              px.beginPath();
+              px.arc(ox + fx * sc, oy - fy * sc, view.dot * rk * 1.15, 0, 6.2832);
+              px.fill();
             }
           }
         }
@@ -3863,17 +3949,81 @@
           const ry = (-sn * q.x + cs * q.y) * k;
           const tw = 0.80 + 0.20 * Math.sin(T * 1.8 + q.sz * 21.0);
           const cr = ink ? ink[0] : q.cr, cg = ink ? ink[1] : q.cg, cb = ink ? ink[2] : q.cb;
-          ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' +
+          px.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' +
             Math.min(1, q.a * tw * feedA * view.alpha * 1.25).toFixed(3) + ')';
-          ctx.beginPath();
-          ctx.arc(ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
+          px.beginPath();
+          px.arc(ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
                   oy - ry * sc + aDrift * Math.cos(T * 0.7 + q.sz * 9.42),
-                  q.r * view.dot * 0.9, 0, 6.2832);
-          ctx.fill();
+                  q.r * rk * view.dot * 0.9, 0, 6.2832);
+          px.fill();
         }
+      },
+      // an export-resolution still, drawn on the same ground the tile sits on
+      exportCanvas(size, grounds){
+        const ec = document.createElement('canvas');
+        ec.width = ec.height = size;
+        const ex = ec.getContext('2d');
+        (grounds || []).forEach(col => {
+          if (!col || col === 'transparent') return;
+          ex.fillStyle = col; ex.fillRect(0, 0, size, size);
+        });
+        const live = Math.min(c.width, c.height) || size;
+        view.paint(ex, size, size, performance.now(), size / live);
+        return ec;
+      },
+      // the asset, as the viewer currently sees it: current theme, current cloud
+      // the name follows whatever the view is showing now, not what it was built with
+      label(){
+        return opts.name
+          || (view.idx != null && ORGANS[view.idx] ? ORGANS[view.idx].label : 'visual');
+      },
+      async download(){
+        const cv = view.exportCanvas(DL_SIZE, groundStack(host));
+        await savePNG(slug(view.label()) + '-' + themeName() + '-' + DL_SIZE + '.png',
+                      await toBlob(cv));
       }
     };
     organViews.push(view);
+    // Every instance carries its own download, top-right of the visual, so any
+    // asset on the page is one click away without a separate export screen.
+    if (opts.dl !== false){
+      if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+      host.classList.add('dlHost');
+      const btn = document.createElement('button');
+      btn.className = 'dlBtn';
+      btn.type = 'button';
+      btn.title = 'Download PNG — ' + DL_SIZE + '×' + DL_SIZE;
+      btn.setAttribute('aria-label', 'Download this visual as a PNG');
+      btn.innerHTML =
+        '<svg viewBox="0 0 16 16" aria-hidden="true">' +
+          '<path d="M8 2v8M4.6 7.1 8 10.5l3.4-3.4M3 13h10" ' +
+          'fill="none" stroke="currentColor" stroke-width="1.4" ' +
+          'stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg>';
+      btn.addEventListener('click', async ev => {
+        ev.stopPropagation();
+        if (btn.dataset.busy) return;
+        btn.dataset.busy = '1'; btn.classList.add('is-busy');
+        try {
+          await view.download();
+          btn.classList.add('is-done');
+          setTimeout(() => btn.classList.remove('is-done'), 1400);
+        } catch (e){
+          // declined, rate-limited or unavailable — say so, never retry on our own
+          btn.classList.add('is-fail');
+          btn.title = (e && e.code === 'declined') ? 'Download cancelled'
+                    : 'Download unavailable' + (e && e.message ? ' — ' + e.message : '');
+          setTimeout(() => {
+            btn.classList.remove('is-fail');
+            btn.title = 'Download PNG — ' + DL_SIZE + '×' + DL_SIZE;
+          }, 2200);
+        } finally {
+          btn.classList.remove('is-busy'); delete btn.dataset.busy;
+        }
+      });
+      host.appendChild(btn);
+      view.dlBtn = btn;
+    }
     return view;
   }
   (function organTick(t){
@@ -4135,6 +4285,7 @@
       const view = makeOrganView(stage, null, {
         cloud: cl, key: 'ms' + m.code, target: dotTarget(cl),
         fill: 0.46, dot: 1.0, beat: false,
+        name: m.code + '-' + m.name,
         flowPreset: m.flow
       });
       cell.querySelector('.olPts').textContent = view.dotCount() + ' pts';
@@ -4155,7 +4306,10 @@
         '<div class="olSpec"><span class="olPts"></span></div>' +
         '<div class="olUse">' + (used.length ? used.join(' &middot; ') : 'Not mapped to a health system') + '</div>';
       grid.appendChild(cell);
-      const v = makeOrganView(cell.querySelector('.olStage'), i, { target: dotTarget(clouds[i]), fill: 0.46, dot: 1.0 });
+      const v = makeOrganView(cell.querySelector('.olStage'), i, {
+        target: dotTarget(clouds[i]), fill: 0.46, dot: 1.0,
+        name: String(i).padStart(2, '0') + '-' + o.label
+      });
       cell.querySelector('.olPts').textContent = v.dotCount() + ' pts';
     });
   })();
@@ -4617,7 +4771,9 @@
   (function(){
     const host = document.getElementById('ovOrgan');
     if (!host) return;
-    makeOrganView(host, 3, { dense: true }); // overview: heart, at engine density
+    // no download here: the tile is a thumbnail inside a card, and the same
+    // heart is downloadable at full size from the library
+    makeOrganView(host, 3, { dense: true, dl: false }); // overview: heart, at engine density
     document.querySelector('.ovcard.red').addEventListener('click', e => {
       if (e.target.closest('.ocx')) return; // the dismiss X never opens it
       sheetR.open(0); // heart first
