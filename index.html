@@ -574,7 +574,7 @@
     /* 12px from every edge; the top clears the prototype's control bar so the
        diagnostic channels are never hidden behind it */
     display:none;position:fixed;inset:12px;top:55px;z-index:9;overflow:hidden;
-    background:#0a0908;border:1px solid rgba(242,229,224,.09);border-radius:26px;
+    background:#111;border:1px solid rgba(242,229,224,.09);border-radius:26px;
     color:#ececec;
     grid-template-rows:auto 1fr;
   }
@@ -602,7 +602,7 @@
   }
   .imLeft{display:grid;grid-template-rows:1fr auto;gap:14px;min-height:0;}
   .imPanel{
-    background:rgba(242,229,224,.035);border:1px solid rgba(242,229,224,.06);
+    background:rgba(242,229,224,.04);border:none;
     border-radius:18px;padding:20px 22px;min-height:0;
   }
   .imMeta{
@@ -633,7 +633,7 @@
   /* modules differ in weight on purpose: the grid carries the hierarchy */
   .imMods{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   .imMod{
-    background:rgba(242,229,224,.035);border:1px solid rgba(242,229,224,.06);
+    background:rgba(242,229,224,.04);border:none;
     border-radius:18px;padding:16px 18px 14px;min-height:150px;
     display:flex;flex-direction:column;
   }
@@ -673,7 +673,7 @@
   .imSwap{transition:opacity .34s ease,filter .34s ease;}
   .imWrap.swapping .imSwap{opacity:0;filter:blur(7px);}
   body.light .imWrap{background:#f4efed;border-color:rgba(46,31,26,.12);color:#2e1f1a;}
-  body.light .imPanel, body.light .imMod{background:rgba(46,31,26,.04);border-color:rgba(46,31,26,.08);}
+  body.light .imPanel, body.light .imMod{background:rgba(46,31,26,.05);border:none;}
   body.light .imTab{background:rgba(46,31,26,.04);border-color:rgba(46,31,26,.08);color:rgba(46,31,26,.6);}
   body.light .imTab.on{color:#2e1f1a;background:rgba(46,31,26,.09);border-color:rgba(46,31,26,.22);}
   body.light .imMeta, body.light .imKv div span{color:rgba(46,31,26,.4);}
@@ -689,6 +689,19 @@
   body.light .imMod .big em{color:rgba(46,31,26,.5);}
   body.light .imMod .foot{color:rgba(46,31,26,.42);}
   body.light .imBars i{background:rgba(46,31,26,.4);}
+  /* the primary panel is a solid orange plate — placed last so it wins in both themes */
+  .imPrimary, body.light .imPrimary{
+    background:#e0784a;border:none;color:#170807;
+  }
+  .imPrimary .imMeta, body.light .imPrimary .imMeta,
+  .imPrimary .imKv div span, body.light .imPrimary .imKv div span{color:rgba(23,8,7,.58);}
+  .imPrimary h2, body.light .imPrimary h2,
+  .imPrimary .imKv div b, body.light .imPrimary .imKv div b{color:#170807;}
+  .imPrimary p, body.light .imPrimary p{color:rgba(23,8,7,.74);}
+  .imPrimary .imRule{border-top-color:rgba(23,8,7,.2);}
+  .imPrimary .imInfo, body.light .imPrimary .imInfo{
+    border-color:rgba(23,8,7,.38);color:rgba(23,8,7,.62);
+  }
   .olHead{max-width:880px;margin:0;padding:34px 28px 26px;}
   .olHead h1{
     margin:0 0 10px;font-size:27px;font-weight:500;letter-spacing:-.6px;color:#f2e5e0;
@@ -3891,7 +3904,7 @@
     'Gut': [0.46, 0.24], 'Metabolic': [0.48, 0.26], 'Kidney': [0.46, 0.30]
   };
   // the hero renders far larger than a library tile, so it needs the dots to match
-  function imTarget(cl){ return Math.min(8600, Math.round(dotTarget(cl) * 6)); }
+  function imTarget(cl){ return Math.min(8600, Math.round(dotTarget(cl) * 3.06)); }
   function imTone(delta){
     return delta < 0 ? '#8fae7e' : delta > 0 ? '#cf6b5b' : '#d9c66b';
   }
@@ -3975,7 +3988,7 @@
       const d = PILL[i], a = IM_ANCHOR[d.label] || [0.45, 0.3];
       const w = stage.clientWidth, h = stage.clientHeight;
       const cx = w / 2, cy = h / 2;
-      const sc = Math.min(w, h) * 0.50;
+      const sc = Math.min(w, h) * 0.357;
       const ax = cx + a[0] * sc, ay = cy - a[1] * sc;
       const lx = Math.min(w - 90, ax + 96), ly = Math.max(28, ay - 62);
       const qx = ax + 40, qy = ay - 34;
@@ -4017,7 +4030,7 @@
       ready = true;
       const cl = clouds[PILL[0].organIdx];
       view = makeOrganView(document.getElementById('imSlot'), PILL[0].organIdx,
-        { target: imTarget(cl), fill: 0.50, dot: 1.25, alpha: 1.35 });
+        { target: imTarget(cl), fill: 0.357, dot: 1.25, alpha: 1.35 });
       render(0);
       requestAnimationFrame(() => { annotate(0); wrap.classList.add('lines');
         setTimeout(() => wrap.classList.add('notes'), 260); });
