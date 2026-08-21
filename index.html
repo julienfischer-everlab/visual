@@ -682,10 +682,10 @@
   body.light .imKv div b{color:rgba(46,31,26,.8);}
   body.light .imLines path{stroke:rgba(46,31,26,.3);}
   body.light .imChip.q{background:rgba(46,31,26,.07);color:rgba(46,31,26,.7);}
-  .imArc .mj{stroke:rgba(242,229,224,.85);}
-  .imArc .nt{stroke:rgba(242,229,224,.18);}
-  body.light .imArc .mj{stroke:rgba(46,31,26,.8);}
-  body.light .imArc .nt{stroke:rgba(46,31,26,.2);}
+  .imArc .mj, .shArc .mj{stroke:rgba(242,229,224,.85);}
+  .imArc .nt, .shArc .nt{stroke:rgba(242,229,224,.18);}
+  body.light .imArc .mj, body.light .shArc .mj{stroke:rgba(46,31,26,.8);}
+  body.light .imArc .nt, body.light .shArc .nt{stroke:rgba(46,31,26,.2);}
   body.light .imMod .big em{color:rgba(46,31,26,.5);}
   body.light .imMod .foot{color:rgba(46,31,26,.42);}
   body.light .imBars i{background:rgba(46,31,26,.4);}
@@ -1031,6 +1031,8 @@
   }
   .shCard .sub{margin:3px 0 10px;font-size:15px;line-height:1.25;color:rgba(242,229,224,.5);letter-spacing:-.2px;}
   .shCard p{margin:0;font-size:12px;line-height:1.5;color:rgba(242,229,224,.42);}
+  .shArc{flex:none;padding:0 26px 10px;}
+  .shArc svg{display:block;width:100%;height:54px;overflow:visible;}
   .shModal .shDots{padding:16px 0 0;}
   body.light .sheet.shModal{background:#f3e2d8;}
   body.light .shModal .shClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
@@ -3905,6 +3907,28 @@
   };
   // the hero renders far larger than a library tile, so it needs the dots to match
   function imTarget(cl){ return Math.min(8600, Math.round(dotTarget(cl) * 3.06)); }
+  // the age scale: real ages, a tick per year, colour only across the gap,
+  // the chronological age marked at centre and an indicator at the biological age
+  function ageArcMarkup(delta){
+    const span = 11, R = 210, SW = 96;
+    let ticks = '';
+    for (let y = -span; y <= span; y++){
+      const a = (y / span) * (SW / 2) * Math.PI / 180 - Math.PI / 2;
+      const inGap = delta < 0 ? (y >= delta && y <= 0) : (y <= delta && y >= 0);
+      const major = y === 0;
+      const len = major ? 15 : (inGap ? 12 : 8);
+      const x1 = 170 + Math.cos(a) * R, y1 = 238 + Math.sin(a) * R;
+      const x2 = 170 + Math.cos(a) * (R - len), y2 = 238 + Math.sin(a) * (R - len);
+      const cls = major ? 'mj' : inGap ? 'gp' : 'nt';
+      const col = inGap && !major ? ' stroke="' + imTone(delta) + '"' : '';
+      ticks += '<line class="' + cls + '" x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) +
+               '" y2="' + y2.toFixed(1) + '"' + col + ' stroke-width="' + (major ? 2 : 1.4) + '"/>';
+    }
+    const ab = (delta / span) * (SW / 2) * Math.PI / 180 - Math.PI / 2;
+    ticks += '<circle cx="' + (170 + Math.cos(ab) * (R - 24)).toFixed(1) + '" cy="' +
+             (238 + Math.sin(ab) * (R - 24)).toFixed(1) + '" r="4.5" fill="' + imTone(delta) + '"/>';
+    return '<svg viewBox="20 18 300 58" preserveAspectRatio="xMidYMid meet">' + ticks + '</svg>';
+  }
   function imTone(delta){
     return delta < 0 ? '#8fae7e' : delta > 0 ? '#cf6b5b' : '#d9c66b';
   }
@@ -3934,27 +3958,6 @@
     document.querySelector('.imPrimary').classList.add('imSwap');
     modsEl.classList.add('imSwap');
 
-    // the age scale: real ages, a tick per year, colour only across the gap
-    function ageArc(d){
-      const age = CHRONO + d.delta, span = 11, R = 210, SW = 96;
-      let ticks = '';
-      for (let y = -span; y <= span; y++){
-        const a = (y / span) * (SW / 2) * Math.PI / 180 - Math.PI / 2;
-        const inGap = d.delta < 0 ? (y >= d.delta && y <= 0) : (y <= d.delta && y >= 0);
-        const major = y === 0;
-        const len = major ? 15 : (inGap ? 12 : 8);
-        const x1 = 170 + Math.cos(a) * R, y1 = 238 + Math.sin(a) * R;
-        const x2 = 170 + Math.cos(a) * (R - len), y2 = 238 + Math.sin(a) * (R - len);
-        const cls = major ? 'mj' : inGap ? 'gp' : 'nt';
-        const col = inGap && !major ? ' stroke="' + imTone(d.delta) + '"' : '';
-        ticks += '<line class="' + cls + '" x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) +
-                 '" y2="' + y2.toFixed(1) + '"' + col + ' stroke-width="' + (major ? 2 : 1.4) + '"/>';
-      }
-      const ab = (d.delta / span) * (SW / 2) * Math.PI / 180 - Math.PI / 2;   // indicator at biological age
-      ticks += '<circle cx="' + (170 + Math.cos(ab) * (R - 24)).toFixed(1) + '" cy="' +
-               (238 + Math.sin(ab) * (R - 24)).toFixed(1) + '" r="4.5" fill="' + imTone(d.delta) + '"/>';
-      return '<div class="imArc"><svg viewBox="20 18 300 58" preserveAspectRatio="xMidYMid meet">' + ticks + '</svg></div>';
-    }
     function bars(seed){
       let h = '';
       for (let i = 0; i < 5; i++)
@@ -3972,7 +3975,8 @@
         '<div><span>Trend</span><b>' + (d.delta < 0 ? 'Improving' : d.delta > 0 ? 'Drifting' : 'Stable') + '</b></div>';
       modsEl.innerHTML =
         '<div class="imMod"><div class="imMeta">Biological age</div>' +
-          '<div class="big">' + age + ' <em>years old</em></div>' + ageArc(d) + '</div>' +
+          '<div class="big">' + age + ' <em>years old</em></div>' +
+          '<div class="imArc">' + ageArcMarkup(d.delta) + '</div></div>' +
         '<div class="imMod"><div class="imMeta">Biomarkers measured</div>' +
           '<div class="big">' + d.bio + '</div>' +
           '<div class="foot"><span>' + (d.bioOut || 0) + ' out of range</span>' + bars(d.bio) + '</div></div>' +
@@ -4163,6 +4167,7 @@
       '<div class="sheet shModal">' +
         '<button class="shClose" aria-label="Close">&#10005;</button>' +
         '<div class="shStage"><div class="shSlot"></div></div>' +
+        '<div class="shArc" id="shArc"></div>' +
         '<div class="shCarousel"><div class="shTrack"></div></div>' +
         '<div class="mbDots shDots"></div>' +
         '<div class="shHome"></div>' +
@@ -4170,7 +4175,7 @@
     hostPhone.appendChild(wrap);
     const q = sel => wrap.querySelector(sel);
     const sheet = q('.sheet'), stage = q('.shStage');
-    const carousel = q('.shCarousel'), track = q('.shTrack');
+    const carousel = q('.shCarousel'), track = q('.shTrack'), arcEl = q('.shArc');
 
     function cardHTML(d){
       const age = CHRONO + d.delta, nm = d.label.toLowerCase();
@@ -4226,6 +4231,7 @@
       sxT = i;
       if (i !== cur){
         cur = i;
+        arcEl.innerHTML = ageArcMarkup(PILL[i].delta);
         dots.forEach((el, j) => el.classList.toggle('on', j === i));
       }
     }
@@ -4338,6 +4344,7 @@
         cur = startIdx;
         sx = sxT = startIdx;
         dots.forEach((el, j) => el.classList.toggle('on', j === startIdx));
+        arcEl.innerHTML = ageArcMarkup(PILL[startIdx].delta);
         wrap.style.display = 'block';
         layout(); place();
         requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
