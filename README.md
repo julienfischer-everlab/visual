@@ -31,6 +31,7 @@ python3 -m http.server 8734
 7. **Mobile (overview)** — the Overview frame on its own screen
 8. **Grid** — full-screen 3×3 anatomical plate, all organs alive with per-organ flow
 9. **Library** — an internal component workbench behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts, with the health systems it serves) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication and Supplements, each a standalone object). Every tile reports the dot count that visual is actually made of.
+10. **Immersive experience (modal)** — organ age as a lab instrument: pill channels, an asymmetric data grid, the particle organ floating in the right half with drawn annotations, and a ~1s morph between organs
 
 ## Tweaks (top bar)
 
