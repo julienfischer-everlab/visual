@@ -33,6 +33,7 @@ python3 -m http.server 8734
 9. **Library** — an internal component workbench behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts, with the health systems it serves) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication and Supplements, each a standalone object). Every tile reports the dot count that visual is actually made of.
 10. **Immersive experience (modal)** — organ age as a lab instrument: pill channels, an asymmetric data grid, the particle organ floating in the right half with drawn annotations, and a ~1s morph between organs
 11. **Desktop (organ age)** — the organ-age modal as a centred desktop card: header, the organ held dead centre, status badge, name, description and the organ carousel along the bottom
+12. **Desktop (overview)** — the Everlab product shell: sidebar, plan card, the two gauges, tasks, a next-actions rail and the action-plan grid. The organ card opens the organ-age modal over the page
 
 ## Tweaks (top bar)
 
@@ -79,8 +80,9 @@ python3 -m http.server 8734
   `dotTarget` also records `cl._k`, how much a shape needs over what its area
   suggests, so `shapeTarget(cl, base)` carries the same correction into the
   surfaces that ask for a flat count (the mobile sheets and carousels).
-- **The organ-age modal** (`makeSheet`) is one component in two dresses: a
-  bottom sheet inside the phone frames, a centred card on its own desktop page.
+- **The organ-age modal** (`makeSheet`) is one component in three dresses: a
+  bottom sheet inside the phone frames, a centred card on its own desktop page,
+  and — with `overlay: true` — the same card opened over the desktop overview.
   Both mount a single `makeOrganView`, so swiping the carousel does not move the
   organ — the cards travel, the organ stays dead centre and `morphTo` dissolves
   one silhouette into the next (verified: the lit centroid holds at 0.497-0.502
