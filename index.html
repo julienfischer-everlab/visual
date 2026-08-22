@@ -704,27 +704,45 @@
   }
   /* ---- download: one per visual, top-right, out of the way until wanted ---- */
   .dlBtn{
-    position:absolute;top:6px;right:6px;z-index:4;
-    width:26px;height:26px;padding:0;border:0;border-radius:8px;
+    position:absolute;top:8px;right:8px;z-index:4;
+    width:28px;height:28px;padding:0;border:0;border-radius:9px;
     display:flex;align-items:center;justify-content:center;
-    background:rgba(242,229,224,.09);color:rgba(242,229,224,.62);
-    cursor:pointer;opacity:.34;transform:translateY(-2px);
-    transition:opacity .18s ease,transform .18s ease,background .18s ease,color .18s ease;
+    background:rgba(242,229,224,.2);color:rgba(242,229,224,.92);
+    cursor:pointer;transition:background .16s ease,color .16s ease;
   }
   .dlBtn svg{width:14px;height:14px;display:block;}
-  .olCell:hover .dlBtn,.dlHost:hover .dlBtn,
-  .dlBtn:focus-visible,.dlBtn.is-busy,.dlBtn.is-done,.dlBtn.is-fail{
-    opacity:1;transform:none;
+  .dlBtn:hover{background:rgba(242,229,224,.34);color:#fff;}
+  .dlBtn:focus-visible{outline:2px solid rgba(242,229,224,.55);outline-offset:2px;}
+  .dlBtn.is-busy{opacity:.55;cursor:progress;}
+  .dlBtn.is-open{background:rgba(242,229,224,.34);color:#fff;}
+  .dlMenu{
+    position:absolute;top:40px;right:8px;z-index:7;display:none;
+    min-width:158px;padding:5px;border-radius:12px;
+    background:rgba(30,17,16,.97);border:1px solid rgba(242,229,224,.13);
+    box-shadow:0 14px 34px rgba(0,0,0,.55);
   }
-  .dlBtn:hover{background:rgba(242,229,224,.16);color:#f2e5e0;}
-  .dlBtn:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
-  .dlBtn.is-busy{opacity:.5;cursor:progress;}
+  .dlMenu.open{display:block;}
+  .dlMenu button{
+    display:flex;width:100%;align-items:baseline;gap:10px;box-sizing:border-box;
+    padding:7px 9px;border:0;border-radius:8px;background:transparent;
+    color:#f2e5e0;font:inherit;font-size:12px;text-align:left;cursor:pointer;
+  }
+  .dlMenu button:hover,.dlMenu button:focus-visible{background:rgba(242,229,224,.11);outline:none;}
+  .dlMenu b{font-weight:500;letter-spacing:.03em;}
+  .dlMenu i{
+    font-style:normal;margin-left:auto;font-size:10px;
+    color:rgba(242,229,224,.42);white-space:nowrap;
+  }
+  body.light .dlBtn.is-open{background:rgba(46,31,26,.16);color:#2e1f1a;}
+  body.light .dlMenu{background:rgba(253,251,249,.98);border-color:rgba(46,31,26,.14);
+    box-shadow:0 14px 34px rgba(46,31,26,.16);}
+  body.light .dlMenu button{color:#2e1f1a;}
+  body.light .dlMenu button:hover,body.light .dlMenu button:focus-visible{background:rgba(46,31,26,.08);}
+  body.light .dlMenu i{color:rgba(46,31,26,.45);}
   .dlBtn.is-done{background:rgba(122,196,140,.22);color:#9ad8a8;}
   .dlBtn.is-fail{background:rgba(226,110,92,.22);color:#f0a394;}
-  body.light .dlBtn{background:rgba(46,31,26,.08);color:rgba(46,31,26,.6);}
-  body.light .dlBtn:hover{background:rgba(46,31,26,.15);color:#2e1f1a;}
-  /* no hover to reveal it on touch, so it just stays */
-  @media (hover:none){ .dlBtn{opacity:1;transform:none;} }
+  body.light .dlBtn{background:rgba(46,31,26,.14);color:rgba(46,31,26,.8);}
+  body.light .dlBtn:hover{background:rgba(46,31,26,.24);color:#2e1f1a;}
   .olHead{max-width:880px;margin:0;padding:34px 28px 26px;}
   .olHead h1{
     margin:0 0 10px;font-size:27px;font-weight:500;letter-spacing:-.6px;color:#f2e5e0;
@@ -751,11 +769,7 @@
   .olName{font-size:15px;font-weight:500;color:#f2e5e0;margin:3px 0 5px;}
   .olSpec{
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:10px;color:rgba(242,229,224,.4);display:flex;gap:10px;flex-wrap:wrap;
-  }
-  .olUse{
-    margin-top:9px;padding-top:9px;border-top:1px solid rgba(242,229,224,.08);
-    font-size:10.5px;line-height:1.5;color:rgba(242,229,224,.45);
+    font-size:10px;color:rgba(242,229,224,.4);
   }
   body.light .olHead h1{color:#2e1f1a;}
   body.light .olHead p{color:#7d6b58;}
@@ -763,7 +777,6 @@
   body.light .olIdx{color:rgba(46,31,26,.4);}
   body.light .olName{color:#2e1f1a;}
   body.light .olSpec{color:rgba(46,31,26,.45);}
-  body.light .olUse{color:rgba(46,31,26,.5);border-top-color:rgba(46,31,26,.1);}
   body.black .olCell{background:rgba(255,255,255,.05);}
   .gCell{
     border:0;border-radius:0;background:transparent;
@@ -1785,10 +1798,11 @@
         <p>Every organ in the experience, isolated. Each tile is one instance of the
            same component, drawn from the shared point cloud &mdash; change the source
            and every surface that uses it follows.</p>
-        <p class="olHint">Every visual downloads from the &#8595; in its top-right
-           corner as a <strong>transparent PNG</strong>, no smaller than
-           1920&times;1920 &mdash; the frame on screen, dot for dot, inked for
-           whichever theme the page is in.</p>
+        <p class="olHint">The &#8595; in each visual's top-right corner exports the
+           frame on screen, dot for dot, no smaller than 1920&times;1920 and inked
+           for whichever theme the page is in &mdash; as
+           <strong>PNG</strong> or <strong>SVG</strong> on a transparent ground,
+           or <strong>JPG</strong> with the background baked in.</p>
       </div>
       <div class="olGrid" id="olGrid"></div>
     </section>
@@ -1798,10 +1812,11 @@
         <p>The health journey as seven standalone objects, built from the same cloud
            builder and the same component as the organs &mdash; same material, same
            motion, same scale.</p>
-        <p class="olHint">Every visual downloads from the &#8595; in its top-right
-           corner as a <strong>transparent PNG</strong>, no smaller than
-           1920&times;1920 &mdash; the frame on screen, dot for dot, inked for
-           whichever theme the page is in.</p>
+        <p class="olHint">The &#8595; in each visual's top-right corner exports the
+           frame on screen, dot for dot, no smaller than 1920&times;1920 and inked
+           for whichever theme the page is in &mdash; as
+           <strong>PNG</strong> or <strong>SVG</strong> on a transparent ground,
+           or <strong>JPG</strong> with the background baked in.</p>
       </div>
       <div class="olGrid" id="olOther"></div>
     </section>
@@ -3744,8 +3759,49 @@
   }
   // ---- asset export: any visual, as a square PNG at print resolution ----
   const DL_SIZE = 1920;              // the floor the assets are specified at
-  // The ground stays transparent — what the theme changes is the ink the dots
-  // are drawn with, so a light-mode asset is still a different image.
+  // PNG and SVG keep a transparent ground; JPEG cannot, so it gets the same
+  // stack of backgrounds the tile actually sits on. Either way the theme
+  // decides the ink, so a light-mode asset is a different image.
+  function groundStack(el){
+    const out = [];
+    for (let n = el; n && n.nodeType === 1; n = n.parentElement){
+      const bg = getComputedStyle(n).backgroundColor;
+      if (bg && bg !== 'transparent' && !/^rgba\(0, 0, 0, 0\)$/.test(bg)) out.push(bg);
+    }
+    out.push(getComputedStyle(document.body).backgroundColor || '#111');
+    return out.reverse();            // outermost first, so inner cards paint over
+  }
+  // A drop-in for a 2D context that records circles instead of drawing them, so
+  // the vector export runs the exact same paint() as the screen does.
+  function svgSink(){
+    let fill = '#000', cx = 0, cy = 0, r = 0;
+    const parts = [];
+    return {
+      parts: parts,
+      set fillStyle(v){ fill = v; },
+      get fillStyle(){ return fill; },
+      beginPath(){},
+      clearRect(){},
+      arc(x, y, rad){ cx = x; cy = y; r = rad; },
+      fill(){
+        // rgba() in a fill attribute is not universally understood; split it
+        const m = /^rgba?\(([^)]+)\)$/.exec(fill);
+        let col = fill, op = '';
+        if (m){
+          const n = m[1].split(',').map(v => v.trim());
+          col = 'rgb(' + n[0] + ',' + n[1] + ',' + n[2] + ')';
+          if (n[3] != null && +n[3] < 1) op = ' fill-opacity="' + (+n[3]).toFixed(3) + '"';
+        }
+        parts.push('<circle cx="' + cx.toFixed(2) + '" cy="' + cy.toFixed(2) +
+                   '" r="' + r.toFixed(2) + '" fill="' + col + '"' + op + '/>');
+      }
+    };
+  }
+  const DL_FORMATS = [
+    { id: 'png', ext: 'png', label: 'PNG', note: 'transparent' },
+    { id: 'jpg', ext: 'jpg', label: 'JPG', note: 'with background' },
+    { id: 'svg', ext: 'svg', label: 'SVG', note: 'vector, transparent' }
+  ];
   function slug(s){
     return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'asset';
   }
@@ -3765,10 +3821,10 @@
     } catch (e){ dlNS = null; }
     return dlNS;
   }
-  function toBlob(canvas){
-    return new Promise(res => canvas.toBlob(res, 'image/png'));
+  function toBlob(canvas, mime, q){
+    return new Promise(res => canvas.toBlob(res, mime || 'image/png', q));
   }
-  async function savePNG(filename, blob){
+  async function saveFile(filename, blob){
     const ns = await dlReady();
     if (ns && ns.save){ await ns.save({ filename: filename, data: blob }); return; }
     const url = URL.createObjectURL(blob);
@@ -3955,15 +4011,34 @@
       // canvas keeps the live tile's proportions and scales by one factor, so
       // nothing is cropped or padded: it is the picture on screen, enlarged.
       // minSide is the floor for BOTH dimensions.
-      exportCanvas(minSide){
+      exportCanvas(minSide, grounds){
         const w = c.width, h = c.height;
         if (!w || !h) return null;
         const k = minSide / Math.min(w, h);
         const ec = document.createElement('canvas');
         ec.width = Math.round(w * k);
         ec.height = Math.round(h * k);
-        view.paint(ec.getContext('2d'), ec.width, ec.height, view._lastT || performance.now(), k);
+        const ex = ec.getContext('2d');
+        (grounds || []).forEach(col => {
+          if (!col || col === 'transparent') return;
+          ex.fillStyle = col; ex.fillRect(0, 0, ec.width, ec.height);
+        });
+        view.paint(ex, ec.width, ec.height, view._lastT || performance.now(), k);
         return ec;
+      },
+      // the same frame as vector art: one <circle> per dot, transparent ground
+      exportSVG(minSide){
+        const w = c.width, h = c.height;
+        if (!w || !h) return null;
+        const k = minSide / Math.min(w, h);
+        const W = Math.round(w * k), H = Math.round(h * k);
+        const sink = svgSink();
+        view.paint(sink, W, H, view._lastT || performance.now(), k);
+        return {
+          W: W, H: H,
+          text: '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H +
+                '" viewBox="0 0 ' + W + ' ' + H + '">\n' + sink.parts.join('\n') + '\n</svg>\n'
+        };
       },
       // the name follows whatever the view is showing now, not what it was built with
       label(){
@@ -3971,12 +4046,21 @@
           || (view.idx != null && ORGANS[view.idx] ? ORGANS[view.idx].label : 'visual');
       },
       // the asset exactly as the viewer sees it: same frame, same dots, same
-      // framing, transparent ground, at no less than DL_SIZE on either side
-      async download(){
-        const cv = view.exportCanvas(DL_SIZE);
+      // framing, at no less than DL_SIZE on either side
+      async download(fmt){
+        const name = slug(view.label()) + '-' + themeName() + '-';
+        if (fmt === 'svg'){
+          const v = view.exportSVG(DL_SIZE);
+          if (!v) return;
+          await saveFile(name + v.W + 'x' + v.H + '.svg',
+                         new Blob([v.text], { type: 'image/svg+xml' }));
+          return;
+        }
+        const jpg = fmt === 'jpg';
+        const cv = view.exportCanvas(DL_SIZE, jpg ? groundStack(host) : null);
         if (!cv) return;
-        await savePNG(slug(view.label()) + '-' + themeName() + '-' + cv.width + 'x' + cv.height + '.png',
-                      await toBlob(cv));
+        await saveFile(name + cv.width + 'x' + cv.height + (jpg ? '.jpg' : '.png'),
+                       await toBlob(cv, jpg ? 'image/jpeg' : 'image/png', jpg ? 0.92 : undefined));
       }
     };
     organViews.push(view);
@@ -3988,35 +4072,81 @@
       const btn = document.createElement('button');
       btn.className = 'dlBtn';
       btn.type = 'button';
-      btn.title = 'Download PNG — ' + DL_SIZE + '×' + DL_SIZE;
-      btn.setAttribute('aria-label', 'Download this visual as a PNG');
+      btn.title = 'Download this visual';
+      btn.setAttribute('aria-haspopup', 'true');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-label', 'Download this visual');
       btn.innerHTML =
         '<svg viewBox="0 0 16 16" aria-hidden="true">' +
           '<path d="M8 2v8M4.6 7.1 8 10.5l3.4-3.4M3 13h10" ' +
           'fill="none" stroke="currentColor" stroke-width="1.4" ' +
           'stroke-linecap="round" stroke-linejoin="round"/>' +
         '</svg>';
-      btn.addEventListener('click', async ev => {
+      // the format menu: raster or vector, and whether the ground comes with it
+      const menu = document.createElement('div');
+      menu.className = 'dlMenu';
+      menu.setAttribute('role', 'menu');
+      menu.innerHTML = DL_FORMATS.map(f =>
+        '<button type="button" role="menuitem" data-fmt="' + f.id + '">' +
+          '<b>' + f.label + '</b><i>' + f.note + '</i></button>').join('');
+
+      function close(){
+        menu.classList.remove('open');
+        btn.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+        removeEventListener('pointerdown', onAway, true);
+        removeEventListener('keydown', onKey, true);
+      }
+      function onAway(ev){ if (!menu.contains(ev.target) && ev.target !== btn) close(); }
+      function onKey(ev){ if (ev.key === 'Escape'){ close(); btn.focus(); } }
+      function open(){
+        // only one picker at a time, so a page of tiles never stacks menus
+        document.querySelectorAll('.dlMenu.open').forEach(m => m !== menu &&
+          m.dispatchEvent(new CustomEvent('dlclose')));
+        menu.classList.add('open');
+        btn.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+        addEventListener('pointerdown', onAway, true);
+        addEventListener('keydown', onKey, true);
+        menu.querySelector('button').focus();
+      }
+      menu.addEventListener('dlclose', close);
+
+      btn.addEventListener('click', ev => {
         ev.stopPropagation();
+        menu.classList.contains('open') ? close() : open();
+      });
+
+      menu.addEventListener('click', async ev => {
+        const item = ev.target.closest('button[data-fmt]');
+        if (!item) return;
+        ev.stopPropagation();
+        close();
         if (btn.dataset.busy) return;
         btn.dataset.busy = '1'; btn.classList.add('is-busy');
+        const fmt = item.dataset.fmt;
         try {
-          await view.download();
+          await view.download(fmt);
           btn.classList.add('is-done');
           setTimeout(() => btn.classList.remove('is-done'), 1400);
         } catch (e){
           // declined, rate-limited or unavailable — say so, never retry on our own
+          const code = e && e.code;
           btn.classList.add('is-fail');
-          btn.title = (e && e.code === 'declined') ? 'Download cancelled'
+          btn.title = code === 'declined' ? 'Download cancelled'
+                    : code === 'extension_not_enabled'
+                      ? fmt.toUpperCase() + ' is not allowed here — try PNG or JPG'
                     : 'Download unavailable' + (e && e.message ? ' — ' + e.message : '');
           setTimeout(() => {
             btn.classList.remove('is-fail');
-            btn.title = 'Download PNG — ' + DL_SIZE + '×' + DL_SIZE;
-          }, 2200);
+            btn.title = 'Download this visual';
+          }, 3200);
         } finally {
           btn.classList.remove('is-busy'); delete btn.dataset.busy;
         }
       });
+
+      host.appendChild(menu);
       host.appendChild(btn);
       view.dlBtn = btn;
     }
@@ -4273,8 +4403,7 @@
         '<div class="olStage"></div>' +
         '<div class="olIdx">' + m.code + '</div>' +
         '<div class="olName">' + m.name + '</div>' +
-        '<div class="olSpec"><span class="olPts"></span><span>' + m.sub + '</span></div>' +
-        '<div class="olUse">' + m.note + '</div>';
+        '<div class="olSpec"><span class="olPts"></span></div>';
       grid.appendChild(cell);
       const stage = cell.querySelector('.olStage');
       const cl = buildCloud(m.accent, m.depth, 1.0, { s: 1, x: 0, y: 0 });
@@ -4294,13 +4423,11 @@
     ORGANS.forEach((o, i) => {
       const cell = document.createElement('div');
       cell.className = 'olCell';
-      const used = ORGAN_USED_BY[i] || [];
       cell.innerHTML =
         '<div class="olStage"></div>' +
         '<div class="olIdx">' + String(i).padStart(2, '0') + '</div>' +
         '<div class="olName">' + o.label + '</div>' +
-        '<div class="olSpec"><span class="olPts"></span></div>' +
-        '<div class="olUse">' + (used.length ? used.join(' &middot; ') : 'Not mapped to a health system') + '</div>';
+        '<div class="olSpec"><span class="olPts"></span></div>';
       grid.appendChild(cell);
       const v = makeOrganView(cell.querySelector('.olStage'), i, {
         target: dotTarget(clouds[i]), fill: 0.46, dot: 1.0,

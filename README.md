@@ -72,11 +72,23 @@ python3 -m http.server 8734
   screen — verified by counting `arc()` calls on both surfaces and comparing
   normalised positions. It replays `view._lastT`, the timestamp of the last
   painted frame, so the asset is the frame the viewer was looking at. The
-  ground stays transparent; what the theme changes is the ink, so a light-mode
-  asset is still a different image. The download control sits in the top-right
-  of each visual; pass `dl: false` to suppress it. Saving goes through the
-  Artifact `downloads` capability when the page runs as an artifact, and falls
-  back to an `<a download>` when it does not.
+  download control sits in the top-right of each visual and opens a format
+  picker; pass `dl: false` to suppress it.
+  - **PNG** and **JPG** come off `exportCanvas`. PNG keeps a transparent
+    ground; JPG has no alpha, so it gets the tile's own background stack
+    (`groundStack` walks the ancestors).
+  - **SVG** comes off `exportSVG`, which runs the *same* `paint()` against
+    `svgSink()` — a duck-typed stand-in for a 2D context that records
+    `<circle>` elements instead of drawing arcs. One code path, so the vector
+    file can never drift from the screen. `rgba()` is split into `fill` +
+    `fill-opacity` for tools that will not parse it in an attribute.
+
+  In every format the theme decides the ink, so a light-mode asset is a
+  different image. Saving goes through the Artifact `downloads` capability when
+  the page runs as an artifact, and falls back to an `<a download>` when it
+  does not. Note that `svg` is in the capability's *extended* extension set and
+  can come back `extension_not_enabled`; the button surfaces that and points at
+  PNG/JPG.
 - The mobile bottom sheets and small cards use lightweight 2D-canvas particle
   renderers sampled from the same clouds, so several organs can animate
   independently of the WebGL context.
