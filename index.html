@@ -206,6 +206,18 @@
   body.m1 .carousel{display:none;}
   body.m2 .carousel{display:none;}
   body.m2 canvas#field{z-index:2;border-radius:18px;}
+  .dcExpand{
+    position:absolute;right:14px;top:14px;z-index:6;
+    width:30px;height:30px;border-radius:9px;border:0;padding:0;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(242,229,224,.09);color:rgba(242,229,224,.75);
+    transition:background .16s ease,color .16s ease;
+  }
+  .dcExpand svg{width:14px;height:14px;display:block;}
+  .dcExpand:hover{background:rgba(242,229,224,.18);color:#f2e5e0;}
+  .dcExpand:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
+  body.light .dcExpand{background:rgba(46,31,26,.09);color:rgba(46,31,26,.7);}
+  body.light .dcExpand:hover{background:rgba(46,31,26,.18);color:#2e1f1a;}
   body.m2 .note{display:none;}
   body.m2 .pillui{z-index:5;padding:0;gap:0;display:flex;}
   body.m2 .pills{display:none;}
@@ -269,7 +281,7 @@
     font-size:9px;line-height:13px;text-align:center;color:#8b8b86;
     vertical-align:6px;margin-left:6px;font-style:normal;font-weight:400;
   }
-  .dash .dcard{background:#161615;border:none;border-radius:16px;padding:20px;}
+  .dash .dcard{background:#161615;border:none;border-radius:16px;padding:20px;position:relative;}
   .dash .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;}
   .dash .big{font-size:30px;font-weight:500;margin-top:6px;}
   .dash .legend{display:flex;gap:26px;margin-top:22px;font-size:12px;color:#bdbdb9;}
@@ -348,12 +360,12 @@
   body.m2 .pill{padding:5px 11px;font-size:11px;}
 
   /* ---- Mobile: the hero as a swipe carousel inside a phone frame ---- */
-  body.m3, body.m6, body.m7{background:#000;}
-  body.m3 .carousel, body.m3 .note, body.m6 .carousel, body.m6 .note,
-  body.m7 .carousel, body.m7 .note, body.m7 .pillui, body.m7 #field{display:none;}
-  /* the device: titanium band, display bezel, side buttons */
+
+  body.m5, body.m6{background:#000;}
+  body.m5 .carousel, body.m5 .note,
+  body.m6 .carousel, body.m6 .note, body.m6 .pillui, body.m6 #field{display:none;}  /* the device: titanium band, display bezel, side buttons */
   #phoneShell{display:none;}
-  body.m3 #phoneShell, body.m6 #phoneShell{
+  body.m5 #phoneShell{
     display:block;position:fixed;z-index:1;
     left:50%;top:calc(50% + 22px);transform:translate(-50%,-50%);
     --phH:min(calc(100vh - 108px), 880px);
@@ -384,27 +396,7 @@
   .mtitle h2{margin:0;font-size:24px;font-weight:500;letter-spacing:-0.4px;color:#ececec;}
   .mtitle .cbtn{display:inline-block;width:36px;height:36px;border-radius:50%;background:#1c1c1b;border:1px solid #2c2c2a;margin-left:8px;}
   /* fixed-height hero carousel; a sliver of the next card signals swipe */
-  .mcar{
-    display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;flex:none;
-    padding:0 13px;
-    height:398px;scrollbar-width:none;overscroll-behavior-x:contain;
-  }
-  .mcar::-webkit-scrollbar{display:none;}
-  .mcar{cursor:grab;user-select:none;-webkit-user-select:none;}
-  .mcar:active{cursor:grabbing;}
-  .mcard{
-    flex:0 0 calc(100% - 22px);scroll-snap-align:start;
-    border-radius:22px;height:100%;overflow:hidden;position:relative;
-  }
-  .mdots{display:flex;gap:5px;justify-content:center;align-items:center;padding:14px 0 2px;flex:none;}
-  .mdots i{height:6px;border-radius:3px;background:#ececec;display:block;}
-  /* card 1 — the snapshot slide: three surfaces, one carousel piece */
-  .mcard.msnap{background:transparent;display:flex;flex-direction:column;gap:12px;}
   .msn{background:rgba(255,255,255,.04);border-radius:22px;padding:22px;display:flex;flex-direction:column;}
-  .msnap .mc1{flex:1;}
-  #phone .mc1 .legend{margin-top:auto;}
-  #phone .mc1 .meterbar{margin-bottom:2px;}
-  .msnap .mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:none;height:158px;}
   #phone .lbl, #phone2 .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;}
   #phone .big, #phone2 .big{font-size:28px;font-weight:500;margin-top:6px;color:#ececec;}
   #phone .inf{
@@ -420,40 +412,6 @@
   #phone .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;color:#8b8b86;font-size:12.5px;}
   #phone .bars{display:flex;align-items:flex-end;gap:2px;}
   #phone .bars i{width:4px;background:#ececec;border-radius:1px;font-style:normal;}
-  /* card 2 — the organ-age experience, adapted for mobile */
-  .mcard.morgan{background:#331110;display:flex;flex-direction:column;padding:18px 0 0;}
-  .morgan .mhead{padding:2px 20px 0;flex:none;}
-  .morgan .slbl2{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,229,224,.6);text-align:center;}
-  .morgan .moname{font-size:16px;font-weight:500;letter-spacing:-0.3px;color:#f2e5e0;text-align:center;flex:none;transition:opacity .22s;}
-  #mSlot{flex:1;position:relative;min-height:110px;}
-  #mGauge{flex:none;}
-  body.m3 canvas#field{position:absolute;z-index:1;}
-  body.m3 .pillui{display:none;}
-  /* centered stack: organ visual, then [‹ hero age + name ›], then the arc */
-  body.m3 #ageBig{height:60px;justify-content:center;flex:none;}
-  body.m3 #ageBig .dcol{font-size:44px;}
-  body.m3 #ageBig .dcol + .dcol{margin-left:-2px;}
-  /* caption rides under the organ name in the bottom group */
-  body.m3 #status{margin:2px 0 0;min-height:0;text-align:center;}
-  body.m3 #status .word{
-    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:9px;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;
-  }
-  /* the arc sits directly below the organ visual */
-  #mGauge{display:flex;justify-content:center;}
-  body.m3 #arcA{transform:scale(.58);margin:-2px 0 -58px;flex:none;}
-  /* organ switcher arrows flank the age + name group */
-  .mAgeRow{display:flex;align-items:center;justify-content:center;gap:20px;padding:0 20px;flex:none;margin-bottom:36px;}
-  .mAgeCol{display:flex;flex-direction:column;align-items:center;min-width:130px;}
-  .mAgeCol .moname{margin-top:-4px;}
-  .mnbtn{
-    width:27px;height:27px;border-radius:50%;cursor:pointer;flex:none;
-    background:rgba(255,255,255,.04);border:none;
-    color:#f2e5e0;display:flex;align-items:center;justify-content:center;
-    padding:0;transition:background .2s;
-  }
-  .mnbtn:hover{background:rgba(255,255,255,.1);}
-  .mnbtn svg{display:block;width:5px;height:9px;}
   /* page content below the hero */
   .msel{
     margin:16px 13px 0;border:1px solid #2a2a28;border-radius:12px;
@@ -493,10 +451,10 @@
     user-select:none;-webkit-user-select:none;cursor:grab;
   }
   #spatial:active{cursor:grabbing;}
-  body.m4 #spatial{display:block;}
-  body.m4 .carousel, body.m4 .pillui, body.m4 .note{display:none;}
+  body.m3 #spatial{display:block;}
+  body.m3 .carousel, body.m3 .pillui, body.m3 .note{display:none;}
   /* organs render above the cards: transparent canvas, input passes through */
-  body.m4 canvas#field{z-index:3;pointer-events:none;}
+  body.m3 canvas#field{z-index:3;pointer-events:none;}
   .spCard{
     position:absolute;left:50%;top:50%;box-sizing:border-box;
     border-radius:44px;
@@ -524,13 +482,13 @@
     grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:0;
     border:1px solid rgba(242,229,224,.07);
   }
-  body.m5 #grid{display:grid;}
-  body.m5 .carousel, body.m5 .pillui, body.m5 .note{display:none;}
+  body.m4 #grid{display:grid;}
+  body.m4 .carousel, body.m4 .pillui, body.m4 .note{display:none;}
 
   /* ---- Organ library: the master component, one tile per organ ---- */
   .olib{display:none;position:fixed;inset:0;z-index:8;background:var(--bg);
     padding-top:43px;box-sizing:border-box;}
-  body.m8 .olib{display:flex;}
+  body.m7 .olib{display:flex;}
   /* persistent nav: this is a workbench, so it stays quiet and out of the way */
   .olNav{
     width:208px;flex:none;padding:26px 12px 26px 20px;box-sizing:border-box;
@@ -567,7 +525,7 @@
   body.light .olNavItem:hover, body.light .olNavItem.on{color:#2e1f1a;background:rgba(46,31,26,.06);}
   body.light .olEmpty p{color:rgba(46,31,26,.45);}
   body.light .olEmptyMark{border-color:rgba(46,31,26,.22);}
-  body.m8 #field, body.m8 .carousel, body.m8 .pillui, body.m8 .note{display:none;}
+  body.m7 #field, body.m7 .carousel, body.m7 .pillui, body.m7 .note{display:none;}
 
   /* ---- Immersive experience: a lab instrument, not a dashboard ---- */
   .imWrap{
@@ -578,7 +536,7 @@
     color:#ececec;
     grid-template-rows:1fr;
   }
-  body.m9 .imWrap{display:grid;}
+  body.m8 .imWrap{display:grid;}
   /* it is a modal, so it closes */
   .imClose{
     position:absolute;right:16px;top:16px;z-index:6;
@@ -591,10 +549,10 @@
   .imClose:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
   body.light .imClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
   body.light .imClose:hover{background:rgba(46,31,26,.18);}
+  body.m8 #field, body.m8 .carousel, body.m8 .pillui, body.m8 .note{display:none;}
+  body.m8{background:#000;}
   body.m9 #field, body.m9 .carousel, body.m9 .pillui, body.m9 .note{display:none;}
   body.m9{background:#000;}
-  body.m10 #field, body.m10 .carousel, body.m10 .pillui, body.m10 .note{display:none;}
-  body.m10{background:#000;}
   .imBody{
     display:grid;grid-template-columns:minmax(320px,0.86fr) 1.14fr;
     gap:14px;padding:18px;min-height:0;
@@ -833,9 +791,9 @@
 
   /* ---- Bento mobile: three hero cards, mini organ-age window ---- */
   #mBento{display:none;flex-direction:column;gap:12px;padding:0 13px;flex:none;}
-  body.m6 #mBento{display:flex;}
-  body.m6 .mcar, body.m6 .mdots, body.m6 .pillui{display:none;}
-  body.m6 canvas#field{position:absolute;z-index:1;}
+  body.m5 .pillui{display:none;}
+  body.m5 #mBento{display:flex;}
+  body.m5 canvas#field{position:absolute;z-index:1;}
   #mBento > .msn:first-child{min-height:208px;}
   #mBento > .msn:first-child .legend{margin-top:auto;}
   .mbrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -1047,7 +1005,8 @@
 
   /* ---- Organ age: one modal, worn as a mobile sheet or a desktop card ---- */
   .sheet.shModal{
-    top:0;border-radius:0;background:#2a0b0a;
+    /* almost full-screen: the status bar and a sliver of the screen behind stay visible */
+    top:52px;border-radius:24px 24px 0 0;background:#2a0b0a;
     /* absolute with left/right 0, so auto margins still centre it under the cap */
     max-width:600px;margin-left:auto;margin-right:auto;
     transform:translateY(100%);
@@ -1176,7 +1135,7 @@
     background:#0d0d0d;color:#ececec;
     grid-template-columns:302px 1fr;overflow:hidden;
   }
-  body.m10 .dvWrap{display:grid;}
+  body.m9 .dvWrap{display:grid;}
   .dvNav{
     display:flex;flex-direction:column;padding:26px 20px 22px;gap:26px;
     border-right:1px solid rgba(255,255,255,.06);min-height:0;
@@ -1393,7 +1352,7 @@
   /* ---- Overview frame: a sibling screen in the same language ---- */
   #phoneShell2{display:none;}
   /* Overview is its own screen now, so each mode shows one phone, centred */
-  body.m7 #phoneShell2{
+  body.m6 #phoneShell2{
     display:block;position:fixed;z-index:1;
     left:50%;top:calc(50% + 22px);transform:translate(-50%,-50%);
     --phH:min(calc(100vh - 108px), 880px);
@@ -1632,10 +1591,6 @@
   body.light #phone .st.ok{background:#e5efdb;color:#55763f;}
   body.light #phone .st.sub{background:#f3ead0;color:#8f7327;}
   body.light .morgan{background:#f3e2d8 !important;}
-  body.light .morgan .slbl2{color:rgba(46,31,26,.6);}
-  body.light .mnbtn{background:rgba(46,31,26,.07);color:#2e1f1a;}
-  body.light .mnbtn:hover{background:rgba(46,31,26,.14);}
-  body.light .mdots i{background:#4a3a2c;}
   /* card flip */
   body.light .spCard{background:rgba(255,252,246,.55);}
   body.light .spCard .nm{color:rgba(46,31,26,.55);}
@@ -1658,13 +1613,14 @@
   <div class="tweaks">
     <span class="lbl">Version</span>
     <select id="versionSel" aria-label="Version"></select>
-    <span class="lbl">Density</span>
-    <input type="range" id="densR" min="25" max="100" value="100" aria-label="Particle density">
-    <span class="lbl">Particles size</span>
-    <input type="range" id="sizeR" min="50" max="180" value="160" aria-label="Particles size">
-    <button class="chip" id="flowChip" aria-pressed="true">Flow</button>
-    <button class="chip" id="voxChip" aria-pressed="false">Voxels</button>
-    <button class="chip" id="themeChip" aria-pressed="false" aria-label="Light mode" title="Light mode">&#9789;</button>
+    <span class="lbl">Your age</span>
+    <select id="ageSel" aria-label="Chronological age"></select>
+    <span class="lbl">Mode</span>
+    <select id="themeSel" aria-label="Colour mode">
+      <option value="colour">Colour mode</option>
+      <option value="dark">Dark mode</option>
+      <option value="light">Light mode</option>
+    </select>
   </div>
 </div>
 <div class="carousel" id="carousel" role="group" aria-label="Health metrics"></div>
@@ -1724,6 +1680,12 @@
       </div>
       <div class="dcard organ" id="organSlot">
         <div class="olist" id="olist"></div>
+        <button class="dcExpand" id="dcExpand" type="button" aria-label="Open organ age">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9.5 2.5H13.5V6.5M6.5 13.5H2.5V9.5M13.5 2.5 9 7M2.5 13.5 7 9"/>
+          </svg>
+        </button>
       </div>
     </div>
     <div class="filters">
@@ -1897,51 +1859,6 @@
         </div>
       </div>
     </div>
-    <div class="mcar" id="mCar">
-      <div class="mcard msnap">
-        <div class="msn mc1">
-          <div style="display:flex;justify-content:flex-start;align-items:flex-start;gap:40px;">
-            <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
-            <div><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:13px;font-weight:400">years old</span></div></div>
-          </div>
-          <div class="legend">
-            <div><b>81</b><i style="background:#8fae7e"></i>Optimal</div>
-            <div><b>9</b><i style="background:#d9c66b"></i>Suboptimal</div>
-            <div><b>6</b><i style="background:#cf6b5b"></i>Out of range</div>
-          </div>
-          <div class="meterbar">
-            <span style="width:64%;background:#8fae7e"></span>
-            <span style="width:14%;background:#d9c66b"></span>
-            <span style="width:12%;background:#cf6b5b"></span>
-          </div>
-        </div>
-        <div class="mrow">
-          <div class="msn">
-            <div class="lbl">Steps</div>
-            <div class="big" style="font-size:22px">2,568 <span class="inf">i</span></div>
-            <div class="foot"><span>Today</span><span class="bars"><i style="height:8px"></i><i style="height:12px"></i><i style="height:9px"></i><i style="height:16px"></i></span></div>
-          </div>
-          <div class="msn">
-            <div class="lbl">Heart rate</div>
-            <div class="big" style="font-size:22px">72 <span style="font-size:12px;font-weight:400">bpm</span> <span class="inf">i</span></div>
-            <div class="foot"><span>Today</span><span class="bars"><i style="height:8px"></i><i style="height:12px"></i><i style="height:9px"></i><i style="height:16px"></i></span></div>
-          </div>
-        </div>
-      </div>
-      <div class="mcard morgan">
-        <div class="mhead">
-          <div class="slbl2">How your organs are aging</div>
-        </div>
-        <div id="mSlot"></div>
-        <div id="mGauge"></div>
-        <div class="mAgeRow">
-          <button class="mnbtn" id="mPrev" aria-label="Previous organ"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M6 1 1 6l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="mAgeCol"><div class="moname" id="mOrgName">Heart</div></div>
-          <button class="mnbtn" id="mNext" aria-label="Next organ"><svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        </div>
-      </div>
-    </div>
-    <div class="mdots" id="mDots"><i></i><i></i></div>
     <div class="msel">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
     <div class="mchips">
       <div class="fchip on"><b>81</b>&nbsp;All</div>
@@ -2287,13 +2204,12 @@
     { name: 'Card Nav', dur: 1800, ease: 1, pix: 1.35 , group: 'Concept' }, // card carousel, hard S-curve pace
     { name: 'Pill Nav', dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // pill chips, arc below the organ
     { name: 'Desktop (biomarker)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ card inside the product dashboard
-    { name: 'Mobile (Hero carousel)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // hero swipe carousel in a phone frame
     { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // rotating card carousel of organs
     { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // outlined 3-across organ grid
     { name: 'Mobile (biomarkers)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // mobile bento with a mini organ card
     { name: 'Mobile (overview)',   dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // the Overview frame on its own
     { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 , group: 'Library' }, // the isolated-organ component library
-    { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ age as a lab instrument
+    { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // organ age as a lab instrument
     { name: 'Desktop (overview)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // the product shell the modal opens over
   ];
   let version = 0;
@@ -3436,7 +3352,7 @@
   // --- age arc: a measurement instrument. The centre tick is the user's
   // chronological age; the scale shows absolute ages; only the gap between
   // the baseline and the organ age takes colour.
-  const CHRONO = 40; // demo user's chronological age
+  let CHRONO = 40; // demo user's chronological age, set from the top bar
   const arcASvg = document.getElementById('arcA');
   const AG = { cx: 220, cy: 354, R: 340, amax: Math.asin(204 / 340) };
   // symmetric scale: -15..+15 years, so the chronological age sits dead centre
@@ -3447,7 +3363,11 @@
   }
   let indA;
   const tickEls = [];
-  (function buildArcA(){
+  // rebuildable: the whole scale is drawn around CHRONO, so changing your age
+  // redraws it rather than relabelling it
+  function buildArcA(){
+    arcASvg.innerHTML = '';
+    tickEls.length = 0;
     // soft blur on the outer ticks so the scale dissolves at both ends
     const defs = el('defs', {}, arcASvg);
     const f1 = el('filter', { id: 'tb1', x: '-60%', y: '-60%', width: '220%', height: '220%' }, defs);
@@ -3484,7 +3404,8 @@
     }
     // indicator rides just outside the ticks, like a gauge needle head
     indA = el('circle', { r: 4, fill: ageColor(arcNow) }, arcASvg);
-  })();
+  }
+  buildArcA();
 
   // per-digit odometer: every digit is its own wheel with an unwrapped
   // continuous value, so 8→4 downward visibly travels 8→7→6→5→4 rather
@@ -3722,15 +3643,10 @@
     const bPrev = pillCurrent;
     pillCurrent = i;
     // bento mini card: carousel-style slide direction + title crossfade
-    if (version === 6) bxT = i; // the mini carousel glides to the selection
+    if (version === 5) bxT = i; // the mini carousel glides to the selection
     pillBtns.forEach((p, j) => p.setAttribute('aria-pressed', String(j === i)));
     olistRows.forEach((r, j) => r.classList.toggle('on', j === i));
     situOrgan.textContent = PILL[i].label;
-    // mobile organ name crossfades to the new label
-    const mn = document.getElementById('mOrgName');
-    mn.style.opacity = 0;
-    clearTimeout(mNameT);
-    mNameT = setTimeout(() => { mn.textContent = PILL[i].label; mn.style.opacity = 1; }, 220);
     mbDots.forEach((s2, j) => s2.classList.toggle('on', j === i));
     const d = PILL[i];
     const dir = Math.sign(d.delta - arcTo) || 0;
@@ -3774,20 +3690,9 @@
     document.body.className = 'm' + m + (lightOn ? ' light' : '') + (blackOn ? ' black' : '');
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
-    if (m === 6){
+    if (m === 5){
       document.getElementById('mbSlot').appendChild(canvas);
       bx = bxT = pillCurrent; // carousel enters on the active organ
-    } else if (m === 3){
-      document.getElementById('mSlot').appendChild(canvas);
-      // stack: visual, arc, then [arrows around age + name + caption]
-      document.getElementById('mGauge').appendChild(document.getElementById('arcA'));
-      const mac = document.querySelector('.mAgeCol');
-      mac.insertBefore(document.getElementById('ageBig'), document.getElementById('mOrgName'));
-      mac.appendChild(document.getElementById('status'));
-      // always enter the carousel on the first card
-      const mc = document.getElementById('mCar');
-      mc.scrollLeft = 0;
-      setTimeout(() => { mc.scrollLeft = 0; }, 120);
     } else {
       if (canvas.parentNode !== document.body)
         document.body.insertBefore(canvas, document.querySelector('.topbar'));
@@ -3800,11 +3705,11 @@
     }
     // the organ cards are a touch lighter than the full-bleed burgundy;
     // card flip clears transparent so organs float above the frosted cards
-    if (m === 4) gl.clearColor(0, 0, 0, 0);
-    else if (m === 2 || m === 3 || m === 6) gl.clearColor(0.20, 0.067, 0.063, 1);
+    if (m === 3) gl.clearColor(0, 0, 0, 0);
+    else if (m === 2 || m === 5) gl.clearColor(0.20, 0.067, 0.063, 1);
     else gl.clearColor(0.141, 0.035, 0.031, 1);
-    if (m === 9 && window.__imBoot) window.__imBoot();  // the instrument builds on first view
-    if (m === 4) spTarget = pillCurrent; // card flip picks up the active organ
+    if (m === 8 && window.__imBoot) window.__imBoot();  // the instrument builds on first view
+    if (m === 3) spTarget = pillCurrent; // card flip picks up the active organ
     versionSel.value = String(m);
     resize(); // re-measures the bottom UI
     // let the new layout settle before measuring positions for the sync
@@ -3848,19 +3753,11 @@
       st.style.right = 'auto';
       st.style.left = (slot.left + 24) + 'px';
       st.style.top = (slot.top + 24) + 'px';
-    } else if (version === 6){
+    } else if (version === 5){
       // bento: canvas fills the mini organ card
       const r = document.getElementById('mbSlot').getBoundingClientRect();
       canvOX = r.left; canvOY = r.top;
       W = Math.max(120, Math.round(r.width)); H = Math.max(120, Math.round(r.height));
-      canvas.style.left = '0'; canvas.style.top = '0';
-      pillui.style.left = ''; pillui.style.top = '';
-      pillui.style.width = ''; pillui.style.right = ''; pillui.style.bottom = '';
-    } else if (version === 3){
-      // mobile: canvas lives inside the organ card's slot; the DOM moves it
-      const r = document.getElementById('mSlot').getBoundingClientRect();
-      canvOX = r.left; canvOY = r.top;
-      W = Math.max(180, Math.round(r.width)); H = Math.max(140, Math.round(r.height));
       canvas.style.left = '0'; canvas.style.top = '0';
       pillui.style.left = ''; pillui.style.top = '';
       pillui.style.width = ''; pillui.style.right = ''; pillui.style.bottom = '';
@@ -3879,14 +3776,26 @@
     const bottomUI = version === 0 ? carousel : pillui;
     const topH = version >= 2 ? 0 : (document.querySelector('.topbar').offsetHeight || 0);
     // mobile: the gauge stack sits below the slot, not over it
-    const botH = (version === 3 || version === 6) ? 0 : (bottomUI.offsetHeight || 0);
+    const botH = (version === 5) ? 0 : (bottomUI.offsetHeight || 0);
     effDim = Math.min(W, Math.max(220, H - topH - botH));
     gl.uniform2f(U.uView, 0.78 * effDim / W, 0.78 * effDim / H);
     gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700));
     // pill mode: organ sits 80px lower for breathing room under the top bar
-    gl.uniform1f(U.uYOff, (botH - topH - (version === 1 ? 96 : version === 3 ? 26 : version === 6 ? 40 : 0)) / H);
+    gl.uniform1f(U.uYOff, (botH - topH - (version === 1 ? 96 : version === 5 ? 40 : 0)) / H);
   }
   addEventListener('resize', resize);
+  // the in-situ canvas is positioned from the card's viewport rect, so it has to
+  // be re-placed whenever the dashboard scrolls under it
+  (function trackScroll(){
+    const dash = document.querySelector('.dash');
+    if (!dash) return;
+    let queued = false;
+    dash.addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; if (version === 2) resize(); });
+    }, { passive: true });
+  })();
   resize();
   // in-situ: keep the fixed overlays glued to the organ card while scrolling
   function situFollow(){
@@ -3903,30 +3812,6 @@
   }
   document.querySelector('.dash').addEventListener('scroll',
     () => requestAnimationFrame(situFollow), { passive: true });
-  // mobile: pagination dots and card fades track the carousel continuously —
-  // the inactive card sits dimmed and fades up as it becomes active
-  const mCar = document.getElementById('mCar');
-  const mDots = document.getElementById('mDots').children;
-  function mCarUpdate(){
-    const max = Math.max(1, mCar.scrollWidth - mCar.clientWidth);
-    const p = Math.min(1, Math.max(0, mCar.scrollLeft / max));
-    mDots[0].style.width = (18 - 12 * p) + 'px';
-    mDots[0].style.opacity = (1 - 0.68 * p).toFixed(3);
-    mDots[1].style.width = (6 + 12 * p) + 'px';
-    mDots[1].style.opacity = (0.32 + 0.68 * p).toFixed(3);
-    mCar.children[0].style.opacity = (1 - 0.62 * p).toFixed(3);
-    mCar.children[1].style.opacity = (0.38 + 0.62 * p).toFixed(3);
-  }
-  mCarUpdate();
-  // organ switcher arrows on the mobile card
-  document.getElementById('mPrev').addEventListener('click', () => {
-    lastManual = performance.now();
-    selectPill((pillCurrent + PILL.length - 1) % PILL.length);
-  });
-  document.getElementById('mNext').addEventListener('click', () => {
-    lastManual = performance.now();
-    selectPill((pillCurrent + 1) % PILL.length);
-  });
   // ---------- spatial cover-flow ----------
   const spWrap = document.getElementById('spatial');
   const spCards = PILL.map(d => {
@@ -4920,6 +4805,7 @@
         setTimeout(() => wrap.classList.add('notes'), 260); });
     }
     window.__imBoot = boot;
+    window.__imRefresh = () => { if (ready) render(cur); };
     document.getElementById('imClose').addEventListener('click', () => {
       setMode(2);            // back to the dashboard this modal sits over
     });
@@ -5043,6 +4929,7 @@
       cell.querySelector('.olPts').textContent = v.dotCount() + ' pts';
     });
   })();
+  const organSheets = [];   // every organ-age modal, so an age change reaches all
   // What each organ's age is actually describing, in the modal's own voice.
   const AGE_DESC = {
     'Heart': 'Your heart drives circulation, blood pressure and how well oxygen reaches the rest of you. Its biological age reflects the load your cardiovascular system is carrying.',
@@ -5266,6 +5153,12 @@
     }
 
     const api = {
+      refresh(){
+        cards.forEach((el, i) => {
+          el.querySelector('span').textContent = (CHRONO + PILL[i].delta) + ' years old';
+        });
+        renderMeta(PILL[cur]);
+      },
       open(startIdx){
         startIdx = Math.max(0, Math.min(PILL.length - 1, startIdx || 0));
         if (open) { go(startIdx); return; }
@@ -5558,7 +5451,10 @@
   const sheetS = makeSignalSheet(document.getElementById('phone'));
   const sheetL = makeSheet(document.getElementById('phone'));
   const sheetR = makeSheet(document.getElementById('phone2'));
-  // ---- desktop overview: the product shell the organ-age modal opens over ----
+  organSheets.push(sheetL, sheetR);
+  // ---- one organ-age modal, opened from anywhere on the desktop ----
+  const organModal = makeSheet(document.body, { desktop: true, overlay: true });
+  organSheets.push(organModal);
   (function desktopOverview(){
     const card = document.getElementById('dvOrganCard');
     if (!card) return;
@@ -5566,12 +5462,26 @@
     makeOrganView(document.getElementById('dvOrgan'), 0, {
       target: shapeTarget(clouds[0], 900), fill: 0.44, dot: 0.95, dl: false
     });
-    const modal = makeSheet(document.getElementById('dvWrap'),
-                            { desktop: true, overlay: true });
     card.addEventListener('click', e => {
       if (e.target.closest('.x')) return;   // the dismiss cross never opens it
-      modal.open(1);                        // Mental: the brain on the card
+      organModal.open(1);                   // Mental: the brain on the card
     });
+    // the sidebars move between the two desktop pages
+    const goto = { 'Overview': 9, 'Biomarkers': 2 };
+    document.querySelectorAll('.dvNav a').forEach(a2 => {
+      const to = goto[a2.textContent.trim()];
+      if (to == null) return;
+      a2.addEventListener('click', () => setMode(to));
+    });
+    document.querySelectorAll('.dash .side .nv').forEach(nv => {
+      const to = goto[nv.textContent.trim()];
+      if (to == null) return;
+      nv.style.cursor = 'pointer';
+      nv.addEventListener('click', () => setMode(to));
+    });
+    // the dashboard's organ card expands into the same modal
+    const exp = document.getElementById('dcExpand');
+    if (exp) exp.addEventListener('click', () => organModal.open(pillCurrent));
   })();
   // overview: a live mini particle heart on its own 2D canvas
   (function(){
@@ -5627,80 +5537,25 @@
     gl.uniform1f(U.uAlpha, 1);
   }
 
-  // snapping is done by hand: native scroll-snap kept re-snapping to a
-  // stale remembered card whenever the odometer touched layout. Touch and
-  // trackpad scroll natively and glide-snap on scroll-end; mice get a
-  // drag-to-swipe emulation with the same glide.
-  (function(){
-    const max = () => mCar.scrollWidth - mCar.clientWidth; // one-step carousel
-    let drag = null, glideId = 0, settleT = 0, gliding = false;
-    function glideTo(target){
-      cancelAnimationFrame(glideId);
-      const start = mCar.scrollLeft, d = target - start, t0 = performance.now();
-      if (Math.abs(d) < 1){ mCar.scrollLeft = target; gliding = false; return; }
-      gliding = true;
-      (function stepFn(){
-        const p = Math.min(1, (performance.now() - t0) / 420);
-        mCar.scrollLeft = start + d * (1 - Math.pow(1 - p, 3));
-        if (p < 1) glideId = requestAnimationFrame(stepFn);
-        else gliding = false;
-      })();
-    }
-    mCar.addEventListener('scroll', () => {
-      requestAnimationFrame(mCarUpdate);
-      if (drag || gliding) return;
-      // scroll-end snap for touch/trackpad momentum
-      clearTimeout(settleT);
-      settleT = setTimeout(() => {
-        if (drag || gliding) return;
-        glideTo(mCar.scrollLeft > max() / 2 ? max() : 0);
-      }, 130);
-    }, { passive: true });
-    mCar.addEventListener('pointerdown', e => {
-      if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      drag = { x: e.clientX, l: mCar.scrollLeft, moved: false };
-      cancelAnimationFrame(glideId); gliding = false;
-    });
-    addEventListener('pointermove', e => {
-      if (!drag) return;
-      const dx = e.clientX - drag.x;
-      if (Math.abs(dx) > 6) drag.moved = true;
-      if (drag.moved) mCar.scrollLeft = drag.l - dx;
-    });
-    addEventListener('pointerup', e => {
-      if (!drag) return;
-      const d = drag; drag = null;
-      if (!d.moved) return;
-      const dx = e.clientX - d.x;
-      const from = d.l > max() / 2 ? 1 : 0;
-      const to = dx < -40 ? 1 : dx > 40 ? 0 : from;
-      glideTo(to * max());
-    });
-  })();
 
   // ---------- frame loop ----------
   let jitter = reduced ? 0 : 1;
   let beatBlend = 0;
   let warmNow = 0;
-  let dens = 1, sizeMul = 1.6;
-  document.getElementById('densR').addEventListener('input', e => { dens = e.target.value / 100; });
-  document.getElementById('sizeR').addEventListener('input', e => { sizeMul = e.target.value / 100; });
-  // voxel render system: same clouds and morphs, square data cells
-  let voxOn = false, voxNow = 0;
-  const voxChip = document.getElementById('voxChip');
-  voxChip.addEventListener('click', () => {
-    voxOn = !voxOn;
-    voxChip.setAttribute('aria-pressed', String(voxOn));
-  });
-  // theme cycle: burgundy dark -> warm light -> pure black -> back
-  let themeState = 0, lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
-  const themeChip = document.getElementById('themeChip');
-  themeChip.addEventListener('click', () => {
-    themeState = (themeState + 1) % 3;
-    lightOn = themeState === 1;
-    blackOn = themeState === 2;
-    themeChip.textContent = themeState === 0 ? '\u263E' : themeState === 1 ? '\u2600' : '\u2B24';
-    themeChip.setAttribute('aria-pressed', String(themeState !== 0));
+  // density, particle size, flow and voxels are settled: they stay where the
+  // design landed rather than being exposed as tweaks
+  const dens = 1, sizeMul = 1.6;
+  const voxOn = false;
+  let voxNow = 0;
+  const flowOn = true;
+  let flowVis = 0;
+  // colour (the burgundy the concept is designed in), dark, or light
+  let lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
+  const themeSel = document.getElementById('themeSel');
+  themeSel.addEventListener('change', () => {
+    const v = themeSel.value;
+    lightOn = v === 'light';
+    blackOn = v === 'dark';
     document.body.classList.toggle('light', lightOn);
     document.body.classList.toggle('black', blackOn);
     document.body.classList.add('theming');
@@ -5708,12 +5563,46 @@
     themingT = setTimeout(() => document.body.classList.remove('theming'), 700);
   });
   const tickBase = () => lightOn ? '#8a6a5c' : '#c49b93';
-  let flowOn = true, flowVis = 0;
-  const flowChip = document.getElementById('flowChip');
-  flowChip.addEventListener('click', () => {
-    flowOn = !flowOn;
-    flowChip.setAttribute('aria-pressed', String(flowOn));
-  });
+  // Chronological age is the reference every other number on the page is quoted
+  // against, so changing it redraws the scale and re-renders everything derived
+  // from it rather than only relabelling the headline.
+  (function ageControl(){
+    const sel = document.getElementById('ageSel');
+    for (let a2 = 30; a2 <= 40; a2++){
+      const o = document.createElement('option');
+      o.value = String(a2);
+      o.textContent = a2 + ' years old';
+      sel.appendChild(o);
+    }
+    sel.value = String(CHRONO);
+    sel.addEventListener('change', () => {
+      CHRONO = +sel.value;
+      buildArcA();                                   // the scale is drawn around it
+      olistRows.forEach((r, i) => {
+        r.querySelector('.ag').textContent = CHRONO + PILL[i].delta;
+      });
+      spCards.forEach((c, i) => {
+        const n = c.querySelector('.spBot .num');
+        if (n) n.textContent = CHRONO + PILL[i].delta;
+      });
+      document.querySelectorAll('#grid .gCell').forEach((c, i) => {
+        const n = c.querySelector('.num');
+        if (n && PILL[i]) n.textContent = CHRONO + PILL[i].delta;
+      });
+      organSheets.forEach(sh => sh.refresh && sh.refresh());
+      if (window.__imRefresh) window.__imRefresh();
+      document.querySelectorAll('[data-chrono]').forEach(el2 => {
+        el2.textContent = el2.dataset.chrono === 'bio' ? String(bioAge()) : String(CHRONO);
+      });
+      buildAgeCols(String(CHRONO + PILL[pillCurrent].delta));
+      selectPill(pillCurrent);
+    });
+  })();
+  // the whole-body figure the page quotes: the mean of the organ gaps
+  function bioAge(){
+    const mean = PILL.reduce((a2, d) => a2 + d.delta, 0) / PILL.length;
+    return Math.round(CHRONO + mean);
+  }
   let cenX = 0, cenY = 0, orgR = ORGANS[0].r, ghostVis = 0, zoomNow = 1, situCheck = 0;
   let camMark = -1;
   const camFrom = { x: 0, y: 0, r: ORGANS[0].r, z: 1 };

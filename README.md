@@ -30,26 +30,30 @@ The dropdown is grouped by what a mode is for.
 2. **Pill Nav** — hero organ, rolling per-digit age odometer, instrument gauge, pill chips
 3. **Card flip** — frosted rotating card carousel (backdrop-blur, per-card Y rotation)
 4. **Grid** — full-screen 3x3 anatomical plate, all organs alive with per-organ flow
+5. **Immersive experience (modal)** — organ age as a lab instrument: an asymmetric data grid, the particle organ in the right half with drawn annotations, and a footer dock of miniature organs that selects the channel
 
 **Pages** — the product screens, mobile and desktop
 
-5. **Desktop (biomarker)** — the Everlab dashboard with the organ-age card in situ
-6. **Mobile (Hero carousel)** — iPhone frame, swipeable hero cards
-7. **Mobile (biomarkers)** — bento layout with the mini organ carousel, metrics carousel (ApoB / heart rate / steps / sleep), the signal insight sheet, and the organ-age modal
+6. **Desktop (biomarker)** — the Everlab dashboard with the organ-age card in situ; the card expands into the organ-age modal
+7. **Mobile (biomarkers)** — bento layout with the mini organ carousel, metrics carousel, the signal insight sheet, and the organ-age sheet
 8. **Mobile (overview)** — the Overview frame on its own screen
-9. **Immersive experience (modal)** — organ age as a lab instrument: an asymmetric data grid, the particle organ floating in the right half with drawn annotations, and a footer dock of miniature organs that selects the channel
-10. **Desktop (overview)** — the Everlab product shell: sidebar, plan card, the two gauges, tasks, a next-actions rail and the action-plan grid. The organ card opens the organ-age modal over the page
+9. **Desktop (overview)** — the Everlab product shell: sidebar, plan card, the two gauges, tasks, a next-actions rail and the action-plan grid. The organ card opens the organ-age modal over the page
+
+Both desktop sidebars move between **Overview** and **Biomarkers**.
 
 **Library** — the component workbench
 
-11. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication and Supplements, each a standalone object). Every tile reports the dot count that visual is made of, and downloads as PNG, JPG or SVG.
+10. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication, Supplements). Every tile reports its dot count and downloads as PNG, JPG or SVG.
 
 ## Tweaks (top bar)
 
-- **Density / Particles size** sliders
-- **Flow** — per-organ internal streams (vascular, airflow, peristalsis, neural impulses on the neuron)
-- **Voxels** — square data-cell render mode
-- **Theme cycle** — burgundy dark → warm light (`#F4EFED`) → pure black
+- **Your age** — chronological age, 30 to 40. Everything quoted against it follows:
+  the arc scale is redrawn around the new centre, and the organ list, spatial and
+  grid cards, the immersive panel and every organ-age modal re-render.
+- **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
+
+Density, particle size, flow and voxels are no longer exposed: they stay where
+the design landed.
 
 ## Engine notes
 
