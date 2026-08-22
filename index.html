@@ -581,6 +581,8 @@
   body.m9 .imWrap{display:grid;}
   body.m9 #field, body.m9 .carousel, body.m9 .pillui, body.m9 .note{display:none;}
   body.m9{background:#000;}
+  body.m10 #field, body.m10 .carousel, body.m10 .pillui, body.m10 .note{display:none;}
+  body.m10{background:#000;}
   /* selecting a diagnostic channel, not app tabs */
   .imTabs{
     display:flex;gap:8px;flex-wrap:wrap;padding:18px 18px 4px;
@@ -682,10 +684,10 @@
   body.light .imKv div b{color:rgba(46,31,26,.8);}
   body.light .imLines path{stroke:rgba(46,31,26,.3);}
   body.light .imChip.q{background:rgba(46,31,26,.07);color:rgba(46,31,26,.7);}
-  .imArc .mj, .shArc .mj{stroke:rgba(242,229,224,.85);}
-  .imArc .nt, .shArc .nt{stroke:rgba(242,229,224,.18);}
-  body.light .imArc .mj, body.light .shArc .mj{stroke:rgba(46,31,26,.8);}
-  body.light .imArc .nt, body.light .shArc .nt{stroke:rgba(46,31,26,.2);}
+  .imArc .mj{stroke:rgba(242,229,224,.85);}
+  .imArc .nt{stroke:rgba(242,229,224,.18);}
+  body.light .imArc .mj{stroke:rgba(46,31,26,.8);}
+  body.light .imArc .nt{stroke:rgba(46,31,26,.2);}
   body.light .imMod .big em{color:rgba(46,31,26,.5);}
   body.light .imMod .foot{color:rgba(46,31,26,.42);}
   body.light .imBars i{background:rgba(46,31,26,.4);}
@@ -991,10 +993,6 @@
   }
   .shWrap.on .shDim{opacity:1;}
   .shWrap.on .sheet{transform:translateY(0);}
-  .shHead{
-    position:relative;height:46%;flex:none;background:transparent;
-    overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;
-  }
   .shHandle{
     position:absolute;left:50%;top:9px;transform:translateX(-50%);
     width:34px;height:4px;border-radius:2px;background:rgba(242,229,224,.3);z-index:3;
@@ -1004,83 +1002,115 @@
     width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;
     background:rgba(242,229,224,.14);color:#f2e5e0;font:inherit;font-size:12px;
   }
-  .shSlot{position:absolute;inset:0;}
-  .shSlot canvas{position:absolute;inset:0;display:block;}
-  .shTrack{display:none;}
-  .shItem{position:absolute;display:none;}
-  .shBody{
-    flex:1;padding:62px 28px 0;text-align:center;color:#ececec;
-    transition:opacity .22s ease,transform .22s ease;overflow-y:auto;
-  }
-  .shBody.sw{opacity:0;transform:translateY(8px);}
-  .shBody h3{margin:0;font-size:25px;font-weight:500;color:#f2e5e0;letter-spacing:-0.5px;line-height:1.15;}
-  .shSub{font-size:25px;color:rgba(242,229,224,.5);margin:2px 0 12px;letter-spacing:-0.5px;line-height:1.15;}
-  .shBody p{margin:0;font-size:14px;line-height:1.6;color:rgba(242,229,224,.55);}
-  .shDots{position:static !important;justify-content:center;padding:50px 0 0;flex:none;}
-  .shDots i{width:8px;height:8px;border-radius:4px;}
-  .shDots i.on{width:28px;}
-  .shDots i.on{width:16px;}
   .shHome{
     flex:none;width:110px;height:4px;border-radius:2px;
     background:rgba(242,229,224,.22);margin:8px auto 40px;
   }
     body.light .sheet{background:#f3e2d8;}
-  body.light .shHead{background:transparent;}
-  body.light .shSub{color:rgba(46,31,26,.5);}
   body.light .shHome{background:rgba(46,31,26,.22);}
-  body.light .shItem .yl{color:rgba(46,31,26,.55);}
-  body.light .shItem .nm{color:#2e1f1a;}
-  body.light .shBody{color:#33291f;}
-  body.light .shBody h3{color:#2e1f1a;}
-  body.light .shBody p{color:#9b8a75;}
-  body.light .shChips span{color:#6b5c4a;border-color:#ddd3bf;}
-  body.light .shChips span.hl{color:#2e241c;border-color:#2e241c;}
-  body.light .shCta{background:rgba(46,31,26,.07);color:#2e241c;}
 
-  /* ---- Organ age: a full-screen modal, not a sheet ---- */
+  /* ---- Organ age: one modal, worn as a mobile sheet or a desktop card ---- */
   .sheet.shModal{
-    top:0;border-radius:0;background:#280707;
+    top:0;border-radius:0;background:#2a0b0a;
     transform:translateY(100%);
     transition:transform .52s cubic-bezier(.32,.72,.28,1);
   }
   .shWrap.on .sheet.shModal{transform:translateY(0);}
-  .shModal .shClose{position:absolute;right:16px;top:16px;z-index:4;}
-  /* the organ takes the whole upper half, with nothing crowding it */
-  .shStage{
-    flex:1;position:relative;min-height:0;
+  .oaTop{
+    flex:none;display:flex;align-items:center;justify-content:space-between;
+    padding:22px 22px 0;
+  }
+  .oaTop h4{margin:0;font-size:17px;font-weight:500;color:#f2e5e0;letter-spacing:-.2px;}
+  .oaModal .shClose{
+    position:static;flex:none;width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:none;cursor:pointer;font:inherit;font-size:13px;
+    background:rgba(242,229,224,.13);color:#f2e5e0;
+    transition:background .16s ease;
+  }
+  .oaModal .shClose:hover{background:rgba(242,229,224,.22);}
+  /* the organ owns a fixed band near the top, and never leaves the middle of
+     it — the slack in the sheet falls between the copy and the cards instead */
+  .oaStage{
+    flex:none;height:36%;position:relative;min-height:0;
     touch-action:none;user-select:none;-webkit-user-select:none;
   }
-  .shModal .shSlot{position:absolute;inset:0;}
-  .shModal .shSlot canvas{position:absolute;inset:0;display:block;}
-  .shCarousel{
-    flex:none;overflow:hidden;padding-bottom:2px;
+  .oaStage canvas{position:absolute;inset:0;display:block;width:100%;height:100%;}
+  .oaMeta{
+    flex:none;padding:0 26px;text-align:center;
+    transition:opacity .2s ease,transform .2s ease;
+  }
+  .oaMeta.sw{opacity:0;transform:translateY(6px);}
+  .oaBadge{
+    display:inline-block;padding:7px 14px;border-radius:9px;
+    font-size:14px;font-weight:500;letter-spacing:-.1px;
+  }
+  .oaBadge.older  {background:#3b3216;color:#f2d478;}
+  .oaBadge.younger{background:#16321f;color:#7fdb9d;}
+  .oaBadge.par    {background:#16321f;color:#7fdb9d;}
+  .oaName{
+    margin:16px 0 0;font-size:34px;font-weight:500;color:#fff;
+    letter-spacing:-.9px;line-height:1.1;
+  }
+  .oaDesc{
+    margin:12px auto 0;max-width:38ch;
+    font-size:15px;line-height:1.55;color:rgba(242,229,224,.52);
+  }
+  .oaCarousel{
+    flex:none;margin-top:auto;overflow:hidden;padding:26px 0 2px;
     touch-action:pan-y;user-select:none;-webkit-user-select:none;
   }
-  .shTrack{display:flex;align-items:stretch;will-change:transform;}
-  .shCard{
-    flex:none;box-sizing:border-box;text-align:left;
-    background:rgba(242,229,224,.06);border-radius:20px;padding:18px 20px 20px;
+  .oaTrack{display:flex;align-items:stretch;will-change:transform;}
+  .oaCard{
+    flex:none;position:relative;box-sizing:border-box;text-align:left;cursor:pointer;
+    background:rgba(242,229,224,.07);border-radius:18px;padding:18px 20px 20px;
+    transition:background .2s ease;
   }
-  .shCard .nm{
-    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:rgba(242,229,224,.45);
+  .oaCard.on{background:rgba(242,229,224,.12);}
+  .oaCard b{
+    display:block;font-size:19px;font-weight:500;color:#fff;
+    letter-spacing:-.3px;line-height:1.15;padding-right:20px;
   }
-  .shCard h3{
-    margin:9px 0 0;font-size:21px;font-weight:500;color:#f2e5e0;
-    letter-spacing:-.4px;line-height:1.15;
+  .oaCard span{
+    display:block;margin-top:5px;font-size:15px;
+    color:rgba(242,229,224,.5);letter-spacing:-.1px;
   }
-  .shCard .sub{margin:3px 0 10px;font-size:15px;line-height:1.25;color:rgba(242,229,224,.5);letter-spacing:-.2px;}
-  .shCard p{margin:0;font-size:12px;line-height:1.5;color:rgba(242,229,224,.42);}
-  .shArc{flex:none;padding:0 26px 10px;}
-  .shArc svg{display:block;width:100%;height:54px;overflow:visible;}
-  .shModal .shDots{padding:16px 0 0;}
-  body.light .sheet.shModal{background:#f3e2d8;}
-  body.light .shModal .shClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
-  body.light .shCard{background:rgba(46,31,26,.05);}
-  body.light .shCard .nm{color:rgba(46,31,26,.45);}
-  body.light .shCard h3{color:#2e1f1a;}
-  body.light .shCard .sub{color:rgba(46,31,26,.55);}
-  body.light .shCard p{color:rgba(46,31,26,.45);}
+  .oaDot{
+    position:absolute;right:18px;top:21px;
+    width:10px;height:10px;border-radius:50%;
+  }
+  .oaDot.older  {background:#f2c14e;}
+  .oaDot.younger{background:#4ade80;}
+  .oaDot.par    {background:#8b8b8b;}
+  /* desktop: the same modal as a centred card on its own page */
+  .oaWrap{
+    display:none;position:fixed;inset:0;z-index:8;background:#050505;
+    align-items:center;justify-content:center;
+  }
+  body.m10 .oaWrap{display:flex;}
+  .sheet.shModal.oaDesk{
+    position:relative;inset:auto;
+    width:min(790px,92vw);height:auto;max-height:92vh;
+    border-radius:24px;transform:none;transition:none;
+  }
+  .oaDesk .oaTop{padding:26px 26px 0;}
+  .oaDesk .oaName{font-size:40px;letter-spacing:-1.1px;}
+  .oaDesk .oaDesc{max-width:44ch;}
+  .oaDesk .oaStage{height:min(340px,34vh);}
+  .oaDesk .oaCarousel{margin-top:0;padding:38px 0 26px;}
+  body.light .sheet.shModal{background:#f6ece6;}
+  body.light .oaTop h4{color:#2e1f1a;}
+  body.light .oaModal .shClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
+  body.light .oaModal .shClose:hover{background:rgba(46,31,26,.18);}
+  body.light .oaBadge.older{background:#f4e5bd;color:#7a5c15;}
+  body.light .oaBadge.younger,body.light .oaBadge.par{background:#d7eddd;color:#1f6438;}
+  body.light .oaName{color:#2e1f1a;}
+  body.light .oaDesc{color:rgba(46,31,26,.58);}
+  body.light .oaCard{background:rgba(46,31,26,.06);}
+  body.light .oaCard.on{background:rgba(46,31,26,.11);}
+  body.light .oaCard b{color:#2e1f1a;}
+  body.light .oaCard span{color:rgba(46,31,26,.55);}
+  body.light .oaWrap{background:#efe7e1;}
 
   /* ---- Overview frame: a sibling screen in the same language ---- */
   #phoneShell2{display:none;}
@@ -1785,6 +1815,7 @@
     </div>
   </div>
 </div>
+<div class="oaWrap" id="oaWrap"></div>
 <div class="olib" id="oLib">
   <aside class="olNav">
     <div class="olNavTitle">Library</div>
@@ -1849,6 +1880,7 @@
     { name: 'Mobile (overview)',   dur: 850, ease: 0, pix: 1.35 }, // the Overview frame on its own
     { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 }, // the isolated-organ component library
     { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 }, // organ age as a lab instrument
+    { name: 'Desktop (organ age)', dur: 850, ease: 0, pix: 1.35 }, // the organ-age modal as a desktop card
   ];
   let version = 0;
   let DUR = reduced ? 300 : MODES[version].dur;
@@ -4523,131 +4555,126 @@
       cell.querySelector('.olPts').textContent = v.dotCount() + ' pts';
     });
   })();
-  function makeSheet(hostPhone){
-    const PAD = 20, PEEK = 28, GAP = 12;   // 28px of the next card stays in view
+  // What each organ's age is actually describing, in the modal's own voice.
+  const AGE_DESC = {
+    'Heart': 'Your heart drives circulation, blood pressure and how well oxygen reaches the rest of you. Its biological age reflects the load your cardiovascular system is carrying.',
+    'Mental': "Your brain plays a central role in memory, focus, mood and cognitive performance. Its biological age reflects how well it's functioning compared with what's expected for your age.",
+    'Brain + nerve': 'Your nervous system carries every signal between brain and body. Its biological age reflects how cleanly those signals are still travelling.',
+    'Lung': 'Your lungs move oxygen into the blood and carbon dioxide back out. Their biological age reflects how efficiently that exchange is still happening.',
+    'Immune': 'Your immune system decides how quickly you mount a response and how cleanly you resolve it. Its biological age reflects how well that balance is holding.',
+    'Muscle + bone': 'Muscle and bone carry you, and repair themselves as they go. Their biological age reflects how much strength and density you are keeping.',
+    'Gut': 'Your gut breaks food down and decides how much of it you actually use. Its biological age reflects how well digestion and absorption are working.',
+    'Metabolic': 'Your metabolism sets how you store and spend energy. Its biological age reflects how steadily glucose and lipids are being handled.',
+    'Kidney': 'Your kidneys filter the blood and hold your fluid balance steady. Their biological age reflects how efficiently that clearing is still being done.'
+  };
+  // older reads amber, younger green, on par neutral — one scale for badge and dot
+  function ageStatus(d){ return d.delta > 0 ? 'older' : d.delta < 0 ? 'younger' : 'par'; }
+  function ageBadge(d){
+    const n = Math.abs(d.delta);
+    if (!d.delta) return 'Align with your age';
+    return n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older');
+  }
+  // The organ-age modal. Same component either way: a bottom sheet inside the
+  // phone frames, a centred card on the desktop page.
+  function makeSheet(host, opts){
+    opts = opts || {};
+    const desk = !!opts.desktop;
+    const PAD = desk ? 26 : 20, PEEK = desk ? 96 : 46, GAP = 12;
     const wrap = document.createElement('div');
-    wrap.className = 'shWrap';
+    wrap.className = desk ? 'oaDeskWrap' : 'shWrap';
     wrap.innerHTML =
-      '<div class="sheet shModal">' +
-        '<button class="shClose" aria-label="Close">&#10005;</button>' +
-        '<div class="shStage"><div class="shSlot"></div></div>' +
-        '<div class="shArc" id="shArc"></div>' +
-        '<div class="shCarousel"><div class="shTrack"></div></div>' +
-        '<div class="mbDots shDots"></div>' +
-        '<div class="shHome"></div>' +
+      '<div class="sheet shModal oaModal' + (desk ? ' oaDesk' : '') + '">' +
+        (desk ? '' : '<div class="shHandle"></div>') +
+        '<div class="oaTop"><h4>Organ age</h4>' +
+          '<button class="shClose" aria-label="Close">&#10005;</button></div>' +
+        '<div class="oaStage"></div>' +
+        '<div class="oaMeta">' +
+          '<span class="oaBadge"></span>' +
+          '<h3 class="oaName"></h3>' +
+          '<p class="oaDesc"></p>' +
+        '</div>' +
+        '<div class="oaCarousel"><div class="oaTrack"></div></div>' +
+        (desk ? '' : '<div class="shHome"></div>') +
       '</div>';
-    hostPhone.appendChild(wrap);
+    host.appendChild(wrap);
     const q = sel => wrap.querySelector(sel);
-    const sheet = q('.sheet'), stage = q('.shStage');
-    const carousel = q('.shCarousel'), track = q('.shTrack'), arcEl = q('.shArc');
+    const sheet = q('.sheet'), stage = q('.oaStage'), meta = q('.oaMeta');
+    const carousel = q('.oaCarousel'), track = q('.oaTrack');
 
-    function cardHTML(d){
-      const age = CHRONO + d.delta, nm = d.label.toLowerCase();
-      const n = Math.abs(d.delta);
-      const sub = d.delta === 0
-        ? 'On par with your current age'
-        : n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older') + ' than your current age';
-      const note = d.delta > 0
-        ? 'Your ' + nm + ' health is ageing faster than your biological age. The related biomarkers are where to focus.'
-        : d.delta < 0
-          ? 'Your ' + nm + ' health is ageing slower than your biological age. Keep doing what you are doing.'
-          : 'Your ' + nm + ' health is ageing in step with your biological age.';
-      return '<div class="nm">' + d.label + '</div>' +
-             '<h3>Your ' + nm + ' age is ' + age + '</h3>' +
-             '<div class="sub">' + sub + '</div>' +
-             '<p>' + note + '</p>';
-    }
-    const cards = PILL.map(d => {
+    const cards = PILL.map((d, i) => {
       const el = document.createElement('article');
-      el.className = 'shCard';
-      el.innerHTML = cardHTML(d);
+      el.className = 'oaCard';
+      el.innerHTML =
+        '<i class="oaDot ' + ageStatus(d) + '"></i>' +
+        '<b>' + d.label + '</b>' +
+        '<span>' + (CHRONO + d.delta) + ' years old</span>';
+      el.addEventListener('click', () => go(i));
       track.appendChild(el);
       return el;
     });
-    const dots = PILL.map((d, i) => {
-      const el = document.createElement('i');
-      el.addEventListener('click', e => { e.stopPropagation(); go(i); });
-      q('.shDots').appendChild(el);
-      return el;
-    });
-    const c2 = document.createElement('canvas');
-    q('.shSlot').appendChild(c2);
-    const ctx2 = c2.getContext('2d');
-    let open = false, sx = 0, sxT = 0, sv = 0, drag = null, cur = 0, step = 1;
 
+    // one instance of the master component, held dead centre — the organ never
+    // travels with the carousel, it dissolves from one silhouette into the next
+    const oaTarget = cl => shapeTarget(cl, desk ? 2400 : 2000);
+    const first = clouds[PILL[0].organIdx];
+    const view = makeOrganView(stage, PILL[0].organIdx, {
+      target: oaTarget(first), fill: desk ? 0.52 : 0.55, dot: 1.05, dl: false
+    });
+
+    let open = desk, sx = 0, sxT = 0, sv = 0, drag = null, cur = 0, step = 1, swT = 0;
+
+    function renderMeta(d){
+      const badge = q('.oaBadge');
+      badge.className = 'oaBadge ' + ageStatus(d);
+      badge.textContent = ageBadge(d);
+      q('.oaName').textContent = d.label;
+      q('.oaDesc').textContent = AGE_DESC[d.label] || '';
+    }
     function layout(){
       const W = carousel.clientWidth;
       if (!W) return;
-      const cardW = Math.max(120, W - PAD - PEEK - GAP);
+      const cardW = desk
+        ? Math.max(240, Math.min(460, (W - PAD - GAP) * 0.58))
+        : Math.max(140, W - PAD - PEEK - GAP);
       track.style.paddingLeft = PAD + 'px';
       track.style.gap = GAP + 'px';
       cards.forEach(el => { el.style.width = cardW + 'px'; });
       step = cardW + GAP;
+      place();
     }
-    // one place decides where the track sits and which card reads as selected
     function place(){
       track.style.transform = 'translateX(' + (-sx * step).toFixed(1) + 'px)';
       for (let k = 0; k < cards.length; k++)
-        cards[k].style.opacity = (1 - 0.6 * Math.min(1, Math.abs(k - sx))).toFixed(3);
+        cards[k].style.opacity = (1 - 0.55 * Math.min(1, Math.abs(k - sx))).toFixed(3);
     }
     function go(i){
       i = Math.max(0, Math.min(PILL.length - 1, i));
       sxT = i;
-      if (i !== cur){
-        cur = i;
-        arcEl.innerHTML = ageArcMarkup(PILL[i].delta);
-        dots.forEach((el, j) => el.classList.toggle('on', j === i));
-      }
+      if (i === cur) return;
+      cur = i;
+      const d = PILL[i], cl = clouds[d.organIdx];
+      // the heartbeat and the internal flow belong to the destination organ
+      view.idx = d.organIdx;
+      view.beat = ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart';
+      view.morphTo(cl, 'o' + d.organIdx, oaTarget(cl), 760);
+      meta.classList.add('sw');
+      clearTimeout(swT);
+      swT = setTimeout(() => { renderMeta(d); meta.classList.remove('sw'); }, 210);
+      cards.forEach((el, j) => el.classList.toggle('on', j === i));
     }
-    function draw(t){
-      if (!open) return;
-      requestAnimationFrame(draw);
-      const w = stage.clientWidth, h = stage.clientHeight;
-      if (!w) return;
-      if (c2.width !== w * 2 || c2.height !== h * 2){
-        c2.width = w * 2; c2.height = h * 2;
-        c2.style.width = w + 'px'; c2.style.height = h + 'px';
-        layout();
-      }
-      if (!drag){
-        sx += (sxT - sx) * 0.16;                    // weighted settle
-        if (Math.abs(sxT - sx) < 0.002) sx = sxT;
-      }
-      place();                                       // card and organ move together
-      ctx2.clearRect(0, 0, c2.width, c2.height);
-      const T = t / 1000;
-      const sc = Math.min(c2.width, c2.height) * 0.40;   // room to breathe
-      const oy = c2.height * 0.52;
-      for (let k = 0; k < PILL.length; k++){
-        const dd = k - sx;
-        if (Math.abs(dd) > 1.2) continue;
-        const ox = c2.width / 2 + dd * c2.width;
-        const ga = Math.max(0, 1 - Math.abs(dd));
-        for (const qp of pts2D(PILL[k].organIdx, true)){
-          const jx = Math.sin(T * 0.8 * qp.sp + qp.ph) * 3.2;
-          const jy = Math.cos(T * 0.7 * qp.sp + qp.ph * 1.7) * 3.2;
-          const tw = 0.55 + 0.45 * Math.sin(T * 1.8 + qp.ph * 3);
-          ctx2.fillStyle = 'rgba(' + qp.cr + ',' + qp.cg + ',' + qp.cb + ',' + (qp.a * tw * ga).toFixed(2) + ')';
-          ctx2.beginPath();
-          ctx2.arc(ox + qp.x * sc + jx, oy - qp.y * sc + jy, qp.r * 1.05, 0, 6.2832);
-          ctx2.fill();
-        }
-        for (let j = 0; j < 70; j++){
-          const u0 = (j * 0.618 + k * 0.37) % 1;
-          const cyc = ((T / 9 + u0) % 1 + 1) % 1;
-          const fall = cyc * cyc;
-          const ang = j * 2.399 + (j % 2 ? 1 : -1) * 1.3 * cyc;
-          const rr = (0.65 + ((j * 0.317) % 1) * 0.6) * (1.3 - fall);
-          const fe = Math.min(1, cyc / 0.14) * (1 - Math.min(1, Math.max(0, (cyc - 0.85) / 0.13)));
-          ctx2.fillStyle = 'rgba(220,190,180,' + (0.4 * fe * ga).toFixed(2) + ')';
-          ctx2.beginPath();
-          ctx2.arc(ox + Math.cos(ang) * rr * sc, oy + Math.sin(ang) * rr * sc * 0.85, 1.6, 0, 6.2832);
-          ctx2.fill();
-        }
-      }
-    }
+    // the settle between cards runs off the shared organ loop, so the track
+    // eases with the same clock the morph does
+    organViews.push({ frame(){
+      if (!open || drag) return;
+      if (sx === sxT) return;
+      sx += (sxT - sx) * 0.16;
+      if (Math.abs(sxT - sx) < 0.002) sx = sxT;
+      place();
+    } });
+    if (window.ResizeObserver) new ResizeObserver(layout).observe(carousel);
+    else addEventListener('resize', layout);
 
-    // the cards carry the horizontal gesture; the organ above follows them
+    // the cards carry the horizontal gesture; the organ stays where it is
     carousel.addEventListener('pointerdown', e => {
       drag = { x: e.clientX, y: e.clientY, sx0: sx, s0: Math.round(sxT),
                lt: performance.now(), mode: null, pid: e.pointerId };
@@ -4670,6 +4697,7 @@
       sv = 0.7 * sv + 0.3 * ((nx - sx) / Math.max(1, now - drag.lt));
       drag.lt = now;
       sx = nx;
+      place();
     });
     carousel.addEventListener('pointerup', e => {
       if (!drag) return;
@@ -4682,40 +4710,48 @@
       else if (Math.abs(sv) > 0.0016 && Math.abs(delta) > 0.08)
         target = d.s0 + (sv > 0 ? 1 : -1);                            // a flick still carries
       go(target);
+      sxT = Math.max(0, Math.min(PILL.length - 1, target));
     });
-    // the empty space above still swipes the modal away
-    stage.addEventListener('pointerdown', e => {
-      if (e.target.closest('.shClose')) return;
-      drag = { x: e.clientX, y: e.clientY, lt: performance.now(), mode: 'v', pid: e.pointerId };
-      sheet.style.transition = 'none';
-    });
-    stage.addEventListener('pointermove', e => {
-      if (!drag || drag.mode !== 'v') return;
-      sheet.style.transform = 'translateY(' + Math.max(0, e.clientY - drag.y) + 'px)';
-    });
-    stage.addEventListener('pointerup', e => {
-      if (!drag || drag.mode !== 'v') return;
-      const d = drag; drag = null;
-      sheet.style.transition = '';
-      if (e.clientY - d.y > 140) api.close();
-      else sheet.style.transform = '';
-    });
+    if (!desk){
+      // on the phone, the empty space above still swipes the modal away
+      stage.addEventListener('pointerdown', e => {
+        if (e.target.closest('.shClose')) return;
+        drag = { x: e.clientX, y: e.clientY, lt: performance.now(), mode: 'v', pid: e.pointerId };
+        sheet.style.transition = 'none';
+      });
+      stage.addEventListener('pointermove', e => {
+        if (!drag || drag.mode !== 'v') return;
+        sheet.style.transform = 'translateY(' + Math.max(0, e.clientY - drag.y) + 'px)';
+      });
+      stage.addEventListener('pointerup', e => {
+        if (!drag || drag.mode !== 'v') return;
+        const d = drag; drag = null;
+        sheet.style.transition = '';
+        if (e.clientY - d.y > 140) api.close();
+        else sheet.style.transform = '';
+      });
+    }
 
     const api = {
       open(startIdx){
+        startIdx = Math.max(0, Math.min(PILL.length - 1, startIdx || 0));
         if (open) { go(startIdx); return; }
         open = true;
         cur = startIdx;
         sx = sxT = startIdx;
-        dots.forEach((el, j) => el.classList.toggle('on', j === startIdx));
-        arcEl.innerHTML = ageArcMarkup(PILL[startIdx].delta);
+        const d = PILL[startIdx], cl = clouds[d.organIdx];
+        view.idx = d.organIdx;
+        view.cl = cl; view.key = 'o' + d.organIdx;
+        view.target = oaTarget(cl); view.morph = null; view._rt = null;
+        view.beat = ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart';
+        renderMeta(d);
+        cards.forEach((el, j) => el.classList.toggle('on', j === startIdx));
         wrap.style.display = 'block';
-        layout(); place();
+        layout();
         requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
-        requestAnimationFrame(draw);
       },
       close(){
-        if (!open) return;
+        if (!open || desk) return;
         open = false;
         wrap.classList.remove('on');
         sheet.style.transform = '';
@@ -4723,6 +4759,11 @@
       }
     };
     q('.shClose').addEventListener('click', api.close);
+    if (desk){
+      renderMeta(PILL[0]);
+      cards[0].classList.add('on');
+      requestAnimationFrame(layout);
+    }
     return api;
   }
   // steps / heart rate / sleep: the left bento card is its own mini carousel
@@ -4977,6 +5018,8 @@
   const sheetS = makeSignalSheet(document.getElementById('phone'));
   const sheetL = makeSheet(document.getElementById('phone'));
   const sheetR = makeSheet(document.getElementById('phone2'));
+  // the same modal, on its own desktop page — always open, nothing to dismiss
+  makeSheet(document.getElementById('oaWrap'), { desktop: true });
   // overview: a live mini particle heart on its own 2D canvas
   (function(){
     const host = document.getElementById('ovOrgan');
