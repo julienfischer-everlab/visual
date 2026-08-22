@@ -54,11 +54,30 @@ python3 -m http.server 8734
   It reproduces the engine's own motion — the shader's idle drift, the
   heartbeat/breathing pulse, and the ambient matter that spirals in and is
   absorbed — and the organ's own internal flow — so an isolated organ moves the
-  way it does in the concept. Dot counts run at a constant density measured in
-  *rendered* area (`cl.area * cl.s^2 * DOT_DENSITY`) — every cloud is scaled to
-  fit its frame, so silhouette area alone would give shapes with a bigger
-  bounding box more dots per visible pixel. Every visual carries the same dots
-  per unit of form.
+  way it does in the concept.
+- **Dot density is calibrated, not computed.** What the eye reads as density is
+  the *gap* between dots. Rendered area (`cl.area * cl.s^2 * DOT_DENSITY`) is
+  only a proxy for it, and it fails on a shape made of strokes: a neuron's
+  dendrites are barely wider than the gap, so its dots queue along each branch
+  instead of spreading over a surface, and the visual reads ~25% thinner than a
+  solid organ at the same area density (measured: 3.21px nearest-neighbour vs
+  2.38-2.73px for the others). Edge-biased sampling pulls the same way. So
+  `dotTarget` measures instead of predicting: `dotGap` returns the exact mean
+  nearest-neighbour distance (an x-sorted sweep, linear in practice), and the
+  count is iterated until that gap sits on `DOT_GAP`. The *mean*, not the
+  median — along a dendrite the dots pair up, so the median looks healthy while
+  the runs between pairs are the holes the eye picks out. Spacing goes as
+  1/sqrt(N) over a surface and as 1/N along a line, so it iterates to
+  convergence rather than assuming one correction lands; a neuron takes four
+  passes, a liver one or two. Result: 2.0% spread across all nine organs, from
+  12.6% with the nerve far outside it.
+  `cloudIdx` uses a fractional stride for the same reason — stepping by
+  `ceil()` only ever yields 8650/1, /2, /3 …, so the reachable counts jump in
+  coarse increments and no density target can land between them. Index k stays
+  the same particle across clouds, which is what lets a morph lerp pairwise.
+  `dotTarget` also records `cl._k`, how much a shape needs over what its area
+  suggests, so `shapeTarget(cl, base)` carries the same correction into the
+  surfaces that ask for a flat count (the mobile sheets and carousels).
 - Milestone visuals are standalone objects, built exactly like an organ: one
   silhouette through `buildCloud`, one `makeOrganView`, its own flow preset.
   Nothing about them is special-cased.

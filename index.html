@@ -3709,21 +3709,102 @@
   // ---------- organ-age bottom sheets: one independent instance per frame,
   // each with its own 2D particle carousel so both can be open at once ----------
   const pts2DCache = {};
-  function pts2D(organIdx, dense){ return samplePts(clouds[organIdx], 'o' + organIdx, dense ? 2600 : 560); }
-  // Constant dot density *on screen*. Every cloud is scaled to fit its frame by
-  // 1.55/maxDim, so silhouette area alone is the wrong measure — a shape with a
-  // bigger bounding box would end up with more dots per rendered pixel. Area
-  // scaled by s^2 is the area the tile actually shows.
-  const DOT_DENSITY = 1250;
+  function pts2D(organIdx, dense){
+    return samplePts(clouds[organIdx], 'o' + organIdx,
+                     shapeTarget(clouds[organIdx], dense ? 2600 : 560));
+  }
+  // Constant dot SPACING, which is what the eye reads as density. Silhouette
+  // area is only a proxy for it, and a poor one on a shape made of strokes: a
+  // neuron's dendrites are barely wider than the gap between dots, so its dots
+  // queue up along each branch instead of spreading over a surface and the
+  // whole visual reads thinner than a solid organ at the same area density.
+  // Edge-biased sampling pulls the same way. Rather than model any of that,
+  // measure it: sample the cloud, read the MEAN nearest-neighbour distance, and
+  // solve for the count that puts it on DOT_GAP. The mean, not the median —
+  // along a dendrite the dots pair up tightly, so the median looks healthy
+  // while the runs between pairs are exactly the holes the eye picks out.
+  // Spacing goes as 1/sqrt(N) over a surface and as 1/N along a line, so the
+  // passes converge from either side rather than in one step.
+  const DOT_DENSITY = 1250;                       // area-based first guess
+  const DOT_GAP = 0.0140;                         // organ-local units
+  const DOT_CAP = 2600;                           // frame budget, as elsewhere
+  // Mean gap between neighbouring dots. Exact, via a sweep over x: with the
+  // points sorted, a neighbour further away in x than the best distance so far
+  // cannot beat it, so each point only ever looks at the handful around it.
+  function dotGap(cl, target){
+    const idx = cloudIdx(target);
+    const n = idx.length;
+    const xs = new Float64Array(n), ys = new Float64Array(n);
+    for (let k = 0; k < n; k++){ xs[k] = cl.pos[idx[k] * 3]; ys[k] = cl.pos[idx[k] * 3 + 1]; }
+    if (n < 16) return null;
+    const ord = Array.from({ length: n }, (_, i) => i).sort((a, b) => xs[a] - xs[b]);
+    const px = new Float64Array(n), py = new Float64Array(n);
+    for (let k = 0; k < n; k++){ px[k] = xs[ord[k]]; py[k] = ys[ord[k]]; }
+    let sum = 0;
+    for (let i = 0; i < n; i++){
+      let best = Infinity;
+      for (let j = i + 1; j < n; j++){
+        const dx = px[j] - px[i];
+        if (dx * dx >= best) break;
+        const dy = py[j] - py[i];
+        const d = dx * dx + dy * dy;
+        if (d < best) best = d;
+      }
+      for (let j = i - 1; j >= 0; j--){
+        const dx = px[i] - px[j];
+        if (dx * dx >= best) break;
+        const dy = py[j] - py[i];
+        const d = dx * dx + dy * dy;
+        if (d < best) best = d;
+      }
+      sum += Math.sqrt(best);
+    }
+    return sum / n;
+  }
   function dotTarget(cl){
-    return Math.max(120, Math.round(cl.area * cl.s * cl.s * DOT_DENSITY));
+    if (cl._target != null) return cl._target;
+    let t = Math.max(120, Math.round(cl.area * cl.s * cl.s * DOT_DENSITY));
+    // Iterate to the gap rather than assuming one step lands on it: over a
+    // surface the gap goes as 1/sqrt(N), along a dendrite as 1/N, so a single
+    // 1/sqrt(N) correction under- or over-shoots depending on the shape.
+    for (let pass = 0; pass < 12; pass++){
+      const g = dotGap(cl, t);
+      if (!g) break;
+      if (Math.abs(g / DOT_GAP - 1) < 0.015) break;
+      const next = Math.max(120, Math.min(DOT_CAP, Math.round(t * (g / DOT_GAP) * (g / DOT_GAP))));
+      if (next === t) break;
+      t = next;
+    }
+    cl._target = t;
+    // how much this shape needs over what its area alone suggests, so a surface
+    // that asks for a flat dot count still gets every organ at one spacing
+    cl._k = t / Math.max(1, cl.area * cl.s * cl.s * DOT_DENSITY);
+    return t;
+  }
+  // a designer-set dot count, corrected for the shape it is being spent on
+  function shapeTarget(cl, base){
+    dotTarget(cl);
+    return Math.max(60, Math.min(N - AMB, Math.round(base * cl._k)));
+  }
+  // Which of the cloud's particles a given dot count uses. A fractional stride,
+  // not an integer step: stepping by ceil() only ever yields 8650/1, /2, /3 …
+  // so the reachable counts jump in coarse increments and a density target can
+  // land nowhere near them. Index k is the same particle for any two clouds at
+  // the same count, which is what lets a morph lerp them pairwise.
+  function cloudIdx(target){
+    const M = N - AMB;
+    const count = Math.max(1, Math.min(M, Math.round(target)));
+    const idx = new Int32Array(count);
+    for (let k = 0; k < count; k++) idx[k] = Math.floor(k * M / count);
+    return idx;
   }
   function samplePts(cl, id, target){
     const key = id + '@' + target;
     if (pts2DCache[key]) return pts2DCache[key];
-    const step = Math.max(1, Math.ceil((N - AMB) / target));
+    const idx = cloudIdx(target);
     const pts = [];
-    for (let i = 0; i < N - AMB; i += step){
+    for (let k = 0; k < idx.length; k++){
+      const i = idx[k];
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
         r: 0.9 + (i % 5) * 0.26,
@@ -3845,11 +3926,14 @@
     const c = document.createElement('canvas');
     host.appendChild(c);
     const ctx = c.getContext('2d');
+    const cloud = opts.cloud || clouds[organIdx];
+    // remembered so a swapped-in organ is re-corrected for its own shape
+    const baseTarget = opts.target ? null : (opts.dense ? 2600 : 560);
     const view = {
       idx: organIdx,
-      cl: opts.cloud || clouds[organIdx],
+      cl: cloud,
       key: opts.key || ('o' + organIdx),
-      target: opts.target || (opts.dense ? 2600 : 560),
+      target: opts.target || shapeTarget(cloud, opts.dense ? 2600 : 560),
       fill: opts.fill != null ? opts.fill : 0.58,
       dot: opts.dot != null ? opts.dot : 1.05,
       breathe: opts.breathe != null ? opts.breathe : 0.012,
@@ -3862,7 +3946,10 @@
       flowN: opts.flowN || 120,
       alpha: opts.alpha != null ? opts.alpha : 1,
       canvas: c,
-      setOrgan(i){ view.idx = i; view.cl = clouds[i]; view.key = 'o' + i; view._rt = null; },
+      setOrgan(i){
+        view.idx = i; view.cl = clouds[i]; view.key = 'o' + i; view._rt = null;
+        if (baseTarget != null) view.target = shapeTarget(clouds[i], baseTarget);
+      },
       // dissolve from the current cloud into another. Both are sampled at the
       // destination's target so index i is the same particle in each, which is
       // what lets the points travel rather than cross-fade.
