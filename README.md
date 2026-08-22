@@ -22,18 +22,27 @@ python3 -m http.server 8734
 
 ## Experience modes (version dropdown, top bar)
 
+The dropdown is grouped by what a mode is for.
+
+**Concept** — the full-bleed explorations
+
 1. **Card Nav** — full-bleed organ with a bottom card carousel
 2. **Pill Nav** — hero organ, rolling per-digit age odometer, instrument gauge, pill chips
-3. **Desktop (biomarker)** — the Everlab dashboard with the organ-age card in situ
-4. **Mobile (Hero carousel)** — iPhone frame, swipeable hero cards
-5. **Card flip** — frosted rotating card carousel (backdrop-blur, per-card Y rotation)
-6. **Mobile (biomarkers)** — bento layout with the mini organ carousel, metrics carousel (ApoB / heart rate / steps / sleep), the signal insight sheet, and the full-screen organ-age modal
-7. **Mobile (overview)** — the Overview frame on its own screen
-8. **Grid** — full-screen 3×3 anatomical plate, all organs alive with per-organ flow
-9. **Library** — an internal component workbench behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts, with the health systems it serves) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication and Supplements, each a standalone object). Every tile reports the dot count that visual is actually made of.
-10. **Immersive experience (modal)** — organ age as a lab instrument: pill channels, an asymmetric data grid, the particle organ floating in the right half with drawn annotations, and a ~1s morph between organs
-11. **Desktop (organ age)** — the organ-age modal as a centred desktop card: header, the organ held dead centre, status badge, name, description and the organ carousel along the bottom
-12. **Desktop (overview)** — the Everlab product shell: sidebar, plan card, the two gauges, tasks, a next-actions rail and the action-plan grid. The organ card opens the organ-age modal over the page
+3. **Card flip** — frosted rotating card carousel (backdrop-blur, per-card Y rotation)
+4. **Grid** — full-screen 3x3 anatomical plate, all organs alive with per-organ flow
+
+**Pages** — the product screens, mobile and desktop
+
+5. **Desktop (biomarker)** — the Everlab dashboard with the organ-age card in situ
+6. **Mobile (Hero carousel)** — iPhone frame, swipeable hero cards
+7. **Mobile (biomarkers)** — bento layout with the mini organ carousel, metrics carousel (ApoB / heart rate / steps / sleep), the signal insight sheet, and the organ-age modal
+8. **Mobile (overview)** — the Overview frame on its own screen
+9. **Immersive experience (modal)** — organ age as a lab instrument: an asymmetric data grid, the particle organ floating in the right half with drawn annotations, and a footer dock of miniature organs that selects the channel
+10. **Desktop (overview)** — the Everlab product shell: sidebar, plan card, the two gauges, tasks, a next-actions rail and the action-plan grid. The organ card opens the organ-age modal over the page
+
+**Library** — the component workbench
+
+11. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication and Supplements, each a standalone object). Every tile reports the dot count that visual is made of, and downloads as PNG, JPG or SVG.
 
 ## Tweaks (top bar)
 
@@ -80,9 +89,11 @@ python3 -m http.server 8734
   `dotTarget` also records `cl._k`, how much a shape needs over what its area
   suggests, so `shapeTarget(cl, base)` carries the same correction into the
   surfaces that ask for a flat count (the mobile sheets and carousels).
-- **The organ-age modal** (`makeSheet`) is one component in three dresses: a
-  bottom sheet inside the phone frames, a centred card on its own desktop page,
-  and — with `overlay: true` — the same card opened over the desktop overview.
+- **The organ-age modal** (`makeSheet`) is one component in two dresses: a
+  bottom sheet inside the phone frames (capped at 600px wide), and — with
+  `overlay: true` — a centred card opened over the desktop overview. Changing
+  channel slides the copy 32px in the direction of travel while it crossfades,
+  and the organ itself never moves.
   Both mount a single `makeOrganView`, so swiping the carousel does not move the
   organ — the cards travel, the organ stays dead centre and `morphTo` dissolves
   one silhouette into the next (verified: the lit centroid holds at 0.497-0.502

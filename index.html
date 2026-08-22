@@ -1048,6 +1048,8 @@
   /* ---- Organ age: one modal, worn as a mobile sheet or a desktop card ---- */
   .sheet.shModal{
     top:0;border-radius:0;background:#2a0b0a;
+    /* absolute with left/right 0, so auto margins still centre it under the cap */
+    max-width:600px;margin-left:auto;margin-right:auto;
     transform:translateY(100%);
     transition:transform .52s cubic-bezier(.32,.72,.28,1);
   }
@@ -1092,23 +1094,25 @@
   body.light .oaNav:hover{background:rgba(46,31,26,.2);}
   .oaMeta{
     flex:none;padding:0 26px;text-align:center;
-    transition:opacity .2s ease,transform .2s ease;
+    transition:opacity .2s ease,transform .22s ease;
   }
-  .oaMeta.sw{opacity:0;transform:translateY(6px);}
+  /* out to one side, then in from the other — --dx carries the direction */
+  .oaMeta.sw{opacity:0;transform:translateX(var(--dx,0px));}
+  .oaMeta.noTr{transition:none;}
   .oaBadge{
-    display:inline-block;padding:7px 14px;border-radius:9px;
-    font-size:14px;font-weight:500;letter-spacing:-.1px;
+    display:inline-block;padding:5.5px 11px;border-radius:8px;
+    font-size:11.5px;font-weight:500;letter-spacing:-.05px;
   }
   .oaBadge.older  {background:#3b3216;color:#f2d478;}
   .oaBadge.younger{background:#16321f;color:#7fdb9d;}
   .oaBadge.par    {background:#16321f;color:#7fdb9d;}
   .oaName{
-    margin:16px 0 0;font-size:27px;font-weight:500;color:#fff;
+    margin:11px 0 0;font-size:27px;font-weight:500;color:#fff;
     letter-spacing:-.6px;line-height:1.15;
   }
   .oaDesc{
-    margin:12px auto 0;max-width:38ch;
-    font-size:15px;line-height:1.55;color:rgba(242,229,224,.52);
+    margin:8px auto 0;max-width:38ch;
+    font-size:15px;line-height:1.5;color:rgba(242,229,224,.52);
   }
   .oaCarousel{
     flex:none;margin:auto 0 24px;overflow:hidden;padding:26px 0 2px;
@@ -1142,14 +1146,9 @@
   .oaDot.younger{background:#4ade80;}
   .oaDot.par    {background:#8b8b8b;}
   /* desktop: the same modal as a centred card on its own page */
-  .oaWrap{
-    display:none;position:fixed;inset:0;z-index:8;background:#050505;
-    align-items:center;justify-content:center;
-  }
-  body.m10 .oaWrap{display:flex;}
   .sheet.shModal.oaDesk{
-    position:relative;inset:auto;
-    width:min(790px,92vw);height:auto;max-height:92vh;
+    position:relative;inset:auto;margin:0;
+    width:min(790px,92vw);max-width:none;height:auto;max-height:92vh;
     border-radius:24px;transform:none;transition:none;
   }
   .oaDesk .oaTop{padding:26px 26px 0;}
@@ -1169,7 +1168,6 @@
   body.light .oaCard.on{background:rgba(46,31,26,.07);}
   body.light .oaCard b{color:#2e1f1a;}
   body.light .oaCard span{color:rgba(46,31,26,.55);}
-  body.light .oaWrap{background:#efe7e1;}
 
   /* ---- Desktop overview: the product shell the organ-age modal opens over ---- */
   .dvWrap{
@@ -1178,9 +1176,7 @@
     background:#0d0d0d;color:#ececec;
     grid-template-columns:302px 1fr;overflow:hidden;
   }
-  body.m11 .dvWrap{display:grid;}
-  body.m11 #field, body.m11 .carousel, body.m11 .pillui, body.m11 .note{display:none;}
-  body.m11{background:#000;}
+  body.m10 .dvWrap{display:grid;}
   .dvNav{
     display:flex;flex-direction:column;padding:26px 20px 22px;gap:26px;
     border-right:1px solid rgba(255,255,255,.06);min-height:0;
@@ -2234,7 +2230,6 @@
     <div class="dvPlanGrid"><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#8e7a63,#4c4035)"></span><span class="badge">Protocol</span></div><div><b>Onboarding Consult</b><p>Speak with an Everlab doctor about trends from your existing data, and gaps in your screening.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="9" rx="2"/><path d="M6 15h4"/></svg><span>Online video call</span><button class="go pri">Book</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#e0693f,#b83a1e)"></span><span class="badge">Protocol</span></div><div><b>Pathology Test</b><p>Visit an Everlab or partner clinic to complete your pathology tests.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#6f6f72,#37373a)"></span><span class="badge">Protocol</span></div><div><b>Dexa Scan</b><p>Visit an Everlab or partner clinic to get your full body composition scan.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#3a3a44,#17171c)"></span><span class="badge">Protocol</span></div><div><b>MRI Scan</b><p>Title of the event lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#c2a08a,#7a5a47)"></span><span class="badge">Protocol</span></div><div><b>Physical Assessment</b><p>A 90 minute longevity focused physical assessment to guide your exercise plan.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#9aa87d,#4e5a3c)"></span><span class="badge">Protocol</span></div><div><b>Nutrition Review</b><p>Transform your health data into actionable insights with an Accredited Dietitian.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="9" rx="2"/><path d="M6 15h4"/></svg><span>Online video call</span><button class="go">View</button></div></article></div>
   </main>
 </div>
-<div class="oaWrap" id="oaWrap"></div>
 <div class="olib" id="oLib">
   <aside class="olNav">
     <div class="olNavTitle">Library</div>
@@ -2289,18 +2284,17 @@
 
   // navigation modes, switchable from the top bar
   const MODES = [
-    { name: 'Card Nav', dur: 1800, ease: 1, pix: 1.35 }, // card carousel, hard S-curve pace
-    { name: 'Pill Nav', dur: 850,  ease: 0, pix: 1.35 }, // pill chips, arc below the organ
-    { name: 'Desktop (biomarker)', dur: 850, ease: 0, pix: 1.35 }, // organ card inside the product dashboard
-    { name: 'Mobile (Hero carousel)', dur: 850, ease: 0, pix: 1.35 }, // hero swipe carousel in a phone frame
-    { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 }, // rotating card carousel of organs
-    { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 }, // outlined 3-across organ grid
-    { name: 'Mobile (biomarkers)', dur: 850, ease: 0, pix: 1.35 }, // mobile bento with a mini organ card
-    { name: 'Mobile (overview)',   dur: 850, ease: 0, pix: 1.35 }, // the Overview frame on its own
-    { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 }, // the isolated-organ component library
-    { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 }, // organ age as a lab instrument
-    { name: 'Desktop (organ age)', dur: 850, ease: 0, pix: 1.35 }, // the organ-age modal as a desktop card
-    { name: 'Desktop (overview)', dur: 850, ease: 0, pix: 1.35 }, // the product shell the modal opens over
+    { name: 'Card Nav', dur: 1800, ease: 1, pix: 1.35 , group: 'Concept' }, // card carousel, hard S-curve pace
+    { name: 'Pill Nav', dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // pill chips, arc below the organ
+    { name: 'Desktop (biomarker)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ card inside the product dashboard
+    { name: 'Mobile (Hero carousel)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // hero swipe carousel in a phone frame
+    { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // rotating card carousel of organs
+    { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // outlined 3-across organ grid
+    { name: 'Mobile (biomarkers)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // mobile bento with a mini organ card
+    { name: 'Mobile (overview)',   dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // the Overview frame on its own
+    { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 , group: 'Library' }, // the isolated-organ component library
+    { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ age as a lab instrument
+    { name: 'Desktop (overview)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // the product shell the modal opens over
   ];
   let version = 0;
   let DUR = reduced ? 300 : MODES[version].dur;
@@ -3757,11 +3751,20 @@
   // ---------- tweak panel ----------
   document.body.classList.add('m0');
   const versionSel = document.getElementById('versionSel');
-  MODES.forEach((v, i) => {
-    const o = document.createElement('option');
-    o.value = String(i);
-    o.textContent = v.name;
-    versionSel.appendChild(o);
+  // grouped by what the mode is for, not by the order it was built in
+  const MODE_GROUPS = ['Concept', 'Pages', 'Library'];
+  MODE_GROUPS.forEach(g => {
+    const inGroup = MODES.map((v, i) => [v, i]).filter(([v]) => v.group === g);
+    if (!inGroup.length) return;
+    const og = document.createElement('optgroup');
+    og.label = g;
+    inGroup.forEach(([v, i]) => {
+      const o = document.createElement('option');
+      o.value = String(i);
+      o.textContent = v.name;
+      og.appendChild(o);
+    });
+    versionSel.appendChild(og);
   });
   versionSel.value = String(version);
   versionSel.addEventListener('change', () => setMode(+versionSel.value));
@@ -5160,15 +5163,25 @@
       i = Math.max(0, Math.min(PILL.length - 1, i));
       sxT = i;
       if (i === cur) return;
+      const dir = i > cur ? 1 : -1;
       cur = i;
       const d = PILL[i], cl = clouds[d.organIdx];
       // the heartbeat and the internal flow belong to the destination organ
       view.idx = d.organIdx;
       view.beat = ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart';
       view.morphTo(cl, 'o' + d.organIdx, oaTarget(cl), 760);
+      // the copy leaves the way the carousel is going and returns from the far side
+      meta.style.setProperty('--dx', (-32 * dir) + 'px');
       meta.classList.add('sw');
       clearTimeout(swT);
-      swT = setTimeout(() => { renderMeta(d); meta.classList.remove('sw'); }, 210);
+      swT = setTimeout(() => {
+        renderMeta(d);
+        meta.classList.add('noTr');
+        meta.style.setProperty('--dx', (32 * dir) + 'px');
+        void meta.offsetWidth;                 // commit the jump before easing back
+        meta.classList.remove('noTr');
+        meta.classList.remove('sw');
+      }, 210);
       cards.forEach((el, j) => el.classList.toggle('on', j === i));
       syncNav();
     }
@@ -5545,8 +5558,6 @@
   const sheetS = makeSignalSheet(document.getElementById('phone'));
   const sheetL = makeSheet(document.getElementById('phone'));
   const sheetR = makeSheet(document.getElementById('phone2'));
-  // the same modal, on its own desktop page — always open, nothing to dismiss
-  makeSheet(document.getElementById('oaWrap'), { desktop: true });
   // ---- desktop overview: the product shell the organ-age modal opens over ----
   (function desktopOverview(){
     const card = document.getElementById('dvOrganCard');
