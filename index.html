@@ -576,32 +576,70 @@
     display:none;position:fixed;inset:12px;top:55px;z-index:9;overflow:hidden;
     background:#111;border:1px solid rgba(242,229,224,.09);border-radius:26px;
     color:#ececec;
-    grid-template-rows:auto 1fr;
+    grid-template-rows:1fr;
   }
   body.m9 .imWrap{display:grid;}
+  /* it is a modal, so it closes */
+  .imClose{
+    position:absolute;right:16px;top:16px;z-index:6;
+    width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(242,229,224,.13);color:#f2e5e0;font:inherit;font-size:13px;
+    transition:background .16s ease;
+  }
+  .imClose:hover{background:rgba(242,229,224,.22);}
+  .imClose:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
+  body.light .imClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
+  body.light .imClose:hover{background:rgba(46,31,26,.18);}
   body.m9 #field, body.m9 .carousel, body.m9 .pillui, body.m9 .note{display:none;}
   body.m9{background:#000;}
   body.m10 #field, body.m10 .carousel, body.m10 .pillui, body.m10 .note{display:none;}
   body.m10{background:#000;}
-  /* selecting a diagnostic channel, not app tabs */
-  .imTabs{
-    display:flex;gap:8px;flex-wrap:wrap;padding:18px 18px 4px;
-  }
-  .imTab{
-    display:inline-flex;align-items:center;gap:8px;cursor:pointer;
-    font:inherit;font-size:12px;color:rgba(242,229,224,.55);
-    background:rgba(242,229,224,.035);border:1px solid rgba(242,229,224,.07);
-    border-radius:999px;padding:8px 15px;
-    transition:color .35s ease,background .35s ease,border-color .35s ease;
-  }
-  .imTab:hover{color:rgba(242,229,224,.85);}
-  .imTab.on{color:#f2e5e0;background:rgba(242,229,224,.09);border-color:rgba(242,229,224,.2);}
-  .imTab i{width:6px;height:6px;border-radius:50%;flex:none;}
-  .imTab:focus-visible{outline:1px solid rgba(242,229,224,.5);outline-offset:2px;}
   .imBody{
     display:grid;grid-template-columns:minmax(320px,0.86fr) 1.14fr;
-    gap:14px;padding:14px 18px 18px;min-height:0;
+    gap:14px;padding:18px;min-height:0;
   }
+  .imRight{display:grid;grid-template-rows:1fr auto;gap:10px;min-height:0;}
+  /* the channel picker: the organ itself, nine times over, under the hero */
+  .imDock{
+    position:relative;overflow:hidden;padding:2px 0 4px;
+    touch-action:pan-y;user-select:none;-webkit-user-select:none;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 32px,
+                       #000 calc(100% - 32px),transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0,#000 32px,
+               #000 calc(100% - 32px),transparent 100%);
+  }
+  .imDockTrack{display:flex;gap:10px;padding:0 24px;will-change:transform;}
+  .imChan{
+    flex:none;position:relative;width:88px;height:88px;box-sizing:border-box;
+    padding:0;border:1px solid rgba(242,229,224,.07);border-radius:14px;
+    background:rgba(242,229,224,.035);cursor:pointer;overflow:hidden;
+    transition:background .25s ease,border-color .25s ease,opacity .25s ease;
+    opacity:.55;
+  }
+  .imChan:hover{opacity:.85;background:rgba(242,229,224,.07);}
+  .imChan.on{
+    opacity:1;background:rgba(242,229,224,.1);border-color:rgba(242,229,224,.28);
+  }
+  .imChan:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
+  .imChan canvas{position:absolute;inset:0;display:block;width:100%;height:100%;}
+  .imChan i{
+    position:absolute;right:7px;top:7px;width:5px;height:5px;border-radius:50%;
+  }
+  .imChan b{
+    position:absolute;left:0;right:0;bottom:5px;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:8.5px;font-weight:400;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(242,229,224,.6);white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;padding:0 5px;
+  }
+  .imChan.on b{color:#f2e5e0;}
+  body.light .imChan{background:rgba(46,31,26,.04);border-color:rgba(46,31,26,.08);}
+  body.light .imChan.on{background:rgba(46,31,26,.09);border-color:rgba(46,31,26,.24);}
+  body.light .imChan b{color:rgba(46,31,26,.6);}
+  body.light .imChan.on b{color:#2e1f1a;}
+  /* the hero's own download moves out from under the close button */
+  .imStage .dlBtn{top:auto;bottom:10px;right:10px;}
   .imLeft{display:grid;grid-template-rows:1fr auto;gap:14px;min-height:0;}
   .imPanel{
     background:rgba(242,229,224,.04);border:none;
@@ -676,8 +714,6 @@
   .imWrap.swapping .imSwap{opacity:0;filter:blur(7px);}
   body.light .imWrap{background:#f4efed;border-color:rgba(46,31,26,.12);color:#2e1f1a;}
   body.light .imPanel, body.light .imMod{background:rgba(46,31,26,.05);border:none;}
-  body.light .imTab{background:rgba(46,31,26,.04);border-color:rgba(46,31,26,.08);color:rgba(46,31,26,.6);}
-  body.light .imTab.on{color:#2e1f1a;background:rgba(46,31,26,.09);border-color:rgba(46,31,26,.22);}
   body.light .imMeta, body.light .imKv div span{color:rgba(46,31,26,.4);}
   body.light .imPrimary h2, body.light .imMod .big{color:#2e1f1a;}
   body.light .imPrimary p{color:rgba(46,31,26,.55);}
@@ -1819,7 +1855,7 @@
   <div class="pills" id="pills" role="group" aria-label="Organ"></div>
 </div>
 <div class="imWrap" id="imWrap">
-  <div class="imTabs" id="imTabs"></div>
+  <button class="imClose" id="imClose" type="button" aria-label="Close">&#10005;</button>
   <div class="imBody">
     <div class="imLeft">
       <section class="imPanel imPrimary">
@@ -1831,10 +1867,15 @@
       </section>
       <div class="imMods" id="imMods"></div>
     </div>
-    <div class="imStage" id="imStage">
-      <div class="imSlot" id="imSlot"></div>
-      <svg class="imLines" id="imLines" aria-hidden="true"></svg>
-      <div class="imNotes" id="imNotes"></div>
+    <div class="imRight">
+      <div class="imStage" id="imStage">
+        <div class="imSlot" id="imSlot"></div>
+        <svg class="imLines" id="imLines" aria-hidden="true"></svg>
+        <div class="imNotes" id="imNotes"></div>
+      </div>
+      <div class="imDock" id="imDock" role="tablist" aria-label="Organ channel">
+        <div class="imDockTrack" id="imDockTrack"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -4325,6 +4366,7 @@
   };
   // the hero renders far larger than a library tile, so it needs the dots to match
   function imTarget(cl){ return Math.min(8600, Math.round(dotTarget(cl) * 3.06)); }
+  const IM_FILL = 0.286;   // the annotation anchors are placed off this too
   // the age scale: real ages, a tick per year, colour only across the gap,
   // the chronological age marked at centre and an indicator at the biological age
   function ageArcMarkup(delta){
@@ -4357,21 +4399,80 @@
   (function immersive(){
     const wrap = document.getElementById('imWrap');
     if (!wrap) return;
-    const tabsEl = document.getElementById('imTabs'), modsEl = document.getElementById('imMods');
+    const dockEl = document.getElementById('imDock');
+    const dockTrack = document.getElementById('imDockTrack');
+    const modsEl = document.getElementById('imMods');
     const stage = document.getElementById('imStage'), linesEl = document.getElementById('imLines');
     const notesEl = document.getElementById('imNotes');
     const titleEl = document.getElementById('imTitle'), descEl = document.getElementById('imDesc');
     const kvEl = document.getElementById('imKv');
     let cur = 0, busy = false, view = null;
 
-    const tabs = PILL.map((d, i) => {
-      const b = document.createElement('button');
-      b.className = 'imTab' + (i === 0 ? ' on' : '');
-      b.innerHTML = '<i style="background:' + imTone(d.delta) + '"></i>' + d.label;
-      b.addEventListener('click', () => select(i));
-      tabsEl.appendChild(b);
-      return b;
+    // Each channel is the organ itself in miniature — the same master component
+    // the hero runs, so the picker cannot drift from what it selects.
+    const chans = PILL.map((d, i) => {
+      const el = document.createElement('button');
+      el.className = 'imChan' + (i === 0 ? ' on' : '');
+      el.type = 'button';
+      el.setAttribute('role', 'tab');
+      el.setAttribute('aria-label', d.label);
+      el.innerHTML = '<i style="background:' + imTone(d.delta) + '"></i><b>' + d.label + '</b>';
+      el.addEventListener('click', () => { if (!dockMoved) select(i); });
+      dockTrack.appendChild(el);
+      return el;
     });
+    let chansBuilt = false;
+    function buildChans(){
+      if (chansBuilt) return;
+      chansBuilt = true;
+      chans.forEach((el, i) => {
+        const cl = clouds[PILL[i].organIdx];
+        makeOrganView(el, PILL[i].organIdx, {
+          target: shapeTarget(cl, 300), fill: 0.38, dot: 0.85,
+          feed: false, flow: false, dl: false
+        });
+      });
+    }
+    // a filmstrip: drag to scroll, and the active channel is kept in view
+    let dockX = 0, dockDrag = null, dockMoved = false;
+    function dockMax(){
+      return Math.max(0, dockTrack.scrollWidth - dockEl.clientWidth);
+    }
+    function dockPlace(){
+      dockTrack.style.transform = 'translateX(' + (-dockX).toFixed(1) + 'px)';
+    }
+    function dockReveal(i){
+      const el = chans[i];
+      if (!el || !dockEl.clientWidth) return;
+      const step = el.offsetWidth + 10;
+      dockX = Math.max(0, Math.min(dockMax(),
+        i * step + el.offsetWidth / 2 - dockEl.clientWidth / 2 + 24));
+      dockPlace();
+    }
+    dockEl.addEventListener('pointerdown', e => {
+      dockDrag = { x: e.clientX, x0: dockX, pid: e.pointerId };
+      dockMoved = false;
+    });
+    dockEl.addEventListener('pointermove', e => {
+      if (!dockDrag) return;
+      const dx = e.clientX - dockDrag.x;
+      if (!dockMoved && Math.abs(dx) > 5){
+        dockMoved = true;
+        try { dockEl.setPointerCapture(dockDrag.pid); } catch (err) {}
+      }
+      if (!dockMoved) return;
+      dockX = Math.max(0, Math.min(dockMax(), dockDrag.x0 - dx));
+      dockPlace();
+    });
+    const endDockDrag = () => {
+      if (!dockDrag) return;
+      dockDrag = null;
+      // let the click that ends a drag through, but not as a selection
+      if (dockMoved) setTimeout(() => { dockMoved = false; }, 0);
+    };
+    dockEl.addEventListener('pointerup', endDockDrag);
+    dockEl.addEventListener('pointercancel', endDockDrag);
+    addEventListener('resize', () => dockReveal(cur));
     ['imPrimary', 'imMods'].forEach(() => {});
     document.querySelector('.imPrimary').classList.add('imSwap');
     modsEl.classList.add('imSwap');
@@ -4410,7 +4511,7 @@
       const d = PILL[i], a = IM_ANCHOR[d.label] || [0.45, 0.3];
       const w = stage.clientWidth, h = stage.clientHeight;
       const cx = w / 2, cy = h / 2;
-      const sc = Math.min(w, h) * 0.357;
+      const sc = Math.min(w, h) * IM_FILL;
       const ax = cx + a[0] * sc, ay = cy - a[1] * sc;
       const lx = Math.min(w - 90, ax + 96), ly = Math.max(28, ay - 62);
       const qx = ax + 40, qy = ay - 34;
@@ -4436,7 +4537,8 @@
       if (busy || i === cur) return;
       busy = true;
       const from = cur; cur = i;
-      tabs.forEach((b, j) => b.classList.toggle('on', j === i));
+      chans.forEach((b, j) => b.classList.toggle('on', j === i));
+      dockReveal(i);
       clearNotes();
       wrap.classList.add('swapping');
       const cl = clouds[PILL[i].organIdx];
@@ -4452,12 +4554,16 @@
       ready = true;
       const cl = clouds[PILL[0].organIdx];
       view = makeOrganView(document.getElementById('imSlot'), PILL[0].organIdx,
-        { target: imTarget(cl), fill: 0.357, dot: 1.25, alpha: 1.35 });
+        { target: imTarget(cl), fill: IM_FILL, dot: 1.25, alpha: 1.35 });
       render(0);
-      requestAnimationFrame(() => { annotate(0); wrap.classList.add('lines');
+      buildChans();
+      requestAnimationFrame(() => { annotate(0); dockReveal(0); wrap.classList.add('lines');
         setTimeout(() => wrap.classList.add('notes'), 260); });
     }
     window.__imBoot = boot;
+    document.getElementById('imClose').addEventListener('click', () => {
+      setMode(2);            // back to the dashboard this modal sits over
+    });
     addEventListener('resize', () => { if (ready && !busy) annotate(cur); });
   })();
 
