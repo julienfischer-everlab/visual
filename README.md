@@ -55,6 +55,18 @@ Both desktop sidebars move between **Overview** and **Biomarkers**.
 Density, particle size, flow and voxels are no longer exposed: they stay where
 the design landed.
 
+## The organ ground
+
+`#220606` is the one background the organ ever sits on. It is `--bg`, and every
+surface that carries an organ resolves to it: the full-bleed concepts, the
+in-situ dashboard card, the mobile mini-organ card, the overview's organ cards,
+the immersive page and its surround, the library, and the organ-age modal in
+both dresses. The WebGL context clears to the same value (`0.133, 0.024, 0.024`)
+in every mode, so the canvas never leaves a seam against the surface behind it.
+
+The mobile device backdrops and the desktop product shell keep their own near
+black — the phone frame and the dashboard chrome cover them entirely.
+
 ## Engine notes
 
 - Raw WebGL1 point sprites; one shared shader handles morphing (organ-local
