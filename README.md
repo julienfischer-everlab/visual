@@ -41,7 +41,7 @@ The dropdown is grouped by what a mode is for.
 
 Both desktop sidebars move between **Overview** and **Biomarkers**.
 
-10. **Desktop (biomarker) B2** — the same dashboard, re-proportioned: the biomarker card carries the distribution range at its foot, the stat pair is swapped for the steps and health-coverage cards, and a records row, an Other chip and a search field sit under the grid. The hero sizes itself off its content, so nothing spills onto the rows below, and the organ card takes its height from the left column — landscape, not standing up. It wears `m2`'s styles plus a `b2` marker, so there is one dashboard, not two.
+10. **Desktop (biomarker) V2** — the same dashboard, re-proportioned: the biomarker card carries the distribution range at its foot, the stat pair is swapped for the steps and health-coverage cards, and a records row, an Other chip and a search field sit under the grid. The hero sizes itself off its content, so nothing spills onto the rows below, and the organ card takes its height from the left column — landscape, not standing up. It wears `m2`'s styles plus a marker class, so there is one dashboard, not two — the class is still `b2` in code, since `v2` already marks the mobile page.
 11. **Mobile (biomarkers) V2** — the same bento re-laid out to the design: the health-coverage card beside a week of steps, then organ age full width beneath them. Wears `m5` plus a `v2` marker.
 
 ### The organ in situ
