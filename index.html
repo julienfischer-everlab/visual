@@ -297,6 +297,21 @@
   .dash .meterbar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:12px;background:#2a2a28;}
   .dash .meterbar span{height:100%;}
   .dash .drow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0;}
+  /* the right column is a stack, so a second card can sit under the organ */
+  .dash .dright{display:flex;flex-direction:column;gap:16px;min-height:0;}
+  .dash .dright .organ{flex:1;}
+  .dash .dcard.dfill{display:none;flex:0 0 148px;background:#252522;border-radius:20px;}
+  /* B2: organ age minimised on top, an empty card waiting underneath */
+  body.b2 .dash .dgrid{height:500px;}
+  body.b2 .dash .dcard.dfill{display:block;}
+  body.b2 .dash .olist{top:44px;}
+  body.b2 .dash .olist .or{padding:6px 2px;}
+  /* the gauge stack shrinks with the card, so the organ still has room above it */
+  body.b2 #arcA{transform:scale(.42);margin:-26px 0 -74px;}
+  body.b2 #ageBig{height:48px;}
+  body.b2 #ageBig .dcol{font-size:27px;}
+  body.b2 #status{margin-top:-14px;min-height:14px;}
+  body.b2 #status .word{font-size:9px;}
   .dash .organ{padding:0;position:relative;background:var(--bg);border-color:#2c1512;min-height:0;border-radius:20px;}
   .dash .istats{
     position:absolute;left:20px;top:20px;bottom:20px;width:352px;z-index:3;
@@ -1687,6 +1702,7 @@
           </div>
         </div>
       </div>
+      <div class="dright">
       <div class="dcard organ" id="organSlot">
         <div class="olist" id="olist"></div>
         <button class="dcExpand" id="dcExpand" type="button" aria-label="Open organ age">
@@ -1695,6 +1711,8 @@
             <path d="M9.5 2.5H13.5V6.5M6.5 13.5H2.5V9.5M13.5 2.5 9 7M2.5 13.5 7 9"/>
           </svg>
         </button>
+      </div>
+        <div class="dcard dfill"></div>
       </div>
     </div>
     <div class="filters">
@@ -2219,9 +2237,13 @@
     { name: 'Mobile (overview)',   dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // the Overview frame on its own
     { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 , group: 'Library' }, // the isolated-organ component library
     { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // organ age as a lab instrument
-    { name: 'Desktop (overview)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // the product shell the modal opens over
+    { name: 'Desktop (overview)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' },
+    { name: 'Desktop (biomarker) B2', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ age split off its own card // the product shell the modal opens over
   ];
   let version = 0;
+  // B2 is the same dashboard with the right column split, so it wears m2's
+  // styles as well as its own marker
+  const isDash = v => v === 2 || v === 10;
   let DUR = reduced ? 300 : MODES[version].dur;
 
   // ---------- muted warm palette on burgundy (rgb 0..1) ----------
@@ -3520,13 +3542,13 @@
     const phrase = n + ' biomarkers tested';
     const R = 0.265 * effDim;
     const bottomUI = version === 0 ? carousel : pillui;
-    const topHn = version === 2 ? 0 : (document.querySelector('.topbar').offsetHeight || 0);
+    const topHn = isDash(version) ? 0 : (document.querySelector('.topbar').offsetHeight || 0);
     const ocx = canvOX + W / 2;
     const ocy = canvOY + H / 2 - ((bottomUI.offsetHeight || 0) - topHn) / 2 + (version === 1 ? 80 : 0);
     const x = ocx + conf.ax * R, y = ocy + conf.ay * R;
     // single inclined connector, standing off the organ by a 24px safe gap
     const GAP = 24 * 0.7071;
-    if (version === 2){
+    if (isDash(version)){
       // in situ: a fixed dashboard label inside the card, no connector line
       notePath.style.display = 'none';
       noteEl.style.left = (canvOX + 26) + 'px';
@@ -3562,8 +3584,8 @@
     noteTypeTxt2.textContent = '';
     noteCursor2.style.opacity = 0;
     noteTxt.style.bottom = outN ? '88px' : '70px';
-    if (version === 2 || conf.side === 'r'){
-      noteTxt2.style.left = version === 2 ? '0px' : '52px'; noteTxt2.style.right = 'auto';
+    if (isDash(version) || conf.side === 'r'){
+      noteTxt2.style.left = isDash(version) ? '0px' : '52px'; noteTxt2.style.right = 'auto';
     } else {
       noteTxt2.style.left = 'auto'; noteTxt2.style.right = '68px';
     }
@@ -3575,7 +3597,7 @@
     const chipW = noteTxt.offsetWidth;
     noteTxt.style.width = chipW + 'px';
     noteTypeTxt.textContent = '';
-    if (version === 2){
+    if (isDash(version)){
       // stay inside the dashboard card
       const lNow = parseFloat(noteEl.style.left);
       noteEl.style.left = Math.min(Math.max(lNow, canvOX + 10), canvOX + W - 200) + 'px';
@@ -3696,13 +3718,14 @@
   function setMode(m){
     version = m;
     DUR = reduced ? 300 : MODES[m].dur;
-    document.body.className = 'm' + m + (lightOn ? ' light' : '') + (blackOn ? ' black' : '');
+    document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') +
+      (lightOn ? ' light' : '') + (blackOn ? ' black' : '');
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
     if (m === 5){
       document.getElementById('mbSlot').appendChild(canvas);
       bx = bxT = pillCurrent; // carousel enters on the active organ
-    } else if (m === 2){
+    } else if (isDash(m)){
       // in situ: canvas, gauge stack and title all become children of the card
       const slot = document.getElementById('organSlot');
       slot.appendChild(canvas);
@@ -3754,7 +3777,7 @@
     document.querySelector('.dash').style.top = tbH + 'px';
     document.querySelector('.dash .side').style.top = tbH + 'px';
     document.getElementById('grid').style.top = tbH + 'px';
-    if (version === 2){
+    if (isDash(version)){
       // in situ: the canvas becomes the dashboard's organ card
       const slot = document.getElementById('organSlot').getBoundingClientRect();
       // organ + gauge + age on the card's left; the organ-age list on the right
@@ -3765,9 +3788,11 @@
       // measured from the card, not the viewport — nothing to re-place on scroll
       canvas.style.left = listW + 'px'; canvas.style.top = '0px';
       pillui.style.left = listW + 'px';
-      pillui.style.top = (slot.height - 208) + 'px';
       pillui.style.width = W + 'px';
       pillui.style.right = 'auto'; pillui.style.bottom = 'auto';
+      // sit the gauge stack on the card's floor by its real height, so a
+      // shorter card leaves the organ the room the stack gives back
+      pillui.style.top = (slot.height - (pillui.offsetHeight || 208) - 14) + 'px';
       const st = document.getElementById('situTitle');
       st.style.right = 'auto';
       st.style.left = '24px';
@@ -3796,7 +3821,9 @@
     const topH = version >= 2 ? 0 : (document.querySelector('.topbar').offsetHeight || 0);
     // mobile: the gauge stack sits below the slot, not over it
     const botH = (version === 5) ? 0 : (bottomUI.offsetHeight || 0);
-    effDim = Math.min(W, Math.max(220, H - topH - botH));
+    // the dashboard cards can be shorter than the 220 floor, and clamping up to
+    // it pushes the organ off the top of the card — let it shrink to fit instead
+    effDim = Math.min(W, Math.max(isDash(version) ? 140 : 220, H - topH - botH));
     gl.uniform2f(U.uView, 0.78 * effDim / W, 0.78 * effDim / H);
     gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700));
     // pill mode: organ sits 80px lower for breathing room under the top bar
@@ -5677,7 +5704,7 @@
     cenX = camFrom.x + (org.x - camFrom.x) * k2;
     cenY = camFrom.y + (org.y - camFrom.y) * k2;
     orgR = camFrom.r + (org.r - camFrom.r) * k2;
-    zoomNow = camFrom.z + ((version === 1 ? 0.74 : version === 2 ? 0.82 : version === 3 ? 0.7 : version === 6 ? 0.69 : 0.68) / org.r - camFrom.z) * k2;
+    zoomNow = camFrom.z + ((version === 1 ? 0.74 : isDash(version) ? 0.82 : version === 3 ? 0.7 : version === 6 ? 0.69 : 0.68) / org.r - camFrom.z) * k2;
     ghostVis += (0 - ghostVis) * 0.05; // body context retired: no ghost outline
     gl.uniform1f(U.uEase, reduced ? 1 : MODES[version].ease);
     gl.uniform3f(U.uCenter, cenX, cenY, 0);
@@ -5694,7 +5721,7 @@
     gl.uniformMatrix3fv(U.uRot, false, rot);
 
     // in situ: self-heal card geometry (layout settles late, dashboard scrolls)
-    if (version === 2 && t - situCheck > 800){
+    if (isDash(version) && t - situCheck > 800){
       situCheck = t;
       const r = document.getElementById('organSlot').getBoundingClientRect();
       if (Math.abs(r.left - canvOX) > 2 || Math.abs(r.width - W) > 2) resize();
@@ -5763,7 +5790,7 @@
     blackNow += ((blackOn ? 1 : 0) - blackNow) * 0.16;
     gl.uniform1f(U.uLight, lightNow);
     if (version !== 4){
-      const cardMode = (version === 2 || version === 3 || version === 6);
+      const cardMode = isDash(version);
       const dk = [0.133, 0.024, 0.024];   // #220606, whatever the surface
       const lt = cardMode ? [0.953, 0.886, 0.847] : [0.957, 0.937, 0.929];
       const bk = cardMode ? [0.157, 0.027, 0.027] : [0.02, 0.02, 0.02];
