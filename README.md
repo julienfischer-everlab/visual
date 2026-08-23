@@ -61,7 +61,8 @@ screening, skin check), the questionnaire prompt and the report upload;
 They share one skeleton — label, value, a fixed-height `.hiViz` visual on the
 baseline, dots on the card's bottom edge — so the pair lines up whatever slide
 each is showing. The markup is identical wherever a card appears, so the
-desktop and mobile copies behave the same.
+desktop and mobile copies behave the same; the desktop hero swaps the dots for
+two quiet arrows in the card's bottom corner.
 
 **Library** — the component workbench
 
