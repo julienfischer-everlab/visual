@@ -41,8 +41,8 @@ The dropdown is grouped by what a mode is for.
 
 Both desktop sidebars move between **Overview** and **Biomarkers**.
 
-10. **Desktop (biomarker) B2** — the same dashboard, shorter: organ age minimised on its own card with the left column brought down to meet it. It wears `m2`'s styles plus a `b2` marker, so there is one dashboard, not two.
-11. **Mobile (biomarkers) V2** — the same bento with the row re-laid out: the signal runs the full width, and organ age sits beside a coverage card underneath. Wears `m5` plus a `v2` marker.
+10. **Desktop (biomarker) B2** — the same dashboard, shorter: organ age minimised on its own card with the left column brought down to meet it, the stat pair swapped for a week of steps and a health-coverage dial, and a records row, an Other chip and a search field under the grid. It wears `m2`'s styles plus a `b2` marker, so there is one dashboard, not two.
+11. **Mobile (biomarkers) V2** — the same bento re-laid out to the design: a health-coverage dial beside a week of steps, then organ age full width beneath them. Wears `m5` plus a `v2` marker.
 
 **Library** — the component workbench
 
