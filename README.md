@@ -44,14 +44,17 @@ Both desktop sidebars move between **Overview** and **Biomarkers**.
 10. **Desktop (biomarker) B2** — the same dashboard, re-proportioned: the biomarker card runs taller with the distribution range pinned to its foot, the stat pair is swapped for a week of steps and the health-coverage card, the organ-age card on the right stands taller than the left column, and a records row, an Other chip and a search field sit under the grid. The hero sizes itself off its content, so nothing spills onto the rows below. It wears `m2`'s styles plus a `b2` marker, so there is one dashboard, not two.
 11. **Mobile (biomarkers) V2** — the same bento re-laid out to the design: the health-coverage card beside a week of steps, then organ age full width beneath them. Wears `m5` plus a `v2` marker.
 
-### The health-coverage card
+### The two mini cards
 
-One card, four slides, swipeable by pointer or touch and steerable from its
-dots — the 64% dial, screenings that have fallen due (cancer screening, skin
-check), the questionnaire prompt and the report upload. The markup is the same
-wherever the card appears, so the desktop and mobile copies behave identically;
-both they and the steps card carry the period they cover (`This week`) under
-the label.
+Both swipe, by pointer or touch, and are steerable from their dots. **Health
+coverage** runs the 64% dial, screenings that have fallen due (cancer
+screening, skin check), the questionnaire prompt and the report upload;
+**Steps** runs the week of steps, heart rate, sleep score and time asleep.
+
+They share one skeleton — label, value, a fixed-height `.hiViz` visual on the
+baseline, dots on the card's bottom edge — so the pair lines up whatever slide
+each is showing. The markup is identical wherever a card appears, so the
+desktop and mobile copies behave the same.
 
 **Library** — the component workbench
 
