@@ -41,11 +41,12 @@ The dropdown is grouped by what a mode is for.
 
 Both desktop sidebars move between **Overview** and **Biomarkers**.
 
-10. **Desktop (biomarker) B2** — the same dashboard with the right column split: organ age minimised on its own card, and an empty grey card beneath it. It wears `m2`'s styles plus a `b2` marker, so there is one dashboard, not two.
+10. **Desktop (biomarker) B2** — the same dashboard, shorter: organ age minimised on its own card with the left column brought down to meet it. It wears `m2`'s styles plus a `b2` marker, so there is one dashboard, not two.
+11. **Mobile (biomarkers) V2** — the same bento with the row re-laid out: the signal runs the full width, and organ age sits beside a coverage card underneath. Wears `m5` plus a `v2` marker.
 
 **Library** — the component workbench
 
-11. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication, Supplements). Every tile reports its dot count and downloads as PNG, JPG or SVG.
+12. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication, Supplements). Every tile reports its dot count and downloads as PNG, JPG or SVG.
 
 ## Tweaks (top bar)
 

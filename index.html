@@ -301,9 +301,9 @@
   .dash .dright{display:flex;flex-direction:column;gap:16px;min-height:0;}
   .dash .dright .organ{flex:1;}
   .dash .dcard.dfill{display:none;flex:0 0 148px;background:#252522;border-radius:20px;}
-  /* B2: organ age minimised on top, an empty card waiting underneath */
-  body.b2 .dash .dgrid{height:500px;}
-  body.b2 .dash .dcard.dfill{display:block;}
+  /* B2: organ age minimised, and the left column comes down to meet it */
+  body.b2 .dash .dgrid{height:340px;}
+  body.b2 .dash .dcard.scard{height:132px;}
   body.b2 .dash .olist{top:44px;}
   body.b2 .dash .olist .or{padding:6px 2px;}
   /* the gauge stack shrinks with the card, so the organ still has room above it */
@@ -820,6 +820,15 @@
   #mBento > .msn:first-child{min-height:208px;}
   #mBento > .msn:first-child .legend{margin-top:auto;}
   .mbrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .mbrow2 .mbCov{display:none;}
+  /* V2: the signal runs the full width, organ age and coverage sit under it */
+  body.v2 .mbrow2 .msCar{grid-column:1 / -1;}
+  body.v2 .mbrow2 .mbCov{display:flex;flex-direction:column;}
+  body.v2 .mbrow2 .msCar .big{font-size:24px;}
+  body.v2 .mbrow2 .msCar .msSlide{padding:16px 18px;}
+  body.v2 .mbrow2 .msCar .msChart{margin-top:6px;}
+  body.v2 .mbCov .big{font-size:26px;margin-top:4px;}
+  body.v2 .mbCov .mtag{align-self:flex-start;margin-top:6px;}
   #mBento .mbrow2 .big{font-size:17px;margin-top:2px;}
   .msCar{
     position:relative;overflow:hidden;padding:0;
@@ -1884,6 +1893,12 @@
           <div id="mbSlot"></div>
           <div class="mbDots" id="mbDots"></div>
         </div>
+        <div class="msn mbCov">
+          <div class="lbl">Coverage</div>
+          <div class="big">89<span style="font-size:11px;font-weight:400">%</span></div>
+          <div class="mtag">Of your panel</div>
+          <div class="meterbar" style="margin-top:auto"><span style="width:89%;background:#8fae7e"></span></div>
+        </div>
       </div>
     </div>
     <div class="msel">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
@@ -2238,12 +2253,15 @@
     { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 , group: 'Library' }, // the isolated-organ component library
     { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // organ age as a lab instrument
     { name: 'Desktop (overview)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' },
-    { name: 'Desktop (biomarker) B2', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ age split off its own card // the product shell the modal opens over
+    { name: 'Desktop (biomarker) B2', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ age split off its own card
+    { name: 'Mobile (biomarkers) V2', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // full-width signal, organ age beside coverage // the product shell the modal opens over
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
   // styles as well as its own marker
   const isDash = v => v === 2 || v === 10;
+  // V2 is the same bento with the row re-laid out
+  const isBento = v => v === 5 || v === 11;
   let DUR = reduced ? 300 : MODES[version].dur;
 
   // ---------- muted warm palette on burgundy (rgb 0..1) ----------
@@ -3674,7 +3692,7 @@
     const bPrev = pillCurrent;
     pillCurrent = i;
     // bento mini card: carousel-style slide direction + title crossfade
-    if (version === 5) bxT = i; // the mini carousel glides to the selection
+    if (isBento(version)) bxT = i; // the mini carousel glides to the selection
     pillBtns.forEach((p, j) => p.setAttribute('aria-pressed', String(j === i)));
     olistRows.forEach((r, j) => r.classList.toggle('on', j === i));
     situOrgan.textContent = PILL[i].label;
@@ -3718,11 +3736,11 @@
   function setMode(m){
     version = m;
     DUR = reduced ? 300 : MODES[m].dur;
-    document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') +
+    document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') + (m === 11 ? ' m5 v2' : '') +
       (lightOn ? ' light' : '') + (blackOn ? ' black' : '');
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
-    if (m === 5){
+    if (isBento(m)){
       document.getElementById('mbSlot').appendChild(canvas);
       bx = bxT = pillCurrent; // carousel enters on the active organ
     } else if (isDash(m)){
@@ -3797,7 +3815,7 @@
       st.style.right = 'auto';
       st.style.left = '24px';
       st.style.top = '24px';
-    } else if (version === 5){
+    } else if (isBento(version)){
       // bento: canvas fills the mini organ card
       const r = document.getElementById('mbSlot').getBoundingClientRect();
       canvOX = r.left; canvOY = r.top;
@@ -3820,14 +3838,14 @@
     const bottomUI = version === 0 ? carousel : pillui;
     const topH = version >= 2 ? 0 : (document.querySelector('.topbar').offsetHeight || 0);
     // mobile: the gauge stack sits below the slot, not over it
-    const botH = (version === 5) ? 0 : (bottomUI.offsetHeight || 0);
+    const botH = isBento(version) ? 0 : (bottomUI.offsetHeight || 0);
     // the dashboard cards can be shorter than the 220 floor, and clamping up to
     // it pushes the organ off the top of the card — let it shrink to fit instead
     effDim = Math.min(W, Math.max(isDash(version) ? 140 : 220, H - topH - botH));
     gl.uniform2f(U.uView, 0.78 * effDim / W, 0.78 * effDim / H);
     gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700));
     // pill mode: organ sits 80px lower for breathing room under the top bar
-    gl.uniform1f(U.uYOff, (botH - topH - (version === 1 ? 96 : version === 5 ? 40 : 0)) / H);
+    gl.uniform1f(U.uYOff, (botH - topH - (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
   }
   addEventListener('resize', resize);
   resize();
@@ -5650,11 +5668,11 @@
         t - lastCycle > CYCLE && t - lastManual > MANUAL_HOLD){
       lastCycle = t;
       if (version === 0) setOrgan((current + 1) % ORGANS.length);
-      else if (version === 4){
+      else if (version === 3){                 // card flip
         spTarget = (spTarget + 1) % PILL.length;
         pillCurrent = spTarget;
       }
-      else if (version === 5){
+      else if (version === 4){                 // grid
         pillCurrent = (pillCurrent + 1) % PILL.length;
         current = PILL[pillCurrent].organIdx; // the flow scans across the grid
       }
@@ -5704,7 +5722,7 @@
     cenX = camFrom.x + (org.x - camFrom.x) * k2;
     cenY = camFrom.y + (org.y - camFrom.y) * k2;
     orgR = camFrom.r + (org.r - camFrom.r) * k2;
-    zoomNow = camFrom.z + ((version === 1 ? 0.74 : isDash(version) ? 0.82 : version === 3 ? 0.7 : version === 6 ? 0.69 : 0.68) / org.r - camFrom.z) * k2;
+    zoomNow = camFrom.z + ((version === 1 ? 0.74 : isDash(version) ? 0.82 : isBento(version) ? 0.69 : 0.68) / org.r - camFrom.z) * k2;
     ghostVis += (0 - ghostVis) * 0.05; // body context retired: no ghost outline
     gl.uniform1f(U.uEase, reduced ? 1 : MODES[version].ease);
     gl.uniform3f(U.uCenter, cenX, cenY, 0);
@@ -5810,16 +5828,16 @@
     flowVis += (fvT - flowVis) * 0.05;
     gl.uniform1f(U.uFlowVis, flowVis);
     if (flowVis > 0.015){
-      if (version === 5) updateFlowGrid(t);
+      if (version === 4) updateFlowGrid(t);   // grid: one flow per cell
       else updateFlow(t);
     }
 
-    if (version === 4){
-      spatialFrame(t);
-    } else if (version === 5){
-      gridFrame(t);
-    } else if (version === 6){
-      bentoFrame(t);
+    if (version === 3){
+      spatialFrame(t);            // card flip
+    } else if (version === 4){
+      gridFrame(t);               // grid
+    } else if (isBento(version)){
+      bentoFrame(t);              // mobile bento, and V2
     } else {
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.POINTS, 0, TOT);
