@@ -3954,6 +3954,9 @@
 
   // ---------- resize ----------
   let W = 0, H = 0, dpr = 1, effDim = 700, canvOX = 0, canvOY = 0;
+  // the dot size rides on effDim, so a narrow dashboard card would thin the
+  // organ to near-invisible points — hold a floor under it in situ
+  const pixScale = () => isDash(version) ? Math.max(0.42, effDim / 700) : effDim / 700;
   function resize(){
     dpr = Math.min(devicePixelRatio || 1, 2);
     // the dashboard starts exactly where the bar ends — no background sliver
@@ -4014,7 +4017,7 @@
     // it pushes the organ off the top of the card — let it shrink to fit instead
     effDim = Math.min(W, Math.max(isDash(version) ? 140 : 220, H - topH - botH));
     gl.uniform2f(U.uView, 0.78 * effDim / W, 0.78 * effDim / H);
-    gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700));
+    gl.uniform1f(U.uPix, MODES[version].pix * dpr * pixScale());
     // pill mode: organ sits 80px lower for breathing room under the top bar
     gl.uniform1f(U.uYOff, (botH - topH - (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
   }
@@ -6037,7 +6040,7 @@
     }
 
     gl.uniform1f(U.uDens, dens);
-    gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul);
+    gl.uniform1f(U.uPix, MODES[version].pix * dpr * pixScale() * sizeMul);
     voxNow += ((voxOn ? 1 : 0) - voxNow) * 0.08;
     gl.uniform1f(U.uSq, voxNow);
     // theme crossfade: particles re-ink and the clear colour glides between
