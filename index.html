@@ -2394,6 +2394,13 @@
   // alpha:true so Card flip can layer sharp organs OVER the frosted cards
   const gl = canvas.getContext('webgl', { antialias: true, alpha: true });
   if (!gl){ document.getElementById('nogl').style.display = 'grid'; return; }
+  // a dropped GPU context blanks every organ while the rest of the page keeps
+  // working — say so rather than leaving an empty card, and rebuild on restore
+  canvas.addEventListener('webglcontextlost', e => {
+    e.preventDefault();
+    document.getElementById('nogl').style.display = 'grid';
+  });
+  canvas.addEventListener('webglcontextrestored', () => location.reload());
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const N = 9000;
@@ -3959,9 +3966,13 @@
       const slot = document.getElementById('organSlot').getBoundingClientRect();
       // organ + gauge + age on the card's left; the organ-age list on the right
       // organ-age list on the card's left; organ + gauge + age on the right
+      // a hidden dashboard measures 0x0; sizing off that leaves the canvas in
+      // the card's top corner with sub-pixel particles, so wait for a real box
+      if (slot.width < 40 || slot.height < 40) return;
       const listW = Math.min(390, slot.width * 0.54);
       canvOX = slot.left + listW; canvOY = slot.top;   // viewport coords, for the notes
-      W = Math.max(220, slot.width - listW); H = Math.max(220, slot.height);
+      // never wider than what the list leaves, or the organ hangs off the card
+      W = Math.max(60, slot.width - listW); H = Math.max(220, slot.height);
       // measured from the card, not the viewport — nothing to re-place on scroll
       canvas.style.left = listW + 'px'; canvas.style.top = '0px';
       pillui.style.left = listW + 'px';
