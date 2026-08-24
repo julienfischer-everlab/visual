@@ -1,0 +1,230 @@
+# Working notes
+
+Context distilled from building this prototype: what the conventions are, why
+the design landed where it did, and which parts have already bitten. The
+[README](../README.md) describes *what* the thing is and how the engine works —
+this is the part you need before you change it.
+
+---
+
+## 1. The shape of the file
+
+One `index.html`. Engine, every page, every theme, every control. No build, no
+dependencies, no external requests. That constraint is the point: the prototype
+has to open from a file, an artifact, or any static host and behave identically.
+
+Consequences worth knowing before editing:
+
+- **One WebGL context, one canvas.** `#field` is moved between DOM slots by
+  `setMode()` — it is never duplicated. Anything that shows an organ *besides*
+  the current page uses `makeOrganView`, a 2D-canvas renderer drawing from the
+  same point cloud.
+- **`MODES[]` is index-stable.** The array index is the page id, it appears in
+  `body.m<N>`, and the version dropdown's `value` is that index. Removing an
+  entry renumbers everything downstream — see §5.1 for what that broke.
+- **Edits are made by script, not by hand.** The file is ~300KB; the edits in
+  this history were applied by small Python scripts that assert on an exact
+  match before writing. An assert that fails writes nothing, which is the
+  desired outcome — a silently-partial edit to a file this size is expensive to
+  find.
+
+---
+
+## 2. Pages, and the composite-mode convention
+
+Twelve pages in three dropdown groups: **Concept** (full-bleed explorations),
+**Pages** (product surfaces), **Library** (the component workbench).
+
+The two "V2" pages are not separate pages. Each wears another page's styles
+*plus* a marker class:
+
+| Page | `body` class | Reads as |
+|---|---|---|
+| Desktop (biomarker) | `m2` | the original dashboard |
+| Desktop (biomarker) V2 | `m10 m2 b2` | the dashboard + the `b2` marker |
+| Mobile (biomarkers) | `m5` | the original bento |
+| Mobile (biomarkers) V2 | `m11 m5 v2` | the bento + the `v2` marker |
+
+Predicates `isDash(v)` and `isBento(v)` exist so engine code treats a page and
+its variant identically. Markup is shared and toggled with `.hiOnly` /
+`.v2Only` rather than duplicated, so the original and the variant cannot drift.
+
+> The desktop variant's marker class is `b2` even though the page is now
+> *named* V2. `v2` already marks the mobile page and both markers live on
+> `<body>` — sharing the name would make every `body.v2` rule cross-apply.
+> Internal name only; nothing user-facing says B2.
+
+---
+
+## 3. Design decisions, and the reasoning
+
+**The organ ground is `#220606`, everywhere.** One colour for the burgundy the
+particles clear to, on every surface that shows an organ — cards, sheets,
+modals, full-bleed. It is set in CSS (`--bg`), in every `gl.clearColor`, and in
+the 2D renderers' `dk`. Divergence here reads as a seam down the middle of a
+card, which is what forced the unification.
+
+**Chronological age is a control, not a constant.** The "Your age" selector
+(30–40) is the origin for everything quoted: the arc scale redraws around the
+new centre, and every organ age, delta and caption re-renders. Nothing hardcodes
+40.
+
+**Density is measured, not predicted.** Covered in the README; the reason it
+belongs in a *design* note is that it is the difference between organs that
+look like one family and organs that look like nine different techniques. The
+nerve was 25% thinner than the rest at the same nominal density.
+
+**The mini cards share one skeleton.** Both hero cards — Coverage and Steps —
+are built from: label → value → a fixed-height `.hiViz` visual sitting on the
+baseline → position marker on the card's bottom edge. Every slide of both cards
+uses it. That is what makes the pair line up whatever slide each is showing;
+without the fixed viz height they drift apart as content changes. Measured
+across all slides: viz height 84px, viz bottom 168px (mobile) / 170px (desktop),
+dot row 191px / 189px — identical between cards.
+
+**One markup, both platforms.** The mini cards are the same DOM on desktop and
+mobile; only their steering differs (arrows top-right on desktop, dots on
+mobile, small dots on both). A card that behaves differently per platform
+because it *is* different markup is a card that will diverge.
+
+**The in-situ organ card is landscape.** The organ card takes its height from
+the left column rather than a fixed value, landing near 4:3. It had been
+standing up tall (1.12) against a reference nearer 1.38. The organ is
+width-constrained by the list beside it, so height past that point buys empty
+space, not a bigger organ.
+
+**Copy is sentence-shaped.** Organ modal titles read "Your brain age is 40", not
+"Brain". Labels are categories, headlines carry the sentence.
+
+---
+
+## 4. Verifying a change
+
+There is no test suite. There is a Playwright harness pattern, and it is worth
+following because the failure modes here are visual and silent.
+
+Run a static server from the repo root and drive Chromium with swiftshader:
+
+```js
+chromium.launch({
+  executablePath: '/opt/pw-browsers/chromium-*/chrome-linux/chrome',
+  args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'],
+})
+```
+
+**Assert on evidence, not on absence of errors.** "Routes to `body.mN`" and "no
+page errors" both pass while the wrong renderer runs. Check the thing each
+renderer actually produces: positioned spatial cards, grid cells, placed
+carousel items, a non-empty organ. That check (`render.js` in the scratch
+harness) is what catches §5.1 class of bug.
+
+**Measure geometry, don't eyeball it.** Gaps, clearances, alignment and drift
+are all `getBoundingClientRect` questions. Screenshots confirm; numbers decide.
+
+**Two traps in measurement itself, both hit in this history:**
+
+- *Hidden elements measure zero.* A clipping check that walks
+  `.hiSlide .lbl` reports every hidden slide as fine, because `display:none`
+  gives `scrollWidth === clientWidth === 0`. Force each slide visible before
+  measuring, then restore.
+- *Layout settles after the event.* Sampling 120ms after `scrollTo` produced a
+  −99px "drift" that did not exist. Wait for a settled frame before trusting a
+  position.
+
+**Sweep viewport widths.** Several bugs here live only in a band — see §5.3.
+1150 / 1192 / 1300 / 1500 is a reasonable sweep for the desktop pages.
+
+---
+
+## 5. Traps already hit
+
+### 5.1 Renumbering `MODES[]` silently rewires the renderer
+
+Removing a page and renumbering updated the CSS and the branches that were
+enumerated — and missed the frame dispatch (`version === 4/5/6`), the
+auto-cycle branches, `updateFlowGrid`, and the camera-zoom ternary. Four pages
+ran the *wrong renderer*; the mobile bento drew no particles at all. The smoke
+test passed throughout.
+
+If you renumber, grep for every numeric comparison against `version`, not just
+the ones you remember.
+
+### 5.2 The in-situ canvas sized off a hidden card
+
+While the dashboard is hidden, the organ card measures **0 × 0**. `resize()`
+landing in that window pinned the canvas to a 220 × 220 box in the card's
+top-left corner — behind the organ list — with sub-pixel particles. The card
+read as blank while the list and gauge rendered normally.
+
+Now guarded: the dash branch bails out until the card has a real box.
+
+### 5.3 The organ faded out in a narrow-window band
+
+Particle size derives from the card's own width (`effDim / 700`). At a window
+around 1150–1250px the organ column is ~224px instead of ~273px, dropping the
+dot size ~20% and thinning the organ to near-invisible points. Everything else
+on the card is DOM, so it rendered normally — the symptom read as "the visual is
+gone", not "the visual is dim".
+
+Now floored: `pixScale()` holds at 0.42 for the in-situ pages.
+
+This one is worth internalising as a *class* of bug: **anything that scales with
+a container has a width at which it disappears.** It never reproduced above
+1280px, which is where all the checking had been happening.
+
+### 5.4 A fixed-position canvas cannot chase a scrolling card
+
+First attempt at "the organ floats when I scroll" was a rAF-throttled scroll
+listener re-placing a `position:fixed` canvas. That can only ever be a frame
+behind. The fix is structural: make the canvas, gauge stack and title
+*children* of the card, positioned absolutely, and the browser carries them for
+free.
+
+### 5.5 A minimum width made the canvas wider than its card
+
+`W = Math.max(220, slot.width - listW)` overflowed the card by 20–166px below
+about 480px of card width. A floor that exists to keep something usable will
+happily push it outside its container.
+
+### 5.6 Export framing, not export fidelity
+
+"The PNG doesn't have the same dots as the screen" was not a dot-count problem —
+counts matched exactly. It was framing: a square 1920×1920 export of a 502×380
+tile crops the sides and pads the top. Exports now keep the live proportions
+and replay `view._lastT`, the last painted frame.
+
+### 5.7 `paint()` cleared the ground it had just been given
+
+`paint()` opened with `clearRect`, which wiped the background `exportCanvas`
+had laid down — every export came out transparent. `clearRect` belongs to the
+frame loop, not the renderer.
+
+---
+
+## 6. Open items
+
+- **"Survey" vs "Questionnaire".** That slide's category label was shortened to
+  *Survey* because *QUESTIONNAIRE* does not fit beside the arrows below ~1300px
+  and was ellipsizing. The headline still reads "Complete your questionnaire".
+  Reverting the label is one word, at the cost of the truncation.
+- **The V2 reference designs are light-mode.** They are reproduced in the
+  theme-aware palette rather than forced light; use the Mode selector to
+  compare against the mocks.
+- **Mock numbers differ from live data.** The references show bio age 32 and
+  "118 All"; the prototype derives those from the "Your age" selector, so they
+  will not match a static mock.
+- **The organ-age modal does not close on Escape**, and stays open when the
+  page is changed from the version dropdown.
+
+---
+
+## 7. Publishing
+
+- **Artifact:** https://claude.ai/code/artifact/78766a66-729c-4942-8206-0acbcf4b8551
+  — the live copy through this work. Republished from an exact copy of
+  `index.html` (only `<title>` differs).
+- **Branch:** `claude/zip-package-import-fzfsrp`.
+- **Push status:** blocked. `git push` returns 403 on `git-receive-pack`; the
+  GitHub App does not have write access to `julienfischer-everlab/visual`. An
+  org admin can grant it at claude.ai/admin-settings/claude-tag. Every commit is
+  local until then.

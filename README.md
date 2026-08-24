@@ -18,6 +18,7 @@ python3 -m http.server 8734
 |---|---|
 | `index.html` | The entire prototype: engine, all modes, themes, UI |
 | `docs/design-spec.md` | Design spec with the full source embedded |
+| `docs/working-notes.md` | Conventions, design reasoning, and the traps already hit |
 | `social-video/organ-age-teaser.mp4` | 1350×1920 · 12s seamless-loop teaser (30fps H.264, X-ready) |
 
 ## Experience modes (version dropdown, top bar)
