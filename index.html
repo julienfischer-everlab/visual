@@ -5285,7 +5285,7 @@
         '<i class="oaDot ' + ageStatus(d) + '"></i>' +
         '<b>' + d.label + '</b>' +
         '<span>' + (CHRONO + d.delta) + ' years old</span>';
-      el.addEventListener('click', () => go(i));
+      el.addEventListener('click', () => manual(i));
       track.appendChild(el);
       return el;
     });
@@ -5353,6 +5353,22 @@
       cards.forEach((el, j) => el.classList.toggle('on', j === i));
       syncNav();
     }
+    // The channels advance on their own while the modal is open and wrap from
+    // the last back to the first. Any manual move restarts the clock, so the
+    // carousel never pulls a card away from under a finger or a click.
+    const ROT_MS = 3000;
+    let rot = 0;
+    function rotStop(){ if (rot){ clearInterval(rot); rot = 0; } }
+    function rotStart(){
+      rotStop();
+      if (reduced) return;                 // no unbidden motion when it is off
+      rot = setInterval(() => {
+        if (!open || drag) return;
+        go((cur + 1) % PILL.length);
+      }, ROT_MS);
+    }
+    function manual(i){ go(i); rotStart(); }
+
     const navPrev = q('.oaNav.prev'), navNext = q('.oaNav.next');
     function syncNav(){
       if (!navPrev) return;
@@ -5360,8 +5376,8 @@
       navNext.disabled = cur >= PILL.length - 1;
     }
     if (navPrev){
-      navPrev.addEventListener('click', () => go(cur - 1));
-      navNext.addEventListener('click', () => go(cur + 1));
+      navPrev.addEventListener('click', () => manual(cur - 1));
+      navNext.addEventListener('click', () => manual(cur + 1));
     }
     // the settle between cards runs off the shared organ loop, so the track
     // eases with the same clock the morph does
@@ -5410,7 +5426,7 @@
       else if (delta < -0.5) target = d.s0 + Math.floor(delta + 0.5);
       else if (Math.abs(sv) > 0.0016 && Math.abs(delta) > 0.08)
         target = d.s0 + (sv > 0 ? 1 : -1);                            // a flick still carries
-      go(target);
+      manual(target);
       sxT = Math.max(0, Math.min(PILL.length - 1, target));
     });
     if (!desk){
@@ -5442,7 +5458,7 @@
       },
       open(startIdx){
         startIdx = Math.max(0, Math.min(PILL.length - 1, startIdx || 0));
-        if (open) { go(startIdx); return; }
+        if (open) { manual(startIdx); return; }
         open = true;
         cur = startIdx;
         sx = sxT = startIdx;
@@ -5457,11 +5473,13 @@
         else wrap.style.display = 'block';
         syncNav();
         layout();
+        rotStart();
         requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
       },
       close(){
         if (!open || (desk && !overlay)) return;
         open = false;
+        rotStop();
         wrap.classList.remove('on');
         if (overlay){
           setTimeout(() => wrap.classList.remove('show'), 320);

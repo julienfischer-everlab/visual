@@ -134,6 +134,10 @@ black — the phone frame and the dashboard chrome cover them entirely.
   `overlay: true` — a centred card opened over the desktop overview. Changing
   channel slides the copy 32px in the direction of travel while it crossfades,
   and the organ itself never moves.
+  The channels advance on their own every 3s while it is open and wrap from the
+  last back to the first; any manual move — arrow, card tap or swipe — restarts
+  that clock, so it never pulls a card out from under you. Reduced motion turns
+  it off.
   Both mount a single `makeOrganView`, so swiping the carousel does not move the
   organ — the cards travel, the organ stays dead centre and `morphTo` dissolves
   one silhouette into the next (verified: the lit centroid holds at 0.497-0.502
