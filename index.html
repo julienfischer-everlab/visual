@@ -2666,14 +2666,40 @@
     c.beginPath(); c.moveTo(206, 80); c.bezierCurveTo(210, 116, 214, 150, 212, 186); c.stroke();
   }
 
+  // One continuous bean per kidney. Punching the hilum out of an ellipse left a
+  // cusp where the two curves crossed and traced a hard arc through the middle
+  // of the lobe; drawn as a single path the whole outline stays smooth, and the
+  // hilum is just where the inner wall dishes in.
+  function bean(c, cx, cy, w, h, d){          // d: +1 hilum faces right, -1 left
+    c.beginPath();
+    c.moveTo(cx - d * w * 0.20, cy - h);
+    // outer wall, shoulder down to the lower pole
+    c.bezierCurveTo(cx - d * w * 0.85, cy - h * 1.00,
+                    cx - d * w * 1.10, cy - h * 0.15,
+                    cx - d * w * 0.78, cy + h * 0.66);
+    // round the base
+    c.bezierCurveTo(cx - d * w * 0.55, cy + h * 1.06,
+                    cx + d * w * 0.30, cy + h * 1.06,
+                    cx + d * w * 0.62, cy + h * 0.62);
+    // inner wall, dishing in toward the hilum — tangent vertical at its deepest
+    c.bezierCurveTo(cx + d * w * 0.74, cy + h * 0.34,
+                    cx + d * w * 0.46, cy + h * 0.32,
+                    cx + d * w * 0.44, cy + h * 0.02);
+    // back out along the upper inner wall
+    c.bezierCurveTo(cx + d * w * 0.42, cy - h * 0.28,
+                    cx + d * w * 0.58, cy - h * 0.40,
+                    cx + d * w * 0.60, cy - h * 0.62);
+    // over the top, tangent horizontal at the join so the outline has no corner
+    c.bezierCurveTo(cx + d * w * 0.60, cy - h * 0.84,
+                    cx + d * w * 0.20, cy - h * 1.02,
+                    cx - d * w * 0.20, cy - h);
+    c.closePath(); c.fill();
+  }
+
   function drawKidneys(c){
-    // right kidney (viewer left) sits slightly lower
-    c.beginPath(); c.ellipse(120, 182, 40, 64, 0.12, 0, 6.2832); c.fill();
-    c.beginPath(); c.ellipse(222, 168, 40, 64, -0.12, 0, 6.2832); c.fill();
-    c.globalCompositeOperation = 'destination-out';
-    // hilum notches on the inner edges
-    c.beginPath(); c.ellipse(158, 186, 20, 26, 0.1, 0, 6.2832); c.fill();
-    c.beginPath(); c.ellipse(184, 172, 20, 26, -0.1, 0, 6.2832); c.fill();
+    // right kidney (viewer left) sits slightly lower; hila face each other
+    bean(c, 118, 182, 40, 64, 1);
+    bean(c, 224, 168, 40, 64, -1);
   }
 
   function drawLungs(c){
@@ -2686,9 +2712,8 @@
     c.beginPath(); c.ellipse(122, 195, 55, 98, 0.06, 0, 6.2832); c.fill();
     c.beginPath(); c.ellipse(218, 195, 52, 95, -0.06, 0, 6.2832); c.fill();
     c.globalCompositeOperation = 'destination-out';
-    // mediastinum gap + cardiac notch
+    // the gap between the two lungs, and nothing else
     c.beginPath(); c.ellipse(170, 205, 17, 85, 0, 0, 6.2832); c.fill();
-    c.beginPath(); c.arc(196, 242, 20, 0, 6.2832); c.fill();
   }
 
   // brain + spinal cord + branching nerves
