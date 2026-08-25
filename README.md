@@ -169,6 +169,12 @@ black — the phone frame and the dashboard chrome cover them entirely.
   does not. Note that `svg` is in the capability's *extended* extension set and
   can come back `extension_not_enabled`; the button surfaces that and points at
   PNG/JPG.
+- **Dot edges are soft.** A solid `arc()` has a hard rim the moment the dot is
+  big enough to see it — which is exactly what an export or a large tile shows.
+  `dot2D` lays a faint halo under a slightly smaller core so the edge falls away
+  the way the shader's own `smoothstep` does. Sub-pixel dots and SVG output keep
+  the single disc: there is nothing to soften at 1px, and a vector edge is crisp
+  by nature.
 - The mobile bottom sheets and small cards use lightweight 2D-canvas particle
   renderers sampled from the same clouds, so several organs can animate
   independently of the WebGL context.
