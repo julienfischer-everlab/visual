@@ -2071,9 +2071,25 @@
   body.light.b4 .dash .dcard.scard,
   body.light.b4 .dash .hiCard,
   body.light.b4 .dash .dcard.organ{background:#280707;}
-  body.v4 #phone{background:#fff;}
-  body.v4 .mstatus,
+  /* The phone's own ground is the hero's, so the status strip and the scroller
+     cannot show a seam between them — there is nothing lighter behind either to
+     catch a fractional pixel. The white body supplies the white where it is
+     wanted, as a layer. */
+  body.v4 #phone{background:#1c0505;position:relative;}
   body.v4 .mHead{background:#1c0505;}
+  body.v4 .mstatus{background:none;position:relative;z-index:4;}
+  /* Frosted glass over the safe area: strongest behind the status bar and
+     dissolving into the hero. The mask fades the blur out with the tint, so
+     there is no edge where the backdrop filter stops. */
+  body.v4 #phone::before{
+    content:'';position:absolute;left:0;right:0;top:0;height:112px;z-index:3;
+    pointer-events:none;
+    -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+    background:linear-gradient(to bottom,
+      rgba(17,3,3,.94) 0%, rgba(17,3,3,.78) 34%, rgba(17,3,3,.36) 68%, rgba(17,3,3,0) 100%);
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 46%, rgba(0,0,0,.55) 74%, transparent 100%);
+    mask-image:linear-gradient(to bottom, #000 0%, #000 46%, rgba(0,0,0,.55) 74%, transparent 100%);
+  }
   body.v4 #mBento{padding:0 13px 36px;}
   /* Two layers, not two sections. The header pins to the top of the scroller
      and the white body rides over it — so the body moves at the scroll's own
@@ -3019,6 +3035,57 @@
     }
   }
 
+  // The body as a whole: head, neck, shoulders and upper torso, cropped at the
+  // waist by the frame. The arms enter and leave through the foot rather than
+  // being drawn whole, and the head sits a touch off the centre line so the
+  // silhouette reads three-quarter rather than pinned flat.
+  function drawBody(c){
+    c.lineCap = 'round'; c.lineJoin = 'round';
+    c.beginPath(); c.ellipse(166, 62, 35, 43, 0.03, 0, 6.2832); c.fill();
+    c.lineWidth = 42;
+    c.beginPath(); c.moveTo(167, 96); c.lineTo(169, 126); c.stroke();
+    c.lineWidth = 41;
+    c.beginPath();
+    c.moveTo(114, 158);
+    c.bezierCurveTo(88, 168, 73, 192, 71, 224);
+    c.bezierCurveTo(69, 262, 72, 302, 78, 344);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(222, 156);
+    c.bezierCurveTo(250, 166, 267, 190, 269, 222);
+    c.bezierCurveTo(271, 260, 268, 302, 262, 344);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(138, 126);
+    c.bezierCurveTo(112, 133, 92, 149, 84, 176);
+    c.bezierCurveTo(78, 200, 86, 240, 96, 282);
+    c.bezierCurveTo(102, 308, 106, 326, 108, 344);
+    c.lineTo(232, 344);
+    c.bezierCurveTo(234, 326, 238, 308, 244, 282);
+    c.bezierCurveTo(254, 240, 262, 200, 256, 176);
+    c.bezierCurveTo(248, 149, 228, 133, 202, 126);
+    c.closePath(); c.fill();
+  }
+
+  // The systems inside are density, not drawing: the sampler is pulled toward
+  // the skull, the heart and the two lungs, and away from the arms, so the
+  // shape reads as one body that is denser where the work happens.
+  function bodyDensity(x, y){
+    const g = (cx, cy, rx, ry, amp) => {
+      const dx = (x - cx) / rx, dy = (y - cy) / ry;
+      return amp * Math.exp(-(dx * dx + dy * dy));
+    };
+    let w = 1 + g(166, 60, 27, 33, 0.44)    // brain
+              + g(150, 200, 33, 30, 0.42)   // heart, left of the centre line
+              + g(124, 190, 28, 42, 0.24)   // lung
+              + g(210, 190, 28, 42, 0.24);  // lung
+    if (x < 96 || x > 246) w *= 0.78;       // the arms sit back from the torso
+    // the waist is a crop, not a cut: thin the sampling toward the frame's
+    // foot so the body dissolves out of view instead of ending on a bright rule
+    if (y > 258) w *= Math.max(0.12, 1 - (y - 258) / 74);
+    return w;
+  }
+
   function drawHeart(c){
     c.lineCap = 'round';
     c.lineWidth = 32;
@@ -3269,7 +3336,7 @@
 
   // ---------- sample a silhouette into a volumetric point cloud ----------
   // tf places the organ at its anatomical spot inside the ghost body
-  function buildCloud(draw, depthPx, sizeMul, tf, normRef){
+  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens){
     octx.save();
     octx.clearRect(0, 0, S, S);
     octx.fillStyle = '#fff'; octx.strokeStyle = '#fff';
@@ -3312,6 +3379,8 @@
 
     const out = new Float32Array(N * 3);
     const edge = new Float32Array(N).fill(1);
+    // a standing turn about the vertical, for shapes that want a three-quarter
+    const yaw = tf.yaw || 0, cyaw = Math.cos(yaw), syaw = Math.sin(yaw);
     const M = pts.length / 2;
     for (let i = 0; i < N; i++){
       // bias toward the shell: prefer points near the silhouette edge,
@@ -3321,15 +3390,20 @@
         const j = (Math.random() * M) | 0;
         px = pts[j * 2]; py = pts[j * 2 + 1];
         d = edgeDist(px, py);
-        if (Math.random() < 0.07 + 0.93 * Math.exp(-d / 3.5)) break;
+        // dens, where a shape supplies one, weights the shell bias so some
+        // regions gather more particles than their thickness alone would give
+        const w = dens ? dens(px, py) : 1;
+        if (Math.random() < (0.07 + 0.93 * Math.exp(-d / 3.5)) * w) break;
       }
       // edge particles read brighter so the silhouette stays crisp
       edge[i] = 0.72 + 0.48 * Math.exp(-d / 6);
       const zmax = depthPx * Math.sqrt(d / 22);
       const zsign = Math.random() < 0.5 ? -1 : 1;
-      out[i * 3]     = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s + tf.x;
-      out[i * 3 + 1] = -(py - cy + (Math.random() - 0.5) * 2) * s * tf.s + tf.y;
-      out[i * 3 + 2] = zsign * zmax * Math.pow(Math.random(), 0.3) * s * tf.s;
+      let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
+      const Y = -(py - cy + (Math.random() - 0.5) * 2) * s * tf.s;
+      let Z = zsign * zmax * Math.pow(Math.random(), 0.3) * s * tf.s;
+      if (yaw){ const nx = X * cyaw + Z * syaw; Z = -X * syaw + Z * cyaw; X = nx; }
+      out[i * 3] = X + tf.x; out[i * 3 + 1] = Y + tf.y; out[i * 3 + 2] = Z;
     }
     // ambient strays: a loose shell of drifting particles around the organ
     for (let i = N - AMB; i < N; i++){
@@ -3393,12 +3467,13 @@
     { label: 'Gut',     cloud: () => buildCloud(drawGut,     30, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Liver',   cloud: () => buildCloud(drawLiver,   42, 0.95, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Kidneys', cloud: () => buildCloud(drawKidneys, 34, 0.90, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Body',    cloud: () => buildCloud(drawBody, 40, 1.04, {s:1, x:0, y:0, yaw:0.17}, null, bodyDensity), x:0, y:0, r:0.82 },
   ];
   const clouds = ORGANS.map(o => o.cloud());
   const GB = 1200;
   const ghostPts = buildGhost(GB);
   const FSTART = N + GB;   // flow layer sits after organ + ambient + ghost
-  const FLOWN = 700;
+  const FLOWN = 780;   // divided evenly between the organs, the body included
   const TOT = FSTART + FLOWN;
 
   // ---------- GL program ----------
@@ -3774,6 +3849,9 @@
       loop: 10, op: 0.65, width: 5, turb: 2,   tone: [0.90,0.55,0.48] },            // liver: perfusion
     { paths: [[[102,128],[94,178],[112,222],[148,190]], [[240,116],[248,166],[234,210],[194,176]]],
       loop: 9,  op: 0.65, width: 4, turb: 1.5, tone: [0.92,0.58,0.56] },            // kidneys: filtration
+    { paths: [[[164,200],[166,148],[166,104],[166,70]], [[164,200],[126,214],[100,252],[88,306]],
+              [[164,200],[206,214],[234,252],[248,306]], [[166,120],[166,210],[168,306]]],
+      loop: 12, op: 0.5,  width: 4, turb: 1.2, tone: [0.92,0.62,0.60] },            // body: circulation, heart outward
   ];
   const flowRT = {};
   function getFlowRT(i){
@@ -3828,7 +3906,7 @@
   }
   // grid mode: every organ flows at once — the flow slice is partitioned
   // into nine per-organ groups, each streaming its own preset paths
-  const GFN = Math.floor(FLOWN / 9);
+  const GFN = Math.floor(FLOWN / ORGANS.length);
   function updateFlowGrid(t){
     flowTintFor = -1; // single-organ tint cache is stale after this
     const time = t / 1000;
@@ -3955,7 +4033,9 @@
   ];
   let hoverBoost = 0;
   let programmaticScroll = false, progT = 0;
-  const buttons = ORGANS.map((o, i) => {
+  // the concept carousel is the nine organs; the body is a product visual and
+  // has no card of its own, so it sits outside this rotation
+  const buttons = ORGANS.slice(0, CARDS.length).map((o, i) => {
     const d = CARDS[i];
     const b = document.createElement('button');
     b.className = 'card' + (d.delta > 0 ? ' aged' : '');
@@ -4688,7 +4768,8 @@
   // The mini carousel leads with the body's own age and then walks the organs,
   // so its index runs one ahead of PILL: slide 0 is the body, slide i+1 is
   // PILL[i]. There is no whole-body silhouette, so slide 0 carries no organ.
-  const MB = [{ label: 'Body', delta: -6, body: true }].concat(PILL);
+  const MB = [{ label: 'Body', delta: -6, body: true,
+                organIdx: ORGANS.findIndex(o => o.label === 'Body') }].concat(PILL);
   // bento mini organ card: tiny dots, internal swipe, tap opens the full view
   const mbDotsEl = document.getElementById('mbDots');
   const mbDots = MB.map((d, i) => {
@@ -4762,8 +4843,8 @@
         el.style.transform = 'translateX(' + (d * cw).toFixed(1) + 'px)';
         el.style.opacity = fade(d).toFixed(3);
       }
-      if (!vis || k === 0) continue;          // the body slide has no organ
-      const o = PILL[k - 1];
+      if (!vis) continue;
+      const o = MB[k];                       // slide 0 is the body's own cloud
       gl.uniform2f(U.uPan, d * panK, 0);
       gl.uniform1f(U.uAlpha, fade(d));
       gl.uniform1f(U.uWarm,
@@ -6676,7 +6757,7 @@
     if (!reduced && uPnow >= 1 &&
         t - lastCycle > CYCLE && t - lastManual > MANUAL_HOLD){
       lastCycle = t;
-      if (version === 0) setOrgan((current + 1) % ORGANS.length);
+      if (version === 0) setOrgan((current + 1) % CARDS.length);
       else if (version === 3){                 // card flip
         spTarget = (spTarget + 1) % PILL.length;
         pillCurrent = spTarget;

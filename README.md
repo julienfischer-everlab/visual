@@ -1,6 +1,6 @@
 # Particle Organs — Organ Age concept
 
-A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between nine organ silhouettes, explored through sixteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
+A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between ten anatomical silhouettes, explored through sixteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
 
 **Live:** https://particle-organs.vercel.app
 
@@ -86,6 +86,27 @@ and the translate goes.
 The body is white in every theme, so in the dark themes the records on it take
 the light theme's readings — the mirror of the `.onDark` rules, and the same
 values as the `body.light #phone …` rules they stand in for.
+
+### The body
+
+Biological age gets a silhouette of its own, in the same language as the
+organs: the upper half of a body — head, neck, shoulders, chest, the arms
+entering and leaving through the frame — cropped at the waist and turned a
+little off-axis so it reads three-quarter rather than pinned flat.
+
+Two things in the pipeline are new for it. `buildCloud` takes an optional
+density function, so the sampler can be pulled toward the skull, the heart and
+the lungs and away from the arms: the systems inside are *density*, never drawn
+shapes, and it still reads as one object. The same function thins the sampling
+toward the frame's foot, so the waist dissolves out of view instead of ending
+on the bright rule that edge-biased sampling would otherwise leave at a cut.
+And `tf.yaw` turns a cloud about the vertical at build time, which is where the
+three-quarter comes from.
+
+Everything else it inherits: shell bias, depth from thickness, ambient strays,
+idle drift, the breathing pulse, and a flow preset of its own — circulation out
+from the heart. It is not part of the concept carousel; those nine cards are
+the organs, and the body is a product visual.
 
 ### The organ mini card
 
