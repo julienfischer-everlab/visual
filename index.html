@@ -4345,8 +4345,13 @@
       if (slot.width < 40 || slot.height < 40) return;
       const listW = Math.min(390, slot.width * 0.54);
       canvOX = slot.left + listW; canvOY = slot.top;   // viewport coords, for the notes
+      // V3 lifts the whole right column off the card's floor — the organ with
+      // it, not just the gauge. The canvas keeps its top edge and loses twice
+      // the lift from its height, which carries its centre up by the lift.
+      const lift = document.body.classList.contains('b3') ? 48 : 0;
       // never wider than what the list leaves, or the organ hangs off the card
-      W = Math.max(60, slot.width - listW); H = Math.max(220, slot.height);
+      W = Math.max(60, slot.width - listW);
+      H = Math.max(220, slot.height - lift * 2);
       // measured from the card, not the viewport — nothing to re-place on scroll
       canvas.style.left = listW + 'px'; canvas.style.top = '0px';
       pillui.style.left = listW + 'px';
@@ -4354,7 +4359,7 @@
       pillui.style.right = 'auto'; pillui.style.bottom = 'auto';
       // sit the gauge stack on the card's floor by its real height, so a
       // shorter card leaves the organ the room the stack gives back
-      const gaugePad = document.body.classList.contains('b2') ? 32 : 14;
+      const gaugePad = (document.body.classList.contains('b2') ? 32 : 14) + lift;
       pillui.style.top = (slot.height - (pillui.offsetHeight || 208) - gaugePad) + 'px';
       const st = document.getElementById('situTitle');
       st.style.right = 'auto';
