@@ -1,6 +1,6 @@
 # Particle Organs — Organ Age concept
 
-A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between nine organ silhouettes, explored through seven switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
+A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between nine organ silhouettes, explored through thirteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
 
 **Live:** https://particle-organs.vercel.app
 
@@ -43,7 +43,7 @@ The dropdown is grouped by what a mode is for.
 Both desktop sidebars move between **Overview** and **Biomarkers**.
 
 10. **Desktop (biomarker) V2** — the same dashboard, re-proportioned: the biomarker card carries the distribution range at its foot, the stat pair is swapped for the steps and health-coverage cards, and a records row, an Other chip and a search field sit under the grid. The hero sizes itself off its content, so nothing spills onto the rows below, and the organ card takes its height from the left column — landscape, not standing up. It wears `m2`'s styles plus a marker class, so there is one dashboard, not two — the class is still `b2` in code, since `v2` already marks the mobile page.
-11. **Mobile (biomarkers) V2** — the same bento re-laid out to the design: the health-coverage card beside a week of steps, then organ age full width beneath them. Wears `m5` plus a `v2` marker.
+11. **Mobile (biomarkers) V2** — the same bento re-laid out to the design: the hero is a two-card carousel — biomarkers and biological age, then organ age — with the next card's shoulder held in view so the swipe announces itself, and dots beneath the pair. The health-coverage card sits beside a week of steps below. Wears `m5` plus a `v2` marker.
 12. **Mobile (biomarkers) V3** — the bento folded down to two blocks. The hero is a two-card carousel: biomarkers and coverage on the first card, organ age on the second, swiped by finger and steered from the dots beneath. Coverage takes the place of biological age, its dial sitting under its own title. Steps then runs the full width with no card beside it. Wears `m5 v2` plus a `v3` marker.
 
 ### The organ in situ
@@ -68,7 +68,7 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 **Library** — the component workbench
 
-12. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication, Supplements). Every tile reports its dot count and downloads as PNG, JPG or SVG.
+13. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication, Supplements). Every tile reports its dot count and downloads as PNG, JPG or SVG.
 
 ## Tweaks (top bar)
 

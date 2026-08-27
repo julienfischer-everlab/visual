@@ -842,26 +842,33 @@
      would otherwise win on specificity and unpin the legend from the foot */
   #mBento .mHeroCard .legend{margin-top:auto;}
   .mHeroTop{display:flex;justify-content:flex-start;align-items:flex-start;gap:40px;}
-  /* The hero is a plain card everywhere but V3, where it becomes a two-card
-     carousel. The wrapper and its track fold away with display:contents, so on
-     every other page the card lays out exactly as it did before. */
+  /* The hero is a plain card on the original bento; from V2 on it is a
+     two-card carousel — biomarkers, then organ age. The wrapper and its track
+     fold away with display:contents, so on every other page the card lays out
+     exactly as it did before the wrapper existed. */
   .mHero, .mHeroTrack{display:contents;}
-  .mHeroDots{display:none;}
+  /* the id keeps this ahead of .hiDots, which sets display:flex further down */
+  #mHeroDots{display:none;}
   .v3On{display:none;}
   body.v3 .v3On{display:block;}
   body.v3 .v3Off{display:none;}
-  body.v3 .mHero{
-    display:block;position:relative;overflow:hidden;padding-bottom:20px;
+  body.v2 .mHero{
+    display:block;position:relative;
     touch-action:pan-y;user-select:none;-webkit-user-select:none;
   }
-  body.v3 .mHeroTrack{display:flex;will-change:transform;}
+  body.v2 .mHeroTrack{display:flex;gap:12px;will-change:transform;}
+  /* V2 shows the shoulder of the next card, so the swipe announces itself
+     without a hint; V3's hero carries more content and runs edge to edge */
+  body.v2 .mHeroTrack > .msn{flex:0 0 calc(100% - 44px);min-width:calc(100% - 44px);}
   body.v3 .mHeroTrack > .msn{flex:0 0 100%;min-width:100%;}
-  body.v3 .mHeroTrack > .morganMini{height:auto;}
+  body.v2 .mHeroTrack > .morganMini{height:auto;min-height:232px;}
   /* inside the hero the swipe belongs to the hero, so the organ card's own
      dot strip would point at a gesture that no longer exists — a tap still
      opens the sheet, which is where the organs are browsed from here */
-  body.v3 .mHeroTrack > .morganMini .mbDots{display:none;}
-  body.v3 .mHeroDots{display:flex;position:absolute;left:0;right:0;bottom:2px;}
+  body.v2 .mHeroTrack > .morganMini .mbDots{display:none;}
+  /* the dots sit under the carousel, not over it */
+  body.v2 .mHero{padding-bottom:20px;overflow:hidden;}
+  body.v2 #mHeroDots{display:flex;position:absolute;left:0;right:0;bottom:2px;}
   /* coverage moves into the hero: the dial sits under its own title */
   .mHeroCov{flex:1;}
   .mHeroCov .big .pc{font-size:13px;font-weight:400;}
@@ -877,7 +884,8 @@
   /* V3: no mini-card row — steps runs the full width and coverage is gone */
   body.v3 .mbrowV2{grid-template-columns:1fr;}
   body.v3 .mbrowV2 .hiCov{display:none;}
-  body.v3 .mbrow2{display:none;}
+  /* organ age is the hero's second card from V2 on, so its row is empty */
+  body.v2 .mbrow2{display:none;}
   .mbrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   /* ---- V2 stat cards: a coverage dial and a week of steps ---- */
   .mchips .mOther{display:none;}
@@ -4005,11 +4013,11 @@
     // card, so the phone's own scrolling and swiping clip them naturally
     if (isBento(m)){
       document.getElementById('mbSlot').appendChild(canvas);
-      // V3 carries organ age as the hero's second card; everywhere else it
-      // belongs in the row, ahead of the coverage tile
+      // from V2 on, organ age is the hero's second card; on the original bento
+      // it belongs in the row, ahead of the coverage tile
       const oc = document.getElementById('mOrgCard');
       const ht = document.getElementById('mHeroTrack');
-      if (m === 12){ if (oc.parentElement !== ht) ht.appendChild(oc); }
+      if (m === 11 || m === 12){ if (oc.parentElement !== ht) ht.appendChild(oc); }
       else if (oc.parentElement === ht){
         const row = document.querySelector('#mBento .mbrow2');
         row.insertBefore(oc, row.querySelector('.mbCov'));
@@ -4339,11 +4347,35 @@
   const heroTrack = document.getElementById('mHeroTrack');
   const heroDots = [].slice.call(document.getElementById('mHeroDots').children);
   let hx = 0, hxT = 0, hDrag = null, hV = 0;
-  const heroOn = () => document.body.classList.contains('v3');
+  const heroOn = () => document.body.classList.contains('v2');
   const heroN  = () => heroTrack.children.length;
+  // One step is a card plus the gap, not the viewport: V2 holds the next
+  // card's shoulder in view. The last card still lands flush against the right
+  // edge rather than a step further on, which would leave the gap showing as a
+  // sliver of page — so the final segment is shorter than the others.
+  function heroStep(){
+    const first = heroTrack.children[0];
+    if (!first) return heroEl.clientWidth || 1;
+    const gap = parseFloat(getComputedStyle(heroTrack).columnGap) || 0;
+    return Math.max(1, first.getBoundingClientRect().width + gap);
+  }
+  function heroOff(i){                    // pixels scrolled for a fractional index
+    const step = heroStep();
+    const max = Math.max(0, heroTrack.scrollWidth - heroEl.clientWidth);
+    const at = k => Math.min(k * step, max);
+    const n = heroN() - 1;
+    if (i <= 0) return i * step;                        // rubber band, near end
+    if (i >= n) return at(n) + (i - n) * step;          // rubber band, far end
+    const f = Math.floor(i);
+    return at(f) + (i - f) * (at(f + 1) - at(f));
+  }
+  // the finger moves the track, so a drag reads in the segments' own scale
+  function heroSpan(){
+    const n = heroN() - 1;
+    return n > 0 ? Math.max(1, heroOff(n) / n) : (heroEl.clientWidth || 1);
+  }
   function heroPlace(){
-    const w = heroEl.clientWidth || 1;
-    heroTrack.style.transform = 'translateX(' + (-hx * w).toFixed(1) + 'px)';
+    heroTrack.style.transform = 'translateX(' + (-heroOff(hx)).toFixed(1) + 'px)';
   }
   function heroGo(i, snap){
     hxT = Math.max(0, Math.min(heroN() - 1, i));
@@ -4369,8 +4401,7 @@
       } else if (Math.abs(dy) > 10){ hDrag = null; return; }
       else return;
     }
-    const w = heroEl.clientWidth || 1;
-    let nx = d.hx0 - dx / w;
+    let nx = d.hx0 - dx / heroSpan();
     if (nx < 0) nx = nx * 0.28;
     if (nx > heroN() - 1) nx = (heroN() - 1) + (nx - (heroN() - 1)) * 0.28;
     const now = performance.now();

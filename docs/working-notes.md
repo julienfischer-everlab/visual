@@ -51,12 +51,20 @@ its variant identically. Markup is shared and toggled with `.hiOnly` /
 `.v2Only` / `.v3On` / `.v3Off` rather than duplicated, so the original and the
 variant cannot drift.
 
-V3 takes this one step further: the hero card is wrapped in a track and a dot
-strip that fold away with `display:contents` on every other page, so the card
-lays out there exactly as it did before the wrapper existed. Only under
-`body.v3` do the wrapper and track become a real flex carousel. The organ card
-is *moved* by `setMode` between the hero track and its row rather than
-duplicated — one card, one canvas, one set of handlers.
+The hero carousel shows how far this goes. The hero card is wrapped in a track
+and a dot strip that fold away with `display:contents` on the original bento,
+so the card lays out there exactly as it did before the wrapper existed. Under
+`body.v2` — which V3 also wears — the wrapper and track become a real flex
+carousel. The organ card is *moved* by `setMode` between the hero track and its
+row rather than duplicated: one card, one canvas, one set of handlers.
+
+The two variants differ only in the slide width. V2 holds the next card's
+shoulder in view (`calc(100% - 44px)` with a 12px gap) so the swipe announces
+itself; V3's hero carries coverage as well and runs edge to edge. The last card
+still lands flush against the right edge rather than a full step further on —
+`heroOff()` clamps the scroll to `scrollWidth - clientWidth` and interpolates
+between the per-index offsets, so the final segment is simply shorter than the
+others instead of leaving the gap showing as a sliver of page.
 
 > The desktop variant's marker class is `b2` even though the page is now
 > *named* V2. `v2` already marks the mobile page and both markers live on
