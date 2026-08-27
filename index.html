@@ -2084,11 +2084,14 @@
   body.v4 #phone::before{
     content:'';position:absolute;left:0;right:0;top:0;height:112px;z-index:3;
     pointer-events:none;
-    -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
-    background:linear-gradient(to bottom,
-      rgba(17,3,3,.94) 0%, rgba(17,3,3,.78) 34%, rgba(17,3,3,.36) 68%, rgba(17,3,3,0) 100%);
+    /* blur only — no tint. The mask is what gives it a gradient: the glass is
+       full strength behind the status bar and gone by the foot, so there is no
+       darkening and no edge where the filter stops. */
+    -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
     -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 46%, rgba(0,0,0,.55) 74%, transparent 100%);
     mask-image:linear-gradient(to bottom, #000 0%, #000 46%, rgba(0,0,0,.55) 74%, transparent 100%);
+    /* nothing to hide at rest: the glass arrives with the scroll */
+    opacity:var(--topFog, 0);
   }
   body.v4 #mBento{padding:0 13px 36px;}
   /* Two layers, not two sections. The header pins to the top of the scroller
@@ -6693,6 +6696,11 @@
       const p = Math.min(1, Math.max(0, y / span));
       inner.style.transform = reduced ? '' : 'translateY(' + (-y * 0.25).toFixed(1) + 'px)';
       inner.style.opacity = (1 - p).toFixed(3);
+      // the frosted top has nothing to sit over until something scrolls under
+      // it, so it fades in over the first 48px rather than being there at rest
+      const f = Math.min(1, Math.max(0, y / 48));
+      const ph = sc.closest('#phone');
+      if (ph) ph.style.setProperty('--topFog', (f * f * (3 - 2 * f)).toFixed(3));
     }
     sc.addEventListener('scroll', () => {
       if (queued) return;
