@@ -287,6 +287,20 @@ through `cardFor(i)`, which falls back to the body's `PILL` row. Same for
 general shape: when a selection set grows, the arrays parallel to it split into
 the ones that must grow and the ones that must learn to be shorter.
 
+### 5.11 A fixed layer only covers the viewport it was sized to
+
+`.dash` is `position:fixed; top:57px; bottom:0`, so it is exactly one viewport
+tall no matter how tall the document is. Everywhere it does not reach — an embed
+whose frame is sized to content rather than to a viewport, a full-page capture,
+an over-scroll — the page behind it shows instead, and that page was the organ
+ground: `#220606` in colour, `#f4efed` in light, against a dashboard that is
+`#0d0d0c` / `#fff`. Light chrome over a dark hole, or a cream seam under white.
+
+The fix is not to unfix the layer but to make the page agree with it:
+`body.m2{background:#0d0d0c}` and `body.light.m2{background:#fff}`. Worth
+remembering for any other full-bleed fixed surface here — the element's own
+background is only half the ground.
+
 ### 5.8 Rewriting a selector changed which rule won
 
 Wrapping the mobile hero meant `#mBento > .msn:first-child` no longer named the
