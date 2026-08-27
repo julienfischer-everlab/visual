@@ -2073,9 +2073,19 @@
   body.light.b4 .dash .dcard.organ{background:#280707;}
   body.v4 #phone{background:#fff;}
   body.v4 .mstatus,
-  body.v4 .mtitle,
-  body.v4 #mBento{background:#1c0505;}
-  body.v4 #mBento{padding:0 13px 20px;}
+  body.v4 .mHead{background:#1c0505;}
+  body.v4 #mBento{padding:0 13px 36px;}
+  /* Two layers, not two sections. The header pins to the top of the scroller
+     and the white body rides over it — so the body moves at the scroll's own
+     rate while the header stays put, and its content is what recedes. */
+  .mHead, .mHeadIn, .mBody{display:contents;}
+  body.v4 .mHead{display:block;position:sticky;top:0;z-index:1;}
+  body.v4 .mHeadIn{display:block;will-change:transform,opacity;}
+  body.v4 .mBody{
+    display:block;position:relative;z-index:2;background:#fff;
+    border-radius:28px 28px 0 0;margin-top:-24px;padding-top:14px;
+    min-height:calc(100% + 24px);
+  }
   body.v4 #phone #mBento .msn,
   body.v4 #phone #mBento .msn.morganMini{background:#280707;}
 
@@ -2126,6 +2136,22 @@
   body.light .onDark #status.warn .word{background:rgba(242,199,68,.16);}
   body.light .onDark h2{color:#f2e5e0;}
   body.light .onDark .hiShare{background:rgba(242,229,224,.1);color:#f2e5e0;}
+  /* ...and the mirror of it: V3's phone body is a white layer whatever the
+     theme, so in the dark themes the records on it take the light readings.
+     Same values as the `body.light #phone …` rules they stand in for. */
+  body:not(.light).v4 #mBody{color:#33291f;}
+  body:not(.light).v4 #mBody .msel{border-color:#ddd3bf;color:#2e241c;}
+  body:not(.light).v4 #mBody .msel svg path{stroke:#9b8a75;}
+  body:not(.light).v4 #mBody .mchips{color:#6b5c4a;}
+  body:not(.light).v4 #mBody .fchip{border-color:#ddd3bf;}
+  body:not(.light).v4 #mBody .fchip.on{border-color:#2e241c;color:#2e241c;}
+  body:not(.light).v4 #mBody .mrecs h3{color:#2e1f1a;}
+  body:not(.light).v4 #mBody .mrecs .gd{color:#9b8a75;}
+  body:not(.light).v4 #mBody .mbrow{color:#3a2f24;border-bottom-color:#ece4d4;}
+  body:not(.light).v4 #mBody .mbrow .g{color:#9b8a75;}
+  body:not(.light).v4 #mBody .st.ok{background:#e5efdb;color:#55763f;}
+  body:not(.light).v4 #mBody .st.sub{background:#f3ead0;color:#8f7327;}
+  body:not(.light).v4 #mBody .mk{border-bottom-color:#3a2f24;}
   /* the dashboard's own light rules carry b2/b3 as well, so the block that
      overrides them names the grid it is sitting on to match their weight */
   body.light .dash .onDark.dgrid .lbl,
@@ -2357,6 +2383,7 @@
     </svg>
   </div>
   <div class="mscroll" id="mScroll">
+    <div class="mHead" id="mHead"><div class="mHeadIn" id="mHeadIn">
     <div class="mtitle">
       <h2>Health insights</h2>
       <button class="hiShare" type="button" aria-label="Share"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12V3M6 5.6 9 2.6l3 3M4 10.5v3.9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-3.9"/></svg></button>
@@ -2475,6 +2502,8 @@
         </div>
       </div>
     </div>
+    </div></div>
+    <div class="mBody" id="mBody">
     <div class="msel">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
     <div class="mchips">
       <div class="fchip on"><b>81</b>&nbsp;All</div>
@@ -2512,7 +2541,8 @@
       </div>
     </div>
   </div>
-  </div>
+      </div>
+</div>
 </div>
 
 <div id="phoneShell2" aria-hidden="true">
@@ -4377,6 +4407,7 @@
       (lightOn ? ' light' : '') + (blackOn ? ' black' : '') +
       (organTint ? ' organTint' : '');
     syncDark();
+    if (parallaxApply) parallaxApply();
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
     if (isBento(m)){
@@ -6524,6 +6555,7 @@
   let lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
   // the organ card can take a colour of its own again, the same in every theme
   let organTint = false;
+  let parallaxApply = null;
   const themeSel = document.getElementById('themeSel');
   themeSel.addEventListener('change', () => {
     const v = themeSel.value;
@@ -6559,6 +6591,36 @@
     set(document.getElementById('organSlot'), tint);
     set(document.getElementById('mOrgCard'), tint);
   }
+
+  // V3's phone reads as two layers: the white body scrolls at its own rate over
+  // a pinned header whose content recedes at a quarter of it and fades out by
+  // the time the body has covered it. Scroll-linked, not an animation.
+  (function headerParallax(){
+    const sc = document.getElementById('mScroll');
+    const head = document.getElementById('mHead');
+    const inner = document.getElementById('mHeadIn');
+    if (!sc || !head || !inner) return;
+    let queued = false;
+    function apply(){
+      queued = false;
+      if (!document.body.classList.contains('v4')){
+        inner.style.transform = ''; inner.style.opacity = '';
+        return;
+      }
+      const y = sc.scrollTop;
+      const span = Math.max(1, head.offsetHeight - 40);
+      const p = Math.min(1, Math.max(0, y / span));
+      inner.style.transform = reduced ? '' : 'translateY(' + (-y * 0.25).toFixed(1) + 'px)';
+      inner.style.opacity = (1 - p).toFixed(3);
+    }
+    sc.addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(apply);
+    }, { passive: true });
+    addEventListener('resize', apply);
+    parallaxApply = apply;
+  })();
 
   const tickBase = () => lightOn ? '#8a6a5c' : '#c49b93';
   // Chronological age is the reference every other number on the page is quoted

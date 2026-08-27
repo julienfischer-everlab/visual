@@ -52,7 +52,7 @@ renderer.
 11. **Mobile V1** — the bento folded down to two blocks. The hero is a plain card carrying biomarkers and health coverage as two figures, with the meter beneath doing the work the dial used to. Below it, steps and organ age stand side by side and close the same way: label, value, visual, a rounded status tag, then the dots — same sizes on both, so the two carousels read as one control. Wears `m5 v2` plus a `v3` marker.
 
 12. **Desktop V3** — V1's dashboard with its insight header lifted onto a ground of its own: the hero, steps and organ cards sit inside one `#1c0505` panel on `#280707` cards, over a page that stays light. Wears `m2 b2 b3` plus a `b4` marker.
-13. **Mobile V3** — the same idea on the phone: the status bar, the title and the bento share one coloured region running to the screen edges, and the records list below it sits on white. Wears `m5 v2 v3` plus a `v4` marker.
+13. **Mobile V3** — the same idea on the phone: the status bar, the title and the bento share one coloured region running to the screen edges, and the records list below it sits on white. The two are layers rather than sections — see below. Wears `m5 v2 v3` plus a `v4` marker.
 
 **Overview page** — the same two platforms.
 
@@ -71,6 +71,21 @@ holds its density from about 1150px of window upward.
 Mode 5, the original bento, is no longer offered on its own — every mobile
 variant wears its styles, so it stays in `MODES` (renumbering would rewire the
 renderer) but sits in a group the dropdown does not list.
+
+### Two layers, not two sections
+
+Mobile V3's white body is a foreground layer over the coloured header, not the
+next thing down the page. The header pins to the top of the scroller and the
+body rides over it with rounded top corners and a higher `z-index`, so the body
+moves at the scroll's own rate while the header stays put. What recedes is the
+header's *content*: it translates at a quarter of the scroll and fades to zero
+by the time the body has covered it — scroll-linked throughout, no animation to
+trigger and nothing that scales or bounces. Under reduced motion the fade stays
+and the translate goes.
+
+The body is white in every theme, so in the dark themes the records on it take
+the light theme's readings — the mirror of the `.onDark` rules, and the same
+values as the `body.light #phone …` rules they stand in for.
 
 ### The organ mini card
 
