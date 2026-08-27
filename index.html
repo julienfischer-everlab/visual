@@ -363,7 +363,7 @@
   body.light.b3 .dash .hiSteps .stpBars i::before{background:#2e1f1a;}
   /* the list reads at its own height and leaves the slack at the foot, rather
      than stretching to fill a card that is now much taller */
-  body.b3 .dash .olist{top:60px;bottom:auto;}
+  body.b3 .dash .olist{top:60px;bottom:auto;gap:2px;width:calc(46% - 48px);}
   body.b3 .dash .olist .or{flex:none;padding:9px 12px;border-radius:10px;}
   /* hover is the selected state, exactly — the row shows what picking it does,
      and nothing shifts weight, so the list never reflows under the pointer */
@@ -2068,9 +2068,12 @@
   body.light .gCell .nm{color:rgba(46,31,26,.55);}
   body.light .gCell:hover{background:rgba(46,31,26,.03);}
 
+  /* The dashboard is a fixed, painted layer, so an unstyled notice sat behind
+     it: a lost context read as an organ that simply was not there. */
   .nogl{
-    position:fixed;inset:0;display:none;place-items:center;
-    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    position:fixed;inset:0;display:none;place-items:center;z-index:99;
+    background:rgba(13,13,12,.94);color:#f2e5e0;text-align:center;padding:0 24px;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;line-height:1.7;
   }
 </style>
 
@@ -2709,7 +2712,9 @@
   // working — say so rather than leaving an empty card, and rebuild on restore
   canvas.addEventListener('webglcontextlost', e => {
     e.preventDefault();
-    document.getElementById('nogl').style.display = 'grid';
+    const n = document.getElementById('nogl');
+    n.textContent = 'The graphics context was lost — reload the page to bring the organ back';
+    n.style.display = 'grid';
   });
   canvas.addEventListener('webglcontextrestored', () => location.reload());
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -4343,7 +4348,10 @@
       // a hidden dashboard measures 0x0; sizing off that leaves the canvas in
       // the card's top corner with sub-pixel particles, so wait for a real box
       if (slot.width < 40 || slot.height < 40) return;
-      const listW = Math.min(390, slot.width * 0.54);
+      // V3's list is sentence case and needs less room than the instrument
+      // list it replaced, so the organ gets the difference
+      const listShare = document.body.classList.contains('b3') ? 0.46 : 0.54;
+      const listW = Math.min(390, slot.width * listShare);
       canvOX = slot.left + listW; canvOY = slot.top;   // viewport coords, for the notes
       // V3 lifts the whole right column off the card's floor — the organ with
       // it, not just the gauge. The canvas keeps its top edge and loses twice
