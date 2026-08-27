@@ -2080,16 +2080,18 @@
   body.v4 .mstatus{background:none;position:relative;z-index:4;}
   /* Frosted glass over the safe area: strongest behind the status bar and
      dissolving into the hero. The mask fades the blur out with the tint, so
-     there is no edge where the backdrop filter stops. */
+     there is no edge where the backdrop filter stops. Keep the band close to
+     the status bar — the reach is what reads as "too much blur" long before
+     the radius does, because it decides how much of the card gets veiled. */
   body.v4 #phone::before{
-    content:'';position:absolute;left:0;right:0;top:0;height:112px;z-index:3;
+    content:'';position:absolute;left:0;right:0;top:0;height:84px;z-index:3;
     pointer-events:none;
     /* blur only — no tint. The mask is what gives it a gradient: the glass is
        full strength behind the status bar and gone by the foot, so there is no
        darkening and no edge where the filter stops. */
     -webkit-backdrop-filter:blur(5.4px);backdrop-filter:blur(5.4px);
-    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 46%, rgba(0,0,0,.55) 74%, transparent 100%);
-    mask-image:linear-gradient(to bottom, #000 0%, #000 46%, rgba(0,0,0,.55) 74%, transparent 100%);
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 30%, rgba(0,0,0,.42) 64%, transparent 100%);
+    mask-image:linear-gradient(to bottom, #000 0%, #000 30%, rgba(0,0,0,.42) 64%, transparent 100%);
     /* nothing to hide at rest: the glass arrives with the scroll */
     opacity:var(--topFog, 0);
   }
