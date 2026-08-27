@@ -74,7 +74,7 @@ renderer) but sits in a group the dropdown does not list.
 
 ### Two layers, not two sections
 
-Mobile V3's white body is a foreground layer over the coloured header, not the
+Mobile V3's body is a foreground layer over the coloured header, not the
 next thing down the page. The header pins to the top of the scroller and the
 body rides over it with rounded top corners and a higher `z-index`, so the body
 moves at the scroll's own rate while the header stays put. What recedes is the
@@ -83,9 +83,13 @@ by the time the body has covered it — scroll-linked throughout, no animation t
 trigger and nothing that scales or bounces. Under reduced motion the fade stays
 and the translate goes.
 
-The body is white in every theme, so in the dark themes the records on it take
-the light theme's readings — the mirror of the `.onDark` rules, and the same
-values as the `body.light #phone …` rules they stand in for.
+The layer takes the theme: white in light, `#0d0d0c` in the dark themes, with
+the records reading normally on either. The *header* does not — it keeps
+`#1c0505` in every theme, and so does the phone's own ground, so the safe area
+above the header can never show a lighter strip behind the status bar. That is
+the one place a light theme is named explicitly rather than left to source
+order: `body.light.m5 #phone` paints the phone white and ties with the V3 rule
+on specificity.
 
 ### The body
 
