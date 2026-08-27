@@ -45,9 +45,10 @@ The variant pages are not separate pages. Each wears another page's styles
 | Biomarkers · Mobile | `m5` | the original bento |
 | Biomarkers · Mobile V2 | `m11 m5 v2` | the bento + the `v2` marker |
 | Biomarkers · Mobile V1 | `m12 m5 v2 v3` | V2 + the `v3` marker on top |
-| Biomarkers · Desktop V1 | `m13 m2 b2 b3` |
-| Biomarkers · Desktop V3 | `m14 m2 b2 b3 b4` | V1 + the `b4` marker |
-| Biomarkers · Mobile V3 | `m15 m5 v2 v3 v4` | V1 + the `v4` marker | the V2 dashboard + the `b3` marker |
+| Biomarkers · Desktop V1 | `m13 m2 b2 b3` | the V2 dashboard + the `b3` marker |
+| Biomarkers · Desktop V3 | `m14 m2 b2 b3 b4` | Desktop V1 + the `b4` marker |
+| Biomarkers · Mobile V3 | `m15 m5 v2 v3 v4` | Mobile V1 + the `v4` marker |
+| Biomarkers · Mobile V4 | `m16 m5 v2 v3 v4 v5` | Mobile V3 + the `v5` marker |
 
 **A dark island in a light page.** Where a block keeps the organ's ground
 rather than the page's surface — the coloured organ card, and V3's whole
@@ -314,6 +315,22 @@ The loop now schedules first and runs its body under a guard, so a bad frame
 costs a frame instead of the session, and ~1.5s of consecutive failures raises
 the `.nogl` notice rather than leaving a silent hole. Worth applying to any
 self-scheduling loop here: **schedule, then do the work.**
+
+### 5.13 Moving a node back needs a placeholder, not a remembered sibling
+
+V4 borrows five cards and the organ card from the bento and hands them back
+when any other page loads. The first cut recorded each node's parent and next
+sibling and restored with `insertBefore(el, next)`. It threw: the organ card is
+relocated by `setMode` on its own schedule, so a sibling recorded as an anchor
+can be in a different parent by restore time, and `insertBefore` rejects an
+anchor that is not a child of the node it is called on.
+
+Restoring in reverse order does not fix it — the stale anchor is a *different*
+node's business, not a later sibling of the one being restored. What does fix
+it is leaving a comment node standing in the gap and calling `replaceChild`:
+a placeholder is inert, invisible to layout, and cannot be moved by anything
+else. General rule for any borrow-and-return in this file: **mark the slot,
+don't remember the neighbour.**
 
 ### 5.8 Rewriting a selector changed which rule won
 

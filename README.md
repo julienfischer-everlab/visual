@@ -1,6 +1,6 @@
 # Particle Organs — Organ Age concept
 
-A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between ten anatomical silhouettes, explored through sixteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
+A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between ten anatomical silhouettes, explored through seventeen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
 
 **Live:** https://particle-organs.vercel.app
 
@@ -121,6 +121,32 @@ read it by the live organ index go through `cardFor()`, which falls back to the
 Body row rather than off the end of the array when a body selection survives a
 mode switch. The nine-cell overview grid stays nine for the same reason its
 layout is 3×3.
+
+### Mobile V4: the header is the organ
+
+V4 is V3 re-hung, not redrawn — the same cards, the same spacing, the same
+interactions, in a different hierarchy.
+
+The organ leaves the bento and becomes the header's own content: no card, no
+ground, no radius, no padding. It is centred, the eyebrow sits above it and the
+name, the age and the status sit under it, and the canvas clears to `#1c0505`
+so there is no rectangle to see against the header — the same reason the dial
+and the type keep the dark theme's readings in both themes. It still swipes
+through all ten selections, and the dots still steer it.
+
+Everything else moves down into the white body, in one column: **Biomarkers**
+full width with the health-coverage block removed, then a two-up of the two
+mini cards V2 and V3 don't use (**Signal** and **Coverage**), then **Activity**
+full width, then **Health Coverage** as its own card — the coverage dial that
+used to live inside the Biomarkers hero. The rounded transition and the layered
+parallax scroll are V3's, untouched.
+
+None of this is a second copy. The nodes are the ones every other page uses, so
+V4 takes them on the way in and hands them back on the way out, leaving a
+comment node standing in each gap — a placeholder cannot go stale the way a
+recorded sibling can, and the organ card in particular moves on its own
+schedule. V1, V2, V3 and every desktop page lay out to the pixel after a V4
+round trip.
 
 ### Charts draw, they do not grow
 
