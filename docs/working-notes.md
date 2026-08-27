@@ -40,12 +40,17 @@ The variant pages are not separate pages. Each wears another page's styles
 
 | Page | `body` class | Reads as |
 |---|---|---|
-| Desktop (biomarker) | `m2` | the original dashboard |
-| Desktop (biomarker) V2 | `m10 m2 b2` | the dashboard + the `b2` marker |
-| Mobile (biomarkers) | `m5` | the original bento |
-| Mobile (biomarkers) V2 | `m11 m5 v2` | the bento + the `v2` marker |
-| Mobile (biomarkers) V3 | `m12 m5 v2 v3` | V2 + the `v3` marker on top |
-| Desktop (biomarker) V3 | `m13 m2 b2 b3` | the V2 dashboard + the `b3` marker |
+| Biomarkers · Desktop | `m2` | the original dashboard |
+| Biomarkers · Desktop V2 | `m10 m2 b2` | the dashboard + the `b2` marker |
+| Biomarkers · Mobile | `m5` | the original bento |
+| Biomarkers · Mobile V2 | `m11 m5 v2` | the bento + the `v2` marker |
+| Biomarkers · Mobile V3 | `m12 m5 v2 v3` | V2 + the `v3` marker on top |
+| Biomarkers · Desktop V3 | `m13 m2 b2 b3` | the V2 dashboard + the `b3` marker |
+
+A page's dropdown label says only its platform and version — the group above it
+already names the page — so two entries read `Desktop` and two read `Mobile`.
+Do not disambiguate them by name; the group is the disambiguation, and the
+table above is how you tell which mode index is which.
 
 The dropdown groups off `MODES[].group` and orders within a group off an
 optional `sort`, because the product pages read best desktop-then-mobile, which
