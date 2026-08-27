@@ -228,9 +228,15 @@ the new one did not. The legend unpinned from the foot of the card on the two
 Two lessons. Re-specifying a selector is a behaviour change, not a rename —
 check what else claims the same property. And the way to catch this class of
 regression is a **pixel diff against `HEAD`**: render the untouched pages from
-`git show HEAD:index.html` and from the working copy, and compare. The particle
-cloud animates, so expect a small permanent diff confined to the organ's own
-bounding box; anything outside that box is a real regression.
+`git show HEAD:index.html` and from the working copy, and compare.
+
+Diff to a **mask, not a bounding box**. The cloud animates, so every diff has a
+permanent floor; the question is only *where* it falls. A bounding box merges
+disjoint regions, so one stray ambient particle at the far left stretches the
+box across half the page and swallows a real regression inside it — which is
+exactly how a stray dot strip at the foot of the bento went unnoticed here for
+a commit. Paint the changed pixels red over a dimmed copy of the new render and
+look at it: the particle noise is unmistakable, and anything else stands out.
 
 ---
 

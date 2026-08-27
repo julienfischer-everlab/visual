@@ -43,6 +43,8 @@ The dropdown is grouped by what a mode is for.
 Both desktop sidebars move between **Overview** and **Biomarkers**.
 
 10. **Desktop (biomarker) V2** — the same dashboard, re-proportioned: the biomarker card carries the distribution range at its foot, the stat pair is swapped for the steps and health-coverage cards, and a records row, an Other chip and a search field sit under the grid. The hero sizes itself off its content, so nothing spills onto the rows below, and the organ card takes its height from the left column — landscape, not standing up. It wears `m2`'s styles plus a marker class, so there is one dashboard, not two — the class is still `b2` in code, since `v2` already marks the mobile page.
+
+    Its organ card reads as product, not instrument: the list is sentence case in the page's own face with no dividers, led by a **Body** row carrying the whole-body age, and the selected organ is highlighted where it sits rather than hoisted to the top. The card also drops the warm organ ground for the same surface its siblings use — see below.
 11. **Mobile (biomarkers) V2** — the same bento re-laid out to the design: the hero is a two-card carousel — biomarkers and biological age, then organ age — with the next card's shoulder held in view so the swipe announces itself, and dots beneath the pair. The health-coverage card sits beside a week of steps below. Wears `m5` plus a `v2` marker.
 12. **Mobile (biomarkers) V3** — the bento folded down to two blocks. The hero is a two-card carousel: biomarkers and coverage on the first card, organ age on the second, swiped by finger and steered from the dots beneath. Coverage takes the place of biological age, its dial sitting under its own title. Steps then runs the full width with no card beside it. Wears `m5 v2` plus a `v3` marker.
 
@@ -88,6 +90,12 @@ in-situ dashboard card, the mobile mini-organ card, the overview's organ cards,
 the immersive page and its surround, the library, and the organ-age modal in
 both dresses. The WebGL context clears to the same value (`0.133, 0.024, 0.024`)
 in every mode, so the canvas never leaves a seam against the surface behind it.
+
+**Desktop V2 is the one exception.** Its organ card sits on the same surface as
+its sibling cards, so the card reads as part of the dashboard rather than a
+window onto the concept. The rule that matters still holds — the canvas clears
+to whatever the card is — so `paintFrame` picks its clear colour from the page,
+not from a constant, and there is still no seam.
 
 The mobile device backdrops and the desktop product shell keep their own near
 black — the phone frame and the dashboard chrome cover them entirely.

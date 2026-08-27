@@ -310,8 +310,30 @@
   body.b2 .dash .drecs{margin-top:34px;}
   body.b2 .dash .olist{top:64px;bottom:24px;display:flex;flex-direction:column;}
   body.b2 .dash .olist .or{flex:1;padding:0 2px;}
+  /* ---- V2's organ card, to the reference ---------------------------------
+     The list drops the instrument dress — monospace, uppercase, hairline
+     rules — and reads as product copy: sentence case, proportional, no
+     dividers, the selected row carrying its weight instead of a border. */
+  body.b2 .dash .olist{
+    font-family:inherit;font-size:13.5px;letter-spacing:0;text-transform:none;
+  }
+  body.b2 .dash .olist .or{
+    gap:14px;border-bottom:none;color:rgba(242,229,224,.42);
+  }
+  body.b2 .dash .olist .or .ag{font-size:13.5px;}
+  body.b2 .dash .olist .or.on{font-weight:600;color:#f2e5e0;}
+  body.b2 .dash .olist .dot{width:7px;height:7px;}
+  /* the body's own age is a summary, not a selectable organ */
+  .dash .olist .or.sum{display:none;}
+  body.b2 .dash .olist .or.sum{display:flex;cursor:default;}
+  body.light.b2 .dash .olist .or{color:rgba(46,31,26,.45);}
+  body.light.b2 .dash .olist .or.on{color:#2e1f1a;}
+  /* the organ sits on the same ground as its siblings here, not the warm
+     organ ground — paintFrame clears the canvas to match */
+  body.b2 .dash .dcard.organ{background:#161615;}
+  body.light.b2 .dash .dcard.organ{background:#fdfaf3;}
   /* the gauge stack shrinks with the card, so the organ still has room above it */
-  body.b2 #arcA{transform:scale(.4);margin:-27px 0 -44px;}
+  body.b2 #arcA{transform:scale(.48);margin:-27px 0 -44px;}
   body.b2 #ageBig{height:70px;}
   body.b2 #ageBig .dcol{font-size:39px;}
   body.b2 #status{margin-top:-6px;min-height:16px;}
@@ -3946,6 +3968,21 @@
 
   // in-situ organ-age list: every area with its age, active row highlighted
   const olistEl = document.getElementById('olist');
+  // V2 reads the list as a body, top down, with the selected organ highlighted
+  // where it sits rather than hoisted to the first row. PILL leads with Heart
+  // because that is the opening selection, so only Heart moves. The order is
+  // set inline because it only takes effect where the list is a flex column —
+  // the original dashboard's block list ignores it and keeps PILL's order.
+  const OLIST_ORDER = [4, 1, 2, 3, 5, 6, 7, 8, 9];
+  // the body's own age leads the list: a summary row, not a tenth organ —
+  // there is no whole-body silhouette to select
+  const bodyRow = document.createElement('div');
+  bodyRow.className = 'or sum';
+  bodyRow.innerHTML = '<span class="dot" style="background:#8fae7e"></span>' +
+    '<span class="nm">Body</span><span class="ag">' + CHRONO + '</span>';
+  bodyRow.style.order = 0;
+  olistEl.appendChild(bodyRow);
+
   const olistRows = PILL.map((d, i) => {
     const r = document.createElement('div');
     r.className = 'or' + (i === 0 ? ' on' : '');
@@ -3953,6 +3990,7 @@
     r.innerHTML = '<span class="dot" style="background:' + dotCol + '"></span>' +
       '<span class="nm">' + d.label + ' health</span>' +
       '<span class="ag">' + (CHRONO + d.delta) + '</span>';
+    r.style.order = OLIST_ORDER[i];
     r.addEventListener('click', () => { lastManual = performance.now(); selectPill(i); });
     olistEl.appendChild(r);
     return r;
@@ -6124,6 +6162,7 @@
       olistRows.forEach((r, i) => {
         r.querySelector('.ag').textContent = CHRONO + PILL[i].delta;
       });
+      bodyRow.querySelector('.ag').textContent = CHRONO;
       spCards.forEach((c, i) => {
         const n = c.querySelector('.spBot .num');
         if (n) n.textContent = CHRONO + PILL[i].delta;
@@ -6300,9 +6339,15 @@
     gl.uniform1f(U.uLight, lightNow);
     if (version !== 4){
       const cardMode = isDash(version);
-      const dk = [0.133, 0.024, 0.024];   // #220606, whatever the surface
-      const lt = cardMode ? [0.953, 0.886, 0.847] : [0.957, 0.937, 0.929];
-      const bk = cardMode ? [0.157, 0.027, 0.027] : [0.02, 0.02, 0.02];
+      // V2's organ card drops the warm organ ground for the same surface its
+      // sibling cards use, so the canvas clears to the card, not to #220606
+      const flat = cardMode && document.body.classList.contains('b2');
+      const dk = flat ? [0.086, 0.086, 0.082]           // #161615, the card
+                      : [0.133, 0.024, 0.024];          // #220606, the ground
+      const lt = cardMode ? (flat ? [0.992, 0.980, 0.953] : [0.953, 0.886, 0.847])
+                          : [0.957, 0.937, 0.929];
+      const bk = cardMode ? (flat ? [0.086, 0.086, 0.082] : [0.157, 0.027, 0.027])
+                          : [0.02, 0.02, 0.02];
       const r0 = dk[0] + (lt[0] - dk[0]) * lightNow;
       const g0 = dk[1] + (lt[1] - dk[1]) * lightNow;
       const b0 = dk[2] + (lt[2] - dk[2]) * lightNow;
