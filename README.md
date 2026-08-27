@@ -44,6 +44,7 @@ Both desktop sidebars move between **Overview** and **Biomarkers**.
 
 10. **Desktop (biomarker) V2** — the same dashboard, re-proportioned: the biomarker card carries the distribution range at its foot, the stat pair is swapped for the steps and health-coverage cards, and a records row, an Other chip and a search field sit under the grid. The hero sizes itself off its content, so nothing spills onto the rows below, and the organ card takes its height from the left column — landscape, not standing up. It wears `m2`'s styles plus a marker class, so there is one dashboard, not two — the class is still `b2` in code, since `v2` already marks the mobile page.
 11. **Mobile (biomarkers) V2** — the same bento re-laid out to the design: the health-coverage card beside a week of steps, then organ age full width beneath them. Wears `m5` plus a `v2` marker.
+12. **Mobile (biomarkers) V3** — the bento folded down to two blocks. The hero is a two-card carousel: biomarkers and coverage on the first card, organ age on the second, swiped by finger and steered from the dots beneath. Coverage takes the place of biological age, its dial sitting under its own title. Steps then runs the full width with no card beside it. Wears `m5 v2` plus a `v3` marker.
 
 ### The organ in situ
 

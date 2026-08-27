@@ -32,11 +32,11 @@ Consequences worth knowing before editing:
 
 ## 2. Pages, and the composite-mode convention
 
-Twelve pages in three dropdown groups: **Concept** (full-bleed explorations),
+Thirteen pages in three dropdown groups: **Concept** (full-bleed explorations),
 **Pages** (product surfaces), **Library** (the component workbench).
 
-The two "V2" pages are not separate pages. Each wears another page's styles
-*plus* a marker class:
+The variant pages are not separate pages. Each wears another page's styles
+*plus* a marker class, and the markers stack:
 
 | Page | `body` class | Reads as |
 |---|---|---|
@@ -44,10 +44,19 @@ The two "V2" pages are not separate pages. Each wears another page's styles
 | Desktop (biomarker) V2 | `m10 m2 b2` | the dashboard + the `b2` marker |
 | Mobile (biomarkers) | `m5` | the original bento |
 | Mobile (biomarkers) V2 | `m11 m5 v2` | the bento + the `v2` marker |
+| Mobile (biomarkers) V3 | `m12 m5 v2 v3` | V2 + the `v3` marker on top |
 
 Predicates `isDash(v)` and `isBento(v)` exist so engine code treats a page and
 its variant identically. Markup is shared and toggled with `.hiOnly` /
-`.v2Only` rather than duplicated, so the original and the variant cannot drift.
+`.v2Only` / `.v3On` / `.v3Off` rather than duplicated, so the original and the
+variant cannot drift.
+
+V3 takes this one step further: the hero card is wrapped in a track and a dot
+strip that fold away with `display:contents` on every other page, so the card
+lays out there exactly as it did before the wrapper existed. Only under
+`body.v3` do the wrapper and track become a real flex carousel. The organ card
+is *moved* by `setMode` between the hero track and its row rather than
+duplicated — one card, one canvas, one set of handlers.
 
 > The desktop variant's marker class is `b2` even though the page is now
 > *named* V2. `v2` already marks the mobile page and both markers live on
@@ -198,6 +207,22 @@ and replay `view._lastT`, the last painted frame.
 `paint()` opened with `clearRect`, which wiped the background `exportCanvas`
 had laid down — every export came out transparent. `clearRect` belongs to the
 frame loop, not the renderer.
+
+### 5.8 Rewriting a selector changed which rule won
+
+Wrapping the mobile hero meant `#mBento > .msn:first-child` no longer named the
+card, so its two rules were rewritten against a new `.mHeroCard` class. One of
+them, `margin-top:auto` on the legend, silently stopped applying: `#phone
+.legend` sets `margin-top:20px`, and the old selector out-specified it while
+the new one did not. The legend unpinned from the foot of the card on the two
+*untouched* mobile pages, which is exactly where nobody was looking.
+
+Two lessons. Re-specifying a selector is a behaviour change, not a rename —
+check what else claims the same property. And the way to catch this class of
+regression is a **pixel diff against `HEAD`**: render the untouched pages from
+`git show HEAD:index.html` and from the working copy, and compare. The particle
+cloud animates, so expect a small permanent diff confined to the organ's own
+bounding box; anything outside that box is a real regression.
 
 ---
 
