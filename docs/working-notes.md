@@ -301,6 +301,20 @@ The fix is not to unfix the layer but to make the page agree with it:
 remembering for any other full-bleed fixed surface here — the element's own
 background is only half the ground.
 
+### 5.12 A throw in the render loop used to end it for good
+
+`frame()` scheduled its own next frame at the *foot* of the body, so anything
+that threw above that line meant no further frames — ever. The page kept every
+piece of its chrome: the sidebar, the list, the age, the badge. Only the organ
+stopped existing. That is indistinguishable from a layout bug, and it is what
+was behind two separate "the visual is missing on the right" reports; both times
+I went looking at geometry.
+
+The loop now schedules first and runs its body under a guard, so a bad frame
+costs a frame instead of the session, and ~1.5s of consecutive failures raises
+the `.nogl` notice rather than leaving a silent hole. Worth applying to any
+self-scheduling loop here: **schedule, then do the work.**
+
 ### 5.8 Rewriting a selector changed which rule won
 
 Wrapping the mobile hero meant `#mBento > .msn:first-child` no longer named the

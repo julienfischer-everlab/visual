@@ -1044,16 +1044,31 @@
     height:84px;margin-top:auto;margin-bottom:20px;
     display:flex;flex-direction:column;justify-content:flex-end;gap:6px;
   }
-  /* A slide that lands draws its chart in rather than cutting to it. The
-     growth sits on the container, not the marks, so it composes with whatever
-     transform the marks already carry. */
-  @keyframes hiGrow{from{transform:scaleY(.12);}to{transform:scaleY(1);}}
+  /* A slide that lands draws its chart in rather than cutting to it, and it
+     draws *along the line*: the path keeps its exact geometry and only the
+     stroke is revealed, left to right, by running the dash offset back to
+     zero. Nothing translates, scales, or grows off the baseline — the
+     container, the dotted baseline, the labels and the value are static
+     throughout, and the line ends where it always was.
+     The other marks have no stroke to draw, so they take the same left-to-right
+     reading: the bar weeks wipe in from the left at their final heights and
+     opacities, and the dial keeps its own sweep. Every mini chart on the page
+     runs the same curve over the same 820ms. */
+  @keyframes hiDraw{from{stroke-dashoffset:var(--len,400);}to{stroke-dashoffset:0;}}
+  @keyframes hiWipe{from{clip-path:inset(0 100% 0 0);}to{clip-path:inset(0 0 0 0);}}
   @keyframes hiSweep{from{stroke-dashoffset:114.6;}to{stroke-dashoffset:0;}}
+  @keyframes hiFade{from{opacity:0;}to{opacity:1;}}
+  /* the dash pattern is the whole path, so at offset 0 the line reads solid */
+  .hiLine .ln, .msChart .ln{stroke-dasharray:var(--len,400);}
+  .hiSlide.grow .hiLine .ln,
+  .msSlide.grow .msChart .ln{animation:hiDraw .82s cubic-bezier(.25,.46,.45,.94) both;}
   .hiSlide.grow .stpBars,
-  .hiSlide.grow .hiLine{
-    animation:hiGrow .5s cubic-bezier(.34,.68,.4,1) both;transform-origin:bottom;
-  }
-  .hiSlide.grow .covDial .pg{animation:hiSweep .62s cubic-bezier(.34,.68,.4,1) both;}
+  .msSlide.grow .mwk{animation:hiWipe .82s cubic-bezier(.25,.46,.45,.94) both;}
+  .hiSlide.grow .covDial .pg{animation:hiSweep .82s cubic-bezier(.25,.46,.45,.94) both;}
+  /* the signal card's fill and end dots have no length to run along, so they
+     arrive with the stroke rather than ahead of it */
+  .msSlide.grow .msChart .ar,
+  .msSlide.grow .msChart circle{animation:hiFade .82s cubic-bezier(.25,.46,.45,.94) both;}
   .hiDots{
     position:absolute;left:0;right:0;bottom:14px;z-index:2;
     display:flex;gap:5px;justify-content:center;align-items:center;
@@ -6188,7 +6203,7 @@
     if (!carEl) return;
     const slides = [].slice.call(carEl.querySelectorAll('.msSlide'));
     const dotsEl = document.getElementById('msDots');
-    let x = 0, tx = 0, v = 0, dr = null;
+    let x = 0, tx = 0, v = 0, dr = null, act = -1;
     const dots = slides.map((sl, i) => {
       const el = document.createElement('i');
       el.addEventListener('click', e => { e.stopPropagation(); tx = i; setDots(i); });
@@ -6208,6 +6223,15 @@
         el.style.transform = 'translateX(' + (d * w).toFixed(1) + 'px)';
         el.style.opacity = Math.max(0, 1 - Math.abs(d)).toFixed(3);
       });
+      // the chart on the slide that lands draws itself in; the class has to
+      // come off and go back on to restart the animation, and it only fires on
+      // a settled index change so a rerender cannot replay it
+      const at = Math.round(x);
+      if (!reduced && carEl.offsetParent !== null && Math.abs(x - at) < 0.02 && at !== act){
+        act = at;
+        const el = slides[at];
+        if (el){ el.classList.remove('grow'); void el.offsetWidth; el.classList.add('grow'); }
+      }
     })();
     carEl.addEventListener('pointerdown', e => {
       dr = { x: e.clientX, y: e.clientY, x0: x, s0: Math.round(tx),
@@ -6266,6 +6290,25 @@
       });
     });
   })();
+
+  // Every line chart draws itself in along its own path, so each stroke needs
+  // its length as a custom property for the keyframes to run the dash offset
+  // against. Measured once: the paths are fixed geometry, and the length is in
+  // user units, which is what stroke-dasharray counts in — so preserveAspect-
+  // Ratio="none" scaling the box does not desynchronise the draw.
+  document.querySelectorAll('.hiLine .ln, .msChart .ln').forEach(el => {
+    let L = 0;
+    // a straight <line> does not answer getTotalLength everywhere, and getBBox
+    // throws while it is off-screen — its endpoints give the same number and
+    // need no layout at all
+    if (el.tagName === 'line'){
+      const g = n => parseFloat(el.getAttribute(n)) || 0;
+      L = Math.hypot(g('x2') - g('x1'), g('y2') - g('y1'));
+    } else {
+      try { L = el.getTotalLength(); } catch (err) {}
+    }
+    if (L) el.style.setProperty('--len', L.toFixed(1));
+  });
 
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.
@@ -6759,7 +6802,25 @@
   let morphCB = { x: ORGANS[0].x, y: ORGANS[0].y };
   const rot = new Float32Array(9);
 
+  // One bad read used to end the render loop for good: the next frame was
+  // scheduled at the *foot* of the body, so a throw anywhere above it meant no
+  // further frames, ever. The page kept its chrome and its last age, and the
+  // organ simply stopped existing — which reads as a missing visual rather than
+  // as an error, and is impossible to tell apart from a layout bug. Schedule
+  // first, then run the body under a guard.
+  let frameFails = 0;
   function frame(t){
+    requestAnimationFrame(frame);
+    try { drawFrame(t); frameFails = 0; }
+    catch (e){
+      if (!frameFails++) console.error('organ render failed', e);
+      if (frameFails === 90){                  // ~1.5s of nothing: say so
+        const n = document.querySelector('.nogl');
+        if (n) n.style.display = 'grid';
+      }
+    }
+  }
+  function drawFrame(t){
     // auto-switch every 5s in every mode; never restart a morph mid-flight
     if (!reduced && uPnow >= 1 &&
         t - lastCycle > CYCLE && t - lastManual > MANUAL_HOLD){
@@ -6962,7 +7023,6 @@
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.POINTS, 0, TOT);
     }
-    requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 })();

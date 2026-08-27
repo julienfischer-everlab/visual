@@ -122,6 +122,27 @@ Body row rather than off the end of the array when a body selection survives a
 mode switch. The nine-cell overview grid stays nine for the same reason its
 layout is 3×3.
 
+### Charts draw, they do not grow
+
+Every mini chart animates when its slide lands, and they all animate the same
+way: left to right, along the mark itself. The line charts run
+`stroke-dashoffset` from the path's own length back to zero, so the stroke is
+*revealed* rather than moved — the path keeps its exact geometry from the first
+frame, and the container, the dotted baseline, the axis labels and the value
+never animate at all. The marks without a stroke to draw take the same reading:
+the bar weeks wipe in from the left at their final heights and opacities, the
+coverage dial keeps its own sweep, and the signal card's fill and end dots
+arrive with the stroke instead of ahead of it. One curve, 820ms, everywhere.
+
+Each line's length is measured once at load into a `--len` custom property, in
+user units, which is what `stroke-dasharray` counts in — so
+`preserveAspectRatio="none"` stretching the box cannot desynchronise the draw.
+A straight `<line>` gets its length from its endpoints instead: `getBBox()`
+throws while the element is off-screen, and the endpoints need no layout.
+
+The animation fires only when a slide's index settles on a new value, so a
+rerender or a nudged carousel cannot replay it.
+
 ### The organ mini card
 
 Label, title, status: three lines, then the visual, then the dots. The status
