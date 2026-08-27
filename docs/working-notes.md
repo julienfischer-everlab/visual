@@ -248,8 +248,10 @@ bounding box; anything outside that box is a real regression.
 - **Artifact:** https://claude.ai/code/artifact/78766a66-729c-4942-8206-0acbcf4b8551
   — the live copy through this work. Republished from an exact copy of
   `index.html` (only `<title>` differs).
-- **Branch:** `claude/zip-package-import-fzfsrp`.
-- **Push status:** blocked. `git push` returns 403 on `git-receive-pack`; the
-  GitHub App does not have write access to `julienfischer-everlab/visual`. An
-  org admin can grant it at claude.ai/admin-settings/claude-tag. Every commit is
-  local until then.
+- **Branch:** `claude/zip-package-import-fzfsrp` on
+  `julienfischer-everlab/visual`, pushed.
+- Write access was refused for most of this work — `git push` returned 403 on
+  `git-receive-pack` — so the history sat local and was handed over as a zipped
+  git bundle instead. It was granted later and the whole branch went up at
+  once. If a push starts failing that way again, the grant lives at
+  claude.ai/admin-settings/claude-tag; the bundle is a stopgap, not a fix.
