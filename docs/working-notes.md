@@ -235,6 +235,15 @@ and replay `view._lastT`, the last painted frame.
 had laid down — every export came out transparent. `clearRect` belongs to the
 frame loop, not the renderer.
 
+### 5.9 The bento carousel's index runs one ahead of `PILL`
+
+The mini organ card leads with the body's own age, so its slide 0 is the body
+and slide *i+1* is `PILL[i]`. Everything that crosses that boundary has to
+convert: `selectPill(i)` sets `bxT = i + 1`, the dots light `i + 1`, the settle
+calls `selectPill(target - 1)` and the frame loop draws `PILL[k - 1]`, skipping
+`k === 0` because there is no whole-body silhouette. If a new control moves the
+carousel, it is in MB units; if it selects an organ, it is in PILL units.
+
 ### 5.8 Rewriting a selector changed which rule won
 
 Wrapping the mobile hero meant `#mBento > .msn:first-child` no longer named the
@@ -250,6 +259,13 @@ to lighten the phone's header cards, and the id out-specified
 An id in a selector does not just make it *more* specific — it makes it win
 against the theme overrides written without one, so a rule with an id in it has
 to exclude the themes it does not mean, not leave them to override.
+
+And a third time, symmetrically: `body.light #mBento .lbl` ties on specificity
+with `body.light #phone .lbl` and lost on source order, so the light card kept
+the old label colour. Written as `body.light #phone #mBento .lbl` it wins. The
+general shape of all three: **in this file, specificity is the API.** Anything
+that already claims a property claims it at some weight, and the only reliable
+way to know a new rule takes effect is to read back the computed value.
 
 Two lessons. Re-specifying a selector is a behaviour change, not a rename —
 check what else claims the same property. And the way to catch this class of

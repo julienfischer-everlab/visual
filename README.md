@@ -61,6 +61,14 @@ window thinned the organ to near-invisible dots while the gauge and list stayed
 put — the card read as empty. The in-situ size now has a floor, so the organ
 holds its density from about 1150px of window upward.
 
+### The organ mini card
+
+The measure is the card's, not the slide's: **Biological age** is pinned and
+only the name, the organ and its tag travel with the swipe. The carousel leads
+with the body's own age — *Body, 6 years younger* — and then walks the organs,
+so its index runs one ahead of `PILL`: slide 0 is the body, slide *i+1* is
+`PILL[i]`. There is no whole-body silhouette, so slide 0 carries no organ.
+
 ### The two mini cards
 
 Both swipe, by pointer or touch, and are steerable from their dots. **Health
