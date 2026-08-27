@@ -61,7 +61,15 @@ window thinned the organ to near-invisible dots while the gauge and list stayed
 put — the card read as empty. The in-situ size now has a floor, so the organ
 holds its density from about 1150px of window upward.
 
+Mode 5, the original bento, is no longer offered on its own — every mobile
+variant wears its styles, so it stays in `MODES` (renumbering would rewire the
+renderer) but sits in a group the dropdown does not list.
+
 ### The organ mini card
+
+Label, title, status: three lines, then the visual, then the dots. The status
+is a line of type in its own colour rather than a chip — the same on the phone
+and on the dashboard.
 
 The measure is the card's, not the slide's: **Biological age** is pinned and
 only the name, the organ and its tag travel with the swipe. The carousel leads

@@ -380,11 +380,8 @@
   /* the scale reads from the ticks alone once the number sits right under it */
   body.b3 #arcA text{display:none;}
   body.b3 #arcA{transform:scale(.46);margin:-27px 0 -50px;}
-  /* steps carries the same status tag its phone copy does */
-  body.b3 .dash .hiSteps .hiStat{
-    display:block;position:absolute;left:0;right:0;bottom:38px;text-align:center;
-  }
-  body.b3 .dash .hiSteps .hiViz{margin-bottom:54px;}
+  /* steps says its status the same way its phone copy does: under the title */
+  body.b3 .dash .hiSteps .hiStat{display:block;margin-top:2px;}
   body.b2 #ageBig{height:70px;}
   body.b2 #ageBig .dcol{font-size:39px;}
   body.b2 #status{margin-top:-6px;min-height:16px;}
@@ -992,25 +989,18 @@
      puts both tags 36px off the bottom */
   /* the organ stops short of the tag rather than running behind it — resize()
      takes the canvas box from this slot, so insetting it is enough */
-  body.v3 .mbrowV2 #mbSlot{inset:0 0 42px;}
+  body.v3 .mbrowV2 #mbSlot{inset:14px 0 26px;}
   body.v3 .mbrowV2 .morganMini .mbItem{bottom:0;}
   body.v3 .mbrowV2 .morganMini .big{font-size:22px;}
-  body.v3 .mbrowV2 .morganMini .mbBadge{
-    position:absolute;left:0;right:0;bottom:14px;align-self:auto;margin:0;
-    width:max-content;margin-inline:auto;
-  }
+  body.v3 .mbrowV2 .morganMini .mbBadge{align-self:flex-start;}
+  /* the status reads as the third line of the title group, not as a chip
+     floated above the dots */
   .hiStat{display:none;}
-  body.v3 .hiSteps .hiStat{
-    display:block;position:absolute;left:0;right:0;bottom:36px;text-align:center;
-  }
-  .hiStat span{
-    display:inline-block;font-size:10.5px;font-weight:500;padding:4px 10px;
-    border-radius:999px;background:rgba(92,196,127,.18);color:#7fd39a;
-  }
-  .hiStat span.warn{background:rgba(242,199,68,.16);color:#f2c744;}
-  body.light .hiStat span{background:rgba(35,122,70,.13);color:#237a46;}
-  body.light .hiStat span.warn{background:rgba(150,110,15,.13);color:#8a6512;}
-  body.v3 .hiSteps .hiViz{margin-bottom:52px;}
+  body.v3 .hiSteps .hiStat{display:block;margin-top:2px;}
+  .hiStat span{display:inline-block;font-size:13px;font-weight:500;color:#7fd39a;}
+  .hiStat span.warn{color:#f2c744;}
+  body.light .hiStat span{color:#237a46;}
+  body.light .hiStat span.warn{color:#8a6512;}
   /* V3 stands organ age beside steps, so its own row is empty there */
   body.v3 .mbrow2{display:none;}
   .mbrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -1034,6 +1024,16 @@
     height:84px;margin-top:auto;margin-bottom:20px;
     display:flex;flex-direction:column;justify-content:flex-end;gap:6px;
   }
+  /* A slide that lands draws its chart in rather than cutting to it. The
+     growth sits on the container, not the marks, so it composes with whatever
+     transform the marks already carry. */
+  @keyframes hiGrow{from{transform:scaleY(.12);}to{transform:scaleY(1);}}
+  @keyframes hiSweep{from{stroke-dashoffset:114.6;}to{stroke-dashoffset:0;}}
+  .hiSlide.grow .stpBars,
+  .hiSlide.grow .hiLine{
+    animation:hiGrow .5s cubic-bezier(.34,.68,.4,1) both;transform-origin:bottom;
+  }
+  .hiSlide.grow .covDial .pg{animation:hiSweep .62s cubic-bezier(.34,.68,.4,1) both;}
   .hiDots{
     position:absolute;left:0;right:0;bottom:14px;z-index:2;
     display:flex;gap:5px;justify-content:center;align-items:center;
@@ -1170,8 +1170,18 @@
      stands in the right half, and the dots sit under the text rather than
      under the middle of the card */
   body.v2 .mbrow2 .morganMini{height:150px;}
-  body.v2 .mbrow2 #mbSlot{left:46%;}
+  /* the row above insets its cards by 22px; this one is full width, so it has
+     no reason to keep the narrow row's tighter 14px */
+  body.v2 .mbrow2 .mbHead{left:22px;right:22px;top:22px;}
+  body.v2 .mbrow2 .mbTrack{top:22px;bottom:22px;}
+  body.v2 .mbrow2 .mbItem{left:22px;right:22px;}
+  /* the organ sits high and to the right of the text rather than centred in
+     its half — the slot keeps its height, so the canvas box does not change */
+  body.v2 .mbrow2 #mbSlot{left:calc(46% + 16px);top:-20px;bottom:20px;}
   body.v2 .mbrow2 .mbDots{justify-content:flex-start;padding-left:22px;}
+  /* the title group breathes: 2px more between each of its three parts */
+  body.v2 .mbrow2 .mbItem .big{margin-top:6px;}
+  body.v2 .mbrow2 .mbItem .mbBadge{margin-top:8px;}
   .hiCard .lbl i{font-style:normal;}
   .hiCard .lbl .cvL{display:none;}
   body.v2 #phone .hiCov .lbl .cvS{display:none;}
@@ -1179,10 +1189,8 @@
   /* the tile leads with a figure, so the unit carries the same weight */
   body.v2 #phone .hiCov .big .pc{font-size:inherit;font-weight:inherit;}
   /* steps closes with its status, the way it does on V3 */
-  body.v2 #phone .hiSteps .hiStat{
-    display:block;position:absolute;left:0;right:0;bottom:36px;text-align:center;
-  }
-  body.v2 #phone .hiSteps .hiViz{margin-bottom:52px;}
+  body.v2 #phone .hiSteps .hiStat{display:block;margin-top:2px;}
+  body.v2 #phone .hiSteps .hiViz{margin-bottom:20px;}
   /* Seven bars across a 171px tile stretch into blocks. Each becomes a stroke
      centred in its slot — 9px, a third narrower than the slot-filling bar —
      drawn on a child so it stays under its day letter. */
@@ -1200,9 +1208,14 @@
   body.v2 #phone .hiViz{height:108px;}
   body.v2 #phone .hiSteps .stpBars{height:70px;}
   body.v2 #phone .hiSteps .stpBars i{transform:scaleY(1.52);transform-origin:bottom;}
-  /* the status tags are rounded, not pills */
-  body.v2 #phone .hiStat span,
-  body.v2 #phone .mbBadge{border-radius:9px;}
+  /* on the phone the status is a line of type under the title, not a pill */
+  body.v2 #phone .mbBadge{
+    background:none;padding:0;margin-top:2px;font-size:13px;font-weight:500;
+    color:#7fd39a;
+  }
+  body.v2 #phone .mbBadge.warn{background:none;color:#f2c744;}
+  body.light.v2 #phone .mbBadge{color:#237a46;}
+  body.light.v2 #phone .mbBadge.warn{color:#8a6512;}
   /* both carousels on the row are the same control, so they read the same:
      the organ card's dots take the mini card's sizing and baseline */
   body.v2 #phone .mbDots{bottom:14px;gap:5px;}
@@ -2670,7 +2683,7 @@
     { name: 'Desktop', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 1 }, // organ card inside the product dashboard
     { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // rotating card carousel of organs
     { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // outlined 3-across organ grid
-    { name: 'Mobile', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 4 }, // mobile bento with a mini organ card
+    { name: 'Mobile', dur: 850, ease: 0, pix: 1.35 , group: 'Base', sort: 4 }, // the bento every mobile variant wears; not offered on its own
     { name: 'Mobile',   dur: 850, ease: 0, pix: 1.35 , group: 'Overview page', sort: 2 }, // the Overview frame on its own
     { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 , group: 'Library' }, // the isolated-organ component library
     { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // organ age as a lab instrument
@@ -4526,6 +4539,20 @@
     gl.clear(gl.COLOR_BUFFER_BIT);
     const items = mbItems;
     const cw = Math.max(1, mOrgCard.offsetWidth);
+    // A straight 1 - |d| leaves both slides at half strength across the middle
+    // of a swipe, which reads as a double exposure. This holds full strength
+    // for the first sixth of a card and is gone by two thirds, so the pair
+    // crossfades cleanly — and the organ, which has a narrower window than the
+    // text it travels with, has faded out before that window clips it.
+    const fade = x => {
+      const t = Math.min(1, Math.max(0, (0.62 - Math.abs(x)) / 0.44));
+      return t * t * (3 - 2 * t);
+    };
+    // The organ and its text travel together. uPan is in clip units, so a card
+    // width is 2 * cw / canvas width — a constant would only be right where the
+    // canvas happens to fill the card, and reads as parallax everywhere else
+    // (V2's wide card gives the organ barely half the width the text moves in).
+    const panK = 2 * cw / Math.max(1, canvas.clientWidth || cw);
     for (let k = 0; k < MB.length; k++){
       const d = k - bx;
       const vis = Math.abs(d) <= 1.2;
@@ -4535,12 +4562,12 @@
       else {
         el.style.display = '';
         el.style.transform = 'translateX(' + (d * cw).toFixed(1) + 'px)';
-        el.style.opacity = Math.max(0, 1 - Math.abs(d)).toFixed(3);
+        el.style.opacity = fade(d).toFixed(3);
       }
       if (!vis || k === 0) continue;          // the body slide has no organ
       const o = PILL[k - 1];
-      gl.uniform2f(U.uPan, d * 2.05, 0);
-      gl.uniform1f(U.uAlpha, Math.max(0, 1 - Math.abs(d)));
+      gl.uniform2f(U.uPan, d * panK, 0);
+      gl.uniform1f(U.uAlpha, fade(d));
       gl.uniform1f(U.uWarm,
         (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
         Math.min(1, Math.abs(o.delta) / 7));
@@ -5953,7 +5980,7 @@
         const w = document.createElement('div');
         w.className = 'hiStat';
         w.innerHTML = '<span' + (t[1] ? ' class="warn"' : '') + '>' + t[0] + '</span>';
-        sl.appendChild(w);
+        sl.insertBefore(w, sl.querySelector('.hiViz'));   // under the title
       });
     });
   })();
@@ -5965,7 +5992,7 @@
       const slides = [].slice.call(carEl.querySelectorAll('.hiSlide'));
       const dots = [].slice.call(carEl.querySelectorAll('.hiDots i'));
       if (slides.length < 2) return null;
-      const c = { el: carEl, slides, dots, x: 0, tx: 0, v: 0, dr: null };
+      const c = { el: carEl, slides, dots, x: 0, tx: 0, v: 0, dr: null, act: -1 };
       const setDots = i => dots.forEach((el, j) => el.classList.toggle('on', j === i));
       setDots(0);
       dots.forEach((el, i) => el.addEventListener('click', e => {
@@ -6031,8 +6058,17 @@
           if (Math.abs(d) > 1.2){ el.style.display = 'none'; return; }
           el.style.display = '';
           el.style.transform = 'translateX(' + (d * w).toFixed(1) + 'px)';
-          el.style.opacity = Math.max(0, 1 - Math.abs(d)).toFixed(3);
+          const t = Math.min(1, Math.max(0, (0.62 - Math.abs(d)) / 0.44));
+          el.style.opacity = (t * t * (3 - 2 * t)).toFixed(3);
         });
+        // the chart on the slide that lands grows in from its baseline; the
+        // class has to come off and go back on to restart the animation
+        const at = Math.round(c.x);
+        if (!reduced && Math.abs(c.x - at) < 0.02 && at !== c.act){
+          c.act = at;
+          const el = c.slides[at];
+          if (el){ el.classList.remove('grow'); void el.offsetWidth; el.classList.add('grow'); }
+        }
       });
     })();
   })();
