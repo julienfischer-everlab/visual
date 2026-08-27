@@ -47,6 +47,12 @@ The variant pages are not separate pages. Each wears another page's styles
 | Mobile (biomarkers) V3 | `m12 m5 v2 v3` | V2 + the `v3` marker on top |
 | Desktop (biomarker) V3 | `m13 m2 b2 b3` | the V2 dashboard + the `b3` marker |
 
+The dropdown groups off `MODES[].group` and orders within a group off an
+optional `sort`, because the product pages read best desktop-then-mobile, which
+is neither the order they were built in nor alphabetical. `hero2` — the
+two-card hero carousel — is currently set by no page; the mechanism is left in
+place because V2's hero has now been a carousel and a plain card once each.
+
 Predicates `isDash(v)` and `isBento(v)` exist so engine code treats a page and
 its variant identically. Markup is shared and toggled with `.hiOnly` /
 `.v2Only` / `.v3On` / `.v3Off` rather than duplicated, so the original and the
@@ -232,6 +238,13 @@ them, `margin-top:auto` on the legend, silently stopped applying: `#phone
 .legend` sets `margin-top:20px`, and the old selector out-specified it while
 the new one did not. The legend unpinned from the foot of the card on the two
 *untouched* mobile pages, which is exactly where nobody was looking.
+
+It happened a second time from the other direction: `#mBento .msn` was written
+to lighten the phone's header cards, and the id out-specified
+`body.light .msn`, carrying the dark card into the light theme under dark type.
+An id in a selector does not just make it *more* specific — it makes it win
+against the theme overrides written without one, so a rule with an id in it has
+to exclude the themes it does not mean, not leave them to override.
 
 Two lessons. Re-specifying a selector is a behaviour change, not a rename —
 check what else claims the same property. And the way to catch this class of

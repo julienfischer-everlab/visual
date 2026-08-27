@@ -285,7 +285,7 @@
     font-size:9px;line-height:13px;text-align:center;color:#8b8b86;
     vertical-align:6px;margin-left:6px;font-style:normal;font-weight:400;
   }
-  .dash .dcard{background:#161615;border:none;border-radius:16px;padding:20px;position:relative;}
+  .dash .dcard{background:#252522;border:none;border-radius:16px;padding:20px;position:relative;}
   /* the organ card carries the burgundy the canvas clears to, so the two
      halves read as one surface rather than a seam down the middle */
   .dash .dcard.organ{background:var(--bg);}
@@ -330,7 +330,7 @@
   body.light.b2 .dash .olist .or.on{color:#2e1f1a;}
   /* the organ sits on the same ground as its siblings here, not the warm
      organ ground — paintFrame clears the canvas to match */
-  body.b2 .dash .dcard.organ{background:#161615;}
+  body.b2 .dash .dcard.organ{background:#252522;}
   body.light.b2 .dash .dcard.organ{background:#fdfaf3;}
   /* the gauge stack shrinks with the card, so the organ still has room above it */
   body.b2 #arcA{transform:scale(.48);margin:-27px 0 -44px;}
@@ -907,6 +907,10 @@
 
   /* ---- Bento mobile: three hero cards, mini organ-age window ---- */
   #mBento{display:none;flex-direction:column;gap:12px;padding:0 13px;flex:none;}
+  /* The header cards sit one step off the page. Dark themes only — the id
+     here out-specifies `body.light .msn`, so the light theme has to be
+     excluded rather than left to override. */
+  body:not(.light) #mBento .msn{background:#252522;}
   body.m5 .pillui{display:none;}
   body.m5 #mBento{display:flex;}
   body.m5 canvas#field{position:absolute;z-index:1;}
@@ -915,6 +919,9 @@
      would otherwise win on specificity and unpin the legend from the foot */
   #mBento .mHeroCard .legend{margin-top:auto;}
   .mHeroTop{display:flex;justify-content:flex-start;align-items:flex-start;gap:40px;}
+  .mHeroCard .yrs{font-size:13px;font-weight:400;}
+  /* from V2 on the pair reads as two figures, so the age drops its unit */
+  body.v2 .mHeroCard .yrs{display:none;}
   /* The hero is a plain card on the original bento; from V2 on it is a
      two-card carousel — biomarkers, then organ age. The wrapper and its track
      fold away with display:contents, so on every other page the card lays out
@@ -925,7 +932,12 @@
   .v3On{display:none;}
   body.v3 .v3On{display:block;}
   body.v3 .v3Off{display:none;}
+  /* the original bento calls it organ age; from V2 on the page says
+     biological age throughout, so the card follows */
   .mbItem .lbl i{font-style:normal;}
+  .mbItem .lbl .ageL{display:none;}
+  body.v2 .mbItem .lbl .ageS{display:none;}
+  body.v2 .mbItem .lbl .ageL{display:inline;}
   body.hero2 .mHero{
     display:block;position:relative;
     touch-action:pan-y;user-select:none;-webkit-user-select:none;
@@ -951,10 +963,10 @@
   /* coverage has moved into the hero, so the row carries steps and organ age */
   body.v3 .mbrowV2 .hiCov{display:none;}
   body.v3 .mbrowV2 .morganMini{height:210px;}
-  /* the organ stands on the same card surface as steps, not the organ ground —
-     paintFrame clears the canvas to match */
-  body.v3 .mbrowV2 .morganMini{background:rgba(255,255,255,.04);}
-  body.light.v3 .mbrowV2 .morganMini{background:rgba(46,31,26,.055);}
+  /* from V2 on the organ stands on the same card surface as the rest of the
+     bento, not the warm organ ground — paintFrame clears the canvas to match */
+  body.v2 .msn.morganMini{background:#252522;}
+  body.light.v2 .msn.morganMini{background:rgba(46,31,26,.055);}
   /* both cards close the same way: a status tag, then the dots */
   /* the item spans the track so the tag can sit against the card's foot, on
      the same line as the steps card's — the track is inset 22px, so 14px here
@@ -980,8 +992,8 @@
   body.light .hiStat span{background:rgba(93,122,74,.14);color:#5d7a4a;}
   body.light .hiStat span.warn{background:rgba(166,101,58,.14);color:#a6653a;}
   body.v3 .hiSteps .hiViz{margin-bottom:52px;}
-  /* organ age is the hero's second card from V2 on, so its row is empty */
-  body.v2 .mbrow2{display:none;}
+  /* V3 stands organ age beside steps, so its own row is empty there */
+  body.v3 .mbrow2{display:none;}
   .mbrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   /* ---- V2 stat cards: a coverage dial and a week of steps ---- */
   .mchips .mOther{display:none;}
@@ -1135,7 +1147,43 @@
   /* V2: the signal runs the full width, organ age and coverage sit under it */
   body.v2 .mbrow2{grid-template-columns:1fr;}
   body.v2 .mbrow2 .msCar{display:none;}       /* the signal moves out of the row */
-  body.v2 .mbrow2 .morganMini{height:268px;}
+  /* wide and shallow: the name and its tag read down the left, the organ
+     stands in the right half, and the dots sit under the text rather than
+     under the middle of the card */
+  body.v2 .mbrow2 .morganMini{height:150px;}
+  body.v2 .mbrow2 #mbSlot{left:46%;}
+  body.v2 .mbrow2 .mbDots{justify-content:flex-start;padding-left:22px;}
+  .hiCard .lbl i{font-style:normal;}
+  .hiCard .lbl .cvL{display:none;}
+  body.v2 #phone .hiCov .lbl .cvS{display:none;}
+  body.v2 #phone .hiCov .lbl .cvL{display:inline;}
+  /* the tile leads with a figure, so the unit carries the same weight */
+  body.v2 #phone .hiCov .big .pc{font-size:inherit;font-weight:inherit;}
+  /* steps closes with its status, the way it does on V3 */
+  body.v2 #phone .hiSteps .hiStat{
+    display:block;position:absolute;left:0;right:0;bottom:36px;text-align:center;
+  }
+  body.v2 #phone .hiSteps .hiViz{margin-bottom:52px;}
+  /* Seven bars across a 171px tile stretch into blocks. Each becomes a stroke
+     centred in its slot — 9px, a third narrower than the slot-filling bar —
+     drawn on a child so it stays under its day letter. */
+  body.v2 #phone .hiSteps .stpBars i{background:none;position:relative;}
+  body.v2 #phone .hiSteps .stpBars i::before{
+    content:'';position:absolute;top:0;bottom:0;left:50%;margin-left:-4.5px;
+    width:9px;border-radius:3px;background:#f2e5e0;
+  }
+  body.light.v2 #phone .hiSteps .stpBars i::before{background:#2e1f1a;}
+  /* #phone .big wins on specificity, so the tile titles need the id too */
+  body.v2 #phone .hiCard .big,
+  body.v2 #phone .mbItem .big{font-size:20px;}
+  /* the status tags are rounded, not pills */
+  body.v2 #phone .hiStat span,
+  body.v2 #phone .mbBadge{border-radius:9px;}
+  /* both carousels on the row are the same control, so they read the same:
+     the organ card's dots take the mini card's sizing and baseline */
+  body.v2 #phone .mbDots{bottom:14px;gap:5px;}
+  body.v2 #phone .mbDots i{width:5px;height:5px;border-radius:3px;}
+  body.v2 #phone .mbDots i.on{width:16px;}
   #mBento .mbrow2 .big{font-size:17px;margin-top:2px;}
   .msCar{
     position:relative;overflow:hidden;padding:0;
@@ -2130,7 +2178,7 @@
       <div class="msn mHeroCard">
         <div class="mHeroTop">
           <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
-          <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:13px;font-weight:400">years old</span></div></div>
+          <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span class="yrs">years old</span></div></div>
           <div class="mHeroCov v3On">
             <div class="lbl">Health coverage</div>
             <div class="big">64<span class="pc">%</span></div>
@@ -2154,7 +2202,7 @@
       </div>
       <div class="hiDots mHeroDots" id="mHeroDots"><i class="on"></i><i></i></div>
       </div>
-      <div class="mbrowV2"><div class="msn hiCard hiCov"><div class="hiSlide"><div class="lbl">Coverage</div><div class="big">64<span class="pc">%</span></div><div class="hiViz covGauge"><svg class="covDial" viewBox="0 0 100 100" aria-hidden="true"><path class="tk" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="9" stroke-dasharray="1.4 3.3"/><path class="pg" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="114.6 999"/></svg><svg class="covWarn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.6 14.4 13.4H1.6L8 2.6ZM8 6.6v3M8 11.4v.1"/></svg></div></div><div class="hiSlide"><div class="lbl">Screening</div><div class="hiList"><div class="r"><span>Cancer screening</span><span class="hiTag">Due</span></div><div class="r"><span>Skin check</span><span class="hiTag">Due</span></div></div><div class="hiAct">Book now<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Survey</div><div class="hiLead">Complete your questionnaire</div><div class="hiAct">Start<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Report</div><div class="hiLead">Upload this report</div><div class="hiUp"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9.5V2.4M4.4 5 7 2.4 9.6 5M2.4 9v2.3a.9.9 0 0 0 .9.9h7.4a.9.9 0 0 0 .9-.9V9"/></svg><span>Choose file</span></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div><div class="msn hiCard hiSteps"><div class="hiSlide"><div class="lbl">Steps</div><div class="big">2,568</div><div class="hiViz"><div class="stpBars"><i style="height:38px"></i><i style="height:26px"></i><i style="height:16px;opacity:.34"></i><i style="height:35px"></i><i style="height:29px"></i><i style="height:42px"></i><i style="height:13px;opacity:.34"></i></div><div class="stpDays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div></div><div class="hiSlide"><div class="lbl">Heart rate</div><div class="big">72<span class="pc"> bpm</span></div><div class="hiViz"><svg class="hiLine" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true"><line class="gl" x1="0" y1="38" x2="120" y2="38" stroke-dasharray="3 3"/><path class="ln" d="M3 26 C13 24 19 29 29 27 C39 25 45 31 55 28 C65 25 71 22 81 21 C91 20 99 17 108 15 C112 14 115 14 117 13"/></svg><div class="hiXlb"><span>Resting</span><span>Your avg.</span></div></div></div><div class="hiSlide"><div class="lbl">Sleep score</div><div class="big">82</div><div class="hiViz"><svg class="hiLine" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true"><line class="gl" x1="0" y1="38" x2="120" y2="38" stroke-dasharray="3 3"/><path class="ln" d="M3 34 C13 33 19 30 29 31 C39 32 45 25 55 24 C65 23 71 19 81 20 C91 21 99 14 108 12 C112 11 115 11 117 10"/></svg><div class="hiXlb"><span>Last 7 nights</span><span>Good</span></div></div></div><div class="hiSlide"><div class="lbl">Time asleep</div><div class="big">6h 12m</div><div class="hiViz"><div class="stpBars"><i style="height:32px"></i><i style="height:39px"></i><i style="height:24px;opacity:.34"></i><i style="height:36px"></i><i style="height:28px"></i><i style="height:44px"></i><i style="height:30px"></i></div><div class="stpDays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div></div>
+      <div class="mbrowV2"><div class="msn hiCard hiCov"><div class="hiSlide"><div class="lbl"><i class="cvS">Coverage</i><i class="cvL">Health coverage</i></div><div class="big">64<span class="pc">%</span></div><div class="hiViz covGauge"><svg class="covDial" viewBox="0 0 100 100" aria-hidden="true"><path class="tk" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="9" stroke-dasharray="1.4 3.3"/><path class="pg" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="114.6 999"/></svg><svg class="covWarn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.6 14.4 13.4H1.6L8 2.6ZM8 6.6v3M8 11.4v.1"/></svg></div></div><div class="hiSlide"><div class="lbl">Screening</div><div class="hiList"><div class="r"><span>Cancer screening</span><span class="hiTag">Due</span></div><div class="r"><span>Skin check</span><span class="hiTag">Due</span></div></div><div class="hiAct">Book now<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Survey</div><div class="hiLead">Complete your questionnaire</div><div class="hiAct">Start<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Report</div><div class="hiLead">Upload this report</div><div class="hiUp"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9.5V2.4M4.4 5 7 2.4 9.6 5M2.4 9v2.3a.9.9 0 0 0 .9.9h7.4a.9.9 0 0 0 .9-.9V9"/></svg><span>Choose file</span></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div><div class="msn hiCard hiSteps"><div class="hiSlide"><div class="lbl">Steps</div><div class="big">2,568</div><div class="hiViz"><div class="stpBars"><i style="height:38px"></i><i style="height:26px"></i><i style="height:16px;opacity:.34"></i><i style="height:35px"></i><i style="height:29px"></i><i style="height:42px"></i><i style="height:13px;opacity:.34"></i></div><div class="stpDays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div></div><div class="hiSlide"><div class="lbl">Heart rate</div><div class="big">72<span class="pc"> bpm</span></div><div class="hiViz"><svg class="hiLine" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true"><line class="gl" x1="0" y1="38" x2="120" y2="38" stroke-dasharray="3 3"/><path class="ln" d="M3 26 C13 24 19 29 29 27 C39 25 45 31 55 28 C65 25 71 22 81 21 C91 20 99 17 108 15 C112 14 115 14 117 13"/></svg><div class="hiXlb"><span>Resting</span><span>Your avg.</span></div></div></div><div class="hiSlide"><div class="lbl">Sleep score</div><div class="big">82</div><div class="hiViz"><svg class="hiLine" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true"><line class="gl" x1="0" y1="38" x2="120" y2="38" stroke-dasharray="3 3"/><path class="ln" d="M3 34 C13 33 19 30 29 31 C39 32 45 25 55 24 C65 23 71 19 81 20 C91 21 99 14 108 12 C112 11 115 11 117 10"/></svg><div class="hiXlb"><span>Last 7 nights</span><span>Good</span></div></div></div><div class="hiSlide"><div class="lbl">Time asleep</div><div class="big">6h 12m</div><div class="hiViz"><div class="stpBars"><i style="height:32px"></i><i style="height:39px"></i><i style="height:24px;opacity:.34"></i><i style="height:36px"></i><i style="height:28px"></i><i style="height:44px"></i><i style="height:30px"></i></div><div class="stpDays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div></div>
       <div class="mbrow2">
         <div class="msn msCar" id="msCar">
           <div class="msSlide">
@@ -2589,18 +2637,18 @@
   const MODES = [
     { name: 'Card Nav', dur: 1800, ease: 1, pix: 1.35 , group: 'Concept' }, // card carousel, hard S-curve pace
     { name: 'Pill Nav', dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // pill chips, arc below the organ
-    { name: 'Desktop (biomarker)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ card inside the product dashboard
+    { name: 'Desktop (biomarker)', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 1 }, // organ card inside the product dashboard
     { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // rotating card carousel of organs
     { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // outlined 3-across organ grid
-    { name: 'Mobile (biomarkers)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // mobile bento with a mini organ card
-    { name: 'Mobile (overview)',   dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // the Overview frame on its own
+    { name: 'Mobile (biomarkers)', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 4 }, // mobile bento with a mini organ card
+    { name: 'Mobile (overview)',   dur: 850, ease: 0, pix: 1.35 , group: 'Overview page', sort: 2 }, // the Overview frame on its own
     { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 , group: 'Library' }, // the isolated-organ component library
     { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // organ age as a lab instrument
-    { name: 'Desktop (overview)', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' },
-    { name: 'Desktop (biomarker) V2', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // organ age split off its own card
-    { name: 'Mobile (biomarkers) V2', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // full-width signal, organ age beside coverage // the product shell the modal opens over
-    { name: 'Mobile (biomarkers) V3', dur: 850, ease: 0, pix: 1.35 , group: 'Pages' }, // coverage folded into the hero, steps full width
-    { name: 'Desktop (biomarker) V3', dur: 900, ease: 0, pix: 1.30 , group: 'Pages' }, // coverage in the hero, one mini card, the body list given room
+    { name: 'Desktop (overview)', dur: 850, ease: 0, pix: 1.35 , group: 'Overview page', sort: 1 },
+    { name: 'Desktop (biomarker) V2', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 2 }, // organ age split off its own card
+    { name: 'Mobile (biomarkers) V2', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 5 }, // hero pair, coverage beside steps, organ age wide beneath
+    { name: 'Mobile (biomarkers) V3', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 6 }, // coverage folded into the hero, organ age beside steps
+    { name: 'Desktop (biomarker) V3', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 3 }, // coverage in the hero, one mini card, the body list given room
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
@@ -4103,10 +4151,13 @@
   // ---------- tweak panel ----------
   document.body.classList.add('m0');
   const versionSel = document.getElementById('versionSel');
-  // grouped by what the mode is for, not by the order it was built in
-  const MODE_GROUPS = ['Concept', 'Pages', 'Library'];
+  // grouped by what the mode is for, not by the order it was built in, and
+  // within a group by `sort` — the product pages run desktop then mobile, which
+  // is neither the order they were built in nor alphabetical
+  const MODE_GROUPS = ['Concept', 'Biomarkers page', 'Overview page', 'Library'];
   MODE_GROUPS.forEach(g => {
     const inGroup = MODES.map((v, i) => [v, i]).filter(([v]) => v.group === g);
+    inGroup.sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0));
     if (!inGroup.length) return;
     const og = document.createElement('optgroup');
     og.label = g;
@@ -4125,21 +4176,18 @@
     DUR = reduced ? 300 : MODES[m].dur;
     document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') +
       (m === 13 ? ' m2 b2 b3' : '') +
-      (m === 11 ? ' m5 v2 hero2' : '') +
+      (m === 11 ? ' m5 v2' : '') +
       (m === 12 ? ' m5 v2 v3' : '') +
       (lightOn ? ' light' : '') + (blackOn ? ' black' : '');
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
     if (isBento(m)){
       document.getElementById('mbSlot').appendChild(canvas);
-      // V2 carries organ age as the hero's second card; V3 stands it beside
-      // steps; the original bento keeps it in its own row, ahead of coverage
+      // V3 stands organ age beside steps; every other bento keeps it in its
+      // own row, ahead of coverage
       const oc = document.getElementById('mOrgCard');
-      const ht = document.getElementById('mHeroTrack');
       const row2 = document.querySelector('#mBento .mbrow2');
-      const home = m === 11 ? ht
-                 : m === 12 ? document.querySelector('#mBento .mbrowV2')
-                 : row2;
+      const home = m === 12 ? document.querySelector('#mBento .mbrowV2') : row2;
       if (oc.parentElement !== home){
         if (home === row2) home.insertBefore(oc, home.querySelector('.mbCov'));
         else home.appendChild(oc);
@@ -4420,8 +4468,8 @@
     el.className = 'mbItem';
     const n = Math.abs(d.delta);
     const badge = d.delta === 0 ? 'On par' : n + (n > 1 ? ' years ' : ' year ') + (d.delta < 0 ? 'younger' : 'older');
-    el.innerHTML = '<span class="lbl"><i class="v3Off">Organ age</i>' +
-      '<i class="v3On">Biological age</i></span>' +
+    el.innerHTML = '<span class="lbl"><i class="ageS">Organ age</i>' +
+      '<i class="ageL">Biological age</i></span>' +
       '<span class="big">' + d.label + '</span>' +
       '<span class="mbBadge' + (d.delta > 0 ? ' warn' : '') + '">' + badge + '</span>';
     mbTrackEl.appendChild(el);
@@ -6446,10 +6494,9 @@
       // card's own background, composited where it is translucent.
       const cls = document.body.classList;
       const flat = cardMode ? (cls.contains('b2') ? 'dash' : '')
-                            : (isBento(version) && cls.contains('v3') ? 'bento' : '');
-      const dk = flat === 'dash'  ? [0.0860, 0.0860, 0.0820]   // #161615, the dashboard card
-               : flat === 'bento' ? [0.0889, 0.0889, 0.0852]   // .msn over the phone screen
-               :                    [0.1330, 0.0240, 0.0240];  // #220606, the organ ground
+                            : (isBento(version) && cls.contains('v2') ? 'bento' : '');
+      const dk = flat        ? [0.1451, 0.1451, 0.1333]   // #252522, the header card
+               :                 [0.1330, 0.0240, 0.0240];  // #220606, the organ ground
       const lt = flat === 'dash'  ? [0.9920, 0.9800, 0.9530]
                : flat === 'bento' ? [0.9253, 0.9035, 0.8691]
                : cardMode         ? [0.9530, 0.8860, 0.8470]
