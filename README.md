@@ -1,6 +1,6 @@
 # Particle Organs — Organ Age concept
 
-A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between nine organ silhouettes, explored through thirteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
+A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between nine organ silhouettes, explored through fourteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
 
 **Live:** https://particle-organs.vercel.app
 
@@ -46,7 +46,8 @@ Both desktop sidebars move between **Overview** and **Biomarkers**.
 
     Its organ card reads as product, not instrument: the list is sentence case in the page's own face with no dividers, led by a **Body** row carrying the whole-body age, and the selected organ is highlighted where it sits rather than hoisted to the top. The card also drops the warm organ ground for the same surface its siblings use — see below.
 11. **Mobile (biomarkers) V2** — the same bento re-laid out to the design: the hero is a two-card carousel — biomarkers and biological age, then organ age — with the next card's shoulder held in view so the swipe announces itself, and dots beneath the pair. The health-coverage card sits beside a week of steps below. Wears `m5` plus a `v2` marker.
-12. **Mobile (biomarkers) V3** — the bento folded down to two blocks. The hero is a two-card carousel: biomarkers and coverage on the first card, organ age on the second, swiped by finger and steered from the dots beneath. Coverage takes the place of biological age, its dial sitting under its own title. Steps then runs the full width with no card beside it. Wears `m5 v2` plus a `v3` marker.
+12. **Mobile (biomarkers) V3** — the bento folded down to two blocks. The hero is a plain card carrying biomarkers and health coverage as two figures, with the meter beneath doing the work the dial used to. Below it, steps and organ age stand side by side and close the same way: label, value, visual, a status tag, then the dots. Wears `m5 v2` plus a `v3` marker.
+13. **Desktop (biomarker) V3** — the V2 dashboard turned toward the body. The hero's second figure is health coverage rather than biological age, the coverage tile goes (it would say the same thing twice) and steps takes the whole left column, its week drawn as strokes rather than blocks. The width that frees up goes to the organ card, retitled *How your body is ageing*, where the selected row sits on a filled pill and the age reads as a tag under the number. Wears `m2 b2` plus a `b3` marker.
 
 ### The organ in situ
 
@@ -70,7 +71,7 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 **Library** — the component workbench
 
-13. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication, Supplements). Every tile reports its dot count and downloads as PNG, JPG or SVG.
+14. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication, Supplements). Every tile reports its dot count and downloads as PNG, JPG or SVG.
 
 ## Tweaks (top bar)
 
@@ -91,11 +92,12 @@ the immersive page and its surround, the library, and the organ-age modal in
 both dresses. The WebGL context clears to the same value (`0.133, 0.024, 0.024`)
 in every mode, so the canvas never leaves a seam against the surface behind it.
 
-**Desktop V2 is the one exception.** Its organ card sits on the same surface as
-its sibling cards, so the card reads as part of the dashboard rather than a
-window onto the concept. The rule that matters still holds — the canvas clears
-to whatever the card is — so `paintFrame` picks its clear colour from the page,
-not from a constant, and there is still no seam.
+**From V2 on, the organ stands on the card instead.** On desktop V2 and V3 and
+on mobile V3, the organ card takes the same surface as its sibling cards, so it
+reads as part of the page rather than a window onto the concept. The rule that
+matters still holds — the canvas clears to whatever the organ is standing on —
+so `paintFrame` picks its triple from the surface (dashboard card, phone card,
+or the organ ground) rather than from one constant, and there is still no seam.
 
 The mobile device backdrops and the desktop product shell keep their own near
 black — the phone frame and the dashboard chrome cover them entirely.

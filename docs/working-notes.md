@@ -32,7 +32,7 @@ Consequences worth knowing before editing:
 
 ## 2. Pages, and the composite-mode convention
 
-Thirteen pages in three dropdown groups: **Concept** (full-bleed explorations),
+Fourteen pages in three dropdown groups: **Concept** (full-bleed explorations),
 **Pages** (product surfaces), **Library** (the component workbench).
 
 The variant pages are not separate pages. Each wears another page's styles
@@ -45,11 +45,19 @@ The variant pages are not separate pages. Each wears another page's styles
 | Mobile (biomarkers) | `m5` | the original bento |
 | Mobile (biomarkers) V2 | `m11 m5 v2` | the bento + the `v2` marker |
 | Mobile (biomarkers) V3 | `m12 m5 v2 v3` | V2 + the `v3` marker on top |
+| Desktop (biomarker) V3 | `m13 m2 b2 b3` | the V2 dashboard + the `b3` marker |
 
 Predicates `isDash(v)` and `isBento(v)` exist so engine code treats a page and
 its variant identically. Markup is shared and toggled with `.hiOnly` /
 `.v2Only` / `.v3On` / `.v3Off` rather than duplicated, so the original and the
 variant cannot drift.
+
+A marker that names a *layout* rather than a page is worth splitting out.
+V3 mobile wears `v2` for everything it inherits, so when the two-card hero
+carousel was gated on `body.v2` it picked the carousel up with it. The carousel
+now has its own `hero2` class, set only by the page that wants it. The rule:
+if two pages share a marker and only one wants a behaviour, that behaviour
+needs its own name — not a `:not()`.
 
 The hero carousel shows how far this goes. The hero card is wrapped in a track
 and a dot strip that fold away with `display:contents` on the original bento,
