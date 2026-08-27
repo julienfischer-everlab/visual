@@ -45,7 +45,7 @@ renderer.
 6. **Desktop** — the Everlab dashboard with the organ-age card in situ; the card expands into the organ-age modal
 7. **Desktop V2** — the same dashboard, re-proportioned: the biomarker card carries the distribution range at its foot, the stat pair is swapped for the steps and health-coverage cards, and a records row, an Other chip and a search field sit under the grid. The hero sizes itself off its content, so nothing spills onto the rows below, and the organ card takes its height from the left column — landscape, not standing up. It wears `m2`'s styles plus a marker class, so there is one dashboard, not two — the class is still `b2` in code, since `v2` already marks the mobile page.
 
-    Its organ card reads as product, not instrument: the list is sentence case in the page's own face with no dividers, led by a **Body** row carrying the whole-body age, and the selected organ is highlighted where it sits rather than hoisted to the top. The card also drops the warm organ ground for the same surface its siblings use — see below.
+    Its organ card reads as product, not instrument: the list is sentence case in the page's own face with no dividers, led by a **Body** row carrying the whole-body age — a real selection like any other row, not a caption — and the selected organ is highlighted where it sits rather than hoisted to the top. The card also drops the warm organ ground for the same surface its siblings use — see below.
 8. **Desktop V1** — the V2 dashboard turned toward the body. The hero's second figure is health coverage rather than biological age, the coverage tile goes (it would say the same thing twice) and steps takes the whole left column, its week drawn as strokes rather than blocks. The width that frees up goes to the organ card, retitled *How your body is ageing*, where the selected row sits on a filled pill and the age reads as a tag under the number. Wears `m2 b2` plus a `b3` marker.
 9. **Mobile** — bento layout with the mini organ carousel, metrics carousel, the signal insight sheet, and the organ-age sheet
 10. **Mobile V2** — the same bento re-laid out to the design: biomarkers and biological age as a pair of figures at the top, health coverage beside a week of steps below, then organ age wide and shallow beneath them — its name and tag down the left, the organ standing in the right half. Wears `m5` plus a `v2` marker.
@@ -105,8 +105,18 @@ three-quarter comes from.
 
 Everything else it inherits: shell bias, depth from thickness, ambient strays,
 idle drift, the breathing pulse, and a flow preset of its own — circulation out
-from the heart. It is not part of the concept carousel; those nine cards are
-the organs, and the body is a product visual.
+from the heart.
+
+It is a selection, not a decoration. **Body** is the last entry in `PILL`, so
+wherever an organ can be picked in the product — the desktop organ card, the
+mini card on the phone, the immersive modal's channel dock, the organ library —
+Body is there, and picking it puts the silhouette on the hero the same way an
+organ goes there. It is deliberately *not* in the concept carousel: those nine
+cards are the organs. `CARDS` therefore stops at nine, and the two places that
+read it by the live organ index go through `cardFor()`, which falls back to the
+Body row rather than off the end of the array when a body selection survives a
+mode switch. The nine-cell overview grid stays nine for the same reason its
+layout is 3×3.
 
 ### The organ mini card
 
@@ -116,9 +126,10 @@ and on the dashboard.
 
 The measure is the card's, not the slide's: **Biological age** is pinned and
 only the name, the organ and its tag travel with the swipe. The carousel leads
-with the body's own age — *Body, 6 years younger* — and then walks the organs,
-so its index runs one ahead of `PILL`: slide 0 is the body, slide *i+1* is
-`PILL[i]`. There is no whole-body silhouette, so slide 0 carries no organ.
+with the body's own age — *Body, 6 years younger* — and then walks the organs.
+`PILL` keeps Body last so the nine organs hold the indices everything else is
+written against; the reading order is a lookup, `MB_ORDER`, and the carousel
+walks `MB`. Slide 0 is the body, and it carries the body silhouette.
 
 ### The two mini cards
 

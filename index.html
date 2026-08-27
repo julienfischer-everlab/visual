@@ -3801,8 +3801,10 @@
     morphStart = performance.now();
     buttons.forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
     noteSwap();
+    // Body has no concept card — it is only reachable from the dashboards,
+    // so there is nothing to glide the concept carousel to.
     const b = buttons[i];
-    glideCarousel(b.offsetLeft + b.offsetWidth / 2 - carousel.clientWidth / 2);
+    if (b) glideCarousel(b.offsetLeft + b.offsetWidth / 2 - carousel.clientWidth / 2);
   }
 
   // rAF-driven glide on the same S-curve as the state change
@@ -4097,7 +4099,14 @@
     { label: 'Gut',           organIdx: 6, delta: -5, bio: 15 },
     { label: 'Metabolic',     organIdx: 7, delta:  4, bio: 13, bioOut: 3 },
     { label: 'Kidney',        organIdx: 8, delta: -1, bio: 10, bioOut: 1 },
+    // the body itself, last so the nine organs keep the indices everything
+    // else is written against; the surfaces that lead with it say so by order
+    { label: 'Body',          organIdx: 9, delta: -6, bio: 124 },
   ];
+  // The concept pages carry one card per organ but none for the body, which is
+  // a dashboard-only selection. When it survives a mode switch, read its
+  // dashboard row rather than running off the end of CARDS.
+  const cardFor = i => CARDS[i] || PILL[PILL.length - 1];
   let pillCurrent = 0;
   let arcFrom = PILL[0].delta, arcTo = PILL[0].delta, arcNow = PILL[0].delta;
   let arcStart = -1e9, statusT = 0, ageT = 0, mNameT = 0, mbT = 0;
@@ -4239,6 +4248,7 @@
     { side: 'r', ax:  0.92, ay: -0.38 }, // gut
     { side: 'r', ax:  0.62, ay: -0.55 }, // liver
     { side: 'l', ax: -0.62, ay: -0.58 }, // kidneys
+    { side: 'r', ax:  0.44, ay: -0.66 }, // body
   ];
   const noteTypeTxt = document.getElementById('noteTypeTxt');
   const noteCursor = document.getElementById('noteCursor');
@@ -4280,7 +4290,7 @@
   function revealNote(){
     if (!W || !H){ noteT1 = setTimeout(revealNote, 500); return; } // wait for a real viewport
     const conf = NOTE_POS[current];
-    const n = version === 0 ? CARDS[current].bio : PILL[pillCurrent].bio;
+    const n = version === 0 ? cardFor(current).bio : PILL[pillCurrent].bio;
     const phrase = n + ' biomarkers tested';
     const R = 0.265 * effDim;
     const bottomUI = version === 0 ? carousel : pillui;
@@ -4311,7 +4321,7 @@
       noteTxt.style.right = '68px';
     }
     // optional second line: outdated biomarker count in orange
-    const outN = version === 0 ? CARDS[current].bioOut : PILL[pillCurrent].bioOut;
+    const outN = version === 0 ? cardFor(current).bioOut : PILL[pillCurrent].bioOut;
     const outStr = outN ? outN + ' outdated' : '';
     noteTxt2.style.opacity = 1; // container stays visible; text types in later
     if (outStr){
@@ -4407,22 +4417,14 @@
   // because that is the opening selection, so only Heart moves. The order is
   // set inline because it only takes effect where the list is a flex column —
   // the original dashboard's block list ignores it and keeps PILL's order.
-  const OLIST_ORDER = [4, 1, 2, 3, 5, 6, 7, 8, 9];
-  // the body's own age leads the list: a summary row, not a tenth organ —
-  // there is no whole-body silhouette to select
-  const bodyRow = document.createElement('div');
-  bodyRow.className = 'or sum';
-  bodyRow.innerHTML = '<span class="dot" style="background:#5cc47f"></span>' +
-    '<span class="nm">Body</span><span class="ag">' + CHRONO + '</span>';
-  bodyRow.style.order = 0;
-  olistEl.appendChild(bodyRow);
-
+  const OLIST_ORDER = [5, 2, 3, 4, 6, 7, 8, 9, 10, 1];
   const olistRows = PILL.map((d, i) => {
     const r = document.createElement('div');
     r.className = 'or' + (i === 0 ? ' on' : '');
     const dotCol = d.delta < 0 ? '#5cc47f' : d.delta > 0 ? '#d9895b' : '#b59a93';
     r.innerHTML = '<span class="dot" style="background:' + dotCol + '"></span>' +
-      '<span class="nm">' + d.label + ' health</span>' +
+      // "Body" is the whole person, not an area of health, so it keeps its bare label
+      '<span class="nm">' + d.label + (d.label === 'Body' ? '' : ' health') + '</span>' +
       '<span class="ag">' + (CHRONO + d.delta) + '</span>';
     r.style.order = OLIST_ORDER[i];
     r.addEventListener('click', () => { lastManual = performance.now(); selectPill(i); });
@@ -4434,11 +4436,11 @@
     const bPrev = pillCurrent;
     pillCurrent = i;
     // bento mini card: carousel-style slide direction + title crossfade
-    if (isBento(version)) bxT = i + 1; // the mini carousel glides to the selection
+    if (isBento(version)) bxT = MB_ORDER.indexOf(i); // the mini carousel glides to the selection
     pillBtns.forEach((p, j) => p.setAttribute('aria-pressed', String(j === i)));
     olistRows.forEach((r, j) => r.classList.toggle('on', j === i));
     situOrgan.textContent = PILL[i].label;
-    mbDots.forEach((s2, j) => s2.classList.toggle('on', j === i + 1));
+    mbDots.forEach((s2, j) => s2.classList.toggle('on', j === MB_ORDER.indexOf(i)));
     const d = PILL[i];
     const dir = Math.sign(d.delta - arcTo) || 0;
     // the indicator travels from wherever it is now — never resets to zero
@@ -4505,7 +4507,7 @@
         else home.appendChild(oc);
       }
       heroGo(0, true);
-      bx = bxT = pillCurrent + 1; // carousel enters on the active organ
+      bx = bxT = MB_ORDER.indexOf(pillCurrent); // carousel enters on the active organ
     } else if (isDash(m)){
       // in situ: canvas, gauge stack and title all become children of the card
       const slot = document.getElementById('organSlot');
@@ -4755,7 +4757,8 @@
 
   // ---------- outlined organ grid ----------
   const gridWrap = document.getElementById('grid');
-  const gridCells = PILL.map((d, i) => {
+  const GRID_N = 9;                     // the plate is 3x3; the body sits out
+  const gridCells = PILL.slice(0, GRID_N).map((d, i) => {
     const el = document.createElement('div');
     el.className = 'gCell';
     const n = Math.abs(d.delta);
@@ -4771,8 +4774,10 @@
   // The mini carousel leads with the body's own age and then walks the organs,
   // so its index runs one ahead of PILL: slide 0 is the body, slide i+1 is
   // PILL[i]. There is no whole-body silhouette, so slide 0 carries no organ.
-  const MB = [{ label: 'Body', delta: -6, body: true,
-                organIdx: ORGANS.findIndex(o => o.label === 'Body') }].concat(PILL);
+  // the mini carousel leads with the body and then walks the organs; slide k
+  // shows PILL[MB_ORDER[k]], so nothing has to reason about an offset
+  const MB_ORDER = [PILL.length - 1].concat(PILL.map((d, i) => i).slice(0, -1));
+  const MB = MB_ORDER.map(i => PILL[i]);
   // bento mini organ card: tiny dots, internal swipe, tap opens the full view
   const mbDotsEl = document.getElementById('mbDots');
   const mbDots = MB.map((d, i) => {
@@ -4780,15 +4785,11 @@
     el.addEventListener('click', e => {
       e.stopPropagation();
       lastManual = performance.now();
-      if (i === 0) mbBody(); else selectPill(i - 1);
+      selectPill(MB_ORDER[i]);
     });
     mbDotsEl.appendChild(el);
     return el;
   });
-  function mbBody(){
-    bxT = 0;
-    mbDots.forEach((el, j) => el.classList.toggle('on', j === 0));
-  }
   const mOrgCard = document.getElementById('mOrgCard');
   // each organ is a complete slide: title + age + visual travel together
   const mbTrackEl = document.getElementById('mbTrack');
@@ -4986,8 +4987,7 @@
     else if (Math.abs(bxV) > 0.0016 && Math.abs(delta) > 0.08)
       target = d.s0 + (bxV > 0 ? 1 : -1);     // intentional flick advances
     target = Math.max(0, Math.min(MB.length - 1, target));
-    if (target === 0) mbBody();                      // the body's own age
-    else if (target - 1 !== pillCurrent) selectPill(target - 1); // dots + title follow
+    if (MB_ORDER[target] !== pillCurrent) selectPill(MB_ORDER[target]); // dots + title follow
     else bxT = target;
   });
   // ---------- organ-age bottom sheets: one independent instance per frame,
@@ -5565,13 +5565,15 @@
     'Muscle + bone': 'Creatine kinase, vitamin D and mineral balance — the markers behind musculoskeletal strength and repair.',
     'Gut': 'Digestive and absorptive function: liver enzymes, iron studies and the markers that reveal how well food is used.',
     'Metabolic': 'Glucose handling and insulin sensitivity, with the lipid fractions that move first when metabolism drifts.',
-    'Kidney': 'Filtration rate, creatinine and electrolyte balance, describing how efficiently the blood is being cleared.'
+    'Kidney': 'Filtration rate, creatinine and electrolyte balance, describing how efficiently the blood is being cleared.',
+    'Body': 'Every panel read as one system — the whole biomarker set rolled up into a single age for the body you are living in.'
   };
   // annotation anchors in organ-local space, art-directed per organ
   const IM_ANCHOR = {
     'Heart': [0.42, 0.34], 'Mental': [0.46, 0.30], 'Brain + nerve': [0.52, 0.36],
     'Lung': [0.44, 0.32], 'Immune': [0.50, 0.28], 'Muscle + bone': [0.30, 0.36],
-    'Gut': [0.46, 0.24], 'Metabolic': [0.48, 0.26], 'Kidney': [0.46, 0.30]
+    'Gut': [0.46, 0.24], 'Metabolic': [0.48, 0.26], 'Kidney': [0.46, 0.30],
+    'Body': [0.34, 0.40]
   };
   // the hero renders far larger than a library tile, so it needs the dots to match
   function imTarget(cl){ return Math.min(8600, Math.round(dotTarget(cl) * 3.06)); }
@@ -6595,7 +6597,7 @@
     gl.uniformMatrix3fv(U.uRot, false, [1, 0, 0, 0, 1, 0, 0, 0, 1]);
     gl.uniform1f(U.uScale, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    for (let i = 0; i < PILL.length; i++){
+    for (let i = 0; i < GRID_N; i++){
       const r = gridCells[i].getBoundingClientRect();
       const org = ORGANS[PILL[i].organIdx];
       const cx = r.left + r.width / 2 - W / 2;
@@ -6730,7 +6732,6 @@
       olistRows.forEach((r, i) => {
         r.querySelector('.ag').textContent = CHRONO + PILL[i].delta;
       });
-      bodyRow.querySelector('.ag').textContent = CHRONO;
       spCards.forEach((c, i) => {
         const n = c.querySelector('.spBot .num');
         if (n) n.textContent = CHRONO + PILL[i].delta;
@@ -6805,7 +6806,7 @@
     rot[6] = cx_ * sy_;  rot[7] = -sx_; rot[8] = cx_ * cy_;
 
     // signed age halo: older organs glow orange, younger ones green
-    const warmDelta = version === 0 ? CARDS[current].delta : PILL[pillCurrent].delta;
+    const warmDelta = version === 0 ? cardFor(current).delta : PILL[pillCurrent].delta;
     const warmTarget = Math.max(-1, Math.min(1, warmDelta / 6));
     warmNow += (warmTarget - warmNow) * 0.025;
     gl.uniform1f(U.uWarm, warmNow);

@@ -254,14 +254,38 @@ and replay `view._lastT`, the last painted frame.
 had laid down — every export came out transparent. `clearRect` belongs to the
 frame loop, not the renderer.
 
-### 5.9 The bento carousel's index runs one ahead of `PILL`
+### 5.9 The bento carousel reads `PILL` through an order table, not an offset
 
-The mini organ card leads with the body's own age, so its slide 0 is the body
-and slide *i+1* is `PILL[i]`. Everything that crosses that boundary has to
-convert: `selectPill(i)` sets `bxT = i + 1`, the dots light `i + 1`, the settle
-calls `selectPill(target - 1)` and the frame loop draws `PILL[k - 1]`, skipping
-`k === 0` because there is no whole-body silhouette. If a new control moves the
-carousel, it is in MB units; if it selects an organ, it is in PILL units.
+The mini organ card leads with the body's own age. That used to be an arithmetic
+offset — slide *i+1* was `PILL[i]`, and every control that crossed the boundary
+added or subtracted one. Once the body became a real `PILL` entry the offset had
+nothing left to encode, so it is now a lookup: `MB_ORDER` is the reading order
+(body first, then the nine organs in `PILL` order) and `MB` is `PILL` walked
+through it. Controls convert with `MB_ORDER.indexOf(pillIndex)` one way and
+`MB_ORDER[slide]` the other. The rule is unchanged in spirit and worth keeping
+in mind for any new control: **if it moves the carousel it is in MB units; if it
+selects an organ it is in PILL units.** The gain is that a reorder is now a data
+edit rather than an audit of every ±1.
+
+`PILL` gains entries at the *end* for the same reason: the nine organs are
+indexed by everything else in the file, and `MB_ORDER` carries the presentation
+order so the data order never has to move.
+
+### 5.10 Adding a tenth selection found the arrays that were still nine
+
+`CARDS` (the concept carousel), `NOTE_POS` (the annotation anchors), `IM_DESC`
+and `IM_ANCHOR` are all keyed by organ, and all four stopped at nine. Selecting
+the body threw from three of them and rendered an empty description from the
+fourth — but only after a mode switch carried the selection onto a page that
+reads them, which is why the first sweep looked clean.
+
+The split matters: `NOTE_POS`, `IM_DESC` and `IM_ANCHOR` describe *an organ*, so
+they gained a body entry. `CARDS` describes *a concept card*, and the body
+deliberately has none, so it stays at nine and its two live-index readers go
+through `cardFor(i)`, which falls back to the body's `PILL` row. Same for
+`setOrgan`'s carousel tail, which now no-ops when `buttons[i]` is absent. The
+general shape: when a selection set grows, the arrays parallel to it split into
+the ones that must grow and the ones that must learn to be shorter.
 
 ### 5.8 Rewriting a selector changed which rule won
 
