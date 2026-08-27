@@ -990,6 +990,32 @@
   /* coverage has moved into the hero, so the row carries steps and organ age */
   body.v3 .mbrowV2 .hiCov{display:none;}
   body.v3 .mbrowV2 .morganMini{height:234px;}
+  /* The organ card can take a colour of its own again, on every biomarker
+     page and in every theme. It is the same #280707 light or dark, because it
+     is the organ's ground rather than the page's surface. */
+  body.organTint .dash .dcard.organ,
+  body.light.organTint .dash .dcard.organ,
+  body.organTint #phone #mBento .msn.morganMini,
+  body.light.organTint #phone #mBento .msn.morganMini{background:#280707;}
+  /* the card's own type stays legible on it, whatever the theme */
+  body.light.organTint #phone #mBento .morganMini .lbl,
+  body.light.organTint #phone #mBento .morganMini .mbHead .lbl{color:rgba(242,229,224,.6);}
+  body.light.organTint #phone #mBento .morganMini .big{color:#f2e5e0;}
+  body.light.organTint #phone #mBento .morganMini .mbDots i{background:rgba(242,229,224,.3);}
+  body.light.organTint #phone #mBento .morganMini .mbDots i.on{background:#f2e5e0;}
+  body.light.organTint .dash .olist .or{color:rgba(242,229,224,.42);}
+  body.light.organTint .dash .olist .or.on,
+  body.light.organTint .dash .olist .or:hover{color:#f2e5e0;background:rgba(242,229,224,.07);}
+  body.light.organTint #situTitle .slbl{color:rgba(242,229,224,.6);}
+  body.light.organTint #ageBig .dcol{color:#f2e5e0;}
+  body.light.organTint #arcA text{fill:rgba(242,229,224,.5);}
+  body.light.organTint .dcExpand{background:rgba(242,229,224,.09);color:rgba(242,229,224,.75);}
+  /* the statuses on a tinted card take their dark-theme readings */
+  body.light.organTint #phone #mBento .morganMini .mbBadge{color:#7fd39a;}
+  body.light.organTint #phone #mBento .morganMini .mbBadge.warn{color:#ffe29f;}
+  body.light.organTint #status .word{background:rgba(92,196,127,.18);color:#7fd39a;}
+  body.light.organTint #status.warn .word{background:rgba(242,199,68,.16);color:#ffe29f;}
+
   /* from V2 on the organ stands on the same card surface as the rest of the
      bento, not the warm organ ground — paintFrame clears the canvas to match */
   body.v2 .msn.morganMini{background:#252522;}
@@ -1000,7 +1026,7 @@
      puts both tags 36px off the bottom */
   /* the organ stops short of the tag rather than running behind it — resize()
      takes the canvas box from this slot, so insetting it is enough */
-  body.v3 .mbrowV2 #mbSlot{inset:34px 0 6px;}
+  body.v3 .mbrowV2 #mbSlot{inset:26px 0 14px;}
   body.v3 .mbrowV2 .morganMini .mbItem{bottom:0;}
   body.v3 .mbrowV2 .morganMini .big{font-size:22px;}
   body.v3 .mbrowV2 .morganMini .mbBadge{align-self:flex-start;}
@@ -2061,6 +2087,11 @@
       <option value="colour">Colour mode</option>
       <option value="dark">Dark mode</option>
       <option value="light">Light mode</option>
+    </select>
+    <span class="lbl">Organ card</span>
+    <select id="tintSel" aria-label="Organ card">
+      <option value="flat">On the card</option>
+      <option value="tint">Coloured</option>
     </select>
   </div>
 </div>
@@ -4232,7 +4263,8 @@
       (m === 13 ? ' m2 b2 b3' : '') +
       (m === 11 ? ' m5 v2' : '') +
       (m === 12 ? ' m5 v2 v3' : '') +
-      (lightOn ? ' light' : '') + (blackOn ? ' black' : '');
+      (lightOn ? ' light' : '') + (blackOn ? ' black' : '') +
+      (organTint ? ' organTint' : '');
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
     if (isBento(m)){
@@ -6370,6 +6402,8 @@
   let flowVis = 0;
   // colour (the burgundy the concept is designed in), dark, or light
   let lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
+  // the organ card can take a colour of its own again, the same in every theme
+  let organTint = false;
   const themeSel = document.getElementById('themeSel');
   themeSel.addEventListener('change', () => {
     const v = themeSel.value;
@@ -6381,6 +6415,15 @@
     clearTimeout(themingT);
     themingT = setTimeout(() => document.body.classList.remove('theming'), 700);
   });
+  const tintSel = document.getElementById('tintSel');
+  tintSel.addEventListener('change', () => {
+    organTint = tintSel.value === 'tint';
+    document.body.classList.toggle('organTint', organTint);
+    document.body.classList.add('theming');
+    clearTimeout(themingT);
+    themingT = setTimeout(() => document.body.classList.remove('theming'), 700);
+  });
+
   const tickBase = () => lightOn ? '#8a6a5c' : '#c49b93';
   // Chronological age is the reference every other number on the page is quoted
   // against, so changing it redraws the scale and re-renders everything derived
@@ -6574,7 +6617,11 @@
     }
     lightNow += ((lightOn ? 1 : 0) - lightNow) * 0.16;
     blackNow += ((blackOn ? 1 : 0) - blackNow) * 0.16;
-    gl.uniform1f(U.uLight, lightNow);
+    // A tinted card is dark whatever the theme, so the organ keeps its dark ink
+    // there — the light theme's near-black ink would vanish into it.
+    const cardTint = document.body.classList.contains('organTint') &&
+                     (isDash(version) || isBento(version));
+    gl.uniform1f(U.uLight, cardTint ? 0 : lightNow);
     if (version !== 4){
       const cardMode = isDash(version);
       // From V2 on, the organ stands on the same surface as its sibling cards
@@ -6584,9 +6631,14 @@
       const cls = document.body.classList;
       const flat = cardMode ? (cls.contains('b2') ? 'dash' : '')
                             : (isBento(version) && cls.contains('v2') ? 'bento' : '');
-      const dk = flat        ? [0.1451, 0.1451, 0.1333]   // #252522, the header card
-               :                 [0.1330, 0.0240, 0.0240];  // #220606, the organ ground
-      const lt = flat === 'dash'  ? [0.9920, 0.9800, 0.9530]
+      // the tint is the organ's own ground, so it overrides both the card
+      // surface and the theme — the canvas clears to exactly the card
+      const tint = flat && cls.contains('organTint');
+      const dk = tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
+               : flat ? [0.1451, 0.1451, 0.1333]           // #252522, the header card
+               :        [0.1330, 0.0240, 0.0240];          // #220606, the organ ground
+      const lt = tint             ? [0.1569, 0.0275, 0.0275]
+               : flat === 'dash'  ? [0.9920, 0.9800, 0.9530]
                : flat === 'bento' ? [0.9570, 0.9370, 0.9290]   // #f4efed, the light card
                : cardMode         ? [0.9530, 0.8860, 0.8470]
                :                    [0.9570, 0.9370, 0.9290];

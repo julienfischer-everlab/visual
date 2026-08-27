@@ -100,6 +100,11 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   the arc scale is redrawn around the new centre, and the organ list, spatial and
   grid cards, the immersive panel and every organ-age modal re-render.
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
+- **Organ card** — whether the organ stands on the page's own card surface or
+  takes a colour of its own, `#280707`. The tint is the organ's ground rather
+  than the page's surface, so it is the same in every theme, and the organ
+  keeps its dark ink on it — the light theme's near-black would vanish into it.
+  It applies to every biomarker page, desktop and mobile.
 
 Density, particle size, flow and voxels are no longer exposed: they stay where
 the design landed.
