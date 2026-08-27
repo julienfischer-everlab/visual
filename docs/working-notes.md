@@ -44,8 +44,15 @@ The variant pages are not separate pages. Each wears another page's styles
 | Biomarkers · Desktop V2 | `m10 m2 b2` | the dashboard + the `b2` marker |
 | Biomarkers · Mobile | `m5` | the original bento |
 | Biomarkers · Mobile V2 | `m11 m5 v2` | the bento + the `v2` marker |
-| Biomarkers · Mobile V3 | `m12 m5 v2 v3` | V2 + the `v3` marker on top |
-| Biomarkers · Desktop V3 | `m13 m2 b2 b3` | the V2 dashboard + the `b3` marker |
+| Biomarkers · Mobile V1 | `m12 m5 v2 v3` | V2 + the `v3` marker on top |
+| Biomarkers · Desktop V1 | `m13 m2 b2 b3` | the V2 dashboard + the `b3` marker |
+
+A page's **label** and its **marker class** are different things and drift
+apart on purpose. The pages built as V3 are labelled V1, because that is what
+the design is called now; their classes stay `v3` and `b3`. Renaming a marker
+would touch every rule written against it for no user-visible gain, and
+renumbering a mode would rewire the renderer outright. Read the table above,
+not the dropdown, to know which page a rule applies to.
 
 A page's dropdown label says only its platform and version — the group above it
 already names the page — so two entries read `Desktop` and two read `Mobile`.
