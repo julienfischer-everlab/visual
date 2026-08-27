@@ -365,8 +365,19 @@
      than stretching to fill a card that is now much taller */
   body.b3 .dash .olist{top:60px;bottom:auto;}
   body.b3 .dash .olist .or{flex:none;padding:9px 12px;border-radius:10px;}
-  body.b3 .dash .olist .or.on{background:rgba(242,229,224,.07);}
-  body.light.b3 .dash .olist .or.on{background:rgba(46,31,26,.06);}
+  /* hover is the selected state, exactly — the row shows what picking it does,
+     and nothing shifts weight, so the list never reflows under the pointer */
+  body.b3 .dash .olist .or.on,
+  body.b3 .dash .olist .or:hover{background:rgba(242,229,224,.07);color:#f2e5e0;}
+  body.light.b3 .dash .olist .or.on,
+  body.light.b3 .dash .olist .or:hover{background:rgba(46,31,26,.06);color:#2e1f1a;}
+  body.b3 .dash .olist .or.on,
+  body.b3 .dash .olist .or:hover{font-weight:inherit;}
+  /* the ages are a column of figures, so they are set in the mono face */
+  body.b3 .dash .olist .or .ag{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:13px;
+  }
   /* the age reads as a tag here, the way every other status on the page does */
   body.b3 #status{margin-top:2px;min-height:22px;}
   body.b3 #status .word{
@@ -903,7 +914,7 @@
   .gCell .diff{font-size:10.5px;font-weight:500;}
 
   /* ---- Bento mobile: three hero cards, mini organ-age window ---- */
-  #mBento{display:none;flex-direction:column;gap:12px;padding:0 13px;flex:none;}
+  #mBento{display:none;flex-direction:column;gap:8px;padding:0 13px;flex:none;}
   /* The header cards sit one step off the page. Dark themes only — the id
      here out-specifies `body.light .msn`, so the light theme has to be
      excluded rather than left to override. */
@@ -989,7 +1000,7 @@
      puts both tags 36px off the bottom */
   /* the organ stops short of the tag rather than running behind it — resize()
      takes the canvas box from this slot, so insetting it is enough */
-  body.v3 .mbrowV2 #mbSlot{inset:14px 0 26px;}
+  body.v3 .mbrowV2 #mbSlot{inset:34px 0 6px;}
   body.v3 .mbrowV2 .morganMini .mbItem{bottom:0;}
   body.v3 .mbrowV2 .morganMini .big{font-size:22px;}
   body.v3 .mbrowV2 .morganMini .mbBadge{align-self:flex-start;}
@@ -998,16 +1009,16 @@
   .hiStat{display:none;}
   body.v3 .hiSteps .hiStat{display:block;margin-top:2px;}
   .hiStat span{display:inline-block;font-size:13px;font-weight:500;color:#7fd39a;}
-  .hiStat span.warn{color:#f2c744;}
+  .hiStat span.warn{color:#ffe29f;}
   body.light .hiStat span{color:#237a46;}
-  body.light .hiStat span.warn{color:#8a6512;}
+  body.light .hiStat span.warn{color:#806629;}
   /* V3 stands organ age beside steps, so its own row is empty there */
   body.v3 .mbrow2{display:none;}
-  .mbrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .mbrow2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   /* ---- V2 stat cards: a coverage dial and a week of steps ---- */
   .mchips .mOther{display:none;}
   body.v2 .mchips .mOther{display:flex;}
-  .mbrowV2{display:none;grid-template-columns:1fr 1fr;gap:12px;}
+  .mbrowV2{display:none;grid-template-columns:1fr 1fr;gap:8px;}
   body.v2 .mbrowV2{display:grid;}
   /* both mini cards are carousels off one skeleton — label, value, a
      fixed-height visual, dots on the card's bottom edge — so the pair lines up */
@@ -1213,9 +1224,9 @@
     background:none;padding:0;margin-top:2px;font-size:13px;font-weight:500;
     color:#7fd39a;
   }
-  body.v2 #phone .mbBadge.warn{background:none;color:#f2c744;}
+  body.v2 #phone .mbBadge.warn{background:none;color:#ffe29f;}
   body.light.v2 #phone .mbBadge{color:#237a46;}
-  body.light.v2 #phone .mbBadge.warn{color:#8a6512;}
+  body.light.v2 #phone .mbBadge.warn{color:#806629;}
   /* both carousels on the row are the same control, so they read the same:
      the organ card's dots take the mini card's sizing and baseline */
   body.v2 #phone .mbDots{bottom:14px;gap:5px;}
@@ -4548,11 +4559,15 @@
       const t = Math.min(1, Math.max(0, (0.62 - Math.abs(x)) / 0.44));
       return t * t * (3 - 2 * t);
     };
-    // The organ and its text travel together. uPan is in clip units, so a card
-    // width is 2 * cw / canvas width — a constant would only be right where the
-    // canvas happens to fill the card, and reads as parallax everywhere else
-    // (V2's wide card gives the organ barely half the width the text moves in).
-    const panK = 2 * cw / Math.max(1, canvas.clientWidth || cw);
+    // The organ travels with its text where its window is about as wide as the
+    // card: uPan is in clip units, so a card width is 2 * cw / canvas width. A
+    // constant would only be right where the canvas fills the card and reads as
+    // parallax everywhere else. Where the window is much narrower — V2's wide
+    // card gives the organ half the width the text moves in — a locked pan
+    // would slide it into the window's edge and cut it long before the
+    // crossfade could hide it, so there it holds still and only fades.
+    const canW = Math.max(1, canvas.clientWidth || cw);
+    const panK = canW / cw > 0.8 ? 2 * cw / canW : 0;
     for (let k = 0; k < MB.length; k++){
       const d = k - bx;
       const vis = Math.abs(d) <= 1.2;
