@@ -2177,26 +2177,48 @@
      so it is one element per organ, same as the names. */
   .v4Ages{display:none;}
   /* A wash of the organ's own verdict across the top of the header: green when
-     it is younger, orange-red when older, and it changes as the swipe carries
-     one organ into the next. It sits *over* the organ rather than behind it —
-     the canvas clears opaque, so anything underneath would simply not be there
-     — but under the gauge and the strips, and it is faint enough to read as
-     light rather than as a shape. */
+     it is younger, orange when older, and it changes as the swipe carries one
+     organ into the next. Both hues are held at low saturation — this is light
+     on a surface, not a colour applied to it. It sits *over* the organ rather
+     than behind it — the canvas clears opaque, so anything underneath would
+     simply not be there — but under the gauge and the strips.
+
+     The falloff is the whole trick. Three stops ramping linearly to zero leave
+     a Mach band exactly where the ramp stops: the eye reads the break in the
+     *slope*, not in the value, so a gradient that reaches zero at its boundary
+     still draws a visible arc there. So the stops below approximate a gaussian
+     — each interval roughly halves the one before it — and the last third of
+     the radius is already so close to zero that there is no boundary left to
+     see. The box is square, so the light is a circle rather than a band; it is
+     placed so that the tail has run out before the status bar, which keeps the
+     time and the battery on the header's own black. */
   .v4Halo{display:none;}
   body.v5 #mHeroOrgan .v4Halo{
-    display:block;position:absolute;left:50%;top:-330px;
-    width:170%;height:380px;transform:translateX(-50%);
-    z-index:1;pointer-events:none;
+    display:block;position:absolute;left:50%;top:-94px;
+    width:290px;height:290px;transform:translateX(-50%);
+    z-index:2;pointer-events:none;
     background:radial-gradient(closest-side,
-      rgb(var(--v4halo, 92 196 127) / .16) 0%,
-      rgb(var(--v4halo, 92 196 127) / .06) 50%,
-      rgb(var(--v4halo, 92 196 127) / 0) 100%);
+      rgb(var(--v4halo, 132 176 142) / .20) 0%,
+      rgb(var(--v4halo, 132 176 142) / .175) 14%,
+      rgb(var(--v4halo, 132 176 142) / .128) 28%,
+      rgb(var(--v4halo, 132 176 142) / .086) 42%,
+      rgb(var(--v4halo, 132 176 142) / .052) 56%,
+      rgb(var(--v4halo, 132 176 142) / .027) 69%,
+      rgb(var(--v4halo, 132 176 142) / .011) 81%,
+      rgb(var(--v4halo, 132 176 142) / .003) 91%,
+      rgb(var(--v4halo, 132 176 142) / 0) 100%);
   }
   body.light.v5 #mHeroOrgan .v4Halo{
     background:radial-gradient(closest-side,
-      rgb(var(--v4halo, 92 196 127) / .22) 0%,
-      rgb(var(--v4halo, 92 196 127) / .08) 50%,
-      rgb(var(--v4halo, 92 196 127) / 0) 100%);
+      rgb(var(--v4halo, 132 176 142) / .28) 0%,
+      rgb(var(--v4halo, 132 176 142) / .245) 14%,
+      rgb(var(--v4halo, 132 176 142) / .180) 28%,
+      rgb(var(--v4halo, 132 176 142) / .120) 42%,
+      rgb(var(--v4halo, 132 176 142) / .073) 56%,
+      rgb(var(--v4halo, 132 176 142) / .038) 69%,
+      rgb(var(--v4halo, 132 176 142) / .015) 81%,
+      rgb(var(--v4halo, 132 176 142) / .004) 91%,
+      rgb(var(--v4halo, 132 176 142) / 0) 100%);
   }
 
   /* The silhouette's feet run off the bottom of the canvas, and a hard cut
@@ -2205,11 +2227,13 @@
      lower and hit harder than the last, then the tint on top. The layers are
      siblings rather than nested — an element that carries a backdrop-filter
      becomes a backdrop root, and a blur layer inside one would have nothing
-     behind it to sample. */
+     behind it to sample. Both this and the halo sit above the canvas: the organ
+     card is appended to the header after them, so at equal z-index the canvas
+     would paint over both and neither would be there at all. */
   .v4Foot{display:none;}
   body.v5 #mHeroOrgan .v4Foot{
     display:block;position:absolute;left:0;right:0;bottom:232px;height:40px;
-    z-index:1;pointer-events:none;
+    z-index:2;pointer-events:none;
     --fog:#000;
   }
   body.light.v5 #mHeroOrgan .v4Foot{--fog:#ececea;}
@@ -5255,18 +5279,20 @@
       gl.drawArrays(gl.POINTS, 0, N);
     }
     if (v4Hero && v4Ages.length){
-      // the age reads as the name strip's twin: it travels the same way and
-      // crossfades rather than rolling, only slower. The step is wide enough
-      // that two numbers never sit on top of each other — a 57px figure needs
-      // room the names do not — and the blur grows toward the strip's edges
-      // in step with the mask fading them out there.
+      // At rest the strip is one number. The neighbours are not dimmed, they are
+      // absent — nothing to read until a finger moves the carousel, and the next
+      // age arrives with the swipe rather than sitting there waiting. So the
+      // ramp reaches zero a little short of a full step, which puts a resting
+      // neighbour past the end of it, and the blur runs the same curve: heaviest
+      // as the number appears, gone by the time it reaches the centre.
       for (let k = 0; k < v4Ages.length; k++){
         const ag = v4Ages[k], d = k - bx;
         if (Math.abs(d) > 1.6){ ag.style.display = 'none'; continue; }
         const an = Math.min(1, Math.abs(d));
-        ag.style.display = '';
+        const op = Math.max(0, 1 - Math.pow(Math.min(1, an / 0.88), 1.15));
+        ag.style.display = op > 0.002 ? '' : 'none';
         ag.style.transform = 'translate(-50%,-50%) translateX(' + (d * 118).toFixed(1) + 'px)';
-        ag.style.opacity = (1 - 0.58 * Math.pow(an, 1.25)).toFixed(3);
+        ag.style.opacity = op.toFixed(3);
         ag.style.filter = an > 0.02
           ? 'blur(' + (Math.pow(an, 1.6) * 3.4).toFixed(2) + 'px)' : 'none';
       }
@@ -5286,7 +5312,7 @@
         // reads as a legible name set back rather than as a smear
         nm.style.transform = 'translate(-50%,-50%) translateX(' +
           (d * 138).toFixed(1) + 'px) scale(' + (1 - 0.05 * an).toFixed(3) + ')';
-        nm.style.opacity = (1 - 0.58 * Math.pow(an, 1.25)).toFixed(3);
+        nm.style.opacity = (1 - 0.76 * Math.pow(an, 1.25)).toFixed(3);
         nm.style.filter = an > 0.02
           ? 'blur(' + (Math.pow(an, 1.6) * 1.4).toFixed(2) + 'px)' : 'none';
       }
@@ -5306,7 +5332,7 @@
       // silhouette: green while the organ reads younger, orange-red once it
       // reads older, and blended through the middle of a swipe.
       if (v4HaloEl){
-        const hue = o => o.delta > 0 ? [232, 113, 74] : [92, 196, 127];
+        const hue = o => o.delta > 0 ? [210, 148, 112] : [132, 176, 142];
         const ha = hue(oa), hb = hue(ob);
         v4HaloEl.style.setProperty('--v4halo',
           Math.round(ha[0] + (hb[0] - ha[0]) * f) + ' ' +
