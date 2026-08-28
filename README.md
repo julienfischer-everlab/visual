@@ -1,6 +1,6 @@
 # Particle Organs — Organ Age concept
 
-A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between ten anatomical silhouettes, explored through seventeen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
+A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between ten anatomical silhouettes, explored through eighteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
 
 **Live:** https://particle-organs.vercel.app
 
@@ -175,6 +175,12 @@ second indicator under it only competed with it.
 
 The body is V2's three cards unchanged — the hero with biomarkers beside
 biological age, then health coverage and steps as the pair.
+
+**Mobile V5** is V4 with the dark theme's two grounds swapped: the header takes
+the lifted grey and the body takes the black, so the hero recedes and the
+content sits forward. Everything else — the morph, the strips, the physics, the
+whole light theme — is V4's. It wears every V4 class and adds a marker of its
+own, and the canvas clears to whichever of the two headers it is sitting on.
 
 Release runs a timed curve, 480ms on `cubic-bezier(.22, 1, .36, 1)`, instead of
 the exponential chase the other pages use, so it reads as one deliberate

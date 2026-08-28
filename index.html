@@ -2212,6 +2212,13 @@
   body.light.v5 .mHead{background:#ececea;}
   body.v5 #phone .mBody{background:#111;}
   body.light.v5 #phone .mBody{background:#fff;}
+  /* V5 is V4 with the dark theme's two grounds swapped over: the header is the
+     lifted grey and the body is the black. Said after V4's pair and at the same
+     weight, so it wins on order; the light theme carries `.light` and outranks
+     both, so it is untouched. */
+  body.v6 #phone{background:#1a1a19;}
+  body.v6 .mHead{background:#1a1a19;}
+  body.v6 #phone .mBody{background:#000;}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
   body.light.v5 #phone .mstatus .tm{color:#000;}
@@ -3070,14 +3077,18 @@
     { name: 'Desktop V1', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 3 }, // coverage in the hero, one mini card, the body list given room
     { name: 'Desktop V3', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 4 }, // the insight header as one coloured block over a white page
     { name: 'Mobile V3', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 8 },
-    { name: 'Mobile V4', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 9 }, // the same, folded to the phone
+    { name: 'Mobile V4', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 9 },
+    { name: 'Mobile V5', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 10 }, // the same, folded to the phone
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
   // styles as well as its own marker
   const isDash = v => v === 2 || v === 10 || v === 13 || v === 14;
   // V2 is the same bento with the row re-laid out
-  const isBento = v => v === 5 || v === 11 || v === 12 || v === 15 || v === 16;
+  const isBento = v => v === 5 || v === 11 || v === 12 || v === 15 || v === 16 || v === 17;
+  // V5 is V4 with one thing changed, so it wears every V4 class and adds a
+  // marker of its own; everything that asks "is this the V4 hero?" asks for v5
+  const isV4Hero = m => m === 16 || m === 17;
   let DUR = reduced ? 300 : MODES[version].dur;
 
   // ---------- muted warm palette on burgundy (rgb 0..1) ----------
@@ -4722,20 +4733,21 @@
       (m === 11 ? ' m5 v2' : '') +
       (m === 12 ? ' m5 v2 v3' : '') +
       (m === 16 ? ' m5 v2 v3 v4 v5' : '') +
+      (m === 17 ? ' m5 v2 v3 v4 v5 v6' : '') +
       (lightOn ? ' light' : '') + (blackOn ? ' black' : '') +
       (organTint ? ' organTint' : '');
     syncDark();
     if (parallaxApply) parallaxApply();
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
-    layoutV4(m === 16);
+    layoutV4(isV4Hero(m));
     if (isBento(m)){
       document.getElementById('mbSlot').appendChild(canvas);
       // V3 stands organ age beside steps; V4 stands it alone in the header;
       // every other bento keeps it in its own row, ahead of coverage
       const oc = document.getElementById('mOrgCard');
       const row2 = document.querySelector('#mBento .mbrow2');
-      const home = m === 16 ? document.getElementById('mHeroOrgan')
+      const home = isV4Hero(m) ? document.getElementById('mHeroOrgan')
                  : (m === 12 || m === 15) ? document.querySelector('#mBento .mbrowV2') : row2;
       if (oc.parentElement !== home){
         if (home === row2) home.insertBefore(oc, home.querySelector('.mbCov'));
@@ -7368,7 +7380,9 @@
       // so there is no rectangle to see against the background. That header is a
       // neutral page surface, so it has a reading per theme like any other.
       const bare = flat && cls.contains('v5');
-      const dk = bare ? [0.0, 0.0, 0.0]                    // #000, the V4 header
+      const dk = bare ? (cls.contains('v6')
+                          ? [0.1020, 0.1020, 0.0980]        // #1a1a19, V5's header
+                          : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
                : flat ? [0.1451, 0.1451, 0.1333]           // #252522, the header card
                :        [0.1330, 0.0240, 0.0240];          // #220606, the organ ground
