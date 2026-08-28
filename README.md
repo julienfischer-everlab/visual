@@ -158,11 +158,12 @@ travels — half a card, or they would fly off a static organ — the age tag at
 of downward drift. They answer the pointer on top of that, at those same
 relative rates, so the pair keeps its depth even when nothing is being dragged.
 
-The age travels too, at its own slower rate. It is one element for the whole
-carousel rather than one per slide, so it cannot crossfade the way the names do
-— and its offset has to be damped rather than driven straight off the drag,
-because the target re-bases the moment a swipe commits. The damping turns that
-step into a swing back instead of a jump.
+The age is the name strip's twin: one element per organ, travelling the same
+way at about half the rate and crossfading rather than rolling. It is *not* the
+dashboard's odometer — that reads as a drum, which is right for a value ticking
+over in place and wrong for a carousel — so on V4 the odometer stays where it
+is and the age gets a strip of its own. No blur on it either: a softened number
+is a misread number.
 
 **The name strip is the carousel's only cue.** The active organ's name sits
 centred and sharp at the foot of the header, its neighbours out toward the edges

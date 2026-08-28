@@ -2165,18 +2165,27 @@
   /* the arc and the age, the dashboard's instrument at phone scale, sitting
      between the organ and the names */
   .v4Gauge{display:none;}
+  /* the gauge is the arc alone — the age is a strip of its own below it */
   body.v5 #mHeroOrgan .v4Gauge{
     display:flex;flex-direction:column;align-items:center;
-    position:absolute;left:0;right:0;bottom:88px;z-index:2;pointer-events:none;
+    position:absolute;left:0;right:0;bottom:184px;z-index:2;pointer-events:none;
   }
   body.v5 #mHeroOrgan #arcA{transform:scale(.52);margin:26px 0 -92px;}
   body.v5 #mHeroOrgan #arcA text{display:none;}
-  /* the odometer's column masks its own top and bottom so the roll reads as a
-     drum; at 57px type a 64px column left the mask eating the digit, so the
-     column grows with the type rather than staying where the smaller one sat */
-  body.v5 #mHeroOrgan #ageBig{height:96px;margin:0;position:relative;top:12px;}
-  body.v5 #mHeroOrgan #ageBig .dcol{font-size:57px;}
-  body.v5 #mHeroOrgan #ageBig .dcol + .dcol{margin-left:-2px;}
+  /* The age is the name strip's twin rather than the dashboard's odometer: it
+     travels and crossfades with the carousel instead of rolling like a drum,
+     so it is one element per organ, same as the names. */
+  .v4Ages{display:none;}
+  body.v5 #mHeroOrgan .v4Ages{
+    display:block;position:absolute;left:0;right:0;bottom:124px;height:0;z-index:2;
+    pointer-events:none;
+  }
+  body.v5 #mHeroOrgan .v4AgeN{
+    position:absolute;left:50%;top:0;white-space:nowrap;
+    font-size:57px;font-weight:500;line-height:1;letter-spacing:-1.6px;
+    font-variant-numeric:tabular-nums;color:var(--ink-bright);
+    will-change:transform,opacity;
+  }
   body.v5 #mHeroOrgan .v4Names{
     display:block;position:absolute;left:0;right:0;bottom:58px;height:0;z-index:3;
     pointer-events:none;
@@ -2687,7 +2696,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="v4Gauge" id="v4Gauge"></div><div class="v4Names" id="v4Names"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -4698,11 +4707,10 @@
     stack.appendChild(row);
     v4Take(q('#mBento .hiCov'), row);
     v4Take(q('#mBento .hiSteps'), row);
-    // the header closes on the same instrument the dashboards use — the arc and
-    // the odometer themselves, not a copy, so they keep animating in step
-    const gauge = document.getElementById('v4Gauge');
-    v4Take(document.getElementById('arcA'), gauge);
-    v4Take(document.getElementById('ageBig'), gauge);
+    // the arc itself, not a copy, so it keeps animating in step. The odometer
+    // stays where it is: V4's age crossfades sideways with the carousel rather
+    // than rolling like a drum, so it is a strip of its own.
+    v4Take(document.getElementById('arcA'), document.getElementById('v4Gauge'));
   }
   function setMode(m){
     version = m;
@@ -5045,6 +5053,14 @@
   // V4 closes the header with the organ's own name between its neighbours, so
   // the carousel says what is on either side of it without a control. Built
   // here rather than in the markup: it is the same list the carousel walks.
+  const v4AgeEl = document.getElementById('v4Ages');
+  const v4Ages = v4AgeEl ? MB.map(d => {
+    const el = document.createElement('span');
+    el.className = 'v4AgeN';
+    el.textContent = String(CHRONO + d.delta);
+    v4AgeEl.appendChild(el);
+    return el;
+  }) : [];
   const v4NameEl = document.getElementById('v4Names');
   const v4Names = v4NameEl ? MB.map(d => {
     const el = document.createElement('span');
@@ -5062,12 +5078,6 @@
   // everywhere else, so V1-V3 keep the settle they have.
   let bxEase = null;
   let scaleNow = 1;   // the breathing scale, so the bento loop can bias it
-  // The age is one element for the whole carousel, not one per slide, so it
-  // cannot crossfade the way the names do — it travels instead, at its own
-  // slower rate. Damped rather than driven straight off the drag: the target
-  // re-bases the moment a swipe commits, and the damping turns that step into
-  // a swing back rather than a jump.
-  let ageOff = 0;
   // cubic-bezier(.22, 1, .36, 1): solve x for the parameter, then read y
   function bezOut(p){
     const cx = 3 * 0.22, bx2 = 3 * (0.36 - 0.22) - cx, ax = 1 - cx - bx2;
@@ -5162,14 +5172,17 @@
       bindCloud(o.organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
     }
-    if (v4Hero && v4NameEl){
-      const ageEl = document.getElementById('ageBig');
-      if (ageEl && ageEl.parentElement && ageEl.parentElement.id === 'v4Gauge'){
-        // same sign as the names — they travel together, the age just slower
-        const want = -(bx - bxT) * 62;         // ~0.45x the name strip's step
-        ageOff += (want - ageOff) * 0.18;
-        if (Math.abs(want - ageOff) < 0.05) ageOff = want;
-        ageEl.style.transform = 'translateX(' + ageOff.toFixed(1) + 'px)';
+    if (v4Hero && v4Ages.length){
+      // the age reads as the name strip's twin: it travels the same way and
+      // crossfades rather than rolling, only slower and without the blur —
+      // a number softened is a number misread
+      for (let k = 0; k < v4Ages.length; k++){
+        const ag = v4Ages[k], d = k - bx;
+        if (Math.abs(d) > 1.6){ ag.style.display = 'none'; continue; }
+        const an = Math.min(1, Math.abs(d));
+        ag.style.display = '';
+        ag.style.transform = 'translate(-50%,-50%) translateX(' + (d * 62).toFixed(1) + 'px)';
+        ag.style.opacity = (1 - Math.min(1, an * 1.55)).toFixed(3);
       }
     }
     if (v4Hero && v4Names.length){
