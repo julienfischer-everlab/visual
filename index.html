@@ -3682,7 +3682,6 @@
     attribute vec4 aSeed;   // x stagger, y curve angle, z noise phase, w size
     attribute vec4 aColor;
     uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight;
-    uniform vec3 uWarmCol;
     uniform vec2 uPan; // per-draw clip-space offset (spatial card placement)
     uniform vec3 uCenter;
     uniform vec2 uCA;   // organ centre the A positions belong to
@@ -3749,14 +3748,12 @@
       float tw = 0.62 + 0.38 * sin(uTime * 1.8 + aSeed.z * 21.0);
       // voxel mode: quieter shimmer — data, not sparkle
       tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
-      // Age halo: the band's colour comes in as a colour rather than being
-      // picked from uWarm's sign, because there are three bands now and only
-      // the caller knows the years. It also reaches further in than the shell
-      // and carries more weight, so the reading is unmistakable.
+      // age halo on the shell: orange when older (uWarm > 0), green when younger (uWarm < 0)
       float halo = (1.0 - ghost) * (1.0 - flowP) * abs(uWarm)
-                 * smoothstep(uOrgR * 0.18, uOrgR, length(mix(aPosA, aPosB, e) - uCenter))
-                 * (0.58 + 0.42 * fract(aSeed.y * 3.17)) * 1.35;
-      vec3 rgb = mix(aColor.rgb, uWarmCol, min(1.0, halo));
+                 * smoothstep(uOrgR * 0.45, uOrgR, length(mix(aPosA, aPosB, e) - uCenter))
+                 * (0.45 + 0.55 * fract(aSeed.y * 3.17));
+      vec3 haloCol = uWarm > 0.0 ? vec3(0.87, 0.56, 0.30) : vec3(0.55, 0.73, 0.48);
+      vec3 rgb = mix(aColor.rgb, haloCol, halo);
       // light theme: dark, mostly desaturated ink with a trace of warmth
       vec3 lrgb = mix(rgb, vec3(dot(rgb, vec3(0.4, 0.4, 0.2))), 0.6) * 0.38 + vec3(0.02);
       rgb = mix(rgb, lrgb, uLight);
@@ -3800,28 +3797,12 @@
   gl.useProgram(prog);
 
   const U = {};
-  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uWarmCol','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView'])
+  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView'])
     U[n] = gl.getUniformLocation(prog, n);
   gl.uniform2f(U.uPan, 0, 0);
   gl.uniform1f(U.uAlpha, 1);
   gl.uniform1f(U.uSq, 0);
   gl.uniform1f(U.uLight, 0);
-  // Three bands, by years, and the band is the organ's whole reading rather
-  // than a ramp: over five years older is red, up to five is orange, any
-  // amount younger is green. On par keeps the cloud's own colour, which is
-  // what a zero-strength halo already gives.
-  const AGE_RED = [0.88, 0.27, 0.20], AGE_ORANGE = [0.94, 0.55, 0.20],
-        AGE_GREEN = [0.38, 0.79, 0.50];
-  const warmCol = d => d > 5 ? AGE_RED : d > 0 ? AGE_ORANGE : AGE_GREEN;
-  // the strength no longer has to carry the hue, so it starts high enough that
-  // a one-year gap already reads and tops out by five
-  const warmStr = d => (d === 0 ? 0 : Math.sign(d)) * Math.min(1, 0.52 + Math.abs(d) / 9);
-  const setWarm = (d, k) => {
-    const c = warmCol(d);
-    gl.uniform3f(U.uWarmCol, c[0], c[1], c[2]);
-    gl.uniform1f(U.uWarm, warmStr(d) * (k === undefined ? 1 : k));
-  };
-  gl.uniform3f(U.uWarmCol, AGE_GREEN[0], AGE_GREEN[1], AGE_GREEN[2]);
 
   // ---------- buffers ----------
   const posA = new Float32Array(TOT * 3);
@@ -5016,7 +4997,9 @@
       gl.uniform2f(U.uPan, effX * 2 / W, (ch * 0.055 * effS) * 2 / H);
       gl.uniform1f(U.uAlpha, bright);
       gl.uniform1f(U.uZoom, (cw / effDim) * 0.62 / org.r * effS);
-      setWarm(PILL[i].delta, bright);
+      gl.uniform1f(U.uWarm,
+        (PILL[i].delta > 0 ? 1 : PILL[i].delta < 0 ? -1 : 0) *
+        Math.min(1, Math.abs(PILL[i].delta) / 7) * bright);
       gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul * (0.7 + 0.3 * effS));
       bindCloud(PILL[i].organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
@@ -5199,7 +5182,9 @@
       const o = MB[k];                       // slide 0 is the body's own cloud
       gl.uniform2f(U.uPan, d * panK, 0);
       gl.uniform1f(U.uAlpha, fade(d));
-      setWarm(o.delta);
+      gl.uniform1f(U.uWarm,
+        (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
+        Math.min(1, Math.abs(o.delta) / 7));
       bindCloud(o.organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
     }
@@ -5245,15 +5230,12 @@
       const k0 = Math.min(MB.length - 2, Math.floor(b0));
       const k1 = k0 + 1, f = b0 - k0;
       const oa = MB[k0], ob = MB[k1];
+      const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
+                        Math.min(1, Math.abs(o.delta) / 7);
       gl.uniform1f(U.uP, f);
       gl.uniform2f(U.uPan, 0, 0);
       gl.uniform1f(U.uAlpha, 1);
-      // mid-morph the halo is between the two organs' bands, colour included
-      const wa = warmCol(oa.delta), wb = warmCol(ob.delta);
-      gl.uniform3f(U.uWarmCol, wa[0] + (wb[0] - wa[0]) * f,
-                               wa[1] + (wb[1] - wa[1]) * f,
-                               wa[2] + (wb[2] - wa[2]) * f);
-      gl.uniform1f(U.uWarm, warmStr(oa.delta) + (warmStr(ob.delta) - warmStr(oa.delta)) * f);
+      gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[oa.organIdx].x, ORGANS[oa.organIdx].y);
       gl.uniform2f(U.uCB, ORGANS[ob.organIdx].x, ORGANS[ob.organIdx].y);
       bindPair(oa.organIdx, ob.organIdx);
@@ -7052,7 +7034,9 @@
       // alpha reads far brighter than the text — square it to match
       gl.uniform1f(U.uAlpha, Math.pow(gA[i], 2));
       gl.uniform1f(U.uZoom, (Math.min(r.width, r.height) / effDim) * 0.6 / org.r);
-      setWarm(PILL[i].delta, 0.85);
+      gl.uniform1f(U.uWarm,
+        (PILL[i].delta > 0 ? 1 : PILL[i].delta < 0 ? -1 : 0) *
+        Math.min(1, Math.abs(PILL[i].delta) / 7) * 0.85);
       gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul * 0.85);
       bindCloud(PILL[i].organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
@@ -7291,10 +7275,9 @@
 
     // signed age halo: older organs glow orange, younger ones green
     const warmDelta = version === 0 ? cardFor(current).delta : PILL[pillCurrent].delta;
-    warmNow += (warmStr(warmDelta) - warmNow) * 0.025;
+    const warmTarget = Math.max(-1, Math.min(1, warmDelta / 6));
+    warmNow += (warmTarget - warmNow) * 0.025;
     gl.uniform1f(U.uWarm, warmNow);
-    const wc = warmCol(warmDelta);
-    gl.uniform3f(U.uWarmCol, wc[0], wc[1], wc[2]);
 
     // camera rides the same S-curve timeline as the morph
     const org = ORGANS[current];
