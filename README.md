@@ -129,13 +129,14 @@ interactions, in a different hierarchy.
 
 The organ leaves the bento and becomes the header's own content: no card, no
 ground, no radius, no padding, one large silhouette on black with generous space
-around it. The header reads top to bottom as four bands: the two tags, the
-organ, the arc and age, then the name strip. The tags — `40 YEARS OLD` in
-off-white and the delta in grey or coral — sit in a row across the top, anchored
-to the two edges and clear of the silhouette. Below the organ, the dashboard's
-own arc and odometer, moved here rather than copied, so they keep animating in
-step with everything else. The canvas clears to the header colour so there is no
-rectangle to see against it.
+around it. The header reads top to bottom as three bands: the organ, the arc and
+age, then the name strip — no labels over the silhouette at all. The arc and
+odometer are the dashboard's own, moved here rather than copied, so they keep
+animating in step with everything else. The odometer's column masks its own top
+and bottom so the roll reads as a drum, which means the column has to grow with
+the type: at 57px, the 64px column the smaller digits sat in left the mask eating
+them. The canvas clears to the header colour so there is no rectangle to see
+against it.
 
 That clear colour snaps to the theme rather than riding the eased crossfade
 value every other page uses. Elsewhere the canvas covers its whole card, so a
