@@ -128,16 +128,35 @@ V4 is V3 re-hung, not redrawn — the same cards, the same spacing, the same
 interactions, in a different hierarchy.
 
 The organ leaves the bento and becomes the header's own content: no card, no
-ground, no radius, no padding. The header is a row — organ on the left, its
-name, age and status on the right and left-aligned against it, with no eyebrow
-over them — and the canvas clears to the header colour so there is no rectangle
-to see against it. It still swipes through all ten selections, and the dots,
-lined up under the reading, still steer it.
+ground, no radius, no padding, one large silhouette on black with generous
+space around it. Its two readings — `37 YEARS OLD` in off-white, `3 YEARS
+YOUNGER` in green or `8 YEARS OLDER` in coral — float *over* the organ rather
+than sitting beside it, and not in the same place for every organ: each
+silhouette has its own clear quarters, in a small table. The canvas clears to
+the header colour so there is no rectangle to see against it.
 
 That clear colour snaps to the theme rather than riding the eased crossfade
 value every other page uses. Elsewhere the canvas covers its whole card, so a
 frame or two of mismatch is invisible; here it is a box *inside* the header, and
 a value short of its target draws a visible rectangle on it.
+
+**One progress value drives everything.** The carousel already tracked the
+finger 1:1, rubber-banded at the ends, snapped past half a card and honoured a
+flick; V4 hangs the rest of the composition off that same `d`. The organ
+translates at 1x, the age tag at 0.82x and the status tag at 0.68x, so the
+labels stay attached but sit at their own depth. Both tags fade a little ahead
+of the organ and drift 3-4px down as they leave, and arrive progressively rather
+than appearing at the end. The organ itself gives up 2% of scale and its points
+spread as it goes — there is no per-organ CSS filter to reach for, since both
+organs are drawn into the same canvas, so the softening is done in the cloud's
+own terms. And the crossfade window widens: V1-V3 hold one slide at full
+strength to avoid a double exposure, while V4 wants exactly that double
+exposure — both organs half-present at half a swipe.
+
+Release runs a timed curve, 480ms on `cubic-bezier(.22, 1, .36, 1)`, instead of
+the exponential chase the other pages use, so it reads as one deliberate
+movement with a long tail. A new drag cancels it. Arrow keys and the pagination
+dots run the same glide.
 
 That header is a neutral page surface rather than a coloured block — `#ececea`
 under a white sheet in light, `#1a1a19` under `#0d0d0c` in the dark themes — so
@@ -155,8 +174,10 @@ reason the dot size differs between the mobile versions.
 Everything else moves down into the body, in one column: **Biomarkers** full
 width with the health-coverage block removed, then a two-up of **Signal** and
 **Activity**. That is the whole page — coverage does not appear on V4 at all,
-and the cards are a 2% wash on the body rather than a surface of their own. The
-rounded transition and the layered parallax scroll are V3's, untouched.
+and the cards are a 4% wash on the body rather than a surface of their own. The
+header is `#000`, the body `#111`, so the black hero reads as its own space
+under the body's rounded shoulder; the transition and the layered parallax
+scroll are V3's, untouched.
 
 None of this is a second copy. The nodes are the ones every other page uses, so
 V4 takes them on the way in and hands them back on the way out, leaving a
