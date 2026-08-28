@@ -2131,31 +2131,33 @@
   body.v5 #mBento{display:none;}
   /* the organ, centred, with nothing drawn around it: no ground, no radius, no
      padding — the canvas clears to #1c0505 so it reads as the header itself */
-  body.v5 #mHeroOrgan{display:block;position:relative;height:392px;margin:2px 0 26px;}
+  /* The header is a row, not a stack: the organ on the left, its reading on
+     the right and left-aligned against it. No eyebrow — the name and the number
+     say what this is without a label over them. */
+  body.v5 #mHeroOrgan{display:block;position:relative;height:238px;margin:0 0 14px;}
   body.v5 #mHeroOrgan .msn.morganMini{
-    position:absolute;inset:0;background:none;border:0;border-radius:0;padding:0;
+    position:absolute;inset:0 13px;background:none;border:0;border-radius:0;padding:0;
   }
-  body.v5 #mHeroOrgan .mbHead{left:0;right:0;top:0;text-align:center;}
-  body.v5 #mHeroOrgan .mbHead .lbl{justify-content:center;}
+  body.v5 #mHeroOrgan .mbHead{display:none;}
   /* resize() takes the canvas box straight off this slot, so insetting it is
-     the whole layout: eyebrow above, the age group below, organ in between */
-  body.v5 #mHeroOrgan #mbSlot{inset:26px 0 146px;}
-  /* the age group sits under the visual, centred, and still travels with the
-     swipe — only its anchor moves */
-  body.v5 #mHeroOrgan .mbTrack{top:auto;bottom:44px;}
+     the whole layout — here it is the left column */
+  body.v5 #mHeroOrgan #mbSlot{inset:0 auto 24px 0;width:46%;}
+  /* the reading holds the right column and still travels with the swipe;
+     only its box moves */
+  body.v5 #mHeroOrgan .mbTrack{left:46%;right:0;top:0;bottom:24px;}
   body.v5 #mHeroOrgan .mbItem{
-    left:0;right:0;top:auto;bottom:0;padding-top:0;align-items:center;text-align:center;
+    left:16px;right:0;top:0;bottom:0;padding-top:0;
+    justify-content:center;align-items:flex-start;text-align:left;
   }
   body.v5 #mHeroOrgan .mbItem .big{font-size:15px;font-weight:500;letter-spacing:.01em;}
   .mbAgeN{display:none;}
   body.v5 #mHeroOrgan .mbAgeN{
-    display:block;font-size:56px;font-weight:500;line-height:1.02;letter-spacing:-2px;
-    color:#f2e5e0;margin-top:4px;
+    display:block;font-size:48px;font-weight:500;line-height:1.02;letter-spacing:-1.6px;
+    color:#f2e5e0;margin-top:2px;
   }
-  /* the badge carries align-self:flex-start for the row layouts; here the
-     whole group is centred under the visual */
-  body.v5 #mHeroOrgan .mbBadge{margin-top:10px;align-self:center;}
-  body.v5 #mHeroOrgan .mbDots{bottom:6px;}
+  body.v5 #mHeroOrgan .mbBadge{margin-top:8px;align-self:flex-start;}
+  /* the dots line up with the column they steer */
+  body.v5 #mHeroOrgan .mbDots{bottom:0;left:calc(46% + 16px);right:0;justify-content:flex-start;}
   /* ---- V4's own two grounds -------------------------------------------------
      V3's header is the organ's burgundy and keeps the dark theme's ink on it
      whatever the page theme — a dark island. V4 is not an island: it is a
@@ -2191,8 +2193,9 @@
   body.v5 #mV4Row{display:grid;grid-template-columns:1fr 1fr;}
   body.v5 #mV4Row .msCar,
   body.v5 #mV4Row .mbCov{display:flex;}
-  body.v5 #mV4 .msn{background:#252522;}
-  body.light.v5 #mV4 .msn{background:#f4efed;}
+  /* the cards are a 2% wash on the body rather than a solid surface */
+  body.v5 #mV4 .msn{background:rgba(255,255,255,.02);}
+  body.light.v5 #mV4 .msn{background:rgba(0,0,0,.02);}
   /* health coverage is its own widget now, so the hero card carries biomarkers
      and nothing else */
   body.v5 #mV4 .mHeroCard .mHeroCov{display:none;}
@@ -2201,6 +2204,8 @@
   /* the pair reuses the mini-card system whole — #mV4Row wears .mbrow2 — so
      the only thing said here is that the cards are the same height */
   body.v5 #mV4Row > .msn{min-height:152px;}
+  /* activity is a mini card here, so it takes the pair's tighter inset */
+  body.v5 #mV4Row .hiSlide{padding:14px;}
   /* one flat card, black type, one 64% black for everything secondary: the
      same readings the bento takes in light, said again for the body stack */
   body.light.v5 #phone #mV4 .big,
@@ -4642,10 +4647,10 @@
     const q = sel => document.querySelector(sel);
     v4Take(q('#mBento .mHeroCard'), stack);   // 1. biomarkers, full width
     stack.appendChild(row);                   // 2. the pair, right beneath it
-    v4Take(q('#mBento #msCar'), row);
-    v4Take(q('#mBento .mbCov'), row);
-    v4Take(q('#mBento .hiSteps'), stack);     // 3. activity
-    v4Take(q('#mBento .hiCov'), stack);       // 4. health coverage, its own card
+    v4Take(q('#mBento #msCar'), row);         //    signal
+    v4Take(q('#mBento .hiSteps'), row);       //    activity, as the second mini
+    // coverage does not appear on V4 at all: the wide card is gone and the
+    // narrow one gave its place to activity
   }
   function setMode(m){
     version = m;
@@ -7174,13 +7179,19 @@
                : cardMode         ? [0.9530, 0.8860, 0.8470]
                :                    [0.9570, 0.9370, 0.9290];
       const bk = flat ? dk : cardMode ? [0.157, 0.027, 0.027] : [0.02, 0.02, 0.02];
-      const r0 = dk[0] + (lt[0] - dk[0]) * lightNow;
-      const g0 = dk[1] + (lt[1] - dk[1]) * lightNow;
-      const b0 = dk[2] + (lt[2] - dk[2]) * lightNow;
+      // Everywhere else the canvas covers its whole card, so it can ride the
+      // eased theme value and any mismatch mid-crossfade is invisible. V4's
+      // canvas is a box inside the header, so a value a few frames short of the
+      // target draws a visible rectangle on it — it snaps to the theme instead.
+      const mixL = bare ? (lightOn ? 1 : 0) : lightNow;
+      const r0 = dk[0] + (lt[0] - dk[0]) * mixL;
+      const g0 = dk[1] + (lt[1] - dk[1]) * mixL;
+      const b0 = dk[2] + (lt[2] - dk[2]) * mixL;
+      const mixB = bare ? (blackOn ? 1 : 0) : blackNow;
       gl.clearColor(
-        r0 + (bk[0] - r0) * blackNow,
-        g0 + (bk[1] - g0) * blackNow,
-        b0 + (bk[2] - b0) * blackNow, 1);
+        r0 + (bk[0] - r0) * mixB,
+        g0 + (bk[1] - g0) * mixB,
+        b0 + (bk[2] - b0) * mixB, 1);
     } else {
       gl.clearColor(0, 0, 0, 0);
     }

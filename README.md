@@ -128,10 +128,16 @@ V4 is V3 re-hung, not redrawn — the same cards, the same spacing, the same
 interactions, in a different hierarchy.
 
 The organ leaves the bento and becomes the header's own content: no card, no
-ground, no radius, no padding. It is centred, the eyebrow sits above it and the
-name, the age and the status sit under it, and the canvas clears to the header
-colour so there is no rectangle to see against it. It still swipes through all
-ten selections, and the dots still steer it.
+ground, no radius, no padding. The header is a row — organ on the left, its
+name, age and status on the right and left-aligned against it, with no eyebrow
+over them — and the canvas clears to the header colour so there is no rectangle
+to see against it. It still swipes through all ten selections, and the dots,
+lined up under the reading, still steer it.
+
+That clear colour snaps to the theme rather than riding the eased crossfade
+value every other page uses. Elsewhere the canvas covers its whole card, so a
+frame or two of mismatch is invisible; here it is a box *inside* the header, and
+a value short of its target draws a visible rectangle on it.
 
 That header is a neutral page surface rather than a coloured block — `#ececea`
 under a white sheet in light, `#1a1a19` under `#0d0d0c` in the dark themes — so
@@ -146,12 +152,11 @@ bright 1px dot on burgundy still glows. Dark ink on light grey does not — the
 organ came out as a whisper — so V4 takes the same floor. That is the only
 reason the dot size differs between the mobile versions.
 
-Everything else moves down into the white body, in one column: **Biomarkers**
-full width with the health-coverage block removed, then a two-up of the two
-mini cards V2 and V3 don't use (**Signal** and **Coverage**), then **Activity**
-full width, then **Health Coverage** as its own card — the coverage dial that
-used to live inside the Biomarkers hero. The rounded transition and the layered
-parallax scroll are V3's, untouched.
+Everything else moves down into the body, in one column: **Biomarkers** full
+width with the health-coverage block removed, then a two-up of **Signal** and
+**Activity**. That is the whole page — coverage does not appear on V4 at all,
+and the cards are a 2% wash on the body rather than a surface of their own. The
+rounded transition and the layered parallax scroll are V3's, untouched.
 
 None of this is a second copy. The nodes are the ones every other page uses, so
 V4 takes them on the way in and hands them back on the way out, leaving a
