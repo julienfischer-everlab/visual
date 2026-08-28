@@ -129,10 +129,21 @@ interactions, in a different hierarchy.
 
 The organ leaves the bento and becomes the header's own content: no card, no
 ground, no radius, no padding. It is centred, the eyebrow sits above it and the
-name, the age and the status sit under it, and the canvas clears to `#1c0505`
-so there is no rectangle to see against the header — the same reason the dial
-and the type keep the dark theme's readings in both themes. It still swipes
-through all ten selections, and the dots still steer it.
+name, the age and the status sit under it, and the canvas clears to the header
+colour so there is no rectangle to see against it. It still swipes through all
+ten selections, and the dots still steer it.
+
+That header is a light grey, `#ececea`, under a white sheet — and V4 is a light
+page in *every* theme, the mirror of V3, whose burgundy header carries the dark
+theme's ink whatever the page is set to. So V4 forces the light reading instead:
+`uLight` to 1 for the organ, and the light values said again with two ids for
+everything the dark themes would otherwise ink.
+
+One thing had to change for it. `pixScale` clamps the dot size on the dashboard
+because a sub-pixel particle disappears; the phone had no floor, because a
+bright 1px dot on burgundy still glows. Dark ink on light grey does not — the
+organ came out as a whisper — so V4 takes the same floor. That is the only
+reason the dot size differs between the mobile versions.
 
 Everything else moves down into the white body, in one column: **Biomarkers**
 full width with the health-coverage block removed, then a two-up of the two
