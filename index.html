@@ -2203,35 +2203,45 @@
      the same reason: both have to inherit it. */
   body.v5 #phone{
     --v4haloStops:
-      rgb(var(--v4halo, 132 176 142) / .140) 0%,
-      rgb(var(--v4halo, 132 176 142) / .123) 14%,
-      rgb(var(--v4halo, 132 176 142) / .090) 28%,
-      rgb(var(--v4halo, 132 176 142) / .060) 42%,
-      rgb(var(--v4halo, 132 176 142) / .036) 56%,
-      rgb(var(--v4halo, 132 176 142) / .019) 69%,
-      rgb(var(--v4halo, 132 176 142) / .008) 81%,
-      rgb(var(--v4halo, 132 176 142) / .002) 91%,
+      rgb(var(--v4halo, 132 176 142) / .266) 0%,
+      rgb(var(--v4halo, 132 176 142) / .234) 14%,
+      rgb(var(--v4halo, 132 176 142) / .171) 28%,
+      rgb(var(--v4halo, 132 176 142) / .114) 42%,
+      rgb(var(--v4halo, 132 176 142) / .068) 56%,
+      rgb(var(--v4halo, 132 176 142) / .036) 69%,
+      rgb(var(--v4halo, 132 176 142) / .015) 81%,
+      rgb(var(--v4halo, 132 176 142) / .004) 91%,
       rgb(var(--v4halo, 132 176 142) / 0) 100%;
-    /* the circle's radius, and its centre measured down from the top of the
-       phone — the strip needs both as real lengths, having no box of the
-       halo's own to size a gradient against */
-    --v4haloR:290px;
-    --v4haloY:96px;
+    /* The circle's radius, and its centre measured down from the top of the
+       phone — the strip needs both as real lengths, having no box of the halo's
+       own to size a gradient against, and the halo's own offset is derived from
+       them so there is one place to move the light.
+
+       The centre sits above the screen: only the bottom third of the circle is
+       ever on it, which is what makes the light read as a dome across the top
+       rather than a disc floating in the header. That also means the core never
+       shows, so the stops are pitched for the band that does — at the top of the
+       screen the gradient is already 40% of the way out. */
+    --v4haloR:365px;
+    --v4haloY:-151px;
   }
   body.light.v5 #phone{
     --v4haloStops:
-      rgb(var(--v4halo, 132 176 142) / .196) 0%,
-      rgb(var(--v4halo, 132 176 142) / .172) 14%,
-      rgb(var(--v4halo, 132 176 142) / .126) 28%,
-      rgb(var(--v4halo, 132 176 142) / .084) 42%,
-      rgb(var(--v4halo, 132 176 142) / .051) 56%,
-      rgb(var(--v4halo, 132 176 142) / .027) 69%,
-      rgb(var(--v4halo, 132 176 142) / .011) 81%,
-      rgb(var(--v4halo, 132 176 142) / .003) 91%,
+      rgb(var(--v4halo, 132 176 142) / .372) 0%,
+      rgb(var(--v4halo, 132 176 142) / .327) 14%,
+      rgb(var(--v4halo, 132 176 142) / .239) 28%,
+      rgb(var(--v4halo, 132 176 142) / .160) 42%,
+      rgb(var(--v4halo, 132 176 142) / .097) 56%,
+      rgb(var(--v4halo, 132 176 142) / .051) 69%,
+      rgb(var(--v4halo, 132 176 142) / .021) 81%,
+      rgb(var(--v4halo, 132 176 142) / .006) 91%,
       rgb(var(--v4halo, 132 176 142) / 0) 100%;
   }
   body.v5 #mHeroOrgan .v4Halo{
-    display:block;position:absolute;left:50%;top:-303px;
+    display:block;position:absolute;left:50%;
+    /* --v4haloY is measured from the phone; the header's organ block starts
+       109px below that, and the box hangs a radius above the centre */
+    top:calc(var(--v4haloY) - 109px - var(--v4haloR));
     width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
     transform:translateX(-50%);
     z-index:2;pointer-events:none;
