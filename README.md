@@ -242,6 +242,21 @@ throws while the element is off-screen, and the endpoints need no layout.
 The animation fires only when a slide's index settles on a new value, so a
 rerender or a nudged carousel cannot replay it.
 
+### The age halo reads in three bands
+
+The organ's own colour carries its verdict: **red** more than five years older,
+**orange** up to five years older, **green** any amount younger. On par keeps
+the cloud's own colour, which is what a zero-strength halo already gives.
+
+The band arrives at the shader as a colour rather than being picked from the
+tint's sign, because there are three of them and only the caller knows the
+years. That leaves the strength free to mean strength alone, so it starts high
+enough that a one-year gap already reads and tops out by five, and the halo
+reaches well in from the shell rather than skimming it. Every surface that draws
+an organ goes through one helper, so the bands cannot drift apart between the
+hero, the grid, the card flip and the mini cards — and mid-morph on V4 the
+colour lerps between the two organs' bands along with the strength.
+
 ### The organ mini card
 
 Label, title, status: three lines, then the visual, then the dots. The status
