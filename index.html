@@ -2189,36 +2189,57 @@
      still draws a visible arc there. So the stops below approximate a gaussian
      — each interval roughly halves the one before it — and the last third of
      the radius is already so close to zero that there is no boundary left to
-     see. The box is square, so the light is a circle rather than a band; it is
-     placed so that the tail has run out before the status bar, which keeps the
-     time and the battery on the header's own black. */
+     see. The box is square, so the light is a circle rather than a band. At this
+     diameter the tail does reach the status bar, which is why the peak is held
+     low enough that what arrives up there is a couple of levels, not a wash. */
   .v4Halo{display:none;}
-  body.v5 #mHeroOrgan .v4Halo{
-    display:block;position:absolute;left:50%;top:-94px;
-    width:290px;height:290px;transform:translateX(-50%);
-    z-index:2;pointer-events:none;
-    background:radial-gradient(closest-side,
-      rgb(var(--v4halo, 132 176 142) / .20) 0%,
-      rgb(var(--v4halo, 132 176 142) / .175) 14%,
-      rgb(var(--v4halo, 132 176 142) / .128) 28%,
-      rgb(var(--v4halo, 132 176 142) / .086) 42%,
-      rgb(var(--v4halo, 132 176 142) / .052) 56%,
+  /* The stop list lives on the phone rather than inside the gradient, because
+     two elements have to draw the same circle: the halo itself, and the status
+     strip above it. The scroller the header lives in clips at its own top edge,
+     so a circle this size stops dead under the time and the battery — a seam
+     exactly where the light should be quietest. The strip is a sibling of the
+     scroller, so it paints the same gradient in its own coordinates and the two
+     halves meet with nothing between them. The colour is set on the phone for
+     the same reason: both have to inherit it. */
+  body.v5 #phone{
+    --v4haloStops:
+      rgb(var(--v4halo, 132 176 142) / .140) 0%,
+      rgb(var(--v4halo, 132 176 142) / .123) 14%,
+      rgb(var(--v4halo, 132 176 142) / .090) 28%,
+      rgb(var(--v4halo, 132 176 142) / .060) 42%,
+      rgb(var(--v4halo, 132 176 142) / .036) 56%,
+      rgb(var(--v4halo, 132 176 142) / .019) 69%,
+      rgb(var(--v4halo, 132 176 142) / .008) 81%,
+      rgb(var(--v4halo, 132 176 142) / .002) 91%,
+      rgb(var(--v4halo, 132 176 142) / 0) 100%;
+    /* the circle's radius, and its centre measured down from the top of the
+       phone — the strip needs both as real lengths, having no box of the
+       halo's own to size a gradient against */
+    --v4haloR:290px;
+    --v4haloY:96px;
+  }
+  body.light.v5 #phone{
+    --v4haloStops:
+      rgb(var(--v4halo, 132 176 142) / .196) 0%,
+      rgb(var(--v4halo, 132 176 142) / .172) 14%,
+      rgb(var(--v4halo, 132 176 142) / .126) 28%,
+      rgb(var(--v4halo, 132 176 142) / .084) 42%,
+      rgb(var(--v4halo, 132 176 142) / .051) 56%,
       rgb(var(--v4halo, 132 176 142) / .027) 69%,
       rgb(var(--v4halo, 132 176 142) / .011) 81%,
       rgb(var(--v4halo, 132 176 142) / .003) 91%,
-      rgb(var(--v4halo, 132 176 142) / 0) 100%);
+      rgb(var(--v4halo, 132 176 142) / 0) 100%;
   }
-  body.light.v5 #mHeroOrgan .v4Halo{
-    background:radial-gradient(closest-side,
-      rgb(var(--v4halo, 132 176 142) / .28) 0%,
-      rgb(var(--v4halo, 132 176 142) / .245) 14%,
-      rgb(var(--v4halo, 132 176 142) / .180) 28%,
-      rgb(var(--v4halo, 132 176 142) / .120) 42%,
-      rgb(var(--v4halo, 132 176 142) / .073) 56%,
-      rgb(var(--v4halo, 132 176 142) / .038) 69%,
-      rgb(var(--v4halo, 132 176 142) / .015) 81%,
-      rgb(var(--v4halo, 132 176 142) / .004) 91%,
-      rgb(var(--v4halo, 132 176 142) / 0) 100%);
+  body.v5 #mHeroOrgan .v4Halo{
+    display:block;position:absolute;left:50%;top:-303px;
+    width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
+    transform:translateX(-50%);
+    z-index:2;pointer-events:none;
+    background:radial-gradient(closest-side, var(--v4haloStops));
+  }
+  body.v5 #phone .mstatus{
+    background-image:radial-gradient(var(--v4haloR) at 50% var(--v4haloY),
+      var(--v4haloStops));
   }
 
   /* The silhouette's feet run off the bottom of the canvas, and a hard cut
@@ -5332,9 +5353,10 @@
       // silhouette: green while the organ reads younger, orange-red once it
       // reads older, and blended through the middle of a swipe.
       if (v4HaloEl){
+        const halo = v4HaloEl.closest('#phone') || v4HaloEl;
         const hue = o => o.delta > 0 ? [210, 148, 112] : [132, 176, 142];
         const ha = hue(oa), hb = hue(ob);
-        v4HaloEl.style.setProperty('--v4halo',
+        halo.style.setProperty('--v4halo',
           Math.round(ha[0] + (hb[0] - ha[0]) * f) + ' ' +
           Math.round(ha[1] + (hb[1] - ha[1]) * f) + ' ' +
           Math.round(ha[2] + (hb[2] - ha[2]) * f));
