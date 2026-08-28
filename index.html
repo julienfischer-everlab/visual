@@ -2134,7 +2134,7 @@
   /* The header is the organ and almost nothing else: one large silhouette on
      black, its two readings floating over it, and a row of dots at the foot.
      No card, no eyebrow, no caption beside it. */
-  body.v5 #mHeroOrgan{display:block;position:relative;height:414px;margin:0 0 6px;}
+  body.v5 #mHeroOrgan{display:block;position:relative;height:350px;margin:0 0 6px;}
   body.v5 #mHeroOrgan .msn.morganMini{
     position:absolute;inset:0;background:none;border:0;border-radius:0;padding:0;
     outline:none;-webkit-user-select:none;user-select:none;
@@ -2146,10 +2146,10 @@
   .mbAgeN{display:none;}
   /* resize() takes the canvas box straight off this slot, so insetting it is
      the whole layout — here the organ gets nearly all of it */
-  body.v5 #mHeroOrgan #mbSlot{inset:0 0 62px;}
+  body.v5 #mHeroOrgan #mbSlot{inset:0 0 92px;}
   /* the track is only a frame: on V4 nothing about it moves, the tags inside
      it carry their own translation at their own rates */
-  body.v5 #mHeroOrgan .mbTrack{left:0;right:0;top:0;bottom:62px;}
+  body.v5 #mHeroOrgan .mbTrack{left:0;right:0;top:0;bottom:92px;}
   body.v5 #mHeroOrgan .mbItem{
     left:0;right:0;top:0;bottom:0;padding-top:0;display:block;
   }
@@ -2162,15 +2162,30 @@
     padding:7px 11px;will-change:transform,opacity;pointer-events:none;
   }
   body.v5 #mHeroOrgan .v4Age{background:#f4f2ef;color:#000;}
-  body.v5 #mHeroOrgan .v4Delta{background:#5cc47f;color:#06210f;}
+  body.v5 #mHeroOrgan .v4Delta{background:#4a4a47;color:#e8e8e4;}
   body.v5 #mHeroOrgan .v4Delta.warn{background:#e8714a;color:#210a03;}
   /* the neutral tag is the one that has to invert: an off-white block reads as
      a tag on black and as nothing at all on the light header */
   body.light.v5 #mHeroOrgan .v4Age{background:#111;color:#f4f2ef;}
+  body.light.v5 #mHeroOrgan .v4Delta{background:#d4d4d0;color:#1a1a19;}
   /* the pagination sits at the foot of the header, above the body's rounded
      shoulder, and stays understated */
+  /* The strip is one line: the active name centred and sharp, its neighbours
+     out toward the edges under blur. The blur is the point — grey alone would
+     read as a disabled label rather than as something further away. */
+  .v4Names{display:none;}
+  body.v5 #mHeroOrgan .v4Names{
+    display:block;position:absolute;left:0;right:0;bottom:56px;height:0;z-index:3;
+    pointer-events:none;
+  }
+  body.v5 #mHeroOrgan .v4Name{
+    position:absolute;left:50%;top:0;white-space:nowrap;
+    font-size:15px;font-weight:500;letter-spacing:.01em;color:#f2e5e0;
+    will-change:transform,opacity,filter;
+  }
+  body.light.v5 #mHeroOrgan .v4Name{color:#111;}
   /* clear of the body's shoulder: it overlaps the header's last 30px */
-  body.v5 #mHeroOrgan .mbDots{bottom:40px;left:0;right:0;justify-content:center;gap:5px;}
+  body.v5 #mHeroOrgan .mbDots{bottom:36px;left:0;right:0;justify-content:center;gap:5px;}
   /* ---- V4's own two grounds -------------------------------------------------
      V3's header is the organ's burgundy and keeps the dark theme's ink on it
      whatever the page theme — a dark island. V4 is not an island: it is a
@@ -2668,7 +2683,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="v4Names" id="v4Names"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -3860,6 +3875,18 @@
     ea: gl.getAttribLocation(prog, 'aEdgeA'),
     eb: gl.getAttribLocation(prog, 'aEdgeB'),
   };
+  // the same, with a different cloud in each slot: the shader's own morph then
+  // carries one silhouette into the other instead of crossfading two copies
+  function bindPair(a, b){
+    gl.bindBuffer(gl.ARRAY_BUFFER, orgBuf[a].pos);
+    gl.vertexAttribPointer(LOC.a, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, orgBuf[b].pos);
+    gl.vertexAttribPointer(LOC.b, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, orgBuf[a].edge);
+    gl.vertexAttribPointer(LOC.ea, 1, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, orgBuf[b].edge);
+    gl.vertexAttribPointer(LOC.eb, 1, gl.FLOAT, false, 0, 0);
+  }
   function bindCloud(k){
     // k = organ index for a static cloud, -1 for the live morph buffers
     gl.bindBuffer(gl.ARRAY_BUFFER, k < 0 ? bufA : orgBuf[k].pos);
@@ -5051,6 +5078,17 @@
   // the two tags, cached per slide: the frame loop drives them at their own
   // rates and must not query the DOM sixty times a second
   const mbTags = mbItems.map(el => [el.querySelector('.v4Age'), el.querySelector('.v4Delta')]);
+  // V4 closes the header with the organ's own name between its neighbours, so
+  // the carousel says what is on either side of it without a control. Built
+  // here rather than in the markup: it is the same list the carousel walks.
+  const v4NameEl = document.getElementById('v4Names');
+  const v4Names = v4NameEl ? MB.map(d => {
+    const el = document.createElement('span');
+    el.className = 'v4Name';
+    el.textContent = d.label;
+    v4NameEl.appendChild(el);
+    return el;
+  }) : [];
 
   // native-feeling internal carousel: a continuous track position in slide
   // units; slides track the finger 1:1, neighbours enter from the sides,
@@ -5138,49 +5176,80 @@
         el.style.display = '';
         el.style.transform = 'none';
         el.style.opacity = '1';
-        const px = d * cw, ad = Math.min(1, Math.abs(d));
+        // The organ morphs in place, so the tags are the only thing that
+        // travels — half a card rather than a whole one, or they would fly.
+        // On top of the swipe they answer the pointer, at their own rates
+        // again, which gives the pair depth even when nothing is being dragged.
+        const px = d * cw * 0.5, ad = Math.min(1, Math.abs(d));
+        const lx = look.x * 26, ly = look.y * 14;
         const tf = fade(d * 1.18).toFixed(3);   // tags clear before the organ
         const tg = mbTags[k];
         if (tg[0]){
-          tg[0].style.transform = 'translate(' + (px * 0.82).toFixed(1) + 'px,' +
-            (ad * 3).toFixed(1) + 'px)';
+          tg[0].style.transform = 'translate(' + (px * 0.82 + lx * 0.82).toFixed(1) +
+            'px,' + (ad * 3 + ly * 0.82).toFixed(1) + 'px)';
           tg[0].style.opacity = tf;
         }
         if (tg[1]){
-          tg[1].style.transform = 'translate(' + (px * 0.68).toFixed(1) + 'px,' +
-            (ad * 4).toFixed(1) + 'px)';
+          tg[1].style.transform = 'translate(' + (px * 0.68 + lx * 1.34).toFixed(1) +
+            'px,' + (ad * 4 + ly * 1.34).toFixed(1) + 'px)';
           tg[1].style.opacity = tf;
         }
+
       }
       else {
         el.style.display = '';
         el.style.transform = 'translateX(' + (d * cw).toFixed(1) + 'px)';
         el.style.opacity = fade(d).toFixed(3);
       }
-      if (!vis) continue;
+      if (v4Hero || !vis) continue;         // V4 draws once, after the loop
       const o = MB[k];                       // slide 0 is the body's own cloud
       gl.uniform2f(U.uPan, d * panK, 0);
       gl.uniform1f(U.uAlpha, fade(d));
-      if (v4Hero){
-        // there is no per-organ CSS filter to reach for — both organs are drawn
-        // into one canvas — so the softening is done in the cloud's own terms:
-        // the points spread as the slide leaves, and it gives up 2% of scale
-        const ad = Math.min(1, Math.abs(d));
-        gl.uniform1f(U.uJitter, jitter * (1 + 2.4 * ad));
-        gl.uniform1f(U.uScale, scaleNow * (1 - 0.02 * ad));
-      }
       gl.uniform1f(U.uWarm,
         (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
         Math.min(1, Math.abs(o.delta) / 7));
       bindCloud(o.organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
     }
+    if (v4Hero && v4Names.length){
+      // The name strip runs the same progress at its own rate: the active label
+      // sharp and centred, its neighbours out toward the edges under blur. It
+      // is not a slide — every organ has a name whether or not its tags are on
+      // screen — so it is placed in a pass of its own.
+      for (let k = 0; k < v4Names.length; k++){
+        const nm = v4Names[k], d = k - bx;
+        if (Math.abs(d) > 1.9){ nm.style.display = 'none'; continue; }
+        const an = Math.min(1, Math.abs(d));
+        nm.style.display = '';
+        nm.style.transform = 'translate(-50%,-50%) translateX(' +
+          (d * 128).toFixed(1) + 'px) scale(' + (1 - 0.06 * an).toFixed(3) + ')';
+        nm.style.opacity = (1 - 0.74 * an).toFixed(3);
+        nm.style.filter = an > 0.02 ? 'blur(' + (an * 2.8).toFixed(2) + 'px)' : 'none';
+      }
+    }
+    if (v4Hero && MB.length > 1){
+      // One organ, not two: the swipe drives the shader's own morph, so the
+      // silhouette breaks apart and reforms as the next one in place rather
+      // than sliding off the side. The per-particle stagger and the outward
+      // puff at half-way come free with it.
+      const b0 = Math.max(0, Math.min(MB.length - 1, bx));
+      const k0 = Math.min(MB.length - 2, Math.floor(b0));
+      const k1 = k0 + 1, f = b0 - k0;
+      const oa = MB[k0], ob = MB[k1];
+      const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
+                        Math.min(1, Math.abs(o.delta) / 7);
+      gl.uniform1f(U.uP, f);
+      gl.uniform2f(U.uPan, 0, 0);
+      gl.uniform1f(U.uAlpha, 1);
+      gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
+      gl.uniform2f(U.uCA, ORGANS[oa.organIdx].x, ORGANS[oa.organIdx].y);
+      gl.uniform2f(U.uCB, ORGANS[ob.organIdx].x, ORGANS[ob.organIdx].y);
+      bindPair(oa.organIdx, ob.organIdx);
+      gl.drawArrays(gl.POINTS, 0, N);
+      gl.uniform1f(U.uP, 1);
+    }
     bindCloud(-1);
     gl.uniform2f(U.uPan, 0, 0);
-    if (v4Hero){
-      gl.uniform1f(U.uJitter, jitter);
-      gl.uniform1f(U.uScale, scaleNow);
-    }
   }
   // ---------- V3 hero: the biomarker card and organ age as one carousel -------
   const heroEl = document.getElementById('mHero');

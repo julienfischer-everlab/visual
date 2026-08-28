@@ -140,18 +140,27 @@ value every other page uses. Elsewhere the canvas covers its whole card, so a
 frame or two of mismatch is invisible; here it is a box *inside* the header, and
 a value short of its target draws a visible rectangle on it.
 
-**One progress value drives everything.** The carousel already tracked the
-finger 1:1, rubber-banded at the ends, snapped past half a card and honoured a
-flick; V4 hangs the rest of the composition off that same `d`. The organ
-translates at 1x, the age tag at 0.82x and the status tag at 0.68x, so the
-labels stay attached but sit at their own depth. Both tags fade a little ahead
-of the organ and drift 3-4px down as they leave, and arrive progressively rather
-than appearing at the end. The organ itself gives up 2% of scale and its points
-spread as it goes — there is no per-organ CSS filter to reach for, since both
-organs are drawn into the same canvas, so the softening is done in the cloud's
-own terms. And the crossfade window widens: V1-V3 hold one slide at full
-strength to avoid a double exposure, while V4 wants exactly that double
-exposure — both organs half-present at half a swipe.
+**The organ morphs; nothing about it slides.** V1-V3 draw the two neighbouring
+clouds side by side and crossfade them. V4 instead binds one organ into the
+shader's A slot and its neighbour into B and drives `uP` straight off the drag,
+so a swipe runs the same particle morph a mode change does: the silhouette
+breaks apart and reforms as the next one, in place, with the per-particle
+stagger and the outward puff at half-way coming free. One draw call, no pan.
+
+**One progress value drives the rest.** The carousel already tracked the finger
+1:1, rubber-banded at the ends, snapped past half a card and honoured a flick;
+V4 hangs the composition off that same `d`. The tags are the only thing that
+travels — half a card, or they would fly off a static organ — the age tag at
+0.82x and the status tag at 0.68x, fading a little ahead of the morph with 3-4px
+of downward drift. They answer the pointer on top of that, at those same
+relative rates, so the pair keeps its depth even when nothing is being dragged.
+
+**The name strip is the carousel's other cue.** The active organ's name sits
+centred and sharp above the dots, with its neighbours out toward the edges under
+real blur rather than grey — grey reads as disabled, blur reads as further away.
+It runs the same progress at its own rate, so a swipe brings the incoming name
+into focus as the outgoing one softens, and the dots underneath stay as the
+secondary indicator.
 
 Release runs a timed curve, 480ms on `cubic-bezier(.22, 1, .36, 1)`, instead of
 the exponential chase the other pages use, so it reads as one deliberate
