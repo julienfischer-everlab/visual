@@ -128,12 +128,14 @@ V4 is V3 re-hung, not redrawn — the same cards, the same spacing, the same
 interactions, in a different hierarchy.
 
 The organ leaves the bento and becomes the header's own content: no card, no
-ground, no radius, no padding, one large silhouette on black with generous
-space around it. Its two readings — `37 YEARS OLD` in off-white, `3 YEARS
-YOUNGER` in green or `8 YEARS OLDER` in coral — float *over* the organ rather
-than sitting beside it, and not in the same place for every organ: each
-silhouette has its own clear quarters, in a small table. The canvas clears to
-the header colour so there is no rectangle to see against it.
+ground, no radius, no padding, one large silhouette on black with generous space
+around it. The header reads top to bottom as four bands: the two tags, the
+organ, the arc and age, then the name strip. The tags — `40 YEARS OLD` in
+off-white and the delta in grey or coral — sit in a row across the top, anchored
+to the two edges and clear of the silhouette. Below the organ, the dashboard's
+own arc and odometer, moved here rather than copied, so they keep animating in
+step with everything else. The canvas clears to the header colour so there is no
+rectangle to see against it.
 
 That clear colour snaps to the theme rather than riding the eased crossfade
 value every other page uses. Elsewhere the canvas covers its whole card, so a
@@ -155,12 +157,16 @@ travels — half a card, or they would fly off a static organ — the age tag at
 of downward drift. They answer the pointer on top of that, at those same
 relative rates, so the pair keeps its depth even when nothing is being dragged.
 
-**The name strip is the carousel's other cue.** The active organ's name sits
-centred and sharp above the dots, with its neighbours out toward the edges under
-real blur rather than grey — grey reads as disabled, blur reads as further away.
-It runs the same progress at its own rate, so a swipe brings the incoming name
-into focus as the outgoing one softens, and the dots underneath stay as the
-secondary indicator.
+**The name strip is the carousel's only cue.** The active organ's name sits
+centred and sharp at the foot of the header, its neighbours out toward the edges
+under real blur rather than grey — grey reads as disabled, blur reads as further
+away. The softening is progressive, staying light through the middle of a step
+and only arriving at the edges, so a neighbour is a legible name set back rather
+than a smear. It runs the same progress at its own rate. There are no dots: a
+second indicator under it only competed with it.
+
+The body is V2's three cards unchanged — the hero with biomarkers beside
+biological age, then health coverage and steps as the pair.
 
 Release runs a timed curve, 480ms on `cubic-bezier(.22, 1, .36, 1)`, instead of
 the exponential chase the other pages use, so it reads as one deliberate
