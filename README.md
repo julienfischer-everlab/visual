@@ -138,6 +138,13 @@ the type: at 57px, the 64px column the smaller digits sat in left the mask eatin
 them. The canvas clears to the header colour so there is no rectangle to see
 against it.
 
+Two soft edges frame the band. At the top of the header sits a very light
+elliptical wash that carries the same verdict as the silhouette — green while
+the organ reads younger, orange-red once it reads older — blending from one to
+the next as the swipe crosses between organs. At the foot of the band, the last
+40px is a progressive blur that fades to the header colour, so the silhouette's
+legs dissolve into the header instead of ending on the crop.
+
 That clear colour snaps to the theme rather than riding the eased crossfade
 value every other page uses. Elsewhere the canvas covers its whole card, so a
 frame or two of mismatch is invisible; here it is a box *inside* the header, and

@@ -369,6 +369,29 @@ exactly how a stray dot strip at the foot of the bento went unnoticed here for
 a commit. Paint the changed pixels red over a dimmed copy of the new render and
 look at it: the particle noise is unmistakable, and anything else stands out.
 
+### 5.14 A colour that never painted, and a blur with nothing behind it
+
+Two failures landed together on the V4 header's halo and its bottom fade, and
+both were silent — no error, just an effect that was not there.
+
+The halo takes its colour from a custom property so the swipe can lerp it:
+`--v4halo: 92 196 127`. Written into the gradient as
+`rgba(var(--v4halo), .16)` it produces `rgba(92 196 127, .16)` — space-separated
+channels followed by a *comma* and an alpha, which is not a legal colour in
+either syntax. The declaration was dropped, `background-image` computed to
+`none`, and the header looked exactly as it had before. The legal form mixes the
+two the other way round: `rgb(var(--v4halo) / .16)`. When a var carries bare
+channels, read back `getComputedStyle(el).backgroundImage` — an invalid colour
+inside a gradient takes the whole declaration with it and says nothing.
+
+The fade underneath is a progressive blur: two `backdrop-filter` layers, each
+masked to start lower and hit harder than the last, with the tint on top. They
+have to be **siblings**. An element that carries a `backdrop-filter` becomes a
+backdrop root for its descendants, so a blur layer nested inside another one
+samples only what is painted within its parent — which is nothing — and comes
+out perfectly sharp. Stack the layers side by side under a plain positioned
+wrapper that carries no filter, no opacity and no mask of its own.
+
 ---
 
 ## 6. Open items

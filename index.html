@@ -2176,22 +2176,87 @@
      travels and crossfades with the carousel instead of rolling like a drum,
      so it is one element per organ, same as the names. */
   .v4Ages{display:none;}
+  /* A wash of the organ's own verdict across the top of the header: green when
+     it is younger, orange-red when older, and it changes as the swipe carries
+     one organ into the next. It sits *over* the organ rather than behind it —
+     the canvas clears opaque, so anything underneath would simply not be there
+     — but under the gauge and the strips, and it is faint enough to read as
+     light rather than as a shape. */
+  .v4Halo{display:none;}
+  body.v5 #mHeroOrgan .v4Halo{
+    display:block;position:absolute;left:50%;top:-330px;
+    width:170%;height:380px;transform:translateX(-50%);
+    z-index:1;pointer-events:none;
+    background:radial-gradient(closest-side,
+      rgb(var(--v4halo, 92 196 127) / .16) 0%,
+      rgb(var(--v4halo, 92 196 127) / .06) 50%,
+      rgb(var(--v4halo, 92 196 127) / 0) 100%);
+  }
+  body.light.v5 #mHeroOrgan .v4Halo{
+    background:radial-gradient(closest-side,
+      rgb(var(--v4halo, 92 196 127) / .22) 0%,
+      rgb(var(--v4halo, 92 196 127) / .08) 50%,
+      rgb(var(--v4halo, 92 196 127) / 0) 100%);
+  }
+
+  /* The silhouette's feet run off the bottom of the canvas, and a hard cut
+     there reads as a crop. So the last 40px of the organ band is a progressive
+     blur that fades to the header colour: two blur layers, each masked to start
+     lower and hit harder than the last, then the tint on top. The layers are
+     siblings rather than nested — an element that carries a backdrop-filter
+     becomes a backdrop root, and a blur layer inside one would have nothing
+     behind it to sample. */
+  .v4Foot{display:none;}
+  body.v5 #mHeroOrgan .v4Foot{
+    display:block;position:absolute;left:0;right:0;bottom:232px;height:40px;
+    z-index:1;pointer-events:none;
+    --fog:#000;
+  }
+  body.light.v5 #mHeroOrgan .v4Foot{--fog:#ececea;}
+  body.v6 #mHeroOrgan .v4Foot{--fog:rgb(var(--v5head, 15 15 14));}
+  body.v5 #mHeroOrgan .v4Foot i{
+    position:absolute;left:0;right:0;top:0;bottom:0;display:block;
+  }
+  body.v5 #mHeroOrgan .v4FogA{
+    -webkit-backdrop-filter:blur(2.5px);backdrop-filter:blur(2.5px);
+    -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 55%, #000 100%);
+    mask-image:linear-gradient(to bottom, transparent 0%, #000 55%, #000 100%);
+  }
+  body.v5 #mHeroOrgan .v4FogB{
+    -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
+    -webkit-mask-image:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.55) 72%, #000 100%);
+    mask-image:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.55) 72%, #000 100%);
+  }
+  body.v5 #mHeroOrgan .v4FogC{
+    background:linear-gradient(to bottom, transparent 0%, var(--fog) 88%, var(--fog) 100%);
+  }
+
+  /* Both strips fade out into their own left and right edges, and the blur each
+     item carries grows on the way there — so the softening is the fade rather
+     than a separate effect sitting on top of it. The mask needs a real box to
+     act on, so the strips carry a height and centre their items in it rather
+     than hanging them off a zero-height line. */
+  body.v5 #mHeroOrgan .v4Ages,
+  body.v5 #mHeroOrgan .v4Names{
+    -webkit-mask-image:linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent 100%);
+    mask-image:linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent 100%);
+  }
   body.v5 #mHeroOrgan .v4Ages{
-    display:block;position:absolute;left:0;right:0;bottom:124px;height:0;z-index:2;
+    display:block;position:absolute;left:0;right:0;bottom:84px;height:80px;z-index:2;
     pointer-events:none;
   }
   body.v5 #mHeroOrgan .v4AgeN{
-    position:absolute;left:50%;top:0;white-space:nowrap;
+    position:absolute;left:50%;top:50%;white-space:nowrap;
     font-size:57px;font-weight:500;line-height:1;letter-spacing:-1.6px;
     font-variant-numeric:tabular-nums;color:var(--ink-bright);
-    will-change:transform,opacity;
+    will-change:transform,opacity,filter;
   }
   body.v5 #mHeroOrgan .v4Names{
-    display:block;position:absolute;left:0;right:0;bottom:58px;height:0;z-index:3;
+    display:block;position:absolute;left:0;right:0;bottom:38px;height:40px;z-index:3;
     pointer-events:none;
   }
   body.v5 #mHeroOrgan .v4Name{
-    position:absolute;left:50%;top:0;white-space:nowrap;
+    position:absolute;left:50%;top:50%;white-space:nowrap;
     font-size:20px;font-weight:500;letter-spacing:-.01em;color:#f2e5e0;
     will-change:transform,opacity,filter;
   }
@@ -2246,7 +2311,7 @@
   body.v5 #mV4Row .msCar,
   body.v5 #mV4Row .mbCov{display:flex;}
   /* the cards are a wash on the body rather than a surface of their own */
-  body.v5 #mV4 .msn{background:rgba(255,255,255,.06);}
+  body.v5 #mV4 .msn{background:rgba(255,255,255,.08);}
   body.light.v5 #mV4 .msn{background:rgba(0,0,0,.028);}
   /* the hero is V2's: biomarkers beside biological age. V3 swaps that second
      figure for health coverage, and V4 puts it back — coverage has its own
@@ -2707,7 +2772,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -5077,6 +5142,7 @@
     v4AgeEl.appendChild(el);
     return el;
   }) : [];
+  const v4HaloEl = document.getElementById('v4Halo');
   const v4NameEl = document.getElementById('v4Names');
   const v4Names = v4NameEl ? MB.map(d => {
     const el = document.createElement('span');
@@ -5190,15 +5256,19 @@
     }
     if (v4Hero && v4Ages.length){
       // the age reads as the name strip's twin: it travels the same way and
-      // crossfades rather than rolling, only slower and without the blur —
-      // a number softened is a number misread
+      // crossfades rather than rolling, only slower. The step is wide enough
+      // that two numbers never sit on top of each other — a 57px figure needs
+      // room the names do not — and the blur grows toward the strip's edges
+      // in step with the mask fading them out there.
       for (let k = 0; k < v4Ages.length; k++){
         const ag = v4Ages[k], d = k - bx;
         if (Math.abs(d) > 1.6){ ag.style.display = 'none'; continue; }
         const an = Math.min(1, Math.abs(d));
         ag.style.display = '';
-        ag.style.transform = 'translate(-50%,-50%) translateX(' + (d * 62).toFixed(1) + 'px)';
-        ag.style.opacity = (1 - Math.min(1, an * 1.55)).toFixed(3);
+        ag.style.transform = 'translate(-50%,-50%) translateX(' + (d * 118).toFixed(1) + 'px)';
+        ag.style.opacity = (1 - 0.58 * Math.pow(an, 1.25)).toFixed(3);
+        ag.style.filter = an > 0.02
+          ? 'blur(' + (Math.pow(an, 1.6) * 3.4).toFixed(2) + 'px)' : 'none';
       }
     }
     if (v4Hero && v4Names.length){
@@ -5232,6 +5302,17 @@
       const oa = MB[k0], ob = MB[k1];
       const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
                         Math.min(1, Math.abs(o.delta) / 7);
+      // The halo at the top of the header carries the same verdict as the
+      // silhouette: green while the organ reads younger, orange-red once it
+      // reads older, and blended through the middle of a swipe.
+      if (v4HaloEl){
+        const hue = o => o.delta > 0 ? [232, 113, 74] : [92, 196, 127];
+        const ha = hue(oa), hb = hue(ob);
+        v4HaloEl.style.setProperty('--v4halo',
+          Math.round(ha[0] + (hb[0] - ha[0]) * f) + ' ' +
+          Math.round(ha[1] + (hb[1] - ha[1]) * f) + ' ' +
+          Math.round(ha[2] + (hb[2] - ha[2]) * f));
+      }
       gl.uniform1f(U.uP, f);
       gl.uniform2f(U.uPan, 0, 0);
       gl.uniform1f(U.uAlpha, 1);
