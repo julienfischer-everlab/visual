@@ -180,7 +180,13 @@ biological age, then health coverage and steps as the pair.
 the lifted grey and the body takes the black, so the hero recedes and the
 content sits forward. Everything else — the morph, the strips, the physics, the
 whole light theme — is V4's. It wears every V4 class and adds a marker of its
-own, and the canvas clears to whichever of the two headers it is sitting on.
+own.
+
+Its header also darkens as the body rises over it, from that grey down to almost
+black, reaching the bottom of its range exactly as the body reaches the top of
+the screen. The organ's canvas clears to the header, so the renderer reads the
+same number the CSS does rather than a constant — otherwise a grey rectangle
+surfaces on the darkening ground half way through.
 
 Release runs a timed curve, 480ms on `cubic-bezier(.22, 1, .36, 1)`, instead of
 the exponential chase the other pages use, so it reads as one deliberate

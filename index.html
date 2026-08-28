@@ -2216,8 +2216,12 @@
      lifted grey and the body is the black. Said after V4's pair and at the same
      weight, so it wins on order; the light theme carries `.light` and outranks
      both, so it is untouched. */
-  body.v6 #phone{background:#1a1a19;}
-  body.v6 .mHead{background:#1a1a19;}
+  /* The header is driven from the scroll: --v5head runs the lifted grey down to
+     almost-black as the body rises over it, reaching the bottom of its range
+     exactly when the body reaches the top of the screen. The body's own ground
+     is black throughout — it is what the header is darkening toward. */
+  body.v6 #phone{background:rgb(var(--v5head, 26 26 25));}
+  body.v6 .mHead{background:rgb(var(--v5head, 26 26 25));}
   body.v6 #phone .mBody{background:#000;}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
@@ -2242,8 +2246,8 @@
   body.v5 #mV4Row .msCar,
   body.v5 #mV4Row .mbCov{display:flex;}
   /* the cards are a wash on the body rather than a surface of their own */
-  body.v5 #mV4 .msn{background:rgba(255,255,255,.04);}
-  body.light.v5 #mV4 .msn{background:rgba(0,0,0,.04);}
+  body.v5 #mV4 .msn{background:rgba(255,255,255,.06);}
+  body.light.v5 #mV4 .msn{background:rgba(0,0,0,.06);}
   /* the hero is V2's: biomarkers beside biological age. V3 swaps that second
      figure for health coverage, and V4 puts it back — coverage has its own
      card in the pair below. */
@@ -7107,6 +7111,10 @@
   // V3's phone reads as two layers: the white body scrolls at its own rate over
   // a pinned header whose content recedes at a quarter of it and fades out by
   // the time the body has covered it. Scroll-linked, not an animation.
+  // V5's header darkens as it is scrolled under, and the organ's canvas clears
+  // to that header — so the renderer needs the same number the CSS is using, or
+  // a grey rectangle surfaces on the darkening ground half way through.
+  let v5HeadP = 0;
   (function headerParallax(){
     const sc = document.getElementById('mScroll');
     const head = document.getElementById('mHead');
@@ -7129,6 +7137,21 @@
       const f = Math.min(1, Math.max(0, y / 48));
       const ph = sc.closest('#phone');
       if (ph) ph.style.setProperty('--topFog', (f * f * (3 - 2 * f)).toFixed(3));
+      // V5's header darkens under the body as the body covers it: p is already
+      // the fraction of the header that has been scrolled past, so the grey runs
+      // to almost-black exactly as the body reaches the top of the screen. Only
+      // V5 reads the property, so only V5 has it set.
+      if (ph){
+        if (document.body.classList.contains('v6')){
+          v5HeadP = p * p * (3 - 2 * p);
+          const r = Math.round(26 + (8 - 26) * v5HeadP);
+          const b2 = Math.round(25 + (8 - 25) * v5HeadP);
+          ph.style.setProperty('--v5head', r + ' ' + r + ' ' + b2);
+        } else {
+          v5HeadP = 0;
+          ph.style.removeProperty('--v5head');
+        }
+      }
     }
     sc.addEventListener('scroll', () => {
       if (queued) return;
@@ -7381,7 +7404,10 @@
       // neutral page surface, so it has a reading per theme like any other.
       const bare = flat && cls.contains('v5');
       const dk = bare ? (cls.contains('v6')
-                          ? [0.1020, 0.1020, 0.0980]        // #1a1a19, V5's header
+                          // V5's header runs grey to almost-black under the body
+                          ? [(26 + (8 - 26) * v5HeadP) / 255,
+                             (26 + (8 - 26) * v5HeadP) / 255,
+                             (25 + (8 - 25) * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
                : flat ? [0.1451, 0.1451, 0.1333]           // #252522, the header card
