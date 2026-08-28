@@ -133,11 +133,12 @@ name, the age and the status sit under it, and the canvas clears to the header
 colour so there is no rectangle to see against it. It still swipes through all
 ten selections, and the dots still steer it.
 
-That header is a light grey, `#ececea`, under a white sheet — and V4 is a light
-page in *every* theme, the mirror of V3, whose burgundy header carries the dark
-theme's ink whatever the page is set to. So V4 forces the light reading instead:
-`uLight` to 1 for the organ, and the light values said again with two ids for
-everything the dark themes would otherwise ink.
+That header is a neutral page surface rather than a coloured block — `#ececea`
+under a white sheet in light, `#1a1a19` under `#0d0d0c` in the dark themes — so
+unlike V3, which keeps the organ's burgundy and the dark theme's ink on it
+whatever the page is set to, V4 simply takes the theme. Both readings are said
+with two ids, because the rules they override are written against `#phone` and
+an id beats any number of classes.
 
 One thing had to change for it. `pixScale` clamps the dot size on the dashboard
 because a sub-pixel particle disappears; the phone had no floor, because a
