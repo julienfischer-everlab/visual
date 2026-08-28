@@ -2174,11 +2174,11 @@
   /* the odometer's column masks its own top and bottom so the roll reads as a
      drum; at 57px type a 64px column left the mask eating the digit, so the
      column grows with the type rather than staying where the smaller one sat */
-  body.v5 #mHeroOrgan #ageBig{height:96px;margin:0;}
+  body.v5 #mHeroOrgan #ageBig{height:96px;margin:0;position:relative;top:12px;}
   body.v5 #mHeroOrgan #ageBig .dcol{font-size:57px;}
   body.v5 #mHeroOrgan #ageBig .dcol + .dcol{margin-left:-2px;}
   body.v5 #mHeroOrgan .v4Names{
-    display:block;position:absolute;left:0;right:0;bottom:70px;height:0;z-index:3;
+    display:block;position:absolute;left:0;right:0;bottom:58px;height:0;z-index:3;
     pointer-events:none;
   }
   body.v5 #mHeroOrgan .v4Name{
@@ -5165,7 +5165,8 @@
     if (v4Hero && v4NameEl){
       const ageEl = document.getElementById('ageBig');
       if (ageEl && ageEl.parentElement && ageEl.parentElement.id === 'v4Gauge'){
-        const want = (bx - bxT) * 62;          // ~0.45x the name strip's step
+        // same sign as the names — they travel together, the age just slower
+        const want = -(bx - bxT) * 62;         // ~0.45x the name strip's step
         ageOff += (want - ageOff) * 0.18;
         if (Math.abs(want - ageOff) < 0.05) ageOff = want;
         ageEl.style.transform = 'translateX(' + ageOff.toFixed(1) + 'px)';
