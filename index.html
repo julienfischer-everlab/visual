@@ -2149,13 +2149,13 @@
   body.v5 #mHeroOrgan #mbSlot{inset:0 0 92px;}
   /* the track is only a frame: on V4 nothing about it moves, the tags inside
      it carry their own translation at their own rates */
-  body.v5 #mHeroOrgan .mbTrack{left:0;right:0;top:0;bottom:212px;}
+  body.v5 #mHeroOrgan .mbTrack{left:0;right:0;top:0;bottom:232px;}
   body.v5 #mHeroOrgan .mbItem{
     left:0;right:0;top:0;bottom:0;padding-top:0;display:block;
   }
-  /* No labels over the organ any more, so it starts at the very top of the
-     header and sits 40px higher than it did. */
-  body.v5 #mHeroOrgan #mbSlot{inset:-4px 0 212px;}
+  /* No labels over the organ any more, so it rides high in the header — the
+     slot keeps its height and only its box moves up. */
+  body.v5 #mHeroOrgan #mbSlot{inset:-24px 0 232px;}
   /* the pagination sits at the foot of the header, above the body's rounded
      shoulder, and stays understated */
   /* The strip is one line: the active name centred and sharp, its neighbours
@@ -2169,7 +2169,7 @@
     display:flex;flex-direction:column;align-items:center;
     position:absolute;left:0;right:0;bottom:88px;z-index:2;pointer-events:none;
   }
-  body.v5 #mHeroOrgan #arcA{transform:scale(.52);margin:-22px 0 -44px;}
+  body.v5 #mHeroOrgan #arcA{transform:scale(.52);margin:26px 0 -92px;}
   body.v5 #mHeroOrgan #arcA text{display:none;}
   /* the odometer's column masks its own top and bottom so the roll reads as a
      drum; at 57px type a 64px column left the mask eating the digit, so the
@@ -5062,6 +5062,12 @@
   // everywhere else, so V1-V3 keep the settle they have.
   let bxEase = null;
   let scaleNow = 1;   // the breathing scale, so the bento loop can bias it
+  // The age is one element for the whole carousel, not one per slide, so it
+  // cannot crossfade the way the names do — it travels instead, at its own
+  // slower rate. Damped rather than driven straight off the drag: the target
+  // re-bases the moment a swipe commits, and the damping turns that step into
+  // a swing back rather than a jump.
+  let ageOff = 0;
   // cubic-bezier(.22, 1, .36, 1): solve x for the parameter, then read y
   function bezOut(p){
     const cx = 3 * 0.22, bx2 = 3 * (0.36 - 0.22) - cx, ax = 1 - cx - bx2;
@@ -5155,6 +5161,15 @@
         Math.min(1, Math.abs(o.delta) / 7));
       bindCloud(o.organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
+    }
+    if (v4Hero && v4NameEl){
+      const ageEl = document.getElementById('ageBig');
+      if (ageEl && ageEl.parentElement && ageEl.parentElement.id === 'v4Gauge'){
+        const want = (bx - bxT) * 62;          // ~0.45x the name strip's step
+        ageOff += (want - ageOff) * 0.18;
+        if (Math.abs(want - ageOff) < 0.05) ageOff = want;
+        ageEl.style.transform = 'translateX(' + ageOff.toFixed(1) + 'px)';
+      }
     }
     if (v4Hero && v4Names.length){
       // The name strip runs the same progress at its own rate: the active label
