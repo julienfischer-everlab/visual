@@ -2213,6 +2213,15 @@
       rgb(var(--v4halo, 132 176 142) / .006) 91%,
       rgb(var(--v4halo, 132 176 142) / 0) 100%;
   }
+  /* The light breathes: one slow swell out to 1.21 and back, eleven seconds a
+     cycle. It scales about the circle's own centre, which is above the screen,
+     so the visible cap widens and brightens together — at a given row the
+     gradient is a smaller fraction of a larger radius — rather than sliding.
+     Composited on the transform, and stilled for anyone who asks for less. */
+  @keyframes v4Breath{
+    0%, 100%{transform:translateX(-50%) scale(1);}
+    50%     {transform:translateX(-50%) scale(1.21);}
+  }
   body.v5 #mHeroOrgan .v4Halo{
     display:block;position:absolute;left:50%;
     /* --v4haloY is measured from the phone; the header's organ block starts
@@ -2220,8 +2229,12 @@
     top:calc(var(--v4haloY) - 109px - var(--v4haloR));
     width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
     transform:translateX(-50%);
-    z-index:2;pointer-events:none;
+    z-index:2;pointer-events:none;will-change:transform;
     background:radial-gradient(closest-side, var(--v4haloStops));
+    animation:v4Breath 11s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    body.v5 #mHeroOrgan .v4Halo{animation:none;}
   }
 
   /* The silhouette's feet run off the bottom of the canvas, and a hard cut
@@ -2364,10 +2377,14 @@
   body.light.v5 #phone #mHeroOrgan .mbBadge.warn{color:#806629;}
 
   /* the body stack: full-width biomarkers, a pair, activity, coverage */
-  body.v5 #mV4{display:flex;flex-direction:column;gap:8px;padding:2px 13px 18px;}
+  body.v5 #mV4{display:flex;flex-direction:column;gap:12px;padding:2px 13px 18px;}
   /* the pair is a real two-up again: .mbrow2 folds to one column from V2 on,
      and hides the two cards V2-V3 do not use — V4 is the page that wants them */
-  body.v5 #mV4Row{display:grid;grid-template-columns:1fr 1fr;}
+  body.v5 #mV4Row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  /* the wider gap takes 2px off each card, which is all it took to wrap
+     "Health coverage" — the tile already carries a short form for exactly this */
+  body.v5 #phone #mV4 .hiCov .lbl .cvL{display:none;}
+  body.v5 #phone #mV4 .hiCov .lbl .cvS{display:inline;}
   body.v5 #mV4Row .msCar,
   body.v5 #mV4Row .mbCov{display:flex;}
   /* the cards are a wash on the body rather than a surface of their own */
@@ -2391,21 +2408,26 @@
      absolute corner, so it takes the row's own top edge and the figures keep
      their spacing whatever the second one turns out to be. */
   .mHeroGet{display:none;}
-  /* Three things on a 287px row where the pair alone used to have it. Nothing
-     here shrinks or wraps — a wrapped eyebrow drops its figure out of line with
-     the one beside it — so the room comes from the eyebrows themselves, half a
-     point smaller and a little tighter here than elsewhere on the page, and from
-     a row closed up from 40px to 18. That puts the three at 283 of the 287. */
-  body.v5 #mV4 .mHeroCard .mHeroTop{gap:18px;}
+  /* Nothing on this row shrinks or wraps — a wrapped eyebrow drops its figure
+     out of line with the one beside it, and a shrinkable first column puts the
+     info dot on a line of its own — so the eyebrows are half a point smaller and
+     a little tighter here than elsewhere on the page. The button is out of the
+     flow entirely, pinned to the card's corner: in the row it was a third item
+     the two figures had to leave room for, and there was none to leave. */
+  body.v5 #mV4 .mHeroCard{position:relative;}
+  /* 26, not the 34 the +16 would have made: at 34 the eyebrow's tail runs under
+     the button, and the two asks are competing for the same 287px. This is the
+     widest the pair can sit and still leave the button clear air. */
+  body.v5 #mV4 .mHeroCard .mHeroTop{gap:26px;}
   body.v5 #phone #mV4 .mHeroCard .mHeroTop .lbl{
-    font-size:9.5px;letter-spacing:.08em;white-space:nowrap;
+    font-size:9px;letter-spacing:.05em;white-space:nowrap;
   }
   body.v5 #phone #mV4 .mHeroCard .mHeroTop .big{white-space:nowrap;}
   body.v5 #mV4 .mHeroCard .mHeroGet{
-    display:block;margin-left:auto;flex:none;align-self:flex-start;
-    font:inherit;font-size:11.5px;font-weight:500;line-height:1;
+    display:block;position:absolute;top:22px;right:22px;
+    font:inherit;font-size:13px;font-weight:500;line-height:1;
     white-space:nowrap;
-    border:0;border-radius:999px;padding:8px 12px;cursor:pointer;
+    border:0;border-radius:999px;padding:11px 16px;cursor:pointer;
     background:rgba(255,255,255,.12);color:#ececec;
     transition:background .16s ease;
   }
