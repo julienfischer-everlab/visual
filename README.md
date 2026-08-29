@@ -208,11 +208,8 @@ and only arriving at the edges, so a neighbour is a legible name set back rather
 than a smear. It runs the same progress at its own rate. There are no dots: a
 second indicator under it only competed with it.
 
-The body is V2's three cards — health coverage and steps as the pair, and the
-hero with biomarkers beside a third reading of its own: how many of the panel
-are still untested. That figure takes the label's grey rather than the card's
-ink, because it counts what is missing. V2 keeps biological age there and V3
-keeps coverage; each is its own element, so none of them had to be rewritten.
+The body is V2's three cards unchanged — the hero with biomarkers beside
+biological age, then health coverage and steps as the pair.
 
 **Mobile V5** is V4 with the dark theme's two grounds swapped: the header takes
 the lifted grey and the body takes the black, so the hero recedes and the
