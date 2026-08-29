@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <meta charset="utf-8">
 <title>Particle morph &mdash; organ concept demo</title>
 <style>
@@ -2269,8 +2270,16 @@
   }
   body.light.v5 #mHeroOrgan .v4Foot{--fog:#ececea;}
   body.v6 #mHeroOrgan .v4Foot{--fog:rgb(var(--v5head, 15 15 14));}
+  /* Only the body silhouette runs off the bottom of the canvas — every other
+     organ is a compact shape sitting well inside it, and softening a foot it
+     does not have just veils the bottom of the drawing. So the whole band rides
+     a strength the carousel sets: 1 on the body, 0 a step away, crossfading in
+     between. It is set on each layer rather than on the group, because opacity
+     on the group would make it a backdrop root and the blurs inside it would
+     have nothing left to sample. */
   body.v5 #mHeroOrgan .v4Foot i{
     position:absolute;left:0;right:0;top:0;bottom:0;display:block;
+    opacity:var(--v4foot, 0);
   }
   body.v5 #mHeroOrgan .v4FogA{
     -webkit-backdrop-filter:blur(2.5px);backdrop-filter:blur(2.5px);
@@ -2296,16 +2305,31 @@
     -webkit-mask-image:linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent 100%);
     mask-image:linear-gradient(to right, transparent 0, #000 20%, #000 80%, transparent 100%);
   }
+  /* The box is taller than the figure and hung lower than the figure sits: the
+     number keeps its own centre 20px higher than it was, and the slack below it
+     is where the caption hangs without the strip's mask clipping it. */
   body.v5 #mHeroOrgan .v4Ages{
-    display:block;position:absolute;left:0;right:0;bottom:84px;height:80px;z-index:2;
+    display:block;position:absolute;left:0;right:0;bottom:89px;height:110px;z-index:2;
     pointer-events:none;
   }
   body.v5 #mHeroOrgan .v4AgeN{
     position:absolute;left:50%;top:50%;white-space:nowrap;
-    font-size:57px;font-weight:500;line-height:1;letter-spacing:-1.6px;
+    font-size:57px;font-weight:500;line-height:1;letter-spacing:-2.3px;
     font-variant-numeric:tabular-nums;color:var(--ink-bright);
     will-change:transform,opacity,filter;
   }
+  /* The gap, in words, under the figure it belongs to — one element per organ,
+     so it travels, fades and blurs on the number's own transform.
+     Not .v4AgeS: without a doctype this file renders in quirks mode, where
+     class selectors are case-insensitive, so .v4AgeS also matched .v4Ages and
+     hung the whole strip off the foot of the header by its own top:100%. */
+  body.v5 #mHeroOrgan .v4Gap{
+    position:absolute;top:100%;left:50%;transform:translateX(-50%);
+    margin-top:8px;white-space:nowrap;
+    font-size:13px;font-weight:400;line-height:1;letter-spacing:0;
+    color:rgba(242,229,224,.5);
+  }
+  body.light.v5 #mHeroOrgan .v4Gap{color:rgba(0,0,0,.5);}
   body.v5 #mHeroOrgan .v4Names{
     display:block;position:absolute;left:0;right:0;bottom:38px;height:40px;z-index:3;
     pointer-events:none;
@@ -5193,11 +5217,19 @@
   const v4Ages = v4AgeEl ? MB.map(d => {
     const el = document.createElement('span');
     el.className = 'v4AgeN';
-    el.textContent = String(CHRONO + d.delta);
+    const n = Math.abs(d.delta);
+    el.innerHTML = String(CHRONO + d.delta) +
+      '<span class="v4Gap">' + (d.delta === 0 ? 'On par'
+        : n + (n > 1 ? ' years ' : ' year ') + (d.delta < 0 ? 'younger' : 'older')) +
+      '</span>';
     v4AgeEl.appendChild(el);
     return el;
   }) : [];
   const v4HaloEl = document.getElementById('v4Halo');
+  const v4FootEl = document.getElementById('v4Foot');
+  // the bottom fade belongs to the body alone, so the carousel has to know
+  // which of its slides that is rather than assuming the order
+  const v4BodyK = MB.findIndex(d => d.label === 'Body');
   const v4NameEl = document.getElementById('v4Names');
   const v4Names = v4NameEl ? MB.map(d => {
     const el = document.createElement('span');
@@ -5353,7 +5385,14 @@
       // silhouette breaks apart and reforms as the next one in place rather
       // than sliding off the side. The per-particle stagger and the outward
       // puff at half-way come free with it.
-      const b0 = Math.max(0, Math.min(MB.length - 1, bx));
+      // But not under the finger. The strips track the drag 1:1; the silhouette
+      // holds the organ the swipe picked up and only breaks apart once it is let
+      // go, so the morph reads as one deliberate movement on the settle rather
+      // than something scrubbed back and forth. mx0 is where the morph was when
+      // the drag began, which is a whole slide at rest and a fraction if the
+      // finger comes back down mid-settle.
+      const mx = bxDrag ? bxDrag.mx0 : bx;
+      const b0 = Math.max(0, Math.min(MB.length - 1, mx));
       const k0 = Math.min(MB.length - 2, Math.floor(b0));
       const k1 = k0 + 1, f = b0 - k0;
       const oa = MB[k0], ob = MB[k1];
@@ -5362,6 +5401,10 @@
       // The halo at the top of the header carries the same verdict as the
       // silhouette: green while the organ reads younger, orange-red once it
       // reads older, and blended through the middle of a swipe.
+      if (v4FootEl && v4BodyK >= 0){
+        v4FootEl.style.setProperty('--v4foot',
+          Math.max(0, 1 - Math.abs(b0 - v4BodyK)).toFixed(3));
+      }
       if (v4HaloEl){
         const halo = v4HaloEl.closest('#phone') || v4HaloEl;
         const hue = o => o.delta > 0 ? [210, 148, 112] : [132, 176, 142];
@@ -5471,6 +5514,9 @@
                lt: performance.now(), horiz: null, pid: e.pointerId };
     bxV = 0;
     bxEase = null;                 // the finger takes the wheel back
+    // the strips track the finger, but the silhouette does not: it holds the
+    // organ it was showing and only breaks apart once the swipe is let go
+    bxDrag.mx0 = bx;
   });
   mOrgCard.addEventListener('pointermove', e => {
     if (!bxDrag) return;
@@ -7269,7 +7315,7 @@
       const y = sc.scrollTop;
       const span = Math.max(1, head.offsetHeight - 40);
       const p = Math.min(1, Math.max(0, y / span));
-      inner.style.transform = reduced ? '' : 'translateY(' + (-y * 0.25).toFixed(1) + 'px)';
+      inner.style.transform = reduced ? '' : 'translateY(' + (-y * 0.12).toFixed(1) + 'px)';
       inner.style.opacity = (1 - p).toFixed(3);
       // the frosted top has nothing to sit over until something scrolls under
       // it, so it fades in over the first 48px rather than being there at rest
