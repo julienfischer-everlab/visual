@@ -2408,19 +2408,18 @@
      absolute corner, so it takes the row's own top edge and the figures keep
      their spacing whatever the second one turns out to be. */
   .mHeroGet{display:none;}
-  /* The eyebrows here read at the same size as every other card's — the button
-     gets its own band across the top of the card rather than a place in the row,
-     so the two figures have the width to themselves and nothing has to be shrunk
-     or wrapped to fit beside it. */
-  body.v5 #mV4 .mHeroCard{position:relative;}
-  body.v5 #mV4 .mHeroCard .mHeroTop{gap:34px;padding-top:47px;}
+  /* All three back on one line, at the eyebrow size every other card uses. The
+     short second label is what buys the room: 79 + 63 + 76 of content in a 287px
+     row leaves 69 for two gaps of 34, and the button lands flush on the card's
+     own 22px inset. Nothing shrinks or wraps to fit. */
+  body.v5 #mV4 .mHeroCard .mHeroTop{gap:34px;}
   body.v5 #phone #mV4 .mHeroCard .mHeroTop .lbl,
   body.v5 #phone #mV4 .mHeroCard .mHeroTop .big{white-space:nowrap;}
   body.v5 #mV4 .mHeroCard .mHeroGet{
-    display:block;position:absolute;top:22px;right:22px;
+    display:block;margin-left:auto;flex:none;align-self:flex-start;
     font:inherit;font-size:13px;font-weight:500;line-height:1;
     white-space:nowrap;
-    border:0;border-radius:999px;padding:11px 16px;cursor:pointer;
+    border:0;border-radius:999px;padding:11px 15px;cursor:pointer;
     background:rgba(255,255,255,.12);color:#ececec;
     transition:background .16s ease;
   }
@@ -2774,7 +2773,7 @@
         <div class="mHeroTop">
           <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
           <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span class="yrs">years old</span></div></div>
-          <div class="mHeroUt"><div class="lbl">Untested markers</div><div class="big">76</div></div>
+          <div class="mHeroUt"><div class="lbl">Untested</div><div class="big">76</div></div>
           <button class="mHeroGet" type="button">Get test</button>
           <div class="mHeroCov v3On">
             <div class="lbl">Health coverage</div>
@@ -3951,9 +3950,20 @@
       float halo = (1.0 - ghost) * (1.0 - flowP) * abs(uWarm)
                  * (uWarm > 0.0 ? (0.25 + 0.60 * pick)
                                 : max(0.0, 0.70 * pick - 0.32));
+      // Younger cools the whole cloud, not just the dots that take the tint: the
+      // red is pulled 30% toward its own grey before anything else happens, so a
+      // healthy organ reads as grey and pale rather than as a red one wearing
+      // light. It reaches full strength by half the scale, so there is no step
+      // at the crossing. The tint over it is white with a green cast — on the
+      // light theme it stays ink, where a pale green would be nothing at all.
+      float cool = min(1.0, max(0.0, -uWarm) * 2.0);
+      vec3 base = mix(aColor.rgb, vec3(dot(aColor.rgb, vec3(0.36, 0.50, 0.14))),
+                      0.30 * cool);
       vec3 haloCol = uWarm > 0.0 ? vec3(0.87, 0.56, 0.30)
-                                 : mix(vec3(1.0), vec3(0.0), uLight);
-      vec3 rgb = mix(aColor.rgb, haloCol, halo);
+                                 : mix(vec3(0.90, 0.97, 0.92), vec3(0.0), uLight);
+      vec3 rgb = mix(base, haloCol, halo);
+      // and 15% off the whole cloud's saturation on top of that, verdict included
+      rgb = mix(rgb, vec3(dot(rgb, vec3(0.36, 0.50, 0.14))), 0.15);
       // light theme: dark, mostly desaturated ink with a trace of warmth
       vec3 lrgb = mix(rgb, vec3(dot(rgb, vec3(0.4, 0.4, 0.2))), 0.6) * 0.38 + vec3(0.02);
       rgb = mix(rgb, lrgb, uLight);
