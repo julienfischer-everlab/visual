@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<!-- without this a phone lays the page out at 980px and zooms out, which
+     puts the device mock-up off the side of the screen -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Particle morph &mdash; organ concept demo</title>
 <style>
   :root{
@@ -25,7 +28,11 @@
     display:flex;align-items:center;gap:24px;
     padding:8px 16px;
     background:#09090b;border-bottom:1px solid #1f1f22;
+    /* on a phone the row is wider than the screen; let it be swiped rather than
+       clipped, so the controls past the fold are still reachable */
+    overflow-x:auto;scrollbar-width:none;
   }
+  .topbar::-webkit-scrollbar{display:none;}
   .topbar, .topbar *{box-shadow:none !important;filter:none !important;}
   .tweaks{display:flex;align-items:center;gap:16px;flex-wrap:nowrap;flex:1;}
   .tweaks .lbl{
@@ -4537,6 +4544,14 @@
   // same colours rather than each in its own dialect.
   const C_GREEN = [92,196,127], C_NEUT = [181,154,147],
         C_ORANGE = [242,199,68], C_RED = [239,111,99];
+  // The instrument sits a fifth off full saturation — the ticks are a scale, not
+  // a signal, and at full strength the lit ones shouted over the reading they
+  // were measuring. Applied to the live colour and the resting one alike.
+  const ARC_DESAT = 0.20;
+  function desat(c, k){
+    const l = c[0] * 0.36 + c[1] * 0.50 + c[2] * 0.14;
+    return [c[0] + (l - c[0]) * k, c[1] + (l - c[1]) * k, c[2] + (l - c[2]) * k];
+  }
   const lerpC = (a, b, t) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t];
   // The needle head is the reading's position, not its verdict — the coloured
   // ticks between the centre and it already say which way the gap runs, and a
@@ -4546,6 +4561,13 @@
   function indFill(){
     return document.body.classList.contains('light') ? '#000' : '#fff';
   }
+  // Declared here, and off the body class rather than the theme flag, because
+  // buildArcA() draws the resting ticks at module init — before that flag exists.
+  function tickBase(){
+    const light = document.body.classList.contains('light');
+    const c = desat(light ? [138, 106, 92] : [196, 155, 147], ARC_DESAT);
+    return 'rgb(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ')';
+  }
   function ageColor(v){
     // decisive semantics: any younger value is green, any older is orange->red
     let c;
@@ -4554,6 +4576,7 @@
     // actually span, rather than the scale's own half-width
     else if (v >= 0.05) c = lerpC(C_ORANGE, C_RED, Math.min(1, v / 7));
     else c = C_NEUT;
+    c = desat(c, ARC_DESAT);
     return 'rgb(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ')';
   }
 
@@ -4606,7 +4629,7 @@
       const baseOp = Math.max(0.02, 0.03 + 0.26 * (1 - Math.pow(rel, 1.4)));
       const line = el('line', {
         x1: a[0], y1: a[1], x2: b[0], y2: b[1],
-        stroke: '#c49b93',
+        stroke: tickBase(),
         'stroke-width': 1.1, 'stroke-linecap': 'round',
         opacity: baseOp,
       }, arcASvg);
@@ -4920,6 +4943,14 @@
   });
   versionSel.value = String(version);
   versionSel.addEventListener('change', () => setMode(+versionSel.value));
+  // A page can be linked to directly, so a phone can be pointed at one version
+  // without hunting through the dropdown first. The hash is the mode's number,
+  // which is the same index the dropdown and the body class already use.
+  function modeFromHash(){
+    const m = /^#m(\d+)$/.exec(location.hash || '');
+    const v = m ? +m[1] : NaN;
+    return (v >= 0 && v < MODES.length) ? v : null;
+  }
   // V4 rebuilds the phone out of the same parts rather than new ones: the
   // organ card leaves the bento for the header, and the four content cards
   // leave it for the white body in a new order. Nothing is duplicated — each
@@ -5019,6 +5050,9 @@
     if (m === 8 && window.__imBoot) window.__imBoot();  // the instrument builds on first view
     if (m === 3) spTarget = pillCurrent; // card flip picks up the active organ
     versionSel.value = String(m);
+    // replace rather than push: stepping through versions should not fill the
+    // back button with them, but the address bar should still be linkable
+    try { history.replaceState(null, '', '#m' + m); } catch (e){}
     resize(); // re-measures the bottom UI
     // let the new layout settle before measuring positions for the sync
     if (m > 0) setTimeout(() => { resize(); selectPill(pillCurrent); }, 60);
@@ -7445,7 +7479,6 @@
     parallaxApply = apply;
   })();
 
-  const tickBase = () => lightOn ? '#8a6a5c' : '#c49b93';
   // Chronological age is the reference every other number on the page is quoted
   // against, so changing it redraws the scale and re-renders everything derived
   // from it rather than only relabelling the headline.
@@ -7739,6 +7772,12 @@
       gl.drawArrays(gl.POINTS, 0, TOT);
     }
   }
+  // open on whatever the address bar asks for, and follow it if it changes
+  addEventListener('hashchange', () => {
+    const h = modeFromHash();
+    if (h !== null && h !== version) setMode(h);
+  });
+  { const h = modeFromHash(); if (h !== null) setMode(h); }
   requestAnimationFrame(frame);
 })();
 </script>
