@@ -169,7 +169,7 @@ puff at half-way coming free. One draw call, no pan.
 
 But not under the finger, and not on the strips' clock. The text tracks the drag
 1:1 and settles in 480ms; the cloud holds whatever the swipe picked up, starts
-only on the release, and takes 1500ms to gather. The words land while the organ
+only on the release, and takes 3000ms to gather. The words land while the organ
 is still arriving, which is what makes it read as one thing becoming another
 rather than as a slide changing.
 
@@ -249,27 +249,12 @@ recorded sibling can, and the organ card in particular moves on its own
 schedule. V1, V2, V3 and every desktop page lay out to the pixel after a V4
 round trip.
 
-### Charts draw, they do not grow
+### Charts do not animate in
 
-Every mini chart animates when its slide lands, and they all animate the same
-way: left to right, along the mark itself. The line charts run
-`stroke-dashoffset` from the path's own length back to zero, so the stroke is
-*revealed* rather than moved — the path keeps its exact geometry from the first
-frame, and the container, the dotted baseline, the axis labels and the value
-never animate at all. The marks without a stroke to draw take the same reading:
-the bar weeks wipe in from the left at their final heights and opacities, the
-coverage dial keeps its own sweep, and the signal card's fill and end dots
-arrive with the stroke instead of ahead of it. One curve, 820ms, everywhere.
-
-Each line's length is measured once at load into a `--len` custom property, in
-user units, which is what `stroke-dasharray` counts in — so
-`preserveAspectRatio="none"` stretching the box cannot desynchronise the draw.
-A straight `<line>` gets its length from its endpoints instead: `getBBox()`
-throws while the element is off-screen, and the endpoints need no layout.
-
-The animation fires only when a slide's index settles on a new value, so a
-rerender or a nudged carousel cannot replay it.
-
+The mini charts used to draw themselves as each slide landed. They are static
+now: a slide arrives already drawn, and every mark renders its final state
+without help — the dash pattern is the whole path, so at offset 0 the line reads
+solid, and nothing is left to fire.
 ### The organ mini card
 
 Label, title, status: three lines, then the visual, then the dots. The status
