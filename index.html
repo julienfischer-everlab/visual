@@ -5284,6 +5284,15 @@
     return ((ay * u + by) * u + cy) * u;
   }
   const v4Live = () => document.body.classList.contains('v5');
+  // On V1-V3 a slide travels a whole card, so dividing the drag by the card is
+  // exactly 1:1 with the finger. V4's slides do not: the name strip steps 138px,
+  // the age 118px, and the silhouette does not move at all until the release —
+  // so the same division reads about three times heavier than it looks, and the
+  // swipe feels like it is dragging weight. V4 gets a shorter span, a shorter
+  // commit and a lighter flick; every other page keeps the physics it had.
+  const bxFeel = () => v4Live()
+    ? { span: 0.52, snap: 0.34, flickV: 0.0009, flickD: 0.04 }
+    : { span: 1,    snap: 0.5,  flickV: 0.0016, flickD: 0.08 };
   function bxGlide(to){
     to = Math.max(0, Math.min(MB.length - 1, to));
     if (!v4Live()){ bxEase = null; return; }
@@ -5567,8 +5576,8 @@
       } else if (Math.abs(dy) > 10){ bxDrag = null; return; }
       else return;
     }
-    const w = Math.max(1, mOrgCard.offsetWidth);
-    let nx = bxDrag.bx0 - dx / w;              // 1:1 with the finger
+    const w = Math.max(1, mOrgCard.offsetWidth * bxFeel().span);
+    let nx = bxDrag.bx0 - dx / w;
     // rubber-band past the ends — never expose empty space
     if (nx < 0) nx = nx * 0.28;
     if (nx > MB.length - 1) nx = (MB.length - 1) + (nx - (MB.length - 1)) * 0.28;
@@ -5586,11 +5595,12 @@
       return;
     }
     lastManual = performance.now();
+    const fl = bxFeel();
     const delta = bx - d.s0;
     let target = d.s0;
-    if (delta > 0.5) target = d.s0 + Math.ceil(delta - 0.5);
-    else if (delta < -0.5) target = d.s0 + Math.floor(delta + 0.5);
-    else if (Math.abs(bxV) > 0.0016 && Math.abs(delta) > 0.08)
+    if (delta > fl.snap) target = d.s0 + Math.ceil(delta - fl.snap);
+    else if (delta < -fl.snap) target = d.s0 + Math.floor(delta + fl.snap);
+    else if (Math.abs(bxV) > fl.flickV && Math.abs(delta) > fl.flickD)
       target = d.s0 + (bxV > 0 ? 1 : -1);     // intentional flick advances
     target = Math.max(0, Math.min(MB.length - 1, target));
     if (MB_ORDER[target] !== pillCurrent) selectPill(MB_ORDER[target]); // dots + title follow

@@ -173,13 +173,20 @@ only on the release, and takes 3000ms to gather. The words land while the organ
 is still arriving, which is what makes it read as one thing becoming another
 rather than as a slide changing.
 
-**One progress value drives the rest.** The carousel already tracked the finger
-1:1, rubber-banded at the ends, snapped past half a card and honoured a flick;
+**One progress value drives the rest.** The carousel rubber-bands at the ends,
+snaps past a threshold and honours a flick;
 V4 hangs the composition off that same `d`. The tags are the only thing that
 travels — half a card, or they would fly off a static organ — the age tag at
 0.82x and the status tag at 0.68x, fading a little ahead of the morph with 3-4px
 of downward drift. They answer the pointer on top of that, at those same
 relative rates, so the pair keeps its depth even when nothing is being dragged.
+
+Its drag is not 1:1 with the card, though, where V1-V3's is. Their slides
+travel a whole card, so dividing the drag by the card is exactly the finger;
+V4's do not — the name strip steps 138px, the age 118px, the silhouette not at
+all until the release — so the same division read about three times heavier
+than it looked. One slide is 52% of a card here, committing at a third of
+that, with a lighter flick to match.
 
 The age is the name strip's twin: one element per organ, travelling the same
 way at about half the rate and crossfading rather than rolling. It is *not* the
