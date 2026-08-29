@@ -3899,8 +3899,16 @@
       // verdict is the per-particle lottery alone and they fall right across the
       // silhouette. The younger colour is ink rather than green: white on the
       // dark grounds, black on the light one, which the theme mix supplies.
+      // Ink carries much further than the orange does on a near-black ground, so
+      // the two verdicts do not read equally at the same strength: the younger
+      // side is thinned to 40% of the older one's. Subtracting a floor rather
+      // than scaling the whole ramp is what does the thinning — it drops the
+      // weakest of the lottery to zero, so about a third of the dots keep their
+      // own palette colour outright instead of every dot going faintly white.
+      float pick = fract(aSeed.y * 3.17);
       float halo = (1.0 - ghost) * (1.0 - flowP) * abs(uWarm)
-                 * (0.25 + 0.60 * fract(aSeed.y * 3.17));
+                 * (uWarm > 0.0 ? (0.25 + 0.60 * pick)
+                                : max(0.0, 0.86 * pick - 0.25));
       vec3 haloCol = uWarm > 0.0 ? vec3(0.87, 0.56, 0.30)
                                  : mix(vec3(1.0), vec3(0.0), uLight);
       vec3 rgb = mix(aColor.rgb, haloCol, halo);
