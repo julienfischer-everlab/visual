@@ -169,7 +169,7 @@ puff at half-way coming free. One draw call, no pan.
 
 But not under the finger, and not on the strips' clock. The text tracks the drag
 1:1 and settles in 480ms; the cloud holds whatever the swipe picked up, starts
-only on the release, and takes 900ms to gather. The words land while the organ
+only on the release, and takes 1500ms to gather. The words land while the organ
 is still arriving, which is what makes it read as one thing becoming another
 rather than as a slide changing.
 
