@@ -2194,14 +2194,9 @@
      diameter the tail does reach the status bar, which is why the peak is held
      low enough that what arrives up there is a couple of levels, not a wash. */
   .v4Halo{display:none;}
-  /* The stop list lives on the phone rather than inside the gradient, because
-     two elements have to draw the same circle: the halo itself, and the status
-     strip above it. The scroller the header lives in clips at its own top edge,
-     so a circle this size stops dead under the time and the battery — a seam
-     exactly where the light should be quietest. The strip is a sibling of the
-     scroller, so it paints the same gradient in its own coordinates and the two
-     halves meet with nothing between them. The colour is set on the phone for
-     the same reason: both have to inherit it. */
+  /* The stop list and the geometry live on the phone rather than inside the
+     gradient, so the light has one definition and each theme supplies its own
+     alphas. The colour is set there too, by the carousel. */
   body.v5 #phone{
     --v4haloStops:
       rgb(var(--v4halo, 132 176 142) / .266) 0%,
@@ -2214,9 +2209,8 @@
       rgb(var(--v4halo, 132 176 142) / .004) 91%,
       rgb(var(--v4halo, 132 176 142) / 0) 100%;
     /* The circle's radius, and its centre measured down from the top of the
-       phone — the strip needs both as real lengths, having no box of the halo's
-       own to size a gradient against, and the halo's own offset is derived from
-       them so there is one place to move the light.
+       phone; the halo's own offset is derived from them, so there is one place
+       to move the light.
 
        The centre sits above the screen: only the bottom third of the circle is
        ever on it, which is what makes the light read as a dome across the top
@@ -2247,10 +2241,6 @@
     transform:translateX(-50%);
     z-index:2;pointer-events:none;
     background:radial-gradient(closest-side, var(--v4haloStops));
-  }
-  body.v5 #phone .mstatus{
-    background-image:radial-gradient(var(--v4haloR) at 50% var(--v4haloY),
-      var(--v4haloStops));
   }
 
   /* The silhouette's feet run off the bottom of the canvas, and a hard cut
@@ -2350,6 +2340,16 @@
      a pale grey under a white sheet; the dark themes are the same two steps in
      neutral. Both are said with two ids because the readings they override are
      written against `#phone`, and an id beats any number of classes. */
+  /* The strip is a band in the flow everywhere else, which means the scroller
+     starts under it and nothing can ever pass beneath the clock. Here it lifts
+     out and becomes an overlay: the scroller runs the full height of the phone,
+     the header carries the safe area as padding so nothing starts hidden, and
+     what scrolls up goes under the time and the battery behind the frosted
+     glass that was already waiting for it. */
+  body.v5 #phone .mstatus{position:absolute;left:0;right:0;top:0;z-index:5;}
+  /* 39px, not 44: the strip's own height in flow, so lifting it out moves
+     nothing that was below it */
+  body.v5 #phone #mHeadIn{padding-top:39px;}
   body.v5 #phone{background:#000;}
   body.light.v5 #phone{background:#ececea;}
   body.v5 .mHead{background:#000;}
