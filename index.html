@@ -2376,8 +2376,17 @@
   /* the hero is V2's: biomarkers beside biological age. V3 swaps that second
      figure for health coverage, and V4 puts it back — coverage has its own
      card in the pair below. */
-  body.v5 #mV4 .mHeroCard .mHeroCov{display:none;}
-  body.v5 #mV4 .mHeroCard .v3Off{display:block;}
+  /* V2 reads the pair as biomarkers beside biological age and V3 swaps the
+     second for coverage; V4 asks for a third thing — how many of the panel are
+     still untested. It is a count of what is missing, so the figure takes the
+     label's own grey rather than the card's ink. Its own element rather than a
+     rewrite of the age's, so the pages that still want the age keep it. */
+  .mHeroUt{display:none;}
+  body.v5 #mV4 .mHeroCard .mHeroCov,
+  body.v5 #mV4 .mHeroCard .v3Off{display:none;}
+  body.v5 #mV4 .mHeroCard .mHeroUt{display:block;}
+  body.v5 #phone #mV4 .mHeroUt .big{color:#8b8b86;}
+  body.light.v5 #phone #mV4 .mHeroUt .big{color:rgba(0,0,0,.5);}
   body.v5 #mV4 .mHeroCard{min-height:0;}
   body.v5 #mV4 .mHeroCard .legend{margin-top:22px;}
   /* the pair reuses the mini-card system whole — #mV4Row wears .mbrow2 — so
@@ -2723,6 +2732,7 @@
         <div class="mHeroTop">
           <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
           <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span class="yrs">years old</span></div></div>
+          <div class="mHeroUt"><div class="lbl">Untested markers</div><div class="big">76</div></div>
           <div class="mHeroCov v3On">
             <div class="lbl">Health coverage</div>
             <div class="big">64<span class="pc">%</span></div>
@@ -3221,16 +3231,18 @@
   let DUR = reduced ? 300 : MODES[version].dur;
 
   // ---------- muted warm palette on burgundy (rgb 0..1) ----------
-  // Weighted toward the reds: the cream highlight and the lavender are what pull
-  // the cloud pale, so they are the two that give ground. The colours themselves
-  // are unchanged — it is which of them a particle is likely to draw.
+  // Instrument, not illustration: neutrals carrying a slight cool cast, held at
+  // mid value so the cloud reads as material rather than as light. Warmth is a
+  // trace rather than the subject — one warm grey and one terracotta, together a
+  // fifth of the draw — which also leaves the verdict tint somewhere to register
+  // against, where a saturated cloud swallowed it.
   const PALETTE = [
-    [[0.690,0.314,0.314], 34], // muted red
-    [[0.812,0.490,0.420], 24], // soft coral
-    [[0.788,0.541,0.584], 20], // dusty pink
-    [[0.541,0.290,0.322], 12], // rosewood depth
-    [[0.663,0.541,0.722],  7], // warm lavender
-    [[0.941,0.878,0.816],  3], // pale cream highlight
+    [[0.620,0.632,0.660], 30], // steel
+    [[0.520,0.540,0.580], 24], // slate
+    [[0.600,0.520,0.510], 16], // warm grey
+    [[0.720,0.712,0.702], 14], // light neutral
+    [[0.400,0.420,0.460], 10], // deep slate
+    [[0.740,0.560,0.500],  6], // terracotta, the last of the red
   ];
   function pickColor(){
     let r = Math.random() * 100;
