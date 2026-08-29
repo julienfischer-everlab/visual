@@ -392,6 +392,48 @@ samples only what is painted within its parent — which is nothing — and come
 out perfectly sharp. Stack the layers side by side under a plain positioned
 wrapper that carries no filter, no opacity and no mask of its own.
 
+### 5.15 The file rendered in a different mode than the thing it ships as
+
+`index.html` had no doctype, so opened directly it rendered in **quirks mode**.
+The published artifact is the same bytes wrapped in a shell that begins
+`<!doctype html>`, so it rendered in **standards mode**. Every local check —
+every box measured, every screenshot compared — was therefore made against a
+document the user was never looking at.
+
+It surfaced through a selector. A caption class written as `.v4AgeS` also
+matched `.v4Ages`, because quirks mode makes class and id selectors
+case-insensitive; the strip inherited the caption's `position:absolute;
+top:100%` and hung off the foot of the header. In the artifact it would have
+been fine, which is the worst version of the bug: broken only where it was
+being verified.
+
+The doctype is now declared, and the two agree. The layout it moved is small and
+entirely inline line boxes — `.hiStat` from 15px to 18px, the overview tasks,
+one desktop tag — all of which the published page had been showing all along.
+
+Two lessons. **Verify the artefact you ship, not the file you edit**: if the two
+differ by so much as a wrapper, say what the difference is before trusting a
+measurement. And never distinguish two classes by case alone — the collision is
+silent, and it only appears on one side of that gap.
+
+### 5.16 Three ways the shader's own scope bit back
+
+The organ's verdict tint lives in the vertex shader, and three separate requests
+all turned out to be one line each in it — which is worth knowing before hunting
+through CSS for a colour that is not there.
+
+The tint was gated to the shell by `smoothstep(uOrgR * 0.45, uOrgR, …)`, which
+sorted every cloud into a coloured rim around a palette-coloured middle. It
+reads as two zones rather than one organ, and no amount of changing the colour
+fixes that — the gate is what has to go, leaving the per-particle lottery to
+scatter the verdict across the whole silhouette.
+
+The theme is available in there as `uLight`, so a colour that has to differ per
+theme is `mix(dark, light, uLight)` rather than anything in the sheet. And the
+light theme's own re-ink runs *after* the tint, so white does not arrive as
+white: it lands on 0.4 grey. Specify the light value, do not let the transform
+guess it.
+
 ---
 
 ## 6. Open items

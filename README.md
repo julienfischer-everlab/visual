@@ -143,7 +143,17 @@ elliptical wash that carries the same verdict as the silhouette — green while
 the organ reads younger, orange-red once it reads older — blending from one to
 the next as the swipe crosses between organs. At the foot of the band, the last
 40px is a progressive blur that fades to the header colour, so the silhouette's
-legs dissolve into the header instead of ending on the crop.
+legs dissolve into the header instead of ending on the crop. That belongs to the
+body alone — every other organ is a compact shape sitting well inside the
+canvas, and softening a foot it does not have only veils the drawing — so the
+band rides a strength the carousel sets, full on the body and gone a step away.
+
+The light itself is a circle whose centre sits above the screen: only its bottom
+third is ever on one, which is what makes it read as a wash coming from off the
+top edge rather than a disc placed in the header. Its stops approximate a
+gaussian, because three stops ramping linearly to zero leave a Mach band exactly
+where the ramp stops — the eye reads the break in the slope, not in the value,
+so a gradient that reaches zero at its boundary still draws an arc there.
 
 That clear colour snaps to the theme rather than riding the eased crossfade
 value every other page uses. Elsewhere the canvas covers its whole card, so a
@@ -152,10 +162,16 @@ a value short of its target draws a visible rectangle on it.
 
 **The organ morphs; nothing about it slides.** V1-V3 draw the two neighbouring
 clouds side by side and crossfade them. V4 instead binds one organ into the
-shader's A slot and its neighbour into B and drives `uP` straight off the drag,
-so a swipe runs the same particle morph a mode change does: the silhouette
-breaks apart and reforms as the next one, in place, with the per-particle
-stagger and the outward puff at half-way coming free. One draw call, no pan.
+shader's A slot and its neighbour into B and drives `uP` off the swipe, so it
+runs the same particle morph a mode change does: the silhouette breaks apart and
+reforms as the next one, in place, with the per-particle stagger and the outward
+puff at half-way coming free. One draw call, no pan.
+
+But not under the finger, and not on the strips' clock. The text tracks the drag
+1:1 and settles in 480ms; the cloud holds whatever the swipe picked up, starts
+only on the release, and takes 900ms to gather. The words land while the organ
+is still arriving, which is what makes it read as one thing becoming another
+rather than as a slide changing.
 
 **One progress value drives the rest.** The carousel already tracked the finger
 1:1, rubber-banded at the ends, snapped past half a card and honoured a flick;
@@ -169,8 +185,13 @@ The age is the name strip's twin: one element per organ, travelling the same
 way at about half the rate and crossfading rather than rolling. It is *not* the
 dashboard's odometer — that reads as a drum, which is right for a value ticking
 over in place and wrong for a carousel — so on V4 the odometer stays where it
-is and the age gets a strip of its own. No blur on it either: a softened number
-is a misread number.
+is and the age gets a strip of its own, with the gap in words underneath it.
+
+At rest that strip is one number. Its neighbours are not dimmed, they are
+absent: the ramp reaches zero a little short of a full step, so there is nothing
+to read until a finger moves the carousel and the next age arrives with the
+swipe. The blur runs the same curve — heaviest as a number appears, gone by the
+time it reaches the centre.
 
 **The name strip is the carousel's only cue.** The active organ's name sits
 centred and sharp at the foot of the header, its neighbours out toward the edges
