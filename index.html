@@ -2408,20 +2408,13 @@
      absolute corner, so it takes the row's own top edge and the figures keep
      their spacing whatever the second one turns out to be. */
   .mHeroGet{display:none;}
-  /* Nothing on this row shrinks or wraps — a wrapped eyebrow drops its figure
-     out of line with the one beside it, and a shrinkable first column puts the
-     info dot on a line of its own — so the eyebrows are half a point smaller and
-     a little tighter here than elsewhere on the page. The button is out of the
-     flow entirely, pinned to the card's corner: in the row it was a third item
-     the two figures had to leave room for, and there was none to leave. */
+  /* The eyebrows here read at the same size as every other card's — the button
+     gets its own band across the top of the card rather than a place in the row,
+     so the two figures have the width to themselves and nothing has to be shrunk
+     or wrapped to fit beside it. */
   body.v5 #mV4 .mHeroCard{position:relative;}
-  /* 26, not the 34 the +16 would have made: at 34 the eyebrow's tail runs under
-     the button, and the two asks are competing for the same 287px. This is the
-     widest the pair can sit and still leave the button clear air. */
-  body.v5 #mV4 .mHeroCard .mHeroTop{gap:26px;}
-  body.v5 #phone #mV4 .mHeroCard .mHeroTop .lbl{
-    font-size:9px;letter-spacing:.05em;white-space:nowrap;
-  }
+  body.v5 #mV4 .mHeroCard .mHeroTop{gap:34px;padding-top:47px;}
+  body.v5 #phone #mV4 .mHeroCard .mHeroTop .lbl,
   body.v5 #phone #mV4 .mHeroCard .mHeroTop .big{white-space:nowrap;}
   body.v5 #mV4 .mHeroCard .mHeroGet{
     display:block;position:absolute;top:22px;right:22px;
@@ -3284,13 +3277,18 @@
   // Weighted toward the reds: the cream highlight and the lavender are what pull
   // the cloud pale, so they are the two that give ground. The colours themselves
   // are unchanged — it is which of them a particle is likely to draw.
+  // Redder and a little cooler in the burn. Every entry sits a step lower in
+  // value than it did and a step nearer red in hue — the pink turns to rose, the
+  // lavender to mauve, the cream stops being a highlight and becomes the palest
+  // member of the same family — so the cloud reads as one warm material rather
+  // than a set of tints at full brightness.
   const PALETTE = [
-    [[0.690,0.314,0.314], 34], // muted red
-    [[0.812,0.490,0.420], 24], // soft coral
-    [[0.788,0.541,0.584], 20], // dusty pink
-    [[0.541,0.290,0.322], 12], // rosewood depth
-    [[0.663,0.541,0.722],  7], // warm lavender
-    [[0.941,0.878,0.816],  3], // pale cream highlight
+    [[0.640,0.270,0.262], 36], // deep red
+    [[0.740,0.400,0.330], 24], // burnt coral
+    [[0.700,0.430,0.450], 20], // dusty rose
+    [[0.490,0.240,0.262], 13], // rosewood depth
+    [[0.580,0.430,0.560],  5], // mauve
+    [[0.850,0.770,0.720],  2], // pale warm
   ];
   function pickColor(){
     let r = Math.random() * 100;
@@ -4024,7 +4022,9 @@
     seeds[i*4+3] = 0.55 + Math.pow(Math.random(), 1.6) * 1.5; // size
     const c = pickColor();
     colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
-    colors[i*4+3] = 0.45 + Math.random() * 0.55;
+    // a shade under what it was: the cloud carried more light than the form
+    // needed, and the verdict tint over it had to shout to be seen
+    colors[i*4+3] = 0.38 + Math.random() * 0.50;
   }
   // mark ambient strays: negative size flags them in the shader, fainter + drifting more
   for (let i = N - AMB; i < N; i++){
