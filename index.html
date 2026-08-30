@@ -2785,6 +2785,26 @@
      result -- enough to say what the card will hold without stating a figure
      nobody has yet. The bars keep their widths, so it is the real distribution
      under the blur rather than a mock of one. */
+  /* V6's first slide: the biomarker count where the age sits, and the three
+     ranges under it in place of the younger/older caption. The card it came
+     from leaves the body -- it is in the hero now, not below it. */
+  body.v7 #mV4 .mHeroCard{display:none;}
+  .v4BioLeg{display:none;}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg{
+    display:flex;position:absolute;top:100%;left:50%;transform:translateX(-50%);
+    margin-top:14px;gap:15px;white-space:nowrap;
+    font-size:11px;font-weight:400;letter-spacing:0;
+    color:rgba(242,229,224,.55);
+  }
+  body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg{color:rgba(0,0,0,.55);}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg span{display:flex;align-items:center;gap:5px;}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg b{
+    font-weight:600;color:var(--ink-bright);font-size:12px;
+  }
+  body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg b{color:#000;}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg i{
+    width:6px;height:6px;border-radius:50%;flex:none;font-style:normal;
+  }
   /* Partial: an untested organ shows a dash where its age would be, its
      silhouette loses its colour, and the arc says nothing -- an indicator
      resting on a reading nobody has taken is worse than no indicator. */
@@ -5704,6 +5724,14 @@
   // the bottom fade belongs to the body alone, so the carousel has to know
   // which of its slides that is rather than assuming the order
   const v4BodyK = MB.findIndex(d => d.label === 'Body');
+  // V6 puts the biomarkers in front of the organs as the carousel's first
+  // slide. It is not an organ -- there is nothing to morph to and no age to
+  // read -- so it sits at index -1 rather than inside MB, and the strips place
+  // it from the same d = k - bx as every other slide. Declarations, because
+  // bxGlide is called during init and reads them.
+  function v7On(){ return document.body.classList.contains('v7'); }
+  function bxMin(){ return v7On() ? -1 : 0; }
+  let bioArc = 0, bioRev = 0, bioRevT = -1;
   const v4NameEl = document.getElementById('v4Names');
   const v4Names = v4NameEl ? MB.map(d => {
     const el = document.createElement('span');
@@ -5712,6 +5740,27 @@
     v4NameEl.appendChild(el);
     return el;
   }) : [];
+
+  const v4BioAge = v4AgeEl ? (() => {
+    const el = document.createElement('span');
+    el.className = 'v4AgeN v4BioN';
+    el.innerHTML = '124<span class="v4BioLeg">' +
+      '<span><b>81</b><i style="background:#5cc47f"></i>Optimal</span>' +
+      '<span><b>9</b><i style="background:#f2c744"></i>Suboptimal</span>' +
+      '<span><b>6</b><i style="background:#ef6f63"></i>Out of range</span>' +
+      '</span>';
+    el.style.display = 'none';
+    v4AgeEl.appendChild(el);
+    return el;
+  })() : null;
+  const v4BioName = v4NameEl ? (() => {
+    const el = document.createElement('span');
+    el.className = 'v4Name v4BioNm';
+    el.textContent = 'Biomarkers';
+    el.style.display = 'none';
+    v4NameEl.appendChild(el);
+    return el;
+  })() : null;
 
   // native-feeling internal carousel: a continuous track position in slide
   // units; slides track the finger 1:1, neighbours enter from the sides,
@@ -5750,7 +5799,7 @@
     ? { span: 0.52, snap: 0.34, flickV: 0.0009, flickD: 0.04 }
     : { span: 1,    snap: 0.5,  flickV: 0.0016, flickD: 0.08 };
   function bxGlide(to){
-    to = Math.max(0, Math.min(MB.length - 1, to));
+    to = Math.max(bxMin(), Math.min(MB.length - 1, to));
     if (!v4Live()){ bxEase = null; return; }
     const now = performance.now();
     bxEase = { from: bx, to, t0: now, dur: 480 };
@@ -5850,6 +5899,32 @@
           ? 'blur(' + (Math.pow(an, 1.6) * 3.4).toFixed(2) + 'px)' : 'none';
       }
     }
+    // the extra slide, placed by the same maths with k = -1
+    if (v4BioAge){
+      if (!v7On()) v4BioAge.style.display = 'none';
+      else {
+        const d = -1 - bx, an = Math.min(1, Math.abs(d));
+        const op = Math.max(0, 1 - Math.pow(Math.min(1, an / 0.88), 1.15));
+        v4BioAge.style.display = op > 0.002 ? '' : 'none';
+        v4BioAge.style.transform =
+          'translate(-50%,-50%) translateX(' + (d * 118).toFixed(1) + 'px)';
+        v4BioAge.style.opacity = op.toFixed(3);
+        v4BioAge.style.filter = an > 0.02
+          ? 'blur(' + (Math.pow(an, 1.6) * 3.4).toFixed(2) + 'px)' : 'none';
+      }
+    }
+    if (v4BioName){
+      if (!v7On()) v4BioName.style.display = 'none';
+      else {
+        const d = -1 - bx, an = Math.min(1, Math.abs(d));
+        v4BioName.style.display = Math.abs(d) > 1.9 ? 'none' : '';
+        v4BioName.style.transform = 'translate(-50%,-50%) translateX(' +
+          (d * 138).toFixed(1) + 'px) scale(' + (1 - 0.05 * an).toFixed(3) + ')';
+        v4BioName.style.opacity = (1 - 0.76 * Math.pow(an, 1.25)).toFixed(3);
+        v4BioName.style.filter = an > 0.02
+          ? 'blur(' + (Math.pow(an, 1.6) * 1.4).toFixed(2) + 'px)' : 'none';
+      }
+    }
     if (v4Hero && v4Names.length){
       // The name strip runs the same progress at its own rate: the active label
       // sharp and centred, its neighbours out toward the edges under blur. It
@@ -5914,9 +5989,18 @@
           Math.round(ha[1] + (hb[1] - ha[1]) * f) + ' ' +
           Math.round(ha[2] + (hb[2] - ha[2]) * f));
       }
+      // On the way to the biomarker slide the silhouette and its light give way
+      // -- there is no organ there -- and the arc stops being an age scale and
+      // becomes the distribution, revealed left to right once the slide lands.
+      const bioOn = v7On() ? Math.max(0, Math.min(1, -bx)) : 0;
+      bioArc = bioOn;
+      if (bioOn > 0.999 && !bxDrag){ if (bioRevT < 0) bioRevT = t; }
+      else bioRevT = -1;
+      bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / 700);
+      if (v4HaloEl) v4HaloEl.style.opacity = (1 - bioOn).toFixed(3);
       gl.uniform1f(U.uP, f);
       gl.uniform2f(U.uPan, 0, 0);
-      gl.uniform1f(U.uAlpha, 1);
+      gl.uniform1f(U.uAlpha, (1 - bioOn).toFixed(4));
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[oa.organIdx].x, ORGANS[oa.organIdx].y);
       gl.uniform2f(U.uCB, ORGANS[ob.organIdx].x, ORGANS[ob.organIdx].y);
@@ -6037,7 +6121,8 @@
     const w = Math.max(1, mOrgCard.offsetWidth * bxFeel().span);
     let nx = bxDrag.bx0 - dx / w;
     // rubber-band past the ends — never expose empty space
-    if (nx < 0) nx = nx * 0.28;
+    const lo0 = bxMin();
+    if (nx < lo0) nx = lo0 + (nx - lo0) * 0.28;
     if (nx > MB.length - 1) nx = (MB.length - 1) + (nx - (MB.length - 1)) * 0.28;
     const now = performance.now();
     bxV = 0.7 * bxV + 0.3 * ((nx - bx) / Math.max(1, now - bxDrag.lt));
@@ -6060,7 +6145,9 @@
     else if (delta < -fl.snap) target = d.s0 + Math.floor(delta + fl.snap);
     else if (Math.abs(bxV) > fl.flickV && Math.abs(delta) > fl.flickD)
       target = d.s0 + (bxV > 0 ? 1 : -1);     // intentional flick advances
-    target = Math.max(0, Math.min(MB.length - 1, target));
+    target = Math.max(bxMin(), Math.min(MB.length - 1, target));
+    // the biomarker slide is not an organ, so it is travelled to directly
+    if (target < 0){ bxT = target; bxGlide(target); return; }
     if (MB_ORDER[target] !== pillCurrent) selectPill(MB_ORDER[target]); // dots + title follow
     else { bxT = target; bxGlide(target); }
   });
@@ -6072,7 +6159,8 @@
     if (!step) return;
     e.preventDefault();
     lastManual = performance.now();
-    const to = Math.max(0, Math.min(MB.length - 1, Math.round(bxT) + step));
+    const to = Math.max(bxMin(), Math.min(MB.length - 1, Math.round(bxT) + step));
+    if (to < 0){ bxT = to; bxGlide(to); return; }
     if (MB_ORDER[to] !== pillCurrent) selectPill(MB_ORDER[to]);
     else { bxT = to; bxGlide(to); }
   });
@@ -8021,6 +8109,25 @@
       const lo = Math.min(0, arcNow), hi = Math.max(0, arcNow);
       const active = hi - lo > 0.08;
       const span = Math.max(0.001, Math.abs(arcNow));
+      if (bioArc > 0.001){
+        // the three bands in the meter's own proportions, so the arc and the
+        // bar under the counts are the same reading in the same colours
+        const n = Math.max(1, tickEls.length - 1);
+        for (let i = 0; i < tickEls.length; i++){
+          const tk = tickEls[i], pp = i / n;
+          const c = pp < 0.64 ? '#5cc47f' : pp < 0.78 ? '#f2c744'
+                  : pp < 0.90 ? '#ef6f63' : null;
+          if (c && pp <= bioRev){
+            tk.line.setAttribute('stroke', c);
+            tk.line.setAttribute('opacity', (0.95 * bioArc).toFixed(3));
+          } else {
+            tk.line.setAttribute('stroke', tickBase());
+            tk.line.setAttribute('opacity', tk.baseOp);
+          }
+        }
+        indA.setAttribute('opacity', (1 - bioArc).toFixed(3));
+      } else {
+      indA.setAttribute('opacity', 1);
       for (const tk of tickEls){
         const inGap = active && !tk.zero && tk.v >= lo - 0.01 && tk.v <= hi + 0.01;
         if (inGap){
@@ -8033,6 +8140,7 @@
           tk.line.setAttribute('stroke', tickBase());
           tk.line.setAttribute('opacity', tk.baseOp);
         }
+      }
       }
     }
 
