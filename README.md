@@ -318,12 +318,18 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   two keep their shape and their eyebrow and give up everything else; what
   stands in the space is a placeholder line, not a designed empty state.
 
-  The age card is designed: it keeps its organ and says what is missing under
-  it, one line and one action centred across the card, with no eyebrow — the
-  sentence names the card. The organ takes the height back that the gauge, the
-  age and the names give up, so on both platforms the empty card is the visual
-  over the message; the 150px the message reserves is the same number `resize()`
-  takes off the canvas, so the two can never overlap. The rules are
+  The other two are designed. The **age** card keeps its organ and says what is
+  missing under it, one line and one action centred across the card, with no
+  eyebrow — the sentence names the card. What it shows is the body, and only the
+  body: there is no organ to pick when there is no age, so the carousel is off
+  and every route into a different one is closed at `selectPill`, with the
+  swipe's own drag stopped where it starts. The organ takes back the height the
+  gauge, the age and the names give up and then gives a fifth of its size to the
+  message; the 150px the message reserves is the same number `resize()` takes
+  off the canvas, so the two can never overlap. **Activity** keeps its eyebrow —
+  its sentence does not name the card the way the age card's does — and centres
+  *Connect your variables* and a *Connect* action on the card itself rather than
+  on what the eyebrow leaves, which would sit low by half a label. The rules are
   named by the card rather than by where it sits — V4's hero layout borrows the
   hero and the steps tile out of the bento — and they sit last in the sheet
   carrying the phone's id, because what they switch off was switched on by rules
