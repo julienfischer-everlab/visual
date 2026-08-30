@@ -149,6 +149,15 @@ body alone — every other organ is a compact shape sitting well inside the
 canvas, and softening a foot it does not have only veils the drawing — so the
 band rides a strength the carousel sets, full on the body and gone a step away.
 
+The header content slides up at a fraction of the scroll and fades out by the
+time the body has covered it, and the organ recedes with it: the silhouette is
+drawn down to nine tenths of its size across that same span, a multiplier on the
+zoom uniform rather than on the camera's own eased value, so scrolling and the
+morph between organs are never fighting over one number. The pair below the hero
+stands 222px tall on a 96px chart — the visual is the only part of the tile with
+slack in it, so it is what gives way when the card comes down; coverage and steps
+are one rule in one grid row, so they cannot drift apart.
+
 The light itself is a circle whose centre sits above the screen: only its bottom
 third is ever on one, which is what makes it read as a wash coming from off the
 top edge rather than a disc placed in the header. Its stops approximate a

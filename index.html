@@ -2428,6 +2428,13 @@
   /* the pair is a real two-up again: .mbrow2 folds to one column from V2 on,
      and hides the two cards V2-V3 do not use — V4 is the page that wants them */
   body.v5 #mV4Row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  /* The pair comes down 12px, and the chart gives up exactly that much rather
+     than the card squeezing its type: the visual is the only part of the tile
+     with slack in it. Both tiles carry the same two numbers, so coverage and
+     steps stay the same height as each other -- which is what the row already
+     guaranteed, since they are one rule and one grid row. */
+  body.v5 #phone .hiViz{height:96px;}
+  body.v5 #phone .hiCard{height:222px;}
   /* the wider gap takes 2px off each card, which is all it took to wrap
      "Health coverage" — the tile already carries a short form for exactly this */
   body.v5 #phone #mV4 .hiCov .lbl .cvL{display:none;}
@@ -7474,6 +7481,11 @@
   // to that header — so the renderer needs the same number the CSS is using, or
   // a grey rectangle surfaces on the darkening ground half way through.
   let v5HeadP = 0;
+  // the hero organ draws a tenth smaller by the time the body has covered the
+  // header — it recedes as it is scrolled past rather than only sliding away.
+  // A multiplier on the uniform rather than on zoomNow itself, so the camera's
+  // own easing between organs is not fighting the scroll for the same number.
+  let v5Shrink = 1;
   (function headerParallax(){
     const sc = document.getElementById('mScroll');
     const head = document.getElementById('mHead');
@@ -7484,6 +7496,7 @@
       queued = false;
       if (!document.body.classList.contains('v4')){
         inner.style.transform = ''; inner.style.opacity = '';
+        v5Shrink = 1;
         return;
       }
       const y = sc.scrollTop;
@@ -7491,6 +7504,7 @@
       const p = Math.min(1, Math.max(0, y / span));
       inner.style.transform = reduced ? '' : 'translateY(' + (-y * 0.12).toFixed(1) + 'px)';
       inner.style.opacity = (1 - p).toFixed(3);
+      v5Shrink = document.body.classList.contains('v5') ? 1 - 0.10 * p : 1;
       // the frosted top has nothing to sit over until something scrolls under
       // it, so it fades in over the first 48px rather than being there at rest
       const f = Math.min(1, Math.max(0, y / 48));
@@ -7657,7 +7671,7 @@
     gl.uniform2f(U.uCB, morphCB.x, morphCB.y);
     gl.uniform1f(U.uOrgR, orgR);
     gl.uniform1f(U.uGhost, ghostVis);
-    gl.uniform1f(U.uZoom, zoomNow);
+    gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1));
 
     gl.uniform1f(U.uP, uPnow);
     gl.uniform1f(U.uTime, t * 0.001);
