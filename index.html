@@ -2765,8 +2765,8 @@
   body.emBio .dash .dcard.bcard > *:not(.emNote),
   body.emAct #phone .hiSteps > *:not(.emNote),
   body.emAct .dash .hiSteps > *:not(.emNote),
-  body.emAge #phone #mHeroOrgan > *:not(.emNote),
-  body.emAge .dash #organSlot > *:not(.emNote){display:none;}
+  body.emAge #phone #mHeroOrgan > *:not(.emNote):not(.morganMini),
+  body.emAge .dash #organSlot > *:not(.emNote):not(#field){display:none;}
   body.emBio #phone .mHeroCard > .emNote,
   body.emBio .dash .dcard.bcard > .emNote,
   body.emAct #phone .hiSteps > .emNote,
@@ -2777,8 +2777,32 @@
      and the organ blocks are stages the note has to be placed in */
   body.emAct #phone .hiSteps > .emNote{padding:22px;}
   body.emAct .dash .hiSteps > .emNote{padding:20px;}
-  body.emAge .dash #organSlot > .emNote{position:absolute;left:24px;top:24px;}
-  body.emAge #phone #mHeroOrgan > .emNote{position:absolute;left:13px;top:8px;}
+  /* The age card keeps its visual and says what is missing under it: one line
+     and one action, centred across the card, with the organ given the rest of
+     the height. It carries no eyebrow -- the sentence names the card -- and the
+     150px it reserves is the same number resize() takes off the canvas, so the
+     two never overlap. */
+  body.emAge #phone #mHeroOrgan > .emNote,
+  body.emAge .dash #organSlot > .emNote{
+    position:absolute;left:0;right:0;bottom:0;top:auto;height:150px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:16px;padding:0 24px;text-align:center;
+  }
+  body.emAge #phone #mHeroOrgan > .morganMini{inset:0 0 150px 0;}
+  body.emAge #phone #mHeroOrgan #mbSlot{inset:0;}
+  .emAgeNote .emTxt{
+    margin-top:0;font-size:14px;line-height:1.4;max-width:320px;
+    text-wrap:balance;color:rgba(242,229,224,.6);
+  }
+  body.light .emAgeNote .emTxt{color:rgba(46,31,26,.6);}
+  .emCta{
+    font:inherit;font-size:13px;font-weight:500;line-height:1;white-space:nowrap;
+    border:0;border-radius:999px;padding:11px 17px;cursor:pointer;
+    background:rgba(255,255,255,.12);color:#ececec;transition:background .16s ease;
+  }
+  .emCta:hover{background:rgba(255,255,255,.2);}
+  body.light .emCta{background:rgba(0,0,0,.06);color:#2e241c;}
+  body.light .emCta:hover{background:rgba(0,0,0,.11);}
 </style>
 
 <canvas id="field"></canvas>
@@ -2873,7 +2897,7 @@
       </div>
       <div class="dright">
       <div class="dcard organ" id="organSlot">
-        <div class="emNote"><div class="lbl">Biological age</div><div class="emTxt">No data yet</div></div>
+        <div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div>
         <div class="v4HaloClip"><div class="v4Halo" id="dHalo"></div></div>
         <div class="olist" id="olist"></div>
         <button class="dcExpand" id="dcExpand" type="button" aria-label="Open organ age">
@@ -3098,7 +3122,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote"><div class="lbl">Biological age</div><div class="emTxt">No data yet</div></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -5314,17 +5338,21 @@
       // needs a larger share of a smaller card to hold its longest row on one
       // line; the organ takes what is left, as it does on every other page.
       const cls2 = document.body.classList;
+      // emptied, the card is the organ and one line under it: no list beside it
+      // and no gauge stack under it, so the canvas takes the width whole and
+      // gives back only the 150px the message reserves
+      const emAge = cls2.contains('emAge');
       const listShare = cls2.contains('b5') ? 0.51
                       : cls2.contains('b3') ? 0.46 : 0.54;
-      const listW = Math.min(390, slot.width * listShare);
+      const listW = emAge ? 0 : Math.min(390, slot.width * listShare);
       canvOX = slot.left + listW; canvOY = slot.top;   // viewport coords, for the notes
       // V3 lifts the whole right column off the card's floor — the organ with
       // it, not just the gauge. The canvas keeps its top edge and loses twice
       // the lift from its height, which carries its centre up by the lift.
-      const lift = document.body.classList.contains('b3') ? 48 : 0;
+      const lift = (!emAge && document.body.classList.contains('b3')) ? 48 : 0;
       // never wider than what the list leaves, or the organ hangs off the card
       W = Math.max(60, slot.width - listW);
-      H = Math.max(220, slot.height - lift * 2);
+      H = Math.max(220, slot.height - lift * 2 - (emAge ? 150 : 0));
       // measured from the card, not the viewport — nothing to re-place on scroll
       canvas.style.left = listW + 'px'; canvas.style.top = '0px';
       pillui.style.left = listW + 'px';
@@ -5370,7 +5398,8 @@
     // pill mode: organ sits 80px lower for breathing room under the top bar
     // uYOff lands in clip space, which spans H pixels over two units, so a
     // pixel push is twice its value here: -128 sits the organ 64px lower
-    const dropB5 = (isDash(version) && document.body.classList.contains('b5')) ? 128 : 0;
+    const dropB5 = (isDash(version) && document.body.classList.contains('b5') &&
+                    !document.body.classList.contains('emAge')) ? 128 : 0;
     gl.uniform1f(U.uYOff,
       (botH - topH - dropB5 - (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
   }

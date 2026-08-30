@@ -314,9 +314,16 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
 - **Biomarkers**, **Activity**, **Biological age** — each of the three cards can
-  be put in an *Empty* state on its own, desktop and mobile at once. The card
-  keeps its shape and its eyebrow and gives up everything else; what stands in
-  the space is a placeholder line, not a designed empty state. The rules are
+  be put in an *Empty* state on its own, desktop and mobile at once. The first
+  two keep their shape and their eyebrow and give up everything else; what
+  stands in the space is a placeholder line, not a designed empty state.
+
+  The age card is designed: it keeps its organ and says what is missing under
+  it, one line and one action centred across the card, with no eyebrow — the
+  sentence names the card. The organ takes the height back that the gauge, the
+  age and the names give up, so on both platforms the empty card is the visual
+  over the message; the 150px the message reserves is the same number `resize()`
+  takes off the canvas, so the two can never overlap. The rules are
   named by the card rather than by where it sits — V4's hero layout borrows the
   hero and the steps tile out of the bento — and they sit last in the sheet
   carrying the phone's id, because what they switch off was switched on by rules
