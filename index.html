@@ -2082,6 +2082,46 @@
   body.light.b4 .dash .dcard.scard,
   body.light.b4 .dash .hiCard,
   body.light.b4 .dash .dcard.organ{background:#280707;}
+
+  /* ---- Desktop V5: V1 reading the organ the way the phone does -------------
+     Same dashboard, same cards, two things changed. The organ card carries the
+     phone's stack — arc, then the age at the phone's size, then the difference
+     in words directly under it — and that difference stops being a badge. A
+     pill is a status; this is a caption, and V5's whole point is that the
+     number says the status and the words only spell it out. And the cards come
+     up a step off the page so they read as surfaces rather than as holes. */
+  body.b5 .dash .dcard,
+  body.b5 .dash .dcard.bcard,
+  body.b5 .dash .dcard.scard,
+  body.b5 .dash .dcard.dfill,
+  body.b5 .dash .hiCard,
+  body.b5 .dash .dcard.organ{background:#30302d;}
+  /* body.light.b2 .dash .dcard.organ carries one more class than the plain
+     light rule, so the organ card needs saying at that weight here too */
+  body.light.b5 .dash .dcard,
+  body.light.b5 .dash .dcard.bcard,
+  body.light.b5 .dash .dcard.scard,
+  body.light.b5 .dash .dcard.dfill,
+  body.light.b5 .dash .hiCard,
+  body.light.b5 .dash .dcard.organ{background:#fbf8f7;}
+  /* the phone's proportions carry over almost unchanged: the organ card is
+     358px wide against the phone's 352, so the arc and the age are set at the
+     same sizes they are given there rather than scaled to a new column */
+  body.b5 #arcA{transform:scale(.52);margin:-24px 0 -46px;}
+  body.b5 #ageBig{height:86px;}
+  body.b5 #ageBig .dcol{font-size:57px;}
+  body.b5 #ageBig .dcol + .dcol{margin-left:-2.3px;}
+  /* the difference reads as a caption under the number, not a tag beside it,
+     so it loses the pill and takes the phone's grey in both directions --
+     older and younger say the same kind of thing here */
+  body.b5 #status{margin-top:4px;min-height:18px;}
+  body.b5 #status .word,
+  body.b5 #status.warn .word{
+    display:block;font-size:13px;font-weight:400;letter-spacing:0;
+    background:none;padding:0;border-radius:0;color:rgba(242,229,224,.5);
+  }
+  body.light.b5 #status .word,
+  body.light.b5 #status.warn .word{background:none;color:rgba(46,31,26,.5);}
   /* The phone's own ground is the hero's, so the status strip and the scroller
      cannot show a seam between them — there is nothing lighter behind either to
      catch a fractional pixel. The white body supplies the white where it is
@@ -3260,18 +3300,19 @@
     { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // organ age as a lab instrument
     { name: 'Desktop', dur: 850, ease: 0, pix: 1.35 , group: 'Overview page', sort: 1 },
     { name: 'Desktop V2', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 2 }, // organ age split off its own card
-    { name: 'Mobile V2', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 5 }, // hero pair, coverage beside steps, organ age wide beneath
-    { name: 'Mobile V1', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 6 }, // coverage folded into the hero, organ age beside steps
+    { name: 'Mobile V2', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 6 }, // hero pair, coverage beside steps, organ age wide beneath
+    { name: 'Mobile V1', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 7 }, // coverage folded into the hero, organ age beside steps
     { name: 'Desktop V1', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 3 }, // coverage in the hero, one mini card, the body list given room
     { name: 'Desktop V3', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 4 }, // the insight header as one coloured block over a white page
-    { name: 'Mobile V3', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 8 },
-    { name: 'Mobile V4', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 9 },
-    { name: 'Mobile V5', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 10 }, // the same, folded to the phone
+    { name: 'Mobile V3', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 9 },
+    { name: 'Mobile V4', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 10 },
+    { name: 'Mobile V5', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 11 }, // the same, folded to the phone
+    { name: 'Desktop V5', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 5 }, // V1 wearing the phone's reading of the organ
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
   // styles as well as its own marker
-  const isDash = v => v === 2 || v === 10 || v === 13 || v === 14;
+  const isDash = v => v === 2 || v === 10 || v === 13 || v === 14 || v === 18;
   // V2 is the same bento with the row re-laid out
   const isBento = v => v === 5 || v === 11 || v === 12 || v === 15 || v === 16 || v === 17;
   // V5 is V4 with one thing changed, so it wears every V4 class and adds a
@@ -4995,6 +5036,7 @@
     document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') +
       (m === 13 ? ' m2 b2 b3' : '') +
       (m === 14 ? ' m2 b2 b3 b4' : '') +
+      (m === 18 ? ' m2 b2 b3 b5' : '') +
       (m === 15 ? ' m5 v2 v3 v4' : '') +
       (m === 11 ? ' m5 v2' : '') +
       (m === 12 ? ' m5 v2 v3' : '') +
@@ -7719,6 +7761,7 @@
       // so there is no rectangle to see against the background. That header is a
       // neutral page surface, so it has a reading per theme like any other.
       const bare = flat && cls.contains('v5');
+      const lift = flat === 'dash' && cls.contains('b5');   // V5's lighter card
       const dk = bare ? (cls.contains('v6')
                           // V5's header runs grey to almost-black under the body
                           ? [(15 + (6 - 15) * v5HeadP) / 255,
@@ -7726,10 +7769,12 @@
                              (14 + (6 - 14) * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
+               : lift ? [0.1882, 0.1882, 0.1765]           // #30302d, V5's card
                : flat ? [0.1451, 0.1451, 0.1333]           // #252522, the header card
                :        [0.1330, 0.0240, 0.0240];          // #220606, the organ ground
       const lt = bare             ? [0.9255, 0.9255, 0.9176]   // #ececea, the same in light
                : tint             ? [0.1569, 0.0275, 0.0275]
+               : lift             ? [0.9843, 0.9725, 0.9686]   // #fbf8f7, V5's light card
                : flat === 'dash'  ? [0.9569, 0.9373, 0.9294]   // #f4efed, the light card
                : flat === 'bento' ? [0.9570, 0.9370, 0.9290]   // #f4efed, the light card
                : cardMode         ? [0.9530, 0.8860, 0.8470]
