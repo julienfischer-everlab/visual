@@ -2101,6 +2101,18 @@
      share a card colour if they share a ground. The dashboard's #0d0d0c goes
      black here, the way the phone's body is black on this page -- 13 levels,
      invisible in itself, and it is what makes the cards identical. */
+  /* The page is two even columns: biomarkers over the pair on the left, the
+     organ alone on the right. V1 gave the organ the wider half and folded the
+     pair into one full-width tile because coverage had moved into its hero;
+     V5's hero carries untested instead, so coverage takes its own tile back and
+     the two stand side by side, in the phone's order -- coverage, then steps. */
+  body.b5 .dash .dgrid{grid-template-columns:1fr 1fr;}
+  body.b5 .dash .drow{grid-template-columns:1fr 1fr;}
+  body.b5 .dash .drow .hiCov{display:flex;order:1;}
+  body.b5 .dash .drow .hiSteps{order:2;}
+  /* the longest row -- muscle + bone health, with its figure -- sets this: at
+     the b3 width it wrapped onto two lines and broke the column's rhythm */
+  body.b5 .dash .olist{width:238px;}
   body.b5 .dash{background:#000;}
   body.light.b5 .dash{background:#fff;}
   /* body.light.b2 .dash .dcard.organ carries one more class than the plain
@@ -5252,7 +5264,12 @@
       if (slot.width < 40 || slot.height < 40) return;
       // V3's list is sentence case and needs less room than the instrument
       // list it replaced, so the organ gets the difference
-      const listShare = document.body.classList.contains('b3') ? 0.46 : 0.54;
+      // V5's card is half the page rather than five eighths of it, so the list
+      // needs a larger share of a smaller card to hold its longest row on one
+      // line; the organ takes what is left, as it does on every other page.
+      const cls2 = document.body.classList;
+      const listShare = cls2.contains('b5') ? 0.51
+                      : cls2.contains('b3') ? 0.46 : 0.54;
       const listW = Math.min(390, slot.width * listShare);
       canvOX = slot.left + listW; canvOY = slot.top;   // viewport coords, for the notes
       // V3 lifts the whole right column off the card's floor — the organ with
