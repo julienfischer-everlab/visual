@@ -312,18 +312,19 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 ## Tweaks (top bar)
 
-- **Your age** — chronological age, 30 to 40. Everything quoted against it follows:
-  the arc scale is redrawn around the new centre, and the organ list, spatial and
-  grid cards, the immersive panel and every organ-age modal re-render.
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
-- **Organ card** — *Neutral*, the page's own card surface, or *Coloured*,
-  `#280707`. The tint is the organ's ground rather
-  than the page's surface, so it is the same in every theme, and the organ
-  keeps its dark ink on it — the light theme's near-black would vanish into it.
-  It applies to every biomarker page, desktop and mobile.
+- **Biomarkers**, **Activity**, **Biological age** — each of the three cards can
+  be put in an *Empty* state on its own, desktop and mobile at once. The card
+  keeps its shape and its eyebrow and gives up everything else; what stands in
+  the space is a placeholder line, not a designed empty state. The rules are
+  named by the card rather than by where it sits — V4's hero layout borrows the
+  hero and the steps tile out of the bento — and they sit last in the sheet
+  carrying the phone's id, because what they switch off was switched on by rules
+  that carry one.
 
-Density, particle size, flow and voxels are no longer exposed: they stay where
-the design landed.
+Chronological age, the organ-card tint, density, particle size, flow and voxels
+are no longer exposed: they stay where the design landed. `CHRONO` is a constant
+now rather than a control.
 
 ## The organ ground
 
