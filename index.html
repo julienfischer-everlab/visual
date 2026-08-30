@@ -2113,6 +2113,67 @@
   /* the longest row -- muscle + bone health, with its figure -- sets this: at
      the b3 width it wrapped onto two lines and broke the column's rhythm */
   body.b5 .dash .olist{width:238px;}
+  /* The phone's light, on the card. The stops are the phone's exactly; only the
+     geometry is restated, scaled off the card's width the way the phone's is off
+     the screen's -- the circle is a little over twice as wide as what it sits on,
+     and all that shows is the bottom cap of it. It is centred on the organ
+     rather than on the card: the list has the left half, so a light centred on
+     the card would sit beside the thing it is lighting. */
+  body.b5 #organSlot{
+    --v4haloStops:
+      rgb(var(--v4halo, 132 176 142) / .287) 0%,
+      rgb(var(--v4halo, 132 176 142) / .253) 14%,
+      rgb(var(--v4halo, 132 176 142) / .185) 28%,
+      rgb(var(--v4halo, 132 176 142) / .123) 42%,
+      rgb(var(--v4halo, 132 176 142) / .073) 56%,
+      rgb(var(--v4halo, 132 176 142) / .039) 69%,
+      rgb(var(--v4halo, 132 176 142) / .016) 81%,
+      rgb(var(--v4halo, 132 176 142) / .004) 91%,
+      rgb(var(--v4halo, 132 176 142) / 0) 100%;
+    --v4haloR:552px;
+    --v4haloCap:126px;    /* the phone's 105-on-410, at the card's height */
+    --v4haloX:75.5%;      /* the centre of the canvas, not of the card */
+  }
+  body.light.b5 #organSlot{
+    --v4haloStops:
+      rgb(var(--v4halo, 132 176 142) / .402) 0%,
+      rgb(var(--v4halo, 132 176 142) / .353) 14%,
+      rgb(var(--v4halo, 132 176 142) / .258) 28%,
+      rgb(var(--v4halo, 132 176 142) / .173) 42%,
+      rgb(var(--v4halo, 132 176 142) / .105) 56%,
+      rgb(var(--v4halo, 132 176 142) / .055) 69%,
+      rgb(var(--v4halo, 132 176 142) / .023) 81%,
+      rgb(var(--v4halo, 132 176 142) / .006) 91%,
+      rgb(var(--v4halo, 132 176 142) / 0) 100%;
+  }
+  /* The light runs past every edge of the card, so something has to crop it --
+     but not the card itself: the arc is drawn wider than the column it sits in
+     and hangs 41px over the right edge, and a clip on the card cut it. So the
+     halo gets a box of its own, the card's size and the card's radius, and
+     nothing else is inside it.
+
+     Over the organ rather than behind it: the canvas clears opaque, so anything
+     underneath would simply not be there. Under the list and the title, which
+     carry z-index 3 and 5 and come later in the card. */
+  .v4HaloClip{display:none;}
+  body.b5 #organSlot .v4HaloClip{
+    display:block;position:absolute;inset:0;overflow:hidden;
+    border-radius:20px;z-index:3;pointer-events:none;
+  }
+  body.b5 #organSlot .v4Halo{
+    display:block;position:absolute;left:var(--v4haloX);
+    top:calc(var(--v4haloCap) - var(--v4haloR) * 2);
+    width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
+    transform:translateX(-50%);
+    pointer-events:none;will-change:transform;
+    background:radial-gradient(closest-side, var(--v4haloStops));
+    animation:v4Breath 11s ease-in-out infinite;
+  }
+  /* the card's corner is the phone's share button, not the expand arrows */
+  body.b5 #organSlot .dcExpand{display:none;}
+  body.b5 #organSlot .hiShare{
+    display:flex;position:absolute;right:14px;top:14px;z-index:6;margin-left:0;
+  }
   body.b5 .dash{background:#000;}
   body.light.b5 .dash{background:#fff;}
   /* body.light.b2 .dash .dcard.organ carries one more class than the plain
@@ -2335,7 +2396,8 @@
     animation:v4Breath 11s ease-in-out infinite;
   }
   @media (prefers-reduced-motion: reduce){
-    body.v5 #mHeroOrgan .v4Halo{animation:none;}
+    body.v5 #mHeroOrgan .v4Halo,
+    body.b5 #organSlot .v4Halo{animation:none;}
   }
 
   /* The silhouette's feet run off the bottom of the canvas, and a hard cut
@@ -2830,6 +2892,7 @@
       <div class="dright">
       <div class="dcard organ" id="organSlot">
         <div class="emNote"><div class="lbl">Biological age</div><div class="emTxt">No data yet</div></div>
+        <div class="v4HaloClip"><div class="v4Halo" id="dHalo"></div></div>
         <div class="olist" id="olist"></div>
         <button class="dcExpand" id="dcExpand" type="button" aria-label="Open organ age">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"
@@ -2837,6 +2900,7 @@
             <path d="M9.5 2.5H13.5V6.5M6.5 13.5H2.5V9.5M13.5 2.5 9 7M2.5 13.5 7 9"/>
           </svg>
         </button>
+        <button class="hiShare" id="dShare" type="button" aria-label="Share"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12V3M6 5.6 9 2.6l3 3M4 10.5v3.9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-3.9"/></svg></button>
       </div>
         <div class="dcard dfill"></div>
       </div>
@@ -7548,6 +7612,7 @@
   let jitter = reduced ? 0 : 1;
   let beatBlend = 0;
   let warmNow = 0;
+  const dHaloEl = document.getElementById('dHalo');
   // density, particle size, flow and voxels are settled: they stay where the
   // design landed rather than being exposed as tweaks
   const dens = 1, sizeMul = 1.6;
@@ -7739,6 +7804,18 @@
     const warmTarget = Math.max(-1, Math.min(1, warmDelta / 6));
     warmNow += (warmTarget - warmNow) * 0.025;
     gl.uniform1f(U.uWarm, warmNow);
+    // The card's light carries the same verdict the cloud does, and eases with
+    // it. The phone picks its hue off the sign of the gap; here the eased warmth
+    // stands in for that, run out to full orange by a two-year gap so every
+    // organ in the data reads the colour the phone gives it.
+    if (dHaloEl && isDash(version)){
+      const hf = Math.max(0, Math.min(1, warmNow / 0.34));
+      const gr = [132, 176, 142], og = [210, 148, 112];
+      (dHaloEl.closest('#organSlot') || dHaloEl).style.setProperty('--v4halo',
+        Math.round(gr[0] + (og[0] - gr[0]) * hf) + ' ' +
+        Math.round(gr[1] + (og[1] - gr[1]) * hf) + ' ' +
+        Math.round(gr[2] + (og[2] - gr[2]) * hf));
+    }
 
     // camera rides the same S-curve timeline as the morph
     const org = ORGANS[current];
