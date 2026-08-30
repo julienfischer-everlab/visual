@@ -51,6 +51,7 @@ The variant pages are not separate pages. Each wears another page's styles
 | Biomarkers · Mobile V3 | `m15 m5 v2 v3 v4` | Mobile V1 + the `v4` marker |
 | Biomarkers · Mobile V4 | `m16 m5 v2 v3 v4 v5` | Mobile V3 + the `v5` marker |
 | Biomarkers · Mobile V5 | `m17 m5 v2 v3 v4 v5 v6` | Mobile V4 + the `v6` marker |
+| Biomarkers · Mobile V6 | `m19 m5 v2 v3 v4 v5 v6 v7` | Mobile V5 + the `v7` marker |
 
 **A dark island in a light page.** Where a block keeps the organ's ground
 rather than the page's surface — the coloured organ card, and V3's whole
