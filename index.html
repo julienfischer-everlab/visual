@@ -2096,7 +2096,7 @@
   body.b5 .dash .dcard.scard,
   body.b5 .dash .dcard.dfill,
   body.b5 .dash .hiCard,
-  body.b5 .dash .dcard.organ{background:#30302d;}
+  body.b5 .dash .dcard.organ{background:rgba(255,255,255,.08);}
   /* body.light.b2 .dash .dcard.organ carries one more class than the plain
      light rule, so the organ card needs saying at that weight here too */
   body.light.b5 .dash .dcard,
@@ -2104,7 +2104,7 @@
   body.light.b5 .dash .dcard.scard,
   body.light.b5 .dash .dcard.dfill,
   body.light.b5 .dash .hiCard,
-  body.light.b5 .dash .dcard.organ{background:#fbf8f7;}
+  body.light.b5 .dash .dcard.organ{background:rgba(0,0,0,.028);}
   /* the phone's proportions carry over almost unchanged: the organ card is
      358px wide against the phone's 352, so the arc and the age are set at the
      same sizes they are given there rather than scaled to a new column */
@@ -2115,7 +2115,8 @@
      The gap comes down to the phone's 34px to make room for the action. */
   .b5On{display:none;}
   body.b5 .b5On{display:block;}
-  body.b5 .b3On{display:none;}
+  body.b5 .dash .bcard .b3On,
+  body.b5 #situTitle .b3On{display:none;}
   body.b5 .dash .bcard .bcTop{gap:34px;}
   body.b5 .dash .bcard .b5On .big{color:#8b8b86;}
   body.light.b5 .dash .bcard .b5On .big{color:#9b8a75;}
@@ -2132,7 +2133,17 @@
   body.b5 .dash .bcard .bcGet:hover{background:rgba(255,255,255,.2);}
   body.light.b5 .dash .bcard .bcGet{background:rgba(0,0,0,.06);color:#2e241c;}
   body.light.b5 .dash .bcard .bcGet:hover{background:rgba(0,0,0,.11);}
-  body.b5 #arcA{transform:scale(.52);margin:-24px 0 -46px;}
+  /* the eyebrow reads at the biomarker card's size and in its grey, so the two
+     titles on the row are one thing said twice rather than two treatments */
+  body.b5 #situTitle .slbl{font-size:10px;color:#8b8b86;}
+  body.light.b5 #situTitle .slbl{color:#9b8a75;}
+  /* The stack shifts down as a group to sit under the bigger organ, but not by
+     one amount: the arc gives up 48px and the age 24, so the two close on each
+     other as they fall. Transforms rather than margins -- resize() bottom-aligns
+     the stack off its own offsetHeight, and a margin would grow that height and
+     shunt the whole block back up by what it was just given. */
+  body.b5 #arcA{transform:scale(.52) translateY(92px);margin:-24px 0 -46px;}
+  body.b5 #ageBig, body.b5 #status{transform:translateY(24px);}
   body.b5 #ageBig{height:86px;}
   body.b5 #ageBig .dcol{font-size:57px;}
   body.b5 #ageBig .dcol + .dcol{margin-left:-2.3px;}
@@ -2823,6 +2834,7 @@
 <div id="situTitle">
   <div class="slbl b3Off">How your organs are aging</div>
   <div class="slbl b3On">How your body is ageing</div>
+  <div class="slbl b5On">Biological age</div>
   <div class="oname" id="situOrgan">Gut</div>
 </div>
 
@@ -5227,7 +5239,11 @@
     gl.uniform2f(U.uView, 0.78 * effDim / W, 0.78 * effDim / H);
     gl.uniform1f(U.uPix, MODES[version].pix * dpr * pixScale());
     // pill mode: organ sits 80px lower for breathing room under the top bar
-    gl.uniform1f(U.uYOff, (botH - topH - (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
+    // uYOff lands in clip space, which spans H pixels over two units, so a
+    // pixel push is twice its value here: -128 sits the organ 64px lower
+    const dropB5 = (isDash(version) && document.body.classList.contains('b5')) ? 128 : 0;
+    gl.uniform1f(U.uYOff,
+      (botH - topH - dropB5 - (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
   }
   addEventListener('resize', resize);
   resize();
@@ -7690,7 +7706,9 @@
     orgR = camFrom.r + (org.r - camFrom.r) * k2;
     // V4's organ is the page, so it is drawn a quarter larger than the bento's
     const bentoZ = document.body.classList.contains('v5') ? 0.8625 : 0.69;
-    zoomNow = camFrom.z + ((version === 1 ? 0.74 : isDash(version) ? 0.82 : isBento(version) ? bentoZ : 0.68) / org.r - camFrom.z) * k2;
+    // V5 draws the organ a fifth larger than the other dashboards
+    const dashZ = document.body.classList.contains('b5') ? 0.984 : 0.82;
+    zoomNow = camFrom.z + ((version === 1 ? 0.74 : isDash(version) ? dashZ : isBento(version) ? bentoZ : 0.68) / org.r - camFrom.z) * k2;
     ghostVis += (0 - ghostVis) * 0.05; // body context retired: no ghost outline
     gl.uniform1f(U.uEase, reduced ? 1 : MODES[version].ease);
     gl.uniform3f(U.uCenter, cenX, cenY, 0);
@@ -7802,7 +7820,9 @@
       // so there is no rectangle to see against the background. That header is a
       // neutral page surface, so it has a reading per theme like any other.
       const bare = flat && cls.contains('v5');
-      const lift = flat === 'dash' && cls.contains('b5');   // V5's lighter card
+      // V5's card is a wash rather than a colour, so the clear value is what it
+      // composites to: 8% white over #0d0d0c dark, 2.8% black over #fff light
+      const lift = flat === 'dash' && cls.contains('b5');
       const dk = bare ? (cls.contains('v6')
                           // V5's header runs grey to almost-black under the body
                           ? [(15 + (6 - 15) * v5HeadP) / 255,
@@ -7810,12 +7830,12 @@
                              (14 + (6 - 14) * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
-               : lift ? [0.1882, 0.1882, 0.1765]           // #30302d, V5's card
+               : lift ? [0.1269, 0.1269, 0.1233]           // V5's wash on #0d0d0c
                : flat ? [0.1451, 0.1451, 0.1333]           // #252522, the header card
                :        [0.1330, 0.0240, 0.0240];          // #220606, the organ ground
       const lt = bare             ? [0.9255, 0.9255, 0.9176]   // #ececea, the same in light
                : tint             ? [0.1569, 0.0275, 0.0275]
-               : lift             ? [0.9843, 0.9725, 0.9686]   // #fbf8f7, V5's light card
+               : lift             ? [0.9720, 0.9720, 0.9720]   // V5's wash on #fff
                : flat === 'dash'  ? [0.9569, 0.9373, 0.9294]   // #f4efed, the light card
                : flat === 'bento' ? [0.9570, 0.9370, 0.9290]   // #f4efed, the light card
                : cardMode         ? [0.9530, 0.8860, 0.8470]
