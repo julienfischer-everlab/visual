@@ -314,9 +314,8 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
 - **Biomarkers**, **Activity**, **Biological age** — each of the three cards can
-  be put in an *Empty* state on its own, desktop and mobile at once. The first
-  two keep their shape and their eyebrow and give up everything else; what
-  stands in the space is a placeholder line, not a designed empty state.
+  be put in an *Empty* state on its own, desktop and mobile at once; the age
+  card also has a *Partial*.
 
   The other two are designed. The **age** card keeps its organ and says what is
   missing under it, one line and one action centred across the card, with no
@@ -329,7 +328,19 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   off the canvas, so the two can never overlap. **Activity** keeps its eyebrow —
   its sentence does not name the card the way the age card's does — and centres
   *Connect your variables* and a *Connect* action on the card itself rather than
-  on what the eyebrow leaves, which would sit low by half a label. The rules are
+  on what the eyebrow leaves, which would sit low by half a label.
+  **Biomarkers** keeps its distribution and takes the reading out of it: blurred
+  and drained of colour, the band is a shape rather than a result — the real
+  widths under the blur, enough to say what the card will hold without stating a
+  figure nobody has yet.
+
+  *Partial* is the middle case: some organs have been read and some have not.
+  An untested one shows a dash wherever its age would be — the list, the strip,
+  the odometer, which gets an element of its own rather than a wheel for a
+  character that is not a digit — and when it is the one on screen the
+  silhouette goes grey, the halo goes with it, and the arc and the caption say
+  nothing at all. An indicator resting on a reading nobody has taken is worse
+  than no indicator. The rules are
   named by the card rather than by where it sits — V4's hero layout borrows the
   hero and the steps tile out of the bento — and they sit last in the sheet
   carrying the phone's id, because what they switch off was switched on by rules

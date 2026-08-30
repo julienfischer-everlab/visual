@@ -166,6 +166,7 @@
     display:flex;align-items:center;justify-content:center;
     font-variant-numeric:tabular-nums;
   }
+  .ageBig .agDash{font-size:92px;}
   .ageBig .dcol{
     position:relative;height:100%;width:1ch;overflow:hidden;
     font-size:92px;font-weight:500;color:var(--ink-bright);line-height:1;
@@ -236,7 +237,7 @@
   body.m2 #arcA{order:1;transform:scale(.52);margin:-20px 0 -60px;}
   body.m1 #ageBig{margin-top:16px;}
   body.m2 #ageBig{order:2;height:64px;}
-  body.m2 #ageBig .dcol{font-size:34px;}
+  body.m2 #ageBig .dcol, body.m2 #ageBig .agDash{font-size:34px;}
   body.m2 #ageBig .dcol + .dcol{margin-left:-1px;}
   body.m2 #status{order:3;margin-top:-10px;min-height:18px;}
   body.m2 #status .word{
@@ -403,7 +404,7 @@
   /* steps says its status the same way its phone copy does: under the title */
   body.b3 .dash .hiSteps .hiStat{display:block;margin-top:2px;}
   body.b2 #ageBig{height:70px;}
-  body.b2 #ageBig .dcol{font-size:39px;}
+  body.b2 #ageBig .dcol, body.b2 #ageBig .agDash{font-size:39px;}
   body.b2 #status{margin-top:-6px;min-height:16px;}
   body.b2 #status .word{font-size:11px;}
   .dash .organ{padding:0;position:relative;background:var(--bg);border-color:#2c1512;min-height:0;border-radius:20px;}
@@ -2212,7 +2213,7 @@
   body.b5 #arcA{transform:scale(.52) translateY(92px);margin:-24px 0 -46px;}
   body.b5 #ageBig, body.b5 #status{transform:translateY(24px);}
   body.b5 #ageBig{height:86px;}
-  body.b5 #ageBig .dcol{font-size:57px;}
+  body.b5 #ageBig .dcol, body.b5 #ageBig .agDash{font-size:57px;}
   body.b5 #ageBig .dcol + .dcol{margin-left:-2.3px;}
   /* the difference reads as a caption under the number, not a tag beside it,
      so it loses the pill and takes the phone's grey in both directions --
@@ -2761,8 +2762,8 @@
     margin-top:6px;font-size:13px;font-weight:400;color:rgba(242,229,224,.38);
   }
   body.light .emNote .emTxt{color:rgba(46,31,26,.4);}
-  body.emBio #phone .mHeroCard > *:not(.emNote),
-  body.emBio .dash .dcard.bcard > *:not(.emNote),
+  body.emBio #phone .mHeroCard > *:not(.emNote):not(.legend):not(.meterbar),
+  body.emBio .dash .dcard.bcard > *:not(.emNote):not(.legend):not(.meterbar),
   body.emAct #phone .hiSteps > *:not(.emNote),
   body.emAct .dash .hiSteps > *:not(.emNote),
   body.emAge #phone #mHeroOrgan > *:not(.emNote):not(.morganMini),
@@ -2779,6 +2780,28 @@
      so the whole apparatus goes with the card: the records count, the filter
      chips and search, and the rows themselves. Written with an ancestor so it
      outranks the rules that lay each of them out. */
+  /* The emptied biomarker card keeps its distribution and takes the reading out
+     of it: blurred and drained of colour, the band is a shape rather than a
+     result -- enough to say what the card will hold without stating a figure
+     nobody has yet. The bars keep their widths, so it is the real distribution
+     under the blur rather than a mock of one. */
+  /* Partial: an untested organ shows a dash where its age would be, its
+     silhouette loses its colour, and the arc says nothing -- an indicator
+     resting on a reading nobody has taken is worse than no indicator. */
+  .agDash{display:none;font-weight:500;line-height:1;color:var(--ink-bright);}
+  body.light .agDash{color:#2e1f1a;}
+  body.noAge #ageBig .dcol{display:none;}
+  body.noAge #ageBig .agDash{display:block;}
+  body.noAge #arcA{visibility:hidden;}
+  body.noAge #status{visibility:hidden;}
+  canvas#field{transition:filter .45s ease;}
+  body.noAge canvas#field{filter:grayscale(1);}
+  body.emBio #phone .mHeroCard > .legend,
+  body.emBio #phone .mHeroCard > .meterbar,
+  body.emBio .dash .dcard.bcard > .legend,
+  body.emBio .dash .dcard.bcard > .meterbar{
+    filter:blur(3px) grayscale(1);pointer-events:none;user-select:none;
+  }
   body.emBio .dash .drecs,
   body.emBio .dash .filters,
   body.emBio .dash .recs,
@@ -2794,7 +2817,7 @@
      two never overlap. */
   body.emAge #phone #mHeroOrgan > .emNote,
   body.emAge .dash #organSlot > .emNote{
-    position:absolute;left:0;right:0;bottom:32px;top:auto;height:150px;z-index:4;
+    position:absolute;left:0;right:0;bottom:56px;top:auto;height:150px;z-index:4;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     gap:16px;padding:0 24px;text-align:center;
   }
@@ -2852,6 +2875,7 @@
     <span class="lbl">Biological age</span>
     <select id="stAge" aria-label="Biological age card state">
       <option value="on">Default</option>
+      <option value="partial">Partial</option>
       <option value="empty">Empty</option>
     </select>
   </div>
@@ -2883,7 +2907,7 @@
     <div class="dgrid">
       <div class="dleft">
         <div class="dcard bcard">
-          <div class="emNote"><div class="lbl">Biomarkers</div><div class="emTxt">No data yet</div></div>
+          <div class="emNote emBioNote"><div class="lbl">Biomarkers</div></div>
           <div class="bcTop">
             <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
             <div class="b3Off"><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:14px;font-weight:400">years old</span></div></div>
@@ -3029,7 +3053,7 @@
       <div class="mHero" id="mHero">
       <div class="mHeroTrack" id="mHeroTrack">
       <div class="msn mHeroCard">
-        <div class="emNote"><div class="lbl">Biomarkers</div><div class="emTxt">No data yet</div></div>
+        <div class="emNote emBioNote"><div class="lbl">Biomarkers</div></div>
         <div class="mHeroTop">
           <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
           <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span class="yrs">years old</span></div></div>
@@ -4772,12 +4796,12 @@
     { label: 'Heart',         organIdx: 3, delta: -3, bio: 18 },
     { label: 'Mental',        organIdx: 0, delta:  0, bio: 14 },
     { label: 'Brain + nerve', organIdx: 1, delta: -6, bio: 11 },
-    { label: 'Lung',          organIdx: 2, delta:  8, bio: 16, bioOut: 2 },
+    { label: 'Lung',          organIdx: 2, delta:  8, bio: 16, bioOut: 2, nodata: true },
     { label: 'Immune',        organIdx: 4, delta: -3, bio: 12 },
-    { label: 'Muscle + bone', organIdx: 5, delta:  2, bio: 9,  bioOut: 4 },
+    { label: 'Muscle + bone', organIdx: 5, delta:  2, bio: 9,  bioOut: 4, nodata: true },
     { label: 'Gut',           organIdx: 6, delta: -5, bio: 15 },
     { label: 'Metabolic',     organIdx: 7, delta:  4, bio: 13, bioOut: 3 },
-    { label: 'Kidney',        organIdx: 8, delta: -1, bio: 10, bioOut: 1 },
+    { label: 'Kidney',        organIdx: 8, delta: -1, bio: 10, bioOut: 1, nodata: true },
     // the body itself, last so the nine organs keep the indices everything
     // else is written against; the surfaces that lead with it say so by order
     { label: 'Body',          organIdx: 9, delta: -6, bio: 124 },
@@ -4910,6 +4934,12 @@
   // wheel's target instead of restarting, so interrupts never jump.
   const ageBigEl = document.getElementById('ageBig');
   let ageCols = [];
+  // A reading the panel has not taken is a dash, not a number, so it is its own
+  // element rather than a character the odometer has to find a wheel for.
+  // buildAgeCols clears the host, so it is put back on every build.
+  const agDashEl = document.createElement('span');
+  agDashEl.className = 'agDash';
+  agDashEl.textContent = '\u2013';
   function buildAgeCols(str){
     ageBigEl.innerHTML = '';
     ageCols = str.split('').map(d => {
@@ -4924,6 +4954,7 @@
       ageBigEl.appendChild(col);
       return { spans, cur: +d, target: +d, k: 0.11, readyAt: 0 };
     });
+    ageBigEl.appendChild(agDashEl);
   }
   buildAgeCols(String(CHRONO + PILL[0].delta));
   function setAge(age, dir){
@@ -5146,6 +5177,15 @@
     return r;
   });
 
+  // Partial: some organs have been tested and some have not. The ones that have
+  // not read as a dash wherever their age would be, and the silhouette loses its
+  // colour -- there is nothing to be warm or cool about.
+  function noAgeFor(d){
+    return document.body.classList.contains('paAge') && !!(d && d.nodata);
+  }
+  function applyNoAge(){
+    document.body.classList.toggle('noAge', noAgeFor(PILL[pillCurrent]));
+  }
   function selectPill(i){
     // An emptied age card is the body and nothing else -- no carousel, no
     // organ to pick. Every route into a different one comes through here (the
@@ -5159,6 +5199,7 @@
       bxT = MB_ORDER.indexOf(i);   // the mini carousel glides to the selection
       bxGlide(bxT);                // V4 rides a timed curve to it; the rest chase
     }
+    applyNoAge();
     pillBtns.forEach((p, j) => p.setAttribute('aria-pressed', String(j === i)));
     olistRows.forEach((r, j) => r.classList.toggle('on', j === i));
     situOrgan.textContent = PILL[i].label;
@@ -5264,8 +5305,10 @@
       (organTint ? ' organTint' : '') +
       (CARD_STATE.emBio ? ' emBio' : '') +
       (CARD_STATE.emAct ? ' emAct' : '') +
-      (CARD_STATE.emAge ? ' emAge' : '');
+      (CARD_STATE.emAge ? ' emAge' : '') +
+      (CARD_STATE.paAge ? ' paAge' : '');
     syncDark();
+    applyNoAge();   // setMode writes the class list whole
     if (parallaxApply) parallaxApply();
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
@@ -5628,6 +5671,31 @@
     v4AgeEl.appendChild(el);
     return el;
   }) : [];
+  // Every surface that quotes an age reads it from the same place, so the state
+  // is applied in one pass rather than at each of the four build sites.
+  function refreshAges(){
+    const num = d => String(CHRONO + d.delta);
+    olistRows.forEach((r, i) => {
+      const d = PILL[i], no = noAgeFor(d);
+      r.querySelector('.ag').textContent = no ? '\u2013' : num(d);
+      // the dot states a verdict, which an untested organ does not have
+      r.querySelector('.dot').style.background = no ? '#6b6b68'
+        : (d.delta < 0 ? '#5cc47f' : d.delta > 0 ? '#d9895b' : '#b59a93');
+    });
+    mbItems.forEach((el, k) => {
+      const no = noAgeFor(MB[k]);
+      el.querySelector('.mbAgeN').textContent = no ? '\u2013' : num(MB[k]);
+      const bd = el.querySelector('.mbBadge');
+      if (bd) bd.style.visibility = no ? 'hidden' : '';
+    });
+    v4Ages.forEach((el, k) => {
+      const no = noAgeFor(MB[k]);
+      el.firstChild.nodeValue = no ? '\u2013' : num(MB[k]);
+      const gp = el.querySelector('.v4Gap');
+      if (gp) gp.style.visibility = no ? 'hidden' : '';
+    });
+    applyNoAge();
+  }
   const v4HaloEl = document.getElementById('v4Halo');
   const v4FootEl = document.getElementById('v4Foot');
   // the bottom fade belongs to the body alone, so the carousel has to know
@@ -5835,7 +5903,8 @@
       }
       if (v4HaloEl){
         const halo = v4HaloEl.closest('#phone') || v4HaloEl;
-        const hue = o => o.delta > 0 ? [210, 148, 112] : [132, 176, 142];
+        const hue = o => noAgeFor(o) ? [150, 150, 148]
+                       : o.delta > 0 ? [210, 148, 112] : [132, 176, 142];
         const ha = hue(oa), hb = hue(ob);
         halo.style.setProperty('--v4halo',
           Math.round(ha[0] + (hb[0] - ha[0]) * f) + ' ' +
@@ -7682,17 +7751,27 @@
   // Each of the three cards can be put in an empty state from the bar. setMode
   // writes body.className whole, so these live in a set it reads rather than
   // being toggled onto the element and lost at the next page change.
-  const CARD_STATE = { emBio: false, emAct: false, emAge: false };
-  for (const [id, cls] of [['stBio','emBio'], ['stAct','emAct'], ['stAge','emAge']]){
+  const CARD_STATE = { emBio: false, emAct: false, emAge: false, paAge: false };
+  for (const [id, cls] of [['stBio','emBio'], ['stAct','emAct']]){
     const sel = document.getElementById(id);
     sel.addEventListener('change', () => {
       CARD_STATE[cls] = sel.value === 'empty';
       document.body.classList.toggle(cls, CARD_STATE[cls]);
-      // the body is the last entry in PILL, after the nine organs
-      if (cls === 'emAge' && CARD_STATE[cls]) selectPill(PILL.length - 1);
-      resize();   // the organ's slot may have just appeared or gone
+      resize();
     });
   }
+  // the age card has three: whole, part-tested, and nothing yet
+  const stAgeSel = document.getElementById('stAge');
+  stAgeSel.addEventListener('change', () => {
+    CARD_STATE.emAge = stAgeSel.value === 'empty';
+    CARD_STATE.paAge = stAgeSel.value === 'partial';
+    document.body.classList.toggle('emAge', CARD_STATE.emAge);
+    document.body.classList.toggle('paAge', CARD_STATE.paAge);
+    // the body is the last entry in PILL, after the nine organs
+    if (CARD_STATE.emAge) selectPill(PILL.length - 1);
+    refreshAges();
+    resize();   // the organ's slot may have just appeared or gone
+  });
 
   // Blocks that keep the organ's ground rather than the page's surface carry
   // .onDark, and the ink rules at the foot of the sheet key off it. One place
@@ -7855,7 +7934,9 @@
     // organ in the data reads the colour the phone gives it.
     if (dHaloEl && isDash(version)){
       const hf = Math.max(0, Math.min(1, warmNow / 0.34));
-      const gr = [132, 176, 142], og = [210, 148, 112];
+      const grey = document.body.classList.contains('noAge');
+      const gr = grey ? [150, 150, 148] : [132, 176, 142],
+            og = grey ? [150, 150, 148] : [210, 148, 112];
       (dHaloEl.closest('#organSlot') || dHaloEl).style.setProperty('--v4halo',
         Math.round(gr[0] + (og[0] - gr[0]) * hf) + ' ' +
         Math.round(gr[1] + (og[1] - gr[1]) * hf) + ' ' +
