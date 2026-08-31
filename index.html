@@ -2811,6 +2811,11 @@
     -webkit-mask-image:none;mask-image:none;
     bottom:52px;height:200px;pointer-events:auto;
   }
+  /* and no name strip under the action. The strip is the carousel's own
+     indicator, and there is no carousel here -- one slide, whose first line
+     already says what it is. A label under a call to action would be a second
+     thing to read after the thing to do. */
+  body.emBio.v7 #mHeroOrgan .v4Names{display:none;}
   body.emBio.v7 #mHeroOrgan .v4BioN .v4BioEmpty{
     display:flex;flex-direction:column;align-items:center;gap:12px;
     width:300px;text-align:center;white-space:normal;
@@ -2826,6 +2831,22 @@
   }
   body.light.emBio.v7 #mHeroOrgan .v4BioEmpty i{color:rgba(0,0,0,.55);}
   body.emBio.v7 #mHeroOrgan .v4BioEmpty .emCta{margin-top:2px;}
+  /* The organ slides' own empty state: a line and the action that would fill
+     it, where the number was. It is deliberately shorter than the biomarker
+     one -- that slide is alone in its carousel and can take a paragraph; these
+     nine still slide past each other inside the strip's 110px box, so the
+     block has to fit it or the strip's edge fade clips what overflows. */
+  .v4OrgEmpty{display:none;}
+  body.v5 #mHeroOrgan .v4AgeN.v4OrgEm{font-size:0;letter-spacing:0;}
+  body.v5 #mHeroOrgan .v4AgeN.v4OrgEm .v4OrgEmpty{
+    display:flex;flex-direction:column;align-items:center;gap:11px;
+    width:280px;text-align:center;white-space:normal;
+  }
+  body.v5 #mHeroOrgan .v4OrgEmpty b{
+    font-size:16px;font-weight:500;line-height:1.3;letter-spacing:-0.2px;
+    color:var(--ink-bright);text-wrap:balance;
+  }
+  body.light.v5 #mHeroOrgan .v4OrgEmpty b{color:#000;}
   /* the whole reading comes up 16px: the visual by the uniform, the arc and the
      age strip by their own offsets. The caption hangs off the number, so it
      travels with it; the name strip stays where it is. */
@@ -4370,10 +4391,12 @@
         // has to sit inside that range or every particle counts as rim and
         // the empty half comes out as an even speckle instead of an edge
         float shell = smoothstep(0.82, 1.16, ef);
-        float keepUp = step(fract(aSeed.z * 71.33), mix(0.04, 0.78, shell));
-        // and what is left of them is faint: a twentieth of full in the
-        // volume, a little over a third on the rim, where light would sit
-        float upA = keepUp * mix(0.06, 0.42, shell);
+        float keepUp = step(fract(aSeed.z * 71.33), mix(0.11, 0.78, shell));
+        // and what is left of them is faint: a sixth of full inside the
+        // vessel, a little over a third on the rim, where light would sit.
+        // The interior is not empty -- a scattering of dots floats in it, so
+        // the shell reads as a volume rather than as a cut-out.
+        float upA = keepUp * mix(0.16, 0.42, shell);
         // one restrained highlight, cool against the warm body, so the empty
         // half reads as a container rather than as the same body dimmed
         rgb = mix(rgb, vec3(0.60, 0.66, 0.68),
@@ -5627,9 +5650,9 @@
     // uYOff is clip space, two units over H pixels, so a pixel move is twice
     // its value here: +64 lifts the phone's silhouette 32px off where it sat
     const upEm = (isBento(version) && document.body.classList.contains('emAge')) ? 64 : 0;
-    // V6 sits its silhouette 8px above where V5 draws it: it came up 32px with
-    // the rest of the stack and has since gone back down 24px of that
-    const upV6 = (isBento(version) && v7On()) ? 16 : 0;   // 8px, in clip units
+    // V6 sits its silhouette 24px above where V5 draws it: 32px up with the
+    // rest of the stack, 24px back down, then 16px up again
+    const upV6 = (isBento(version) && v7On()) ? 48 : 0;   // 24px, in clip units
     gl.uniform1f(U.uYOff,
       (botH - topH - dropB5 + upEm + upV6 -
        (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
@@ -5821,10 +5844,16 @@
     const el = document.createElement('span');
     el.className = 'v4AgeN';
     const n = Math.abs(d.delta);
+    // Number, caption, and -- for when there is no age to state -- the line
+    // and the action that would produce one. All three live in the slide, so
+    // whichever is showing travels, fades and blurs on the same transform.
     el.innerHTML = String(CHRONO + d.delta) +
       '<span class="v4Gap">' + (d.delta === 0 ? 'Aligned with your age'
         : n + (n > 1 ? ' years ' : ' year ') + (d.delta < 0 ? 'younger' : 'older')) +
-      '</span>';
+      '</span>' +
+      (d.label === 'Body' ? '' :
+        '<span class="v4OrgEmpty"><b>Unlock your organ ages</b>' +
+        '<button class="emCta" type="button">Get tested</button></span>');
     v4AgeEl.appendChild(el);
     return el;
   }) : [];
@@ -5845,11 +5874,18 @@
       const bd = el.querySelector('.mbBadge');
       if (bd) bd.style.visibility = no ? 'hidden' : '';
     });
+    // Emptied outright, an organ slide stops saying nothing with a dash and
+    // says what would fill it instead. Partial keeps the dash: there the
+    // reading exists for most of them, and an action on every unread one
+    // would be the same sentence nine times over a carousel that is working.
+    const allOrg = document.body.classList.contains('emOrg');
     v4Ages.forEach((el, k) => {
       const no = noAgeFor(MB[k]);
-      el.firstChild.nodeValue = no ? '\u2013' : num(MB[k]);
+      const ask = allOrg && MB[k].label !== 'Body';
+      el.classList.toggle('v4OrgEm', ask);
+      el.firstChild.nodeValue = ask ? '' : no ? '\u2013' : num(MB[k]);
       const gp = el.querySelector('.v4Gap');
-      if (gp) gp.style.visibility = no ? 'hidden' : '';
+      if (gp) gp.style.visibility = (no || ask) ? 'hidden' : '';
     });
     applyNoAge();
   }
@@ -5873,7 +5909,11 @@
     return v7On() && document.body.classList.contains('emBio');
   }
   function bxMax(){ return bioLock() ? -1 : MB.length - 1; }
-  let bioArc = 0, bioRev = 0, bioRevT = -1, fillT = -1;
+  let bioArc = 0, bioRev = 0, bioRevT = -1;
+  // the arc's sweep and the body's fill are one reveal, so they share a span
+  const BIO_REVEAL = 700;
+  // which arc the carousel has committed to, and when it committed
+  let bioWant = 0, bioSwapT = -1;
   const v4NameEl = document.getElementById('v4Names');
   const v4Names = v4NameEl ? MB.map(d => {
     const el = document.createElement('span');
@@ -6170,11 +6210,19 @@
       }
       // On the way to the biomarker slide the silhouette and its light give way
       // -- there is no organ there -- and the arc stops being an age scale and
-      // becomes the distribution, revealed left to right once the slide lands.
-      // ...and on the same clock as the silhouette. The arc is a reading, not a
-      // scrubbable control: it swaps from the age scale to the distribution
-      // when the swipe commits, not by degrees under the finger.
-      const bioOn = v7On() ? Math.max(0, Math.min(1, -mx)) : 0;
+      // becomes the distribution, revealed left to right.
+      //
+      // The arc is a reading, not a scrubbable control, so it does not follow
+      // the finger: bxT is where the carousel has committed to go, which
+      // changes on the release and nowhere else. Nor does it ride the
+      // silhouette's own clock -- that dissolve is three seconds long, and
+      // waiting for it to land left the arc sitting on the old scale for most
+      // of a swipe that had already been let go. The release is the cue, and
+      // the swap runs at its own quarter-second from there.
+      const want = (v7On() && bxT < 0) ? 1 : 0;
+      if (want !== bioWant){ bioWant = want; bioSwapT = t; }
+      const swap = bioSwapT < 0 ? 1 : Math.min(1, (t - bioSwapT) / 260);
+      const bioOn = v7On() ? (bioWant ? swap : 1 - swap) : 0;
       // The body is one size wherever it shows. The biomarker slide and the
       // body slide are the same figure, so framing them the same way leaves
       // that step nothing to change but colour; the third it is drawn larger
@@ -6190,16 +6238,14 @@
       gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
                             (v7On() ? V6_HERO : 1) *
                             zFix * (1 + 0.30 * bodyShown));
-      // The fill rises once the slide has settled, over a couple of seconds,
-      // and is put away again when it is left. It stops at the optimal share
-      // rather than covering the body: how high the green reaches is the
-      // reading -- 81 of 124 is two thirds of the figure, not all of it --
-      // and what is left above it stays in the body's own ink at a little
-      // over half brightness, which is the part that has not come back green.
-      if (vasc > 0.999 && !bxDrag){ if (fillT < 0) fillT = t; }
-      else if (vasc < 0.6) fillT = -1;
-      const fillP = fillT < 0 ? 0
-                  : Math.min(BIO_FILL, (t - fillT) / 2160 * BIO_FILL);
+      // The fill rises on the same cue and over the same span as the arc's
+      // sweep: they are one reveal of one reading, and running them on two
+      // clocks left the body still filling after the meter had finished. It
+      // stops at the optimal share rather than covering the body -- how high
+      // it reaches is the reading, 81 of 124 being two thirds of the figure --
+      // and above it the body waits as the shell it is drawn as.
+      const fillP = bioRevT < 0 ? 0
+                  : Math.min(BIO_FILL, (t - bioRevT) / BIO_REVEAL * BIO_FILL);
       gl.uniform1f(U.uRange, emB ? 0 : vasc);
       gl.uniform1f(U.uFill, fillP);
       gl.uniform2f(U.uFillY, BODY_Y[0], BODY_Y[1]);
@@ -6207,9 +6253,10 @@
       // and the arc has nothing to draw, so it stands down rather than showing
       // an empty scale under a slide that is asking for a test
       arcASvg.style.visibility = (emB && bioOn > 0.5) ? 'hidden' : '';
-      if (bioOn > 0.999 && !bxDrag){ if (bioRevT < 0) bioRevT = t; }
+      // and the left-to-right sweep starts with the swap rather than after it
+      if (bioWant){ if (bioRevT < 0) bioRevT = t; }
       else bioRevT = -1;
-      bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / 700);
+      bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / BIO_REVEAL);
       gl.uniform1f(U.uP, f);
       // the 30% pushes the crown past the top of the canvas, so the body
       // rides down by what it grew — on both of its slides, or the step that
