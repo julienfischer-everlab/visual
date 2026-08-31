@@ -371,11 +371,15 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   carousel reads biomarkers, body, organ age, and that slide carries the same
   shape the other empty states do: *Discover how your organs are ageing*, a
   sentence, and *Get tested*. What sits at that slot is remapped rather than
-  reordered, since `MB` is the order every other surface counts by. The strip
-  the copy lives in is 110px tall and the paragraph is not, so the box grows
-  and its offset drops by half of what it grew — every slide's own centre, the
-  body's number included, lands exactly where it did, and only the room around
-  them changes.
+  reordered, since `MB` is the order every other surface counts by. All three empty
+  states are laid out as one thing rather than three: the same strip box, the
+  same block height, and the action anchored to its foot, so however long the
+  copy above it runs the button a reader is looking for is in the same place.
+  The strip is 110px tall and a paragraph is not, so the box grows and its
+  offset drops by half of what it grew — every slide's own centre, the body's
+  number included, lands exactly where it did, and only the room around them
+  changes. The block itself is lifted clear of the name strip below, by the
+  same amount on all three, or they would stop agreeing.
 
   Neither age reading has a middle. The body is read or it is not, and the
   organs come back together or not at all — one panel, one result — so both
