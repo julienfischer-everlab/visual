@@ -352,14 +352,15 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   would be a missing subject — and only its contents change. The count and the
   three ranges go, the arc goes with them, the body loses its fill, and what
   takes their place is the same shape the age card's empty state has: a line
-  saying what testing would show, a sentence under it, and *Get tested*. It is
-  also the whole carousel: an age is read out of biomarkers, so with none there
-  is nothing to say about the body or any organ, and the body and the nine
-  organs leave the hero rather than sitting one swipe away behind a locked
-  track still promising a number that cannot exist. Both ends of the travel
-  become the same slot, which closes the swipe, the flick, the arrow keys and
-  the five-second cycle at once, and the organ names and figures go with the
-  slides they belonged to. On the
+  saying what testing would show, a sentence under it, and *Get tested*. The carousel stands
+  through it: emptying biomarkers empties the ages with it, so each slide says
+  its own piece rather than the first one speaking for all three. On the
+  dashboard, which has no hero, the card carries the same thing — the body
+  drawn in the 2D view every other thumbnail in the file uses, since the one
+  WebGL canvas belongs to the organ card — in place of the distribution, which
+  goes with the reading: a blurred bar is a result held just out of view, and
+  there is no result. The phone's own biomarker card keeps that teaser, since
+  on V6 the card is in the hero and this state is the hero slide's. On the
   cards below, the distribution stays and the reading comes out of it: blurred
   and drained of colour, the band is a shape rather than a result.
 
@@ -383,14 +384,15 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
   Neither age reading has a middle. The body is read or it is not, and the
   organs come back together or not at all — one panel, one result — so both
-  controls are *Completed* or *Empty* and nothing between. Nor are they
-  independent: the body's age is the summary of the organs', so an organ that
-  has been read is part of a body that has been read. An organ age implies a
-  biological age; it does not work the other way, since a body can have its
-  age while the organs are still being reported. The two controls enforce that
-  between them — emptying biological age empties organ age, and completing
-  organ age completes biological age — with whichever control was touched
-  keeping what it was set to.
+  controls are *Completed* or *Empty* and nothing between. Nor are they independent.
+  An age is derived from biomarkers, and the body's age is the summary of the
+  organs', so the three sit on one chain: biomarkers, then the biological age,
+  then the organ ages. Emptying runs down it — no biomarkers means no age of
+  any kind — and completing runs back up, since an organ age is only possible
+  on a body that has been read, on a panel that has been taken. Neither runs
+  the other way: a taken panel need not have produced an age yet, and a body
+  can have its age while the organs are still coming in. Whichever control was
+  touched keeps what it was set to.
 
   An arc is a reading, so a slide with no reading has no arc: the biomarker
   slide when the panel is untested, the body when there is no biological age,

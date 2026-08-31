@@ -2855,13 +2855,12 @@
        than by moving the box, so the slides that do carry a number keep their
        own centre -- and by the same amount on all three, or they would stop
        agreeing with each other. */
-    transform:translateY(-24px);
+    transform:translateY(-48px);
   }
   /* and no name strip under the action. The strip is the carousel's own
      indicator, and there is no carousel here -- one slide, whose first line
      already says what it is. A label under a call to action would be a second
      thing to read after the thing to do. */
-  body.emBio.v7 #mHeroOrgan .v4Names{display:none;}
   body.emBio.v7 #mHeroOrgan .v4BioN .v4BioEmpty{
     display:flex;flex-direction:column;align-items:center;gap:12px;
     width:300px;text-align:center;white-space:normal;
@@ -2957,12 +2956,37 @@
   body.noAge #status{visibility:hidden;}
   canvas#field{transition:filter .45s ease;}
   body.noAge canvas#field{filter:grayscale(1);}
-  body.emBio #phone .mHeroCard > .legend,
-  body.emBio #phone .mHeroCard > .meterbar,
+  /* The dashboard's card says what the phone's V6 slide says: the body, a
+     line, a sentence, an action. The distribution behind it goes with the
+     reading -- a blurred bar is a result held just out of view, and there is
+     no result. The phone's own biomarker card keeps the teaser: on V6, which
+     is the phone's design now, that card is in the hero rather than the bento
+     and this state is the hero slide's. */
   body.emBio .dash .dcard.bcard > .legend,
-  body.emBio .dash .dcard.bcard > .meterbar{
+  body.emBio .dash .dcard.bcard > .meterbar{display:none;}
+  body.emBio #phone .mHeroCard > .legend,
+  body.emBio #phone .mHeroCard > .meterbar{
     filter:blur(3px) grayscale(1);pointer-events:none;user-select:none;
   }
+  .dash .emBioNote .emMid{
+    flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:12px;text-align:center;
+  }
+  .dash .emBioNote .emOrg{
+    width:100%;flex:1 1 auto;min-height:120px;position:relative;
+  }
+  .dash .emBioNote .emOrg canvas{position:absolute;inset:0;}
+  .dash .emBioNote b{
+    font-size:16px;font-weight:500;line-height:1.3;letter-spacing:-0.2px;
+    color:var(--ink-bright);text-wrap:balance;max-width:320px;
+  }
+  body.light .dash .emBioNote b{color:#000;}
+  .dash .emBioNote i{
+    font-style:normal;font-size:13px;font-weight:400;line-height:1.45;
+    letter-spacing:0;color:rgba(242,229,224,.55);text-wrap:balance;max-width:340px;
+  }
+  body.light .dash .emBioNote i{color:rgba(0,0,0,.55);}
+  .dash .emBioNote .emCta{margin-top:2px;flex:0 0 auto;}
   body.emBio .dash .drecs,
   body.emBio .dash .filters,
   body.emBio .dash .recs,
@@ -2997,6 +3021,17 @@
   body.light .emActNote .emTxt{color:rgba(46,31,26,.6);}
   /* the activity card keeps its eyebrow -- the sentence under it does not name
      the card the way the age card's does -- and centres the rest in what is left */
+  body.emBio .dash .dcard.bcard > .emNote{
+    /* the card's own padding, since an absolutely placed note does not
+       inherit it and the eyebrow would otherwise sit on the card's edge */
+    position:absolute;inset:0;display:flex;flex-direction:column;padding:22px;
+  }
+  /* The card is sized by what it holds, and what it holds has just been
+     replaced by a figure and three lines. Without a floor the note -- taken
+     out of the flow so it can fill the card -- leaves nothing behind to
+     measure, and the card collapses to its eyebrow. */
+  body.emBio .dash .dcard.bcard{min-height:340px;}
+  body.emBio #phone .mHeroCard .emMid{display:none;}
   body.emAct #phone .hiSteps > .emNote,
   body.emAct .dash .hiSteps > .emNote{
     position:absolute;inset:0;display:flex;flex-direction:column;
@@ -3084,7 +3119,7 @@
     <div class="dgrid">
       <div class="dleft">
         <div class="dcard bcard">
-          <div class="emNote emBioNote"><div class="lbl">Biomarkers</div></div>
+          <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><div class="emOrg"></div><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
           <div class="bcTop">
             <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
             <div class="b3Off"><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:14px;font-weight:400">years old</span></div></div>
@@ -3231,7 +3266,7 @@
       <div class="mHero" id="mHero">
       <div class="mHeroTrack" id="mHeroTrack">
       <div class="msn mHeroCard">
-        <div class="emNote emBioNote"><div class="lbl">Biomarkers</div></div>
+        <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><div class="emOrg"></div><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
         <div class="mHeroTop">
           <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
           <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span class="yrs">years old</span></div></div>
@@ -5450,8 +5485,7 @@
     pillCurrent = i;
     // bento mini card: carousel-style slide direction + title crossfade
     if (isBento(version)){
-      bxT = bioLock() ? -1
-          : (orgLock() && i === MB_ORDER[BRAIN_K]) ? 1
+      bxT = (orgLock() && i === MB_ORDER[BRAIN_K]) ? 1
           : MB_ORDER.indexOf(i);   // the carousel glides to the selection
       bxGlide(bxT);                // V4 rides a timed curve to it; the rest chase
     }
@@ -6014,13 +6048,11 @@
   // bxGlide is called during init and reads them.
   function v7On(){ return document.body.classList.contains('v7'); }
   function bxMin(){ return v7On() ? -1 : 0; }
-  // An age is read out of biomarkers, so with none there is nothing to say
-  // about the body or any organ. The carousel keeps the one slide that says
-  // so and loses the rest: an organ sitting a swipe away behind a locked
-  // track would still be promising a number that cannot exist.
-  function bioLock(){
-    return v7On() && document.body.classList.contains('emBio');
-  }
+  // An untested panel used to collapse the carousel to its one slide. It does
+  // not any more: the three readings are chained, so emptying biomarkers
+  // empties the ages with it, and each slide then says its own piece rather
+  // than the first one speaking for all three. The carousel stands.
+
   // Emptied outright, the nine organ slides say the same nothing nine times.
   // They collapse to one -- "Organ age", showing the brain, since a carousel
   // of unread organs is nine swipes to the same sentence. The slide keeps
@@ -6034,7 +6066,7 @@
     d => d.organIdx === ORGANS.findIndex(o => o.label === 'Brain')));
   function mbAt(k){ return MB[orgLock() && k >= 1 ? BRAIN_K : k]; }
   function pillAt(k){ return MB_ORDER[orgLock() && k >= 1 ? BRAIN_K : k]; }
-  function bxMax(){ return bioLock() ? -1 : orgLock() ? 1 : MB.length - 1; }
+  function bxMax(){ return orgLock() ? 1 : MB.length - 1; }
   // whether the slide at a carousel index has a reading to draw an arc for
   function arcAt(k){
     const c = document.body.classList;
@@ -6224,7 +6256,7 @@
       // as the number appears, gone by the time it reaches the centre.
       for (let k = 0; k < v4Ages.length; k++){
         const ag = v4Ages[k], d = k - bx;
-        if (bioLock() || (orgLock() && k >= 2) || Math.abs(d) > 1.6){
+        if ((orgLock() && k >= 2) || Math.abs(d) > 1.6){
           ag.style.display = 'none'; continue;
         }
         const an = Math.min(1, Math.abs(d));
@@ -6269,7 +6301,7 @@
       // screen — so it is placed in a pass of its own.
       for (let k = 0; k < v4Names.length; k++){
         const nm = v4Names[k], d = k - bx;
-        if (bioLock() || (orgLock() && k >= 2) || Math.abs(d) > 1.9){
+        if ((orgLock() && k >= 2) || Math.abs(d) > 1.9){
           nm.style.display = 'none'; continue;
         }
         const an = Math.min(1, Math.abs(d));
@@ -8241,6 +8273,17 @@
     // no download here: the tile is a thumbnail inside a card, and the same
     // heart is downloadable at full size from the library
     makeOrganView(host, 3, { dense: true, dl: false }); // overview: heart, at engine density
+  })();
+  // The emptied biomarker card carries the phone's slide: the body, a line, a
+  // sentence, an action. There is one WebGL canvas and it belongs to the organ
+  // card, so this is the 2D view every other thumbnail in the file is drawn
+  // with -- same cloud, same sampling, and it skips its frame while the card
+  // it sits in is not on screen, which is most of the time.
+  (function bioEmptyBody(){
+    for (const host of document.querySelectorAll('.emBioNote .emOrg')){
+      makeOrganView(host, BODY_I, { dense: true, fill: 0.55, dot: 0.95,
+                                    feed: false, flow: false, dl: false });
+    }
     document.querySelector('.ovcard.red').addEventListener('click', e => {
       if (e.target.closest('.ocx')) return; // the dismiss X never opens it
       sheetR.open(0); // heart first
@@ -8322,26 +8365,39 @@
   // being toggled onto the element and lost at the next page change.
   const CARD_STATE = { emBio: false, emAct: false, emAge: false,
                        emOrg: false, noCov: false };
-  for (const [id, cls] of [['stBio','emBio'], ['stAct','emAct']]){
-    const sel = document.getElementById(id);
+  // activity stands alone -- it comes off a wearable, not the panel
+  {
+    const sel = document.getElementById('stAct');
     sel.addEventListener('change', () => {
-      CARD_STATE[cls] = sel.value === 'empty';
-      document.body.classList.toggle(cls, CARD_STATE[cls]);
+      CARD_STATE.emAct = sel.value === 'empty';
+      document.body.classList.toggle('emAct', CARD_STATE.emAct);
       resize();
     });
   }
+  const stBioSel = document.getElementById('stBio');
+  stBioSel.addEventListener('change', () => applyAgeStates('bio'));
   // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');
-  // The two readings come off the same panel, and the body's age is the
-  // summary of the organs': an organ that has been read is part of a body
-  // that has been read, so an organ age implies a biological age. It does not
-  // work the other way -- a body can have its age while the organs are still
-  // being reported -- so a completed biological age leaves organ age free.
-  // The pair is applied together with that one implication enforced on the
-  // way, and whichever control was touched keeps what it was set to.
+  // Three readings on one chain. An age is derived from biomarkers, and the
+  // body's age is the summary of the organs', so each one being read depends
+  // on the one before it: biomarkers, then the biological age, then the organ
+  // ages. Emptying runs down the chain -- no biomarkers means no age of any
+  // kind -- and completing runs back up it, since an organ age is only
+  // possible on a body that has been read, on a panel that has been taken.
+  // Neither runs the other way: a taken panel need not have produced an age
+  // yet, and a body can have its age while the organs are still coming in.
+  // Whichever control was touched keeps what it was set to.
   function applyAgeStates(src){
-    if (src === 'age'){ if (stAgeSel.value === 'empty') stOrgSel.value = 'empty'; }
-    else if (stOrgSel.value === 'on') stAgeSel.value = 'on';
+    if (src === 'bio'){
+      if (stBioSel.value === 'empty'){ stAgeSel.value = 'empty'; stOrgSel.value = 'empty'; }
+    } else if (src === 'age'){
+      if (stAgeSel.value === 'empty') stOrgSel.value = 'empty';
+      else stBioSel.value = 'on';
+    } else {
+      if (stOrgSel.value === 'on'){ stAgeSel.value = 'on'; stBioSel.value = 'on'; }
+    }
+    CARD_STATE.emBio = stBioSel.value === 'empty';
+    document.body.classList.toggle('emBio', CARD_STATE.emBio);
     CARD_STATE.emAge = stAgeSel.value === 'empty';
     CARD_STATE.emOrg = stOrgSel.value === 'empty';
     document.body.classList.toggle('emAge', CARD_STATE.emAge);
