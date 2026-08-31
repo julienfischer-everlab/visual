@@ -2784,12 +2784,17 @@
   body.emBio .dash .dcard.bcard > *:not(.emNote):not(.legend):not(.meterbar),
   body.emAct #phone .hiSteps > *:not(.emNote),
   body.emAct .dash .hiSteps > *:not(.emNote),
-  body.emAge .dash #organSlot > #pillui{display:none;}
+  /* an unread organ is the organ's own note; an unread body is the body's.
+     Both are true at once when the organs are empty, since that empties the
+     body too, so the selection decides which of the two the card carries. */
+  body.emAge .dash #organSlot > #pillui,
+  body.emOrg.noAge .dash #organSlot > #pillui{display:none;}
   body.emBio #phone .mHeroCard > .emNote,
   body.emBio .dash .dcard.bcard > .emNote,
   body.emAct #phone .hiSteps > .emNote,
   body.emAct .dash .hiSteps > .emNote,
-  body.emAge .dash #organSlot > .emNote{display:block;}
+  body.emAge:not(.noAge) .dash #organSlot > .emAgeNote,
+  body.emOrg.noAge .dash #organSlot > .emOrgNote{display:block;}
   /* the two carousels have no padding of their own -- their slides carry it --
      and the organ blocks are stages the note has to be placed in */
   /* With no biomarkers there is nothing for the page under the bento to list,
@@ -2971,11 +2976,19 @@
      the height. It carries no eyebrow -- the sentence names the card -- and the
      150px it reserves is the same number resize() takes off the canvas, so the
      two never overlap. */
-  body.emAge .dash #organSlot > .emNote{
+  /* Both dashboard notes stand exactly where the gauge stack they replace
+     did, so the card reads the same whichever reading is missing. */
+  body.emAge:not(.noAge) .dash #organSlot > .emAgeNote,
+  body.emOrg.noAge .dash #organSlot > .emOrgNote{
     position:absolute;left:0;right:0;bottom:56px;top:auto;height:150px;z-index:4;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     gap:16px;padding:0 24px;text-align:center;
   }
+  .emOrgNote .emTxt{
+    margin-top:0;font-size:14px;line-height:1.4;max-width:320px;
+    text-wrap:balance;color:rgba(242,229,224,.6);
+  }
+  body.light .emOrgNote .emTxt{color:rgba(46,31,26,.6);}
   .emAgeNote .emTxt, .emActNote .emTxt{
     margin-top:0;font-size:14px;line-height:1.4;max-width:320px;
     text-wrap:balance;color:rgba(242,229,224,.6);
@@ -3108,6 +3121,7 @@
       <div class="dright">
       <div class="dcard organ" id="organSlot">
         <div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div>
+        <div class="emNote emOrgNote"><div class="emTxt">Get tested to reveal the biological age of your organs and where to focus.</div><button class="emCta" type="button">Get tested</button></div>
         <div class="v4HaloClip"><div class="v4Halo" id="dHalo"></div></div>
         <div class="olist" id="olist"></div>
         <button class="dcExpand" id="dcExpand" type="button" aria-label="Open organ age">
@@ -5685,9 +5699,10 @@
       pillui.style.top = (slot.height - (pillui.offsetHeight || 208) - gaugePad) + 'px';
       // the message stands exactly where the stack it replaced did, which is
       // the organ's column -- left:0 would run it under the list beside it
-      const emN = document.querySelector('#organSlot > .emNote');
-      if (emN){ emN.style.left = listW + 'px'; emN.style.width = W + 'px';
-                emN.style.right = 'auto'; }
+      for (const emN of document.querySelectorAll('#organSlot > .emNote')){
+        emN.style.left = listW + 'px'; emN.style.width = W + 'px';
+        emN.style.right = 'auto';
+      }
       const st = document.getElementById('situTitle');
       st.style.right = 'auto';
       st.style.left = '24px';
@@ -5726,8 +5741,8 @@
     // pixel push is twice its value here: -128 sits the organ 64px lower
     const dropB5 = (isDash(version) && document.body.classList.contains('b5') &&
                     !document.body.classList.contains('emAge')) ? 128 : 0;
-    // V6 sits its silhouette 24px above where V5 draws it
-    const upV6 = (isBento(version) && v7On()) ? 48 : 0;   // 24px, in clip units
+    // V6 sits its silhouette 8px above where V5 draws it
+    const upV6 = (isBento(version) && v7On()) ? 16 : 0;   // 8px, in clip units
     gl.uniform1f(U.uYOff,
       (botH - topH - dropB5 + upV6 -
        (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
@@ -6020,6 +6035,13 @@
   function mbAt(k){ return MB[orgLock() && k >= 1 ? BRAIN_K : k]; }
   function pillAt(k){ return MB_ORDER[orgLock() && k >= 1 ? BRAIN_K : k]; }
   function bxMax(){ return bioLock() ? -1 : orgLock() ? 1 : MB.length - 1; }
+  // whether the slide at a carousel index has a reading to draw an arc for
+  function arcAt(k){
+    const c = document.body.classList;
+    return (k < 0 ? !c.contains('emBio')
+          : k === 0 ? !c.contains('emAge')
+          : !c.contains('emOrg')) ? 1 : 0;
+  }
   let bioArc = 0, bioRev = 0, bioRevT = -1;
   // the arc's sweep and the body's fill are one reveal, so they share a span;
   // draining the colour back off the body is slower, being a departure
@@ -6400,12 +6422,15 @@
       bioArc = bioOn;
       // and the arc has nothing to draw, so it stands down rather than showing
       // an empty scale under a slide that is asking for a test
-      arcASvg.style.visibility = (emB && bioOn > 0.5) ? 'hidden' : '';
-      // ...and so does the age scale over an emptied body: there is no reading
-      // for it to point at. It fades with the slide's own approach rather than
-      // switching, so the arc leaves as the body arrives.
-      arcASvg.style.opacity = document.body.classList.contains('emAge')
-        ? Math.min(1, Math.abs(b0 - v4BodyK)).toFixed(3) : '1';
+      // An arc is a reading, so a slide with no reading has no arc -- the
+      // biomarker slide when the panel is untested, the body when there is no
+      // biological age, an organ when there are no organ ages. It is one rule
+      // across the carousel rather than a case per state, and it rides the
+      // swipe's own position, so the arc leaves and arrives with the slide it
+      // belongs to instead of switching at a threshold.
+      arcASvg.style.visibility = '';
+      arcASvg.style.opacity =
+        (arcAt(k0) * (1 - f) + arcAt(k1) * f).toFixed(3);
       // The left-to-right sweep starts with the swap rather than after it, and
       // it is not unwound on the way out: dropping it the instant the swipe
       // committed put every tick back to grey in one frame, so the ranges
@@ -8307,12 +8332,29 @@
   }
   // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');
-  stAgeSel.addEventListener('change', () => {
+  // The two readings come off the same panel, and the whole body's age is
+  // derived from the organs': there is no test that reads every organ and
+  // leaves the body unread, or reads the body while the organs are unread.
+  // So the pair is applied together, with the one rule that holds between
+  // them enforced on the way -- unread organs mean an unread body, which
+  // read the other way round is that a body with an age has organs with one.
+  function applyAgeStates(src){
+    // whichever control was touched keeps what it was set to; the other
+    // follows only where the rule requires it
+    if (src === 'age'){ if (stAgeSel.value === 'on') stOrgSel.value = 'on'; }
+    else if (stOrgSel.value === 'empty') stAgeSel.value = 'empty';
     CARD_STATE.emAge = stAgeSel.value === 'empty';
+    CARD_STATE.emOrg = stOrgSel.value === 'empty';
     document.body.classList.toggle('emAge', CARD_STATE.emAge);
+    document.body.classList.toggle('emOrg', CARD_STATE.emOrg);
     refreshAges();
+    // the carousel slot an organ occupies is not the same on both sides of
+    // this switch -- nine slides collapse to one -- so it is re-derived
+    // rather than left pointing at where the organ used to sit
+    selectPill(pillCurrent);
     resize();   // the organ's slot may have just appeared or gone
-  });
+  }
+  stAgeSel.addEventListener('change', () => applyAgeStates('age'));
   // Everything a tweak sets lives in memory, so a reload is the way back to
   // the page as it first drew: the states reset, the clouds rebuild, and the
   // reveals play from the top. The version travels in the hash, so the reload
@@ -8330,15 +8372,7 @@
   });
   // the organs' own pair, which never touches the body
   const stOrgSel = document.getElementById('stOrg');
-  stOrgSel.addEventListener('change', () => {
-    CARD_STATE.emOrg = stOrgSel.value === 'empty';
-    document.body.classList.toggle('emOrg', CARD_STATE.emOrg);
-    refreshAges();
-    // the carousel slot an organ occupies is not the same on both sides of
-    // this switch -- nine slides collapse to one -- so it is re-derived
-    // rather than left pointing at where the organ used to sit
-    selectPill(pillCurrent);
-  });
+  stOrgSel.addEventListener('change', () => applyAgeStates('org'));
 
   // Blocks that keep the organ's ground rather than the page's surface carry
   // .onDark, and the ink rules at the foot of the sheet key off it. One place
@@ -8610,8 +8644,7 @@
       // way there and only on the way there -- leaving it for an organ, the
       // age scale has to be drawn as the arc comes back up, or it would fade
       // in wearing the ranges and swap once it arrived.
-      const arcGoing = document.body.classList.contains('emAge') &&
-                       bxT === v4BodyK;
+      const arcGoing = isBento(version) && v7On() && !arcAt(Math.round(bxT));
       if (arcGoing){ /* leave it exactly as it is and let it go */ }
       else if (bioA > 0.001){
         // the three bands in the meter's own proportions, so the arc and the
@@ -8693,10 +8726,13 @@
                           // V5's header runs grey to almost-black under the body
                           ? [(15 + (6 - 15) * v5HeadP) / 255,
                              (15 + (6 - 15) * v5HeadP) / 255,
-                             (14 + (6 - 14) * v5HeadP) / 255]
+                             (15 + (6 - 15) * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
-               : lift ? [0.0600, 0.0600, 0.0600]           // #0f0f0f, V5's card
+               // 8% white on the card's black ground, which is what the card
+               // paints: the canvas clears to the value, not to the wash, so
+               // the two drift apart the moment the card's opacity changes
+               : lift ? [0.0784, 0.0784, 0.0784]           // #141414, V5's card
                : flat ? [0.1451, 0.1451, 0.1333]           // #252522, the header card
                :        [0.1330, 0.0240, 0.0240];          // #220606, the organ ground
       const lt = bare             ? [0.9255, 0.9255, 0.9176]   // #ececea, the same in light

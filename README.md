@@ -383,7 +383,22 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
   Neither age reading has a middle. The body is read or it is not, and the
   organs come back together or not at all — one panel, one result — so both
-  controls are *Completed* or *Empty* and nothing between.
+  controls are *Completed* or *Empty* and nothing between. Nor are they
+  independent: the whole body's age is derived from the organs', so unread
+  organs mean an unread body, and the two controls enforce that between them —
+  emptying organ age empties biological age, and completing biological age
+  completes organ age. Whichever control was touched keeps what it was set to.
+
+  An arc is a reading, so a slide with no reading has no arc: the biomarker
+  slide when the panel is untested, the body when there is no biological age,
+  an organ when there are no organ ages. One rule across the carousel rather
+  than a case per state, riding the swipe's own position so the arc leaves and
+  arrives with the slide it belongs to instead of switching at a threshold.
+
+  On the desktop, where there is no carousel, the same two notes stand exactly
+  where the gauge stack they replace did. Both states are true at once when the
+  organs are empty — that empties the body too — so the selection decides which
+  of the two the card carries.
   An untested one shows a dash wherever its age would be — the list, the strip,
   the odometer, which gets an element of its own rather than a wheel for a
   character that is not a digit — and when it is the one on screen the
