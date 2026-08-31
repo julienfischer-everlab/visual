@@ -2904,6 +2904,12 @@
       <option value="partial">Partial</option>
       <option value="empty">Empty</option>
     </select>
+    <span class="lbl">Organ age</span>
+    <select id="stOrg" aria-label="Organ age state">
+      <option value="on">Default</option>
+      <option value="partial">Partial</option>
+      <option value="empty">Empty</option>
+    </select>
   </div>
 </div>
 <div class="carousel" id="carousel" role="group" aria-label="Health metrics"></div>
@@ -4031,7 +4037,7 @@
 
   // ---------- sample a silhouette into a volumetric point cloud ----------
   // tf places the organ at its anatomical spot inside the ghost body
-  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens, edgeMod){
+  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens){
     octx.save();
     octx.clearRect(0, 0, S, S);
     octx.fillStyle = '#fff'; octx.strokeStyle = '#fff';
@@ -4091,8 +4097,7 @@
         if (Math.random() < (0.07 + 0.93 * Math.exp(-d / 3.5)) * w) break;
       }
       // edge particles read brighter so the silhouette stays crisp
-      edge[i] = (0.72 + 0.48 * Math.exp(-d / 6)) *
-                (edgeMod ? edgeMod(px, py) : 1);
+      edge[i] = 0.72 + 0.48 * Math.exp(-d / 6);
       const zmax = depthPx * Math.sqrt(d / 22);
       const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
@@ -4113,49 +4118,6 @@
     let area = 0;
     for (let i = 0; i < S * S; i++) area += mask[i];
     return { pos: out, edge, area, s, norm: { cx, cy, k: s * tf.s, tx: tf.x, ty: tf.y } };
-  }
-
-  // ---------- the body, read as what is moving through it ----------
-  // The biomarker slide and the Body slide are the same silhouette; what
-  // differs is where the particles gather. These are the paths they gather on:
-  // a trunk from the head down through the heart to the pelvis, and a branch
-  // out along each arm. Polylines rather than anatomy -- the brief asks for
-  // circulation suggested, not veins drawn -- and deliberately few, so what
-  // reads is flow through a body and not a diagram of one.
-  const VASC = [
-    [[166, 74], [166, 112], [152, 186], [158, 232], [163, 276]],
-    [[152, 186], [118, 176], [102, 220], [94, 268]],
-    [[152, 186], [200, 178], [218, 222], [228, 268]],
-    [[160, 120], [138, 168], [130, 214], [136, 262]],   // a second strand, offset
-    [[168, 122], [186, 170], [196, 216], [190, 264]],
-  ];
-  function vascDist(x, y){
-    let best = 1e9;
-    for (let p = 0; p < VASC.length; p++){
-      const ln = VASC[p];
-      for (let i = 0; i < ln.length - 1; i++){
-        const ax = ln[i][0], ay = ln[i][1], bx2 = ln[i+1][0], by = ln[i+1][1];
-        const vx = bx2 - ax, vy = by - ay;
-        const t = Math.max(0, Math.min(1,
-          ((x - ax) * vx + (y - ay) * vy) / (vx * vx + vy * vy || 1)));
-        const dx = x - (ax + vx * t), dy = y - (ay + vy * t);
-        const d2 = dx * dx + dy * dy;
-        if (d2 < best) best = d2;
-      }
-    }
-    return Math.sqrt(best);
-  }
-  // the streams take most of the particles; the rest of the body keeps enough
-  // to read as a silhouette and no more
-  function vascDensity(x, y){
-    return (0.24 + 4.4 * Math.exp(-vascDist(x, y) / 8.0)) * bodyDensity(x, y);
-  }
-  // and what is left outside them is dimmed, so the eye goes to the flow. The
-  // shader interpolates edge between the two clouds, so this dimming lifts as
-  // the swipe carries the body in -- the periphery fills out rather than
-  // appearing.
-  function vascEdge(x, y){
-    return 0.46 + 0.54 * Math.exp(-vascDist(x, y) / 12);
   }
 
   // faint outline of the body, sampled from the silhouette's edge only
@@ -4223,7 +4185,8 @@
     attribute float aEdgeB;
     attribute vec4 aSeed;   // x stagger, y curve angle, z noise phase, w size
     attribute vec4 aColor;
-    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uVasc;
+    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uRange, uFill;
+    uniform vec2 uFillY;
     uniform vec2 uPan; // per-draw clip-space offset (spatial card placement)
     uniform vec3 uCenter;
     uniform vec2 uCA;   // organ centre the A positions belong to
@@ -4256,11 +4219,6 @@
       vec3 dir = normalize(vec3(cos(aSeed.y), sin(aSeed.y), cos(aSeed.y * 1.7)) + 0.001);
       pos += dir * arc * (0.10 + 0.25 * fract(aSeed.y * 7.13)) * min(distance(la, lb) + 0.15, 1.0);
       // idle drift, never fully static; ambient strays wander much more, the ghost barely
-      if (uVasc > 0.0){
-        float vph2 = fract(aSeed.z * 5.17 + uTime * 0.045);
-        pos.y += (vph2 - 0.5) * 0.15 * uVasc;
-        pos.x += sin(vph2 * 6.2832 + aSeed.y) * 0.008 * uVasc;
-      }
       float amb = aSeed.w < 0.0 ? 1.0 : 0.0;
       float ghost = (aSeed.x < -0.5 && aSeed.x > -1.5) ? 1.0 : 0.0;
       // feeding: ambient matter spirals inward on curved orbits, accelerates
@@ -4331,15 +4289,31 @@
       rgb = mix(rgb, lrgb, uLight);
       float ga = mix(1.0, uGhost * 0.38, ghost);
       float ef = mix(aEdgeA, aEdgeB, mix(e, 1.0, flowP));
-      // The vascular reading travels: each particle runs a slow loop along the
-      // body's long axis and fades at either end of its run, so what reads is
-      // motes carried through the streams rather than a still field. It rides
-      // uVasc, so it is only there while that slide is, and it leaves as the
-      // swipe fills the body out.
+      // The biomarker reading: the same body, its particles taking the
+      // distribution's colours by height -- the bottom 81% optimal, the next 9%
+      // suboptimal, the top 6% out of range -- blended rather than banded, and
+      // arriving as a front that rises from the foot.
+      //
+      // The stops follow the reference rather than the counts read literally as
+      // height. 81/9/6 cumulative puts the green boundary at 0.81 and leaves
+      // red on the crown alone, which is not the picture: there the figure runs
+      // green through the lower body, amber across the upper torso and red over
+      // the head and shoulders. The brief's own note -- adjust for a natural
+      // silhouette, shoulders and head get the red -- is the licence for it.
+      // Below the front a
+      // particle is lit and coloured; above it, it waits at a little over half
+      // brightness, which is what makes the fill read as a wave rather than a
+      // recolour.
       float vfade = 1.0;
-      if (uVasc > 0.0){
-        float vph = fract(aSeed.z * 5.17 + uTime * 0.045);
-        vfade = mix(1.0, 0.30 + 0.70 * sin(vph * 3.14159), uVasc);
+      if (uRange > 0.0){
+        float h = clamp((pos.y - uFillY.x) / max(0.001, uFillY.y - uFillY.x),
+                        0.0, 1.0);
+        vec3 band = mix(vec3(0.44, 0.70, 0.45), vec3(0.88, 0.74, 0.30),
+                        smoothstep(0.34, 0.66, h));
+        band = mix(band, vec3(0.86, 0.36, 0.30), smoothstep(0.62, 0.90, h));
+        float lit = smoothstep(uFill + 0.07, uFill - 0.07, h);
+        rgb = mix(rgb, band, uRange * lit);
+        vfade = mix(1.0, mix(0.55, 1.0, lit), uRange);
       }
       // density control: a stable per-particle lottery thins the cloud live
       float keep = mix(step(fract(aSeed.z * 39.7), uDens), 1.0, max(ghost, flowP));
@@ -4379,7 +4353,7 @@
   gl.useProgram(prog);
 
   const U = {};
-  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uVasc'])
+  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY'])
     U[n] = gl.getUniformLocation(prog, n);
   gl.uniform2f(U.uPan, 0, 0);
   gl.uniform1f(U.uAlpha, 1);
@@ -4472,16 +4446,19 @@
 
   // spatial mode: every organ gets its own static buffers, so several
   // live organs can be drawn at once — no remounting, ever
-  // Pinned to the body's own centring and scale, so the two register exactly:
-  // the brief asks for position, scale and perspective to hold across the
-  // transition, and this is what guarantees it -- the same mask, the same
-  // normalisation, only the sampling weights differ.
   const BODY_I = ORGANS.findIndex(o => o.label === 'Body');
-  const VASC_IDX = clouds.length;
-  clouds.push(buildCloud(drawBody, 40, 1.04, { s: 1, x: 0, y: 0, yaw: 0.17 },
-                         { cx: clouds[BODY_I].norm.cx, cy: clouds[BODY_I].norm.cy,
-                           s: clouds[BODY_I].s },
-                         vascDensity, vascEdge));
+  // The range fill runs on the body's own height, so the shader needs to know
+  // where that body starts and ends in cloud space -- measured off the cloud
+  // rather than assumed, since the silhouette decides it.
+  const BODY_Y = (() => {
+    const q = clouds[BODY_I].pos;
+    let lo = 1e9, hi = -1e9;
+    for (let i = 0; i < N - AMB; i++){       // the strays sit outside the body
+      const y = q[i * 3 + 1];
+      if (y < lo) lo = y; if (y > hi) hi = y;
+    }
+    return [lo, hi];
+  })();
   const orgBuf = clouds.map(cl => {
     const pos = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, pos);
@@ -5274,11 +5251,15 @@
     return r;
   });
 
-  // Partial: some organs have been tested and some have not. The ones that have
-  // not read as a dash wherever their age would be, and the silhouette loses its
-  // colour -- there is nothing to be warm or cool about.
+  // Two readings, two controls. The body is the biological age; the nine
+  // organs are the organ ages, and one says nothing about the other. Whichever
+  // is untested reads as a dash wherever its age would be, and its silhouette
+  // loses its colour -- there is nothing to be warm or cool about.
   function noAgeFor(d){
-    return document.body.classList.contains('paAge') && !!(d && d.nodata);
+    if (!d) return false;
+    const c = document.body.classList;
+    if (d.label === 'Body') return c.contains('paAge');
+    return c.contains('emOrg') || (c.contains('paOrg') && !!d.nodata);
   }
   function applyNoAge(){
     document.body.classList.toggle('noAge', noAgeFor(PILL[pillCurrent]));
@@ -5404,7 +5385,9 @@
       (CARD_STATE.emBio ? ' emBio' : '') +
       (CARD_STATE.emAct ? ' emAct' : '') +
       (CARD_STATE.emAge ? ' emAge' : '') +
-      (CARD_STATE.paAge ? ' paAge' : '');
+      (CARD_STATE.paAge ? ' paAge' : '') +
+      (CARD_STATE.paOrg ? ' paOrg' : '') +
+      (CARD_STATE.emOrg ? ' emOrg' : '');
     syncDark();
     applyNoAge();   // setMode writes the class list whole
     if (parallaxApply) parallaxApply();
@@ -5424,7 +5407,9 @@
         else home.appendChild(oc);
       }
       heroGo(0, true);
-      bx = bxT = MB_ORDER.indexOf(pillCurrent); // carousel enters on the active organ
+      bx = bxT = document.body.classList.contains('v7')
+        ? -1                                   // V6 opens on the biomarkers
+        : MB_ORDER.indexOf(pillCurrent);       // the rest, on the active organ
       bxEase = null;
       mxNow = bx; mxEase = null;
     } else if (isDash(m)){
@@ -5459,7 +5444,13 @@
     try { history.replaceState(null, '', '#m' + m); } catch (e){}
     resize(); // re-measures the bottom UI
     // let the new layout settle before measuring positions for the sync
-    if (m > 0) setTimeout(() => { resize(); selectPill(pillCurrent); }, 60);
+    if (m > 0) setTimeout(() => {
+      resize();
+      selectPill(pillCurrent);
+      if (document.body.classList.contains('v7') && isBento(version)){
+        bx = bxT = -1; bxEase = null; mxNow = -1; mxEase = null;
+      }
+    }, 60);
     else noteSwap(); // re-place the annotation for the card layout
   }
   let lastManual = -1e9;
@@ -5808,7 +5799,7 @@
   // bxGlide is called during init and reads them.
   function v7On(){ return document.body.classList.contains('v7'); }
   function bxMin(){ return v7On() ? -1 : 0; }
-  let bioArc = 0, bioRev = 0, bioRevT = -1;
+  let bioArc = 0, bioRev = 0, bioRevT = -1, fillT = -1;
   const v4NameEl = document.getElementById('v4Names');
   const v4Names = v4NameEl ? MB.map(d => {
     const el = document.createElement('span');
@@ -5885,7 +5876,7 @@
   function bentoFrame(t){
     uPnow = 1;
     gl.uniform1f(U.uP, 1);
-    gl.uniform1f(U.uVasc, 0);
+    gl.uniform1f(U.uRange, 0);
     const v4Hero = document.body.classList.contains('v5');
     if (!bxDrag){
       if (bxEase){
@@ -6059,7 +6050,7 @@
       // k0 = -1 is the biomarker slide: the same body, read as what is moving
       // through it. Its cloud is bound in place of an organ's and the pair
       // interpolates position, brightness and flow across the step.
-      const vasc = k0 < 0 ? 1 - f : 0;
+      const vasc = k0 < 0 ? 1 - f : 0;   // how much the biomarker slide is showing
       const oa = MB[Math.max(0, k0)], ob = MB[k1];
       const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
                         Math.min(1, Math.abs(o.delta) / 7);
@@ -6084,7 +6075,14 @@
       // -- there is no organ there -- and the arc stops being an age scale and
       // becomes the distribution, revealed left to right once the slide lands.
       const bioOn = v7On() ? Math.max(0, Math.min(1, -bx)) : 0;
-      gl.uniform1f(U.uVasc, vasc);
+      // the fill rises once the slide has settled, over two and a half
+      // seconds, and is put away again when it is left
+      if (vasc > 0.999 && !bxDrag){ if (fillT < 0) fillT = t; }
+      else if (vasc < 0.6) fillT = -1;
+      const fillP = fillT < 0 ? 0 : Math.min(1.16, (t - fillT) / 2500 * 1.16);
+      gl.uniform1f(U.uRange, vasc);
+      gl.uniform1f(U.uFill, fillP);
+      gl.uniform2f(U.uFillY, BODY_Y[0], BODY_Y[1]);
       bioArc = bioOn;
       if (bioOn > 0.999 && !bxDrag){ if (bioRevT < 0) bioRevT = t; }
       else bioRevT = -1;
@@ -6095,7 +6093,7 @@
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[oa.organIdx].x, ORGANS[oa.organIdx].y);
       gl.uniform2f(U.uCB, ORGANS[ob.organIdx].x, ORGANS[ob.organIdx].y);
-      bindPair(k0 < 0 ? VASC_IDX : oa.organIdx, ob.organIdx);
+      bindPair(oa.organIdx, ob.organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
       gl.uniform1f(U.uP, 1);
     }
@@ -7933,7 +7931,8 @@
   // Each of the three cards can be put in an empty state from the bar. setMode
   // writes body.className whole, so these live in a set it reads rather than
   // being toggled onto the element and lost at the next page change.
-  const CARD_STATE = { emBio: false, emAct: false, emAge: false, paAge: false };
+  const CARD_STATE = { emBio: false, emAct: false, emAge: false, paAge: false,
+                       paOrg: false, emOrg: false };
   for (const [id, cls] of [['stBio','emBio'], ['stAct','emAct']]){
     const sel = document.getElementById(id);
     sel.addEventListener('change', () => {
@@ -7953,6 +7952,15 @@
     if (CARD_STATE.emAge) selectPill(PILL.length - 1);
     refreshAges();
     resize();   // the organ's slot may have just appeared or gone
+  });
+  // the organs' own three, which never touch the body
+  const stOrgSel = document.getElementById('stOrg');
+  stOrgSel.addEventListener('change', () => {
+    CARD_STATE.paOrg = stOrgSel.value === 'partial';
+    CARD_STATE.emOrg = stOrgSel.value === 'empty';
+    document.body.classList.toggle('paOrg', CARD_STATE.paOrg);
+    document.body.classList.toggle('emOrg', CARD_STATE.emOrg);
+    refreshAges();
   });
 
   // Blocks that keep the organ's ground rather than the page's surface carry
@@ -8074,6 +8082,7 @@
         pillCurrent = (pillCurrent + 1) % PILL.length;
         current = PILL[pillCurrent].organIdx; // the flow scans across the grid
       }
+      else if (v7On() && bxT < 0){ /* V6 holds its biomarker slide */ }
       else selectPill((pillCurrent + 1) % PILL.length);
     }
 
