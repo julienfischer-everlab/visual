@@ -5494,8 +5494,22 @@
     if (d.label === 'Body') return false;
     return c.contains('emOrg');
   }
+  // Which of the dashboard's two notes is showing, if either: the body's when
+  // the biological age is missing and the body is the selection, an organ's
+  // when the organ ages are missing and an organ is. Both are true at once
+  // when the organs are empty, since that empties the body too.
+  function dashNote(){
+    const c = document.body.classList, no = c.contains('noAge');
+    return (c.contains('emAge') && !no) || (c.contains('emOrg') && no);
+  }
+  let noteWas = false;
   function applyNoAge(){
     document.body.classList.toggle('noAge', noAgeFor(PILL[pillCurrent]));
+    // the organ sits lower over a note than over the gauge stack, so the
+    // arrival of one is a re-frame -- but only on the change, not on every
+    // organ picked
+    const now = dashNote();
+    if (now !== noteWas){ noteWas = now; if (isDash(version)) resize(); }
   }
   function selectPill(i){
     const bPrev = pillCurrent;
@@ -5790,12 +5804,20 @@
     // pill mode: organ sits 80px lower for breathing room under the top bar
     // uYOff lands in clip space, which spans H pixels over two units, so a
     // pixel push is twice its value here: -128 sits the organ 64px lower
-    const dropB5 = (isDash(version) && document.body.classList.contains('b5') &&
-                    !document.body.classList.contains('emAge')) ? 128 : 0;
+    // ...on V5's card, note or no note. The exception was written when an
+    // emptied age card was a different layout; it is the same card now, so
+    // dropping it under emAge only lifted the organ away from its own copy.
+    const dropB5 = (isDash(version) &&
+                    document.body.classList.contains('b5')) ? 128 : 0;
     // V6 sits its silhouette 28px above where V5 draws it
     const upV6 = (isBento(version) && v7On()) ? 56 : 0;   // 28px, in clip units
+    // A note stands where the gauge stack does but reaches less far up it, so
+    // the organ framed against the stack floats well clear of the copy. It
+    // comes down to sit just above it. uYOff is clip space -- two units over
+    // H pixels -- so a pixel push is twice its value: -96 is 48px lower.
+    const dropNote = (isDash(version) && dashNote()) ? 96 : 0;
     gl.uniform1f(U.uYOff,
-      (botH - topH - dropB5 + upV6 -
+      (botH - topH - dropB5 + upV6 - dropNote -
        (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
   }
   addEventListener('resize', resize);

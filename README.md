@@ -414,7 +414,9 @@ menus: one is a long list, the other has three options.
   out of the flow made every organ jump larger the moment a note appeared —
   and a wide one, the immune cluster, ran off the card's edge. Hidden, its box
   stays, the note is drawn over it, and the organ is the same size either side
-  of the switch. Both states are true at once when the organs
+  of the switch. It does come down 48px over a note: a note reaches less far up
+  the card than the gauge stack does, so an organ framed against the stack
+  floats clear of its own copy. Both states are true at once when the organs
   are empty — that empties the body too — so the selection decides which of the
   two the card carries.
   An untested one shows a dash wherever its age would be — the list, the strip,
