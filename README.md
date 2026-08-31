@@ -325,7 +325,7 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   and activity takes the width it was sharing. The row drops to a single
   column rather than hiding one of two, since an empty grid track keeps the
   gap it was there to fill. Desktop and mobile together.
-- **Biomarkers**, **Activity**, **Biological age**, **Organ age** — each can be
+- **Biomarkers**, **Biological age**, **Organ age**, **Activity** — each can be
   put in an *Empty* state on its own, desktop and mobile at once, and the state
   each control starts in is *Completed* rather than *Default*: the word says
   what has happened to the card, not which option the code fell back to. The two
@@ -384,10 +384,13 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   Neither age reading has a middle. The body is read or it is not, and the
   organs come back together or not at all — one panel, one result — so both
   controls are *Completed* or *Empty* and nothing between. Nor are they
-  independent: the whole body's age is derived from the organs', so unread
-  organs mean an unread body, and the two controls enforce that between them —
-  emptying organ age empties biological age, and completing biological age
-  completes organ age. Whichever control was touched keeps what it was set to.
+  independent: the body's age is the summary of the organs', so an organ that
+  has been read is part of a body that has been read. An organ age implies a
+  biological age; it does not work the other way, since a body can have its
+  age while the organs are still being reported. The two controls enforce that
+  between them — emptying biological age empties organ age, and completing
+  organ age completes biological age — with whichever control was touched
+  keeping what it was set to.
 
   An arc is a reading, so a slide with no reading has no arc: the biomarker
   slide when the panel is untested, the body when there is no biological age,

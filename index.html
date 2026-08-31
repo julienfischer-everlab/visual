@@ -3033,11 +3033,6 @@
       <option value="on">Completed</option>
       <option value="empty">Empty</option>
     </select>
-    <span class="lbl">Activity</span>
-    <select id="stAct" aria-label="Activity card state">
-      <option value="on">Completed</option>
-      <option value="empty">Empty</option>
-    </select>
     <span class="lbl">Biological age</span>
     <select id="stAge" aria-label="Biological age card state">
       <option value="on">Completed</option>
@@ -3052,6 +3047,11 @@
     <select id="stCov" aria-label="Health coverage card">
       <option value="on">On</option>
       <option value="off">Off</option>
+    </select>
+    <span class="lbl">Activity</span>
+    <select id="stAct" aria-label="Activity card state">
+      <option value="on">Completed</option>
+      <option value="empty">Empty</option>
     </select>
     <button class="tkBtn" id="tkReload" type="button"
             aria-label="Reload the page on this version">Refresh</button>
@@ -8332,17 +8332,16 @@
   }
   // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');
-  // The two readings come off the same panel, and the whole body's age is
-  // derived from the organs': there is no test that reads every organ and
-  // leaves the body unread, or reads the body while the organs are unread.
-  // So the pair is applied together, with the one rule that holds between
-  // them enforced on the way -- unread organs mean an unread body, which
-  // read the other way round is that a body with an age has organs with one.
+  // The two readings come off the same panel, and the body's age is the
+  // summary of the organs': an organ that has been read is part of a body
+  // that has been read, so an organ age implies a biological age. It does not
+  // work the other way -- a body can have its age while the organs are still
+  // being reported -- so a completed biological age leaves organ age free.
+  // The pair is applied together with that one implication enforced on the
+  // way, and whichever control was touched keeps what it was set to.
   function applyAgeStates(src){
-    // whichever control was touched keeps what it was set to; the other
-    // follows only where the rule requires it
-    if (src === 'age'){ if (stAgeSel.value === 'on') stOrgSel.value = 'on'; }
-    else if (stOrgSel.value === 'empty') stAgeSel.value = 'empty';
+    if (src === 'age'){ if (stAgeSel.value === 'empty') stOrgSel.value = 'empty'; }
+    else if (stOrgSel.value === 'on') stAgeSel.value = 'on';
     CARD_STATE.emAge = stAgeSel.value === 'empty';
     CARD_STATE.emOrg = stOrgSel.value === 'empty';
     document.body.classList.toggle('emAge', CARD_STATE.emAge);
