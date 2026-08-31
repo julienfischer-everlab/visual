@@ -2111,6 +2111,15 @@
   body.b5 .dash .drow{grid-template-columns:1fr 1fr;}
   body.b5 .dash .drow .hiCov{display:flex;order:1;}
   body.b5 .dash .drow .hiSteps{order:2;}
+  /* Coverage off: the card goes and activity takes the whole row rather than
+     half of it with a hole beside it. One column, not a hidden second one --
+     an empty grid track would keep the gap it was there to fill. */
+  body.noCov .dash .drow .hiCov{display:none;}
+  body.noCov.b5 .dash .drow{grid-template-columns:1fr;}
+  body.noCov #phone .hiCard.hiCov{display:none;}
+  body.noCov #phone .mbrowV2,
+  body.noCov #phone #mV4Row,
+  body.noCov #phone .mbrow2{grid-template-columns:1fr;}
   /* the longest row -- muscle + bone health, with its figure -- sets this: at
      the b3 width it wrapped onto two lines and broke the column's rhythm */
   body.b5 .dash .olist{width:238px;}
@@ -2839,14 +2848,31 @@
   .v4OrgEmpty{display:none;}
   body.v5 #mHeroOrgan .v4AgeN.v4OrgEm{font-size:0;letter-spacing:0;}
   body.v5 #mHeroOrgan .v4AgeN.v4OrgEm .v4OrgEmpty{
-    display:flex;flex-direction:column;align-items:center;gap:11px;
-    width:280px;text-align:center;white-space:normal;
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+    width:300px;text-align:center;white-space:normal;
   }
   body.v5 #mHeroOrgan .v4OrgEmpty b{
     font-size:16px;font-weight:500;line-height:1.3;letter-spacing:-0.2px;
     color:var(--ink-bright);text-wrap:balance;
   }
   body.light.v5 #mHeroOrgan .v4OrgEmpty b{color:#000;}
+  body.v5 #mHeroOrgan .v4OrgEmpty i{
+    font-style:normal;font-size:13px;font-weight:400;line-height:1.45;
+    letter-spacing:0;color:rgba(242,229,224,.55);text-wrap:balance;
+  }
+  body.light.v5 #mHeroOrgan .v4OrgEmpty i{color:rgba(0,0,0,.55);}
+  body.v5 #mHeroOrgan .v4OrgEmpty .emCta{margin-top:2px;}
+  /* The slide is a paragraph now, which does not fit the strip's 110px box.
+     The box grows and its offset drops by half of what it grew, so every
+     slide's own centre -- the body's number included -- lands exactly where
+     it did; only the room around them changes. The edge fade goes with it,
+     since the strip is two slides wide here and the JS ramp already softens
+     the neighbour, and the strip stops swallowing the action's clicks. */
+  body.emOrg #phone #mHeroOrgan .v4Ages{
+    -webkit-mask-image:none;mask-image:none;
+    bottom:38px;height:200px;pointer-events:auto;
+  }
+  body.emOrg.v7 #phone #mHeroOrgan .v4Ages{bottom:54px;}
   /* the whole reading comes up 16px: the visual by the uniform, the arc and the
      age strip by their own offsets. The caption hangs off the number, so it
      travels with it; the name strip stays where it is. */
@@ -2963,8 +2989,12 @@
     <span class="lbl">Organ age</span>
     <select id="stOrg" aria-label="Organ age state">
       <option value="on">Completed</option>
-      <option value="partial">Partial</option>
       <option value="empty">Empty</option>
+    </select>
+    <span class="lbl">Coverage</span>
+    <select id="stCov" aria-label="Health coverage card">
+      <option value="on">On</option>
+      <option value="off">Off</option>
     </select>
   </div>
 </div>
@@ -4958,12 +4988,12 @@
     { label: 'Heart',         organIdx: 3, delta: -3, bio: 18 },
     { label: 'Mental',        organIdx: 0, delta:  0, bio: 14 },
     { label: 'Brain + nerve', organIdx: 1, delta: -6, bio: 11 },
-    { label: 'Lung',          organIdx: 2, delta:  8, bio: 16, bioOut: 2, nodata: true },
+    { label: 'Lung',          organIdx: 2, delta:  8, bio: 16, bioOut: 2 },
     { label: 'Immune',        organIdx: 4, delta: -3, bio: 12 },
-    { label: 'Muscle + bone', organIdx: 5, delta:  2, bio: 9,  bioOut: 4, nodata: true },
+    { label: 'Muscle + bone', organIdx: 5, delta:  2, bio: 9,  bioOut: 4 },
     { label: 'Gut',           organIdx: 6, delta: -5, bio: 15 },
     { label: 'Metabolic',     organIdx: 7, delta:  4, bio: 13, bioOut: 3 },
-    { label: 'Kidney',        organIdx: 8, delta: -1, bio: 10, bioOut: 1, nodata: true },
+    { label: 'Kidney',        organIdx: 8, delta: -1, bio: 10, bioOut: 1 },
     // the body itself, last so the nine organs keep the indices everything
     // else is written against; the surfaces that lead with it say so by order
     { label: 'Body',          organIdx: 9, delta: -6, bio: 124 },
@@ -5346,9 +5376,11 @@
   function noAgeFor(d){
     if (!d) return false;
     const c = document.body.classList;
-    // the body is read or it is not: there is no partly-read biological age
+    // Neither reading has a middle. The body is read or it is not, and the
+    // organs come back together or not at all -- one panel, one result -- so
+    // there is no partly-read biological age and no partly-read organ age.
     if (d.label === 'Body') return false;
-    return c.contains('emOrg') || (c.contains('paOrg') && !!d.nodata);
+    return c.contains('emOrg');
   }
   function applyNoAge(){
     document.body.classList.toggle('noAge', noAgeFor(PILL[pillCurrent]));
@@ -5363,7 +5395,9 @@
     pillCurrent = i;
     // bento mini card: carousel-style slide direction + title crossfade
     if (isBento(version)){
-      bxT = bioLock() ? -1 : MB_ORDER.indexOf(i);  // the carousel glides to it
+      bxT = bioLock() ? -1
+          : (orgLock() && i === MB_ORDER[BRAIN_K]) ? 1
+          : MB_ORDER.indexOf(i);   // the carousel glides to the selection
       bxGlide(bxT);                // V4 rides a timed curve to it; the rest chase
     }
     applyNoAge();
@@ -5474,8 +5508,8 @@
       (CARD_STATE.emBio ? ' emBio' : '') +
       (CARD_STATE.emAct ? ' emAct' : '') +
       (CARD_STATE.emAge ? ' emAge' : '') +
-      (CARD_STATE.paOrg ? ' paOrg' : '') +
-      (CARD_STATE.emOrg ? ' emOrg' : '');
+      (CARD_STATE.emOrg ? ' emOrg' : '') +
+      (CARD_STATE.noCov ? ' noCov' : '');
     syncDark();
     applyNoAge();   // setMode writes the class list whole
     if (parallaxApply) parallaxApply();
@@ -5852,7 +5886,10 @@
         : n + (n > 1 ? ' years ' : ' year ') + (d.delta < 0 ? 'younger' : 'older')) +
       '</span>' +
       (d.label === 'Body' ? '' :
-        '<span class="v4OrgEmpty"><b>Unlock your organ ages</b>' +
+        '<span class="v4OrgEmpty">' +
+        '<b>Discover how your organs are ageing</b>' +
+        '<i>Get tested to reveal the biological age of your organs and see ' +
+        'where your health may need more attention.</i>' +
         '<button class="emCta" type="button">Get tested</button></span>');
     v4AgeEl.appendChild(el);
     return el;
@@ -5881,11 +5918,16 @@
     const allOrg = document.body.classList.contains('emOrg');
     v4Ages.forEach((el, k) => {
       const no = noAgeFor(MB[k]);
-      const ask = allOrg && MB[k].label !== 'Body';
+      const ask = allOrg && k === 1;      // the one slide the nine collapse to
       el.classList.toggle('v4OrgEm', ask);
       el.firstChild.nodeValue = ask ? '' : no ? '\u2013' : num(MB[k]);
       const gp = el.querySelector('.v4Gap');
       if (gp) gp.style.visibility = (no || ask) ? 'hidden' : '';
+    });
+    // and it is not one of the organs any more, so it does not carry an
+    // organ's name: what is unread is the organ ages, all of them
+    v4Names.forEach((el, k) => {
+      el.textContent = (allOrg && k === 1) ? 'Organ age' : MB[k].label;
     });
     applyNoAge();
   }
@@ -5908,10 +5950,21 @@
   function bioLock(){
     return v7On() && document.body.classList.contains('emBio');
   }
-  function bxMax(){ return bioLock() ? -1 : MB.length - 1; }
+  // Emptied outright, the nine organ slides say the same nothing nine times.
+  // They collapse to one -- "Organ age", showing the brain, since a carousel
+  // of unread organs is nine swipes to the same sentence. The slide keeps
+  // index 1, so the carousel reads biomarkers, body, organ age; what sits at
+  // 1 is remapped rather than reordered, because MB is what every other
+  // surface counts by.
+  function orgLock(){ return document.body.classList.contains('emOrg'); }
+  const BRAIN_K = Math.max(1, MB.findIndex(d => /Brain/.test(d.label)));
+  function mbAt(k){ return MB[orgLock() && k >= 1 ? BRAIN_K : k]; }
+  function pillAt(k){ return MB_ORDER[orgLock() && k >= 1 ? BRAIN_K : k]; }
+  function bxMax(){ return bioLock() ? -1 : orgLock() ? 1 : MB.length - 1; }
   let bioArc = 0, bioRev = 0, bioRevT = -1;
-  // the arc's sweep and the body's fill are one reveal, so they share a span
-  const BIO_REVEAL = 700;
+  // the arc's sweep and the body's fill are one reveal, so they share a span;
+  // draining the colour back off the body is slower, being a departure
+  const BIO_REVEAL = 700, BIO_DRAIN = 1200;
   // which arc the carousel has committed to, and when it committed
   let bioWant = 0, bioSwapT = -1;
   const v4NameEl = document.getElementById('v4Names');
@@ -6090,7 +6143,9 @@
       // as the number appears, gone by the time it reaches the centre.
       for (let k = 0; k < v4Ages.length; k++){
         const ag = v4Ages[k], d = k - bx;
-        if (bioLock() || Math.abs(d) > 1.6){ ag.style.display = 'none'; continue; }
+        if (bioLock() || (orgLock() && k >= 2) || Math.abs(d) > 1.6){
+          ag.style.display = 'none'; continue;
+        }
         const an = Math.min(1, Math.abs(d));
         const op = Math.max(0, 1 - Math.pow(Math.min(1, an / 0.88), 1.15));
         ag.style.display = op > 0.002 ? '' : 'none';
@@ -6133,7 +6188,9 @@
       // screen — so it is placed in a pass of its own.
       for (let k = 0; k < v4Names.length; k++){
         const nm = v4Names[k], d = k - bx;
-        if (bioLock() || Math.abs(d) > 1.9){ nm.style.display = 'none'; continue; }
+        if (bioLock() || (orgLock() && k >= 2) || Math.abs(d) > 1.9){
+          nm.style.display = 'none'; continue;
+        }
         const an = Math.min(1, Math.abs(d));
         nm.style.display = '';
         // progressive, not a switch: the softening stays light through the
@@ -6185,7 +6242,7 @@
       // emptied, the body keeps its own colour: a range fill with no ranges
       // behind it would be a reading invented for the picture
       const emB = document.body.classList.contains('emBio');
-      const oa = MB[Math.max(0, k0)], ob = MB[k1];
+      const oa = mbAt(Math.max(0, k0)), ob = mbAt(k1);
       const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
                         Math.min(1, Math.abs(o.delta) / 7);
       // The halo at the top of the header carries the same verdict as the
@@ -6263,7 +6320,22 @@
       // and above it the body waits as the shell it is drawn as.
       const fillP = bioRevT < 0 ? 0
                   : Math.min(BIO_FILL, (t - bioRevT) / BIO_REVEAL * BIO_FILL);
-      gl.uniform1f(U.uRange, emB ? 0 : vasc);
+      // How much of the reading is on the body. Coming in it rises with the
+      // arc, over one span; going out it drains over its own, longer one.
+      // It used to ride vasc straight, and vasc rides the morph's curve --
+      // cubic-bezier(.22, 1, .36, 1), which spends most of itself in the first
+      // fifth of a three-second dissolve. So the sage left and ninety per cent
+      // of the particles came back inside half a second, and then nothing
+      // happened for two and a half more: a flip, not a fade. On its own clock
+      // and eased at both ends it crosses evenly. vasc still caps it, so a
+      // second swipe that carries the slide off early takes the colour with it
+      // rather than leaving it painted on an organ.
+      const eio = x => x * x * (3 - 2 * x);
+      const cT = bioWant ? (t - bioSwapT) / BIO_REVEAL
+                         : 1 - (t - bioSwapT) / BIO_DRAIN;
+      const rng = Math.min(eio(Math.max(0, Math.min(1, cT))),
+                           Math.min(1, vasc * 2.5));
+      gl.uniform1f(U.uRange, emB ? 0 : rng);
       gl.uniform1f(U.uFill, fillP);
       gl.uniform2f(U.uFillY, BODY_Y[0], BODY_Y[1]);
       bioArc = bioOn;
@@ -6434,7 +6506,7 @@
     target = Math.max(bxMin(), Math.min(bxMax(), target));
     // the biomarker slide is not an organ, so it is travelled to directly
     if (target < 0){ bxT = target; bxGlide(target); return; }
-    if (MB_ORDER[target] !== pillCurrent) selectPill(MB_ORDER[target]); // dots + title follow
+    if (pillAt(target) !== pillCurrent) selectPill(pillAt(target)); // dots + title follow
     else { bxT = target; bxGlide(target); }
   });
   // V4 is a control, so it answers the arrow keys too; the card carries a
@@ -6447,7 +6519,7 @@
     lastManual = performance.now();
     const to = Math.max(bxMin(), Math.min(bxMax(), Math.round(bxT) + step));
     if (to < 0){ bxT = to; bxGlide(to); return; }
-    if (MB_ORDER[to] !== pillCurrent) selectPill(MB_ORDER[to]);
+    if (pillAt(to) !== pillCurrent) selectPill(pillAt(to));
     else { bxT = to; bxGlide(to); }
   });
   // ---------- organ-age bottom sheets: one independent instance per frame,
@@ -8129,7 +8201,7 @@
   // writes body.className whole, so these live in a set it reads rather than
   // being toggled onto the element and lost at the next page change.
   const CARD_STATE = { emBio: false, emAct: false, emAge: false,
-                       paOrg: false, emOrg: false };
+                       emOrg: false, noCov: false };
   for (const [id, cls] of [['stBio','emBio'], ['stAct','emAct']]){
     const sel = document.getElementById(id);
     sel.addEventListener('change', () => {
@@ -8148,14 +8220,25 @@
     refreshAges();
     resize();   // the organ's slot may have just appeared or gone
   });
-  // the organs' own three, which never touch the body
+  // Health coverage is a card the page may simply not carry. Off is not an
+  // empty state -- there is nothing to say and no action to offer -- so it
+  // leaves, and activity takes the width it was sharing.
+  const stCovSel = document.getElementById('stCov');
+  stCovSel.addEventListener('change', () => {
+    CARD_STATE.noCov = stCovSel.value === 'off';
+    document.body.classList.toggle('noCov', CARD_STATE.noCov);
+    resize();   // the phone's rows just changed height
+  });
+  // the organs' own pair, which never touches the body
   const stOrgSel = document.getElementById('stOrg');
   stOrgSel.addEventListener('change', () => {
-    CARD_STATE.paOrg = stOrgSel.value === 'partial';
     CARD_STATE.emOrg = stOrgSel.value === 'empty';
-    document.body.classList.toggle('paOrg', CARD_STATE.paOrg);
     document.body.classList.toggle('emOrg', CARD_STATE.emOrg);
     refreshAges();
+    // the carousel slot an organ occupies is not the same on both sides of
+    // this switch -- nine slides collapse to one -- so it is re-derived
+    // rather than left pointing at where the organ used to sit
+    selectPill(pillCurrent);
   });
 
   // Blocks that keep the organ's ground rather than the page's surface carry
