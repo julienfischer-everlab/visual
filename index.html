@@ -2790,6 +2790,11 @@
      from leaves the body -- it is in the hero now, not below it. */
   body.v7 #mV4 .mHeroCard{display:none;}
   body.v7 #mHeroOrgan .v4BioN{font-size:45.6px;letter-spacing:-1.84px;}
+  /* the whole reading comes up 16px: the visual by the uniform, the arc and the
+     age strip by their own offsets. The caption hangs off the number, so it
+     travels with it; the name strip stays where it is. */
+  body.v7 #mHeroOrgan .v4Gauge{bottom:200px;}
+  body.v7 #mHeroOrgan .v4Ages{bottom:99px;}
   .v4BioLeg{display:none;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg{
     display:flex;position:absolute;top:100%;left:50%;transform:translateX(-50%);
@@ -5578,8 +5583,10 @@
     // uYOff is clip space, two units over H pixels, so a pixel move is twice
     // its value here: +64 lifts the phone's silhouette 32px off where it sat
     const upEm = (isBento(version) && document.body.classList.contains('emAge')) ? 64 : 0;
+    // V6 lifts the silhouette with the rest of the stack -- 32 here is 16px
+    const upV6 = (isBento(version) && v7On()) ? 32 : 0;
     gl.uniform1f(U.uYOff,
-      (botH - topH - dropB5 + upEm -
+      (botH - topH - dropB5 + upEm + upV6 -
        (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
   }
   addEventListener('resize', resize);
