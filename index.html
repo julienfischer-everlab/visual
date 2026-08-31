@@ -4031,7 +4031,7 @@
 
   // ---------- sample a silhouette into a volumetric point cloud ----------
   // tf places the organ at its anatomical spot inside the ghost body
-  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens){
+  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens, edgeMod){
     octx.save();
     octx.clearRect(0, 0, S, S);
     octx.fillStyle = '#fff'; octx.strokeStyle = '#fff';
@@ -4091,7 +4091,8 @@
         if (Math.random() < (0.07 + 0.93 * Math.exp(-d / 3.5)) * w) break;
       }
       // edge particles read brighter so the silhouette stays crisp
-      edge[i] = 0.72 + 0.48 * Math.exp(-d / 6);
+      edge[i] = (0.72 + 0.48 * Math.exp(-d / 6)) *
+                (edgeMod ? edgeMod(px, py) : 1);
       const zmax = depthPx * Math.sqrt(d / 22);
       const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
@@ -4112,6 +4113,49 @@
     let area = 0;
     for (let i = 0; i < S * S; i++) area += mask[i];
     return { pos: out, edge, area, s, norm: { cx, cy, k: s * tf.s, tx: tf.x, ty: tf.y } };
+  }
+
+  // ---------- the body, read as what is moving through it ----------
+  // The biomarker slide and the Body slide are the same silhouette; what
+  // differs is where the particles gather. These are the paths they gather on:
+  // a trunk from the head down through the heart to the pelvis, and a branch
+  // out along each arm. Polylines rather than anatomy -- the brief asks for
+  // circulation suggested, not veins drawn -- and deliberately few, so what
+  // reads is flow through a body and not a diagram of one.
+  const VASC = [
+    [[166, 74], [166, 112], [152, 186], [158, 232], [163, 276]],
+    [[152, 186], [118, 176], [102, 220], [94, 268]],
+    [[152, 186], [200, 178], [218, 222], [228, 268]],
+    [[160, 120], [138, 168], [130, 214], [136, 262]],   // a second strand, offset
+    [[168, 122], [186, 170], [196, 216], [190, 264]],
+  ];
+  function vascDist(x, y){
+    let best = 1e9;
+    for (let p = 0; p < VASC.length; p++){
+      const ln = VASC[p];
+      for (let i = 0; i < ln.length - 1; i++){
+        const ax = ln[i][0], ay = ln[i][1], bx2 = ln[i+1][0], by = ln[i+1][1];
+        const vx = bx2 - ax, vy = by - ay;
+        const t = Math.max(0, Math.min(1,
+          ((x - ax) * vx + (y - ay) * vy) / (vx * vx + vy * vy || 1)));
+        const dx = x - (ax + vx * t), dy = y - (ay + vy * t);
+        const d2 = dx * dx + dy * dy;
+        if (d2 < best) best = d2;
+      }
+    }
+    return Math.sqrt(best);
+  }
+  // the streams take most of the particles; the rest of the body keeps enough
+  // to read as a silhouette and no more
+  function vascDensity(x, y){
+    return (0.24 + 4.4 * Math.exp(-vascDist(x, y) / 8.0)) * bodyDensity(x, y);
+  }
+  // and what is left outside them is dimmed, so the eye goes to the flow. The
+  // shader interpolates edge between the two clouds, so this dimming lifts as
+  // the swipe carries the body in -- the periphery fills out rather than
+  // appearing.
+  function vascEdge(x, y){
+    return 0.46 + 0.54 * Math.exp(-vascDist(x, y) / 12);
   }
 
   // faint outline of the body, sampled from the silhouette's edge only
@@ -4179,7 +4223,7 @@
     attribute float aEdgeB;
     attribute vec4 aSeed;   // x stagger, y curve angle, z noise phase, w size
     attribute vec4 aColor;
-    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uConst;
+    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uVasc;
     uniform vec2 uPan; // per-draw clip-space offset (spatial card placement)
     uniform vec3 uCenter;
     uniform vec2 uCA;   // organ centre the A positions belong to
@@ -4212,6 +4256,11 @@
       vec3 dir = normalize(vec3(cos(aSeed.y), sin(aSeed.y), cos(aSeed.y * 1.7)) + 0.001);
       pos += dir * arc * (0.10 + 0.25 * fract(aSeed.y * 7.13)) * min(distance(la, lb) + 0.15, 1.0);
       // idle drift, never fully static; ambient strays wander much more, the ghost barely
+      if (uVasc > 0.0){
+        float vph2 = fract(aSeed.z * 5.17 + uTime * 0.045);
+        pos.y += (vph2 - 0.5) * 0.15 * uVasc;
+        pos.x += sin(vph2 * 6.2832 + aSeed.y) * 0.008 * uVasc;
+      }
       float amb = aSeed.w < 0.0 ? 1.0 : 0.0;
       float ghost = (aSeed.x < -0.5 && aSeed.x > -1.5) ? 1.0 : 0.0;
       // feeding: ambient matter spirals inward on curved orbits, accelerates
@@ -4282,23 +4331,22 @@
       rgb = mix(rgb, lrgb, uLight);
       float ga = mix(1.0, uGhost * 0.38, ghost);
       float ef = mix(aEdgeA, aEdgeB, mix(e, 1.0, flowP));
-      // The constellation's own colours, in the meter's proportions: the
-      // majority optimal, a small amber cluster, a smaller red one. Mixed in
-      // rather than replacing, so the crossfade out of it is a colour move
-      // rather than a switch.
-      if (uConst > 0.0){
-        float gsel = fract(aSeed.z * 13.0);
-        vec3 sc = gsel < 0.844 ? vec3(0.55, 0.68, 0.58)
-                : gsel < 0.938 ? vec3(0.80, 0.66, 0.40)
-                               : vec3(0.78, 0.48, 0.45);
-        rgb = mix(rgb, sc, uConst);
+      // The vascular reading travels: each particle runs a slow loop along the
+      // body's long axis and fades at either end of its run, so what reads is
+      // motes carried through the streams rather than a still field. It rides
+      // uVasc, so it is only there while that slide is, and it leaves as the
+      // swipe fills the body out.
+      float vfade = 1.0;
+      if (uVasc > 0.0){
+        float vph = fract(aSeed.z * 5.17 + uTime * 0.045);
+        vfade = mix(1.0, 0.30 + 0.70 * sin(vph * 3.14159), uVasc);
       }
       // density control: a stable per-particle lottery thins the cloud live
       float keep = mix(step(fract(aSeed.z * 39.7), uDens), 1.0, max(ghost, flowP));
       float fv = mix(1.0, uFlowVis, flowP);
       // voxel mode: depth-weighted brightness so the volume reads in layers
       float da = mix(1.0, clamp(persp, 0.72, 1.2), uSq);
-      vColor = vec4(rgb, aColor.a * tw * (1.0 + 0.35 * halo) * ga * ef * keep * fv * uAlpha * da * feedA);
+      vColor = vec4(rgb, aColor.a * tw * (1.0 + 0.35 * halo) * ga * ef * keep * fv * uAlpha * da * feedA * vfade);
     }`;
   const FS = `
     precision mediump float;
@@ -4331,7 +4379,7 @@
   gl.useProgram(prog);
 
   const U = {};
-  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uConst'])
+  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uVasc'])
     U[n] = gl.getUniformLocation(prog, n);
   gl.uniform2f(U.uPan, 0, 0);
   gl.uniform1f(U.uAlpha, 1);
@@ -4424,76 +4472,16 @@
 
   // spatial mode: every organ gets its own static buffers, so several
   // live organs can be drawn at once — no remounting, ever
-  // ---------- the biomarker constellation ----------
-  // V6's first slide needs a visual, and it has to belong to the same system as
-  // the organs or the swipe between them is a cut rather than a morph. So it is
-  // a cloud like any other: the same N particles, in the same buffers, reached
-  // by the same bindPair. What differs is how the points are placed.
-  //
-  // 124 anchors, each holding a tight clump of particles that reads as one
-  // luminous point. The anchors come off a golden-angle spiral, which gives an
-  // organic radial field that is denser at the centre without being a grid --
-  // but a clean phyllotaxis has visible arms, so twice as many candidates are
-  // generated, each is jittered by more than the spacing between them, and
-  // barely half are kept. What survives has the spiral's density and none of
-  // its geometry. A shallow parabolic bend then lays the field along an
-  // invisible arc, and the vertical squash keeps it wider than it is tall.
-  //
-  // Each clump is one status. The shader picks a particle's colour from
-  // fract(aSeed.z * 13.0), so the anchors are partitioned the same way here and
-  // particles are handed to an anchor of their own group -- otherwise every
-  // point would be a mix of green, amber and red and the field would read muddy.
-  const CONST_IDX = clouds.length;
-  clouds.push((function buildConstellation(){
-    const A = 124;
-    const pos = new Float32Array(N * 3), edge = new Float32Array(N);
-    const CN = Math.round(A * 2.2);
-    const cand = [];
-    for (let i = 0; i < CN; i++){
-      const ga = i * 2.39996323;                       // golden angle
-      // 0.55 is a shade sparser than uniform-area at the rim and still denser
-      // at the middle -- the brief wants a centre that gathers and edges that
-      // give way to black, not an even disc
-      const rr = Math.pow((i + 0.5) / CN, 0.55);
-      cand.push([Math.cos(ga) * rr + (Math.random() - 0.5) * 0.20,
-                 Math.sin(ga) * rr + (Math.random() - 0.5) * 0.20]);
-    }
-    for (let i = cand.length - 1; i > 0; i--){         // keep A of them at random
-      const j = (Math.random() * (i + 1)) | 0;
-      const t = cand[i]; cand[i] = cand[j]; cand[j] = t;
-    }
-    const anch = cand.slice(0, A).map(c => {
-      const x = c[0] * 0.86;
-      return { x: x,
-               // the invisible arc: a shallow dome, deep enough to read as a
-               // curve at this width and no deeper
-               y: c[1] * 0.58 - x * x * 0.40 + 0.10,
-               z: (Math.random() - 0.5) * 0.26 };
-    });
-    // the status split the counts give: 81 / 9 / 6 of 96
-    const grp = anch.map((a, i) => (i < 105 ? 0 : i < 117 ? 1 : 2));
-    for (let i = anch.length - 1; i > 0; i--){
-      const j = (Math.random() * (i + 1)) | 0;
-      const t = grp[i]; grp[i] = grp[j]; grp[j] = t;   // scatter the clusters
-    }
-    const byGrp = [[], [], []];
-    anch.forEach((a, i) => byGrp[grp[i]].push(a));
-    for (let i = 0; i < N; i++){
-      const v = seeds[i * 4 + 2] * 13.0, gs = v - Math.floor(v);
-      const g = gs < 0.844 ? 0 : gs < 0.938 ? 1 : 2;
-      const list = byGrp[g].length ? byGrp[g] : anch;
-      const a = list[(Math.random() * list.length) | 0];
-      // nearer clumps a shade wider, so the field has depth rather than scale
-      const near = 0.5 + a.z * 2.0;
-      const rad = (0.005 + 0.009 * Math.random()) * (0.75 + near);
-      const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
-      pos[i * 3]     = a.x + Math.sin(ph) * Math.cos(th) * rad;
-      pos[i * 3 + 1] = a.y + Math.sin(ph) * Math.sin(th) * rad;
-      pos[i * 3 + 2] = a.z + Math.cos(ph) * rad;
-      edge[i] = 0.34 + 0.66 * Math.min(1, Math.max(0, near));
-    }
-    return { pos, edge };
-  })());
+  // Pinned to the body's own centring and scale, so the two register exactly:
+  // the brief asks for position, scale and perspective to hold across the
+  // transition, and this is what guarantees it -- the same mask, the same
+  // normalisation, only the sampling weights differ.
+  const BODY_I = ORGANS.findIndex(o => o.label === 'Body');
+  const VASC_IDX = clouds.length;
+  clouds.push(buildCloud(drawBody, 40, 1.04, { s: 1, x: 0, y: 0, yaw: 0.17 },
+                         { cx: clouds[BODY_I].norm.cx, cy: clouds[BODY_I].norm.cy,
+                           s: clouds[BODY_I].s },
+                         vascDensity, vascEdge));
   const orgBuf = clouds.map(cl => {
     const pos = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, pos);
@@ -5892,15 +5880,12 @@
     if (!v4Live()){ bxEase = null; return; }
     const now = performance.now();
     bxEase = { from: bx, to, t0: now, dur: 480 };
-    // the constellation gathers and disperses in about a second and a half;
-    // organ to organ keeps the longer, slower morph
-    const cross = to < 0 || mxNow < 0;
-    mxEase = { from: mxNow, to, t0: now, dur: cross ? 1400 : MX_DUR };
+    mxEase = { from: mxNow, to, t0: now, dur: MX_DUR };
   }
   function bentoFrame(t){
     uPnow = 1;
     gl.uniform1f(U.uP, 1);
-    gl.uniform1f(U.uConst, 0);
+    gl.uniform1f(U.uVasc, 0);
     const v4Hero = document.body.classList.contains('v5');
     if (!bxDrag){
       if (bxEase){
@@ -6058,16 +6043,23 @@
       } else {
         mxNow = bx;
       }
-      const mx = mxNow;
-      // V6 reaches one slide further left, where the constellation is. It is
-      // not in MB, so k0 = -1 stands for it and the pair binds its cloud in
-      // place of an organ's; everything downstream still reads MB[0] for the
-      // numbers, which the slide does not show anyway.
+      // Every other step morphs on release, which is what makes the organ
+      // change read as one deliberate movement. This one is asked to follow the
+      // swipe -- halfway across is halfway between the two readings -- so
+      // within the biomarker step the morph tracks the carousel directly.
+      const mx = (v7On() && bx < 1) ? bx : mxNow;
+      // V6 reaches one slide further left, where the biomarkers are. That
+      // slide is not in MB -- k0 = -1 stands for it -- and it shows the body,
+      // which is also what MB[0] is, so the pair binds the same cloud on both
+      // sides of the step and the silhouette simply holds across it.
       const mlo = v7On() ? -1 : 0;
       const b0 = Math.max(mlo, Math.min(MB.length - 1, mx));
       const k0 = Math.max(mlo, Math.min(MB.length - 2, Math.floor(b0)));
       const k1 = k0 + 1, f = b0 - k0;
-      const konst = k0 < 0 ? 1 - f : 0;
+      // k0 = -1 is the biomarker slide: the same body, read as what is moving
+      // through it. Its cloud is bound in place of an organ's and the pair
+      // interpolates position, brightness and flow across the step.
+      const vasc = k0 < 0 ? 1 - f : 0;
       const oa = MB[Math.max(0, k0)], ob = MB[k1];
       const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
                         Math.min(1, Math.abs(o.delta) / 7);
@@ -6092,21 +6084,18 @@
       // -- there is no organ there -- and the arc stops being an age scale and
       // becomes the distribution, revealed left to right once the slide lands.
       const bioOn = v7On() ? Math.max(0, Math.min(1, -bx)) : 0;
-      gl.uniform1f(U.uConst, konst);
+      gl.uniform1f(U.uVasc, vasc);
       bioArc = bioOn;
       if (bioOn > 0.999 && !bxDrag){ if (bioRevT < 0) bioRevT = t; }
       else bioRevT = -1;
       bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / 700);
-      if (v4HaloEl) v4HaloEl.style.opacity = (1 - bioOn).toFixed(3);
       gl.uniform1f(U.uP, f);
       gl.uniform2f(U.uPan, 0, 0);
       gl.uniform1f(U.uAlpha, 1);
-      // the constellation has no verdict, so the warm tint gives way with it
-      gl.uniform1f(U.uWarm,
-        (warm(oa) + (warm(ob) - warm(oa)) * f) * (1 - konst));
+      gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[oa.organIdx].x, ORGANS[oa.organIdx].y);
       gl.uniform2f(U.uCB, ORGANS[ob.organIdx].x, ORGANS[ob.organIdx].y);
-      bindPair(k0 < 0 ? CONST_IDX : oa.organIdx, ob.organIdx);
+      bindPair(k0 < 0 ? VASC_IDX : oa.organIdx, ob.organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
       gl.uniform1f(U.uP, 1);
     }
