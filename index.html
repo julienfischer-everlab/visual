@@ -2827,7 +2827,7 @@
      dropped, and the strip stops swallowing pointer events the action needs. */
   body.emBio.v7 #mHeroOrgan .v4Ages{
     -webkit-mask-image:none;mask-image:none;
-    bottom:52px;height:200px;pointer-events:auto;
+    bottom:52px;height:200px;
   }
   /* and no name strip under the action. The strip is the carousel's own
      indicator, and there is no carousel here -- one slide, whose first line
@@ -2859,6 +2859,9 @@
   body.v5 #mHeroOrgan .v4AgeN.v4OrgEm .v4OrgEmpty{
     display:flex;flex-direction:column;align-items:center;gap:12px;
     width:300px;text-align:center;white-space:normal;
+    /* 24px above where a number would sit: the slide is a paragraph and an
+       action, and it closes on the visual rather than hanging off the name */
+    transform:translateY(-24px);
   }
   body.v5 #mHeroOrgan .v4OrgEmpty b{
     font-size:16px;font-weight:500;line-height:1.3;letter-spacing:-0.2px;
@@ -2879,8 +2882,13 @@
      the neighbour, and the strip stops swallowing the action's clicks. */
   body.emOrg #phone #mHeroOrgan .v4Ages{
     -webkit-mask-image:none;mask-image:none;
-    bottom:38px;height:200px;pointer-events:auto;
+    bottom:38px;height:200px;
   }
+  /* The strip stays transparent to the finger -- a swipe that started on the
+     copy would otherwise stop dead there -- and only the action takes its
+     presses back. */
+  #mHeroOrgan .v4BioEmpty .emCta,
+  #mHeroOrgan .v4OrgEmpty .emCta{pointer-events:auto;}
   body.emOrg.v7 #phone #mHeroOrgan .v4Ages{bottom:54px;}
   /* the whole reading comes up 16px: the visual by the uniform, the arc and the
      age strip by their own offsets. The caption hangs off the number, so it
@@ -5968,7 +5976,10 @@
   // 1 is remapped rather than reordered, because MB is what every other
   // surface counts by.
   function orgLock(){ return document.body.classList.contains('emOrg'); }
-  const BRAIN_K = Math.max(1, MB.findIndex(d => /Brain/.test(d.label)));
+  // the brain, by the cloud rather than by the label: 'Brain + nerve' draws a
+  // neuron, and the brain itself is what 'Mental' carries
+  const BRAIN_K = Math.max(1, MB.findIndex(
+    d => d.organIdx === ORGANS.findIndex(o => o.label === 'Brain')));
   function mbAt(k){ return MB[orgLock() && k >= 1 ? BRAIN_K : k]; }
   function pillAt(k){ return MB_ORDER[orgLock() && k >= 1 ? BRAIN_K : k]; }
   function bxMax(){ return bioLock() ? -1 : orgLock() ? 1 : MB.length - 1; }
@@ -6461,19 +6472,37 @@
   heroEl.addEventListener('pointercancel', heroSettle);
   addEventListener('resize', () => { if (heroOn()) heroPlace(); });
 
-  mOrgCard.addEventListener('pointerdown', e => {
+  // The gesture belongs to the surface, not to the card drawn on it. On the
+  // hero layouts the carousel *is* the header, so the whole of it takes the
+  // swipe -- the silhouette, the arc, the figure, the caption, the names --
+  // rather than only the card's own box, which is what a finger landing on
+  // the number would otherwise have found dead. Elsewhere the card is a tile
+  // among others and keeps the gesture to itself. One set of handlers, bound
+  // to both, with the header's copy standing down when the card already has
+  // it: pointer events bubble, so without that they would run twice.
+  function bxOwns(e){
+    if (e.target.closest('#mOrgCard')) return 'card';
+    if (!isV4Hero(version)) return null;
+    // whatever the header carries that is meant to be pressed keeps its press
+    if (e.target.closest('button, a, select, input, .mbDots')) return null;
+    return 'head';
+  }
+  function bxDown(e){
     if (document.body.classList.contains('emAge')) return;
+    const own = bxOwns(e);
+    if (!own || (e.currentTarget !== mOrgCard) !== (own === 'head')) return;
     bxDrag = { x: e.clientX, y: e.clientY, bx0: bx, s0: Math.round(bxT),
-               lt: performance.now(), horiz: null, pid: e.pointerId };
+               lt: performance.now(), horiz: null, pid: e.pointerId,
+               el: e.currentTarget, inCard: own === 'card' };
     bxV = 0;
     bxEase = null;                 // the finger takes the wheel back
     // the strips track the finger, but the silhouette does not: it holds the
     // organ it was showing and only breaks apart once the swipe is let go
     bxDrag.mx0 = mxNow;
     mxEase = null;
-  });
-  mOrgCard.addEventListener('pointermove', e => {
-    if (!bxDrag) return;
+  }
+  function bxMove(e){
+    if (!bxDrag || e.currentTarget !== bxDrag.el) return;
     const dx = e.clientX - bxDrag.x, dy = e.clientY - bxDrag.y;
     if (bxDrag.horiz === null){
       // horizontal intent drives the carousel; vertical stays native scroll
@@ -6482,7 +6511,7 @@
         // so the card yields it rather than nesting two horizontal swipes
         if (mOrgCard.parentElement === heroTrack){ bxDrag = null; return; }
         bxDrag.horiz = true;
-        try { mOrgCard.setPointerCapture(bxDrag.pid); } catch (err) {}
+        try { bxDrag.el.setPointerCapture(bxDrag.pid); } catch (err) {}
       } else if (Math.abs(dy) > 10){ bxDrag = null; return; }
       else return;
     }
@@ -6497,13 +6526,15 @@
     bxV = 0.7 * bxV + 0.3 * ((nx - bx) / Math.max(1, now - bxDrag.lt));
     bxDrag.lt = now;
     bx = nx;
-  });
-  mOrgCard.addEventListener('pointerup', e => {
-    if (!bxDrag) return;
+  }
+  function bxUp(e){
+    if (!bxDrag || e.currentTarget !== bxDrag.el) return;
     const d = bxDrag; bxDrag = null;
     if (e.target.closest('.mbDots')) return;
     if (d.horiz === null){
-      sheetL.open(pillCurrent); // plain tap: expand into the organ-age sheet
+      // a plain tap opens the sheet, but only on the card: elsewhere in the
+      // header it is a tap on the page, and the page has nothing to open
+      if (d.inCard) sheetL.open(pillCurrent);
       return;
     }
     lastManual = performance.now();
@@ -6519,7 +6550,13 @@
     if (target < 0){ bxT = target; bxGlide(target); return; }
     if (pillAt(target) !== pillCurrent) selectPill(pillAt(target)); // dots + title follow
     else { bxT = target; bxGlide(target); }
-  });
+  }
+  for (const el of [mOrgCard, document.getElementById('mHeadIn')]){
+    if (!el) continue;
+    el.addEventListener('pointerdown', bxDown);
+    el.addEventListener('pointermove', bxMove);
+    el.addEventListener('pointerup', bxUp);
+  }
   // V4 is a control, so it answers the arrow keys too; the card carries a
   // tabindex for it and the step runs the same glide a swipe does
   mOrgCard.addEventListener('keydown', e => {
