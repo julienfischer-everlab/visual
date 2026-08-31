@@ -5917,9 +5917,8 @@
         '<b>Unlock your biological age by completing your test.</b>' +
         '<button class="emCta" type="button">Unlock now</button></span>' :
         '<span class="v4OrgEmpty">' +
-        '<b>Discover how your organs are ageing</b>' +
-        '<i>Get tested to reveal the biological age of your organs and see ' +
-        'where your health may need more attention.</i>' +
+        '<i>Get tested to reveal the biological age of your organs and ' +
+        'where to focus.</i>' +
         '<button class="emCta" type="button">Get tested</button></span>');
     v4AgeEl.appendChild(el);
     return el;
@@ -6404,10 +6403,16 @@
       else if (vasc < 0.001) bioRevT = -1;
       bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / BIO_REVEAL);
       gl.uniform1f(U.uP, f);
-      // the 30% pushes the crown past the top of the canvas, so the body
-      // rides down by what it grew — on both of its slides, or the step that
-      // was meant to hold it still would move it instead
-      gl.uniform2f(U.uPan, 0, -0.35 * bodyShown);
+      // The body rides down by what the 30% grew it — on both of its slides,
+      // or the step that was meant to hold it still would move it instead.
+      // The organs ride down too, by less: nothing zoomed them, but the hero
+      // has been lifted for the body's sake and they were left sitting a
+      // quarter of the canvas above its centre. This puts their mass on the
+      // line the body's sits on, so the carousel stops stepping up and down
+      // as it goes. Clip space is two units over the canvas, so 0.25 is 25px
+      // on a 202px hero.
+      const orgDrop = v7On() ? -0.25 * (1 - bodyShown) : 0;
+      gl.uniform2f(U.uPan, 0, -0.35 * bodyShown + orgDrop);
       gl.uniform1f(U.uAlpha, 1);
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[oa.organIdx].x, ORGANS[oa.organIdx].y);
