@@ -12,6 +12,18 @@ Serve `index.html` from any static server (or just open the file):
 python3 -m http.server 8734
 ```
 
+## On a phone
+
+`/phone` opens **Mobile V6** full screen, for carrying the design on the device
+it is a design for: the mock-up's shell, bezel, side buttons and drawn status
+bar are the phone's own job, so they go and the page fills the viewport, safe
+areas included. `vercel.json` rewrites that path to `index.html`; anywhere
+without the rewrite, `?phone` on the URL does the same. Add `&bar` to keep the
+tweak row, for trying the empty states on the device.
+
+The flag cannot be a class added at load: `setMode` writes `body.className`
+whole, so it lives in the set `setMode` reads, beside the card states.
+
 ## What's inside
 
 | Path | Purpose |

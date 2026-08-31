@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <!-- without this a phone lays the page out at 980px and zooms out, which
      puts the device mock-up off the side of the screen -->
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Particle morph &mdash; organ concept demo</title>
 <style>
   :root{
@@ -531,6 +531,29 @@
     background:linear-gradient(145deg,#54545a,#2b2b2f 28%,#3f3f45 55%,#54545a 82%,#232327);
     box-shadow:inset 0 0 1.5px rgba(255,255,255,.5), 0 30px 90px rgba(0,0,0,.35);
   }
+  /* On a real phone the mock-up's job is done for it: the shell, the bezel,
+     the side buttons and the drawn status bar all belong to the device, so
+     they go and the page fills the viewport. Reached at /phone, or with
+     ?phone on the URL where there is no rewrite to do it. The tweak bar goes
+     with them unless ?bar asks for it, since a row of controls is not part of
+     the thing being looked at. */
+  body.fullscr .topbar{display:none;}
+  body.fullscr.showBar .topbar{display:flex;}
+  body.fullscr.m5 #phoneShell{
+    left:0;top:0;transform:none;padding:0;border-radius:0;
+    width:100%;height:100vh;height:100dvh;
+    background:none;box-shadow:none;
+  }
+  body.fullscr .pbtn, body.fullscr .mstatus{display:none;}
+  body.fullscr #phone{
+    border:0;border-radius:0;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  /* the title had the drawn status bar above it; on the device it is the
+     first thing under the notch and needs the room itself */
+  body.fullscr .mtitle{padding-top:26px;}
+  body.fullscr{overscroll-behavior:none;}
   .pbtn{position:absolute;background:linear-gradient(180deg,#4c4c52,#333338);}
   .pbtn.act{left:-2px;top:154px;width:3px;height:32px;border-radius:2px 0 0 2px;}
   .pbtn.vup{left:-2.5px;top:216px;width:3.5px;height:58px;border-radius:3px 0 0 3px;}
@@ -5629,7 +5652,9 @@
       (CARD_STATE.emAct ? ' emAct' : '') +
       (CARD_STATE.emAge ? ' emAge' : '') +
       (CARD_STATE.emOrg ? ' emOrg' : '') +
-      (CARD_STATE.noCov ? ' noCov' : '');
+      (CARD_STATE.noCov ? ' noCov' : '') +
+      (CARD_STATE.fullscr ? ' fullscr' : '') +
+      (CARD_STATE.showBar ? ' showBar' : '');
     syncDark();
     applyNoAge();   // setMode writes the class list whole
     if (parallaxApply) parallaxApply();
@@ -8395,7 +8420,10 @@
   // writes body.className whole, so these live in a set it reads rather than
   // being toggled onto the element and lost at the next page change.
   const CARD_STATE = { emBio: false, emAct: false, emAge: false,
-                       emOrg: false, noCov: false };
+                       emOrg: false, noCov: false,
+                       // not a card state, but the same problem: a class that
+                       // has to survive setMode writing the list whole
+                       fullscr: false, showBar: false };
   // Every state control is a thing that is either on or off, so each becomes a
   // switch -- the label beside it already says which thing. The select stays,
   // hidden, as the thing that holds the value: every handler in the file reads
@@ -8915,6 +8943,21 @@
     if (h !== null && h !== version) setMode(h);
   });
   { const h = modeFromHash(); if (h !== null) setMode(h); }
+  // Full screen, for carrying the phone design on a phone. The path is what
+  // the deploy rewrites (/phone), the query is what works without a rewrite,
+  // and either way it is V6 -- the page this is the design of.
+  (function fullScreen(){
+    const onPath = /\/phone\/?$/.test(location.pathname);
+    const onQuery = /[?&]phone(=|&|$)/.test(location.search);
+    if (!onPath && !onQuery) return;
+    // setMode writes body.className whole, so this cannot be a class added
+    // here -- it lives in the set setMode reads, next to the card states
+    CARD_STATE.fullscr = true;
+    // ...with the bar back on request, for trying the states on the device
+    CARD_STATE.showBar = /[?&]bar(=|&|$)/.test(location.search);
+    setMode(19);
+    resize();
+  })();
   requestAnimationFrame(frame);
 })();
 </script>
