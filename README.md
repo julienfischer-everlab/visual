@@ -409,11 +409,12 @@ menus: one is a long list, the other has three options.
   arrives with the slide it belongs to instead of switching at a threshold.
 
   On the desktop, where there is no carousel, the same two notes stand exactly
-  where the gauge stack they replace did, and the organ gives up the note's
-  height rather than being drawn behind it — without that the visual grows with
-  the card while the note stays put, so on a wide screen the copy sat in the
-  middle of the organ and every organ was framed differently from the body the
-  biological-age note stands over. Both states are true at once when the organs
+  where the gauge stack they replace did, with the gauge stack hidden rather than
+  removed: the organ is framed off the height the stack leaves, so taking it
+  out of the flow made every organ jump larger the moment a note appeared —
+  and a wide one, the immune cluster, ran off the card's edge. Hidden, its box
+  stays, the note is drawn over it, and the organ is the same size either side
+  of the switch. Both states are true at once when the organs
   are empty — that empties the body too — so the selection decides which of the
   two the card carries.
   An untested one shows a dash wherever its age would be — the list, the strip,

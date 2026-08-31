@@ -2799,11 +2799,17 @@
   body.emBio .dash .dcard.bcard > *:not(.emNote):not(.legend):not(.meterbar),
   body.emAct #phone .hiSteps > *:not(.emNote),
   body.emAct .dash .hiSteps > *:not(.emNote),
-  /* an unread organ is the organ's own note; an unread body is the body's.
+  /* The gauge stack is hidden rather than removed, because the organ is framed
+     off the height it leaves: `effDim` is the card minus the stack, so taking
+     the stack out of the flow made every organ jump larger the moment a note
+     appeared -- and a wide one, the immune cluster, ran off the card's edge.
+     Hidden, its box stays and the organ is the same size either side of the
+     switch. The note is drawn over it.
+     An unread organ is the organ's own note; an unread body is the body's.
      Both are true at once when the organs are empty, since that empties the
      body too, so the selection decides which of the two the card carries. */
   body.emAge .dash #organSlot > #pillui,
-  body.emOrg.noAge .dash #organSlot > #pillui{display:none;}
+  body.emOrg.noAge .dash #organSlot > #pillui{visibility:hidden;}
   body.emBio #phone .mHeroCard > .emNote,
   body.emBio .dash .dcard.bcard > .emNote,
   body.emAct #phone .hiSteps > .emNote,
@@ -5488,21 +5494,8 @@
     if (d.label === 'Body') return false;
     return c.contains('emOrg');
   }
-  // Which of the dashboard's two notes is showing, if either: the body's when
-  // the biological age is missing and the body is the selection, an organ's
-  // when the organ ages are missing and an organ is. Both are true at once
-  // when the organs are empty, since that empties the body too.
-  function dashNote(){
-    const c = document.body.classList, no = c.contains('noAge');
-    return (c.contains('emAge') && !no) || (c.contains('emOrg') && no);
-  }
-  let noteWas = false;
   function applyNoAge(){
     document.body.classList.toggle('noAge', noAgeFor(PILL[pillCurrent]));
-    // the canvas gives up the note's height, so a change of note is a change
-    // of layout -- but only when it changes, not on every organ picked
-    const now = dashNote();
-    if (now !== noteWas){ noteWas = now; if (isDash(version)) resize(); }
   }
   function selectPill(i){
     const bPrev = pillCurrent;
@@ -5745,12 +5738,7 @@
       const lift = document.body.classList.contains('b3') ? 48 : 0;
       // never wider than what the list leaves, or the organ hangs off the card
       W = Math.max(60, slot.width - listW);
-      // Where the card carries a note, the organ gives up the note's height
-      // rather than being drawn behind it. Without that the visual grows with
-      // the card while the note stays put, so on a wide screen the copy sat
-      // in the middle of the organ -- and every organ ended up framed
-      // differently from the body the biological-age note stands over.
-      H = Math.max(220, slot.height - lift * 2 - (dashNote() ? 150 : 0));
+      H = Math.max(220, slot.height - lift * 2);
       // measured from the card, not the viewport — nothing to re-place on scroll
       canvas.style.left = listW + 'px'; canvas.style.top = '0px';
       pillui.style.left = listW + 'px';
