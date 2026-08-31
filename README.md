@@ -316,6 +316,10 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 ## Tweaks (top bar)
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
+- **Refresh** — reloads the page. Everything the tweaks set lives in memory,
+  so this is the way back to the page as it first drew: the states reset, the
+  clouds rebuild and the reveals play from the top. The version travels in the
+  hash, so it comes back to the page being looked at rather than the first one.
 - **Coverage** — on or off. Off is not an empty state: there is nothing to say
   about a card the page does not carry and no action to offer, so it leaves
   and activity takes the width it was sharing. The row drops to a single

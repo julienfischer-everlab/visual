@@ -46,6 +46,15 @@
     -webkit-appearance:none;appearance:none;cursor:pointer;outline:none;
   }
   .topbar select:hover{border-color:#3f3f46;}
+  /* An action rather than a choice, so it wears the selects' shell without
+     their chevron: same face, same box, same hover. */
+  .topbar .tkBtn{
+    font:inherit;font-size:12px;font-weight:500;color:#e4e4e7;
+    background:#131316;border:1px solid #232326;border-radius:8px;
+    padding:6px 12px;cursor:pointer;outline:none;white-space:nowrap;
+  }
+  .topbar .tkBtn:hover{border-color:#3f3f46;}
+  .topbar .tkBtn:active{background:#1c1c20;}
   .topbar .seg{
     display:flex;gap:2px;border:1px solid #232326;background:#131316;
     border-radius:8px;padding:3px;
@@ -2996,6 +3005,8 @@
       <option value="on">On</option>
       <option value="off">Off</option>
     </select>
+    <button class="tkBtn" id="tkReload" type="button"
+            aria-label="Reload the page on this version">Refresh</button>
   </div>
 </div>
 <div class="carousel" id="carousel" role="group" aria-label="Health metrics"></div>
@@ -8220,6 +8231,12 @@
     refreshAges();
     resize();   // the organ's slot may have just appeared or gone
   });
+  // Everything a tweak sets lives in memory, so a reload is the way back to
+  // the page as it first drew: the states reset, the clouds rebuild, and the
+  // reveals play from the top. The version travels in the hash, so the reload
+  // comes back to the page being looked at rather than to the first one.
+  document.getElementById('tkReload')
+    .addEventListener('click', () => location.reload());
   // Health coverage is a card the page may simply not carry. Off is not an
   // empty state -- there is nothing to say and no action to offer -- so it
   // leaves, and activity takes the width it was sharing.
