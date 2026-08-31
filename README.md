@@ -334,15 +334,16 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   age has a *Partial*, because only it can be partly read — a body is tested or
   it is not, so the biological age is *Completed* or *Empty* and nothing between.
 
-  The empty states are designed. The **age** card keeps its organ and says what
-  is missing under it, one line and one action centred across the card, with no
-  eyebrow — the sentence names the card. What it shows is the body, and only the
-  body: there is no organ to pick when there is no age, so the carousel is off
-  and every route into a different one is closed at `selectPill`, with the
-  swipe's own drag stopped where it starts. The organ takes back the height the
-  gauge, the age and the names give up and then gives a fifth of its size to the
-  message; the 150px the message reserves is the same number `resize()` takes
-  off the canvas, so the two can never overlap. **Activity** keeps its eyebrow —
+  The empty states are designed. The **age** card is the card it always was:
+  the same carousel, the same silhouette at the same size in the same place,
+  and on the desktop the same list beside it — a missing biological age is not
+  a missing page, the biomarkers are still read and the organs still have ages
+  of their own. Only the reading goes: where the figure and its caption were,
+  the body slide carries one line and one action instead, and the age scale
+  fades out with the slide's own approach, there being no reading for it to
+  point at. The body reads as a dash wherever else it is quoted, but it is not
+  greyed the way an unread organ is — the silhouette is the same body, and only
+  what is said about it has gone. **Activity** keeps its eyebrow —
   its sentence does not name the card the way the age card's does — and centres
   *Connect your variables* and a *Connect* action on the card itself rather than
   on what the eyebrow leaves, which would sit low by half a label.
