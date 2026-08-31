@@ -454,6 +454,20 @@ Worth generalising: a per-page uniform needs a default written on the shared
 path, not a reset written on its own. The bug only shows on the *second* page
 you look at, which is exactly the order nobody tests in.
 
+It happened twice. `bioArc` — the crossfade from the age scale to the
+distribution — is a module-level `let` written only inside the bento frame, and
+the arc block that reads it runs on every page. So the same visit to V6 left
+every dashboard afterwards wearing the ranges instead of its own age scale, a
+week after the uniform version of it was fixed. The reset trick does not help
+here, because the writer runs *after* the reader in the same frame; what does
+is asking the page rather than the variable: `const bioA = (isBento(version) &&
+v7On()) ? bioArc : 0`. Shared mutable state read across pages needs a gate on
+the reader, not just a default on the writer.
+
+Both would have shipped invisibly. The check that catches them is cheap: after
+touching anything a single page draws, switch to a different page and look at
+it — the failure is never on the page you were working on.
+
 ---
 
 ## 6. Open items

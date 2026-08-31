@@ -2097,7 +2097,7 @@
   body.b5 .dash .dcard.scard,
   body.b5 .dash .dcard.dfill,
   body.b5 .dash .hiCard,
-  body.b5 .dash .dcard.organ{background:rgba(255,255,255,.06);}
+  body.b5 .dash .dcard.organ{background:rgba(255,255,255,.08);}
   /* A wash is a relationship to what is behind it, so the two pages can only
      share a card colour if they share a ground. The dashboard's #0d0d0c goes
      black here, the way the phone's body is black on this page -- 13 levels,
@@ -2399,7 +2399,7 @@
     --fog:#000;
   }
   body.light.v5 #mHeroOrgan .v4Foot{--fog:#ececea;}
-  body.v6 #mHeroOrgan .v4Foot{--fog:rgb(var(--v5head, 15 15 14));}
+  body.v6 #mHeroOrgan .v4Foot{--fog:rgb(var(--v5head, 15 15 15));}
   /* Only the body silhouette runs off the bottom of the canvas — every other
      organ is a compact shape sitting well inside it, and softening a foot it
      does not have just veils the bottom of the drawing. So the whole band rides
@@ -2504,8 +2504,8 @@
      almost-black as the body rises over it, reaching the bottom of its range
      exactly when the body reaches the top of the screen. The body's own ground
      is black throughout — it is what the header is darkening toward. */
-  body.v6 #phone{background:rgb(var(--v5head, 15 15 14));}
-  body.v6 .mHead{background:rgb(var(--v5head, 15 15 14));}
+  body.v6 #phone{background:rgb(var(--v5head, 15 15 15));}
+  body.v6 .mHead{background:rgb(var(--v5head, 15 15 15));}
   body.v6 #phone .mBody{background:#000;}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
@@ -2551,7 +2551,7 @@
   body.light.v5 #mV4 .msn{background:rgba(0,0,0,.028);}
   /* V5's own: 6% white, which on the black its body and the dashboard both
      stand on paints #0f0f0f -- one card colour on the phone and the desktop */
-  body.v6 #mV4 .msn{background:rgba(255,255,255,.06);}
+  body.v6 #mV4 .msn{background:rgba(255,255,255,.08);}
   body.light.v6 #mV4 .msn{background:rgba(0,0,0,.028);}
   /* the hero is V2's: biomarkers beside biological age. V3 swaps that second
      figure for health coverage, and V4 puts it back — coverage has its own
@@ -2800,6 +2800,16 @@
   body.emBio.v7 #mHeroOrgan .v4BioN .v4BioLeg{display:none;}
   body.emBio.v7 #mHeroOrgan .v4BioN{
     font-size:0;letter-spacing:0;
+  }
+  /* The empty slide is a paragraph and an action, not a number: it stands
+     140px tall against the strip's 110px box, it never travels, and the
+     strip's edge fade is there for items sliding past its sides. Left alone,
+     the mask took the line that overflowed above the box and the button that
+     overflowed below it -- so the box is given the room and the fade is
+     dropped, and the strip stops swallowing pointer events the action needs. */
+  body.emBio.v7 #mHeroOrgan .v4Ages{
+    -webkit-mask-image:none;mask-image:none;
+    bottom:52px;height:200px;pointer-events:auto;
   }
   body.emBio.v7 #mHeroOrgan .v4BioN .v4BioEmpty{
     display:flex;flex-direction:column;align-items:center;gap:12px;
@@ -3614,6 +3624,11 @@
   // V5 is V4 with one thing changed, so it wears every V4 class and adds a
   // marker of its own; everything that asks "is this the V4 hero?" asks for v5
   const isV4Hero = m => m === 16 || m === 17 || m === 19;
+  // V6 draws its hero visual smaller than V5 draws the same one. A constant
+  // beside the scroll's own shrink rather than folded into it: one is the
+  // page's framing and the other is what the scroll does to it, and a single
+  // number would have the scroll fighting the layout for the same slot.
+  const V6_HERO = 0.85;
   let DUR = reduced ? 300 : MODES[version].dur;
 
   // ---------- muted warm palette on burgundy (rgb 0..1) ----------
@@ -4333,14 +4348,37 @@
       if (uRange > 0.0){
         float h = clamp((pos.y - uFillY.x) / max(0.001, uFillY.y - uFillY.x),
                         0.0, 1.0);
-        // one colour, not three: the fill says a reading has been taken, and
-        // the legend below carries the split -- so the body stays green and
-        // only the height of the front moves
-        vec3 band = vec3(0.44, 0.70, 0.45);
-        band = mix(band, vec3(dot(band, vec3(0.36, 0.50, 0.14))), 0.38);
-        float lit = smoothstep(uFill + 0.07, uFill - 0.07, h);
+        // The front is a band, not a line. A tenth of the body either side of
+        // it is wide enough that no horizontal edge is ever visible in the
+        // handover, which is the whole difficulty with filling a silhouette.
+        float lit = smoothstep(uFill + 0.13, uFill - 0.13, h);
+        // Sage, not green. A saturated green on a near-black ground reads as a
+        // status light; this is a reading taken in a clinic, and it has to sit
+        // beside the warm ink the rest of the cloud is drawn in without
+        // becoming the brightest thing on the screen.
+        vec3 band = vec3(0.52, 0.66, 0.54);
+        band = mix(band, vec3(dot(band, vec3(0.36, 0.50, 0.14))), 0.22);
         rgb = mix(rgb, band, uRange * lit);
-        vfade = mix(1.0, mix(0.55, 1.0, lit), uRange);
+        // Above the front the body is not a thinner cloud but an empty vessel,
+        // so it is drawn as one. Nearly every particle in the volume goes and
+        // what stays is the shell: ef is already high on the silhouette and
+        // low deep inside, so keeping by it leaves an edge nobody drew -- the
+        // body still legibly there, visible the way glass is, by its rim
+        // rather than by an outline. The survivors are picked by a stable
+        // lottery, so the shell holds still instead of sparkling.
+        // ef runs 0.72 deep inside to 1.20 on the silhouette, so the window
+        // has to sit inside that range or every particle counts as rim and
+        // the empty half comes out as an even speckle instead of an edge
+        float shell = smoothstep(0.82, 1.16, ef);
+        float keepUp = step(fract(aSeed.z * 71.33), mix(0.04, 0.78, shell));
+        // and what is left of them is faint: a twentieth of full in the
+        // volume, a little over a third on the rim, where light would sit
+        float upA = keepUp * mix(0.06, 0.42, shell);
+        // one restrained highlight, cool against the warm body, so the empty
+        // half reads as a container rather than as the same body dimmed
+        rgb = mix(rgb, vec3(0.60, 0.66, 0.68),
+                  uRange * (1.0 - lit) * shell * 0.40 * (1.0 - uLight));
+        vfade = mix(1.0, mix(upA, 1.0, lit), uRange);
       }
       // density control: a stable per-particle lottery thins the cloud live
       float keep = mix(step(fract(aSeed.z * 39.7), uDens), 1.0, max(ghost, flowP));
@@ -5302,7 +5340,7 @@
     pillCurrent = i;
     // bento mini card: carousel-style slide direction + title crossfade
     if (isBento(version)){
-      bxT = MB_ORDER.indexOf(i);   // the mini carousel glides to the selection
+      bxT = bioLock() ? -1 : MB_ORDER.indexOf(i);  // the carousel glides to it
       bxGlide(bxT);                // V4 rides a timed curve to it; the rest chase
     }
     applyNoAge();
@@ -5589,9 +5627,9 @@
     // uYOff is clip space, two units over H pixels, so a pixel move is twice
     // its value here: +64 lifts the phone's silhouette 32px off where it sat
     const upEm = (isBento(version) && document.body.classList.contains('emAge')) ? 64 : 0;
-    // V6 lifts the silhouette off where V5 draws it -- 64 here is 32px, the
-    // 16 that came up with the rest of the stack and 16 of its own
-    const upV6 = (isBento(version) && v7On()) ? 64 : 0;   // 32px, in clip units
+    // V6 sits its silhouette 8px above where V5 draws it: it came up 32px with
+    // the rest of the stack and has since gone back down 24px of that
+    const upV6 = (isBento(version) && v7On()) ? 16 : 0;   // 8px, in clip units
     gl.uniform1f(U.uYOff,
       (botH - topH - dropB5 + upEm + upV6 -
        (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
@@ -5827,6 +5865,14 @@
   // bxGlide is called during init and reads them.
   function v7On(){ return document.body.classList.contains('v7'); }
   function bxMin(){ return v7On() ? -1 : 0; }
+  // An age is read out of biomarkers, so with none there is nothing to say
+  // about the body or any organ. The carousel keeps the one slide that says
+  // so and loses the rest: an organ sitting a swipe away behind a locked
+  // track would still be promising a number that cannot exist.
+  function bioLock(){
+    return v7On() && document.body.classList.contains('emBio');
+  }
+  function bxMax(){ return bioLock() ? -1 : MB.length - 1; }
   let bioArc = 0, bioRev = 0, bioRevT = -1, fillT = -1;
   const v4NameEl = document.getElementById('v4Names');
   const v4Names = v4NameEl ? MB.map(d => {
@@ -5913,7 +5959,7 @@
     ? { span: 0.52, snap: 0.34, flickV: 0.0009, flickD: 0.04 }
     : { span: 1,    snap: 0.5,  flickV: 0.0016, flickD: 0.08 };
   function bxGlide(to){
-    to = Math.max(bxMin(), Math.min(MB.length - 1, to));
+    to = Math.max(bxMin(), Math.min(bxMax(), to));
     if (!v4Live()){ bxEase = null; return; }
     const now = performance.now();
     bxEase = { from: bx, to, t0: now, dur: 480 };
@@ -6004,7 +6050,7 @@
       // as the number appears, gone by the time it reaches the centre.
       for (let k = 0; k < v4Ages.length; k++){
         const ag = v4Ages[k], d = k - bx;
-        if (Math.abs(d) > 1.6){ ag.style.display = 'none'; continue; }
+        if (bioLock() || Math.abs(d) > 1.6){ ag.style.display = 'none'; continue; }
         const an = Math.min(1, Math.abs(d));
         const op = Math.max(0, 1 - Math.pow(Math.min(1, an / 0.88), 1.15));
         ag.style.display = op > 0.002 ? '' : 'none';
@@ -6047,7 +6093,7 @@
       // screen — so it is placed in a pass of its own.
       for (let k = 0; k < v4Names.length; k++){
         const nm = v4Names[k], d = k - bx;
-        if (Math.abs(d) > 1.9){ nm.style.display = 'none'; continue; }
+        if (bioLock() || Math.abs(d) > 1.9){ nm.style.display = 'none'; continue; }
         const an = Math.min(1, Math.abs(d));
         nm.style.display = '';
         // progressive, not a switch: the softening stays light through the
@@ -6125,7 +6171,10 @@
       // On the way to the biomarker slide the silhouette and its light give way
       // -- there is no organ there -- and the arc stops being an age scale and
       // becomes the distribution, revealed left to right once the slide lands.
-      const bioOn = v7On() ? Math.max(0, Math.min(1, -bx)) : 0;
+      // ...and on the same clock as the silhouette. The arc is a reading, not a
+      // scrubbable control: it swaps from the age scale to the distribution
+      // when the swipe commits, not by degrees under the finger.
+      const bioOn = v7On() ? Math.max(0, Math.min(1, -mx)) : 0;
       // The body is one size wherever it shows. The biomarker slide and the
       // body slide are the same figure, so framing them the same way leaves
       // that step nothing to change but colour; the third it is drawn larger
@@ -6139,6 +6188,7 @@
       const rBody = ORGANS[MB[0].organIdx].r;
       const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
       gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
+                            (v7On() ? V6_HERO : 1) *
                             zFix * (1 + 0.30 * bodyShown));
       // The fill rises once the slide has settled, over a couple of seconds,
       // and is put away again when it is left. It stops at the optimal share
@@ -6288,7 +6338,8 @@
     // rubber-band past the ends — never expose empty space
     const lo0 = bxMin();
     if (nx < lo0) nx = lo0 + (nx - lo0) * 0.28;
-    if (nx > MB.length - 1) nx = (MB.length - 1) + (nx - (MB.length - 1)) * 0.28;
+    const hi0 = bxMax();
+    if (nx > hi0) nx = hi0 + (nx - hi0) * 0.28;
     const now = performance.now();
     bxV = 0.7 * bxV + 0.3 * ((nx - bx) / Math.max(1, now - bxDrag.lt));
     bxDrag.lt = now;
@@ -6310,7 +6361,7 @@
     else if (delta < -fl.snap) target = d.s0 + Math.floor(delta + fl.snap);
     else if (Math.abs(bxV) > fl.flickV && Math.abs(delta) > fl.flickD)
       target = d.s0 + (bxV > 0 ? 1 : -1);     // intentional flick advances
-    target = Math.max(bxMin(), Math.min(MB.length - 1, target));
+    target = Math.max(bxMin(), Math.min(bxMax(), target));
     // the biomarker slide is not an organ, so it is travelled to directly
     if (target < 0){ bxT = target; bxGlide(target); return; }
     if (MB_ORDER[target] !== pillCurrent) selectPill(MB_ORDER[target]); // dots + title follow
@@ -6324,7 +6375,7 @@
     if (!step) return;
     e.preventDefault();
     lastManual = performance.now();
-    const to = Math.max(bxMin(), Math.min(MB.length - 1, Math.round(bxT) + step));
+    const to = Math.max(bxMin(), Math.min(bxMax(), Math.round(bxT) + step));
     if (to < 0){ bxT = to; bxGlide(to); return; }
     if (MB_ORDER[to] !== pillCurrent) selectPill(MB_ORDER[to]);
     else { bxT = to; bxGlide(to); }
@@ -8099,9 +8150,11 @@
       if (ph){
         if (document.body.classList.contains('v6')){
           v5HeadP = p * p * (3 - 2 * p);
+          // 6% white on the body's black, which is what the hero reads as:
+          // rgb(15) exactly rather than a hair warm of it, so the hero and the
+          // cards over it are two strengths of one wash, not two colours
           const r = Math.round(15 + (6 - 15) * v5HeadP);
-          const b2 = Math.round(14 + (6 - 14) * v5HeadP);
-          ph.style.setProperty('--v5head', r + ' ' + r + ' ' + b2);
+          ph.style.setProperty('--v5head', r + ' ' + r + ' ' + r);
         } else {
           v5HeadP = 0;
           ph.style.removeProperty('--v5head');
@@ -8234,7 +8287,8 @@
     gl.uniform2f(U.uCB, morphCB.x, morphCB.y);
     gl.uniform1f(U.uOrgR, orgR);
     gl.uniform1f(U.uGhost, ghostVis);
-    gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1));
+    gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
+                          (v7On() ? V6_HERO : 1));
 
     gl.uniform1f(U.uP, uPnow);
     gl.uniform1f(U.uTime, t * 0.001);
@@ -8283,7 +8337,13 @@
       const lo = Math.min(0, arcNow), hi = Math.max(0, arcNow);
       const active = hi - lo > 0.08;
       const span = Math.max(0.001, Math.abs(arcNow));
-      if (bioArc > 0.001){
+      // The distribution arc belongs to V6's biomarker slide and nowhere else.
+      // bioArc is written inside the bento frame, which the dashboards never
+      // run, so reading it directly would leave every page visited after V6
+      // wearing the ranges instead of its own age scale: the page decides
+      // which arc this is, not a number left behind by the last page.
+      const bioA = (isBento(version) && v7On()) ? bioArc : 0;
+      if (bioA > 0.001){
         // the three bands in the meter's own proportions, so the arc and the
         // bar under the counts are the same reading in the same colours
         const n = Math.max(1, tickEls.length - 1);
@@ -8293,13 +8353,13 @@
                   : pp < 0.90 ? '#ef6f63' : null;
           if (c && pp <= bioRev){
             tk.line.setAttribute('stroke', c);
-            tk.line.setAttribute('opacity', (0.95 * bioArc).toFixed(3));
+            tk.line.setAttribute('opacity', (0.95 * bioA).toFixed(3));
           } else {
             tk.line.setAttribute('stroke', tickBase());
             tk.line.setAttribute('opacity', tk.baseOp);
           }
         }
-        indA.setAttribute('opacity', (1 - bioArc).toFixed(3));
+        indA.setAttribute('opacity', (1 - bioA).toFixed(3));
       } else {
       indA.setAttribute('opacity', 1);
       for (const tk of tickEls){
