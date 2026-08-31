@@ -6220,7 +6220,24 @@
       // of a swipe that had already been let go. The release is the cue, and
       // the swap runs at its own quarter-second from there.
       const want = (v7On() && bxT < 0) ? 1 : 0;
-      if (want !== bioWant){ bioWant = want; bioSwapT = t; }
+      if (want !== bioWant){
+        bioWant = want; bioSwapT = t;
+        // Leaving the biomarker slide, the age scale is not resumed but
+        // started: the indicator comes back at the centre and the ticks grow
+        // out of it to the organ's own gap, left or right. Ordinarily the arc
+        // travels from wherever it was, which is right between two organs and
+        // wrong here -- there was no age on the slide we are leaving, so there
+        // is nothing for it to have travelled from. Its start is put 260ms out
+        // so the sweep begins as the distribution finishes fading rather than
+        // underneath it.
+        // ...but only when the carousel moved. Leaving V6 for another page
+        // flips this too, and there the arc is set up by the mode switch.
+        if (!want && v7On()){
+          arcFrom = 0; arcNow = 0;
+          arcTo = PILL[pillCurrent].delta;
+          arcStart = t + 260;
+        }
+      }
       const swap = bioSwapT < 0 ? 1 : Math.min(1, (t - bioSwapT) / 260);
       const bioOn = v7On() ? (bioWant ? swap : 1 - swap) : 0;
       // The body is one size wherever it shows. The biomarker slide and the
@@ -6253,9 +6270,15 @@
       // and the arc has nothing to draw, so it stands down rather than showing
       // an empty scale under a slide that is asking for a test
       arcASvg.style.visibility = (emB && bioOn > 0.5) ? 'hidden' : '';
-      // and the left-to-right sweep starts with the swap rather than after it
+      // The left-to-right sweep starts with the swap rather than after it, and
+      // it is not unwound on the way out: dropping it the instant the swipe
+      // committed put every tick back to grey in one frame, so the ranges
+      // vanished instead of fading. They stay drawn -- at an opacity that runs
+      // to nothing with the swap -- until the slide itself has gone, which is
+      // also what keeps the body's fill from falling away under a colour that
+      // is still on screen.
       if (bioWant){ if (bioRevT < 0) bioRevT = t; }
-      else bioRevT = -1;
+      else if (vasc < 0.001) bioRevT = -1;
       bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / BIO_REVEAL);
       gl.uniform1f(U.uP, f);
       // the 30% pushes the crown past the top of the canvas, so the body
