@@ -436,6 +436,24 @@ light theme's own re-ink runs *after* the tint, so white does not arrive as
 white: it lands on 0.4 grey. Specify the light value, do not let the transform
 guess it.
 
+### 5.17 A uniform outlives the page that set it
+
+The range fill is V6's alone, and it was set inside the bento frame, which also
+resets it at the top — so within that page it was airtight. Then Desktop V5
+showed a green-to-red body. Nothing on that page had asked for one.
+
+A GL uniform is not scoped to the code that writes it. It belongs to the
+program, and the program outlives `setMode`: the dash path draws with whatever
+the last page left in `uRange`, and a visit to V6 was enough to tint every page
+reached after it. The frame that *uses* a uniform can only be trusted to leave
+it right for itself. The reset belongs one level up, in `drawFrame`, before the
+branch — every path starts from a known value, and the one path that wants the
+fill turns it on for itself.
+
+Worth generalising: a per-page uniform needs a default written on the shared
+path, not a reset written on its own. The bug only shows on the *second* page
+you look at, which is exactly the order nobody tests in.
+
 ---
 
 ## 6. Open items

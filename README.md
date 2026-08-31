@@ -53,7 +53,7 @@ renderer.
 
 12. **Desktop V3** — V1's dashboard with its insight header lifted onto a ground of its own: the hero, steps and organ cards sit inside one `#1c0505` panel on `#280707` cards, over a page that stays light. Wears `m2 b2 b3` plus a `b4` marker.
 13. **Mobile V3** — the same idea on the phone: the status bar, the title and the bento share one coloured region running to the screen edges, and the records list below it sits on white. The two are layers rather than sections — see below. Wears `m5 v2 v3` plus a `v4` marker.
-14. **Mobile V6** — V5 with the biomarkers folded into the hero, and the whole reading 16px higher: the visual by the uniform, the arc and the age strip by their own offsets, the caption travelling with the number it hangs from, the name strip staying where it is. The header carousel gains a slide in front of the organs: the total where the age sits — a fifth smaller than the age, being a count rather than a reading — the three ranges under it in place of the younger/older caption, and the arc reading the distribution instead of an age scale — the meter's own proportions in the meter's own colours, revealed left to right once the slide lands. It is not an organ, so it sits at index −1 rather than inside `MB`, and its halo gives way as the swipe carries it in. Both slides show the **same body** at the same density; what differs is colour. On the biomarker slide the particles take the distribution's colours by height — optimal low, suboptimal through the upper torso, out of range over the head and shoulders — blended rather than banded, and arriving as a front that rises from the foot over about two seconds, particles waiting at a little over half brightness until it reaches them. The stops follow the reference picture rather than the counts read literally as height: 81/9/6 cumulative would leave red on the crown alone. V6 opens on that slide and holds it against the five-second cycle, since it is the page's headline. The card it came from leaves the body: it is in the hero now, not below it. Wears `m5 v2 v3 v4 v5 v6` plus a `v7` marker.
+14. **Mobile V6** — V5 with the biomarkers folded into the hero, and the whole reading 16px higher: the visual by the uniform, the arc and the age strip by their own offsets, the caption travelling with the number it hangs from, the name strip staying where it is. The header carousel gains a slide in front of the organs: the total where the age sits — a fifth smaller than the age, being a count rather than a reading — the three ranges under it in place of the younger/older caption, and the arc reading the distribution instead of an age scale — the meter's own proportions in the meter's own colours, revealed left to right once the slide lands. It is not an organ, so it sits at index −1 rather than inside `MB`, and its halo gives way as the swipe carries it in. Both slides show the **same body** at the same density; what differs is scale and colour. The biomarker body is drawn a third larger and rides down by the same measure it grew, so its crown lands on the line the body slide's does: the swipe changes the size of the figure, never the top of it. Its particles take a single green, arriving as a front that rises from the foot over about two seconds with the particles waiting at a little over half brightness until it reaches them — the fill says a reading has been taken, and the three ranges below it carry the split, so the body itself does not need to be three colours. Neither does it morph under the finger: the strips track the drag, the silhouette holds the slide the swipe picked up and only breaks apart on the release, which is the physics every other step of the carousel already had. V6 opens on that slide and holds it against the five-second cycle, since it is the page's headline. The card it came from leaves the body: it is in the hero now, not below it. Wears `m5 v2 v3 v4 v5 v6` plus a `v7` marker.
 15. **Desktop V5** — Desktop V1 reading the organ the way the phone does. The organ card carries Mobile V5's stack — the arc, then the age at the size the phone sets it, then the difference in words directly under the number — and that difference stops being a tag: a pill is a status, and V5's whole point is that the figure states the verdict while the words only spell it out, in the same grey whichever way the delta runs. The hero says what the phone's hero says, figure for figure: biomarkers, then the count of the panel still untested rather than health coverage — coverage has a tile of its own further down — and the card's one action, *Get test*, held at the right by an auto margin. The steps card already read the same on both. The page is two even columns: biomarkers over the pair on the left, the organ alone on the right. V1 gave the organ the wider half and folded the pair into one full-width tile, because coverage had moved into its hero; V5's hero carries untested instead, so coverage takes its own tile back and the two stand side by side in the phone's order — coverage, then steps. The organ list holds its longest row on one line at the narrower card by taking a larger share of it (51%, against V1's 46%), and the organ takes what is left. The halo is a dark-theme thing on both platforms: it is light thrown on a surface, and on the pale ground it read as a coloured stain sitting on the page rather than as light, so the light theme carries none. The phone's light sits on the card too: the same stop list, the geometry scaled off the card's width the way the phone's is off the screen's, and the same slow breath. It is centred on the organ rather than on the card, since the list has the left half and a light centred on the card would sit beside the thing it is lighting. Its colour is the phone's — green while the organ reads younger, orange once it reads older — taken here from the eased warmth the cloud is already tinted by rather than from a carousel position. The card's corner carries the phone's share button in place of the expand arrows. Its own eyebrow reads *Biological age*, at the biomarker card's size and in its grey, so the two titles on the row are one thing said twice rather than two treatments. The organ is drawn a fifth larger than the other dashboards and sits 64px lower in the card, and the stack follows it down by less than it moved — 48px for the arc, 24px for the age and its caption — so the three close on each other as they fall. Those are transforms rather than margins: `resize()` bottom-aligns the stack off its own `offsetHeight`, and a margin would grow that height and shunt the block back up by what it was just given. The cards are the phone's cards exactly: 6% white, which paints `#0f0f0f` — a card that lifts off the page rather than standing on it. A wash is a relationship to what is behind it, so two pages can only share a card colour if they share a ground; the dashboard's `#0d0d0c` goes black here, the way the phone's body is black on this page. Thirteen levels, invisible in itself, and it is what makes the two identical. The canvas clears to the same value, or the organ would sit on a visible rectangle. Wears `m2 b2 b3` plus a `b5` marker.
 
 **Overview page** — the same two platforms.
@@ -314,15 +314,17 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 ## Tweaks (top bar)
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
-- **Biomarkers**, **Activity**, **Biological age**, **Organ age** — the three
-  cards can each be put in an *Empty* state on its own, desktop and mobile at
-  once. The two age controls are separate readings: the body is the biological
-  age, the nine organs are the organ ages, and one says nothing about the other.
-  Each has a *Partial* — the body untested, or three of the nine — and organ age
-  has an *Empty* that leaves every organ unread while the body keeps its figure.
+- **Biomarkers**, **Activity**, **Biological age**, **Organ age** — each can be
+  put in an *Empty* state on its own, desktop and mobile at once, and the state
+  each control starts in is *Completed* rather than *Default*: the word says
+  what has happened to the card, not which option the code fell back to. The two
+  age controls are separate readings: the body is the biological age, the nine
+  organs are the organ ages, and one says nothing about the other. Only organ
+  age has a *Partial*, because only it can be partly read — a body is tested or
+  it is not, so the biological age is *Completed* or *Empty* and nothing between.
 
-  The other two are designed. The **age** card keeps its organ and says what is
-  missing under it, one line and one action centred across the card, with no
+  The empty states are designed. The **age** card keeps its organ and says what
+  is missing under it, one line and one action centred across the card, with no
   eyebrow — the sentence names the card. What it shows is the body, and only the
   body: there is no organ to pick when there is no age, so the carousel is off
   and every route into a different one is closed at `selectPill`, with the
@@ -333,12 +335,17 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   its sentence does not name the card the way the age card's does — and centres
   *Connect your variables* and a *Connect* action on the card itself rather than
   on what the eyebrow leaves, which would sit low by half a label.
-  **Biomarkers** keeps its distribution and takes the reading out of it: blurred
-  and drained of colour, the band is a shape rather than a result — the real
-  widths under the blur, enough to say what the card will hold without stating a
-  figure nobody has yet.
+  **Biomarkers** is the age card's state in the hero: on V6 the slide stays in
+  the carousel whether or not there is anything to report — a missing slide
+  would be a missing subject — and only its contents change. The count and the
+  three ranges go, the arc goes with them, the body loses its fill, and what
+  takes their place is the same shape the age card's empty state has: a line
+  saying what testing would show, a sentence under it, and *Get tested*. On the
+  cards below, the distribution stays and the reading comes out of it: blurred
+  and drained of colour, the band is a shape rather than a result.
 
-  *Partial* is the middle case: some organs have been read and some have not.
+  *Partial* is organ age's middle case: some organs have been read and some
+  have not.
   An untested one shows a dash wherever its age would be — the list, the strip,
   the odometer, which gets an element of its own rather than a wheel for a
   character that is not a digit — and when it is the one on screen the

@@ -2790,6 +2790,32 @@
      from leaves the body -- it is in the hero now, not below it. */
   body.v7 #mV4 .mHeroCard{display:none;}
   body.v7 #mHeroOrgan .v4BioN{font-size:45.6px;letter-spacing:-1.84px;}
+  .v4BioN .bioNum{font-style:normal;}
+  .v4BioEmpty{display:none;}
+  /* Emptied, the slide drops the figure and the distribution -- there is no
+     reading to state -- and says what a test would give instead. Laid out the
+     way the age card's empty state is, so the two read as one pattern: a line,
+     a sentence, an action, centred under the body. */
+  body.emBio.v7 #mHeroOrgan .v4BioN .bioNum,
+  body.emBio.v7 #mHeroOrgan .v4BioN .v4BioLeg{display:none;}
+  body.emBio.v7 #mHeroOrgan .v4BioN{
+    font-size:0;letter-spacing:0;
+  }
+  body.emBio.v7 #mHeroOrgan .v4BioN .v4BioEmpty{
+    display:flex;flex-direction:column;align-items:center;gap:12px;
+    width:300px;text-align:center;white-space:normal;
+  }
+  body.emBio.v7 #mHeroOrgan .v4BioEmpty b{
+    font-size:16px;font-weight:500;line-height:1.3;letter-spacing:-0.2px;
+    color:var(--ink-bright);text-wrap:balance;
+  }
+  body.light.emBio.v7 #mHeroOrgan .v4BioEmpty b{color:#000;}
+  body.emBio.v7 #mHeroOrgan .v4BioEmpty i{
+    font-style:normal;font-size:13px;font-weight:400;line-height:1.45;
+    letter-spacing:0;color:rgba(242,229,224,.55);text-wrap:balance;
+  }
+  body.light.emBio.v7 #mHeroOrgan .v4BioEmpty i{color:rgba(0,0,0,.55);}
+  body.emBio.v7 #mHeroOrgan .v4BioEmpty .emCta{margin-top:2px;}
   /* the whole reading comes up 16px: the visual by the uniform, the arc and the
      age strip by their own offsets. The caption hangs off the number, so it
      travels with it; the name strip stays where it is. */
@@ -2890,23 +2916,22 @@
     </select>
     <span class="lbl">Biomarkers</span>
     <select id="stBio" aria-label="Biomarker card state">
-      <option value="on">Default</option>
+      <option value="on">Completed</option>
       <option value="empty">Empty</option>
     </select>
     <span class="lbl">Activity</span>
     <select id="stAct" aria-label="Activity card state">
-      <option value="on">Default</option>
+      <option value="on">Completed</option>
       <option value="empty">Empty</option>
     </select>
     <span class="lbl">Biological age</span>
     <select id="stAge" aria-label="Biological age card state">
-      <option value="on">Default</option>
-      <option value="partial">Partial</option>
+      <option value="on">Completed</option>
       <option value="empty">Empty</option>
     </select>
     <span class="lbl">Organ age</span>
     <select id="stOrg" aria-label="Organ age state">
-      <option value="on">Default</option>
+      <option value="on">Completed</option>
       <option value="partial">Partial</option>
       <option value="empty">Empty</option>
     </select>
@@ -4308,9 +4333,11 @@
       if (uRange > 0.0){
         float h = clamp((pos.y - uFillY.x) / max(0.001, uFillY.y - uFillY.x),
                         0.0, 1.0);
-        vec3 band = mix(vec3(0.44, 0.70, 0.45), vec3(0.88, 0.74, 0.30),
-                        smoothstep(0.34, 0.66, h));
-        band = mix(band, vec3(0.86, 0.36, 0.30), smoothstep(0.62, 0.90, h));
+        // one colour, not three: the fill says a reading has been taken, and
+        // the legend below carries the split -- so the body stays green and
+        // only the height of the front moves
+        vec3 band = vec3(0.44, 0.70, 0.45);
+        band = mix(band, vec3(dot(band, vec3(0.36, 0.50, 0.14))), 0.38);
         float lit = smoothstep(uFill + 0.07, uFill - 0.07, h);
         rgb = mix(rgb, band, uRange * lit);
         vfade = mix(1.0, mix(0.55, 1.0, lit), uRange);
@@ -5258,7 +5285,8 @@
   function noAgeFor(d){
     if (!d) return false;
     const c = document.body.classList;
-    if (d.label === 'Body') return c.contains('paAge');
+    // the body is read or it is not: there is no partly-read biological age
+    if (d.label === 'Body') return false;
     return c.contains('emOrg') || (c.contains('paOrg') && !!d.nodata);
   }
   function applyNoAge(){
@@ -5385,7 +5413,6 @@
       (CARD_STATE.emBio ? ' emBio' : '') +
       (CARD_STATE.emAct ? ' emAct' : '') +
       (CARD_STATE.emAge ? ' emAge' : '') +
-      (CARD_STATE.paAge ? ' paAge' : '') +
       (CARD_STATE.paOrg ? ' paOrg' : '') +
       (CARD_STATE.emOrg ? ' emOrg' : '');
     syncDark();
@@ -5562,8 +5589,9 @@
     // uYOff is clip space, two units over H pixels, so a pixel move is twice
     // its value here: +64 lifts the phone's silhouette 32px off where it sat
     const upEm = (isBento(version) && document.body.classList.contains('emAge')) ? 64 : 0;
-    // V6 lifts the silhouette with the rest of the stack -- 32 here is 16px
-    const upV6 = (isBento(version) && v7On()) ? 32 : 0;
+    // V6 lifts the silhouette off where V5 draws it -- 64 here is 32px, the
+    // 16 that came up with the rest of the stack and 16 of its own
+    const upV6 = (isBento(version) && v7On()) ? 64 : 0;   // 32px, in clip units
     gl.uniform1f(U.uYOff,
       (botH - topH - dropB5 + upEm + upV6 -
        (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
@@ -5812,11 +5840,19 @@
   const v4BioAge = v4AgeEl ? (() => {
     const el = document.createElement('span');
     el.className = 'v4AgeN v4BioN';
-    el.innerHTML = '124<span class="v4BioLeg">' +
+    // The slide is always in the carousel; what is inside it is what changes.
+    // Both readings are built here and one is shown, so the slide travels and
+    // blurs as one thing either way.
+    el.innerHTML = '<i class="bioNum">124</i><span class="v4BioLeg">' +
       '<span><b>81</b><i style="background:#5cc47f"></i>Optimal</span>' +
       '<span><b>9</b><i style="background:#f2c744"></i>Suboptimal</span>' +
       '<span><b>6</b><i style="background:#ef6f63"></i>Out of range</span>' +
-      '</span>';
+      '</span>' +
+      '<span class="v4BioEmpty">' +
+      '<b>Discover what&rsquo;s happening inside your body</b>' +
+      '<i>Get tested to understand your key biomarkers and identify what may ' +
+      'need attention.</i>' +
+      '<button class="emCta" type="button">Get tested</button></span>';
     el.style.display = 'none';
     v4AgeEl.appendChild(el);
     return el;
@@ -6034,11 +6070,10 @@
       } else {
         mxNow = bx;
       }
-      // Every other step morphs on release, which is what makes the organ
-      // change read as one deliberate movement. This one is asked to follow the
-      // swipe -- halfway across is halfway between the two readings -- so
-      // within the biomarker step the morph tracks the carousel directly.
-      const mx = (v7On() && bx < 1) ? bx : mxNow;
+      // Every step morphs on release, the biomarker one included: the strips
+      // track the finger, the silhouette holds what the swipe picked up and
+      // breaks apart once it is let go. One system across the whole carousel.
+      const mx = mxNow;
       // V6 reaches one slide further left, where the biomarkers are. That
       // slide is not in MB -- k0 = -1 stands for it -- and it shows the body,
       // which is also what MB[0] is, so the pair binds the same cloud on both
@@ -6051,6 +6086,9 @@
       // through it. Its cloud is bound in place of an organ's and the pair
       // interpolates position, brightness and flow across the step.
       const vasc = k0 < 0 ? 1 - f : 0;   // how much the biomarker slide is showing
+      // emptied, the body keeps its own colour: a range fill with no ranges
+      // behind it would be a reading invented for the picture
+      const emB = document.body.classList.contains('emBio');
       const oa = MB[Math.max(0, k0)], ob = MB[k1];
       const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
                         Math.min(1, Math.abs(o.delta) / 7);
@@ -6058,8 +6096,11 @@
       // silhouette: green while the organ reads younger, orange-red once it
       // reads older, and blended through the middle of a swipe.
       if (v4FootEl && v4BodyK >= 0){
+        // the biomarker slide is the body as well, so it gets the same bottom
+        // fade: the carousel position is clamped at the body's own slot, which
+        // holds the fade full through everything at or before it
         v4FootEl.style.setProperty('--v4foot',
-          Math.max(0, 1 - Math.abs(b0 - v4BodyK)).toFixed(3));
+          Math.max(0, 1 - Math.abs(Math.max(0, b0) - v4BodyK)).toFixed(3));
       }
       if (v4HaloEl){
         const halo = v4HaloEl.closest('#phone') || v4HaloEl;
@@ -6075,20 +6116,34 @@
       // -- there is no organ there -- and the arc stops being an age scale and
       // becomes the distribution, revealed left to right once the slide lands.
       const bioOn = v7On() ? Math.max(0, Math.min(1, -bx)) : 0;
+      // The biomarker reading is drawn a third larger, and the swipe carries it
+      // back out: uZoom is uploaded before this runs, so setting it here wins,
+      // and it rides the same vasc the fill does, which means the zoom follows
+      // the finger exactly as the colour does.
+      const rBody = ORGANS[MB[0].organIdx].r;
+      const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
+      gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
+                            zFix * (1 + 0.30 * vasc));
       // the fill rises once the slide has settled, over two and a half
       // seconds, and is put away again when it is left
       if (vasc > 0.999 && !bxDrag){ if (fillT < 0) fillT = t; }
       else if (vasc < 0.6) fillT = -1;
       const fillP = fillT < 0 ? 0 : Math.min(1.16, (t - fillT) / 2500 * 1.16);
-      gl.uniform1f(U.uRange, vasc);
+      gl.uniform1f(U.uRange, emB ? 0 : vasc);
       gl.uniform1f(U.uFill, fillP);
       gl.uniform2f(U.uFillY, BODY_Y[0], BODY_Y[1]);
       bioArc = bioOn;
+      // and the arc has nothing to draw, so it stands down rather than showing
+      // an empty scale under a slide that is asking for a test
+      arcASvg.style.visibility = (emB && bioOn > 0.5) ? 'hidden' : '';
       if (bioOn > 0.999 && !bxDrag){ if (bioRevT < 0) bioRevT = t; }
       else bioRevT = -1;
       bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / 700);
       gl.uniform1f(U.uP, f);
-      gl.uniform2f(U.uPan, 0, 0);
+      // the 30% zoom pushes the crown past the top of the canvas, so the
+      // biomarker body rides down until its head sits on the same line as
+      // the body slide's — the swipe changes scale, never the top edge
+      gl.uniform2f(U.uPan, 0, -0.35 * vasc);
       gl.uniform1f(U.uAlpha, 1);
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[oa.organIdx].x, ORGANS[oa.organIdx].y);
@@ -7931,7 +7986,7 @@
   // Each of the three cards can be put in an empty state from the bar. setMode
   // writes body.className whole, so these live in a set it reads rather than
   // being toggled onto the element and lost at the next page change.
-  const CARD_STATE = { emBio: false, emAct: false, emAge: false, paAge: false,
+  const CARD_STATE = { emBio: false, emAct: false, emAge: false,
                        paOrg: false, emOrg: false };
   for (const [id, cls] of [['stBio','emBio'], ['stAct','emAct']]){
     const sel = document.getElementById(id);
@@ -7941,13 +7996,11 @@
       resize();
     });
   }
-  // the age card has three: whole, part-tested, and nothing yet
+  // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');
   stAgeSel.addEventListener('change', () => {
     CARD_STATE.emAge = stAgeSel.value === 'empty';
-    CARD_STATE.paAge = stAgeSel.value === 'partial';
     document.body.classList.toggle('emAge', CARD_STATE.emAge);
-    document.body.classList.toggle('paAge', CARD_STATE.paAge);
     // the body is the last entry in PILL, after the nine organs
     if (CARD_STATE.emAge) selectPill(PILL.length - 1);
     refreshAges();
@@ -8329,6 +8382,9 @@
       else updateFlow(t);
     }
 
+    // the range fill belongs to V6's biomarker slide alone; every other path
+    // draws with it off, or a visit to V6 would tint the next page it landed on
+    gl.uniform1f(U.uRange, 0);
     if (version === 3){
       spatialFrame(t);            // card flip
     } else if (version === 4){
