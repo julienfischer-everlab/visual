@@ -69,6 +69,18 @@
   }
   .topbar .seg button:hover{color:#e4e4e7;}
   .topbar .seg button[aria-pressed="true"]{color:#09090b;background:#fafafa;}
+  .topbar .tgl{
+    position:relative;flex:0 0 auto;width:34px;height:20px;padding:0;
+    border:1px solid #232326;border-radius:999px;background:#27272a;
+    cursor:pointer;transition:background .16s ease;
+  }
+  .topbar .tgl:hover{border-color:#3f3f46;}
+  .topbar .tgl i{
+    position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#a1a1aa;transition:transform .16s ease,background .16s ease;
+  }
+  .topbar .tgl[aria-checked="true"]{background:#fafafa;}
+  .topbar .tgl[aria-checked="true"] i{transform:translateX(14px);background:#09090b;}
   .topbar input[type="range"]{
     -webkit-appearance:none;appearance:none;width:110px;height:4px;border-radius:2px;
     background:#27272a;outline:none;cursor:pointer;
@@ -8374,29 +8386,28 @@
   // being toggled onto the element and lost at the next page change.
   const CARD_STATE = { emBio: false, emAct: false, emAge: false,
                        emOrg: false, noCov: false };
-  // Every state control is a choice between two, and a menu you have to open
-  // to see both of them is the wrong shape for that. Each becomes a pair of
-  // buttons -- but the select stays, hidden, as the thing that holds the
-  // value: every handler in the file reads sel.value and listens for change,
-  // and the pair drives it rather than replacing it. One control, two faces.
+  // Every state control is a thing that is either on or off, so each becomes a
+  // switch -- the label beside it already says which thing. The select stays,
+  // hidden, as the thing that holds the value: every handler in the file reads
+  // sel.value and listens for change, and the switch drives it rather than
+  // replacing it. That is also how a control follows a change some other
+  // control made through the chain.
   (function segmentise(){
     for (const sel of document.querySelectorAll('.tweaks select')){
       const opts = [...sel.options];
       if (opts.length !== 2 || sel.id === 'versionSel') continue;
-      const seg = document.createElement('span');
-      seg.className = 'seg';
-      const btns = opts.map(o => {
-        const b = document.createElement('button');
-        b.type = 'button'; b.textContent = o.textContent;
-        b.addEventListener('click', () => {
-          if (sel.value === o.value) return;
-          sel.value = o.value;
-          sel.dispatchEvent(new Event('change', { bubbles: true }));
-        });
-        seg.appendChild(b); return b;
+      const seg = document.createElement('button');
+      seg.type = 'button'; seg.className = 'tgl';
+      seg.setAttribute('role', 'switch');
+      seg.setAttribute('aria-label', sel.getAttribute('aria-label') || '');
+      seg.appendChild(document.createElement('i'));
+      // the first option is the on position -- Completed, or On
+      seg.addEventListener('click', () => {
+        sel.value = sel.value === opts[0].value ? opts[1].value : opts[0].value;
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
       });
-      const sync = () => opts.forEach((o, i) =>
-        btns[i].setAttribute('aria-pressed', String(sel.value === o.value)));
+      const sync = () =>
+        seg.setAttribute('aria-checked', String(sel.value === opts[0].value));
       // the pair follows the select whoever moved it -- a handler in the
       // chain may set a value this control never touched
       sel.addEventListener('change', sync);

@@ -315,13 +315,13 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 ## Tweaks (top bar)
 
-Every state control is a choice between two, and a menu you have to open to see
-both is the wrong shape for that, so each is a pair of buttons. The `select`
-stays underneath as the thing that holds the value — every handler in the file
-reads `.value` and listens for `change` — and the pair drives it rather than
-replacing it, which is also how a control follows a change some other control
-made through the chain. Version and Mode keep their menus: one is a long list,
-the other has three options.
+Every state control is a thing that is either on or off, so each is a switch —
+the label beside it already says which thing, and the first option is the on
+position. The `select` stays underneath as the thing that holds the value —
+every handler in the file reads `.value` and listens for `change` — and the
+switch drives it rather than replacing it, which is also how a control follows
+a change some other control made through the chain. Version and Mode keep their
+menus: one is a long list, the other has three options.
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
 - **Refresh** — reloads the page. Everything the tweaks set lives in memory,
