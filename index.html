@@ -5837,16 +5837,26 @@
     return el;
   }) : [];
 
+  // The slide's counts live here rather than in the markup, because the fill
+  // height is one of them: the green front stops at the optimal share, so a
+  // number typed into the legend and a number typed into the shader would be
+  // two places to change one fact.
+  const BIO_N = { total: 124, optimal: 81, sub: 9, out: 6 };
+  const BIO_FILL = BIO_N.optimal / BIO_N.total;
   const v4BioAge = v4AgeEl ? (() => {
     const el = document.createElement('span');
     el.className = 'v4AgeN v4BioN';
     // The slide is always in the carousel; what is inside it is what changes.
     // Both readings are built here and one is shown, so the slide travels and
     // blurs as one thing either way.
-    el.innerHTML = '<i class="bioNum">124</i><span class="v4BioLeg">' +
-      '<span><b>81</b><i style="background:#5cc47f"></i>Optimal</span>' +
-      '<span><b>9</b><i style="background:#f2c744"></i>Suboptimal</span>' +
-      '<span><b>6</b><i style="background:#ef6f63"></i>Out of range</span>' +
+    el.innerHTML = '<i class="bioNum">' + BIO_N.total + '</i>' +
+      '<span class="v4BioLeg">' +
+      '<span><b>' + BIO_N.optimal + '</b><i style="background:#5cc47f"></i>' +
+      'Optimal</span>' +
+      '<span><b>' + BIO_N.sub + '</b><i style="background:#f2c744"></i>' +
+      'Suboptimal</span>' +
+      '<span><b>' + BIO_N.out + '</b><i style="background:#ef6f63"></i>' +
+      'Out of range</span>' +
       '</span>' +
       '<span class="v4BioEmpty">' +
       '<b>Discover what&rsquo;s happening inside your body</b>' +
@@ -6116,19 +6126,30 @@
       // -- there is no organ there -- and the arc stops being an age scale and
       // becomes the distribution, revealed left to right once the slide lands.
       const bioOn = v7On() ? Math.max(0, Math.min(1, -bx)) : 0;
-      // The biomarker reading is drawn a third larger, and the swipe carries it
-      // back out: uZoom is uploaded before this runs, so setting it here wins,
-      // and it rides the same vasc the fill does, which means the zoom follows
-      // the finger exactly as the colour does.
+      // The body is one size wherever it shows. The biomarker slide and the
+      // body slide are the same figure, so framing them the same way leaves
+      // that step nothing to change but colour; the third it is drawn larger
+      // by only comes back out on the step to the first organ, where the
+      // framing was going to change anyway. zFix is the other half of that:
+      // zoomNow is framed on whichever organ was last selected, so without it
+      // the biomarker slide would render at a different size depending on
+      // where the carousel had been. uZoom is uploaded before this runs, so
+      // setting it here wins.
+      const bodyShown = !v7On() ? 0 : k0 < 0 ? 1 : k0 === 0 ? 1 - f : 0;
       const rBody = ORGANS[MB[0].organIdx].r;
       const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
       gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
-                            zFix * (1 + 0.30 * vasc));
-      // the fill rises once the slide has settled, over two and a half
-      // seconds, and is put away again when it is left
+                            zFix * (1 + 0.30 * bodyShown));
+      // The fill rises once the slide has settled, over a couple of seconds,
+      // and is put away again when it is left. It stops at the optimal share
+      // rather than covering the body: how high the green reaches is the
+      // reading -- 81 of 124 is two thirds of the figure, not all of it --
+      // and what is left above it stays in the body's own ink at a little
+      // over half brightness, which is the part that has not come back green.
       if (vasc > 0.999 && !bxDrag){ if (fillT < 0) fillT = t; }
       else if (vasc < 0.6) fillT = -1;
-      const fillP = fillT < 0 ? 0 : Math.min(1.16, (t - fillT) / 2500 * 1.16);
+      const fillP = fillT < 0 ? 0
+                  : Math.min(BIO_FILL, (t - fillT) / 2160 * BIO_FILL);
       gl.uniform1f(U.uRange, emB ? 0 : vasc);
       gl.uniform1f(U.uFill, fillP);
       gl.uniform2f(U.uFillY, BODY_Y[0], BODY_Y[1]);
@@ -6140,10 +6161,10 @@
       else bioRevT = -1;
       bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / 700);
       gl.uniform1f(U.uP, f);
-      // the 30% zoom pushes the crown past the top of the canvas, so the
-      // biomarker body rides down until its head sits on the same line as
-      // the body slide's — the swipe changes scale, never the top edge
-      gl.uniform2f(U.uPan, 0, -0.35 * vasc);
+      // the 30% pushes the crown past the top of the canvas, so the body
+      // rides down by what it grew — on both of its slides, or the step that
+      // was meant to hold it still would move it instead
+      gl.uniform2f(U.uPan, 0, -0.35 * bodyShown);
       gl.uniform1f(U.uAlpha, 1);
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[oa.organIdx].x, ORGANS[oa.organIdx].y);
