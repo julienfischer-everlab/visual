@@ -58,10 +58,13 @@
   .topbar .seg{
     display:flex;gap:2px;border:1px solid #232326;background:#131316;
     border-radius:8px;padding:3px;
+    /* the selects' own height, so a row of toggles does not make the bar
+       taller and push every page below it down two pixels */
+    height:28px;box-sizing:border-box;align-items:stretch;
   }
   .topbar .seg button{
     font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;
-    color:#a1a1aa;border-radius:6px;padding:4px 12px;
+    color:#a1a1aa;border-radius:6px;padding:0 12px;line-height:1;
     transition:color .15s,background .15s;
   }
   .topbar .seg button:hover{color:#e4e4e7;}
@@ -5473,8 +5476,21 @@
     if (d.label === 'Body') return false;
     return c.contains('emOrg');
   }
+  // Which of the dashboard's two notes is showing, if either: the body's when
+  // the biological age is missing and the body is the selection, an organ's
+  // when the organ ages are missing and an organ is. Both are true at once
+  // when the organs are empty, since that empties the body too.
+  function dashNote(){
+    const c = document.body.classList, no = c.contains('noAge');
+    return (c.contains('emAge') && !no) || (c.contains('emOrg') && no);
+  }
+  let noteWas = false;
   function applyNoAge(){
     document.body.classList.toggle('noAge', noAgeFor(PILL[pillCurrent]));
+    // the canvas gives up the note's height, so a change of note is a change
+    // of layout -- but only when it changes, not on every organ picked
+    const now = dashNote();
+    if (now !== noteWas){ noteWas = now; if (isDash(version)) resize(); }
   }
   function selectPill(i){
     const bPrev = pillCurrent;
@@ -5717,7 +5733,12 @@
       const lift = document.body.classList.contains('b3') ? 48 : 0;
       // never wider than what the list leaves, or the organ hangs off the card
       W = Math.max(60, slot.width - listW);
-      H = Math.max(220, slot.height - lift * 2);
+      // Where the card carries a note, the organ gives up the note's height
+      // rather than being drawn behind it. Without that the visual grows with
+      // the card while the note stays put, so on a wide screen the copy sat
+      // in the middle of the organ -- and every organ ended up framed
+      // differently from the body the biological-age note stands over.
+      H = Math.max(220, slot.height - lift * 2 - (dashNote() ? 150 : 0));
       // measured from the card, not the viewport — nothing to re-place on scroll
       canvas.style.left = listW + 'px'; canvas.style.top = '0px';
       pillui.style.left = listW + 'px';
@@ -8353,6 +8374,43 @@
   // being toggled onto the element and lost at the next page change.
   const CARD_STATE = { emBio: false, emAct: false, emAge: false,
                        emOrg: false, noCov: false };
+  // Every state control is a choice between two, and a menu you have to open
+  // to see both of them is the wrong shape for that. Each becomes a pair of
+  // buttons -- but the select stays, hidden, as the thing that holds the
+  // value: every handler in the file reads sel.value and listens for change,
+  // and the pair drives it rather than replacing it. One control, two faces.
+  (function segmentise(){
+    for (const sel of document.querySelectorAll('.tweaks select')){
+      const opts = [...sel.options];
+      if (opts.length !== 2 || sel.id === 'versionSel') continue;
+      const seg = document.createElement('span');
+      seg.className = 'seg';
+      const btns = opts.map(o => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = o.textContent;
+        b.addEventListener('click', () => {
+          if (sel.value === o.value) return;
+          sel.value = o.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        seg.appendChild(b); return b;
+      });
+      const sync = () => opts.forEach((o, i) =>
+        btns[i].setAttribute('aria-pressed', String(sel.value === o.value)));
+      // the pair follows the select whoever moved it -- a handler in the
+      // chain may set a value this control never touched
+      sel.addEventListener('change', sync);
+      const setter = Object.getOwnPropertyDescriptor(
+        HTMLSelectElement.prototype, 'value');
+      Object.defineProperty(sel, 'value', {
+        get(){ return setter.get.call(this); },
+        set(v){ setter.set.call(this, v); sync(); }
+      });
+      sync();
+      sel.style.display = 'none';
+      sel.parentNode.insertBefore(seg, sel.nextSibling);
+    }
+  })();
   // activity stands alone -- it comes off a wearable, not the panel
   {
     const sel = document.getElementById('stAct');

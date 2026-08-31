@@ -315,6 +315,14 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 ## Tweaks (top bar)
 
+Every state control is a choice between two, and a menu you have to open to see
+both is the wrong shape for that, so each is a pair of buttons. The `select`
+stays underneath as the thing that holds the value — every handler in the file
+reads `.value` and listens for `change` — and the pair drives it rather than
+replacing it, which is also how a control follows a change some other control
+made through the chain. Version and Mode keep their menus: one is a long list,
+the other has three options.
+
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
 - **Refresh** — reloads the page. Everything the tweaks set lives in memory,
   so this is the way back to the page as it first drew: the states reset, the
@@ -401,9 +409,13 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
   arrives with the slide it belongs to instead of switching at a threshold.
 
   On the desktop, where there is no carousel, the same two notes stand exactly
-  where the gauge stack they replace did. Both states are true at once when the
-  organs are empty — that empties the body too — so the selection decides which
-  of the two the card carries.
+  where the gauge stack they replace did, and the organ gives up the note's
+  height rather than being drawn behind it — without that the visual grows with
+  the card while the note stays put, so on a wide screen the copy sat in the
+  middle of the organ and every organ was framed differently from the body the
+  biological-age note stands over. Both states are true at once when the organs
+  are empty — that empties the body too — so the selection decides which of the
+  two the card carries.
   An untested one shows a dash wherever its age would be — the list, the strip,
   the odometer, which gets an element of its own rather than a wheel for a
   character that is not a digit — and when it is the one on screen the
