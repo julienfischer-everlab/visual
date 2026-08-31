@@ -2972,10 +2972,6 @@
     flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:12px;text-align:center;
   }
-  .dash .emBioNote .emOrg{
-    width:100%;flex:1 1 auto;min-height:120px;position:relative;
-  }
-  .dash .emBioNote .emOrg canvas{position:absolute;inset:0;}
   .dash .emBioNote b{
     font-size:16px;font-weight:500;line-height:1.3;letter-spacing:-0.2px;
     color:var(--ink-bright);text-wrap:balance;max-width:320px;
@@ -3030,7 +3026,7 @@
      replaced by a figure and three lines. Without a floor the note -- taken
      out of the flow so it can fill the card -- leaves nothing behind to
      measure, and the card collapses to its eyebrow. */
-  body.emBio .dash .dcard.bcard{min-height:340px;}
+  body.emBio .dash .dcard.bcard{min-height:210px;}
   body.emBio #phone .mHeroCard .emMid{display:none;}
   body.emAct #phone .hiSteps > .emNote,
   body.emAct .dash .hiSteps > .emNote{
@@ -3119,7 +3115,7 @@
     <div class="dgrid">
       <div class="dleft">
         <div class="dcard bcard">
-          <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><div class="emOrg"></div><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
+          <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
           <div class="bcTop">
             <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
             <div class="b3Off"><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:14px;font-weight:400">years old</span></div></div>
@@ -3266,7 +3262,7 @@
       <div class="mHero" id="mHero">
       <div class="mHeroTrack" id="mHeroTrack">
       <div class="msn mHeroCard">
-        <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><div class="emOrg"></div><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
+        <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
         <div class="mHeroTop">
           <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
           <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span class="yrs">years old</span></div></div>
@@ -6074,7 +6070,7 @@
           : k === 0 ? !c.contains('emAge')
           : !c.contains('emOrg')) ? 1 : 0;
   }
-  let bioArc = 0, bioRev = 0, bioRevT = -1;
+  let bioArc = 0, bioRev = 0, bioRevT = -1, arcFade = 1;
   // the arc's sweep and the body's fill are one reveal, so they share a span;
   // draining the colour back off the body is slower, being a departure
   const BIO_REVEAL = 700, BIO_DRAIN = 1200;
@@ -6461,8 +6457,11 @@
       // swipe's own position, so the arc leaves and arrives with the slide it
       // belongs to instead of switching at a threshold.
       arcASvg.style.visibility = '';
-      arcASvg.style.opacity =
-        (arcAt(k0) * (1 - f) + arcAt(k1) * f).toFixed(3);
+      // written here, applied where every page can see it: this frame runs
+      // only on the bento, and an opacity left at 0 by V6 blanked the
+      // dashboard's arc the moment you switched to it -- the third time this
+      // exact leak has cost a page something
+      arcFade = arcAt(k0) * (1 - f) + arcAt(k1) * f;
       // The left-to-right sweep starts with the swap rather than after it, and
       // it is not unwound on the way out: dropping it the instant the swipe
       // committed put every tick back to grey in one frame, so the ranges
@@ -8273,17 +8272,6 @@
     // no download here: the tile is a thumbnail inside a card, and the same
     // heart is downloadable at full size from the library
     makeOrganView(host, 3, { dense: true, dl: false }); // overview: heart, at engine density
-  })();
-  // The emptied biomarker card carries the phone's slide: the body, a line, a
-  // sentence, an action. There is one WebGL canvas and it belongs to the organ
-  // card, so this is the 2D view every other thumbnail in the file is drawn
-  // with -- same cloud, same sampling, and it skips its frame while the card
-  // it sits in is not on screen, which is most of the time.
-  (function bioEmptyBody(){
-    for (const host of document.querySelectorAll('.emBioNote .emOrg')){
-      makeOrganView(host, BODY_I, { dense: true, fill: 0.55, dot: 0.95,
-                                    feed: false, flow: false, dl: false });
-    }
     document.querySelector('.ovcard.red').addEventListener('click', e => {
       if (e.target.closest('.ocx')) return; // the dismiss X never opens it
       sheetR.open(0); // heart first
@@ -8692,14 +8680,18 @@
       // run, so reading it directly would leave every page visited after V6
       // wearing the ranges instead of its own age scale: the page decides
       // which arc this is, not a number left behind by the last page.
-      const bioA = (isBento(version) && v7On()) ? bioArc : 0;
+      const onHero = isBento(version) && v7On();
+      const bioA = onHero ? bioArc : 0;
+      // ...and the fade is the hero's too: everywhere else the arc is simply
+      // there, because everywhere else every slide has a reading
+      arcASvg.style.opacity = onHero ? arcFade.toFixed(3) : '1';
       // With no biological age the body slide has no scale, so the arc fades
       // out on the way to it rather than crossing into one: a change of
       // content inside a fade is a flicker, not a transition. Frozen on the
       // way there and only on the way there -- leaving it for an organ, the
       // age scale has to be drawn as the arc comes back up, or it would fade
       // in wearing the ranges and swap once it arrived.
-      const arcGoing = isBento(version) && v7On() && !arcAt(Math.round(bxT));
+      const arcGoing = onHero && !arcAt(Math.round(bxT));
       if (arcGoing){ /* leave it exactly as it is and let it go */ }
       else if (bioA > 0.001){
         // the three bands in the meter's own proportions, so the arc and the

@@ -464,9 +464,19 @@ is asking the page rather than the variable: `const bioA = (isBento(version) &&
 v7On()) ? bioArc : 0`. Shared mutable state read across pages needs a gate on
 the reader, not just a default on the writer.
 
-Both would have shipped invisibly. The check that catches them is cheap: after
-touching anything a single page draws, switch to a different page and look at
-it — the failure is never on the page you were working on.
+Then a third: `arcASvg.style.opacity`, written in the same bento frame to fade
+the arc off a slide with no reading. V6 left it at 0 and the dashboard's arc
+was simply not there. Same shape, same fix — the value is computed where the
+carousel positions live and *applied* on the shared path, gated on the page:
+`onHero ? arcFade : '1'`.
+
+Three times is a pattern, so state it as a rule. **Anything the bento frame
+writes to a shared object — a GL uniform, a module variable, an element's
+style — is read by pages that never run that frame.** Compute it there if you
+must; apply it where every page can see it, with the page deciding. And the
+check that catches it is cheap: after touching anything a single page draws,
+switch to a different page and look at it — the failure is never on the page
+you were working on.
 
 ---
 
