@@ -4236,10 +4236,12 @@
   // And how bright they are. aEdge is the per-particle brightness the shader
   // multiplies into alpha; for an organ it comes from the distance to the
   // silhouette's edge, which is meaningless on a line drawing where every
-  // particle is edge. The print reads it as depth instead: full at the core,
-  // falling away by a smooth power over the whole radius, so the outer ridges
-  // are softer and darker without a boundary anywhere. The strays sit at the
-  // floor — present, barely.
+  // particle is edge. The print reads it as depth instead, falling away by a
+  // smooth power over the whole radius so the outer ridges are softer without a
+  // boundary anywhere. The whole layer is held down: these ridges are the
+  // substrate the signals run through, and a substrate that competes with them
+  // is just a brighter fingerprint. The strays sit at the floor — present,
+  // barely.
   function fingerprintCloud(){
     const cl = buildCloud(drawFingerprint, 7, 0.88, {s:1, x:0, y:0}, null,
                           fingerprintDensity);
@@ -4249,7 +4251,7 @@
       const x = cl.pos[i * 3] / k + cl.norm.cx;
       const y = -cl.pos[i * 3 + 1] / k + cl.norm.cy;
       const t = Math.min(1.3, FP_PAD.rad(x, y));
-      cl.edge[i] = Math.max(0.34, 1.14 - 0.72 * Math.pow(t, 1.2));
+      cl.edge[i] = Math.max(0.13, 0.98 - 0.82 * Math.pow(t, 1.05));
     }
     return cl;
   }
@@ -5136,15 +5138,19 @@
     // the lanes read separately, each at its own pace so the family has depth.
     // width and turb are near nothing — on a ridge a dot that wanders off the
     // line is a dot in the gap, and the gaps are what make the print legible
-    // only the long runs are lanes: a dot travelling a ridge fragment reads as
-    // a twitch, not a current, and the fragments are there to be still
+    // Only the long runs are lanes: a dot travelling a ridge fragment reads as
+    // a twitch, not a current, and the fragments are there to be still.
     // FP_RIDGES comes out of the contouring innermost first, so the lane index
-    // is distance from the core: the pace falls as it goes, and the wave's lag
-    // steps outward with it. The print reads as active at the middle and
-    // drifting at the rim without anything moving that should not.
+    // is distance from the core — the ambient pace falls as it goes, and a
+    // ladder of packets fired on consecutive lanes travels outward.
+    // width and turb stay at almost nothing: on a ridge, a dot off the line is
+    // a dot in the gap, and the gaps are what make the print legible.
     { paths: FP_RIDGES.filter(p => p.length > 60).filter((_, i) => i % 2 === 1),
       pathSpd: [1.34, 1.18, 1.06, 0.96, 0.88, 0.80, 0.73, 0.67, 0.62],
-      wave: { period: 9.5, lag: 0.085, duty: 0.5, amp: 1.05, width: 0.15 },
+      signals: { every: 4, ambient: 0.42, op: 0.95, decay: 1.7, trail: 0.26,
+                 tone: [0.99, 0.90, 0.86],
+                 dur: 620, durVar: 520, gap: 90, gapVar: 220,
+                 rest: 120, restVar: 420, ladder: 0.45 },
       loop: 17, op: 0.55, width: 1.1, turb: 0.3, tone: [0.92,0.62,0.60] },          // biological age: the fingerprint's own ridges
     { paths: [[[164,200],[166,148],[166,104],[166,70]], [[164,200],[126,214],[100,252],[88,306]],
               [[164,200],[206,214],[234,252],[248,306]], [[166,120],[166,210],[168,306]]],
@@ -5155,21 +5161,6 @@
   // curves any depth at all. Everything else runs one speed and says nothing.
   function lanePace(pr, i){
     return pr.pathSpd ? pr.pathSpd[i % pr.pathSpd.length] : 1;
-  }
-  // A signal crossing one ridge. Each lane runs its own cycle, quiet for most
-  // of it and then a single crest sweeping the ridge from end to end; the lag
-  // steps that cycle later for every lane further out, so the crests leave the
-  // core and cross the print outward rather than all lighting at once. It is
-  // brightness only — the dots do not move for it — so nothing about the
-  // structure shifts, and the cycle has no edge to see it restart at.
-  function laneWave(pr, i, u, time){
-    const w = pr.wave;
-    if (!w) return 1;
-    let c = (time / w.period - i * w.lag) % 1;
-    if (c < 0) c += 1;
-    if (c > w.duty) return 1;
-    const d = u - c / w.duty;
-    return 1 + w.amp * Math.exp(-(d * d) / (w.width * w.width));
   }
   const flowRT = {};
   function getFlowRT(i){
@@ -5260,6 +5251,107 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
   }
+  // ---- Signals -------------------------------------------------------------
+  // The print's own flow. Two layers out of one budget of dots: a slow ambient
+  // stream that keeps every ridge faintly in motion, and fast packets — small
+  // groups of brighter dots that appear on a ridge, run it end to end, fade,
+  // and are replaced somewhere else. Both ride the ridge polylines by arc
+  // length, so a dot is never off its line; the ridges themselves never move.
+  const SIG_CH = 8;
+  const sigCh = new Array(SIG_CH).fill(null);
+  let sigNext = 0;
+  function updateSignalPackets(t, rt, sg){
+    for (let c = 0; c < SIG_CH; c++)
+      if (sigCh[c] && t > sigCh[c].t0 + sigCh[c].dur * 1.25) sigCh[c] = null;
+    if (t < sigNext) return;
+    const free = [];
+    for (let c = 0; c < SIG_CH; c++) if (!sigCh[c]) free.push(c);
+    if (!free.length) return;
+    const n = Math.min(free.length, 1 + (Math.random() * 3 | 0));
+    let last = 0, k = 0;
+    while (k < n){
+      const p = (Math.random() * rt.paths.length) | 0;
+      const dur = sg.dur + Math.random() * sg.durVar;
+      // half of them run the ridge the other way, so nothing reads as a
+      // rotation of the whole print
+      const dir = Math.random() < 0.5 ? -1 : 1;
+      sigCh[free[k]] = { p, t0: t + last, dur, dir };
+      k++;
+      // a ladder: the same signal picked up by the next ridge out, and the one
+      // after. FP_RIDGES is ordered from the core outward, so consecutive lanes
+      // fired a beat apart read as one thing leaving the centre rather than
+      // three unrelated ones.
+      if (Math.random() < sg.ladder){
+        for (let j = 1; j <= 2 && k < n; j++, k++){
+          sigCh[free[k]] = { p: (p + j) % rt.paths.length,
+                             t0: t + last + j * (90 + Math.random() * 80),
+                             dur: dur * (1 + 0.07 * j), dir };
+        }
+      }
+      last += sg.gap + Math.random() * sg.gapVar;
+    }
+    sigNext = t + last + sg.rest + Math.random() * sg.restVar;
+  }
+  // where a dot sits on a path at arc-length fraction u, offset onto its lane
+  function alongPath(P, u, off){
+    const d = u * P.total;
+    let s = 0;
+    while (s < P.cum.length - 2 && P.cum[s + 1] < d) s++;
+    const segLen = (P.cum[s + 1] - P.cum[s]) || 1;
+    const st = (d - P.cum[s]) / segLen;
+    const ax = P.x[s], ay = P.y[s], bx = P.x[s + 1], by = P.y[s + 1];
+    const dx = (bx - ax) / segLen, dy = (by - ay) / segLen;
+    return [ax + (bx - ax) * st - dy * off, ay + (by - ay) * st + dx * off];
+  }
+  function updateSignals(pr, rt, t){
+    const sg = pr.signals;
+    updateSignalPackets(t, rt, sg);
+    const time = t / 1000;
+    for (let f = 0; f < FLOWN; f++){
+      const gi = FSTART + f, i3 = gi * 3;
+      const pi = flowPick[f] % rt.paths.length;
+      let a = 0;
+      // the two layers are told apart by colour as well as by speed: the
+      // ambient keeps the print's own pink, a packet runs a shade off white.
+      // Not a glow — a signal has to be brighter than the tissue it crosses or
+      // it is just a denser part of it.
+      const tone = (f % sg.every === 0) ? pr.tone : sg.tone;
+      colors[gi * 4] = tone[0]; colors[gi * 4 + 1] = tone[1]; colors[gi * 4 + 2] = tone[2];
+      if (f % sg.every === 0){
+        // the ambient layer: slow, even, and dim enough that a packet crossing
+        // it reads as a different thing rather than a brighter part of it
+        const P = rt.paths[pi];
+        const u = (flowU0[f] + time * flowSpd[f] * lanePace(pr, pi) / (pr.loop * 2)) % 1;
+        const off = (flowLane[f] * pr.width + Math.sin(time * 0.9 + flowU0[f] * 25) * pr.turb) * rt.k;
+        const q = alongPath(P, u, off);
+        posB[i3] = q[0]; posB[i3 + 1] = q[1]; posB[i3 + 2] = flowZ[f] * 20 * rt.k;
+        a = pr.op * sg.ambient * Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1)
+          * (1 - 0.4 * Math.abs(flowZ[f]));
+      } else {
+        const pu = sigCh[f % SIG_CH];
+        if (pu && t >= pu.t0){
+          // every dot in a packet trails the head by its own stable slot, so
+          // the group has a comet's shape and holds it for the whole run
+          const slot = flowU0[f];
+          const w = (t - pu.t0) / pu.dur - slot * sg.trail;
+          if (w > 0 && w < 1){
+            const P = rt.paths[pu.p % rt.paths.length];
+            const u = pu.dir > 0 ? w : 1 - w;
+            const q = alongPath(P, u, flowLane[f] * pr.width * rt.k * 0.45);
+            posB[i3] = q[0]; posB[i3 + 1] = q[1]; posB[i3 + 2] = flowZ[f] * 10 * rt.k;
+            a = sg.op * Math.pow(1 - slot, sg.decay)
+              * Math.min(1, w / 0.06) * Math.min(1, (1 - w) / 0.12);
+          }
+        }
+      }
+      colors[gi * 4 + 3] = a;
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
+    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
+    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
+  }
+
   function updateFlow(t){
     const pr = FLOW_PRESETS[current];
     const rt = getFlowRT(current);
@@ -5271,6 +5363,7 @@
         colors[i4] = pr.tone[0]; colors[i4+1] = pr.tone[1]; colors[i4+2] = pr.tone[2];
       }
     }
+    if (pr.signals){ updateSignals(pr, rt, t); return; }
     if (pr.pulse){
       updatePulses(t, rt);
       for (let f = 0; f < FLOWN; f++){
@@ -5330,8 +5423,7 @@
       posB[i3+2] = flowZ[f] * 28 * rt.k; // embedded in the volume
       // ends fade so the loop never visibly resets; deeper dots are softer
       const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-      colors[gi*4+3] = Math.min(1, pr.op * 1.35) * endFade
-                     * (1 - 0.4 * Math.abs(flowZ[f])) * laneWave(pr, pi, u, time);
+      colors[gi*4+3] = Math.min(1, pr.op * 1.35) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
@@ -6850,6 +6942,27 @@
       bindPair(ia, ob.organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
       gl.uniform1f(U.uP, 1);
+      // The flow layer lives in the main buffers, and the hero draws the cloud
+      // out of the static pair — so [0, N) is everything it has ever drawn and
+      // the flow slice past FSTART was never reached. Every other page either
+      // draws the whole buffer or asks for the slice by hand; the hero, alone,
+      // did neither, which is why nothing riding the ridges could be seen here.
+      // It is asked for the same way the spatial cards ask: a second draw off
+      // the live buffers, with uP already at 1 so the flow reads its own B
+      // positions rather than a morph of them.
+      //
+      // Only for a preset built for this. The others are tuned for the
+      // full-bleed concept modes, and their paths are laid out in a frame the
+      // hero does not use. And only at rest on the slide the preset belongs to:
+      // mid-swipe the pair is two different figures, and a lane drawn in one
+      // figure's frame lands nowhere in the other's. At rest f is 0 and the B
+      // slot contributes nothing, so it is the A slot that has to be the print
+      // — the pair is always this slide and the next one, never a slide twice.
+      const hf = FLOW_PRESETS[current];
+      if (hf && hf.signals && flowVis > 0.015 && ia === current && f < 0.02){
+        bindCloud(-1);
+        gl.drawArrays(gl.POINTS, FSTART, FLOWN);
+      }
     }
     bindCloud(-1);
     gl.uniform2f(U.uPan, 0, 0);

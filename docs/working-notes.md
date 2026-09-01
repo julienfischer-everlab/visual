@@ -530,6 +530,30 @@ ordered thing out of unordered pieces, a seed has two directions and you owe it
 both.** And a wedge of anything missing in the same corner every time is a scan
 order confessing, not a shape.
 
+### 5.20 A layer that was drawn everywhere except where it was wanted
+
+The print's signals ride the flow slice, which lives past `FSTART` in the same
+buffers as the cloud. Every frame it was updated: packets spawned, positions
+written along the ridges, colours uploaded. A probe on the buffer showed all of
+it working. Nothing appeared on the phone.
+
+The hero draws the cloud out of the static pair buffers, and it asks for
+`[0, N)` — every particle except the flow slice. The concept modes draw the
+whole buffer and the spatial cards ask for the slice by hand; the hero, alone,
+did neither. So the layer was computed sixty times a second and never reached
+the screen, and every adjustment made to it changed nothing, invisibly.
+
+What found it was wrapping `drawArrays` and printing the ranges: one entry,
+`0+9000`, where there should have been two. Worth doing early — a layer that
+does not appear is either not drawn or drawn wrong, and the draw log tells you
+which in one line, where staring at the shader tells you neither.
+
+The condition that then had to be right: the hero's pair is *this slide and the
+next one*, never a slide twice. At rest the blend sits at zero and the B slot
+contributes nothing, so it is the A slot that has to be the shape you are
+testing for. Testing both was a condition that could never be true, which
+looked exactly like the bug it had just replaced.
+
 ---
 
 ## 6. Open items

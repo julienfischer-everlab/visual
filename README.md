@@ -354,34 +354,48 @@ edge instead of ending on one — an impression, not a stamp. Fixed constants, n
 The same polylines then do two more jobs. Stroked onto the sampling canvas they
 are what becomes particles; handed to the flow preset they are the lanes the
 travelling dots run along — only the long runs, since a dot travelling a ridge
-fragment reads as a twitch rather than a current, with `pathSpd` giving each
-lane its own pace and `width` and `turb` at almost nothing, because on a ridge
-a dot off the line is a dot in the gap and the gaps are what make the print
-legible.
+fragment reads as a twitch rather than a current, and `width` and `turb` stay at
+almost nothing, because on a ridge a dot off the line is a dot in the gap and
+the gaps are what make the print legible.
 
 **Depth.** The print carries a centre-to-edge falloff rather than an even
-brightness: the core is the active signal and everything softens away from it.
-Two things do it, both measured off one radius in the pad's own tilted frame,
-taken from a point up toward the core rather than the pad's centre — which is
-where the eye reads the middle of a print to be. The sampler thins outward, so
-the outer ridges are sparser as well as dimmer; and `aEdge`, the per-particle
-brightness the shader multiplies into alpha, is set from that same radius by a
-smooth power over the whole radius. For an organ `aEdge` comes from the
+brightness, and the whole static layer is held down: these ridges are the
+substrate the signals run through, and a substrate that competes with them is
+just a brighter fingerprint. Two things do it, both measured off one radius in
+the pad's own tilted frame, taken from a point up toward the core rather than
+the pad's centre — which is where the eye reads the middle of a print to be. The
+sampler thins outward, so the outer ridges are sparser as well as dimmer; and
+`aEdge`, the per-particle brightness the shader multiplies into alpha, is set
+from that same radius by a smooth power. For an organ `aEdge` comes from the
 distance to the silhouette's edge, which means nothing on a line drawing where
 every particle is edge — the print reads it as depth instead. Running the
 falloff over the whole radius rather than the last fifth is what keeps a ring
 from appearing anywhere for the eye to find, and the floor keeps individual
-particles visible out to the rim. The strays sit at that floor: present,
-barely.
+particles visible out to the rim. The strays sit at that floor: present, barely.
 
-**Signals.** `FP_RIDGES` comes out of the contouring innermost first, so a
-lane's index is its distance from the core. The pace falls as it goes, and on
-top of the steady stream each lane runs a wave: quiet for most of a cycle, then
-a single crest sweeping the ridge end to end, with the cycle stepped later for
-every lane further out. The crests leave the core and cross the print outward
-rather than lighting at once. It is brightness only — the dots do not move for
-it — so nothing about the structure shifts, and the cycle has no edge to see it
-restart at.
+**Signals.** Two layers out of one budget of dots. A quarter of them are the
+ambient stream: slow, even, dim, keeping every lane faintly in motion. The rest
+are packets — small groups that appear on a ridge, run it end to end fast, fade,
+and are replaced somewhere else, with eight channels so several cross the print
+at once. Each dot in a packet trails the head by its own stable slot, so the
+group holds a comet's shape for the whole run; half run their ridge backwards,
+so nothing reads as a rotation of the print; and a *ladder* fires the same
+signal on the next lane out and the one after, a beat apart — `FP_RIDGES` is
+ordered from the core outward, so consecutive lanes read as one thing leaving
+the centre rather than three unrelated ones. Duration, gap and rest are
+randomised around their means, so the sequence never lands on a beat. The two
+layers are told apart by colour as well as by speed: the ambient keeps the
+print's pink, a packet runs a shade off white — not a glow, but a signal has to
+be brighter than the tissue it crosses or it is just a denser part of it. Both
+ride the polylines by arc length, so a dot is never off its line, and the ridges
+themselves never move.
+
+The hero had to be taught to draw them. It renders the cloud out of the static
+pair buffers and asks for `[0, N)`, which is every particle except the flow
+slice past `FSTART` — so on the phone the flow layer was computed every frame
+and never reached the screen. It now takes a second draw off the live buffers,
+the way the spatial cards do, for presets built for it and only at rest on the
+slide they belong to.
 
 ### The two mini cards
 
