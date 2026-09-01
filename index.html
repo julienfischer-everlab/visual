@@ -4109,28 +4109,35 @@
           map.get(k).push(i);
         }
       });
+      // A seed lands in the middle of a chain as often as at its end, so both
+      // directions have to be followed and joined. Walking one way only chops
+      // every contour at whichever cell the scan reached first and leaves the
+      // offcut to be re-seeded facing a used neighbour, where it dies at two or
+      // three segments and is dropped for being short — which comes out as a
+      // wedge of missing ridges, always in the same corner, because the scan
+      // always starts in the same corner.
       const used = new Uint8Array(segs.length);
       const runs = [];
-      const walk = (i, from) => {
+      const extend = end => {
         const out = [];
-        let cur = i, end = from;
-        while (cur >= 0 && !used[cur]){
-          used[cur] = 1;
-          const s = segs[cur];
-          const a = key(s[0][0], s[0][1]) === key(end[0], end[1]) ? s[1] : s[0];
-          out.push(a);
-          end = a;
-          const cand = (map.get(key(a[0], a[1])) || []).filter(j => !used[j]);
-          cur = cand.length ? cand[0] : -1;
+        for (;;){
+          const cand = (map.get(key(end[0], end[1])) || []).filter(j => !used[j]);
+          if (!cand.length) return out;
+          const j = cand[0];
+          used[j] = 1;
+          const s = segs[j];
+          const nxt = key(s[0][0], s[0][1]) === key(end[0], end[1]) ? s[1] : s[0];
+          out.push(nxt);
+          end = nxt;
         }
-        return out;
       };
       for (let i = 0; i < segs.length; i++){
         if (used[i]) continue;
-        const fwd = walk(i, segs[i][0]);
-        const back = walk(-1, [0, 0]);   // no-op, kept for symmetry
-        if (fwd.length > 4) runs.push([segs[i][0]].concat(fwd));
-        void back;
+        used[i] = 1;
+        const fwd = extend(segs[i][1]);
+        const bwd = extend(segs[i][0]);
+        const run = bwd.reverse().concat([segs[i][0], segs[i][1]], fwd);
+        if (run.length > 4) runs.push(run);
       }
       return runs;
     }

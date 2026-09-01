@@ -509,6 +509,27 @@ gets you as far as "they do not cross". A field gets you the structure the
 family is supposed to have — the merges and the terminations included — because
 the structure is a property of the field, not something drawn on afterwards.
 
+### 5.19 Marching squares, walked one way, eats a corner
+
+The print's ridges are contours, and contours come out of marching squares as a
+bag of unordered segments that has to be linked into runs. The first linker
+seeded on the first unused segment and walked forward until it ran out.
+
+A seed lands in the middle of a chain as often as at its end. Walking forward
+from a mid-chain seed takes half the contour and leaves the other half unused;
+that half is re-seeded later facing a neighbour that is now used, so it dies
+after two or three segments and is dropped for being too short to draw. The
+result was a wedge of missing ridges — always in the top-left, because the
+scan is row-major and the failure happens where the scan starts.
+
+It read as a bug in the *shape*, and two rounds went into the geometry looking
+for it. It was in the bookkeeping: the contours were right the whole time.
+
+Link both ways from the seed and join. The general form: **when you rebuild an
+ordered thing out of unordered pieces, a seed has two directions and you owe it
+both.** And a wedge of anything missing in the same corner every time is a scan
+order confessing, not a shape.
+
 ---
 
 ## 6. Open items
