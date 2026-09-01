@@ -365,7 +365,7 @@ menus: one is a long list, the other has three options.
   greyed the way an unread organ is — the silhouette is the same body, and only
   what is said about it has gone. **Activity** keeps its eyebrow —
   its sentence does not name the card the way the age card's does — and centres
-  *Connect your variables* and a *Connect* action on the card itself rather than
+  *Connect your wearables* and a *Connect* action on the card itself rather than
   on what the eyebrow leaves, which would sit low by half a label.
   **Biomarkers** is the age card's state in the hero: on V6 the slide stays in
   the carousel whether or not there is anything to report — a missing slide
