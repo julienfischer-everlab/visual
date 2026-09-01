@@ -2559,12 +2559,14 @@
      lifted grey and the body is the black. Said after V4's pair and at the same
      weight, so it wins on order; the light theme carries `.light` and outranks
      both, so it is untouched. */
-  /* The header is driven from the scroll: --v5head runs the lifted grey down to
-     almost-black as the body rises over it, reaching the bottom of its range
-     exactly when the body reaches the top of the screen. The body's own ground
-     is black throughout — it is what the header is darkening toward. */
-  body.v6 #phone{background:rgb(var(--v5head, 15 15 15));}
-  body.v6 .mHead{background:rgb(var(--v5head, 15 15 15));}
+  /* The header is driven from the scroll: --v5head runs its 2% wash down to
+     black as the body rises over it, reaching the bottom of its range exactly
+     when the body reaches the top of the screen. The body's own ground is black
+     throughout — it is what the header is darkening toward. A 2% hero under 6%
+     cards is one wash at two strengths: the hero is the faintest lift off the
+     black there is, and the cards still stand a step above it. */
+  body.v6 #phone{background:rgb(var(--v5head, 5 5 5));}
+  body.v6 .mHead{background:rgb(var(--v5head, 5 5 5));}
   body.v6 #phone .mBody{background:#000;}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
@@ -3969,54 +3971,102 @@
     }
   }
 
-  // The body as a whole: head, neck, shoulders and upper torso, cropped at the
-  // waist by the frame. The arms enter and leave through the foot rather than
-  // being drawn whole, and the head sits a touch off the centre line so the
-  // silhouette reads three-quarter rather than pinned flat.
-  function drawBody(c){
+  // ---- The biological fingerprint -------------------------------------------
+  // Biological age is not an organ, so it stopped being drawn as one. It is the
+  // print: the one mark that is nobody else's, made the way the organs are
+  // made, out of particles. Ridges rather than a silhouette, which is what lets
+  // the same polylines do three jobs — stroked below they are what the sampler
+  // rasterises into particles, handed to the flow preset they are the lanes the
+  // travelling dots run along, and their spacing is what keeps the print
+  // readable at thumbnail size.
+  //
+  // Every ridge is the same base loop offset outward along its own normal, so
+  // they are parallel by construction and no two can ever cross — the failure
+  // mode of drawing each ridge as its own ellipse, where a per-ridge wobble
+  // tangles the family at the first crossing. The wobble here rides on that
+  // offset instead: shared low-frequency terms, a per-ridge phase, and an
+  // amplitude that stays a fraction of the spacing. Fixed constants, no
+  // Math.random: a print is one print, the same on every load.
+  const FP_RIDGES = (() => {
+    const cx = 168, cy = 136, A = 13, B = 14.5, SP = 10.9, K = 12, XS = 0.9;
+    let s = 0x9e3779b9 >>> 0;
+    const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+    const ph = [];
+    for (let i = 0; i < K; i++) ph.push((rnd() - 0.5) * 1.6);
+    const wob = (t, i) => 2.2 * Math.sin(2.3 * t + 0.7 + ph[i] * 0.3)
+                        + 1.4 * Math.sin(3.9 * t + 2.1 + ph[i])
+                        + 0.8 * Math.sin(6.1 * t + 4.4);
+    const bez = (P, C1, C2, E, n) => {
+      const o = [];
+      for (let k = 1; k <= n; k++){
+        const u = k / n, v = 1 - u;
+        o.push([v*v*v*P[0] + 3*v*v*u*C1[0] + 3*v*u*u*C2[0] + u*u*u*E[0],
+                v*v*v*P[1] + 3*v*v*u*C1[1] + 3*v*u*u*C2[1] + u*u*u*E[1]]);
+      }
+      return o;
+    };
+    const at = (i, t) => {
+      const bx = cx + A * Math.sin(t), by = cy - B * Math.cos(t);
+      let nx = B * Math.sin(t), ny = -A * Math.cos(t);
+      const L = Math.hypot(nx, ny) || 1; nx /= L; ny /= L;
+      const d = i * SP + wob(t, i) * (0.3 + 0.05 * i);
+      return [bx + nx * d, by + ny * d];
+    };
+    const out = [];
+    for (let i = 0; i < K; i++){
+      // the core recurves almost shut; each ridge out from it opens a little
+      // earlier, so the ends fan from the centre of the foot to the sides
+      const T = 2.98 - i * 0.070;
+      const steps = 40 + i * 4;
+      let pts = [];
+      for (let k = 0; k <= steps; k++) pts.push(at(i, -T + 2 * T * k / steps));
+      // and then run on down out of the frame, the way a print's ridges leave
+      // the pad rather than closing on themselves
+      if (i > 0) for (const sgn of [-1, 1]){
+        const t = sgn * T;
+        const P = at(i, t), Q = at(i, t - sgn * 0.06);
+        let dx = P[0] - Q[0], dy = P[1] - Q[1];
+        const L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L;
+        const E = [P[0] + sgn * (5 + i * 0.9), 296 + ((i * 7) % 4) * 6];
+        const tail = bez(P, [P[0] + dx * 14, P[1] + dy * 14], [E[0], E[1] - 58], E, 16);
+        pts = sgn > 0 ? pts.concat(tail) : tail.reverse().concat(pts);
+      }
+      out.push(pts);
+    }
+    // ridge endings: short fragments lying between two ridges, the way a real
+    // print carries them — enough to break the parallel, never enough to read
+    for (const [i, t0, len] of [[3, -1.1, 0.55], [6, 1.35, 0.5], [8, -2.0, 0.4],
+                                [5, 0.35, 0.45], [9, 1.05, 0.38]]){
+      const pts = [];
+      for (let k = 0; k <= 14; k++){
+        const t = t0 + len * k / 14;
+        const p = at(i, t), q = at(i + 1, t);
+        pts.push([(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]);
+      }
+      out.push(pts);
+    }
+    // a fingertip is taller than it is wide
+    for (const p of out) for (const q of p) q[0] = cx + (q[0] - cx) * XS;
+    return out;
+  })();
+
+  function drawFingerprint(c){
     c.lineCap = 'round'; c.lineJoin = 'round';
-    c.beginPath(); c.ellipse(166, 62, 35, 43, 0.03, 0, 6.2832); c.fill();
-    c.lineWidth = 42;
-    c.beginPath(); c.moveTo(167, 96); c.lineTo(169, 126); c.stroke();
-    c.lineWidth = 41;
-    c.beginPath();
-    c.moveTo(114, 158);
-    c.bezierCurveTo(88, 168, 73, 192, 71, 224);
-    c.bezierCurveTo(69, 262, 72, 302, 78, 344);
-    c.stroke();
-    c.beginPath();
-    c.moveTo(222, 156);
-    c.bezierCurveTo(250, 166, 267, 190, 269, 222);
-    c.bezierCurveTo(271, 260, 268, 302, 262, 344);
-    c.stroke();
-    c.beginPath();
-    c.moveTo(138, 126);
-    c.bezierCurveTo(112, 133, 92, 149, 84, 176);
-    c.bezierCurveTo(78, 200, 86, 240, 96, 282);
-    c.bezierCurveTo(102, 308, 106, 326, 108, 344);
-    c.lineTo(232, 344);
-    c.bezierCurveTo(234, 326, 238, 308, 244, 282);
-    c.bezierCurveTo(254, 240, 262, 200, 256, 176);
-    c.bezierCurveTo(248, 149, 228, 133, 202, 126);
-    c.closePath(); c.fill();
+    c.lineWidth = 3.0;
+    for (const p of FP_RIDGES){
+      c.beginPath(); c.moveTo(p[0][0], p[0][1]);
+      for (let i = 1; i < p.length; i++) c.lineTo(p[i][0], p[i][1]);
+      c.stroke();
+    }
   }
 
-  // The systems inside are density, not drawing: the sampler is pulled toward
-  // the skull, the heart and the two lungs, and away from the arms, so the
-  // shape reads as one body that is denser where the work happens.
-  function bodyDensity(x, y){
-    const g = (cx, cy, rx, ry, amp) => {
-      const dx = (x - cx) / rx, dy = (y - cy) / ry;
-      return amp * Math.exp(-(dx * dx + dy * dy));
-    };
-    let w = 1 + g(166, 60, 27, 33, 0.44)    // brain
-              + g(150, 200, 33, 30, 0.42)   // heart, left of the centre line
-              + g(124, 190, 28, 42, 0.24)   // lung
-              + g(210, 190, 28, 42, 0.24);  // lung
-    if (x < 96 || x > 246) w *= 0.78;       // the arms sit back from the torso
-    // the waist is a crop, not a cut: thin the sampling toward the frame's
-    // foot so the body dissolves out of view instead of ending on a bright rule
-    if (y > 258) w *= Math.max(0.12, 1 - (y - 258) / 74);
+  // The core is where the eye lands, so it keeps its dots; the foot is a crop
+  // rather than a cut, so the ridges leaving the frame thin out instead of
+  // stopping on a bright rule.
+  function fingerprintDensity(x, y){
+    const dx = (x - 168) / 58, dy = (y - 136) / 64;
+    let w = 1 + 0.34 * Math.exp(-(dx * dx + dy * dy));
+    if (y > 232) w *= Math.max(0.10, 1 - (y - 232) / 84);
     return w;
   }
 
@@ -4401,7 +4451,9 @@
     { label: 'Gut',     cloud: () => buildCloud(drawGut,     30, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Liver',   cloud: () => buildCloud(drawLiver,   42, 0.95, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Kidneys', cloud: () => buildCloud(drawKidneys, 34, 0.90, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
-    { label: 'Body',    cloud: () => buildCloud(drawBody, 40, 1.04, {s:1, x:0, y:0, yaw:0.17}, null, bodyDensity), x:0, y:0, r:0.82 },
+    // no yaw: a print is a flat impression, and it has to stay square to the
+    // frame — the three-quarter turn the body carried would read as a smear
+    { label: 'Body',    cloud: () => buildCloud(drawFingerprint, 7, 1.00, {s:1, x:0, y:0}, null, fingerprintDensity), x:0, y:0, r:0.82 },
   ];
   const clouds = ORGANS.map(o => o.cloud());
   const GB = 1200;
@@ -4891,10 +4943,20 @@
       loop: 10, op: 0.65, width: 5, turb: 2,   tone: [0.90,0.55,0.48] },            // liver: perfusion
     { paths: [[[102,128],[94,178],[112,222],[148,190]], [[240,116],[248,166],[234,210],[194,176]]],
       loop: 9,  op: 0.65, width: 4, turb: 1.5, tone: [0.92,0.58,0.56] },            // kidneys: filtration
-    { paths: [[[164,200],[166,148],[166,104],[166,70]], [[164,200],[126,214],[100,252],[88,306]],
-              [[164,200],[206,214],[234,252],[248,306]], [[166,120],[166,210],[168,306]]],
-      loop: 12, op: 0.5,  width: 4, turb: 1.2, tone: [0.92,0.62,0.60] },            // body: circulation, heart outward
+    // the print: the dots run along the ridges themselves, every other one so
+    // the lanes read separately, each at its own pace so the family has depth.
+    // width and turb are near nothing — on a ridge a dot that wanders off the
+    // line is a dot in the gap, and the gaps are what make the print legible
+    { paths: FP_RIDGES.filter((_, i) => i < 12 && i % 2 === 1),
+      pathSpd: [1.0, 0.72, 1.28, 0.86, 1.12, 0.64, 1.34],
+      loop: 17, op: 0.55, width: 1.1, turb: 0.3, tone: [0.92,0.62,0.60] },          // biological age: the fingerprint's own ridges
   ];
+  // A preset may pace its lanes apart from one another: on the fingerprint the
+  // ridges travel at their own speeds, which is what gives a family of parallel
+  // curves any depth at all. Everything else runs one speed and says nothing.
+  function lanePace(pr, i){
+    return pr.pathSpd ? pr.pathSpd[i % pr.pathSpd.length] : 1;
+  }
   const flowRT = {};
   function getFlowRT(i){
     if (flowRT[i]) return flowRT[i];
@@ -4958,8 +5020,9 @@
       if (!pr || !rt) continue;
       for (let k = 0; k < GFN; k++){
         const f = g * GFN + k, gi = FSTART + f;
-        const P = rt.paths[flowPick[f] % rt.paths.length];
-        const u = (flowU0[f] + time * flowSpd[f] / (pr.loop * 2)) % 1;
+        const pi = flowPick[f] % rt.paths.length;
+        const P = rt.paths[pi];
+        const u = (flowU0[f] + time * flowSpd[f] * lanePace(pr, pi) / (pr.loop * 2)) % 1;
         const d = u * P.total;
         let s = 0;
         while (s < P.cum.length - 2 && P.cum[s+1] < d) s++;
@@ -5034,8 +5097,9 @@
     const time = t / 1000;
     for (let f = 0; f < FLOWN; f++){
       const gi = FSTART + f;
-      const P = rt.paths[flowPick[f] % rt.paths.length];
-      const u = (flowU0[f] + time * flowSpd[f] / (pr.loop * 2)) % 1;
+      const pi = flowPick[f] % rt.paths.length;
+      const P = rt.paths[pi];
+      const u = (flowU0[f] + time * flowSpd[f] * lanePace(pr, pi) / (pr.loop * 2)) % 1;
       const d = u * P.total;
       let s = 0;
       while (s < P.cum.length - 2 && P.cum[s+1] < d) s++;
@@ -8598,10 +8662,11 @@
       if (ph){
         if (document.body.classList.contains('v6')){
           v5HeadP = p * p * (3 - 2 * p);
-          // 6% white on the body's black, which is what the hero reads as:
-          // rgb(15) exactly rather than a hair warm of it, so the hero and the
-          // cards over it are two strengths of one wash, not two colours
-          const r = Math.round(15 + (6 - 15) * v5HeadP);
+          // 2% white on the body's black, which is what the hero reads as:
+          // rgb(5) exactly rather than a hair warm of it, so the hero and the
+          // 6% cards over it are two strengths of one wash, not two colours.
+          // It runs to the body's own black, reached as the body tops out.
+          const r = Math.round(5 - 5 * v5HeadP);
           ph.style.setProperty('--v5head', r + ' ' + r + ' ' + r);
         } else {
           v5HeadP = 0;
@@ -8889,10 +8954,10 @@
       const bare = flat && cls.contains('v5');
       const lift = flat === 'dash' && cls.contains('b5');   // V5's card
       const dk = bare ? (cls.contains('v6')
-                          // V5's header runs grey to almost-black under the body
-                          ? [(15 + (6 - 15) * v5HeadP) / 255,
-                             (15 + (6 - 15) * v5HeadP) / 255,
-                             (15 + (6 - 15) * v5HeadP) / 255]
+                          // V5's header runs its 2% wash to black under the body
+                          ? [(5 - 5 * v5HeadP) / 255,
+                             (5 - 5 * v5HeadP) / 255,
+                             (5 - 5 * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
                // 6% white on the card's black ground, which is what the card

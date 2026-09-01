@@ -313,7 +313,45 @@ only the name, the organ and its tag travel with the swipe. The carousel leads
 with the body's own age — *Body, 6 years younger* — and then walks the organs.
 `PILL` keeps Body last so the nine organs hold the indices everything else is
 written against; the reading order is a lookup, `MB_ORDER`, and the carousel
-walks `MB`. Slide 0 is the body, and it carries the body silhouette.
+walks `MB`. Slide 0 is the body, and it carries the fingerprint.
+
+### The fingerprint
+
+Biological age is not an organ, so it stopped being drawn as one. It is the
+print: the one mark that is nobody else's, made the way the organs are made,
+out of particles. Ridges rather than a silhouette, which is what lets one set
+of polylines do three jobs — stroked onto the sampling canvas they are what
+becomes particles, handed to the flow preset they are the lanes the travelling
+dots run along, and their spacing is what keeps the print readable at thumbnail
+size.
+
+Every ridge is the same base loop offset outward along its own normal, so they
+are parallel by construction and no two can ever cross. Drawing each ridge as
+its own ellipse is the obvious way and the wrong one: a per-ridge wobble
+tangles the family at the first crossing, and a fingerprint that crosses itself
+reads as scribble. The wobble rides on the offset instead — shared
+low-frequency terms, a per-ridge phase, and an amplitude that stays a fraction
+of the spacing, so the print is organic without ever being wrong. The
+constants are fixed rather than random: a print is one print, the same on every
+load.
+
+The core recurves almost shut and each ridge out from it opens a little
+earlier, so the ends fan from the centre of the foot to the sides and run on
+down out of the frame; the density function thins them as they go, so the
+print leaves the frame rather than stopping on a rule. Five short fragments lie
+between ridges as ridge endings — enough to break the parallel, never enough to
+read as anything. There is no yaw: a print is a flat impression and has to stay
+square to the frame, where the body's three-quarter turn would read as a smear.
+
+Motion is the flow layer doing what it already did for the organs, pointed at
+the ridges themselves: every other ridge is a lane, `pathSpd` gives each its
+own pace so the family has depth, and `width` and `turb` are near nothing —
+on a ridge, a dot that wanders off the line is a dot in the gap, and the gaps
+are what make the print legible.
+
+The biomarker slide shows the same asset by design — the two slides differ in
+colour alone — so the distribution now rises through the print rather than
+through a body.
 
 ### The two mini cards
 

@@ -478,6 +478,28 @@ check that catches it is cheap: after touching anything a single page draws,
 switch to a different page and look at it — the failure is never on the page
 you were working on.
 
+### 5.18 A family of ridges drawn one at a time tangles
+
+The Biological Age visual is a fingerprint: a dozen ridges, each a curve, and
+the first attempt drew each one as its own ellipse — its own radii, its own
+opening angle, its own low-frequency wobble. Every one was a good curve, and
+the family was a scribble: two neighbours only need their wobbles to disagree
+by more than the gap between them and they cross, and a fingerprint that
+crosses itself stops reading as a fingerprint at any distance.
+
+The fix is not to tune the wobble down until it happens to stay clear. It is to
+make crossing impossible: one base loop, and every ridge is that loop offset
+outward along its own normal. Parallel by construction, whatever the wobble
+does, because the wobble now rides on the offset distance rather than on each
+ridge's own geometry — shared low-frequency terms, a per-ridge phase, and an
+amplitude that stays a fraction of the spacing. The derivative of the offset
+with respect to ridge index is the spacing plus a term far smaller than it, so
+the order of the family is fixed.
+
+The general form: **when a shape is a family of curves that must not touch,
+generate the family from one curve, not the curves from one rule.** The second
+gives you n chances to be wrong; the first has none to give.
+
 ---
 
 ## 6. Open items
