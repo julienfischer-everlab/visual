@@ -24,6 +24,13 @@ tweak row, for trying the empty states on the device.
 The flag cannot be a class added at load: `setMode` writes `body.className`
 whole, so it lives in the set `setMode` reads, beside the card states.
 
+V5 lifts the drawn status strip out of the flow and gives `#mHeadIn` 39px to
+stand in for it. Full screen has no strip to lift, so that room reserves
+nothing and the page would open on a band of empty black: it goes to zero, the
+device's own bar sits in the safe-area inset `#phone` pads for, and the title
+keeps the 16px every other layout gives it. The override is written beside the
+V5 rule rather than in the full-screen block, which the cascade puts above it.
+
 ## What's inside
 
 | Path | Purpose |
