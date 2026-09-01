@@ -3998,10 +3998,28 @@
   // print is one print, the same on every load.
   // the pad: the oval the ridges are cut to, and the same oval the sampler
   // thins against, so the print lifts off at its edge rather than ending on one
-  const FP_PAD = { cx: 168, cy: 164, rx: 94, ry: 120, tilt: -0.09 };
+  const FP_PAD = (() => {
+    const p = { cx: 168, cy: 164, rx: 94, ry: 120, tilt: -0.09 };
+    // Where the light comes from: not the pad's centre but a point up toward
+    // the core, which is what the eye reads as the middle of a print. The
+    // falloff is measured off this, in the pad's own tilted frame.
+    const c = Math.cos(p.tilt), s = Math.sin(p.tilt);
+    const dx = -3, dy = -26;
+    p.gx = p.cx + dx * c - dy * s;
+    p.gy = p.cy + dx * s + dy * c;
+    p.grx = 102; p.gry = 134;
+    // radius in the pad's frame, 0 at that point and about 1 at the rim
+    p.rad = (x, y) => {
+      const ic = Math.cos(-p.tilt), is = Math.sin(-p.tilt);
+      const px = x - p.gx, py = y - p.gy;
+      const ax = (px * ic - py * is) / p.grx, ay = (px * is + py * ic) / p.gry;
+      return Math.sqrt(ax * ax + ay * ay);
+    };
+    return p;
+  })();
   const FP_RIDGES = (() => {
     const cx = FP_PAD.cx, cy = FP_PAD.cy, RX = FP_PAD.rx, RY = FP_PAD.ry, TILT = FP_PAD.tilt;
-    const SP = 8.9, K = 14, R0 = 4.0;
+    const SP = 8.9, K = 14, R0 = 6.2;
     const GS = 2, SPAN = 340, NG = Math.floor(SPAN / GS) + 1;
 
     // the core: a hairpin. The long arm runs out of the pad; the short one stops
@@ -4197,17 +4215,36 @@
     }
   }
 
-  // The core is where the eye lands, so it keeps its dots. The pad's rim is a
-  // lift, not a cut: an impression fades out at its edge, and thinning the
-  // sampling over the last fifth of the oval is what keeps the silhouette from
-  // reading as a stamp. Measured in the pad's own frame, tilt included.
+  // Where the dots go. The core is the active signal, so it keeps them; the
+  // print thins all the way out from there, and the rim is a lift rather than
+  // a cut — an impression fades at its edge instead of ending on one. The
+  // falloff runs the whole radius rather than the last fifth of it, so there is
+  // no ring anywhere for the eye to find.
   function fingerprintDensity(x, y){
-    const c = Math.cos(-FP_PAD.tilt), s = Math.sin(-FP_PAD.tilt);
-    const px = x - FP_PAD.cx, py = y - FP_PAD.cy;
-    const dx = (px * c - py * s) / FP_PAD.rx, dy = (px * s + py * c) / FP_PAD.ry;
-    const r = Math.sqrt(dx * dx + dy * dy);
-    return (1 + 0.30 * Math.exp(-r * r * 4)) *
-           (1 - 0.70 * Math.max(0, Math.min(1, (r - 0.80) / 0.22)));
+    const t = FP_PAD.rad(x, y);
+    return (1 + 0.22 * Math.exp(-t * t * 3.2)) *
+           Math.max(0.20, 1 - 0.42 * Math.pow(Math.min(1.25, t), 1.6));
+  }
+
+  // And how bright they are. aEdge is the per-particle brightness the shader
+  // multiplies into alpha; for an organ it comes from the distance to the
+  // silhouette's edge, which is meaningless on a line drawing where every
+  // particle is edge. The print reads it as depth instead: full at the core,
+  // falling away by a smooth power over the whole radius, so the outer ridges
+  // are softer and darker without a boundary anywhere. The strays sit at the
+  // floor — present, barely.
+  function fingerprintCloud(){
+    const cl = buildCloud(drawFingerprint, 7, 0.88, {s:1, x:0, y:0}, null,
+                          fingerprintDensity);
+    const k = cl.norm.k || 1;
+    for (let i = 0; i < N; i++){
+      if (i >= N - AMB){ cl.edge[i] = 0.30; continue; }
+      const x = cl.pos[i * 3] / k + cl.norm.cx;
+      const y = -cl.pos[i * 3 + 1] / k + cl.norm.cy;
+      const t = Math.min(1.3, FP_PAD.rad(x, y));
+      cl.edge[i] = Math.max(0.34, 1.14 - 0.72 * Math.pow(t, 1.2));
+    }
+    return cl;
   }
 
   function drawHeart(c){
@@ -4595,7 +4632,7 @@
     // the print keeps it: renumbering would rewire everything written against
     // an organ index. No yaw — a print is a flat impression and has to stay
     // square to the frame, where the body's three-quarter turn read as a smear.
-    { label: 'Fingerprint', cloud: () => buildCloud(drawFingerprint, 7, 1.00, {s:1, x:0, y:0}, null, fingerprintDensity), x:0, y:0, r:0.82 },
+    { label: 'Fingerprint', cloud: fingerprintCloud, x:0, y:0, r:0.82 },
     // And the human body stays in the system as its own asset: it is what the
     // biomarker slide shows, and the two are a step apart in the carousel.
     { label: 'Body',    cloud: () => buildCloud(drawBody, 40, 1.04, {s:1, x:0, y:0, yaw:0.17}, null, bodyDensity), x:0, y:0, r:0.82 },
@@ -5094,8 +5131,13 @@
     // line is a dot in the gap, and the gaps are what make the print legible
     // only the long runs are lanes: a dot travelling a ridge fragment reads as
     // a twitch, not a current, and the fragments are there to be still
+    // FP_RIDGES comes out of the contouring innermost first, so the lane index
+    // is distance from the core: the pace falls as it goes, and the wave's lag
+    // steps outward with it. The print reads as active at the middle and
+    // drifting at the rim without anything moving that should not.
     { paths: FP_RIDGES.filter(p => p.length > 60).filter((_, i) => i % 2 === 1),
-      pathSpd: [1.0, 0.72, 1.28, 0.86, 1.12, 0.64, 1.34, 0.92],
+      pathSpd: [1.34, 1.18, 1.06, 0.96, 0.88, 0.80, 0.73, 0.67, 0.62],
+      wave: { period: 9.5, lag: 0.085, duty: 0.5, amp: 1.05, width: 0.15 },
       loop: 17, op: 0.55, width: 1.1, turb: 0.3, tone: [0.92,0.62,0.60] },          // biological age: the fingerprint's own ridges
     { paths: [[[164,200],[166,148],[166,104],[166,70]], [[164,200],[126,214],[100,252],[88,306]],
               [[164,200],[206,214],[234,252],[248,306]], [[166,120],[166,210],[168,306]]],
@@ -5106,6 +5148,21 @@
   // curves any depth at all. Everything else runs one speed and says nothing.
   function lanePace(pr, i){
     return pr.pathSpd ? pr.pathSpd[i % pr.pathSpd.length] : 1;
+  }
+  // A signal crossing one ridge. Each lane runs its own cycle, quiet for most
+  // of it and then a single crest sweeping the ridge from end to end; the lag
+  // steps that cycle later for every lane further out, so the crests leave the
+  // core and cross the print outward rather than all lighting at once. It is
+  // brightness only — the dots do not move for it — so nothing about the
+  // structure shifts, and the cycle has no edge to see it restart at.
+  function laneWave(pr, i, u, time){
+    const w = pr.wave;
+    if (!w) return 1;
+    let c = (time / w.period - i * w.lag) % 1;
+    if (c < 0) c += 1;
+    if (c > w.duty) return 1;
+    const d = u - c / w.duty;
+    return 1 + w.amp * Math.exp(-(d * d) / (w.width * w.width));
   }
   const flowRT = {};
   function getFlowRT(i){
@@ -5266,7 +5323,8 @@
       posB[i3+2] = flowZ[f] * 28 * rt.k; // embedded in the volume
       // ends fade so the loop never visibly resets; deeper dots are softer
       const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-      colors[gi*4+3] = Math.min(1, pr.op * 1.35) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+      colors[gi*4+3] = Math.min(1, pr.op * 1.35) * endFade
+                     * (1 - 0.4 * Math.abs(flowZ[f])) * laneWave(pr, pi, u, time);
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));

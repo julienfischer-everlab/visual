@@ -359,6 +359,30 @@ lane its own pace and `width` and `turb` at almost nothing, because on a ridge
 a dot off the line is a dot in the gap and the gaps are what make the print
 legible.
 
+**Depth.** The print carries a centre-to-edge falloff rather than an even
+brightness: the core is the active signal and everything softens away from it.
+Two things do it, both measured off one radius in the pad's own tilted frame,
+taken from a point up toward the core rather than the pad's centre — which is
+where the eye reads the middle of a print to be. The sampler thins outward, so
+the outer ridges are sparser as well as dimmer; and `aEdge`, the per-particle
+brightness the shader multiplies into alpha, is set from that same radius by a
+smooth power over the whole radius. For an organ `aEdge` comes from the
+distance to the silhouette's edge, which means nothing on a line drawing where
+every particle is edge — the print reads it as depth instead. Running the
+falloff over the whole radius rather than the last fifth is what keeps a ring
+from appearing anywhere for the eye to find, and the floor keeps individual
+particles visible out to the rim. The strays sit at that floor: present,
+barely.
+
+**Signals.** `FP_RIDGES` comes out of the contouring innermost first, so a
+lane's index is its distance from the core. The pace falls as it goes, and on
+top of the steady stream each lane runs a wave: quiet for most of a cycle, then
+a single crest sweeping the ridge end to end, with the cycle stepped later for
+every lane further out. The crests leave the core and cross the print outward
+rather than lighting at once. It is brightness only — the dots do not move for
+it — so nothing about the structure shifts, and the cycle has no edge to see it
+restart at.
+
 ### The two mini cards
 
 Both swipe, by pointer or touch, and are steerable from their dots. **Health
