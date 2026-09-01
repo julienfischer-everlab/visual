@@ -315,43 +315,49 @@ with the body's own age — *Body, 6 years younger* — and then walks the organ
 written against; the reading order is a lookup, `MB_ORDER`, and the carousel
 walks `MB`. Slide 0 is the body, and it carries the fingerprint.
 
+### Three expressions of one system
+
+Biomarkers is the **human body**, biological age is the **fingerprint**, organ
+age is the **organs** — three shapes, one particle language. They are three
+clouds in the same array, and the carousel morphs between them like any other
+step; the biomarker slide and the body slide used to be the same drawing and
+differ only in colour, and that is no longer true.
+
+Slot 9 stays the print, because it is what the Biological Age carousel and the
+Body row select and every index in the file is written against that numbering;
+the human body is appended as slot 10 and bound in place of an organ's cloud
+when the carousel is on the biomarker slide. `BODY_I` finds it by label, which
+is also what the range fill measures its height off.
+
 ### The fingerprint
 
-Biological age is not an organ, so it stopped being drawn as one. It is the
-print: the one mark that is nobody else's, made the way the organs are made,
-out of particles. Ridges rather than a silhouette, which is what lets one set
-of polylines do three jobs — stroked onto the sampling canvas they are what
-becomes particles, handed to the flow preset they are the lanes the travelling
-dots run along, and their spacing is what keeps the print readable at thumbnail
-size.
+Biological age is not an organ, so it is not drawn as one. It is the print: the
+one mark that is nobody else's, made the way the organs are made, out of
+particles.
 
-Every ridge is the same base loop offset outward along its own normal, so they
-are parallel by construction and no two can ever cross. Drawing each ridge as
-its own ellipse is the obvious way and the wrong one: a per-ridge wobble
-tangles the family at the first crossing, and a fingerprint that crosses itself
-reads as scribble. The wobble rides on the offset instead — shared
-low-frequency terms, a per-ridge phase, and an amplitude that stays a fraction
-of the spacing, so the print is organic without ever being wrong. The
-constants are fixed rather than random: a print is one print, the same on every
-load.
+The ridges are **isocontours of one scalar field** — the distance to a core
+hairpin — rather than curves drawn one at a time. That is what buys the three
+things a print needs and a drawn family cannot hold together at once. Contours
+of a single field never cross, whatever the wobble does. They stay evenly
+spaced, because the field is a distance. And where they wrap the end of the
+short arm they close beneath the core on their own, which is the delta —
+the thing that makes a print read as a print rather than as rings.
 
-The core recurves almost shut and each ridge out from it opens a little
-earlier, so the ends fan from the centre of the foot to the sides and run on
-down out of the frame; the density function thins them as they go, so the
-print leaves the frame rather than stopping on a rule. Five short fragments lie
-between ridges as ridge endings — enough to break the parallel, never enough to
-read as anything. There is no yaw: a print is a flat impression and has to stay
-square to the frame, where the body's three-quarter turn would read as a smear.
+So the shape is authored as one curve: a hairpin whose long arm runs out
+through the foot of the pad and whose short arm stops inside it. The wobble is
+laid over the field rather than over the ridges, so it bends the whole family
+together. Marching squares lifts the contours out, an oval pad cuts them, and
+the sampler thins the last fifth of that oval so the print lifts off at its
+edge instead of ending on one — an impression, not a stamp. Fixed constants, no
+`Math.random`: a print is one print, the same on every load.
 
-Motion is the flow layer doing what it already did for the organs, pointed at
-the ridges themselves: every other ridge is a lane, `pathSpd` gives each its
-own pace so the family has depth, and `width` and `turb` are near nothing —
-on a ridge, a dot that wanders off the line is a dot in the gap, and the gaps
-are what make the print legible.
-
-The biomarker slide shows the same asset by design — the two slides differ in
-colour alone — so the distribution now rises through the print rather than
-through a body.
+The same polylines then do two more jobs. Stroked onto the sampling canvas they
+are what becomes particles; handed to the flow preset they are the lanes the
+travelling dots run along — only the long runs, since a dot travelling a ridge
+fragment reads as a twitch rather than a current, with `pathSpd` giving each
+lane its own pace and `width` and `turb` at almost nothing, because on a ridge
+a dot off the line is a dot in the gap and the gaps are what make the print
+legible.
 
 ### The two mini cards
 

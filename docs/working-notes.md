@@ -478,27 +478,36 @@ check that catches it is cheap: after touching anything a single page draws,
 switch to a different page and look at it — the failure is never on the page
 you were working on.
 
-### 5.18 A family of ridges drawn one at a time tangles
+### 5.18 A family of ridges drawn one at a time cannot be a fingerprint
 
-The Biological Age visual is a fingerprint: a dozen ridges, each a curve, and
-the first attempt drew each one as its own ellipse — its own radii, its own
-opening angle, its own low-frequency wobble. Every one was a good curve, and
-the family was a scribble: two neighbours only need their wobbles to disagree
-by more than the gap between them and they cross, and a fingerprint that
-crosses itself stops reading as a fingerprint at any distance.
+The Biological Age visual is a fingerprint, and it took three constructions to
+get one.
 
-The fix is not to tune the wobble down until it happens to stay clear. It is to
-make crossing impossible: one base loop, and every ridge is that loop offset
-outward along its own normal. Parallel by construction, whatever the wobble
-does, because the wobble now rides on the offset distance rather than on each
-ridge's own geometry — shared low-frequency terms, a per-ridge phase, and an
-amplitude that stays a fraction of the spacing. The derivative of the offset
-with respect to ridge index is the spacing plus a term far smaller than it, so
-the order of the family is fixed.
+**Each ridge as its own ellipse.** Every curve was a good curve and the family
+was a scribble: two neighbours only need their wobbles to disagree by more than
+the gap between them and they cross, and a print that crosses itself stops
+reading as a print at any distance.
 
-The general form: **when a shape is a family of curves that must not touch,
-generate the family from one curve, not the curves from one rule.** The second
-gives you n chances to be wrong; the first has none to give.
+**Each ridge as an offset of one base loop.** That fixed the crossing — offsets
+of a convex curve are parallel by construction, whatever the wobble does — and
+it produced a clean nested family. It was still not a fingerprint. It had no
+delta, and nothing filled the inside of the loop below the core, so it read as
+an arch, or a keyhole, depending on where the ends were cut.
+
+**Ridges as isocontours of one scalar field.** The field is the distance to a
+core hairpin. Contours of a single field never cross, for the same reason as
+before but stronger; they stay evenly spaced, because the field is a distance;
+and where they wrap the end of the hairpin's short arm they close beneath the
+core on their own — which is the delta, the thing that makes a print read as a
+print rather than as rings. The wobble goes on the field rather than on the
+ridges, so it bends the whole family together. Marching squares lifts the
+contours out and an oval pad cuts them.
+
+The general form: **when a shape is a family of curves that must not touch and
+must relate to each other, author the relation, not the curves.** Offsetting
+gets you as far as "they do not cross". A field gets you the structure the
+family is supposed to have — the merges and the terminations included — because
+the structure is a property of the field, not something drawn on afterwards.
 
 ---
 
