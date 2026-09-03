@@ -61,6 +61,17 @@ while the code keeps the marker class it was built under (`b3`, `v3`) — mode
 indices and marker names are internal and renaming them would rewire the
 renderer.
 
+The dropdown carries three entries here: **Desktop V5**, **Mobile V7**, and
+**Archive**. Fourteen versions in one list read as history rather than as a
+choice, and the two that are current were the hardest to find in it. So the
+menu shows what is current and folds every version they came from into the one
+Archive entry, where they are reached from a second select in the bar. Nothing
+about the modes changed to do it — `MODES` is still append-only, each version
+keeps its index, its class chain and its hash, and only the way in is re-hung.
+`#m13` still opens Desktop V1 exactly as it did, with the dropdown reading
+*Archive* and the archive select naming the version. Everything below is still
+in the build; the numbering is the mode index, not the menu.
+
 6. **Desktop** — the Everlab dashboard with the organ-age card in situ; the card expands into the organ-age modal
 7. **Desktop V2** — the same dashboard, re-proportioned: the biomarker card carries the distribution range at its foot, the stat pair is swapped for the steps and health-coverage cards, and a records row, an Other chip and a search field sit under the grid. The hero sizes itself off its content, so nothing spills onto the rows below, and the organ card takes its height from the left column — landscape, not standing up. It wears `m2`'s styles plus a marker class, so there is one dashboard, not two — the class is still `b2` in code, since `v2` already marks the mobile page.
 
@@ -530,6 +541,13 @@ a change some other control made through the chain. Version and Mode keep their
 menus: one is a long list, the other has three options.
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
+- **Archive** — which superseded version is on screen, and only while one is.
+  It is the second half of one control: the dropdown names the entry and this
+  names the version inside it, so the bar reads *Version: Archive · Archive:
+  Desktop V1*. Stepping out to a current design and back returns to the version
+  you were reading rather than to the top of the list, and a hash aimed
+  straight at an archived mode sets both halves, since they are set from the
+  mode rather than from whichever control was touched.
 - **Bio visual** — Iris or Sphere, and only on Mobile V7. The biological age
   slide is the one reading in the carousel with a choice of figure, so the
   choice is resolved where the cloud is picked rather than written into the

@@ -60,6 +60,7 @@
   .topbar .tkGrp{display:none;}
   body.b5 .topbar .tkGrp#devGrp{display:contents;}
   body.v8 .topbar .tkGrp#bioGrp{display:contents;}
+  body.archived .topbar .tkGrp#arcGrp{display:contents;}
   .topbar .tkBtn:hover{border-color:#3f3f46;}
   .topbar .tkBtn:active{background:#1c1c20;}
   .topbar .seg{
@@ -3259,6 +3260,14 @@
         <option value="desktop">Desktop</option>
         <option value="tablet">Tablet M</option>
       </select>
+    </span>
+    <!-- The archive is a page rather than a group: the dropdown carries the two
+         designs that are current, and every version they came from is a tweak
+         inside the one entry. Same group treatment as the rest — it is in the
+         row only while it is what you are looking at. -->
+    <span class="tkGrp" id="arcGrp">
+      <span class="lbl">Archive</span>
+      <select id="arcSel" aria-label="Archived version"></select>
     </span>
     <!-- Mobile V7 alone offers a choice of figure for the biological age. Same
          group treatment as Device: it exists where it applies and is out of the
@@ -6502,9 +6511,34 @@
   // grouped by what the mode is for, not by the order it was built in, and
   // within a group by `sort` — the product pages run desktop then mobile, which
   // is neither the order they were built in nor alphabetical
+  // The biomarker page has two current designs, and a dozen versions they came
+  // from. Listing all fourteen made the newest two hard to find in a menu that
+  // read as history rather than as a choice. So the group carries what is
+  // current and one entry called Archive; every earlier version is a tweak
+  // inside that entry, reached from a second select in the bar.
+  //
+  // Nothing about the modes themselves changes -- MODES stays append-only and
+  // each version keeps its index, its class chain and its hash. Only the way
+  // in is re-hung, which means #m13 still opens Desktop V1 exactly as it did,
+  // with the dropdown showing Archive and the archive select showing the name.
+  const LIVE = [18, 20];               // Desktop V5 and Mobile V7
+  const ARCHIVED = MODES.map((v, i) => [v, i])
+    .filter(([v, i]) => v.group === 'Biomarkers page' && !LIVE.includes(i))
+    .sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0))
+    .map(([, i]) => i);
+  const isArchived = m => ARCHIVED.includes(m);
+  const ARCHIVE_VAL = 'archive';
+  const arcSel = document.getElementById('arcSel');
+  ARCHIVED.forEach(i => {
+    const o = document.createElement('option');
+    o.value = String(i);
+    o.textContent = MODES[i].name;
+    arcSel.appendChild(o);
+  });
   const MODE_GROUPS = ['Concept', 'Biomarkers page', 'Overview page', 'Library'];
   MODE_GROUPS.forEach(g => {
-    const inGroup = MODES.map((v, i) => [v, i]).filter(([v]) => v.group === g);
+    const inGroup = MODES.map((v, i) => [v, i])
+      .filter(([v, i]) => v.group === g && !isArchived(i));
     inGroup.sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0));
     if (!inGroup.length) return;
     const og = document.createElement('optgroup');
@@ -6515,10 +6549,27 @@
       o.textContent = v.name;
       og.appendChild(o);
     });
+    // the archive sits at the foot of the group it belongs to, after the
+    // designs that superseded it
+    if (g === 'Biomarkers page' && ARCHIVED.length){
+      const o = document.createElement('option');
+      o.value = ARCHIVE_VAL;
+      o.textContent = 'Archive';
+      og.appendChild(o);
+    }
     versionSel.appendChild(og);
   });
-  versionSel.value = String(version);
-  versionSel.addEventListener('change', () => setMode(+versionSel.value));
+  // the opening mode is never an archived one, but the pair is set the way
+  // setMode sets it so there is one rule for it rather than two
+  if (isArchived(version)){ versionSel.value = ARCHIVE_VAL; arcSel.value = String(version); }
+  else versionSel.value = String(version);
+  versionSel.addEventListener('change', () => {
+    // Archive is an entry, not a mode: picking it opens whichever version the
+    // archive select is already showing, so stepping out and back returns to
+    // the one you were reading rather than to the top of the list.
+    setMode(versionSel.value === ARCHIVE_VAL ? +arcSel.value : +versionSel.value);
+  });
+  arcSel.addEventListener('change', () => setMode(+arcSel.value));
   // A page can be linked to directly, so a phone can be pointed at one version
   // without hunting through the dropdown first. The hash is the mode's number,
   // which is the same index the dropdown and the body class already use.
@@ -6597,7 +6648,10 @@
       (CARD_STATE.tabM && m === 18 ? ' tabM' : '') +
       // the same rule for the figure: only Mobile V7 offers the choice, so
       // only Mobile V7 wears it
-      (CARD_STATE.bioSph && m === 20 ? ' bioSph' : '');
+      (CARD_STATE.bioSph && m === 20 ? ' bioSph' : '') +
+      // and the archive's own control is in the bar only while an archived
+      // version is what is on screen
+      (isArchived(m) ? ' archived' : '');
     syncDark();
     applyNoAge();   // setMode writes the class list whole
     refreshAges();  // and the list's own wording is one of the things it decides
@@ -6649,7 +6703,13 @@
     else gl.clearColor(0.133, 0.024, 0.024, 1);   // #220606, in situ and full bleed
     if (m === 8 && window.__imBoot) window.__imBoot();  // the instrument builds on first view
     if (m === 3) spTarget = pillCurrent; // card flip picks up the active organ
-    versionSel.value = String(m);
+    // An archived version is reached through the Archive entry, so the two
+    // selects say the same thing between them: the dropdown names the entry
+    // and the archive select names the version inside it. A hash aimed
+    // straight at an archived mode lands here too, which is why the pair is
+    // set from `m` rather than from whichever control was touched.
+    if (isArchived(m)){ versionSel.value = ARCHIVE_VAL; arcSel.value = String(m); }
+    else versionSel.value = String(m);
     // replace rather than push: stepping through versions should not fill the
     // back button with them, but the address bar should still be linkable
     try { history.replaceState(null, '', '#m' + m); } catch (e){}
