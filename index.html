@@ -4004,9 +4004,13 @@
     { name: 'Mobile V3', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 9 },
     { name: 'Mobile V4', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 10 },
     { name: 'Mobile V5', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 11 }, // the same, folded to the phone
-    { name: 'Desktop V5', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 5 }, // V1 wearing the phone's reading of the organ
+    // Named for what it is rather than for how many came before it. The
+    // version number was the menu carrying its own history, which is what the
+    // archive is for now; the marker class stays `b5`, because renaming that
+    // rewires the renderer.
+    { name: 'Desktop', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 5 }, // V1 wearing the phone's reading of the organ
     { name: 'Mobile V6', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 12 }, // V5 with the biomarkers folded into the hero
-    { name: 'Mobile V7', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 13 }, // V6 again, to diverge from
+    { name: 'Mobile', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 13 }, // V6 again, to diverge from; marker stays `v8`
     // Desktop V5 in a frame two hundred pixels narrower. It was a tweak on V5
     // first, which made it a state of another page rather than a design you
     // can link to, sit beside its siblings in the menu, or open on its own.
@@ -6048,6 +6052,14 @@
   // carry the choice onto the dashboards, the library and the concept pages,
   // none of which offer it; resolving it at the point the cloud is picked
   // leaves it exactly where the class that decides it applies.
+  // What a reading is called, anywhere it is named. Every one of them is an
+  // age, so the organ's own name carries the word; an entry that already has a
+  // name of its own keeps it, which is the one that would otherwise come out
+  // as "age age". It was the carousel's rule and the list had another -- the
+  // same reading was "Heart age" on the phone and "Heart health" on the
+  // desktop, which is two names for one thing and a reader's problem, not a
+  // platform's. One rule, every surface.
+  const slideName = d => d.slide || (d.label + ' age');
   const bioIdx = d =>
     (d && d.label === 'Body' && document.body.classList.contains('bioSph'))
       ? SPHERE_I : d.organIdx;
@@ -6460,8 +6472,7 @@
     r.className = 'or' + (i === 0 ? ' on' : '');
     const dotCol = d.delta < 0 ? '#5cc47f' : d.delta > 0 ? '#d9895b' : '#b59a93';
     r.innerHTML = '<span class="dot" style="background:' + dotCol + '"></span>' +
-      // "Body" is the whole person, not an area of health, so it keeps its bare label
-      '<span class="nm">' + d.label + (d.label === 'Body' ? '' : ' health') + '</span>' +
+      '<span class="nm">' + slideName(d) + '</span>' +
       '<span class="ag">' + (CHRONO + d.delta) + '</span>';
     r.style.order = OLIST_ORDER[i];
     r.addEventListener('click', () => { lastManual = performance.now(); selectPill(i); });
@@ -7095,14 +7106,9 @@
     // and only what is said about it has gone.
     const noBody = document.body.classList.contains('emAge');
     const gone = d => noAgeFor(d) || (noBody && d.label === 'Body');
-    // V5 calls the body row by the reading it is, the way the carousel does;
-    // the older dashboards keep the organ list they were designed with.
-    const bio5 = document.body.classList.contains('b5');
     olistRows.forEach((r, i) => {
       const d = PILL[i], no = gone(d);
-      r.querySelector('.nm').textContent =
-        (bio5 && d.label === 'Body') ? 'Biological age'
-                                     : d.label + (d.label === 'Body' ? '' : ' health');
+      r.querySelector('.nm').textContent = slideName(d);
       r.querySelector('.ag').textContent = no ? '\u2013' : num(d);
       // the dot states a verdict, which an untested organ does not have
       r.querySelector('.dot').style.background = no ? '#6b6b68'
@@ -7152,12 +7158,6 @@
   // read -- so it sits at index -1 rather than inside MB, and the strips place
   // it from the same d = k - bx as every other slide. Declarations, because
   // bxGlide is called during init and reads them.
-  // What a slide is called. Every one of them is an age and the strip is the
-  // one place that says so, so the organ's own name carries the word; an entry
-  // that already has a name of its own keeps it, which is the one that would
-  // otherwise come out as "age age". Two places write the strip, so the rule
-  // lives in one.
-  const slideName = d => d.slide || (d.label + ' age');
   function v7On(){ return document.body.classList.contains('v7'); }
   function bxMin(){ return v7On() ? -1 : 0; }
   // An untested panel used to collapse the carousel to its one slide. It does

@@ -61,8 +61,14 @@ while the code keeps the marker class it was built under (`b3`, `v3`) — mode
 indices and marker names are internal and renaming them would rewire the
 renderer.
 
-The dropdown carries three entries here: **Desktop V5**, **Mobile V7**, and
-**Archive**. Fourteen versions in one list read as history rather than as a
+The dropdown carries four entries here — **Desktop**, **Tablet**, **Mobile**
+and **Archive** — and the three designs are named for what they are rather
+than for how many came before them. The version number was the menu carrying
+its own history, which is what the archive is for; in code they are still
+`b5`, `tabM` and `v8`, since marker names are internal and renaming them would
+rewire the renderer. The archive keeps its own **Desktop** — the original
+dashboard — so the same word means the current design at the top level and the
+first one inside the archive. Fourteen versions in one list read as history rather than as a
 choice, and the two that are current were the hardest to find in it. So the
 menu shows what is current and folds every version they came from into the one
 Archive entry, where they are reached from a second select in the bar. Nothing
