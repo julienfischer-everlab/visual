@@ -10161,13 +10161,18 @@
       const arcGoing = onHero && !arcAt(Math.round(bxT));
       if (arcGoing){ /* leave it exactly as it is and let it go */ }
       else if (bioA > 0.001){
-        // the three bands in the meter's own proportions, so the arc and the
-        // bar under the counts are the same reading in the same colours
+        // One band, not three. The arc read the whole distribution in the
+        // meter's colours, which put a run of amber and a run of red across
+        // the top of the page under a headline count -- three verdicts on a
+        // slide that is not making one. The bar beneath the counts is where
+        // the split belongs; up here the reading is how far the optimal share
+        // reaches, and everything past it stays unlit rather than being called
+        // something. Same figure as the fill rising through the body on this
+        // slide, off the same constant, so the two cannot drift apart.
         const n = Math.max(1, tickEls.length - 1);
         for (let i = 0; i < tickEls.length; i++){
           const tk = tickEls[i], pp = i / n;
-          const c = pp < 0.64 ? '#5cc47f' : pp < 0.78 ? '#f2c744'
-                  : pp < 0.90 ? '#ef6f63' : null;
+          const c = pp < BIO_FILL ? '#5cc47f' : null;
           if (c && pp <= bioRev){
             tk.line.setAttribute('stroke', c);
             tk.line.setAttribute('opacity', (0.95 * bioA).toFixed(3));
