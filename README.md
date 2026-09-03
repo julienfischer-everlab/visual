@@ -431,12 +431,22 @@ sampler holds the dots to the inner half and thins them all the way out.
 
 A shape made of thin lines needs more dots than a constant gap asks for, or the
 lines come out as a speckle — the entry carries its own `dots` multiplier and
-the library honours it.
+the library honours it. The opposite is true in the engine: a cloud is the same
+nine thousand particles whatever shape it takes, so thin lines wear all of them
+on very little area and the iris came out heavier than the organs beside it. It
+is drawn at 70% of the frame's density, and because that lottery is stable per
+particle it drops the same dots every frame rather than sparkling.
 
-**It dilates rather than scales.** The pupil opens and shuts on a slow breath,
-and the tissue between it and the limbus is compressed into whatever is left:
-the inner edge travels a long way, the rim does not move at all. Scaling the
-whole disc would read as a zoom. Over that, a front per furrow rather than
+**It dilates rather than scales.** The pupil opens and shuts on a breath of
+about nine seconds, and the tissue between it and the limbus is compressed into
+whatever is left: the inner edge travels a long way, the rim does not move at
+all, and every particle between them moves with the deformation. Scaling the
+whole disc would read as a zoom. The breath dwells at its ends — a plain sine is
+already flat at its extremes, and passing it through a second sine flattens it
+again, so the pupil rests wide and rests small instead of turning round the
+moment it arrives — and its phase drifts while its amplitude wanders on periods
+sharing no factor with it, so no two breaths are the same size or land on the
+same beat. Over that, a front per furrow rather than
 one across the disc: the wave's phase and its strength come from which bundle a
 dot stands in, so the fibres light in their own time and the movement stays
 radial without ever reading as a rotation. The middle keeps its own long pulse,
