@@ -6719,7 +6719,7 @@
     // and it is not one of the organs any more, so it does not carry an
     // organ's name: what is unread is the organ ages, all of them
     v4Names.forEach((el, k) => {
-      el.textContent = (allOrg && k === 1) ? 'Organ age' : MB[k].label;
+      el.textContent = (allOrg && k === 1) ? 'Organ age' : slideName(MB[k]);
     });
     applyNoAge();
   }
@@ -6733,6 +6733,12 @@
   // read -- so it sits at index -1 rather than inside MB, and the strips place
   // it from the same d = k - bx as every other slide. Declarations, because
   // bxGlide is called during init and reads them.
+  // What a slide is called. Every one of them is an age and the strip is the
+  // one place that says so, so the organ's own name carries the word; an entry
+  // that already has a name of its own keeps it, which is the one that would
+  // otherwise come out as "age age". Two places write the strip, so the rule
+  // lives in one.
+  const slideName = d => d.slide || (d.label + ' age');
   function v7On(){ return document.body.classList.contains('v7'); }
   function bxMin(){ return v7On() ? -1 : 0; }
   // An untested panel used to collapse the carousel to its one slide. It does
@@ -6771,7 +6777,7 @@
   const v4Names = v4NameEl ? MB.map(d => {
     const el = document.createElement('span');
     el.className = 'v4Name';
-    el.textContent = d.slide || d.label;
+    el.textContent = slideName(d);
     v4NameEl.appendChild(el);
     return el;
   }) : [];
