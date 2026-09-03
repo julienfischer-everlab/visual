@@ -2562,11 +2562,12 @@
   /* The header is driven from the scroll: --v5head runs its 2% wash down to
      black as the body rises over it, reaching the bottom of its range exactly
      when the body reaches the top of the screen. The body's own ground is black
-     throughout — it is what the header is darkening toward. A 2% hero under 6%
-     cards is one wash at two strengths: the hero is the faintest lift off the
-     black there is, and the cards still stand a step above it. */
-  body.v6 #phone{background:rgb(var(--v5head, 5 5 5));}
-  body.v6 .mHead{background:rgb(var(--v5head, 5 5 5));}
+     throughout — it is what the header is darkening toward. A 5% hero under 6%
+     cards is one wash at two strengths, and close enough at rest that the cards
+     read as the same surface carried up into the header rather than as tiles
+     laid on a darker one. */
+  body.v6 #phone{background:rgb(var(--v5head, 13 13 13));}
+  body.v6 .mHead{background:rgb(var(--v5head, 13 13 13));}
   body.v6 #phone .mBody{background:#000;}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
@@ -4273,8 +4274,8 @@
     // its lacunae
     const crypts = [];
     for (let i = 0; i < 5; i++)
-      crypts.push({ a: rnd() * 6.2832, w: 0.05 + rnd() * 0.07,
-                    r0: 0.26 + rnd() * 0.24, r1: 0.48 + rnd() * 0.22 });
+      crypts.push({ a: rnd() * 6.2832, w: 0.035 + rnd() * 0.045,
+                    r0: 0.30 + rnd() * 0.22, r1: 0.46 + rnd() * 0.16 });
     const inCrypt = (a, u) => {
       for (const k of crypts){
         const d = Math.abs(((a - k.a + Math.PI * 3) % 6.2832) - Math.PI);
@@ -4332,10 +4333,15 @@
     // sampler cannot fill them in. Widths and gaps are uneven, or the fan comes
     // out as a cog.
     const B = 34;
-    let a = rnd() * 6.2832;
+    const step = 6.2832 / B, aPhase = rnd() * 6.2832;
     for (let i = 0; i < B; i++){
-      const step = 6.2832 / B;
-      const half = step * (0.34 + rnd() * 0.34) * 0.5;
+      // An even partition with the bundle jittered inside its own cell. Walking
+      // the circle by a random step is the obvious way and it does not close:
+      // the drift accumulates, the last bundle lands wherever it lands, and
+      // what is left is one wide seam and a quadrant lighter than the rest. The
+      // cell fixes the coverage; the jitter inside it keeps the spacing uneven.
+      const a = aPhase + (i + 0.5 + (rnd() - 0.5) * 0.42) * step;
+      const half = step * (0.40 + rnd() * 0.30) * 0.5;
       const n = 2 + (rnd() * 3 | 0);
       const bend = (rnd() - 0.5) * 0.20;          // the whole bundle leans
       for (let j = 0; j < n; j++){
@@ -4353,13 +4359,15 @@
                  wid * 0.8, bj * 0.7 + spread * 1.5, 1.2);
         }
       }
-      // shorter infill starting out in the groove, so a gap reads as a furrow
-      // between fibres rather than as an empty wedge
-      if (rnd() < 0.55){
-        const a0 = a + step * 0.5 + (rnd() - 0.5) * step * 0.3;
-        strand(a0, 0.52 + rnd() * 0.2, 0.86 + rnd() * 0.14, 1.2, (rnd() - 0.5) * 0.1, 1.2);
-      }
-      a += step * (0.78 + rnd() * 0.44);
+      // A shorter strand out in the groove, in every groove rather than in
+      // most of them: it is what keeps a gap reading as a furrow between fibres
+      // instead of an empty wedge, and skipping it at random is how a quadrant
+      // goes light.
+      const ai = a + step * 0.5 + (rnd() - 0.5) * step * 0.22;
+      strand(ai, 0.46 + rnd() * 0.22, 0.86 + rnd() * 0.14, 1.2, (rnd() - 0.5) * 0.1, 1.2);
+      if (rnd() < 0.5)
+        strand(ai + (rnd() - 0.5) * step * 0.3, 0.66 + rnd() * 0.18,
+               0.92 + rnd() * 0.08, 1.0, (rnd() - 0.5) * 0.08, 1.2);
     }
 
     // contraction furrows: a few short arcs across the fibres, so the radial is
@@ -9278,11 +9286,11 @@
       if (ph){
         if (document.body.classList.contains('v6')){
           v5HeadP = p * p * (3 - 2 * p);
-          // 2% white on the body's black, which is what the hero reads as:
-          // rgb(5) exactly rather than a hair warm of it, so the hero and the
+          // 5% white on the body's black, which is what the hero reads as:
+          // rgb(13) exactly rather than a hair warm of it, so the hero and the
           // 6% cards over it are two strengths of one wash, not two colours.
           // It runs to the body's own black, reached as the body tops out.
-          const r = Math.round(5 - 5 * v5HeadP);
+          const r = Math.round(13 - 13 * v5HeadP);
           ph.style.setProperty('--v5head', r + ' ' + r + ' ' + r);
         } else {
           v5HeadP = 0;
@@ -9573,10 +9581,10 @@
       const bare = flat && cls.contains('v5');
       const lift = flat === 'dash' && cls.contains('b5');   // V5's card
       const dk = bare ? (cls.contains('v6')
-                          // V5's header runs its 2% wash to black under the body
-                          ? [(5 - 5 * v5HeadP) / 255,
-                             (5 - 5 * v5HeadP) / 255,
-                             (5 - 5 * v5HeadP) / 255]
+                          // V5's header runs its 5% wash to black under the body
+                          ? [(13 - 13 * v5HeadP) / 255,
+                             (13 - 13 * v5HeadP) / 255,
+                             (13 - 13 * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
                // 6% white on the card's black ground, which is what the card

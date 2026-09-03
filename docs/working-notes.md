@@ -568,6 +568,24 @@ grown with the organ list because they were derived from it, and the one that
 was written out by hand had not. Handwritten parallel arrays are the only kind
 that can fall behind, and they fall behind silently until the index is reached.
 
+### 5.22 A random walk around a circle does not close
+
+The iris's fibre bundles were placed by stepping around the circle, each step a
+random fraction of the mean. Every step is fine and the mean is exactly right,
+and the figure still comes out with one wide empty wedge: the steps are a random
+walk, the walk accumulates drift, and wherever the drift happens to leave the
+last bundle is a seam. It read as a lighting problem — one quadrant looking
+under-exposed — which is what sent the first look at it to the density function,
+where there was nothing wrong.
+
+Place on an even partition and jitter inside the cell. The cell guarantees the
+coverage; the jitter inside it does the irregularity that the random step was
+there to provide. Same look, no seam, and the guarantee is structural rather
+than something the numbers happen to average out to.
+
+**Anything laid around a circle by cumulative random steps has this bug**, and
+it is invisible in the code and obvious in the picture, at one angle only.
+
 ---
 
 ## 6. Open items

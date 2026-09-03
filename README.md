@@ -416,8 +416,15 @@ The fibres go in **bundles with gaps between them**, and that is the whole
 trick: a groove is nothing drawn, not fewer dots drawn. Modulating density over
 an even fan gives a cloud that is thinner in places; leaving the mask empty
 gives a furrow the sampler cannot fill in. Thirty-four bundles of two to four
-strands, each bundle leaning its own way, with uneven widths and uneven gaps —
-even ones come out as a cog. Strands start at the pupil's edge and run out,
+strands, each leaning its own way, with uneven widths and uneven gaps — even
+ones come out as a cog. The bundles sit on an **even partition with each one
+jittered inside its own cell**, which is the part that took a second pass:
+walking the circle by a random step is the obvious way and it does not close.
+The drift accumulates, the last bundle lands wherever it lands, and what is left
+is one wide seam with a quadrant lighter than the rest. The cell fixes the
+coverage, the jitter inside it keeps the spacing uneven, and a shorter strand
+goes into every groove rather than most of them — skipping that at random is the
+other way a quadrant goes light. Strands start at the pupil's edge and run out,
 some forking a third of the way along, and a shorter strand starts inside the
 groove itself so a gap reads as a furrow between fibres rather than an empty
 wedge.
