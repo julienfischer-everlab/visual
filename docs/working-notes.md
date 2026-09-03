@@ -588,6 +588,36 @@ it is invisible in the code and obvious in the picture, at one angle only.
 
 ---
 
+### 5.23 The control that only existed while there was something to control
+
+Tablet M replaces Desktop V5's organ list with arrows either side of the age,
+which is the only way to change the card's reading once the list is gone. The
+arrows were hung off `#ageBig`, since that element is exactly as wide as the
+digits and centred, so they keep their distance from the number whether it is
+two digits or a dash — no measurement, and nothing to keep in step.
+
+Then an empty state. `body.emAge .dash #organSlot > #pillui{visibility:hidden}`
+takes the whole gauge stack down when a card has no reading, so the note can
+stand where the figure was — and the arrows went with it. The slide with
+nothing on it was the one slide you could not leave, on the one shell with no
+list to leave by. Nothing threw; the sweep was clean; the page simply had a
+dead end in it.
+
+Restoring the stack's visibility and hiding everything in it except the arrows
+worked and was wrong: the note occupies **exactly** the band the number was in
+— that is the point of it — so the arrows came back on top of the copy. There
+is no gap to move them into, because the two things are meant to be in the same
+place.
+
+The answer was a second place to stand, not a rescue of the first: a matching
+pair positioned against the **card**, at the ends of the name strip on its
+floor, shown only while a note is up. One pair or the other, never both,
+neither of them measuring anything. **A control that lives inside a thing that
+can be hidden is a control that can be hidden**, and the states worth checking
+are the ones where the surface it belongs to is not there.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

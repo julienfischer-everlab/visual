@@ -53,6 +53,12 @@
     background:#131316;border:1px solid #232326;border-radius:8px;
     padding:6px 12px;cursor:pointer;outline:none;white-space:nowrap;
   }
+  /* a pair of controls that appears and disappears together. display:contents
+     rather than a flex child, so when it is showing the label and the select
+     sit in the bar's own row at the bar's own gap, exactly as if they had been
+     typed there loose. */
+  .topbar .tkGrp{display:none;}
+  body.b5 .topbar .tkGrp#devGrp{display:contents;}
   .topbar .tkBtn:hover{border-color:#3f3f46;}
   .topbar .tkBtn:active{background:#1c1c20;}
   .topbar .seg{
@@ -2318,6 +2324,97 @@
   }
   body.light.b5 #status .word,
   body.light.b5 #status.warn .word{background:none;color:rgba(46,31,26,.5);}
+
+  /* ---- Desktop V5 / Tablet M ----------------------------------------------
+     The same page in a frame two hundred pixels narrower, and one thing has to
+     give: the organ card cannot hold the list and the organ side by side, and
+     halving the organ to keep ten rows would be keeping the least of the card.
+     So the list goes and the card reads the way the phone's hero does -- the
+     organ centred with the whole width, arrows either side of the number, and
+     the names on the floor of the card with their neighbours showing. Nothing
+     is lost: every reading the list held is still one arrow away, and the one
+     the card is showing is the one it was always showing large.
+
+     Everything else is the same page tightened -- a narrower rail, a shorter
+     page margin, and the left column stacked one-up because half of a narrower
+     page is not two cards wide. */
+  body.tabM .dash{padding-left:200px;}
+  body.tabM .dash .side{width:200px;padding:22px 16px;font-size:13px;}
+  body.tabM .dash .side .logo{font-size:16px;margin-bottom:26px;}
+  body.tabM .dash main{padding:44px 28px 52px;max-width:1020px;}
+  body.tabM .dash h1{font-size:23px;margin:0 0 18px;}
+  body.tabM .dash .dgrid{gap:20px;}
+  body.tabM .dash .dleft{gap:20px;}
+  body.tabM.b5 .dash .drow{grid-template-columns:1fr;gap:20px;}
+  body.tabM .dash .dcard.bcard{padding:20px;}
+  body.tabM .dash .bcard .bcTop{gap:24px;}
+
+  /* the card: no list, so nothing to lean the organ or its light away from */
+  body.tabM .dash .olist{display:none;}
+  body.tabM #organSlot{--v4haloX:50%;}
+  body.tabM #dstrip{display:flex;}
+  body.tabM .agStep{display:flex;}
+  /* Three names, the middle one the reading on the card. The neighbours are
+     cropped rather than shortened: the strip is centred on the one that counts
+     and the card's edge takes whatever is left of the other two, which is what
+     tells you there is more either side without spelling it out. */
+  .dstrip{
+    display:none;position:absolute;left:0;right:0;bottom:16px;z-index:6;
+    align-items:baseline;justify-content:center;gap:26px;
+    overflow:hidden;white-space:nowrap;pointer-events:none;
+  }
+  .dstrip .ds{flex:none;font-size:14px;color:rgba(242,229,224,.2);}
+  .dstrip .ds.c{font-size:15px;font-weight:600;color:#f2e5e0;}
+  body.light.b5 .dstrip .ds{color:rgba(46,31,26,.2);}
+  body.light.b5 .dstrip .ds.c{color:#2e1f1a;}
+  /* The arrows hang off #ageBig, which is exactly as wide as the digits and
+     centred in the card, so they keep their distance from the number whether
+     it is two digits or a dash. pointer-events, because .pillui has none. */
+  .agStep, .dsStep{
+    width:28px;height:28px;padding:0;border:0;border-radius:50%;
+    align-items:center;justify-content:center;cursor:pointer;
+    background:rgba(255,255,255,.1);color:#ececec;
+    pointer-events:auto;transition:background .16s ease;
+  }
+  .agStep svg, .dsStep svg{width:12px;height:12px;display:block;}
+  .agStep:hover, .dsStep:hover{background:rgba(255,255,255,.2);}
+  body.light.b5 .agStep, body.light.b5 .dsStep{background:rgba(0,0,0,.06);color:#2e241c;}
+  body.light.b5 .agStep:hover, body.light.b5 .dsStep:hover{background:rgba(0,0,0,.11);}
+  .agStep{display:none;position:absolute;top:50%;margin-top:-14px;}
+  .agStep.prev{right:100%;margin-right:24px;}
+  .agStep.next{left:100%;margin-left:24px;}
+
+  /* One row of chips that runs off the edge, as the design has it -- scrolling
+     rather than wrapping, because a chip row that wraps stops reading as a
+     row. The search goes with it: at this width it would take a line of its
+     own, and the chips are the filter the page is actually offering. */
+  body.tabM .dash .filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;}
+  body.tabM .dash .filters::-webkit-scrollbar{display:none;}
+  body.tabM .dash .fchip{flex:none;}
+  body.tabM .dash .dsearch{display:none;}
+  /* the table drops the sparkline -- the trend is the one column that says
+     least at a glance, and the four that are left all carry a reading. The
+     fourth child rather than the svg: a row with no trend has an empty span
+     there, and hiding one of the two would leave the other holding a track. */
+  body.tabM .dash .grp{grid-template-columns:176px 1fr;gap:0 20px;padding:24px 4px;}
+  body.tabM .dash .grp .gd{max-width:none;}
+  body.tabM .dash .brow{
+    grid-template-columns:1.5fr .62fr .58fr 118px 90px;gap:12px;
+  }
+  body.tabM .dash .brow > :nth-child(4){display:none;}
+  /* The arrows' second place to stand, at the ends of the strip: the note
+     occupies exactly the band the number was in, so the pair beside it has
+     nowhere to go there. Against the card rather than against anything in it,
+     so there is nothing to measure and nothing to keep in step. */
+  .dsStep{display:none;position:absolute;bottom:11px;z-index:7;}
+  .dsStep.prev{left:16px;}
+  .dsStep.next{right:16px;}
+  body.tabM.emAge .dsStep,
+  body.tabM.emOrg.noAge .dsStep{display:flex;}
+  /* and the strip gives them the room, so a long neighbour crops at the button
+     rather than running under it */
+  body.tabM.emAge #dstrip,
+  body.tabM.emOrg.noAge #dstrip{left:58px;right:58px;}
   /* The phone's own ground is the hero's, so the status strip and the scroller
      cannot show a seam between them — there is nothing lighter behind either to
      catch a fractional pixel. The white body supplies the white where it is
@@ -3152,6 +3249,16 @@
       <option value="dark">Dark mode</option>
       <option value="light">Light mode</option>
     </select>
+    <!-- Desktop V5 alone has two shells, so the control only exists there:
+         display:contents when it applies, and gone from the flow when it does
+         not, rather than a disabled pair sitting in the row saying nothing. -->
+    <span class="tkGrp" id="devGrp">
+      <span class="lbl">Device</span>
+      <select id="devSel" aria-label="Device layout">
+        <option value="desktop">Desktop</option>
+        <option value="tablet">Tablet M</option>
+      </select>
+    </span>
     <span class="lbl">Biomarkers</span>
     <select id="stBio" aria-label="Biomarker card state">
       <option value="on">Completed</option>
@@ -3248,6 +3355,14 @@
         <div class="emNote emOrgNote"><div class="emTxt">Get tested to reveal the biological age of your organs and where to focus.</div><button class="emCta" type="button">Get tested</button></div>
         <div class="v4HaloClip"><div class="v4Halo" id="dHalo"></div></div>
         <div class="olist" id="olist"></div>
+        <!-- Tablet M: the list will not fit beside the organ, so the card
+             reads the way the phone's hero does instead -- the name strip on
+             the floor of the card, and the step arrows beside the number. Both
+             live here always and are shown by the shell, because the strip has
+             to be written by the same code whichever shell is up. -->
+        <div class="dstrip" id="dstrip" aria-hidden="true">
+          <span class="ds p"></span><span class="ds c"></span><span class="ds n"></span>
+        </div>
         <button class="dcExpand" id="dcExpand" type="button" aria-label="Open organ age">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -5957,6 +6072,35 @@
   const agDashEl = document.createElement('span');
   agDashEl.className = 'agDash';
   agDashEl.textContent = '\u2013';
+  // Tablet M steps through the card's readings from beside the number, the way
+  // the phone steps through them by swiping. The buttons hang off #ageBig
+  // because #ageBig is exactly as wide as the digits and centred: anything
+  // measured off the card would have to be re-measured every time the reading
+  // goes from two digits to a dash. Absolutely positioned, so they take no
+  // part in that width. buildAgeCols empties the host on every reading, so
+  // they are put back there with the dash rather than appended once.
+  function mkStep(cls, k){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = cls + ' ' + (k ? 'next' : 'prev');
+    b.setAttribute('aria-label', k ? 'Next reading' : 'Previous reading');
+    b.innerHTML = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ' +
+      'aria-hidden="true"><path d="' +
+      (k ? 'M4.5 2.5 8 6l-3.5 3.5' : 'M7.5 2.5 4 6l3.5 3.5') + '"/></svg>';
+    b.addEventListener('click', () => stepReading(k ? 1 : -1));
+    return b;
+  }
+  const agStep = [0, 1].map(k => mkStep('agStep', k));
+  // An empty state takes the gauge stack down with it, and the arrows beside
+  // the number go too -- which on Tablet M would leave a slide you cannot step
+  // off, there being no list to leave by either. So the same control has a
+  // second place to stand: the ends of the name strip, on the card's floor,
+  // where nothing else ever is. One pair or the other, never both.
+  {
+    const slot = document.getElementById('organSlot');
+    if (slot) [0, 1].forEach(k => slot.appendChild(mkStep('dsStep', k)));
+  }
   function buildAgeCols(str){
     ageBigEl.innerHTML = '';
     ageCols = str.split('').map(d => {
@@ -5972,6 +6116,7 @@
       return { spans, cur: +d, target: +d, k: 0.11, readyAt: 0 };
     });
     ageBigEl.appendChild(agDashEl);
+    agStep.forEach(b => ageBigEl.appendChild(b));
   }
   buildAgeCols(String(CHRONO + PILL[0].delta));
   function setAge(age, dir){
@@ -6242,6 +6387,7 @@
     applyNoAge();
     pillBtns.forEach((p, j) => p.setAttribute('aria-pressed', String(j === i)));
     olistRows.forEach((r, j) => r.classList.toggle('on', j === i));
+    dstripWrite();   // Tablet M reads the selection off the strip, not the list
     situOrgan.textContent = PILL[i].label;
     mbDots.forEach((s2, j) => s2.classList.toggle('on', j === MB_ORDER.indexOf(i)));
     const d = PILL[i];
@@ -6355,7 +6501,10 @@
       (CARD_STATE.emOrg ? ' emOrg' : '') +
       (CARD_STATE.noCov ? ' noCov' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
-      (CARD_STATE.showBar ? ' showBar' : '');
+      (CARD_STATE.showBar ? ' showBar' : '') +
+      // only Desktop V5 has the second shell, so the class only goes on there:
+      // every other page would inherit a frame that was never drawn for it
+      (CARD_STATE.tabM && m === 18 ? ' tabM' : '');
     syncDark();
     applyNoAge();   // setMode writes the class list whole
     refreshAges();  // and the list's own wording is one of the things it decides
@@ -6469,7 +6618,11 @@
       // Emptied, the card is the card it always was: the same list beside the
       // same organ at the same size, with the gauge stack swapped for a line
       // and an action. Only the reading is missing, so only the reading goes.
-      const listShare = cls2.contains('b5') ? 0.51
+      // Tablet M has no list, so nothing is set aside for one: the organ has
+      // the whole card and is centred in it, the way it is on the phone.
+      const tabM = cls2.contains('tabM');
+      const listShare = tabM ? 0
+                      : cls2.contains('b5') ? 0.51
                       : cls2.contains('b3') ? 0.46 : 0.54;
       const listW = Math.min(390, slot.width * listShare);
       canvOX = slot.left + listW; canvOY = slot.top;   // viewport coords, for the notes
@@ -6487,7 +6640,10 @@
       pillui.style.right = 'auto'; pillui.style.bottom = 'auto';
       // sit the gauge stack on the card's floor by its real height, so a
       // shorter card leaves the organ the room the stack gives back
-      const gaugePad = (document.body.classList.contains('b2') ? 32 : 14) + lift;
+      // ...and on Tablet M the card's floor belongs to the name strip, so the
+      // stack stops above it rather than sitting on it
+      const gaugePad = (tabM ? 54 : document.body.classList.contains('b2') ? 32 : 14)
+                     + lift;
       pillui.style.top = (slot.height - (pillui.offsetHeight || 208) - gaugePad) + 'px';
       // the message stands exactly where the stack it replaced did, which is
       // the organ's column -- left:0 would run it under the list beside it
@@ -6806,6 +6962,7 @@
     v4Names.forEach((el, k) => {
       el.textContent = (allOrg && k === 1) ? 'Organ age' : slideName(MB[k]);
     });
+    dstripWrite();   // the collapse renames the strip's neighbours too
     applyNoAge();
   }
   const v4HaloEl = document.getElementById('v4Halo');
@@ -6845,6 +7002,40 @@
   function mbAt(k){ return MB[orgLock() && k >= 1 ? BRAIN_K : k]; }
   function pillAt(k){ return MB_ORDER[orgLock() && k >= 1 ? BRAIN_K : k]; }
   function bxMax(){ return orgLock() ? 1 : MB.length - 1; }
+  // ---------- Tablet M: the card's own carousel ----------
+  // The dashboard card holds the biological age and the nine organ ages, in
+  // the order the phone's carousel reads them. Tablet M has no room for the
+  // list, so those become a strip of names with arrows either side, and both
+  // count by bxMax() -- the same collapse the phone makes when the organ ages
+  // are missing, where nine slides saying nothing become one that says it once.
+  function stripName(k){
+    return (orgLock() && k === 1) ? 'Organ age' : slideName(mbAt(k));
+  }
+  // where the selection sits in that sequence. Under the lock every organ is
+  // the one collapsed slide, so nine of them map to 1 -- the same fold mbAt
+  // makes. Reading the raw index would put a selected organ past the end and
+  // send it back to slot 0, which is the body: the arrow would appear to do
+  // nothing while quietly changing the reading.
+  function stripAt(){
+    const at = MB_ORDER.indexOf(pillCurrent);
+    if (at < 0) return 0;
+    return (orgLock() && at >= 1) ? 1 : at;
+  }
+  function stepReading(dir){
+    lastManual = performance.now();
+    const n = bxMax() + 1;
+    selectPill(pillAt((stripAt() + dir + n) % n));
+  }
+  const dstripEl = document.getElementById('dstrip');
+  const dstripSpans = dstripEl
+    ? ['.p', '.c', '.n'].map(s => dstripEl.querySelector(s)) : [];
+  function dstripWrite(){
+    if (!dstripSpans.length) return;
+    const n = bxMax() + 1, at = stripAt();
+    dstripSpans[0].textContent = stripName((at + n - 1) % n);
+    dstripSpans[1].textContent = stripName(at);
+    dstripSpans[2].textContent = stripName((at + 1) % n);
+  }
   // whether the slide at a carousel index has a reading to draw an arc for
   function arcAt(k){
     const c = document.body.classList;
@@ -9253,7 +9444,12 @@
                        emOrg: false, noCov: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
-                       fullscr: false, showBar: false };
+                       fullscr: false, showBar: false,
+                       // which shell Desktop V5 is wearing. Same page, same
+                       // cards, same data -- a narrower frame that reads the
+                       // organ card the way the phone does, because the list
+                       // and the organ cannot both have half of it.
+                       tabM: false };
   // Every state control is a thing that is either on or off, so each becomes a
   // switch -- the label beside it already says which thing. The select stays,
   // hidden, as the thing that holds the value: every handler in the file reads
@@ -9263,7 +9459,10 @@
   (function segmentise(){
     for (const sel of document.querySelectorAll('.tweaks select')){
       const opts = [...sel.options];
-      if (opts.length !== 2 || sel.id === 'versionSel') continue;
+      // a switch stands for a thing being on or off; Desktop and Tablet M are
+      // two named shells, and neither of them is the other one turned off
+      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'devSel')
+        continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
       seg.setAttribute('role', 'switch');
@@ -9290,6 +9489,18 @@
       sel.parentNode.insertBefore(seg, sel.nextSibling);
     }
   })();
+  // Desktop V5's shell. The organ card changes shape between the two, so the
+  // canvas and the gauge stack have to be re-placed inside it -- resize() is
+  // what reads the card and puts them there.
+  {
+    const sel = document.getElementById('devSel');
+    sel.addEventListener('change', () => {
+      CARD_STATE.tabM = sel.value === 'tablet';
+      document.body.classList.toggle('tabM', CARD_STATE.tabM);
+      dstripWrite();
+      resize();
+    });
+  }
   // activity stands alone -- it comes off a wearable, not the panel
   {
     const sel = document.getElementById('stAct');
