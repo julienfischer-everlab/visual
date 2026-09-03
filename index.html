@@ -2142,6 +2142,11 @@
   body.b5 .dash .dcard.dfill,
   body.b5 .dash .hiCard,
   body.b5 .dash .dcard.organ{background:rgba(255,255,255,.06);}
+  /* One number on the list, and it is the one the card is already showing
+     large: the rows beside it are a way in, not a table of readings.
+     visibility rather than display, so the column keeps its width and the
+     names do not shift when the selection moves. */
+  body.b5 .dash .olist .or:not(.on) .ag{visibility:hidden;}
   /* A wash is a relationship to what is behind it, so the two pages can only
      share a card colour if they share a ground. The dashboard's #0d0d0c goes
      black here, the way the phone's body is black on this page -- 13 levels,
@@ -3287,7 +3292,7 @@
 <div id="situTitle">
   <div class="slbl b3Off">How your organs are aging</div>
   <div class="slbl b3On">How your body is ageing</div>
-  <div class="slbl b5On">Biological age</div>
+  <div class="slbl b5On">Biological &amp; organs age</div>
   <div class="oname" id="situOrgan">Gut</div>
 </div>
 
@@ -6280,6 +6285,7 @@
       (CARD_STATE.showBar ? ' showBar' : '');
     syncDark();
     applyNoAge();   // setMode writes the class list whole
+    refreshAges();  // and the list's own wording is one of the things it decides
     if (parallaxApply) parallaxApply();
     // mobile embeds the canvas + gauge stack inside the carousel's organ
     // card, so the phone's own scrolling and swiping clip them naturally
@@ -6683,8 +6689,14 @@
     // and only what is said about it has gone.
     const noBody = document.body.classList.contains('emAge');
     const gone = d => noAgeFor(d) || (noBody && d.label === 'Body');
+    // V5 calls the body row by the reading it is, the way the carousel does;
+    // the older dashboards keep the organ list they were designed with.
+    const bio5 = document.body.classList.contains('b5');
     olistRows.forEach((r, i) => {
       const d = PILL[i], no = gone(d);
+      r.querySelector('.nm').textContent =
+        (bio5 && d.label === 'Body') ? 'Biological age'
+                                     : d.label + (d.label === 'Body' ? '' : ' health');
       r.querySelector('.ag').textContent = no ? '\u2013' : num(d);
       // the dot states a verdict, which an untested organ does not have
       r.querySelector('.dot').style.background = no ? '#6b6b68'
