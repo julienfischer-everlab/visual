@@ -458,11 +458,10 @@ one across the disc: the wave's phase and its strength come from which bundle a
 dot stands in, so the fibres light in their own time and the movement stays
 radial without ever reading as a rotation. The middle keeps its own long pulse,
 each dot breathes a little along its own strand, and the flow layer runs spokes
-from the ruff to the limbus so a travelling dot is travelling a fibre. On the phone it is framed a twentieth smaller than the body's rule gives it and
-16px higher, weighted by how much of it is on screen rather than switched at the
-slide, so the adjustment arrives with the figure over the swipe instead of
-stepping when the carousel crosses. `uYOff` is the layout's, so the lift is put
-back the moment the draw is done — it belongs to this slide, not to the page.
+from the ruff to the limbus so a travelling dot is travelling a fibre. On the phone it is framed a twentieth smaller than the body's rule gives it,
+weighted by how much of it is on screen rather than switched at the slide, so
+the adjustment arrives with the figure over the swipe instead of stepping when
+the carousel crosses. It sits at the height every other slide does.
 
 All of that lives twice: in the 2D view the library tiles are drawn with, and in
 the shader, so the slide is alive too. `uIris` carries the switch and the two
