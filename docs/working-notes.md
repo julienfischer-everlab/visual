@@ -633,6 +633,38 @@ neither of them measuring anything. **A control that lives inside a thing that
 can be hidden is a control that can be hidden**, and the states worth checking
 are the ones where the surface it belongs to is not there.
 
+### 5.24 A theme fix that only reached one of the two renderers
+
+The light theme's figure was measured, fixed and verified — on the shader.
+There are two renderers. The library's tiles are 2D canvas, and they carried
+their own light-mode rule from much earlier: `ink = [58,45,34]`, a flat dark
+brown painted over every dot's own colour. Nine red organs rendering as grey
+smudges, on the one page in the file whose entire job is to show what the
+organs look like. The sweep was clean, nothing threw, and the surface I had
+been screenshotting was the dashboard.
+
+**A rule about how something looks belongs to the component, not to the
+renderer that happened to be in front of you.** Grep for the concept
+(`classList.contains('light')`), not for the code you just changed.
+
+The second half of the note is about the fix itself. The shader's light path
+was `desaturate ×0.16, then ×0.42 + 0.015` — a desaturation *and* a darkening,
+both aimed at legibility. Splitting them showed the darkening was doing the
+wrong job badly: multiplying an already-desaturated colour down destroys what
+chroma is left (a red at 40% luminance lands at 17%, which reads as soot), and
+at the coverage these dots actually paint it moved the composited result three
+levels. Contrast came from the alpha lift the whole time. So colour is one
+line now — the dark theme's colour, 30% less saturated — and alpha carries the
+legibility, lifted 1.85 → 3.0 to cover what the darkening had been quietly
+contributing.
+
+Once alpha carried it, a third mode-specific substitution fell out: the cool
+verdict's halo, sent to a warm dark under the light theme so it would not
+vanish. Removing it made the light body read *redder and cleaner* than the
+override ever had. **A compensation added when something was invisible should
+be re-tested once the real cause is fixed** — it is usually not neutral, it is
+just the least visible of the damage.
+
 ---
 
 ## 6. Open items

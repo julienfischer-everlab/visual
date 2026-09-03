@@ -699,20 +699,37 @@ ground and 6 off a light one — the same cloud, and only one of them visible.
 The fix is not a light-mode treatment. That would be two pictures to keep in
 step, and they would drift the first time either changed. It is one shader
 with the ground's own arithmetic undone by the uniform that already knows
-about it: the light theme lifts alpha, keeps far more of the palette's warmth
-than it used to (16% desaturated, not 60% — a figure this warm has no business
-arriving as slate), and sends the cooler verdict to a warm dark rather than to
-black, which is not a colour this palette contains and turned a third of the
-cloud to soot. Both grounds now measure the same 28 levels of contrast.
+about it, and the split between the two is the whole point:
 
-Two things moved to make that possible. The light ink is applied **last**,
-after every other colour decision — it used to run before the biomarker
-reading, so the reading painted over it and the light theme's dark ink came
-back as a pale wash on pale paper. And the biomarker slide's fill stopped
-recolouring the body to sage: that was a second figure in a colour belonging
-to nothing else on the page, and the reading is carried by how much body there
-is — whole below the front, emptied to its shell above — which reads on any
-ground and needs no second palette.
+- **Colour is the dark theme's colour, with 30% of its saturation taken out.**
+  One line, no second palette, no ink. It used to darken as well — `×0.42`
+  — and that is what turned the palette's red into a brown-grey soot: a
+  desaturated colour multiplied down has almost no chroma left. The darkening
+  bought nearly nothing anyway, because at the coverage these dots actually
+  paint it moved the composite three levels.
+- **Contrast is alpha.** The light theme multiplies it by 3.0. That is where
+  the legibility comes from, and keeping it there is what lets the colour rule
+  stay as simple as one line.
+
+Applying that in the wrong order was the original bug: the light ink ran
+before the biomarker reading, so the reading painted over it and the light
+theme came back as a pale wash on pale paper. It is applied **last** now,
+after every other colour decision. Two mode-specific substitutions came out
+along the way — the biomarker fill's sage recolour (the reading is carried by
+how much body there is, not what colour it turns) and the cooler verdict's
+warm-dark halo, which with the alpha lift in place was redundant and was
+muddying the light body it was meant to save.
+
+Measured on the desktop organ: 25 levels off its card on light against the
+dark theme's 28. On a library tile, 50 against 35 — light is, if anything, the
+stronger of the two.
+
+**The library tiles follow the same rule.** They are 2D canvas, not the
+shader, and they used to be inked flat dark brown in light mode — which is
+where this last showed up as a bug: nine red organs rendering as grey
+smudges. They now desaturate each dot's own colour by the same 30%, memoised
+on the `"r,g,b"` string the painter was building anyway. The exports inherit
+it, because PNG, JPG and SVG all run the same `paint`.
 
 ## The organ ground
 

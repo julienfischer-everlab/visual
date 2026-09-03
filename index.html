@@ -5239,17 +5239,15 @@
       // red is pulled 30% toward its own grey before anything else happens, so a
       // healthy organ reads as grey and pale rather than as a red one wearing
       // light. It reaches full strength by half the scale, so there is no step
-      // at the crossing. The tint over it is white with a green cast — on the
-      // light theme it stays ink, where a pale green would be nothing at all.
+      // at the crossing. The tint over it is white with a green cast, on both
+      // themes: it used to be sent to a warm dark under the light one, which is
+      // the sort of per-mode substitution this file is meant not to have. With
+      // the alpha carrying the figure it is redundant, and taking it out made
+      // the light body read redder and cleaner than the override ever did.
       float cool = min(1.0, max(0.0, -uWarm) * 2.0);
       vec3 base = mix(aColor.rgb, vec3(dot(aColor.rgb, vec3(0.36, 0.50, 0.14))),
                       0.30 * cool);
-      // The cool tint goes to a warm dark on the light theme rather than to
-      // black: black is not a colour this palette contains, and a third of the
-      // cloud taking it turned the figure to soot. Dark enough to read as the
-      // cooler verdict, warm enough to still belong to the same body.
-      vec3 haloCol = uWarm > 0.0 ? vec3(0.87, 0.56, 0.30)
-                                 : mix(vec3(0.90, 0.97, 0.92), vec3(0.30, 0.22, 0.21), uLight);
+      vec3 haloCol = uWarm > 0.0 ? vec3(0.87, 0.56, 0.30) : vec3(0.90, 0.97, 0.92);
       vec3 rgb = mix(base, haloCol, halo);
       // and 15% off the whole cloud's saturation on top of that, verdict included
       rgb = mix(rgb, vec3(dot(rgb, vec3(0.36, 0.50, 0.14))), 0.15);
@@ -5310,8 +5308,8 @@
         float upA = keepUp * mix(0.30, 0.62, shell);
         vfade = mix(1.0, mix(upA, 1.0, lit), uRange);
       }
-      // Light theme: dark, mostly desaturated ink with a trace of warmth --
-      // applied last, to whatever the cloud turned out to be.
+      // Light theme: the dark theme's own colour with 30% of its saturation
+      // taken out -- applied last, to whatever the cloud turned out to be.
       //
       // It used to run before the biomarker reading, which meant the reading
       // was painted over it: the light theme's dark ink went back to a bright
@@ -5322,9 +5320,13 @@
       // colour decision has already been made, so light is the same picture
       // one step darker rather than a second one. The vessel's own highlight
       // stops being dark-theme-only for the same reason.
-      // Less of the grey than it used to take: at 60% desaturated the figure
-      // came out a neutral slate, and this palette's whole job is to be warm.
-      vec3 lrgb = mix(rgb, vec3(dot(rgb, vec3(0.4, 0.4, 0.2))), 0.16) * 0.42 + vec3(0.015);
+      // And the transform itself is one line: the same colour with 30% of its
+      // saturation taken out. It used to darken as well, which is what turned
+      // the palette's red into a brown-grey soot on the light theme -- and the
+      // darkening bought almost nothing, because at the coverage these dots
+      // actually paint it moved the composite three levels. Chroma is what a
+      // reader sees; the contrast comes from the alpha lift below.
+      vec3 lrgb = mix(rgb, vec3(dot(rgb, vec3(0.36, 0.50, 0.14))), 0.30);
       rgb = mix(rgb, lrgb, uLight);
       // density control: a stable per-particle lottery thins the cloud live
       float keep = mix(step(fract(aSeed.z * 39.7), uDens), 1.0, max(ghost, flowP));
@@ -5337,8 +5339,12 @@
       // page and 6 off a light one -- the same cloud, and only one of them
       // visible. So the light theme lifts the alpha rather than being given a
       // second treatment: one shader, one figure, the ground's own arithmetic
-      // undone by the uniform that already knows about it.
-      float aLift = mix(1.0, 1.85, uLight);
+      // undone by the uniform that already knows about it. 3.0, not the 1.85 it
+      // first took: the darkening above was quietly doing half this job, and
+      // with the colour left alone the lift has to do all of it. Measured on
+      // the desktop organ, the light figure now deviates 25 levels from its
+      // card against the dark theme's 28.
+      float aLift = mix(1.0, 3.00, uLight);
       vColor = vec4(rgb, aColor.a * tw * (1.0 + 0.35 * halo) * ga * ef * keep * fv * uAlpha * da * feedA * vfade * irisA * aLift);
     }`;
   const FS = `
@@ -8215,6 +8221,23 @@
     } catch (e){ dlNS = null; }
     return dlNS;
   }
+  // Light is the dark figure with a third of its saturation taken out — not a
+  // second palette and not a dark ink. Every dot keeps the colour it drew from
+  // the cloud and only loses chroma, so the two themes are one component seen
+  // on two grounds. Memoised on the "r,g,b" string the painter builds anyway:
+  // the cloud draws from six colours and this runs once per dot per frame.
+  const LIGHT_DESAT = 0.30, desatMemo = new Map();
+  function lightRGB(key, r, g, b){
+    let v = desatMemo.get(key);
+    if (v === undefined){
+      const l = 0.36 * r + 0.50 * g + 0.14 * b;
+      v = ((r + (l - r) * LIGHT_DESAT) | 0) + ',' +
+          ((g + (l - g) * LIGHT_DESAT) | 0) + ',' +
+          ((b + (l - b) * LIGHT_DESAT) | 0);
+      desatMemo.set(key, v);
+    }
+    return v;
+  }
   function toBlob(canvas, mime, q){
     return new Promise(res => canvas.toBlob(res, mime || 'image/png', q));
   }
@@ -8320,8 +8343,8 @@
           : 1 + 0.010 * Math.sin(t * 0.0009);
         const sc = Math.min(W, H) * view.fill * (view.still ? 1 : pulse);
         const ox = W / 2, oy = H / 2;
-        // the light theme inks the cloud dark, the way the engine re-inks its own
-        const ink = document.body.classList.contains('light') ? [58, 45, 34] : null;
+        // the light theme takes 30% of the saturation out, the way the engine does
+        const lit = document.body.classList.contains('light');
         const drift = view.still ? 0 : 0.006 * view.jitter * sc;
         // The iris breathes by dilating rather than by scaling: the pupil opens
         // and shuts, and the tissue between it and the limbus is compressed into
@@ -8438,9 +8461,10 @@
             // back rather than being a disc of even points
             rr2 *= 0.86 + 0.30 * (zz / 0.775 * 0.5 + 0.5);
           }
-          const cr = ink ? ink[0] : q.cr, cg = ink ? ink[1] : q.cg, cb = ink ? ink[2] : q.cb;
+          const key = q.cr + ',' + q.cg + ',' + q.cb;
           dot2D(px, ox + qx * sc + jx, oy - qy * sc + jy, rr2 * rk * view.dot,
-                cr + ',' + cg + ',' + cb, Math.min(1, q.a * tw * view.alpha * 1.3));
+                lit ? lightRGB(key, q.cr, q.cg, q.cb) : key,
+                Math.min(1, q.a * tw * view.alpha * 1.3));
         }
         if (view.morph) return;      // no flow or feeding while the cloud is in flight
         // internal flow: the same presets and path maths the engine runs, so a
@@ -8451,8 +8475,10 @@
             ? (view._rt = view._rt || buildFlowRT(pr, view.cl.norm))
             : getFlowRT(view.idx));
           if (rt){
-            const tone = 'rgba(' + ((pr.tone[0] * 255) | 0) + ',' + ((pr.tone[1] * 255) | 0) +
-                         ',' + ((pr.tone[2] * 255) | 0) + ',';
+            const tr = (pr.tone[0] * 255) | 0, tg = (pr.tone[1] * 255) | 0,
+                  tb = (pr.tone[2] * 255) | 0;
+            const tkey = tr + ',' + tg + ',' + tb;
+            const tone = 'rgba(' + (lit ? lightRGB(tkey, tr, tg, tb) : tkey) + ',';
             for (let f = 0; f < view.flowN; f++){
               const P = rt.paths[flowPick[f] % rt.paths.length];
               const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
@@ -8470,7 +8496,7 @@
               const off = flowLane[f] * pr.width * rt.k
                         + Math.sin(T * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
               fx += -ddy * off; fy += ddx * off;
-              px.fillStyle = ink ? 'rgba(58,45,34,' + fa.toFixed(3) + ')' : tone + fa.toFixed(3) + ')';
+              px.fillStyle = tone + fa.toFixed(3) + ')';
               px.beginPath();
               px.arc(ox + fx * sc, oy - fy * sc, view.dot * rk * 1.15, 0, 6.2832);
               px.fill();
@@ -8494,11 +8520,12 @@
           const rx = (cs * q.x + sn * q.y) * k;
           const ry = (-sn * q.x + cs * q.y) * k;
           const tw = 0.80 + 0.20 * Math.sin(T * 1.8 + q.sz * 21.0);
-          const cr = ink ? ink[0] : q.cr, cg = ink ? ink[1] : q.cg, cb = ink ? ink[2] : q.cb;
+          const key = q.cr + ',' + q.cg + ',' + q.cb;
           dot2D(px,
                 ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
                 oy - ry * sc + aDrift * Math.cos(T * 0.7 + q.sz * 9.42),
-                q.r * rk * view.dot * 0.9, cr + ',' + cg + ',' + cb,
+                q.r * rk * view.dot * 0.9,
+                lit ? lightRGB(key, q.cr, q.cg, q.cb) : key,
                 Math.min(1, q.a * tw * feedA * view.alpha * 1.25));
         }
       },
