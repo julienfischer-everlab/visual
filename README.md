@@ -689,6 +689,31 @@ Chronological age, the organ-card tint, density, particle size, flow and voxels
 are no longer exposed: they stay where the design landed. `CHRONO` is a constant
 now rather than a control.
 
+## Light is the same figure, not a second one
+
+Every per-particle value in the shader was tuned against black, where a dot at
+a sixth of full still reads. On a light page the same alpha buys almost
+nothing: measured on the biomarker slide, the body sat 28 levels off a dark
+ground and 6 off a light one — the same cloud, and only one of them visible.
+
+The fix is not a light-mode treatment. That would be two pictures to keep in
+step, and they would drift the first time either changed. It is one shader
+with the ground's own arithmetic undone by the uniform that already knows
+about it: the light theme lifts alpha, keeps far more of the palette's warmth
+than it used to (16% desaturated, not 60% — a figure this warm has no business
+arriving as slate), and sends the cooler verdict to a warm dark rather than to
+black, which is not a colour this palette contains and turned a third of the
+cloud to soot. Both grounds now measure the same 28 levels of contrast.
+
+Two things moved to make that possible. The light ink is applied **last**,
+after every other colour decision — it used to run before the biomarker
+reading, so the reading painted over it and the light theme's dark ink came
+back as a pale wash on pale paper. And the biomarker slide's fill stopped
+recolouring the body to sage: that was a second figure in a colour belonging
+to nothing else on the page, and the reading is carried by how much body there
+is — whole below the front, emptied to its shell above — which reads on any
+ground and needs no second palette.
+
 ## The organ ground
 
 `#220606` is the one background the organ ever sits on. It is `--bg`, and every

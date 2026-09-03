@@ -5244,14 +5244,15 @@
       float cool = min(1.0, max(0.0, -uWarm) * 2.0);
       vec3 base = mix(aColor.rgb, vec3(dot(aColor.rgb, vec3(0.36, 0.50, 0.14))),
                       0.30 * cool);
+      // The cool tint goes to a warm dark on the light theme rather than to
+      // black: black is not a colour this palette contains, and a third of the
+      // cloud taking it turned the figure to soot. Dark enough to read as the
+      // cooler verdict, warm enough to still belong to the same body.
       vec3 haloCol = uWarm > 0.0 ? vec3(0.87, 0.56, 0.30)
-                                 : mix(vec3(0.90, 0.97, 0.92), vec3(0.0), uLight);
+                                 : mix(vec3(0.90, 0.97, 0.92), vec3(0.30, 0.22, 0.21), uLight);
       vec3 rgb = mix(base, haloCol, halo);
       // and 15% off the whole cloud's saturation on top of that, verdict included
       rgb = mix(rgb, vec3(dot(rgb, vec3(0.36, 0.50, 0.14))), 0.15);
-      // light theme: dark, mostly desaturated ink with a trace of warmth
-      vec3 lrgb = mix(rgb, vec3(dot(rgb, vec3(0.4, 0.4, 0.2))), 0.6) * 0.38 + vec3(0.02);
-      rgb = mix(rgb, lrgb, uLight);
       float ga = mix(1.0, uGhost * 0.38, ghost);
       float ef = mix(aEdgeA, aEdgeB, mix(e, 1.0, flowP));
       // The biomarker reading: the same body, its particles taking the
@@ -5277,13 +5278,19 @@
         // it is wide enough that no horizontal edge is ever visible in the
         // handover, which is the whole difficulty with filling a silhouette.
         float lit = smoothstep(uFill + 0.13, uFill - 0.13, h);
-        // Sage, not green. A saturated green on a near-black ground reads as a
-        // status light; this is a reading taken in a clinic, and it has to sit
-        // beside the warm ink the rest of the cloud is drawn in without
-        // becoming the brightest thing on the screen.
-        vec3 band = vec3(0.52, 0.66, 0.54);
-        band = mix(band, vec3(dot(band, vec3(0.36, 0.50, 0.14))), 0.22);
-        rgb = mix(rgb, band, uRange * lit);
+        // The body keeps its own colour. It used to take a sage below the
+        // front, which is a second body -- one figure in the palette every
+        // other slide is drawn in, and one in a colour that belongs to nothing
+        // else on the page. On a dark ground it passed; on a light one it was
+        // a pale wash on pale paper and the slide came out blank, which is the
+        // same fault showing rather than a light-mode bug.
+        //
+        // So the reading is carried by how much body there is, not by what
+        // colour it turns: below the front the figure is whole and at full
+        // strength, above it the volume empties to its shell. That reads on
+        // any ground, needs no second palette to keep in step with the first,
+        // and leaves the biomarker slide the same warm figure as its
+        // neighbours -- which is what the design sheet has always shown.
         // Above the front the body is not a thinner cloud but an empty vessel,
         // so it is drawn as one. Nearly every particle in the volume goes and
         // what stays is the shell: ef is already high on the silhouette and
@@ -5300,19 +5307,39 @@
         // vessel, a little over a third on the rim, where light would sit.
         // The interior is not empty -- a scattering of dots floats in it, so
         // the shell reads as a volume rather than as a cut-out.
-        float upA = keepUp * mix(0.16, 0.42, shell);
-        // one restrained highlight, cool against the warm body, so the empty
-        // half reads as a container rather than as the same body dimmed
-        rgb = mix(rgb, vec3(0.60, 0.66, 0.68),
-                  uRange * (1.0 - lit) * shell * 0.40 * (1.0 - uLight));
+        float upA = keepUp * mix(0.30, 0.62, shell);
         vfade = mix(1.0, mix(upA, 1.0, lit), uRange);
       }
+      // Light theme: dark, mostly desaturated ink with a trace of warmth --
+      // applied last, to whatever the cloud turned out to be.
+      //
+      // It used to run before the biomarker reading, which meant the reading
+      // was painted over it: the light theme's dark ink went back to a bright
+      // sage, and a bright sage on a near-white ground is nothing at all. The
+      // slide came out as a white body on a white page. The fix is not a light
+      // variant of the fill -- that would be two pictures to keep in step, and
+      // they would drift. It is the transform belonging where every other
+      // colour decision has already been made, so light is the same picture
+      // one step darker rather than a second one. The vessel's own highlight
+      // stops being dark-theme-only for the same reason.
+      // Less of the grey than it used to take: at 60% desaturated the figure
+      // came out a neutral slate, and this palette's whole job is to be warm.
+      vec3 lrgb = mix(rgb, vec3(dot(rgb, vec3(0.4, 0.4, 0.2))), 0.16) * 0.42 + vec3(0.015);
+      rgb = mix(rgb, lrgb, uLight);
       // density control: a stable per-particle lottery thins the cloud live
       float keep = mix(step(fract(aSeed.z * 39.7), uDens), 1.0, max(ghost, flowP));
       float fv = mix(1.0, uFlowVis, flowP);
       // voxel mode: depth-weighted brightness so the volume reads in layers
       float da = mix(1.0, clamp(persp, 0.72, 1.2), uSq);
-      vColor = vec4(rgb, aColor.a * tw * (1.0 + 0.35 * halo) * ga * ef * keep * fv * uAlpha * da * feedA * vfade * irisA);
+      // The same alpha does not buy the same figure on opposite grounds. Every
+      // per-particle value here was tuned against black, where a dot at a
+      // sixth of full still reads: measured, the body sat 28 levels off a dark
+      // page and 6 off a light one -- the same cloud, and only one of them
+      // visible. So the light theme lifts the alpha rather than being given a
+      // second treatment: one shader, one figure, the ground's own arithmetic
+      // undone by the uniform that already knows about it.
+      float aLift = mix(1.0, 1.85, uLight);
+      vColor = vec4(rgb, aColor.a * tw * (1.0 + 0.35 * halo) * ga * ef * keep * fv * uAlpha * da * feedA * vfade * irisA * aLift);
     }`;
   const FS = `
     precision mediump float;
