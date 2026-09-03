@@ -535,7 +535,14 @@ menus: one is a long list, the other has three options.
   choice is resolved where the cloud is picked rather than written into the
   row: `PILL` is the table every surface reads, and editing it would carry the
   sphere onto the dashboards, the library and the concept pages, none of which
-  offer it. The sphere's currents are drawn in the shader here rather than in
+  offer it. The sphere is a fluid rather than a stipple: the material itself
+  travels, on a bounded sway a sixteenth of the radius wide and three clocks
+  that share no factor, so the volume is always in slow motion. It is a
+  function of time rather than an integration of one, so the dots move on
+  closed paths and come back — nothing drifts out of the ball and nothing
+  piles up, which an integrated field would not have left it. Damped to
+  nothing at the rim, because a boundary that breathes is not a sphere. Over
+  that, the currents are drawn in the shader here rather than in
   the library's 2D renderer — the same three-wave field, the same stable
   per-particle lottery, so a thinning region loses the same dots every frame
   instead of shimmering, and the shell is exempt so the boundary never comes

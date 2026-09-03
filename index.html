@@ -5137,6 +5137,25 @@
       if (uSphere.x > 0.5){
         float solid = (1.0 - amb) * (1.0 - ghost) * (1.0 - flowP);
         vec3 q = pos - uCenter;
+        float R = max(1e-4, uSphere.y);
+        // The material itself is never still. The density field alone
+        // reorganises what is showing, but every dot stands where it was put
+        // while it does -- which reads as a stipple being switched on and off,
+        // not as liquid. So the particles travel too, on a smooth field a
+        // sixteenth of the radius wide.
+        //
+        // It is a function of time rather than an integration of one: the dots
+        // sway on closed paths and come back, so nothing drifts out of the
+        // ball, nothing piles up, and the volume stays as evenly filled as it
+        // was built. Three clocks that share no factor, so the surface never
+        // repeats a pose. Damped to nothing at the rim -- a boundary that
+        // breathes is not a sphere.
+        vec3 sw = vec3(
+          sin(2.1 * q.y + 1.3 * q.z + uTime * 0.090),
+          sin(2.4 * q.z + 1.1 * q.x + uTime * 0.075 + 2.1),
+          sin(2.0 * q.x + 1.7 * q.y + uTime * 0.062 + 4.2));
+        q += sw * (0.062 * R) * (1.0 - smoothstep(0.72, 1.0, length(q) / R));
+        pos = uCenter + q;
         // the z terms are the shallowest of the three: a field varying as much
         // through the depth as across the width averages out along the line of
         // sight and arrives as noise
@@ -5144,7 +5163,7 @@
                  + sin(6.9 * q.y - 3.7 * q.x + uTime * 0.041 + 1.7)
                  + sin(1.4 * q.z + 5.8 * q.y + uTime * 0.029 + 3.1)) / 3.0;
         float kf = smoothstep(-0.30, 0.26, w);
-        float rim = smoothstep(0.86, 0.99, length(q) / max(1e-4, uSphere.y));
+        float rim = smoothstep(0.86, 0.99, length(q) / R);
         float lot = fract(sin(aSeed.z * 127.1 + aSeed.y * 311.7) * 43758.5453);
         sphOff = solid * step(clamp(0.05 + 0.85 * kf + 0.85 * rim, 0.0, 1.0), lot);
         sphLit = mix(1.0, 0.58 + 0.66 * kf, solid);
@@ -8156,7 +8175,22 @@
           }
           let rr2 = q.r;
           if (sph){
-            const zz = q.z + 0.06 * Math.sin(T * 0.11 + q.sz * 6.28);
+            let zz = q.z + 0.06 * Math.sin(T * 0.11 + q.sz * 6.28);
+            // The material moves, not only the pattern in it. Same field as the
+            // hero's: a bounded sway a sixteenth of the radius wide, on three
+            // clocks that share no factor, damped to nothing at the rim. It is
+            // a function of time rather than an integration of one, so the dots
+            // travel on closed paths -- the ball stays as evenly filled as it
+            // was built, and its edge stays exactly where it is drawn.
+            {
+              const R = 0.775;
+              const rr0 = Math.sqrt(qx * qx + qy * qy + zz * zz) / R;
+              const damp = (1 - smoothstep(0.72, 1.0, rr0)) * 0.062 * R;
+              const sx = Math.sin(2.1 * qy + 1.3 * zz + T * 0.090);
+              const sy = Math.sin(2.4 * zz + 1.1 * qx + T * 0.075 + 2.1);
+              const sz = Math.sin(2.0 * qx + 1.7 * qy + T * 0.062 + 4.2);
+              qx += sx * damp; qy += sy * damp; zz += sz * damp;
+            }
             // Mostly across the ball rather than through it. A field that varies
             // as much in depth as in width averages out along every line of
             // sight -- the projection sums the chord, and the structure is gone
