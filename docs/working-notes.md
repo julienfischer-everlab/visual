@@ -554,6 +554,20 @@ contributes nothing, so it is the A slot that has to be the shape you are
 testing for. Testing both was a condition that could never be true, which
 looked exactly like the bug it had just replaced.
 
+### 5.21 The table that is still ten
+
+5.10 records a table that was still nine the day a tenth selection arrived.
+Adding the fingerprint, the human body and the iris as clouds ten, eleven and
+twelve found `NOTE_POS` — the annotation offsets, indexed by organ index, ten
+entries long — and it threw on the first frame that selected the new one.
+
+It is the same lesson and it did not stick, so here it is as a rule rather than
+a story: **when you add a cloud, grep for every array indexed by organ index
+before you look at anything on screen.** There were four of them; three had
+grown with the organ list because they were derived from it, and the one that
+was written out by hand had not. Handwritten parallel arrays are the only kind
+that can fall behind, and they fall behind silently until the index is reached.
+
 ---
 
 ## 6. Open items

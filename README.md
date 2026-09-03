@@ -314,11 +314,15 @@ only the name, the organ and its tag travel with the swipe. The carousel leads
 with the body's own age — *Body, 6 years younger* — and then walks the organs.
 `PILL` keeps Body last so the nine organs hold the indices everything else is
 written against; the reading order is a lookup, `MB_ORDER`, and the carousel
-walks `MB`. Slide 0 is the body, and it carries the fingerprint.
+walks `MB`. Slide 0 is biological age: the strip calls it that, while the code
+and the organ list still call the entry **Body** — `label` is the key every
+test is written against and the word the list uses under a card whose
+heading already says *Biological age*; `slide` is what the carousel calls it,
+where nothing else does. It carries the **iris**.
 
 ### Three expressions of one system
 
-Biomarkers is the **human body**, biological age is the **fingerprint**, organ
+Biomarkers is the **human body**, biological age is the **iris**, organ
 age is the **organs** — three shapes, one particle language. They are three
 clouds in the same array, and the carousel morphs between them like any other
 step; the biomarker slide and the body slide used to be the same drawing and
@@ -398,11 +402,11 @@ and never reached the screen. It now takes a second draw off the live buffers,
 the way the spatial cards do, for presets built for it and only at rest on the
 slide they belong to.
 
-### The iris — an exploration
+### The iris
 
-Biological age as a **pupil** rather than a figure, sitting in the organ library
-as its own tile and nowhere else: nothing in the product selects it, so it is
-there to be looked at and argued with.
+Biological age as a **pupil** rather than a figure. It began as a library
+exploration and now carries the biological-age slide itself; the fingerprint
+stays in the library as an asset, unselected.
 
 A dark centre and a fan of fine strands leaving it — the whole system read off
 one structure, which is what the print and the body are each saying too. No
@@ -437,9 +441,11 @@ one across the disc: the wave's phase and its strength come from which bundle a
 dot stands in, so the fibres light in their own time and the movement stays
 radial without ever reading as a rotation. The middle keeps its own long pulse,
 each dot breathes a little along its own strand, and the flow layer runs spokes
-from the ruff to the limbus so a travelling dot is travelling a fibre. Its colour is its
-own — a desaturated sage against the library's warm tissue — because it is not
-made of the same material as an organ.
+from the ruff to the limbus so a travelling dot is travelling a fibre. All of that lives twice: in the 2D view the library tiles are drawn with, and in
+the shader, so the slide is alive too. `uIris` carries the switch and the two
+radii, and it follows the same rule the range fill does — raised where the iris
+is the shape on screen and settled, off everywhere else, because a uniform left
+up is read by the next page that draws.
 
 ### The two mini cards
 
