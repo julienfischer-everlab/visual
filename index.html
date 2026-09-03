@@ -5193,6 +5193,7 @@
   // centre to be radial about.
   const IRIS_I = ORGANS.findIndex(o => o.label === 'Iris');
   let densNow = 1;   // the frame's own density, so setIris can lean on it
+  let yOffNow = 0;   // and the layout's own vertical offset, likewise
   function setIris(aIdx, mix){
     const on = aIdx === IRIS_I && mix < 0.02 && clouds[IRIS_I] && clouds[IRIS_I].iris;
     if (on) gl.uniform3f(U.uIris, 1, clouds[IRIS_I].iris.rp, clouds[IRIS_I].iris.R);
@@ -6464,7 +6465,7 @@
     // comes down to sit just above it. uYOff is clip space -- two units over
     // H pixels -- so a pixel push is twice its value: -96 is 48px lower.
     const dropNote = (isDash(version) && dashNote()) ? 96 : 0;
-    gl.uniform1f(U.uYOff,
+    gl.uniform1f(U.uYOff, yOffNow =
       (botH - topH - dropB5 + upV6 - dropNote -
        (version === 1 ? 96 : isBento(version) ? 40 : 0)) / H);
   }
@@ -7117,11 +7118,19 @@
       // where the carousel had been. uZoom is uploaded before this runs, so
       // setting it here wins.
       const bodyShown = !v7On() ? 0 : k0 < 0 ? 1 : k0 === 0 ? 1 - f : 0;
+      // The iris takes the body's framing and wants a little off it on the
+      // phone: a twentieth smaller and 16px higher. Weighted by how much of it
+      // is on screen rather than switched at the slide, so the adjustment
+      // arrives with the figure over the swipe instead of stepping when the
+      // carousel crosses. uYOff is clip space, two units over H pixels, so 32
+      // is the 16, and positive is up.
+      const irisShown = !v7On() ? 0 : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
       const rBody = ORGANS[MB[0].organIdx].r;
       const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
       gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
                             (v7On() ? V6_HERO : 1) *
-                            zFix * (1 + 0.30 * bodyShown));
+                            zFix * (1 + 0.30 * bodyShown) * (1 - 0.05 * irisShown));
+      gl.uniform1f(U.uYOff, yOffNow + irisShown * 32 / H);
       // The fill rises on the same cue and over the same span as the arc's
       // sweep: they are one reveal of one reading, and running them on two
       // clocks left the body still filling after the meter had finished. It
@@ -7192,6 +7201,7 @@
       setIris(ia, f);
       gl.drawArrays(gl.POINTS, 0, N);
       setIris(-1, 1);
+      gl.uniform1f(U.uYOff, yOffNow);   // the lift is this slide's, not the page's
       gl.uniform1f(U.uP, 1);
       // The flow layer lives in the main buffers, and the hero draws the cloud
       // out of the static pair — so [0, N) is everything it has ever drawn and
