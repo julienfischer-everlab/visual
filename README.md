@@ -408,31 +408,36 @@ A dark centre and a fan of fine strands leaving it — the whole system read off
 one structure, which is what the print and the body are each saying too. No
 lids, no sclera, no highlight: it is the fan, and the fan is the point.
 
-The fibres are drawn in **three interleaved tiers** rather than one dense fan.
-A single fan of six hundred merges into a solid disc long before it reaches the
-pupil — the angular gap has to stay wider than the sampler can resolve, and near
-the middle there is no room for more than about a hundred strands. Each tier
-starts further out and interleaves with the one inside it, which holds the
-spacing roughly even from the pupillary ruff to the limbus, and is how an iris
-is built anyway: fibres divide as they travel. Three tiers and no more — at a
-library tile's size, a dot budget spread over four hundred fibres gives each of
-them five dots, and five dots in a row is a speckle rather than a strand. A
-shape made of thin lines needs more dots than a constant gap asks for, so the
-entry carries its own `dots` multiplier and the library honours it.
+The fibres go in **bundles with gaps between them**, and that is the whole
+trick: a groove is nothing drawn, not fewer dots drawn. Modulating density over
+an even fan gives a cloud that is thinner in places; leaving the mask empty
+gives a furrow the sampler cannot fill in. Thirty-four bundles of two to four
+strands, each bundle leaning its own way, with uneven widths and uneven gaps —
+even ones come out as a cog. Strands start at the pupil's edge and run out,
+some forking a third of the way along, and a shorter strand starts inside the
+groove itself so a gap reads as a furrow between fibres rather than an empty
+wedge.
 
-Crypts cut a few fibres short, the way an iris carries its lacunae, and three
-short furrow arcs cross them so the radial is not the only direction in the
-picture — a full ring would read as a diagram. The sampler holds the dots
-toward the inner third and thins them all the way out, so the disc dissolves at
-its rim rather than ending.
+Past the middle each strand loosens — its taper thins, its angle scatters, its
+radius wanders — so the structure is crisp where it is meant to be read and
+comes apart toward the rim. Crypts cut a few fibres short, the way an iris
+carries its lacunae, and three short furrow arcs cross the fan so the radial is
+not the only direction in the picture; a full ring would read as a diagram. The
+sampler holds the dots to the inner half and thins them all the way out.
+
+A shape made of thin lines needs more dots than a constant gap asks for, or the
+lines come out as a speckle — the entry carries its own `dots` multiplier and
+the library honours it.
 
 **It dilates rather than scales.** The pupil opens and shuts on a slow breath,
 and the tissue between it and the limbus is compressed into whatever is left:
 the inner edge travels a long way, the rim does not move at all. Scaling the
-whole disc would read as a zoom. Over that, two slow fronts leave the centre and
-pass out through the fibres, the middle keeps its own long pulse, each dot
-breathes a little along its own strand, and the flow layer runs spokes from the
-ruff to the limbus so a travelling dot is travelling a fibre. Its colour is its
+whole disc would read as a zoom. Over that, a front per furrow rather than
+one across the disc: the wave's phase and its strength come from which bundle a
+dot stands in, so the fibres light in their own time and the movement stays
+radial without ever reading as a rotation. The middle keeps its own long pulse,
+each dot breathes a little along its own strand, and the flow layer runs spokes
+from the ruff to the limbus so a travelling dot is travelling a fibre. Its colour is its
 own — a desaturated sage against the library's warm tissue — because it is not
 made of the same material as an organ.
 
