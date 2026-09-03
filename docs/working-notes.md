@@ -568,6 +568,23 @@ grown with the organ list because they were derived from it, and the one that
 was written out by hand had not. Handwritten parallel arrays are the only kind
 that can fall behind, and they fall behind silently until the index is reached.
 
+**It did not stick the second time either.** The sphere was added as cloud
+twelve and nothing threw, because a library tile is drawn by the 2D renderer
+and never reaches `NOTE_POS`. The moment Mobile V7 could *select* the sphere,
+the same undefined `.ax` came back — third time, same table, same message.
+
+So the rule stopped being a rule and became code. `NOTE_POS` is now padded to
+`ORGANS.length` at build time with a serviceable right-hand anchor, and the
+handwritten rows above it still say where each figure wants its note. The
+placement is a per-figure choice worth making; it was never worth a crash when
+nobody had made it yet. **A handwritten table indexed by a growing list should
+end with the line that fills it out** — the entries are the design, the length
+is not.
+
+There is a second lesson hiding in it: **adding a cloud is not what finds these
+— selecting one is.** A cloud that only ever appears in the library is drawn by
+a different renderer and clears none of the traps.
+
 ### 5.22 A random walk around a circle does not close
 
 The iris's fibre bundles were placed by stepping around the circle, each step a

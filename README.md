@@ -530,6 +530,18 @@ a change some other control made through the chain. Version and Mode keep their
 menus: one is a long list, the other has three options.
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
+- **Bio visual** — Iris or Sphere, and only on Mobile V7. The biological age
+  slide is the one reading in the carousel with a choice of figure, so the
+  choice is resolved where the cloud is picked rather than written into the
+  row: `PILL` is the table every surface reads, and editing it would carry the
+  sphere onto the dashboards, the library and the concept pages, none of which
+  offer it. The sphere's currents are drawn in the shader here rather than in
+  the library's 2D renderer — the same three-wave field, the same stable
+  per-particle lottery, so a thinning region loses the same dots every frame
+  instead of shimmering, and the shell is exempt so the boundary never comes
+  and goes with the weather inside it. The iris's five-per-cent shrink belongs
+  to the iris, not to the slot: the sphere is a ball drawn to its own radius,
+  and shrinking it would leave the age slide smaller than the organs after it.
 - **Device** — Desktop or Tablet M, and only on Desktop V5, which is the one
   version that has two shells. It keeps its menu rather than becoming a switch:
   a switch stands for a thing being on or off, and neither of these is the other

@@ -59,6 +59,7 @@
      typed there loose. */
   .topbar .tkGrp{display:none;}
   body.b5 .topbar .tkGrp#devGrp{display:contents;}
+  body.v8 .topbar .tkGrp#bioGrp{display:contents;}
   .topbar .tkBtn:hover{border-color:#3f3f46;}
   .topbar .tkBtn:active{background:#1c1c20;}
   .topbar .seg{
@@ -3259,6 +3260,16 @@
         <option value="tablet">Tablet M</option>
       </select>
     </span>
+    <!-- Mobile V7 alone offers a choice of figure for the biological age. Same
+         group treatment as Device: it exists where it applies and is out of the
+         row everywhere else. -->
+    <span class="tkGrp" id="bioGrp">
+      <span class="lbl">Bio visual</span>
+      <select id="bioSel" aria-label="Biological age visual">
+        <option value="iris">Iris</option>
+        <option value="sphere">Sphere</option>
+      </select>
+    </span>
     <span class="lbl">Biomarkers</span>
     <select id="stBio" aria-label="Biomarker card state">
       <option value="on">Completed</option>
@@ -4596,6 +4607,10 @@
       // the rim reads a shade brighter, the way a shell of anything does
       cl.edge[i] = 0.62 + 0.46 * Math.pow(r / R, 3);
     }
+    // the shader draws the currents through the ball and needs its radius to
+    // know where the shell is; measured off the thing that built it rather
+    // than typed a second time
+    cl.sphere = { R };
     return cl;
   }
 
@@ -5015,6 +5030,7 @@
     // (on, pupil radius, limbus radius) in cloud units — the iris dilates and
     // its furrows light in turn, and both need the two radii to mean anything
     uniform vec3 uIris;
+    uniform vec2 uSphere;   // on, radius
     uniform vec2 uPan; // per-draw clip-space offset (spatial card placement)
     uniform vec3 uCenter;
     uniform vec2 uCA;   // organ centre the A positions belong to
@@ -5109,6 +5125,30 @@
           pos.xy = mix(pos.xy, uCenter.xy + rel * (nr / r), solid);
         }
       }
+      // The sphere's currents. The ball is uniform by construction, so the
+      // density that reads as liquid is taken out of it rather than built in:
+      // a slow three-wave field decides, per particle, whether it is showing
+      // at all. Modulating brightness instead reads as uneven lighting on one
+      // object; taking the particles away reads as the object having weather
+      // in it. The lottery is the particle's own seed, so a thinning region
+      // loses the same dots every frame rather than shimmering, and the shell
+      // is exempt — the boundary must not come and go with what is inside it.
+      float sphLit = 1.0, sphOff = 0.0;
+      if (uSphere.x > 0.5){
+        float solid = (1.0 - amb) * (1.0 - ghost) * (1.0 - flowP);
+        vec3 q = pos - uCenter;
+        // the z terms are the shallowest of the three: a field varying as much
+        // through the depth as across the width averages out along the line of
+        // sight and arrives as noise
+        float w = (sin(6.2 * q.x + 1.1 * q.z + uTime * 0.058)
+                 + sin(6.9 * q.y - 3.7 * q.x + uTime * 0.041 + 1.7)
+                 + sin(1.4 * q.z + 5.8 * q.y + uTime * 0.029 + 3.1)) / 3.0;
+        float kf = smoothstep(-0.30, 0.26, w);
+        float rim = smoothstep(0.86, 0.99, length(q) / max(1e-4, uSphere.y));
+        float lot = fract(sin(aSeed.z * 127.1 + aSeed.y * 311.7) * 43758.5453);
+        sphOff = solid * step(clamp(0.05 + 0.85 * kf + 0.85 * rim, 0.0, 1.0), lot);
+        sphLit = mix(1.0, 0.58 + 0.66 * kf, solid);
+      }
       // pulse scales the organ around its own anatomical center; ghost stays still
       float pw = (1.0 - ghost) * (1.0 - smoothstep(uOrgR * 1.6, uOrgR * 2.4, distance(pos, uCenter)));
       pos = uCenter + (pos - uCenter) * mix(1.0, uScale, pw);
@@ -5116,8 +5156,9 @@
       pos = uRot * ((pos - vec3(uCenter.x, uCenter.y, 0.0)) * uZoom);
       float persp = 1.0 / (1.0 - pos.z * 0.22);
       gl_Position = vec4(pos.x * persp * uView.x + uPan.x, pos.y * persp * uView.y + uYOff + uPan.y, 0.0, 1.0);
-      gl_PointSize = abs(aSeed.w) * persp * uPix * pow(uZoom, 0.35) * mix(1.0, 1.35, uSq);
-      float tw = 0.62 + 0.38 * sin(uTime * 1.8 + aSeed.z * 21.0);
+      gl_PointSize = abs(aSeed.w) * persp * uPix * pow(uZoom, 0.35) * mix(1.0, 1.35, uSq)
+                   * (1.0 - sphOff);
+      float tw = (0.62 + 0.38 * sin(uTime * 1.8 + aSeed.z * 21.0)) * sphLit;
       // voxel mode: quieter shimmer — data, not sparkle
       tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
       // The verdict, in the dots themselves: orange when the organ reads older,
@@ -5247,7 +5288,7 @@
   gl.useProgram(prog);
 
   const U = {};
-  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY','uIris'])
+  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY','uIris','uSphere'])
     U[n] = gl.getUniformLocation(prog, n);
   gl.uniform2f(U.uPan, 0, 0);
   gl.uniform1f(U.uAlpha, 1);
@@ -5385,8 +5426,17 @@
   // radial about the cloud's own centre and a half-morphed cloud has no such
   // centre to be radial about.
   const IRIS_I = ORGANS.findIndex(o => o.label === 'Iris');
-  let densNow = 1;   // the frame's own density, so setIris can lean on it
-  function setIris(aIdx, mix){
+  const SPHERE_I = ORGANS.findIndex(o => o.label === 'Sphere');
+  let densNow = 1;   // the frame's own density, so the setter can lean on it
+  // One setter for both, because they have the same shape of bug: a uniform
+  // raised for the figure on screen and left up outlives the page that set it.
+  // Two setters would be two things to remember to lower; this one is called
+  // wherever a cloud is about to be drawn, and it lowers whichever of the two
+  // is not wanted as a matter of course.
+  function setShape(aIdx, mix){
+    const sph = aIdx === SPHERE_I && mix < 0.02
+             && clouds[SPHERE_I] && clouds[SPHERE_I].sphere;
+    gl.uniform2f(U.uSphere, sph ? 1 : 0, sph ? clouds[SPHERE_I].sphere.R : 0);
     const on = aIdx === IRIS_I && mix < 0.02 && clouds[IRIS_I] && clouds[IRIS_I].iris;
     if (on) gl.uniform3f(U.uIris, 1, clouds[IRIS_I].iris.rp, clouds[IRIS_I].iris.R);
     else gl.uniform3f(U.uIris, 0, 0, 0);
@@ -5938,6 +5988,16 @@
     // `slide` is what the carousel strip calls it, where nothing else does.
     { label: 'Body', slide: 'Biological age', organIdx: 11, delta: -6, bio: 124 },
   ];
+  // Which cloud a row is drawn as. It is the row's own `organIdx` everywhere
+  // but one: Mobile V7 can read the biological age as the iris or as the
+  // sphere, and that choice is resolved here rather than written into PILL,
+  // because PILL is the one table every surface reads. Editing the row would
+  // carry the choice onto the dashboards, the library and the concept pages,
+  // none of which offer it; resolving it at the point the cloud is picked
+  // leaves it exactly where the class that decides it applies.
+  const bioIdx = d =>
+    (d && d.label === 'Body' && document.body.classList.contains('bioSph'))
+      ? SPHERE_I : d.organIdx;
   // The concept pages carry one card per organ but none for the body, which is
   // a dashboard-only selection. When it survives a mode switch, read its
   // dashboard row rather than running off the end of CARDS.
@@ -6158,11 +6218,22 @@
     { side: 'r', ax:  0.44, ay: -0.66 }, // fingerprint
     { side: 'r', ax:  0.44, ay: -0.66 }, // body
     { side: 'r', ax:  0.58, ay: -0.58 }, // iris
+    { side: 'r', ax:  0.58, ay: -0.58 }, // sphere
   ];
   // One entry per cloud, and the sharp edge every time a cloud is added: this
   // is indexed by organ index, so a table still nine long the day a tenth
   // selection arrives throws on the first frame that selects it. It has now
-  // been ten on the day there were eleven, too.
+  // been ten on the day there were eleven, eleven on the day there were twelve,
+  // and twelve on the day the sphere became something you could select.
+  //
+  // Three times is a design fault, not three mistakes. The anchor is where a
+  // note stands beside a figure -- a per-figure choice worth making, but never
+  // worth a crash when nobody has made it yet. So the table is filled out to
+  // the length it is indexed by, and a new cloud gets a serviceable anchor on
+  // its right until someone places it properly. The rows above still say where
+  // each figure wants its note; this only guarantees there is a row at all.
+  while (NOTE_POS.length < ORGANS.length)
+    NOTE_POS.push({ side: 'r', ax: 0.58, ay: -0.58 });
   const noteTypeTxt = document.getElementById('noteTypeTxt');
   const noteCursor = document.getElementById('noteCursor');
   const noteTxt2 = document.getElementById('noteTxt2');
@@ -6399,7 +6470,7 @@
     // sequenced: the arc sweeps first, the wheels start rolling as it lands
     clearTimeout(ageT);
     ageT = setTimeout(() => setAge(CHRONO + d.delta, dir), DUR * 0.75);
-    setOrgan(d.organIdx);
+    setOrgan(bioIdx(d));
     statusEl.style.opacity = 0;
     clearTimeout(statusT);
     statusT = setTimeout(() => { updateStatus(d); statusEl.style.opacity = 1; }, 220);
@@ -6504,7 +6575,10 @@
       (CARD_STATE.showBar ? ' showBar' : '') +
       // only Desktop V5 has the second shell, so the class only goes on there:
       // every other page would inherit a frame that was never drawn for it
-      (CARD_STATE.tabM && m === 18 ? ' tabM' : '');
+      (CARD_STATE.tabM && m === 18 ? ' tabM' : '') +
+      // the same rule for the figure: only Mobile V7 offers the choice, so
+      // only Mobile V7 wears it
+      (CARD_STATE.bioSph && m === 20 ? ' bioSph' : '');
     syncDark();
     applyNoAge();   // setMode writes the class list whole
     refreshAges();  // and the list's own wording is one of the things it decides
@@ -7329,7 +7403,8 @@
       // age slide is the print. Only the geometry differs — oa still carries
       // the Body row's reading, so the arc, the halo and the caption are the
       // ones that slide has always had.
-      const ia = k0 < 0 ? BODY_I : oa.organIdx;
+      const ia = k0 < 0 ? BODY_I : bioIdx(oa);
+      const ib = bioIdx(ob);
       const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
                         Math.min(1, Math.abs(o.delta) / 7);
       // The halo at the top of the header carries the same verdict as the
@@ -7402,9 +7477,12 @@
       // The iris takes the body's framing and wants a twentieth off it on the
       // phone. Weighted by how much of it is on screen rather than switched at
       // the slide, so the adjustment arrives with the figure over the swipe
-      // instead of stepping when the carousel crosses.
-      const irisShown = !v7On() ? 0 : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
-      const rBody = ORGANS[MB[0].organIdx].r;
+      // instead of stepping when the carousel crosses. It belongs to the iris,
+      // not to the slot: the sphere is a ball drawn to its own radius and
+      // shrinking it would leave the age slide smaller than the organs after it.
+      const irisShown = (!v7On() || bioIdx(MB[0]) !== IRIS_I) ? 0
+                      : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
+      const rBody = ORGANS[bioIdx(MB[0])].r;
       const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
       gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
                             (v7On() ? V6_HERO : 1) *
@@ -7474,11 +7552,11 @@
       gl.uniform1f(U.uAlpha, 1);
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[ia].x, ORGANS[ia].y);
-      gl.uniform2f(U.uCB, ORGANS[ob.organIdx].x, ORGANS[ob.organIdx].y);
-      bindPair(ia, ob.organIdx);
-      setIris(ia, f);
+      gl.uniform2f(U.uCB, ORGANS[ib].x, ORGANS[ib].y);
+      bindPair(ia, ib);
+      setShape(ia, f);
       gl.drawArrays(gl.POINTS, 0, N);
-      setIris(-1, 1);
+      setShape(-1, 1);
       gl.uniform1f(U.uP, 1);
       // The flow layer lives in the main buffers, and the hero draws the cloud
       // out of the static pair — so [0, N) is everything it has ever drawn and
@@ -9449,7 +9527,10 @@
                        // cards, same data -- a narrower frame that reads the
                        // organ card the way the phone does, because the list
                        // and the organ cannot both have half of it.
-                       tabM: false };
+                       tabM: false,
+                       // and which figure Mobile V7 reads the biological age
+                       // as. Same problem again: a class setMode would drop.
+                       bioSph: false };
   // Every state control is a thing that is either on or off, so each becomes a
   // switch -- the label beside it already says which thing. The select stays,
   // hidden, as the thing that holds the value: every handler in the file reads
@@ -9461,8 +9542,8 @@
       const opts = [...sel.options];
       // a switch stands for a thing being on or off; Desktop and Tablet M are
       // two named shells, and neither of them is the other one turned off
-      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'devSel')
-        continue;
+      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'devSel'
+          || sel.id === 'bioSel') continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
       seg.setAttribute('role', 'switch');
@@ -9499,6 +9580,18 @@
       document.body.classList.toggle('tabM', CARD_STATE.tabM);
       dstripWrite();
       resize();
+    });
+  }
+  // Mobile V7's biological age figure. Nothing about the slide changes but the
+  // cloud it is drawn as, so the selection is re-made rather than re-laid out:
+  // selectPill picks the cloud through bioIdx, and setOrgan morphs from
+  // whichever figure is up into the other one.
+  {
+    const sel = document.getElementById('bioSel');
+    sel.addEventListener('change', () => {
+      CARD_STATE.bioSph = sel.value === 'sphere';
+      document.body.classList.toggle('bioSph', CARD_STATE.bioSph);
+      selectPill(pillCurrent);
     });
   }
   // activity stands alone -- it comes off a wearable, not the panel
@@ -9786,7 +9879,9 @@
     gl.uniform1f(U.uTime, t * 0.001);
     // the live buffers hold the morph, so the iris is itself only once it has
     // arrived — and it is the A slot that holds it there, with uP back at 0
-    const irisNow = uPnow >= 1 ? current : -1;
+    // which cloud the shader may treat as itself: only a settled one, since
+    // both effects are radial about a centre a half-morphed cloud does not have
+    const shapeNow = uPnow >= 1 ? current : -1;
     gl.uniform1f(U.uScale, scale);
     gl.uniform1f(U.uJitter, jitter);
     gl.uniformMatrix3fv(U.uRot, false, rot);
@@ -9979,7 +10074,7 @@
     // The same rule for the iris: it is raised where the iris is what is drawn
     // and off everywhere else, or the dilation would take hold of whatever the
     // next page put in front of it. Off here, and each path says so for itself.
-    setIris(-1, 1);
+    setShape(-1, 1);
     if (version === 3){
       spatialFrame(t);            // card flip
     } else if (version === 4){
@@ -9988,9 +10083,9 @@
       bentoFrame(t);              // mobile bento, and V2
     } else {
       gl.clear(gl.COLOR_BUFFER_BIT);
-      setIris(irisNow, 0);
+      setShape(shapeNow, 0);
       gl.drawArrays(gl.POINTS, 0, TOT);
-      setIris(-1, 1);
+      setShape(-1, 1);
     }
   }
   // open on whatever the address bar asks for, and follow it if it changes
