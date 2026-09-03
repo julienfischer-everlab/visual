@@ -398,6 +398,44 @@ and never reached the screen. It now takes a second draw off the live buffers,
 the way the spatial cards do, for presets built for it and only at rest on the
 slide they belong to.
 
+### The iris — an exploration
+
+Biological age as a **pupil** rather than a figure, sitting in the organ library
+as its own tile and nowhere else: nothing in the product selects it, so it is
+there to be looked at and argued with.
+
+A dark centre and a fan of fine strands leaving it — the whole system read off
+one structure, which is what the print and the body are each saying too. No
+lids, no sclera, no highlight: it is the fan, and the fan is the point.
+
+The fibres are drawn in **three interleaved tiers** rather than one dense fan.
+A single fan of six hundred merges into a solid disc long before it reaches the
+pupil — the angular gap has to stay wider than the sampler can resolve, and near
+the middle there is no room for more than about a hundred strands. Each tier
+starts further out and interleaves with the one inside it, which holds the
+spacing roughly even from the pupillary ruff to the limbus, and is how an iris
+is built anyway: fibres divide as they travel. Three tiers and no more — at a
+library tile's size, a dot budget spread over four hundred fibres gives each of
+them five dots, and five dots in a row is a speckle rather than a strand. A
+shape made of thin lines needs more dots than a constant gap asks for, so the
+entry carries its own `dots` multiplier and the library honours it.
+
+Crypts cut a few fibres short, the way an iris carries its lacunae, and three
+short furrow arcs cross them so the radial is not the only direction in the
+picture — a full ring would read as a diagram. The sampler holds the dots
+toward the inner third and thins them all the way out, so the disc dissolves at
+its rim rather than ending.
+
+**It dilates rather than scales.** The pupil opens and shuts on a slow breath,
+and the tissue between it and the limbus is compressed into whatever is left:
+the inner edge travels a long way, the rim does not move at all. Scaling the
+whole disc would read as a zoom. Over that, two slow fronts leave the centre and
+pass out through the fibres, the middle keeps its own long pulse, each dot
+breathes a little along its own strand, and the flow layer runs spokes from the
+ruff to the limbus so a travelling dot is travelling a fibre. Its colour is its
+own — a desaturated sage against the library's warm tissue — because it is not
+made of the same material as an organ.
+
 ### The two mini cards
 
 Both swipe, by pointer or touch, and are steerable from their dots. **Health
