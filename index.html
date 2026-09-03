@@ -4455,6 +4455,35 @@
     return cl;
   }
 
+  // ---- The sphere: a volume, and weather inside it ---------------------------
+  // A ball of particles whose outline never moves and whose inside never stops.
+  // The mask is only a circle — it is there so the framing, the area and the
+  // normalisation come out of the same machinery as every other shape — and the
+  // positions are then thrown away and rebuilt as a real ball.
+  function drawSphere(c){
+    c.beginPath(); c.arc(170, 170, 150, 0, 6.2832); c.fill();
+  }
+  function sphereCloud(){
+    const cl = buildCloud(drawSphere, 10, 1.00, {s:1, x:0, y:0});
+    // A ball sampled evenly through its volume projects brightest at the middle
+    // and fades to nothing at the rim, which is a fog rather than an object. A
+    // shell carries the edge and the volume fills the inside, so the boundary
+    // stays where it is drawn and the middle still has depth in it.
+    const R = 0.775;
+    for (let i = 0; i < N - AMB; i++){
+      const shell = (i % 20) < 9;
+      const u = Math.random();
+      const r = shell ? R * (0.93 + 0.07 * u) : R * Math.cbrt(u) * 0.93;
+      const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
+      cl.pos[i * 3]     = r * Math.sin(ph) * Math.cos(th);
+      cl.pos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
+      cl.pos[i * 3 + 2] = r * Math.cos(ph);
+      // the rim reads a shade brighter, the way a shell of anything does
+      cl.edge[i] = 0.62 + 0.46 * Math.pow(r / R, 3);
+    }
+    return cl;
+  }
+
   function drawHeart(c){
     c.lineCap = 'round';
     c.lineWidth = 32;
@@ -4847,6 +4876,9 @@
     // An exploration, not a selection: nothing in the product picks it, so it
     // shows up as a tile in the library and nowhere else until it is asked for.
     { label: 'Iris',    cloud: irisCloud, x:0, y:0, r:0.80, dots: 1.6 },
+    // no flow preset and no paths: what moves in a sphere is where the
+    // particles are dense, not a dot running along a line
+    { label: 'Sphere',  cloud: sphereCloud, x:0, y:0, r:0.80, dots: 1.25 },
   ];
   const clouds = ORGANS.map(o => o.cloud());
   const GB = 1200;
@@ -7561,7 +7593,7 @@
     for (let k = 0; k < idx.length; k++){
       const i = idx[k];
       pts.push({
-        x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
+        x: cl.pos[i * 3], y: cl.pos[i * 3 + 1], z: cl.pos[i * 3 + 2],
         r: 0.9 + (i % 5) * 0.26,
         cr: (colors[i * 4] * 255) | 0, cg: (colors[i * 4 + 1] * 255) | 0, cb: (colors[i * 4 + 2] * 255) | 0,
         a: colors[i * 4 + 3] * (0.45 + 0.55 * cl.edge[i]),
@@ -7722,6 +7754,9 @@
       beat: opts.beat != null ? opts.beat : (organIdx != null && ORGANS[organIdx] && ORGANS[organIdx].label === 'Heart'),
       // the iris has motion of its own: the pupil dilates, and waves leave it
       iris: opts.iris != null ? opts.iris : (organIdx != null && ORGANS[organIdx] && ORGANS[organIdx].label === 'Iris'),
+      // and the sphere has weather: the outline holds while the density inside
+      // it drifts, merges and comes apart
+      sphere: opts.sphere != null ? opts.sphere : (organIdx != null && ORGANS[organIdx] && ORGANS[organIdx].label === 'Sphere'),
       feed: opts.feed !== false, // ambient matter spiralling in, as in the concept
       still: !!opts.still || reduced,
       flowPreset: opts.flowPreset || null,
@@ -7792,6 +7827,13 @@
         const rp2 = ir ? ir.rp * dil : 0;
         const rk2 = ir ? (ir.R - rp2) / Math.max(1e-4, ir.R - ir.rp) : 1;
         const corePulse = ir ? 1 + 0.20 * Math.sin(T * 0.37) : 1;
+        // The sphere's currents. Three low-frequency waves through the volume,
+        // each drifting on its own slow clock: their sum is a smooth field with
+        // features about the size of the ball, and pushing that sum through a
+        // soft threshold turns a gradient into regions with edges — which is
+        // the difference between weather and noise. Nothing here moves a
+        // particle far: what travels is where the density is.
+        const sph = (view.sphere && !view.still) ? 1 : 0;
         let cloud = samplePts(view.cl, view.key, view.target), other = null, me = 0, arc = 0;
         if (view.morph){
           const m = view.morph;
@@ -7843,8 +7885,37 @@
                   + (0.20 + 0.24 * fract(sp * 3.1)) * Math.exp(-Math.pow((un - w2) / 0.16, 2)));
             }
           }
+          let rr2 = q.r;
+          if (sph){
+            const zz = q.z + 0.06 * Math.sin(T * 0.11 + q.sz * 6.28);
+            // Mostly across the ball rather than through it. A field that varies
+            // as much in depth as in width averages out along every line of
+            // sight -- the projection sums the chord, and the structure is gone
+            // before it reaches the screen. Depth still bends the currents; it
+            // just cannot be what decides them.
+            const w = (Math.sin(6.2 * qx + 1.1 * zz + T * 0.058)
+                     + Math.sin(6.9 * qy - 3.7 * qx + T * 0.041 + 1.7)
+                     + Math.sin(1.4 * zz + 5.8 * qy + T * 0.029 + 3.1)) / 3;
+            const k = smoothstep(-0.30, 0.26, w);
+            // Density, not brightness. Dimming every dot by the field gives a
+            // ball that is unevenly lit; what the reference has is regions where
+            // the particles are not. So the field decides which dots are drawn
+            // at all, against a threshold that is stable per dot — the same dot
+            // fades out and comes back as the current passes over it, rather
+            // than the cloud sparkling.
+            // The shell is not weather. A current that eats the rim takes the
+            // sphere with it, so the outermost particles are exempt from the
+            // cull and the boundary is there whatever the field is doing.
+            const rn = Math.sqrt(qx * qx + qy * qy + zz * zz) / 0.775;
+            const rim = smoothstep(0.86, 0.99, rn);
+            if (q.sz > 0.04 + 1.12 * k + 0.95 * rim) continue;
+            tw *= 0.55 + 0.70 * k;
+            // depth: nearer dots a shade larger, so the ball has a front and a
+            // back rather than being a disc of even points
+            rr2 *= 0.86 + 0.30 * (zz / 0.775 * 0.5 + 0.5);
+          }
           const cr = ink ? ink[0] : q.cr, cg = ink ? ink[1] : q.cg, cb = ink ? ink[2] : q.cb;
-          dot2D(px, ox + qx * sc + jx, oy - qy * sc + jy, q.r * rk * view.dot,
+          dot2D(px, ox + qx * sc + jx, oy - qy * sc + jy, rr2 * rk * view.dot,
                 cr + ',' + cg + ',' + cb, Math.min(1, q.a * tw * view.alpha * 1.3));
         }
         if (view.morph) return;      // no flow or feeding while the cloud is in flight

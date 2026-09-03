@@ -469,6 +469,37 @@ radii, and it follows the same rule the range fill does — raised where the iri
 is the shape on screen and settled, off everywhere else, because a uniform left
 up is read by the next page that draws.
 
+### The sphere
+
+A ball of particles whose outline never moves and whose inside never stops. The
+mask is only a circle — it is there so the framing, the area and the
+normalisation come out of the same machinery as every other shape — and the
+positions are then thrown away and rebuilt as a real ball. Sampled evenly
+through its volume, a ball projects brightest at the middle and fades to nothing
+at the rim, which is a fog rather than an object; so a shell carries the edge and
+the volume fills the inside.
+
+The currents are three low-frequency waves through the volume, each drifting on
+its own slow clock, summed and pushed through a soft threshold — which is what
+turns a gradient into regions with edges, and is the difference between weather
+and noise. Two things had to be got right for them to be visible at all:
+
+**They are density, not brightness.** Dimming every dot by the field gives a
+ball that is unevenly lit. What reads as a current is regions where the
+particles are *not*, so the field decides which dots are drawn at all, against a
+threshold that is stable per dot — the same dot fades out and comes back as the
+current passes over it, rather than the cloud sparkling.
+
+**And they vary mostly across the ball rather than through it.** A field that
+varies as much in depth as in width averages out along every line of sight: the
+projection sums the chord and the structure is gone before it reaches the
+screen. The first version was invisible for exactly that reason. Depth still
+bends the currents; it just cannot be what decides them.
+
+The shell is exempt from the cull, so no current can eat the rim and take the
+sphere with it, and depth shows in the dot size rather than in the outline —
+the ball has a front and a back without ever ceasing to be a circle.
+
 ### The two mini cards
 
 Both swipe, by pointer or touch, and are steerable from their dots. **Health
