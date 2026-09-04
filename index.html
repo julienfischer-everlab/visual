@@ -4159,6 +4159,10 @@
   // 10% are depth highlights, 55% to 90%. They are the only thing in the cloud
   // allowed past half, and what they are for is the front of the volume: a
   // reader is given a handful of near points to place the rest against.
+  // The base a particle's size is a multiple of. One number, read by the
+  // vertex through aSeed.w and by the 2D painter through the same seed, so
+  // the grain is the library's grain everywhere.
+  const DOT_BASE = 0.95;
   const HL_SHARE = 0.10;
   const opBright = p => opSnap(0.55 + 0.35 * Math.min(1, Math.max(0, p)));
   // What the 2D painter puts on screen, snapped the same way the shader's last
@@ -5099,12 +5103,17 @@
       // silhouette IS a filled shape; what makes a volume look like one is
       // being able to see through parts of it.
       //
-      // Two terms, and neither of them draws an outline. `pocket` is smooth
-      // noise at about a thirtieth of the shape, so density drifts between
-      // fuller and sparser regions the way a real material does rather than
-      // being even everywhere. `inner` takes up to 40% out of the middle,
-      // where a viewer is looking through the most tissue and the projection
-      // piles up: enough to see into, far short of a shell.
+      // Two terms. `shell` puts more density near a boundary than deep inside
+      // it -- about 1.6 to 1 across the range, which reads as a form with a
+      // defined outside and an open middle rather than a slab. It is nothing
+      // like the 13-to-1 the first version of this ran, which drew an outline
+      // with a fill behind it; the difference between an edge that is denser
+      // and an edge that is a line is entirely in that ratio.
+      //
+      // `pocket` is smooth value noise at about a fifteenth of the shape, so
+      // density also drifts between fuller and sparser regions the way a real
+      // material does. Without it the shell term alone would read as a clean
+      // gradient, which is a rendering, not a volume.
       //
       // `dens`, where a shape supplies one, still applies on top: that is a
       // shape's own say in which of its regions gather particles.
@@ -5113,9 +5122,9 @@
         const j = (Math.random() * M) | 0;
         px = pts[j * 2]; py = pts[j * 2 + 1];
         d = edgeDist(px, py);
+        const shell = 0.55 + 0.45 * Math.exp(-d / 7);
         const pocket = 0.70 + 0.30 * vnoise(px / 15, py / 15);
-        const inner = 1 - Math.exp(-d / 7);
-        const keep = (dens ? dens(px, py) : 1) * pocket * (1 - 0.30 * inner);
+        const keep = (dens ? dens(px, py) : 1) * shell * pocket;
         if (Math.random() < keep) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
@@ -5673,7 +5682,7 @@
     // by its own perspective term, so a dot at the front of a volume is drawn
     // larger than the same dot at the back without anything here saying so.
     const sz = Math.random();
-    seeds[i*4+3] = 0.95 * (sz < 0.30 ? 0.8 : sz < 0.70 ? 1.0 : 1.2); // size
+    seeds[i*4+3] = DOT_BASE * (sz < 0.30 ? 0.8 : sz < 0.70 ? 1.0 : 1.2); // size
     const c = pickInk(i);
     colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
     // 1, not a jitter. The opacity a particle renders at is authored on the
@@ -8445,7 +8454,9 @@
       const i = idx[k];
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1], z: cl.pos[i * 3 + 2],
-        r: 0.9 + (i % 5) * 0.26,
+        // the same three sizes the engine draws, off the same seed rather than
+        // a modulo pattern of its own -- one source of truth for grain too
+        r: Math.abs(seeds[i * 4 + 3]) * 1.30,
         a: cl.edge[i],          // already on the grid, already the opacity
         c: inkOf(i),
         ph: Math.random() * 6.28, sp: 0.5 + Math.random(),
@@ -8463,7 +8474,9 @@
     for (let i = N - AMB; i < N; i += step){
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
-        r: 0.9 + (i % 5) * 0.26,
+        // the same three sizes the engine draws, off the same seed rather than
+        // a modulo pattern of its own -- one source of truth for grain too
+        r: Math.abs(seeds[i * 4 + 3]) * 1.30,
         a: cl.edge[i],
         c: inkOf(i),
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]
@@ -8816,7 +8829,12 @@
                   + (0.20 + 0.24 * fract(sp * 3.1)) * Math.exp(-Math.pow((un - w2) / 0.16, 2)));
             }
           }
-          let rr2 = q.r;
+          // Depth in the size, which the engine gets free from its perspective
+          // divide and this had no equivalent of: a dot at the front of the
+          // volume is drawn a fifth larger than the same dot at the back, so
+          // size, opacity and position all say the same thing about where a
+          // particle is.
+          let rr2 = q.r * (0.90 + 0.20 * Math.min(1, Math.max(0, q.z / 0.9 + 0.5)));
           if (sph){
             let zz = q.z + 0.06 * Math.sin(T * 0.11 + q.sz * 6.28);
             // The material moves, not only the pattern in it. Same field as the

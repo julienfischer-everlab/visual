@@ -723,23 +723,41 @@ Depth carries 40% of the opacity score (up from 25%) and the z spread is a
 quarter deeper, so front, middle and back separate instead of averaging into
 a mass.
 
-### Density: pockets, and a thinner middle
+### The library is the source of truth
 
-Sampling has been two wrong things in turn. It biased hard toward the outline
-— `0.07 + 0.93 × exp(-d / 3.5)`, six times the density two pixels from a
-boundary as twenty — which read as an outline with a fill behind it. Made
+Every authoring decision about a particle lives in one place and is read by
+both renderers — the WebGL engine the product pages use and the 2D painter the
+library uses. Colour share, opacity grid, opacity bands, highlight share,
+density, and now `DOT_BASE`, the number a particle's size is a multiple of.
+The library's grain *is* the engine's grain because they read the same seed.
+
+The two renderers stay separate implementations, because they must: the engine
+morphs between organs on the GPU and the painter draws a still cloud on a
+canvas. What they may not do is hold separate opinions. When they have — the
+painter had its own five-step size formula, `0.9 + (i % 5) × 0.26`, and its
+own alpha buckets — the library quietly showed something the product pages did
+not, which is the one thing a reference sheet must never do.
+
+### Density: denser at the edge, open in the core
+
+Sampling has been three things. It biased hard toward the outline — `0.07 +
+0.93 × exp(-d / 3.5)` — which read as an outline with a fill behind it. Made
 uniform, it read as a solid: **uniform density through a silhouette *is* a
 filled shape.** What makes a volume look like one is being able to see through
-parts of it.
+parts of it — and what makes it read as a *form* is a boundary that is denser
+than the middle without being a line.
 
-Two terms now, and neither draws an outline:
+Two terms now:
 
+- `shell = 0.55 + 0.45 × exp(−d / 7)` — about **1.6 to 1** from boundary to
+  core, so the form has a defined outside and an open middle. The first
+  version of this ran **13 to 1** and drew an outline with a fill behind it;
+  the difference between an edge that is denser and an edge that is a *line*
+  is entirely in that ratio.
 - `pocket = 0.70 + 0.30 × noise(x/15, y/15)` — smooth value noise at about a
-  fifteenth of the shape, so density drifts between fuller and sparser regions
-  the way a real material does rather than being even everywhere.
-- `inner = 1 − exp(−d / 7)`, taking **30% out of the middle**, where a viewer
-  is looking through the most tissue and the projection piles up. Enough to
-  see into; far short of a shell.
+  fifteenth of the shape, so density also drifts between fuller and sparser
+  regions the way a real material does. Without it the shell term alone reads
+  as a clean gradient, which is a rendering, not a volume.
 
 A shape's own `dens` function still applies on top — that is its say in which
 of *its* regions gather particles, which is not an edge bias.
