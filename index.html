@@ -8322,10 +8322,17 @@
       gl.uniform2f(U.uCB, ORGANS[ib].x, ORGANS[ib].y);
       bindPair(ia, ib);
       setShape(ia, f);
-      // a morph is two clouds at once, so it draws as many as the fuller of
-      // the pair asks for -- anything less would drop points out of one of
-      // them mid-step
-      gl.drawArrays(gl.POINTS, 0, Math.max(orgDrawN(ia), orgDrawN(ib)));
+      // A morph is two clouds at once, so the count travels between them the
+      // way everything else about the pair does. It used to take the larger of
+      // the two outright, on the grounds that anything less drops points out of
+      // one of them mid-step -- but the hero holds that count at rest as well,
+      // and a slide whose neighbour is three times denser was then drawing
+      // three times its own asset. The nerve, at 1,587 points beside the body's
+      // 4,700, came out as a solid mass instead of a stipple. Interpolated, the
+      // resting count is the slide's own and the moving one is between the two,
+      // which is what the rest of the morph already is.
+      gl.drawArrays(gl.POINTS, 0,
+        Math.round(orgDrawN(ia) + (orgDrawN(ib) - orgDrawN(ia)) * f));
       gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
       setShape(-1, 1);
       gl.uniform1f(U.uP, 1);
@@ -9375,9 +9382,12 @@
     const mul = (ORGANS[i] && ORGANS[i].dots) || 1;
     return ORG_N[i] = organN(fullTarget(cl) * mul);
   }
-  // The single-organ pages draw one cloud, or two while it is changing.
+  // The single-organ pages draw one cloud, or a count between two while it is
+  // changing -- for the same reason the hero pair does: the larger of the two
+  // held at rest is another organ's density wearing this one's shape.
   const heroDrawN = () => uPnow >= 1 ? orgDrawN(current)
-                        : Math.max(orgDrawN(previous), orgDrawN(current));
+    : Math.round(orgDrawN(previous) +
+                 (orgDrawN(current) - orgDrawN(previous)) * Math.max(0, uPnow));
   window.__dbg = () => ({ cur: current, label: ORGANS[current].label,
     n: orgDrawN(current), all: ORGANS.map((o,i)=>o.label+':'+orgDrawN(i)) });
 

@@ -1228,6 +1228,33 @@ two calls is not arbitrary either — B is written first so the colours left
 standing belong to the resting slide, which is where `f` sits.
 
 
+### 5.44 A count taken as a maximum is another organ's density
+
+"The nerve is very, very condensed after the morph lands." It was, by exactly
+three times, and the reason is one word in the hero's draw call.
+
+A morph is two clouds at once, so the hero drew `max(orgDrawN(ia),
+orgDrawN(ib))` — anything less drops points out of one of them mid-step, which
+is true. What is not true is that the pair only exists mid-step: the hero holds
+that same expression at rest, so a slide sitting next to a denser one draws its
+neighbour's count. The nerve asks for 1,587 points. The body next to it asks
+for 4,700. The nerve was drawn with 4,700 — its own particles, three times over
+the density its shape was sampled for, which on a shape made of *lines* rather
+than volume is the difference between a stipple and a solid mass.
+
+Interpolating instead of maximising fixes both ends at once. `nA + (nB - nA) *
+f` gives the resting slide its own count and the moving one a count between the
+two, which is what every other property of the pair already does. Ink over the
+organ's own box, on the two phone heroes: 14.07 and 13.41 against the library
+tile's 4.63 before, 6.73 and 7.48 after.
+
+The general lesson is worth naming because it is the second time in this file:
+**a clamp that is correct during a transition is wrong at rest, and a
+transition's expression is evaluated at rest far more often than in flight.**
+The same `max` had been written into `heroDrawN` for the single-organ pages; it
+is interpolated there too now.
+
+
 ---
 
 ## 6. Open items
