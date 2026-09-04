@@ -1198,6 +1198,36 @@ call and counting its lit pixels through a change shows it present the whole
 way, spreading mid-morph rather than disappearing.
 
 
+### 5.43 A morph is two streams, not one stream drawn twice
+
+The hero drew its flow only once the carousel had settled — `f < 0.02` — so
+through the whole swipe there was no stream, and it snapped back on at the end.
+That is the worst possible moment to hide it: the swipe is the one time a
+reader is watching the thing move.
+
+The reasoning behind the gate was sound as far as it went. A lane is built in
+one cloud's normalised frame; drawn over another cloud it lands nowhere. But
+the hero is not showing one cloud mid-swipe, it is showing two, interpolated by
+`uP` — and the flow can have the same two ends. The outgoing organ's lanes go
+in the A slot, the incoming organ's in B, `uP` takes the swipe's own fraction,
+and every flow dot travels from one shape to the other inside the cloud that is
+doing the same thing around it.
+
+What that needed was for "the flow of organ X" to become a function you can
+evaluate into either slot, rather than a procedure that writes `posB` for
+`current`. Two arguments — which organ, which slot — and one more that matters:
+**the packet channels are state, not geometry.** The pulse and signal presets
+carry a handful of live packets, and evaluating a second organ in the same
+frame would step their clock twice. The second call places the packets it
+already has along the other shape's lanes, which is exactly what a morph wants:
+the same dots, a different path.
+
+Measured by isolating the flow's own draw call: 0 lit pixels for the whole
+swipe before, ~1,090 continuously after, on both phone heroes. The order of the
+two calls is not arbitrary either — B is written first so the colours left
+standing belong to the resting slide, which is where `f` sits.
+
+
 ---
 
 ## 6. Open items

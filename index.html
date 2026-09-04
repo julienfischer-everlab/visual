@@ -6328,9 +6328,13 @@
     const dx = (bx - ax) / segLen, dy = (by - ay) / segLen;
     return [ax + (bx - ax) * st - dy * off, ay + (by - ay) * st + dx * off];
   }
-  function updateSignals(pr, rt, t){
+  function updateSignals(pr, rt, t, dst, dstBuf, advance){
     const sg = pr.signals;
-    updateSignalPackets(t, rt, sg);
+    // The packets are one piece of state, not one per organ: a morph asks
+    // for the same dots drawn along another shape's lanes, so the second
+    // evaluation of a frame places the packets it already has rather than
+    // running the clock twice.
+    if (advance !== false) updateSignalPackets(t, rt, sg);
     const time = t / 1000;
     for (let f = 0; f < FLOWN; f++){
       const gi = FSTART + f, i3 = gi * 3;
@@ -6350,7 +6354,7 @@
         const u = (flowU0[f] + time * flowSpd[f] * lanePace(pr, pi) / (pr.loop * 2)) % 1;
         const off = (flowLane[f] * pr.width + Math.sin(time * 0.9 + flowU0[f] * 25) * pr.turb) * rt.k;
         const q = alongPath(P, u, off);
-        posB[i3] = q[0]; posB[i3 + 1] = q[1]; posB[i3 + 2] = flowZ[f] * 20 * rt.k;
+        dst[i3] = q[0]; dst[i3 + 1] = q[1]; dst[i3 + 2] = flowZ[f] * 20 * rt.k;
         a = pr.op * sg.ambient * Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1)
           * (1 - 0.4 * Math.abs(flowZ[f]));
       } else {
@@ -6364,7 +6368,7 @@
             const P = rt.paths[pu.p % rt.paths.length];
             const u = pu.dir > 0 ? w : 1 - w;
             const q = alongPath(P, u, flowLane[f] * pr.width * rt.k * 0.45);
-            posB[i3] = q[0]; posB[i3 + 1] = q[1]; posB[i3 + 2] = flowZ[f] * 10 * rt.k;
+            dst[i3] = q[0]; dst[i3 + 1] = q[1]; dst[i3 + 2] = flowZ[f] * 10 * rt.k;
             a = sg.op * Math.pow(1 - slot, sg.decay)
               * Math.min(1, w / 0.06) * Math.min(1, (1 - w) / 0.12);
           }
@@ -6372,19 +6376,27 @@
       }
       colors[gi * 4 + 3] = Math.min(flowA(pr), a * tA);
     }
-    gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
-    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
+    gl.bindBuffer(gl.ARRAY_BUFFER, dstBuf);
+    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, dst.subarray(FSTART * 3, TOT * 3));
     gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
   }
 
-  function updateFlow(t){
-    const pr = FLOW_PRESETS[current];
-    const rt = getFlowRT(current);
-    if (!pr || !rt) return;
-    if (pr.signals){ updateSignals(pr, rt, t); return; }
+  // Which organ's stream, and into which slot. A morph is two streams -- the
+  // one being left and the one being arrived at -- so the same maths has to be
+  // able to write either end of the interpolation the shader already does for
+  // the cloud. `advance` is off for the second call of a frame: the packet
+  // channels are one piece of state and stepping them twice would run their
+  // clock at double speed.
+  function updateFlow(t, idx, dst, dstBuf, advance){
+    if (idx == null) idx = current;
+    if (!dst){ dst = posB; dstBuf = bufB; }
+    const pr = FLOW_PRESETS[idx];
+    const rt = getFlowRT(idx);
+    if (!pr || !rt) return false;
+    if (pr.signals){ updateSignals(pr, rt, t, dst, dstBuf, advance); return true; }
     if (pr.pulse){
-      updatePulses(t, rt);
+      if (advance !== false) updatePulses(t, rt);
       for (let f = 0; f < FLOWN; f++){
         const gi = FSTART + f;
         const pu = pulseCh[f % 4];
@@ -6407,18 +6419,18 @@
             const off = flowLane[f] * pr.width * rt.k * 0.5;
             x += -dyn * off; y += dxn * off;
             const i3 = gi * 3;
-            posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 14 * rt.k;
+            dst[i3] = x; dst[i3+1] = y; dst[i3+2] = flowZ[f] * 14 * rt.k;
             a = flowA(pr) * Math.pow(1 - slot, 1.8)
               * Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.1);
           }
         }
         colors[gi*4+3] = a;
       }
-      gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
-      gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
+      gl.bindBuffer(gl.ARRAY_BUFFER, dstBuf);
+      gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, dst.subarray(FSTART * 3, TOT * 3));
       gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
       gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
-      return;
+      return true;
     }
     const time = t / 1000;
     for (let f = 0; f < FLOWN; f++){
@@ -6438,16 +6450,17 @@
                 + Math.sin(time * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
       x += -dy * off; y += dx * off;
       const i3 = gi * 3;
-      posB[i3] = x; posB[i3+1] = y;
-      posB[i3+2] = flowZ[f] * 28 * rt.k; // embedded in the volume
+      dst[i3] = x; dst[i3+1] = y;
+      dst[i3+2] = flowZ[f] * 28 * rt.k; // embedded in the volume
       // ends fade so the loop never visibly resets; deeper dots are softer
       const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
       colors[gi*4+3] = flowA(pr) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
     }
-    gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
-    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
+    gl.bindBuffer(gl.ARRAY_BUFFER, dstBuf);
+    gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, dst.subarray(FSTART * 3, TOT * 3));
     gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
+    return true;
   }
 
   // ---------- carousel of health cards ----------
@@ -8332,14 +8345,33 @@
       // frame, it is the same one at another scale. The flow now behaves the
       // same on the phone as on the desktop, which is the point of it.
       //
-      // Still only at rest on the slide the preset belongs to: mid-swipe the
-      // pair is two different figures, and a lane drawn in one figure's frame
-      // lands nowhere in the other's. At rest f is 0 and the B slot
-      // contributes nothing, so it is the A slot that has to match.
-      const hf = FLOW_PRESETS[current];
-      if (hf && flowVis > 0.015 && ia === current && f < 0.02){
+      // And through the swipe, not only at rest. It used to be drawn only when
+      // the carousel had settled, on the grounds that a lane belongs to one
+      // figure and lands nowhere in another -- true of a single stream, but the
+      // pair is not one stream. It is two, and the shader is already
+      // interpolating a pair of clouds with uP. Give the flow the same two
+      // ends: the outgoing organ's lanes in the A slot, the incoming organ's in
+      // B, uP at the swipe's own fraction. The stream then travels from one
+      // shape to the other with the cloud around it rather than blinking off at
+      // the first pixel of the swipe and back on at the last -- which is the
+      // one moment a reader is actually watching the thing move.
+      //
+      // The second call does not advance the packet channels: those are one
+      // piece of state, and a morph wants the same dots placed along another
+      // shape's lanes, not a second clock. B is written first so the colours
+      // left in place are the resting slide's, which is where f sits.
+      if (flowVis > 0.015 && (FLOW_PRESETS[ia] || FLOW_PRESETS[ib])){
+        const gotB = updateFlow(t, ib, posB, bufB, false);
+        const gotA = updateFlow(t, ia, posA, bufA, false);
+        // A slide with no stream of its own -- the biomarker page -- has
+        // nothing to morph from or to, so the other end stands in for both and
+        // the flow simply holds still rather than reading a stale slot.
+        if (!gotA && gotB) updateFlow(t, ib, posA, bufA, false);
+        if (!gotB && gotA) updateFlow(t, ia, posB, bufB, false);
+        gl.uniform1f(U.uP, f);
         bindCloud(-1);
         gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
+        gl.uniform1f(U.uP, 1);
       }
     }
     bindCloud(-1);
