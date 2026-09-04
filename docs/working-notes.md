@@ -1097,6 +1097,48 @@ about 1.8 pixels for one drawn. That blur is a performance decision, not a
 design one, and it is the last of the difference — the same ink, slightly
 softer. The engine reproduces the tile's ink, not its resampling.
 
+### 5.40 A message that named the wrong fault
+
+A screenshot came back with the whole page under a 94%-black sheet reading
+**WEBGL UNAVAILABLE IN THIS BROWSER**. It was not. WebGL had answered — the
+context existed, the program had linked, the page had drawn. What had happened
+is that `drawFrame` threw ninety frames running, and the guard around it raises
+that same overlay without touching its text, which is written for a browser
+that has no WebGL at all. So the sheet sent a reader to their driver settings
+for a fault in this file, and stayed up for the rest of the session even if the
+next frame succeeded.
+
+Three things follow from that, and only one of them is the bug.
+
+**A shared overlay must be told what it is saying.** Four code paths raise it —
+no context, context lost, context restored, render failed — and three of them
+set the text first. The fourth inherited whatever was in the markup. It now
+names the failure and quotes `e.message`, because the person looking at the
+sheet is the only one who can read it back to me, and it lifts as soon as a
+frame completes.
+
+**A lookup read every frame must be total.** `orgDrawN` indexed `clouds`
+without checking, so one index that does not name a cloud is not one bad
+frame, it is every frame from then on. It returns 0 now.
+
+**And a shader must not read its own output.** The size clamp I had just added
+was written `if (gl_PointSize > 0.0) gl_PointSize = max(gl_PointSize, 1.0)`.
+`gl_PointSize` is an output; reading one back is undefined in GLSL ES 1.00, and
+a stricter driver than the software rasteriser I test against may refuse to
+compile it. Computed in a local and assigned once now. Worth being precise
+about what this does and does not explain: a shader that fails to compile
+throws during setup, so the frame loop never starts and this overlay never
+appears — it cannot be the fault in the screenshot. It is a hazard I shipped,
+found while looking for a different one, and it would have failed silently on
+hardware I cannot reach.
+
+The fault itself I could not reproduce: twenty-two modes, a sixty-second
+auto-cycle on six surfaces, every organ slide on every phone hero, and every
+card-state combination all came back clean. That is the honest state of it —
+the diagnostics are fixed, the fault is not found, and the next occurrence will
+say what it is.
+
+
 ---
 
 ## 6. Open items

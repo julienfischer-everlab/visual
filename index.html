@@ -5519,13 +5519,15 @@
       // organ's own radius, on the frame, or on the device pixel ratio, all of
       // which cancel against the projection. It is the one number the library
       // tile and a full-bleed phone hero then have in common.
-      gl_PointSize = abs(aSeed.w) * persp * uPix * uOrgK * mix(1.0, 1.35, uSq)
-                   * (1.0 - sphOff);
+      float ptSize = abs(aSeed.w) * persp * uPix * uOrgK * mix(1.0, 1.35, uSq);
       // Below a device pixel a dot stops being a faint dot and becomes no dot,
       // so the smallest cards would lose their cloud rather than draw a fine
       // one. Held at one pixel, and only there -- above it the grain is the
-      // library's, unmodified.
-      if (gl_PointSize > 0.0) gl_PointSize = max(gl_PointSize, 1.0);
+      // library's, unmodified. Computed in a local and assigned once, because
+      // gl_PointSize is an output: reading one back is undefined in GLSL ES 1.0
+      // and a stricter driver than the one this was written against is within
+      // its rights to refuse to compile it.
+      gl_PointSize = max(ptSize, 1.0) * (1.0 - sphOff);
       float tw = (0.90 + 0.10 * sin(uTime * 1.8 + aSeed.z * 21.0)) * sphLit;
       // voxel mode: quieter shimmer — data, not sparkle
       tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
@@ -5710,12 +5712,13 @@
       } else {
         float d = dot(c, c);
         if (d > 1.0) discard;
-        // A hard disc with an antialiased rim, not a soft blob. The library's
-        // dot is a flat square at exactly the alpha it was authored at -- the
-        // soft edge was taken off it so the 5% grid would survive to the pixel
-        // -- and a long falloff here was the engine quietly disagreeing twice:
-        // it lit a third of the area the tile lit for the same particle, and it
-        // multiplied a snapped alpha by a smooth ramp on the way to the screen.
+        // Ink spread to the rim rather than a lit core inside a soft halo. The
+        // library's dot is a flat square at exactly the alpha it was authored
+        // at -- the soft edge came off it so the 5% grid would survive to the
+        // pixel -- and the long plateau this had before was the engine quietly
+        // disagreeing twice: it lit about a third of the area the tile lit for
+        // the same particle, and it multiplied a snapped alpha by a smooth ramp
+        // on the way to the screen.
         gl_FragColor = vec4(vColor.rgb, vColor.a * (1.0 - d));
       }
     }`;
@@ -9279,8 +9282,13 @@
   const ORG_N = [];
   function orgDrawN(i){
     if (ORG_N[i] != null) return ORG_N[i];
+    // Total, because this is read from inside the render loop: an index that
+    // does not name a cloud must cost a frame nothing rather than throw one
+    // organ's mistake into every one of them.
+    const cl = clouds[i];
+    if (!cl) return 0;
     const mul = (ORGANS[i] && ORGANS[i].dots) || 1;
-    return ORG_N[i] = organN(fullTarget(clouds[i]) * mul);
+    return ORG_N[i] = organN(fullTarget(cl) * mul);
   }
   // The single-organ pages draw one cloud, or two while it is changing.
   const heroDrawN = () => uPnow >= 1 ? orgDrawN(current)
@@ -10657,15 +10665,36 @@
   // organ simply stopped existing — which reads as a missing visual rather than
   // as an error, and is impossible to tell apart from a layout bug. Schedule
   // first, then run the body under a guard.
-  let frameFails = 0;
+  let frameFails = 0, frameShown = false;
   function frame(t){
     requestAnimationFrame(frame);
-    try { drawFrame(t); frameFails = 0; }
+    try {
+      drawFrame(t);
+      frameFails = 0;
+      // A render fault can be one bad state rather than a dead page -- a slide
+      // the camera has not reached yet, a cloud still building. If frames are
+      // arriving again, take the sheet down rather than leaving the page under
+      // it for the rest of the session.
+      if (frameShown){
+        frameShown = false;
+        const n = document.querySelector('.nogl');
+        if (n) n.style.display = 'none';
+      }
+    }
     catch (e){
       if (!frameFails++) console.error('organ render failed', e);
       if (frameFails === 90){                  // ~1.5s of nothing: say so
         const n = document.querySelector('.nogl');
-        if (n) n.style.display = 'grid';
+        // Not "WebGL unavailable": WebGL answered, and saying otherwise sends
+        // a reader to their driver settings for a fault in this file. Name the
+        // failure and quote it, because the person who can see this message is
+        // the only one who can read it back.
+        if (n){
+          n.textContent = 'The organ could not be drawn — ' +
+            ((e && e.message) ? e.message : 'unknown error');
+          n.style.display = 'grid';
+          frameShown = true;
+        }
       }
     }
   }
