@@ -1280,50 +1280,34 @@ preset, read where the flow is drawn, not a branch on an organ's name. Any
 asset whose lanes converge can ask for the same behaviour by saying so.
 
 
-### 5.46 A quarter more edge is a ratio to solve, not a number to scale
+### 5.46 Two ends of one curve are one pair of equations
 
-"The edge should be more condensed by 25%." The sampler's acceptance is
-`0.424 + 0.740 * exp(-d/8)`, highest at the boundary and falling inward, so the
-obvious move is 0.740 x 1.25. That buys about 20% of what was asked for, and
-the reason is the constant: it sits under both ends, so scaling the coefficient
-raises the deep middle along with the boundary.
+"The edge should be more condensed by 25%." Then, on top of it, "less dense in
+the core by 4%, more condensed on the edge by 6%." Both are the same curve —
+`A + X * exp(-d/8)`, a constant plus a term that decays inward — and neither
+end of it can be set without moving the other. The constant sits under both, so
+scaling the coefficient by 1.25 lifts the deep middle along with the boundary
+and buys about 20% of what was asked.
 
-What a reader sees is the *ratio* between the two, because the count is fixed —
-a rejection test decides where particles land, never how many, so raising every
-weight raises nothing at all. Solve for the ratio instead:
+Solve for the pair instead:
 
-    (0.424 + X e^-0.25) / (0.424 + X e^-2.75) = 2.122 x 1.25   ->   X = 1.152
+    A + X e^-0.25 = edge      A + X e^-2.75 = core
 
-which takes the boundary from 2.12x the deep middle to 2.66x, measured 1.2509
-against the 1.25 asked for.
+The first ask: keep the core, take the boundary from 2.122x it to 2.655x —
+0.424 and 1.152. The second: 1.4004 and 0.4777, from 1.3212 x 1.06 and
+0.4976 x 0.96 — 0.395 and 1.290, and 2.93x.
+
+What any of it buys is the *ratio*, because a rejection test decides where
+particles land and never how many. Raising every weight raises nothing at all.
+Which also means a one-sided ask ("more edge") and a two-sided one ("more edge,
+less core") are the same kind of instruction: both are a tilt, and only the
+second says how steep in two numbers instead of one.
 
 The pixel-level effect is smaller than the weighting change and depends on the
 shape, which is worth saying rather than hiding: a lung, with a real interior to
-take from, moved its measured edge-to-core ink ratio 1.107 -> 1.346; a neuron,
-which is all edge and has no interior, moved 1.051 -> 1.057. Nothing can make a
-shape denser at the edge than it is in a middle it does not have.
-
-
-### 5.47 The grain has one knob, and it is not the one that was calibrated
-
-"Finer, more precise, more technical." There are two numbers that scale a dot
-and picking the wrong one undoes a session's work.
-
-`DOT_PIX` is the engine's calibration -- the number solved so a point sprite
-lands on the same grain the tile paints. It is not a design control; moving it
-makes the two renderers disagree again, which is exactly the divergence that
-took three rounds of measurement to find.
-
-`DOT_BASE` is the shared one. The 2D painter reads it through the seed
-(`|seed| * 1.30`), the vertex reads the same seed through `aSeed.w`, so one
-number moves both renderers in step and the parity survives. 0.95 -> 0.76.
-
-The flow had to come with it. Its seed was written as a bare `1.50`, which is
-the tile's own 1.95/1.30 ratio stated directly -- true only while `DOT_BASE`
-was 0.95. A finer cloud under a stream left at its old size is not a finer
-drawing, it is a cloud beneath a coarser stream, so the constant is written
-against `DOT_BASE` now and the ratio holds wherever the grain goes.
-
+take from, moved its measured edge-to-core ink ratio 1.107 -> 1.346 -> 1.414; a
+neuron, which is nearly all edge, has little interior to take from. Nothing can
+make a shape denser at the edge than it is in a middle it does not have.
 
 ---
 
