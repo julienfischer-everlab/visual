@@ -806,8 +806,8 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **9,200**. Measured in the library: brain 6,291 points, lungs
-5,070, nerve 2,316 (each including its flow layer). Recognisable, with black space
+The count is **8,280**. Measured in the library: brain 5,954 points, lungs
+4,387, nerve 2,214 (each including its flow layer). Recognisable, with black space
 between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which
