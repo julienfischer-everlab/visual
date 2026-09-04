@@ -5354,7 +5354,11 @@
     // "floating outside the organ" has to mean once opacity is the only
     // variable describing where a particle is.
     for (let i = N - AMB; i < N; i++){
-      edge[i] = OP_LO;
+      // Authored on the grid like everything else, and with a spread rather
+      // than one value: a field of strays reads as a cosmos when a few are
+      // clearly there and most are barely, and as dirt when they are all the
+      // same. Skewed low, so the handful that carry it are the exception.
+      edge[i] = opSnap(0.05 + 0.15 * Math.pow(Math.random(), 1.8));
       const r = (0.55 + Math.random() * 0.75) * tf.s;
       const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
       out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;
@@ -5943,7 +5947,13 @@
   // thing saying where a particle is.
   for (let i = N - AMB; i < N; i++){
     seeds[i*4+3] = -(0.5 + Math.random() * 0.9);
-    colors[i*4+3] *= 0.42;
+    // No 0.42 here any more, and its absence is the whole fix. The strays were
+    // authored at OP_LO, the bottom step of the grid, and this multiplied them
+    // to 0.021 -- under the half-step floor the shader snaps to zero. Every
+    // ambient particle, every frame, drawn and then rounded out of existence:
+    // the layer measured 0 lit pixels. A factor applied after the value was
+    // authored is exactly what the grid exists to keep out; the spread that
+    // replaced it is in buildCloud, on the grid, where it can be seen.
   }
   // ghost body: static outline particles, flagged by negative stagger
   for (let i = N; i < FSTART; i++){
@@ -8868,7 +8878,7 @@
   // A prefix of the stray range, for the same reason the cloud's subset is one:
   // the engine draws it as `drawArrays(N - AMB, AMB_VIEW)` and a contiguous
   // range is the only kind of subset a draw call can express.
-  const AMB_VIEW = 150;
+  const AMB_VIEW = 300;
   function ambPts2D(cl, id){
     if (ambCache[id]) return ambCache[id];
     const pts = [];

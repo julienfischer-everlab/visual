@@ -1412,6 +1412,31 @@ nothing to rebuild. Applying a saved palette later would mean re-uploading the
 buffer and dropping every sampled list to say something that could have been
 said first.
 
+### 5.53 A layer rounded out of existence
+
+"The floating particles around the visual are gone." They were: the ambient
+slice measured **0 lit pixels** on every surface, drawn every frame and
+arriving as nothing.
+
+The strays were authored at `OP_LO` -- 0.05, the bottom step of the grid -- and
+then multiplied by 0.42 in the buffer. 0.05 x 0.42 = 0.021, and the shader's
+last line rounds anything under half a step to zero. So the layer was not dim,
+it was absent, and it had been absent for as long as those two lines had sat
+next to each other.
+
+This is the exact failure the grid is meant to prevent, committed by the code
+that owns the grid. The rule is not "snap at the end" -- the snap was working
+perfectly, it is what deleted the layer. The rule is that **a factor applied
+after a value is authored is a second author**, and at the bottom of a
+quantised range a second author can only round down. The 0.42 is gone; the
+strays carry a spread of 0.05 to 0.20 written where the rest of the opacity is
+written, on the grid, skewed low so a few carry the field and most are barely
+there.
+
+`AMB_VIEW` went 150 -> 300 of the 350 built, which is the count both renderers
+read, so the tile and the product get the same field.
+
+
 ---
 
 ## 6. Open items
