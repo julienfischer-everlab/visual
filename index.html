@@ -4038,7 +4038,7 @@
   // ones: negative space between them is what lets a reader see through the
   // front layer to the ones behind it. Removed uniformly, since the sampling
   // is uniform -- there is no region this thins more than another.
-  const N = 3300;
+  const N = 4450;
   const AMB = 350; // ambient strays that float around the organ, never joining it
   const STAG = 0.35;                  // stagger fraction of the timeline
 
@@ -5115,10 +5115,14 @@
       // spends longer near zero: that is what makes the holes holes rather
       // than thin patches.
       //
-      // `bulk` takes 55% out of thick regions. `d` is the distance to the
-      // nearest boundary, so it is large exactly where a silhouette is a
-      // filled mass -- the middle of a liver, the body of a lung -- and those
-      // are the places a projection piles up most and a reader learns least.
+      // `bulk` runs 0.82 near a boundary to 0.38 deep inside one, a little
+      // over two to one. `d` is the distance to the nearest boundary, so the
+      // low end lands exactly where a silhouette is a filled mass -- the
+      // middle of a liver, the body of a lung -- which is where a projection
+      // piles up most and a reader learns least. The ratio widened from 1.8
+      // when the brief asked for a quarter more in the core and half again at
+      // the edges; the overall count carries the rest of that, since a
+      // rejection test only decides where particles land, never how many.
       //
       // Nothing here prefers the perimeter. The boundary keeps more particles
       // than the middle only because `bulk` takes fewer from it, and the noise
@@ -5133,7 +5137,7 @@
         const n2 = vnoise(px / 13 + 41.3, py / 13 + 17.7);
         const n3 = vnoise(px / 6 + 7.1, py / 6 + 91.4);
         const mask = Math.pow(0.16 + 0.84 * (0.50 * n1 + 0.32 * n2 + 0.18 * n3), 1.8);
-        const bulk = 1 - 0.55 * (1 - Math.exp(-d / 6));
+        const bulk = 0.36 + 0.64 * Math.exp(-d / 6);
         if (Math.random() < (dens ? dens(px, py) : 1) * mask * bulk) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
@@ -9151,7 +9155,7 @@
   // next to each other it reads as a thinner one, which is what it is. FULL is
   // the factor that closes the difference, and every 2D surface that means to
   // match the engine takes it from here rather than picking its own.
-  const FULL_DOTS = 1.10;   // in step with the engine's own count
+  const FULL_DOTS = 1.65;   // in step with the engine's own count
   const fullTarget = cl => Math.min(8600, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
 

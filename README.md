@@ -751,10 +751,16 @@ stippling; three give regions that are open, regions that are full, and grain
 inside both. The irregularity has to exist at more than one size or the eye
 reads it as texture rather than as space.
 
-**`bulk` takes 55% out of thick regions.** `d` is the distance to the nearest
-boundary, so it is largest exactly where a silhouette is a filled mass — the
-middle of a liver, the body of a lung — which is where a projection piles up
-most and a reader learns least.
+**`bulk` runs 0.82 near a boundary to 0.38 deep inside one** — a little over
+two to one. `d` is the distance to the nearest boundary, so the low end lands
+exactly where a silhouette is a filled mass — the middle of a liver, the body
+of a lung — which is where a projection piles up most and a reader learns
+least.
+
+Note what a rejection test can and cannot do: it decides **where** particles
+land, never **how many**. Asking for a quarter more in the core and half again
+at the edges is therefore two separate changes — the ratio widens from 1.8 to
+2.2 here, and the count carries the rest.
 
 **Nothing prefers the perimeter.** The boundary keeps more than the middle
 only because `bulk` takes less from it, and the noise cuts through the
@@ -763,8 +769,10 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **3,300**, down from 9,000 over four steps. Recognisable, and
-with black space between and behind the particles rather than a filled shape.
+The count is **4,450** — down from 9,000 over four steps, then back up by a
+third when the core and edges were asked for more. Measured in the library:
+brain 3,087 points, lungs 2,432, nerve 1,148. Recognisable, with black space
+between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which
 of *its* regions gather particles, which is not an edge bias.
