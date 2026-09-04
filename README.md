@@ -725,18 +725,37 @@ a mass.
 
 ### The library is the source of truth
 
-Every authoring decision about a particle lives in one place and is read by
-both renderers — the WebGL engine the product pages use and the 2D painter the
-library uses. Colour share, opacity grid, opacity bands, highlight share,
-density, and now `DOT_BASE`, the number a particle's size is a multiple of.
-The library's grain *is* the engine's grain because they read the same seed.
+Not a principle — a mechanism. The two renderers stay separate
+implementations, because they must: the engine morphs between organs on the
+GPU, the painter draws a still cloud on a canvas. What they may not do is hold
+separate opinions, and for a long time they did.
 
-The two renderers stay separate implementations, because they must: the engine
-morphs between organs on the GPU and the painter draws a still cloud on a
-canvas. What they may not do is hold separate opinions. When they have — the
-painter had its own five-step size formula, `0.9 + (i % 5) × 0.26`, and its
-own alpha buckets — the library quietly showed something the product pages did
-not, which is the one thing a reference sheet must never do.
+**Every authoring decision now lives in one place and is read by both.**
+Colour shares, the opacity grid and its bands, the highlight share, the
+density mask, `DOT_BASE` (the number a particle's size is a multiple of), and
+`FULL_DOTS` (the density of every organ everywhere).
+
+**Including how many particles there are.** This was the last and largest
+divergence: the library drew a subset from `dotTarget × FULL_DOTS`, and the
+engine drew the whole buffer — the same cloud at two densities. The engine
+now asks `orgDrawN(i)` for its count, and `orgDrawN` *is* the library's own
+target. Two things had to change to let it:
+
+- `cloudIdx` returns a **prefix**, not a stride. The cloud is built by
+  independent random sampling, so its order carries no meaning and the first
+  *k* particles are as uniform a subset as any other — and a prefix is the
+  only kind of subset `drawArrays(0, k)` can express. `ambPts2D` became a
+  prefix for the same reason.
+- the flow draws **200 dots** on both, `FLOW_VIEW`, and its particles carry
+  one size: the painter draws every flow dot at `1.95×` its base while a cloud
+  dot is `|seed| × 1.30` of the same base, so the ratio a reader sees is
+  `1.50` of a cloud dot. The engine states that ratio directly rather than
+  approximating it with a range.
+
+What is left differing between the two is only what a GPU and a canvas cannot
+share: the engine morphs and the painter does not, and the flow's phase is
+computed on two clocks. The asset itself — which particles, at what opacity,
+in what colour, at what size, with what flow — is one thing.
 
 ### Density: a mask of holes, not a distribution
 

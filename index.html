@@ -5334,6 +5334,10 @@
   const ghostPts = buildGhost(GB);
   const FSTART = N + GB;   // flow layer sits after organ + ambient + ghost
   const FLOWN = 780;   // divided evenly between the organs, the body included
+  // What ONE organ's flow is: the number a library tile draws, so a single
+  // organ's stream is the same stream on every surface. The slice stays 780
+  // because the grid partitions it nine ways.
+  const FLOW_VIEW = 200;
   const TOT = FSTART + FLOWN;
 
   // ---------- GL program ----------
@@ -5792,7 +5796,11 @@
     seeds[i*4]   = -2;                       // flow flag
     seeds[i*4+1] = Math.random() * 6.2832;
     seeds[i*4+2] = Math.random();
-    seeds[i*4+3] = 1.1 + Math.random() * 0.9;
+    // One size, and it is the tile's: the 2D painter draws every flow dot at
+    // 1.95x its base while a cloud dot is |seed| * 1.30 of the same base, so
+    // the ratio a reader sees is 1.95 / 1.30 = 1.50 of a cloud dot. The engine
+    // states that ratio directly rather than approximating it with a range.
+    seeds[i*4+3] = 1.50;
     // the flow layer's rgb is written once and never again: the presets set
     // alpha per frame, and which of the two inks a dot got does not change
     const fc = pickInk(f % N);
@@ -7388,11 +7396,12 @@
         Math.min(1, Math.abs(PILL[i].delta) / 7) * bright);
       gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul * (0.7 + 0.3 * effS));
       bindCloud(PILL[i].organIdx);
-      gl.drawArrays(gl.POINTS, 0, N);
+      gl.drawArrays(gl.POINTS, 0, orgDrawN(PILL[i].organIdx));
+      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);   // the loose shell, as the tile draws it
       // the flow layer lives in the main buffers; it rides the centre card
       if (PILL[i].organIdx === current && ad < 0.6 && flowVis > 0.015){
         bindCloud(-1);
-        gl.drawArrays(gl.POINTS, FSTART, FLOWN);
+        gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
       }
     }
     bindCloud(-1);
@@ -7926,13 +7935,14 @@
         (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
         Math.min(1, Math.abs(o.delta) / 7));
       bindCloud(o.organIdx);
-      gl.drawArrays(gl.POINTS, 0, N);
+      gl.drawArrays(gl.POINTS, 0, orgDrawN(o.organIdx));
+      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
       // and its flow, on the one slide whose organ the flow is currently
       // computed for — the same second draw off the live buffers every other
       // surface makes, so the phone's carousel carries what the desktop's does
       if (o.organIdx === current && flowVis > 0.015){
         bindCloud(-1);
-        gl.drawArrays(gl.POINTS, FSTART, FLOWN);
+        gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
       }
     }
     if (v4Hero && v4Ages.length){
@@ -8203,7 +8213,11 @@
       gl.uniform2f(U.uCB, ORGANS[ib].x, ORGANS[ib].y);
       bindPair(ia, ib);
       setShape(ia, f);
-      gl.drawArrays(gl.POINTS, 0, N);
+      // a morph is two clouds at once, so it draws as many as the fuller of
+      // the pair asks for -- anything less would drop points out of one of
+      // them mid-step
+      gl.drawArrays(gl.POINTS, 0, Math.max(orgDrawN(ia), orgDrawN(ib)));
+      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
       setShape(-1, 1);
       gl.uniform1f(U.uP, 1);
       // The flow layer lives in the main buffers, and the hero draws the cloud
@@ -8229,7 +8243,7 @@
       const hf = FLOW_PRESETS[current];
       if (hf && flowVis > 0.015 && ia === current && f < 0.02){
         bindCloud(-1);
-        gl.drawArrays(gl.POINTS, FSTART, FLOWN);
+        gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
       }
     }
     bindCloud(-1);
@@ -8498,13 +8512,19 @@
   // so the reachable counts jump in coarse increments and a density target can
   // land nowhere near them. Index k is the same particle for any two clouds at
   // the same count, which is what lets a morph lerp them pairwise.
+  // A PREFIX, not a stride. The cloud is built by independent random sampling,
+  // so its order carries no meaning and the first k particles are as uniform a
+  // subset as any other -- and being a prefix is what lets the engine draw the
+  // identical set with one `drawArrays(0, k)`. A stride cannot be expressed as
+  // a contiguous range, which is the whole reason the two renderers used to
+  // show different numbers of the same organ.
   function cloudIdx(target){
-    const M = N - AMB;
-    const count = Math.max(1, Math.min(M, Math.round(target)));
+    const count = organN(target);
     const idx = new Int32Array(count);
-    for (let k = 0; k < count; k++) idx[k] = Math.floor(k * M / count);
+    for (let k = 0; k < count; k++) idx[k] = k;
     return idx;
   }
+  const organN = t => Math.max(1, Math.min(N - AMB, Math.round(t)));
   function samplePts(cl, id, target){
     const key = id + '@' + target;
     if (pts2DCache[key]) return pts2DCache[key];
@@ -8527,11 +8547,14 @@
   }
   // the ambient strays the engine feeds into the organ; same tail of the cloud
   const ambCache = {};
+  // A prefix of the stray range, for the same reason the cloud's subset is one:
+  // the engine draws it as `drawArrays(N - AMB, AMB_VIEW)` and a contiguous
+  // range is the only kind of subset a draw call can express.
+  const AMB_VIEW = 150;
   function ambPts2D(cl, id){
     if (ambCache[id]) return ambCache[id];
-    const step = Math.max(1, Math.ceil(AMB / 150));
     const pts = [];
-    for (let i = N - AMB; i < N; i += step){
+    for (let i = N - AMB; i < N - AMB + AMB_VIEW; i++){
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
         // the same three sizes the engine draws, off the same seed rather than
@@ -9200,9 +9223,25 @@
   // next to each other it reads as a thinner one, which is what it is. FULL is
   // the factor that closes the difference, and every 2D surface that means to
   // match the engine takes it from here rather than picking its own.
-  const FULL_DOTS = 2.31;   // in step with the engine's own count
+  // The density of every organ everywhere. Since the engine asks orgDrawN()
+  // for its count and orgDrawN is the library's own target, this one number
+  // moves both renderers together and there is nothing else to keep in step.
+  const FULL_DOTS = 2.08;
   const fullTarget = cl => Math.min(8600, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
+  // ---- how many particles an organ is, full stop ----------------------------
+  // The library was showing a subset and the engine was drawing the whole
+  // buffer, which is two different pictures of one asset: the same cloud at
+  // two densities. This is the number, for both. It is the library's own --
+  // `dotTarget` iterated to a constant on-screen gap, times FULL_DOTS, times
+  // the shape's own `dots` say -- and the engine now asks for it rather than
+  // for N. Memoised, because dotTarget iterates.
+  const ORG_N = [];
+  function orgDrawN(i){
+    if (ORG_N[i] != null) return ORG_N[i];
+    const mul = (ORGANS[i] && ORGANS[i].dots) || 1;
+    return ORG_N[i] = organN(fullTarget(clouds[i]) * mul);
+  }
 
   // ---- no GPU: the organ still has to be on the page -------------------------
   // The engine is drawing into a stub, so nothing appears where the canvas is.
@@ -10300,7 +10339,8 @@
         Math.min(1, Math.abs(PILL[i].delta) / 7) * 0.85);
       gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul * 0.85);
       bindCloud(PILL[i].organIdx);
-      gl.drawArrays(gl.POINTS, 0, N);
+      gl.drawArrays(gl.POINTS, 0, orgDrawN(PILL[i].organIdx));
+      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
       if (flowVis > 0.015){
         // each cell draws only its own partition of the flow slice
         bindCloud(-1);
