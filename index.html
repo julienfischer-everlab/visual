@@ -4207,9 +4207,27 @@
   // saturation held: a warmer ink, not a different one. Rotating rather than
   // hand-picking is what keeps the three a family -- pick three warmer colours
   // by eye and the steps between them stop being the steps they were.
-  let INK_CSS = '163,84,66';                                    // #A35442
-  let MID_CSS = '208,164,150';                                  // #D0A496
-  let LIT_CSS = '242,235,231';                                  // #F2EBE7
+  //
+  // Then again, and this time in three channels at once: "shinier, a bit more
+  // saturated, 20% warmer, orange-red". Same discipline -- each ink is the old
+  // one moved in HSL, not a new pick -- and the same three moves for all three:
+  //
+  //   hue         +5 degrees toward orange       (warmer)
+  //   saturation  x1.20                          (the 20%, taken literally)
+  //   lightness   +0 / +2 / +1.5 points          (the shine, which is the light
+  //                                              inks lifting and the deep one
+  //                                              holding, so contrast grows)
+  //
+  //   #A35442  hsl(11, 42%, 45%)  ->  hsl(16, 50%, 45%)    #AC5839
+  //   #D0A496  hsl(14, 38%, 70%)  ->  hsl(20, 46%, 72%)    #D8AD97
+  //   #F2EBE7  hsl(22, 30%, 93%)  ->  hsl(26, 36%, 94.5%)  #F6F0EC
+  //
+  // The flow is the third ink alone, so its lift is the flow going brighter --
+  // which is where "shiny" reads first, a stream of near-white through a warmer
+  // cloud.
+  let INK_CSS = '172,88,57';                                    // #AC5839
+  let MID_CSS = '216,173,151';                                  // #D8AD97
+  let LIT_CSS = '246,240,236';                                  // #F6F0EC
   // A saved palette is restored here rather than applied later, because here is
   // before anything has read the three: the colour buffer is built from them,
   // the tiles bake them into their sampled points. Restoring afterwards would
@@ -4217,9 +4235,17 @@
   // first. Storage can throw -- a private window, a browser set to refuse it --
   // and a palette is not worth a dead page, so it fails back to the defaults.
   const INK_KEY = 'everlab.inks';
+  // A palette saved without being changed is the old defaults written down,
+  // and it would pin the page to them for ever -- every warmer set of three
+  // authored here would be silently overridden by a Save pressed weeks ago. So
+  // the previous defaults are known by name, and a saved set that IS them is
+  // treated as no choice at all. A set that differs from them was chosen, and
+  // stands.
+  const OLD_INKS = [['163,84,66', '208,164,150', '242,235,231']];
   try {
     const saved = JSON.parse(localStorage.getItem(INK_KEY) || 'null');
-    if (saved && saved.length === 3) [INK_CSS, MID_CSS, LIT_CSS] = saved;
+    const isOld = s => OLD_INKS.some(o => o.every((v, i) => v === s[i]));
+    if (saved && saved.length === 3 && !isOld(saved)) [INK_CSS, MID_CSS, LIT_CSS] = saved;
   } catch (e){ /* defaults stand */ }
   const rgb01 = c => c.split(',').map(v => +v / 255);
   // `let`, because the tweak bar can set them live. Everything downstream reads
@@ -4308,6 +4334,10 @@
   // fraction of that other thing" has to be stored as that fraction, or it
   // stops being true the moment the grain moves.
   const AMB_MUL = 0.85;
+  // And their opacity, as a multiple of the shared lift: 1.25 is "the floating
+  // particles a quarter more visible", asked for on its own, so it sits on its
+  // own rather than being folded into BRIGHT where it would move the organ too.
+  const AMB_A = 1.25;
   // How big a dot is against the organ it belongs to. It used to be a column in
   // MODES, one number per page, because the old size law made the ratio drift
   // with how large the organ was drawn -- a page that framed it big got thin
@@ -5434,7 +5464,11 @@
       // thinner dot lights fewer pixels, so holding the field at the same
       // alpha would have made "thinner" mean "gone". 53 lit pixels measured
       // at the first attempt, against 720.
-      edge[i] = opSnap(BRIGHT * (0.10 + 0.15 * Math.pow(Math.random(), 1.8)));
+      // And a quarter more on top of the shared lift, for this layer alone:
+      // the strays were asked for at +25%. Same place as BRIGHT, before the
+      // snap, for the same reason -- on the grid a lift applied after rounding
+      // would move only the values that happened to sit near a step.
+      edge[i] = opSnap(BRIGHT * AMB_A * (0.10 + 0.15 * Math.pow(Math.random(), 1.8)));
       const r = (0.55 + Math.random() * 0.75) * tf.s;
       const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
       out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;

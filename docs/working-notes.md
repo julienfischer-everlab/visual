@@ -1633,6 +1633,68 @@ saturation. Two tiles did not move: Iris and Sphere already sit at the buffer
 nothing in the product selects. The brain, the largest filled organ, lands at
 10,578 -- the cap is close now, and the next density ask will need `N` raised.
 
+### 5.61 Three channels at once, still as a transform
+
+"Shinier, a bit more saturated, 20% warmer, orange-red -- it's all about
+colours here." Three adjectives, three HSL channels, and the same rule as the
+last time the inks moved: each is the old ink transformed, not a new pick, and
+all three get the same transform so the steps between them stay the steps they
+were.
+
+    hue         +5 degrees toward orange
+    saturation  x1.20
+    lightness   +0 / +2 / +1.5 points
+
+    #A35442 -> #AC5839      #D0A496 -> #D8AD97      #F2EBE7 -> #F6F0EC
+
+The lightness column is where "shiny" went. Shine in a particle cloud is
+contrast between the near points and the mass, so the deep ink holds and the
+two light ones lift -- and since the flow is now the third ink alone, the flow
+is what goes brightest: a stream of near-white through a warmer cloud, which is
+where the eye reads shine first.
+
+Measured on screen as the direction and chroma of (pixel - background), which
+is the ink's own hue and saturation whatever alpha it was drawn at:
+
+| | hue | saturation |
+|---|---|---|
+| library Brain | 22.3 -> 28.6 deg | 0.373 -> 0.448 (+20%) |
+| library Heart | 22.4 -> 29.5 deg | 0.371 -> 0.440 (+19%) |
+| phone m20 | 12.8 -> 17.5 deg | 0.430 -> 0.479 (+11%) |
+| desk m18 | 12.6 -> 17.2 deg | 0.440 -> 0.490 (+11%) |
+
+The tile takes the full 20%; the engine takes half of it, because its cloud is
+denser and more dots composite over each other toward the light ink, which
+desaturates. Same authored colour, two surfaces, two saturations -- the grain
+is unified but the overlap is not, and it cannot be, since the engine draws the
+organ several times the tile's size.
+
+**A saved palette that is the old defaults is not a choice.** The tweak bar's
+Save writes the three to storage and the page restores them before anything
+reads them. Which means a Save pressed once, without changing anything, would
+have pinned that browser to the old inks for ever, and every warmer set
+authored here after it would have been silently overridden -- the file would
+say one thing and the screen another, with nothing to point at. So the previous
+defaults are listed by name (`OLD_INKS`), and a saved set that matches one of
+them is ignored. A set that differs was chosen, and stands.
+
+### 5.62 The strays' own opacity, on their own constant
+
+"The floating particles a quarter more visible." The strays are authored on
+their own line in `buildCloud`, already through `BRIGHT`, so the lift goes on a
+constant of their own next to `AMB_MUL` rather than into `BRIGHT` -- `AMB_A =
+1.25`, before the snap like everything else, so the rounding falls where it
+falls rather than moving only the values already near a step. 0.15-0.35 on the
+grid becomes 0.20-0.45. Measured with nothing but the stray slice drawn on m20:
+ink 3.36 -> 4.50, of which the quarter is the alpha and the rest is the lighter
+inks landing on the same pixels.
+
+The probe had to be corrected first. It counted from 11,895, which was
+`N - AMB` when AMB was 350, and read zero on both sides -- a measurement of the
+right thing at the wrong address, and a zero that would have been believed if
+the baseline had not also come back zero. Two identical wrong answers are the
+tell.
+
 ---
 
 ## 6. Open items

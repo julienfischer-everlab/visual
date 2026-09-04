@@ -702,9 +702,16 @@ sorting into regions:
 
 | | role | share | opacity |
 |---|---|---|---|
-| `#A34442` | the material | 60% | 20–50% |
-| `#D09A96` | a lighter tone of it | 25% | 12–40% |
-| `#F2E9E7` | warm off-white | 15% | 5–25% |
+| `#AC5839` | the material | 60% | 20–50% |
+| `#D8AD97` | a lighter tone of it | 25% | 12–40% |
+| `#F6F0EC` | warm off-white | 15% | 5–25% |
+
+These are the third set. Each move has been a transform of the previous three
+in HSL rather than a re-pick — a hue rotation toward orange first, then hue
++5°, saturation ×1.20 and the two light inks lifted a point or two — because
+three colours picked by eye stop being the steps they were. Defaults only: a
+palette saved from the tweak bar wins, unless it is a previous default written
+down unchanged, which is treated as no choice.
 
 The ranges overlap, and **the brightest colour has the lowest ceiling**. That
 is the rule that keeps fifteen percent of the particles from reading as
@@ -973,9 +980,9 @@ curve that favours the low end:
 
 | | band | most of them |
 |---|---|---|
-| `#A34442` | 20–50% | 20–30% |
-| `#D09A96` | 15–40% | 15–25% |
-| `#F2E9E7` | 5–25% | 5–15% |
+| `#AC5839` | 20–50% | 20–30% |
+| `#D8AD97` | 15–40% | 15–25% |
+| `#F6F0EC` | 5–25% | 5–15% |
 
 **10% — depth highlights, 55–90%.** Chosen for frontness, but with more than
 half their score their own draw, so they scatter through the near face instead
