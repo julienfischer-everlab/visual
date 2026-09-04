@@ -1139,6 +1139,38 @@ the diagnostics are fixed, the fault is not found, and the next occurrence will
 say what it is.
 
 
+### 5.41 A soft edge has to be measured in the unit it is seen in
+
+The falloff that made a phone hero's dots match the library tile turned a
+full-bleed organ into fog. Both are the same line of shader — `(1.0 - d)`,
+alpha falling from the centre to the rim — and that is the fault: it is a
+share of the dot's own radius, so it scales with the dot. At a pixel and a
+half across there is no room for a gradient and it reads as a soft point,
+which is what the tile's upscaled backing store looks like and what I
+calibrated against. At twelve pixels across the same line is a gradient
+twelve pixels wide, and the organ is made of nothing but out-of-focus balls.
+
+Softness belongs in pixels, because that is the unit an edge is seen in. The
+vertex publishes the sprite's size as a varying and the fragment sets the rim
+to about one pixel of it, whatever the size. Two guards make that work at the
+ends: the rim is capped at the radius, or a small dot never reaches its own
+authored alpha anywhere and the cloud silently loses a third of its ink; and
+the size still has a one-pixel floor, because below that a dot is not a fine
+dot but no dot.
+
+`DOT_PIX` has to be re-solved after any change to the falloff — the shape of
+the dot and the size of the dot both set how much ink lands on the page, so
+they are one calibration and not two. Solid discs carry more than blurred ones
+at the same radius, which is why the number moved with the edge.
+
+*And, for the second time in this file: a backtick in a comment, inside the
+template literal holding the shader, closed the string. The page threw
+`Unexpected identifier 'vPt'` — a JavaScript error naming a GLSL variable.
+Note 5.32 says exactly this. Knowing the trap is not the same as not falling
+into it; what caught it in one step was running the error probe before the
+measurement probe, rather than after.*
+
+
 ---
 
 ## 6. Open items

@@ -771,9 +771,16 @@ page gave the organ, the finer its grain got.**
 was authored at — the soft edge came off it so the 5% grid would survive to
 the pixel. The engine drew a disc under `smoothstep(1.0, 0.38, d)`, which lit
 about a third of the area for the same particle and multiplied a snapped alpha
-by a smooth ramp on the way to the screen. It is `(1.0 - d)` now: ink spread
-to the rim, `DOT_PIX` solved so the total ink over the organ's box matches the
-tile's.
+by a smooth ramp on the way to the screen.
+
+The edge is now **a pixel, not a fraction of the radius**. Written as a share
+of the dot it is invisible at two pixels across and a fog bank at twelve —
+which is what a full-bleed organ is made of — so the vertex publishes the
+sprite's size as `vPt` and the rim is about one pixel wide at every size,
+capped at the radius so it never eats a small dot's centre. That leaves a
+small dot soft the way the library's upscaled tile is, and a large one with an
+edge. `DOT_PIX` is then solved so the total ink over the organ's box matches
+the tile's.
 
 `uZoom` is always written as a layout constant over the organ's own radius, so
 `uZoom × r` is that constant on its own — how much of the frame the organ
