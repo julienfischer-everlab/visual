@@ -1280,6 +1280,30 @@ preset, read where the flow is drawn, not a branch on an organ's name. Any
 asset whose lanes converge can ask for the same behaviour by saying so.
 
 
+### 5.46 A quarter more edge is a ratio to solve, not a number to scale
+
+"The edge should be more condensed by 25%." The sampler's acceptance is
+`0.424 + 0.740 * exp(-d/8)`, highest at the boundary and falling inward, so the
+obvious move is 0.740 x 1.25. That buys about 20% of what was asked for, and
+the reason is the constant: it sits under both ends, so scaling the coefficient
+raises the deep middle along with the boundary.
+
+What a reader sees is the *ratio* between the two, because the count is fixed —
+a rejection test decides where particles land, never how many, so raising every
+weight raises nothing at all. Solve for the ratio instead:
+
+    (0.424 + X e^-0.25) / (0.424 + X e^-2.75) = 2.122 x 1.25   ->   X = 1.152
+
+which takes the boundary from 2.12x the deep middle to 2.66x, measured 1.2509
+against the 1.25 asked for.
+
+The pixel-level effect is smaller than the weighting change and depends on the
+shape, which is worth saying rather than hiding: a lung, with a real interior to
+take from, moved its measured edge-to-core ink ratio 1.107 -> 1.346; a neuron,
+which is all edge and has no interior, moved 1.051 -> 1.057. Nothing can make a
+shape denser at the edge than it is in a middle it does not have.
+
+
 ---
 
 ## 6. Open items

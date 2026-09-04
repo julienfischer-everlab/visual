@@ -5219,7 +5219,16 @@
         const n2 = vnoise(px / 13 + 41.3, py / 13 + 17.7);
         const n3 = vnoise(px / 6 + 7.1, py / 6 + 91.4);
         const mask = Math.pow(0.42 + 0.58 * (0.36 * n1 + 0.28 * n2 + 0.36 * n3), 1.5);
-        const bulk = 0.424 + 0.740 * Math.exp(-d / 8.0);
+        // 1.152, from 0.740: a quarter more edge, solved rather than nudged.
+        // What a reader sees is the ratio between the boundary and the deep
+        // middle, not either weight on its own -- the count is fixed, so
+        // raising both ends raises nothing. The constant sits under both, so
+        // the coefficient has to be solved for the ratio it produces:
+        // (0.424 + X*e^-0.25) / (0.424 + X*e^-2.75) = 2.124 * 1.25 gives
+        // X = 1.152, and the boundary goes from 2.12x the deep middle to
+        // 2.65x. Scaling 0.740 by 1.25 would have bought 20% of it, because
+        // the floor rises with it.
+        const bulk = 0.424 + 1.152 * Math.exp(-d / 8.0);
         if (Math.random() < (dens ? dens(px, py) : 1) * mask * bulk) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
