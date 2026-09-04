@@ -6124,7 +6124,14 @@
               [[56,46],[86,80],[122,118],[148,148],[176,184],[250,216],[336,244]],
               [[152,30],[162,68],[152,108],[150,148],[176,184],[250,216],[336,244]],
               [[42,266],[76,230],[116,190],[146,152],[176,184],[240,214],[336,244]]],
-      pulse: true, loop: 8, op: 0.5, width: 2.5, turb: 0.6, tone: [0.90,0.80,0.94] }, // neuron: impulse bursts
+      // `late`: this stream does not travel with the morph, it arrives after it.
+      // Every one of the neuron's paths ends at the same axon terminal, so a
+      // layer interpolating toward them converges on one corner rather than
+      // spreading along a shape -- true of the geometry, not of a bug, and the
+      // only asset here it is true of. So it sits the transition out and eases
+      // in once the pair has landed.
+      pulse: true, late: true,
+      loop: 8, op: 0.5, width: 2.5, turb: 0.6, tone: [0.90,0.80,0.94] }, // neuron: impulse bursts
     { paths: [[[170,34],[170,82],[142,108],[122,165],[118,215]], [[170,34],[170,82],[198,108],[214,165],[218,210]]],
       loop: 9,  op: 0.55, width: 5, turb: 2.5, tone: [0.97,0.93,0.86] },            // lungs: airflow (lighter tone)
     { paths: [[[250,60],[236,110],[224,170],[198,242],[158,288]], [[158,288],[148,230],[158,160],[184,118],[196,62]], [[162,108],[138,78],[114,60]]],
@@ -6401,6 +6408,19 @@
         const gi = FSTART + f;
         const pu = pulseCh[f % 4];
         let a = 0;
+        // A dot with no packet is invisible, and for a long time that was taken
+        // to mean its position did not matter. It does: a morph interpolates
+        // every slot whether or not this preset lit it, so a slot left
+        // untouched carries some other organ's coordinate into the blend and
+        // the whole layer flies to it. Parked on this shape's own path at its
+        // stable phase -- still invisible, but somewhere that belongs to the
+        // organ it is being drawn for.
+        {
+          const P = rt.paths[flowPick[f] % rt.paths.length];
+          const q = alongPath(P, flowU0[f], flowLane[f] * pr.width * rt.k * 0.5);
+          const i3 = gi * 3;
+          dst[i3] = q[0]; dst[i3+1] = q[1]; dst[i3+2] = flowZ[f] * 14 * rt.k;
+        }
         if (pu && t >= pu.t0){
           // each dot trails the packet head by its stable slot; the trail
           // dies away fast behind the head — a glow, not a stream
@@ -8375,10 +8395,22 @@
         // the flow simply holds still rather than reading a stale slot.
         if (!gotA && gotB) updateFlow(t, ib, posA, bufA, false);
         if (!gotB && gotA) updateFlow(t, ia, posB, bufB, false);
-        gl.uniform1f(U.uP, f);
-        bindCloud(-1);
-        gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
-        gl.uniform1f(U.uP, 1);
+        // One asset sits the transition out. See `late` in FLOW_PRESETS: the
+        // neuron's paths all end at the same terminal, so a layer interpolating
+        // between its lanes and another shape's piles into that corner instead
+        // of travelling. Eased rather than switched, so it arrives.
+        const lateNow = (FLOW_PRESETS[ia] && FLOW_PRESETS[ia].late) ||
+                        (FLOW_PRESETS[ib] && FLOW_PRESETS[ib].late);
+        const want = (lateNow && f > 0.004 && f < 0.996) ? 0 : 1;
+        lateFlow += (want - lateFlow) * (want ? 0.055 : 0.34);
+        if (lateFlow > 0.004){
+          gl.uniform1f(U.uFlowVis, flowVis * lateFlow);
+          gl.uniform1f(U.uP, f);
+          bindCloud(-1);
+          gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
+          gl.uniform1f(U.uP, 1);
+          gl.uniform1f(U.uFlowVis, flowVis);
+        }
       }
     }
     bindCloud(-1);
@@ -10521,6 +10553,9 @@
   let flowVis = -1;
   // true until the opening gather has landed; see the copy in drawFrame
   let flowStart = true;
+  // How much of the flow a `late` preset is allowed while its pair is moving:
+  // 0 in flight, easing back to 1 once landed, so it arrives rather than snaps.
+  let lateFlow = 1;
   // colour (the burgundy the concept is designed in), dark, or light
   let lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
   // the organ card can take a colour of its own again, the same in every theme

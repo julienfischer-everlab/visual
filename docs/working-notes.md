@@ -1255,6 +1255,31 @@ The same `max` had been written into `heroDrawN` for the single-organ pages; it
 is interpolated there too now.
 
 
+### 5.45 One shape's geometry, not one shape's bug
+
+The neuron's flow piled into the bottom-right corner every time the hero
+morphed into it. Two things were true at once, and only one of them was a bug.
+
+The bug: a `pulse` preset writes a position only for the dots currently inside
+a packet. A morph interpolates *every* slot whether or not this preset lit it,
+so the seven-hundred-odd untouched slots carried whatever coordinate was last
+written into them — some other organ's lanes — and the whole layer flew there.
+Inactive dots are parked on this shape's own path at their stable phase now:
+still invisible, but somewhere that belongs to the organ being drawn.
+
+The geometry: all four of the neuron's paths end at the same axon terminal. A
+layer interpolating between another shape's lanes and this one's therefore
+*converges*, whatever the slots hold — it does not spread along a shape,
+because the shape's lanes do not spread at that end. That is not something to
+fix; it is what a neuron is. So this preset carries `late`, and its stream sits
+the transition out and eases in once the pair has landed. Eased in both
+directions rather than switched, or the exception would be its own pop.
+
+Worth being precise about the shape of the exception: it is one flag on one
+preset, read where the flow is drawn, not a branch on an organ's name. Any
+asset whose lanes converge can ask for the same behaviour by saying so.
+
+
 ---
 
 ## 6. Open items
