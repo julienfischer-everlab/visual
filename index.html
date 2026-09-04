@@ -4043,32 +4043,35 @@
   const STAG = 0.35;                  // stagger fraction of the timeline
 
   // navigation modes, switchable from the top bar
+  // No dot-size column: the grain is one constant (DOT_PIX) read against the
+  // organ's framing, so a page describes its layout and its pace and nothing
+  // about the particles.
   const MODES = [
-    { name: 'Card Nav', dur: 1800, ease: 1, pix: 1.35 , group: 'Concept' }, // card carousel, hard S-curve pace
-    { name: 'Pill Nav', dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // pill chips, arc below the organ
-    { name: 'Desktop', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 1 }, // organ card inside the product dashboard
-    { name: 'Card flip', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // rotating card carousel of organs
-    { name: 'Grid',     dur: 850,  ease: 0, pix: 1.35 , group: 'Concept' }, // outlined 3-across organ grid
-    { name: 'Mobile', dur: 850, ease: 0, pix: 1.35 , group: 'Base', sort: 4 }, // the bento every mobile variant wears; not offered on its own
-    { name: 'Mobile',   dur: 850, ease: 0, pix: 1.35 , group: 'Overview page', sort: 2 }, // the Overview frame on its own
-    { name: 'Library',  dur: 850,  ease: 0, pix: 1.35 , group: 'Library' }, // the isolated-organ component library
-    { name: 'Immersive experience (modal)', dur: 850, ease: 0, pix: 1.35 , group: 'Concept' }, // organ age as a lab instrument
-    { name: 'Desktop', dur: 850, ease: 0, pix: 1.35 , group: 'Overview page', sort: 1 },
-    { name: 'Desktop V2', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 2 }, // organ age split off its own card
-    { name: 'Mobile V2', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 6 }, // hero pair, coverage beside steps, organ age wide beneath
-    { name: 'Mobile V1', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 7 }, // coverage folded into the hero, organ age beside steps
-    { name: 'Desktop V1', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 3 }, // coverage in the hero, one mini card, the body list given room
-    { name: 'Desktop V3', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 4 }, // the insight header as one coloured block over a white page
-    { name: 'Mobile V3', dur: 850, ease: 0, pix: 1.35 , group: 'Biomarkers page', sort: 9 },
-    { name: 'Mobile V4', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 10 },
-    { name: 'Mobile V5', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 11 }, // the same, folded to the phone
+    { name: 'Card Nav', dur: 1800, ease: 1, group: 'Concept' }, // card carousel, hard S-curve pace
+    { name: 'Pill Nav', dur: 850,  ease: 0, group: 'Concept' }, // pill chips, arc below the organ
+    { name: 'Desktop', dur: 850, ease: 0, group: 'Biomarkers page', sort: 1 }, // organ card inside the product dashboard
+    { name: 'Card flip', dur: 850, ease: 0, group: 'Concept' }, // rotating card carousel of organs
+    { name: 'Grid',     dur: 850,  ease: 0, group: 'Concept' }, // outlined 3-across organ grid
+    { name: 'Mobile', dur: 850, ease: 0, group: 'Base', sort: 4 }, // the bento every mobile variant wears; not offered on its own
+    { name: 'Mobile',   dur: 850, ease: 0, group: 'Overview page', sort: 2 }, // the Overview frame on its own
+    { name: 'Library',  dur: 850,  ease: 0, group: 'Library' }, // the isolated-organ component library
+    { name: 'Immersive experience (modal)', dur: 850, ease: 0, group: 'Concept' }, // organ age as a lab instrument
+    { name: 'Desktop', dur: 850, ease: 0, group: 'Overview page', sort: 1 },
+    { name: 'Desktop V2', dur: 850, ease: 0, group: 'Biomarkers page', sort: 2 }, // organ age split off its own card
+    { name: 'Mobile V2', dur: 850, ease: 0, group: 'Biomarkers page', sort: 6 }, // hero pair, coverage beside steps, organ age wide beneath
+    { name: 'Mobile V1', dur: 850, ease: 0, group: 'Biomarkers page', sort: 7 }, // coverage folded into the hero, organ age beside steps
+    { name: 'Desktop V1', dur: 900, ease: 0, group: 'Biomarkers page', sort: 3 }, // coverage in the hero, one mini card, the body list given room
+    { name: 'Desktop V3', dur: 900, ease: 0, group: 'Biomarkers page', sort: 4 }, // the insight header as one coloured block over a white page
+    { name: 'Mobile V3', dur: 850, ease: 0, group: 'Biomarkers page', sort: 9 },
+    { name: 'Mobile V4', dur: 850, ease: 0, group: 'Biomarkers page', sort: 10 },
+    { name: 'Mobile V5', dur: 850, ease: 0, group: 'Biomarkers page', sort: 11 }, // the same, folded to the phone
     // Named for what it is rather than for how many came before it. The
     // version number was the menu carrying its own history, which is what the
     // archive is for now; the marker class stays `b5`, because renaming that
     // rewires the renderer.
-    { name: 'Desktop', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 5 }, // V1 wearing the phone's reading of the organ
-    { name: 'Mobile V6', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 12 }, // V5 with the biomarkers folded into the hero
-    { name: 'Mobile', dur: 850, ease: 0, pix: 1.70 , group: 'Biomarkers page', sort: 13 }, // V6 again, to diverge from; marker stays `v8`
+    { name: 'Desktop', dur: 900, ease: 0, group: 'Biomarkers page', sort: 5 }, // V1 wearing the phone's reading of the organ
+    { name: 'Mobile V6', dur: 850, ease: 0, group: 'Biomarkers page', sort: 12 }, // V5 with the biomarkers folded into the hero
+    { name: 'Mobile', dur: 850, ease: 0, group: 'Biomarkers page', sort: 13 }, // V6 again, to diverge from; marker stays `v8`
     // Desktop V5 in a frame two hundred pixels narrower. It was a tweak on V5
     // first, which made it a state of another page rather than a design you
     // can link to, sit beside its siblings in the menu, or open on its own.
@@ -4076,7 +4079,7 @@
     // rule V5 wears plus the marker the tablet layout is written against.
     // 5.5 rather than 6: it sits between the two current designs in the menu,
     // and saying so with a fraction cannot collide with an existing sort.
-    { name: 'Tablet', dur: 900, ease: 0, pix: 1.30 , group: 'Biomarkers page', sort: 5.5 },
+    { name: 'Tablet', dur: 900, ease: 0, group: 'Biomarkers page', sort: 5.5 },
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
@@ -4163,6 +4166,13 @@
   // vertex through aSeed.w and by the 2D painter through the same seed, so
   // the grain is the library's grain everywhere.
   const DOT_BASE = 0.95;
+  // How big a dot is against the organ it belongs to. It used to be a column in
+  // MODES, one number per page, because the old size law made the ratio drift
+  // with how large the organ was drawn -- a page that framed it big got thin
+  // grain and had to be compensated by hand. The law reads the framing now, so
+  // there is nothing left to compensate and nothing left to set per page: one
+  // constant, calibrated against the library tile.
+  const DOT_PIX = 2.60;
   const HL_SHARE = 0.10;
   const opBright = p => opSnap(0.55 + 0.35 * Math.min(1, Math.max(0, p)));
   // What the 2D painter puts on screen, snapped the same way the shader's last
@@ -5352,7 +5362,7 @@
     attribute vec4 aSeed;   // x stagger, y curve angle, z noise phase, w size
     attribute vec4 aColor;
     ${GLSL_OP}
-    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uRange, uFill;
+    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uOrgK, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uRange, uFill;
     uniform vec2 uFillY;
     // (on, pupil radius, limbus radius) in cloud units — the iris dilates and
     // its furrows light in turn, and both need the two radii to mean anything
@@ -5502,8 +5512,20 @@
       pos = uRot * ((pos - vec3(uCenter.x, uCenter.y, 0.0)) * uZoom);
       float persp = 1.0 / (1.0 - pos.z * 0.22);
       gl_Position = vec4(pos.x * persp * uView.x + uPan.x, pos.y * persp * uView.y + uYOff + uPan.y, 0.0, 1.0);
-      gl_PointSize = abs(aSeed.w) * persp * uPix * pow(uZoom, 0.35) * mix(1.0, 1.35, uSq)
+      // A dot is a fixed fraction of the organ it belongs to, on every surface.
+      // uZoom carries 1.0/r, so uOrgK -- uZoom times that same r -- is the
+      // layout constant on its own: how much of the frame the organ fills. Size
+      // the dot by that and the dot-to-organ ratio stops depending on the
+      // organ's own radius, on the frame, or on the device pixel ratio, all of
+      // which cancel against the projection. It is the one number the library
+      // tile and a full-bleed phone hero then have in common.
+      gl_PointSize = abs(aSeed.w) * persp * uPix * uOrgK * mix(1.0, 1.35, uSq)
                    * (1.0 - sphOff);
+      // Below a device pixel a dot stops being a faint dot and becomes no dot,
+      // so the smallest cards would lose their cloud rather than draw a fine
+      // one. Held at one pixel, and only there -- above it the grain is the
+      // library's, unmodified.
+      if (gl_PointSize > 0.0) gl_PointSize = max(gl_PointSize, 1.0);
       float tw = (0.90 + 0.10 * sin(uTime * 1.8 + aSeed.z * 21.0)) * sphLit;
       // voxel mode: quieter shimmer — data, not sparkle
       tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
@@ -5706,12 +5728,20 @@
   gl.useProgram(prog);
 
   const U = {};
-  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY','uIris','uSphere'])
+  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uOrgK','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY','uIris','uSphere'])
     U[n] = gl.getUniformLocation(prog, n);
   gl.uniform2f(U.uPan, 0, 0);
   gl.uniform1f(U.uAlpha, 1);
   gl.uniform1f(U.uSq, 0);
   gl.uniform1f(U.uLight, 0);
+  // The zoom is never set without the radius it was divided by: the dot size
+  // reads the product, and a zoom written on its own would size the dots by
+  // whichever organ happened to be framed last. One call, so the pair cannot
+  // come apart.
+  const setZoom = (z, r) => {
+    gl.uniform1f(U.uZoom, z);
+    gl.uniform1f(U.uOrgK, z * r);
+  };
 
   // ---------- buffers ----------
   const posA = new Float32Array(TOT * 3);
@@ -7162,16 +7192,15 @@
 
   // ---------- resize ----------
   let W = 0, H = 0, dpr = 1, effDim = 700, canvOX = 0, canvOY = 0;
-  // the dot size rides on effDim, so a narrow dashboard card would thin the
-  // organ to near-invisible points — hold a floor under it in situ
-  // The dashboard clamps its dot size because a sub-pixel particle disappears.
-  // V4 needs the same floor for the same reason from the other direction: it
-  // draws the organ in dark ink on a light grey, where a 1px dot reads as
-  // nothing, while the burgundy pages get away with it because a bright dot on
-  // a dark ground glows.
-  const pixScale = () => isDash(version) ? Math.max(0.42, effDim / 700)
-    : document.body.classList.contains('v5') ? Math.max(0.46, effDim / 700)
-    : effDim / 700;
+  // Two floors used to live here, one for the dashboard and one for V5: a
+  // narrow card thinned the organ to invisible points, so those pages held
+  // their dot size up by hand. Under the old size law that was the only fix
+  // available, and it cost them the library's grain — a card with the floor
+  // active drew dots half again as coarse as the tile does. The floor belongs
+  // where the problem is, which is a dot narrower than a pixel, not a page
+  // that happens to be narrow: the shader clamps the point size itself now,
+  // and the scale here is what it says it is on every surface.
+  const pixScale = () => effDim / 700;
   function resize(){
     dpr = Math.min(devicePixelRatio || 1, 2);
     // the dashboard starts exactly where the bar ends — no background sliver
@@ -7261,7 +7290,7 @@
     // it pushes the organ off the top of the card — let it shrink to fit instead
     effDim = Math.min(W, Math.max(isDash(version) ? 140 : 220, H - topH - botH));
     gl.uniform2f(U.uView, 0.78 * effDim / W, 0.78 * effDim / H);
-    gl.uniform1f(U.uPix, MODES[version].pix * dpr * pixScale());
+    gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale());
     // pill mode: organ sits 80px lower for breathing room under the top bar
     // uYOff lands in clip space, which spans H pixels over two units, so a
     // pixel push is twice its value here: -128 sits the organ 64px lower
@@ -7390,11 +7419,11 @@
       gl.uniformMatrix3fv(U.uRot, false, [cyr, 0, -syr, 0, 1, 0, syr, 0, cyr]);
       gl.uniform2f(U.uPan, effX * 2 / W, (ch * 0.055 * effS) * 2 / H);
       gl.uniform1f(U.uAlpha, bright);
-      gl.uniform1f(U.uZoom, (cw / effDim) * 0.62 / org.r * effS);
+      setZoom((cw / effDim) * 0.62 / org.r * effS, org.r);
       gl.uniform1f(U.uWarm,
         (PILL[i].delta > 0 ? 1 : PILL[i].delta < 0 ? -1 : 0) *
         Math.min(1, Math.abs(PILL[i].delta) / 7) * bright);
-      gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul * (0.7 + 0.3 * effS));
+      gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale() * sizeMul * (0.7 + 0.3 * effS));
       bindCloud(PILL[i].organIdx);
       gl.drawArrays(gl.POINTS, 0, orgDrawN(PILL[i].organIdx));
       gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);   // the loose shell, as the tile draws it
@@ -8142,9 +8171,9 @@
                       : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
       const rBody = ORGANS[bioIdx(MB[0])].r;
       const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
-      gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
-                            (v7On() ? V6_HERO : 1) *
-                            zFix * (1 + 0.30 * bodyShown) * (1 - 0.05 * irisShown));
+      setZoom(zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
+              (v7On() ? V6_HERO : 1) *
+              zFix * (1 + 0.30 * bodyShown) * (1 - 0.05 * irisShown), orgR);
       // The fill rises on the same cue and over the same span as the arc's
       // sweep: they are one reveal of one reading, and running them on two
       // clocks left the body still filling after the meter had finished. It
@@ -10333,11 +10362,11 @@
       // particles accumulate brightness where they overlap, so a linear
       // alpha reads far brighter than the text — square it to match
       gl.uniform1f(U.uAlpha, Math.pow(gA[i], 2));
-      gl.uniform1f(U.uZoom, (Math.min(r.width, r.height) / effDim) * 0.6 / org.r);
+      setZoom((Math.min(r.width, r.height) / effDim) * 0.6 / org.r, org.r);
       gl.uniform1f(U.uWarm,
         (PILL[i].delta > 0 ? 1 : PILL[i].delta < 0 ? -1 : 0) *
         Math.min(1, Math.abs(PILL[i].delta) / 7) * 0.85);
-      gl.uniform1f(U.uPix, MODES[version].pix * dpr * (effDim / 700) * sizeMul * 0.85);
+      gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale() * sizeMul * 0.85);
       bindCloud(PILL[i].organIdx);
       gl.drawArrays(gl.POINTS, 0, orgDrawN(PILL[i].organIdx));
       gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
@@ -10725,8 +10754,8 @@
     gl.uniform2f(U.uCB, morphCB.x, morphCB.y);
     gl.uniform1f(U.uOrgR, orgR);
     gl.uniform1f(U.uGhost, ghostVis);
-    gl.uniform1f(U.uZoom, zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
-                          (v7On() ? V6_HERO : 1));
+    setZoom(zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
+            (v7On() ? V6_HERO : 1), orgR);
 
     gl.uniform1f(U.uP, uPnow);
     gl.uniform1f(U.uTime, t * 0.001);
@@ -10839,7 +10868,7 @@
     }
 
     gl.uniform1f(U.uDens, densNow = dens);
-    gl.uniform1f(U.uPix, MODES[version].pix * dpr * pixScale() * sizeMul);
+    gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale() * sizeMul);
     voxNow += ((voxOn ? 1 : 0) - voxNow) * 0.08;
     gl.uniform1f(U.uSq, voxNow);
     // theme crossfade: particles re-ink and the clear colour glides between

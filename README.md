@@ -752,10 +752,42 @@ target. Two things had to change to let it:
   `1.50` of a cloud dot. The engine states that ratio directly rather than
   approximating it with a range.
 
+**And how big a dot is against the organ it belongs to.** Counts, colours and
+opacities can all agree and the picture still not match, because a particle
+system *is* its grain — the ratio between one dot and the thing the dots are
+making. The engine sized a dot by `pow(uZoom, 0.35)`, deliberately sublinear
+so a narrow card kept visible points; the organ's size on screen is linear in
+the same zoom, so the ratio ran as `uZoom^-0.65` and **the more of the frame a
+page gave the organ, the finer its grain got.** A phone hero covered 15% of
+its own bounding box where the library tile covered 53%.
+
+`uZoom` is always written as a layout constant over the organ's own radius, so
+`uZoom × r` is that constant on its own — how much of the frame the organ
+fills, with the organ's size divided out. `setZoom` sends the pair together as
+`uOrgK`, the dot size reads it, and the frame, the device pixel ratio and the
+organ's radius all cancel against the projection. Measured across ten
+surfaces, dot-to-organ is `0.0079` on all of them; before, it ran `0.0079` to
+`0.0129`.
+
+Two knobs went with it, both of which existed only to fight the old law:
+
+- **the `pix` column in `MODES` is gone.** One constant, `DOT_PIX`, calibrated
+  against the library tile. A page describes its layout and its pace and
+  nothing about the particles.
+- **the two floors in `pixScale` are gone**, replaced by a clamp on
+  `gl_PointSize` itself at one device pixel. A dot narrower than a pixel is
+  not a fine dot, it is no dot — that is a fact about pixels, not about
+  dashboards. The smallest dashboard cards sit on that clamp, and they are the
+  one place the library's grain cannot be reproduced: 2,900 dots at the
+  library's ratio would be sub-pixel there.
+
 What is left differing between the two is only what a GPU and a canvas cannot
-share: the engine morphs and the painter does not, and the flow's phase is
-computed on two clocks. The asset itself — which particles, at what opacity,
-in what colour, at what size, with what flow — is one thing.
+share: the engine morphs and the painter does not, the flow's phase is
+computed on two clocks, and the product surfaces read the verdict into the
+particles — `verdA` thins a share of them by up to 49% when an organ is far
+from its baseline, which the library has no verdict to apply. The asset itself
+— which particles, at what opacity, in what colour, at what size against the
+organ, with what flow — is one thing.
 
 ### Density: a mask of holes, not a distribution
 

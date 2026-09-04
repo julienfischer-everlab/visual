@@ -1052,6 +1052,43 @@ attempts got wrong in both directions.
 
 ---
 
+### 5.39 Same count, same colours, same opacities — and a different picture
+
+The two renderers had already been made to agree on every list: the same
+particles, the same subset, the same three inks, the same 5% opacity grid, the
+same flow. A phone hero still did not look like the library tile, and the
+measurement said why. Coverage of the organ's own bounding box: library 0.53,
+phone 0.15. Nothing in the lists was wrong. The dots were a third of the size
+they should have been *relative to the organ*, and a particle system is its
+grain — the ratio between one dot and the thing the dots are making.
+
+The engine sized a dot by `pow(uZoom, 0.35)`, sublinear on purpose so a small
+card kept visible points. But the organ's size on screen is linear in the same
+zoom, so the ratio ran as `uZoom^-0.65`: **the more of the frame a page gave
+the organ, the finer its grain got.** Every page then compensated by hand,
+which is what the `pix` column in `MODES` was, and what two floors in
+`pixScale` were. Twenty-two numbers holding down a law that was pulling the
+wrong way.
+
+`uZoom` is always written as a layout constant over the organ's own radius, so
+`uZoom * r` *is* the layout constant — how much of the frame the organ fills,
+with the organ's own size divided out. Size the dot by that and the frame, the
+device pixel ratio and the organ's radius all cancel against the projection.
+Measured across ten surfaces afterwards, dot-to-organ came back 0.00791 on
+nine of them and 0.00794 on the tenth, where before it ran 0.0079 to 0.0129.
+One number, so there is exactly one place left to set it.
+
+Two things this cost, both worth saying out loud. The per-page `pix` column is
+gone, and with it the ability to make one page's grain coarser than another's
+— which was the bug, not a feature. And the floors are gone from `pixScale`,
+replaced by a clamp on `gl_PointSize` itself at one device pixel: a dot
+narrower than a pixel is not a fine dot, it is no dot, and that is a fact
+about pixels rather than about dashboards. The smallest cards sit on that
+clamp, which is the one place the library's grain cannot be reproduced —
+2,900 dots at the library's ratio would be sub-pixel there.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
