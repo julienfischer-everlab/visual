@@ -1171,6 +1171,33 @@ into it; what caught it in one step was running the error probe before the
 measurement probe, rather than after.*
 
 
+### 5.42 The flow had a "before" it should never have had
+
+"The flow appears a second after the visual." Two causes, and neither was the
+flow's own opacity — the authored alpha measures flat at 165.7 from the first
+frame through a whole organ change.
+
+`flowVis` started at zero and eased toward one at 0.05 a frame: about seven
+tenths of a second to arrive. Worse, the same value gates `updateFlow`, so for
+those frames the dots were not being put on their paths at all. It is seeded at
+its target on the first frame now and smooths only if something changes it
+later.
+
+And the flow's A slot is zero-filled at startup, so the opening gather dragged
+every flow dot out of a knot at the origin: the stream only became a stream
+near the end of the gather. Holding A on the live positions until the gather
+lands leaves nothing to travel from — the streams are already running while the
+cloud arrives. Measured at the first frame, the flow's ink went from 24% of its
+settled value to 53%; the rest of the ramp is the opening camera move, which
+grows the organ and the flow together.
+
+An organ change was already right and is untouched: `freezeInto` writes the
+flow's A slot from where the dots actually are, so they travel with the cloud
+instead of snapping to the new organ's paths. Isolating the flow's own draw
+call and counting its lit pixels through a change shows it present the whole
+way, spreading mid-morph rather than disappearing.
+
+
 ---
 
 ## 6. Open items

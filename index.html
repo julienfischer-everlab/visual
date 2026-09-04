@@ -10425,7 +10425,15 @@
   const voxOn = false;
   let voxNow = 0;
   const flowOn = true;
-  let flowVis = 0;
+  // Not zero: zero is a fade-in, and a fade-in is the flow arriving a second
+  // after the organ it belongs to. The first frame seeds this at its target
+  // (below) so the streams are running before the opening gather starts --
+  // the gate on `updateFlow` also reads it, so a slow ramp meant the dots were
+  // not on their paths yet either, and the cloud gathered to positions the
+  // flow had not been given. It smooths only when something changes it later.
+  let flowVis = -1;
+  // true until the opening gather has landed; see the copy in drawFrame
+  let flowStart = true;
   // colour (the burgundy the concept is designed in), dark, or light
   let lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
   // the organ card can take a colour of its own again, the same in every theme
@@ -11001,11 +11009,26 @@
     // flow dots morph with the cloud, so they stay visible throughout —
     // they scatter into the environment and regroup as the next streams
     const fvT = (flowOn && !reduced) ? 1 : 0;
-    flowVis += (fvT - flowVis) * 0.05;
+    if (flowVis < 0) flowVis = fvT; else flowVis += (fvT - flowVis) * 0.05;
     gl.uniform1f(U.uFlowVis, flowVis);
     if (flowVis > 0.015){
       if (version === 4) updateFlowGrid(t);   // grid: one flow per cell
       else updateFlow(t);
+      // The flow does not have a "before". Its A slot is zero-filled at
+      // startup, so the opening gather dragged every flow dot out of a knot at
+      // the origin and the stream only became a stream near the end of it --
+      // which reads as the flow arriving a second after the organ. Holding A
+      // on the live positions until the gather lands means there is nothing to
+      // travel from: the streams are already running while the cloud arrives.
+      // An organ change is different and already correct -- freezeInto writes
+      // the flow's A slot from where the dots actually are, so they travel with
+      // the cloud rather than snapping to the new paths.
+      if (flowStart){
+        posA.set(posB.subarray(FSTART * 3, TOT * 3), FSTART * 3);
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufA);
+        gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posA.subarray(FSTART * 3, TOT * 3));
+        if (uPnow >= 1) flowStart = false;
+      }
     }
 
     // the range fill belongs to V6's biomarker slide alone; every other path
