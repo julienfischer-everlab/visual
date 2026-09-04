@@ -798,10 +798,12 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **5,450** — down from 9,000 over four steps, then back up as the
-core, the edges and the core again were asked for more. Measured in the
-library: brain 3,553 points, lungs 2,789, nerve 1,400 (each including its
-flow layer). Recognisable, with black space
+The count is **7,100** — down from 9,000 over four steps, then back up as the
+core, the edges, the core again and finally everything were asked for more.
+Measured in the library: brain 4,330 points, lungs 3,499, nerve 1,761 (each
+including its flow layer). The shape of the mask has not moved through any of
+those: the holes are the same holes, and only how many particles sit between
+them has changed. Recognisable, with black space
 between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which
