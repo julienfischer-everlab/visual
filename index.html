@@ -4185,6 +4185,10 @@
   // decide the paths, the pace and the turbulence, which is what they were
   // for. See the shader, where the flow takes its own alpha path entirely.
   const FLOW_A = 0.30;
+  // one preset's own share of that level, for the rare case where a figure's
+  // geometry makes the same number read as more or less flow than its
+  // neighbours
+  const flowA = pr => FLOW_A * (pr && pr.vis != null ? pr.vis : 1);
 
   // ---------- organ silhouettes drawn to an offscreen canvas ----------
   const S = 340;
@@ -5299,7 +5303,10 @@
   // no camera travel or angle change between organs
   const ORGANS = [
     { label: 'Brain',   cloud: () => buildCloud(drawBrain,   52, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
-    { label: 'Nerves',  cloud: () => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    // A shape made of thin branches: the constant-gap target that suits a
+    // filled organ leaves a dendrite reading as a dotted line rather than a
+    // limb, so it takes 30% more than the gap alone asks for.
+    { label: 'Nerves',  cloud: () => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78, dots: 1.30 },
     { label: 'Lungs',   cloud: () => buildCloud(drawLungs,   46, 1.02, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Heart',   cloud: () => buildCloud(drawHeart,   55, 0.88, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Cells',   cloud: () => buildCloud(drawCells,   42, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
@@ -6048,7 +6055,12 @@
       loop: 17, op: 0.55, width: 1.1, turb: 0.3, tone: [0.92,0.62,0.60] },          // biological age: the fingerprint's own ridges
     { paths: [[[164,200],[166,148],[166,104],[166,70]], [[164,200],[126,214],[100,252],[88,306]],
               [[164,200],[206,214],[234,252],[248,306]], [[166,120],[166,210],[168,306]]],
-      loop: 12, op: 0.5,  width: 4, turb: 1.2, tone: [0.92,0.62,0.60] },            // body: circulation, heart outward
+      // `vis` scales this preset's share of FLOW_A and nothing else's. The
+      // body is the one figure whose flow runs the whole height of the frame
+      // rather than inside a compact organ, so the same level reads as much
+      // more of it; 0.55 puts it back where the others sit.
+      loop: 12, op: 0.5,  width: 4, turb: 1.2, vis: 0.55,
+      tone: [0.92,0.62,0.60] },                                    // body: circulation, heart outward
     // The iris: spokes from the pupil's edge to the limbus, wobbled the way the
     // fibres are, so a dot travelling one is travelling a strand. Slow, and
     // barely there — the structure is the visual, this is the sign of life in it.
@@ -6151,7 +6163,7 @@
         const i3 = gi * 3;
         posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 24 * rt.k;
         const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-        colors[gi*4+3] = FLOW_A * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+        colors[gi*4+3] = flowA(pr) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
       }
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
@@ -6253,7 +6265,7 @@
           }
         }
       }
-      colors[gi * 4 + 3] = Math.min(FLOW_A, a * tA);
+      colors[gi * 4 + 3] = Math.min(flowA(pr), a * tA);
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
@@ -6291,7 +6303,7 @@
             x += -dyn * off; y += dxn * off;
             const i3 = gi * 3;
             posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 14 * rt.k;
-            a = FLOW_A * Math.pow(1 - slot, 1.8)
+            a = flowA(pr) * Math.pow(1 - slot, 1.8)
               * Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.1);
           }
         }
@@ -6325,7 +6337,7 @@
       posB[i3+2] = flowZ[f] * 28 * rt.k; // embedded in the volume
       // ends fade so the loop never visibly resets; deeper dots are softer
       const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-      colors[gi*4+3] = FLOW_A * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+      colors[gi*4+3] = flowA(pr) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
@@ -8952,8 +8964,8 @@
               // themeA lifts the cloud against a pale ground; the flow is
               // authored at the value it should render at, so the lift may
               // move it up to its own ceiling and no further
-              const fa = opRender(Math.min(FLOW_A,
-                FLOW_A * themeA * endFade * (1 - 0.4 * Math.abs(flowZ[f]))));
+              const fa = opRender(Math.min(flowA(pr),
+                flowA(pr) * themeA * endFade * (1 - 0.4 * Math.abs(flowZ[f]))));
               if (fa <= 0.012) continue;
               const d = u * P.total;
               let k = 0;

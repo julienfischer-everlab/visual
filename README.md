@@ -806,8 +806,19 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **6,245**. Measured in the library: brain 4,436 points, lungs
-3,389, nerve 1,643 (each including its flow layer). Recognisable, with black space
+The count is **6,245**. Measured in the library: brain 4,339 points, lungs
+3,454, nerve 2,119 (each including its flow layer).
+
+Two per-asset overrides sit on top of the shared numbers, because a figure's
+geometry can make the same setting read differently:
+
+- **`dots` on an ORGANS entry** scales that shape's point target. The nerve
+  takes `1.30`: a shape made of thin branches leaves a dendrite reading as a
+  dotted line at the constant-gap target that suits a filled organ.
+- **`vis` on a flow preset** scales that preset's share of `FLOW_A` and
+  nothing else's. The body takes `0.55`: it is the one figure whose flow runs
+  the whole height of the frame rather than inside a compact organ, so the
+  same level reads as much more of it. Recognisable, with black space
 between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which
