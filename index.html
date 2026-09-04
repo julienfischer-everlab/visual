@@ -4279,6 +4279,13 @@
   // still above a cloud dot, which is what keeps it a stream rather than more
   // cloud.
   const FLOW_MUL = 1.35;
+  // And the strays, as a multiple of the same mid cloud dot. They were written
+  // as a bare -(0.5 + rand*0.9), which at DOT_BASE 0.52 made them up to two and
+  // a half times a cloud dot -- the coarsest thing on screen, for the layer
+  // that should be the finest. Same lesson as the flow: a size that means "a
+  // fraction of that other thing" has to be stored as that fraction, or it
+  // stops being true the moment the grain moves.
+  const AMB_MUL = 0.85;
   // How big a dot is against the organ it belongs to. It used to be a column in
   // MODES, one number per page, because the old size law made the ratio drift
   // with how large the organ was drawn -- a page that framed it big got thin
@@ -4314,10 +4321,10 @@
   // behind it. The presets' own `op` and `tone` no longer scale it; they still
   // decide the paths, the pace and the turbulence, which is what they were
   // for. See the shader, where the flow takes its own alpha path entirely.
-  // 0.35, from 0.30: one step, because on a 5% grid that is what "5% more"
-  // is. Anything between the steps gets snapped back to one of them anyway,
-  // so a multiplicative 1.05 would have been 0.315 -- and 0.315 is 0.30.
-  const FLOW_A = 0.35;
+  // 0.40, by 5% steps from 0.30. On a 5% grid "5% brighter" is one step: a
+  // multiplicative 1.05 gives 0.3675, which snaps back to 0.35 and changes
+  // nothing at all.
+  const FLOW_A = 0.40;
   // one preset's own share of that level, for the rare case where a figure's
   // geometry makes the same number read as more or less flow than its
   // neighbours
@@ -5379,7 +5386,11 @@
       // than one value: a field of strays reads as a cosmos when a few are
       // clearly there and most are barely, and as dirt when they are all the
       // same. Skewed low, so the handful that carry it are the exception.
-      edge[i] = opSnap(0.05 + 0.15 * Math.pow(Math.random(), 1.8));
+      // One step up from where they were authored, to pay for the size: a
+      // thinner dot lights fewer pixels, so holding the field at the same
+      // alpha would have made "thinner" mean "gone". 53 lit pixels measured
+      // at the first attempt, against 720.
+      edge[i] = opSnap(0.10 + 0.15 * Math.pow(Math.random(), 1.8));
       const r = (0.55 + Math.random() * 0.75) * tf.s;
       const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
       out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;
@@ -5508,7 +5519,9 @@
   // What ONE organ's flow is: the number a library tile draws, so a single
   // organ's stream is the same stream on every surface. The slice stays 780
   // because the grid partitions it nine ways.
-  const FLOW_VIEW = 200;
+  // 210, from 200: the flow's density, and the one number both renderers count
+  // to. Unlike the opacity there is no grid here, so 5% is 5%.
+  const FLOW_VIEW = 210;
   const TOT = FSTART + FLOWN;
 
   // ---------- GL program ----------
@@ -5969,7 +5982,8 @@
   // is what "floating outside the organ" has to mean when opacity is the only
   // thing saying where a particle is.
   for (let i = N - AMB; i < N; i++){
-    seeds[i*4+3] = -(0.5 + Math.random() * 0.9);
+    // negative is the flag that marks a stray; the magnitude is the size
+    seeds[i*4+3] = -(AMB_MUL * DOT_BASE * (0.70 + Math.random() * 0.60));
     // No 0.42 here any more, and its absence is the whole fix. The strays were
     // authored at OP_LO, the bottom step of the grid, and this multiplied them
     // to 0.021 -- under the half-step floor the shader snaps to zero. Every

@@ -1466,6 +1466,29 @@ The nerve takes the most of all three (0.72 / 0.62), because it is the shape
 with the least silhouette to derive anything from.
 
 
+### 5.55 Thinner is not free, and the same mistake had a third instance
+
+"The floating particles should be super thin." They were the *coarsest* thing on
+screen: written as `-(0.5 + rand * 0.9)`, a bare magnitude, while every cloud
+dot is `DOT_BASE * m`. At DOT_BASE 0.95 that was about the same size; at 0.52
+it made a stray up to two and a half times a cloud dot.
+
+That is the third instance of one mistake in this file -- the flow's `1.50` and
+`1.95`, and now the strays' `0.5`. A size that means "a fraction of that other
+thing", written as the number it happened to equal on the day, is true once.
+`AMB_MUL` joins `FLOW_MUL`: both are fractions of `DOT_BASE`, so the whole
+system moves together and there is nothing left in it that has to be remembered
+by hand.
+
+The other half is that **thinner costs light**. A dot a third the diameter
+lights a ninth the pixels, and the first attempt (0.60) took the layer from 720
+lit pixels to 53 -- thin to the point of gone, which is the same failure as the
+0.42 that started this. 0.85 with the authored alpha raised one step, 0.05-0.20
+to 0.10-0.25, holds it at 118: single-pixel specks that still read as a field.
+Two knobs, because "make it thinner" and "keep it visible" are two properties
+and only one of them was asked for out loud.
+
+
 ---
 
 ## 6. Open items
