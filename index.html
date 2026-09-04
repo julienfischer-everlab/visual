@@ -4209,8 +4209,13 @@
   // reader is given a handful of near points to place the rest against.
   // The base a particle's size is a multiple of. One number, read by the
   // vertex through aSeed.w and by the 2D painter through the same seed, so
-  // the grain is the library's grain everywhere.
-  const DOT_BASE = 0.95;
+  // the grain is the library's grain everywhere -- which is why it, and not
+  // the engine's own DOT_PIX, is where the grain gets finer or coarser. DOT_PIX
+  // is the calibration that makes the engine agree with the tile; moving it
+  // would make them disagree again. This moves both at once.
+  // 0.76, from 0.95: a fifth finer, for a drawing that reads as measured
+  // rather than as painted.
+  const DOT_BASE = 0.76;
   // How big a dot is against the organ it belongs to. It used to be a column in
   // MODES, one number per page, because the old size law made the ratio drift
   // with how large the organ was drawn -- a page that framed it big got thin
@@ -5901,7 +5906,10 @@
     // 1.95x its base while a cloud dot is |seed| * 1.30 of the same base, so
     // the ratio a reader sees is 1.95 / 1.30 = 1.50 of a cloud dot. The engine
     // states that ratio directly rather than approximating it with a range.
-    seeds[i*4+3] = 1.50;
+    // Written against DOT_BASE rather than as a bare number, because the ratio
+    // is the thing that has to hold: a finer cloud with a flow left at its old
+    // size is not finer, it is a cloud under a coarser stream.
+    seeds[i*4+3] = 1.50 * (DOT_BASE / 0.95);
     // the flow layer's rgb is written once and never again: the presets set
     // alpha per frame, and which of the two inks a dot got does not change
     const fc = pickInk(f % N);

@@ -1304,6 +1304,27 @@ which is all edge and has no interior, moved 1.051 -> 1.057. Nothing can make a
 shape denser at the edge than it is in a middle it does not have.
 
 
+### 5.47 The grain has one knob, and it is not the one that was calibrated
+
+"Finer, more precise, more technical." There are two numbers that scale a dot
+and picking the wrong one undoes a session's work.
+
+`DOT_PIX` is the engine's calibration -- the number solved so a point sprite
+lands on the same grain the tile paints. It is not a design control; moving it
+makes the two renderers disagree again, which is exactly the divergence that
+took three rounds of measurement to find.
+
+`DOT_BASE` is the shared one. The 2D painter reads it through the seed
+(`|seed| * 1.30`), the vertex reads the same seed through `aSeed.w`, so one
+number moves both renderers in step and the parity survives. 0.95 -> 0.76.
+
+The flow had to come with it. Its seed was written as a bare `1.50`, which is
+the tile's own 1.95/1.30 ratio stated directly -- true only while `DOT_BASE`
+was 0.95. A finer cloud under a stream left at its old size is not a finer
+drawing, it is a cloud beneath a coarser stream, so the constant is written
+against `DOT_BASE` now and the ratio holds wherever the grain goes.
+
+
 ---
 
 ## 6. Open items
