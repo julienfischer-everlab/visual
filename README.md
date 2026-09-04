@@ -94,7 +94,7 @@ in the build; the numbering is the mode index, not the menu.
 14. **Mobile V6** — V5 with the biomarkers folded into the hero, and the whole reading 16px higher: the visual by the uniform, the arc and the age strip by their own offsets, the caption travelling with the number it hangs from, the name strip staying where it is. The header carousel gains a slide in front of the organs: the total where the age sits — a fifth smaller than the age, being a count rather than a reading — the three ranges under it in place of the younger/older caption, and the arc reading the optimal share instead of an age scale, revealed left to right once the slide lands. One band rather than three: the whole distribution in the meter's colours put a run of amber and a run of red across the top of the page under a headline count, which is three verdicts on a slide that is not making one. The split belongs to the bar beneath the counts; up here the reading is how far the green reaches, and everything past it stays unlit rather than being called something. It runs to the same figure as the fill rising through the body on this slide, off the same constant, so the two cannot drift apart. It is not an organ, so it sits at index −1 rather than inside `MB`, and its halo gives way as the swipe carries it in. The header is the backdrop the body rises over, not a surface to be scrolled: a swipe up belongs to the content under it, so the header keeps the horizontal axis — the carousel's — and gives up the vertical one. `touch-action` settles the finger; a trackpad has no gesture for it to honour, so the wheel is turned away by the same rule. The gesture belongs to the surface rather than to the card drawn on it: on the hero layouts the carousel *is* the header, so the whole of it takes the swipe — the title row, the silhouette, the arc, the figure, the caption and the names — and only what is meant to be pressed keeps its press. Elsewhere the card is a tile among others and keeps the gesture to itself. The first slide shows the **human body** and the second the **iris**, so that step changes the figure and nothing around it; the iris is drawn a twentieth smaller than the body's rule gives it, blended in over the swipe. Every slide names itself as an age — the organ's own name plus the word — except the entry that already carries a name of its own and the biomarker slide, which is a count rather than a reading. Two places write that strip, so the rule lives in one. The body is drawn a third larger than the organs and rides down by what it grew, on both of its slides — the scale only comes back out on the step to the first organ, where the framing was going to change anyway. The organs ride down too, by less: nothing zoomed them, but the hero has been lifted for the body's sake and it left them a quarter of the canvas above its centre. Every slide's mass now sits on the same line, so the carousel stops stepping up and down as it goes.
 15. **Mobile V7** — Mobile V6 again, as somewhere to diverge from. It is an index and a marker class, not a copy of anything: the class chain is cumulative, so `m20` wears every rule V6 wears and starts differing the moment something is written against `v8`. Wears `m5 v2 v3 v4 v5 v6 v7` plus a `v8` marker.
 
-On the biomarker slide the body is a **vessel being filled**, not a body being coloured. Below the front the particles are dense and take a muted sage — a saturated green on a near-black ground reads as a status light, and this is a reading taken in a clinic. The front stops at the **optimal share** rather than covering the figure: how high it reaches is the reading, 81 of 124 being two thirds of a body and not all of it. Above it the cloud does not simply dim — nearly every particle in the volume goes, and what stays is the shell. The edge attribute each particle already carries runs high on the silhouette and low deep inside, so keeping by it leaves an edge nobody drew: the body is still legibly there, visible the way glass is, by its rim rather than by an outline, with one cool highlight so the empty half reads as a container rather than as the same body dimmed. The handover is a band a tenth of the body deep, because a fill in a silhouette fails at exactly one place — a visible horizontal edge — and the particles the lottery took fade back in across it rather than switching on. The strays that sit outside the silhouette stay, since a vessel drawn to the pixel would stop being a particle system. Leaving that slide the colour drains over a span of its own, slower than it arrived — it used to ride the morph's curve directly, and that curve spends most of itself in the first fifth of a three-second dissolve, so the sage left and the particles came back inside half a second and then nothing happened for two and a half more: a flip, not a fade. The fill rises on the same cue and over the same span as the arc's sweep — they are one reveal of one reading, and running them on two clocks left the body still filling long after the meter had finished. The cue is the release: the arc is a reading rather than a scrubbable control, so it commits with the swipe and then fills at its own pace instead of waiting out the silhouette's three-second dissolve. The three ranges below carry the split, so the body itself never needs to be three colours; the counts live in one object that both the legend and the fill height are read from, since a number typed into the markup and a number typed into the shader would be two places to change one fact. Neither does it morph under the finger: the strips track the drag, the silhouette holds the slide the swipe picked up and only breaks apart on the release, which is the physics every other step of the carousel already had. V6 opens on that slide and holds it against the five-second cycle, since it is the page's headline. The card it came from leaves the body: it is in the hero now, not below it. Wears `m5 v2 v3 v4 v5 v6` plus a `v7` marker.
+On the biomarker slide the body is a **vessel being filled**, not a body being coloured. Below the front the particles are dense and at full strength; they do not change colour, because there is only one. The front stops at the **optimal share** rather than covering the figure: how high it reaches is the reading, 81 of 124 being two thirds of a body and not all of it. Above it the cloud does not simply dim — nearly every particle in the volume goes, and what stays is the shell. The edge attribute each particle already carries runs high on the silhouette and low deep inside, so keeping by it leaves an edge nobody drew: the body is still legibly there, visible the way glass is, by its rim rather than by an outline, The empty half reads as a container rather than as the same body dimmed because of how little of it is left, not because anything is tinted. The handover is a band a tenth of the body deep, because a fill in a silhouette fails at exactly one place — a visible horizontal edge — and the particles the lottery took fade back in across it rather than switching on. The strays that sit outside the silhouette stay, since a vessel drawn to the pixel would stop being a particle system. Leaving that slide the fill drains over a span of its own, slower than it arrived — it used to ride the morph's curve directly, and that curve spends most of itself in the first fifth of a three-second dissolve, so the fill left and the particles came back inside half a second and then nothing happened for two and a half more: a flip, not a fade. The fill rises on the same cue and over the same span as the arc's sweep — they are one reveal of one reading, and running them on two clocks left the body still filling long after the meter had finished. The cue is the release: the arc is a reading rather than a scrubbable control, so it commits with the swipe and then fills at its own pace instead of waiting out the silhouette's three-second dissolve. The three ranges below carry the split, so the body itself never needs to carry three readings; the counts live in one object that both the legend and the fill height are read from, since a number typed into the markup and a number typed into the shader would be two places to change one fact. Neither does it morph under the finger: the strips track the drag, the silhouette holds the slide the swipe picked up and only breaks apart on the release, which is the physics every other step of the carousel already had. V6 opens on that slide and holds it against the five-second cycle, since it is the page's headline. The card it came from leaves the body: it is in the hero now, not below it. Wears `m5 v2 v3 v4 v5 v6` plus a `v7` marker.
 15. **Desktop V5** — Desktop V1 reading the organ the way the phone does. The organ card carries Mobile V5's stack — the arc, then the age at the size the phone sets it, then the difference in words directly under the number — and that difference stops being a tag: a pill is a status, and V5's whole point is that the figure states the verdict while the words only spell it out, in the same grey whichever way the delta runs. The hero says what the phone's hero says, figure for figure: biomarkers, then the count of the panel still untested rather than health coverage — coverage has a tile of its own further down — and the card's one action, *Get test*, held at the right by an auto margin. The steps card already read the same on both. The page is two even columns: biomarkers over the pair on the left, the organ alone on the right. V1 gave the organ the wider half and folded the pair into one full-width tile, because coverage had moved into its hero; V5's hero carries untested instead, so coverage takes its own tile back and the two stand side by side in the phone's order — coverage, then steps. The organ list holds its longest row on one line at the narrower card by taking a larger share of it (51%, against V1's 46%), and the organ takes what is left. The dot that starts each row sits on the eyebrow's own left rule rather than a row's padding in from it -- nothing else on the card stands on that line, so the inset read as a misalignment. It became a negative margin, which sends the highlight the other way: the selected row bleeds off the card's left edge as a band across the row, rather than a pill floating inside a column. The halo is a dark-theme thing on both platforms: it is light thrown on a surface, and on the pale ground it read as a coloured stain sitting on the page rather than as light, so the light theme carries none. The phone's light sits on the card too: the same stop list, the geometry scaled off the card's width the way the phone's is off the screen's, and the same slow breath. It is centred on the organ rather than on the card, since the list has the left half and a light centred on the card would sit beside the thing it is lighting. Its colour is the phone's — green while the organ reads younger, orange once it reads older — taken here from the eased warmth the cloud is already tinted by rather than from a carousel position. The card's corner carries the phone's share button in place of the expand arrows. Its own eyebrow reads *Biological age*, at the biomarker card's size and in its grey, so the two titles on the row are one thing said twice rather than two treatments. The organ is drawn a fifth larger than the other dashboards and sits 64px lower in the card, and the stack follows it down by less than it moved — 48px for the arc, 24px for the age and its caption — so the three close on each other as they fall. Those are transforms rather than margins: `resize()` bottom-aligns the stack off its own `offsetHeight`, and a margin would grow that height and shunt the block back up by what it was just given. The cards are the phone's cards exactly: 6% white, which paints `#0f0f0f` — a card that lifts off the page rather than standing on it. A wash is a relationship to what is behind it, so two pages can only share a card colour if they share a ground; the dashboard's `#0d0d0c` goes black here, the way the phone's body is black on this page. Thirteen levels, invisible in itself, and it is what makes the two identical. The canvas clears to the same value, or the organ would sit on a visible rectangle. Wears `m2 b2 b3` plus a `b5` marker.
 
 15. **Tablet** — Desktop V5 in a frame two hundred pixels narrower, and a page rather than a state of one. It was a tweak on V5 first, which is what a shell looks like before you try to link to it: a design you cannot open on its own, cannot put beside its siblings in the menu, and cannot point anyone at. A page costs one index and one class chain — it wears every rule V5 wears plus the `tabM` marker the layout is written against — and buys all three back. One thing has to give at that width: the organ card cannot hold the list and the organ side by side, and halving the organ to keep ten rows would be keeping the least of the card. So the list goes and the card reads the way the phone's hero does — the organ centred with the whole width, arrows either side of the number, and the names on the floor of the card with their neighbours showing, cropped by the card's edge rather than shortened. Nothing is lost: every reading the list held is one arrow away, and the one the card is showing is the one it was already showing large. The strip and the arrows count by the same sequence the phone's carousel does, so the organ ages collapse to a single *Organ age* slide when they are unread, exactly as they do there. Everything else is the same page tightened — a narrower rail, a shorter page margin, the left column stacked one-up because half of a narrower page is not two cards wide, one row of filter chips that scrolls rather than wraps, and a table that drops the sparkline, the one column that says least at a glance. Coverage and steps stay side by side as they are on the desktop — stacking them was the obvious move and the wrong one, since the pair is one row of two readings taken together rather than two cards that happen to be adjacent.
@@ -350,8 +350,9 @@ where nothing else does. It carries the **iris**.
 Biomarkers is the **human body**, biological age is the **iris**, organ
 age is the **organs** — three shapes, one particle language. They are three
 clouds in the same array, and the carousel morphs between them like any other
-step; the biomarker slide and the body slide used to be the same drawing and
-differ only in colour, and that is no longer true.
+step; the biomarker slide and the body slide used to be the same drawing
+differing only in colour, and that is no longer true — which matters more now
+that there is no colour for two things to differ in.
 
 Slot 9 stays the print, because it is what the Biological Age carousel and the
 Body row select and every index in the file is written against that numbering;
@@ -414,9 +415,11 @@ signal on the next lane out and the one after, a beat apart — `FP_RIDGES` is
 ordered from the core outward, so consecutive lanes read as one thing leaving
 the centre rather than three unrelated ones. Duration, gap and rest are
 randomised around their means, so the sequence never lands on a beat. The two
-layers are told apart by colour as well as by speed: the ambient keeps the
-print's pink, a packet runs a shade off white — not a glow, but a signal has to
-be brighter than the tissue it crosses or it is just a denser part of it. Both
+layers are told apart by weight as well as by speed: the ambient sits at the
+print's own strength, a packet runs harder — not a glow, but a signal has to be
+stronger than the tissue it crosses or it is just a denser part of it. It used
+to be a paler colour; `toneA` spends that paleness on alpha instead, which is
+the same distinction at the same size in the one ink. Both
 ride the polylines by arc length, so a dot is never off its line, and the ridges
 themselves never move.
 
@@ -689,6 +692,57 @@ Chronological age, the organ-card tint, density, particle size, flow and voxels
 are no longer exposed: they stay where the design landed. `CHRONO` is a constant
 now rather than a control.
 
+## One ink
+
+Every particle in this file is **`#A34442`** and nothing else. There is no
+palette, no verdict colour, no theme colour, no flow tint. Depth, density,
+anatomy and verdict are all carried by how opaque a dot is.
+
+That is a constraint, not a simplification: everything the colour used to say
+still has to be said, and opacity is now the only thing left to say it with.
+
+| what it says | how it says it now |
+| --- | --- |
+| the organ's body | `edge` runs 1.00 at the silhouette to 1.59 deep inside — the core solid, falling away toward the boundary |
+| loose particles | the ambient shell sits at `edge` 0.30 and a third of the cloud's base alpha: about a quarter of the organ's weight |
+| volume | `depthA` reads the camera's own foreshortening, so the near face of a cloud comes forward and the far one falls back |
+| the verdict | older gains up to 95% more alpha on the dots the lottery picks; younger loses up to 62%, and the whole cloud thins 16% besides |
+| a flow layer's character | the presets keep the tones they were authored with, but `toneA` reads a tone for its brightness alone and spends it on alpha — a signal packet that used to run off-white now runs stronger |
+| the theme | alpha, and only alpha: `×1.90` in the shader on light, `×0.60` on the 2D tiles, because a mid-dark ink buys more contrast per unit of alpha on a pale card than on a dark one |
+
+**The ramp is the piece that changed direction.** `edge` used to brighten the
+rim — 1.20 on the silhouette, 0.72 deep inside — to keep outlines crisp. It
+now runs the other way. The silhouette survives losing its bright rim because
+the sampling is shell-biased: most particles land near the edge, so the
+outline is still the densest part of the picture; it just arrives as a
+gradient of many faint dots instead of a line of bright ones. The biomarker
+slide's rim selector reads the same attribute, so its window was reversed with
+it (`smoothstep(1.42, 1.10, ef)`).
+
+**Measured**, against the multi-colour version it replaces: a library tile
+deviates 34 levels from its card on dark and 52 on light; the desktop organ,
+26 and 28. The old palette measured 35 and 50 on the tiles, 28 and 25 on the
+organ — so the figure carries the same weight it did, in one colour.
+
+### How exact "one colour" is
+
+The painter never sets a second fill: hooking `CanvasRenderingContext2D.fillStyle`
+for a whole session on the library page returns exactly one rgb — `163,68,66`
+— plus the `#fff` the offscreen silhouette mask is rasterised with, which is a
+bitmask read back as coverage and never drawn. The SVG export is exact by
+construction: one `fill="rgb(163,68,66)"` per dot with the opacity as a
+separate `fill-opacity`.
+
+A rasterised PNG is exact to within the canvas's own storage. Canvas keeps 8
+bits per channel **premultiplied by alpha**, so a pixel at 2% coverage — the
+antialiased boundary of every dot — has almost no colour information left in
+it, and reading it back returns a rounded neighbour of the ink rather than the
+ink: `rgba(163,68,66,0.02)` drawn on a blank canvas and read straight back
+comes out `153,51,51`. It is the same single fill either way; it is the buffer
+that cannot hold it. A single fill reads back within two
+levels above about 12% alpha, and 99.8% of painted pixels sit on the ink's
+own ray from black.
+
 ## Light is the same figure, not a second one
 
 Every per-particle value in the shader was tuned against black, where a dot at
@@ -699,37 +753,18 @@ ground and 6 off a light one — the same cloud, and only one of them visible.
 The fix is not a light-mode treatment. That would be two pictures to keep in
 step, and they would drift the first time either changed. It is one shader
 with the ground's own arithmetic undone by the uniform that already knows
-about it, and the split between the two is the whole point:
+about it — and the colour half of that rule has since gone away entirely. The
+light theme's transform went from a dark ink, to the same colour darkened, to
+the same colour 30% desaturated, to nothing at all. What is left is alpha:
+`×1.90`, and the figure lands within two levels of the dark theme's contrast
+on both grounds.
 
-- **Colour is the dark theme's colour, with 30% of its saturation taken out.**
-  One line, no second palette, no ink. It used to darken as well — `×0.42`
-  — and that is what turned the palette's red into a brown-grey soot: a
-  desaturated colour multiplied down has almost no chroma left. The darkening
-  bought nearly nothing anyway, because at the coverage these dots actually
-  paint it moved the composite three levels.
-- **Contrast is alpha.** The light theme multiplies it by 3.0. That is where
-  the legibility comes from, and keeping it there is what lets the colour rule
-  stay as simple as one line.
-
-Applying that in the wrong order was the original bug: the light ink ran
+The order mattered while there was still a colour transform to order. It ran
 before the biomarker reading, so the reading painted over it and the light
-theme came back as a pale wash on pale paper. It is applied **last** now,
-after every other colour decision. Two mode-specific substitutions came out
-along the way — the biomarker fill's sage recolour (the reading is carried by
-how much body there is, not what colour it turns) and the cooler verdict's
-warm-dark halo, which with the alpha lift in place was redundant and was
-muddying the light body it was meant to save.
-
-Measured on the desktop organ: 25 levels off its card on light against the
-dark theme's 28. On a library tile, 50 against 35 — light is, if anything, the
-stronger of the two.
-
-**The library tiles follow the same rule.** They are 2D canvas, not the
-shader, and they used to be inked flat dark brown in light mode — which is
-where this last showed up as a bug: nine red organs rendering as grey
-smudges. They now desaturate each dot's own colour by the same 30%, memoised
-on the `"r,g,b"` string the painter was building anyway. The exports inherit
-it, because PNG, JPG and SVG all run the same `paint`.
+theme came back as a pale wash on pale paper; moving it **last** fixed that,
+and three mode-specific substitutions came out along the way — the biomarker
+fill's sage recolour, the cooler verdict's warm-dark halo, and finally the
+desaturation itself.
 
 ## The organ ground
 

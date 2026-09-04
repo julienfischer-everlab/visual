@@ -665,6 +665,51 @@ override ever had. **A compensation added when something was invisible should
 be re-tested once the real cause is fixed** — it is usually not neutral, it is
 just the least visible of the damage.
 
+### 5.25 Taking the colours out found every place there were colours
+
+The brief was one ink — `#A34442` on every particle, everything else carried by
+opacity. The interesting part was not the shader line that sets it. It was the
+inventory: a colour decision turns out to live in six places, and five of them
+do not look like colour code.
+
+- the palette the cloud samples per particle (the obvious one)
+- the ghost outline's own pale warm, written straight into the colour buffer
+- nine flow presets' `tone`, rewritten into the buffer every frame
+- the signal layer's second tone, chosen per particle between ambient and packet
+- the verdict tint in the vertex shader, plus the desaturation under it
+- the 2D renderer, which is a separate painter with its own idea of all of the
+  above
+
+Grepping for the constant finds the first. Grepping for the *concept* —
+`colors[`, `tone`, `rgb`, `mix(` — finds the rest.
+
+**A distinction encoded in colour has to be re-encoded, not deleted.** Every
+tone above meant something: an airflow paler than a perfusion, a signal packet
+paler than the tissue it crosses, an organ ageing faster than you. Dropping
+them would have quietly removed six readings. `toneA` reads a tone for its
+luminance and spends it on alpha, which keeps each distinction at roughly the
+size it had; the verdict became a straight alpha gain or loss, which is if
+anything the more literal statement of what it means.
+
+The second half of the note is about what a constraint costs elsewhere. One
+ink is a fixed luminance, so it no longer averages out against either ground,
+and three separate things had to be re-tuned to keep the figure weighing what
+it did: the base alpha (the ink is darker than the old palette's mean), the
+`edge` ramp (which had to be scaled as well as reversed, since it multiplies
+alpha directly), and the light theme's lift (which had been compensating for a
+desaturation that no longer happens). Measuring the tile and the organ against
+their own grounds before and after is what kept that honest — by eye the first
+attempt looked fine and was down a third of its contrast.
+
+And one honest limit found by measuring rather than assuming: a canvas stores
+8 bits per channel **premultiplied by alpha**, so the antialiased boundary
+pixels of every dot cannot hold the ink exactly. `rgba(163,68,66,0.02)` drawn
+on a blank canvas reads straight back as `153,51,51`. The fill is still one
+value — hooking `fillStyle` for a session proves it — and the SVG export is
+exact by construction, but "every pixel in the PNG is literally #A34442" is
+not a claim the format can support, and it is better to say so than to let
+someone discover it in a colour picker.
+
 ---
 
 ## 6. Open items

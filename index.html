@@ -4047,19 +4047,23 @@
   // lavender to mauve, the cream stops being a highlight and becomes the palest
   // member of the same family — so the cloud reads as one warm material rather
   // than a set of tints at full brightness.
-  const PALETTE = [
-    [[0.640,0.270,0.262], 36], // deep red
-    [[0.740,0.400,0.330], 24], // burnt coral
-    [[0.700,0.430,0.450], 20], // dusty rose
-    [[0.490,0.240,0.262], 13], // rosewood depth
-    [[0.580,0.430,0.560],  5], // mauve
-    [[0.850,0.770,0.720],  2], // pale warm
-  ];
-  function pickColor(){
-    let r = Math.random() * 100;
-    for (const [c, w] of PALETTE){ if ((r -= w) <= 0) return c; }
-    return PALETTE[0][0];
-  }
+  // ---------- one ink ----------
+  // Every particle in this file is #A34442 and nothing else. There is no
+  // palette, no verdict colour, no theme colour, no flow tint: depth, density,
+  // anatomy and verdict are all carried by how opaque a dot is. Inspect any
+  // dot on any surface in any mode and it reads the same three bytes.
+  //
+  // The presets and layers below still carry the tones they were authored
+  // with, because those tones encoded a real distinction — an airflow that
+  // was paler than a perfusion, a signal packet paler than the tissue it
+  // crosses. `toneA` reads a tone for its brightness alone and spends it on
+  // alpha, so what used to be told apart by being paler is told apart by
+  // being stronger. Nothing resolves to a second hue.
+  // written as the eighth-bit fractions themselves, so the value that reaches
+  // the GPU is the byte a designer will read back and not a rounding of it
+  const INK_CSS = '163,68,66';                                    // #A34442
+  const INK = INK_CSS.split(',').map(v => +v / 255);
+  const toneA = t => Math.min(1.6, (0.36 * t[0] + 0.50 * t[1] + 0.14 * t[2]) / 0.72);
 
   // ---------- organ silhouettes drawn to an offscreen canvas ----------
   const S = 340;
@@ -4463,7 +4467,7 @@
       const x = cl.pos[i * 3] / k + cl.norm.cx;
       const y = -cl.pos[i * 3 + 1] / k + cl.norm.cy;
       const t = Math.min(1.3, FP_PAD.rad(x, y));
-      cl.edge[i] = Math.max(0.13, 0.98 - 0.82 * Math.pow(t, 1.05));
+      cl.edge[i] = Math.max(0.18, 1.32 - 1.10 * Math.pow(t, 1.05));
     }
     return cl;
   }
@@ -4642,8 +4646,11 @@
       cl.pos[i * 3]     = r * Math.sin(ph) * Math.cos(th);
       cl.pos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
       cl.pos[i * 3 + 2] = r * Math.cos(ph);
-      // the rim reads a shade brighter, the way a shell of anything does
-      cl.edge[i] = 0.62 + 0.46 * Math.pow(r / R, 3);
+      // The core reads solid and the rim falls away, the same ramp every other
+      // cloud runs. The boundary still holds without a bright edge: nine
+      // particles in twenty sit in the shell, so the rim is where the dots
+      // are, and it is their number rather than their weight that draws it.
+      cl.edge[i] = 1.59 - 0.45 * Math.pow(r / R, 3);
     }
     // the shader draws the currents through the ball and needs its radius to
     // know where the shell is; measured off the thing that built it rather
@@ -4961,8 +4968,15 @@
         const w = dens ? dens(px, py) : 1;
         if (Math.random() < (0.07 + 0.93 * Math.exp(-d / 3.5)) * w) break;
       }
-      // edge particles read brighter so the silhouette stays crisp
-      edge[i] = 0.72 + 0.48 * Math.exp(-d / 6);
+      // Opacity is the only variable left, so it carries the form. `d` is the
+      // distance to the silhouette in mask pixels — 2 at the outline, 22 deep
+      // inside — and the ramp runs the other way from the one it replaces:
+      // solid through the core that defines the organ, falling away toward the
+      // boundary. The silhouette survives losing its bright rim because the
+      // sampling above is shell-biased: most particles land near the edge, so
+      // the outline is still the densest part of the picture, it just arrives
+      // as a gradient of many faint dots rather than a line of bright ones.
+      edge[i] = 1.00 + 0.62 * (1 - Math.exp(-d / 7));
       const zmax = depthPx * Math.sqrt(d / 22);
       const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
@@ -4971,8 +4985,12 @@
       if (yaw){ const nx = X * cyaw + Z * syaw; Z = -X * syaw + Z * cyaw; X = nx; }
       out[i * 3] = X + tf.x; out[i * 3 + 1] = Y + tf.y; out[i * 3 + 2] = Z;
     }
-    // ambient strays: a loose shell of drifting particles around the organ
+    // ambient strays: a loose shell of drifting particles around the organ.
+    // They sample the mask like everything else and would otherwise inherit
+    // whatever weight that gave them, which with one ink is the difference
+    // between floating around the organ and being part of it.
     for (let i = N - AMB; i < N; i++){
+      edge[i] = 0.30;
       const r = (0.55 + Math.random() * 0.75) * tf.s;
       const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
       out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;
@@ -5218,39 +5236,29 @@
       float tw = (0.62 + 0.38 * sin(uTime * 1.8 + aSeed.z * 21.0)) * sphLit;
       // voxel mode: quieter shimmer — data, not sparkle
       tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
-      // The verdict, in the dots themselves: orange when the organ reads older,
-      // ink when it reads younger. It used to be gated to the shell, which sorted
-      // the cloud into a coloured rim around a palette-coloured middle — two
-      // zones rather than one organ. The gate is gone, so which dots take the
-      // verdict is the per-particle lottery alone and they fall right across the
-      // silhouette. The younger colour is ink rather than green: white on the
-      // dark grounds, black on the light one, which the theme mix supplies.
-      // Ink carries much further than the orange does on a near-black ground, so
-      // the two verdicts do not read equally at the same strength: the younger
-      // side is thinned to 40% of the older one's. Subtracting a floor rather
-      // than scaling the whole ramp is what does the thinning — it drops the
-      // weakest of the lottery to zero, so about a third of the dots keep their
-      // own palette colour outright instead of every dot going faintly white.
+      // The verdict, in the dots themselves — and now in their opacity alone.
+      // It used to be a colour: orange when the organ reads older, ink when it
+      // reads younger, over a cloud whose red was also pulled toward grey by
+      // the younger reading. One ink leaves opacity to say it, which turns out
+      // to be the more literal statement of what the reading means: an organ
+      // ageing faster than you is denser and more present, one ageing slower
+      // is lighter on the page. Which dots take it is the same per-particle
+      // lottery, so the verdict still falls right across the silhouette
+      // instead of banding it, and the older side still carries further than
+      // the younger — subtracting a floor rather than scaling the ramp leaves
+      // about a third of the dots at their own weight either way.
       float pick = fract(aSeed.y * 3.17);
-      float halo = (1.0 - ghost) * (1.0 - flowP) * abs(uWarm)
+      float vsel = (1.0 - ghost) * (1.0 - flowP) * abs(uWarm)
                  * (uWarm > 0.0 ? (0.25 + 0.60 * pick)
                                 : max(0.0, 0.70 * pick - 0.32));
-      // Younger cools the whole cloud, not just the dots that take the tint: the
-      // red is pulled 30% toward its own grey before anything else happens, so a
-      // healthy organ reads as grey and pale rather than as a red one wearing
-      // light. It reaches full strength by half the scale, so there is no step
-      // at the crossing. The tint over it is white with a green cast, on both
-      // themes: it used to be sent to a warm dark under the light one, which is
-      // the sort of per-mode substitution this file is meant not to have. With
-      // the alpha carrying the figure it is redundant, and taking it out made
-      // the light body read redder and cleaner than the override ever did.
+      // older: those dots gain weight. younger: they lose it, and the whole
+      // cloud thins a little besides, the way the desaturation used to cool it
       float cool = min(1.0, max(0.0, -uWarm) * 2.0);
-      vec3 base = mix(aColor.rgb, vec3(dot(aColor.rgb, vec3(0.36, 0.50, 0.14))),
-                      0.30 * cool);
-      vec3 haloCol = uWarm > 0.0 ? vec3(0.87, 0.56, 0.30) : vec3(0.90, 0.97, 0.92);
-      vec3 rgb = mix(base, haloCol, halo);
-      // and 15% off the whole cloud's saturation on top of that, verdict included
-      rgb = mix(rgb, vec3(dot(rgb, vec3(0.36, 0.50, 0.14))), 0.15);
+      float verdA = (uWarm > 0.0 ? 1.0 + 0.95 * vsel : 1.0 - 0.62 * vsel)
+                  * mix(1.0, 0.84, cool);
+      // and that is the whole of the colour decision: #A34442, every particle,
+      // every mode, every theme
+      vec3 rgb = aColor.rgb;
       float ga = mix(1.0, uGhost * 0.38, ghost);
       float ef = mix(aEdgeA, aEdgeB, mix(e, 1.0, flowP));
       // The biomarker reading: the same body, its particles taking the
@@ -5296,10 +5304,11 @@
         // body still legibly there, visible the way glass is, by its rim
         // rather than by an outline. The survivors are picked by a stable
         // lottery, so the shell holds still instead of sparkling.
-        // ef runs 0.72 deep inside to 1.20 on the silhouette, so the window
-        // has to sit inside that range or every particle counts as rim and
-        // the empty half comes out as an even speckle instead of an edge
-        float shell = smoothstep(0.82, 1.16, ef);
+        // ef now runs the other way -- about 1.14 at the silhouette up to
+        // 1.59 deep inside -- so the window is reversed with it. The stops
+        // still have to sit inside the range or every particle counts as rim
+        // and the empty half comes out as an even speckle instead of an edge.
+        float shell = smoothstep(1.42, 1.10, ef);
         float keepUp = step(fract(aSeed.z * 71.33), mix(0.11, 0.78, shell));
         // and what is left of them is faint: a sixth of full inside the
         // vessel, a little over a third on the rim, where light would sit.
@@ -5308,44 +5317,36 @@
         float upA = keepUp * mix(0.30, 0.62, shell);
         vfade = mix(1.0, mix(upA, 1.0, lit), uRange);
       }
-      // Light theme: the dark theme's own colour with 30% of its saturation
-      // taken out -- applied last, to whatever the cloud turned out to be.
-      //
-      // It used to run before the biomarker reading, which meant the reading
-      // was painted over it: the light theme's dark ink went back to a bright
-      // sage, and a bright sage on a near-white ground is nothing at all. The
-      // slide came out as a white body on a white page. The fix is not a light
-      // variant of the fill -- that would be two pictures to keep in step, and
-      // they would drift. It is the transform belonging where every other
-      // colour decision has already been made, so light is the same picture
-      // one step darker rather than a second one. The vessel's own highlight
-      // stops being dark-theme-only for the same reason.
-      // And the transform itself is one line: the same colour with 30% of its
-      // saturation taken out. It used to darken as well, which is what turned
-      // the palette's red into a brown-grey soot on the light theme -- and the
-      // darkening bought almost nothing, because at the coverage these dots
-      // actually paint it moved the composite three levels. Chroma is what a
-      // reader sees; the contrast comes from the alpha lift below.
-      vec3 lrgb = mix(rgb, vec3(dot(rgb, vec3(0.36, 0.50, 0.14))), 0.30);
-      rgb = mix(rgb, lrgb, uLight);
+      // The light theme changes nothing about the colour -- there is nothing
+      // left to change. It went from a dark ink, to the same colour darkened,
+      // to the same colour 30% desaturated, and now to the same colour: the
+      // ground's arithmetic is undone entirely by the alpha lift below, which
+      // is where it always belonged. A dot inspected on the light theme and a
+      // dot inspected on the dark one are the same three bytes.
       // density control: a stable per-particle lottery thins the cloud live
       float keep = mix(step(fract(aSeed.z * 39.7), uDens), 1.0, max(ghost, flowP));
       float fv = mix(1.0, uFlowVis, flowP);
       // voxel mode: depth-weighted brightness so the volume reads in layers
       float da = mix(1.0, clamp(persp, 0.72, 1.2), uSq);
+      // Depth, everywhere, not only in voxel mode. persp is already the
+      // camera's own foreshortening -- about 0.90 at the back of a cloud and
+      // 1.12 at the front -- so the near face of a volume comes forward and the
+      // far one falls back without a second term to keep in step. This is the
+      // one dimensional cue a single ink cannot get from colour, and it costs
+      // nothing: it is a number the vertex already computed.
+      float depthA = mix(0.70, 1.08, smoothstep(0.88, 1.12, persp));
       // The same alpha does not buy the same figure on opposite grounds. Every
       // per-particle value here was tuned against black, where a dot at a
       // sixth of full still reads: measured, the body sat 28 levels off a dark
       // page and 6 off a light one -- the same cloud, and only one of them
       // visible. So the light theme lifts the alpha rather than being given a
       // second treatment: one shader, one figure, the ground's own arithmetic
-      // undone by the uniform that already knows about it. 3.0, not the 1.85 it
-      // first took: the darkening above was quietly doing half this job, and
-      // with the colour left alone the lift has to do all of it. Measured on
-      // the desktop organ, the light figure now deviates 25 levels from its
-      // card against the dark theme's 28.
-      float aLift = mix(1.0, 3.00, uLight);
-      vColor = vec4(rgb, aColor.a * tw * (1.0 + 0.35 * halo) * ga * ef * keep * fv * uAlpha * da * feedA * vfade * irisA * aLift);
+      // undone by the uniform that already knows about it. It is now the only
+      // thing the light theme does at all, which is why it carries a larger
+      // number than it once did -- first the darkening was folded into it, and
+      // then the desaturation.
+      float aLift = mix(1.0, 1.90, uLight);
+      vColor = vec4(rgb, aColor.a * tw * verdA * ga * ef * keep * fv * uAlpha * da * depthA * feedA * vfade * irisA * aLift);
     }`;
   const FS = `
     precision mediump float;
@@ -5401,16 +5402,19 @@
     seeds[i*4+1] = Math.random() * 6.2832;      // curve direction
     seeds[i*4+2] = Math.random();               // noise phase
     seeds[i*4+3] = 0.55 + Math.pow(Math.random(), 1.6) * 1.5; // size
-    const c = pickColor();
-    colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
+    colors[i*4] = INK[0]; colors[i*4+1] = INK[1]; colors[i*4+2] = INK[2];
     // a shade under what it was: the cloud carried more light than the form
     // needed, and the verdict tint over it had to shout to be seen
-    colors[i*4+3] = 0.38 + Math.random() * 0.50;
+    colors[i*4+3] = 0.56 + Math.random() * 0.60;
   }
-  // mark ambient strays: negative size flags them in the shader, fainter + drifting more
+  // Mark ambient strays: negative size flags them in the shader, fainter and
+  // drifting more. They used to sit at 60% of the cloud's alpha, which was
+  // enough separation while they also had the palette's spread to be told
+  // apart by. With one ink they are only as separate as they are faint, so
+  // they drop to a third — loose, floating, present rather than legible.
   for (let i = N - AMB; i < N; i++){
     seeds[i*4+3] = -(0.5 + Math.random() * 0.9);
-    colors[i*4+3] *= 0.6;
+    colors[i*4+3] *= 0.34;
   }
   // ghost body: static outline particles, flagged by negative stagger
   for (let i = N; i < FSTART; i++){
@@ -5422,8 +5426,9 @@
     seeds[i*4+1] = Math.random() * 6.2832;
     seeds[i*4+2] = Math.random();
     seeds[i*4+3] = 0.5 + Math.random() * 0.4;
-    colors[i*4] = 0.941; colors[i*4+1] = 0.878; colors[i*4+2] = 0.816;
-    colors[i*4+3] = 0.8;
+    // the ghost was a pale warm; that paleness is now its alpha
+    colors[i*4] = INK[0]; colors[i*4+1] = INK[1]; colors[i*4+2] = INK[2];
+    colors[i*4+3] = Math.min(1, 0.8 * toneA([0.941, 0.878, 0.816]));
   }
   // flow layer: soft dots that travel along internal organ paths (positions
   // are computed on the CPU each frame and streamed into the posB slice)
@@ -5444,6 +5449,9 @@
     seeds[i*4+1] = Math.random() * 6.2832;
     seeds[i*4+2] = Math.random();
     seeds[i*4+3] = 1.1 + Math.random() * 0.9;
+    // the flow layer's rgb is written once and never again: the presets set
+    // alpha per frame, and the ink under it does not change
+    colors[i*4] = INK[0]; colors[i*4+1] = INK[1]; colors[i*4+2] = INK[2];
     colors[i*4+3] = 0;
   }
 
@@ -5750,7 +5758,6 @@
     });
     return { paths, k: nm.k };
   }
-  let flowTintFor = -1;
   // neural impulses: four fixed dot-channels, each carrying one packet at a
   // time — bursts fire with jittered stagger, sometimes splitting across
   // branches, then the nerve goes quiet before the next volley
@@ -5782,7 +5789,6 @@
   // into nine per-organ groups, each streaming its own preset paths
   const GFN = Math.floor(FLOWN / ORGANS.length);
   function updateFlowGrid(t){
-    flowTintFor = -1; // single-organ tint cache is stale after this
     const time = t / 1000;
     for (let g = 0; g < ORGANS.length; g++){
       const pr = FLOW_PRESETS[g];
@@ -5807,8 +5813,8 @@
         const i3 = gi * 3;
         posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 24 * rt.k;
         const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-        colors[gi*4] = pr.tone[0]; colors[gi*4+1] = pr.tone[1]; colors[gi*4+2] = pr.tone[2];
-        colors[gi*4+3] = Math.min(1, pr.op * 1.2) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+        colors[gi*4+3] = Math.min(1, pr.op * 1.2 * toneA(pr.tone))
+                       * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
       }
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
@@ -5876,12 +5882,13 @@
       const gi = FSTART + f, i3 = gi * 3;
       const pi = flowPick[f] % rt.paths.length;
       let a = 0;
-      // the two layers are told apart by colour as well as by speed: the
-      // ambient keeps the print's own pink, a packet runs a shade off white.
-      // Not a glow — a signal has to be brighter than the tissue it crosses or
-      // it is just a denser part of it.
+      // The two layers are told apart by speed and by weight. A packet used to
+      // run a shade off white against the print's own pink; with one ink that
+      // paleness is spent on alpha instead, which is the same distinction made
+      // the same size — a signal has to be stronger than the tissue it crosses
+      // or it is just a denser part of it.
       const tone = (f % sg.every === 0) ? pr.tone : sg.tone;
-      colors[gi * 4] = tone[0]; colors[gi * 4 + 1] = tone[1]; colors[gi * 4 + 2] = tone[2];
+      const tA = toneA(tone);
       if (f % sg.every === 0){
         // the ambient layer: slow, even, and dim enough that a packet crossing
         // it reads as a different thing rather than a brighter part of it
@@ -5909,7 +5916,7 @@
           }
         }
       }
-      colors[gi * 4 + 3] = a;
+      colors[gi * 4 + 3] = Math.min(1, a * tA);
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
@@ -5921,13 +5928,6 @@
     const pr = FLOW_PRESETS[current];
     const rt = getFlowRT(current);
     if (!pr || !rt) return;
-    if (flowTintFor !== current){
-      flowTintFor = current;
-      for (let f = 0; f < FLOWN; f++){
-        const i4 = (FSTART + f) * 4;
-        colors[i4] = pr.tone[0]; colors[i4+1] = pr.tone[1]; colors[i4+2] = pr.tone[2];
-      }
-    }
     if (pr.signals){ updateSignals(pr, rt, t); return; }
     if (pr.pulse){
       updatePulses(t, rt);
@@ -5954,7 +5954,7 @@
             x += -dyn * off; y += dxn * off;
             const i3 = gi * 3;
             posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 14 * rt.k;
-            a = Math.min(1, pr.op * 1.4) * Math.pow(1 - slot, 1.8)
+            a = Math.min(1, pr.op * 1.4 * toneA(pr.tone)) * Math.pow(1 - slot, 1.8)
               * Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.1);
           }
         }
@@ -5988,7 +5988,8 @@
       posB[i3+2] = flowZ[f] * 28 * rt.k; // embedded in the volume
       // ends fade so the loop never visibly resets; deeper dots are softer
       const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-      colors[gi*4+3] = Math.min(1, pr.op * 1.35) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+      colors[gi*4+3] = Math.min(1, pr.op * 1.35 * toneA(pr.tone))
+                     * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
@@ -8110,8 +8111,9 @@
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1], z: cl.pos[i * 3 + 2],
         r: 0.9 + (i % 5) * 0.26,
-        cr: (colors[i * 4] * 255) | 0, cg: (colors[i * 4 + 1] * 255) | 0, cb: (colors[i * 4 + 2] * 255) | 0,
-        a: colors[i * 4 + 3] * (0.45 + 0.55 * cl.edge[i]),
+        // edge is the whole of this dot's form, so it is spent whole -- the
+        // shader multiplies it straight into alpha and this has to agree
+        a: colors[i * 4 + 3] * cl.edge[i] * 0.80,
         ph: Math.random() * 6.28, sp: 0.5 + Math.random(),
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]   // the shader's own phases
       });
@@ -8128,7 +8130,6 @@
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
         r: 0.9 + (i % 5) * 0.26,
-        cr: (colors[i * 4] * 255) | 0, cg: (colors[i * 4 + 1] * 255) | 0, cb: (colors[i * 4 + 2] * 255) | 0,
         a: colors[i * 4 + 3],
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]
       });
@@ -8220,23 +8221,6 @@
         ? await claude.use('downloads') : null;
     } catch (e){ dlNS = null; }
     return dlNS;
-  }
-  // Light is the dark figure with a third of its saturation taken out — not a
-  // second palette and not a dark ink. Every dot keeps the colour it drew from
-  // the cloud and only loses chroma, so the two themes are one component seen
-  // on two grounds. Memoised on the "r,g,b" string the painter builds anyway:
-  // the cloud draws from six colours and this runs once per dot per frame.
-  const LIGHT_DESAT = 0.30, desatMemo = new Map();
-  function lightRGB(key, r, g, b){
-    let v = desatMemo.get(key);
-    if (v === undefined){
-      const l = 0.36 * r + 0.50 * g + 0.14 * b;
-      v = ((r + (l - r) * LIGHT_DESAT) | 0) + ',' +
-          ((g + (l - g) * LIGHT_DESAT) | 0) + ',' +
-          ((b + (l - b) * LIGHT_DESAT) | 0);
-      desatMemo.set(key, v);
-    }
-    return v;
   }
   function toBlob(canvas, mime, q){
     return new Promise(res => canvas.toBlob(res, mime || 'image/png', q));
@@ -8343,8 +8327,12 @@
           : 1 + 0.010 * Math.sin(t * 0.0009);
         const sc = Math.min(W, H) * view.fill * (view.still ? 1 : pulse);
         const ox = W / 2, oy = H / 2;
-        // the light theme takes 30% of the saturation out, the way the engine does
-        const lit = document.body.classList.contains('light');
+        // No colour branch anywhere. The one thing the theme still decides is
+        // how much opacity the ink needs: #A34442 is a mid-dark, so it buys
+        // more contrast per unit of alpha on a pale card than on a dark one,
+        // and the tiles come back to the same weight by spending less of it.
+        // The engine's own shader does exactly this with its light alpha lift.
+        const themeA = document.body.classList.contains('light') ? 0.60 : 1;
         const drift = view.still ? 0 : 0.006 * view.jitter * sc;
         // The iris breathes by dilating rather than by scaling: the pupil opens
         // and shuts, and the tissue between it and the limbus is compressed into
@@ -8461,10 +8449,8 @@
             // back rather than being a disc of even points
             rr2 *= 0.86 + 0.30 * (zz / 0.775 * 0.5 + 0.5);
           }
-          const key = q.cr + ',' + q.cg + ',' + q.cb;
           dot2D(px, ox + qx * sc + jx, oy - qy * sc + jy, rr2 * rk * view.dot,
-                lit ? lightRGB(key, q.cr, q.cg, q.cb) : key,
-                Math.min(1, q.a * tw * view.alpha * 1.3));
+                INK_CSS, Math.min(1, q.a * tw * view.alpha * themeA * 1.3));
         }
         if (view.morph) return;      // no flow or feeding while the cloud is in flight
         // internal flow: the same presets and path maths the engine runs, so a
@@ -8475,15 +8461,16 @@
             ? (view._rt = view._rt || buildFlowRT(pr, view.cl.norm))
             : getFlowRT(view.idx));
           if (rt){
-            const tr = (pr.tone[0] * 255) | 0, tg = (pr.tone[1] * 255) | 0,
-                  tb = (pr.tone[2] * 255) | 0;
-            const tkey = tr + ',' + tg + ',' + tb;
-            const tone = 'rgba(' + (lit ? lightRGB(tkey, tr, tg, tb) : tkey) + ',';
+            // the preset's tone is read for its brightness and spent on alpha,
+            // the same way the engine's flow layer does it
+            const tA = toneA(pr.tone);
+            const tone = 'rgba(' + INK_CSS + ',';
             for (let f = 0; f < view.flowN; f++){
               const P = rt.paths[flowPick[f] % rt.paths.length];
               const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
               const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-              const fa = Math.min(1, pr.op * 1.35) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+              const fa = Math.min(1, pr.op * 1.35 * tA * themeA)
+                       * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
               if (fa <= 0.012) continue;
               const d = u * P.total;
               let k = 0;
@@ -8520,13 +8507,11 @@
           const rx = (cs * q.x + sn * q.y) * k;
           const ry = (-sn * q.x + cs * q.y) * k;
           const tw = 0.80 + 0.20 * Math.sin(T * 1.8 + q.sz * 21.0);
-          const key = q.cr + ',' + q.cg + ',' + q.cb;
           dot2D(px,
                 ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
                 oy - ry * sc + aDrift * Math.cos(T * 0.7 + q.sz * 9.42),
-                q.r * rk * view.dot * 0.9,
-                lit ? lightRGB(key, q.cr, q.cg, q.cb) : key,
-                Math.min(1, q.a * tw * feedA * view.alpha * 1.25));
+                q.r * rk * view.dot * 0.9, INK_CSS,
+                Math.min(1, q.a * tw * feedA * view.alpha * themeA * 1.25));
         }
       },
       // The same frame at export resolution, on a transparent ground. The
