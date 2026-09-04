@@ -1588,6 +1588,51 @@ next lift, if one is asked for, has to come from the bands, or from raising
 opacity at all -- count, size, or (as with the heart) how large the organ is
 drawn in the first place.
 
+### 5.60 The rim cannot be pushed up, only the middle pulled down
+
+"35% more density, more matter especially on the edge, thicker." Three asks,
+and they are three different knobs. The count is `FULL_DOTS`, 4.16 -> 5.62,
+and since the rejection test decides where and never how many, that is the
+whole of the density part. "Thicker" is the length in `exp(-d/L)`: how far in
+from the boundary the dense band reaches before it decays to the interior
+value, so 8 -> 11 is the same rim carried deeper. "Especially on the edge" is
+the ratio of the two ends, and that is where the first attempt went wrong.
+
+It raised the boundary weight a tenth, to 1.54, and held the deep middle at
+0.4777. Measured, the interior gained *more* than the rim: +32% against +21% on
+the brain. The acceptance test is `min(1, mask * bulk)`, and at the boundary
+`bulk` is already past 1 -- so for every point where the noise mask is not low,
+a higher boundary weight clips to the same 1 it was clipping to before. The rim
+has no headroom on that side. The only way to favour it is to make the interior
+*less* likely relative to it: the deep middle down to 0.40, which with 35% more
+count still leaves the core up in absolute terms. Re-solved at L = 11:
+
+    A + X*e^(-2/11) = 1.54,   A + X*e^(-22/11) = 0.40   ->   0.179, 1.632
+
+Boundary over core 2.93x -> 3.85x; the mid volume (d = 8) 0.87 -> 0.97.
+
+Measured on the library tiles as ink density inside a shell of the closed
+silhouette versus the interior it encloses:
+
+| shell | brain edge / core | lungs edge / core | heart edge / core |
+|---|---|---|---|
+| 7 px (the band) | +29% / +26% | +31% / +27% | +25% / +24% |
+| 3 px (the rim) | +23% / +31% | +24% / +30% | +12% / +20% |
+
+The thick band gains at least as much as the core everywhere, which is the
+thickness. The outermost three pixels still gain less than the core, and that
+is not the sampler: rim pixels were already the densest thing on the tile and,
+after the brightness lift, sit closest to the 0.90 ceiling, so an extra dot
+there composites to less than an extra dot in the middle does. It is a ceiling
+in the measurement, not in the distribution, and pushing the ratio further
+would not show up there either.
+
+Total ink per tile: median +27% for a count up 35%, the gap being the same
+saturation. Two tiles did not move: Iris and Sphere already sit at the buffer
+(12,445 and 12,245 points against 11,545 slots), and are the two explorations
+nothing in the product selects. The brain, the largest filled organ, lands at
+10,578 -- the cap is close now, and the next density ask will need `N` raised.
+
 ---
 
 ## 6. Open items

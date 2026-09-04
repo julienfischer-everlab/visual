@@ -5352,7 +5352,26 @@
         // particles land, never how many -- so what any of this buys is the
         // ratio: the two asks together are a 10.4% steeper fall from the
         // boundary inward.
-        const bulk = 0.395 + 1.290 * Math.exp(-d / 8.0);
+        //
+        // "More matter, especially on the edge, and thicker." Thicker is the
+        // length L, not the weights: L is how far in from the boundary the
+        // dense band reaches before it has decayed to the interior value, so
+        // 8 -> 11 is the same rim carried deeper into the volume. The two ends
+        // are then re-solved at the new L. The first attempt raised the
+        // boundary to 1.54 and held the deep middle at 0.4777, and the
+        // measurement said the middle gained MORE than the rim (+32% against
+        // +21% on the brain). The acceptance test is min(1, mask * bulk), and
+        // at the boundary bulk is already past 1, so a higher boundary weight
+        // clips away for every point where the noise mask is not low -- the
+        // rim cannot be pushed up. It can only be favoured by pulling the
+        // interior down relative to it, which with 35% more count still leaves
+        // the core up in absolute terms:
+        //
+        //   A + X*e^(-2/11) = 1.54,   A + X*e^(-22/11) = 0.40
+        //
+        // gives 0.179 and 1.632. The mid volume (d = 8) goes 0.87 -> 0.97,
+        // which is the thickness; boundary over core goes 2.93x -> 3.85x.
+        const bulk = 0.179 + 1.632 * Math.exp(-d / 11.0);
         if (Math.random() < (dens ? dens(px, py) : 1) * mask * bulk) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
@@ -9638,7 +9657,10 @@
   // The density of every organ everywhere. Since the engine asks orgDrawN()
   // for its count and orgDrawN is the library's own target, this one number
   // moves both renderers together and there is nothing else to keep in step.
-  const FULL_DOTS = 4.16;
+  // 4.16, then 35% more: "more matter". The cap below and the buffer's N - AMB
+  // slots are what this has to fit under; the brain, the largest filled organ,
+  // lands at ~10,800 of 11,545.
+  const FULL_DOTS = 5.62;
   const fullTarget = cl => Math.min(11800, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
   // ---- how many particles an organ is, full stop ----------------------------

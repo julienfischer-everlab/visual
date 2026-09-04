@@ -906,8 +906,20 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **6,245**. Measured in the library: brain 4,339 points, lungs
-3,454, nerve 2,119 (each including its flow layer).
+**And the rim cannot be pushed up, only the middle pulled down.** The
+acceptance test is `min(1, mask × bulk)`, and at the boundary `bulk` is
+already past 1 — so raising the boundary weight clips to the same 1 for every
+point where the noise mask is not low, and measured on the tiles it was the
+*interior* that gained. The curve is `0.179 + 1.632·e^(−d/11)`: the length is
+how deep the dense band reaches (the thickness), and favouring the edge is
+done by solving the deep-middle end *lower* (0.40) while the count carries the
+absolute weight. Boundary over core 3.85×.
+
+The count is `dotTarget × FULL_DOTS` (5.62), capped at 11,800 and by the
+buffer's `N − AMB` = 11,545 slots. Measured in the library: brain 10,578
+points, lungs 8,375, heart 8,262, nerve 5,130. Iris and Sphere — the two
+explorations nothing in the product selects — already sit at the buffer and
+did not grow; the brain is close, and the next density ask needs `N` raised.
 
 Two per-asset overrides sit on top of the shared numbers, because a figure's
 geometry can make the same setting read differently:
