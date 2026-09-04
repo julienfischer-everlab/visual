@@ -3307,7 +3307,7 @@
       <option value="on">Completed</option>
       <option value="empty">Empty</option>
     </select>
-    <span class="lbl">Organ age</span>
+    <span class="lbl">Organ ages</span>
     <select id="stOrg" aria-label="Organ age state">
       <option value="on">Completed</option>
       <option value="empty">Empty</option>
@@ -3605,8 +3605,8 @@
           </div>
           <div class="mbDots msDots" id="msDots"></div>
         </div>
-        <div class="msn morganMini" id="mOrgCard" tabindex="0" role="group" aria-label="Organ age, use arrow keys to change organ">
-          <div class="mbHead"><span class="lbl"><i class="ageS">Organ age</i><i class="ageL">Biological age</i></span></div>
+        <div class="msn morganMini" id="mOrgCard" tabindex="0" role="group" aria-label="Organ ages, use arrow keys to change organ">
+          <div class="mbHead"><span class="lbl"><i class="ageS">Organ ages</i><i class="ageL">Biological age</i></span></div>
           <div class="mbTrack" id="mbTrack"></div>
           <div id="mbSlot"></div>
           <div class="mbDots" id="mbDots"></div>
@@ -3980,7 +3980,12 @@
   canvas.addEventListener('webglcontextrestored', () => location.reload());
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const N = 9000;
+  // 7200, down from 9000. The cloud was reading as a filled 2D shape rather
+  // than a volume, and the fix for that is fewer particles, not different
+  // ones: negative space between them is what lets a reader see through the
+  // front layer to the ones behind it. Removed uniformly, since the sampling
+  // is uniform -- there is no region this thins more than another.
+  const N = 7200;
   const AMB = 350; // ambient strays that float around the organ, never joining it
   const STAG = 0.35;                  // stagger fraction of the timeline
 
@@ -4115,7 +4120,7 @@
   // behind it. The presets' own `op` and `tone` no longer scale it; they still
   // decide the paths, the pace and the turbulence, which is what they were
   // for. See the shader, where the flow takes its own alpha path entirely.
-  const FLOW_A = 0.75;
+  const FLOW_A = 0.30;
 
   // ---------- organ silhouettes drawn to an offscreen canvas ----------
   const S = 340;
@@ -5041,7 +5046,9 @@
       //
       // This is a score, not an opacity. It is ranked against the whole cloud
       // below and only then turned into one.
-      const zmax = depthPx * Math.sqrt(d / 22);
+      // a quarter deeper than it was: the front and back of a volume have to
+      // be far enough apart in z for the depth term above to separate them
+      const zmax = depthPx * 1.25 * Math.sqrt(d / 22);
       const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
       const Y = -(py - cy + (Math.random() - 0.5) * 2) * s * tf.s;
@@ -5056,10 +5063,13 @@
       // else may correlate with position. And a fifth is structure, kept
       // deliberately small: enough that a fold or a bronchus is a little
       // firmer than the tissue around it, not enough to be a border.
-      const zN = Math.min(1, Math.abs(Z) / (0.35 * s * tf.s + 1e-6));
-      score[i] = 0.55 * Math.random()
-               + 0.25 * (1 - zN)
-               + 0.20 * Math.exp(-d / 5.5);
+      // Depth carries more of the weight than it did: 0.25 was enough to be a
+      // cue and not enough to sort the cloud into layers a reader can pick
+      // apart, which is what a volume has to do to stop reading as a shape.
+      const zN = Math.min(1, Math.abs(Z) / (0.44 * s * tf.s + 1e-6));
+      score[i] = 0.45 * Math.random()
+               + 0.40 * (1 - zN)
+               + 0.15 * Math.exp(-d / 5.5);
     }
     // ambient strays: a loose shell of drifting particles around the organ.
     // They score zero — they are not part of any structure — and take a
@@ -5414,12 +5424,16 @@
         // the edge signal that drew the shell was the thing the cloud was
         // asked to stop having.
         float shell = smoothstep(0.42, 0.88, ef);
-        float keepUp = step(fract(aSeed.z * 71.33), mix(0.11, 0.78, shell));
+        // Kept far more of the volume than it used to. The old numbers were
+        // tuned when ef was a rim signal and dropping 89% of the interior left
+        // a legible shell behind; with ef an opacity rank and the cloud 20%
+        // thinner besides, the same numbers took the head off the figure.
+        float keepUp = step(fract(aSeed.z * 71.33), mix(0.38, 0.82, shell));
         // and what is left of them is faint: a sixth of full inside the
         // vessel, a little over a third on the rim, where light would sit.
         // The interior is not empty -- a scattering of dots floats in it, so
         // the shell reads as a volume rather than as a cut-out.
-        float upA = keepUp * mix(0.30, 0.62, shell);
+        float upA = keepUp * mix(0.46, 0.72, shell);
         vfade = mix(1.0, mix(upA, 1.0, lit), uRange);
       }
       // The light theme changes nothing about the colour -- there is nothing
@@ -6154,7 +6168,7 @@
     { name: 'Lung health',          age: 40, delta: 6,  bio: 16, bioOut: 2 },
     { name: 'Heart health',         age: 31, delta: -3, bio: 18 },
     { name: 'Immune health',        age: 31, delta: -3, bio: 12 },
-    { name: 'Muscle + bone health', age: 36, delta: 2,  bio: 9,  bioOut: 4 },
+    { name: 'Muscle & bone health', age: 36, delta: 2,  bio: 9,  bioOut: 4 },
     { name: 'Gut health',           age: 29, delta: -5, bio: 15 },
     { name: 'Metabolic health',     age: 38, delta: 4,  bio: 13, bioOut: 3 },
     { name: 'Kidney health',        age: 30, delta: -4, bio: 10 },
@@ -6215,10 +6229,10 @@
   const PILL = [
     { label: 'Heart',         organIdx: 3, delta: -3, bio: 18 },
     { label: 'Mental',        organIdx: 0, delta:  0, bio: 14 },
-    { label: 'Brain + nerve', organIdx: 1, delta: -6, bio: 11 },
+    { label: 'Brain', organIdx: 1, delta: -6, bio: 11 },
     { label: 'Lung',          organIdx: 2, delta:  8, bio: 16, bioOut: 2 },
     { label: 'Immune',        organIdx: 4, delta: -3, bio: 12 },
-    { label: 'Muscle + bone', organIdx: 5, delta:  2, bio: 9,  bioOut: 4 },
+    { label: 'Muscle & bone', organIdx: 5, delta:  2, bio: 9,  bioOut: 4 },
     { label: 'Gut',           organIdx: 6, delta: -5, bio: 15 },
     { label: 'Metabolic',     organIdx: 7, delta:  4, bio: 13, bioOut: 3 },
     { label: 'Kidney',        organIdx: 8, delta: -1, bio: 10, bioOut: 1 },
@@ -7326,7 +7340,7 @@
     // and it is not one of the organs any more, so it does not carry an
     // organ's name: what is unread is the organ ages, all of them
     v4Names.forEach((el, k) => {
-      el.textContent = (allOrg && k === 1) ? 'Organ age' : slideName(MB[k]);
+      el.textContent = (allOrg && k === 1) ? 'Organ ages' : slideName(MB[k]);
     });
     dstripWrite();   // the collapse renames the strip's neighbours too
     applyNoAge();
@@ -7349,14 +7363,16 @@
   // than the first one speaking for all three. The carousel stands.
 
   // Emptied outright, the nine organ slides say the same nothing nine times.
-  // They collapse to one -- "Organ age", showing the brain, since a carousel
+  // They collapse to one -- "Organ ages", showing the brain, since a carousel
   // of unread organs is nine swipes to the same sentence. The slide keeps
   // index 1, so the carousel reads biomarkers, body, organ age; what sits at
   // 1 is remapped rather than reordered, because MB is what every other
   // surface counts by.
   function orgLock(){ return document.body.classList.contains('emOrg'); }
-  // the brain, by the cloud rather than by the label: 'Brain + nerve' draws a
-  // neuron, and the brain itself is what 'Mental' carries
+  // The brain, found by the cloud rather than by the label. Both are called
+  // 'Brain' now and they are not the same thing: the reading labelled Brain
+  // draws a neuron, and the brain itself is the cloud 'Mental' carries. This
+  // asks ORGANS, so it gets the organ.
   const BRAIN_K = Math.max(1, MB.findIndex(
     d => d.organIdx === ORGANS.findIndex(o => o.label === 'Brain')));
   function mbAt(k){ return MB[orgLock() && k >= 1 ? BRAIN_K : k]; }
@@ -7369,7 +7385,7 @@
   // count by bxMax() -- the same collapse the phone makes when the organ ages
   // are missing, where nine slides saying nothing become one that says it once.
   function stripName(k){
-    return (orgLock() && k === 1) ? 'Organ age' : slideName(mbAt(k));
+    return (orgLock() && k === 1) ? 'Organ ages' : slideName(mbAt(k));
   }
   // where the selection sits in that sequence. Under the lock every organ is
   // the one collapsed slide, so nine of them map to 1 -- the same fold mbAt
@@ -7685,6 +7701,13 @@
         Math.min(1, Math.abs(o.delta) / 7));
       bindCloud(o.organIdx);
       gl.drawArrays(gl.POINTS, 0, N);
+      // and its flow, on the one slide whose organ the flow is currently
+      // computed for — the same second draw off the live buffers every other
+      // surface makes, so the phone's carousel carries what the desktop's does
+      if (o.organIdx === current && flowVis > 0.015){
+        bindCloud(-1);
+        gl.drawArrays(gl.POINTS, FSTART, FLOWN);
+      }
     }
     if (v4Hero && v4Ages.length){
       // At rest the strip is one number. The neighbours are not dimmed, they are
@@ -7963,15 +7986,19 @@
       // the live buffers, with uP already at 1 so the flow reads its own B
       // positions rather than a morph of them.
       //
-      // Only for a preset built for this. The others are tuned for the
-      // full-bleed concept modes, and their paths are laid out in a frame the
-      // hero does not use. And only at rest on the slide the preset belongs to:
-      // mid-swipe the pair is two different figures, and a lane drawn in one
-      // figure's frame lands nowhere in the other's. At rest f is 0 and the B
-      // slot contributes nothing, so it is the A slot that has to be the print
-      // — the pair is always this slide and the next one, never a slide twice.
+      // Every preset, not only the print's. It was gated to `signals` on the
+      // grounds that the others were laid out for the full-bleed concepts, but
+      // the paths are built in the cloud's own normalised frame and placed by
+      // the same pan and zoom the cloud is — so a hero is not a different
+      // frame, it is the same one at another scale. The flow now behaves the
+      // same on the phone as on the desktop, which is the point of it.
+      //
+      // Still only at rest on the slide the preset belongs to: mid-swipe the
+      // pair is two different figures, and a lane drawn in one figure's frame
+      // lands nowhere in the other's. At rest f is 0 and the B slot
+      // contributes nothing, so it is the A slot that has to match.
       const hf = FLOW_PRESETS[current];
-      if (hf && hf.signals && flowVis > 0.015 && ia === current && f < 0.02){
+      if (hf && flowVis > 0.015 && ia === current && f < 0.02){
         bindCloud(-1);
         gl.drawArrays(gl.POINTS, FSTART, FLOWN);
       }
@@ -8908,10 +8935,10 @@
   const IM_DESC = {
     'Heart': 'Lipids, blood pressure and inflammatory markers, read together as the load the cardiovascular system is carrying.',
     'Mental': 'Markers tied to cognition and mood regulation — inflammation, B-vitamin status and metabolic supply to the brain.',
-    'Brain + nerve': 'Neurological signal quality: homocysteine, B12 and the inflammatory markers that track nerve conduction.',
+    'Brain': 'Neurological signal quality: homocysteine, B12 and the inflammatory markers that track nerve conduction.',
     'Lung': 'Oxygen transport and airway inflammation, from haemoglobin and red cell indices through to eosinophil counts.',
     'Immune': 'White cell lines and inflammatory proteins, describing how quickly the body mounts and resolves a response.',
-    'Muscle + bone': 'Creatine kinase, vitamin D and mineral balance — the markers behind musculoskeletal strength and repair.',
+    'Muscle & bone': 'Creatine kinase, vitamin D and mineral balance — the markers behind musculoskeletal strength and repair.',
     'Gut': 'Digestive and absorptive function: liver enzymes, iron studies and the markers that reveal how well food is used.',
     'Metabolic': 'Glucose handling and insulin sensitivity, with the lipid fractions that move first when metabolism drifts.',
     'Kidney': 'Filtration rate, creatinine and electrolyte balance, describing how efficiently the blood is being cleared.',
@@ -8919,8 +8946,8 @@
   };
   // annotation anchors in organ-local space, art-directed per organ
   const IM_ANCHOR = {
-    'Heart': [0.42, 0.34], 'Mental': [0.46, 0.30], 'Brain + nerve': [0.52, 0.36],
-    'Lung': [0.44, 0.32], 'Immune': [0.50, 0.28], 'Muscle + bone': [0.30, 0.36],
+    'Heart': [0.42, 0.34], 'Mental': [0.46, 0.30], 'Brain': [0.52, 0.36],
+    'Lung': [0.44, 0.32], 'Immune': [0.50, 0.28], 'Muscle & bone': [0.30, 0.36],
     'Gut': [0.46, 0.24], 'Metabolic': [0.48, 0.26], 'Kidney': [0.46, 0.30],
     'Body': [0.34, 0.40]
   };
@@ -8931,7 +8958,7 @@
   // next to each other it reads as a thinner one, which is what it is. FULL is
   // the factor that closes the difference, and every 2D surface that means to
   // match the engine takes it from here rather than picking its own.
-  const FULL_DOTS = 3.06;
+  const FULL_DOTS = 2.45;   // 20% under the engine's own, with it
   const fullTarget = cl => Math.min(8600, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
   const IM_FILL = 0.286;   // the annotation anchors are placed off this too
@@ -9262,10 +9289,10 @@
   const AGE_DESC = {
     'Heart': 'Your heart drives circulation, blood pressure and how well oxygen reaches the rest of you. Its biological age reflects the load your cardiovascular system is carrying.',
     'Mental': "Your brain plays a central role in memory, focus, mood and cognitive performance. Its biological age reflects how well it's functioning compared with what's expected for your age.",
-    'Brain + nerve': 'Your nervous system carries every signal between brain and body. Its biological age reflects how cleanly those signals are still travelling.',
+    'Brain': 'Your nervous system carries every signal between brain and body. Its biological age reflects how cleanly those signals are still travelling.',
     'Lung': 'Your lungs move oxygen into the blood and carbon dioxide back out. Their biological age reflects how efficiently that exchange is still happening.',
     'Immune': 'Your immune system decides how quickly you mount a response and how cleanly you resolve it. Its biological age reflects how well that balance is holding.',
-    'Muscle + bone': 'Muscle and bone carry you, and repair themselves as they go. Their biological age reflects how much strength and density you are keeping.',
+    'Muscle & bone': 'Muscle and bone carry you, and repair themselves as they go. Their biological age reflects how much strength and density you are keeping.',
     'Gut': 'Your gut breaks food down and decides how much of it you actually use. Its biological age reflects how well digestion and absorption are working.',
     'Metabolic': 'Your metabolism sets how you store and spend energy. Its biological age reflects how steadily glucose and lipids are being handled.',
     'Kidney': 'Your kidneys filter the blood and hold your fluid balance steady. Their biological age reflects how efficiently that clearing is still being done.'
@@ -9280,8 +9307,8 @@
   // the noun each channel takes in "Your ___ age is 32"; the label alone does not
   // always read as one ("Your brain + nerve age" does not)
   const AGE_NOUN = {
-    'Heart': 'heart', 'Mental': 'brain', 'Brain + nerve': 'nerve', 'Lung': 'lung',
-    'Immune': 'immune', 'Muscle + bone': 'muscle &amp; bone', 'Gut': 'gut',
+    'Heart': 'heart', 'Mental': 'brain', 'Brain': 'nerve', 'Lung': 'lung',
+    'Immune': 'immune', 'Muscle & bone': 'muscle &amp; bone', 'Gut': 'gut',
     'Metabolic': 'metabolic', 'Kidney': 'kidney'
   };
   function ageTitle(d){
@@ -9307,7 +9334,7 @@
     wrap.innerHTML =
       '<div class="sheet shModal oaModal' + (desk ? ' oaDesk' : '') + '">' +
         (desk ? '' : '<div class="shHandle"></div>') +
-        '<div class="oaTop"><h4>Organ age</h4>' +
+        '<div class="oaTop"><h4>Organ ages</h4>' +
           '<button class="shClose" aria-label="Close">&#10005;</button></div>' +
         '<div class="oaStage">' +
           (desk ? oaArrow('prev', 'Previous organ') + oaArrow('next', 'Next organ') : '') +
