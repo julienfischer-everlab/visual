@@ -845,6 +845,49 @@ it had been correct for months and silently became a bucket count instead —
 reporting 50% for a 30% split. A measurement that stops measuring the thing it
 names is worse than no measurement.
 
+### 5.31 Rank, then quantise
+
+The brief wanted two things at once: an opacity *histogram* (half the cloud at
+10–20%, a third at 20–35%, a seventh above) and an opacity *meaning* (edges
+and internal structures strong, volume medium, depth and strays faint).
+Written as two rules they drift the first time either is touched — a curve
+tuned to look right stops matching the histogram, and a histogram enforced
+directly stops following the shape.
+
+They are one rule if you **rank by the meaning and read the values off the
+histogram**: sort the cloud by structural score, take each particle's
+percentile, feed it through the histogram's inverse CDF. The shape decides the
+order, the histogram decides the values, and neither can drift from the other
+because there is only one of them.
+
+Two things fell out of doing it that way. `edge` stopped being an opacity and
+became a **rank in 0–1**, because the ink a particle lands on decides which
+range that rank is spent over and the ink is not known when the cloud is
+built — the clouds are shared across every organ, the colours are per particle
+index. And the shader's gain and depth term could go: both existed to put back
+what a long run of fractions took out, and once the authored value carries the
+ramp and the range, everything left has to modulate *around* 1 rather than
+under it, or the histogram is a fiction.
+
+**Two specs in one message can be arithmetically incompatible, and the fix is
+to say so, not to split the difference.** 60% of particles red with a floor of
+20% opacity means at most 40% of the cloud can be under 20% — so the requested
+"50% at 10–20%" cannot hold alongside the per-colour table. The table is the
+more specific rule and wins; the global split lands at 26/56/15 and that
+number goes in the README rather than being quietly rounded toward the brief.
+
+### 5.32 A backtick in a comment inside a template literal
+
+`// \`authored\` already carries the ramp` — written inside the vertex
+shader's template literal, which the backtick promptly closed. The page threw
+`Unexpected identifier 'authored'` and nothing rendered.
+
+Worth its own note because of how the error read: a **JavaScript** parse error
+naming a **GLSL** identifier, from a line that is a comment in both languages.
+Nothing in the message points at the real cause. The five-second diagnosis is
+to extract the largest `<script>` block and run `node --check` on it, which
+names the line directly — and is worth doing before reading any shader.
+
 ---
 
 ## 6. Open items

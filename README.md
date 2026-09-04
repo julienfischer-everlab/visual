@@ -692,69 +692,75 @@ Chronological age, the organ-card tint, density, particle size, flow and voxels
 are no longer exposed: they stay where the design landed. `CHRONO` is a constant
 now rather than a control.
 
-## Two inks
+## Three inks, and opacity as anatomy
 
-Every particle is one of exactly two values — **`#A34442`** or **`#FFFFFF`** —
-**70/30**, with the coin thrown independently per particle so the two fall
-through the cloud the way a speckled material does rather than sorting into
-regions. There is no third colour: no palette, no verdict colour, no theme
-colour, no flow tint. Everything else is opacity.
+**Colour is random. Opacity is not.** That split is the whole treatment.
 
-Red is the material; white is the highlight in it. It began as an even split,
-which read as two materials sharing a volume rather than one with light on it;
-cutting the highlight to 30% by count is what made it land as a glint.
+Every particle is one of exactly three values, dealt by an independent coin so
+they fall through the cloud the way a speckled material does rather than
+sorting into regions:
 
-**Three ceilings, one per thing.** The material stops at **50%**, the
-highlight is allowed **60%** — it is the only thing in the cloud that may be
-brighter than the material, which is the whole of its job — and the flow layer
-runs at a flat **75%**. Which ceiling a particle gets is read off the colour it
-is already carrying: green is `1.0` on the highlight and `0.27` on the
-material.
-That ceiling is enforced twice: once where a particle's alpha is authored, and
-again as a hard `min(A, 0.50)` at the end of the vertex shader, because
-thirteen factors multiply into alpha between those two points and tuning each
-of them to stay under would be a guarantee that quietly stops holding the next
-time one changes. The 2D painter clamps at the same value, and `dot2D`'s two
-discs were re-weighted from `0.34/0.82` to `0.30/0.76` — the old pair
-composited to `1.02×` at the top of the range, which would have put a dot over
-the ceiling by way of its own soft edge.
+| | role | share | opacity |
+|---|---|---|---|
+| `#A34442` | the material | 60% | 20–50% |
+| `#D09A96` | a lighter tone of it | 25% | 12–40% |
+| `#F2E9E7` | warm off-white | 15% | 5–25% |
 
-**The two inks take different ranges**, and this is the one place opacity is
-deliberately correlated with colour:
+The ranges overlap, and **the brightest colour has the lowest ceiling**. That
+is the rule that keeps fifteen percent of the particles from reading as
+glitter: the off-white can never be the strongest thing on the page, only the
+lightest.
 
-- **The material runs `0.25`–`0.50`.** A two-to-one spread — narrow enough to
-  read as one substance, wide enough for the depth ramp to have something to
-  work with.
-- **The highlight runs `0.05`–`0.60`,** on a `^2.2` curve that keeps most of
-  it low. The few that reach the top are genuinely the brightest points in the
-  picture; the long tail under them is what stops that reading as a scatter of
-  hotspots.
+### Opacity is authored from the shape
 
-A gain of `2.15` sits just before the ceiling. The factors between the
-authored alpha and the end of the shader — the ramp, the depth, the twinkle —
-are all fractions and average about `0.47`, so a particle written at 25% was
-arriving near 12% and the whole 5–50% range only ever occupied its own bottom
-half. The gain puts it back where it was written; the cap keeps the top
-honest.
+Each particle gets a **structural score** — `exp(-d / 5.5)`, where `d` is its
+distance to the nearest boundary in the silhouette mask, with a mild penalty
+for sitting deep in z. The mask does not distinguish the outline from the
+structures inside it, which is exactly the distinction the design does not
+want made: a brain's folds and a lung's bronchi score as highly as their
+outer edges do.
 
-| what it says | how it says it |
-| --- | --- |
-| the organ's body | `edge` runs 0.62 at the silhouette to 0.98 deep inside — the core solid, falling away toward the boundary, and normalised to a ceiling of 1 so the cap never clips the gradient flat |
-| loose particles | the ambient shell sits at `edge` 0.14 and a fifth of the cloud's base alpha: under a tenth of the organ's weight |
-| volume | `depthA` reads the camera's own foreshortening, so the near face of a cloud comes forward and the far one falls back |
-| the verdict | subtraction only, since nothing may gain: older sits at the ceiling, neutral a little under it, younger falls away by up to 68% on the dots the lottery picks |
-| a flow layer's character | the presets keep the tones they were authored with, but `toneA` reads a tone for its brightness alone and spends it on alpha; the layer as a whole runs 50% stronger than the cloud, under a ceiling of its own |
-| the theme | alpha, and only alpha |
+Then the cloud is **sorted by that score, and each particle's percentile is
+read through the opacity histogram**:
 
-**The ramp changed direction when the colours went**, and was later
-normalised. `edge` used to brighten the rim — 1.20 on the silhouette, 0.72
-deep inside — to keep outlines crisp.
-It now runs the other way. The silhouette survives losing its bright rim
-because the sampling is shell-biased: most particles land near the edge, so
-the outline is still the densest part of the picture; it just arrives as a
-gradient of many faint dots instead of a line of bright ones. The biomarker
-slide's rim selector reads the same attribute, so its window was reversed with
-it (`smoothstep(0.89, 0.69, ef)`).
+```
+50% → 10–20%     35% → 20–35%     15% → 35–50%
+```
+
+Ranking rather than mapping the score directly is what makes the distribution
+and the anatomy *the same statement* instead of two that have to be kept in
+step: the shape decides the order, the histogram decides the values, and
+neither can drift from the other. The result is stored as a rank in 0–1; the
+ink a particle landed on decides which range that rank is spent over, which is
+why it cannot be an opacity until both are known.
+
+So: **higher opacity on the silhouette, the anatomical boundaries and the
+internal structures; medium through the volume; very low deep inside it.** The
+ambient strays score zero and take a further 0.42 of even the bottom of their
+ink's range, which is what "floating outside the organ" has to mean once
+opacity is the only thing saying where a particle is.
+
+**One arithmetic note.** With 60% of particles red and red floored at 20%, at
+most 40% of the cloud can sit in the 10–20% band — so the global histogram
+lands nearer **4 / 26 / 56 / 15** across *under 10 / 10–20 / 20–35 / 35–50*
+rather than the 50 / 35 / 15 asked for. The per-colour table and the global
+histogram cannot both hold exactly; the table is the more specific of the two
+and wins. 85% of particles still sit below 35%, and nothing exceeds 50%.
+
+### Nothing above its ceiling
+
+The cap is enforced twice: once where a particle's opacity is authored, and
+again as a hard `min` at the end of the vertex shader, because a dozen factors
+multiply into alpha between those two points and tuning each to stay under
+would be a guarantee that quietly stops holding the next time one changes. The
+2D painter clamps at the same values, and `dot2D`'s two discs were re-weighted
+from `0.34/0.82` to `0.30/0.76` — the old pair composited to `1.02×`, which
+would have put a dot over its ceiling by way of its own soft edge.
+
+There is no gain and no separate depth term in the cloud's chain any more.
+Both existed to put back what a long run of fractions took out; now that the
+authored value already carries the ramp and the ink's range, what remains
+modulates around 1 rather than under it.
 
 ### The flow runs at a flat 75%, on its own alpha path
 

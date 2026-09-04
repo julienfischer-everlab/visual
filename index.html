@@ -4047,43 +4047,66 @@
   // lavender to mauve, the cream stops being a highlight and becomes the palest
   // member of the same family — so the cloud reads as one warm material rather
   // than a set of tints at full brightness.
-  // ---------- two inks ----------
-  // Every particle is one of exactly two values: #A34442 or #BC6654, dealt
-  // 65/35 by an independent coin per particle, so the two fall through the
-  // cloud the way a speckled material does rather than sorting themselves
-  // into regions. There is no third colour anywhere — no palette, no verdict
-  // colour, no theme colour, no flow tint. Depth, density, anatomy and
-  // verdict are carried by opacity alone.
+  // ---------- three inks, and opacity as anatomy ----------
+  // Colour is random; opacity is not. That split is the whole treatment.
   //
-  // The highlight was #FFFFFF and is now a warm mid-tone a step up from the
-  // material rather than a step out of it: fifteen levels of separation
-  // instead of ninety, which is what turns a glint into a sheen. Its own
-  // opacity curve is unchanged — still bunched at the bottom of the range,
-  // because a highlight that reaches the material's weight stops being one.
+  // Every particle is one of exactly three values, dealt by an independent
+  // coin so they fall through the cloud the way a speckled material does
+  // rather than sorting into regions:
   //
-  // The presets and layers below still carry the tones they were authored
-  // with, because those tones encoded a real distinction — an airflow that
-  // was paler than a perfusion, a signal packet paler than the tissue it
-  // crosses. `toneA` reads a tone for its brightness alone and spends it on
-  // alpha, so what used to be told apart by being paler is told apart by
-  // being stronger. Nothing resolves to a further hue.
+  //   60%  #A34442  the material
+  //   25%  #D09A96  a lighter tone of it
+  //   15%  #F2E9E7  off-white, and capped at 25% opacity, because at 15% of
+  //                 the particles it only takes a handful of bright ones to
+  //                 make the whole cloud read as glitter rather than tissue
   //
-  // Written as the eighth-bit fractions themselves, so the value that reaches
-  // the GPU is the byte a designer will read back and not a rounding of it.
+  // Opacity carries the anatomy. It is authored per cloud, from each
+  // particle's distance to the nearest boundary in the silhouette -- outline
+  // and internal structure alike, since the mask does not distinguish them --
+  // so the edges and the structures inside are the visible part and the
+  // volume behind them falls away. See `buildCloud`, where the ramp is built.
   const INK_CSS = '163,68,66';                                    // #A34442
-  const LIT_CSS = '255,255,255';                                  // #FFFFFF
-  const INK = INK_CSS.split(',').map(v => +v / 255);
-  const LIT = LIT_CSS.split(',').map(v => +v / 255);
-  // 30/70. White is an accent, not half the material — but a bright one: it
-  // is the only thing in the cloud allowed past the 50% the material stops at.
-  const WHITE_SHARE = 0.30;
-  const pickInk = () => Math.random() < WHITE_SHARE ? LIT : INK;
-  // Read back off the buffer rather than kept in a second array: the colour a
-  // particle got at init is the one both renderers have to agree on, and one
-  // of the two is the only bit that separates them. Green is what separates
-  // them furthest -- 0.27 against 0.40 -- now that both are warm reds and red
-  // itself only differs by a tenth.
-  const isLit = i => colors[i * 4 + 1] > 0.33;
+  const MID_CSS = '208,154,150';                                  // #D09A96
+  const LIT_CSS = '242,233,231';                                  // #F2E9E7
+  const rgb01 = c => c.split(',').map(v => +v / 255);
+  const INK = rgb01(INK_CSS), MID = rgb01(MID_CSS), LIT = rgb01(LIT_CSS);
+  const INK_SHARE = 0.60, MID_SHARE = 0.25;   // the rest is the off-white
+  function pickInk(){
+    const r = Math.random();
+    return r < INK_SHARE ? INK : r < INK_SHARE + MID_SHARE ? MID : LIT;
+  }
+  // The off-white's ceiling, and the cloud's. Read back off the colour a
+  // particle is already carrying rather than kept in a second array: green
+  // separates the three furthest -- 0.27, 0.60, 0.91.
+  // Each ink has its own range, and they overlap: the material is the darkest
+  // thing on the page and also the strongest, the off-white the lightest and
+  // the faintest. That is what stops fifteen percent of the particles reading
+  // as glitter — the brightest colour is never allowed the strongest weight.
+  const INK_LO = 0.20, INK_HI = 0.50;   // #A34442
+  const MID_LO = 0.12, MID_HI = 0.40;   // #D09A96
+  const LIT_LO = 0.05, LIT_HI = 0.25;   // #F2E9E7
+  const LIT_CAP = LIT_HI, CLOUD_CAP = INK_HI;
+  const inkOf = i => colors[i * 4 + 1] > 0.80 ? LIT_CSS
+                   : colors[i * 4 + 1] > 0.45 ? MID_CSS : INK_CSS;
+  const capOf = i => colors[i * 4 + 1] > 0.80 ? LIT_CAP : CLOUD_CAP;
+  // shape is the particle's structural rank, 0 deep inside to 1 on a boundary;
+  // the ink decides what range that rank is spent over
+  function inkAlpha(i, shape){
+    const g = colors[i * 4 + 1];
+    const lo = g > 0.80 ? LIT_LO : g > 0.45 ? MID_LO : INK_LO;
+    const hi = g > 0.80 ? LIT_HI : g > 0.45 ? MID_HI : INK_HI;
+    return lo + (hi - lo) * shape;
+  }
+  // The opacity histogram the design asks for, as an inverse CDF: half the
+  // cloud between 10 and 20%, a third between 20 and 35%, a seventh between
+  // 35 and 50%, and nothing above. Feeding it a particle's rank by structural
+  // importance is what makes the distribution and the anatomy the same
+  // statement instead of two that have to be kept in step.
+  function opQuantile(p){
+    if (p < 0.50) return 0.10 + (p / 0.50) * 0.10;
+    if (p < 0.85) return 0.20 + ((p - 0.50) / 0.35) * 0.15;
+    return 0.35 + ((p - 0.85) / 0.15) * 0.15;
+  }
   const toneA = t => Math.min(1.6, (0.36 * t[0] + 0.50 * t[1] + 0.14 * t[2]) / 0.72);
   // The flow layer runs at a flat 75% -- the one thing in the file brighter
   // than either ink. What is left varying on it is only what makes it a
@@ -4492,11 +4515,13 @@
                           fingerprintDensity);
     const k = cl.norm.k || 1;
     for (let i = 0; i < N; i++){
-      if (i >= N - AMB){ cl.edge[i] = 0.14; continue; }
+      if (i >= N - AMB){ cl.edge[i] = 0; continue; }
       const x = cl.pos[i * 3] / k + cl.norm.cx;
       const y = -cl.pos[i * 3 + 1] / k + cl.norm.cy;
       const t = Math.min(1.3, FP_PAD.rad(x, y));
-      cl.edge[i] = Math.max(0.11, 0.83 - 0.69 * Math.pow(t, 1.05));
+      // a rank now, not an opacity: the ridges near the centre of the print
+      // are the structure, and it thins outward into nothing
+      cl.edge[i] = Math.max(0.05, 1 - 0.88 * Math.pow(t, 1.05));
     }
     return cl;
   }
@@ -4675,11 +4700,11 @@
       cl.pos[i * 3]     = r * Math.sin(ph) * Math.cos(th);
       cl.pos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
       cl.pos[i * 3 + 2] = r * Math.cos(ph);
-      // The core reads solid and the rim falls away, the same ramp every other
-      // cloud runs. The boundary still holds without a bright edge: nine
-      // particles in twenty sit in the shell, so the rim is where the dots
-      // are, and it is their number rather than their weight that draws it.
-      cl.edge[i] = 1.00 - 0.28 * Math.pow(r / R, 3);
+      // The shell is the structure and the inside is volume behind it, which
+      // is the same rule every other cloud follows now that opacity describes
+      // anatomy: a boundary is what a reader is given, and the middle is what
+      // they are given it about.
+      cl.edge[i] = 0.24 + 0.76 * Math.pow(r / R, 3);
     }
     // the shader draws the currents through the ball and needs its radius to
     // know where the shell is; measured off the thing that built it rather
@@ -4981,6 +5006,7 @@
 
     const out = new Float32Array(N * 3);
     const edge = new Float32Array(N).fill(1);
+    const score = new Float32Array(N);
     // a standing turn about the vertical, for shapes that want a three-quarter
     const yaw = tf.yaw || 0, cyaw = Math.cos(yaw), syaw = Math.sin(yaw);
     const M = pts.length / 2;
@@ -4997,18 +5023,16 @@
         const w = dens ? dens(px, py) : 1;
         if (Math.random() < (0.07 + 0.93 * Math.exp(-d / 3.5)) * w) break;
       }
-      // Opacity is the only variable left, so it carries the form. `d` is the
-      // distance to the silhouette in mask pixels — 2 at the outline, 22 deep
-      // inside — and the ramp runs the other way from the one it replaces:
-      // solid through the core that defines the organ, falling away toward the
-      // boundary. The silhouette survives losing its bright rim because the
-      // sampling above is shell-biased: most particles land near the edge, so
-      // the outline is still the densest part of the picture, it just arrives
-      // as a gradient of many faint dots rather than a line of bright ones.
-      // Normalised to a ceiling of 1: this multiplies straight into alpha, and
-      // alpha now has a hard cap, so a ramp that ran past 1 would spend its
-      // top third clipped flat and lose the very gradient it exists for.
-      edge[i] = 0.62 + 0.38 * (1 - Math.exp(-d / 7));
+      // Structural importance, raw. `d` is the distance to the nearest boundary
+      // in the mask — the silhouette and every internal structure alike, since
+      // the mask does not distinguish them, which is exactly the distinction
+      // the design does not want made. A particle on a boundary scores 1; one
+      // buried in the middle of a volume scores near 0, and the depth it sits
+      // at pulls it further down, because a dot behind the mass is deeper
+      // inside the volume in the sense that matters to a reader.
+      //
+      // This is a score, not an opacity. It is ranked against the whole cloud
+      // below and only then turned into one.
       const zmax = depthPx * Math.sqrt(d / 22);
       const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
@@ -5016,18 +5040,36 @@
       let Z = zsign * zmax * Math.pow(Math.random(), 0.3) * s * tf.s;
       if (yaw){ const nx = X * cyaw + Z * syaw; Z = -X * syaw + Z * cyaw; X = nx; }
       out[i * 3] = X + tf.x; out[i * 3 + 1] = Y + tf.y; out[i * 3 + 2] = Z;
+      score[i] = Math.exp(-d / 5.5) *
+                 (1 - 0.30 * Math.min(1, Math.abs(Z) / (0.35 * s * tf.s + 1e-6)));
     }
     // ambient strays: a loose shell of drifting particles around the organ.
-    // They sample the mask like everything else and would otherwise inherit
-    // whatever weight that gave them, which with one ink is the difference
-    // between floating around the organ and being part of it.
+    // They score zero — they are not part of any structure — and take a
+    // fraction of even the bottom of their ink's range, which is what
+    // "floating outside the organ" has to mean once opacity is the only
+    // variable describing where a particle is.
     for (let i = N - AMB; i < N; i++){
-      edge[i] = 0.14;
+      edge[i] = 0;
       const r = (0.55 + Math.random() * 0.75) * tf.s;
       const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
       out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;
       out[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th) * 0.8 + tf.y;
       out[i * 3 + 2] = r * Math.cos(ph) * 0.6;
+    }
+    // Rank, then quantise. Sorting the cloud by structural score and reading
+    // the histogram off each particle's percentile is what makes the
+    // distribution and the anatomy the same statement rather than two that
+    // have to be kept in step: the shape decides the ORDER, the histogram
+    // decides the VALUES, and neither can drift from the other. `edge` ends up
+    // holding a rank in 0..1; the ink it lands on decides the range that rank
+    // is spent over, which is why this cannot be an opacity yet.
+    const M2 = N - AMB;
+    const order = new Int32Array(M2);
+    for (let i = 0; i < M2; i++) order[i] = i;
+    const sortable = Array.from(order).sort((a, b) => score[a] - score[b]);
+    for (let k = 0; k < M2; k++){
+      const p = M2 > 1 ? k / (M2 - 1) : 1;
+      edge[sortable[k]] = (opQuantile(p) - 0.10) / 0.40;   // 0..1
     }
     // mask coverage: how much silhouette this shape actually occupies
     let area = 0;
@@ -5265,7 +5307,7 @@
       gl_Position = vec4(pos.x * persp * uView.x + uPan.x, pos.y * persp * uView.y + uYOff + uPan.y, 0.0, 1.0);
       gl_PointSize = abs(aSeed.w) * persp * uPix * pow(uZoom, 0.35) * mix(1.0, 1.35, uSq)
                    * (1.0 - sphOff);
-      float tw = (0.62 + 0.38 * sin(uTime * 1.8 + aSeed.z * 21.0)) * sphLit;
+      float tw = (0.90 + 0.10 * sin(uTime * 1.8 + aSeed.z * 21.0)) * sphLit;
       // voxel mode: quieter shimmer — data, not sparkle
       tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
       // The verdict, in the dots themselves — and now in their opacity alone.
@@ -5292,7 +5334,17 @@
       // every mode, every theme
       vec3 rgb = aColor.rgb;
       float ga = mix(1.0, uGhost * 0.38, ghost);
+      // ef is the particle's structural rank, 0 deep inside a volume to 1 on a
+      // boundary. The ink it landed on decides the range that rank is spent
+      // over -- the material 20-50%, the warm highlight 12-40%, the off-white
+      // 5-25%. The ranges overlap, and the brightest colour has the lowest
+      // ceiling, which is the rule that keeps fifteen percent of the particles
+      // from reading as glitter.
       float ef = mix(aEdgeA, aEdgeB, mix(e, 1.0, flowP));
+      float gch = aColor.g;
+      float oLo = gch > 0.80 ? 0.05 : gch > 0.45 ? 0.12 : 0.20;
+      float oHi = gch > 0.80 ? 0.25 : gch > 0.45 ? 0.40 : 0.50;
+      float authored = oLo + (oHi - oLo) * clamp(ef, 0.0, 1.0);
       // The biomarker reading: the same body, its particles taking the
       // distribution's colours by height -- the bottom 81% optimal, the next 9%
       // suboptimal, the top 6% out of range -- blended rather than banded, and
@@ -5336,11 +5388,11 @@
         // body still legibly there, visible the way glass is, by its rim
         // rather than by an outline. The survivors are picked by a stable
         // lottery, so the shell holds still instead of sparkling.
-        // ef now runs the other way -- about 0.71 at the silhouette up to
-        // 0.98 deep inside -- so the window is reversed with it. The stops
-        // still have to sit inside the range or every particle counts as rim
-        // and the empty half comes out as an even speckle instead of an edge.
-        float shell = smoothstep(0.89, 0.69, ef);
+        // ef is a structural rank now -- 1 on a boundary, 0 deep inside -- so
+        // the rim is its top and the window reads that way round again. The
+        // stops still have to sit inside the range or every particle counts as
+        // rim and the empty half comes out as an even speckle, not an edge.
+        float shell = smoothstep(0.45, 0.82, ef);
         float keepUp = step(fract(aSeed.z * 71.33), mix(0.11, 0.78, shell));
         // and what is left of them is faint: a sixth of full inside the
         // vessel, a little over a third on the rim, where light would sit.
@@ -5366,7 +5418,7 @@
       // far one falls back without a second term to keep in step. This is the
       // one dimensional cue a single ink cannot get from colour, and it costs
       // nothing: it is a number the vertex already computed.
-      float depthA = mix(0.68, 1.00, smoothstep(0.88, 1.12, persp));
+
       // The same alpha does not buy the same figure on opposite grounds. Every
       // per-particle value here was tuned against black, where a dot at a
       // sixth of full still reads: measured, the body sat 28 levels off a dark
@@ -5405,12 +5457,16 @@
       // visibility fade it rides in on, the page's own alpha, and the theme
       // lift. Running it through the cloud's chain is what would quietly put a
       // layer specified at 75% on screen at 40.
-      float cloudA = aColor.a * tw * verdA * ga * ef * keep * fv * uAlpha * da
-                   * depthA * feedA * vfade * irisA * aLift * 2.15;
+      // authored already carries the ramp and the ink's range, so there is
+      // no gain here and no separate depth term: both of those existed to put
+      // back what a chain of fractions took out, and the chain is gone. What
+      // is left modulates around 1 rather than under it.
+      float cloudA = authored * aColor.a * tw * verdA * ga * keep * fv * uAlpha
+                   * da * feedA * vfade * irisA * aLift;
       float flowA  = aColor.a * fv * uAlpha * aLift;
       float A = mix(cloudA, flowA, flowP);
-      float lit = step(0.9, aColor.g);
-      vColor = vec4(rgb, min(A, mix(mix(0.50, 0.60, lit), 0.75, flowP)));
+      float lit = step(0.80, gch);
+      vColor = vec4(rgb, min(A, mix(mix(0.50, 0.25, lit), 0.75, flowP)));
     }`;
   const FS = `
     precision mediump float;
@@ -5468,27 +5524,20 @@
     seeds[i*4+3] = 0.55 + Math.pow(Math.random(), 1.6) * 1.5; // size
     const c = pickInk();
     colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
-    // Two ranges, one per ink, and they are different shapes on purpose.
-    //
-    // The material runs 25% to 50%: a two-to-one spread, narrow enough to read
-    // as one substance and wide enough for the depth ramp below to have
-    // something to work with.
-    //
-    // The highlight runs 5% to 60% on a curve that keeps most of it low. It is
-    // the only thing here allowed past 50%, so the few that reach the top are
-    // genuinely the brightest points in the picture, and the long tail under
-    // them is what stops that reading as a scatter of hotspots.
-    colors[i*4+3] = (c === LIT ? 0.05 + Math.pow(Math.random(), 2.2) * 0.55
-                               : 0.25 + Math.pow(Math.random(), 1.1) * 0.25);
+    // A multiplier on the authored opacity, not the opacity itself: what a
+    // particle is worth is decided by where it sits in its organ, which is
+    // per-cloud, and this array is per-particle across all of them. Held near
+    // 1 so it varies the cloud slightly without disturbing the histogram.
+    colors[i*4+3] = 0.92 + Math.random() * 0.16;
   }
-  // Mark ambient strays: negative size flags them in the shader, fainter and
-  // drifting more. They used to sit at 60% of the cloud's alpha, which was
-  // enough separation while they also had the palette's spread to be told
-  // apart by. With one ink they are only as separate as they are faint, so
-  // they drop to a third — loose, floating, present rather than legible.
+  // Ambient strays: negative size flags them in the shader, fainter and
+  // drifting more. Their structural rank is already zero, so they sit at the
+  // bottom of whichever ink they drew; this takes them below it again, which
+  // is what "floating outside the organ" has to mean when opacity is the only
+  // thing saying where a particle is.
   for (let i = N - AMB; i < N; i++){
     seeds[i*4+3] = -(0.5 + Math.random() * 0.9);
-    colors[i*4+3] *= 0.22;
+    colors[i*4+3] *= 0.42;
   }
   // ghost body: static outline particles, flagged by negative stagger
   for (let i = N; i < FSTART; i++){
@@ -5500,10 +5549,9 @@
     seeds[i*4+1] = Math.random() * 6.2832;
     seeds[i*4+2] = Math.random();
     seeds[i*4+3] = 0.5 + Math.random() * 0.4;
-    // the ghost was a pale warm; that paleness is now its alpha
     const gc = pickInk();
     colors[i*4] = gc[0]; colors[i*4+1] = gc[1]; colors[i*4+2] = gc[2];
-    colors[i*4+3] = Math.min(0.50, 0.8 * toneA([0.941, 0.878, 0.816]));
+    colors[i*4+3] = 1;
   }
   // flow layer: soft dots that travel along internal organ paths (positions
   // are computed on the CPU each frame and streamed into the posB slice)
@@ -8191,11 +8239,11 @@
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1], z: cl.pos[i * 3 + 2],
         r: 0.9 + (i % 5) * 0.26,
-        // edge is the whole of this dot's form, so it is spent whole -- the
-        // shader multiplies it straight into alpha and this has to agree
-        a: colors[i * 4 + 3] * cl.edge[i],
-        c: isLit(i) ? LIT_CSS : INK_CSS,
-        cap: isLit(i) ? 0.60 : 0.50,   // the highlight is the one allowed past 50%
+        // the same two steps the shader takes: a structural rank, spent over
+        // the range its ink is allowed
+        a: colors[i * 4 + 3] * inkAlpha(i, cl.edge[i]),
+        c: inkOf(i),
+        cap: capOf(i),
         ph: Math.random() * 6.28, sp: 0.5 + Math.random(),
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]   // the shader's own phases
       });
@@ -8212,9 +8260,9 @@
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
         r: 0.9 + (i % 5) * 0.26,
-        a: colors[i * 4 + 3],
-        c: isLit(i) ? LIT_CSS : INK_CSS,
-        cap: isLit(i) ? 0.60 : 0.50,
+        a: colors[i * 4 + 3] * inkAlpha(i, cl.edge[i]),
+        c: inkOf(i),
+        cap: capOf(i),
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]
       });
     }
@@ -8611,7 +8659,7 @@
             rr2 *= 0.86 + 0.30 * (zz / 0.775 * 0.5 + 0.5);
           }
           dot(ox + qx * sc + jx, oy - qy * sc + jy, rr2 * rk * view.dot,
-              q.c, Math.min(q.cap, q.a * tw * view.alpha * themeA * 1.8));
+              q.c, Math.min(q.cap, q.a * tw * view.alpha * themeA));
         }
         // no flow or feeding while the cloud is in flight
         if (view.morph){ if (batch) batch.flush(); return; }
@@ -8625,7 +8673,7 @@
           if (rt){
             // the two inks are dealt out along the stream by the same coin as
             // everywhere else; the tone no longer scales it, the flow is flat
-            const tones = ['rgba(' + INK_CSS + ',', 'rgba(' + LIT_CSS + ','];
+            const tones = ['rgba(' + INK_CSS + ',', 'rgba(' + MID_CSS + ','];
             for (let f = 0; f < view.flowN; f++){
               const P = rt.paths[flowPick[f] % rt.paths.length];
               const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
@@ -8670,11 +8718,11 @@
           const k = 1.3 + (0.3 - 1.3) * Math.min(1, fall);
           const rx = (cs * q.x + sn * q.y) * k;
           const ry = (-sn * q.x + cs * q.y) * k;
-          const tw = 0.80 + 0.20 * Math.sin(T * 1.8 + q.sz * 21.0);
+          const tw = 0.92 + 0.08 * Math.sin(T * 1.8 + q.sz * 21.0);
           dot(ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
               oy - ry * sc + aDrift * Math.cos(T * 0.7 + q.sz * 9.42),
               q.r * rk * view.dot * 0.9, q.c,
-              Math.min(q.cap, q.a * tw * feedA * view.alpha * themeA * 1.75));
+              Math.min(q.cap, q.a * tw * feedA * view.alpha * themeA));
         }
         if (batch) batch.flush();
       },
