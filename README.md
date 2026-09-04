@@ -751,9 +751,16 @@ stippling; three give regions that are open, regions that are full, and grain
 inside both. The irregularity has to exist at more than one size or the eye
 reads it as texture rather than as space.
 
-**`bulk` runs 0.86 near a boundary to 0.22 deep inside one** — nearly four to
-one, over a short falloff (`exp(−d / 4)`) so the gain is concentrated in the
-first few pixels rather than spread across the whole depth.
+**`bulk` runs 0.86 near a boundary to 0.26 deep inside one**, over a short
+falloff (`exp(−d / 4)`) so the difference is concentrated in the first few
+pixels rather than spread across the whole depth.
+
+Its two ends move independently, which is worth knowing before touching it:
+the **constant term is the core's floor** and the **coefficient is what the
+boundary adds on top of it**. A change asked for at one end is made by moving
+one of them and solving for the other, so the end that was not asked about
+stays exactly where it was — a 15% lift in the core took the floor from 0.22
+to 0.258 and the coefficient from 1.05 to 0.988, leaving the boundary at 0.86.
 
 **The power on the noise sum decides whether a reader sees variation at all.**
 At `^1.8` the mask ran roughly 0.15 to 0.75 and the cloud came out looking
@@ -791,9 +798,10 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **5,000** — down from 9,000 over four steps, then back up as the
-core and then the edges were asked for more. Measured in the library: brain
-3,271 points, lungs 2,612, nerve 1,329. Recognisable, with black space
+The count is **5,450** — down from 9,000 over four steps, then back up as the
+core, the edges and the core again were asked for more. Measured in the
+library: brain 3,553 points, lungs 2,789, nerve 1,400 (each including its
+flow layer). Recognisable, with black space
 between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which
