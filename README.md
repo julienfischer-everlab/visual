@@ -723,6 +723,29 @@ Depth carries 40% of the opacity score (up from 25%) and the z spread is a
 quarter deeper, so front, middle and back separate instead of averaging into
 a mass.
 
+### The light and the edge it lands on
+
+The halo over the phone's header is one gaussian stop list with the geometry
+kept outside it, so there is a single place to move the light. Its strength is
+now a single number too — `--haloK`, a scale on every stop at once, because
+raising nine hand-written alphas independently pulls the curve out of shape.
+
+A halo with nothing to catch it is a wash. What makes it read as light is an
+edge, so the screen carries a neutral hairline: **neutral because the light is
+already the colour**, and a second tinted thing would only be more of the same
+stain. It is drawn as a one-pixel ring — a gradient clipped to its own padding
+— rather than a border, because the frame is a 56px radius and `border-top` on
+a rounded box stops at the corner.
+
+The two themes want opposite things from it. **Dark** has the halo, so the line
+is brightest along the top and gone a third of the way down: the same light,
+arriving at the edge. **Light** has no halo at all — it was removed because on
+a pale ground it read as a coloured stain rather than as light — so there is
+nothing to catch, and the line stops being a highlight and becomes the edge
+itself: even the whole way round, a step stronger, because on a pale ground
+the edge is the only thing separating the surface from the page.
+
+
 ### The library is the source of truth
 
 Not a principle — a mechanism. The two renderers stay separate

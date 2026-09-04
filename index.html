@@ -2237,14 +2237,14 @@
      the card would sit beside the thing it is lighting. */
   body.b5 #organSlot{
     --v4haloStops:
-      rgb(var(--v4halo, 132 176 142) / .287) 0%,
-      rgb(var(--v4halo, 132 176 142) / .253) 14%,
-      rgb(var(--v4halo, 132 176 142) / .185) 28%,
-      rgb(var(--v4halo, 132 176 142) / .123) 42%,
-      rgb(var(--v4halo, 132 176 142) / .073) 56%,
-      rgb(var(--v4halo, 132 176 142) / .039) 69%,
-      rgb(var(--v4halo, 132 176 142) / .016) 81%,
-      rgb(var(--v4halo, 132 176 142) / .004) 91%,
+      rgb(var(--v4halo, 132 176 142) / calc(.287 * var(--haloK, 1))) 0%,
+      rgb(var(--v4halo, 132 176 142) / calc(.253 * var(--haloK, 1))) 14%,
+      rgb(var(--v4halo, 132 176 142) / calc(.185 * var(--haloK, 1))) 28%,
+      rgb(var(--v4halo, 132 176 142) / calc(.123 * var(--haloK, 1))) 42%,
+      rgb(var(--v4halo, 132 176 142) / calc(.073 * var(--haloK, 1))) 56%,
+      rgb(var(--v4halo, 132 176 142) / calc(.039 * var(--haloK, 1))) 69%,
+      rgb(var(--v4halo, 132 176 142) / calc(.016 * var(--haloK, 1))) 81%,
+      rgb(var(--v4halo, 132 176 142) / calc(.004 * var(--haloK, 1))) 91%,
       rgb(var(--v4halo, 132 176 142) / 0) 100%;
     --v4haloR:552px;
     --v4haloCap:126px;    /* the phone's 105-on-410, at the card's height */
@@ -2545,19 +2545,25 @@
      diameter the tail does reach the status bar, which is why the peak is held
      low enough that what arrives up there is a couple of levels, not a wash. */
   .v4Halo{display:none;}
+  /* How strong the light is, in one number. The stop list is a gaussian pitched
+     against the ground it was drawn on; raising it is a scale on every stop at
+     once, not nine hand-edited alphas that would drift out of shape. The dark
+     themes carry the light -- it is light thrown on a surface, and that only
+     reads on a dark one -- so the number lives with them. */
+  :root{--haloK:1.55;}
   /* The stop list and the geometry live on the phone rather than inside the
      gradient, so the light has one definition and each theme supplies its own
      alphas. The colour is set there too, by the carousel. */
   body.v5 #phone{
     --v4haloStops:
-      rgb(var(--v4halo, 132 176 142) / .287) 0%,
-      rgb(var(--v4halo, 132 176 142) / .253) 14%,
-      rgb(var(--v4halo, 132 176 142) / .185) 28%,
-      rgb(var(--v4halo, 132 176 142) / .123) 42%,
-      rgb(var(--v4halo, 132 176 142) / .073) 56%,
-      rgb(var(--v4halo, 132 176 142) / .039) 69%,
-      rgb(var(--v4halo, 132 176 142) / .016) 81%,
-      rgb(var(--v4halo, 132 176 142) / .004) 91%,
+      rgb(var(--v4halo, 132 176 142) / calc(.287 * var(--haloK, 1))) 0%,
+      rgb(var(--v4halo, 132 176 142) / calc(.253 * var(--haloK, 1))) 14%,
+      rgb(var(--v4halo, 132 176 142) / calc(.185 * var(--haloK, 1))) 28%,
+      rgb(var(--v4halo, 132 176 142) / calc(.123 * var(--haloK, 1))) 42%,
+      rgb(var(--v4halo, 132 176 142) / calc(.073 * var(--haloK, 1))) 56%,
+      rgb(var(--v4halo, 132 176 142) / calc(.039 * var(--haloK, 1))) 69%,
+      rgb(var(--v4halo, 132 176 142) / calc(.016 * var(--haloK, 1))) 81%,
+      rgb(var(--v4halo, 132 176 142) / calc(.004 * var(--haloK, 1))) 91%,
       rgb(var(--v4halo, 132 176 142) / 0) 100%;
     /* The circle's radius, and its centre measured down from the top of the
        phone; the halo's own offset is derived from them, so there is one place
@@ -2601,6 +2607,45 @@
      outrank the rules that switch the light on wherever those sit. */
   body.light.v5 #mHeroOrgan .v4Halo,
   body.light.b5 #organSlot .v4HaloClip{display:none;}
+
+  /* ---- The edge the light lands on ----------------------------------------
+     A halo without an edge is a wash. What makes it read as light rather than
+     as a coloured fog is something for it to catch, so the screen gets a
+     hairline of its own: neutral, because the light is already the colour --
+     a second tinted thing would just be more of the same stain.
+
+     Drawn as a one-pixel ring rather than a border, because the frame is a
+     56px radius and a `border-top` on a rounded box stops at the corner. The
+     ring is a gradient clipped to its own padding, which follows the curve all
+     the way round, and the gradient decides how far down the sides it reaches.
+
+     Dark: brightest along the top and gone by a third of the way down, which
+     is the halo's own falloff -- the same light, arriving at the edge.
+     Light: no halo up there at all, so there is nothing to catch and the line
+     stops being a highlight and becomes the edge itself. Even the whole way
+     round, and a step stronger, because on a pale ground the edge is the only
+     thing separating the surface from the page. */
+  :root{--rimC:236 234 230; --rimA:.34; --rimStop:34%;}
+  body.light{--rimC:28 26 24; --rimA:.13; --rimStop:100%;}
+  #phone::after,
+  body.b5 #organSlot::after{
+    content:'';position:absolute;inset:0;z-index:7;pointer-events:none;
+    padding:1px;border-radius:inherit;
+    background:linear-gradient(to bottom,
+      rgb(var(--rimC) / var(--rimA)) 0%,
+      rgb(var(--rimC) / 0) var(--rimStop));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+            mask-composite:exclude;
+  }
+  /* on a pale ground the line is the edge, so it does not fade away down the
+     sides -- one alpha, the whole way round */
+  body.light #phone::after,
+  body.light.b5 #organSlot::after{
+    background:rgb(var(--rimC) / var(--rimA));
+  }
+  body.b5 #organSlot::after{border-radius:20px;}
 
   /* The silhouette's feet run off the bottom of the canvas, and a hard cut
      there reads as a crop. So the last 40px of the organ band is a progressive
