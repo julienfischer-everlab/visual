@@ -1056,36 +1056,46 @@ attempts got wrong in both directions.
 
 The two renderers had already been made to agree on every list: the same
 particles, the same subset, the same three inks, the same 5% opacity grid, the
-same flow. A phone hero still did not look like the library tile, and the
-measurement said why. Coverage of the organ's own bounding box: library 0.53,
-phone 0.15. Nothing in the lists was wrong. The dots were a third of the size
-they should have been *relative to the organ*, and a particle system is its
-grain — the ratio between one dot and the thing the dots are making.
+same flow. A phone hero still did not look like the library tile. Three things
+turned out to be wrong, and only measurement separated them — each one alone
+would have been diagnosed as "the dots are too small".
 
-The engine sized a dot by `pow(uZoom, 0.35)`, sublinear on purpose so a small
-card kept visible points. But the organ's size on screen is linear in the same
-zoom, so the ratio ran as `uZoom^-0.65`: **the more of the frame a page gave
-the organ, the finer its grain got.** Every page then compensated by hand,
-which is what the `pix` column in `MODES` was, and what two floors in
-`pixScale` were. Twenty-two numbers holding down a law that was pulling the
-wrong way.
+**One draw call had never been unified.** The `else` branch that serves the
+dashboards and the phone still ran `drawArrays(0, TOT)` — the whole buffer,
+6,245 organ particles against a tile's 3,561. Every other path had been
+converted; this one was the default case, so nothing named an organ in it and
+nothing flagged it. It also hid the other two faults: three times the count at
+a third of the dot size looks, in aggregate, about right, which is why the
+Heart appeared to match while the Brain did not.
 
-`uZoom` is always written as a layout constant over the organ's own radius, so
-`uZoom * r` *is* the layout constant — how much of the frame the organ fills,
-with the organ's own size divided out. Size the dot by that and the frame, the
-device pixel ratio and the organ's radius all cancel against the projection.
-Measured across ten surfaces afterwards, dot-to-organ came back 0.00791 on
-nine of them and 0.00794 on the tenth, where before it ran 0.0079 to 0.0129.
-One number, so there is exactly one place left to set it.
+**The size law ran backwards in the zoom.** `pow(uZoom, 0.35)`, sublinear so a
+narrow card kept visible points — but the organ's size on screen is linear in
+the same zoom, so the ratio went as `uZoom^-0.65`: the more of the frame a page
+gave the organ, the finer its grain got. `uZoom` is always written as a layout
+constant over the organ's own radius, so `uZoom × r` is that constant alone;
+size the dot by it and the frame, the device pixel ratio and the radius all
+cancel against the projection. Ten surfaces, one number.
 
-Two things this cost, both worth saying out loud. The per-page `pix` column is
-gone, and with it the ability to make one page's grain coarser than another's
-— which was the bug, not a feature. And the floors are gone from `pixScale`,
-replaced by a clamp on `gl_PointSize` itself at one device pixel: a dot
-narrower than a pixel is not a fine dot, it is no dot, and that is a fact
-about pixels rather than about dashboards. The smallest cards sit on that
-clamp, which is the one place the library's grain cannot be reproduced —
-2,900 dots at the library's ratio would be sub-pixel there.
+**The two dots were not the same dot.** The tile's is a flat square at exactly
+its authored alpha — the soft edge had been taken off it so the 5% grid would
+survive to the pixel. The engine's was a disc under `smoothstep(1.0, 0.38, d)`,
+which lit about a third of the area for the same particle *and* multiplied a
+snapped alpha by a smooth ramp on the way to the screen. The grid guarantee had
+a hole in it the whole time, in the renderer that states it in a comment.
+
+The calibration that closed it is worth recording, because two numbers had to
+move together. Coverage of the organ's own bounding box and total ink over that
+box are independent measures: dot size moves both, falloff shape trades one
+against the other. Matching coverage alone overshot the ink by a quarter;
+matching ink alone left the cloud reading as hard specks rather than grain.
+`(1.0 - d)` — no plateau, ink spread to the rim — with `DOT_PIX` solved for ink
+lands both: 15.2 against the tile's 15.2, coverage 0.48 against 0.52.
+
+The residue is honest and worth knowing: **a library tile renders its backing
+store below its CSS size and arrives upscaled**, which spreads every dot over
+about 1.8 pixels for one drawn. That blur is a performance decision, not a
+design one, and it is the last of the difference — the same ink, slightly
+softer. The engine reproduces the tile's ink, not its resampling.
 
 ---
 

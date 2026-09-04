@@ -752,22 +752,35 @@ target. Two things had to change to let it:
   `1.50` of a cloud dot. The engine states that ratio directly rather than
   approximating it with a range.
 
+**Including on the pages that never got the count.** The `else` branch of the
+frame — the one that serves the dashboards and the phone — still ran
+`drawArrays(0, TOT)`: the whole buffer, 6,245 organ particles against a tile's
+3,561. It is the default case, so nothing in it names an organ and nothing
+flagged it. It now makes the same three draws as every other path, counting
+through `heroDrawN()`, which is `orgDrawN` of the organ in the morph slots.
+
 **And how big a dot is against the organ it belongs to.** Counts, colours and
 opacities can all agree and the picture still not match, because a particle
 system *is* its grain — the ratio between one dot and the thing the dots are
 making. The engine sized a dot by `pow(uZoom, 0.35)`, deliberately sublinear
 so a narrow card kept visible points; the organ's size on screen is linear in
 the same zoom, so the ratio ran as `uZoom^-0.65` and **the more of the frame a
-page gave the organ, the finer its grain got.** A phone hero covered 15% of
-its own bounding box where the library tile covered 53%.
+page gave the organ, the finer its grain got.**
+
+**And the dot itself.** The tile draws a flat square at exactly the alpha it
+was authored at — the soft edge came off it so the 5% grid would survive to
+the pixel. The engine drew a disc under `smoothstep(1.0, 0.38, d)`, which lit
+about a third of the area for the same particle and multiplied a snapped alpha
+by a smooth ramp on the way to the screen. It is `(1.0 - d)` now: ink spread
+to the rim, `DOT_PIX` solved so the total ink over the organ's box matches the
+tile's.
 
 `uZoom` is always written as a layout constant over the organ's own radius, so
 `uZoom × r` is that constant on its own — how much of the frame the organ
 fills, with the organ's size divided out. `setZoom` sends the pair together as
 `uOrgK`, the dot size reads it, and the frame, the device pixel ratio and the
 organ's radius all cancel against the projection. Measured across ten
-surfaces, dot-to-organ is `0.0079` on all of them; before, it ran `0.0079` to
-`0.0129`.
+surfaces, dot-to-organ is one number; before, it ran `0.0079` to `0.0129`.
 
 Two knobs went with it, both of which existed only to fight the old law:
 
@@ -783,8 +796,9 @@ Two knobs went with it, both of which existed only to fight the old law:
 
 What is left differing between the two is only what a GPU and a canvas cannot
 share: the engine morphs and the painter does not, the flow's phase is
-computed on two clocks, and the product surfaces read the verdict into the
-particles — `verdA` thins a share of them by up to 49% when an organ is far
+computed on two clocks, a tile renders its backing store below its CSS size so
+its dots arrive upscaled and a shade softer, and the product surfaces read the
+verdict into the particles — `verdA` thins a share of them by up to 49% when an organ is far
 from its baseline, which the library has no verdict to apply. The asset itself
 — which particles, at what opacity, in what colour, at what size against the
 organ, with what flow — is one thing.

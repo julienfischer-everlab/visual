@@ -4172,7 +4172,7 @@
   // grain and had to be compensated by hand. The law reads the framing now, so
   // there is nothing left to compensate and nothing left to set per page: one
   // constant, calibrated against the library tile.
-  const DOT_PIX = 2.60;
+  const DOT_PIX = 4.60;
   const HL_SHARE = 0.10;
   const opBright = p => opSnap(0.55 + 0.35 * Math.min(1, Math.max(0, p)));
   // What the 2D painter puts on screen, snapped the same way the shader's last
@@ -5710,7 +5710,13 @@
       } else {
         float d = dot(c, c);
         if (d > 1.0) discard;
-        gl_FragColor = vec4(vColor.rgb, vColor.a * smoothstep(1.0, 0.38, d));
+        // A hard disc with an antialiased rim, not a soft blob. The library's
+        // dot is a flat square at exactly the alpha it was authored at -- the
+        // soft edge was taken off it so the 5% grid would survive to the pixel
+        // -- and a long falloff here was the engine quietly disagreeing twice:
+        // it lit a third of the area the tile lit for the same particle, and it
+        // multiplied a snapped alpha by a smooth ramp on the way to the screen.
+        gl_FragColor = vec4(vColor.rgb, vColor.a * (1.0 - d));
       }
     }`;
 
@@ -5947,6 +5953,10 @@
 
   // ---------- morph state ----------
   let current = 0;
+  // The A slot holds a frozen snapshot rather than an organ, so the only way to
+  // know how many particles are in flight is to remember where they came from.
+  // Both counts are drawn for the length of the morph, as the hero pair does.
+  let previous = 0;
   let morphStart = performance.now();
   let uPnow = 0;
 
@@ -6016,6 +6026,7 @@
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, edgeA);
     gl.bindBuffer(gl.ARRAY_BUFFER, bufEB);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, edgeB);
+    previous = current;
     current = i;
     morphStart = performance.now();
     buttons.forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
@@ -9271,6 +9282,11 @@
     const mul = (ORGANS[i] && ORGANS[i].dots) || 1;
     return ORG_N[i] = organN(fullTarget(clouds[i]) * mul);
   }
+  // The single-organ pages draw one cloud, or two while it is changing.
+  const heroDrawN = () => uPnow >= 1 ? orgDrawN(current)
+                        : Math.max(orgDrawN(previous), orgDrawN(current));
+  window.__dbg = () => ({ cur: current, label: ORGANS[current].label,
+    n: orgDrawN(current), all: ORGANS.map((o,i)=>o.label+':'+orgDrawN(i)) });
 
   // ---- no GPU: the organ still has to be on the page -------------------------
   // The engine is drawing into a stub, so nothing appears where the canvas is.
@@ -10971,7 +10987,14 @@
     } else {
       gl.clear(gl.COLOR_BUFFER_BIT);
       setShape(shapeNow, 0);
-      gl.drawArrays(gl.POINTS, 0, TOT);
+      // The library's count, the library's shell, the library's flow -- the
+      // same three draws every other path makes. This one was still drawing the
+      // whole buffer, which on the dashboards and the phone meant 6,245 organ
+      // particles against a tile's 3,900: the same cloud at two densities, the
+      // exact divergence the rest of the unification removed.
+      gl.drawArrays(gl.POINTS, 0, heroDrawN());
+      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
+      gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
       setShape(-1, 1);
     }
     // the tablet's strip is the only DOM the dashboards animate per frame, and
