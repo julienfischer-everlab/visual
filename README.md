@@ -694,17 +694,21 @@ now rather than a control.
 
 ## Two inks
 
-Every particle is one of exactly two values — **`#A34442`** or **`#FFFFFF`** —
+Every particle is one of exactly two values — **`#A34442`** or **`#BC6654`** —
 **65/35**, with the coin thrown independently per particle so the two fall
 through the cloud the way a speckled material does rather than sorting into
 regions. There is no third colour: no palette, no verdict colour, no theme
 colour, no flow tint. Everything else is opacity.
 
-Red is the material; white is a highlight in it. It started as an even split,
-which read as two materials sharing a volume — reducing white by count as well
-as by weight is what makes it land as a glint instead.
+Red is the material; the second is a highlight in it. It started as an even
+split of red and pure white, which read as two materials sharing a volume:
+reducing the highlight by count as well as by weight is what made it land as a
+glint, and moving it from `#FFFFFF` to a warm mid-tone turned the glint into a
+sheen. Fifteen levels of separation instead of ninety. The highlight's own
+opacity curve did not change with the colour.
 
-**Nothing anywhere exceeds 50% opacity**, and the range runs `0.05`–`0.50`.
+**Nothing in the cloud exceeds 50% opacity**, and the range runs
+`0.05`–`0.50`. The flow layer alone is allowed **75%** — see below.
 That ceiling is enforced twice: once where a particle's alpha is authored, and
 again as a hard `min(A, 0.50)` at the end of the vertex shader, because
 thirteen factors multiply into alpha between those two points and tuning each
@@ -734,7 +738,7 @@ honest.
 | loose particles | the ambient shell sits at `edge` 0.14 and a fifth of the cloud's base alpha: under a tenth of the organ's weight |
 | volume | `depthA` reads the camera's own foreshortening, so the near face of a cloud comes forward and the far one falls back |
 | the verdict | subtraction only, since nothing may gain: older sits at the ceiling, neutral a little under it, younger falls away by up to 68% on the dots the lottery picks |
-| a flow layer's character | the presets keep the tones they were authored with, but `toneA` reads a tone for its brightness alone and spends it on alpha |
+| a flow layer's character | the presets keep the tones they were authored with, but `toneA` reads a tone for its brightness alone and spends it on alpha; the layer as a whole runs 50% stronger than the cloud, under a ceiling of its own |
 | the theme | alpha, and only alpha |
 
 **The ramp changed direction when the colours went**, and was later
@@ -747,14 +751,63 @@ gradient of many faint dots instead of a line of bright ones. The biomarker
 slide's rim selector reads the same attribute, so its window was reversed with
 it (`smoothstep(0.89, 0.69, ef)`).
 
-### White does not work on a light ground, and cannot be made to
+### The flow has a ceiling of its own
+
+Raising the flow layer by 50% under the cloud's shared ceiling does nothing,
+and it is worth saying why rather than shipping it and hoping. Its dots were
+already pressing against 50% for most of a run: measured, multiplying them by
+1.5 under the shared cap moved the rendered organ by **0.2 of a level**, which
+is noise. Raising a layer that is already at the ceiling means raising what it
+is allowed to reach.
+
+So the flow clamps at `0.75` — in the shader as `min(A, mix(0.50, 0.75,
+flowP))`, and at the same value in each of the five places its alpha is
+written per frame — and carries a `1.5` factor so the parts of a run that were
+*below* the old ceiling come up by the same proportion. The cloud itself still
+stops at 50%.
+
+### The library draws at the engine's density
+
+`dotTarget` returns the number of dots that holds a constant on-screen *gap*,
+which is the right answer for a thumbnail and the wrong one for a reference
+sheet: the engine draws all 8650 organ particles, and side by side the library
+read as a thinner organ, because it was one. Both the immersive view and the
+library now take `fullTarget` — `dotTarget × 3.06`, one constant, one place.
+
+That is five thousand dots a tile across nine tiles, and it took the page from
+6fps to 53. Four changes, in order of what each was worth:
+
+- **Deal the dense views into rotating slots.** A time gate does not help,
+  because when a frame already takes 50ms the gate always passes — the work
+  has to be *spread*, not deferred. One group of three paints per frame, so
+  each tile still updates several times a second, which a slow drift cannot be
+  told from, and the page keeps its own frame. Worth 2.6×.
+- **Squares under five device pixels.** A filled square and a filled circle
+  are the same two or three lit pixels at that size, and a rect costs a
+  fraction of tessellating an arc. Worth 2.3×.
+- **One shape instead of two below `r = 2.2`.** `dot2D` draws each dot as two
+  discs for a soft edge; on a dot four pixels wide that edge is one pixel doing
+  nothing. Worth 1.25×.
+- **Batch by colour and quantised alpha.** A canvas pays for the `fillStyle`
+  write and the `fill()` call, not the geometry, so ten thousand fills become
+  at most ninety-six. Worth nothing on its own here — the loop, not the
+  rasteriser, was the bottleneck — but it is what makes the other three
+  expressible.
+
+### White did not work on a light ground, and could not be made to
 
 This is the one place the treatment costs something, and it is structural
 rather than a tuning problem. Half the cloud is `#FFFFFF`; the light theme's
 card is `#ece7e2`. Fifteen levels of lift is not a particle, and no amount of
 alpha invents contrast that is not in the difference between two colours.
 
-So on the light theme the figure is carried by the red 65% alone. Measured on
+This was the reason the highlight moved off pure white, and it is worth
+keeping the note: half the cloud at `#FFFFFF` on a `#ece7e2` card is fifteen
+levels, and **alpha scales a contrast, it does not create one**. `#BC6654`
+carries on both grounds, so the light theme is no longer paying for a third of
+its particles saying nothing.
+
+Measured at the even white split, on
 a library tile: **27 levels of deviation from its card against the dark
 theme's 29** — the two grounds are close now, which they were not at the even
 split, because there is simply less white to lose. The single-ink treatment

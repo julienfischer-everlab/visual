@@ -777,6 +777,48 @@ its alpha, which composite to 1.02× — so a dot at the ceiling went over it by
 way of its own antialiasing. 0.30/0.76 composites to 0.95×. A ceiling is only
 as good as the thing that draws under it.
 
+### 5.28 Raising something that is already at its ceiling
+
+"Add opacity on the flow by 50%" looks like one multiplication. The flow's
+dots were already clamped at the cloud's 50% ceiling for most of a run, so the
+multiplication landed on a wall — measured, ×1.5 under the shared cap moved
+the rendered organ by **0.2 of a level**. Raising a layer that is against a
+ceiling means raising the ceiling for that layer, not the number feeding it.
+Both, in the end: `min(A, mix(0.50, 0.75, flowP))` in the shader plus the 1.5
+factor, so the parts of a run that were below the old cap rise by the same
+proportion as the parts that were at it.
+
+**Measure before shipping a multiplication.** The change would have looked
+correct in the diff and done nothing on screen.
+
+### 5.29 Two renderers, two densities, one "source of truth"
+
+The library drew every organ through `dotTarget`, which returns the dot count
+that holds a constant on-screen *gap*. The engine draws all 8650 particles.
+Both are defensible; having both means the reference sheet for the component
+shows a thinner organ than the component. `fullTarget = dotTarget × 3.06` is
+now the one constant, taken by the immersive view and the library alike.
+
+Then it ran at 6fps, and the profile was not where it looked. In order:
+
+1. **Batching the fills by colour and quantised alpha** — the obvious win,
+   ten thousand `fill()` calls down to ninety-six — was worth **nothing**. The
+   bottleneck was the per-dot JS loop and the geometry, not the state changes.
+2. **Rects instead of arcs** below five device pixels: 2.3×. At that size a
+   square and a circle are the same lit pixels, and tessellating an arc is not.
+3. **One shape instead of two** below `r = 2.2`: another 1.25×. `dot2D` draws
+   a soft edge as two discs; on a four-pixel dot that edge is one pixel.
+4. **Dealing the dense views into rotating slots**: 2.6×, and the one that
+   mattered. A *time* gate did nothing — when the frame already takes 50ms the
+   gate always passes. Work that is too expensive per frame has to be spread
+   across frames, not deferred within one. Three of nine tiles paint per
+   frame; each still updates several times a second, which a slow drift cannot
+   be told from.
+
+6fps to 53. **The optimisation that reads as obviously right can be worth
+zero; measure each one separately**, or the three that did the work get
+credited to the one that did not.
+
 ---
 
 ## 6. Open items
