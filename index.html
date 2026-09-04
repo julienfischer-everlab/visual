@@ -4047,22 +4047,34 @@
   // lavender to mauve, the cream stops being a highlight and becomes the palest
   // member of the same family — so the cloud reads as one warm material rather
   // than a set of tints at full brightness.
-  // ---------- one ink ----------
-  // Every particle in this file is #A34442 and nothing else. There is no
-  // palette, no verdict colour, no theme colour, no flow tint: depth, density,
-  // anatomy and verdict are all carried by how opaque a dot is. Inspect any
-  // dot on any surface in any mode and it reads the same three bytes.
+  // ---------- two inks ----------
+  // Every particle is one of exactly two values: #A34442 or #FFFFFF, split
+  // evenly and assigned by an independent coin per particle, so the two fall
+  // through the cloud the way a speckled material does rather than sorting
+  // themselves into regions. There is no third colour anywhere — no palette,
+  // no verdict colour, no theme colour, no flow tint. Depth, density, anatomy
+  // and verdict are carried by opacity alone, and opacity is uncorrelated with
+  // which of the two a dot got: a white dot is as likely to be nearly gone as
+  // a red one.
   //
   // The presets and layers below still carry the tones they were authored
   // with, because those tones encoded a real distinction — an airflow that
   // was paler than a perfusion, a signal packet paler than the tissue it
   // crosses. `toneA` reads a tone for its brightness alone and spends it on
   // alpha, so what used to be told apart by being paler is told apart by
-  // being stronger. Nothing resolves to a second hue.
-  // written as the eighth-bit fractions themselves, so the value that reaches
-  // the GPU is the byte a designer will read back and not a rounding of it
+  // being stronger. Nothing resolves to a further hue.
+  //
+  // Written as the eighth-bit fractions themselves, so the value that reaches
+  // the GPU is the byte a designer will read back and not a rounding of it.
   const INK_CSS = '163,68,66';                                    // #A34442
+  const LIT_CSS = '255,255,255';                                  // #FFFFFF
   const INK = INK_CSS.split(',').map(v => +v / 255);
+  const LIT = [1, 1, 1];
+  const pickInk = () => Math.random() < 0.5 ? LIT : INK;
+  // Read back off the buffer rather than kept in a second array: the colour a
+  // particle got at init is the one both renderers have to agree on, and one
+  // of the two is the only bit that separates them.
+  const isLit = i => colors[i * 4] > 0.8;
   const toneA = t => Math.min(1.6, (0.36 * t[0] + 0.50 * t[1] + 0.14 * t[2]) / 0.72);
 
   // ---------- organ silhouettes drawn to an offscreen canvas ----------
@@ -5345,7 +5357,7 @@
       // thing the light theme does at all, which is why it carries a larger
       // number than it once did -- first the darkening was folded into it, and
       // then the desaturation.
-      float aLift = mix(1.0, 1.90, uLight);
+      float aLift = mix(1.0, 5.20, uLight);
       vColor = vec4(rgb, aColor.a * tw * verdA * ga * ef * keep * fv * uAlpha * da * depthA * feedA * vfade * irisA * aLift);
     }`;
   const FS = `
@@ -5402,10 +5414,16 @@
     seeds[i*4+1] = Math.random() * 6.2832;      // curve direction
     seeds[i*4+2] = Math.random();               // noise phase
     seeds[i*4+3] = 0.55 + Math.pow(Math.random(), 1.6) * 1.5; // size
-    colors[i*4] = INK[0]; colors[i*4+1] = INK[1]; colors[i*4+2] = INK[2];
+    const c = pickInk();
+    colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
     // a shade under what it was: the cloud carried more light than the form
     // needed, and the verdict tint over it had to shout to be seen
-    colors[i*4+3] = 0.56 + Math.random() * 0.60;
+    // A wide range, weighted toward the faint end: a few dots crisp, most of
+    // them somewhere under half, a long tail almost gone. The old range was
+    // 0.56-1.16, which is a cloud of near-equals -- readable, but flat, and
+    // with white now carrying two and a half times the ink's luminance the
+    // headroom to spread it finally exists.
+    colors[i*4+3] = 0.10 + Math.pow(Math.random(), 1.25) * 0.92;
   }
   // Mark ambient strays: negative size flags them in the shader, fainter and
   // drifting more. They used to sit at 60% of the cloud's alpha, which was
@@ -5427,7 +5445,8 @@
     seeds[i*4+2] = Math.random();
     seeds[i*4+3] = 0.5 + Math.random() * 0.4;
     // the ghost was a pale warm; that paleness is now its alpha
-    colors[i*4] = INK[0]; colors[i*4+1] = INK[1]; colors[i*4+2] = INK[2];
+    const gc = pickInk();
+    colors[i*4] = gc[0]; colors[i*4+1] = gc[1]; colors[i*4+2] = gc[2];
     colors[i*4+3] = Math.min(1, 0.8 * toneA([0.941, 0.878, 0.816]));
   }
   // flow layer: soft dots that travel along internal organ paths (positions
@@ -5437,6 +5456,11 @@
   const flowLane = new Float32Array(FLOWN);
   const flowZ = new Float32Array(FLOWN);
   const flowSpd = new Float32Array(FLOWN);
+  // Which of the two inks each flow dot carries, for the 2D tiles' own light
+  // sim. Its own coin, not derived from the path, the phase or the speed --
+  // reusing one of those would tie colour to position or pace and put a
+  // pattern in the stream.
+  const flowInk = new Uint8Array(FLOWN);
   for (let f = 0; f < FLOWN; f++){
     const i = FSTART + f;
     flowPick[f] = (Math.random() * 16) | 0;
@@ -5445,13 +5469,15 @@
     flowLane[f] = ((Math.random() * 3) | 0) - 1 + (Math.random() - 0.5) * 0.3;
     flowZ[f] = Math.random() * 2 - 1;
     flowSpd[f] = 0.8 + Math.random() * 0.4; // layered velocities, organic not uniform
+    flowInk[f] = Math.random() < 0.5 ? 1 : 0;
     seeds[i*4]   = -2;                       // flow flag
     seeds[i*4+1] = Math.random() * 6.2832;
     seeds[i*4+2] = Math.random();
     seeds[i*4+3] = 1.1 + Math.random() * 0.9;
     // the flow layer's rgb is written once and never again: the presets set
-    // alpha per frame, and the ink under it does not change
-    colors[i*4] = INK[0]; colors[i*4+1] = INK[1]; colors[i*4+2] = INK[2];
+    // alpha per frame, and which of the two inks a dot got does not change
+    const fc = pickInk();
+    colors[i*4] = fc[0]; colors[i*4+1] = fc[1]; colors[i*4+2] = fc[2];
     colors[i*4+3] = 0;
   }
 
@@ -8114,6 +8140,7 @@
         // edge is the whole of this dot's form, so it is spent whole -- the
         // shader multiplies it straight into alpha and this has to agree
         a: colors[i * 4 + 3] * cl.edge[i] * 0.80,
+        c: isLit(i) ? LIT_CSS : INK_CSS,
         ph: Math.random() * 6.28, sp: 0.5 + Math.random(),
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]   // the shader's own phases
       });
@@ -8131,6 +8158,7 @@
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
         r: 0.9 + (i % 5) * 0.26,
         a: colors[i * 4 + 3],
+        c: isLit(i) ? LIT_CSS : INK_CSS,
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]
       });
     }
@@ -8332,7 +8360,7 @@
         // more contrast per unit of alpha on a pale card than on a dark one,
         // and the tiles come back to the same weight by spending less of it.
         // The engine's own shader does exactly this with its light alpha lift.
-        const themeA = document.body.classList.contains('light') ? 0.60 : 1;
+        const themeA = document.body.classList.contains('light') ? 1.90 : 0.66;
         const drift = view.still ? 0 : 0.006 * view.jitter * sc;
         // The iris breathes by dilating rather than by scaling: the pupil opens
         // and shuts, and the tissue between it and the limbus is compressed into
@@ -8450,7 +8478,7 @@
             rr2 *= 0.86 + 0.30 * (zz / 0.775 * 0.5 + 0.5);
           }
           dot2D(px, ox + qx * sc + jx, oy - qy * sc + jy, rr2 * rk * view.dot,
-                INK_CSS, Math.min(1, q.a * tw * view.alpha * themeA * 1.3));
+                q.c, Math.min(1, q.a * tw * view.alpha * themeA * 1.3));
         }
         if (view.morph) return;      // no flow or feeding while the cloud is in flight
         // internal flow: the same presets and path maths the engine runs, so a
@@ -8462,9 +8490,10 @@
             : getFlowRT(view.idx));
           if (rt){
             // the preset's tone is read for its brightness and spent on alpha,
-            // the same way the engine's flow layer does it
+            // the same way the engine's flow layer does it; the two inks are
+            // dealt out along the stream by the same coin as everywhere else
             const tA = toneA(pr.tone);
-            const tone = 'rgba(' + INK_CSS + ',';
+            const tones = ['rgba(' + INK_CSS + ',', 'rgba(' + LIT_CSS + ','];
             for (let f = 0; f < view.flowN; f++){
               const P = rt.paths[flowPick[f] % rt.paths.length];
               const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
@@ -8483,7 +8512,7 @@
               const off = flowLane[f] * pr.width * rt.k
                         + Math.sin(T * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
               fx += -ddy * off; fy += ddx * off;
-              px.fillStyle = tone + fa.toFixed(3) + ')';
+              px.fillStyle = tones[flowInk[f]] + fa.toFixed(3) + ')';
               px.beginPath();
               px.arc(ox + fx * sc, oy - fy * sc, view.dot * rk * 1.15, 0, 6.2832);
               px.fill();
@@ -8510,7 +8539,7 @@
           dot2D(px,
                 ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
                 oy - ry * sc + aDrift * Math.cos(T * 0.7 + q.sz * 9.42),
-                q.r * rk * view.dot * 0.9, INK_CSS,
+                q.r * rk * view.dot * 0.9, q.c,
                 Math.min(1, q.a * tw * feedA * view.alpha * themeA * 1.25));
         }
       },

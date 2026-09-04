@@ -710,6 +710,36 @@ exact by construction, but "every pixel in the PNG is literally #A34442" is
 not a claim the format can support, and it is better to say so than to let
 someone discover it in a colour picker.
 
+### 5.26 A colour that does not exist on one of the grounds
+
+The brief after the single ink was two: half `#A34442`, half `#FFFFFF`, evenly
+distributed, opacity doing the rest. On the dark themes it is exactly the
+thing asked for — the cloud stops reading as one flat red material and starts
+reading as a speckle with a bright element and a dark one to build depth
+between.
+
+On the light theme half the cloud is white on `#ece7e2`. Fifteen levels. That
+is not a tuning problem and no lever in the file can fix it: **alpha scales a
+contrast, it does not create one**, and the contrast between white and a
+near-white card is not there to scale. The figure falls to the red half at
+half the particle count — measured, 30 levels of deviation from a library
+tile's card against the dark theme's 41, where the previous single-ink
+treatment managed 52 and 34.
+
+Two things worth keeping from it. **Push a compensating lever to its knee, not
+past it**: the light lift was tried at 1.9, 4.6, 5.2 and 6.5, and past about
+5 the extra contrast arrives entirely by dots clamping at full opacity —
+buying three levels by destroying the wide opacity range the whole treatment
+is built on. 5.2 is where it stops being worth it. And **name the limit rather
+than quietly designing around it**: the fix is a second value for the light
+theme, which is a third colour, which is a decision the brief did not make. It
+goes in the reply and in the README, not into the file.
+
+The general shape: a two-value palette is a relationship to a ground, not a
+property of the artwork. One of the two will always be doing most of the work
+on any given surface, and if a surface's own colour sits at one end of the
+pair, that end stops existing there.
+
 ---
 
 ## 6. Open items
