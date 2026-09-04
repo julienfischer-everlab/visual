@@ -1437,6 +1437,35 @@ there.
 read, so the tile and the product get the same field.
 
 
+### 5.54 Depth derived from a silhouette is depth a line cannot have
+
+"The brain and the nerve are too 2D, and the nerve should go in multiple
+directions." Both come from one line: `zmax = depthPx * sqrt(d / 22)`, where
+`d` is the distance to the nearest boundary.
+
+That is right for a mass and wrong for a line. A lung's middle is twenty pixels
+from an edge, so it gets its full depth; a dendrite is two pixels from an edge
+*everywhere along its length*, so it gets 30% of it and reads as wire on glass.
+The rule was never "thin things are flat" -- it was "thickness on screen stands
+in for thickness in depth", which is a fair guess for a blob and a bad one for
+a branch.
+
+`vol` is the per-shape override, and it has three parts because the ask had
+three:
+
+- `floor` puts depth under the thin parts regardless of `d`. Thickness.
+- `spread` displaces whole *regions* along z from a low-frequency field of
+  (x, y). This is the one that answers "multiple directions": a per-particle z
+  offset is more thickness, and thickness is not direction. The field has to be
+  coarse enough that a branch agrees with itself and disagrees with the branch
+  beside it -- at 1/42 of the raster, it is.
+- `hl` raises the highlight share, because the front of a volume is what tells
+  a reader it is one. 10% globally, 16% on these two.
+
+The nerve takes the most of all three (0.72 / 0.62), because it is the shape
+with the least silhouette to derive anything from.
+
+
 ---
 
 ## 6. Open items

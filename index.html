@@ -5171,7 +5171,16 @@
 
   // ---------- sample a silhouette into a volumetric point cloud ----------
   // tf places the organ at its anatomical spot inside the ghost body
-  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens){
+  // `vol`: how a shape carries depth, for the two that do not carry it from
+  // their silhouette alone. Depth here is derived from `d`, the distance to the
+  // nearest boundary, which is right for a mass and wrong for a line -- a
+  // dendrite is two pixels from an edge everywhere along it, so it gets almost
+  // no z and reads as wire on glass. `floor` puts depth under the thin parts
+  // regardless of `d`; `spread` offsets whole regions along z from a
+  // low-frequency field, so separate branches sit at separate depths and the
+  // shape points in more than one direction; `hl` overrides the highlight
+  // share, because the front of a volume is what says it is a volume.
+  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens, vol){
     octx.save();
     octx.clearRect(0, 0, S, S);
     octx.fillStyle = '#fff'; octx.strokeStyle = '#fff';
@@ -5326,11 +5335,20 @@
       // below and only then turned into one.
       // a quarter deeper than it was: the front and back of a volume have to
       // be far enough apart in z for the depth term above to separate them
-      const zmax = depthPx * 1.25 * Math.sqrt(d / 22);
+      const zf = vol && vol.floor ? vol.floor : 0;
+      const zmax = depthPx * 1.25 * (zf + (1 - zf) * Math.sqrt(d / 22));
       const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
       const Y = -(py - cy + (Math.random() - 0.5) * 2) * s * tf.s;
       let Z = zsign * zmax * Math.pow(Math.random(), 0.3) * s * tf.s;
+      // Whole regions displaced along z rather than each particle -- a
+      // per-particle offset is thickness, and thickness is not direction. The
+      // field is coarse enough that a branch agrees with itself and disagrees
+      // with the branch beside it.
+      if (vol && vol.spread){
+        Z += (vnoise(px / 42 + 13.9, py / 42 + 71.2) * 2 - 1)
+           * vol.spread * depthPx * s * tf.s;
+      }
       if (yaw){ const nx = X * cyaw + Z * syaw; Z = -X * syaw + Z * cyaw; X = nx; }
       out[i * 3] = X + tf.x; out[i * 3 + 1] = Y + tf.y; out[i * 3 + 2] = Z;
       // What a particle's opacity is worth. Mostly its own draw, so opacity
@@ -5391,7 +5409,7 @@
     }
     const byHl = Array.from({ length: M2 }, (_, i) => i).sort((a, b) => hl[b] - hl[a]);
     const isHl = new Uint8Array(M2);
-    const nHl = Math.round(M2 * HL_SHARE);
+    const nHl = Math.round(M2 * ((vol && vol.hl) || HL_SHARE));
     for (let k = 0; k < nHl; k++) isHl[byHl[k]] = 1;
     // and their own values, ranked by frontness so the nearest are the
     // strongest: 55% to 90%, on the grid
@@ -5453,11 +5471,13 @@
   // every organ shares the same centred position — no anatomical placement,
   // no camera travel or angle change between organs
   const ORGANS = [
-    { label: 'Brain',   cloud: () => buildCloud(drawBrain,   52, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Brain',   cloud: () => buildCloud(drawBrain,   52, 1.00, {s:1, x:0, y:0}, null, null,
+                                  { floor: 0.55, spread: 0.30, hl: 0.16 }), x:0, y:0, r:0.78 },
     // A shape made of thin branches: the constant-gap target that suits a
     // filled organ leaves a dendrite reading as a dotted line rather than a
     // limb, so it takes 30% more than the gap alone asks for.
-    { label: 'Nerves',  cloud: () => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78, dots: 1.30 },
+    { label: 'Nerves',  cloud: () => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}, null, null,
+                                  { floor: 0.72, spread: 0.62, hl: 0.16 }), x:0, y:0, r:0.78, dots: 1.30 },
     { label: 'Lungs',   cloud: () => buildCloud(drawLungs,   46, 1.02, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Heart',   cloud: () => buildCloud(drawHeart,   55, 0.88, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Cells',   cloud: () => buildCloud(drawCells,   42, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
