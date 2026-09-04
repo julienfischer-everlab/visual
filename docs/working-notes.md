@@ -1489,6 +1489,55 @@ Two knobs, because "make it thinner" and "keep it visible" are two properties
 and only one of them was asked for out loud.
 
 
+### 5.56 A percentage asked of a grid has to be spent before the rounding
+
+"Make all visuals brighter by 10%." Every dot in the file sits on one of
+eighteen opacity values, 5% to 90% in steps of 5, and the obvious move -- lift
+the three ink bands by a tenth -- does nothing where it matters. `0.20 x 1.10`
+is `0.22`, which rounds straight back to `0.20`; `0.05` becomes `0.055` and
+rounds back to `0.05`. The low end of the range is where most of the cloud
+lives, so the bands would have moved only at the top, and "10% brighter" would
+have arrived as "the bright dots got brighter".
+
+The lift belongs one step earlier, on the continuous value, before the snap:
+
+    const BRIGHT = 1.10;
+    opSnap(BRIGHT * (b[0] + (b[1] - b[0]) * Math.pow(p, 1.6)))
+
+Now the rounding falls where it falls. A dot three fifths of the way through a
+step crosses to the next one, a dot one fifth of the way does not, and across
+thousands of dots the mean rises by the tenth asked for while every individual
+dot is still on the grid. Measured as mean deviation from the ground: library
+Brain 19.5 -> 21.4, m20 31.2 -> 33.8, m19 30.4 -> 34.0, m21 33.6 -> 36.0, m18
+22.6 -> 23.7. Mean +8.3%, not +10, and the shortfall is the two hard ends of
+the grid: the highlights clamp at 0.90 and the dimmest dots are already at
+0.05 and have nowhere below to have come from. Both are the grid doing its job,
+so the constant stays at the number that was asked for rather than being tuned
+up until a measurement reads 10.0.
+
+### 5.57 A layer made of the same mixture as its background is only motion
+
+The flow was dealt the same three inks as the cloud it runs through -- 60/25/15
+by `pickInk`, the same coin as every particle in the organ. Which means the one
+thing separating the stream from the still field was that it moved. Freeze a
+frame and there is no stream in it.
+
+It is one colour now, and it is the lightest of the three. The flow is held
+well under the cloud on alpha -- that is deliberate, it must not compete on
+brightness -- so hue is the only budget it has left, and spending all of it in
+one place is what turns a scatter of moving dots into a material.
+
+The two renderers had, as usual, two opinions. The engine dealt all three inks;
+the 2D painter dealt the two *darkest* ones (`tones = [INK_CSS, MID_CSS]`) and
+never touched the light one at all. So the library tile -- the surface where
+this gets judged -- was showing the flow in the dimmest pair available, which
+is most of why it kept reading as more cloud there. Both sites read `LIT` now,
+live, so the tweak bar moves the stream with everything else. Verified by
+drawing nothing but the flow slice and histogramming `(r-bg)/(b-bg)`, which is
+the ink's own red/blue ratio whatever the alpha it was drawn at: 2.9 for the
+deep ink, 1.4 for the mid, 1.05 for the light one. m18/m20/m21 all come back
+one cluster at 1.0, no trace of the other two.
+
 ---
 
 ## 6. Open items

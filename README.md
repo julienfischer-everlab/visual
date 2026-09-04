@@ -872,10 +872,15 @@ with a 0.42 floor it runs about 0.36 to 0.87 — visibly uneven, never empty —
 and the weight moved from the broad octave to the fine one, so what is left is
 small pockets rather than large patches.
 
-**The flow layer is separated by grain, not by brightness.** It is held at 30%
-so it cannot compete with the organ, which means the only thing left to tell
-it apart is dot size: a stream of bigger, softer dots moving through a field
-of fine still ones. Its dots were `1.15×` the tile's base — picked when the
+**The flow layer is separated by grain and by hue, not by brightness.** It is
+held at 30% so it cannot compete with the organ, which means the only things
+left to tell it apart are dot size and colour: a stream of bigger, softer dots
+moving through a field of fine still ones, and all of them the lightest of the
+three inks rather than the same 60/25/15 mixture as the cloud. A layer made of
+the same mixture as its background is distinguishable only by its motion, which
+is to say not at all in a still frame. One ink makes it a material. The engine
+writes `LIT` into the colour buffer past `FSTART` and the 2D painter reads
+`LIT_CSS` per frame, so a colour change from the tweak bar moves the stream too. Its dots were `1.15×` the tile's base — picked when the
 cloud was twice as dense and had one size — and once the cloud went to five
 sizes averaging above that, the flow had become *smaller* than the particles
 it runs through, at the same opacity and in the same inks. Indistinguishable
@@ -968,7 +973,18 @@ the top slice fixes the share at exactly 10%; ranking that slice by frontness
 puts the strongest on the nearest points. They are the only thing in the cloud
 above half.
 
-Ambient strays sit at the floor, 5%.
+Ambient strays sit near the floor, 10–25% skewed low.
+
+**Brightness, when it is asked for as a percentage.** `BRIGHT` (1.10) multiplies
+the authored value *before* the snap, in `opNormal`, `opBright` and the strays'
+own line — never the band endpoints. Lifting the endpoints looks equivalent and
+is not: `0.20 × 1.10` is `0.22`, which rounds back to `0.20`, so the low end of
+each band — where most of the cloud lives — would not move at all. Applied to
+the continuous value the rounding falls where it falls, some dots cross a step
+and some do not, and the mean rises by the tenth asked for with every dot still
+on one of the eighteen. Measured lift is about 8%, not 10: the highlights clamp
+at 90% and the dimmest dots are already at the floor, which is the grid's two
+hard ends and not a miscalibration.
 
 ### No GPU is not a dead page
 

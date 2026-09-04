@@ -4110,7 +4110,13 @@
   // front layer to the ones behind it. Removed uniformly, since the sampling
   // is uniform -- there is no region this thins more than another.
   const N = 12245;
-  const AMB = 350; // ambient strays that float around the organ, never joining it
+  // 700, from 350. The strays went super-thin on request and a thin dot lights
+  // a fraction of the pixels a fat one does, so the field all but vanished on
+  // the big surfaces -- a tile is small enough that 300 specks read as weather,
+  // a full-bleed hero is not. The lever for "more visible" here is how many,
+  // never how big: raising the size would undo the thing that was asked for.
+  // They come out of N, which is 12,245, so the cloud loses 3% of nothing.
+  const AMB = 700; // ambient strays that float around the organ, never joining it
   const STAG = 0.35;                  // stagger fraction of the timeline
 
   // navigation modes, switchable from the top bar
@@ -4243,9 +4249,20 @@
   // 90% of the cloud is the subtle system: each ink over its own band, low
   // favoured, so most of the picture sits between 10 and 30%.
   const BAND = [[0.20, 0.50], [0.15, 0.40], [0.05, 0.25]];   // by INK_PICK
+  // "Brighter by 10%" applied where opacity is AUTHORED, before the snap, and
+  // never to the bands themselves. Raising the band endpoints would have been
+  // the obvious move and it does not work on a grid: 0.20 x 1.10 is 0.22, which
+  // rounds straight back to 0.20, so the low end -- where most of the cloud
+  // lives -- would not have moved at all while the top end gained a full step.
+  // Multiplying the continuous value instead lets the rounding fall where it
+  // falls: a dot 3/5 of the way through a step crosses, one 1/5 of the way does
+  // not, and across thousands of dots the mean rises by the 10% asked for while
+  // every individual dot stays on one of the eighteen values.
+  const BRIGHT = 1.10;
   const opNormal = (ink, p) => {
     const b = BAND[ink];
-    return opSnap(b[0] + (b[1] - b[0]) * Math.pow(Math.min(1, Math.max(0, p)), 1.6));
+    return opSnap(BRIGHT *
+      (b[0] + (b[1] - b[0]) * Math.pow(Math.min(1, Math.max(0, p)), 1.6)));
   };
   // 10% are depth highlights, 55% to 90%. They are the only thing in the cloud
   // allowed past half, and what they are for is the front of the volume: a
@@ -4297,7 +4314,10 @@
   // whenever the shape of the dot changes, not only its size.
   const DOT_PIX = 5.93;
   const HL_SHARE = 0.10;
-  const opBright = p => opSnap(0.55 + 0.35 * Math.min(1, Math.max(0, p)));
+  // The highlights take the same 10%, and are the one place it is mostly spent
+  // against the ceiling: 0.90 x 1.10 clamps back to 0.90, so the top of the
+  // range holds and the lift is real only across the lower two thirds of it.
+  const opBright = p => opSnap(BRIGHT * (0.55 + 0.35 * Math.min(1, Math.max(0, p))));
   // What the 2D painter puts on screen, snapped the same way the shader's last
   // line snaps it, so a tile and the engine agree dot for dot. Below half a
   // step a dot is not drawn rather than drawn at the floor: that is the only
@@ -5390,7 +5410,7 @@
       // thinner dot lights fewer pixels, so holding the field at the same
       // alpha would have made "thinner" mean "gone". 53 lit pixels measured
       // at the first attempt, against 720.
-      edge[i] = opSnap(0.10 + 0.15 * Math.pow(Math.random(), 1.8));
+      edge[i] = opSnap(BRIGHT * (0.10 + 0.15 * Math.pow(Math.random(), 1.8)));
       const r = (0.55 + Math.random() * 0.75) * tf.s;
       const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
       out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;
@@ -6013,11 +6033,6 @@
   const flowLane = new Float32Array(FLOWN);
   const flowZ = new Float32Array(FLOWN);
   const flowSpd = new Float32Array(FLOWN);
-  // Which of the two inks each flow dot carries, for the 2D tiles' own light
-  // sim. Its own coin, not derived from the path, the phase or the speed --
-  // reusing one of those would tie colour to position or pace and put a
-  // pattern in the stream.
-  const flowInk = new Uint8Array(FLOWN);
   for (let f = 0; f < FLOWN; f++){
     const i = FSTART + f;
     flowPick[f] = (Math.random() * 16) | 0;
@@ -6026,16 +6041,19 @@
     flowLane[f] = ((Math.random() * 3) | 0) - 1 + (Math.random() - 0.5) * 0.3;
     flowZ[f] = Math.random() * 2 - 1;
     flowSpd[f] = 0.8 + Math.random() * 0.4; // layered velocities, organic not uniform
-    flowInk[f] = Math.random() < 0.5 ? 1 : 0;
     seeds[i*4]   = -2;                       // flow flag
     seeds[i*4+1] = Math.random() * 6.2832;
     seeds[i*4+2] = Math.random();
     // One size, and it is a multiple of the cloud's: see FLOW_MUL.
     seeds[i*4+3] = FLOW_MUL * DOT_BASE;
-    // the flow layer's rgb is written once and never again: the presets set
-    // alpha per frame, and which of the two inks a dot got does not change
-    const fc = pickInk(f % N);
-    colors[i*4] = fc[0]; colors[i*4+1] = fc[1]; colors[i*4+2] = fc[2];
+    // The flow is one colour, and it is the brightest of the three. The stream
+    // used to be dealt the same three inks as the cloud it runs through, which
+    // is exactly what stops it reading as a separate thing: a layer made of the
+    // same mixture as its background is only distinguishable by its motion.
+    // Given one ink it becomes a material -- and the brightest one, because the
+    // flow is held well under the cloud on alpha and the hue is the only budget
+    // it has left. rgb only; alpha is still set per frame by the presets.
+    colors[i*4] = LIT[0]; colors[i*4+1] = LIT[1]; colors[i*4+2] = LIT[2];
     colors[i*4+3] = 0;
   }
 
@@ -6069,7 +6087,8 @@
     INK = rgb01(INK_CSS); MID = rgb01(MID_CSS); LIT = rgb01(LIT_CSS);
     INKS[0] = INK; INKS[1] = MID; INKS[2] = LIT;
     for (let i = 0; i < TOT; i++){
-      const c = pickInk(i < FSTART ? i % N : (i - FSTART) % N);
+      // past FSTART is the flow, and the flow is the third ink and nothing else
+      const c = i < FSTART ? pickInk(i % N) : LIT;
       colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
@@ -8591,6 +8610,12 @@
         // A slide with no stream of its own -- the biomarker page -- has
         // nothing to morph from or to, so the other end stands in for both and
         // the flow simply holds still rather than reading a stale slot.
+        // Holding still is not the same as handing over, though: a layer at
+        // full strength beside a slide that has none appears at whichever end
+        // of the swipe it lands on. `hand` is the fade across that gap -- 1
+        // where both ends carry a stream, running to 0 toward the end that does
+        // not -- so the biological-age slide's flow leaves as the biomarker
+        // page arrives and returns as it goes, instead of switching on.
         if (!gotA && gotB) updateFlow(t, ib, posA, bufA, false);
         if (!gotB && gotA) updateFlow(t, ia, posB, bufB, false);
         // One asset sits the transition out. See `late` in FLOW_PRESETS: the
@@ -8601,8 +8626,9 @@
                         (FLOW_PRESETS[ib] && FLOW_PRESETS[ib].late);
         const want = (lateNow && f > 0.004 && f < 0.996) ? 0 : 1;
         lateFlow += (want - lateFlow) * (want ? 0.055 : 0.34);
-        if (lateFlow > 0.004){
-          gl.uniform1f(U.uFlowVis, flowVis * lateFlow);
+        const hand = (gotA ? 1 : 0) + ((gotB ? 1 : 0) - (gotA ? 1 : 0)) * f;
+        if (lateFlow * hand > 0.004){
+          gl.uniform1f(U.uFlowVis, flowVis * lateFlow * hand);
           gl.uniform1f(U.uP, f);
           bindCloud(-1);
           gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
@@ -8915,7 +8941,7 @@
   // A prefix of the stray range, for the same reason the cloud's subset is one:
   // the engine draws it as `drawArrays(N - AMB, AMB_VIEW)` and a contiguous
   // range is the only kind of subset a draw call can express.
-  const AMB_VIEW = 300;
+  const AMB_VIEW = 700;   // all of them, on every surface
   function ambPts2D(cl, id){
     if (ambCache[id]) return ambCache[id];
     const pts = [];
@@ -9342,9 +9368,13 @@
             ? (view._rt = view._rt || buildFlowRT(pr, view.cl.norm))
             : getFlowRT(view.idx));
           if (rt){
-            // the two inks are dealt out along the stream by the same coin as
-            // everywhere else; the tone no longer scales it, the flow is flat
-            const tones = ['rgba(' + INK_CSS + ',', 'rgba(' + MID_CSS + ','];
+            // One ink for the whole stream, the brightest of the three, read
+            // live so the tweak bar moves it too. This painter used to deal out
+            // the two DARKEST inks while the engine dealt all three -- two
+            // renderers with two opinions about the same layer, and the tile
+            // holding the dimmer pair, which is most of why the flow kept
+            // reading as more cloud there.
+            const tone = 'rgba(' + LIT_CSS + ',';
             for (let f = 0; f < view.flowN; f++){
               const P = rt.paths[flowPick[f] % rt.paths.length];
               const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
@@ -9366,7 +9396,7 @@
               const off = flowLane[f] * pr.width * rt.k
                         + Math.sin(T * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
               fx += -ddy * off; fy += ddx * off;
-              px.fillStyle = tones[flowInk[f]] + fa.toFixed(3) + ')';
+              px.fillStyle = tone + fa.toFixed(3) + ')';
               px.beginPath();
               // Larger than a cloud dot rather than the same size. The flow is
               // held at 30% and must not compete on brightness, so what
