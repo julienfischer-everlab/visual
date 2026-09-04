@@ -888,6 +888,31 @@ Nothing in the message points at the real cause. The five-second diagnosis is
 to extract the largest `<script>` block and run `node --check` on it, which
 names the line directly — and is worth doing before reading any shader.
 
+### 5.33 An outline nobody drew
+
+"Too many particles around the outer edges, a hollow outlined look." The
+sampler had biased toward the silhouette since the first version —
+`0.07 + 0.93 × exp(-d / 3.5)`, six times the density two pixels from a
+boundary as twenty — and every subsequent opacity treatment had been tuned
+*on top of* that, including one round spent making the ramp core-strong to
+compensate for it and a later round spent making it edge-strong again.
+
+**A weighting in the sampler and a weighting in the shading are not
+independent, and the sampler is the one nobody looks at.** Two rounds of
+opacity work were arguing with a line of rejection sampling written months
+earlier. The fix was to delete it: `pts` is already every pixel inside the
+mask, so an unweighted draw from it *is* uniform area density, and the
+silhouette then emerges from where the cloud stops rather than from a rim
+drawn in it.
+
+The second half is what a constraint costs. Once nothing may correlate
+strongly with distance from the edge, the biomarker slide's empty vessel loses
+its input: that effect read by keeping the rim above the fill front, and the
+rim was the thing being removed. It now keeps the strongest of the cloud
+instead — emptied and still legibly there, but not glass. **When a brief
+removes a signal, find what else was reading it** before shipping, and say
+what changed rather than letting it be discovered.
+
 ---
 
 ## 6. Open items

@@ -711,14 +711,30 @@ is the rule that keeps fifteen percent of the particles from reading as
 glitter: the off-white can never be the strongest thing on the page, only the
 lightest.
 
-### Opacity is authored from the shape
+### The cloud is uniform, and the silhouette is where it stops
 
-Each particle gets a **structural score** — `exp(-d / 5.5)`, where `d` is its
-distance to the nearest boundary in the silhouette mask, with a mild penalty
-for sitting deep in z. The mask does not distinguish the outline from the
-structures inside it, which is exactly the distinction the design does not
-want made: a brain's folds and a lung's bronchi score as highly as their
-outer edges do.
+Sampling used to bias hard toward the outline — `0.07 + 0.93 × exp(-d / 3.5)`,
+which put six times as many particles two pixels from a boundary as twenty —
+and the result read as an outline with a thinner fill behind it rather than a
+body. It is uniform now: the mask's pixel list *is* a uniform area sample, so
+drawing from it without a weight is all it takes, and the silhouette emerges
+from where the cloud stops. A shape's own `dens` function still applies, since
+that is its say in which of *its* regions gather particles — not an edge bias.
+
+### Opacity is authored per particle, then ranked
+
+Each particle gets a score that is **mostly its own draw**:
+
+```
+0.55 × random  +  0.25 × (1 − depth)  +  0.20 × exp(−d / 5.5)
+```
+
+Mostly random, so opacity varies independently and does not draw a second
+outline in weight where the old one used to be in count. A quarter depth, so a
+dot at the front of the volume reads nearer than one behind it — the
+dimensional cue that survives when nothing else may correlate with position. A
+fifth structure, kept deliberately small: enough that a fold or a bronchus is a
+little firmer than the tissue around it, not enough to be a border.
 
 Then the cloud is **sorted by that score, and each particle's percentile is
 read through the opacity histogram**:
@@ -734,11 +750,17 @@ neither can drift from the other. The result is stored as a rank in 0–1; the
 ink a particle landed on decides which range that rank is spent over, which is
 why it cannot be an opacity until both are known.
 
-So: **higher opacity on the silhouette, the anatomical boundaries and the
-internal structures; medium through the volume; very low deep inside it.** The
-ambient strays score zero and take a further 0.42 of even the bottom of their
-ink's range, which is what "floating outside the organ" has to mean once
+The ambient strays score zero and take a further `0.42` of even the bottom of
+their ink's range, which is what "floating outside the organ" has to mean once
 opacity is the only thing saying where a particle is.
+
+One thing was lost with the edge bias, and it is worth naming rather than
+discovering: the biomarker slide's **empty vessel used to read by its rim** —
+above the fill front the volume dropped away and the silhouette stayed, which
+looked like glass. That effect took its rim signal from exactly the edge
+emphasis the cloud was asked to stop having. What survives above the front is
+now the strongest of the cloud rather than its rim: the body reads as emptied
+and still legibly there, which is the reading, but not as a shell.
 
 **One arithmetic note.** With 60% of particles red and red floored at 20%, at
 most 40% of the cloud can sit in the 10–20% band — so the global histogram
