@@ -752,7 +752,7 @@ inside both. The irregularity has to exist at more than one size or the eye
 reads it as texture rather than as space.
 
 **`bulk` is fitted to a hierarchy rather than picked.** Boundary 100%, mid
-volume 74%, deep volume 55% — `a + b·exp(−d/L)` solved for the two ends at
+volume 70%, deep volume 47% — `a + b·exp(−d/L)` solved for the two ends at
 `L = 8` sets `a` and `b`, and the middle falls out of the curve instead of
 being a third number to keep in step.
 
@@ -806,8 +806,8 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **7,170**. Measured in the library: brain 5,042 points, lungs
-3,948, nerve 1,918 (each including its flow layer). Recognisable, with black space
+The count is **6,245**. Measured in the library: brain 4,436 points, lungs
+3,389, nerve 1,643 (each including its flow layer). Recognisable, with black space
 between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which

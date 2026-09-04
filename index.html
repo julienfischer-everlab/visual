@@ -4038,7 +4038,7 @@
   // ones: negative space between them is what lets a reader see through the
   // front layer to the ones behind it. Removed uniformly, since the sampling
   // is uniform -- there is no region this thins more than another.
-  const N = 7170;
+  const N = 6245;
   const AMB = 350; // ambient strays that float around the organ, never joining it
   const STAG = 0.35;                  // stagger fraction of the timeline
 
@@ -5121,8 +5121,8 @@
       // And the weights moved from the broad octave to the fine one, so what
       // is left is small pockets rather than large patches.
       //
-      // `bulk` is fitted rather than picked: 1.00 at the boundary, 0.74
-      // through the mid volume, 0.55 deep inside. Solving `a + b*exp(-d/L)`
+      // `bulk` is fitted rather than picked: 1.00 at the boundary, 0.70
+      // through the mid volume, 0.47 deep inside. Solving `a + b*exp(-d/L)`
       // for the two ends at L = 8 is what sets a and b; the middle then falls
       // out of the curve instead of being a third number to keep in step.
       // A 15% cut asked for in the core alone is made by solving for the
@@ -5160,7 +5160,7 @@
         const n2 = vnoise(px / 13 + 41.3, py / 13 + 17.7);
         const n3 = vnoise(px / 6 + 7.1, py / 6 + 91.4);
         const mask = Math.pow(0.42 + 0.58 * (0.36 * n1 + 0.28 * n2 + 0.36 * n3), 1.5);
-        const bulk = 0.514 + 0.624 * Math.exp(-d / 8.0);
+        const bulk = 0.424 + 0.740 * Math.exp(-d / 8.0);
         if (Math.random() < (dens ? dens(px, py) : 1) * mask * bulk) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
@@ -9188,7 +9188,7 @@
   // next to each other it reads as a thinner one, which is what it is. FULL is
   // the factor that closes the difference, and every 2D surface that means to
   // match the engine takes it from here rather than picking its own.
-  const FULL_DOTS = 2.65;   // in step with the engine's own count
+  const FULL_DOTS = 2.31;   // in step with the engine's own count
   const fullTarget = cl => Math.min(8600, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
 
