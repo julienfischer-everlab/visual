@@ -819,6 +819,32 @@ Then it ran at 6fps, and the profile was not where it looked. In order:
 zero; measure each one separately**, or the three that did the work get
 credited to the one that did not.
 
+### 5.30 A layer authored at one number, rendered at another
+
+The flow was specified at 75% and, once the ceiling was raised to let it get
+there, still arrived on screen at about 40. Nothing was wrong with the number:
+it was being multiplied by the cloud's own chain on the way out — the twinkle,
+the depth term, the gain that exists to undo the *cloud's* fractions.
+
+**A layer whose alpha is authored at the value it should render at must not
+share a pipeline with one whose alpha is a fraction of thirteen other things.**
+The flow now takes its own path through the shader: `mix(cloudA, flowA,
+flowP)`, where `flowA` is the authored value times only the visibility fade it
+rides in on, the page alpha and the theme lift. Everything else in the chain
+belongs to the cloud.
+
+The same mistake had a second form on the 2D side: `themeA`, which lifts the
+cloud against a pale ground, was multiplying the flow's authored 0.75 to 1.195
+— over full opacity, silently, because nothing clamped it. Caught by hooking
+`fillStyle` and printing the maximum, which is worth doing after any change
+that moves a ceiling.
+
+Also worth recording: **once fills are batched, counting `fillStyle` writes
+stops counting particles.** The guard that measured the white share by hooking
+it had been correct for months and silently became a bucket count instead —
+reporting 50% for a 30% split. A measurement that stops measuring the thing it
+names is worse than no measurement.
+
 ---
 
 ## 6. Open items

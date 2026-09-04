@@ -694,21 +694,22 @@ now rather than a control.
 
 ## Two inks
 
-Every particle is one of exactly two values — **`#A34442`** or **`#BC6654`** —
-**65/35**, with the coin thrown independently per particle so the two fall
+Every particle is one of exactly two values — **`#A34442`** or **`#FFFFFF`** —
+**70/30**, with the coin thrown independently per particle so the two fall
 through the cloud the way a speckled material does rather than sorting into
 regions. There is no third colour: no palette, no verdict colour, no theme
 colour, no flow tint. Everything else is opacity.
 
-Red is the material; the second is a highlight in it. It started as an even
-split of red and pure white, which read as two materials sharing a volume:
-reducing the highlight by count as well as by weight is what made it land as a
-glint, and moving it from `#FFFFFF` to a warm mid-tone turned the glint into a
-sheen. Fifteen levels of separation instead of ninety. The highlight's own
-opacity curve did not change with the colour.
+Red is the material; white is the highlight in it. It began as an even split,
+which read as two materials sharing a volume rather than one with light on it;
+cutting the highlight to 30% by count is what made it land as a glint.
 
-**Nothing in the cloud exceeds 50% opacity**, and the range runs
-`0.05`–`0.50`. The flow layer alone is allowed **75%** — see below.
+**Three ceilings, one per thing.** The material stops at **50%**, the
+highlight is allowed **60%** — it is the only thing in the cloud that may be
+brighter than the material, which is the whole of its job — and the flow layer
+runs at a flat **75%**. Which ceiling a particle gets is read off the colour it
+is already carrying: green is `1.0` on the highlight and `0.27` on the
+material.
 That ceiling is enforced twice: once where a particle's alpha is authored, and
 again as a hard `min(A, 0.50)` at the end of the vertex shader, because
 thirteen factors multiply into alpha between those two points and tuning each
@@ -718,12 +719,16 @@ discs were re-weighted from `0.34/0.82` to `0.30/0.76` — the old pair
 composited to `1.02×` at the top of the range, which would have put a dot over
 the ceiling by way of its own soft edge.
 
-**The two inks take different curves**, and this is the one place opacity is
-deliberately correlated with colour: reds spread across the range on a `^1.3`
-curve, whites bunch at the bottom of it on `^2.4`. Means come out near `0.25`
-and `0.15`. A highlight that reaches the same weight as the material it sits
-in has stopped being a highlight, and that is what produced white hotspots in
-the even-split version.
+**The two inks take different ranges**, and this is the one place opacity is
+deliberately correlated with colour:
+
+- **The material runs `0.25`–`0.50`.** A two-to-one spread — narrow enough to
+  read as one substance, wide enough for the depth ramp to have something to
+  work with.
+- **The highlight runs `0.05`–`0.60`,** on a `^2.2` curve that keeps most of
+  it low. The few that reach the top are genuinely the brightest points in the
+  picture; the long tail under them is what stops that reading as a scatter of
+  hotspots.
 
 A gain of `2.15` sits just before the ceiling. The factors between the
 authored alpha and the end of the shader — the ramp, the depth, the twinkle —
@@ -751,20 +756,27 @@ gradient of many faint dots instead of a line of bright ones. The biomarker
 slide's rim selector reads the same attribute, so its window was reversed with
 it (`smoothstep(0.89, 0.69, ef)`).
 
-### The flow has a ceiling of its own
+### The flow runs at a flat 75%, on its own alpha path
 
-Raising the flow layer by 50% under the cloud's shared ceiling does nothing,
-and it is worth saying why rather than shipping it and hoping. Its dots were
-already pressing against 50% for most of a run: measured, multiplying them by
-1.5 under the shared cap moved the rendered organ by **0.2 of a level**, which
-is noise. Raising a layer that is already at the ceiling means raising what it
-is allowed to reach.
+Raising the flow under the cloud's shared ceiling did nothing, and it is worth
+saying why rather than shipping it and hoping: its dots were already pressing
+against 50% for most of a run, and measured, `×1.5` under the shared cap moved
+the rendered organ by **0.2 of a level**. Raising a layer that is at a ceiling
+means raising the ceiling.
 
-So the flow clamps at `0.75` — in the shader as `min(A, mix(0.50, 0.75,
-flowP))`, and at the same value in each of the five places its alpha is
-written per frame — and carries a `1.5` factor so the parts of a run that were
-*below* the old ceiling come up by the same proportion. The cloud itself still
-stops at 50%.
+It is now authored at `0.75` outright. What still varies on it is only what
+makes it a stream rather than a set of lit dots — the fade at each end of a
+loop, so nothing pops, and the depth softening, so a dot behind the volume
+reads behind it. The presets' own `op` and `tone` no longer scale it; they
+still decide the paths, the pace and the turbulence, which is what they were
+for.
+
+And it takes **its own path through the shader**. The cloud's alpha is a
+fraction of a fraction thirteen times over and needs a `2.15` gain to arrive
+where it was authored; the flow's is authored at the value it should render
+at, so it takes none of that — only the visibility fade it rides in on, the
+page's alpha, and the theme lift. Running a layer specified at 75% through the
+cloud's chain is how it quietly arrives on screen at 40.
 
 ### The library draws at the engine's density
 
