@@ -1309,6 +1309,27 @@ take from, moved its measured edge-to-core ink ratio 1.107 -> 1.346 -> 1.414; a
 neuron, which is nearly all edge, has little interior to take from. Nothing can
 make a shape denser at the edge than it is in a middle it does not have.
 
+### 5.48 "Thinner, sharper" is two knobs, and the second moves the first
+
+Two properties are being named and they are not the same one: how wide a dot
+is, and how hard its edge is.
+
+Width is `DOT_BASE`, the number both renderers read through the seed --
+0.95 -> 0.76 -> 0.61. Hardness is the rim constant in the fragment shader:
+`aa` is in r units and the sprite's radius is half its point size, so the
+constant *is* twice the rim's width in pixels. 2.4 was a 1.2px falloff; 1.6 is
+0.8px. Sharpening moves the engine's dot toward the tile's, which has no
+falloff at all -- the 2D painter lays a flat rect at exactly its authored alpha
+-- so this closes a difference between the renderers rather than opening one.
+
+The part worth remembering: **a harder edge is less ink at the same radius**,
+so `DOT_PIX` had to be re-solved. It is the number that makes the engine agree
+with the tile, and that number is an answer about the *shape* of the dot as
+much as its size — change either and it has to be asked again. 5.70 -> 6.02
+put the ink back: tile 7.71 against 6.64-7.66 on the surfaces, the ratio it
+held before the rim moved.
+
+
 ---
 
 ## 6. Open items

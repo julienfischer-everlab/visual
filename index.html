@@ -4213,16 +4213,20 @@
   // the engine's own DOT_PIX, is where the grain gets finer or coarser. DOT_PIX
   // is the calibration that makes the engine agree with the tile; moving it
   // would make them disagree again. This moves both at once.
-  // 0.76, from 0.95: a fifth finer, for a drawing that reads as measured
-  // rather than as painted.
-  const DOT_BASE = 0.76;
+  // 0.61, from 0.76, from 0.95: finer again. Two properties are being asked
+  // for and they are not the same one -- how wide a dot is, and how hard its
+  // edge is. This is the width.
+  const DOT_BASE = 0.61;
   // How big a dot is against the organ it belongs to. It used to be a column in
   // MODES, one number per page, because the old size law made the ratio drift
   // with how large the organ was drawn -- a page that framed it big got thin
   // grain and had to be compensated by hand. The law reads the framing now, so
   // there is nothing left to compensate and nothing left to set per page: one
-  // constant, calibrated against the library tile.
-  const DOT_PIX = 5.70;
+  // constant, calibrated against the library tile. Re-solved when the dot's
+  // rim was sharpened: a harder edge is less ink for the same radius, and the
+  // number that makes the engine agree with the tile has to be re-answered
+  // whenever the shape of the dot changes, not only its size.
+  const DOT_PIX = 6.02;
   const HL_SHARE = 0.10;
   const opBright = p => opSnap(0.55 + 0.35 * Math.min(1, Math.max(0, p)));
   // What the 2D painter puts on screen, snapped the same way the shader's last
@@ -5790,7 +5794,13 @@
         // Capped at 1.0 so the rim never eats the centre: past that a small
         // dot stops reaching its own authored alpha anywhere, which takes
         // ink out of the cloud rather than softening it.
-        float aa = clamp(2.4 / max(vPt, 1.0), 0.07, 1.0);
+        // 1.6, from 2.4: the rim is the other half of "sharper". aa is in r
+        // units and the sprite's radius is vPt/2, so the constant IS the rim's
+        // width in pixels times two -- 2.4 was a 1.2px falloff, this is 0.8px.
+        // It moves the engine's dot toward the tile's, which has no falloff at
+        // all: the 2D painter draws a flat rect at exactly its authored alpha,
+        // so sharpening here closes a difference rather than opening one.
+        float aa = clamp(1.6 / max(vPt, 1.0), 0.07, 1.0);
         gl_FragColor = vec4(vColor.rgb, vColor.a * smoothstep(1.0, 1.0 - aa, r));
       }
     }`;
