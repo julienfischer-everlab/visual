@@ -751,9 +751,25 @@ stippling; three give regions that are open, regions that are full, and grain
 inside both. The irregularity has to exist at more than one size or the eye
 reads it as texture rather than as space.
 
-**`bulk` runs 0.88 near a boundary to 0.31 deep inside one** — nearly three
-to one, over a shorter falloff (`exp(−d / 4.5)`) so the gain is concentrated
-in the first few pixels rather than spread across the whole depth. `d` is the distance to the nearest boundary, so the low end lands
+**`bulk` runs 0.86 near a boundary to 0.22 deep inside one** — nearly four to
+one, over a short falloff (`exp(−d / 4)`) so the gain is concentrated in the
+first few pixels rather than spread across the whole depth.
+
+**The power on the noise sum decides whether a reader sees variation at all.**
+At `^1.8` the mask ran roughly 0.15 to 0.75 and the cloud came out looking
+evenly dense everywhere — the variation was there and too shallow to register.
+At `^2.7` the low end spends much longer near zero, which turns gentle
+thinning into actual holes and makes the fuller regions read as fuller by
+contrast with them.
+
+**The flow layer is separated by grain, not by brightness.** It is held at 30%
+so it cannot compete with the organ, which means the only thing left to tell
+it apart is dot size: a stream of bigger, softer dots moving through a field
+of fine still ones. Its dots were `1.15×` the tile's base — picked when the
+cloud was twice as dense and had one size — and once the cloud went to five
+sizes averaging above that, the flow had become *smaller* than the particles
+it runs through, at the same opacity and in the same inks. Indistinguishable
+by construction. `1.95×` now, 200 dots a tile rather than 120. `d` is the distance to the nearest boundary, so the low end lands
 exactly where a silhouette is a filled mass — the middle of a liver, the body
 of a lung — which is where a projection piles up most and a reader learns
 least.
