@@ -4038,7 +4038,7 @@
   // ones: negative space between them is what lets a reader see through the
   // front layer to the ones behind it. Removed uniformly, since the sampling
   // is uniform -- there is no region this thins more than another.
-  const N = 7100;
+  const N = 9200;
   const AMB = 350; // ambient strays that float around the organ, never joining it
   const STAG = 0.35;                  // stagger fraction of the timeline
 
@@ -5113,22 +5113,26 @@
       // the irregularity has to exist at more than one size or the eye reads
       // it as texture instead of as space.
       //
-      // The power on the sum is what decides whether a reader sees variation
-      // at all. At 1.8 the mask ran roughly 0.15 to 0.75 and the cloud came
-      // out looking evenly dense everywhere -- the variation was there and too
-      // shallow to register. At 2.7 the low end spends much longer near zero,
-      // which turns gentle thinning into actual holes and makes the fuller
-      // regions read as fuller by contrast with them.
+      // Two things the power and the weights decide together: how deep the
+      // sparse regions go, and how large they are. At 2.7 with the broad
+      // octave dominant the mask reached near zero over wide areas, which is
+      // holes you can see the shape of -- too far. At 1.5 with the floor at
+      // 0.42 it runs about 0.36 to 0.87: still visibly uneven, never empty.
+      // And the weights moved from the broad octave to the fine one, so what
+      // is left is small pockets rather than large patches.
       //
-      // `bulk` runs 0.86 near a boundary to 0.26 deep inside one, over a short
-      // falloff so the difference is concentrated in the first few pixels
-      // rather than spread across the whole depth. The two ends move
-      // independently: the constant term is the core's floor and the
-      // coefficient is what the boundary adds on top of it, so a change asked
-      // for at one end is made by moving one of them and solving for the other
-      // to hold the end that was not asked about. The core's floor went 0.22
-      // to 0.258 for a 15% lift; the coefficient came down 1.05 to 0.988 so
-      // the boundary stayed exactly where it was. `d` is the distance to the nearest boundary, so the low
+      // `bulk` is now fitted to a hierarchy rather than picked: 1.00 at the
+      // boundary, 0.80 through the mid volume, 0.65 deep inside. Three points,
+      // two free parameters and a length -- solving `a + b*exp(-d/L)` at d = 2
+      // and d = 8 for L = 8 gives a = 0.621 and b = 0.487, and d = 22 falls
+      // out at 0.65 without being asked to.
+      //
+      // The long falloff is the point of it. The previous version ran over
+      // `exp(-d/4)` and dropped to a quarter within a few pixels, which is a
+      // rim and an interior -- two states with a step between them. Over
+      // `exp(-d/8)` the same span is a gradient a reader can follow, which is
+      // what a volume with a denser surface looks like as opposed to a shell
+      // with something behind it. `d` is the distance to the nearest boundary, so the low
       // end lands exactly where a silhouette is a filled mass -- the middle of
       // a liver, the body of a lung -- which is where a projection piles up
       // most and a reader learns least.
@@ -5154,8 +5158,8 @@
         const n1 = vnoise(px / 34, py / 34);
         const n2 = vnoise(px / 13 + 41.3, py / 13 + 17.7);
         const n3 = vnoise(px / 6 + 7.1, py / 6 + 91.4);
-        const mask = Math.pow(0.05 + 0.95 * (0.56 * n1 + 0.27 * n2 + 0.17 * n3), 2.7);
-        const bulk = 0.258 + 0.988 * Math.exp(-d / 4.0);
+        const mask = Math.pow(0.42 + 0.58 * (0.36 * n1 + 0.28 * n2 + 0.36 * n3), 1.5);
+        const bulk = 0.621 + 0.487 * Math.exp(-d / 8.0);
         if (Math.random() < (dens ? dens(px, py) : 1) * mask * bulk) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
@@ -9183,7 +9187,7 @@
   // next to each other it reads as a thinner one, which is what it is. FULL is
   // the factor that closes the difference, and every 2D surface that means to
   // match the engine takes it from here rather than picking its own.
-  const FULL_DOTS = 2.63;   // in step with the engine's own count
+  const FULL_DOTS = 3.40;   // in step with the engine's own count
   const fullTarget = cl => Math.min(8600, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
 

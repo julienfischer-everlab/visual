@@ -751,23 +751,31 @@ stippling; three give regions that are open, regions that are full, and grain
 inside both. The irregularity has to exist at more than one size or the eye
 reads it as texture rather than as space.
 
-**`bulk` runs 0.86 near a boundary to 0.26 deep inside one**, over a short
-falloff (`exp(−d / 4)`) so the difference is concentrated in the first few
-pixels rather than spread across the whole depth.
+**`bulk` is fitted to a hierarchy rather than picked.** Boundary 100%, mid
+volume 80%, deep volume 65% — three points, and `a + b·exp(−d/L)` solved at
+`d = 2` and `d = 8` for `L = 8` gives `a = 0.621`, `b = 0.487`. `d = 22` then
+falls out at 0.65 on its own.
 
-Its two ends move independently, which is worth knowing before touching it:
-the **constant term is the core's floor** and the **coefficient is what the
-boundary adds on top of it**. A change asked for at one end is made by moving
-one of them and solving for the other, so the end that was not asked about
-stays exactly where it was — a 15% lift in the core took the floor from 0.22
-to 0.258 and the coefficient from 1.05 to 0.988, leaving the boundary at 0.86.
+The **long falloff is the point of it**. An earlier version ran over
+`exp(−d/4)` and dropped to a quarter within a few pixels, which is a rim and
+an interior — two states with a step between them. Over `exp(−d/8)` the same
+span is a gradient a reader can follow, which is what a volume with a denser
+surface looks like as opposed to a shell with something behind it.
 
-**The power on the noise sum decides whether a reader sees variation at all.**
-At `^1.8` the mask ran roughly 0.15 to 0.75 and the cloud came out looking
-evenly dense everywhere — the variation was there and too shallow to register.
-At `^2.7` the low end spends much longer near zero, which turns gentle
-thinning into actual holes and makes the fuller regions read as fuller by
-contrast with them.
+Its two ends still move independently, which is worth knowing before touching
+it: the **constant term is the core's floor** and the **coefficient is what
+the boundary adds on top of it**. A change asked for at one end is made by
+moving one and solving for the other, so the end that was not asked about
+stays where it was.
+
+**The power and the octave weights decide two different things**: how deep
+the sparse regions go, and how large they are. At `^1.8` the mask ran roughly
+0.15 to 0.75 and the cloud looked evenly dense — the variation was there and
+too shallow to register. At `^2.7` with the broad octave dominant it reached
+near zero over wide areas, which is holes you can see the shape of. At `^1.5`
+with a 0.42 floor it runs about 0.36 to 0.87 — visibly uneven, never empty —
+and the weight moved from the broad octave to the fine one, so what is left is
+small pockets rather than large patches.
 
 **The flow layer is separated by grain, not by brightness.** It is held at 30%
 so it cannot compete with the organ, which means the only thing left to tell
@@ -798,12 +806,8 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **7,100** — down from 9,000 over four steps, then back up as the
-core, the edges, the core again and finally everything were asked for more.
-Measured in the library: brain 4,330 points, lungs 3,499, nerve 1,761 (each
-including its flow layer). The shape of the mask has not moved through any of
-those: the holes are the same holes, and only how many particles sit between
-them has changed. Recognisable, with black space
+The count is **9,200**. Measured in the library: brain 6,291 points, lungs
+5,070, nerve 2,316 (each including its flow layer). Recognisable, with black space
 between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which
