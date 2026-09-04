@@ -711,6 +711,18 @@ is the rule that keeps fifteen percent of the particles from reading as
 glitter: the off-white can never be the strongest thing on the page, only the
 lightest.
 
+### How many particles, and why so few
+
+**5,200**, down from 9,000 in two steps. The cloud read as a filled 2D shape
+rather than a volume, and the only fix for that is fewer particles: negative
+space between them is what lets a reader see through the front layer to the
+ones behind it. The library's own factor moved with it — one count, both
+renderers — and the thinning is uniform, since the sampling is.
+
+Depth carries 40% of the opacity score (up from 25%) and the z spread is a
+quarter deeper, so front, middle and back separate instead of averaging into
+a mass.
+
 ### The cloud is uniform, and the silhouette is where it stops
 
 Sampling used to bias hard toward the outline — `0.07 + 0.93 × exp(-d / 3.5)`,
