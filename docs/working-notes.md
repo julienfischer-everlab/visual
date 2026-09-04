@@ -740,6 +740,43 @@ property of the artwork. One of the two will always be doing most of the work
 on any given surface, and if a surface's own colour sits at one end of the
 pair, that end stops existing there.
 
+### 5.27 A ceiling on alpha has to be enforced where alpha ends, not where it starts
+
+"No particle above 50% opacity" sounds like one number to change. It is not,
+because alpha in this file is authored in one place and *finished* in another
+with thirteen multiplications in between — the edge ramp, the twinkle, the
+depth, the density lottery, the verdict, the vessel fade, the iris mask, the
+theme lift, and five more. Several of those ran above 1 by design.
+
+Two things follow, and both were needed:
+
+- **Clamp at the end.** `min(A, 0.50)` in the last line of the vertex shader,
+  and the same value in the 2D painter. Anything else is a guarantee that
+  holds until the next time one of the thirteen changes.
+- **Normalise the factors that ran above 1 anyway**, or the clamp does the
+  damage the tuning was supposed to avoid. The edge ramp ran 1.00–1.59; under
+  a hard cap its top third would clip flat and the core-to-edge gradient — the
+  entire reason it exists — would disappear into the ceiling. Rescaled to
+  0.62–0.98, and the biomarker slide's rim window rescaled with it.
+
+The verdict needed rethinking rather than rescaling. It used to *add* alpha
+for an organ reading older; under a ceiling, adding says nothing, because the
+dots it would raise are the ones already against it. It now only subtracts:
+older sits at the ceiling, neutral a little under, younger falls away. Same
+three readings, read from below instead of from above.
+
+And a gain, which is the part that is easy to skip. With every factor a
+fraction averaging about 0.47, a particle authored at 25% arrives at 12% — so
+a brief asking for "5% to 50%" gets a picture that lives in 2% to 24% and
+reads as a mistake. `×2.15` before the clamp puts the authored range back
+where it was authored. **A range specified at one end of a pipeline is not the
+range that comes out of it**; measure the output, not the input.
+
+Last, the soft edge. `dot2D` draws each dot as two discs at 0.34 and 0.82 of
+its alpha, which composite to 1.02× — so a dot at the ceiling went over it by
+way of its own antialiasing. 0.30/0.76 composites to 0.95×. A ceiling is only
+as good as the thing that draws under it.
+
 ---
 
 ## 6. Open items

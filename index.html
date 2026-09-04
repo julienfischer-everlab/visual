@@ -4070,7 +4070,11 @@
   const LIT_CSS = '255,255,255';                                  // #FFFFFF
   const INK = INK_CSS.split(',').map(v => +v / 255);
   const LIT = [1, 1, 1];
-  const pickInk = () => Math.random() < 0.5 ? LIT : INK;
+  // 35/65, not the even split it started as: white is a highlight now, not
+  // half the material. Reducing it by count as well as by weight is what keeps
+  // it from reading as a second material with its own texture.
+  const WHITE_SHARE = 0.35;
+  const pickInk = () => Math.random() < WHITE_SHARE ? LIT : INK;
   // Read back off the buffer rather than kept in a second array: the colour a
   // particle got at init is the one both renderers have to agree on, and one
   // of the two is the only bit that separates them.
@@ -4475,11 +4479,11 @@
                           fingerprintDensity);
     const k = cl.norm.k || 1;
     for (let i = 0; i < N; i++){
-      if (i >= N - AMB){ cl.edge[i] = 0.30; continue; }
+      if (i >= N - AMB){ cl.edge[i] = 0.14; continue; }
       const x = cl.pos[i * 3] / k + cl.norm.cx;
       const y = -cl.pos[i * 3 + 1] / k + cl.norm.cy;
       const t = Math.min(1.3, FP_PAD.rad(x, y));
-      cl.edge[i] = Math.max(0.18, 1.32 - 1.10 * Math.pow(t, 1.05));
+      cl.edge[i] = Math.max(0.11, 0.83 - 0.69 * Math.pow(t, 1.05));
     }
     return cl;
   }
@@ -4662,7 +4666,7 @@
       // cloud runs. The boundary still holds without a bright edge: nine
       // particles in twenty sit in the shell, so the rim is where the dots
       // are, and it is their number rather than their weight that draws it.
-      cl.edge[i] = 1.59 - 0.45 * Math.pow(r / R, 3);
+      cl.edge[i] = 1.00 - 0.28 * Math.pow(r / R, 3);
     }
     // the shader draws the currents through the ball and needs its radius to
     // know where the shell is; measured off the thing that built it rather
@@ -4988,7 +4992,10 @@
       // sampling above is shell-biased: most particles land near the edge, so
       // the outline is still the densest part of the picture, it just arrives
       // as a gradient of many faint dots rather than a line of bright ones.
-      edge[i] = 1.00 + 0.62 * (1 - Math.exp(-d / 7));
+      // Normalised to a ceiling of 1: this multiplies straight into alpha, and
+      // alpha now has a hard cap, so a ramp that ran past 1 would spend its
+      // top third clipped flat and lose the very gradient it exists for.
+      edge[i] = 0.62 + 0.38 * (1 - Math.exp(-d / 7));
       const zmax = depthPx * Math.sqrt(d / 22);
       const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
@@ -5002,7 +5009,7 @@
     // whatever weight that gave them, which with one ink is the difference
     // between floating around the organ and being part of it.
     for (let i = N - AMB; i < N; i++){
-      edge[i] = 0.30;
+      edge[i] = 0.14;
       const r = (0.55 + Math.random() * 0.75) * tf.s;
       const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
       out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;
@@ -5260,14 +5267,14 @@
       // the younger — subtracting a floor rather than scaling the ramp leaves
       // about a third of the dots at their own weight either way.
       float pick = fract(aSeed.y * 3.17);
-      float vsel = (1.0 - ghost) * (1.0 - flowP) * abs(uWarm)
-                 * (uWarm > 0.0 ? (0.25 + 0.60 * pick)
-                                : max(0.0, 0.70 * pick - 0.32));
-      // older: those dots gain weight. younger: they lose it, and the whole
-      // cloud thins a little besides, the way the desaturation used to cool it
-      float cool = min(1.0, max(0.0, -uWarm) * 2.0);
-      float verdA = (uWarm > 0.0 ? 1.0 + 0.95 * vsel : 1.0 - 0.62 * vsel)
-                  * mix(1.0, 0.84, cool);
+      float vsel = (1.0 - ghost) * (1.0 - flowP) * (0.25 + 0.60 * pick);
+      // The verdict can only take alpha away now, never add it: every particle
+      // has a ceiling, so a reading that gained weight would simply clip
+      // against it and say nothing. Older sits at the ceiling, neutral a
+      // little under, younger falls away — the same three apart, read from
+      // below instead of from above.
+      float lean = clamp(uWarm, -1.0, 1.0);          // -1 younger .. +1 older
+      float verdA = 1.0 - vsel * (0.34 - 0.34 * lean);
       // and that is the whole of the colour decision: #A34442, every particle,
       // every mode, every theme
       vec3 rgb = aColor.rgb;
@@ -5316,11 +5323,11 @@
         // body still legibly there, visible the way glass is, by its rim
         // rather than by an outline. The survivors are picked by a stable
         // lottery, so the shell holds still instead of sparkling.
-        // ef now runs the other way -- about 1.14 at the silhouette up to
-        // 1.59 deep inside -- so the window is reversed with it. The stops
+        // ef now runs the other way -- about 0.71 at the silhouette up to
+        // 0.98 deep inside -- so the window is reversed with it. The stops
         // still have to sit inside the range or every particle counts as rim
         // and the empty half comes out as an even speckle instead of an edge.
-        float shell = smoothstep(1.42, 1.10, ef);
+        float shell = smoothstep(0.89, 0.69, ef);
         float keepUp = step(fract(aSeed.z * 71.33), mix(0.11, 0.78, shell));
         // and what is left of them is faint: a sixth of full inside the
         // vessel, a little over a third on the rim, where light would sit.
@@ -5346,7 +5353,7 @@
       // far one falls back without a second term to keep in step. This is the
       // one dimensional cue a single ink cannot get from colour, and it costs
       // nothing: it is a number the vertex already computed.
-      float depthA = mix(0.70, 1.08, smoothstep(0.88, 1.12, persp));
+      float depthA = mix(0.68, 1.00, smoothstep(0.88, 1.12, persp));
       // The same alpha does not buy the same figure on opposite grounds. Every
       // per-particle value here was tuned against black, where a dot at a
       // sixth of full still reads: measured, the body sat 28 levels off a dark
@@ -5357,8 +5364,20 @@
       // thing the light theme does at all, which is why it carries a larger
       // number than it once did -- first the darkening was folded into it, and
       // then the desaturation.
-      float aLift = mix(1.0, 5.20, uLight);
-      vColor = vec4(rgb, aColor.a * tw * verdA * ga * ef * keep * fv * uAlpha * da * depthA * feedA * vfade * irisA * aLift);
+      float aLift = mix(1.0, 3.20, uLight);
+      // The ceiling. Every factor above is a fraction of something except the
+      // theme lift, and the lift is exactly the one that has to be allowed to
+      // push a faint dot up without letting a strong one past 50%. Clamping
+      // here rather than tuning each factor to stay under is the only way to
+      // make the guarantee actually hold: there are thirteen of them.
+      // The factors between the authored alpha and here average out around
+      // 0.47 -- the ramp, the depth, the twinkle, all of them fractions -- so
+      // a particle written at 25% would arrive near 12%, and the 5-50% range
+      // would only ever occupy its own bottom half. The gain puts it back
+      // where it was authored; the cap below is what keeps the top honest.
+      float A = aColor.a * tw * verdA * ga * ef * keep * fv * uAlpha * da
+              * depthA * feedA * vfade * irisA * aLift * 2.15;
+      vColor = vec4(rgb, min(A, 0.50));
     }`;
   const FS = `
     precision mediump float;
@@ -5416,14 +5435,14 @@
     seeds[i*4+3] = 0.55 + Math.pow(Math.random(), 1.6) * 1.5; // size
     const c = pickInk();
     colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
-    // a shade under what it was: the cloud carried more light than the form
-    // needed, and the verdict tint over it had to shout to be seen
-    // A wide range, weighted toward the faint end: a few dots crisp, most of
-    // them somewhere under half, a long tail almost gone. The old range was
-    // 0.56-1.16, which is a cloud of near-equals -- readable, but flat, and
-    // with white now carrying two and a half times the ink's luminance the
-    // headroom to spread it finally exists.
-    colors[i*4+3] = 0.10 + Math.pow(Math.random(), 1.25) * 0.92;
+    // 5% to 50%, and nothing above it anywhere -- the ceiling is enforced
+    // again at the end of the shader, because a dozen factors multiply into
+    // alpha between here and there. Two curves rather than one: the reds
+    // spread across most of the range, the whites bunch at the bottom of it,
+    // since a highlight that reaches the same weight as the material it sits
+    // in has stopped being a highlight. Means come out near 0.25 and 0.15.
+    colors[i*4+3] = (c === LIT ? 0.05 + Math.pow(Math.random(), 2.4) * 0.34
+                               : 0.05 + Math.pow(Math.random(), 1.3) * 0.45);
   }
   // Mark ambient strays: negative size flags them in the shader, fainter and
   // drifting more. They used to sit at 60% of the cloud's alpha, which was
@@ -5432,7 +5451,7 @@
   // they drop to a third — loose, floating, present rather than legible.
   for (let i = N - AMB; i < N; i++){
     seeds[i*4+3] = -(0.5 + Math.random() * 0.9);
-    colors[i*4+3] *= 0.34;
+    colors[i*4+3] *= 0.22;
   }
   // ghost body: static outline particles, flagged by negative stagger
   for (let i = N; i < FSTART; i++){
@@ -5447,7 +5466,7 @@
     // the ghost was a pale warm; that paleness is now its alpha
     const gc = pickInk();
     colors[i*4] = gc[0]; colors[i*4+1] = gc[1]; colors[i*4+2] = gc[2];
-    colors[i*4+3] = Math.min(1, 0.8 * toneA([0.941, 0.878, 0.816]));
+    colors[i*4+3] = Math.min(0.50, 0.8 * toneA([0.941, 0.878, 0.816]));
   }
   // flow layer: soft dots that travel along internal organ paths (positions
   // are computed on the CPU each frame and streamed into the posB slice)
@@ -5839,8 +5858,8 @@
         const i3 = gi * 3;
         posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 24 * rt.k;
         const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-        colors[gi*4+3] = Math.min(1, pr.op * 1.2 * toneA(pr.tone))
-                       * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+        colors[gi*4+3] = Math.min(0.50, pr.op * 1.2 * toneA(pr.tone)
+                                * endFade * (1 - 0.4 * Math.abs(flowZ[f])));
       }
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
@@ -5942,7 +5961,7 @@
           }
         }
       }
-      colors[gi * 4 + 3] = Math.min(1, a * tA);
+      colors[gi * 4 + 3] = Math.min(0.50, a * tA);
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
@@ -5980,8 +5999,8 @@
             x += -dyn * off; y += dxn * off;
             const i3 = gi * 3;
             posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 14 * rt.k;
-            a = Math.min(1, pr.op * 1.4 * toneA(pr.tone)) * Math.pow(1 - slot, 1.8)
-              * Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.1);
+            a = Math.min(0.50, pr.op * 1.4 * toneA(pr.tone) * Math.pow(1 - slot, 1.8)
+                        * Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.1));
           }
         }
         colors[gi*4+3] = a;
@@ -6014,8 +6033,8 @@
       posB[i3+2] = flowZ[f] * 28 * rt.k; // embedded in the volume
       // ends fade so the loop never visibly resets; deeper dots are softer
       const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-      colors[gi*4+3] = Math.min(1, pr.op * 1.35 * toneA(pr.tone))
-                     * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+      colors[gi*4+3] = Math.min(0.50, pr.op * 1.35 * toneA(pr.tone)
+                              * endFade * (1 - 0.4 * Math.abs(flowZ[f])));
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, posB.subarray(FSTART * 3, TOT * 3));
@@ -8139,7 +8158,7 @@
         r: 0.9 + (i % 5) * 0.26,
         // edge is the whole of this dot's form, so it is spent whole -- the
         // shader multiplies it straight into alpha and this has to agree
-        a: colors[i * 4 + 3] * cl.edge[i] * 0.80,
+        a: colors[i * 4 + 3] * cl.edge[i],
         c: isLit(i) ? LIT_CSS : INK_CSS,
         ph: Math.random() * 6.28, sp: 0.5 + Math.random(),
         sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]   // the shader's own phases
@@ -8196,9 +8215,12 @@
       px.beginPath(); px.arc(x, y, r, 0, 6.2832); px.fill();
       return;
     }
-    px.fillStyle = 'rgba(' + rgb + ',' + (a * 0.34).toFixed(3) + ')';
+    // Two discs, and the pair composites to less than `a` rather than more:
+    // 0.34/0.82 came to 1.02x at the top of the range, which would have put a
+    // dot over the 50% ceiling by way of its own soft edge.
+    px.fillStyle = 'rgba(' + rgb + ',' + (a * 0.30).toFixed(3) + ')';
     px.beginPath(); px.arc(x, y, r, 0, 6.2832); px.fill();
-    px.fillStyle = 'rgba(' + rgb + ',' + (a * 0.82).toFixed(3) + ')';
+    px.fillStyle = 'rgba(' + rgb + ',' + (a * 0.76).toFixed(3) + ')';
     px.beginPath(); px.arc(x, y, r * 0.72, 0, 6.2832); px.fill();
   }
 
@@ -8360,7 +8382,7 @@
         // more contrast per unit of alpha on a pale card than on a dark one,
         // and the tiles come back to the same weight by spending less of it.
         // The engine's own shader does exactly this with its light alpha lift.
-        const themeA = document.body.classList.contains('light') ? 1.90 : 0.66;
+        const themeA = document.body.classList.contains('light') ? 1.60 : 1;
         const drift = view.still ? 0 : 0.006 * view.jitter * sc;
         // The iris breathes by dilating rather than by scaling: the pupil opens
         // and shuts, and the tissue between it and the limbus is compressed into
@@ -8478,7 +8500,7 @@
             rr2 *= 0.86 + 0.30 * (zz / 0.775 * 0.5 + 0.5);
           }
           dot2D(px, ox + qx * sc + jx, oy - qy * sc + jy, rr2 * rk * view.dot,
-                q.c, Math.min(1, q.a * tw * view.alpha * themeA * 1.3));
+                q.c, Math.min(0.50, q.a * tw * view.alpha * themeA * 2.8));
         }
         if (view.morph) return;      // no flow or feeding while the cloud is in flight
         // internal flow: the same presets and path maths the engine runs, so a
@@ -8498,8 +8520,8 @@
               const P = rt.paths[flowPick[f] % rt.paths.length];
               const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
               const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-              const fa = Math.min(1, pr.op * 1.35 * tA * themeA)
-                       * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+              const fa = Math.min(0.50, pr.op * 1.35 * tA * themeA
+                                  * endFade * (1 - 0.4 * Math.abs(flowZ[f])));
               if (fa <= 0.012) continue;
               const d = u * P.total;
               let k = 0;
@@ -8540,7 +8562,7 @@
                 ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
                 oy - ry * sc + aDrift * Math.cos(T * 0.7 + q.sz * 9.42),
                 q.r * rk * view.dot * 0.9, q.c,
-                Math.min(1, q.a * tw * feedA * view.alpha * themeA * 1.25));
+                Math.min(0.50, q.a * tw * feedA * view.alpha * themeA * 2.7));
         }
       },
       // The same frame at export resolution, on a transparent ground. The

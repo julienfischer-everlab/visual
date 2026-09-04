@@ -695,41 +695,57 @@ now rather than a control.
 ## Two inks
 
 Every particle is one of exactly two values — **`#A34442`** or **`#FFFFFF`** —
-split evenly, with the coin thrown independently per particle so the two fall
-through the cloud the way a speckled material does rather than sorting
-themselves into regions. There is no third colour: no palette, no verdict
-colour, no theme colour, no flow tint. Everything else is opacity.
+**65/35**, with the coin thrown independently per particle so the two fall
+through the cloud the way a speckled material does rather than sorting into
+regions. There is no third colour: no palette, no verdict colour, no theme
+colour, no flow tint. Everything else is opacity.
 
-The red alone read as one flat material. Half of it in white makes the cloud
-neutral rather than predominantly red, and gives the eye a bright and a dark
-element to read depth between — which is what a single mid-tone could never do
-on its own.
+Red is the material; white is a highlight in it. It started as an even split,
+which read as two materials sharing a volume — reducing white by count as well
+as by weight is what makes it land as a glint instead.
 
-**Opacity is uncorrelated with which ink a dot got.** A white dot is as likely
-to be nearly gone as a red one. The range is deliberately wide — `0.10` to
-`1.02`, weighted toward the faint end by a `^1.25` curve — so a minority of
-dots are crisp, most sit under half, and a long tail is almost not there. The
-previous treatment ran `0.56`–`1.16`, a cloud of near-equals: readable but
-flat. White carrying two and a half times the ink's luminance is what created
-the headroom to spread it.
+**Nothing anywhere exceeds 50% opacity**, and the range runs `0.05`–`0.50`.
+That ceiling is enforced twice: once where a particle's alpha is authored, and
+again as a hard `min(A, 0.50)` at the end of the vertex shader, because
+thirteen factors multiply into alpha between those two points and tuning each
+of them to stay under would be a guarantee that quietly stops holding the next
+time one changes. The 2D painter clamps at the same value, and `dot2D`'s two
+discs were re-weighted from `0.34/0.82` to `0.30/0.76` — the old pair
+composited to `1.02×` at the top of the range, which would have put a dot over
+the ceiling by way of its own soft edge.
+
+**The two inks take different curves**, and this is the one place opacity is
+deliberately correlated with colour: reds spread across the range on a `^1.3`
+curve, whites bunch at the bottom of it on `^2.4`. Means come out near `0.25`
+and `0.15`. A highlight that reaches the same weight as the material it sits
+in has stopped being a highlight, and that is what produced white hotspots in
+the even-split version.
+
+A gain of `2.15` sits just before the ceiling. The factors between the
+authored alpha and the end of the shader — the ramp, the depth, the twinkle —
+are all fractions and average about `0.47`, so a particle written at 25% was
+arriving near 12% and the whole 5–50% range only ever occupied its own bottom
+half. The gain puts it back where it was written; the cap keeps the top
+honest.
 
 | what it says | how it says it |
 | --- | --- |
-| the organ's body | `edge` runs 1.00 at the silhouette to 1.59 deep inside — the core solid, falling away toward the boundary |
-| loose particles | the ambient shell sits at `edge` 0.30 and a third of the cloud's base alpha: about a quarter of the organ's weight |
+| the organ's body | `edge` runs 0.62 at the silhouette to 0.98 deep inside — the core solid, falling away toward the boundary, and normalised to a ceiling of 1 so the cap never clips the gradient flat |
+| loose particles | the ambient shell sits at `edge` 0.14 and a fifth of the cloud's base alpha: under a tenth of the organ's weight |
 | volume | `depthA` reads the camera's own foreshortening, so the near face of a cloud comes forward and the far one falls back |
-| the verdict | older gains up to 95% more alpha on the dots the lottery picks; younger loses up to 62%, and the whole cloud thins 16% besides |
+| the verdict | subtraction only, since nothing may gain: older sits at the ceiling, neutral a little under it, younger falls away by up to 68% on the dots the lottery picks |
 | a flow layer's character | the presets keep the tones they were authored with, but `toneA` reads a tone for its brightness alone and spends it on alpha |
 | the theme | alpha, and only alpha |
 
-**The ramp changed direction when the colours went.** `edge` used to brighten
-the rim — 1.20 on the silhouette, 0.72 deep inside — to keep outlines crisp.
+**The ramp changed direction when the colours went**, and was later
+normalised. `edge` used to brighten the rim — 1.20 on the silhouette, 0.72
+deep inside — to keep outlines crisp.
 It now runs the other way. The silhouette survives losing its bright rim
 because the sampling is shell-biased: most particles land near the edge, so
 the outline is still the densest part of the picture; it just arrives as a
 gradient of many faint dots instead of a line of bright ones. The biomarker
 slide's rim selector reads the same attribute, so its window was reversed with
-it (`smoothstep(1.42, 1.10, ef)`).
+it (`smoothstep(0.89, 0.69, ef)`).
 
 ### White does not work on a light ground, and cannot be made to
 
@@ -738,19 +754,18 @@ rather than a tuning problem. Half the cloud is `#FFFFFF`; the light theme's
 card is `#ece7e2`. Fifteen levels of lift is not a particle, and no amount of
 alpha invents contrast that is not in the difference between two colours.
 
-So on the light theme the figure is carried by the red half alone, at half the
-particle count. Measured on a library tile: **30 levels of deviation from its
-card against the dark theme's 41**, where the single-ink treatment managed 52
-and 34. The silhouettes still read — the whites arrive as a faint erosion in
-the stipple rather than as nothing — but light mode is now the weaker of the
-two rather than the stronger.
+So on the light theme the figure is carried by the red 65% alone. Measured on
+a library tile: **27 levels of deviation from its card against the dark
+theme's 29** — the two grounds are close now, which they were not at the even
+split, because there is simply less white to lose. The single-ink treatment
+managed 52 and 34; both are softer than that on purpose.
 
-The alpha lift is pushed as far as it usefully goes (`×5.2` in the shader,
-`×1.90` on the 2D tiles); past that the dots clamp at full opacity and the
-wide opacity range this treatment is built on collapses into a solid mass.
-The only real fix would be a second value for the light theme — the page's own
-dark instead of white — and that is a third colour, so it is a decision rather
-than a repair.
+The alpha lift is pushed to its knee (`×3.2` in the shader, `×1.60` on the 2D
+tiles). Past that the extra contrast arrives entirely by dots pressing against
+the 50% ceiling, which buys a level or two by flattening the opacity range the
+whole treatment is built on. The only real fix would be a second value for the
+light theme — the page's own dark instead of white — and that is a third
+colour, so it is a decision rather than a repair.
 
 ### How exact "two colours" is
 
@@ -758,6 +773,8 @@ The painter never sets a third fill: hooking `CanvasRenderingContext2D.fillStyle
 for a whole session on the library page returns exactly two rgb values —
 `163,68,66` and `255,255,255` — plus the `#fff` the offscreen silhouette mask
 is rasterised with, which is a bitmask read back as coverage and never drawn.
+The same hook counts them and measures the ceiling: **36% white, and no fill
+above `0.500`.**
 The SVG export is exact by construction: one `fill` per dot, opacity as a
 separate `fill-opacity`.
 
@@ -783,7 +800,7 @@ with the ground's own arithmetic undone by the uniform that already knows
 about it — and the colour half of that rule has since gone away entirely. The
 light theme's transform went from a dark ink, to the same colour darkened, to
 the same colour 30% desaturated, to nothing at all. What is left is alpha —
-now `×5.2`, most of which is spent covering for the white half of the cloud
+now `×3.2`, most of which is spent covering for the white third of the cloud
 having nothing to say on a pale card (see above).
 
 The order mattered while there was still a colour transform to order. It ran
