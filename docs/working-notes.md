@@ -1330,6 +1330,41 @@ put the ink back: tile 7.71 against 6.64-7.66 on the surfaces, the ratio it
 held before the rim moved.
 
 
+### 5.49 Rotate the hue; do not pick three new colours
+
+"A bit more orange, not too much." The three inks are a family — 60/25/15 with
+their own opacity bands — and picking three warmer colours by eye would have
+kept each one plausible and lost the steps between them. Each hue is rotated
+about ten degrees toward orange with lightness and saturation held, which is
+the same ink warmed rather than a different ink:
+
+    #A34442 -> #A35442     #D09A96 -> #D0A496     #F2E9E7 -> #F2EBE7
+
+The near-white barely moves, which is correct: there is little hue in it to
+turn. `inkOf`, which tells the three apart in the 2D painter by green channel
+against 0.45 and 0.80, still separates them — 0.33 / 0.64 / 0.92.
+
+### 5.50 The tile has a floor, and the grain has reached it
+
+`DOT_BASE` 0.61 -> 0.52 on the same ask. Measured at the tile: mean dot
+diameter **1.04 backing-store pixels**, tenth percentile 0.73. The tile's
+backing store is 1.5x its CSS size, so those are 0.69 CSS pixels on screen.
+
+That is the floor, and it is worth stating plainly rather than discovering it
+again next round: **below about a pixel a dot stops getting smaller and starts
+getting fainter.** A canvas rect of side 0.73 is not a finer dot, it is the
+same dot at less alpha. Further reductions will read as a weaker drawing, not
+a sharper one.
+
+The engine has headroom the tile does not — it draws at full device resolution,
+so its dots are still two and a half pixels on a phone hero. Which means the
+two renderers now degrade differently as the grain falls, and `DOT_PIX` has to
+be re-solved each time to hold them together: 6.02 -> 6.68 here, landing the
+tile at 6.46 against 5.78-6.35 on the surfaces. If the grain is asked to go
+finer again, the honest fix is the tile's backing-store scale, not the number
+that measures the engine against it.
+
+
 ---
 
 ## 6. Open items

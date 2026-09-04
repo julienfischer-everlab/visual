@@ -4171,9 +4171,13 @@
   // and internal structure alike, since the mask does not distinguish them --
   // so the edges and the structures inside are the visible part and the
   // volume behind them falls away. See `buildCloud`, where the ramp is built.
-  const INK_CSS = '163,68,66';                                    // #A34442
-  const MID_CSS = '208,154,150';                                  // #D09A96
-  const LIT_CSS = '242,233,231';                                  // #F2E9E7
+  // Each hue rotated about ten degrees toward orange, with lightness and
+  // saturation held: a warmer ink, not a different one. Rotating rather than
+  // hand-picking is what keeps the three a family -- pick three warmer colours
+  // by eye and the steps between them stop being the steps they were.
+  const INK_CSS = '163,84,66';                                    // #A35442
+  const MID_CSS = '208,164,150';                                  // #D0A496
+  const LIT_CSS = '242,235,231';                                  // #F2EBE7
   const rgb01 = c => c.split(',').map(v => +v / 255);
   const INK = rgb01(INK_CSS), MID = rgb01(MID_CSS), LIT = rgb01(LIT_CSS);
   const INK_SHARE = 0.60, MID_SHARE = 0.25;   // the rest is the off-white
@@ -4213,10 +4217,11 @@
   // the engine's own DOT_PIX, is where the grain gets finer or coarser. DOT_PIX
   // is the calibration that makes the engine agree with the tile; moving it
   // would make them disagree again. This moves both at once.
-  // 0.61, from 0.76, from 0.95: finer again. Two properties are being asked
-  // for and they are not the same one -- how wide a dot is, and how hard its
-  // edge is. This is the width.
-  const DOT_BASE = 0.61;
+  // 0.52, from 0.61, from 0.76, from 0.95. Two properties keep being asked for
+  // together and they are not the same one -- how wide a dot is, and how hard
+  // its edge is. This is the width; the rim constant in the fragment shader is
+  // the hardness.
+  const DOT_BASE = 0.52;
   // How big a dot is against the organ it belongs to. It used to be a column in
   // MODES, one number per page, because the old size law made the ratio drift
   // with how large the organ was drawn -- a page that framed it big got thin
@@ -4226,7 +4231,7 @@
   // rim was sharpened: a harder edge is less ink for the same radius, and the
   // number that makes the engine agree with the tile has to be re-answered
   // whenever the shape of the dot changes, not only its size.
-  const DOT_PIX = 6.02;
+  const DOT_PIX = 6.68;
   const HL_SHARE = 0.10;
   const opBright = p => opSnap(0.55 + 0.35 * Math.min(1, Math.max(0, p)));
   // What the 2D painter puts on screen, snapped the same way the shader's last
