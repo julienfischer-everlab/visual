@@ -970,21 +970,27 @@ half their score their own draw, so they scatter through the near face instead
 of condensing into a sheet at it — a sheet is a surface, and a surface is the
 thing a highlight is meant to let you see past. Sorting the cloud and taking
 the top slice fixes the share at exactly 10%; ranking that slice by frontness
-puts the strongest on the nearest points. They are the only thing in the cloud
-above half.
+puts the strongest on the nearest points. They used to be the only thing in the
+cloud above half; with `BRIGHT` at 1.43 the deep ink's band reaches 71%, so what
+separates a highlight now is the gap between that and the 80–90% they occupy,
+not the halfway line.
 
 Ambient strays sit near the floor, 10–25% skewed low.
 
-**Brightness, when it is asked for as a percentage.** `BRIGHT` (1.10) multiplies
+**Brightness, when it is asked for as a percentage.** `BRIGHT` (1.43) multiplies
 the authored value *before* the snap, in `opNormal`, `opBright` and the strays'
 own line — never the band endpoints. Lifting the endpoints looks equivalent and
 is not: `0.20 × 1.10` is `0.22`, which rounds back to `0.20`, so the low end of
 each band — where most of the cloud lives — would not move at all. Applied to
 the continuous value the rounding falls where it falls, some dots cross a step
-and some do not, and the mean rises by the tenth asked for with every dot still
-on one of the eighteen. Measured lift is about 8%, not 10: the highlights clamp
-at 90% and the dimmest dots are already at the floor, which is the grid's two
-hard ends and not a miscalibration.
+and some do not, and the mean rises with every dot still on one of the eighteen.
+Measured as total ink per library tile, 1.43 lands a median +26% against an
+authored +30%; the brain is lowest at +16% because it runs a 16% highlight share
+and the highlights are what meets the ceiling first. `opBright` now tops out at
+`1.43 × 0.90` = 1.287, clamped to 0.90, so its ramp is three steps rather than
+seven and **the highlight headroom is largely spent** — a further lift has to
+come from the bands, from raising `OP_HI`, or from something that is not opacity
+at all: count, dot size, or how large the organ is drawn.
 
 ### No GPU is not a dead page
 

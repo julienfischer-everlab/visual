@@ -1538,6 +1538,56 @@ the ink's own red/blue ratio whatever the alpha it was drawn at: 2.9 for the
 deep ink, 1.4 for the mid, 1.05 for the light one. m18/m20/m21 all come back
 one cluster at 1.0, no trace of the other two.
 
+### 5.58 "The heart is too weak" was not about opacity at all
+
+The ask was "add 30% more, I want to see some volume, the heart for example is
+too weak", arriving straight after a brightness change -- so the obvious reading
+is another 30% of brightness and the heart is just the example that prompted it.
+Measuring every library tile before touching anything says otherwise:
+
+| | frac (own box) | ink (whole tile) |
+|---|---|---|
+| Brain | 0.447 | 3.08 |
+| Heart | **0.486** | **1.90** |
+| Lungs | 0.376 | 2.26 |
+
+The heart was the *densest* organ per unit of its own bounding box and one of
+the lightest on the tile as a whole. It was never short of particles or alpha.
+It was drawn small: `sizeMul 0.88`, the lowest of any filled organ, against
+1.00-1.04 for the rest. Every cloud is already normalised so its longest
+dimension matches (`s = 1.55 / maxDim`), so a sizeMul under 1 is a deliberate
+shrink applied on top of that, and nothing in the file said why.
+
+1.00 gives it `(1/0.88)^2` = 1.29x the area. The dot count is derived from the
+area, so it gains the particles to fill the new size instead of being stretched
+over the old ones -- 5,305 points to 6,583. Tile ink 1.90 -> 2.74, which puts
+it level with the lungs at 2.77 instead of last but one.
+
+Worth stating as a rule: when a request names one element as the weak one, the
+measurement that matters is the one that isolates it from the others, not the
+one that describes the whole. Per-unit-area the heart looked fine and a global
+brightness lift would have kept it exactly as far behind the brain as it was.
+
+### 5.59 A percentage lift that is mostly spent
+
+`BRIGHT` 1.10 -> 1.43. What actually landed, as total ink per tile:
+
+    Sphere +31%   Body +30%   Bone +29%   Cells +27%   Gut +27%
+    Fingerprint +26%   Iris +24%   Lungs +23%   Kidneys +22%
+    Liver +20%   Nerves +20%   Brain +16%
+
+Median +26% for an authored +30%, and the brain is the outlier for a reason
+that is visible in the numbers: it runs a 16% highlight share against the
+default 10%, and highlights are what hits the ceiling first. `opBright` tops out
+at `1.43 x 0.90` = 1.287, clamped back to 0.90, so everything past `p = 0.37`
+is now the same value -- a three-step ramp where there were seven.
+
+Which is the useful thing to record: the highlight headroom is mostly gone. The
+next lift, if one is asked for, has to come from the bands, or from raising
+`OP_HI` and accepting more than eighteen values, or from somewhere that is not
+opacity at all -- count, size, or (as with the heart) how large the organ is
+drawn in the first place.
+
 ---
 
 ## 6. Open items

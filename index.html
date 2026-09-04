@@ -4258,7 +4258,12 @@
   // falls: a dot 3/5 of the way through a step crosses, one 1/5 of the way does
   // not, and across thousands of dots the mean rises by the 10% asked for while
   // every individual dot stays on one of the eighteen values.
-  const BRIGHT = 1.10;
+  // 1.10, then 30% more on top of it. At this height the highlights start
+  // meeting the ceiling: opBright's top half all lands on 0.90, so the
+  // highlight ramp is three steps rather than seven. It still reads as a ramp
+  // and still sits clear above the normal bands, but that headroom is now
+  // mostly spent -- a further lift would have to come from the bands alone.
+  const BRIGHT = 1.43;
   const opNormal = (ink, p) => {
     const b = BAND[ink];
     return opSnap(BRIGHT *
@@ -5510,7 +5515,16 @@
     { label: 'Nerves',  cloud: () => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}, null, null,
                                   { floor: 0.72, spread: 0.62, hl: 0.16 }), x:0, y:0, r:0.78, dots: 1.30 },
     { label: 'Lungs',   cloud: () => buildCloud(drawLungs,   46, 1.02, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
-    { label: 'Heart',   cloud: () => buildCloud(drawHeart,   55, 0.88, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    // 0.88 was the smallest sizeMul of any filled organ, and it is why the
+    // heart kept reading as the weak one. Measured across the library tiles it
+    // was the DENSEST organ per unit of its own bounding box (frac 0.486,
+    // against the brain's 0.447) and one of the lightest on the tile as a whole
+    // (ink 1.90 against 3.08) -- it was never short of particles or opacity, it
+    // was drawn small. Every cloud is normalised so its longest dimension is
+    // the same, so a sizeMul under 1 is a deliberate shrink on top of that.
+    // 1.00 gives it (1/0.88)^2 = 1.29x the area, and the dot count follows the
+    // area, so it gains the particles to fill it rather than being stretched.
+    { label: 'Heart',   cloud: () => buildCloud(drawHeart,   55, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Cells',   cloud: () => buildCloud(drawCells,   42, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Bone',    cloud: () => buildCloud(drawBone,    24, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     { label: 'Gut',     cloud: () => buildCloud(drawGut,     30, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
