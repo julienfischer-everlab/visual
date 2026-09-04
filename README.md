@@ -738,38 +738,49 @@ painter had its own five-step size formula, `0.9 + (i % 5) × 0.26`, and its
 own alpha buckets — the library quietly showed something the product pages did
 not, which is the one thing a reference sheet must never do.
 
-### Density: denser at the edge, open in the core
+### Density: a mask of holes, not a distribution
 
-Sampling has been three things. It biased hard toward the outline — `0.07 +
-0.93 × exp(-d / 3.5)` — which read as an outline with a fill behind it. Made
-uniform, it read as a solid: **uniform density through a silhouette *is* a
-filled shape.** What makes a volume look like one is being able to see through
-parts of it — and what makes it read as a *form* is a boundary that is denser
-than the middle without being a line.
+The question stopped being *how should particles be distributed over this
+shape* and became *what should be cut out of it*. Those produce different
+pictures: the first fills a silhouette, the second suspends a cloud in space.
 
-Two terms now:
+**Three octaves of value noise**, at a tenth, a twenty-fifth and a sixtieth of
+the shape, raised to a power so the low end spends longer near zero — that is
+what makes the holes holes rather than thin patches. One scale gives even
+stippling; three give regions that are open, regions that are full, and grain
+inside both. The irregularity has to exist at more than one size or the eye
+reads it as texture rather than as space.
 
-- `shell = 0.55 + 0.45 × exp(−d / 7)` — about **1.6 to 1** from boundary to
-  core, so the form has a defined outside and an open middle. The first
-  version of this ran **13 to 1** and drew an outline with a fill behind it;
-  the difference between an edge that is denser and an edge that is a *line*
-  is entirely in that ratio.
-- `pocket = 0.70 + 0.30 × noise(x/15, y/15)` — smooth value noise at about a
-  fifteenth of the shape, so density also drifts between fuller and sparser
-  regions the way a real material does. Without it the shell term alone reads
-  as a clean gradient, which is a rendering, not a volume.
+**`bulk` takes 55% out of thick regions.** `d` is the distance to the nearest
+boundary, so it is largest exactly where a silhouette is a filled mass — the
+middle of a liver, the body of a lung — which is where a projection piles up
+most and a reader learns least.
+
+**Nothing prefers the perimeter.** The boundary keeps more than the middle
+only because `bulk` takes less from it, and the noise cuts through the
+boundary as readily as through anything else — so the outline arrives broken
+rather than as a ring. That is the distinction the earlier versions kept
+missing: an edge that is *denser* and an edge that is a *line* differ only in
+whether anything is allowed to interrupt it.
+
+The count is **3,300**, down from 9,000 over four steps. Recognisable, and
+with black space between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which
 of *its* regions gather particles, which is not an edge bias.
 
-### Three particle sizes
+### Five particle sizes, unevenly weighted
 
-`0.8× / 1× / 1.2×`, and nothing between them — the same discipline the opacity
-has. It used to run a continuum from 0.55 to 2.05, which is a cloud with a few
-conspicuously big dots in it rather than a material with grain. Depth is
-already in the size: the vertex multiplies by its own perspective term, so a
-dot at the front of a volume is drawn larger than the same dot at the back
-without anything in the authoring saying so.
+`0.7× / 0.85× / 1× / 1.15× / 1.3×`, weighted **18 / 24 / 30 / 18 / 10** — an
+even split across five is its own kind of regularity, and the middle of a
+range is where a material's grain actually sits. Nothing between them, the
+same discipline the opacity has.
+
+Depth is applied on top, in the vertex and in the 2D painter both, so a dot at
+the front of a volume is drawn about half again the size of the same dot at
+the back. Size, opacity and position then all say the same thing about where a
+particle is: front is larger and occasionally bright, back is smaller and
+almost always faint.
 
 ### Opacity: eighteen values, and nothing between them
 

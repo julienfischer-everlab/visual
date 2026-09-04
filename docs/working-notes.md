@@ -1025,6 +1025,31 @@ no knowledge of any of them.
 null, and a `position:fixed` element has none — so the fallback mounted, sized
 itself, and silently never painted.)
 
+### 5.38 Distributing over a shape and cutting holes in one are different questions
+
+Four rounds of density work all asked the same question — *how should
+particles be spread across this silhouette* — and every answer to it fills the
+silhouette, because that is what the question means. Edge-biased filled it
+with an outline and a backing; uniform filled it evenly; a shell gradient
+filled it with a gradient. The picture only changed when the question did:
+**what should be cut out of it.**
+
+The mechanism is three octaves of value noise rather than one. A single scale
+produces even stippling, which the eye reads as texture; three produce open
+regions, full regions and grain inside both, which it reads as space. Raising
+the sum to a power matters as much as the octaves — it keeps the low end near
+zero for longer, and that is the difference between a hole and a thin patch.
+
+The other half is where to take the most from. `d`, the distance to the
+nearest boundary, is largest exactly where a silhouette is a filled mass, and
+those are the regions where a projection piles up most and a reader learns
+least — so 55% comes out of them. Note what this is *not*: nothing in it
+prefers the perimeter. The boundary survives better only because less is taken
+from it, and the noise cuts through the boundary as readily as anywhere else.
+**An edge that is denser and an edge that is a line differ only in whether
+anything is allowed to interrupt it** — which is the thing three previous
+attempts got wrong in both directions.
+
 ---
 
 ## 6. Open items

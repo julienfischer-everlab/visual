@@ -4038,7 +4038,7 @@
   // ones: negative space between them is what lets a reader see through the
   // front layer to the ones behind it. Removed uniformly, since the sampling
   // is uniform -- there is no region this thins more than another.
-  const N = 5200;
+  const N = 3300;
   const AMB = 350; // ambient strays that float around the organ, never joining it
   const STAG = 0.35;                  // stagger fraction of the timeline
 
@@ -5103,29 +5103,38 @@
       // silhouette IS a filled shape; what makes a volume look like one is
       // being able to see through parts of it.
       //
-      // Two terms. `shell` puts more density near a boundary than deep inside
-      // it -- about 1.6 to 1 across the range, which reads as a form with a
-      // defined outside and an open middle rather than a slab. It is nothing
-      // like the 13-to-1 the first version of this ran, which drew an outline
-      // with a fill behind it; the difference between an edge that is denser
-      // and an edge that is a line is entirely in that ratio.
+      // The mask. Not a distribution over the silhouette -- a set of holes cut
+      // through one, which is a different thing and the reason this reads as a
+      // point cloud rather than a picture turned into dots.
       //
-      // `pocket` is smooth value noise at about a fifteenth of the shape, so
-      // density also drifts between fuller and sparser regions the way a real
-      // material does. Without it the shell term alone would read as a clean
-      // gradient, which is a rendering, not a volume.
+      // Three octaves of value noise, at a tenth, a twenty-fifth and a
+      // sixtieth of the shape. One scale gives even stippling; three give
+      // regions that are open, regions that are full, and grain inside both --
+      // the irregularity has to exist at more than one size or the eye reads
+      // it as texture instead of as space. Raised to a power so the low end
+      // spends longer near zero: that is what makes the holes holes rather
+      // than thin patches.
       //
-      // `dens`, where a shape supplies one, still applies on top: that is a
-      // shape's own say in which of its regions gather particles.
+      // `bulk` takes 55% out of thick regions. `d` is the distance to the
+      // nearest boundary, so it is large exactly where a silhouette is a
+      // filled mass -- the middle of a liver, the body of a lung -- and those
+      // are the places a projection piles up most and a reader learns least.
+      //
+      // Nothing here prefers the perimeter. The boundary keeps more particles
+      // than the middle only because `bulk` takes fewer from it, and the noise
+      // cuts through the boundary as readily as through anything else, so the
+      // outline arrives broken rather than as a ring.
       let px = 0, py = 0, d = 22;
-      for (let tries = 0; tries < 30; tries++){
+      for (let tries = 0; tries < 60; tries++){
         const j = (Math.random() * M) | 0;
         px = pts[j * 2]; py = pts[j * 2 + 1];
         d = edgeDist(px, py);
-        const shell = 0.55 + 0.45 * Math.exp(-d / 7);
-        const pocket = 0.70 + 0.30 * vnoise(px / 15, py / 15);
-        const keep = (dens ? dens(px, py) : 1) * shell * pocket;
-        if (Math.random() < keep) break;
+        const n1 = vnoise(px / 34, py / 34);
+        const n2 = vnoise(px / 13 + 41.3, py / 13 + 17.7);
+        const n3 = vnoise(px / 6 + 7.1, py / 6 + 91.4);
+        const mask = Math.pow(0.16 + 0.84 * (0.50 * n1 + 0.32 * n2 + 0.18 * n3), 1.8);
+        const bulk = 1 - 0.55 * (1 - Math.exp(-d / 6));
+        if (Math.random() < (dens ? dens(px, py) : 1) * mask * bulk) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
       // in the mask — the silhouette and every internal structure alike, since
@@ -5191,7 +5200,13 @@
     // thing a highlight is meant to let you see past. Sorting the whole cloud
     // and taking the top slice is what fixes the share at exactly 5%.
     const hl = new Float32Array(M2);
-    for (let i = 0; i < M2; i++) hl[i] = 0.55 * Math.random() + 0.45 * front[i];
+    // front-weighted, and with a noise term so they arrive in loose drifts
+    // rather than evenly scattered -- an even scatter of bright dots is the
+    // definition of glitter
+    for (let i = 0; i < M2; i++){
+      hl[i] = 0.34 * Math.random() + 0.44 * front[i]
+            + 0.22 * vnoise(out[i * 3] * 9 + 3.7, out[i * 3 + 1] * 9 + 5.1);
+    }
     const byHl = Array.from({ length: M2 }, (_, i) => i).sort((a, b) => hl[b] - hl[a]);
     const isHl = new Uint8Array(M2);
     const nHl = Math.round(M2 * HL_SHARE);
@@ -5681,8 +5696,14 @@
     // material with grain. Depth is already in the size: the vertex multiplies
     // by its own perspective term, so a dot at the front of a volume is drawn
     // larger than the same dot at the back without anything here saying so.
+    // Five sizes, deliberately uneven -- an even split across five is its own
+    // kind of regularity, and the middle of a range is where a material's
+    // grain actually sits. Depth is applied on top, in the vertex and in the
+    // painter both, so a dot at the front is drawn about half again the size
+    // of the same dot at the back.
     const sz = Math.random();
-    seeds[i*4+3] = DOT_BASE * (sz < 0.30 ? 0.8 : sz < 0.70 ? 1.0 : 1.2); // size
+    seeds[i*4+3] = DOT_BASE * (sz < 0.18 ? 0.70 : sz < 0.42 ? 0.85
+                             : sz < 0.72 ? 1.00 : sz < 0.90 ? 1.15 : 1.30);
     const c = pickInk(i);
     colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
     // 1, not a jitter. The opacity a particle renders at is authored on the
@@ -9130,7 +9151,7 @@
   // next to each other it reads as a thinner one, which is what it is. FULL is
   // the factor that closes the difference, and every 2D surface that means to
   // match the engine takes it from here rather than picking its own.
-  const FULL_DOTS = 1.75;   // in step with the engine's own count
+  const FULL_DOTS = 1.10;   // in step with the engine's own count
   const fullTarget = cl => Math.min(8600, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
 
