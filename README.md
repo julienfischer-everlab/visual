@@ -751,16 +751,22 @@ stippling; three give regions that are open, regions that are full, and grain
 inside both. The irregularity has to exist at more than one size or the eye
 reads it as texture rather than as space.
 
-**`bulk` runs 0.82 near a boundary to 0.38 deep inside one** — a little over
-two to one. `d` is the distance to the nearest boundary, so the low end lands
+**`bulk` runs 0.88 near a boundary to 0.31 deep inside one** — nearly three
+to one, over a shorter falloff (`exp(−d / 4.5)`) so the gain is concentrated
+in the first few pixels rather than spread across the whole depth. `d` is the distance to the nearest boundary, so the low end lands
 exactly where a silhouette is a filled mass — the middle of a liver, the body
 of a lung — which is where a projection piles up most and a reader learns
 least.
 
+**This is still not a perimeter ring**, and the reason is the order of the
+multiplication: the noise mask applies to the boundary exactly as it applies
+to everything else, so the denser edge arrives with the same holes cut through
+it. A ratio decides how much survives; only an *unbroken run* of it would be a
+line.
+
 Note what a rejection test can and cannot do: it decides **where** particles
-land, never **how many**. Asking for a quarter more in the core and half again
-at the edges is therefore two separate changes — the ratio widens from 1.8 to
-2.2 here, and the count carries the rest.
+land, never **how many**. Every density change is therefore two — the ratio
+here, and the count.
 
 **Nothing prefers the perimeter.** The boundary keeps more than the middle
 only because `bulk` takes less from it, and the noise cuts through the
@@ -769,9 +775,9 @@ rather than as a ring. That is the distinction the earlier versions kept
 missing: an edge that is *denser* and an edge that is a *line* differ only in
 whether anything is allowed to interrupt it.
 
-The count is **4,450** — down from 9,000 over four steps, then back up by a
-third when the core and edges were asked for more. Measured in the library:
-brain 3,087 points, lungs 2,432, nerve 1,148. Recognisable, with black space
+The count is **5,000** — down from 9,000 over four steps, then back up as the
+core and then the edges were asked for more. Measured in the library: brain
+3,271 points, lungs 2,612, nerve 1,329. Recognisable, with black space
 between and behind the particles rather than a filled shape.
 
 A shape's own `dens` function still applies on top — that is its say in which
