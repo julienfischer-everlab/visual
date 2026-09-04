@@ -5111,9 +5111,14 @@
       // sixtieth of the shape. One scale gives even stippling; three give
       // regions that are open, regions that are full, and grain inside both --
       // the irregularity has to exist at more than one size or the eye reads
-      // it as texture instead of as space. Raised to a power so the low end
-      // spends longer near zero: that is what makes the holes holes rather
-      // than thin patches.
+      // it as texture instead of as space.
+      //
+      // The power on the sum is what decides whether a reader sees variation
+      // at all. At 1.8 the mask ran roughly 0.15 to 0.75 and the cloud came
+      // out looking evenly dense everywhere -- the variation was there and too
+      // shallow to register. At 2.7 the low end spends much longer near zero,
+      // which turns gentle thinning into actual holes and makes the fuller
+      // regions read as fuller by contrast with them.
       //
       // `bulk` runs 0.88 near a boundary to 0.31 deep inside one -- nearly
       // three to one, over a shorter falloff than it used to have, so the gain
@@ -5144,8 +5149,8 @@
         const n1 = vnoise(px / 34, py / 34);
         const n2 = vnoise(px / 13 + 41.3, py / 13 + 17.7);
         const n3 = vnoise(px / 6 + 7.1, py / 6 + 91.4);
-        const mask = Math.pow(0.16 + 0.84 * (0.50 * n1 + 0.32 * n2 + 0.18 * n3), 1.8);
-        const bulk = 0.30 + 0.90 * Math.exp(-d / 4.5);
+        const mask = Math.pow(0.05 + 0.95 * (0.56 * n1 + 0.27 * n2 + 0.17 * n3), 2.7);
+        const bulk = 0.22 + 1.05 * Math.exp(-d / 4.0);
         if (Math.random() < (dens ? dens(px, py) : 1) * mask * bulk) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
@@ -8712,7 +8717,10 @@
       still: !!opts.still || reduced,
       flowPreset: opts.flowPreset || null,
       flow: opts.flow !== false,   // follows the top bar's Flow chip
-      flowN: opts.flowN || 120,
+      // 200, not 120. The cloud is half the density it was when this number
+      // was picked and its dots are finer, so a stream of 120 the same size
+      // reads as a few more particles rather than as a stream.
+      flowN: opts.flowN || 200,
       alpha: opts.alpha != null ? opts.alpha : 1,
       canvas: c,
       setOrgan(i){
@@ -8950,7 +8958,14 @@
               fx += -ddy * off; fy += ddx * off;
               px.fillStyle = tones[flowInk[f]] + fa.toFixed(3) + ')';
               px.beginPath();
-              px.arc(ox + fx * sc, oy - fy * sc, view.dot * rk * 1.15, 0, 6.2832);
+              // Larger than a cloud dot rather than the same size. The flow is
+              // held at 30% and must not compete on brightness, so what
+              // separates it has to be grain: a stream of bigger, softer dots
+              // moving through a field of fine still ones reads as a different
+              // layer at the same weight. It was 1.15 -- smaller than most
+              // cloud dots since they went to five sizes -- which is why it
+              // had stopped being visible at all.
+              px.arc(ox + fx * sc, oy - fy * sc, view.dot * rk * 1.95, 0, 6.2832);
               px.fill();
             }
           }
