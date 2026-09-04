@@ -1384,22 +1384,33 @@ relationship. A number that means "1.5x that other thing" and is written as
 
 Everything else in this file is settled by measuring: counts, ink, grain, the
 edge ratio. The palette is not that kind of question -- it is looked at and
-either right or wrong -- and a constant to edit plus a reload is the wrong tool
-for a question answered by eye. Three swatches in the tweak bar now set the
-inks live.
+either right or wrong -- so three swatches in the tweak bar set the inks live,
+and a Save button keeps them.
 
-Two things made it cheap rather than invasive. `INK_PICK` already existed: the
-assignment of particles to inks is decided once and stored, so a colour change
-repaints without reshuffling -- the same particles keep the same roles. And the
-recolour pass writes only rgb, never alpha, because alpha is authored per cloud
-on the 5% grid and has nothing to do with hue.
+Two things made it cheap. `INK_PICK` already existed: which ink a particle
+carries is decided once and stored, so a colour change repaints without
+reshuffling. And the recolour pass writes rgb only, never alpha, which is
+authored per cloud on the 5% grid and has nothing to do with hue.
 
-One thing had to be fixed first. `inkOf` told the three apart by reading the
-green channel back out of the colour buffer against 0.45 and 0.80 -- fine while
-the three were far apart on it, and silently wrong the moment a person can pick
-any three colours. It asks `INK_PICK` now: the draw that decided, not the pixel
-it produced.
+`inkOf` had to stop telling the three apart by reading the green channel back
+out of the colour buffer against 0.45 and 0.80. That worked only because the
+three were far apart on it, and a control that lets a person pick any three
+colours makes it silently wrong. It asks `INK_PICK`: the draw that decided,
+not the pixel it produced.
 
+**And uploading to the GPU is half the job.** The first version changed the
+engine's surfaces and left the library untouched -- which is the one place the
+palette is actually judged. The 2D painter does not read the colour buffer; it
+bakes an ink into each point when it first samples a cloud and keeps that list.
+`recolour` drops those lists so the next paint rebuilds them. The general
+shape: *a value that has been copied into a cache is not one value any more*,
+and the second copy is invisible from where the first one lives.
+
+The restore is done at the declaration rather than after load, for the same
+reason in reverse: at that point nothing has read the three yet, so there is
+nothing to rebuild. Applying a saved palette later would mean re-uploading the
+buffer and dropping every sampled list to say something that could have been
+said first.
 
 ---
 

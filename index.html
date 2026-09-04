@@ -123,6 +123,18 @@
   .tweaks input[type="color"]::-webkit-color-swatch-wrapper{padding:2px;}
   .tweaks input[type="color"]::-webkit-color-swatch{border:0;border-radius:3px;}
   body.light .tweaks input[type="color"]{border-color:rgba(0,0,0,.22);}
+  /* sized off the swatches beside it rather than the selects, so the palette
+     reads as one group: three colours and the thing that keeps them */
+  .tweaks .tbtn{
+    height:22px;padding:0 9px;flex:none;cursor:pointer;
+    font:inherit;font-size:11px;letter-spacing:.04em;
+    color:inherit;background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.18);border-radius:5px;
+  }
+  .tweaks .tbtn:hover{background:rgba(255,255,255,.12);}
+  body.light .tweaks .tbtn{
+    background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.22);
+  }
   .chip{
     font:inherit;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
     color:var(--ink);background:transparent;border:1px solid var(--pill-line);
@@ -3365,6 +3377,7 @@
     <input type="color" id="inkA" value="#a35442" aria-label="Base ink, 60% of particles">
     <input type="color" id="inkB" value="#d0a496" aria-label="Mid ink, 25% of particles">
     <input type="color" id="inkC" value="#f2ebe7" aria-label="Light ink, 15% of particles">
+    <button id="inkSave" class="tbtn" type="button">Save</button>
     <span class="lbl">Organ ages</span>
     <select id="stOrg" aria-label="Organ age state">
       <option value="on">Completed</option>
@@ -4191,6 +4204,17 @@
   let INK_CSS = '163,84,66';                                    // #A35442
   let MID_CSS = '208,164,150';                                  // #D0A496
   let LIT_CSS = '242,235,231';                                  // #F2EBE7
+  // A saved palette is restored here rather than applied later, because here is
+  // before anything has read the three: the colour buffer is built from them,
+  // the tiles bake them into their sampled points. Restoring afterwards would
+  // mean rebuilding both to say something that could simply have been said
+  // first. Storage can throw -- a private window, a browser set to refuse it --
+  // and a palette is not worth a dead page, so it fails back to the defaults.
+  const INK_KEY = 'everlab.inks';
+  try {
+    const saved = JSON.parse(localStorage.getItem(INK_KEY) || 'null');
+    if (saved && saved.length === 3) [INK_CSS, MID_CSS, LIT_CSS] = saved;
+  } catch (e){ /* defaults stand */ }
   const rgb01 = c => c.split(',').map(v => +v / 255);
   // `let`, because the tweak bar can set them live. Everything downstream reads
   // the array rather than the three names, so a change is one recolour pass.
@@ -4245,7 +4269,16 @@
   // tile's cloud at 1.04px and its flow untouched at 3.9px, nearly four times
   // the size of what it runs through. Both renderers read this now, so the
   // stream stays in proportion wherever the grain goes.
-  const FLOW_MUL = 0.79;
+  //
+  // 1.35, and the first attempt at "two times smaller" was 0.79, which is what
+  // halving the engine's old 1.58 gives. It made the stream finer than the
+  // cloud it crosses and it disappeared -- 90 lit pixels against the 1,100 it
+  // had. The two renderers had been stating two different ratios, 1.58 in the
+  // engine and 2.87 at the tile, so "half" meant two different things; this is
+  // half of what the tile was showing, which is where it was being judged, and
+  // still above a cloud dot, which is what keeps it a stream rather than more
+  // cloud.
+  const FLOW_MUL = 1.35;
   // How big a dot is against the organ it belongs to. It used to be a column in
   // MODES, one number per page, because the old size law made the ratio drift
   // with how large the organ was drawn -- a page that framed it big got thin
@@ -5994,6 +6027,14 @@
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, colors);
+    // The 2D painter does not read the colour buffer -- it bakes an ink into
+    // each point when it first samples a cloud, and keeps that list. Uploading
+    // to the GPU therefore repaints the engine and leaves every tile exactly as
+    // it was, which is the whole of the library. Drop the sampled lists so the
+    // next paint rebuilds them; it costs one pass over a few thousand points,
+    // on a control a person moves by hand.
+    for (const k in pts2DCache) delete pts2DCache[k];
+    for (const k in ambCache) delete ambCache[k];
   }
 
   // spatial mode: every organ gets its own static buffers, so several
@@ -7151,6 +7192,24 @@
     wire('inkA', v => { INK_CSS = v; });
     wire('inkB', v => { MID_CSS = v; });
     wire('inkC', v => { LIT_CSS = v; });
+    // the swatches show what is actually in use, which after a restore is not
+    // what the markup says
+    const toHex = c => '#' + c.split(',')
+      .map(v => (+v).toString(16).padStart(2, '0')).join('');
+    [['inkA', INK_CSS], ['inkB', MID_CSS], ['inkC', LIT_CSS]].forEach(([id, v]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = toHex(v);
+    });
+    const save = document.getElementById('inkSave');
+    if (save) save.addEventListener('click', () => {
+      let ok = true;
+      try { localStorage.setItem(INK_KEY, JSON.stringify([INK_CSS, MID_CSS, LIT_CSS])); }
+      catch (e){ ok = false; }
+      // say which of the two happened rather than flashing the same word at
+      // both: a palette that silently failed to save is worse than no button
+      save.textContent = ok ? 'Saved' : 'Cannot save';
+      setTimeout(() => { save.textContent = 'Save'; }, ok ? 1400 : 2600);
+    });
   }
 
   // ---------- tweak panel ----------
