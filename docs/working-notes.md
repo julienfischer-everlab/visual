@@ -913,6 +913,42 @@ instead — emptied and still legibly there, but not glass. **When a brief
 removes a signal, find what else was reading it** before shipping, and say
 what changed rather than letting it be discovered.
 
+### 5.34 A carousel loops on two functions, and neither of them wraps the position
+
+Making the organ carousels endless came down to two lines, used everywhere:
+
+```js
+const wrapIx = (v, n) => ((v % n) + n) % n;          // which reading is at v
+function wrapD(k, x, n){ let d = k - x; return d - n * Math.round(d / n); }
+```
+
+`wrapD` is the one that does the work: the **shortest signed distance** from a
+slot to the strip's position, so the first reading draws just off the right
+edge while the last one is still centred. That is what makes the loop seamless
+— the wrap-around neighbour is already on screen before the step, so there is
+never a frame to hide.
+
+**The position itself is deliberately not wrapped.** Folding `dsx`/`bx` into
+range would put a discontinuity under the finger at exactly the moment a drag
+crosses the seam. It runs on unbounded and is normalised only at rest, where
+slot placement is wrap-invariant and nothing moves. Everything that *names* a
+reading wraps at the point of use; nothing that *positions* one does.
+
+Three things had to stop clamping, and one had to stop resisting: `dsGlide`
+and `bxGlide` (so a step off the end travels the short way rather than
+scrubbing back across the strip), the release handlers, and the rubber-band
+past the ends — which is the correct feel for a list with ends and exactly
+wrong for one without.
+
+The trap was the odd slide out. The phone's carousel carries a biomarker slide
+at index −1 that is not in `MB` and is positioned by its own two blocks of
+code, `-1 - bx`. Everything else looped and that one slide vanished at the
+seam — visible only by stepping the whole way round and reading the labels,
+which is why the check was a script that presses ArrowRight thirteen times and
+prints what is on screen rather than a screenshot of one state. **A carousel is
+correct at its seam or nowhere, and the seam is the one state a screenshot of
+the default view never shows.**
+
 ---
 
 ## 6. Open items
