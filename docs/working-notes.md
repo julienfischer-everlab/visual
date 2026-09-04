@@ -949,6 +949,38 @@ prints what is on screen rather than a screenshot of one state. **A carousel is
 correct at its seam or nowhere, and the seam is the one state a screenshot of
 the default view never shows.**
 
+### 5.35 "Every dot snaps" is a property of the last line, not the first
+
+Authoring opacity on a 5% grid is easy and worth almost nothing on its own: a
+particle written at 30% is multiplied by the twinkle, the verdict, the vessel
+fade, the density lottery, the theme lift and nine more before it reaches a
+pixel, and each of those lands it between two steps. **A quantisation
+guarantee belongs at the end of the pipeline**, and the honest version needs
+both — the author so the distribution is what was asked for, the end so what
+is drawn is what was authored.
+
+Three things had to change to make it hold on the 2D side, and none of them
+looked like quantisation:
+
+- the batcher bucketed alpha to 48 steps, a number chosen for smoothness back
+  when nothing depended on it. 20 buckets **are** the grid.
+- `dot2D` drew every dot as two discs, at 0.30 and 0.76 of its alpha, for a
+  soft edge. That is two values off the grid for every dot on it. The edge
+  went; at three device pixels it was one pixel of falloff.
+- the flow's end-fades multiply a flat 0.30 into a continuum. Snapped with the
+  same function the cloud uses.
+
+The check that mattered was hooking `fillStyle` for a whole session and
+printing the distinct alphas: **18, none off-grid, 0.05 to 0.90.** Before the
+three fixes the same probe said 302 distinct values — which is the number that
+tells you the property is not held, and no screenshot ever would have.
+
+And one ordering lesson: the ink a particle carries had to be decided *before*
+any cloud was built, because the cloud builder now authors an opacity and
+needs to know which band to spend it over. It had been drawn later, when the
+colour buffer was filled. Two draws from the same distribution are two
+different answers to one question.
+
 ---
 
 ## 6. Open items

@@ -733,53 +733,43 @@ drawing from it without a weight is all it takes, and the silhouette emerges
 from where the cloud stops. A shape's own `dens` function still applies, since
 that is its say in which of *its* regions gather particles — not an edge bias.
 
-### Opacity is authored per particle, then ranked
+### Opacity: eighteen values, and nothing between them
 
-Each particle gets a score that is **mostly its own draw**:
+Every dot in the file lands on one of **5% / 10% / … / 90%**. Not approximately
+— measured on a live page, the painter emits exactly 18 distinct alpha values
+and none of them is off the grid.
 
-```
-0.55 × random  +  0.25 × (1 − depth)  +  0.20 × exp(−d / 5.5)
-```
+That takes two snaps, not one. Once where the opacity is authored, and again as
+the **last line of the vertex shader**, because a particle authored at 30%
+passes through the twinkle, the verdict, the vessel fade, the theme lift and
+nine other factors before it reaches a pixel, and every one of them would land
+it between two steps. A dot below half a step is drawn at nothing rather than
+at the floor, which is how a fade reaches zero without leaving a residue.
 
-Mostly random, so opacity varies independently and does not draw a second
-outline in weight where the old one used to be in count. A quarter depth, so a
-dot at the front of the volume reads nearer than one behind it — the
-dimensional cue that survives when nothing else may correlate with position. A
-fifth structure, kept deliberately small: enough that a fold or a bronchus is a
-little firmer than the tissue around it, not enough to be a border.
+The 2D painter's fill buckets **are** the grid — 20 of them — and `dot2D`'s
+two-disc soft edge is gone from the batched path for the same reason: a soft
+edge is two fractions of an alpha, which is two values off the grid for every
+dot on it.
 
-Then the cloud is **sorted by that score, and each particle's percentile is
-read through the opacity histogram**:
+**95% — the subtle system.** Each ink over its own band, ranked by structural
+score so opacity still says something about where a particle is, with a `^1.6`
+curve that favours the low end:
 
-```
-50% → 10–20%     35% → 20–35%     15% → 35–50%
-```
+| | band | most of them |
+|---|---|---|
+| `#A34442` | 20–50% | 20–30% |
+| `#D09A96` | 15–40% | 15–25% |
+| `#F2E9E7` | 5–25% | 5–15% |
 
-Ranking rather than mapping the score directly is what makes the distribution
-and the anatomy *the same statement* instead of two that have to be kept in
-step: the shape decides the order, the histogram decides the values, and
-neither can drift from the other. The result is stored as a rank in 0–1; the
-ink a particle landed on decides which range that rank is spent over, which is
-why it cannot be an opacity until both are known.
+**5% — depth highlights, 55–90%.** Chosen for frontness, but with more than
+half their score their own draw, so they scatter through the near face instead
+of condensing into a sheet at it — a sheet is a surface, and a surface is the
+thing a highlight is meant to let you see past. Sorting the cloud and taking
+the top slice fixes the share at exactly 5%; ranking that slice by frontness
+puts the strongest on the nearest points. They are the only thing in the cloud
+above half.
 
-The ambient strays score zero and take a further `0.42` of even the bottom of
-their ink's range, which is what "floating outside the organ" has to mean once
-opacity is the only thing saying where a particle is.
-
-One thing was lost with the edge bias, and it is worth naming rather than
-discovering: the biomarker slide's **empty vessel used to read by its rim** —
-above the fill front the volume dropped away and the silhouette stayed, which
-looked like glass. That effect took its rim signal from exactly the edge
-emphasis the cloud was asked to stop having. What survives above the front is
-now the strongest of the cloud rather than its rim: the body reads as emptied
-and still legibly there, which is the reading, but not as a shell.
-
-**One arithmetic note.** With 60% of particles red and red floored at 20%, at
-most 40% of the cloud can sit in the 10–20% band — so the global histogram
-lands nearer **4 / 26 / 56 / 15** across *under 10 / 10–20 / 20–35 / 35–50*
-rather than the 50 / 35 / 15 asked for. The per-colour table and the global
-histogram cannot both hold exactly; the table is the more specific of the two
-and wins. 85% of particles still sit below 35%, and nothing exceeds 50%.
+Ambient strays sit at the floor, 5%.
 
 ### Nothing above its ceiling
 
