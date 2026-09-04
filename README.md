@@ -723,15 +723,35 @@ Depth carries 40% of the opacity score (up from 25%) and the z spread is a
 quarter deeper, so front, middle and back separate instead of averaging into
 a mass.
 
-### The cloud is uniform, and the silhouette is where it stops
+### Density: pockets, and a thinner middle
 
-Sampling used to bias hard toward the outline — `0.07 + 0.93 × exp(-d / 3.5)`,
-which put six times as many particles two pixels from a boundary as twenty —
-and the result read as an outline with a thinner fill behind it rather than a
-body. It is uniform now: the mask's pixel list *is* a uniform area sample, so
-drawing from it without a weight is all it takes, and the silhouette emerges
-from where the cloud stops. A shape's own `dens` function still applies, since
-that is its say in which of *its* regions gather particles — not an edge bias.
+Sampling has been two wrong things in turn. It biased hard toward the outline
+— `0.07 + 0.93 × exp(-d / 3.5)`, six times the density two pixels from a
+boundary as twenty — which read as an outline with a fill behind it. Made
+uniform, it read as a solid: **uniform density through a silhouette *is* a
+filled shape.** What makes a volume look like one is being able to see through
+parts of it.
+
+Two terms now, and neither draws an outline:
+
+- `pocket = 0.70 + 0.30 × noise(x/15, y/15)` — smooth value noise at about a
+  fifteenth of the shape, so density drifts between fuller and sparser regions
+  the way a real material does rather than being even everywhere.
+- `inner = 1 − exp(−d / 7)`, taking **30% out of the middle**, where a viewer
+  is looking through the most tissue and the projection piles up. Enough to
+  see into; far short of a shell.
+
+A shape's own `dens` function still applies on top — that is its say in which
+of *its* regions gather particles, which is not an edge bias.
+
+### Three particle sizes
+
+`0.8× / 1× / 1.2×`, and nothing between them — the same discipline the opacity
+has. It used to run a continuum from 0.55 to 2.05, which is a cloud with a few
+conspicuously big dots in it rather than a material with grain. Depth is
+already in the size: the vertex multiplies by its own perspective term, so a
+dot at the front of a volume is drawn larger than the same dot at the back
+without anything in the authoring saying so.
 
 ### Opacity: eighteen values, and nothing between them
 
@@ -751,7 +771,7 @@ two-disc soft edge is gone from the batched path for the same reason: a soft
 edge is two fractions of an alpha, which is two values off the grid for every
 dot on it.
 
-**95% — the subtle system.** Each ink over its own band, ranked by structural
+**90% — the subtle system.** Each ink over its own band, ranked by structural
 score so opacity still says something about where a particle is, with a `^1.6`
 curve that favours the low end:
 
@@ -761,15 +781,33 @@ curve that favours the low end:
 | `#D09A96` | 15–40% | 15–25% |
 | `#F2E9E7` | 5–25% | 5–15% |
 
-**5% — depth highlights, 55–90%.** Chosen for frontness, but with more than
+**10% — depth highlights, 55–90%.** Chosen for frontness, but with more than
 half their score their own draw, so they scatter through the near face instead
 of condensing into a sheet at it — a sheet is a surface, and a surface is the
 thing a highlight is meant to let you see past. Sorting the cloud and taking
-the top slice fixes the share at exactly 5%; ranking that slice by frontness
+the top slice fixes the share at exactly 10%; ranking that slice by frontness
 puts the strongest on the nearest points. They are the only thing in the cloud
 above half.
 
 Ambient strays sit at the floor, 5%.
+
+### No GPU is not a dead page
+
+A browser refuses a WebGL context for reasons that have nothing to do with the
+machine being able to draw — too many live contexts across tabs is the common
+one, a blocklisted driver the next. The page used to `return` at that line and
+stop entirely: no pages, no carousels, no cards, one sentence.
+
+It now asks four times (`webgl`, `experimental-webgl`, each with and without
+antialias — a context can be refused for antialias alone on a machine short of
+GPU memory), and if all four fail it runs the engine against a **stub that
+accepts every call and draws nothing**. Every page, carousel and card behaves
+exactly as it does with a GPU, and the organ is painted by the 2D renderer the
+library already uses, mounted inside whatever slot the canvas is in — so
+`setMode` moves it by moving the canvas, and it needs to know nothing about
+the modes. It carries the same cloud, the same three inks and the same opacity
+grid; what it does not carry is the morph between organs, which is the
+engine's.
 
 ### Nothing above its ceiling
 

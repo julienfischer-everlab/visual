@@ -3975,11 +3975,41 @@
   // once and reporting "unavailable" tells a reader their browser cannot do
   // this when what actually happened is that we asked for one thing too many.
   const glOpts = { antialias: true, alpha: true };
-  const gl = canvas.getContext('webgl', glOpts)
-          || canvas.getContext('experimental-webgl', glOpts)
-          || canvas.getContext('webgl', { alpha: true })
-          || canvas.getContext('experimental-webgl', { alpha: true });
-  if (!gl){ document.getElementById('nogl').style.display = 'grid'; return; }
+  const glReal = canvas.getContext('webgl', glOpts)
+              || canvas.getContext('experimental-webgl', glOpts)
+              || canvas.getContext('webgl', { alpha: true })
+              || canvas.getContext('experimental-webgl', { alpha: true });
+  const NO_GL = !glReal;
+  // A browser refuses a context for reasons that have nothing to do with the
+  // machine being able to draw -- too many live contexts across tabs is the
+  // common one, and a blocklisted driver the next. This used to `return`, and
+  // the whole prototype stopped at that line: no pages, no carousels, no
+  // cards, one sentence. It does not now. The engine runs against a stub that
+  // accepts every call and draws nothing, so the rest of the page behaves
+  // exactly as it does with a GPU, and the organ is painted by the 2D renderer
+  // the library already uses. Enums answer 1, the handful of calls whose
+  // return value is actually read answer something usable, and everything else
+  // is a no-op.
+  const gl = glReal || new Proxy({}, {
+    get(t, k){
+      if (typeof k !== 'string') return undefined;
+      if (k === k.toUpperCase() && /^[A-Z0-9_]+$/.test(k)) return 1;
+      if (k === 'getShaderParameter' || k === 'getProgramParameter') return () => true;
+      if (k === 'getAttribLocation') return () => 0;
+      if (k === 'getUniformLocation') return () => ({});
+      if (/^create[A-Z]/.test(k)) return () => ({});
+      if (k === 'getExtension' || k === 'getShaderInfoLog' ||
+          k === 'getProgramInfoLog') return () => null;
+      if (k === 'getParameter') return () => 0;
+      return () => {};
+    }
+  });
+  if (NO_GL){
+    const n = document.getElementById('nogl');
+    n.textContent = 'Drawing without the GPU — the organ is simplified';
+    n.style.display = 'grid';
+    setTimeout(() => { n.style.display = 'none'; }, 4200);
+  }
   // a dropped GPU context blanks every organ while the rest of the page keeps
   // working — say so rather than leaving an empty card, and rebuild on restore
   // A lost context is usually temporary -- the browser reclaims GPU memory
@@ -4119,17 +4149,17 @@
   const OP_STEP = 0.05, OP_LO = 0.05, OP_HI = 0.90;
   const opSnap = v => Math.min(OP_HI, Math.max(OP_LO,
     Math.round(v / OP_STEP) * OP_STEP));
-  // 95% of the cloud is the subtle system: each ink over its own band, low
+  // 90% of the cloud is the subtle system: each ink over its own band, low
   // favoured, so most of the picture sits between 10 and 30%.
   const BAND = [[0.20, 0.50], [0.15, 0.40], [0.05, 0.25]];   // by INK_PICK
   const opNormal = (ink, p) => {
     const b = BAND[ink];
     return opSnap(b[0] + (b[1] - b[0]) * Math.pow(Math.min(1, Math.max(0, p)), 1.6));
   };
-  // 5% are depth highlights, 55% to 90%. They are the only thing in the cloud
+  // 10% are depth highlights, 55% to 90%. They are the only thing in the cloud
   // allowed past half, and what they are for is the front of the volume: a
   // reader is given a handful of near points to place the rest against.
-  const HL_SHARE = 0.05;
+  const HL_SHARE = 0.10;
   const opBright = p => opSnap(0.55 + 0.35 * Math.min(1, Math.max(0, p)));
   // What the 2D painter puts on screen, snapped the same way the shader's last
   // line snaps it, so a tile and the engine agree dot for dot. Below half a
@@ -5029,7 +5059,22 @@
     let s = (1.55 / maxDim) * sizeMul;
     if (normRef){ cx = normRef.cx; cy = normRef.cy; s = normRef.s; }
 
-    // depth from distance to silhouette edge, so volumes read rounded
+    // Smooth value noise, for density that varies organically through a volume
+  // instead of being even everywhere. Even is what makes a cloud read as a
+  // solid: a reader needs somewhere to see through.
+  const vnHash = (a, b) => {
+    const s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
+    return s - Math.floor(s);
+  };
+  function vnoise(x, y){
+    const xi = Math.floor(x), yi = Math.floor(y);
+    const sm = t => t * t * (3 - 2 * t);
+    const u = sm(x - xi), v = sm(y - yi);
+    const a = vnHash(xi, yi),     b = vnHash(xi + 1, yi);
+    const c = vnHash(xi, yi + 1), e = vnHash(xi + 1, yi + 1);
+    return (a + (b - a) * u) + ((c + (e - c) * u) - (a + (b - a) * u)) * v;
+  }
+  // depth from distance to silhouette edge, so volumes read rounded
     function edgeDist(x, y){
       for (let r = 2; r <= 22; r += 2){
         if (x - r < 0 || x + r >= S || y - r < 0 || y + r >= S) return r;
@@ -5049,23 +5094,29 @@
     const yaw = tf.yaw || 0, cyaw = Math.cos(yaw), syaw = Math.sin(yaw);
     const M = pts.length / 2;
     for (let i = 0; i < N; i++){
-      // Uniform through the volume. This used to bias hard toward the
-      // silhouette -- `0.07 + 0.93 * exp(-d / 3.5)`, which put six times as
-      // many particles two pixels from a boundary as it did twenty -- and the
-      // result was an outline with a thinner fill behind it rather than a
-      // body. `pts` is already every pixel inside the mask, so drawing from it
-      // without a weight IS uniform area density, and the silhouette then
-      // emerges from where the cloud stops rather than from a rim drawn in it.
+      // Not uniform, and not edge-biased either -- the two things this has
+      // been in turn, and both read as a solid. Uniform density through a
+      // silhouette IS a filled shape; what makes a volume look like one is
+      // being able to see through parts of it.
       //
-      // `dens`, where a shape supplies one, still applies: that is a shape's
-      // own say in which of its regions gather more particles, which is not
-      // the same thing as an edge bias.
+      // Two terms, and neither of them draws an outline. `pocket` is smooth
+      // noise at about a thirtieth of the shape, so density drifts between
+      // fuller and sparser regions the way a real material does rather than
+      // being even everywhere. `inner` takes up to 40% out of the middle,
+      // where a viewer is looking through the most tissue and the projection
+      // piles up: enough to see into, far short of a shell.
+      //
+      // `dens`, where a shape supplies one, still applies on top: that is a
+      // shape's own say in which of its regions gather particles.
       let px = 0, py = 0, d = 22;
       for (let tries = 0; tries < 30; tries++){
         const j = (Math.random() * M) | 0;
         px = pts[j * 2]; py = pts[j * 2 + 1];
         d = edgeDist(px, py);
-        if (!dens || Math.random() < dens(px, py)) break;
+        const pocket = 0.70 + 0.30 * vnoise(px / 15, py / 15);
+        const inner = 1 - Math.exp(-d / 7);
+        const keep = (dens ? dens(px, py) : 1) * pocket * (1 - 0.30 * inner);
+        if (Math.random() < keep) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
       // in the mask — the silhouette and every internal structure alike, since
@@ -5615,7 +5666,14 @@
     seeds[i*4]   = Math.random();               // stagger
     seeds[i*4+1] = Math.random() * 6.2832;      // curve direction
     seeds[i*4+2] = Math.random();               // noise phase
-    seeds[i*4+3] = 0.55 + Math.pow(Math.random(), 1.6) * 1.5; // size
+    // Three sizes, 0.8x / 1x / 1.2x, and nothing between them -- the same
+    // discipline the opacity has. It used to run a continuum from 0.55 to 2.05,
+    // which is a cloud with a few conspicuously big dots in it rather than a
+    // material with grain. Depth is already in the size: the vertex multiplies
+    // by its own perspective term, so a dot at the front of a volume is drawn
+    // larger than the same dot at the back without anything here saying so.
+    const sz = Math.random();
+    seeds[i*4+3] = 0.95 * (sz < 0.30 ? 0.8 : sz < 0.70 ? 1.0 : 1.2); // size
     const c = pickInk(i);
     colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
     // 1, not a jitter. The opacity a particle renders at is authored on the
@@ -9057,6 +9115,52 @@
   const FULL_DOTS = 1.75;   // in step with the engine's own count
   const fullTarget = cl => Math.min(8600, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
+
+  // ---- no GPU: the organ still has to be on the page -------------------------
+  // The engine is drawing into a stub, so nothing appears where the canvas is.
+  // The 2D renderer the library already uses is mounted over it instead —
+  // fixed to the canvas's own rectangle, so it follows #field from slot to
+  // slot as setMode moves it without knowing anything about the modes. It
+  // carries the same cloud, the same three inks and the same opacity grid;
+  // what it does not carry is the morph between organs, which is the engine's.
+  if (NO_GL){
+    const fb = document.createElement('div');
+    // Mounted INSIDE whatever slot the canvas is in, filling it. Mirroring the
+    // canvas's viewport rectangle from the body looked equivalent and is not:
+    // it inherits nothing about the stacking, the clipping or the transforms
+    // the slot sits under. Living in the slot means the organ is placed by the
+    // same CSS that places the canvas, in every mode, without knowing any of
+    // them -- and setMode moves it by moving the canvas.
+    fb.style.cssText = 'position:absolute;inset:0;pointer-events:none;display:none;';
+    const fbView = makeOrganView(fb, current, {
+      dl: false, feed: true, flow: true, fill: 0.44, dot: 1.0,
+      target: fullTarget(clouds[current])
+    });
+    let fbAt = -1;
+    // ahead of the view in the shared loop, so the box is right before it paints
+    organViews.unshift({ frame(){
+      const host = canvas.parentElement;
+      if (host && fb.parentElement !== host){
+        if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+        host.appendChild(fb);
+      }
+      const r = canvas.getBoundingClientRect();
+      const on = r.width > 8 && r.height > 8 &&
+                 getComputedStyle(canvas).visibility !== 'hidden';
+      fb.style.display = on ? '' : 'none';
+      if (!on) return;
+      // the engine's `current` is the morph target; on the phone's hero the
+      // slide decides what is on screen, so ask the carousel where it is
+      let want = current;
+      try {
+        if (typeof v4Live === 'function' && v4Live()){
+          const w2 = bxWrap(Math.round(bx));
+          want = w2 < 0 ? BODY_I : bioIdx(mbAt(w2));
+        }
+      } catch (err) {}
+      if (fbAt !== want){ fbAt = want; fbView.setOrgan(want); }
+    } });
+  }
   const IM_FILL = 0.286;   // the annotation anchors are placed off this too
   // the age scale: real ages, a tick per year, colour only across the gap,
   // the chronological age marked at centre and an indicator at the biological age

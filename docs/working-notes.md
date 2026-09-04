@@ -981,6 +981,50 @@ needs to know which band to spend it over. It had been drawn later, when the
 colour buffer was filled. Two draws from the same distribution are two
 different answers to one question.
 
+### 5.36 Uniform density through a silhouette is a filled shape
+
+The sampler has now been three things: edge-biased (an outline with a fill
+behind it), uniform (a solid), and finally uneven on purpose. The middle one
+is the interesting mistake, because uniform *sounds* like the neutral answer
+and is not: a constant density inside an outline is exactly the definition of
+a filled shape. A volume reads as a volume because you can see through parts
+of it, which means the density has to vary — and vary in a way that has
+nothing to do with the boundary, or you are back to the first mistake.
+
+Smooth value noise at about a fifteenth of the shape does it, plus a 30%
+reduction toward the interior where the projection piles up most. Both were
+overdone on the first attempt — noise at a twenty-sixth with a 58% swing, and
+42% out of the middle — and the brain stopped being a brain. **A density
+change is a legibility change**, and the check is whether you can still name
+the organ.
+
+### 5.37 A refused context should not be a dead page
+
+`if (!gl) return;` sat at the top of an IIFE containing the entire
+application. A browser refusing a WebGL context — for tab count, for a driver
+blocklist, for asking for antialias on a machine short of memory — took every
+page, carousel, card and label with it and left one sentence.
+
+Two fixes, and the second is the one that matters. Ask more than once: four
+attempts across `webgl`/`experimental-webgl` with and without antialias. And
+when all four fail, **run the app against a stub instead of not running it**.
+A Proxy that answers 1 for any all-caps property (the enums), `true` for the
+two `get*Parameter` calls whose results are actually tested, an object for
+anything `create*`, and a no-op function for everything else is enough for the
+whole engine to execute happily while drawing nothing.
+
+The organ is then painted by the 2D renderer that already existed for the
+library, mounted **inside the canvas's own slot** rather than positioned over
+its viewport rectangle. The first version mirrored the rect from `document.body`
+and landed in the wrong place: a rectangle copy inherits nothing about the
+stacking, clipping or transforms the slot sits under. Living in the slot means
+the same CSS that places the canvas places the fallback, in every mode, with
+no knowledge of any of them.
+
+(One trap on the way: `makeOrganView` skips any host whose `offsetParent` is
+null, and a `position:fixed` element has none — so the fallback mounted, sized
+itself, and silently never painted.)
+
 ---
 
 ## 6. Open items
