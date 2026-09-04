@@ -1365,6 +1365,42 @@ finer again, the honest fix is the tile's backing-store scale, not the number
 that measures the engine against it.
 
 
+### 5.51 A ratio stated twice is a ratio that will come apart
+
+The flow's size was written in two places and two currencies: the engine as a
+seed of `1.50`, the 2D painter as a radius of `1.95` with no reference to
+`DOT_BASE` at all. That agreed exactly once -- at `DOT_BASE = 0.95`, where it
+was written -- and three rounds of thinning walked it apart without a word.
+Measured at the tile afterwards: cloud dots at 1.04px, flow dots still at
+3.9px, nearly four times the size of what they run through.
+
+`FLOW_MUL` is the ratio, once, and both renderers multiply it by `DOT_BASE`.
+The lesson is not "keep them in sync" -- they were in sync, by hand, and hands
+do not survive four changes. It is that a *relationship* has to be stored as a
+relationship. A number that means "1.5x that other thing" and is written as
+`1.50` has thrown away the only part of itself that was load-bearing.
+
+### 5.52 Three colours are judged, not measured, so they get a control
+
+Everything else in this file is settled by measuring: counts, ink, grain, the
+edge ratio. The palette is not that kind of question -- it is looked at and
+either right or wrong -- and a constant to edit plus a reload is the wrong tool
+for a question answered by eye. Three swatches in the tweak bar now set the
+inks live.
+
+Two things made it cheap rather than invasive. `INK_PICK` already existed: the
+assignment of particles to inks is decided once and stored, so a colour change
+repaints without reshuffling -- the same particles keep the same roles. And the
+recolour pass writes only rgb, never alpha, because alpha is authored per cloud
+on the 5% grid and has nothing to do with hue.
+
+One thing had to be fixed first. `inkOf` told the three apart by reading the
+green channel back out of the colour buffer against 0.45 and 0.80 -- fine while
+the three were far apart on it, and silently wrong the moment a person can pick
+any three colours. It asks `INK_PICK` now: the draw that decided, not the pixel
+it produced.
+
+
 ---
 
 ## 6. Open items

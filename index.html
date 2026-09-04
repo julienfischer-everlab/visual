@@ -114,6 +114,15 @@
   .seg button[aria-pressed="true"]{color:var(--ink-bright);background:#43181c;}
   .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   .tweaks input[type="range"]{width:110px;accent-color:var(--accent);cursor:pointer;}
+  /* three swatches, sized like the chips beside them rather than like a form
+     control -- this is a palette, and it should read as one */
+  .tweaks input[type="color"]{
+    width:26px;height:22px;padding:0;border:1px solid rgba(255,255,255,.18);
+    border-radius:5px;background:none;cursor:pointer;flex:none;
+  }
+  .tweaks input[type="color"]::-webkit-color-swatch-wrapper{padding:2px;}
+  .tweaks input[type="color"]::-webkit-color-swatch{border:0;border-radius:3px;}
+  body.light .tweaks input[type="color"]{border-color:rgba(0,0,0,.22);}
   .chip{
     font:inherit;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
     color:var(--ink);background:transparent;border:1px solid var(--pill-line);
@@ -3352,6 +3361,10 @@
       <option value="on">Completed</option>
       <option value="empty">Empty</option>
     </select>
+    <span class="lbl">Ink</span>
+    <input type="color" id="inkA" value="#a35442" aria-label="Base ink, 60% of particles">
+    <input type="color" id="inkB" value="#d0a496" aria-label="Mid ink, 25% of particles">
+    <input type="color" id="inkC" value="#f2ebe7" aria-label="Light ink, 15% of particles">
     <span class="lbl">Organ ages</span>
     <select id="stOrg" aria-label="Organ age state">
       <option value="on">Completed</option>
@@ -4083,7 +4096,7 @@
   // ones: negative space between them is what lets a reader see through the
   // front layer to the ones behind it. Removed uniformly, since the sampling
   // is uniform -- there is no region this thins more than another.
-  const N = 6245;
+  const N = 12245;
   const AMB = 350; // ambient strays that float around the organ, never joining it
   const STAG = 0.35;                  // stagger fraction of the timeline
 
@@ -4175,11 +4188,13 @@
   // saturation held: a warmer ink, not a different one. Rotating rather than
   // hand-picking is what keeps the three a family -- pick three warmer colours
   // by eye and the steps between them stop being the steps they were.
-  const INK_CSS = '163,84,66';                                    // #A35442
-  const MID_CSS = '208,164,150';                                  // #D0A496
-  const LIT_CSS = '242,235,231';                                  // #F2EBE7
+  let INK_CSS = '163,84,66';                                    // #A35442
+  let MID_CSS = '208,164,150';                                  // #D0A496
+  let LIT_CSS = '242,235,231';                                  // #F2EBE7
   const rgb01 = c => c.split(',').map(v => +v / 255);
-  const INK = rgb01(INK_CSS), MID = rgb01(MID_CSS), LIT = rgb01(LIT_CSS);
+  // `let`, because the tweak bar can set them live. Everything downstream reads
+  // the array rather than the three names, so a change is one recolour pass.
+  let INK = rgb01(INK_CSS), MID = rgb01(MID_CSS), LIT = rgb01(LIT_CSS);
   const INK_SHARE = 0.60, MID_SHARE = 0.25;   // the rest is the off-white
   const INKS = [INK, MID, LIT];
   // Which ink each particle carries, decided once, before any cloud is built:
@@ -4222,6 +4237,15 @@
   // its edge is. This is the width; the rim constant in the fragment shader is
   // the hardness.
   const DOT_BASE = 0.52;
+  // A flow dot as a multiple of a mid cloud dot, and the only place that ratio
+  // is written. It used to be stated twice and in two different currencies:
+  // the engine as a seed of 1.50, the 2D painter as a radius of 1.95 with no
+  // reference to DOT_BASE at all. That held while DOT_BASE was 0.95 and came
+  // apart the moment the grain moved -- three rounds of thinning left the
+  // tile's cloud at 1.04px and its flow untouched at 3.9px, nearly four times
+  // the size of what it runs through. Both renderers read this now, so the
+  // stream stays in proportion wherever the grain goes.
+  const FLOW_MUL = 0.79;
   // How big a dot is against the organ it belongs to. It used to be a column in
   // MODES, one number per page, because the old size law made the ratio drift
   // with how large the organ was drawn -- a page that framed it big got thin
@@ -4231,7 +4255,7 @@
   // rim was sharpened: a harder edge is less ink for the same radius, and the
   // number that makes the engine agree with the tile has to be re-answered
   // whenever the shape of the dot changes, not only its size.
-  const DOT_PIX = 6.68;
+  const DOT_PIX = 5.93;
   const HL_SHARE = 0.10;
   const opBright = p => opSnap(0.55 + 0.35 * Math.min(1, Math.max(0, p)));
   // What the 2D painter puts on screen, snapped the same way the shader's last
@@ -4243,8 +4267,12 @@
   // Which ink a particle carries, read back off the colour it already has
   // rather than kept in a second array: green separates the three furthest --
   // 0.27, 0.60, 0.91.
-  const inkOf = i => colors[i * 4 + 1] > 0.80 ? LIT_CSS
-                   : colors[i * 4 + 1] > 0.45 ? MID_CSS : INK_CSS;
+  // Which ink a particle carries, asked of the draw that decided it rather than
+  // read back out of the pixel it produced. Sniffing the green channel worked
+  // only because the three were far apart on it; the tweak bar can put any
+  // three colours here, and two of them landing on the same side of a
+  // threshold would have silently repainted a third of the cloud.
+  const inkOf = i => [INK_CSS, MID_CSS, LIT_CSS][INK_PICK[i % N]];
   const toneA = t => Math.min(1.6, (0.36 * t[0] + 0.50 * t[1] + 0.14 * t[2]) / 0.72);
   // The flow layer runs at a flat 75% -- the one thing in the file brighter
   // than either ink. What is left varying on it is only what makes it a
@@ -5922,14 +5950,8 @@
     seeds[i*4]   = -2;                       // flow flag
     seeds[i*4+1] = Math.random() * 6.2832;
     seeds[i*4+2] = Math.random();
-    // One size, and it is the tile's: the 2D painter draws every flow dot at
-    // 1.95x its base while a cloud dot is |seed| * 1.30 of the same base, so
-    // the ratio a reader sees is 1.95 / 1.30 = 1.50 of a cloud dot. The engine
-    // states that ratio directly rather than approximating it with a range.
-    // Written against DOT_BASE rather than as a bare number, because the ratio
-    // is the thing that has to hold: a finer cloud with a flow left at its old
-    // size is not finer, it is a cloud under a coarser stream.
-    seeds[i*4+3] = 1.50 * (DOT_BASE / 0.95);
+    // One size, and it is a multiple of the cloud's: see FLOW_MUL.
+    seeds[i*4+3] = FLOW_MUL * DOT_BASE;
     // the flow layer's rgb is written once and never again: the presets set
     // alpha per frame, and which of the two inks a dot got does not change
     const fc = pickInk(f % N);
@@ -5958,6 +5980,21 @@
   const bufEB = attr('aEdgeB', edgeB, 1, gl.DYNAMIC_DRAW);
   attr('aSeed', seeds, 4, gl.STATIC_DRAW);
   const bufC = attr('aColor', colors, 4, gl.DYNAMIC_DRAW);
+  // Repaint every particle from the ink it was assigned. The assignment itself
+  // (INK_PICK) is untouched, so a colour change is a change of colour and not
+  // a reshuffle -- the same particles keep the same roles and only the three
+  // values move. Alpha is left alone: it is authored per cloud on the grid and
+  // has nothing to do with hue.
+  function recolour(){
+    INK = rgb01(INK_CSS); MID = rgb01(MID_CSS); LIT = rgb01(LIT_CSS);
+    INKS[0] = INK; INKS[1] = MID; INKS[2] = LIT;
+    for (let i = 0; i < TOT; i++){
+      const c = pickInk(i < FSTART ? i % N : (i - FSTART) % N);
+      colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, colors);
+  }
 
   // spatial mode: every organ gets its own static buffers, so several
   // live organs can be drawn at once — no remounting, ever
@@ -7096,6 +7133,24 @@
     clearTimeout(statusT);
     statusT = setTimeout(() => { updateStatus(d); statusEl.style.opacity = 1; }, 220);
     noteSwap(); // always re-place the annotation, even when the organ is unchanged
+  }
+
+  // ---------- the three inks, live ----------
+  // The palette is the one thing in here that is judged rather than measured,
+  // so it gets a control instead of a constant to edit and a reload to see.
+  {
+    const hexTo = h => {
+      const n = parseInt(h.slice(1), 16);
+      return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255);
+    };
+    const wire = (id, set) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => { set(hexTo(el.value)); recolour(); });
+    };
+    wire('inkA', v => { INK_CSS = v; });
+    wire('inkB', v => { MID_CSS = v; });
+    wire('inkC', v => { LIT_CSS = v; });
   }
 
   // ---------- tweak panel ----------
@@ -9214,7 +9269,10 @@
               // layer at the same weight. It was 1.15 -- smaller than most
               // cloud dots since they went to five sizes -- which is why it
               // had stopped being visible at all.
-              px.arc(ox + fx * sc, oy - fy * sc, view.dot * rk * 1.95, 0, 6.2832);
+              // the same multiple of the same base the engine uses, times the
+              // 1.30 that turns a seed into this painter's radius
+              px.arc(ox + fx * sc, oy - fy * sc,
+                     view.dot * rk * FLOW_MUL * DOT_BASE * 1.30, 0, 6.2832);
               px.fill();
             }
           }
@@ -9430,8 +9488,8 @@
   // The density of every organ everywhere. Since the engine asks orgDrawN()
   // for its count and orgDrawN is the library's own target, this one number
   // moves both renderers together and there is nothing else to keep in step.
-  const FULL_DOTS = 2.08;
-  const fullTarget = cl => Math.min(8600, Math.round(dotTarget(cl) * FULL_DOTS));
+  const FULL_DOTS = 4.16;
+  const fullTarget = cl => Math.min(11800, Math.round(dotTarget(cl) * FULL_DOTS));
   function imTarget(cl){ return fullTarget(cl); }
   // ---- how many particles an organ is, full stop ----------------------------
   // The library was showing a subset and the engine was drawing the whole
