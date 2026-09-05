@@ -487,8 +487,8 @@ dot stands in, so the fibres light in their own time and the movement stays
 radial without ever reading as a rotation. The middle keeps its own long pulse,
 each dot breathes a little along its own strand, and the flow layer runs spokes
 from the ruff to the limbus so a travelling dot is travelling a fibre. On the
-phone it is framed 15% smaller than the organs' rule gives it and sits 16px
-higher — both asked for by the number, both weighted by how much of it is on
+phone it is framed 15% smaller than the organs' rule gives it and sits 10px
+higher (16 up, then 6 back down) — both asked for by the number, both weighted by how much of it is on
 screen so they arrive with the swipe rather than stepping when the carousel
 crosses. (An earlier, unasked twentieth off plus a wider framing radius had made
 it 7.5% smaller and read as a defect; those were removed first, then the 15%

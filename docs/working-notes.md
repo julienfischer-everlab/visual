@@ -1926,6 +1926,14 @@ framing, weighted like the pan so it arrives with the swipe. Outer radius on
 the settled iris 151 -> 129 px at 2x, which is 0.85. The 16px lift holds
 (centre 111.9 px).
 
+### 5.77 Six back down
+
+"Push down the iris by 6px." 0.158 -> 0.099, the same unit (2 / 202 per pixel),
+so the iris now sits 10px above the organs on the phone. Measured centroid
+111.9 -> 117.7 px, 5.8 down. Two asks in opposite directions a build apart are
+not a contradiction; they are someone converging on a number by eye, which is
+what a number that is asked for by the pixel is for.
+
 ---
 
 ## 6. Open items
