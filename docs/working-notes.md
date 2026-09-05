@@ -1695,6 +1695,68 @@ right thing at the wrong address, and a zero that would have been believed if
 the baseline had not also come back zero. Two identical wrong answers are the
 tell.
 
+### 5.63 A strength written as a switch is a snap waiting for a threshold
+
+"There is still a bug on the biological age when the visual morphs -- like a
+clip of a different shape going inside. Super brutal." Frames at 50ms and 150ms
+across the swipe looked continuous, on the phone in both directions, and a
+total-ink series showed nothing. The thing that found it was the difference
+between *consecutive* frames under a fake clock, every 33ms:
+
+    HEAD m20:  ... 89 529 73 88 ...      (settled, then one frame at 5-6x)
+    new  m20:  ... 155 62 64 77 80 94 90 74 129 192 117 219 151 ...
+
+The iris asks the shader for a pupil remap, brightness fronts and a 30% cull
+of its particles, and the CPU wrote the switch for them as exactly 0 or 1:
+`uIris.x > 0.5`, set when the morph's progress fell under 0.02. So on the frame
+the morph settled, the pupil jumped to its dilated radius, the fronts lit, and
+three in ten dots vanished -- together, in 16ms, on a cloud that had spent the
+previous 300ms arriving smoothly. Leaving did the same in reverse on the first
+frame of the next swipe. It is the same magnitude of change as the whole morph,
+compressed into a frame, which is precisely "a different shape clipped in".
+
+`setShape(a, b, f)` takes the pair and the progress now and computes a
+strength: ramping out over the first third of a morph away from the shape and
+in over the last third of a morph toward it. The shader multiplies its `solid`
+mask by it, and the cull follows the same ramp (`1 - 0.30 k`), so the dots go
+one at a time rather than a third at once. The sphere had the identical switch
+and takes the identical ramp.
+
+Two lessons. A value that the shader tests against 0.5 is a switch however it
+is typed, and a switch on a continuous process will fire on a single frame
+sooner or later. And stills cannot find a one-frame event: only the difference
+between one frame and the next can, and only at frame rate.
+
+### 5.64 A floor under the depth made a slab
+
+The brain and the nerve had been given a depth floor (a minimum thickness
+everywhere) and a noise field displacing whole regions along z, so the nerve's
+branches would go "in multiple directions" instead of lying flat. The user's
+verdict: remove it -- the brain looks flat now, it should be like a sphere.
+
+Which is right, and for a reason worth writing down. The shared law is
+`zmax = depthPx * k * sqrt(d / 22)`: thickness grows as the square root of the
+distance in from the silhouette, which is the section of a rounded body cut by
+the picture plane -- nothing at the rim, deepest in the middle. That profile is
+what a front-on view reads as round: the rim is thin so it recedes, the centre
+is thick so its highlights sit forward. A floor of 0.55 puts more than half the
+maximum depth at the rim as well, so the rim no longer recedes, and a shape
+with the same depth everywhere is a slab however deep it is. The displacement
+field, meanwhile, read as a warp rather than as depth.
+
+Both removed; both shapes back on the shared law, keeping only their extra
+share of highlights (`hl: 0.16`). And the whole section made deeper for every
+shape instead, 1.25 -> 1.75, so the perspective in the shader has more to work
+with -- including on the nerve's branches, whose thin sections get the same
+proportional gain. The span the front/back rank is read over scales with it
+(0.44 -> 0.62), or a deeper cloud would saturate the rank at both ends.
+
+### 5.65 The strays, another quarter
+
+"More visible, not bigger, just brighter." `AMB_A` 1.25 -> 1.5625, the same
+constant as last time, on the same line, before the snap. Ink with only the
+stray slice drawn on m20: 4.50 -> 5.54.
+
 ---
 
 ## 6. Open items

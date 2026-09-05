@@ -491,6 +491,18 @@ weighted by how much of it is on screen rather than switched at the slide, so
 the adjustment arrives with the figure over the swipe instead of stepping when
 the carousel crosses. It sits at the height every other slide does.
 
+**And it arrives over a third of the morph, not in a frame.** `uIris.x` is a
+strength, not a switch. It used to be written as exactly 0 or 1 by the CPU the
+frame the morph settled, which put the dilation, the brightness fronts and the
+30% cull on screen together in a single frame at the end of every morph into the
+iris — and took them off in one frame at the start of every morph out. Measured
+as the pixel difference between consecutive frames, that frame moved five times
+more than its neighbours, the same magnitude as the morph itself: a second shape
+clipped into the first. `setShape(a, b, f)` now ramps the strength in over the
+last third of an approach and out over the first third of a departure, and
+everything in the shader is scaled by it. The sphere's currents take the same
+ramp for the same reason.
+
 All of that lives twice: in the 2D view the library tiles are drawn with, and in
 the shader, so the slide is alive too. `uIris` carries the switch and the two
 radii, and it follows the same rule the range fill does — raised where the iris
@@ -726,9 +738,15 @@ space between them is what lets a reader see through the front layer to the
 ones behind it. The library's own factor moved with it — one count, both
 renderers — and the thinning is uniform, since the sampling is.
 
-Depth carries 40% of the opacity score (up from 25%) and the z spread is a
-quarter deeper, so front, middle and back separate instead of averaging into
-a mass.
+Depth carries 40% of the opacity score (up from 25%), and the section is
+deeper — `zmax = depthPx × 1.75 × √(d/22)`, up from 1.25 — so front, middle
+and back separate instead of averaging into a mass. One law for every shape:
+the profile of a rounded body cut by the picture plane, nothing at the rim and
+deepest in the middle. The brain and the nerve briefly carried a floor (a
+minimum depth everywhere) and a noise-displaced z of their own; the floor made
+the brain a slab that read flat from the front however deep it was, and the
+displacement read as a warp rather than as depth. Both are gone; they keep only
+their extra share of highlights.
 
 ### The light and the edge it lands on
 

@@ -4337,7 +4337,8 @@
   // And their opacity, as a multiple of the shared lift: 1.25 is "the floating
   // particles a quarter more visible", asked for on its own, so it sits on its
   // own rather than being folded into BRIGHT where it would move the organ too.
-  const AMB_A = 1.25;
+  // 1.25, then another quarter: "more visible, not bigger, just brighter".
+  const AMB_A = 1.5625;
   // How big a dot is against the organ it belongs to. It used to be a column in
   // MODES, one number per page, because the old size law made the ratio drift
   // with how large the organ was drawn -- a page that framed it big got thin
@@ -5414,22 +5415,27 @@
       //
       // This is a score, not an opacity. It is ranked against the whole cloud
       // below and only then turned into one.
-      // a quarter deeper than it was: the front and back of a volume have to
-      // be far enough apart in z for the depth term above to separate them
-      const zf = vol && vol.floor ? vol.floor : 0;
-      const zmax = depthPx * 1.25 * (zf + (1 - zf) * Math.sqrt(d / 22));
+      // The section of a rounded body: thickness grows as the square root of
+      // the distance in from the silhouette, which is the profile of a sphere
+      // cut by the picture plane -- nothing at the rim, deepest in the middle.
+      // One law for every shape. The per-shape floor that used to sit here
+      // (a minimum thickness everywhere, so thin branches would not lie flat)
+      // made the brain a slab with the same depth at its rim as at its centre,
+      // and a slab reads flat from the front however deep it is. Removed, and
+      // the whole section made deeper instead: 1.25 -> 1.75, so the front and
+      // back are further apart and the perspective in the shader has more to
+      // work with on every organ, the nerve's branches included.
+      const zmax = depthPx * 1.75 * Math.sqrt(d / 22);
       const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
       const Y = -(py - cy + (Math.random() - 0.5) * 2) * s * tf.s;
+      // Skewed toward the surface (the 0.3 power), so the volume reads as a
+      // body with a front and a back rather than a fog that is densest in the
+      // middle -- the same reason a sphere drawn in points is drawn as a shell.
+      // The noise-displaced z that used to follow here -- whole regions of a
+      // shape pushed forward or back so the nerve's branches went "in multiple
+      // directions" -- is gone: it read as a warp rather than as depth.
       let Z = zsign * zmax * Math.pow(Math.random(), 0.3) * s * tf.s;
-      // Whole regions displaced along z rather than each particle -- a
-      // per-particle offset is thickness, and thickness is not direction. The
-      // field is coarse enough that a branch agrees with itself and disagrees
-      // with the branch beside it.
-      if (vol && vol.spread){
-        Z += (vnoise(px / 42 + 13.9, py / 42 + 71.2) * 2 - 1)
-           * vol.spread * depthPx * s * tf.s;
-      }
       if (yaw){ const nx = X * cyaw + Z * syaw; Z = -X * syaw + Z * cyaw; X = nx; }
       out[i * 3] = X + tf.x; out[i * 3 + 1] = Y + tf.y; out[i * 3 + 2] = Z;
       // What a particle's opacity is worth. Mostly its own draw, so opacity
@@ -5443,7 +5449,10 @@
       // Depth carries more of the weight than it did: 0.25 was enough to be a
       // cue and not enough to sort the cloud into layers a reader can pick
       // apart, which is what a volume has to do to stop reading as a shape.
-      const zSpan = 0.44 * s * tf.s + 1e-6;
+      // 0.44 x 1.75/1.25: the span the front/back rank is read over grows with
+      // the section it is reading, or a deeper cloud would saturate the rank at
+      // both ends and the ordering it exists for would be lost in the middle.
+      const zSpan = 0.62 * s * tf.s + 1e-6;
       front[i] = Math.min(1, Math.max(0, 0.5 + 0.5 * (Z / zSpan)));
       const zN = Math.min(1, Math.abs(Z) / zSpan);
       score[i] = 0.45 * Math.random()
@@ -5560,13 +5569,18 @@
   // every organ shares the same centred position — no anatomical placement,
   // no camera travel or angle change between organs
   const ORGANS = [
+    // The brain and the nerve used to carry a depth floor and a noise-displaced
+    // z of their own, which made a slab of the one and a tangle of the other:
+    // "now the brain looks flat". Gone. Both take the shared law now -- a
+    // rounded section, thin at the silhouette and deepest in the middle -- and
+    // keep only the extra share of highlights.
     { label: 'Brain',   cloud: () => buildCloud(drawBrain,   52, 1.00, {s:1, x:0, y:0}, null, null,
-                                  { floor: 0.55, spread: 0.30, hl: 0.16 }), x:0, y:0, r:0.78 },
+                                  { hl: 0.16 }), x:0, y:0, r:0.78 },
     // A shape made of thin branches: the constant-gap target that suits a
     // filled organ leaves a dendrite reading as a dotted line rather than a
     // limb, so it takes 30% more than the gap alone asks for.
     { label: 'Nerves',  cloud: () => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}, null, null,
-                                  { floor: 0.72, spread: 0.62, hl: 0.16 }), x:0, y:0, r:0.78, dots: 1.30 },
+                                  { hl: 0.16 }), x:0, y:0, r:0.78, dots: 1.30 },
     { label: 'Lungs',   cloud: () => buildCloud(drawLungs,   46, 1.02, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
     // 0.88 was the smallest sizeMul of any filled organ, and it is why the
     // heart kept reading as the weak one. Measured across the library tiles it
@@ -5693,9 +5707,16 @@
       // bundles a particle stands in, so the fibres light in their own time and
       // the movement stays radial without ever reading as a turn. Strays, the
       // ghost and the flow are left alone: they are not the tissue.
+      // uIris.x is a strength, not a switch. It used to be tested against 0.5
+      // and set to exactly 0 or 1 by the CPU the frame the morph settled --
+      // which put the dilation, the brightness fronts and the 30% cull on
+      // screen in one frame, at the end of every morph into the iris, and took
+      // them off in one frame at the start of every morph out. Now it ramps
+      // over the last third of the approach and the first third of the
+      // departure, and everything below is scaled by it.
       float irisA = 1.0;
-      if (uIris.x > 0.5){
-        float solid = (1.0 - amb) * (1.0 - ghost) * (1.0 - flowP);
+      if (uIris.x > 0.001){
+        float solid = uIris.x * (1.0 - amb) * (1.0 - ghost) * (1.0 - flowP);
         vec2 rel = pos.xy - uCenter.xy;
         float r = length(rel);
         if (r > 1e-4){
@@ -5733,8 +5754,8 @@
       // loses the same dots every frame rather than shimmering, and the shell
       // is exempt — the boundary must not come and go with what is inside it.
       float sphLit = 1.0, sphOff = 0.0;
-      if (uSphere.x > 0.5){
-        float solid = (1.0 - amb) * (1.0 - ghost) * (1.0 - flowP);
+      if (uSphere.x > 0.001){   // a strength too, for the same reason as the iris
+        float solid = uSphere.x * (1.0 - amb) * (1.0 - ghost) * (1.0 - flowP);
         vec3 q = pos - uCenter;
         float R = max(1e-4, uSphere.y);
         // The material itself is never still. The density field alone
@@ -6224,19 +6245,34 @@
   // Two setters would be two things to remember to lower; this one is called
   // wherever a cloud is about to be drawn, and it lowers whichever of the two
   // is not wanted as a matter of course.
-  function setShape(aIdx, mix){
-    const sph = aIdx === SPHERE_I && mix < 0.02
-             && clouds[SPHERE_I] && clouds[SPHERE_I].sphere;
-    gl.uniform2f(U.uSphere, sph ? 1 : 0, sph ? clouds[SPHERE_I].sphere.R : 0);
-    const on = aIdx === IRIS_I && mix < 0.02 && clouds[IRIS_I] && clouds[IRIS_I].iris;
-    if (on) gl.uniform3f(U.uIris, 1, clouds[IRIS_I].iris.rp, clouds[IRIS_I].iris.R);
+  // A strength, not a switch. `f` is the morph's progress from aIdx toward bIdx;
+  // a shape's own effects ramp out over the first third of a morph away from
+  // it and ramp in over the last third of a morph toward it, so nothing about
+  // the iris or the sphere arrives or leaves in a single frame. The old form
+  // tested `mix < 0.02` and wrote exactly 0 or 1 -- and the dilation remap,
+  // the brightness fronts and the 30% cull all landed together on the frame
+  // the morph settled, which on the biological-age slide read as a second
+  // shape being clipped into the first.
+  const sm = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  function shapeK(idx, aIdx, bIdx, f){
+    if (idx < 0) return 0;
+    const out = aIdx === idx ? 1 - sm(0.0, 0.35, f) : 0;    // leaving it
+    const into = bIdx === idx ? sm(0.65, 1.0, f) : 0;       // arriving at it
+    return Math.max(out, into);
+  }
+  function setShape(aIdx, bIdx, f){
+    const ks = clouds[SPHERE_I] && clouds[SPHERE_I].sphere ? shapeK(SPHERE_I, aIdx, bIdx, f) : 0;
+    gl.uniform2f(U.uSphere, ks, ks > 0 ? clouds[SPHERE_I].sphere.R : 0);
+    const ki = clouds[IRIS_I] && clouds[IRIS_I].iris ? shapeK(IRIS_I, aIdx, bIdx, f) : 0;
+    if (ki > 0) gl.uniform3f(U.uIris, ki, clouds[IRIS_I].iris.rp, clouds[IRIS_I].iris.R);
     else gl.uniform3f(U.uIris, 0, 0, 0);
     // A cloud is the same nine thousand particles whatever shape it takes, so a
     // shape made of thin lines wears them all on very little area and comes out
     // heavier than the organs beside it. The density lottery is stable per
     // particle, so thinning it here drops the same dots every frame rather than
-    // making the iris sparkle.
-    gl.uniform1f(U.uDens, densNow * (on ? 0.70 : 1));
+    // making the iris sparkle -- and it follows the same ramp, so the cull
+    // arrives dot by dot rather than as a third of the cloud at once.
+    gl.uniform1f(U.uDens, densNow * (1 - 0.30 * ki));
   }
   function bindCloud(k){
     // k = organ index for a static cloud, -1 for the live morph buffers
@@ -8625,7 +8661,7 @@
       gl.uniform2f(U.uCA, ORGANS[ia].x, ORGANS[ia].y);
       gl.uniform2f(U.uCB, ORGANS[ib].x, ORGANS[ib].y);
       bindPair(ia, ib);
-      setShape(ia, f);
+      setShape(ia, ib, f);
       // A morph is two clouds at once, so the count travels between them the
       // way everything else about the pair does. It used to take the larger of
       // the two outright, on the grounds that anything less drops points out of
@@ -8638,7 +8674,7 @@
       gl.drawArrays(gl.POINTS, 0,
         Math.round(orgDrawN(ia) + (orgDrawN(ib) - orgDrawN(ia)) * f));
       gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
-      setShape(-1, 1);
+      setShape(-1, -1, 1);
       gl.uniform1f(U.uP, 1);
       // The flow layer lives in the main buffers, and the hero draws the cloud
       // out of the static pair — so [0, N) is everything it has ever drawn and
@@ -11243,11 +11279,6 @@
 
     gl.uniform1f(U.uP, uPnow);
     gl.uniform1f(U.uTime, t * 0.001);
-    // the live buffers hold the morph, so the iris is itself only once it has
-    // arrived — and it is the A slot that holds it there, with uP back at 0
-    // which cloud the shader may treat as itself: only a settled one, since
-    // both effects are radial about a centre a half-morphed cloud does not have
-    const shapeNow = uPnow >= 1 ? current : -1;
     gl.uniform1f(U.uScale, scale);
     gl.uniform1f(U.uJitter, jitter);
     gl.uniformMatrix3fv(U.uRot, false, rot);
@@ -11460,7 +11491,7 @@
     // The same rule for the iris: it is raised where the iris is what is drawn
     // and off everywhere else, or the dilation would take hold of whatever the
     // next page put in front of it. Off here, and each path says so for itself.
-    setShape(-1, 1);
+    setShape(-1, -1, 1);
     if (version === 3){
       spatialFrame(t);            // card flip
     } else if (version === 4){
@@ -11469,7 +11500,9 @@
       bentoFrame(t);              // mobile bento, and V2
     } else {
       gl.clear(gl.COLOR_BUFFER_BIT);
-      setShape(shapeNow, 0);
+      // the pair the morph is between and how far along it is, so the shape's
+      // own effects can ramp rather than switch on the frame it settles
+      setShape(previous, current, Math.min(1, Math.max(0, uPnow)));
       // The library's count, the library's shell, the library's flow -- the
       // same three draws every other path makes. This one was still drawing the
       // whole buffer, which on the dashboards and the phone meant 6,245 organ
@@ -11478,7 +11511,7 @@
       gl.drawArrays(gl.POINTS, 0, heroDrawN());
       gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
       gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
-      setShape(-1, 1);
+      setShape(-1, -1, 1);
     }
     // the tablet's strip is the only DOM the dashboards animate per frame, and
     // it rides a continuous position rather than a class, so it is laid out
