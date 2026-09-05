@@ -2712,7 +2712,7 @@
     --fog:#000;
   }
   body.light.v5 #mHeroOrgan .v4Foot{--fog:#ececea;}
-  body.v6 #mHeroOrgan .v4Foot{--fog:rgb(var(--v5head, 15 15 15));}
+  body.v6 #mHeroOrgan .v4Foot{--fog:rgb(var(--v5head, 18 18 18));}
   /* Only the body silhouette runs off the bottom of the canvas — every other
      organ is a compact shape sitting well inside it, and softening a foot it
      does not have just veils the bottom of the drawing. So the whole band rides
@@ -2826,8 +2826,8 @@
      cards is one wash at two strengths, and close enough at rest that the cards
      read as the same surface carried up into the header rather than as tiles
      laid on a darker one. */
-  body.v6 #phone{background:rgb(var(--v5head, 13 13 13));}
-  body.v6 .mHead{background:rgb(var(--v5head, 13 13 13));}
+  body.v6 #phone{background:rgb(var(--v5head, 18 18 18));}
+  body.v6 .mHead{background:rgb(var(--v5head, 18 18 18));}
   body.v6 #phone .mBody{background:#000;}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
@@ -11413,11 +11413,14 @@
       if (ph){
         if (document.body.classList.contains('v6')){
           v5HeadP = p * p * (3 - 2 * p);
-          // 5% white on the body's black, which is what the hero reads as:
-          // rgb(13) exactly rather than a hair warm of it, so the hero and the
+          // 7% white on the body's black, which is what the hero reads as:
+          // rgb(18) exactly rather than a hair warm of it, so the hero and the
           // 6% cards over it are two strengths of one wash, not two colours.
-          // It runs to the body's own black, reached as the body tops out.
-          const r = Math.round(13 - 13 * v5HeadP);
+          // It was 5% (rgb 13); "increase the header grey to be a little bit
+          // lighter by 2%" -- so the hero now sits a step above the cards
+          // rather than a step below. It runs to the body's own black,
+          // reached as the body tops out.
+          const r = Math.round(18 - 18 * v5HeadP);
           ph.style.setProperty('--v5head', r + ' ' + r + ' ' + r);
         } else {
           v5HeadP = 0;
@@ -11706,7 +11709,18 @@
         indA.setAttribute('opacity', (1 - bioA).toFixed(3));
       } else {
       indA.setAttribute('opacity', 1);
+      // Aligned with your age: no gap to colour, so the one increment that is
+      // active is the centre tick, and it is white -- the indicator's own ink,
+      // the same white the aligned halo is. It arrives as the indicator does,
+      // rising over the last half-year of its travel, so a morph into the
+      // aligned organ ends on a lit centre rather than switching one on.
+      const alignK = Math.max(0, 1 - Math.abs(arcNow) / 0.5);
       for (const tk of tickEls){
+        if (tk.zero && alignK > 0.001){
+          tk.line.setAttribute('stroke', indFill());
+          tk.line.setAttribute('opacity', (tk.baseOp + (0.95 - tk.baseOp) * alignK).toFixed(3));
+          continue;
+        }
         const inGap = active && !tk.zero && tk.v >= lo - 0.01 && tk.v <= hi + 0.01;
         if (inGap){
           // fade in from the normal inactive level over the first 30%, intense after

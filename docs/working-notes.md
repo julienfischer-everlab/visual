@@ -2372,6 +2372,28 @@ page and there is no bezel in the picture. The card's 4% line (5.96) stays: it
 was asked for separately, and a whisper on a pane is a different thing from a
 frame on a screen.
 
+### 5.99 The mobile header, two percent lighter
+
+"Increase the header grey to be a little bit lighter by 2%. On mobile." The
+V6 header is a wash of white on the body's black, run down to black by the
+scroll (`--v5head`, written per frame). It was 5% -- rgb(13) -- sitting a step
+under the 6% cards; it is 7% now, rgb(18), a step over them. Three places say
+the number: the JS that drives it, the CSS fallbacks on `#phone` and `.mHead`,
+and the foot fog's fallback, which had drifted to 15 and is 18 with the rest.
+Measured: `.mHead` computes to rgb(18, 18, 18) at rest.
+
+### 5.100 Aligned: one increment, white
+
+"When aligning with my age, the only increment active should be the one in
+the middle. It should be white." The arc coloured the ticks between the
+centre and the organ's age and skipped the centre tick itself, so an organ
+exactly its age lit nothing: an indicator over a dead scale. Now the centre
+tick takes the indicator's own ink (white on dark, black on light, the same
+white the aligned halo is) at the lit ticks' 0.95, rising over the last half-
+year of the indicator's travel so a morph into the aligned organ ends on a lit
+centre rather than switching one on. Checked on the phone and the desktop with
+Brain (delta 0): 61 ticks, exactly one above the resting level, `#fff@0.950`.
+
 ---
 
 ## 6. Open items
