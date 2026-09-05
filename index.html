@@ -2658,9 +2658,14 @@
      thing separating the surface from the page. */
   :root{--rimC:236 234 230; --rimA:.34; --rimStop:34%;}
   body.light{--rimC:28 26 24; --rimA:.13; --rimStop:100%;}
-  /* The phone only. The desktop and tablet card carried the same line and it
-     read as a stray white edge along its top and left -- "useless" -- so it
-     is gone from there; the card's edge is its own radius against the page. */
+  /* Light theme only, now. On the dark phone the ring read as a screen border
+     -- "remove this screen border on the top and on the left and right" -- at
+     34% white it was a drawn frame, not a light landing on an edge, and the
+     screen's edge is the black bezel it already has. The card keeps its own
+     4% line (below); the two were asked for separately and land differently:
+     a whisper on a pane, nothing on a screen. */
+  #phone::after{display:none;}
+  body.light #phone::after{display:block;}
   #phone::after{
     content:'';position:absolute;inset:0;z-index:7;pointer-events:none;
     padding:1px;border-radius:inherit;
@@ -8620,17 +8625,25 @@
       // k0 = -1 is the biomarker slide: the human body, read as what is moving
       // through it. Its cloud is bound in place of an organ's and the pair
       // interpolates position, brightness and flow across the step.
-      const vasc = k0 < 0 ? 1 - f : 0;   // how much the biomarker slide is showing
+      // How much the biomarker slide is showing. It is reached from both sides
+      // now that the carousel wraps: from the print at k0 = -1 (leaving it as f
+      // rises) and from the last reading with k1 = -1 (arriving as f rises).
+      const vasc = k0 < 0 ? 1 - f : k1 < 0 ? f : 0;
       // emptied, the body keeps its own colour: a range fill with no ranges
       // behind it would be a reading invented for the picture
       const emB = document.body.classList.contains('emBio');
-      const oa = mbAt(Math.max(0, k0)), ob = mbAt(k1);
       // The two are different figures now: biomarkers is the human body, the
       // age slide is the print. Only the geometry differs — oa still carries
       // the Body row's reading, so the arc, the halo and the caption are the
-      // ones that slide has always had.
+      // ones that slide has always had. The same at the other end: since the
+      // carousel wraps (past Kidney, k1 is the biomarker slide at -1) the B
+      // end can be that slide too, and MB has no row at -1 -- reading one
+      // there was "cannot read properties of undefined (reading 'organIdx')",
+      // on every frame from the moment the swipe out of the last reading
+      // began, until the frame loop gave up and said so.
+      const oa = mbAt(Math.max(0, k0)), ob = mbAt(Math.max(0, k1));
       const ia = k0 < 0 ? BODY_I : bioIdx(oa);
-      const ib = bioIdx(ob);
+      const ib = k1 < 0 ? BODY_I : bioIdx(ob);
       const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
                         Math.min(1, Math.abs(o.delta) / 7);
       // The halo at the top of the header carries the same verdict as the
@@ -8713,7 +8726,7 @@
       // the biomarker slide would render at a different size depending on
       // where the carousel had been. uZoom is uploaded before this runs, so
       // setting it here wins.
-      const bodyShown = !v7On() ? 0 : k0 < 0 ? 1 : k0 === 0 ? 1 - f : 0;
+      const bodyShown = !v7On() ? 0 : k0 < 0 ? 1 : k0 === 0 ? 1 - f : k1 < 0 ? f : 0;
       // The iris used to take a twentieth off the body's framing on the phone,
       // on top of a radius (0.80) two and a half percent wider than the organs'
       // -- seven and a half percent smaller than the slides either side of it,

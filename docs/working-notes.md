@@ -2331,6 +2331,47 @@ one-pixel gradient clipped to its own padding, white at 4% at the top and gone
 a third of the way down, nothing along the sides. Dark theme only, as on the
 phone.
 
+### 5.97 "The organ could not be drawn": the wrap read a row that is not there
+
+A screenshot of the phone with the fallback message across it: *cannot read
+properties of undefined (reading 'organIdx')*, Kidney age in the strip. It
+never showed as a page error -- the frame loop catches its own failures and
+only says so after ninety of them -- which is why the error probes were clean
+and the user's screen was not.
+
+The carousel wraps (5.8x): past the last reading, k1 is the first one, "so the
+step out of the end of the list is the same crossfade every other step is".
+In Mobile V6 the first one is the biomarker slide at −1, and MB has no row at
+−1. The hero block already knew that for the A end -- `oa = mbAt(max(0,
+k0))`, `ia = k0 < 0 ? BODY_I : …` -- and not for the B end, which was written
+before the wrap existed and read `mbAt(k1)` straight. So swiping on from
+Kidney threw on the first frame of the morph and on every frame after, and
+after a second and a half the page said so.
+
+The B end is now read the way the A end is: `ob` from row 0, `ib` the body
+when k1 < 0, and `vasc` and `bodyShown` rise with f when the biomarker slide is
+the one arriving, as they fall with it when it is the one leaving. Reproduced
+before (one swipe on from Kidney, `wrapcrash.js`: "organ render failed" on
+V6 and V5), clean after, and the wrap itself looks right: the kidney breaks
+into the body over the swipe and the strip reads Kidney age · Biomarkers ·
+Biological age.
+
+The lesson is the probe's, again: a page that catches its own errors has to
+be probed for the catch, not for the throw. `wrapcrash.js` counts the console
+line the catch writes.
+
+### 5.98 The phone's ring is gone on dark
+
+"Remove this screen border on the top and on the left and right of this
+screen", with the top of the phone in the picture. That is the one-pixel ring
+(5.7x): 34% white at the top, fading a third of the way down the sides. On the
+dark phone it read as a drawn frame around the screen rather than as a light
+landing on an edge -- the screen already has a black bezel for an edge. Off on
+dark; the light theme keeps it, where it is the edge itself against a pale
+page and there is no bezel in the picture. The card's 4% line (5.96) stays: it
+was asked for separately, and a whisper on a pane is a different thing from a
+frame on a screen.
+
 ---
 
 ## 6. Open items

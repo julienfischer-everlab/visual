@@ -819,13 +819,16 @@ stain. It is drawn as a one-pixel ring — a gradient clipped to its own padding
 — rather than a border, because the frame is a 56px radius and `border-top` on
 a rounded box stops at the corner.
 
-The two themes want opposite things from it. **Dark** has the halo, so the line
-is brightest along the top and gone a third of the way down: the same light,
-arriving at the edge. **Light** has no halo at all — it was removed because on
-a pale ground it read as a coloured stain rather than as light — so there is
-nothing to catch, and the line stops being a highlight and becomes the edge
-itself: even the whole way round, a step stronger, because on a pale ground
-the edge is the only thing separating the surface from the page.
+The two themes want opposite things from it. **Dark** had the line brightest
+along the top and gone a third of the way down — the same light, arriving at
+the edge — and on the phone it is gone now: at 34% white it read as a drawn
+frame around the screen ("remove this screen border on the top and on the left
+and right"), and the screen already has a black bezel for an edge. **Light**
+has no halo at all — it was removed because on a pale ground it read as a
+coloured stain rather than as light — so there is nothing to catch, and the
+line stops being a highlight and becomes the edge itself: even the whole way
+round, a step stronger, because on a pale ground the edge is the only thing
+separating the surface from the page. The light theme keeps its ring.
 
 **The card's edge carries a top line at 4%.** The desktop and tablet card
 carried the phone's full ring first, and it read as a stray white edge along
