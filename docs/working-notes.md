@@ -2194,6 +2194,45 @@ the one in 5.89 -- the same layer's ink as a share of the same reference on
 each surface -- and it is cheap enough to run after every change to either
 renderer. It is in `flowratio.js`.
 
+### 5.91 The blink that lived in the last thousandth
+
+"I told you a million times: it is a clip when you morph, and then you wait 1
+second, and then, for 0.5 seconds, the flow appears and disappears." Every
+earlier measurement had stopped a second or so after the swipe, and had
+sampled the flow with reads that could return false zeros -- so a real gap
+sitting at 2.5 seconds, among artefact zeros, was invisible. This time: four
+seconds, every 33ms, the flow read INSIDE its own draw call, with the number
+of flow draws per frame and the visibility uniform beside each sample. On the
+phone, Heart to Lung:
+
+    1980ms  516 508 497 489 492 503 504 497 512 505 497 496 492 490 504 488 497
+            0 0 0 0 0 0 0 0 0 0 0 0 468 ...
+
+Twelve frames, four hundred milliseconds, 2.5 seconds after the swipe, the flow
+drawn on every one of them (two draws a frame, uFlowVis at 1) and not a pixel
+lit. Then back. The desktop and the tablet, same test: continuous.
+
+The carousel eases into its final position asymptotically, so the fraction
+spends its last stretch in [0.999, 1). The alpha blend between the two ends'
+streams (5.67) was gated `f > 0.001 && f < 0.999`: outside that, no blend, and
+the colours stand as the A end wrote them -- the OUTGOING slide. Heart to Lung
+passes through the neuron, so the outgoing slide of the last hop is the neuron,
+and the neuron's alphas are pulses: sparse bursts, zero between. For four
+hundred milliseconds the lung's lanes were drawn with the neuron's silence.
+Then the carousel snapped to f = 0, A became the lung, and the flow appeared.
+
+The cutoff is gone: the blend runs to f = 1 inclusive, where it is B exactly.
+After, both directions on the phone, and the tablet: continuous through the
+tail and the snap. The zeros that remain are the neuron's own mid-hop dip (5.66),
+two to five frames deep in a hop that touches it -- the exception that was asked
+for, and the only one.
+
+Three lessons, all about the measurement rather than the code. Measure for as
+long as the user says the thing takes, plus the same again. Read the thing
+where it is produced, not where it is displayed, so a zero means zero. And when
+a cutoff is written as `< 0.999`, ask what happens in the last thousandth --
+on an eased motion, the last thousandth is where the time goes.
+
 ---
 
 ## 6. Open items

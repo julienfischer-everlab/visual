@@ -1118,6 +1118,16 @@ the same dot (below) and the flow meant one amount of ink everywhere. The
 level was raised twice and was never the problem. The rest of this section is
 about the *path*, and still holds whatever the number is.
 
+**Through a swipe, the two ends blend to f = 1 inclusive.** On the phone the
+carousel eases into place asymptotically, so its fraction spends its last
+~400ms in [0.999, 1). The blend between the outgoing and incoming streams'
+alphas used to stop at `f < 0.999`, which left those frames drawn with the
+outgoing slide's alphas — and when the outgoing slide is the neuron, whose flow
+is pulses, that is nothing: twelve frames of zero flow pixels 2.5s after a
+Heart → Lung swipe, then the snap. Measured with the flow read inside its own
+draw call over four seconds; continuous after, on the phone in both directions
+and on the tablet.
+
 **The engine draws the library's flow dot.** Both renderers read `FLOW_MUL` and
 `FLOW_A`, so their inputs agreed; the shapes they made of them did not — the
 tile a firm disc at `rF` under a faint one at `1.6 rF`, `rF` floored at 1.15 of

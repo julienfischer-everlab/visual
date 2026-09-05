@@ -8839,7 +8839,15 @@
         // after the morph finishes". Measured at 660ms of nothing on Heart ->
         // Lung, which passes through the nerve. Two ends for the alpha too,
         // blended by the same f as everything else about the pair.
-        if (gotA && gotB && f > 0.001 && f < 0.999){
+        // To f = 1 inclusive, not `f < 0.999`. The carousel eases into its
+        // final position asymptotically, so the fraction spends its last
+        // ~400ms in [0.999, 1); with the blend cut off there, those frames were
+        // drawn with the OUTGOING slide's alphas -- and when the outgoing slide
+        // is the neuron those alphas are sparse pulses, i.e. nothing. Measured
+        // on the phone, Heart -> Lung: twelve frames of zero flow pixels 2.5s
+        // after the swipe, then the snap to the lung's alphas. "You wait one
+        // second, and then for half a second the flow appears and disappears."
+        if (gotA && gotB && f > 0.001){
           for (let k = 0; k < FLOWN; k++){
             const i = (FSTART + k) * 4 + 3;
             colors[i] += (flowAB[k] - colors[i]) * f;
