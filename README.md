@@ -486,15 +486,20 @@ one across the disc: the wave's phase and its strength come from which bundle a
 dot stands in, so the fibres light in their own time and the movement stays
 radial without ever reading as a rotation. The middle keeps its own long pulse,
 each dot breathes a little along its own strand, and the flow layer runs spokes
-from the ruff to the limbus so a travelling dot is travelling a fibre. It is
-framed by the same rule as every other organ — it briefly took a twentieth off
-on the phone, on top of a radius two and a half percent wider than the organs',
-and the two together read as "the iris is 10% smaller" — and on the phone it
-sits 16px higher than the organs, weighted by how much of it is on screen so it
-rides up with the swipe. The flow rides the dilation with the tissue: it used to
-be excluded from the remap along with the strays and the ghost, so when the
-pupil opened the fibres moved outward and the spokes stayed put, their inner
-ends in the hole — the flow clipping the iris.
+from the ruff to the limbus so a travelling dot is travelling a fibre. On the
+phone it is framed 15% smaller than the organs' rule gives it and sits 16px
+higher — both asked for by the number, both weighted by how much of it is on
+screen so they arrive with the swipe rather than stepping when the carousel
+crosses. (An earlier, unasked twentieth off plus a wider framing radius had made
+it 7.5% smaller and read as a defect; those were removed first, then the 15%
+was asked for on top of the true size.) The flow rides the dilation with the
+tissue: it used to be excluded from the remap along with the strays and the
+ghost, so when the pupil opened the fibres moved outward and the spokes stayed
+put, their inner ends in the hole — the flow clipping the iris. Two things had
+to change for that: the shader's mask, and the phone hero's draw order, which
+lowered the iris uniform after the cloud and *before* the flow, so the remap
+never reached the flow on that path at all. Measured on the settled iris, the
+pupil edge and the flow's inner ends now breathe over the same range.
 
 **And it arrives over a third of the morph, not in a frame.** `uIris.x` is a
 strength, not a switch. It used to be written as exactly 0 or 1 by the CPU the

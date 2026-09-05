@@ -1878,6 +1878,54 @@ against the previous commit served on a second port: 28.3 / 30.1 / 30.4 -- the
 same on both. The container was slower, not the page. One A/B is worth more
 than any amount of reasoning about which change could have cost it.
 
+### 5.74 A fix in the shader that a draw order never let run
+
+"The iris is still clipping with the flow. Double check." The previous fix put
+the flow inside the iris's dilation remap in the shader, and the reasoning was
+right; the measurement says it did not happen on the phone. Drawing the tissue
+alone and the flow alone on the settled iris and reading their radial extents
+about the same centre, three times over a breath:
+
+    tissue inner edge   40 -> 47 -> 48 px
+    flow inner ends     42 -> 42 -> 44 px
+
+The pupil opened by eight pixels and the spokes moved by two: when dilated, the
+flow's inner ends sat inside the hole. The shader was willing; the uniform was
+zero. On the phone hero the cloud is drawn, `setShape` is lowered, and the flow
+is drawn *after* that -- so `uIris.x` was 0 for every flow draw on that path and
+the remap it now allowed for the flow was multiplied by nothing. The dash path
+happened to reset after its flow draw and was fine. Raised again around the
+hero's flow draw; after: tissue 34 -> 40 -> 41, flow 34 -> 43 -> 39, the same
+range.
+
+A change made where the effect is computed is not a change until every path
+that draws the thing carries the state it depends on. The shader is one place;
+the uniforms are set in five.
+
+### 5.75 The server that was not serving the file
+
+Three measurements in a row said the settled iris drew no flow at all and only
+one draw call a frame, `drawArrays(0, 10980)`, from a line of the file that
+contained no draw call. The served copy was not the working tree. A stale
+`python3 -m http.server 8735` had survived with its cwd in the scratchpad, where
+an old `index.html` sits, and a `cd` earlier in the same shell line had put it
+there. The byte-count check at the start of each run is the guard against this
+and it was skipped for exactly the runs that went wrong.
+
+The server is started from a script now (`/tmp/claude-0/serve.sh`) that kills
+whatever holds the port, starts from the project directory whatever the shell's
+cwd is, and prints served size, file size and the server's own cwd. The lesson
+is older than this file: a measurement that contradicts the code is a
+measurement of something else, and the first thing to check is what.
+
+### 5.76 Fifteen percent, on top of the true size
+
+"Scale down the iris by 15%." Asked for after the unasked 7.5% had been removed,
+so this is a deliberate size and not a leftover: `(1 - 0.15 * irisOn)` on the
+framing, weighted like the pan so it arrives with the swipe. Outer radius on
+the settled iris 151 -> 129 px at 2x, which is 0.85. The 16px lift holds
+(centre 111.9 px).
+
 ---
 
 ## 6. Open items

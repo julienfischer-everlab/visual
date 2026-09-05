@@ -8615,9 +8615,16 @@
       // same rule as every other organ.
       const rBody = ORGANS[bioIdx(MB[0])].r;
       const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
+      // How much of the iris is on screen, 0..1, so anything the iris does
+      // differently on the phone arrives with the swipe rather than stepping
+      // when the carousel crosses. Used by the framing here and the pan below.
+      const irisOn = (!v7On() || bioIdx(MB[0]) !== IRIS_I) ? 0
+                   : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
+      // "Scale down the iris by 15%" -- asked for after it was brought to the
+      // organs' own framing, so this is a deliberate size, not a leftover.
       setZoom(zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
               (v7On() ? V6_HERO : 1) *
-              zFix * (1 + 0.30 * bodyShown), orgR);
+              zFix * (1 + 0.30 * bodyShown) * (1 - 0.15 * irisOn), orgR);
       // The fill rises on the same cue and over the same span as the arc's
       // sweep: they are one reveal of one reading, and running them on two
       // clocks left the body still filling after the meter had finished. It
@@ -8680,11 +8687,8 @@
       // on a 202px hero.
       const orgDrop = v7On() ? -0.25 * (1 - bodyShown) : 0;
       // The iris sits 16px higher than the organs on the phone -- asked for by
-      // the pixel. Weighted by how much of it is on screen, so it rides up with
-      // the swipe rather than stepping when the carousel crosses. Same unit as
-      // orgDrop: 2 / 202 per pixel, so 16px is 0.158.
-      const irisOn = (!v7On() || bioIdx(MB[0]) !== IRIS_I) ? 0
-                   : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
+      // the pixel, and weighted by irisOn (above) so it rides up with the
+      // swipe. Same unit as orgDrop: 2 / 202 per pixel, so 16px is 0.158.
       gl.uniform2f(U.uPan, 0, -0.35 * bodyShown + orgDrop + 0.158 * irisOn);
       gl.uniform1f(U.uAlpha, 1);
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
@@ -8797,7 +8801,16 @@
           gl.uniform1f(U.uFlowVis, flowVis * dip * hand);
           gl.uniform1f(U.uP, f);
           bindCloud(-1);
+          // The shape's own effects are raised again for the flow draw. They
+          // were lowered right after the cloud, above, and this draw came
+          // after -- so the iris's dilation, which the shader now applies to
+          // the flow as well, never reached the flow on this path: the tissue
+          // breathed and the spokes stood still, inner ends in the pupil.
+          // Measured on the settled iris: the pupil edge moving 40 -> 48px
+          // over a breath while the flow's inner ends sat at 42-44.
+          setShape(ia, ib, f);
           gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
+          setShape(-1, -1, 1);
           gl.uniform1f(U.uP, 1);
           gl.uniform1f(U.uFlowVis, flowVis);
         }
