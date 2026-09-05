@@ -2132,6 +2132,68 @@ a quarter. Flow drawn alone on the phone: ink 34.5 -> 44.1, +28%. The shader
 caps the flow at 0.75, so there is one step left above this before the cap has
 to move -- worth saying now, so the next "more" is not a surprise.
 
+### 5.88 "No flow while the cloud is in flight" was the one-second blink
+
+"The flow is still clipping when you transition from one organ to another.
+The transition occurs, and then after 1 second, the flow blinks." Every hero
+path had been fixed (5.66, 5.67) and measured continuous. The 2D painter had
+not: its flow section began with `if (view.morph) return` -- "no flow or
+feeding while the cloud is in flight" -- so on the organ-age card and the
+immersive picker every organ change switched the stream off for the 760-900ms
+of the morph and back on the frame the cloud landed. Measured on the picker's
+view, overlay lit pixels per frame, click at frame 10:
+
+    before   2478 2471 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2412 2449
+    after    2247 2249 2233 2252 2274 2279 2245 2187 2234 2192 2213 2107 2014 2026 1990 2000 2270 2297
+
+Twenty-four frames of nothing, then everything. The painter now does what the
+hero does: two streams, lane to lane and alpha to alpha by the same eased
+fraction the cloud travels by; the other end stands in where one has no
+stream (`hand`); the neuron dips through its middle (`late`). The two
+presets' indices come off the morph's keys (`'o' + organIdx`). The body pass
+still paints only the cloud in flight; the strays still wait.
+
+### 5.89 The library is the source of truth, so the engine draws the library's dot
+
+"The flow is too bright now. You only fixed the library... make sure the
+library visuals are reflected on mobile, desktop and tablet. The library is
+always the source of truth." Flow ink as a share of cloud ink, per surface, on
+the previous commit:
+
+    tile 17.6%    phone 25.4%    desktop 20.2%
+
+Three surfaces, three answers, because two renderers drew two different dots:
+the tile a firm disc at rF under a faint one at 1.6 rF, rF floored at 1.15 of
+its backing pixels; the engine a three-pixel soft cone. Same `FLOW_A`, same
+lanes, same count -- and a quarter more ink on the phone than on the tile,
+which is what "too bright, you only fixed the library" is when measured.
+
+The engine draws the tile's dot now. The sprite is the outer disc's diameter
+(`rF = max(ptSize / 2, 0.77 css px * uDpr)`, the tile's floor restated in
+device pixels through a new `uDpr`), and the fragment shader lays down the two
+discs -- 0.80 inside 1/1.6 of the radius, 0.30 to the edge, clamped where they
+overlap -- in place of the cone, for flow dots only. Then the level: `FLOW_A`
+0.65 -> 0.35, "reduce it by 50%", 0.325 to the nearer step. After:
+
+    tile 10.5%    phone 9.4%    desktop 9.8%
+
+One number, within a point, on every surface. The level had been raised twice
+and was never the problem; the problem was that "the flow" meant a different
+amount of ink depending on which renderer said it. Per-dot brightness change
+on the phone with the new profile: 4% median, 19% p90 -- up from the cone's
+9% at p90, the price of the tile's harder discs, and still a fifth of where it
+started.
+
+### 5.90 Two renderers, one dot: the rule, restated for the flow
+
+The cloud's dot was unified early (5.39, "grain as a ratio"). The flow's was
+not, because it looked unified: both read `FLOW_MUL`, both read `FLOW_A`, so
+the *inputs* agreed. What did not agree was the shape each renderer turned
+those inputs into, and shape is ink. The check that would have caught it is
+the one in 5.89 -- the same layer's ink as a share of the same reference on
+each surface -- and it is cheap enough to run after every change to either
+renderer. It is in `flowratio.js`.
+
 ---
 
 ## 6. Open items

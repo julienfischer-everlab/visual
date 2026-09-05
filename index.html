@@ -4397,8 +4397,13 @@
   // need to see the flow, 25% more visible": 0.50 x 1.25 is 0.625, between two
   // steps; 0.65 rather than 0.60, because the ask was emphatic and a quarter
   // short of a quarter is what the last round already was. The shader caps the
-  // flow at 0.75, so there is one more step above this and no more.
-  const FLOW_A = 0.65;
+  // flow at 0.75, so there is one more step above this and no more. And then
+  // back down: "the flow is too bright now, reduce it by 50%" -- said once the
+  // engine's dot had been made the library's (see rF in the vertex shader) and
+  // the two surfaces finally agreed on how much ink a flow dot puts down. 0.65
+  // x 0.5 is 0.325; 0.35 is the nearer step. The level was never the problem;
+  // two renderers stating it in two different dots was.
+  const FLOW_A = 0.35;
   // one preset's own share of that level, for the rare case where a figure's
   // geometry makes the same number read as more or less flow than its
   // neighbours
@@ -5660,7 +5665,7 @@
     attribute vec4 aSeed;   // x stagger, y curve angle, z noise phase, w size
     attribute vec4 aColor;
     ${GLSL_OP}
-    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uOrgK, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uRange, uFill;
+    uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uOrgK, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uRange, uFill, uDpr;
     uniform vec2 uFillY;
     // (on, pupil radius, limbus radius) in cloud units — the iris dilates and
     // its furrows light in turn, and both need the two radii to mean anything
@@ -5853,7 +5858,16 @@
       // change a frame at two, against 0% on the library's tile. At three the
       // cone has nine samples to move across. The cloud stands still, so its
       // dots keep the one-pixel floor and the sharper rim.
-      float ps = max(ptSize, 1.0 + 2.0 * flowP) * (1.0 - sphOff);
+      //
+      // Then made the LIBRARY'S dot rather than a dot of its own. The tile
+      // draws a flow dot as two discs -- a firm one at rF and a faint one at
+      // 1.6 rF, rF never under 1.15 of its backing pixels (0.77 css px) -- and
+      // the engine drew a three-pixel soft cone, which at the phone's scale put
+      // a fifth of the ink on each dot that the tile did: "you only fixed the
+      // library". The library is the source of truth, so the sprite is now the
+      // outer disc's diameter and the fragment shader draws the two discs.
+      float rF = max(ptSize * 0.5, 0.77 * uDpr);
+      float ps = mix(max(ptSize, 1.0), 2.0 * 1.6 * rF, flowP) * (1.0 - sphOff);
       gl_PointSize = ps;
       vPt = ps;
       vSoft = flowP;
@@ -6067,8 +6081,15 @@
         // It moves the engine's dot toward the tile's, which has no falloff at
         // all: the 2D painter draws a flat rect at exactly its authored alpha,
         // so sharpening here closes a difference rather than opening one.
-        float aa = max(clamp(1.6 / max(vPt, 1.0), 0.07, 1.0), vSoft);   // flow: soft to the centre
-        gl_FragColor = vec4(vColor.rgb, vColor.a * smoothstep(1.0, 1.0 - aa, r));
+        float aa = clamp(1.6 / max(vPt, 1.0), 0.07, 1.0);
+      // The flow dot is the library's: a firm disc at 1/1.6 of the sprite's
+      // radius at 0.80 of the alpha, under a faint one at the full radius at
+      // 0.30 -- the same two the 2D painter lays down, so the tile and the
+      // engine put the same ink on the same dot. Clamped where they overlap.
+      float disc2 = min(1.0, 0.30 * smoothstep(1.0, 1.0 - aa, r)
+                           + 0.80 * smoothstep(0.625, 0.625 - aa * 0.625, r));
+      float prof = mix(smoothstep(1.0, 1.0 - aa, r), disc2, vSoft);
+        gl_FragColor = vec4(vColor.rgb, vColor.a * prof);
       }
     }`;
 
@@ -6086,7 +6107,7 @@
   gl.useProgram(prog);
 
   const U = {};
-  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uOrgK','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY','uIris','uSphere'])
+  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uOrgK','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY','uIris','uSphere','uDpr'])
     U[n] = gl.getUniformLocation(prog, n);
   gl.uniform2f(U.uPan, 0, 0);
   gl.uniform1f(U.uAlpha, 1);
@@ -9663,31 +9684,50 @@
               q.c, opRender(q.a * tw * view.alpha * themeA));
         }
         // no flow or feeding while the cloud is in flight
-        if (view.morph){ if (batch) batch.flush(); return; }
-        // internal flow: the same presets and path maths the engine runs, so a
-        // library tile streams like its organ does in the concept
+        // The body pass paints the cloud in flight and nothing else, as before.
+        if (view.morph && mode === 'body'){ if (batch) batch.flush(); return; }
+        // Internal flow: the same presets and path maths the engine runs, so a
+        // library tile streams like its organ does in the concept.
+        //
+        // And through a morph, not only at rest. This used to `return` above
+        // while the cloud was in flight -- "no flow while the cloud is in
+        // flight" -- which switched the stream off for the 760-900ms of every
+        // organ change on the organ-age card and the immersive picker, and
+        // switched it back on the frame the cloud landed: "the transition
+        // occurs, and then after one second the flow blinks". The cloud
+        // travels between two shapes by `me`; the flow now travels between two
+        // streams by the same `me`, lane to lane, alpha to alpha -- the hero's
+        // own rule (5.66, 5.67). One end without a stream: the other stands in
+        // and the alpha runs to zero toward it (`hand`). The neuron dips
+        // through the middle of its morphs (`late`), as on the hero.
         if (mode !== 'body' && view.flow && flowOn && !view.still){
-          const pr = view.flowPreset || FLOW_PRESETS[view.idx];
-          const rt = pr && (view.flowPreset
-            ? (view._rt = view._rt || buildFlowRT(pr, view.cl.norm))
-            : getFlowRT(view.idx));
-          if (rt){
-            // One ink for the whole stream, the brightest of the three (LIT_CSS,
-            // read live so the tweak bar moves it too). This painter used to
-            // deal out the two DARKEST inks while the engine dealt all three --
-            // two renderers with two opinions about the same layer, and the
-            // tile holding the dimmer pair, which is most of why the flow kept
-            // reading as more cloud there.
-            for (let f = 0; f < view.flowN; f++){
-              const P = rt.paths[flowPick[f] % rt.paths.length];
-              const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
+          const m = view.morph;
+          const idxOf = (key, fb) => { const n = key && /^o(\d+)$/.exec(key); return n ? +n[1] : fb; };
+          const iA = m ? idxOf(m.keyA, view.idx) : view.idx;
+          const iB = m ? idxOf(m.keyB, view.idx) : view.idx;
+          const own = i => (view.flowPreset && i === view.idx)
+            ? { pr: view.flowPreset, rt: (view._rt = view._rt || buildFlowRT(view.flowPreset, view.cl.norm)) }
+            : { pr: FLOW_PRESETS[i], rt: FLOW_PRESETS[i] ? getFlowRT(i) : null };
+          let A = own(iA), B = m ? own(iB) : A;
+          const gotA = !!(A.pr && A.rt), gotB = !!(B.pr && B.rt);
+          if (!gotA && gotB) A = B;
+          if (!gotB && gotA) B = A;
+          if (A.pr && A.rt){
+            const f = m ? me : 0;
+            const hand = (gotA ? 1 : 0) + ((gotB ? 1 : 0) - (gotA ? 1 : 0)) * f;
+            const sf = Math.sin(Math.PI * f);
+            const dip = (m && (A.pr.late || B.pr.late)) ? 1 - sf * sf * sf * sf : 1;
+            const vis = hand * dip;
+            // one flow dot on one preset's lanes at time T: position in cloud
+            // units and the alpha the preset gives it
+            const at = (pr, rt, fi) => {
+              const P = rt.paths[flowPick[fi] % rt.paths.length];
+              const u = (flowU0[fi] + T * flowSpd[fi] * lanePace(pr, flowPick[fi] % rt.paths.length) / (pr.loop * 2)) % 1;
               const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
               // themeA lifts the cloud against a pale ground; the flow is
               // authored at the value it should render at, so the lift may
               // move it up to its own ceiling and no further
-              const fa = opRender(Math.min(flowA(pr),
-                flowA(pr) * themeA * endFade * (1 - 0.4 * Math.abs(flowZ[f]))));
-              if (fa <= 0.012) continue;
+              const fa = Math.min(flowA(pr), flowA(pr) * themeA * endFade * (1 - 0.4 * Math.abs(flowZ[fi])));
               const d = u * P.total;
               let k = 0;
               while (k < P.cum.length - 2 && P.cum[k + 1] < d) k++;
@@ -9696,38 +9736,36 @@
               const ax = P.x[k], ay = P.y[k], bx = P.x[k + 1], by = P.y[k + 1];
               let fx = ax + (bx - ax) * st, fy = ay + (by - ay) * st;
               const ddx = (bx - ax) / segLen, ddy = (by - ay) / segLen;
-              const off = flowLane[f] * pr.width * rt.k
-                        + Math.sin(T * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
-              fx += -ddy * off; fy += ddx * off;
-              // Larger than a cloud dot rather than the same size. The flow is
-              // held at 30% and must not compete on brightness, so what
-              // separates it has to be grain: a stream of bigger, softer dots
-              // moving through a field of fine still ones reads as a different
-              // layer at the same weight. It was 1.15 -- smaller than most
-              // cloud dots since they went to five sizes -- which is why it
-              // had stopped being visible at all.
-              // the same multiple of the same base the engine uses, times the
-              // 1.30 that turns a seed into this painter's radius.
-              // Through the same batcher as the cloud, not its own arc and
-              // fill per dot: now that the flow paints every frame on every
-              // dense tile, two hundred and sixty individually filled paths a
-              // frame took the library from 30fps to 9. The batcher buckets by
-              // alpha and draws a sub-pixel dot as a square, which at this size
-              // is the same two or three lit pixels.
-              // A moving dot cannot be smaller than a pixel without blinking
-              // as it crosses them, so the flow has a floor here the way the
-              // engine's points have theirs (max(ptSize, 1.0)): the library's
-              // grain went finer than that floor and the flow went with it.
-              // And it is soft -- a wide faint disc under a narrow firm one,
-              // 0.30 and 0.80 of its alpha, both on the grid via the buckets --
-              // so what a pixel receives as the dot crosses it changes by
-              // degrees rather than all at once. See `soft` in makeBatch.
+              const off = flowLane[fi] * pr.width * rt.k
+                        + Math.sin(T * 0.9 + flowU0[fi] * 25) * pr.turb * rt.k;
+              return [fx - ddy * off, fy + ddx * off, fa];
+            };
+            if (vis > 0.004) for (let fi = 0; fi < view.flowN; fi++){
+              const a = at(A.pr, A.rt, fi);
+              const b = f > 0.001 ? at(B.pr, B.rt, fi) : a;
+              const fx = a[0] + (b[0] - a[0]) * f, fy = a[1] + (b[1] - a[1]) * f;
+              // on the grid at the end, like every other alpha in the file
+              const fa = opRender((a[2] + (b[2] - a[2]) * f) * vis);
+              if (fa <= 0.012) continue;
+              // The flow dot: the one the engine now copies (see the vertex
+              // shader, `rF`). Larger than a cloud dot -- a stream of bigger,
+              // softer dots through a field of fine still ones reads as a
+              // different layer at the same weight -- and never under a pixel:
+              // a moving dot smaller than the pixels it crosses blinks as it
+              // crosses them (5.79), so it has a floor the way the engine's
+              // points have theirs. Soft: a wide faint disc under a narrow firm
+              // one, 0.30 and 0.80 of its alpha, both circles whatever their
+              // size (`soft` in makeBatch), so what a pixel receives as the dot
+              // crosses it changes by degrees. One ink, the lightest (LIT_CSS,
+              // read live so the tweak bar moves it too).
               const rF = Math.max(1.15, view.dot * rk * FLOW_MUL * DOT_BASE * 1.30);
               dot(ox + fx * sc, oy - fy * sc, rF * 1.6, LIT_CSS, fa * 0.30, true);
               dot(ox + fx * sc, oy - fy * sc, rF,       LIT_CSS, fa * 0.80, true);
             }
           }
         }
+        // no feeding while the cloud is in flight
+        if (view.morph){ if (batch) batch.flush(); return; }
         // strays live in the body pass; the flow pass ends here, and flushes
         // what it batched, since the flush at the foot belongs to the feed
         if (mode === 'flow' || !view.feed || view.still){ if (batch) batch.flush(); return; }
@@ -11605,6 +11643,7 @@
 
     gl.uniform1f(U.uDens, densNow = dens);
     gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale() * sizeMul);
+    gl.uniform1f(U.uDpr, dpr);   // the flow dot's pixel floor is stated in css px, see rF in the vertex shader
     voxNow += ((voxOn ? 1 : 0) - voxNow) * 0.08;
     gl.uniform1f(U.uSq, voxNow);
     // theme crossfade: particles re-ink and the clear colour glides between

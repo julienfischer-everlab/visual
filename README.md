@@ -1111,12 +1111,23 @@ modulates around 1 rather than under it.
 The level itself has moved since this was written: 0.75 when the flow first got
 its own path, then 0.30 when it was re-authored under the opacity grid, then
 0.40 by two 5% steps, then 0.50 ("25% more opacity on the dot", 0.40 × 1.25,
-on the grid exactly; ink 28.1 → 35.8), and now **0.65** — "you really need to
-see the flow, 25% more visible": 0.50 × 1.25 is 0.625, between two steps, and
-the emphatic ask took the upper one. Flow drawn alone on the phone: ink 34.5 →
-44.1, +28%. The shader caps the flow at 0.75, so there is one step left above
-this. The rest of this section is about the *path*, and still holds whatever
-the number is.
+on the grid exactly; ink 28.1 → 35.8), then 0.65 ("you really need to see the
+flow, 25% more visible"; ink 34.5 → 44.1), and now **0.35** — "too bright,
+reduce it by 50%", said once the two renderers had finally been made to draw
+the same dot (below) and the flow meant one amount of ink everywhere. The
+level was raised twice and was never the problem. The rest of this section is
+about the *path*, and still holds whatever the number is.
+
+**The engine draws the library's flow dot.** Both renderers read `FLOW_MUL` and
+`FLOW_A`, so their inputs agreed; the shapes they made of them did not — the
+tile a firm disc at `rF` under a faint one at `1.6 rF`, `rF` floored at 1.15 of
+its backing pixels, the engine a three-pixel soft cone — and shape is ink.
+Measured as flow ink over cloud ink: tile 17.6%, phone 25.4%, desktop 20.2%.
+The engine's flow sprite is now the outer disc's diameter (`rF = max(ptSize/2,
+0.77 css px × uDpr)`) and its fragment shader lays down the two discs, 0.80
+inside `1/1.6` of the radius and 0.30 to the edge, for flow dots only. After:
+tile 10.5%, phone 9.4%, desktop 9.8%. The library is the source of truth; the
+check is `flowratio.js`.
 
 Raising the flow under the cloud's shared ceiling did nothing, and it is worth
 saying why rather than shipping it and hoping: its dots were already pressing
@@ -1168,9 +1179,20 @@ That is five thousand dots a tile across nine tiles, and it took the page from
   side of a pixel boundary, then the other. The flow's dots on the tiles now
   have a floor of 1.15 backing pixels and a soft profile — a wide faint disc
   under a narrow firm one, both drawn as circles — and the figure is 0% (p90
-  8%). The engine's flow points take a three-pixel floor and a fully soft edge
-  for the same reason: 11% → 3% on the phone. Costs the library about 15% of
-  its frame rate in software rendering; the still dots keep their squares.
+  8%). The engine's flow points then took a three-pixel soft cone for the same
+  reason (11% → 3% on the phone), and finally the tile's own two-disc dot, so
+  that the two renderers put the same ink on the same dot (see *The engine
+  draws the library's flow dot*). Costs the library about 15% of its frame rate
+  in software rendering; the still dots keep their squares.
+- **And the flow travels through a 2D morph rather than hiding.** The painter
+  used to return before its flow section while the cloud was in flight, which
+  switched the stream off for the 760–900ms of every organ change on the
+  organ-age card and the immersive picker and back on when the cloud landed —
+  "the transition occurs, and then after one second the flow blinks". It now
+  does what the hero does: two streams, lane to lane and alpha to alpha by the
+  cloud's own eased fraction, the other end standing in where one has no
+  stream, the neuron dipping through its middle. Measured on the picker:
+  twenty-four empty frames → none.
 - **Squares under five device pixels.** A filled square and a filled circle
   are the same two or three lit pixels at that size, and a rect costs a
   fraction of tessellating an arc. Worth 2.3×.
