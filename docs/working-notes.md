@@ -2233,6 +2233,104 @@ where it is produced, not where it is displayed, so a zero means zero. And when
 a cutoff is written as `< 0.999`, ask what happens in the last thousandth --
 on an eased motion, the last thousandth is where the time goes.
 
+### 5.92 Cheaper in code, the same on screen
+
+"Make it cheaper in terms of code." Measured first: 632 KB, of which 54 KB is
+markup, 174 KB stylesheet (47 KB of it comments) and 404 KB script (168 KB of
+comment lines). Runtime: the engine's JS is under a millisecond a frame and its
+GL calls are trivial (six `bufferSubData`, three `drawArrays`); the library's
+2D painter is the only real cost, 20–28 ms a frame under software rendering,
+which is sixty thousand dots a frame as `Path2D` fills.
+
+Two things done, and one not.
+
+`tools/build.js` writes `dist/index.html`: csso on the stylesheet (without
+restructuring, so the cascade order is exactly the source's), terser on the
+script, HTML comments stripped. 632 KB → 324 KB, 185 KB → 88 KB gzipped. The
+shaders are template literals and pass through byte for byte. Every probe reads
+the same on both files: the sweep (`ERRORS none`), the guard (no white, max
+alpha 0.900), the flow ratio (10.3 / 9.7 / 10.5% against 10.2 / 9.8 / 10.2%,
+inside the run-to-run spread), the frame rate (33.6 vs 32.6 fps on the
+library, 60 on the phone). The source stays the file that is read and edited;
+the comments are the reasoning and they stay where the decisions are.
+
+In the painter's batching, the bucket key was `rgb + '|' + q` -- a string
+built and hashed into a Map for every dot, sixty thousand allocations a frame.
+It is an integer now (ink id × 21 + step), the three inks interned once per
+batch, and an `order` list keeps the fills in first-use order, which is what
+the Map's iteration gave and which matters: a lighter ink over a deeper one
+composites differently from the reverse. Verified the honest way -- the old
+and the new `makeBatch` cut out of the two files, run side by side in one page
+on the same twenty thousand seeded dots, pixels compared: max channel
+difference 0 (`batcheq.js`). A page-level comparison of the library tiles was
+tried first and could not tell: even with a seeded `Math.random` and a fake
+clock, two loads of the SAME file differ by a mean of 3–5 levels (which frame
+a tile last painted on is not deterministic), so the unit comparison is the
+one that counts.
+
+Not done: removing the archived modes (m0–m15), which is most of the code and
+none of the current design. That is a product decision -- the archive is there
+to be stepped through -- and it is offered, not made.
+
+### 5.93 The list as the design draws it
+
+A screenshot with a blue rule down the left of the card: "The hover state of
+this is wrong. Follow this rule here." The rule is one edge. The eyebrow, the
+dots and the names stand on it; the hover pill stands the same distance
+outside it on either side, rounded all the way round; every row carries its
+age, dim beside its name. Ours was a band cut off flush at the card's left
+edge (a −24px margin bleeding into a 0/10/10/0 radius), ending flush with the
+figures on the right, and only the selected row showed its age. Now: margin
+−14px both sides, padding 14px, radius 999px, ages on every row. And the
+eyebrow reads *Biological & organ ages* -- "there is an S to remove on organs
+and put on age".
+
+### 5.94 The card's light dipped through white
+
+"When transitioning the organ, the halo on the top right is clipping a little
+bit." Traced per frame (`halofade.js`): Heart to Lung, `--haloK` 0.465 →
+0.339 → 0.141 → 0.465 across three samples 130ms apart, the colour going green
+→ (179 196 173) → orange. The card's light was read off the eased warmth --
+green below zero, orange above, white within 0.08 of zero at a third of the
+strength -- and a change of verdict crossed zero on the way. Ten frames
+through the white, dimmed by 70%, in the middle of every green-to-orange morph.
+
+Now it fades the way the phone's does: the two verdicts are the ends, and the
+light blends from whatever it was showing to the new organ's colour and
+strength on the morph's own S-curve (`haloFrom`/`haloTo`/`haloNow`, keyed to
+`morphStart` the way the camera's `camFrom` is). After: 0.465 flat through the
+morph, the colour walking green → orange over the second with no reversal, on
+the desktop and the tablet.
+
+### 5.95 A 6% white light, measured on the pixels
+
+"The neutral state has to be a white halo on the top right with an opacity of
+6%. For mobile, desktop, and tablet. At the moment I don't see any halo." The
+white light was at 30% of the coloured lights' strength, and on the card that
+sat on top of the card's own 70% cut. Measured with the light on and off, the
+lift of the band under the top edge over the ground (`halolift.js`): 3.5% at
+the card's top right, 2.5% at the phone's dome peak. Not a light anyone sees.
+
+The stops alone would have said the phone was at 6% already -- the centre is
+151px above the top on a 365px radius, the top edge 41% out, 0.126 of the
+strength at k = 0.48 -- and they are wrong by more than half, because the
+header's ground and the status bar sit over the gradient. So the strength is
+set off the measurement, per surface: 0.19 (× 1.55) on the card for 6.0% on
+the desktop and the tablet at the top-right band; 0.74 (× 1.55) on the phone
+for 6.0% at the dome's peak. The coloured lights measure 7% on the phone by
+the same probe, so the white is nearly their equal there -- which is what "I
+want to see it" means. The phone's dome stays centred, as it has always been;
+"top right" is where the card's light sits.
+
+### 5.96 The card's edge has its line back
+
+"A line with your edge should have the light. I think it's 4% white opacity on
+the top." The ring that was taken off the card in 5.8x (it read as a stray
+edge at the phone's strength) is back at the strength asked for: the same
+one-pixel gradient clipped to its own padding, white at 4% at the top and gone
+a third of the way down, nothing along the sides. Dark theme only, as on the
+phone.
+
 ---
 
 ## 6. Open items
@@ -2254,9 +2352,12 @@ on an eased motion, the last thousandth is where the time goes.
 
 ## 7. Publishing
 
-- **Artifact:** https://claude.ai/code/artifact/78766a66-729c-4942-8206-0acbcf4b8551
-  — the live copy through this work. Republished from an exact copy of
-  `index.html` (only `<title>` differs).
+- **Artifact:** https://claude.ai/code/artifact/eb7b1a71-ee47-49a2-b338-2f1b60244efd
+  — the live copy through this work (an earlier one, 78766a66…, carried the
+  first stretch). Republished after every commit — a re-sent message has
+  always meant "I don't see it yet". Since 5.92 it is republished from
+  `dist/index.html` (only `<title>` differs), so the copy people open is the
+  built one.
 - **Branch:** `claude/zip-package-import-fzfsrp` on
   `julienfischer-everlab/visual`, pushed.
 - Write access was refused for most of this work — `git push` returned 403 on

@@ -2220,11 +2220,15 @@
   body.b5 .dash .dcard.dfill,
   body.b5 .dash .hiCard,
   body.b5 .dash .dcard.organ{background:rgba(255,255,255,.06);}
-  /* One number on the list, and it is the one the card is already showing
-     large: the rows beside it are a way in, not a table of readings.
-     visibility rather than display, so the column keeps its width and the
-     names do not shift when the selection moves. */
-  body.b5 .dash .olist .or:not(.on) .ag{visibility:hidden;}
+  /* The list as the design draws it. Every row carries its age, dim with its
+     name, so the column reads as the table it is; the hover -- which is the
+     selected state exactly -- is a pill that overhangs the column by the same
+     14px on both sides, rounded all the way round. It used to be a band cut
+     off flush at the card's left edge and ending flush with the figures on the
+     right, and only the selected row showed its age. The rule the design sets
+     is one edge: the label, the dots and the names stand on it, and the pill
+     stands the same distance outside it on either side. */
+  body.b5 .dash .olist .or{margin:0 -14px;padding:9px 14px;border-radius:999px;}
   /* A wash is a relationship to what is behind it, so the two pages can only
      share a card colour if they share a ground. The dashboard's #0d0d0c goes
      black here, the way the phone's body is black on this page -- 13 levels,
@@ -2672,6 +2676,19 @@
      sides -- one alpha, the whole way round */
   body.light #phone::after{
     background:rgb(var(--rimC) / var(--rimA));
+  }
+  /* The card gets its line back, at a whisper: white at 4% along the top,
+     fading down the sides the way the phone's does, so the light in the corner
+     has an edge to land on without the edge reading as a border. Dark only --
+     light has no halo on the card and nothing for a line to catch. */
+  body.b5:not(.light) #organSlot::after{
+    content:'';position:absolute;inset:0;z-index:7;pointer-events:none;
+    padding:1px;border-radius:20px;
+    background:linear-gradient(to bottom, rgb(255 255 255 / .04) 0%, rgb(255 255 255 / 0) 34%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+            mask-composite:exclude;
   }
 
   /* The silhouette's feet run off the bottom of the canvas, and a hard cut
@@ -3554,7 +3571,7 @@
 <div id="situTitle">
   <div class="slbl b3Off">How your organs are aging</div>
   <div class="slbl b3On">How your body is ageing</div>
-  <div class="slbl b5On">Biological &amp; organs age</div>
+  <div class="slbl b5On">Biological &amp; organ ages</div>
   <div class="oname" id="situOrgan">Gut</div>
 </div>
 
@@ -8638,9 +8655,15 @@
         // if it were younger. White now, and at a fraction of the strength
         // (the fourth value scales --haloK), so it reads as a light that is
         // present and has nothing to say. Both interpolate across the swipe.
+        // The white is pitched at 6% where the dome peaks, at the top centre
+        // of the screen -- measured off the rendered pixels with the light on
+        // and off (halolift.js), since the header's own ground and the status
+        // bar sit over the gradient and the stops alone overstate it by more
+        // than half. At 0.30 it measured 2.5%, which is not a light anyone
+        // sees; 0.74 is 6%. The coloured lights at 1 measure 7%.
         const hue = o => noAgeFor(o) ? [150, 150, 148, 1]
                        : o.delta > 0 ? [210, 148, 112, 1]
-                       : o.delta < 0 ? [132, 176, 142, 1] : [236, 234, 230, 0.30];
+                       : o.delta < 0 ? [132, 176, 142, 1] : [236, 234, 230, 0.74];
         const ha = hue(oa), hb = hue(ob);
         halo.style.setProperty('--v4halo',
           Math.round(ha[0] + (hb[0] - ha[0]) * f) + ' ' +
@@ -9269,13 +9292,23 @@
   const DOT_STEPS = 20;
   function makeBatch(px){
     if (px.parts) return null;
-    const buckets = new Map();
+    // Buckets are indexed by a small integer -- ink id times the grid's steps
+    // plus the step -- rather than by a string built per dot. Sixty thousand
+    // dots a frame each used to allocate `rgb + '|' + q` and hash it into a
+    // Map; the three inks are interned once per batch instead and the bucket
+    // is an array slot. Same buckets, same fills, less garbage.
+    const inkId = new Map(), inkRgb = [];
+    const buckets = [], order = [];
     const put = (x, y, r, rgb, a, soft) => {
       if (a < 0.006 || r <= 0) return;
       const q = Math.min(DOT_STEPS, Math.max(1, Math.round(a * DOT_STEPS)));
-      const key = rgb + '|' + q;
-      let path = buckets.get(key);
-      if (!path) buckets.set(key, path = new Path2D());
+      let id = inkId.get(rgb);
+      if (id === undefined){ id = inkRgb.length; inkRgb.push(rgb); inkId.set(rgb, id); }
+      const key = id * (DOT_STEPS + 1) + q;
+      let path = buckets[key];
+      // `order` keeps the fills in first-use order, which is what the Map gave:
+      // a lighter ink over a deeper one composites differently from the reverse.
+      if (!path){ buckets[key] = path = new Path2D(); order.push(key); }
       // Under about five device pixels across, a filled square and a filled
       // circle are the same two or three lit pixels -- and a rect costs a
       // fraction of what tessellating an arc does. The library draws sixty
@@ -9305,13 +9338,14 @@
       // was one pixel of falloff either way.
       add(x, y, r, rgb, a, soft){ put(x, y, soft ? r : r * (r < 2.2 ? 0.86 : 0.92), rgb, a, soft); },
       flush(){
-        buckets.forEach((path, key) => {
-          const i = key.lastIndexOf('|');
-          px.fillStyle = 'rgba(' + key.slice(0, i) + ',' +
-                         (+key.slice(i + 1) / DOT_STEPS).toFixed(3) + ')';
-          px.fill(path);
-        });
-        buckets.clear();
+        for (let n = 0; n < order.length; n++){
+          const key = order[n];
+          const id = (key / (DOT_STEPS + 1)) | 0, q = key - id * (DOT_STEPS + 1);
+          px.fillStyle = 'rgba(' + inkRgb[id] + ',' + (q / DOT_STEPS).toFixed(3) + ')';
+          px.fill(buckets[key]);
+          buckets[key] = undefined;
+        }
+        order.length = 0;
       }
     };
   }
@@ -11134,6 +11168,9 @@
   let jitter = reduced ? 0 : 1;
   let beatBlend = 0;
   let warmNow = 0;
+  // the card's light: the verdict it is fading from, the one it is fading to,
+  // where it is between them, and the morph whose clock it fades on
+  let haloFrom = null, haloTo = null, haloNow = null, haloMark = -1;
   const dHaloEl = document.getElementById('dHalo');
   // density, particle size, flow and voxels are settled: they stay where the
   // design landed rather than being exposed as tweaks
@@ -11502,18 +11539,41 @@
       // hair of zero -- "aligned with your age" is not a younger reading and
       // must not glow like one. `al` is the closeness to zero, eased with the
       // warmth so the colour and the dimming arrive together.
-      const hf = Math.max(0, Math.min(1, warmNow / 0.34));
-      const al = grey ? 0 : Math.max(0, 1 - Math.abs(warmNow) / 0.08);
-      const gr = grey ? [150, 150, 148] : [132, 176, 142],
-            og = grey ? [150, 150, 148] : [210, 148, 112],
-            wh = [236, 234, 230];
-      const c = [0, 1, 2].map(i => { const v = gr[i] + (og[i] - gr[i]) * hf; return Math.round(v + (wh[i] - v) * al); });
+      // The phone's three lights, read off the sign of the gap, and blended
+      // from the light that was showing to the one the new organ calls for on
+      // the morph's own S-curve -- the way the phone blends them across a
+      // swipe. This used to be read off the eased warmth instead, and a change
+      // of verdict crossed zero on the way: through the white "aligned" light
+      // at a third of the strength, in about ten frames. The card's light
+      // dipped by 70% and came back in the middle of every green-to-orange
+      // morph, which is the clip that was being seen. Now nothing is read mid-
+      // way; the two verdicts are the ends and the morph is the fade.
+      //
+      // The fourth value is the strength, in units of the phone's 1.55. The
+      // coloured lights run at 30% of the phone's: "reduce the halo on tablet
+      // and desktop by 70%" -- the card is a pane on a dark page, not a screen,
+      // and the phone's strength on it read as a stain over the whole top. The
+      // white "aligned" light is pitched separately, at 6% where it meets the
+      // card -- measured, not derived: the lift of the rendered pixels in the
+      // band under the card's top edge on the right, over the card's ground,
+      // with the light on and off (halolift.js). 0.19 puts that at 6.0% on the
+      // desktop and 6.4% on the tablet. It used to take the coloured lights'
+      // 70% cut on top of its own 30%, which left it at three and a half
+      // percent and not there at all.
+      const tgt = grey ? [150, 150, 148, 0.30]
+                : warmDelta > 0 ? [210, 148, 112, 0.30]
+                : warmDelta < 0 ? [132, 176, 142, 0.30] : [236, 234, 230, 0.19];
+      if (!haloTo){ haloTo = tgt; haloFrom = tgt.slice(); haloNow = tgt.slice(); }
+      else if (tgt.some((v, i) => v !== haloTo[i])){
+        // a new verdict: fade from wherever the light is, on this morph's clock
+        haloFrom = haloNow.slice(); haloTo = tgt; haloMark = morphStart;
+      }
+      const hk = haloMark === morphStart ? easeJS(Math.min(1, Math.max(0, uPnow))) : 1;
+      for (let i = 0; i < 4; i++) haloNow[i] = haloFrom[i] + (haloTo[i] - haloFrom[i]) * hk;
       const host = dHaloEl.closest('#organSlot') || dHaloEl;
-      host.style.setProperty('--v4halo', c.join(' '));
-      // The card's light at 30% of the phone's: "reduce the halo on tablet and
-      // desktop by 70%". The card is a pane on a dark page, not a screen, and
-      // the phone's strength on it read as a stain over the whole top.
-      host.style.setProperty('--haloK', (1.55 * 0.30 * (1 - 0.70 * al)).toFixed(3));
+      host.style.setProperty('--v4halo',
+        Math.round(haloNow[0]) + ' ' + Math.round(haloNow[1]) + ' ' + Math.round(haloNow[2]));
+      host.style.setProperty('--haloK', (1.55 * haloNow[3]).toFixed(3));
     }
 
     // camera rides the same S-curve timeline as the morph

@@ -1,6 +1,6 @@
 # Particle Organs — Organ Age concept
 
-A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between ten anatomical silhouettes, explored through eighteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no build step, no dependencies, no external requests.
+A living particle-anatomy prototype for Everlab: a single WebGL particle system (~9,000 points) morphs between ten anatomical silhouettes, explored through eighteen switchable experience modes with three themes. Everything ships as **one self-contained HTML file** — no dependencies, no external requests. There is an optional build that makes the same file half the size; the source runs as it is.
 
 **Live:** https://particle-organs.vercel.app
 
@@ -11,6 +11,39 @@ Serve `index.html` from any static server (or just open the file):
 ```bash
 python3 -m http.server 8734
 ```
+
+## Build (optional)
+
+`index.html` is the file people read and edit, and about a third of it is
+explanation: the comments in the CSS and the JS are the design's reasoning,
+kept where the decisions are. That is the right shape for the source and the
+wrong shape for the wire. `tools/build.js` writes `dist/index.html`: the same
+page, with the stylesheet through csso and the script through terser, and the
+HTML comments stripped. Nothing else — no number the design landed on is
+touched, the shaders (template literals) pass through untouched, and the
+regression probes read the same on both files.
+
+```bash
+cd tools && npm install && npm run build
+```
+
+| | source | dist | gzip source | gzip dist |
+|---|---|---|---|---|
+| `index.html` | 632 KB | 324 KB | 185 KB | 88 KB |
+
+The build is not where the runtime cost is. The engine's frame is under a
+millisecond of JS; the library's is the 2D painter's sixty thousand dots a
+frame, and that is drawn as fills of at most sixty `Path2D` buckets per tile
+(colour × the 5% alpha grid). The one runtime change made alongside the build
+is in that batching: the bucket key is a small integer now (ink id × steps +
+step) rather than a string built and hashed per dot, so the sixty thousand
+string allocations a frame are gone. Verified pixel-identical to the old
+batching on the same dots (`batcheq.js`, max channel difference 0).
+
+What would actually make the page smaller is removing the archived modes
+(Desktop V1–V4, Mobile V1–V5 and the rest of m0–m15). That is most of the code
+and none of the current design — and it is a product decision, not a build
+step, so it has not been made here.
 
 ## On a phone
 
@@ -36,6 +69,8 @@ V5 rule rather than in the full-screen block, which the cascade puts above it.
 | Path | Purpose |
 |---|---|
 | `index.html` | The entire prototype: engine, all modes, themes, UI |
+| `tools/build.js` | Optional build: minifies `index.html` into `dist/index.html` without changing what it does |
+| `dist/index.html` | The built copy — half the bytes, the same page (regenerate, do not edit) |
 | `docs/design-spec.md` | Design spec with the full source embedded |
 | `docs/working-notes.md` | Conventions, design reasoning, and the traps already hit |
 | `social-video/organ-age-teaser.mp4` | 1350×1920 · 12s seamless-loop teaser (30fps H.264, X-ready) |
@@ -95,7 +130,7 @@ in the build; the numbering is the mode index, not the menu.
 15. **Mobile V7** — Mobile V6 again, as somewhere to diverge from. It is an index and a marker class, not a copy of anything: the class chain is cumulative, so `m20` wears every rule V6 wears and starts differing the moment something is written against `v8`. Wears `m5 v2 v3 v4 v5 v6 v7` plus a `v8` marker.
 
 On the biomarker slide the body is a **vessel being filled**, not a body being coloured. Below the front the particles are dense and at full strength; they do not change colour, because the two they are drawn from say nothing about the reading. The front stops at the **optimal share** rather than covering the figure: how high it reaches is the reading, 81 of 124 being two thirds of a body and not all of it. Above it the cloud does not simply dim — nearly every particle in the volume goes, and what stays is the shell. The edge attribute each particle already carries runs high on the silhouette and low deep inside, so keeping by it leaves an edge nobody drew: the body is still legibly there, visible the way glass is, by its rim rather than by an outline, The empty half reads as a container rather than as the same body dimmed because of how little of it is left, not because anything is tinted. The handover is a band a tenth of the body deep, because a fill in a silhouette fails at exactly one place — a visible horizontal edge — and the particles the lottery took fade back in across it rather than switching on. The strays that sit outside the silhouette stay, since a vessel drawn to the pixel would stop being a particle system. Leaving that slide the fill drains over a span of its own, slower than it arrived — it used to ride the morph's curve directly, and that curve spends most of itself in the first fifth of a three-second dissolve, so the fill left and the particles came back inside half a second and then nothing happened for two and a half more: a flip, not a fade. The fill rises on the same cue and over the same span as the arc's sweep — they are one reveal of one reading, and running them on two clocks left the body still filling long after the meter had finished. The cue is the release: the arc is a reading rather than a scrubbable control, so it commits with the swipe and then fills at its own pace instead of waiting out the silhouette's three-second dissolve. The three ranges below carry the split, so the body itself never needs to carry three readings; the counts live in one object that both the legend and the fill height are read from, since a number typed into the markup and a number typed into the shader would be two places to change one fact. Neither does it morph under the finger: the strips track the drag, the silhouette holds the slide the swipe picked up and only breaks apart on the release, which is the physics every other step of the carousel already had. V6 opens on that slide and holds it against the five-second cycle, since it is the page's headline. The card it came from leaves the body: it is in the hero now, not below it. Wears `m5 v2 v3 v4 v5 v6` plus a `v7` marker.
-15. **Desktop V5** — Desktop V1 reading the organ the way the phone does. The organ card carries Mobile V5's stack — the arc, then the age at the size the phone sets it, then the difference in words directly under the number — and that difference stops being a tag: a pill is a status, and V5's whole point is that the figure states the verdict while the words only spell it out, in the same grey whichever way the delta runs. The hero says what the phone's hero says, figure for figure: biomarkers, then the count of the panel still untested rather than health coverage — coverage has a tile of its own further down — and the card's one action, *Get test*, held at the right by an auto margin. The steps card already read the same on both. The page is two even columns: biomarkers over the pair on the left, the organ alone on the right. V1 gave the organ the wider half and folded the pair into one full-width tile, because coverage had moved into its hero; V5's hero carries untested instead, so coverage takes its own tile back and the two stand side by side in the phone's order — coverage, then steps. The organ list holds its longest row on one line at the narrower card by taking a larger share of it (51%, against V1's 46%), and the organ takes what is left. The dot that starts each row sits on the eyebrow's own left rule rather than a row's padding in from it -- nothing else on the card stands on that line, so the inset read as a misalignment. It became a negative margin, which sends the highlight the other way: the selected row bleeds off the card's left edge as a band across the row, rather than a pill floating inside a column. The halo is a dark-theme thing on both platforms: it is light thrown on a surface, and on the pale ground it read as a coloured stain sitting on the page rather than as light, so the light theme carries none. The phone's light sits on the card too: the same stop list, the geometry scaled off the card's width the way the phone's is off the screen's, and the same slow breath. It is centred on the organ rather than on the card, since the list has the left half and a light centred on the card would sit beside the thing it is lighting. Its colour is the phone's — green while the organ reads younger, orange once it reads older — taken here from the eased warmth the cloud is already tinted by rather than from a carousel position. The card's corner carries the phone's share button in place of the expand arrows. Its own eyebrow reads *Biological age*, at the biomarker card's size and in its grey, so the two titles on the row are one thing said twice rather than two treatments. The organ is drawn a fifth larger than the other dashboards and sits 64px lower in the card, and the stack follows it down by less than it moved — 48px for the arc, 24px for the age and its caption — so the three close on each other as they fall. Those are transforms rather than margins: `resize()` bottom-aligns the stack off its own `offsetHeight`, and a margin would grow that height and shunt the block back up by what it was just given. The cards are the phone's cards exactly: 6% white, which paints `#0f0f0f` — a card that lifts off the page rather than standing on it. A wash is a relationship to what is behind it, so two pages can only share a card colour if they share a ground; the dashboard's `#0d0d0c` goes black here, the way the phone's body is black on this page. Thirteen levels, invisible in itself, and it is what makes the two identical. The canvas clears to the same value, or the organ would sit on a visible rectangle. Wears `m2 b2 b3` plus a `b5` marker.
+15. **Desktop V5** — Desktop V1 reading the organ the way the phone does. The organ card carries Mobile V5's stack — the arc, then the age at the size the phone sets it, then the difference in words directly under the number — and that difference stops being a tag: a pill is a status, and V5's whole point is that the figure states the verdict while the words only spell it out, in the same grey whichever way the delta runs. The hero says what the phone's hero says, figure for figure: biomarkers, then the count of the panel still untested rather than health coverage — coverage has a tile of its own further down — and the card's one action, *Get test*, held at the right by an auto margin. The steps card already read the same on both. The page is two even columns: biomarkers over the pair on the left, the organ alone on the right. V1 gave the organ the wider half and folded the pair into one full-width tile, because coverage had moved into its hero; V5's hero carries untested instead, so coverage takes its own tile back and the two stand side by side in the phone's order — coverage, then steps. The organ list holds its longest row on one line at the narrower card by taking a larger share of it (51%, against V1's 46%), and the organ takes what is left. The dot that starts each row sits on the eyebrow's own left rule rather than a row's padding in from it -- nothing else on the card stands on that line, so the inset read as a misalignment. The list follows the design's one rule: the eyebrow (*Biological & organ ages*), the dots and the names all stand on that left rule, every row carries its age dim beside its name, and the highlight -- hover and selected are the same state -- is a pill rounded all the way round that overhangs the column by the same 14px on both sides. It was a band cut off flush at the card's left edge and ending flush with the figures for a while, with only the selected row showing its age; the design drew it otherwise, and the design is the rule. The halo is a dark-theme thing on both platforms: it is light thrown on a surface, and on the pale ground it read as a coloured stain sitting on the page rather than as light, so the light theme carries none. The phone's light sits on the card too: the same stop list, the geometry scaled off the card's width the way the phone's is off the screen's, and the same slow breath. It is centred on the organ rather than on the card, since the list has the left half and a light centred on the card would sit beside the thing it is lighting. Its colour is the phone's — green while the organ reads younger, orange once it reads older — taken here from the eased warmth the cloud is already tinted by rather than from a carousel position. The card's corner carries the phone's share button in place of the expand arrows. Its own eyebrow reads *Biological age*, at the biomarker card's size and in its grey, so the two titles on the row are one thing said twice rather than two treatments. The organ is drawn a fifth larger than the other dashboards and sits 64px lower in the card, and the stack follows it down by less than it moved — 48px for the arc, 24px for the age and its caption — so the three close on each other as they fall. Those are transforms rather than margins: `resize()` bottom-aligns the stack off its own `offsetHeight`, and a margin would grow that height and shunt the block back up by what it was just given. The cards are the phone's cards exactly: 6% white, which paints `#0f0f0f` — a card that lifts off the page rather than standing on it. A wash is a relationship to what is behind it, so two pages can only share a card colour if they share a ground; the dashboard's `#0d0d0c` goes black here, the way the phone's body is black on this page. Thirteen levels, invisible in itself, and it is what makes the two identical. The canvas clears to the same value, or the organ would sit on a visible rectangle. Wears `m2 b2 b3` plus a `b5` marker.
 
 15. **Tablet** — Desktop V5 in a frame two hundred pixels narrower, and a page rather than a state of one. It was a tweak on V5 first, which is what a shell looks like before you try to link to it: a design you cannot open on its own, cannot put beside its siblings in the menu, and cannot point anyone at. A page costs one index and one class chain — it wears every rule V5 wears plus the `tabM` marker the layout is written against — and buys all three back. One thing has to give at that width: the organ card cannot hold the list and the organ side by side, and halving the organ to keep ten rows would be keeping the least of the card. So the list goes and the card reads the way the phone's hero does — the organ centred with the whole width, arrows either side of the number, and the names on the floor of the card with their neighbours showing, cropped by the card's edge rather than shortened. Nothing is lost: every reading the list held is one arrow away, and the one the card is showing is the one it was already showing large. The strip and the arrows count by the same sequence the phone's carousel does, so the organ ages collapse to a single *Organ age* slide when they are unread, exactly as they do there. Everything else is the same page tightened — a narrower rail, a shorter page margin, the left column stacked one-up because half of a narrower page is not two cards wide, one row of filter chips that scrolls rather than wraps, and a table that drops the sparkline, the one column that says least at a glance. Coverage and steps stay side by side as they are on the desktop — stacking them was the obvious move and the wrong one, since the pair is one row of two readings taken together rather than two cards that happen to be adjacent.
 
@@ -792,10 +827,14 @@ nothing to catch, and the line stops being a highlight and becomes the edge
 itself: even the whole way round, a step stronger, because on a pale ground
 the edge is the only thing separating the surface from the page.
 
-**The ring is the phone's alone.** The desktop and tablet card carried the same
-one-pixel line, and there it read as a stray white edge along the top and left
-— "useless" — so it is gone from the card; the card's edge is its own radius
-against the page.
+**The card's edge carries a top line at 4%.** The desktop and tablet card
+carried the phone's full ring first, and it read as a stray white edge along
+the top and left — "useless" — so it went; then the light needed something to
+land on, and the ask came back as "a line with your edge should have the light,
+4% white on the top". So the card has the same one-pixel ring the phone has,
+drawn the same way (a gradient clipped to its own padding), at 4% white at the
+top and gone a third of the way down: the light arriving at the edge, and
+nothing along the sides.
 
 **The card's light sits top right, and can be seen.** The first geometry
 centred a 1104px circle 426px above the card so that only its bottom cap
@@ -809,10 +848,30 @@ over the whole top; "reduce it by 70%" was the ask.
 
 **Three verdicts, three lights.** Older is orange and younger is green on every
 surface; *aligned with your age* used to fall on the green side of `delta > 0`,
-so an organ exactly its age glowed as if it were younger. It is white now, at
-30% of the halo's strength (`--haloK` is scaled per verdict alongside the
-colour, and both interpolate across the swipe on the phone and with the eased
-warmth on the card): a light that is present and has nothing to say.
+so an organ exactly its age glowed as if it were younger. It is white now: a
+light that is present and has nothing to say.
+
+**The white is pitched at 6%, measured.** It was set at 30% of the coloured
+lights' strength, and on the card that sat on top of the card's own 70% cut —
+three and a half percent at the edge, and on the phone two and a half at the
+dome's peak, which is no light at all ("I don't see any halo"). The strength is
+now set per surface off the rendered pixels — the lift of the band under the
+top edge with the light on and off, over the ground (`halolift.js`) — so that
+the white reads at 6% where it meets the surface: the top-right band of the
+card on the desktop and tablet, the top centre of the screen on the phone. The
+stops alone overstate the phone by more than half, because the header's ground
+and the status bar sit over the gradient, which is why this is measured rather
+than derived.
+
+**The card's light fades on the morph.** It used to be read off the eased
+warmth — green below zero, orange above, white within a hair of zero — and a
+change of verdict crossed zero on the way: through the white light at a third
+of the strength, in about ten frames. The card's light dipped by 70% and came
+back in the middle of every green-to-orange morph. Now the two verdicts are the
+ends and the morph is the fade: the light blends from whatever it was showing
+to the new organ's colour and strength on the morph's own S-curve, the way the
+phone blends its halo across a swipe. Nothing is read mid-way, so there is
+nothing to dip through.
 
 
 ### The library is the source of truth
@@ -1399,7 +1458,9 @@ black — the phone frame and the dashboard chrome cover them entirely.
 ## Deploy
 
 The current production deploy is Vercel (`vercel --prod` from the repo root —
-`index.html` is the site). Any static host works.
+`index.html` is the site). Any static host works. To ship the built copy
+instead, serve `dist/index.html` (rebuild it first: `cd tools && npm run
+build`); it is the same page at half the bytes.
 
 ## Social video
 
