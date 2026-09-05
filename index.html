@@ -7443,8 +7443,21 @@
     pillCurrent = i;
     // bento mini card: carousel-style slide direction + title crossfade
     if (isBento(version)){
-      bxT = (orgLock() && i === MB_ORDER[BRAIN_K]) ? 1
-          : MB_ORDER.indexOf(i);   // the carousel glides to the selection
+      const slot = (orgLock() && i === MB_ORDER[BRAIN_K]) ? 1
+                 : MB_ORDER.indexOf(i);   // the reading's slot in the strip
+      // The carousel is a loop, and the position is unwrapped so a drag never
+      // jumps under the finger -- which means one reading has many positions
+      // (Kidney is 9, and also -2, and 20). This used to glide to the slot
+      // itself, so a swipe back from the biomarker slide at -1 to Kidney set
+      // off for 9: ten slides the long way round, every organ flashing past,
+      // "all of the visuals change a lot". Now it goes to whichever position of
+      // the reading is nearest where the carousel is: the swipe and the arrow
+      // keys have already said which one (bxT), so that is kept when it names
+      // this reading; a pill tap or the auto-advance picks the short way round.
+      // One step is one step, in either direction, across the join included.
+      if (document.body.classList.contains('v5')){   // v4Live, which is declared later
+        if (bxWrap(Math.round(bxT)) !== slot) bxT = Math.round(bx + bxD(slot, bx));
+      } else bxT = slot;
       bxGlide(bxT);                // V4 rides a timed curve to it; the rest chase
     }
     applyNoAge();

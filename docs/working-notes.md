@@ -2408,6 +2408,28 @@ bottom corner; at the top both sit under the green light, 22–24 against 21–2
 a level apart. The rule this leaves behind: a number the CSS and the renderer
 both have to agree on is declared once and read twice, never written twice.
 
+### 5.102 One step is one step, across the join
+
+"When I go to biomarker and I go backward to kidney, all of the visuals
+change a lot. It should just change one." The carousel is a loop and its
+position is unwrapped, so one reading has many positions: Kidney is 9, and
+also −2, and 20. The swipe handler already knew this -- it set the target to
+the position the finger reached (−2) and glided there -- and then called
+`selectPill`, which set the target again, to the reading's slot (9), and
+glided there instead: eleven slides the long way round, every organ flashing
+through the centre. Measured with the strip name nearest the centre sampled
+every 40ms (`loopback.js`), the step from Biomarkers back to Kidney passed
+Kidney, Mental, Muscle & bone, Gut, Metabolic, Kidney; the step on from Kidney
+to Biomarkers passed five names the other way.
+
+`selectPill` now glides to whichever position of the reading is nearest where
+the carousel is: it keeps the caller's target when that target names this
+reading (the swipe and the arrow keys have already chosen), and otherwise takes
+the shortest signed distance (`bxD`) from the current position -- so a pill
+tap and the auto-advance also take the short way round, forward across the
+join from Kidney rather than rewinding the strip. After: every step in the
+probe passes exactly one name, both directions, join included.
+
 ---
 
 ## 6. Open items
