@@ -5662,7 +5662,8 @@
     uniform mat3 uRot;
     uniform vec2 uView;
     varying vec4 vColor;
-    varying float vPt;   // the dot's size in pixels, so the rim can be a pixel wide
+    varying float vPt;
+    varying float vSoft;   // 1 for a flow dot: fully soft edge, see the fragment shader   // the dot's size in pixels, so the rim can be a pixel wide
     uniform float uEase;
     float ease(float p){
       // uEase 0: gentle sine S-curve; 1: hard quint S-curve
@@ -5832,9 +5833,19 @@
       // gl_PointSize is an output: reading one back is undefined in GLSL ES 1.0
       // and a stricter driver than the one this was written against is within
       // its rights to refuse to compile it.
-      float ps = max(ptSize, 1.0) * (1.0 - sphOff);
+      // The flow's floor is three pixels, not one, and its edge is fully soft
+      // (vSoft): a moving dot smaller than that, hard-edged, lands on one side
+      // of a pixel boundary and then the other and reads as blinking as it
+      // travels. Three rather than two because a two-pixel sprite is sampled
+      // by four fragments and a soft cone across four fragments still jumps
+      // as the centre crosses them -- measured per dot: 11% -> 8% brightness
+      // change a frame at two, against 0% on the library's tile. At three the
+      // cone has nine samples to move across. The cloud stands still, so its
+      // dots keep the one-pixel floor and the sharper rim.
+      float ps = max(ptSize, 1.0 + 2.0 * flowP) * (1.0 - sphOff);
       gl_PointSize = ps;
       vPt = ps;
+      vSoft = flowP;
       float tw = (0.90 + 0.10 * sin(uTime * 1.8 + aSeed.z * 21.0)) * sphLit;
       // voxel mode: quieter shimmer — data, not sparkle
       tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
@@ -6017,7 +6028,8 @@
   const FS = `
     precision mediump float;
     varying vec4 vColor;
-    varying float vPt;   // the dot's size in pixels, so the rim can be a pixel wide
+    varying float vPt;
+    varying float vSoft;   // 1 for a flow dot: fully soft edge, see the fragment shader   // the dot's size in pixels, so the rim can be a pixel wide
     uniform highp float uSq;
     void main(){
       vec2 c = gl_PointCoord * 2.0 - 1.0;
@@ -6044,7 +6056,7 @@
         // It moves the engine's dot toward the tile's, which has no falloff at
         // all: the 2D painter draws a flat rect at exactly its authored alpha,
         // so sharpening here closes a difference rather than opening one.
-        float aa = clamp(1.6 / max(vPt, 1.0), 0.07, 1.0);
+        float aa = max(clamp(1.6 / max(vPt, 1.0), 0.07, 1.0), vSoft);   // flow: soft to the centre
         gl_FragColor = vec4(vColor.rgb, vColor.a * smoothstep(1.0, 1.0 - aa, r));
       }
     }`;
@@ -9190,7 +9202,7 @@
   function makeBatch(px){
     if (px.parts) return null;
     const buckets = new Map();
-    const put = (x, y, r, rgb, a) => {
+    const put = (x, y, r, rgb, a, soft) => {
       if (a < 0.006 || r <= 0) return;
       const q = Math.min(DOT_STEPS, Math.max(1, Math.round(a * DOT_STEPS)));
       const key = rgb + '|' + q;
@@ -9201,7 +9213,19 @@
       // fraction of what tessellating an arc does. The library draws sixty
       // thousand of these a frame now, so it is the difference between the
       // page animating and the page not.
-      if (r < 2.4){ const d = r * 1.78; path.rect(x - d / 2, y - d / 2, d, d); }
+      //
+      // The same two or three pixels only while the dot stands still. A dot
+      // that MOVES a fraction of a pixel per frame lands with its hard edge on
+      // one side of a pixel boundary, then the other: one bright pixel, then
+      // two dim ones, then one bright -- and the eye reads a white dot that
+      // blinks as it travels. Measured on the library's flow overlay: 71% of
+      // its pixels jumped a brightness step every frame. So a moving dot is
+      // drawn as a circle whatever its size (`soft`), and drawn twice by its
+      // caller -- a wide faint disc under a narrow firm one -- so its coverage
+      // of any pixel changes smoothly as it crosses. Two arcs a dot, on the
+      // two hundred dots that move; the sixty thousand that stand still keep
+      // their squares.
+      if (r < 2.4 && !soft){ const d = r * 1.78; path.rect(x - d / 2, y - d / 2, d, d); }
       else { path.moveTo(x + r, y); path.arc(x, y, r, 0, 6.2832); }
     };
     return {
@@ -9211,7 +9235,7 @@
       // two values off the grid for every dot on it. The grid is the thing
       // being asked for, so the edge goes; at three or four device pixels it
       // was one pixel of falloff either way.
-      add(x, y, r, rgb, a){ put(x, y, r * (r < 2.2 ? 0.86 : 0.92), rgb, a); },
+      add(x, y, r, rgb, a, soft){ put(x, y, soft ? r : r * (r < 2.2 ? 0.86 : 0.92), rgb, a, soft); },
       flush(){
         buckets.forEach((path, key) => {
           const i = key.lastIndexOf('|');
@@ -9458,8 +9482,8 @@
         mode = mode || 'all';
         const T = t / 1000;
         const batch = makeBatch(px);
-        const dot = (x, y, r, rgb, a) => batch ? batch.add(x, y, r, rgb, a)
-                                               : dot2D(px, x, y, r, rgb, a);
+        const dot = (x, y, r, rgb, a, soft) => batch ? batch.add(x, y, r, rgb, a, soft)
+                                                     : dot2D(px, x, y, r, rgb, a);
         // same pulse the engine runs: the heart beats, everything else breathes
         const u = (t % 1100) / 1100;
         const pulse = view.beat
@@ -9651,8 +9675,17 @@
               // frame took the library from 30fps to 9. The batcher buckets by
               // alpha and draws a sub-pixel dot as a square, which at this size
               // is the same two or three lit pixels.
-              dot(ox + fx * sc, oy - fy * sc,
-                  view.dot * rk * FLOW_MUL * DOT_BASE * 1.30, LIT_CSS, fa);
+              // A moving dot cannot be smaller than a pixel without blinking
+              // as it crosses them, so the flow has a floor here the way the
+              // engine's points have theirs (max(ptSize, 1.0)): the library's
+              // grain went finer than that floor and the flow went with it.
+              // And it is soft -- a wide faint disc under a narrow firm one,
+              // 0.30 and 0.80 of its alpha, both on the grid via the buckets --
+              // so what a pixel receives as the dot crosses it changes by
+              // degrees rather than all at once. See `soft` in makeBatch.
+              const rF = Math.max(1.15, view.dot * rk * FLOW_MUL * DOT_BASE * 1.30);
+              dot(ox + fx * sc, oy - fy * sc, rF * 1.6, LIT_CSS, fa * 0.30, true);
+              dot(ox + fx * sc, oy - fy * sc, rF,       LIT_CSS, fa * 0.80, true);
             }
           }
         }

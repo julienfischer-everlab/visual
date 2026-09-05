@@ -1126,11 +1126,18 @@ That is five thousand dots a tile across nine tiles, and it took the page from
   and on the brightest ink in the file that reads as blinking — which is how it
   was reported. A dense tile therefore paints its flow every frame on a
   transparent overlay canvas over the cloud's, and the cloud and strays keep
-  their slot. About 10% of the library's frame rate in software rendering, for
-  the one layer whose meaning is that it moves. (Found on the way: the resize
-  check compared an integer canvas width against `w × 1.5`, so every tile was
-  "resized" — reallocated and repainted — on every frame it was checked.
-  Rounded.)
+  their slot. (Found on the way: the resize check compared an integer canvas
+  width against `w × 1.5`, so every tile was "resized" — reallocated and
+  repainted — on every frame it was checked. Rounded.)
+- **And a moving dot cannot be smaller than the pixels it crosses.** Followed
+  dot by dot from frame to frame, each flow dot on a tile changed brightness by
+  a median 17% every frame (p90 30%): a hard-edged 1.6px square landing on one
+  side of a pixel boundary, then the other. The flow's dots on the tiles now
+  have a floor of 1.15 backing pixels and a soft profile — a wide faint disc
+  under a narrow firm one, both drawn as circles — and the figure is 0% (p90
+  8%). The engine's flow points take a three-pixel floor and a fully soft edge
+  for the same reason: 11% → 3% on the phone. Costs the library about 15% of
+  its frame rate in software rendering; the still dots keep their squares.
 - **Squares under five device pixels.** A filled square and a filled circle
   are the same two or three lit pixels at that size, and a rect costs a
   fraction of tessellating an arc. Worth 2.3×.

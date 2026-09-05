@@ -1983,6 +1983,54 @@ back to back against the previous commit: 27-28fps -> 24.7 on the library.
 The phone is unchanged. The right trade for the one layer whose whole meaning
 is that it moves.
 
+### 5.79 A dot that moves cannot be smaller than the pixels it crosses
+
+"The flow still clipping, fix it" -- "the white particles that are moving".
+The overlay had put the flow at full frame rate (5.78) and it still blinked,
+so the fault was in the dot, not the schedule. Every metric so far had
+conflated two things: pixels changing because a dot MOVED across them, which
+is motion and correct, and a dot's own brightness changing as it moved, which
+is the blink. The measurement that separates them follows each dot: find its
+brightest pixel in one frame, match it to the nearest peak within 2.5px in the
+next, and record how much that brightness changed.
+
+    library tile, per dot, frame to frame:   median 17%   p90 30%   (before)
+
+Seventeen percent brighter or dimmer every frame, every dot. That is what a
+hard-edged square 1.6 pixels wide does as it travels a fraction of a pixel per
+frame: one bright pixel, then two dim ones, then one bright. The cloud's dots
+are the same size and do not blink, because they do not move.
+
+Two changes to the tile's flow dots, and only theirs. A floor of 1.15 backing
+pixels on the radius, the way the engine's points have `max(ptSize, 1.0)` --
+the library's grain went finer than a pixel and the flow went with it, and a
+STILL dot can do that where a moving one cannot. And a soft profile: drawn
+twice, a wide faint disc (1.6r at 0.30 of its alpha) under a narrow firm one
+(r at 0.80), both as circles whatever their size (`soft` in the batcher, which
+otherwise draws small dots as squares), so what any pixel receives changes by
+degrees as the dot crosses it.
+
+    library tile, per dot, frame to frame:   median 0%    p90 8%    (after)
+
+The engine had the same fault at a smaller amplitude: 11% median, 29% p90 on
+the phone hero. Its points already have a soft rim, but at the two-pixel size
+the flow was drawn at, a sprite is sampled by four fragments and a cone across
+four fragments still jumps as its centre crosses them. A floor of three pixels
+for the flow alone (`1.0 + 2.0 * flowP`), and a fully soft edge (`vSoft`, the
+smoothstep run to the centre): 3% median, 9% p90 on the phone, 5% and 11% on
+the desktop.
+
+Cost, in software rendering: two arcs a flow dot on the tiles, 26 -> 22fps on
+the library; the phone unchanged. The dots are visibly a little larger and
+softer than the "two times smaller, fine like the other particles" of 5.51 --
+that instruction was met on a dot that stood still and cannot be met on one
+that moves. The right size for a moving dot is the smallest one that does not
+blink, and this is it.
+
+The general lesson is the one from 5.63 restated for space instead of time:
+stills cannot find a one-frame event, and pixel counts cannot find a per-dot
+one. The measurement has to be shaped like the thing being looked for.
+
 ---
 
 ## 6. Open items
