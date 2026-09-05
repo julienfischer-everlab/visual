@@ -2113,6 +2113,25 @@ changed. The brain (organ 0) is *Brain age* and reads as aligned; the neuron
 ORGANS label rather than the pill's and was left alone. The tab order follows
 the pill list, so it now reads Heart, Brain, Mental, Lung.
 
+### 5.86 The card's light at 30%
+
+"Reduce the halo on tablet and desktop by 70%." One frame after it became
+visible at all (5.83), which is the right order: first make the thing exist,
+then set its level. The card's `--haloK` is the phone's 1.55 times 0.30, set in
+the same place the verdict dims it, so the aligned white is 30% of 30%. A card
+is a pane on a dark page rather than a screen, and the phone's strength on it
+read as a stain over the whole top. Checked at 2x on desktop and tablet: a
+tint in the corner, orange or green by verdict, and no more.
+
+### 5.87 The flow, a step past the arithmetic
+
+"You really need to see the flow -- 25% more visible." 0.50 x 1.25 is 0.625,
+which sits between two steps of the grid; 0.65 rather than 0.60, because the
+ask was emphatic and the previous round had already landed a quarter short of
+a quarter. Flow drawn alone on the phone: ink 34.5 -> 44.1, +28%. The shader
+caps the flow at 0.75, so there is one step left above this before the cap has
+to move -- worth saying now, so the next "more" is not a surprise.
+
 ---
 
 ## 6. Open items

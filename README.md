@@ -803,7 +803,9 @@ showed — the outer quarter of the gradient, under 3% alpha, which is no light
 at all. The centre now sits just outside the card's top-right corner (`88%`
 across, 70px above; `84%` on the tablet), radius 440px, so the strong inner
 stops fall inside the card the way they do on the phone. Same stops, same
-`--haloK`, same verdict colours.
+verdict colours, at **30% of the phone's strength** — the card is a pane on a
+dark page rather than a screen, and the phone's strength on it read as a stain
+over the whole top; "reduce it by 70%" was the ask.
 
 **Three verdicts, three lights.** Older is orange and younger is green on every
 surface; *aligned with your age* used to fall on the green side of `delta > 0`,
@@ -1108,10 +1110,13 @@ modulates around 1 rather than under it.
 
 The level itself has moved since this was written: 0.75 when the flow first got
 its own path, then 0.30 when it was re-authored under the opacity grid, then
-0.40 by two 5% steps, and now **0.50** — "25% more opacity on the dot", which
-for once lands on the grid exactly (0.40 × 1.25). Measured with the flow drawn
-alone on the phone: ink 28.1 → 35.8, +27%. The rest of this section is about
-the *path*, and still holds whatever the number is.
+0.40 by two 5% steps, then 0.50 ("25% more opacity on the dot", 0.40 × 1.25,
+on the grid exactly; ink 28.1 → 35.8), and now **0.65** — "you really need to
+see the flow, 25% more visible": 0.50 × 1.25 is 0.625, between two steps, and
+the emphatic ask took the upper one. Flow drawn alone on the phone: ink 34.5 →
+44.1, +28%. The shader caps the flow at 0.75, so there is one step left above
+this. The rest of this section is about the *path*, and still holds whatever
+the number is.
 
 Raising the flow under the cloud's shared ceiling did nothing, and it is worth
 saying why rather than shipping it and hoping: its dots were already pressing

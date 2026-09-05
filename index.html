@@ -4393,8 +4393,12 @@
   // 0.40, by 5% steps from 0.30. On a 5% grid "5% brighter" is one step: a
   // multiplicative 1.05 gives 0.3675, which snaps back to 0.35 and changes
   // nothing at all. Then "25% more opacity on the dot": 0.40 x 1.25 is 0.50,
-  // which for once lands on the grid exactly, two steps up.
-  const FLOW_A = 0.50;
+  // which for once lands on the grid exactly, two steps up. Then "you really
+  // need to see the flow, 25% more visible": 0.50 x 1.25 is 0.625, between two
+  // steps; 0.65 rather than 0.60, because the ask was emphatic and a quarter
+  // short of a quarter is what the last round already was. The shader caps the
+  // flow at 0.75, so there is one more step above this and no more.
+  const FLOW_A = 0.65;
   // one preset's own share of that level, for the rare case where a figure's
   // geometry makes the same number read as more or less flow than its
   // neighbours
@@ -11460,7 +11464,10 @@
       const c = [0, 1, 2].map(i => { const v = gr[i] + (og[i] - gr[i]) * hf; return Math.round(v + (wh[i] - v) * al); });
       const host = dHaloEl.closest('#organSlot') || dHaloEl;
       host.style.setProperty('--v4halo', c.join(' '));
-      host.style.setProperty('--haloK', (1.55 * (1 - 0.70 * al)).toFixed(3));
+      // The card's light at 30% of the phone's: "reduce the halo on tablet and
+      // desktop by 70%". The card is a pane on a dark page, not a screen, and
+      // the phone's strength on it read as a stain over the whole top.
+      host.style.setProperty('--haloK', (1.55 * 0.30 * (1 - 0.70 * al)).toFixed(3));
     }
 
     // camera rides the same S-curve timeline as the morph
