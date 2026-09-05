@@ -1757,6 +1757,80 @@ proportional gain. The span the front/back rank is read over scales with it
 constant as last time, on the same line, before the snap. Ink with only the
 stray slice drawn on m20: 4.50 -> 5.54.
 
+### 5.66 A timer cannot be "with the morph"; only a function of it can
+
+"The flow doesn't move well. When the morph finishes, just after one second,
+the flow appears, and it's so brutal. Example: the lung." Drawn with nothing but
+the flow slice, every 33ms of a fake clock, a click from the heart to the lung
+on the phone:
+
+    231 233 246 270 248 260 198 113 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 220 235 ...
+
+Seven hundred and sixty milliseconds of nothing, ending well after the cloud
+had landed. Logging the uniforms written before each flow draw explained the
+shape of it: a click across the carousel is not one morph but one per slide it
+crosses, and Heart to Lung crosses Mental and Brain. Brain is the nerve, and the
+nerve's flow was `late` -- drop to zero at the first pixel of any morph touching
+it, then ease back at 5% a frame once landed. Sensible for a swipe onto the
+nerve; on a three-hop click the ease-back began after the third hop, so the
+lung got the nerve's penalty. A timer that starts when the morph ends is, by
+construction, a thing that happens after the morph.
+
+Replaced with a dip that is a function of the morph's own fraction: `1 -
+sin^4(pi f)`, full at both ends, empty at the midpoint where the neuron's lanes
+pile into their shared terminal. It cannot be late, because it and the cloud's
+position are the same number. Fourth power rather than second because the
+carousel's last hop decelerates -- f spends its final third arriving slowly --
+and a dip still 35% deep at f = 0.7 read as the flow lagging the cloud.
+
+### 5.67 The positions had two ends; the alphas had one
+
+Fixing the timer left a 660ms gap on the same click, and the uniform log showed
+the flow being drawn throughout it. The flow's positions live in two slots, A
+and B, and the shader blends them by f -- but its alpha is one array, written
+by whichever end `updateFlow` ran for last, which is the A end. A morph leaving
+the nerve was therefore drawn, every frame until it landed, with the nerve's
+alphas: a pulse preset, sparse bursts and zero between them, on dots whose
+positions were already most of the way to the lung's lanes. Then the pair
+landed, A became the lung, and the whole stream lit in one frame. That is the
+sentence the user wrote, measured.
+
+The B end's alphas are now kept aside after B is written and blended into A's
+by the same f as the positions, and re-uploaded. After both fixes, the same
+click:
+
+    227 235 251 255 236 248 207 125 122 102 41 117 115 129 36 0 9 121 158 189 208 208 213 231 ...
+
+A brief dip through the nerve hop -- the exception the design asked for -- and
+back to full as the cloud lands, because they are landing on the same f.
+
+### 5.68 Two shells are not a volume
+
+"The 3D seems to work with two layers instead of one unique 3D environment."
+Correct, and it was written down as a virtue. Depth was placed at `zsign *
+zmax * rand^0.3`: the 0.3 power skews |z| toward zmax, so most particles sat on
+the front face or the back face and few between. The comment called it a
+shell, "the same reason a sphere drawn in points is drawn as a shell". But a
+sphere drawn as a shell is a hollow sphere, and the two-shell version of a
+brain is two brain-shaped sheets with a gap -- which is what two layers means.
+
+Uniform through the section now: `(rand * 2 - 1) * zmax`. The `sqrt(d)` law
+already gives the section a rounded profile, thin at the rim and deep in the
+middle, so a solid fill of that section is a rounded solid. The shell-weighting
+was doubling a cue the profile provides on its own, and paying for it with a
+hole in the middle of every organ.
+
+### 5.69 Three small numbers that added up to a size
+
+"The iris in the mobile view seems reduced by 10%." Two deliberate reductions
+were stacked: a twentieth off the body's framing on the phone (`1 - 0.05 *
+irisShown`), and a radius of 0.80 where the organs have 0.78 -- the camera
+frames to r, so a wider r is a smaller figure, 2.5% here. Seven and a half
+percent, perceived as ten. Both removed; the iris is framed by the same rule
+as everything else. The lesson is the one from the heart (5.58): an element
+that reads small is usually small for a reason written in a number somewhere,
+and the number is easier to find than to argue with.
+
 ---
 
 ## 6. Open items

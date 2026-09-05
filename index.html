@@ -5426,16 +5426,19 @@
       // back are further apart and the perspective in the shader has more to
       // work with on every organ, the nerve's branches included.
       const zmax = depthPx * 1.75 * Math.sqrt(d / 22);
-      const zsign = Math.random() < 0.5 ? -1 : 1;
       let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
       const Y = -(py - cy + (Math.random() - 0.5) * 2) * s * tf.s;
-      // Skewed toward the surface (the 0.3 power), so the volume reads as a
-      // body with a front and a back rather than a fog that is densest in the
-      // middle -- the same reason a sphere drawn in points is drawn as a shell.
-      // The noise-displaced z that used to follow here -- whole regions of a
-      // shape pushed forward or back so the nerve's branches went "in multiple
-      // directions" -- is gone: it read as a warp rather than as depth.
-      let Z = zsign * zmax * Math.pow(Math.random(), 0.3) * s * tf.s;
+      // Uniform through the section, not skewed to its surface. It used to be
+      // `zsign * zmax * rand^0.3`, which puts most particles near +zmax or
+      // -zmax and few between -- two shells with a gap, and that is exactly how
+      // it read: "3D, but with two layers instead of one environment". A solid
+      // body cut by the picture plane has particles at every depth of its
+      // section, evenly, and the sqrt(d) law above already gives that section
+      // its rounded profile; the shell-weighting was doubling a cue the profile
+      // provides on its own and paying for it with a hole in the middle. The
+      // noise-displaced z that used to follow here -- whole regions pushed
+      // forward or back -- is gone too: it read as a warp rather than as depth.
+      let Z = (Math.random() * 2 - 1) * zmax * s * tf.s;
       if (yaw){ const nx = X * cyaw + Z * syaw; Z = -X * syaw + Z * cyaw; X = nx; }
       out[i * 3] = X + tf.x; out[i * 3 + 1] = Y + tf.y; out[i * 3 + 2] = Z;
       // What a particle's opacity is worth. Mostly its own draw, so opacity
@@ -5607,7 +5610,9 @@
     { label: 'Body',    cloud: () => buildCloud(drawBody, 40, 1.04, {s:1, x:0, y:0, yaw:0.17}, null, bodyDensity), x:0, y:0, r:0.82 },
     // An exploration, not a selection: nothing in the product picks it, so it
     // shows up as a tile in the library and nowhere else until it is asked for.
-    { label: 'Iris',    cloud: irisCloud, x:0, y:0, r:0.80, dots: 1.6 },
+    // r 0.78 like the organs, not 0.80: the camera frames to r, so a wider one
+    // is a smaller figure, and this was a third of "the iris is 10% smaller".
+    { label: 'Iris',    cloud: irisCloud, x:0, y:0, r:0.78, dots: 1.6 },
     // no flow preset and no paths: what moves in a sphere is where the
     // particles are dense, not a dot running along a line
     { label: 'Sphere',  cloud: sphereCloud, x:0, y:0, r:0.80, dots: 1.25 },
@@ -6121,6 +6126,8 @@
   const flowLane = new Float32Array(FLOWN);
   const flowZ = new Float32Array(FLOWN);
   const flowSpd = new Float32Array(FLOWN);
+  // scratch for the B end's alphas while a hero morph blends the two ends
+  const flowAB = new Float32Array(FLOWN);
   for (let f = 0; f < FLOWN; f++){
     const i = FSTART + f;
     flowPick[f] = (Math.random() * 16) | 0;
@@ -6408,12 +6415,15 @@
               [[56,46],[86,80],[122,118],[148,148],[176,184],[250,216],[336,244]],
               [[152,30],[162,68],[152,108],[150,148],[176,184],[250,216],[336,244]],
               [[42,266],[76,230],[116,190],[146,152],[176,184],[240,214],[336,244]]],
-      // `late`: this stream does not travel with the morph, it arrives after it.
-      // Every one of the neuron's paths ends at the same axon terminal, so a
-      // layer interpolating toward them converges on one corner rather than
-      // spreading along a shape -- true of the geometry, not of a bug, and the
-      // only asset here it is true of. So it sits the transition out and eases
-      // in once the pair has landed.
+      // `late`: this stream dips through the middle of a morph rather than
+      // travelling it at full strength. Every one of the neuron's paths ends at
+      // the same axon terminal, so a layer interpolating toward them converges
+      // on one corner rather than spreading along a shape -- true of the
+      // geometry, not of a bug, and the only asset here it is true of. The dip
+      // is a function of the morph's own fraction (see the hero's flow draw),
+      // full at both ends and empty at the midpoint where the piling is worst;
+      // it used to be a timer that eased back in after landing, which is a
+      // second of no flow after every morph that passed through this slide.
       pulse: true, late: true,
       loop: 8, op: 0.5, width: 2.5, turb: 0.6, tone: [0.90,0.80,0.94] }, // neuron: impulse bursts
     { paths: [[[170,34],[170,82],[142,108],[122,165],[118,215]], [[170,34],[170,82],[198,108],[214,165],[218,210]]],
@@ -8581,19 +8591,16 @@
       // where the carousel had been. uZoom is uploaded before this runs, so
       // setting it here wins.
       const bodyShown = !v7On() ? 0 : k0 < 0 ? 1 : k0 === 0 ? 1 - f : 0;
-      // The iris takes the body's framing and wants a twentieth off it on the
-      // phone. Weighted by how much of it is on screen rather than switched at
-      // the slide, so the adjustment arrives with the figure over the swipe
-      // instead of stepping when the carousel crosses. It belongs to the iris,
-      // not to the slot: the sphere is a ball drawn to its own radius and
-      // shrinking it would leave the age slide smaller than the organs after it.
-      const irisShown = (!v7On() || bioIdx(MB[0]) !== IRIS_I) ? 0
-                      : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
+      // The iris used to take a twentieth off the body's framing on the phone,
+      // on top of a radius (0.80) two and a half percent wider than the organs'
+      // -- seven and a half percent smaller than the slides either side of it,
+      // read as "the iris is reduced by 10%". Both gone: it is framed by the
+      // same rule as every other organ.
       const rBody = ORGANS[bioIdx(MB[0])].r;
       const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
       setZoom(zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
               (v7On() ? V6_HERO : 1) *
-              zFix * (1 + 0.30 * bodyShown) * (1 - 0.05 * irisShown), orgR);
+              zFix * (1 + 0.30 * bodyShown), orgR);
       // The fill rises on the same cue and over the same span as the arc's
       // sweep: they are one reveal of one reading, and running them on two
       // clocks left the body still filling after the meter had finished. It
@@ -8709,7 +8716,26 @@
       // left in place are the resting slide's, which is where f sits.
       if (flowVis > 0.015 && (FLOW_PRESETS[ia] || FLOW_PRESETS[ib])){
         const gotB = updateFlow(t, ib, posB, bufB, false);
+        for (let k = 0; k < FLOWN; k++) flowAB[k] = colors[(FSTART + k) * 4 + 3];
         const gotA = updateFlow(t, ia, posA, bufA, false);
+        // The positions have two ends and the shader blends them by f. The
+        // ALPHAS had one: a single array, written by whichever end was updated
+        // last -- the A end, above -- so a morph leaving the nerve was drawn,
+        // every frame until it landed, with the nerve's pulse alphas: sparse
+        // bursts, zero between them, on dots whose positions were already most
+        // of the way to the lung's lanes. Then the pair landed, A became the
+        // lung, and the whole stream lit in one frame: "the flow appears just
+        // after the morph finishes". Measured at 660ms of nothing on Heart ->
+        // Lung, which passes through the nerve. Two ends for the alpha too,
+        // blended by the same f as everything else about the pair.
+        if (gotA && gotB && f > 0.001 && f < 0.999){
+          for (let k = 0; k < FLOWN; k++){
+            const i = (FSTART + k) * 4 + 3;
+            colors[i] += (flowAB[k] - colors[i]) * f;
+          }
+          gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
+          gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 16, colors.subarray(FSTART * 4, TOT * 4));
+        }
         // A slide with no stream of its own -- the biomarker page -- has
         // nothing to morph from or to, so the other end stands in for both and
         // the flow simply holds still rather than reading a stale slot.
@@ -8721,17 +8747,31 @@
         // page arrives and returns as it goes, instead of switching on.
         if (!gotA && gotB) updateFlow(t, ib, posA, bufA, false);
         if (!gotB && gotA) updateFlow(t, ia, posB, bufB, false);
-        // One asset sits the transition out. See `late` in FLOW_PRESETS: the
-        // neuron's paths all end at the same terminal, so a layer interpolating
-        // between its lanes and another shape's piles into that corner instead
-        // of travelling. Eased rather than switched, so it arrives.
+        // One asset dips through the transition. See `late` in FLOW_PRESETS:
+        // the neuron's paths all end at the same terminal, so a layer
+        // interpolating between its lanes and another shape's piles into that
+        // corner instead of travelling. The dip is a function of the morph's
+        // own fraction -- 1 at both ends, 0 at the midpoint, where the piling
+        // is worst -- and of nothing else. It used to be a timer: drop to 0 at
+        // the first pixel of the swipe, then ease back at 5% a frame once the
+        // pair had landed, which is a second of no flow after every morph that
+        // touched the nerve. And a click across the carousel touches the nerve
+        // whenever the brain slide lies between where it was and where it is
+        // going -- Heart to Lung passes it -- so "the flow appears a second
+        // after the morph, on the lung" was this, measured at 760ms of nothing.
+        // A fraction of f cannot be late: the flow is at its resting strength
+        // the frame the morph is, because they are the same number.
         const lateNow = (FLOW_PRESETS[ia] && FLOW_PRESETS[ia].late) ||
                         (FLOW_PRESETS[ib] && FLOW_PRESETS[ib].late);
-        const want = (lateNow && f > 0.004 && f < 0.996) ? 0 : 1;
-        lateFlow += (want - lateFlow) * (want ? 0.055 : 0.34);
+        // sin^4 rather than sin^2: the carousel's last hop decelerates, so f
+        // spends its final third arriving slowly, and a dip that is still 35%
+        // deep at f = 0.7 reads as the flow lagging the cloud. At the fourth
+        // power it is 5% deep at f = 0.84 and gone by 0.9.
+        const sf = Math.sin(Math.PI * f);
+        const dip = lateNow ? 1 - sf * sf * sf * sf : 1;
         const hand = (gotA ? 1 : 0) + ((gotB ? 1 : 0) - (gotA ? 1 : 0)) * f;
-        if (lateFlow * hand > 0.004){
-          gl.uniform1f(U.uFlowVis, flowVis * lateFlow * hand);
+        if (dip * hand > 0.004){
+          gl.uniform1f(U.uFlowVis, flowVis * dip * hand);
           gl.uniform1f(U.uP, f);
           bindCloud(-1);
           gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
@@ -10890,9 +10930,6 @@
   let flowVis = -1;
   // true until the opening gather has landed; see the copy in drawFrame
   let flowStart = true;
-  // How much of the flow a `late` preset is allowed while its pair is moving:
-  // 0 in flight, easing back to 1 once landed, so it arrives rather than snaps.
-  let lateFlow = 1;
   // colour (the burgundy the concept is designed in), dark, or light
   let lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
   // the organ card can take a colour of its own again, the same in every theme

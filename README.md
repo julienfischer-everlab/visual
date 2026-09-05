@@ -486,10 +486,11 @@ one across the disc: the wave's phase and its strength come from which bundle a
 dot stands in, so the fibres light in their own time and the movement stays
 radial without ever reading as a rotation. The middle keeps its own long pulse,
 each dot breathes a little along its own strand, and the flow layer runs spokes
-from the ruff to the limbus so a travelling dot is travelling a fibre. On the phone it is framed a twentieth smaller than the body's rule gives it,
-weighted by how much of it is on screen rather than switched at the slide, so
-the adjustment arrives with the figure over the swipe instead of stepping when
-the carousel crosses. It sits at the height every other slide does.
+from the ruff to the limbus so a travelling dot is travelling a fibre. It is
+framed by the same rule as every other organ, at the height every other slide
+sits at — it briefly took a twentieth off on the phone, on top of a radius two
+and a half percent wider than the organs', and the two together read as "the
+iris is 10% smaller".
 
 **And it arrives over a third of the morph, not in a frame.** `uIris.x` is a
 strength, not a switch. It used to be written as exactly 0 or 1 by the CPU the
@@ -747,6 +748,15 @@ minimum depth everywhere) and a noise-displaced z of their own; the floor made
 the brain a slab that read flat from the front however deep it was, and the
 displacement read as a warp rather than as depth. Both are gone; they keep only
 their extra share of highlights.
+
+And the particles are spread *evenly* through that section, not skewed to its
+surface. They used to be placed at `±zmax × rand^0.3`, which puts most of them
+near the front face or the back face and few between — two shells with a gap,
+and that is exactly how it read: "3D, but with two layers instead of one
+environment". A solid body has particles at every depth of its section; the
+√d profile already gives the section its rounded shape, and the shell-weighting
+was doubling a cue the profile provides on its own, at the cost of a hole in the
+middle.
 
 ### The light and the edge it lands on
 
