@@ -4386,8 +4386,9 @@
   // for. See the shader, where the flow takes its own alpha path entirely.
   // 0.40, by 5% steps from 0.30. On a 5% grid "5% brighter" is one step: a
   // multiplicative 1.05 gives 0.3675, which snaps back to 0.35 and changes
-  // nothing at all.
-  const FLOW_A = 0.40;
+  // nothing at all. Then "25% more opacity on the dot": 0.40 x 1.25 is 0.50,
+  // which for once lands on the grid exactly, two steps up.
+  const FLOW_A = 0.50;
   // one preset's own share of that level, for the rare case where a figure's
   // geometry makes the same number read as more or less flow than its
   // neighbours
@@ -6469,8 +6470,25 @@
       loop: 8,  op: 0.72, width: 4, turb: 1.5, tone: [0.93,0.55,0.50] },            // heart: vascular flow
     { paths: [CELL_ORBIT],
       loop: 12, op: 0.55, width: 6, turb: 3,   tone: [0.94,0.90,0.84] },            // immune: patrol orbit
-    { paths: [[[170,290],[170,44]]],
-      loop: 11, op: 0.60, width: 4, turb: 1.5, tone: [0.92,0.74,0.56] },            // bone: perfusion along the spine
+    // bone: perfusion along the spine and out through each vertebra. It was
+    // the spine alone -- one lane, two hundred dots, which drew a solid white
+    // line down the middle of the figure ("a cluster of white dots") and
+    // nothing anywhere else. Now the spine plus, at each of the five
+    // vertebrae (drawBone: y = 62 + 50i), a pair of lanes from the column out
+    // along the transverse processes to their tips. Dots are dealt evenly
+    // across the path list, so the spine appears five times to give it
+    // roughly the same dots per unit of length as the short processes.
+    { paths: (() => {
+        const spine = [[170,290],[170,44]];
+        const out = [spine, spine, spine, spine, spine];
+        for (let i = 0; i < 5; i++){
+          const y = 62 + i * 50;
+          out.push([[170, y + 2], [132, y + 2], [106, y + 12]]);
+          out.push([[170, y + 2], [208, y + 2], [234, y + 12]]);
+        }
+        return out;
+      })(),
+      loop: 11, op: 0.60, width: 4, turb: 1.5, tone: [0.92,0.74,0.56] },
     { paths: [[[120,128],[228,126],[120,160],[226,164],[124,194],[226,192],[130,224],[218,226]],
               [[88,240],[86,120],[150,86],[250,100],[258,214],[206,248],[172,296]]],
       loop: 12, op: 0.65, width: 5, turb: 2,   tone: [0.92,0.66,0.52] },            // gut: peristaltic flow

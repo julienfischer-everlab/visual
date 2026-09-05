@@ -2031,6 +2031,38 @@ The general lesson is the one from 5.63 restated for space instead of time:
 stills cannot find a one-frame event, and pixel counts cannot find a per-dot
 one. The measurement has to be shaped like the thing being looked for.
 
+### 5.80 A quarter more, and for once the grid agrees
+
+"Increase the flow visibility by 25%, more opacity on the dot." `FLOW_A` 0.40 ->
+0.50: 0.40 x 1.25 is 0.50, two steps up and exactly on the 5% grid, so nothing
+has to be argued about rounding this time. Both renderers read `flowA()`, so
+one number. Flow drawn alone on the phone hero: ink 28.1 -> 35.8, +27%.
+
+### 5.81 One lane is a line, however many dots are on it
+
+"On the muscle and bone, at the bottom of the visual there is a cluster of
+white dots. Spread them across the entire visual." Measured first: the flow's
+vertical distribution on the bone was even -- 20/20/16/19/20 by fifths on the
+phone, the same on the desktop and the tile -- so it was not at the bottom in
+the sense the numbers could see. The pictures said what the numbers had not:
+the bone's flow preset was a single path, straight down the spine, and two
+hundred dots on one lane are not a stream through a figure, they are a solid
+white line down the middle of it. Std of x on the tile's flow overlay: 3.3px,
+against 34 for the cloud. Where the eye put the "cluster" hardly matters; the
+whole thing was a cluster, in one dimension.
+
+The preset is now the spine plus, at each of the five vertebrae (`drawBone`,
+y = 62 + 50i), a pair of lanes from the column out along the transverse
+processes to their tips: perfusion along the spine and out through the bone.
+Dots are dealt evenly across the path list, so the spine is listed five times
+to give it roughly the same dots per unit of length as the ten short
+processes. Std of x: 3.3 -> 26.4px, against the cloud's 35.
+
+Worth keeping: a distribution can be perfectly even along one axis and still
+be a line. The histogram that would have found this is the one along the OTHER
+axis, and the fastest way to know which axis to histogram is to look at the
+picture first.
+
 ---
 
 ## 6. Open items
