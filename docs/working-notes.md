@@ -1934,6 +1934,55 @@ so the iris now sits 10px above the organs on the phone. Measured centroid
 not a contradiction; they are someone converging on a number by eye, which is
 what a number that is asked for by the pixel is for.
 
+### 5.78 "Blinking" was a frame rate, not an alpha
+
+"Flow is still clipping.... blinking", with a crop of the lung. Three things
+were measured before anything was changed, because "blinking" can mean four
+different faults and the last two rounds had already fixed two of them.
+
+1. The phone hero at rest, flow slice alone, framebuffer read INSIDE the hooked
+   draw call so no compositing race is possible: 95 draws in 90 frames, 221 to
+   251 lit pixels, never zero. The layer does not switch off.
+2. Per-pixel brightness flicker at rest, phone hero: half the flow's pixels
+   jumped a step or more every frame, against 9% for the cloud. Suspected the
+   twinkle crossing the 5% grid on a continuous alpha; exempted the flow from
+   the twinkle and authored its alpha on the grid. The figure did not move
+   (48% -> 51%), and neither did it on the commit before this round's flow
+   work (51%) or on one from the start of the session (37%). It is motion:
+   sub-pixel travel of a two-pixel dot changes the pixels it covers. Not a
+   fault, and not new. The two changes stay because they are right on their
+   own terms; they are not the fix.
+3. The library tile, canvas read every rAF: the cloud's lit count changed
+   every third frame and the flow arcs were painted every third frame -- 196
+   arcs, then two frames of none. The tile's canvas persists between paints,
+   so nothing blinks off. But a stream whose dots move ~half a pixel per
+   update, updated at a third of the frame rate, is a stream whose dots leave
+   one pixel and land in the next with nothing between. On the brightest ink
+   in the file, that is what blinking looks like. The crop was a library tile.
+
+So the fault was the slot scheduler (5.x, "one group of three paints per
+frame"), which is right for a cloud that drifts and wrong for a stream that
+travels. The flow now paints every frame on every dense tile, on a transparent
+overlay canvas over the cloud's; the cloud and the strays keep their slot.
+
+Two wrong turns on the way, both measured:
+
+- The first cut composited a cached copy of the cloud under the flow every
+  frame. `drawImage` of a tile-sized canvas thirteen times a frame cost 20ms in
+  software rendering; 30fps to 9. The overlay costs a `clearRect`.
+- The fps did not come back. Counting primitives found 106,000 rects a frame
+  where 37,000 were expected: every tile's cloud was repainting every frame.
+  The resize check compared the canvas's integer width against `w * 1.5`, so
+  a 301px tile was "resized" -- reallocated and repainted -- on every frame it
+  was checked. Behind the slot gate that had been one wasted repaint per slot
+  for as long as the gate existed; in front of it, everything. Rounded now.
+  37,300 rects a frame, and the flow overlay lit every frame.
+
+Cost of the flow at full rate in this software-rendered container, measured
+back to back against the previous commit: 27-28fps -> 24.7 on the library.
+The phone is unchanged. The right trade for the one layer whose whole meaning
+is that it moves.
+
 ---
 
 ## 6. Open items

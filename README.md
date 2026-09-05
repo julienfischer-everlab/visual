@@ -1120,7 +1120,17 @@ That is five thousand dots a tile across nine tiles, and it took the page from
   because when a frame already takes 50ms the gate always passes — the work
   has to be *spread*, not deferred. One group of three paints per frame, so
   each tile still updates several times a second, which a slow drift cannot be
-  told from, and the page keeps its own frame. Worth 2.6×.
+  told from, and the page keeps its own frame. Worth 2.6×. **Except the flow**:
+  a stream whose dots travel half a pixel per update, updated at a third of
+  the frame rate, leaves one pixel and lands in the next with nothing between,
+  and on the brightest ink in the file that reads as blinking — which is how it
+  was reported. A dense tile therefore paints its flow every frame on a
+  transparent overlay canvas over the cloud's, and the cloud and strays keep
+  their slot. About 10% of the library's frame rate in software rendering, for
+  the one layer whose meaning is that it moves. (Found on the way: the resize
+  check compared an integer canvas width against `w × 1.5`, so every tile was
+  "resized" — reallocated and repainted — on every frame it was checked.
+  Rounded.)
 - **Squares under five device pixels.** A filled square and a filled circle
   are the same two or three lit pixels at that size, and a rect costs a
   fraction of tessellating an arc. Worth 2.3×.

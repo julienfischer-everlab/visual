@@ -5838,6 +5838,14 @@
       float tw = (0.90 + 0.10 * sin(uTime * 1.8 + aSeed.z * 21.0)) * sphLit;
       // voxel mode: quieter shimmer — data, not sparkle
       tw = mix(tw, 0.82 + 0.18 * sin(uTime * 1.1 + aSeed.z * 21.0), uSq);
+      // No twinkle on the flow. Its alpha is authored on the grid (see the
+      // opRender in updateFlow) and the snap at the end of this shader is then
+      // the identity -- unless something multiplies it off the grid first,
+      // which a 0.90..1.00 twinkle does twice a cycle for every dot near a
+      // step. On the near-white ink each step is eleven levels, and on dots a
+      // third larger than the cloud's it read as blinking. Measured at rest:
+      // half the flow's pixels jumped a step or more every frame.
+      tw = mix(tw, 1.0, flowP);
       // The verdict, in the dots themselves — and now in their opacity alone.
       // It used to be a colour: orange when the organ reads older, ink when it
       // reads younger, over a cloud whose red was also pulled toward grey by
@@ -6586,7 +6594,10 @@
         const i3 = gi * 3;
         posB[i3] = x; posB[i3+1] = y; posB[i3+2] = flowZ[f] * 24 * rt.k;
         const endFade = Math.min(1, u / 0.1) * Math.min(1, (1 - u) / 0.1);
-        colors[gi*4+3] = flowA(pr) * endFade * (1 - 0.4 * Math.abs(flowZ[f]));
+        // On the grid at authoring, like every other alpha in the file, so the
+        // shader's final snap is the identity for a resting flow rather than a
+        // coin toss for every dot that happened to sit near a step.
+        colors[gi*4+3] = opRender(flowA(pr) * endFade * (1 - 0.4 * Math.abs(flowZ[f])));
       }
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
@@ -6692,7 +6703,7 @@
           }
         }
       }
-      colors[gi * 4 + 3] = Math.min(flowA(pr), a * tA);
+      colors[gi * 4 + 3] = opRender(Math.min(flowA(pr), a * tA));   // on the grid, see updateFlow
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, dstBuf);
     gl.bufferSubData(gl.ARRAY_BUFFER, FSTART * 12, dst.subarray(FSTART * 3, TOT * 3));
@@ -6751,8 +6762,8 @@
             x += -dyn * off; y += dxn * off;
             const i3 = gi * 3;
             dst[i3] = x; dst[i3+1] = y; dst[i3+2] = flowZ[f] * 14 * rt.k;
-            a = flowA(pr) * Math.pow(1 - slot, 1.8)
-              * Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.1);
+            a = opRender(flowA(pr) * Math.pow(1 - slot, 1.8)
+              * Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.1));   // on the grid
           }
         }
         colors[gi*4+3] = a;
@@ -9311,6 +9322,18 @@
     const c = document.createElement('canvas');
     host.appendChild(c);
     const ctx = c.getContext('2d');
+    // A second, transparent canvas over the first, for the flow alone. A dense
+    // tile repaints its cloud every third frame (see frame()); the flow has to
+    // move every frame or its dots jump pixel to pixel and read as blinking,
+    // and painting it INTO the cloud's canvas every frame would mean either
+    // repainting five thousand rects or compositing a cached copy, which
+    // measured at 20ms a frame across the library. Clearing a small transparent
+    // canvas and putting two hundred dots on it costs nothing comparable.
+    const c2 = document.createElement('canvas');
+    c2.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none';
+    if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    host.appendChild(c2);
+    const ctx2 = c2.getContext('2d');
     const cloud = opts.cloud || clouds[organIdx];
     // remembered so a swapped-in organ is re-corrected for its own shape
     const baseTarget = opts.target ? null : (opts.dense ? 2600 : 560);
@@ -9371,9 +9394,23 @@
         // still updates several times a second, which a slow drift cannot be
         // told from, and the page keeps its own frame. The hero organs are
         // small clouds and are never in a group.
-        if (view.target > 2200){
+        //
+        // But not the flow. A cloud that repaints every third frame is a cloud
+        // that drifts at 20Hz, which the eye cannot tell from 60. A stream of
+        // two-pixel dots that MOVES at 20Hz is a stream that jumps: each dot
+        // leaves one pixel and lands in the next with nothing between, which
+        // on the brightest ink in the file reads as blinking -- and was
+        // reported as exactly that, on the lung. So a dense tile paints its
+        // cloud and strays on its slot as before, and its flow on the overlay
+        // canvas (c2) every frame. The first cut of this composited a cached
+        // copy of the cloud under the flow every frame instead: 20ms a frame
+        // of drawImage across the library, 30fps down to 9. An overlay costs a
+        // clearRect.
+        const dense = view.target > 2200;
+        let slot = true;
+        if (dense){
           if (view._slot === undefined) view._slot = denseSeq++;
-          if ((denseTick + view._slot) % DENSE_SLOTS !== 0) return;
+          slot = (denseTick + view._slot) % DENSE_SLOTS === 0;
         }
         // Backing-store scale. Two is the right answer for a visual of a few
         // hundred dots, where the dots are large enough for the extra samples
@@ -9381,21 +9418,44 @@
         // across and the second sample buys nothing, while the fill cost goes
         // as the square of it -- so a dense visual drops to 1.5 and the
         // library goes from unwatchable to smooth.
-        const dpr = (view.target > 2200 ? 0.75 : 1) *
+        const dpr = (dense ? 0.75 : 1) *
                     Math.min(3, Math.max(2, Math.round(devicePixelRatio || 1)));
-        if (c.width !== w * dpr || c.height !== h * dpr){
-          c.width = w * dpr; c.height = h * dpr;
+        // Rounded, because a canvas's width is an integer and w * 1.5 is not:
+        // compared unrounded, a 301px tile was "resized" on every frame it
+        // was checked, and a resize reallocates the canvas and forces the
+        // body to repaint. Behind the slot gate that cost one wasted repaint
+        // per slot; in front of it, every tile every frame -- 106,000 rects a
+        // frame, 30fps to 9 -- which is how it was found.
+        const tw = Math.round(w * dpr), th = Math.round(h * dpr);
+        const resized = c.width !== tw || c.height !== th;
+        if (resized){
+          c.width = tw; c.height = th;
           c.style.width = w + 'px'; c.style.height = h + 'px';
+          c2.width = c.width; c2.height = c.height;
+          c2.style.width = c.style.width; c2.style.height = c.style.height;
         }
         view._lastT = t;                      // the export replays this exact frame
-        ctx.clearRect(0, 0, c.width, c.height);
-        view.paint(ctx, c.width, c.height, t, 1);
+        if (!dense){                          // small heroes: everything, every frame, one canvas
+          ctx.clearRect(0, 0, c.width, c.height);
+          view.paint(ctx, c.width, c.height, t, 1);
+          return;
+        }
+        if (slot || resized){                 // the cloud and the strays, on this tile's turn
+          ctx.clearRect(0, 0, c.width, c.height);
+          view.paint(ctx, c.width, c.height, t, 1, 'body');
+        }
+        ctx2.clearRect(0, 0, c2.width, c2.height);   // the flow, every frame
+        view.paint(ctx2, c2.width, c2.height, t, 1, 'flow');
       },
       // Render one frame into any context at any size. rk scales the dot radius
       // with the canvas, so an export is the same picture at a higher
       // resolution rather than a sparser one. It composites onto whatever is
       // already in the context — the caller clears, or lays a ground first.
-      paint(px, W, H, t, rk){
+      // mode: 'all' (exports and the small heroes), 'body' (cloud and strays,
+      // into a dense tile's cache on its slot) or 'flow' (the stream alone, on
+      // top of that cache every frame). See frame().
+      paint(px, W, H, t, rk, mode){
+        mode = mode || 'all';
         const T = t / 1000;
         const batch = makeBatch(px);
         const dot = (x, y, r, rgb, a) => batch ? batch.add(x, y, r, rgb, a)
@@ -9449,7 +9509,8 @@
             other = null; me = 0; arc = 0;
           }
         }
-        for (let i = 0; i < cloud.length; i++){
+        const nCloud = mode === 'flow' ? 0 : cloud.length;   // the flow pass paints no cloud
+        for (let i = 0; i < nCloud; i++){
           const q = cloud[i];
           let qx = q.x, qy = q.y;
           if (other){
@@ -9542,19 +9603,18 @@
         if (view.morph){ if (batch) batch.flush(); return; }
         // internal flow: the same presets and path maths the engine runs, so a
         // library tile streams like its organ does in the concept
-        if (view.flow && flowOn && !view.still){
+        if (mode !== 'body' && view.flow && flowOn && !view.still){
           const pr = view.flowPreset || FLOW_PRESETS[view.idx];
           const rt = pr && (view.flowPreset
             ? (view._rt = view._rt || buildFlowRT(pr, view.cl.norm))
             : getFlowRT(view.idx));
           if (rt){
-            // One ink for the whole stream, the brightest of the three, read
-            // live so the tweak bar moves it too. This painter used to deal out
-            // the two DARKEST inks while the engine dealt all three -- two
-            // renderers with two opinions about the same layer, and the tile
-            // holding the dimmer pair, which is most of why the flow kept
+            // One ink for the whole stream, the brightest of the three (LIT_CSS,
+            // read live so the tweak bar moves it too). This painter used to
+            // deal out the two DARKEST inks while the engine dealt all three --
+            // two renderers with two opinions about the same layer, and the
+            // tile holding the dimmer pair, which is most of why the flow kept
             // reading as more cloud there.
-            const tone = 'rgba(' + LIT_CSS + ',';
             for (let f = 0; f < view.flowN; f++){
               const P = rt.paths[flowPick[f] % rt.paths.length];
               const u = (flowU0[f] + T * flowSpd[f] / (pr.loop * 2)) % 1;
@@ -9576,8 +9636,6 @@
               const off = flowLane[f] * pr.width * rt.k
                         + Math.sin(T * 0.9 + flowU0[f] * 25) * pr.turb * rt.k;
               fx += -ddy * off; fy += ddx * off;
-              px.fillStyle = tone + fa.toFixed(3) + ')';
-              px.beginPath();
               // Larger than a cloud dot rather than the same size. The flow is
               // held at 30% and must not compete on brightness, so what
               // separates it has to be grain: a stream of bigger, softer dots
@@ -9586,14 +9644,21 @@
               // cloud dots since they went to five sizes -- which is why it
               // had stopped being visible at all.
               // the same multiple of the same base the engine uses, times the
-              // 1.30 that turns a seed into this painter's radius
-              px.arc(ox + fx * sc, oy - fy * sc,
-                     view.dot * rk * FLOW_MUL * DOT_BASE * 1.30, 0, 6.2832);
-              px.fill();
+              // 1.30 that turns a seed into this painter's radius.
+              // Through the same batcher as the cloud, not its own arc and
+              // fill per dot: now that the flow paints every frame on every
+              // dense tile, two hundred and sixty individually filled paths a
+              // frame took the library from 30fps to 9. The batcher buckets by
+              // alpha and draws a sub-pixel dot as a square, which at this size
+              // is the same two or three lit pixels.
+              dot(ox + fx * sc, oy - fy * sc,
+                  view.dot * rk * FLOW_MUL * DOT_BASE * 1.30, LIT_CSS, fa);
             }
           }
         }
-        if (!view.feed || view.still) return;
+        // strays live in the body pass; the flow pass ends here, and flushes
+        // what it batched, since the flush at the foot belongs to the feed
+        if (mode === 'flow' || !view.feed || view.still){ if (batch) batch.flush(); return; }
         // feeding: ambient matter spirals in on curved orbits, accelerates near
         // the surface, is absorbed, and is reborn faint at the rim
         const aDrift = 0.006 * (view.jitter + 2.2) * sc;
