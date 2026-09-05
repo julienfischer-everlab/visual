@@ -1831,6 +1831,53 @@ as everything else. The lesson is the one from the heart (5.58): an element
 that reads small is usually small for a reason written in a number somewhere,
 and the number is easier to find than to argue with.
 
+### 5.70 Sixteen pixels, in the unit the pan already speaks
+
+"Push the iris mobile up by 16px." The hero's pan is in clip space, two units
+over the canvas, and the comment beside `orgDrop` had already done the
+conversion for a 202px hero: 0.25 is 25px. So 16px is 0.158, added to the pan
+weighted by how much of the iris is on screen -- the same weight the old
+framing shrink used, so it rides up with the swipe rather than stepping when
+the carousel crosses. Measured as the centroid of the hero's lit pixels on the
+Biological age slide: 127.7px -> 111.6px, 16.1 up.
+
+### 5.71 The fourth palette is a pick, and is kept as one
+
+Three screenshots of the tweak bar's colour pickers, and "keep these shades as
+default": 247/131/89, 240/217/168, 246/240/236. Salmon, sand, warm white.
+
+The three previous moves were transforms of the set before them, on the
+principle that colours picked by eye stop being a family. This set was picked
+by eye, on the live control built for exactly that, and is kept exactly as
+picked -- the principle was about *my* picking, not the user's. The set it
+replaces goes into `OLD_INKS`, so a browser that saved it unchanged is not
+pinned to it.
+
+### 5.72 The flow was excluded from the tissue it runs through
+
+"The iris is still clipping with the flow." The flow-only series into the iris
+had no gap left in it, so this was not the timer or the alphas. It was the
+remap: the iris dilates by moving its tissue radially, and the remap's mask
+left out the strays, the ghost and the flow on the grounds that "they are not
+the tissue". The strays and the ghost are not. The flow's lanes run from the
+ruff to the limbus, through the very band the remap compresses, so when the
+pupil opened the fibres moved outward and the spokes stayed put -- their inner
+ends sat in the hole and their bodies cut across fibres that had moved. That is
+a layer clipping another layer, frame by frame, for as long as the breath
+lasts.
+
+Position takes the tissue's remap now (`ride`, without the flow exclusion); the
+brightness fronts still leave the flow alone. A layer embedded in a deforming
+body has to deform with it or it is not embedded.
+
+### 5.73 A frame rate that dropped on both sides is not a regression
+
+The library read 27fps after this round against 37 the round before, with
+nothing in the round that touches the library's painter. Measured back to back
+against the previous commit served on a second port: 28.3 / 30.1 / 30.4 -- the
+same on both. The container was slower, not the page. One A/B is worth more
+than any amount of reasoning about which change could have cost it.
+
 ---
 
 ## 6. Open items

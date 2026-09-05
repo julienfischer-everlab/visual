@@ -487,10 +487,14 @@ dot stands in, so the fibres light in their own time and the movement stays
 radial without ever reading as a rotation. The middle keeps its own long pulse,
 each dot breathes a little along its own strand, and the flow layer runs spokes
 from the ruff to the limbus so a travelling dot is travelling a fibre. It is
-framed by the same rule as every other organ, at the height every other slide
-sits at — it briefly took a twentieth off on the phone, on top of a radius two
-and a half percent wider than the organs', and the two together read as "the
-iris is 10% smaller".
+framed by the same rule as every other organ — it briefly took a twentieth off
+on the phone, on top of a radius two and a half percent wider than the organs',
+and the two together read as "the iris is 10% smaller" — and on the phone it
+sits 16px higher than the organs, weighted by how much of it is on screen so it
+rides up with the swipe. The flow rides the dilation with the tissue: it used to
+be excluded from the remap along with the strays and the ghost, so when the
+pupil opened the fibres moved outward and the spokes stayed put, their inner
+ends in the hole — the flow clipping the iris.
 
 **And it arrives over a third of the morph, not in a frame.** `uIris.x` is a
 strength, not a switch. It used to be written as exactly 0 or 1 by the CPU the
@@ -715,16 +719,18 @@ sorting into regions:
 
 | | role | share | opacity |
 |---|---|---|---|
-| `#AC5839` | the material | 60% | 20–50% |
-| `#D8AD97` | a lighter tone of it | 25% | 12–40% |
+| `#F78359` | the material — salmon | 60% | 20–50% |
+| `#F0D9A8` | sand | 25% | 12–40% |
 | `#F6F0EC` | warm off-white | 15% | 5–25% |
 
-These are the third set. Each move has been a transform of the previous three
-in HSL rather than a re-pick — a hue rotation toward orange first, then hue
-+5°, saturation ×1.20 and the two light inks lifted a point or two — because
-three colours picked by eye stop being the steps they were. Defaults only: a
-palette saved from the tweak bar wins, unless it is a previous default written
-down unchanged, which is treated as no choice.
+These are the fourth set, and the first not derived from the previous one: the
+earlier three moves were HSL transforms of the set before (a hue rotation toward
+orange, then hue +5°, saturation ×1.20 and the light inks lifted), on the
+principle that three colours picked by eye stop being the steps they were. This
+set *was* picked by eye — on the tweak bar, live, and sent back as "keep these
+shades as default" — and is kept exactly as picked. Defaults only: a palette
+saved from the tweak bar wins, unless it is a previous default written down
+unchanged, which is treated as no choice.
 
 The ranges overlap, and **the brightest colour has the lowest ceiling**. That
 is the rule that keeps fifteen percent of the particles from reading as
@@ -1008,8 +1014,8 @@ curve that favours the low end:
 
 | | band | most of them |
 |---|---|---|
-| `#AC5839` | 20–50% | 20–30% |
-| `#D8AD97` | 15–40% | 15–25% |
+| `#F78359` | 20–50% | 20–30% |
+| `#F0D9A8` | 15–40% | 15–25% |
 | `#F6F0EC` | 5–25% | 5–15% |
 
 **10% — depth highlights, 55–90%.** Chosen for frontness, but with more than

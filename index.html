@@ -4225,8 +4225,14 @@
   // The flow is the third ink alone, so its lift is the flow going brighter --
   // which is where "shiny" reads first, a stream of near-white through a warmer
   // cloud.
-  let INK_CSS = '172,88,57';                                    // #AC5839
-  let MID_CSS = '216,173,151';                                  // #D8AD97
+  //
+  // And then the fourth set, which is not a transform of the third: these were
+  // picked live on the tweak bar and sent back as "keep these shades as
+  // default". Salmon, sand, warm white -- the deep ink a good deal lighter and
+  // more orange than anything the rotations reached, the mid gone from a tint
+  // of the deep ink to a yellow of its own. Kept exactly as picked.
+  let INK_CSS = '247,131,89';                                   // #F78359
+  let MID_CSS = '240,217,168';                                  // #F0D9A8
   let LIT_CSS = '246,240,236';                                  // #F6F0EC
   // A saved palette is restored here rather than applied later, because here is
   // before anything has read the three: the colour buffer is built from them,
@@ -4241,7 +4247,8 @@
   // the previous defaults are known by name, and a saved set that IS them is
   // treated as no choice at all. A set that differs from them was chosen, and
   // stands.
-  const OLD_INKS = [['163,84,66', '208,164,150', '242,235,231']];
+  const OLD_INKS = [['163,84,66', '208,164,150', '242,235,231'],
+                    ['172,88,57', '216,173,151', '246,240,236']];
   try {
     const saved = JSON.parse(localStorage.getItem(INK_KEY) || 'null');
     const isOld = s => OLD_INKS.some(o => o.every((v, i) => v === s[i]));
@@ -5722,6 +5729,16 @@
       float irisA = 1.0;
       if (uIris.x > 0.001){
         float solid = uIris.x * (1.0 - amb) * (1.0 - ghost) * (1.0 - flowP);
+        // The flow rides the dilation with the tissue it runs through. It was
+        // left out of the remap along with the strays and the ghost, on the
+        // grounds that it "is not the tissue" -- but its lanes run from the
+        // ruff to the limbus, through the very band the remap compresses, so
+        // when the pupil opened the tissue moved outward and the spokes stayed
+        // put: their inner ends sat in the hole and their bodies cut across
+        // fibres that had moved. That is the flow clipping the iris. Position
+        // takes the tissue's remap; the brightness fronts below still do not
+        // touch it.
+        float ride = uIris.x * (1.0 - amb) * (1.0 - ghost);
         vec2 rel = pos.xy - uCenter.xy;
         float r = length(rel);
         if (r > 1e-4){
@@ -5747,7 +5764,7 @@
           irisA = mix(1.0, (1.0 + 0.20 * sin(uTime * 0.37))
                  * (1.0 + (0.38 + 0.42 * fract(sp * 7.3)) * exp(-d1 * d1)
                         + (0.20 + 0.24 * fract(sp * 3.1)) * exp(-d2 * d2)), solid);
-          pos.xy = mix(pos.xy, uCenter.xy + rel * (nr / r), solid);
+          pos.xy = mix(pos.xy, uCenter.xy + rel * (nr / r), ride);
         }
       }
       // The sphere's currents. The ball is uniform by construction, so the
@@ -8662,7 +8679,13 @@
       // as it goes. Clip space is two units over the canvas, so 0.25 is 25px
       // on a 202px hero.
       const orgDrop = v7On() ? -0.25 * (1 - bodyShown) : 0;
-      gl.uniform2f(U.uPan, 0, -0.35 * bodyShown + orgDrop);
+      // The iris sits 16px higher than the organs on the phone -- asked for by
+      // the pixel. Weighted by how much of it is on screen, so it rides up with
+      // the swipe rather than stepping when the carousel crosses. Same unit as
+      // orgDrop: 2 / 202 per pixel, so 16px is 0.158.
+      const irisOn = (!v7On() || bioIdx(MB[0]) !== IRIS_I) ? 0
+                   : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
+      gl.uniform2f(U.uPan, 0, -0.35 * bodyShown + orgDrop + 0.158 * irisOn);
       gl.uniform1f(U.uAlpha, 1);
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[ia].x, ORGANS[ia].y);
