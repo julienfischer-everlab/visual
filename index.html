@@ -11372,6 +11372,12 @@
   // to that header — so the renderer needs the same number the CSS is using, or
   // a grey rectangle surfaces on the darkening ground half way through.
   let v5HeadP = 0;
+  // The V6 header's wash, as a grey level: 7% white on black. One number, read
+  // by the CSS driver below AND by the canvas clear in the frame loop, because
+  // the two were written as separate literals once and the 2% lift landed on
+  // one of them only -- the canvas kept clearing to 13 on an 18 header, which
+  // is "the background is cut, like a dark rectangle".
+  const V6_HEAD = 18;
   // the hero organ draws a tenth smaller by the time the body has covered the
   // header — it recedes as it is scrolled past rather than only sliding away.
   // A multiplier on the uniform rather than on zoomNow itself, so the camera's
@@ -11420,7 +11426,7 @@
           // lighter by 2%" -- so the hero now sits a step above the cards
           // rather than a step below. It runs to the body's own black,
           // reached as the body tops out.
-          const r = Math.round(18 - 18 * v5HeadP);
+          const r = Math.round(V6_HEAD - V6_HEAD * v5HeadP);
           ph.style.setProperty('--v5head', r + ' ' + r + ' ' + r);
         } else {
           v5HeadP = 0;
@@ -11779,10 +11785,11 @@
       const bare = flat && cls.contains('v5');
       const lift = flat === 'dash' && cls.contains('b5');   // V5's card
       const dk = bare ? (cls.contains('v6')
-                          // V5's header runs its 5% wash to black under the body
-                          ? [(13 - 13 * v5HeadP) / 255,
-                             (13 - 13 * v5HeadP) / 255,
-                             (13 - 13 * v5HeadP) / 255]
+                          // V6's header runs its wash to black under the body;
+                          // the same number the CSS is painting, see V6_HEAD
+                          ? [(V6_HEAD - V6_HEAD * v5HeadP) / 255,
+                             (V6_HEAD - V6_HEAD * v5HeadP) / 255,
+                             (V6_HEAD - V6_HEAD * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
                // 6% white on the card's black ground, which is what the card

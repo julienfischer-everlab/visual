@@ -2394,6 +2394,20 @@ year of the indicator's travel so a morph into the aligned organ ends on a lit
 centre rather than switching one on. Checked on the phone and the desktop with
 Brain (delta 0): 61 ticks, exactly one above the resting level, `#fff@0.950`.
 
+### 5.101 The dark rectangle: a fourth copy of the number
+
+"The background is cut. It's like a dark rectangle." The 2% lift (5.99) found
+three places that said 13 and missed the fourth: the canvas clear colour in the
+frame loop, which paints the hero's box the same grey as the header so the box
+is invisible on it -- "or a grey rectangle surfaces", as its own comment
+warned. It kept clearing to 13 on an 18 header, and the box surfaced, darker.
+
+Both now read one constant, `V6_HEAD = 18`: the CSS driver and the clear.
+Measured on the phone with the body showing: header 18, canvas 18 at the
+bottom corner; at the top both sit under the green light, 22–24 against 21–23,
+a level apart. The rule this leaves behind: a number the CSS and the renderer
+both have to agree on is declared once and read twice, never written twice.
+
 ---
 
 ## 6. Open items
