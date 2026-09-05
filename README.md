@@ -653,9 +653,10 @@ menus: one is a long list, the other has three options.
   and drained of colour, the band is a shape rather than a result.
 
   **Organ age**, emptied, stops saying nothing nine times. The nine organ
-  slides collapse to one — *Organ age*, showing the brain (the cloud, not the
-  label: *Brain + nerve* draws a neuron, and the brain itself is what *Mental*
-  carries), with no heading over its two lines: the name strip under it already
+  slides collapse to one — *Organ age*, showing the brain (organ 0; the names
+  were swapped at the user's word so that *Brain age* is the brain and *Mental
+  age* the neuron, and every table keyed by label swapped its two entries with
+  them), with no heading over its two lines: the name strip under it already
   says what the slide is — so the hero
   carousel reads biomarkers, body, organ age, and that slide carries the same
   shape the other empty states do: *Discover how your organs are ageing*, a
@@ -790,6 +791,26 @@ a pale ground it read as a coloured stain rather than as light — so there is
 nothing to catch, and the line stops being a highlight and becomes the edge
 itself: even the whole way round, a step stronger, because on a pale ground
 the edge is the only thing separating the surface from the page.
+
+**The ring is the phone's alone.** The desktop and tablet card carried the same
+one-pixel line, and there it read as a stray white edge along the top and left
+— "useless" — so it is gone from the card; the card's edge is its own radius
+against the page.
+
+**The card's light sits top right, and can be seen.** The first geometry
+centred a 1104px circle 426px above the card so that only its bottom cap
+showed — the outer quarter of the gradient, under 3% alpha, which is no light
+at all. The centre now sits just outside the card's top-right corner (`88%`
+across, 70px above; `84%` on the tablet), radius 440px, so the strong inner
+stops fall inside the card the way they do on the phone. Same stops, same
+`--haloK`, same verdict colours.
+
+**Three verdicts, three lights.** Older is orange and younger is green on every
+surface; *aligned with your age* used to fall on the green side of `delta > 0`,
+so an organ exactly its age glowed as if it were younger. It is white now, at
+30% of the halo's strength (`--haloK` is scaled per verdict alongside the
+colour, and both interpolate across the swipe on the phone and with the eased
+warmth on the card): a light that is present and has nothing to say.
 
 
 ### The library is the source of truth

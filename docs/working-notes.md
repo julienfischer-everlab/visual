@@ -2063,6 +2063,56 @@ be a line. The histogram that would have found this is the one along the OTHER
 axis, and the fastest way to know which axis to histogram is to look at the
 picture first.
 
+### 5.82 The line that made sense on one surface and not the other
+
+"Remove this white border edge on the top and left, it is useless." The
+one-pixel neutral ring was added to the phone with the halo it catches (5.3x):
+a light with nothing to land on is a wash, so the phone's edge carries a
+hairline that is brightest where the light is. The same rule was applied to the
+desktop card, and there it read as exactly what it is when there is no visible
+light behind it -- a stray white edge along two sides. Gone from the card; the
+phone keeps it. A detail that exists to serve another detail should be removed
+wherever the other is missing, and the other was missing on the card, which is
+the next note.
+
+### 5.83 A light positioned so that only its darkest quarter shows
+
+"Do you see the green and orange halo on mobile? I need the same on desktop and
+tablet, top right." The card already had one. `.v4Halo` on `#organSlot` was a
+1104px circle whose centre sat 426px above the card, so that only its bottom
+126px cap fell inside -- and the cap of a radial gradient is its outer quarter:
+stops at 77% and beyond, alpha under 3%. Present in the DOM, invisible on the
+screen, which is the same as absent and harder to notice.
+
+The centre now sits just outside the card's top-right corner (88% across, 70px
+above; 84% on the tablet) with a 440px radius, so the inner stops -- the ones
+that are actually light -- fall inside the card the way they do on the phone.
+Nothing else changed: same stops, same `--haloK`, same verdict colours. Checked
+at 2x with an older organ (orange, top right), a younger one (green), and the
+aligned one (see the next note), on desktop and tablet.
+
+### 5.84 Aligned is not younger
+
+"The halo for 'aligned with your age' shouldn't be green. White, very low
+opacity." Both colour sites picked the hue off `delta > 0 ? orange : green`,
+which puts zero on the green side: an organ exactly its age glowed as if it were
+younger. Three verdicts now, on both surfaces: orange above, green below, and
+white at 30% of the halo's strength at zero. The strength rides `--haloK`,
+which the JS now sets per verdict beside the colour, so a dim white and a full
+green interpolate together -- across the swipe on the phone, and with the eased
+warmth on the card, where "aligned" is the closeness of the warmth to zero.
+
+### 5.85 Swapping two names without swapping what they name
+
+"Replace brain age by mental age and mental age by brain age." The labels in
+`PILL` swapped, and with them the two entries in every table keyed by label --
+the biomarker descriptions, the organ copy, the annotation anchors, the age
+nouns -- so each organ kept its own words and its own anchor and only its name
+changed. The brain (organ 0) is *Brain age* and reads as aligned; the neuron
+(organ 1) is *Mental age* and reads six years younger. One site keys on the
+ORGANS label rather than the pill's and was left alone. The tab order follows
+the pill list, so it now reads Heart, Brain, Mental, Lung.
+
 ---
 
 ## 6. Open items

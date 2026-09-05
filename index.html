@@ -2267,9 +2267,15 @@
       rgb(var(--v4halo, 132 176 142) / calc(.016 * var(--haloK, 1))) 81%,
       rgb(var(--v4halo, 132 176 142) / calc(.004 * var(--haloK, 1))) 91%,
       rgb(var(--v4halo, 132 176 142) / 0) 100%;
-    --v4haloR:552px;
-    --v4haloCap:126px;    /* the phone's 105-on-410, at the card's height */
-    --v4haloX:75.5%;      /* the centre of the canvas, not of the card */
+    /* Top right of the card, and close enough to be seen. The first geometry
+       centred a 1104px circle 426px above the card so that only its bottom cap
+       showed -- which is the outer quarter of the gradient, under 3% alpha, and
+       read as no light at all ("I need the same thing on the desktop and
+       tablet"). The centre now sits just outside the card's top-right corner,
+       so the strong inner stops fall inside it the way they do on the phone. */
+    --v4haloR:440px;
+    --v4haloX:88%;        /* toward the right edge, over the organ's side */
+    --v4haloY:-70px;      /* the centre, a little above the card's top */
   }
   /* The light runs past every edge of the card, so something has to crop it --
      but not the card itself: the arc is drawn wider than the column it sits in
@@ -2287,7 +2293,7 @@
   }
   body.b5 #organSlot .v4Halo{
     display:block;position:absolute;left:var(--v4haloX);
-    top:calc(var(--v4haloCap) - var(--v4haloR) * 2);
+    top:calc(var(--v4haloY) - var(--v4haloR));
     width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
     transform:translateX(-50%);
     pointer-events:none;will-change:transform;
@@ -2394,7 +2400,7 @@
 
   /* the card: no list, so nothing to lean the organ or its light away from */
   body.tabM .dash .olist{display:none;}
-  body.tabM #organSlot{--v4haloX:50%;}
+  body.tabM #organSlot{--v4haloX:84%;}   /* the tablet's light sits top right as well */
   body.tabM #dstrip{display:flex;}
   body.tabM .agStep{display:flex;}
   /* Three names, the middle one the reading on the card. The neighbours are
@@ -2648,8 +2654,10 @@
      thing separating the surface from the page. */
   :root{--rimC:236 234 230; --rimA:.34; --rimStop:34%;}
   body.light{--rimC:28 26 24; --rimA:.13; --rimStop:100%;}
-  #phone::after,
-  body.b5 #organSlot::after{
+  /* The phone only. The desktop and tablet card carried the same line and it
+     read as a stray white edge along its top and left -- "useless" -- so it
+     is gone from there; the card's edge is its own radius against the page. */
+  #phone::after{
     content:'';position:absolute;inset:0;z-index:7;pointer-events:none;
     padding:1px;border-radius:inherit;
     background:linear-gradient(to bottom,
@@ -2662,11 +2670,9 @@
   }
   /* on a pale ground the line is the edge, so it does not fade away down the
      sides -- one alpha, the whole way round */
-  body.light #phone::after,
-  body.light.b5 #organSlot::after{
+  body.light #phone::after{
     background:rgb(var(--rimC) / var(--rimA));
   }
-  body.b5 #organSlot::after{border-radius:20px;}
 
   /* The silhouette's feet run off the bottom of the canvas, and a hard cut
      there reads as a crop. So the last 40px of the organ band is a progressive
@@ -6903,8 +6909,11 @@
   // the full collection of health areas, in product order
   const PILL = [
     { label: 'Heart',         organIdx: 3, delta: -3, bio: 18 },
-    { label: 'Mental',        organIdx: 0, delta:  0, bio: 14 },
-    { label: 'Brain', organIdx: 1, delta: -6, bio: 11 },
+    // The names swapped, at the user's word: the brain organ is "Brain age" and
+    // the nerve is "Mental age". Every table keyed by label below swapped its
+    // two entries with them, so each organ kept its own copy and anchor.
+    { label: 'Brain',         organIdx: 0, delta:  0, bio: 14 },
+    { label: 'Mental',        organIdx: 1, delta: -6, bio: 11 },
     { label: 'Lung',          organIdx: 2, delta:  8, bio: 16, bioOut: 2 },
     { label: 'Immune',        organIdx: 4, delta: -3, bio: 12 },
     { label: 'Muscle & bone', organIdx: 5, delta:  2, bio: 9,  bioOut: 4 },
@@ -8598,13 +8607,21 @@
       }
       if (v4HaloEl){
         const halo = v4HaloEl.closest('#phone') || v4HaloEl;
-        const hue = o => noAgeFor(o) ? [150, 150, 148]
-                       : o.delta > 0 ? [210, 148, 112] : [132, 176, 142];
+        // Three verdicts, three lights: older is orange, younger is green, and
+        // "aligned with your age" is neither -- it used to fall on the green
+        // side of `delta > 0`, and an organ that is exactly its age glowed as
+        // if it were younger. White now, and at a fraction of the strength
+        // (the fourth value scales --haloK), so it reads as a light that is
+        // present and has nothing to say. Both interpolate across the swipe.
+        const hue = o => noAgeFor(o) ? [150, 150, 148, 1]
+                       : o.delta > 0 ? [210, 148, 112, 1]
+                       : o.delta < 0 ? [132, 176, 142, 1] : [236, 234, 230, 0.30];
         const ha = hue(oa), hb = hue(ob);
         halo.style.setProperty('--v4halo',
           Math.round(ha[0] + (hb[0] - ha[0]) * f) + ' ' +
           Math.round(ha[1] + (hb[1] - ha[1]) * f) + ' ' +
           Math.round(ha[2] + (hb[2] - ha[2]) * f));
+        halo.style.setProperty('--haloK', (1.55 * (ha[3] + (hb[3] - ha[3]) * f)).toFixed(3));
       }
       // On the way to the biomarker slide the silhouette and its light give way
       // -- there is no organ there -- and the arc stops being an age scale and
@@ -9893,8 +9910,8 @@
   // ---- Immersive experience: the organ on an instrument, one channel at a time ----
   const IM_DESC = {
     'Heart': 'Lipids, blood pressure and inflammatory markers, read together as the load the cardiovascular system is carrying.',
-    'Mental': 'Markers tied to cognition and mood regulation — inflammation, B-vitamin status and metabolic supply to the brain.',
-    'Brain': 'Neurological signal quality: homocysteine, B12 and the inflammatory markers that track nerve conduction.',
+    'Brain': 'Markers tied to cognition and mood regulation — inflammation, B-vitamin status and metabolic supply to the brain.',
+    'Mental': 'Neurological signal quality: homocysteine, B12 and the inflammatory markers that track nerve conduction.',
     'Lung': 'Oxygen transport and airway inflammation, from haemoglobin and red cell indices through to eosinophil counts.',
     'Immune': 'White cell lines and inflammatory proteins, describing how quickly the body mounts and resolves a response.',
     'Muscle & bone': 'Creatine kinase, vitamin D and mineral balance — the markers behind musculoskeletal strength and repair.',
@@ -9905,7 +9922,7 @@
   };
   // annotation anchors in organ-local space, art-directed per organ
   const IM_ANCHOR = {
-    'Heart': [0.42, 0.34], 'Mental': [0.46, 0.30], 'Brain': [0.52, 0.36],
+    'Heart': [0.42, 0.34], 'Brain': [0.46, 0.30], 'Mental': [0.52, 0.36],
     'Lung': [0.44, 0.32], 'Immune': [0.50, 0.28], 'Muscle & bone': [0.30, 0.36],
     'Gut': [0.46, 0.24], 'Metabolic': [0.48, 0.26], 'Kidney': [0.46, 0.30],
     'Body': [0.34, 0.40]
@@ -10325,8 +10342,8 @@
   // What each organ's age is actually describing, in the modal's own voice.
   const AGE_DESC = {
     'Heart': 'Your heart drives circulation, blood pressure and how well oxygen reaches the rest of you. Its biological age reflects the load your cardiovascular system is carrying.',
-    'Mental': "Your brain plays a central role in memory, focus, mood and cognitive performance. Its biological age reflects how well it's functioning compared with what's expected for your age.",
-    'Brain': 'Your nervous system carries every signal between brain and body. Its biological age reflects how cleanly those signals are still travelling.',
+    'Brain': "Your brain plays a central role in memory, focus, mood and cognitive performance. Its biological age reflects how well it's functioning compared with what's expected for your age.",
+    'Mental': 'Your nervous system carries every signal between brain and body. Its biological age reflects how cleanly those signals are still travelling.',
     'Lung': 'Your lungs move oxygen into the blood and carbon dioxide back out. Their biological age reflects how efficiently that exchange is still happening.',
     'Immune': 'Your immune system decides how quickly you mount a response and how cleanly you resolve it. Its biological age reflects how well that balance is holding.',
     'Muscle & bone': 'Muscle and bone carry you, and repair themselves as they go. Their biological age reflects how much strength and density you are keeping.',
@@ -10344,7 +10361,7 @@
   // the noun each channel takes in "Your ___ age is 32"; the label alone does not
   // always read as one ("Your brain + nerve age" does not)
   const AGE_NOUN = {
-    'Heart': 'heart', 'Mental': 'brain', 'Brain': 'nerve', 'Lung': 'lung',
+    'Heart': 'heart', 'Brain': 'brain', 'Mental': 'nerve', 'Lung': 'lung',
     'Immune': 'immune', 'Muscle & bone': 'muscle &amp; bone', 'Gut': 'gut',
     'Metabolic': 'metabolic', 'Kidney': 'kidney'
   };
@@ -11429,14 +11446,21 @@
     // stands in for that, run out to full orange by a two-year gap so every
     // organ in the data reads the colour the phone gives it.
     if (dHaloEl && isDash(version)){
-      const hf = Math.max(0, Math.min(1, warmNow / 0.34));
       const grey = document.body.classList.contains('noAge');
+      // The same three verdicts as the phone, read off the eased warmth: green
+      // below, orange above, and white at a fraction of the strength within a
+      // hair of zero -- "aligned with your age" is not a younger reading and
+      // must not glow like one. `al` is the closeness to zero, eased with the
+      // warmth so the colour and the dimming arrive together.
+      const hf = Math.max(0, Math.min(1, warmNow / 0.34));
+      const al = grey ? 0 : Math.max(0, 1 - Math.abs(warmNow) / 0.08);
       const gr = grey ? [150, 150, 148] : [132, 176, 142],
-            og = grey ? [150, 150, 148] : [210, 148, 112];
-      (dHaloEl.closest('#organSlot') || dHaloEl).style.setProperty('--v4halo',
-        Math.round(gr[0] + (og[0] - gr[0]) * hf) + ' ' +
-        Math.round(gr[1] + (og[1] - gr[1]) * hf) + ' ' +
-        Math.round(gr[2] + (og[2] - gr[2]) * hf));
+            og = grey ? [150, 150, 148] : [210, 148, 112],
+            wh = [236, 234, 230];
+      const c = [0, 1, 2].map(i => { const v = gr[i] + (og[i] - gr[i]) * hf; return Math.round(v + (wh[i] - v) * al); });
+      const host = dHaloEl.closest('#organSlot') || dHaloEl;
+      host.style.setProperty('--v4halo', c.join(' '));
+      host.style.setProperty('--haloK', (1.55 * (1 - 0.70 * al)).toFixed(3));
     }
 
     // camera rides the same S-curve timeline as the morph
