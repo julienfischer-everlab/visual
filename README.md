@@ -1291,14 +1291,15 @@ more orange."
 Inverted means turned over, not negated. The palette was tuned as light marks
 on black; on the pale ground the same three read in the other order, so the ink
 that is near-white on black is the darkest here, the theme's own text ink, the
-sand becomes a burnt amber that still sits in the middle, and the orange is a
-deeper, more saturated orange, since on white it is the saturation that
-carries:
+sand becomes a brick between the two, and the material goes to a dark red —
+"it should tend more to red, dark red than orange" — since on white it is the
+depth of the mark that carries, and the dots have to be darker than the dark
+theme's are light:
 
 | | dark ground | light ground |
 |---|---|---|
-| material (60%) | `247,131,89` | `214,68,12` |
-| middle (25%) | `240,217,168` | `184,118,46` |
+| material (60%) | `247,131,89` | `156,30,24` |
+| middle (25%) | `240,217,168` | `168,84,54` |
 | highlight (15%) | `246,240,236` | `46,31,26` |
 
 The engine crossfades each particle to its light ink on the theme's own eased
@@ -1310,13 +1311,15 @@ the pickers and the exports carry it without re-sampling. The pickers on the
 tweak bar still choose the dark three; the light three are what that palette is
 on a pale ground.
 
-With the ink carrying the contrast the lift drops to what it takes for the
-organ to sit as far off a pale ground as it does off black: `×1.80` in the
-shader, `×1.70` on the tiles, measured as the mean lift of the organ's pixels
-off its ground with the halo hidden (`lightlift.js`). The tile reads 70 levels
-off its card against the dark theme's 56, the desktop card 86 against 76; the
-engine and the tile agree on the colour they put on screen (hue 19–20, the
-same saturation).
+The lift stays high — `×3.0` in the shader, `×2.2` on the tiles — because the
+ask is for marks darker on white than they are light on black, not for parity.
+A first pass at `×1.8` with a saturated orange measured as parity and read as
+no change at all on the phone and the card ("you didn't change anything for
+the colour in light mode"): a dot at a fifth of full is pastel whatever its
+ink. Measured as the mean lift of the organ's pixels off its ground with the
+halo hidden (`lightlift.js`): the tile reads 81 levels off its card against the
+dark theme's 57, the desktop card 97 against 88, the phone's lung 62 against
+72; the engine and the tile put the same hue on screen (8–9, a red).
 
 ### How exact "two colours" is
 
@@ -1352,8 +1355,9 @@ knows about it — and, since the palette was turned over for the light theme
 through that same uniform. The light theme's colour transform went from a dark
 ink, to the same colour darkened, to the same colour 30% desaturated, to
 nothing at all, and now to a second palette chosen for the ground rather than
-derived from the first. What is left of the alpha lift is `×1.80`, the part
-that is genuinely about the ground and not about an ink with nothing to say.
+derived from the first. The alpha lift stands at `×3.0` beside it: not to make
+up for an ink with nothing to say any more, but because the marks are asked to
+be darker on the pale ground than they are light on the dark one.
 
 The order mattered while there was still a colour transform to order. It ran
 before the biomarker reading, so the reading painted over it and the light

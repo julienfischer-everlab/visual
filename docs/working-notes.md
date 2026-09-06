@@ -2464,6 +2464,32 @@ that was true before; left alone.
 Checked by eye at 2× on the card, the phone and the tile: orange marks with
 dark specks through them, the same picture on all three.
 
+### 5.104 Darker than the dark theme is light, and red
+
+"You didn't change anything for the colour in light mode. Obviously the dot
+should be way darker than in dark mode." And: "more to red, dark red than
+orange; adapt everything to mobile, desktop and tablet, not only the library."
+
+5.103 had measured for parity -- the organ as far off the pale ground as off
+black -- and got it (1.14× on the card, 1.25× on the tile, 0.63× on the phone's
+body). Parity was the wrong target: a saturated orange at a fifth of full on
+white is a pastel, and a pastel orange was what the light theme had shown
+before. Nothing looked changed, because in the only sense that matters nothing
+had. The library read differently only because its tiles pack the dots.
+
+Now: the material is a dark red (156 30 24), the middle a brick (168 84 54),
+the highlight the ink (46 31 26); the lift goes back up to ×3.0 in the shader
+and ×2.2 on the tiles, so the marks arrive dark. Measured the same way: tile
+81 against dark's 57, card 97 against 88, the phone's lung 62 against 72 (its
+dots are the smallest, so per-pixel coverage caps what any lift can do). The
+hue on screen is 8–9 on all three -- a red -- where 5.103's was 19–20. By eye
+at 2× on phone, card and tile: dark red marks with near-black specks, the same
+picture on the three surfaces, and unmistakably not the dark theme's.
+
+The lesson is about the target, not the tool. "Inverted" and "darker" were
+both said; the first pass heard the first and measured for it. When a request
+names a direction, measure the direction.
+
 ---
 
 ## 6. Open items
