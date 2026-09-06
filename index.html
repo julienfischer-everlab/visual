@@ -4306,6 +4306,16 @@
   const LIGHT_INKS = ['204,50,18',                                // #CC3212
                       '214,110,44',                               // #D66E2C
                       '122,38,12'];                               // #7A260C
+  // The light three are picked and saved on their own, under their own key,
+  // the same way the dark three are above; the pickers edit whichever theme
+  // is showing. No "old defaults" guard here: this palette has no history of
+  // being saved unchanged, so a saved set is a choice.
+  const INK_KEY_LIGHT = 'everlab.inks.light';
+  try {
+    const savedL = JSON.parse(localStorage.getItem(INK_KEY_LIGHT) || 'null');
+    if (savedL && savedL.length === 3 && savedL.every(v => /^\d+,\d+,\d+$/.test(v)))
+      for (let i = 0; i < 3; i++) LIGHT_INKS[i] = savedL[i];
+  } catch (e){ /* defaults stand */ }
   // How much the light theme lifts alpha, in the engine and in the 2D painter:
   // only what it takes for the organ to sit as far off a pale ground as it
   // does off black, measured (lightlift.js) rather than judged. See aLift in
@@ -7544,26 +7554,50 @@
       const n = parseInt(h.slice(1), 16);
       return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255);
     };
-    const wire = (id, set) => {
+    // Two palettes, one row of pickers. The pickers edit the palette of the
+    // theme that is showing: on dark they are the dark three, on light the
+    // light three, and neither touches the other -- "I can pick some colours
+    // when I'm in light mode, but this set should be independent of the dark
+    // one, and the same the other way". Which theme is read off the theme
+    // control itself rather than the body class, because the swatch sync
+    // below runs on the same change event as the class toggle and must not
+    // depend on which listener the browser ran first.
+    const themeCtl = document.getElementById('themeSel');
+    const onLight = () => themeCtl ? themeCtl.value === 'light'
+                                   : document.body.classList.contains('light');
+    const setInk = (i, v) => {
+      if (onLight()) LIGHT_INKS[i] = v;
+      else if (i === 0) INK_CSS = v; else if (i === 1) MID_CSS = v; else LIT_CSS = v;
+    };
+    const wire = (id, i) => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.addEventListener('input', () => { set(hexTo(el.value)); recolour(); });
+      el.addEventListener('input', () => { setInk(i, hexTo(el.value)); recolour(); });
     };
-    wire('inkA', v => { INK_CSS = v; });
-    wire('inkB', v => { MID_CSS = v; });
-    wire('inkC', v => { LIT_CSS = v; });
-    // the swatches show what is actually in use, which after a restore is not
-    // what the markup says
+    wire('inkA', 0);
+    wire('inkB', 1);
+    wire('inkC', 2);
+    // the swatches show what is actually in use -- the showing theme's three,
+    // which after a restore is not what the markup says
     const toHex = c => '#' + c.split(',')
       .map(v => (+v).toString(16).padStart(2, '0')).join('');
-    [['inkA', INK_CSS], ['inkB', MID_CSS], ['inkC', LIT_CSS]].forEach(([id, v]) => {
-      const el = document.getElementById(id);
-      if (el) el.value = toHex(v);
-    });
+    const syncSwatches = () => {
+      const set = onLight() ? LIGHT_INKS : [INK_CSS, MID_CSS, LIT_CSS];
+      [['inkA', set[0]], ['inkB', set[1]], ['inkC', set[2]]].forEach(([id, v]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = toHex(v);
+      });
+    };
+    syncSwatches();
+    if (themeCtl) themeCtl.addEventListener('change', syncSwatches);
     const save = document.getElementById('inkSave');
     if (save) save.addEventListener('click', () => {
       let ok = true;
-      try { localStorage.setItem(INK_KEY, JSON.stringify([INK_CSS, MID_CSS, LIT_CSS])); }
+      // both palettes, whichever is showing: a Save is a save of the inks
+      try {
+        localStorage.setItem(INK_KEY, JSON.stringify([INK_CSS, MID_CSS, LIT_CSS]));
+        localStorage.setItem(INK_KEY_LIGHT, JSON.stringify(LIGHT_INKS.slice()));
+      }
       catch (e){ ok = false; }
       // say which of the two happened rather than flashing the same word at
       // both: a palette that silently failed to save is worse than no button

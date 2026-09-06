@@ -1312,9 +1312,10 @@ value: the shader reads which of the three a particle carries off its colour
 (nearest of the three dark inks, passed as uniforms) and mixes to the
 counterpart, after the ceilings that key off the dark colour's green. The 2D
 painter reads the same table through `inkNow()` at draw time, so the tiles,
-the pickers and the exports carry it without re-sampling. The pickers on the
-tweak bar still choose the dark three; the light three are what that palette is
-on a pale ground.
+the pickers and the exports carry it without re-sampling. The three pickers on
+the tweak bar edit the palette of the theme that is showing — the dark three on
+dark, the light three on light — and neither touches the other; Save writes
+both, under their own storage keys, and each is restored on its own.
 
 The lift stays high — `×3.2` in the shader, `×2.4` on the tiles — because the
 ask is for marks darker on white than they are light on black, not for parity.

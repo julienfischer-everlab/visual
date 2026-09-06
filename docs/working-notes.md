@@ -2504,6 +2504,25 @@ now rather than brown-black. The lift goes up a step with it, ×3.2 / ×2.4, for
 "contrasted". Checked at 2× on the phone, the card and the tile: a lively
 red-orange body with darker orange specks, the same on all three.
 
+### 5.106 Two palettes, one row of pickers
+
+"I want the colour to be custom as well: I can pick colours in light mode, but
+this set should be independent of the dark one; and the same for dark." The
+three pickers edit the palette of the theme that is showing -- `setInk(i, v)`
+writes `LIGHT_INKS[i]` on light and the dark three otherwise -- and the
+swatches re-sync on the theme control's change event so they always show the
+set in hand. Which theme is read off the control's value, not the body class:
+the sync runs on the same event as the class toggle, and which listener the
+browser runs first is not something to lean on.
+
+Save writes both sets, the light one under `everlab.inks.light`; each is
+restored on its own at start, before anything reads the three. The light set
+has no "old defaults" guard -- it has no history of being saved unchanged, so a
+saved set is a choice. `recolour()` already pushed the six uniforms and
+dropped the painter's baked lists, so a pick lands on the engine and the tiles
+alike. Probed (`pickers.js`): a pick on light changes the light three and
+leaves the dark three; a pick on dark does the reverse; both survive a reload.
+
 ---
 
 ## 6. Open items
