@@ -2490,6 +2490,20 @@ The lesson is about the target, not the tool. "Inverted" and "darker" were
 both said; the first pass heard the first and measured for it. When a request
 names a direction, measure the direction.
 
+### 5.105 Shinier, a step back toward orange, and the flow in orange too
+
+"Make the light mode's red a bit more shiny and contrasted, and turn it a
+little more orange. It looks a bit sad. For the flow, you can use more orange
+as well." The dark red (156 30 24) was the depth the previous note asked for
+and, on the page, a mute one. Now the material is a saturated red-orange (204
+50 18), the middle a lighter orange (214 110 44), and the highlight -- which
+is the flow's ink and the specks through the cloud -- a deep burnt orange (122
+38 12) in place of the theme's near-black: still the darkest of the three, so
+the contrast the specks and the flow give the picture stays, but it is orange
+now rather than brown-black. The lift goes up a step with it, ×3.2 / ×2.4, for
+"contrasted". Checked at 2× on the phone, the card and the tile: a lively
+red-orange body with darker orange specks, the same on all three.
+
 ---
 
 ## 6. Open items

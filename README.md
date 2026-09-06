@@ -1291,16 +1291,21 @@ more orange."
 Inverted means turned over, not negated. The palette was tuned as light marks
 on black; on the pale ground the same three read in the other order, so the ink
 that is near-white on black is the darkest here, the theme's own text ink, the
-sand becomes a brick between the two, and the material goes to a dark red —
-"it should tend more to red, dark red than orange" — since on white it is the
-depth of the mark that carries, and the dots have to be darker than the dark
-theme's are light:
+sand becomes a lighter orange, and the material goes to a bright red-orange.
+It went to a dark red first ("it should tend more to red, dark red than
+orange"), and came back a step — "a bit more shiny and contrasted, a little
+more orange, it looks a bit sad" — so the red is saturated rather than deep.
+The highlight, which is also the flow's ink, is a deep burnt orange rather than
+the theme's near-black ("for the flow, use more orange as well"): still the
+darkest of the three, so the specks and the flow keep their contrast, but
+orange with the rest. The dots have to be darker than the dark theme's are
+light:
 
 | | dark ground | light ground |
 |---|---|---|
-| material (60%) | `247,131,89` | `156,30,24` |
-| middle (25%) | `240,217,168` | `168,84,54` |
-| highlight (15%) | `246,240,236` | `46,31,26` |
+| material (60%) | `247,131,89` | `204,50,18` |
+| middle (25%) | `240,217,168` | `214,110,44` |
+| highlight (15%) | `246,240,236` | `122,38,12` |
 
 The engine crossfades each particle to its light ink on the theme's own eased
 value: the shader reads which of the three a particle carries off its colour
@@ -1311,7 +1316,7 @@ the pickers and the exports carry it without re-sampling. The pickers on the
 tweak bar still choose the dark three; the light three are what that palette is
 on a pale ground.
 
-The lift stays high — `×3.0` in the shader, `×2.2` on the tiles — because the
+The lift stays high — `×3.2` in the shader, `×2.4` on the tiles — because the
 ask is for marks darker on white than they are light on black, not for parity.
 A first pass at `×1.8` with a saturated orange measured as parity and read as
 no change at all on the phone and the card ("you didn't change anything for
@@ -1355,7 +1360,7 @@ knows about it — and, since the palette was turned over for the light theme
 through that same uniform. The light theme's colour transform went from a dark
 ink, to the same colour darkened, to the same colour 30% desaturated, to
 nothing at all, and now to a second palette chosen for the ground rather than
-derived from the first. The alpha lift stands at `×3.0` beside it: not to make
+derived from the first. The alpha lift stands at `×3.2` beside it: not to make
 up for an ink with nothing to say any more, but because the marks are asked to
 be darker on the pale ground than they are light on the dark one.
 
