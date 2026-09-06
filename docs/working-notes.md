@@ -2523,6 +2523,25 @@ dropped the painter's baked lists, so a pick lands on the engine and the tiles
 alike. Probed (`pickers.js`): a pick on light changes the light three and
 leaves the dark three; a pick on dark does the reverse; both survive a reload.
 
+### 5.107 Mobile (viewport): an entry, not a mode
+
+"Add a version, mobile (viewport), that fills the design to the viewport so we
+can test on our phone. No iPhone frame." The full-screen flag already existed
+for the `/phone` route (`CARD_STATE.fullscr`, setMode writes it into the class
+list); what was missing was a way to reach it from the menu, on the current
+mobile design rather than V6. A new mode index would have meant touching every
+`version === 20` and the class chain, so it is an entry in the dropdown --
+value `viewport` -- that sets the flag and calls setMode(20). From the bar the
+bar stays (`showBar`); by hash, `#m20v`, it goes.
+
+One thing bit: setMode itself rewrites the address bar to `#m` + mode and the
+dropdown to the mode's own option, which stripped the `v` and reset the entry
+the moment it was chosen -- and with the hash already `#m20`, going to `#m20`
+was then no change and the frame never came back. setMode now writes the entry
+and the flagged hash when the flag is on. Probed at 390×844 (`viewport.js`):
+by hash, `#phone` is 0,0,390,844 with the bar hidden; by menu, the same with
+the bar showing; picking Mobile again or any other hash takes the flag off.
+
 ---
 
 ## 6. Open items

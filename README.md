@@ -47,12 +47,20 @@ step, so it has not been made here.
 
 ## On a phone
 
-`/phone` opens **Mobile V6** full screen, for carrying the design on the device
-it is a design for: the mock-up's shell, bezel, side buttons and drawn status
-bar are the phone's own job, so they go and the page fills the viewport, safe
-areas included. `vercel.json` rewrites that path to `index.html`; anywhere
-without the rewrite, `?phone` on the URL does the same. Add `&bar` to keep the
-tweak row, for trying the empty states on the device.
+**Mobile (viewport)** in the version menu is the mobile design filling the
+browser's viewport with no drawn phone around it, for testing on an actual
+phone: the mock-up's shell, bezel, side buttons and drawn status bar are the
+device's own job, so they go and the page fills the screen, safe areas included.
+It is an entry rather than a mode — Mobile (`#m20`) wearing the full-screen
+flag — so the class chain and everything keyed on the mode stay one thing.
+Picked from the bar, the bar stays (it is how you get back); opened by its own
+hash, **`#m20v`**, the bar is gone and the design has the whole screen, which is
+the link to send to a phone.
+
+`/phone` is the older route to the same thing for Mobile V6: `vercel.json`
+rewrites that path to `index.html`; anywhere without the rewrite, `?phone` on
+the URL does the same, and `&bar` keeps the tweak row for trying the empty
+states on the device.
 
 The flag cannot be a class added at load: `setMode` writes `body.className`
 whole, so it lives in the set `setMode` reads, beside the card states.
