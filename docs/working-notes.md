@@ -2430,6 +2430,40 @@ tap and the auto-advance also take the short way round, forward across the
 join from Kidney rather than rewinding the strip. After: every step in the
 probe passes exactly one name, both directions, join included.
 
+### 5.103 The light theme's own three inks
+
+"On light mode, the three colours need to be inverted. The orange should be
+way more orange." The light theme drew the dark palette with the alpha lifted
+×3.2, and the README's own note on it said the only real fix was a second set
+of values, "a decision rather than a repair". Decided.
+
+Inverted as turned over, not negated: negating would make the orange a blue.
+The three keep their roles and swap their tones for the ground -- the
+near-white highlight becomes the theme's text ink (46 31 26), the sand a burnt
+amber (184 118 46), the orange a deeper, more saturated orange (214 68 12; it
+went through 232 92 32 and 222 80 22 on the way, each one "more orange" than
+the last against the same alpha).
+
+Two renderers, one table. The engine: six vec3 uniforms (the dark three and
+the light three), the shader finds which ink a particle carries by nearest of
+the dark three and mixes to its counterpart by `uLight` -- at the end of the
+vertex shader, after the ceilings that key off the dark colour's green, so
+nothing else changes. The painter: `inkNow(c)` maps a baked ink string at draw
+time, so no tile re-samples and the exports carry it. `pushInks()` follows the
+pickers through `recolour()`.
+
+The lift, re-measured (`lightlift.js`: mean lift of the organ's pixels off its
+ground, halo hidden). The old ×3.2 / ×1.60 were pushing an ink with nothing to
+say; with the ink carrying the contrast, ×1.80 / ×1.70 put the tile at 70
+levels off its card against the dark theme's 56 and the desktop card at 86
+against 76, and the engine and the tile agree on what they put on screen (hue
+19–20, saturation alike). The phone's body slide reads fainter than the rest
+in light (32 against 51) because its dots are authored faint -- a shell -- and
+that was true before; left alone.
+
+Checked by eye at 2× on the card, the phone and the tile: orange marks with
+dark specks through them, the same picture on all three.
+
 ---
 
 ## 6. Open items

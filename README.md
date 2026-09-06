@@ -1277,31 +1277,46 @@ That is five thousand dots a tile across nine tiles, and it took the page from
   rasteriser, was the bottleneck — but it is what makes the other three
   expressible.
 
-### White did not work on a light ground, and could not be made to
+### The light theme has its own three inks
 
-This is the one place the treatment costs something, and it is structural
-rather than a tuning problem. Half the cloud is `#FFFFFF`; the light theme's
-card is `#ece7e2`. Fifteen levels of lift is not a particle, and no amount of
-alpha invents contrast that is not in the difference between two colours.
+For a long stretch the light theme drew the dark theme's palette and lifted
+the alpha to compensate — `×3.2` in the shader, `×1.60` on the tiles — and the
+note here said what that could not do: half the cloud at near-white on a
+`#ece7e2` card is fifteen levels, and **alpha scales a contrast, it does not
+create one**. The only real fix, it said, would be a second value for the light
+theme, and that is a decision rather than a repair. The decision has been made:
+"on light mode the three colours need to be inverted; the orange should be way
+more orange."
 
-This was the reason the highlight moved off pure white, and it is worth
-keeping the note: half the cloud at `#FFFFFF` on a `#ece7e2` card is fifteen
-levels, and **alpha scales a contrast, it does not create one**. `#BC6654`
-carries on both grounds, so the light theme is no longer paying for a third of
-its particles saying nothing.
+Inverted means turned over, not negated. The palette was tuned as light marks
+on black; on the pale ground the same three read in the other order, so the ink
+that is near-white on black is the darkest here, the theme's own text ink, the
+sand becomes a burnt amber that still sits in the middle, and the orange is a
+deeper, more saturated orange, since on white it is the saturation that
+carries:
 
-Measured at the even white split, on
-a library tile: **27 levels of deviation from its card against the dark
-theme's 29** — the two grounds are close now, which they were not at the even
-split, because there is simply less white to lose. The single-ink treatment
-managed 52 and 34; both are softer than that on purpose.
+| | dark ground | light ground |
+|---|---|---|
+| material (60%) | `247,131,89` | `214,68,12` |
+| middle (25%) | `240,217,168` | `184,118,46` |
+| highlight (15%) | `246,240,236` | `46,31,26` |
 
-The alpha lift is pushed to its knee (`×3.2` in the shader, `×1.60` on the 2D
-tiles). Past that the extra contrast arrives entirely by dots pressing against
-the 50% ceiling, which buys a level or two by flattening the opacity range the
-whole treatment is built on. The only real fix would be a second value for the
-light theme — the page's own dark instead of white — and that is a third
-colour, so it is a decision rather than a repair.
+The engine crossfades each particle to its light ink on the theme's own eased
+value: the shader reads which of the three a particle carries off its colour
+(nearest of the three dark inks, passed as uniforms) and mixes to the
+counterpart, after the ceilings that key off the dark colour's green. The 2D
+painter reads the same table through `inkNow()` at draw time, so the tiles,
+the pickers and the exports carry it without re-sampling. The pickers on the
+tweak bar still choose the dark three; the light three are what that palette is
+on a pale ground.
+
+With the ink carrying the contrast the lift drops to what it takes for the
+organ to sit as far off a pale ground as it does off black: `×1.80` in the
+shader, `×1.70` on the tiles, measured as the mean lift of the organ's pixels
+off its ground with the halo hidden (`lightlift.js`). The tile reads 70 levels
+off its card against the dark theme's 56, the desktop card 86 against 76; the
+engine and the tile agree on the colour they put on screen (hue 19–20, the
+same saturation).
 
 ### How exact "two colours" is
 
@@ -1330,14 +1345,15 @@ a sixth of full still reads. On a light page the same alpha buys almost
 nothing: measured on the biomarker slide, the body sat 28 levels off a dark
 ground and 6 off a light one — the same cloud, and only one of them visible.
 
-The fix is not a light-mode treatment. That would be two pictures to keep in
-step, and they would drift the first time either changed. It is one shader
-with the ground's own arithmetic undone by the uniform that already knows
-about it — and the colour half of that rule has since gone away entirely. The
-light theme's transform went from a dark ink, to the same colour darkened, to
-the same colour 30% desaturated, to nothing at all. What is left is alpha —
-now `×3.2`, most of which is spent covering for the white third of the cloud
-having nothing to say on a pale card (see above).
+The fix is not a light-mode treatment in the sense of a second picture. It is
+one shader with the ground's own arithmetic undone by the uniform that already
+knows about it — and, since the palette was turned over for the light theme
+(see *The light theme has its own three inks*), one table of three inks read
+through that same uniform. The light theme's colour transform went from a dark
+ink, to the same colour darkened, to the same colour 30% desaturated, to
+nothing at all, and now to a second palette chosen for the ground rather than
+derived from the first. What is left of the alpha lift is `×1.80`, the part
+that is genuinely about the ground and not about an ink with nothing to say.
 
 The order mattered while there was still a colour transform to order. It ran
 before the biomarker reading, so the reading painted over it and the light

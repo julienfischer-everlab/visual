@@ -4286,6 +4286,28 @@
   // `let`, because the tweak bar can set them live. Everything downstream reads
   // the array rather than the three names, so a change is one recolour pass.
   let INK = rgb01(INK_CSS), MID = rgb01(MID_CSS), LIT = rgb01(LIT_CSS);
+  // The light theme's three, in the dark three's order. "On light mode the
+  // three colours need to be inverted" -- turned over, not negated: the palette
+  // was tuned as light marks on black, and on a pale ground the near-white ink
+  // vanished and the sand went to nothing, whatever the alpha was lifted to.
+  // So the ink that is the lightest on black is the darkest here (the theme's
+  // own text ink), the sand becomes a burnt amber that still reads as the
+  // middle of the three, and the orange is "way more orange": deeper and more
+  // saturated, since on white it is the saturation that carries. The engine
+  // crossfades to these on the theme's own eased value; the painter reads them
+  // through inkNow(). Not on the tweak bar -- the bar picks the palette, and
+  // this is what that palette is on a pale ground.
+  const LIGHT_INKS = ['214,68,12',                                // #D6440C
+                      '184,118,46',                               // #B8762E
+                      '46,31,26'];                                // #2E1F1A
+  // How much the light theme lifts alpha, in the engine and in the 2D painter:
+  // only what it takes for the organ to sit as far off a pale ground as it
+  // does off black, measured (lightlift.js) rather than judged. See aLift in
+  // the vertex shader and themeA in the painter.
+  const LIGHT_LIFT = 1.80, LIGHT_LIFT_2D = 1.70;
+  const inkNow = c => document.body.classList.contains('light')
+    ? (c === INK_CSS ? LIGHT_INKS[0] : c === MID_CSS ? LIGHT_INKS[1] : c === LIT_CSS ? LIGHT_INKS[2] : c)
+    : c;
   const INK_SHARE = 0.60, MID_SHARE = 0.25;   // the rest is the off-white
   const INKS = [INK, MID, LIT];
   // Which ink each particle carries, decided once, before any cloud is built:
@@ -5688,6 +5710,7 @@
     attribute vec4 aColor;
     ${GLSL_OP}
     uniform float uP, uTime, uScale, uJitter, uPix, uYOff, uWarm, uOrgR, uOrgK, uGhost, uZoom, uDens, uFlowVis, uAlpha, uSq, uLight, uRange, uFill, uDpr;
+    uniform vec3 uInkD0, uInkD1, uInkD2, uInkL0, uInkL1, uInkL2;   // the three inks, dark and light, see LIGHT_INKS
     uniform vec2 uFillY;
     // (on, pupil radius, limbus radius) in cloud units — the iris dilates and
     // its furrows light in turn, and both need the two radii to mean anything
@@ -5997,12 +6020,12 @@
         float upA = keepUp * mix(0.46, 0.72, shell);
         vfade = mix(1.0, mix(upA, 1.0, lit), uRange);
       }
-      // The light theme changes nothing about the colour -- there is nothing
-      // left to change. It went from a dark ink, to the same colour darkened,
-      // to the same colour 30% desaturated, and now to the same colour: the
-      // ground's arithmetic is undone entirely by the alpha lift below, which
-      // is where it always belonged. A dot inspected on the light theme and a
-      // dot inspected on the dark one are the same three bytes.
+      // The light theme's colour: for a long stretch it changed nothing -- the
+      // transform went from a dark ink, to the same colour darkened, to the
+      // same colour 30% desaturated, to the same colour, with the ground's
+      // arithmetic undone by the alpha lift alone. It has its own three inks
+      // now (LIGHT_INKS), applied at the very end of this shader so that
+      // everything between here and there still keys off the dark colour.
       // density control: a stable per-particle lottery thins the cloud live
       float keep = mix(step(fract(aSeed.z * 39.7), uDens), 1.0, max(ghost, flowP));
       float fv = mix(1.0, uFlowVis, flowP);
@@ -6025,7 +6048,12 @@
       // thing the light theme does at all, which is why it carries a larger
       // number than it once did -- first the darkening was folded into it, and
       // then the desaturation.
-      float aLift = mix(1.0, 3.20, uLight);
+      // 3.20 while the light theme drew the dark theme's inks -- near-white on
+      // near-white needed every bit of it. With the palette turned over
+      // (LIGHT_INKS) the ink carries the contrast and the lift only makes up
+      // the difference between a mark on black and the same mark on a pale
+      // ground, measured as the mean lift of the organ's pixels off its ground.
+      float aLift = mix(1.0, ${LIGHT_LIFT.toFixed(2)}, uLight);
       // The ceiling. Every factor above is a fraction of something except the
       // theme lift, and the lift is exactly the one that has to be allowed to
       // push a faint dot up without letting a strong one past the cap.
@@ -6070,7 +6098,16 @@
       // fading out steps down through them and then to nothing, which is what
       // the floor is for.
       A = A < 0.5 * OP_STEP ? 0.0 : floor(A / OP_STEP + 0.5) * OP_STEP;
-      vColor = vec4(rgb, A);
+      // The light theme has its own three inks (LIGHT_INKS in the script):
+      // the same palette turned over, so the ink that is near-white on black
+      // is near-black on the pale ground, and the orange is more orange.
+      // Which of the three this particle got is read off the colour it
+      // carries -- nearest of the three dark inks -- and the colour crossfades
+      // to its light counterpart on the same eased value the ground does.
+      // Read after the ceilings above, which key off the dark colour's green.
+      float dI0 = distance(rgb, uInkD0), dI1 = distance(rgb, uInkD1), dI2 = distance(rgb, uInkD2);
+      vec3 inkL = (dI0 <= dI1 && dI0 <= dI2) ? uInkL0 : (dI1 <= dI2 ? uInkL1 : uInkL2);
+      vColor = vec4(mix(rgb, inkL, uLight), A);
     }`;
   const FS = `
     precision mediump float;
@@ -6129,12 +6166,22 @@
   gl.useProgram(prog);
 
   const U = {};
-  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uOrgK','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY','uIris','uSphere','uDpr'])
+  for (const n of ['uP','uTime','uScale','uJitter','uPix','uYOff','uWarm','uOrgR','uOrgK','uGhost','uZoom','uEase','uDens','uFlowVis','uAlpha','uPan','uSq','uLight','uCenter','uCA','uCB','uRot','uView','uRange','uFill','uFillY','uIris','uSphere','uDpr',
+                   'uInkD0','uInkD1','uInkD2','uInkL0','uInkL1','uInkL2'])
     U[n] = gl.getUniformLocation(prog, n);
   gl.uniform2f(U.uPan, 0, 0);
   gl.uniform1f(U.uAlpha, 1);
   gl.uniform1f(U.uSq, 0);
   gl.uniform1f(U.uLight, 0);
+  // the shader maps each particle's dark ink to its light counterpart by
+  // matching against these; they follow the pickers through recolour()
+  function pushInks(){
+    gl.uniform3fv(U.uInkD0, INK); gl.uniform3fv(U.uInkD1, MID); gl.uniform3fv(U.uInkD2, LIT);
+    gl.uniform3fv(U.uInkL0, rgb01(LIGHT_INKS[0]));
+    gl.uniform3fv(U.uInkL1, rgb01(LIGHT_INKS[1]));
+    gl.uniform3fv(U.uInkL2, rgb01(LIGHT_INKS[2]));
+  }
+  pushInks();
   // The zoom is never set without the radius it was divided by: the dot size
   // reads the product, and a zoom written on its own would size the dots by
   // whichever organ happened to be framed last. One call, so the pair cannot
@@ -6279,6 +6326,7 @@
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, colors);
+    pushInks();   // the light-theme mapping matches against the dark three
     // The 2D painter does not read the colour buffer -- it bakes an ink into
     // each point when it first samples a cloud, and keeps that list. Uploading
     // to the GPU therefore repaints the engine and leaves every tile exactly as
@@ -9625,7 +9673,7 @@
         // more contrast per unit of alpha on a pale card than on a dark one,
         // and the tiles come back to the same weight by spending less of it.
         // The engine's own shader does exactly this with its light alpha lift.
-        const themeA = document.body.classList.contains('light') ? 1.60 : 1;
+        const themeA = document.body.classList.contains('light') ? LIGHT_LIFT_2D : 1;
         const drift = view.still ? 0 : 0.006 * view.jitter * sc;
         // The iris breathes by dilating rather than by scaling: the pupil opens
         // and shuts, and the tissue between it and the limbus is compressed into
@@ -9749,7 +9797,7 @@
             rr2 *= 0.86 + 0.30 * (zz / 0.775 * 0.5 + 0.5);
           }
           dot(ox + qx * sc + jx, oy - qy * sc + jy, rr2 * rk * view.dot,
-              q.c, opRender(q.a * tw * view.alpha * themeA));
+              inkNow(q.c), opRender(q.a * tw * view.alpha * themeA));
         }
         // no flow or feeding while the cloud is in flight
         // The body pass paints the cloud in flight and nothing else, as before.
@@ -9827,8 +9875,8 @@
               // crosses it changes by degrees. One ink, the lightest (LIT_CSS,
               // read live so the tweak bar moves it too).
               const rF = Math.max(1.15, view.dot * rk * FLOW_MUL * DOT_BASE * 1.30);
-              dot(ox + fx * sc, oy - fy * sc, rF * 1.6, LIT_CSS, fa * 0.30, true);
-              dot(ox + fx * sc, oy - fy * sc, rF,       LIT_CSS, fa * 0.80, true);
+              dot(ox + fx * sc, oy - fy * sc, rF * 1.6, inkNow(LIT_CSS), fa * 0.30, true);
+              dot(ox + fx * sc, oy - fy * sc, rF,       inkNow(LIT_CSS), fa * 0.80, true);
             }
           }
         }
@@ -9855,7 +9903,7 @@
           const tw = 0.92 + 0.08 * Math.sin(T * 1.8 + q.sz * 21.0);
           dot(ox + rx * sc + aDrift * Math.sin(T * 0.8 + q.sz * 6.28),
               oy - ry * sc + aDrift * Math.cos(T * 0.7 + q.sz * 9.42),
-              q.r * rk * view.dot * 0.9, q.c,
+              q.r * rk * view.dot * 0.9, inkNow(q.c),
               opRender(q.a * tw * feedA * view.alpha * themeA));
         }
         if (batch) batch.flush();
