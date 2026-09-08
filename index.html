@@ -357,16 +357,16 @@
   .dash .legend{display:flex;gap:26px;margin-top:22px;font-size:12px;color:#bdbdb9;}
   .dash .legend b{display:block;font-size:17px;color:#ececec;font-weight:600;}
   .dash .legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;font-style:normal;}
-  /* Not scored: the legend's fourth reading, on the bar's switch. `revert`
+  /* Unclassified: the legend's fourth reading, on the bar's switch. `revert`
      rather than a named display, because the item is a div in the cards and a
      span in the hero legend and each should come back as what it is. The dot
      is the meter's own remainder grey, per theme. */
   .nsOnly{display:none;}
-  body.notScored .nsOnly{display:revert;}
+  body.unclass .nsOnly{display:revert;}
   /* the hero legend lays its spans out by an id-strength rule, which outranks
      the line above; this outranks that while the switch is off, and steps
      aside when it is on so the item takes the same flex row as its siblings */
-  body:not(.notScored) #mHeroOrgan .v4BioN .v4BioLeg span.nsOnly{display:none;}
+  body:not(.unclass) #mHeroOrgan .v4BioN .v4BioLeg span.nsOnly{display:none;}
   .nsDot{background:#2a2a28;}
   body.light .nsDot{background:#e8e2d9;}
   .dash .meterbar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:12px;background:#2a2a28;}
@@ -3264,9 +3264,13 @@
     color:rgba(242,229,224,.55);
   }
   body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg{color:rgba(0,0,0,.55);}
-  /* four readings where there were three: the row closes up a little so its
-     ends sit clear of the header's side fade */
-  body.notScored.v7 #mHeroOrgan .v4BioN .v4BioLeg{gap:11px;}
+  /* four readings where there were three: the design sets them two by two --
+     Optimal and Suboptimal on one line, Out of range and Unclassified on the
+     next -- a two-column grid, centred, so the pairing holds at any width */
+  body.unclass.v7 #mHeroOrgan .v4BioN .v4BioLeg{
+    display:grid;grid-template-columns:auto auto;justify-content:center;
+    row-gap:7px;column-gap:15px;
+  }
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg span{display:flex;align-items:center;gap:5px;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg b{
     font-weight:600;color:var(--ink-bright);font-size:12px;
@@ -3423,11 +3427,13 @@
       <option value="on">Completed</option>
       <option value="empty">Empty</option>
     </select>
-    <!-- The legend's fourth reading: the biomarkers in the panel that have no
-         score yet, the grey remainder of the meter said in a number beside
-         "Out of range". Off by default; a switch like the card states. -->
-    <span class="lbl">Not scored</span>
-    <select id="stNs" aria-label="Not scored in the legend">
+    <!-- Unclassified: the biomarkers the panel has not classified, as the
+         legend's fourth reading beside "Out of range" with the meter's grey
+         remainder -- or folded into the three, the meter full. The counts
+         come from the design's two readings of the same panel (see BIO_SETS).
+         Off by default; a switch like the card states. -->
+    <span class="lbl">Unclassified</span>
+    <select id="stUn" aria-label="Unclassified in the legend">
       <option value="on">Shown</option>
       <option value="off" selected>Hidden</option>
     </select>
@@ -3489,22 +3495,24 @@
         <div class="dcard bcard">
           <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
           <div class="bcTop">
-            <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
+            <div><div class="lbl">Biomarkers</div><div class="big">110 <span class="inf">i</span></div></div>
             <div class="b3Off"><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:14px;font-weight:400">years old</span></div></div>
             <div class="b3On"><div class="lbl">Health coverage</div><div class="big">64%</div></div>
             <div class="b5On"><div class="lbl">Untested</div><div class="big">76</div></div>
             <button class="b5On bcGet" type="button">Get test</button>
           </div>
+          <!-- data-on / data-off: the two readings of the panel, with and without
+               the unclassified shown (see BIO_SETS); applyUnclass writes them -->
           <div class="legend">
-            <div><b>81</b><i style="background:#5cc47f"></i>Optimal</div>
-            <div><b>9</b><i style="background:#f2c744"></i>Suboptimal</div>
-            <div><b>6</b><i style="background:#ef6f63"></i>Out of range</div>
-            <div class="nsOnly"><b>28</b><i class="nsDot"></i>Not scored</div>
+            <div><b data-on="68" data-off="80">80</b><i style="background:#5cc47f"></i>Optimal</div>
+            <div><b data-on="20" data-off="24">24</b><i style="background:#f2c744"></i>Suboptimal</div>
+            <div><b data-on="12" data-off="12">12</b><i style="background:#ef6f63"></i>Out of range</div>
+            <div class="nsOnly"><b>10</b><i class="nsDot"></i>Unclassified</div>
           </div>
           <div class="meterbar">
-            <span style="width:64%;background:#5cc47f"></span>
-            <span style="width:14%;background:#f2c744"></span>
-            <span style="width:12%;background:#ef6f63"></span>
+            <span data-on="62%" data-off="69%" style="width:69%;background:#5cc47f"></span>
+            <span data-on="18%" data-off="21%" style="width:21%;background:#f2c744"></span>
+            <span data-on="11%" data-off="10%" style="width:10%;background:#ef6f63"></span>
           </div>
         </div>
         <div class="drow">
@@ -3643,7 +3651,7 @@
       <div class="msn mHeroCard">
         <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
         <div class="mHeroTop">
-          <div><div class="lbl">Biomarkers</div><div class="big">124 <span class="inf">i</span></div></div>
+          <div><div class="lbl">Biomarkers</div><div class="big">110 <span class="inf">i</span></div></div>
           <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span class="yrs">years old</span></div></div>
           <div class="mHeroUt"><div class="lbl">Untested</div><div class="big">76</div></div>
           <button class="mHeroGet" type="button">Get test</button>
@@ -3657,15 +3665,15 @@
           </div>
         </div>
         <div class="legend">
-          <div><b>81</b><i style="background:#5cc47f"></i>Optimal</div>
-          <div><b>9</b><i style="background:#f2c744"></i>Suboptimal</div>
-          <div><b>6</b><i style="background:#ef6f63"></i>Out of range</div>
-          <div class="nsOnly"><b>28</b><i class="nsDot"></i>Not scored</div>
+          <div><b data-on="68" data-off="80">80</b><i style="background:#5cc47f"></i>Optimal</div>
+          <div><b data-on="20" data-off="24">24</b><i style="background:#f2c744"></i>Suboptimal</div>
+          <div><b data-on="12" data-off="12">12</b><i style="background:#ef6f63"></i>Out of range</div>
+          <div class="nsOnly"><b>10</b><i class="nsDot"></i>Unclassified</div>
         </div>
         <div class="meterbar">
-          <span style="width:64%;background:#5cc47f"></span>
-          <span style="width:14%;background:#f2c744"></span>
-          <span style="width:12%;background:#ef6f63"></span>
+          <span data-on="62%" data-off="69%" style="width:69%;background:#5cc47f"></span>
+          <span data-on="18%" data-off="21%" style="width:21%;background:#f2c744"></span>
+          <span data-on="11%" data-off="10%" style="width:10%;background:#ef6f63"></span>
         </div>
       </div>
       </div>
@@ -7931,7 +7939,7 @@
       (CARD_STATE.noCov ? ' noCov' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
-      (CARD_STATE.notScored ? ' notScored' : '') +
+      (CARD_STATE.unclass ? ' unclass' : '') +
       (CARD_STATE.dense ? ' dense' : '') +
       // the same rule for the figure: only Mobile V7 offers the choice, so
       // only Mobile V7 wears it
@@ -8647,26 +8655,38 @@
   // height is one of them: the green front stops at the optimal share, so a
   // number typed into the legend and a number typed into the shader would be
   // two places to change one fact.
-  const BIO_N = { total: 124, optimal: 81, sub: 9, out: 6 };
-  const BIO_FILL = BIO_N.optimal / BIO_N.total;
+  // The design's two readings of the same panel of 110. With the unclassified
+  // shown, ten of them stand apart as a fourth reading and the meter keeps a
+  // grey remainder; without, they are folded into the three and the meter is
+  // full. The figures are the design's own, taken from its two frames as
+  // drawn -- the "without" three sum to 116 against the 110 shown, which is
+  // the mock's arithmetic and kept as given rather than corrected here.
+  const BIO_SETS = {
+    on:  { total: 110, optimal: 68, sub: 20, out: 12, un: 10 },
+    off: { total: 110, optimal: 80, sub: 24, out: 12, un: 0 }
+  };
+  const bioSet = () => BIO_SETS[CARD_STATE.unclass ? 'on' : 'off'];
+  const BIO_N = BIO_SETS.off;   // the opening state; applyUnclass moves it
+  let BIO_FILL = BIO_N.optimal / BIO_N.total;
   const v4BioAge = v4AgeEl ? (() => {
     const el = document.createElement('span');
     el.className = 'v4AgeN v4BioN';
     // The slide is always in the carousel; what is inside it is what changes.
     // Both readings are built here and one is shown, so the slide travels and
-    // blurs as one thing either way.
+    // blurs as one thing either way. The counts carry both readings as
+    // data-on / data-off, the way the card legends do, for applyUnclass.
+    const pair = k => ' data-on="' + BIO_SETS.on[k] + '" data-off="' + BIO_SETS.off[k] + '"';
     el.innerHTML = '<i class="bioNum">' + BIO_N.total + '</i>' +
       '<span class="v4BioLeg">' +
-      '<span><b>' + BIO_N.optimal + '</b><i style="background:#5cc47f"></i>' +
+      '<span><b' + pair('optimal') + '>' + BIO_N.optimal + '</b><i style="background:#5cc47f"></i>' +
       'Optimal</span>' +
-      '<span><b>' + BIO_N.sub + '</b><i style="background:#f2c744"></i>' +
+      '<span><b' + pair('sub') + '>' + BIO_N.sub + '</b><i style="background:#f2c744"></i>' +
       'Suboptimal</span>' +
-      '<span><b>' + BIO_N.out + '</b><i style="background:#ef6f63"></i>' +
+      '<span><b' + pair('out') + '>' + BIO_N.out + '</b><i style="background:#ef6f63"></i>' +
       'Out of range</span>' +
-      // the fourth reading, shown by the Not scored switch: what the meter's
-      // grey remainder is, as a number -- the panel less the three scored
-      '<span class="nsOnly"><b>' + (BIO_N.total - BIO_N.optimal - BIO_N.sub - BIO_N.out) +
-      '</b><i class="nsDot"></i>Not scored</span>' +
+      // the fourth reading, shown by the Unclassified switch
+      '<span class="nsOnly"><b>' + BIO_SETS.on.un +
+      '</b><i class="nsDot"></i>Unclassified</span>' +
       '</span>' +
       '<span class="v4BioEmpty">' +
       '<b>Discover what&rsquo;s happening inside your body</b>' +
@@ -9381,9 +9401,10 @@
     const d = bxDrag; bxDrag = null;
     if (e.target.closest('.mbDots')) return;
     if (d.horiz === null){
-      // a plain tap opens the sheet, but only on the card: elsewhere in the
-      // header it is a tap on the page, and the page has nothing to open
-      if (d.inCard) sheetL.open(pillCurrent);
+      // A plain tap does nothing. It used to open the organ-age sheet from the
+      // card -- "remove this modal on tap, no action on tap" -- so the hero is
+      // a thing to swipe and to look at. The phone sheet (sheetL) stays built
+      // but nothing opens it now; the desktop card keeps its modal.
       return;
     }
     lastManual = performance.now();
@@ -11636,7 +11657,7 @@
                        // Same problem: a class setMode would drop.
                        bioSph: false,
                        // the legend's fourth reading, on the bar's switch
-                       notScored: false,
+                       unclass: false,
                        // Density: Dense on every surface, see denseOn
                        dense: false };
   // Every state control is a thing that is either on or off, so each becomes a
@@ -11702,13 +11723,24 @@
   }
   const stBioSel = document.getElementById('stBio');
   stBioSel.addEventListener('change', () => applyAgeStates('bio'));
-  // Not scored: the legend's fourth reading. A class on the body, kept in the
-  // set setMode reads so a page change does not drop it.
-  const stNsSel = document.getElementById('stNs');
-  if (stNsSel) stNsSel.addEventListener('change', () => {
-    CARD_STATE.notScored = stNsSel.value === 'on';
-    document.body.classList.toggle('notScored', CARD_STATE.notScored);
-  });
+  // Unclassified: the legend's fourth reading, and the panel's two readings of
+  // its own numbers. A class on the body, kept in the set setMode reads so a
+  // page change does not drop it; and every count and meter run that carries
+  // a data-on / data-off pair takes the value for the state -- the two card
+  // legends, the hero legend (built from BIO_SETS with the same pairs) and the
+  // meters -- so one switch moves every surface, and the reveal on the body
+  // reads the optimal share of whichever reading is showing.
+  function applyUnclass(on){
+    CARD_STATE.unclass = on;
+    document.body.classList.toggle('unclass', on);
+    document.querySelectorAll('[data-on][data-off]').forEach(el => {
+      const v = el.dataset[on ? 'on' : 'off'];
+      if (el.tagName === 'B') el.textContent = v; else el.style.width = v;
+    });
+    BIO_FILL = bioSet().optimal / bioSet().total;
+  }
+  const stUnSel = document.getElementById('stUn');
+  if (stUnSel) stUnSel.addEventListener('change', () => applyUnclass(stUnSel.value === 'on'));
   // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');
   // Three readings on one chain. An age is derived from biomarkers, and the

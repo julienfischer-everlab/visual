@@ -128,7 +128,7 @@ in the build; the numbering is the mode index, not the menu.
 
     Its organ card reads as product, not instrument: the list is sentence case in the page's own face with no dividers, led by a **Body** row carrying the whole-body age — a real selection like any other row, not a caption — and the selected organ is highlighted where it sits rather than hoisted to the top. The card also drops the warm organ ground for the same surface its siblings use — see below.
 8. **Desktop V1** — the V2 dashboard turned toward the body. The hero's second figure is health coverage rather than biological age, the coverage tile goes (it would say the same thing twice) and steps takes the whole left column, its week drawn as strokes rather than blocks. The width that frees up goes to the organ card, retitled *How your body is ageing*, where the selected row sits on a filled pill and the age reads as a tag under the number. Wears `m2 b2` plus a `b3` marker.
-9. **Mobile** — bento layout with the mini organ carousel, metrics carousel, the signal insight sheet, and the organ-age sheet
+9. **Mobile** — bento layout with the mini organ carousel, metrics carousel and the signal insight sheet. The organ card used to open an organ-age sheet on tap; a tap now does nothing, and the card is a thing to swipe and to look at
 10. **Mobile V2** — the same bento re-laid out to the design: biomarkers and biological age as a pair of figures at the top, health coverage beside a week of steps below, then organ age wide and shallow beneath them — its name and tag down the left, the organ standing in the right half. Wears `m5` plus a `v2` marker.
 11. **Mobile V1** — the bento folded down to two blocks. The hero is a plain card carrying biomarkers and health coverage as two figures, with the meter beneath doing the work the dial used to. Below it, steps and organ age stand side by side and close the same way: label, value, visual, a rounded status tag, then the dots — same sizes on both, so the two carousels read as one control. Wears `m5 v2` plus a `v3` marker.
 
@@ -621,11 +621,14 @@ a change some other control made through the chain. Version and Mode keep their
 menus: one is a long list, the other has three options.
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
-- **Not scored** — off by default. On, the biomarker legend gains a fourth
-  reading beside *Out of range*: the panel's unscored biomarkers, the grey
-  remainder the meter already draws, as a number (28 of 124) with the meter's
-  own grey for its dot. On every surface that carries the legend — the desktop
-  card, the phone bento and the V6 hero — and kept across page changes.
+- **Unclassified** — off by default. The biomarker panel has two readings of
+  its 110 markers, from the design's two mocks. Off: 80 Optimal, 24 Suboptimal,
+  12 Out of range, the meter full. On: 68 / 20 / 12 and a fourth item,
+  *10 Unclassified*, with the meter's grey remainder for its dot and the meter
+  leaving that share unfilled. On every surface that carries the legend — the
+  desktop card, the phone bento and the V6 hero, where four items sit two by
+  two — and kept across page changes. (The mocks' numbers are kept as given;
+  the *without* reading sums to 116 against the 110 shown.)
 - **Density** — on every page. Normal is the organ as designed; Dense is the
   library's fine-grain reading of it: twice the body, twice the strays, twice
   the flow, drawn from the same cloud at the smaller dot — on the phone, the

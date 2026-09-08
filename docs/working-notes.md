@@ -2679,6 +2679,36 @@ as before. Start-up: the bigger clouds cost about 300 ms more here (600 ->
 900 ms to first draw), which is the price of Dense being one switch away on
 every page rather than a rebuild.
 
+### 5.112 Unclassified: two readings of the panel, on every screen
+
+Four mocks -- with unclassified, without, phone and desktop -- and "create this
+tweak for all screens". The Not scored switch (5.110) becomes Unclassified,
+and rather than deriving a fourth number from the three it carries the mocks'
+own figures: both read 110 in total; without is 80 Optimal, 24 Suboptimal, 12
+Out of range with the meter full (69 / 21 / 10%); with is 68 / 20 / 12 plus 10
+Unclassified, the meter leaving its share grey (62 / 18 / 11%). Every legend
+count and meter run carries both readings as `data-on` / `data-off`, and
+`applyUnclass` writes the one in force, so the hero (built from BIO_SETS), the
+desktop card and the phone bento switch together and BIO_FILL follows. In the
+V6 hero four items are laid two by two, as the mock has them -- a two-column
+grid, centred, since a wrapping flex row put three on the first line. The
+mocks' arithmetic is kept as given: the without reading sums to 116 against
+the 110 shown, which is the design's to settle, not the prototype's. Probed
+(`unclass.js`): 80/24/12 <-> 68/20/12/10, meters 69/21/10 <-> 62/18/11, hero
+spans on two rows at two shared x positions, state survives the change to the
+phone, off again everywhere.
+
+### 5.113 No action on a hero tap
+
+The phone's organ-age sheet ("Organ ages ... Your body age is 34") opened from
+a plain tap on the hero card; "remove this modal on tap, no action on tap".
+bxUp's tap branch now returns without doing anything -- a swipe still moves the
+carousel, the dots still select, the arrow keys still step. The sheet itself
+(sheetL) is still built, since nothing else is wrong with it, but nothing
+opens it; the desktop card's modal is untouched, as the request was the phone
+screen. Probed against HEAD: the same tap opened `oaModal` there and opens
+nothing now.
+
 ---
 
 ## 6. Open items
