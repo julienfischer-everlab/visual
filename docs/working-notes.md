@@ -2596,6 +2596,27 @@ Not attached: the brief's reference screenshot arrived afterwards ("inspi") --
 a very fine, even stipple with every grain still a dot -- and the dot went from
 0.82 to 0.78 of normal on the strength of it.
 
+### 5.109 The engine carries its ink index, not an inference
+
+"Reflect colour from library", with the phone's light-mode iris in pale peach
+-- the dark palette on the pale ground -- while the library showed the red.
+Could not be reproduced here: the phone's light iris renders the light three
+in this environment, with and without a saved custom palette (`savedpal.js`,
+`iriscrop.js`). Most likely a cached page; but the request stands on its own
+merits. The engine inferred which ink a particle was by nearest colour to the
+three dark inks, and the painter mapped by ink identity -- two mechanisms for
+one fact, and an inference is the kind of thing that fails on a palette it was
+not tuned against (two saved inks close together, say).
+
+Now the fact travels with the particle: an `aInk` attribute, 0/1/2 for the
+organ, its strays and the flow, 3 for the ghost outline (which keeps its own
+colour in every theme), written once when the buffers are built. The shader
+maps by it; the three dark-ink uniforms and the distance test are gone. The
+painter already mapped by ink identity, so the two now read the same index.
+Checked: shaders compile, no null uniform locations, the phone's light iris is
+the library's red with a saved custom palette in both themes, sweep clean,
+flow ratios unchanged.
+
 ---
 
 ## 6. Open items

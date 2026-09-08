@@ -1350,11 +1350,14 @@ light:
 | highlight (15%) | `246,240,236` | `122,38,12` |
 
 The engine crossfades each particle to its light ink on the theme's own eased
-value: the shader reads which of the three a particle carries off its colour
-(nearest of the three dark inks, passed as uniforms) and mixes to the
-counterpart, after the ceilings that key off the dark colour's green. The 2D
-painter reads the same table through `inkNow()` at draw time, so the tiles,
-the pickers and the exports carry it without re-sampling. The three pickers on
+value: every particle carries its ink as an index (`aInk`, 0/1/2, with 3 for
+the ghost outline that keeps its colour), and the shader mixes to that index's
+light counterpart after the ceilings that key off the dark colour's green. It
+used to infer the index by nearest colour, and an inference is one more thing
+two renderers can disagree about ("reflect colour from library"); the index is
+the same one the 2D painter maps by through `inkNow()` at draw time, so the
+tiles, the pickers and the exports carry the palette without re-sampling and
+the phone cannot show a different answer from the library. The three pickers on
 the tweak bar edit the palette of the theme that is showing — the dark three on
 dark, the light three on light — and neither touches the other; Save writes
 both, under their own storage keys, and each is restored on its own.
