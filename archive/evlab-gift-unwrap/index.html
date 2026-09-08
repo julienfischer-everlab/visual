@@ -1,392 +1,368 @@
 <meta charset="utf-8">
 <title>Unwrap your Everlab gift</title>
 <!--
-  Everlab · gift unwrap page
+  Everlab · gift reveal
 
-  Linked from the gift email. The link can carry the gift on the query string:
+  Two scenes, one continuous page. State: intro → revealing → gift.
 
-    ?to=Julien
-    &from=Sarah
-    &message=Happy%20birthday...
-    &product=Everlab%20Complete%20Health%20Assessment
-    &blurb=A%20full-body%20baseline...
-    &includes=100%2B%20biomarkers%7CDoctor%20consult%7CPersonalised%20plan   (pipe-separated)
-    &code=EVL-7K2M-QX4
-    &until=8%20September%202027
-    &claim=https%3A%2F%2Feverlab.com.au%2Fclaim%3Fcode%3DEVL-7K2M-QX4
+  Components (bottom of file):
+    AnimatedQuote  splits the sender's message into characters and resolves
+                   them into focus one by one (blur → sharp, 3px rise, ~2s total)
+    GiftIntro      scene 1: the quote and the "See my gift" button
+    GiftReveal     scene 2: eyebrow, heading, supporting copy, the gift card
+    GiftCard       the gift itself (placeholder content for now)
+    App            owns the state and the timing of the transition
 
-  Anything missing falls back to the example gift in GIFT_DEFAULTS below.
+  The link from the email can carry the gift on the query string. Every field
+  is optional and falls back to GIFT_DEFAULTS.
+
+    ?from=Sarah
+    &to=Julien
+    &message=Here%E2%80%99s%20something%0Ato%20help%20you%20feel%20better%2C%0Afor%20longer.
+        (%0A = a deliberate line break in the quote; three lines read best)
+    &note=Wishing%20you%20a%20long%2C%20healthy%20life.
+    &product=Everlab%20Membership
+    &term=12%20months
+    &value=%241%2C950
+    &includes=Comprehensive%20blood%20panel%7CDoctor%20consultation%7CPersonalised%20plan
+        (pipe-separated)
+    &claim=https%3A%2F%2Feverlab.com.au%2Factivate%3Fcode%3DEVL-7K2M-QX4
+
   All text is inserted with textContent, never innerHTML.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap">
 <style>
+  /* One deliberate visual world: a white page that warms as the gift arrives.
+     Painted explicitly so it holds on any host ground. */
   :root{
-    --ground:#F3EDE7;
-    --paper:#FBF8F4;
-    --paper-back:#FDFBF8;
-    --ink:#2A1B16;
-    --ink-soft:#6E5348;
-    --muted:#9A8377;
-    --line:rgba(42,27,22,.12);
-    --ribbon:#B4574E;
-    --ribbon-deep:#95433C;
-    --ribbon-edge:rgba(42,27,22,.18);
-    --glow:rgba(180,87,78,.10);
-    --shadow:0 1px 2px rgba(42,27,22,.06), 0 18px 48px -18px rgba(42,27,22,.28);
-    --shadow-lift:0 2px 4px rgba(42,27,22,.06), 0 34px 70px -22px rgba(42,27,22,.36);
-    --btn:#2A1B16;
-    --btn-ink:#FBF8F4;
-    --focus:#B4574E;
+    --white:#FCFBF9;          /* scene 1: warm off-white */
+    --warm:#F6F0E9;           /* scene 2: warmer paper */
+    --ink:#171412;
+    --ink-2:#4A423D;
+    --muted:#8A7F76;
+    --hair:rgba(23,20,18,.09);
+    --card:#FFFFFF;
+    --card-tint-a:#FBF6F0;
+    --card-tint-b:#F1E6DB;
+    --red:#B4574E;
+    --glow-a:rgba(214,150,120,.22);
+    --glow-b:rgba(180,87,78,.10);
+    --btn:#171412;
+    --btn-ink:#FCFBF9;
+
+    --ease-scene:cubic-bezier(.76,0,.24,1);
+    --ease-out:cubic-bezier(.22,.61,.24,1);
+    --scene-ms:1100ms;
+
+    --serif:'Newsreader',Georgia,'Times New Roman',serif;
+    --sans:'Suisse Intl','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
     color-scheme:light;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --ground:#1A0E0C;
-      --paper:#261512;
-      --paper-back:#2B1915;
-      --ink:#F2E5E0;
-      --ink-soft:#C9AFA6;
-      --muted:#8F736A;
-      --line:rgba(242,229,224,.12);
-      --ribbon:#C1615A;
-      --ribbon-deep:#9E4B45;
-      --ribbon-edge:rgba(0,0,0,.28);
-      --glow:rgba(193,97,90,.14);
-      --shadow:0 1px 2px rgba(0,0,0,.3), 0 18px 48px -18px rgba(0,0,0,.7);
-      --shadow-lift:0 2px 4px rgba(0,0,0,.3), 0 34px 70px -22px rgba(0,0,0,.8);
-      --btn:#F2E5E0;
-      --btn-ink:#1A0E0C;
-      --focus:#C1615A;
-      color-scheme:dark;
-    }
-  }
-  :root[data-theme="dark"]{
-    --ground:#1A0E0C;
-    --paper:#261512;
-    --paper-back:#2B1915;
-    --ink:#F2E5E0;
-    --ink-soft:#C9AFA6;
-    --muted:#8F736A;
-    --line:rgba(242,229,224,.12);
-    --ribbon:#C1615A;
-    --ribbon-deep:#9E4B45;
-    --ribbon-edge:rgba(0,0,0,.28);
-    --glow:rgba(193,97,90,.14);
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 18px 48px -18px rgba(0,0,0,.7);
-    --shadow-lift:0 2px 4px rgba(0,0,0,.3), 0 34px 70px -22px rgba(0,0,0,.8);
-    --btn:#F2E5E0;
-    --btn-ink:#1A0E0C;
-    --focus:#C1615A;
-    color-scheme:dark;
   }
 
   *{box-sizing:border-box;}
   html{height:100%;}
   body{
-    margin:0;
-    min-height:100%;
-    background:var(--ground);
+    margin:0;min-height:100%;
+    background:var(--white);
     color:var(--ink);
-    font-family:'Suisse Intl','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
-    font-size:15px;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
+    font-family:var(--sans);
+    font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    transition:background-color var(--scene-ms) var(--ease-scene);
   }
-  :focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:4px;}
+  body[data-state="revealing"],
+  body[data-state="gift"]{background:var(--warm);}
+  body[data-state="intro"],
+  body[data-state="revealing"]{overflow:hidden;}
 
-  /* ---- chrome ---- */
-  .brand{
-    position:absolute;top:22px;left:24px;z-index:3;
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink);
-    text-decoration:none;
-  }
-  .brand svg{display:block;}
-  .brand svg rect{fill:var(--ink);}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:999px;}
 
-  /* ---- page ---- */
-  .page{
-    position:relative;
-    min-height:100svh;
-    padding:clamp(88px, 14vh, 150px) 20px 72px;
-    display:flex;flex-direction:column;align-items:center;
-  }
+  /* ---- ambient glow, fades in as the environment changes ---- */
   .glow{
-    position:absolute;left:50%;top:clamp(88px, 14vh, 150px);
-    width:min(720px, 120vw);height:520px;
-    transform:translate(-50%,-90px);
-    background:radial-gradient(ellipse at center, var(--glow) 0%, transparent 62%);
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(60% 45% at 50% 8%, var(--glow-a), transparent 70%),
+      radial-gradient(45% 40% at 50% 100%, var(--glow-b), transparent 70%);
+    opacity:0;
+    transition:opacity 1400ms var(--ease-scene);
+  }
+  body[data-state="revealing"] .glow,
+  body[data-state="gift"] .glow{opacity:1;}
+
+  /* ---- scene 1 ---- */
+  .intro{
+    position:fixed;inset:0;z-index:2;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;
+    background:var(--white);
+    transition:transform var(--scene-ms) var(--ease-scene),
+               opacity var(--scene-ms) var(--ease-scene),
+               background-color var(--scene-ms) var(--ease-scene);
+  }
+  body[data-state="revealing"] .intro{
+    transform:translateY(-58vh);
+    opacity:0;
+    background:var(--warm);
     pointer-events:none;
-    opacity:.55;
-    transition:opacity 1.6s ease;
   }
-  .page.open .glow{opacity:1;}
+  body[data-state="gift"] .intro{display:none;}
 
-  .stage{
-    position:relative;z-index:1;
-    width:100%;max-width:400px;
-    display:flex;flex-direction:column;align-items:center;gap:28px;
-  }
-
-  .eyebrow{
+  .quote{
     margin:0;
-    font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--muted);
+    max-width:min(92vw, 15.5em);
     text-align:center;
-    transition:opacity .5s ease;
-  }
-  .page.open .eyebrow.lead{opacity:0;}
-
-  /* ---- the card ---- */
-  .scene{
-    width:100%;
-    perspective:1600px;
-  }
-  .card{
-    position:relative;
-    width:100%;
-    display:grid;
-    transform-style:preserve-3d;
-    transition:transform 1.05s cubic-bezier(.66,0,.2,1), box-shadow .8s ease;
-    border-radius:8px;
-    box-shadow:var(--shadow);
-    cursor:pointer;
-  }
-  .card:hover{box-shadow:var(--shadow-lift);}
-  .page.open .card{transform:rotateY(180deg);cursor:default;box-shadow:var(--shadow);}
-  .face{
-    grid-area:1/1;
-    border-radius:8px;
-    backface-visibility:hidden;
-    -webkit-backface-visibility:hidden;
-    min-height:440px;
-  }
-  .front{
-    position:relative;overflow:hidden;
-    background:var(--paper);
-    border:1px solid var(--line);
-  }
-  .back{
-    transform:rotateY(180deg);
-    background:var(--paper-back);
-    border:1px solid var(--line);
-    padding:34px 34px 30px;
-    display:flex;flex-direction:column;
-  }
-
-  /* ribbon */
-  .ribbon{
-    position:absolute;
-    background:
-      linear-gradient(90deg, var(--ribbon-edge), transparent 18%, transparent 82%, var(--ribbon-edge)),
-      var(--ribbon);
-    transition:transform 1s cubic-bezier(.7,0,.3,1), opacity .9s ease;
-  }
-  .ribbon.v{top:-2px;bottom:-2px;left:38%;width:34px;}
-  .ribbon.h{
-    left:-2px;right:-2px;top:44%;height:34px;
-    background:
-      linear-gradient(180deg, var(--ribbon-edge), transparent 18%, transparent 82%, var(--ribbon-edge)),
-      var(--ribbon);
-  }
-  .knot{
-    position:absolute;
-    left:calc(38% + 17px);top:calc(44% + 17px);
-    width:120px;height:96px;
-    transform:translate(-50%,-50%);
-    transition:transform .8s cubic-bezier(.6,0,.3,1), opacity .6s ease;
-  }
-  .knot .loop{fill:var(--ribbon-deep);stroke:var(--paper);stroke-width:2;}
-  .knot .core{fill:var(--ribbon);stroke:var(--paper);stroke-width:2;}
-  .page.open .ribbon.v{transform:translateY(112%);}
-  .page.open .ribbon.h{transform:translateX(112%);}
-  .page.open .knot{transform:translate(-50%,-50%) scale(.6) rotate(-8deg);opacity:0;}
-
-  .front .mark{
-    position:absolute;left:22px;bottom:18px;
-    display:inline-flex;align-items:center;gap:7px;
-    font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.01em;
-  }
-  .front .mark svg rect{fill:var(--muted);}
-  .front .to{
-    position:absolute;right:22px;bottom:18px;
-    font-size:12px;color:var(--muted);
-    font-family:'Newsreader',Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;
-  }
-
-  /* message */
-  .from{
-    margin:0 0 18px;
-    font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
-  }
-  .message{
-    margin:0;flex:1;
-    font-family:'Newsreader',Georgia,'Times New Roman',serif;
-    font-style:italic;font-weight:300;
-    font-size:clamp(22px, 2.2vw + 12px, 26px);
-    line-height:1.32;letter-spacing:-.005em;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(30px, 4.6vw + 12px, 68px);
+    line-height:1.14;
+    letter-spacing:-.022em;
     color:var(--ink);
-    text-wrap:pretty;
-    white-space:pre-line;
-  }
-  .sign{
-    margin:26px 0 0;
-    font-family:'Newsreader',Georgia,'Times New Roman',serif;font-style:italic;
-    font-size:19px;color:var(--ink-soft);
-  }
-  .back > *{
-    opacity:0;transform:translateY(6px);
-    transition:opacity .7s ease, transform .7s ease;
-  }
-  .page.open .back > *{opacity:1;transform:none;}
-  .page.open .back .from{transition-delay:.75s;}
-  .page.open .back .message{transition-delay:.9s;}
-  .page.open .back .sign{transition-delay:1.15s;}
-
-  /* unwrap button */
-  .unwrap{
-    appearance:none;border:0;cursor:pointer;
-    font:inherit;font-weight:500;font-size:15px;letter-spacing:-.005em;
-    color:var(--btn-ink);background:var(--btn);
-    padding:13px 30px;border-radius:999px;
-    transition:transform .18s ease, opacity .45s ease, box-shadow .18s ease;
-  }
-  .unwrap:hover{transform:translateY(-1px);box-shadow:var(--shadow);}
-  .unwrap:active{transform:translateY(0) scale(.985);}
-  .page.open .unwrap{opacity:0;pointer-events:none;}
-
-  /* ---- the gift ---- */
-  .gift{
-    width:100%;
-    display:flex;flex-direction:column;gap:0;
-    opacity:0;transform:translateY(18px);
-    transition:opacity .8s ease 1.35s, transform .8s cubic-bezier(.2,.7,.2,1) 1.35s;
-  }
-  .page.open .gift{opacity:1;transform:none;}
-  .gift .eyebrow{text-align:left;margin-bottom:12px;}
-  .gift h1{
-    margin:0 0 8px;
-    font-size:22px;font-weight:500;line-height:1.25;letter-spacing:-.015em;
     text-wrap:balance;
   }
-  .gift .blurb{margin:0 0 22px;color:var(--ink-soft);max-width:34em;text-wrap:pretty;}
-  .includes{
-    list-style:none;margin:0 0 24px;padding:0;
-    border-top:1px solid var(--line);
+  .quote .w{white-space:nowrap;}
+  .quote .c{
+    position:relative;
+    display:inline;
+    opacity:0;top:3px;
+    filter:blur(7px);
+    animation:resolve 680ms var(--ease-out) both;
+    animation-delay:var(--d);
   }
-  .includes li{
-    display:flex;align-items:baseline;gap:12px;
-    padding:11px 0;border-bottom:1px solid var(--line);
-    font-size:14.5px;color:var(--ink);
+  @keyframes resolve{
+    0%{opacity:0;top:3px;filter:blur(7px);}
+    55%{opacity:.85;}
+    100%{opacity:1;top:0;filter:blur(0);}
   }
-  .includes li::before{
-    content:"";flex:none;width:6px;height:6px;border-radius:50%;
-    background:var(--ribbon);transform:translateY(-1px);
+
+  .pill{
+    appearance:none;border:0;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--sans);font-weight:500;font-size:15px;letter-spacing:-.004em;
+    color:var(--btn-ink);background:var(--btn);
+    padding:13px 26px;border-radius:999px;
+    text-decoration:none;
+    transition:transform .35s var(--ease-out), background-color .35s var(--ease-out),
+               opacity .7s var(--ease-out), filter .7s var(--ease-out);
   }
-  .meta{
-    display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;
+  .pill:hover{transform:translateY(-1px) scale(1.015);background:#2A2522;}
+  .pill:active{transform:scale(.985);}
+
+  .intro .cta{
+    margin-top:clamp(40px, 6vh, 64px);
+    opacity:0;transform:translateY(10px);filter:blur(3px);
+    transition:opacity .8s var(--ease-out), transform .8s var(--ease-out), filter .8s var(--ease-out);
+  }
+  .intro.cta-in .cta{opacity:1;transform:none;filter:none;}
+
+  /* ---- scene 2 ---- */
+  .gift{
+    position:relative;z-index:1;
+    min-height:100svh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:clamp(72px, 10vh, 120px) 24px 64px;
+    visibility:hidden;
+    transform:translateY(9vh);
+    transition:transform var(--scene-ms) var(--ease-scene), visibility 0s linear var(--scene-ms);
+  }
+  body[data-state="revealing"] .gift,
+  body[data-state="gift"] .gift{visibility:visible;transform:none;transition-delay:0s;}
+
+  .gift .rise{
+    opacity:0;transform:translateY(18px);filter:blur(5px);
+    transition:opacity .9s var(--ease-out), transform .9s var(--ease-out), filter .9s var(--ease-out);
+    transition-delay:var(--d, 0ms);
+  }
+  body[data-state="revealing"] .gift .rise,
+  body[data-state="gift"] .gift .rise{opacity:1;transform:none;filter:none;}
+
+  .head{
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    max-width:40em;
+  }
+  .eyebrow{
     margin:0 0 22px;
+    font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);
+  }
+  .eyebrow b{font-weight:500;color:var(--ink-2);}
+  .title{
+    margin:0 0 20px;
+    font-family:var(--serif);font-weight:300;
+    font-size:clamp(34px, 3.6vw + 12px, 60px);
+    line-height:1.08;letter-spacing:-.024em;
+    text-wrap:balance;
+  }
+  .lede{
+    margin:0;
+    max-width:32em;
+    font-size:clamp(16px, .4vw + 14px, 18px);line-height:1.55;
+    color:var(--ink-2);
+    text-wrap:pretty;
+  }
+
+  /* the gift card */
+  .card{
+    width:100%;max-width:820px;
+    margin-top:clamp(44px, 6vh, 72px);
+    background:var(--card);
+    border:1px solid var(--hair);
+    border-radius:22px;
+    box-shadow:0 1px 2px rgba(23,20,18,.04), 0 40px 90px -40px rgba(23,20,18,.28);
+    display:grid;grid-template-columns:1.1fr .9fr;
+    overflow:hidden;
+    transform:translateY(24px) scale(.985);
+  }
+  body[data-state="revealing"] .card,
+  body[data-state="gift"] .card{transform:none;}
+
+  .card .info{padding:40px 40px 36px;display:flex;flex-direction:column;}
+  .card .kicker{
+    display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+    margin:0 0 6px;
+    font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500;
+  }
+  .card h2{
+    margin:0 0 6px;
+    font-family:var(--serif);font-weight:400;
+    font-size:clamp(26px, 1.4vw + 16px, 34px);line-height:1.1;letter-spacing:-.02em;
+  }
+  .card .term{margin:0 0 26px;color:var(--ink-2);font-size:15px;}
+  .incl{list-style:none;margin:0 0 28px;padding:0;border-top:1px solid var(--hair);}
+  .incl li{
+    display:flex;gap:14px;align-items:baseline;
+    padding:12px 0;border-bottom:1px solid var(--hair);
+    font-size:15px;color:var(--ink);
+  }
+  .incl li::before{
+    content:"";flex:none;width:5px;height:5px;border-radius:50%;background:var(--red);
+    transform:translateY(-2px);
+  }
+  .note{
+    margin:0 0 28px;
+    font-family:var(--serif);font-style:italic;font-weight:300;
+    font-size:19px;line-height:1.35;color:var(--ink-2);
+  }
+  .note .who{display:block;margin-top:6px;font-size:15px;color:var(--muted);font-style:normal;font-family:var(--sans);}
+  .card .act{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:auto;}
+  .card .fine{font-size:13px;color:var(--muted);}
+
+  .card .visual{
+    position:relative;
+    background:linear-gradient(160deg, var(--card-tint-a), var(--card-tint-b));
+    border-left:1px solid var(--hair);
+    display:flex;align-items:center;justify-content:center;
+    min-height:340px;
+    overflow:hidden;
+  }
+  .card .visual::before{
+    content:"";position:absolute;inset:-30%;
+    background:radial-gradient(40% 40% at 50% 50%, rgba(255,255,255,.9), transparent 70%);
+    pointer-events:none;
+  }
+  .dial{width:min(72%, 280px);height:auto;position:relative;}
+  .dial .tick{stroke:rgba(23,20,18,.22);stroke-width:1.2;stroke-linecap:round;}
+  .dial .tick.hi{stroke:var(--red);stroke-width:1.6;}
+  .dial .ring{fill:none;stroke:rgba(23,20,18,.10);stroke-width:1;}
+  .dial text{font-family:var(--sans);fill:var(--muted);font-size:9px;letter-spacing:.14em;text-transform:uppercase;}
+  .dial .val{font-family:var(--serif);fill:var(--ink);font-size:46px;letter-spacing:-.03em;font-weight:300;}
+  .dial .sub{fill:var(--ink-2);font-size:9.5px;letter-spacing:.12em;}
+  .dial .hand{stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;transform-origin:120px 120px;
+    transform:rotate(-140deg);transition:transform 2.2s var(--ease-scene) .9s;}
+  body[data-state="gift"] .dial .hand{transform:rotate(38deg);}
+
+  .foot{
+    margin-top:56px;
+    display:flex;align-items:center;gap:10px;
     font-size:13px;color:var(--muted);
   }
-  .meta dl{display:flex;gap:28px;margin:0;}
-  .meta dt{margin:0 0 2px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;}
-  .meta dd{margin:0;color:var(--ink);font-size:14px;}
-  .meta dd.code{
-    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:13.5px;letter-spacing:.04em;font-variant-numeric:tabular-nums;
-  }
-  .claim{
-    display:flex;align-items:center;justify-content:center;
-    width:100%;padding:15px 20px;border-radius:999px;
-    font:inherit;font-weight:500;font-size:15px;letter-spacing:-.005em;
-    color:var(--btn-ink);background:var(--btn);text-decoration:none;
-    transition:transform .18s ease, box-shadow .18s ease;
-  }
-  .claim:hover{transform:translateY(-1px);box-shadow:var(--shadow);}
-  .claim:active{transform:translateY(0) scale(.99);}
-  .fine{margin:14px 0 0;text-align:center;font-size:12.5px;color:var(--muted);}
+  .foot svg rect{fill:var(--muted);}
+  .foot b{font-weight:500;color:var(--ink-2);}
 
-  @media (max-width:420px){
-    .page{padding-top:84px;}
-    .back{padding:28px 26px 26px;}
-    .face{min-height:400px;}
+  @media (max-width:760px){
+    .card{grid-template-columns:1fr;max-width:560px;}
+    .card .visual{order:-1;min-height:220px;border-left:0;border-bottom:1px solid var(--hair);}
+    .dial{width:min(60%, 210px);}
+    .card .info{padding:30px 26px 28px;}
+    .intro{padding:24px 22px;}
+    .intro .cta{margin-top:44px;}
+    .gift{padding:72px 20px 56px;}
   }
 
   @media (prefers-reduced-motion: reduce){
-    .card, .ribbon, .knot, .back > *, .gift, .glow, .eyebrow, .unwrap, .claim{transition:none !important;}
-    .page.open .back > *{transition-delay:0s !important;}
+    .quote .c{animation:none;opacity:1;top:0;filter:none;}
+    .intro, .gift, .gift .rise, .card, .glow, body, .intro .cta, .dial .hand{transition-duration:.25s !important;transition-delay:0s !important;}
+    .intro .cta{opacity:1;transform:none;filter:none;}
+    body[data-state="revealing"] .intro{transform:none;}
+    .gift{transform:none;}
   }
 </style>
 
-<a class="brand" href="https://everlab.com.au" aria-label="Everlab">
-  <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true"><rect x="3" y="2" width="12" height="2.6" rx="1.3"/><rect x="1" y="7.7" width="16" height="2.6" rx="1.3"/><rect x="3" y="13.4" width="12" height="2.6" rx="1.3"/></svg>
-  <span>everlab</span>
-</a>
+<div class="glow" aria-hidden="true"></div>
 
-<main class="page" id="page">
-  <div class="glow" aria-hidden="true"></div>
+<!-- Scene 1 · GiftIntro -->
+<section class="intro" id="intro" aria-label="A message from the sender">
+  <p class="quote" id="quote"></p>
+  <div class="cta">
+    <button class="pill" id="see" type="button">See my gift</button>
+  </div>
+</section>
 
-  <div class="stage">
-    <p class="eyebrow lead" id="lead">Sarah sent you something</p>
+<!-- Scene 2 · GiftReveal -->
+<main class="gift" id="gift" aria-hidden="true">
+  <header class="head">
+    <p class="eyebrow rise" id="eyebrow" style="--d:400ms">A gift from <b id="fromName"></b></p>
+    <h1 class="title rise" style="--d:480ms">Your Everlab health experience</h1>
+    <p class="lede rise" style="--d:560ms">Everything you need to understand your health today, and stay ahead of what comes next.</p>
+  </header>
 
-    <div class="scene">
-      <div class="card" id="card" role="button" tabindex="0" aria-label="Unwrap your gift" aria-pressed="false">
-        <div class="face front" aria-hidden="true">
-          <div class="ribbon v"></div>
-          <div class="ribbon h"></div>
-          <svg class="knot" viewBox="0 0 120 96" aria-hidden="true">
-            <path class="loop" d="M60 48C52 34 26 24 16 36c-9 11 8 26 28 24 8-1 13-5 16-12z"/>
-            <path class="loop" d="M60 48c8-14 34-24 44-12 9 11-8 26-28 24-8-1-13-5-16-12z"/>
-            <path class="loop" d="M60 50c-6 10-18 22-14 32 3 8 12 4 14-3 2 7 11 11 14 3 4-10-8-22-14-32z"/>
-            <ellipse class="core" cx="60" cy="48" rx="9" ry="7"/>
-          </svg>
-          <span class="mark">
-            <svg width="12" height="12" viewBox="0 0 18 18" aria-hidden="true"><rect x="3" y="2" width="12" height="2.6" rx="1.3"/><rect x="1" y="7.7" width="16" height="2.6" rx="1.3"/><rect x="3" y="13.4" width="12" height="2.6" rx="1.3"/></svg>
-            everlab
-          </span>
-          <span class="to" id="toLabel">for Julien</span>
-        </div>
-        <div class="face back">
-          <p class="from" id="fromLabel">From Sarah</p>
-          <p class="message" id="message"></p>
-          <p class="sign" id="sign"></p>
-        </div>
+  <!-- GiftCard -->
+  <article class="card rise" id="card" style="--d:660ms" aria-label="Your gift">
+    <div class="info">
+      <p class="kicker"><span>Your gift</span><span id="value"></span></p>
+      <h2 id="product"></h2>
+      <p class="term" id="term"></p>
+      <ul class="incl" id="includes"></ul>
+      <p class="note" id="note"><span id="noteText"></span><span class="who" id="noteWho"></span></p>
+      <div class="act">
+        <a class="pill" id="claim" href="#">Activate my gift</a>
+        <span class="fine">Takes a couple of minutes. Nothing to pay.</span>
       </div>
     </div>
+    <div class="visual" aria-hidden="true">
+      <svg class="dial" viewBox="0 0 240 240" id="dial">
+        <circle class="ring" cx="120" cy="120" r="104"/>
+        <g id="ticks"></g>
+        <line class="hand" x1="120" y1="36" x2="120" y2="12"/>
+        <text x="120" y="176" text-anchor="middle" class="sub">BIOLOGICAL AGE</text>
+        <text x="120" y="212" text-anchor="middle">100+ BIOMARKERS</text>
+      </svg>
+    </div>
+  </article>
 
-    <button class="unwrap" id="unwrap" type="button">Unwrap</button>
-
-    <section class="gift" id="gift" aria-live="polite" hidden>
-      <p class="eyebrow">Your gift</p>
-      <h1 id="productName"></h1>
-      <p class="blurb" id="productBlurb"></p>
-      <ul class="includes" id="includes"></ul>
-      <div class="meta">
-        <dl>
-          <div><dt>Gift code</dt><dd class="code" id="code"></dd></div>
-          <div><dt>Valid until</dt><dd id="until"></dd></div>
-        </dl>
-      </div>
-      <a class="claim" id="claim" href="#">Claim your gift</a>
-      <p class="fine">Takes a couple of minutes. Nothing to pay.</p>
-    </section>
-  </div>
+  <p class="foot rise" style="--d:780ms">
+    <svg width="13" height="13" viewBox="0 0 18 18" aria-hidden="true"><rect x="3" y="2" width="12" height="2.6" rx="1.3"/><rect x="1" y="7.7" width="16" height="2.6" rx="1.3"/><rect x="3" y="13.4" width="12" height="2.6" rx="1.3"/></svg>
+    <span>everlab &nbsp;·&nbsp; Sent privately to <b id="toName"></b></span>
+  </p>
 </main>
 
 <script>
 (function(){
+  'use strict';
+
   var GIFT_DEFAULTS = {
-    to: 'Julien',
     from: 'Sarah',
-    message: 'Happy birthday, Jules.\nYou spend the whole year looking after everyone else. This is a year of someone looking after you. Go and find out what your body has been trying to tell you.',
-    sign: 'With love, S.',
-    product: 'Everlab Complete Health Assessment',
-    blurb: 'A full-body baseline: blood work across 100+ biomarkers, a consult with an Everlab doctor, and a personalised plan for the year ahead.',
-    includes: ['Blood test across 100+ biomarkers', '60-minute consult with an Everlab doctor', 'Personalised health plan and follow-up'],
-    code: 'EVL-7K2M-QX4',
-    until: '8 September 2027',
+    to: 'Julien',
+    message: 'Here’s something\nto help you feel better,\nfor longer.',
+    note: 'Wishing you a long, healthy life. You deserve to know what’s going on inside.',
+    product: 'Everlab Membership',
+    term: 'Twelve months of testing, doctors and insights',
+    value: '$1,950 value',
+    includes: [
+      'Comprehensive blood panel across 100+ biomarkers',
+      'Consultation with an Everlab doctor',
+      'Personalised health plan and ongoing insights'
+    ],
     claim: 'https://everlab.com.au/'
   };
 
@@ -396,67 +372,127 @@
     return (v && v.trim()) ? v.trim() : GIFT_DEFAULTS[key];
   }
   var gift = {
-    to: pick('to'), from: pick('from'), message: pick('message'), sign: pick('sign'),
-    product: pick('product'), blurb: pick('blurb'),
-    includes: params.get('includes') ? params.get('includes').split('|').map(function(s){return s.trim();}).filter(Boolean) : GIFT_DEFAULTS.includes,
-    code: pick('code'), until: pick('until'), claim: pick('claim')
+    from: pick('from'), to: pick('to'), message: pick('message'), note: pick('note'),
+    product: pick('product'), term: pick('term'), value: pick('value'),
+    includes: params.get('includes')
+      ? params.get('includes').split('|').map(function(s){ return s.trim(); }).filter(Boolean)
+      : GIFT_DEFAULTS.includes,
+    claim: pick('claim')
   };
-  // Only allow http(s) claim links.
   if(!/^https?:\/\//i.test(gift.claim)) gift.claim = GIFT_DEFAULTS.claim;
 
-  var $ = function(id){ return document.getElementById(id); };
-  $('lead').textContent = gift.from + ' sent you something';
-  $('toLabel').textContent = 'for ' + gift.to;
-  $('fromLabel').textContent = 'From ' + gift.from;
-  $('message').textContent = gift.message;
-  $('sign').textContent = gift.sign;
-  $('productName').textContent = gift.product;
-  $('productBlurb').textContent = gift.blurb;
-  $('code').textContent = gift.code;
-  $('until').textContent = gift.until;
-  $('claim').href = gift.claim;
-  document.title = 'Unwrap your Everlab gift';
-
-  var list = $('includes');
-  gift.includes.forEach(function(item){
-    var li = document.createElement('li');
-    li.textContent = item;
-    list.appendChild(li);
-  });
-
-  var page = $('page'), card = $('card'), btn = $('unwrap'), giftEl = $('gift');
-  var opened = false;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function(id){ return document.getElementById(id); };
 
-  function open(){
-    if(opened) return;
-    opened = true;
-    giftEl.hidden = false;
-    // let the gift section paint in its hidden resting state before the transition starts
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        page.classList.add('open');
-        card.setAttribute('aria-pressed','true');
-        card.setAttribute('aria-label','Your gift message');
-        card.removeAttribute('role');
-        card.removeAttribute('tabindex');
-        btn.setAttribute('aria-hidden','true');
-        btn.tabIndex = -1;
+  /* ---------- AnimatedQuote ----------
+     Characters resolve into focus one after another. The stagger is derived
+     from the character count so any message lands in ~2s. Words are kept
+     unbreakable; authored line breaks (\n) are honoured. */
+  function AnimatedQuote(el, text, opts){
+    var startAt = opts.startAt, finishStartsBy = opts.finishStartsBy, charMs = opts.charMs;
+    var lines = text.split('\n');
+    var count = 0;
+    lines.forEach(function(l){ count += l.replace(/\s+/g,'').length; });
+    var stagger = count > 1 ? (finishStartsBy - startAt) / (count - 1) : 0;
+
+    var i = 0;
+    var frag = document.createDocumentFragment();
+    lines.forEach(function(line, li){
+      var words = line.split(/\s+/).filter(Boolean);
+      words.forEach(function(word, wi){
+        var w = document.createElement('span');
+        w.className = 'w';
+        Array.prototype.forEach.call(word, function(ch){
+          var c = document.createElement('span');
+          c.className = 'c';
+          c.textContent = ch;
+          c.style.setProperty('--d', Math.round(startAt + i * stagger) + 'ms');
+          w.appendChild(c);
+          i++;
+        });
+        frag.appendChild(w);
+        if(wi < words.length - 1) frag.appendChild(document.createTextNode(' '));
       });
+      if(li < lines.length - 1) frag.appendChild(document.createElement('br'));
     });
-    // once the gift has arrived, make sure it's on screen (mostly matters on phones)
-    setTimeout(function(){
-      var r = giftEl.getBoundingClientRect();
-      if(r.bottom > window.innerHeight){
-        giftEl.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'end'});
-      }
-    }, reduce ? 50 : 2200);
+    el.textContent = '';
+    el.appendChild(frag);
+    el.setAttribute('aria-label', text.replace(/\n/g,' '));
+
+    return { done: reduce ? 0 : finishStartsBy + charMs };
   }
 
-  btn.addEventListener('click', open);
-  card.addEventListener('click', open);
-  card.addEventListener('keydown', function(e){
-    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(); }
-  });
+  /* ---------- GiftIntro ---------- */
+  function GiftIntro(root, gift, onSee){
+    var quote = AnimatedQuote($('quote'), gift.message, {
+      startAt: 260, finishStartsBy: 1480, charMs: 680
+    });
+    // the button rises ~400ms after the last character settles
+    setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 400);
+    $('see').addEventListener('click', onSee);
+  }
+
+  /* ---------- GiftCard ---------- */
+  function GiftCard(gift){
+    $('value').textContent = gift.value;
+    $('product').textContent = gift.product;
+    $('term').textContent = gift.term;
+    $('noteText').textContent = '“' + gift.note + '”';
+    $('noteWho').textContent = '— ' + gift.from;
+    $('claim').href = gift.claim;
+    var list = $('includes');
+    gift.includes.forEach(function(item){
+      var li = document.createElement('li');
+      li.textContent = item;
+      list.appendChild(li);
+    });
+    // dial ticks: 60 fine marks, the last third emphasised in Everlab red
+    var g = $('ticks'), NS = 'http://www.w3.org/2000/svg';
+    for(var k = 0; k < 60; k++){
+      var a = (-140 + k * (280/59)) * Math.PI/180;
+      var r1 = 104, r2 = k % 5 === 0 ? 94 : 98;
+      var t = document.createElementNS(NS, 'line');
+      t.setAttribute('x1', (120 + r1*Math.sin(a)).toFixed(2)); t.setAttribute('y1', (120 - r1*Math.cos(a)).toFixed(2));
+      t.setAttribute('x2', (120 + r2*Math.sin(a)).toFixed(2)); t.setAttribute('y2', (120 - r2*Math.cos(a)).toFixed(2));
+      t.setAttribute('class', 'tick' + (k >= 30 && k <= 38 ? ' hi' : ''));
+      g.appendChild(t);
+    }
+    var v = document.createElementNS(NS, 'text');
+    v.setAttribute('x', 120); v.setAttribute('y', 146); v.setAttribute('text-anchor', 'middle');
+    v.setAttribute('class', 'val'); v.textContent = '42';
+    $('dial').insertBefore(v, $('dial').querySelector('.sub'));
+  }
+
+  /* ---------- GiftReveal ---------- */
+  function GiftReveal(gift){
+    $('fromName').textContent = gift.from;
+    $('toName').textContent = gift.to;
+    GiftCard(gift);
+  }
+
+  /* ---------- App: intro → revealing → gift ---------- */
+  var SCENE_MS = 1100;
+  var state = 'intro';
+  function setState(next){
+    state = next;
+    document.body.dataset.state = next;
+    $('gift').setAttribute('aria-hidden', next === 'intro' ? 'true' : 'false');
+  }
+
+  function reveal(){
+    if(state !== 'intro') return;
+    setState('revealing');
+    $('see').disabled = true;
+    setTimeout(function(){
+      setState('gift');
+      window.scrollTo(0, 0);
+      var h = document.querySelector('.title');
+      if(h){ h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    }, reduce ? 260 : SCENE_MS);
+  }
+
+  setState('intro');
+  GiftReveal(gift);
+  GiftIntro($('intro'), gift, reveal);
 })();
 </script>
