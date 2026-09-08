@@ -660,9 +660,10 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   slide light one status at a time: its own portion of the arc, in its own
   colour, the rest of the scale at rest, and the legend's matching column
   comes forward while the others step back. Two seconds a status; the leaving
-  portion fades out (300ms), then the arriving one grows in from its left end
-  to its right (650ms), both on a quintic ease with a soft front three ticks
-  wide, so two colours are never on the arc together; four
+  portion recedes from its right end to its left (450ms), then the arriving
+  one grows in from its left end to its right (850ms), both behind a soft
+  front seven ticks wide on a quintic ease, so nothing switches and two
+  colours are never on the arc together; four
   states with Unclassified shown, three without; looping without a pause. The
   outer 20% of the scale at each end sits under the side fade and the end
   blur, where nothing reads, so the panel is laid onto the middle 60%.

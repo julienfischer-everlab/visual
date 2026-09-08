@@ -3339,11 +3339,11 @@
      count in full ink, word brighter -- and the others step back, on the arc's
      own 350ms. The class is set by the frame as the arc changes state. */
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span{
-    opacity:.5;transition:opacity .35s ease;
+    opacity:.5;transition:opacity .6s ease;   /* the arc's own pace */
   }
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on{opacity:1;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span b,
-  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span small{transition:color .35s ease;}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span small{transition:color .6s ease;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on b{color:#fff;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on small{color:rgba(255,255,255,.82);}
   body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on b{color:#000;}
@@ -12381,9 +12381,9 @@
         // its own -- no switch, no touch): one status at a time, its own
         // portion of the scale in its own colour, the rest of the arc at rest,
         // two seconds each, and the legend's matching column comes forward
-        // with it. The leaving portion fades out (300ms), then the arriving one
-        // grows in from its left end to its right (650ms, a soft front three
-        // ticks wide, both on a quintic ease) -- so two colours are never on
+        // with it. The leaving portion recedes right to left (450ms), then the
+        // arriving one grows in from its left end to its right (850ms), both
+        // behind soft fronts on a quintic ease -- so two colours are never on
         // the arc together.
         // Four states with the unclassified shown, three without.
         //
@@ -12398,37 +12398,41 @@
         const W0 = 0.20, W1 = 0.80, bp = q => W0 + (W1 - W0) * q;   // "exclude the left 20% and right 20%"
         const SEG_COL = ['opt', 'sub', 'out', 'un'];
         const segLo = [W0, bp(q1), bp(q2), bp(q3)], segHi = [bp(q1), bp(q2), bp(q3), W1];
-        let cK = -1, cPrev = -1, outW = 0, front = -1;
+        // "Smoother ease in-out", twice asked: the change is two wipes on one
+        // quintic clock (no velocity at either end). The leaving portion
+        // recedes from its right end to its left (450ms) rather than fading
+        // as a block; the arriving one grows from its left end to its right
+        // (850ms). Both fronts are seven ticks wide and each tick's own rise
+        // is eased across the front, so nothing switches -- the edge is a
+        // gradient that travels. The state then holds for the rest of its two
+        // seconds.
+        const FEATHER = 7 / n, sm = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+        let cK = -1, cPrev = -1, back = -1, front = -1;
         if (cyc){
-          // "Smoother ease in-out": the fade-out and the sweep both run on a
-          // quintic ease (no velocity at either end), a little longer than
-          // they were -- 300ms out, 650ms in -- and the sweep's front is three
-          // ticks wide, so each tick rises over a stretch of the travel rather
-          // than switching on as the front passes it.
-          const states = un ? 4 : 3, STEP = 2000, OUT = 300, IN = 650;
+          const states = un ? 4 : 3, STEP = 2000, OUT = 450, IN = 850;
           const ease = x => x * x * x * (x * (x * 6 - 15) + 10);
           const ph = (t / STEP) % states; cK = Math.floor(ph);
           const ms = (ph - cK) * STEP;
           cPrev = (cK + states - 1) % states;
-          // the leaving portion's weight, 1 -> 0 over the first 300ms
-          outW = 1 - ease(Math.max(0, Math.min(1, ms / OUT)));
-          // the arriving portion's front, its left end -> its right end over the
-          // next 650ms, and past the end (by the feather) once it has landed
-          const s = Math.max(0, Math.min(1, (ms - OUT) / IN)), es = ease(s);
-          front = ms < OUT ? -1 : segLo[cK] - 3 / n + (segHi[cK] - segLo[cK] + 3.5 / n) * es;
+          // the leaving portion's back edge, its right end -> its left end
+          const eo = ease(Math.min(1, ms / OUT));
+          back = ms >= OUT ? -1 : segHi[cPrev] + FEATHER - (segHi[cPrev] - segLo[cPrev] + 2 * FEATHER) * eo;
+          // the arriving portion's front, its left end -> its right end, from
+          // a feather before to a feather past so the ends rise like the middle
+          const es = ease(Math.max(0, Math.min(1, (ms - OUT) / IN)));
+          front = ms < OUT ? -1 : segLo[cK] - FEATHER + (segHi[cK] - segLo[cK] + 2 * FEATHER) * es;
           if (cK !== cycLast && v4BioAge){
             cycLast = cK;
             [...v4BioAge.querySelector('.v4BioLeg').children].forEach((c, i) => c.classList.toggle('on', i === cK));
           }
         }
-        const feather = 3 / n;
         for (let i = 0; i < tickEls.length; i++){
           const tk = tickEls[i], pp = i / n;
           if (cyc){
             const seg = pp < W0 || pp >= W1 ? -1 : pp < segLo[1] ? 0 : pp < segLo[2] ? 1 : pp < segLo[3] ? 2 : 3;
             let w = 0;
-            if (seg === cK && front >= 0) w = Math.max(0, Math.min(1, (front - pp) / feather));
-            else if (seg === cPrev) w = outW;
+            if (seg === cK && front >= 0) w = sm((front - pp) / FEATHER);
+            else if (seg === cPrev && back >= 0) w = sm((back - pp) / FEATHER);
             const shown = seg >= 0 && (un || seg < 3) && pp <= bioRev && w > 0.001;
             if (shown){
               tk.line.setAttribute('stroke', rangeCol(SEG_COL[seg]));

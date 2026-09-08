@@ -2988,6 +2988,16 @@ instead of one and a half, starting three ticks before the portion so the
 first tick rises as gently as the rest. A state still holds for the remainder
 of its two seconds.
 
+Asked again once that was live, so the change is rebuilt as two wipes rather
+than a fade and a sweep: the leaving portion recedes from its right end to its
+left (450ms) and the arriving one grows from its left end to its right
+(850ms), both fronts seven ticks wide with each tick's own rise eased across
+the front, on the quintic clock. Nothing switches; the edge is a gradient that
+travels. The legend's column change takes the same 600ms rather than 350.
+Probed at ~50ms: the out-of-range portion recedes 44 -> 41 over the first
+half-second, then the optimal portion grows 12 -> 32 over the next .85s; one
+colour at a time throughout.
+
 ---
 
 ## 6. Open items
