@@ -2998,6 +2998,18 @@ Probed at ~50ms: the out-of-range portion recedes 44 -> 41 over the first
 half-second, then the optimal portion grows 12 -> 32 over the next .85s; one
 colour at a time throughout.
 
+### 5.126 The middle 60% is the visible arc
+
+"The range portions should be included into these 60% central." They were
+laid there (5.125), but the hero's arc kept the base side fade -- clear by 4%,
+full by 30% -- so a portion's first ticks sat under the fade and it looked to
+start short of where it did, and the end blur began at 25% from each end, one
+step inside the window. The hero's arc now fades only outside the window
+(clear by 3%, full by 20%, and the mirror), and the end blur on every arc
+starts at the 20% line rather than 25%, so the middle 60% is crisp and whole
+and the portions fill exactly it. Probed: the lit optimal portion runs from
+the first fully opaque tick; the desktop and tablet arcs keep the base fade.
+
 ---
 
 ## 6. Open items

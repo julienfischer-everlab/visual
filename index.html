@@ -2619,6 +2619,14 @@
     position:absolute;left:0;right:0;bottom:184px;z-index:2;pointer-events:none;
   }
   body.v5 #mHeroOrgan #arcA{transform:scale(.52);margin:26px 0 -92px;}
+  /* The hero's arc is fully there across its middle 60% and fades only outside
+     it: the biomarker portions are laid onto that 60%, and the base fade
+     (clear by 4%, full at 30%) was still dimming their outer ticks, so a
+     portion looked to start short of where it did. */
+  body.v5 #mHeroOrgan #arcA{
+    -webkit-mask-image:linear-gradient(to right,transparent 3%,#000 20%,#000 80%,transparent 97%);
+    mask-image:linear-gradient(to right,transparent 3%,#000 20%,#000 80%,transparent 97%);
+  }
   body.v5 #mHeroOrgan #arcA text{display:none;}
   /* The age is the name strip's twin rather than the dashboard's odometer: it
      travels and crossfades with the carousel instead of rolling like a drum,
@@ -7467,9 +7475,10 @@
                                x: -40, y: -60, width: 520, height: 240 }, defs);
       el('feGaussianBlur', { stdDeviation: sd }, f);
     });
-    // 0 within the middle half of the scale, then the steps out to the ends
+    // 0 across the middle 60% of the scale -- where the hero lays the
+    // biomarker portions, so they stay crisp -- then the steps out to the ends
     const blurLevel = rel => {
-      const q = Math.max(0, Math.min(1, (rel - 0.5) / 0.5));
+      const q = Math.max(0, Math.min(1, (rel - 0.6) / 0.4));
       return q <= 0 ? 0 : Math.min(BLUR_STEPS.length, Math.ceil(q * BLUR_STEPS.length));
     };
     // uniform bar ticks, no track line: the instrument IS the ticks.
@@ -10663,7 +10672,7 @@
       const x2 = 170 + Math.cos(a) * (R - len), y2 = 238 + Math.sin(a) * (R - len);
       const cls = major ? 'mj' : inGap ? 'gp' : 'nt';
       const col = inGap && !major ? ' stroke="' + imTone(delta) + '"' : '';
-      const q = Math.max(0, Math.min(1, (Math.abs(y) / span - 0.5) / 0.5));
+      const q = Math.max(0, Math.min(1, (Math.abs(y) / span - 0.6) / 0.4));   // the main arc's onset
       const bl = q <= 0 ? 0 : Math.min(STEPS.length, Math.ceil(q * STEPS.length));
       const flt = bl ? ' filter="url(#' + fid + bl + ')"' : '';
       ticks += '<line class="' + cls + '" x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) +
