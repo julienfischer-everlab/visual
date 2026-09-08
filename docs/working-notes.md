@@ -2786,6 +2786,28 @@ inks and Refresh stay in the bar. Probed (tkmenu.js): six rows with toggles,
 a toggle flips its state with the panel staying open, outside click and Escape
 close it.
 
+### 5.118 A 160px reading, and the ranges' own colours
+
+"Arc, number and the values below should fit into a 160px height area." With
+two legend lines the block ran from the indicator's top to the legend's foot in
+161px. The legend sits 5px closer under the number (margin 14 -> 9 in that
+state) and its lines 2px closer (row gap 7 -> 5): 152.
+
+"Use the exact colour for ranges", with the two panels, dark and light. The
+prototype had one set (#5cc47f / #f2c744 / #ef6f63) typed in some thirty
+places; the design has two, a pastel set on the dark ground and a saturated one
+on the light. They are CSS variables now -- --rgOpt, --rgSub, --rgOut, --rgUn on
+:root and again on body.light -- and every legend dot, meter run, range bar and
+the sheet's gradient reads them; the unclassified grey is also the meter's
+remainder, as it is in both mocks. Script that paints a range (the hero's
+distribution arc, the tablet's arc tone, the signal sheet's zones) reads them
+through rangeCol(), cached per theme. The values were read off the screenshots
+by eye -- the tokens' hex, if it differs, goes in those two lines and nowhere
+else. The organ-age colours (younger green, older orange) are a different
+reading and were left alone. Probed (rangecol.js): dots, runs, bars and
+gradient stops report the dark set, then the light set after a theme change;
+the hero arc's lit ticks take the light green.
+
 ---
 
 ## 6. Open items

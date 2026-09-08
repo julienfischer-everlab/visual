@@ -637,7 +637,14 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   count, word as the phone mocks do — count and word in one ink, white at 56%,
   the count medium rather than bold, 14 and 13px — and four of them sit two
   by two, each line centred, the whole reading lifting 16px to keep the second
-  line clear of the names — and kept across page changes. Every V6 hero figure,
+  line clear of the names, and the arc, number and both lines inside 160px —
+  and kept across page changes. The ranges' colours are the design's, per
+  theme: the dark theme's pastel set (green `#82d18e`, sand `#f6e1a5`, salmon
+  `#e97f7f`, grey `#8c8c8c`) and the light theme's saturated one (`#6fcb7c`,
+  `#f2c550`, `#e5514f`, `#7f7f7f`), as CSS variables that every legend dot,
+  meter run, range bar and the hero's distribution arc read; the grey is also
+  the meter's remainder. They were read off the mocks by eye — the variables
+  at the top of the stylesheet are where the tokens' exact values go. Every V6 hero figure,
   the biomarker count included, is the design's one number: medium, 64px on a
   64px line, letter-spacing −1px. (The mocks' numbers are kept as given;
   the *without* reading sums to 116 against the 110 shown.)

@@ -21,6 +21,14 @@
     font-family:'Suisse Intl','SuisseIntl',"Suisse Int'l",'Helvetica Neue',Helvetica,Arial,sans-serif;
     color:var(--ink);
   }
+  /* The biomarker ranges' colours, per theme, read off the design's two panels
+     ("use the exact colour for ranges"): the dark theme's are the pastel set,
+     the light theme's the saturated one, and the unclassified grey is also the
+     meter's remainder. Every legend dot, meter run, range bar and the hero's
+     distribution arc read these. Sampled from the mocks by eye -- swap in the
+     tokens' hex values here if they differ. */
+  :root{--rgOpt:#82d18e;--rgSub:#f6e1a5;--rgOut:#e97f7f;--rgUn:#8c8c8c;}
+  body.light{--rgOpt:#6fcb7c;--rgSub:#f2c550;--rgOut:#e5514f;--rgUn:#7f7f7f;}
   canvas{display:block;position:fixed;inset:0;}
   /* minimal shadcn-style control bar: zinc palette, one quiet row */
   .topbar{
@@ -393,9 +401,8 @@
      the line above; this outranks that while the switch is off, and steps
      aside when it is on so the item takes the same flex row as its siblings */
   body:not(.unclass) #mHeroOrgan .v4BioN .v4BioLeg span.nsOnly{display:none;}
-  .nsDot{background:#2a2a28;}
-  body.light .nsDot{background:#e8e2d9;}
-  .dash .meterbar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:12px;background:#2a2a28;}
+  .nsDot{background:var(--rgUn);}
+  .dash .meterbar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:12px;background:var(--rgUn);}
   .dash .meterbar span{height:100%;}
   .dash .drow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0;}
   /* the right column is a stack, so a second card can sit under the organ */
@@ -578,9 +585,9 @@
   .dash .brow .g{color:#8b8b86;font-size:13px;}
   .dash .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;}
   .dash .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
-  .dash .rng .s1{width:34px;background:#5cc47f;}
-  .dash .rng .s2{width:26px;background:#f2c744;}
-  .dash .rng .s3{width:26px;background:#ef6f63;}
+  .dash .rng .s1{width:34px;background:var(--rgOpt);}
+  .dash .rng .s2{width:26px;background:var(--rgSub);}
+  .dash .rng .s3{width:26px;background:var(--rgOut);}
   .dash .rng .mk{
     position:absolute;top:-2px;left:1px;width:0;height:0;border:4px solid transparent;
     border-top:6px solid #ececec;background:none;border-radius:0;
@@ -701,7 +708,7 @@
   #phone .legend{display:flex;gap:18px;margin-top:20px;font-size:11.5px;color:#bdbdb9;white-space:nowrap;}
   #phone .legend b{display:block;font-size:16px;color:#ececec;font-weight:600;}
   #phone .legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;font-style:normal;}
-  #phone .meterbar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:12px;background:#2a2a28;}
+  #phone .meterbar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:12px;background:var(--rgUn);}
   #phone .meterbar span{height:100%;}
   #phone .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;color:#8b8b86;font-size:12.5px;}
   #phone .bars{display:flex;align-items:flex-end;gap:2px;}
@@ -727,9 +734,9 @@
   .mbrow .g{color:#8b8b86;font-size:12.5px;}
   #phone .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;justify-self:end;}
   #phone .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
-  #phone .rng .s1{width:34px;background:#5cc47f;}
-  #phone .rng .s2{width:26px;background:#f2c744;}
-  #phone .rng .s3{width:26px;background:#ef6f63;}
+  #phone .rng .s1{width:34px;background:var(--rgOpt);}
+  #phone .rng .s2{width:26px;background:var(--rgSub);}
+  #phone .rng .s3{width:26px;background:var(--rgOut);}
   #phone .rng .mk{
     position:absolute;top:-2px;left:1px;width:0;height:0;border:4px solid transparent;
     border-top:6px solid #ececec;background:none;border-radius:0;
@@ -2173,7 +2180,6 @@
   body.light .dash .lbl{color:#9b8a75;}
   body.light .dash .legend{color:#6b5c4a;}
   body.light .dash .legend b{color:#2e241c;}
-  body.light .dash .meterbar{background:#e9e1cf;}
   body.light .dash .foot{color:#9b8a75;}
   body.light .dash .bars i{background:#4a3a2c;}
   body.light .dash .inf{border-color:#d6cab6;color:#9b8a75;}
@@ -2201,7 +2207,6 @@
   body.light #phone .big, body.light #phone2 .big{color:#2e1f1a;}
   body.light #phone .legend{color:#6b5c4a;}
   body.light #phone .legend b{color:#2e241c;}
-  body.light #phone .meterbar{background:#e6ddca;}
   body.light #phone .foot{color:#9b8a75;}
   body.light #phone .bars i{background:#4a3a2c;}
   body.light #phone .inf{border-color:#d6cab6;color:#9b8a75;}
@@ -3319,9 +3324,13 @@
      item takes the whole row when the switch is on, and is nothing otherwise */
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg .legBrk{display:none;}
   body.unclass.v7 #mHeroOrgan .v4BioN .v4BioLeg{
-    flex-wrap:wrap;justify-content:center;row-gap:7px;column-gap:15px;
+    flex-wrap:wrap;justify-content:center;row-gap:5px;column-gap:15px;
     width:280px;   /* the legend hangs off the number, whose width is the number's:
                       absolutely positioned, it needs a width of its own to wrap in */
+    /* "arc, number and the values below should fit a 160px height": with two
+       lines the block ran to 161 from the indicator's top, so the legend sits
+       5px closer under the number and the lines 2px closer -- 154 */
+    margin-top:9px;
   }
   body.unclass.v7 #mHeroOrgan .v4BioN .v4BioLeg .legBrk{
     display:block;flex:0 0 100%;height:0;margin:0;padding:0;
@@ -3595,15 +3604,15 @@
           <!-- data-on / data-off: the two readings of the panel, with and without
                the unclassified shown (see BIO_SETS); applyUnclass writes them -->
           <div class="legend">
-            <div><b data-on="68" data-off="80">80</b><i style="background:#5cc47f"></i>Optimal</div>
-            <div><b data-on="20" data-off="24">24</b><i style="background:#f2c744"></i>Suboptimal</div>
-            <div><b data-on="12" data-off="12">12</b><i style="background:#ef6f63"></i>Out of range</div>
+            <div><b data-on="68" data-off="80">80</b><i style="background:var(--rgOpt)"></i>Optimal</div>
+            <div><b data-on="20" data-off="24">24</b><i style="background:var(--rgSub)"></i>Suboptimal</div>
+            <div><b data-on="12" data-off="12">12</b><i style="background:var(--rgOut)"></i>Out of range</div>
             <div class="nsOnly"><b>10</b><i class="nsDot"></i>Unclassified</div>
           </div>
           <div class="meterbar">
-            <span data-on="62%" data-off="69%" style="width:69%;background:#5cc47f"></span>
-            <span data-on="18%" data-off="21%" style="width:21%;background:#f2c744"></span>
-            <span data-on="11%" data-off="10%" style="width:10%;background:#ef6f63"></span>
+            <span data-on="62%" data-off="69%" style="width:69%;background:var(--rgOpt)"></span>
+            <span data-on="18%" data-off="21%" style="width:21%;background:var(--rgSub)"></span>
+            <span data-on="11%" data-off="10%" style="width:10%;background:var(--rgOut)"></span>
           </div>
         </div>
         <div class="drow">
@@ -3649,9 +3658,9 @@
     </div>
     <div class="filters">
       <div class="fchip on"><b>81</b> All</div>
-      <div class="fchip"><i style="background:#5cc47f"></i><b>81</b> Optimal</div>
-      <div class="fchip"><i style="background:#f2c744"></i><b>9</b> Suboptimal</div>
-      <div class="fchip"><i style="background:#ef6f63"></i><b>6</b> Out of range</div>
+      <div class="fchip"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</div>
+      <div class="fchip"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</div>
+      <div class="fchip"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</div>
       <div class="fchip v2Only"><i style="background:#7b7b78"></i><b>28</b> Other</div>
       <div class="dsearch v2Only">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
@@ -3663,9 +3672,9 @@
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
         <linearGradient id="sgrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#ef6f63"/>
-          <stop offset=".55" stop-color="#f2c744"/>
-          <stop offset="1" stop-color="#5cc47f"/>
+          <stop offset="0" style="stop-color:var(--rgOut)"/>
+          <stop offset=".55" style="stop-color:var(--rgSub)"/>
+          <stop offset="1" style="stop-color:var(--rgOpt)"/>
         </linearGradient>
       </defs>
     </svg>
@@ -3756,15 +3765,15 @@
           </div>
         </div>
         <div class="legend">
-          <div><b data-on="68" data-off="80">80</b><i style="background:#5cc47f"></i>Optimal</div>
-          <div><b data-on="20" data-off="24">24</b><i style="background:#f2c744"></i>Suboptimal</div>
-          <div><b data-on="12" data-off="12">12</b><i style="background:#ef6f63"></i>Out of range</div>
+          <div><b data-on="68" data-off="80">80</b><i style="background:var(--rgOpt)"></i>Optimal</div>
+          <div><b data-on="20" data-off="24">24</b><i style="background:var(--rgSub)"></i>Suboptimal</div>
+          <div><b data-on="12" data-off="12">12</b><i style="background:var(--rgOut)"></i>Out of range</div>
           <div class="nsOnly"><b>10</b><i class="nsDot"></i>Unclassified</div>
         </div>
         <div class="meterbar">
-          <span data-on="62%" data-off="69%" style="width:69%;background:#5cc47f"></span>
-          <span data-on="18%" data-off="21%" style="width:21%;background:#f2c744"></span>
-          <span data-on="11%" data-off="10%" style="width:10%;background:#ef6f63"></span>
+          <span data-on="62%" data-off="69%" style="width:69%;background:var(--rgOpt)"></span>
+          <span data-on="18%" data-off="21%" style="width:21%;background:var(--rgSub)"></span>
+          <span data-on="11%" data-off="10%" style="width:10%;background:var(--rgOut)"></span>
         </div>
       </div>
       </div>
@@ -3864,9 +3873,9 @@
     <div class="msel">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
     <div class="mchips">
       <div class="fchip on"><b>81</b>&nbsp;All</div>
-      <div class="fchip"><i style="background:#5cc47f"></i><b>81</b>&nbsp;Optimal</div>
-      <div class="fchip"><i style="background:#f2c744"></i><b>9</b>&nbsp;Suboptimal</div>
-      <div class="fchip"><i style="background:#ef6f63"></i><b>6</b>&nbsp;Out of range</div>
+      <div class="fchip"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</div>
+      <div class="fchip"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</div>
+      <div class="fchip"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</div>
       <div class="fchip mOther"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</div>
     </div>
     <div class="mrecs">
@@ -7346,6 +7355,25 @@
   }
   // Declared here, and off the body class rather than the theme flag, because
   // buildArcA() draws the resting ticks at module init — before that flag exists.
+  // The range colours are CSS variables (--rgOpt/--rgSub/--rgOut/--rgUn, per
+  // theme); script that paints a range reads them here rather than carrying
+  // hex of its own, so a change to the tokens is one edit. Cached per theme --
+  // getComputedStyle every frame is not free.
+  const RANGE_CACHE = { key: '', v: {} };
+  function rangeCol(k){
+    const key = document.body.classList.contains('light') ? 'L' : 'D';
+    if (RANGE_CACHE.key !== key){
+      const cs = getComputedStyle(document.body);
+      RANGE_CACHE.v = {
+        opt: cs.getPropertyValue('--rgOpt').trim() || '#5cc47f',
+        sub: cs.getPropertyValue('--rgSub').trim() || '#f2c744',
+        out: cs.getPropertyValue('--rgOut').trim() || '#ef6f63',
+        un:  cs.getPropertyValue('--rgUn').trim()  || '#8c8c8c'
+      };
+      RANGE_CACHE.key = key;
+    }
+    return RANGE_CACHE.v[k];
+  }
   function tickBase(){
     const light = document.body.classList.contains('light');
     const c = desat(light ? [138, 106, 92] : [196, 155, 147], ARC_DESAT);
@@ -8770,13 +8798,13 @@
     el.innerHTML = '<i class="bioNum">' + BIO_N.total + '</i>' +
       '<span class="v4BioLeg">' +
       // dot, count, word -- the order the design's phone mocks read in
-      '<span><i style="background:#5cc47f"></i><b' + pair('optimal') + '>' + BIO_N.optimal + '</b>' +
+      '<span><i style="background:var(--rgOpt)"></i><b' + pair('optimal') + '>' + BIO_N.optimal + '</b>' +
       'Optimal</span>' +
-      '<span><i style="background:#f2c744"></i><b' + pair('sub') + '>' + BIO_N.sub + '</b>' +
+      '<span><i style="background:var(--rgSub)"></i><b' + pair('sub') + '>' + BIO_N.sub + '</b>' +
       'Suboptimal</span>' +
       // with four readings the row breaks here, two and two, each line centred
       '<i class="legBrk"></i>' +
-      '<span><i style="background:#ef6f63"></i><b' + pair('out') + '>' + BIO_N.out + '</b>' +
+      '<span><i style="background:var(--rgOut)"></i><b' + pair('out') + '>' + BIO_N.out + '</b>' +
       'Out of range</span>' +
       // the fourth reading, shown by the Unclassified switch
       '<span class="nsOnly"><i class="nsDot"></i><b>' + BIO_SETS.on.un +
@@ -10580,7 +10608,7 @@
     return '<svg viewBox="20 18 300 58" preserveAspectRatio="xMidYMid meet">' + ticks + '</svg>';
   }
   function imTone(delta){
-    return delta < 0 ? '#5cc47f' : delta > 0 ? '#ef6f63' : '#f2c744';
+    return delta < 0 ? rangeCol('opt') : delta > 0 ? rangeCol('out') : rangeCol('sub');
   }
   function imVerdict(d){
     const n = Math.abs(d.delta);
@@ -11430,7 +11458,8 @@
     })();
   })();
   // ---- signal insight sheet: what one metric card is telling you ----
-  const ZONE = { good: '#5cc47f', warn: '#f2c744', bad: '#ef6f63' };
+  // the range colours, read live so the sheet follows the theme's set
+  const ZONE = { get good(){ return rangeCol('opt'); }, get warn(){ return rangeCol('sub'); }, get bad(){ return rangeCol('out'); } };
   const SIGNALS = [
     {
       name: 'ApoB', status: 'To monitor', unit: 'mg/dL',
@@ -12271,7 +12300,7 @@
         const n = Math.max(1, tickEls.length - 1);
         for (let i = 0; i < tickEls.length; i++){
           const tk = tickEls[i], pp = i / n;
-          const c = pp < BIO_FILL ? '#5cc47f' : null;
+          const c = pp < BIO_FILL ? rangeCol('opt') : null;
           if (c && pp <= bioRev){
             tk.line.setAttribute('stroke', c);
             tk.line.setAttribute('opacity', (0.95 * bioA).toFixed(3));
