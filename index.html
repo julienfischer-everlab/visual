@@ -27,7 +27,9 @@
      meter's remainder. Every legend dot, meter run, range bar and the hero's
      distribution arc read these. Sampled from the mocks by eye -- swap in the
      tokens' hex values here if they differ. */
-  :root{--rgOpt:#82d18e;--rgSub:#f6e1a5;--rgOut:#e97f7f;--rgUn:#8c8c8c;}
+  /* dark: the design's tokens as given -- optimal / younger AAEEC2, suboptimal /
+     older FFE29F, out of range FE8087, aligned / unclassified white at 48% */
+  :root{--rgOpt:#aaeec2;--rgSub:#ffe29f;--rgOut:#fe8087;--rgUn:rgba(255,255,255,.48);}
   body.light{--rgOpt:#6fcb7c;--rgSub:#f2c550;--rgOut:#e5514f;--rgUn:#7f7f7f;}
   canvas{display:block;position:fixed;inset:0;}
   /* minimal shadcn-style control bar: zinc palette, one quiet row */
@@ -96,6 +98,9 @@
     padding:7px 10px;border-radius:8px;
   }
   .topbar .tkRow:hover{background:#1c1c20;}
+  /* a row that applies to the phone's hero alone is in the list only there */
+  .topbar .tkRow.tkMobile{display:none;}
+  body.v7 .topbar .tkRow.tkMobile{display:flex;}
   .topbar .tkRow .lbl{color:#e4e4e7;white-space:nowrap;}
   .topbar .seg{
     display:flex;gap:2px;border:1px solid #232326;background:#131316;
@@ -3559,6 +3564,16 @@
           <select id="stAct" aria-label="Activity card state">
             <option value="on">Completed</option>
             <option value="empty">Empty</option>
+          </select>
+        </div>
+        <!-- Mobile only: the biomarker arc's band cycles through the four
+             status colours, one at a time, two seconds each, with a soft
+             crossfade -- never more than one colour on the arc at once. -->
+        <div class="tkRow tkMobile">
+          <span class="lbl">Arc cycle</span>
+          <select id="stCyc" aria-label="Biomarker arc colour cycle">
+            <option value="on">Cycling</option>
+            <option value="off" selected>Static</option>
           </select>
         </div>
       </div>
@@ -7380,20 +7395,51 @@
     }
     return RANGE_CACHE.v[k];
   }
+  // a CSS colour as [r, g, b, a]: #rgb, #rrggbb, rgb() or rgba() -- the forms
+  // the range variables take
+  function parseCol(s){
+    s = String(s).trim();
+    if (s[0] === '#'){
+      let h = s.slice(1); if (h.length === 3) h = h.split('').map(ch => ch + ch).join('');
+      return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16), 1];
+    }
+    const m = s.match(/[\d.]+/g) || [0, 0, 0];
+    return [+m[0], +m[1], +m[2], m.length > 3 ? +m[3] : 1];
+  }
+  // a crossfade between two of the range colours (any form in, rgba() out)
+  function mixHex(a, b, t){
+    const A = parseCol(a), B = parseCol(b);
+    const m = i => A[i] + (B[i] - A[i]) * t;
+    return 'rgba(' + Math.round(m(0)) + ',' + Math.round(m(1)) + ',' + Math.round(m(2)) + ',' + m(3).toFixed(3) + ')';
+  }
+  // The dot beside a reading in the lists and pills: younger takes the optimal
+  // colour, older the suboptimal one -- the design's tokens, on the dark ground;
+  // the light theme keeps its own greens and ambers.
+  function ageDot(dir){
+    if (document.body.classList.contains('light')) return dir < 0 ? '#5cc47f' : '#d9895b';
+    return rangeCol(dir < 0 ? 'opt' : 'sub');
+  }
   function tickBase(){
     const light = document.body.classList.contains('light');
     const c = desat(light ? [138, 106, 92] : [196, 155, 147], ARC_DESAT);
     return 'rgb(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ')';
   }
+  // On the dark ground the arc takes the design's tokens as given -- younger
+  // AAEEC2, older FFE29F running to FE8087 by seven years -- with no
+  // desaturation, since the tokens are already the calm the fifth was for.
+  // The light theme keeps the instrument's own set and its fifth off.
+  const C_GREEN_D = [170,238,194], C_ORANGE_D = [255,226,159], C_RED_D = [254,128,135];
   function ageColor(v){
+    const dark = !document.body.classList.contains('light');
+    const G = dark ? C_GREEN_D : C_GREEN, O = dark ? C_ORANGE_D : C_ORANGE, R = dark ? C_RED_D : C_RED;
     // decisive semantics: any younger value is green, any older is orange->red
     let c;
-    if (v <= -0.05) c = C_GREEN;
+    if (v <= -0.05) c = G;
     // amber at the first year older, full red by seven — the range the organs
     // actually span, rather than the scale's own half-width
-    else if (v >= 0.05) c = lerpC(C_ORANGE, C_RED, Math.min(1, v / 7));
+    else if (v >= 0.05) c = lerpC(O, R, Math.min(1, v / 7));
     else c = C_NEUT;
-    c = desat(c, ARC_DESAT);
+    c = desat(c, dark ? 0 : ARC_DESAT);
     return 'rgb(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ')';
   }
 
@@ -7744,7 +7790,7 @@
     const b = document.createElement('button');
     b.className = 'pill';
     b.setAttribute('aria-pressed', String(i === 0));
-    const dotCol = d.delta < 0 ? '#5cc47f' : d.delta > 0 ? '#d9895b' : '#b59a93';
+    const dotCol = d.delta < 0 ? ageDot(-1) : d.delta > 0 ? ageDot(1) : '#b59a93';
     b.innerHTML = '<span class="dot" style="background:' + dotCol + '"></span>' + d.label;
     b.addEventListener('click', () => { lastManual = performance.now(); selectPill(i); });
     b.addEventListener('pointerenter', () => { hoverBoost = 1; });
@@ -7767,7 +7813,7 @@
   const olistRows = PILL.map((d, i) => {
     const r = document.createElement('div');
     r.className = 'or' + (i === 0 ? ' on' : '');
-    const dotCol = d.delta < 0 ? '#5cc47f' : d.delta > 0 ? '#d9895b' : '#b59a93';
+    const dotCol = d.delta < 0 ? ageDot(-1) : d.delta > 0 ? ageDot(1) : '#b59a93';
     r.innerHTML = '<span class="dot" style="background:' + dotCol + '"></span>' +
       '<span class="nm">' + slideName(d) + '</span>' +
       '<span class="ag">' + (CHRONO + d.delta) + '</span>';
@@ -8080,6 +8126,7 @@
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.unclass ? ' unclass' : '') +
+      (CARD_STATE.arcCyc ? ' arcCyc' : '') +
       (CARD_STATE.dense ? ' dense' : '') +
       // the same rule for the figure: only Mobile V7 offers the choice, so
       // only Mobile V7 wears it
@@ -8322,7 +8369,7 @@
     const n = Math.abs(d.delta);
     const diff = d.delta === 0 ? 'Aligned with your age'
       : n + ' year' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older');
-    const dc = d.delta < 0 ? '#5cc47f' : d.delta > 0 ? '#d9895b' : 'rgba(242,229,224,.55)';
+    const dc = d.delta < 0 ? ageDot(-1) : d.delta > 0 ? ageDot(1) : 'rgba(242,229,224,.55)';
     el.innerHTML = '<div class="nm">' + d.label + '</div>' +
       '<div class="spBot"><div class="num">' + (CHRONO + d.delta) + '</div>' +
       '<div class="diff" style="color:' + dc + '">' + diff + '</div></div>';
@@ -8434,7 +8481,7 @@
     const n = Math.abs(d.delta);
     const diff = d.delta === 0 ? 'Aligned with your age'
       : n + ' yr' + (n > 1 ? 's' : '') + (d.delta < 0 ? ' younger' : ' older');
-    const dc = d.delta < 0 ? '#5cc47f' : d.delta > 0 ? '#d9895b' : 'rgba(242,229,224,.55)';
+    const dc = d.delta < 0 ? ageDot(-1) : d.delta > 0 ? ageDot(1) : 'rgba(242,229,224,.55)';
     el.innerHTML = '<div class="nm">' + d.label + '</div>' +
       '<div class="bot"><span class="num">' + (CHRONO + d.delta) + '</span>' +
       '<span class="diff" style="color:' + dc + '">' + diff + '</span></div>';
@@ -8519,7 +8566,7 @@
       r.querySelector('.ag').textContent = no ? '\u2013' : num(d);
       // the dot states a verdict, which an untested organ does not have
       r.querySelector('.dot').style.background = no ? '#6b6b68'
-        : (d.delta < 0 ? '#5cc47f' : d.delta > 0 ? '#d9895b' : '#b59a93');
+        : (d.delta < 0 ? ageDot(-1) : d.delta > 0 ? ageDot(1) : '#b59a93');
     });
     mbItems.forEach((el, k) => {
       const no = gone(MB[k]);
@@ -9209,7 +9256,9 @@
       // organs' own framing, so this is a deliberate size, not a leftover.
       setZoom(zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
               (v7On() ? V6_HERO : 1) *
-              zFix * (1 + 0.30 * bodyShown) * (1 - 0.15 * irisOn), orgR);
+              // the body's 30% grew it into the arc ("visual is too close to
+              // arc"): 8% off that, so 1.196 rather than 1.30
+              zFix * (1 + 0.196 * bodyShown) * (1 - 0.15 * irisOn), orgR);
       // The fill rises on the same cue and over the same span as the arc's
       // sweep: they are one reveal of one reading, and running them on two
       // clocks left the body still filling after the meter had finished. It
@@ -9277,7 +9326,8 @@
       // back down, both asked for by the pixel -- weighted by irisOn (above) so
       // it rides with the swipe. Same unit as orgDrop: 2 / 202 per pixel, so
       // 10px is 0.099.
-      gl.uniform2f(U.uPan, 0, -0.35 * bodyShown + orgDrop + 0.099 * irisOn);
+      // ...and the body 16px higher (0.158 at 2 / 202 a pixel) on the same weight
+      gl.uniform2f(U.uPan, 0, (-0.35 + 0.158) * bodyShown + orgDrop + 0.099 * irisOn);
       gl.uniform1f(U.uAlpha, 1);
       gl.uniform1f(U.uWarm, warm(oa) + (warm(ob) - warm(oa)) * f);
       gl.uniform2f(U.uCA, ORGANS[ia].x, ORGANS[ia].y);
@@ -11810,7 +11860,7 @@
                        // Same problem: a class setMode would drop.
                        bioSph: false,
                        // the legend's fourth reading, on the bar's switch
-                       unclass: false,
+                       unclass: false, arcCyc: false,
                        // Density: Dense on every surface, see denseOn
                        dense: false };
   // Every state control is a thing that is either on or off, so each becomes a
@@ -11894,6 +11944,13 @@
   }
   const stUnSel = document.getElementById('stUn');
   if (stUnSel) stUnSel.addEventListener('change', () => applyUnclass(stUnSel.value === 'on'));
+  // Arc cycle (mobile): the biomarker band's colour walks the four statuses.
+  // A flag the arc reads each frame, and a body class kept in CARD_STATE.
+  const stCycSel = document.getElementById('stCyc');
+  if (stCycSel) stCycSel.addEventListener('change', () => {
+    CARD_STATE.arcCyc = stCycSel.value === 'on';
+    document.body.classList.toggle('arcCyc', CARD_STATE.arcCyc);
+  });
   // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');
   // Three readings on one chain. An age is derived from biomarkers, and the
@@ -12330,12 +12387,28 @@
         // distribution in the ranges' colours -- optimal, suboptimal, out of
         // range, then the grey remainder -- and no indicator, since the bands
         // themselves mark where each share ends.
+        //
+        // Arc cycle (a mobile tweak): the band keeps its extent -- the optimal
+        // share, the indicator at its end -- and its one colour walks the four
+        // statuses, green, sand, salmon, grey, two seconds each, crossfading
+        // over the first 350ms of each step. One colour on the arc at any
+        // moment, whichever way the Unclassified switch is set: the cycle says
+        // what the bands would have said, one at a time.
         const n = Math.max(1, tickEls.length - 1);
-        const bs = bioSet(), un = CARD_STATE.unclass;
+        const cyc = CARD_STATE.arcCyc;
+        const bs = bioSet(), un = CARD_STATE.unclass && !cyc;
         const q1 = bs.optimal / bs.total, q2 = q1 + bs.sub / bs.total, q3 = q2 + bs.out / bs.total;
+        let cycCol = null;
+        if (cyc){
+          const ORDER = ['opt', 'sub', 'out', 'un'], STEP = 2000, FADE = 350;
+          const ph = (t / STEP) % ORDER.length, k = Math.floor(ph);
+          const f = Math.min(1, ((ph - k) * STEP) / FADE), e = f * f * (3 - 2 * f);
+          cycCol = mixHex(rangeCol(ORDER[(k + ORDER.length - 1) % ORDER.length]), rangeCol(ORDER[k]), e);
+        }
         for (let i = 0; i < tickEls.length; i++){
           const tk = tickEls[i], pp = i / n;
-          const c = !un ? (pp < BIO_FILL ? rangeCol('opt') : null)
+          const c = cyc ? (pp < BIO_FILL ? cycCol : null)
+                  : !un ? (pp < BIO_FILL ? rangeCol('opt') : null)
                   : pp < q1 ? rangeCol('opt') : pp < q2 ? rangeCol('sub') : pp < q3 ? rangeCol('out') : null;
           if (c && pp <= bioRev){
             tk.line.setAttribute('stroke', c);
@@ -12366,8 +12439,10 @@
       const alignK = Math.max(0, 1 - Math.abs(arcNow) / 0.5);
       for (const tk of tickEls){
         if (tk.zero && alignK > 0.001){
+          // ...at the design's 48% on the dark ground ("aligned: FFFFFF 48%")
+          const alignOp = document.body.classList.contains('light') ? 0.95 : 0.48;
           tk.line.setAttribute('stroke', indFill());
-          tk.line.setAttribute('opacity', (tk.baseOp + (0.95 - tk.baseOp) * alignK).toFixed(3));
+          tk.line.setAttribute('opacity', (tk.baseOp + (alignOp - tk.baseOp) * alignK).toFixed(3));
           continue;
         }
         const inGap = active && !tk.zero && tk.v >= lo - 0.01 && tk.v <= hi + 0.01;

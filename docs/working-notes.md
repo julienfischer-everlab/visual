@@ -2861,6 +2861,42 @@ end; on, 0-37 green, 38-47 sand, 48-54 salmon, 55-60 base, indicator at 0; the
 light set on the light theme; four equal columns of 81px, rules between them;
 the block 149px. Arc-wrap, Unclassified and error probes as before.
 
+### 5.121 Arc cycle, the body's fit, and the tokens
+
+A mobile-only tweak, Arc cycle, in the Tweaks dropdown (a row that is in the
+list only when a v7 page is up). On, the biomarker arc's band keeps its extent
+-- the optimal share, the indicator at its end -- and its one colour walks the
+four statuses, optimal, suboptimal, out of range, unclassified, two seconds
+each, easing into each over the first 350ms, looping without a pause. One
+colour on the arc at any moment, whichever way the Unclassified switch is set:
+with both on, the cycle says what the bands would have said, one at a time. A
+flag the arc reads each frame (CARD_STATE.arcCyc, body class arcCyc, kept
+through setMode). Probed (arccyc.js): the row shows on m20 and not on the
+desktop; sampled every 250ms for 8.5s the band carries exactly one colour, eight
+samples a state, the crossfade visible as mixed values at each step; with
+Unclassified on as well, still one colour.
+
+"Visual is too close to arc here: reduce by 8% and move up 16px" -- the body
+on the biomarker slide. The hero grows the body by 30% over the organs'
+framing; that is 19.6% now (1.196 = 1.30 x 0.92), and its pan gains the same
+16px (0.158 clip units) the organs got, on the body's own weight. Screenshot
+against the previous build: the crown 16px higher, the shoulders inside the
+arc's span.
+
+Then the tokens, from the design: dark mode optimal / younger AAEEC2,
+suboptimal / older FFE29F, out of range FE8087, aligned / unclassified white at
+48%, "consider this on arc". The dark range variables take them (the grey is
+rgba now, so the colour parser behind the cycle's crossfade reads rgb() and
+rgba() as well as hex, and returns rgba). The age arc on the dark ground takes
+the same three -- younger in the optimal colour, older from the suboptimal to
+out-of-range by seven years -- with no desaturation, the tokens being the calm
+the fifth was for; the aligned centre tick lights to 48% rather than 95%; the
+younger / older dots in the lists and pills go through ageDot(), the tokens on
+dark and the old green and amber on light. The light theme's ranges and arc
+are as they were. Probed: legend dots, meter runs, range bars and gradient
+stops report the tokens; the arc's lit ticks read rgb(170,238,194) younger and
+rgb(254,170,145) two years older; the cycle's states are the four tokens.
+
 ---
 
 ## 6. Open items
