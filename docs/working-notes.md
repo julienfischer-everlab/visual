@@ -2897,6 +2897,53 @@ are as they were. Probed: legend dots, meter runs, range bars and gradient
 stops report the tokens; the arc's lit ticks read rgb(170,238,194) younger and
 rgb(254,170,145) two years older; the cycle's states are the four tokens.
 
+### 5.122 The cycle goes; a lighter blur, on every arc
+
+"No, no need to highlight the portions one after each other." The Arc cycle
+of 5.121 -- one colour walking the four statuses -- lasted the afternoon; the
+row, the state, the body class, the frame logic and the colour parser behind
+its crossfade are all out, and the biomarker arc reads the design's two frames
+as in 5.120. It is in the history (d445090) if it is ever wanted back.
+
+"Reduce the blur effect": the end blur's six steps are halved, 0.8 to 5.8 in
+the svg's units, so about 3px on screen at the very ends rather than 6.
+
+"Add blur effect on edges for ALL arcs": the main scale (#arcA) is one svg
+that every dashboard, tablet and phone page draws, so the blur was already on
+those; the library card's arc (ageArcMarkup, built as a string) had none and
+takes the same treatment -- six filters per instance, ids per instance since a
+page can hold several, applied past the middle half of its 23 ticks. And the
+Desktop V5 card's narrower side fade (14% -> 42%), put there so the ends had
+dissolved before the card clipped them, comes off: the blur does that job now,
+and the arc reads the same on every page.
+
+### 5.123 Arc cycle, as the frames have it
+
+Three frames arrived with no words: the biomarker slide with, in each, one
+status lit -- optimal green on its own portion of the arc in the first,
+suboptimal sand on its portion in the second, out-of-range salmon in the third
+-- the rest of the scale at rest, and in the legend the matching column bright
+while the others stand back. So the cycle of 5.121 was the wrong cycle, not a
+wrong idea: it recoloured the whole band; the design lights each status where
+it lives. Back it comes, that way. The arc's ticks belong to segments (the
+shares, as the static bands draw them; four with the unclassified shown, three
+without), and each frame one segment is lit in its colour at the band's
+strength while the rest sit at their base grey. Two seconds a state. The
+change runs 350ms and is out-then-in -- the leaving segment fades to base over
+the first half, the arriving one rises over the second -- because the brief
+tells the arc never to carry two status colours at once, and a plain crossfade
+did, for a frame or two. The frame toggles an `on` class on the legend's
+column when the state changes; CSS steps the others back to half opacity and
+brings the count to full ink on the arc's own 350ms. The indicator hides while
+the cycle runs; the lit portion marks itself. On by default, since these are
+the design's frames; the row stills it.
+
+Probed (arccyc2.js): sampled every 300ms, one colour on the arc at every
+sample, the lit range moving 0-43 / 44-56 / 57-59 across the three states
+without the unclassified and 0-37 / 38-47 / 48-54 / 55-60 with, the `on` class
+on the matching column each time; off, the static bands and every column at
+full opacity. Arc-wrap, error and all-arcs probes clean.
+
 ---
 
 ## 6. Open items
