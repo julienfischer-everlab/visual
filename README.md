@@ -670,6 +670,16 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   full at 20%) and the end blur starts at the same line, so a portion reads
   from exactly where it starts to exactly where it ends.
   (A constant in the script, `BIO_CYCLE`, puts the static bands back.)
+- **Bio graph** — Arc (default) or Dots, in the Tweaks dropdown; a select, since
+  the two are named readings rather than on and off. Dots puts a line of forty
+  dots where the arc's ticks are on the biomarker slide, the legend's width,
+  filled left to right with the ranges' colours by share — each range takes its
+  share of the forty by largest remainder, so they always sum — the unclassified
+  in the range grey when shown, at rest when folded in. It rides the same swap
+  the arc does (the arc gives way on the biomarker slide alone and is back on
+  the organs), the same hero fade and the same left-to-right reveal when the
+  slide lands; with the dots the legend carries no highlight and the arc's
+  status cycle stands down. Kept across page changes.
 - **Density** — on every page. Normal is the organ as designed; Dense is the
   library's fine-grain reading of it: twice the body, twice the strays, twice
   the flow, drawn from the same cloud at the smaller dot — on the phone, the

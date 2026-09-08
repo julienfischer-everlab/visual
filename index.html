@@ -2628,6 +2628,23 @@
     mask-image:linear-gradient(to right,transparent 3%,#000 20%,#000 80%,transparent 97%);
   }
   body.v5 #mHeroOrgan #arcA text{display:none;}
+  /* Bio graph = Dots: a line of forty dots where the arc's ticks are, filled
+     left to right with the ranges' colours by share (the script paints them);
+     the rest rest at a low grey. Same width as the legend beneath. */
+  .v4Dots{display:none;}
+  body.v5.bioDots #mHeroOrgan .v4Dots{
+    display:flex;justify-content:space-between;align-items:center;
+    position:absolute;left:50%;transform:translateX(-50%);bottom:222px;
+    width:calc(var(--heroW, 372px) - 48px);height:6px;z-index:2;
+    pointer-events:none;opacity:0;
+  }
+  body.v5 #mHeroOrgan .v4Dots i{
+    width:6px;height:6px;border-radius:50%;flex:none;
+    background:rgba(255,255,255,.14);transition:background .3s ease;
+  }
+  body.light.v5 #mHeroOrgan .v4Dots i{background:rgba(0,0,0,.12);}
+  /* with the dots the legend carries no highlight: every column at full */
+  body.bioDots.v7 #mHeroOrgan .v4BioN .v4BioLeg > span{opacity:1;}
   /* The age is the name strip's twin rather than the dashboard's odometer: it
      travels and crossfades with the carousel instead of rolling like a drum,
      so it is one element per organ, same as the names. */
@@ -3579,6 +3596,16 @@
             <option value="empty">Empty</option>
           </select>
         </div>
+        <!-- The biomarker slide's graph: the arc, or a line of dots filled with
+             the ranges' colours by share. Two named readings, not on and off,
+             so it stays a select. -->
+        <div class="tkRow">
+          <span class="lbl">Bio graph</span>
+          <select id="stGraph" aria-label="Biomarker graph">
+            <option value="arc">Arc</option>
+            <option value="dots">Dots</option>
+          </select>
+        </div>
       </div>
     </details>
     <span class="lbl">Ink</span>
@@ -3889,7 +3916,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Dots" id="v4Dots" aria-hidden="true"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -8115,6 +8142,7 @@
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.unclass ? ' unclass' : '') +
+      (CARD_STATE.bioDots ? ' bioDots' : '') +
       (CARD_STATE.dense ? ' dense' : '') +
       // the same rule for the figure: only Mobile V7 offers the choice, so
       // only Mobile V7 wears it
@@ -8878,6 +8906,36 @@
     v4AgeEl.appendChild(el);
     return el;
   })() : null;
+  // Bio graph = Dots. Forty dots stand for the panel; each range takes its
+  // share of them (largest remainder, so they always sum to forty), left to
+  // right in the legend's order, and the unclassified take the range grey when
+  // shown or stay at rest when folded in. Painted from the frame with the
+  // reveal fraction, and only when something changed -- forty style writes a
+  // frame is not free.
+  const DOTS_N = 40;
+  const v4DotsEl = document.getElementById('v4Dots');
+  if (v4DotsEl) for (let i = 0; i < DOTS_N; i++) v4DotsEl.appendChild(document.createElement('i'));
+  let dotsSig = '';
+  function paintDots(rev){
+    if (!v4DotsEl) return;
+    const bs = bioSet(), un = CARD_STATE.unclass;
+    const light = document.body.classList.contains('light');
+    const lit = Math.round(rev * DOTS_N);
+    const sig = (un ? 'u' : 'f') + (light ? 'L' : 'D') + lit;
+    if (sig === dotsSig) return;
+    dotsSig = sig;
+    const shares = [bs.optimal, bs.sub, bs.out, un ? bs.un : 0];
+    const tot = Math.max(1, shares.reduce((a, v) => a + v, 0));
+    const raw = shares.map(v => v / tot * DOTS_N), cnt = raw.map(Math.floor);
+    let left = DOTS_N - cnt.reduce((a, v) => a + v, 0);
+    raw.map((v, i) => [v - cnt[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (left > 0){ cnt[i]++; left--; } });
+    const cols = [rangeCol('opt'), rangeCol('sub'), rangeCol('out'), rangeCol('un')];
+    let k = 0;
+    const dots = v4DotsEl.children;
+    for (let s = 0; s < 4; s++) for (let j = 0; j < cnt[s]; j++, k++)
+      dots[k].style.background = (k < lit && (s < 3 || un)) ? cols[s] : '';
+    for (; k < DOTS_N; k++) dots[k].style.background = '';
+  }
   const v4BioName = v4NameEl ? (() => {
     const el = document.createElement('span');
     el.className = 'v4Name v4BioNm';
@@ -11860,7 +11918,7 @@
                        // Same problem: a class setMode would drop.
                        bioSph: false,
                        // the legend's fourth reading, on the bar's switch
-                       unclass: false,
+                       unclass: false, bioDots: false,
                        // Density: Dense on every surface, see denseOn
                        dense: false };
   // Every state control is a thing that is either on or off, so each becomes a
@@ -11875,7 +11933,7 @@
       // a switch stands for a thing being on or off; Desktop and Tablet M are
       // two named shells, and neither of them is the other one turned off --
       // nor are the library's two grains, Normal and Dense
-      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'bioSel' || sel.id === 'densSel')
+      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'bioSel' || sel.id === 'densSel' || sel.id === 'stGraph')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -11949,6 +12007,17 @@
   // and the constant is what is left of it: the static bands are one edit away.
   const BIO_CYCLE = true;
   let cycLast = -1;
+  // Bio graph: the arc (default) or the line of dots. A body class, kept in
+  // CARD_STATE so a page change does not drop it; the frame reads the flag.
+  const stGraphSel = document.getElementById('stGraph');
+  if (stGraphSel) stGraphSel.addEventListener('change', () => {
+    CARD_STATE.bioDots = stGraphSel.value === 'dots';
+    document.body.classList.toggle('bioDots', CARD_STATE.bioDots);
+    if (CARD_STATE.bioDots && v4BioAge){
+      [...v4BioAge.querySelector('.v4BioLeg').children].forEach(c => c.classList.remove('on'));
+      cycLast = -1;
+    }
+  });
   // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');
   // Three readings on one chain. An age is derived from biomarkers, and the
@@ -12361,6 +12430,16 @@
       // ...and the fade is the hero's too: everywhere else the arc is simply
       // there, because everywhere else every slide has a reading
       arcASvg.style.opacity = onHero ? arcFade.toFixed(3) : '1';
+      // Bio graph = Dots: on the biomarker slide the arc gives way to the line
+      // of dots, on the same swap the distribution rides (bioArc), the same
+      // hero fade, and the same left-to-right reveal once the slide lands.
+      if (v4DotsEl){
+        if (onHero && CARD_STATE.bioDots){
+          arcASvg.style.opacity = (arcFade * (1 - bioA)).toFixed(3);
+          v4DotsEl.style.opacity = (arcFade * bioA).toFixed(3);
+          paintDots(bioRev);
+        } else v4DotsEl.style.opacity = '0';
+      }
       // With no biological age the body slide has no scale, so the arc fades
       // out on the way to it rather than crossing into one: a change of
       // content inside a fade is a flicker, not a transition. Frozen on the
@@ -12402,7 +12481,7 @@
         // window stay at rest. Same window for the static bands and the
         // band's indicator, so the two readings agree.
         const n = Math.max(1, tickEls.length - 1);
-        const bs = bioSet(), un = CARD_STATE.unclass, cyc = BIO_CYCLE;
+        const bs = bioSet(), un = CARD_STATE.unclass, cyc = BIO_CYCLE && !CARD_STATE.bioDots;   // the dots carry the whole distribution
         const q1 = bs.optimal / bs.total, q2 = q1 + bs.sub / bs.total, q3 = Math.min(1, q2 + bs.out / bs.total);
         const W0 = 0.20, W1 = 0.80, bp = q => W0 + (W1 - W0) * q;   // "exclude the left 20% and right 20%"
         const SEG_COL = ['opt', 'sub', 'out', 'un'];

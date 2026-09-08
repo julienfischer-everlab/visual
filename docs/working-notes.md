@@ -3010,6 +3010,34 @@ starts at the 20% line rather than 25%, so the middle 60% is crisp and whole
 and the portions fill exactly it. Probed: the lit optimal portion runs from
 the first fully opaque tick; the desktop and tablet arcs keep the base fade.
 
+### 5.127 Bio graph: the arc, or a line of dots
+
+"Instead of the arc for the biomarker, maybe just dots -- a line of dots, filled
+with the colour of the ranges by percentage. A tweak: the arc by default, the
+dots the other one." A Bio graph row in the Tweaks dropdown, Arc / Dots, kept
+as a select (two named readings, so segmentise leaves it alone, as it does
+Density). Dots is a body class held in CARD_STATE.
+
+The dots are forty `<i>` in a flex row, space-between, the legend's width
+(--heroW less 48) at bottom 222px -- where the arc's ticks sit -- 6px each,
+resting at white 14% (black 12% on light). paintDots() gives each range its
+share of the forty by largest remainder, so the counts always sum to forty,
+and fills them left to right in the legend's order with the range variables;
+the unclassified take the range grey when shown and rest when folded in. It
+runs from the frame with the reveal fraction and only writes the DOM when the
+signature (state, theme, dots revealed) changes. The swap is the arc's own:
+on the biomarker slide the arc's opacity is arcFade x (1 - bioArc) and the
+dots' arcFade x bioArc, so the dots arrive as the distribution would have and
+the age scale is back on the organs; the reveal fraction is bioRev, so they
+fill left to right once the slide lands. With the dots the arc's status cycle
+stands down and the legend's columns all read at full.
+
+Probed (biodots.js): default Arc, dots display none; Dots: forty dots, 28 / 8
+/ 4 without the unclassified and 25 / 7 / 4 / 4 with, the arc at 0 and the
+dots at 1 on the biomarker slide, the reverse on an organ, back again on the
+return; the state and the select survive a page round trip; the light set on
+the light theme. Error, mode and arc-wrap probes clean.
+
 ---
 
 ## 6. Open items
