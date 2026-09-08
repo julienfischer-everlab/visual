@@ -2241,7 +2241,7 @@
      right, and only the selected row showed its age. The rule the design sets
      is one edge: the label, the dots and the names stand on it, and the pill
      stands the same distance outside it on either side. */
-  body.b5 .dash .olist .or{margin:0 -14px;padding:9px 14px;border-radius:999px;}
+  body.b5 .dash .olist .or{margin:0 -14px;padding:9px 14px;border-radius:12px;}   /* "less radius, 12px" */
   /* A wash is a relationship to what is behind it, so the two pages can only
      share a card colour if they share a ground. The dashboard's #0d0d0c goes
      black here, the way the phone's body is black on this page -- 13 levels,
@@ -2267,6 +2267,10 @@
   /* the longest row -- muscle + bone health, with its figure -- sets this: at
      the b3 width it wrapped onto two lines and broke the column's rhythm */
   body.b5 .dash .olist{width:238px;}
+  /* "display the list on the bottom, keep title on the top": the eyebrow stays
+     at the card's head and the list drops to its foot, the slack now above it,
+     inset from the bottom by what the eyebrow is from the top */
+  body.b5 .dash .olist{top:auto;bottom:24px;}
   /* The phone's light, on the card. The stops are the phone's exactly; only the
      geometry is restated, scaled off the card's width the way the phone's is off
      the screen's -- the circle is a little over twice as wide as what it sits on,
@@ -2347,6 +2351,9 @@
   body.b5 .dash .bcard .bcTop{gap:34px;}
   body.b5 .dash .bcard .b5On .big{color:#8b8b86;}
   body.light.b5 .dash .bcard .b5On .big{color:#9b8a75;}
+  /* "opacity -50%": the untested figure reads at half strength, a count of what
+     is missing standing back from the count of what is there */
+  body.b5 .dash .bcard .bcTop > .b5On:not(.bcGet){opacity:.5;}
   /* the card's one action, top right: an auto left margin rather than an
      absolute corner, so the figures keep their spacing whatever they turn
      out to be */
@@ -2358,6 +2365,8 @@
     transition:background .16s ease;
   }
   body.b5 .dash .bcard .bcGet:hover{background:rgba(255,255,255,.2);}
+  /* "remove": the card carries no action now; the figures keep their spacing */
+  body.b5 .dash .bcard .bcGet{display:none;}
   body.light.b5 .dash .bcard .bcGet{background:rgba(0,0,0,.06);color:#2e241c;}
   body.light.b5 .dash .bcard .bcGet:hover{background:rgba(0,0,0,.11);}
   /* the eyebrow reads at the biomarker card's size and in its grey, so the two
@@ -2370,6 +2379,15 @@
      the stack off its own offsetHeight, and a margin would grow that height and
      shunt the whole block back up by what it was just given. */
   body.b5 #arcA{transform:scale(.52) translateY(92px);margin:-24px 0 -46px;}
+  /* "edges of arc need to be blurred": at this scale the arc is wider than the
+     half of the card it sits in, so the base fade (clear by 4%, full at 30%)
+     was still a third strong where the card cut it off. The fade starts
+     inside the card and runs to the middle third, so the ends dissolve
+     before anything can clip them. */
+  body.b5 #arcA{
+    -webkit-mask-image:linear-gradient(to right,transparent 14%,#000 42%,#000 58%,transparent 86%);
+    mask-image:linear-gradient(to right,transparent 14%,#000 42%,#000 58%,transparent 86%);
+  }
   body.b5 #ageBig, body.b5 #status{transform:translateY(24px);}
   body.b5 #ageBig{height:86px;}
   body.b5 #ageBig .dcol, body.b5 #ageBig .agDash{font-size:57px;}
@@ -2377,7 +2395,7 @@
   /* the difference reads as a caption under the number, not a tag beside it,
      so it loses the pill and takes the phone's grey in both directions --
      older and younger say the same kind of thing here */
-  body.b5 #status{margin-top:4px;min-height:18px;}
+  body.b5 #status{margin-top:-8px;min-height:18px;}   /* was 4px: "reduce gap by 12px" */
   body.b5 #status .word,
   body.b5 #status.warn .word{
     display:block;font-size:13px;font-weight:400;letter-spacing:0;
@@ -3266,10 +3284,16 @@
   body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg{color:rgba(0,0,0,.55);}
   /* four readings where there were three: the design sets them two by two --
      Optimal and Suboptimal on one line, Out of range and Unclassified on the
-     next -- a two-column grid, centred, so the pairing holds at any width */
+     next, each line centred on its own -- so a break element after the second
+     item takes the whole row when the switch is on, and is nothing otherwise */
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg .legBrk{display:none;}
   body.unclass.v7 #mHeroOrgan .v4BioN .v4BioLeg{
-    display:grid;grid-template-columns:auto auto;justify-content:center;
-    row-gap:7px;column-gap:15px;
+    flex-wrap:wrap;justify-content:center;row-gap:7px;column-gap:15px;
+    width:280px;   /* the legend hangs off the number, whose width is the number's:
+                      absolutely positioned, it needs a width of its own to wrap in */
+  }
+  body.unclass.v7 #mHeroOrgan .v4BioN .v4BioLeg .legBrk{
+    display:block;flex:0 0 100%;height:0;margin:0;padding:0;
   }
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg span{display:flex;align-items:center;gap:5px;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg b{
@@ -8678,15 +8702,18 @@
     const pair = k => ' data-on="' + BIO_SETS.on[k] + '" data-off="' + BIO_SETS.off[k] + '"';
     el.innerHTML = '<i class="bioNum">' + BIO_N.total + '</i>' +
       '<span class="v4BioLeg">' +
-      '<span><b' + pair('optimal') + '>' + BIO_N.optimal + '</b><i style="background:#5cc47f"></i>' +
+      // dot, count, word -- the order the design's phone mocks read in
+      '<span><i style="background:#5cc47f"></i><b' + pair('optimal') + '>' + BIO_N.optimal + '</b>' +
       'Optimal</span>' +
-      '<span><b' + pair('sub') + '>' + BIO_N.sub + '</b><i style="background:#f2c744"></i>' +
+      '<span><i style="background:#f2c744"></i><b' + pair('sub') + '>' + BIO_N.sub + '</b>' +
       'Suboptimal</span>' +
-      '<span><b' + pair('out') + '>' + BIO_N.out + '</b><i style="background:#ef6f63"></i>' +
+      // with four readings the row breaks here, two and two, each line centred
+      '<i class="legBrk"></i>' +
+      '<span><i style="background:#ef6f63"></i><b' + pair('out') + '>' + BIO_N.out + '</b>' +
       'Out of range</span>' +
       // the fourth reading, shown by the Unclassified switch
-      '<span class="nsOnly"><b>' + BIO_SETS.on.un +
-      '</b><i class="nsDot"></i>Unclassified</span>' +
+      '<span class="nsOnly"><i class="nsDot"></i><b>' + BIO_SETS.on.un +
+      '</b>Unclassified</span>' +
       '</span>' +
       '<span class="v4BioEmpty">' +
       '<b>Discover what&rsquo;s happening inside your body</b>' +

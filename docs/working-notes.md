@@ -2709,6 +2709,33 @@ opens it; the desktop card's modal is untouched, as the request was the phone
 screen. Probed against HEAD: the same tap opened `oaModal` there and opens
 nothing now.
 
+### 5.114 Two lines, and a round of the desktop card
+
+The published hero legend put three items on the first line and the fourth
+alone on the second; "in 2 lines like this", with the mock: Optimal and
+Suboptimal, then Out of range and Unclassified, each line centred, and the dot
+before the count. The grid of 5.112 aligned columns rather than centring
+lines, so it goes: the legend is a wrapping flex row again, a zero-height
+break element after the second item takes the whole row when the switch is
+on and is display:none otherwise, and the items are reordered dot, count,
+word. One thing to know: the legend is absolutely positioned off the number,
+whose width is the number's, so without a width of its own Chrome's
+shrink-to-fit gave it half the parent and wrapped every item -- the 280px
+width is back for that reason, not for the pairing.
+
+Then five notes on the Desktop V5 organ card, each a line: the highlight pill
+on a 12px radius rather than fully round; the caption 12px closer under the
+number (status margin 4px -> -8px; the stack is bottom-aligned so the number
+comes down to meet it); the arc's ends blurred -- at scale .52 the arc is 343px
+in a half-card of 266, and the base mask (clear by 4%, full at 30%) was still a
+third strong where the card clipped it, so the b5 mask runs 14% -> 42%; the
+*Get test* action removed; the untested figure at half opacity. And the list
+moves to the foot of the card, the eyebrow staying at its head, inset 24px from
+the bottom as the eyebrow is from the top. Probed: list bottom = card bottom -
+24, age block down 12 with the caption where it was, button display none,
+figure opacity .5; modes and page errors none. The phone's own *Get test* and
+untested figure are as they were -- the screenshots were the desktop's.
+
 ---
 
 ## 6. Open items
