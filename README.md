@@ -1285,6 +1285,40 @@ That is five thousand dots a tile across nine tiles, and it took the page from
   rasteriser, was the bottleneck — but it is what makes the other three
   expressible.
 
+### Organs — Fine Grain, and the Density select
+
+The library carries a second collection of the same organs, **Organs — Fine
+Grain**, at exactly twice the particles of the Organ Library beside it. The
+**Density** select on the bar (Normal / Dense), shown on the library page only,
+switches between the two; the nav's two entries do the same, and either moves
+the other.
+
+Each fine-grain tile is the same component drawn from a second cloud: the
+organ's own builder run again at another size (`buildCloud` takes `{ count,
+amb, rnd }`), so every point is a fresh sample of the organ's own geometry —
+nothing is duplicated, nothing is jittered from the first set. The cloud holds
+twice the library's largest target with its strays behind it (`FINE_N`); the
+tile draws twice the body count the base tile actually draws, twice the strays
+(the cloud's own tail, all of it) and twice the flow, and shows the count on
+its card. The dot is drawn at 0.78 of the normal size with the same five sizes,
+the same opacity grid and the same three inks, so what changes is the grain,
+not the fill: a finer stipple over the same anatomy, every particle still its
+own dot. Exports run the same `paint()` as the tile, so the ↓ produces the
+fine-grain frame dot for dot, `-fine` in the filename.
+
+**Deterministic randomness, for the whole page.** The fine clouds carry their
+own seeded generator per organ (mulberry32), including their ink picks and
+size seeds, so a fine-grain illustration is one picture and not a new draw of
+one. And the page's `Math.random` is itself a seeded generator now: every
+cloud, ink pick, seed table and flow phase is drawn at start-up in one fixed
+order, so the Organ Library's counts stopped moving between loads (the gap
+solver iterates on whatever sample it is handed, and Brain read 10117 on one
+load and 11275 on the next). That is what lets "exactly twice" mean the same
+number every time. Verified: thirteen cards, every count doubled, identical
+across two loads; the fine panel repaints its clouds in six groups rather
+than three and runs at about half the normal library's frame rate under
+software rendering.
+
 ### The light theme has its own three inks
 
 For a long stretch the light theme drew the dark theme's palette and lifted

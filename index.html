@@ -59,6 +59,7 @@
      typed there loose. */
   .topbar .tkGrp{display:none;}
   body.v8 .topbar .tkGrp#bioGrp{display:contents;}
+  body.m7 .topbar .tkGrp#densGrp{display:contents;}   /* the library's two grains */
   body.archived .topbar .tkGrp#arcGrp{display:contents;}
   .topbar .tkBtn:hover{border-color:#3f3f46;}
   .topbar .tkBtn:active{background:#1c1c20;}
@@ -3384,6 +3385,17 @@
     <!-- Mobile V7 alone offers a choice of figure for the biological age. Same
          group treatment as Device: it exists where it applies and is out of the
          row everywhere else. -->
+    <!-- The library alone offers a second grain of the same organs: Normal is
+         the collection every surface draws, Dense the fine-grain set at twice
+         the particles. Same group treatment: in the row on the library page,
+         out of it everywhere else. -->
+    <span class="tkGrp" id="densGrp">
+      <span class="lbl">Density</span>
+      <select id="densSel" aria-label="Library density">
+        <option value="normal">Normal</option>
+        <option value="dense">Dense</option>
+      </select>
+    </span>
     <span class="tkGrp" id="bioGrp">
       <span class="lbl">Bio visual</span>
       <select id="bioSel" aria-label="Biological age visual">
@@ -4026,6 +4038,7 @@
   <aside class="olNav">
     <div class="olNavTitle">Library</div>
     <button class="olNavItem on" data-panel="organs" aria-current="page">Organ Library</button>
+    <button class="olNavItem" data-panel="fine">Organs &mdash; Fine Grain</button>
     <button class="olNavItem" data-panel="other">Other</button>
   </aside>
   <main class="olMain">
@@ -4042,6 +4055,22 @@
            or <strong>JPG</strong> with the background baked in.</p>
       </div>
       <div class="olGrid" id="olGrid"></div>
+    </section>
+    <section class="olPanel" data-panel="fine">
+      <div class="olHead">
+        <h1>Organs &mdash; Fine Grain</h1>
+        <p>The same organs at exactly twice the particles: a second cloud sampled
+           from each organ's own geometry with a fixed seed, so every point is new
+           and every render is the same. Slightly smaller dots, the same five sizes,
+           the same opacity grid, the same three inks &mdash; a finer stipple, not a
+           denser fill. Each card carries its actual count.</p>
+        <p class="olHint">The &#8595; in each visual's top-right corner exports the
+           frame on screen, dot for dot, no smaller than 1920&times;1920 and inked
+           for whichever theme the page is in &mdash; as
+           <strong>PNG</strong> or <strong>SVG</strong> on a transparent ground,
+           or <strong>JPG</strong> with the background baked in.</p>
+      </div>
+      <div class="olGrid" id="olFine"></div>
     </section>
     <section class="olPanel" data-panel="other">
       <div class="olHead">
@@ -4064,6 +4093,24 @@
 <script>
 (() => {
   'use strict';
+  // Deterministic randomness, for the whole page. Every cloud, every ink pick,
+  // every seed table and every flow phase is drawn at start-up through
+  // Math.random, in one fixed order; with a fixed generator behind it they
+  // come out the same on every load, so an illustration is one picture and not
+  // a new draw of one -- which is what lets the fine-grain library say "exactly
+  // twice" of a count that used to move by a thousand between two loads of the
+  // same page (the gap solver iterates on whatever sample it was handed). The
+  // fine-grain clouds carry their own seeded generators besides, so their
+  // pictures do not depend on what else the page drew first. mulberry32.
+  Math.random = (() => {
+    let a = 0x45564C42;   // 'EVLB'
+    return () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  })();
   const canvas = document.getElementById('field');
   // alpha:true so Card flip can layer sharp organs OVER the frosted cards
   // Three attempts, not one. `webgl` is the name every current browser
@@ -4441,7 +4488,8 @@
   // only because the three were far apart on it; the tweak bar can put any
   // three colours here, and two of them landing on the same side of a
   // threshold would have silently repainted a third of the cloud.
-  const inkOf = i => [INK_CSS, MID_CSS, LIT_CSS][INK_PICK[i % N]];
+  const INK_CSS_AT = k => [INK_CSS, MID_CSS, LIT_CSS][k];   // an ink index, as the painter's string
+  const inkOf = i => INK_CSS_AT(INK_PICK[i % N]);
   const toneA = t => Math.min(1.6, (0.36 * t[0] + 0.50 * t[1] + 0.14 * t[2]) / 0.72);
   // The flow layer runs at a flat 75% -- the one thing in the file brighter
   // than either ink. What is left varying on it is only what makes it a
@@ -4862,19 +4910,22 @@
   // substrate the signals run through, and a substrate that competes with them
   // is just a brighter fingerprint. The strays sit at the floor — present,
   // barely.
-  function fingerprintCloud(){
+  // `opts` as buildCloud takes it ({ count, rnd }), for the fine-grain library
+  function fingerprintCloud(opts){
     const cl = buildCloud(drawFingerprint, 7, 0.88, {s:1, x:0, y:0}, null,
-                          fingerprintDensity);
+                          fingerprintDensity, null, opts);
+    const n = cl.n || N, body = cl.n ? cl.n - cl.amb : N - AMB;
+    const rnd = (opts && opts.rnd) || Math.random;
     const k = cl.norm.k || 1;
-    for (let i = 0; i < N; i++){
-      if (i >= N - AMB){ cl.edge[i] = OP_LO; continue; }
+    for (let i = 0; i < n; i++){
+      if (i >= body){ cl.edge[i] = OP_LO; continue; }
       const x = cl.pos[i * 3] / k + cl.norm.cx;
       const y = -cl.pos[i * 3 + 1] / k + cl.norm.cy;
       const t = Math.min(1.3, FP_PAD.rad(x, y));
       // a rank, and mostly its own draw, so the print does not acquire a
       // bright core the organs no longer have; what is left of the falloff is
       // the impression lifting off at its edge, which is the shape's own idea
-      cl.edge[i] = opNormal(INK_PICK[i], Math.min(1, 0.55 * Math.random()
+      cl.edge[i] = opNormal(cl.ink ? cl.ink[i] : INK_PICK[i % N], Math.min(1, 0.55 * rnd()
                              + 0.45 * Math.max(0, 1 - Math.pow(t, 1.05))));
     }
     return cl;
@@ -5019,10 +5070,10 @@
   // The dilation needs the pupil's edge and the limbus in cloud units, and
   // measuring them off the sampled cloud is the only way they stay right when
   // anything about the drawing changes.
-  function irisCloud(){
-    const cl = buildCloud(drawIris, 10, 1.00, {s:1, x:0, y:0}, null, irisDensity);
+  function irisCloud(opts){
+    const cl = buildCloud(drawIris, 10, 1.00, {s:1, x:0, y:0}, null, irisDensity, null, opts);
     let lo = 1e9, hi = 0;
-    for (let i = 0; i < N - AMB; i++){
+    for (let i = 0, body = cl.n ? cl.n - cl.amb : N - AMB; i < body; i++){
       const r = Math.hypot(cl.pos[i * 3], cl.pos[i * 3 + 1]);
       if (r < lo) lo = r;
       if (r > hi) hi = r;
@@ -5039,25 +5090,26 @@
   function drawSphere(c){
     c.beginPath(); c.arc(170, 170, 150, 0, 6.2832); c.fill();
   }
-  function sphereCloud(){
-    const cl = buildCloud(drawSphere, 10, 1.00, {s:1, x:0, y:0});
+  function sphereCloud(opts){
+    const cl = buildCloud(drawSphere, 10, 1.00, {s:1, x:0, y:0}, null, null, null, opts);
+    const rnd = (opts && opts.rnd) || Math.random;
     // A ball sampled evenly through its volume projects brightest at the middle
     // and fades to nothing at the rim, which is a fog rather than an object. A
     // shell carries the edge and the volume fills the inside, so the boundary
     // stays where it is drawn and the middle still has depth in it.
     const R = 0.775;
-    for (let i = 0; i < N - AMB; i++){
+    for (let i = 0, body = cl.n ? cl.n - cl.amb : N - AMB; i < body; i++){
       const shell = (i % 20) < 9;
-      const u = Math.random();
+      const u = rnd();
       const r = shell ? R * (0.93 + 0.07 * u) : R * Math.cbrt(u) * 0.93;
-      const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
+      const th = rnd() * 6.2832, ph = Math.acos(rnd() * 2 - 1);
       cl.pos[i * 3]     = r * Math.sin(ph) * Math.cos(th);
       cl.pos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
       cl.pos[i * 3 + 2] = r * Math.cos(ph);
       // Mostly its own draw, with a trace of the shell left in it -- a ball
       // whose rim were the only strong thing in it would be the ring the
       // organs were just asked to stop drawing.
-      cl.edge[i] = opNormal(INK_PICK[i], Math.min(1, 0.60 * Math.random()
+      cl.edge[i] = opNormal(cl.ink ? cl.ink[i] : INK_PICK[i % N], Math.min(1, 0.60 * rnd()
                              + 0.40 * Math.pow(r / R, 3)));
     }
     // the shader draws the currents through the ball and needs its radius to
@@ -5326,7 +5378,16 @@
   // low-frequency field, so separate branches sit at separate depths and the
   // shape points in more than one direction; `hl` overrides the highlight
   // share, because the front of a volume is what says it is a volume.
-  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens, vol){
+  // `opts` is the fine-grain library's way in: { count, rnd }. `count` sizes
+  // the cloud (the engine's clouds are all N, the buffer's size; a cloud built
+  // for the 2D painter alone can be any size) and `rnd` replaces Math.random
+  // so the same seed builds the same cloud every time. The strays scale with
+  // the count, and a cloud built this way carries its own seed table, since
+  // the shared one is N long. Left out, everything is exactly as it was.
+  function buildCloud(draw, depthPx, sizeMul, tf, normRef, dens, vol, opts){
+    const n = (opts && opts.count) || N;
+    const amb = (opts && opts.amb) || ((opts && opts.count) ? Math.round(AMB * n / N) : AMB);
+    const rnd = (opts && opts.rnd) || Math.random;
     octx.save();
     octx.clearRect(0, 0, S, S);
     octx.fillStyle = '#fff'; octx.strokeStyle = '#fff';
@@ -5382,14 +5443,26 @@
       return 22;
     }
 
-    const out = new Float32Array(N * 3);
-    const edge = new Float32Array(N).fill(1);
-    const score = new Float32Array(N);
-    const front = new Float32Array(N);   // 1 at the near face of the volume
+    const out = new Float32Array(n * 3);
+    const edge = new Float32Array(n).fill(1);
+    const score = new Float32Array(n);
+    const front = new Float32Array(n);   // 1 at the near face of the volume
     // a standing turn about the vertical, for shapes that want a three-quarter
     const yaw = tf.yaw || 0, cyaw = Math.cos(yaw), syaw = Math.sin(yaw);
     const M = pts.length / 2;
-    for (let i = 0; i < N; i++){
+    // Which ink each particle carries. The engine's clouds read the shared
+    // INK_PICK, drawn once per load; a cloud built at its own size draws its
+    // own off the same generator as its positions, so the picture -- where a
+    // dot is, how big, which ink, how opaque -- is one seed's worth of choices
+    // and comes out the same on every load. Drawn before the positions so the
+    // sequence is fixed.
+    let inkL = null;
+    if (opts && opts.count){
+      inkL = new Uint8Array(n);
+      for (let i = 0; i < n; i++){ const r = rnd(); inkL[i] = r < INK_SHARE ? 0 : r < INK_SHARE + MID_SHARE ? 1 : 2; }
+    }
+    const inkAt = i => inkL ? inkL[i] : INK_PICK[i % N];
+    for (let i = 0; i < n; i++){
       // Not uniform, and not edge-biased either -- the two things this has
       // been in turn, and both read as a solid. Uniform density through a
       // silhouette IS a filled shape; what makes a volume look like one is
@@ -5445,7 +5518,7 @@
       // outline arrives broken rather than as a ring.
       let px = 0, py = 0, d = 22;
       for (let tries = 0; tries < 60; tries++){
-        const j = (Math.random() * M) | 0;
+        const j = (rnd() * M) | 0;
         px = pts[j * 2]; py = pts[j * 2 + 1];
         d = edgeDist(px, py);
         const n1 = vnoise(px / 34, py / 34);
@@ -5486,7 +5559,7 @@
         // gives 0.179 and 1.632. The mid volume (d = 8) goes 0.87 -> 0.97,
         // which is the thickness; boundary over core goes 2.93x -> 3.85x.
         const bulk = 0.179 + 1.632 * Math.exp(-d / 11.0);
-        if (Math.random() < (dens ? dens(px, py) : 1) * mask * bulk) break;
+        if (rnd() < (dens ? dens(px, py) : 1) * mask * bulk) break;
       }
       // Structural importance, raw. `d` is the distance to the nearest boundary
       // in the mask — the silhouette and every internal structure alike, since
@@ -5509,8 +5582,8 @@
       // back are further apart and the perspective in the shader has more to
       // work with on every organ, the nerve's branches included.
       const zmax = depthPx * 1.75 * Math.sqrt(d / 22);
-      let X = (px - cx + (Math.random() - 0.5) * 2) * s * tf.s;
-      const Y = -(py - cy + (Math.random() - 0.5) * 2) * s * tf.s;
+      let X = (px - cx + (rnd() - 0.5) * 2) * s * tf.s;
+      const Y = -(py - cy + (rnd() - 0.5) * 2) * s * tf.s;
       // Uniform through the section, not skewed to its surface. It used to be
       // `zsign * zmax * rand^0.3`, which puts most particles near +zmax or
       // -zmax and few between -- two shells with a gap, and that is exactly how
@@ -5521,7 +5594,7 @@
       // provides on its own and paying for it with a hole in the middle. The
       // noise-displaced z that used to follow here -- whole regions pushed
       // forward or back -- is gone too: it read as a warp rather than as depth.
-      let Z = (Math.random() * 2 - 1) * zmax * s * tf.s;
+      let Z = (rnd() * 2 - 1) * zmax * s * tf.s;
       if (yaw){ const nx = X * cyaw + Z * syaw; Z = -X * syaw + Z * cyaw; X = nx; }
       out[i * 3] = X + tf.x; out[i * 3 + 1] = Y + tf.y; out[i * 3 + 2] = Z;
       // What a particle's opacity is worth. Mostly its own draw, so opacity
@@ -5541,7 +5614,7 @@
       const zSpan = 0.62 * s * tf.s + 1e-6;
       front[i] = Math.min(1, Math.max(0, 0.5 + 0.5 * (Z / zSpan)));
       const zN = Math.min(1, Math.abs(Z) / zSpan);
-      score[i] = 0.45 * Math.random()
+      score[i] = 0.45 * rnd()
                + 0.40 * (1 - zN)
                + 0.15 * Math.exp(-d / 5.5);
     }
@@ -5550,7 +5623,7 @@
     // fraction of even the bottom of their ink's range, which is what
     // "floating outside the organ" has to mean once opacity is the only
     // variable describing where a particle is.
-    for (let i = N - AMB; i < N; i++){
+    for (let i = n - amb; i < n; i++){
       // Authored on the grid like everything else, and with a spread rather
       // than one value: a field of strays reads as a cosmos when a few are
       // clearly there and most are barely, and as dirt when they are all the
@@ -5563,9 +5636,9 @@
       // the strays were asked for at +25%. Same place as BRIGHT, before the
       // snap, for the same reason -- on the grid a lift applied after rounding
       // would move only the values that happened to sit near a step.
-      edge[i] = opSnap(BRIGHT * AMB_A * (0.10 + 0.15 * Math.pow(Math.random(), 1.8)));
-      const r = (0.55 + Math.random() * 0.75) * tf.s;
-      const th = Math.random() * 6.2832, ph = Math.acos(Math.random() * 2 - 1);
+      edge[i] = opSnap(BRIGHT * AMB_A * (0.10 + 0.15 * Math.pow(rnd(), 1.8)));
+      const r = (0.55 + rnd() * 0.75) * tf.s;
+      const th = rnd() * 6.2832, ph = Math.acos(rnd() * 2 - 1);
       out[i * 3]     = r * Math.sin(ph) * Math.cos(th) + tf.x;
       out[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th) * 0.8 + tf.y;
       out[i * 3 + 2] = r * Math.cos(ph) * 0.6;
@@ -5577,7 +5650,7 @@
     // decides the VALUES, and neither can drift from the other. `edge` ends up
     // holding a rank in 0..1; the ink it lands on decides the range that rank
     // is spent over, which is why this cannot be an opacity yet.
-    const M2 = N - AMB;
+    const M2 = n - amb;
     // The 5% that carry the front of the volume. Chosen for frontness, but
     // with enough of their own draw in it that they do not condense into a
     // sheet at the near face -- that would be a surface, and a surface is the
@@ -5588,7 +5661,7 @@
     // rather than evenly scattered -- an even scatter of bright dots is the
     // definition of glitter
     for (let i = 0; i < M2; i++){
-      hl[i] = 0.34 * Math.random() + 0.44 * front[i]
+      hl[i] = 0.34 * rnd() + 0.44 * front[i]
             + 0.22 * vnoise(out[i * 3] * 9 + 3.7, out[i * 3 + 1] * 9 + 5.1);
     }
     const byHl = Array.from({ length: M2 }, (_, i) => i).sort((a, b) => hl[b] - hl[a]);
@@ -5608,12 +5681,31 @@
     rest.sort((a, b) => score[a] - score[b]);
     for (let k = 0; k < rest.length; k++){
       const i = rest[k];
-      edge[i] = opNormal(INK_PICK[i], rest.length > 1 ? k / (rest.length - 1) : 0);
+      edge[i] = opNormal(inkAt(i), rest.length > 1 ? k / (rest.length - 1) : 0);
     }
     // mask coverage: how much silhouette this shape actually occupies
     let area = 0;
     for (let i = 0; i < S * S; i++) area += mask[i];
-    return { pos: out, edge, area, s, norm: { cx, cy, k: s * tf.s, tx: tf.x, ty: tf.y } };
+    const cl = { pos: out, edge, area, s, norm: { cx, cy, k: s * tf.s, tx: tf.x, ty: tf.y } };
+    if (inkL) cl.ink = inkL;
+    if (opts && opts.count){
+      // A cloud of its own size carries its own seed table -- the same five
+      // sizes, the same negative flag on the strays -- since the shared one is
+      // N long and the painter reads grain off it. Off the same generator, so
+      // the grain is as deterministic as the positions.
+      cl.n = n; cl.amb = amb;
+      cl.seeds = new Float32Array(n * 4);
+      for (let i = 0; i < n; i++){
+        cl.seeds[i * 4] = rnd();
+        cl.seeds[i * 4 + 1] = rnd() * 6.2832;
+        cl.seeds[i * 4 + 2] = rnd();
+        const sz = rnd();
+        cl.seeds[i * 4 + 3] = DOT_BASE * (sz < 0.18 ? 0.70 : sz < 0.42 ? 0.85
+                                        : sz < 0.72 ? 1.00 : sz < 0.90 ? 1.15 : 1.30);
+      }
+      for (let i = n - amb; i < n; i++) cl.seeds[i * 4 + 3] = -(AMB_MUL * DOT_BASE * (0.70 + rnd() * 0.60));
+    }
+    return cl;
   }
 
   // faint outline of the body, sampled from the silhouette's edge only
@@ -5660,14 +5752,17 @@
     // "now the brain looks flat". Gone. Both take the shared law now -- a
     // rounded section, thin at the silhouette and deepest in the middle -- and
     // keep only the extra share of highlights.
-    { label: 'Brain',   cloud: () => buildCloud(drawBrain,   52, 1.00, {s:1, x:0, y:0}, null, null,
-                                  { hl: 0.16 }), x:0, y:0, r:0.78 },
+    // Every builder takes the same optional `o` ({ count, rnd }, see buildCloud)
+    // so the fine-grain library can ask each organ for a second cloud at
+    // another size off a fixed seed; the engine calls them with nothing.
+    { label: 'Brain',   cloud: o => buildCloud(drawBrain,   52, 1.00, {s:1, x:0, y:0}, null, null,
+                                  { hl: 0.16 }, o), x:0, y:0, r:0.78 },
     // A shape made of thin branches: the constant-gap target that suits a
     // filled organ leaves a dendrite reading as a dotted line rather than a
     // limb, so it takes 30% more than the gap alone asks for.
-    { label: 'Nerves',  cloud: () => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}, null, null,
-                                  { hl: 0.16 }), x:0, y:0, r:0.78, dots: 1.30 },
-    { label: 'Lungs',   cloud: () => buildCloud(drawLungs,   46, 1.02, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Nerves',  cloud: o => buildCloud(drawNeuron,  46, 1.00, {s:1, x:0, y:0}, null, null,
+                                  { hl: 0.16 }, o), x:0, y:0, r:0.78, dots: 1.30 },
+    { label: 'Lungs',   cloud: o => buildCloud(drawLungs,   46, 1.02, {s:1, x:0, y:0}, null, null, null, o), x:0, y:0, r:0.78 },
     // 0.88 was the smallest sizeMul of any filled organ, and it is why the
     // heart kept reading as the weak one. Measured across the library tiles it
     // was the DENSEST organ per unit of its own bounding box (frac 0.486,
@@ -5677,12 +5772,12 @@
     // the same, so a sizeMul under 1 is a deliberate shrink on top of that.
     // 1.00 gives it (1/0.88)^2 = 1.29x the area, and the dot count follows the
     // area, so it gains the particles to fill it rather than being stretched.
-    { label: 'Heart',   cloud: () => buildCloud(drawHeart,   55, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
-    { label: 'Cells',   cloud: () => buildCloud(drawCells,   42, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
-    { label: 'Bone',    cloud: () => buildCloud(drawBone,    24, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
-    { label: 'Gut',     cloud: () => buildCloud(drawGut,     30, 1.00, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
-    { label: 'Liver',   cloud: () => buildCloud(drawLiver,   42, 0.95, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
-    { label: 'Kidneys', cloud: () => buildCloud(drawKidneys, 34, 0.90, {s:1, x:0, y:0}), x:0, y:0, r:0.78 },
+    { label: 'Heart',   cloud: o => buildCloud(drawHeart,   55, 1.00, {s:1, x:0, y:0}, null, null, null, o), x:0, y:0, r:0.78 },
+    { label: 'Cells',   cloud: o => buildCloud(drawCells,   42, 1.00, {s:1, x:0, y:0}, null, null, null, o), x:0, y:0, r:0.78 },
+    { label: 'Bone',    cloud: o => buildCloud(drawBone,    24, 1.00, {s:1, x:0, y:0}, null, null, null, o), x:0, y:0, r:0.78 },
+    { label: 'Gut',     cloud: o => buildCloud(drawGut,     30, 1.00, {s:1, x:0, y:0}, null, null, null, o), x:0, y:0, r:0.78 },
+    { label: 'Liver',   cloud: o => buildCloud(drawLiver,   42, 0.95, {s:1, x:0, y:0}, null, null, null, o), x:0, y:0, r:0.78 },
+    { label: 'Kidneys', cloud: o => buildCloud(drawKidneys, 34, 0.90, {s:1, x:0, y:0}, null, null, null, o), x:0, y:0, r:0.78 },
     // Slot 9 is what the Biological Age carousel and the Body row select, so
     // the print keeps it: renumbering would rewire everything written against
     // an organ index. No yaw — a print is a flat impression and has to stay
@@ -5690,7 +5785,7 @@
     { label: 'Fingerprint', cloud: fingerprintCloud, x:0, y:0, r:0.82 },
     // And the human body stays in the system as its own asset: it is what the
     // biomarker slide shows, and the two are a step apart in the carousel.
-    { label: 'Body',    cloud: () => buildCloud(drawBody, 40, 1.04, {s:1, x:0, y:0, yaw:0.17}, null, bodyDensity), x:0, y:0, r:0.82 },
+    { label: 'Body',    cloud: o => buildCloud(drawBody, 40, 1.04, {s:1, x:0, y:0, yaw:0.17}, null, bodyDensity, null, o), x:0, y:0, r:0.82 },
     // An exploration, not a selection: nothing in the product picks it, so it
     // shows up as a tile in the library and nowhere else until it is asked for.
     // r 0.78 like the organs, not 0.80: the camera frames to r, so a wider one
@@ -9284,7 +9379,7 @@
   // points sorted, a neighbour further away in x than the best distance so far
   // cannot beat it, so each point only ever looks at the handful around it.
   function dotGap(cl, target){
-    const idx = cloudIdx(target);
+    const idx = cloudIdx(target, cl);
     const n = idx.length;
     const xs = new Float64Array(n), ys = new Float64Array(n);
     for (let k = 0; k < n; k++){ xs[k] = cl.pos[idx[k] * 3]; ys[k] = cl.pos[idx[k] * 3 + 1]; }
@@ -9336,8 +9431,11 @@
   // a designer-set dot count, corrected for the shape it is being spent on
   function shapeTarget(cl, base){
     dotTarget(cl);
-    return Math.max(60, Math.min(N - AMB, Math.round(base * cl._k)));
+    return Math.max(60, Math.min(bodyN(cl), Math.round(base * cl._k)));
   }
+  // how many body particles a cloud has to draw from: the buffer's N - AMB for
+  // the engine's clouds, its own count for one built at another size
+  const bodyN = cl => (cl && cl.n ? cl.n - cl.amb : N - AMB);
   // Which of the cloud's particles a given dot count uses. A fractional stride,
   // not an integer step: stepping by ceil() only ever yields 8650/1, /2, /3 …
   // so the reachable counts jump in coarse increments and a density target can
@@ -9349,17 +9447,21 @@
   // identical set with one `drawArrays(0, k)`. A stride cannot be expressed as
   // a contiguous range, which is the whole reason the two renderers used to
   // show different numbers of the same organ.
-  function cloudIdx(target){
-    const count = organN(target);
+  function cloudIdx(target, cl){
+    const count = organN(target, cl);
     const idx = new Int32Array(count);
     for (let k = 0; k < count; k++) idx[k] = k;
     return idx;
   }
-  const organN = t => Math.max(1, Math.min(N - AMB, Math.round(t)));
+  const organN = (t, cl) => Math.max(1, Math.min(bodyN(cl), Math.round(t)));
   function samplePts(cl, id, target){
     const key = id + '@' + target;
     if (pts2DCache[key]) return pts2DCache[key];
-    const idx = cloudIdx(target);
+    const idx = cloudIdx(target, cl);
+    // a cloud built at its own size carries its own seed table (buildCloud);
+    // the drift phases come off it too, so a fine-grain tile is the same
+    // picture on every load rather than a new drift each time
+    const sd = cl.seeds || seeds;
     const pts = [];
     for (let k = 0; k < idx.length; k++){
       const i = idx[k];
@@ -9367,11 +9469,12 @@
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1], z: cl.pos[i * 3 + 2],
         // the same three sizes the engine draws, off the same seed rather than
         // a modulo pattern of its own -- one source of truth for grain too
-        r: Math.abs(seeds[i * 4 + 3]) * 1.30,
+        r: Math.abs(sd[i * 4 + 3]) * 1.30,
         a: cl.edge[i],          // already on the grid, already the opacity
-        c: inkOf(i),
-        ph: Math.random() * 6.28, sp: 0.5 + Math.random(),
-        sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]   // the shader's own phases
+        c: cl.ink ? INK_CSS_AT(cl.ink[i]) : inkOf(i),   // a seeded cloud carries its own pick
+        ph: cl.seeds ? sd[i * 4] * 6.28 : Math.random() * 6.28,
+        sp: cl.seeds ? 0.5 + sd[i * 4 + 2] : 0.5 + Math.random(),
+        sy: sd[i * 4 + 1], sz: sd[i * 4 + 2]   // the shader's own phases
       });
     }
     return (pts2DCache[key] = pts);
@@ -9385,15 +9488,19 @@
   function ambPts2D(cl, id){
     if (ambCache[id]) return ambCache[id];
     const pts = [];
-    for (let i = N - AMB; i < N - AMB + AMB_VIEW; i++){
+    // a cloud of its own size keeps its strays at its own tail, and shows them
+    // all -- the fine-grain set has twice as many, and shows twice as many
+    const base = bodyN(cl), sd = cl.seeds || seeds;
+    const show = cl.n ? cl.amb : AMB_VIEW;
+    for (let i = base; i < base + show; i++){
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
         // the same three sizes the engine draws, off the same seed rather than
         // a modulo pattern of its own -- one source of truth for grain too
-        r: Math.abs(seeds[i * 4 + 3]) * 1.30,
+        r: Math.abs(sd[i * 4 + 3]) * 1.30,
         a: cl.edge[i],
-        c: inkOf(i),
-        sy: seeds[i * 4 + 1], sz: seeds[i * 4 + 2]
+        c: cl.ink ? INK_CSS_AT(cl.ink[i]) : inkOf(i),
+        sy: sd[i * 4 + 1], sz: sd[i * 4 + 2]
       });
     }
     return (ambCache[id] = pts);
@@ -9632,6 +9739,9 @@
       // was picked and its dots are finer, so a stream of 120 the same size
       // reads as a few more particles rather than as a stream.
       flowN: opts.flowN || 200,
+      // how many groups a dense tile's cloud repaint is dealt into (frame());
+      // the fine-grain tiles, at twice the dots, take twice the groups
+      slots: opts.slots || DENSE_SLOTS,
       alpha: opts.alpha != null ? opts.alpha : 1,
       canvas: c,
       setOrgan(i){
@@ -9682,7 +9792,7 @@
         let slot = true;
         if (dense){
           if (view._slot === undefined) view._slot = denseSeq++;
-          slot = (denseTick + view._slot) % DENSE_SLOTS === 0;
+          slot = (denseTick + view._slot) % view.slots === 0;
         }
         // Backing-store scale. Two is the right answer for a visual of a few
         // hundred dots, where the dots are large enough for the extra samples
@@ -10453,6 +10563,10 @@
     const items = [].slice.call(lib.querySelectorAll('.olNavItem'));
     const panels = [].slice.call(lib.querySelectorAll('.olPanel'));
     const main = lib.querySelector('.olMain');
+    // The bar's Density control and the nav's two organ entries are one
+    // choice said twice: Normal is the Organ Library, Dense is Organs -- Fine
+    // Grain. Either one moves the other.
+    const densSel = document.getElementById('densSel');
     items.forEach(btn => btn.addEventListener('click', () => {
       const want = btn.dataset.panel;
       items.forEach(b2 => {
@@ -10461,9 +10575,16 @@
         if (on) b2.setAttribute('aria-current', 'page'); else b2.removeAttribute('aria-current');
       });
       if (want === 'other') buildMilestones();
+      if (want === 'fine') buildFine();
       panels.forEach(pn => pn.classList.toggle('on', pn.dataset.panel === want));
+      if (densSel && (want === 'organs' || want === 'fine')) densSel.value = want === 'fine' ? 'dense' : 'normal';
       main.scrollTop = 0;   // each section starts at its own top
     }));
+    if (densSel) densSel.addEventListener('change', () => {
+      const want = densSel.value === 'dense' ? 'fine' : 'organs';
+      const btn = items.find(b => b.dataset.panel === want);
+      if (btn) btn.click();
+    });
   })();
   // ---- milestone visuals: the health journey, on the same body ----
   // One torso cloud shared by all three; each stage differs by the accent layer
@@ -10545,6 +10666,7 @@
     });
   }
 
+  const libViews = [];   // the Organ Library's tiles, by organ index: the fine-grain set doubles these
   (function buildLibrary(){
     const grid = document.getElementById('olGrid');
     if (!grid) return;
@@ -10565,9 +10687,73 @@
         target: Math.round(fullTarget(clouds[i]) * (o.dots || 1)), fill: 0.46, dot: 1.0,
         name: String(i).padStart(2, '0') + '-' + o.label
       });
+      libViews[i] = v;
       cell.querySelector('.olPts').textContent = v.dotCount() + ' pts';
     });
   })();
+  // ---- Organs -- Fine Grain: the same organs at exactly twice the particles ----
+  // A second cloud per organ, sampled from the organ's own geometry by the same
+  // builder, at a size that holds twice the library's largest target, off a
+  // fixed seed per organ so every point is new and every render is the same.
+  // The tile is the same component drawn from that cloud: twice the body
+  // target, twice the strays (the cloud's own tail, all of it), twice the flow,
+  // and the dot a little smaller -- a finer stipple over the same anatomy, not
+  // a denser fill. Built on first view, like the milestones.
+  //
+  // The size: the body prefix has to hold 2 x 11800 (the cap fullTarget can
+  // reach, for the iris and the sphere) with the strays' tail behind it, and
+  // 2N - 2AMB is 23090, five hundred short -- so 2N + 512, and the tail scales.
+  const FINE_N = 2 * N + 512;
+  // "slightly smaller": the five sizes and their spread stay, scaled down a
+  // fifth or so -- the reference is a very fine, even stipple with every grain
+  // still its own dot, so smaller rather than fainter, and never so small that
+  // a dot stops being one (the painter draws a rect under 2.4 backing px)
+  const FINE_DOT = 0.78;
+  // mulberry32, seeded per organ: small, fast, and the same sequence everywhere
+  function seeded(seed){
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const fineClouds = [];
+  const fineViews = [];
+  function buildFine(){
+    const grid = document.getElementById('olFine');
+    if (!grid || grid.dataset.built) return;
+    grid.dataset.built = '1';
+    ORGANS.forEach((o, i) => {
+      const base = libViews[i];
+      if (!base) return;
+      // exactly twice the strays, and exactly twice the body the base tile
+      // actually draws (its target, capped by the buffer as organN caps it)
+      const cl = fineClouds[i] || (fineClouds[i] = o.cloud({ count: FINE_N, amb: 2 * AMB, rnd: seeded(0x9E3779B9 ^ (i * 0x85EBCA6B)) }));
+      const cell = document.createElement('div');
+      cell.className = 'olCell';
+      cell.innerHTML =
+        '<div class="olStage"></div>' +
+        '<div class="olIdx">' + String(i).padStart(2, '0') + '</div>' +
+        '<div class="olName">' + o.label + '</div>' +
+        '<div class="olSpec"><span class="olPts"></span> <span class="olFine">&middot; 2&times; fine grain</span></div>';
+      grid.appendChild(cell);
+      // the same options as the base tile, doubled where they count: the body
+      // target, and the flow (the strays double through the cloud's own tail)
+      const v = makeOrganView(cell.querySelector('.olStage'), i, {
+        cloud: cl, key: 'fg' + i,
+        target: 2 * organN(base.target, clouds[i]), fill: 0.46, dot: FINE_DOT,
+        flowN: base.flowN * 2,
+        // twice the dots to paint, so the cloud repaints in twice as many
+        // groups; the flow overlay still moves every frame
+        slots: DENSE_SLOTS * 2,
+        name: String(i).padStart(2, '0') + '-' + o.label + '-fine'
+      });
+      fineViews[i] = v;
+      cell.querySelector('.olPts').textContent = v.dotCount() + ' pts';
+    });
+  }
   const organSheets = [];   // every organ-age modal, so an age change reaches all
   // What each organ's age is actually describing, in the modal's own voice.
   const AGE_DESC = {
@@ -11374,8 +11560,9 @@
     for (const sel of document.querySelectorAll('.tweaks select')){
       const opts = [...sel.options];
       // a switch stands for a thing being on or off; Desktop and Tablet M are
-      // two named shells, and neither of them is the other one turned off
-      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'bioSel')
+      // two named shells, and neither of them is the other one turned off --
+      // nor are the library's two grains, Normal and Dense
+      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'bioSel' || sel.id === 'densSel')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';

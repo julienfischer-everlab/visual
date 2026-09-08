@@ -2542,6 +2542,60 @@ and the flagged hash when the flag is on. Probed at 390×844 (`viewport.js`):
 by hash, `#phone` is 0,0,390,844 with the bar hidden; by menu, the same with
 the bar showing; picking Mobile again or any other hash takes the flag off.
 
+### 5.108 Organs -- Fine Grain: twice the particles, the same picture every time
+
+The brief: a second collection in the library at exactly twice each organ's
+particles, sampled from the organ's geometry rather than duplicated, dots a
+little smaller with the same variation, anatomy and framing kept, particles
+distinct, palette and themes kept, the card layout and export reused, the
+count shown, deterministic, verified side by side, responsive. Plus a Density
+select, Normal / Dense.
+
+The cloud builder took the count. `buildCloud(..., opts)` with `{ count, amb,
+rnd }`: `n` in place of N, `amb` in place of AMB, `rnd()` in place of every
+Math.random, INK_PICK read modulo N -- and a cloud built this way carries its
+own seed table (the five sizes, the strays' negative flag) and its own ink
+picks, drawn off the same generator before the positions so the sequence is
+fixed. The three custom builders (fingerprint, iris, sphere) take the same
+option and read the cloud's own body count. The painter's caps went per-cloud
+(`bodyN(cl)`), and both samplers read the cloud's seed and ink tables when it
+has them. Left out, everything is exactly as it was: the engine's clouds are
+still N, still off the shared tables.
+
+The size: the body prefix must hold twice the library's largest target (11800,
+the iris and the sphere) with the strays behind it, and 2N - 2AMB is 23090 --
+five hundred short -- so FINE_N = 2N + 512, with the strays pinned at 2 x AMB
+so the count doubles exactly rather than by ratio. The tile: the same options
+as the base tile with the body target at twice what the base tile actually
+draws (its target through `organN`, which caps it), the flow at twice, the dot
+at 0.78, and the repaint dealt into six groups instead of three.
+
+Two things bit. The Density select came out as an on/off switch: the bar turns
+every two-option select into a toggle (`segmentise`), and Normal is not Dense
+turned off, so it joins the version and bio-visual selects in the exemption.
+And "exactly twice" of a count that was not itself stable: the Organ Library's
+counts moved by up to a thousand between two loads of the same page (Brain
+10117, then 11275), because `dotTarget` iterates its gap solver on whatever
+random sample it is handed. So the page's Math.random is a seeded mulberry32
+now -- every start-up draw in one fixed order -- and both collections read the
+same on every load; the fine clouds have their own generators on top, so their
+pictures do not depend on what else the page drew first.
+
+Verified (`finegrain.js`, `finestable2.js`): thirteen cards, every fine count
+exactly twice its base card's (Brain 10398 -> 20796 ... Sphere 12245 ->
+24490); counts identical across two loads, both collections; the SVG export of
+a fine tile identical across two loads except sub-pixel drift from a frame's
+difference in the fake clock; the PNG export a 2540x1920 file named
+`00-brain-fine-dark-...`; the Density select and the nav move each other; the
+fine panel at 17 fps under software rendering against the normal library's
+33, with the cloud repaint in six groups (it was 11 fps in three). By eye at
+2x: the heart at fine grain is the same heart, finer and denser, every dot its
+own.
+
+Not attached: the brief's reference screenshot arrived afterwards ("inspi") --
+a very fine, even stipple with every grain still a dot -- and the dot went from
+0.82 to 0.78 of normal on the strength of it.
+
 ---
 
 ## 6. Open items
