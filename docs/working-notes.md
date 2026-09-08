@@ -2944,6 +2944,34 @@ without the unclassified and 0-37 / 38-47 / 48-54 / 55-60 with, the `on` class
 on the matching column each time; off, the static bands and every column at
 full opacity. Arc-wrap, error and all-arcs probes clean.
 
+### 5.124 The portion grows in; the middle 70%; no switch
+
+"The portion should grow and be revealed from left to right." The arriving
+status no longer fades up as a block: the leaving one fades out over 200ms,
+then the arriving one's front travels from its left end to its right over
+450ms (eased), a soft edge a tick and a half wide, so the portion is drawn in
+the way the reveal draws the bands when the slide lands. Still one colour on
+the arc at any moment.
+
+"For biomarkers don't consider the first 15% and last 15% of the portion, as
+we don't see anything." True: the side fade is clear by 4% and full at 30%,
+and the end blur sits on the outer quarter, so a share laid on the whole
+scale lost its ends. The panel is laid onto the middle 70% now -- a share q
+sits at 0.15 + 0.70 q -- for the cycle, the static bands and the band's
+indicator alike, and the ticks outside the window stay at rest.
+
+"Remove the action on the ranges on biomarkers, the animation should run
+without interaction from the user." The Arc cycle row goes: the cycle runs on
+the hero on its own, and BIO_CYCLE (a constant) is what is left of the switch,
+so the static bands are one edit away rather than a rebuild. The legend's
+column rules, which hung off the tweak's body class, are unconditional.
+
+Probed (arcsweep.js), sampled every ~50ms across a change: the unclassified
+portion (ticks 48-50, 0.80-0.83) fades, the column class moves, then the
+optimal portion grows 9 -> 34 (0.15 -> 0.57) over about 450ms and holds; never
+more than one colour; nothing lit below 0.15 or above 0.85. Arc-wrap and error
+probes clean.
+
 ---
 
 ## 6. Open items

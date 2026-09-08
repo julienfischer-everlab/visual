@@ -98,9 +98,6 @@
     padding:7px 10px;border-radius:8px;
   }
   .topbar .tkRow:hover{background:#1c1c20;}
-  /* a row that applies to the phone's hero alone is in the list only there */
-  .topbar .tkRow.tkMobile{display:none;}
-  body.v7 .topbar .tkRow.tkMobile{display:flex;}
   .topbar .tkRow .lbl{color:#e4e4e7;white-space:nowrap;}
   .topbar .seg{
     display:flex;gap:2px;border:1px solid #232326;background:#131316;
@@ -3341,16 +3338,16 @@
   /* Arc cycle: the column whose status the arc is lighting comes forward --
      count in full ink, word brighter -- and the others step back, on the arc's
      own 350ms. The class is set by the frame as the arc changes state. */
-  body.arcCyc.v7 #mHeroOrgan .v4BioN .v4BioLeg > span{
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span{
     opacity:.5;transition:opacity .35s ease;
   }
-  body.arcCyc.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on{opacity:1;}
-  body.arcCyc.v7 #mHeroOrgan .v4BioN .v4BioLeg > span b,
-  body.arcCyc.v7 #mHeroOrgan .v4BioN .v4BioLeg > span small{transition:color .35s ease;}
-  body.arcCyc.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on b{color:#fff;}
-  body.arcCyc.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on small{color:rgba(255,255,255,.82);}
-  body.light.arcCyc.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on b{color:#000;}
-  body.light.arcCyc.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on small{color:rgba(0,0,0,.82);}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on{opacity:1;}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span b,
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span small{transition:color .35s ease;}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on b{color:#fff;}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on small{color:rgba(255,255,255,.82);}
+  body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on b{color:#000;}
+  body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on small{color:rgba(0,0,0,.82);}
   /* The age strip's side fade is a mask, and a mask clips at its box: at the
      64px figure a one-line legend already ran 5px past the strip, and a second
      line hung wholly below it and was simply not drawn. So the strip is 40px
@@ -3572,17 +3569,6 @@
           <select id="stAct" aria-label="Activity card state">
             <option value="on">Completed</option>
             <option value="empty">Empty</option>
-          </select>
-        </div>
-        <!-- Mobile only: the biomarker arc lights one status at a time -- each
-             its own portion of the scale, in its own colour, the rest of the
-             arc at rest -- two seconds each with a soft crossfade, and the
-             legend's matching column comes forward with it. -->
-        <div class="tkRow tkMobile">
-          <span class="lbl">Arc cycle</span>
-          <select id="stCyc" aria-label="Biomarker arc status cycle">
-            <option value="on" selected>Cycling</option>
-            <option value="off">Static</option>
           </select>
         </div>
       </div>
@@ -8120,7 +8106,6 @@
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.unclass ? ' unclass' : '') +
-      (CARD_STATE.arcCyc ? ' arcCyc' : '') +
       (CARD_STATE.dense ? ' dense' : '') +
       // the same rule for the figure: only Mobile V7 offers the choice, so
       // only Mobile V7 wears it
@@ -11866,7 +11851,7 @@
                        // Same problem: a class setMode would drop.
                        bioSph: false,
                        // the legend's fourth reading, on the bar's switch
-                       unclass: false, arcCyc: true,
+                       unclass: false,
                        // Density: Dense on every surface, see denseOn
                        dense: false };
   // Every state control is a thing that is either on or off, so each becomes a
@@ -11950,19 +11935,10 @@
   }
   const stUnSel = document.getElementById('stUn');
   if (stUnSel) stUnSel.addEventListener('change', () => applyUnclass(stUnSel.value === 'on'));
-  // Arc cycle (mobile): the biomarker arc lights one status at a time. A flag
-  // the arc reads each frame, and a body class kept in CARD_STATE. On by
-  // default -- it is the design's frames -- and the row is where to still it.
-  const stCycSel = document.getElementById('stCyc');
-  if (stCycSel) stCycSel.addEventListener('change', () => {
-    CARD_STATE.arcCyc = stCycSel.value === 'on';
-    document.body.classList.toggle('arcCyc', CARD_STATE.arcCyc);
-    if (!CARD_STATE.arcCyc){
-      const leg = document.querySelector('#mHeroOrgan .v4BioLeg');
-      if (leg) [...leg.children].forEach(c => c.classList.remove('on'));
-      cycLast = -1;
-    }
-  });
+  // The biomarker arc's status cycle runs on its own -- it was a switch for an
+  // afternoon ("the animation should run without interaction from the user"),
+  // and the constant is what is left of it: the static bands are one edit away.
+  const BIO_CYCLE = true;
   let cycLast = -1;
   // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');
@@ -12401,35 +12377,52 @@
         // range, then the grey remainder -- and no indicator, since the bands
         // themselves mark where each share ends.
         //
-        // Arc cycle (a mobile tweak, on by default): the design's three frames
-        // of this slide light one status at a time -- its own portion of the
-        // scale, in its own colour, the rest of the arc at rest -- two seconds
-        // each, crossfading over 350ms, and the legend's matching column comes
-        // forward with it. Never two colours on the arc at once. Four states
-        // with the unclassified shown, three without.
+        // The cycle (the design's three frames of this slide, and it runs on
+        // its own -- no switch, no touch): one status at a time, its own
+        // portion of the scale in its own colour, the rest of the arc at rest,
+        // two seconds each, and the legend's matching column comes forward
+        // with it. The leaving portion fades out (200ms), then the arriving one
+        // grows in from its left end to its right (450ms, a soft front a tick
+        // and a half wide) -- so two colours are never on the arc together.
+        // Four states with the unclassified shown, three without.
+        //
+        // The outer 15% of the scale at each end is under the side fade and
+        // the end blur, where nothing reads, so the panel is laid onto the
+        // middle 70%: a share q sits at bp(q), and the ticks outside the
+        // window stay at rest. Same window for the static bands and the
+        // band's indicator, so the two readings agree.
         const n = Math.max(1, tickEls.length - 1);
-        const bs = bioSet(), un = CARD_STATE.unclass, cyc = CARD_STATE.arcCyc;
+        const bs = bioSet(), un = CARD_STATE.unclass, cyc = BIO_CYCLE;
         const q1 = bs.optimal / bs.total, q2 = q1 + bs.sub / bs.total, q3 = Math.min(1, q2 + bs.out / bs.total);
+        const W0 = 0.15, W1 = 0.85, bp = q => W0 + (W1 - W0) * q;
         const SEG_COL = ['opt', 'sub', 'out', 'un'];
-        let cK = -1, cPrev = -1, cF = 1;
+        const segLo = [W0, bp(q1), bp(q2), bp(q3)], segHi = [bp(q1), bp(q2), bp(q3), W1];
+        let cK = -1, cPrev = -1, outW = 0, front = -1;
         if (cyc){
-          const states = un ? 4 : 3, STEP = 2000, FADE = 350;
+          const states = un ? 4 : 3, STEP = 2000, OUT = 200, IN = 450;
           const ph = (t / STEP) % states; cK = Math.floor(ph);
-          const f = Math.min(1, ((ph - cK) * STEP) / FADE); cF = f * f * (3 - 2 * f);
+          const ms = (ph - cK) * STEP;
           cPrev = (cK + states - 1) % states;
+          // the leaving portion's weight, 1 -> 0 over the first 200ms
+          outW = Math.max(0, 1 - ms / OUT);
+          // the arriving portion's front, its left end -> its right end over the
+          // next 450ms (eased), and past the end once it has landed
+          const s = Math.max(0, Math.min(1, (ms - OUT) / IN)), es = s * s * (3 - 2 * s);
+          front = ms < OUT ? -1 : segLo[cK] + (segHi[cK] - segLo[cK]) * es + 0.5 / n;
           if (cK !== cycLast && v4BioAge){
             cycLast = cK;
             [...v4BioAge.querySelector('.v4BioLeg').children].forEach((c, i) => c.classList.toggle('on', i === cK));
           }
         }
+        const feather = 1.5 / n;
         for (let i = 0; i < tickEls.length; i++){
           const tk = tickEls[i], pp = i / n;
           if (cyc){
-            const seg = pp < q1 ? 0 : pp < q2 ? 1 : pp < q3 ? 2 : 3;
-            // out, then in -- the leaving status is gone before the next one
-            // starts, so the two colours are never on the arc together
-            const w = seg === cK ? Math.max(0, 2 * cF - 1) : seg === cPrev ? Math.max(0, 1 - 2 * cF) : 0;
-            const shown = (un || seg < 3) && pp <= bioRev && w > 0.001;
+            const seg = pp < W0 || pp >= W1 ? -1 : pp < segLo[1] ? 0 : pp < segLo[2] ? 1 : pp < segLo[3] ? 2 : 3;
+            let w = 0;
+            if (seg === cK && front >= 0) w = Math.max(0, Math.min(1, (front - pp) / feather));
+            else if (seg === cPrev) w = outW;
+            const shown = seg >= 0 && (un || seg < 3) && pp <= bioRev && w > 0.001;
             if (shown){
               tk.line.setAttribute('stroke', rangeCol(SEG_COL[seg]));
               tk.line.setAttribute('opacity', (tk.baseOp + (0.95 * bioA - tk.baseOp) * w).toFixed(3));
@@ -12439,8 +12432,10 @@
             }
             continue;
           }
-          const c = !un ? (pp < BIO_FILL ? rangeCol('opt') : null)
-                  : pp < q1 ? rangeCol('opt') : pp < q2 ? rangeCol('sub') : pp < q3 ? rangeCol('out') : null;
+          const inWin = pp >= W0 && pp < W1;
+          const c = !inWin ? null
+                  : !un ? (pp < bp(BIO_FILL) ? rangeCol('opt') : null)
+                  : pp < bp(q1) ? rangeCol('opt') : pp < bp(q2) ? rangeCol('sub') : pp < bp(q3) ? rangeCol('out') : null;
           if (c && pp <= bioRev){
             tk.line.setAttribute('stroke', c);
             tk.line.setAttribute('opacity', (0.95 * bioA).toFixed(3));
@@ -12454,9 +12449,9 @@
         // the first half, the band's end-stop fades in over the second (with
         // the reveal), so it never jumps in view.
         if (bioA > 0.5 && !un && !cyc){   // the cycle's lit portion marks itself
-          const bp = ptA(-15 + 30 * BIO_FILL, AG.R + 13);
-          indA.setAttribute('cx', bp[0]);
-          indA.setAttribute('cy', bp[1]);
+          const ip = ptA(-15 + 30 * bp(BIO_FILL), AG.R + 13);
+          indA.setAttribute('cx', ip[0]);
+          indA.setAttribute('cy', ip[1]);
           indA.setAttribute('fill', rangeCol('un'));
           indA.setAttribute('opacity', ((2 * bioA - 1) * bioRev).toFixed(3));
         } else indA.setAttribute('opacity', Math.max(0, 1 - 2 * bioA).toFixed(3));

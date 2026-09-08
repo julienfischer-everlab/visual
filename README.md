@@ -655,15 +655,17 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   the biomarker count included, is the design's one number: medium, 64px on a
   64px line, letter-spacing −1px. (The mocks' numbers are kept as given;
   the *without* reading sums to 116 against the 110 shown.)
-- **Arc cycle** — mobile only, on by default, in the Tweaks dropdown when a
-  phone page with the V6 hero is up. The design's three frames of the
-  biomarker slide light one status at a time: its own portion of the arc, in
-  its own colour, the rest of the scale at rest, and the legend's matching
-  column comes forward while the others step back. Two seconds a status, a
-  350ms change between them that fades the leaving colour out before the next
-  fades in, so two colours are never on the arc together; four states with
-  Unclassified shown, three without; looping without a pause. Off, the arc
-  reads the panel's frames as static bands (see Unclassified).
+- **The biomarker arc's cycle** is not a tweak: it runs on its own on the V6
+  hero, with nothing to switch on or touch. The design's three frames of the
+  slide light one status at a time: its own portion of the arc, in its own
+  colour, the rest of the scale at rest, and the legend's matching column
+  comes forward while the others step back. Two seconds a status; the leaving
+  portion fades out (200ms), then the arriving one grows in from its left end
+  to its right (450ms), so two colours are never on the arc together; four
+  states with Unclassified shown, three without; looping without a pause. The
+  outer 15% of the scale at each end sits under the side fade and the end
+  blur, where nothing reads, so the panel is laid onto the middle 70%.
+  (A constant in the script, `BIO_CYCLE`, puts the static bands back.)
 - **Density** — on every page. Normal is the organ as designed; Dense is the
   library's fine-grain reading of it: twice the body, twice the strays, twice
   the flow, drawn from the same cloud at the smaller dot — on the phone, the
