@@ -2835,6 +2835,32 @@ apart by opacity and blur, not weight. Probed against the previous dist:
 ageBig 455 -> 439, arrows 484 -> 468, caption 533 -> 517, strip 587 -> 571,
 weights 600 -> 500.
 
+### 5.120 The biomarker slide, to the design's two frames
+
+"Adjust mobile version biomarkers", with the two frames. The legend is no
+longer lines of dot-count-word but a row of columns divided by hairline rules,
+one a reading, each with the dot and count on its first line and the word
+beneath -- three columns without the unclassified, four with, the same layout
+either way, so the break element and the two-by-two rules of 5.114 go. The
+legend hangs off the number, whose width is the number's, so it takes the
+hero's width from a custom property resize() writes (--heroW) less 48px, and
+the columns share it. The strip's side fade came in from 20% to 6% a side:
+the outer columns stood in it and read at half strength. The 16px lift of the
+reading is unconditional now, the legend being two lines in both states.
+
+The arc reads the panel as the frames draw it. Without the unclassified, the
+one green band to the optimal share stays, and the indicator stands at the
+band's end in the range grey rather than hiding. With them, the distribution:
+optimal, suboptimal, out of range in the ranges' colours, then the grey
+remainder, and no indicator -- the bands mark where each share ends. The
+indicator hands over at the half-way point of the swap, where both readings are
+at nothing (the age's needle fades out over the first half, the end-stop fades
+in over the second, with the reveal), so it never jumps in view. Probed
+(bioslide.js): off, ticks 0-43 green then base, indicator #8c8c8c at the band's
+end; on, 0-37 green, 38-47 sand, 48-54 salmon, 55-60 base, indicator at 0; the
+light set on the light theme; four equal columns of 81px, rules between them;
+the block 149px. Arc-wrap, Unclassified and error probes as before.
+
 ---
 
 ## 6. Open items

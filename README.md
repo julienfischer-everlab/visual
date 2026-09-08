@@ -633,12 +633,16 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   12 Out of range, the meter full. On: 68 / 20 / 12 and a fourth item,
   *10 Unclassified*, with the meter's grey remainder for its dot and the meter
   leaving that share unfilled. On every surface that carries the legend — the
-  desktop card, the phone bento and the V6 hero, where the items read dot,
-  count, word as the phone mocks do — count and word in one ink, white at 56%,
-  the count medium rather than bold, 14 and 13px — and four of them sit two
-  by two, each line centred, the whole reading lifting 16px to keep the second
-  line clear of the names, and the arc, number and both lines inside 160px —
-  and kept across page changes. The ranges' colours are the design's, per
+  desktop card, the phone bento and the V6 hero — and kept across page
+  changes. On the hero the legend is a row of columns divided by rules, one a
+  reading, three or four of them: the dot and the count on the first line, the
+  word beneath, count and word in one ink (white at 56%, the count medium),
+  the row taking the hero's width less a margin. The hero's arc reads the
+  panel too: without the unclassified, one green band to the optimal share
+  with the indicator standing at its end in the range grey; with them, the
+  whole distribution in the ranges' colours and the grey remainder, and no
+  indicator. The whole reading sits 16px higher so the legend clears the
+  names, with arc, number and legend inside 160px. The ranges' colours are the design's, per
   theme: the dark theme's pastel set (green `#82d18e`, sand `#f6e1a5`, salmon
   `#e97f7f`, grey `#8c8c8c`) and the light theme's saturated one (`#6fcb7c`,
   `#f2c550`, `#e5514f`, `#7f7f7f`), as CSS variables that every legend dot,

@@ -3315,48 +3315,48 @@
   body.v7 #mHeroOrgan .v4Gauge{bottom:200px;}
   body.v7 #mHeroOrgan .v4Ages{bottom:99px;}
   .v4BioLeg{display:none;}
+  /* The legend is a row of columns divided by rules -- one a reading, three or
+     four of them -- each with the dot and the count on its first line and the
+     word beneath, as the design's phone frame has it in both states. It hangs
+     off the number, whose width is the number's, so it takes the hero's width
+     (--heroW, written by resize()) less a margin, and the columns share it.
+     "Arc, number and the values below should fit a 160px height": it sits 9px
+     under the number. */
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg{
     display:flex;position:absolute;top:100%;left:50%;transform:translateX(-50%);
-    margin-top:14px;gap:15px;white-space:nowrap;
+    margin-top:9px;width:calc(var(--heroW, 372px) - 48px);white-space:nowrap;
     font-size:13px;font-weight:400;letter-spacing:0;
     /* count and word in one ink, white at 56% (black at 56% in the light
-       theme); the count is a medium weight, not bold. Both up 2px. */
+       theme); the count is a medium weight, not bold. */
     color:rgba(255,255,255,.56);
   }
   body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg{color:rgba(0,0,0,.56);}
-  /* four readings where there were three: the design sets them two by two --
-     Optimal and Suboptimal on one line, Out of range and Unclassified on the
-     next, each line centred on its own -- so a break element after the second
-     item takes the whole row when the switch is on, and is nothing otherwise */
-  body.v7 #mHeroOrgan .v4BioN .v4BioLeg .legBrk{display:none;}
-  body.unclass.v7 #mHeroOrgan .v4BioN .v4BioLeg{
-    flex-wrap:wrap;justify-content:center;row-gap:5px;column-gap:15px;
-    width:280px;   /* the legend hangs off the number, whose width is the number's:
-                      absolutely positioned, it needs a width of its own to wrap in */
-    /* "arc, number and the values below should fit a 160px height": with two
-       lines the block ran to 161 from the indicator's top, so the legend sits
-       5px closer under the number and the lines 2px closer -- 154 */
-    margin-top:9px;
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span{
+    flex:1 1 0;min-width:0;display:flex;flex-wrap:wrap;justify-content:center;
+    align-items:center;gap:1px 5px;padding:0 2px;
   }
-  body.unclass.v7 #mHeroOrgan .v4BioN .v4BioLeg .legBrk{
-    display:block;flex:0 0 100%;height:0;margin:0;padding:0;
-  }
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span + span{border-left:1px solid rgba(255,255,255,.14);}
+  body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg > span + span{border-left-color:rgba(0,0,0,.14);}
+  body.v7 #mHeroOrgan .v4BioN .v4BioLeg small{flex:0 0 100%;text-align:center;font-size:13px;line-height:1.25;}
   /* The age strip's side fade is a mask, and a mask clips at its box: at the
-     64px figure the legend's first line already ran 5px past the strip, and the
-     second line hung wholly below it and was simply not drawn. So the strip is
-     40px deeper -- as padding, with the numbers pulled up by half of it so
-     their centre does not move -- and with the switch on the whole reading
-     (arc and strip) lifts 16px to keep the second line clear of the names.
-     Not in the empty states, which lay the strip out their own way. */
+     64px figure a one-line legend already ran 5px past the strip, and a second
+     line hung wholly below it and was simply not drawn. So the strip is 40px
+     deeper -- as padding, with the numbers pulled up by half of it so their
+     centre does not move -- and the whole reading (arc and strip) sits 16px
+     higher to keep the legend's second line clear of the names. Not in the
+     empty states, which lay the strip out their own way. */
   body.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4Ages{
-    height:150px;padding-bottom:40px;bottom:59px;   /* border-box: 110 + 40 deeper, same top */
+    height:150px;padding-bottom:40px;bottom:75px;   /* border-box: 110 + 40 deeper, top 16 up */
+    /* the side fade narrows from 20% to 6% a side: the legend's outer columns
+       stand where the fade was and were reading half-strength. The neighbours'
+       numbers are already softened by the script's own ramp. */
+    -webkit-mask-image:linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+    mask-image:linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
   }
   body.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4AgeN{top:calc(50% - 20px);}
-  body.unclass.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4Gauge{bottom:216px;}
-  body.unclass.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4Ages{bottom:75px;}
-  body.v7 #mHeroOrgan .v4BioN .v4BioLeg span{display:flex;align-items:center;gap:5px;}
+  body.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4Gauge{bottom:216px;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg b{
-    font-weight:500;color:inherit;font-size:14px;
+    font-weight:500;color:inherit;font-size:14px;line-height:1.25;
   }
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg i{
     width:6px;height:6px;border-radius:50%;flex:none;font-style:normal;
@@ -8192,6 +8192,9 @@
     document.querySelector('.dash').style.top = tbH + 'px';
     document.querySelector('.dash .side').style.top = tbH + 'px';
     document.getElementById('grid').style.top = tbH + 'px';
+    // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
+    { const ho = document.getElementById('mHeroOrgan');
+      if (ho && ho.clientWidth) ho.style.setProperty('--heroW', ho.clientWidth + 'px'); }
     if (isDash(version)){
       // in situ: the canvas becomes the dashboard's organ card
       const slot = document.getElementById('organSlot').getBoundingClientRect();
@@ -8818,18 +8821,18 @@
     const pair = k => ' data-on="' + BIO_SETS.on[k] + '" data-off="' + BIO_SETS.off[k] + '"';
     el.innerHTML = '<i class="bioNum">' + BIO_N.total + '</i>' +
       '<span class="v4BioLeg">' +
-      // dot, count, word -- the order the design's phone mocks read in
+      // One column a reading, divided by rules: the dot and the count on the
+      // first line, the word under them -- the design's phone frame, three
+      // columns or four.
       '<span><i style="background:var(--rgOpt)"></i><b' + pair('optimal') + '>' + BIO_N.optimal + '</b>' +
-      'Optimal</span>' +
+      '<small>Optimal</small></span>' +
       '<span><i style="background:var(--rgSub)"></i><b' + pair('sub') + '>' + BIO_N.sub + '</b>' +
-      'Suboptimal</span>' +
-      // with four readings the row breaks here, two and two, each line centred
-      '<i class="legBrk"></i>' +
+      '<small>Suboptimal</small></span>' +
       '<span><i style="background:var(--rgOut)"></i><b' + pair('out') + '>' + BIO_N.out + '</b>' +
-      'Out of range</span>' +
+      '<small>Out of range</small></span>' +
       // the fourth reading, shown by the Unclassified switch
       '<span class="nsOnly"><i class="nsDot"></i><b>' + BIO_SETS.on.un +
-      '</b>Unclassified</span>' +
+      '</b><small>Unclassified</small></span>' +
       '</span>' +
       '<span class="v4BioEmpty">' +
       '<b>Discover what&rsquo;s happening inside your body</b>' +
@@ -12320,10 +12323,20 @@
         // reaches, and everything past it stays unlit rather than being called
         // something. Same figure as the fill rising through the body on this
         // slide, off the same constant, so the two cannot drift apart.
+        //
+        // ...and then the design's two frames of the slide. Without the
+        // unclassified, one green band to the optimal share with the indicator
+        // standing at its end, in the range grey. With them, the whole
+        // distribution in the ranges' colours -- optimal, suboptimal, out of
+        // range, then the grey remainder -- and no indicator, since the bands
+        // themselves mark where each share ends.
         const n = Math.max(1, tickEls.length - 1);
+        const bs = bioSet(), un = CARD_STATE.unclass;
+        const q1 = bs.optimal / bs.total, q2 = q1 + bs.sub / bs.total, q3 = q2 + bs.out / bs.total;
         for (let i = 0; i < tickEls.length; i++){
           const tk = tickEls[i], pp = i / n;
-          const c = pp < BIO_FILL ? rangeCol('opt') : null;
+          const c = !un ? (pp < BIO_FILL ? rangeCol('opt') : null)
+                  : pp < q1 ? rangeCol('opt') : pp < q2 ? rangeCol('sub') : pp < q3 ? rangeCol('out') : null;
           if (c && pp <= bioRev){
             tk.line.setAttribute('stroke', c);
             tk.line.setAttribute('opacity', (0.95 * bioA).toFixed(3));
@@ -12332,7 +12345,17 @@
             tk.line.setAttribute('opacity', tk.baseOp);
           }
         }
-        indA.setAttribute('opacity', (1 - bioA).toFixed(3));
+        // The indicator hands over at the half-way point of the swap, where
+        // both of its readings are at nothing: the age's needle fades out over
+        // the first half, the band's end-stop fades in over the second (with
+        // the reveal), so it never jumps in view.
+        if (bioA > 0.5 && !un){
+          const bp = ptA(-15 + 30 * BIO_FILL, AG.R + 13);
+          indA.setAttribute('cx', bp[0]);
+          indA.setAttribute('cy', bp[1]);
+          indA.setAttribute('fill', rangeCol('un'));
+          indA.setAttribute('opacity', ((2 * bioA - 1) * bioRev).toFixed(3));
+        } else indA.setAttribute('opacity', Math.max(0, 1 - 2 * bioA).toFixed(3));
       } else {
       indA.setAttribute('opacity', 1);
       // Aligned with your age: no gap to colour, so the one increment that is
