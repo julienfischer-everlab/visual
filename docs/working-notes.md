@@ -2736,6 +2736,56 @@ the bottom as the eyebrow is from the top. Probed: list bottom = card bottom -
 figure opacity .5; modes and page errors none. The phone's own *Get test* and
 untested figure are as they were -- the screenshots were the desktop's.
 
+### 5.115 The hero legend's ink, the hero's one number, and the strip's mask
+
+Three on the phone hero legend in a row: count and word in one colour, white at
+56% (black at 56% in the light theme), the count medium rather than bold, both
+up 2px (14 / 13). Then the design's typography for the number itself -- medium,
+64 on a 64 line, letter-spacing -1 -- for every hero figure: the ages were 57px
+at -2.3, the biomarker count 45.6px at -1.84, and "the biomarker hero number
+seems inconsistent with the other hero number" was exactly that. The count now
+inherits .v4AgeN's size rather than setting its own.
+
+Then the legend's second line, which the published version did not show at
+all: the age strip's side fade is a mask, and a mask clips at its element's
+box, so a line hung below the strip is simply not drawn. At the 64px figure the
+first line already ran 5px past it. The strip is 40px deeper as padding-bottom
+(border-box, so height 150 and bottom 59 keep its top edge), with the numbers
+pulled up 20px to keep their centre; with Unclassified on the arc and the strip
+lift 16px so the second line clears the names. Not in the empty states, which
+size the strip their own way. Probed (herolook.js): off, one line inside the
+box; on, two lines at 482 and 510 inside a box ending at 531, names' text from
+538; the organ slides unchanged but for the size.
+
+### 5.116 The arc after a backward swipe
+
+"The arc progress is missing / doesn't react properly when I go backward." The
+carousel's committed position bxT is unwrapped -- that is how the loop is
+travelled the short way -- so a swipe back from the biomarker slide (-1) puts
+the last organ at -2, the one before at -3, and so on. Three readers took
+`bxT < 0` to mean the biomarker slide: the distribution's `want`, the arc's
+`arcGoing`, and the idle cycle's hold. So every organ reached by swiping
+backward kept the biomarker distribution on the arc -- green run from the left,
+no indicator, no age scale -- until a forward swipe brought bxT back above
+zero. All three read bxWrap(Math.round(bxT)) now. Probed with pointer swipes
+(arcback2.js) on the previous build and this one: three swipes back there left
+the arc at the distribution with the indicator at opacity 0; here each lands on
+the organ's own gap -- indicator on, ticks green or orange to the reading.
+
+### 5.117 One dropdown for the switches
+
+"Put all of these tweaks inside one select, a dropdown listing each item with
+a toggle." A `<details>` in the bar, its summary wearing the selects' shell and
+chevron, and a panel of rows: Biomarkers, Unclassified, Biological age, Organ
+ages, Coverage, Activity, name left, toggle right. The selects are still the
+controls, and segmentise() still renders each as its toggle, now inside its
+row. The panel is position:fixed because the bar scrolls sideways and would
+clip a child; a small script places it under the bar when it opens and closes
+it on an outside click, Escape, or a bar scroll. Version, Mode, Density, the
+inks and Refresh stay in the bar. Probed (tkmenu.js): six rows with toggles,
+a toggle flips its state with the panel staying open, outside click and Escape
+close it.
+
 ---
 
 ## 6. Open items

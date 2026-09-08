@@ -63,6 +63,32 @@
   body.archived .topbar .tkGrp#arcGrp{display:contents;}
   .topbar .tkBtn:hover{border-color:#3f3f46;}
   .topbar .tkBtn:active{background:#1c1c20;}
+  /* The tweaks dropdown: a summary that wears the selects' shell, chevron
+     included, and a panel of rows -- name on the left, toggle on the right.
+     The panel is fixed (the bar scrolls sideways and would clip a child), and
+     the script places it under its button when it opens. */
+  .topbar .tkMenu{position:relative;flex:none;}
+  .topbar .tkMenu summary{
+    list-style:none;display:block;
+    font:inherit;font-size:12px;font-weight:500;color:#e4e4e7;
+    background:#131316 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23a1a1aa' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>") no-repeat right 10px center;
+    border:1px solid #232326;border-radius:8px;padding:6px 28px 6px 12px;
+    cursor:pointer;outline:none;white-space:nowrap;user-select:none;
+  }
+  .topbar .tkMenu summary::-webkit-details-marker{display:none;}
+  .topbar .tkMenu summary:hover,.topbar .tkMenu[open] summary{border-color:#3f3f46;}
+  .topbar .tkMenu summary:focus-visible{border-color:#71717a;}
+  .topbar .tkPanel{
+    position:fixed;z-index:30;min-width:232px;padding:6px;
+    background:#131316;border:1px solid #232326;border-radius:12px;
+    display:flex;flex-direction:column;gap:2px;
+  }
+  .topbar .tkRow{
+    display:flex;align-items:center;justify-content:space-between;gap:28px;
+    padding:7px 10px;border-radius:8px;
+  }
+  .topbar .tkRow:hover{background:#1c1c20;}
+  .topbar .tkRow .lbl{color:#e4e4e7;white-space:nowrap;}
   .topbar .seg{
     display:flex;gap:2px;border:1px solid #232326;background:#131316;
     border-radius:8px;padding:3px;
@@ -2788,7 +2814,9 @@
   }
   body.v5 #mHeroOrgan .v4AgeN{
     position:absolute;left:50%;top:50%;white-space:nowrap;
-    font-size:57px;font-weight:500;line-height:1;letter-spacing:-2.3px;
+    /* the design's figure: medium, 64 on a 64 line, letter-spacing -1 -- one
+       treatment for every hero number, the biomarker count included */
+    font-size:64px;font-weight:500;line-height:1;letter-spacing:-1px;
     font-variant-numeric:tabular-nums;color:var(--ink-bright);
     will-change:transform,opacity,filter;
   }
@@ -3155,7 +3183,8 @@
      ranges under it in place of the younger/older caption. The card it came
      from leaves the body -- it is in the hero now, not below it. */
   body.v7 #mV4 .mHeroCard{display:none;}
-  body.v7 #mHeroOrgan .v4BioN{font-size:45.6px;letter-spacing:-1.84px;}
+  /* the count used to be set smaller (45.6px) than the ages beside it; it is
+     the same figure now, so it inherits .v4AgeN's size and spacing */
   .v4BioN .bioNum{font-style:normal;}
   .v4BioEmpty{display:none;}
   /* Emptied, the slide drops the figure and the distribution -- there is no
@@ -3278,10 +3307,12 @@
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg{
     display:flex;position:absolute;top:100%;left:50%;transform:translateX(-50%);
     margin-top:14px;gap:15px;white-space:nowrap;
-    font-size:11px;font-weight:400;letter-spacing:0;
-    color:rgba(242,229,224,.55);
+    font-size:13px;font-weight:400;letter-spacing:0;
+    /* count and word in one ink, white at 56% (black at 56% in the light
+       theme); the count is a medium weight, not bold. Both up 2px. */
+    color:rgba(255,255,255,.56);
   }
-  body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg{color:rgba(0,0,0,.55);}
+  body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg{color:rgba(0,0,0,.56);}
   /* four readings where there were three: the design sets them two by two --
      Optimal and Suboptimal on one line, Out of range and Unclassified on the
      next, each line centred on its own -- so a break element after the second
@@ -3295,11 +3326,23 @@
   body.unclass.v7 #mHeroOrgan .v4BioN .v4BioLeg .legBrk{
     display:block;flex:0 0 100%;height:0;margin:0;padding:0;
   }
+  /* The age strip's side fade is a mask, and a mask clips at its box: at the
+     64px figure the legend's first line already ran 5px past the strip, and the
+     second line hung wholly below it and was simply not drawn. So the strip is
+     40px deeper -- as padding, with the numbers pulled up by half of it so
+     their centre does not move -- and with the switch on the whole reading
+     (arc and strip) lifts 16px to keep the second line clear of the names.
+     Not in the empty states, which lay the strip out their own way. */
+  body.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4Ages{
+    height:150px;padding-bottom:40px;bottom:59px;   /* border-box: 110 + 40 deeper, same top */
+  }
+  body.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4AgeN{top:calc(50% - 20px);}
+  body.unclass.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4Gauge{bottom:216px;}
+  body.unclass.v7:not(.emBio):not(.emAge):not(.emOrg) #mHeroOrgan .v4Ages{bottom:75px;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg span{display:flex;align-items:center;gap:5px;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg b{
-    font-weight:600;color:var(--ink-bright);font-size:12px;
+    font-weight:500;color:inherit;font-size:14px;
   }
-  body.light.v7 #mHeroOrgan .v4BioN .v4BioLeg b{color:#000;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg i{
     width:6px;height:6px;border-radius:50%;flex:none;font-style:normal;
   }
@@ -3446,46 +3489,70 @@
         <option value="sphere">Sphere</option>
       </select>
     </span>
-    <span class="lbl">Biomarkers</span>
-    <select id="stBio" aria-label="Biomarker card state">
-      <option value="on">Completed</option>
-      <option value="empty">Empty</option>
-    </select>
-    <!-- Unclassified: the biomarkers the panel has not classified, as the
-         legend's fourth reading beside "Out of range" with the meter's grey
-         remainder -- or folded into the three, the meter full. The counts
-         come from the design's two readings of the same panel (see BIO_SETS).
-         Off by default; a switch like the card states. -->
-    <span class="lbl">Unclassified</span>
-    <select id="stUn" aria-label="Unclassified in the legend">
-      <option value="on">Shown</option>
-      <option value="off" selected>Hidden</option>
-    </select>
-    <span class="lbl">Biological age</span>
-    <select id="stAge" aria-label="Biological age card state">
-      <option value="on">Completed</option>
-      <option value="empty">Empty</option>
-    </select>
+    <!-- The on/off tweaks live in one dropdown, a row each with its own toggle
+         ("put all of these tweaks inside one select"): the card states, the
+         legend's Unclassified reading, coverage and activity. The selects are
+         still the controls -- every handler reads .value and listens for
+         change -- and segmentise() renders each as the toggle beside its name.
+         The panel is position:fixed so the bar's own horizontal scroll cannot
+         clip it; the script below places it under the button. -->
+    <details class="tkMenu" id="tkMenu">
+      <summary aria-label="Tweaks">Tweaks</summary>
+      <div class="tkPanel" role="group" aria-label="Tweaks">
+        <div class="tkRow">
+          <span class="lbl">Biomarkers</span>
+          <select id="stBio" aria-label="Biomarker card state">
+            <option value="on">Completed</option>
+            <option value="empty">Empty</option>
+          </select>
+        </div>
+        <!-- Unclassified: the biomarkers the panel has not classified, as the
+             legend's fourth reading beside "Out of range" with the meter's grey
+             remainder -- or folded into the three, the meter full. The counts
+             come from the design's two readings of the same panel (see
+             BIO_SETS). Off by default; a switch like the card states. -->
+        <div class="tkRow">
+          <span class="lbl">Unclassified</span>
+          <select id="stUn" aria-label="Unclassified in the legend">
+            <option value="on">Shown</option>
+            <option value="off" selected>Hidden</option>
+          </select>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Biological age</span>
+          <select id="stAge" aria-label="Biological age card state">
+            <option value="on">Completed</option>
+            <option value="empty">Empty</option>
+          </select>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Organ ages</span>
+          <select id="stOrg" aria-label="Organ age state">
+            <option value="on">Completed</option>
+            <option value="empty">Empty</option>
+          </select>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Coverage</span>
+          <select id="stCov" aria-label="Health coverage card">
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Activity</span>
+          <select id="stAct" aria-label="Activity card state">
+            <option value="on">Completed</option>
+            <option value="empty">Empty</option>
+          </select>
+        </div>
+      </div>
+    </details>
     <span class="lbl">Ink</span>
     <input type="color" id="inkA" value="#a35442" aria-label="Base ink, 60% of particles">
     <input type="color" id="inkB" value="#d0a496" aria-label="Mid ink, 25% of particles">
     <input type="color" id="inkC" value="#f2ebe7" aria-label="Light ink, 15% of particles">
     <button id="inkSave" class="tbtn" type="button">Save</button>
-    <span class="lbl">Organ ages</span>
-    <select id="stOrg" aria-label="Organ age state">
-      <option value="on">Completed</option>
-      <option value="empty">Empty</option>
-    </select>
-    <span class="lbl">Coverage</span>
-    <select id="stCov" aria-label="Health coverage card">
-      <option value="on">On</option>
-      <option value="off">Off</option>
-    </select>
-    <span class="lbl">Activity</span>
-    <select id="stAct" aria-label="Activity card state">
-      <option value="on">Completed</option>
-      <option value="empty">Empty</option>
-    </select>
     <button class="tkBtn" id="tkReload" type="button"
             aria-label="Reload the page on this version">Refresh</button>
   </div>
@@ -9038,7 +9105,11 @@
       // waiting for it to land left the arc sitting on the old scale for most
       // of a swipe that had already been let go. The release is the cue, and
       // the swap runs at its own quarter-second from there.
-      const want = (v7On() && bxT < 0) ? 1 : 0;
+      // bxT is unwrapped -- a swipe back past the biomarker slide leaves it at
+      // -2, -3, ... for the last organs -- so it is read through bxWrap: a
+      // bare `bxT < 0` kept the distribution on every organ reached that way,
+      // with no indicator and no age scale ("the arc progress is missing")
+      const want = (v7On() && bxWrap(Math.round(bxT)) < 0) ? 1 : 0;
       if (want !== bioWant){
         bioWant = want; bioSwapT = t;
         // Leaving the biomarker slide, the age scale is not resumed but
@@ -11808,6 +11879,28 @@
   // comes back to the page being looked at rather than to the first one.
   document.getElementById('tkReload')
     .addEventListener('click', () => location.reload());
+  // The tweaks dropdown. The panel is fixed, so it is placed under its button
+  // each time it opens (the bar can have scrolled); it closes on a click
+  // anywhere outside it, on Escape, and when the bar scrolls out from under it.
+  {
+    const menu = document.getElementById('tkMenu');
+    const panel = menu && menu.querySelector('.tkPanel');
+    const place = () => {
+      const s = menu.querySelector('summary').getBoundingClientRect();
+      const bar = document.querySelector('.topbar').getBoundingClientRect();
+      panel.style.top = Math.round(bar.bottom + 6) + 'px';
+      // keep the panel on screen if the button sits near the right edge
+      const w = panel.offsetWidth || 240;
+      panel.style.left = Math.round(Math.max(8, Math.min(s.left, innerWidth - w - 8))) + 'px';
+    };
+    if (menu){
+      menu.addEventListener('toggle', () => { if (menu.open) place(); });
+      addEventListener('pointerdown', e => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
+      addEventListener('keydown', e => { if (e.key === 'Escape' && menu.open) menu.open = false; });
+      document.querySelector('.topbar').addEventListener('scroll', () => { menu.open = false; });
+      addEventListener('resize', () => { if (menu.open) place(); });
+    }
+  }
   // Health coverage is a card the page may simply not carry. Off is not an
   // empty state -- there is nothing to say and no action to offer -- so it
   // leaves, and activity takes the width it was sharing.
@@ -11978,7 +12071,7 @@
         pillCurrent = (pillCurrent + 1) % PILL.length;
         current = PILL[pillCurrent].organIdx; // the flow scans across the grid
       }
-      else if (v7On() && bxT < 0){ /* V6 holds its biomarker slide */ }
+      else if (v7On() && bxWrap(Math.round(bxT)) < 0){ /* V6 holds its biomarker slide */ }
       else selectPill((pillCurrent + 1) % PILL.length);
     }
 
@@ -12164,7 +12257,7 @@
       // way there and only on the way there -- leaving it for an organ, the
       // age scale has to be drawn as the arc comes back up, or it would fade
       // in wearing the ranges and swap once it arrived.
-      const arcGoing = onHero && !arcAt(Math.round(bxT));
+      const arcGoing = onHero && !arcAt(bxWrap(Math.round(bxT)));   // wrapped: see `want`
       if (arcGoing){ /* leave it exactly as it is and let it go */ }
       else if (bioA > 0.001){
         // One band, not three. The arc read the whole distribution in the

@@ -620,6 +620,13 @@ switch drives it rather than replacing it, which is also how a control follows
 a change some other control made through the chain. Version and Mode keep their
 menus: one is a long list, the other has three options.
 
+The switches themselves live in one **Tweaks** dropdown rather than loose in the
+bar: a row each — Biomarkers, Unclassified, Biological age, Organ ages,
+Coverage, Activity — with the name on the left and its toggle on the right. The
+panel is fixed under the button (the bar scrolls sideways and would otherwise
+clip it), and closes on a click outside, on Escape, or when the bar scrolls.
+Version, Mode, Density, the ink pickers and Refresh stay in the bar.
+
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
 - **Unclassified** — off by default. The biomarker panel has two readings of
   its 110 markers, from the design's two mocks. Off: 80 Optimal, 24 Suboptimal,
@@ -627,8 +634,12 @@ menus: one is a long list, the other has three options.
   *10 Unclassified*, with the meter's grey remainder for its dot and the meter
   leaving that share unfilled. On every surface that carries the legend — the
   desktop card, the phone bento and the V6 hero, where the items read dot,
-  count, word as the phone mocks do and four of them sit two by two, each
-  line centred — and kept across page changes. (The mocks' numbers are kept as given;
+  count, word as the phone mocks do — count and word in one ink, white at 56%,
+  the count medium rather than bold, 14 and 13px — and four of them sit two
+  by two, each line centred, the whole reading lifting 16px to keep the second
+  line clear of the names — and kept across page changes. Every V6 hero figure,
+  the biomarker count included, is the design's one number: medium, 64px on a
+  64px line, letter-spacing −1px. (The mocks' numbers are kept as given;
   the *without* reading sums to 116 against the 110 shown.)
 - **Density** — on every page. Normal is the organ as designed; Dense is the
   library's fine-grain reading of it: twice the body, twice the strays, twice
