@@ -660,11 +660,12 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   slide light one status at a time: its own portion of the arc, in its own
   colour, the rest of the scale at rest, and the legend's matching column
   comes forward while the others step back. Two seconds a status; the leaving
-  portion fades out (200ms), then the arriving one grows in from its left end
-  to its right (450ms), so two colours are never on the arc together; four
+  portion fades out (300ms), then the arriving one grows in from its left end
+  to its right (650ms), both on a quintic ease with a soft front three ticks
+  wide, so two colours are never on the arc together; four
   states with Unclassified shown, three without; looping without a pause. The
-  outer 15% of the scale at each end sits under the side fade and the end
-  blur, where nothing reads, so the panel is laid onto the middle 70%.
+  outer 20% of the scale at each end sits under the side fade and the end
+  blur, where nothing reads, so the panel is laid onto the middle 60%.
   (A constant in the script, `BIO_CYCLE`, puts the static bands back.)
 - **Density** — on every page. Normal is the organ as designed; Dense is the
   library's fine-grain reading of it: twice the body, twice the strays, twice

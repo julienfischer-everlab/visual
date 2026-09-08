@@ -2972,6 +2972,22 @@ optimal portion grows 9 -> 34 (0.15 -> 0.57) over about 450ms and holds; never
 more than one colour; nothing lit below 0.15 or above 0.85. Arc-wrap and error
 probes clean.
 
+### 5.125 The middle 60%
+
+"Exclude the left 20% and right 20% for the biomarker portions." The window
+of 5.124 was 15% a side; it is 20% now, the panel laid onto the middle 60% of
+the scale -- one constant, W0/W1, that the cycle, the static bands and the
+band's indicator all read. Probed: nothing lit below 0.20 or above 0.80, the
+optimal portion 12 -> 32 of 61 ticks, one colour at a time.
+
+"Need smoother ease in-out for the range in the arc animation." Both halves
+of the change run on a quintic ease now (6x^5 - 15x^4 + 10x^3, no velocity at
+either end) rather than the linear fade and cubic sweep they had, a little
+longer -- 300ms out, 650ms in -- and the sweep's front is three ticks wide
+instead of one and a half, starting three ticks before the portion so the
+first tick rises as gently as the rest. A state still holds for the remainder
+of its two seconds.
+
 ---
 
 ## 6. Open items

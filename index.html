@@ -12381,40 +12381,47 @@
         // its own -- no switch, no touch): one status at a time, its own
         // portion of the scale in its own colour, the rest of the arc at rest,
         // two seconds each, and the legend's matching column comes forward
-        // with it. The leaving portion fades out (200ms), then the arriving one
-        // grows in from its left end to its right (450ms, a soft front a tick
-        // and a half wide) -- so two colours are never on the arc together.
+        // with it. The leaving portion fades out (300ms), then the arriving one
+        // grows in from its left end to its right (650ms, a soft front three
+        // ticks wide, both on a quintic ease) -- so two colours are never on
+        // the arc together.
         // Four states with the unclassified shown, three without.
         //
-        // The outer 15% of the scale at each end is under the side fade and
+        // The outer 20% of the scale at each end is under the side fade and
         // the end blur, where nothing reads, so the panel is laid onto the
-        // middle 70%: a share q sits at bp(q), and the ticks outside the
+        // middle 60%: a share q sits at bp(q), and the ticks outside the
         // window stay at rest. Same window for the static bands and the
         // band's indicator, so the two readings agree.
         const n = Math.max(1, tickEls.length - 1);
         const bs = bioSet(), un = CARD_STATE.unclass, cyc = BIO_CYCLE;
         const q1 = bs.optimal / bs.total, q2 = q1 + bs.sub / bs.total, q3 = Math.min(1, q2 + bs.out / bs.total);
-        const W0 = 0.15, W1 = 0.85, bp = q => W0 + (W1 - W0) * q;
+        const W0 = 0.20, W1 = 0.80, bp = q => W0 + (W1 - W0) * q;   // "exclude the left 20% and right 20%"
         const SEG_COL = ['opt', 'sub', 'out', 'un'];
         const segLo = [W0, bp(q1), bp(q2), bp(q3)], segHi = [bp(q1), bp(q2), bp(q3), W1];
         let cK = -1, cPrev = -1, outW = 0, front = -1;
         if (cyc){
-          const states = un ? 4 : 3, STEP = 2000, OUT = 200, IN = 450;
+          // "Smoother ease in-out": the fade-out and the sweep both run on a
+          // quintic ease (no velocity at either end), a little longer than
+          // they were -- 300ms out, 650ms in -- and the sweep's front is three
+          // ticks wide, so each tick rises over a stretch of the travel rather
+          // than switching on as the front passes it.
+          const states = un ? 4 : 3, STEP = 2000, OUT = 300, IN = 650;
+          const ease = x => x * x * x * (x * (x * 6 - 15) + 10);
           const ph = (t / STEP) % states; cK = Math.floor(ph);
           const ms = (ph - cK) * STEP;
           cPrev = (cK + states - 1) % states;
-          // the leaving portion's weight, 1 -> 0 over the first 200ms
-          outW = Math.max(0, 1 - ms / OUT);
+          // the leaving portion's weight, 1 -> 0 over the first 300ms
+          outW = 1 - ease(Math.max(0, Math.min(1, ms / OUT)));
           // the arriving portion's front, its left end -> its right end over the
-          // next 450ms (eased), and past the end once it has landed
-          const s = Math.max(0, Math.min(1, (ms - OUT) / IN)), es = s * s * (3 - 2 * s);
-          front = ms < OUT ? -1 : segLo[cK] + (segHi[cK] - segLo[cK]) * es + 0.5 / n;
+          // next 650ms, and past the end (by the feather) once it has landed
+          const s = Math.max(0, Math.min(1, (ms - OUT) / IN)), es = ease(s);
+          front = ms < OUT ? -1 : segLo[cK] - 3 / n + (segHi[cK] - segLo[cK] + 3.5 / n) * es;
           if (cK !== cycLast && v4BioAge){
             cycLast = cK;
             [...v4BioAge.querySelector('.v4BioLeg').children].forEach((c, i) => c.classList.toggle('on', i === cK));
           }
         }
-        const feather = 1.5 / n;
+        const feather = 3 / n;
         for (let i = 0; i < tickEls.length; i++){
           const tk = tickEls[i], pp = i / n;
           if (cyc){
