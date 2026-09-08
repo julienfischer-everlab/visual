@@ -2638,6 +2638,47 @@ ends sit clear of the header's side fade. Probed (`notscored.js`): off on
 desktop, on shows "28 Not scored", the state survives a change to the phone,
 off again hides it everywhere.
 
+### 5.111 Density on every surface: one cloud, two draw counts
+
+"Density select should be on tablet, desktop and mobile. This needs to replace
+the visual by the library one." The engine's buffers were N = 12,245 a cloud,
+and Dense is twice the library's largest target; the fine-grain tiles had
+their own clouds at another size, which the engine could not draw without
+re-uploading everything that hangs off N.
+
+The way through was already in the design: a cloud built by independent
+random sampling has no order, so its first k particles are as uniform a subset
+as any other, and both renderers already draw a prefix (orgDrawN, samplePts).
+So every cloud is built at the fine size -- N = 2 x 12,245 + 512, AMB 1,400 --
+and density is how far in a surface draws: Normal the library's target, Dense
+twice it. The extra particles are the NEXT ones in the same cloud, new points
+of the same geometry, and the fine-grain tile is now literally the base tile
+plus as many again. The engine on Dense draws orgDrawN x 2, ambView() (1,400
+strays for 700) and flowView() (420 flow dots for 210, out of the 780 it
+already computes) at FINE_DOT. The separate fine clouds, their seed tables and
+per-organ generators went; buildCloud keeps its `opts` (harmless, unused).
+
+Two caps, and the first pass conflated them. With the buffer's old cap gone
+the normal Iris tile grew from 12,445 to 14,433 and the Sphere to 15,450:
+doubling the cloud is not a licence for the normal set to grow. `organN` is
+now the DESIGN's cap, the 11,545 body slots the buffer used to have, applied
+to every normal count (the library's targets, imTarget, orgDrawN before the
+x2); `cloudIdx` caps only at what the cloud holds, so twice a capped count
+fits. Iris 12,445 -> 24,890, Sphere 12,245 -> 24,490, as before.
+
+The switch is one state however set: `applyDense(on)` from the bar's select or
+the library's two nav entries sets denseOn, the body class (held in CARD_STATE)
+and the select; the memoised counts are per density. Probed
+(`denseengine.js`): phone Lung 7,166 -> 14,332 body, 700 -> 1,400 strays, 210
+-> 420 flow; desktop Heart 7,806 -> 15,612; the state survives a page change.
+Library (`finegrain.js`): thirteen cards, every count exactly double; counts
+identical across loads. The flow-ratio probe had the buffer's slice
+boundaries typed in (13,000 for the flow) and read the strays as flow at the
+new layout -- moved to the new offsets, the ratios read 10.6 / 10.3 / 10.4%
+as before. Start-up: the bigger clouds cost about 300 ms more here (600 ->
+900 ms to first draw), which is the price of Dense being one switch away on
+every page rather than a rebuild.
+
 ---
 
 ## 6. Open items

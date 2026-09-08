@@ -59,7 +59,7 @@
      typed there loose. */
   .topbar .tkGrp{display:none;}
   body.v8 .topbar .tkGrp#bioGrp{display:contents;}
-  body.m7 .topbar .tkGrp#densGrp{display:contents;}   /* the library's two grains */
+  .topbar .tkGrp#densGrp{display:contents;}   /* Density is on every page: the switch drives the engine too */
   body.archived .topbar .tkGrp#arcGrp{display:contents;}
   .topbar .tkBtn:hover{border-color:#3f3f46;}
   .topbar .tkBtn:active{background:#1c1c20;}
@@ -3400,10 +3400,10 @@
     <!-- Mobile V7 alone offers a choice of figure for the biological age. Same
          group treatment as Device: it exists where it applies and is out of the
          row everywhere else. -->
-    <!-- The library alone offers a second grain of the same organs: Normal is
-         the collection every surface draws, Dense the fine-grain set at twice
-         the particles. Same group treatment: in the row on the library page,
-         out of it everywhere else. -->
+    <!-- Density, on every page: Normal is the organ as designed, Dense the
+         library's fine-grain reading of it -- twice the particles, a smaller
+         dot -- drawn by the engine on the phone, the desktop and the tablet,
+         and by the library as its own collection. -->
     <span class="tkGrp" id="densGrp">
       <span class="lbl">Density</span>
       <select id="densSel" aria-label="Library density">
@@ -4084,11 +4084,12 @@
     <section class="olPanel" data-panel="fine">
       <div class="olHead">
         <h1>Organs &mdash; Fine Grain</h1>
-        <p>The same organs at exactly twice the particles: a second cloud sampled
-           from each organ's own geometry with a fixed seed, so every point is new
-           and every render is the same. Slightly smaller dots, the same five sizes,
-           the same opacity grid, the same three inks &mdash; a finer stipple, not a
-           denser fill. Each card carries its actual count.</p>
+        <p>The same organs at exactly twice the particles: each tile draws twice as
+           far into its organ's own cloud, so every added point is a new sample of
+           the same geometry and every render is the same. Slightly smaller dots,
+           the same five sizes, the same opacity grid, the same three inks &mdash; a
+           finer stipple, not a denser fill. Each card carries its actual count.
+           This is what the Density switch draws on every other page.</p>
         <p class="olHint">The &#8595; in each visual's top-right corner exports the
            frame on screen, dot for dot, no smaller than 1920&times;1920 and inked
            for whichever theme the page is in &mdash; as
@@ -4209,14 +4210,39 @@
   // ones: negative space between them is what lets a reader see through the
   // front layer to the ones behind it. Removed uniformly, since the sampling
   // is uniform -- there is no region this thins more than another.
-  const N = 12245;
+  //
+  // And then doubled, for the Density switch. The cloud is the same picture
+  // at either density: a cloud built by independent random sampling has no
+  // order, so the first k particles are as uniform a subset as any other, and
+  // both renderers draw a prefix (orgDrawN, samplePts). Normal draws the
+  // library's target; Dense draws twice it, and the extra particles are the
+  // NEXT ones in the same cloud -- new points of the same geometry, none of
+  // them a duplicate or a jitter of the first set. So one cloud per organ,
+  // sized to hold twice the largest target (2 x 11,800) with the strays
+  // behind it, serves every density on every surface, and the library and
+  // the engine cannot disagree about what Dense is. 2 x 12,245 + 512: the
+  // 512 is what 2N - 2AMB was short of 23,600.
+  const N_BASE = 12245;
+  const N = 2 * N_BASE + 512;
   // 700, from 350. The strays went super-thin on request and a thin dot lights
   // a fraction of the pixels a fat one does, so the field all but vanished on
   // the big surfaces -- a tile is small enough that 300 specks read as weather,
   // a full-bleed hero is not. The lever for "more visible" here is how many,
   // never how big: raising the size would undo the thing that was asked for.
-  // They come out of N, which is 12,245, so the cloud loses 3% of nothing.
-  const AMB = 700; // ambient strays that float around the organ, never joining it
+  // They come out of N, so the cloud loses 3% of nothing.
+  //
+  // 1400 in the tail now, so Dense can show twice the strays too; how many
+  // are DRAWN is AMB_VIEW (700), or twice it on Dense -- see ambView().
+  const AMB = 1400; // ambient strays that float around the organ, never joining it
+  // The Density switch: Normal or Dense, on every surface. Dense draws twice
+  // the body (orgDrawN), twice the strays (ambView) and twice the flow
+  // (flowView) from the same clouds, with the dot at FINE_DOT -- the library's
+  // fine-grain tile, on the engine. A class on the body as well (`dense`),
+  // held in CARD_STATE so a page change keeps it.
+  let denseOn = false;
+  const densMul = () => denseOn ? 2 : 1;
+  const ambView = () => AMB_VIEW * densMul();
+  const flowView = () => FLOW_VIEW * densMul();
   const STAG = 0.35;                  // stagger fraction of the timeline
 
   // navigation modes, switchable from the top bar
@@ -7906,6 +7932,7 @@
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.notScored ? ' notScored' : '') +
+      (CARD_STATE.dense ? ' dense' : '') +
       // the same rule for the figure: only Mobile V7 offers the choice, so
       // only Mobile V7 wears it
       (CARD_STATE.bioSph && m === 20 ? ' bioSph' : '') +
@@ -8235,11 +8262,11 @@
       gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale() * sizeMul * (0.7 + 0.3 * effS));
       bindCloud(PILL[i].organIdx);
       gl.drawArrays(gl.POINTS, 0, orgDrawN(PILL[i].organIdx));
-      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);   // the loose shell, as the tile draws it
+      gl.drawArrays(gl.POINTS, N - AMB, ambView());   // the loose shell, as the tile draws it
       // the flow layer lives in the main buffers; it rides the centre card
       if (PILL[i].organIdx === current && ad < 0.6 && flowVis > 0.015){
         bindCloud(-1);
-        gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
+        gl.drawArrays(gl.POINTS, FSTART, flowView());
       }
     }
     bindCloud(-1);
@@ -8778,13 +8805,13 @@
         Math.min(1, Math.abs(o.delta) / 7));
       bindCloud(o.organIdx);
       gl.drawArrays(gl.POINTS, 0, orgDrawN(o.organIdx));
-      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
+      gl.drawArrays(gl.POINTS, N - AMB, ambView());
       // and its flow, on the one slide whose organ the flow is currently
       // computed for — the same second draw off the live buffers every other
       // surface makes, so the phone's carousel carries what the desktop's does
       if (o.organIdx === current && flowVis > 0.015){
         bindCloud(-1);
-        gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
+        gl.drawArrays(gl.POINTS, FSTART, flowView());
       }
     }
     if (v4Hero && v4Ages.length){
@@ -9096,7 +9123,7 @@
       // which is what the rest of the morph already is.
       gl.drawArrays(gl.POINTS, 0,
         Math.round(orgDrawN(ia) + (orgDrawN(ib) - orgDrawN(ia)) * f));
-      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
+      gl.drawArrays(gl.POINTS, N - AMB, ambView());
       setShape(-1, -1, 1);
       gl.uniform1f(U.uP, 1);
       // The flow layer lives in the main buffers, and the hero draws the cloud
@@ -9206,7 +9233,7 @@
           // Measured on the settled iris: the pupil edge moving 40 -> 48px
           // over a breath while the flow's inner ends sat at 42-44.
           setShape(ia, ib, f);
-          gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
+          gl.drawArrays(gl.POINTS, FSTART, flowView());
           setShape(-1, -1, 1);
           gl.uniform1f(U.uP, 1);
           gl.uniform1f(U.uFlowVis, flowVis);
@@ -9488,13 +9515,20 @@
   // identical set with one `drawArrays(0, k)`. A stride cannot be expressed as
   // a contiguous range, which is the whole reason the two renderers used to
   // show different numbers of the same organ.
+  // Two caps, and they are not the same thing. organN is the DESIGN's cap on a
+  // normal count: the body slots the buffer had before the clouds were doubled
+  // (12,245 less 700), which is what pinned the iris and the sphere at 11,545
+  // and must go on pinning them -- doubling the cloud is not a licence for the
+  // normal set to grow. cloudIdx caps at what the cloud actually holds, so a
+  // fine-grain target of twice a capped normal count fits under it.
+  const BODY_CAP = N_BASE - 700;
   function cloudIdx(target, cl){
-    const count = organN(target, cl);
+    const count = Math.max(1, Math.min(bodyN(cl), Math.round(target)));
     const idx = new Int32Array(count);
     for (let k = 0; k < count; k++) idx[k] = k;
     return idx;
   }
-  const organN = (t, cl) => Math.max(1, Math.min(bodyN(cl), Math.round(t)));
+  const organN = (t, cl) => Math.max(1, Math.min(cl && cl.n ? cl.n - cl.amb : BODY_CAP, Math.round(t)));
   function samplePts(cl, id, target){
     const key = id + '@' + target;
     if (pts2DCache[key]) return pts2DCache[key];
@@ -9526,13 +9560,14 @@
   // the engine draws it as `drawArrays(N - AMB, AMB_VIEW)` and a contiguous
   // range is the only kind of subset a draw call can express.
   const AMB_VIEW = 700;   // all of them, on every surface
-  function ambPts2D(cl, id){
-    if (ambCache[id]) return ambCache[id];
+  function ambPts2D(cl, id, show){
+    show = Math.min(show || AMB_VIEW, cl.n ? cl.amb : AMB);
+    const key = id + '@' + show;
+    if (ambCache[key]) return ambCache[key];
     const pts = [];
-    // a cloud of its own size keeps its strays at its own tail, and shows them
-    // all -- the fine-grain set has twice as many, and shows twice as many
+    // the strays are the tail of the cloud; a view says how many of them it
+    // shows -- the engine's AMB_VIEW, or twice that on the fine-grain tiles
     const base = bodyN(cl), sd = cl.seeds || seeds;
-    const show = cl.n ? cl.amb : AMB_VIEW;
     for (let i = base; i < base + show; i++){
       pts.push({
         x: cl.pos[i * 3], y: cl.pos[i * 3 + 1],
@@ -9783,6 +9818,9 @@
       // how many groups a dense tile's cloud repaint is dealt into (frame());
       // the fine-grain tiles, at twice the dots, take twice the groups
       slots: opts.slots || DENSE_SLOTS,
+      // how many of the cloud's strays this view shows; the fine-grain tiles
+      // show twice the engine's AMB_VIEW, as Dense does on the engine
+      ambN: opts.ambN || AMB_VIEW,
       alpha: opts.alpha != null ? opts.alpha : 1,
       canvas: c,
       setOrgan(i){
@@ -9801,7 +9839,7 @@
       // the dots this visual is actually made of, for the tile's reference line
       dotCount(){
         const body = samplePts(view.cl, view.key, view.target).length;
-        const amb = (view.feed && !view.still) ? ambPts2D(view.cl, view.key).length : 0;
+        const amb = (view.feed && !view.still) ? ambPts2D(view.cl, view.key, view.ambN).length : 0;
         const pr = view.flowPreset || FLOW_PRESETS[view.idx];
         const flow = (view.flow && pr) ? view.flowN : 0;
         return body + amb + flow;
@@ -10111,7 +10149,7 @@
         // feeding: ambient matter spirals in on curved orbits, accelerates near
         // the surface, is absorbed, and is reborn faint at the rim
         const aDrift = 0.006 * (view.jitter + 2.2) * sc;
-        for (const q of ambPts2D(view.cl, view.key)){
+        for (const q of ambPts2D(view.cl, view.key, view.ambN)){
           const grp = fract(q.sy * 3.7) < 0.25 ? 1 : 0;
           const uq = grp ? Math.floor(q.sz * 5) / 5 + 0.09 : q.sz;
           const cyc = fract(T / 9 + uq);
@@ -10323,7 +10361,7 @@
   // lands at ~10,800 of 11,545.
   const FULL_DOTS = 5.62;
   const fullTarget = cl => Math.min(11800, Math.round(dotTarget(cl) * FULL_DOTS));
-  function imTarget(cl){ return fullTarget(cl); }
+  function imTarget(cl){ return organN(fullTarget(cl)); }   // the design's cap, as everywhere
   // ---- how many particles an organ is, full stop ----------------------------
   // The library was showing a subset and the engine was drawing the whole
   // buffer, which is two different pictures of one asset: the same cloud at
@@ -10331,16 +10369,19 @@
   // `dotTarget` iterated to a constant on-screen gap, times FULL_DOTS, times
   // the shape's own `dots` say -- and the engine now asks for it rather than
   // for N. Memoised, because dotTarget iterates.
-  const ORG_N = [];
+  // memoised per density: Dense is twice the count, from the same cloud
+  const ORG_N = [[], []];
   function orgDrawN(i){
-    if (ORG_N[i] != null) return ORG_N[i];
+    const memo = ORG_N[denseOn ? 1 : 0];
+    if (memo[i] != null) return memo[i];
     // Total, because this is read from inside the render loop: an index that
     // does not name a cloud must cost a frame nothing rather than throw one
     // organ's mistake into every one of them.
     const cl = clouds[i];
     if (!cl) return 0;
     const mul = (ORGANS[i] && ORGANS[i].dots) || 1;
-    return ORG_N[i] = organN(fullTarget(cl) * mul);
+    // the design's cap first, then Dense doubles what the cap allowed
+    return memo[i] = organN(fullTarget(cl) * mul) * densMul();
   }
   // The single-organ pages draw one cloud, or a count between two while it is
   // changing -- for the same reason the hero pair does: the larger of the two
@@ -10618,13 +10659,28 @@
       if (want === 'other') buildMilestones();
       if (want === 'fine') buildFine();
       panels.forEach(pn => pn.classList.toggle('on', pn.dataset.panel === want));
-      if (densSel && (want === 'organs' || want === 'fine')) densSel.value = want === 'fine' ? 'dense' : 'normal';
+      if (want === 'organs' || want === 'fine') applyDense(want === 'fine');
       main.scrollTop = 0;   // each section starts at its own top
     }));
+    // One state, however it was set. The switch drives every surface: the
+    // engine draws twice the body, the strays and the flow from the same
+    // clouds at the fine-grain dot -- the hero pair and the single-organ pages
+    // included -- and a class goes on the body, kept across page changes. The
+    // memoised counts are per density, so nothing needs clearing. The nav's
+    // two organ entries set the same state, so the library and the engine
+    // always agree about what Dense is.
+    function applyDense(on){
+      denseOn = on;
+      CARD_STATE.dense = on;
+      document.body.classList.toggle('dense', on);
+      if (densSel) densSel.value = on ? 'dense' : 'normal';
+    }
     if (densSel) densSel.addEventListener('change', () => {
-      const want = densSel.value === 'dense' ? 'fine' : 'organs';
-      const btn = items.find(b => b.dataset.panel === want);
-      if (btn) btn.click();
+      const on = densSel.value === 'dense';
+      applyDense(on);
+      // on the library page, turn to the collection that shows the same thing
+      const btn = items.find(b => b.dataset.panel === (on ? 'fine' : 'organs'));
+      if (btn && document.body.classList.contains('m7')) btn.click();
     });
   })();
   // ---- milestone visuals: the health journey, on the same body ----
@@ -10725,7 +10781,9 @@
         // or the lines come out as a speckle; `dots` is that shape's own say in it
         // the library is the reference sheet for the component, so it draws at
         // the engine's own density rather than a thumbnail's
-        target: Math.round(fullTarget(clouds[i]) * (o.dots || 1)), fill: 0.46, dot: 1.0,
+        // ...capped by the design's normal body count (organN), as the engine
+        // caps its own -- the sampler caps only at what the cloud holds
+        target: organN(Math.round(fullTarget(clouds[i]) * (o.dots || 1))), fill: 0.46, dot: 1.0,
         name: String(i).padStart(2, '0') + '-' + o.label
       });
       libViews[i] = v;
@@ -10733,34 +10791,21 @@
     });
   })();
   // ---- Organs -- Fine Grain: the same organs at exactly twice the particles ----
-  // A second cloud per organ, sampled from the organ's own geometry by the same
-  // builder, at a size that holds twice the library's largest target, off a
-  // fixed seed per organ so every point is new and every render is the same.
-  // The tile is the same component drawn from that cloud: twice the body
-  // target, twice the strays (the cloud's own tail, all of it), twice the flow,
-  // and the dot a little smaller -- a finer stipple over the same anatomy, not
-  // a denser fill. Built on first view, like the milestones.
+  // The same cloud, further in. Every cloud is sized to hold twice the
+  // library's largest target (see N), and both renderers draw a prefix of it,
+  // so the fine-grain tile is the base tile's particles plus the next as many
+  // again from the same sampling -- new points of the same geometry, none a
+  // duplicate or a jitter of the first set, and the same picture the engine
+  // draws on Dense. Twice the body, twice the strays, twice the flow, and the
+  // dot a little smaller: a finer stipple over the same anatomy, not a denser
+  // fill. Built on first view, like the milestones.
   //
-  // The size: the body prefix has to hold 2 x 11800 (the cap fullTarget can
-  // reach, for the iris and the sphere) with the strays' tail behind it, and
-  // 2N - 2AMB is 23090, five hundred short -- so 2N + 512, and the tail scales.
-  const FINE_N = 2 * N + 512;
   // "slightly smaller": the five sizes and their spread stay, scaled down a
   // fifth or so -- the reference is a very fine, even stipple with every grain
   // still its own dot, so smaller rather than fainter, and never so small that
-  // a dot stops being one (the painter draws a rect under 2.4 backing px)
+  // a dot stops being one (the painter draws a rect under 2.4 backing px). The
+  // engine draws the same dot on Dense.
   const FINE_DOT = 0.78;
-  // mulberry32, seeded per organ: small, fast, and the same sequence everywhere
-  function seeded(seed){
-    let a = seed >>> 0;
-    return () => {
-      a = (a + 0x6D2B79F5) | 0;
-      let t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-  const fineClouds = [];
   const fineViews = [];
   function buildFine(){
     const grid = document.getElementById('olFine');
@@ -10769,9 +10814,7 @@
     ORGANS.forEach((o, i) => {
       const base = libViews[i];
       if (!base) return;
-      // exactly twice the strays, and exactly twice the body the base tile
-      // actually draws (its target, capped by the buffer as organN caps it)
-      const cl = fineClouds[i] || (fineClouds[i] = o.cloud({ count: FINE_N, amb: 2 * AMB, rnd: seeded(0x9E3779B9 ^ (i * 0x85EBCA6B)) }));
+      const cl = clouds[i];
       const cell = document.createElement('div');
       cell.className = 'olCell';
       cell.innerHTML =
@@ -10785,6 +10828,7 @@
       const v = makeOrganView(cell.querySelector('.olStage'), i, {
         cloud: cl, key: 'fg' + i,
         target: 2 * organN(base.target, clouds[i]), fill: 0.46, dot: FINE_DOT,
+        ambN: 2 * AMB_VIEW,
         flowN: base.flowN * 2,
         // twice the dots to paint, so the cloud repaints in twice as many
         // groups; the flow overlay still moves every frame
@@ -11524,7 +11568,7 @@
       gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale() * sizeMul * 0.85);
       bindCloud(PILL[i].organIdx);
       gl.drawArrays(gl.POINTS, 0, orgDrawN(PILL[i].organIdx));
-      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
+      gl.drawArrays(gl.POINTS, N - AMB, ambView());
       if (flowVis > 0.015){
         // each cell draws only its own partition of the flow slice
         bindCloud(-1);
@@ -11592,7 +11636,9 @@
                        // Same problem: a class setMode would drop.
                        bioSph: false,
                        // the legend's fourth reading, on the bar's switch
-                       notScored: false };
+                       notScored: false,
+                       // Density: Dense on every surface, see denseOn
+                       dense: false };
   // Every state control is a thing that is either on or off, so each becomes a
   // switch -- the label beside it already says which thing. The select stays,
   // hidden, as the thing that holds the value: every handler in the file reads
@@ -12113,7 +12159,8 @@
     }
 
     gl.uniform1f(U.uDens, densNow = dens);
-    gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale() * sizeMul);
+    // Dense draws the library's fine-grain dot: the same five sizes at FINE_DOT
+    gl.uniform1f(U.uPix, DOT_PIX * dpr * pixScale() * sizeMul * (denseOn ? FINE_DOT : 1));
     gl.uniform1f(U.uDpr, dpr);   // the flow dot's pixel floor is stated in css px, see rF in the vertex shader
     voxNow += ((voxOn ? 1 : 0) - voxNow) * 0.08;
     gl.uniform1f(U.uSq, voxNow);
@@ -12241,8 +12288,8 @@
       // particles against a tile's 3,900: the same cloud at two densities, the
       // exact divergence the rest of the unification removed.
       gl.drawArrays(gl.POINTS, 0, heroDrawN());
-      gl.drawArrays(gl.POINTS, N - AMB, AMB_VIEW);
-      gl.drawArrays(gl.POINTS, FSTART, FLOW_VIEW);
+      gl.drawArrays(gl.POINTS, N - AMB, ambView());
+      gl.drawArrays(gl.POINTS, FSTART, flowView());
       setShape(-1, -1, 1);
     }
     // the tablet's strip is the only DOM the dashboards animate per frame, and

@@ -626,9 +626,12 @@ menus: one is a long list, the other has three options.
   remainder the meter already draws, as a number (28 of 124) with the meter's
   own grey for its dot. On every surface that carries the legend — the desktop
   card, the phone bento and the V6 hero — and kept across page changes.
-- **Density** — on the library page only: Normal (the Organ Library) or Dense
-  (Organs — Fine Grain, at twice the particles). It and the library's nav move
-  each other.
+- **Density** — on every page. Normal is the organ as designed; Dense is the
+  library's fine-grain reading of it: twice the body, twice the strays, twice
+  the flow, drawn from the same cloud at the smaller dot — on the phone, the
+  desktop and the tablet by the engine, and on the library page by turning to
+  Organs — Fine Grain (the nav's two organ entries set the same state). Kept
+  across page changes.
 - **Archive** — which superseded version is on screen, and only while one is.
   It is the second half of one control: the dropdown names the entry and this
   names the version inside it, so the bar reads *Version: Archive · Archive:
@@ -1296,36 +1299,41 @@ That is five thousand dots a tile across nine tiles, and it took the page from
 ### Organs — Fine Grain, and the Density select
 
 The library carries a second collection of the same organs, **Organs — Fine
-Grain**, at exactly twice the particles of the Organ Library beside it. The
-**Density** select on the bar (Normal / Dense), shown on the library page only,
-switches between the two; the nav's two entries do the same, and either moves
-the other.
+Grain**, at exactly twice the particles of the Organ Library beside it, and the
+**Density** select on the bar (Normal / Dense) draws the same thing on every
+other page: the phone, the desktop and the tablet switch their engine to the
+fine-grain reading, and the library page turns to the collection. The nav's two
+organ entries set the same state, so the two never disagree about what Dense is.
 
-Each fine-grain tile is the same component drawn from a second cloud: the
-organ's own builder run again at another size (`buildCloud` takes `{ count,
-amb, rnd }`), so every point is a fresh sample of the organ's own geometry —
-nothing is duplicated, nothing is jittered from the first set. The cloud holds
-twice the library's largest target with its strays behind it (`FINE_N`); the
-tile draws twice the body count the base tile actually draws, twice the strays
-(the cloud's own tail, all of it) and twice the flow, and shows the count on
-its card. The dot is drawn at 0.78 of the normal size with the same five sizes,
-the same opacity grid and the same three inks, so what changes is the grain,
-not the fill: a finer stipple over the same anatomy, every particle still its
-own dot. Exports run the same `paint()` as the tile, so the ↓ produces the
-fine-grain frame dot for dot, `-fine` in the filename.
+Density is a draw count, not a second asset. Every cloud is sampled by
+independent random draws, so it has no order and its first *k* particles are
+as uniform a subset as any other; both renderers draw a prefix of it. The
+clouds are sized to hold twice the library's largest target with the strays
+behind them (`N` is 2 × 12,245 + 512, `AMB` 1,400), Normal draws the library's
+target and Dense draws twice it — the next particles in the same cloud, new
+points of the same geometry, none a duplicate or a jitter of the first set.
+Two caps keep that honest: `organN` is the design's cap on a normal count (the
+11,545 body slots the buffer had before, which is what pins the iris and the
+sphere), and the sampler caps only at what the cloud holds, so twice a capped
+normal count fits. The engine on Dense draws `orgDrawN × 2`, `ambView()` twice
+the strays and `flowView()` twice the flow, at the fine-grain dot; each
+fine-grain tile draws twice its base tile's body, strays and flow, shows the
+count on its card, and exports dot for dot with `-fine` in the filename. The
+dot is 0.78 of normal with the same five sizes, the same opacity grid and the
+same three inks: a finer stipple over the same anatomy, every particle still
+its own dot. The larger clouds cost about 300 ms more at start-up here.
 
-**Deterministic randomness, for the whole page.** The fine clouds carry their
-own seeded generator per organ (mulberry32), including their ink picks and
-size seeds, so a fine-grain illustration is one picture and not a new draw of
-one. And the page's `Math.random` is itself a seeded generator now: every
-cloud, ink pick, seed table and flow phase is drawn at start-up in one fixed
-order, so the Organ Library's counts stopped moving between loads (the gap
-solver iterates on whatever sample it is handed, and Brain read 10117 on one
-load and 11275 on the next). That is what lets "exactly twice" mean the same
-number every time. Verified: thirteen cards, every count doubled, identical
-across two loads; the fine panel repaints its clouds in six groups rather
-than three and runs at about half the normal library's frame rate under
-software rendering.
+**Deterministic randomness, for the whole page.** The page's `Math.random` is
+a seeded generator (mulberry32): every cloud, ink pick, seed table and flow
+phase is drawn at start-up in one fixed order, so an illustration is one
+picture and not a new draw of one, and the Organ Library's counts stopped
+moving between loads (the gap solver iterates on whatever sample it is handed,
+and Brain read 10117 on one load and 11275 on the next). That is what lets
+"exactly twice" mean the same number every time. Verified: thirteen cards,
+every count doubled, identical across two loads; the engine on Dense draws
+exactly twice the body, strays and flow of Normal; the fine panel repaints its
+clouds in six groups rather than three and runs at about half the normal
+library's frame rate under software rendering.
 
 ### The light theme has its own three inks
 
