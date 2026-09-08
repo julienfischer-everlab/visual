@@ -2808,6 +2808,33 @@ reading and were left alone. Probed (rangecol.js): dots, runs, bars and
 gradient stops report the dark set, then the light set after a theme change;
 the hero arc's lit ticks take the light green.
 
+### 5.119 Organ up 16px, the arc's ends blurred, and the tablet's stack
+
+"Push up organ by 16px on mobile." The organ slides' vertical offset is a
+clip-space pan in the hero frame -- orgDrop, -0.25 at 2 / 202 per pixel --
+weighted by how little of the body slide is showing, so the same weight
+carries the lift: -0.25 + 0.158. The body on the biomarker slide is where it
+was. Screenshot against the previous build: the heart's crown 16px higher.
+
+"Is there a blur effect on both edges? If not add 6px blur progressive." There
+was not: two Gaussian filters were declared in buildArcA and applied to
+nothing; the ends relied on the side-fade mask alone. Now six filters, 1.5 to
+11.5 in the svg's units (0.8 to 6px on screen at the .52 the pages draw it),
+and each tick past the middle half of the scale takes the step for its
+distance, so the ends dissolve rather than thin. The filter regions are in
+user space and cover the whole scale -- a tick's own box is a pixel wide, and a
+percentage of that is nothing to blur into. 30 of 61 ticks carry a filter;
+frame pacing here unchanged (61 fps under swiftshader either way).
+
+"Tablet: push up hero number + arrows + sub by 16px; push up the bottom
+carousel by 16px; carousel item active medium not bold." The number, its
+arrows (they hang off #ageBig) and the caption ride one transform, so b5's
+translateY(24px) is 8px on the tablet; the name strip's bottom goes 10 -> 26;
+the strip's names are weight 500 -- all of them, since the active one is told
+apart by opacity and blur, not weight. Probed against the previous dist:
+ageBig 455 -> 439, arrows 484 -> 468, caption 533 -> 517, strip 587 -> 571,
+weights 600 -> 500.
+
 ---
 
 ## 6. Open items
