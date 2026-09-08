@@ -621,6 +621,14 @@ a change some other control made through the chain. Version and Mode keep their
 menus: one is a long list, the other has three options.
 
 - **Mode** — Colour (the burgundy the concept is designed in), Dark, or Light.
+- **Not scored** — off by default. On, the biomarker legend gains a fourth
+  reading beside *Out of range*: the panel's unscored biomarkers, the grey
+  remainder the meter already draws, as a number (28 of 124) with the meter's
+  own grey for its dot. On every surface that carries the legend — the desktop
+  card, the phone bento and the V6 hero — and kept across page changes.
+- **Density** — on the library page only: Normal (the Organ Library) or Dense
+  (Organs — Fine Grain, at twice the particles). It and the library's nav move
+  each other.
 - **Archive** — which superseded version is on screen, and only while one is.
   It is the second half of one control: the dropdown names the entry and this
   names the version inside it, so the bar reads *Version: Archive · Archive:

@@ -2617,6 +2617,27 @@ Checked: shaders compile, no null uniform locations, the phone's light iris is
 the library's red with a saved custom palette in both themes, sweep clean,
 flow ratios unchanged.
 
+### 5.110 Not scored: the legend's fourth reading, on a switch
+
+"Create a tweak, Not scored. If on, add the label next to Out of range." The
+meter already draws it -- the grey remainder after the three coloured runs --
+and the legend did not say what it was. Now a bar switch (`stNs`, a two-option
+select the bar renders as a toggle, off by default) puts a fourth item beside
+Out of range on every surface that has the legend: the desktop biomarker card,
+the phone bento, and the V6 hero's legend, where the count is derived from
+BIO_N (124 less 81, 9 and 6: 28) rather than typed. The dot is the meter's
+own remainder grey, per theme. A class on the body, held in CARD_STATE so
+setMode does not drop it on a page change.
+
+One thing bit: the hero legend lays its spans out by an id-strength rule, and
+a class-strength `display:none` lost to it, so the item showed in the hero
+whatever the switch said. The hiding rule now outranks it by one class and
+steps aside when the switch is on, so the item takes the same flex row as its
+siblings. With four items the hero's row closes up by four pixels a gap so its
+ends sit clear of the header's side fade. Probed (`notscored.js`): off on
+desktop, on shows "28 Not scored", the state survives a change to the phone,
+off again hides it everywhere.
+
 ---
 
 ## 6. Open items
