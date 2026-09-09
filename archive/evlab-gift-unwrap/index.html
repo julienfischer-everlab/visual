@@ -176,6 +176,47 @@
   body[data-state="returning"] .dim,
   body[data-state="returning"] .scene-bg::after{transition-duration:var(--back-card-ms);transition-delay:0s;}
 
+  /* the seed: a glass half circle inside the photo dome, concentric with it,
+     the card's own surface with nothing in it yet. On the reveal it morphs into
+     the card's exact rectangle (left/top/width/height/radius written by JS),
+     then the card takes its place and the content fades in. */
+  .seed{
+    position:absolute;z-index:2;pointer-events:none;
+    background:rgba(40,38,36,.32);
+    -webkit-backdrop-filter:blur(44px) saturate(1.15);backdrop-filter:blur(44px) saturate(1.15);
+    border-radius:50%;
+    transform:scale(0);
+    transition:
+      transform 1100ms cubic-bezier(.2,.7,.2,1),
+      left var(--card-ms) var(--ease-scene) var(--card-delay),
+      top var(--card-ms) var(--ease-scene) var(--card-delay),
+      width var(--card-ms) var(--ease-scene) var(--card-delay),
+      height var(--card-ms) var(--ease-scene) var(--card-delay),
+      border-radius var(--card-ms) var(--ease-scene) var(--card-delay),
+      opacity 300ms ease calc(var(--card-delay) + var(--card-ms));
+  }
+  body.orb-in .seed{transform:scale(1);}
+  body[data-state="revealing"] .seed,
+  body[data-state="gift"] .seed{opacity:0;}
+  body[data-state="returning"] .seed{
+    opacity:1;
+    transition:
+      left var(--back-card-ms) var(--ease-scene) 0s, top var(--back-card-ms) var(--ease-scene) 0s,
+      width var(--back-card-ms) var(--ease-scene) 0s, height var(--back-card-ms) var(--ease-scene) 0s,
+      border-radius var(--back-card-ms) var(--ease-scene) 0s, opacity 250ms ease 0s;
+  }
+  body[data-motion="static"] .seed{display:none !important;}
+  /* dynamic: the card does not rise; it appears where the seed has arrived and
+     its content fades in */
+  body[data-motion="dynamic"] .card{transform:none;opacity:0;transition:opacity 300ms ease calc(var(--card-delay) + var(--card-ms) - 200ms);}
+  body[data-motion="dynamic"][data-state="revealing"] .card,
+  body[data-motion="dynamic"][data-state="gift"] .card{opacity:1;}
+  body[data-motion="dynamic"][data-state="returning"] .card{opacity:0;transition:opacity 250ms ease 0s;}
+  body[data-motion="dynamic"] .card .info{opacity:0;transition:opacity 600ms ease calc(var(--card-delay) + var(--card-ms) + 50ms);}
+  body[data-motion="dynamic"][data-state="revealing"] .card .info,
+  body[data-motion="dynamic"][data-state="gift"] .card .info{opacity:1;}
+  body[data-motion="dynamic"][data-state="returning"] .card .info{opacity:0;transition:opacity 200ms ease 0s;}
+
   /* warm glow that belongs to the dark room; fades in with the background */
   .glow{
     position:absolute;inset:0;z-index:0;pointer-events:none;
@@ -900,6 +941,7 @@
 <div class="glow" aria-hidden="true"></div>
 <div class="scene-bg" id="sceneBg" role="img" aria-label="A couple sharing a photo album in a cosy wood-toned living room"></div>
 <div class="dim" aria-hidden="true"></div>
+<div class="seed" id="seed" aria-hidden="true"></div>
 
 <!-- Fold 1 · GiftIntro -->
 <section class="intro" id="intro" aria-label="A message from the sender">
@@ -969,7 +1011,6 @@
   </article>
   <aside class="side" aria-label="Your membership">
 
-      <p class="mono-label">What’s next</p>
       <ol class="timeline" aria-label="Your next steps">
         <li class="now" aria-current="step"><i></i><span>Unwrap</span></li>
         <li><i></i><span>Claim your gift</span></li>
@@ -1173,6 +1214,23 @@
      Writes the closed and open states of the photo circle as custom
      properties: diameter, background size and background position. */
   var imgW = 1920, imgH = 1446; // the stand-in gradient uses the photo's aspect
+  var seedD0 = 0;
+  function seedRest(){
+    var st = document.getElementById('stage'), seed = $('seed');
+    var r = seedD0 * .3;
+    seed.style.left = (st.clientWidth / 2 - r).toFixed(1) + 'px';
+    seed.style.top = (st.clientHeight - r).toFixed(1) + 'px';
+    seed.style.width = seed.style.height = (2 * r).toFixed(1) + 'px';
+    seed.style.borderRadius = '50%';
+  }
+  function seedCard(){
+    var c = $('card'), seed = $('seed');
+    seed.style.left = c.offsetLeft + 'px';
+    seed.style.top = c.offsetTop + 'px';
+    seed.style.width = c.offsetWidth + 'px';
+    seed.style.height = c.offsetHeight + 'px';
+    seed.style.borderRadius = getComputedStyle(c).borderRadius;
+  }
   function layoutScene(w, h){
     if(w && h){ imgW = w; imgH = h; }
     var stage = document.getElementById('stage');
@@ -1200,6 +1258,8 @@
     var by1 = (d1 - H - Fh) / 2;
 
     root.setProperty('--d0', d0.toFixed(1) + 'px');
+    seedD0 = d0;
+    if(state === 'intro' || state === 'returning') seedRest(); else seedCard();
     root.setProperty('--bw0', bw0.toFixed(1) + 'px'); root.setProperty('--bh0', bh0.toFixed(1) + 'px');
     root.setProperty('--bx0', bx0.toFixed(1) + 'px'); root.setProperty('--by0', by0.toFixed(1) + 'px');
     root.setProperty('--d1', d1.toFixed(1) + 'px');
@@ -1230,6 +1290,8 @@
   var BACK_MS = 1150;  // back-text-delay + back-text-ms
   var state = 'intro';
   function setState(next){
+    if(next === 'revealing') seedCard();
+    if(next === 'returning') seedRest();
     state = next;
     document.body.dataset.state = next;
     var onGift = next === 'gift' || next === 'revealing';

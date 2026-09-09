@@ -10,7 +10,7 @@ in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Blinking square" |
+| Captured from version | 2026-09-09, "Seed circle becomes the card" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -88,13 +88,19 @@ floating phone button are not used. Reduced motion disables the parallax.
 
 The reveal. Half a second after the button arrives, the top of a circle scales
 up from the bottom edge of the screen (the photograph at half size, the couple
-inside the dome) and the whole block moves up 64px to make room for it. The button, a scroll down, a swipe or the down-arrow, page-down and
+inside the dome) and the whole block moves up 64px to make room for it. Inside
+the dome, concentric with it at 60% of its size, sits a second half circle:
+the card's own glass surface (same tint, same blur) with nothing in it yet, the
+card not yet expanded. The button, a scroll down, a swipe or the down-arrow, page-down and
 space keys run the same sequence on the one viewport: the first-fold block
 travels 256px up while fading and blurring (800ms); from 100ms the circle
 grows until the photograph is exactly a full-screen cover while the room
-crossfades to dark; at the same moment the glass card rises from below into
-place over 1s on `cubic-bezier(.9,0,.22,1)`, the right side a beat later;
-settled at 1.1s, when the footer and a small arrow at the top fade in. The
+crossfades to dark; at the same moment the glass half circle morphs into the
+card's exact rectangle (position, size and corner radius written by the
+script from the card's layout) over 1s on `cubic-bezier(.9,0,.22,1)`; as it
+lands the real card takes its place and the content fades in, while the
+timeline rises from below a beat later; settled at 1.1s, when the footer and
+a small arrow at the top fade in. The
 arrow, or a firm scroll up, runs it in reverse (about 1.15s).
 
 ## Fold 2
@@ -112,7 +118,7 @@ right of the card, beside the title, sits the membership passport as a 128×72
 tile: the `Ellipse 4358.png` copper texture blurred 64px into a warm gradient,
 the Everlab mark top left and "12 months" bottom right. Phones drop the tile.
 
-Under the card, 28px below and directly over the photograph: "What's next", a
+Under the card, 28px below and directly over the photograph, with no label: a
 horizontal timeline as wide as the card, four equal columns with a 10px square
 at the centre of each and its label centred beneath on one line; a half-pixel
 line runs from 6px right of each square to 6px left of the next. The squares
