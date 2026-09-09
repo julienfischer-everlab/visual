@@ -10,7 +10,7 @@ in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Circle after the button" |
+| Captured from version | 2026-09-09, "Blinking square" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -51,7 +51,8 @@ the frame and on a real phone alike.
 
 The sender's message, set large and medium in a sans (Suisse Intl where
 installed, otherwise Geist), under a plain mono eyebrow, all caps and widely
-spaced, a small orange square then "Matt got something special for you".
+spaced, a small orange square (blinking once a second, like a cursor) then
+"Matt got something special for you".
 Default copy: "Happy Birthday. I want you around for a long time." over three
 lines. Letters resolve one by one out of a blur with a faint warm ember on the
 newest three, each line opening as a row so the block grows from the middle;
