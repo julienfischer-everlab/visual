@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Centred card, columns follow" |
+| Captured from version | 2026-09-08, "Half circle opens into the room" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -27,7 +27,9 @@ actually are." over three lines. Each character starts blurred, faintly
 transparent and 3px low, and eases up and sharpens out of the blur over 1s. Separately, a warm ember fades over three stagger steps (about 200ms), so at any moment the newest letter is warmest and the two before it progressively less: a short gradient trailing the leading edge. The stagger is
 derived from the character count so the whole message lands in about 2.8
 seconds. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 350ms after the last character settles, a small black pill,
-**See my gift**, rises into place.
+**See my gift**, rises into place. At the bottom edge of the screen the top of a
+dark circle shows, like a sun about to rise: the photograph behind fold 2,
+peeking through.
 
 **Transition.** On click, three things happen in sequence, all on the same
 viewport:
@@ -35,23 +37,22 @@ viewport:
 | When | What |
 | --- | --- |
 | 0ms | The whole first-fold block (chip, message, button) scrolls up and out of the viewport (800ms), like the page being pushed |
-| 100ms | The viewport crossfades from warm white to near-black over 700ms, and a faint warm glow comes up with it |
+| 100ms | The circle at the bottom opens until it fills the viewport and becomes the room; the viewport behind it crossfades to dark at the same time |
 | 100ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1s on `cubic-bezier(.9,0,.22,1)`, a long slow start that then commits fast |
 | 1100ms | Settled; the footer line and a small arrow at the top fade in |
 
 Nothing slides or cuts; the room changes around the reader and then the card
 arrives. The arrow at the top of fold 2 runs the same sequence in reverse:
-the card sinks back below the edge and the room crossfades back to white
-together (about 750ms), and the block settles back down into place from
-400ms, done at about 1.15s.
+the card sinks back below the edge, the circle closes back to a half circle at
+the bottom and the room crossfades back to white together (about 750ms), and
+the block settles back down into place from 400ms, done at about 1.15s.
 
-**Fold 2.** Near-black with a faint warm glow. The gift card lands in the centre
-of the screen,
-with no border and no shadow, just a slightly lighter fill. Its left column
-holds the mono "A gift from Matt" line, the product name, a short description
-of the membership, the total value set large under a mono label, and
-**Claim my gift**. Its right column is the photograph, with the sender's note
-overlaid on its lower edge in a dark glass panel.
+**Fold 2.** The photograph fills the screen, darkened so type reads over it.
+The gift card lands in the centre as a dark glass panel with the photo
+showing through, no border and no shadow. Its left column holds the mono "A
+gift from Matt" line, the product name, a short description of the
+membership, the total value set large under a mono label, and
+**Claim my gift**. Its right column is the sender's note, set large.
 
 Below the first screen, two columns fade in half a second after the card has
 landed, each with a mono label on top; the reader scrolls down to them:
@@ -69,13 +70,10 @@ folds.
 
 ## The photograph
 
-The card's right column is a photo slot. The photo supplied for it (a hand
-holding a phone showing Everlab health insights, a glass of water, warm light
-on an oak table) was not available as a file when this version was captured.
-Until it is, the column carries a composed stand-in of the same scene built
-from CSS and a little SVG: oak grain in low warm light, and a tilted phone
-showing the Everlab "Health insights" screen with a heart age of 44 and a
-steps tile. To ship the real photo:
+The photograph behind fold 2 is `couple-sharing-a-photo-album-in-a-cozy-wood-toned-living-room-large.png`
+(a couple sharing a photo album in a cosy wood-toned living room). It was not
+available as a file when this version was captured, so a warm living-room
+gradient stands in. To ship it:
 
 - **Inside the page** (the only way it can load on the artifact host): set the
   `PHOTO` constant at the top of the script to a `data:` URI of the image.
@@ -91,7 +89,7 @@ small components with one piece of state on the
 | --- | --- |
 | `AnimatedQuote` | Splits the message into unbreakable words and per-character spans, assigns each its delay |
 | `GiftIntro` | Fold 1: the message and the button, and when the button appears |
-| `GiftCard` | The gift itself: product, term, value, inclusions, the sender's note, the activation button, the photo |
+| `GiftCard` | The gift itself: product, description, value, the sender's note, the button, inclusions, next steps, and the photo behind the fold |
 | `App` | Owns the state (`intro → revealing → gift → returning → intro`) and the timing of both directions |
 
 ## Feeding it from the email
@@ -111,7 +109,7 @@ optional and falls back to the example gift baked into the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`); one line each on desktop, so keep items short |
 | `steps` | Next steps, semicolon-separated, each `Title\|Description` |
 | `claim` | Activation URL for the button (http or https only) |
-| `image` | Photo for the card's right column (http or https only) |
+| `image` | The photograph behind fold 2 (http or https only) |
 
 All text is inserted as plain text, never as HTML.
 
