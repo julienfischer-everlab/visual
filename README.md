@@ -671,14 +671,18 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   from exactly where it starts to exactly where it ends.
   (A constant in the script, `BIO_CYCLE`, puts the static bands back.)
 - **Bio graph** — Arc (default) or Dots, in the Tweaks dropdown; a select, since
-  the two are named readings rather than on and off. Dots puts a line of forty
-  dots where the arc's ticks are on the biomarker slide, the legend's width,
-  filled left to right with the ranges' colours by share — each range takes its
-  share of the forty by largest remainder, so they always sum — the unclassified
-  in the range grey when shown, at rest when folded in. It rides the same swap
-  the arc does (the arc gives way on the biomarker slide alone and is back on
-  the organs), the same hero fade and the same left-to-right reveal when the
-  slide lands; with the dots the legend carries no highlight and the arc's
+  the two are named readings rather than on and off. Dots runs twenty-six dots
+  along the arc's own curve on the biomarker slide — inside the arc's SVG, at
+  the ticks' midline, across the middle 60% of the scale, with a gap a little
+  over a dot wide — filled left to right with the ranges' colours by share
+  (each range takes its share of the dots by largest remainder, so they always
+  sum), the unclassified in the range grey when shown, at rest when folded in;
+  a dot not yet reached or without a range rests at the ticks' grey. The ticks
+  under the dotted stretch stand down as the dots come up, and the resting
+  ticks outside it stay as the arc's background with their blur and side
+  fade, which the dots share. Same swap as the arc's distribution, same hero
+  fade, same left-to-right reveal when the slide lands; the age scale is back
+  on the organs. With the dots the legend carries no highlight and the arc's
   status cycle stands down. Kept across page changes.
 - **Density** — on every page. Normal is the organ as designed; Dense is the
   library's fine-grain reading of it: twice the body, twice the strays, twice

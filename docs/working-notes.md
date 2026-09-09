@@ -3038,6 +3038,29 @@ dots at 1 on the biomarker slide, the reverse on an organ, back again on the
 return; the state and the select survive a page round trip; the light set on
 the light theme. Error, mode and arc-wrap probes clean.
 
+### 5.128 The dots on the arc's curve
+
+"Put the dots in the same way as the arc, with a circular shape, keep the blur
+on the background and the fade-out on the edges, and more gap between the
+dots." The straight row (5.127) goes; the dots are a `<g>` of circles inside
+#arcA itself, built by buildArcA on the same geometry -- ptA at the ticks'
+midline, evenly pitched across v -9..9, the middle 60% the panel is laid on --
+so the svg's side fade, its scale and its place on every rebuild are theirs
+for nothing. Twenty-six of them at r 2.4 (3.7px on screen, a 4px gap), down
+from forty at 6px edge to edge. The group's opacity is the swap (bioArc), and
+in the tick loop the ticks under the dotted stretch stand down by the same
+weight while the ticks outside it -- the blurred, fading ends -- stay as the
+arc's background, so the dotted centre reads as one arc with the grey ends.
+paintDots() sets fill and opacity on the circles rather than a background on
+divs; the DOM row, its CSS and --heroW dependence are gone. The indicator
+stays hidden with the dots, as with the cycle.
+
+Probed (biodots.js): 26 circles on a 20px rise across 204px, gap 3.9px; 18 /
+5 / 3 without the unclassified, 16 / 5 / 3 / 2 with; the ticks under them at
+base x (1 - bioArc), the ends unchanged; the group at 0 on an organ slide and
+1 again on the return; state through a page round trip; the light set on the
+light theme. Error, mode, arc-wrap and all-arcs probes clean.
+
 ---
 
 ## 6. Open items
