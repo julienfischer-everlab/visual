@@ -689,8 +689,14 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   to its last, left to right over 0.65s, each dot rising as the front reaches
   it; the growth starts once the slide has landed rather than during the
   swap, and a late frame (a cold start compiling shaders) moves the clock on
-  instead of eating the run. Same swap as the arc's distribution, same hero
-  fade; the age scale is back on the organs. With the dots the legend carries no highlight and the arc's
+  instead of eating the run. Leaving the slide, the run does not fade: over
+  half a second the dots travel along the arc to its centre and out to the
+  indicator's radius, growing to its size and taking its ink, until they are
+  one dot — and that dot is the indicator, which takes over in the same
+  frame and sweeps to the age with the ticks growing behind it. A swipe back
+  before the gather has ended simply lays the run down again. Same swap as
+  the arc's distribution, same hero fade; the age scale is back on the
+  organs. With the dots the legend carries no highlight and the arc's
   status cycle stands down. Kept across page changes.
 - **Density** — on every page. Normal is the organ as designed; Dense is the
   library's fine-grain reading of it: twice the body, twice the strays, twice

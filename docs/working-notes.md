@@ -3284,6 +3284,38 @@ run laid down rather than a switch. Probed: after a swipe the first dot rises
 at 0.30s and the twenty-eight are down by 0.91s; on a cold start the run goes
 3 -> 28 in 0.54s once the first frames are through.
 
+### 5.137 The dots gather into the indicator
+
+"We need a transition between the dots and the next arc: when you go from
+biomarkers to biological age, combine all the dots into one, and that dot
+becomes the reference dot on the range." The run used to fade with the swap
+(260ms) while the age arc's indicator faded in at the centre; two things
+crossing, neither becoming the other.
+
+Now, when the slide is left with the dots up, the group holds at full
+opacity and each dot travels over 520ms (a smooth ease) from its place on the
+run to the indicator's spot -- along the arc to the centre (v -> 0) and
+outward from the dots' radius (R - 6.5) to the indicator's (R + 13) -- while
+growing from 2.4 to the indicator's 4 and blending from its range colour to
+the indicator's ink (white; black in light). The ends' taper and the resting
+dots' faintness lift as they go, so what arrives is one solid dot, not a
+pale one. The frame the gather ends, the dots go and the indicator appears
+at that same point, and the sweep to the organ's age starts from there: the
+arc's start (arcStart) is held for the gather rather than the swap's 260ms,
+and the aligned centre tick waits with it. A run left half-grown gathers only
+what was there (dotsMergeRev). A swipe back before the gather has ended
+clears it (dotsMergeT), and the run is laid down again on landing as usual.
+The Arc version is untouched -- with the dots off, the 260ms hand-over
+stands.
+
+Probed (dotmerge.js): after the swipe the dots' spread runs 306 -> 280 ->
+156 -> 25px over 0.44s as the radius goes 2.4 -> 3.88 and the first dot's fill
+runs from AAEEC2 to near white; at 0.53s the group is off and the indicator
+is on at (220, 1) -- the gather's target -- from where it travels to (125, 14)
+with eleven ticks lit behind it. A swipe back mid-gather leaves the run
+whole (28 dots, spread 306, radius 2.4, indicator off). Landing, backward
+swipe, mode and error probes clean.
+
 ---
 
 ## 6. Open items
