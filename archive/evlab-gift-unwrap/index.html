@@ -207,7 +207,7 @@
   body[data-state="revealing"] .intro,
   body[data-state="gift"] .intro{pointer-events:none;}
   body[data-state="revealing"] .stack,
-  body[data-state="gift"] .stack{transform:translateY(-110vh);}
+  body[data-state="gift"] .stack{transform:translateY(-110cqh);}
   body[data-state="gift"] .intro{visibility:hidden;}
   /* coming back: the block scrolls back down into place once the room is light again */
   body[data-state="returning"] .stack{
@@ -217,12 +217,12 @@
 
   .quote{
     margin:0;
-    max-width:min(92vw, 14em);
+    max-width:min(92cqw, 14em);
     text-align:center;
     font-weight:500;
-    font-size:clamp(29px, 4.2vw + 12px, 64px);
+    font-size:clamp(29px, 4.2cqw + 12px, 64px);
     /* 6px tighter than .98; floored at .8em so lines never overlap on phones */
-    line-height:max(calc(.98em - 6px), .8em);
+    line-height:max(calc(.98em - 6px), .9em);
     letter-spacing:-.034em;
     color:var(--ink);
     text-wrap:balance;
@@ -265,7 +265,7 @@
 
   /* a plain mono line above the message: a black square, then who sent it */
   .chip{
-    margin:0 0 clamp(26px, 4vh, 40px);
+    margin:0 0 clamp(26px, 4cqh, 40px);
     display:inline-flex;align-items:center;gap:12px;
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
     font-size:12px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
@@ -303,7 +303,7 @@
 
   .intro .cta{
     position:relative;border-radius:999px;
-    margin-top:clamp(40px, 6vh, 64px);
+    margin-top:clamp(40px, 6cqh, 64px);
     opacity:0;transform:translateY(8px);filter:blur(3px);
     transition:opacity .7s var(--ease-out), transform .7s var(--ease-out), filter .7s var(--ease-out);
   }
@@ -382,13 +382,13 @@
     display:grid;grid-template-columns:minmax(0, 1.5fr) minmax(0, 1fr);
     max-height:100%;
     overflow:hidden;
-    transform:translateY(110vh);
+    transform:translateY(110cqh);
     will-change:transform;
     transition:transform var(--card-ms) var(--ease-scene) var(--card-delay);
   }
   body[data-state="revealing"] .card,
   body[data-state="gift"] .card{transform:none;}
-  body[data-state="returning"] .card{transform:translateY(110vh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
+  body[data-state="returning"] .card{transform:translateY(110cqh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
 
   .card .info{padding:48px;display:flex;flex-direction:column;justify-content:flex-start;min-height:0;min-width:0;}
   .kicker{
@@ -407,7 +407,7 @@
   }
   .value{display:flex;flex-direction:column;gap:6px;margin:0 0 30px;}
   .value b{
-    font-weight:500;font-size:clamp(26px, 1.4vw + 16px, 34px);line-height:1;letter-spacing:-.03em;
+    font-weight:500;font-size:clamp(26px, 1.4cqw + 16px, 34px);line-height:1;letter-spacing:-.03em;
     color:var(--ink-d);font-variant-numeric:tabular-nums;
   }
 
@@ -474,7 +474,7 @@
   .card h2{
     margin:0;
     font-weight:500;
-    font-size:clamp(28px, 1.6vw + 16px, 38px);line-height:1.04;letter-spacing:-.03em;
+    font-size:clamp(28px, 1.6cqw + 16px, 38px);line-height:1.04;letter-spacing:-.03em;
     color:var(--ink-d);
     text-wrap:balance;
   }
@@ -564,13 +564,13 @@
   .foot svg rect{fill:var(--muted-d);}
   .foot b{font-weight:500;color:var(--ink-d2);}
 
-  @media (min-width:821px) and (max-height:800px){
+  @container stage (min-width:821px) and (max-height:800px){
     .hero{padding:80px 0 52px;gap:20px;}
     .card .info, .visual{padding:30px 34px;}
     .card{border-radius:32px;}
     .title-row{margin-bottom:8px;}
     .title-row .orb{width:36px;height:36px;}
-    .card h2{font-size:clamp(24px, 1.3vw + 14px, 30px);}
+    .card h2{font-size:clamp(24px, 1.3cqw + 14px, 30px);}
     .blurb{margin-bottom:0;font-size:14.5px;}
     .incl-wrap{padding-top:22px;gap:12px;}
     .incl{gap:8px;}
@@ -587,7 +587,7 @@
     .logo svg{height:20px;}
     .back{top:22px;}
   }
-  @media (max-width:820px){
+  @container stage (max-width:820px){
     .card{grid-template-columns:1fr;max-width:560px;margin:0;}
     .visual{order:1;min-height:0;padding:26px 26px 30px;border-left:0;border-top:1px solid rgba(255,255,255,.06);}
     .incl{grid-template-columns:repeat(2, minmax(0,1fr));}
@@ -638,6 +638,7 @@
     font-size:11px;letter-spacing:.14em;text-transform:uppercase;
   }
   .topbar label{opacity:.6;white-space:nowrap;}
+  .topbar .bar-group{display:inline-flex;align-items:center;gap:10px;margin-left:auto;}
   @media (max-width:600px){ .topbar label{display:none;} .topbar{justify-content:flex-end;} }
   .topbar select{
     font:inherit;font-size:12px;letter-spacing:0;text-transform:none;
@@ -648,17 +649,69 @@
 
   /* the stage: everything that used to be pinned to the viewport is pinned to
      the area under the bar instead, so the bar never overlays anything */
-  #stage{position:fixed;top:44px;left:0;right:0;bottom:0;overflow:hidden;}
+  #stage{position:absolute;inset:0;overflow:hidden;container:stage / size;}
+  /* the device holder: on desktop it is simply the area under the bar; in
+     iPhone mode it becomes a phone frame with the stage as its screen */
+  .device{position:fixed;top:44px;left:0;right:0;bottom:0;}
+  .device .island, .device .status, .device .home{display:none;}
+  body[data-device="phone"]{background:#141414 !important;}
+  body[data-device="phone"] .device{
+    left:50%;right:auto;bottom:auto;top:calc(44px + 24px);
+    width:430px;height:884px;
+    transform:translateX(-50%) scale(var(--fit, 1));transform-origin:top center;
+    border-radius:66px;background:#0B0B0B;
+    box-shadow:0 0 0 2px #3A3A3A, 0 0 0 4px #141414, 0 0 0 5px #2A2A2A, 0 60px 120px -40px rgba(0,0,0,.8);
+  }
+  body[data-device="phone"] #stage{inset:16px;border-radius:50px;background:var(--white);transition:background-color var(--bg-ms) ease var(--bg-delay);}
+  body[data-device="phone"][data-state="revealing"] #stage,
+  body[data-device="phone"][data-state="gift"] #stage{background:var(--night);}
+  body[data-device="phone"][data-state="returning"] #stage{background:var(--white);transition-delay:var(--back-bg-delay);}
+  body[data-device="phone"] .device .island{
+    display:block;position:absolute;top:28px;left:50%;transform:translateX(-50%);
+    width:122px;height:36px;border-radius:999px;background:#000;z-index:30;
+  }
+  body[data-device="phone"] .device .status{
+    display:flex;position:absolute;top:30px;left:44px;right:44px;z-index:29;
+    justify-content:space-between;align-items:center;pointer-events:none;
+    font-family:var(--sans);font-weight:600;font-size:16px;color:var(--ink);letter-spacing:-.01em;
+    transition:color var(--bg-ms) ease var(--bg-delay);
+  }
+  body[data-device="phone"][data-state="revealing"] .device .status,
+  body[data-device="phone"][data-state="gift"] .device .status{color:var(--ink-d);}
+  .device .status svg{display:block;}
+  body[data-device="phone"] .device .home{
+    display:block;position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
+    width:140px;height:5px;border-radius:999px;background:currentColor;opacity:.9;z-index:30;
+    color:var(--ink);transition:color var(--bg-ms) ease var(--bg-delay);
+  }
+  body[data-device="phone"][data-state="revealing"] .device .home,
+  body[data-device="phone"][data-state="gift"] .device .home{color:var(--ink-d);}
+  /* inside the phone the fixed chrome makes room for the island and the home bar */
+  body[data-device="phone"] .logo{top:76px;}
+  body[data-device="phone"] .back{top:74px;right:22px;}
+  body[data-device="phone"] .hero{padding-top:118px;}
+  body[data-device="phone"] .intro{padding-top:60px;padding-bottom:40px;}
+  body[data-device="phone"] .gift{padding-bottom:56px;}
 </style>
 
 
 <div class="topbar">
   <label for="version">Everlab gift · version</label>
+  <span class="bar-group">
+  <label for="device">Device</label>
+  <select id="device" aria-label="Device">
+    <option value="desktop">Desktop</option>
+    <option value="phone">iPhone</option>
+  </select>
+  </span>
   <select id="version" aria-label="Switch version">
     <option value="https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159" selected>01 · Cinematic reveal</option>
     <option value="https://claude.ai/code/artifact/05f652dc-ce60-45f8-92db-a2e813932039">02 · Sections</option>
   </select>
 </div>
+<div class="device" id="deviceFrame">
+<div class="island" aria-hidden="true"></div>
+<div class="status" aria-hidden="true"><span>9:41</span><svg width="52" height="12" viewBox="0 0 52 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/><path d="M22 4.5a9 9 0 0 1 12 0l-1.4 1.5a7 7 0 0 0-9.2 0z"/><path d="M24.6 7.3a5 5 0 0 1 6.8 0L30 8.8a3 3 0 0 0-4 0z"/><circle cx="28" cy="10.5" r="1.4"/><rect x="38" y="1" width="12" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="39.5" y="2.5" width="8" height="7" rx="1.2"/><rect x="50.6" y="4" width="1.4" height="4" rx=".7"/></svg></div>
 <div id="stage">
 <a class="logo" href="https://everlab.com.au" aria-label="Everlab"><svg aria-hidden="true" focusable="false" viewBox="0 0 124 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_3368_175050)">
@@ -763,6 +816,8 @@
   </p>
 </main>
 
+</div>
+<div class="home" aria-hidden="true"></div>
 </div>
 
 <script>
@@ -978,8 +1033,24 @@
     root.setProperty('--bw1', Fw.toFixed(1) + 'px'); root.setProperty('--bh1', Fh.toFixed(1) + 'px');
     root.setProperty('--bx1', bx1.toFixed(1) + 'px'); root.setProperty('--by1', by1.toFixed(1) + 'px');
   }
-  layoutScene();
-  window.addEventListener('resize', function(){ layoutScene(); });
+  /* ---------- device: desktop or an iPhone frame ---------- */
+  var deviceSel = document.getElementById('device');
+  function fitDevice(){
+    var availH = window.innerHeight - 44 - 48, availW = window.innerWidth - 32;
+    var fit = Math.min(1, availH / 884, availW / 430);
+    document.documentElement.style.setProperty('--fit', fit.toFixed(4));
+  }
+  function setDevice(d){
+    document.body.dataset.device = d;
+    deviceSel.value = d;
+    fitDevice();
+    // the stage has a new size: recompute the circle and let the layout settle
+    requestAnimationFrame(function(){ layoutScene(); });
+  }
+  var wanted = (params.get('device') || '').toLowerCase();
+  setDevice(wanted === 'phone' || wanted === 'iphone' ? 'phone' : 'desktop');
+  deviceSel.addEventListener('change', function(){ setDevice(deviceSel.value); });
+  window.addEventListener('resize', function(){ fitDevice(); layoutScene(); });
 
   /* ---------- App: intro → revealing → gift → returning → intro ---------- */
   var SCENE_MS = 1100; // card-delay + card-ms, see the CSS tokens

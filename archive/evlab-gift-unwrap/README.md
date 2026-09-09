@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Membership passport card" |
+| Captured from version | 2026-09-08, "iPhone frame mode" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -81,6 +81,18 @@ hairline, and the card corners are 44px.
 Motion is limited to transform, opacity and blur. Nothing bounces.
 `prefers-reduced-motion` shows the message immediately and crossfades the
 folds.
+
+## Desktop and iPhone
+
+The top bar carries a **Device** select: Desktop or iPhone (also `?device=phone`
+on the link). In iPhone mode the whole experience runs inside a drawn iPhone,
+430×884 with a dynamic island, a status bar reading 9:41, and a home
+indicator, scaled to fit the window below the bar. The screen is the same
+stage the desktop version uses, so the reveal, the circle, the card and the
+scroll and swipe triggers all behave identically; the phone layout rules are
+container queries on the stage rather than media queries on the window, so
+the phone layout applies inside the frame on a desktop screen and on a real
+phone alike. Sizes that used viewport units now use container units.
 
 ## Logo and chrome
 
