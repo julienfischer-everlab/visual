@@ -3208,6 +3208,20 @@ pill 24px), so a skeleton row is 75px like a real one and the head is 79px
 against the real 78.8; the swap from skeleton to results moves nothing.
 Probed (skelh.js, skel.js): five rows at 75 each, real 75.
 
+### 5.132 The keyboard comes up from the bottom
+
+"The keyboard should have a transition coming from the bottom of the screen."
+It switched on. It is in the frame all the time now, parked a full height
+below the bottom edge (translateY(100%), hidden and deaf to touch), and slides
+up over 320ms on an ease-out when the field takes focus, then back down the
+same way when a scroll or the search key lets it go; visibility follows the
+slide down so the parked keyboard cannot be tapped through the tab bar's
+place. Only the frame draws it -- on the device (#m20v) it stays display:none
+and the real one comes up. Probed (kbdslide.js): tap, and the offset runs
+254 -> 200 -> 55 -> 16 -> 0 over 0.36s, visible throughout; a scroll runs it
+back 0 -> 147 -> 242 -> 254 and it is hidden at 0.43s; the viewport version
+shows none. The typing probe (mkbd.js) is unchanged.
+
 ---
 
 ## 6. Open items
