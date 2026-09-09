@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Scroll to reveal" |
+| Captured from version | 2026-09-08, "Lines grow from the centre" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 280 KB, single file (the photograph is embedded) |
@@ -22,9 +22,11 @@ repo's git history.
 **Fold 1.** A warm off-white viewport with nothing on it but the sender's
 message, set large in a sans (Suisse Intl where installed, otherwise Geist),
 with a plain mono line above it, all caps and widely spaced, a small black
-square then "Matt sent you something". Its letters resolve the same way as the
+square then "Matt got something special for you". Its letters resolve the same way as the
 message, ahead of it, with a lighter ember. Default copy: "Happy 30th, Sam. Go find out how good you
-actually are." over three lines. Each character starts blurred, faintly
+actually are." over three lines. Each line opens as a row just before its letters
+start, so the centred block grows from the middle: the first line is pushed up
+by the second, both by the third, and the finished block sits centred. Each character starts blurred, faintly
 transparent and 3px low, and eases up and sharpens out of the blur over 1s. Separately, a warm ember fades over three stagger steps (about 200ms), so at any moment the newest letter is warmest and the two before it progressively less: a short gradient trailing the leading edge. The stagger is
 derived from the character count so the whole message lands in about 3.3
 seconds, eyebrow included. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 350ms after the last character settles, a small black pill,
@@ -57,9 +59,10 @@ the block settles back down into place from 400ms, done at about 1.15s.
 **Fold 2.** The photograph fills the screen, darkened so type reads over it.
 The gift card lands in the centre: one large-radius dark glass panel with a
 strong blur, the photo showing through, no border and no shadow. Its left
-column holds the mono "A gift from Matt" line, the product name, a short
-description of the membership and the sender's note. Its right column is a
-condensed "What's included" list, six rows with small square markers.
+column holds the mono "A gift from Matt" line, the product name and a short
+description at the top, with the sender's note at the bottom. Its right column,
+behind a hairline divider, is a condensed "What's included" list, six rows
+with small square markers, pinned to the top.
 **Claim my gift** sits in the card's bottom-right corner.
 
 Under the card, a timeline shows where the recipient is: four squares joined
