@@ -3250,6 +3250,31 @@ the 4.6 the "reduce by 1px" asked for. Probed: 28 dots, gap 4.5, first at
 15.2% of the arc's width and last at 84.8%; the reveal lands the last dot at
 1.07s; the Arc version's first lit tick is at 15% of the scale.
 
+### 5.135 The dots grow from the first every time the slide is reached
+
+"Every time the biomarker starts -- when you land on the slide or open the
+app -- the coloured dots should grow from left to right." They were meant to
+(5.131), and on the probe they did, but the run was on the arc's clock
+(bioRevT), which starts with the swap: the first dots rose under a group still
+fading in and while the carousel was still travelling, so on the device the
+run was a third laid down by the time the slide could be seen. And on a cold
+start the clock began on the first frame, which is followed by the shader
+compile: 1.1s of reveal spent in frames nobody saw.
+
+The dots have their own clock now (dotsRevT). It starts on the first frame
+in which the slide has landed -- the swap complete and the carousel settled
+within 2% of the slide -- and is dropped the moment the slide is left, so
+the next arrival starts it again. A frame that arrives more than 200ms after
+the one before, while the run is still going, pushes the clock on by the
+delay, so a stall (the cold start, a tab coming back) postpones the growth
+rather than consuming it. The arc's own reveal and the body's fill keep
+bioRevT as they were.
+
+Probed: after a swipe the group is fully in (opacity 1) before the first dot
+rises at 0.31s and the twenty-eight are laid down by 1.35s; on a cold start
+(sampled from the navigation commit) the dots go 0 -> 3 at 0.96s and reach
+28 at 1.87s, the whole run seen. Modes and error probes clean.
+
 ---
 
 ## 6. Open items
