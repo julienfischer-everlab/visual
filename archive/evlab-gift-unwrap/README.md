@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Subtle ember, bigger chip, tighter" |
+| Captured from version | 2026-09-08, "Numbered inclusions" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -47,8 +47,9 @@ done at about 1.6s.
 **Fold 2.** Near-black with a faint warm glow, and one object in the middle: the
 gift card, with no border and no shadow, just a slightly lighter fill. Its
 left column holds the same "A gift from Matt" chip as fold 1, the value, the
-product, what's included (square markers in Everlab red), the sender's note in
-a rounded panel at 4% white, and **Claim my gift**. Its right column is the
+product, a monospace "What's included" label over six numbered rows (01 to 06,
+hairline rules, each on one line on desktop), the sender's note in a rounded
+panel at 4% white, and **Claim my gift**. Its right column is the
 photograph.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
@@ -96,7 +97,7 @@ optional and falls back to the example gift baked into the page.
 | `product` | Product name |
 | `term` | One line under the product name |
 | `value` | Gift value label, as text |
-| `includes` | What's included, pipe-separated (`a\|b\|c`) |
+| `includes` | What's included, pipe-separated (`a\|b\|c`); numbered in order, one line each on desktop, so keep items short |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | Photo for the card's right column (http or https only) |
 

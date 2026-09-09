@@ -33,8 +33,8 @@
     &product=Everlab%20Membership
     &term=12%20months
     &value=%241%2C950%20value
-    &includes=Comprehensive%20blood%20panel%7CDoctor%20consultation%7CPersonalised%20plan
-        (pipe-separated)
+    &includes=A%2045-minute%20onboarding%20consult%7CAdvanced%20blood%20panel%7CDEXA%20scan
+        (pipe-separated; each item is one line on desktop, so keep them short)
     &claim=https%3A%2F%2Feverlab.com.au%2Factivate%3Fcode%3DEVL-7K2M-QX4
     &image=https%3A%2F%2F...  (photo for the card; http(s) only)
 
@@ -220,7 +220,7 @@
     -webkit-overflow-scrolling:touch;
     color:var(--ink-d);
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:clamp(28px, 6vh, 64px) 24px;
+    padding:84px 24px 40px;  /* room for the arrow above the card */
     visibility:hidden;
   }
   body[data-state="revealing"] .gift,
@@ -244,12 +244,12 @@
   body[data-state="returning"] .back{opacity:0;transition-delay:0s;transition-duration:.4s;}
 
   .card{
-    width:100%;max-width:900px;
+    width:100%;max-width:1080px;
     flex:none;
     margin:auto 0;
     background:var(--card);
     border-radius:24px;
-    display:grid;grid-template-columns:1fr 1fr;
+    display:grid;grid-template-columns:minmax(0, 1.25fr) minmax(0, 1fr);
     overflow:hidden;
     transform:translateY(110vh);
     will-change:transform;
@@ -259,7 +259,7 @@
   body[data-state="gift"] .card{transform:none;}
   body[data-state="returning"] .card{transform:translateY(110vh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
 
-  .card .info{padding:40px 44px 40px;display:flex;flex-direction:column;min-height:520px;}
+  .card .info{padding:36px 40px 36px;display:flex;flex-direction:column;min-height:520px;min-width:0;}
   .kicker{
     display:flex;justify-content:space-between;align-items:center;gap:16px;
     margin:0 0 28px;
@@ -280,19 +280,29 @@
     text-wrap:balance;
   }
   .term{margin:0 0 28px;color:var(--ink-d2);font-size:15px;}
-  .incl{list-style:none;margin:0 0 30px;padding:0;border-top:1px solid var(--hair-d);}
+  .incl-label{
+    margin:0 0 10px;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-d);
+  }
+  .incl{list-style:none;margin:0 0 30px;padding:0;counter-reset:incl;}
   .incl li{
-    display:flex;gap:14px;align-items:baseline;
-    padding:12px 0;border-bottom:1px solid var(--hair-d);
-    font-size:15px;color:var(--ink-d);
+    counter-increment:incl;
+    display:flex;gap:18px;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid var(--hair-d);
+    font-size:14.5px;color:var(--ink-d);
+    white-space:nowrap;
   }
   .incl li::before{
-    content:"";flex:none;width:5px;height:5px;background:var(--red);
-    transform:translateY(-2px);
+    content:counter(incl, decimal-leading-zero);
+    flex:none;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:11.5px;letter-spacing:.04em;color:var(--muted-d);
+    font-variant-numeric:tabular-nums;
   }
   .note{
-    margin:0 0 32px;
-    padding:18px 20px;border-radius:14px;background:rgba(255,255,255,.04);
+    margin:0 0 26px;
+    padding:16px 18px;border-radius:14px;background:rgba(255,255,255,.04);
     font-weight:300;font-size:17px;line-height:1.45;letter-spacing:-.01em;color:var(--ink-d2);
     text-wrap:pretty;
   }
@@ -367,7 +377,8 @@
     .back{top:14px;}
     .phone{width:min(34%, 150px);transform:translate(-50%,-42%) rotate(-14deg);}
     .card .info{padding:30px 26px 28px;min-height:0;}
-    .gift{justify-content:flex-start;padding:24px 20px 40px;}
+    .incl li{white-space:normal;}
+    .gift{justify-content:flex-start;padding:68px 20px 40px;}
     .intro{padding:24px 22px;}
     .intro .cta{margin-top:44px;}
   }
@@ -407,6 +418,7 @@
       <p class="kicker"><span class="chip" id="fromChip"></span><span id="value"></span></p>
       <h2 id="product" tabindex="-1"></h2>
       <p class="term" id="term"></p>
+      <p class="incl-label">What’s included</p>
       <ul class="incl" id="includes"></ul>
       <p class="note"><span id="noteText"></span><span class="who" id="noteWho"></span></p>
       <div class="act">
@@ -458,9 +470,12 @@
     term: 'Twelve months of testing, doctors and insights',
     value: '$1,950 value',
     includes: [
-      'Comprehensive blood panel across 100+ biomarkers',
-      'Consultation with an Everlab doctor',
-      'Personalised health plan and ongoing insights'
+      'A 45-minute onboarding consult with an Everlab doctor',
+      'Advanced blood panel — 100+ biomarkers across 50 health areas',
+      'DEXA scan for body composition and bone density',
+      'A 90-minute physical assessment, including VO₂ max',
+      'Nutrition assessment with an Everlab nutritionist',
+      'Re-testing part-way through, plus a full 12-month review'
     ],
     claim: 'https://everlab.com.au/',
     image: ''
