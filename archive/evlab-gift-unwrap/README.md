@@ -10,7 +10,7 @@ in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Back control, one title size" |
+| Captured from version | 2026-09-09, "Circle after the button" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -85,9 +85,9 @@ floating phone button are not used. Reduced motion disables the parallax.
 
 ## Dynamic motion
 
-The reveal. As the button arrives, the top of a circle scales up from the
-bottom edge of the screen: the photograph at half size, the couple inside the
-dome. The button, a scroll down, a swipe or the down-arrow, page-down and
+The reveal. Half a second after the button arrives, the top of a circle scales
+up from the bottom edge of the screen (the photograph at half size, the couple
+inside the dome) and the whole block moves up 64px to make room for it. The button, a scroll down, a swipe or the down-arrow, page-down and
 space keys run the same sequence on the one viewport: the first-fold block
 travels 256px up while fading and blurring (800ms); from 100ms the circle
 grows until the photograph is exactly a full-screen cover while the room

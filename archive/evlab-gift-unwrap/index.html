@@ -204,6 +204,8 @@
     will-change:transform,opacity,filter;
     transition:transform var(--fade-ms) var(--ease-scene), opacity calc(var(--fade-ms) * .7) ease calc(var(--fade-ms) * .2), filter var(--fade-ms) ease;
   }
+  /* dynamic: when the circle rises, the block moves up 64px to make room */
+  body[data-motion="dynamic"].orb-in .stack{transform:translateY(-64px);}
   body[data-state="revealing"] .intro,
   body[data-state="gift"] .intro{pointer-events:none;}
   body[data-state="revealing"] .stack,
@@ -211,7 +213,7 @@
   body[data-state="gift"] .intro{visibility:hidden;}
   /* coming back: the block settles down into focus once the room is light again */
   body[data-state="returning"] .stack{
-    transform:none;opacity:1;filter:none;
+    transform:translateY(-64px);opacity:1;filter:none;
     transition:transform var(--back-text-ms) var(--ease-out) var(--back-text-delay),
                opacity var(--back-text-ms) ease var(--back-text-delay),
                filter var(--back-text-ms) ease var(--back-text-delay);
@@ -1117,12 +1119,10 @@
     var quote = AnimatedQuote($('quote'), gift.message, {
       startAt: 900, finishStartsBy: 2700, charMs: 1000, lastWordMs: 600, lastWordEmber: .2, grow: true
     });
-    // the button and the circle arrive together, just after the last
-    // character settles
-    setTimeout(function(){
-      root.classList.add('cta-in');
-      document.body.classList.add('orb-in');
-    }, reduce ? 0 : quote.done + 120);
+    // the button arrives just after the last character settles; the circle
+    // follows it half a second later and the block moves up 64px to make room
+    setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 120);
+    setTimeout(function(){ document.body.classList.add('orb-in'); }, reduce ? 0 : quote.done + 620);
     $('see').textContent = 'See ' + gift.from + '’s gift';
     $('see').addEventListener('click', onSee);
   }
