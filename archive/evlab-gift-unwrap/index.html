@@ -301,13 +301,17 @@
   .pill:hover{transform:translateY(-1px) scale(1.015);background:#2A2522;}
   .pill:active{transform:scale(.985);}
 
+  /* the button's row opens from nothing, so the message and eyebrow above are
+     pushed up as it arrives, the same way the lines pushed each other */
   .intro .cta{
-    position:relative;border-radius:999px;
-    margin-top:clamp(40px, 6cqh, 64px);
+    display:grid;grid-template-rows:0fr;
+    margin-top:0;
     opacity:0;transform:translateY(8px);filter:blur(3px);
-    transition:opacity .7s var(--ease-out), transform .7s var(--ease-out), filter .7s var(--ease-out);
+    transition:grid-template-rows .8s var(--ease-out), margin-top .8s var(--ease-out),
+               opacity .7s var(--ease-out) .15s, transform .7s var(--ease-out) .15s, filter .7s var(--ease-out) .15s;
   }
-  .intro.cta-in .cta{opacity:1;transform:none;filter:none;}
+  .intro .cta-box{min-height:0;display:flex;justify-content:center;}
+  .intro.cta-in .cta{grid-template-rows:1fr;margin-top:clamp(40px, 6cqh, 64px);opacity:1;transform:none;filter:none;}
   .intro .cta .pill{position:relative;z-index:1;}
 
   /* ---- fold 2: the dark room; the card rises into it from the bottom ---- */
@@ -640,7 +644,7 @@
     .stack{transition-property:opacity;}
     body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;opacity:0;}
     body[data-state="returning"] .stack{opacity:1;}
-    .intro .cta{opacity:1;transform:none;filter:none;}
+    .intro .cta{opacity:1;transform:none;filter:none;grid-template-rows:1fr;margin-top:clamp(40px, 6cqh, 64px);transition:none;}
     .card{transform:none;opacity:0;transition-property:opacity;}
     body[data-state="revealing"] .card, body[data-state="gift"] .card{opacity:1;}
   }
@@ -763,9 +767,9 @@
   <div class="stack">
     <p class="chip" id="chip"><span class="chip-text" id="chipText"></span></p>
     <p class="quote" id="quote"></p>
-    <div class="cta">
+    <div class="cta"><div class="cta-box">
       <button class="pill" id="see" type="button">See my gift</button>
-    </div>
+    </div></div>
   </div>
 </section>
 
