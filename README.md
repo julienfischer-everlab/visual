@@ -686,7 +686,7 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   `d` on the hash (`#m20vd`, or `#m20d`) opens with the dots, which is now the
   default anyway. Every time the slide is reached — a swipe, the idle
   cycle, opening the page on it — the coloured run grows from its first dot
-  to its last, left to right over 1.1s, each dot rising as the front reaches
+  to its last, left to right over 0.65s, each dot rising as the front reaches
   it; the growth starts once the slide has landed rather than during the
   swap, and a late frame (a cold start compiling shaders) moves the clock on
   instead of eating the run. Same swap as the arc's distribution, same hero

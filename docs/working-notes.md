@@ -3275,6 +3275,15 @@ rises at 0.31s and the twenty-eight are laid down by 1.35s; on a cold start
 (sampled from the navigation commit) the dots go 0 -> 3 at 0.96s and reach
 28 at 1.87s, the whole run seen. Modes and error probes clean.
 
+### 5.136 The dots grow faster
+
+"Grow faster the arc on the biomarker." The run took 1.1s end to end, a
+length inherited from the arc's own sweep; it takes 650ms now, each dot still
+rising over the time the front takes to pass two of them, so it reads as a
+run laid down rather than a switch. Probed: after a swipe the first dot rises
+at 0.30s and the twenty-eight are down by 0.91s; on a cold start the run goes
+3 -> 28 in 0.54s once the first frames are through.
+
 ---
 
 ## 6. Open items
