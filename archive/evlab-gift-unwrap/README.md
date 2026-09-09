@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Protocol Membership, Your gift from Marc" |
+| Captured from version | 2026-09-09, "Six-step timeline" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -101,8 +101,8 @@ its own: the seed stays exactly behind the transparent card for the whole
 visit as its surface (following the card if the fold scrolls on a phone), so
 there is never a swap between two surfaces; as the seed lands the content
 fades in; settled at 1.1s, when the footer and a small arrow at the
-top fade in and the four timeline steps appear one after another, 500ms apart,
-from 1.2s to about 3.2s. The arrow, or a firm scroll up, runs it in reverse:
+top fade in and the six timeline steps appear one after another, 350ms apart,
+from 1.2s to about 3.5s. The arrow, or a firm scroll up, runs it in reverse:
 the card's content fades out in place (350ms, nothing inside it moves) while
 the seed shrinks back into a half circle in the dome and the room lightens (750ms, the seed always inside the closing circle), and the
 block settles back from 400ms, done at about 1.15s. The seed's rectangle is
@@ -146,12 +146,12 @@ blurred 64px into a warm gradient, a warm highlight top left and a deep shadow
 bottom right laid over it, and the Everlab mark. Phones drop the tile.
 
 Under the card, 52px below and directly over the photograph, with no label: a
-horizontal timeline as wide as the card, four equal columns with a 10px square
-at the centre of each and its label centred beneath on one line; a half-pixel
+horizontal timeline as wide as the card, six equal columns with a 10px square
+at the centre of each and its label (12.5px) centred beneath on one line; a half-pixel
 line runs from 6px right of each square to 6px left of the next. The squares
 are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
-travelling along its segment; then Claim your gift, Meet your doctor, Get
-tested. The card and the timeline are centred together in the fold. The
+travelling along its segment; then Claim your gift, Get started, Consult,
+Test, Act. The card and the timeline are centred together in the fold. The
 wordmark sits top centre, the footer line "Page secured by Everlab" bottom
 centre. On phones the timeline labels may wrap and in dynamic motion **Claim
 my gift** floats at the foot of the screen.
