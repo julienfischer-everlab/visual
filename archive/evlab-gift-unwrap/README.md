@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Card with the background, longer fade" |
+| Captured from version | 2026-09-08, "Subtle ember, bigger chip, tighter" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -23,7 +23,7 @@ repo's git history.
 message, set large in a sans (Suisse Intl where installed, otherwise Geist),
 with a small chip above it reading "Matt sent you something". Default copy: "Happy 30th, Sam. Go find out how good you
 actually are." over three lines. Each character starts blurred, faintly
-transparent and 3px low, and arrives warm orange with a soft glow, then cools to ink as it sharpens over 1.2s. The stagger is
+transparent and 3px low, and arrives with a faint warm tint (about a third of the ember colour) and a soft glow, then cools to ink as it sharpens over 1.1s. The stagger is
 derived from the character count so the whole message lands in about three and a half
 seconds. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 450ms after the last character settles, a small black pill,
 **See my gift**, rises into place.
