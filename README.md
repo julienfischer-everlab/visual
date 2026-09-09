@@ -677,10 +677,10 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   over a dot wide — filled left to right with the ranges' colours by share
   (each range takes its share of the dots by largest remainder, so they always
   sum), the unclassified in the range grey when shown, at rest when folded in;
-  a dot not yet reached or without a range rests at the ticks' grey. The ticks
-  under the dotted stretch stand down as the dots come up, and the resting
-  ticks outside it stay as the arc's background with their blur and side
-  fade, which the dots share. Same swap as the arc's distribution, same hero
+  a dot not yet reached or without a range rests at the ticks' grey. The arc's
+  ticks all stand down as the dots come up — the dots are the whole graph on
+  this slide, the 20% at each side left empty — and the dotted line fades out
+  at both ends, the outer six dots each side tapering to a tenth. Same swap as the arc's distribution, same hero
   fade, same left-to-right reveal when the slide lands; the age scale is back
   on the organs. With the dots the legend carries no highlight and the arc's
   status cycle stands down. Kept across page changes.

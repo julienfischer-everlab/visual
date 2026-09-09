@@ -7540,7 +7540,10 @@
     dotEls.length = 0;
     arcDotsG = el('g', { id: 'arcDots', opacity: 0 }, arcASvg);
     for (let k = 0; k < DOTS_N; k++){
-      const v = -DOTS_SPAN + 2 * DOTS_SPAN * (k + 0.5) / DOTS_N;
+      // edge to edge: the first and last dots sit on the window's ends, one
+      // tick pitch from the first grey tick outside it, so the dotted stretch
+      // runs on into the arc with no gap at the join
+      const v = -DOTS_SPAN + 2 * DOTS_SPAN * k / (DOTS_N - 1);
       const p = ptA(v, AG.R - 6.5);
       dotEls.push(el('circle', { cx: p[0].toFixed(2), cy: p[1].toFixed(2), r: 2.4, fill: tickBase(), opacity: 0.3 }, arcDotsG));
     }
@@ -8933,11 +8936,15 @@
     raw.map((v, i) => [v - cnt[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (left > 0){ cnt[i]++; left--; } });
     const cols = [rangeCol('opt'), rangeCol('sub'), rangeCol('out'), rangeCol('un')];
     const rest = tickBase();
+    // the line fades out at both ends -- the outer six dots each side taper
+    // to a tenth, on a smooth curve -- since with the arc gone there is
+    // nothing else to soften the run's ends
+    const edge = k => { const d = Math.min(k, DOTS_N - 1 - k) / 6, x = Math.min(1, d); return 0.1 + 0.9 * x * x * (3 - 2 * x); };
     let k = 0;
-    const set = (d, fill, op) => { d.setAttribute('fill', fill); d.setAttribute('opacity', op); };
+    const set = (d, fill, op) => { d.setAttribute('fill', fill); d.setAttribute('opacity', op.toFixed(3)); };
     for (let s = 0; s < 4; s++) for (let j = 0; j < cnt[s]; j++, k++)
-      (k < lit && (s < 3 || un)) ? set(dotEls[k], cols[s], 0.95) : set(dotEls[k], rest, 0.3);
-    for (; k < DOTS_N; k++) set(dotEls[k], rest, 0.3);
+      (k < lit && (s < 3 || un)) ? set(dotEls[k], cols[s], 0.95 * edge(k)) : set(dotEls[k], rest, 0.3 * edge(k));
+    for (; k < DOTS_N; k++) set(dotEls[k], rest, 0.3 * edge(k));
   }
   const v4BioName = v4NameEl ? (() => {
     const el = document.createElement('span');
@@ -12537,7 +12544,10 @@
           // come up; the rest stay as the arc's background
           if (CARD_STATE.bioDots){
             tk.line.setAttribute('stroke', tickBase());
-            tk.line.setAttribute('opacity', (inWin ? tk.baseOp * (1 - bioA) : tk.baseOp).toFixed(3));
+            // every tick stands down -- "I'll remove the arc on this version
+            // totally, just the 60% with the dots": the dots are the graph,
+            // and their own ends fade (paintDots)
+            tk.line.setAttribute('opacity', (tk.baseOp * (1 - bioA)).toFixed(3));
             continue;
           }
           const c = !inWin ? null

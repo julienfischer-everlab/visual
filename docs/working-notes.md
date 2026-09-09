@@ -3061,6 +3061,20 @@ base x (1 - bioArc), the ends unchanged; the group at 0 on an organ slide and
 1 again on the return; state through a page round trip; the light set on the
 light theme. Error, mode, arc-wrap and all-arcs probes clean.
 
+"No gap between the dot and the arc dot." The dots were pitched at half-steps
+inside the window, so the first sat 0.35 years in from its edge and the
+nearest grey tick 0.5 beyond it: a gap of nearly two tick pitches at each
+join. They run edge to edge now (v = -9 + 18k / 25), the first and last on the
+window's ends. Then, before that shipped: "fade out on the left and right
+more; remove the 20% safe space, I can see the arc there; I'll remove the arc
+on this version totally, just the 60% with the dots." So in the Dots version
+every tick stands down as the dots come up -- the grey ends included -- and the
+dotted line carries its own fade: the outer six dots each side taper to a
+tenth on a smooth curve, so the run dissolves at both ends with nothing else
+to soften it. Probed (dotjoin.js): 26 dots from v -9 to 9, no tick above base
+x (1 - bioArc) anywhere on the biomarker slide, the end dots at a tenth of the
+middle's strength; the arc whole again on the organ slides.
+
 ---
 
 ## 6. Open items
