@@ -9,7 +9,7 @@ scroll in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | | |
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
-| Title | Unwrap your Everlab gift |
+| Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
 | Captured from version | 2026-09-09, "Passport tile in the card, fixed photo" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
