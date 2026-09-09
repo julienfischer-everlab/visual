@@ -361,7 +361,7 @@
     width:100%;max-width:1080px;
     flex:none;
     margin:0;
-    background:rgba(40,38,36,.8);
+    background:rgba(40,38,36,.93);
     -webkit-backdrop-filter:blur(44px) saturate(1.15);backdrop-filter:blur(44px) saturate(1.15);
     border-radius:44px;
     display:grid;grid-template-columns:minmax(0, 1.5fr) minmax(0, 1fr);
@@ -398,13 +398,14 @@
 
   /* the journey, vertical: square, line, square, line ... a title beside each */
   .timeline{
+    --pb:34px;  /* space under each step; the lines are measured from it */
     list-style:none;margin:0;padding:0 0 0 2px;
     display:flex;flex-direction:column;
   }
   .timeline li{
     position:relative;
     display:flex;align-items:center;gap:16px;
-    padding:0 0 34px;
+    padding:0 0 var(--pb);
   }
   .timeline li:last-child{padding-bottom:0;}
   .timeline li i{
@@ -414,11 +415,23 @@
   .timeline li.now i{background:var(--red);border-color:var(--red);}
   .timeline li span{font-size:14.5px;color:var(--muted-d);}
   .timeline li.now span{color:var(--ink-d);font-weight:500;}
-  /* the line from this square down to the next */
-  .timeline li:not(:last-child)::after{
-    content:"";position:absolute;left:4.5px;top:calc(50% + 10px);bottom:calc(-50% + 10px);
-    border-left:1px solid rgba(243,239,234,.22);
+  /* the line from this square down to the next, meeting both squares */
+  .timeline li:not(:last-child)::before{
+    content:"";position:absolute;left:4.5px;width:1px;
+    top:calc((100% - var(--pb)) / 2 + 5px);          /* the bottom edge of this square */
+    bottom:calc(-1 * (100% - var(--pb)) / 2 + 5px);  /* the top edge of the next */
+    background:rgba(243,239,234,.22);
   }
+  /* on the current step's segment a soft orange pulse travels down the line */
+  .timeline li.now:not(:last-child)::after{
+    content:"";position:absolute;left:4.5px;width:1px;
+    top:calc((100% - var(--pb)) / 2 + 5px);
+    bottom:calc(-1 * (100% - var(--pb)) / 2 + 5px);
+    background:linear-gradient(180deg, transparent, #E8722A 35%, #E8722A 65%, transparent) no-repeat;
+    background-size:100% 45%;
+    animation:flow 2.2s cubic-bezier(.45,0,.55,1) infinite;
+  }
+  @keyframes flow{from{background-position:0 -80%;}to{background-position:0 180%;}}
 
   /* below the card */
   .more{
@@ -463,25 +476,19 @@
     color:var(--ink-d);
     text-wrap:balance;
   }
-  /* what's included: a bordered panel, a mono label, numbered rows with hairlines */
-  .incl-wrap{
-    margin-top:auto;
-    padding:22px 24px 6px;border:1px solid rgba(255,255,255,.10);border-radius:18px;
-    display:flex;flex-direction:column;gap:14px;
+  /* what's included: the label above, then a light grey card of rows with an icon each */
+  .incl-wrap{margin-top:auto;display:flex;flex-direction:column;gap:14px;}
+  .incl{
+    list-style:none;margin:0;padding:6px 26px;
+    background:rgba(255,255,255,.07);border-radius:18px;
   }
-  .incl{list-style:none;margin:0;padding:0;counter-reset:incl;border-top:1px solid rgba(255,255,255,.08);}
   .incl li{
-    counter-increment:incl;
-    display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:baseline;
-    padding:11px 0;border-bottom:1px solid rgba(255,255,255,.08);
+    display:grid;grid-template-columns:22px minmax(0,1fr);gap:14px;align-items:center;
+    padding:13px 0;border-bottom:1px solid rgba(255,255,255,.08);
     font-size:14px;line-height:1.4;color:var(--ink-d);text-wrap:pretty;
   }
   .incl li:last-child{border-bottom:0;}
-  .incl li::before{
-    content:counter(incl, decimal-leading-zero);
-    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:11px;letter-spacing:.04em;color:var(--muted-d);
-  }
+  .incl li svg{display:block;width:18px;height:18px;stroke:var(--ink-d2);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
   /* the sender's note, under the value */
   .note{
     margin:auto 0 0;padding-top:26px;border-top:1px solid var(--hair-d);  /* pushed to the bottom of the column */
@@ -564,9 +571,10 @@
     .title-row .orb{width:36px;height:36px;}
     .card h2{font-size:clamp(22px, 1cqw + 13px, 26px);}
     .blurb{margin-bottom:0;font-size:13.5px;}
-    .incl-wrap{padding:16px 18px 2px;gap:10px;}
-    .incl li{padding:8px 0;font-size:13px;}
-    .timeline li{padding-bottom:18px;}
+    .incl-wrap{gap:10px;}
+    .incl{padding:2px 20px;}
+    .incl li{padding:9px 0;font-size:13px;}
+    .timeline{--pb:18px;}
     .visual{gap:12px;}
     .visual .mono-label{margin-top:4px;}
     .pass{aspect-ratio:1.9;}
@@ -626,6 +634,7 @@
   @media (prefers-reduced-motion: reduce){
     .quote .c, .chip .c{animation:none !important;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
     .quote .line{animation:none !important;grid-template-rows:1fr;}
+    .timeline li.now::after{animation:none;display:none;}
     .chip{animation:none;opacity:1;transform:none;}
     .stack, .card, .act, .more, .foot, .back, body, .glow, .scene-bg, .scene-bg::after, .dim{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
@@ -844,8 +853,8 @@
     to: 'Sam',
     message: 'Happy 30th, Sam.\nGo find out how good\nyou actually are.',
     note: 'Thirty looks good on you. Now go and see what’s going on inside.',
-    product: 'Everlab Membership',
-    blurb: 'Twelve months of Everlab. Advanced testing, a doctor who knows your numbers, and a plan that changes as you do. Everything you need to see exactly where you stand, and what to do about it.',
+    product: 'Everlab Protocol',
+    blurb: 'Everlab is preventive medicine. A doctor, a full picture of your body, and a plan built from what they actually find — not from what’s average for your age. Your Protocol is paid for; there is nothing for you to pay at any point.',
     value: '$1,950',
     steps: [
       'Claim your gift|Enter your details and choose the Everlab clinic closest to you.',
@@ -976,17 +985,30 @@
 
   /* ---------- GiftCard ---------- */
   function GiftCard(gift){
-    $('fromChip').textContent = 'A gift from ' + gift.from;
+    $('fromChip').textContent = 'Gift received from ' + gift.from;
     $('product').textContent = gift.product;
     $('blurb').textContent = gift.blurb;
     $('passName').textContent = gift.to;
     $('passProduct').textContent = gift.product;
     $('claim').href = gift.claim;
     $('claimFloat').href = gift.claim;
+    // one small line icon per inclusion, in order: consult, blood, scan, pulse, leaf, cycle
+    var ICONS = [
+      '<path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 16 14.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 13V7A1.5 1.5 0 0 1 4 5.5z"/>',
+      '<path d="M10 2.5s5.5 6 5.5 10a5.5 5.5 0 0 1-11 0c0-4 5.5-10 5.5-10z"/>',
+      '<rect x="3.5" y="3.5" width="13" height="13" rx="2"/><path d="M6.5 10h7M10 6.5v7"/>',
+      '<path d="M2.5 10h4l1.8-4.5 3.4 9 1.8-4.5h4"/>',
+      '<path d="M3.5 16.5C3.5 9 8 4.5 16.5 3.5c1 8.5-3.5 13-13 13z"/><path d="M3.5 16.5 12 8"/>',
+      '<path d="M16 8.5a6 6 0 0 0-10.9-2M4 11.5a6 6 0 0 0 10.9 2"/><path d="M16 3.5v5h-5M4 16.5v-5h5"/>'
+    ];
     var list = $('includes');
-    gift.includes.forEach(function(item){
+    gift.includes.forEach(function(item, n){
       var li = document.createElement('li');
-      li.textContent = item;
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 20 20'); svg.setAttribute('aria-hidden', 'true');
+      svg.innerHTML = ICONS[n % ICONS.length];
+      var t = document.createElement('span'); t.textContent = item;
+      li.appendChild(svg); li.appendChild(t);
       list.appendChild(li);
     });
     var src = gift.image || PHOTO;

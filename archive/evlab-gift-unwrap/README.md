@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Numbered inclusions, opaque card, footer" |
+| Captured from version | 2026-09-08, "Timeline pulse, Protocol copy, icon rows" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -63,17 +63,19 @@ Everlab", centred) to the bottom, and
 on short screens the card tightens its padding and tiles so it always fits.
 On phones the fold scrolls. The gift card: one large-radius grey glass panel,
 fairly opaque, with a strong blur, no border and no shadow. Its left column
-holds the mono "A gift from Matt" line (orange square), the product name and
-a short description at the top; at the bottom, "What's included" as a
-bordered panel with a mono label and six numbered rows (01 to 06, small grey
-mono numbers, hairlines between), the full titles. Its right column, behind a hairline divider, opens
+holds the mono "Gift received from Matt" line (orange square), the product
+name "Everlab Protocol" and a short description at the top; at the bottom, a
+mono "What's included" label above a light grey rounded card of six rows,
+each with a small line icon (speech bubble, drop, scan, pulse, leaf, cycle),
+hairlines between, the full titles. Its right column, behind a hairline divider, opens
 with a membership passport card: the `Ellipse 4358.png` copper texture under
 a fine dot grid, the Everlab mark top left, a MEMBER pill top right, the
 recipient's name and "Everlab Membership" bottom left, "12 months / gift
 membership" bottom right. Under it, "What's next": a vertical timeline of four
-squares joined by hairlines,
-Unwrap (the current step, filled in Everlab red), Claim your gift, Meet your
-doctor, Get tested, with **Claim my gift** filling the foot of the column. Padding is an even 48px all round, the divider is a faint
+squares joined by hairlines that meet the squares exactly, Unwrap (the current
+step, filled in Everlab red), Claim your gift, Meet your doctor, Get tested;
+a soft orange pulse travels down the first segment every 2.2s so the journey
+reads as in motion, with **Claim my gift** filling the foot of the column. Padding is an even 48px all round, the divider is a faint
 hairline, and the card corners are 44px.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
@@ -151,7 +153,7 @@ optional and falls back to the example gift baked into the page.
 | `to` | Recipient's first name |
 | `message` | The message on the first fold (`%0A` for a deliberate line break; three lines read best) |
 | `note` | The sender's short note (kept in the data, not shown for now) |
-| `product` | Product name |
+| `product` | Product name (default "Everlab Protocol") |
 | `blurb` | The description of the membership inside the card |
 | `value` | Total value (kept in the data, not shown for now) |
 | `includes` | What's included, pipe-separated (`a\|b\|c`); six short items fit the two-by-three grid |
