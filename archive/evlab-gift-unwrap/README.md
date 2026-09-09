@@ -52,7 +52,9 @@ the whole message lands in about 3.3 seconds. Just after the last character
 settles, **See my gift** rises into place (17px type on 15×30px padding), its
 row opening so the message is pushed up as it arrives. In the dark theme the
 fold is the same near-black as the room behind fold 2, the type warm white,
-the button white with dark type, the ember mixed towards white.
+the button white with dark type, and the ember a touch warmer (`#E8874A` at
+70%) so it still reads on the dark ground: a soft peach on the newest three
+letters, gone in about 200ms.
 
 ## Static motion (default)
 
