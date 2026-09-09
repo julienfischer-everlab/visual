@@ -10,7 +10,7 @@ folder's `README.md` records where it came from and when it was captured.
 | --- | --- | --- | --- |
 | [`particle-organs-78766a66`](particle-organs-78766a66/) | Particle Organs — the organ age prototype linked from DES-589 | 2026-08-25T03:16:48Z | Private |
 | [`particle-organs-cf1a68fa`](particle-organs-cf1a68fa/) | Particle Organs — earlier iteration | 2026-08-21T23:15:44Z | Shared with organization |
-| [`evlab-gift-unwrap`](evlab-gift-unwrap/) | Unwrap your Everlab gift — the cinematic reveal linked from a gift email | 2026-09-08, "Rise, fade and blur exit" | Private |
+| [`evlab-gift-unwrap`](evlab-gift-unwrap/) | Unwrap your Everlab gift — the cinematic reveal linked from a gift email | 2026-09-08, "Exit through the top" | Private |
 | [`evlab-gift-sections`](evlab-gift-sections/) | Your Everlab gift — the same gift as a static, section-based page | 2026-09-09, "Top bar, six inclusion cards" | Private |
 
 The two Particle Organs artifacts carry the same title, so those folder names

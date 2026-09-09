@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Rise, fade and blur exit" |
+| Captured from version | 2026-09-08, "Exit through the top" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -46,7 +46,7 @@ all on the same viewport:
 
 | When | What |
 | --- | --- |
-| 0ms | The whole first-fold block (eyebrow, message, button) rises about 80px while fading out and softening into a blur, all together (800ms) |
+| 0ms | The whole first-fold block (eyebrow, message, button) travels up and out of the top of the viewport while fading out and softening into a blur, all together (800ms) |
 | 100ms | The circle grows until it covers the viewport and the photograph inside it grows to exactly a full-screen cover, both computed from the viewport and the image so they land together; the viewport behind crossfades to dark at the same time |
 | 100ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1s on `cubic-bezier(.9,0,.22,1)`, a long slow start that then commits fast |
 | 1100ms | Settled; the footer line and a small arrow at the top fade in |
