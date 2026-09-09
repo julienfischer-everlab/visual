@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Ember letters, longer arrival" |
+| Captured from version | 2026-09-08, "Lighter tail, chip, Matt" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -20,12 +20,12 @@ repo's git history.
 ## The experience
 
 **Fold 1.** A warm off-white viewport with nothing on it but the sender's
-message, set large in a sans (Suisse Intl where installed, otherwise Geist)
-and centred exactly. Default copy: "Happy 30th, Sam. Go find out how good you
+message, set large in a sans (Suisse Intl where installed, otherwise Geist),
+with a small chip above it reading "Matt sent you something". Default copy: "Happy 30th, Sam. Go find out how good you
 actually are." over three lines. Each character starts blurred, faintly
 transparent and 3px low, and arrives warm orange with a soft glow, then cools to ink as it sharpens over 1.2s. The stagger is
-derived from the character count so the whole message lands in about four
-seconds. About 450ms after the last character settles, a small black pill,
+derived from the character count so the whole message lands in about three and a half
+seconds. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 450ms after the last character settles, a small black pill,
 **See my gift**, rises into place.
 
 **Transition.** On click, three things happen in sequence, all on the same
@@ -43,7 +43,7 @@ arrives.
 
 **Fold 2.** Near-black with a faint warm glow, and one object in the middle: the
 gift card, with no border and no shadow, just a slightly lighter fill. Its
-left column holds "A gift from Sarah", the value, the product, what's
+left column holds "A gift from Matt", the value, the product, what's
 included, the sender's note and **Activate my gift**. Its right column is the
 photograph.
 

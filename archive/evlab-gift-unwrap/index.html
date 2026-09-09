@@ -25,7 +25,7 @@
   The link from the email can carry the gift on the query string. Every field
   is optional and falls back to GIFT_DEFAULTS.
 
-    ?from=Sarah
+    ?from=Matt
     &to=Sam
     &message=Happy%2030th%2C%20Sam.%0AGo%20find%20out%20how%20good%0Ayou%20actually%20are.
         (%0A = a deliberate line break in the quote; three lines read best)
@@ -119,9 +119,10 @@
     padding:24px;
   }
   /* on click the message and button simply dissolve; the room changes around them */
-  .intro .quote, .intro .cta{transition:opacity var(--fade-ms) ease, filter var(--fade-ms) ease;}
+  .intro .quote, .intro .cta, .intro .chip{transition:opacity var(--fade-ms) ease, filter var(--fade-ms) ease;}
   body[data-state="revealing"] .intro{pointer-events:none;}
   body[data-state="revealing"] .intro .quote,
+  body[data-state="revealing"] .intro .chip,
   body[data-state="revealing"] .intro .cta{opacity:0 !important;filter:blur(4px) !important;}
   body[data-state="gift"] .intro{display:none;}
 
@@ -131,25 +132,42 @@
     text-align:center;
     font-weight:500;
     font-size:clamp(29px, 4.2vw + 12px, 64px);
-    line-height:1.04;
+    line-height:.98;
     letter-spacing:-.034em;
     color:var(--ink);
     text-wrap:balance;
   }
   .quote .w{white-space:nowrap;}
-  /* each letter arrives as a warm orange glow out of focus, then cools to ink */
+  /* each letter arrives as a warm glow out of focus, then cools to ink.
+     --e is how much ember it carries (100% at the start of the message,
+     tapering to almost none on the last word) and --dur how long it takes. */
   .quote .c{
     position:relative;display:inline;
     opacity:0;top:3px;filter:blur(7px);
-    color:var(--ember);
-    animation:resolve 1200ms var(--ease-out) both;
+    --warm:color-mix(in srgb, var(--ember) var(--e, 100%), var(--ink));
+    --halo:color-mix(in srgb, rgba(232,140,60,.6) var(--e, 100%), transparent);
+    color:var(--warm);
+    animation:resolve var(--dur, 1050ms) var(--ease-out) both;
     animation-delay:var(--d);
   }
   @keyframes resolve{
-    0%{opacity:0;top:3px;filter:blur(8px);color:var(--ember);text-shadow:0 0 22px rgba(232,140,60,.65);}
-    45%{opacity:.9;color:var(--ember);text-shadow:0 0 14px rgba(232,140,60,.35);}
+    0%{opacity:0;top:3px;filter:blur(8px);color:var(--warm);text-shadow:0 0 22px var(--halo);}
+    45%{opacity:.9;color:var(--warm);text-shadow:0 0 12px var(--halo);}
     100%{opacity:1;top:0;filter:blur(0);color:var(--ink);text-shadow:0 0 0 rgba(232,140,60,0);}
   }
+
+  .chip{
+    margin:0 0 clamp(22px, 3.4vh, 34px);
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 13px;border-radius:999px;
+    font-size:13px;font-weight:500;letter-spacing:-.005em;color:var(--ink);
+    background:rgba(23,20,18,.045);
+    border:1px solid rgba(23,20,18,.07);
+    opacity:0;transform:translateY(4px);
+    animation:chip-in 900ms var(--ease-out) 120ms both;
+  }
+  .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ember);}
+  @keyframes chip-in{to{opacity:1;transform:none;}}
 
   .pill{
     appearance:none;border:0;cursor:pointer;
@@ -312,6 +330,7 @@
 
   @media (prefers-reduced-motion: reduce){
     .quote .c{animation:none;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
+    .chip{animation:none;opacity:1;transform:none;}
     .intro .quote, .intro .cta, .card, .foot, body, .glow{transition-duration:.3s !important;transition-delay:0s !important;}
     .intro .cta{opacity:1;transform:none;filter:none;}
     .card{transform:none;opacity:0;transition-property:opacity;}
@@ -323,6 +342,7 @@
 
 <!-- Fold 1 · GiftIntro -->
 <section class="intro" id="intro" aria-label="A message from the sender">
+  <p class="chip" id="chip"></p>
   <p class="quote" id="quote"></p>
   <div class="cta">
     <button class="pill" id="see" type="button">See my gift</button>
@@ -380,7 +400,7 @@
   var PHOTO = '';
 
   var GIFT_DEFAULTS = {
-    from: 'Sarah',
+    from: 'Matt',
     to: 'Sam',
     message: 'Happy 30th, Sam.\nGo find out how good\nyou actually are.',
     note: 'Thirty looks good on you. Now go and see what’s going on inside.',
@@ -422,10 +442,18 @@
      Words are kept unbreakable; authored line breaks (\n) are honoured. */
   function AnimatedQuote(el, text, opts){
     var startAt = opts.startAt, finishStartsBy = opts.finishStartsBy, charMs = opts.charMs;
+    var lastMs = opts.lastWordMs || charMs, lastEmber = opts.lastWordEmber == null ? 1 : opts.lastWordEmber;
     var lines = text.split('\n');
     var count = 0;
     lines.forEach(function(l){ count += l.replace(/\s+/g,'').length; });
     var stagger = count > 1 ? (finishStartsBy - startAt) / (count - 1) : 0;
+
+    // the ember tapers across the last line so the final word arrives quick
+    // and almost ink; everything before it keeps the full effect
+    var lastLine = lines[lines.length - 1];
+    var lastLineChars = lastLine.replace(/\s+/g,'').length;
+    var lastLineStart = count - lastLineChars;
+    var lastWordChars = (lastLine.trim().split(/\s+/).pop() || '').length;
 
     var i = 0;
     var frag = document.createDocumentFragment();
@@ -439,6 +467,14 @@
           c.className = 'c';
           c.textContent = ch;
           c.style.setProperty('--d', Math.round(startAt + i * stagger) + 'ms');
+          if(i >= lastLineStart){
+            var isLastWord = i >= count - lastWordChars;
+            var t = lastLineChars > 1 ? (i - lastLineStart) / (lastLineChars - 1) : 1; // 0 → 1 across the last line
+            var ember = isLastWord ? lastEmber : 1 - (1 - lastEmber) * t;
+            var dur = isLastWord ? lastMs : charMs - (charMs - lastMs) * t;
+            c.style.setProperty('--e', Math.round(ember * 100) + '%');
+            c.style.setProperty('--dur', Math.round(dur) + 'ms');
+          }
           w.appendChild(c);
           i++;
         });
@@ -451,14 +487,16 @@
     el.appendChild(frag);
     el.setAttribute('aria-label', text.replace(/\n/g,' '));
 
-    return { done: reduce ? 0 : finishStartsBy + charMs };
+    return { done: reduce ? 0 : finishStartsBy + lastMs };
   }
 
   /* ---------- GiftIntro ---------- */
   function GiftIntro(root, gift, onSee){
-    // letters start at 0.3s, the last begins at 3.0s and settles by ~4.2s
+    $('chip').textContent = gift.from + ' sent you something';
+    // letters start at 0.45s (after the chip), the last begins at 2.9s and
+    // settles by ~3.5s; the last word carries a fifth of the ember and half the time
     var quote = AnimatedQuote($('quote'), gift.message, {
-      startAt: 300, finishStartsBy: 3000, charMs: 1200
+      startAt: 450, finishStartsBy: 2900, charMs: 1100, lastWordMs: 600, lastWordEmber: .2
     });
     // the button rises ~450ms after the last character settles
     setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 450);
