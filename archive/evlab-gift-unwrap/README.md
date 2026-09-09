@@ -1,19 +1,19 @@
-# Unwrap your Everlab gift
+# Unwrap gift-FINAL
 
 The private page a recipient opens from an Everlab gift email. Two folds: a
 personal message alone on the first, then the gift over a photograph of a
-couple in a warm living room: one centred glass card with the button inside
-it and the "What's next" timeline beneath. By default it is one plain scroll
-in the dark theme; a Motion tweak turns it into the cinematic reveal.
+couple in a warm living room, in one centred glass card with the button inside
+it and a horizontal timeline beneath. By default it is the cinematic reveal in
+the dark theme; a Motion tweak turns it into one plain scroll.
 
 | | |
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Stronger ember" |
+| Captured from version | 2026-09-09, "Arrival order, orange while blurred" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
-| Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
+| Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
 This is the only gift page kept. Earlier versions (a ribbon-tied card; a warm
 two-scene reveal; the one-card "01" layout; the three-way Version select; the
@@ -32,7 +32,7 @@ the bar evenly.
 | --- | --- | --- |
 | Device | Desktop, iPhone | `device=phone` |
 | Theme | Dark, Light | `theme=light` |
-| Motion | Static, Dynamic | `motion=dynamic` |
+| Motion | Dynamic, Static | `motion=static` |
 | Message | Happy Birthday; Looking after everyone else; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
@@ -51,86 +51,88 @@ the frame and on a real phone alike.
 
 The sender's message, set large and medium in a sans (Suisse Intl where
 installed, otherwise Geist), under a plain mono eyebrow, all caps and widely
-spaced, a small orange square (blinking once a second, like a cursor) then
-"Matt got something special for you".
-Default copy: "Happy Birthday. I want you around for a long time." over three
-lines. Letters resolve one by one out of a blur with a faint warm ember on the
-newest three, each line opening as a row so the block grows from the middle;
-the whole message lands in about 3.3 seconds. Just after the last character
-settles, **See Matt’s gift** (the sender’s name) rises into place (17px type on 15×30px padding), its
-row opening so the message is pushed up as it arrives. In the dark theme the
-fold is the same near-black as the room behind fold 2, the type warm white,
-the button white with dark type, and the ember a touch warmer (`#E8874A` at
-70%) so it still reads on the dark ground: a soft peach on the newest three
-letters. Since the wave revision the ember carries a fifth more colour
-(strength .8, full on dark with `#F5842E`, a stronger halo) and fades over five stagger steps on
-an ease-in-out, so the trail swells and recedes like a wave behind the leading
-edge; the sharpening runs on one smooth curve.
+spaced: a small orange square, blinking once a second like a cursor, then
+"Matt got something special for you". Default copy: "Happy Birthday. I want
+you around for a long time." over three lines.
 
-## Static motion (default)
+In dynamic motion things arrive in order: the wordmark fades in first (from
+150ms); the eyebrow's letters resolve from 0.8s to 1.4s; the message's letters
+from 1.5s, the last beginning at 3.3s, each line opening as a row so the block
+grows from the middle; **See Matt's gift** (the sender's name) rises into
+place just after the last letter settles, its row opening so the block is
+pushed up; half a second later the circle rises at the bottom and the block
+moves up 64px to make room. Each letter eases up and sharpens out of a blur
+over 1s on one smooth curve, and is orange for as long as it is out of focus
+(the warmth fades over 70% of the sharpening time, full strength, `#F5842E`
+on dark), so every word arrives orange and blurred and settles white and
+sharp. The last word keeps most of it. In the dark theme the fold is the same
+near-black as the room behind fold 2, the type warm white, the button white
+with dark type.
+
+## Dynamic motion (default)
+
+The reveal. The circle that rises at the bottom is the photograph at half
+size, the couple inside the dome. Inside it, concentric at 30% of its size,
+sits a second half circle: the card's own glass surface (same tint, same 60px
+blur) with nothing in it yet, the card not yet expanded.
+
+The button, a scroll down, a swipe or the down-arrow, page-down and space keys
+run the same sequence on the one viewport: the first-fold block travels 256px
+up while fading and blurring (800ms); from 100ms the circle grows until the
+photograph is exactly a full-screen cover while the room crossfades to dark
+(no halo at the top); at the same moment the glass half circle morphs into the
+card's exact rectangle (position, size and corner radius taken from the card's
+layout, one Web Animation for all five so the box never drifts) over 1s on
+`cubic-bezier(.9,0,.22,1)`; as it lands the real card takes its place and the
+content fades in, while the timeline rises from below a beat later; settled at
+1.1s, when the footer and a small arrow at the top fade in. The arrow, or a
+firm scroll up, runs it in reverse (about 1.15s): the content fades, the card
+shrinks back into a half circle in the dome, the room lightens and the block
+settles back.
+
+## Static motion
 
 One ordinary scroll, nothing waiting on a click. The title, eyebrow and button
 are simply there, with no entrance, set in warm white over the photograph
 whatever the theme. The first fold is 80% of the screen tall and is not
-painted: the photograph is behind it from the start; near its foot a one-pixel
-white line bobs up and down (16px, 1.8s) as a hint to scroll, fading out over the first
-120px of scroll. At the top of the second fold a small "Back" control (an up
-arrow over a 24px hairline and a mono label) scrolls back to the top. On phones the fold's content is centred with 80px above and
-below. The photograph is the page's own background: a
-sticky, zero-height layer at the top of the scroll holds it fixed behind both
-folds, so the first fold's card scrolls up off it and the gift sits on it,
-and it drifts up at 20% of the scroll, a small parallax. The button, or any
-scroll, simply moves down the page. The card, passport, timeline and
-footer are in place from the start; the back arrow, the circle and the
-floating phone button are not used. Reduced motion disables the parallax.
-
-## Dynamic motion
-
-The reveal. Half a second after the button arrives, the top of a circle scales
-up from the bottom edge of the screen (the photograph at half size, the couple
-inside the dome) and the whole block moves up 64px to make room for it. Inside
-the dome, concentric with it at 30% of its size, sits a second half circle:
-the card's own glass surface (same tint, same blur) with nothing in it yet, the
-card not yet expanded. The button, a scroll down, a swipe or the down-arrow, page-down and
-space keys run the same sequence on the one viewport: the first-fold block
-travels 256px up while fading and blurring (800ms); from 100ms the circle
-grows until the photograph is exactly a full-screen cover while the room
-crossfades to dark; at the same moment the glass half circle morphs into the
-card's exact rectangle (position, size and corner radius written by the
-script from the card's layout) over 1s on `cubic-bezier(.9,0,.22,1)`; as it
-lands the real card takes its place and the content fades in, while the
-timeline rises from below a beat later; settled at 1.1s, when the footer and
-a small arrow at the top fade in. The
-arrow, or a firm scroll up, runs it in reverse (about 1.15s).
+painted: the photograph is the page's own background from the start, held
+fixed behind both folds by a sticky zero-height layer at the top of the
+scroll, drifting up at 20% of the scroll as a small parallax. Near the foot of
+the first fold a one-pixel white line bobs up and down (16px, 1.8s) as a hint
+to scroll, fading out over the first 120px of scroll. At the top of the second
+fold a small "Back" control (an up arrow over a 24px hairline and a mono
+label) scrolls back to the top. On phones the first fold's content is centred
+with 80px above and below, and a dark gradient is fixed at the top of the
+screen over the photograph so the status bar reads. The back arrow, the
+circle, the seed and the floating phone button are not used. Reduced motion
+disables the parallax.
 
 ## Fold 2
 
 The photograph fills the screen, darkened so type reads over it. The fold does
 not scroll on desktop; on phones it does. One glass card, centred, up to 561px
-wide: `rgba(40,38,36,.32)` over a 44px blur, 44px corners, no border, no
+wide: `rgba(40,38,36,.32)` over a 60px blur, 44px corners, no border, no
 shadow, so the room shows through. Inside, 48px padding all round: the mono
 "Gift received from Matt" line (orange square), the product name "Everlab
-Protocol", a short description, then a mono "What's included" label above six
-plain rows, each a small line icon (speech bubble, drop, scan, pulse, leaf,
-cycle) and the full title, no card and no dividers, 8px above and below each
-row; then **Claim my gift** full width at the foot of the card. At the top
-right of the card, beside the title, sits the membership passport as a 128×72
-tile: the `Ellipse 4358.png` copper texture blurred 64px into a warm gradient,
-the Everlab mark top left and "12 months" bottom right. Phones drop the tile.
+Protocol" 16px under it, a short description, then a mono "What's included"
+label above six plain rows, each a small line icon (speech bubble, drop, scan,
+pulse, leaf, cycle) and the full title, no card and no dividers, 7px above and
+below each row; then **Claim my gift** full width at the foot of the card. At
+the top right of the card, beside the title, sits the membership passport as a
+104×60 tile with nothing written on it: the `Ellipse 4358.png` copper texture
+blurred 64px into a warm gradient, a warm highlight top left and a deep shadow
+bottom right laid over it, and the Everlab mark. Phones drop the tile.
 
-Under the card, 28px below and directly over the photograph, with no label: a
+Under the card, 52px below and directly over the photograph, with no label: a
 horizontal timeline as wide as the card, four equal columns with a 10px square
 at the centre of each and its label centred beneath on one line; a half-pixel
 line runs from 6px right of each square to 6px left of the next. The squares
 are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Claim your gift, Meet your doctor, Get
-tested. The card and
-the timeline are centred together in the fold. The wordmark sits top centre,
-the footer line "Page secured by Everlab" bottom centre. On phones the
-timeline labels may wrap, the first-fold block sits centred with 80px above
-and below, a dark gradient is fixed at the top of the screen over the
-photograph, and in dynamic motion **Claim my gift** floats at the foot of the
-screen.
+tested. The card and the timeline are centred together in the fold. The
+wordmark sits top centre, the footer line "Page secured by Everlab" bottom
+centre. On phones the timeline labels may wrap and in dynamic motion **Claim
+my gift** floats at the foot of the screen.
 
 ## Feeding it from the email
 
@@ -138,7 +140,7 @@ Every parameter is optional and falls back to the example gift in the page.
 
 | Parameter | Meaning |
 | --- | --- |
-| `from` | Sender's name |
+| `from` | Sender's name (in the eyebrow, the card and the button) |
 | `to` | Recipient's first name |
 | `message` | The message on the first fold (`%0A` for a line break; three lines read best) |
 | `product` | Product name (default "Everlab Protocol") |
@@ -146,7 +148,7 @@ Every parameter is optional and falls back to the example gift in the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`), six items |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
-| `device`, `theme`, `motion` | The tweaks, as above |
+| `device`, `theme`, `motion`, `msg` | The tweaks, as above |
 
 All text is inserted as plain text, never as HTML.
 
@@ -164,16 +166,19 @@ used by the page.
 Plain HTML, CSS and JavaScript, no build step. `AnimatedQuote` splits the
 message into per-character spans and assigns each its delay; `GiftIntro` runs
 fold 1; `GiftCard` fills the gift; `App` owns the state
-(`intro → revealing → gift → returning → intro`) for the dynamic motion and
-the tweaks. Motion is limited to transform, opacity and blur.
+(`intro → revealing → gift → returning → intro`), the seed's geometry and the
+tweaks. Motion is limited to transform, opacity and blur, plus the seed's
+box morph.
 
 ## Verification
 
 Rendered headlessly at capture time on desktop (1440×900) and in the iPhone
-frame, light and dark, static (first fold, three scroll positions showing the
-parallax) and dynamic (the settled card). Google Fonts were not reachable from
-the render sandbox, so the screenshots used the fallback stack; the published
-page loads them normally.
+frame, light and dark, in both motions: the first fold at several moments of
+the arrival sequence, the seed at rest, mid-morph and landed (its rectangle
+measured against the card's, and its centre measured through the way back),
+the settled card, and the static scroll at three positions. Google Fonts were
+not reachable from the render sandbox, so the screenshots used the fallback
+stack; the published page loads them normally.
 
 ## Viewing
 

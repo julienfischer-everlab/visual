@@ -52,7 +52,7 @@
     --white:#FCFBF9;
     --ink:#171412;
     --ember:#D98B4A;   /* the colour a letter has while it's still out of focus */
-    --ember-strength:.8;    /* how much of it shows: 1 is full orange, 0 is none */
+    --ember-strength:1;     /* how much of it shows: 1 is full orange, 0 is none */
     --btn:#171412;
     --btn-ink:#FCFBF9;
 
@@ -287,11 +287,11 @@
     color:var(--ink);
     animation:
       resolve var(--dur, 1000ms) cubic-bezier(.45,0,.2,1) var(--d) both,
-      ember calc(var(--stag, 60ms) * 5) cubic-bezier(.45,0,.55,1) var(--d) both;
+      ember calc(var(--dur, 1000ms) * .7) cubic-bezier(.3,0,.5,1) var(--d) both;
   }
-  /* the letter eases up and sharpens along one smooth curve; the warmth fades
-     over five stagger steps on an ease-in-out, so the trail of warm letters
-     swells and recedes like a wave behind the leading edge */
+  /* the letter eases up and sharpens along one smooth curve; it is orange for
+     as long as it is out of focus (the warmth fades over 70% of the sharpening
+     time), so every word arrives orange and blurred and settles white and sharp */
   @keyframes resolve{
     0%{opacity:0;top:3px;filter:blur(7px);}
     35%{opacity:.7;top:1.5px;filter:blur(4px);}
@@ -311,7 +311,7 @@
     font-size:12px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
     color:var(--ink);
     opacity:0;transform:translateY(4px);
-    animation:chip-in 700ms var(--ease-out) 80ms both;
+    animation:chip-in 700ms var(--ease-out) 650ms both;
   }
   .chip::before{content:"";width:7px;height:7px;background:#E8722A;}
   /* on the first fold the square blinks once a second, like a cursor */
@@ -327,7 +327,7 @@
     color:var(--ink);
     animation:
       resolve var(--dur, 700ms) cubic-bezier(.45,0,.2,1) var(--d) both,
-      ember calc(var(--stag, 40ms) * 5) cubic-bezier(.45,0,.55,1) var(--d) both;
+      ember calc(var(--dur, 700ms) * .7) cubic-bezier(.3,0,.5,1) var(--d) both;
   }
   .chip .w{white-space:nowrap;}
 
@@ -369,7 +369,7 @@
   /* the card lands in the centre of the first screen; the columns wait below */
   .hero{
     width:100%;height:100%;flex:none;max-width:561px;
-    display:grid;grid-template-columns:minmax(0, 1fr);gap:28px;
+    display:grid;grid-template-columns:minmax(0, 1fr);gap:52px;
     align-content:center;justify-content:center;
     padding:96px 0 64px;  /* clear of the logo above and the footer below */
   }
@@ -384,6 +384,9 @@
     transition:color var(--bg-ms) ease var(--bg-delay);
   }
   .logo svg{display:block;height:25px;width:auto;}
+  /* the order of arrival: wordmark, eyebrow, message, button, circle */
+  body[data-motion="dynamic"] .logo{opacity:0;animation:logo-in 700ms var(--ease-out) 150ms both;}
+  @keyframes logo-in{to{opacity:1;}}
   body[data-state="revealing"] .logo,
   body[data-state="gift"] .logo{color:var(--ink-d);}
   body[data-state="returning"] .logo{transition-delay:0s;transition-duration:var(--back-card-ms);}
@@ -629,7 +632,7 @@
     .hero{padding:80px 0 52px;}
     .card .info{padding:30px 34px;}
     .card .pass{top:30px;right:34px;}
-    .hero{gap:20px;}
+    .hero{gap:44px;}
     .side{gap:12px;}
     .card{border-radius:32px;}
     .title-row{margin-bottom:8px;}
@@ -706,6 +709,7 @@
     .timeline li.now::after{animation:none;display:none;}
     .intro .chip::before{animation:none;}
     .chip{animation:none;opacity:1;transform:none;}
+    .logo{animation:none !important;opacity:1;}
     .stack, .card, .act, .more, .foot, .back, body, .glow, .scene-bg, .scene-bg::after, .dim{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
     body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;opacity:0;filter:none;}
@@ -1154,15 +1158,15 @@
 
   /* ---------- GiftIntro ---------- */
   function GiftIntro(root, gift, onSee){
-    // the eyebrow resolves first: its letters run from 0.2s to 0.8s, with a
-    // lighter ember, and are settled by ~1.4s
+    // the wordmark fades in first (CSS, 150ms); the eyebrow follows: its
+    // letters run from 0.8s to 1.4s, with a lighter ember, settled by ~2s
     AnimatedQuote($('chipText'), gift.from + ' got something special for you', {
-      startAt: 200, finishStartsBy: 800, charMs: 650, fixedDur: true, ember: .5
+      startAt: 800, finishStartsBy: 1400, charMs: 650, fixedDur: true, ember: .5
     });
-    // the message follows: letters start at 0.9s, the last begins at 2.7s
-    // and settles by ~3.3s; the last word carries a fifth of the ember and less time
+    // the message follows: letters start at 1.5s, the last begins at 3.3s
+    // and settles by ~3.9s; the last word carries a fifth of the ember and less time
     var quote = AnimatedQuote($('quote'), gift.message, {
-      startAt: 900, finishStartsBy: 2700, charMs: 1000, lastWordMs: 600, lastWordEmber: .2, grow: true
+      startAt: 1500, finishStartsBy: 3300, charMs: 1000, lastWordMs: 700, lastWordEmber: .7, grow: true
     });
     // the button arrives just after the last character settles; the circle
     // follows it half a second later and the block moves up 64px to make room
@@ -1345,7 +1349,7 @@
     $('quote').classList.toggle('long', text.replace(/\s/g, '').length > 48);
     if(first) return; // GiftIntro renders the first one
     gift.message = text;
-    AnimatedQuote($('quote'), text, { startAt: 100, finishStartsBy: 1700, charMs: 1000, lastWordMs: 600, lastWordEmber: .2, grow: true });
+    AnimatedQuote($('quote'), text, { startAt: 100, finishStartsBy: 1700, charMs: 1000, lastWordMs: 700, lastWordEmber: .7, grow: true });
   }
   setMessage(MESSAGES[wantedM] ? wantedM : 0, true);
   msgSel.addEventListener('change', function(){ setMessage(parseInt(msgSel.value, 10)); });
