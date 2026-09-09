@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Signature over the last word, off by default" |
+| Captured from version | 2026-09-09, "Motion switch lands on the first fold" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -25,7 +25,7 @@ repo's git history.
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
 with a mono label and five plain native selects. Each changes the page in
-place; nothing reloads. On phones the labels hide and the four selects share
+place; nothing reloads. On phones the labels hide and the five selects share
 the bar evenly.
 
 | Select | Options (default first) | Link parameter |
@@ -41,6 +41,10 @@ in the script; choosing one re-renders the first-fold title in place (in
 dynamic motion it resolves letter by letter again). Every message is set at
 the same full size (up to 64px, the block up to 17em wide); the two longest
 run over four lines. A custom `message=` on the link still wins.
+
+Switching Motion always lands on the first fold: if the reveal had run, it is
+put back to its start, so the static header and the dynamic message are both
+where the new mode expects them.
 
 Everything below the bar lives in a stage pinned under it, so the bar never
 overlays anything. In iPhone mode the whole page runs inside a drawn iPhone

@@ -1436,7 +1436,10 @@
     m = m === 'static' ? 'static' : 'dynamic';
     document.body.dataset.motion = m;
     motionSel.value = m;
-    if(m === 'dynamic'){ document.getElementById('stage').scrollTop = 0; }
+    // switching motion always lands on the first fold: the reveal, if it had
+    // run, is put back to its start so both folds are where the new mode expects
+    if(state !== 'intro'){ setState('intro'); $('see').disabled = false; seedRest(); }
+    document.getElementById('stage').scrollTop = 0;
     requestAnimationFrame(function(){ layoutScene(); placeSig(); });
   }
   setMotion((params.get('motion') || DEFAULT_MOTION || '').toLowerCase());
