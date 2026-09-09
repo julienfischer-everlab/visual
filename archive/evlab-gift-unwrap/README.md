@@ -10,7 +10,7 @@ in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Timeline centred, half-pixel lines" |
+| Captured from version | 2026-09-09, "Back control, one title size" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -37,8 +37,9 @@ the bar evenly.
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
 in the script; choosing one re-renders the first-fold title in place (in
-dynamic motion it resolves letter by letter again). The two longest run over
-four lines a size down. A custom `message=` on the link still wins.
+dynamic motion it resolves letter by letter again). Every message is set at
+the same full size (up to 64px, the block up to 17em wide); the two longest
+run over four lines. A custom `message=` on the link still wins.
 
 Everything below the bar lives in a stage pinned under it, so the bar never
 overlays anything. In iPhone mode the whole page runs inside a drawn iPhone
@@ -72,7 +73,8 @@ are simply there, with no entrance, set in warm white over the photograph
 whatever the theme. The first fold is 80% of the screen tall and is not
 painted: the photograph is behind it from the start; near its foot a one-pixel
 white line bobs up and down (16px, 1.8s) as a hint to scroll, fading out over the first
-120px of scroll. On phones the fold's content is centred with 80px above and
+120px of scroll. At the top of the second fold a small "Back" control (an up
+arrow over a 24px hairline and a mono label) scrolls back to the top. On phones the fold's content is centred with 80px above and
 below. The photograph is the page's own background: a
 sticky, zero-height layer at the top of the scroll holds it fixed behind both
 folds, so the first fold's card scrolls up off it and the gift sits on it,
