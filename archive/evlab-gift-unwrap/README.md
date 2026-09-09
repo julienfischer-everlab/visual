@@ -10,7 +10,7 @@ scroll in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Horizontal timeline, 64px gap" |
+| Captured from version | 2026-09-09, "Message tweak, scroll hint" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -25,14 +25,21 @@ repo's git history.
 ## Tweaks
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
-with a mono label and three plain native selects. Each changes the page in
-place through a `data-` attribute on `<body>`; nothing reloads.
+with a mono label and four plain native selects. Each changes the page in
+place; nothing reloads. On phones the labels hide and the four selects share
+the bar evenly.
 
 | Select | Options (default first) | Link parameter |
 | --- | --- | --- |
 | Device | Desktop, iPhone | `device=phone` |
 | Theme | Dark, Light | `theme=light` |
 | Motion | Static, Dynamic | `motion=dynamic` |
+| Message | Happy Birthday; Looking after everyone else; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` |
+
+The six messages, with their authored line breaks, are the `MESSAGES` array
+in the script; choosing one re-renders the first-fold title in place (in
+dynamic motion it resolves letter by letter again). The two longest run over
+four lines a size down. A custom `message=` on the link still wins.
 
 Everything below the bar lives in a stage pinned under it, so the bar never
 overlays anything. In iPhone mode the whole page runs inside a drawn iPhone
@@ -58,9 +65,13 @@ letters, gone in about 200ms.
 
 ## Static motion (default)
 
-One ordinary scroll, nothing waiting on a click. The first fold is a painted
-card 80% of the screen tall with 56px rounded bottom corners (48px on phones),
-sitting over the photograph. The photograph is the page's own background: a
+One ordinary scroll, nothing waiting on a click. The title, eyebrow and button
+are simply there, with no entrance. The first fold is a painted card 80% of the
+screen tall with 56px rounded bottom corners (48px on phones), sitting over
+the photograph; in the strip of photograph under it a one-pixel white line
+bobs up and down (16px, 1.8s) as a hint to scroll, fading out over the first
+120px of scroll. On phones the fold's content is centred with 80px above and
+below. The photograph is the page's own background: a
 sticky, zero-height layer at the top of the scroll holds it fixed behind both
 folds, so the first fold's card scrolls up off it and the gift sits on it,
 and it drifts up at 12% of the scroll, a small parallax. The button, or any
@@ -91,10 +102,10 @@ shadow, so the room shows through. Inside, 48px padding all round: the mono
 Protocol", a short description, then at the foot a mono "What's included"
 label above six plain rows, each a small line icon (speech bubble, drop, scan,
 pulse, leaf, cycle) and the full title, no card and no dividers, 8px above and
-below each row. At the top right of the card, beside the title, sits the
-membership passport as a 128×72 tile: the `Ellipse 4358.png` copper texture
-blurred 64px into a warm gradient, the Everlab mark top left and "12 months"
-bottom right.
+below each row, the block following the description directly. At the top
+right of the card, beside the title, sits the membership passport as a 128×72
+tile: the `Ellipse 4358.png` copper texture blurred 64px into a warm gradient,
+the Everlab mark top left and "12 months" bottom right. Phones drop the tile.
 
 On the right, 64px from the card and directly over the photograph: "What's
 next", a horizontal timeline of four equal columns, a square above each label

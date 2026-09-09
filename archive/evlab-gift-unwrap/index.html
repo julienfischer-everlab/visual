@@ -230,6 +230,8 @@
     text-wrap:balance;
   }
   .quote .w{white-space:nowrap;}
+  /* the longer messages: a size down, a little wider, four lines */
+  .quote.long{font-size:clamp(26px, 3.1cqw + 8px, 48px);max-width:min(92cqw, 17em);}
   /* each line is a row that opens from nothing shortly before its letters
      start, so the centred block grows from the middle: the first line is
      pushed up by the second, both by the third */
@@ -480,7 +482,7 @@
     text-wrap:balance;
   }
   /* what's included: the label above, then plain rows with an icon each, no card, no dividers */
-  .incl-wrap{margin-top:auto;padding-top:30px;display:flex;flex-direction:column;gap:14px;}
+  .incl-wrap{margin-top:0;padding-top:6px;display:flex;flex-direction:column;gap:14px;}
   .incl{list-style:none;margin:0;padding:0;}
   .incl li{
     display:grid;grid-template-columns:22px minmax(0,1fr);gap:14px;align-items:center;
@@ -585,7 +587,7 @@
     .title-row .orb{width:36px;height:36px;}
     .card h2{font-size:clamp(22px, 1cqw + 13px, 26px);}
     .blurb{margin-bottom:0;font-size:13.5px;}
-    .incl-wrap{gap:10px;padding-top:22px;}
+    .incl-wrap{gap:10px;padding-top:4px;}
     .incl li{padding:5px 0;font-size:13px;}
     .side .mono-label{margin-top:4px;}
     .pass{aspect-ratio:1.9;}
@@ -601,7 +603,7 @@
     .hero{grid-template-columns:1fr;gap:20px;}
     .side{gap:14px;padding:0 4px;}
     .side .act{display:none;}
-    .incl-wrap{margin-top:28px;}
+    .incl-wrap{margin-top:0;}
     .card{border-radius:28px;}
     /* the first-fold block sits 72px higher than centre on phones */
     .intro{padding-bottom:168px;}
@@ -610,6 +612,7 @@
     .chip .line{display:inline;}
     /* a bigger headline */
     .quote{font-size:clamp(34px, 9.4cqw, 40px);letter-spacing:-.03em;line-height:.95;max-width:100%;}
+    .quote.long{font-size:clamp(26px, 7.2cqw, 30px);}
     /* on phones the card's own button hides and a floating one takes over,
        anchored to the stage so it stays at the foot of the screen */
     .act{display:none;}
@@ -635,7 +638,8 @@
     .back{top:14px;}
     .phone{width:min(34%, 150px);transform:translate(-50%,-42%) rotate(-14deg);}
     .card .info{padding:30px 26px 28px;min-height:0;}
-    .card .pass{top:30px;right:26px;}
+    .card .pass{display:none;}
+    .title-row{padding-right:0;}
     .incl li{white-space:normal;}
     .more{margin-top:40px;gap:40px;}
     .gift{overflow-y:auto;justify-content:flex-start;padding:0 20px 40px;}
@@ -674,7 +678,7 @@
   }
   .topbar label{opacity:.6;white-space:nowrap;}
   .topbar .bar-group{display:inline-flex;align-items:center;gap:10px;margin-left:auto;}
-  @media (max-width:600px){ .topbar label{display:none;} .topbar{justify-content:flex-end;padding:0 10px;} .topbar .bar-group{gap:6px;} .topbar select{max-width:31vw;padding:4px 4px;font-size:11px;} }
+  @media (max-width:600px){ .topbar label{display:none;} .topbar{justify-content:flex-end;padding:0 10px;} .topbar .bar-group{gap:6px;} .topbar .bar-group{flex:1 1 0;min-width:0;} .topbar select{flex:1 1 0;width:0;min-width:0;max-width:none;padding:4px 2px;font-size:10px;} }
   .topbar select{
     font:inherit;font-size:12px;letter-spacing:0;text-transform:none;
     color:#F3EFEA;background:#1C1C1C;border:1px solid rgba(255,255,255,.16);border-radius:6px;
@@ -726,6 +730,7 @@
   body[data-device="phone"] .back{top:74px;right:22px;}
   body[data-device="phone"] .hero{padding-top:118px;}
   body[data-device="phone"] .intro{padding-top:60px;padding-bottom:184px;}
+  body[data-device="phone"][data-motion="static"] .intro{padding:80px 22px;}
   body[data-device="phone"] .gift{padding-bottom:140px;}
   body[data-device="phone"] .act-float{padding-bottom:48px;border-radius:0 0 50px 50px;}
 
@@ -762,13 +767,26 @@
     transform:translateY(var(--par, 0px));will-change:transform;
   }
   body[data-motion="static"] .hero{position:relative;z-index:1;}
+  body[data-motion="static"] .quote .c, body[data-motion="static"] .chip .c{animation:none;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
+  body[data-motion="static"] .quote .line{animation:none;grid-template-rows:1fr;}
+  body[data-motion="static"] .chip{animation:none;opacity:1;transform:none;}
+  body[data-motion="static"] .intro .cta{opacity:1;transform:none;filter:none;grid-template-rows:1fr;margin-top:clamp(40px, 6cqh, 64px);transition:none;}
+  .scroll-hint{display:none;}
+  body[data-motion="static"] .scroll-hint{
+    display:block;position:absolute;left:50%;top:calc(100% + 10cqh - 18px);
+    width:1px;height:36px;background:rgba(255,255,255,.75);
+    opacity:var(--hint, 1);
+    animation:hint 1.8s ease-in-out infinite;
+  }
+  @keyframes hint{0%,100%{transform:translate(-50%,-8px);}50%{transform:translate(-50%,8px);}}
+  @media (prefers-reduced-motion: reduce){ .scroll-hint{animation:none;} }
   body[data-motion="static"] .card, body[data-motion="static"] .side{transform:none;transition:none;}
   body[data-motion="static"] .act, body[data-motion="static"] .more, body[data-motion="static"] .foot{opacity:1;transform:none;transition:none;}
   body[data-motion="static"] .side .act{display:flex;}
   body[data-motion="static"] .intro .pill{scroll-behavior:smooth;}
   @container stage (max-width:820px){
     body[data-motion="static"] .gift{height:auto;min-height:calc(100cqh + 56px);overflow:visible;padding-bottom:40px;}
-    body[data-motion="static"] .intro{border-radius:0 0 48px 48px;}
+    body[data-motion="static"] .intro{border-radius:0 0 48px 48px;padding:80px 22px;}
     body[data-motion="static"] .hero{height:auto;min-height:0;}
     body[data-motion="static"] .act{display:flex;}
   }
@@ -808,6 +826,15 @@
     <select id="motion" aria-label="Motion">
       <option value="dynamic">Dynamic</option>
       <option value="static">Static</option>
+    </select>
+    <label for="message">Message</label>
+    <select id="message" aria-label="Message">
+      <option value="0">Happy Birthday</option>
+      <option value="1">Looking after everyone else</option>
+      <option value="2">Adventures ahead</option>
+      <option value="3">What actually matters</option>
+      <option value="4">More good years</option>
+      <option value="5">A little push</option>
     </select>
   </span>
 </div>
@@ -850,6 +877,7 @@
       <button class="pill" id="see" type="button">See my gift</button>
     </div></div>
   </div>
+  <div class="scroll-hint" aria-hidden="true"></div>
 </section>
 
 <!-- Fold 2 · the gift -->
@@ -1194,6 +1222,30 @@
     }, reduce ? 320 : BACK_MS);
   }
 
+  /* ---------- message tweak: six lines for the first fold ---------- */
+  var MESSAGES = [
+    'Happy Birthday.\nI want you around\nfor a long time.',
+    'You’ve spent so much time\nlooking after everyone else.\nThis one’s for you.',
+    'For all the adventures\nstill ahead of us — I want you\nfeeling your best\nfor every one of them.',
+    'I wasn’t sure what to get you,\nso I went with something\nI know actually matters: you.',
+    'Here’s to feeling better,\nliving longer, and having\na lot more good years together.',
+    'You always say you want to take\nyour health more seriously.\nConsider this a little push\nfrom someone who loves you.'
+  ];
+  var msgSel = document.getElementById('message');
+  var wantedM = parseInt(params.get('msg'), 10);
+  if(!params.get('message') && MESSAGES[wantedM]) gift.message = MESSAGES[wantedM];
+  function setMessage(i, first){
+    i = MESSAGES[i] ? i : 0;
+    msgSel.value = String(i);
+    var text = first ? gift.message : MESSAGES[i];
+    $('quote').classList.toggle('long', text.replace(/\s/g, '').length > 48);
+    if(first) return; // GiftIntro renders the first one
+    gift.message = text;
+    AnimatedQuote($('quote'), text, { startAt: 100, finishStartsBy: 1700, charMs: 1000, lastWordMs: 600, lastWordEmber: .2, grow: true });
+  }
+  setMessage(MESSAGES[wantedM] ? wantedM : 0, true);
+  msgSel.addEventListener('change', function(){ setMessage(parseInt(msgSel.value, 10)); });
+
   setState('intro');
   GiftCard(gift);
   GiftIntro($('intro'), gift, reveal);
@@ -1226,6 +1278,7 @@
     parTick = false;
     if(!isStatic() || reduce){ stageEl.style.setProperty('--par', '0px'); return; }
     stageEl.style.setProperty('--par', (-stageEl.scrollTop * .12).toFixed(1) + 'px');
+    stageEl.style.setProperty('--hint', Math.max(0, 1 - stageEl.scrollTop / 120).toFixed(2));
   }
   stageEl.addEventListener('scroll', function(){ if(!parTick){ parTick = true; requestAnimationFrame(parallax); } }, { passive: true });
   window.addEventListener('resize', parallax);
