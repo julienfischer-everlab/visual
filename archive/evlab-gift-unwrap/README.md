@@ -10,7 +10,7 @@ scroll in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Passport tile in the card, fixed photo" |
+| Captured from version | 2026-09-09, "Horizontal timeline, 64px gap" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -96,10 +96,12 @@ membership passport as a 128×72 tile: the `Ellipse 4358.png` copper texture
 blurred 64px into a warm gradient, the Everlab mark top left and "12 months"
 bottom right.
 
-On the right, directly over the photograph: "What's next", a vertical timeline of four squares joined by hairlines that meet the
-squares exactly, 22px apart, Unwrap filled in Everlab red with a soft orange
-pulse travelling down its segment, then Claim your gift, Meet your doctor, Get
-tested; and **Claim my gift** full width. The wordmark sits top centre, the
+On the right, 64px from the card and directly over the photograph: "What's
+next", a horizontal timeline of four equal columns, a square above each label
+and a hairline from each square's right edge to the next square's left edge;
+Unwrap filled in Everlab red with a soft orange pulse travelling along its
+segment, then Claim your gift, Meet your doctor, Get tested; and **Claim my
+gift** full width beneath. The wordmark sits top centre, the
 footer line "Page secured by Everlab" bottom centre. On phones the card and
 the right side stack, the first-fold block sits 72px above centre, the
 headline is larger, and in dynamic motion **Claim my gift** floats at the foot

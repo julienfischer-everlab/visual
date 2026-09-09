@@ -10,7 +10,7 @@ only one, so the two artifacts are identical. Everything is documented in
 | --- | --- |
 | Source | https://claude.ai/code/artifact/90f389b7-825e-4861-b364-3d22c5a2db45 |
 | Title | Unwrap your Everlab gift · Split |
-| Captured from version | 2026-09-09, "Passport tile in the card, fixed photo" |
+| Captured from version | 2026-09-09, "Horizontal timeline, 64px gap" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Private |
 | Size | 383 KB, single file (photograph, logo and ellipse embedded) |
