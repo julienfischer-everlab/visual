@@ -653,11 +653,23 @@
      to reach. */
   .mTabs{display:none;}
   body.v8 .mTabs{
-    display:flex;position:absolute;left:0;right:0;bottom:0;z-index:6;
-    padding:9px 6px calc(8px + env(safe-area-inset-bottom));
+    display:flex;flex-wrap:wrap;position:absolute;left:0;right:0;bottom:0;z-index:6;
+    /* room above the home indicator: on the device the safe area plus 18px
+       (it was 8, and the labels sat on the indicator); in the frame the pill
+       below is drawn in that same room */
+    padding:9px 6px calc(18px + env(safe-area-inset-bottom));
     background:rgba(10,10,10,.94);border-top:1px solid rgba(255,255,255,.07);
     -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
   }
+  /* the iPhone's home indicator, in the frame only -- the device draws its
+     own in the safe area -- fixed with the tab bar, 8px off the bottom */
+  .mHome{display:none;}
+  body.v8:not(.fullscr) .mTabs{padding-bottom:30px;}
+  body.v8:not(.fullscr) .mTabs .mHome{
+    display:block;position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
+    width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);
+  }
+  body.light.v8:not(.fullscr) .mTabs .mHome{background:rgba(0,0,0,.8);}
   body.light.v8 .mTabs{
     background:rgba(255,255,255,.96);border-top-color:rgba(0,0,0,.08);
   }
@@ -741,12 +753,27 @@
   /* The biomarker search. The box wears the select's shell; the wrapper is
      what sticks -- to the top of the scroll container, over the list, on the
      phone's own ground -- once the field is focused or holds text. */
-  .msWrap{padding:12px 13px 0;}
-  .msWrap.stick{
-    position:sticky;top:0;z-index:6;padding:10px 13px;
-    background:#0d0d0c;box-shadow:0 10px 14px -10px rgba(0,0,0,.7);
+  /* Always sticky: the wrapper pins to the top of the scroll container -- which
+     is below the status bar (the hour, the battery), in the frame and on the
+     device alike -- on the phone's own dark ground, and stays there while the
+     list scrolls under it. So a scroll can drop the keyboard and the field is
+     still where the thumb left it, ready to tap again. The shadow comes on
+     only once it is actually pinned (the script sets .stuck). */
+  .msWrap{
+    position:sticky;top:var(--msTop, 0px);z-index:4;padding:12px 13px 10px;
+    background:#0d0d0c;transition:box-shadow .2s ease;
   }
-  body.light .msWrap.stick{background:#f7f2e9;box-shadow:0 10px 14px -10px rgba(46,31,26,.18);}
+  /* Where the status bar lies over the page (V4 on), the bar pins under it
+     (--msTop is its height, set by the script) and, once pinned, backs it
+     with the same ground so the list does not scroll under the hour and the
+     battery. z-index below the status bar's (5), so its text stays on top. */
+  .msWrap.stuck::before{
+    content:"";position:absolute;left:0;right:0;top:calc(-1 * var(--msTop, 0px));
+    height:var(--msTop, 0px);background:inherit;
+  }
+  .msWrap.stuck{box-shadow:0 10px 14px -10px rgba(0,0,0,.7);}
+  body.light .msWrap{background:#f7f2e9;}
+  body.light .msWrap.stuck{box-shadow:0 10px 14px -10px rgba(46,31,26,.18);}
   .msBox{
     display:flex;align-items:center;gap:9px;height:44px;padding:0 12px 0 14px;
     border:1px solid #2a2a28;border-radius:12px;color:#8b8b86;background:transparent;
@@ -4070,6 +4097,9 @@
   <a class="mTab"><svg viewBox="0 0 24 24"><path d="M4 6.5h5M4 12h5M4 17.5h5M13 7l2 2 4-4M13 17.5h7"/></svg><i>Plan</i></a>
   <a class="mTab"><svg viewBox="0 0 24 24"><path d="M12 3.6 20 8v8l-8 4.4L4 16V8z"/><path d="M4 8l8 4.4L20 8M12 12.4V20.4"/></svg><i>Services</i></a>
   <a class="mTab"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/></svg><i>More</i></a>
+  <!-- the iPhone's home indicator, drawn in the frame where the device would
+       draw its own; the tab bar keeps the same distance above it either way -->
+  <i class="mHome" aria-hidden="true"></i>
 </nav>
 </div>
 </div>
@@ -12913,12 +12943,29 @@
     const holdScroll = ms => { progUntil = Math.max(progUntil, performance.now() + ms); };
     const setStick = () => {
       const on = document.activeElement === input || input.value.length > 0;
-      wrap.classList.toggle('stick', on);
-      // while the search is up the results area is at least a screen tall, so
-      // a short list (or the skeleton) cannot pull the stuck field back down
+      // while the search is in use the results area is at least a screen tall,
+      // so a short list (or the skeleton) cannot pull the pinned field back down
       const mh = on ? Math.max(0, sc.clientHeight - wrap.offsetHeight) + 'px' : '';
       recs.style.minHeight = mh; skel.style.minHeight = mh;
     };
+    // Where the status bar lies over the page (V4 on, position:absolute), the
+    // bar pins under it rather than beneath its text: --msTop is its height,
+    // 0 where it is in the flow or hidden (the device shows its own).
+    const statusH = () => {
+      const st = document.querySelector('#phone .mstatus');
+      if (!st) return 0;
+      const cs = getComputedStyle(st);
+      return (cs.display !== 'none' && cs.position === 'absolute') ? st.offsetHeight : 0;
+    };
+    const placeBar = () => wrap.style.setProperty('--msTop', statusH() + 'px');
+    // the shadow (and the backdrop under the status bar) once it is pinned
+    const setStuck = () => {
+      placeBar();   // the page may have changed since init (setMode moves the status bar)
+      const top = parseFloat(getComputedStyle(wrap).top) || 0;
+      wrap.classList.toggle('stuck', wrap.getBoundingClientRect().top <= sc.getBoundingClientRect().top + top + 0.5 && sc.scrollTop > 0);
+    };
+    placeBar();
+    addEventListener('resize', () => { placeBar(); setStuck(); });
     function applyFilter(){
       const q = input.value.trim().toLowerCase();
       let any = false;
@@ -12949,11 +12996,11 @@
     input.addEventListener('focus', () => {
       wrap.classList.add('focus');
       document.body.classList.add('mSearchOn');
-      setStick();
-      // bring the field to the top of the screen; this scroll is ours
-      const top = wrap.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+      placeBar(); setStick();
+      // bring the field up to its pinned place; this scroll is ours
+      const top = wrap.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - statusH();
       progUntil = performance.now() + 900;
-      sc.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      if (Math.abs(top - sc.scrollTop) > 1) sc.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     });
     input.addEventListener('blur', () => {
       wrap.classList.remove('focus');
@@ -12962,14 +13009,21 @@
     });
     input.addEventListener('input', typed);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') input.blur(); if (e.key === 'Escape'){ input.value = ''; typed(); input.blur(); } });
-    clear.addEventListener('pointerdown', e => e.preventDefault());   // keep the focus on the field
-    clear.addEventListener('click', () => { input.value = ''; typed(); input.focus(); });
-    // a scroll by the reader dismisses the keyboard; our own scroll-to-top does not
+    // The cross clears the text and nothing else: no focus taken or given, no
+    // scroll -- "we don't interact with the focus here, we just clear the
+    // field". pointerdown is prevented so a focused field is not blurred by
+    // the tap, and an unfocused one is not focused by it.
+    clear.addEventListener('pointerdown', e => e.preventDefault());
+    clear.addEventListener('click', () => { input.value = ''; typed(); });
+    // a scroll by the reader dismisses the keyboard; our own scroll-to-top does
+    // not. The field stays pinned either way, so a tap brings the keyboard back.
     sc.addEventListener('scroll', () => {
+      setStuck();
       if (document.activeElement !== input) return;
       if (performance.now() < progUntil) return;
       input.blur();
     }, { passive: true });
+    setStuck();
   })();
   requestAnimationFrame(frame);
 })();

@@ -3119,6 +3119,41 @@ the empty line; the cross -> all 25 back with focus kept; "chol" then a hand
 scroll -> blurred, tabs back, the search still stuck with its three rows;
 cleared -> back in the flow. Error and mode probes clean.
 
+### 5.130 The search bar pinned under the status bar; the cross; the home indicator
+
+Three from the device. "The search should be below the top navigation -- the
+hour and the battery -- fixed with a dark background; when you scroll the
+keyboard disappears, and the user can click again and the keyboard appears."
+The sticky-on-focus of 5.129 went back into the flow once the field was empty
+and blurred, so after a scroll had dropped the keyboard the field could be
+gone. The wrapper is always sticky now, at the top of the scroll container on
+the phone's ground, with a shadow (and .stuck) once it is actually pinned;
+where the status bar lies over the page (V4 on, position:absolute) it pins
+under it -- --msTop is the bar's height, read live since setMode moves the bar
+-- and once pinned backs the bar with the same ground (a ::before) so the list
+does not scroll under the hour. Its z-index is 4, below the status bar's 5, so
+the text stays on top. On the device the bar is hidden and the safe-area
+padding does the same job, so --msTop is 0 there.
+
+"Click the clear icon: we shouldn't put the search at the top of the screen.
+It should stay in position, we don't interact with the focus, we just clear."
+The cross called focus(), and the focus handler scrolled; it clears and
+refilters and does nothing else now, pointerdown prevented so the field's
+focus is neither taken nor given by the tap.
+
+"The main nav should have more padding on the bottom, it's too close to the
+home navigation; and the home indicator should be on the iPhone frame, fixed
+with the main nav." The tab bar's bottom padding is 18px plus the safe area
+(was 8); in the frame, where the device is not there to draw it, a 134 x 5
+home pill sits 8px off the bottom inside the tab bar, with 30px of padding
+above it.
+
+Probed (msearch.js): the cross leaves scroll and focus as they were (828, still
+focused, all 25 rows back); a hand scroll blurs and a retap refocuses with the
+bar still pinned; in the frame the bar pins under the status bar (top 39px,
+z 4 under 5), the tab labels sit 35px above the frame's edge, the pill 134 x 5
+at 8px. Error and mode probes clean.
+
 ---
 
 ## 6. Open items
