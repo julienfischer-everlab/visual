@@ -3075,6 +3075,50 @@ to soften it. Probed (dotjoin.js): 26 dots from v -9 to 9, no tick above base
 x (1 - bioArc) anywhere on the biomarker slide, the end dots at a tenth of the
 middle's strength; the arc whole again on the organ slides.
 
+### 5.129 The dots by link, and the phone's biomarker search
+
+The message about the dots came a third time, and the reason was not the
+build: the viewport entry has no bar, so on a phone the Bio graph select cannot
+be reached and the arc is all anyone sees. The choice travels in the link now
+-- a trailing `d` on the hash (#m20vd, #m20d) sets CARD_STATE.bioDots and the
+select before setMode runs. modeFromHash, viewportFromHash and a new
+dotsFromHash read the suffix. Probed: #m20vd opens fullscreen with the dots at
+1 and every tick at 0; #m20v is the arc as before.
+
+"Extend the biomarker screen so we can simulate the search, below the
+filters." The phone's list grows from one group of four to seven groups of
+twenty-five (kidney, heart, metabolic, thyroid, blood, inflammation, all
+placeholder readings), each a `<section class="mgrp">` so a filter has
+something to hide and show, and the last row's missing rule is a :last-child
+rule rather than an inline style. Under the filter chips, a search box in the
+select's shell. Its behaviour, as asked:
+
+- Focus: the wrapper goes position:sticky at the top of the scroll container
+  (on the phone's ground, with a soft shadow) and the container scrolls up to
+  it, smoothly; the body wears mSearchOn, which hides the main navigation
+  (.mTabs) while the keyboard is up and gives the list its padding back.
+- Typing: the list gives way to a shimmering skeleton of six rows for 380ms,
+  then the groups are filtered by the row's name -- rows that miss hide, groups
+  with nothing left hide, and an empty line names the query. The cross shows
+  as soon as there is text, clears it, and keeps the focus (pointerdown is
+  prevented so the field never blurs on the way).
+- A scroll by the reader blurs the field, so the keyboard goes. Two scrolls
+  are not the reader's and are ignored for a beat: our own scroll-to-top on
+  focus (900ms) and the container clamping its position when the list just
+  got shorter (250ms after a change) -- the second was found by the probe,
+  which saw the field lose focus on the first keystroke. To the same end the
+  results area (list or skeleton) is kept at least a screen tall while the
+  search is up, so a short result cannot pull the stuck field back down.
+- The wrapper stays stuck while the field holds text, so a filtered list
+  keeps its search in view after the keyboard has gone; cleared and blurred,
+  it goes back into the flow.
+
+Probed (msearch.js, touch emulation at 390x844): tap -> stuck at 0, scrolled
+to it, tabs gone; "ser" -> skeleton, then Liver's four rows alone; a miss ->
+the empty line; the cross -> all 25 back with focus kept; "chol" then a hand
+scroll -> blurred, tabs back, the search still stuck with its three rows;
+cleared -> back in the flow. Error and mode probes clean.
+
 ---
 
 ## 6. Open items

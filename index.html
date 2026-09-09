@@ -734,6 +734,60 @@
     padding:14px 0;border-bottom:1px solid #1c1c1b;font-size:14px;color:#e4e4e0;
   }
   .mbrow .g{color:#8b8b86;font-size:12.5px;}
+  /* rows in a group: the last carries no rule (it used to be an inline style
+     on the last row, which a filter that hides rows could not follow) */
+  .mgrp .mbrow:last-child{border-bottom:none;}
+  .mbrow[hidden], .mgrp[hidden]{display:none;}
+  /* The biomarker search. The box wears the select's shell; the wrapper is
+     what sticks -- to the top of the scroll container, over the list, on the
+     phone's own ground -- once the field is focused or holds text. */
+  .msWrap{padding:12px 13px 0;}
+  .msWrap.stick{
+    position:sticky;top:0;z-index:6;padding:10px 13px;
+    background:#0d0d0c;box-shadow:0 10px 14px -10px rgba(0,0,0,.7);
+  }
+  body.light .msWrap.stick{background:#f7f2e9;box-shadow:0 10px 14px -10px rgba(46,31,26,.18);}
+  .msBox{
+    display:flex;align-items:center;gap:9px;height:44px;padding:0 12px 0 14px;
+    border:1px solid #2a2a28;border-radius:12px;color:#8b8b86;background:transparent;
+    transition:border-color .16s ease;
+  }
+  .msWrap.focus .msBox{border-color:#5a5a56;}
+  body.light .msBox{border-color:#ddd3bf;color:#9b8a75;}
+  body.light .msWrap.focus .msBox{border-color:#9b8a75;}
+  .msIco{width:16px;height:16px;flex:none;}
+  .msBox input{
+    flex:1;min-width:0;background:none;border:0;outline:none;padding:0;margin:0;
+    font:inherit;font-size:15px;color:#ececec;-webkit-appearance:none;appearance:none;
+  }
+  .msBox input::placeholder{color:#8b8b86;}
+  .msBox input::-webkit-search-cancel-button,.msBox input::-webkit-search-decoration{-webkit-appearance:none;display:none;}
+  body.light .msBox input{color:#2e1f1a;}
+  body.light .msBox input::placeholder{color:#9b8a75;}
+  .msClear{
+    display:none;width:22px;height:22px;flex:none;padding:0;border:0;border-radius:50%;
+    background:#2a2a28;color:#ececec;cursor:pointer;align-items:center;justify-content:center;
+  }
+  .msClear svg{width:12px;height:12px;display:block;}
+  .msWrap.hasText .msClear{display:flex;}
+  body.light .msClear{background:#e6ddca;color:#2e1f1a;}
+  /* the skeleton that stands in for the list while a keystroke "loads" */
+  .msSkel{padding:16px 13px 0;}
+  .msSkel i{
+    display:block;height:54px;margin-bottom:10px;border-radius:12px;
+    background:linear-gradient(90deg,#171716 0%,#232322 40%,#171716 80%);
+    background-size:220% 100%;animation:msShimmer 1.1s linear infinite;
+  }
+  .msSkel i:nth-child(2n){width:92%;}
+  .msSkel i:nth-child(3n){width:84%;}
+  body.light .msSkel i{background:linear-gradient(90deg,#ece4d4 0%,#f5efe4 40%,#ece4d4 80%);background-size:220% 100%;}
+  @keyframes msShimmer{from{background-position:120% 0;}to{background-position:-120% 0;}}
+  .msEmpty{padding:34px 13px;text-align:center;font-size:13.5px;color:#8b8b86;}
+  body.light .msEmpty{color:#9b8a75;}
+  /* the keyboard is up: the main navigation leaves, and the list no longer
+     keeps room for it */
+  body.v8.mSearchOn .mTabs{display:none;}
+  body.v8.mSearchOn .mscroll{padding-bottom:26px;}
   #phone .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;justify-self:end;}
   #phone .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
   #phone .rng .s1{width:34px;background:var(--rgOpt);}
@@ -3916,7 +3970,23 @@
       <div class="fchip"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</div>
       <div class="fchip mOther"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</div>
     </div>
-    <div class="mrecs">
+    <!-- The search sits under the filters. Focused, it sticks to the top of the
+         screen and the page scrolls up to it; typing filters the groups below
+         through a short skeleton; the cross clears; the main navigation leaves
+         while the keyboard is up; a scroll lets the field go. See mSearch. -->
+    <div class="msWrap" id="mSearch">
+      <div class="msBox">
+        <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 10.4 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="mSearchIn" type="search" placeholder="Search biomarkers" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search biomarkers">
+        <button class="msClear" id="mSearchClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+    <div class="msSkel" id="mSkel" hidden aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="msEmpty" id="mSearchEmpty" hidden>No biomarkers match &ldquo;<span></span>&rdquo;</div>
+    <div class="mrecs" id="mRecs">
+      <section class="mgrp">
       <h3>Liver Health</h3>
       <div class="gd">Biomarkers that indicate liver health and function, critical in metabolic processes.</div>
       <div class="mbrow">
@@ -3937,12 +4007,60 @@
         <span class="g">18.0 ng/dL &nbsp;|&nbsp; Dec 2024</span>
         <span class="st sub">Suboptimal</span>
       </div>
-      <div class="mbrow" style="border-bottom:none">
+      <div class="mbrow">
         <span>Serum gamma-GT (GGT)</span>
         <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
         <span class="g">18.0 ng/dL &nbsp;|&nbsp; Dec 2024</span>
         <span class="st ok">Optimal</span>
       </div>
+      </section>
+      <!-- more groups, so the screen is long enough to scroll and the search
+           has something to find; the readings are placeholders like the first -->
+      <section class="mgrp">
+      <h3>Kidney Health</h3>
+      <div class="gd">How well the kidneys filter the blood and keep its chemistry in balance.</div>
+      <div class="mbrow"><span>Creatinine</span><span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">78 &micro;mol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>eGFR</span><span class="rng"><i class="mk" style="left:12px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">96 mL/min &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Urea</span><span class="rng"><i class="mk" style="left:40px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">7.4 mmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st sub">Suboptimal</span></div>
+      <div class="mbrow"><span>Uric acid</span><span class="rng"><i class="mk" style="left:20px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">0.31 mmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      </section>
+      <section class="mgrp">
+      <h3>Heart Health</h3>
+      <div class="gd">Lipids and particles that carry them: the long-run picture of cardiovascular risk.</div>
+      <div class="mbrow"><span>Total cholesterol</span><span class="rng"><i class="mk" style="left:44px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">5.6 mmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st sub">Suboptimal</span></div>
+      <div class="mbrow"><span>LDL cholesterol</span><span class="rng"><i class="mk" style="left:40px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">3.4 mmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st sub">Suboptimal</span></div>
+      <div class="mbrow"><span>HDL cholesterol</span><span class="rng"><i class="mk" style="left:22px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">1.5 mmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Triglycerides</span><span class="rng"><i class="mk" style="left:18px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">1.1 mmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Apolipoprotein B (ApoB)</span><span class="rng"><i class="mk" style="left:48px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">1.12 g/L &nbsp;|&nbsp; Dec 2024</span><span class="st sub">Suboptimal</span></div>
+      </section>
+      <section class="mgrp">
+      <h3>Metabolic Health</h3>
+      <div class="gd">How the body handles sugar and stores energy.</div>
+      <div class="mbrow"><span>HbA1c</span><span class="rng"><i class="mk" style="left:16px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">5.2 % &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Fasting glucose</span><span class="rng"><i class="mk" style="left:24px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">5.0 mmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Fasting insulin</span><span class="rng"><i class="mk" style="left:52px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">14 mIU/L &nbsp;|&nbsp; Dec 2024</span><span class="st sub">Suboptimal</span></div>
+      </section>
+      <section class="mgrp">
+      <h3>Thyroid</h3>
+      <div class="gd">The gland that sets the pace of the metabolism.</div>
+      <div class="mbrow"><span>TSH</span><span class="rng"><i class="mk" style="left:20px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">1.8 mIU/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Free T4</span><span class="rng"><i class="mk" style="left:26px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">15 pmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Free T3</span><span class="rng"><i class="mk" style="left:14px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">4.9 pmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      </section>
+      <section class="mgrp">
+      <h3>Blood Health</h3>
+      <div class="gd">Red cells, iron and the vitamins that make them.</div>
+      <div class="mbrow"><span>Haemoglobin</span><span class="rng"><i class="mk" style="left:22px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">148 g/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Ferritin</span><span class="rng"><i class="mk" style="left:8px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">38 &micro;g/L &nbsp;|&nbsp; Dec 2024</span><span class="st sub">Suboptimal</span></div>
+      <div class="mbrow"><span>Vitamin B12</span><span class="rng"><i class="mk" style="left:30px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">410 pmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Folate</span><span class="rng"><i class="mk" style="left:28px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">22 nmol/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      </section>
+      <section class="mgrp">
+      <h3>Inflammation</h3>
+      <div class="gd">Low-grade inflammation, the background hum behind many chronic conditions.</div>
+      <div class="mbrow"><span>hs-CRP</span><span class="rng"><i class="mk" style="left:10px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">0.8 mg/L &nbsp;|&nbsp; Dec 2024</span><span class="st ok">Optimal</span></div>
+      <div class="mbrow"><span>Homocysteine</span><span class="rng"><i class="mk" style="left:42px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">12 &micro;mol/L &nbsp;|&nbsp; Dec 2024</span><span class="st sub">Suboptimal</span></div>
+      </section>
     </div>
   </div>
       </div>
@@ -8068,17 +8186,25 @@
   // without hunting through the dropdown first. The hash is the mode's number,
   // which is the same index the dropdown and the body class already use; a
   // trailing `v` (#m20v) is the viewport entry -- the same mode, full screen.
+  // A trailing `d` (#m20vd, #m20d) opens with the Dots biomarker graph: the
+  // viewport entry has no bar to choose it from, so the choice travels in the
+  // link -- the way a phone gets to see a tweak at all.
   function modeFromHash(){
-    const m = /^#m(\d+)v?$/.exec(location.hash || '');
+    const m = /^#m(\d+)v?d?$/.exec(location.hash || '');
     const v = m ? +m[1] : NaN;
     return (v >= 0 && v < MODES.length) ? v : null;
   }
-  const viewportFromHash = () => /^#m\d+v$/.test(location.hash || '');
+  const viewportFromHash = () => /^#m\d+vd?$/.test(location.hash || '');
+  const dotsFromHash = () => /^#m\d+v?d$/.test(location.hash || '');
   // the hash opens the viewport entry the way the bar does, less the bar
   function applyHashMode(h){
     const vp = viewportFromHash();
     CARD_STATE.fullscr = vp;
     CARD_STATE.showBar = false;
+    if (dotsFromHash()){
+      CARD_STATE.bioDots = true;
+      const g = document.getElementById('stGraph'); if (g) g.value = 'dots';
+    }
     setMode(h);
     if (vp){ versionSel.value = VIEWPORT_VAL; resize(); }
   }
@@ -12763,6 +12889,87 @@
     CARD_STATE.showBar = /[?&]bar(=|&|$)/.test(location.search);
     setMode(19);
     resize();
+  })();
+  // ---- the phone's biomarker search ----
+  // Focus: the wrapper sticks to the top of the scroll container and the page
+  // scrolls up to it (programmatically -- the scroll-to-dismiss below ignores
+  // that one), the body wears mSearchOn so the main navigation leaves while
+  // the keyboard is up. Typing: the list gives way to a skeleton for a beat,
+  // then the groups are filtered by name -- rows that do not match hide, groups
+  // with nothing left hide, an empty line says so. The cross clears and keeps
+  // the focus. A scroll by the reader blurs the field, so the keyboard goes;
+  // the wrapper stays stuck while the field holds text, so the filtered list
+  // keeps its search in view. Nothing of this touches the other pages.
+  (function mSearchInit(){
+    const sc = document.getElementById('mScroll');
+    const wrap = document.getElementById('mSearch'), input = document.getElementById('mSearchIn');
+    const clear = document.getElementById('mSearchClear'), skel = document.getElementById('mSkel');
+    const recs = document.getElementById('mRecs'), empty = document.getElementById('mSearchEmpty');
+    if (!sc || !wrap || !input || !recs) return;
+    const groups = [...recs.querySelectorAll('.mgrp')];
+    let progUntil = 0, skelTimer = 0;
+    // a scroll the reader did not make -- ours, or the container clamping its
+    // position because the list just got shorter -- must not dismiss the field
+    const holdScroll = ms => { progUntil = Math.max(progUntil, performance.now() + ms); };
+    const setStick = () => {
+      const on = document.activeElement === input || input.value.length > 0;
+      wrap.classList.toggle('stick', on);
+      // while the search is up the results area is at least a screen tall, so
+      // a short list (or the skeleton) cannot pull the stuck field back down
+      const mh = on ? Math.max(0, sc.clientHeight - wrap.offsetHeight) + 'px' : '';
+      recs.style.minHeight = mh; skel.style.minHeight = mh;
+    };
+    function applyFilter(){
+      const q = input.value.trim().toLowerCase();
+      let any = false;
+      for (const g of groups){
+        let shown = 0;
+        for (const row of g.querySelectorAll('.mbrow')){
+          const hit = !q || row.firstElementChild.textContent.toLowerCase().includes(q);
+          row.hidden = !hit; if (hit) shown++;
+        }
+        g.hidden = shown === 0; if (shown) any = true;
+      }
+      empty.querySelector('span').textContent = input.value.trim();
+      empty.hidden = any || !q;
+      holdScroll(250);
+      recs.hidden = false; skel.hidden = true;
+    }
+    function typed(){
+      wrap.classList.toggle('hasText', input.value.length > 0);
+      setStick();
+      // a keystroke "loads": the skeleton stands in for a beat, then the list
+      clearTimeout(skelTimer);
+      holdScroll(250);
+      if (input.value.trim()){
+        recs.hidden = true; empty.hidden = true; skel.hidden = false;
+        skelTimer = setTimeout(applyFilter, 380);
+      } else applyFilter();
+    }
+    input.addEventListener('focus', () => {
+      wrap.classList.add('focus');
+      document.body.classList.add('mSearchOn');
+      setStick();
+      // bring the field to the top of the screen; this scroll is ours
+      const top = wrap.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+      progUntil = performance.now() + 900;
+      sc.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    });
+    input.addEventListener('blur', () => {
+      wrap.classList.remove('focus');
+      document.body.classList.remove('mSearchOn');
+      setStick();
+    });
+    input.addEventListener('input', typed);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') input.blur(); if (e.key === 'Escape'){ input.value = ''; typed(); input.blur(); } });
+    clear.addEventListener('pointerdown', e => e.preventDefault());   // keep the focus on the field
+    clear.addEventListener('click', () => { input.value = ''; typed(); input.focus(); });
+    // a scroll by the reader dismisses the keyboard; our own scroll-to-top does not
+    sc.addEventListener('scroll', () => {
+      if (document.activeElement !== input) return;
+      if (performance.now() < progUntil) return;
+      input.blur();
+    }, { passive: true });
   })();
   requestAnimationFrame(frame);
 })();
