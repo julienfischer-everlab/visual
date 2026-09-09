@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Faster fold" |
+| Captured from version | 2026-09-08, "Card, then included and next steps" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -45,13 +45,22 @@ the card sinks back below the edge and the room crossfades back to white
 together (about 750ms), and the block settles back down into place from
 400ms, done at about 1.15s.
 
-**Fold 2.** Near-black with a faint warm glow, and one object in the middle: the
-gift card, with no border and no shadow, just a slightly lighter fill. Its
-left column holds the same mono "A gift from Matt" line as fold 1, the value, the
-product, a monospace "What's included" label over six rows with small square
-markers in Everlab red and hairline rules, each on one line on desktop, and
+**Fold 2.** Near-black with a faint warm glow. The gift card sits at the top,
+with no border and no shadow, just a slightly lighter fill. Its left column
+holds the mono "A gift from Matt" line, the product name, a short description
+of the membership, the total value set large under a mono label, and
 **Claim my gift**. Its right column is the photograph, with the sender's note
 overlaid on its lower edge in a dark glass panel.
+
+Below the card, two sections fade in once the card has landed, each with a
+mono label in a left column and its content on the right:
+
+- **What's included**: six rows with small square markers in Everlab red and
+  hairline rules, each on one line on desktop.
+- **Next steps**: three numbered steps (01 to 03), each a title and a line of
+  description. Numbers here because the order is real.
+
+The fold scrolls when the content is taller than the screen.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
 `prefers-reduced-motion` shows the message immediately and crossfades the
@@ -96,9 +105,10 @@ optional and falls back to the example gift baked into the page.
 | `message` | The message on the first fold (`%0A` for a deliberate line break; three lines read best) |
 | `note` | The sender's short note shown inside the gift card |
 | `product` | Product name |
-| `term` | One line under the product name |
-| `value` | Gift value label, as text |
+| `blurb` | The description of the membership inside the card |
+| `value` | Total value, shown large in the card (e.g. `$1,950`) |
 | `includes` | What's included, pipe-separated (`a\|b\|c`); one line each on desktop, so keep items short |
+| `steps` | Next steps, semicolon-separated, each `Title\|Description` |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | Photo for the card's right column (http or https only) |
 
