@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Top bar, ellipse, tiles" |
+| Captured from version | 2026-09-08, "Centred card, no scroll" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -58,7 +58,10 @@ the bottom and the room crossfades back to white together (about 750ms), and
 the block settles back down into place from 400ms, done at about 1.15s.
 
 **Fold 2.** The photograph fills the screen, darkened so type reads over it.
-The gift card lands in the centre: one large-radius grey glass panel with a
+The fold does not scroll on desktop: the card lands centred in the stage,
+the logo is pinned to the top edge and the footer line to the bottom, and
+on short screens the card tightens its padding and tiles so it always fits.
+On phones the fold scrolls. The gift card: one large-radius grey glass panel with a
 strong blur, the photo showing through, no border and no shadow. Its left
 column holds the mono "A gift from Matt" line (orange square), the round
 `Ellipse 4358.png` beside the product name, and a short description at the
