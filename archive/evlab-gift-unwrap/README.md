@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Centred card, no scroll" |
+| Captured from version | 2026-09-08, "Membership passport card" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -67,8 +67,12 @@ column holds the mono "A gift from Matt" line (orange square), the round
 `Ellipse 4358.png` beside the product name, and a short description at the
 top; at the bottom, "What's included" as two rows of three faint rounded
 tiles, each inclusion under a small line icon (speech bubble, drop, scan,
-pulse, leaf, cycle), no bullets. Its right column, behind a hairline divider, is
-"What's next": a vertical timeline of four squares joined by hairlines,
+pulse, leaf, cycle), no bullets. Its right column, behind a hairline divider, opens
+with a membership passport card: the `Ellipse 4358.png` copper texture under
+a fine dot grid, the Everlab mark top left, a MEMBER pill top right, the
+recipient's name and "Everlab Membership" bottom left, "12 months / gift
+membership" bottom right. Under it, "What's next": a vertical timeline of four
+squares joined by hairlines,
 Unwrap (the current step, filled in Everlab red), Claim your gift, Meet your
 doctor, Get tested, with **Claim my gift** centred at the foot of the column at
 70% of its width. Padding is an even 48px all round, the divider is a faint
