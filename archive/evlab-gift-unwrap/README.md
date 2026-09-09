@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Light sweep on the button" |
+| Captured from version | 2026-09-08, "Logo at the top" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 280 KB, single file (the photograph is embedded) |
@@ -71,6 +71,14 @@ doctor, Get tested. **Claim my gift** sits in the card's bottom-right corner.
 Motion is limited to transform, opacity and blur. Nothing bounces.
 `prefers-reduced-motion` shows the message immediately and crossfades the
 folds.
+
+## Logo and chrome
+
+The Everlab wordmark (`Logo mark+type.svg`, inlined with its fills set to
+`currentColor`) sits fixed at the top centre: ink on the white fold, fading to
+white as the room darkens. The back arrow sits top right. On phones the
+version switcher moves to the bottom-left corner so it never overlaps the
+logo.
 
 ## Version switcher
 
