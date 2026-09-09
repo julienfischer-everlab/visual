@@ -10,31 +10,25 @@ band of three cards, then a light closing section.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/05f652dc-ce60-45f8-92db-a2e813932039 |
 | Title | Your Everlab gift |
-| Captured from version | 2026-09-09, "Version switcher" |
+| Captured from version | 2026-09-09, "Top bar, six inclusion cards" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Private |
 | Size | 166 KB, single file (the card photo is embedded) |
 
 ## The page
 
-**Hero.** Warm off-white with a soft coral wash rising from the bottom edge.
-Left: a grey mono pill reading "Matt sent you something", the message set in
-two tones (the first line in ink, the rest in grey), two short lines about the
-membership, a black pill button **Claim my gift →**, and a mono line with the
-recipient and the total value. Right: a dark maroon card with the photograph
+**Hero.** Plain warm off-white. Left: a grey mono pill reading "Matt sent you
+something", the message set medium in two tones (the first line in ink, the
+rest in grey) with tight leading, a black pill button **Claim my gift →**, and
+a mono line with the recipient and the total value. Right: a dark maroon card with the photograph
 on top, three white tags (Everlab Membership, 12 months, $1,950 value) and the
 sender's note.
 
-**What's included.** Near-black band. A coral-square eyebrow, the heading
-"Everything in the membership", and three dark cards, each with a title, a
-sentence, and a small illustrative panel:
-
-- Blood & Biomarkers: three biomarker rows with range bars and status chips.
-- Imaging & Body Composition: a scan disc beside three mono readouts.
-- Doctors & Follow-up: a white panel with a dotted timeline (consult, month 6,
-  month 12).
-
-The six inclusions from the first version are folded into these three cards.
+**What's included.** Near-black band with the heading "What's included" and
+six dark rounded cards in two rows of three, each a small line icon over one
+inclusion, the same six as version 1: the onboarding consult, the blood
+panel, the DEXA scan, the physical assessment with VO₂ max, the nutrition
+assessment, and re-testing with the 12-month review.
 
 **Next steps.** Light section, three numbered columns (claim, meet your doctor,
 get tested), a second button, and a mono "A gift from Matt" line. A slim
@@ -42,10 +36,10 @@ footer carries the wordmark.
 
 No motion beyond a hover on the buttons. Nothing waits for scroll or a click.
 
-A small fixed pill at the top left, mono caps, holds a select with the two
-versions of the page: 01 Cinematic reveal (`../evlab-gift-unwrap`) and 02
-Sections (this one). Choosing the other opens it in a new tab, or navigates
-when the host allows.
+A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
+with a mono label and a plain native select for switching between the two
+versions: 01 Cinematic reveal (`../evlab-gift-unwrap`) and 02 Sections (this
+one). The page starts below it.
 
 ## The photograph
 
@@ -63,7 +57,7 @@ overrides it when the page is hosted.
 | `message` | The headline (`%0A` ends the first, dark line; the rest is grey) |
 | `note` | The sender's note in the card |
 | `product` | Product name, shown as a tag |
-| `blurb` | The two lines under the headline (`%0A` between them) |
+| `includes` | The six cards, pipe-separated (`a\|b\|c`) |
 | `value` | Total value, e.g. `$1,950` |
 | `claim` | URL for both buttons (http or https only) |
 | `image` | Photo for the card (http or https only) |

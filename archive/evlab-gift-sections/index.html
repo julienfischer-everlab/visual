@@ -97,10 +97,10 @@
   .lead{display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px;}
   .lead h1{
     margin:0;
-    font-weight:500;font-size:clamp(34px, 2.4vw + 14px, 46px);line-height:1.04;letter-spacing:-.03em;
+    font-weight:500;font-size:clamp(34px, 2.4vw + 14px, 46px);line-height:.98;letter-spacing:-.03em;
     text-wrap:balance;max-width:14em;
   }
-  .lead h1 .rest{color:var(--grey);font-weight:400;}
+  .lead h1 .rest{color:var(--grey);font-weight:500;}
   .lead p{margin:0;max-width:30em;color:var(--ink-2);font-size:15.5px;line-height:1.55;text-wrap:pretty;}
   .lead .copy{display:flex;flex-direction:column;gap:10px;}
   .trust{
@@ -140,7 +140,14 @@
     text-wrap:balance;
   }
   .included .eyebrow{color:var(--ink-d);}
-  .cards{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:24px;}
+  .cards{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:16px;}
+  .cards.six{list-style:none;margin:0;padding:0;}
+  .cards.six li{
+    background:var(--night-card);border-radius:22px;padding:28px 26px 26px;
+    display:flex;flex-direction:column;gap:18px;
+    font-size:16px;line-height:1.4;color:var(--ink-d);text-wrap:pretty;
+  }
+  .cards.six li svg{display:block;width:24px;height:24px;stroke:var(--ink-d2);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
   .card{
     background:var(--night-card);border-radius:26px;padding:32px 24px 20px;
     display:flex;flex-direction:column;gap:16px;text-align:center;
@@ -214,48 +221,40 @@
     footer .wrap{flex-direction:column;align-items:flex-start;}
   }
 
-  /* ---- version switcher: a fixed pill at the top left with a select ---- */
-  .switch{
-    position:fixed;top:14px;left:16px;z-index:9;
-    display:inline-flex;align-items:center;gap:10px;
-    padding:0 12px 0 14px;height:36px;border-radius:999px;
-    background:rgba(23,20,18,.86);color:#F3EFEA;
-    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+
+  /* ---- version bar: a fixed, edge-to-edge strip at the very top with a plain select ---- */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;height:44px;z-index:20;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:0 16px;
+    background:#111111;color:#F3EFEA;
+    border-bottom:1px solid rgba(255,255,255,.08);
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
     font-size:11px;letter-spacing:.14em;text-transform:uppercase;
   }
-  .switch label{opacity:.55;}
-  .switch .sel{position:relative;display:inline-flex;align-items:center;}
-  .switch select{
-    appearance:none;-webkit-appearance:none;
-    background:transparent;border:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;
-    padding:0 18px 0 0;cursor:pointer;outline:none;
+  .topbar label{opacity:.6;}
+  .topbar select{
+    font:inherit;font-size:12px;letter-spacing:0;text-transform:none;
+    color:#F3EFEA;background:#1C1C1C;border:1px solid rgba(255,255,255,.16);border-radius:6px;
+    padding:5px 8px;max-width:60vw;
   }
-  .switch select option{color:#171412;background:#F3EFEA;text-transform:none;letter-spacing:0;font-family:inherit;}
-  .switch .sel::after{
-    content:"";position:absolute;right:2px;top:50%;width:6px;height:6px;
-    border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
-    transform:translateY(-70%) rotate(45deg);pointer-events:none;
-  }
-  .switch select:focus-visible{outline:2px solid #F3EFEA;outline-offset:3px;border-radius:4px;}
-  @media (max-width:820px){ .switch{top:10px;left:10px;height:32px;font-size:10px;} .switch label{display:none;} }
+  .topbar select:focus-visible{outline:2px solid #F3EFEA;outline-offset:2px;}
+  body{padding-top:44px;}
 </style>
 
 
-<div class="switch">
-  <label for="version">Version</label>
-  <span class="sel"><select id="version" aria-label="Switch version">
+<div class="topbar">
+  <label for="version">Everlab gift · version</label>
+  <select id="version" aria-label="Switch version">
     <option value="https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159">01 · Cinematic reveal</option>
     <option value="https://claude.ai/code/artifact/05f652dc-ce60-45f8-92db-a2e813932039" selected>02 · Sections</option>
-  </select></span>
+  </select>
 </div>
 <section class="hero" aria-label="A message from the sender">
-  <div class="wash" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="d"></i><i class="c"></i></div>
   <div class="wrap">
     <div class="lead">
       <span class="eyebrow pill" id="eyebrow"></span>
       <h1 id="message"></h1>
-      <div class="copy" id="blurb"></div>
       <a class="btn" id="claim" href="#">Claim my gift
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
       </a>
@@ -275,48 +274,9 @@
 <section class="included" aria-label="What's included">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow red">What’s included</span>
-      <h2>Everything in the membership</h2>
+      <h2>What’s included</h2>
     </div>
-    <div class="cards">
-      <article class="card">
-        <h3>Blood &amp; Biomarkers</h3>
-        <p>An advanced blood panel across 100+ biomarkers and 50 health areas, plus a nutrition assessment with an Everlab nutritionist.</p>
-        <div class="panel">
-          <div class="bio"><span class="n">Serum triglycerides<small>1.9 MMOL/L · JUN 2026</small></span><span class="r"><span class="range" style="--x:52%"></span><span class="stat warn">Suboptimal</span></span></div>
-          <div class="bio"><span class="n">HDL cholesterol<small>1.22 MMOL/L · JUN 2026</small></span><span class="r"><span class="range" style="--x:44%"></span><span class="stat warn">Suboptimal</span></span></div>
-          <div class="bio"><span class="n">LDL cholesterol<small>1.8 MMOL/L · JUN 2026</small></span><span class="r"><span class="range" style="--x:22%"></span><span class="stat ok">Optimal</span></span></div>
-        </div>
-      </article>
-      <article class="card">
-        <h3>Imaging &amp; Body Composition</h3>
-        <p>A DEXA scan for body composition and bone density, and a 90-minute physical assessment including VO₂ max.</p>
-        <div class="panel">
-          <div class="scan">
-            <div class="disc" aria-hidden="true"></div>
-            <ul>
-              <li>BONE DENSITY T-SCORE 0.4</li>
-              <li>BODY FAT 18.2%</li>
-              <li>VO₂ MAX 46 ML/KG/MIN</li>
-            </ul>
-          </div>
-        </div>
-      </article>
-      <article class="card">
-        <h3>Doctors &amp; Follow-up</h3>
-        <p>A 45-minute onboarding consult with an Everlab doctor, re-testing part-way through, and a full 12-month review.</p>
-        <div class="panel light">
-          <div class="tl">
-            <div class="line" aria-hidden="true"></div>
-            <ul>
-              <li><i></i><span>CONSULT</span></li>
-              <li><i></i><span>MONTH 6</span></li>
-              <li><i></i><span>MONTH 12</span></li>
-            </ul>
-          </div>
-        </div>
-      </article>
-    </div>
+    <ul class="cards six" id="includes"></ul>
   </div>
 </section>
 
@@ -360,13 +320,22 @@
     product: 'Everlab Membership',
     blurb: 'Twelve months of Everlab. Advanced testing, a doctor who knows your numbers, and a plan that changes as you do.\nEverything you need to see exactly where you stand, and what to do about it.',
     value: '$1,950',
+    includes: [
+      '45-minute onboarding consult with an Everlab doctor',
+      'Blood panel: 100+ biomarkers across 50 health areas',
+      'DEXA scan for body composition and bone density',
+      '90-minute physical assessment, including VO₂ max',
+      'Nutrition assessment with an Everlab nutritionist',
+      'Re-testing part-way, plus a full 12-month review'
+    ],
     claim: 'https://everlab.com.au/',
     image: ''
   };
   var params = new URLSearchParams(location.search);
   function pick(k){ var v = params.get(k); return (v && v.trim()) ? v.trim() : GIFT_DEFAULTS[k]; }
   var gift = { from: pick('from'), to: pick('to'), message: pick('message'), note: pick('note'),
-    product: pick('product'), blurb: pick('blurb'), value: pick('value'), claim: pick('claim'), image: pick('image') };
+    product: pick('product'), blurb: pick('blurb'), value: pick('value'), claim: pick('claim'), image: pick('image'),
+    includes: params.get('includes') ? params.get('includes').split('|').map(function(x){ return x.trim(); }).filter(Boolean) : GIFT_DEFAULTS.includes };
   if(!/^https?:\/\//i.test(gift.claim)) gift.claim = GIFT_DEFAULTS.claim;
   if(gift.image && !/^https?:\/\//i.test(gift.image)) gift.image = '';
 
@@ -383,7 +352,23 @@
     rest.textContent = lines.slice(1).join(' ');
     h1.appendChild(rest);
   }
-  gift.blurb.split('\n').forEach(function(t){ var p = document.createElement('p'); p.textContent = t; $('blurb').appendChild(p); });
+  var ICONS = [
+    '<path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 16 14.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 13V7A1.5 1.5 0 0 1 4 5.5z"/>',
+    '<path d="M10 2.5s5.5 6 5.5 10a5.5 5.5 0 0 1-11 0c0-4 5.5-10 5.5-10z"/>',
+    '<rect x="3.5" y="3.5" width="13" height="13" rx="2"/><path d="M6.5 10h7M10 6.5v7"/>',
+    '<path d="M2.5 10h4l1.8-4.5 3.4 9 1.8-4.5h4"/>',
+    '<path d="M3.5 16.5C3.5 9 8 4.5 16.5 3.5c1 8.5-3.5 13-13 13z"/><path d="M3.5 16.5 12 8"/>',
+    '<path d="M16 8.5a6 6 0 0 0-10.9-2M4 11.5a6 6 0 0 0 10.9 2"/><path d="M16 3.5v5h-5M4 16.5v-5h5"/>'
+  ];
+  var list = $('includes');
+  gift.includes.forEach(function(item, n){
+    var li = document.createElement('li');
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 20 20'); svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = ICONS[n % ICONS.length];
+    var t = document.createElement('span'); t.textContent = item;
+    li.appendChild(svg); li.appendChild(t); list.appendChild(li);
+  });
 
   $('toName').textContent = gift.to; $('toFoot').textContent = gift.to;
   $('valueLead').textContent = gift.value; $('valueTag').textContent = gift.value + ' value';

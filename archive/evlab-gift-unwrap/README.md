@@ -8,10 +8,10 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Button in the right column, even padding" |
+| Captured from version | 2026-09-08, "Top bar, ellipse, tiles" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
-| Size | 280 KB, single file (the photograph is embedded) |
+| Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
 Earlier versions (a ribbon-tied card; a warm two-scene reveal with headings
 and a biological-age dial) are in the artifact's version history and in this
@@ -22,7 +22,7 @@ repo's git history.
 **Fold 1.** A warm off-white viewport with nothing on it but the sender's
 message, set large in a sans (Suisse Intl where installed, otherwise Geist),
 with a plain mono line above it, all caps and widely spaced, a small black
-square then "Matt got something special for you". Its letters resolve the same way as the
+orange square then "Matt got something special for you". Its letters resolve the same way as the
 message, ahead of it, with a lighter ember. Default copy: "Happy 30th, Sam. Go find out how good you
 actually are." over three lines. Each line opens as a row just before its letters
 start, so the centred block grows from the middle: the first line is pushed up
@@ -58,12 +58,13 @@ the bottom and the room crossfades back to white together (about 750ms), and
 the block settles back down into place from 400ms, done at about 1.15s.
 
 **Fold 2.** The photograph fills the screen, darkened so type reads over it.
-The gift card lands in the centre: one large-radius dark glass panel with a
+The gift card lands in the centre: one large-radius grey glass panel with a
 strong blur, the photo showing through, no border and no shadow. Its left
-column holds the mono "A gift from Matt" line, the product name and a short
-description at the top; at the bottom, "What's included" as two rows of three,
-each inclusion under a small line icon (speech bubble, drop, scan, pulse,
-leaf, cycle), no bullets. Its right column, behind a hairline divider, is
+column holds the mono "A gift from Matt" line (orange square), the round
+`Ellipse 4358.png` beside the product name, and a short description at the
+top; at the bottom, "What's included" as two rows of three faint rounded
+tiles, each inclusion under a small line icon (speech bubble, drop, scan,
+pulse, leaf, cycle), no bullets. Its right column, behind a hairline divider, is
 "What's next": a vertical timeline of four squares joined by hairlines,
 Unwrap (the current step, filled in Everlab red), Claim your gift, Meet your
 doctor, Get tested, with **Claim my gift** centred at the foot of the column at
@@ -76,18 +77,17 @@ folds.
 
 ## Logo and chrome
 
-The Everlab wordmark (`Logo mark+type.svg`, inlined with its fills set to
-`currentColor`) sits fixed at the top centre, 25px tall and 44px from the top: ink on the white fold, fading to
-white as the room darkens. The back arrow sits top right. On phones the
-version switcher moves to the bottom-left corner so it never overlaps the
-logo.
-
-## Version switcher
-
-A small fixed pill at the top left, mono caps, holds a select with the two
-versions of the page: 01 Cinematic reveal (this one) and 02 Sections
+A fixed, edge-to-edge bar 44px tall runs along the very top of the page in
+near-black, with a mono label and a plain native select for switching between
+the two versions: 01 Cinematic reveal (this one) and 02 Sections
 (`../evlab-gift-sections`). Choosing the other opens it in a new tab, or
-navigates when the host allows.
+navigates when the host allows. Everything else lives in a stage pinned
+below the bar, so the bar never overlays anything.
+
+The Everlab wordmark (`Logo mark+type.svg`, inlined with its fills set to
+`currentColor`) sits at the top centre of the stage, 25px tall: ink on the
+white fold, fading to white as the room darkens. The back arrow sits top
+right.
 
 ## The photograph
 
