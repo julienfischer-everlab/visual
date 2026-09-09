@@ -336,12 +336,13 @@
   body[data-state="returning"] .back{opacity:0;transition-delay:0s;transition-duration:.4s;}
 
   .card{
+    position:relative;
     width:100%;max-width:1080px;
     flex:none;
     margin:0;
     background:rgba(22,19,18,.66);
-    -webkit-backdrop-filter:blur(28px) saturate(1.1);backdrop-filter:blur(28px) saturate(1.1);
-    border-radius:24px;
+    -webkit-backdrop-filter:blur(44px) saturate(1.15);backdrop-filter:blur(44px) saturate(1.15);
+    border-radius:36px;
     display:grid;grid-template-columns:minmax(0, 1.25fr) minmax(0, 1fr);
     overflow:hidden;
     transform:translateY(110vh);
@@ -352,7 +353,7 @@
   body[data-state="gift"] .card{transform:none;}
   body[data-state="returning"] .card{transform:translateY(110vh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
 
-  .card .info{padding:36px 40px 36px;display:flex;flex-direction:column;justify-content:center;min-height:400px;min-width:0;}
+  .card .info{padding:48px 48px;display:flex;flex-direction:column;justify-content:center;min-height:580px;min-width:0;}
   .kicker{
     display:flex;justify-content:space-between;align-items:center;gap:16px;
     margin:0 0 28px;
@@ -367,17 +368,47 @@
     font-size:15.5px;line-height:1.55;color:var(--ink-d2);
     text-wrap:pretty;
   }
-  .value{display:flex;flex-direction:column;gap:6px;margin:0;}
+  .value{display:flex;flex-direction:column;gap:6px;margin:0 0 30px;}
   .value b{
     font-weight:500;font-size:clamp(26px, 1.4vw + 16px, 34px);line-height:1;letter-spacing:-.03em;
     color:var(--ink-d);font-variant-numeric:tabular-nums;
+  }
+
+  /* the journey: square, line, square, line ... with a title under each */
+  .timeline{
+    list-style:none;margin:12px 0 0;padding:0 8px;
+    width:100%;max-width:820px;
+    display:flex;align-items:flex-start;
+    opacity:0;transform:translateY(10px);
+    transition:opacity .8s var(--ease-out) 1250ms, transform .8s var(--ease-out) 1250ms;
+  }
+  body[data-state="revealing"] .timeline,
+  body[data-state="gift"] .timeline{opacity:1;transform:none;}
+  body[data-state="returning"] .timeline{opacity:0;transition-delay:0s;transition-duration:.3s;}
+  .timeline li{
+    position:relative;flex:1;min-width:0;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    text-align:center;
+  }
+  .timeline li i{
+    display:block;width:10px;height:10px;flex:none;
+    border:1.5px solid rgba(243,239,234,.45);background:transparent;
+  }
+  .timeline li.now i{background:var(--red);border-color:var(--red);}
+  .timeline li span{font-size:13px;color:var(--muted-d);padding:0 6px;}
+  .timeline li.now span{color:var(--ink-d);font-weight:500;}
+  /* the line between squares: from this square to the next */
+  .timeline li:not(:last-child)::after{
+    content:"";position:absolute;top:4.5px;left:calc(50% + 10px);right:calc(-50% + 10px);
+    border-top:1px solid rgba(243,239,234,.22);
   }
 
   /* below the card */
   .more{
     width:100%;max-width:1080px;
     margin-top:8px;
-    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;
+    max-width:760px;
+    display:grid;grid-template-columns:1fr;gap:64px;
     align-items:start;
     opacity:0;transform:translateY(18px);
     /* half a second after the card has landed (card-delay + card-ms + 500) */
@@ -425,15 +456,16 @@
     transform:translateY(-2px);
   }
   /* the sender's note */
+  /* the sender's note, under the value */
   .note{
-    margin:0;
-    font-weight:300;font-size:clamp(19px, 1vw + 12px, 24px);line-height:1.35;letter-spacing:-.015em;color:#F3EFEA;
+    margin:0;padding-top:26px;border-top:1px solid var(--hair-d);
+    font-weight:300;font-size:16.5px;line-height:1.45;letter-spacing:-.01em;color:var(--ink-d2);
     text-wrap:pretty;
   }
-  .note .who{display:block;margin-top:14px;font-size:14px;color:rgba(243,239,234,.6);font-weight:400;letter-spacing:0;}
+  .note .who{display:block;margin-top:8px;font-size:13px;color:var(--muted-d);font-weight:400;letter-spacing:0;}
   /* the button sits under the card, centred, and fades in once the card has landed */
   .act{
-    display:flex;justify-content:center;
+    position:absolute;right:28px;bottom:28px;
     opacity:0;transform:translateY(10px);
     transition:opacity .7s var(--ease-out) 1100ms, transform .7s var(--ease-out) 1100ms;
   }
@@ -443,14 +475,15 @@
   .act .pill{color:var(--btn-d-ink);background:var(--btn-d);padding:15px 30px;}
   .act .pill:hover{background:#FFFFFF;}
 
-  /* right column: the sender's note, given room of its own */
+  /* right column: what's included, condensed; the same glass as the rest of
+     the card, no second tint */
   .visual{
-    position:relative;min-height:400px;
-    display:flex;align-items:flex-end;
-    padding:32px;
-    background:rgba(255,255,255,.035);
-    border-left:1px solid rgba(255,255,255,.06);
+    position:relative;min-height:580px;min-width:0;
+    display:flex;flex-direction:column;justify-content:center;gap:14px;
+    padding:48px 44px 110px 20px;  /* room for the button in the corner */
   }
+  .visual .incl li{padding:9px 0;font-size:13.5px;gap:12px;white-space:normal;}
+  .visual .incl li::before{width:4px;height:4px;}
 
   .foot{
     margin:28px 0 0;flex:none;
@@ -467,13 +500,16 @@
 
   @media (max-width:820px){
     .card{grid-template-columns:1fr;max-width:560px;margin:0;}
-    .visual{order:1;min-height:0;padding:24px 26px 28px;border-left:0;border-top:1px solid rgba(255,255,255,.06);}
-    .note{font-size:18px;}
+    .visual{order:1;min-height:0;padding:0 26px 30px;}
+    .card{border-radius:28px;}
+    .act{position:static;order:2;display:flex;justify-content:center;padding:0 26px 30px;}
+    .back{left:auto;right:14px;transform:none;}
+    .timeline li span{font-size:11.5px;padding:0 3px;}
     .back{top:14px;}
     .phone{width:min(34%, 150px);transform:translate(-50%,-42%) rotate(-14deg);}
     .card .info{padding:30px 26px 28px;min-height:0;}
     .incl li{white-space:normal;}
-    .more{margin-top:40px;grid-template-columns:1fr;gap:40px;}
+    .more{margin-top:40px;gap:40px;}
     .gift{justify-content:flex-start;padding:0 20px 40px;}
     .hero{min-height:0;padding:68px 0 8px;}
     .intro{padding:24px 22px;}
@@ -554,29 +590,22 @@
       <p class="kicker"><span class="chip" id="fromChip"></span></p>
       <h2 id="product" tabindex="-1"></h2>
       <p class="blurb" id="blurb"></p>
-      <div class="value">
-        <span class="mono-label">Total value</span>
-        <b id="value"></b>
-      </div>
-    </div>
-    <div class="visual">
       <p class="note"><span id="noteText"></span><span class="who" id="noteWho"></span></p>
     </div>
-  </article>
-  <div class="act"><a class="pill" id="claim" href="#">Claim my gift</a></div>
-  </div>
-
-  <!-- below the card: what the membership holds, and what happens next -->
-  <section class="more" aria-label="About the gift">
-    <div class="block">
+    <div class="visual">
       <p class="mono-label">What’s included</p>
       <ul class="incl" id="includes"></ul>
     </div>
-    <div class="block">
-      <p class="mono-label">Next steps</p>
-      <ol class="steps" id="steps"></ol>
-    </div>
-  </section>
+    <div class="act"><a class="pill" id="claim" href="#">Claim my gift</a></div>
+  </article>
+  <!-- where the recipient is in the journey -->
+  <ol class="timeline" aria-label="Your next steps">
+    <li class="now" aria-current="step"><i></i><span>Unwrap</span></li>
+    <li><i></i><span>Claim your gift</span></li>
+    <li><i></i><span>Meet your doctor</span></li>
+    <li><i></i><span>Get tested</span></li>
+  </ol>
+  </div>
 
   <p class="foot">
     <svg width="13" height="13" viewBox="0 0 18 18" aria-hidden="true"><rect x="3" y="2" width="12" height="2.6" rx="1.3"/><rect x="1" y="7.7" width="16" height="2.6" rx="1.3"/><rect x="3" y="13.4" width="12" height="2.6" rx="1.3"/></svg>
@@ -721,20 +750,8 @@
   function GiftCard(gift){
     $('fromChip').textContent = 'A gift from ' + gift.from;
     $('toName').textContent = gift.to;
-    $('value').textContent = gift.value;
     $('product').textContent = gift.product;
     $('blurb').textContent = gift.blurb;
-    var steps = $('steps');
-    gift.steps.forEach(function(item){
-      var parts = item.split('|');
-      var li = document.createElement('li');
-      var wrap = document.createElement('div');
-      var b = document.createElement('b'); b.textContent = parts[0].trim();
-      wrap.appendChild(b);
-      if(parts[1]){ var sp = document.createElement('span'); sp.textContent = parts[1].trim(); wrap.appendChild(sp); }
-      li.appendChild(wrap);
-      steps.appendChild(li);
-    });
     $('noteText').textContent = '“' + gift.note + '”';
     $('noteWho').textContent = '— ' + gift.from;
     $('claim').href = gift.claim;

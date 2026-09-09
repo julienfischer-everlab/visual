@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Circle scales up after the button" |
+| Captured from version | 2026-09-08, "Inclusions in the card, timeline, corner button" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 280 KB, single file (the photograph is embedded) |
@@ -52,22 +52,16 @@ the bottom and the room crossfades back to white together (about 750ms), and
 the block settles back down into place from 400ms, done at about 1.15s.
 
 **Fold 2.** The photograph fills the screen, darkened so type reads over it.
-The gift card lands in the centre as a dark glass panel with the photo
-showing through, no border and no shadow. Its left column holds the mono "A
-gift from Matt" line, the product name, a short description of the
-membership, and the total value set large under a mono label. Its right column
-is the sender's note, set large. **Claim my gift** sits centred under the
-card and fades in once it has landed.
+The gift card lands in the centre: one large-radius dark glass panel with a
+strong blur, the photo showing through, no border and no shadow. Its left
+column holds the mono "A gift from Matt" line, the product name, a short
+description of the membership and the sender's note. Its right column is a
+condensed "What's included" list, six rows with small square markers.
+**Claim my gift** sits in the card's bottom-right corner.
 
-Below the first screen, two columns fade in half a second after the card has
-landed, each with a mono label on top; the reader scrolls down to them:
-
-- **What's included** (left): six rows with small square markers in Everlab
-  red and hairline rules, each on one line on desktop.
-- **Next steps** (right): three numbered steps (01 to 03), each a title and a
-  line of description. Numbers here because the order is real.
-
-The fold scrolls when the content is taller than the screen.
+Under the card, a timeline shows where the recipient is: four squares joined
+by hairlines, titled Unwrap (the current step, filled in Everlab red), Claim
+your gift, Meet your doctor, Get tested. It fades in after the card lands.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
 `prefers-reduced-motion` shows the message immediately and crossfades the
@@ -121,9 +115,8 @@ optional and falls back to the example gift baked into the page.
 | `note` | The sender's short note shown inside the gift card |
 | `product` | Product name |
 | `blurb` | The description of the membership inside the card |
-| `value` | Total value, shown large in the card (e.g. `$1,950`) |
+| `value` | Total value (kept in the data, not shown for now) |
 | `includes` | What's included, pipe-separated (`a\|b\|c`); one line each on desktop, so keep items short |
-| `steps` | Next steps, semicolon-separated, each `Title\|Description` |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
 
