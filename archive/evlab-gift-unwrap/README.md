@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Sender is Marc" |
+| Captured from version | 2026-09-09, "Signature, capital G" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -53,13 +53,17 @@ The sender's message, set large and medium in a sans (Suisse Intl where
 installed, otherwise Geist), under a plain mono eyebrow, all caps and widely
 spaced: a small orange square, blinking once a second like a cursor, then
 "Marc got something special for you". Default copy: "You’ve spent so much
-time looking after everyone else. This one’s for you." over three lines.
+time looking after everyone else. This one’s for you." over three lines. The
+sender's first name is written across the bottom right of the title in a
+script face (Caveat, orange, inclined 7°), like a signature: in dynamic motion
+it writes itself on from left to right 0.7s after the title's last letter
+starts, and again whenever the message is switched.
 
 In dynamic motion things arrive in order: the wordmark fades in first (from
 150ms); the eyebrow's letters resolve from 0.73s to 1.7s (on phones it breaks
 before "special"); the message's letters from 1.8s, the last beginning at 4.8s,
 each line opening as a row over 1.5s, from 900ms before its first letter, so
-the block grows gently from the middle; **See Marc's gift** (the sender's
+the block grows gently from the middle; **See Marc's Gift** (the sender's
 name) and the circle at the bottom arrive together half a second after the
 title's last letter starts, the button's row opening and the block moving up 64px slowly
 (1.3s, easing out) to make room. Each letter eases up and
