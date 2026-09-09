@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Quote over the photo, scroll-out" |
+| Captured from version | 2026-09-08, "One-letter flash, mono line" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -21,10 +21,11 @@ repo's git history.
 
 **Fold 1.** A warm off-white viewport with nothing on it but the sender's
 message, set large in a sans (Suisse Intl where installed, otherwise Geist),
-with a small chip above it reading "Matt sent you something". Default copy: "Happy 30th, Sam. Go find out how good you
+with a plain mono line above it, all caps and widely spaced, a small black
+square then "Matt, I sent you something". Default copy: "Happy 30th, Sam. Go find out how good you
 actually are." over three lines. Each character starts blurred, faintly
-transparent and 3px low, and arrives with a faint warm tint (about a third of the ember colour) and a soft glow, then cools to ink as it sharpens over 1.1s. The stagger is
-derived from the character count so the whole message lands in about three and a half
+transparent and 3px low, and comes up quickly and then sharpens out of the blur over 1.6s. Separately, a warm ember flash lasts exactly one stagger step (about 65ms), so it only ever sits on the newest letter and travels along the sentence like a point of light. The stagger is
+derived from the character count so the whole message lands in about four
 seconds. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 450ms after the last character settles, a small black pill,
 **See my gift**, rises into place.
 
@@ -46,7 +47,7 @@ done at about 1.6s.
 
 **Fold 2.** Near-black with a faint warm glow, and one object in the middle: the
 gift card, with no border and no shadow, just a slightly lighter fill. Its
-left column holds the same "A gift from Matt" chip as fold 1, the value, the
+left column holds the same mono "A gift from Matt" line as fold 1, the value, the
 product, a monospace "What's included" label over six rows with small square
 markers in Everlab red and hairline rules, each on one line on desktop, and
 **Claim my gift**. Its right column is the photograph, with the sender's note

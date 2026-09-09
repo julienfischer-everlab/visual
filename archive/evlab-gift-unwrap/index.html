@@ -49,7 +49,8 @@
     --white:#FCFBF9;
     --ink:#171412;
     --ember:#D98B4A;   /* the colour a letter has while it's still out of focus */
-    --ember-strength:.38;   /* how much of it shows: 1 is full orange, 0 is none */
+    --ember-strength:.85;   /* how much of it shows: 1 is full orange, 0 is none.
+                               It only ever sits on one letter, so it can be strong. */
     --btn:#171412;
     --btn-ink:#FCFBF9;
 
@@ -154,42 +155,50 @@
     text-align:center;
     font-weight:500;
     font-size:clamp(29px, 4.2vw + 12px, 64px);
-    /* 12px tighter than .98; floored at .8em so lines never overlap on phones */
-    line-height:max(calc(.98em - 12px), .8em);
+    /* 6px tighter than .98; floored at .8em so lines never overlap on phones */
+    line-height:max(calc(.98em - 6px), .8em);
     letter-spacing:-.034em;
     color:var(--ink);
     text-wrap:balance;
   }
   .quote .w{white-space:nowrap;}
-  /* each letter arrives as a warm glow out of focus, then cools to ink.
-     --e is how much ember it carries (100% at the start of the message,
-     tapering to almost none on the last word) and --dur how long it takes. */
+  /* each letter comes up quickly, then takes its time sharpening out of the
+     blur. The warmth is a separate, much shorter animation that lasts exactly
+     one stagger step (--stag), so it only ever sits on the newest letter and
+     travels along the sentence like a point of light. --e lets the last word
+     carry less of it; --dur is the sharpening time. */
   .quote .c{
     position:relative;display:inline;
     opacity:0;top:3px;filter:blur(7px);
     --warm:color-mix(in srgb, var(--ember) calc(var(--e, 100%) * var(--ember-strength)), var(--ink));
-    --halo:color-mix(in srgb, rgba(217,139,74,.45) calc(var(--e, 100%) * var(--ember-strength)), transparent);
-    color:var(--warm);
-    animation:resolve var(--dur, 1050ms) var(--ease-out) both;
-    animation-delay:var(--d);
+    --halo:color-mix(in srgb, rgba(217,139,74,.5) calc(var(--e, 100%) * var(--ember-strength)), transparent);
+    color:var(--ink);
+    animation:
+      resolve var(--dur, 1600ms) var(--ease-out) var(--d) both,
+      ember var(--stag, 60ms) linear var(--d) both;
   }
   @keyframes resolve{
-    0%{opacity:0;top:3px;filter:blur(8px);color:var(--warm);text-shadow:0 0 16px var(--halo);}
-    45%{opacity:.9;color:var(--warm);text-shadow:0 0 8px var(--halo);}
-    100%{opacity:1;top:0;filter:blur(0);color:var(--ink);text-shadow:0 0 0 rgba(232,140,60,0);}
+    0%{opacity:0;top:3px;filter:blur(8px);}
+    6%{opacity:.8;}
+    100%{opacity:1;top:0;filter:blur(0);}
+  }
+  @keyframes ember{
+    0%{color:var(--warm);text-shadow:0 0 14px var(--halo);}
+    70%{color:var(--warm);text-shadow:0 0 10px var(--halo);}
+    100%{color:var(--ink);text-shadow:0 0 0 rgba(232,140,60,0);}
   }
 
+  /* a plain mono line above the message: a black square, then who sent it */
   .chip{
-    margin:0 0 clamp(22px, 3.4vh, 34px);
-    display:inline-flex;align-items:center;gap:9px;
-    padding:10px 18px;border-radius:999px;
-    font-size:15px;font-weight:500;letter-spacing:-.006em;color:var(--ink);
-    background:rgba(23,20,18,.045);
-    border:1px solid rgba(23,20,18,.07);
+    margin:0 0 clamp(26px, 4vh, 40px);
+    display:inline-flex;align-items:center;gap:12px;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink);
     opacity:0;transform:translateY(4px);
     animation:chip-in 900ms var(--ease-out) 120ms both;
   }
-  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ember);}
+  .chip::before{content:"";width:7px;height:7px;background:var(--ink);}
   @keyframes chip-in{to{opacity:1;transform:none;}}
 
   .pill{
@@ -265,13 +274,12 @@
     margin:0 0 28px;
     font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-d);font-weight:500;
   }
-  /* the same chip as fold 1, on the dark ground */
+  /* the same mono line as fold 1, on the dark ground */
   .kicker .chip{
     margin:0;animation:none;opacity:1;transform:none;
-    font-size:13px;padding:7px 13px;gap:8px;
-    color:var(--ink-d);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08);
-    letter-spacing:-.005em;text-transform:none;
+    font-size:11.5px;gap:10px;color:var(--ink-d);
   }
+  .kicker .chip::before{background:var(--ink-d);}
   .card h2{
     margin:0 0 8px;
     font-weight:500;
@@ -387,7 +395,7 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .quote .c{animation:none;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
+    .quote .c{animation:none !important;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
     .chip{animation:none;opacity:1;transform:none;}
     .stack, .card, .foot, .back, body, .glow{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
@@ -517,6 +525,8 @@
     var count = 0;
     lines.forEach(function(l){ count += l.replace(/\s+/g,'').length; });
     var stagger = count > 1 ? (finishStartsBy - startAt) / (count - 1) : 0;
+    // the warm flash lasts one stagger step, so it is only ever on one letter
+    el.style.setProperty('--stag', Math.max(40, Math.round(stagger)) + 'ms');
 
     // the ember tapers across the last line so the final word arrives quick
     // and almost ink; everything before it keeps the full effect
@@ -562,11 +572,11 @@
 
   /* ---------- GiftIntro ---------- */
   function GiftIntro(root, gift, onSee){
-    $('chip').textContent = gift.from + ' sent you something';
-    // letters start at 0.45s (after the chip), the last begins at 2.9s and
-    // settles by ~3.5s; the last word carries a fifth of the ember and half the time
+    $('chip').textContent = gift.from + ', I sent you something';
+    // letters start at 0.45s (after the mono line), the last begins at 3.4s
+    // and settles by ~4.2s; the last word carries a fifth of the ember and half the time
     var quote = AnimatedQuote($('quote'), gift.message, {
-      startAt: 450, finishStartsBy: 2900, charMs: 1100, lastWordMs: 600, lastWordEmber: .2
+      startAt: 450, finishStartsBy: 3400, charMs: 1600, lastWordMs: 800, lastWordEmber: .2
     });
     // the button rises ~450ms after the last character settles
     setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 450);
