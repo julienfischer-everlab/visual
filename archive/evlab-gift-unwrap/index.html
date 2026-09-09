@@ -183,28 +183,19 @@
   .seed{
     position:absolute;z-index:2;pointer-events:none;
     background:rgba(40,38,36,.32);
-    -webkit-backdrop-filter:blur(44px) saturate(1.15);backdrop-filter:blur(44px) saturate(1.15);
+    -webkit-backdrop-filter:blur(60px) saturate(1.15);backdrop-filter:blur(60px) saturate(1.15);
     border-radius:50%;
     transform:scale(0);
+    /* the morph itself (left/top/width/height/radius) is one Web Animation
+       driven from the script, so the four sides always move together */
     transition:
       transform 1100ms cubic-bezier(.2,.7,.2,1),
-      left var(--card-ms) var(--ease-scene) var(--card-delay),
-      top var(--card-ms) var(--ease-scene) var(--card-delay),
-      width var(--card-ms) var(--ease-scene) var(--card-delay),
-      height var(--card-ms) var(--ease-scene) var(--card-delay),
-      border-radius var(--card-ms) var(--ease-scene) var(--card-delay),
       opacity 300ms ease calc(var(--card-delay) + var(--card-ms));
   }
   body.orb-in .seed{transform:scale(1);}
   body[data-state="revealing"] .seed,
   body[data-state="gift"] .seed{opacity:0;}
-  body[data-state="returning"] .seed{
-    opacity:1;
-    transition:
-      left var(--back-card-ms) var(--ease-scene) 0s, top var(--back-card-ms) var(--ease-scene) 0s,
-      width var(--back-card-ms) var(--ease-scene) 0s, height var(--back-card-ms) var(--ease-scene) 0s,
-      border-radius var(--back-card-ms) var(--ease-scene) 0s, opacity 250ms ease 0s;
-  }
+  body[data-state="returning"] .seed{opacity:1;transition:opacity 250ms ease 0s;}
   body[data-motion="static"] .seed{display:none !important;}
   /* dynamic: the card does not rise; it appears where the seed has arrived and
      its content fades in */
@@ -226,8 +217,8 @@
     opacity:0;
     transition:opacity var(--bg-ms) ease var(--bg-delay);
   }
-  body[data-state="revealing"] .glow,
-  body[data-state="gift"] .glow{opacity:1;}
+  /* the warm halo that used to come up with the room is off */
+  .glow{display:none;}
   body[data-state="returning"] .glow{opacity:0;transition-delay:var(--back-bg-delay);}
 
   :focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:999px;}
@@ -419,7 +410,7 @@
     flex:none;
     margin:0;
     background:rgba(40,38,36,.32);
-    -webkit-backdrop-filter:blur(44px) saturate(1.15);backdrop-filter:blur(44px) saturate(1.15);
+    -webkit-backdrop-filter:blur(60px) saturate(1.15);backdrop-filter:blur(60px) saturate(1.15);
     border-radius:44px;
     display:grid;grid-template-columns:minmax(0, 1fr);
     max-height:100%;
@@ -435,7 +426,7 @@
   .card .info{padding:48px;display:flex;flex-direction:column;justify-content:flex-start;min-height:0;min-width:0;}
   .kicker{
     display:flex;justify-content:space-between;align-items:center;gap:16px;
-    margin:0 0 28px;
+    margin:0 0 16px;
   }
   .mono-label{
     margin:0;
@@ -536,7 +527,7 @@
   .incl{list-style:none;margin:0;padding:0;}
   .incl li{
     display:grid;grid-template-columns:22px minmax(0,1fr);gap:14px;align-items:center;
-    padding:8px 0;
+    padding:7px 0;
     font-size:14px;line-height:1.4;color:var(--ink-d);text-wrap:pretty;
   }
   .incl li svg{display:block;width:18px;height:18px;stroke:var(--ink-d2);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
@@ -587,12 +578,21 @@
   .pass-term span{font-size:12px;opacity:.85;margin-top:5px;}
   /* inside the glass card the passport is a small 128×72 tile at the top right,
      beside the title: the mark and the term only */
-  .card .pass{position:absolute;top:48px;right:48px;width:128px;height:72px;aspect-ratio:auto;border-radius:12px;}
-  .card .pass .pass-tag, .card .pass .pass-name, .card .pass .pass-term span{display:none;}
+  .card .pass{position:absolute;top:48px;right:48px;width:104px;height:60px;aspect-ratio:auto;border-radius:12px;}
+  .card .pass .pass-tag, .card .pass .pass-name, .card .pass .pass-term{display:none;}
+  .card .pass .pass-mark{z-index:1;}
+  /* more light inside the tile: a warm highlight top left, a deep shadow bottom right */
+  .card .pass::after{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(90% 110% at 18% 10%, rgba(255,214,170,.6), transparent 62%),
+      radial-gradient(80% 90% at 88% 95%, rgba(96,30,12,.75), transparent 66%),
+      linear-gradient(160deg, rgba(255,255,255,.12), transparent 45%);
+  }
   .card .pass .pass-mark{top:10px;left:10px;width:18px;height:18px;}
   .card .pass .pass-term{right:11px;bottom:9px;}
   .card .pass .pass-term b{font-size:12px;letter-spacing:-.01em;}
-  .title-row{padding-right:150px;}
+  .title-row{padding-right:126px;}
 
   /* fold 2 layout: the side sits outside the card, over the photograph;
      the passport card, then what's next, then the button. It rises after the card. */
@@ -637,7 +637,7 @@
     .card h2{font-size:clamp(22px, 1cqw + 13px, 26px);}
     .blurb{margin-bottom:0;font-size:13.5px;}
     .incl-wrap{gap:10px;padding-top:10px;}
-    .incl li{padding:5px 0;font-size:13px;}
+    .incl li{padding:4px 0;font-size:13px;}
     .side .mono-label{margin-top:4px;}
     .pass{aspect-ratio:1.9;}
     .pass-name b{font-size:22px;}
@@ -1214,23 +1214,29 @@
      Writes the closed and open states of the photo circle as custom
      properties: diameter, background size and background position. */
   var imgW = 1920, imgH = 1446; // the stand-in gradient uses the photo's aspect
-  var seedD0 = 0;
-  function seedRest(){
-    var st = document.getElementById('stage'), seed = $('seed');
-    var r = seedD0 * .15;  // the seed is 30% of the dome, half its former size
-    seed.style.left = (st.clientWidth / 2 - r).toFixed(1) + 'px';
-    seed.style.top = (st.clientHeight - r).toFixed(1) + 'px';
-    seed.style.width = seed.style.height = (2 * r).toFixed(1) + 'px';
-    seed.style.borderRadius = '50%';
+  var seedD0 = 0, seedAnim = null;
+  // the seed at rest: a circle 30% of the dome, concentric with it
+  function restRect(){
+    var st = document.getElementById('stage');
+    var r = seedD0 * .15, d = (2 * r).toFixed(1) + 'px';
+    return { left: (st.clientWidth / 2 - r).toFixed(1) + 'px', top: (st.clientHeight - r).toFixed(1) + 'px', width: d, height: d, borderRadius: '50%' };
   }
-  function seedCard(){
-    var c = $('card'), seed = $('seed');
-    seed.style.left = c.offsetLeft + 'px';
-    seed.style.top = c.offsetTop + 'px';
-    seed.style.width = c.offsetWidth + 'px';
-    seed.style.height = c.offsetHeight + 'px';
-    seed.style.borderRadius = getComputedStyle(c).borderRadius;
+  // the seed as the card: the card's own rectangle and corner radius
+  function cardRect(){
+    var c = $('card');
+    return { left: c.offsetLeft + 'px', top: c.offsetTop + 'px', width: c.offsetWidth + 'px', height: c.offsetHeight + 'px', borderRadius: getComputedStyle(c).borderRadius };
   }
+  function seedSet(to){ var seed = $('seed'); if(seedAnim){ seedAnim.cancel(); seedAnim = null; } Object.assign(seed.style, to); }
+  // one animation for all five properties, so the box never drifts mid-way
+  function seedMorph(to, ms, delay){
+    var seed = $('seed');
+    var from = { left: seed.style.left, top: seed.style.top, width: seed.style.width, height: seed.style.height, borderRadius: seed.style.borderRadius };
+    seedSet(to);
+    if(reduce || !seed.animate || !from.width) return;
+    seedAnim = seed.animate([from, to], { duration: ms, delay: delay, easing: 'cubic-bezier(.9,0,.22,1)', fill: 'backwards' });
+  }
+  function seedRest(){ seedSet(restRect()); }
+  function seedCard(){ seedSet(cardRect()); }
   function layoutScene(w, h){
     if(w && h){ imgW = w; imgH = h; }
     var stage = document.getElementById('stage');
@@ -1290,8 +1296,8 @@
   var BACK_MS = 1150;  // back-text-delay + back-text-ms
   var state = 'intro';
   function setState(next){
-    if(next === 'revealing') seedCard();
-    if(next === 'returning') seedRest();
+    if(next === 'revealing') seedMorph(cardRect(), 1000, 100);   // card-ms, card-delay
+    if(next === 'returning') seedMorph(restRect(), 750, 0);      // back-card-ms
     state = next;
     document.body.dataset.state = next;
     var onGift = next === 'gift' || next === 'revealing';
