@@ -177,12 +177,12 @@
     --halo:color-mix(in srgb, rgba(217,139,74,.4) calc(var(--e, 100%) * var(--ember-strength)), transparent);
     color:var(--ink);
     animation:
-      resolve var(--dur, 1600ms) var(--ease-out) var(--d) both,
+      resolve var(--dur, 1000ms) cubic-bezier(.3,.5,.2,1) var(--d) both,
       ember calc(var(--stag, 60ms) * 3) linear var(--d) both;
   }
   @keyframes resolve{
-    0%{opacity:0;top:3px;filter:blur(8px);}
-    6%{opacity:.8;}
+    0%{opacity:0;top:3px;filter:blur(7px);}
+    22%{opacity:.75;top:2px;filter:blur(5px);}
     100%{opacity:1;top:0;filter:blur(0);}
   }
   @keyframes ember{
@@ -198,7 +198,7 @@
     font-size:12px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
     color:var(--ink);
     opacity:0;transform:translateY(4px);
-    animation:chip-in 900ms var(--ease-out) 120ms both;
+    animation:chip-in 700ms var(--ease-out) 80ms both;
   }
   .chip::before{content:"";width:7px;height:7px;background:var(--ink);}
   @keyframes chip-in{to{opacity:1;transform:none;}}
@@ -218,8 +218,8 @@
 
   .intro .cta{
     margin-top:clamp(40px, 6vh, 64px);
-    opacity:0;transform:translateY(10px);filter:blur(3px);
-    transition:opacity .8s var(--ease-out), transform .8s var(--ease-out), filter .8s var(--ease-out);
+    opacity:0;transform:translateY(8px);filter:blur(3px);
+    transition:opacity .7s var(--ease-out), transform .7s var(--ease-out), filter .7s var(--ease-out);
   }
   .intro.cta-in .cta{opacity:1;transform:none;filter:none;}
 
@@ -637,13 +637,13 @@
   /* ---------- GiftIntro ---------- */
   function GiftIntro(root, gift, onSee){
     $('chip').textContent = gift.from + ', I sent you something';
-    // letters start at 0.45s (after the mono line), the last begins at 3.4s
-    // and settles by ~4.2s; the last word carries a fifth of the ember and half the time
+    // letters start at 0.35s (after the mono line), the last begins at 2.2s
+    // and settles by ~2.8s; the last word carries a fifth of the ember and less time
     var quote = AnimatedQuote($('quote'), gift.message, {
-      startAt: 450, finishStartsBy: 3400, charMs: 1600, lastWordMs: 800, lastWordEmber: .2
+      startAt: 350, finishStartsBy: 2200, charMs: 1000, lastWordMs: 600, lastWordEmber: .2
     });
-    // the button rises ~450ms after the last character settles
-    setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 450);
+    // the button rises ~350ms after the last character settles
+    setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 350);
     $('see').addEventListener('click', onSee);
   }
 
