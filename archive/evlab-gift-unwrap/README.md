@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Two columns below the card" |
+| Captured from version | 2026-09-08, "Centred card, columns follow" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -45,15 +45,16 @@ the card sinks back below the edge and the room crossfades back to white
 together (about 750ms), and the block settles back down into place from
 400ms, done at about 1.15s.
 
-**Fold 2.** Near-black with a faint warm glow. The gift card sits at the top,
+**Fold 2.** Near-black with a faint warm glow. The gift card lands in the centre
+of the screen,
 with no border and no shadow, just a slightly lighter fill. Its left column
 holds the mono "A gift from Matt" line, the product name, a short description
 of the membership, the total value set large under a mono label, and
 **Claim my gift**. Its right column is the photograph, with the sender's note
 overlaid on its lower edge in a dark glass panel.
 
-Below the card, two columns fade in once the card has landed, each with a mono
-label on top:
+Below the first screen, two columns fade in half a second after the card has
+landed, each with a mono label on top; the reader scrolls down to them:
 
 - **What's included** (left): six rows with small square markers in Everlab
   red and hairline rules, each on one line on desktop.

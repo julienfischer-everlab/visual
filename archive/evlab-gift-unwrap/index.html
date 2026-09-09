@@ -230,8 +230,14 @@
     -webkit-overflow-scrolling:touch;
     color:var(--ink-d);
     display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-    padding:84px 24px 48px;  /* room for the arrow above the card */
+    padding:0 24px 48px;
     visibility:hidden;
+  }
+  /* the card lands in the centre of the first screen; the columns wait below */
+  .hero{
+    width:100%;min-height:100svh;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    padding:84px 0 24px;  /* room for the arrow above the card */
   }
   body[data-state="revealing"] .gift,
   body[data-state="gift"] .gift,
@@ -293,11 +299,12 @@
   /* below the card */
   .more{
     width:100%;max-width:1080px;
-    margin-top:56px;
+    margin-top:8px;
     display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;
     align-items:start;
     opacity:0;transform:translateY(18px);
-    transition:opacity .9s var(--ease-out) 1000ms, transform .9s var(--ease-out) 1000ms;
+    /* half a second after the card has landed (card-delay + card-ms + 500) */
+    transition:opacity .9s var(--ease-out) 1600ms, transform .9s var(--ease-out) 1600ms;
   }
   body[data-state="revealing"] .more,
   body[data-state="gift"] .more{opacity:1;transform:none;}
@@ -408,7 +415,7 @@
     display:flex;align-items:center;gap:10px;
     font-size:13px;color:var(--muted-d);
     opacity:0;transform:translateY(8px);
-    transition:opacity .9s var(--ease-out) 1000ms, transform .9s var(--ease-out) 1000ms;
+    transition:opacity .9s var(--ease-out) 1900ms, transform .9s var(--ease-out) 1900ms;
   }
   body[data-state="returning"] .foot{opacity:0;transition-delay:0s;transition-duration:.4s;}
   body[data-state="revealing"] .foot,
@@ -426,7 +433,8 @@
     .card .info{padding:30px 26px 28px;min-height:0;}
     .incl li{white-space:normal;}
     .more{margin-top:40px;grid-template-columns:1fr;gap:40px;}
-    .gift{justify-content:flex-start;padding:68px 20px 40px;}
+    .gift{justify-content:flex-start;padding:0 20px 40px;}
+    .hero{min-height:0;padding:68px 0 8px;}
     .intro{padding:24px 22px;}
     .intro .cta{margin-top:44px;}
   }
@@ -463,6 +471,7 @@
 </button>
 
 <main class="gift" id="gift" aria-hidden="true">
+  <div class="hero">
   <article class="card" id="card" aria-label="Your gift">
     <div class="info">
       <p class="kicker"><span class="chip" id="fromChip"></span></p>
@@ -499,6 +508,7 @@
       <p class="note"><span id="noteText"></span><span class="who" id="noteWho"></span></p>
     </div>
   </article>
+  </div>
 
   <!-- below the card: what the membership holds, and what happens next -->
   <section class="more" aria-label="About the gift">
