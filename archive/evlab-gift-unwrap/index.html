@@ -273,7 +273,7 @@
      pushed up by the second, both by the third */
   .quote .line{
     display:grid;grid-template-rows:0fr;
-    animation:line-open 900ms var(--ease-out) var(--ld, 0ms) both;
+    animation:line-open 820ms var(--ease-out) var(--ld, 0ms) both;
   }
   .quote .line-in{min-height:0;}
   @keyframes line-open{from{grid-template-rows:0fr;}to{grid-template-rows:1fr;}}
@@ -290,8 +290,8 @@
     --halo:color-mix(in srgb, rgba(240,130,50,.55) calc(var(--e, 100%) * var(--ember-strength)), transparent);
     color:var(--ink);
     animation:
-      resolve var(--dur, 1800ms) cubic-bezier(.45,0,.2,1) var(--d) both,
-      ember calc(var(--dur, 1800ms) * .7) cubic-bezier(.3,0,.5,1) var(--d) both;
+      resolve var(--dur, 1640ms) cubic-bezier(.45,0,.2,1) var(--d) both,
+      ember calc(var(--dur, 1640ms) * .7) cubic-bezier(.3,0,.5,1) var(--d) both;
   }
   /* the letter eases up and sharpens along one smooth curve; it is orange for
      as long as it is out of focus (the warmth fades over 70% of the sharpening
@@ -1159,7 +1159,7 @@
         var inner = document.createElement('span'); inner.className = 'line-in';
         row.appendChild(inner); frag.appendChild(row); host = inner;
         // the row starts opening 450ms before this line's first letter
-        row.style.setProperty('--ld', Math.max(0, Math.round(startAt + i * stagger - 600)) + 'ms');
+        row.style.setProperty('--ld', Math.max(0, Math.round(startAt + i * stagger - 545)) + 'ms');
       }
       words.forEach(function(word, wi){
         var w = document.createElement('span');
@@ -1197,14 +1197,14 @@
   /* ---------- GiftIntro ---------- */
   function GiftIntro(root, gift, onSee){
     // the wordmark fades in first (CSS, 150ms); the eyebrow follows: its
-    // letters run from 0.8s to 1.9s, with a lighter ember, settled by ~3s
+    // letters run from 0.73s to 1.7s, with a lighter ember, settled by ~2.8s
     AnimatedQuote($('chipText'), gift.from + ' got something\nspecial for you', {
-      startAt: 800, finishStartsBy: 1880, charMs: 1170, fixedDur: true, ember: .5
+      startAt: 730, finishStartsBy: 1710, charMs: 1060, fixedDur: true, ember: .5
     });
-    // the message follows: letters start at 2s, the last begins at 5.2s and
-    // settles by ~6.5s (everything 1.8× slower than it was)
+    // the message follows: letters start at 1.8s, the last begins at 4.8s and
+    // settles by ~5.9s
     var quote = AnimatedQuote($('quote'), gift.message, {
-      startAt: 2000, finishStartsBy: 5240, charMs: 1800, lastWordMs: 1260, lastWordEmber: .7, grow: true
+      startAt: 1820, finishStartsBy: 4760, charMs: 1640, lastWordMs: 1150, lastWordEmber: .7, grow: true
     });
     // the button and the circle arrive together just after the last character
     // settles, and the block moves up 64px, slowly, to make room
@@ -1386,7 +1386,7 @@
     $('quote').classList.toggle('long', text.replace(/\s/g, '').length > 48);
     if(first) return; // GiftIntro renders the first one
     gift.message = text;
-    AnimatedQuote($('quote'), text, { startAt: 100, finishStartsBy: 2980, charMs: 1800, lastWordMs: 1260, lastWordEmber: .7, grow: true });
+    AnimatedQuote($('quote'), text, { startAt: 100, finishStartsBy: 2720, charMs: 1640, lastWordMs: 1150, lastWordEmber: .7, grow: true });
   }
   setMessage(MESSAGES[wantedM] ? wantedM : 0, true);
   msgSel.addEventListener('change', function(){ setMessage(parseInt(msgSel.value, 10)); });

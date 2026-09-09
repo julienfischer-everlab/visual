@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Staged return, staggered timeline, slower text" |
+| Captured from version | 2026-09-09, "Text 1.1× faster" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -56,13 +56,13 @@ spaced: a small orange square, blinking once a second like a cursor, then
 you around for a long time." over three lines.
 
 In dynamic motion things arrive in order: the wordmark fades in first (from
-150ms); the eyebrow's letters resolve from 0.8s to 1.9s (on phones it breaks
-before "special"); the message's letters from 2s, the last beginning at 5.2s,
+150ms); the eyebrow's letters resolve from 0.73s to 1.7s (on phones it breaks
+before "special"); the message's letters from 1.8s, the last beginning at 4.8s,
 each line opening as a row so the block grows from the middle; **See Matt's
 gift** (the sender's name) and the circle at the bottom arrive together just
 after the last letter settles, the button's row opening and the block moving
 up 64px slowly (1.3s, easing out) to make room. Each letter eases up and
-sharpens out of a blur over 1.8s on one smooth curve, and is orange for as long as it is out of focus
+sharpens out of a blur over 1.64s on one smooth curve, and is orange for as long as it is out of focus
 (the warmth fades over 70% of the sharpening time, full strength, `#F5842E`
 on dark), so every word arrives orange and blurred and settles white and
 sharp. The last word keeps most of it. In the dark theme the fold is the same
