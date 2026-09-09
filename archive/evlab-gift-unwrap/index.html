@@ -412,13 +412,14 @@
     position:absolute;top:22px;right:22px;z-index:4;
     width:40px;height:40px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    appearance:none;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
+    appearance:none;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.16);
+    -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
     color:var(--ink-d2);cursor:pointer;
     opacity:0;pointer-events:none;
     /* appears once the card has landed (the gift state starts as it settles) */
     transition:opacity .8s var(--ease-out) 250ms, background-color .3s ease, color .3s ease, border-color .3s ease;
   }
-  .back:hover{background:rgba(255,255,255,.09);color:var(--ink-d);border-color:rgba(255,255,255,.18);}
+  .back:hover{background:rgba(255,255,255,.24);color:var(--ink-d);border-color:rgba(255,255,255,.22);}
   .back svg{display:block;}
   body[data-state="gift"] .back{opacity:1;pointer-events:auto;}
   body[data-state="returning"] .back{opacity:0;transition-delay:0s;transition-duration:.4s;}
@@ -937,7 +938,7 @@
     <label for="device">Device</label>
     <select id="device" aria-label="Device">
       <option value="desktop">Desktop</option>
-      <option value="phone">iPhone</option>
+      <option value="phone">Mobile</option>
     </select>
     <label for="theme">Theme</label>
     <select id="theme" aria-label="Theme">
@@ -1455,7 +1456,12 @@
   var stageEl = document.getElementById('stage'), parTick = false;
   function parallax(){
     parTick = false;
-    if(!isStatic() || reduce){ stageEl.style.setProperty('--par', '0px'); return; }
+    if(!isStatic() || reduce){
+      // the dynamic stage never scrolls: a focus() or scrollIntoView on something
+      // below the fold could nudge it, so it is pinned back to the top
+      if(!isStatic() && stageEl.scrollTop) stageEl.scrollTop = 0;
+      stageEl.style.setProperty('--par', '0px'); return;
+    }
     stageEl.style.setProperty('--par', (-stageEl.scrollTop * .2).toFixed(1) + 'px');
   }
   stageEl.addEventListener('scroll', function(){ if(!parTick){ parTick = true; requestAnimationFrame(parallax); } }, { passive: true });

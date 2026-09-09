@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Five timeline steps" |
+| Captured from version | 2026-09-09, "Frosted back arrow, Mobile" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -30,7 +30,7 @@ the bar evenly.
 
 | Select | Options (default first) | Link parameter |
 | --- | --- | --- |
-| Device | Desktop, iPhone | `device=phone` |
+| Device | Desktop, Mobile | `device=phone` |
 | Theme | Light, Dark | `theme=dark` |
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
@@ -47,10 +47,12 @@ put back to its start, so the static header and the dynamic message are both
 where the new mode expects them.
 
 Everything below the bar lives in a stage pinned under it, so the bar never
-overlays anything. In iPhone mode the whole page runs inside a drawn iPhone
+overlays anything. In Mobile mode the whole page runs inside a drawn iPhone
 (430×884, dynamic island, 9:41 status bar, home indicator) scaled to fit; the
 phone layout rules are container queries on the stage, so they apply inside
-the frame and on a real phone alike.
+the frame and on a real phone alike. In dynamic motion the stage never
+scrolls: if a focus or scroll-into-view nudges it, it is pinned back to the
+top.
 
 ## Fold 1
 
@@ -102,7 +104,8 @@ its own: the seed stays exactly behind the transparent card for the whole
 visit as its surface (following the card if the fold scrolls on a phone), so
 there is never a swap between two surfaces; as the seed lands the content
 fades in; settled at 1.1s, when the footer and a small arrow at the
-top fade in and the five timeline steps appear one after another, 350ms apart,
+top (a 40px frosted disc, white at 16% over a 24px blur, on desktop and
+phones alike) fade in and the five timeline steps appear one after another, 350ms apart,
 from 1.2s to about 3.2s. The arrow, or a firm scroll up, runs it in reverse:
 the card's content fades out in place (350ms, nothing inside it moves) while
 the seed shrinks back into a half circle in the dome and the room lightens (750ms, the seed always inside the closing circle), and the
