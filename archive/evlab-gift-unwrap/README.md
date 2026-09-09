@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Button pushes the message up" |
+| Captured from version | 2026-09-08, "Rise, fade and blur exit" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -46,7 +46,7 @@ all on the same viewport:
 
 | When | What |
 | --- | --- |
-| 0ms | The whole first-fold block (chip, message, button) scrolls up and out of the viewport (800ms), like the page being pushed |
+| 0ms | The whole first-fold block (eyebrow, message, button) rises about 80px while fading out and softening into a blur, all together (800ms) |
 | 100ms | The circle grows until it covers the viewport and the photograph inside it grows to exactly a full-screen cover, both computed from the viewport and the image so they land together; the viewport behind crossfades to dark at the same time |
 | 100ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1s on `cubic-bezier(.9,0,.22,1)`, a long slow start that then commits fast |
 | 1100ms | Settled; the footer line and a small arrow at the top fade in |
@@ -56,7 +56,7 @@ arrives. The arrow at the top of fold 2, or a firm scroll up from the top of the
 runs the same sequence in reverse:
 the card sinks back below the edge, the circle closes back to a half circle at
 the bottom and the room crossfades back to white together (about 750ms), and
-the block settles back down into place from 400ms, done at about 1.15s.
+the block settles back down into focus from 400ms, done at about 1.15s.
 
 **Fold 2.** The photograph fills the screen, darkened so type reads over it.
 The fold does not scroll on desktop: the card lands centred in the stage,

@@ -197,22 +197,24 @@
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:24px;
   }
-  /* on click the whole block scrolls up and out of the viewport, like the
-     page being pushed; the room changes behind it */
+  /* on click the whole block (eyebrow, message, button) rises a little while
+     it fades and softens out of focus, all together; the room changes behind it */
   .stack{
     display:flex;flex-direction:column;align-items:center;
-    will-change:transform;
-    transition:transform var(--fade-ms) var(--ease-scene);
+    will-change:transform,opacity,filter;
+    transition:transform var(--fade-ms) var(--ease-out), opacity var(--fade-ms) ease, filter var(--fade-ms) ease;
   }
   body[data-state="revealing"] .intro,
   body[data-state="gift"] .intro{pointer-events:none;}
   body[data-state="revealing"] .stack,
-  body[data-state="gift"] .stack{transform:translateY(-110cqh);}
+  body[data-state="gift"] .stack{transform:translateY(-80px);opacity:0;filter:blur(8px);}
   body[data-state="gift"] .intro{visibility:hidden;}
-  /* coming back: the block scrolls back down into place once the room is light again */
+  /* coming back: the block settles down into focus once the room is light again */
   body[data-state="returning"] .stack{
-    transform:none;
-    transition:transform var(--back-text-ms) var(--ease-scene) var(--back-text-delay);
+    transform:none;opacity:1;filter:none;
+    transition:transform var(--back-text-ms) var(--ease-out) var(--back-text-delay),
+               opacity var(--back-text-ms) ease var(--back-text-delay),
+               filter var(--back-text-ms) ease var(--back-text-delay);
   }
 
   .quote{
@@ -642,7 +644,7 @@
     .chip{animation:none;opacity:1;transform:none;}
     .stack, .card, .act, .more, .foot, .back, body, .glow, .scene-bg, .scene-bg::after, .dim{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
-    body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;opacity:0;}
+    body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;opacity:0;filter:none;}
     body[data-state="returning"] .stack{opacity:1;}
     .intro .cta{opacity:1;transform:none;filter:none;grid-template-rows:1fr;margin-top:clamp(40px, 6cqh, 64px);transition:none;}
     .card{transform:none;opacity:0;transition-property:opacity;}
