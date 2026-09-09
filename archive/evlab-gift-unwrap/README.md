@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Phone: bigger headline, big dome, floating button" |
+| Captured from version | 2026-09-08, "Numbered inclusions, opaque card, footer" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -30,10 +30,9 @@ by the second, both by the third, and the finished block sits centred. Each char
 transparent and 3px low, and eases up and sharpens out of the blur over 1s. Separately, a warm ember fades over three stagger steps (about 200ms), so at any moment the newest letter is warmest and the two before it progressively less: a short gradient trailing the leading edge. The stagger is
 derived from the character count so the whole message lands in about 3.3
 seconds, eyebrow included. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 350ms after the last character settles, a small black pill,
-**See my gift**, rises into place, with a light-orange point of light travelling
-round its edge once every two seconds. Half a second after the button, the top of a
-circle scales up from nothing at the bottom edge of the screen, like a sun
-about to rise: the photograph behind fold 2 at half
+**See my gift**, rises into place, and at the same moment the top of a circle
+scales up from nothing at the bottom edge of the screen, like a sun about to
+rise: the photograph behind fold 2 at half
 size, placed so the couple sits inside the dome. The circle is the photograph
 itself (a round element whose background is the image), so no edge of the
 image can ever show inside it.
@@ -59,23 +58,22 @@ the block settles back down into place from 400ms, done at about 1.15s.
 
 **Fold 2.** The photograph fills the screen, darkened so type reads over it.
 The fold does not scroll on desktop: the card lands centred in the stage,
-the logo is pinned to the top edge and the footer line to the bottom, and
+the logo is pinned to the top edge and the footer line ("Page secured by
+Everlab", centred) to the bottom, and
 on short screens the card tightens its padding and tiles so it always fits.
-On phones the fold scrolls. The gift card: one large-radius grey glass panel with a
-strong blur, the photo showing through, no border and no shadow. Its left
-column holds the mono "A gift from Matt" line (orange square), the round
-`Ellipse 4358.png` beside the product name, and a short description at the
-top; at the bottom, "What's included" as two rows of three faint rounded
-tiles, each inclusion under a small line icon (speech bubble, drop, scan,
-pulse, leaf, cycle), no bullets. Its right column, behind a hairline divider, opens
+On phones the fold scrolls. The gift card: one large-radius grey glass panel,
+fairly opaque, with a strong blur, no border and no shadow. Its left column
+holds the mono "A gift from Matt" line (orange square), the product name and
+a short description at the top; at the bottom, "What's included" as a
+bordered panel with a mono label and six numbered rows (01 to 06, small grey
+mono numbers, hairlines between), the full titles. Its right column, behind a hairline divider, opens
 with a membership passport card: the `Ellipse 4358.png` copper texture under
 a fine dot grid, the Everlab mark top left, a MEMBER pill top right, the
 recipient's name and "Everlab Membership" bottom left, "12 months / gift
 membership" bottom right. Under it, "What's next": a vertical timeline of four
 squares joined by hairlines,
 Unwrap (the current step, filled in Everlab red), Claim your gift, Meet your
-doctor, Get tested, with **Claim my gift** centred at the foot of the column at
-70% of its width. Padding is an even 48px all round, the divider is a faint
+doctor, Get tested, with **Claim my gift** filling the foot of the column. Padding is an even 48px all round, the divider is a faint
 hairline, and the card corners are 44px.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
