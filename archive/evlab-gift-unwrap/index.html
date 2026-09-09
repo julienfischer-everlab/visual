@@ -69,15 +69,24 @@
     --ease-scene:cubic-bezier(.58,.02,.18,1);
     --ease-out:cubic-bezier(.22,.61,.24,1);
     /* the sequence after the click:
-         0ms      message and button fade out
-         200ms    the viewport starts crossfading to dark (1300ms)
-         1000ms   the card starts rising from the bottom (1400ms)
-         2400ms   settled */
-    --fade-ms:650ms;
-    --bg-delay:200ms;
-    --bg-ms:1300ms;
-    --card-delay:1000ms;
-    --card-ms:1400ms;
+         0ms      the whole first-fold block lifts upward and fades (600ms)
+         150ms    the viewport starts crossfading to dark (950ms)
+         700ms    the card starts rising from the bottom (1100ms)
+         1800ms   settled */
+    --fade-ms:600ms;
+    --bg-delay:150ms;
+    --bg-ms:950ms;
+    --card-delay:700ms;
+    --card-ms:1100ms;
+    /* and in reverse (the arrow on fold 2):
+         0ms      the card sinks back below the bottom edge (900ms)
+         350ms    the viewport crossfades back to white (950ms)
+         950ms    the block settles back down into place (750ms)
+         1700ms   settled */
+    --back-card-ms:900ms;
+    --back-bg-delay:350ms;
+    --back-text-delay:950ms;
+    --back-text-ms:750ms;
 
     --sans:'Suisse Intl','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
     color-scheme:light;
@@ -97,6 +106,7 @@
   }
   body[data-state="revealing"],
   body[data-state="gift"]{background:var(--night);color-scheme:dark;}
+  body[data-state="returning"]{background:var(--white);transition-delay:var(--back-bg-delay);}
 
   /* warm glow that belongs to the dark room; fades in with the background */
   .glow{
@@ -109,6 +119,7 @@
   }
   body[data-state="revealing"] .glow,
   body[data-state="gift"] .glow{opacity:1;}
+  body[data-state="returning"] .glow{opacity:0;transition-delay:var(--back-bg-delay);}
 
   :focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:999px;}
 
@@ -118,13 +129,24 @@
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:24px;
   }
-  /* on click the message and button simply dissolve; the room changes around them */
-  .intro .quote, .intro .cta, .intro .chip{transition:opacity var(--fade-ms) ease, filter var(--fade-ms) ease;}
-  body[data-state="revealing"] .intro{pointer-events:none;}
-  body[data-state="revealing"] .intro .quote,
-  body[data-state="revealing"] .intro .chip,
-  body[data-state="revealing"] .intro .cta{opacity:0 !important;filter:blur(4px) !important;}
-  body[data-state="gift"] .intro{display:none;}
+  /* on click the whole block lifts and fades; the room changes behind it */
+  .stack{
+    display:flex;flex-direction:column;align-items:center;
+    will-change:transform,opacity;
+    transition:transform var(--fade-ms) var(--ease-scene), opacity var(--fade-ms) ease, filter var(--fade-ms) ease;
+  }
+  body[data-state="revealing"] .intro,
+  body[data-state="gift"] .intro{pointer-events:none;}
+  body[data-state="revealing"] .stack,
+  body[data-state="gift"] .stack{transform:translateY(-14vh);opacity:0;filter:blur(3px);}
+  body[data-state="gift"] .intro{visibility:hidden;}
+  /* coming back: the block settles down into place once the room is light again */
+  body[data-state="returning"] .stack{
+    transform:none;opacity:1;filter:none;
+    transition:transform var(--back-text-ms) var(--ease-scene) var(--back-text-delay),
+               opacity var(--back-text-ms) ease var(--back-text-delay),
+               filter var(--back-text-ms) ease var(--back-text-delay);
+  }
 
   .quote{
     margin:0;
@@ -200,7 +222,24 @@
     visibility:hidden;
   }
   body[data-state="revealing"] .gift,
-  body[data-state="gift"] .gift{visibility:visible;}
+  body[data-state="gift"] .gift,
+  body[data-state="returning"] .gift{visibility:visible;}
+
+  /* the way back up */
+  .back{
+    position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:3;
+    width:40px;height:40px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    appearance:none;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
+    color:var(--ink-d2);cursor:pointer;
+    opacity:0;pointer-events:none;
+    /* appears once the card has landed (the gift state starts as it settles) */
+    transition:opacity .8s var(--ease-out) 250ms, background-color .3s ease, color .3s ease, border-color .3s ease;
+  }
+  .back:hover{background:rgba(255,255,255,.09);color:var(--ink-d);border-color:rgba(255,255,255,.18);}
+  .back svg{display:block;}
+  body[data-state="gift"] .back{opacity:1;pointer-events:auto;}
+  body[data-state="returning"] .back{opacity:0;transition-delay:0s;transition-duration:.4s;}
 
   .card{
     width:100%;max-width:900px;
@@ -216,14 +255,20 @@
   }
   body[data-state="revealing"] .card,
   body[data-state="gift"] .card{transform:none;}
+  body[data-state="returning"] .card{transform:translateY(110vh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
 
-  .card .info{padding:44px 44px 40px;display:flex;flex-direction:column;min-height:520px;}
+  .card .info{padding:40px 44px 40px;display:flex;flex-direction:column;min-height:520px;}
   .kicker{
-    display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
     margin:0 0 28px;
     font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-d);font-weight:500;
   }
-  .kicker b{font-weight:500;color:var(--ink-d2);}
+  /* the same chip as fold 1, on the dark ground */
+  .kicker .chip{
+    margin:0;animation:none;opacity:1;transform:none;
+    color:var(--ink-d);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08);
+    letter-spacing:-.005em;text-transform:none;
+  }
   .card h2{
     margin:0 0 8px;
     font-weight:500;
@@ -239,11 +284,12 @@
     font-size:15px;color:var(--ink-d);
   }
   .incl li::before{
-    content:"";flex:none;width:5px;height:5px;border-radius:50%;background:var(--red);
+    content:"";flex:none;width:5px;height:5px;background:var(--red);
     transform:translateY(-2px);
   }
   .note{
     margin:0 0 32px;
+    padding:18px 20px;border-radius:14px;background:rgba(255,255,255,.04);
     font-weight:300;font-size:17px;line-height:1.45;letter-spacing:-.01em;color:var(--ink-d2);
     text-wrap:pretty;
   }
@@ -251,7 +297,6 @@
   .act{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:auto;}
   .act .pill{color:var(--btn-d-ink);background:var(--btn-d);}
   .act .pill:hover{background:#FFFFFF;}
-  .fine{font-size:13px;color:var(--muted-d);}
 
   /* right column: the photograph, or until it ships, a composed stand-in of
      the same scene: a phone on oak in low warm light */
@@ -299,19 +344,15 @@
   .phone .tile b{display:block;font-weight:400;font-size:1.3em;margin:3% 0 8%;}
   .phone .bars{display:flex;align-items:flex-end;gap:7%;height:22px;}
   .phone .bars i{flex:1;background:#DCD4CB;border-radius:2px;opacity:.85;}
-  .visual::after{
-    content:"";position:absolute;inset:0;
-    background:linear-gradient(90deg, rgba(14,12,11,.30), transparent 30%);
-    pointer-events:none;
-  }
 
   .foot{
     margin:28px 0 0;flex:none;
     display:flex;align-items:center;gap:10px;
     font-size:13px;color:var(--muted-d);
     opacity:0;transform:translateY(8px);
-    transition:opacity .9s var(--ease-out) 2200ms, transform .9s var(--ease-out) 2200ms;
+    transition:opacity .9s var(--ease-out) 1700ms, transform .9s var(--ease-out) 1700ms;
   }
+  body[data-state="returning"] .foot{opacity:0;transition-delay:0s;transition-duration:.4s;}
   body[data-state="revealing"] .foot,
   body[data-state="gift"] .foot{opacity:1;transform:none;}
   .foot svg rect{fill:var(--muted-d);}
@@ -320,7 +361,7 @@
   @media (max-width:820px){
     .card{grid-template-columns:1fr;max-width:560px;margin:0;}
     .visual{order:-1;min-height:min(58vw, 320px);}
-    .visual::after{background:linear-gradient(180deg, transparent 60%, rgba(22,19,18,.6));}
+    .back{top:14px;}
     .phone{width:min(34%, 150px);transform:translate(-50%,-42%) rotate(-14deg);}
     .card .info{padding:30px 26px 28px;min-height:0;}
     .gift{justify-content:flex-start;padding:24px 20px 40px;}
@@ -331,7 +372,8 @@
   @media (prefers-reduced-motion: reduce){
     .quote .c{animation:none;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
     .chip{animation:none;opacity:1;transform:none;}
-    .intro .quote, .intro .cta, .card, .foot, body, .glow{transition-duration:.3s !important;transition-delay:0s !important;}
+    .stack, .card, .foot, .back, body, .glow{transition-duration:.3s !important;transition-delay:0s !important;}
+    body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;filter:none;}
     .intro .cta{opacity:1;transform:none;filter:none;}
     .card{transform:none;opacity:0;transition-property:opacity;}
     body[data-state="revealing"] .card, body[data-state="gift"] .card{opacity:1;}
@@ -342,25 +384,30 @@
 
 <!-- Fold 1 · GiftIntro -->
 <section class="intro" id="intro" aria-label="A message from the sender">
-  <p class="chip" id="chip"></p>
-  <p class="quote" id="quote"></p>
-  <div class="cta">
-    <button class="pill" id="see" type="button">See my gift</button>
+  <div class="stack">
+    <p class="chip" id="chip"></p>
+    <p class="quote" id="quote"></p>
+    <div class="cta">
+      <button class="pill" id="see" type="button">See my gift</button>
+    </div>
   </div>
 </section>
 
 <!-- Fold 2 · the gift -->
+<button class="back" id="back" type="button" aria-label="Back to the message">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg>
+</button>
+
 <main class="gift" id="gift" aria-hidden="true">
   <article class="card" id="card" aria-label="Your gift">
     <div class="info">
-      <p class="kicker"><span>A gift from <b id="fromName"></b></span><span id="value"></span></p>
+      <p class="kicker"><span class="chip" id="fromChip"></span><span id="value"></span></p>
       <h2 id="product" tabindex="-1"></h2>
       <p class="term" id="term"></p>
       <ul class="incl" id="includes"></ul>
       <p class="note"><span id="noteText"></span><span class="who" id="noteWho"></span></p>
       <div class="act">
-        <a class="pill" id="claim" href="#">Activate my gift</a>
-        <span class="fine">Takes a couple of minutes. Nothing to pay.</span>
+        <a class="pill" id="claim" href="#">Claim my gift</a>
       </div>
     </div>
     <div class="visual" id="visual" role="img" aria-label="A phone showing Everlab health insights on a wooden table in warm evening light">
@@ -505,7 +552,7 @@
 
   /* ---------- GiftCard ---------- */
   function GiftCard(gift){
-    $('fromName').textContent = gift.from;
+    $('fromChip').textContent = 'A gift from ' + gift.from;
     $('toName').textContent = gift.to;
     $('value').textContent = gift.value;
     $('product').textContent = gift.product;
@@ -527,13 +574,16 @@
     }
   }
 
-  /* ---------- App: intro → revealing → gift ---------- */
-  var SCENE_MS = 2400; // card-delay + card-ms, see the CSS tokens
+  /* ---------- App: intro → revealing → gift → returning → intro ---------- */
+  var SCENE_MS = 1800; // card-delay + card-ms, see the CSS tokens
+  var BACK_MS = 1700;  // back-text-delay + back-text-ms
   var state = 'intro';
   function setState(next){
     state = next;
     document.body.dataset.state = next;
-    $('gift').setAttribute('aria-hidden', next === 'intro' ? 'true' : 'false');
+    var onGift = next === 'gift' || next === 'revealing';
+    $('gift').setAttribute('aria-hidden', onGift ? 'false' : 'true');
+    $('intro').setAttribute('aria-hidden', onGift ? 'true' : 'false');
   }
 
   function reveal(){
@@ -546,8 +596,19 @@
     }, reduce ? 320 : SCENE_MS);
   }
 
+  function goBack(){
+    if(state !== 'gift') return;
+    setState('returning');
+    setTimeout(function(){
+      setState('intro');
+      $('see').disabled = false;
+      $('see').focus({ preventScroll: true });
+    }, reduce ? 320 : BACK_MS);
+  }
+
   setState('intro');
   GiftCard(gift);
   GiftIntro($('intro'), gift, reveal);
+  $('back').addEventListener('click', goBack);
 })();
 </script>

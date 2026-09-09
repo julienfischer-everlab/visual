@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Lighter tail, chip, Matt" |
+| Captured from version | 2026-09-08, "Back arrow, lift, card details" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -33,18 +33,22 @@ viewport:
 
 | When | What |
 | --- | --- |
-| 0ms | The message and button dissolve (650ms, opacity and a light blur) |
-| 200ms | The viewport crossfades from warm white to near-black over 1.3s, and a faint warm glow comes up with it |
-| 1000ms | The gift card rises from below the bottom edge into the centre over 1.4s on `cubic-bezier(.58,.02,.18,1)` |
-| 2400ms | Settled; the footer line fades in |
+| 0ms | The whole first-fold block (chip, message, button) lifts upward and fades (600ms) |
+| 150ms | The viewport crossfades from warm white to near-black over 950ms, and a faint warm glow comes up with it |
+| 700ms | The gift card rises from below the bottom edge into the centre over 1.1s on `cubic-bezier(.58,.02,.18,1)` |
+| 1800ms | Settled; the footer line and a small arrow at the top fade in |
 
 Nothing slides or cuts; the room changes around the reader and then the card
-arrives.
+arrives. The arrow at the top of fold 2 runs the same sequence in reverse:
+the card sinks back below the edge (900ms), the room crossfades back to white
+from 350ms, and the block settles back down into place from 950ms, done at
+about 1.7s.
 
 **Fold 2.** Near-black with a faint warm glow, and one object in the middle: the
 gift card, with no border and no shadow, just a slightly lighter fill. Its
-left column holds "A gift from Matt", the value, the product, what's
-included, the sender's note and **Activate my gift**. Its right column is the
+left column holds the same "A gift from Matt" chip as fold 1, the value, the
+product, what's included (square markers in Everlab red), the sender's note in
+a rounded panel at 4% white, and **Claim my gift**. Its right column is the
 photograph.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
@@ -68,7 +72,7 @@ steps tile. To ship the real photo:
 ## Structure
 
 Plain HTML, CSS and JavaScript, no build step. The script is organised as
-small components with one piece of state (`intro → revealing → gift`) on the
+small components with one piece of state on the
 `<body>`:
 
 | Component | Role |
@@ -76,7 +80,7 @@ small components with one piece of state (`intro → revealing → gift`) on the
 | `AnimatedQuote` | Splits the message into unbreakable words and per-character spans, assigns each its delay |
 | `GiftIntro` | Fold 1: the message and the button, and when the button appears |
 | `GiftCard` | The gift itself: product, term, value, inclusions, the sender's note, the activation button, the photo |
-| `App` | Owns the state and the timing of the transition |
+| `App` | Owns the state (`intro → revealing → gift → returning → intro`) and the timing of both directions |
 
 ## Feeding it from the email
 
@@ -111,8 +115,8 @@ All text is inserted as plain text, never as HTML.
 ## Verification
 
 Rendered headlessly at capture time on desktop (1440×900) and phone (390×844):
-the settled message, a frame mid-crossfade with the message gone and the room
-half dark, a frame with the card part-way up, and the finished card. Google Fonts were not reachable from the
+the settled message, a frame with the block lifting as the room darkens, the
+finished card, a frame mid-way back, and the restored first fold. Google Fonts were not reachable from the
 render sandbox, so the screenshots used the fallback stack; the published
 page loads them normally.
 
