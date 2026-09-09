@@ -12,7 +12,7 @@ The right side rises a beat after the card.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/90f389b7-825e-4861-b364-3d22c5a2db45 |
 | Title | Unwrap your Everlab gift · Split |
-| Captured from version | 2026-09-09, "Version select complete" |
+| Captured from version | 2026-09-09, "Button and circle right after the text" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Private |
 | Size | 375 KB, single file (photograph, logo and ellipse embedded) |
