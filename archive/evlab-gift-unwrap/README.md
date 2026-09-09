@@ -8,10 +8,17 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Button and circle right after the text" |
-| Captured on | 2026-09-08 |
+| Captured from version | 2026-09-09, "One page, version + theme tweaks" |
+| Captured on | 2026-09-09 |
 | Sharing at capture | Private |
-| Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
+| Size | 547 KB, single file (both photographs, the logo and the ellipse are embedded) |
+
+Since this version the three gift pages are one file. The same page is
+published at all three artifact URLs; each opens on its own version
+(`DEFAULT_VARIANT` in the script) and the **Version** select in the top bar
+switches between them in place, without leaving the page. The copies in
+`../evlab-gift-sections` and `../evlab-gift-split` differ from this one only
+in that constant and the `<title>`.
 
 Earlier versions (a ribbon-tied card; a warm two-scene reveal with headings
 and a biological-age dial) are in the artifact's version history and in this
@@ -31,7 +38,9 @@ transparent and 3px low, and eases up and sharpens out of the blur over 1s. Sepa
 derived from the character count so the whole message lands in about 3.3
 seconds, eyebrow included. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. Just after the last character settles, a small black pill,
 **See my gift**, rises into place; its row opens from nothing so the message and
-eyebrow are pushed up as it arrives, the way the lines pushed each other. At
+eyebrow are pushed up as it arrives, the way the lines pushed each other (the
+button is 17px type on 15×30px padding, about 15% larger than the fold-2
+buttons' proportions). At
 the same moment the top of a circle
 scales up from nothing at the bottom edge of the screen, like a sun about to
 rise: the photograph behind fold 2 at half
@@ -63,18 +72,21 @@ The fold does not scroll on desktop: the card lands centred in the stage,
 the logo is pinned to the top edge and the footer line ("Page secured by
 Everlab", text only, centred on the same axis as the logo) to the bottom, and
 on short screens the card tightens its padding and tiles so it always fits.
-On phones the fold scrolls. The gift card: one large-radius grey glass panel,
-fairly opaque, with a strong blur, no border and no shadow. Its left column
+On phones the fold scrolls. The gift card: one large-radius grey glass panel
+at about half opacity (`rgba(40,38,36,.47)`) over a strong blur, so the room
+shows through it, no border and no shadow. Its left column
 holds the mono "Gift received from Matt" line (orange square), the product
 name "Everlab Protocol" and a short description at the top; at the bottom, a
-mono "What's included" label above a light grey rounded card of six rows,
+mono "What's included" label above a faint rounded card (a 3.5% white tint,
+14px of padding top and bottom) of six rows,
 each with a small line icon (speech bubble, drop, scan, pulse, leaf, cycle),
-hairlines between, the full titles. Its right column, behind a hairline divider, opens
+a visible hairline divider between rows, 11px of padding above and below each
+row, the full titles. Its right column, behind a hairline divider, opens
 with a membership passport card: the `Ellipse 4358.png` copper texture under
 a fine dot grid, the Everlab mark top left, a MEMBER pill top right, the
 recipient's name and "Everlab Membership" bottom left, "12 months / gift
 membership" bottom right. Under it, "What's next": a vertical timeline of four
-squares joined by hairlines that meet the squares exactly, Unwrap (the current
+squares joined by hairlines that meet the squares exactly, 22px between steps, Unwrap (the current
 step, filled in Everlab red), Claim your gift, Meet your doctor, Get tested;
 a soft orange pulse travels down the first segment every 2.2s so the journey
 reads as in motion, with **Claim my gift** filling the foot of the column. Padding is an even 48px all round, the divider is a faint
@@ -103,14 +115,30 @@ is larger (34 to 40px), the half circle is about twice the desktop ratio
 floats at the foot of the screen over a soft dark gradient, in place of the
 button inside the card.
 
+## Dark theme
+
+The top bar also carries a **Theme** select: Light or Dark (`?theme=dark` on
+the link). Dark paints the first fold the same near-black as the room behind
+fold 2, with the message and eyebrow in warm white, a white **See my gift**
+button with dark type, the wordmark in white, and the ember mixed towards
+white instead of ink. The transition then only opens the circle and raises
+the card; the room is already dark. In the sections version the hero and the
+closing section go near-black too, the inclusion cards a shade lighter than
+their band, the white tags keeping dark type.
+
 ## Logo and chrome
 
 A fixed, edge-to-edge bar 44px tall runs along the very top of the page in
-near-black, with a mono label and a plain native select for switching between
-the three versions: 01 Cinematic reveal (this one), 02 Sections
-(`../evlab-gift-sections`) and 03 Split card (`../evlab-gift-split`). Choosing the other opens it in a new tab, or
-navigates when the host allows. Everything else lives in a stage pinned
-below the bar, so the bar never overlays anything.
+near-black, with a mono label and three plain native selects: **Device**
+(Desktop, iPhone), **Theme** (Light, Dark) and **Version** (01 Cinematic
+reveal, 02 Sections, 03 Split card). Each changes the page in place through
+a `data-` attribute on `<body>` (`data-device`, `data-theme`,
+`data-variant`); nothing reloads and the current fold is kept. The
+sections version is a scrolling layer inside the same stage, shown only for
+`data-variant="sections"`; its classes and ids carry an `s-` prefix so they
+never collide with the cinematic folds. Everything else lives in a stage
+pinned below the bar, so the bar never overlays anything. On phones the labels
+hide and the selects narrow so all three fit.
 
 The Everlab wordmark (`Logo mark+type.svg`, inlined with its fills set to
 `currentColor`) sits at the top centre of the stage, 25px tall: ink on the
@@ -162,6 +190,9 @@ optional and falls back to the example gift baked into the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`); six short items fit the two-by-three grid |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
+| `v` | Version to open on: `1`/`card`, `2`/`sections`, `3`/`split` |
+| `theme` | `light` or `dark` |
+| `device` | `desktop` or `phone` |
 
 All text is inserted as plain text, never as HTML.
 
@@ -177,9 +208,11 @@ All text is inserted as plain text, never as HTML.
 
 ## Verification
 
-Rendered headlessly at capture time on desktop (1440×900) and phone (390×844):
-the settled message, a frame with the block lifting as the room darkens, the
-finished card, a frame mid-way back, and the restored first fold. Google Fonts were not reachable from the
+Rendered headlessly at capture time on desktop (1440×900), a short screen
+(1280×720), a phone viewport (390×844) and the iPhone frame, for each of the
+three versions and both themes: the settled first fold, the finished card, and
+a run that switched version and theme from the selects without reloading.
+Google Fonts were not reachable from the
 render sandbox, so the screenshots used the fallback stack; the published
 page loads them normally.
 

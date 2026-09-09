@@ -10,9 +10,9 @@ folder's `README.md` records where it came from and when it was captured.
 | --- | --- | --- | --- |
 | [`particle-organs-78766a66`](particle-organs-78766a66/) | Particle Organs — the organ age prototype linked from DES-589 | 2026-08-25T03:16:48Z | Private |
 | [`particle-organs-cf1a68fa`](particle-organs-cf1a68fa/) | Particle Organs — earlier iteration | 2026-08-21T23:15:44Z | Shared with organization |
-| [`evlab-gift-unwrap`](evlab-gift-unwrap/) | Unwrap your Everlab gift — the cinematic reveal linked from a gift email | 2026-09-08, "Button and circle right after the text" | Private |
-| [`evlab-gift-sections`](evlab-gift-sections/) | Your Everlab gift — the same gift as a static, section-based page | 2026-09-09, "Third version in the select" | Private |
-| [`evlab-gift-split`](evlab-gift-split/) | Unwrap your Everlab gift · Split — the reveal with the card on the left and the membership over the photo on the right | 2026-09-09, "Button and circle right after the text" | Private |
+| [`evlab-gift-unwrap`](evlab-gift-unwrap/) | Unwrap your Everlab gift — the cinematic reveal linked from a gift email; one page holding all three versions, opening on 01 | 2026-09-09, "One page, version + theme tweaks" | Private |
+| [`evlab-gift-sections`](evlab-gift-sections/) | Your Everlab gift — the same page, opening on 02 Sections | 2026-09-09, "One page, version + theme tweaks" | Private |
+| [`evlab-gift-split`](evlab-gift-split/) | Unwrap your Everlab gift · Split — the same page, opening on 03 Split card | 2026-09-09, "One page, version + theme tweaks" | Private |
 
 The two Particle Organs artifacts carry the same title, so those folder names
 are suffixed with the first segment of the artifact ID to tell them apart.

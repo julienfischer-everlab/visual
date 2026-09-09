@@ -10,10 +10,18 @@ band of three cards, then a light closing section.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/05f652dc-ce60-45f8-92db-a2e813932039 |
 | Title | Your Everlab gift |
-| Captured from version | 2026-09-09, "Third version in the select" |
+| Captured from version | 2026-09-09, "One page, version + theme tweaks" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Private |
-| Size | 166 KB, single file (the card photo is embedded) |
+| Size | 547 KB, single file (both photographs, the logo and the ellipse are embedded) |
+
+Since this version `index.html` is the same combined page as
+`../evlab-gift-unwrap/index.html`, differing only in `DEFAULT_VARIANT`
+(`'sections'`) and the `<title>`, so this link opens on the sections layout.
+The **Version** select in the top bar switches to the other two in place. The
+description below is of the sections layout itself; the shared chrome (Device,
+Theme and Version selects, the dark theme, the iPhone frame) is documented in
+`../evlab-gift-unwrap/README.md`.
 
 ## The page
 
@@ -37,15 +45,16 @@ footer carries the wordmark.
 No motion beyond a hover on the buttons. Nothing waits for scroll or a click.
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
-with a mono label and a plain native select for switching between the two
-versions: 01 Cinematic reveal (`../evlab-gift-unwrap`), 02 Sections (this
-one) and 03 Split card (`../evlab-gift-split`). The page starts below it.
+with the Device, Theme and Version selects. The sections layout is a
+scrolling layer inside the stage below it; its classes and ids carry an `s-`
+prefix. In the dark theme the hero and the closing section go near-black, the
+inclusion cards a shade lighter than their band.
 
 ## The photograph
 
 The card uses a 1200×750 JPEG crop of
 `../evlab-gift-unwrap/couple-sharing-a-photo-album-in-a-cozy-wood-toned-living-room-large.png`,
-embedded as a `data:` URI in the `PHOTO` constant. `?image=https://...`
+embedded as a `data:` URI in the `PHOTO_CARD` constant. `?image=https://...`
 overrides it when the page is hosted.
 
 ## Feeding it from the email
