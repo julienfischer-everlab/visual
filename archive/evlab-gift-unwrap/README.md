@@ -10,7 +10,7 @@ in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Photo behind fold 1, narrower card" |
+| Captured from version | 2026-09-09, "Timeline centred, half-pixel lines" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -110,10 +110,12 @@ tile: the `Ellipse 4358.png` copper texture blurred 64px into a warm gradient,
 the Everlab mark top left and "12 months" bottom right. Phones drop the tile.
 
 Under the card, 28px below and directly over the photograph: "What's next", a
-horizontal timeline of four equal columns, a square above each label on one
-line and a hairline from each square's right edge to the next square's left
-edge; Unwrap filled in Everlab red with a soft orange pulse travelling along
-its segment, then Claim your gift, Meet your doctor, Get tested. The card and
+horizontal timeline as wide as the card, four equal columns with a 10px square
+at the centre of each and its label centred beneath on one line; a half-pixel
+line runs from 6px right of each square to 6px left of the next. The squares
+are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
+travelling along its segment; then Claim your gift, Meet your doctor, Get
+tested. The card and
 the timeline are centred together in the fold. The wordmark sits top centre,
 the footer line "Page secured by Everlab" bottom centre. On phones the
 timeline labels may wrap, the first-fold block sits centred with 80px above
