@@ -3485,8 +3485,9 @@
      count in full ink, word brighter -- and the others step back, on the arc's
      own 350ms. The class is set by the frame as the arc changes state. */
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span{
-    opacity:.5;transition:opacity .6s ease;   /* the arc's own pace */
+    opacity:1;transition:opacity .6s ease;   /* the arc's own pace; the columns step back to .5 only while the cycle runs (BIO_CYCLE) */
   }
+  body.bioCycle.v7 #mHeroOrgan .v4BioN .v4BioLeg > span{opacity:.5;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span.on{opacity:1;}
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span b,
   body.v7 #mHeroOrgan .v4BioN .v4BioLeg > span small{transition:color .6s ease;}
@@ -3723,8 +3724,8 @@
         <div class="tkRow">
           <span class="lbl">Bio graph</span>
           <select id="stGraph" aria-label="Biomarker graph">
-            <option value="dots" selected>Dots</option>
-            <option value="arc">Arc</option>
+            <option value="dots">Dots</option>
+            <option value="arc" selected>Arc</option>
           </select>
         </div>
       </div>
@@ -12226,7 +12227,7 @@
                        // Same problem: a class setMode would drop.
                        bioSph: false,
                        // the legend's fourth reading, on the bar's switch
-                       unclass: false, bioDots: true,
+                       unclass: false, bioDots: false,
                        // Density: Dense on every surface, see denseOn
                        dense: false };
   // Every state control is a thing that is either on or off, so each becomes a
@@ -12310,10 +12311,11 @@
   }
   const stUnSel = document.getElementById('stUn');
   if (stUnSel) stUnSel.addEventListener('change', () => applyUnclass(stUnSel.value === 'on'));
-  // The biomarker arc's status cycle runs on its own -- it was a switch for an
-  // afternoon ("the animation should run without interaction from the user"),
-  // and the constant is what is left of it: the static bands are one edit away.
-  const BIO_CYCLE = true;
+  // The biomarker arc's status cycle ran on its own for a while ("the
+  // animation should run without interaction from the user"); then "keep the
+  // arc by default and only display the green portion, no animation on the
+  // other portions". Off: the optimal share alone, revealed once, and still.
+  const BIO_CYCLE = false;
   let cycLast = -1;
   // Bio graph: the arc (default) or the line of dots. A body class, kept in
   // CARD_STATE so a page change does not drop it; the frame reads the flag.
@@ -12818,7 +12820,7 @@
           const es = ease(Math.max(0, Math.min(1, (ms - OUT) / IN)));
           front = ms < OUT ? -1 : segLo[cK] - FEATHER + (segHi[cK] - segLo[cK] + 2 * FEATHER) * es;
           if (cK !== cycLast && v4BioAge){
-            cycLast = cK;
+            cycLast = cK; document.body.classList.add('bioCycle');
             [...v4BioAge.querySelector('.v4BioLeg').children].forEach((c, i) => c.classList.toggle('on', i === cK));
           }
         }
@@ -12850,9 +12852,9 @@
             tk.line.setAttribute('opacity', (tk.baseOp * (1 - bioA)).toFixed(3));
             continue;
           }
-          const c = !inWin ? null
-                  : !un ? (pp < bp(BIO_FILL) ? rangeCol('opt') : null)
-                  : pp < bp(q1) ? rangeCol('opt') : pp < bp(q2) ? rangeCol('sub') : pp < bp(q3) ? rangeCol('out') : null;
+          // the optimal share alone, with or without the unclassified ("only
+          // display the green portion"); the rest of the scale stays at rest
+          const c = inWin && pp < bp(BIO_FILL) ? rangeCol('opt') : null;
           if (c && pp <= bioRev){
             tk.line.setAttribute('stroke', c);
             tk.line.setAttribute('opacity', (0.95 * bioA).toFixed(3));
@@ -12865,7 +12867,7 @@
         // both of its readings are at nothing: the age's needle fades out over
         // the first half, the band's end-stop fades in over the second (with
         // the reveal), so it never jumps in view.
-        if (bioA > 0.5 && !un && !cyc && !CARD_STATE.bioDots){   // the cycle's lit portion, or the dots, mark themselves
+        if (bioA > 0.5 && !cyc && !CARD_STATE.bioDots){   // the cycle's lit portion, or the dots, mark themselves
           const ip = ptA(-15 + 30 * bp(BIO_FILL), AG.R + 13);
           indA.setAttribute('cx', ip[0]);
           indA.setAttribute('cy', ip[1]);

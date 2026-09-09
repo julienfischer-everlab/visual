@@ -655,22 +655,18 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   the biomarker count included, is the design's one number: medium, 64px on a
   64px line, letter-spacing −1px. (The mocks' numbers are kept as given;
   the *without* reading sums to 116 against the 110 shown.)
-- **The biomarker arc's cycle** is not a tweak: it runs on its own on the V6
-  hero, with nothing to switch on or touch. The design's three frames of the
-  slide light one status at a time: its own portion of the arc, in its own
-  colour, the rest of the scale at rest, and the legend's matching column
-  comes forward while the others step back. Two seconds a status; the leaving
-  portion recedes from its right end to its left (450ms), then the arriving
-  one grows in from its left end to its right (850ms), both behind a soft
-  front seven ticks wide on a quintic ease, so nothing switches and two
-  colours are never on the arc together; four
-  states with Unclassified shown, three without; looping without a pause. The
-  panel is laid onto the middle 70% of the scale (15% safe space each side),
-  and on the hero that 70% is fully visible: the arc's side fade runs only
-  outside it (clear by 3%, full at 15%), so a portion reads from exactly
-  where it starts to exactly where it ends.
-  (A constant in the script, `BIO_CYCLE`, puts the static bands back.)
-- **Bio graph** — Dots (default) or Arc, in the Tweaks dropdown; a select, since
+- **The biomarker arc** on the V6 hero shows the optimal share alone: one
+  green band from the window's left end to the share, revealed left to right
+  once as the slide lands, the indicator standing at its end in the range
+  grey, and the rest of the scale at rest — with or without Unclassified
+  shown, and with no animation on the other portions. The band is laid onto
+  the middle 70% of the scale (15% safe space each side), and on the hero
+  that 70% is fully visible: the arc's side fade runs only outside it (clear
+  by 3%, full at 15%), so the band reads from exactly where it starts to
+  exactly where it ends. The status cycle that lit one portion after another
+  (two seconds each, the legend's column coming forward with it) is kept
+  behind a constant in the script, `BIO_CYCLE`, and off.
+- **Bio graph** — Arc (default) or Dots, in the Tweaks dropdown; a select, since
   the two are named readings rather than on and off. Dots runs twenty-eight
   dots along the arc's own curve on the biomarker slide — inside the arc's SVG,
   at the ticks' midline, across the middle 70% of the scale, with a gap a
@@ -683,8 +679,7 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   this slide, the 15% at each side left empty — and the dotted line fades out
   at both ends, the outer six dots each side tapering to a tenth. A phone has
   no bar to choose from, so the choice can travel in the link: a trailing
-  `d` on the hash (`#m20vd`, or `#m20d`) opens with the dots, which is now the
-  default anyway. Every time the slide is reached — a swipe, the idle
+  `d` on the hash (`#m20vd`, or `#m20d`) opens with the dots. Every time the slide is reached — a swipe, the idle
   cycle, opening the page on it — the coloured run grows from its first dot
   to its last, left to right over 0.65s, each dot rising as the front reaches
   it; the growth starts once the slide has landed rather than during the

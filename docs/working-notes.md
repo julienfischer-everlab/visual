@@ -3319,6 +3319,28 @@ swipe, mode and error probes clean.
 "And the grouping should be faster." 320ms rather than 520. Probed: spread
 306 -> 200 -> 81 -> 4px over 0.28s, the indicator on at 0.35s.
 
+### 5.138 The arc by default, the green alone, still
+
+"Keep the arc biomarker by default and only display the green portion. No
+animation on the other portions." Bio graph opens on Arc again (the dots stay
+a select away, and `d` on the hash still opens them). BIO_CYCLE is off: the
+arc shows the optimal share as one band from the window's left end, revealed
+left to right once as the slide lands, and then holds. The static reading
+used to draw all three colours when the unclassified were shown; it is the
+green alone in both states now, off the same figure as the body's fill
+(BIO_FILL, which applyUnclass moves), and the indicator stands at its end in
+both -- it was hidden with the unclassified because the bands marked their
+own ends, and there are no bands now. The legend's columns were dimmed to
+half by the cycle's own rule with the lit one at full; with no cycle nothing
+would be lit, so the columns are at full and the dimming is behind a body
+class the cycle sets when it runs (bioCycle).
+
+Probed (arcstill.js): Arc selected, dots off, ticks 9..39 lit in AAEEC2 only
+(the band's end at 65% of the scale = 15% + 70% x 80/110), the indicator at
+its end, all four legend columns at 1, and nothing moves over 3.6s; with the
+unclassified shown, ticks 9..34 in the green alone (68/110), indicator at the
+end. Modes and error probes clean.
+
 ---
 
 ## 6. Open items
