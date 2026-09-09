@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Lines grow from the centre" |
+| Captured from version | 2026-09-08, "Icon grid and vertical timeline" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 280 KB, single file (the photograph is embedded) |
@@ -60,14 +60,12 @@ the block settles back down into place from 400ms, done at about 1.15s.
 The gift card lands in the centre: one large-radius dark glass panel with a
 strong blur, the photo showing through, no border and no shadow. Its left
 column holds the mono "A gift from Matt" line, the product name and a short
-description at the top, with the sender's note at the bottom. Its right column,
-behind a hairline divider, is a condensed "What's included" list, six rows
-with small square markers, pinned to the top.
-**Claim my gift** sits in the card's bottom-right corner.
-
-Under the card, a timeline shows where the recipient is: four squares joined
-by hairlines, titled Unwrap (the current step, filled in Everlab red), Claim
-your gift, Meet your doctor, Get tested. It fades in after the card lands.
+description at the top; at the bottom, "What's included" as two rows of three,
+each inclusion under a small line icon (speech bubble, drop, scan, pulse,
+leaf, cycle), no bullets. Its right column, behind a hairline divider, is
+"What's next": a vertical timeline of four squares joined by hairlines,
+Unwrap (the current step, filled in Everlab red), Claim your gift, Meet your
+doctor, Get tested. **Claim my gift** sits in the card's bottom-right corner.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
 `prefers-reduced-motion` shows the message immediately and crossfades the
@@ -118,11 +116,11 @@ optional and falls back to the example gift baked into the page.
 | `from` | Sender's name |
 | `to` | Recipient's first name |
 | `message` | The message on the first fold (`%0A` for a deliberate line break; three lines read best) |
-| `note` | The sender's short note shown inside the gift card |
+| `note` | The sender's short note (kept in the data, not shown for now) |
 | `product` | Product name |
 | `blurb` | The description of the membership inside the card |
 | `value` | Total value (kept in the data, not shown for now) |
-| `includes` | What's included, pipe-separated (`a\|b\|c`); one line each on desktop, so keep items short |
+| `includes` | What's included, pipe-separated (`a\|b\|c`); six short items fit the two-by-three grid |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
 
