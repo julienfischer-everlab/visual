@@ -10,7 +10,7 @@ in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "One column, button in the card" |
+| Captured from version | 2026-09-09, "Photo behind fold 1, narrower card" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -60,15 +60,18 @@ row opening so the message is pushed up as it arrives. In the dark theme the
 fold is the same near-black as the room behind fold 2, the type warm white,
 the button white with dark type, and the ember a touch warmer (`#E8874A` at
 70%) so it still reads on the dark ground: a soft peach on the newest three
-letters, gone in about 200ms.
+letters. Since the wave revision the ember carries a fifth more colour
+(strength .6, .84 on dark with `#EE8542`) and fades over five stagger steps on
+an ease-in-out, so the trail swells and recedes like a wave behind the leading
+edge; the sharpening runs on one smooth curve.
 
 ## Static motion (default)
 
 One ordinary scroll, nothing waiting on a click. The title, eyebrow and button
-are simply there, with no entrance. The first fold is a painted card 80% of the
-screen tall with 56px rounded bottom corners (48px on phones), sitting over
-the photograph; in the strip of photograph under it a one-pixel white line
-bobs up and down (16px, 1.8s) as a hint to scroll, fading out over the first
+are simply there, with no entrance, set in warm white over the photograph
+whatever the theme. The first fold is 80% of the screen tall and is not
+painted: the photograph is behind it from the start; near its foot a one-pixel
+white line bobs up and down (16px, 1.8s) as a hint to scroll, fading out over the first
 120px of scroll. On phones the fold's content is centred with 80px above and
 below. The photograph is the page's own background: a
 sticky, zero-height layer at the top of the scroll holds it fixed behind both
@@ -94,7 +97,7 @@ arrow, or a firm scroll up, runs it in reverse (about 1.15s).
 ## Fold 2
 
 The photograph fills the screen, darkened so type reads over it. The fold does
-not scroll on desktop; on phones it does. One glass card, centred, up to 660px
+not scroll on desktop; on phones it does. One glass card, centred, up to 561px
 wide: `rgba(40,38,36,.32)` over a 44px blur, 44px corners, no border, no
 shadow, so the room shows through. Inside, 48px padding all round: the mono
 "Gift received from Matt" line (orange square), the product name "Everlab

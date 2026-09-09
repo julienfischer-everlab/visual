@@ -52,7 +52,7 @@
     --white:#FCFBF9;
     --ink:#171412;
     --ember:#D98B4A;   /* the colour a letter has while it's still out of focus */
-    --ember-strength:.5;    /* how much of it shows: 1 is full orange, 0 is none */
+    --ember-strength:.6;    /* how much of it shows: 1 is full orange, 0 is none */
     --btn:#171412;
     --btn-ink:#FCFBF9;
 
@@ -254,12 +254,16 @@
     --halo:color-mix(in srgb, rgba(217,139,74,.4) calc(var(--e, 100%) * var(--ember-strength)), transparent);
     color:var(--ink);
     animation:
-      resolve var(--dur, 1000ms) cubic-bezier(.3,.5,.2,1) var(--d) both,
-      ember calc(var(--stag, 60ms) * 3) linear var(--d) both;
+      resolve var(--dur, 1000ms) cubic-bezier(.45,0,.2,1) var(--d) both,
+      ember calc(var(--stag, 60ms) * 5) cubic-bezier(.45,0,.55,1) var(--d) both;
   }
+  /* the letter eases up and sharpens along one smooth curve; the warmth fades
+     over five stagger steps on an ease-in-out, so the trail of warm letters
+     swells and recedes like a wave behind the leading edge */
   @keyframes resolve{
     0%{opacity:0;top:3px;filter:blur(7px);}
-    22%{opacity:.75;top:2px;filter:blur(5px);}
+    35%{opacity:.7;top:1.5px;filter:blur(4px);}
+    70%{opacity:.95;top:.4px;filter:blur(1.2px);}
     100%{opacity:1;top:0;filter:blur(0);}
   }
   @keyframes ember{
@@ -287,8 +291,8 @@
     --halo:color-mix(in srgb, rgba(217,139,74,.4) calc(var(--e, 100%) * var(--ember-strength)), transparent);
     color:var(--ink);
     animation:
-      resolve var(--dur, 700ms) cubic-bezier(.3,.5,.2,1) var(--d) both,
-      ember calc(var(--stag, 40ms) * 3) linear var(--d) both;
+      resolve var(--dur, 700ms) cubic-bezier(.45,0,.2,1) var(--d) both,
+      ember calc(var(--stag, 40ms) * 5) cubic-bezier(.45,0,.55,1) var(--d) both;
   }
   .chip .w{white-space:nowrap;}
 
@@ -329,7 +333,7 @@
   }
   /* the card lands in the centre of the first screen; the columns wait below */
   .hero{
-    width:100%;height:100%;flex:none;max-width:660px;
+    width:100%;height:100%;flex:none;max-width:561px;
     display:grid;grid-template-columns:minmax(0, 1fr);gap:28px;
     align-content:center;justify-content:center;
     padding:96px 0 64px;  /* clear of the logo above and the footer below */
@@ -482,7 +486,7 @@
     text-wrap:balance;
   }
   /* what's included: the label above, then plain rows with an icon each, no card, no dividers */
-  .incl-wrap{margin-top:0;padding-top:6px;display:flex;flex-direction:column;gap:14px;}
+  .incl-wrap{margin-top:0;padding-top:2px;display:flex;flex-direction:column;gap:14px;}
   .incl{list-style:none;margin:0;padding:0;}
   .incl li{
     display:grid;grid-template-columns:22px minmax(0,1fr);gap:14px;align-items:center;
@@ -586,7 +590,7 @@
     .title-row .orb{width:36px;height:36px;}
     .card h2{font-size:clamp(22px, 1cqw + 13px, 26px);}
     .blurb{margin-bottom:0;font-size:13.5px;}
-    .incl-wrap{gap:10px;padding-top:14px;}
+    .incl-wrap{gap:10px;padding-top:10px;}
     .incl li{padding:5px 0;font-size:13px;}
     .side .mono-label{margin-top:4px;}
     .pass{aspect-ratio:1.9;}
@@ -744,9 +748,13 @@
      room shows under the corners */
   body[data-motion="static"] .intro{
     position:relative;height:80cqh;flex:none;z-index:4;
-    background:var(--white);border-radius:0 0 56px 56px;
-    transition:background-color var(--bg-ms) ease;
+    background:transparent;border-radius:0;
+    --ink:#F3EFEA;--btn:#F3EFEA;--btn-ink:#0E0C0B;
   }
+  body[data-motion="static"] .logo{color:var(--ink-d);}
+  body[data-motion="static"] .pill:hover{background:#FFFFFF;}
+  body[data-device="phone"][data-motion="static"] .device .status,
+  body[data-device="phone"][data-motion="static"] .device .home{color:var(--ink-d);}
   body[data-motion="static"] .stack{transform:none !important;opacity:1 !important;filter:none !important;transition:none;}
   body[data-motion="static"] .scene-bg, body[data-motion="static"] .dim, body[data-motion="static"] .glow,
   body[data-motion="static"] .back, body[data-motion="static"] .act-float{display:none !important;}
@@ -787,7 +795,7 @@
   body[data-motion="static"] .intro .pill{scroll-behavior:smooth;}
   @container stage (max-width:820px){
     body[data-motion="static"] .gift{height:auto;min-height:calc(100cqh + 56px);overflow:visible;padding-bottom:40px;}
-    body[data-motion="static"] .intro{border-radius:0 0 48px 48px;padding:80px 22px;}
+    body[data-motion="static"] .intro{padding:80px 22px;}
     /* phones: a dark gradient fixed at the top of the screen, over the
        photograph, so the status bar and the top of the fold read */
     body[data-motion="static"] .fixed-bg::after{
@@ -803,7 +811,7 @@
     --white:#0E0C0B;--ink:#F3EFEA;--btn:#F3EFEA;--btn-ink:#0E0C0B;
     /* on the dark ground the ember needs a little more colour to read at all;
        it still only touches the newest three letters and fades in ~200ms */
-    --ember:#E8874A;--ember-strength:.7;
+    --ember:#EE8542;--ember-strength:.84;
     color-scheme:dark;
   }
   body[data-theme="dark"] .pill:hover{background:#FFFFFF;}
