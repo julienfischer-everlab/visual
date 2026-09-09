@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Faster, softer entrance" |
+| Captured from version | 2026-09-08, "Two columns below the card" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -52,13 +52,13 @@ of the membership, the total value set large under a mono label, and
 **Claim my gift**. Its right column is the photograph, with the sender's note
 overlaid on its lower edge in a dark glass panel.
 
-Below the card, two sections fade in once the card has landed, each with a
-mono label in a left column and its content on the right:
+Below the card, two columns fade in once the card has landed, each with a mono
+label on top:
 
-- **What's included**: six rows with small square markers in Everlab red and
-  hairline rules, each on one line on desktop.
-- **Next steps**: three numbered steps (01 to 03), each a title and a line of
-  description. Numbers here because the order is real.
+- **What's included** (left): six rows with small square markers in Everlab
+  red and hairline rules, each on one line on desktop.
+- **Next steps** (right): three numbered steps (01 to 03), each a title and a
+  line of description. Numbers here because the order is real.
 
 The fold scrolls when the content is taller than the screen.
 
