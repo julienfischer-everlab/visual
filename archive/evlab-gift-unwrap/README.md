@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Six-step timeline" |
+| Captured from version | 2026-09-09, "Rows 2px closer" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -138,7 +138,7 @@ shadow, so the room shows through. Inside, 48px padding all round: the mono
 "Your gift from Marc" line (orange square), the product name "Everlab
 Protocol Membership" 10px under it (two lines beside the tile), a short description, then a mono "What's included"
 label above six plain rows, each a small line icon (speech bubble, drop, scan,
-pulse, leaf, cycle) and the full title, no card and no dividers, 7px above and
+pulse, leaf, cycle) and the full title, no card and no dividers, 6px above and
 below each row; then **Claim my gift** full width at the foot of the card. At
 the top right of the card, beside the title, sits the membership passport as a
 104×60 tile with nothing written on it: the `Ellipse 4358.png` copper texture
