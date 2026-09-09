@@ -2,24 +2,23 @@
 
 The private page a recipient opens from an Everlab gift email. Two folds: a
 personal message alone on the first, then the gift over a photograph of a
-couple in a warm living room, with a glass card on the left and the
-membership on the right (the "split card" layout). By default it is one plain
-scroll in the dark theme; a Motion tweak turns it into the cinematic reveal.
+couple in a warm living room: one centred glass card with the button inside
+it and the "What's next" timeline beneath. By default it is one plain scroll
+in the dark theme; a Motion tweak turns it into the cinematic reveal.
 
 | | |
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Message tweak, scroll hint" |
+| Captured from version | 2026-09-09, "One column, button in the card" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
-`../evlab-gift-split` holds the same file under its older title; the two
-artifacts are now identical. The sections version is a separate page,
-`../evlab-gift-sections`, no longer switchable from here. Earlier versions (a
-ribbon-tied card; a warm two-scene reveal; the one-card "01" layout; the
-three-way Version select) are in the artifact's version history and in this
+This is the only gift page kept. Earlier versions (a ribbon-tied card; a warm
+two-scene reveal; the one-card "01" layout; the three-way Version select; the
+independent sections page and the "Split" duplicate, whose archive folders
+were removed on 2026-09-09) are in the artifact's version history and in this
 repo's git history.
 
 ## Tweaks
@@ -74,7 +73,7 @@ bobs up and down (16px, 1.8s) as a hint to scroll, fading out over the first
 below. The photograph is the page's own background: a
 sticky, zero-height layer at the top of the scroll holds it fixed behind both
 folds, so the first fold's card scrolls up off it and the gift sits on it,
-and it drifts up at 12% of the scroll, a small parallax. The button, or any
+and it drifts up at 20% of the scroll, a small parallax. The button, or any
 scroll, simply moves down the page. The card, passport, timeline and
 footer are in place from the start; the back arrow, the circle and the
 floating phone button are not used. Reduced motion disables the parallax.
@@ -95,28 +94,29 @@ arrow, or a firm scroll up, runs it in reverse (about 1.15s).
 ## Fold 2
 
 The photograph fills the screen, darkened so type reads over it. The fold does
-not scroll on desktop; on phones it does. The glass card covers the left
-half: `rgba(40,38,36,.32)` over a 44px blur, 44px corners, no border, no
+not scroll on desktop; on phones it does. One glass card, centred, up to 660px
+wide: `rgba(40,38,36,.32)` over a 44px blur, 44px corners, no border, no
 shadow, so the room shows through. Inside, 48px padding all round: the mono
 "Gift received from Matt" line (orange square), the product name "Everlab
-Protocol", a short description, then at the foot a mono "What's included"
-label above six plain rows, each a small line icon (speech bubble, drop, scan,
-pulse, leaf, cycle) and the full title, no card and no dividers, 8px above and
-below each row, the block following the description directly. At the top
+Protocol", a short description, then a mono "What's included" label above six
+plain rows, each a small line icon (speech bubble, drop, scan, pulse, leaf,
+cycle) and the full title, no card and no dividers, 8px above and below each
+row; then **Claim my gift** full width at the foot of the card. At the top
 right of the card, beside the title, sits the membership passport as a 128×72
 tile: the `Ellipse 4358.png` copper texture blurred 64px into a warm gradient,
 the Everlab mark top left and "12 months" bottom right. Phones drop the tile.
 
-On the right, 64px from the card and directly over the photograph: "What's
-next", a horizontal timeline of four equal columns, a square above each label
-and a hairline from each square's right edge to the next square's left edge;
-Unwrap filled in Everlab red with a soft orange pulse travelling along its
-segment, then Claim your gift, Meet your doctor, Get tested; and **Claim my
-gift** full width beneath. The wordmark sits top centre, the
-footer line "Page secured by Everlab" bottom centre. On phones the card and
-the right side stack, the first-fold block sits 72px above centre, the
-headline is larger, and in dynamic motion **Claim my gift** floats at the foot
-of the screen.
+Under the card, 28px below and directly over the photograph: "What's next", a
+horizontal timeline of four equal columns, a square above each label on one
+line and a hairline from each square's right edge to the next square's left
+edge; Unwrap filled in Everlab red with a soft orange pulse travelling along
+its segment, then Claim your gift, Meet your doctor, Get tested. The card and
+the timeline are centred together in the fold. The wordmark sits top centre,
+the footer line "Page secured by Everlab" bottom centre. On phones the
+timeline labels may wrap, the first-fold block sits centred with 80px above
+and below, a dark gradient is fixed at the top of the screen over the
+photograph, and in dynamic motion **Claim my gift** floats at the foot of the
+screen.
 
 ## Feeding it from the email
 

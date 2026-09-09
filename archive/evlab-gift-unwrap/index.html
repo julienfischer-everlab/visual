@@ -329,9 +329,9 @@
   }
   /* the card lands in the centre of the first screen; the columns wait below */
   .hero{
-    width:100%;height:100%;flex:none;max-width:1120px;
-    display:grid;grid-template-columns:minmax(0, 1fr) minmax(0, .78fr);gap:64px;
-    align-items:center;justify-content:center;
+    width:100%;height:100%;flex:none;max-width:660px;
+    display:grid;grid-template-columns:minmax(0, 1fr);gap:28px;
+    align-content:center;justify-content:center;
     padding:96px 0 64px;  /* clear of the logo above and the footer below */
   }
   body[data-state="revealing"] .gift,
@@ -420,7 +420,7 @@
     border:1.5px solid rgba(243,239,234,.45);background:transparent;
   }
   .timeline li.now i{background:var(--red);border-color:var(--red);}
-  .timeline li span{font-size:13.5px;line-height:1.3;color:var(--muted-d);text-wrap:balance;}
+  .timeline li span{font-size:13.5px;line-height:1.3;color:var(--muted-d);white-space:nowrap;}
   .timeline li.now span{color:var(--ink-d);font-weight:500;}
   /* the line from this square's right edge to the next square's left edge */
   .timeline li:not(:last-child)::before{
@@ -502,7 +502,7 @@
   body[data-state="gift"] .act-float{pointer-events:auto;}
   /* the button: centred at the foot of the right column, 70% of its width */
   .act{
-    margin-top:auto;padding-top:34px;
+    margin-top:auto;padding-top:30px;
     display:flex;justify-content:center;
     opacity:0;transform:translateY(10px);
     transition:opacity .7s var(--ease-out) 1100ms, transform .7s var(--ease-out) 1100ms;
@@ -511,7 +511,6 @@
   body[data-state="gift"] .act{opacity:1;transform:none;}
   body[data-state="returning"] .act{opacity:0;transition-delay:0s;transition-duration:.3s;}
   .act .pill{color:var(--btn-d-ink);background:var(--btn-d);padding:16px 30px;width:100%;font-size:16px;font-weight:500;}
-  .side .act{margin-top:6px;padding-top:0;}
   .act .pill:hover{background:#FFFFFF;}
 
   /* the membership passport card: copper texture, mark, MEMBER pill, name, term */
@@ -549,7 +548,7 @@
      the passport card, then what's next, then the button. It rises after the card. */
   .side{
     position:relative;min-width:0;
-    display:flex;flex-direction:column;justify-content:center;gap:18px;
+    display:flex;flex-direction:column;justify-content:center;gap:14px;padding:0 6px;
     transform:translateY(110cqh);
     will-change:transform;
     transition:transform var(--card-ms) var(--ease-scene) calc(var(--card-delay) + 120ms);
@@ -580,14 +579,14 @@
     .hero{padding:80px 0 52px;}
     .card .info{padding:30px 34px;}
     .card .pass{top:30px;right:34px;}
-    .hero{gap:64px;}
+    .hero{gap:20px;}
     .side{gap:12px;}
     .card{border-radius:32px;}
     .title-row{margin-bottom:8px;}
     .title-row .orb{width:36px;height:36px;}
     .card h2{font-size:clamp(22px, 1cqw + 13px, 26px);}
     .blurb{margin-bottom:0;font-size:13.5px;}
-    .incl-wrap{gap:10px;padding-top:4px;}
+    .incl-wrap{gap:10px;padding-top:14px;}
     .incl li{padding:5px 0;font-size:13px;}
     .side .mono-label{margin-top:4px;}
     .pass{aspect-ratio:1.9;}
@@ -602,6 +601,8 @@
     .card{grid-template-columns:1fr;max-width:560px;margin:0;}
     .hero{grid-template-columns:1fr;gap:20px;}
     .side{gap:14px;padding:0 4px;}
+    .timeline li span{white-space:normal;}
+    .timeline li{padding-right:8px;}
     .side .act{display:none;}
     .incl-wrap{margin-top:0;}
     .card{border-radius:28px;}
@@ -760,7 +761,7 @@
   .fixed-bg{display:none;}
   body[data-motion="static"] .fixed-bg{display:block;position:sticky;top:0;height:0;z-index:0;}
   body[data-motion="static"] .fixed-bg::before{
-    content:"";position:absolute;left:0;right:0;top:-12cqh;height:124cqh;
+    content:"";position:absolute;left:0;right:0;top:-22cqh;height:144cqh;
     background-color:var(--night);
     background-image:linear-gradient(180deg, rgba(14,12,11,.45), rgba(14,12,11,.62) 55%, rgba(14,12,11,.85)), var(--photo, none);
     background-size:cover;background-position:center;
@@ -932,6 +933,7 @@
         <p class="mono-label">What’s included</p>
         <ul class="incl" id="includes"></ul>
       </div>
+      <div class="act"><a class="pill" id="claim" href="#">Claim my gift</a></div>
     </div>
   </article>
   <aside class="side" aria-label="Your membership">
@@ -943,7 +945,6 @@
         <li><i></i><span>Meet your doctor</span></li>
         <li><i></i><span>Get tested</span></li>
       </ol>
-      <div class="act"><a class="pill" id="claim" href="#">Claim my gift</a></div>
       </aside>
   </div>
 
@@ -1278,12 +1279,12 @@
   motionSel.addEventListener('change', function(){ setMotion(motionSel.value); });
 
   // a small parallax on the static scroll: the fixed photograph drifts up at
-  // 12% of the scroll (its layer is 12cqh taller at each end, so no edge shows)
+  // 20% of the scroll (its layer is 22cqh taller at each end, so no edge shows)
   var stageEl = document.getElementById('stage'), parTick = false;
   function parallax(){
     parTick = false;
     if(!isStatic() || reduce){ stageEl.style.setProperty('--par', '0px'); return; }
-    stageEl.style.setProperty('--par', (-stageEl.scrollTop * .12).toFixed(1) + 'px');
+    stageEl.style.setProperty('--par', (-stageEl.scrollTop * .2).toFixed(1) + 'px');
     stageEl.style.setProperty('--hint', Math.max(0, 1 - stageEl.scrollTop / 120).toFixed(2));
   }
   stageEl.addEventListener('scroll', function(){ if(!parTick){ parTick = true; requestAnimationFrame(parallax); } }, { passive: true });
