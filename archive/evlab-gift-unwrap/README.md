@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Seed is the card's glass" |
+| Captured from version | 2026-09-09, "Sender is Marc" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -52,14 +52,14 @@ the frame and on a real phone alike.
 The sender's message, set large and medium in a sans (Suisse Intl where
 installed, otherwise Geist), under a plain mono eyebrow, all caps and widely
 spaced: a small orange square, blinking once a second like a cursor, then
-"Matt got something special for you". Default copy: "You’ve spent so much
+"Marc got something special for you". Default copy: "You’ve spent so much
 time looking after everyone else. This one’s for you." over three lines.
 
 In dynamic motion things arrive in order: the wordmark fades in first (from
 150ms); the eyebrow's letters resolve from 0.73s to 1.7s (on phones it breaks
 before "special"); the message's letters from 1.8s, the last beginning at 4.8s,
 each line opening as a row over 1.5s, from 900ms before its first letter, so
-the block grows gently from the middle; **See Matt's gift** (the sender's
+the block grows gently from the middle; **See Marc's gift** (the sender's
 name) and the circle at the bottom arrive together half a second after the
 title's last letter starts, the button's row opening and the block moving up 64px slowly
 (1.3s, easing out) to make room. Each letter eases up and
@@ -123,7 +123,7 @@ The photograph fills the screen, darkened so type reads over it. The fold does
 not scroll on desktop; on phones it does. One glass card, centred, up to 561px
 wide: `rgba(40,38,36,.36)` over a 60px blur, 44px corners, no border, no
 shadow, so the room shows through. Inside, 48px padding all round: the mono
-"Gift received from Matt" line (orange square), the product name "Everlab
+"Gift received from Marc" line (orange square), the product name "Everlab
 Protocol" 16px under it, a short description, then a mono "What's included"
 label above six plain rows, each a small line icon (speech bubble, drop, scan,
 pulse, leaf, cycle) and the full title, no card and no dividers, 7px above and
