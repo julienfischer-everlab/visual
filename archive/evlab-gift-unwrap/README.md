@@ -2,14 +2,13 @@
 
 The private page a recipient opens from an Everlab gift email. Two folds, one
 continuous page: a personal message resolving into focus on a white screen,
-then a dark fold that rises from the bottom and pushes the first one out
-through the top, carrying nothing but the gift card.
+then the room fades to dark and the gift card rises into it from the bottom.
 
 | | |
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Dark fold, sans, card only" |
+| Captured from version | 2026-09-08, "Fade to dark, then the card" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -29,15 +28,23 @@ derived from the character count so the whole message lands in about three
 seconds. About 450ms after the last character settles, a small black pill,
 **See my gift**, rises into place.
 
-**Transition.** On click the dark second fold rises from the bottom of the
-screen and pushes the first fold out through the top, both moving together
-over 1.25s on `cubic-bezier(.58,.02,.18,1)`: a gentle start and a long settle,
-no snap. The page switches to dark for the rest of the visit.
+**Transition.** On click, three things happen in sequence, all on the same
+viewport:
+
+| When | What |
+| --- | --- |
+| 0ms | The message and button dissolve (650ms, opacity and a light blur) |
+| 200ms | The viewport crossfades from warm white to near-black over 1.3s, and a faint warm glow comes up with it |
+| 1000ms | The gift card rises from below the bottom edge into the centre over 1.4s on `cubic-bezier(.58,.02,.18,1)` |
+| 2400ms | Settled; the footer line fades in |
+
+Nothing slides or cuts; the room changes around the reader and then the card
+arrives.
 
 **Fold 2.** Near-black with a faint warm glow, and one object in the middle: the
-gift card. It rides in on the sheet and settles a hair after it lands. Its
+gift card, with no border and no shadow, just a slightly lighter fill. Its
 left column holds "A gift from Sarah", the value, the product, what's
-included, the sender's note and **Activate my gift**. Its right column is a
+included, the sender's note and **Activate my gift**. Its right column is the
 photograph.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
@@ -48,8 +55,11 @@ folds.
 
 The card's right column is a photo slot. The photo supplied for it (a hand
 holding a phone showing Everlab health insights, a glass of water, warm light
-on an oak table) was not available as a file when this version was captured,
-so a warm low-light gradient stands in. To ship it:
+on an oak table) was not available as a file when this version was captured.
+Until it is, the column carries a composed stand-in of the same scene built
+from CSS and a little SVG: oak grain in low warm light, and a tilted phone
+showing the Everlab "Health insights" screen with a heart age of 44 and a
+steps tile. To ship the real photo:
 
 - **Inside the page** (the only way it can load on the artifact host): set the
   `PHOTO` constant at the top of the script to a `data:` URI of the image.
@@ -101,8 +111,8 @@ All text is inserted as plain text, never as HTML.
 ## Verification
 
 Rendered headlessly at capture time on desktop (1440×900) and phone (390×844):
-the settled message, a frame mid-transition with the dark fold pushing the
-white one up, and the finished card. Google Fonts were not reachable from the
+the settled message, a frame mid-crossfade with the message gone and the room
+half dark, a frame with the card part-way up, and the finished card. Google Fonts were not reachable from the
 render sandbox, so the screenshots used the fallback stack; the published
 page loads them normally.
 
