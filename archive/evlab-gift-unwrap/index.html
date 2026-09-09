@@ -857,5 +857,40 @@
   GiftCard(gift);
   GiftIntro($('intro'), gift, reveal);
   $('back').addEventListener('click', goBack);
+
+  /* ---------- scroll as a trigger ----------
+     On the first fold, scrolling down (wheel, trackpad, swipe, keyboard) runs
+     the same reveal as the button, once the message and button are on
+     screen. At the top of the second fold, a firm scroll up runs the way back. */
+  var intro = $('intro'), giftEl = $('gift');
+  function ready(){ return state === 'intro' && intro.classList.contains('cta-in'); }
+  var wheelAcc = 0, wheelTimer = null;
+  window.addEventListener('wheel', function(e){
+    if(state === 'intro'){
+      if(!ready()) return;
+      wheelAcc += e.deltaY;
+      clearTimeout(wheelTimer); wheelTimer = setTimeout(function(){ wheelAcc = 0; }, 300);
+      if(wheelAcc > 40){ wheelAcc = 0; reveal(); }
+    }else if(state === 'gift'){
+      if(giftEl.scrollTop > 0) return;
+      wheelAcc += e.deltaY;
+      clearTimeout(wheelTimer); wheelTimer = setTimeout(function(){ wheelAcc = 0; }, 300);
+      if(wheelAcc < -140){ wheelAcc = 0; goBack(); }
+    }
+  }, { passive: true });
+  var touchY = null;
+  window.addEventListener('touchstart', function(e){ touchY = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener('touchmove', function(e){
+    if(touchY == null) return;
+    var dy = touchY - e.touches[0].clientY; // finger up = scroll down
+    if(state === 'intro' && ready() && dy > 48){ touchY = null; reveal(); }
+    else if(state === 'gift' && giftEl.scrollTop <= 0 && dy < -90){ touchY = null; goBack(); }
+  }, { passive: true });
+  window.addEventListener('touchend', function(){ touchY = null; });
+  window.addEventListener('keydown', function(e){
+    if(e.defaultPrevented || e.target.tagName === 'SELECT') return;
+    if(state === 'intro' && ready() && (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ')){ e.preventDefault(); reveal(); }
+    else if(state === 'gift' && giftEl.scrollTop <= 0 && (e.key === 'ArrowUp' || e.key === 'PageUp')){ e.preventDefault(); goBack(); }
+  });
 })();
 </script>

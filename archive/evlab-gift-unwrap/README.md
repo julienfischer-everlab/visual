@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Inclusions in the card, timeline, corner button" |
+| Captured from version | 2026-09-08, "Scroll to reveal" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 280 KB, single file (the photograph is embedded) |
@@ -35,8 +35,10 @@ size, placed so the couple sits inside the dome. The circle is the photograph
 itself (a round element whose background is the image), so no edge of the
 image can ever show inside it.
 
-**Transition.** On click, three things happen in sequence, all on the same
-viewport:
+**Transition.** The button, a scroll down (wheel, trackpad, swipe, or the
+down-arrow, page-down and space keys) all run the same reveal, once the
+message and button are on screen. On click, three things happen in sequence,
+all on the same viewport:
 
 | When | What |
 | --- | --- |
@@ -46,7 +48,8 @@ viewport:
 | 1100ms | Settled; the footer line and a small arrow at the top fade in |
 
 Nothing slides or cuts; the room changes around the reader and then the card
-arrives. The arrow at the top of fold 2 runs the same sequence in reverse:
+arrives. The arrow at the top of fold 2, or a firm scroll up from the top of the fold,
+runs the same sequence in reverse:
 the card sinks back below the edge, the circle closes back to a half circle at
 the bottom and the room crossfades back to white together (about 750ms), and
 the block settles back down into place from 400ms, done at about 1.15s.
