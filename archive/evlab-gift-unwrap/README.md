@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Numbered inclusions" |
+| Captured from version | 2026-09-08, "Quote over the photo, scroll-out" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -33,7 +33,7 @@ viewport:
 
 | When | What |
 | --- | --- |
-| 0ms | The whole first-fold block (chip, message, button) lifts upward and fades (1.1s) |
+| 0ms | The whole first-fold block (chip, message, button) scrolls up and out of the viewport (1.1s), like the page being pushed |
 | 150ms | The viewport crossfades from warm white to near-black over 950ms, and a faint warm glow comes up with it |
 | 150ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1.4s on `cubic-bezier(.58,.02,.18,1)` |
 | 1550ms | Settled; the footer line and a small arrow at the top fade in |
@@ -47,10 +47,10 @@ done at about 1.6s.
 **Fold 2.** Near-black with a faint warm glow, and one object in the middle: the
 gift card, with no border and no shadow, just a slightly lighter fill. Its
 left column holds the same "A gift from Matt" chip as fold 1, the value, the
-product, a monospace "What's included" label over six numbered rows (01 to 06,
-hairline rules, each on one line on desktop), the sender's note in a rounded
-panel at 4% white, and **Claim my gift**. Its right column is the
-photograph.
+product, a monospace "What's included" label over six rows with small square
+markers in Everlab red and hairline rules, each on one line on desktop, and
+**Claim my gift**. Its right column is the photograph, with the sender's note
+overlaid on its lower edge in a dark glass panel.
 
 Motion is limited to transform, opacity and blur. Nothing bounces.
 `prefers-reduced-motion` shows the message immediately and crossfades the
@@ -97,7 +97,7 @@ optional and falls back to the example gift baked into the page.
 | `product` | Product name |
 | `term` | One line under the product name |
 | `value` | Gift value label, as text |
-| `includes` | What's included, pipe-separated (`a\|b\|c`); numbered in order, one line each on desktop, so keep items short |
+| `includes` | What's included, pipe-separated (`a\|b\|c`); one line each on desktop, so keep items short |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | Photo for the card's right column (http or https only) |
 
