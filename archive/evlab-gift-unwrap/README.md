@@ -8,10 +8,10 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Half circle opens into the room" |
+| Captured from version | 2026-09-08, "Real photo embedded" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
-| Size | 18 KB, single file |
+| Size | 280 KB, single file (the photograph is embedded) |
 
 Earlier versions (a ribbon-tied card; a warm two-scene reveal with headings
 and a biological-age dial) are in the artifact's version history and in this
@@ -70,14 +70,18 @@ folds.
 
 ## The photograph
 
-The photograph behind fold 2 is `couple-sharing-a-photo-album-in-a-cozy-wood-toned-living-room-large.png`
-(a couple sharing a photo album in a cosy wood-toned living room). It was not
-available as a file when this version was captured, so a warm living-room
-gradient stands in. To ship it:
+The photograph behind fold 2 is
+`couple-sharing-a-photo-album-in-a-cozy-wood-toned-living-room-large.png`,
+kept in this folder as uploaded (1920×1446 PNG, 4 MB). The page embeds a
+1600px JPEG re-encoding of it (about 190 KB) as a `data:` URI in the `PHOTO`
+constant, which is the only way an image can load on the artifact host. When
+Everlab hosts the page, `?image=https://...` on the link can point at a hosted
+copy instead and the embedded one is ignored.
 
-- **Inside the page** (the only way it can load on the artifact host): set the
-  `PHOTO` constant at the top of the script to a `data:` URI of the image.
-- **Hosted**: pass `?image=https://...` on the link when Everlab hosts the page.
+Two further photographs were uploaded alongside it and are kept here as
+alternatives: `woman-reading-on-curved-velvet-sofa-in-warm-minimalist-interior-large.png`
+and `woman-reading-on-curved-bouclé-sofa-in-warm-minimalist-interior-large.png`.
+Neither is used by the page.
 
 ## Structure
 
