@@ -89,9 +89,9 @@
          400ms    the block settles back down into place (750ms)
          1150ms   settled */
     --back-card-ms:750ms;
-    --back-hold:500ms;      /* the card's content fades out before anything moves */
-    --back-bg-delay:500ms;
-    --back-text-delay:900ms;
+    --back-hold:0ms;        /* the content fades in place while the card shrinks */
+    --back-bg-delay:0ms;
+    --back-text-delay:400ms;
     --back-text-ms:750ms;
 
     --sans:'Suisse Intl','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
@@ -200,7 +200,9 @@
   body[data-motion="dynamic"] .card .info{opacity:0;transition:opacity 600ms ease calc(var(--card-delay) + var(--card-ms) + 50ms);}
   body[data-motion="dynamic"][data-state="revealing"] .card .info,
   body[data-motion="dynamic"][data-state="gift"] .card .info{opacity:1;}
-  body[data-motion="dynamic"][data-state="returning"] .card .info{opacity:0;transition:opacity 450ms ease 0s;}
+  body[data-motion="dynamic"][data-state="returning"] .card .info{opacity:0;transition:opacity 350ms ease 0s;}
+  /* nothing inside the card moves on the way back; it only fades */
+  body[data-motion="dynamic"][data-state="returning"] .act{transform:none;}
 
   /* warm glow that belongs to the dark room; fades in with the background */
   .glow{
@@ -268,13 +270,14 @@
     position:absolute;right:.1em;bottom:-.15em;
     font-family:'Homemade Apple','Segoe Script','Bradley Hand',cursive;font-weight:400;
     font-size:clamp(20px, 1.9cqw + 6px, 32px);line-height:1;letter-spacing:.02em;
-    color:#F5842E;white-space:nowrap;
+    color:var(--ink);white-space:nowrap;
     transform:rotate(-7deg);transform-origin:left bottom;
     opacity:0;clip-path:inset(-20% 100% -20% -10%);
     transition:opacity .3s ease, clip-path 1.1s cubic-bezier(.3,0,.3,1);
   }
   .sig.sig-in{opacity:1;clip-path:inset(-20% -10% -20% -10%);}
   body[data-motion="static"] .sig{opacity:1;clip-path:none;transition:none;}
+  body[data-sig="off"] .sig{display:none;}
   /* each line is a row that opens from nothing shortly before its letters
      start, so the centred block grows from the middle: the first line is
      pushed up by the second, both by the third */
@@ -942,6 +945,11 @@
       <option value="dynamic">Dynamic</option>
       <option value="static">Static</option>
     </select>
+    <label for="sigSel">Signature</label>
+    <select id="sigSel" aria-label="Signature">
+      <option value="on">On</option>
+      <option value="off">Off</option>
+    </select>
     <label for="message">Message</label>
     <select id="message" aria-label="Message">
       <option value="0">Happy Birthday</option>
@@ -1331,11 +1339,11 @@
 
   /* ---------- App: intro → revealing → gift → returning → intro ---------- */
   var SCENE_MS = 1100; // card-delay + card-ms, see the CSS tokens
-  var BACK_MS = 1650;  // back-text-delay + back-text-ms
+  var BACK_MS = 1150;  // back-text-delay + back-text-ms
   var state = 'intro';
   function setState(next){
     if(next === 'revealing') seedMorph(cardRect(), 1000, 100);   // card-ms, card-delay
-    if(next === 'returning') seedMorph(restRect(), 750, 500);    // back-card-ms, after back-hold
+    if(next === 'returning') seedMorph(restRect(), 750, 0);      // back-card-ms
     state = next;
     document.body.dataset.state = next;
     var onGift = next === 'gift' || next === 'revealing';
@@ -1403,6 +1411,15 @@
   }
   setTheme((params.get('theme') || DEFAULT_THEME || '').toLowerCase());
   themeSel.addEventListener('change', function(){ setTheme(themeSel.value); });
+
+  var sigSel = document.getElementById('sigSel');
+  function setSig(v){
+    v = v === 'off' ? 'off' : 'on';
+    document.body.dataset.sig = v;
+    sigSel.value = v;
+  }
+  setSig((params.get('sig') || '').toLowerCase());
+  sigSel.addEventListener('change', function(){ setSig(sigSel.value); });
 
   var motionSel = document.getElementById('motion');
   function setMotion(m){
