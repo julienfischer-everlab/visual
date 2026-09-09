@@ -3222,6 +3222,23 @@ and the real one comes up. Probed (kbdslide.js): tap, and the offset runs
 back 0 -> 147 -> 242 -> 254 and it is hidden at 0.43s; the viewport version
 shows none. The typing probe (mkbd.js) is unchanged.
 
+### 5.133 The dots a pixel closer, over 80% of the arc
+
+"Reduce the gap by 1px on the arc system, and you can put 10% safe space on
+each side, not 20%." The dots ran over the middle 60% of the scale (v -9..9)
+with 5.6px between them; they run over the middle 80% now (v -12..12), and
+the pitch is set by the count, so the gap came down by adding dots: thirty
+over the wider span put 4.7px between 3.7px dots at hero scale. Thirty-two
+gave 4.2 and thirty-one 4.4 -- the arc is a curve, so the chord-based guess
+overshot -- and thirty is the count nearest the asked pixel. The Arc version's
+biomarker window is the same 10..90% now, so the two graphs agree on where
+the reading sits, and the hero's side fade on the arc runs only outside that
+80% (clear by 3%, full at 10%, was 20%), so the outer dots and the outer
+ticks of a portion are not dimmed by it. The end taper of the dots (the outer
+six each side to a tenth) is unchanged. Probed: 30 dots, gap 4.7, dot 3.7,
+first at 10.7% of the arc's width and last at 89.3%; the reveal still lands
+the last dot at 1.1s; the Arc version's first lit tick is at 10% of the scale.
+
 ---
 
 ## 6. Open items

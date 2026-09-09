@@ -665,21 +665,21 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   front seven ticks wide on a quintic ease, so nothing switches and two
   colours are never on the arc together; four
   states with Unclassified shown, three without; looping without a pause. The
-  panel is laid onto the middle 60% of the scale, and on the hero that 60%
-  is fully visible: the arc's side fade runs only outside it (clear by 3%,
-  full at 20%) and the end blur starts at the same line, so a portion reads
-  from exactly where it starts to exactly where it ends.
+  panel is laid onto the middle 80% of the scale (10% safe space each side,
+  was 20%), and on the hero that 80% is fully visible: the arc's side fade
+  runs only outside it (clear by 3%, full at 10%), so a portion reads from
+  exactly where it starts to exactly where it ends.
   (A constant in the script, `BIO_CYCLE`, puts the static bands back.)
 - **Bio graph** — Dots (default) or Arc, in the Tweaks dropdown; a select, since
-  the two are named readings rather than on and off. Dots runs twenty-two dots
+  the two are named readings rather than on and off. Dots runs thirty dots
   along the arc's own curve on the biomarker slide — inside the arc's SVG, at
-  the ticks' midline, across the middle 60% of the scale, with a gap a little
-  over a dot wide — filled left to right with the ranges' colours by share
+  the ticks' midline, across the middle 80% of the scale, with a gap a little
+  over a dot wide (4.7px to a 3.7px dot) — filled left to right with the ranges' colours by share
   (each range takes its share of the dots by largest remainder, so they always
   sum), the unclassified in the range grey when shown, at rest when folded in;
   a dot not yet reached or without a range rests at the ticks' grey. The arc's
   ticks all stand down as the dots come up — the dots are the whole graph on
-  this slide, the 20% at each side left empty — and the dotted line fades out
+  this slide, the 10% at each side left empty — and the dotted line fades out
   at both ends, the outer six dots each side tapering to a tenth. A phone has
   no bar to choose from, so the choice can travel in the link: a trailing
   `d` on the hash (`#m20vd`, or `#m20d`) opens with the dots, which is now the

@@ -2752,13 +2752,14 @@
     position:absolute;left:0;right:0;bottom:184px;z-index:2;pointer-events:none;
   }
   body.v5 #mHeroOrgan #arcA{transform:scale(.52);margin:26px 0 -92px;}
-  /* The hero's arc is fully there across its middle 60% and fades only outside
-     it: the biomarker portions are laid onto that 60%, and the base fade
-     (clear by 4%, full at 30%) was still dimming their outer ticks, so a
-     portion looked to start short of where it did. */
+  /* The hero's arc is fully there across its middle 80% and fades only outside
+     it: the biomarker portions and the dots are laid onto that 80% (10% safe
+     space each side, was 20%), and the base fade (clear by 4%, full at 30%)
+     was dimming their outer ticks, so a portion looked to start short of
+     where it did. */
   body.v5 #mHeroOrgan #arcA{
-    -webkit-mask-image:linear-gradient(to right,transparent 3%,#000 20%,#000 80%,transparent 97%);
-    mask-image:linear-gradient(to right,transparent 3%,#000 20%,#000 80%,transparent 97%);
+    -webkit-mask-image:linear-gradient(to right,transparent 3%,#000 10%,#000 90%,transparent 97%);
+    mask-image:linear-gradient(to right,transparent 3%,#000 10%,#000 90%,transparent 97%);
   }
   body.v5 #mHeroOrgan #arcA text{display:none;}
   /* Bio graph = Dots lives inside #arcA (a <g> of circles on the arc's own
@@ -7677,9 +7678,11 @@
   }
   let indA;
   const tickEls = [];
-  // the Dots graph: twenty-six dots across the middle 60% of the scale (v -9..9)
-  // -- "more gap between the dots": a gap a little over a dot wide on screen
-  const DOTS_N = 22, DOTS_SPAN = 9, dotEls = [];   // 22: "increase the gap by 2px" (was 26)
+  // the Dots graph: thirty dots across the middle 80% of the scale (v -12..12)
+  // -- "10% safe space on each side, not 20%"; the pitch is set by the count:
+  // 30 over that span puts ~4.7px between dots at hero scale ("reduce the gap
+  // by 1px" from the 5.6 of 22 dots over 60%)
+  const DOTS_N = 30, DOTS_SPAN = 12, dotEls = [];
   let arcDotsG = null, dotsSig = '';
   // rebuildable: the whole scale is drawn around CHRONO, so changing your age
   // redraws it rather than relabelling it
@@ -12720,7 +12723,7 @@
         const n = Math.max(1, tickEls.length - 1);
         const bs = bioSet(), un = CARD_STATE.unclass, cyc = BIO_CYCLE && !CARD_STATE.bioDots;   // the dots carry the whole distribution
         const q1 = bs.optimal / bs.total, q2 = q1 + bs.sub / bs.total, q3 = Math.min(1, q2 + bs.out / bs.total);
-        const W0 = 0.20, W1 = 0.80, bp = q => W0 + (W1 - W0) * q;   // "exclude the left 20% and right 20%"
+        const W0 = 0.10, W1 = 0.90, bp = q => W0 + (W1 - W0) * q;   // "10% safe space on each side, not 20%"
         const SEG_COL = ['opt', 'sub', 'out', 'un'];
         const segLo = [W0, bp(q1), bp(q2), bp(q3)], segHi = [bp(q1), bp(q2), bp(q3), W1];
         // "Smoother ease in-out", twice asked: the change is two wipes on one
