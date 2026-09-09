@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Back arrow, lift, card details" |
+| Captured from version | 2026-09-08, "Card with the background, longer fade" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -33,16 +33,16 @@ viewport:
 
 | When | What |
 | --- | --- |
-| 0ms | The whole first-fold block (chip, message, button) lifts upward and fades (600ms) |
+| 0ms | The whole first-fold block (chip, message, button) lifts upward and fades (1.1s) |
 | 150ms | The viewport crossfades from warm white to near-black over 950ms, and a faint warm glow comes up with it |
-| 700ms | The gift card rises from below the bottom edge into the centre over 1.1s on `cubic-bezier(.58,.02,.18,1)` |
-| 1800ms | Settled; the footer line and a small arrow at the top fade in |
+| 150ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1.4s on `cubic-bezier(.58,.02,.18,1)` |
+| 1550ms | Settled; the footer line and a small arrow at the top fade in |
 
 Nothing slides or cuts; the room changes around the reader and then the card
 arrives. The arrow at the top of fold 2 runs the same sequence in reverse:
-the card sinks back below the edge (900ms), the room crossfades back to white
-from 350ms, and the block settles back down into place from 950ms, done at
-about 1.7s.
+the card sinks back below the edge and the room crossfades back to white
+together (about 1s), and the block settles back down into place from 600ms,
+done at about 1.6s.
 
 **Fold 2.** Near-black with a faint warm glow, and one object in the middle: the
 gift card, with no border and no shadow, just a slightly lighter fill. Its
