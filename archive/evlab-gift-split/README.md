@@ -12,10 +12,10 @@ The right side rises a beat after the card.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/90f389b7-825e-4861-b364-3d22c5a2db45 |
 | Title | Unwrap your Everlab gift · Split |
-| Captured from version | 2026-09-09, "One page, version + theme tweaks" |
+| Captured from version | 2026-09-09, "Static motion, passport blur" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Private |
-| Size | 547 KB, single file (both photographs, the logo and the ellipse are embedded) |
+| Size | 548 KB, single file (both photographs, the logo and the ellipse are embedded) |
 
 Since this version `index.html` is the same combined page as
 `../evlab-gift-unwrap/index.html`, differing only in `DEFAULT_VARIANT`

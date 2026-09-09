@@ -10,10 +10,10 @@ band of three cards, then a light closing section.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/05f652dc-ce60-45f8-92db-a2e813932039 |
 | Title | Your Everlab gift |
-| Captured from version | 2026-09-09, "One page, version + theme tweaks" |
+| Captured from version | 2026-09-09, "Static motion, passport blur" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Private |
-| Size | 547 KB, single file (both photographs, the logo and the ellipse are embedded) |
+| Size | 548 KB, single file (both photographs, the logo and the ellipse are embedded) |
 
 Since this version `index.html` is the same combined page as
 `../evlab-gift-unwrap/index.html`, differing only in `DEFAULT_VARIANT`

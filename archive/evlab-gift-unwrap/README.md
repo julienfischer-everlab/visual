@@ -8,10 +8,10 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-09, "One page, version + theme tweaks" |
+| Captured from version | 2026-09-09, "Static motion, passport blur" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Private |
-| Size | 547 KB, single file (both photographs, the logo and the ellipse are embedded) |
+| Size | 548 KB, single file (both photographs, the logo and the ellipse are embedded) |
 
 Since this version the three gift pages are one file. The same page is
 published at all three artifact URLs; each opens on its own version
@@ -82,8 +82,9 @@ mono "What's included" label above a faint rounded card (a 3.5% white tint,
 each with a small line icon (speech bubble, drop, scan, pulse, leaf, cycle),
 a visible hairline divider between rows, 11px of padding above and below each
 row, the full titles. Its right column, behind a hairline divider, opens
-with a membership passport card: the `Ellipse 4358.png` copper texture under
-a fine dot grid, the Everlab mark top left, a MEMBER pill top right, the
+with a membership passport card: the `Ellipse 4358.png` copper texture
+softened with a 64px blur so it reads as a warm gradient (no dot grid), the
+Everlab mark top left, a MEMBER pill top right, the
 recipient's name and "Everlab Membership" bottom left, "12 months / gift
 membership" bottom right. Under it, "What's next": a vertical timeline of four
 squares joined by hairlines that meet the squares exactly, 22px between steps, Unwrap (the current
@@ -126,14 +127,27 @@ the card; the room is already dark. In the sections version the hero and the
 closing section go near-black too, the inclusion cards a shade lighter than
 their band, the white tags keeping dark type.
 
+## Static motion
+
+A **Motion** select, Dynamic or Static (`?motion=static`). Dynamic is the
+reveal described above. Static is the same two folds as one ordinary
+scrolling page, nothing waiting on a click or a scroll: the first fold is a
+painted card 80% of the screen tall with 40px rounded bottom corners, sitting
+over the photograph, which shows under the corners and continues as the
+second fold's own background directly below. The message still resolves
+letter by letter on load; the button, and any scroll, simply move down the
+page. The card, the passport, the timeline and the footer are in place from
+the start, and the back arrow, the circle and the floating phone button are
+not used. Switching back to Dynamic returns to the top of the reveal.
+
 ## Logo and chrome
 
 A fixed, edge-to-edge bar 44px tall runs along the very top of the page in
-near-black, with a mono label and three plain native selects: **Device**
-(Desktop, iPhone), **Theme** (Light, Dark) and **Version** (01 Cinematic
-reveal, 02 Sections, 03 Split card). Each changes the page in place through
-a `data-` attribute on `<body>` (`data-device`, `data-theme`,
-`data-variant`); nothing reloads and the current fold is kept. The
+near-black, with a mono label and four plain native selects: **Device**
+(Desktop, iPhone), **Theme** (Light, Dark), **Motion** (Dynamic, Static) and
+**Version** (01 Cinematic reveal, 02 Sections, 03 Split card). Each changes
+the page in place through a `data-` attribute on `<body>` (`data-device`,
+`data-theme`, `data-motion`, `data-variant`); nothing reloads and the current fold is kept. The
 sections version is a scrolling layer inside the same stage, shown only for
 `data-variant="sections"`; its classes and ids carry an `s-` prefix so they
 never collide with the cinematic folds. Everything else lives in a stage
@@ -192,6 +206,7 @@ optional and falls back to the example gift baked into the page.
 | `image` | The photograph behind fold 2 (http or https only) |
 | `v` | Version to open on: `1`/`card`, `2`/`sections`, `3`/`split` |
 | `theme` | `light` or `dark` |
+| `motion` | `dynamic` or `static` |
 | `device` | `desktop` or `phone` |
 
 All text is inserted as plain text, never as HTML.
