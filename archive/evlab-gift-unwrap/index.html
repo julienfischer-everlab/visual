@@ -189,21 +189,14 @@
     transform:scale(0);
     /* the morph itself (left/top/width/height/radius) is one Web Animation
        driven from the script, so the four sides always move together */
-    transition:
-      transform 1100ms cubic-bezier(.2,.7,.2,1),
-      opacity 0s linear calc(var(--card-delay) + var(--card-ms));
+    transition:transform 1100ms cubic-bezier(.2,.7,.2,1);
   }
   body.orb-in .seed{transform:scale(1);}
-  body[data-state="revealing"] .seed,
-  body[data-state="gift"] .seed{opacity:0;}
-  body[data-state="returning"] .seed{opacity:1;transition:opacity 0s linear var(--back-hold);}
   body[data-motion="static"] .seed{display:none !important;}
-  /* dynamic: the card does not rise; it appears where the seed has arrived and
-     its content fades in */
-  body[data-motion="dynamic"] .card{transform:none;opacity:0;transition:opacity 0s linear calc(var(--card-delay) + var(--card-ms));}
-  body[data-motion="dynamic"][data-state="revealing"] .card,
-  body[data-motion="dynamic"][data-state="gift"] .card{opacity:1;}
-  body[data-motion="dynamic"][data-state="returning"] .card{opacity:0;transition:opacity 0s linear var(--back-hold);}
+  /* dynamic: the card does not rise and has no glass of its own; the seed,
+     sitting exactly behind it, is its surface for the whole visit (so there is
+     never a swap to flash), and only the content fades in and out */
+  body[data-motion="dynamic"] .card{transform:none;opacity:1;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;transition:none;}
   body[data-motion="dynamic"] .card .info{opacity:0;transition:opacity 600ms ease calc(var(--card-delay) + var(--card-ms) + 50ms);}
   body[data-motion="dynamic"][data-state="revealing"] .card .info,
   body[data-motion="dynamic"][data-state="gift"] .card .info{opacity:1;}
@@ -1420,6 +1413,7 @@
      the same reveal as the button, once the message and button are on
      screen. At the top of the second fold, a firm scroll up runs the way back. */
   var intro = $('intro'), giftEl = $('gift');
+  giftEl.addEventListener('scroll', function(){ if(!isStatic() && state === 'gift') seedSet(cardRect()); }, { passive: true });
   function ready(){ return !isStatic() && state === 'intro' && intro.classList.contains('cta-in'); }
   var wheelAcc = 0, wheelTimer = null;
   window.addEventListener('wheel', function(e){

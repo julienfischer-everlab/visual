@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Default message, hint downwards" |
+| Captured from version | 2026-09-09, "Seed is the card's glass" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -84,14 +84,15 @@ photograph is exactly a full-screen cover while the room crossfades to dark
 (no halo at the top); at the same moment the glass half circle morphs into the
 card's exact rectangle (position, size and corner radius taken from the card's
 layout, one Web Animation for all five so the box never drifts) over 1s on
-`cubic-bezier(.9,0,.22,1)`; as it lands the real card takes its place in a
-single frame (same glass, same rectangle, so nothing overlaps) and the
-content fades in; settled at 1.1s, when the footer and a small arrow at the
+`cubic-bezier(.9,0,.22,1)`; in dynamic motion the card itself has no glass of
+its own: the seed stays exactly behind the transparent card for the whole
+visit as its surface (following the card if the fold scrolls on a phone), so
+there is never a swap between two surfaces; as the seed lands the content
+fades in; settled at 1.1s, when the footer and a small arrow at the
 top fade in and the four timeline steps appear one after another, 500ms apart,
 from 1.2s to about 3.2s. The arrow, or a firm scroll up, runs it in reverse:
-first the card's content fades out (450ms), then at 500ms the card becomes the
-seed in one frame and shrinks back into a half circle in the dome while the
-room lightens (750ms, the seed always inside the closing circle), and the
+first the card's content fades out (450ms), then at 500ms the seed shrinks
+back into a half circle in the dome while the room lightens (750ms, the seed always inside the closing circle), and the
 block settles back from 900ms, done at about 1.65s. The seed's rectangle is
 taken from the card as it sits on screen, so a scrolled fold on a phone still
 lands exactly. On phones a dark gradient is fixed at the
