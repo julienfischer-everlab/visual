@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Eyebrow to title 10px" |
+| Captured from version | 2026-09-09, "Signature over the last word, off by default" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -33,7 +33,7 @@ the bar evenly.
 | Device | Desktop, iPhone | `device=phone` |
 | Theme | Dark, Light | `theme=light` |
 | Motion | Dynamic, Static | `motion=static` |
-| Signature | On, Off | `sig=off` |
+| Signature | Off, On | `sig=on` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
@@ -56,8 +56,10 @@ spaced: a small orange square, blinking once a second like a cursor, then
 "Marc got something special for you". Default copy: "You’ve spent so much
 time looking after everyone else. This one’s for you." over three lines. The
 sender's first name is written across the bottom right of the title in a
-thin script face (Homemade Apple, in the text colour, inclined 7°),
-overlapping the last line like a signature: in dynamic motion
+thin script face (Homemade Apple, in the text colour, inclined 7°), laid over
+the last word (starting a third of the way into it, across its lower half,
+placed by the script and re-placed on resize), like a signature; it is off
+unless the Signature tweak is on: in dynamic motion
 it writes itself on from left to right 0.7s after the title's last letter
 starts, and again whenever the message is switched.
 
