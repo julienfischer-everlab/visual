@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Text 1.1× faster" |
+| Captured from version | 2026-09-09, "Instant card/seed swap" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -83,12 +83,14 @@ photograph is exactly a full-screen cover while the room crossfades to dark
 (no halo at the top); at the same moment the glass half circle morphs into the
 card's exact rectangle (position, size and corner radius taken from the card's
 layout, one Web Animation for all five so the box never drifts) over 1s on
-`cubic-bezier(.9,0,.22,1)`; as it lands the real card takes its place and the
+`cubic-bezier(.9,0,.22,1)`; as it lands the real card takes its place in a
+single frame (same glass, same rectangle, so nothing overlaps) and the
 content fades in; settled at 1.1s, when the footer and a small arrow at the
 top fade in and the four timeline steps appear one after another, 500ms apart,
 from 1.2s to about 3.2s. The arrow, or a firm scroll up, runs it in reverse:
-first the card's content fades out (300ms), then the card shrinks back into a
-half circle in the dome while the room lightens (750ms), and the block settles
+first the card's content fades out (300ms), then the card becomes the seed in
+one frame and shrinks back into a half circle in the dome while the room
+lightens (750ms), and the block settles
 back from 700ms, done at about 1.45s. On phones a dark gradient is fixed at the
 top of the screen under the wordmark and the arrow so the card can scroll
 beneath them, the first-fold block sits 64px lower, and the timeline has 24px
