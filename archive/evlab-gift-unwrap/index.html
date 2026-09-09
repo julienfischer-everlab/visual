@@ -89,9 +89,9 @@
          400ms    the block settles back down into place (750ms)
          1150ms   settled */
     --back-card-ms:750ms;
-    --back-hold:300ms;      /* the card's content fades out before anything moves */
-    --back-bg-delay:300ms;
-    --back-text-delay:700ms;
+    --back-hold:500ms;      /* the card's content fades out before anything moves */
+    --back-bg-delay:500ms;
+    --back-text-delay:900ms;
     --back-text-ms:750ms;
 
     --sans:'Suisse Intl','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
@@ -207,7 +207,7 @@
   body[data-motion="dynamic"] .card .info{opacity:0;transition:opacity 600ms ease calc(var(--card-delay) + var(--card-ms) + 50ms);}
   body[data-motion="dynamic"][data-state="revealing"] .card .info,
   body[data-motion="dynamic"][data-state="gift"] .card .info{opacity:1;}
-  body[data-motion="dynamic"][data-state="returning"] .card .info{opacity:0;transition:opacity 280ms ease 0s;}
+  body[data-motion="dynamic"][data-state="returning"] .card .info{opacity:0;transition:opacity 450ms ease 0s;}
 
   /* warm glow that belongs to the dark room; fades in with the background */
   .glow{
@@ -273,7 +273,7 @@
      pushed up by the second, both by the third */
   .quote .line{
     display:grid;grid-template-rows:0fr;
-    animation:line-open 820ms var(--ease-out) var(--ld, 0ms) both;
+    animation:line-open 1500ms cubic-bezier(.25,.1,.25,1) var(--ld, 0ms) both;
   }
   .quote .line-in{min-height:0;}
   @keyframes line-open{from{grid-template-rows:0fr;}to{grid-template-rows:1fr;}}
@@ -820,7 +820,6 @@
   body[data-device="phone"] .intro{padding-top:60px;padding-bottom:184px;}
   body[data-device="phone"][data-motion="dynamic"] .intro{padding-top:124px;padding-bottom:120px;}
   body[data-device="phone"][data-motion="static"] .intro{padding:80px 22px;}
-  body[data-device="phone"][data-motion="static"] .back-static{top:66px;}
   body[data-device="phone"] .gift{padding-bottom:140px;}
   body[data-device="phone"] .act-float{padding-bottom:48px;border-radius:0 0 50px 50px;}
 
@@ -863,32 +862,24 @@
     transform:translateY(var(--par, 0px));will-change:transform;
   }
   body[data-motion="static"] .hero{position:relative;z-index:1;}
-  .back-static{display:none;}
-  body[data-motion="static"] .back-static{
-    display:flex;position:absolute;top:26px;left:50%;transform:translateX(-50%);z-index:2;
-    flex-direction:column;align-items:center;gap:8px;
-    appearance:none;border:0;background:none;padding:6px 10px;cursor:pointer;
-    color:var(--ink-d);opacity:.8;
-    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-    transition:opacity .3s ease;
-  }
-  body[data-motion="static"] .back-static:hover{opacity:1;}
-  .back-static svg{display:block;}
-  .back-static i{display:block;width:1px;height:24px;background:rgba(255,255,255,.75);}
   body[data-motion="static"] .quote .c, body[data-motion="static"] .chip .c{animation:none;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
   body[data-motion="static"] .quote .line{animation:none;grid-template-rows:1fr;}
   body[data-motion="static"] .chip{animation:none;opacity:1;transform:none;}
   body[data-motion="static"] .intro .cta{opacity:1;transform:none;filter:none;grid-template-rows:1fr;margin-top:clamp(40px, 6cqh, 64px);transition:none;}
+  /* the scroll hint: a one-pixel track at the foot of the black header, 30px
+     from its bottom edge, centred, with a bright segment that keeps climbing
+     from the bottom to the top, like a vertical progress */
   .scroll-hint{display:none;}
   body[data-motion="static"] .scroll-hint{
-    display:block;position:absolute;left:50%;top:calc(100% + 10cqh - 18px);
-    width:1px;height:36px;background:rgba(255,255,255,.75);
-    opacity:var(--hint, 1);
-    animation:hint 1.8s ease-in-out infinite;
+    display:block;position:absolute;left:50%;bottom:30px;transform:translateX(-50%);
+    width:1px;height:36px;background:rgba(255,255,255,.18);overflow:hidden;
   }
-  @keyframes hint{0%,100%{transform:translate(-50%,-8px);}50%{transform:translate(-50%,8px);}}
-  @media (prefers-reduced-motion: reduce){ .scroll-hint{animation:none;} }
+  body[data-motion="static"] .scroll-hint::after{
+    content:"";position:absolute;left:0;top:0;width:100%;height:50%;background:rgba(255,255,255,.9);
+    animation:hint-up 1.6s cubic-bezier(.45,0,.55,1) infinite;
+  }
+  @keyframes hint-up{from{transform:translateY(100%);}to{transform:translateY(-100%);}}
+  @media (prefers-reduced-motion: reduce){ .scroll-hint::after{animation:none;transform:none;} }
   body[data-motion="static"] .card, body[data-motion="static"] .side{transform:none;transition:none;}
   body[data-motion="static"] .act, body[data-motion="static"] .more, body[data-motion="static"] .foot{opacity:1;transform:none;transition:none;}
   body[data-motion="static"] .side .act{display:flex;}
@@ -1002,11 +993,6 @@
 </button>
 
 <main class="gift" id="gift" aria-hidden="true">
-  <button class="back-static" id="backStatic" type="button" aria-label="Back to the message">
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11V1M1.5 5.5 6 1l4.5 4.5"/></svg>
-    <i aria-hidden="true"></i>
-    <span>Back</span>
-  </button>
   <div class="hero">
   <article class="card" id="card" aria-label="Your gift">
     <div class="info">
@@ -1158,8 +1144,8 @@
         var row = document.createElement('span'); row.className = 'line';
         var inner = document.createElement('span'); inner.className = 'line-in';
         row.appendChild(inner); frag.appendChild(row); host = inner;
-        // the row starts opening 450ms before this line's first letter
-        row.style.setProperty('--ld', Math.max(0, Math.round(startAt + i * stagger - 545)) + 'ms');
+        // the row starts opening 900ms before this line's first letter, over 1.5s
+        row.style.setProperty('--ld', Math.max(0, Math.round(startAt + i * stagger - 900)) + 'ms');
       }
       words.forEach(function(word, wi){
         var w = document.createElement('span');
@@ -1206,9 +1192,9 @@
     var quote = AnimatedQuote($('quote'), gift.message, {
       startAt: 1820, finishStartsBy: 4760, charMs: 1640, lastWordMs: 1150, lastWordEmber: .7, grow: true
     });
-    // the button and the circle arrive together just after the last character
-    // settles, and the block moves up 64px, slowly, to make room
-    setTimeout(function(){ root.classList.add('cta-in'); document.body.classList.add('orb-in'); }, reduce ? 0 : quote.done + 120);
+    // the button and the circle arrive together as the last characters are
+    // still sharpening, and the block moves up 64px, slowly, to make room
+    setTimeout(function(){ root.classList.add('cta-in'); document.body.classList.add('orb-in'); }, reduce ? 0 : quote.done - 500);
     $('see').textContent = 'See ' + gift.from + '’s gift';
     $('see').addEventListener('click', onSee);
   }
@@ -1264,8 +1250,8 @@
   }
   // the seed as the card: the card's own rectangle and corner radius
   function cardRect(){
-    var c = $('card');
-    return { left: c.offsetLeft + 'px', top: c.offsetTop + 'px', width: c.offsetWidth + 'px', height: c.offsetHeight + 'px', borderRadius: getComputedStyle(c).borderRadius };
+    var c = $('card'), g = $('gift');
+    return { left: (c.offsetLeft - g.scrollLeft) + 'px', top: (c.offsetTop - g.scrollTop) + 'px', width: c.offsetWidth + 'px', height: c.offsetHeight + 'px', borderRadius: getComputedStyle(c).borderRadius };
   }
   function seedSet(to){ var seed = $('seed'); if(seedAnim){ seedAnim.cancel(); seedAnim = null; } Object.assign(seed.style, to); }
   // one animation for all five properties, so the box never drifts mid-way
@@ -1334,11 +1320,11 @@
 
   /* ---------- App: intro → revealing → gift → returning → intro ---------- */
   var SCENE_MS = 1100; // card-delay + card-ms, see the CSS tokens
-  var BACK_MS = 1450;  // back-text-delay + back-text-ms
+  var BACK_MS = 1650;  // back-text-delay + back-text-ms
   var state = 'intro';
   function setState(next){
     if(next === 'revealing') seedMorph(cardRect(), 1000, 100);   // card-ms, card-delay
-    if(next === 'returning') seedMorph(restRect(), 750, 300);    // back-card-ms, after back-hold
+    if(next === 'returning') seedMorph(restRect(), 750, 500);    // back-card-ms, after back-hold
     state = next;
     document.body.dataset.state = next;
     var onGift = next === 'gift' || next === 'revealing';
@@ -1423,13 +1409,11 @@
     parTick = false;
     if(!isStatic() || reduce){ stageEl.style.setProperty('--par', '0px'); return; }
     stageEl.style.setProperty('--par', (-stageEl.scrollTop * .2).toFixed(1) + 'px');
-    stageEl.style.setProperty('--hint', Math.max(0, 1 - stageEl.scrollTop / 120).toFixed(2));
   }
   stageEl.addEventListener('scroll', function(){ if(!parTick){ parTick = true; requestAnimationFrame(parallax); } }, { passive: true });
   window.addEventListener('resize', parallax);
   parallax();
   $('back').addEventListener('click', goBack);
-  $('backStatic').addEventListener('click', function(){ document.getElementById('stage').scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
 
   /* ---------- scroll as a trigger ----------
      On the first fold, scrolling down (wheel, trackpad, swipe, keyboard) runs
