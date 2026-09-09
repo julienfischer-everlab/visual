@@ -667,9 +667,9 @@
   body.v8:not(.fullscr) .mTabs{padding-bottom:30px;}
   body.v8:not(.fullscr) .mTabs .mHome{
     display:block;position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
-    width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);
+    width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);   /* "lighter by 70%" */
   }
-  body.light.v8:not(.fullscr) .mTabs .mHome{background:rgba(0,0,0,.8);}
+  body.light.v8:not(.fullscr) .mTabs .mHome{background:rgba(0,0,0,.24);}
   body.light.v8 .mTabs{
     background:rgba(255,255,255,.96);border-top-color:rgba(0,0,0,.08);
   }
@@ -798,16 +798,26 @@
   .msClear svg{width:12px;height:12px;display:block;}
   .msWrap.hasText .msClear{display:flex;}
   body.light .msClear{background:#e6ddca;color:#2e1f1a;}
-  /* the skeleton that stands in for the list while a keystroke "loads" */
-  .msSkel{padding:16px 13px 0;}
-  .msSkel i{
-    display:block;height:54px;margin-bottom:10px;border-radius:12px;
-    background:linear-gradient(90deg,#171716 0%,#232322 40%,#171716 80%);
+  /* The skeleton that stands in for the list while a keystroke "loads": the
+     list's own shape (see the markup), every block a shimmering bar. The rows
+     are .mbrow, so they take the row's grid, padding and rule as they are. */
+  .msSkel{padding:8px 13px 0;}
+  .msSkel .skH{padding:14px 0 9px;display:flex;flex-direction:column;gap:8px;}
+  .msSkel .skb, .msSkel .rng i, .msSkel .st{
+    display:block;height:12px;border-radius:6px;
+    background:linear-gradient(90deg,#1c1c1b 0%,#2a2a28 40%,#1c1c1b 80%);
     background-size:220% 100%;animation:msShimmer 1.1s linear infinite;
   }
-  .msSkel i:nth-child(2n){width:92%;}
-  .msSkel i:nth-child(3n){width:84%;}
-  body.light .msSkel i{background:linear-gradient(90deg,#ece4d4 0%,#f5efe4 40%,#ece4d4 80%);background-size:220% 100%;}
+  /* the bars sit in the text lines' boxes (name 16px, value 14px, pill 24px),
+     so a skeleton row measures exactly what a real row does: 75px */
+  .msSkel .mbrow > .skb:first-child{height:14px;margin:1px 0;}
+  .msSkel .skb.g{height:12px;margin:1px 0;}
+  .msSkel .rng i{height:4px;border-radius:2px;background:linear-gradient(90deg,#2a2a28 0%,#3a3a38 40%,#2a2a28 80%);background-size:220% 100%;}
+  .msSkel .rng i:nth-child(1){width:34px;}
+  .msSkel .rng i:nth-child(2), .msSkel .rng i:nth-child(3){width:26px;}
+  .msSkel .st{width:74px;height:24px;border-radius:8px;justify-self:end;}
+  body.light .msSkel .skb, body.light .msSkel .st{background:linear-gradient(90deg,#ece4d4 0%,#f5efe4 40%,#ece4d4 80%);background-size:220% 100%;}
+  body.light .msSkel .rng i{background:linear-gradient(90deg,#e2d9c7 0%,#ede6d8 40%,#e2d9c7 80%);background-size:220% 100%;}
   @keyframes msShimmer{from{background-position:120% 0;}to{background-position:-120% 0;}}
   .msEmpty{padding:34px 13px;text-align:center;font-size:13.5px;color:#8b8b86;}
   body.light .msEmpty{color:#9b8a75;}
@@ -815,6 +825,41 @@
      keeps room for it */
   body.v8.mSearchOn .mTabs{display:none;}
   body.v8.mSearchOn .mscroll{padding-bottom:26px;}
+  /* An iOS keyboard, drawn in the frame while the field is focused -- the
+     device brings its own, so the viewport version shows none. The keys type
+     into the field (the script), so the demo can be worked from a desktop. */
+  .mKbd{
+    display:none;position:absolute;left:0;right:0;bottom:0;z-index:7;
+    padding:8px 3px 0;background:#1d1d1f;
+    user-select:none;-webkit-user-select:none;touch-action:manipulation;
+    font-family:-apple-system,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+  body.mSearchOn:not(.fullscr) #phone .mKbd{display:block;}
+  body.mSearchOn:not(.fullscr) #phone .mscroll{padding-bottom:280px;}   /* the list can rise above the keys */
+  .mKbd .kr{display:flex;justify-content:center;gap:6px;margin:0 0 11px;padding:0 3px;}
+  .mKbd .kr.r2{padding:0 22px;}
+  .mKbd .k{
+    flex:1 1 0;min-width:0;height:42px;border-radius:5px;background:#6b6b6f;color:#fff;
+    font-size:22px;font-weight:400;line-height:1;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 0 rgba(0,0,0,.45);cursor:pointer;
+  }
+  .mKbd .k:active{background:#8a8a8e;}
+  .mKbd.shift .k.ch{text-transform:uppercase;}
+  .mKbd .k.fn{flex:1.45 1 0;background:#464649;font-size:16px;}
+  .mKbd.shift .k.shift{background:#fff;color:#000;}
+  .mKbd .k.sp{flex:5.2 1 0;font-size:16px;}
+  .mKbd .k.n{flex:1.3 1 0;background:#464649;font-size:16px;}
+  .mKbd .k.go{flex:2.2 1 0;background:#0a84ff;font-size:16px;}
+  .mKbd .k svg{width:22px;height:22px;display:block;}
+  .mKbd .kHome{height:34px;position:relative;}
+  .mKbd .kHome i{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);}
+  body.light .mKbd{background:#d1d3d9;}
+  body.light .mKbd .k{background:#fff;color:#000;box-shadow:0 1px 0 rgba(0,0,0,.3);}
+  body.light .mKbd .k:active{background:#e6e7eb;}
+  body.light .mKbd .k.fn, body.light .mKbd .k.n{background:#acb0bb;color:#000;}
+  body.light .mKbd.shift .k.shift{background:#fff;}
+  body.light .mKbd .k.go{background:#0a7aff;color:#fff;}
+  body.light .mKbd .kHome i{background:rgba(0,0,0,.24);}
   #phone .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;justify-self:end;}
   #phone .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
   #phone .rng .s1{width:34px;background:var(--rgOpt);}
@@ -3670,8 +3715,8 @@
         <div class="tkRow">
           <span class="lbl">Bio graph</span>
           <select id="stGraph" aria-label="Biomarker graph">
+            <option value="dots" selected>Dots</option>
             <option value="arc">Arc</option>
-            <option value="dots">Dots</option>
           </select>
         </div>
       </div>
@@ -4008,8 +4053,17 @@
         <button class="msClear" id="mSearchClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       </div>
     </div>
+    <!-- The skeleton is the list's own shape: a group head (title, two lines of
+         description) and rows laid out on the row's grid -- a name, the three
+         range bars, a value line and a status pill -- all as shimmering blocks,
+         so the swap from skeleton to results moves nothing. -->
     <div class="msSkel" id="mSkel" hidden aria-hidden="true">
-      <i></i><i></i><i></i><i></i><i></i><i></i>
+      <div class="skH"><i class="skb" style="width:38%;height:16px"></i><i class="skb" style="width:92%"></i><i class="skb" style="width:64%"></i></div>
+      <div class="mbrow"><i class="skb" style="width:58%"></i><span class="rng"><i></i><i></i><i></i></span><i class="skb g" style="width:44%"></i><i class="st"></i></div>
+      <div class="mbrow"><i class="skb" style="width:72%"></i><span class="rng"><i></i><i></i><i></i></span><i class="skb g" style="width:40%"></i><i class="st"></i></div>
+      <div class="mbrow"><i class="skb" style="width:50%"></i><span class="rng"><i></i><i></i><i></i></span><i class="skb g" style="width:46%"></i><i class="st" style="width:90px"></i></div>
+      <div class="mbrow"><i class="skb" style="width:64%"></i><span class="rng"><i></i><i></i><i></i></span><i class="skb g" style="width:42%"></i><i class="st"></i></div>
+      <div class="mbrow"><i class="skb" style="width:46%"></i><span class="rng"><i></i><i></i><i></i></span><i class="skb g" style="width:38%"></i><i class="st"></i></div>
     </div>
     <div class="msEmpty" id="mSearchEmpty" hidden>No biomarkers match &ldquo;<span></span>&rdquo;</div>
     <div class="mrecs" id="mRecs">
@@ -7618,7 +7672,7 @@
   const tickEls = [];
   // the Dots graph: twenty-six dots across the middle 60% of the scale (v -9..9)
   // -- "more gap between the dots": a gap a little over a dot wide on screen
-  const DOTS_N = 26, DOTS_SPAN = 9, dotEls = [];
+  const DOTS_N = 22, DOTS_SPAN = 9, dotEls = [];   // 22: "increase the gap by 2px" (was 26)
   let arcDotsG = null, dotsSig = '';
   // rebuildable: the whole scale is drawn around CHRONO, so changing your age
   // redraws it rather than relabelling it
@@ -9077,14 +9131,22 @@
   // in. A dot not yet reached by the reveal, or with no range, rests at the
   // ticks' grey. Painted from the frame with the reveal fraction, and only when
   // something changed -- twenty-six attribute writes a frame is not free.
-  function paintDots(rev){
+  // The dots appear one after another when the slide arrives: on their own
+  // clock from the reveal's start (bioRevT), 1.1s end to end, each dot rising
+  // over the time the front takes to pass two of them, eased -- so the run is
+  // laid down left to right rather than switched on, and the last dot lands as
+  // the arc's own reveal would have finished.
+  const DOTS_REVEAL = 1100;
+  function paintDots(t){
     if (!dotEls.length) return;
     const bs = bioSet(), un = CARD_STATE.unclass;
     const light = document.body.classList.contains('light');
-    const lit = Math.round(rev * DOTS_N);
-    const sig = (un ? 'u' : 'f') + (light ? 'L' : 'D') + lit;
+    const rev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / DOTS_REVEAL);
+    const front = rev * (DOTS_N + 2);   // in dots; runs two past the end so the last one completes
+    const sig = (un ? 'u' : 'f') + (light ? 'L' : 'D') + (rev >= 1 ? 'x' : Math.round(front * 6));
     if (sig === dotsSig) return;
     dotsSig = sig;
+    const rise = k => { const x = Math.max(0, Math.min(1, (front - k) / 2)); return x * x * (3 - 2 * x); };
     const shares = [bs.optimal, bs.sub, bs.out, un ? bs.un : 0];
     const tot = Math.max(1, shares.reduce((a, v) => a + v, 0));
     const raw = shares.map(v => v / tot * DOTS_N), cnt = raw.map(Math.floor);
@@ -9098,9 +9160,13 @@
     const edge = k => { const d = Math.min(k, DOTS_N - 1 - k) / 6, x = Math.min(1, d); return 0.1 + 0.9 * x * x * (3 - 2 * x); };
     let k = 0;
     const set = (d, fill, op) => { d.setAttribute('fill', fill); d.setAttribute('opacity', op.toFixed(3)); };
-    for (let s = 0; s < 4; s++) for (let j = 0; j < cnt[s]; j++, k++)
-      (k < lit && (s < 3 || un)) ? set(dotEls[k], cols[s], 0.95 * edge(k)) : set(dotEls[k], rest, 0.3 * edge(k));
-    for (; k < DOTS_N; k++) set(dotEls[k], rest, 0.3 * edge(k));
+    // a dot with a range rises into its colour; one without rises into the
+    // resting grey; either way nothing is there before the front reaches it
+    for (let s = 0; s < 4; s++) for (let j = 0; j < cnt[s]; j++, k++){
+      const r = rise(k), filled = s < 3 || un;
+      set(dotEls[k], filled ? cols[s] : rest, (filled ? 0.95 : 0.3) * edge(k) * r);
+    }
+    for (; k < DOTS_N; k++) set(dotEls[k], rest, 0.3 * edge(k) * rise(k));
   }
   const v4BioName = v4NameEl ? (() => {
     const el = document.createElement('span');
@@ -12084,7 +12150,7 @@
                        // Same problem: a class setMode would drop.
                        bioSph: false,
                        // the legend's fourth reading, on the bar's switch
-                       unclass: false, bioDots: false,
+                       unclass: false, bioDots: true,
                        // Density: Dense on every surface, see denseOn
                        dense: false };
   // Every state control is a thing that is either on or off, so each becomes a
@@ -12601,7 +12667,7 @@
       // down in the tick loop below -- with the same left-to-right reveal once
       // the slide lands. Same svg, so the hero's fade is already theirs.
       if (arcDotsG){
-        if (onHero && CARD_STATE.bioDots){ arcDotsG.setAttribute('opacity', bioA.toFixed(3)); paintDots(bioRev); }
+        if (onHero && CARD_STATE.bioDots){ arcDotsG.setAttribute('opacity', bioA.toFixed(3)); paintDots(t); }
         else arcDotsG.setAttribute('opacity', '0');
       }
       // With no biological age the body slide has no scale, so the arc fades
@@ -12942,9 +13008,13 @@
     // position because the list just got shorter -- must not dismiss the field
     const holdScroll = ms => { progUntil = Math.max(progUntil, performance.now() + ms); };
     const setStick = () => {
-      const on = document.activeElement === input || input.value.length > 0;
-      // while the search is in use the results area is at least a screen tall,
-      // so a short list (or the skeleton) cannot pull the pinned field back down
+      // While the field is focused the results area is at least a screen tall,
+      // so a short list (or the skeleton) cannot pull the pinned field down
+      // from under the keyboard, which covers the slack anyway. The moment the
+      // field blurs the slack goes: "the screen always fits the content" --
+      // with three rows left, the page is three rows long, and if that lets
+      // the bar back into the flow, so be it; it is still there to tap.
+      const on = document.activeElement === input;
       const mh = on ? Math.max(0, sc.clientHeight - wrap.offsetHeight) + 'px' : '';
       recs.style.minHeight = mh; skel.style.minHeight = mh;
     };
@@ -12966,6 +13036,38 @@
     };
     placeBar();
     addEventListener('resize', () => { placeBar(); setStuck(); });
+    // The frame's keyboard. Built here rather than in the markup: four rows,
+    // the third with shift and delete, the fourth with 123, space and search
+    // (the field's enterkeyhint). pointerdown is prevented so a key press never
+    // takes the focus off the field; the key's character goes on the end of
+    // the value and the same input event the real keyboard would raise fires.
+    // Shift caps the next letter and drops, as iOS does; search drops the
+    // keyboard (blurs); 123 is drawn but has nothing to switch to.
+    const phone = document.getElementById('phone');
+    const kbd = document.createElement('div');
+    kbd.className = 'mKbd'; kbd.id = 'mKbd'; kbd.setAttribute('aria-hidden', 'true');
+    const key = (label, cls, val) => '<div class="k ' + cls + '" data-k="' + (val === undefined ? label : val) + '">' + label + '</div>';
+    const row = (keys, cls) => '<div class="kr ' + (cls || '') + '">' + keys + '</div>';
+    kbd.innerHTML =
+      row('qwertyuiop'.split('').map(c => key(c, 'ch')).join('')) +
+      row('asdfghjkl'.split('').map(c => key(c, 'ch')).join(''), 'r2') +
+      row(key('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 4 4.5 12h4.2v7h6.6v-7h4.2z"/></svg>', 'fn shift', 'shift') +
+          'zxcvbnm'.split('').map(c => key(c, 'ch')).join('') +
+          key('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7z"/><path d="M12 10l5 5M17 10l-5 5"/></svg>', 'fn', 'del')) +
+      row(key('123', 'n', 'num') + key('space', 'sp', ' ') + key('search', 'go', 'go')) +
+      '<div class="kHome"><i></i></div>';
+    if (phone) phone.appendChild(kbd);
+    kbd.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      const k = e.target.closest('.k'); if (!k) return;
+      const v = k.dataset.k;
+      if (v === 'shift'){ kbd.classList.toggle('shift'); return; }
+      if (v === 'num') return;
+      if (v === 'go'){ input.blur(); return; }
+      if (v === 'del') input.value = input.value.slice(0, -1);
+      else { input.value += kbd.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; kbd.classList.remove('shift'); }
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
     function applyFilter(){
       const q = input.value.trim().toLowerCase();
       let any = false;
@@ -13005,6 +13107,7 @@
     input.addEventListener('blur', () => {
       wrap.classList.remove('focus');
       document.body.classList.remove('mSearchOn');
+      holdScroll(250);   // the slack going may clamp the scroll; not the reader's doing
       setStick();
     });
     input.addEventListener('input', typed);

@@ -3154,6 +3154,60 @@ bar still pinned; in the frame the bar pins under the status bar (top 39px,
 z 4 under 5), the tab labels sit 35px above the frame's edge, the pill 134 x 5
 at 8px. Error and mode probes clean.
 
+"In some cases there is still empty space at the bottom when you search.
+Make sure this never happens; the screen always fits the content." The slack
+was the screen-tall results area of 5.129, kept while the field held text so
+the pinned bar could not be pulled down by a short list; with the keyboard
+gone it showed as a blank under three rows. It is kept only while the field is
+focused now -- the keyboard covers it then -- and dropped on blur, so the page
+is as long as its results; if that lets the bar back into the flow, it is
+still there to tap. The clamp that dropping it can cause is held off the
+scroll-to-dismiss for a beat, as the other non-reader scrolls are. Probed:
+after a hand scroll blurs a three-row search, minHeight is cleared and the
+scroll height is the content's (no slack); focused again, the slack is back
+under the keyboard.
+
+### 5.131 A keyboard in the frame; dots by default, one after another; a truer skeleton
+
+"I need a keyboard. Can you just put an iOS keyboard for the sake of the demo?"
+The frame has no device under it to raise one, so the search stood over a
+blank where the keyboard would be. The frame draws one now (.mKbd, built by
+the script): four rows -- qwertyuiop, asdfghjkl, shift zxcvbnm delete, 123
+space search -- 254px tall over the tab bar's place, dark and light, with the
+home pill in its own bar. It shows while the field is focused, and the keys
+work: a letter goes into the field and fires the same input event a real
+keystroke would, so the skeleton and the filter follow; delete takes one off;
+search blurs, which drops the keyboard as a scroll does. The list gets 280px of
+bottom padding while it is up so the last rows can be scrolled clear of it.
+Pointerdown is prevented on the keys so a tap does not take the field's focus.
+Only the frame draws it: on the device (#m20v) the real one comes up.
+
+"Make the dot arc the default and increase the gap by 2px; the dots should
+appear one after another when you enter the screen." Bio graph now opens on
+Dots; twenty-two dots (from twenty-six) put 5.6px between them at hero scale
+(was 3.9). The reveal is on the arc's own clock (bioRevT): a front runs left
+to right across the run over 1.1s, each dot rising over the time the front
+takes to pass two of them, eased, so they lay down one after another rather
+than fade in as a block, and the last lands about where the arc's sweep would
+have ended. The paint is keyed on the front's position, so it is repainted
+only while it moves. Probed (dotstag.js): swiping away and back, 2 dots at
+0.11s, 9 at 0.40s, 17 at 0.78s, all 22 at 1.04s; gap 5.6, dot 3.7.
+
+"Put the home indicator lighter by 70% in the bar." The pill was white at 90%
+(and near-black in light); it is white at 26% now, black at 24% in light, in
+the tab bar and under the drawn keyboard alike.
+
+"Make sure the skeleton fits with the biomarker row. Use the same kind of
+element, so it will be more realistic." The skeleton was three loose bars per
+row. It is the list's own markup now -- a group head (a title bar, two
+description bars) and five .mbrow rows, each a name bar, the three range
+bars, a value bar and a pill -- so the rows take the real grid, padding and
+rule as they are, and every block is a shimmering bar where a text line or a
+pill will be. The bars sit in the lines' own boxes (name 16px, value 14px,
+pill 24px), so a skeleton row is 75px like a real one and the head is 79px
+against the real 78.8; the swap from skeleton to results moves nothing.
+Probed (skelh.js, skel.js): five rows at 75 each, real 75.
+
 ---
 
 ## 6. Open items

@@ -128,7 +128,7 @@ in the build; the numbering is the mode index, not the menu.
 
     Its organ card reads as product, not instrument: the list is sentence case in the page's own face with no dividers, led by a **Body** row carrying the whole-body age — a real selection like any other row, not a caption — and the selected organ is highlighted where it sits rather than hoisted to the top. The card also drops the warm organ ground for the same surface its siblings use — see below.
 8. **Desktop V1** — the V2 dashboard turned toward the body. The hero's second figure is health coverage rather than biological age, the coverage tile goes (it would say the same thing twice) and steps takes the whole left column, its week drawn as strokes rather than blocks. The width that frees up goes to the organ card, retitled *How your body is ageing*, where the selected row sits on a filled pill and the age reads as a tag under the number. Wears `m2 b2` plus a `b3` marker.
-9. **Mobile** — bento layout with the mini organ carousel, metrics carousel and the signal insight sheet. The organ card used to open an organ-age sheet on tap; a tap now does nothing, and the card is a thing to swipe and to look at. Below the filter chips the biomarker list runs to seven groups and twenty-five readings, with a **search** under the chips. The search bar is sticky: it pins under the status bar (the hour, the battery) on the phone's own ground as the list scrolls, so it is always there to tap. Focused, the page scrolls up to it and the main navigation leaves while the keyboard is up; typing shows a short skeleton and then filters the groups by name, with an empty line for a miss; the cross clears the text and nothing else — no scroll, no change of focus; a scroll by the reader lets the field go, so the keyboard drops, and a tap brings it back. The tab bar keeps 18px plus the safe area above the home indicator, and in the frame draws the indicator itself
+9. **Mobile** — bento layout with the mini organ carousel, metrics carousel and the signal insight sheet. The organ card used to open an organ-age sheet on tap; a tap now does nothing, and the card is a thing to swipe and to look at. Below the filter chips the biomarker list runs to seven groups and twenty-five readings, with a **search** under the chips. The search bar is sticky: it pins under the status bar (the hour, the battery) on the phone's own ground as the list scrolls, so it is always there to tap. Focused, the page scrolls up to it and the main navigation leaves while the keyboard is up — on the device the real one, in the frame a drawn iOS keyboard whose keys type into the field; typing shows a short skeleton (the list's own rows, every text line and pill a shimmering bar, so the swap to results moves nothing) and then filters the groups by name, with an empty line for a miss; the cross clears the text and nothing else — no scroll, no change of focus; a scroll by the reader lets the field go, so the keyboard drops, and a tap brings it back. The results area stays screen-tall only while the field is focused, so the page is never longer than its content once the keyboard is gone. The tab bar keeps 18px plus the safe area above the home indicator, and in the frame draws the indicator itself, white at 26% (black at 24% in light)
 10. **Mobile V2** — the same bento re-laid out to the design: biomarkers and biological age as a pair of figures at the top, health coverage beside a week of steps below, then organ age wide and shallow beneath them — its name and tag down the left, the organ standing in the right half. Wears `m5` plus a `v2` marker.
 11. **Mobile V1** — the bento folded down to two blocks. The hero is a plain card carrying biomarkers and health coverage as two figures, with the meter beneath doing the work the dial used to. Below it, steps and organ age stand side by side and close the same way: label, value, visual, a rounded status tag, then the dots — same sizes on both, so the two carousels read as one control. Wears `m5 v2` plus a `v3` marker.
 
@@ -670,8 +670,8 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   full at 20%) and the end blur starts at the same line, so a portion reads
   from exactly where it starts to exactly where it ends.
   (A constant in the script, `BIO_CYCLE`, puts the static bands back.)
-- **Bio graph** — Arc (default) or Dots, in the Tweaks dropdown; a select, since
-  the two are named readings rather than on and off. Dots runs twenty-six dots
+- **Bio graph** — Dots (default) or Arc, in the Tweaks dropdown; a select, since
+  the two are named readings rather than on and off. Dots runs twenty-two dots
   along the arc's own curve on the biomarker slide — inside the arc's SVG, at
   the ticks' midline, across the middle 60% of the scale, with a gap a little
   over a dot wide — filled left to right with the ranges' colours by share
@@ -681,10 +681,12 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   ticks all stand down as the dots come up — the dots are the whole graph on
   this slide, the 20% at each side left empty — and the dotted line fades out
   at both ends, the outer six dots each side tapering to a tenth. A phone has
-  no bar to choose Dots from, so the choice travels in the link: a trailing
-  `d` on the hash (`#m20vd`, or `#m20d`) opens with the dots. Same swap as the arc's distribution, same hero
-  fade, same left-to-right reveal when the slide lands; the age scale is back
-  on the organs. With the dots the legend carries no highlight and the arc's
+  no bar to choose from, so the choice can travel in the link: a trailing
+  `d` on the hash (`#m20vd`, or `#m20d`) opens with the dots, which is now the
+  default anyway. When the slide arrives the dots appear one after another,
+  left to right over 1.1s, each rising as the front reaches it. Same swap as
+  the arc's distribution, same hero fade; the age scale is back on the
+  organs. With the dots the legend carries no highlight and the arc's
   status cycle stands down. Kept across page changes.
 - **Density** — on every page. Normal is the organ as designed; Dense is the
   library's fine-grain reading of it: twice the body, twice the strays, twice
