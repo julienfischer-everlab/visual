@@ -1177,7 +1177,7 @@
     el.appendChild(frag);
     el.setAttribute('aria-label', text.replace(/\n/g,' '));
 
-    return { done: reduce ? 0 : finishStartsBy + lastMs };
+    return { done: reduce ? 0 : finishStartsBy + lastMs, lastStart: reduce ? 0 : finishStartsBy };
   }
 
   /* ---------- GiftIntro ---------- */
@@ -1192,9 +1192,9 @@
     var quote = AnimatedQuote($('quote'), gift.message, {
       startAt: 1820, finishStartsBy: 4760, charMs: 1640, lastWordMs: 1150, lastWordEmber: .7, grow: true
     });
-    // the button and the circle arrive together as the last characters are
-    // still sharpening, and the block moves up 64px, slowly, to make room
-    setTimeout(function(){ root.classList.add('cta-in'); document.body.classList.add('orb-in'); }, reduce ? 0 : quote.done - 500);
+    // the button and the circle arrive together half a second after the last
+    // letter of the title starts, and the block moves up 64px, slowly, to make room
+    setTimeout(function(){ root.classList.add('cta-in'); document.body.classList.add('orb-in'); }, reduce ? 0 : quote.lastStart + 500);
     $('see').textContent = 'See ' + gift.from + '’s gift';
     $('see').addEventListener('click', onSee);
   }

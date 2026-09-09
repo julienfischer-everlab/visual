@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Softer return, earlier CTA, progress hint" |
+| Captured from version | 2026-09-09, "CTA and circle 0.5s after the title" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -60,8 +60,8 @@ In dynamic motion things arrive in order: the wordmark fades in first (from
 before "special"); the message's letters from 1.8s, the last beginning at 4.8s,
 each line opening as a row over 1.5s, from 900ms before its first letter, so
 the block grows gently from the middle; **See Matt's gift** (the sender's
-name) and the circle at the bottom arrive together while the last letters are
-still sharpening, the button's row opening and the block moving up 64px slowly
+name) and the circle at the bottom arrive together half a second after the
+title's last letter starts, the button's row opening and the block moving up 64px slowly
 (1.3s, easing out) to make room. Each letter eases up and
 sharpens out of a blur over 1.64s on one smooth curve, and is orange for as long as it is out of focus
 (the warmth fades over 70% of the sharpening time, full strength, `#F5842E`
