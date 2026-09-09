@@ -466,7 +466,7 @@
   /* the journey, horizontal: square, line, square, line ... a title under each */
   .timeline{
     list-style:none;margin:0;padding:0;
-    display:grid;grid-template-columns:repeat(6, minmax(0,1fr));gap:0;
+    display:grid;grid-template-columns:repeat(5, minmax(0,1fr));gap:0;
   }
   .timeline li{
     position:relative;
@@ -600,6 +600,8 @@
   .card .pass{position:absolute;top:48px;right:48px;width:104px;height:60px;aspect-ratio:auto;border-radius:12px;}
   .card .pass .pass-tag, .card .pass .pass-name, .card .pass .pass-term{display:none;}
   .card .pass .pass-mark{z-index:1;}
+  .card .pass .pass-tex{inset:0;filter:none;opacity:1;}
+  .card .pass::after{display:none;}
   /* more light inside the tile: a warm highlight top left, a deep shadow bottom right */
   .card .pass::after{
     content:"";position:absolute;inset:0;
@@ -640,8 +642,6 @@
   body[data-motion="dynamic"][data-state="gift"] .timeline li:nth-child(4){transition-delay:2250ms;}
   body[data-motion="dynamic"][data-state="revealing"] .timeline li:nth-child(5),
   body[data-motion="dynamic"][data-state="gift"] .timeline li:nth-child(5){transition-delay:2600ms;}
-  body[data-motion="dynamic"][data-state="revealing"] .timeline li:nth-child(6),
-  body[data-motion="dynamic"][data-state="gift"] .timeline li:nth-child(6){transition-delay:2950ms;}
   body[data-motion="dynamic"][data-state="returning"] .timeline li{opacity:0;transition:opacity .25s ease 0s;}
   body[data-state="returning"] .side{transform:translateY(110cqh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
   .side .mono-label{margin-top:10px;}
@@ -696,7 +696,7 @@
     /* the first-fold block sits 72px higher than centre on phones */
     .intro{padding-bottom:168px;}
     /* the eyebrow: two lines, roomier */
-    .chip{max-width:250px;text-align:center;justify-content:center;font-size:12px;letter-spacing:.12em;line-height:1.7;}
+    .chip{max-width:250px;text-align:center;justify-content:center;font-size:13px;letter-spacing:.12em;line-height:1.36;}
     .chip .line{display:inline;}
     /* a bigger headline */
     .quote{font-size:clamp(34px, 9.4cqw, 40px);letter-spacing:-.03em;line-height:.95;max-width:100%;}
@@ -717,9 +717,9 @@
     .act-float .pill{width:100%;color:var(--btn-d-ink);background:var(--btn-d);padding:16px 30px;font-size:16px;font-weight:500;}
     .gift{padding-bottom:120px;}
 
-    /* the eyebrow's square sits on its first line */
-    .chip{align-items:flex-start;}
-    .chip::before{margin-top:7px;}
+    /* the eyebrow's square sits centred above its two lines */
+    .intro .chip{flex-direction:column;align-items:center;gap:10px;}
+    .intro .chip::before{margin-top:0;}
     .back{top:12px;right:12px;}
     .logo{top:40px;}
     .logo svg{height:20px;}
@@ -1061,7 +1061,6 @@
 
       <ol class="timeline" aria-label="Your next steps">
         <li class="now" aria-current="step"><i></i><span>Unwrap</span></li>
-        <li><i></i><span>Claim your gift</span></li>
         <li><i></i><span>Get started</span></li>
         <li><i></i><span>Consult</span></li>
         <li><i></i><span>Test</span></li>
@@ -1083,7 +1082,7 @@
 (function(){
   'use strict';
 
-  var DEFAULT_THEME = 'dark';    // light | dark
+  var DEFAULT_THEME = 'light';   // light | dark
   var DEFAULT_MOTION = 'dynamic'; // dynamic | static
   /* Paste a data: URI here to ship the card photo inside the page. */
   // couple-sharing-a-photo-album-in-a-cozy-wood-toned-living-room-large.png, re-encoded to a 1600px JPEG

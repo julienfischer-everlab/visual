@@ -4,16 +4,16 @@ The private page a recipient opens from an Everlab gift email. Two folds: a
 personal message alone on the first, then the gift over a photograph of a
 couple in a warm living room, in one centred glass card with the button inside
 it and a horizontal timeline beneath. By default it is the cinematic reveal in
-the dark theme; a Motion tweak turns it into one plain scroll.
+the light theme; a Motion tweak turns it into one plain scroll.
 
 | | |
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Rows 2px closer" |
+| Captured from version | 2026-09-09, "Five timeline steps" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
-| Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
+| Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
 This is the only gift page kept. Earlier versions (a ribbon-tied card; a warm
 two-scene reveal; the one-card "01" layout; the three-way Version select; the
@@ -31,7 +31,7 @@ the bar evenly.
 | Select | Options (default first) | Link parameter |
 | --- | --- | --- |
 | Device | Desktop, iPhone | `device=phone` |
-| Theme | Dark, Light | `theme=light` |
+| Theme | Light, Dark | `theme=dark` |
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
@@ -68,8 +68,8 @@ it writes itself on from left to right 0.7s after the title's last letter
 starts, and again whenever the message is switched.
 
 In dynamic motion things arrive in order: the wordmark fades in first (from
-150ms); the eyebrow's letters resolve from 0.73s to 1.7s (on phones it breaks
-before "special"); the message's letters from 1.8s, the last beginning at 4.8s,
+150ms); the eyebrow's letters resolve from 0.73s to 1.7s (on phones the square sits
+centred above the two lines, 13px type on a 1.36 line height); the message's letters from 1.8s, the last beginning at 4.8s,
 each line opening as a row over 1.5s, from 900ms before its first letter, so
 the block grows gently from the middle; **See Marc's Gift** (the sender's
 name) and the circle at the bottom arrive together half a second after the
@@ -80,7 +80,8 @@ sharpens out of a blur over 1.64s on one smooth curve, and is orange for as long
 on dark), so every word arrives orange and blurred and settles white and
 sharp. The last word keeps most of it. In the dark theme the fold is the same
 near-black as the room behind fold 2, the type warm white, the button white
-with dark type.
+with dark type. In the light theme (the default) the fold is warm white
+with near-black type.
 
 ## Dynamic motion (default)
 
@@ -101,8 +102,8 @@ its own: the seed stays exactly behind the transparent card for the whole
 visit as its surface (following the card if the fold scrolls on a phone), so
 there is never a swap between two surfaces; as the seed lands the content
 fades in; settled at 1.1s, when the footer and a small arrow at the
-top fade in and the six timeline steps appear one after another, 350ms apart,
-from 1.2s to about 3.5s. The arrow, or a firm scroll up, runs it in reverse:
+top fade in and the five timeline steps appear one after another, 350ms apart,
+from 1.2s to about 3.2s. The arrow, or a firm scroll up, runs it in reverse:
 the card's content fades out in place (350ms, nothing inside it moves) while
 the seed shrinks back into a half circle in the dome and the room lightens (750ms, the seed always inside the closing circle), and the
 block settles back from 400ms, done at about 1.15s. The seed's rectangle is
@@ -141,17 +142,16 @@ label above six plain rows, each a small line icon (speech bubble, drop, scan,
 pulse, leaf, cycle) and the full title, no card and no dividers, 6px above and
 below each row; then **Claim my gift** full width at the foot of the card. At
 the top right of the card, beside the title, sits the membership passport as a
-104×60 tile with nothing written on it: the `Ellipse 4358.png` copper texture
-blurred 64px into a warm gradient, a warm highlight top left and a deep shadow
-bottom right laid over it, and the Everlab mark. Phones drop the tile.
+104×60 tile with nothing written on it: the `Ellipse 4358.png` copper image
+itself, crisp, filling the tile, with the Everlab mark over it and nothing
+else. Phones drop the tile.
 
 Under the card, 52px below and directly over the photograph, with no label: a
-horizontal timeline as wide as the card, six equal columns with a 10px square
+horizontal timeline as wide as the card, five equal columns with a 10px square
 at the centre of each and its label (12.5px) centred beneath on one line; a half-pixel
 line runs from 6px right of each square to 6px left of the next. The squares
 are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
-travelling along its segment; then Claim your gift, Get started, Consult,
-Test, Act. The card and the timeline are centred together in the fold. The
+travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold. The
 wordmark sits top centre, the footer line "Page secured by Everlab" bottom
 centre. On phones the timeline labels may wrap and in dynamic motion **Claim
 my gift** floats at the foot of the screen.
