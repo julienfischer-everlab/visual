@@ -10,7 +10,7 @@ scroll in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-09, "Split card only, static dark by default" |
+| Captured from version | 2026-09-09, "Passport tile in the card, fixed photo" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -49,7 +49,7 @@ Default copy: "Happy Birthday. I want you around for a long time." over three
 lines. Letters resolve one by one out of a blur with a faint warm ember on the
 newest three, each line opening as a row so the block grows from the middle;
 the whole message lands in about 3.3 seconds. Just after the last character
-settles, **See my gift** rises into place (17px type on 15×30px padding), its
+settles, **See Matt’s gift** (the sender’s name) rises into place (17px type on 15×30px padding), its
 row opening so the message is pushed up as it arrives. In the dark theme the
 fold is the same near-black as the room behind fold 2, the type warm white,
 the button white with dark type, and the ember a touch warmer (`#E8874A` at
@@ -60,11 +60,11 @@ letters, gone in about 200ms.
 
 One ordinary scroll, nothing waiting on a click. The first fold is a painted
 card 80% of the screen tall with 56px rounded bottom corners (48px on phones),
-sitting over the photograph, which shows under the corners and continues as
-the second fold directly below. **See my gift**, or any scroll, simply moves
-down the page. The photograph is a taller layer behind the second fold that
-drifts at a third of the scroll speed (parallax), so the first fold's card and
-the gift card move over it at full speed. The card, passport, timeline and
+sitting over the photograph. The photograph is the page's own background: a
+sticky, zero-height layer at the top of the scroll holds it fixed behind both
+folds, so the first fold's card scrolls up off it and the gift sits on it,
+and it drifts up at 12% of the scroll, a small parallax. The button, or any
+scroll, simply moves down the page. The card, passport, timeline and
 footer are in place from the start; the back arrow, the circle and the
 floating phone button are not used. Reduced motion disables the parallax.
 
@@ -90,13 +90,13 @@ shadow, so the room shows through. Inside, 48px padding all round: the mono
 "Gift received from Matt" line (orange square), the product name "Everlab
 Protocol", a short description, then at the foot a mono "What's included"
 label above six plain rows, each a small line icon (speech bubble, drop, scan,
-pulse, leaf, cycle) and the full title, no card and no dividers.
+pulse, leaf, cycle) and the full title, no card and no dividers, 8px above and
+below each row. At the top right of the card, beside the title, sits the
+membership passport as a 128×72 tile: the `Ellipse 4358.png` copper texture
+blurred 64px into a warm gradient, the Everlab mark top left and "12 months"
+bottom right.
 
-On the right, directly over the photograph: the membership passport card (the
-`Ellipse 4358.png` copper texture blurred 64px into a warm gradient, the
-Everlab mark top left, a MEMBER pill top right, the recipient's name and the
-product bottom left, "12 months / gift membership" bottom right); "What's
-next", a vertical timeline of four squares joined by hairlines that meet the
+On the right, directly over the photograph: "What's next", a vertical timeline of four squares joined by hairlines that meet the
 squares exactly, 22px apart, Unwrap filled in Everlab red with a soft orange
 pulse travelling down its segment, then Claim your gift, Meet your doctor, Get
 tested; and **Claim my gift** full width. The wordmark sits top centre, the

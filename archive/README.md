@@ -10,9 +10,9 @@ folder's `README.md` records where it came from and when it was captured.
 | --- | --- | --- | --- |
 | [`particle-organs-78766a66`](particle-organs-78766a66/) | Particle Organs — the organ age prototype linked from DES-589 | 2026-08-25T03:16:48Z | Private |
 | [`particle-organs-cf1a68fa`](particle-organs-cf1a68fa/) | Particle Organs — earlier iteration | 2026-08-21T23:15:44Z | Shared with organization |
-| [`evlab-gift-unwrap`](evlab-gift-unwrap/) | Unwrap your Everlab gift — the gift page linked from a gift email: split-card layout, static dark by default, with Device, Theme and Motion tweaks | 2026-09-09, "Split card only, static dark by default" | Shared with organization |
+| [`evlab-gift-unwrap`](evlab-gift-unwrap/) | Unwrap your Everlab gift — the gift page linked from a gift email: split-card layout, static dark by default, with Device, Theme and Motion tweaks | 2026-09-09, "Passport tile in the card, fixed photo" | Shared with organization |
 | [`evlab-gift-sections`](evlab-gift-sections/) | Your Everlab gift — the gift as an independent, section-based page | 2026-09-09, "Independent sections page" | Private |
-| [`evlab-gift-split`](evlab-gift-split/) | Unwrap your Everlab gift · Split — the same file as `evlab-gift-unwrap` under its older title | 2026-09-09, "Split card only, static dark by default" | Private |
+| [`evlab-gift-split`](evlab-gift-split/) | Unwrap your Everlab gift · Split — the same file as `evlab-gift-unwrap` under its older title | 2026-09-09, "Passport tile in the card, fixed photo" | Private |
 
 The two Particle Organs artifacts carry the same title, so those folder names
 are suffixed with the first segment of the artifact ID to tell them apart.
