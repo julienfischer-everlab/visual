@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Arrival order, orange while blurred" |
+| Captured from version | 2026-09-09, "Staged return, staggered timeline, slower text" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -56,13 +56,13 @@ spaced: a small orange square, blinking once a second like a cursor, then
 you around for a long time." over three lines.
 
 In dynamic motion things arrive in order: the wordmark fades in first (from
-150ms); the eyebrow's letters resolve from 0.8s to 1.4s; the message's letters
-from 1.5s, the last beginning at 3.3s, each line opening as a row so the block
-grows from the middle; **See Matt's gift** (the sender's name) rises into
-place just after the last letter settles, its row opening so the block is
-pushed up; half a second later the circle rises at the bottom and the block
-moves up 64px to make room. Each letter eases up and sharpens out of a blur
-over 1s on one smooth curve, and is orange for as long as it is out of focus
+150ms); the eyebrow's letters resolve from 0.8s to 1.9s (on phones it breaks
+before "special"); the message's letters from 2s, the last beginning at 5.2s,
+each line opening as a row so the block grows from the middle; **See Matt's
+gift** (the sender's name) and the circle at the bottom arrive together just
+after the last letter settles, the button's row opening and the block moving
+up 64px slowly (1.3s, easing out) to make room. Each letter eases up and
+sharpens out of a blur over 1.8s on one smooth curve, and is orange for as long as it is out of focus
 (the warmth fades over 70% of the sharpening time, full strength, `#F5842E`
 on dark), so every word arrives orange and blurred and settles white and
 sharp. The last word keeps most of it. In the dark theme the fold is the same
@@ -84,20 +84,25 @@ photograph is exactly a full-screen cover while the room crossfades to dark
 card's exact rectangle (position, size and corner radius taken from the card's
 layout, one Web Animation for all five so the box never drifts) over 1s on
 `cubic-bezier(.9,0,.22,1)`; as it lands the real card takes its place and the
-content fades in, while the timeline rises from below a beat later; settled at
-1.1s, when the footer and a small arrow at the top fade in. The arrow, or a
-firm scroll up, runs it in reverse (about 1.15s): the content fades, the card
-shrinks back into a half circle in the dome, the room lightens and the block
-settles back.
+content fades in; settled at 1.1s, when the footer and a small arrow at the
+top fade in and the four timeline steps appear one after another, 500ms apart,
+from 1.2s to about 3.2s. The arrow, or a firm scroll up, runs it in reverse:
+first the card's content fades out (300ms), then the card shrinks back into a
+half circle in the dome while the room lightens (750ms), and the block settles
+back from 700ms, done at about 1.45s. On phones a dark gradient is fixed at the
+top of the screen under the wordmark and the arrow so the card can scroll
+beneath them, the first-fold block sits 64px lower, and the timeline has 24px
+more room above it.
 
 ## Static motion
 
 One ordinary scroll, nothing waiting on a click. The title, eyebrow and button
-are simply there, with no entrance, set in warm white over the photograph
-whatever the theme. The first fold is 80% of the screen tall and is not
-painted: the photograph is the page's own background from the start, held
-fixed behind both folds by a sticky zero-height layer at the top of the
-scroll, drifting up at 20% of the scroll as a small parallax. Near the foot of
+are simply there, with no entrance, in warm white whatever the theme. The
+first fold is a near-black header 80% of the screen tall with 56px rounded
+bottom corners (48px on phones); the photograph is the page's own background,
+held fixed behind both folds by a sticky zero-height layer at the top of the
+scroll, showing under the corners and drifting up at 20% of the scroll as a
+small parallax. Near the foot of
 the first fold a one-pixel white line bobs up and down (16px, 1.8s) as a hint
 to scroll, fading out over the first 120px of scroll. At the top of the second
 fold a small "Back" control (an up arrow over a 24px hairline and a mono

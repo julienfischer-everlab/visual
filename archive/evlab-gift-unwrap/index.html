@@ -89,8 +89,9 @@
          400ms    the block settles back down into place (750ms)
          1150ms   settled */
     --back-card-ms:750ms;
-    --back-bg-delay:0ms;
-    --back-text-delay:400ms;
+    --back-hold:300ms;      /* the card's content fades out before anything moves */
+    --back-bg-delay:300ms;
+    --back-text-delay:700ms;
     --back-text-ms:750ms;
 
     --sans:'Suisse Intl','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
@@ -155,7 +156,7 @@
     background-size:var(--bw1) var(--bh1);
     background-position:var(--bx1) var(--by1);
   }
-  body[data-state="returning"] .scene-bg{transition-duration:var(--back-card-ms);transition-delay:0s;}
+  body[data-state="returning"] .scene-bg{transition-duration:var(--back-card-ms);transition-delay:var(--back-hold);}
   /* a light dim on the peeking photo, so it sits back from the white page */
   .scene-bg::after{
     content:"";position:absolute;inset:0;background:rgba(14,12,11,.22);
@@ -174,7 +175,7 @@
   body[data-state="revealing"] .dim,
   body[data-state="gift"] .dim{opacity:1;}
   body[data-state="returning"] .dim,
-  body[data-state="returning"] .scene-bg::after{transition-duration:var(--back-card-ms);transition-delay:0s;}
+  body[data-state="returning"] .scene-bg::after{transition-duration:var(--back-card-ms);transition-delay:var(--back-hold);}
 
   /* the seed: a glass half circle inside the photo dome, concentric with it,
      the card's own surface with nothing in it yet. On the reveal it morphs into
@@ -195,18 +196,18 @@
   body.orb-in .seed{transform:scale(1);}
   body[data-state="revealing"] .seed,
   body[data-state="gift"] .seed{opacity:0;}
-  body[data-state="returning"] .seed{opacity:1;transition:opacity 250ms ease 0s;}
+  body[data-state="returning"] .seed{opacity:1;transition:opacity 150ms ease var(--back-hold);}
   body[data-motion="static"] .seed{display:none !important;}
   /* dynamic: the card does not rise; it appears where the seed has arrived and
      its content fades in */
   body[data-motion="dynamic"] .card{transform:none;opacity:0;transition:opacity 300ms ease calc(var(--card-delay) + var(--card-ms) - 200ms);}
   body[data-motion="dynamic"][data-state="revealing"] .card,
   body[data-motion="dynamic"][data-state="gift"] .card{opacity:1;}
-  body[data-motion="dynamic"][data-state="returning"] .card{opacity:0;transition:opacity 250ms ease 0s;}
+  body[data-motion="dynamic"][data-state="returning"] .card{opacity:0;transition:opacity 150ms ease var(--back-hold);}
   body[data-motion="dynamic"] .card .info{opacity:0;transition:opacity 600ms ease calc(var(--card-delay) + var(--card-ms) + 50ms);}
   body[data-motion="dynamic"][data-state="revealing"] .card .info,
   body[data-motion="dynamic"][data-state="gift"] .card .info{opacity:1;}
-  body[data-motion="dynamic"][data-state="returning"] .card .info{opacity:0;transition:opacity 200ms ease 0s;}
+  body[data-motion="dynamic"][data-state="returning"] .card .info{opacity:0;transition:opacity 280ms ease 0s;}
 
   /* warm glow that belongs to the dark room; fades in with the background */
   .glow{
@@ -237,11 +238,14 @@
     transition:transform var(--fade-ms) var(--ease-scene), opacity calc(var(--fade-ms) * .7) ease calc(var(--fade-ms) * .2), filter var(--fade-ms) ease;
   }
   /* dynamic: when the circle rises, the block moves up 64px to make room */
-  body[data-motion="dynamic"].orb-in .stack{transform:translateY(-64px);}
+  body.orb-in .stack{transform:translateY(-64px);transition:transform 1.3s var(--ease-out);}
   body[data-state="revealing"] .intro,
   body[data-state="gift"] .intro{pointer-events:none;}
   body[data-state="revealing"] .stack,
-  body[data-state="gift"] .stack{transform:translateY(-256px);opacity:0;filter:blur(8px);}
+  body[data-state="gift"] .stack{
+    transform:translateY(-256px);opacity:0;filter:blur(8px);
+    transition:transform var(--fade-ms) var(--ease-scene), opacity calc(var(--fade-ms) * .7) ease calc(var(--fade-ms) * .2), filter var(--fade-ms) ease;
+  }
   body[data-state="gift"] .intro{visibility:hidden;}
   /* coming back: the block settles down into focus once the room is light again */
   body[data-state="returning"] .stack{
@@ -269,7 +273,7 @@
      pushed up by the second, both by the third */
   .quote .line{
     display:grid;grid-template-rows:0fr;
-    animation:line-open 650ms var(--ease-out) var(--ld, 0ms) both;
+    animation:line-open 900ms var(--ease-out) var(--ld, 0ms) both;
   }
   .quote .line-in{min-height:0;}
   @keyframes line-open{from{grid-template-rows:0fr;}to{grid-template-rows:1fr;}}
@@ -286,8 +290,8 @@
     --halo:color-mix(in srgb, rgba(240,130,50,.55) calc(var(--e, 100%) * var(--ember-strength)), transparent);
     color:var(--ink);
     animation:
-      resolve var(--dur, 1000ms) cubic-bezier(.45,0,.2,1) var(--d) both,
-      ember calc(var(--dur, 1000ms) * .7) cubic-bezier(.3,0,.5,1) var(--d) both;
+      resolve var(--dur, 1800ms) cubic-bezier(.45,0,.2,1) var(--d) both,
+      ember calc(var(--dur, 1800ms) * .7) cubic-bezier(.3,0,.5,1) var(--d) both;
   }
   /* the letter eases up and sharpens along one smooth curve; it is orange for
      as long as it is out of focus (the warmth fades over 70% of the sharpening
@@ -330,6 +334,8 @@
       ember calc(var(--dur, 700ms) * .7) cubic-bezier(.3,0,.5,1) var(--d) both;
   }
   .chip .w{white-space:nowrap;}
+  /* the authored break before "special" only shows on phones */
+  @container stage (min-width:821px){ .chip br{display:none;} }
 
   .pill{
     appearance:none;border:0;cursor:pointer;
@@ -350,8 +356,8 @@
     display:grid;grid-template-rows:0fr;
     margin-top:0;
     opacity:0;transform:translateY(8px);filter:blur(3px);
-    transition:grid-template-rows .8s var(--ease-out), margin-top .8s var(--ease-out),
-               opacity .7s var(--ease-out) .15s, transform .7s var(--ease-out) .15s, filter .7s var(--ease-out) .15s;
+    transition:grid-template-rows 1.3s var(--ease-out), margin-top 1.3s var(--ease-out),
+               opacity .9s var(--ease-out) .2s, transform .9s var(--ease-out) .2s, filter .9s var(--ease-out) .2s;
   }
   .intro .cta-box{min-height:0;display:flex;justify-content:center;}
   .intro.cta-in .cta{grid-template-rows:1fr;margin-top:clamp(40px, 6cqh, 64px);opacity:1;transform:none;filter:none;}
@@ -389,7 +395,7 @@
   @keyframes logo-in{to{opacity:1;}}
   body[data-state="revealing"] .logo,
   body[data-state="gift"] .logo{color:var(--ink-d);}
-  body[data-state="returning"] .logo{transition-delay:0s;transition-duration:var(--back-card-ms);}
+  body[data-state="returning"] .logo{transition-delay:var(--back-hold);transition-duration:var(--back-card-ms);}
 
   /* the way back up, top right */
   .back{
@@ -608,6 +614,21 @@
   }
   body[data-state="revealing"] .side,
   body[data-state="gift"] .side{transform:none;}
+  /* dynamic: the timeline does not slide; its four steps appear one after
+     another over about two seconds once the card has landed */
+  body[data-motion="dynamic"] .side{transform:none !important;transition:none;}
+  body[data-motion="dynamic"] .timeline li{opacity:0;transform:translateY(6px);transition:opacity .5s ease, transform .5s ease;}
+  body[data-motion="dynamic"][data-state="revealing"] .timeline li,
+  body[data-motion="dynamic"][data-state="gift"] .timeline li{opacity:1;transform:none;}
+  body[data-motion="dynamic"][data-state="revealing"] .timeline li:nth-child(1),
+  body[data-motion="dynamic"][data-state="gift"] .timeline li:nth-child(1){transition-delay:1200ms;}
+  body[data-motion="dynamic"][data-state="revealing"] .timeline li:nth-child(2),
+  body[data-motion="dynamic"][data-state="gift"] .timeline li:nth-child(2){transition-delay:1700ms;}
+  body[data-motion="dynamic"][data-state="revealing"] .timeline li:nth-child(3),
+  body[data-motion="dynamic"][data-state="gift"] .timeline li:nth-child(3){transition-delay:2200ms;}
+  body[data-motion="dynamic"][data-state="revealing"] .timeline li:nth-child(4),
+  body[data-motion="dynamic"][data-state="gift"] .timeline li:nth-child(4){transition-delay:2700ms;}
+  body[data-motion="dynamic"][data-state="returning"] .timeline li{opacity:0;transition:opacity .25s ease 0s;}
   body[data-state="returning"] .side{transform:translateY(110cqh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
   .side .mono-label{margin-top:10px;}
   .side .timeline li span{color:rgba(243,239,234,.62);}
@@ -700,6 +721,11 @@
     .foot{position:static;margin-top:28px;white-space:normal;width:100%;}
     .incl li{font-size:13.5px;}
     .intro{padding:24px 22px;}
+    body[data-motion="dynamic"] .intro{padding:88px 22px 104px;}
+    body[data-motion="dynamic"][data-state="revealing"] .top-shade,
+    body[data-motion="dynamic"][data-state="gift"] .top-shade{opacity:1;}
+    /* and more room above the timeline */
+    .side{padding-top:24px;}
     .intro .cta{margin-top:44px;}
   }
 
@@ -743,6 +769,14 @@
   /* the stage: everything that used to be pinned to the viewport is pinned to
      the area under the bar instead, so the bar never overlays anything */
   #stage{position:absolute;inset:0;overflow:hidden;container:stage / size;}
+  /* phones, dynamic fold 2: a dark gradient fixed at the top of the stage, under
+     the wordmark and the arrow, so the card can scroll beneath them */
+  .top-shade{
+    position:absolute;left:0;right:0;top:0;height:170px;z-index:4;pointer-events:none;
+    background:linear-gradient(180deg, rgba(14,12,11,.9), rgba(14,12,11,.55) 45%, rgba(14,12,11,0));
+    opacity:0;transition:opacity .6s ease .7s;
+  }
+  body[data-state="returning"] .top-shade{transition-delay:0s;}
   /* the device holder: on desktop it is simply the area under the bar; in
      iPhone mode it becomes a phone frame with the stage as its screen */
   .device{position:fixed;top:44px;left:0;right:0;bottom:0;}
@@ -784,6 +818,7 @@
   body[data-device="phone"] .back{top:74px;right:22px;}
   body[data-device="phone"] .hero{padding-top:118px;}
   body[data-device="phone"] .intro{padding-top:60px;padding-bottom:184px;}
+  body[data-device="phone"][data-motion="dynamic"] .intro{padding-top:124px;padding-bottom:120px;}
   body[data-device="phone"][data-motion="static"] .intro{padding:80px 22px;}
   body[data-device="phone"][data-motion="static"] .back-static{top:66px;}
   body[data-device="phone"] .gift{padding-bottom:140px;}
@@ -796,9 +831,11 @@
   /* the first fold is a card: 80% of the screen, painted, with rounded bottom
      corners, overlapping the top of the photograph fold by the radius so the
      room shows under the corners */
+  /* the first fold is a near-black header with rounded bottom corners; the
+     photograph, fixed behind everything, shows under the corners */
   body[data-motion="static"] .intro{
     position:relative;height:80cqh;flex:none;z-index:4;
-    background:transparent;border-radius:0;
+    background:#0E0C0B;border-radius:0 0 56px 56px;
     --ink:#F3EFEA;--btn:#F3EFEA;--btn-ink:#0E0C0B;
   }
   body[data-motion="static"] .logo{color:var(--ink-d);}
@@ -858,7 +895,7 @@
   body[data-motion="static"] .intro .pill{scroll-behavior:smooth;}
   @container stage (max-width:820px){
     body[data-motion="static"] .gift{height:auto;min-height:100cqh;overflow:visible;padding-bottom:40px;}
-    body[data-motion="static"] .intro{padding:80px 22px;}
+    body[data-motion="static"] .intro{padding:80px 22px;border-radius:0 0 48px 48px;}
     /* phones: a dark gradient fixed at the top of the screen, over the
        photograph, so the status bar and the top of the fold read */
     body[data-motion="static"] .fixed-bg::after{
@@ -1027,6 +1064,7 @@
   <p class="foot">Page secured by Everlab</p>
 </main>
 
+<div class="top-shade" aria-hidden="true"></div>
 <div class="act-float"><a class="pill" id="claimFloat" href="#">Claim my gift</a></div>
 </div>
 <div class="home" aria-hidden="true"></div>
@@ -1121,7 +1159,7 @@
         var inner = document.createElement('span'); inner.className = 'line-in';
         row.appendChild(inner); frag.appendChild(row); host = inner;
         // the row starts opening 450ms before this line's first letter
-        row.style.setProperty('--ld', Math.max(0, Math.round(startAt + i * stagger - 450)) + 'ms');
+        row.style.setProperty('--ld', Math.max(0, Math.round(startAt + i * stagger - 600)) + 'ms');
       }
       words.forEach(function(word, wi){
         var w = document.createElement('span');
@@ -1159,19 +1197,18 @@
   /* ---------- GiftIntro ---------- */
   function GiftIntro(root, gift, onSee){
     // the wordmark fades in first (CSS, 150ms); the eyebrow follows: its
-    // letters run from 0.8s to 1.4s, with a lighter ember, settled by ~2s
-    AnimatedQuote($('chipText'), gift.from + ' got something special for you', {
-      startAt: 800, finishStartsBy: 1400, charMs: 650, fixedDur: true, ember: .5
+    // letters run from 0.8s to 1.9s, with a lighter ember, settled by ~3s
+    AnimatedQuote($('chipText'), gift.from + ' got something\nspecial for you', {
+      startAt: 800, finishStartsBy: 1880, charMs: 1170, fixedDur: true, ember: .5
     });
-    // the message follows: letters start at 1.5s, the last begins at 3.3s
-    // and settles by ~3.9s; the last word carries a fifth of the ember and less time
+    // the message follows: letters start at 2s, the last begins at 5.2s and
+    // settles by ~6.5s (everything 1.8× slower than it was)
     var quote = AnimatedQuote($('quote'), gift.message, {
-      startAt: 1500, finishStartsBy: 3300, charMs: 1000, lastWordMs: 700, lastWordEmber: .7, grow: true
+      startAt: 2000, finishStartsBy: 5240, charMs: 1800, lastWordMs: 1260, lastWordEmber: .7, grow: true
     });
-    // the button arrives just after the last character settles; the circle
-    // follows it half a second later and the block moves up 64px to make room
-    setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 120);
-    setTimeout(function(){ document.body.classList.add('orb-in'); }, reduce ? 0 : quote.done + 620);
+    // the button and the circle arrive together just after the last character
+    // settles, and the block moves up 64px, slowly, to make room
+    setTimeout(function(){ root.classList.add('cta-in'); document.body.classList.add('orb-in'); }, reduce ? 0 : quote.done + 120);
     $('see').textContent = 'See ' + gift.from + '’s gift';
     $('see').addEventListener('click', onSee);
   }
@@ -1297,11 +1334,11 @@
 
   /* ---------- App: intro → revealing → gift → returning → intro ---------- */
   var SCENE_MS = 1100; // card-delay + card-ms, see the CSS tokens
-  var BACK_MS = 1150;  // back-text-delay + back-text-ms
+  var BACK_MS = 1450;  // back-text-delay + back-text-ms
   var state = 'intro';
   function setState(next){
     if(next === 'revealing') seedMorph(cardRect(), 1000, 100);   // card-ms, card-delay
-    if(next === 'returning') seedMorph(restRect(), 750, 0);      // back-card-ms
+    if(next === 'returning') seedMorph(restRect(), 750, 300);    // back-card-ms, after back-hold
     state = next;
     document.body.dataset.state = next;
     var onGift = next === 'gift' || next === 'revealing';
@@ -1349,7 +1386,7 @@
     $('quote').classList.toggle('long', text.replace(/\s/g, '').length > 48);
     if(first) return; // GiftIntro renders the first one
     gift.message = text;
-    AnimatedQuote($('quote'), text, { startAt: 100, finishStartsBy: 1700, charMs: 1000, lastWordMs: 700, lastWordEmber: .7, grow: true });
+    AnimatedQuote($('quote'), text, { startAt: 100, finishStartsBy: 2980, charMs: 1800, lastWordMs: 1260, lastWordEmber: .7, grow: true });
   }
   setMessage(MESSAGES[wantedM] ? wantedM : 0, true);
   msgSel.addEventListener('change', function(){ setMessage(parseInt(msgSel.value, 10)); });
