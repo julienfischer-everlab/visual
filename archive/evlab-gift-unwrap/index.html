@@ -500,6 +500,8 @@
   }
   .note .who{display:block;margin-top:8px;font-size:13px;color:var(--muted-d);font-weight:400;letter-spacing:0;}
   /* the button sits under the card, centred, and fades in once the card has landed */
+  .act-float{display:none;pointer-events:none;}
+  body[data-state="gift"] .act-float{pointer-events:auto;}
   /* the button: centred at the foot of the right column, 70% of its width */
   .act{
     margin-top:auto;padding-top:34px;
@@ -593,8 +595,30 @@
     .incl{grid-template-columns:repeat(2, minmax(0,1fr));}
     .incl-wrap{padding-top:28px;}
     .card{border-radius:28px;}
-    .act{padding-top:28px;}
-    .act .pill{width:100%;}
+    /* the eyebrow: two lines, roomier */
+    .chip{max-width:250px;text-align:center;justify-content:center;font-size:12px;letter-spacing:.12em;line-height:1.7;}
+    .chip .line{display:inline;}
+    /* a bigger headline */
+    .quote{font-size:clamp(34px, 9.4cqw, 40px);letter-spacing:-.03em;line-height:.95;max-width:100%;}
+    /* on phones the card's own button hides and a floating one takes over,
+       anchored to the stage so it stays at the foot of the screen */
+    .act{display:none;}
+    .act-float{
+      display:flex;position:absolute;left:0;right:0;bottom:0;z-index:6;
+      padding:18px 20px 30px;
+      background:linear-gradient(180deg, rgba(14,12,11,0), rgba(14,12,11,.88) 45%);
+      opacity:0;transform:translateY(10px);
+      transition:opacity .7s var(--ease-out) 1100ms, transform .7s var(--ease-out) 1100ms;
+    }
+    body[data-state="revealing"] .act-float,
+    body[data-state="gift"] .act-float{opacity:1;transform:none;}
+    body[data-state="returning"] .act-float{opacity:0;transition-delay:0s;transition-duration:.3s;}
+    .act-float .pill{width:100%;color:var(--btn-d-ink);background:var(--btn-d);padding:16px 30px;font-size:16px;font-weight:500;}
+    .gift{padding-bottom:120px;}
+    .visual{padding-bottom:0;}
+    /* the eyebrow's square sits on its first line */
+    .chip{align-items:flex-start;}
+    .chip::before{margin-top:7px;}
     .back{top:12px;right:12px;}
     .logo{top:40px;}
     .logo svg{height:20px;}
@@ -691,7 +715,8 @@
   body[data-device="phone"] .back{top:74px;right:22px;}
   body[data-device="phone"] .hero{padding-top:118px;}
   body[data-device="phone"] .intro{padding-top:60px;padding-bottom:40px;}
-  body[data-device="phone"] .gift{padding-bottom:56px;}
+  body[data-device="phone"] .gift{padding-bottom:140px;}
+  body[data-device="phone"] .act-float{padding-bottom:48px;border-radius:0 0 50px 50px;}
 </style>
 
 
@@ -816,6 +841,7 @@
   </p>
 </main>
 
+<div class="act-float"><a class="pill" id="claimFloat" href="#">Claim my gift</a></div>
 </div>
 <div class="home" aria-hidden="true"></div>
 </div>
@@ -970,6 +996,7 @@
     $('passName').textContent = gift.to;
     $('passProduct').textContent = gift.product;
     $('claim').href = gift.claim;
+    $('claimFloat').href = gift.claim;
     // one small line icon per inclusion, in order: consult, blood, scan, heart, leaf, cycle
     var ICONS = [
       '<path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 16 14.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 13V7A1.5 1.5 0 0 1 4 5.5z"/>',
@@ -1014,7 +1041,9 @@
 
     // closed: a half circle of radius r on the bottom edge, photo at half size,
     // placed so the upper-middle of the photo (the couple) sits in the dome
-    var r = Math.max(90, Math.min(.26 * W, .22 * H, 260));
+    var r = W <= 820
+      ? Math.min(.54 * W, .28 * H)                  /* phones: a big dome, about twice the desktop ratio */
+      : Math.max(90, Math.min(.26 * W, .22 * H, 260));
     var d0 = 2 * r;
     var bw0 = Fw * .5, bh0 = Fh * .5;
     var bx0 = r - bw0 / 2;                  // centred on the circle

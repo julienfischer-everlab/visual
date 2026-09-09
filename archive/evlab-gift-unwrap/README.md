@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "iPhone frame mode" |
+| Captured from version | 2026-09-08, "Phone: bigger headline, big dome, floating button" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -93,6 +93,12 @@ scroll and swipe triggers all behave identically; the phone layout rules are
 container queries on the stage rather than media queries on the window, so
 the phone layout applies inside the frame on a desktop screen and on a real
 phone alike. Sizes that used viewport units now use container units.
+
+On phones: the eyebrow runs over two lines with looser spacing, the headline
+is larger (34 to 40px), the half circle is about twice the desktop ratio
+(roughly half the screen width), and on the second fold **Claim my gift**
+floats at the foot of the screen over a soft dark gradient, in place of the
+button inside the card.
 
 ## Logo and chrome
 
