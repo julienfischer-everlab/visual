@@ -48,6 +48,7 @@
     /* fold 1 */
     --white:#FCFBF9;
     --ink:#171412;
+    --ember:#E0883A;   /* the colour a letter has while it's still out of focus */
     --btn:#171412;
     --btn-ink:#FCFBF9;
 
@@ -136,16 +137,18 @@
     text-wrap:balance;
   }
   .quote .w{white-space:nowrap;}
+  /* each letter arrives as a warm orange glow out of focus, then cools to ink */
   .quote .c{
     position:relative;display:inline;
     opacity:0;top:3px;filter:blur(7px);
-    animation:resolve 900ms var(--ease-out) both;
+    color:var(--ember);
+    animation:resolve 1200ms var(--ease-out) both;
     animation-delay:var(--d);
   }
   @keyframes resolve{
-    0%{opacity:0;top:3px;filter:blur(7px);}
-    60%{opacity:.88;}
-    100%{opacity:1;top:0;filter:blur(0);}
+    0%{opacity:0;top:3px;filter:blur(8px);color:var(--ember);text-shadow:0 0 22px rgba(232,140,60,.65);}
+    45%{opacity:.9;color:var(--ember);text-shadow:0 0 14px rgba(232,140,60,.35);}
+    100%{opacity:1;top:0;filter:blur(0);color:var(--ink);text-shadow:0 0 0 rgba(232,140,60,0);}
   }
 
   .pill{
@@ -308,7 +311,7 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .quote .c{animation:none;opacity:1;top:0;filter:none;}
+    .quote .c{animation:none;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
     .intro .quote, .intro .cta, .card, .foot, body, .glow{transition-duration:.3s !important;transition-delay:0s !important;}
     .intro .cta{opacity:1;transform:none;filter:none;}
     .card{transform:none;opacity:0;transition-property:opacity;}
@@ -453,9 +456,9 @@
 
   /* ---------- GiftIntro ---------- */
   function GiftIntro(root, gift, onSee){
-    // letters start at 0.3s, the last begins at 2.4s and settles by ~3.3s
+    // letters start at 0.3s, the last begins at 3.0s and settles by ~4.2s
     var quote = AnimatedQuote($('quote'), gift.message, {
-      startAt: 300, finishStartsBy: 2400, charMs: 900
+      startAt: 300, finishStartsBy: 3000, charMs: 1200
     });
     // the button rises ~450ms after the last character settles
     setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 450);

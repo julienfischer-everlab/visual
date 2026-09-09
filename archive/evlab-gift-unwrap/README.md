@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Medium weight, tighter quote" |
+| Captured from version | 2026-09-08, "Ember letters, longer arrival" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -23,8 +23,8 @@ repo's git history.
 message, set large in a sans (Suisse Intl where installed, otherwise Geist)
 and centred exactly. Default copy: "Happy 30th, Sam. Go find out how good you
 actually are." over three lines. Each character starts blurred, faintly
-transparent and 3px low, and sharpens into place over 900ms. The stagger is
-derived from the character count so the whole message lands in about three
+transparent and 3px low, and arrives warm orange with a soft glow, then cools to ink as it sharpens over 1.2s. The stagger is
+derived from the character count so the whole message lands in about four
 seconds. About 450ms after the last character settles, a small black pill,
 **See my gift**, rises into place.
 
