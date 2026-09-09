@@ -10,7 +10,7 @@ in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Smaller seed" |
+| Captured from version | 2026-09-09, "Stronger ember" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -63,7 +63,7 @@ fold is the same near-black as the room behind fold 2, the type warm white,
 the button white with dark type, and the ember a touch warmer (`#E8874A` at
 70%) so it still reads on the dark ground: a soft peach on the newest three
 letters. Since the wave revision the ember carries a fifth more colour
-(strength .6, .84 on dark with `#EE8542`) and fades over five stagger steps on
+(strength .8, full on dark with `#F5842E`, a stronger halo) and fades over five stagger steps on
 an ease-in-out, so the trail swells and recedes like a wave behind the leading
 edge; the sharpening runs on one smooth curve.
 
