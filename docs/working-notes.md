@@ -3239,6 +3239,17 @@ six each side to a tenth) is unchanged. Probed: 30 dots, gap 4.7, dot 3.7,
 first at 10.7% of the arc's width and last at 89.3%; the reveal still lands
 the last dot at 1.1s; the Arc version's first lit tick is at 10% of the scale.
 
+### 5.134 Fifteen percent safe space
+
+"Reduce by 15% safe space." The window settles between the two: 15% empty at
+each side, the dots and the Arc version's portions over the middle 70% of
+the scale (v -10.5..10.5), the hero's side fade full from 15%. The pitch is
+held by the count again: twenty-six dots over 70% opened the gap to 5.2px,
+so it is twenty-eight, at 4.5px between 3.7px dots -- the nearest count to
+the 4.6 the "reduce by 1px" asked for. Probed: 28 dots, gap 4.5, first at
+15.2% of the arc's width and last at 84.8%; the reveal lands the last dot at
+1.07s; the Arc version's first lit tick is at 15% of the scale.
+
 ---
 
 ## 6. Open items
