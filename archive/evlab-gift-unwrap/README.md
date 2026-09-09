@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Real photo embedded" |
+| Captured from version | 2026-09-08, "Circle is the photo, button below card, switcher" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 280 KB, single file (the photograph is embedded) |
@@ -22,14 +22,17 @@ repo's git history.
 **Fold 1.** A warm off-white viewport with nothing on it but the sender's
 message, set large in a sans (Suisse Intl where installed, otherwise Geist),
 with a plain mono line above it, all caps and widely spaced, a small black
-square then "Matt, I sent you something". Default copy: "Happy 30th, Sam. Go find out how good you
+square then "Matt sent you something". Its letters resolve the same way as the
+message, ahead of it, with a lighter ember. Default copy: "Happy 30th, Sam. Go find out how good you
 actually are." over three lines. Each character starts blurred, faintly
 transparent and 3px low, and eases up and sharpens out of the blur over 1s. Separately, a warm ember fades over three stagger steps (about 200ms), so at any moment the newest letter is warmest and the two before it progressively less: a short gradient trailing the leading edge. The stagger is
-derived from the character count so the whole message lands in about 2.8
-seconds. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 350ms after the last character settles, a small black pill,
+derived from the character count so the whole message lands in about 3.3
+seconds, eyebrow included. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 350ms after the last character settles, a small black pill,
 **See my gift**, rises into place. At the bottom edge of the screen the top of a
-dark circle shows, like a sun about to rise: the photograph behind fold 2,
-peeking through.
+circle shows, like a sun about to rise: the photograph behind fold 2 at half
+size, placed so the couple sits inside the dome. The circle is the photograph
+itself (a round element whose background is the image), so no edge of the
+image can ever show inside it.
 
 **Transition.** On click, three things happen in sequence, all on the same
 viewport:
@@ -37,7 +40,7 @@ viewport:
 | When | What |
 | --- | --- |
 | 0ms | The whole first-fold block (chip, message, button) scrolls up and out of the viewport (800ms), like the page being pushed |
-| 100ms | The circle at the bottom opens until it fills the viewport and becomes the room; the viewport behind it crossfades to dark at the same time |
+| 100ms | The circle grows until it covers the viewport and the photograph inside it grows to exactly a full-screen cover, both computed from the viewport and the image so they land together; the viewport behind crossfades to dark at the same time |
 | 100ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1s on `cubic-bezier(.9,0,.22,1)`, a long slow start that then commits fast |
 | 1100ms | Settled; the footer line and a small arrow at the top fade in |
 
@@ -51,8 +54,9 @@ the block settles back down into place from 400ms, done at about 1.15s.
 The gift card lands in the centre as a dark glass panel with the photo
 showing through, no border and no shadow. Its left column holds the mono "A
 gift from Matt" line, the product name, a short description of the
-membership, the total value set large under a mono label, and
-**Claim my gift**. Its right column is the sender's note, set large.
+membership, and the total value set large under a mono label. Its right column
+is the sender's note, set large. **Claim my gift** sits centred under the
+card and fades in once it has landed.
 
 Below the first screen, two columns fade in half a second after the card has
 landed, each with a mono label on top; the reader scrolls down to them:
@@ -67,6 +71,13 @@ The fold scrolls when the content is taller than the screen.
 Motion is limited to transform, opacity and blur. Nothing bounces.
 `prefers-reduced-motion` shows the message immediately and crossfades the
 folds.
+
+## Version switcher
+
+A small fixed pill at the top left, mono caps, holds a select with the two
+versions of the page: 01 Cinematic reveal (this one) and 02 Sections
+(`../evlab-gift-sections`). Choosing the other opens it in a new tab, or
+navigates when the host allows.
 
 ## The photograph
 
