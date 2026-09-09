@@ -3316,6 +3316,9 @@ with eleven ticks lit behind it. A swipe back mid-gather leaves the run
 whole (28 dots, spread 306, radius 2.4, indicator off). Landing, backward
 swipe, mode and error probes clean.
 
+"And the grouping should be faster." 320ms rather than 520. Probed: spread
+306 -> 200 -> 81 -> 4px over 0.28s, the indicator on at 0.35s.
+
 ---
 
 ## 6. Open items
