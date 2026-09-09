@@ -127,7 +127,8 @@
   .scene-bg{
     position:fixed;left:50%;top:100%;z-index:1;pointer-events:none;
     width:var(--d0);height:var(--d0);
-    transform:translate(-50%,-50%);
+    /* hidden until the message and the button have landed, then it scales up */
+    transform:translate(-50%,-50%) scale(0);
     border-radius:50%;
     overflow:hidden;
     /* stand-in until the photo ships: a cosy wood-toned living room in low warm light */
@@ -141,11 +142,13 @@
     background-size:var(--bw0) var(--bh0);
     background-position:var(--bx0) var(--by0);
     transition:
+      transform 1100ms cubic-bezier(.2,.7,.2,1),
       width var(--card-ms) var(--ease-scene) var(--bg-delay),
       height var(--card-ms) var(--ease-scene) var(--bg-delay),
       background-size var(--card-ms) var(--ease-scene) var(--bg-delay),
       background-position var(--card-ms) var(--ease-scene) var(--bg-delay);
   }
+  body.orb-in .scene-bg{transform:translate(-50%,-50%) scale(1);}
   body[data-state="revealing"] .scene-bg,
   body[data-state="gift"] .scene-bg{
     width:var(--d1);height:var(--d1);
@@ -707,8 +710,10 @@
     var quote = AnimatedQuote($('quote'), gift.message, {
       startAt: 900, finishStartsBy: 2700, charMs: 1000, lastWordMs: 600, lastWordEmber: .2
     });
-    // the button rises ~350ms after the last character settles
+    // the button rises ~350ms after the last character settles, and the
+    // circle scales up at the bottom ~500ms after the button
     setTimeout(function(){ root.classList.add('cta-in'); }, reduce ? 0 : quote.done + 350);
+    setTimeout(function(){ document.body.classList.add('orb-in'); }, reduce ? 0 : quote.done + 850);
     $('see').addEventListener('click', onSee);
   }
 

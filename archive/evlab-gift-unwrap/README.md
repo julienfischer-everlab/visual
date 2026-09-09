@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Circle is the photo, button below card, switcher" |
+| Captured from version | 2026-09-08, "Circle scales up after the button" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 280 KB, single file (the photograph is embedded) |
@@ -28,8 +28,9 @@ actually are." over three lines. Each character starts blurred, faintly
 transparent and 3px low, and eases up and sharpens out of the blur over 1s. Separately, a warm ember fades over three stagger steps (about 200ms), so at any moment the newest letter is warmest and the two before it progressively less: a short gradient trailing the leading edge. The stagger is
 derived from the character count so the whole message lands in about 3.3
 seconds, eyebrow included. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 350ms after the last character settles, a small black pill,
-**See my gift**, rises into place. At the bottom edge of the screen the top of a
-circle shows, like a sun about to rise: the photograph behind fold 2 at half
+**See my gift**, rises into place. Half a second after the button, the top of a
+circle scales up from nothing at the bottom edge of the screen, like a sun
+about to rise: the photograph behind fold 2 at half
 size, placed so the couple sits inside the dome. The circle is the photograph
 itself (a round element whose background is the image), so no edge of the
 image can ever show inside it.
