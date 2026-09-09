@@ -10,7 +10,7 @@ band of three cards, then a light closing section.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/05f652dc-ce60-45f8-92db-a2e813932039 |
 | Title | Your Everlab gift |
-| Captured from version | 2026-09-09, "Top bar, six inclusion cards" |
+| Captured from version | 2026-09-09, "Third version in the select" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Private |
 | Size | 166 KB, single file (the card photo is embedded) |
@@ -38,8 +38,8 @@ No motion beyond a hover on the buttons. Nothing waits for scroll or a click.
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
 with a mono label and a plain native select for switching between the two
-versions: 01 Cinematic reveal (`../evlab-gift-unwrap`) and 02 Sections (this
-one). The page starts below it.
+versions: 01 Cinematic reveal (`../evlab-gift-unwrap`), 02 Sections (this
+one) and 03 Split card (`../evlab-gift-split`). The page starts below it.
 
 ## The photograph
 

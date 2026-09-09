@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "Exit through the top" |
+| Captured from version | 2026-09-08, "256px exit, phone offset, third version" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 360 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -46,7 +46,7 @@ all on the same viewport:
 
 | When | What |
 | --- | --- |
-| 0ms | The whole first-fold block (eyebrow, message, button) travels up and out of the top of the viewport while fading out and softening into a blur, all together (800ms) |
+| 0ms | The whole first-fold block (eyebrow, message, button) travels 256px up while fading out and softening into a blur, all together (800ms) |
 | 100ms | The circle grows until it covers the viewport and the photograph inside it grows to exactly a full-screen cover, both computed from the viewport and the image so they land together; the viewport behind crossfades to dark at the same time |
 | 100ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1s on `cubic-bezier(.9,0,.22,1)`, a long slow start that then commits fast |
 | 1100ms | Settled; the footer line and a small arrow at the top fade in |
@@ -96,7 +96,8 @@ container queries on the stage rather than media queries on the window, so
 the phone layout applies inside the frame on a desktop screen and on a real
 phone alike. Sizes that used viewport units now use container units.
 
-On phones: the eyebrow runs over two lines with looser spacing, the headline
+On phones: the first-fold block sits 72px above centre, the eyebrow runs over
+two lines with looser spacing, the headline
 is larger (34 to 40px), the half circle is about twice the desktop ratio
 (roughly half the screen width), and on the second fold **Claim my gift**
 floats at the foot of the screen over a soft dark gradient, in place of the
@@ -106,8 +107,8 @@ button inside the card.
 
 A fixed, edge-to-edge bar 44px tall runs along the very top of the page in
 near-black, with a mono label and a plain native select for switching between
-the two versions: 01 Cinematic reveal (this one) and 02 Sections
-(`../evlab-gift-sections`). Choosing the other opens it in a new tab, or
+the three versions: 01 Cinematic reveal (this one), 02 Sections
+(`../evlab-gift-sections`) and 03 Split card (`../evlab-gift-split`). Choosing the other opens it in a new tab, or
 navigates when the host allows. Everything else lives in a stage pinned
 below the bar, so the bar never overlays anything.
 
