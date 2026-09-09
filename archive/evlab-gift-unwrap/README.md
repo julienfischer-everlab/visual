@@ -10,7 +10,7 @@ the dark theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "CTA and circle 0.5s after the title" |
+| Captured from version | 2026-09-09, "Default message, hint downwards" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 386 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -33,7 +33,7 @@ the bar evenly.
 | Device | Desktop, iPhone | `device=phone` |
 | Theme | Dark, Light | `theme=light` |
 | Motion | Dynamic, Static | `motion=static` |
-| Message | Happy Birthday; Looking after everyone else; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` |
+| Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
 in the script; choosing one re-renders the first-fold title in place (in
@@ -52,8 +52,8 @@ the frame and on a real phone alike.
 The sender's message, set large and medium in a sans (Suisse Intl where
 installed, otherwise Geist), under a plain mono eyebrow, all caps and widely
 spaced: a small orange square, blinking once a second like a cursor, then
-"Matt got something special for you". Default copy: "Happy Birthday. I want
-you around for a long time." over three lines.
+"Matt got something special for you". Default copy: "You’ve spent so much
+time looking after everyone else. This one’s for you." over three lines.
 
 In dynamic motion things arrive in order: the wordmark fades in first (from
 150ms); the eyebrow's letters resolve from 0.73s to 1.7s (on phones it breaks
@@ -107,8 +107,8 @@ first fold is a near-black header 80% of the screen tall with 56px rounded
 bottom corners (48px on phones); the photograph is the page's own background,
 held fixed behind both folds by a sticky zero-height layer at the top of the
 scroll, showing under the corners and drifting up at 20% of the scroll as a
-small parallax. Centred 30px above the header's bottom edge, a one-pixel,
-36px track carries a bright segment that keeps climbing from bottom to top
+small parallax. Centred 46px above the header's bottom edge, a one-pixel,
+36px track carries a bright segment that keeps running from top to bottom
 (1.6s loop), a vertical progress hinting at the scroll; it never stops. There
 is no Back control; scrolling up is the way back. On phones the first fold's content is centred
 with 80px above and below, and a dark gradient is fixed at the top of the
@@ -120,7 +120,7 @@ disables the parallax.
 
 The photograph fills the screen, darkened so type reads over it. The fold does
 not scroll on desktop; on phones it does. One glass card, centred, up to 561px
-wide: `rgba(40,38,36,.32)` over a 60px blur, 44px corners, no border, no
+wide: `rgba(40,38,36,.36)` over a 60px blur, 44px corners, no border, no
 shadow, so the room shows through. Inside, 48px padding all round: the mono
 "Gift received from Matt" line (orange square), the product name "Everlab
 Protocol" 16px under it, a short description, then a mono "What's included"
