@@ -8,7 +8,7 @@ then the room fades to dark and the gift card rises into it from the bottom.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap your Everlab gift |
-| Captured from version | 2026-09-08, "One-letter flash, mono line" |
+| Captured from version | 2026-09-08, "Trailing ember, slow-then-fast fold" |
 | Captured on | 2026-09-08 |
 | Sharing at capture | Private |
 | Size | 18 KB, single file |
@@ -24,7 +24,7 @@ message, set large in a sans (Suisse Intl where installed, otherwise Geist),
 with a plain mono line above it, all caps and widely spaced, a small black
 square then "Matt, I sent you something". Default copy: "Happy 30th, Sam. Go find out how good you
 actually are." over three lines. Each character starts blurred, faintly
-transparent and 3px low, and comes up quickly and then sharpens out of the blur over 1.6s. Separately, a warm ember flash lasts exactly one stagger step (about 65ms), so it only ever sits on the newest letter and travels along the sentence like a point of light. The stagger is
+transparent and 3px low, and comes up quickly and then sharpens out of the blur over 1.6s. Separately, a warm ember fades over three stagger steps (about 200ms), so at any moment the newest letter is warmest and the two before it progressively less: a short gradient trailing the leading edge. The stagger is
 derived from the character count so the whole message lands in about four
 seconds. The ember tapers across the last line: the final word carries a fifth of the colour and half the time, so the sentence ends crisp rather than lingering orange. About 450ms after the last character settles, a small black pill,
 **See my gift**, rises into place.
@@ -36,7 +36,7 @@ viewport:
 | --- | --- |
 | 0ms | The whole first-fold block (chip, message, button) scrolls up and out of the viewport (1.1s), like the page being pushed |
 | 150ms | The viewport crossfades from warm white to near-black over 950ms, and a faint warm glow comes up with it |
-| 150ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1.4s on `cubic-bezier(.58,.02,.18,1)` |
+| 150ms | At the same moment, the gift card rises from below the bottom edge into the centre over 1.4s on `cubic-bezier(.9,0,.22,1)`, a long slow start that then commits fast |
 | 1550ms | Settled; the footer line and a small arrow at the top fade in |
 
 Nothing slides or cuts; the room changes around the reader and then the card
