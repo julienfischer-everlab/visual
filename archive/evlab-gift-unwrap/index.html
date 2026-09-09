@@ -302,11 +302,28 @@
   .pill:active{transform:scale(.985);}
 
   .intro .cta{
+    position:relative;border-radius:999px;
     margin-top:clamp(40px, 6vh, 64px);
     opacity:0;transform:translateY(8px);filter:blur(3px);
     transition:opacity .7s var(--ease-out), transform .7s var(--ease-out), filter .7s var(--ease-out);
   }
   .intro.cta-in .cta{opacity:1;transform:none;filter:none;}
+  .intro .cta .pill{position:relative;z-index:1;}
+  /* a light-orange point of light travelling round the button, one lap every 2s */
+  @property --sweep{syntax:'<angle>';inherits:false;initial-value:0deg;}
+  .intro .cta::before,
+  .intro .cta::after{
+    content:"";position:absolute;inset:-2px;border-radius:999px;pointer-events:none;
+    background:conic-gradient(from var(--sweep),
+      transparent 0deg 290deg, rgba(242,178,122,.35) 320deg, #F2B27A 345deg, rgba(242,178,122,.35) 356deg, transparent 360deg);
+    animation:sweep 2s linear infinite;
+  }
+  .intro .cta::after{inset:-5px;filter:blur(6px);opacity:.55;}
+  @keyframes sweep{to{--sweep:360deg;}}
+  body[data-state="revealing"] .intro .cta::before,
+  body[data-state="revealing"] .intro .cta::after,
+  body[data-state="gift"] .intro .cta::before,
+  body[data-state="gift"] .intro .cta::after{animation-play-state:paused;}
 
   /* ---- fold 2: the dark room; the card rises into it from the bottom ---- */
   .gift{
@@ -523,6 +540,7 @@
   @media (prefers-reduced-motion: reduce){
     .quote .c, .chip .c{animation:none !important;opacity:1;top:0;filter:none;color:var(--ink);text-shadow:none;}
     .quote .line{animation:none !important;grid-template-rows:1fr;}
+    .intro .cta::before, .intro .cta::after{animation:none;display:none;}
     .chip{animation:none;opacity:1;transform:none;}
     .stack, .card, .act, .more, .foot, .back, body, .glow, .scene-bg, .scene-bg::after, .dim{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
