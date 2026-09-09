@@ -10,7 +10,7 @@ in the dark theme; a Motion tweak turns it into the cinematic reveal.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Seed circle becomes the card" |
+| Captured from version | 2026-09-09, "Smaller seed" |
 | Captured on | 2026-09-09 |
 | Sharing at capture | Shared with organization |
 | Size | 383 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -89,7 +89,7 @@ floating phone button are not used. Reduced motion disables the parallax.
 The reveal. Half a second after the button arrives, the top of a circle scales
 up from the bottom edge of the screen (the photograph at half size, the couple
 inside the dome) and the whole block moves up 64px to make room for it. Inside
-the dome, concentric with it at 60% of its size, sits a second half circle:
+the dome, concentric with it at 30% of its size, sits a second half circle:
 the card's own glass surface (same tint, same blur) with nothing in it yet, the
 card not yet expanded. The button, a scroll down, a swipe or the down-arrow, page-down and
 space keys run the same sequence on the one viewport: the first-fold block
