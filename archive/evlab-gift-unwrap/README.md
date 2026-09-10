@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Fold-1 button fades and rises; desktop card top +8" |
+| Captured from version | 2026-09-10, "96px frame, scrolling card, Heavy tweak" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -24,7 +24,7 @@ repo's git history.
 ## Tweaks
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
-with a mono label, six plain native selects, a colour swatch and two number fields. Each changes the page in
+with a mono label, seven plain native selects, a colour swatch and two number fields. Each changes the page in
 place; nothing reloads. On phones the labels hide and the controls share
 the bar evenly.
 
@@ -35,6 +35,7 @@ the bar evenly.
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
 | Card | Cards, List | `card=list` |
+| Heavy | No, Yes: much more text in the card (a longer description, twelve rows) to test the card's own scroll | `heavy=yes` |
 | Panel | a colour swatch (default a warm sand, `#c5a496`), an opacity in percent (default 24) and a backdrop blur in pixels (default 120, the maximum) for the second card in Cards | `panel=c5a496&alpha=24&blur=120` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
@@ -211,8 +212,12 @@ first fold or when the tab is hidden, and restarts from the first chip when
 the panel returns. On phones the chips wrap.
 The hero card keeps its six rows, set a
 little tighter (4px above and below each row, 44px top and bottom padding)
-so the stack fits an 856px-tall stage without scrolling; on shorter screens
-the fold scrolls and the footer flows after the stack. The
+and the stack sits inside a frame of 96px above and 96px below on desktop:
+the script caps the card's height so card and panel always fit that frame, and
+the card's upper part (everything above the button) scrolls on its own, with no
+visible bar and a 28px fade at either end once it can scroll; the button never
+moves. With the default text the card scrolls a little at 900px tall; with the
+Heavy tweak it scrolls a lot. Phones keep the flowing fold instead. The
 wordmark sits top centre, the footer line "Page secured by Everlab" bottom
 centre. On phones the timeline labels may wrap and in dynamic motion **Claim
 my gift** floats at the foot of the screen.
@@ -231,7 +236,7 @@ Every parameter is optional and falls back to the example gift in the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`), six items |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
-| `device`, `theme`, `motion`, `sig`, `card`, `panel`, `alpha`, `blur`, `msg` | The tweaks, as above |
+| `device`, `theme`, `motion`, `sig`, `card`, `heavy`, `panel`, `alpha`, `blur`, `msg` | The tweaks, as above |
 
 All text is inserted as plain text, never as HTML.
 
