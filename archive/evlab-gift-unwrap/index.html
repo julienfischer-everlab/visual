@@ -587,7 +587,8 @@
   body[data-card="cards"] .side-clip{display:block;overflow:hidden;border-radius:0 0 var(--r) var(--r);}
   body[data-card="cards"] .side-in{
     gap:12px;padding:18px 48px 22px;
-    background:var(--panel-bg, rgba(255,255,255,.12));  /* the Panel tweak: colour and opacity */
+    background:var(--panel-bg, rgba(255,255,255,.12));  /* the Panel tweak: colour, opacity and blur */
+    -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
     border-radius:0 0 var(--r) var(--r);
   }
   body[data-card="cards"] .side::before, body[data-card="cards"] .side::after{
@@ -1058,6 +1059,7 @@
     <label for="panelColor">Panel</label>
     <input type="color" id="panelColor" value="#ffffff" aria-label="Panel colour" title="Panel colour">
     <input type="number" id="panelAlpha" min="0" max="100" step="1" value="12" aria-label="Panel opacity, percent" title="Panel opacity %">
+    <input type="number" id="panelBlur" min="0" max="120" step="1" value="0" aria-label="Panel blur, pixels" title="Panel blur px">
     <label for="message">Message</label>
     <select id="message" aria-label="Message">
       <option value="0">Happy Birthday</option>
@@ -1582,18 +1584,22 @@
   sigSel.addEventListener('change', function(){ setSig(sigSel.value); });
 
   /* ---------- panel tweak: the second card's colour and opacity ---------- */
-  var panelColor = document.getElementById('panelColor'), panelAlpha = document.getElementById('panelAlpha');
-  function setPanel(hex, a){
+  var panelColor = document.getElementById('panelColor'), panelAlpha = document.getElementById('panelAlpha'), panelBlur = document.getElementById('panelBlur');
+  function setPanel(hex, a, bl){
     hex = String(hex || '').replace('#', '');
     if(!/^[0-9a-f]{6}$/i.test(hex)) hex = 'ffffff';
     a = parseInt(a, 10); if(isNaN(a)) a = 12; a = Math.max(0, Math.min(100, a));
+    bl = parseInt(bl, 10); if(isNaN(bl)) bl = 0; bl = Math.max(0, Math.min(120, bl));
     var r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
     document.body.style.setProperty('--panel-bg', 'rgba(' + r + ',' + g + ',' + b + ',' + (a / 100) + ')');
-    panelColor.value = '#' + hex.toLowerCase(); panelAlpha.value = a;
+    document.body.style.setProperty('--panel-filter', bl ? 'blur(' + bl + 'px)' : 'none');
+    panelColor.value = '#' + hex.toLowerCase(); panelAlpha.value = a; panelBlur.value = bl;
   }
-  setPanel(params.get('panel'), params.get('alpha'));
-  panelColor.addEventListener('input', function(){ setPanel(panelColor.value, panelAlpha.value); });
-  panelAlpha.addEventListener('input', function(){ setPanel(panelColor.value, panelAlpha.value); });
+  function panelFromBar(){ setPanel(panelColor.value, panelAlpha.value, panelBlur.value); }
+  setPanel(params.get('panel'), params.get('alpha'), params.get('blur'));
+  panelColor.addEventListener('input', panelFromBar);
+  panelAlpha.addEventListener('input', panelFromBar);
+  panelBlur.addEventListener('input', panelFromBar);
 
   /* ---------- card tweak: the six rows, or three mini cards ---------- */
   var cardSel = document.getElementById('cardSel');

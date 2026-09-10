@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Panel slides down, Panel tweak, plain chips" |
+| Captured from version | 2026-09-10, "Panel blur control" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -24,7 +24,7 @@ repo's git history.
 ## Tweaks
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
-with a mono label, six plain native selects, a colour swatch and a number field. Each changes the page in
+with a mono label, six plain native selects, a colour swatch and two number fields. Each changes the page in
 place; nothing reloads. On phones the labels hide and the controls share
 the bar evenly.
 
@@ -35,7 +35,7 @@ the bar evenly.
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
 | Card | List, Cards | `card=cards` |
-| Panel | a colour swatch (default white) and an opacity in percent (default 12) for the second card in Cards | `panel=ffffff&alpha=12` |
+| Panel | a colour swatch (default white), an opacity in percent (default 12) and a backdrop blur in pixels (default 0, up to 120) for the second card in Cards | `panel=ffffff&alpha=12&blur=0` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
@@ -160,8 +160,9 @@ travelling along its segment; then Get started, Consult, Test, Act. The card and
 
 With the Card tweak on Cards the timeline goes and a second card takes its
 place: a panel in white at 12% (`rgba(255,255,255,.12)` by default; the Panel
-tweak sets any colour and opacity, a plain colour with no blur so the masked
-corner fillers render in every browser) as wide as the hero card, starting flush at the hero card's bottom edge with square
+tweak sets any colour, opacity and backdrop blur; the blur is on the panel
+only, the masked corner fillers stay a plain colour so they render in every
+browser) as wide as the hero card, starting flush at the hero card's bottom edge with square
 top corners and the hero card's radius on its bottom ones, so it reads as a
 card tucked behind the hero card with only its bottom showing. Two small
 glass fillers, masked to the outside of the hero card's rounded bottom
@@ -207,7 +208,7 @@ Every parameter is optional and falls back to the example gift in the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`), six items |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
-| `device`, `theme`, `motion`, `sig`, `card`, `panel`, `alpha`, `msg` | The tweaks, as above |
+| `device`, `theme`, `motion`, `sig`, `card`, `panel`, `alpha`, `blur`, `msg` | The tweaks, as above |
 
 All text is inserted as plain text, never as HTML.
 
