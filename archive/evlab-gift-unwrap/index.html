@@ -444,6 +444,22 @@
   body[data-state="returning"] .card{transform:translateY(110cqh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
 
   .card .info{padding:48px;display:flex;flex-direction:column;justify-content:flex-start;min-height:0;min-width:0;}
+  /* a soft light travelling round the card's edge: a 1px ring (the padding of
+     a masked pseudo-element) painted with a conic gradient whose bright arc
+     turns once every 4s; faint everywhere else, so the card keeps no hard border */
+  @property --ring-a{syntax:'<angle>';inherits:false;initial-value:0deg;}
+  .card::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
+    background:conic-gradient(from var(--ring-a),
+      rgba(255,255,255,.06) 0deg, rgba(255,255,255,.06) 200deg,
+      rgba(255,255,255,.44) 290deg, rgba(255,255,255,.06) 360deg);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);mask-composite:exclude;
+    opacity:0;transition:opacity .8s ease;
+    animation:ring-turn 4s linear infinite;
+  }
+  @keyframes ring-turn{to{--ring-a:360deg;}}
+  body[data-state="gift"] .card::before, body[data-motion="static"] .card::before{opacity:1;}
   .kicker{
     display:flex;justify-content:space-between;align-items:center;gap:16px;
     margin:0 0 10px;
@@ -839,6 +855,7 @@
     .intro .chip::before{animation:none;}
     .chip{animation:none;opacity:1;transform:none;}
     .logo{animation:none !important;opacity:1;}
+    .card::before{animation:none;}
     .stack, .card, .act, .more, .foot, .back, body, .glow, .scene-bg, .scene-bg::after, .dim{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
     body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;opacity:0;filter:none;}
