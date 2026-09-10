@@ -818,17 +818,12 @@
     .card-head .kicker .chip{justify-content:center;}
     .card-head .title-row{margin:0;padding:0;justify-content:center;}
     .card-head h2{text-align:center;font-size:clamp(26px, 6cqw + 4px, 32px);}
-    .card{background:rgba(0,0,0,.9);-webkit-backdrop-filter:none;backdrop-filter:none;}
-    /* dynamic on phones: no seed circle and no morph; the card is its own
-       black surface and fades in together with the title above it and the
-       content inside it, once the photograph has filled the screen */
-    .seed{display:none;}
-    body[data-motion="dynamic"] .card{background:rgba(0,0,0,.9);opacity:0;transition:opacity 600ms ease 900ms;}
-    body[data-motion="dynamic"][data-state="revealing"] .card,
-    body[data-motion="dynamic"][data-state="gift"] .card{opacity:1;}
-    body[data-motion="dynamic"][data-state="returning"] .card{opacity:0;transition:opacity 350ms ease 0s;}
-    body[data-motion="dynamic"] .card .info, body[data-motion="dynamic"] .card-head{transition-delay:900ms;}
-    body[data-motion="dynamic"][data-state="returning"] .card .info, body[data-motion="dynamic"][data-state="returning"] .card-head{transition-delay:0s;}
+    /* the card is black at 80% over a 64px blur; in dynamic motion the seed
+       keeps its half circle on the first fold, morphs to the card as on
+       desktop and takes the same black as it lands */
+    .card{background:rgba(0,0,0,.8);-webkit-backdrop-filter:blur(64px);backdrop-filter:blur(64px);}
+    body[data-state="revealing"] .seed, body[data-state="gift"] .seed{background:rgba(0,0,0,.8);-webkit-backdrop-filter:blur(64px);backdrop-filter:blur(64px);}
+    .seed{transition:transform 1100ms cubic-bezier(.2,.7,.2,1), background-color 700ms ease;}
     .hero{padding-top:72px;}
     body[data-card="cards"] .hero{padding-top:72px;}
     .card .pass{display:none;}

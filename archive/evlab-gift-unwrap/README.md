@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Phone: no seed, black card, 70% button; ring removed" |
+| Captured from version | 2026-09-10, "Phone: seed back, black 80% blur 64" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -92,8 +92,7 @@ with near-black type.
 The reveal. The circle that rises at the bottom is the photograph at half
 size, the couple inside the dome. Inside it, concentric at 30% of its size,
 sits a second half circle: the card's own glass surface (same tint, same 60px
-blur) with nothing in it yet, the card not yet expanded (not on phones, which
-have no seed).
+blur) with nothing in it yet, the card not yet expanded.
 
 The button, a scroll down, a swipe or the down-arrow, page-down and space keys
 run the same sequence on the one viewport: the first-fold block travels 256px
@@ -157,13 +156,12 @@ it. Phones drop the circle, and lay the card out differently: the script moves
 the "Your gift from Marc" line and the product title out of the card into a
 head above it, centred, with 64px above and below so the photograph shows
 around them (they move back inside when the stage is wide again, ids and all);
-the card itself is black at 90% (`rgba(0,0,0,.9)`) with no blur and 42px
-padding (38px at the sides, 40px at the foot). In dynamic motion phones have
-no seed at all: no half circle in the dome on the first fold and no morph on
-the way to the second; the card is its own black surface and fades in over
-0.6s from 0.9s, together with the head above it and the content inside it,
-as the photograph finishes filling the screen. The floating **Claim my gift**
-at the foot of the screen fills 70% of the width, centred.
+the card itself is black at 80% over a 64px blur (`rgba(0,0,0,.8)`) with
+42px padding (38px at the sides, 40px at the foot). In dynamic motion the seed
+keeps its half circle in the dome on the first fold and morphs to the card as
+on desktop, taking the same black over 0.7s as it lands; the head above the
+card fades in with the card's content. The floating **Claim my gift** at the
+foot of the screen fills 70% of the width, centred.
 
 Under the card, 52px below and directly over the photograph, with no label: a
 horizontal timeline as wide as the card (with the Card tweak on List), five equal columns with a 10px square
