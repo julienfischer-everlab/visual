@@ -457,7 +457,7 @@
   }
   .blurb{
     margin:0 0 22px;max-width:34em;padding-right:88px;  /* clear of the image column, like the title */
-    font-size:14px;line-height:1.55;color:var(--ink-d2);
+    font-size:14px;line-height:16px;color:var(--ink-d2);
     text-wrap:pretty;
   }
   .value{display:flex;flex-direction:column;gap:6px;margin:0 0 30px;}
@@ -586,7 +586,7 @@
      panel reads as continuing up behind the card */
   body[data-card="cards"] .hero{gap:0 !important;}  /* flush: the panel starts at the card's bottom edge, on every screen */
   body[data-card="cards"] .gift{overflow-y:auto;justify-content:flex-start;}
-  body[data-card="cards"] .hero{height:100%;min-height:0;padding:96px 0 96px;}  /* 96px above and below the stack */
+  body[data-card="cards"] .hero{height:100%;min-height:0;padding:160px 0 160px;}  /* 160px above and below the stack */
   body[data-card="cards"] .incl li{padding:4px 0;}
   body[data-card="cards"] .incl-wrap{gap:10px;}
   body[data-card="cards"] .card .info{padding-top:40px;padding-bottom:40px;}
@@ -609,13 +609,15 @@
      glass, sized by the script to the card's width and the panel's height
      plus the corner radius, so it runs up under the card and the card's
      rounded bottom simply sits over it: no seam, no fillers */
+  .panel-clip{position:absolute;z-index:1;pointer-events:none;display:none;overflow:hidden;}
+  body[data-card="cards"] .panel-clip{display:block;}
   .panel-bg{
-    position:absolute;z-index:1;pointer-events:none;display:none;
+    position:absolute;left:0;width:100%;
     background:var(--panel-bg, rgba(197,164,150,.24));  /* the Panel tweak: colour, opacity and blur */
     -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
-    border-radius:0 0 var(--r, 44px) var(--r, 44px);
+    /* the script sets a clip path: the panel's rectangle plus the two notches
+       outside the card's rounded bottom corners, and nothing under the glass */
   }
-  body[data-card="cards"] .panel-bg{display:block;}
   }
   /* dynamic: once the hero card has landed the panel slides down from behind
      it (its own height, inside the clip, so it emerges from the card's bottom
@@ -625,10 +627,10 @@
   body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .side-in,
   body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .side-in{transform:none;transition-delay:1000ms;}
   body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .side-in{transform:translateY(-100%);transition:transform .35s ease 0s;}
-  body[data-motion="dynamic"][data-card="cards"] .panel-bg{opacity:0;transform:translateY(calc(-100% + var(--r, 44px)));transition:transform .8s var(--ease-out), opacity 0s linear 0s;}
+  body[data-motion="dynamic"][data-card="cards"] .panel-bg{transform:translateY(calc(-100% + var(--r, 44px)));transition:transform .8s var(--ease-out);}
   body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .panel-bg,
-  body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .panel-bg{opacity:1;transform:none;transition:transform .8s var(--ease-out) 1000ms, opacity 0s linear 1000ms;}
-  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .panel-bg{opacity:0;transform:translateY(calc(-100% + var(--r, 44px)));transition:transform .35s ease 0s, opacity .2s ease .1s;}
+  body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .panel-bg{transform:none;transition:transform .8s var(--ease-out) 1000ms;}
+  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .panel-bg{transform:translateY(calc(-100% + var(--r, 44px)));transition:transform .35s ease 0s;}
   /* the label above the mini cards, Cards only; the column's gap sits between */
   .next-label{display:none;margin:0 0 6px;color:rgba(243,239,234,.62);}  /* 18px to the chips with the column gap */
   body[data-card="cards"] .next-label{display:block;}
@@ -1140,7 +1142,7 @@
 <div class="glow" aria-hidden="true"></div>
 <div class="scene-bg" id="sceneBg" role="img" aria-label="A couple sharing a photo album in a cosy wood-toned living room"></div>
 <div class="dim" aria-hidden="true"></div>
-<div class="panel-bg" id="panelBg" aria-hidden="true"></div>
+<div class="panel-clip" id="panelClip" aria-hidden="true"><div class="panel-bg" id="panelBg"></div></div>
 <div class="seed" id="seed" aria-hidden="true"></div>
 
 <!-- Fold 1 · GiftIntro -->
@@ -1516,26 +1518,39 @@
   /* the panel's surface follows the card: same left and width, from one radius
      above the card's bottom edge down to the panel's foot; measured in the
      stage's own pixels (the phone frame is scaled) */
+  var panelSettled = false;   // true once the surface has finished sliding out
   function panelSet(){
-    var pb = document.getElementById('panelBg');
+    var pb = document.getElementById('panelBg'), pc = document.getElementById('panelClip');
     if(document.body.dataset.card !== 'cards') return;
     var st = document.getElementById('stage'), sr = st.getBoundingClientRect(), k = sr.width / (st.clientWidth || 1) || 1;
-    // desktop: cap the card so card + panel sit inside the 96px frame; the
+    // desktop: cap the card so card + panel sit inside the 160px frame; the
     // card's upper part then scrolls, with a fade at both ends
     var scroller = document.getElementById('infoScroll');
     if(st.clientWidth > 820){
-      var cap = st.clientHeight - 192 - document.querySelector('.side-clip').offsetHeight;
+      var cap = st.clientHeight - 320 - document.querySelector('.side-clip').offsetHeight;
       $('card').style.setProperty('--card-max', Math.max(240, cap) + 'px');
     } else { $('card').style.removeProperty('--card-max'); }
     scroller.classList.toggle('can-scroll', scroller.scrollHeight > scroller.clientHeight + 1);
     var c = $('card').getBoundingClientRect(), sc = document.querySelector('.side-clip').getBoundingClientRect();
     var r = parseFloat(getComputedStyle(document.querySelector('.side')).getPropertyValue('--r')) || 44;
+    var W = c.width / k, H = r + sc.height / k, settled = isStatic() || (state === 'gift' && panelSettled);
     pb.style.setProperty('--r', r + 'px');
-    pb.style.left = ((c.left - sr.left) / k + st.scrollLeft) + 'px';
-    pb.style.width = (c.width / k) + 'px';
-    pb.style.top = ((c.bottom - sr.top) / k + st.scrollTop - r) + 'px';
-    pb.style.height = (r + sc.height / k) + 'px';
+    pc.style.left = ((c.left - sr.left) / k + st.scrollLeft) + 'px';
+    pc.style.width = W + 'px';
+    // sliding: the clip box starts at the card's bottom edge, so the notch band
+    // above it (and the surface passing behind the glass) never shows;
+    // settled: it grows up by one radius and the notches fill in
+    pc.style.top = ((c.bottom - sr.top) / k + st.scrollTop - (settled ? r : 0)) + 'px';
+    pc.style.height = (settled ? H : H - r) + 'px';
+    pb.style.top = (settled ? 0 : -r) + 'px';
+    pb.style.height = H + 'px';
+    // the surface's shape: its rectangle with the card's radius at the foot,
+    // and at the top only the two slivers outside the card's rounded corners
+    pb.style.clipPath = 'path("M0 0 A' + r + ' ' + r + ' 0 0 0 ' + r + ' ' + r + ' L' + (W - r) + ' ' + r + ' A' + r + ' ' + r + ' 0 0 0 ' + W + ' 0 L' + W + ' ' + (H - r) + ' A' + r + ' ' + r + ' 0 0 1 ' + (W - r) + ' ' + H + ' L' + r + ' ' + H + ' A' + r + ' ' + r + ' 0 0 1 0 ' + (H - r) + ' Z")';
   }
+  document.getElementById('panelBg').addEventListener('transitionend', function(e){
+    if(e.propertyName === 'transform' && state === 'gift'){ panelSettled = true; panelSet(); }
+  });
   if(window.ResizeObserver){
     var ro = new ResizeObserver(function(){ panelSet(); });
     ro.observe(document.querySelector('.side-clip')); ro.observe($('card')); ro.observe(document.getElementById('stage'));
@@ -1554,6 +1569,7 @@
     var onGift = next === 'gift' || next === 'revealing';
     $('gift').setAttribute('aria-hidden', onGift ? 'false' : 'true');
     $('intro').setAttribute('aria-hidden', onGift ? 'true' : 'false');
+    if(next !== 'gift') panelSettled = false;
     syncSteps();
     panelSet();
   }
@@ -1718,6 +1734,7 @@
     v = v === 'list' ? 'list' : 'cards';   // Cards by default
     document.body.dataset.card = v;
     cardSel.value = v;
+    if(state === 'gift') panelSettled = true;
     syncSteps();
     requestAnimationFrame(panelSet);
     // the card changes height, so the seed behind it follows

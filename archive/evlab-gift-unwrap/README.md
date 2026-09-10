@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "96px frame, scrolling card, Heavy tweak" |
+| Captured from version | 2026-09-10, "Panel edge fixed, 160px frame, 14/16 description" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -150,8 +150,8 @@ foot matches the sides; the panel below also ends 40px under its
 last line). Inside: the mono
 "Your gift from Marc" line (orange square), the product name "Everlab
 Protocol Membership" 10px under it (beside the circle), a short description
-kept 88px clear of the right edge like the title so it never runs under the
-circle (four lines), then a mono "What's included"
+(14px on a 16px line) kept 88px clear of the right edge like the title so it
+never runs under the circle, then a mono "What's included"
 label above six plain rows, each a small line icon (speech bubble, drop, scan,
 pulse, leaf, cycle) and the full title, no card and no dividers, 6px above and
 below each row. Then **Claim my gift** full width at the foot of the card. At
@@ -183,12 +183,14 @@ travelling along its segment; then Get started, Consult, Test, Act. The card and
 With the Card tweak on Cards (the default) the timeline goes and a second card
 takes its place: a panel in a warm sand (`#c5a496`) at 24% over a 120px
 backdrop blur by default (the Panel tweak sets any colour, opacity and blur)
-as wide as the hero card. Its surface is one element in the stage, behind the
-hero card's glass, placed by the script from the card's box: it runs from one
-corner radius above the card's bottom edge down to the panel's foot, with the
-card's radius on its bottom corners, so the hero card's rounded bottom simply
-sits over it and the panel reads as a card tucked behind it with only its
-bottom showing, with no seam and no corner patches. It
+as wide as the hero card. Its surface is one element in the stage, placed by
+the script from the card's box and cut to shape with a clip path: the panel's
+rectangle, the card's radius on its bottom corners, and at the top only the
+two slivers outside the card's rounded bottom corners, so nothing of it runs
+under the card's glass (no faint edge shows through) and the panel reads as a
+card tucked behind the hero card with only its bottom showing. While it
+slides it sits in a clip box that starts at the card's bottom edge, so the
+slivers appear only as it settles. It
 arrives in dynamic motion once the hero card has landed: from 1.0s the
 surface and the content slide down together out from behind the card (their
 own height in 0.8s, easing out; the content inside a clip at the card's
@@ -212,7 +214,7 @@ first fold or when the tab is hidden, and restarts from the first chip when
 the panel returns. On phones the chips wrap.
 The hero card keeps its six rows, set a
 little tighter (4px above and below each row, 44px top and bottom padding)
-and the stack sits inside a frame of 96px above and 96px below on desktop:
+and the stack sits inside a frame of 160px above and 160px below on desktop:
 the script caps the card's height so card and panel always fit that frame, and
 the card's upper part (everything above the button) scrolls on its own, with no
 visible bar and a 28px fade at either end once it can scroll; the button never
