@@ -3405,6 +3405,50 @@ Probed (halo.js): on the phone, swiping the carousel, younger organs 88AB74 at
 .16, the aligned brain FFFFFF at .08, older organs E7B69C at .12; on the
 desktop and tablet cards (m21, m18) the same per organ.
 
+### 5.141 The Teaser video page
+
+"Create a new page called Teaser video. I want to use our system and describe
+into a script sequence by sequence. Each frame should be animated slightly to
+guide the motion designer who is going to polish everything manually in AE."
+With the script (seven lines, Everlab last) and a nine-frame board.
+
+A page (#m22, group Video, MODES index 22), built on first view like the
+instrument (__tzBoot). The page is the board: a header with the intent, the
+script beside it with timecodes and what is on screen per line (two of the
+nine sequences have no VO -- 03 and 07 -- and are marked so; 07 is the
+board's line rather than the script's, and the note says to keep or cut it
+with the client), then the nine frames three across, each a 16:9 stage, the
+spoken line, and the notes for the AE pass: motion, ease, durations, cut.
+Palette, type and delivery cards close it.
+
+The frames move a little, and in the system's own means. 01 is a field of
+the three inks (the engine's default set, as rgb) drifting on a 14-degree
+tilt with streaks and five readings surfacing; 02 the same field drawing in
+to an accent point that swells (CSS custom properties per dot for the
+radial travel); 03, 08 and 09 are type on black -- a breath, a cut, and the
+three beats of the closure; 07 an SVG line drawing on with three points
+popping (SMIL, so it plays without script). 04-06 are the product's own
+component: makeOrganView on a drawn phone, the heart at 760 dots with its
+beat, and the arc an SVG with dashed ticks whose portion grows on a SMIL
+dasharray and whose indicator rides an animateMotion along the same path; the
+reading counts up on the arc's clock, the halo is the verdict's light (HALO's
+values) as a radial gradient behind the organ. 06 starts on the lungs and
+morphs to the heart and back every six seconds (the view's own morphTo), the
+number, the label, the arc and the light following once the morph is most
+of the way over -- the first cut left it on the heart wearing 48 and orange
+for six seconds, and looked up "Lung" in a table that says "Lungs".
+
+The page is black whatever the theme (a video is graded on black), and the
+engine's canvas is hidden under it as it is under the library. The views
+stop painting when the page is hidden (offsetParent), so the page costs
+nothing when it is not showing.
+
+Probed (teaser.js): the entry sits under Video as value 22, the page shows and
+the engine hides, nine frames, nine script lines, the three organ canvases
+painted, the 06 loop flips the reading and the light, a round trip through
+Mobile and back leaves the page built and showing. Modes and error probes
+clean.
+
 ---
 
 ## 6. Open items
