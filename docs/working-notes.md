@@ -3449,6 +3449,40 @@ painted, the 06 loop flips the reading and the light, a round trip through
 Mobile and back leaves the page built and showing. Modes and error probes
 clean.
 
+### 5.142 The teaser opens on lifestyle imagery; the organs tracked apart
+
+"I'd like to start with an imagery lifestyle, then transition to the cloud of
+dots" -- with a still: warm afternoon light, someone reading on a sofa. And on
+the Over time frame: "all tracked independently, for better insights and
+decision taking."
+
+A tenth sequence in front: 01 Lifestyle, two seconds, no VO. The photograph
+itself is the designer's to drop into the comp -- it is not in the repo, and
+the sketch does not pretend to be it: a stand-in of its tones (the cream of
+the boucle, the figure's navy, the terracotta cushion, a shaft of light)
+pushes in about 4%, then goes to dots. Two copies of the still do it: the
+solid one fades as a second, screened one comes up under a radial-gradient
+mask whose cells coarsen from 6px to 34px (mask-size is animatable) -- the
+image as a halftone in its own colours -- and as the screen breaks the
+field of signals comes up through it and takes the drift. The note for AE
+says the real thing: image to particles (Form or Particular on the still)
+rather than a mask; the dot screen is the intent. The VO's first line now
+starts as the image goes, at 0:02, and the rest of the board shifts by a
+beat: 03 The bigger story 0:04, 04 Introducing 0:07 (two seconds rather than
+three), 08 Over time 0:18-0:22, 09 Look closer 0:22, 10 Closure 0:25.
+
+08 Over time: one heart line became three organs -- heart, lungs, liver --
+each its own line in its verdict's colour (the design's tokens), drawing on
+in turn over 1.6s with its points popping and the latest reading labelled at
+its end, and the lines never meeting: that is what "tracked independently"
+looks like. A legend in the header, two actions under the chart (heart: keep
+going; lungs: consider a check-in), and the caption is the client's line.
+
+Probed: ten frames, ten script lines, the numbering and timecodes through;
+the still's loop sampled at 1.5s (the still), 4.4s (the screen, the image's
+colours in the dots) and 5.6s (the field); the chart at 5.2s with all three
+lines drawn and the readings labelled. Modes and error probes clean.
+
 ---
 
 ## 6. Open items
