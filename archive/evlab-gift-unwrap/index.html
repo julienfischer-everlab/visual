@@ -456,7 +456,7 @@
     -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);mask-composite:exclude;
     opacity:0;transition:opacity .8s ease;
-    animation:ring-turn 4s cubic-bezier(.45,0,.55,1) infinite;  /* each turn eases in and out */
+    animation:ring-turn 8s cubic-bezier(.45,0,.55,1) infinite;  /* each turn eases in and out */
   }
   @keyframes ring-turn{to{--ring-a:360deg;}}
   body[data-state="gift"] .card::before, body[data-motion="static"] .card::before{opacity:1;}
@@ -580,9 +580,18 @@
     padding:9px 16px;font:inherit;font-size:13px;font-weight:500;line-height:1.2;letter-spacing:.01em;
     color:var(--muted-d);transition:color .4s ease, border-color .4s ease, background-color .4s ease;
   }
+  .chip-btn{display:inline-flex;align-items:center;gap:9px;padding-left:9px;}
+  .chip-btn .n{
+    display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.28);font-style:normal;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;line-height:1;color:var(--muted-d);
+    transition:background-color .4s ease, color .4s ease, border-color .4s ease;
+  }
+  .chip-btn.on .n{background:var(--ink-d);border-color:var(--ink-d);color:#1A1816;}
   .chip-btn:hover{color:var(--ink-d);}
   .chip-btn.on{color:var(--ink-d);border-color:transparent;background:rgba(255,255,255,.14);}
-  .step-desc{margin:0;min-height:3em;font-size:14px;line-height:1.5;color:var(--ink-d2);text-wrap:pretty;transition:opacity .22s ease;}
+  .step-desc{margin:0;min-height:3em;  /* two lines at line-height 1.5 */
+    font-size:14px;line-height:1.5;color:var(--ink-d2);text-wrap:pretty;transition:opacity .22s ease;}
   .step-desc.swap{opacity:0;}
   /* Cards: the side column is a second card in the same glass, tucked behind
      the hero card so only its bottom shows. It starts flush at the hero card's
@@ -595,31 +604,24 @@
   body[data-card="cards"] .foot{position:static;margin:0 0 10px;}
   body[data-card="cards"] .incl li{padding:4px 0;}
   body[data-card="cards"] .incl-wrap{gap:10px;}
-  body[data-card="cards"] .card .info{padding-top:36px;padding-bottom:36px;}
+  body[data-card="cards"] .card .info{padding-top:36px;padding-bottom:40px;}
   body[data-card="cards"] .card{max-height:none;}
   .side-clip{display:contents;}
   .side-in{display:flex;flex-direction:column;gap:14px;min-width:0;}
   body[data-card="cards"] .side{--r:44px;position:relative;justify-content:flex-start;padding:0;}
   body[data-card="cards"] .side-clip{display:block;overflow:hidden;border-radius:0 0 var(--r) var(--r);}
-  body[data-card="cards"] .side-in{
-    gap:12px;padding:10px 40px 14px;
-    background:var(--panel-bg, rgba(255,255,255,.06));  /* the Panel tweak: colour, opacity and blur */
+  body[data-card="cards"] .side-in{gap:12px;padding:10px 40px 40px;}  /* the foot matches the sides */
+  /* the panel's surface: one element in the stage, behind the hero card's
+     glass, sized by the script to the card's width and the panel's height
+     plus the corner radius, so it runs up under the card and the card's
+     rounded bottom simply sits over it: no seam, no fillers */
+  .panel-bg{
+    position:absolute;z-index:1;pointer-events:none;display:none;
+    background:var(--panel-bg, rgba(197,164,150,.12));  /* the Panel tweak: colour, opacity and blur */
     -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
-    border-radius:0 0 var(--r) var(--r);
+    border-radius:0 0 var(--r, 44px) var(--r, 44px);
   }
-  body[data-card="cards"] .side::before, body[data-card="cards"] .side::after{
-    content:"";position:absolute;top:calc(-1 * var(--r));width:var(--r);height:var(--r);
-    background:var(--panel-bg, rgba(255,255,255,.06));
-  }
-  body[data-card="cards"] .side::before{
-    left:0;
-    -webkit-mask:radial-gradient(circle at 100% 0, transparent calc(var(--r) - .5px), #000 var(--r));
-    mask:radial-gradient(circle at 100% 0, transparent calc(var(--r) - .5px), #000 var(--r));
-  }
-  body[data-card="cards"] .side::after{
-    right:0;
-    -webkit-mask:radial-gradient(circle at 0 0, transparent calc(var(--r) - .5px), #000 var(--r));
-    mask:radial-gradient(circle at 0 0, transparent calc(var(--r) - .5px), #000 var(--r));
+  body[data-card="cards"] .panel-bg{display:block;}
   }
   /* dynamic: once the hero card has landed the panel slides down from behind
      it (its own height, inside the clip, so it emerges from the card's bottom
@@ -629,16 +631,12 @@
   body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .side-in,
   body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .side-in{transform:none;transition-delay:1000ms;}
   body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .side-in{transform:translateY(-100%);transition:transform .35s ease 0s;}
-  body[data-motion="dynamic"][data-card="cards"] .side::before,
-  body[data-motion="dynamic"][data-card="cards"] .side::after{opacity:0;transition:opacity .3s ease;}
-  body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .side::before,
-  body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .side::after,
-  body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .side::before,
-  body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .side::after{opacity:1;transition-delay:1600ms;}
-  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .side::before,
-  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .side::after{opacity:0;transition:opacity .15s ease 0s;}
+  body[data-motion="dynamic"][data-card="cards"] .panel-bg{opacity:0;transform:translateY(calc(-100% + var(--r, 44px)));transition:transform .8s var(--ease-out), opacity 0s linear 0s;}
+  body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .panel-bg,
+  body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .panel-bg{opacity:1;transform:none;transition:transform .8s var(--ease-out) 1000ms, opacity 0s linear 1000ms;}
+  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .panel-bg{opacity:0;transform:translateY(calc(-100% + var(--r, 44px)));transition:transform .35s ease 0s, opacity .2s ease .1s;}
   /* the label above the mini cards, Cards only; the column's gap sits between */
-  .next-label{display:none;margin:0;color:rgba(243,239,234,.62);}
+  .next-label{display:none;margin:0 0 6px;color:rgba(243,239,234,.62);}  /* 18px to the chips with the column gap */
   body[data-card="cards"] .next-label{display:block;}
   body[data-motion="dynamic"] .next-label{opacity:0;transition:opacity .5s ease;}
   body[data-motion="dynamic"][data-state="revealing"] .next-label,
@@ -1075,8 +1073,8 @@
       <option value="list">List</option>
     </select>
     <label for="panelColor">Panel</label>
-    <input type="color" id="panelColor" value="#ffffff" aria-label="Panel colour" title="Panel colour">
-    <input type="number" id="panelAlpha" min="0" max="100" step="1" value="6" aria-label="Panel opacity, percent" title="Panel opacity %">
+    <input type="color" id="panelColor" value="#c5a496" aria-label="Panel colour" title="Panel colour">
+    <input type="number" id="panelAlpha" min="0" max="100" step="1" value="12" aria-label="Panel opacity, percent" title="Panel opacity %">
     <input type="number" id="panelBlur" min="0" max="120" step="1" value="64" aria-label="Panel blur, pixels" title="Panel blur px">
     <label for="message">Message</label>
     <select id="message" aria-label="Message">
@@ -1118,6 +1116,7 @@
 <div class="glow" aria-hidden="true"></div>
 <div class="scene-bg" id="sceneBg" role="img" aria-label="A couple sharing a photo album in a cosy wood-toned living room"></div>
 <div class="dim" aria-hidden="true"></div>
+<div class="panel-bg" id="panelBg" aria-hidden="true"></div>
 <div class="seed" id="seed" aria-hidden="true"></div>
 
 <!-- Fold 1 · GiftIntro -->
@@ -1186,9 +1185,9 @@
       <p class="mono-label next-label">What’s next?</p>
       <div class="steps" id="steps">
         <div class="chips" id="chips" role="tablist" aria-label="What’s next">
-          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="Three minutes and a few questions about your health and history."><span>Get started</span></button>
-          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="A 45-minute consult online. They decide what’s worth testing for you, and we book it around you."><span>Meet your doctor</span></button>
-          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="Your doctor walks you through every result and what to change first."><span>Get your plan</span></button>
+          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="Three minutes and a few questions about your health and history."><i class="n">1</i><span>Get started</span></button>
+          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="A 45-minute consult online. They decide what’s worth testing for you, and we book it around you."><i class="n">2</i><span>Meet your doctor</span></button>
+          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="Your doctor walks you through every result and what to change first."><i class="n">3</i><span>Get your plan</span></button>
         </div>
         <p class="step-desc" id="stepDesc" aria-live="polite"></p>
       </div>
@@ -1484,7 +1483,27 @@
   var wanted = (params.get('device') || '').toLowerCase();
   setDevice(wanted === 'phone' || wanted === 'iphone' ? 'phone' : 'desktop');
   deviceSel.addEventListener('change', function(){ setDevice(deviceSel.value); });
-  window.addEventListener('resize', function(){ fitDevice(); layoutScene(); placeSig(); });
+  window.addEventListener('resize', function(){ fitDevice(); layoutScene(); placeSig(); panelSet(); });
+
+  /* the panel's surface follows the card: same left and width, from one radius
+     above the card's bottom edge down to the panel's foot; measured in the
+     stage's own pixels (the phone frame is scaled) */
+  function panelSet(){
+    var pb = document.getElementById('panelBg');
+    if(document.body.dataset.card !== 'cards') return;
+    var st = document.getElementById('stage'), sr = st.getBoundingClientRect(), k = sr.width / (st.clientWidth || 1) || 1;
+    var c = $('card').getBoundingClientRect(), sc = document.querySelector('.side-clip').getBoundingClientRect();
+    var r = parseFloat(getComputedStyle(document.querySelector('.side')).getPropertyValue('--r')) || 44;
+    pb.style.setProperty('--r', r + 'px');
+    pb.style.left = ((c.left - sr.left) / k + st.scrollLeft) + 'px';
+    pb.style.width = (c.width / k) + 'px';
+    pb.style.top = ((c.bottom - sr.top) / k + st.scrollTop - r) + 'px';
+    pb.style.height = (r + sc.height / k) + 'px';
+  }
+  if(window.ResizeObserver){
+    var ro = new ResizeObserver(function(){ panelSet(); });
+    ro.observe(document.querySelector('.side-clip')); ro.observe($('card')); ro.observe(document.getElementById('stage'));
+  }
 
   /* ---------- App: intro → revealing → gift → returning → intro ---------- */
   var SCENE_MS = 1100; // card-delay + card-ms, see the CSS tokens
@@ -1499,6 +1518,7 @@
     $('gift').setAttribute('aria-hidden', onGift ? 'false' : 'true');
     $('intro').setAttribute('aria-hidden', onGift ? 'true' : 'false');
     syncSteps();
+    panelSet();
   }
 
   /* ---------- What's next chips: the active one fills over STEP_MS, then the
@@ -1605,8 +1625,8 @@
   var panelColor = document.getElementById('panelColor'), panelAlpha = document.getElementById('panelAlpha'), panelBlur = document.getElementById('panelBlur');
   function setPanel(hex, a, bl){
     hex = String(hex || '').replace('#', '');
-    if(!/^[0-9a-f]{6}$/i.test(hex)) hex = 'ffffff';
-    a = parseInt(a, 10); if(isNaN(a)) a = 6; a = Math.max(0, Math.min(100, a));
+    if(!/^[0-9a-f]{6}$/i.test(hex)) hex = 'c5a496';   // warm sand by default
+    a = parseInt(a, 10); if(isNaN(a)) a = 12; a = Math.max(0, Math.min(100, a));
     bl = parseInt(bl, 10); if(isNaN(bl)) bl = 64; bl = Math.max(0, Math.min(120, bl));
     var r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
     document.body.style.setProperty('--panel-bg', 'rgba(' + r + ',' + g + ',' + b + ',' + (a / 100) + ')');
@@ -1626,6 +1646,7 @@
     document.body.dataset.card = v;
     cardSel.value = v;
     syncSteps();
+    requestAnimationFrame(panelSet);
     // the card changes height, so the seed behind it follows
     requestAnimationFrame(function(){ layoutScene(); if(state === 'gift') seedSet(cardRect()); });
   }
@@ -1644,7 +1665,7 @@
     if(state !== 'intro'){ setState('intro'); $('see').disabled = false; seedRest(); }
     document.getElementById('stage').scrollTop = 0;
     syncSteps();
-    requestAnimationFrame(function(){ layoutScene(); placeSig(); });
+    requestAnimationFrame(function(){ layoutScene(); placeSig(); panelSet(); });
   }
   setMotion((params.get('motion') || DEFAULT_MOTION || '').toLowerCase());
   motionSel.addEventListener('change', function(){ setMotion(motionSel.value); });
@@ -1672,7 +1693,7 @@
      the same reveal as the button, once the message and button are on
      screen. At the top of the second fold, a firm scroll up runs the way back. */
   var intro = $('intro'), giftEl = $('gift');
-  giftEl.addEventListener('scroll', function(){ if(!isStatic() && state === 'gift') seedSet(cardRect()); }, { passive: true });
+  giftEl.addEventListener('scroll', function(){ if(!isStatic() && state === 'gift') seedSet(cardRect()); panelSet(); }, { passive: true });
   function ready(){ return !isStatic() && state === 'intro' && intro.classList.contains('cta-in'); }
   var wheelAcc = 0, wheelTimer = null;
   window.addEventListener('wheel', function(e){

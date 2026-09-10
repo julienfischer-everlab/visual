@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Cards default, softer ring, tighter padding" |
+| Captured from version | 2026-09-10, "Seamless panel, numbered chips, sand default" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -35,7 +35,7 @@ the bar evenly.
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
 | Card | Cards, List | `card=list` |
-| Panel | a colour swatch (default white), an opacity in percent (default 6) and a backdrop blur in pixels (default 64, up to 120) for the second card in Cards | `panel=ffffff&alpha=6&blur=64` |
+| Panel | a colour swatch (default a warm sand, `#c5a496`), an opacity in percent (default 12) and a backdrop blur in pixels (default 64, up to 120) for the second card in Cards | `panel=c5a496&alpha=12&blur=64` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
@@ -140,11 +140,12 @@ disables the parallax.
 The photograph fills the screen, darkened so type reads over it. The fold does
 not scroll on desktop; on phones it does. One glass card, centred, up to 561px
 wide: `rgba(40,38,36,.36)` over a 60px blur, 44px corners, no shadow, so the
-room shows through; 40px padding inside (36px above and below in the Cards
-layout). Its only edge is a soft light: a 1px ring (the padding of
+room shows through; 40px padding inside (36px above in the Cards layout,
+40px at the foot to match the sides; the panel below also ends 40px under its
+last line). Its only edge is a soft light: a 1px ring (the padding of
 a masked pseudo-element) painted with a conic gradient, white at 6% all round
 with one soft arc about 80° wide, 24% at its heart, that turns once every
-four seconds, each turn easing in and out, endless; it fades in over 0.8s once the card has landed
+eight seconds, each turn easing in and out, endless; it fades in over 0.8s once the card has landed
 (and is always on in static motion), and does not turn under reduced motion. Inside: the mono
 "Your gift from Marc" line (orange square), the product name "Everlab
 Protocol Membership" 10px under it (two lines beside the tile), a short description, then a mono "What's included"
@@ -163,24 +164,26 @@ are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
 
 With the Card tweak on Cards (the default) the timeline goes and a second card
-takes its place: a panel in white at 6% over a 64px backdrop blur by default; the Panel
-tweak sets any colour, opacity and backdrop blur; the blur is on the panel
-only, the masked corner fillers stay a plain colour so they render in every
-browser) as wide as the hero card, starting flush at the hero card's bottom edge with square
-top corners and the hero card's radius on its bottom ones, so it reads as a
-card tucked behind the hero card with only its bottom showing. Two small
-glass fillers, masked to the outside of the hero card's rounded bottom
-corners, close the notches so the panel continues up behind the card. It
-arrives in dynamic motion once the hero card has landed: from 1.0s it slides
-down out from behind the card (its own height in 0.8s, easing out, inside a
-clip at the card's bottom edge so it emerges from under it) and the corner
-fillers fade in as it settles at 1.6s; on the way back it slides up under the
-card again in 0.35s. It holds, under a mono "What's next?" label, three chips
-in a row: Get started, Meet your doctor, Get your plan (pills with a hairline
-border, 13px medium). One is active at a time, white at 14% with brighter text
+takes its place: a panel in a warm sand (`#c5a496`) at 12% over a 64px
+backdrop blur by default (the Panel tweak sets any colour, opacity and blur)
+as wide as the hero card. Its surface is one element in the stage, behind the
+hero card's glass, placed by the script from the card's box: it runs from one
+corner radius above the card's bottom edge down to the panel's foot, with the
+card's radius on its bottom corners, so the hero card's rounded bottom simply
+sits over it and the panel reads as a card tucked behind it with only its
+bottom showing, with no seam and no corner patches. It
+arrives in dynamic motion once the hero card has landed: from 1.0s the
+surface and the content slide down together out from behind the card (their
+own height in 0.8s, easing out; the content inside a clip at the card's
+bottom edge, the surface hidden under the card's glass) so it emerges from
+under it; on the way back both slide up under the card again in 0.35s. It holds, under a mono "What's next?" label (18px above the
+chips), three chips in a row: Get started, Meet your doctor, Get your plan
+(pills with a hairline border, 13px medium, each starting with an 18px
+numbered circle, 1 to 3, outlined when idle and filled in the text colour when
+active). One is active at a time, white at 14% with brighter text
 and no border, the two states fading into each other over 0.4s; after three
 seconds the next chip takes over, round and round.
-Under the chips one line of description (14px, up to three lines reserved so
+Under the chips one line of description (14px, two lines always reserved so
 nothing jumps) belongs to the active chip and crossfades when it changes:
 "Three minutes and a few questions about your health and history." / "A
 45-minute consult online. They decide what's worth testing for you, and we
