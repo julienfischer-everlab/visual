@@ -3538,6 +3538,12 @@ arrow steps to 04; 03 sampled close (a few dots at the edge, the rest black)
 and landed (the body, the chip at its shoulder). Modes and error probes
 clean.
 
+"Your organs age differently -- before Introducing Organ Age." The heart
+frame moves ahead of the title card: 04 Heart / younger at 0:07-0:10 with
+the line, 05 Introducing at 0:10-0:12, and 06 The right pace picks the
+heart back up after it. The script, the frames and the delivery notes'
+frame numbers follow.
+
 ---
 
 ## 6. Open items
