@@ -10,8 +10,8 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-09, "Frosted back arrow, Mobile" |
-| Captured on | 2026-09-09 |
+| Captured from version | 2026-09-10, "Card tweak: mini cards" |
+| Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
@@ -24,7 +24,7 @@ repo's git history.
 ## Tweaks
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
-with a mono label and five plain native selects. Each changes the page in
+with a mono label and six plain native selects. Each changes the page in
 place; nothing reloads. On phones the labels hide and the five selects share
 the bar evenly.
 
@@ -34,6 +34,7 @@ the bar evenly.
 | Theme | Light, Dark | `theme=dark` |
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
+| Card | List, Cards | `card=cards` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
@@ -143,7 +144,13 @@ shadow, so the room shows through. Inside, 48px padding all round: the mono
 Protocol Membership" 10px under it (two lines beside the tile), a short description, then a mono "What's included"
 label above six plain rows, each a small line icon (speech bubble, drop, scan,
 pulse, leaf, cycle) and the full title, no card and no dividers, 6px above and
-below each row; then **Claim my gift** full width at the foot of the card. At
+below each row. With the Card tweak on Cards the six rows give way to three
+mini cards in a row under the same label (white at 7% with a faint border,
+18px corners): Consults, "Unlimited when needed"; Diagnostics, "DEXA, MRI
+scan, VO₂ Max"; On-going assistance, "Included", each a small mono label with
+its value anchored at the card's foot so the three values line up. On phones
+the three stack, label left and value right. The glass behind the card
+follows the card's new height at once. Then **Claim my gift** full width at the foot of the card. At
 the top right of the card, beside the title, sits the membership passport as a
 104×60 tile with nothing written on it: the `Ellipse 4358.png` copper image
 itself, crisp, filling the tile, with the Everlab mark over it and nothing
@@ -173,7 +180,7 @@ Every parameter is optional and falls back to the example gift in the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`), six items |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
-| `device`, `theme`, `motion`, `msg` | The tweaks, as above |
+| `device`, `theme`, `motion`, `sig`, `card`, `msg` | The tweaks, as above |
 
 All text is inserted as plain text, never as HTML.
 
