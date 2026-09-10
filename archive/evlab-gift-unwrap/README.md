@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Second card behind the hero card" |
+| Captured from version | 2026-09-10, "Panel corners closed, plain columns" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -158,17 +158,16 @@ are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
 
 With the Card tweak on Cards the timeline goes and a second card takes its
-place: a darker glass panel (`rgba(18,16,15,.62)` over a 40px blur) as wide
-as the hero card, starting flush at the hero card's bottom edge with square
+place: a darker panel (`rgba(18,16,15,.72)`, a plain colour with no blur so
+its masked corner fillers render in every browser) as wide as the hero card, starting flush at the hero card's bottom edge with square
 top corners and the hero card's radius on its bottom ones, so it reads as a
 card tucked behind the hero card with only its bottom showing. Two small
 glass fillers, masked to the outside of the hero card's rounded bottom
 corners, close the notches so the panel continues up behind the card. It
 fades in at 0.9s in dynamic motion and holds, under a mono "What's next?"
-label, the three mini cards, near-black at 90% (`rgba(14,12,11,.9)`, no blur,
-24px corners): Consults, "Unlimited
+label, three plain columns with no tile of their own, 20px apart: Consults, "Unlimited
 when needed"; Diagnostics, "DEXA, MRI scan, VO₂ Max"; On-going assistance,
-"Included", each a small mono label with its value anchored at the tile's
+"Included", each a small mono label with its value anchored at the column's
 foot so the three values line up. In dynamic motion they arrive one after
 another like the timeline steps (1.2s, 1.55s, 1.9s). On phones the three
 stack, label left and value right. The hero card keeps its six rows, set a
