@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Phone landing fix, card keeps the circle's glass" |
+| Captured from version | 2026-09-10, "Phone padding, progressive blur bars" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -117,7 +117,8 @@ block settles back from 400ms, done at about 1.15s. The seed's rectangle is
 taken from the card as it sits on screen, so a scrolled fold on a phone still
 lands exactly. On phones a dark gradient is fixed at the
 top of the screen under the wordmark and the arrow so the card can scroll
-beneath them, the first-fold block sits 64px lower, and the timeline has 24px
+beneath them, carrying a progressive 16px backdrop blur that fades out with
+the gradient (the floating button's bar at the foot has the same, upward), the first-fold block sits 64px lower, and the timeline has 24px
 more room above it.
 
 ## Static motion
@@ -159,8 +160,8 @@ the "Your gift from Marc" line and the product title out of the card into a
 head above it, centred, with 64px above and below so the photograph shows
 around them (they move back inside when the stage is wide again, ids and all);
 the card itself keeps the very same glass as the half circle on the first
-fold (`rgba(40,38,36,.36)` over a 60px blur), with 42px padding (38px at the
-sides, 40px at the foot). In dynamic motion the seed morphs to the card as on
+fold (`rgba(40,38,36,.36)` over a 60px blur), with 30px padding and 32px at
+the foot; the panel below uses the same 30px sides and 32px foot. In dynamic motion the seed morphs to the card as on
 desktop, unchanged in colour; the head above the card fades in with the
 card's content. The floating **Claim my gift** at the
 foot of the screen fills 70% of the width, centred.
