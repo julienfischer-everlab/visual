@@ -3890,6 +3890,55 @@ itself, each sequence its board time and on to the next, round and round;
 Pause (or the space bar) holds it, and a click on a row joins the play
 there. The button reads Pause at boot.
 
+"Need to finish this sequence before going to the next one. After Organ
+ages, plus a 1s delay. All sequences need a 2s minimum, a 1s delay after
+the VO." The play's pacing is its own now, not the board's timecodes (those
+are the edit's): a sequence hands over at the latest of 2s, the line spoken
+plus a second (a word every 0.32s from 0.25s), and where its own motion is
+through -- the readings' cycle, the body's 8s, "Organ ages" landed (2.9s)
+plus a second, the push to its 6s cut, the glide landed on the lungs plus a
+second (5s), the third line drawn and the actions up (6.5s), "Look closer"
+landed plus a second, the dot gone (4.5s). The live phones load at boot,
+hidden, so they are ready when the play reaches them, and on focus the board
+asks the framed page to land again (a postMessage; the app re-runs its hero
+landing), so the arc reveal -- and 06's glide, which now starts 1.5s after
+landing rather than 6 -- begin with the slot. The sketch under 06 morphs
+1.5s in to match.
+
+"Others are ageing faster." 06's line, in the script and on the frame.
+
+"Break the subtitle in two pieces: Together they tell a bigger story, then
+But not the full story." A line can be spoken in pieces (" | " in the
+script): a box per piece, the next starting once the one before has landed,
+held its 2s and gone (0.6s) -- so 02's second piece comes at 4.8s -- and the
+fade rule is written per (word count, start, cycle) now. The body's cycle is
+8s to carry it, the chips holding while the second line lands.
+
+"Same sequence as Look closer: add Available now before Look closer." 08 is
+two phases as 03 is -- "Available now" turning in and away, "Look closer"
+coming the same way and holding -- with the line in two pieces to match,
+"Available now." then "Look closer.", and the play holding to the second
+piece plus a second.
+
+"Sequence 1: more screen time, +2s." 01 runs a 10s cycle: the pull-back
+paced the same (the dot to the field in the first 2.4s), the ease on to 1x
+over the rest, five readings rather than four, and the subtitle on the same
+10s so the line does not come round again before the cut. A frame can name
+its cycle; the others stay on 8.
+
+"Break with paragraphs!" The motion notes under a frame are a paragraph per
+labelled part now -- Motion, Ease, Hold, Cut, Note -- 9px apart, instead of
+one run of text.
+
+Two sketches that cycle on their own now start with their slot rather than
+wherever their interval happened to be: 02's body (the cut to the close-up,
+the pull-back, the chips, the hold to 8s) restarts when 02 comes into focus,
+and 06's fallback glide goes to the lungs 1.5s in and back 4.2s later, as
+the app does. Without this the chips could be off for most of a slot.
+
+The play's clock skips any frame gap over a second (a phone booting, the
+tab away), so a stall is not charged to the slot it happens in.
+
 ---
 
 ## 6. Open items
