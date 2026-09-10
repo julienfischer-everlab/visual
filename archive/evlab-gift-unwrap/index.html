@@ -818,12 +818,9 @@
     .card-head .kicker .chip{justify-content:center;}
     .card-head .title-row{margin:0;padding:0;justify-content:center;}
     .card-head h2{text-align:center;font-size:clamp(26px, 6cqw + 4px, 32px);}
-    /* the card is black at 80% over a 64px blur; in dynamic motion the seed
-       keeps its half circle on the first fold, morphs to the card as on
-       desktop and takes the same black as it lands */
-    .card{background:rgba(0,0,0,.8);-webkit-backdrop-filter:blur(64px);backdrop-filter:blur(64px);}
-    body[data-state="revealing"] .seed, body[data-state="gift"] .seed{background:rgba(0,0,0,.8);-webkit-backdrop-filter:blur(64px);backdrop-filter:blur(64px);}
-    .seed{transition:transform 1100ms cubic-bezier(.2,.7,.2,1), background-color 700ms ease;}
+    /* the card keeps the very same glass as the half circle on the first
+       fold (rgba(40,38,36,.36) over a 60px blur): the seed morphs into it
+       unchanged, and the static card carries the same surface */
     .hero{padding-top:72px;}
     body[data-card="cards"] .hero{padding-top:72px;}
     .card .pass{display:none;}
@@ -1514,6 +1511,7 @@
   function setState(next){
     if(next === 'revealing') seedMorph(cardRect(), 1000, 100);   // card-ms, card-delay
     if(next === 'returning') seedMorph(restRect(), 750, 0);      // back-card-ms
+    if(next === 'gift') seedSet(cardRect());                       // land exactly where the card is now
     state = next;
     document.body.dataset.state = next;
     var onGift = next === 'gift' || next === 'revealing';
@@ -1709,7 +1707,11 @@
      the same reveal as the button, once the message and button are on
      screen. At the top of the second fold, a firm scroll up runs the way back. */
   var intro = $('intro'), giftEl = $('gift');
-  giftEl.addEventListener('scroll', function(){ if(!isStatic() && state === 'gift') seedSet(cardRect()); panelSet(); }, { passive: true });
+  giftEl.addEventListener('scroll', function(){
+    if(!isStatic() && state === 'gift') seedSet(cardRect());
+    else if(!isStatic() && state === 'revealing' && seedAnim){ var t = seedAnim.currentTime || 0; seedMorph(cardRect(), Math.max(50, 1100 - t), 0); }
+    panelSet();
+  }, { passive: true });
   function ready(){ return !isStatic() && state === 'intro' && intro.classList.contains('cta-in'); }
   var wheelAcc = 0, wheelTimer = null;
   window.addEventListener('wheel', function(e){

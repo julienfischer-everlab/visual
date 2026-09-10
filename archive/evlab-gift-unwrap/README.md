@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Phone: seed back, black 80% blur 64" |
+| Captured from version | 2026-09-10, "Phone landing fix, card keeps the circle's glass" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -104,8 +104,10 @@ layout, one Web Animation for all five so the box never drifts) over 1s on
 `cubic-bezier(.9,0,.22,1)`; in dynamic motion the card itself has no glass of
 its own: the seed stays exactly behind the transparent card for the whole
 visit as its surface (following the card if the fold scrolls on a phone), so
-there is never a swap between two surfaces; as the seed lands the content
-fades in; settled at 1.1s, when the footer and a small arrow at the
+there is never a swap between two surfaces; on landing the seed snaps to
+where the card is at that moment, and a scroll of the fold during the morph
+(a swipe's momentum on a phone) re-aims it, so it never lands offset; as the
+seed lands the content fades in; settled at 1.1s, when the footer and a small arrow at the
 top (a 40px frosted disc, white at 16% over a 24px blur, on desktop and
 phones alike) fade in and the five timeline steps appear one after another, 350ms apart,
 from 1.2s to about 3.2s. The arrow, or a firm scroll up, runs it in reverse:
@@ -156,11 +158,11 @@ it. Phones drop the circle, and lay the card out differently: the script moves
 the "Your gift from Marc" line and the product title out of the card into a
 head above it, centred, with 64px above and below so the photograph shows
 around them (they move back inside when the stage is wide again, ids and all);
-the card itself is black at 80% over a 64px blur (`rgba(0,0,0,.8)`) with
-42px padding (38px at the sides, 40px at the foot). In dynamic motion the seed
-keeps its half circle in the dome on the first fold and morphs to the card as
-on desktop, taking the same black over 0.7s as it lands; the head above the
-card fades in with the card's content. The floating **Claim my gift** at the
+the card itself keeps the very same glass as the half circle on the first
+fold (`rgba(40,38,36,.36)` over a 60px blur), with 42px padding (38px at the
+sides, 40px at the foot). In dynamic motion the seed morphs to the card as on
+desktop, unchanged in colour; the head above the card fades in with the
+card's content. The floating **Claim my gift** at the
 foot of the screen fills 70% of the width, centred.
 
 Under the card, 52px below and directly over the photograph, with no label: a
