@@ -187,9 +187,9 @@ own height in 0.8s, easing out; the content inside a clip at the card's
 bottom edge, the surface hidden under the card's glass) so it emerges from
 under it; on the way back both slide up under the card again in 0.35s. It holds, under a mono "What's next?" label (18px above the
 chips), three chips in a row: Get started, Meet your doctor, Get your plan
-(pills with a hairline border, 13px medium, each starting with an 18px
-numbered circle, 1 to 3, outlined when idle and filled in the text colour when
-active). One is active at a time, white at 14% with brighter text
+(pills with a hairline border, 13px medium, each starting with a 22px numbered circle, 1 to 3, set 7px from the pill's left, top and bottom so
+it fills the pill's height, outlined at 16% when idle and filled in the text
+colour when active). One is active at a time, white at 14% with brighter text
 and no border, the two states fading into each other over 0.4s; after three
 seconds the next chip takes over, round and round.
 Under the chips one line of description (14px, two lines always reserved so
