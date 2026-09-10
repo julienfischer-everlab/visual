@@ -1033,7 +1033,14 @@
     100%{opacity:0;scale:1;-webkit-mask-size:6px 6px;mask-size:6px 6px;}}
   .tzLife .tzFieldIn{animation:tzFieldIn 8s ease-in-out infinite;}
   @keyframes tzFieldIn{0%,50%{opacity:0;}72%,90%{opacity:1;}100%{opacity:0;}}
-  /* scene 03: the bigger story -- signals draw in to one point */
+  /* scene 03: the bigger story -- the body, and the chip pinned to it */
+  .tzBody{position:absolute;inset:0;}
+  .tzBody .tzOrgan{left:20%;right:20%;top:2%;height:96%;}
+  .tzChip{position:absolute;left:53%;top:44%;padding:7px 12px 6px;background:#F78359;color:#111;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;
+    opacity:0;transform:translateY(4px);transition:opacity .12s steps(1,end),transform .12s steps(1,end);}
+  .tzChip.on{opacity:1;transform:none;}
+  /* (the earlier draw-in sketch's rules, kept for reference) */
   .tzS2 i{position:absolute;left:50%;top:50%;border-radius:50%;animation:tzConverge 3.6s cubic-bezier(.4,0,.6,1) infinite;}
   .tzS2 em{position:absolute;left:50%;top:50%;width:46%;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(242,229,224,.22),transparent);}
   .tzS2 .tzCore{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:#F78359;box-shadow:0 0 26px 6px rgba(247,131,89,.35);animation:tzPulse 3.6s ease-in-out infinite;}
@@ -1057,6 +1064,9 @@
   @keyframes tzPush{from{scale:1;}to{scale:1.07;}}
   .tzOrgan{position:absolute;left:4%;right:4%;top:10%;height:31%;}
   .tzOrgan .dlBtn, .tzOrgan .dlMenu{display:none !important;}
+  /* the page's base rule fixes every canvas to the viewport (it is written
+     for the engine's); a view's canvases belong to their stage */
+  .tzOrgan canvas{position:absolute;inset:0;display:block;width:100%;height:100%;}
   .tzArc{position:absolute;left:6%;right:6%;top:39%;height:16%;}
   .tzArc svg{display:block;width:100%;height:100%;overflow:visible;}
   .tzPhone .tzArc.g{display:none;}
@@ -11617,7 +11627,7 @@
   const TZ_SCRIPT = [
     { tc: '00:00', vo: null, on: 'Lifestyle still: warm light, someone reading on a sofa. A slow push in' },
     { tc: '00:02', vo: 'Your body holds millions of signals.', on: 'The still dissolves into a field of readings, which drift' },
-    { tc: '00:04', vo: 'Together, they tell a bigger story.', on: 'The field draws in to one point' },
+    { tc: '00:04', vo: 'Together, they tell a bigger story.', on: 'The signals gather into a cloud that becomes the body; the chip: 8 years younger' },
     { tc: '00:07', vo: null, on: 'Black. INTRODUCING ORGAN AGE, a quiet pulse' },
     { tc: '00:09', vo: 'Your organs age differently.', on: 'The phone: heart, green arc, 37' },
     { tc: '00:12', vo: 'Some exactly as they should.', on: 'Closer on the heart; the arc holds' },
@@ -11669,14 +11679,10 @@
     // over it a dot-screened one whose screen coarsens as it takes over
     const photoInner = '<i class="sofa a"></i><i class="sofa b"></i><i class="cush"></i><i class="fig"></i><i class="light"></i>';
     const s0 = '<div class="tzLife"><div class="tzPhoto solid">' + photoInner + '</div><div class="tzPhoto dots">' + photoInner + '</div>' + field('tzFieldIn', false) + '</div>';
-    // 02 -- the draw-in
-    let s2 = '<div class="tzS2">';
-    for (let i = 0; i < 14; i++) s2 += '<em style="transform:rotate(' + (i * 360 / 14 + rnd(-6, 6)).toFixed(1) + 'deg)"></em>';
-    for (let i = 0; i < 30; i++){
-      const a = rnd(0, 6.283), r = rnd(120, 300), ink = Math.random() < 0.55 ? 0 : Math.random() < 0.6 ? 1 : 2, sz = rnd(2.5, 6);
-      s2 += '<i style="--dx:' + (Math.cos(a) * r).toFixed(0) + 'px;--dy:' + (Math.sin(a) * r * 0.6).toFixed(0) + 'px;width:' + sz.toFixed(1) + 'px;height:' + sz.toFixed(1) + 'px;margin:-' + (sz / 2).toFixed(1) + 'px;background:rgb(' + inkRGB[ink] + ');animation-delay:-' + rnd(0, 3.6).toFixed(2) + 's"></i>';
-    }
-    s2 += '<div class="tzCore"></div></div>';
+    // 03 -- the body: the product's own particle body, arrived at from a
+    // cloud (the sphere, the engine's own), with the reading's chip landing
+    // as the body does
+    const s2 = '<div class="tzBody"><div class="tzOrgan" id="tzBodyV"></div><div class="tzChip" id="tzChip">8 years younger</div></div>';
     // 03 / 08 / 09 -- type on black
     const s3 = '<div class="tzTitle tzBreathe"><div class="tzMono tzEye">Introducing</div><div class="tzBig">ORGAN AGE</div></div>';
     const s8 = '<div class="tzTitle"><div class="tzBig tzCut">LOOK CLOSER.</div></div>';
@@ -11720,7 +11726,7 @@
       frame('02', 'Signals', '0:02 \u2013 0:04', s1, { text: '\u201CYour body holds millions of signals.\u201D' },
         '<b>Motion.</b> A field of readings in the three inks drifting slowly up and to the right, a few numbers surfacing and going under. Parallax between three depths; nothing faster than about 12px/s at 1080p. <b>Ease.</b> Linear drift, numbers in and out on a 1.2s ease-in-out. <b>Grade.</b> Black, inks as tokens; the streaks are the flow\u2019s off-white at 35%.') +
       frame('03', 'The bigger story', '0:04 \u2013 0:07', s2, { text: '\u201CTogether, they tell a bigger story.\u201D' },
-        '<b>Motion.</b> The field of 02 draws in to one point over 2.5s; thin rays lead the eye to it; the point takes the accent (F78359) and swells once as the last signals land. <b>Ease.</b> Ease-in on the convergence (cubic-bezier .4 0 .6 1), a soft overshoot on the swell. <b>Cut.</b> Hard cut to black on the swell\u2019s peak.') +
+        '<b>Motion.</b> The field of 02 gathers into a cloud, and the cloud becomes the body \u2014 the product\u2019s own particle body, particle for particle (the component\u2019s morph, 1.6s), the strays still drifting round it. As the body lands, the chip: 8 YEARS YOUNGER in the accent (F78359), the mono in black, set over the right shoulder like a label pinned to it. <b>Ease.</b> Quintic in-out on the morph; the chip cuts in (no fade), 0.2s after the body settles. <b>Cut.</b> Hold 1.2s on the body and the chip, then a hard cut to black. <b>Note.</b> The sketch loops cloud \u2192 body \u2192 cloud every 6s.') +
       frame('04', 'Introducing', '0:07 \u2013 0:09', s3, { text: 'Black. A quiet pulse.', silent: true },
         '<b>Motion.</b> Two lines of type only: the eyebrow in the mono at 12% tracking, the title medium with 6% tracking. Both breathe between 78% and 100% opacity on a 3.2s cycle, no scale. <b>In/out.</b> 0.6s fade in, 0.4s fade out. Leave 1s of black before 05.') +
       frame('05', 'Heart / younger', '0:09 \u2013 0:12', s4, { text: '\u201CYour organs age differently.\u201D' },
@@ -11777,6 +11783,24 @@
       }, 900);
       toLung = !toLung;
     }, 6000);
+    // 03: sphere -> body -> sphere, the chip on while the body stands
+    // at the library's own density for the body (its tile's count, about ten
+    // thousand), not a thumbnail's: "use exactly the Body visual" -- this is
+    // the frame the whole piece turns on. A dense view, so it paints in slots.
+    const bodyN = organN(fullTarget(clouds[BODY_I]));
+    const bodyV = makeOrganView(document.getElementById('tzBodyV'), SPHERE_I, { target: bodyN, fill: 0.55, dot: 1.0, name: 'teaser-body', feed: true });
+    const chip = document.getElementById('tzChip'), bodyHost = document.getElementById('tzBodyV');
+    let bodyOn = false;
+    const bodyStep = () => {
+      if (bodyHost.offsetParent === null) return;
+      bodyOn = !bodyOn;
+      const idx = bodyOn ? BODY_I : SPHERE_I;
+      bodyV.morphTo(clouds[idx], 'o' + idx, bodyN, 1600);
+      if (bodyOn) setTimeout(() => chip.classList.add('on'), 1800);
+      else chip.classList.remove('on');
+    };
+    setTimeout(bodyStep, 900);
+    setInterval(bodyStep, 6000);
     // 05: the count-up rides the arc's 7s loop
     const n4 = document.getElementById('tzHeartN'), t0 = performance.now();
     (function count(){

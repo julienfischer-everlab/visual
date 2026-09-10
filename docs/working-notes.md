@@ -3483,6 +3483,33 @@ the still's loop sampled at 1.5s (the still), 4.4s (the screen, the image's
 colours in the dots) and 5.6s (the field); the chart at 5.2s with all three
 lines drawn and the readings labelled. Modes and error probes clean.
 
+### 5.143 The bigger story is the body
+
+"Here use exactly the Body visual. Cloud of particles that become the body
+particle shape. Add chip with bio age when the body is shaped." (With the
+chip drawn: 8 YEARS YOUNGER, the mono in black on the accent.)
+
+Frame 03 dropped the drawn convergence for the component itself: an organ
+view on the stage, starting on the engine's sphere -- a cloud of the same
+particles -- and morphing to the body (morphTo, 1.6s), at the library's own
+density for the body's cloud (organN(fullTarget), the tile's ten thousand points; a dense view, painted in slots) rather
+than a thumbnail's, since this is the frame the piece turns on; the strays
+drift round it. As the body lands the chip cuts in over the right shoulder
+(a step transition, no fade -- a label pinned, not a fade-up), and the sketch
+loops cloud -> body -> cloud every 6s so both can be seen. The script line
+and the notes follow.
+
+The body did not show at first: the page's base rule fixes every canvas to
+the viewport (it is written for the engine's), and a view's main canvas is
+positioned by it. The phone frames escaped only because a transformed
+ancestor (the phone's translate) re-anchors fixed descendants; the body's
+stage has none, so its canvas sat under the top bar. The organ stages now
+pin their canvases to themselves (.tzOrgan canvas), as the library's cells do.
+
+Probed: the view paints (3280 lit samples on the main canvas), the chip
+comes on once the body has landed, and the frame is the body with the chip
+at its shoulder.
+
 ---
 
 ## 6. Open items
