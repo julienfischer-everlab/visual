@@ -3819,6 +3819,11 @@ act's first row carrying no rule under its heading. The headings are rows of
 the same list but not lines: the focus wiring selects rows by their index
 attribute, so a heading is neither clickable nor counted.
 
+"Kill 'It all starts with one test'. Keep the sequence without VO." 01 is
+silent again -- the dot and the pull-back stay, the first spoken line is
+02's -- and carries no subtitle, as silent frames do. 05 keeps its VO, so
+01 is the one silent sequence.
+
 ---
 
 ## 6. Open items
