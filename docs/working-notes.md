@@ -3544,6 +3544,89 @@ the line, 05 Introducing at 0:10-0:12, and 06 The right pace picks the
 heart back up after it. The script, the frames and the delivery notes'
 frame numbers follow.
 
+### 5.145 The phone frames are the app
+
+"Why don't you use the exact same build as the mobile app? Why reinvent the
+wheel?" -- and then "Use the same screen as the Mobile view!" Fair: the mobile
+hero is one instance of one thing (a canvas, an arc, a halo, a shell), which
+is why the storyboard had redrawn it. The way to use the exact build is to
+let each frame be the app: the file is self-contained, so a frame is an
+iframe of this same file opened on the mobile viewport hash, and the real
+hero renders inside it.
+
+What that needed. The hash grew a hero suffix: `#m20v.p0` opens the hero on
+pill 0 (the heart), `#m20v.p0-3` opens on the heart and glides to the lungs
+and back every 5.5s, the way a swipe does (bxT and bxGlide, selectPill).
+The landing runs 140ms after setMode, past setMode's own 60ms settle that
+puts V6 on the biomarkers. It did not land at first: setMode rewrites the
+hash with replaceState to the bare `#m20v`, and the suffix was read after
+that call -- so it is read before, and the rewrite keeps the suffix, so a
+reload of a framed page lands where it did. The teaser's phone helper adds
+an iframe to frames 04, 06 and 07 (loading="lazy", src set on first focus),
+laid out at the app's 390px and scaled to the drawn phone, and shown only
+once the framed document reports itself as the mobile page (same origin, so
+it can be asked); if the host refuses to frame the page the sketch stays.
+The iframe's 'load' fires either way, which is why the class is read rather
+than the event trusted.
+
+Frame 08 also has its line now: "Everlab tracks them all, for better
+decisions", landing as the third line finishes drawing.
+
+### 5.146 Frame 03: centred, sharper, whole, and eased
+
+"Particles should be centred, not on the left. Sharper dots. The body at the
+end seems to have some holes -- keep the same body as the bio age one. The
+zoom out should have better pacing, ease in out."
+
+Centred: the close-up is on the cloud's centre now, and reads as a few
+particles by opacity rather than by looking away from the cloud -- the view
+opens at 80% and comes to full as the camera pulls back. Sharper: the zoom
+is 2.2x rather than 3.4x, so the close-up is a gentler upscale. (Laying the
+view out at 1.5x the stage to make the close-up the painter's own pixels was
+tried and undone: the dots are sized in pixels, so the larger layout spread
+them thin, and the landed body, scaled back down, was a faint dust.) Whole:
+the morph samples both clouds at the body's target, and the sphere holds
+fewer points than the body's ten thousand, so the body it landed on was
+missing the difference -- the holes. Once the morph is over the view is
+re-seated on the body itself (setOrgan), which re-samples it in full: the
+same body the bio-age slide and the library draw. Eased: 3s on an
+ease-in-out (cubic-bezier .65 0 .35 1) rather than a long ease-out, the chip
+landing as it settles.
+
+### 5.147 One dot, then the universe; no inclined text
+
+Three at once. "Avoid inclined text": the silent lines and the script's
+"no VO" were italic; they are upright, and `i` and `em` inside the page --
+which are dots and streaks, not words -- are set upright too so nothing can
+lean. "The sequence should be a cloud of particles floating, consistently
+moving like a vacuum, blur with parallax, and metrics appearing and
+disappearing through the zoom out" -- and "first sequence: a simple dot that
+becomes the cloud universe of dots by zooming out, then go to sequence 2."
+
+So the lifestyle still is out of 01 and one field serves 01 and 02: the
+universe (universe()), some 1,270 dots in four depths -- far: small, dim, blurred
+1.6px; mid: blurred .7px; sharp; near: large and out of focus 1.4px --
+every depth drifting the same way (up and to the left) at its own speed, one
+direction and never back, which is the pull; the whole field in a zoom
+container. 01 opens at ten times, one accent dot at the centre (the others
+are kept 11% clear of it, so nothing else is in frame close), and pulls back
+over 8s on an ease-in-out to the whole; 02 keeps pulling back gently (1.6x
+to 1x) while six readings (72, 209, 14, 5.1, 6h 12m, 88%) surface and go in
+the two sharp depths on staggered 6.4s cycles, up 0.6s, held 1.8s, gone. Each
+frame's loop fades to black at its end so the reset does not pop. The
+readings are sized to the stage like the rest of the type.
+
+Probed: 01 at 0.9s is the one dot alone; at 6s the universe with the dot at
+its centre; 02 shows the field with readings up; no element on the page
+renders italic.
+
+"Use the full viewport space. Viewport padding 64px, #111 background. Cards
+#000 for the frame, the script and timecodes, the palette, type and
+delivery; 32px radius, 32px padding." Done as said: the page's wrap has no
+maximum width and 64px of padding on a #111 ground, and the five kinds of
+content sit in black cards at 32px radius and padding; the stage inside the
+frame card keeps a 16px radius and a hairline so it reads on the black.
+
 ---
 
 ## 6. Open items
