@@ -3746,6 +3746,30 @@ holds 2s, the box fades over .5s. The fade point depends on the word count,
 so one keyframes rule is written per count present (tzSubOutN) into a style
 the page appends after the frames.
 
+### 5.149 The organ-age sheet: the right visual, and the organ swipes
+
+"Use the right visuals here. Make the organ swipeable as well." (The
+sheet, on the phone, its brain a faint sketch.) The sheet drew each organ at
+a two-thousand-dot thumbnail (shapeTarget 2000, 2400 on the desktop) with
+fill .44 and dot 1.05, and on the sheet's dark ground that read as a
+sketch. It draws the library's organ now -- the tile's own count (the
+organ's multiplier on the engine's density), fill .46, dot 1.0 -- on the
+phone sheet and the desktop modal alike, and the morph between organs
+samples at that count.
+
+The horizontal gesture belonged to the cards alone; the stage above only
+took a downward pull to dismiss the sheet. One set of handlers sits on both
+now: a horizontal drag on the organ moves the track and dissolves the organ
+into the next exactly as a drag on the cards does (the same rubber-band, the
+same flick), and on the phone a downward pull on the stage still takes the
+sheet away -- the direction decides which gesture it is, once it has moved
+seven pixels sideways or ten down.
+
+Probed on the desktop modal (m2, the expand button): open on the heart, a
+leftward drag across the organ lands on the brain with the card marked and
+the copy swapped; the lit pixel count on the stage's canvas up by a third
+over the thumbnail. Modes and error probes clean.
+
 ---
 
 ## 6. Open items

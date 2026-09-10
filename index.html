@@ -12194,10 +12194,13 @@
 
     // one instance of the master component, held dead centre — the organ never
     // travels with the carousel, it dissolves from one silhouette into the next
-    const oaTarget = cl => shapeTarget(cl, desk ? 2400 : 2000);
-    const first = clouds[PILL[0].organIdx];
+    // the Library's own drawing of each organ -- its tile's dot count (the
+    // organ's multiplier on the engine's density), fill .46, dot 1.0 -- rather
+    // than a two-thousand-dot thumbnail, which read as a faint sketch of the
+    // brain on the sheet's dark ground ("use the right visuals here")
+    const oaTarget = i => organN(Math.round(fullTarget(clouds[i]) * (ORGANS[i].dots || 1)));
     const view = makeOrganView(stage, PILL[0].organIdx, {
-      target: oaTarget(first), fill: desk ? 0.42 : 0.44, dot: 1.05, dl: false
+      target: oaTarget(PILL[0].organIdx), fill: 0.46, dot: 1.0, dl: false
     });
 
     let open = desk && !overlay, sx = 0, sxT = 0, sv = 0, drag = null, cur = 0, step = 1, swT = 0;
@@ -12239,7 +12242,7 @@
       // the heartbeat and the internal flow belong to the destination organ
       view.idx = d.organIdx;
       view.beat = ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart';
-      view.morphTo(cl, 'o' + d.organIdx, oaTarget(cl), 760);
+      view.morphTo(cl, 'o' + d.organIdx, oaTarget(d.organIdx), 760);
       // the copy leaves the way the carousel is going and returns from the far side
       meta.style.setProperty('--dx', (-32 * dir) + 'px');
       meta.classList.add('sw');
@@ -12293,22 +12296,33 @@
     if (window.ResizeObserver) new ResizeObserver(layout).observe(carousel);
     else addEventListener('resize', layout);
 
-    // the cards carry the horizontal gesture; the organ stays where it is
-    carousel.addEventListener('pointerdown', e => {
+    // The horizontal gesture belongs to the cards and to the organ alike
+    // ("make the organ swipeable as well"): one set of handlers on both. The
+    // organ stays where it is and dissolves into the next; the track follows
+    // the finger. On the phone a downward pull on the stage still takes the
+    // sheet away -- the direction decides which gesture this is.
+    const hDown = e => {
+      if (e.target.closest('.shClose, .oaNav')) return;
       drag = { x: e.clientX, y: e.clientY, sx0: sx, s0: Math.round(sxT),
-               lt: performance.now(), mode: null, pid: e.pointerId };
+               lt: performance.now(), mode: null, pid: e.pointerId, onStage: e.currentTarget === stage };
       sv = 0;
-    });
-    carousel.addEventListener('pointermove', e => {
+    };
+    const hMove = e => {
       if (!drag) return;
       const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
       if (drag.mode === null){
         if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy)){
           drag.mode = 'h';
-          try { carousel.setPointerCapture(drag.pid); } catch (err) {}
-        } else if (Math.abs(dy) > 10){ drag = null; return; }
+          try { e.currentTarget.setPointerCapture(drag.pid); } catch (err) {}
+        } else if (Math.abs(dy) > 10){
+          // a vertical pull: on the phone's stage it drags the sheet; anywhere
+          // else it is not ours
+          if (!desk && drag.onStage && dy > 0){ drag.mode = 'v'; sheet.style.transition = 'none'; }
+          else { drag = null; return; }
+        }
         else return;
       }
+      if (drag.mode === 'v'){ sheet.style.transform = 'translateY(' + Math.max(0, dy) + 'px)'; return; }
       let nx = drag.sx0 - dx / step;                 // 1:1 with the finger
       if (nx < 0) nx = nx * 0.28;                    // rubber-band at the ends
       if (nx > PILL.length - 1) nx = (PILL.length - 1) + (nx - (PILL.length - 1)) * 0.28;
@@ -12317,10 +12331,16 @@
       drag.lt = now;
       sx = nx;
       place();
-    });
-    carousel.addEventListener('pointerup', e => {
+    };
+    const hUp = e => {
       if (!drag) return;
       const d = drag; drag = null;
+      if (d.mode === 'v'){
+        sheet.style.transition = '';
+        if (e.clientY - d.y > 140) api.close();
+        else sheet.style.transform = '';
+        return;
+      }
       if (d.mode !== 'h') return;
       const delta = sx - d.s0;
       let target = d.s0;
@@ -12330,25 +12350,12 @@
         target = d.s0 + (sv > 0 ? 1 : -1);                            // a flick still carries
       manual(target);
       sxT = Math.max(0, Math.min(PILL.length - 1, target));
-    });
-    if (!desk){
-      // on the phone, the empty space above still swipes the modal away
-      stage.addEventListener('pointerdown', e => {
-        if (e.target.closest('.shClose')) return;
-        drag = { x: e.clientX, y: e.clientY, lt: performance.now(), mode: 'v', pid: e.pointerId };
-        sheet.style.transition = 'none';
-      });
-      stage.addEventListener('pointermove', e => {
-        if (!drag || drag.mode !== 'v') return;
-        sheet.style.transform = 'translateY(' + Math.max(0, e.clientY - drag.y) + 'px)';
-      });
-      stage.addEventListener('pointerup', e => {
-        if (!drag || drag.mode !== 'v') return;
-        const d = drag; drag = null;
-        sheet.style.transition = '';
-        if (e.clientY - d.y > 140) api.close();
-        else sheet.style.transform = '';
-      });
+    };
+    for (const el of [carousel, stage]){
+      el.addEventListener('pointerdown', hDown);
+      el.addEventListener('pointermove', hMove);
+      el.addEventListener('pointerup', hUp);
+      el.addEventListener('pointercancel', hUp);
     }
 
     const api = {
@@ -12367,7 +12374,7 @@
         const d = PILL[startIdx], cl = clouds[d.organIdx];
         view.idx = d.organIdx;
         view.cl = cl; view.key = 'o' + d.organIdx;
-        view.target = oaTarget(cl); view.morph = null; view._rt = null;
+        view.target = oaTarget(d.organIdx); view.morph = null; view._rt = null;
         view.beat = ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart';
         renderMeta(d);
         cards.forEach((el, j) => el.classList.toggle('on', j === startIdx));
