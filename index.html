@@ -1018,7 +1018,7 @@
   /* spoken: the words come up one by one at a talking pace, the line holds,
      and it starts over on an 8s period -- the frames' own cycle */
   .tzSub span{display:inline-block;opacity:0;animation:tzSpeak 8s linear infinite;}   /* its own name: tzWord is the closure's wordmark */
-  @keyframes tzSpeak{0%{opacity:0;translate:0 .3cqw;}2.5%{opacity:1;translate:0 0;}88%{opacity:1;}90%,100%{opacity:0;}}
+  @keyframes tzSpeak{0%{opacity:0;translate:0 .3cqw;}2.5%,100%{opacity:1;translate:0 0;}}   /* the words stay; the box does the fading (tzSubOutN) */
   .tzNote{margin-top:2px;}
   .tzNote{font-size:11.5px;line-height:1.6;color:rgba(242,229,224,.5);margin:0;}
   .tzNote b{font-weight:500;color:rgba(242,229,224,.78);}
@@ -1040,12 +1040,12 @@
      letter-spaced, a filled square before the label and a square cursor that
      types on; the entry fades once it has said its piece */
   .tzMet{position:absolute;inset:0;z-index:4;pointer-events:none;}
-  .tzM{position:absolute;font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:2.1cqw;line-height:1.5;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.88);white-space:nowrap;transition:opacity .45s ease;}
+  .tzM{position:absolute;font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:1.5cqw;line-height:1.25;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.88);white-space:nowrap;transition:opacity .45s ease;}
   .tzM.out{opacity:0;}
   .tzM .l{display:flex;align-items:center;}
-  .tzM .v{padding-left:2.6cqw;}
-  .tzM .sq{display:inline-block;width:1.5cqw;height:1.5cqw;background:#fff;margin-right:1.1cqw;}
-  .tzM .cur{display:inline-block;width:1.2cqw;height:1.7cqw;background:currentColor;margin-left:.5cqw;vertical-align:-.15cqw;}
+  .tzM .v{padding-left:1.8cqw;}
+  .tzM .sq{display:inline-block;width:1.05cqw;height:1.05cqw;background:#fff;margin-right:.75cqw;}
+  .tzM .cur{display:inline-block;width:.85cqw;height:1.2cqw;background:currentColor;margin-left:.35cqw;vertical-align:-.1cqw;}
   @keyframes tzVac{from{translate:0 0;}to{translate:var(--dx) var(--dy);}}
   .tzUni1 .zoom{animation:tzZoom1 8s cubic-bezier(.65,0,.35,1) infinite;}
   .tzUni1{animation:tzUniFade 8s linear infinite;}
@@ -11724,13 +11724,19 @@
     // the subtitle spoken: each word its own span, coming up in turn at a
     // talking pace (~0.32s a word) and the line holding, then starting over
     // on the frame's own cycle (the animation's period is the frame's)
+    // once the last word is written the line holds 2s, then the whole box
+    // fades (0.5s); the fade point depends on the word count, so a rule is
+    // written per count (tzSubOutN) into a style of the page's own
+    const subCounts = new Set();
     const spoken = text => {
       const words = text.split(' ');
+      subCounts.add(words.length);
       return words.map((w, i) => '<span style="animation-delay:' + (0.25 + i * 0.32).toFixed(2) + 's">' + w + '</span>').join(' ');
     };
+    const subClass = text => 'tzSub n' + text.split(' ').length;
     const frame = (n, title, dur, stage, line, note) =>
       '<div class="tzFrame' + (n === '01' ? ' on' : '') + '" data-i="' + (+n - 1) + '"><div class="tzBar tzMono"><span><b>' + n + '</b>&nbsp;&nbsp;' + title + '</span><span style="display:flex;gap:14px;align-items:center"><span class="tzDur">' + dur + '</span><span class="tzNav"><button type="button" data-go="-1" aria-label="Previous frame">&larr;</button><button type="button" data-go="1" aria-label="Next frame">&rarr;</button></span></span></div>' +
-      '<div class="tzStage" id="tzS' + n + '">' + stage + (line.silent ? '' : '<div class="tzSub">' + spoken(line.text) + '</div>') + '</div>' +
+      '<div class="tzStage" id="tzS' + n + '">' + stage + (line.silent ? '' : '<div class="' + subClass(line.text) + '">' + spoken(line.text) + '</div>') + '</div>' +
       '<p class="tzNote">' + note + '</p></div>';
     // 01 and 02 -- the universe of dots. One field in four depths: the far
     // ones small, dim and blurred, the near ones large and out of focus, the
@@ -11827,7 +11833,7 @@
       frame('01', 'One dot', '0:00 \u2013 0:02', s0, { text: '\u201CIt all starts with one test.\u201D' },
         '<b>Motion.</b> Black, and one dot, close \u2014 an ordinary one, off-white, drifting a little; the line lands on it. A zoom out over 2s, ease-in-out, and the dot is one of a universe of dots \u2014 the same field 02 continues \u2014 already drifting in one direction, the far ones small, dim and soft, the near ones large and out of focus. Nothing is pinned to the centre: the dot drifts with the rest. <b>Cut.</b> None into 02, which continues the shot; the sketch itself cuts back to the dot and plays again.') +
       frame('02', 'Signals', '0:02 \u2013 0:04', s1, { text: '\u201CYour body holds millions of signals.\u201D' },
-        '<b>Motion.</b> The same shot, the zoom out continuing gently (about 1.6x to 1x over the sequence). The universe drifts consistently in one direction, like a pull \u2014 four depths at four speeds, the far barely moving and the near sweeping past, so it parallaxes hard; the far depths small, dim and well out of focus, the nearest large and soft, the middle sharp. No glow on any dot. Readings type on, letter by letter, the way the Card nav\u2019s annotation does: a filled square, the label in the mono (VO\u2082 MAX, MAX HR, O\u2082 UPTAKE, HRV, GLUCOSE, SPO\u2082\u2026), then the value on the line below (42.8 ML/KG/MIN, 184 BPM, 3.2 L/MIN\u2026), a square cursor typing at 34ms a character and blinking off; each holds about 2s and fades, seven a sequence at staggered times and places. <b>Grade.</b> Black; mostly the off-white and the sand, a twelfth salmon, the grain fine; the readings in white at 88%.') +
+        '<b>Motion.</b> The same shot, the zoom out continuing gently (about 1.6x to 1x over the sequence). The universe drifts consistently in one direction, like a pull \u2014 four depths at four speeds, the far barely moving and the near sweeping past, so it parallaxes hard; the far depths small, dim and well out of focus, the nearest large and soft, the middle sharp. No glow on any dot. Readings type on, letter by letter, the way the Card nav\u2019s annotation does: a filled square, the label in the mono (VO\u2082 MAX, MAX HR, O\u2082 UPTAKE, HRV, GLUCOSE, SPO\u2082\u2026), then the value on the line below (42.8 ML/KG/MIN, 184 BPM, 3.2 L/MIN\u2026), a square cursor typing at 34ms a character and blinking off; each holds about 2s and fades, five a sequence, 1.4s apart, at staggered places. <b>Grade.</b> Black; mostly the off-white and the sand, a twelfth salmon, the grain fine; the readings in white at 88%.') +
       frame('03', 'The bigger story', '0:04 \u2013 0:07', s2, { text: '\u201CTogether, they tell a bigger story.\u201D' },
         '<b>Motion.</b> Open close, centred, the frame full of particles edge to edge, large and slow, the camera among them. Then a zoom out \u2014 the camera pulls back over 3s and the particles resolve into the body: the Library\u2019s own particle body, exactly as the Library page draws it, the strays still drifting round it. As the camera settles, the chip: 8 YEARS YOUNGER in the accent (F78359), the mono in black, pinned over the right shoulder. <b>Ease.</b> Ease-in-out on the pull-back (cubic-bezier .65 0 .35 1); the chip cuts in, no fade. <b>Cut.</b> Hold 1.2s on the body and the chip, then a hard cut. <b>Note.</b> Every sketch plays through once and cuts back to its start; nothing reverses.') +
       frame('04', 'Heart / younger', '0:07 \u2013 0:10', s4, { text: '\u201CYour organs age differently.\u201D' },
@@ -11866,6 +11872,15 @@
         '<li>Organs for 04, 06 and 07: export stills or frames from the Library page (download button on each tile)</li></ul></div>' +
       '</div>');
     wrap.innerHTML = h.join('');
+    // the subtitles' fade-out, one keyframes rule per word count: the last
+    // word lands at .25 + (n-1) x .32 + .2s, the line holds 2s, the box goes
+    // over .5s, all as shares of the 8s cycle
+    const st = document.createElement('style');
+    st.textContent = [...subCounts].map(n => {
+      const end = 0.25 + (n - 1) * 0.32 + 0.2 + 2.0, p1 = (end / 8 * 100).toFixed(2), p2 = ((end + 0.5) / 8 * 100).toFixed(2);
+      return '.tzSub.n' + n + '{animation:tzSubOut' + n + ' 8s linear infinite}@keyframes tzSubOut' + n + '{0%,' + p1 + '%{opacity:1}' + p2 + '%,100%{opacity:0}}';
+    }).join('\n');
+    wrap.appendChild(st);
     // one frame in focus: the script's lines and the frame's arrows choose it;
     // the arrow keys too while the page shows. A hidden frame's views stop
     // painting on their own (offsetParent), so only the focused one costs.
@@ -11983,7 +11998,9 @@
       clearMet();
       if (!metHost || metHost.offsetParent === null) return;
       const pick = METRICS.slice().sort(() => Math.random() - 0.5).slice(0, MET_SLOTS.length);
-      pick.forEach((m, i) => metLater(() => typeMetric(m, MET_SLOTS[i][0], MET_SLOTS[i][1]), 300 + i * 850));
+      // 1.4s between entries ("more delay between them appearing"): five a
+      // cycle rather than seven, so the last has time to say its piece
+      pick.slice(0, 5).forEach((m, i) => metLater(() => typeMetric(m, MET_SLOTS[i][0], MET_SLOTS[i][1]), 300 + i * 1400));
       metLater(runMetrics, 8000);   // the frame's cycle
     };
     // 03: the Library's body, exactly -- the same view with the same options

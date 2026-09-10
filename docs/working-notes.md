@@ -3733,6 +3733,19 @@ dot, and the universe answers it. The script, the frame and its subtitle
 follow; only 05 and 08's board line remain without VO -- 08 has its own now,
 so only 05 is silent.
 
+"Markers good, but more delay between them appearing. Reduce the line
+height. Scale the square and text down 30%." Entries 1.4s apart (was .85),
+five a cycle rather than seven so the last still has its hold; the type at
+1.5% of the stage's width (from 2.1), line height 1.25 (from 1.5), the
+square, the cursor and the indent scaled with it.
+
+"Once the subtitle is written, hold 2s, then fade out the whole subtitle."
+The words no longer fade one by one at the cycle's end; they stay, and the
+box goes as one: the last word lands at .25 + (n - 1) x .32 + .2s, the line
+holds 2s, the box fades over .5s. The fade point depends on the word count,
+so one keyframes rule is written per count present (tzSubOutN) into a style
+the page appends after the frames.
+
 ---
 
 ## 6. Open items
