@@ -3770,6 +3770,18 @@ leftward drag across the organ lands on the brain with the card marked and
 the copy swapped; the lit pixel count on the stage's canvas up by a third
 over the thumbnail. Modes and error probes clean.
 
+### 5.150 Hex beside the ink swatches
+
+"Need HEX, not RGB, on the tweak here." The Ink swatches are the browser's
+own colour inputs, and the picker they open shows RGB fields with no way to
+ask it for hex. So the bar carries its own: a mono hex field beside each
+swatch, the two one control -- type a six- or three-digit hex and the swatch
+and the ink follow (an unparsable value marks the field and changes nothing;
+blur restores the swatch's hex); pick with the swatch and the field follows;
+a theme change resyncs both, as the swatches already did. Probed: typing
+AAEEC2 sets the swatch and the ink, a bad value is marked and leaves the ink,
+picking updates the field.
+
 ---
 
 ## 6. Open items
