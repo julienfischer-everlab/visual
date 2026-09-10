@@ -25,7 +25,7 @@ repo's git history.
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
 with a mono label, six plain native selects, a colour swatch and a number field. Each changes the page in
-place; nothing reloads. On phones the labels hide and the six selects share
+place; nothing reloads. On phones the labels hide and the controls share
 the bar evenly.
 
 | Select | Options (default first) | Link parameter |
