@@ -3682,6 +3682,51 @@ with a small rise, the line holding once complete and going at the end of an
 8s period to start over -- the period the frames cycle on. Silent frames have
 no subtitle, so nothing to speak.
 
+"No halo light on the particles. Too much orange, make it more neutral. More
+parallax: blur, opacity." The glow is off every dot (the sharp depth's and
+the opening dot's). The inks are a twelfth salmon, a third sand, the rest
+off-white. The depths are pulled apart: the far one a thousand dots at 1-2px,
+18-42% and 2.2px of blur, drifting 18px over its cycle; the mid 620 at 1.8-3px,
+38-72%, 1px, 62px; the sharp 340 at 3-5px, 70-100%, no blur, 150px; the near
+44 at 8-14px, 22-48%, 2.6px of blur, sweeping 300px -- a sixteen-fold range
+of speed between the nearest and the farthest, which is the parallax.
+
+A frame starts from its first frame when it comes into focus: show()
+restarts its CSS animations (getAnimations, cancel and play) and rewinds its
+SVG timelines (setCurrentTime 0). They had all been running since the page
+was built, so a frame opened mid-cycle -- a subtitle caught with its first
+words already gone.
+
+"Put some real metrics, written letter by letter, the same effect as the Card
+nav's metric entries. Ideate more. Particles need to be finer." (With three
+examples: VO2 MAX 42.8 ML/KG/MIN, MAX HR 184 BPM, O2 UPTAKE 3.2 L/MIN, each a
+filled square and two lines of the mono.) 02's readings are entries now, in
+the Card nav annotation's manner and by the same mechanics (typeInto's
+square-cursor typer, 34ms a character, four blinks): a filled square, the
+label typed on, then the value on the line below, a hold of about two
+seconds and a fade. Fourteen real readings to draw from -- VO2 max, max HR,
+O2 uptake, resting HR, HRV, glucose, LDL, SpO2, blood pressure, sleep,
+hs-CRP, ferritin, grip, cortisol -- seven a cycle, shuffled, at seven places
+and staggered 0.85s apart, on an 8s cycle that runs only while 02 is in
+focus (show starts it and clears it). The entries sit in an overlay over the
+zoom rather than in a drifting depth, so they read while the field pulls
+back behind them. The grain is finer: the far dots .8-1.4px, the sharp ones
+2-3.2px.
+
+"Introducing / organ age, in two phases. No full uppercase. Saans medium,
+smaller." 05 is two lines on one cycle: "Introducing" up at 0.6s, held,
+gone by 3.7s as "organ age" comes up and holds to the cut; sentence case,
+4.2% of the stage's width (about 45px at 1080p), centred, no breath. Saans
+is named first in the stack with the product's fallbacks behind it -- the
+file does not carry the face, so the page shows the fallback until the font
+is installed where it is viewed; the AE comp has it.
+
+The subtitle's first words were going at three seconds, and the restart on
+focus did not explain it: the words' keyframes were named tzWord, which is
+also the closure frame's wordmark animation (up, hold, gone by 36%), and the
+later definition won -- 36% of the words' 8s is 2.9s. The words' keyframes
+are tzSpeak.
+
 ---
 
 ## 6. Open items
