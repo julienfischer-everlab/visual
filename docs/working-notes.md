@@ -3727,6 +3727,12 @@ also the closure frame's wordmark animation (up, hold, gone by 36%), and the
 later definition won -- 36% of the words' 8s is 2.9s. The words' keyframes
 are tzSpeak.
 
+"VO: It all starts with one test." 01 has its line: it lands on the one dot
+before the pull-back, so the first spoken word of the piece is over one
+dot, and the universe answers it. The script, the frame and its subtitle
+follow; only 05 and 08's board line remain without VO -- 08 has its own now,
+so only 05 is silent.
+
 ---
 
 ## 6. Open items
