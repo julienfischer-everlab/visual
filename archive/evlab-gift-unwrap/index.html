@@ -552,14 +552,26 @@
   }
   .incl li svg{display:block;width:18px;height:18px;stroke:var(--ink-d2);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
   /* Card tweak "Cards": three mini cards in a row below the card, in place of the timeline */
-  .minis{list-style:none;margin:0;padding:0;display:none;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px;}
-  .minis li{display:flex;flex-direction:column;gap:8px;min-width:0;padding:0;}  /* no tile: label and value only */
-  .minis .m-k{
-    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-d);
+  .steps{display:none;flex-direction:column;gap:14px;}
+  body[data-card="cards"] .steps{display:flex;}
+  /* three chips; the active one fills from the left over the step's time
+     (--step-ms) and then hands over to the next; the description below
+     crossfades with it */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip-btn{
+    position:relative;overflow:hidden;appearance:none;cursor:pointer;
+    border:1px solid rgba(255,255,255,.14);border-radius:999px;background:transparent;
+    padding:9px 16px;font:inherit;font-size:13px;font-weight:500;line-height:1.2;letter-spacing:.01em;
+    color:var(--muted-d);transition:color .3s ease, border-color .3s ease;
   }
-  .minis .m-v{margin-top:auto;font-weight:500;font-size:15px;line-height:1.3;color:var(--ink-d);text-wrap:balance;}  /* values share the cards' foot */
-  body[data-card="cards"] .minis{display:grid;}
+  .chip-btn::before{content:"";position:absolute;inset:0;width:0;background:rgba(255,255,255,.14);}
+  .chip-btn span{position:relative;}
+  .chip-btn:hover{color:var(--ink-d);}
+  .chip-btn.on{color:var(--ink-d);border-color:rgba(255,255,255,.28);}
+  .chip-btn.on::before{animation:chip-fill var(--step-ms, 3000ms) linear forwards;}
+  @keyframes chip-fill{from{width:0}to{width:100%}}
+  .step-desc{margin:0;min-height:3em;font-size:14px;line-height:1.5;color:var(--ink-d2);text-wrap:pretty;transition:opacity .22s ease;}
+  .step-desc.swap{opacity:0;}
   /* Cards: the side column is a second card in the same glass, tucked behind
      the hero card so only its bottom shows. It starts flush at the hero card's
      bottom edge with square top corners; two small glass fillers, masked to
@@ -567,17 +579,16 @@
      panel reads as continuing up behind the card */
   body[data-card="cards"] .hero{gap:0 !important;}  /* flush: the panel starts at the card's bottom edge, on every screen */
   body[data-card="cards"] .gift{overflow-y:auto;justify-content:flex-start;}
-  body[data-card="cards"] .hero{height:auto;min-height:calc(100% - 40px);padding:112px 0 8px;}
+  body[data-card="cards"] .hero{height:auto;min-height:calc(100% - 40px);padding:100px 0 8px;}
   body[data-card="cards"] .foot{position:static;margin:0 0 10px;}
-  .minis{gap:20px;}
   body[data-card="cards"] .incl li{padding:4px 0;}
   body[data-card="cards"] .incl-wrap{gap:10px;}
   body[data-card="cards"] .card .info{padding-top:44px;padding-bottom:44px;}
   body[data-card="cards"] .card{max-height:none;}
   body[data-card="cards"] .side{
     --r:44px;
-    position:relative;justify-content:flex-start;gap:14px;
-    padding:18px 48px 26px;
+    position:relative;justify-content:flex-start;gap:12px;
+    padding:18px 48px 22px;
     background:rgba(18,16,15,.72);  /* plain colour, no blur: the masked fillers then render everywhere */
     border-radius:0 0 var(--r) var(--r);
   }
@@ -609,16 +620,6 @@
   body[data-motion="dynamic"][data-state="returning"] .next-label{opacity:0;transition:opacity .25s ease 0s;}
   body[data-card="cards"] .timeline{display:none;}
   /* dynamic: like the timeline steps, the three arrive one after another */
-  body[data-motion="dynamic"] .minis li{opacity:0;transform:translateY(6px);transition:opacity .5s ease, transform .5s ease;}
-  body[data-motion="dynamic"][data-state="revealing"] .minis li,
-  body[data-motion="dynamic"][data-state="gift"] .minis li{opacity:1;transform:none;}
-  body[data-motion="dynamic"][data-state="revealing"] .minis li:nth-child(1),
-  body[data-motion="dynamic"][data-state="gift"] .minis li:nth-child(1){transition-delay:1200ms;}
-  body[data-motion="dynamic"][data-state="revealing"] .minis li:nth-child(2),
-  body[data-motion="dynamic"][data-state="gift"] .minis li:nth-child(2){transition-delay:1550ms;}
-  body[data-motion="dynamic"][data-state="revealing"] .minis li:nth-child(3),
-  body[data-motion="dynamic"][data-state="gift"] .minis li:nth-child(3){transition-delay:1900ms;}
-  body[data-motion="dynamic"][data-state="returning"] .minis li{opacity:0;transition:opacity .25s ease 0s;}
   /* the sender's note, under the value */
   .note{
     margin:auto 0 0;padding-top:26px;border-top:1px solid var(--hair-d);  /* pushed to the bottom of the column */
@@ -747,7 +748,6 @@
     .blurb{margin-bottom:0;font-size:13.5px;}
     .incl-wrap{gap:10px;padding-top:10px;}
     .incl li{padding:3px 0;font-size:13px;}
-    .minis .m-v{font-size:14px;}
     .side .mono-label{margin-top:4px;}
     .pass{aspect-ratio:1.9;}
     .pass-name b{font-size:22px;}
@@ -808,9 +808,8 @@
     .card{max-height:none;}
     .foot{position:static;margin-top:28px;white-space:normal;width:100%;}
     .incl li{font-size:13.5px;}
-    .minis{grid-template-columns:1fr;gap:12px;}
-    .minis li{flex-direction:row;align-items:center;justify-content:space-between;gap:14px;}
-    .minis .m-v{margin-top:0;font-size:14px;text-align:right;}
+    .chip-btn{padding:8px 13px;font-size:12.5px;}
+    .step-desc{font-size:13.5px;}
     .intro{padding:24px 22px;}
     body[data-motion="dynamic"] .intro{padding:88px 22px 104px;}
     body[data-motion="dynamic"][data-state="revealing"] .top-shade,
@@ -828,6 +827,7 @@
     .intro .chip::before{animation:none;}
     .chip{animation:none;opacity:1;transform:none;}
     .logo{animation:none !important;opacity:1;}
+    .chip-btn.on::before{animation:none;width:100%;}
     .stack, .card, .act, .more, .foot, .back, body, .glow, .scene-bg, .scene-bg::after, .dim{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
     body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;opacity:0;filter:none;}
@@ -1141,11 +1141,14 @@
   <aside class="side" aria-label="Your membership">
 
       <p class="mono-label next-label">What’s next?</p>
-      <ul class="minis" id="minis" aria-label="What’s next">
-        <li><span class="m-k">Consults</span><b class="m-v">Unlimited when needed</b></li>
-        <li><span class="m-k">Diagnostics</span><b class="m-v">DEXA, MRI scan, VO₂ Max</b></li>
-        <li><span class="m-k">On-going assistance</span><b class="m-v">Included</b></li>
-      </ul>
+      <div class="steps" id="steps">
+        <div class="chips" id="chips" role="tablist" aria-label="What’s next">
+          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="Three minutes and a few questions about your health and history."><span>Get started</span></button>
+          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="A 45-minute consult online. They decide what’s worth testing for you, and we book it around you."><span>Meet your doctor</span></button>
+          <button class="chip-btn" type="button" role="tab" aria-selected="false" data-desc="Your doctor walks you through every result and what to change first."><span>Get your plan</span></button>
+        </div>
+        <p class="step-desc" id="stepDesc" aria-live="polite"></p>
+      </div>
       <ol class="timeline" aria-label="Your next steps">
         <li class="now" aria-current="step"><i></i><span>Unwrap</span></li>
         <li><i></i><span>Get started</span></li>
@@ -1451,7 +1454,40 @@
     var onGift = next === 'gift' || next === 'revealing';
     $('gift').setAttribute('aria-hidden', onGift ? 'false' : 'true');
     $('intro').setAttribute('aria-hidden', onGift ? 'true' : 'false');
+    syncSteps();
   }
+
+  /* ---------- What's next chips: the active one fills over STEP_MS, then the
+     next takes over; the description below changes with it. Runs only while
+     the panel is on screen (Cards layout, second fold or static) ---------- */
+  var STEP_MS = 3000;
+  var chipBtns = Array.prototype.slice.call(document.querySelectorAll('#chips .chip-btn'));
+  var stepDesc = document.getElementById('stepDesc'), stepI = 0, stepTimer = 0, stepsOn = false;
+  document.documentElement.style.setProperty('--step-ms', STEP_MS + 'ms');
+  function showStep(i){
+    stepI = i;
+    chipBtns.forEach(function(b, k){ b.classList.remove('on'); b.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+    void chipBtns[i].offsetWidth;            // restart the fill even on the same chip
+    chipBtns[i].classList.add('on');
+    if(stepDesc.textContent !== chipBtns[i].dataset.desc){
+      stepDesc.classList.add('swap');
+      setTimeout(function(){ stepDesc.textContent = chipBtns[i].dataset.desc; stepDesc.classList.remove('swap'); }, reduce ? 0 : 220);
+    }
+    clearTimeout(stepTimer);
+    stepTimer = setTimeout(function(){ showStep((stepI + 1) % chipBtns.length); }, STEP_MS);
+  }
+  function stepsLive(){
+    return document.body.dataset.card === 'cards' && !document.hidden && (isStatic() || state === 'gift');
+  }
+  function syncSteps(){
+    var live = stepsLive();
+    if(live && !stepsOn){ stepsOn = true; showStep(0); }
+    else if(!live && stepsOn){ stepsOn = false; clearTimeout(stepTimer); stepTimer = 0; chipBtns.forEach(function(b){ b.classList.remove('on'); }); }
+  }
+  chipBtns.forEach(function(b, k){ b.addEventListener('click', function(){ if(stepsOn) showStep(k); }); });
+  document.addEventListener('visibilitychange', syncSteps);
+  stepDesc.textContent = chipBtns[0].dataset.desc;
+  chipBtns[0].setAttribute('aria-selected', 'true');
 
   function isStatic(){ return document.body.dataset.motion === 'static'; }
   function reveal(){
@@ -1529,6 +1565,7 @@
     v = v === 'cards' ? 'cards' : 'list';
     document.body.dataset.card = v;
     cardSel.value = v;
+    syncSteps();
     // the card changes height, so the seed behind it follows
     requestAnimationFrame(function(){ layoutScene(); if(state === 'gift') seedSet(cardRect()); });
   }
@@ -1546,6 +1583,7 @@
     // run, is put back to its start so both folds are where the new mode expects
     if(state !== 'intro'){ setState('intro'); $('see').disabled = false; seedRest(); }
     document.getElementById('stage').scrollTop = 0;
+    syncSteps();
     requestAnimationFrame(function(){ layoutScene(); placeSig(); });
   }
   setMotion((params.get('motion') || DEFAULT_MOTION || '').toLowerCase());

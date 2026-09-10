@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Panel corners closed, plain columns" |
+| Captured from version | 2026-09-10, "What's next chips, 3s cycle" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -165,12 +165,22 @@ card tucked behind the hero card with only its bottom showing. Two small
 glass fillers, masked to the outside of the hero card's rounded bottom
 corners, close the notches so the panel continues up behind the card. It
 fades in at 0.9s in dynamic motion and holds, under a mono "What's next?"
-label, three plain columns with no tile of their own, 20px apart: Consults, "Unlimited
-when needed"; Diagnostics, "DEXA, MRI scan, VO₂ Max"; On-going assistance,
-"Included", each a small mono label with its value anchored at the column's
-foot so the three values line up. In dynamic motion they arrive one after
-another like the timeline steps (1.2s, 1.55s, 1.9s). On phones the three
-stack, label left and value right. The hero card keeps its six rows, set a
+label, three chips in a row: Get started, Meet your doctor, Get your plan
+(pills with a hairline border, 13px medium). One is active at a time: its
+text and border brighten and a soft white fill (14%) grows across it from
+the left over three seconds, then the next chip takes over, round and round.
+Under the chips one line of description (14px, up to three lines reserved so
+nothing jumps) belongs to the active chip and crossfades when it changes:
+"Three minutes and a few questions about your health and history." / "A
+45-minute consult online. They decide what's worth testing for you, and we
+book it around you." / "Your doctor walks you through every result and what
+to change first." Clicking a chip makes it active and restarts its fill. The
+cycle runs only while the panel is on screen (Cards layout, on the second
+fold in dynamic motion or anywhere in static), stops on the way back to the
+first fold or when the tab is hidden, and restarts from the first chip when
+the panel returns. Reduced motion shows the active chip filled with no
+animation. On phones the chips wrap.
+The hero card keeps its six rows, set a
 little tighter (4px above and below each row, 44px top and bottom padding)
 so the stack fits an 856px-tall stage without scrolling; on shorter screens
 the fold scrolls and the footer flows after the stack. The
