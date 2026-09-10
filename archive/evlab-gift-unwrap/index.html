@@ -198,7 +198,7 @@
      never a swap to flash), and only the content fades in and out */
   body[data-motion="dynamic"] .card{transform:none;opacity:1;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;transition:none;}
   body[data-motion="dynamic"] .card .info, body[data-motion="dynamic"] .card-head{opacity:0;transition:opacity 600ms ease calc(var(--card-delay) + var(--card-ms) + 50ms);}
-  body[data-motion="dynamic"][data-state="revealing"] .card .info,
+  body[data-motion="dynamic"][data-state="revealing"] .card .info, body[data-motion="dynamic"][data-state="revealing"] .card-head,
   body[data-motion="dynamic"][data-state="gift"] .card .info, body[data-motion="dynamic"][data-state="gift"] .card-head{opacity:1;}
   body[data-motion="dynamic"][data-state="returning"] .card .info, body[data-motion="dynamic"][data-state="returning"] .card-head{opacity:0;transition:opacity 350ms ease 0s;}
   /* nothing inside the card moves on the way back; it only fades */
@@ -445,22 +445,6 @@
 
   .card-head:empty{display:none;}
   .card .info{padding:40px;display:flex;flex-direction:column;justify-content:flex-start;min-height:0;min-width:0;}
-  /* a soft light travelling round the card's edge: a 1px ring (the padding of
-     a masked pseudo-element) painted with a conic gradient whose bright arc
-     turns once every 4s; faint everywhere else, so the card keeps no hard border */
-  @property --ring-a{syntax:'<angle>';inherits:false;initial-value:0deg;}
-  .card::before{
-    content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
-    background:conic-gradient(from var(--ring-a),
-      rgba(255,255,255,.06) 0deg, rgba(255,255,255,.06) 280deg,
-      rgba(255,255,255,.24) 320deg, rgba(255,255,255,.06) 360deg);  /* one soft 80° arc, 24% at its heart */
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);mask-composite:exclude;
-    opacity:0;transition:opacity .8s ease;
-    animation:ring-turn 8s cubic-bezier(.45,0,.55,1) infinite;  /* each turn eases in and out */
-  }
-  @keyframes ring-turn{to{--ring-a:360deg;}}
-  body[data-state="gift"] .card::before, body[data-motion="static"] .card::before{opacity:1;}
   .kicker{
     display:flex;justify-content:space-between;align-items:center;gap:16px;
     margin:0 0 10px;
@@ -805,8 +789,8 @@
        anchored to the stage so it stays at the foot of the screen */
     .act{display:none;}
     .act-float{
-      display:flex;position:absolute;left:0;right:0;bottom:0;z-index:6;
-      padding:18px 20px 30px;
+      display:flex;justify-content:center;position:absolute;left:0;right:0;bottom:0;z-index:6;
+      padding:18px 15% 30px;  /* the button fills 70% of the width */
       background:linear-gradient(180deg, rgba(14,12,11,0), rgba(14,12,11,.88) 45%);
       opacity:0;transform:translateY(10px);
       transition:opacity .7s var(--ease-out) 1100ms, transform .7s var(--ease-out) 1100ms;
@@ -825,8 +809,8 @@
     .logo svg{height:20px;}
     .back{top:14px;}
     .phone{width:min(34%, 150px);transform:translate(-50%,-42%) rotate(-14deg);}
-    .card .info{padding:22px 18px 20px;min-height:0;}
-    body[data-card="cards"] .card .info{padding-top:22px;padding-bottom:20px;}
+    .card .info{padding:42px 38px 40px;min-height:0;}
+    body[data-card="cards"] .card .info{padding-top:42px;padding-bottom:40px;}
     /* the eyebrow and the title stand outside the card, centred, with room
        above and below so the photograph shows; the card is solid black */
     .card-head{display:flex;flex-direction:column;align-items:center;text-align:center;padding:64px 12px 64px;}
@@ -834,9 +818,17 @@
     .card-head .kicker .chip{justify-content:center;}
     .card-head .title-row{margin:0;padding:0;justify-content:center;}
     .card-head h2{text-align:center;font-size:clamp(26px, 6cqw + 4px, 32px);}
-    .card{background:#0E0C0B;-webkit-backdrop-filter:none;backdrop-filter:none;}
-    body[data-state="revealing"] .seed, body[data-state="gift"] .seed{background:#0E0C0B;-webkit-backdrop-filter:none;backdrop-filter:none;}
-    .seed{transition:transform 1100ms cubic-bezier(.2,.7,.2,1), background-color 700ms ease;}
+    .card{background:rgba(0,0,0,.9);-webkit-backdrop-filter:none;backdrop-filter:none;}
+    /* dynamic on phones: no seed circle and no morph; the card is its own
+       black surface and fades in together with the title above it and the
+       content inside it, once the photograph has filled the screen */
+    .seed{display:none;}
+    body[data-motion="dynamic"] .card{background:rgba(0,0,0,.9);opacity:0;transition:opacity 600ms ease 900ms;}
+    body[data-motion="dynamic"][data-state="revealing"] .card,
+    body[data-motion="dynamic"][data-state="gift"] .card{opacity:1;}
+    body[data-motion="dynamic"][data-state="returning"] .card{opacity:0;transition:opacity 350ms ease 0s;}
+    body[data-motion="dynamic"] .card .info, body[data-motion="dynamic"] .card-head{transition-delay:900ms;}
+    body[data-motion="dynamic"][data-state="returning"] .card .info, body[data-motion="dynamic"][data-state="returning"] .card-head{transition-delay:0s;}
     .hero{padding-top:72px;}
     body[data-card="cards"] .hero{padding-top:72px;}
     .card .pass{display:none;}
@@ -869,7 +861,6 @@
     .intro .chip::before{animation:none;}
     .chip{animation:none;opacity:1;transform:none;}
     .logo{animation:none !important;opacity:1;}
-    .card::before{animation:none;}
     .stack, .card, .act, .more, .foot, .back, body, .glow, .scene-bg, .scene-bg::after, .dim{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
     body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;opacity:0;filter:none;}
