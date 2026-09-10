@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Phone padding, progressive blur bars" |
+| Captured from version | 2026-09-10, "Phone button rises after the card, crisp over its blur" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -164,7 +164,12 @@ fold (`rgba(40,38,36,.36)` over a 60px blur), with 30px padding and 32px at
 the foot; the panel below uses the same 30px sides and 32px foot. In dynamic motion the seed morphs to the card as on
 desktop, unchanged in colour; the head above the card fades in with the
 card's content. The floating **Claim my gift** at the
-foot of the screen fills 70% of the width, centred.
+foot of the screen fills 70% of the width, centred; in dynamic motion it waits
+below the screen and rises into place over 0.75s from 1.5s, once the card has
+landed and its content shown, and drops back below on the way back. Its bar's
+gradient and progressive blur live on a layer of their own behind the button,
+so the button stays crisp; the fold keeps 120px of room at its foot so
+everything can scroll clear of the button.
 
 Under the card, 52px below and directly over the photograph, with no label: a
 horizontal timeline as wide as the card (with the Card tweak on List), five equal columns with a 10px square

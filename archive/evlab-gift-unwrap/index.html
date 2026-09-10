@@ -791,15 +791,22 @@
     .act-float{
       display:flex;justify-content:center;position:absolute;left:0;right:0;bottom:0;z-index:6;
       padding:18px 15% 30px;  /* the button fills 70% of the width */
+      /* rises from below the screen once the card has landed and its content shown */
+      opacity:0;transform:translateY(110%);
+      transition:opacity .5s var(--ease-out) 1500ms, transform .75s var(--ease-out) 1500ms;
+    }
+    /* the bar's own layer, behind the button: the gradient and a progressive
+       16px blur fading upward, so the button itself stays crisp */
+    .act-float .bar-fade{
+      position:absolute;inset:0;z-index:0;pointer-events:none;
       background:linear-gradient(180deg, rgba(14,12,11,0), rgba(14,12,11,.88) 45%);
       -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
       -webkit-mask:linear-gradient(0deg, #000 40%, transparent);mask:linear-gradient(0deg, #000 40%, transparent);
-      opacity:0;transform:translateY(10px);
-      transition:opacity .7s var(--ease-out) 1100ms, transform .7s var(--ease-out) 1100ms;
     }
+    .act-float .pill{position:relative;z-index:1;}
     body[data-state="revealing"] .act-float,
     body[data-state="gift"] .act-float{opacity:1;transform:none;}
-    body[data-state="returning"] .act-float{opacity:0;transition-delay:0s;transition-duration:.3s;}
+    body[data-state="returning"] .act-float{opacity:0;transform:translateY(110%);transition-delay:0s;transition-duration:.3s;}
     .act-float .pill{width:100%;color:var(--btn-d-ink);background:var(--btn-d);padding:16px 30px;font-size:16px;font-weight:500;}
     .gift{padding-bottom:120px;}
 
@@ -830,7 +837,7 @@
     .blurb{padding-right:0;}
     .incl li{white-space:normal;}
     .more{margin-top:40px;gap:40px;}
-    .gift{overflow-y:auto;justify-content:flex-start;padding:0 20px 40px;}
+    .gift{overflow-y:auto;justify-content:flex-start;padding:0 20px 120px;}  /* room to scroll everything clear of the floating button */
     .hero{height:auto;min-height:0;padding:88px 0 8px;}
     .card{max-height:none;}
     .foot{position:static;margin-top:28px;white-space:normal;width:100%;}
@@ -1210,7 +1217,7 @@
 </main>
 
 <div class="top-shade" aria-hidden="true"></div>
-<div class="act-float"><a class="pill" id="claimFloat" href="#">Claim my gift</a></div>
+<div class="act-float"><i class="bar-fade" aria-hidden="true"></i><a class="pill" id="claimFloat" href="#">Claim my gift</a></div>
 </div>
 <div class="home" aria-hidden="true"></div>
 </div>
