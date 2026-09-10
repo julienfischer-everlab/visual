@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Card tweak: mini cards" |
+| Captured from version | 2026-09-10, "Mini cards flip" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -149,8 +149,19 @@ mini cards in a row under the same label (white at 7% with a faint border,
 18px corners): Consults, "Unlimited when needed"; Diagnostics, "DEXA, MRI
 scan, VO₂ Max"; On-going assistance, "Included", each a small mono label with
 its value anchored at the card's foot so the three values line up. On phones
-the three stack, label left and value right. The glass behind the card
-follows the card's new height at once. Then **Claim my gift** full width at the foot of the card. At
+the three stack, label left and value right. Each mini card is a button:
+a click, Enter or Space flips it over (a 0.65s rotation about its vertical
+axis) to a back face carrying the same label and three short bullets with
+small red squares (Consults: the 45-minute onboarding consult, the
+nutrition assessment, follow-ups when needed; Diagnostics: the 100+
+biomarker blood panel, the DEXA scan, the 90-minute physical with VO₂ max;
+On-going assistance: re-testing part-way, the 12-month review, the plan
+updated as results come in), and a second click flips it back. Only the
+face showing sets the card's height, which animates between the two while
+the glass behind the gift card follows it frame by frame; on desktop the
+other two cards stretch to the same row. Reduced motion drops the
+rotation and the height animation. The glass behind the card also
+follows the card's new height when the tweak is switched. Then **Claim my gift** full width at the foot of the card. At
 the top right of the card, beside the title, sits the membership passport as a
 104×60 tile with nothing written on it: the `Ellipse 4358.png` copper image
 itself, crisp, filling the tile, with the Everlab mark over it and nothing
