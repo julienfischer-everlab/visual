@@ -969,7 +969,22 @@
   body.m22 .tzr{display:block;}
   body.m22 #field, body.m22 .carousel, body.m22 .pillui, body.m22 .note{display:none;}
   .tzr *{box-sizing:border-box;}
-  .tzWrap{max-width:1220px;margin:0 auto;padding:36px 28px 90px;}
+  .tzWrap{max-width:1280px;margin:0 auto;padding:28px 28px 80px;}
+  /* one frame in focus on the left, the script on the right driving it */
+  .tzLayout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.85fr);gap:24px;align-items:start;}
+  @media (max-width:980px){.tzLayout{grid-template-columns:1fr;}}
+  .tzFocus .tzFrame{display:none;}
+  .tzFocus .tzFrame.on{display:flex;}
+  .tzScript li{cursor:pointer;border-radius:8px;padding:9px 10px;margin:0 -10px;border-top:0;}
+  .tzScript li + li{border-top:1px solid rgba(242,229,224,.07);}
+  .tzScript li:hover{background:rgba(255,255,255,.04);}
+  .tzScript li.on{background:rgba(255,255,255,.07);}
+  .tzScript li.on .tc{color:#F78359;}
+  .tzScript li .n{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;color:rgba(242,229,224,.4);margin-right:8px;}
+  .tzScript li.on .n{color:#f2e5e0;}
+  .tzNav{display:flex;gap:6px;}
+  .tzNav button{width:26px;height:26px;border-radius:7px;border:1px solid rgba(242,229,224,.14);background:transparent;color:#f2e5e0;cursor:pointer;font:inherit;font-size:13px;line-height:1;}
+  .tzNav button:hover{background:rgba(255,255,255,.06);}
   .tzMono{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;}
   .tzHead{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:start;margin-bottom:34px;}
   .tzHead h1{margin:0 0 10px;font-size:27px;font-weight:500;letter-spacing:-.6px;}
@@ -990,13 +1005,13 @@
   .tzBar{display:flex;justify-content:space-between;align-items:baseline;font-size:10px;color:rgba(242,229,224,.45);}
   .tzBar b{font-weight:500;color:#f2e5e0;}
   .tzBar .tzDur{letter-spacing:.06em;}
-  .tzStage{position:relative;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;
+  .tzStage{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;container-type:inline-size;
     border:1px solid rgba(255,255,255,.08);margin:10px 0 12px;isolation:isolate;}
   .tzLine{font-size:15px;line-height:1.4;color:#f2e5e0;margin:0 0 8px;}
   .tzLine.silent{color:rgba(242,229,224,.5);font-style:italic;}
   .tzNote{font-size:11.5px;line-height:1.6;color:rgba(242,229,224,.5);margin:0;}
   .tzNote b{font-weight:500;color:rgba(242,229,224,.78);}
-  .tzSys{margin-top:34px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+  .tzSys{margin-top:24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
   @media (max-width:980px){.tzSys{grid-template-columns:1fr;}}
   .tzSys .tzCard{background:rgba(255,255,255,.04);border-radius:16px;padding:16px 18px;}
   .tzSys h3{margin:0 0 10px;font-size:10px;color:rgba(242,229,224,.45);}
@@ -1009,7 +1024,7 @@
   .tzField{position:absolute;inset:-30%;transform:rotate(-14deg);}
   .tzField i{position:absolute;border-radius:50%;animation:tzDrift linear infinite alternate;}
   .tzField em{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(242,229,224,.35),transparent);animation:tzDrift linear infinite alternate;}
-  .tzField b{position:absolute;font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-weight:400;font-size:13px;color:rgba(242,229,224,.85);animation:tzDrift linear infinite alternate, tzBlink 7s ease-in-out infinite;}
+  .tzField b{position:absolute;font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-weight:400;font-size:3.4cqw;color:rgba(242,229,224,.85);animation:tzDrift linear infinite alternate, tzBlink 7s ease-in-out infinite;}
   @keyframes tzDrift{from{translate:-26px 0;}to{translate:26px 0;}}
   @keyframes tzBlink{0%,18%{opacity:0;}30%,70%{opacity:1;}82%,100%{opacity:0;}}
   /* scene 01: the lifestyle still, standing in, going to dots */
@@ -1035,21 +1050,30 @@
   @keyframes tzFieldIn{0%,50%{opacity:0;}72%,90%{opacity:1;}100%{opacity:0;}}
   /* scene 03: the bigger story -- the body, and the chip pinned to it */
   .tzBody{position:absolute;inset:0;}
-  .tzBody .tzOrgan{left:20%;right:20%;top:2%;height:96%;}
-  .tzChip{position:absolute;left:53%;top:44%;padding:7px 12px 6px;background:#F78359;color:#111;
-    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;
+  /* a zoom out: the frame opens close (3.4x) on the cloud's upper-right
+     edge, where only the strays drift -- the translate brings that region to
+     the frame -- and pulls back to the whole as the cloud becomes the body.
+     The view is laid out at the stage's size, so the body is the painter's
+     own pixels when the camera lands; the close-up is an upscale and soft,
+     which the note says. (Laying the view out at 3.4x made the close-up
+     crisp and the landed body a faint dust of sub-pixel dots.) */
+  .tzBody .tzOrgan{left:20%;right:20%;top:2%;height:96%;transform-origin:50% 50%;
+    transform:translate(-102%, 109%) scale(3.4);transition:transform 2.6s cubic-bezier(.3,.6,.15,1);}
+  .tzBody.out .tzOrgan{transform:translate(0, 0) scale(1);}
+  .tzChip{position:absolute;left:53%;top:44%;padding:1.6cqw 2.4cqw 1.4cqw;background:#F78359;color:#111;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:2.6cqw;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;
     opacity:0;transform:translateY(4px);transition:opacity .12s steps(1,end),transform .12s steps(1,end);}
   .tzChip.on{opacity:1;transform:none;}
   /* (the earlier draw-in sketch's rules, kept for reference) */
   .tzS2 i{position:absolute;left:50%;top:50%;border-radius:50%;animation:tzConverge 3.6s cubic-bezier(.4,0,.6,1) infinite;}
   .tzS2 em{position:absolute;left:50%;top:50%;width:46%;height:1px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(242,229,224,.22),transparent);}
-  .tzS2 .tzCore{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:#F78359;box-shadow:0 0 26px 6px rgba(247,131,89,.35);animation:tzPulse 3.6s ease-in-out infinite;}
+  .tzS2 .tzCore{position:absolute;left:50%;top:50%;width:5cqw;height:5cqw;margin:-2.5cqw 0 0 -2.5cqw;border-radius:50%;background:#F78359;box-shadow:0 0 26px 6px rgba(247,131,89,.35);animation:tzPulse 3.6s ease-in-out infinite;}
   @keyframes tzConverge{0%{translate:var(--dx) var(--dy);opacity:0;}12%{opacity:1;}78%{translate:0 0;opacity:.9;}86%,100%{translate:0 0;opacity:0;}}
   @keyframes tzPulse{0%,60%{scale:1;}78%{scale:1.22;}100%{scale:1;}}
   /* scenes 04 and 09: black and a line of type */
   .tzTitle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
-  .tzTitle .tzEye{font-size:10px;color:rgba(242,229,224,.55);}
-  .tzTitle .tzBig{font-size:34px;font-weight:500;letter-spacing:.06em;color:#f2e5e0;}
+  .tzTitle .tzEye{font-size:2.6cqw;color:rgba(242,229,224,.55);}
+  .tzTitle .tzBig{font-size:9cqw;font-weight:500;letter-spacing:.06em;color:#f2e5e0;}
   .tzBreathe{animation:tzBreathe 3.2s ease-in-out infinite;}
   @keyframes tzBreathe{0%,100%{opacity:.78;}50%{opacity:1;}}
   .tzCut{animation:tzCut 5s linear infinite;}
@@ -1073,28 +1097,28 @@
   .tzPhone.isHeart .tzArc.g{display:block;}
   .tzPhone.isHeart .tzArc.o{display:none;}
   .tzRead{position:absolute;left:0;right:0;top:51%;text-align:center;}
-  .tzRead .n{font-size:22px;font-weight:500;letter-spacing:-.6px;line-height:1;color:#f2e5e0;font-variant-numeric:tabular-nums;}
-  .tzRead .l{font-size:9px;color:rgba(242,229,224,.55);margin-top:5px;letter-spacing:.1em;text-transform:uppercase;font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;}
+  .tzRead .n{font-size:6.4cqw;font-weight:500;letter-spacing:-.6px;line-height:1;color:#f2e5e0;font-variant-numeric:tabular-nums;}
+  .tzRead .l{font-size:2.5cqw;color:rgba(242,229,224,.55);margin-top:5px;letter-spacing:.1em;text-transform:uppercase;font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;}
   .tzHalo{position:absolute;left:50%;top:-10%;width:120%;aspect-ratio:1;translate:-50% 0;border-radius:50%;pointer-events:none;
     background:radial-gradient(closest-side, rgb(var(--tzHalo) / .16), rgb(var(--tzHalo) / 0));transition:--tzHalo 1s;}
   /* scene 08: the readings over time */
   .tzChart{position:absolute;inset:0;padding:8% 9%;}
-  .tzChart .h{font-size:9.5px;color:rgba(242,229,224,.6);display:flex;align-items:center;gap:7px;}
-  .tzChart .h i{width:12px;height:12px;border-radius:50%;border:1px solid rgba(242,229,224,.5);display:inline-block;}
-  .tzChart .h .leg{margin-left:auto;display:flex;gap:10px;font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;}
+  .tzChart .h{font-size:2.6cqw;color:rgba(242,229,224,.6);display:flex;align-items:center;gap:7px;}
+  .tzChart .h i{width:3.2cqw;height:3.2cqw;border-radius:50%;border:1px solid rgba(242,229,224,.5);display:inline-block;}
+  .tzChart .h .leg{margin-left:auto;display:flex;gap:2.6cqw;font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:2.2cqw;letter-spacing:.08em;text-transform:uppercase;}
   .tzChart .h .leg b{font-weight:500;}
   .tzChart svg{display:block;width:100%;height:56%;margin-top:4%;overflow:visible;}
   .tzChart .lbl{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:8px;fill:rgba(242,229,224,.5);}
   .tzChart .val{font-size:10px;font-weight:500;}
-  .tzChart .todo{border-top:1px solid rgba(242,229,224,.12);margin-top:3%;padding-top:5%;display:flex;flex-direction:column;gap:6px;font-size:9.5px;color:rgba(242,229,224,.75);}
+  .tzChart .todo{border-top:1px solid rgba(242,229,224,.12);margin-top:3%;padding-top:5%;display:flex;flex-direction:column;gap:1.6cqw;font-size:2.6cqw;color:rgba(242,229,224,.75);}
   .tzChart .todo span{display:flex;align-items:center;gap:8px;}
-  .tzChart .todo i{width:12px;height:12px;border-radius:50%;border:1px solid rgba(242,229,224,.5);display:inline-block;position:relative;}
-  .tzChart .todo i.on::after{content:"";position:absolute;left:3px;top:1px;width:3px;height:6px;border:solid rgba(242,229,224,.9);border-width:0 1px 1px 0;transform:rotate(40deg);}
+  .tzChart .todo i{width:3.2cqw;height:3.2cqw;border-radius:50%;border:1px solid rgba(242,229,224,.5);display:inline-block;position:relative;}
+  .tzChart .todo i.on::after{content:"";position:absolute;left:34%;top:10%;width:22%;height:50%;border:solid rgba(242,229,224,.9);border-width:0 1px 1px 0;transform:rotate(40deg);}
   .tzChart .todo span:nth-child(2){opacity:.45;}
   /* scene 10: closure -- wordmark, dot, black */
   .tzClose .w, .tzClose .d{position:absolute;left:50%;top:50%;translate:-50% -50%;}
-  .tzClose .w{font-size:22px;font-weight:500;letter-spacing:.22em;color:#f2e5e0;animation:tzWord 6s linear infinite;}
-  .tzClose .d{width:16px;height:16px;border-radius:50%;background:#F78359;animation:tzDot 6s cubic-bezier(.2,.8,.2,1) infinite;}
+  .tzClose .w{font-size:6cqw;font-weight:500;letter-spacing:.22em;color:#f2e5e0;animation:tzWord 6s linear infinite;}
+  .tzClose .d{width:4cqw;height:4cqw;border-radius:50%;background:#F78359;animation:tzDot 6s cubic-bezier(.2,.8,.2,1) infinite;}
   @keyframes tzWord{0%{opacity:0;}8%,30%{opacity:1;}36%,100%{opacity:0;}}
   @keyframes tzDot{0%,36%{opacity:0;scale:.6;}42%,62%{opacity:1;scale:1;}68%,100%{opacity:0;scale:.9;}}
   body.light .tzr{background:#000;color:#f2e5e0;}   /* a video is graded on black whatever the page's theme */
@@ -11627,7 +11651,7 @@
   const TZ_SCRIPT = [
     { tc: '00:00', vo: null, on: 'Lifestyle still: warm light, someone reading on a sofa. A slow push in' },
     { tc: '00:02', vo: 'Your body holds millions of signals.', on: 'The still dissolves into a field of readings, which drift' },
-    { tc: '00:04', vo: 'Together, they tell a bigger story.', on: 'The signals gather into a cloud that becomes the body; the chip: 8 years younger' },
+    { tc: '00:04', vo: 'Together, they tell a bigger story.', on: 'Close on a few floating particles; a zoom out as they gather into the body; the chip: 8 years younger' },
     { tc: '00:07', vo: null, on: 'Black. INTRODUCING ORGAN AGE, a quiet pulse' },
     { tc: '00:09', vo: 'Your organs age differently.', on: 'The phone: heart, green arc, 37' },
     { tc: '00:12', vo: 'Some exactly as they should.', on: 'Closer on the heart; the arc holds' },
@@ -11645,15 +11669,11 @@
     const inkRGB = ['247,131,89', '240,217,168', '246,240,236'];   // the three inks, as the engine has them by default
     const rnd = (a, b) => a + Math.random() * (b - a);
     const h = [];
-    h.push('<div class="tzHead"><div><div class="tzMono tzEyebrow">Teaser video &middot; storyboard &middot; 10 sequences &middot; ~30s</div>' +
-      '<h1>Teaser video</h1><p>The teaser, sequence by sequence, in the product\u2019s own system: the three inks, the arc, the halo, the type. ' +
-      'Each frame moves a little to say what moves and how; nothing here is final timing or grade. The notes under each frame give the intent, ' +
-      'the easing and the durations for the After Effects pass. Frames 05\u201307 draw the real component: the same particle organs the app shows. The lifestyle still in 01 is yours to drop in; the sketch stands in with its tones.</p></div>' +
-      '<div class="tzScript"><div class="tzMono tzEyebrow" style="margin-bottom:2px">Script &amp; timecodes</div><ol>' +
-      TZ_SCRIPT.map(l => '<li><span class="tc">' + l.tc + '</span><span><span class="vo' + (l.vo ? '' : ' silent') + '">' + (l.vo ? '\u201C' + l.vo + '\u201D' : 'no VO') + '</span><small>' + l.on + '</small></span></li>').join('') +
-      '</ol></div></div>');
+    const script = '<div class="tzScript"><div class="tzMono tzEyebrow" style="margin-bottom:2px">Script &amp; timecodes</div><ol id="tzLines">' +
+      TZ_SCRIPT.map((l, i) => '<li data-i="' + i + '"' + (i === 0 ? ' class="on"' : '') + '><span class="tc">' + l.tc + '</span><span><span class="vo' + (l.vo ? '' : ' silent') + '"><span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + (l.vo ? '\u201C' + l.vo + '\u201D' : 'no VO') + '</span><small>' + l.on + '</small></span></li>').join('') +
+      '</ol></div>';
     const frame = (n, title, dur, stage, line, note) =>
-      '<div class="tzFrame"><div class="tzBar tzMono"><span><b>' + n + '</b>&nbsp;&nbsp;' + title + '</span><span class="tzDur">' + dur + '</span></div>' +
+      '<div class="tzFrame' + (n === '01' ? ' on' : '') + '" data-i="' + (+n - 1) + '"><div class="tzBar tzMono"><span><b>' + n + '</b>&nbsp;&nbsp;' + title + '</span><span style="display:flex;gap:14px;align-items:center"><span class="tzDur">' + dur + '</span><span class="tzNav"><button type="button" data-go="-1" aria-label="Previous frame">&larr;</button><button type="button" data-go="1" aria-label="Next frame">&rarr;</button></span></span></div>' +
       '<div class="tzStage" id="tzS' + n + '">' + stage + '</div>' +
       '<p class="tzLine' + (line.silent ? ' silent' : '') + '">' + line.text + '</p><p class="tzNote">' + note + '</p></div>';
     // 02 -- the field (and, under the lifestyle still of 01, the same field
@@ -11720,13 +11740,13 @@
           (i === 2 ? '<text class="val" x="' + (x + 9) + '" y="' + (y + 3.5) + '" fill="' + sr.c + '">' + v + '</text>' : '') + '</g>'; }).join('')
       ).join('') +
       '</svg><div class="todo"><span><i class="on"></i>Heart: keep going</span><span><i></i>Lungs: consider a check-in</span></div></div>';
-    h.push('<div class="tzGrid">' +
+    h.push('<div class="tzLayout"><div class="tzFocus">' +
       frame('01', 'Lifestyle', '0:00 \u2013 0:02', s0, { text: 'Warm light. Someone reading. No VO yet.', silent: true },
         '<b>Motion.</b> The lifestyle still (the reading-on-the-sofa frame) with a slow push in, about 4% over two seconds. Then the image goes to dots: a halftone that coarsens from the grain of the photo to the size of the signals, the image\u2019s own colours in the dots, and as it breaks the field of 02 comes up through it and takes over the drift. The VO starts as the last of the image goes. <b>Ease.</b> Ease-in on the break (about 1.2s), the field fading up over the second half of it. <b>AE.</b> Image to particles (Form or Particular on the still) rather than a mask; the sketch\u2019s dot screen is only the intent.') +
       frame('02', 'Signals', '0:02 \u2013 0:04', s1, { text: '\u201CYour body holds millions of signals.\u201D' },
         '<b>Motion.</b> A field of readings in the three inks drifting slowly up and to the right, a few numbers surfacing and going under. Parallax between three depths; nothing faster than about 12px/s at 1080p. <b>Ease.</b> Linear drift, numbers in and out on a 1.2s ease-in-out. <b>Grade.</b> Black, inks as tokens; the streaks are the flow\u2019s off-white at 35%.') +
       frame('03', 'The bigger story', '0:04 \u2013 0:07', s2, { text: '\u201CTogether, they tell a bigger story.\u201D' },
-        '<b>Motion.</b> The field of 02 gathers into a cloud, and the cloud becomes the body \u2014 the product\u2019s own particle body, particle for particle (the component\u2019s morph, 1.6s), the strays still drifting round it. As the body lands, the chip: 8 YEARS YOUNGER in the accent (F78359), the mono in black, set over the right shoulder like a label pinned to it. <b>Ease.</b> Quintic in-out on the morph; the chip cuts in (no fade), 0.2s after the body settles. <b>Cut.</b> Hold 1.2s on the body and the chip, then a hard cut to black. <b>Note.</b> The sketch loops cloud \u2192 body \u2192 cloud every 6s.') +
+        '<b>Motion.</b> Open close: a few particles floating in black, large and slow, the camera among them. Then a zoom out \u2014 the camera pulls back over 2.6s and, as it does, the cloud gathers into the body: the product\u2019s own particle body, particle for particle (the component\u2019s morph, 1.6s, so the body is whole before the camera settles), the strays still drifting round it. As the camera lands, the chip: 8 YEARS YOUNGER in the accent (F78359), the mono in black, pinned over the right shoulder. <b>Ease.</b> The pull-back on a long ease-out (cubic-bezier .3 .6 .15 1); quintic in-out on the morph; the chip cuts in, no fade. <b>Cut.</b> Hold 1.2s on the body and the chip, then a hard cut to black. <b>Note.</b> The sketch loops close \u2192 out \u2192 close every 6s; the zoom is a CSS scale on the view, so the dots soften when close \u2014 in AE the camera moves through real particles.') +
       frame('04', 'Introducing', '0:07 \u2013 0:09', s3, { text: 'Black. A quiet pulse.', silent: true },
         '<b>Motion.</b> Two lines of type only: the eyebrow in the mono at 12% tracking, the title medium with 6% tracking. Both breathe between 78% and 100% opacity on a 3.2s cycle, no scale. <b>In/out.</b> 0.6s fade in, 0.4s fade out. Leave 1s of black before 05.') +
       frame('05', 'Heart / younger', '0:09 \u2013 0:12', s4, { text: '\u201CYour organs age differently.\u201D' },
@@ -11741,7 +11761,7 @@
         '<b>Motion.</b> The line fades up over 0.7s on black, holds about 2.8s, then a hard cut to black \u2014 no fade out. The cut is the beat before the mark.') +
       frame('10', 'Closure', '0:25 \u2013 0:30', s9, { text: '\u201CEverlab\u201D' },
         '<b>Motion.</b> The wordmark fades up (0.5s), holds 1.3s, fades (0.4s). Beat. The accent dot scales in from 60% (0.4s, ease-out), holds, fades. Beat. Black to the end. <b>Rhythm.</b> Three even beats; the dot is the same dot the signals gathered into in 03.') +
-      '</div>');
+      '</div>' + script + '</div>');
     h.push('<div class="tzSys">' +
       '<div class="tzCard"><h3 class="tzMono">Palette</h3><ul>' +
         '<li><i style="background:#F78359"></i>Accent, the material ink<code>F78359</code></li>' +
@@ -11764,8 +11784,26 @@
         '<li>Organs for 05\u201307: export stills or frames from the Library page (download button on each tile)</li></ul></div>' +
       '</div>');
     wrap.innerHTML = h.join('');
+    // one frame in focus: the script's lines and the frame's arrows choose it;
+    // the arrow keys too while the page shows. A hidden frame's views stop
+    // painting on their own (offsetParent), so only the focused one costs.
+    const frames = [...wrap.querySelectorAll('.tzFrame')], lines = [...wrap.querySelectorAll('#tzLines li')];
+    let focus = 0;
+    const show = i => {
+      focus = (i + frames.length) % frames.length;
+      frames.forEach((f, k) => f.classList.toggle('on', k === focus));
+      lines.forEach((l, k) => l.classList.toggle('on', k === focus));
+    };
+    lines.forEach(l => l.addEventListener('click', () => show(+l.dataset.i)));
+    wrap.querySelectorAll('.tzNav button').forEach(b => b.addEventListener('click', () => show(focus + (+b.dataset.go))));
+    document.addEventListener('keydown', e => {
+      if (!document.body.classList.contains('m22') || e.target.matches('input, select, textarea')) return;
+      if (e.key === 'ArrowRight') show(focus + 1); else if (e.key === 'ArrowLeft') show(focus - 1);
+    });
+    window.__tzShow = show;
     // the organs: the painter's, on the phone's stage
-    const mk = (id, idx) => makeOrganView(document.getElementById(id), idx, { target: 1100, fill: 0.52, dot: 1.0, name: 'teaser-' + id, feed: false });
+    // at the library's density for each organ (the app's), not a thumbnail's
+    const mk = (id, idx) => makeOrganView(document.getElementById(id), idx, { target: organN(fullTarget(clouds[idx])), fill: 0.52, dot: 1.0, name: 'teaser-' + id, feed: false });
     mk('tzHeart', HEART); mk('tzHeart2', HEART);
     const v6 = mk('tzLung', LUNG);
     // 07: lungs -> heart -> lungs, every 6s, the reading, the arc and the
@@ -11775,7 +11813,7 @@
     setInterval(() => {
       if (ph6.offsetParent === null) return;
       const idx = toLung ? LUNG : HEART, lung = toLung;
-      v6.morphTo(clouds[idx], 'o' + idx, 1100, 1400);
+      v6.morphTo(clouds[idx], 'o' + idx, organN(fullTarget(clouds[idx])), 1400);
       setTimeout(() => {
         n6.textContent = lung ? '48' : '37'; l6.textContent = lung ? 'Lung age' : 'Heart age';
         ph6.classList.toggle('isHeart', !lung);
@@ -11791,12 +11829,16 @@
     const bodyV = makeOrganView(document.getElementById('tzBodyV'), SPHERE_I, { target: bodyN, fill: 0.55, dot: 1.0, name: 'teaser-body', feed: true });
     const chip = document.getElementById('tzChip'), bodyHost = document.getElementById('tzBodyV');
     let bodyOn = false;
+    const bodyStage = bodyHost.parentNode;
     const bodyStep = () => {
       if (bodyHost.offsetParent === null) return;
       bodyOn = !bodyOn;
       const idx = bodyOn ? BODY_I : SPHERE_I;
+      // the pull-back runs with the morph (2.6s against the morph's 1.6), so
+      // the body is whole before the camera has settled on it
       bodyV.morphTo(clouds[idx], 'o' + idx, bodyN, 1600);
-      if (bodyOn) setTimeout(() => chip.classList.add('on'), 1800);
+      bodyStage.classList.toggle('out', bodyOn);
+      if (bodyOn) setTimeout(() => chip.classList.add('on'), 2800);
       else chip.classList.remove('on');
     };
     setTimeout(bodyStep, 900);

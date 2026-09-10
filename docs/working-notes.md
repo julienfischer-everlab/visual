@@ -3510,6 +3510,34 @@ Probed: the view paints (3280 lit samples on the main canvas), the chip
 comes on once the body has landed, and the frame is the body with the chip
 at its shoulder.
 
+### 5.144 The body as a zoom out; one frame in focus
+
+"This should feel like a zoom out, from few floating particles to body
+cluster." Frame 03 opens close: the view scaled 3.4x and translated so the
+frame sits on the cloud's upper-right edge, where only the strays drift, a
+few large soft dots in black. Then the pull-back (2.6s on a long ease-out)
+runs with the morph (1.6s), so the body is whole before the camera settles,
+and the chip cuts in as it lands. A first cut laid the view out at 3.4x the
+stage so the close-up would be the painter's own pixels; it was, and the
+landed body was a faint dust of sub-pixel dots, so the view is at the stage's
+size and the close-up is an upscale -- soft, which the note says, since in
+AE the camera moves through real particles.
+
+"Keep that control section and on the left column use the frame focused, one
+frame at a time, no frames next to each other. Remove the title and
+description." The header is gone; the page is two columns: the focused frame
+on the left, the script on the right, each line a control that brings its
+frame up (the frame's own arrows and the arrow keys step through), the
+active line marked. A hidden frame's views stop painting on their own, so
+only the frame in focus costs. With one frame filling the column the stages
+are three times the size they were, so the type inside them is sized to the
+stage (container query units) and a frame reads the same at any width.
+
+Probed: one frame shown at a time, the third line brings frame 03 up, the
+arrow steps to 04; 03 sampled close (a few dots at the edge, the rest black)
+and landed (the body, the chip at its shoulder). Modes and error probes
+clean.
+
 ---
 
 ## 6. Open items
