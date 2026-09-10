@@ -991,6 +991,11 @@
      text on both sides; the others step back to 60% */
   .tzScript li{cursor:pointer;border-radius:12px;padding:10px 0;margin:0;border-top:0;opacity:.6;transition:opacity .2s ease;}
   .tzScript li + li{border-top:1px solid rgba(242,229,224,.07);}
+  /* the act headings: the mono eyebrow, above the first line of each act,
+     with the act's first line carrying no rule under the heading */
+  .tzScript li.grp{display:block;cursor:default;opacity:1;padding:22px 0 6px;font-size:10px;color:#F78359;border-top:0;}
+  .tzScript li.grp:first-child{padding-top:10px;}
+  .tzScript li.grp + li{border-top:0;}
   .tzScript li:hover{opacity:.85;}
   .tzScript li.on{opacity:1;background:rgba(255,255,255,.08);padding:10px 8px;margin:0 -8px;}
   .tzScript li.on .tc{color:#F78359;}
@@ -11743,8 +11748,13 @@
     const inkRGB = ['247,131,89', '240,217,168', '246,240,236'];   // the three inks, as the engine has them by default
     const rnd = (a, b) => a + Math.random() * (b - a);
     const h = [];
+    // the sequences in their four acts: a heading in the mono over the first
+    // line of each -- Introduction (01-04), New feature (05-08), Value (09),
+    // Closure (10-11)
+    const TZ_GROUPS = { 0: 'Introduction', 4: 'New feature', 8: 'Value', 9: 'Closure' };
     const script = '<div class="tzScript"><div class="tzMono tzEyebrow" style="margin-bottom:2px">Script &amp; timecodes</div><ol id="tzLines">' +
-      TZ_SCRIPT.map((l, i) => '<li data-i="' + i + '"' + (i === 0 ? ' class="on"' : '') + '><span class="tc">' + l.tc + '</span><span><span class="vo' + (l.vo ? '' : ' silent') + '"><span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + (l.vo ? '\u201C' + l.vo + '\u201D' : 'no VO') + '</span><small>' + l.on + '</small></span></li>').join('') +
+      TZ_SCRIPT.map((l, i) => (TZ_GROUPS[i] ? '<li class="grp tzMono" aria-hidden="true">' + TZ_GROUPS[i] + '</li>' : '') +
+        '<li data-i="' + i + '"' + (i === 0 ? ' class="on"' : '') + '><span class="tc">' + l.tc + '</span><span><span class="vo' + (l.vo ? '' : ' silent') + '"><span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + (l.vo ? '\u201C' + l.vo + '\u201D' : 'no VO') + '</span><small>' + l.on + '</small></span></li>').join('') +
       '</ol></div>';
     // the subtitle spoken: each word its own span, coming up in turn at a
     // talking pace (~0.32s a word) and the line holding, then starting over
@@ -11912,7 +11922,7 @@
     // one frame in focus: the script's lines and the frame's arrows choose it;
     // the arrow keys too while the page shows. A hidden frame's views stop
     // painting on their own (offsetParent), so only the focused one costs.
-    const frames = [...wrap.querySelectorAll('.tzFrame')], lines = [...wrap.querySelectorAll('#tzLines li')];
+    const frames = [...wrap.querySelectorAll('.tzFrame')], lines = [...wrap.querySelectorAll('#tzLines li[data-i]')];
     let focus = 0;
     // the live phones: the app's mobile layout is 390 wide, so the iframe is
     // laid out at 390 and scaled to the drawn phone; it is loaded on first

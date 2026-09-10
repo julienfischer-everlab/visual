@@ -3812,6 +3812,13 @@ title's left edge; the active card alone runs 8px past the text on both
 sides (padding and a negative margin); the other rows are at 60% and come up
 on hover.
 
+"Group the sequences by naming the group in the timeline: 1-4 Introduction,
+5-8 New feature, 9 Value, 10-11 Closure." Four headings in the script's
+list, the mono eyebrow in the accent over the first line of each act, the
+act's first row carrying no rule under its heading. The headings are rows of
+the same list but not lines: the focus wiring selects rows by their index
+attribute, so a heading is neither clickable nor counted.
+
 ---
 
 ## 6. Open items
