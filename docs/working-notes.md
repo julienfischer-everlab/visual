@@ -3795,7 +3795,22 @@ frame; the phone with the heart under it as before.
 in on the heart, "A deeper view of your organs") and 07 The right pace
 (0:14-0:16, the heart held, "Some age exactly as they should"), each the
 app on the heart; the rest move a beat -- 08 Lungs 0:16, 09 Over time 0:19,
-10 Look closer 0:23, 11 Closure 0:26. Eleven sequences.
+10 Look closer 0:23, 11 Closure 0:26. Eleven sequences. (The first cut of
+this patch stopped on a stale anchor after the notes were written, so for
+one commit the notes described a board the page did not have.)
+
+"Add VO here; Introducing stays too long." 05 speaks its title: "Introducing
+Organ ages" -- and the title's second phase reads "Organ ages", capital O,
+plural, as asked. The first phase holds about a second now (up by 6% of the
+cycle, gone by 27%) and the second comes at 36%; the two together no longer
+outstay the two-second frame by much.
+
+"Style the timeline: align the times with the title above, push right;
+active card padding left and right +8px; inactive items down 40%." The
+script's rows have no negative margin now, so the timecodes stand on the
+title's left edge; the active card alone runs 8px past the text on both
+sides (padding and a negative margin); the other rows are at 60% and come up
+on hover.
 
 ---
 
