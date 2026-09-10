@@ -3788,6 +3788,15 @@ pace the eleven words take about 3.5s to land, so the subtitle's hold and
 fade fall a beat after the frame's own cut -- the frame is 3s on the board,
 which the edit will settle.
 
+"Replace by: But not the full story." 04's line, in the script and on the
+frame; the phone with the heart under it as before.
+
+"Split in two sequences." 06 is two: 06 A deeper view (0:12-0:14, the push
+in on the heart, "A deeper view of your organs") and 07 The right pace
+(0:14-0:16, the heart held, "Some age exactly as they should"), each the
+app on the heart; the rest move a beat -- 08 Lungs 0:16, 09 Over time 0:19,
+10 Look closer 0:23, 11 Closure 0:26. Eleven sequences.
+
 ---
 
 ## 6. Open items
