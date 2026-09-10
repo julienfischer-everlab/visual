@@ -3640,6 +3640,19 @@ library's view with the library's options (libOpts), and no morph: the
 cloud the frame opens on is the body seen close, at 2.2x and 80%, and the
 pull-back resolves it. The phone sketches take the same options.
 
+"Put the caption overlapping the video frame, like a movie subtitle." The
+spoken line moved from under the stage onto it: bottom centre, 8% in from
+the sides and 6% up, white at medium weight with a soft shadow so it reads
+over the black and over the phone alike, sized to the stage like the rest of
+the type; a silent frame's direction is set the same way at 60% and regular
+weight. The notes stay under the frame.
+
+"More shiny, the body dots." The library's body as it is, with two lifts on
+top for this frame alone: the view's alpha at 1.35 (the faint dots come up,
+the bright ones cap at full) and, on its canvas, brightness 1.35 and
+saturation 1.15 in CSS -- so the tile's own drawing is untouched and the
+shine is the frame's.
+
 ---
 
 ## 6. Open items

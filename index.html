@@ -1009,8 +1009,14 @@
   .tzBar .tzDur{letter-spacing:.06em;}
   .tzStage{position:relative;aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;container-type:inline-size;
     border:1px solid rgba(255,255,255,.1);margin:16px 0 18px;isolation:isolate;}
-  .tzLine{font-size:15px;line-height:1.4;color:#f2e5e0;margin:0 0 8px;}
-  .tzLine.silent{color:rgba(242,229,224,.5);}
+  /* the spoken line sits on the frame, a subtitle: bottom centre, white with
+     a soft shadow so it reads over anything; a silent frame's direction is
+     set the same way at 60% */
+  .tzSub{position:absolute;left:8%;right:8%;bottom:6%;z-index:6;text-align:center;pointer-events:none;
+    font-size:3.4cqw;line-height:1.35;font-weight:500;color:#fff;letter-spacing:.005em;
+    text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 14px rgba(0,0,0,.7);}
+  .tzSub.silent{color:rgba(255,255,255,.6);font-weight:400;}
+  .tzNote{margin-top:2px;}
   .tzNote{font-size:11.5px;line-height:1.6;color:rgba(242,229,224,.5);margin:0;}
   .tzNote b{font-weight:500;color:rgba(242,229,224,.78);}
   .tzSys{margin-top:24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
@@ -1051,6 +1057,9 @@
   .tzBody .tzOrgan{left:20%;right:20%;top:2%;height:96%;transform-origin:50% 50%;opacity:.8;
     transform:scale(2.2);transition:transform 3s cubic-bezier(.65,0,.35,1),opacity 2.2s ease-in-out;}
   .tzBody.out .tzOrgan{transform:scale(1);opacity:1;}
+  /* "more shiny": the body's dots lifted in brightness and a touch of
+     saturation on the canvas itself, so the tile's own drawing stays as it is */
+  .tzBody .tzOrgan canvas{filter:brightness(1.35) saturate(1.15);}
   .tzChip{position:absolute;left:53%;top:44%;padding:1.6cqw 2.4cqw 1.4cqw;background:#F78359;color:#111;
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:2.6cqw;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;
     opacity:0;transform:translateY(4px);transition:opacity .12s steps(1,end),transform .12s steps(1,end);}
@@ -11695,8 +11704,8 @@
       '</ol></div>';
     const frame = (n, title, dur, stage, line, note) =>
       '<div class="tzFrame' + (n === '01' ? ' on' : '') + '" data-i="' + (+n - 1) + '"><div class="tzBar tzMono"><span><b>' + n + '</b>&nbsp;&nbsp;' + title + '</span><span style="display:flex;gap:14px;align-items:center"><span class="tzDur">' + dur + '</span><span class="tzNav"><button type="button" data-go="-1" aria-label="Previous frame">&larr;</button><button type="button" data-go="1" aria-label="Next frame">&rarr;</button></span></span></div>' +
-      '<div class="tzStage" id="tzS' + n + '">' + stage + '</div>' +
-      '<p class="tzLine' + (line.silent ? ' silent' : '') + '">' + line.text + '</p><p class="tzNote">' + note + '</p></div>';
+      '<div class="tzStage" id="tzS' + n + '">' + stage + '<div class="tzSub' + (line.silent ? ' silent' : '') + '">' + line.text + '</div></div>' +
+      '<p class="tzNote">' + note + '</p></div>';
     // 01 and 02 -- the universe of dots. One field in four depths: the far
     // ones small, dim and blurred, the near ones large and out of focus, the
     // sharp ones between; every depth drifts the same way at its own speed
@@ -11888,7 +11897,10 @@
     // and no morph: the cloud the frame opens on IS the body, seen close, and
     // the pull-back resolves it. The chip comes on as the camera settles.
     const libOpts = i => ({ target: organN(Math.round(fullTarget(clouds[i]) * (ORGANS[i].dots || 1))), fill: 0.46, dot: 1.0 });
-    makeOrganView(document.getElementById('tzBodyV'), BODY_I, Object.assign(libOpts(BODY_I), { name: 'teaser-body' }));
+    // "more shiny": the library's body with its alpha lifted a third (the
+    // dots that were faint come up; the bright ones cap), and a brightness
+    // lift on the canvas in CSS
+    makeOrganView(document.getElementById('tzBodyV'), BODY_I, Object.assign(libOpts(BODY_I), { name: 'teaser-body', alpha: 1.35 }));
     const chip = document.getElementById('tzChip'), bodyHost = document.getElementById('tzBodyV'), bodyStage = bodyHost.parentNode;
     let bodyOn = false;
     const bodyStep = () => {
