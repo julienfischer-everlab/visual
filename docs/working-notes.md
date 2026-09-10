@@ -3782,6 +3782,12 @@ a theme change resyncs both, as the swatches already did. Probed: typing
 AAEEC2 sets the swatch and the ink, a bad value is marked and leaves the ink,
 picking updates the field.
 
+"Add VO: A deeper view of your organs. Some age exactly as they should." 06's
+line is the two sentences now, in the script and on the frame; at a talking
+pace the eleven words take about 3.5s to land, so the subtitle's hold and
+fade fall a beat after the frame's own cut -- the frame is 3s on the board,
+which the edit will settle.
+
 ---
 
 ## 6. Open items
