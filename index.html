@@ -1008,12 +1008,14 @@
   .tzHead p{margin:0;font-size:13.5px;line-height:1.6;color:rgba(242,229,224,.55);max-width:60ch;}
   .tzHead .tzEyebrow{font-size:10px;color:rgba(242,229,224,.4);margin-bottom:12px;}
   .tzScript{background:#000;border-radius:32px;padding:32px;position:relative;}
-  .tzScript ol{list-style:none;margin:8px 0 0;padding:0;}
+  .tzScript ol{list-style:none;margin:8px 0 0;padding:0;position:relative;}
   .tzScript li{display:grid;grid-template-columns:54px 1fr;gap:12px;font-size:13px;line-height:1.45;}
-  /* the play's progress: a hairline down the card's left edge, from the first
-     line to the last, filling in the accent as the play runs -- to the top of
-     the line in focus, then through it on the frame's own clock */
-  .tzProg{position:absolute;left:14px;width:2px;border-radius:1px;background:rgba(242,229,224,.1);overflow:hidden;}
+  /* the progress: a hairline inside each act, under its heading's left edge,
+     from the act's first row to its last, filling in the accent as the
+     sequences play -- to the top of the row in focus, then through it on the
+     board's clock; the rows sit 20px to its right (32px in, the line at 12) */
+  .tzScript li[data-i]{padding-left:32px;}
+  .tzProg{position:absolute;left:0;width:2px;border-radius:1px;background:rgba(242,229,224,.1);overflow:hidden;}
   .tzProg i{position:absolute;left:0;top:0;width:100%;height:0;background:#F78359;}
   .tzNav button.play{width:auto;padding:0 9px;font-size:10px;letter-spacing:.08em;}
   .tzNav button.play.on{background:rgba(247,131,89,.16);border-color:rgba(247,131,89,.5);}
@@ -11762,7 +11764,7 @@
     const script = '<div class="tzScript"><div class="tzMono tzEyebrow" style="margin-bottom:2px">Script &amp; timecodes</div><ol id="tzLines">' +
       TZ_SCRIPT.map((l, i) => (TZ_GROUPS[i] ? '<li class="grp tzMono" aria-hidden="true">' + TZ_GROUPS[i] + '</li>' : '') +
         '<li data-i="' + i + '"' + (i === 0 ? ' class="on"' : '') + '><span class="tc">' + l.tc + '</span><span><span class="vo' + (l.vo ? '' : ' silent') + '"><span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + (l.vo ? '\u201C' + l.vo + '\u201D' : 'no VO') + '</span><small>' + l.on + '</small></span></li>').join('') +
-      '</ol><div class="tzProg" id="tzProg"><i></i></div></div>';
+      '</ol></div>';
     // the subtitle spoken: each word its own span, coming up in turn at a
     // talking pace (~0.32s a word) and the line holding, then starting over
     // on the frame's own cycle (the animation's period is the frame's)
@@ -11957,20 +11959,26 @@
     };
     // the play: each sequence runs for its board time (the gap to the next
     // timecode, the last to 0:30) and hands on to the next, round and round
-    // until paused; the progress hairline beside the script shows where the
-    // play is, to the top of the line in focus and on through it
+    // until paused. The progress lives whether or not the play is on: the
+    // sequence in focus is playing, so its line fills through its row on the
+    // board's clock and holds at the row's end; with the play on, the
+    // hand-over follows. One hairline per act, inside it, under the heading.
     const secs = tc => tc.split(':').reduce((m, v) => m * 60 + +v, 0);
     const durs = TZ_SCRIPT.map((l, i) => ((i + 1 < TZ_SCRIPT.length ? secs(TZ_SCRIPT[i + 1].tc) : 30) - secs(l.tc)) * 1000);
-    let playing = false, t0 = 0;
-    const prog = document.getElementById('tzProg'), fill = prog.firstChild, playBtns = [...wrap.querySelectorAll('.tzNav .play')];
-    const layProg = () => {
-      const a = lines[0], z = lines[lines.length - 1];
-      prog.style.top = a.offsetTop + 'px'; prog.style.height = (z.offsetTop + z.offsetHeight - a.offsetTop) + 'px';
-    };
-    const drawProg = k => {
+    let playing = false, t0 = performance.now();   // the clock starts with the page, not at zero
+    const ol = document.getElementById('tzLines'), playBtns = [...wrap.querySelectorAll('.tzNav .play')];
+    const gStarts = Object.keys(TZ_GROUPS).map(Number).sort((a, b) => a - b);
+    const acts = gStarts.map((a, g) => {
+      const el = document.createElement('div'); el.className = 'tzProg'; el.innerHTML = '<i></i>'; ol.appendChild(el);
+      return { a, z: (gStarts[g + 1] || lines.length) - 1, el, fill: el.firstChild };
+    });
+    const layProg = () => acts.forEach(({ a, z, el }) => {
+      el.style.top = lines[a].offsetTop + 'px'; el.style.height = (lines[z].offsetTop + lines[z].offsetHeight - lines[a].offsetTop) + 'px';
+    });
+    const drawProg = k => acts.forEach(({ a, z, fill }) => {
       const l = lines[focus];
-      fill.style.height = (l.offsetTop - lines[0].offsetTop + k * l.offsetHeight) + 'px';
-    };
+      fill.style.height = focus > z ? '100%' : focus < a ? '0' : (l.offsetTop - lines[a].offsetTop + k * l.offsetHeight) + 'px';
+    });
     const show = i => {
       focus = (i + frames.length) % frames.length;
       frames.forEach((f, k) => f.classList.toggle('on', k === focus));
@@ -11983,16 +11991,15 @@
     const setPlay = on => {
       playing = on; t0 = performance.now();
       playBtns.forEach(b => { b.classList.toggle('on', on); b.textContent = on ? 'Pause' : 'Play'; b.setAttribute('aria-label', on ? 'Pause' : 'Play through the sequences'); });
-      if (!on) drawProg(0);
     };
+    const kNow = () => Math.min(1, (performance.now() - t0) / durs[focus]);
     (function tick(prev){
       requestAnimationFrame(() => tick(performance.now()));
-      if (!playing) return;
-      if (!document.body.classList.contains('m22')) { t0 += performance.now() - prev; return; }   // paused while the page is away
+      if (!document.body.classList.contains('m22')) { t0 += performance.now() - prev; return; }   // the clock holds while the page is away
       const k = (performance.now() - t0) / durs[focus];
-      if (k >= 1) show(focus + 1); else drawProg(k);
+      if (playing && k >= 1) show(focus + 1); else drawProg(Math.min(1, k));
     })(performance.now());
-    window.addEventListener('resize', () => { fitLive(frames[focus]); layProg(); drawProg(playing ? Math.min(1, (performance.now() - t0) / durs[focus]) : 0); });
+    window.addEventListener('resize', () => { fitLive(frames[focus]); layProg(); drawProg(kNow()); });
     lines.forEach(l => l.addEventListener('click', () => show(+l.dataset.i)));
     wrap.querySelectorAll('.tzNav button[data-go]').forEach(b => b.addEventListener('click', () => show(focus + (+b.dataset.go))));
     playBtns.forEach(b => b.addEventListener('click', () => setPlay(!playing)));

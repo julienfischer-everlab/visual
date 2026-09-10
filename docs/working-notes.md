@@ -3876,6 +3876,15 @@ readings type on -- the first once the field has resolved, 1.8s in, then
 one-dot universe carries the readings' layer now; the second field is gone.
 Nine sequences, no silent one; the acts are 01-02, 03-06, 07, 08-09.
 
+"More right margin after the timeline. Put the timeline inside the group. The
+line should live-progress while the video is playing." The progress is one
+hairline per act now, inside it: under the heading's left edge, from the
+act's first row to its last, with the rows 20px to its right (32px in, the
+line at 12). Acts already played read full, acts to come empty. And the line
+lives whether or not Play is on -- the sequence in focus is playing, so its
+line fills through its row on the board's clock and holds at the row's end;
+with Play on the hand-over follows. Pause no longer clears it.
+
 ---
 
 ## 6. Open items
