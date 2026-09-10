@@ -2792,7 +2792,7 @@
      once, not nine hand-edited alphas that would drift out of shape. The dark
      themes carry the light -- it is light thrown on a surface, and that only
      reads on a dark one -- so the number lives with them. */
-  :root{--haloK:1.55;}
+  :root{--haloK:0.557;}   /* 16% / .287: the younger light's peak, before the script writes one */
   /* The stop list and the geometry live on the phone rather than inside the
      gradient, so the light has one definition and each theme supplies its own
      alphas. The colour is set there too, by the carousel. */
@@ -7704,6 +7704,20 @@
   function indFill(){
     return document.body.classList.contains('light') ? '#000' : '#fff';
   }
+  // The halo behind the organ: three lights, the design's, and the same on
+  // the phone, the tablet and the desktop card. The fourth value is the
+  // light's peak opacity -- what the colour is drawn at where the dome is
+  // strongest, the gradient's first stop -- and haloKFor turns it into the
+  // stop multiplier (--haloK), the stops being written at .287 of it. "No
+  // reading" is a grey at the aligned light's level: present, saying nothing.
+  const HALO = {
+    younger: [136, 171, 116, 0.16],   // 88AB74 16%
+    older:   [231, 182, 156, 0.12],   // E7B69C 12%
+    aligned: [255, 255, 255, 0.08],   // FFFFFF 8%
+    none:    [150, 150, 148, 0.08]
+  };
+  const HALO_STOP0 = 0.287;
+  const haloKFor = peak => (peak / HALO_STOP0).toFixed(3);
   // Declared here, and off the body class rather than the theme flag, because
   // buildArcA() draws the resting ticks at module init — before that flag exists.
   // The range colours are CSS variables (--rgOpt/--rgSub/--rgOut/--rgUn, per
@@ -9632,15 +9646,18 @@
         // bar sit over the gradient and the stops alone overstate it by more
         // than half. At 0.30 it measured 2.5%, which is not a light anyone
         // sees; 0.74 is 6%. The coloured lights at 1 measure 7%.
-        const hue = o => noAgeFor(o) ? [150, 150, 148, 1]
-                       : o.delta > 0 ? [210, 148, 112, 1]
-                       : o.delta < 0 ? [132, 176, 142, 1] : [236, 234, 230, 0.74];
+        // The design's three lights (HALO): younger 88AB74 at 16%, older
+        // E7B69C at 12%, aligned FFFFFF at 8% -- the percentage is the light's
+        // peak, the gradient's first stop, on every surface alike (haloKFor).
+        const hue = o => noAgeFor(o) ? HALO.none
+                       : o.delta > 0 ? HALO.older
+                       : o.delta < 0 ? HALO.younger : HALO.aligned;
         const ha = hue(oa), hb = hue(ob);
         halo.style.setProperty('--v4halo',
           Math.round(ha[0] + (hb[0] - ha[0]) * f) + ' ' +
           Math.round(ha[1] + (hb[1] - ha[1]) * f) + ' ' +
           Math.round(ha[2] + (hb[2] - ha[2]) * f));
-        halo.style.setProperty('--haloK', (1.55 * (ha[3] + (hb[3] - ha[3]) * f)).toFixed(3));
+        halo.style.setProperty('--haloK', haloKFor(ha[3] + (hb[3] - ha[3]) * f));
       }
       // On the way to the biomarker slide the silhouette and its light give way
       // -- there is no organ there -- and the arc stops being an age scale and
@@ -12753,9 +12770,13 @@
       // desktop and 6.4% on the tablet. It used to take the coloured lights'
       // 70% cut on top of its own 30%, which left it at three and a half
       // percent and not there at all.
-      const tgt = grey ? [150, 150, 148, 0.30]
-                : warmDelta > 0 ? [210, 148, 112, 0.30]
-                : warmDelta < 0 ? [132, 176, 142, 0.30] : [236, 234, 230, 0.19];
+      // ...and then the design's lights, the same on every surface: younger
+      // 88AB74 at 16%, older E7B69C at 12%, aligned FFFFFF at 8% (HALO). The
+      // fourth value is the peak, and haloKFor turns it into the gradient's
+      // multiplier, so the card and the phone read the one table.
+      const tgt = grey ? HALO.none
+                : warmDelta > 0 ? HALO.older
+                : warmDelta < 0 ? HALO.younger : HALO.aligned;
       if (!haloTo){ haloTo = tgt; haloFrom = tgt.slice(); haloNow = tgt.slice(); }
       else if (tgt.some((v, i) => v !== haloTo[i])){
         // a new verdict: fade from wherever the light is, on this morph's clock
@@ -12766,7 +12787,7 @@
       const host = dHaloEl.closest('#organSlot') || dHaloEl;
       host.style.setProperty('--v4halo',
         Math.round(haloNow[0]) + ' ' + Math.round(haloNow[1]) + ' ' + Math.round(haloNow[2]));
-      host.style.setProperty('--haloK', (1.55 * haloNow[3]).toFixed(3));
+      host.style.setProperty('--haloK', haloKFor(haloNow[3]));
     }
 
     // camera rides the same S-curve timeline as the morph

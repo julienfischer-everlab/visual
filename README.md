@@ -957,17 +957,16 @@ surface; *aligned with your age* used to fall on the green side of `delta > 0`,
 so an organ exactly its age glowed as if it were younger. It is white now: a
 light that is present and has nothing to say.
 
-**The white is pitched at 6%, measured.** It was set at 30% of the coloured
-lights' strength, and on the card that sat on top of the card's own 70% cut —
-three and a half percent at the edge, and on the phone two and a half at the
-dome's peak, which is no light at all ("I don't see any halo"). The strength is
-now set per surface off the rendered pixels — the lift of the band under the
-top edge with the light on and off, over the ground (`halolift.js`) — so that
-the white reads at 6% where it meets the surface: the top-right band of the
-card on the desktop and tablet, the top centre of the screen on the phone. The
-stops alone overstate the phone by more than half, because the header's ground
-and the status bar sit over the gradient, which is why this is measured rather
-than derived.
+**The three lights are the design's, on every surface.** Younger `#88AB74`
+at 16%, older `#E7B69C` at 12%, aligned `#FFFFFF` at 8%, and "no reading" a
+grey at the aligned light's 8%. The percentage is the light's peak — the
+colour's opacity at the gradient's first stop — and one table in the script
+(`HALO`) carries colour and peak for the phone, the tablet and the desktop card
+alike; `--haloK` is derived from the peak rather than pitched per surface. (It
+used to be set per surface off the rendered pixels — the lift of the band under
+the top edge with the light on and off, `halolift.js` — with the white tuned
+to a 6% lift, which made the same verdict a different value on each surface
+and none of them a number a designer had written.)
 
 **The card's light fades on the morph.** It used to be read off the eased
 warmth — green below zero, orange above, white within a hair of zero — and a

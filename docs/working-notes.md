@@ -3385,6 +3385,26 @@ and the read threw. Probed (wine.js, wine2.js): the select flips the body
 class and repaints without error, survives a page change to Mobile V7, and the
 light theme is unchanged. Modes and error probes clean.
 
+### 5.140 The halo's three lights, as the design has them
+
+"Adjust halo: green (younger) 88AB74 16%, orange (older) E7B69C 12%, neutral
+(aligned) FFF 8%." The lights used to be pitched by measurement -- a
+strength per surface (the phone's 1.55, the card's 30% of it, the white
+tuned separately to a 6% lift off the rendered pixels) -- which made the same
+verdict a different value on each surface, and none of them a number a
+designer had written. Now one table (HALO) carries the colour and the peak,
+and the peak is what the design states: the colour's opacity at the
+gradient's first stop. haloKFor turns it into the stop multiplier (the stops
+are written at .287 of --haloK), and the phone's writer and the card's read
+the same table, so the three lights are 88AB74 at 16%, E7B69C at 12% and
+FFFFFF at 8% on the phone, the tablet and the desktop card alike. "No
+reading" is the grey at the aligned light's 8%. The :root default follows
+the younger light.
+
+Probed (halo.js): on the phone, swiping the carousel, younger organs 88AB74 at
+.16, the aligned brain FFFFFF at .08, older organs E7B69C at .12; on the
+desktop and tablet cards (m21, m18) the same per organ.
+
 ---
 
 ## 6. Open items
