@@ -581,10 +581,10 @@
     padding:9px 16px;font:inherit;font-size:13px;font-weight:500;line-height:1.2;letter-spacing:.01em;
     color:var(--muted-d);transition:color .4s ease, border-color .4s ease, background-color .4s ease;
   }
-  .chip-btn{display:inline-flex;align-items:center;gap:9px;padding-left:9px;}
+  .chip-btn{display:inline-flex;align-items:center;gap:9px;padding:7px 16px 7px 7px;}  /* 7px round the circle on three sides */
   .chip-btn .n{
-    display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
-    border:1px solid rgba(255,255,255,.28);font-style:normal;
+    display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;flex:none;
+    border:1px solid rgba(255,255,255,.16);font-style:normal;
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;line-height:1;color:var(--muted-d);
     transition:background-color .4s ease, color .4s ease, border-color .4s ease;
   }
@@ -618,7 +618,7 @@
      rounded bottom simply sits over it: no seam, no fillers */
   .panel-bg{
     position:absolute;z-index:1;pointer-events:none;display:none;
-    background:var(--panel-bg, rgba(197,164,150,.12));  /* the Panel tweak: colour, opacity and blur */
+    background:var(--panel-bg, rgba(197,164,150,.24));  /* the Panel tweak: colour, opacity and blur */
     -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
     border-radius:0 0 var(--r, 44px) var(--r, 44px);
   }
@@ -849,7 +849,8 @@
     .card{max-height:none;}
     .foot{position:static;margin-top:28px;white-space:normal;width:100%;}
     .incl li{font-size:13.5px;}
-    .chip-btn{padding:8px 13px;font-size:12.5px;}
+    .chip-btn{padding:6px 13px 6px 6px;font-size:12.5px;}
+    .chip-btn .n{width:21px;height:21px;}
     .step-desc{font-size:13.5px;}
     .intro{padding:24px 22px;}
     body[data-motion="dynamic"] .intro{padding:88px 22px 104px;}
@@ -1088,8 +1089,8 @@
     </select>
     <label for="panelColor">Panel</label>
     <input type="color" id="panelColor" value="#c5a496" aria-label="Panel colour" title="Panel colour">
-    <input type="number" id="panelAlpha" min="0" max="100" step="1" value="12" aria-label="Panel opacity, percent" title="Panel opacity %">
-    <input type="number" id="panelBlur" min="0" max="120" step="1" value="64" aria-label="Panel blur, pixels" title="Panel blur px">
+    <input type="number" id="panelAlpha" min="0" max="100" step="1" value="24" aria-label="Panel opacity, percent" title="Panel opacity %">
+    <input type="number" id="panelBlur" min="0" max="120" step="1" value="120" aria-label="Panel blur, pixels" title="Panel blur px">
     <label for="message">Message</label>
     <select id="message" aria-label="Message">
       <option value="0">Happy Birthday</option>
@@ -1655,8 +1656,8 @@
   function setPanel(hex, a, bl){
     hex = String(hex || '').replace('#', '');
     if(!/^[0-9a-f]{6}$/i.test(hex)) hex = 'c5a496';   // warm sand by default
-    a = parseInt(a, 10); if(isNaN(a)) a = 12; a = Math.max(0, Math.min(100, a));
-    bl = parseInt(bl, 10); if(isNaN(bl)) bl = 64; bl = Math.max(0, Math.min(120, bl));
+    a = parseInt(a, 10); if(isNaN(a)) a = 24; a = Math.max(0, Math.min(100, a));
+    bl = parseInt(bl, 10); if(isNaN(bl)) bl = 120; bl = Math.max(0, Math.min(120, bl));
     var r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
     document.body.style.setProperty('--panel-bg', 'rgba(' + r + ',' + g + ',' + b + ',' + (a / 100) + ')');
     document.body.style.setProperty('--panel-filter', bl ? 'blur(' + bl + 'px)' : 'none');

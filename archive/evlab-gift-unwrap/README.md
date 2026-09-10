@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Phone: head above a black card" |
+| Captured from version | 2026-09-10, "Chip circles, panel 24%/120px" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -35,7 +35,7 @@ the bar evenly.
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
 | Card | Cards, List | `card=list` |
-| Panel | a colour swatch (default a warm sand, `#c5a496`), an opacity in percent (default 12) and a backdrop blur in pixels (default 64, up to 120) for the second card in Cards | `panel=c5a496&alpha=12&blur=64` |
+| Panel | a colour swatch (default a warm sand, `#c5a496`), an opacity in percent (default 24) and a backdrop blur in pixels (default 120, the maximum) for the second card in Cards | `panel=c5a496&alpha=24&blur=120` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
@@ -172,7 +172,7 @@ are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
 
 With the Card tweak on Cards (the default) the timeline goes and a second card
-takes its place: a panel in a warm sand (`#c5a496`) at 12% over a 64px
+takes its place: a panel in a warm sand (`#c5a496`) at 24% over a 120px
 backdrop blur by default (the Panel tweak sets any colour, opacity and blur)
 as wide as the hero card. Its surface is one element in the stage, behind the
 hero card's glass, placed by the script from the card's box: it runs from one
