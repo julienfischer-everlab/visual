@@ -3939,6 +3939,19 @@ the app does. Without this the chips could be off for most of a slot.
 The play's clock skips any frame gap over a second (a phone booting, the
 tab away), so a stall is not charged to the slot it happens in.
 
+"Sequence 2 should be a cloud of particles that become the body. Use the
+morph from the concept." It is the morph now, and whole this time: the
+cloud the frame opens on is a cloud derived from the body's own -- the same
+particles, every one, scattered through a ball the body's height (a seeded
+scatter, so it is the same cloud on every load), carrying the body's inks,
+seeds and count -- so the painter's morph, which samples both clouds at one
+target and takes index i to index i, lands every dot in its place. (5.148's
+holes came from morphing off the sphere, which holds fewer points than the
+body.) The cycle: cut to the cloud, the travel from 0.5s over 2.4s along the
+morph's slight arc, the camera pulling back only a touch now (1.25x to 1x
+over 3s, where the zoom-out had been 4.5x), the chips at 3.1 and 3.5s, the
+hold to 8s, the cut back to the cloud.
+
 ---
 
 ## 6. Open items
