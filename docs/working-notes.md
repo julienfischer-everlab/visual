@@ -3830,6 +3830,52 @@ shoulder, cut in at 3.1s as the camera settles, and the verdict in the
 accent over the right shoulder 0.4s after it -- the reading first, then what
 it means. Both cut, no fade, and both clear on the cut back to the close-up.
 
+"Merge. No need showing a phone UI here." 04 -- the phone on the heart under
+"But not the full story" -- is folded into 03: the body and its chips hold
+while the second line lands, no phone, no cut between the two lines, 0:04 to
+0:10. Ten sequences; the acts are 01-03, 04-07, 08, 09-10, and the first
+app frame is 05 now, so it carries the full "the frame is the app" note and
+06 and 07 refer to it. The heart count-up that rode the old 04's arc went
+with it.
+
+"Introducing / Organ ages: rotating vertical transition, fade in, out." Each
+phase turns about a horizontal axis as it fades -- a vertical turn, toward
+the camera on the way in (rotateX 70 degrees to flat, rising a third of its
+height) and on and away on the way out (flat to -70, still rising) -- with
+perspective on the stage and ease-in-out on the turn and the fade alike; the
+timings are the ones set above, about a second on "Introducing", the rest
+on "Organ ages".
+
+"When I play a sequence, automatically transition to the next. Add a
+vertical progress on the right side (timeline) so we can see the progress
+through the play." A Play button in the frame's bar (the space bar too):
+each sequence runs for its board time -- the gap to the next timecode, the
+last to 0:30 -- and hands on to the next, round and round until Pause; the
+sketch restarts on each hand-over as it does on a click, so the frame's own
+cycle starts with its slot. A hairline down the script card's left edge,
+from the first line to the last, fills in the accent to the top of the line
+in focus and on through it on the frame's clock; it clears to the line's top
+on pause, and the clock holds while the page is away on another mode.
+
+"Padding 12px. No border, never. All cards, inactive and active, should have
+the same padding so nothing jumps when we activate items." Every row of the
+script is 12px in on all sides and runs 12px past the text either way, so
+the text keeps the card's edge; the active row only takes its ground. The
+rules between rows are gone, and the act headings sit 24px down.
+
+"No full stop. Use the same font style as Introducing." 09 reads "Look
+closer" -- sentence case, no stop -- in the Introducing type: Saans medium,
+4.2cqw, the same fade-up and hard cut as before.
+
+"Merge sequences 1 and 2, both animations in one. Remove 'It all starts',
+we don't need that copy." One sequence, 0:00-0:04, "Your body holds
+millions of signals": the dot close, the 2s pull-back to the field, and the
+same move easing on gently (1.35x to 1x) for the rest of the cycle while the
+readings type on -- the first once the field has resolved, 1.8s in, then
+1.4s apart, four a cycle so the last says its piece before the cut. The
+one-dot universe carries the readings' layer now; the second field is gone.
+Nine sequences, no silent one; the acts are 01-02, 03-06, 07, 08-09.
+
 ---
 
 ## 6. Open items
