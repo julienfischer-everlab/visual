@@ -443,7 +443,7 @@
   body[data-state="gift"] .card{transform:none;}
   body[data-state="returning"] .card{transform:translateY(110cqh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
 
-  .card .info{padding:48px;display:flex;flex-direction:column;justify-content:flex-start;min-height:0;min-width:0;}
+  .card .info{padding:40px;display:flex;flex-direction:column;justify-content:flex-start;min-height:0;min-width:0;}
   /* a soft light travelling round the card's edge: a 1px ring (the padding of
      a masked pseudo-element) painted with a conic gradient whose bright arc
      turns once every 4s; faint everywhere else, so the card keeps no hard border */
@@ -451,12 +451,12 @@
   .card::before{
     content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;z-index:3;
     background:conic-gradient(from var(--ring-a),
-      rgba(255,255,255,.06) 0deg, rgba(255,255,255,.06) 200deg,
-      rgba(255,255,255,.44) 290deg, rgba(255,255,255,.06) 360deg);
+      rgba(255,255,255,.06) 0deg, rgba(255,255,255,.06) 280deg,
+      rgba(255,255,255,.24) 320deg, rgba(255,255,255,.06) 360deg);  /* one soft 80° arc, 24% at its heart */
     -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);mask-composite:exclude;
     opacity:0;transition:opacity .8s ease;
-    animation:ring-turn 4s linear infinite;
+    animation:ring-turn 4s cubic-bezier(.45,0,.55,1) infinite;  /* each turn eases in and out */
   }
   @keyframes ring-turn{to{--ring-a:360deg;}}
   body[data-state="gift"] .card::before, body[data-motion="static"] .card::before{opacity:1;}
@@ -581,7 +581,7 @@
     color:var(--muted-d);transition:color .4s ease, border-color .4s ease, background-color .4s ease;
   }
   .chip-btn:hover{color:var(--ink-d);}
-  .chip-btn.on{color:var(--ink-d);border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.14);}
+  .chip-btn.on{color:var(--ink-d);border-color:transparent;background:rgba(255,255,255,.14);}
   .step-desc{margin:0;min-height:3em;font-size:14px;line-height:1.5;color:var(--ink-d2);text-wrap:pretty;transition:opacity .22s ease;}
   .step-desc.swap{opacity:0;}
   /* Cards: the side column is a second card in the same glass, tucked behind
@@ -595,21 +595,21 @@
   body[data-card="cards"] .foot{position:static;margin:0 0 10px;}
   body[data-card="cards"] .incl li{padding:4px 0;}
   body[data-card="cards"] .incl-wrap{gap:10px;}
-  body[data-card="cards"] .card .info{padding-top:44px;padding-bottom:44px;}
+  body[data-card="cards"] .card .info{padding-top:36px;padding-bottom:36px;}
   body[data-card="cards"] .card{max-height:none;}
   .side-clip{display:contents;}
   .side-in{display:flex;flex-direction:column;gap:14px;min-width:0;}
   body[data-card="cards"] .side{--r:44px;position:relative;justify-content:flex-start;padding:0;}
   body[data-card="cards"] .side-clip{display:block;overflow:hidden;border-radius:0 0 var(--r) var(--r);}
   body[data-card="cards"] .side-in{
-    gap:12px;padding:18px 48px 22px;
-    background:var(--panel-bg, rgba(255,255,255,.12));  /* the Panel tweak: colour, opacity and blur */
+    gap:12px;padding:10px 40px 14px;
+    background:var(--panel-bg, rgba(255,255,255,.06));  /* the Panel tweak: colour, opacity and blur */
     -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
     border-radius:0 0 var(--r) var(--r);
   }
   body[data-card="cards"] .side::before, body[data-card="cards"] .side::after{
     content:"";position:absolute;top:calc(-1 * var(--r));width:var(--r);height:var(--r);
-    background:var(--panel-bg, rgba(255,255,255,.12));
+    background:var(--panel-bg, rgba(255,255,255,.06));
   }
   body[data-card="cards"] .side::before{
     left:0;
@@ -693,7 +693,7 @@
   .pass-term span{font-size:12px;opacity:.85;margin-top:5px;}
   /* inside the glass card the passport is a small 128×72 tile at the top right,
      beside the title: the mark and the term only */
-  .card .pass{position:absolute;top:48px;right:48px;width:64px;height:64px;aspect-ratio:auto;border-radius:50%;}  /* a circle of the image, nothing on it */
+  .card .pass{position:absolute;top:40px;right:40px;width:64px;height:64px;aspect-ratio:auto;border-radius:50%;}  /* a circle of the image, nothing on it */
   .card .pass .pass-tag, .card .pass .pass-name, .card .pass .pass-term{display:none;}
   .card .pass .pass-mark{display:none;}
   .card .pass .pass-tex{inset:0;filter:none;opacity:1;}
@@ -761,13 +761,13 @@
 
   @container stage (min-width:821px) and (max-height:800px){
     .hero{padding:80px 0 52px;}
-    .card .info{padding:30px 34px;}
-    .card .pass{top:30px;right:34px;}
+    .card .info{padding:22px 26px;}
+    .card .pass{top:22px;right:26px;}
     .hero{gap:44px;}
     .side{gap:12px;}
     .card{border-radius:32px;}
     body[data-card="cards"] .side{--r:32px;}
-    body[data-card="cards"] .side-in{padding:16px 34px 22px;gap:10px;}
+    body[data-card="cards"] .side-in{padding:8px 26px 14px;gap:10px;}
     body[data-card="cards"] .hero{padding-top:96px;}
     .title-row{margin-bottom:8px;}
     .title-row .orb{width:36px;height:36px;}
@@ -789,7 +789,7 @@
     .hero{grid-template-columns:1fr;gap:20px;}
     .side{gap:14px;padding:0 4px;}
     body[data-card="cards"] .side{--r:28px;}
-    body[data-card="cards"] .side-in{padding:20px 26px 26px;gap:12px;}
+    body[data-card="cards"] .side-in{padding:12px 18px 18px;gap:12px;}
     .timeline li span{white-space:normal;}
     .side .act{display:none;}
     .incl-wrap{margin-top:0;}
@@ -826,7 +826,8 @@
     .logo svg{height:20px;}
     .back{top:14px;}
     .phone{width:min(34%, 150px);transform:translate(-50%,-42%) rotate(-14deg);}
-    .card .info{padding:30px 26px 28px;min-height:0;}
+    .card .info{padding:22px 18px 20px;min-height:0;}
+    body[data-card="cards"] .card .info{padding-top:22px;padding-bottom:20px;}
     .card .pass{display:none;}
     .title-row{padding-right:0;}
     .incl li{white-space:normal;}
@@ -1070,13 +1071,13 @@
     </select>
     <label for="cardSel">Card</label>
     <select id="cardSel" aria-label="Card">
-      <option value="list">List</option>
       <option value="cards">Cards</option>
+      <option value="list">List</option>
     </select>
     <label for="panelColor">Panel</label>
     <input type="color" id="panelColor" value="#ffffff" aria-label="Panel colour" title="Panel colour">
-    <input type="number" id="panelAlpha" min="0" max="100" step="1" value="12" aria-label="Panel opacity, percent" title="Panel opacity %">
-    <input type="number" id="panelBlur" min="0" max="120" step="1" value="0" aria-label="Panel blur, pixels" title="Panel blur px">
+    <input type="number" id="panelAlpha" min="0" max="100" step="1" value="6" aria-label="Panel opacity, percent" title="Panel opacity %">
+    <input type="number" id="panelBlur" min="0" max="120" step="1" value="64" aria-label="Panel blur, pixels" title="Panel blur px">
     <label for="message">Message</label>
     <select id="message" aria-label="Message">
       <option value="0">Happy Birthday</option>
@@ -1605,8 +1606,8 @@
   function setPanel(hex, a, bl){
     hex = String(hex || '').replace('#', '');
     if(!/^[0-9a-f]{6}$/i.test(hex)) hex = 'ffffff';
-    a = parseInt(a, 10); if(isNaN(a)) a = 12; a = Math.max(0, Math.min(100, a));
-    bl = parseInt(bl, 10); if(isNaN(bl)) bl = 0; bl = Math.max(0, Math.min(120, bl));
+    a = parseInt(a, 10); if(isNaN(a)) a = 6; a = Math.max(0, Math.min(100, a));
+    bl = parseInt(bl, 10); if(isNaN(bl)) bl = 64; bl = Math.max(0, Math.min(120, bl));
     var r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
     document.body.style.setProperty('--panel-bg', 'rgba(' + r + ',' + g + ',' + b + ',' + (a / 100) + ')');
     document.body.style.setProperty('--panel-filter', bl ? 'blur(' + bl + 'px)' : 'none');
@@ -1621,7 +1622,7 @@
   /* ---------- card tweak: the six rows, or three mini cards ---------- */
   var cardSel = document.getElementById('cardSel');
   function setCard(v){
-    v = v === 'cards' ? 'cards' : 'list';
+    v = v === 'list' ? 'list' : 'cards';   // Cards by default
     document.body.dataset.card = v;
     cardSel.value = v;
     syncSteps();
