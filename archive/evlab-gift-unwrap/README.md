@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Mini cards flip" |
+| Captured from version | 2026-09-10, "Mini cards below card, circle tile" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -144,35 +144,28 @@ shadow, so the room shows through. Inside, 48px padding all round: the mono
 Protocol Membership" 10px under it (two lines beside the tile), a short description, then a mono "What's included"
 label above six plain rows, each a small line icon (speech bubble, drop, scan,
 pulse, leaf, cycle) and the full title, no card and no dividers, 6px above and
-below each row. With the Card tweak on Cards the six rows give way to three
-mini cards in a row under the same label (white at 7% with a faint border,
-18px corners): Consults, "Unlimited when needed"; Diagnostics, "DEXA, MRI
-scan, VO₂ Max"; On-going assistance, "Included", each a small mono label with
-its value anchored at the card's foot so the three values line up. On phones
-the three stack, label left and value right. Each mini card is a button:
-a click, Enter or Space flips it over (a 0.65s rotation about its vertical
-axis) to a back face carrying the same label and three short bullets with
-small red squares (Consults: the 45-minute onboarding consult, the
-nutrition assessment, follow-ups when needed; Diagnostics: the 100+
-biomarker blood panel, the DEXA scan, the 90-minute physical with VO₂ max;
-On-going assistance: re-testing part-way, the 12-month review, the plan
-updated as results come in), and a second click flips it back. Only the
-face showing sets the card's height, which animates between the two while
-the glass behind the gift card follows it frame by frame; on desktop the
-other two cards stretch to the same row. Reduced motion drops the
-rotation and the height animation. The glass behind the card also
-follows the card's new height when the tweak is switched. Then **Claim my gift** full width at the foot of the card. At
+below each row. Then **Claim my gift** full width at the foot of the card. At
 the top right of the card, beside the title, sits the membership passport as a
-104×60 tile with nothing written on it: the `Ellipse 4358.png` copper image
-itself, crisp, filling the tile, with the Everlab mark over it and nothing
-else. Phones drop the tile.
+64px circle of the `Ellipse 4358.png` copper image, crisp, with nothing on
+it. Phones drop the circle.
 
 Under the card, 52px below and directly over the photograph, with no label: a
-horizontal timeline as wide as the card, five equal columns with a 10px square
+horizontal timeline as wide as the card (with the Card tweak on List, the
+default), five equal columns with a 10px square
 at the centre of each and its label (12.5px) centred beneath on one line; a half-pixel
 line runs from 6px right of each square to 6px left of the next. The squares
 are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
-travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold. The
+travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
+
+With the Card tweak on Cards the timeline goes and three mini cards take its
+place, 24px under the card and as wide as it, in the card's own glass
+(`rgba(40,38,36,.36)` over a 60px blur, 24px corners): Consults, "Unlimited
+when needed"; Diagnostics, "DEXA, MRI scan, VO₂ Max"; On-going assistance,
+"Included", each a small mono label with its value anchored at the tile's
+foot so the three values line up. In dynamic motion they arrive one after
+another like the timeline steps (1.2s, 1.55s, 1.9s). On phones the three
+stack, label left and value right. The card itself is unchanged: the six
+rows stay inside it. The
 wordmark sits top centre, the footer line "Page secured by Everlab" bottom
 centre. On phones the timeline labels may wrap and in dynamic motion **Claim
 my gift** floats at the foot of the screen.

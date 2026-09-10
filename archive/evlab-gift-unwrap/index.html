@@ -551,37 +551,33 @@
     font-size:14px;line-height:1.4;color:var(--ink-d);text-wrap:pretty;
   }
   .incl li svg{display:block;width:18px;height:18px;stroke:var(--ink-d2);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
-  /* Card tweak "Cards": three mini cards in a row instead of the six rows */
+  /* Card tweak "Cards": three mini cards in a row below the card, in place of the timeline */
   .minis{list-style:none;margin:0;padding:0;display:none;grid-template-columns:repeat(3, minmax(0,1fr));gap:10px;}
-  /* each mini card flips on click: a front (label, value) and a back (label,
-     bullets) share one grid cell inside a 3D wrapper, so the card is as tall
-     as its taller face and the two faces swap with a rotateY */
-  .minis > li{display:grid;min-width:0;perspective:900px;cursor:pointer;border-radius:18px;outline-offset:3px;}
-  .minis > li:focus-visible{outline:2px solid rgba(255,255,255,.6);}
-  .minis .flip{position:relative;display:grid;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.4,0,.2,1);}
-  .minis > li.flipped .flip{transform:rotateY(180deg);}
-  /* only the face that shows sets the card's height; the other fills it from
-     behind, and the script animates the height between the two */
-  .minis .rear, .minis > li.flipped .front{position:absolute;inset:0;}
-  .minis > li.flipped .rear{position:static;}
-  .minis .face{
-    grid-area:1/1;display:flex;flex-direction:column;gap:10px;min-width:0;
-    padding:16px 16px 18px;border-radius:18px;
-    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);
-    -webkit-backface-visibility:hidden;backface-visibility:hidden;
+  .minis li{
+    display:flex;flex-direction:column;gap:10px;min-width:0;
+    padding:18px 20px 20px;border-radius:24px;
+    background:rgba(40,38,36,.36);
+    -webkit-backdrop-filter:blur(60px) saturate(1.15);backdrop-filter:blur(60px) saturate(1.15);
   }
-  .minis > li:hover .face{background:rgba(255,255,255,.10);}
-  .minis .rear{transform:rotateY(180deg);background:rgba(255,255,255,.10);}
-  .minis .rear ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
-  .minis .rear li{position:relative;padding-left:12px;font-size:11.5px;line-height:1.35;color:var(--ink-d);text-wrap:pretty;}
-  .minis .rear li::before{content:"";position:absolute;left:0;top:.48em;width:4px;height:4px;background:var(--red);}
   .minis .m-k{
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
     font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-d);
   }
   .minis .m-v{margin-top:auto;font-weight:500;font-size:15px;line-height:1.3;color:var(--ink-d);text-wrap:balance;}  /* values share the cards' foot */
-  body[data-card="cards"] .incl{display:none;}
   body[data-card="cards"] .minis{display:grid;}
+  body[data-card="cards"] .timeline{display:none;}
+  body[data-card="cards"] .hero{gap:24px;}
+  /* dynamic: like the timeline steps, the three arrive one after another */
+  body[data-motion="dynamic"] .minis li{opacity:0;transform:translateY(6px);transition:opacity .5s ease, transform .5s ease;}
+  body[data-motion="dynamic"][data-state="revealing"] .minis li,
+  body[data-motion="dynamic"][data-state="gift"] .minis li{opacity:1;transform:none;}
+  body[data-motion="dynamic"][data-state="revealing"] .minis li:nth-child(1),
+  body[data-motion="dynamic"][data-state="gift"] .minis li:nth-child(1){transition-delay:1200ms;}
+  body[data-motion="dynamic"][data-state="revealing"] .minis li:nth-child(2),
+  body[data-motion="dynamic"][data-state="gift"] .minis li:nth-child(2){transition-delay:1550ms;}
+  body[data-motion="dynamic"][data-state="revealing"] .minis li:nth-child(3),
+  body[data-motion="dynamic"][data-state="gift"] .minis li:nth-child(3){transition-delay:1900ms;}
+  body[data-motion="dynamic"][data-state="returning"] .minis li{opacity:0;transition:opacity .25s ease 0s;}
   /* the sender's note, under the value */
   .note{
     margin:auto 0 0;padding-top:26px;border-top:1px solid var(--hair-d);  /* pushed to the bottom of the column */
@@ -629,9 +625,9 @@
   .pass-term span{font-size:12px;opacity:.85;margin-top:5px;}
   /* inside the glass card the passport is a small 128×72 tile at the top right,
      beside the title: the mark and the term only */
-  .card .pass{position:absolute;top:48px;right:48px;width:104px;height:60px;aspect-ratio:auto;border-radius:12px;}
+  .card .pass{position:absolute;top:48px;right:48px;width:64px;height:64px;aspect-ratio:auto;border-radius:50%;}  /* a circle of the image, nothing on it */
   .card .pass .pass-tag, .card .pass .pass-name, .card .pass .pass-term{display:none;}
-  .card .pass .pass-mark{z-index:1;}
+  .card .pass .pass-mark{display:none;}
   .card .pass .pass-tex{inset:0;filter:none;opacity:1;}
   .card .pass::after{display:none;}
   /* more light inside the tile: a warm highlight top left, a deep shadow bottom right */
@@ -645,7 +641,7 @@
   .card .pass .pass-mark{top:10px;left:10px;width:18px;height:18px;}
   .card .pass .pass-term{right:11px;bottom:9px;}
   .card .pass .pass-term b{font-size:12px;letter-spacing:-.01em;}
-  .title-row{padding-right:126px;}
+  .title-row{padding-right:88px;}
 
   /* fold 2 layout: the side sits outside the card, over the photograph;
      the passport card, then what's next, then the button. It rises after the card. */
@@ -708,7 +704,7 @@
     .blurb{margin-bottom:0;font-size:13.5px;}
     .incl-wrap{gap:10px;padding-top:10px;}
     .incl li{padding:3px 0;font-size:13px;}
-    .minis .face{padding:12px 14px 14px;gap:8px;}
+    .minis li{padding:12px 14px 14px;gap:8px;}
     .minis .m-v{font-size:14px;}
     .side .mono-label{margin-top:4px;}
     .pass{aspect-ratio:1.9;}
@@ -770,11 +766,8 @@
     .foot{position:static;margin-top:28px;white-space:normal;width:100%;}
     .incl li{font-size:13.5px;}
     .minis{grid-template-columns:1fr;gap:8px;}
-    .minis > li{border-radius:14px;}
-    .minis .face{padding:13px 16px;border-radius:14px;}
-    .minis .front{flex-direction:row;align-items:center;justify-content:space-between;gap:14px;}
+    .minis li{flex-direction:row;align-items:center;justify-content:space-between;gap:14px;padding:13px 16px;border-radius:14px;}
     .minis .m-v{margin-top:0;font-size:14px;text-align:right;}
-    .minis .rear li{font-size:12.5px;}
     .intro{padding:24px 22px;}
     body[data-motion="dynamic"] .intro{padding:88px 22px 104px;}
     body[data-motion="dynamic"][data-state="revealing"] .top-shade,
@@ -792,7 +785,6 @@
     .intro .chip::before{animation:none;}
     .chip{animation:none;opacity:1;transform:none;}
     .logo{animation:none !important;opacity:1;}
-    .minis .flip{transition:none;}
     .stack, .card, .act, .more, .foot, .back, body, .glow, .scene-bg, .scene-bg::after, .dim{transition-duration:.3s !important;transition-delay:0s !important;}
     .stack{transition-property:opacity;}
     body[data-state="revealing"] .stack, body[data-state="gift"] .stack{transform:none;opacity:0;filter:none;}
@@ -1099,44 +1091,17 @@
       <div class="incl-wrap">
         <p class="mono-label">What’s included</p>
         <ul class="incl" id="includes"></ul>
-        <ul class="minis" id="minis">
-          <li tabindex="0" role="button" aria-pressed="false" aria-label="Consults: unlimited when needed. Show details">
-            <div class="flip">
-              <div class="face front"><span class="m-k">Consults</span><b class="m-v">Unlimited when needed</b></div>
-              <div class="face rear"><span class="m-k">Consults</span><ul>
-                <li>45-minute onboarding consult with an Everlab doctor</li>
-                <li>Nutrition assessment with an Everlab nutritionist</li>
-                <li>Follow-ups whenever you need them</li>
-              </ul></div>
-            </div>
-          </li>
-          <li tabindex="0" role="button" aria-pressed="false" aria-label="Diagnostics: DEXA, MRI scan, VO₂ Max. Show details">
-            <div class="flip">
-              <div class="face front"><span class="m-k">Diagnostics</span><b class="m-v">DEXA, MRI scan, VO₂ Max</b></div>
-              <div class="face rear"><span class="m-k">Diagnostics</span><ul>
-                <li>Advanced blood panel, 100+ biomarkers</li>
-                <li>DEXA scan, body composition and bone density</li>
-                <li>90-minute physical assessment with VO₂ max</li>
-              </ul></div>
-            </div>
-          </li>
-          <li tabindex="0" role="button" aria-pressed="false" aria-label="On-going assistance: included. Show details">
-            <div class="flip">
-              <div class="face front"><span class="m-k">On-going assistance</span><b class="m-v">Included</b></div>
-              <div class="face rear"><span class="m-k">On-going assistance</span><ul>
-                <li>Re-testing part-way through</li>
-                <li>A full 12-month review</li>
-                <li>Your plan updated as results come in</li>
-              </ul></div>
-            </div>
-          </li>
-        </ul>
       </div>
       <div class="act"><a class="pill" id="claim" href="#">Claim my gift</a></div>
     </div>
   </article>
   <aside class="side" aria-label="Your membership">
 
+      <ul class="minis" id="minis" aria-label="What’s included">
+        <li><span class="m-k">Consults</span><b class="m-v">Unlimited when needed</b></li>
+        <li><span class="m-k">Diagnostics</span><b class="m-v">DEXA, MRI scan, VO₂ Max</b></li>
+        <li><span class="m-k">On-going assistance</span><b class="m-v">Included</b></li>
+      </ul>
       <ol class="timeline" aria-label="Your next steps">
         <li class="now" aria-current="step"><i></i><span>Unwrap</span></li>
         <li><i></i><span>Get started</span></li>
@@ -1526,33 +1491,7 @@
   setCard((params.get('card') || '').toLowerCase());
   cardSel.addEventListener('change', function(){ setCard(cardSel.value); });
 
-  // a mini card flips to its bullets on click (or Enter / Space), and back again
-  var FLIP_MS = 650;
-  function flipMini(li){
-    var flip = li.querySelector('.flip'), on = !li.classList.contains('flipped');
-    var h0 = flip.offsetHeight;
-    li.classList.toggle('flipped', on);
-    li.setAttribute('aria-pressed', on ? 'true' : 'false');
-    var h1 = flip.offsetHeight;
-    if(h0 !== h1 && !reduce){
-      flip.animate([{ height: h0 + 'px' }, { height: h1 + 'px' }], { duration: FLIP_MS, easing: 'cubic-bezier(.4,0,.2,1)' });
-    }
-    // the gift card changes height with it, so the glass behind follows frame by frame
-    var t0 = performance.now();
-    (function follow(){
-      if(state === 'gift') seedSet(cardRect());
-      if(performance.now() - t0 < FLIP_MS + 60) requestAnimationFrame(follow);
-    })();
-  }
-  var minisEl = document.getElementById('minis');
-  minisEl.addEventListener('click', function(e){
-    var li = e.target.closest('.minis > li'); if(li) flipMini(li);
-  });
-  minisEl.addEventListener('keydown', function(e){
-    if(e.key !== 'Enter' && e.key !== ' ') return;
-    var li = e.target.closest('.minis > li'); if(!li) return;
-    e.preventDefault(); flipMini(li);
-  });
+
 
   var motionSel = document.getElementById('motion');
   function setMotion(m){
