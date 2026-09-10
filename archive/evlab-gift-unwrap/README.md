@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Mini cards below card, circle tile" |
+| Captured from version | 2026-09-10, "Mini cards black 90%" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -158,8 +158,8 @@ are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
 
 With the Card tweak on Cards the timeline goes and three mini cards take its
-place, 24px under the card and as wide as it, in the card's own glass
-(`rgba(40,38,36,.36)` over a 60px blur, 24px corners): Consults, "Unlimited
+place, 24px under the card and as wide as it, near-black at 90%
+(`rgba(14,12,11,.9)`, no blur, 24px corners): Consults, "Unlimited
 when needed"; Diagnostics, "DEXA, MRI scan, VO₂ Max"; On-going assistance,
 "Included", each a small mono label with its value anchored at the tile's
 foot so the three values line up. In dynamic motion they arrive one after
