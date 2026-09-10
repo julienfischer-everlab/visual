@@ -3824,6 +3824,12 @@ silent again -- the dot and the pull-back stay, the first spoken line is
 02's -- and carries no subtitle, as silent frames do. 05 keeps its VO, so
 01 is the one silent sequence.
 
+"Add a chip, white, left side: 124 biomarkers." Frame 03 lands with two chips
+now, the same mono in black: the count on white over the body's left
+shoulder, cut in at 3.1s as the camera settles, and the verdict in the
+accent over the right shoulder 0.4s after it -- the reading first, then what
+it means. Both cut, no fade, and both clear on the cut back to the close-up.
+
 ---
 
 ## 6. Open items
