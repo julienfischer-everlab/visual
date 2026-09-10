@@ -3641,17 +3641,46 @@ cloud the frame opens on is the body seen close, at 2.2x and 80%, and the
 pull-back resolves it. The phone sketches take the same options.
 
 "Put the caption overlapping the video frame, like a movie subtitle." The
-spoken line moved from under the stage onto it: bottom centre, 8% in from
-the sides and 6% up, white at medium weight with a soft shadow so it reads
-over the black and over the phone alike, sized to the stage like the rest of
-the type; a silent frame's direction is set the same way at 60% and regular
-weight. The notes stay under the frame.
+spoken line moved from under the stage onto it: bottom centre, 6% up, white
+at medium weight in a black box (the caption's own rectangle, no shadow),
+smaller than the first cut -- "smaller, with a rectangle black background"
+-- and sized to the stage like the rest of the type. "If no VO, don't show
+any subtitle": a silent frame carries none; its direction is in the script
+and the notes. The notes stay under the frame.
 
 "More shiny, the body dots." The library's body as it is, with two lifts on
 top for this frame alone: the view's alpha at 1.35 (the faint dots come up,
 the bright ones cap at full) and, on its canvas, brightness 1.35 and
 saturation 1.15 in CSS -- so the tile's own drawing is untouched and the
 shine is the frame's.
+
+"Start the sequence closer -- all dots filling the frame. No loop: cut the
+sequence at the end and start over, same for all sequences." Frame 03 opens
+at 4.5x on the body's centre, dots edge to edge, and pulls back as before;
+at the end of its cycle the view jumps back to the close-up with the
+transition off for the jump (.snap) and plays again -- a cut, not a reverse.
+The same rule everywhere: 01 and 02 lose their fade at the loop's end and
+simply reset; 06's push runs in and cuts back rather than alternating; 07's
+hero glides to the lungs, holds, and snaps back to the heart (land) before
+gliding again. The SMIL loops (the arcs, the chart) already ran forward and
+reset.
+
+"More dots filling the screen, floating. Less orange, more neutral shiny
+ones. No fixed dot in the centre: the start should just start with one, then
+zoom out revealing more around." The universe is denser (some 1,900 dots, the
+depths' band pulled in from 190% to 160% of the stage so more of them are in
+frame, 02's pull-back from 1.35x rather than 1.6x), and mostly neutral: a
+fifth salmon, three tenths sand, half off-white, all brighter, the sharp
+depth with a faint glow. The accent dot pinned at the centre is gone from
+both frames. 01 opens on an ordinary off-white dot of the sharp depth at the
+centre, on a drift of its own so slow the close-up holds it, and the
+pull-back shows the rest around it; 02 has nothing at the centre.
+
+"Simulate the subtitle talking, word by word appearing." Each word of a
+spoken line is its own span, coming up in turn 0.32s apart (a talking pace)
+with a small rise, the line holding once complete and going at the end of an
+8s period to start over -- the period the frames cycle on. Silent frames have
+no subtitle, so nothing to speak.
 
 ---
 
