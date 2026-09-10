@@ -197,10 +197,10 @@
      sitting exactly behind it, is its surface for the whole visit (so there is
      never a swap to flash), and only the content fades in and out */
   body[data-motion="dynamic"] .card{transform:none;opacity:1;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;transition:none;}
-  body[data-motion="dynamic"] .card .info{opacity:0;transition:opacity 600ms ease calc(var(--card-delay) + var(--card-ms) + 50ms);}
+  body[data-motion="dynamic"] .card .info, body[data-motion="dynamic"] .card-head{opacity:0;transition:opacity 600ms ease calc(var(--card-delay) + var(--card-ms) + 50ms);}
   body[data-motion="dynamic"][data-state="revealing"] .card .info,
-  body[data-motion="dynamic"][data-state="gift"] .card .info{opacity:1;}
-  body[data-motion="dynamic"][data-state="returning"] .card .info{opacity:0;transition:opacity 350ms ease 0s;}
+  body[data-motion="dynamic"][data-state="gift"] .card .info, body[data-motion="dynamic"][data-state="gift"] .card-head{opacity:1;}
+  body[data-motion="dynamic"][data-state="returning"] .card .info, body[data-motion="dynamic"][data-state="returning"] .card-head{opacity:0;transition:opacity 350ms ease 0s;}
   /* nothing inside the card moves on the way back; it only fades */
   body[data-motion="dynamic"][data-state="returning"] .act{transform:none;}
 
@@ -443,6 +443,7 @@
   body[data-state="gift"] .card{transform:none;}
   body[data-state="returning"] .card{transform:translateY(110cqh);transition:transform var(--back-card-ms) var(--ease-scene) 0s;}
 
+  .card-head:empty{display:none;}
   .card .info{padding:40px;display:flex;flex-direction:column;justify-content:flex-start;min-height:0;min-width:0;}
   /* a soft light travelling round the card's edge: a 1px ring (the padding of
      a masked pseudo-element) painted with a conic gradient whose bright arc
@@ -551,7 +552,7 @@
   .kicker .chip::before{background:#E8722A;}
   .title-row{display:flex;align-items:center;gap:14px;margin:0 0 14px;}
   .title-row .orb{width:44px;height:44px;border-radius:50%;flex:none;display:block;}
-  .card h2{
+  .card h2, .card-head h2{
     margin:0;
     font-weight:500;
     font-size:clamp(24px, 1.1cqw + 14px, 30px);line-height:1.08;letter-spacing:-.025em;
@@ -769,7 +770,7 @@
     body[data-card="cards"] .hero{padding-top:96px;}
     .title-row{margin-bottom:8px;}
     .title-row .orb{width:36px;height:36px;}
-    .card h2{font-size:clamp(22px, 1cqw + 13px, 26px);}
+    .card h2, .card-head h2{font-size:clamp(22px, 1cqw + 13px, 26px);}
     .blurb{margin-bottom:0;font-size:13.5px;}
     .incl-wrap{gap:10px;padding-top:10px;}
     .incl li{padding:3px 0;font-size:13px;}
@@ -826,6 +827,18 @@
     .phone{width:min(34%, 150px);transform:translate(-50%,-42%) rotate(-14deg);}
     .card .info{padding:22px 18px 20px;min-height:0;}
     body[data-card="cards"] .card .info{padding-top:22px;padding-bottom:20px;}
+    /* the eyebrow and the title stand outside the card, centred, with room
+       above and below so the photograph shows; the card is solid black */
+    .card-head{display:flex;flex-direction:column;align-items:center;text-align:center;padding:64px 12px 64px;}
+    .card-head .kicker{margin:0 0 12px;}
+    .card-head .kicker .chip{justify-content:center;}
+    .card-head .title-row{margin:0;padding:0;justify-content:center;}
+    .card-head h2{text-align:center;font-size:clamp(26px, 6cqw + 4px, 32px);}
+    .card{background:#0E0C0B;-webkit-backdrop-filter:none;backdrop-filter:none;}
+    body[data-state="revealing"] .seed, body[data-state="gift"] .seed{background:#0E0C0B;-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .seed{transition:transform 1100ms cubic-bezier(.2,.7,.2,1), background-color 700ms ease;}
+    .hero{padding-top:72px;}
+    body[data-card="cards"] .hero{padding-top:72px;}
     .card .pass{display:none;}
     .title-row{padding-right:0;}
     .blurb{padding-right:0;}
@@ -1139,6 +1152,7 @@
 
 <main class="gift" id="gift" aria-hidden="true">
   <div class="hero">
+  <div class="card-head" id="cardHead"></div>
   <article class="card" id="card" aria-label="Your gift">
     <div class="info">
       <p class="kicker"><span class="chip" id="fromChip"></span></p>
@@ -1479,12 +1493,12 @@
     deviceSel.value = d;
     fitDevice();
     // the stage has a new size: recompute the circle and let the layout settle
-    requestAnimationFrame(function(){ layoutScene(); });
+    requestAnimationFrame(function(){ placeHead(); layoutScene(); panelSet(); });
   }
   var wanted = (params.get('device') || '').toLowerCase();
   setDevice(wanted === 'phone' || wanted === 'iphone' ? 'phone' : 'desktop');
   deviceSel.addEventListener('change', function(){ setDevice(deviceSel.value); });
-  window.addEventListener('resize', function(){ fitDevice(); layoutScene(); placeSig(); panelSet(); });
+  window.addEventListener('resize', function(){ fitDevice(); placeHead(); layoutScene(); placeSig(); panelSet(); });
 
   /* the panel's surface follows the card: same left and width, from one radius
      above the card's bottom edge down to the panel's foot; measured in the
@@ -1601,6 +1615,20 @@
 
   setState('intro');
   GiftCard(gift);
+
+  // phones: the eyebrow and the title move out of the card into the head slot
+  // above it (and back when the stage is wide again); ids travel with the nodes
+  var cardHead = document.getElementById('cardHead'), headOut = false;
+  function placeHead(){
+    var phone = document.getElementById('stage').clientWidth <= 820;
+    if(phone === headOut) return;
+    var info = document.querySelector('.card .info'), k = document.querySelector('.kicker'), t = document.querySelector('.title-row');
+    if(phone){ cardHead.appendChild(k); cardHead.appendChild(t); }
+    else { info.insertBefore(k, info.firstChild); info.insertBefore(t, document.querySelector('.card .blurb')); }
+    headOut = phone;
+    panelSet(); if(state === 'gift') seedSet(cardRect());
+  }
+  placeHead();
   GiftIntro($('intro'), gift, reveal);
 
   /* ---------- tweaks: theme, motion. Each select changes the page in place ---------- */

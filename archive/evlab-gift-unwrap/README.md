@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Description clear of the image" |
+| Captured from version | 2026-09-10, "Phone: head above a black card" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -156,7 +156,13 @@ pulse, leaf, cycle) and the full title, no card and no dividers, 6px above and
 below each row. Then **Claim my gift** full width at the foot of the card. At
 the top right of the card, beside the title, sits the membership passport as a
 64px circle of the `Ellipse 4358.png` copper image, crisp, with nothing on
-it. Phones drop the circle.
+it. Phones drop the circle, and lay the card out differently: the script moves
+the "Your gift from Marc" line and the product title out of the card into a
+head above it, centred, with 64px above and below so the photograph shows
+around them (they move back inside when the stage is wide again, ids and all);
+the card itself is solid near-black (`#0E0C0B`) with no blur, and in dynamic
+motion its glass, the seed, turns the same solid black as it lands (fading
+from its glass over 0.7s). The head fades in and out with the card's content.
 
 Under the card, 52px below and directly over the photograph, with no label: a
 horizontal timeline as wide as the card (with the Card tweak on List), five equal columns with a 10px square
