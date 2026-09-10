@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "No hover scale on buttons" |
+| Captured from version | 2026-09-10, "Fold-1 button fades and rises; desktop card top +8" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -77,8 +77,9 @@ centred above the two lines, 13px type on a 1.36 line height); the message's let
 each line opening as a row over 1.5s, from 900ms before its first letter, so
 the block grows gently from the middle; **See Marc's Gift** (the sender's
 name) and the circle at the bottom arrive together half a second after the
-title's last letter starts, the button's row opening and the block moving up 64px slowly
-(1.3s, easing out) to make room. Each letter eases up and
+title's last letter starts; the button's row is there from the start, so
+nothing grows: the button only fades in while rising 18px (0.9s, easing out),
+and the block moves up 64px slowly (1.3s, easing out) to make room. Each letter eases up and
 sharpens out of a blur over 1.64s on one smooth curve, and is orange for as long as it is out of focus
 (the warmth fades over 70% of the sharpening time, full strength, `#F5842E`
 on dark), so every word arrives orange and blurred and settles white and
@@ -143,8 +144,8 @@ disables the parallax.
 The photograph fills the screen, darkened so type reads over it. The fold does
 not scroll on desktop; on phones it does. One glass card, centred, up to 561px
 wide: `rgba(40,38,36,.36)` over a 60px blur, 44px corners, no shadow, so the
-room shows through; 40px padding inside (32px above in the Cards layout,
-40px at the foot to match the sides; the panel below also ends 40px under its
+room shows through; 40px padding inside all round in the Cards layout (the
+foot matches the sides; the panel below also ends 40px under its
 last line). Inside: the mono
 "Your gift from Marc" line (orange square), the product name "Everlab
 Protocol Membership" 10px under it (beside the circle), a short description
