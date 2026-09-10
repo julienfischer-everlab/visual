@@ -3885,6 +3885,11 @@ lives whether or not Play is on -- the sequence in focus is playing, so its
 line fills through its row on the board's clock and holds at the row's end;
 with Play on the hand-over follows. Pause no longer clears it.
 
+"Auto go to next sequence." The play is on from the start: the board runs
+itself, each sequence its board time and on to the next, round and round;
+Pause (or the space bar) holds it, and a click on a row joins the play
+there. The button reads Pause at boot.
+
 ---
 
 ## 6. Open items
