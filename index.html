@@ -11672,7 +11672,7 @@
   const TZ_SCRIPT = [
     { tc: '00:00', vo: null, on: 'A single dot. A zoom out: it is one of a universe of dots' },
     { tc: '00:02', vo: 'Your body holds millions of signals.', on: 'The universe drifts like a vacuum, in depth and blur; readings surface and go through the zoom out' },
-    { tc: '00:04', vo: 'Together, they tell a bigger story.', on: 'Close on a few floating particles; a zoom out as they gather into the body; the chip: 8 years younger' },
+    { tc: '00:04', vo: 'Together, they tell a bigger story.', on: 'Close on floating particles; a zoom out resolves them into the body; the chip: 8 years younger' },
     { tc: '00:07', vo: 'Your organs age differently.', on: 'The phone: heart, green arc, 37' },
     { tc: '00:10', vo: null, on: 'Black. INTRODUCING ORGAN AGE, a quiet pulse' },
     { tc: '00:12', vo: 'Some exactly as they should.', on: 'Closer on the heart; the arc holds' },
@@ -11733,9 +11733,9 @@
     };
     const s0 = universe('tzUni1', false);
     const s1 = universe('tzUni2', true);
-    // 03 -- the body: the product's own particle body, arrived at from a
-    // cloud (the sphere, the engine's own), with the reading's chip landing
-    // as the body does
+    // 03 -- the body: the Library's particle body, exactly, seen close and
+    // then whole as the camera pulls back, with the reading's chip landing
+    // as it settles
     const s2 = '<div class="tzBody"><div class="tzOrgan" id="tzBodyV"></div><div class="tzChip" id="tzChip">8 years younger</div></div>';
     // 03 / 08 / 09 -- type on black
     const s3 = '<div class="tzTitle tzBreathe"><div class="tzMono tzEye">Introducing</div><div class="tzBig">ORGAN AGE</div></div>';
@@ -11787,7 +11787,7 @@
       frame('02', 'Signals', '0:02 \u2013 0:04', s1, { text: '\u201CYour body holds millions of signals.\u201D' },
         '<b>Motion.</b> The same shot, the zoom out continuing gently (about 1.6x to 1x over the sequence). The universe drifts consistently in one direction, like a pull \u2014 four depths at four speeds, so it parallaxes; the far depths blurred, the nearest out of focus, the middle sharp. Readings surface in the sharp depths and go again (72, 209, 14, 5.1, 6h 12m, 88%), each up 0.6s, held 1.8s, gone 0.6s, staggered so two or three are ever up. <b>Grade.</b> Black; the three inks; the readings in the mono at 55%.') +
       frame('03', 'The bigger story', '0:04 \u2013 0:07', s2, { text: '\u201CTogether, they tell a bigger story.\u201D' },
-        '<b>Motion.</b> Open close, centred: a few particles floating in black, large and slow, the camera among them. Then a zoom out \u2014 the camera pulls back over 3s and, as it does, the cloud gathers into the body: the product\u2019s own particle body, the same body the bio-age slide draws, particle for particle (the component\u2019s morph, 1.6s, so the body is whole before the camera settles), the strays still drifting round it. As the camera settles, the chip: 8 YEARS YOUNGER in the accent (F78359), the mono in black, pinned over the right shoulder. <b>Ease.</b> Ease-in-out on the pull-back (cubic-bezier .65 0 .35 1); quintic in-out on the morph; the chip cuts in, no fade. <b>Cut.</b> Hold 1.2s on the body and the chip, then a hard cut to black. <b>Note.</b> The sketch loops close \u2192 out \u2192 close every 7s.') +
+        '<b>Motion.</b> Open close, centred: particles floating in black, large and slow, the camera among them. Then a zoom out \u2014 the camera pulls back over 3s and the particles resolve into the body: the Library\u2019s own particle body, exactly as the Library page draws it, the strays still drifting round it. As the camera settles, the chip: 8 YEARS YOUNGER in the accent (F78359), the mono in black, pinned over the right shoulder. <b>Ease.</b> Ease-in-out on the pull-back (cubic-bezier .65 0 .35 1); the chip cuts in, no fade. <b>Cut.</b> Hold 1.2s on the body and the chip, then a hard cut to black. <b>Note.</b> The sketch loops close \u2192 out \u2192 close every 7s; in AE the close-up is the camera among real particles.') +
       frame('04', 'Heart / younger', '0:07 \u2013 0:10', s4, { text: '\u201CYour organs age differently.\u201D' },
         '<b>The frame is the app.</b> This is the mobile build itself, opened on the heart (#m20v.p0), not a drawing of it: the same engine, arc, halo, type and timings. <b>Motion.</b> The phone sits still; the heart is the product\u2019s particle heart with its own beat. The arc reveals from its left end to the reading over 1.1s and the green indicator lands as it ends; the number counts up 30\u219237 on the same clock. <b>Halo.</b> The younger light, 88AB74 at 16%, fades in with the arc. <b>Ease.</b> Quintic in-out on the arc.') +
       frame('05', 'Introducing', '0:10 \u2013 0:12', s3, { text: 'Black. A quiet pulse.', silent: true },
@@ -11864,8 +11864,8 @@
     });
     window.__tzShow = show;
     // the organs: the painter's, on the phone's stage
-    // at the library's density for each organ (the app's), not a thumbnail's
-    const mk = (id, idx) => makeOrganView(document.getElementById(id), idx, { target: organN(fullTarget(clouds[idx])), fill: 0.52, dot: 1.0, name: 'teaser-' + id, feed: false });
+    // the library's own tile options for each organ (see libOpts below)
+    const mk = (id, idx) => makeOrganView(document.getElementById(id), idx, { target: organN(Math.round(fullTarget(clouds[idx]) * (ORGANS[idx].dots || 1))), fill: 0.46, dot: 1.0, name: 'teaser-' + id, feed: false });
     mk('tzHeart', HEART); mk('tzHeart2', HEART);
     const v6 = mk('tzLung', LUNG);
     // 07: lungs -> heart -> lungs, every 6s, the reading, the arc and the
@@ -11875,7 +11875,7 @@
     setInterval(() => {
       if (ph6.offsetParent === null) return;
       const idx = toLung ? LUNG : HEART, lung = toLung;
-      v6.morphTo(clouds[idx], 'o' + idx, organN(fullTarget(clouds[idx])), 1400);
+      v6.morphTo(clouds[idx], 'o' + idx, organN(Math.round(fullTarget(clouds[idx]) * (ORGANS[idx].dots || 1))), 1400);
       setTimeout(() => {
         n6.textContent = lung ? '48' : '37'; l6.textContent = lung ? 'Lung age' : 'Heart age';
         ph6.classList.toggle('isHeart', !lung);
@@ -11883,29 +11883,19 @@
       }, 900);
       toLung = !toLung;
     }, 6000);
-    // 03: sphere -> body -> sphere, the chip on while the body stands
-    // at the library's own density for the body (its tile's count, about ten
-    // thousand), not a thumbnail's: "use exactly the Body visual" -- this is
-    // the frame the whole piece turns on. A dense view, so it paints in slots.
-    const bodyN = organN(fullTarget(clouds[BODY_I]));
-    const bodyV = makeOrganView(document.getElementById('tzBodyV'), SPHERE_I, { target: bodyN, fill: 0.55, dot: 1.0, name: 'teaser-body', feed: true });
-    const chip = document.getElementById('tzChip'), bodyHost = document.getElementById('tzBodyV');
+    // 03: the Library's body, exactly -- the same view with the same options
+    // the library tile is built with (its own dot count, fill .46, dot 1.0),
+    // and no morph: the cloud the frame opens on IS the body, seen close, and
+    // the pull-back resolves it. The chip comes on as the camera settles.
+    const libOpts = i => ({ target: organN(Math.round(fullTarget(clouds[i]) * (ORGANS[i].dots || 1))), fill: 0.46, dot: 1.0 });
+    makeOrganView(document.getElementById('tzBodyV'), BODY_I, Object.assign(libOpts(BODY_I), { name: 'teaser-body' }));
+    const chip = document.getElementById('tzChip'), bodyHost = document.getElementById('tzBodyV'), bodyStage = bodyHost.parentNode;
     let bodyOn = false;
-    const bodyStage = bodyHost.parentNode;
     const bodyStep = () => {
       if (bodyHost.offsetParent === null) return;
       bodyOn = !bodyOn;
-      const idx = bodyOn ? BODY_I : SPHERE_I;
-      // the pull-back runs with the morph (2.6s against the morph's 1.6), so
-      // the body is whole before the camera has settled on it
-      bodyV.morphTo(clouds[idx], 'o' + idx, bodyN, 1600);
       bodyStage.classList.toggle('out', bodyOn);
-      // the morph samples both clouds at the body's target, and the sphere
-      // holds fewer points than the body, so the body it lands on is short by
-      // the difference (holes). Once the morph is over, seat the view on the
-      // body itself: re-sampled in full, the same body the bio-age slide draws.
-      if (bodyOn) setTimeout(() => { if (bodyOn){ bodyV.setOrgan(BODY_I); bodyV.target = bodyN; } }, 1750);
-      if (bodyOn) setTimeout(() => chip.classList.add('on'), 3100);
+      if (bodyOn) setTimeout(() => { if (bodyOn) chip.classList.add('on'); }, 3100);
       else chip.classList.remove('on');
     };
     setTimeout(bodyStep, 900);

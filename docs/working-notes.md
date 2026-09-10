@@ -3627,6 +3627,19 @@ maximum width and 64px of padding on a #111 ground, and the five kinds of
 content sit in black cards at 32px radius and padding; the stage inside the
 frame card keeps a 16px radius and a hairline so it reads on the black.
 
+### 5.148 The body is the Library's
+
+"Body looks so bad, just take the one on the library!!!" Right. Two things
+kept it from being that body. The library tile draws each organ at
+organN(fullTarget x the organ's own `dots` multiplier), fill .46, dot 1.0;
+the frame drew the body at organN(fullTarget) alone -- the body's multiplier
+is what takes the tile to ten thousand points -- with fill .55. And the
+morph from the sphere left the body sampled at the sphere's count until it
+was re-seated, so for a while it was a body with holes. Now frame 03 is the
+library's view with the library's options (libOpts), and no morph: the
+cloud the frame opens on is the body seen close, at 2.2x and 80%, and the
+pull-back resolves it. The phone sketches take the same options.
+
 ---
 
 ## 6. Open items
