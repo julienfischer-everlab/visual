@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "What's next chips, 3s cycle" |
+| Captured from version | 2026-09-10, "Panel slides down, Panel tweak, plain chips" |
 | Captured on | 2026-09-10 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -24,7 +24,7 @@ repo's git history.
 ## Tweaks
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
-with a mono label and six plain native selects. Each changes the page in
+with a mono label, six plain native selects, a colour swatch and a number field. Each changes the page in
 place; nothing reloads. On phones the labels hide and the six selects share
 the bar evenly.
 
@@ -35,6 +35,7 @@ the bar evenly.
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
 | Card | List, Cards | `card=cards` |
+| Panel | a colour swatch (default white) and an opacity in percent (default 12) for the second card in Cards | `panel=ffffff&alpha=12` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
@@ -158,28 +159,32 @@ are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
 
 With the Card tweak on Cards the timeline goes and a second card takes its
-place: a darker panel (`rgba(18,16,15,.72)`, a plain colour with no blur so
-its masked corner fillers render in every browser) as wide as the hero card, starting flush at the hero card's bottom edge with square
+place: a panel in white at 12% (`rgba(255,255,255,.12)` by default; the Panel
+tweak sets any colour and opacity, a plain colour with no blur so the masked
+corner fillers render in every browser) as wide as the hero card, starting flush at the hero card's bottom edge with square
 top corners and the hero card's radius on its bottom ones, so it reads as a
 card tucked behind the hero card with only its bottom showing. Two small
 glass fillers, masked to the outside of the hero card's rounded bottom
 corners, close the notches so the panel continues up behind the card. It
-fades in at 0.9s in dynamic motion and holds, under a mono "What's next?"
-label, three chips in a row: Get started, Meet your doctor, Get your plan
-(pills with a hairline border, 13px medium). One is active at a time: its
-text and border brighten and a soft white fill (14%) grows across it from
-the left over three seconds, then the next chip takes over, round and round.
+arrives in dynamic motion once the hero card has landed: from 1.0s it slides
+down out from behind the card (its own height in 0.8s, easing out, inside a
+clip at the card's bottom edge so it emerges from under it) and the corner
+fillers fade in as it settles at 1.6s; on the way back it slides up under the
+card again in 0.35s. It holds, under a mono "What's next?" label, three chips
+in a row: Get started, Meet your doctor, Get your plan (pills with a hairline
+border, 13px medium). One is active at a time, white at 14% with brighter text
+and border, the two states fading into each other over 0.4s; after three
+seconds the next chip takes over, round and round.
 Under the chips one line of description (14px, up to three lines reserved so
 nothing jumps) belongs to the active chip and crossfades when it changes:
 "Three minutes and a few questions about your health and history." / "A
 45-minute consult online. They decide what's worth testing for you, and we
 book it around you." / "Your doctor walks you through every result and what
-to change first." Clicking a chip makes it active and restarts its fill. The
+to change first." Clicking a chip makes it active and restarts the three seconds. The
 cycle runs only while the panel is on screen (Cards layout, on the second
 fold in dynamic motion or anywhere in static), stops on the way back to the
 first fold or when the tab is hidden, and restarts from the first chip when
-the panel returns. Reduced motion shows the active chip filled with no
-animation. On phones the chips wrap.
+the panel returns. On phones the chips wrap.
 The hero card keeps its six rows, set a
 little tighter (4px above and below each row, 44px top and bottom padding)
 so the stack fits an 856px-tall stage without scrolling; on shorter screens
@@ -202,7 +207,7 @@ Every parameter is optional and falls back to the example gift in the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`), six items |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
-| `device`, `theme`, `motion`, `sig`, `card`, `msg` | The tweaks, as above |
+| `device`, `theme`, `motion`, `sig`, `card`, `panel`, `alpha`, `msg` | The tweaks, as above |
 
 All text is inserted as plain text, never as HTML.
 
