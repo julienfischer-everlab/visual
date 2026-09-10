@@ -3341,6 +3341,50 @@ its end, all four legend columns at 1, and nothing moves over 3.6s; with the
 unclassified shown, ticks 9..34 in the green alone (68/110), indicator at the
 end. Modes and error probes clean.
 
+### 5.139 A second palette: the wine family
+
+"At the moment we have only three particle colours, correct? Plus opacity on
+each. How can we achieve this render, need more colours." (A reference heart:
+deep wine, rose, salmon in the bright clusters, a mauve, cream, white sparks,
+every dot a little off its neighbour, on black.) Then: "try to iterate keeping
+the current setup in place." So a Palette tweak -- Three inks, the default and
+exactly as it was, or Wine family.
+
+The way in that keeps the setup: nothing about the anatomy changes. Each
+particle keeps its ink index (INK_PICK), and with it its authored opacity, its
+light-theme ink (aInk -> uInkL0..2) and the painter's mapping. The palette
+only decides what colour that index is drawn in, conditioned on the index so
+the three's tonal hierarchy carries into the family (WINE_SETS): the material
+-> deep wine 38 / rose 42 / mauve 20; the lighter tone -> salmon 65 / pink 35;
+the highlight -> cream 70 / white 30. Then per particle a jitter in HSL (hue
++-5 degrees, lightness +-5 points) and an alpha factor on the 5% grid, per ink
+(WINE_A_RANGE): material 0.8-1.5x, lighter 1.0-1.7x, highlight 1.8-3.2x. The
+tables are drawn once at load (WINE_RGB, WINE_CSS, WINE_A) so the engine
+(paintPalette writes the cloud slice of the colour buffer, alpha in the fourth
+channel, which the shader multiplies in and snaps back to the grid) and the
+painter (inkOf / inkCss / paletteA, its baked lists dropped on the switch)
+agree dot for dot. The flow and the ghost keep their own colours.
+
+Three cuts to get there, all on the heart against the Dark ground, which is
+where the reference sits. The first (deep wine 7B2D3A / rose B85A66 / mauve
+8A6B86, alpha 45-100%) read as a dimmer, greyer cloud than the three inks --
+a factor that only dims takes the average down, and the mauve pulled it grey.
+The second brightened the reds and moved the factor to 60-100%, still dull.
+The third is the one kept: warmer reds (9C3A4A / D06878; salmon F2886A), the
+factor allowed above 1 so some dots are brighter than their authored level,
+and the highlight's factor high enough to break the 25% cap, since the
+reference's white dots are its brightest. What is still not the reference: its
+dots are larger and softer, and the size table is baked into the seed buffer
+both renderers share, so a wider grain is a separate change; and the cloud
+still reads dimmer overall, which is the authored 20-50% band of the material
+doing what it was designed to do.
+
+The flag the painter reads (paletteWine) is its own `let` rather than a read
+of CARD_STATE: the painter bakes its first tile before CARD_STATE is declared,
+and the read threw. Probed (wine.js, wine2.js): the select flips the body
+class and repaints without error, survives a page change to Mobile V7, and the
+light theme is unchanged. Modes and error probes clean.
+
 ---
 
 ## 6. Open items

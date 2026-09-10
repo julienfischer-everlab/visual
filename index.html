@@ -3728,6 +3728,15 @@
             <option value="arc" selected>Arc</option>
           </select>
         </div>
+        <!-- Palette: the three inks the file is built on, or a wine family
+             drawn per particle beside them (see WINE_SETS in the script) -->
+        <div class="tkRow">
+          <span class="lbl">Palette</span>
+          <select id="stPal" aria-label="Particle palette">
+            <option value="inks" selected>Three inks</option>
+            <option value="wine">Wine family</option>
+          </select>
+        </div>
       </div>
     </details>
     <span class="lbl">Ink</span>
@@ -4792,6 +4801,74 @@
   }
   const pickInk = i => INKS[INK_PICK[i]];
 
+  // ---------- the second palette: a wine family ----------
+  // "How can we achieve this render, need more colours." The reference heart is
+  // one material in many tones -- deep wine, rose, mauve, a salmon in the bright
+  // clusters, cream and a few white sparks -- every dot a little off its
+  // neighbour in hue and value, and fainter or brighter than it for no
+  // anatomical reason. The three-ink treatment is kept exactly as it is and
+  // this sits beside it as a Palette tweak. It does not touch the anatomy:
+  // each particle keeps its ink index (INK_PICK), so its authored opacity, its
+  // light-theme counterpart and the painter's mapping stand; the wine palette
+  // only decides what colour that index is drawn in, conditioned on it, so
+  // the tonal hierarchy of the three -- material, lighter tone, highlight --
+  // survives in the new family:
+  //   ink 0 (the material, 60%)  ->  deep wine 45% / rose 35% / mauve 20%
+  //   ink 1 (the lighter, 25%)   ->  salmon 60% / pink 40%
+  //   ink 2 (the highlight, 15%) ->  cream 70% / white 30%
+  // then a jitter per particle (hue +-5 degrees, lightness +-5 points) and an
+  // alpha factor per particle and ink (WINE_A_RANGE, on the 5% grid) so the cloud reads
+  // as tissue speckled by chance rather than three flat inks. The light theme
+  // mixes every particle to its light ink by index, so there this palette
+  // shows as the three-ink one does.
+  const WINE_SETS = [
+    [['#9C3A4A', 0.38], ['#D06878', 0.42], ['#A88098', 0.20]],
+    [['#F2886A', 0.65], ['#E8A0A4', 0.35]],
+    [['#F5E8DF', 0.70], ['#FFFFFF', 0.30]]
+  ];
+  const hexRGB = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+  const rgb2hsl = ([r, g, b]) => {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+    if (mx === mn) return [0, 0, l];
+    const d = mx - mn, sat = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+    const h = mx === r ? ((g - b) / d + (g < b ? 6 : 0)) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return [h / 6, sat, l];
+  };
+  const hsl2rgb = ([h, sat, l]) => {
+    if (sat === 0) return [l * 255, l * 255, l * 255];
+    const q = l < 0.5 ? l * (1 + sat) : l + sat - l * sat, p = 2 * l - q;
+    const f = t => { t = (t + 1) % 1; return t < 1 / 6 ? p + (q - p) * 6 * t : t < 1 / 2 ? q : t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 : p; };
+    return [f(h + 1 / 3) * 255, f(h) * 255, f(h - 1 / 3) * 255];
+  };
+  // per particle, per ink index: the colour as 0..1 rgb for the engine and as
+  // the painter's 'r,g,b' string, and the alpha factor -- drawn once so both
+  // renderers and every mode switch see the same cloud
+  // The alpha factor is per ink too: the material and its lighter tone wander
+  // either side of their authored level, while the highlight -- which the
+  // anatomy caps at 25% so three flat inks do not glitter -- is lifted hard,
+  // since in this family the sparks are the point: the mock's cream and white
+  // dots are its brightest, not its faintest.
+  const WINE_A_RANGE = [[0.80, 1.50], [1.00, 1.70], [1.80, 3.20]];
+  const WINE_RGB = [[], [], []], WINE_CSS = [[], [], []], WINE_A = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
+  for (let i = 0; i < N; i++){
+    const r = Math.random(), dh = (Math.random() * 2 - 1) * (5 / 360), dl = (Math.random() * 2 - 1) * 0.05;
+    for (let b = 0; b < 3; b++){
+      let acc = 0, hex = WINE_SETS[b][0][0];
+      for (const [hx, w] of WINE_SETS[b]){ acc += w; if (r < acc){ hex = hx; break; } }
+      const hsl = rgb2hsl(hexRGB(hex));
+      const rgb = hsl2rgb([hsl[0] + dh, hsl[1], Math.max(0, Math.min(1, hsl[2] + dl))]).map(v => Math.round(Math.max(0, Math.min(255, v))));
+      WINE_RGB[b][i] = rgb.map(v => v / 255);
+      WINE_CSS[b][i] = rgb.join(',');
+    }
+    const ra = Math.random();
+    for (let b = 0; b < 3; b++){ const [lo, hi] = WINE_A_RANGE[b]; WINE_A[b][i] = Math.round((lo + ra * (hi - lo)) / 0.05) * 0.05; }
+  }
+  // a flag of its own rather than a read of CARD_STATE, which is declared
+  // later and is not there yet when the painter first bakes a tile
+  let paletteWine = false;
+  const wineOn = () => paletteWine;
+
   // ---------- the opacity grid ----------
   // Every dot in the file lands on one of eighteen values: 5% to 90% in steps
   // of 5. Nothing sits between them. The snap is applied where the opacity is
@@ -4897,7 +4974,10 @@
   // three colours here, and two of them landing on the same side of a
   // threshold would have silently repainted a third of the cloud.
   const INK_CSS_AT = k => [INK_CSS, MID_CSS, LIT_CSS][k];   // an ink index, as the painter's string
-  const inkOf = i => INK_CSS_AT(INK_PICK[i % N]);
+  const inkOf = i => wineOn() ? WINE_CSS[INK_PICK[i % N]][i % N] : INK_CSS_AT(INK_PICK[i % N]);
+  // a seeded cloud carries its own ink pick; the palette decides the colour
+  const inkCss = (b, i) => wineOn() && b < 3 ? WINE_CSS[b][i % N] : INK_CSS_AT(b);
+  const paletteA = (a, b, i) => wineOn() && b < 3 ? opRender(a * WINE_A[b][i % N]) : a;
   const toneA = t => Math.min(1.6, (0.36 * t[0] + 0.50 * t[1] + 0.14 * t[2]) / 0.72);
   // The flow layer runs at a flat 75% -- the one thing in the file brighter
   // than either ink. What is left varying on it is only what makes it a
@@ -6846,6 +6926,27 @@
   // a reshuffle -- the same particles keep the same roles and only the three
   // values move. Alpha is left alone: it is authored per cloud on the grid and
   // has nothing to do with hue.
+  // The cloud slice of the colour buffer, by the palette in force: the three
+  // inks as picked, or the wine family drawn per particle on its ink index
+  // (WINE_RGB), with the wine palette's alpha factor in the fourth channel --
+  // the shader multiplies it in and snaps the result back onto the grid. The
+  // ghost slice (ink index 3) keeps its own colour under either.
+  function paintPalette(){
+    const wine = wineOn();
+    for (let i = 0; i < FSTART; i++){
+      const b = inks[i], k = i % N;
+      const c = wine && b < 3 ? WINE_RGB[b][k] : pickInk(k);
+      colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
+      colors[i*4+3] = wine && b < 3 ? WINE_A[b][k] : 1;
+    }
+  }
+  function applyPalette(){
+    paintPalette();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, colors.subarray(0, FSTART * 4));
+    for (const k in pts2DCache) delete pts2DCache[k];   // the painter bakes an ink per point: rebuild
+    for (const k in ambCache) delete ambCache[k];
+  }
   function recolour(){
     INK = rgb01(INK_CSS); MID = rgb01(MID_CSS); LIT = rgb01(LIT_CSS);
     INKS[0] = INK; INKS[1] = MID; INKS[2] = LIT;
@@ -6854,6 +6955,7 @@
       const c = i < FSTART ? pickInk(i % N) : LIT;
       colors[i*4] = c[0]; colors[i*4+1] = c[1]; colors[i*4+2] = c[2];
     }
+    paintPalette();   // the cloud slice, under whichever palette is on
     gl.bindBuffer(gl.ARRAY_BUFFER, bufC);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, colors);
     pushInks();   // the light-theme mapping matches against the dark three
@@ -8374,6 +8476,7 @@
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.unclass ? ' unclass' : '') +
       (CARD_STATE.bioDots ? ' bioDots' : '') +
+      (CARD_STATE.palette === 'wine' ? ' wine' : '') +
       (CARD_STATE.dense ? ' dense' : '') +
       // the same rule for the figure: only Mobile V7 offers the choice, so
       // only Mobile V7 wears it
@@ -10123,8 +10226,8 @@
         // the same three sizes the engine draws, off the same seed rather than
         // a modulo pattern of its own -- one source of truth for grain too
         r: Math.abs(sd[i * 4 + 3]) * 1.30,
-        a: cl.edge[i],          // already on the grid, already the opacity
-        c: cl.ink ? INK_CSS_AT(cl.ink[i]) : inkOf(i),   // a seeded cloud carries its own pick
+        a: paletteA(cl.edge[i], cl.ink ? cl.ink[i] : INK_PICK[i % N], i),   // on the grid, the opacity (the wine palette's factor snapped back onto it)
+        c: cl.ink ? inkCss(cl.ink[i], i) : inkOf(i),   // a seeded cloud carries its own pick
         ph: cl.seeds ? sd[i * 4] * 6.28 : Math.random() * 6.28,
         sp: cl.seeds ? 0.5 + sd[i * 4 + 2] : 0.5 + Math.random(),
         sy: sd[i * 4 + 1], sz: sd[i * 4 + 2]   // the shader's own phases
@@ -10152,8 +10255,8 @@
         // the same three sizes the engine draws, off the same seed rather than
         // a modulo pattern of its own -- one source of truth for grain too
         r: Math.abs(sd[i * 4 + 3]) * 1.30,
-        a: cl.edge[i],
-        c: cl.ink ? INK_CSS_AT(cl.ink[i]) : inkOf(i),
+        a: paletteA(cl.edge[i], cl.ink ? cl.ink[i] : INK_PICK[i % N], i),
+        c: cl.ink ? inkCss(cl.ink[i], i) : inkOf(i),
         sy: sd[i * 4 + 1], sz: sd[i * 4 + 2]
       });
     }
@@ -12228,6 +12331,8 @@
                        bioSph: false,
                        // the legend's fourth reading, on the bar's switch
                        unclass: false, bioDots: false,
+                       // Palette: the three inks, or the wine family (see WINE_SETS)
+                       palette: 'inks',
                        // Density: Dense on every surface, see denseOn
                        dense: false };
   // Every state control is a thing that is either on or off, so each becomes a
@@ -12242,7 +12347,7 @@
       // a switch stands for a thing being on or off; Desktop and Tablet M are
       // two named shells, and neither of them is the other one turned off --
       // nor are the library's two grains, Normal and Dense
-      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'bioSel' || sel.id === 'densSel' || sel.id === 'stGraph')
+      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'bioSel' || sel.id === 'densSel' || sel.id === 'stGraph' || sel.id === 'stPal')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -12327,6 +12432,15 @@
       [...v4BioAge.querySelector('.v4BioLeg').children].forEach(c => c.classList.remove('on'));
       cycLast = -1;
     }
+  });
+  // Palette: three inks or the wine family. The colour buffer is repainted
+  // and the painter's baked lists dropped, so the engine and every tile follow.
+  const stPalSel = document.getElementById('stPal');
+  if (stPalSel) stPalSel.addEventListener('change', () => {
+    CARD_STATE.palette = stPalSel.value === 'wine' ? 'wine' : 'inks';
+    paletteWine = CARD_STATE.palette === 'wine';
+    document.body.classList.toggle('wine', paletteWine);
+    applyPalette();
   });
   // the age card has two: read, or nothing yet
   const stAgeSel = document.getElementById('stAge');

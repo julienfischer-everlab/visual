@@ -666,6 +666,23 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   exactly where it ends. The status cycle that lit one portion after another
   (two seconds each, the legend's column coming forward with it) is kept
   behind a constant in the script, `BIO_CYCLE`, and off.
+- **Palette** — Three inks (default) or Wine family, in the Tweaks dropdown.
+  The three-ink treatment below is untouched; the wine family sits beside it
+  as an experiment toward a reference render of the heart: one material in
+  many tones. Each particle keeps its ink index, so its authored opacity, its
+  light-theme counterpart and the painter's mapping stand; the palette only
+  decides what colour that index is drawn in, conditioned on it, so the
+  hierarchy of the three survives — the material becomes deep wine, rose or
+  mauve (38 / 42 / 20), the lighter tone salmon or pink (65 / 35), the
+  highlight cream or white (70 / 30) — then every dot is jittered a little in
+  hue (±5°) and lightness (±5 points) and given an alpha factor of its own on
+  the 5% grid: the material 0.8–1.5× its authored level, the lighter tone
+  1.0–1.7×, the highlight 1.8–3.2×, since the anatomy caps it at 25% and in
+  this family the sparks are the point. Engine and painter read the same
+  tables, so every tile follows the switch. The light theme mixes every dot
+  to its light ink by index, so there the two palettes look the same. Best
+  seen on the Dark ground (the Mode select), which is where the reference
+  sits. Kept across page changes.
 - **Bio graph** — Arc (default) or Dots, in the Tweaks dropdown; a select, since
   the two are named readings rather than on and off. Dots runs twenty-eight
   dots along the arc's own curve on the biomarker slide — inside the arc's SVG,
