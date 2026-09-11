@@ -16,7 +16,24 @@ const { minify } = require('terser');
 const csso = require('csso');
 
 const root = path.resolve(__dirname, '..');
-const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+let src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+
+// Images live under assets/ so the source stays a file people can read and
+// the dev page loads them over HTTP like any other page. dist/index.html has
+// to be the whole thing in one file -- it is what the artifact publishes and
+// what gets mailed around -- so every assets/ path in the source, in CSS or
+// in a string, is replaced here by the file itself as a data URI.
+const MIME = { webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg',
+               gif: 'image/gif', svg: 'image/svg+xml', mp4: 'video/mp4' };
+let assetIn = 0, assetOut = 0, assetN = 0;
+src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4)\b/g, ref => {
+  const f = path.join(root, ref);
+  if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; }
+  const buf = fs.readFileSync(f);
+  const uri = 'data:' + MIME[ref.split('.').pop().toLowerCase()] + ';base64,' + buf.toString('base64');
+  assetIn += buf.length; assetOut += uri.length; assetN++;
+  return uri;
+});
 
 (async () => {
   let out = '';
@@ -64,6 +81,7 @@ const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
   fs.writeFileSync(path.join(root, 'dist', 'index.html'), out);
   const kb = n => (n / 1024).toFixed(0) + ' KB';
+  if (assetN) console.log('asset ' + kb(assetIn) + ' -> ' + kb(assetOut) + '  (' + assetN + ' inlined)');
   console.log('html  ' + kb(htmlIn) + ' -> ' + kb(htmlOut));
   console.log('css   ' + kb(cssIn) + ' -> ' + kb(cssOut));
   console.log('js    ' + kb(jsIn) + ' -> ' + kb(jsOut));

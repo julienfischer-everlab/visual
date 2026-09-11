@@ -3960,6 +3960,26 @@ count as manual. A page opened on a pill holds it now: the landing sets the
 manual clock to infinity, so the framed phone shows what the frame asks for
 and nothing else.
 
+"Can I integrate this image to illustrate sequence 4? The exact image, don't
+recreate." Yes, and now there is a way to. Images live under `assets/` so
+the source stays a file people can read and the dev page loads them over
+HTTP; the build inlines every `assets/...` path it finds -- in CSS or in a
+string -- as a data URI, because dist/index.html has to be the whole page in
+one file (it is what the artifact publishes). One image so far, 31KB of webp
+that inlines to 41KB of base64.
+
+04 is that photograph now: the app on a tablet, the organ ages listed down
+the left and the reading with its particle organ to the right, shot close
+and shallow. It fills the stage (object-fit: cover) and takes the same slow
+push the live frames use, so the two cut together; the note calls it the
+reference still and says a screen recording of the same view replaces it in
+the edit. The live phone that was 04 is gone, so the full "the frame is the
+app" note moved to 05 and 06 refers to 05.
+
+(A pasted image is recoverable: the session transcript stores each one as
+base64 in its message record, so the exact file can be written back out
+rather than asked for again.)
+
 ---
 
 ## 6. Open items
