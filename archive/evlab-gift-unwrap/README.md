@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-11, "Static photo covers long scrolls; panel padding +32" |
+| Captured from version | 2026-09-11, "Description inset 32px, chips as before" |
 | Captured on | 2026-09-11 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -183,7 +183,7 @@ are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
 
 With the Card tweak on Cards (the default) the timeline goes and a second card
-takes its place: a panel (72px of padding at its sides on desktop) in a warm sand (`#c5a496`) at 24% over a 120px
+takes its place: a panel in a warm sand (`#c5a496`) at 24% over a 120px
 backdrop blur by default (the Panel tweak sets any colour, opacity and blur)
 as wide as the hero card. Its surface is one element in the stage, placed by
 the script from the card's box and cut to shape with a clip path: the panel's
@@ -205,7 +205,7 @@ colour when active). One is active at a time, white at 14% with brighter text
 and no border, the two states fading into each other over 0.4s; after three
 seconds the next chip takes over, round and round.
 Under the chips one line of description (14px, two lines always reserved so
-nothing jumps) belongs to the active chip and crossfades when it changes:
+nothing jumps, set 32px further in than the chips on each side) belongs to the active chip and crossfades when it changes:
 "Three minutes and a few questions about your health and history." / "A
 45-minute consult online. They decide what's worth testing for you, and we
 book it around you." / "Your doctor walks you through every result and what
