@@ -385,7 +385,7 @@
   }
   /* the card lands in the centre of the first screen; the columns wait below */
   .hero{
-    width:100%;height:100%;flex:none;max-width:561px;
+    width:100%;height:100%;flex:none;max-width:625px;
     display:grid;grid-template-columns:minmax(0, 1fr);gap:52px;
     align-content:center;justify-content:center;
     padding:96px 0 64px;  /* clear of the logo above and the footer below */
@@ -983,10 +983,13 @@
      photograph, fixed behind everything, shows under the corners */
   body[data-motion="static"] .intro{
     position:relative;height:80cqh;flex:none;z-index:4;
-    background:#0E0C0B;border-radius:0 0 56px 56px;
+    background:var(--white);border-radius:0 0 56px 56px;  /* the header follows the Theme tweak */
+  }
+  body[data-motion="static"][data-theme="dark"] .intro{
+    background:#0E0C0B;
     --ink:#F3EFEA;--btn:#F3EFEA;--btn-ink:#0E0C0B;
   }
-  body[data-motion="static"] .logo{color:var(--ink-d);}
+  body[data-motion="static"][data-theme="dark"] .logo{color:var(--ink-d);}
   body[data-motion="static"] .pill:hover{background:#FFFFFF;}
   body[data-device="phone"][data-motion="static"] .device .status,
   body[data-device="phone"][data-motion="static"] .device .home{color:var(--ink-d);}
@@ -1022,12 +1025,14 @@
   .scroll-hint{display:none;}
   body[data-motion="static"] .scroll-hint{
     display:block;position:absolute;left:50%;bottom:46px;transform:translateX(-50%);
-    width:1px;height:36px;background:rgba(255,255,255,.18);overflow:hidden;
+    width:1px;height:36px;background:rgba(14,12,11,.18);overflow:hidden;
   }
   body[data-motion="static"] .scroll-hint::after{
-    content:"";position:absolute;left:0;top:0;width:100%;height:50%;background:rgba(255,255,255,.9);
+    content:"";position:absolute;left:0;top:0;width:100%;height:50%;background:rgba(14,12,11,.9);
     animation:hint-up 1.6s cubic-bezier(.45,0,.55,1) infinite;
   }
+  body[data-motion="static"][data-theme="dark"] .scroll-hint{background:rgba(255,255,255,.18);}
+  body[data-motion="static"][data-theme="dark"] .scroll-hint::after{background:rgba(255,255,255,.9);}
   @keyframes hint-up{from{transform:translateY(-100%);}to{transform:translateY(100%);}}
   @media (prefers-reduced-motion: reduce){ .scroll-hint::after{animation:none;transform:none;} }
   body[data-motion="static"] .card, body[data-motion="static"] .side{transform:none;transition:none;}
@@ -1543,7 +1548,7 @@
     // above it (and the surface passing behind the glass) never shows;
     // settled: it grows up by one radius and the notches fill in
     pc.style.top = ((c.bottom - sr.top) / k + st.scrollTop - (settled ? r : 0)) + 'px';
-    pc.style.height = (settled ? H : H - r) + 'px';
+    pc.style.height = H + 'px';   /* always down to the panel's foot (and a little past it while sliding): the bottom corners are never cut */
     pb.style.top = (settled ? 0 : -r) + 'px';
     pb.style.height = H + 'px';
     // the surface's shape: its rectangle with the card's radius at the foot,
@@ -1551,8 +1556,13 @@
     pb.style.clipPath = 'path("M0 0 A' + r + ' ' + r + ' 0 0 0 ' + r + ' ' + r + ' L' + (W - r) + ' ' + r + ' A' + r + ' ' + r + ' 0 0 0 ' + W + ' 0 L' + W + ' ' + (H - r) + ' A' + r + ' ' + r + ' 0 0 1 ' + (W - r) + ' ' + H + ' L' + r + ' ' + H + ' A' + r + ' ' + r + ' 0 0 1 0 ' + (H - r) + ' Z")';
   }
   document.getElementById('panelBg').addEventListener('transitionend', function(e){
-    if(e.propertyName === 'transform' && state === 'gift'){ panelSettled = true; panelSet(); }
+    if(/transform/.test(e.propertyName) && state === 'gift'){ panelSettled = true; panelSet(); }
   });
+  var settleTimer = 0;
+  function settleLater(){   // a timer as well, in case the end event is never delivered
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(function(){ if(state === 'gift'){ panelSettled = true; panelSet(); } }, 1900);
+  }
   if(window.ResizeObserver){
     var ro = new ResizeObserver(function(){ panelSet(); });
     ro.observe(document.querySelector('.side-clip')); ro.observe($('card')); ro.observe(document.getElementById('stage'));
@@ -1571,7 +1581,7 @@
     var onGift = next === 'gift' || next === 'revealing';
     $('gift').setAttribute('aria-hidden', onGift ? 'false' : 'true');
     $('intro').setAttribute('aria-hidden', onGift ? 'true' : 'false');
-    if(next !== 'gift') panelSettled = false;
+    if(next !== 'gift') panelSettled = false; else settleLater();
     syncSteps();
     panelSet();
   }

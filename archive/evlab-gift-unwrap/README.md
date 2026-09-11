@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-11, "Description inset 32px, chips as before" |
+| Captured from version | 2026-09-11, "Static header follows Theme, card +64, panel corners" |
 | Captured on | 2026-09-11 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -126,9 +126,10 @@ more room above it.
 ## Static motion
 
 One ordinary scroll, nothing waiting on a click. The title, eyebrow and button
-are simply there, with no entrance, in warm white whatever the theme. The
-first fold is a near-black header 80% of the screen tall with 56px rounded
-bottom corners (48px on phones); the photograph is the page's own background,
+are simply there, with no entrance. The first fold is a header 80% of the
+screen tall with 56px rounded bottom corners (48px on phones) that follows the
+Theme tweak: warm white with near-black type in Light, near-black with warm
+white type in Dark (the scroll hint below takes the same ink); the photograph is the page's own background,
 held fixed behind both folds by a sticky zero-height layer at the top of the
 scroll, showing under the corners and drifting up at 20% of the scroll as a
 small parallax (the layer is 170% of the screen tall and the drift stops at
@@ -145,7 +146,7 @@ disables the parallax.
 ## Fold 2
 
 The photograph fills the screen, darkened so type reads over it. The fold does
-not scroll on desktop; on phones it does. One glass card, centred, up to 561px
+not scroll on desktop; on phones it does. One glass card, centred, up to 625px
 wide: `rgba(40,38,36,.36)` over a 60px blur, 44px corners, no shadow, so the
 room shows through; 40px padding inside all round in the Cards layout (the
 foot matches the sides; the panel below also ends 40px under its
@@ -191,8 +192,10 @@ rectangle, the card's radius on its bottom corners, and at the top only the
 two slivers outside the card's rounded bottom corners, so nothing of it runs
 under the card's glass (no faint edge shows through) and the panel reads as a
 card tucked behind the hero card with only its bottom showing. While it
-slides it sits in a clip box that starts at the card's bottom edge, so the
-slivers appear only as it settles. It
+slides it sits in a clip box that starts at the card's bottom edge and always
+reaches the panel's foot, so the slivers appear only as it settles (on the
+slide's end event, or a timer 1.9s after landing if that never arrives) and the
+bottom corners are never cut. It
 arrives in dynamic motion once the hero card has landed: from 1.0s the
 surface and the content slide down together out from behind the card (their
 own height in 0.8s, easing out; the content inside a clip at the card's
