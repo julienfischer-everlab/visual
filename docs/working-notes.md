@@ -3952,6 +3952,14 @@ morph's slight arc, the camera pulling back only a touch now (1.25x to 1x
 over 3s, where the zoom-out had been 4.5x), the chips at 3.1 and 3.5s, the
 hold to 8s, the cut back to the cloud.
 
+Stills of 03-06 for the user showed the framed phones one slide off -- 05 on
+the brain, 06 on the immune system. The mobile page's own hero auto-switch
+(drawFrame: the next pill every 5s unless something manual happened in the
+last 14s) was running under the teaser's slots, and the hash landing did not
+count as manual. A page opened on a pill holds it now: the landing sets the
+manual clock to infinity, so the framed phone shows what the frame asks for
+and nothing else.
+
 ---
 
 ## 6. Open items
