@@ -4113,6 +4113,20 @@ turn -- a paste reaches the message store only once the turn it arrived in
 has ended -- so swapping the file and going from nine tiles to six (3x2,
 background-size 300% 200%) is the one thing left.
 
+"Put them into an iPad screen, inclined and blurred." The grid is on a
+tablet now, which puts 07 in the same room as 05 and 06 rather than floating
+on black: a rim of brushed metal round a black screen, turned away from the
+camera (rotateY -25, rotateX 7, a degree of roll) on a 130cqw perspective,
+with a touch of softness over the whole device and a depth-of-field wash
+that deepens toward the far edge -- a backdrop-filter under a gradient mask,
+with the light falling off the same way. The screen's ground is the image's
+own, so the plate's edges do not show inside it.
+
+The device is sized by the stage's height (74%), so it sits whole in frame
+when the drift settles; at the drift's start, 1.55x, the frame is inside the
+screen and the edge of the device is just off it, which is the shot the
+reference showed.
+
 ---
 
 ## 6. Open items

@@ -1159,17 +1159,35 @@
      the particle organ, the age scale, the age, the verdict -- with the
      camera starting in on the middle cell and pulling back over the
      sequence while the cells arrive. */
-  .tzGridI{position:absolute;inset:0;overflow:hidden;}
+  .tzGridI{position:absolute;inset:0;overflow:hidden;perspective:130cqw;perspective-origin:54% 46%;}
   .tzGridI .zoom{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     transform-origin:50% 50%;animation:tzGridZoom var(--tzCyc,7s) cubic-bezier(.65,0,.35,1) infinite;}
   /* "zoom out slow": a drift back rather than a pull -- a small scale over
      the whole slot on an ease-out, so it is still moving as it settles */
   @keyframes tzGridZoom{0%{scale:1.55;}100%{scale:1;}}
-  /* the plate is the image itself, square, at the stage's height; the nine
-     tiles are that one file at 300%, each showing its own third, so a tile
-     can arrive on its own without the picture being remade */
+  /* The tablet: the grid is on a screen, turned away from the camera and
+     shot shallow, so 07 sits with 05's plate rather than floating on black.
+     The body is a rim of brushed metal round a black screen; the whole thing
+     carries a touch of softness, and a depth-of-field wash deepens toward
+     the far edge, where the light falls off too. */
+  .tzPad{height:74%;aspect-ratio:4/3;padding:.85cqw;box-sizing:border-box;border-radius:2.4cqw;
+    background:linear-gradient(142deg,#4a4a50,#202024 26%,#35353b 52%,#141417 78%,#0c0c0e);
+    transform:rotateX(7deg) rotateY(-25deg) rotateZ(-1.2deg);
+    box-shadow:0 4cqw 9cqw rgba(0,0,0,.75), inset 0 0 0 .08cqw rgba(255,255,255,.16);
+    filter:blur(.45px);}
+  .tzPad .screen{position:relative;width:100%;height:100%;border-radius:1.7cqw;overflow:hidden;
+    background:#0a0a0a;display:flex;align-items:center;justify-content:center;}
+  /* the nine tiles are one file at 300%, each showing its own third, so a
+     tile can arrive on its own without the picture being remade */
   .tzGridI .plate{height:100%;aspect-ratio:1936/1878;display:grid;
     grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);}
+  .tzPad .dof{position:absolute;inset:0;pointer-events:none;backdrop-filter:blur(2.6px);-webkit-backdrop-filter:blur(2.6px);
+    -webkit-mask-image:linear-gradient(102deg,rgba(0,0,0,0) 26%,rgba(0,0,0,.3) 56%,#000 92%);
+    mask-image:linear-gradient(102deg,rgba(0,0,0,0) 26%,rgba(0,0,0,.3) 56%,#000 92%);}
+  /* the light falls off toward the far edge -- enough to read as depth, not
+     so much that the far cards go out */
+  .tzPad .fall{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(102deg,rgba(0,0,0,0) 34%,rgba(0,0,0,.14) 68%,rgba(0,0,0,.34) 100%);}
   /* the cards come up one after the other, each fading rather than cutting */
   .tzTile{background-image:url(assets/teaser/organ-grid.webp);background-size:300% 300%;background-repeat:no-repeat;
     opacity:0;transition:opacity .5s ease;}
@@ -11958,10 +11976,10 @@
     // tile the same file at 300% with its own background-position), so they
     // can arrive one at a time without a pixel of it being remade. The image
     // is square, so it sits centred at the stage's height on the black.
-    const s7 = '<div class="tzGridI"><div class="zoom"><div class="plate">' +
+    const s7 = '<div class="tzGridI"><div class="zoom"><div class="tzPad"><div class="screen"><div class="plate">' +
       [0,1,2,3,4,5,6,7,8].map(i =>
         '<div class="tzTile" style="background-position:' + (i % 3) * 50 + '% ' + Math.floor(i / 3) * 50 + '%"></div>').join('') +
-      '</div></div></div>';
+      '</div><div class="dof"></div><div class="fall"></div></div></div></div></div>';
     h.push('<div class="tzLayout"><div class="tzFocus">' +
       frame('01', 'Signals', '0:00 \u2013 0:04', s0, { text: '\u201CYour body holds millions of signals.\u201D', cycle: 10 },
         '<b>Motion.</b> Black, and one dot, close \u2014 an ordinary one, off-white, drifting a little. A zoom out over 2s, ease-in-out, and the dot is one of a universe of dots, already drifting in one direction, the far ones small, dim and soft, the near ones large and out of focus; nothing is pinned to the centre, the dot drifts with the rest. The same move then eases on gently (about 1.35x to 1x over the rest of the sequence, 10s in all) as the readings come. The universe drifts consistently in one direction, like a pull \u2014 four depths at four speeds, the far barely moving and the near sweeping past, so it parallaxes hard; the far depths small, dim and well out of focus, the nearest large and soft, the middle sharp. No glow on any dot. Readings type on, letter by letter, the way the Card nav\u2019s annotation does: a filled square, the label in the mono (VO\u2082 MAX, MAX HR, O\u2082 UPTAKE, HRV, GLUCOSE, SPO\u2082\u2026), then the value on the line below (42.8 ML/KG/MIN, 184 BPM, 3.2 L/MIN\u2026), a square cursor typing at 34ms a character and blinking off; the first as the field resolves (about 1.8s in), then 1.4s apart, five a sequence, at staggered places, each holding about 2s and fading. <b>Cut.</b> Hard, to 02, at 10s. <b>Grade.</b> Black; mostly the off-white and the sand, a twelfth salmon, the grain fine; the readings in white at 88%.') +
@@ -11976,7 +11994,7 @@
       frame('06', 'Lungs / older', '0:16 \u2013 0:19', s6, { text: '\u201COthers are ageing faster.\u201D' },
         '<b>The plate.</b> The phone again, at an angle now and further back \u2014 the heart drawn in the orange, the arc filled past the centre, 44, eight years older. Where 04 was the same organ in the green, this is the turn: the same frame, the other verdict. Match its angle and its fall-off. <b>Motion.</b> The camera moves inside rather than straight in \u2014 the push is centred on the screen, about 9% over the sequence, so it travels into the reading and not into the middle of the plate. <b>Ease.</b> Ease-in-out, no hold at either end. <b>In the edit.</b> The arc\u2019s colour going and the orange portion growing from the centre to the right, the number counting 37\u219244, can be played live on the device and shot in one take.') +
       frame('07', 'All of them', '0:19 \u2013 0:23', s7, { text: '\u201CEverlab tracks them all, for better decisions.\u201D' },
-        '<b>The frame.</b> Every organ age at once, each cell the product\u2019s own: the particle organ, the age scale with the coloured gap and the indicator, the age, the verdict. Nine of them, the app\u2019s nine, with the app\u2019s numbers. <b>Motion.</b> A slow drift back over the whole sequence \u2014 a small move, still going as it settles, not a pull. The cards come up one after the other in reading order as it goes, each fading in over half a second, evenly spaced so the last is up with a beat to spare. <b>Ease.</b> Ease-out on the drift; the cards fade, they do not cut. <b>Why.</b> The count is what the line says, so the frame should be felt as a count and not read as a chart \u2014 nine things arriving is the argument.') +
+        '<b>The frame.</b> Every organ age at once, each cell the product\u2019s own: the particle organ, the age scale with the coloured gap and the indicator, the age, the verdict. Nine of them, the app\u2019s nine, with the app\u2019s numbers. <b>The plate.</b> The grid on a tablet, turned away from the camera and shot shallow \u2014 the same device and the same fall-off as 05, so the two belong to one shoot. The screen is the only lit thing; the far edge goes soft and dark. <b>Motion.</b> A slow drift back over the whole sequence \u2014 a small move, still going as it settles, not a pull. The cards come up one after the other in reading order as it goes, each fading in over half a second, evenly spaced so the last is up with a beat to spare. <b>Ease.</b> Ease-out on the drift; the cards fade, they do not cut. <b>Why.</b> The count is what the line says, so the frame should be felt as a count and not read as a chart \u2014 nine things arriving is the argument.') +
       frame('08', 'Look closer', '0:23 \u2013 0:26', s8, { text: '\u201CAvailable now.\u201D | \u201CLook closer.\u201D' },
         '<b>As 03.</b> Two phases on black, each a turn on a vertical axis with a fade: \u201CAvailable now\u201D turns in toward the camera as it fades up (0.5s), holds about a second, turns on and away as it fades; \u201CLook closer\u201D comes the same way and holds to the cut. Sentence case, no full stop, Saans medium, small (about 45px at 1080p), centred. <b>Cut.</b> Hard, to black \u2014 no fade out. The cut is the beat before the mark.') +
       frame('09', 'Closure', '0:26 \u2013 0:30', s9, { text: '\u201CEverlab\u201D' },
