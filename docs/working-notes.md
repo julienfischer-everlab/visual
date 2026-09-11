@@ -4024,6 +4024,42 @@ slots are paced by their lines alone (TZ_DONE 0): a looping push has no end
 of its own to wait for, and at 6s it would have held each frame twice as
 long as the board asks.
 
+### 5.151 Every organ at once, and the voice in the room
+
+"On seq 07, display a grid of organs based on this image, make them appear
+randomly with a zoom out while the sequence progresses. Remove the chart
+currently implemented, replace by this concept." The three-line chart is
+gone. 07 is the app's nine readings at once, each cell the product's own
+parts rather than a drawing of them: the particle organ, the age scale with
+its coloured gap and indicator (ageArcMarkup, the same function the
+immersive page draws), the age (CHRONO + delta) and the verdict (imVerdict).
+The numbers are PILL's, so the grid says what the app says -- 37, 40, 34, 48,
+37, 42, 35, 44, 39 -- and a change to that table changes this frame too.
+
+The camera opens in on the middle cell at 2.7x and pulls back to the whole
+grid over 7s; the other eight arrive around it in a shuffled order, 0.56s
+apart, all landed by 4.3s so the frame settles complete and holds. The first
+cut staggered all nine, which left the stage black for the first third of a
+second of every cycle -- a dropped frame, not a cut. The centre cell is on
+from the first frame now, which is also truer to the shot: you open on one
+organ and the rest arrive around it.
+
+Nine organ views on one stage is the Library's whole page in a ninth of the
+room, so each is built at a third of the library tile's count with feed and
+flow off: what moves in a cell is the organ itself.
+
+"Include this source as a voice style ref." A fourth card beside Palette,
+Type and Delivery: the reference recording, with a line saying to match its
+pace, register and restraint rather than its words. The build inlines audio
+now as well as images (mp3, m4a, wav added to the map), which is 1.3MB of
+mp3 becoming 1.7MB of base64 -- the page goes from 0.5MB to 2.2MB, paid once
+so the board travels as one file with the read inside it.
+
+(A probe artefact worth remembering: page.screenshot with a clip and
+deviceScaleFactor 2 captured a region that did not match what the page
+reported -- one cell where nine were on. At deviceScaleFactor 1 the same
+clip is right. Measure the DOM for truth; use the screenshot to look.)
+
 ---
 
 ## 6. Open items
