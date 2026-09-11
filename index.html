@@ -1162,13 +1162,17 @@
   .tzGridI{position:absolute;inset:0;overflow:hidden;}
   .tzGridI .zoom{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     transform-origin:50% 50%;animation:tzGridZoom var(--tzCyc,7s) cubic-bezier(.65,0,.35,1) infinite;}
-  @keyframes tzGridZoom{0%,3%{scale:2.7;}100%{scale:1;}}
+  /* "zoom out slow": a drift back rather than a pull -- a small scale over
+     the whole slot on an ease-out, so it is still moving as it settles */
+  @keyframes tzGridZoom{0%{scale:1.55;}100%{scale:1;}}
   /* the plate is the image itself, square, at the stage's height; the nine
      tiles are that one file at 300%, each showing its own third, so a tile
      can arrive on its own without the picture being remade */
   .tzGridI .plate{height:100%;aspect-ratio:1936/1878;display:grid;
     grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);}
-  .tzTile{background-image:url(assets/teaser/organ-grid.webp);background-size:300% 300%;background-repeat:no-repeat;opacity:0;}
+  /* the cards come up one after the other, each fading rather than cutting */
+  .tzTile{background-image:url(assets/teaser/organ-grid.webp);background-size:300% 300%;background-repeat:no-repeat;
+    opacity:0;transition:opacity .5s ease;}
   .tzTile.on{opacity:1;}   /* in, then a cut back; no reverse */
   @keyframes tzPush{from{scale:1;}to{scale:1.07;}}
   .tzOrgan{position:absolute;left:4%;right:4%;top:10%;height:31%;}
@@ -11972,7 +11976,7 @@
       frame('06', 'Lungs / older', '0:16 \u2013 0:19', s6, { text: '\u201COthers are ageing faster.\u201D' },
         '<b>The plate.</b> The phone again, at an angle now and further back \u2014 the heart drawn in the orange, the arc filled past the centre, 44, eight years older. Where 04 was the same organ in the green, this is the turn: the same frame, the other verdict. Match its angle and its fall-off. <b>Motion.</b> The camera moves inside rather than straight in \u2014 the push is centred on the screen, about 9% over the sequence, so it travels into the reading and not into the middle of the plate. <b>Ease.</b> Ease-in-out, no hold at either end. <b>In the edit.</b> The arc\u2019s colour going and the orange portion growing from the centre to the right, the number counting 37\u219244, can be played live on the device and shot in one take.') +
       frame('07', 'All of them', '0:19 \u2013 0:23', s7, { text: '\u201CEverlab tracks them all, for better decisions.\u201D' },
-        '<b>The frame.</b> Every organ age at once, each cell the product\u2019s own: the particle organ, the age scale with the coloured gap and the indicator, the age, the verdict. Nine of them, the app\u2019s nine, with the app\u2019s numbers. <b>Motion.</b> The camera starts in on the middle cell \u2014 one organ, whole in frame \u2014 and pulls back over the sequence until the grid is. The other eight arrive as it goes, one at a time in no order \u2014 a shuffle, not a sweep \u2014 each cutting in with its own dots already drifting, about half a second apart, all of them landed a good two seconds before the camera settles. <b>Ease.</b> Ease-in-out on the pull-back (cubic-bezier .65 0 .35 1); the cells cut in, no fade. <b>Why.</b> The count is what the line says, so the frame should be felt as a count and not read as a chart \u2014 nine things arriving is the argument.') +
+        '<b>The frame.</b> Every organ age at once, each cell the product\u2019s own: the particle organ, the age scale with the coloured gap and the indicator, the age, the verdict. Nine of them, the app\u2019s nine, with the app\u2019s numbers. <b>Motion.</b> A slow drift back over the whole sequence \u2014 a small move, still going as it settles, not a pull. The cards come up one after the other in reading order as it goes, each fading in over half a second, evenly spaced so the last is up with a beat to spare. <b>Ease.</b> Ease-out on the drift; the cards fade, they do not cut. <b>Why.</b> The count is what the line says, so the frame should be felt as a count and not read as a chart \u2014 nine things arriving is the argument.') +
       frame('08', 'Look closer', '0:23 \u2013 0:26', s8, { text: '\u201CAvailable now.\u201D | \u201CLook closer.\u201D' },
         '<b>As 03.</b> Two phases on black, each a turn on a vertical axis with a fade: \u201CAvailable now\u201D turns in toward the camera as it fades up (0.5s), holds about a second, turns on and away as it fades; \u201CLook closer\u201D comes the same way and holds to the cut. Sentence case, no full stop, Saans medium, small (about 45px at 1080p), centred. <b>Cut.</b> Hard, to black \u2014 no fade out. The cut is the beat before the mark.') +
       frame('09', 'Closure', '0:26 \u2013 0:30', s9, { text: '\u201CEverlab\u201D' },
@@ -12157,23 +12161,19 @@
     // for them and no phone is framed. The live-iframe machinery above is
     // left where it stands: it costs nothing with no .tzLive on the page, and
     // a frame that wants the running app back only has to ask for one.)
-    // The centre cell is there from the first frame -- it is the one the
-    // camera opens on -- and the other eight arrive around it in a shuffled
-    // order, about half a second apart, all landing by 4.3s of the seven the
-    // pull-back takes. (Staggering all nine left the frame black for the
-    // first third of a second of every cycle, which read as a dropped frame
-    // rather than as a cut.)
+    // The cards come up one after the other in reading order, each fading in
+    // over half a second, evenly across the slot so the last is up with a
+    // beat to spare. The first is there from the frame's first moment -- a
+    // stage that starts empty reads as a dropped frame rather than as a cut.
     const gCells = [...wrap.querySelectorAll('#tzS07 .tzTile')];
-    const G_FIRST = 4;   // the middle of a three by three
     let gridTimers = [];
     const gridStart = () => {
       gridTimers.forEach(clearTimeout); gridTimers = [];
-      gCells.forEach((c, i) => c.classList.toggle('on', i === G_FIRST));
-      const order = gCells.map((c, i) => i).filter(i => i !== G_FIRST);
-      for (let i = order.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
-      const step = (SLOT[6] * 1000 - 900) / order.length;
-      order.forEach((c, k) => gridTimers.push(setTimeout(() => gCells[c].classList.add('on'), 300 + k * step)));
-      gridTimers.push(setTimeout(gridStart, SLOT[6] * 1000));   // the pull-back's own cycle
+      gCells.forEach((c, i) => c.classList.toggle('on', i === 0));
+      const rest = gCells.length - 1;
+      const step = (SLOT[6] * 1000 - 1100) / Math.max(1, rest);
+      for (let k = 1; k < gCells.length; k++) gridTimers.push(setTimeout(() => gCells[k].classList.add('on'), k * step));
+      gridTimers.push(setTimeout(gridStart, SLOT[6] * 1000));   // the drift's own cycle
     };
     gridStart();
     onShow.push(i => { if (i === 6) gridStart(); });

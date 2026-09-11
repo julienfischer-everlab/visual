@@ -4100,6 +4100,19 @@ all nine tiles up by 4.22s -- each sketch finishes inside its own shot.
 TZ_DONE is gone. It existed to hold a sequence until its sketch was through;
 with the sketches cut to fit, the voice is the only clock.
 
+"Use this card style grid instead. Use the exact img. Zoom out slow, card
+opacity appearing one after each other." The motion is in: the drift back is
+1.55x to 1 on an ease-out over the whole slot -- a move that is still going
+as it settles rather than a pull -- and the tiles fade in over half a second
+each, one after the other in reading order, evenly spaced so the last is up
+with a beat to spare. The first is up from the frame's first moment, for the
+same reason as before: a stage that starts empty reads as a dropped frame.
+
+The plate itself is still the nine-up. The card image could not be read this
+turn -- a paste reaches the message store only once the turn it arrived in
+has ended -- so swapping the file and going from nine tiles to six (3x2,
+background-size 300% 200%) is the one thing left.
+
 ---
 
 ## 6. Open items
