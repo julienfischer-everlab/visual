@@ -11812,7 +11812,7 @@
   const TZ_SCRIPT = [
     { tc: '00:00', vo: 'Your body holds millions of signals.', on: 'One dot; a zoom out shows it one of a universe of dots, drifting like a vacuum, in depth and blur; readings type on and go through the zoom out' },
     { tc: '00:04', vo: 'Together, they tell a bigger story. | But not the full story.', on: 'A cloud of particles travels into the body, the concept\u2019s morph; two chips: 124 biomarkers, 8 years younger; the body holds for the second line' },
-    { tc: '00:10', vo: 'Introducing Organ ages.', on: 'Black. Introducing, then Organ ages, each turning in on a vertical axis and fading' },
+    { tc: '00:10', vo: 'Introducing | Organ ages.', on: 'Black. Introducing, a beat, then Organ ages, each turning in on a vertical axis' },
     { tc: '00:12', vo: 'A deeper view of your organs.', on: 'The app on a tablet, the organ ages beside the reading; a slow push in' },
     { tc: '00:14', vo: 'Some age exactly as they should.', on: 'The heart held; the arc and the reading hold' },
     { tc: '00:16', vo: 'Others are ageing faster.', on: 'The phone at an angle: the heart in the orange, 44, eight years older' },
@@ -11857,24 +11857,31 @@
     const VO_CUES = [[0.00, 2.72], [2.72, 6.34], [6.34, 8.30], [8.30, 10.23], [10.23, 12.79],
                      [12.79, 14.84], [14.84, 17.67], [17.67, 19.61], [19.61, 20.74]];
     const VO_PAUSE = 1.0, VO_TAIL = 2.4;   // the beat after a line; the last one longer, for the black
-    const voLen = i => VO_CUES[i][1] - VO_CUES[i][0];
-    const SLOT = VO_CUES.map((c, i) => Math.max(2.4, voLen(i) + (i === VO_CUES.length - 1 ? VO_TAIL : VO_PAUSE)));
+    // A line said in two parts divides inside the take: VO_SPLIT is where,
+    // VO_HOLD is how long the board waits before the second part -- silence
+    // it makes, since the reader ran the two together. The board holds the
+    // recording for that beat, so the picture and the voice keep step.
+    const VO_SPLIT = { 1: 4.89, 2: 7.22, 7: 18.69 };
+    const VO_HOLD  = { 1: 2.0,  2: 0.5,  7: 1.5  };
+    const voPieces = i => { const [a, b] = VO_CUES[i], cut = VO_SPLIT[i]; return cut ? [[a, cut], [cut, b]] : [[a, b]]; };
+    const voHold = i => VO_HOLD[i] != null ? VO_HOLD[i] : 0.3;
+    // where each part begins inside its own slot, and where the last one ends
+    const voStarts = i => { let o = 0; return voPieces(i).map(([a, b]) => { const at = o; o += (b - a) + voHold(i); return at; }); };
+    const voSpan = i => { const ps = voPieces(i), st = voStarts(i), k = ps.length - 1; return st[k] + (ps[k][1] - ps[k][0]); };
+    const SLOT = VO_CUES.map((c, i) => Math.max(2.4, voSpan(i) + (i === VO_CUES.length - 1 ? VO_TAIL : VO_PAUSE)));
     const subKeys = new Set();
     const pieces = text => text.split(' | ');
-    // The caption is written at the voice's pace, not at a pace of its own:
-    // the line's share of the take is split between its pieces by word count,
-    // and the words inside a piece land evenly across it, so the last word
-    // arrives as the voice finishes. A piece that is not the last fades once
-    // it has been said; the last one holds to the cut.
-    const PIECE_GAP = 0.28;
-    const subtitle = (text, cyc, spokenFor) => {
-      const pcs = pieces(text), wn = pcs.map(pc => pc.split(' ').length), tot = wn.reduce((a, b) => a + b, 0);
-      const speech = Math.max(0.4, spokenFor - PIECE_GAP * (pcs.length - 1));
-      let at = 0;
+    // The caption is written at the voice's pace and on the voice's clock:
+    // each part starts where the recording's does and its words land evenly
+    // across what that part takes to say, so the last word arrives as the
+    // voice finishes. A part that is not the last fades once it has been
+    // said; the last one holds to the cut.
+    const subtitle = (text, cyc, starts, lens) => {
+      const pcs = pieces(text);
       return pcs.map((pc, k) => {
-        const d = speech * wn[k] / tot, pace = d / wn[k], start = at, last = k === pcs.length - 1;
-        at += d + PIECE_GAP;
-        const key = [wn[k], Math.round(start * 100), Math.round(pace * 1000), Math.round(cyc * 100), last ? 1 : 0].join('_');
+        const wn = pc.split(' ').length, d = lens[Math.min(k, lens.length - 1)], start = starts[Math.min(k, starts.length - 1)];
+        const pace = d / wn, last = k === pcs.length - 1;
+        const key = [wn, Math.round(start * 100), Math.round(pace * 1000), Math.round(cyc * 100), last ? 1 : 0].join('_');
         subKeys.add(key);
         return '<div class="tzSub k' + key + '">' + pc.split(' ').map((w, i) =>
           '<span style="animation-delay:' + (start + i * pace).toFixed(2) + 's;animation-duration:' + cyc.toFixed(2) + 's">' + w + '</span>').join(' ') + '</div>';
@@ -11882,7 +11889,7 @@
     };
     const frame = (n, title, dur, stage, line, note) =>
       '<div class="tzFrame' + (n === '01' ? ' on' : '') + '" data-i="' + (+n - 1) + '"><div class="tzBar tzMono"><span><b>' + n + '</b>&nbsp;&nbsp;' + title + '</span><span style="display:flex;gap:14px;align-items:center"><span class="tzDur">' + dur + '</span><span class="tzNav"><button type="button" class="play tzMono" data-play aria-label="Pause">Pause</button><button type="button" data-go="-1" aria-label="Previous frame">&larr;</button><button type="button" data-go="1" aria-label="Next frame">&rarr;</button></span></span></div>' +
-      '<div class="tzStage" id="tzS' + n + '" style="--tzCyc:' + SLOT[+n - 1].toFixed(2) + 's">' + stage + (line.silent ? '' : subtitle(line.text, SLOT[+n - 1], voLen(+n - 1))) + '</div>' +
+      '<div class="tzStage" id="tzS' + n + '" style="--tzCyc:' + SLOT[+n - 1].toFixed(2) + 's">' + stage + (line.silent ? '' : subtitle(line.text, SLOT[+n - 1], voStarts(+n - 1), voPieces(+n - 1).map(q => q[1] - q[0]))) + '</div>' +
       note.split(/(?=<b>)/).filter(Boolean).map(pt => '<p class="tzNote">' + pt.trim() + '</p>').join('') + '</div>';
     // 01 and 02 -- the universe of dots. One field in four depths: the far
     // ones small, dim and blurred, the near ones large and out of focus, the
@@ -11986,7 +11993,7 @@
         '<b>Motion.</b> Black, and one dot, close \u2014 an ordinary one, off-white, drifting a little. A zoom out over 2s, ease-in-out, and the dot is one of a universe of dots, already drifting in one direction, the far ones small, dim and soft, the near ones large and out of focus; nothing is pinned to the centre, the dot drifts with the rest. The same move then eases on gently (about 1.35x to 1x over the rest of the sequence, 10s in all) as the readings come. The universe drifts consistently in one direction, like a pull \u2014 four depths at four speeds, the far barely moving and the near sweeping past, so it parallaxes hard; the far depths small, dim and well out of focus, the nearest large and soft, the middle sharp. No glow on any dot. Readings type on, letter by letter, the way the Card nav\u2019s annotation does: a filled square, the label in the mono (VO\u2082 MAX, MAX HR, O\u2082 UPTAKE, HRV, GLUCOSE, SPO\u2082\u2026), then the value on the line below (42.8 ML/KG/MIN, 184 BPM, 3.2 L/MIN\u2026), a square cursor typing at 34ms a character and blinking off; the first as the field resolves (about 1.8s in), then 1.4s apart, five a sequence, at staggered places, each holding about 2s and fading. <b>Cut.</b> Hard, to 02, at 10s. <b>Grade.</b> Black; mostly the off-white and the sand, a twelfth salmon, the grain fine; the readings in white at 88%.') +
       frame('02', 'The bigger story', '0:04 \u2013 0:10', s2, { text: '\u201CTogether, they tell a bigger story.\u201D | \u201CBut not the full story.\u201D' },
         '<b>Motion.</b> Open on a cloud of particles, centred: a loose ball about the body\u2019s height, drifting, the body\u2019s own ten thousand dots scattered. At 0.5s they travel \u2014 the concept\u2019s morph, point for point, each dot to its own place in the body along a slight arc \u2014 over 2.4s, while the camera pulls back a touch (1.25x to 1x over 3s), and the cloud is the body: the Library\u2019s own particle body, exactly as the Library page draws it, the strays still drifting round it. As the camera settles, two chips, the same mono in black: 124 BIOMARKERS on white over the left shoulder, then a beat later 8 YEARS YOUNGER in the accent (F78359) over the right. <b>Ease.</b> The morph eases in and out (cubic); ease-in-out on the pull-back (cubic-bezier .65 0 .35 1); the chips cut in, no fade, 0.4s apart. <b>Hold.</b> The body and the chips hold while the second line lands \u2014 \u201CBut not the full story\u201D, its own subtitle, coming once the first has held and gone \u2014 to the 8s mark, still, the strays drifting; no phone, no cut between the two lines. Then a hard cut to black. <b>Note.</b> Every sketch plays through once and cuts back to its start; nothing reverses.') +
-      frame('03', 'Introducing', '0:10 \u2013 0:12', s3, { text: '\u201CIntroducing Organ ages.\u201D' },
+      frame('03', 'Introducing', '0:10 \u2013 0:12', s3, { text: '\u201CIntroducing\u201D | \u201COrgan ages.\u201D' },
         '<b>Motion.</b> Two phases on black, each a turn on a vertical axis with a fade. \u201CIntroducing\u201D turns in toward the camera from below (rotateX 70\u00B0 to 0, rising about a third of its height) as it fades up (0.5s), holds about a second, then turns on and away (0 to \u221270\u00B0, rising) as it fades (0.5s); \u201COrgan ages\u201D turns in the same way as it goes, and holds to the cut. Sentence case; Saans medium, small (about 45px at 1080p), centred; no scale. <b>Ease.</b> Ease-in-out on both the turn and the fade. <b>Cut.</b> Hard, to 04.') +
       frame('04', 'A deeper view', '0:12 \u2013 0:14', s5, { text: '\u201CA deeper view of your organs.\u201D' },
         '<b>The plate.</b> A photograph of the app on a phone, shot close and shallow and straight on \u2014 the particle heart above, the arc, then the reading: 36, four years younger. The screen is the only lit thing in the frame and the body falls off into black. This is the reference still, not a sketch: match its framing, its angle and its fall-off. <b>Motion.</b> A slow push in over the sequence (about 7%, then the cut). <b>Ease.</b> Ease-in-out, no hold at either end. <b>In the edit.</b> A screen recording of this same view, shot on the device at the same angle, replaces the still.') +
@@ -12046,6 +12053,24 @@
       const kf = (at > 0 ? '0%,' + p0 + '%{opacity:0}' + (+p0 + 0.01).toFixed(2) + '%,' : '0%,') + p1 + '%{opacity:1}' + (last ? '' : p2 + '%,100%{opacity:0}');
       return '.tzSub.k' + key + '{animation:tzSubOut' + key + ' ' + cyc + 's linear infinite}@keyframes tzSubOut' + key + '{' + kf + '}';
     }).join('\n');
+    // 03 and 08 are two phases on black, and their turns follow the voice as
+    // the captions do: the first is up while its part is said and turns away
+    // through the hold, the second comes as the second part starts and holds
+    // to the cut. Written per frame, since the beats differ.
+    [2, 7].forEach(fi => {
+      const cyc = SLOT[fi], ps = voPieces(fi), starts = voStarts(fi);
+      if (ps.length < 2) return;
+      const F = 0.34, pc = t => (Math.max(0, Math.min(cyc, t)) / cyc * 100).toFixed(2);
+      const IN = 'opacity:0;transform:rotateX(70deg) translateY(35%)';
+      const UP = 'opacity:1;transform:none';
+      const AWAY = 'opacity:0;transform:rotateX(-70deg) translateY(-35%)';
+      const a0 = starts[0], a1 = a0 + F, a2 = a0 + (ps[0][1] - ps[0][0]) + 0.1, a3 = Math.min(a2 + F, starts[1]);
+      const b0 = Math.max(a3, starts[1] - F * 0.7), b1 = b0 + F;
+      const id = '#tzS' + String(fi + 1).padStart(2, '0');
+      st.textContent += '\n@keyframes tzP1f' + fi + '{0%,' + pc(a0) + '%{' + IN + '}' + pc(a1) + '%,' + pc(a2) + '%{' + UP + '}' + pc(a3) + '%,100%{' + AWAY + '}}' +
+        '\n@keyframes tzP2f' + fi + '{0%,' + pc(b0) + '%{' + IN + '}' + pc(b1) + '%,96%{' + UP + '}100%{' + AWAY + '}}' +
+        '\n' + id + ' .tzP1{animation-name:tzP1f' + fi + '}' + id + ' .tzP2{animation-name:tzP2f' + fi + '}';
+    });
     wrap.appendChild(st);
     // one frame in focus: the script's lines and the frame's arrows choose it;
     // the arrow keys too while the page shows. A hidden frame's views stop
@@ -12104,7 +12129,7 @@
     const durs = SLOT.map(sec => sec * 1000);
     let playing = false, t0 = performance.now();   // the clock starts with the page, not at zero
     const onShow = [];
-    let vo = null, voT = 0, voBlocked = false;   // the take's handle, declared before the play reads it
+    let vo = null, voT = [], voBlocked = false;   // the take's handle, declared before the play reads it
     let bed = null, bedRamp = 0;                 // and the music under it
     const ol = document.getElementById('tzLines'), playBtns = [...wrap.querySelectorAll('.tzNav .play')];
     const gStarts = Object.keys(TZ_GROUPS).map(Number).sort((a, b) => a - b);
@@ -12131,7 +12156,7 @@
     };
     const setPlay = on => {
       playing = on; t0 = performance.now();
-      if (vo && !on){ clearTimeout(voT); try { vo.pause(); } catch (e) {} }
+      if (vo && !on){ voT.forEach(clearTimeout); voT = []; try { vo.pause(); } catch (e) {} }
       if (bed){
         if (on){ try { const pr = bed.play(); if (pr && pr.catch) pr.catch(() => { voBlocked = true; }); } catch (e) { voBlocked = true; } }
         else { try { bed.pause(); } catch (e) {} }
@@ -12182,16 +12207,21 @@
       }, 40);
     };
     const voPlay = i => {
-      clearTimeout(voT);
+      voT.forEach(clearTimeout); voT = [];
       if (!vo) return;
-      const [a, b] = VO_CUES[i];
-      try {
-        vo.currentTime = a;
-        const pr = vo.play();
-        if (pr && pr.catch) pr.catch(() => { voBlocked = true; });
-      } catch (e) { voBlocked = true; }
-      bedTo(BED_UNDER, 260);
-      voT = setTimeout(() => { try { vo.pause(); } catch (e) {} bedTo(BED_OPEN, 420); }, (b - a) * 1000 + 80);
+      const ps = voPieces(i), st = voStarts(i);
+      ps.forEach(([a, b], k) => {
+        const say = () => {
+          try {
+            vo.currentTime = a;
+            const pr = vo.play();
+            if (pr && pr.catch) pr.catch(() => { voBlocked = true; });
+          } catch (e) { voBlocked = true; }
+          bedTo(BED_UNDER, 260);
+          voT.push(setTimeout(() => { try { vo.pause(); } catch (e) {} bedTo(BED_OPEN, 420); }, (b - a) * 1000 + 80));
+        };
+        if (st[k] <= 0) say(); else voT.push(setTimeout(say, st[k] * 1000));
+      });
     };
     onShow.push(voPlay);
     const voRetry = () => {

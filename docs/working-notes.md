@@ -4149,6 +4149,39 @@ paid once and the board travels as one file with its sound in it, but if it
 ever needs to come down, the style reference is the 1.3MB that the take has
 made redundant.
 
+### 5.153 The holds inside a line
+
+"Need 2 sec pause between 2 sentences." ".5 sec pause after [03's first
+phrase]." "Look closer should come after 1.5s delay, match voice as well."
+Three asks about the same thing: the silence inside a line, which the
+recording does not have -- the reader runs the sentences together with a
+breath between them.
+
+So a line can divide now. VO_SPLIT says where inside the take it divides,
+VO_HOLD how long the board waits before the second part, and the board holds
+the recording for exactly that: it plays the first part, pauses the audio,
+waits, then sets the head to the second part and plays on. The silence is
+made by the board, not cut into the file. 02 holds 2s between "a bigger
+story" and "But not the full story", 03 holds 0.5s between "Introducing" and
+"Organ ages", 08 holds 1.5s before "Look closer".
+
+The split points came from the same envelope: the breath nearest where the
+syllable count says the sentence ends -- 4.89s, 7.22s and 18.69s into the
+take.
+
+Everything downstream follows, because everything reads the cues. A slot is
+the sum of its parts plus its holds plus the beat after (02 is 6.6s now,
+08 4.4s). The captions start where their part of the recording starts and
+run at its pace. And the two title frames, 03 and 08, turn on the same
+clock: the first phrase is up while it is said and turns away through the
+hold, the second comes as the voice does and holds to the cut. Their
+keyframes are written per frame, since the beats differ -- the fixed
+percentages could not have followed a voice.
+
+(03's line is two pieces in the script now, "Introducing | Organ ages.",
+which is what the frame always showed; the script list joins them back for
+reading.)
+
 ---
 
 ## 6. Open items
