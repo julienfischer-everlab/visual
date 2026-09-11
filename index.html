@@ -1144,7 +1144,11 @@
      the same slow move the live frames use */
   .tzPhoto{position:absolute;inset:0;overflow:hidden;}
   .tzPhoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
-  .tzPush{animation:tzPush 6s ease-in-out infinite;}   /* in, then a cut back; no reverse */
+  .tzPush{animation:tzPush 6s ease-in-out infinite;}
+  /* "make it move inside a bit": the push centred on the screen rather than
+     on the middle of the plate, so the camera travels into the reading */
+  .tzPhoto.tzInto{animation:tzInto 6s ease-in-out infinite;transform-origin:46% 42%;}
+  @keyframes tzInto{0%{scale:1;}100%{scale:1.09;}}   /* in, then a cut back; no reverse */
   @keyframes tzPush{from{scale:1;}to{scale:1.07;}}
   .tzOrgan{position:absolute;left:4%;right:4%;top:10%;height:31%;}
   .tzOrgan .dlBtn, .tzOrgan .dlMenu{display:none !important;}
@@ -11768,7 +11772,7 @@
     { tc: '00:10', vo: 'Introducing Organ ages.', on: 'Black. Introducing, then Organ ages, each turning in on a vertical axis and fading' },
     { tc: '00:12', vo: 'A deeper view of your organs.', on: 'The app on a tablet, the organ ages beside the reading; a slow push in' },
     { tc: '00:14', vo: 'Some age exactly as they should.', on: 'The heart held; the arc and the reading hold' },
-    { tc: '00:16', vo: 'Others are ageing faster.', on: 'Heart becomes lungs; orange arc, 48' },
+    { tc: '00:16', vo: 'Others are ageing faster.', on: 'The phone at an angle: the heart in the orange, 44, eight years older' },
     { tc: '00:19', vo: 'Everlab tracks them all, for better decisions.', on: 'Organ ages over time, each its own line, and what to do next' },
     { tc: '00:23', vo: 'Available now. | Look closer.', on: 'Available now, then Look closer, in the Introducing style, on black, then a cut' },
     { tc: '00:26', vo: 'Everlab', on: 'EVERLAB, the dot, black' }
@@ -11892,8 +11896,10 @@
     const photo = (src, alt, cls) => '<div class="tzPhoto ' + (cls || 'tzPush') + '"><img src="' + src + '" alt="' + alt + '"></div>';
     const s5 = photo('assets/teaser/heart-age-phone.webp', 'The app on a phone, close: the particle heart, the arc and the reading');
     const s5b = photo('assets/teaser/deeper-view.webp', 'The app on a tablet: every organ age listed beside the reading');
-    // 07 carries both arcs and shows the one its organ calls for
-    const s6 = phone('tzLung', '', '231 182 156', '<div class="tzArc o">' + arc('#FE8087', 62, 24, 'a6') + '</div><div class="tzArc g">' + arc('#AAEEC2', 14, 22, 'a6b') + '</div>', '48', 'Lung age', '#m20v.p' + HEART_P + '-' + LUNG_P);
+    // 06 -- the third still: the phone at an angle, the heart in the orange,
+    // 44 and eight years older. It moves inside rather than straight in: the
+    // push is centred on the screen, so the camera travels into the reading.
+    const s6 = photo('assets/teaser/heart-older-phone.webp', 'The app on a phone at an angle: the heart in the orange, 44, eight years older', 'tzInto');
     // 07 -- over time: three organs, each its own line, drawn on one after
     // another ("all tracked independently, for better insights and decisions")
     const series = [
@@ -11924,7 +11930,7 @@
       frame('05', 'The right pace', '0:14 \u2013 0:16', s5b, { text: '\u201CSome age exactly as they should.\u201D' },
         '<b>The plate.</b> The same app on a tablet, wider: every organ age listed down the left with its verdict dot, the reading and its particle organ to the right. Where 04 was one organ close, this is the whole set at a glance \u2014 which is what makes \u201Csome age exactly as they should\u201D land. Shot at the same angle and fall-off as 04, so the two cut together. <b>Motion.</b> The same slow push (about 7%, then the cut). <b>Ease.</b> Ease-in-out. <b>Cut.</b> Hard, to 06.') +
       frame('06', 'Lungs / older', '0:16 \u2013 0:19', s6, { text: '\u201COthers are ageing faster.\u201D' },
-        '<b>The frame is the app.</b> This is the mobile build itself, gliding from the heart to the lungs (#m20v.p0-3) the way a swipe does, 1.5s in, then cutting back to the heart to go again: the arc, the reading and the light change as they do in the product. <b>Motion.</b> The heart dissolves into the lungs, particle for particle, over 1.4s (the component\u2019s own morph); as it lands the arc\u2019s colour goes and an orange portion grows from the centre to the right over 1.1s, the indicator with it, the number 37\u219248. <b>Halo.</b> Crossfades to the older light, E7B69C at 12%, on the morph\u2019s clock. <b>Note.</b> The sketch plays the glide every 6s and cuts back; nothing reverses.') +
+        '<b>The plate.</b> The phone again, at an angle now and further back \u2014 the heart drawn in the orange, the arc filled past the centre, 44, eight years older. Where 04 was the same organ in the green, this is the turn: the same frame, the other verdict. Match its angle and its fall-off. <b>Motion.</b> The camera moves inside rather than straight in \u2014 the push is centred on the screen, about 9% over the sequence, so it travels into the reading and not into the middle of the plate. <b>Ease.</b> Ease-in-out, no hold at either end. <b>In the edit.</b> The arc\u2019s colour going and the orange portion growing from the centre to the right, the number counting 37\u219244, can be played live on the device and shot in one take.') +
       frame('07', 'Over time', '0:19 \u2013 0:23', s7, { text: '\u201CEverlab tracks them all, for better decisions.\u201D' },
         '<b>Motion.</b> Three organs, three lines, each drawing on left to right over 1.6s and one after another (heart, then lungs, then liver), each in its verdict\u2019s colour, each point popping (0.2s, slight overshoot) as its line reaches it, the latest reading labelled at the end. The lines never merge: that is the point. The two actions fade up after the last line, 0.3s apart; the second sits at 45%. <b>VO.</b> The line lands as the third line finishes drawing.') +
       frame('08', 'Look closer', '0:23 \u2013 0:26', s8, { text: '\u201CAvailable now.\u201D | \u201CLook closer.\u201D' },
@@ -12027,7 +12033,9 @@
     // the glide landed on the lungs plus a second, the third line drawn and
     // the actions up, "Look closer" landed plus a second, the dot gone). The board's
     // timecodes are the edit's; the play is the preview's pacing.
-    const TZ_DONE = [10000, 8000, 3900, 6000, 0, 5000, 6500, 3900, 4500];
+    // (04, 05 and 06 are photographs that push on a loop with no end of their
+    // own, so their slots are paced by the line alone)
+    const TZ_DONE = [10000, 8000, 3900, 0, 0, 0, 6500, 3900, 4500];
     const voEnd = l => l.vo ? spokenEnd(l.vo) * 1000 : 0;
     const durs = TZ_SCRIPT.map((l, i) => Math.max(2000, voEnd(l) + 1000, TZ_DONE[i] || 0));
     let playing = false, t0 = performance.now();   // the clock starts with the page, not at zero
@@ -12081,36 +12089,10 @@
     setPlay(true);   // "auto go to next sequence": the play is on from the start; Pause holds it
     window.__tzPlay = setPlay;
     window.__tzShow = show;
-    // the organs: the painter's, on the phone's stage
-    // the library's own tile options for each organ (see libOpts below)
-    const mk = (id, idx) => makeOrganView(document.getElementById(id), idx, { target: organN(Math.round(fullTarget(clouds[idx]) * (ORGANS[idx].dots || 1))), fill: 0.46, dot: 1.0, name: 'teaser-' + id, feed: false });
-    const v6 = mk('tzLung', LUNG);
-    // 06: lungs -> heart -> lungs, every 6s, the reading, the arc and the
-    // light following the organ once the morph is most of the way over
-    const ph6 = document.getElementById('tzLung').parentNode, n6 = document.getElementById('tzLungN'), l6 = document.getElementById('tzLungL');
-    // the sketch's glide: to the lungs 1.5s into the slot, back to the heart
-    // 4.2s later, again every 6s -- the app's own timing, for when the live
-    // phone cannot show
-    let toLung = false, lungTimers = [];
-    const lungTo = lung => {
-      if (ph6.offsetParent === null) return;
-      const idx = lung ? LUNG : HEART;
-      v6.morphTo(clouds[idx], 'o' + idx, organN(Math.round(fullTarget(clouds[idx]) * (ORGANS[idx].dots || 1))), 1400);
-      setTimeout(() => {
-        n6.textContent = lung ? '48' : '37'; l6.textContent = lung ? 'Lung age' : 'Heart age';
-        ph6.classList.toggle('isHeart', !lung);
-        ph6.style.setProperty('--tzHalo', lung ? '231 182 156' : '136 171 116');
-      }, 900);
-      toLung = lung;
-    };
-    const lungGo = () => { lungTo(true); lungTimers.push(setTimeout(() => lungTo(false), 4200)); };
-    const lungStart = () => {
-      lungTimers.forEach(t => { clearTimeout(t); clearInterval(t); }); lungTimers = [];
-      if (toLung) lungTo(false);
-      lungTimers.push(setTimeout(() => { lungGo(); lungTimers.push(setInterval(lungGo, 6000)); }, 1500));
-    };
-    lungStart();
-    onShow.push(i => { if (i === 5) lungStart(); });
+    // (The three app frames are photographs now, so no organ view is built
+    // for them and no phone is framed. The live-iframe machinery above is
+    // left where it stands: it costs nothing with no .tzLive on the page, and
+    // a frame that wants the running app back only has to ask for one.)
     // 02: the readings. Real metrics in the Card nav annotation's manner --
     // the mono, uppercase, letter-spaced, a filled square cursor that types
     // the label on, then the value, blinks off, holds, and the entry goes --

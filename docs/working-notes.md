@@ -4008,6 +4008,22 @@ start. The box is sized by its letters, so it grows as they arrive -- the
 same hand as the readings in 01, which is the board's one way of putting
 words on a frame.
 
+"This on 06. Make it moving inside a bit." The third photograph: the phone
+at an angle, the heart drawn in the orange, 44 and eight years older -- the
+turn 06 has always been, the same frame as 04 with the other verdict, and a
+stronger picture than the heart-to-lungs morph it replaces. It moves inside
+rather than straight in: the push is centred on the screen (transform-origin
+46% 42%) and runs to 1.09, so the camera travels into the reading and not
+into the middle of the plate.
+
+That was the last live frame, so the three app sequences are all stills now
+and no organ view is built for them. The live-iframe machinery is left where
+it stands -- with no .tzLive on the page it costs nothing, and a frame that
+wants the running app back only has to ask for one. The three photographed
+slots are paced by their lines alone (TZ_DONE 0): a looping push has no end
+of its own to wait for, and at 6s it would have held each frame twice as
+long as the board asks.
+
 ---
 
 ## 6. Open items
