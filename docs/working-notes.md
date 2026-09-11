@@ -4135,6 +4135,20 @@ move: the slots, the caption pace and every sketch's cycle are all read off
 VO_CUES, so replacing the file and the nine pairs retimed the whole board.
 It runs 31s now.
 
+"Include this music on the bg while the sequences are running." A bed, and
+it behaves like one: it runs under the whole play rather than per sequence,
+loops (40s against the film's 31), starts and stops with Play, and ducks
+while the voice is speaking -- 0.15 under the line, 0.34 in the pauses, on a
+quarter-second ramp down and a slightly slower lift. The two levels are the
+only numbers in it worth arguing about; at these the voice stays clear and
+the room does not go empty between lines. The Voice card is the Sound card
+now and carries all three: the take, the bed, the style reference.
+
+That is 4.4MB of page -- three audio files inline, 4MB of the 4.4. It is
+paid once and the board travels as one file with its sound in it, but if it
+ever needs to come down, the style reference is the 1.3MB that the take has
+made redundant.
+
 ---
 
 ## 6. Open items

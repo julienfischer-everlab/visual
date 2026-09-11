@@ -12010,9 +12010,10 @@
         '<li><i style="background:#FE8087"></i>Older / out of range<code>FE8087</code></li>' +
         '<li><i style="background:#88AB74;opacity:.6"></i>Halo younger 16%<code>88AB74</code></li>' +
         '<li><i style="background:#E7B69C;opacity:.6"></i>Halo older 12%<code>E7B69C</code></li></ul></div>' +
-      '<div class="tzCard"><h3 class="tzMono">Voice</h3>' +
-        '<p class="tzVoNote">The take, below, is the one the board plays: each sequence sets the head to its own line, plays it, and then holds a beat, so the cuts fall in the pauses. Under it, the style reference \u2014 match its pace, its register and its restraint rather than its words.</p>' +
+      '<div class="tzCard"><h3 class="tzMono">Sound</h3>' +
+        '<p class="tzVoNote">The board plays both: each sequence sets the take\u2019s head to its own line and holds a beat after it, so the cuts fall in the pauses, while the bed runs under the whole thing and ducks a little whenever the voice is speaking. The style reference is what the read was matched to \u2014 its pace, its register and its restraint, not its words.</p>' +
         '<p class="tzVoLbl tzMono">The take</p><audio class="tzVo" id="tzVoTrack" controls preload="auto" src="assets/teaser/voice-over.mp3"></audio>' +
+        '<p class="tzVoLbl tzMono">Music bed</p><audio class="tzVo" id="tzBed" loop controls preload="auto" src="assets/teaser/music-bed.mp3"></audio>' +
         '<p class="tzVoLbl tzMono">Style reference</p><audio class="tzVo" controls preload="none" src="assets/teaser/voice-ref.mp3"></audio></div>' +
       '<div class="tzCard"><h3 class="tzMono">Type</h3><ul>' +
         '<li>Eyebrows and labels: mono, uppercase, 12% tracking</li>' +
@@ -12104,6 +12105,7 @@
     let playing = false, t0 = performance.now();   // the clock starts with the page, not at zero
     const onShow = [];
     let vo = null, voT = 0, voBlocked = false;   // the take's handle, declared before the play reads it
+    let bed = null, bedRamp = 0;                 // and the music under it
     const ol = document.getElementById('tzLines'), playBtns = [...wrap.querySelectorAll('.tzNav .play')];
     const gStarts = Object.keys(TZ_GROUPS).map(Number).sort((a, b) => a - b);
     const acts = gStarts.map((a, g) => {
@@ -12129,7 +12131,11 @@
     };
     const setPlay = on => {
       playing = on; t0 = performance.now();
-      if (!on && vo){ clearTimeout(voT); try { vo.pause(); } catch (e) {} }
+      if (vo && !on){ clearTimeout(voT); try { vo.pause(); } catch (e) {} }
+      if (bed){
+        if (on){ try { const pr = bed.play(); if (pr && pr.catch) pr.catch(() => { voBlocked = true; }); } catch (e) { voBlocked = true; } }
+        else { try { bed.pause(); } catch (e) {} }
+      }
       playBtns.forEach(b => { b.classList.toggle('on', on); b.textContent = on ? 'Pause' : 'Play'; b.setAttribute('aria-label', on ? 'Pause' : 'Play through the sequences'); });
     };
     const kNow = () => Math.min(1, (performance.now() - t0) / durs[focus]);
@@ -12157,6 +12163,24 @@
     // touched, so a blocked start is remembered and the first click or key
     // anywhere retries it.
     vo = document.getElementById('tzVoTrack');
+    // The music runs under the whole play rather than per sequence -- that is
+    // what a bed is -- and ducks while the voice is speaking, back up in the
+    // pauses, on a quarter-second ramp. The two levels are the only numbers
+    // here worth an argument; these read with the voice clear and the room
+    // still full between lines.
+    bed = document.getElementById('tzBed');
+    const BED_UNDER = 0.15, BED_OPEN = 0.34;
+    if (bed) bed.volume = BED_OPEN;
+    const bedTo = (target, ms) => {
+      clearInterval(bedRamp);
+      if (!bed) return;
+      const from = bed.volume, t0r = performance.now();
+      bedRamp = setInterval(() => {
+        const k = Math.min(1, (performance.now() - t0r) / ms);
+        try { bed.volume = from + (target - from) * k; } catch (e) {}
+        if (k >= 1) clearInterval(bedRamp);
+      }, 40);
+    };
     const voPlay = i => {
       clearTimeout(voT);
       if (!vo) return;
@@ -12166,10 +12190,16 @@
         const pr = vo.play();
         if (pr && pr.catch) pr.catch(() => { voBlocked = true; });
       } catch (e) { voBlocked = true; }
-      voT = setTimeout(() => { try { vo.pause(); } catch (e) {} }, (b - a) * 1000 + 80);
+      bedTo(BED_UNDER, 260);
+      voT = setTimeout(() => { try { vo.pause(); } catch (e) {} bedTo(BED_OPEN, 420); }, (b - a) * 1000 + 80);
     };
     onShow.push(voPlay);
-    const voRetry = () => { if (!voBlocked) return; voBlocked = false; voPlay(focus); };
+    const voRetry = () => {
+      if (!voBlocked) return;
+      voBlocked = false;
+      if (bed && playing){ try { bed.play(); } catch (e) {} }
+      voPlay(focus);
+    };
     document.addEventListener('pointerdown', voRetry, true);
     document.addEventListener('keydown', voRetry, true);
     layProg(); drawProg(0);
