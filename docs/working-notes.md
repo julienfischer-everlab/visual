@@ -4127,6 +4127,14 @@ when the drift settles; at the drift's start, 1.55x, the frame is inside the
 screen and the edge of the device is just off it, which is the shot the
 reference showed.
 
+"Replace by this VO." A second take, 20.7s against the first's 23.1 -- a
+quicker read. The cues were found the same way, and the fit is tighter this
+time: the eight spoken lines land between 0.23 and 0.30s a syllable, with
+the trailing "Everlab" longer, as a single word held is. Nothing else had to
+move: the slots, the caption pace and every sketch's cycle are all read off
+VO_CUES, so replacing the file and the nine pairs retimed the whole board.
+It runs 31s now.
+
 ---
 
 ## 6. Open items
