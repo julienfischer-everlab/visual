@@ -4060,6 +4060,46 @@ deviceScaleFactor 2 captured a region that did not match what the page
 reported -- one cell where nine were on. At deviceScaleFactor 1 the same
 clip is right. Measure the DOM for truth; use the screenshot to look.)
 
+"Seq 07, use the exact img provided, don't recreate anything." Fair: the
+grid I built from PILL was the product's own parts, but it was not the
+picture that was given. 07 is that picture now, and it still arrives tile by
+tile -- the plate is nine divs of one image, each at 300% with its own
+background-position, so a third of the file can come up on its own without a
+pixel of it being remade. The image is square, so it sits centred at the
+stage's height and the sides stay black. The nine organ views the rebuilt
+grid needed are gone with it.
+
+### 5.152 The board plays the read
+
+"In the teaser add the voice over, respect decent pause between sequence."
+The take is 23s of all nine lines with only breath between them -- the
+longest internal gap is 0.18s -- so the pauses had to come from the board.
+Where each line sits in the file was found rather than guessed: decode it in
+Chromium, take a 20ms RMS envelope, list the silences, and match them to the
+lines by syllable count. The fit lands every line between 0.25 and 0.32s a
+syllable, an even read, which is what says the boundaries are right.
+
+From there the board is timed to the voice and nothing else. A slot is its
+line plus a beat (1s; 2.4s on the last, for the black), so the whole play
+runs 33s for a 30s film and every cut falls in silence. The sequence sets
+the recording's head to its line, plays it, and stops it when the line is
+out -- the pause between sequences is real silence, not the next line
+starting early. A browser will not play audio untouched, so a blocked start
+is remembered and the first click or key anywhere retries it.
+
+Two things follow from the voice being the spine. The caption is written at
+the voice's pace now -- the line's share of the take split between its
+pieces by word count, the words even across each piece -- so the last word
+lands as the voice finishes rather than at a pace of the caption's own. And
+every sketch's cycle is its slot: the stage carries it as --tzCyc and the
+zooms, pushes, turns and the closure all read it, while the three that run
+on timers (01's readings, 02's body and chips, 07's tiles) scale their steps
+to it. Probed: three readings typed by 3.86s, both chips written by 5.08s,
+all nine tiles up by 4.22s -- each sketch finishes inside its own shot.
+
+TZ_DONE is gone. It existed to hold a sequence until its sketch was through;
+with the sketches cut to fit, the voice is the only clock.
+
 ---
 
 ## 6. Open items
