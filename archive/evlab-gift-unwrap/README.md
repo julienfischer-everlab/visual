@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-11, "Panel content centred" |
+| Captured from version | 2026-09-11, "Static photo covers long scrolls; panel padding +32" |
 | Captured on | 2026-09-11 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -131,7 +131,9 @@ first fold is a near-black header 80% of the screen tall with 56px rounded
 bottom corners (48px on phones); the photograph is the page's own background,
 held fixed behind both folds by a sticky zero-height layer at the top of the
 scroll, showing under the corners and drifting up at 20% of the scroll as a
-small parallax. Centred 46px above the header's bottom edge, a one-pixel,
+small parallax (the layer is 170% of the screen tall and the drift stops at
+44% of the screen, so a long fold, heavy content on a phone say, never
+uncovers the page beneath). Centred 46px above the header's bottom edge, a one-pixel,
 36px track carries a bright segment that keeps running from top to bottom
 (1.6s loop), a vertical progress hinting at the scroll; it never stops. There
 is no Back control; scrolling up is the way back. On phones the first fold's content is centred
@@ -181,7 +183,7 @@ are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
 
 With the Card tweak on Cards (the default) the timeline goes and a second card
-takes its place: a panel in a warm sand (`#c5a496`) at 24% over a 120px
+takes its place: a panel (72px of padding at its sides on desktop) in a warm sand (`#c5a496`) at 24% over a 120px
 backdrop blur by default (the Panel tweak sets any colour, opacity and blur)
 as wide as the hero card. Its surface is one element in the stage, placed by
 the script from the card's box and cut to shape with a clip path: the panel's

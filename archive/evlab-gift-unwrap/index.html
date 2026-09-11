@@ -603,7 +603,7 @@
   .side-in{display:flex;flex-direction:column;gap:14px;min-width:0;}
   body[data-card="cards"] .side{--r:44px;position:relative;justify-content:flex-start;padding:0;}
   body[data-card="cards"] .side-clip{display:block;overflow:hidden;border-radius:0 0 var(--r) var(--r);}
-  body[data-card="cards"] .side-in{gap:12px;padding:10px 40px 40px;align-items:center;text-align:center;}  /* the foot matches the sides; everything centred */
+  body[data-card="cards"] .side-in{gap:12px;padding:10px 72px 40px;align-items:center;text-align:center;}  /* the foot matches the sides; everything centred */
   /* the panel's surface: one element in the stage, behind the hero card's
      glass, sized by the script to the card's width and the panel's height
      plus the corner radius, so it runs up under the card and the card's
@@ -1004,7 +1004,7 @@
   .fixed-bg{display:none;}
   body[data-motion="static"] .fixed-bg{display:block;position:sticky;top:0;height:0;z-index:0;}
   body[data-motion="static"] .fixed-bg::before{
-    content:"";position:absolute;left:0;right:0;top:-22cqh;height:144cqh;
+    content:"";position:absolute;left:0;right:0;top:-22cqh;height:170cqh;  /* 48cqh spare below: the parallax never uncovers the page */
     background-color:var(--night);
     background-image:linear-gradient(180deg, rgba(14,12,11,.45), rgba(14,12,11,.62) 55%, rgba(14,12,11,.85)), var(--photo, none);
     background-size:cover;background-position:center;
@@ -1773,7 +1773,9 @@
       if(!isStatic() && stageEl.scrollTop) stageEl.scrollTop = 0;
       stageEl.style.setProperty('--par', '0px'); return;
     }
-    stageEl.style.setProperty('--par', (-stageEl.scrollTop * .2).toFixed(1) + 'px');
+    // 20% of the scroll, but never more than the layer's spare height below the viewport
+    var par = Math.min(stageEl.scrollTop * .2, stageEl.clientHeight * .44);
+    stageEl.style.setProperty('--par', (-par).toFixed(1) + 'px');
   }
   stageEl.addEventListener('scroll', function(){ if(!parTick){ parTick = true; requestAnimationFrame(parallax); } }, { passive: true });
   window.addEventListener('resize', parallax);
