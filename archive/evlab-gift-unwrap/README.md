@@ -10,8 +10,8 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-10, "Panel edge fixed, 160px frame, 14/16 description" |
-| Captured on | 2026-09-10 |
+| Captured from version | 2026-09-11, "Phone frame fix, static top −48, 16/20 text, circle fixed" |
+| Captured on | 2026-09-11 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
@@ -135,7 +135,7 @@ small parallax. Centred 46px above the header's bottom edge, a one-pixel,
 36px track carries a bright segment that keeps running from top to bottom
 (1.6s loop), a vertical progress hinting at the scroll; it never stops. There
 is no Back control; scrolling up is the way back. On phones the first fold's content is centred
-with 80px above and below, and a dark gradient is fixed at the top of the
+with 80px above and below and the second fold starts 70px under the header, and a dark gradient is fixed at the top of the
 screen over the photograph so the status bar reads. The back arrow, the
 circle, the seed and the floating phone button are not used. Reduced motion
 disables the parallax.
@@ -150,7 +150,7 @@ foot matches the sides; the panel below also ends 40px under its
 last line). Inside: the mono
 "Your gift from Marc" line (orange square), the product name "Everlab
 Protocol Membership" 10px under it (beside the circle), a short description
-(14px on a 16px line) kept 88px clear of the right edge like the title so it
+(16px on a 20px line) kept 88px clear of the right edge like the title so it
 never runs under the circle, then a mono "What's included"
 label above six plain rows, each a small line icon (speech bubble, drop, scan,
 pulse, leaf, cycle) and the full title, no card and no dividers, 6px above and
@@ -214,11 +214,13 @@ first fold or when the tab is hidden, and restarts from the first chip when
 the panel returns. On phones the chips wrap.
 The hero card keeps its six rows, set a
 little tighter (4px above and below each row, 44px top and bottom padding)
-and the stack sits inside a frame of 160px above and 160px below on desktop:
+and the stack sits inside a frame of 160px above and 160px below on desktop
+(112px above in static motion; phones have no frame, their fold simply flows):
 the script caps the card's height so card and panel always fit that frame, and
 the card's upper part (everything above the button) scrolls on its own, with no
 visible bar and a 28px fade at either end once it can scroll; the button never
-moves. With the default text the card scrolls a little at 900px tall; with the
+moves, and neither does the circle at the top right, which sits on the card
+itself outside the scrolling part so it is always whole. With the default text the card scrolls a little at 900px tall; with the
 Heavy tweak it scrolls a lot. Phones keep the flowing fold instead. The
 wordmark sits top centre, the footer line "Page secured by Everlab" bottom
 centre. On phones the timeline labels may wrap and in dynamic motion **Claim
