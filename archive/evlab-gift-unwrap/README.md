@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-11, "Static header follows Theme, card +64, panel corners" |
+| Captured from version | 2026-09-11, "Circle fades with the card content" |
 | Captured on | 2026-09-11 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -225,7 +225,8 @@ the script caps the card's height so card and panel always fit that frame, and
 the card's upper part (everything above the button) scrolls on its own, with no
 visible bar and a 28px fade at either end once it can scroll; the button never
 moves, and neither does the circle at the top right, which sits on the card
-itself outside the scrolling part so it is always whole. With the default text the card scrolls a little at 900px tall; with the
+itself outside the scrolling part so it is always whole (it fades in and out
+with the card's content all the same). With the default text the card scrolls a little at 900px tall; with the
 Heavy tweak it scrolls a lot. Phones keep the flowing fold instead. The
 wordmark sits top centre, the footer line "Page secured by Everlab" bottom
 centre. On phones the timeline labels may wrap and in dynamic motion **Claim
