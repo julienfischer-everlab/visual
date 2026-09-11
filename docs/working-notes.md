@@ -3980,6 +3980,34 @@ app" note moved to 05 and 06 refers to 05.
 base64 in its message record, so the exact file can be written back out
 rather than asked for again.)
 
+"04 --> img. Replace current 04 to 05." A second photograph: the app on a
+phone, shot close and straight on, the particle heart over the arc over the
+reading -- 36, four years younger. That is 04 now, and the tablet that was
+04 moves to 05, where the whole set of organ ages listed at once is what
+makes "some age exactly as they should" land. Both take the same slow push,
+so they cut together. The live phones they replaced are gone, so the "frame
+is the app" note moved on again, to 06.
+
+A 419KB PNG inlines to 560KB of base64, which is most of a megabyte of page
+for one still, so the pastes are re-encoded to webp before they land in
+assets/ -- in Chromium, over a canvas, since the container has no image
+tools (towebp.js in the scratchpad). 410KB to 18KB at 1920 wide and quality
+.86, with nothing visible lost on a photograph this dark.
+
+The build's inliner reads the source, so it only sees a path written out
+whole. The first cut of these two built the path at run time
+('assets/teaser/' + file) and shipped a page with two broken images: the
+regex matched nothing, so nothing was inlined and nothing warned. The helper
+takes the whole path now, and the comment beside it says why.
+
+"Smaller chip, 2x less. Write them one after each other." The chips are half
+the type (1.3cqw) with half the padding, and they are written rather than
+cut in: the count types on at 3.1s, a letter every 38ms with a square cursor
+at the end, the cursor blinks twice and goes, and only then does the verdict
+start. The box is sized by its letters, so it grows as they arrive -- the
+same hand as the readings in 01, which is the board's one way of putting
+words on a frame.
+
 ---
 
 ## 6. Open items
