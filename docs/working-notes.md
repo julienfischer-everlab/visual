@@ -4182,6 +4182,16 @@ percentages could not have followed a voice.
 which is what the frame always showed; the script list joins them back for
 reading.)
 
+"Universe should zoom out slower, 2x." The move runs at twice the slot's
+length now, so every part of it is at half the rate and the shot cuts while
+the camera is still pulling back. The dot becomes the field over about 1.6s
+rather than 0.8, and at the cut the field is still easing back from 1.35x
+rather than parked at 1. That is truer to the shot the board is describing:
+a zoom out that carries on past the cut, not one that arrives and waits.
+(The alternative -- keeping the move inside the slot and halving its travel
+-- would have opened on a dot barely magnified, which loses the frame the
+sequence is built on.)
+
 ---
 
 ## 6. Open items
