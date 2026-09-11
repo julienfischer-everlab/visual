@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-11, "Circle fades with the card content" |
+| Captured from version | 2026-09-11, "Label to chips +4px" |
 | Captured on | 2026-09-11 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -200,7 +200,7 @@ arrives in dynamic motion once the hero card has landed: from 1.0s the
 surface and the content slide down together out from behind the card (their
 own height in 0.8s, easing out; the content inside a clip at the card's
 bottom edge, the surface hidden under the card's glass) so it emerges from
-under it; on the way back both slide up under the card again in 0.35s. It holds, everything centred, under a mono "What's next?" label (18px above
+under it; on the way back both slide up under the card again in 0.35s. It holds, everything centred, under a mono "What's next?" label (22px above
 the chips), three chips in a row: Get started, Meet your doctor, Get your plan
 (pills with a hairline border, 13px medium, each starting with a 22px numbered circle, 1 to 3, set 7px from the pill's left, top and bottom so
 it fills the pill's height, outlined at 16% when idle and filled in the text
