@@ -1,0 +1,1122 @@
+<title>Everlab Floating Nav</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+
+<style>
+/* ============================================================
+   TOKENS
+   Phone interior is a fixed light-mode product surface (it is a
+   replication of the live Everlab screen). Only the surround
+   outside the device responds to the viewer's theme.
+   ============================================================ */
+:root{
+  /* surround */
+  --page:#E8E5E0;
+  --page-2:#DCD8D2;
+  --surround-ink:#3A3531;
+  --surround-ink-2:#7C746C;
+  --surround-line:rgba(0,0,0,.10);
+  --surround-chip:rgba(255,255,255,.72);
+
+  /* app interior — fixed */
+  --bg:#F2F0ED;
+  --card:#FFFFFF;
+  --ink:#16120F;
+  --ink-2:#8B8279;
+  --ink-3:#B4ADA4;
+  --line:#E8E4DF;
+  --plum:#3B241D;
+  --plum-2:#4E332A;
+  --plum-3:#5C3F34;
+  --tan:#C49179;
+  --tan-2:#A27C6B;
+  --tan-3:#8D6857;
+  --cream:#EDE6DD;
+  --cream-line:#DCD2C6;
+  --noir:#191614;
+  --ember:#EE6C2B;
+  --ember-2:#F29A2E;
+  --azure:#2C63D6;
+  --azure-bg:#E4EBF9;
+  --chip:#F1EFEC;
+
+  --r-card:22px;
+  --r-inner:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#191715;
+    --page-2:#121110;
+    --surround-ink:#EDE9E4;
+    --surround-ink-2:#9A928A;
+    --surround-line:rgba(255,255,255,.12);
+    --surround-chip:rgba(255,255,255,.07);
+  }
+}
+:root[data-theme="dark"]{
+  --page:#191715;
+  --page-2:#121110;
+  --surround-ink:#EDE9E4;
+  --surround-ink-2:#9A928A;
+  --surround-line:rgba(255,255,255,.12);
+  --surround-chip:rgba(255,255,255,.07);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:radial-gradient(120% 90% at 50% 0%, var(--page) 0%, var(--page-2) 100%);
+  color:var(--surround-ink);
+  font-family:"Instrument Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+
+/* ============================================================
+   STAGE / SURROUND
+   ============================================================ */
+.stage{
+  padding-block:36px 48px;
+  padding-left:20px;padding-right:20px;
+  display:flex;flex-direction:column;align-items:center;gap:22px;
+}
+.stage-head{max-width:430px;text-align:center;display:flex;flex-direction:column;gap:8px}
+.eyebrow{
+  font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--surround-ink-2);margin:0;
+}
+.stage-head h1{
+  margin:0;font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.25;
+  text-wrap:balance;color:var(--surround-ink);
+}
+.stage-head p{
+  margin:0;font-size:13.5px;line-height:1.55;color:var(--surround-ink-2);text-wrap:pretty;
+}
+
+/* nav variant switch */
+.switch{
+  display:inline-flex;gap:3px;padding:3px;border-radius:999px;
+  background:var(--surround-chip);border:1px solid var(--surround-line);
+}
+.switch button{
+  font:inherit;font-size:12.5px;font-weight:600;letter-spacing:-.01em;
+  padding:7px 15px;border-radius:999px;border:0;cursor:pointer;
+  background:transparent;color:var(--surround-ink-2);
+  transition:background .22s ease,color .22s ease;
+}
+.switch button[aria-pressed="true"]{background:var(--noir);color:#fff}
+.switch button:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+
+/* ============================================================
+   DEVICE
+   ============================================================ */
+.phone{
+  position:relative;
+  width:390px;max-width:100%;
+  height:844px;max-height:calc(100vh - 210px);min-height:560px;
+  background:var(--bg);
+  border-radius:44px;
+  box-shadow:
+    0 0 0 9px #17150F,
+    0 0 0 10px rgba(255,255,255,.10),
+    0 32px 70px -20px rgba(20,14,10,.45),
+    0 8px 24px -8px rgba(20,14,10,.25);
+  overflow:hidden;
+  isolation:isolate;
+}
+@media (max-width:470px){
+  .stage{padding-block:16px 24px;padding-left:0;padding-right:0;gap:16px}
+  .stage-head{padding-inline:20px}
+  .phone{
+    width:100%;border-radius:0;height:calc(100vh - 150px);max-height:none;
+    box-shadow:0 -1px 0 var(--surround-line);
+  }
+}
+
+/* scroll surface */
+.screen{
+  position:absolute;inset:0;
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.screen::-webkit-scrollbar{display:none}
+
+/* ---- status bar ---- */
+.statusbar{
+  position:sticky;top:0;z-index:40;
+  height:54px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px 0 32px;
+  color:var(--ink);
+  background:linear-gradient(180deg,var(--bg) 62%,rgba(242,240,237,0) 100%);
+}
+.statusbar .time{font-size:15px;font-weight:600;letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.notch{
+  position:absolute;top:11px;left:50%;transform:translateX(-50%);
+  width:112px;height:32px;border-radius:999px;background:#0B0A09;
+}
+.status-icons{display:flex;align-items:center;gap:6px}
+
+/* ---- content column ---- */
+.content{padding:2px 20px 148px;display:flex;flex-direction:column;gap:26px}
+
+.greeting{
+  margin:6px 0 0;font-size:24px;line-height:1.18;font-weight:600;letter-spacing:-.032em;
+  color:var(--ink);
+}
+.greeting span{font-weight:500;color:var(--ink-3)}
+
+/* ============================================================
+   HERO — personalised program
+   ============================================================ */
+.hero{
+  background:var(--plum);
+  border-radius:var(--r-card);
+  padding:14px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.pill-next{
+  display:inline-block;font-size:11.5px;font-weight:500;letter-spacing:-.005em;
+  color:#E4CFC1;background:var(--plum-2);
+  padding:6px 12px;border-radius:999px;
+}
+.hero-thumbs{display:flex;margin-right:-1px}
+.hero-thumbs i{
+  display:block;width:35px;height:35px;border-radius:9px;
+  border:2px solid var(--plum);margin-left:-15px;
+  box-shadow:inset 0 1px 4px rgba(255,255,255,.28), inset 0 -6px 10px rgba(0,0,0,.22);
+}
+.hero-thumbs i:first-child{margin-left:0}
+.th-veg{background:
+  radial-gradient(75% 65% at 30% 28%, #93AE6B 0%, #5E7C45 58%, #3F5730 100%);}
+.th-plate{background:
+  radial-gradient(72% 72% at 66% 32%, #D9BA8E 0%, #B58457 52%, #7E5836 100%);}
+.th-leaf{background:
+  radial-gradient(68% 76% at 42% 66%, #7C9D79 0%, #46654A 60%, #2C4433 100%);}
+
+.hero h2{
+  margin:14px 0 0;
+  font-size:22px;line-height:1.22;font-weight:500;letter-spacing:-.025em;
+  color:var(--tan);max-width:16ch;
+}
+.hero p{
+  margin:12px 0 0;font-size:11.5px;line-height:1.5;color:var(--tan-3);max-width:44ch;
+}
+.hero-list{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.hero-list li{
+  list-style:none;
+  background:var(--plum-2);border-radius:11px;
+  padding:11px 14px;font-size:12.5px;font-weight:500;letter-spacing:-.01em;color:#E7D4C7;
+}
+.hero-more{margin:11px 0 0;font-size:12px;font-weight:500;color:var(--tan-3)}
+.hero-cta{
+  margin-top:14px;width:100%;border:0;cursor:pointer;
+  background:var(--plum-3);color:#F6E9DF;
+  font:inherit;font-size:14px;font-weight:600;letter-spacing:-.01em;
+  padding:15px;border-radius:14px;
+  transition:background .18s ease;
+}
+.hero-cta:hover{background:#6B4A3D}
+
+/* ============================================================
+   STAT PAIR
+   ============================================================ */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{
+  border-radius:var(--r-card);padding:14px;
+  display:flex;flex-direction:column;min-height:158px;position:relative;
+}
+.stat.light{background:var(--cream)}
+.stat.dark{background:var(--noir)}
+.stat-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.stat-head h3{margin:0;font-size:12.5px;font-weight:600;letter-spacing:-.015em}
+.stat.light h3{color:var(--ink)}
+.stat.dark h3{color:#F2EFEB}
+.share{
+  width:24px;height:24px;border-radius:7px;border:0;cursor:pointer;padding:0;
+  display:grid;place-items:center;background:transparent;
+}
+.stat.light .share{color:var(--tan-3)}
+.stat.dark .share{color:#8D8880}
+.share:hover{background:rgba(0,0,0,.06)}
+.stat.dark .share:hover{background:rgba(255,255,255,.10)}
+
+.gauge{position:relative;margin-top:auto;display:flex;justify-content:center}
+.gauge svg{display:block;width:126px;height:auto}
+.gauge .val{
+  position:absolute;left:0;right:0;bottom:1px;text-align:center;
+  font-size:31px;font-weight:600;letter-spacing:-.04em;color:var(--ink);
+  font-variant-numeric:tabular-nums;line-height:1;
+}
+.stat .cap{margin:9px 0 0;font-size:11.5px;font-weight:500;text-align:center}
+.stat.light .cap{color:var(--tan-3)}
+.stat.dark .cap{color:#8D8880}
+
+.dial{position:relative;margin-top:auto;display:flex;justify-content:center}
+.dial svg{display:block;width:126px;height:auto}
+.dial .val{
+  position:absolute;left:0;right:0;bottom:1px;text-align:center;
+  font-size:31px;font-weight:600;letter-spacing:-.04em;color:#fff;
+  font-variant-numeric:tabular-nums;line-height:1;
+}
+
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:-6px}
+.sec-head h2{margin:0;font-size:17px;font-weight:600;letter-spacing:-.03em;color:var(--ink)}
+.see-all{display:flex;align-items:center;gap:7px}
+.see-all a{
+  font-size:12.5px;font-weight:500;color:var(--ink-2);text-decoration:none;letter-spacing:-.01em;
+}
+.see-all a:hover{color:var(--ink)}
+.count{
+  min-width:19px;height:19px;padding:0 5px;border-radius:6px;
+  background:var(--ember);color:#fff;
+  font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;
+  display:grid;place-items:center;
+}
+
+/* ============================================================
+   TASKS
+   ============================================================ */
+.tasks{display:flex;flex-direction:column;gap:8px}
+.task{
+  background:var(--card);border-radius:18px;padding:13px;
+  display:flex;align-items:center;gap:12px;
+}
+.task-ico{
+  width:38px;height:38px;border-radius:11px;background:var(--chip);
+  display:grid;place-items:center;color:var(--ink);flex:0 0 auto;
+}
+.task-txt{flex:1;min-width:0}
+.task-txt strong{
+  display:block;font-size:13px;font-weight:600;letter-spacing:-.015em;color:var(--ink);
+  line-height:1.3;
+}
+.task-txt span{display:block;margin-top:2px;font-size:11.5px;color:var(--ink-2)}
+.btn-dark{
+  border:0;cursor:pointer;font:inherit;flex:0 0 auto;
+  background:var(--noir);color:#fff;
+  font-size:12.5px;font-weight:600;letter-spacing:-.01em;
+  padding:10px 18px;border-radius:999px;
+  transition:opacity .18s ease;
+}
+.btn-dark:hover{opacity:.85}
+.btn-light{
+  border:0;cursor:pointer;font:inherit;flex:0 0 auto;
+  background:var(--chip);color:var(--ink);
+  font-size:12.5px;font-weight:600;letter-spacing:-.01em;
+  padding:10px 20px;border-radius:999px;
+  transition:background .18s ease;
+}
+.btn-light:hover{background:#E7E4E0}
+
+/* ============================================================
+   NEXT ACTIONS — carousel
+   ============================================================ */
+.rail{
+  display:flex;gap:10px;
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  margin-inline:-20px;padding:2px 20px;
+  scrollbar-width:none;
+}
+.rail::-webkit-scrollbar{display:none}
+.action{
+  flex:0 0 300px;scroll-snap-align:start;
+  background:var(--card);border-radius:20px;padding:14px;
+  display:flex;flex-direction:column;
+}
+.action-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.flag{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;letter-spacing:-.005em}
+.flag b{width:7px;height:7px;border-radius:50%;display:block}
+.flag.monitor{color:var(--ember)}
+.flag.monitor b{background:var(--ember)}
+.flag.note{color:var(--azure)}
+.flag.note b{background:var(--azure)}
+.x{
+  width:22px;height:22px;border-radius:50%;border:0;cursor:pointer;padding:0;
+  background:transparent;color:var(--ink-3);display:grid;place-items:center;
+}
+.x:hover{background:var(--chip);color:var(--ink)}
+.action h3{
+  margin:10px 0 0;font-size:14.5px;line-height:1.34;font-weight:500;
+  letter-spacing:-.022em;color:var(--ink);
+}
+.metric{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
+.metric .num{
+  font-size:26px;font-weight:600;letter-spacing:-.035em;color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+.metric .num em{font-style:normal;font-size:17px;font-weight:500;letter-spacing:-.02em}
+.src{
+  font-size:11px;font-weight:500;color:var(--ink-2);
+  background:var(--chip);padding:5px 11px;border-radius:999px;
+}
+.spark{display:flex;align-items:flex-end;gap:0;margin-top:14px;height:54px}
+.spark .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+.spark .bar{width:3px;border-radius:999px;background:var(--line)}
+.spark .col.hot .bar{background:var(--ember)}
+.spark .dot{width:5px;height:5px;border-radius:50%;background:var(--line);flex:0 0 auto}
+.spark .col.hot .dot{background:var(--ember)}
+.days{display:flex;margin-top:8px}
+.days span{flex:1;text-align:center;font-size:10px;font-weight:500;color:var(--ink-3)}
+.days span.hot{color:var(--ink-2)}
+.insight{
+  margin-top:14px;width:100%;border:0;cursor:pointer;font:inherit;
+  background:var(--chip);color:var(--ink);
+  font-size:13px;font-weight:600;letter-spacing:-.015em;
+  padding:13px;border-radius:13px;transition:background .18s ease;
+}
+.insight:hover{background:#E7E4E0}
+
+.dots{display:flex;justify-content:center;gap:5px;margin-top:14px}
+.dots i{width:5px;height:5px;border-radius:999px;background:var(--ink-3);display:block;opacity:.55}
+.dots i.on{width:16px;background:var(--ink);opacity:1}
+
+/* ============================================================
+   CONNECT A DEVICE
+   ============================================================ */
+.connect{
+  background:var(--cream);border-radius:var(--r-card);overflow:hidden;
+}
+.scene{
+  height:196px;position:relative;padding:14px;overflow:hidden;
+  background:
+    /* haze over the horizon */
+    linear-gradient(180deg, rgba(20,13,8,.30) 0%, rgba(20,13,8,0) 30%),
+    /* low sun */
+    radial-gradient(52% 34% at 72% 61%, rgba(255,214,150,.92) 0%, rgba(247,178,96,.45) 38%, rgba(247,178,96,0) 72%),
+    /* sky to land */
+    linear-gradient(180deg,
+      #6E5C4C 0%, #A67A4E 18%, #D99C57 34%,
+      #E8B268 47%, #A97748 58%, #6B4E33 70%, #3A2C20 84%, #241B14 100%);
+}
+/* ridgeline + foreground silhouette */
+.scene::before{
+  content:"";position:absolute;left:-6%;right:-6%;top:54%;height:22px;
+  background:#5B432D;opacity:.55;
+  border-radius:100% 100% 0 0 / 100% 100% 0 0;
+  transform:scaleX(1.4);
+}
+.scene::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:52%;
+  background:
+    radial-gradient(120% 96% at 14% 118%, #211A13 0%, rgba(33,26,19,0) 58%),
+    radial-gradient(110% 90% at 88% 122%, #1C1610 0%, rgba(28,22,16,0) 56%),
+    linear-gradient(180deg, rgba(26,20,14,0) 0%, rgba(26,20,14,.78) 100%);
+}
+.glass-stats{position:relative;z-index:2;display:flex;flex-direction:column;gap:8px}
+.glass-stats .r1{display:flex;gap:8px}
+.glass-stats .r2{display:flex;justify-content:flex-end}
+.glass-stats .r2 .gstat{flex:0 0 47%}
+.gstat{
+  flex:1;border-radius:15px;padding:10px 12px;color:#fff;
+  background:rgba(255,255,255,.17);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+  backdrop-filter:blur(14px) saturate(150%);
+  border:.5px solid rgba(255,255,255,.34);
+  box-shadow:inset 0 .5px 0 rgba(255,255,255,.5), 0 4px 14px rgba(20,12,6,.16);
+}
+.gstat .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.gstat .lbl{font-size:9.5px;font-weight:500;letter-spacing:.01em;color:rgba(255,255,255,.8)}
+.gstat .tag{
+  font-size:8.5px;font-weight:600;padding:2px 6px;border-radius:999px;
+  background:rgba(255,255,255,.26);color:#fff;
+}
+.gstat .big{
+  margin-top:5px;font-size:17px;font-weight:600;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;
+}
+.gstat .mini{display:flex;align-items:flex-end;gap:6px;height:20px;margin-top:6px}
+.gstat .mini i{width:3px;background:rgba(255,255,255,.7);border-radius:999px;display:block}
+.gstat .mini i.pk{background:#FFB264}
+.gstat svg{display:block;margin-top:6px;width:100%;height:18px}
+
+.connect-body{padding:22px 22px 24px;text-align:center}
+.connect-body h3{
+  margin:0;font-size:17.5px;font-weight:600;letter-spacing:-.03em;color:var(--ink);
+  text-wrap:balance;
+}
+.connect-body p{
+  margin:9px auto 0;font-size:12.5px;line-height:1.52;color:var(--tan-3);max-width:33ch;
+  text-wrap:pretty;
+}
+.btn-outline{
+  margin-top:16px;border:1px solid var(--cream-line);cursor:pointer;font:inherit;
+  background:transparent;color:var(--ink);
+  font-size:13px;font-weight:600;letter-spacing:-.015em;
+  padding:13px 24px;border-radius:999px;transition:background .18s ease;
+}
+.btn-outline:hover{background:rgba(0,0,0,.045)}
+
+/* ============================================================
+   ACTION PLAN
+   ============================================================ */
+.plan{display:flex;flex-direction:column;gap:8px}
+.plan-item{
+  background:var(--card);border-radius:18px;padding:13px;
+  display:flex;gap:12px;
+}
+.plan-item.locked{opacity:.58}
+.thumb{
+  width:58px;height:58px;border-radius:11px;flex:0 0 auto;position:relative;overflow:hidden;
+}
+/* photographic falloff so the placeholders read as imagery, not swatches */
+.thumb::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  background:
+    linear-gradient(165deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 42%),
+    radial-gradient(120% 100% at 50% 120%, rgba(0,0,0,.30) 0%, rgba(0,0,0,0) 62%);
+  box-shadow:inset 0 0 0 .5px rgba(0,0,0,.08);
+}
+.thumb .lock{z-index:2}
+.thumb .lock{
+  position:absolute;top:5px;left:5px;width:19px;height:19px;border-radius:6px;
+  background:rgba(255,255,255,.86);display:grid;place-items:center;color:var(--ink);
+}
+.t-consult{background:
+  linear-gradient(160deg,#DDE3E2 0%,#A9B6B4 45%,#6E7C7A 100%),
+  radial-gradient(60% 60% at 30% 30%,#fff,transparent);}
+.t-path{background:radial-gradient(75% 75% at 35% 30%,#F7A96A 0%,#E4562C 48%,#8E2A16 100%);}
+.t-dexa{background:radial-gradient(80% 70% at 60% 35%,#F0CDA8 0%,#D79A6E 50%,#9A6340 100%);}
+.t-mri{background:radial-gradient(60% 60% at 50% 45%,#4A4844 0%,#232220 55%,#0D0D0C 100%);}
+.t-phys{background:radial-gradient(70% 75% at 40% 30%,#F4B87B 0%,#E07E3D 52%,#93461C 100%);}
+.t-nutri{background:linear-gradient(150deg,#C9CFC2 0%,#94A089 50%,#5E6B55 100%);}
+
+.plan-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.plan-txt strong{
+  font-size:13.5px;font-weight:600;letter-spacing:-.02em;color:var(--ink);line-height:1.3;
+}
+.plan-txt p{
+  margin:3px 0 0;font-size:11.5px;line-height:1.42;color:var(--ink-2);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.tag{
+  align-self:flex-start;margin-top:8px;
+  font-size:10.5px;font-weight:600;letter-spacing:-.005em;
+  color:var(--azure);background:var(--azure-bg);
+  padding:4px 9px;border-radius:7px;
+}
+.plan-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-top:11px;padding-top:11px;border-top:1px solid var(--line);
+}
+.meta{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2);min-width:0}
+.meta span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta .u{text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--ink-3)}
+
+.timeline{
+  width:100%;border:0;cursor:pointer;font:inherit;
+  background:var(--chip);color:var(--ink);
+  font-size:13.5px;font-weight:600;letter-spacing:-.02em;
+  padding:16px;border-radius:15px;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:background .18s ease;
+}
+.timeline:hover{background:#E7E4E0}
+
+/* ============================================================
+   ✦ FLOATING GLASS NAVIGATION ✦
+   Two independent islands: [ nav ] [ + ]
+   ============================================================ */
+.dock{
+  position:absolute;left:0;right:0;bottom:0;z-index:50;
+  padding:0 0 10px;
+  display:flex;flex-direction:column;align-items:center;
+  pointer-events:none;
+}
+/* scrim so content dissolves under the floating layer */
+.dock::before{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:132px;
+  background:linear-gradient(180deg,rgba(242,240,237,0) 0%,rgba(242,240,237,.72) 46%,rgba(242,240,237,.94) 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 55%);
+  mask-image:linear-gradient(180deg,transparent 0%,#000 55%);
+  pointer-events:none;
+}
+.dock-row{
+  position:relative;display:flex;align-items:center;gap:12px;
+  pointer-events:auto;
+}
+
+/* --- shared iOS-style glass material --- */
+.glass{
+  position:relative;
+  background:rgba(255,255,255,.62);
+  -webkit-backdrop-filter:blur(26px) saturate(190%);
+  backdrop-filter:blur(26px) saturate(190%);
+  box-shadow:
+    inset 0 .5px 0 rgba(255,255,255,.92),
+    inset 0 -.5px 0 rgba(255,255,255,.42),
+    inset 0 0 0 .5px rgba(255,255,255,.55),
+    0 0 0 .5px rgba(38,28,22,.07),
+    0 1px 2px rgba(38,28,22,.05),
+    0 8px 18px -6px rgba(38,28,22,.14),
+    0 22px 44px -14px rgba(38,28,22,.22);
+}
+/* specular sheen across the top of the material */
+.glass::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.10) 34%,rgba(255,255,255,0) 62%);
+}
+
+/* --- island --- */
+.island{
+  display:flex;align-items:center;gap:0;
+  padding:6px;border-radius:29px;
+}
+/* sliding active pill */
+.island .pill{
+  position:absolute;top:6px;left:6px;
+  width:50px;height:50px;border-radius:22px;
+  background:var(--noir);
+  box-shadow:0 3px 10px -2px rgba(25,22,20,.42), inset 0 .5px 0 rgba(255,255,255,.16);
+  transition:transform .42s cubic-bezier(.34,1.3,.44,1);
+  z-index:0;
+}
+.island .tab{
+  position:relative;z-index:1;
+  width:50px;height:50px;border:0;cursor:pointer;padding:0;background:transparent;
+  font:inherit;color:var(--ink-2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  border-radius:22px;
+  transition:color .28s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.island .tab svg{width:20px;height:20px;display:block}
+.island .tab i{
+  font-style:normal;font-size:8px;font-weight:600;letter-spacing:-.012em;line-height:1;
+}
+.island .tab[aria-selected="true"]{color:#fff}
+.island .tab:hover:not([aria-selected="true"]){color:var(--ink)}
+.island .tab:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
+
+/* --- separate + button --- */
+.plus{
+  width:62px;height:62px;flex:0 0 auto;
+  border:0;cursor:pointer;padding:0;
+  border-radius:21px;
+  background:rgba(23,20,18,.76);
+  -webkit-backdrop-filter:blur(26px) saturate(190%);
+  backdrop-filter:blur(26px) saturate(190%);
+  color:#fff;display:grid;place-items:center;
+  box-shadow:
+    inset 0 .5px 0 rgba(255,255,255,.30),
+    inset 0 0 0 .5px rgba(255,255,255,.14),
+    0 1px 2px rgba(38,28,22,.16),
+    0 8px 18px -6px rgba(25,18,14,.34),
+    0 22px 44px -14px rgba(25,18,14,.40);
+  transition:transform .2s cubic-bezier(.34,1.4,.5,1), background .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.plus::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.04) 40%,rgba(255,255,255,0) 66%);
+}
+.plus:hover{background:rgba(23,20,18,.86)}
+.plus:active{transform:scale(.93)}
+.plus:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+.plus svg{position:relative;z-index:1;width:23px;height:23px}
+
+/* --- home indicator --- */
+.home-ind{
+  width:134px;height:5px;border-radius:999px;background:rgba(22,18,15,.26);
+  margin-top:11px;pointer-events:none;
+}
+
+/* ============================================================
+   LEGACY TAB BAR (comparison mode)
+   ============================================================ */
+.legacy{
+  position:absolute;left:0;right:0;bottom:0;z-index:50;
+  background:#FBFAF8;border-top:1px solid var(--line);
+  padding:9px 8px 0;display:none;flex-direction:column;align-items:center;
+}
+.legacy-row{display:flex;width:100%}
+.legacy button{
+  flex:1;border:0;background:transparent;cursor:pointer;font:inherit;padding:4px 0 6px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--ink-3);
+}
+.legacy button svg{width:21px;height:21px}
+.legacy button i{font-style:normal;font-size:9.5px;font-weight:500}
+.legacy button[aria-selected="true"]{color:var(--ink)}
+.legacy .home-ind{margin-top:5px;margin-bottom:9px}
+
+[data-nav="legacy"] .dock{display:none}
+[data-nav="legacy"] .legacy{display:flex}
+[data-nav="legacy"] .content{padding-bottom:104px}
+
+/* ============================================================
+   CAPTION
+   ============================================================ */
+.notes{
+  max-width:430px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+}
+.note{
+  font-size:11.5px;font-weight:500;color:var(--surround-ink-2);
+  background:var(--surround-chip);border:1px solid var(--surround-line);
+  padding:6px 11px;border-radius:999px;
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+}
+</style>
+
+<div class="stage" id="stage" data-nav="island">
+
+  <header class="stage-head">
+    <p class="eyebrow">Navigation exploration</p>
+    <h1>Everlab Overview with a floating navigation island</h1>
+    <p>The Overview screen is replicated as-built. The only change is the navigation: a compact glass island and a separate&nbsp;+ action, both floating clear of the content.</p>
+  </header>
+
+  <div class="switch" role="group" aria-label="Navigation treatment">
+    <button type="button" id="sw-island" aria-pressed="true">Floating island</button>
+    <button type="button" id="sw-legacy" aria-pressed="false">Current tab bar</button>
+  </div>
+
+  <div class="phone">
+    <div class="screen" id="screen">
+
+      <!-- ══ status bar ══ -->
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <span class="notch"></span>
+        <span class="status-icons" aria-hidden="true">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.6" y="5.4" width="3" height="5.6" rx="1"/><rect x="9.2" y="3" width="3" height="8" rx="1"/><rect x="13.8" y="0" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 10.6 6.1 8.5a2.7 2.7 0 0 1 3.8 0L8 10.6Zm-4-4.3a6.4 6.4 0 0 1 8 0l-1.3 1.5a4.5 4.5 0 0 0-5.4 0L4 6.3ZM.9 3.2a10.5 10.5 0 0 1 14.2 0l-1.3 1.5a8.6 8.6 0 0 0-11.6 0L.9 3.2Z"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.5" height="10.8" rx="3.2" stroke="currentColor" stroke-opacity=".35" stroke-width="1"/><rect x="2.2" y="2.2" width="17.3" height="7.6" rx="2" fill="currentColor"/><path d="M22.6 4.1c1.1.3 1.7 1 1.7 1.9s-.6 1.6-1.7 1.9V4.1Z" fill="currentColor" fill-opacity=".4"/></svg>
+        </span>
+      </div>
+
+      <div class="content">
+
+        <h1 class="greeting">Welcome back, <span>Julien</span></h1>
+
+        <!-- ══ hero: personalised program ══ -->
+        <section class="hero">
+          <div class="hero-top">
+            <span class="pill-next">Next step</span>
+            <div class="hero-thumbs" aria-hidden="true">
+              <i class="th-veg"></i><i class="th-plate"></i><i class="th-leaf"></i>
+            </div>
+          </div>
+          <h2>Sarah's Personalised Health Program</h2>
+          <p>Here are the services your Everlab doctor has recommended, brought together into a customised plan to support your health goals.</p>
+          <ul class="hero-list">
+            <li>Hormone Balance Panel</li>
+            <li>Weight Management Program (GLP-1)</li>
+            <li>Thyroid &amp; Energy Check</li>
+          </ul>
+          <p class="hero-more">+ 6 more</p>
+          <button class="hero-cta" type="button">Review my plan</button>
+        </section>
+
+        <!-- ══ health insights / biological age ══ -->
+        <section class="stat-row">
+          <div class="stat light">
+            <div class="stat-head">
+              <h3>Health Insights</h3>
+              <button class="share" type="button" aria-label="Share health insights">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.5V1.8"/><path d="M5.2 4.4 8 1.6l2.8 2.8"/><path d="M3 8.6v4.6c0 .6.5 1.1 1.1 1.1h7.8c.6 0 1.1-.5 1.1-1.1V8.6"/></svg>
+              </button>
+            </div>
+            <div class="gauge">
+              <svg viewBox="0 0 126 70" aria-hidden="true">
+                <defs>
+                  <linearGradient id="gg" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0" stop-color="#E4431F"/>
+                    <stop offset=".55" stop-color="#EE6C2B"/>
+                    <stop offset="1" stop-color="#F4A733"/>
+                  </linearGradient>
+                </defs>
+                <path d="M9 63a54 54 0 0 1 108 0" fill="none" stroke="#DBD1C4" stroke-width="7" stroke-linecap="round"/>
+                <path d="M9 63a54 54 0 0 1 108 0" fill="none" stroke="url(#gg)" stroke-width="7" stroke-linecap="round"
+                      stroke-dasharray="127 170"/>
+                <circle cx="113.5" cy="49.5" r="3.1" fill="#fff"/>
+              </svg>
+              <span class="val">75</span>
+            </div>
+            <p class="cap">Biomarkers</p>
+          </div>
+
+          <div class="stat dark">
+            <div class="stat-head">
+              <h3>Biological Age</h3>
+              <button class="share" type="button" aria-label="Share biological age">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10.5V1.8"/><path d="M5.2 4.4 8 1.6l2.8 2.8"/><path d="M3 8.6v4.6c0 .6.5 1.1 1.1 1.1h7.8c.6 0 1.1-.5 1.1-1.1V8.6"/></svg>
+              </button>
+            </div>
+            <div class="dial">
+              <svg viewBox="0 0 126 70" aria-hidden="true">
+                <path d="M9 63a54 54 0 0 1 108 0" fill="none" stroke="rgba(255,255,255,.13)" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="52" cy="9.8" r="3.4" fill="#fff"/>
+              </svg>
+              <span class="val">42</span>
+            </div>
+            <p class="cap">8 years younger</p>
+          </div>
+        </section>
+
+        <!-- ══ tasks to complete ══ -->
+        <section>
+          <div class="sec-head">
+            <h2>Tasks to complete</h2>
+            <span class="see-all"><a href="#">See all</a><span class="count">13</span></span>
+          </div>
+          <div class="tasks" style="margin-top:14px">
+            <div class="task">
+              <span class="task-ico">
+                <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.8" y="4" width="14.4" height="13.2" rx="3"/><path d="M6.4 2.4v3M13.6 2.4v3M2.8 8.2h14.4"/><path d="M6.6 12.2h2M11.4 12.2h2"/></svg>
+              </span>
+              <span class="task-txt"><strong>Book your onboarding consult</strong><span>Small description</span></span>
+              <button class="btn-dark" type="button">Book</button>
+            </div>
+            <div class="task">
+              <span class="task-ico">
+                <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.8" y="4" width="14.4" height="13.2" rx="3"/><path d="M6.4 2.4v3M13.6 2.4v3M2.8 8.2h14.4"/><path d="M6.6 12.2h2M11.4 12.2h2"/></svg>
+              </span>
+              <span class="task-txt"><strong>Complete your health questionnaire</strong><span>Small description</span></span>
+              <button class="btn-dark" type="button">Start</button>
+            </div>
+            <div class="task">
+              <span class="task-ico">
+                <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.8" y="4" width="14.4" height="13.2" rx="3"/><path d="M6.4 2.4v3M13.6 2.4v3M2.8 8.2h14.4"/><path d="M6.6 12.2h2M11.4 12.2h2"/></svg>
+              </span>
+              <span class="task-txt"><strong>Book your pathology collection</strong><span>Small description</span></span>
+              <button class="btn-dark" type="button">Book</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ your next actions ══ -->
+        <section>
+          <div class="sec-head">
+            <h2>Your next actions</h2>
+            <span class="see-all"><a href="#">See all</a><span class="count">12</span></span>
+          </div>
+
+          <div class="rail" style="margin-top:14px">
+            <article class="action">
+              <div class="action-top">
+                <span class="flag monitor"><b></b>To monitor</span>
+                <button class="x" type="button" aria-label="Dismiss">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.4 2.4l7.2 7.2M9.6 2.4L2.4 9.6"/></svg>
+                </button>
+              </div>
+              <h3>We've noticed your heart rate has been elevated recently.</h3>
+              <div class="metric">
+                <span class="num">72 <em>bpm</em></span>
+                <span class="src">Garmin</span>
+              </div>
+              <div class="spark" aria-hidden="true">
+                <span class="col"><span class="bar" style="height:5px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:5px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:5px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:5px"></span><span class="dot"></span></span>
+                <span class="col hot"><span class="bar" style="height:24px"></span><span class="dot"></span></span>
+                <span class="col hot"><span class="bar" style="height:15px"></span><span class="dot"></span></span>
+                <span class="col hot"><span class="bar" style="height:30px"></span><span class="dot"></span></span>
+              </div>
+              <div class="days">
+                <span>M</span><span>T</span><span>W</span><span>T</span>
+                <span class="hot">F</span><span class="hot">S</span><span class="hot">S</span>
+              </div>
+              <button class="insight" type="button">See insight</button>
+            </article>
+
+            <article class="action">
+              <div class="action-top">
+                <span class="flag note"><b></b>New result</span>
+                <button class="x" type="button" aria-label="Dismiss">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.4 2.4l7.2 7.2M9.6 2.4L2.4 9.6"/></svg>
+                </button>
+              </div>
+              <h3>A new pathology result has been published to your record.</h3>
+              <div class="metric">
+                <span class="num">4.9 <em>mmol/L</em></span>
+                <span class="src">Pathology</span>
+              </div>
+              <div class="spark" aria-hidden="true">
+                <span class="col"><span class="bar" style="height:12px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:18px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:9px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:22px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:14px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:20px"></span><span class="dot"></span></span>
+                <span class="col"><span class="bar" style="height:11px"></span><span class="dot"></span></span>
+              </div>
+              <div class="days">
+                <span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span><span>Now</span>
+              </div>
+              <button class="insight" type="button">View result</button>
+            </article>
+          </div>
+
+          <div class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+        </section>
+
+        <!-- ══ connect a device ══ -->
+        <section class="connect">
+          <div class="scene">
+            <div class="glass-stats">
+              <div class="r1">
+                <div class="gstat">
+                  <div class="row"><span class="lbl">Heart rate</span><span class="tag">Garmin</span></div>
+                  <div class="big">72 bpm</div>
+                  <div class="mini"><i style="height:35%"></i><i style="height:52%"></i><i style="height:40%"></i><i class="pk" style="height:78%"></i><i class="pk" style="height:96%"></i><i style="height:60%"></i><i style="height:44%"></i></div>
+                </div>
+                <div class="gstat">
+                  <div class="row"><span class="lbl">Steps</span></div>
+                  <div class="big">8,789</div>
+                  <svg viewBox="0 0 90 20" fill="none" aria-hidden="true"><path d="M1 15C10 15 13 6 22 6s13 10 22 10 13-12 22-12 12 7 23 7" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </div>
+              </div>
+              <div class="r2">
+                <div class="gstat">
+                  <div class="row"><span class="lbl">HRV</span></div>
+                  <div class="big">82 ms</div>
+                  <svg viewBox="0 0 90 20" fill="none" aria-hidden="true"><path d="M1 12c9 0 11-8 20-8s12 11 21 11 11-9 20-9 12 6 27 6" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="connect-body">
+            <h3>See your daily health in context</h3>
+            <p>Connect Apple Watch, Garmin or Oura to see your sleep, heart rate and activity sit alongside your results.</p>
+            <button class="btn-outline" type="button">Connect a device</button>
+          </div>
+        </section>
+
+        <!-- ══ your action plan ══ -->
+        <section>
+          <div class="sec-head"><h2>Your action plan</h2></div>
+          <div class="plan" style="margin-top:14px">
+
+            <div class="plan-item">
+              <span class="thumb t-consult"></span>
+              <div class="plan-txt">
+                <strong>Onboarding Consult</strong>
+                <p>Speak with an Everlab doctor about trends in your existing data, and what to measure next.</p>
+                <span class="tag">Protocol</span>
+                <div class="plan-foot">
+                  <span class="meta">
+                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="3.4" width="8.6" height="7.2" rx="2"/><path d="m9.6 7 3.4-2.2v4.4L9.6 7Z"/></svg>
+                    <span>Online video call</span>
+                  </span>
+                  <button class="btn-dark" type="button">Book</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="plan-item">
+              <span class="thumb t-path"></span>
+              <div class="plan-txt">
+                <strong>Pathology Test</strong>
+                <p>Visit an Everlab or partner clinic to complete your pathology tests and blood collection.</p>
+                <span class="tag">Protocol</span>
+                <div class="plan-foot">
+                  <span class="meta">
+                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 12.6s4.6-3.9 4.6-7A4.6 4.6 0 0 0 2.4 5.6c0 3.1 4.6 7 4.6 7Z"/><circle cx="7" cy="5.5" r="1.7"/></svg>
+                    <span class="u">Quantum Therapy Sydney</span>
+                  </span>
+                  <button class="btn-dark" type="button">Book</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="plan-item">
+              <span class="thumb t-dexa"></span>
+              <div class="plan-txt">
+                <strong>Dexa Scan</strong>
+                <p>Visit an Everlab or partner clinic to get your full body composition scan.</p>
+                <span class="tag">Protocol</span>
+                <div class="plan-foot">
+                  <span class="meta">
+                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 12.6s4.6-3.9 4.6-7A4.6 4.6 0 0 0 2.4 5.6c0 3.1 4.6 7 4.6 7Z"/><circle cx="7" cy="5.5" r="1.7"/></svg>
+                    <span class="u">Quantum Therapy Sydney</span>
+                  </span>
+                  <button class="btn-light" type="button">View</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="plan-item">
+              <span class="thumb t-mri"></span>
+              <div class="plan-txt">
+                <strong>MRI Scan</strong>
+                <p>A whole-body MRI to screen for early signs of disease across your major organs.</p>
+                <span class="tag">Protocol</span>
+                <div class="plan-foot">
+                  <span class="meta">
+                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 12.6s4.6-3.9 4.6-7A4.6 4.6 0 0 0 2.4 5.6c0 3.1 4.6 7 4.6 7Z"/><circle cx="7" cy="5.5" r="1.7"/></svg>
+                    <span class="u">Quantum Therapy Sydney</span>
+                  </span>
+                  <button class="btn-dark" type="button">Book</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="plan-item">
+              <span class="thumb t-phys"></span>
+              <div class="plan-txt">
+                <strong>Physical Assessment</strong>
+                <p>A 90 minute longevity focused physical, covering strength, mobility and cardio fitness.</p>
+                <span class="tag">Protocol</span>
+                <div class="plan-foot">
+                  <span class="meta">
+                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 12.6s4.6-3.9 4.6-7A4.6 4.6 0 0 0 2.4 5.6c0 3.1 4.6 7 4.6 7Z"/><circle cx="7" cy="5.5" r="1.7"/></svg>
+                    <span class="u">Quantum Therapy Sydney</span>
+                  </span>
+                  <button class="btn-light" type="button">View</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="plan-item locked">
+              <span class="thumb t-nutri">
+                <span class="lock">
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.2" y="5.2" width="7.6" height="5.6" rx="1.6"/><path d="M4.1 5.2V3.8a1.9 1.9 0 0 1 3.8 0v1.4"/></svg>
+                </span>
+              </span>
+              <div class="plan-txt">
+                <strong>Nutrition Review</strong>
+                <p>Transform your health data into a nutrition plan built around how you actually eat.</p>
+                <span class="tag">Protocol</span>
+                <div class="plan-foot">
+                  <span class="meta">
+                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="3.4" width="8.6" height="7.2" rx="2"/><path d="m9.6 7 3.4-2.2v4.4L9.6 7Z"/></svg>
+                    <span>Online video call</span>
+                  </span>
+                  <button class="btn-light" type="button">View</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <button class="timeline" type="button">
+          See full timeline
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10 10 4M4.8 4H10v5.2"/></svg>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ══════════ FLOATING NAVIGATION ══════════ -->
+    <div class="dock">
+      <div class="dock-row">
+
+        <nav class="island glass" role="tablist" aria-label="Main">
+          <span class="pill" id="pill" aria-hidden="true"></span>
+
+          <button class="tab" type="button" role="tab" aria-selected="true" data-i="0">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.8 11 3l7.8 5.8v9.2a1.4 1.4 0 0 1-1.4 1.4H4.6a1.4 1.4 0 0 1-1.4-1.4V8.8Z"/><path d="M8.4 19.4v-7h5.2v7"/></svg>
+            <i>Overview</i>
+          </button>
+
+          <button class="tab" type="button" role="tab" aria-selected="false" data-i="1">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 11.4h4l2-4.6 2.8 9 2.2-5.4 1.4 3h4.4"/></svg>
+            <i>Biomarkers</i>
+          </button>
+
+          <button class="tab" type="button" role="tab" aria-selected="false" data-i="2">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.2" y="3.4" width="13.6" height="15.2" rx="2.6"/><path d="M8 8h6M8 11.6h6M8 15.2h3.4"/></svg>
+            <i>Plan</i>
+          </button>
+
+          <button class="tab" type="button" role="tab" aria-selected="false" data-i="3">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2.6 13.1 8l5.3 2.1-5.3 2.2L11 17.6 8.9 12.3 3.6 10.1 8.9 8 11 2.6Z"/></svg>
+            <i>Services</i>
+          </button>
+
+          <button class="tab" type="button" role="tab" aria-selected="false" data-i="4">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="4.6" cy="11" r="1.5" fill="currentColor" stroke="none"/><circle cx="11" cy="11" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.4" cy="11" r="1.5" fill="currentColor" stroke="none"/></svg>
+            <i>More</i>
+          </button>
+        </nav>
+
+        <button class="plus" type="button" aria-label="Add">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+
+      </div>
+      <span class="home-ind"></span>
+    </div>
+
+    <!-- ══════════ CURRENT TAB BAR (for comparison) ══════════ -->
+    <nav class="legacy" aria-label="Main (current)">
+      <div class="legacy-row">
+        <button type="button" aria-selected="true">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.8 11 3l7.8 5.8v9.2a1.4 1.4 0 0 1-1.4 1.4H4.6a1.4 1.4 0 0 1-1.4-1.4V8.8Z"/><path d="M8.4 19.4v-7h5.2v7"/></svg><i>Overview</i>
+        </button>
+        <button type="button" aria-selected="false">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 11.4h4l2-4.6 2.8 9 2.2-5.4 1.4 3h4.4"/></svg><i>Biomarkers</i>
+        </button>
+        <button type="button" aria-selected="false">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.2" y="3.4" width="13.6" height="15.2" rx="2.6"/><path d="M8 8h6M8 11.6h6M8 15.2h3.4"/></svg><i>Plan</i>
+        </button>
+        <button type="button" aria-selected="false">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2.6 13.1 8l5.3 2.1-5.3 2.2L11 17.6 8.9 12.3 3.6 10.1 8.9 8 11 2.6Z"/></svg><i>Services</i>
+        </button>
+        <button type="button" aria-selected="false">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="4.6" cy="11" r="1.5" fill="currentColor" stroke="none"/><circle cx="11" cy="11" r="1.5" fill="currentColor" stroke="none"/><circle cx="17.4" cy="11" r="1.5" fill="currentColor" stroke="none"/></svg><i>More</i>
+        </button>
+      </div>
+      <span class="home-ind"></span>
+    </nav>
+
+  </div>
+
+  <div class="notes">
+    <span class="note">Glass · blur 26 · saturate 190%</span>
+    <span class="note">Island 262 × 62 · radius 29</span>
+    <span class="note">Action 62 × 62 · radius 21</span>
+    <span class="note">Gap 12 · lift 10 above home indicator</span>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  /* --- active section: slide the pill --- */
+  var pill = document.getElementById('pill');
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.island .tab'));
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); });
+      pill.style.transform = 'translateX(' + (Number(tab.dataset.i) * 50) + 'px)';
+    });
+  });
+
+  /* --- carousel dots follow the rail --- */
+  var rail = document.querySelector('.rail');
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dots i'));
+  if (rail && dots.length) {
+    rail.addEventListener('scroll', function () {
+      var i = Math.round(rail.scrollLeft / 310);
+      dots.forEach(function (d, n) { d.classList.toggle('on', n === i); });
+    }, { passive: true });
+  }
+
+  /* --- nav treatment switch --- */
+  var stage = document.getElementById('stage');
+  var swIsland = document.getElementById('sw-island');
+  var swLegacy = document.getElementById('sw-legacy');
+  function setNav(mode) {
+    stage.dataset.nav = mode;
+    swIsland.setAttribute('aria-pressed', String(mode === 'island'));
+    swLegacy.setAttribute('aria-pressed', String(mode === 'legacy'));
+  }
+  swIsland.addEventListener('click', function () { setNav('island'); });
+  swLegacy.addEventListener('click', function () { setNav('legacy'); });
+})();
+</script>
