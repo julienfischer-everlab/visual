@@ -162,11 +162,33 @@ body{
 /* ---- content column ---- */
 .content{padding:2px 20px 148px;display:flex;flex-direction:column;gap:26px}
 
+.greet-row{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  margin-top:26px;
+}
 .greeting{
-  margin:6px 0 0;font-size:24px;line-height:1.18;font-weight:600;letter-spacing:-.032em;
+  margin:0;font-size:24px;line-height:1.18;font-weight:600;letter-spacing:-.032em;
   color:var(--ink);
 }
 .greeting span{font-weight:500;color:var(--ink-3)}
+
+.bell{
+  position:relative;flex:0 0 auto;
+  width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;padding:0;
+  background:var(--card);color:var(--ink);
+  display:grid;place-items:center;
+  box-shadow:0 1px 2px rgba(30,20,14,.05), inset 0 0 0 1px rgba(22,18,15,.05);
+  transition:background .18s ease;
+}
+.bell:hover{background:#FAF8F6}
+.bell:active{transform:scale(.94)}
+.bell:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+.bell svg{width:20px;height:20px}
+.bell i{
+  position:absolute;top:8px;right:9px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--ember);border:2px solid var(--card);
+}
 
 /* ============================================================
    HERO — personalised program
@@ -595,32 +617,152 @@ body{
 .island .tab:hover:not([aria-selected="true"]){color:var(--ink)}
 .island .tab:focus-visible{outline:2px solid var(--ember);outline-offset:1px}
 
-/* --- separate + button --- */
-.plus{
+/* --- separate search button — identical material to the island --- */
+.fab{
   width:62px;height:62px;flex:0 0 auto;
   border:0;cursor:pointer;padding:0;
   border-radius:21px;
-  background:rgba(23,20,18,.76);
-  -webkit-backdrop-filter:blur(26px) saturate(190%);
-  backdrop-filter:blur(26px) saturate(190%);
-  color:#fff;display:grid;place-items:center;
-  box-shadow:
-    inset 0 .5px 0 rgba(255,255,255,.30),
-    inset 0 0 0 .5px rgba(255,255,255,.14),
-    0 1px 2px rgba(38,28,22,.16),
-    0 8px 18px -6px rgba(25,18,14,.34),
-    0 22px 44px -14px rgba(25,18,14,.40);
+  color:var(--ink);display:grid;place-items:center;
   transition:transform .2s cubic-bezier(.34,1.4,.5,1), background .2s ease;
   -webkit-tap-highlight-color:transparent;
 }
-.plus::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.04) 40%,rgba(255,255,255,0) 66%);
+.fab:hover{background:rgba(255,255,255,.78)}
+.fab:active{transform:scale(.93)}
+.fab:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+.fab svg{position:relative;z-index:1;width:23px;height:23px}
+
+/* ============================================================
+   ASK EVERLAB — iOS bottom sheet
+   ============================================================ */
+.scrim{
+  position:absolute;inset:0;z-index:60;
+  background:rgba(28,20,16,.34);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;
+  transition:opacity .34s ease, visibility .34s;
 }
-.plus:hover{background:rgba(23,20,18,.86)}
-.plus:active{transform:scale(.93)}
-.plus:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
-.plus svg{position:relative;z-index:1;width:23px;height:23px}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;z-index:61;
+  height:80%;
+  display:flex;flex-direction:column;
+  background:var(--bg);
+  border-radius:30px 30px 0 0;
+  box-shadow:0 -1px 0 rgba(255,255,255,.7) inset, 0 -18px 50px -12px rgba(30,20,14,.38);
+  transform:translateY(101%);
+  transition:transform .46s cubic-bezier(.32,.9,.28,1);
+  overflow:hidden;
+  visibility:hidden;
+}
+[data-sheet="open"] .scrim{opacity:1;visibility:visible}
+[data-sheet="open"] .sheet{transform:translateY(0);visibility:visible}
+
+.grabber{
+  width:38px;height:5px;border-radius:999px;background:rgba(22,18,15,.2);
+  margin:8px auto 0;flex:0 0 auto;
+}
+.sheet-head{
+  flex:0 0 auto;padding:12px 18px 12px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--line);
+}
+.ai-mark{
+  width:36px;height:36px;border-radius:12px;flex:0 0 auto;
+  display:grid;place-items:center;color:#fff;
+  background:linear-gradient(145deg,#F4A733 0%,#EE6C2B 52%,#D4451E 100%);
+  box-shadow:0 2px 8px -2px rgba(222,86,32,.55);
+}
+.sheet-head .ttl{flex:1;min-width:0}
+.sheet-head .ttl strong{
+  display:block;font-size:15px;font-weight:600;letter-spacing:-.025em;color:var(--ink);
+}
+.sheet-head .ttl span{display:block;margin-top:1px;font-size:11.5px;color:var(--ink-2)}
+.sheet-close{
+  width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;padding:0;flex:0 0 auto;
+  background:var(--chip);color:var(--ink-2);display:grid;place-items:center;
+  transition:background .18s ease,color .18s ease;
+}
+.sheet-close:hover{background:#E5E1DC;color:var(--ink)}
+.sheet-close:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+
+.thread{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:18px 18px 6px;
+  display:flex;flex-direction:column;gap:12px;
+  scrollbar-width:none;
+}
+.thread::-webkit-scrollbar{display:none}
+.msg{max-width:82%;font-size:13.5px;line-height:1.48;letter-spacing:-.012em}
+.msg.ai{
+  align-self:flex-start;background:var(--card);color:var(--ink);
+  padding:12px 14px;border-radius:18px 18px 18px 6px;
+  box-shadow:0 1px 2px rgba(30,20,14,.05);
+}
+.msg.me{
+  align-self:flex-end;background:var(--noir);color:#F6F3F0;
+  padding:12px 14px;border-radius:18px 18px 6px 18px;
+}
+.msg strong{font-weight:600}
+.msg .ref{
+  display:flex;align-items:center;gap:7px;margin-top:10px;padding-top:9px;
+  border-top:1px solid var(--line);font-size:11px;color:var(--ink-2);
+}
+.msg .ref b{
+  font-weight:600;color:var(--ember);background:#FCEDE3;
+  padding:2px 7px;border-radius:6px;
+}
+.typing{
+  align-self:flex-start;display:none;gap:4px;
+  background:var(--card);padding:14px;border-radius:18px 18px 18px 6px;
+  box-shadow:0 1px 2px rgba(30,20,14,.05);
+}
+[data-typing="1"] .typing{display:flex}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);display:block;animation:bob 1.15s infinite}
+.typing i:nth-child(2){animation-delay:.16s}
+.typing i:nth-child(3){animation-delay:.32s}
+@keyframes bob{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+.chips{
+  flex:0 0 auto;display:flex;gap:7px;overflow-x:auto;
+  padding:12px 18px 10px;scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 88%,transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0,#000 88%,transparent 100%);
+}
+.chips::-webkit-scrollbar{display:none}
+.chips button{
+  flex:0 0 auto;border:1px solid var(--line);cursor:pointer;font:inherit;
+  background:var(--card);color:var(--ink);
+  font-size:12px;font-weight:500;letter-spacing:-.012em;
+  padding:9px 14px;border-radius:999px;white-space:nowrap;
+  transition:background .18s ease;
+}
+.chips button:hover{background:var(--chip)}
+.chips button:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+
+.composer{
+  flex:0 0 auto;display:flex;align-items:center;gap:9px;
+  padding:8px 16px 16px;
+}
+.composer .field{
+  flex:1;display:flex;align-items:center;gap:9px;
+  background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:4px 5px 4px 16px;
+  transition:border-color .18s ease;
+}
+.composer .field:focus-within{border-color:#D3CCC3}
+.composer input{
+  flex:1;min-width:0;border:0;outline:0;background:transparent;
+  font:inherit;font-size:13.5px;letter-spacing:-.012em;color:var(--ink);
+  padding:10px 0;
+}
+.composer input::placeholder{color:var(--ink-3)}
+.send{
+  width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;padding:0;flex:0 0 auto;
+  background:var(--noir);color:#fff;display:grid;place-items:center;
+  transition:opacity .18s ease,transform .18s ease;
+}
+.send:hover{opacity:.86}
+.send:active{transform:scale(.92)}
+.send:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
 
 /* --- home indicator --- */
 .home-ind{
@@ -673,7 +815,7 @@ body{
   <header class="stage-head">
     <p class="eyebrow">Navigation exploration</p>
     <h1>Everlab Overview with a floating navigation island</h1>
-    <p>The Overview screen is replicated as-built. The only change is the navigation: a compact glass island and a separate&nbsp;+ action, both floating clear of the content.</p>
+    <p>The Overview screen is replicated as-built. The only change is the navigation: a compact glass island and a separate search button in the same material — tap search to open Ask&nbsp;Everlab.</p>
   </header>
 
   <div class="switch" role="group" aria-label="Navigation treatment">
@@ -697,7 +839,16 @@ body{
 
       <div class="content">
 
-        <h1 class="greeting">Welcome back, <span>Julien</span></h1>
+        <div class="greet-row">
+          <h1 class="greeting">Welcome back, <span>Julien</span></h1>
+          <button class="bell" type="button" aria-label="Notifications, 3 unread">
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 2.8a5.4 5.4 0 0 0-5.4 5.4c0 3.4-1.2 4.6-1.8 5.3-.3.3-.1.9.4.9h13.6c.5 0 .7-.6.4-.9-.6-.7-1.8-1.9-1.8-5.3A5.4 5.4 0 0 0 11 2.8Z"/>
+              <path d="M9.2 17.2a1.9 1.9 0 0 0 3.6 0"/>
+            </svg>
+            <i aria-hidden="true"></i>
+          </button>
+        </div>
 
         <!-- ══ hero: personalised program ══ -->
         <section class="hero">
@@ -1043,13 +1194,75 @@ body{
           </button>
         </nav>
 
-        <button class="plus" type="button" aria-label="Add">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <button class="fab glass" type="button" id="fab" aria-label="Ask Everlab"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="sheet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="10.8" cy="10.8" r="6.4"/><path d="m15.6 15.6 4 4"/>
+          </svg>
         </button>
 
       </div>
       <span class="home-ind"></span>
     </div>
+
+    <!-- ══════════ ASK EVERLAB — BOTTOM SHEET ══════════ -->
+    <div class="scrim" id="scrim"></div>
+
+    <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <span class="grabber" id="grabber"></span>
+
+      <header class="sheet-head">
+        <span class="ai-mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 2.2 11.7 7 16.5 8.7 11.7 10.4 10 15.2 8.3 10.4 3.5 8.7 8.3 7 10 2.2Z"/>
+            <path d="M15.4 13.6 16 15.4l1.8.6-1.8.6-.6 1.8-.6-1.8-1.8-.6 1.8-.6.6-1.8Z"/>
+          </svg>
+        </span>
+        <span class="ttl" id="sheet-title">
+          <strong>Ask Everlab</strong>
+          <span>Example conversation · uses your results</span>
+        </span>
+        <button class="sheet-close" type="button" id="sheet-close" aria-label="Close">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2.4 2.4l7.2 7.2M9.6 2.4L2.4 9.6"/></svg>
+        </button>
+      </header>
+
+      <div class="thread" id="thread">
+        <div class="msg ai">
+          Hi Julien — I can search your results, protocols and appointments. What would you like to look into?
+        </div>
+        <div class="msg me">Why is my heart rate flagged?</div>
+        <div class="msg ai">
+          Your resting heart rate averaged <strong>72 bpm</strong> over the last three days, up from your
+          usual 61–64 bpm baseline. It's a small shift, and short-term rises like this usually track
+          sleep debt, alcohol or a minor illness rather than anything cardiac.
+          <span class="ref"><b>To monitor</b> Garmin · last 7 days</span>
+        </div>
+        <div class="msg me">Should I book something?</div>
+        <div class="msg ai">
+          Not yet. Give it another week of normal sleep — if it stays above 70 bpm, raise it at your
+          <strong>Onboarding Consult</strong>, which is still unbooked in your action plan.
+        </div>
+        <div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="chips" id="chips">
+        <button type="button">What changed this month?</button>
+        <button type="button">Explain my ApoB</button>
+        <button type="button">Why is my bio age 42?</button>
+        <button type="button">What's left to book?</button>
+      </div>
+
+      <form class="composer" id="composer">
+        <label class="field" for="ask">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#B4ADA4" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.4"/><path d="m13 13 3.4 3.4"/></svg>
+          <input id="ask" type="text" autocomplete="off" placeholder="Ask about your health data">
+        </label>
+        <button class="send" type="submit" aria-label="Send">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16.2V4.2"/><path d="m5.2 9 4.8-4.8L14.8 9"/></svg>
+        </button>
+      </form>
+    </section>
 
     <!-- ══════════ CURRENT TAB BAR (for comparison) ══════════ -->
     <nav class="legacy" aria-label="Main (current)">
@@ -1078,7 +1291,7 @@ body{
   <div class="notes">
     <span class="note">Glass · blur 26 · saturate 190%</span>
     <span class="note">Island 262 × 62 · radius 29</span>
-    <span class="note">Action 62 × 62 · radius 21</span>
+    <span class="note">Search 62 × 62 · radius 21</span>
     <span class="note">Gap 12 · lift 10 above home indicator</span>
   </div>
 
@@ -1106,6 +1319,101 @@ body{
       dots.forEach(function (d, n) { d.classList.toggle('on', n === i); });
     }, { passive: true });
   }
+
+  /* --- Ask Everlab sheet --- */
+  var phone   = document.querySelector('.phone');
+  var fab     = document.getElementById('fab');
+  var sheet   = document.getElementById('sheet');
+  var scrim   = document.getElementById('scrim');
+  var thread  = document.getElementById('thread');
+  var ask     = document.getElementById('ask');
+  var typing  = document.querySelector('.typing');
+
+  function openSheet() {
+    phone.dataset.sheet = 'open';
+    fab.setAttribute('aria-expanded', 'true');
+    thread.scrollTop = thread.scrollHeight;
+    setTimeout(function () { ask.focus(); }, 380);
+  }
+  function closeSheet() {
+    delete phone.dataset.sheet;
+    phone.dataset.typing = '0';
+    sheet.style.transform = '';
+    fab.setAttribute('aria-expanded', 'false');
+    fab.focus();
+  }
+
+  fab.addEventListener('click', openSheet);
+  scrim.addEventListener('click', closeSheet);
+  document.getElementById('sheet-close').addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && phone.dataset.sheet === 'open') closeSheet();
+  });
+
+  /* drag the grabber down to dismiss */
+  var grabber = document.getElementById('grabber');
+  var startY = null;
+  grabber.addEventListener('pointerdown', function (e) {
+    startY = e.clientY;
+    sheet.style.transition = 'none';
+    grabber.setPointerCapture(e.pointerId);
+  });
+  grabber.addEventListener('pointermove', function (e) {
+    if (startY === null) return;
+    var dy = Math.max(0, e.clientY - startY);
+    sheet.style.transform = 'translateY(' + dy + 'px)';
+  });
+  grabber.addEventListener('pointerup', function (e) {
+    if (startY === null) return;
+    var dy = e.clientY - startY;
+    startY = null;
+    sheet.style.transition = '';
+    if (dy > 110) closeSheet(); else sheet.style.transform = '';
+  });
+
+  /* seeded replies — this is a visual prototype, not a live model */
+  var replies = {
+    'What changed this month?':
+      'Three things moved: resting heart rate is up ~11 bpm, ApoB came down from 1.12 to 0.94 g/L after eight weeks on your lipid protocol, and your sleep average dropped to 6h 12m.',
+    'Explain my ApoB':
+      'ApoB counts the particles that can lodge in an artery wall, so it predicts cardiovascular risk better than LDL-C alone. Yours is 0.94 g/L — inside the general range, above the < 0.80 g/L target your doctor set for prevention.',
+    'Why is my bio age 42?':
+      'Your biological age is modelled from 75 biomarkers. Inflammation, kidney and metabolic markers all read young; what holds the number up is grip strength and VO₂ max, both of which your Physical Assessment would re-measure.',
+    "What's left to book?":
+      'Two items in your action plan are still unbooked: the Onboarding Consult (online) and your Pathology Test at Quantum Therapy Sydney. The Dexa and Physical Assessment are already scheduled.'
+  };
+  var fallback =
+    'I can pull that from your record. In this prototype the replies are pre-written, ' +
+    'but the real assistant would answer from your biomarkers, protocols and appointment history.';
+
+  function bubble(cls, text) {
+    var el = document.createElement('div');
+    el.className = 'msg ' + cls;
+    el.textContent = text;
+    thread.insertBefore(el, typing);
+    thread.scrollTop = thread.scrollHeight;
+  }
+  function send(text) {
+    text = (text || '').trim();
+    if (!text) return;
+    bubble('me', text);
+    ask.value = '';
+    phone.dataset.typing = '1';
+    thread.scrollTop = thread.scrollHeight;
+    setTimeout(function () {
+      phone.dataset.typing = '0';
+      bubble('ai', replies[text] || fallback);
+    }, 900);
+  }
+
+  document.getElementById('composer').addEventListener('submit', function (e) {
+    e.preventDefault();
+    send(ask.value);
+  });
+  document.getElementById('chips').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (b) send(b.textContent);
+  });
 
   /* --- nav treatment switch --- */
   var stage = document.getElementById('stage');
