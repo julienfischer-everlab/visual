@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-14, "Next tweak (outside/inside), label spacing fixed" |
+| Captured from version | 2026-09-14, "Phone: What's next carousel" |
 | Captured on | 2026-09-14 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -208,7 +208,14 @@ to change first." Clicking a chip makes it active and restarts the three seconds
 cycle runs only while the panel is on screen (Cards layout, on the second
 fold in dynamic motion or anywhere in static), stops on the way back to the
 first fold or when the tab is hidden, and restarts from the first chip when
-the panel returns. On phones the chips wrap.
+the panel returns. On phones the chips and the shared description give way to
+a carousel: three numbered dots (24px circles, the active one filled in the
+text colour) as the indicator, and under them one slide per step carrying the
+step's title (15px medium) and its description (13.5px), in a track that
+scrolls sideways and snaps slide to slide. A swipe picks the step under the
+finger and restarts the three seconds; a tap on a dot does the same; the
+auto-rotation scrolls the track smoothly to the next slide. Desktop keeps the
+chips.
 The hero card keeps its six rows, set a
 little tighter (4px above and below each row, 44px top and bottom padding)
 and the stack (hero card, 24px, panel) sits inside a frame of 160px above and
