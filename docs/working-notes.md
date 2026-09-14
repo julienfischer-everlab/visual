@@ -5074,6 +5074,25 @@ scrollTop at which the bar pins with the list right under it.
   from 1400, chip "Suboptimal": lands at 718, bar pinned at 44,
   skeleton's first row at y 263, then 20 rows at the same position
 
+### 5.179 Still a transparent gap -- on the pages I had not scoped it to
+
+The plate held on the current design and nowhere else. The search bar is on
+every mobile page, and the status bar has lain over the page since V5, so V5,
+V6 and V7 have exactly the same strip to hold -- and I had written the rule as
+`body.v8`. On those three the strip stayed transparent and the list showed
+through beside the hour, which is what the screenshot was of.
+
+Scoped to `body.v5` now, which V6, V7 and V8 all inherit. V4 and earlier keep
+the status bar in the flow (`position: relative` or `static`), so `statusH()`
+is 0 there, there is no strip, and nothing to hold.
+
+  m16 m17 m19 m20  status bar absolute, plate present, strip opaque
+  m15 and earlier  status bar in the flow, no strip
+
+A reminder that "which pages does this rule apply to?" is a question to answer
+from what the rule is FOR -- the status bar lying over a list -- rather than
+from the page I happened to be looking at.
+
 ---
 
 ## 6. Open items
