@@ -4410,6 +4410,56 @@ dropdown now runs over all of them.
 Note that v8 opens fullscreen, where the bar is hidden by design -- tune on
 #m20 or #m6, which show the bar and the navigation together.
 
+### 5.159 The teaser, as a page you scroll
+
+A landing page for Organ Age, built on the file's own parts: one canvas, one
+set of particles, and a scroll position as the only clock. Every scene is the
+same points at different targets, blended -- a particle in the universe is the
+particle that becomes a chamber of the heart and the one that lands in the
+phone. That is the whole reason it is one canvas and not nine sections.
+
+Reuse was the constraint and it mostly held. The organs come out of the file's
+clouds through samplePts, the colours are the three inks through inkNow, the
+opacities go through opRender onto the twenty-step grid, the fills are batched
+by makeBatch the way every other 2D surface batches them, and the figures are
+PILL and CHRONO. What had to be new is a camera: a perspective divide and a
+defocus term. Every flat surface in the file has no use for those, and a page
+that moves through a volume cannot do without them.
+
+Two things I got wrong, both worth writing down.
+
+The first was a design-system error, not a maths one. I reproduced the rule
+"colour is random" and then drew my own opacities from the bands. But the other
+half of that rule is "opacity is anatomy": a point's authored alpha is its
+distance to the nearest boundary in the silhouette, and it is the entire reason
+an edge looks like an edge. Keeping the colour rule and inventing the opacity
+gives a cloud of exactly the right colours in the shape of nothing. Opacity now
+travels with the state, so a blend between two scenes crossfades the anatomy
+along with the position.
+
+The second was surplus particles. Nine thousand of them wrapped over a
+2,600-point sample meant every structural point was drawn three or four times
+with a few pixels of scatter, and a few pixels on every point is ten pixels of
+thickening -- enough to close the gaps between the chambers. The organ is
+exactly the sample now, and what is left over falls away around it as the dust
+it came from, which is also what the story wants at that moment.
+
+The open item is the third thing, and it is not mine. The hero organ's
+silhouette still does not read as well as it should at stage scale. It is not
+this renderer: the painter itself, given the same cloud at 280x360, produces
+the same faint haze, and the library's crisp heart is crisp partly because a
+tile is 150px. The cloud's structure is authored for tile scale and thins out
+above it. So the page draws its hero organ at the scale the spatial field
+proved legible and lets the camera carry the drama instead -- which works, but
+is a smaller organ than the brief pictures. The real fix is either a denser
+edge authored for large-scale use, or a hero organ built at its own count the
+way the fine-grain clouds are. Flagged rather than hidden.
+
+The second organ is the lung. The brief suggested kidneys for "others may be
+ageing faster" and in PILL the kidney is a year younger; using it would have
+this page contradict every other screen in the file. The lung is +8 and is the
+organ that actually carries that reading.
+
 ---
 
 ## 6. Open items
@@ -4424,6 +4474,11 @@ Note that v8 opens fullscreen, where the bar is hidden by design -- tune on
 - **Mock numbers differ from live data.** The references show bio age 32 and
   "118 All"; the prototype derives those from the "Your age" selector, so they
   will not match a static mock.
+- **The landing page's hero organ reads soft at stage scale.** The cloud's
+  silhouette is authored for tile-sized visuals and thins above ~250px; the
+  painter does the same at that size, so it is the cloud rather than the
+  renderer. The page compensates by drawing the hero organ small. A denser
+  edge, or a hero cloud built at its own count, is the real fix.
 - **The organ-age modal does not close on Escape**, and stays open when the
   page is changed from the version dropdown.
 
