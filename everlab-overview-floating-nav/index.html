@@ -173,22 +173,24 @@ body{
 .greeting span{font-weight:500;color:var(--ink-3)}
 
 .bell{
-  position:relative;flex:0 0 auto;
+  flex:0 0 auto;
   width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;padding:0;
-  background:var(--card);color:var(--ink);
+  color:var(--ink);
   display:grid;place-items:center;
-  box-shadow:0 1px 2px rgba(30,20,14,.05), inset 0 0 0 1px rgba(22,18,15,.05);
-  transition:background .18s ease;
+  transition:background .18s ease, transform .2s cubic-bezier(.34,1.4,.5,1);
 }
-.bell:hover{background:#FAF8F6}
-.bell:active{transform:scale(.94)}
+.bell:hover{background:rgba(255,255,255,.5)}
+.bell:active{transform:scale(.9)}
 .bell:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
-.bell svg{width:20px;height:20px}
+.bell svg{position:relative;z-index:2;width:20px;height:20px}
 .bell i{
-  position:absolute;top:8px;right:9px;
-  width:8px;height:8px;border-radius:50%;
-  background:var(--ember);border:2px solid var(--card);
+  position:absolute;top:7px;right:8px;z-index:3;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--ember);
+  box-shadow:0 0 0 2px rgba(255,255,255,.9), 0 1px 3px rgba(214,88,32,.55);
 }
+/* the bell is small, so it gets a proportionally finer rim */
+.bell.glass::before{padding:4px}
 
 /* ============================================================
    HERO — personalised program
@@ -436,14 +438,38 @@ body{
 .glass-stats .r1{display:flex;gap:8px}
 .glass-stats .r2{display:flex;justify-content:flex-end}
 .glass-stats .r2 .gstat{flex:0 0 47%}
+/* liquid glass over photography — the rim picks up the sunset behind it */
 .gstat{
-  flex:1;border-radius:15px;padding:10px 12px;color:#fff;
-  background:rgba(255,255,255,.17);
-  -webkit-backdrop-filter:blur(14px) saturate(150%);
-  backdrop-filter:blur(14px) saturate(150%);
-  border:.5px solid rgba(255,255,255,.34);
-  box-shadow:inset 0 .5px 0 rgba(255,255,255,.5), 0 4px 14px rgba(20,12,6,.16);
+  position:relative;isolation:isolate;
+  flex:1;border-radius:16px;padding:10px 12px;color:#fff;
+  background:rgba(255,255,255,.13);
+  -webkit-backdrop-filter:blur(7px) saturate(190%) brightness(1.06);
+  backdrop-filter:blur(7px) saturate(190%) brightness(1.06);
+  box-shadow:
+    inset 0 0 16px rgba(255,255,255,.20),
+    inset 0 1px 0 rgba(255,255,255,.45),
+    0 4px 16px rgba(20,12,6,.20);
+  corner-shape:squircle;
 }
+.gstat::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  padding:4px;
+  -webkit-backdrop-filter:blur(.5px) saturate(240%) brightness(1.2);
+  backdrop-filter:blur(.5px) saturate(240%) brightness(1.2);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+}
+.gstat::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  padding:1px;
+  background:linear-gradient(140deg,rgba(255,255,255,.9) 0%,rgba(255,255,255,.2) 18%,
+    rgba(255,255,255,0) 40%,rgba(255,255,255,0) 60%,rgba(255,255,255,.45) 88%,rgba(255,255,255,.8) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+}
+.gstat > *{position:relative;z-index:1}
 .gstat .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .gstat .lbl{font-size:9.5px;font-weight:500;letter-spacing:.01em;color:rgba(255,255,255,.8)}
 .gstat .tag{
@@ -553,11 +579,12 @@ body{
   pointer-events:none;
 }
 /* scrim so content dissolves under the floating layer */
+/* kept light — the point of the material is that you see through it */
 .dock::before{
-  content:"";position:absolute;left:0;right:0;bottom:0;height:132px;
-  background:linear-gradient(180deg,rgba(242,240,237,0) 0%,rgba(242,240,237,.72) 46%,rgba(242,240,237,.94) 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 55%);
-  mask-image:linear-gradient(180deg,transparent 0%,#000 55%);
+  content:"";position:absolute;left:0;right:0;bottom:0;height:120px;
+  background:linear-gradient(180deg,rgba(242,240,237,0) 0%,rgba(242,240,237,.26) 55%,rgba(242,240,237,.52) 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 60%);
+  mask-image:linear-gradient(180deg,transparent 0%,#000 60%);
   pointer-events:none;
 }
 .dock-row{
@@ -565,25 +592,56 @@ body{
   pointer-events:auto;
 }
 
-/* --- shared iOS-style glass material --- */
+/* ============================================================
+   LIQUID GLASS
+   Three stacked layers, because that is what makes it read as a
+   lens rather than a frosted panel:
+     body   — thin blur, heavy saturation, mostly transparent so
+              the content's own colour tints the material
+     ::before — the RIM. Samples the backdrop almost unblurred and
+              brighter than the body, so light appears to bend and
+              compress at the edge. This is the refraction cue.
+     ::after — the specular hairline, hot at top-left / bottom-right
+              like a real glass bead catching a light source.
+   ============================================================ */
 .glass{
   position:relative;
-  background:rgba(255,255,255,.62);
-  -webkit-backdrop-filter:blur(26px) saturate(190%);
-  backdrop-filter:blur(26px) saturate(190%);
+  isolation:isolate;
+  background:rgba(255,255,255,.24);
+  -webkit-backdrop-filter:blur(12px) saturate(210%) brightness(1.05);
+  backdrop-filter:blur(12px) saturate(210%) brightness(1.05);
   box-shadow:
-    inset 0 .5px 0 rgba(255,255,255,.92),
-    inset 0 -.5px 0 rgba(255,255,255,.42),
-    inset 0 0 0 .5px rgba(255,255,255,.55),
-    0 0 0 .5px rgba(38,28,22,.07),
-    0 1px 2px rgba(38,28,22,.05),
-    0 8px 18px -6px rgba(38,28,22,.14),
-    0 22px 44px -14px rgba(38,28,22,.22);
+    /* body glow — light scattering inside the slab */
+    inset 0 0 16px rgba(255,255,255,.26),
+    inset 0 1px 1px rgba(255,255,255,.58),
+    inset 0 -8px 14px -8px rgba(38,28,22,.14),
+    /* contact + lift */
+    0 1px 2px rgba(38,28,22,.07),
+    0 10px 22px -8px rgba(38,28,22,.17),
+    0 28px 52px -18px rgba(38,28,22,.26);
+  corner-shape:squircle;
 }
-/* specular sheen across the top of the material */
+/* refracting rim */
+.glass::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  padding:5px;
+  -webkit-backdrop-filter:blur(.5px) saturate(255%) brightness(1.15) contrast(1.08);
+  backdrop-filter:blur(.5px) saturate(255%) brightness(1.15) contrast(1.08);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+}
+/* specular hairline */
 .glass::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.10) 34%,rgba(255,255,255,0) 62%);
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  padding:1.3px;
+  background:linear-gradient(140deg,
+    rgba(255,255,255,.98) 0%, rgba(255,255,255,.42) 13%,
+    rgba(255,255,255,.04) 30%, rgba(255,255,255,.04) 58%,
+    rgba(255,255,255,.50) 80%, rgba(255,255,255,.92) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
 }
 
 /* --- island --- */
@@ -591,24 +649,29 @@ body{
   display:flex;align-items:center;gap:0;
   padding:6px;border-radius:29px;
 }
-/* sliding active pill */
+/* sliding active pill — a liquid lozenge that stretches as it travels */
 .island .pill{
   position:absolute;top:6px;left:6px;
   width:50px;height:50px;border-radius:22px;
-  background:var(--noir);
-  box-shadow:0 3px 10px -2px rgba(25,22,20,.42), inset 0 .5px 0 rgba(255,255,255,.16);
-  transition:transform .42s cubic-bezier(.34,1.3,.44,1);
+  background:linear-gradient(168deg,#332C28 0%,#1D1917 46%,#100D0C 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.26),
+    inset 0 -6px 10px -6px rgba(0,0,0,.7),
+    0 4px 12px -3px rgba(25,22,20,.48);
+  transform-origin:center;
   z-index:0;
+  corner-shape:squircle;
 }
 .island .tab{
-  position:relative;z-index:1;
+  position:relative;z-index:2;
   width:50px;height:50px;border:0;cursor:pointer;padding:0;background:transparent;
   font:inherit;color:var(--ink-2);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   border-radius:22px;
-  transition:color .28s ease;
+  transition:color .28s ease, transform .2s cubic-bezier(.34,1.4,.5,1);
   -webkit-tap-highlight-color:transparent;
 }
+.island .tab:active{transform:scale(.88)}
 .island .tab svg{width:20px;height:20px;display:block}
 .island .tab i{
   font-style:normal;font-size:8px;font-weight:600;letter-spacing:-.012em;line-height:1;
@@ -626,10 +689,10 @@ body{
   transition:transform .2s cubic-bezier(.34,1.4,.5,1), background .2s ease;
   -webkit-tap-highlight-color:transparent;
 }
-.fab:hover{background:rgba(255,255,255,.78)}
-.fab:active{transform:scale(.93)}
+.fab:hover{background:rgba(255,255,255,.46)}
+.fab:active{transform:scale(.9)}
 .fab:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
-.fab svg{position:relative;z-index:1;width:23px;height:23px}
+.fab svg{position:relative;z-index:2;width:23px;height:23px}
 
 /* ============================================================
    ASK EVERLAB — iOS bottom sheet
@@ -645,8 +708,11 @@ body{
   position:absolute;left:0;right:0;bottom:0;z-index:61;
   height:80%;
   display:flex;flex-direction:column;
-  background:var(--bg);
+  background:rgba(243,241,238,.88);
+  -webkit-backdrop-filter:blur(30px) saturate(180%);
+  backdrop-filter:blur(30px) saturate(180%);
   border-radius:30px 30px 0 0;
+  corner-shape:squircle;
   box-shadow:0 -1px 0 rgba(255,255,255,.7) inset, 0 -18px 50px -12px rgba(30,20,14,.38);
   transform:translateY(101%);
   transition:transform .46s cubic-bezier(.32,.9,.28,1);
@@ -663,7 +729,11 @@ body{
 .sheet-head{
   flex:0 0 auto;padding:12px 18px 12px;
   display:flex;align-items:center;gap:12px;
-  border-bottom:1px solid var(--line);
+  position:relative;z-index:2;
+  background:rgba(242,240,237,.62);
+  -webkit-backdrop-filter:blur(18px) saturate(190%);
+  backdrop-filter:blur(18px) saturate(190%);
+  box-shadow:0 1px 0 rgba(22,18,15,.06), 0 10px 20px -14px rgba(30,20,14,.4);
 }
 .ai-mark{
   width:36px;height:36px;border-radius:12px;flex:0 0 auto;
@@ -740,15 +810,25 @@ body{
 
 .composer{
   flex:0 0 auto;display:flex;align-items:center;gap:9px;
-  padding:8px 16px 16px;
+  padding:8px 16px 16px;position:relative;z-index:2;
+  background:linear-gradient(180deg,rgba(242,240,237,0) 0%,rgba(242,240,237,.86) 34%,var(--bg) 100%);
 }
 .composer .field{
   flex:1;display:flex;align-items:center;gap:9px;
-  background:var(--card);border:1px solid var(--line);
   border-radius:999px;padding:4px 5px 4px 16px;
-  transition:border-color .18s ease;
+  transition:box-shadow .2s ease;
 }
-.composer .field:focus-within{border-color:#D3CCC3}
+.composer .field.glass{background:rgba(255,255,255,.52)}
+.composer .field.glass::before{padding:5px}
+.composer .field:focus-within{
+  box-shadow:
+    inset 0 0 22px rgba(255,255,255,.5),
+    inset 0 1px 1px rgba(255,255,255,.7),
+    0 0 0 2px rgba(238,108,43,.28),
+    0 8px 20px -8px rgba(38,28,22,.2);
+}
+.composer input{position:relative;z-index:2}
+.composer .field > svg{position:relative;z-index:2}
 .composer input{
   flex:1;min-width:0;border:0;outline:0;background:transparent;
   font:inherit;font-size:13.5px;letter-spacing:-.012em;color:var(--ink);
@@ -763,6 +843,36 @@ body{
 .send:hover{opacity:.86}
 .send:active{transform:scale(.92)}
 .send:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+
+/* ---- adaptive tint: the material inverts when dark content passes under it,
+       the way Liquid Glass re-reads its own backdrop ---- */
+.island,.fab,.island .tab,.island .pill,.home-ind{
+  transition:background .45s ease, color .45s ease, box-shadow .45s ease;
+}
+[data-behind="dark"] .island,
+[data-behind="dark"] .fab{
+  background:rgba(30,24,20,.26);
+  box-shadow:
+    inset 0 0 22px rgba(255,255,255,.14),
+    inset 0 1px 1px rgba(255,255,255,.34),
+    inset 0 -8px 14px -8px rgba(0,0,0,.34),
+    0 1px 2px rgba(12,8,5,.18),
+    0 10px 22px -8px rgba(12,8,5,.30),
+    0 28px 52px -18px rgba(12,8,5,.42);
+}
+[data-behind="dark"] .island .tab{color:rgba(255,255,255,.66)}
+[data-behind="dark"] .island .tab:hover:not([aria-selected="true"]){color:#fff}
+[data-behind="dark"] .fab{color:#fff}
+/* indicator flips to a bright lozenge so it stays the clearest thing there */
+[data-behind="dark"] .island .pill{
+  background:linear-gradient(168deg,rgba(255,255,255,.97) 0%,rgba(252,249,246,.86) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -6px 10px -6px rgba(40,28,20,.18),
+    0 4px 12px -3px rgba(0,0,0,.34);
+}
+[data-behind="dark"] .island .tab[aria-selected="true"]{color:var(--ink)}
+[data-behind="dark"] .home-ind{background:rgba(255,255,255,.5)}
 
 /* --- home indicator --- */
 .home-ind{
@@ -841,7 +951,7 @@ body{
 
         <div class="greet-row">
           <h1 class="greeting">Welcome back, <span>Julien</span></h1>
-          <button class="bell" type="button" aria-label="Notifications, 3 unread">
+          <button class="bell glass" type="button" aria-label="Notifications, 3 unread">
             <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 2.8a5.4 5.4 0 0 0-5.4 5.4c0 3.4-1.2 4.6-1.8 5.3-.3.3-.1.9.4.9h13.6c.5 0 .7-.6.4-.9-.6-.7-1.8-1.9-1.8-5.3A5.4 5.4 0 0 0 11 2.8Z"/>
               <path d="M9.2 17.2a1.9 1.9 0 0 0 3.6 0"/>
@@ -1254,7 +1364,7 @@ body{
       </div>
 
       <form class="composer" id="composer">
-        <label class="field" for="ask">
+        <label class="field glass" for="ask">
           <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#B4ADA4" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.4"/><path d="m13 13 3.4 3.4"/></svg>
           <input id="ask" type="text" autocomplete="off" placeholder="Ask about your health data">
         </label>
@@ -1289,10 +1399,10 @@ body{
   </div>
 
   <div class="notes">
-    <span class="note">Glass · blur 26 · saturate 190%</span>
-    <span class="note">Island 262 × 62 · radius 29</span>
-    <span class="note">Search 62 × 62 · radius 21</span>
-    <span class="note">Gap 12 · lift 10 above home indicator</span>
+    <span class="note">Liquid glass · refracting 6px rim</span>
+    <span class="note">Body blur 11 · saturate 205%</span>
+    <span class="note">Adapts to dark content behind</span>
+    <span class="note">Indicator stretches as it travels</span>
   </div>
 
 </div>
@@ -1302,11 +1412,32 @@ body{
   /* --- active section: slide the pill --- */
   var pill = document.getElementById('pill');
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.island .tab'));
+  var STEP = 50;
+  var at = 0;
+  var slow = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* The lozenge is liquid: it stretches along its direction of travel and
+     settles back, the way the iOS indicator deforms between tabs. */
+  function movePill(to) {
+    var from = at * STEP, dest = to * STEP, span = Math.abs(to - at);
+    at = to;
+    if (slow || span === 0) { pill.style.transform = 'translateX(' + dest + 'px)'; return; }
+
+    var stretch = 1 + Math.min(span, 4) * 0.16;
+    var squeeze = 1 - Math.min(span, 4) * 0.05;
+
+    pill.animate([
+      { transform: 'translateX(' + from + 'px) scale(1,1)' },
+      { transform: 'translateX(' + (from + (dest - from) * 0.42) + 'px) scale(' + stretch + ',' + squeeze + ')', offset: 0.42 },
+      { transform: 'translateX(' + (dest + (dest - from) * 0.045) + 'px) scale(' + (1 + (stretch - 1) * 0.22) + ',1)', offset: 0.76 },
+      { transform: 'translateX(' + dest + 'px) scale(1,1)' }
+    ], { duration: 560, easing: 'cubic-bezier(.32,.72,.24,1)', fill: 'forwards' });
+  }
 
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       tabs.forEach(function (t) { t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); });
-      pill.style.transform = 'translateX(' + (Number(tab.dataset.i) * 50) + 'px)';
+      movePill(Number(tab.dataset.i));
     });
   });
 
@@ -1319,6 +1450,32 @@ body{
       dots.forEach(function (d, n) { d.classList.toggle('on', n === i); });
     }, { passive: true });
   }
+
+  /* --- the material reads its own backdrop ---
+     While a dark surface (the program hero, the biological-age tile, the
+     device photo) sits under the dock, the glass inverts: darker tint,
+     light icons, bright indicator. */
+  var screenEl = document.getElementById('screen');
+  var dock     = document.querySelector('.dock-row');
+  var darks    = document.querySelectorAll('.hero, .stat.dark, .scene');
+  var queued   = false;
+
+  function readBackdrop() {
+    queued = false;
+    var d = dock.getBoundingClientRect();
+    var dark = false;
+    for (var i = 0; i < darks.length; i++) {
+      var r = darks[i].getBoundingClientRect();
+      /* overlap of at least half the dock's height counts */
+      if (Math.min(r.bottom, d.bottom) - Math.max(r.top, d.top) > d.height * 0.5) { dark = true; break; }
+    }
+    if (dark) screenEl.parentElement.dataset.behind = 'dark';
+    else delete screenEl.parentElement.dataset.behind;
+  }
+  screenEl.addEventListener('scroll', function () {
+    if (!queued) { queued = true; requestAnimationFrame(readBackdrop); }
+  }, { passive: true });
+  readBackdrop();
 
   /* --- Ask Everlab sheet --- */
   var phone   = document.querySelector('.phone');
