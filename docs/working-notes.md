@@ -4661,8 +4661,11 @@ not.
 ### 5.165 The record select, and a sheet to choose from
 
 "Put this next to the Search. Record select - Search. Select should be
-clickable, 56px same as the search. Offer multiple options. Select opens a
-bottom sheet. On click on an option the list is loading state."
+clickable, 56px same as the search. Offer multiple options. On click on an
+option the list is loading state." First as a bottom sheet, then a design came
+back showing a menu anchored under the button instead -- a title, "category |
+date" beneath it, and a badge with the count of readings that record carried.
+The menu is that.
 
 The records line used to be a div above the chips that said "25 records" and
 did nothing. It is a control now, beside the search and the same 56px, and the
@@ -4672,29 +4675,36 @@ longest label needs and the search takes the rest -- the other way round and
 the label truncates, which is the one thing a control naming the current state
 cannot do.
 
-A native select could not carry this. The options have an eyebrow over them, a
-date under each label and a count on one of them, and an OS picker has room for
-none of that. So it is the platform's other answer: a sheet up from the bottom
-edge over a scrim, with a grip, the eyebrow, and a tick on the one that is on.
-The scrim and Escape close it -- a sheet with no way back is a trap on a touch
-screen.
+A native select could not carry it: a title, a category, a date and a count per
+option is four things, and an OS picker has room for one. So the menu is a list
+of its own, anchored under the button that opened it, with the button staying
+visible above it -- which is what tells you what you are changing, and is why
+it is not a sheet.
 
-It had to move into the frame to work. Written in the markup beside the
-controls it belongs to, which reads correctly, but position:absolute resolves
-against the nearest positioned ancestor and there that is the scroller: the
-sheet sat at the bottom of the CONTENT, several hundred pixels below the
-screen, perfectly "open" and nowhere to be seen. The keyboard solved this years
-ago by being appended to the phone; the sheet does the same.
+The counts are the design's and they sum to 136 over a panel of 110, which is
+right rather than wrong: a biomarker measured in August and again in May is in
+both reports. So a reading belongs to one or more records. The membership is
+assigned by walking the records' counts as one run of 136 and stepping through
+the rows by a stride coprime with 110 -- the first 110 steps touch every row
+exactly once, so nothing is orphaned, and the remaining 26 give those rows a
+second record. Exact quotas by construction, and the same sets on every load.
+Measured: every badge is exactly what its option shows, 44, 32, 2, 2, 56, and
+All is the 110 distinct.
 
 Picking an option goes through the same load() a keystroke and a chip go
-through, because it is the same act -- a different set being fetched. And every
-reading now belongs to one of the two named tests, off the same hash that
-places its marker, so Latest test is a real subset (69 readings) rather than a
-label that changes nothing. The chips recount for whatever set is chosen, since
-a chip's number is a promise about what tapping it shows and that promise is
-now about the rows in the chosen test: 69 = 42 + 15 + 8 + 4, 41 = 26 + 5 + 4 +
-6, 110 = 68 + 20 + 12 + 10. A chip whose range empties under a narrower set
-cannot stay chosen, so it hands back to All.
+through, because it is the same act. The chips recount for whatever record is
+chosen -- 44 = 30 + 8 + 2 + 4, 56 = 37 + 9 + 5 + 5 -- and a chip whose range
+empties under a narrower record hands back to All.
+
+Two placement bugs, both the same lesson about where a thing actually lives.
+The menu was written beside the controls it belongs to but outside their
+wrapper, so position:absolute resolved against the scroller and it rendered
+nine thousand pixels down the content: open, correct, and nowhere to be seen.
+And once it was in the right parent it was still painted over by the dock --
+.mBody is position:relative with z-index 2, which makes it a stacking context,
+so the menu at 9 inside a wrapper at 10 resolves at 2 against a dock at 6 and
+no amount of raising it could ever have worked. The dock steps back instead,
+and only while the menu is open.
 
 One thing noticed and left alone. The hero's two readings of the panel live in
 BIO_SETS, and its "unclassified shown" set is 68/20/12/10 -- exactly the panel

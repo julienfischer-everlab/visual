@@ -997,7 +997,7 @@
      longest label needs and the search takes the rest -- the other way round
      and the label would truncate, which is the one thing a control naming the
      current state cannot do. */
-  .msRow{display:flex;align-items:center;gap:8px;}
+  .msRow{display:flex;align-items:center;gap:8px;position:relative;}
   .msRec{
     flex:none;display:flex;align-items:center;gap:8px;
     height:56px;padding:0 14px 0 16px;
@@ -1014,49 +1014,64 @@
   body.light .msRec{border-color:#ddd3bf;color:#2e1f1a;}
   body.light .msRec:hover{border-color:#9b8a75;}
   body.light .msRec[aria-expanded="true"]{background:rgba(46,31,26,.05);border-color:#9b8a75;}
-  /* The sheet. Inside the phone so the frame clips it, over a scrim that is
-     the way out -- a sheet with no way back is a trap on a touch screen. */
-  .mSheetBg{
-    position:absolute;inset:0;z-index:8;background:rgba(0,0,0,.5);
-    opacity:0;transition:opacity .26s ease;
+  /* The record menu, anchored under its button. Not a sheet: it belongs to the
+     control that opened it and the control stays visible above it, which is
+     what tells you what you are changing. */
+  .mRecMenu{
+    position:absolute;left:0;right:0;top:calc(100% - 6px);z-index:9;
+    background:#131312;border-radius:16px;padding:6px;
+    box-shadow:0 24px 48px -18px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.05);
+    opacity:0;transform:translateY(-6px);pointer-events:none;
+    transition:opacity .18s ease,transform .18s ease;
   }
-  body.mSheetOn .mSheetBg{opacity:1;}
-  .mSheet{
-    position:absolute;left:0;right:0;bottom:0;z-index:9;
-    background:#151514;border-radius:22px 22px 0 0;
-    padding:8px 0 calc(14px + env(safe-area-inset-bottom));
-    transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);
-    box-shadow:0 -18px 40px -16px rgba(0,0,0,.7);
+  body.mRecOn .mRecMenu{opacity:1;transform:none;pointer-events:auto;}
+  /* .mBody is position:relative with z-index 2, which makes it a stacking
+     context: everything inside it -- the menu at 9, the wrapper at 10 -- is
+     resolved at 2 against the rest of the frame, and the dock sits at 6. So
+     raising the menu could never work. The dock steps back instead, and only
+     while the menu is open: one element moves rather than the whole content
+     layer, and it moves back the moment the menu closes. */
+  body.mRecOn .msWrap{z-index:10;}
+  body.mRecOn #phone > .mTabs{z-index:1;}
+  body.light .mRecMenu{background:#fffdf8;box-shadow:0 24px 48px -22px rgba(46,31,26,.35),0 0 0 1px rgba(46,31,26,.08);}
+  .mRecScroll{max-height:min(44vh,330px);overflow-y:auto;scrollbar-width:none;}
+  .mRecScroll::-webkit-scrollbar{display:none;}
+  .mRecMore{
+    display:block;text-align:center;color:#8b8b86;padding:2px 0 0;
+    pointer-events:none;
   }
-  body.mSheetOn .mSheet{transform:none;}
-  body.light .mSheet{background:#fffdf8;box-shadow:0 -18px 40px -20px rgba(46,31,26,.3);}
-  .mSheetGrip{
-    display:block;width:38px;height:4px;border-radius:2px;margin:2px auto 12px;
-    background:rgba(236,236,234,.2);
-  }
-  body.light .mSheetGrip{background:rgba(46,31,26,.18);}
-  .mSheetHd{padding:0 20px 2px;font-size:17px;font-weight:500;color:#ececec;letter-spacing:-.2px;}
-  body.light .mSheetHd{color:#2e1f1a;}
-  .mSheetEy{
-    padding:14px 20px 6px;
-    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#8b8b86;
-  }
-  .mSheetOpt{
+  .mRecMore svg{width:12px;height:8px;}
+  .mRecOpt{
     display:flex;align-items:center;gap:12px;width:100%;
-    padding:14px 20px;font:inherit;text-align:left;
-    background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;
+    padding:13px 12px;font:inherit;text-align:left;
+    background:none;border:0;border-radius:12px;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;position:relative;
   }
-  .mSheetOpt:active{background:rgba(255,255,255,.05);}
-  body.light .mSheetOpt:active{background:rgba(46,31,26,.05);}
-  .mSheetOpt .t{flex:1;min-width:0;}
-  .mSheetOpt b{display:block;font-size:15px;font-weight:400;color:#ececec;}
-  .mSheetOpt i{display:block;font-size:12.5px;font-style:normal;color:#8b8b86;margin-top:2px;}
-  .mSheetOpt.on b{font-weight:500;}
-  .mSheetOpt .tick{width:16px;height:16px;flex:none;color:#ececec;opacity:0;}
-  .mSheetOpt.on .tick{opacity:1;}
-  body.light .mSheetOpt b,body.light .mSheetOpt .tick{color:#2e1f1a;}
-  body.light .mSheetOpt i{color:#7d6b58;}
+  /* a hairline between rows, drawn by the row above so the selected plate has
+     nothing crossing it */
+  .mRecOpt + .mRecOpt::before{
+    content:"";position:absolute;left:12px;right:12px;top:-1px;height:1px;
+    background:rgba(236,236,234,.09);
+  }
+  body.light .mRecOpt + .mRecOpt::before{background:rgba(46,31,26,.1);}
+  .mRecOpt.on{background:rgba(255,255,255,.07);}
+  .mRecOpt.on::before,.mRecOpt.on + .mRecOpt::before{opacity:0;}
+  body.light .mRecOpt.on{background:rgba(46,31,26,.06);}
+  .mRecOpt .t{flex:1;min-width:0;}
+  .mRecOpt b{display:block;font-size:15px;font-weight:400;color:#ececec;
+             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mRecOpt i{display:block;font-size:12.5px;font-style:normal;color:#8b8b86;margin-top:3px;}
+  body.light .mRecOpt b{color:#2e1f1a;}
+  body.light .mRecOpt i{color:#7d6b58;}
+  /* the count of readings that record carried */
+  .mRecOpt .n{
+    flex:none;display:flex;align-items:center;gap:6px;
+    height:34px;padding:0 11px;border-radius:10px;
+    background:rgba(255,255,255,.11);color:#fff;
+    font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;
+  }
+  .mRecOpt .n svg{width:14px;height:14px;opacity:.75;}
+  body.light .mRecOpt .n{background:rgba(46,31,26,.1);color:#2e1f1a;}
   .msBox{
     display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;
     border:1px solid #2a2a28;border-radius:12px;color:#8b8b86;background:transparent;
@@ -4930,7 +4945,7 @@
            them: one row, one height, because choosing the record set and
            searching within it are the same question asked twice. -->
       <button class="msRec" id="mRecSel" type="button" aria-haspopup="dialog" aria-expanded="false">
-        <span id="mRecLbl">All tests</span>
+        <span id="mRecLbl">All records</span>
         <svg viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
       <div class="msBox">
@@ -4938,19 +4953,17 @@
         <input id="mSearchIn" type="search" placeholder="Search biomarkers" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search biomarkers">
         <button class="msClear" id="mSearchClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       </div>
+    <!-- The record menu, under the button that opens it. A native select has
+         no room for a category, a date and a count per option, so this is a
+         list of its own: title, "category | date", and the number of readings
+         that record carried. It scrolls when there are more than fit. -->
+    <div class="mRecMenu" id="mRecMenu" role="listbox" aria-label="Choose a record" hidden>
+      <div class="mRecScroll" id="mRecList"></div>
+      <i class="mRecMore" aria-hidden="true"><svg viewBox="0 0 12 8" fill="none"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></i>
+    </div>
       </div>
     </div>
-    <!-- The record sheet. A native select on a phone is an OS control that
-         cannot carry an eyebrow, a date under a label or a count, so this is
-         the platform's other answer: a sheet up from the bottom edge, inside
-         the frame, over a scrim that closes it. -->
-    <div class="mSheetBg" id="mSheetBg" hidden></div>
-    <div class="mSheet" id="mSheet" role="dialog" aria-modal="true" aria-label="Choose a record set" hidden>
-      <i class="mSheetGrip" aria-hidden="true"></i>
-      <div class="mSheetHd">Records</div>
-      <div class="mSheetEy">From 2026</div>
-      <div class="mSheetList" id="mSheetList"></div>
-    </div>
+
     <!-- The skeleton is the list's own shape: a group head (title, two lines of
          description) and rows laid out on the row's grid -- a name, the three
          range bars, a value line and a status pill -- all as shimmering blocks,
@@ -15533,10 +15546,19 @@
     // The record sets. Every reading belongs to one of the two named tests, so
     // "Latest test" is a real subset rather than a label that changes nothing,
     // and the date under each row is the date of the test it came from.
-    const TESTS = [
-      { id: 'all',  label: 'All tests',     note: '16', date: '' },
-      { id: 't0',   label: 'Latest test',   note: '24 Jan 2026', date: 'Jan 2026' },
-      { id: 't1',   label: 'Previous test', note: '13 Apr 2025', date: 'Apr 2025' }
+    // The records, as the design lists them: a title, the category and date
+    // under it, and how many readings that record carried. The counts sum to
+    // 136 over a panel of 110, which is right rather than wrong -- a biomarker
+    // measured in August and again in May is in both reports. So a reading
+    // belongs to one or more records, "All records" is the 110 distinct ones,
+    // and each record shows exactly the number on its badge.
+    const RECS = [
+      { id: 'all', label: 'All records' },
+      { id: 'r1',  label: 'Pathology Report',        cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026' },
+      { id: 'r2',  label: 'Pathology Report',        cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026' },
+      { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026' },
+      { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025' },
+      { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025' }
     ];
     // where the reading sits on its own range bar: inside the green, into the
     // amber, past it -- an unclassified one has no place to sit and shows none
@@ -15555,19 +15577,42 @@
           // all stack on one pixel and do not move between loads
           let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
           const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
-          // which test this reading came from, off the same hash: deterministic,
-          // so the two sets are the same two sets on every load
-          const t = (h % 5) < 3 ? 1 : 2;
-          html += '<div class="mbrow" data-t="' + TESTS[t].id + '">' +
+          html += '<div class="mbrow">' +
                     '<span>' + name + '</span>' +
                     '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
-                    '<span class="g">' + val + ' &nbsp;|&nbsp; ' + TESTS[t].date + '</span>' +
+                    '<span class="g" data-v="' + val + '">' + val + '</span>' +
                     '<span class="st ' + st + '">' + ST_WORD[st] + '</span>' +
                   '</div>';
         });
         html += '</section>';
       });
       host.innerHTML = html;
+
+      // Which records each reading is in. Exact quotas by construction: walk
+      // the records' counts as one run of 136 and step through the rows by a
+      // stride coprime with 110, so the first 110 steps touch every row once
+      // (nothing is orphaned) and the remaining 26 give those rows a second
+      // record. Deterministic, so a record is the same set on every load.
+      const rows = [].slice.call(host.querySelectorAll('.mbrow'));
+      const N = rows.length;
+      rows.forEach(r => { r.dataset.r = ''; });
+      let ptr = 0;
+      RECS.forEach(rec => {
+        if (rec.id === 'all') return;
+        for (let k = 0; k < rec.n; k++, ptr++){
+          const row = rows[(ptr * 37) % N];
+          row.dataset.r += (row.dataset.r ? ' ' : '') + rec.id;
+        }
+      });
+      // the date a reading shows is the most recent record it appears in, and
+      // RECS is in date order, so it is the first one listed
+      const byId = {};
+      RECS.forEach(rec => { byId[rec.id] = rec; });
+      rows.forEach(r => {
+        const first = r.dataset.r.split(' ')[0];
+        const v = r.querySelector('.g');
+        v.innerHTML = v.dataset.v + ' &nbsp;|&nbsp; ' + ((byId[first] || {}).short || '');
+      });
     })();
 
     const groups = [...recs.querySelectorAll('.mgrp')];
@@ -15661,7 +15706,8 @@
         for (const row of g.querySelectorAll('.mbrow')){
           const hit = (!q || row.firstElementChild.textContent.toLowerCase().includes(q)) &&
                       (chipSt === 'all' || rowSt(row) === chipSt) &&
-                      (recSet === 'all' || row.dataset.t === recSet);
+                      (recSet === 'all' ||
+                       (' ' + row.dataset.r + ' ').indexOf(' ' + recSet + ' ') >= 0);
           row.hidden = !hit; if (hit) shown++;
         }
         g.hidden = shown === 0; if (shown) any = true;
@@ -15696,46 +15742,52 @@
     // picking an option runs the list through the same loading beat a keystroke
     // and a chip run through -- it is the same act, a different set being
     // fetched.
-    (function sheetInit(){
+    (function recMenuInit(){
       const btn = document.getElementById('mRecSel'), lbl = document.getElementById('mRecLbl');
-      const sheet = document.getElementById('mSheet'), bg = document.getElementById('mSheetBg');
-      const list = document.getElementById('mSheetList');
-      if (!btn || !sheet || !list) return;
-      // Into the frame, as the keyboard is. Written in the markup beside the
-      // controls it belongs to, but position:absolute resolves against the
-      // nearest positioned ancestor -- which there is the scroller, so the
-      // sheet sat at the bottom of the CONTENT, hundreds of pixels below the
-      // screen. It has to be a child of the phone to be bottom of the screen.
-      const frame = document.getElementById('phone');
-      if (frame){ frame.appendChild(bg); frame.appendChild(sheet); }
-      const TICK = '<svg class="tick" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
-                   '<path d="M3 8.4 6.3 11.7 13 5" stroke="currentColor" stroke-width="1.8" ' +
-                   'stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      list.innerHTML = TESTS.map(t =>
-        '<button class="mSheetOpt' + (t.id === 'all' ? ' on' : '') + '" type="button" data-t="' + t.id + '">' +
-          '<span class="t"><b>' + t.label + '</b>' + (t.note ? '<i>' + t.note + '</i>' : '') + '</span>' +
-          TICK +
+      const menu = document.getElementById('mRecMenu'), list = document.getElementById('mRecList');
+      if (!btn || !menu || !list) return;
+      const CHART = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+                    '<path d="M2 11.2 5.6 7.2 8.4 9.6 14 3.6" stroke="currentColor" stroke-width="1.6" ' +
+                    'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      list.innerHTML = RECS.map(r =>
+        '<button class="mRecOpt' + (r.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
+                'aria-selected="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
+          '<span class="t"><b>' + r.label + '</b>' +
+            (r.cat ? '<i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i>' : '') + '</span>' +
+          (r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
         '</button>').join('');
       const open = on => {
-        document.body.classList.toggle('mSheetOn', on);
+        document.body.classList.toggle('mRecOn', on);
         btn.setAttribute('aria-expanded', String(on));
-        if (on){ sheet.hidden = false; bg.hidden = false; }
-        // hidden only after it has slid away, or it would vanish rather than go
+        if (on) menu.hidden = false;
+        // hidden after it has faded, or it would vanish rather than close
         else setTimeout(() => {
-          if (!document.body.classList.contains('mSheetOn')){ sheet.hidden = true; bg.hidden = true; }
-        }, 320);
+          if (!document.body.classList.contains('mRecOn')) menu.hidden = true;
+        }, 200);
       };
-      btn.addEventListener('click', () => open(!document.body.classList.contains('mSheetOn')));
-      bg.addEventListener('click', () => open(false));
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        open(!document.body.classList.contains('mRecOn'));
+      });
+      // anywhere outside closes it, and so does Escape: the menu has no scrim
+      // of its own, because the control that opened it should stay readable
+      addEventListener('pointerdown', e => {
+        if (document.body.classList.contains('mRecOn') &&
+            !menu.contains(e.target) && !btn.contains(e.target)) open(false);
+      });
       addEventListener('keydown', e => {
-        if (e.key === 'Escape' && document.body.classList.contains('mSheetOn')) open(false);
+        if (e.key === 'Escape' && document.body.classList.contains('mRecOn')) open(false);
       });
       list.addEventListener('click', e => {
-        const o = e.target.closest('.mSheetOpt');
+        const o = e.target.closest('.mRecOpt');
         if (!o) return;
-        [].slice.call(list.children).forEach(x => x.classList.toggle('on', x === o));
-        recSet = o.dataset.t;
-        lbl.textContent = (TESTS.find(t => t.id === recSet) || TESTS[0]).label;
+        [].slice.call(list.children).forEach(x => {
+          const on = x === o;
+          x.classList.toggle('on', on);
+          x.setAttribute('aria-selected', String(on));
+        });
+        recSet = o.dataset.r;
+        lbl.textContent = (RECS.find(r => r.id === recSet) || RECS[0]).label;
         open(false);
         if (countChips) countChips();
         load(false);          // through the skeleton, as everything else is
@@ -15767,7 +15819,7 @@
       countChips = function(){
         const tally = {};
         allRows.forEach(r => {
-          if (recSet !== 'all' && r.dataset.t !== recSet) return;
+          if (recSet !== 'all' && (' ' + r.dataset.r + ' ').indexOf(' ' + recSet + ' ') < 0) return;
           const k = rowSt(r); tally[k] = (tally[k] || 0) + 1;
         });
         let total = 0;
