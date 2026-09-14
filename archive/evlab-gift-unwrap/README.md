@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-14, "Dragged carousel, dots below; Hero tweak" |
+| Captured from version | 2026-09-14, "Light hero stays white under the Dark theme" |
 | Captured on | 2026-09-14 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -35,7 +35,7 @@ the bar evenly.
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
 | Card | Cards, List | `card=list` |
-| Hero | Dark (the glass card), Light: the hero card warm white with black type and a black button, no glass; in dynamic motion the seed turns white as it lands | `hero=light` |
+| Hero | Dark (the glass card), Light: the hero card warm white (`#FCFBF9`, fixed, whatever the Theme) with black type and a black button, no glass; in dynamic motion the seed turns white as it lands | `hero=light` |
 | Next | Outside, Inside: where the What's next block sits, in its own card under the hero card or inside the hero card under the button, above a hairline (the separate card then goes) | `next=inside` |
 | Heavy | No, Yes: much more text in the card (a longer description, twelve rows) to test the card's own scroll | `heavy=yes` |
 | Panel | a colour swatch (default black), an opacity in percent (default 32) and a backdrop blur in pixels (default 120, the maximum) for the second card in Cards | `panel=000000&alpha=32&blur=120` |
