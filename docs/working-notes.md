@@ -4553,6 +4553,42 @@ again in opacity, so a slider at 100% arrived at 72; the colour is solid now
 and opacity carries it alone. Off by default: it is a choice about a screen,
 not a property of the component.
 
+### 5.162 Four corrections, and one of them was upside down
+
+**Chips, 44px and a 1.5px edge.** The height is explicit now rather than falling
+out of the padding -- a control has a size, and a padding-derived one drifts the
+moment the label's font moves. The 1.5px edge could not be a border: Chromium
+floors border-width to whole CSS pixels, measured at dpr 1, 2 and 3, so a
+declared 1.5px border paints at 1. It is an inset box-shadow ring instead, which
+renders at the width it is given and, being outside layout, cannot move the row
+by a sub-pixel -- which is what the transparent-border trick existed for.
+
+**The counts are counted.** "Make sure ALL = the sum of all chips, and the items
+in the list match the number of the chip selected." They were the design's
+figures -- 81 optimal, 9 suboptimal, 6 out of range -- written into the markup
+over a list of twenty-five rows, so every chip disagreed with what tapping it
+showed and All agreed with nothing. They are tallied from the rows at init now:
+All is the sum of the rest, which is also the row count, because they are the
+same arithmetic. A range with nothing in it drops its chip rather than sitting
+there as a dead control at zero -- and `display:flex` on the class beats the
+UA's `[hidden]{display:none}`, so it has to be told twice. 25 = 17 + 8, and
+each chip's number is exactly what its list shows.
+
+**The landing opens on a body.** "Landing should start by a single dot and zoom
+out to form a body shape." The pull-back from the one dot does not open onto a
+formless field any more: it resolves into a person, holds long enough to be
+read, and only then comes apart into the universe of signals it is made of.
+Which makes the universe read as *yours* rather than as space, and is the move
+the teaser opens with.
+
+**And every organ on that page had been upside down.** The clouds are authored
+in the engine's space, where +y is up; a screen's +y is down, and the painter
+has always negated it (`oy - qy * sc`). My organInto added it. On a heart that
+is nearly invisible -- it is roughly symmetric about its own waist, and I had
+looked at it a dozen times while chasing a different bug. A body arrived with
+its head at the bottom and the mistake was unmissable in one frame. Worth
+remembering: the shapes that hide an error are the ones you verify against.
+
 ---
 
 ## 6. Open items

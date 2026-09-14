@@ -932,14 +932,26 @@
      moment a chip is chosen, which is the same rule the cards follow. */
   #phone .fchip{
     font:inherit;font-size:12.5px;color:#bdbdb9;
-    border:1px solid transparent;border-radius:999px;padding:9px 14px;
+    /* An explicit height rather than one that falls out of the padding: the
+       chip is a control with a size, and padding-derived height drifts the
+       moment the label's font or line-height moves.
+       The active edge is an inset ring, not a border. Chromium floors
+       border-width to whole CSS pixels -- measured at dpr 1, 2 and 3, a
+       declared 1.5px border is painted at 1 -- so a border cannot be the 1.5
+       the design asks for. A box-shadow ring renders at the width it is given,
+       and being outside layout it cannot move the row by so much as a
+       sub-pixel, which is what the transparent-border trick was for. */
+    border:0;border-radius:999px;height:44px;padding:0 16px;
     background:rgba(255,255,255,.08);display:flex;gap:7px;align-items:center;flex:none;
     cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;
-    transition:background .18s ease,border-color .18s ease,color .18s ease,transform .12s ease;
+    transition:background .18s ease,box-shadow .18s ease,color .18s ease,transform .12s ease;
   }
+  /* display:flex on the class beats the UA's [hidden]{display:none}, so an
+     empty range's chip has to be told again */
+  #phone .fchip[hidden]{display:none;}
   #phone .fchip:active{transform:scale(.96);}
   #phone .fchip:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:2px;}
-  #phone .fchip.on{background:rgba(255,255,255,.16);border-color:#fff;color:#ececec;}
+  #phone .fchip.on{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1.5px #fff;color:#ececec;}
   #phone .fchip i{width:8px;height:8px;border-radius:3px;font-style:normal;}
   .mrecs{padding:8px 13px 0;}
   .mrecs h3{font-size:14.5px;margin:14px 0 6px;font-weight:600;color:#ececec;}
@@ -2983,8 +2995,8 @@
   /* the same two steps on the pale ground, where "lighter" is darker: the
      plate is ink over paper, and the active edge is the theme's own ink
      rather than white, which on white is not an edge at all */
-  body.light #phone .fchip{border-color:transparent;background:rgba(46,31,26,.07);color:#6b5c4a;}
-  body.light #phone .fchip.on{background:rgba(46,31,26,.14);border-color:#2e241c;color:#2e241c;}
+  body.light #phone .fchip{background:rgba(46,31,26,.07);color:#6b5c4a;}
+  body.light #phone .fchip.on{background:rgba(46,31,26,.14);box-shadow:inset 0 0 0 1.5px #2e241c;color:#2e241c;}
   body.light #phone .fchip:focus-visible{outline-color:rgba(46,31,26,.6);}
   body.light .mrecs h3{color:#2e1f1a;}
   body.light .mrecs .gd{color:#9b8a75;}
@@ -4797,7 +4809,7 @@
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
     <div class="mV4" id="mV4"><div class="mbrow2 mV4Row" id="mV4Row"></div></div>
-    <div class="msel">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+    <div class="msel" id="mRecCount">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
     <!-- Buttons, not divs. A chip that filters is a control: it takes the tab
          order, it answers the keyboard, and aria-pressed says which one is on.
          data-st is the status class on a row's pill, so the filter reads the
@@ -12359,18 +12371,20 @@
     // has the lower third to itself; done in world space rather than as a
     // screen offset, so it parallaxes with everything else.
     const KEYS = [
-      { at: 0.000, st: 'dot',   cam: -0.62, spread: 0.00, dof: 0.55, pan:  0.00 },
-      { at: 0.070, st: 'dot',   cam: -0.34, spread: 0.00, dof: 0.80, pan:  0.00 },
-      { at: 0.200, st: 'uni',   cam:  0.16, spread: 1.00, dof: 1.00, pan:  0.00 },
-      { at: 0.300, st: 'uni',   cam:  0.62, spread: 1.00, dof: 1.00, pan:  0.00 },
-      { at: 0.375, st: 'dark',  cam:  0.86, spread: 1.00, dof: 1.00, pan:  0.00 },
-      { at: 0.450, st: 'dark',  cam:  0.86, spread: 1.00, dof: 1.00, pan:  0.00 },   // LOOK CLOSER holds
-      { at: 0.560, st: 'heart', cam:  0.20, spread: 0.55, dof: 0.45, pan: -0.06 },   // forming
-      { at: 0.620, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // formed
-      { at: 0.700, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // HELD, while the reading is read
-      { at: 0.762, st: 'lung',  cam: -0.02, spread: 0.35, dof: 0.26, pan: -0.17 },   // comes apart, reorganises
-      { at: 0.840, st: 'lung',  cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // HELD
-      { at: 0.895, st: 'field', cam:  0.34, spread: 0.30, dof: 0.26, pan: -0.05 },
+      { at: 0.000, st: 'dot',   cam: -0.66, spread: 0.00, dof: 0.55, pan:  0.00 },
+      { at: 0.060, st: 'dot',   cam: -0.44, spread: 0.00, dof: 0.80, pan:  0.00 },
+      { at: 0.175, st: 'body',  cam:  0.10, spread: 0.85, dof: 0.40, pan: -0.02 },   // the pull-back forms a person
+      { at: 0.250, st: 'body',  cam:  0.02, spread: 0.00, dof: 0.16, pan: -0.02 },   // HELD, so the body is read
+      { at: 0.335, st: 'uni',   cam:  0.42, spread: 1.00, dof: 1.00, pan:  0.00 },   // and opens into the signals it is made of
+      { at: 0.395, st: 'uni',   cam:  0.72, spread: 1.00, dof: 1.00, pan:  0.00 },
+      { at: 0.450, st: 'dark',  cam:  0.90, spread: 1.00, dof: 1.00, pan:  0.00 },
+      { at: 0.515, st: 'dark',  cam:  0.90, spread: 1.00, dof: 1.00, pan:  0.00 },   // LOOK CLOSER holds
+      { at: 0.600, st: 'heart', cam:  0.20, spread: 0.55, dof: 0.45, pan: -0.06 },   // forming
+      { at: 0.655, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // formed
+      { at: 0.722, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // HELD, while the reading is read
+      { at: 0.778, st: 'lung',  cam: -0.02, spread: 0.35, dof: 0.26, pan: -0.17 },   // comes apart, reorganises
+      { at: 0.846, st: 'lung',  cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // HELD
+      { at: 0.898, st: 'field', cam:  0.34, spread: 0.30, dof: 0.26, pan: -0.05 },
       { at: 0.945, st: 'field', cam:  0.34, spread: 0.00, dof: 0.20, pan: -0.05 },   // HELD
       { at: 0.985, st: 'phone', cam:  0.06, spread: 0.25, dof: 0.28, pan: -0.02 },
       { at: 1.000, st: 'phone', cam:  0.06, spread: 0.00, dof: 0.20, pan: -0.02 }
@@ -12378,18 +12392,19 @@
     // The copy. Each line is a range and a place; nothing has a trigger of its
     // own, because two clocks on one page is how it starts to feel assembled.
     const COPY = [
-      { a: 0.012, b: 0.150, cls: 'lpLow',         t: 'It all starts with one signal.' },
-      { a: 0.205, b: 0.330, cls: 'lpLow',         t: 'Revealing millions of signals from across your body.' },
-      { a: 0.390, b: 0.500, cls: 'lpMid lpTitle', t: 'Look closer.' },
-      { a: 0.556, b: 0.628, cls: 'lpLow',         t: 'Your organs age differently.' },
-      { a: 0.638, b: 0.716, cls: 'lpLow',         t: 'Some exactly as they should.' },
-      { a: 0.780, b: 0.862, cls: 'lpLow',         t: 'Others may be ageing faster.' },
-      { a: 0.890, b: 0.946, cls: 'lpLow',         t: 'Together, they tell a bigger story.' },
+      { a: 0.010, b: 0.130, cls: 'lpLow',         t: 'It all starts with one signal.' },
+      { a: 0.196, b: 0.300, cls: 'lpLow',         t: 'Your body is constantly sending them.' },
+      { a: 0.342, b: 0.432, cls: 'lpLow',         t: 'Millions of signals, from across your body.' },
+      { a: 0.458, b: 0.562, cls: 'lpMid lpTitle', t: 'Look closer.' },
+      { a: 0.600, b: 0.672, cls: 'lpLow',         t: 'Your organs age differently.' },
+      { a: 0.686, b: 0.744, cls: 'lpLow',         t: 'Some exactly as they should.' },
+      { a: 0.792, b: 0.868, cls: 'lpLow',         t: 'Others may be ageing faster.' },
+      { a: 0.898, b: 0.948, cls: 'lpLow',         t: 'Together, they tell a bigger story.' },
       { a: 0.958, b: 1.000, cls: 'lpLow lpTitle', t: 'Introducing Organ Age.' }
     ];
     // where the organ readout is up, and which organ it is reading
-    const CARD = [{ a: 0.628, b: 0.742, o: O_HEART }, { a: 0.776, b: 0.876, o: O_LUNG }];
-    const LEGEND = [0.888, 0.952];
+    const CARD = [{ a: 0.662, b: 0.750, o: O_HEART }, { a: 0.812, b: 0.882, o: O_LUNG }];
+    const LEGEND = [0.896, 0.952];
     const PHONE  = [0.956, 1.000];
 
     // ---- small helpers ------------------------------------------------------
@@ -12466,7 +12481,12 @@
         }
         const q = pts[k];
         s.x[i] = ox + q.x * sx;
-        s.y[i] = oy + q.y * sy;
+        // minus, as the painter does (oy - qy * sc): the clouds are authored in
+        // the engine's space where +y is up, and a screen's +y is down. Adding
+        // it drew every organ on this page upside down -- invisible on a heart,
+        // which is nearly symmetric about its own waist, and unmissable the
+        // moment a body arrived with its head at the bottom.
+        s.y[i] = oy - q.y * sy;
         // Depth, capped rather than taken at the organ's drawn scale. The
         // perspective divide is what makes the universe a volume, and run over
         // an organ's own depth at full size it is what destroys it: the back
@@ -12541,6 +12561,13 @@
         dark.a[i] = pA[i]; dark.r[i] = pR[i];
       }
       ST.dark = dark;
+
+      // 02 — the body. The zoom out from the one dot does not open onto a
+      // formless field: pull back far enough and the dots turn out to be a
+      // person. It is the same move the teaser opens with, and it is what
+      // makes the universe that follows read as *yours* rather than as space.
+      const body = newState(); organInto(body, BODY_I, 0, N, 0.52, 0.52, 0, 0, 0);
+      ST.body = body;
 
       // 04/05 and 06 — the two organs, whole and centred.
       // 0.78 rather than the full frame: an organ that fills the viewport has
@@ -15429,6 +15456,33 @@
       const bar = document.getElementById('mChips');
       if (!bar) return;
       const chips = [].slice.call(bar.querySelectorAll('.fchip'));
+      // The counts are COUNTED, not written down. They were the design's
+      // figures -- 81 optimal, 9 suboptimal, 6 out of range -- over a list of
+      // twenty-five rows, so every chip disagreed with what tapping it showed
+      // and All agreed with nothing. A number beside a filter is a promise
+      // about what the filter will do; deriving it from the rows is the only
+      // way that promise cannot go stale, and it means a row added later is
+      // counted without anyone remembering to.
+      //
+      // A range with nothing in it is not a control, so its chip leaves. All
+      // is the sum of the ones that stay, which is also the row count -- the
+      // two cannot drift because they are the same arithmetic.
+      const allRows = [].slice.call(recs.querySelectorAll('.mbrow'));
+      const tally = {};
+      allRows.forEach(r => { const k = rowSt(r); tally[k] = (tally[k] || 0) + 1; });
+      let total = 0;
+      chips.forEach(c => {
+        const k = c.dataset.st;
+        if (k === 'all') return;
+        const n = tally[k] || 0;
+        c.hidden = n === 0;
+        c.querySelector('b').textContent = n;
+        total += n;
+      });
+      const all = chips.find(c => c.dataset.st === 'all');
+      if (all) all.querySelector('b').textContent = total;
+      const rec = document.getElementById('mRecCount');
+      if (rec) rec.firstChild.textContent = total + ' record' + (total === 1 ? '' : 's') + ' ';
       chips.forEach(c => c.addEventListener('click', () => {
         if (c.classList.contains('on')) return;
         chips.forEach(o => {
