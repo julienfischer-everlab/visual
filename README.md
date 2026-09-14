@@ -1591,6 +1591,21 @@ black — the phone frame and the dashboard chrome cover them entirely.
   of canvas width across the whole transition). Badge and status dot share one
   scale: amber older, green younger, neutral on par.
   The Library and the Overview card are instances of it.
+- **Liquid Glass navigation** (mobile). One material, two navigations. The
+  pane is a gradient of its own over a blurred, saturated backdrop with a
+  dark plate beneath it — the blur alone leaves 9.5px labels sitting on
+  whatever happens to be behind them — plus a bright rim along the top edge,
+  a sheen falling from the upper left, and a shadow that lifts it off the
+  content. At the bottom, a floating dock: one 56px pill holding the four
+  destinations, and the chat beside it as its own 56px pill, 8px away, the
+  same glass warmed with the accent so it carries more weight without leaving
+  the system. The active destination takes a brighter layer of the same glass
+  rather than a solid fill. The nav frame itself passes pointer events
+  through, so the gap between the two pills is not a dead strip. At the top,
+  the same pane as a 48px pill that sticks to the top of the scroller — the
+  content passes under it and the blur does the separating — carrying the
+  title, the overflow that used to be the fifth tab, and share.
+
 - **Asset export.** Every `makeOrganView` instance can render itself as a
   transparent PNG, no smaller than 1920px on either side. `paint(px, W, H, t,
   rk)` is the renderer, independent of any one canvas: `rk` scales the dot

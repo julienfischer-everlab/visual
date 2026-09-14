@@ -4207,6 +4207,45 @@ The nav is two entries now, Organ Library and Organs -- Fine Grain, which
 is the pair the Density control already mirrors -- so the page and the bar
 say exactly the same thing, which they did not quite before.
 
+### 5.155 Liquid Glass, on the mobile overview
+
+A new navigation for the phone: a floating dock at the bottom and a floating
+pill at the top, both of one material.
+
+The material is three layers, which is what keeps it from reading as a
+frosted white rectangle. A gradient of its own runs across the pane; under
+that gradient sits a dark plate at 55% (in light, a white one at 42%) --
+without it the blur leaves 9.5px labels sitting on whatever happens to be
+behind them, and the brief asked for legibility as well as translucency.
+Over both, a sheen: a radial fall from the upper left and a hairline of
+specular along the top edge, where glass of any thickness would catch the
+light. The backdrop is blurred 26px, saturated 180% and lifted 5%, so what
+is behind it keeps its colour rather than going grey. A shadow underneath
+separates it from the content; an inset highlight top and bottom gives it a
+thickness.
+
+The dock is two pieces at one height, 56px, eight pixels apart: an island
+with the four destinations and the chat on its own beside it. The chat is
+the same glass warmed with the accent -- more weight than any one of the
+four without leaving the system. The active destination takes a brighter
+layer of the same glass, not a solid fill, so nothing in the pill is opaque.
+The nav element that holds them both takes no pointer events, only the two
+pills do, so the gap between them is not a dead strip over the content.
+
+The fifth tab, More, moved to the top pill, where an overflow belongs; the
+four that stayed are the four destinations. The top pill sticks to the top
+of the scroller rather than sitting above it as a header, so the content
+passes under the glass and the blur does the separating -- 48px, the title
+at 17px, the overflow and share as two round panes of the same material.
+
+The scroller pays for the float, as it did for the bar: 92px of bottom
+padding plus the safe area, which is the dock's 56 plus its 14 plus room to
+breathe. The frame's drawn home indicator sits below the dock, 9px clear.
+
+The four are still presentational -- the prototype has one screen -- but the
+island answers a tap now: the brighter layer moves and aria-selected follows
+it, because a nav that does not respond to being pressed cannot be judged.
+
 ---
 
 ## 6. Open items

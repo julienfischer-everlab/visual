@@ -661,43 +661,154 @@
      pays for it in padding: a bar that floats over content with nothing making
      room for it hides the last row of the list, which is the row people scroll
      to reach. */
+  /* ---- Liquid Glass ------------------------------------------------------
+     One material, both navigations. Not a frosted rectangle: a pane with a
+     gradient of its own over a blurred and saturated backdrop, a bright rim
+     along the top edge where the glass would curve, a soft sheen falling from
+     the upper left, and a shadow that lifts it off what it is over. Three
+     layers, so it reads as depth rather than as opacity. */
+  .lgGlass{
+    position:relative;
+    /* a dark pane under the light one: the blur alone leaves type sitting on
+       whatever happens to be behind it, and the labels are 9.5px */
+    background:
+      linear-gradient(158deg,rgba(255,255,255,.15) 0%,rgba(255,255,255,.055) 44%,rgba(255,255,255,.10) 100%),
+      rgba(16,16,17,.55);
+    -webkit-backdrop-filter:blur(26px) saturate(180%) brightness(1.05);
+    backdrop-filter:blur(26px) saturate(180%) brightness(1.05);
+    border:1px solid rgba(255,255,255,.18);
+    box-shadow:
+      0 16px 34px -14px rgba(0,0,0,.62),
+      0 4px 12px -7px rgba(0,0,0,.5),
+      inset 0 1px 0 rgba(255,255,255,.28),
+      inset 0 -1px 0 rgba(255,255,255,.06);
+  }
+  /* the sheen: where the light falls on it, and the hairline along the curve */
+  .lgGlass::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:
+      radial-gradient(135% 105% at 16% -25%,rgba(255,255,255,.22),rgba(255,255,255,0) 56%),
+      linear-gradient(to bottom,rgba(255,255,255,.10),rgba(255,255,255,0) 24%,rgba(255,255,255,0) 76%,rgba(255,255,255,.05));
+  }
+  .lgGlass > *{position:relative;}   /* the content rides over the sheen */
+  body.light .lgGlass{
+    background:
+      linear-gradient(158deg,rgba(255,255,255,.74) 0%,rgba(255,255,255,.48) 44%,rgba(255,255,255,.64) 100%),
+      rgba(255,255,255,.42);
+    border-color:rgba(255,255,255,.72);
+    box-shadow:
+      0 16px 34px -16px rgba(46,31,26,.30),
+      0 3px 10px -6px rgba(46,31,26,.18),
+      inset 0 1px 0 rgba(255,255,255,.92),
+      inset 0 -1px 0 rgba(255,255,255,.45);
+  }
+  body.light .lgGlass::before{
+    background:
+      radial-gradient(135% 105% at 16% -25%,rgba(255,255,255,.75),rgba(255,255,255,0) 56%),
+      linear-gradient(to bottom,rgba(255,255,255,.5),rgba(255,255,255,0) 24%);
+  }
+
+  /* ---- the dock: an island of four, and the chat beside it ----------------
+     Both float over the content rather than sitting on a bar, both 56px, a
+     short gap between them so they read as one system in two pieces. The nav
+     itself is only a frame: it takes no pointer events, so the content under
+     the gap is still reachable. */
   .mTabs{display:none;}
   body.v8 .mTabs{
-    display:flex;flex-wrap:wrap;position:absolute;left:0;right:0;bottom:0;z-index:6;
-    /* room above the home indicator: on the device the safe area plus 18px
-       (it was 8, and the labels sat on the indicator); in the frame the pill
-       below is drawn in that same room */
-    padding:9px 6px calc(18px + env(safe-area-inset-bottom));
-    background:rgba(10,10,10,.94);border-top:1px solid rgba(255,255,255,.07);
-    -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    display:block;position:absolute;left:0;right:0;bottom:0;z-index:6;
+    padding:0 12px calc(14px + env(safe-area-inset-bottom));
+    pointer-events:none;
   }
+  body.v8 .mDock{display:flex;align-items:center;gap:8px;pointer-events:auto;}
+  body.v8 .mIsland{flex:1;min-width:0;height:56px;border-radius:28px;display:flex;align-items:center;padding:0 4px;}
   /* the iPhone's home indicator, in the frame only -- the device draws its
-     own in the safe area -- fixed with the tab bar, 8px off the bottom */
+     own in the safe area -- under the dock, with room for both */
   .mHome{display:none;}
-  body.v8:not(.fullscr) .mTabs{padding-bottom:30px;}
+  body.v8:not(.fullscr) .mTabs{padding-bottom:22px;}
   body.v8:not(.fullscr) .mTabs .mHome{
     display:block;position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
-    width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);   /* "lighter by 70%" */
+    width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);
   }
   body.light.v8:not(.fullscr) .mTabs .mHome{background:rgba(0,0,0,.24);}
-  body.light.v8 .mTabs{
-    background:rgba(255,255,255,.96);border-top-color:rgba(0,0,0,.08);
-  }
+  /* an action: icon over a compact label, the whole of it a target. The
+     active one takes a brighter layer of the same glass, not a solid fill. */
   body.v8 .mTab{
-    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
-    color:#8b8b86;text-decoration:none;
+    flex:1;min-width:0;height:48px;border-radius:24px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    color:rgba(236,236,234,.68);text-decoration:none;cursor:pointer;
+    transition:color .24s ease,background .24s ease,box-shadow .24s ease,transform .16s ease;
   }
-  body.v8 .mTab.on{color:#ececea;}
-  body.light.v8 .mTab{color:#7b7268;}
-  body.light.v8 .mTab.on{color:#141413;}
+  body.v8 .mTab:hover{color:rgba(236,236,234,.85);}
+  body.v8 .mTab:active{transform:scale(.955);}
+  body.v8 .mTab.on{
+    color:#fff;
+    background:linear-gradient(160deg,rgba(255,255,255,.20),rgba(255,255,255,.07));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 -1px 0 rgba(255,255,255,.05),0 2px 8px -5px rgba(0,0,0,.5);
+  }
+  body.light.v8 .mTab{color:rgba(46,31,26,.55);}
+  body.light.v8 .mTab:hover{color:rgba(46,31,26,.8);}
+  body.light.v8 .mTab.on{
+    color:#141413;
+    background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(255,255,255,.5));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 2px 8px -5px rgba(46,31,26,.28);
+  }
   body.v8 .mTab svg{
-    width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.5;
+    width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.5;
     stroke-linecap:round;stroke-linejoin:round;
   }
   body.v8 .mTab svg circle{fill:currentColor;stroke:none;}
-  body.v8 .mTab i{font-size:10px;font-style:normal;letter-spacing:.01em;}
+  body.v8 .mTab i{font-size:9.5px;font-style:normal;letter-spacing:.01em;line-height:1;white-space:nowrap;}
+  /* the chat: the same glass, warmed, so it carries a little more weight
+     than any one of the four without leaving the system */
+  body.v8 .mChat{
+    flex:none;width:56px;height:56px;border-radius:28px;padding:0;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    background:
+      linear-gradient(158deg,rgba(247,131,89,.42) 0%,rgba(247,131,89,.18) 46%,rgba(255,255,255,.12) 100%),
+      rgba(46,24,16,.5);
+    border-color:rgba(255,178,146,.36);
+    transition:transform .16s ease,box-shadow .24s ease,background .24s ease;
+  }
+  body.v8 .mChat:hover{
+    background:
+      linear-gradient(158deg,rgba(247,131,89,.56) 0%,rgba(247,131,89,.26) 46%,rgba(255,255,255,.15) 100%),
+      rgba(46,24,16,.5);
+  }
+  body.v8 .mChat:active{transform:scale(.94);}
+  body.v8 .mChat svg{
+    width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.5;
+    stroke-linecap:round;stroke-linejoin:round;
+  }
+  body.light.v8 .mChat{
+    color:#3a1c0e;
+    background:
+      linear-gradient(158deg,rgba(247,131,89,.55) 0%,rgba(247,131,89,.3) 46%,rgba(255,255,255,.6) 100%),
+      rgba(255,255,255,.42);
+    border-color:rgba(255,255,255,.7);
+  }
+
+  /* ---- the top: the same glass, as light as it can be -------------------
+     A pill that rides at the top of the scroller rather than a header: the
+     content passes under it and the blur does the separating. */
+  body.v8 .mtitle{
+    position:sticky;top:8px;z-index:7;margin:8px 12px 14px;padding:0 6px 0 16px;
+    height:48px;border-radius:24px;align-items:center;gap:6px;
+  }
+  body.v8 .mtitle h2{font-size:17px;font-weight:500;letter-spacing:-.2px;}
+  body.v8 .mtitle .mMore, body.v8 .mtitle .hiShare{
+    display:flex;align-items:center;justify-content:center;flex:none;
+    width:36px;height:36px;border-radius:50%;border:0;padding:0;margin:0;cursor:pointer;
+    background:rgba(255,255,255,.10);color:#ececea;
+    transition:background .18s ease,transform .16s ease;
+  }
+  body.v8 .mtitle .mMore{margin-left:auto;}
+  body.v8 .mtitle .mMore:hover, body.v8 .mtitle .hiShare:hover{background:rgba(255,255,255,.2);}
+  body.v8 .mtitle .mMore:active, body.v8 .mtitle .hiShare:active{transform:scale(.94);}
+  body.v8 .mtitle .mMore svg{width:18px;height:18px;fill:currentColor;stroke:none;}
+  body.light.v8 .mtitle .mMore, body.light.v8 .mtitle .hiShare{background:rgba(46,31,26,.08);color:#2e1f1a;}
+  .mMore{display:none;}
   /* and the scroller keeps clear of the bar it is running under */
-  body.v8 .mscroll{padding-bottom:calc(68px + env(safe-area-inset-bottom));}
+  body.v8 .mscroll{padding-bottom:calc(92px + env(safe-area-inset-bottom));}
   body.fullscr{overscroll-behavior:none;}
   .pbtn{position:absolute;background:linear-gradient(180deg,#4c4c52,#333338);}
   .pbtn.act{left:-2px;top:154px;width:3px;height:32px;border-radius:2px 0 0 2px;}
@@ -4193,8 +4304,9 @@
   </div>
   <div class="mscroll" id="mScroll">
     <div class="mHead" id="mHead"><div class="mHeadIn" id="mHeadIn">
-    <div class="mtitle">
+    <div class="mtitle lgGlass">
       <h2>Health insights</h2>
+      <button class="mMore" type="button" aria-label="More"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/></svg></button>
       <button class="hiShare" type="button" aria-label="Share"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12V3M6 5.6 9 2.6l3 3M4 10.5v3.9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-3.9"/></svg></button>
     </div>
     <div id="mBento">
@@ -4434,13 +4546,22 @@
   </div>
       </div>
 <nav class="mTabs" id="mTabs" aria-label="Sections">
-  <a class="mTab on"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg><i>Overview</i></a>
-  <a class="mTab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><ellipse cx="12" cy="12" rx="9.2" ry="4.2"/><ellipse cx="12" cy="12" rx="9.2" ry="4.2" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.2" ry="4.2" transform="rotate(120 12 12)"/></svg><i>Biomarkers</i></a>
-  <a class="mTab"><svg viewBox="0 0 24 24"><path d="M4 6.5h5M4 12h5M4 17.5h5M13 7l2 2 4-4M13 17.5h7"/></svg><i>Plan</i></a>
-  <a class="mTab"><svg viewBox="0 0 24 24"><path d="M12 3.6 20 8v8l-8 4.4L4 16V8z"/><path d="M4 8l8 4.4L20 8M12 12.4V20.4"/></svg><i>Services</i></a>
-  <a class="mTab"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/></svg><i>More</i></a>
+  <div class="mDock">
+    <!-- the island: the four destinations, evenly in one pill -->
+    <div class="mIsland lgGlass" role="tablist">
+      <a class="mTab on" role="tab" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg><i>Overview</i></a>
+      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><ellipse cx="12" cy="12" rx="9.2" ry="4.2"/><ellipse cx="12" cy="12" rx="9.2" ry="4.2" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.2" ry="4.2" transform="rotate(120 12 12)"/></svg><i>Biomarkers</i></a>
+      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 6.5h5M4 12h5M4 17.5h5M13 7l2 2 4-4M13 17.5h7"/></svg><i>Plan</i></a>
+      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M12 3.6 20 8v8l-8 4.4L4 16V8z"/><path d="M4 8l8 4.4L20 8M12 12.4V20.4"/></svg><i>Services</i></a>
+    </div>
+    <!-- and the chat, its own pill beside them: the same material, a little
+         brighter, so it reads as part of the system and not of the four -->
+    <button class="mChat lgGlass" type="button" aria-label="Chat">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 11.3c0-3.6 3.3-6.3 7.4-6.3s7.4 2.7 7.4 6.3-3.3 6.4-7.4 6.4a9.6 9.6 0 0 1-2.2-.3l-3.4 1.6.8-2.7c-1.6-1.2-2.6-2.9-2.6-5Z"/></svg>
+    </button>
+  </div>
   <!-- the iPhone's home indicator, drawn in the frame where the device would
-       draw its own; the tab bar keeps the same distance above it either way -->
+       draw its own; the dock keeps the same distance above it either way -->
   <i class="mHome" aria-hidden="true"></i>
 </nav>
 </div>
@@ -11605,6 +11726,25 @@
       if (btn && document.body.classList.contains('m7')) btn.click();
     });
   })();
+  // ---- the dock's active state --------------------------------------------
+  // The four are presentational here (the prototype has one screen), but the
+  // island has to answer a tap: the brighter layer moves, and the label it
+  // lands on is the one the route would be. Chat and the overflow press and
+  // do nothing, which is what they do until there is a screen behind them.
+  (function dock(){
+    const island = document.querySelector('.mIsland');
+    if (!island) return;
+    const tabs = [].slice.call(island.querySelectorAll('.mTab'));
+    tabs.forEach(t => t.addEventListener('click', e => {
+      e.preventDefault();
+      tabs.forEach(o => {
+        const on = o === t;
+        o.classList.toggle('on', on);
+        o.setAttribute('aria-selected', String(on));
+      });
+    }));
+  })();
+
   // ---- Teaser video: the storyboard page ----
   // Ten sequences for a thirty-second teaser, each frame a loose animated
   // sketch in the product's own system -- the three inks, the arc, the halo,
