@@ -69,6 +69,10 @@
      typed there loose. */
   .topbar .tkGrp{display:none;}
   body.v8 .topbar .tkGrp#bioGrp{display:contents;}
+  /* the glass is the mobile navigation's material, so its controls show on the
+     two screens that carry the navigation and nowhere else */
+  body.v8 .topbar .tkGrp#glassGrp,
+  body.m6 .topbar .tkGrp#glassGrp{display:contents;}
   .topbar .tkGrp#densGrp{display:contents;}   /* Density is on every page: the switch drives the engine too */
   body.archived .topbar .tkGrp#arcGrp{display:contents;}
   .topbar .tkBtn:hover{border-color:#3f3f46;}
@@ -99,6 +103,17 @@
   }
   .topbar .tkRow:hover{background:#1c1c20;}
   .topbar .tkRow .lbl{color:#e4e4e7;white-space:nowrap;}
+  /* a slider row carries its own reading, so a value can be taken off the bar
+     and written into a design system rather than guessed from a thumb position */
+  .topbar .tkSlide{display:flex;align-items:center;gap:10px;}
+  .topbar .tkSlide input[type="range"]{width:104px;}
+  .topbar .tkVal{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:10.5px;font-style:normal;color:#a1a1aa;
+    width:44px;text-align:right;white-space:nowrap;
+  }
+  .topbar .tkRow.tkFoot{justify-content:flex-end;padding-top:4px;}
+  .topbar .tkRow.tkFoot:hover{background:none;}
   .topbar .seg{
     display:flex;gap:2px;border:1px solid #232326;background:#131316;
     border-radius:8px;padding:3px;
@@ -667,43 +682,67 @@
      along the top edge where the glass would curve, a soft sheen falling from
      the upper left, and a shadow that lifts it off what it is over. Three
      layers, so it reads as depth rather than as opacity. */
+  /* The material is driven by six variables so the bar can tune it live (see
+     the Glass menu). Three are absolute and read the same in both themes --
+     the backdrop is the backdrop whatever is behind it. Three are multipliers
+     on the values each theme landed on, because the light and dark panes are
+     not the same numbers and never should be: a plate that is 66% of near-black
+     on one ground is 58% of white on the other. A multiplier moves both by the
+     same amount and keeps each one's own tuning, which is what makes one
+     control honest across two themes. Every default is 1 or the value already
+     in the design, so the material with the controls untouched is the material
+     as it was authored. */
+  :root{
+    --lgBlur:44px; --lgSat:165%; --lgBright:1.03;
+    --lgTintK:1; --lgSheenK:1; --lgShadowK:1;
+  }
   .lgGlass{
     position:relative;
     /* a dark pane under the light one: the blur alone leaves type sitting on
        whatever happens to be behind it, and the labels are 9.5px */
     background:
-      linear-gradient(158deg,rgba(255,255,255,.11) 0%,rgba(255,255,255,.04) 46%,rgba(255,255,255,.075) 100%),
-      rgba(16,16,17,.66);
-    -webkit-backdrop-filter:blur(44px) saturate(165%) brightness(1.03);
-    backdrop-filter:blur(44px) saturate(165%) brightness(1.03);
+      linear-gradient(158deg,
+        rgba(255,255,255,calc(.11 * var(--lgTintK))) 0%,
+        rgba(255,255,255,calc(.04 * var(--lgTintK))) 46%,
+        rgba(255,255,255,calc(.075 * var(--lgTintK))) 100%),
+      rgba(16,16,17,calc(.66 * var(--lgTintK)));
+    -webkit-backdrop-filter:blur(var(--lgBlur)) saturate(var(--lgSat)) brightness(var(--lgBright));
+    backdrop-filter:blur(var(--lgBlur)) saturate(var(--lgSat)) brightness(var(--lgBright));
     /* no outline: the edge is a soft catch of light, not a drawn line */
     border:0;
     box-shadow:
-      0 18px 38px -14px rgba(0,0,0,.66),
-      0 5px 14px -8px rgba(0,0,0,.5),
-      inset 0 1px 1px rgba(255,255,255,.16);
+      0 18px 38px -14px rgba(0,0,0,calc(.66 * var(--lgShadowK))),
+      0 5px 14px -8px rgba(0,0,0,calc(.5 * var(--lgShadowK))),
+      inset 0 1px 1px rgba(255,255,255,calc(.16 * var(--lgSheenK)));
   }
   /* the sheen: where the light falls on it, and the hairline along the curve */
   .lgGlass::before{
     content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
     background:
-      radial-gradient(140% 110% at 16% -28%,rgba(255,255,255,.14),rgba(255,255,255,0) 58%),
-      linear-gradient(to bottom,rgba(255,255,255,.07),rgba(255,255,255,0) 26%,rgba(255,255,255,0) 78%,rgba(255,255,255,.035));
+      radial-gradient(140% 110% at 16% -28%,rgba(255,255,255,calc(.14 * var(--lgSheenK))),rgba(255,255,255,0) 58%),
+      linear-gradient(to bottom,
+        rgba(255,255,255,calc(.07 * var(--lgSheenK))),
+        rgba(255,255,255,0) 26%,
+        rgba(255,255,255,0) 78%,
+        rgba(255,255,255,calc(.035 * var(--lgSheenK))));
   }
   .lgGlass > *{position:relative;}   /* the content rides over the sheen */
   body.light .lgGlass{
     background:
-      linear-gradient(158deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.4) 46%,rgba(255,255,255,.54) 100%),
-      rgba(255,255,255,.58);
+      linear-gradient(158deg,
+        rgba(255,255,255,calc(.62 * var(--lgTintK))) 0%,
+        rgba(255,255,255,calc(.4 * var(--lgTintK))) 46%,
+        rgba(255,255,255,calc(.54 * var(--lgTintK))) 100%),
+      rgba(255,255,255,calc(.58 * var(--lgTintK)));
     box-shadow:
-      0 18px 38px -16px rgba(46,31,26,.32),
-      0 4px 12px -7px rgba(46,31,26,.18),
-      inset 0 1px 1px rgba(255,255,255,.8);
+      0 18px 38px -16px rgba(46,31,26,calc(.32 * var(--lgShadowK))),
+      0 4px 12px -7px rgba(46,31,26,calc(.18 * var(--lgShadowK))),
+      inset 0 1px 1px rgba(255,255,255,calc(.8 * var(--lgSheenK)));
   }
   body.light .lgGlass::before{
     background:
-      radial-gradient(140% 110% at 16% -28%,rgba(255,255,255,.6),rgba(255,255,255,0) 58%),
-      linear-gradient(to bottom,rgba(255,255,255,.38),rgba(255,255,255,0) 26%);
+      radial-gradient(140% 110% at 16% -28%,rgba(255,255,255,calc(.6 * var(--lgSheenK))),rgba(255,255,255,0) 58%),
+      linear-gradient(to bottom,rgba(255,255,255,calc(.38 * var(--lgSheenK))),rgba(255,255,255,0) 26%);
   }
 
   /* ---- the dock: an island of four, and the chat beside it ----------------
@@ -4071,6 +4110,65 @@
          change -- and segmentise() renders each as the toggle beside its name.
          The panel is position:fixed so the bar's own horizontal scroll cannot
          clip it; the script below places it under the button. -->
+    <!-- The navigation's material, live. Six controls: the three that read the
+         same in both themes as absolutes, and the three that do not as
+         multipliers on whatever the theme landed on (see :root --lg*). Each row
+         states its value, so a setting can be read off the bar and written down
+         rather than eyeballed off a thumb. Like every other tweak, it lives in
+         memory -- Reload is the way back. -->
+    <span class="tkGrp" id="glassGrp">
+      <span class="lbl">Glass</span>
+      <details class="tkMenu" id="glMenu">
+        <summary aria-label="Glass material">Material</summary>
+        <div class="tkPanel" role="group" aria-label="Glass material">
+          <div class="tkRow">
+            <span class="lbl">Blur</span>
+            <span class="tkSlide">
+              <input type="range" id="glBlur" min="0" max="80" step="1" value="44" aria-label="Backdrop blur">
+              <i class="tkVal" id="glBlurV">44px</i>
+            </span>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Saturation</span>
+            <span class="tkSlide">
+              <input type="range" id="glSat" min="100" max="280" step="5" value="165" aria-label="Backdrop saturation">
+              <i class="tkVal" id="glSatV">165%</i>
+            </span>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Brightness</span>
+            <span class="tkSlide">
+              <input type="range" id="glBright" min="80" max="130" step="1" value="103" aria-label="Backdrop brightness">
+              <i class="tkVal" id="glBrightV">1.03</i>
+            </span>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Tint</span>
+            <span class="tkSlide">
+              <input type="range" id="glTint" min="0" max="180" step="5" value="100" aria-label="Pane tint">
+              <i class="tkVal" id="glTintV">100%</i>
+            </span>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Sheen</span>
+            <span class="tkSlide">
+              <input type="range" id="glSheen" min="0" max="250" step="5" value="100" aria-label="Sheen and inner highlight">
+              <i class="tkVal" id="glSheenV">100%</i>
+            </span>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Shadow</span>
+            <span class="tkSlide">
+              <input type="range" id="glShadow" min="0" max="200" step="5" value="100" aria-label="Drop shadow">
+              <i class="tkVal" id="glShadowV">100%</i>
+            </span>
+          </div>
+          <div class="tkRow tkFoot">
+            <button class="tkBtn" id="glReset" type="button">Reset</button>
+          </div>
+        </div>
+      </details>
+    </span>
     <details class="tkMenu" id="tkMenu">
       <summary aria-label="Tweaks">Tweaks</summary>
       <div class="tkPanel" role="group" aria-label="Tweaks">
@@ -13512,10 +13610,14 @@
   // The tweaks dropdown. The panel is fixed, so it is placed under its button
   // each time it opens (the bar can have scrolled); it closes on a click
   // anywhere outside it, on Escape, and when the bar scrolls out from under it.
+  // Every dropdown on the bar, not only Tweaks: the Glass menu is a second one
+  // and wants the same placing, the same outside-click and the same Escape.
+  // Opening one closes the others, since two fixed panels under one bar would
+  // overlap.
   {
-    const menu = document.getElementById('tkMenu');
-    const panel = menu && menu.querySelector('.tkPanel');
-    const place = () => {
+    const menus = [].slice.call(document.querySelectorAll('.topbar .tkMenu'));
+    const place = menu => {
+      const panel = menu.querySelector('.tkPanel');
       const s = menu.querySelector('summary').getBoundingClientRect();
       const bar = document.querySelector('.topbar').getBoundingClientRect();
       panel.style.top = Math.round(bar.bottom + 6) + 'px';
@@ -13523,13 +13625,64 @@
       const w = panel.offsetWidth || 240;
       panel.style.left = Math.round(Math.max(8, Math.min(s.left, innerWidth - w - 8))) + 'px';
     };
-    if (menu){
-      menu.addEventListener('toggle', () => { if (menu.open) place(); });
-      addEventListener('pointerdown', e => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
-      addEventListener('keydown', e => { if (e.key === 'Escape' && menu.open) menu.open = false; });
-      document.querySelector('.topbar').addEventListener('scroll', () => { menu.open = false; });
-      addEventListener('resize', () => { if (menu.open) place(); });
-    }
+    const closeAll = except => menus.forEach(m => { if (m !== except) m.open = false; });
+    menus.forEach(menu => {
+      menu.addEventListener('toggle', () => { if (menu.open){ closeAll(menu); place(menu); } });
+    });
+    addEventListener('pointerdown', e => {
+      menus.forEach(m => { if (m.open && !m.contains(e.target)) m.open = false; });
+    });
+    addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(null); });
+    const bar = document.querySelector('.topbar');
+    if (bar) bar.addEventListener('scroll', () => closeAll(null));
+    addEventListener('resize', () => menus.forEach(m => { if (m.open) place(m); }));
+  }
+
+  // ---------- the glass controller ----------
+  // The navigation's material, on the bar. Each control writes one custom
+  // property on the root element and the material follows -- there is no
+  // second copy of the numbers here and no re-render: the CSS is the material,
+  // and these are the six values it reads. Written on documentElement rather
+  // than on body, because body.light declares the theme's own bases and a
+  // value set on the same element would be a specificity argument rather than
+  // an inheritance.
+  {
+    const GLASS = [
+      // id,      property,      default, how the value reads, how it reaches CSS
+      ['glBlur',   '--lgBlur',     44,  v => v + 'px',              v => v + 'px'],
+      ['glSat',    '--lgSat',     165,  v => v + '%',               v => v + '%'],
+      ['glBright', '--lgBright',  103,  v => (v / 100).toFixed(2),  v => (v / 100).toFixed(3)],
+      ['glTint',   '--lgTintK',   100,  v => v + '%',               v => (v / 100).toFixed(3)],
+      ['glSheen',  '--lgSheenK',  100,  v => v + '%',               v => (v / 100).toFixed(3)],
+      ['glShadow', '--lgShadowK', 100,  v => v + '%',               v => (v / 100).toFixed(3)]
+    ];
+    const root = document.documentElement;
+    GLASS.forEach(([id, prop, def, read, toCss]) => {
+      const el = document.getElementById(id), out = document.getElementById(id + 'V');
+      if (!el) return;
+      const apply = () => {
+        const v = +el.value;
+        root.style.setProperty(prop, toCss(v));
+        if (out) out.textContent = read(v);
+      };
+      el.addEventListener('input', apply);
+      // Reset puts the slider back and REMOVES the property rather than writing
+      // the default into it: the material then reads what the stylesheet says,
+      // not what this list remembers it said. If a default is ever re-tuned in
+      // the CSS, reset still lands on the new one and only the slider's resting
+      // position here would need catching up.
+      el._glReset = () => {
+        el.value = def;
+        root.style.removeProperty(prop);
+        if (out) out.textContent = read(def);
+      };
+    });
+    const reset = document.getElementById('glReset');
+    if (reset) reset.addEventListener('click', () =>
+      GLASS.forEach(([id]) => {
+        const el = document.getElementById(id);
+        if (el && el._glReset) el._glReset();
+      }));
   }
   // Health coverage is a card the page may simply not carry. Off is not an
   // empty state -- there is nothing to say and no action to offer -- so it

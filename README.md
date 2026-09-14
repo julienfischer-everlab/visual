@@ -1636,6 +1636,33 @@ black — the phone frame and the dashboard chrome cover them entirely.
   phone that carries it, so the Overview and Biomarkers screens wear the same
   navigation rather than two copies of it.
 
+  **The material is tunable from the bar** — a *Glass → Material* dropdown,
+  shown on the two screens that carry the navigation and nowhere else. Six
+  controls, each writing one custom property on the root element; the CSS is
+  the material, so there is no second copy of the numbers and nothing
+  re-renders.
+
+  | | range | default | |
+  |---|---|---|---|
+  | Blur | 0–80px | 44px | the backdrop blur |
+  | Saturation | 100–280% | 165% | what is behind it keeps its colour |
+  | Brightness | 0.80–1.30 | 1.03 | the backdrop's lift |
+  | Tint | 0–180% | 100% | the plate and the pane gradient |
+  | Sheen | 0–250% | 100% | the specular fall and the inset highlight |
+  | Shadow | 0–200% | 100% | the two drop shadows |
+
+  The first three are absolutes — a backdrop is a backdrop whatever is behind
+  it. The last three are **multipliers on whatever each theme landed on**,
+  because the two panes are not the same numbers and should not be: a plate
+  that is 66% of near-black on the dark ground is 58% of white on the pale
+  one. A multiplier moves both by the same amount and keeps each one's own
+  tuning, which is what lets one control be honest across two themes. Every
+  row states its value, so a setting can be read off the bar and written into
+  a design system rather than eyeballed off a thumb. *Reset* removes the
+  properties rather than writing the defaults back, so the material returns to
+  what the stylesheet says. Like every other tweak it lives in memory —
+  Reload is the way back.
+
 - **Asset export.** Every `makeOrganView` instance can render itself as a
   transparent PNG, no smaller than 1920px on either side. `paint(px, W, H, t,
   rk)` is the renderer, independent of any one canvas: `rk` scales the dot

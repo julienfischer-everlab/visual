@@ -4361,6 +4361,55 @@ ink on this burgundy genuinely is almost nothing -- which is worth seeing,
 since it is what the bottom of the scale buys. The percentage under each step
 carries the reading.
 
+### 5.158 A controller for the glass
+
+"Add controller for the glass effect on the main nav." The material had been
+tuned by editing the stylesheet and reloading, three times over, which is the
+slowest possible way to judge a blur. So it comes onto the bar: a Glass menu
+beside Tweaks, six sliders, live.
+
+The question worth getting right was what a control means when there are two
+themes. The dark pane is a gradient over a plate at 66% of near-black; the
+light pane is a gradient over a plate at 58% of white. Those are not the same
+number and were never meant to be -- each was tuned against its own ground. A
+single "plate opacity" slider writing one absolute value would flatten that:
+move it and you lose whichever theme you were not looking at.
+
+So the six split in two. Blur, saturation and brightness are absolute, because
+a backdrop filter does the same thing whatever is behind it -- 44px of blur is
+44px of blur on both grounds. Tint, sheen and shadow are multipliers on the
+values each theme already carries, defaulting to 1. Every alpha in both
+stylesheets became calc(base * var(--lgTintK)) or its sheen and shadow
+equivalents, so one slider at 50% halves the dark plate to 0.33 and the light
+plate to 0.29, each from its own base. Measured both.
+
+The properties go on documentElement, not on body, and that is the one detail
+that would have quietly broken it: body.light declares the theme's own values,
+and an inline custom property written on body would be arguing specificity with
+a class rule on the same element. On html it is plain inheritance -- the root
+value flows down, the theme's rule never competes with it.
+
+Each row states its value in mono at the right. A slider is a gesture and a
+number is a decision; if the point of tuning a material is to end up with
+values that go into a design system, the bar should hand them over rather than
+make you infer them from a thumb.
+
+Reset removes the properties instead of writing the defaults back into them.
+The difference matters the next time a default is re-tuned in the CSS: removal
+lands on whatever the stylesheet now says, while writing 44 back would pin it
+to what a list in the script remembers. The sliders' resting positions are
+still a second copy of the defaults -- that is the part a future re-tune would
+have to catch up -- but the material itself has one source.
+
+The menu is gated to the two screens that carry the navigation, the same way
+the biomarker group is gated, since a control for something not on screen is
+just noise. Opening it closes Tweaks and the reverse: two fixed panels under
+one bar would overlap, so the placement code that was written for the one
+dropdown now runs over all of them.
+
+Note that v8 opens fullscreen, where the bar is hidden by design -- tune on
+#m20 or #m6, which show the bar and the navigation together.
+
 ---
 
 ## 6. Open items
