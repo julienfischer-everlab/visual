@@ -5016,6 +5016,39 @@ only thing that changes during it is the rows. The same hold was already there
 for the keyboard, but only while the field was focused -- a chip tap focuses
 nothing, which is why it only showed up there.
 
+### 5.177 The desk's controls start working
+
+"Need to be able to click, like the mobile. Search and reports select." They
+looked right and did nothing: a div reading "32 records", a div reading
+"Search", and six placeholder rows under chips carrying the design's figures --
+81 optimal over a list of six, which is two sources for one number and one of
+them wrong.
+
+Three moves. The panel table, the records and the membership walk come out of
+the phone's controller into the file's own scope, so both surfaces read one
+table. The desk builds its list from it -- 110 rows, seven groups, in the desk's
+own row shape, with the trend column and a date column where the phone shares a
+cell. And the filter itself becomes `bioFilter(cfg)`: one implementation each
+surface calls with its own elements.
+
+What is genuinely different stays with each surface. The phone holds the
+scroller's height through the beat (a page that shortens under a pinned bar
+unpins it) and manages the keyboard, the scroll-to-pin and the status bar; the
+desk has none of those and passes none of them. Everything else -- the record
+menu and its badges, the chip counts, the empty lines, the beat -- is the one
+copy.
+
+  desk   110 rows / 7 groups   chips 110 68 20 12 10
+  chip out -> 12 shown   other -> 10   ok -> 68
+  record r1 -> chips 44 30 8 2 4, 44 shown, "Pathology Report / Pathology | 13 Aug 2026"
+  search "chol" inside r1 -> 1 shown;  cleared -> 44;  record cleared -> 110
+
+One thing to know: on the desktop pages that are not V2 the Other chip is
+hidden by the design, so the four chips on screen sum to 100 while All reads
+110. All is the row count and the list does hold 110 -- tapping All shows them
+-- so the number is honest; it is the hidden chip that makes the row look like
+it does not add up. Worth a decision if those pages matter.
+
 ---
 
 ## 6. Open items

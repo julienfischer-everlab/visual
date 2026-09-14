@@ -617,6 +617,54 @@
     font-size:15px;color:#8b8b86;cursor:text;
   }
   .dash .dsearch svg{width:15px;height:15px;flex:none;}
+  /* the select is a button and the search a field now, so both need the shell
+     to stop being the thing you read and start being the thing you use */
+  .dash .drecs{font:inherit;font-size:15px;text-align:left;background:none;width:100%;
+               -webkit-tap-highlight-color:transparent;transition:border-color .16s ease,background .16s ease;}
+  .dash .drecs .t{flex:1;min-width:0;}
+  .dash .drecs b{display:block;font-weight:400;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dash .drecs i{display:block;font-style:normal;font-size:12px;color:#8b8b86;margin-top:2px;
+                 white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dash .drecs i[hidden]{display:none;}
+  .dash .drecs:hover{border-color:#5a5a56;}
+  .dash .drecs[aria-expanded="true"]{border-color:#5a5a56;background:rgba(255,255,255,.05);}
+  .dash .drecs[aria-expanded="true"] .msRecChev{transform:rotate(180deg);}
+  .dRecWrap{position:relative;flex:0 0 calc((var(--dRowW) - 12px) * .60);min-width:0;}
+  .dRecWrap.cleared .drecs{padding-right:42px;}
+  .dRecWrap.cleared .msRecChev{display:none;}
+  .dRecWrap.cleared .msRecClear{display:flex;}
+  .dRecWrap .msRecClear{right:13px;}
+  .dash .dsearch input{
+    flex:1;min-width:0;background:none;border:0;outline:0;padding:0;margin:0;
+    font:inherit;font-size:15px;color:#ececec;-webkit-appearance:none;appearance:none;
+  }
+  .dash .dsearch input::placeholder{color:#8b8b86;}
+  .dash .dsearch input::-webkit-search-cancel-button,
+  .dash .dsearch input::-webkit-search-decoration{-webkit-appearance:none;display:none;}
+  .dash .dsearch.focus{border-color:#5a5a56;}
+  .dash .dsearch.hasText .msClear{display:flex;}
+  body.light .dash .drecs b{color:#33291f;}
+  body.light .dash .drecs:hover,body.light .dash .drecs[aria-expanded="true"]{border-color:#9b8a75;}
+  body.light .dash .dsearch input{color:#2e1f1a;}
+  body.light .dash .dsearch input::placeholder{color:#9b8a75;}
+  body.light .dash .dsearch.focus{border-color:#9b8a75;}
+  /* a filtered row leaves, and a group with nothing left leaves with it --
+     both are display:grid, so [hidden] needs saying out loud */
+  .dash .brow[hidden],.dash .grp[hidden]{display:none;}
+  /* the loading beat, in the desk row's own shape */
+  .dash .dSkel .skb,.dash .dSkel .st{
+    display:block;height:13px;border-radius:6px;
+    background:linear-gradient(90deg,#1c1c1b 0,#2a2a28 40%,#1c1c1b 80%);
+    background-size:220% 100%;animation:msShimmer 1.1s linear infinite;
+  }
+  .dash .dSkel .st{width:82px;height:26px;border-radius:8px;justify-self:start;}
+  .dash .dSkel .rng i{background:#2a2a28;}
+  .dash .dSkel .rng .mk{display:none;}
+  body.light .dash .dSkel .skb,body.light .dash .dSkel .st{
+    background:linear-gradient(90deg,#ece4d4 0,#f5efe4 40%,#ece4d4 80%);background-size:220% 100%;
+  }
+  .dEmpty{padding:56px 6px;text-align:center;font-size:14px;color:#8b8b86;}
+  body.light .dEmpty{color:#9b8a75;}
   body.light .dash .drecs{border-color:#e2dbcc;color:#33291f;}
   body.light .dash .dsearch{border-color:#e2dbcc;color:#9b8a75;}
   /* The phone's chip, at the desk. Filled rather than outlined, fully
@@ -4866,22 +4914,36 @@
          choosing the record set and searching within it are the same question
          asked twice, and the chips cut whatever that leaves. -->
     <div class="dRow v2Only">
-      <div class="drecs">32 records
-        <svg viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <!-- The same two controls the phone carries, and the same behaviour: the
+           field opens the list, the cross clears it, and the chevron leaves
+           once something is chosen because the useful action is then undoing
+           it. Markup mirrors .msRecWrap so one stylesheet and one script serve
+           both. -->
+      <div class="dRecWrap" id="dRecWrap">
+        <button class="drecs" id="dRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span class="t"><b id="dRecLbl">All records</b><i id="dRecEy" hidden></i></span>
+          <svg class="msRecChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button class="msRecClear" id="dRecClear" type="button" aria-label="Clear the chosen record" aria-hidden="true"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <div class="mRecMenu" id="dRecMenu" role="listbox" aria-label="Choose a record" hidden>
+          <div class="mRecScroll" id="dRecList"></div>
+          <i class="mRecMore" aria-hidden="true"><svg viewBox="0 0 12 8" fill="none"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></i>
+        </div>
       </div>
-      <div class="dsearch">
+      <div class="dsearch" id="dSearch">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
           <circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/>
         </svg>
-        <span>Search</span>
+        <input id="dSearchIn" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search biomarkers">
+        <button class="msClear" id="dSearchClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       </div>
     </div>
     <div class="filters">
-      <div class="fchip on"><b>81</b> All</div>
-      <div class="fchip"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</div>
-      <div class="fchip"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</div>
-      <div class="fchip"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</div>
-      <div class="fchip v2Only"><i style="background:#7b7b78"></i><b>28</b> Other</div>
+      <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b> All</button>
+      <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</button>
+      <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</button>
+      <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</button>
+      <button class="fchip v2Only" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b> Other</button>
     </div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
@@ -4892,42 +4954,29 @@
         </linearGradient>
       </defs>
     </svg>
-    <div class="recs">
+    <!-- The skeleton is the desk row's own shape, so the swap from skeleton
+         to results moves nothing: a name, a reading, a date, the trend, the
+         three range bars and a status pill, all as shimmering blocks. -->
+    <div class="dSkel" id="dSkel" hidden aria-hidden="true">
       <div class="grp">
-        <div><h3>Liver Health</h3><div class="gd">Biomarkers that indicate liver health and function, critical in metabolic processes.</div></div>
+        <div><i class="skb" style="width:58%;height:15px"></i><i class="skb" style="width:92%;margin-top:10px"></i><i class="skb" style="width:70%;margin-top:6px"></i></div>
         <div>
-          <div class="brow"><span>Biomarker name</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
-            <svg width="76" height="24" viewBox="0 0 76 24"><path d="M2 16 C8 20 12 10 18 14 C24 18 28 8 34 12 C40 16 44 18 50 10 C56 4 60 12 66 6 C70 3 73 6 74 5" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>
-            <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
-            <span class="st ok">Optimal</span></div>
-          <div class="brow"><span>Serum aspartate transaminase (AST)</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
-            <svg width="76" height="24" viewBox="0 0 76 24"><path d="M2 18 C8 14 12 20 18 12 C24 6 28 16 34 10 C40 6 44 14 50 12 C56 10 60 8 66 7 C70 6 73 5 74 5" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>
-            <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
-            <span class="st ok">Optimal</span></div>
-          <div class="brow"><span>Serum alkaline phosphatase (ALP)</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
-            <span></span>
-            <span class="rng"><i class="mk" style="left:36px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
-            <span class="st sub">Suboptimal</span></div>
-          <div class="brow"><span>Serum gamma-GT (GGT)</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
-            <svg width="76" height="24" viewBox="0 0 76 24"><path d="M2 14 C8 18 12 12 18 16 C24 20 28 10 34 14 C40 18 44 8 50 12 C56 15 60 6 66 8 C70 9 73 5 74 4" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>
-            <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
-            <span class="st ok">Optimal</span></div>
-        </div>
-      </div>
-      <div class="grp">
-        <div><h3>Liver Health</h3><div class="gd">Biomarkers that indicate liver health and function, critical in metabolic processes.</div></div>
-        <div>
-          <div class="brow"><span>Biomarker name</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
-            <svg width="76" height="24" viewBox="0 0 76 24"><path d="M2 16 C8 20 12 10 18 14 C24 18 28 8 34 12 C40 16 44 18 50 10 C56 4 60 12 66 6 C70 3 73 6 74 5" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>
-            <span class="rng"><i class="mk"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
-            <span class="st ok">Optimal</span></div>
-          <div class="brow"><span>Serum alkaline phosphatase (ALP)</span><span class="g">18.0 ng/dL</span><span class="g">Dec 2024</span>
-            <span></span>
-            <span class="rng"><i class="mk" style="left:36px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span>
-            <span class="st sub">Suboptimal</span></div>
+          <div class="brow"><i class="skb" style="width:62%"></i><i class="skb" style="width:54%"></i><i class="skb" style="width:58%"></i><i class="skb" style="width:76px"></i><span class="rng"><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><i class="st"></i></div>
+          <div class="brow"><i class="skb" style="width:76%"></i><i class="skb" style="width:48%"></i><i class="skb" style="width:58%"></i><i class="skb" style="width:76px"></i><span class="rng"><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><i class="st"></i></div>
+          <div class="brow"><i class="skb" style="width:52%"></i><i class="skb" style="width:56%"></i><i class="skb" style="width:58%"></i><i class="skb" style="width:76px"></i><span class="rng"><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><i class="st"></i></div>
+          <div class="brow"><i class="skb" style="width:68%"></i><i class="skb" style="width:50%"></i><i class="skb" style="width:58%"></i><i class="skb" style="width:76px"></i><span class="rng"><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><i class="st"></i></div>
+          <div class="brow"><i class="skb" style="width:44%"></i><i class="skb" style="width:52%"></i><i class="skb" style="width:58%"></i><i class="skb" style="width:76px"></i><span class="rng"><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><i class="st"></i></div>
         </div>
       </div>
     </div>
+    <div class="dEmpty" id="dSearchEmpty" hidden>No biomarkers match &ldquo;<span></span>&rdquo;</div>
+    <!-- Empty here and built from PANEL in the script, exactly as the phone's
+         list is: a hundred and ten rows of markup is a hundred and ten chances
+         to mistype one, and the chips' counts have to be a property of the
+         data rather than of the file. The desk used to carry six placeholder
+         rows while its chips carried the design's figures, so the two could
+         only disagree. -->
+    <div class="recs" id="dRecsList"></div>
   </main>
 </div>
 
@@ -15660,6 +15709,511 @@
     resize();
   })();
   // ---- the phone's biomarker search ----
+
+  // ---- the biomarker panel, shared -----------------------------------------
+  // One table, read by every surface that lists biomarkers. It used to live
+  // inside the phone's controller, which is where it was needed first; the
+  // desk then had its own hand-written rows and its own hand-written chip
+  // counts, so the two surfaces could disagree about what the panel holds.
+  // They cannot now: the rows, the records a reading belongs to and the counts
+  // the chips carry all come from here.
+  // ---- the panel ----------------------------------------------------------
+  // A hundred and ten readings, which is the number the design states and the
+  // number the chips add up to: 68 optimal, 20 suboptimal, 12 out of range,
+  // 10 unclassified. The list used to be twenty-five hand-written rows while
+  // the chips carried the design's figures, so the two could only disagree.
+  // Written as a table rather than as markup because a hundred and ten rows
+  // of HTML is a hundred and ten chances to mistype one, and because the
+  // counts are then a property of the data rather than of the file.
+  //
+  // Name | status | value. The names are the standard panel; the values are
+  // plausible placeholders, as the original twenty-five were.
+  const PANEL = [
+    ['Liver Health',
+     'Biomarkers that indicate liver health and function, critical in metabolic processes.', `
+      Serum bilirubin|ok|8.0 umol/L
+      Alanine transaminase (ALT)|ok|22 U/L
+      Aspartate transaminase (AST)|ok|21 U/L
+      Alkaline phosphatase (ALP)|ok|68 U/L
+      Gamma-glutamyl transferase (GGT)|sub|54 U/L
+      Serum albumin|ok|44 g/L
+      Total protein|ok|72 g/L
+      Globulin|ok|28 g/L
+      Albumin / globulin ratio|ok|1.6
+      Direct bilirubin|ok|2.4 umol/L
+      Lactate dehydrogenase (LDH)|sub|238 U/L
+      Alpha-fetoprotein|sub|7.9 ug/L
+      Bile acids|out|14.2 umol/L
+      Hyaluronic acid|other|— `],
+    ['Kidney Health',
+     'How well the kidneys filter the blood and keep its chemistry in balance.', `
+      Serum creatinine|ok|82 umol/L
+      Estimated GFR|ok|96 mL/min
+      Blood urea nitrogen|ok|5.1 mmol/L
+      Uric acid|sub|0.42 mmol/L
+      Cystatin C|ok|0.86 mg/L
+      Serum sodium|ok|140 mmol/L
+      Serum potassium|ok|4.3 mmol/L
+      Serum chloride|ok|103 mmol/L
+      Bicarbonate|ok|25 mmol/L
+      Calcium|ok|2.35 mmol/L
+      Phosphate|sub|1.42 mmol/L
+      Urine albumin / creatinine|out|4.8 mg/mmol
+      Beta-2 microglobulin|other|— `],
+    ['Heart Health',
+     'Lipids and the particles that carry them: the long-run picture of cardiovascular risk.', `
+      Total cholesterol|sub|5.6 mmol/L
+      LDL cholesterol|out|3.8 mmol/L
+      HDL cholesterol|ok|1.5 mmol/L
+      Triglycerides|ok|1.1 mmol/L
+      Non-HDL cholesterol|sub|4.1 mmol/L
+      Apolipoprotein B (ApoB)|out|1.12 g/L
+      Apolipoprotein A1|ok|1.58 g/L
+      Lipoprotein(a)|out|92 nmol/L
+      LDL particle number|sub|1420 nmol/L
+      LDL particle size|ok|21.2 nm
+      Remnant cholesterol|ok|0.5 mmol/L
+      Total / HDL ratio|ok|3.7
+      Triglyceride / HDL ratio|ok|0.73
+      Homocysteine|sub|12.4 umol/L
+      NT-proBNP|ok|42 ng/L
+      High-sensitivity troponin|ok|3.1 ng/L
+      Myeloperoxidase|out|512 pmol/L
+      Oxidised LDL|ok|48 U/L
+      Omega-3 index|other|—
+      Coenzyme Q10|other|— `],
+    ['Metabolic Health',
+     'How the body handles sugar and stores energy.', `
+      HbA1c|ok|5.2 %
+      Fasting glucose|ok|5.0 mmol/L
+      Fasting insulin|sub|11.4 mIU/L
+      HOMA-IR|sub|2.5
+      C-peptide|ok|0.72 nmol/L
+      Postprandial glucose|ok|6.4 mmol/L
+      Glycated albumin|ok|13.1 %
+      Fructosamine|ok|228 umol/L
+      Leptin|out|21.8 ug/L
+      Adiponectin|out|4.1 mg/L
+      Free fatty acids|sub|0.62 mmol/L
+      Vitamin D (25-OH)|out|42 nmol/L
+      Visceral fat index|sub|9
+      Body fat percentage|ok|21.4 %
+      Waist-to-height ratio|ok|0.47
+      Resting metabolic rate|ok|1680 kcal
+      Insulin sensitivity index|ok|4.8
+      1,5-anhydroglucitol|other|— `],
+    ['Thyroid',
+     'The gland that sets the pace of the metabolism.', `
+      TSH|ok|1.8 mIU/L
+      Free T4|ok|15.2 pmol/L
+      Free T3|ok|4.9 pmol/L
+      Reverse T3|sub|0.31 nmol/L
+      Total T4|ok|98 nmol/L
+      Total T3|ok|1.8 nmol/L
+      Thyroid peroxidase antibodies|ok|12 IU/mL
+      Thyroglobulin antibodies|ok|9 IU/mL
+      Thyroid binding globulin|other|—
+      Iodine|other|— `],
+    ['Blood Health',
+     'Red cells, iron and the vitamins that make them.', `
+      Haemoglobin|ok|148 g/L
+      Haematocrit|ok|0.44
+      Red cell count|ok|4.9 x10^12/L
+      Mean corpuscular volume|ok|89 fL
+      Mean corpuscular haemoglobin|ok|30.1 pg
+      MCHC|ok|338 g/L
+      Red cell distribution width|sub|14.8 %
+      White cell count|ok|6.2 x10^9/L
+      Neutrophils|ok|3.4 x10^9/L
+      Lymphocytes|ok|2.1 x10^9/L
+      Monocytes|ok|0.5 x10^9/L
+      Eosinophils|sub|0.62 x10^9/L
+      Basophils|ok|0.04 x10^9/L
+      Platelet count|ok|248 x10^9/L
+      Serum iron|ok|18 umol/L
+      Transferrin|ok|2.8 g/L
+      Transferrin saturation|out|14 %
+      Total iron-binding capacity|ok|64 umol/L
+      Ferritin|out|22 ug/L
+      Vitamin B12|sub|246 pmol/L
+      Folate|other|—
+      Reticulocyte count|other|— `],
+    ['Inflammation',
+     'Low-grade inflammation, the background hum behind many chronic conditions.', `
+      High-sensitivity CRP|ok|0.8 mg/L
+      Erythrocyte sedimentation rate|ok|6 mm/h
+      Interleukin-6|sub|2.4 ng/L
+      Fibrinogen|ok|3.1 g/L
+      Serum amyloid A|ok|4.2 mg/L
+      Tumour necrosis factor alpha|sub|1.9 ng/L
+      Complement C3|ok|1.12 g/L
+      Complement C4|ok|0.24 g/L
+      Immunoglobulin G|ok|11.4 g/L
+      Immunoglobulin A|ok|2.1 g/L
+      Immunoglobulin M|sub|0.42 g/L
+      Neutrophil / lymphocyte ratio|out|3.4
+      Galectin-3|other|— `]
+  ];
+  const ST_WORD = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range', other: 'Unclassified' };
+  // The record sets. Every reading belongs to one of the two named tests, so
+  // "Latest test" is a real subset rather than a label that changes nothing,
+  // and the date under each row is the date of the test it came from.
+  // The records, as the design lists them: a title, the category and date
+  // under it, and how many readings that record carried. The counts sum to
+  // 136 over a panel of 110, which is right rather than wrong -- a biomarker
+  // measured in August and again in May is in both reports. So a reading
+  // belongs to one or more records, "All records" is the 110 distinct ones,
+  // and each record shows exactly the number on its badge.
+  const RECS = [
+    { id: 'all', label: 'All records' },
+    { id: 'r1',  label: 'Pathology Report',        cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026' },
+    { id: 'r2',  label: 'Pathology Report',        cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026' },
+    { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026' },
+    { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025' },
+    { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025' }
+  ];
+  // where the reading sits on its own range bar: inside the green, into the
+  // amber, past it -- an unclassified one has no place to sit and shows none
+  const MK_AT = { ok: [6, 30], sub: [40, 60], out: [70, 88] };
+  (function buildPhonePanel(){
+    const host = document.getElementById('mRecs');
+    if (!host) return;
+    let html = '';
+    PANEL.forEach(([title, desc, rows]) => {
+      html += '<section class="mgrp"><h3>' + title + '</h3>' +
+              '<div class="gd">' + desc + '</div>';
+      rows.trim().split('\n').forEach(line => {
+        const [name, st, val] = line.trim().split('|');
+        const at = MK_AT[st];
+        // deterministic within the band, off the name, so the markers do not
+        // all stack on one pixel and do not move between loads
+        let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+        const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
+        html += '<div class="mbrow">' +
+                  '<span>' + name + '</span>' +
+                  '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
+                  '<span class="g" data-v="' + val + '">' + val + '</span>' +
+                  '<span class="st ' + st + '">' + ST_WORD[st] + '</span>' +
+                '</div>';
+      });
+      html += '</section>';
+    });
+    host.innerHTML = html;
+
+    assignRecords(host.querySelectorAll('.mbrow'), (row, rec) => {
+      // on the phone the reading and its date share one cell
+      const v = row.querySelector('.g');
+      v.innerHTML = v.dataset.v + ' &nbsp;|&nbsp; ' + (rec.short || '');
+    });
+  })();
+
+  // Which records each reading is in. Exact quotas by construction: walk the
+  // records' counts as one run of 136 and step through the rows by a stride
+  // coprime with 110, so the first 110 steps touch every row once (nothing is
+  // orphaned) and the remaining 26 give those rows a second record.
+  // Deterministic, so a record is the same set on every load AND the same set
+  // on every surface: the phone and the desk build their own markup from the
+  // same table in the same order, so the same walk lands on the same readings.
+  function assignRecords(nodes, stampDate){
+    const rows = [].slice.call(nodes);
+    const N = rows.length;
+    if (!N) return;
+    rows.forEach(r => { r.dataset.r = ''; });
+    let ptr = 0;
+    RECS.forEach(rec => {
+      if (rec.id === 'all') return;
+      for (let k = 0; k < rec.n; k++, ptr++){
+        const row = rows[(ptr * 37) % N];
+        row.dataset.r += (row.dataset.r ? ' ' : '') + rec.id;
+      }
+    });
+    // the date a reading shows is the most recent record it appears in, and
+    // RECS is in date order, so it is the first one listed
+    const byId = {};
+    RECS.forEach(rec => { byId[rec.id] = rec; });
+    rows.forEach(r => stampDate(r, byId[r.dataset.r.split(' ')[0]] || {}));
+  }
+
+  // where a row's marker sits, given its status and its name -- deterministic
+  // within the band so the markers do not stack on one pixel or move between
+  // loads. Shared, because both surfaces draw the same three-band bar.
+  function markAt(st, name){
+    const at = MK_AT[st];
+    if (!at) return '';
+    let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+    return '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>';
+  }
+
+  // ---- one filter, two surfaces --------------------------------------------
+  // The record select, the search field and the range chips are one filter,
+  // not three: a row has to pass all of them, so picking Optimal inside a
+  // search narrows what the search found rather than replacing it. All of
+  // that is here rather than in either surface's own code, because the phone
+  // and the desk were about to have two copies of it -- and two copies of a
+  // rule is two rules. Each surface passes its own elements and its own
+  // notion of a loading beat; everything else is shared.
+  const ST_EMPTY = {
+    ok:    'No biomarkers in the optimal range.',
+    sub:   'No suboptimal biomarkers.',
+    out:   'No biomarkers out of range.',
+    other: 'No unclassified biomarkers.'
+  };
+  const bioRowSt = row => {
+    const st = row.querySelector('.st');
+    if (!st) return 'other';
+    return st.classList.contains('ok') ? 'ok'
+         : st.classList.contains('sub') ? 'sub'
+         : st.classList.contains('out') ? 'out' : 'other';
+  };
+  function bioFilter(cfg){
+    const list = cfg.list, skel = cfg.skel, empty = cfg.empty, input = cfg.input;
+    const groups = [].slice.call(list.querySelectorAll(cfg.groupSel));
+    const allRows = [].slice.call(list.querySelectorAll(cfg.rowSel));
+    const hold = cfg.hold || function(){};
+    const afterApply = cfg.afterApply || function(){};
+    const beforeBeat = cfg.beforeBeat || function(){};
+    let chipSt = 'all', recSet = 'all', countChips = null, skelTimer = 0;
+
+    function applyFilter(){
+      const q = input ? input.value.trim().toLowerCase() : '';
+      let any = false;
+      for (const g of groups){
+        let shown = 0;
+        for (const row of g.querySelectorAll(cfg.rowSel)){
+          const hit = (!q || row.firstElementChild.textContent.toLowerCase().includes(q)) &&
+                      (chipSt === 'all' || bioRowSt(row) === chipSt) &&
+                      (recSet === 'all' ||
+                       (' ' + row.dataset.r + ' ').indexOf(' ' + recSet + ' ') >= 0);
+          row.hidden = !hit; if (hit) shown++;
+        }
+        g.hidden = shown === 0; if (shown) any = true;
+      }
+      // Which nothing it is decides what the line says. A search that found
+      // nothing names what was typed; a range that holds nothing says so in
+      // the product's own words -- "No biomarkers out of range" is a result,
+      // and reads as one, rather than as a list that failed to load.
+      if (empty){
+        const es = empty.querySelector('span');
+        if (!any && q){ empty.firstChild.textContent = 'No biomarkers match “'; es.textContent = input.value.trim(); es.hidden = false; empty.lastChild.textContent = '”'; }
+        else if (!any){ empty.firstChild.textContent = ST_EMPTY[chipSt] || 'Nothing to show.'; es.hidden = true; empty.lastChild.textContent = ''; }
+        empty.hidden = any;
+      }
+      hold(250);
+      list.hidden = false; if (skel) skel.hidden = true;
+      afterApply();
+    }
+    // One loading beat, shared. The skeleton stands in, then the list arrives --
+    // the same 380ms whether a key was pressed, a chip was tapped or a record
+    // was chosen, because they are the same act: the set below is being
+    // fetched again.
+    function load(now){
+      clearTimeout(skelTimer);
+      hold(250);
+      if (now || !skel){ applyFilter(); return; }
+      beforeBeat();
+      list.hidden = true; if (empty) empty.hidden = true; skel.hidden = false;
+      skelTimer = setTimeout(applyFilter, 380);
+    }
+    function typed(){
+      if (cfg.fieldEl) cfg.fieldEl.classList.toggle('hasText', input.value.length > 0);
+      afterApply();
+      load(!input.value.trim());
+    }
+
+    // The record menu. The button opens it, a click outside or Escape closes
+    // it, and picking an option runs the list through the same beat a
+    // keystroke and a chip run through -- it is the same act, a different set
+    // being fetched.
+    const rec = cfg.rec || {};
+    if (rec.btn && rec.menu && rec.listEl){
+      const CHART = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+                    '<path d="M2 11.2 5.6 7.2 8.4 9.6 14 3.6" stroke="currentColor" stroke-width="1.6" ' +
+                    'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      rec.listEl.innerHTML = RECS.map(r =>
+        '<button class="mRecOpt' + (r.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
+                'aria-selected="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
+          '<span class="t"><b>' + r.label + '</b>' +
+            (r.cat ? '<i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i>' : '') + '</span>' +
+          (r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
+        '</button>').join('');
+      const isOpen = () => document.body.classList.contains('mRecOn') && !rec.menu.hidden;
+      const open = on => {
+        document.body.classList.toggle('mRecOn', on);
+        rec.btn.setAttribute('aria-expanded', String(on));
+        if (on) rec.menu.hidden = false;
+        // hidden after it has faded, or it would vanish rather than close
+        else setTimeout(() => {
+          if (!document.body.classList.contains('mRecOn')) rec.menu.hidden = true;
+        }, 200);
+      };
+      rec.btn.addEventListener('click', e => { e.stopPropagation(); open(!isOpen()); });
+      // anywhere outside closes it, and so does Escape: the menu has no scrim
+      // of its own, because the control that opened it should stay readable
+      addEventListener('pointerdown', e => {
+        if (isOpen() && !rec.menu.contains(e.target) && !rec.btn.contains(e.target)) open(false);
+      });
+      addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) open(false); });
+      // Everything the choice changes, in one place, so the button can never
+      // say one thing while the list shows another.
+      function choose(id, reload){
+        recSet = id;
+        const r = RECS.find(x => x.id === id) || RECS[0];
+        [].slice.call(rec.listEl.children).forEach(x => {
+          const on = x.dataset.r === id;
+          x.classList.toggle('on', on);
+          x.setAttribute('aria-selected', String(on));
+        });
+        if (rec.lbl) rec.lbl.textContent = r.label;
+        if (rec.ey){
+          rec.ey.hidden = !r.cat;
+          rec.ey.innerHTML = r.cat ? r.cat + ' &nbsp;|&nbsp; ' + r.date : '';
+        }
+        // chevron or cross, never both: with a record chosen the useful action
+        // is undoing it, and All records is the undone state so it needs none
+        const chosen = id !== 'all';
+        if (rec.wrap) rec.wrap.classList.toggle('cleared', chosen);
+        if (rec.clear) rec.clear.setAttribute('aria-hidden', String(!chosen));
+        if (countChips) countChips();
+        if (reload) load(false);
+      }
+      rec.listEl.addEventListener('click', e => {
+        const o = e.target.closest('.mRecOpt');
+        if (!o) return;
+        open(false);
+        choose(o.dataset.r, true);
+      });
+      if (rec.clear) rec.clear.addEventListener('click', e => {
+        e.stopPropagation();       // clearing is not opening
+        choose('all', true);
+      });
+    }
+
+    // The chips. One at a time -- picking one releases the rest, and tapping
+    // the one already on does nothing rather than clearing the filter, since a
+    // list with no range chosen is what All is for.
+    if (cfg.chipsBar){
+      const chips = [].slice.call(cfg.chipsBar.querySelectorAll('.fchip'));
+      // The counts are COUNTED, not written down. They were the design's
+      // figures over a list of twenty-five rows, so every chip disagreed with
+      // what tapping it showed and All agreed with nothing. A number beside a
+      // filter is a promise about what the filter will do; deriving it from
+      // the rows is the only way that promise cannot go stale, and it means a
+      // row added later is counted without anyone remembering to.
+      //
+      // Every range keeps its chip, including an empty one: hiding a zero made
+      // the row jump as records changed, and a filter bar that rearranges
+      // itself is harder to use than one with a nought in it. All is still the
+      // sum of the rest, which is still the row count.
+      countChips = function(){
+        const tally = {};
+        allRows.forEach(r => {
+          if (recSet !== 'all' && (' ' + r.dataset.r + ' ').indexOf(' ' + recSet + ' ') < 0) return;
+          const k = bioRowSt(r); tally[k] = (tally[k] || 0) + 1;
+        });
+        let total = 0;
+        chips.forEach(c => {
+          const k = c.dataset.st;
+          if (k === 'all') return;
+          const n = tally[k] || 0;
+          c.querySelector('b').textContent = n;
+          total += n;
+        });
+        const all = chips.find(c => c.dataset.st === 'all');
+        if (all) all.querySelector('b').textContent = total;
+        // A chosen range that empties under a narrower record STAYS chosen:
+        // the empty line says why, which is more use than the page quietly
+        // changing the filter out from under the reader.
+      };
+      countChips();
+      chips.forEach(c => c.addEventListener('click', () => {
+        if (c.classList.contains('on')) return;
+        chips.forEach(o => {
+          const on = o === c;
+          o.classList.toggle('on', on);
+          o.setAttribute('aria-pressed', String(on));
+        });
+        chipSt = c.dataset.st || 'all';
+        load(false);
+      }));
+    }
+    return { load: load, typed: typed };
+  }
+
+  // ---- the dashboard's biomarker list ---------------------------------------
+  // Built from the same table the phone's is built from, so the desk's chips
+  // count the desk's rows and a record narrows both surfaces to the same
+  // readings. It used to be six placeholder rows under chips carrying the
+  // design's figures, which is two sources for one number.
+  (function dashBioInit(){
+    const host = document.getElementById('dRecsList');
+    if (!host) return;
+    // three trend paths, picked off the name so a row keeps its own line
+    const SPARK = [
+      'M2 16 C8 20 12 10 18 14 C24 18 28 8 34 12 C40 16 44 18 50 10 C56 4 60 12 66 6 C70 3 73 6 74 5',
+      'M2 18 C8 14 12 20 18 12 C24 6 28 16 34 10 C40 6 44 14 50 12 C56 10 60 8 66 7 C70 6 73 5 74 5',
+      'M2 14 C8 18 12 12 18 16 C24 20 28 10 34 14 C40 18 44 8 50 12 C56 15 60 6 66 8 C70 9 73 5 74 4'
+    ];
+    let html = '';
+    PANEL.forEach(([title, desc, rows]) => {
+      html += '<div class="grp"><div><h3>' + title + '</h3>' +
+              '<div class="gd">' + desc + '</div></div><div>';
+      rows.trim().split('\n').forEach(line => {
+        const [name, st, val] = line.trim().split('|');
+        let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+        // an unclassified reading has no trend to draw, as it has no band to
+        // sit in: the column keeps its width and shows nothing
+        const spark = st === 'other' ? '<span></span>' :
+          '<svg width="76" height="24" viewBox="0 0 76 24" aria-hidden="true"><path d="' +
+          SPARK[h % SPARK.length] + '" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>';
+        html += '<div class="brow">' +
+                  '<span>' + name + '</span>' +
+                  '<span class="g">' + val + '</span>' +
+                  '<span class="g dDate"></span>' +
+                  spark +
+                  '<span class="rng">' + markAt(st, name) + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
+                  '<span class="st ' + st + '">' + ST_WORD[st] + '</span>' +
+                '</div>';
+      });
+      html += '</div></div>';
+    });
+    host.innerHTML = html;
+    assignRecords(host.querySelectorAll('.brow'), (row, rec) => {
+      // the desk has a column for the date, where the phone shares one cell
+      row.querySelector('.dDate').textContent = rec.short || '';
+    });
+
+    const field = document.getElementById('dSearch'), input = document.getElementById('dSearchIn');
+    const clear = document.getElementById('dSearchClear');
+    const bio = bioFilter({
+      list: host, groupSel: '.grp', rowSel: '.brow',
+      skel: document.getElementById('dSkel'), empty: document.getElementById('dSearchEmpty'),
+      input: input, fieldEl: field,
+      chipsBar: document.querySelector('.dash .filters'),
+      rec: {
+        btn: document.getElementById('dRecSel'), lbl: document.getElementById('dRecLbl'),
+        ey: document.getElementById('dRecEy'), menu: document.getElementById('dRecMenu'),
+        listEl: document.getElementById('dRecList'), clear: document.getElementById('dRecClear'),
+        wrap: document.getElementById('dRecWrap')
+      }
+      // no hold and no held height: the desk has no pinned bar to keep in
+      // place and no keyboard to keep the field out from under
+    });
+    if (!input) return;
+    const typed = () => { field.classList.toggle('hasText', input.value.length > 0); bio.load(!input.value.trim()); };
+    input.addEventListener('input', typed);
+    input.addEventListener('focus', () => field.classList.add('focus'));
+    input.addEventListener('blur', () => field.classList.remove('focus'));
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') input.blur();
+      if (e.key === 'Escape'){ input.value = ''; typed(); input.blur(); }
+    });
+    // the cross clears the text and nothing else -- no focus taken or given
+    clear.addEventListener('pointerdown', e => e.preventDefault());
+    clear.addEventListener('click', () => { input.value = ''; typed(); });
+    // the shell is the field's target: a click anywhere in it types
+    field.addEventListener('click', e => { if (e.target !== clear && !clear.contains(e.target)) input.focus(); });
+  })();
+
   // Focus: the wrapper sticks to the top of the scroll container and the page
   // scrolls up to it (programmatically -- the scroll-to-dismiss below ignores
   // that one), the body wears mSearchOn so the main navigation leaves while
@@ -15669,224 +16223,15 @@
   // the focus. A scroll by the reader blurs the field, so the keyboard goes;
   // the wrapper stays stuck while the field holds text, so the filtered list
   // keeps its search in view. Nothing of this touches the other pages.
+
   (function mSearchInit(){
     const sc = document.getElementById('mScroll');
     const wrap = document.getElementById('mSearch'), input = document.getElementById('mSearchIn');
     const clear = document.getElementById('mSearchClear'), skel = document.getElementById('mSkel');
     const recs = document.getElementById('mRecs'), empty = document.getElementById('mSearchEmpty');
     if (!sc || !wrap || !input || !recs) return;
-    // ---- the panel ----------------------------------------------------------
-    // A hundred and ten readings, which is the number the design states and the
-    // number the chips add up to: 68 optimal, 20 suboptimal, 12 out of range,
-    // 10 unclassified. The list used to be twenty-five hand-written rows while
-    // the chips carried the design's figures, so the two could only disagree.
-    // Written as a table rather than as markup because a hundred and ten rows
-    // of HTML is a hundred and ten chances to mistype one, and because the
-    // counts are then a property of the data rather than of the file.
-    //
-    // Name | status | value. The names are the standard panel; the values are
-    // plausible placeholders, as the original twenty-five were.
-    const PANEL = [
-      ['Liver Health',
-       'Biomarkers that indicate liver health and function, critical in metabolic processes.', `
-        Serum bilirubin|ok|8.0 umol/L
-        Alanine transaminase (ALT)|ok|22 U/L
-        Aspartate transaminase (AST)|ok|21 U/L
-        Alkaline phosphatase (ALP)|ok|68 U/L
-        Gamma-glutamyl transferase (GGT)|sub|54 U/L
-        Serum albumin|ok|44 g/L
-        Total protein|ok|72 g/L
-        Globulin|ok|28 g/L
-        Albumin / globulin ratio|ok|1.6
-        Direct bilirubin|ok|2.4 umol/L
-        Lactate dehydrogenase (LDH)|sub|238 U/L
-        Alpha-fetoprotein|sub|7.9 ug/L
-        Bile acids|out|14.2 umol/L
-        Hyaluronic acid|other|— `],
-      ['Kidney Health',
-       'How well the kidneys filter the blood and keep its chemistry in balance.', `
-        Serum creatinine|ok|82 umol/L
-        Estimated GFR|ok|96 mL/min
-        Blood urea nitrogen|ok|5.1 mmol/L
-        Uric acid|sub|0.42 mmol/L
-        Cystatin C|ok|0.86 mg/L
-        Serum sodium|ok|140 mmol/L
-        Serum potassium|ok|4.3 mmol/L
-        Serum chloride|ok|103 mmol/L
-        Bicarbonate|ok|25 mmol/L
-        Calcium|ok|2.35 mmol/L
-        Phosphate|sub|1.42 mmol/L
-        Urine albumin / creatinine|out|4.8 mg/mmol
-        Beta-2 microglobulin|other|— `],
-      ['Heart Health',
-       'Lipids and the particles that carry them: the long-run picture of cardiovascular risk.', `
-        Total cholesterol|sub|5.6 mmol/L
-        LDL cholesterol|out|3.8 mmol/L
-        HDL cholesterol|ok|1.5 mmol/L
-        Triglycerides|ok|1.1 mmol/L
-        Non-HDL cholesterol|sub|4.1 mmol/L
-        Apolipoprotein B (ApoB)|out|1.12 g/L
-        Apolipoprotein A1|ok|1.58 g/L
-        Lipoprotein(a)|out|92 nmol/L
-        LDL particle number|sub|1420 nmol/L
-        LDL particle size|ok|21.2 nm
-        Remnant cholesterol|ok|0.5 mmol/L
-        Total / HDL ratio|ok|3.7
-        Triglyceride / HDL ratio|ok|0.73
-        Homocysteine|sub|12.4 umol/L
-        NT-proBNP|ok|42 ng/L
-        High-sensitivity troponin|ok|3.1 ng/L
-        Myeloperoxidase|out|512 pmol/L
-        Oxidised LDL|ok|48 U/L
-        Omega-3 index|other|—
-        Coenzyme Q10|other|— `],
-      ['Metabolic Health',
-       'How the body handles sugar and stores energy.', `
-        HbA1c|ok|5.2 %
-        Fasting glucose|ok|5.0 mmol/L
-        Fasting insulin|sub|11.4 mIU/L
-        HOMA-IR|sub|2.5
-        C-peptide|ok|0.72 nmol/L
-        Postprandial glucose|ok|6.4 mmol/L
-        Glycated albumin|ok|13.1 %
-        Fructosamine|ok|228 umol/L
-        Leptin|out|21.8 ug/L
-        Adiponectin|out|4.1 mg/L
-        Free fatty acids|sub|0.62 mmol/L
-        Vitamin D (25-OH)|out|42 nmol/L
-        Visceral fat index|sub|9
-        Body fat percentage|ok|21.4 %
-        Waist-to-height ratio|ok|0.47
-        Resting metabolic rate|ok|1680 kcal
-        Insulin sensitivity index|ok|4.8
-        1,5-anhydroglucitol|other|— `],
-      ['Thyroid',
-       'The gland that sets the pace of the metabolism.', `
-        TSH|ok|1.8 mIU/L
-        Free T4|ok|15.2 pmol/L
-        Free T3|ok|4.9 pmol/L
-        Reverse T3|sub|0.31 nmol/L
-        Total T4|ok|98 nmol/L
-        Total T3|ok|1.8 nmol/L
-        Thyroid peroxidase antibodies|ok|12 IU/mL
-        Thyroglobulin antibodies|ok|9 IU/mL
-        Thyroid binding globulin|other|—
-        Iodine|other|— `],
-      ['Blood Health',
-       'Red cells, iron and the vitamins that make them.', `
-        Haemoglobin|ok|148 g/L
-        Haematocrit|ok|0.44
-        Red cell count|ok|4.9 x10^12/L
-        Mean corpuscular volume|ok|89 fL
-        Mean corpuscular haemoglobin|ok|30.1 pg
-        MCHC|ok|338 g/L
-        Red cell distribution width|sub|14.8 %
-        White cell count|ok|6.2 x10^9/L
-        Neutrophils|ok|3.4 x10^9/L
-        Lymphocytes|ok|2.1 x10^9/L
-        Monocytes|ok|0.5 x10^9/L
-        Eosinophils|sub|0.62 x10^9/L
-        Basophils|ok|0.04 x10^9/L
-        Platelet count|ok|248 x10^9/L
-        Serum iron|ok|18 umol/L
-        Transferrin|ok|2.8 g/L
-        Transferrin saturation|out|14 %
-        Total iron-binding capacity|ok|64 umol/L
-        Ferritin|out|22 ug/L
-        Vitamin B12|sub|246 pmol/L
-        Folate|other|—
-        Reticulocyte count|other|— `],
-      ['Inflammation',
-       'Low-grade inflammation, the background hum behind many chronic conditions.', `
-        High-sensitivity CRP|ok|0.8 mg/L
-        Erythrocyte sedimentation rate|ok|6 mm/h
-        Interleukin-6|sub|2.4 ng/L
-        Fibrinogen|ok|3.1 g/L
-        Serum amyloid A|ok|4.2 mg/L
-        Tumour necrosis factor alpha|sub|1.9 ng/L
-        Complement C3|ok|1.12 g/L
-        Complement C4|ok|0.24 g/L
-        Immunoglobulin G|ok|11.4 g/L
-        Immunoglobulin A|ok|2.1 g/L
-        Immunoglobulin M|sub|0.42 g/L
-        Neutrophil / lymphocyte ratio|out|3.4
-        Galectin-3|other|— `]
-    ];
-    const ST_WORD = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range', other: 'Unclassified' };
-    // The record sets. Every reading belongs to one of the two named tests, so
-    // "Latest test" is a real subset rather than a label that changes nothing,
-    // and the date under each row is the date of the test it came from.
-    // The records, as the design lists them: a title, the category and date
-    // under it, and how many readings that record carried. The counts sum to
-    // 136 over a panel of 110, which is right rather than wrong -- a biomarker
-    // measured in August and again in May is in both reports. So a reading
-    // belongs to one or more records, "All records" is the 110 distinct ones,
-    // and each record shows exactly the number on its badge.
-    const RECS = [
-      { id: 'all', label: 'All records' },
-      { id: 'r1',  label: 'Pathology Report',        cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026' },
-      { id: 'r2',  label: 'Pathology Report',        cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026' },
-      { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026' },
-      { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025' },
-      { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025' }
-    ];
-    // where the reading sits on its own range bar: inside the green, into the
-    // amber, past it -- an unclassified one has no place to sit and shows none
-    const MK_AT = { ok: [6, 30], sub: [40, 60], out: [70, 88] };
-    (function buildPanel(){
-      const host = document.getElementById('mRecs');
-      if (!host) return;
-      let html = '';
-      PANEL.forEach(([title, desc, rows]) => {
-        html += '<section class="mgrp"><h3>' + title + '</h3>' +
-                '<div class="gd">' + desc + '</div>';
-        rows.trim().split('\n').forEach(line => {
-          const [name, st, val] = line.trim().split('|');
-          const at = MK_AT[st];
-          // deterministic within the band, off the name, so the markers do not
-          // all stack on one pixel and do not move between loads
-          let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
-          const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
-          html += '<div class="mbrow">' +
-                    '<span>' + name + '</span>' +
-                    '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
-                    '<span class="g" data-v="' + val + '">' + val + '</span>' +
-                    '<span class="st ' + st + '">' + ST_WORD[st] + '</span>' +
-                  '</div>';
-        });
-        html += '</section>';
-      });
-      host.innerHTML = html;
 
-      // Which records each reading is in. Exact quotas by construction: walk
-      // the records' counts as one run of 136 and step through the rows by a
-      // stride coprime with 110, so the first 110 steps touch every row once
-      // (nothing is orphaned) and the remaining 26 give those rows a second
-      // record. Deterministic, so a record is the same set on every load.
-      const rows = [].slice.call(host.querySelectorAll('.mbrow'));
-      const N = rows.length;
-      rows.forEach(r => { r.dataset.r = ''; });
-      let ptr = 0;
-      RECS.forEach(rec => {
-        if (rec.id === 'all') return;
-        for (let k = 0; k < rec.n; k++, ptr++){
-          const row = rows[(ptr * 37) % N];
-          row.dataset.r += (row.dataset.r ? ' ' : '') + rec.id;
-        }
-      });
-      // the date a reading shows is the most recent record it appears in, and
-      // RECS is in date order, so it is the first one listed
-      const byId = {};
-      RECS.forEach(rec => { byId[rec.id] = rec; });
-      rows.forEach(r => {
-        const first = r.dataset.r.split(' ')[0];
-        const v = r.querySelector('.g');
-        v.innerHTML = v.dataset.v + ' &nbsp;|&nbsp; ' + ((byId[first] || {}).short || '');
-      });
-    })();
-
-    const groups = [...recs.querySelectorAll('.mgrp')];
-    let progUntil = 0, skelTimer = 0;
+    let progUntil = 0;
     // a scroll the reader did not make -- ours, or the container clamping its
     // position because the list just got shorter -- must not dismiss the field
     const holdScroll = ms => { progUntil = Math.max(progUntil, performance.now() + ms); };
@@ -15972,202 +16317,30 @@
     // The chips and the field are one filter, not two. A row has to pass both
     // the typed text and the chosen range, so picking Optimal inside a search
     // narrows what the search found rather than replacing it.
-    let chipSt = 'all', recSet = 'all', countChips = null;
-    const ST_EMPTY = {
-      ok:    'No biomarkers in the optimal range.',
-      sub:   'No suboptimal biomarkers.',
-      out:   'No biomarkers out of range.',
-      other: 'No unclassified biomarkers.'
-    };
-    const rowSt = row => {
-      const st = row.querySelector('.st');
-      if (!st) return 'other';
-      return st.classList.contains('ok') ? 'ok'
-           : st.classList.contains('sub') ? 'sub'
-           : st.classList.contains('out') ? 'out' : 'other';
-    };
-    function applyFilter(){
-      const q = input.value.trim().toLowerCase();
-      let any = false;
-      for (const g of groups){
-        let shown = 0;
-        for (const row of g.querySelectorAll('.mbrow')){
-          const hit = (!q || row.firstElementChild.textContent.toLowerCase().includes(q)) &&
-                      (chipSt === 'all' || rowSt(row) === chipSt) &&
-                      (recSet === 'all' ||
-                       (' ' + row.dataset.r + ' ').indexOf(' ' + recSet + ' ') >= 0);
-          row.hidden = !hit; if (hit) shown++;
-        }
-        g.hidden = shown === 0; if (shown) any = true;
-      }
-      // Which nothing it is decides what the line says. A search that found
-      // nothing names what was typed; a range that holds nothing says so in
-      // the product's own words -- "No biomarkers out of range" is a result,
-      // and reads as one, rather than as a list that failed to load.
-      const es = empty.querySelector('span');
-      if (!any && q){ empty.firstChild.textContent = 'No biomarkers match \u201C'; es.textContent = input.value.trim(); es.hidden = false; empty.lastChild.textContent = '\u201D'; }
-      else if (!any){ empty.firstChild.textContent = ST_EMPTY[chipSt] || 'Nothing to show.'; es.hidden = true; empty.lastChild.textContent = ''; }
-      empty.hidden = any;
-      holdScroll(250);
-      recs.hidden = false; skel.hidden = true;
-      setStick();   // the beat's held height goes; the list is its own again
-    }
-    // One loading beat, shared. The skeleton stands in, then the list arrives --
-    // the same 380ms whether a key was pressed or a chip was tapped, because
-    // they are the same act: the set below is being fetched again.
-    function load(now){
-      clearTimeout(skelTimer);
-      holdScroll(250);
-      if (now){ applyFilter(); return; }
+    // the shared filter, wearing the phone's elements: the beat holds the
+    // scroller's height (a shorter page under a pinned bar unpins it) and the
+    // field's slack is re-measured whenever the list changes.
+    const bio = bioFilter({
+      list: recs, groupSel: '.mgrp', rowSel: '.mbrow',
+      skel: skel, empty: empty, input: input, fieldEl: wrap,
+      chipsBar: document.getElementById('mChips'),
+      rec: {
+        btn: document.getElementById('mRecSel'), lbl: document.getElementById('mRecLbl'),
+        ey: document.getElementById('mRecEy'), menu: document.getElementById('mRecMenu'),
+        listEl: document.getElementById('mRecList'), clear: document.getElementById('mRecClear'),
+        wrap: document.getElementById('mRecWrap')
+      },
+      hold: holdScroll,
+      afterApply: setStick,
       // The skeleton is five rows where the list is a hundred and ten, so
       // swapping them shortens the page -- and a page that shortens under a
-      // pinned bar unpins it: the bar dropped back into the flow for the
-      // 380ms of the beat and pinned again after. The beat holds whatever
-      // height the list had, so nothing moves but the rows.
-      skel.style.minHeight = Math.max(recs.offsetHeight, sc.clientHeight - wrap.offsetHeight) + 'px';
-      recs.hidden = true; empty.hidden = true; skel.hidden = false;
-      skelTimer = setTimeout(applyFilter, 380);
-    }
-    function typed(){
-      wrap.classList.toggle('hasText', input.value.length > 0);
-      setStick();
-      load(!input.value.trim());
-    }
-    // The record sheet. The button opens it, the scrim and Escape close it, and
-    // picking an option runs the list through the same loading beat a keystroke
-    // and a chip run through -- it is the same act, a different set being
-    // fetched.
-    (function recMenuInit(){
-      const btn = document.getElementById('mRecSel'), lbl = document.getElementById('mRecLbl');
-      const menu = document.getElementById('mRecMenu'), list = document.getElementById('mRecList');
-      if (!btn || !menu || !list) return;
-      const CHART = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
-                    '<path d="M2 11.2 5.6 7.2 8.4 9.6 14 3.6" stroke="currentColor" stroke-width="1.6" ' +
-                    'stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      list.innerHTML = RECS.map(r =>
-        '<button class="mRecOpt' + (r.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
-                'aria-selected="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
-          '<span class="t"><b>' + r.label + '</b>' +
-            (r.cat ? '<i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i>' : '') + '</span>' +
-          (r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
-        '</button>').join('');
-      const open = on => {
-        document.body.classList.toggle('mRecOn', on);
-        btn.setAttribute('aria-expanded', String(on));
-        if (on) menu.hidden = false;
-        // hidden after it has faded, or it would vanish rather than close
-        else setTimeout(() => {
-          if (!document.body.classList.contains('mRecOn')) menu.hidden = true;
-        }, 200);
-      };
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        open(!document.body.classList.contains('mRecOn'));
-      });
-      // anywhere outside closes it, and so does Escape: the menu has no scrim
-      // of its own, because the control that opened it should stay readable
-      addEventListener('pointerdown', e => {
-        if (document.body.classList.contains('mRecOn') &&
-            !menu.contains(e.target) && !btn.contains(e.target)) open(false);
-      });
-      addEventListener('keydown', e => {
-        if (e.key === 'Escape' && document.body.classList.contains('mRecOn')) open(false);
-      });
-      const ey = document.getElementById('mRecEy');
-      const clear = document.getElementById('mRecClear');
-      const wrap = document.getElementById('mRecWrap');
-      // Everything the choice changes, in one place, so the button can never
-      // say one thing while the list shows another.
-      function choose(id, reload){
-        recSet = id;
-        const rec = RECS.find(r => r.id === id) || RECS[0];
-        [].slice.call(list.children).forEach(x => {
-          const on = x.dataset.r === id;
-          x.classList.toggle('on', on);
-          x.setAttribute('aria-selected', String(on));
-        });
-        lbl.textContent = rec.label;
-        if (ey){
-          ey.hidden = !rec.cat;
-          ey.innerHTML = rec.cat ? rec.cat + ' &nbsp;|&nbsp; ' + rec.date : '';
-        }
-        // chevron or cross, never both: with a record chosen the useful action
-        // is undoing it, and All records is the undone state so it needs none
-        const chosen = id !== 'all';
-        if (wrap) wrap.classList.toggle('cleared', chosen);
-        if (clear) clear.setAttribute('aria-hidden', String(!chosen));
-        if (countChips) countChips();
-        if (reload) load(false);   // through the skeleton, as everything else is
+      // pinned bar unpins it: the bar dropped back into the flow for the 380ms
+      // of the beat and pinned again after. Hold the height the list had.
+      beforeBeat: () => {
+        skel.style.minHeight = Math.max(recs.offsetHeight, sc.clientHeight - wrap.offsetHeight) + 'px';
       }
-      list.addEventListener('click', e => {
-        const o = e.target.closest('.mRecOpt');
-        if (!o) return;
-        open(false);
-        choose(o.dataset.r, true);
-      });
-      if (clear) clear.addEventListener('click', e => {
-        e.stopPropagation();       // clearing is not opening
-        choose('all', true);
-      });
-    })();
-
-    // The chips. One at a time -- picking one releases the rest, and tapping
-    // the one already on does nothing rather than clearing the filter, since a
-    // list with no range chosen is what All is for.
-    (function chipsInit(){
-      const bar = document.getElementById('mChips');
-      if (!bar) return;
-      const chips = [].slice.call(bar.querySelectorAll('.fchip'));
-      // The counts are COUNTED, not written down. They were the design's
-      // figures -- 81 optimal, 9 suboptimal, 6 out of range -- over a list of
-      // twenty-five rows, so every chip disagreed with what tapping it showed
-      // and All agreed with nothing. A number beside a filter is a promise
-      // about what the filter will do; deriving it from the rows is the only
-      // way that promise cannot go stale, and it means a row added later is
-      // counted without anyone remembering to.
-      //
-      // Every range keeps its chip, including an empty one. Hiding a zero made
-      // the row jump as records changed -- five chips, then three, then four --
-      // and a filter bar that rearranges itself is harder to use than one with
-      // a nought in it. A zero is a reading in its own right besides: tapping
-      // it says "No biomarkers out of range", which is worth being able to ask.
-      // All is still the sum of the rest, which is still the row count.
-      const allRows = [].slice.call(recs.querySelectorAll('.mbrow'));
-      // Recounted whenever the record set changes, not once at boot. A chip's
-      // number is a promise about what tapping it shows, and once the page can
-      // be narrowed to one test that promise is about the rows in THAT test.
-      countChips = function(){
-        const tally = {};
-        allRows.forEach(r => {
-          if (recSet !== 'all' && (' ' + r.dataset.r + ' ').indexOf(' ' + recSet + ' ') < 0) return;
-          const k = rowSt(r); tally[k] = (tally[k] || 0) + 1;
-        });
-        let total = 0;
-        chips.forEach(c => {
-          const k = c.dataset.st;
-          if (k === 'all') return;
-          const n = tally[k] || 0;
-          c.querySelector('b').textContent = n;
-          total += n;
-        });
-        const all = chips.find(c => c.dataset.st === 'all');
-        if (all) all.querySelector('b').textContent = total;
-        // A chosen range that empties under a narrower record STAYS chosen:
-        // the empty line says why, which is more use than the page quietly
-        // changing the filter out from under the reader.
-      };
-      countChips();
-      chips.forEach(c => c.addEventListener('click', () => {
-        if (c.classList.contains('on')) return;
-        chips.forEach(o => {
-          const on = o === c;
-          o.classList.toggle('on', on);
-          o.setAttribute('aria-pressed', String(on));
-        });
-        chipSt = c.dataset.st || 'all';
-        load(false);   // through the skeleton, as a keystroke goes
-      }));
-    })();
+    });
+    const load = bio.load, typed = bio.typed;
     input.addEventListener('focus', () => {
       wrap.classList.add('focus');
       document.body.classList.add('mSearchOn');
