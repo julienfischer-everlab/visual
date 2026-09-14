@@ -4847,6 +4847,47 @@ rather than softening it. The plate carries on past its own bottom now as a
 the bar instead of being cut by it. Only while it is stuck -- in the flow there
 is nothing passing beneath to fade.
 
+### 5.170 A chip at zero, one Dock menu, and the second bar that wasn't one
+
+"Should all chip even is 0." A range holding nothing used to drop its chip.
+That made the row reshuffle as the reader narrowed the set -- five chips under
+*All records*, three under a small report -- and it also meant a chosen range
+that emptied had nowhere to sit, so the page quietly handed the filter back to
+*All*. Both are gone. Five chips whatever is on the page, a zero where there is
+nothing, and a chosen range that empties stays chosen: the empty line says *No
+biomarkers out of range*, which is a result and is more use than the filter
+changing out from under the reader.
+
+"Put this inside Dock style. Merge everything about Dock inside dock." There
+were two menus, *Style* and *Material*, split on the reasoning that how much
+room the dock takes and what the glass is like are different questions. They
+are, and it did not matter: tuning a dock means moving between them, and the
+two buttons close each other, so every move cost two clicks. One panel now, in
+two named halves -- SHAPE over MATERIAL -- with one Save and one Reset at the
+foot. The two halves still write two storage keys, because they are two tables
+and always were; each registers what it writes and what it clears on a small
+shared list and the buttons run whatever registered. Fourteen rows is taller
+than a short window, so the panel scrolls rather than running off the bottom of
+the screen.
+
+"Bug on scroll. Double fixed bar." It was one bar. When the select and the
+search moved above the chips, the chips stayed behind in the scrolling list --
+so once the bar pinned, the chips slid up behind it and stood there cut across
+their own middle: a row of half pills under the plate, which is exactly what a
+second bar looks like. I measured before believing the screenshot, and the
+markup was not duplicated (one `#mSearch`, one `#mChips`); the geometry said
+the chips overlapped the pinned bar by 42px, and a screenshot of `#phone` at
+that scroll showed the sliced pills.
+
+The fix is not a z-index. The chips are the same filter as the select -- they
+cut the set the select chose -- so they belong to the same bar, and they pin
+with it. The whole filter group is 132px of pinned control on an 810px phone,
+which is what it costs; in exchange the list passes under one edge with one
+fade. Inside the bar the chips keep the full width through negative margins,
+since a horizontal scroller that stops short of the edge tells you it has ended
+when it has not. The chips carry the bar's bottom padding now, so the empty
+biomarkers state -- which hides them -- gets that padding back explicitly.
+
 ---
 
 ## 6. Open items

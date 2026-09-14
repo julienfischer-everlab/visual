@@ -96,7 +96,19 @@
     position:fixed;z-index:30;min-width:232px;padding:6px;
     background:#131316;border:1px solid #232326;border-radius:12px;
     display:flex;flex-direction:column;gap:2px;
+    /* the Dock panel carries fourteen rows since the material moved into it,
+       which is taller than a short window: it scrolls rather than running off
+       the bottom of the screen */
+    max-height:calc(100vh - 64px);overflow-y:auto;
   }
+  /* a named half inside a panel. The dock's shape and the dock's material are
+     one object and belong in one menu, but fourteen unlabelled rows is a list
+     rather than a menu -- the heading says which question each half answers. */
+  .topbar .tkSub{
+    padding:9px 10px 3px;font-size:10px;font-weight:600;letter-spacing:.09em;
+    text-transform:uppercase;color:#71717a;
+  }
+  .topbar .tkPanel > .tkSub:first-child{padding-top:4px;}
   .topbar .tkRow{
     display:flex;align-items:center;justify-content:space-between;gap:28px;
     padding:7px 10px;border-radius:8px;
@@ -980,9 +992,6 @@
     cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;
     transition:background .18s ease,box-shadow .18s ease,color .18s ease,transform .12s ease;
   }
-  /* display:flex on the class beats the UA's [hidden]{display:none}, so an
-     empty range's chip has to be told again */
-  #phone .fchip[hidden]{display:none;}
   #phone .fchip:active{transform:scale(.96);}
   #phone .fchip:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:2px;}
   #phone .fchip.on{background:rgba(255,255,255,.20);box-shadow:inset 0 0 0 1.5px #fff;color:#ececec;}
@@ -1009,9 +1018,18 @@
      still where the thumb left it, ready to tap again. The fade below it comes
      on only once it is actually pinned (the script sets .stuck). */
   .msWrap{
-    position:sticky;top:var(--msTop, 0px);z-index:4;padding:12px 13px 10px;
+    position:sticky;top:var(--msTop, 0px);z-index:4;padding:12px 13px 0;
     background:#0d0d0c;
   }
+  /* The chips are inside the bar now, so the bar's own side padding would
+     stop them short of the edge -- and a horizontal scroller that stops short
+     of the edge tells you it has ended when it has not. Negative margins hand
+     them the full width back and their own padding puts the first chip where
+     the field above it starts. */
+  .msWrap .mchips{margin:0 -13px;padding:10px 13px;}
+  /* the chips carry the bar's bottom padding, so where they are gone -- the
+     empty biomarkers state -- the bar has to carry it itself */
+  body.emBio #phone .msWrap{padding-bottom:10px;}
   /* Where the status bar lies over the page (V4 on), the bar pins under it
      (--msTop is its height, set by the script) and, once pinned, backs it
      with the same ground so the list does not scroll under the hour and the
@@ -4489,15 +4507,17 @@
          states its value, so a setting can be read off the bar and written down
          rather than eyeballed off a thumb. Like every other tweak, it lives in
          memory -- Reload is the way back. -->
-    <!-- The dock's shape, beside the material it is made of. Two menus rather
-         than one long list: "what the glass is like" and "how much room the
-         dock takes" are different questions, and a designer is usually asking
-         only one of them. -->
+    <!-- Everything about the dock, in the dock's own menu. It was two menus for
+         a while -- shape in one, material in the other -- on the reasoning that
+         they are different questions. In use they are not: tuning a dock means
+         moving between them, and two buttons that close each other made that a
+         chore. One panel now, in two named halves. -->
     <span class="tkGrp" id="dockGrp">
       <span class="lbl">Dock</span>
       <details class="tkMenu" id="dkMenu">
         <summary aria-label="Bottom navigation style">Style</summary>
         <div class="tkPanel" role="group" aria-label="Bottom navigation style">
+          <div class="tkSub">Shape</div>
           <div class="tkRow">
             <span class="lbl">Shape</span>
             <select id="dkShape" aria-label="Dock shape">
@@ -4547,17 +4567,9 @@
               <i class="tkVal" id="dkInactV">100%</i>
             </span>
           </div>
-          <div class="tkRow tkFoot">
-            <button class="tkBtn" id="dkSave" type="button">Save</button>
-            <button class="tkBtn" id="dkReset" type="button">Reset</button>
-          </div>
-        </div>
-      </details>
-      <!-- The material the dock is made of, beside the shape it takes: one
-           group, because they are two questions about the same object. -->
-      <details class="tkMenu" id="glMenu">
-        <summary aria-label="Glass material">Material</summary>
-        <div class="tkPanel" role="group" aria-label="Glass material">
+          <!-- and what it is made of. Same object, so the same panel: the six
+               glass values and the plate they are laid over. -->
+          <div class="tkSub">Material</div>
           <div class="tkRow">
             <span class="lbl">Background</span>
             <span class="tkInk">
@@ -4606,9 +4618,12 @@
               <i class="tkVal" id="glShadowV">165%</i>
             </span>
           </div>
+          <!-- One Save and one Reset for the whole dock. Two halves, two
+               stored tables, but a designer tuning a dock is tuning one
+               object and saves it once. -->
           <div class="tkRow tkFoot">
-            <button class="tkBtn" id="glSave" type="button">Save</button>
-            <button class="tkBtn" id="glReset" type="button">Reset</button>
+            <button class="tkBtn" id="dkSave" type="button">Save</button>
+            <button class="tkBtn" id="dkReset" type="button">Reset</button>
           </div>
         </div>
       </details>
@@ -5062,17 +5077,23 @@
       <i class="mRecMore" aria-hidden="true"><svg viewBox="0 0 12 8" fill="none"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></i>
     </div>
       </div>
-    </div>
-    <!-- Buttons, not divs. A chip that filters is a control: it takes the tab
-         order, it answers the keyboard, and aria-pressed says which one is on.
-         data-st is the status class on a row's pill, so the filter reads the
-         list rather than a second table of what is in it. -->
-    <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
-      <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
-      <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
-      <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>
-      <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</button>
-      <button class="fchip mOther" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</button>
+      <!-- Buttons, not divs. A chip that filters is a control: it takes the tab
+           order, it answers the keyboard, and aria-pressed says which one is on.
+           data-st is the status class on a row's pill, so the filter reads the
+           list rather than a second table of what is in it.
+           Inside the pinned bar, not under it: the chips were left in the
+           scrolling list when the two selects moved above them, so once the bar
+           pinned they slid up behind it and stood there sliced across their own
+           middle -- a row of half pills under the plate, which reads as a
+           second bar. They are the same filter as the select, so they pin with
+           it and the list passes under one edge. -->
+      <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
+        <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
+        <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
+        <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>
+        <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</button>
+        <button class="fchip mOther" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</button>
+      </div>
     </div>
 
     <!-- The skeleton is the list's own shape: a group head (title, two lines of
@@ -14718,6 +14739,14 @@
     addEventListener('resize', () => menus.forEach(m => { if (m.open) place(m); }));
   }
 
+  // The dock's one Save and one Reset. The shape and the material are two
+  // tables with two storage keys, but they are two halves of a single object
+  // and the menu now says so, so each half registers what it writes and what
+  // it clears and the buttons below run whatever registered. A half that
+  // cannot write says so by returning false; one failure speaks for the pair,
+  // since they fail for the same reason -- storage refused.
+  const DOCK_UI = { save: [], reset: [] };
+
   // ---------- the glass controller ----------
   // The navigation's material, on the bar. Each control writes one custom
   // property on the root element and the material follows -- there is no
@@ -14807,21 +14836,17 @@
     const themeSelB = document.getElementById('themeSel');
     if (themeSelB) themeSelB.addEventListener('change', () => setTimeout(syncBg, 0));
 
-    const save = document.getElementById('glSave');
-    if (save) save.addEventListener('click', () => {
+    DOCK_UI.save.push(() => {
       const out = {};
       GLASS.forEach(([id]) => { const el = document.getElementById(id); if (el) out[id] = el.value; });
       if (bgHex && document.body.style.getPropertyValue('--lgPlate')) out.bg = bgHex.value;
-      let ok = true;
-      try { localStorage.setItem(GLASS_KEY, JSON.stringify(out)); } catch (e){ ok = false; }
-      save.textContent = ok ? 'Saved' : 'Cannot save';
-      setTimeout(() => { save.textContent = 'Save'; }, ok ? 1400 : 2600);
+      try { localStorage.setItem(GLASS_KEY, JSON.stringify(out)); } catch (e){ return false; }
+      return true;
     });
-    const reset = document.getElementById('glReset');
     // Reset clears the save as well. Without that a reset would look undone
     // the moment the page reloaded, which is the same bug as a Reset that
     // writes the defaults back instead of removing them.
-    if (reset) reset.addEventListener('click', () => {
+    DOCK_UI.reset.push(() => {
       try { localStorage.removeItem(GLASS_KEY); } catch (e){ /* nothing to clear */ }
       GLASS.forEach(([id]) => {
         const el = document.getElementById(id);
@@ -14883,16 +14908,13 @@
       CARD_STATE.navBar = document.body.classList.toggle('navBar', shape.value === 'bar'));
     if (lab) lab.addEventListener('change', () =>
       CARD_STATE.navNoLab = document.body.classList.toggle('navNoLab', lab.value === 'off'));
-    const dkSave = document.getElementById('dkSave');
-    if (dkSave) dkSave.addEventListener('click', () => {
+    DOCK_UI.save.push(() => {
       const out = {};
       DOCK.forEach(([id]) => { const el = document.getElementById(id); if (el) out[id] = el.value; });
       if (shape) out.shape = shape.value;
       if (lab) out.lab = lab.value;
-      let ok = true;
-      try { localStorage.setItem(DOCK_KEY, JSON.stringify(out)); } catch (e){ ok = false; }
-      dkSave.textContent = ok ? 'Saved' : 'Cannot save';
-      setTimeout(() => { dkSave.textContent = 'Save'; }, ok ? 1400 : 2600);
+      try { localStorage.setItem(DOCK_KEY, JSON.stringify(out)); } catch (e){ return false; }
+      return true;
     });
     // the two selects are states rather than numbers, so they restore as classes
     if (dkSaved){
@@ -14901,8 +14923,7 @@
       if (lab && dkSaved.lab){ lab.value = dkSaved.lab;
         CARD_STATE.navNoLab = document.body.classList.toggle('navNoLab', dkSaved.lab === 'off'); }
     }
-    const dkReset = document.getElementById('dkReset');
-    if (dkReset) dkReset.addEventListener('click', () => {
+    DOCK_UI.reset.push(() => {
       try { localStorage.removeItem(DOCK_KEY); } catch (e){ /* nothing to clear */ }
       DOCK.forEach(([id]) => {
         const el = document.getElementById(id);
@@ -14911,6 +14932,18 @@
       if (shape){ shape.value = 'island'; document.body.classList.remove('navBar'); CARD_STATE.navBar = false; }
       if (lab){ lab.value = 'on'; document.body.classList.remove('navNoLab'); CARD_STATE.navNoLab = false; }
     });
+  }
+
+  // Both halves have registered, so the two buttons at the foot of the Dock
+  // panel can run them.
+  {
+    const save = document.getElementById('dkSave'), reset = document.getElementById('dkReset');
+    if (save) save.addEventListener('click', () => {
+      const ok = DOCK_UI.save.map(f => f()).every(Boolean);
+      save.textContent = ok ? 'Saved' : 'Cannot save';
+      setTimeout(() => { save.textContent = 'Save'; }, ok ? 1400 : 2600);
+    });
+    if (reset) reset.addEventListener('click', () => DOCK_UI.reset.forEach(f => f()));
   }
   // Health coverage is a card the page may simply not carry. Off is not an
   // empty state -- there is nothing to say and no action to offer -- so it
@@ -16044,9 +16077,12 @@
       // way that promise cannot go stale, and it means a row added later is
       // counted without anyone remembering to.
       //
-      // A range with nothing in it is not a control, so its chip leaves. All
-      // is the sum of the ones that stay, which is also the row count -- the
-      // two cannot drift because they are the same arithmetic.
+      // Every range keeps its chip, including an empty one. Hiding a zero made
+      // the row jump as records changed -- five chips, then three, then four --
+      // and a filter bar that rearranges itself is harder to use than one with
+      // a nought in it. A zero is a reading in its own right besides: tapping
+      // it says "No biomarkers out of range", which is worth being able to ask.
+      // All is still the sum of the rest, which is still the row count.
       const allRows = [].slice.call(recs.querySelectorAll('.mbrow'));
       // Recounted whenever the record set changes, not once at boot. A chip's
       // number is a promise about what tapping it shows, and once the page can
@@ -16062,21 +16098,14 @@
           const k = c.dataset.st;
           if (k === 'all') return;
           const n = tally[k] || 0;
-          c.hidden = n === 0;
           c.querySelector('b').textContent = n;
           total += n;
         });
         const all = chips.find(c => c.dataset.st === 'all');
         if (all) all.querySelector('b').textContent = total;
-        // a chip whose range just emptied cannot stay chosen
-        if (chipSt !== 'all'){
-          const cur = chips.find(c => c.dataset.st === chipSt);
-          if (cur && cur.hidden){
-            chipSt = 'all';
-            chips.forEach(o => { const on = o.dataset.st === 'all';
-              o.classList.toggle('on', on); o.setAttribute('aria-pressed', String(on)); });
-          }
-        }
+        // A chosen range that empties under a narrower record STAYS chosen:
+        // the empty line says why, which is more use than the page quietly
+        // changing the filter out from under the reader.
       };
       countChips();
       chips.forEach(c => c.addEventListener('click', () => {
