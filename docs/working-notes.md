@@ -4444,16 +4444,28 @@ thickening -- enough to close the gaps between the chambers. The organ is
 exactly the sample now, and what is left over falls away around it as the dust
 it came from, which is also what the story wants at that moment.
 
-The open item is the third thing, and it is not mine. The hero organ's
-silhouette still does not read as well as it should at stage scale. It is not
-this renderer: the painter itself, given the same cloud at 280x360, produces
-the same faint haze, and the library's crisp heart is crisp partly because a
-tile is 150px. The cloud's structure is authored for tile scale and thins out
-above it. So the page draws its hero organ at the scale the spatial field
-proved legible and lets the camera carry the drama instead -- which works, but
-is a smaller organ than the brief pictures. The real fix is either a denser
-edge authored for large-scale use, or a hero organ built at its own count the
-way the fine-grain clouds are. Flagged rather than hidden.
+The third thing took an embarrassing number of passes and was never a
+rendering problem at all. The hero organ read as an oval haze, and I went
+looking for it in the density, the sample depth, the perspective, the strands
+and the dot size in turn -- each time re-rendering, each time still a blob,
+each time concluding something was wrong with the renderer. The painter drawn
+at the same size looked no better, which seemed to confirm it.
+
+The organ was never on screen. The timeline had a key for the heart at 0.620
+and the next key, the lung, at 0.725, with nothing between them: the heart was
+the picture for exactly one instant and was already halfway to the lung by the
+time any frame I inspected was taken. Every "blob" was a fifty-fifty blend of
+two organs, which is precisely what a fifty-fifty blend of two organs should
+look like. Giving each organ a real hold -- two keys naming the same state, so
+that nothing morphs between them -- produced a heart with its chambers and its
+vessels on the first try, and a lung with two lobes and a trachea.
+
+The lesson is not about particles. A scene needs somewhere to be still before
+it can be judged, and a timeline built only of transitions has no such place.
+The probe stops were chosen off the key list and every one of them landed
+between two keys, so the instrumentation agreed with the bug. Every hold in
+KEYS is now a pair, and the walk samples the middle of each pair rather than
+the numbers either side of it.
 
 The second organ is the lung. The brief suggested kidneys for "others may be
 ageing faster" and in PILL the kidney is a year younger; using it would have
@@ -4474,11 +4486,6 @@ organ that actually carries that reading.
 - **Mock numbers differ from live data.** The references show bio age 32 and
   "118 All"; the prototype derives those from the "Your age" selector, so they
   will not match a static mock.
-- **The landing page's hero organ reads soft at stage scale.** The cloud's
-  silhouette is authored for tile-sized visuals and thins above ~250px; the
-  painter does the same at that size, so it is the cloud rather than the
-  renderer. The page compensates by drawing the hero organ small. A denser
-  edge, or a hero cloud built at its own count, is the real fix.
 - **The organ-age modal does not close on Escape**, and stays open when the
   page is changed from the version dropdown.
 

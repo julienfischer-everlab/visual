@@ -1259,8 +1259,11 @@
   }
   @media (max-width:640px){
     .lpScroll{height:720vh;}
-    .lpCard{bottom:11vh;}
-    .lpLine.lpLow{bottom:11vh;}
+    /* the three bands again, further apart: on a phone the reading's arc and
+       the line under it were sitting at the same height and crossing */
+    .lpCard{bottom:19vh;}
+    .lpLine.lpLow{bottom:5vh;}
+    .lpCard .lpArc{width:180px;height:60px;margin-top:10px;}
   }
   /* Reduced motion: the timeline still runs -- it is the page -- but nothing
      moves on its own. The idle drift stops, the morph arc flattens so points
@@ -12261,31 +12264,32 @@
       { at: 0.300, st: 'uni',   cam:  0.62, spread: 1.00, dof: 1.00, pan:  0.00 },
       { at: 0.375, st: 'dark',  cam:  0.86, spread: 1.00, dof: 1.00, pan:  0.00 },
       { at: 0.450, st: 'dark',  cam:  0.86, spread: 1.00, dof: 1.00, pan:  0.00 },   // LOOK CLOSER holds
-      { at: 0.545, st: 'heart', cam:  0.22, spread: 0.55, dof: 0.50, pan: -0.05 },
-      { at: 0.640, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // the organ holds, the reading arrives
-      { at: 0.725, st: 'lung',  cam: -0.02, spread: 0.35, dof: 0.28, pan: -0.17 },
-      { at: 0.800, st: 'lung',  cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },
-      { at: 0.885, st: 'field', cam:  0.34, spread: 0.30, dof: 0.26, pan: -0.05 },
-      { at: 0.940, st: 'field', cam:  0.34, spread: 0.00, dof: 0.20, pan: -0.05 },
+      { at: 0.560, st: 'heart', cam:  0.20, spread: 0.55, dof: 0.45, pan: -0.06 },   // forming
+      { at: 0.620, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // formed
+      { at: 0.700, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // HELD, while the reading is read
+      { at: 0.762, st: 'lung',  cam: -0.02, spread: 0.35, dof: 0.26, pan: -0.17 },   // comes apart, reorganises
+      { at: 0.840, st: 'lung',  cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // HELD
+      { at: 0.895, st: 'field', cam:  0.34, spread: 0.30, dof: 0.26, pan: -0.05 },
+      { at: 0.945, st: 'field', cam:  0.34, spread: 0.00, dof: 0.20, pan: -0.05 },   // HELD
       { at: 0.985, st: 'phone', cam:  0.06, spread: 0.25, dof: 0.28, pan: -0.02 },
       { at: 1.000, st: 'phone', cam:  0.06, spread: 0.00, dof: 0.20, pan: -0.02 }
     ];
     // The copy. Each line is a range and a place; nothing has a trigger of its
     // own, because two clocks on one page is how it starts to feel assembled.
     const COPY = [
-      { a: 0.012, b: 0.150, cls: 'lpLow',            t: 'It all starts with one signal.' },
-      { a: 0.205, b: 0.330, cls: 'lpLow',            t: 'Revealing millions of signals from across your body.' },
-      { a: 0.390, b: 0.500, cls: 'lpMid lpTitle',    t: 'Look closer.' },
-      { a: 0.545, b: 0.640, cls: 'lpLow',            t: 'Your organs age differently.' },
-      { a: 0.655, b: 0.720, cls: 'lpLow',            t: 'Some exactly as they should.' },
-      { a: 0.745, b: 0.830, cls: 'lpLow',            t: 'Others may be ageing faster.' },
-      { a: 0.862, b: 0.935, cls: 'lpLow',            t: 'Together, they tell a bigger story.' },
-      { a: 0.952, b: 1.000, cls: 'lpLow lpTitle',    t: 'Introducing Organ Age.' }
+      { a: 0.012, b: 0.150, cls: 'lpLow',         t: 'It all starts with one signal.' },
+      { a: 0.205, b: 0.330, cls: 'lpLow',         t: 'Revealing millions of signals from across your body.' },
+      { a: 0.390, b: 0.500, cls: 'lpMid lpTitle', t: 'Look closer.' },
+      { a: 0.556, b: 0.628, cls: 'lpLow',         t: 'Your organs age differently.' },
+      { a: 0.638, b: 0.716, cls: 'lpLow',         t: 'Some exactly as they should.' },
+      { a: 0.780, b: 0.862, cls: 'lpLow',         t: 'Others may be ageing faster.' },
+      { a: 0.890, b: 0.946, cls: 'lpLow',         t: 'Together, they tell a bigger story.' },
+      { a: 0.958, b: 1.000, cls: 'lpLow lpTitle', t: 'Introducing Organ Age.' }
     ];
     // where the organ readout is up, and which organ it is reading
-    const CARD = [{ a: 0.600, b: 0.712, o: O_HEART }, { a: 0.740, b: 0.840, o: O_LUNG }];
-    const LEGEND = [0.862, 0.945];
-    const PHONE  = [0.950, 1.000];
+    const CARD = [{ a: 0.628, b: 0.742, o: O_HEART }, { a: 0.776, b: 0.876, o: O_LUNG }];
+    const LEGEND = [0.888, 0.952];
+    const PHONE  = [0.956, 1.000];
 
     // ---- small helpers ------------------------------------------------------
     const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
@@ -12338,7 +12342,7 @@
       // dense organ. Particles past the cap wrap around the sample and are
       // jittered by a hair: they thicken the structure that is there rather
       // than filling the space that should be empty.
-      const pts = samplePts(clouds[idx], 'o' + idx, Math.min(2600, Math.max(700, count)));
+      const pts = samplePts(clouds[idx], 'o' + idx, Math.min(bodyN(clouds[idx]), Math.max(700, count)));
       const L = pts.length;
       for (let k = 0; k < count; k++){
         const i = from + k;
@@ -12441,9 +12445,9 @@
       // 0.78 rather than the full frame: an organ that fills the viewport has
       // nowhere to put its reading, and at this scale the same particle count
       // is a denser stipple, which is what makes the silhouette legible.
-      const heart = newState(); organInto(heart, O_HEART, 0, N, 0.30, 0.30, 0, 0, 0);
+      const heart = newState(); organInto(heart, O_HEART, 0, N, 0.46, 0.46, 0, 0, 0);
       ST.heart = heart;
-      const lung = newState(); organInto(lung, O_LUNG, 0, N, 0.30, 0.30, 0, 0, 0);
+      const lung = newState(); organInto(lung, O_LUNG, 0, N, 0.46, 0.46, 0, 0, 0);
       ST.lung = lung;
 
       // 07 — the system. The particles are dealt into five groups and each
@@ -12566,7 +12570,7 @@
         list.appendChild(row);
       });
       // the same component every other page mounts, at the end of the journey
-      makeOrganView(document.getElementById('lpPhOrg'), O_HEART, { dl: false, flow: true });
+      makeOrganView(document.getElementById('lpPhOrg'), O_HEART, { dl: false, flow: true, fill: 0.82 });
     }
 
     // ---- the frame ----------------------------------------------------------
