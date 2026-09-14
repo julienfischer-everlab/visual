@@ -4918,6 +4918,26 @@ grey" is a relationship, not two numbers). The label is full strength now in
 both states -- and in both themes, which is not the same colour: white on the
 dark ground, the theme's own ink on paper, where white would be no text at all.
 
+### 5.172 One filter row, three widths -- and one tweak fewer
+
+"Align the style of these elements following the mobile version. Same for
+tablet." The desk had its own reading of the same three controls: 12px-radius
+fields at 13.5px text, and chips that were outlined boxes on a 10px radius.
+They are the same components, so they now carry the same numbers -- 56px on a
+14px radius for the record select and the search, 44px fully rounded on a
+filled plate for the chips, the active one a step lighter behind an inset
+1.5px ring. The tablet needed nothing of its own: it reads the dashboard's
+rules, so aligning the desk aligned it, and its one-row-that-scrolls override
+still holds. Light keeps its own two colours, since white on paper is not text.
+
+"Remove this tweak" -- Bio visual, the Iris/Sphere choice for the biological
+age figure, gone from the bar. With the control gone `bioSph` could no longer
+be set, so the class, the CARD_STATE entry, the setMode clause and `bioIdx`
+(which existed only to answer "iris or sphere?") went with it: the slide reads
+its own organ index, which is the iris. The Sphere cloud itself stays -- the
+renderer still carries its uniform and the library still lists it; what left is
+the ability to put it in the age slide.
+
 ---
 
 ## 6. Open items

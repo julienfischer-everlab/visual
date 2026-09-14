@@ -68,7 +68,6 @@
      sit in the bar's own row at the bar's own gap, exactly as if they had been
      typed there loose. */
   .topbar .tkGrp{display:none;}
-  body.v8 .topbar .tkGrp#bioGrp{display:contents;}
   /* the glass is the mobile navigation's material, so its controls show on the
      two screens that carry the navigation and nowhere else */
   body.v8 .topbar .tkGrp#dockGrp,
@@ -592,24 +591,38 @@
   .dash .ilist .li.on{color:var(--ink-bright);border-color:var(--ink-bright);}
   .dash .ilist .dot{width:6px;height:6px;border-radius:50%;flex:none;}
   .dash .filters{display:flex;gap:8px;margin:26px 0 18px;font-size:12.5px;color:#bdbdb9;flex-wrap:wrap;align-items:center;}
+  /* The record select, the search and the chips wear the phone's shells: one
+     component, one set of numbers, whatever the width. 56px on a 14px radius
+     for the two fields, 44px fully rounded on a filled plate for the chips --
+     see .msRec, .msBox and #phone .fchip, which are where these came from. */
   .dash .drecs{
     display:none;align-items:center;justify-content:space-between;gap:10px;
-    width:230px;margin:26px 0 0;border:1px solid #2a2a28;border-radius:12px;
-    padding:13px 16px;font-size:13.5px;color:#ececec;cursor:pointer;
+    width:230px;margin:26px 0 0;border:1px solid #2a2a28;border-radius:14px;
+    height:56px;padding:0 14px 0 16px;font-size:15px;color:#ececec;cursor:pointer;
   }
   body.b2 .dash .drecs{display:flex;}
   .dash .drecs svg{width:12px;height:8px;flex:none;color:#8b8b86;}
   body.b2 .dash .filters{margin-top:16px;}
   .dash .dsearch{
     margin-left:auto;display:none;align-items:center;gap:9px;min-width:230px;
-    border:1px solid #2a2a28;border-radius:12px;padding:11px 15px;color:#8b8b86;cursor:text;
+    border:1px solid #2a2a28;border-radius:14px;height:56px;padding:0 14px 0 16px;
+    font-size:15px;color:#8b8b86;cursor:text;
   }
   body.b2 .dash .dsearch{display:flex;}
   .dash .dsearch svg{width:15px;height:15px;flex:none;}
   body.light .dash .drecs{border-color:#e2dbcc;color:#33291f;}
   body.light .dash .dsearch{border-color:#e2dbcc;color:#9b8a75;}
-  .dash .fchip{border:1px solid #2a2a28;border-radius:10px;padding:9px 14px;display:flex;gap:7px;align-items:center;}
-  .dash .fchip.on{border-color:#ececec;color:#ececec;}
+  /* The phone's chip, at the desk. Filled rather than outlined, fully
+     rounded, 44px tall, and the active edge an inset ring rather than a
+     border -- Chromium floors border-width to whole pixels, so a declared
+     1.5px border paints at 1, and a ring is outside layout and cannot shift
+     the row either. */
+  .dash .fchip{
+    border:0;border-radius:999px;height:44px;padding:0 16px;color:#fff;
+    background:rgba(255,255,255,.10);display:flex;gap:7px;align-items:center;
+    transition:background .18s ease,box-shadow .18s ease,color .18s ease;
+  }
+  .dash .fchip.on{background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1.5px #fff;color:#fff;}
   .dash .fchip i{width:8px;height:8px;border-radius:3px;font-style:normal;}
   .dash .st{border-radius:8px;padding:5px 11px;font-size:12.5px;justify-self:start;}
   .dash .st.ok{background:#17251a;color:#9fc98f;}
@@ -3151,8 +3164,8 @@
   body.light .dash .foot{color:#9b8a75;}
   body.light .dash .bars i{background:#4a3a2c;}
   body.light .dash .inf{border-color:#d6cab6;color:#9b8a75;}
-  body.light .dash .fchip{border-color:#ddd3bf;color:#6b5c4a;}
-  body.light .dash .fchip.on{border-color:#33291f;color:#33291f;}
+  body.light .dash .fchip{background:rgba(46,31,26,.10);color:#2e241c;}
+  body.light .dash .fchip.on{background:rgba(46,31,26,.17);box-shadow:inset 0 0 0 1.5px #2e241c;color:#2e241c;}
   body.light .dash .brow{color:#3a2f24;border-bottom-color:#ece4d4;}
   body.light .dash .brow .g{color:#9b8a75;}
   body.light .dash .grp{border-top-color:#e9e1cf;}
@@ -4493,13 +4506,6 @@
       <select id="densSel" aria-label="Library density">
         <option value="normal">Normal</option>
         <option value="dense">Dense</option>
-      </select>
-    </span>
-    <span class="tkGrp" id="bioGrp">
-      <span class="lbl">Bio visual</span>
-      <select id="bioSel" aria-label="Biological age visual">
-        <option value="iris">Iris</option>
-        <option value="sphere">Sphere</option>
       </select>
     </span>
     <!-- The on/off tweaks live in one dropdown, a row each with its own toggle
@@ -8577,9 +8583,6 @@
   // desktop, which is two names for one thing and a reader's problem, not a
   // platform's. One rule, every surface.
   const slideName = d => d.slide || (d.label + ' age');
-  const bioIdx = d =>
-    (d && d.label === 'Body' && document.body.classList.contains('bioSph'))
-      ? SPHERE_I : d.organIdx;
   // The concept pages carry one card per organ but none for the body, which is
   // a dashboard-only selection. When it survives a mode switch, read its
   // dashboard row rather than running off the end of CARDS.
@@ -9154,7 +9157,7 @@
     // sequenced: the arc sweeps first, the wheels start rolling as it lands
     clearTimeout(ageT);
     ageT = setTimeout(() => setAge(CHRONO + d.delta, dir), DUR * 0.75);
-    setOrgan(bioIdx(d));
+    setOrgan(d.organIdx);
     statusEl.style.opacity = 0;
     clearTimeout(statusT);
     statusT = setTimeout(() => { updateStatus(d); statusEl.style.opacity = 1; }, 220);
@@ -9459,9 +9462,6 @@
       (CARD_STATE.bioDots ? ' bioDots' : '') +
       (CARD_STATE.palette === 'wine' ? ' wine' : '') +
       (CARD_STATE.dense ? ' dense' : '') +
-      // the same rule for the figure: only Mobile V7 offers the choice, so
-      // only Mobile V7 wears it
-      (CARD_STATE.bioSph && m === 20 ? ' bioSph' : '') +
       // and the archive's own control is in the bar only while an archived
       // version is what is on screen
       (isArchived(m) ? ' archived' : '');
@@ -10606,8 +10606,8 @@
       // on every frame from the moment the swipe out of the last reading
       // began, until the frame loop gave up and said so.
       const oa = mbAt(Math.max(0, k0)), ob = mbAt(Math.max(0, k1));
-      const ia = k0 < 0 ? BODY_I : bioIdx(oa);
-      const ib = k1 < 0 ? BODY_I : bioIdx(ob);
+      const ia = k0 < 0 ? BODY_I : oa.organIdx;
+      const ib = k1 < 0 ? BODY_I : ob.organIdx;
       const warm = o => (o.delta > 0 ? 1 : o.delta < 0 ? -1 : 0) *
                         Math.min(1, Math.abs(o.delta) / 7);
       // The halo at the top of the header carries the same verdict as the
@@ -10708,12 +10708,12 @@
       // -- seven and a half percent smaller than the slides either side of it,
       // read as "the iris is reduced by 10%". Both gone: it is framed by the
       // same rule as every other organ.
-      const rBody = ORGANS[bioIdx(MB[0])].r;
+      const rBody = ORGANS[MB[0].organIdx].r;
       const zFix = 1 + (ORGANS[current].r / rBody - 1) * vasc;
       // How much of the iris is on screen, 0..1, so anything the iris does
       // differently on the phone arrives with the swipe rather than stepping
       // when the carousel crosses. Used by the framing here and the pan below.
-      const irisOn = (!v7On() || bioIdx(MB[0]) !== IRIS_I) ? 0
+      const irisOn = (!v7On() || MB[0].organIdx !== IRIS_I) ? 0
                    : k0 < 0 ? f : k0 === 0 ? 1 - f : 0;
       // "Scale down the iris by 15%" -- asked for after it was brought to the
       // organs' own framing, so this is a deliberate size, not a leftover.
@@ -12138,7 +12138,7 @@
       try {
         if (typeof v4Live === 'function' && v4Live()){
           const w2 = bxWrap(Math.round(bx));
-          want = w2 < 0 ? BODY_I : bioIdx(mbAt(w2));
+          want = w2 < 0 ? BODY_I : mbAt(w2).organIdx;
         }
       } catch (err) {}
       if (fbAt !== want){ fbAt = want; fbView.setOrgan(want); }
@@ -14560,9 +14560,6 @@
                        // cards, same data -- a narrower frame that reads the
                        // organ card the way the phone does, because the list
                        // and the organ cannot both have half of it.
-                       // which figure Mobile V7 reads the biological age as.
-                       // Same problem: a class setMode would drop.
-                       bioSph: false,
                        // the legend's fourth reading, on the bar's switch
                        unclass: false, bioDots: false,
                        // Palette: the three inks, or the wine family (see WINE_SETS)
@@ -14581,7 +14578,7 @@
       // a switch stands for a thing being on or off; Desktop and Tablet M are
       // two named shells, and neither of them is the other one turned off --
       // nor are the library's two grains, Normal and Dense
-      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'bioSel' || sel.id === 'densSel' || sel.id === 'stGraph' || sel.id === 'stPal')
+      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stGraph' || sel.id === 'stPal')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -14609,18 +14606,6 @@
       sel.parentNode.insertBefore(seg, sel.nextSibling);
     }
   })();
-  // Mobile V7's biological age figure. Nothing about the slide changes but the
-  // cloud it is drawn as, so the selection is re-made rather than re-laid out:
-  // selectPill picks the cloud through bioIdx, and setOrgan morphs from
-  // whichever figure is up into the other one.
-  {
-    const sel = document.getElementById('bioSel');
-    sel.addEventListener('change', () => {
-      CARD_STATE.bioSph = sel.value === 'sphere';
-      document.body.classList.toggle('bioSph', CARD_STATE.bioSph);
-      selectPill(pillCurrent);
-    });
-  }
   // activity stands alone -- it comes off a wearable, not the panel
   {
     const sel = document.getElementById('stAct');
