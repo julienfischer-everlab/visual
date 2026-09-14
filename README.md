@@ -1646,16 +1646,21 @@ black — the phone frame and the dashboard chrome cover them entirely.
 
   | | range | default | |
   |---|---|---|---|
-  | Blur | 0–80px | 44px | the backdrop blur |
-  | Saturation | 100–280% | 165% | what is behind it keeps its colour |
-  | Brightness | 0.80–1.30 | 1.03 | the backdrop's lift |
-  | Tint | 0–180% | 100% | the plate and the pane gradient |
-  | Sheen | 0–250% | 100% | the specular fall and the inset highlight |
-  | Shadow | 0–200% | 100% | the two drop shadows |
+  | Blur | 0–80px | 16px | the backdrop blur |
+  | Saturation | 100–280% | 100% | what is behind it keeps its colour |
+  | Brightness | 0.80–1.30 | 0.90 | the backdrop's lift |
+  | Tint | 0–180% | 70% | the plate and the pane gradient |
+  | Sheen | 0–250% | 20% | the specular fall and the inset highlight |
+  | Shadow | 0–200% | 165% | the two drop shadows |
 
   **And the dock's shape, beside it** — a *Dock → Style* menu on the same two
   screens. Shape (island + chat, or one bar), Labels (shown, or icons only),
-  Height (44–72px), Side inset (0–32px) and Scrim (0–100%). Two menus rather
+  Height (44–72px), Side inset (0–32px), Scrim (0–100%), **Active light** (the
+  whole of the chosen item's treatment — its brighter layer, both inset
+  highlights and its shadow) and **Inactive** (how present an unchosen one is).
+  The dock floats 25px off the frame's bottom, which puts it exactly 12px clear
+  of the drawn home indicator; fullscreen keeps 14px plus the safe area, where
+  the device draws its own. Two menus rather
   than one long list, because *what the glass is like* and *how much room the
   dock takes* are different questions and a designer is usually asking only
   one. The height drives the island, the chat, both radii **and** the

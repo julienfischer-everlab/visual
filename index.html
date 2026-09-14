@@ -699,11 +699,22 @@
      in the design, so the material with the controls untouched is the material
      as it was authored. */
   :root{
-    --lgBlur:44px; --lgSat:165%; --lgBright:1.03;
-    --lgTintK:1; --lgSheenK:1; --lgShadowK:1;
+    /* Tuned on the bar and kept: less blur, no added saturation, a touch
+       darker, a lighter plate, most of the sheen off and a heavier shadow.
+       The sliders rest here, and Reset returns here. */
+    --lgBlur:16px; --lgSat:100%; --lgBright:.90;
+    --lgTintK:.70; --lgSheenK:.20; --lgShadowK:1.65;
     /* the dock's own shape, separate from the material it is made of: one is
        what the glass is like, the other is how much room it takes */
     --navH:56px; --navInset:12px; --navScrim:0;
+    /* how strong the active item's brighter layer is, and how present an
+       inactive one is -- multipliers on what each theme landed on, as the
+       glass's three are, so one control is honest across both */
+    --navActK:1; --navInactK:1;
+    /* how far the dock floats above the bottom edge. The frame draws a home
+       indicator and the device draws its own into the safe area, so the two
+       cases do not want the same number. */
+    --navLift:25px;
   }
   .lgGlass{
     position:relative;
@@ -764,7 +775,7 @@
   .mTabs{display:none;}
   body.v8 #phone > .mTabs, body.m6 #phone2 > .mTabs{
     display:block;position:absolute;left:0;right:0;bottom:0;z-index:6;
-    padding:0 var(--navInset) calc(14px + env(safe-area-inset-bottom));
+    padding:0 var(--navInset) calc(var(--navLift) + env(safe-area-inset-bottom));
     pointer-events:none;
   }
   /* The scrim: a fade of the page's own ground rising behind the dock. Glass
@@ -789,7 +800,14 @@
   /* the iPhone's home indicator, in the frame only -- the device draws its
      own in the safe area -- under the dock, with room for both */
   .mHome{display:none;}
-  body:not(.fullscr) .mTabs{padding-bottom:22px;}
+  /* Fullscreen has no drawn indicator -- the device draws its own into the
+     safe area, which env() already pays for -- so it floats lower. This used
+     to be a padding-bottom of its own and never applied: `body.v8 #phone >
+     .mTabs` sets the padding shorthand and out-specifies `body:not(.fullscr)
+     .mTabs`, so the framed dock silently kept the fullscreen number and came
+     to rest one pixel above the home indicator. A variable cannot lose that
+     argument, because there is only one declaration. */
+  body.fullscr .mTabs{--navLift:14px;}
   body:not(.fullscr) .mTabs .mHome{
     display:block;position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
     width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);
@@ -800,15 +818,19 @@
   .mTab{
     flex:1;min-width:0;height:calc(var(--navH) - 8px);border-radius:calc((var(--navH) - 8px)/2);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    color:rgba(236,236,234,.42);text-decoration:none;cursor:pointer;
+    color:rgba(236,236,234,calc(.42 * var(--navInactK)));text-decoration:none;cursor:pointer;
     transition:color .24s ease,background .24s ease,box-shadow .24s ease,transform .16s ease;
   }
   .mTab:hover{color:rgba(236,236,234,.72);}
   .mTab:active{transform:scale(.955);}
   .mTab.on{
     color:#fff;
-    background:linear-gradient(160deg,rgba(255,255,255,.20),rgba(255,255,255,.07));
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 -1px 0 rgba(255,255,255,.05),0 2px 8px -5px rgba(0,0,0,.5);
+    background:linear-gradient(160deg,
+      rgba(255,255,255,calc(.20 * var(--navActK))),
+      rgba(255,255,255,calc(.07 * var(--navActK))));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,calc(.32 * var(--navActK))),
+               inset 0 -1px 0 rgba(255,255,255,calc(.05 * var(--navActK))),
+               0 2px 8px -5px rgba(0,0,0,calc(.5 * var(--navActK)));
   }
   /* One bar: the same two pills with the gap closed and their facing corners
      squared, so they read as a single continuous control. Done in CSS rather
@@ -822,12 +844,15 @@
   body.navNoLab .mTab i{display:none;}
   body.navNoLab .mTab{gap:0;}
   body.navNoLab .mTab svg{width:23px;height:23px;}
-  body.light .mTab{color:rgba(46,31,26,.36);}
+  body.light .mTab{color:rgba(46,31,26,calc(.36 * var(--navInactK)));}
   body.light .mTab:hover{color:rgba(46,31,26,.62);}
   body.light .mTab.on{
     color:#141413;
-    background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(255,255,255,.5));
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 2px 8px -5px rgba(46,31,26,.28);
+    background:linear-gradient(160deg,
+      rgba(255,255,255,calc(.9 * var(--navActK))),
+      rgba(255,255,255,calc(.5 * var(--navActK))));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,calc(.95 * var(--navActK))),
+               0 2px 8px -5px rgba(46,31,26,calc(.28 * var(--navActK)));
   }
   .mTab svg{
     width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.5;
@@ -1002,8 +1027,9 @@
      instead skews the ratio, since 6px is a larger share of the smaller one
      (it came out 65.5 : 34.5). The select gets the larger share because it
      carries two lines of text when a report is chosen and the search none. */
+  .msRecWrap{position:relative;flex:0 0 calc((100% - 12px) * .65);min-width:0;}
   .msRec{
-    flex:0 0 calc((100% - 12px) * .65);display:flex;align-items:center;gap:8px;
+    width:100%;display:flex;align-items:center;gap:8px;
     height:56px;padding:0 14px 0 16px;
     font:inherit;font-size:15px;color:#ececec;text-align:left;
     border:1px solid #2a2a28;border-radius:14px;background:transparent;
@@ -1011,6 +1037,8 @@
     transition:border-color .16s ease,background .16s ease;
   }
   .msRec .t{flex:1;min-width:0;}
+  /* whichever sits at the right, the text stops in the same place */
+  .msRecWrap.cleared .msRec{padding-right:42px;}
   .msRec b{display:block;font-weight:400;font-size:15px;
            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   /* the eyebrow: which report, said the way the menu says it. Only when one is
@@ -1018,10 +1046,29 @@
   .msRec i{display:block;font-style:normal;font-size:12px;color:#8b8b86;margin-top:2px;
            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .msRec i[hidden]{display:none;}
-  .msRec svg{width:12px;height:8px;flex:none;color:#8b8b86;transition:transform .22s ease;}
+  .msRecChev{width:12px;height:8px;flex:none;color:#8b8b86;transition:transform .22s ease;}
+  /* Driven by the wrapper's class, not by the hidden property. `hidden` is an
+     HTMLElement property and this is an SVG element, which does not implement
+     it: el.hidden = true set a plain JS field, reported true when read back,
+     and changed nothing on screen -- the chevron sat beside the cross. One
+     class on the wrapper decides which of the two is there. */
+  .msRecWrap.cleared .msRecChev{display:none;}
+  /* the same cross the search carries, over the field's right end and above
+     it, so the tap that clears is not the tap that opens */
+  .msRecClear{
+    position:absolute;right:13px;top:50%;transform:translateY(-50%);
+    width:22px;height:22px;padding:0;border:0;border-radius:50%;
+    background:#2a2a28;color:#ececec;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .msRecClear{display:none;}
+  .msRecWrap.cleared .msRecClear{display:flex;}
+  .msRecClear svg{width:12px;height:12px;display:block;}
+  body.light .msRecClear{background:#e6ddca;color:#2e1f1a;}
   .msRec:hover{border-color:#5a5a56;}
   .msRec[aria-expanded="true"]{border-color:#5a5a56;background:rgba(255,255,255,.05);}
-  .msRec[aria-expanded="true"] svg{transform:rotate(180deg);}
+  .msRec[aria-expanded="true"] .msRecChev{transform:rotate(180deg);}
   .msRow .msBox{flex:0 0 calc((100% - 12px) * .35);min-width:0;}
   body.light .msRec{border-color:#ddd3bf;color:#2e1f1a;}
   body.light .msRec:hover{border-color:#9b8a75;}
@@ -4466,6 +4513,20 @@
               <i class="tkVal" id="dkScrimV">0%</i>
             </span>
           </div>
+          <div class="tkRow">
+            <span class="lbl">Active light</span>
+            <span class="tkSlide">
+              <input type="range" id="dkAct" min="0" max="220" step="5" value="100" aria-label="The active item's light">
+              <i class="tkVal" id="dkActV">100%</i>
+            </span>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Inactive</span>
+            <span class="tkSlide">
+              <input type="range" id="dkInact" min="0" max="220" step="5" value="100" aria-label="Inactive item opacity">
+              <i class="tkVal" id="dkInactV">100%</i>
+            </span>
+          </div>
           <div class="tkRow tkFoot">
             <button class="tkBtn" id="dkReset" type="button">Reset</button>
           </div>
@@ -4480,43 +4541,43 @@
           <div class="tkRow">
             <span class="lbl">Blur</span>
             <span class="tkSlide">
-              <input type="range" id="glBlur" min="0" max="80" step="1" value="44" aria-label="Backdrop blur">
-              <i class="tkVal" id="glBlurV">44px</i>
+              <input type="range" id="glBlur" min="0" max="80" step="1" value="16" aria-label="Backdrop blur">
+              <i class="tkVal" id="glBlurV">16px</i>
             </span>
           </div>
           <div class="tkRow">
             <span class="lbl">Saturation</span>
             <span class="tkSlide">
-              <input type="range" id="glSat" min="100" max="280" step="5" value="165" aria-label="Backdrop saturation">
-              <i class="tkVal" id="glSatV">165%</i>
+              <input type="range" id="glSat" min="100" max="280" step="5" value="100" aria-label="Backdrop saturation">
+              <i class="tkVal" id="glSatV">100%</i>
             </span>
           </div>
           <div class="tkRow">
             <span class="lbl">Brightness</span>
             <span class="tkSlide">
-              <input type="range" id="glBright" min="80" max="130" step="1" value="103" aria-label="Backdrop brightness">
-              <i class="tkVal" id="glBrightV">1.03</i>
+              <input type="range" id="glBright" min="80" max="130" step="1" value="90" aria-label="Backdrop brightness">
+              <i class="tkVal" id="glBrightV">0.90</i>
             </span>
           </div>
           <div class="tkRow">
             <span class="lbl">Tint</span>
             <span class="tkSlide">
-              <input type="range" id="glTint" min="0" max="180" step="5" value="100" aria-label="Pane tint">
-              <i class="tkVal" id="glTintV">100%</i>
+              <input type="range" id="glTint" min="0" max="180" step="5" value="70" aria-label="Pane tint">
+              <i class="tkVal" id="glTintV">70%</i>
             </span>
           </div>
           <div class="tkRow">
             <span class="lbl">Sheen</span>
             <span class="tkSlide">
-              <input type="range" id="glSheen" min="0" max="250" step="5" value="100" aria-label="Sheen and inner highlight">
-              <i class="tkVal" id="glSheenV">100%</i>
+              <input type="range" id="glSheen" min="0" max="250" step="5" value="20" aria-label="Sheen and inner highlight">
+              <i class="tkVal" id="glSheenV">20%</i>
             </span>
           </div>
           <div class="tkRow">
             <span class="lbl">Shadow</span>
             <span class="tkSlide">
-              <input type="range" id="glShadow" min="0" max="200" step="5" value="100" aria-label="Drop shadow">
-              <i class="tkVal" id="glShadowV">100%</i>
+              <input type="range" id="glShadow" min="0" max="200" step="5" value="165" aria-label="Drop shadow">
+              <i class="tkVal" id="glShadowV">165%</i>
             </span>
           </div>
           <div class="tkRow tkFoot">
@@ -4948,10 +5009,18 @@
       <!-- Which set of results is on the page, beside the thing that searches
            them: one row, one height, because choosing the record set and
            searching within it are the same question asked twice. -->
-      <button class="msRec" id="mRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
-        <span class="t"><b id="mRecLbl">All records</b><i id="mRecEy" hidden></i></span>
-        <svg viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      </button>
+      <!-- The field opens the list; the cross clears it. Two targets, so they
+           are two buttons -- a button cannot contain a button -- with the
+           cross laid over the field's right end rather than inside it. The
+           chevron leaves when the cross arrives: once something is chosen, the
+           useful action is undoing it, not being told the list can open. -->
+      <div class="msRecWrap" id="mRecWrap">
+        <button class="msRec" id="mRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span class="t"><b id="mRecLbl">All records</b><i id="mRecEy" hidden></i></span>
+          <svg class="msRecChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button class="msRecClear" id="mRecClear" type="button" aria-label="Clear the chosen record" aria-hidden="true"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      </div>
       <div class="msBox">
         <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 10.4 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         <input id="mSearchIn" type="search" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search biomarkers">
@@ -14633,12 +14702,12 @@
   {
     const GLASS = [
       // id,      property,      default, how the value reads, how it reaches CSS
-      ['glBlur',   '--lgBlur',     44,  v => v + 'px',              v => v + 'px'],
-      ['glSat',    '--lgSat',     165,  v => v + '%',               v => v + '%'],
-      ['glBright', '--lgBright',  103,  v => (v / 100).toFixed(2),  v => (v / 100).toFixed(3)],
-      ['glTint',   '--lgTintK',   100,  v => v + '%',               v => (v / 100).toFixed(3)],
-      ['glSheen',  '--lgSheenK',  100,  v => v + '%',               v => (v / 100).toFixed(3)],
-      ['glShadow', '--lgShadowK', 100,  v => v + '%',               v => (v / 100).toFixed(3)]
+      ['glBlur',   '--lgBlur',     16,  v => v + 'px',              v => v + 'px'],
+      ['glSat',    '--lgSat',     100,  v => v + '%',               v => v + '%'],
+      ['glBright', '--lgBright',   90,  v => (v / 100).toFixed(2),  v => (v / 100).toFixed(3)],
+      ['glTint',   '--lgTintK',    70,  v => v + '%',               v => (v / 100).toFixed(3)],
+      ['glSheen',  '--lgSheenK',   20,  v => v + '%',               v => (v / 100).toFixed(3)],
+      ['glShadow', '--lgShadowK', 165,  v => v + '%',               v => (v / 100).toFixed(3)]
     ];
     const root = document.documentElement;
     GLASS.forEach(([id, prop, def, read, toCss]) => {
@@ -14681,7 +14750,12 @@
     const DOCK = [
       ['dkH',     '--navH',      56, v => v + 'px', v => v + 'px'],
       ['dkInset', '--navInset',  12, v => v + 'px', v => v + 'px'],
-      ['dkScrim', '--navScrim',   0, v => v + '%',  v => (v / 100).toFixed(2)]
+      ['dkScrim', '--navScrim',   0, v => v + '%',  v => (v / 100).toFixed(2)],
+      // the active item's whole treatment -- its brighter layer, both inset
+      // highlights and its shadow -- and how present an inactive one is, each
+      // a multiplier on what the theme landed on
+      ['dkAct',   '--navActK',  100, v => v + '%',  v => (v / 100).toFixed(3)],
+      ['dkInact', '--navInactK',100, v => v + '%',  v => (v / 100).toFixed(3)]
     ];
     const root = document.documentElement;
     DOCK.forEach(([id, prop, def, read, toCss]) => {
@@ -15793,26 +15867,41 @@
       addEventListener('keydown', e => {
         if (e.key === 'Escape' && document.body.classList.contains('mRecOn')) open(false);
       });
-      list.addEventListener('click', e => {
-        const o = e.target.closest('.mRecOpt');
-        if (!o) return;
+      const ey = document.getElementById('mRecEy');
+      const clear = document.getElementById('mRecClear');
+      const wrap = document.getElementById('mRecWrap');
+      // Everything the choice changes, in one place, so the button can never
+      // say one thing while the list shows another.
+      function choose(id, reload){
+        recSet = id;
+        const rec = RECS.find(r => r.id === id) || RECS[0];
         [].slice.call(list.children).forEach(x => {
-          const on = x === o;
+          const on = x.dataset.r === id;
           x.classList.toggle('on', on);
           x.setAttribute('aria-selected', String(on));
         });
-        recSet = o.dataset.r;
-        const rec = RECS.find(r => r.id === recSet) || RECS[0];
         lbl.textContent = rec.label;
-        // the button says which report as well as that one is chosen
-        const ey = document.getElementById('mRecEy');
         if (ey){
           ey.hidden = !rec.cat;
           ey.innerHTML = rec.cat ? rec.cat + ' &nbsp;|&nbsp; ' + rec.date : '';
         }
-        open(false);
+        // chevron or cross, never both: with a record chosen the useful action
+        // is undoing it, and All records is the undone state so it needs none
+        const chosen = id !== 'all';
+        if (wrap) wrap.classList.toggle('cleared', chosen);
+        if (clear) clear.setAttribute('aria-hidden', String(!chosen));
         if (countChips) countChips();
-        load(false);          // through the skeleton, as everything else is
+        if (reload) load(false);   // through the skeleton, as everything else is
+      }
+      list.addEventListener('click', e => {
+        const o = e.target.closest('.mRecOpt');
+        if (!o) return;
+        open(false);
+        choose(o.dataset.r, true);
+      });
+      if (clear) clear.addEventListener('click', e => {
+        e.stopPropagation();       // clearing is not opening
+        choose('all', true);
       });
     })();
 

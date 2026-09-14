@@ -4746,6 +4746,53 @@ field is 137px, and "Search biomarkers" simply clips there -- a placeholder has
 no ellipsis. The visible placeholder is "Search" now; the accessible label is
 still the full phrase.
 
+### 5.167 The tuned glass becomes the glass, and the dock clears the home
+
+"Keep these values as default" -- blur 16, saturation 100, brightness 0.90,
+tint 70, sheen 20, shadow 165. Which is a much quieter material than the one I
+authored: far less blur, no added saturation, a darker and lighter-tinted plate
+and most of the sheen gone, against a heavier shadow. They are the :root values
+now and the sliders rest on them, so Reset returns here rather than to what the
+file used to say.
+
+"Can I also have an option for the light effect and all effect for the active
+state. The inactive state, the opacity on the item." Two more controls in the
+Dock menu. Active light scales the whole of the active item's treatment -- its
+brighter layer, both inset highlights and its shadow -- and Inactive scales how
+present an unchosen one is. Multipliers on what each theme landed on, as the
+glass's three are, because the dark and light docks do not carry the same
+numbers and one control has to be honest across both.
+
+"Push up the nav group by 16px, need to be 12px above the home bottom." The two
+numbers did not agree, and measuring said why: the dock's bottom was sitting
+ONE pixel above the home indicator, not the nine I would have guessed from the
+stylesheet. `body:not(.fullscr) .mTabs{padding-bottom:22px}` had never applied
+-- `body.v8 #phone > .mTabs` sets the padding shorthand and out-specifies it --
+so the framed dock silently wore the fullscreen number. It is a variable now,
+--navLift, which cannot lose that argument because there is only one
+declaration: 25px framed (12 clear of the indicator's top, plus its 5px height,
+plus the 8px it sits off the edge) and 14px fullscreen, where the device draws
+its own indicator into the safe area that env() already pays for. Measured: the
+gap is exactly 12. The group is 56px and always was.
+
+"When an option is selected, put a cross icon -- clear action, same as the
+search. Tapping the rest of the field triggers the options list."
+
+Two targets means two buttons, since a button cannot contain a button: the
+cross is laid over the field's right end rather than inside it, and stops the
+click from reaching the field underneath. The chevron leaves when the cross
+arrives -- with a record chosen the useful action is undoing it, not being told
+the list can open.
+
+And a trap worth writing down. I hid the chevron with el.hidden = true and it
+did nothing, while reading back as true. `hidden` is an HTMLElement property
+and the chevron is an SVG element, which does not implement it: the assignment
+created a plain JS field and the attribute was never set. It looked correct
+from script and wrong on screen -- the chevron sat beside the cross. Both icons
+are driven by one class on the wrapper now, which is what should have decided
+it anyway: they are two halves of one state, not two things that happen to
+agree.
+
 ---
 
 ## 6. Open items
