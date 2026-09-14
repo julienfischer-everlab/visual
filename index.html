@@ -4702,7 +4702,6 @@
     <div class="olNavTitle">Library</div>
     <button class="olNavItem on" data-panel="organs" aria-current="page">Organ Library</button>
     <button class="olNavItem" data-panel="fine">Organs &mdash; Fine Grain</button>
-    <button class="olNavItem" data-panel="other">Other</button>
   </aside>
   <main class="olMain">
     <section class="olPanel on" data-panel="organs">
@@ -4735,20 +4734,6 @@
            or <strong>JPG</strong> with the background baked in.</p>
       </div>
       <div class="olGrid" id="olFine"></div>
-    </section>
-    <section class="olPanel" data-panel="other">
-      <div class="olHead">
-        <h1>Milestones</h1>
-        <p>The health journey as seven standalone objects, built from the same cloud
-           builder and the same component as the organs &mdash; same material, same
-           motion, same scale.</p>
-        <p class="olHint">The &#8595; in each visual's top-right corner exports the
-           frame on screen, dot for dot, no smaller than 1920&times;1920 and inked
-           for whichever theme the page is in &mdash; as
-           <strong>PNG</strong> or <strong>SVG</strong> on a transparent ground,
-           or <strong>JPG</strong> with the background baked in.</p>
-      </div>
-      <div class="olGrid" id="olOther"></div>
     </section>
   </main>
 </div>
@@ -5298,110 +5283,6 @@
     c.lineWidth = 17;
     c.beginPath(); c.moveTo(157, 186); c.lineTo(149, 296); c.stroke();
     c.beginPath(); c.moveTo(183, 186); c.lineTo(191, 296); c.stroke();
-  }
-
-  // ---- milestone objects: each stage as a standalone form, like an organ ----
-  // 01 baseline: a test tube, blood standing in the bottom of it.
-  // The glass is stroked and the blood is filled, so the sample reads as a
-  // solid volume held inside a thin vessel.
-  function drawBloodTube(c){
-    c.lineCap = 'round'; c.lineJoin = 'round';
-    c.lineWidth = 9;
-    c.beginPath();                                    // the glass
-    c.moveTo(137, 82);
-    c.lineTo(137, 222);
-    c.quadraticCurveTo(137, 266, 170, 266);
-    c.quadraticCurveTo(203, 266, 203, 222);
-    c.lineTo(203, 82);
-    c.stroke();
-    c.beginPath(); c.moveTo(126, 82); c.lineTo(214, 82); c.stroke();   // rim
-    c.beginPath();                                    // the blood standing in it
-    c.moveTo(142, 168);
-    c.lineTo(142, 222);
-    c.quadraticCurveTo(142, 261, 170, 261);
-    c.quadraticCurveTo(198, 261, 198, 222);
-    c.lineTo(198, 168);
-    c.closePath(); c.fill();
-  }
-  // 02 treatment: a syringe, kept compact so it reads at tile size
-  function drawSyringe(c){
-    c.lineJoin = 'round';
-    c.lineCap = 'butt';
-    c.lineWidth = 64;
-    c.beginPath(); c.moveTo(132, 212); c.lineTo(222, 122); c.stroke();   // barrel
-    c.lineCap = 'round';
-    c.lineWidth = 16;
-    c.beginPath(); c.moveTo(132, 212); c.lineTo(104, 240); c.stroke();   // plunger rod
-    c.lineWidth = 14;
-    c.beginPath(); c.moveTo(84, 220); c.lineTo(124, 260); c.stroke();    // thumb pad
-    c.beginPath(); c.moveTo(106, 186); c.lineTo(158, 238); c.stroke();   // finger flange
-    c.lineWidth = 26;
-    c.beginPath(); c.moveTo(222, 122); c.lineTo(238, 106); c.stroke();   // hub
-    c.lineWidth = 9;
-    c.beginPath(); c.moveTo(238, 106); c.lineTo(272, 72); c.stroke();    // needle
-    c.globalCompositeOperation = 'destination-out';
-    c.lineWidth = 7;
-    c.beginPath(); c.moveTo(160, 162); c.lineTo(194, 196); c.stroke();   // the dose line
-  }
-  // 03 ongoing: one closed circuit, evenly weighted
-  function drawBalance(c){
-    c.lineCap = 'round';
-    c.lineWidth = 15;
-    c.beginPath(); c.arc(170, 170, 94, 0, 6.2832); c.stroke();
-    for (let k = 0; k < 6; k++){
-      const a = k / 6 * 6.2832 - Math.PI / 2;
-      c.beginPath(); c.arc(170 + 94 * Math.cos(a), 170 + 94 * Math.sin(a), 16, 0, 6.2832); c.fill();
-    }
-  }
-  // 04 nutrition: an apple
-  function drawApple(c){
-    c.lineCap = 'round';
-    c.beginPath(); c.arc(142, 192, 60, 0, 6.2832); c.fill();             // left lobe
-    c.beginPath(); c.arc(198, 192, 60, 0, 6.2832); c.fill();             // right lobe
-    c.beginPath(); c.ellipse(170, 224, 62, 48, 0, 0, 6.2832); c.fill();  // the base
-    c.globalCompositeOperation = 'destination-out';
-    c.beginPath(); c.ellipse(170, 132, 27, 17, 0, 0, 6.2832); c.fill();  // the dimple
-    c.globalCompositeOperation = 'source-over';
-    c.lineWidth = 9;
-    c.beginPath(); c.moveTo(170, 142); c.quadraticCurveTo(177, 114, 191, 100); c.stroke();
-    c.beginPath(); c.ellipse(214, 106, 25, 13, -0.45, 0, 6.2832); c.fill();  // leaf
-  }
-  // 05 activity: two feet mid-stride
-  function drawFoot(c, x, y, rot){
-    c.save();
-    c.translate(x, y); c.rotate(rot);
-    c.beginPath(); c.ellipse(0, -16, 30, 40, 0, 0, 6.2832); c.fill();    // sole
-    c.beginPath(); c.ellipse(2, 44, 21, 26, 0, 0, 6.2832); c.fill();     // heel
-    c.lineCap = 'round'; c.lineWidth = 14;
-    c.beginPath(); c.moveTo(19, 6); c.quadraticCurveTo(25, 24, 17, 36); c.stroke();  // lateral arch
-    for (const [tx, ty, tr] of [[-22,-54,8],[-6,-61,7],[8,-59,6.2],[20,-53,5.6],[30,-44,5]]){
-      c.beginPath(); c.arc(tx, ty, tr, 0, 6.2832); c.fill();             // toes
-    }
-    c.restore();
-  }
-  function drawFeet(c){
-    drawFoot(c, 98, 230, -0.30);    // trailing
-    drawFoot(c, 228, 122, -0.30);   // leading
-  }
-  // 06 medication: one capsule, seam and all
-  function drawMedication(c){
-    c.lineCap = 'round';
-    c.lineWidth = 78;
-    c.beginPath(); c.moveTo(114, 216); c.lineTo(226, 124); c.stroke();
-    c.globalCompositeOperation = 'destination-out';
-    c.lineWidth = 9;
-    c.beginPath(); c.moveTo(142, 142); c.lineTo(198, 198); c.stroke();
-  }
-  // 07 supplements: several smaller forms, and loose grains
-  function drawSupplements(c){
-    c.lineCap = 'round';
-    c.lineWidth = 34;
-    c.beginPath(); c.moveTo(100, 142); c.lineTo(148, 180); c.stroke();
-    c.beginPath(); c.moveTo(184, 106); c.lineTo(232, 144); c.stroke();
-    c.beginPath(); c.moveTo(146, 218); c.lineTo(194, 256); c.stroke();
-    for (const [x, y] of [[244,212],[88,214],[214,198],[118,166],[168,82],[266,178],[76,262]]){
-      c.beginPath(); c.arc(x, y, 11, 0, 6.2832); c.fill();
-    }
   }
 
   // ---- The biological fingerprint -------------------------------------------
@@ -11698,7 +11579,6 @@
         b2.classList.toggle('on', on);
         if (on) b2.setAttribute('aria-current', 'page'); else b2.removeAttribute('aria-current');
       });
-      if (want === 'other') buildMilestones();
       if (want === 'fine') buildFine();
       panels.forEach(pn => pn.classList.toggle('on', pn.dataset.panel === want));
       if (want === 'organs' || want === 'fine') applyDense(want === 'fine');
@@ -11725,86 +11605,6 @@
       if (btn && document.body.classList.contains('m7')) btn.click();
     });
   })();
-  // ---- milestone visuals: the health journey, on the same body ----
-  // One torso cloud shared by all three; each stage differs by the accent layer
-  // mounted over it and the way that layer flows.
-  const MILESTONES = [
-    {
-      code: '01', name: 'Baseline', sub: 'Blood panel / diagnostics',
-      note: 'A drawn sample — the panel every baseline starts from.',
-      accent: drawBloodTube, depth: 30,
-      flow: { paths: [[[156,252],[156,200],[158,176]],[[184,252],[184,200],[182,176]],[[170,256],[170,214],[170,176]]],
-              loop: 10, op: 0.6, width: 3, turb: 0.8, tone: [0.93,0.42,0.40] }
-    },
-    {
-      code: '02', name: 'Treatment', sub: 'Review / re-test',
-      note: 'A dose drawn and given, then measured again.',
-      accent: drawSyringe, depth: 34,
-      flow: { paths: [[[126,218],[177,167],[222,122],[272,72]],[[150,194],[200,144]]],
-              loop: 8, op: 0.66, width: 3, turb: 0.7, tone: [0.95,0.72,0.56] }
-    },
-    {
-      code: '03', name: 'Ongoing', sub: 'Continuous health monitoring',
-      note: 'One closed circuit, evenly weighted — nothing singled out, nothing left unwatched.',
-      accent: drawBalance, depth: 26,
-      flow: { paths: [[[170,76],[264,170],[170,264],[76,170],[170,76]]],
-              loop: 13, op: 0.55, width: 3.5, turb: 0.9, tone: [0.86,0.74,0.62] }
-    },
-    {
-      code: '04', name: 'Nutrition', sub: 'Whole food / intake',
-      note: 'An apple — the simplest version of what goes in.',
-      accent: drawApple, depth: 36,
-      flow: { paths: [[[170,150],[214,192],[170,246],[126,192],[170,150]],[[170,180],[170,236]]],
-              loop: 12, op: 0.58, width: 4, turb: 1.2, tone: [0.93,0.6,0.44] }
-    },
-    {
-      code: '05', name: 'Activity', sub: 'Everyday movement',
-      note: 'Two feet mid-stride — everyday movement, not training.',
-      accent: drawFeet, depth: 30,
-      flow: { paths: [[[86,272],[160,196],[240,116]],[[98,230],[228,122]]],
-              loop: 9, op: 0.6, width: 3.5, turb: 1.0, tone: [0.92,0.67,0.58] }
-    },
-    {
-      code: '06', name: 'Medication', sub: 'Targeted treatment',
-      note: 'A single capsule: one treatment, aimed at one thing.',
-      accent: drawMedication, depth: 40,
-      flow: { paths: [[[114,216],[170,170],[226,124]],[[132,198],[188,142]],[[150,232],[206,176]]],
-              loop: 9, op: 0.66, width: 4, turb: 0.9, tone: [0.95,0.6,0.52] }
-    },
-    {
-      code: '07', name: 'Supplements', sub: 'Daily support',
-      note: 'Several smaller forms and loose grains — support taken daily, not aimed at one thing.',
-      accent: drawSupplements, depth: 30,
-      flow: { paths: [[[100,142],[148,180]],[[184,106],[232,144]],[[146,218],[194,256]],[[88,214],[168,170],[244,212]]],
-              loop: 12, op: 0.58, width: 3.5, turb: 1.1, tone: [0.93,0.8,0.58] }
-    }
-  ];
-  // built on first view: the Other panel costs nothing until it is opened
-  function buildMilestones(){
-    const grid = document.getElementById('olOther');
-    if (!grid || grid.dataset.built) return;
-    grid.dataset.built = '1';
-    MILESTONES.forEach(m => {
-      const cell = document.createElement('div');
-      cell.className = 'olCell';
-      cell.innerHTML =
-        '<div class="olStage"></div>' +
-        '<div class="olIdx">' + m.code + '</div>' +
-        '<div class="olName">' + m.name + '</div>' +
-        '<div class="olSpec"><span class="olPts"></span></div>';
-      grid.appendChild(cell);
-      const stage = cell.querySelector('.olStage');
-      const cl = buildCloud(m.accent, m.depth, 1.0, { s: 1, x: 0, y: 0 });
-      const view = makeOrganView(stage, null, {
-        cloud: cl, key: 'ms' + m.code, target: dotTarget(cl),
-        fill: 0.46, dot: 1.0, beat: false,
-        name: m.code + '-' + m.name,
-        flowPreset: m.flow
-      });
-      cell.querySelector('.olPts').textContent = view.dotCount() + ' pts';
-    });
-  }
-
   // ---- Teaser video: the storyboard page ----
   // Ten sequences for a thirty-second teaser, each frame a loose animated
   // sketch in the product's own system -- the three inks, the arc, the halo,

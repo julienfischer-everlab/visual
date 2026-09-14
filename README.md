@@ -610,7 +610,7 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 **Library** — the component workbench
 
-17. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Milestones** (Baseline, Treatment, Ongoing, Nutrition, Activity, Medication, Supplements). Every tile reports its dot count and downloads as PNG, JPG or SVG.
+17. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Organs — Fine Grain** (the same organs at twice the particles). Every tile reports its dot count and downloads as PNG, JPG or SVG.
 
 ## Tweaks (top bar)
 
@@ -1590,9 +1590,6 @@ black — the phone frame and the dashboard chrome cover them entirely.
   one silhouette into the next (verified: the lit centroid holds at 0.497-0.502
   of canvas width across the whole transition). Badge and status dot share one
   scale: amber older, green younger, neutral on par.
-- Milestone visuals are standalone objects, built exactly like an organ: one
-  silhouette through `buildCloud`, one `makeOrganView`, its own flow preset.
-  Nothing about them is special-cased.
   The Library and the Overview card are instances of it.
 - **Asset export.** Every `makeOrganView` instance can render itself as a
   transparent PNG, no smaller than 1920px on either side. `paint(px, W, H, t,

@@ -4192,6 +4192,21 @@ a zoom out that carries on past the cut, not one that arrives and waits.
 -- would have opened on a dot barely magnified, which loses the frame the
 sequence is built on.)
 
+### 5.154 The Library loses Other
+
+"Remove other." The Library's third nav entry and its Milestones panel are
+gone, and so is everything that was only there for them: the panel markup,
+the builder, the MILESTONES table, and the seven shapes it drew from --
+the blood tube, the syringe, the balance, the apple, the feet, the
+medication and the supplements, about 200 lines in all. Nothing else
+referenced any of it, so leaving it would have been unreachable code rather
+than a feature waiting to come back. It is in the history if it is ever
+wanted: dadecf8 is the last commit that has it.
+
+The nav is two entries now, Organ Library and Organs -- Fine Grain, which
+is the pair the Density control already mirrors -- so the page and the bar
+say exactly the same thing, which they did not quite before.
+
 ---
 
 ## 6. Open items
