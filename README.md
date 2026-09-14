@@ -1617,7 +1617,13 @@ black — the phone frame and the dashboard chrome cover them entirely.
   content passes under it and the blur does the separating.
   The dock is one asset: written once in the script and mounted into each
   phone that carries it, so the Overview and Biomarkers screens wear the same
-  navigation rather than two copies of it.
+  navigation rather than two copies of it. The five icons are the design's own,
+  solid marks on a 20px artboard where the first set was a 1.5px stroke on a
+  24px one — so the box comes down from 21px to 18px (21 in icons-only) to land
+  on the optical size the stroked set had, and they take `fill: currentColor`
+  rather than a stroke, which is what keeps them on the tab's active and
+  inactive colours. The chat bubble beside them is still a stroked outline; it
+  came with no replacement.
 
   **The dock is tunable from the bar** — one *Dock → Style* dropdown, shown on
   the two screens that carry the navigation and nowhere else, in two named

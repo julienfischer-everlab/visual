@@ -4938,6 +4938,28 @@ its own organ index, which is the iris. The Sphere cloud itself stays -- the
 renderer still carries its uniform and the library still lists it; what left is
 the ability to put it in the age slide.
 
+### 5.173 The dock's own icons
+
+Five SVGs, so the dock stops wearing the marks I drew for it as placeholders.
+They are solid shapes on a 20px artboard; the set they replace was a 1.5px
+stroke on a 24px one. That is not a like-for-like swap: the old marks used
+about 16 of their 24 units, the new ones about 17.5 of 20, so at the same 21px
+box the new set reads a third bigger. The box comes down to 18px (21 where the
+labels are off, from 23) and they land on the optical size the stroked set had.
+
+`fill: currentColor; stroke: none` rather than the stroke rules, which is what
+keeps them on the tab's own colours -- the active tab's white and the
+inactive's 42%, both still driven by --navActK and --navInactK from the Dock
+menu. The per-circle rule went with the old set; nothing in the new five is a
+circle element.
+
+The chat bubble beside them is untouched and is still a 1.5px stroked outline.
+It came with no replacement, and at this weight the two read together well
+enough; it is worth a look if a matching solid one turns up. The files are
+named "active" -- there is no second, inactive set here, and none is needed:
+the artwork is already an outline and the state is carried by colour and the
+plate behind it, as it was.
+
 ---
 
 ## 6. Open items
