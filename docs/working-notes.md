@@ -4520,6 +4520,39 @@ health app is a result and reads as one. Fabricating two out-of-range
 biomarkers to make a control look busy would have been the wrong kind of
 fixing.
 
+### 5.161 A controller for the dock's shape
+
+"Add bottom nav controller for style / effect." The glass menu tunes what the
+material is like; this is the other half -- how much room the dock takes and
+what shape it is.
+
+Five controls. Height, side inset and scrim are sliders writing custom
+properties on the root, the same pattern the glass uses. Shape and labels are
+classes on the body instead, because a shape is a state rather than a number,
+and they go in CARD_STATE so setMode does not drop them when it writes the
+class list whole.
+
+The height is the one that had to be derived rather than set beside anything.
+It drives the island, the chat, both radii and the scroller's bottom padding
+from one variable; at 72px the padding goes 92 to 108 on its own, or a taller
+dock would quietly start covering the last row of the list under it. That is
+the same lesson as the flow multiplier: a size that means "a fraction of that
+other thing" has to be stored as that fraction.
+
+Both shape states are CSS alone. "One bar" closes the gap and squares the two
+facing corners so the island and the chat read as one continuous control; it
+would have been easier to move the chat into the island in the DOM and that
+would have forked the markup of an asset mounted into several screens.
+
+The scrim is the effect the screenshot asked for without naming. Glass shows
+what is under it, which is the point of glass and also the problem when what
+is under it is a list -- a row was running straight into the labels. A fade of
+the page's own ground rising behind the dock separates them without making the
+pane opaque. First cut spent the strength twice, in the gradient's alpha and
+again in opacity, so a slider at 100% arrived at 72; the colour is solid now
+and opacity carries it alone. Off by default: it is a choice about a screen,
+not a property of the component.
+
 ---
 
 ## 6. Open items

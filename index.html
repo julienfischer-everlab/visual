@@ -72,7 +72,9 @@
   /* the glass is the mobile navigation's material, so its controls show on the
      two screens that carry the navigation and nowhere else */
   body.v8 .topbar .tkGrp#glassGrp,
-  body.m6 .topbar .tkGrp#glassGrp{display:contents;}
+  body.m6 .topbar .tkGrp#glassGrp,
+  body.v8 .topbar .tkGrp#dockGrp,
+  body.m6 .topbar .tkGrp#dockGrp{display:contents;}
   .topbar .tkGrp#densGrp{display:contents;}   /* Density is on every page: the switch drives the engine too */
   body.archived .topbar .tkGrp#arcGrp{display:contents;}
   .topbar .tkBtn:hover{border-color:#3f3f46;}
@@ -695,6 +697,9 @@
   :root{
     --lgBlur:44px; --lgSat:165%; --lgBright:1.03;
     --lgTintK:1; --lgSheenK:1; --lgShadowK:1;
+    /* the dock's own shape, separate from the material it is made of: one is
+       what the glass is like, the other is how much room it takes */
+    --navH:56px; --navInset:12px; --navScrim:0;
   }
   .lgGlass{
     position:relative;
@@ -755,11 +760,28 @@
   .mTabs{display:none;}
   body.v8 #phone > .mTabs, body.m6 #phone2 > .mTabs{
     display:block;position:absolute;left:0;right:0;bottom:0;z-index:6;
-    padding:0 12px calc(14px + env(safe-area-inset-bottom));
+    padding:0 var(--navInset) calc(14px + env(safe-area-inset-bottom));
     pointer-events:none;
   }
-  .mDock{display:flex;align-items:center;gap:8px;pointer-events:auto;}
-  .mIsland{flex:1;min-width:0;height:56px;border-radius:28px;display:flex;align-items:center;padding:0 4px;}
+  /* The scrim: a fade of the page's own ground rising behind the dock. Glass
+     shows what is under it, which is the point of glass and also the problem
+     when what is under it is a list -- a row can run straight into a label.
+     This is the one thing that separates them without making the pane opaque,
+     and it is off by default: it is a choice about a screen, not a property of
+     the component. */
+  .mTabs::before{
+    content:"";position:absolute;left:0;right:0;bottom:0;pointer-events:none;
+    height:calc(var(--navH) + 92px);
+    /* the strength is carried by opacity alone -- spending it in the colour's
+       alpha as well squares it, and a slider at 100% was arriving at 72 */
+    background:linear-gradient(to top,#0d0d0c 26%,rgba(13,13,12,0));
+    opacity:var(--navScrim);
+  }
+  body.light .mTabs::before{
+    background:linear-gradient(to top,#f7f2e9 26%,rgba(247,242,233,0));
+  }
+  .mDock{display:flex;align-items:center;gap:8px;pointer-events:auto;position:relative;}
+  .mIsland{flex:1;min-width:0;height:var(--navH);border-radius:calc(var(--navH)/2);display:flex;align-items:center;padding:0 4px;}
   /* the iPhone's home indicator, in the frame only -- the device draws its
      own in the safe area -- under the dock, with room for both */
   .mHome{display:none;}
@@ -772,7 +794,7 @@
   /* an action: icon over a compact label, the whole of it a target. The
      active one takes a brighter layer of the same glass, not a solid fill. */
   .mTab{
-    flex:1;min-width:0;height:48px;border-radius:24px;
+    flex:1;min-width:0;height:calc(var(--navH) - 8px);border-radius:calc((var(--navH) - 8px)/2);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
     color:rgba(236,236,234,.42);text-decoration:none;cursor:pointer;
     transition:color .24s ease,background .24s ease,box-shadow .24s ease,transform .16s ease;
@@ -784,6 +806,18 @@
     background:linear-gradient(160deg,rgba(255,255,255,.20),rgba(255,255,255,.07));
     box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 -1px 0 rgba(255,255,255,.05),0 2px 8px -5px rgba(0,0,0,.5);
   }
+  /* One bar: the same two pills with the gap closed and their facing corners
+     squared, so they read as a single continuous control. Done in CSS rather
+     than by moving the chat into the island, because the dock is one asset
+     mounted into several screens and a style should not fork its markup. */
+  body.navBar .mDock{gap:0;}
+  body.navBar .mIsland{border-radius:calc(var(--navH)/2) 0 0 calc(var(--navH)/2);}
+  body.navBar .mChat{border-radius:0 calc(var(--navH)/2) calc(var(--navH)/2) 0;}
+  /* Icons only. The tab keeps its height, so the row does not change shape --
+     the label leaves and the icon takes the middle. */
+  body.navNoLab .mTab i{display:none;}
+  body.navNoLab .mTab{gap:0;}
+  body.navNoLab .mTab svg{width:23px;height:23px;}
   body.light .mTab{color:rgba(46,31,26,.36);}
   body.light .mTab:hover{color:rgba(46,31,26,.62);}
   body.light .mTab.on{
@@ -800,7 +834,7 @@
   /* the chat: the same glass, warmed, so it carries a little more weight
      than any one of the four without leaving the system */
   .mChat{
-    flex:none;width:56px;height:56px;border-radius:28px;padding:0;cursor:pointer;
+    flex:none;width:var(--navH);height:var(--navH);border-radius:calc(var(--navH)/2);padding:0;cursor:pointer;
     display:flex;align-items:center;justify-content:center;color:#fff;
     background:
       linear-gradient(158deg,rgba(247,131,89,.42) 0%,rgba(247,131,89,.18) 46%,rgba(255,255,255,.12) 100%),
@@ -843,7 +877,7 @@
   body.v8 .mtitle .hiShare:active{transform:scale(.94);}
   body.light.v8 .mtitle .hiShare{background:rgba(46,31,26,.08);color:#2e1f1a;}
   /* and the scroller keeps clear of the bar it is running under */
-  body.v8 .mscroll, body.m6 #phone2 .mscroll{padding-bottom:calc(92px + env(safe-area-inset-bottom));}
+  body.v8 .mscroll, body.m6 #phone2 .mscroll{padding-bottom:calc(var(--navH) + 36px + env(safe-area-inset-bottom));}
   body.fullscr{overscroll-behavior:none;}
   .pbtn{position:absolute;background:linear-gradient(180deg,#4c4c52,#333338);}
   .pbtn.act{left:-2px;top:154px;width:3px;height:32px;border-radius:2px 0 0 2px;}
@@ -4276,6 +4310,56 @@
          states its value, so a setting can be read off the bar and written down
          rather than eyeballed off a thumb. Like every other tweak, it lives in
          memory -- Reload is the way back. -->
+    <!-- The dock's shape, beside the material it is made of. Two menus rather
+         than one long list: "what the glass is like" and "how much room the
+         dock takes" are different questions, and a designer is usually asking
+         only one of them. -->
+    <span class="tkGrp" id="dockGrp">
+      <span class="lbl">Dock</span>
+      <details class="tkMenu" id="dkMenu">
+        <summary aria-label="Bottom navigation style">Style</summary>
+        <div class="tkPanel" role="group" aria-label="Bottom navigation style">
+          <div class="tkRow">
+            <span class="lbl">Shape</span>
+            <select id="dkShape" aria-label="Dock shape">
+              <option value="island" selected>Island + chat</option>
+              <option value="bar">One bar</option>
+            </select>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Labels</span>
+            <select id="dkLab" aria-label="Tab labels">
+              <option value="on" selected>Shown</option>
+              <option value="off">Icons only</option>
+            </select>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Height</span>
+            <span class="tkSlide">
+              <input type="range" id="dkH" min="44" max="72" step="1" value="56" aria-label="Dock height">
+              <i class="tkVal" id="dkHV">56px</i>
+            </span>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Side inset</span>
+            <span class="tkSlide">
+              <input type="range" id="dkInset" min="0" max="32" step="1" value="12" aria-label="Side inset">
+              <i class="tkVal" id="dkInsetV">12px</i>
+            </span>
+          </div>
+          <div class="tkRow">
+            <span class="lbl">Scrim</span>
+            <span class="tkSlide">
+              <input type="range" id="dkScrim" min="0" max="100" step="5" value="0" aria-label="Scrim behind the dock">
+              <i class="tkVal" id="dkScrimV">0%</i>
+            </span>
+          </div>
+          <div class="tkRow tkFoot">
+            <button class="tkBtn" id="dkReset" type="button">Reset</button>
+          </div>
+        </div>
+      </details>
+    </span>
     <span class="tkGrp" id="glassGrp">
       <span class="lbl">Glass</span>
       <details class="tkMenu" id="glMenu">
@@ -9157,6 +9241,8 @@
       (CARD_STATE.noCov ? ' noCov' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
+      (CARD_STATE.navBar ? ' navBar' : '') +
+      (CARD_STATE.navNoLab ? ' navNoLab' : '') +
       (CARD_STATE.unclass ? ' unclass' : '') +
       (CARD_STATE.bioDots ? ' bioDots' : '') +
       (CARD_STATE.palette === 'wine' ? ' wine' : '') +
@@ -14224,6 +14310,8 @@
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
+                       // the dock's two shape states, from the Dock menu
+                       navBar: false, navNoLab: false,
                        // which shell Desktop V5 is wearing. Same page, same
                        // cards, same data -- a narrower frame that reads the
                        // organ card the way the phone does, because the list
@@ -14460,6 +14548,52 @@
         const el = document.getElementById(id);
         if (el && el._glReset) el._glReset();
       }));
+  }
+
+  // ---------- the dock's shape ----------
+  // The same pattern as the glass: sliders write custom properties on the root
+  // and the CSS is the dock. The two selects are classes on the body instead,
+  // because a shape is a state rather than a number -- and both of them are
+  // written in CSS alone, so the navigation stays one asset with one markup
+  // however it is styled. The scroller's bottom padding is derived from the
+  // height rather than set beside it, or a taller dock would start covering
+  // the last row of whatever is under it.
+  {
+    const DOCK = [
+      ['dkH',     '--navH',      56, v => v + 'px', v => v + 'px'],
+      ['dkInset', '--navInset',  12, v => v + 'px', v => v + 'px'],
+      ['dkScrim', '--navScrim',   0, v => v + '%',  v => (v / 100).toFixed(2)]
+    ];
+    const root = document.documentElement;
+    DOCK.forEach(([id, prop, def, read, toCss]) => {
+      const el = document.getElementById(id), out = document.getElementById(id + 'V');
+      if (!el) return;
+      const apply = () => {
+        const v = +el.value;
+        root.style.setProperty(prop, toCss(v));
+        if (out) out.textContent = read(v);
+      };
+      el.addEventListener('input', apply);
+      el._dkReset = () => {
+        el.value = def;
+        root.style.removeProperty(prop);
+        if (out) out.textContent = read(def);
+      };
+    });
+    const shape = document.getElementById('dkShape'), lab = document.getElementById('dkLab');
+    if (shape) shape.addEventListener('change', () =>
+      CARD_STATE.navBar = document.body.classList.toggle('navBar', shape.value === 'bar'));
+    if (lab) lab.addEventListener('change', () =>
+      CARD_STATE.navNoLab = document.body.classList.toggle('navNoLab', lab.value === 'off'));
+    const dkReset = document.getElementById('dkReset');
+    if (dkReset) dkReset.addEventListener('click', () => {
+      DOCK.forEach(([id]) => {
+        const el = document.getElementById(id);
+        if (el && el._dkReset) el._dkReset();
+      });
+      if (shape){ shape.value = 'island'; document.body.classList.remove('navBar'); CARD_STATE.navBar = false; }
+      if (lab){ lab.value = 'on'; document.body.classList.remove('navNoLab'); CARD_STATE.navNoLab = false; }
+    });
   }
   // Health coverage is a card the page may simply not carry. Off is not an
   // empty state -- there is nothing to say and no action to offer -- so it

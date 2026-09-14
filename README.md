@@ -1653,6 +1653,22 @@ black — the phone frame and the dashboard chrome cover them entirely.
   | Sheen | 0–250% | 100% | the specular fall and the inset highlight |
   | Shadow | 0–200% | 100% | the two drop shadows |
 
+  **And the dock's shape, beside it** — a *Dock → Style* menu on the same two
+  screens. Shape (island + chat, or one bar), Labels (shown, or icons only),
+  Height (44–72px), Side inset (0–32px) and Scrim (0–100%). Two menus rather
+  than one long list, because *what the glass is like* and *how much room the
+  dock takes* are different questions and a designer is usually asking only
+  one. The height drives the island, the chat, both radii **and** the
+  scroller's bottom padding, so a taller dock never starts covering the last
+  row. Both shape states are CSS alone — *One bar* closes the gap and squares
+  the two facing corners rather than moving the chat into the island — so the
+  navigation stays one asset with one markup however it is styled, and both
+  survive a page change. The **scrim** is the page's own ground fading up
+  behind the dock: glass shows what is under it, which is the point of glass
+  and also the problem when what is under it is a list, and this is the one
+  thing that separates them without making the pane opaque. Off by default —
+  it is a choice about a screen, not a property of the component.
+
   The first three are absolutes — a backdrop is a backdrop whatever is behind
   it. The last three are **multipliers on whatever each theme landed on**,
   because the two panes are not the same numbers and should not be: a plate
