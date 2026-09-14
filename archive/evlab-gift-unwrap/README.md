@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-14, "Black 96% panel, surface on the panel itself" |
+| Captured from version | 2026-09-14, "Label +8 above, panel black 32%" |
 | Captured on | 2026-09-14 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -36,7 +36,7 @@ the bar evenly.
 | Signature | Off, On | `sig=on` |
 | Card | Cards, List | `card=list` |
 | Heavy | No, Yes: much more text in the card (a longer description, twelve rows) to test the card's own scroll | `heavy=yes` |
-| Panel | a colour swatch (default black), an opacity in percent (default 96) and a backdrop blur in pixels (default 120, the maximum) for the second card in Cards | `panel=000000&alpha=96&blur=120` |
+| Panel | a colour swatch (default black), an opacity in percent (default 32) and a backdrop blur in pixels (default 120, the maximum) for the second card in Cards | `panel=000000&alpha=32&blur=120` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
 The six messages, with their authored line breaks, are the `MESSAGES` array
@@ -184,15 +184,15 @@ are white at 20%, Unwrap filled in Everlab red with a soft orange pulse
 travelling along its segment; then Get started, Consult, Test, Act. The card and the timeline are centred together in the fold.
 
 With the Card tweak on Cards (the default) the timeline goes and a second card
-takes its place: a panel in black at 96% by default (the Panel tweak sets any
+takes its place: a panel in black at 32% over a 120px backdrop blur by default (the Panel tweak sets any
 colour, opacity and blur), as wide as the hero card and 24px below it, rounded
 on all four corners with the hero card's radius, a card of its own. Its
 background is on the panel itself, in the fold's flow, so it scrolls with the
 content and never lags or clips. It
 arrives in dynamic motion once the hero card has landed: from 1.0s it fades
 in while settling down 16px (0.7s, easing out); on the way back it fades out
-again in 0.3s. It holds, everything centred, under a mono "What's next?" label (22px above
-the chips), three chips in a row: Get started, Meet your doctor, Get your plan
+again in 0.3s. It holds, everything centred, under a mono "What's next?" label (8px more above it than the panel's
+padding, 22px to the chips), three chips in a row: Get started, Meet your doctor, Get your plan
 (pills with a hairline border, 13px medium, each starting with a 22px numbered circle, 1 to 3, set 7px from the pill's left, top and bottom so
 it fills the pill's height, outlined at 16% when idle and filled in the text
 colour when active). One is active at a time, white at 14% with brighter text
