@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-14, "Light hero stays white under the Dark theme" |
+| Captured from version | 2026-09-14, "Carousel edge fade" |
 | Captured on | 2026-09-14 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -213,8 +213,10 @@ the panel returns. On phones the chips and the shared description give way to
 a carousel: one slide per step carrying the step's title (15px medium) and its
 description (13.5px), and under them three numbered dots (24px circles, the
 active one filled in the text colour) as the indicator, which also work as
-taps. A drag, by finger or mouse, moves the track with the hand while the
-outgoing slide fades with the distance and the incoming one fades in; past
+taps. The track's viewport is masked so its left and right 14% fade to
+nothing, and a drag, by finger or mouse, moves the track with the hand while
+the outgoing slide fades with the distance and the incoming one fades in, so
+each slide dissolves at one edge and resolves from the other; past
 half the width, or a quick flick, the release commits to the next or previous
 step and restarts the three seconds, short of it the slide springs back, and
 the ends resist. The auto-rotation slides the track to the next step over
