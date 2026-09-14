@@ -4793,6 +4793,38 @@ are driven by one class on the wrapper now, which is what should have decided
 it anyway: they are two halves of one state, not two things that happen to
 agree.
 
+### 5.168 Save, one group, and a colour for the plate
+
+"Add a Save, that will save the setup after change." Both panels have one now,
+beside their Reset, each persisting its own values under its own key -- the
+same thing the ink pickers have always done, for the same reason: a material
+tuned on the bar is worth more than one reload. Storage can throw, so every
+path fails back to the defaults and the button says "Cannot save" rather than
+pretending.
+
+Reset clears the save as well as the properties. Without that, a reset would
+look undone the moment the page reloaded -- which is the same mistake as a
+Reset that writes the defaults back instead of removing them, and I have made
+that one already in this file.
+
+"Put glass inside Dock." They were two groups on the bar, Dock and Glass, which
+is two labels for one object: what the dock is shaped like and what it is made
+of. One group now, two menus -- Dock [Style] [Material].
+
+"Put up nav by 4px." --navLift 25 to 29, so the gap over the drawn home
+indicator goes 12 to 16. Measured.
+
+"Add bg colour of the dock nav." The plate was a literal in two places, near
+-black under a dark page and white under a pale one; it is --lgPlate now, with
+each theme starting from its own and a picker over both. Written on BODY rather
+than on the root, which is the same trap the glass multipliers avoided from the
+other side: body.light declares its own starting plate, so a value set on the
+root loses to it in the light theme, while inline on the same element wins in
+both. The swatch reads whatever the theme is actually painting until someone
+picks -- after that the pick stands, through a theme change, because a colour
+someone chose is a colour they chose. Reset removes it rather than writing one
+back, so the plate returns to what the theme says.
+
 ---
 
 ## 6. Open items

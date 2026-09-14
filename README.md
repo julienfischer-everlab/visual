@@ -1646,6 +1646,7 @@ black — the phone frame and the dashboard chrome cover them entirely.
 
   | | range | default | |
   |---|---|---|---|
+  | Background | colour | `#101011` / `#FFFFFF` | the plate the pane sits on, per theme until picked |
   | Blur | 0–80px | 16px | the backdrop blur |
   | Saturation | 100–280% | 100% | what is behind it keeps its colour |
   | Brightness | 0.80–1.30 | 0.90 | the backdrop's lift |
@@ -1653,12 +1654,12 @@ black — the phone frame and the dashboard chrome cover them entirely.
   | Sheen | 0–250% | 20% | the specular fall and the inset highlight |
   | Shadow | 0–200% | 165% | the two drop shadows |
 
-  **And the dock's shape, beside it** — a *Dock → Style* menu on the same two
+  **And the dock's shape, beside it** — one *Dock* group carrying both menus, *Style* and *Material*. Style on the same two
   screens. Shape (island + chat, or one bar), Labels (shown, or icons only),
   Height (44–72px), Side inset (0–32px), Scrim (0–100%), **Active light** (the
   whole of the chosen item's treatment — its brighter layer, both inset
   highlights and its shadow) and **Inactive** (how present an unchosen one is).
-  The dock floats 25px off the frame's bottom, which puts it exactly 12px clear
+  The dock floats 29px off the frame's bottom, which puts it exactly 16px clear
   of the drawn home indicator; fullscreen keeps 14px plus the safe area, where
   the device draws its own. Two menus rather
   than one long list, because *what the glass is like* and *how much room the
@@ -1681,10 +1682,7 @@ black — the phone frame and the dashboard chrome cover them entirely.
   one. A multiplier moves both by the same amount and keeps each one's own
   tuning, which is what lets one control be honest across two themes. Every
   row states its value, so a setting can be read off the bar and written into
-  a design system rather than eyeballed off a thumb. *Reset* removes the
-  properties rather than writing the defaults back, so the material returns to
-  what the stylesheet says. Like every other tweak it lives in memory —
-  Reload is the way back.
+  a design system rather than eyeballed off a thumb. Each panel carries a **Save** beside its *Reset*: the setup persists under its own key and survives a reload, as the ink pickers always have. *Reset* removes the properties rather than writing the defaults back — and clears the save too, or a reset would look undone the moment the page reloaded.
 
 - **Asset export.** Every `makeOrganView` instance can render itself as a
   transparent PNG, no smaller than 1920px on either side. `paint(px, W, H, t,

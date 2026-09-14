@@ -71,8 +71,6 @@
   body.v8 .topbar .tkGrp#bioGrp{display:contents;}
   /* the glass is the mobile navigation's material, so its controls show on the
      two screens that carry the navigation and nowhere else */
-  body.v8 .topbar .tkGrp#glassGrp,
-  body.m6 .topbar .tkGrp#glassGrp,
   body.v8 .topbar .tkGrp#dockGrp,
   body.m6 .topbar .tkGrp#dockGrp{display:contents;}
   .topbar .tkGrp#densGrp{display:contents;}   /* Density is on every page: the switch drives the engine too */
@@ -118,7 +116,7 @@
     font-size:10.5px;font-style:normal;color:#a1a1aa;
     width:44px;text-align:right;white-space:nowrap;
   }
-  .topbar .tkRow.tkFoot{justify-content:flex-end;padding-top:4px;}
+  .topbar .tkRow.tkFoot{justify-content:flex-end;gap:8px;padding-top:4px;}
   .topbar .tkRow.tkFoot:hover{background:none;}
   .topbar .seg{
     display:flex;gap:2px;border:1px solid #232326;background:#131316;
@@ -704,6 +702,11 @@
        The sliders rest here, and Reset returns here. */
     --lgBlur:16px; --lgSat:100%; --lgBright:.90;
     --lgTintK:.70; --lgSheenK:.20; --lgShadowK:1.65;
+    /* what the pane's plate is made of, before Tint decides how much of it
+       there is. Each theme starts from its own -- near-black under a dark
+       page, white under a pale one -- and the picker writes one value for
+       both, because a colour someone chose is a colour they chose. */
+    --lgPlate:16,16,17;
     /* the dock's own shape, separate from the material it is made of: one is
        what the glass is like, the other is how much room it takes */
     --navH:56px; --navInset:12px; --navScrim:0;
@@ -711,10 +714,11 @@
        inactive one is -- multipliers on what each theme landed on, as the
        glass's three are, so one control is honest across both */
     --navActK:1; --navInactK:1;
-    /* how far the dock floats above the bottom edge. The frame draws a home
+    /* How far the dock floats above the bottom edge. The frame draws a home
        indicator and the device draws its own into the safe area, so the two
-       cases do not want the same number. */
-    --navLift:25px;
+       cases do not want the same number. 29 leaves 16px clear of the drawn
+       indicator's top edge (25 left 12). */
+    --navLift:29px;
   }
   .lgGlass{
     position:relative;
@@ -725,7 +729,7 @@
         rgba(255,255,255,calc(.11 * var(--lgTintK))) 0%,
         rgba(255,255,255,calc(.04 * var(--lgTintK))) 46%,
         rgba(255,255,255,calc(.075 * var(--lgTintK))) 100%),
-      rgba(16,16,17,calc(.66 * var(--lgTintK)));
+      rgba(var(--lgPlate),calc(.66 * var(--lgTintK)));
     -webkit-backdrop-filter:blur(var(--lgBlur)) saturate(var(--lgSat)) brightness(var(--lgBright));
     backdrop-filter:blur(var(--lgBlur)) saturate(var(--lgSat)) brightness(var(--lgBright));
     /* no outline: the edge is a soft catch of light, not a drawn line */
@@ -747,13 +751,14 @@
         rgba(255,255,255,calc(.035 * var(--lgSheenK))));
   }
   .lgGlass > *{position:relative;}   /* the content rides over the sheen */
+  body.light{--lgPlate:255,255,255;}
   body.light .lgGlass{
     background:
       linear-gradient(158deg,
         rgba(255,255,255,calc(.62 * var(--lgTintK))) 0%,
         rgba(255,255,255,calc(.4 * var(--lgTintK))) 46%,
         rgba(255,255,255,calc(.54 * var(--lgTintK))) 100%),
-      rgba(255,255,255,calc(.58 * var(--lgTintK)));
+      rgba(var(--lgPlate),calc(.58 * var(--lgTintK)));
     box-shadow:
       0 18px 38px -16px rgba(46,31,26,calc(.32 * var(--lgShadowK))),
       0 4px 12px -7px rgba(46,31,26,calc(.18 * var(--lgShadowK))),
@@ -4528,16 +4533,22 @@
             </span>
           </div>
           <div class="tkRow tkFoot">
+            <button class="tkBtn" id="dkSave" type="button">Save</button>
             <button class="tkBtn" id="dkReset" type="button">Reset</button>
           </div>
         </div>
       </details>
-    </span>
-    <span class="tkGrp" id="glassGrp">
-      <span class="lbl">Glass</span>
+      <!-- The material the dock is made of, beside the shape it takes: one
+           group, because they are two questions about the same object. -->
       <details class="tkMenu" id="glMenu">
         <summary aria-label="Glass material">Material</summary>
         <div class="tkPanel" role="group" aria-label="Glass material">
+          <div class="tkRow">
+            <span class="lbl">Background</span>
+            <span class="tkInk">
+              <input type="color" id="glBg" value="#101011" aria-label="The dock's plate colour"><input type="text" class="inkHex" id="glBgHex" value="#101011" maxlength="7" spellcheck="false" aria-label="Plate colour, hex">
+            </span>
+          </div>
           <div class="tkRow">
             <span class="lbl">Blur</span>
             <span class="tkSlide">
@@ -4581,6 +4592,7 @@
             </span>
           </div>
           <div class="tkRow tkFoot">
+            <button class="tkBtn" id="glSave" type="button">Save</button>
             <button class="tkBtn" id="glReset" type="button">Reset</button>
           </div>
         </div>
@@ -14710,9 +14722,23 @@
       ['glShadow', '--lgShadowK', 165,  v => v + '%',               v => (v / 100).toFixed(3)]
     ];
     const root = document.documentElement;
+    // Saved settings, restored before anything reads them. The inks have done
+    // this for a long time under their own key and the reasoning is the same:
+    // a material tuned on the bar is worth more than one reload. Storage can
+    // throw -- a private window, a browser set to refuse it -- and a saved
+    // dock is not worth a dead page, so every path fails back to the defaults.
+    const GLASS_KEY = 'everlab.glass';
+    let glSaved = null;
+    try { glSaved = JSON.parse(localStorage.getItem(GLASS_KEY) || 'null'); }
+    catch (e){ /* defaults stand */ }
     GLASS.forEach(([id, prop, def, read, toCss]) => {
       const el = document.getElementById(id), out = document.getElementById(id + 'V');
       if (!el) return;
+      if (glSaved && glSaved[id] != null){
+        el.value = glSaved[id];
+        root.style.setProperty(prop, toCss(+glSaved[id]));
+        if (out) out.textContent = read(+glSaved[id]);
+      }
       const apply = () => {
         const v = +el.value;
         root.style.setProperty(prop, toCss(v));
@@ -14730,12 +14756,67 @@
         if (out) out.textContent = read(def);
       };
     });
+    // The plate's colour. Not in GLASS because it is not a number on a slider,
+    // but it saves, resets and restores with them -- it is one setting of the
+    // same material. Written on BODY rather than on the root: body.light
+    // declares its own starting plate, and a value set on the root would lose
+    // to it in the light theme; inline on the same element wins in both.
+    const bgSw = document.getElementById('glBg'), bgHex = document.getElementById('glBgHex');
+    const toRGB = h => { const n = parseInt(h.slice(1), 16);
+      return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255); };
+    const plateNow = () => getComputedStyle(document.body).getPropertyValue('--lgPlate').trim();
+    const toHex = rgb => '#' + rgb.split(',').map(v =>
+      (+v).toString(16).padStart(2, '0')).join('').toUpperCase();
+    const applyBg = hex => {
+      document.body.style.setProperty('--lgPlate', toRGB(hex));
+      if (bgSw) bgSw.value = hex.toLowerCase();
+      if (bgHex){ bgHex.value = hex.toUpperCase(); bgHex.classList.remove('bad'); }
+    };
+    // the swatch opens showing whatever the theme is actually painting
+    const syncBg = () => {
+      if (document.body.style.getPropertyValue('--lgPlate')) return;   // a pick stands
+      const h = toHex(plateNow() || '16,16,17');
+      if (bgSw) bgSw.value = h.toLowerCase();
+      if (bgHex) bgHex.value = h;
+    };
+    syncBg();
+    if (bgSw) bgSw.addEventListener('input', () => applyBg(bgSw.value));
+    if (bgHex) bgHex.addEventListener('input', () => {
+      const v = bgHex.value.trim();
+      const full = /^#?([0-9a-f]{6})$/i.exec(v);
+      if (full) applyBg('#' + full[1]);
+      else bgHex.classList.add('bad');
+    });
+    if (glSaved && glSaved.bg) applyBg(glSaved.bg);
+    // a theme change re-reads the plate, unless someone has picked one
+    const themeSelB = document.getElementById('themeSel');
+    if (themeSelB) themeSelB.addEventListener('change', () => setTimeout(syncBg, 0));
+
+    const save = document.getElementById('glSave');
+    if (save) save.addEventListener('click', () => {
+      const out = {};
+      GLASS.forEach(([id]) => { const el = document.getElementById(id); if (el) out[id] = el.value; });
+      if (bgHex && document.body.style.getPropertyValue('--lgPlate')) out.bg = bgHex.value;
+      let ok = true;
+      try { localStorage.setItem(GLASS_KEY, JSON.stringify(out)); } catch (e){ ok = false; }
+      save.textContent = ok ? 'Saved' : 'Cannot save';
+      setTimeout(() => { save.textContent = 'Save'; }, ok ? 1400 : 2600);
+    });
     const reset = document.getElementById('glReset');
-    if (reset) reset.addEventListener('click', () =>
+    // Reset clears the save as well. Without that a reset would look undone
+    // the moment the page reloaded, which is the same bug as a Reset that
+    // writes the defaults back instead of removing them.
+    if (reset) reset.addEventListener('click', () => {
+      try { localStorage.removeItem(GLASS_KEY); } catch (e){ /* nothing to clear */ }
       GLASS.forEach(([id]) => {
         const el = document.getElementById(id);
         if (el && el._glReset) el._glReset();
-      }));
+      });
+      // removed, not written back: the plate returns to whatever the theme
+      // says it is, which is the whole point of Reset here
+      document.body.style.removeProperty('--lgPlate');
+      syncBg();
+    });
   }
 
   // ---------- the dock's shape ----------
@@ -14758,9 +14839,18 @@
       ['dkInact', '--navInactK',100, v => v + '%',  v => (v / 100).toFixed(3)]
     ];
     const root = document.documentElement;
+    const DOCK_KEY = 'everlab.dock';
+    let dkSaved = null;
+    try { dkSaved = JSON.parse(localStorage.getItem(DOCK_KEY) || 'null'); }
+    catch (e){ /* defaults stand */ }
     DOCK.forEach(([id, prop, def, read, toCss]) => {
       const el = document.getElementById(id), out = document.getElementById(id + 'V');
       if (!el) return;
+      if (dkSaved && dkSaved[id] != null){
+        el.value = dkSaved[id];
+        root.style.setProperty(prop, toCss(+dkSaved[id]));
+        if (out) out.textContent = read(+dkSaved[id]);
+      }
       const apply = () => {
         const v = +el.value;
         root.style.setProperty(prop, toCss(v));
@@ -14778,8 +14868,27 @@
       CARD_STATE.navBar = document.body.classList.toggle('navBar', shape.value === 'bar'));
     if (lab) lab.addEventListener('change', () =>
       CARD_STATE.navNoLab = document.body.classList.toggle('navNoLab', lab.value === 'off'));
+    const dkSave = document.getElementById('dkSave');
+    if (dkSave) dkSave.addEventListener('click', () => {
+      const out = {};
+      DOCK.forEach(([id]) => { const el = document.getElementById(id); if (el) out[id] = el.value; });
+      if (shape) out.shape = shape.value;
+      if (lab) out.lab = lab.value;
+      let ok = true;
+      try { localStorage.setItem(DOCK_KEY, JSON.stringify(out)); } catch (e){ ok = false; }
+      dkSave.textContent = ok ? 'Saved' : 'Cannot save';
+      setTimeout(() => { dkSave.textContent = 'Save'; }, ok ? 1400 : 2600);
+    });
+    // the two selects are states rather than numbers, so they restore as classes
+    if (dkSaved){
+      if (shape && dkSaved.shape){ shape.value = dkSaved.shape;
+        CARD_STATE.navBar = document.body.classList.toggle('navBar', dkSaved.shape === 'bar'); }
+      if (lab && dkSaved.lab){ lab.value = dkSaved.lab;
+        CARD_STATE.navNoLab = document.body.classList.toggle('navNoLab', dkSaved.lab === 'off'); }
+    }
     const dkReset = document.getElementById('dkReset');
     if (dkReset) dkReset.addEventListener('click', () => {
+      try { localStorage.removeItem(DOCK_KEY); } catch (e){ /* nothing to clear */ }
       DOCK.forEach(([id]) => {
         const el = document.getElementById(id);
         if (el && el._dkReset) el._dkReset();
