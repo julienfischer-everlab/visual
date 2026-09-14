@@ -5093,6 +5093,32 @@ A reminder that "which pages does this rule apply to?" is a question to answer
 from what the rule is FOR -- the status bar lying over a list -- rather than
 from the page I happened to be looking at.
 
+### 5.180 An overlap instead of an abutment, and 4px above the chips
+
+"Still a gap." I could not reproduce it. Measured at four viewport sizes and
+three device pixel ratios, on V5, V6, V7 and V8, the geometry is the same and
+the strip is the page's ground: status bar 5..44, bar top 44, select top 56,
+nothing between them but the notch's own outline. Forcing a fractional status
+height (39.6px, 40.4px) -- the one case arithmetic can lose -- did not open one
+either.
+
+So rather than keep hunting a thing I cannot see, the construction changed so
+that it cannot exist. The two plates OVERLAP what they meet rather than abutting
+it: 10px up past the status bar, where the phone's own radius clips them, and
+2px down into the search bar. Abutting is correct arithmetic and the wrong
+construction -- `--msTop` is `offsetHeight`, a whole number, so wherever the
+real height falls between two integers the plates meet at a fraction of a pixel
+and the list shows through the difference. An overlap cannot.
+
+If it survives that, the remaining candidates are outside the CSS: a cached
+copy (which had already produced one "where are the icons?" round), or the
+browser's own compositing of the hero's backdrop-filters, which headless
+Chromium does not reproduce.
+
+"+4px between the select/search row and the chip row." 10px to 14px, on the
+chips' own top padding rather than on the row, so the negative margins that
+give them the full width are untouched.
+
 ---
 
 ## 6. Open items

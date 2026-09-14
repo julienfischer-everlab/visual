@@ -1094,7 +1094,7 @@
      of the edge tells you it has ended when it has not. Negative margins hand
      them the full width back and their own padding puts the first chip where
      the field above it starts. */
-  .msWrap .mchips{margin:0 -13px;padding:10px 13px;}
+  .msWrap .mchips{margin:0 -13px;padding:14px 13px 10px;}
   /* the chips carry the bar's bottom padding, so where they are gone -- the
      empty biomarkers state -- the bar has to carry it itself */
   body.emBio #phone .msWrap{padding-bottom:10px;}
@@ -1110,10 +1110,16 @@
      Scoped to v5 rather than to v8: the search bar is on every mobile page,
      and the status bar has lain over the page since V5, so V5, V6 and V7 have
      the same strip to hold. Scoping it to the current design left a
-     transparent gap on all three -- the list showed through beside the hour. */
+     transparent gap on all three -- the list showed through beside the hour.
+     The two plates OVERLAP what they meet rather than abutting it: 10px up
+     past the status bar (the phone's own radius clips it) and 2px down into
+     the search bar. Abutting is correct arithmetic and the wrong construction
+     -- --msTop is offsetHeight, a whole number, so wherever the real height
+     lands between two of them the two plates meet at a fraction of a pixel
+     and the list shows through the difference. An overlap cannot. */
   body.v5 #phone .mstatus::before{
-    content:"";position:absolute;inset:0;z-index:-1;background:#0d0d0c;
-    opacity:var(--mstBg, 0);
+    content:"";position:absolute;left:0;right:0;top:-10px;bottom:0;z-index:-1;
+    background:#0d0d0c;opacity:var(--mstBg, 0);
   }
   body.light.v5 #phone .mstatus::before{background:#f7f2e9;}
   /* And the gap under it, while the bar is still on its way up. The strip
@@ -1126,7 +1132,7 @@
      band arriving out of nowhere over the hero. */
   body.v5 #phone .mstatus::after{
     content:"";position:absolute;left:0;right:0;top:100%;z-index:-1;
-    height:var(--mstGap, 0px);background:#0d0d0c;opacity:var(--mstGapO, 0);
+    height:calc(var(--mstGap, 0px) + 2px);background:#0d0d0c;opacity:var(--mstGapO, 0);
   }
   body.light.v5 #phone .mstatus::after{background:#f7f2e9;}
   /* Pinned, the bar's plate used to stop dead and the list carried on from the
