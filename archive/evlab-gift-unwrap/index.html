@@ -584,7 +584,7 @@
      bottom edge with square top corners; two small glass fillers, masked to
      the outside of the hero card's rounded corners, close the notches so the
      panel reads as continuing up behind the card */
-  body[data-card="cards"] .hero{gap:0 !important;}  /* flush: the panel starts at the card's bottom edge, on every screen */
+  body[data-card="cards"] .hero{gap:24px !important;}  /* the panel is its own card, 24px under the hero card */
   body[data-card="cards"] .gift{overflow-y:auto;justify-content:flex-start;}
   body[data-card="cards"] .hero{height:100%;min-height:0;padding:160px 0 160px;}  /* 160px above and below the stack */
   body[data-card="cards"] .incl li{padding:4px 0;}
@@ -602,7 +602,7 @@
   .side-clip{display:contents;}
   .side-in{display:flex;flex-direction:column;gap:14px;min-width:0;}
   body[data-card="cards"] .side{--r:44px;position:relative;justify-content:flex-start;padding:0;}
-  body[data-card="cards"] .side-clip{display:block;overflow:hidden;border-radius:0 0 var(--r) var(--r);}
+  body[data-card="cards"] .side-clip{display:block;overflow:hidden;border-radius:var(--r);}
   body[data-card="cards"] .side-in{gap:12px;padding:10px 40px 40px;align-items:center;text-align:center;}  /* the foot matches the sides; everything centred */
   /* the panel's surface: one element in the stage, behind the hero card's
      glass, sized by the script to the card's width and the panel's height
@@ -614,8 +614,7 @@
     position:absolute;left:0;width:100%;
     background:var(--panel-bg, rgba(197,164,150,.24));  /* the Panel tweak: colour, opacity and blur */
     -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
-    /* the script sets a clip path: the panel's rectangle plus the two notches
-       outside the card's rounded bottom corners, and nothing under the glass */
+    border-radius:var(--r, 44px);
   }
   }
   /* dynamic: once the hero card has landed the panel slides down from behind
@@ -626,10 +625,10 @@
   body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .side-in,
   body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .side-in{transform:none;transition-delay:1000ms;}
   body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .side-in{transform:translateY(-100%);transition:transform .35s ease 0s;}
-  body[data-motion="dynamic"][data-card="cards"] .panel-bg{transform:translateY(calc(-100% + var(--r, 44px)));transition:transform .8s var(--ease-out);}
+  body[data-motion="dynamic"][data-card="cards"] .panel-bg{transform:translateY(-100%);transition:transform .8s var(--ease-out);}
   body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .panel-bg,
   body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .panel-bg{transform:none;transition:transform .8s var(--ease-out) 1000ms;}
-  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .panel-bg{transform:translateY(calc(-100% + var(--r, 44px)));transition:transform .35s ease 0s;}
+  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .panel-bg{transform:translateY(-100%);transition:transform .35s ease 0s;}
   /* the label above the mini cards, Cards only; the column's gap sits between */
   .next-label{display:none;margin:0 0 10px;color:rgba(243,239,234,.62);}  /* 22px to the chips with the column gap */
   body[data-card="cards"] .next-label{display:block;}
@@ -1534,26 +1533,23 @@
     var scroller = document.getElementById('infoScroll');
     if(st.clientWidth > 820){
       var hs = getComputedStyle(document.querySelector('.hero'));
-      var cap = st.clientHeight - (parseFloat(hs.paddingTop) || 0) - (parseFloat(hs.paddingBottom) || 0) - document.querySelector('.side-clip').offsetHeight;
+      var cap = st.clientHeight - (parseFloat(hs.paddingTop) || 0) - (parseFloat(hs.paddingBottom) || 0) - document.querySelector('.side-clip').offsetHeight - 24;
       $('card').style.setProperty('--card-max', Math.max(240, cap) + 'px');
     } else { $('card').style.removeProperty('--card-max'); }
     scroller.classList.toggle('can-scroll', scroller.scrollHeight > scroller.clientHeight + 1);
     var c = $('card').getBoundingClientRect(), sc = document.querySelector('.side-clip').getBoundingClientRect();
     var r = parseFloat(getComputedStyle(document.querySelector('.side')).getPropertyValue('--r')) || 44;
-    var W = c.width / k, H = r + sc.height / k, settled = isStatic() || (state === 'gift' && panelSettled);
+    var W = c.width / k, H = sc.height / k;
     pb.style.setProperty('--r', r + 'px');
-    pc.style.left = ((c.left - sr.left) / k + st.scrollLeft) + 'px';
+    // the clip box is the panel's own box: the surface slides down into it
+    // from above (hidden until it arrives) and fills it exactly
+    pc.style.left = ((sc.left - sr.left) / k + st.scrollLeft) + 'px';
     pc.style.width = W + 'px';
-    // sliding: the clip box starts at the card's bottom edge, so the notch band
-    // above it (and the surface passing behind the glass) never shows;
-    // settled: it grows up by one radius and the notches fill in
-    pc.style.top = ((c.bottom - sr.top) / k + st.scrollTop - (settled ? r : 0)) + 'px';
-    pc.style.height = H + 'px';   /* always down to the panel's foot (and a little past it while sliding): the bottom corners are never cut */
-    pb.style.top = (settled ? 0 : -r) + 'px';
+    pc.style.top = ((sc.top - sr.top) / k + st.scrollTop) + 'px';
+    pc.style.height = H + 'px';
+    pb.style.top = '0px';
     pb.style.height = H + 'px';
-    // the surface's shape: its rectangle with the card's radius at the foot,
-    // and at the top only the two slivers outside the card's rounded corners
-    pb.style.clipPath = 'path("M0 0 A' + r + ' ' + r + ' 0 0 0 ' + r + ' ' + r + ' L' + (W - r) + ' ' + r + ' A' + r + ' ' + r + ' 0 0 0 ' + W + ' 0 L' + W + ' ' + (H - r) + ' A' + r + ' ' + r + ' 0 0 1 ' + (W - r) + ' ' + H + ' L' + r + ' ' + H + ' A' + r + ' ' + r + ' 0 0 1 0 ' + (H - r) + ' Z")';
+    pb.style.clipPath = 'none';
   }
   document.getElementById('panelBg').addEventListener('transitionend', function(e){
     if(/transform/.test(e.propertyName) && state === 'gift'){ panelSettled = true; panelSet(); }

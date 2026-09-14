@@ -10,8 +10,8 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-11, "Label to chips +4px" |
-| Captured on | 2026-09-11 |
+| Captured from version | 2026-09-14, "Panel as a separate card, 24px below" |
+| Captured on | 2026-09-14 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
@@ -185,22 +185,15 @@ travelling along its segment; then Get started, Consult, Test, Act. The card and
 
 With the Card tweak on Cards (the default) the timeline goes and a second card
 takes its place: a panel in a warm sand (`#c5a496`) at 24% over a 120px
-backdrop blur by default (the Panel tweak sets any colour, opacity and blur)
-as wide as the hero card. Its surface is one element in the stage, placed by
-the script from the card's box and cut to shape with a clip path: the panel's
-rectangle, the card's radius on its bottom corners, and at the top only the
-two slivers outside the card's rounded bottom corners, so nothing of it runs
-under the card's glass (no faint edge shows through) and the panel reads as a
-card tucked behind the hero card with only its bottom showing. While it
-slides it sits in a clip box that starts at the card's bottom edge and always
-reaches the panel's foot, so the slivers appear only as it settles (on the
-slide's end event, or a timer 1.9s after landing if that never arrives) and the
-bottom corners are never cut. It
+backdrop blur by default (the Panel tweak sets any colour, opacity and blur),
+as wide as the hero card and 24px below it, rounded on all four corners with
+the hero card's radius, a card of its own. Its surface is one element in the
+stage placed by the script over the panel's own box, inside a clip box of the
+same size. It
 arrives in dynamic motion once the hero card has landed: from 1.0s the
-surface and the content slide down together out from behind the card (their
-own height in 0.8s, easing out; the content inside a clip at the card's
-bottom edge, the surface hidden under the card's glass) so it emerges from
-under it; on the way back both slide up under the card again in 0.35s. It holds, everything centred, under a mono "What's next?" label (22px above
+surface and the content slide down together into the panel's box (their own
+height in 0.8s, easing out, each inside its clip so nothing shows until it
+arrives); on the way back both slide up out of it again in 0.35s. It holds, everything centred, under a mono "What's next?" label (22px above
 the chips), three chips in a row: Get started, Meet your doctor, Get your plan
 (pills with a hairline border, 13px medium, each starting with a 22px numbered circle, 1 to 3, set 7px from the pill's left, top and bottom so
 it fills the pill's height, outlined at 16% when idle and filled in the text
@@ -219,9 +212,10 @@ first fold or when the tab is hidden, and restarts from the first chip when
 the panel returns. On phones the chips wrap.
 The hero card keeps its six rows, set a
 little tighter (4px above and below each row, 44px top and bottom padding)
-and the stack sits inside a frame of 160px above and 160px below on desktop
-(112px above in static motion; phones have no frame, their fold simply flows):
-the script caps the card's height so card and panel always fit that frame, and
+and the stack (hero card, 24px, panel) sits inside a frame of 160px above and
+160px below on desktop (112px above in static motion; phones have no frame,
+their fold simply flows): the script caps the card's height so the stack
+always fits that frame, and
 the card's upper part (everything above the button) scrolls on its own, with no
 visible bar and a 28px fade at either end once it can scroll; the button never
 moves, and neither does the circle at the top right, which sits on the card
