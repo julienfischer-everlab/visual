@@ -4460,8 +4460,21 @@ look like. Giving each organ a real hold -- two keys naming the same state, so
 that nothing morphs between them -- produced a heart with its chambers and its
 vessels on the first try, and a lung with two lobes and a trachea.
 
+And a fourth thing, which is why the brief came back a third time: the page was
+not in the menu. MODE_GROUPS is an allow-list, not a display order -- a mode
+whose group is not named in it is built, routable by its hash, and completely
+invisible, with nothing anywhere to say so. Adding { group: 'Landing page' } to
+MODES was half the job; the group had to be added to MODE_GROUPS as well. Until
+it was, the only way to reach the page was to know to type #m23, so opening the
+artifact and looking down the Version list showed no landing page at all and
+the reasonable conclusion was that none had been built. A silent drop is worse
+than an error: everything I had verified about the page was true, and none of
+it was reachable.
+
 The lesson is not about particles. A scene needs somewhere to be still before
 it can be judged, and a timeline built only of transitions has no such place.
+The other lesson is that "it works" is not the same as "it can be found", and
+only one of those two had been tested.
 The probe stops were chosen off the key list and every one of them landed
 between two keys, so the instrumentation agreed with the bug. Every hold in
 KEYS is now a pair, and the walk samples the middle of each pair rather than
