@@ -4825,6 +4825,28 @@ picks -- after that the pick stands, through a theme change, because a colour
 someone chose is a colour they chose. Reset removes it rather than writing one
 back, so the plate returns to what the theme says.
 
+### 5.169 Ellipsis, 60/40, a heavier chip and a bar that fades
+
+"Consider ellipsis if title too long. Select 60%, search 40%." The split moves
+and the title truncates rather than wrapping into the date beneath it --
+"Comprehensive Blood Tests" wants 187px and has 151, and ends in an ellipsis.
+The select still takes the larger share because it carries two lines and the
+search carries none.
+
+"Bg opacity 12%." The chips' resting plate goes 8% to 12%. I took the active
+one up with it, 16 to 20, to keep the doubling the first instruction asked for
+-- "inactive light grey, active lighter grey" is a relationship, and leaving
+the active where it was would have closed the gap to four points. Say the word
+if the active should stay at 16.
+
+"Fixed top bar gradient progressive instead of clear cut." Pinned, the bar's
+plate stopped dead and the list carried on from the next pixel, so a row was
+sliced across its own middle. There was a shadow on that edge, which marks it
+rather than softening it. The plate carries on past its own bottom now as a
+30px fade of the page's own ground, and the shadow is gone: rows go out under
+the bar instead of being cut by it. Only while it is stuck -- in the flow there
+is nothing passing beneath to fade.
+
 ---
 
 ## 6. Open items

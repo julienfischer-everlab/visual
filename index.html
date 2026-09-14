@@ -976,7 +976,7 @@
        and being outside layout it cannot move the row by so much as a
        sub-pixel, which is what the transparent-border trick was for. */
     border:0;border-radius:999px;height:44px;padding:0 16px;
-    background:rgba(255,255,255,.08);display:flex;gap:7px;align-items:center;flex:none;
+    background:rgba(255,255,255,.12);display:flex;gap:7px;align-items:center;flex:none;
     cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;
     transition:background .18s ease,box-shadow .18s ease,color .18s ease,transform .12s ease;
   }
@@ -985,7 +985,7 @@
   #phone .fchip[hidden]{display:none;}
   #phone .fchip:active{transform:scale(.96);}
   #phone .fchip:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:2px;}
-  #phone .fchip.on{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1.5px #fff;color:#ececec;}
+  #phone .fchip.on{background:rgba(255,255,255,.20);box-shadow:inset 0 0 0 1.5px #fff;color:#ececec;}
   #phone .fchip i{width:8px;height:8px;border-radius:3px;font-style:normal;}
   .mrecs{padding:8px 13px 0;}
   .mrecs h3{font-size:14.5px;margin:14px 0 6px;font-weight:600;color:#ececec;}
@@ -1006,11 +1006,11 @@
      is below the status bar (the hour, the battery), in the frame and on the
      device alike -- on the phone's own dark ground, and stays there while the
      list scrolls under it. So a scroll can drop the keyboard and the field is
-     still where the thumb left it, ready to tap again. The shadow comes on
-     only once it is actually pinned (the script sets .stuck). */
+     still where the thumb left it, ready to tap again. The fade below it comes
+     on only once it is actually pinned (the script sets .stuck). */
   .msWrap{
     position:sticky;top:var(--msTop, 0px);z-index:4;padding:12px 13px 10px;
-    background:#0d0d0c;transition:box-shadow .2s ease;
+    background:#0d0d0c;
   }
   /* Where the status bar lies over the page (V4 on), the bar pins under it
      (--msTop is its height, set by the script) and, once pinned, backs it
@@ -1020,19 +1020,34 @@
     content:"";position:absolute;left:0;right:0;top:calc(-1 * var(--msTop, 0px));
     height:var(--msTop, 0px);background:inherit;
   }
-  .msWrap.stuck{box-shadow:0 10px 14px -10px rgba(0,0,0,.7);}
+  /* Pinned, the bar's plate used to stop dead and the list carried on from the
+     next pixel -- a row cut in half across its own middle. A shadow marks that
+     edge; it does not soften it. So the plate carries on past its own bottom
+     as a fade of the page's own ground: the rows go out under the bar rather
+     than being sliced by it. Only while it is stuck, since in the flow there
+     is nothing passing beneath to fade. */
+  .msWrap::after{
+    content:"";position:absolute;left:0;right:0;top:100%;height:30px;
+    background:linear-gradient(to bottom,#0d0d0c,rgba(13,13,12,0));
+    pointer-events:none;opacity:0;transition:opacity .22s ease;
+  }
+  .msWrap.stuck::after{opacity:1;}
+  body.light .msWrap::after{
+    background:linear-gradient(to bottom,#f7f2e9,rgba(247,242,233,0));
+  }
   body.light .msWrap{background:#f7f2e9;}
-  body.light .msWrap.stuck{box-shadow:0 10px 14px -10px rgba(46,31,26,.18);}
+
   /* the two controls side by side, one height. The select takes what its
      longest label needs and the search takes the rest -- the other way round
      and the label would truncate, which is the one thing a control naming the
      current state cannot do. */
   .msRow{display:flex;align-items:center;gap:12px;position:relative;}
-  /* 65 / 35 of the space either side of the gap -- taking 6px off each
-     instead skews the ratio, since 6px is a larger share of the smaller one
-     (it came out 65.5 : 34.5). The select gets the larger share because it
-     carries two lines of text when a report is chosen and the search none. */
-  .msRecWrap{position:relative;flex:0 0 calc((100% - 12px) * .65);min-width:0;}
+  /* 60 / 40 of the space either side of the gap -- taking 6px off each
+     instead skews the ratio, since 6px is a larger share of the smaller one.
+     The select gets the larger share because it carries two lines of text
+     when a report is chosen and the search none; a title longer than the
+     space ellipsizes rather than wrapping into the date under it. */
+  .msRecWrap{position:relative;flex:0 0 calc((100% - 12px) * .60);min-width:0;}
   .msRec{
     width:100%;display:flex;align-items:center;gap:8px;
     height:56px;padding:0 14px 0 16px;
@@ -1074,7 +1089,7 @@
   .msRec:hover{border-color:#5a5a56;}
   .msRec[aria-expanded="true"]{border-color:#5a5a56;background:rgba(255,255,255,.05);}
   .msRec[aria-expanded="true"] .msRecChev{transform:rotate(180deg);}
-  .msRow .msBox{flex:0 0 calc((100% - 12px) * .35);min-width:0;}
+  .msRow .msBox{flex:0 0 calc((100% - 12px) * .40);min-width:0;}
   body.light .msRec{border-color:#ddd3bf;color:#2e1f1a;}
   body.light .msRec:hover{border-color:#9b8a75;}
   body.light .msRec[aria-expanded="true"]{background:rgba(46,31,26,.05);border-color:#9b8a75;}
@@ -3145,8 +3160,8 @@
   /* the same two steps on the pale ground, where "lighter" is darker: the
      plate is ink over paper, and the active edge is the theme's own ink
      rather than white, which on white is not an edge at all */
-  body.light #phone .fchip{background:rgba(46,31,26,.07);color:#6b5c4a;}
-  body.light #phone .fchip.on{background:rgba(46,31,26,.14);box-shadow:inset 0 0 0 1.5px #2e241c;color:#2e241c;}
+  body.light #phone .fchip{background:rgba(46,31,26,.10);color:#6b5c4a;}
+  body.light #phone .fchip.on{background:rgba(46,31,26,.17);box-shadow:inset 0 0 0 1.5px #2e241c;color:#2e241c;}
   body.light #phone .fchip:focus-visible{outline-color:rgba(46,31,26,.6);}
   body.light .mrecs h3{color:#2e1f1a;}
   body.light .mrecs .gd{color:#9b8a75;}
