@@ -4622,6 +4622,42 @@ compared against the last on the ink's centroid, its pixel count and every copy
 block's position. Every step moves. The smallest is the title card, where the
 canvas is legitimately empty and the type is the whole of it.
 
+### 5.164 A hundred and ten readings
+
+"Put good values", against the design's own chip row: 110 All, 68 Optimal, 20
+Suboptimal, 12 Out of range, 10 Other. Which sums correctly -- so the only way
+to have those figures AND keep the rule from two notes ago, that a chip's
+number is what tapping it shows, was for the list to actually hold a hundred
+and ten readings in that distribution. It held twenty-five.
+
+So the panel is a table now, not markup. A hundred and ten rows of HTML is a
+hundred and ten chances to mistype one, and more to the point the counts have
+to be a property of the data rather than of the file: the chips tally the rows
+they will filter, so the only thing that could ever disagree with the design is
+the table, and the table is one place to look.
+
+Seven groups, the ones the list already had, and the standard panel under each
+-- liver enzymes, the lipid fractions and particle measures, the thyroid axis,
+the full blood count and iron studies, the inflammatory markers. The values are
+plausible placeholders, as the original twenty-five were. Two statuses had no
+look yet, since nothing in the list had ever been out of range or unclassified;
+they have one now in both themes.
+
+I miscounted the table by two on the first pass -- 112 and 70 optimal -- which
+is exactly the failure mode the derived counts protect against: the chips said
+112 and the list showed 112, perfectly self-consistent and not the design. The
+tally is a script now rather than an eye.
+
+One detail fell out for free. The marker on each row's range bar is placed from
+the row's status, so an optimal reading sits over the green, a suboptimal one
+over the amber and an out-of-range one past it -- deterministic within its band
+off the biomarker's own name, so the markers neither stack on one pixel nor
+move between loads. It used to sit at the far left on every row regardless.
+
+And Other stopped being gated to one version. Its count governs it like every
+other chip: there when the list holds unclassified readings, gone when it does
+not.
+
 ---
 
 ## 6. Open items
