@@ -4658,6 +4658,51 @@ And Other stopped being gated to one version. Its count governs it like every
 other chip: there when the list holds unclassified readings, gone when it does
 not.
 
+### 5.165 The record select, and a sheet to choose from
+
+"Put this next to the Search. Record select - Search. Select should be
+clickable, 56px same as the search. Offer multiple options. Select opens a
+bottom sheet. On click on an option the list is loading state."
+
+The records line used to be a div above the chips that said "25 records" and
+did nothing. It is a control now, beside the search and the same 56px, and the
+two share a row: choosing the record set and searching within it are the same
+question asked twice, so they belong on one line. The select takes what its
+longest label needs and the search takes the rest -- the other way round and
+the label truncates, which is the one thing a control naming the current state
+cannot do.
+
+A native select could not carry this. The options have an eyebrow over them, a
+date under each label and a count on one of them, and an OS picker has room for
+none of that. So it is the platform's other answer: a sheet up from the bottom
+edge over a scrim, with a grip, the eyebrow, and a tick on the one that is on.
+The scrim and Escape close it -- a sheet with no way back is a trap on a touch
+screen.
+
+It had to move into the frame to work. Written in the markup beside the
+controls it belongs to, which reads correctly, but position:absolute resolves
+against the nearest positioned ancestor and there that is the scroller: the
+sheet sat at the bottom of the CONTENT, several hundred pixels below the
+screen, perfectly "open" and nowhere to be seen. The keyboard solved this years
+ago by being appended to the phone; the sheet does the same.
+
+Picking an option goes through the same load() a keystroke and a chip go
+through, because it is the same act -- a different set being fetched. And every
+reading now belongs to one of the two named tests, off the same hash that
+places its marker, so Latest test is a real subset (69 readings) rather than a
+label that changes nothing. The chips recount for whatever set is chosen, since
+a chip's number is a promise about what tapping it shows and that promise is
+now about the rows in the chosen test: 69 = 42 + 15 + 8 + 4, 41 = 26 + 5 + 4 +
+6, 110 = 68 + 20 + 12 + 10. A chip whose range empties under a narrower set
+cannot stay chosen, so it hands back to All.
+
+One thing noticed and left alone. The hero's two readings of the panel live in
+BIO_SETS, and its "unclassified shown" set is 68/20/12/10 -- exactly the panel
+the chips now count, which is a pleasing confirmation that the table is the
+design's. Its "folded" set is 80/24/12 against a stated total of 110, and
+80 + 24 + 12 is 116. That is the design's own arithmetic rather than the
+prototype's, so it is flagged rather than quietly rewritten.
+
 ---
 
 ## 6. Open items

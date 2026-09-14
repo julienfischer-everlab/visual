@@ -993,6 +993,70 @@
   .msWrap.stuck{box-shadow:0 10px 14px -10px rgba(0,0,0,.7);}
   body.light .msWrap{background:#f7f2e9;}
   body.light .msWrap.stuck{box-shadow:0 10px 14px -10px rgba(46,31,26,.18);}
+  /* the two controls side by side, one height. The select takes what its
+     longest label needs and the search takes the rest -- the other way round
+     and the label would truncate, which is the one thing a control naming the
+     current state cannot do. */
+  .msRow{display:flex;align-items:center;gap:8px;}
+  .msRec{
+    flex:none;display:flex;align-items:center;gap:8px;
+    height:56px;padding:0 14px 0 16px;
+    font:inherit;font-size:15px;color:#ececec;text-align:left;
+    border:1px solid #2a2a28;border-radius:12px;background:transparent;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;
+    transition:border-color .16s ease,background .16s ease;
+  }
+  .msRec svg{width:12px;height:8px;flex:none;color:#8b8b86;transition:transform .22s ease;}
+  .msRec:hover{border-color:#5a5a56;}
+  .msRec[aria-expanded="true"]{border-color:#5a5a56;background:rgba(255,255,255,.05);}
+  .msRec[aria-expanded="true"] svg{transform:rotate(180deg);}
+  .msRow .msBox{flex:1;min-width:0;}
+  body.light .msRec{border-color:#ddd3bf;color:#2e1f1a;}
+  body.light .msRec:hover{border-color:#9b8a75;}
+  body.light .msRec[aria-expanded="true"]{background:rgba(46,31,26,.05);border-color:#9b8a75;}
+  /* The sheet. Inside the phone so the frame clips it, over a scrim that is
+     the way out -- a sheet with no way back is a trap on a touch screen. */
+  .mSheetBg{
+    position:absolute;inset:0;z-index:8;background:rgba(0,0,0,.5);
+    opacity:0;transition:opacity .26s ease;
+  }
+  body.mSheetOn .mSheetBg{opacity:1;}
+  .mSheet{
+    position:absolute;left:0;right:0;bottom:0;z-index:9;
+    background:#151514;border-radius:22px 22px 0 0;
+    padding:8px 0 calc(14px + env(safe-area-inset-bottom));
+    transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);
+    box-shadow:0 -18px 40px -16px rgba(0,0,0,.7);
+  }
+  body.mSheetOn .mSheet{transform:none;}
+  body.light .mSheet{background:#fffdf8;box-shadow:0 -18px 40px -20px rgba(46,31,26,.3);}
+  .mSheetGrip{
+    display:block;width:38px;height:4px;border-radius:2px;margin:2px auto 12px;
+    background:rgba(236,236,234,.2);
+  }
+  body.light .mSheetGrip{background:rgba(46,31,26,.18);}
+  .mSheetHd{padding:0 20px 2px;font-size:17px;font-weight:500;color:#ececec;letter-spacing:-.2px;}
+  body.light .mSheetHd{color:#2e1f1a;}
+  .mSheetEy{
+    padding:14px 20px 6px;
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#8b8b86;
+  }
+  .mSheetOpt{
+    display:flex;align-items:center;gap:12px;width:100%;
+    padding:14px 20px;font:inherit;text-align:left;
+    background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .mSheetOpt:active{background:rgba(255,255,255,.05);}
+  body.light .mSheetOpt:active{background:rgba(46,31,26,.05);}
+  .mSheetOpt .t{flex:1;min-width:0;}
+  .mSheetOpt b{display:block;font-size:15px;font-weight:400;color:#ececec;}
+  .mSheetOpt i{display:block;font-size:12.5px;font-style:normal;color:#8b8b86;margin-top:2px;}
+  .mSheetOpt.on b{font-weight:500;}
+  .mSheetOpt .tick{width:16px;height:16px;flex:none;color:#ececec;opacity:0;}
+  .mSheetOpt.on .tick{opacity:1;}
+  body.light .mSheetOpt b,body.light .mSheetOpt .tick{color:#2e1f1a;}
+  body.light .mSheetOpt i{color:#7d6b58;}
   .msBox{
     display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;
     border:1px solid #2a2a28;border-radius:12px;color:#8b8b86;background:transparent;
@@ -4845,7 +4909,6 @@
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
     <div class="mV4" id="mV4"><div class="mbrow2 mV4Row" id="mV4Row"></div></div>
-    <div class="msel" id="mRecCount">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
     <!-- Buttons, not divs. A chip that filters is a control: it takes the tab
          order, it answers the keyboard, and aria-pressed says which one is on.
          data-st is the status class on a row's pill, so the filter reads the
@@ -4862,11 +4925,31 @@
          through a short skeleton; the cross clears; the main navigation leaves
          while the keyboard is up; a scroll lets the field go. See mSearch. -->
     <div class="msWrap" id="mSearch">
+      <div class="msRow">
+      <!-- Which set of results is on the page, beside the thing that searches
+           them: one row, one height, because choosing the record set and
+           searching within it are the same question asked twice. -->
+      <button class="msRec" id="mRecSel" type="button" aria-haspopup="dialog" aria-expanded="false">
+        <span id="mRecLbl">All tests</span>
+        <svg viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
       <div class="msBox">
         <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 10.4 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         <input id="mSearchIn" type="search" placeholder="Search biomarkers" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search biomarkers">
         <button class="msClear" id="mSearchClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       </div>
+      </div>
+    </div>
+    <!-- The record sheet. A native select on a phone is an OS control that
+         cannot carry an eyebrow, a date under a label or a count, so this is
+         the platform's other answer: a sheet up from the bottom edge, inside
+         the frame, over a scrim that closes it. -->
+    <div class="mSheetBg" id="mSheetBg" hidden></div>
+    <div class="mSheet" id="mSheet" role="dialog" aria-modal="true" aria-label="Choose a record set" hidden>
+      <i class="mSheetGrip" aria-hidden="true"></i>
+      <div class="mSheetHd">Records</div>
+      <div class="mSheetEy">From 2026</div>
+      <div class="mSheetList" id="mSheetList"></div>
     </div>
     <!-- The skeleton is the list's own shape: a group head (title, two lines of
          description) and rows laid out on the row's grid -- a name, the three
@@ -15447,6 +15530,14 @@
         Galectin-3|other|— `]
     ];
     const ST_WORD = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range', other: 'Unclassified' };
+    // The record sets. Every reading belongs to one of the two named tests, so
+    // "Latest test" is a real subset rather than a label that changes nothing,
+    // and the date under each row is the date of the test it came from.
+    const TESTS = [
+      { id: 'all',  label: 'All tests',     note: '16', date: '' },
+      { id: 't0',   label: 'Latest test',   note: '24 Jan 2026', date: 'Jan 2026' },
+      { id: 't1',   label: 'Previous test', note: '13 Apr 2025', date: 'Apr 2025' }
+    ];
     // where the reading sits on its own range bar: inside the green, into the
     // amber, past it -- an unclassified one has no place to sit and shows none
     const MK_AT = { ok: [6, 30], sub: [40, 60], out: [70, 88] };
@@ -15464,10 +15555,13 @@
           // all stack on one pixel and do not move between loads
           let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
           const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
-          html += '<div class="mbrow">' +
+          // which test this reading came from, off the same hash: deterministic,
+          // so the two sets are the same two sets on every load
+          const t = (h % 5) < 3 ? 1 : 2;
+          html += '<div class="mbrow" data-t="' + TESTS[t].id + '">' +
                     '<span>' + name + '</span>' +
                     '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
-                    '<span class="g">' + val + ' &nbsp;|&nbsp; Dec 2024</span>' +
+                    '<span class="g">' + val + ' &nbsp;|&nbsp; ' + TESTS[t].date + '</span>' +
                     '<span class="st ' + st + '">' + ST_WORD[st] + '</span>' +
                   '</div>';
         });
@@ -15545,7 +15639,7 @@
     // The chips and the field are one filter, not two. A row has to pass both
     // the typed text and the chosen range, so picking Optimal inside a search
     // narrows what the search found rather than replacing it.
-    let chipSt = 'all';
+    let chipSt = 'all', recSet = 'all', countChips = null;
     const ST_EMPTY = {
       ok:    'No biomarkers in the optimal range.',
       sub:   'No suboptimal biomarkers.',
@@ -15566,7 +15660,8 @@
         let shown = 0;
         for (const row of g.querySelectorAll('.mbrow')){
           const hit = (!q || row.firstElementChild.textContent.toLowerCase().includes(q)) &&
-                      (chipSt === 'all' || rowSt(row) === chipSt);
+                      (chipSt === 'all' || rowSt(row) === chipSt) &&
+                      (recSet === 'all' || row.dataset.t === recSet);
           row.hidden = !hit; if (hit) shown++;
         }
         g.hidden = shown === 0; if (shown) any = true;
@@ -15597,6 +15692,56 @@
       setStick();
       load(!input.value.trim());
     }
+    // The record sheet. The button opens it, the scrim and Escape close it, and
+    // picking an option runs the list through the same loading beat a keystroke
+    // and a chip run through -- it is the same act, a different set being
+    // fetched.
+    (function sheetInit(){
+      const btn = document.getElementById('mRecSel'), lbl = document.getElementById('mRecLbl');
+      const sheet = document.getElementById('mSheet'), bg = document.getElementById('mSheetBg');
+      const list = document.getElementById('mSheetList');
+      if (!btn || !sheet || !list) return;
+      // Into the frame, as the keyboard is. Written in the markup beside the
+      // controls it belongs to, but position:absolute resolves against the
+      // nearest positioned ancestor -- which there is the scroller, so the
+      // sheet sat at the bottom of the CONTENT, hundreds of pixels below the
+      // screen. It has to be a child of the phone to be bottom of the screen.
+      const frame = document.getElementById('phone');
+      if (frame){ frame.appendChild(bg); frame.appendChild(sheet); }
+      const TICK = '<svg class="tick" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+                   '<path d="M3 8.4 6.3 11.7 13 5" stroke="currentColor" stroke-width="1.8" ' +
+                   'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      list.innerHTML = TESTS.map(t =>
+        '<button class="mSheetOpt' + (t.id === 'all' ? ' on' : '') + '" type="button" data-t="' + t.id + '">' +
+          '<span class="t"><b>' + t.label + '</b>' + (t.note ? '<i>' + t.note + '</i>' : '') + '</span>' +
+          TICK +
+        '</button>').join('');
+      const open = on => {
+        document.body.classList.toggle('mSheetOn', on);
+        btn.setAttribute('aria-expanded', String(on));
+        if (on){ sheet.hidden = false; bg.hidden = false; }
+        // hidden only after it has slid away, or it would vanish rather than go
+        else setTimeout(() => {
+          if (!document.body.classList.contains('mSheetOn')){ sheet.hidden = true; bg.hidden = true; }
+        }, 320);
+      };
+      btn.addEventListener('click', () => open(!document.body.classList.contains('mSheetOn')));
+      bg.addEventListener('click', () => open(false));
+      addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.body.classList.contains('mSheetOn')) open(false);
+      });
+      list.addEventListener('click', e => {
+        const o = e.target.closest('.mSheetOpt');
+        if (!o) return;
+        [].slice.call(list.children).forEach(x => x.classList.toggle('on', x === o));
+        recSet = o.dataset.t;
+        lbl.textContent = (TESTS.find(t => t.id === recSet) || TESTS[0]).label;
+        open(false);
+        if (countChips) countChips();
+        load(false);          // through the skeleton, as everything else is
+      });
+    })();
+
     // The chips. One at a time -- picking one releases the rest, and tapping
     // the one already on does nothing rather than clearing the filter, since a
     // list with no range chosen is what All is for.
@@ -15616,21 +15761,37 @@
       // is the sum of the ones that stay, which is also the row count -- the
       // two cannot drift because they are the same arithmetic.
       const allRows = [].slice.call(recs.querySelectorAll('.mbrow'));
-      const tally = {};
-      allRows.forEach(r => { const k = rowSt(r); tally[k] = (tally[k] || 0) + 1; });
-      let total = 0;
-      chips.forEach(c => {
-        const k = c.dataset.st;
-        if (k === 'all') return;
-        const n = tally[k] || 0;
-        c.hidden = n === 0;
-        c.querySelector('b').textContent = n;
-        total += n;
-      });
-      const all = chips.find(c => c.dataset.st === 'all');
-      if (all) all.querySelector('b').textContent = total;
-      const rec = document.getElementById('mRecCount');
-      if (rec) rec.firstChild.textContent = total + ' record' + (total === 1 ? '' : 's') + ' ';
+      // Recounted whenever the record set changes, not once at boot. A chip's
+      // number is a promise about what tapping it shows, and once the page can
+      // be narrowed to one test that promise is about the rows in THAT test.
+      countChips = function(){
+        const tally = {};
+        allRows.forEach(r => {
+          if (recSet !== 'all' && r.dataset.t !== recSet) return;
+          const k = rowSt(r); tally[k] = (tally[k] || 0) + 1;
+        });
+        let total = 0;
+        chips.forEach(c => {
+          const k = c.dataset.st;
+          if (k === 'all') return;
+          const n = tally[k] || 0;
+          c.hidden = n === 0;
+          c.querySelector('b').textContent = n;
+          total += n;
+        });
+        const all = chips.find(c => c.dataset.st === 'all');
+        if (all) all.querySelector('b').textContent = total;
+        // a chip whose range just emptied cannot stay chosen
+        if (chipSt !== 'all'){
+          const cur = chips.find(c => c.dataset.st === chipSt);
+          if (cur && cur.hidden){
+            chipSt = 'all';
+            chips.forEach(o => { const on = o.dataset.st === 'all';
+              o.classList.toggle('on', on); o.setAttribute('aria-pressed', String(on)); });
+          }
+        }
+      };
+      countChips();
       chips.forEach(c => c.addEventListener('click', () => {
         if (c.classList.contains('on')) return;
         chips.forEach(o => {
