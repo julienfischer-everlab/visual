@@ -897,11 +897,15 @@
      the width has to be spent either way or the row shifts by a pixel the
      moment a chip is chosen, which is the same rule the cards follow. */
   #phone .fchip{
+    font:inherit;font-size:12.5px;color:#bdbdb9;
     border:1px solid transparent;border-radius:999px;padding:9px 14px;
-    background:rgba(255,255,255,.07);display:flex;gap:7px;align-items:center;flex:none;
-    transition:background .18s ease,border-color .18s ease,color .18s ease;
+    background:rgba(255,255,255,.08);display:flex;gap:7px;align-items:center;flex:none;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;
+    transition:background .18s ease,border-color .18s ease,color .18s ease,transform .12s ease;
   }
-  #phone .fchip.on{background:rgba(255,255,255,.15);border-color:#fff;color:#ececec;}
+  #phone .fchip:active{transform:scale(.96);}
+  #phone .fchip:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:2px;}
+  #phone .fchip.on{background:rgba(255,255,255,.16);border-color:#fff;color:#ececec;}
   #phone .fchip i{width:8px;height:8px;border-radius:3px;font-style:normal;}
   .mrecs{padding:8px 13px 0;}
   .mrecs h3{font-size:14.5px;margin:14px 0 6px;font-weight:600;color:#ececec;}
@@ -2945,8 +2949,9 @@
   /* the same two steps on the pale ground, where "lighter" is darker: the
      plate is ink over paper, and the active edge is the theme's own ink
      rather than white, which on white is not an edge at all */
-  body.light #phone .fchip{border-color:transparent;background:rgba(46,31,26,.06);}
-  body.light #phone .fchip.on{background:rgba(46,31,26,.12);border-color:#2e241c;color:#2e241c;}
+  body.light #phone .fchip{border-color:transparent;background:rgba(46,31,26,.07);color:#6b5c4a;}
+  body.light #phone .fchip.on{background:rgba(46,31,26,.14);border-color:#2e241c;color:#2e241c;}
+  body.light #phone .fchip:focus-visible{outline-color:rgba(46,31,26,.6);}
   body.light .mrecs h3{color:#2e1f1a;}
   body.light .mrecs .gd{color:#9b8a75;}
   body.light .mbrow{color:#3a2f24;border-bottom-color:#ece4d4;}
@@ -4709,12 +4714,16 @@
     <!-- V4 only: every card moves down here, in the V4 order -->
     <div class="mV4" id="mV4"><div class="mbrow2 mV4Row" id="mV4Row"></div></div>
     <div class="msel">32 records <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="#8b8b86" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-    <div class="mchips">
-      <div class="fchip on"><b>81</b>&nbsp;All</div>
-      <div class="fchip"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</div>
-      <div class="fchip"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</div>
-      <div class="fchip"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</div>
-      <div class="fchip mOther"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</div>
+    <!-- Buttons, not divs. A chip that filters is a control: it takes the tab
+         order, it answers the keyboard, and aria-pressed says which one is on.
+         data-st is the status class on a row's pill, so the filter reads the
+         list rather than a second table of what is in it. -->
+    <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
+      <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
+      <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
+      <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>
+      <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</button>
+      <button class="fchip mOther" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</button>
     </div>
     <!-- The search sits under the filters. Focused, it sticks to the top of the
          screen and the page scrolls up to it; typing filters the groups below
@@ -15224,33 +15233,79 @@
       else { input.value += kbd.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; kbd.classList.remove('shift'); }
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
+    // The chips and the field are one filter, not two. A row has to pass both
+    // the typed text and the chosen range, so picking Optimal inside a search
+    // narrows what the search found rather than replacing it.
+    let chipSt = 'all';
+    const ST_EMPTY = {
+      ok:    'No biomarkers in the optimal range.',
+      sub:   'No suboptimal biomarkers.',
+      out:   'No biomarkers out of range.',
+      other: 'No unclassified biomarkers.'
+    };
+    const rowSt = row => {
+      const st = row.querySelector('.st');
+      if (!st) return 'other';
+      return st.classList.contains('ok') ? 'ok'
+           : st.classList.contains('sub') ? 'sub'
+           : st.classList.contains('out') ? 'out' : 'other';
+    };
     function applyFilter(){
       const q = input.value.trim().toLowerCase();
       let any = false;
       for (const g of groups){
         let shown = 0;
         for (const row of g.querySelectorAll('.mbrow')){
-          const hit = !q || row.firstElementChild.textContent.toLowerCase().includes(q);
+          const hit = (!q || row.firstElementChild.textContent.toLowerCase().includes(q)) &&
+                      (chipSt === 'all' || rowSt(row) === chipSt);
           row.hidden = !hit; if (hit) shown++;
         }
         g.hidden = shown === 0; if (shown) any = true;
       }
-      empty.querySelector('span').textContent = input.value.trim();
-      empty.hidden = any || !q;
+      // Which nothing it is decides what the line says. A search that found
+      // nothing names what was typed; a range that holds nothing says so in
+      // the product's own words -- "No biomarkers out of range" is a result,
+      // and reads as one, rather than as a list that failed to load.
+      const es = empty.querySelector('span');
+      if (!any && q){ empty.firstChild.textContent = 'No biomarkers match \u201C'; es.textContent = input.value.trim(); es.hidden = false; empty.lastChild.textContent = '\u201D'; }
+      else if (!any){ empty.firstChild.textContent = ST_EMPTY[chipSt] || 'Nothing to show.'; es.hidden = true; empty.lastChild.textContent = ''; }
+      empty.hidden = any;
       holdScroll(250);
       recs.hidden = false; skel.hidden = true;
+    }
+    // One loading beat, shared. The skeleton stands in, then the list arrives --
+    // the same 380ms whether a key was pressed or a chip was tapped, because
+    // they are the same act: the set below is being fetched again.
+    function load(now){
+      clearTimeout(skelTimer);
+      holdScroll(250);
+      if (now){ applyFilter(); return; }
+      recs.hidden = true; empty.hidden = true; skel.hidden = false;
+      skelTimer = setTimeout(applyFilter, 380);
     }
     function typed(){
       wrap.classList.toggle('hasText', input.value.length > 0);
       setStick();
-      // a keystroke "loads": the skeleton stands in for a beat, then the list
-      clearTimeout(skelTimer);
-      holdScroll(250);
-      if (input.value.trim()){
-        recs.hidden = true; empty.hidden = true; skel.hidden = false;
-        skelTimer = setTimeout(applyFilter, 380);
-      } else applyFilter();
+      load(!input.value.trim());
     }
+    // The chips. One at a time -- picking one releases the rest, and tapping
+    // the one already on does nothing rather than clearing the filter, since a
+    // list with no range chosen is what All is for.
+    (function chipsInit(){
+      const bar = document.getElementById('mChips');
+      if (!bar) return;
+      const chips = [].slice.call(bar.querySelectorAll('.fchip'));
+      chips.forEach(c => c.addEventListener('click', () => {
+        if (c.classList.contains('on')) return;
+        chips.forEach(o => {
+          const on = o === c;
+          o.classList.toggle('on', on);
+          o.setAttribute('aria-pressed', String(on));
+        });
+        chipSt = c.dataset.st || 'all';
+        load(false);   // through the skeleton, as a keystroke goes
+      }));
+    })();
     input.addEventListener('focus', () => {
       wrap.classList.add('focus');
       document.body.classList.add('mSearchOn');

@@ -4485,6 +4485,41 @@ ageing faster" and in PILL the kidney is a year younger; using it would have
 this page contradict every other screen in the file. The lung is +8 and is the
 organ that actually carries that reading.
 
+### 5.160 The chips become a control
+
+"Chips must be clickable. Increase grey intensity, #fff 8% bg. On tap the chip
+should turn to active state and the list below should turn into loading state,
+same as the search typing data set loading state. Only one chip can be selected
+in the list."
+
+They were divs. Divs with an .on class on the first one, which is a picture of
+a filter rather than a filter -- no tab stop, no keyboard, nothing to press.
+They are buttons now, with aria-pressed saying which is on and data-st naming
+the status each one selects, and the plate goes from 7% to 8% with the chosen
+one at 16%, twice it, behind the white edge it already had.
+
+The loading state is not a copy of the search's. It IS the search's: typed()
+and the chips both call one load(), which hides the list, shows the skeleton,
+and applies the filter 380ms later. Two code paths doing the same 380ms would
+have drifted the first time either was tuned, and the point of the request was
+that the two should feel like the same act -- the set below is being fetched
+again, whatever asked for it.
+
+Which meant the filter had to be one filter. A row passes if it matches the
+typed text AND the chosen range, so picking Optimal inside a search narrows
+what the search found rather than replacing it. The status comes off the row's
+own pill (.st ok / .st sub), so the filter reads the list rather than a second
+table of what is supposed to be in it.
+
+Two of the five ranges hold nothing in this sample -- the chips carry the
+design's figures (81/9/6/28) and the list is twenty-five rows, seventeen
+optimal and eight suboptimal. Rather than invent results to fill them, the
+empty line changes with the reason: a search that found nothing names what was
+typed, a range that holds nothing says "No biomarkers out of range", which in a
+health app is a result and reads as one. Fabricating two out-of-range
+biomarkers to make a control look busy would have been the wrong kind of
+fixing.
+
 ---
 
 ## 6. Open items
