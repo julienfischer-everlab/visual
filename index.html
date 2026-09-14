@@ -108,6 +108,10 @@
   /* a slider row carries its own reading, so a value can be taken off the bar
      and written into a design system rather than guessed from a thumb position */
   .topbar .tkSlide{display:flex;align-items:center;gap:10px;}
+  /* swatch and hex as one thing at the row's right, so the three rows line up
+     with each other and with the slider rows in the other panels */
+  .topbar .tkInk{display:flex;align-items:center;gap:4px;}
+  .topbar .tkInk .inkHex{margin:0;}
   .topbar .tkSlide input[type="range"]{width:104px;}
   .topbar .tkVal{
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
@@ -4496,11 +4500,38 @@
         </div>
       </div>
     </details>
-    <span class="lbl">Ink</span>
-    <input type="color" id="inkA" value="#a35442" aria-label="Base ink, 60% of particles"><input type="text" class="inkHex" id="inkAHex" value="#A35442" maxlength="7" spellcheck="false" aria-label="Base ink, hex">
-    <input type="color" id="inkB" value="#d0a496" aria-label="Mid ink, 25% of particles"><input type="text" class="inkHex" id="inkBHex" value="#D0A496" maxlength="7" spellcheck="false" aria-label="Mid ink, hex">
-    <input type="color" id="inkC" value="#f2ebe7" aria-label="Light ink, 15% of particles"><input type="text" class="inkHex" id="inkCHex" value="#F2EBE7" maxlength="7" spellcheck="false" aria-label="Light ink, hex">
-    <button id="inkSave" class="tbtn" type="button">Save</button>
+    <!-- The three inks, behind one control. Six elements in a row -- swatch,
+         hex, swatch, hex, swatch, hex -- took a third of the bar to say one
+         thing, and said it without naming which ink was which. In the panel
+         each has its row and its role, in the same words the Library's Colour
+         page uses, so the bar and the design system call them the same thing.
+         Save stays with them: it is what makes a pick outlast the reload. -->
+    <details class="tkMenu" id="inkMenu">
+      <summary aria-label="Particle colours">Particles colours</summary>
+      <div class="tkPanel" role="group" aria-label="Particle colours">
+        <div class="tkRow">
+          <span class="lbl">Ink 01 &middot; Material</span>
+          <span class="tkInk">
+            <input type="color" id="inkA" value="#a35442" aria-label="Base ink, 60% of particles"><input type="text" class="inkHex" id="inkAHex" value="#A35442" maxlength="7" spellcheck="false" aria-label="Base ink, hex">
+          </span>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Ink 02 &middot; Lighter tone</span>
+          <span class="tkInk">
+            <input type="color" id="inkB" value="#d0a496" aria-label="Mid ink, 25% of particles"><input type="text" class="inkHex" id="inkBHex" value="#D0A496" maxlength="7" spellcheck="false" aria-label="Mid ink, hex">
+          </span>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Ink 03 &middot; Highlight</span>
+          <span class="tkInk">
+            <input type="color" id="inkC" value="#f2ebe7" aria-label="Light ink, 15% of particles"><input type="text" class="inkHex" id="inkCHex" value="#F2EBE7" maxlength="7" spellcheck="false" aria-label="Light ink, hex">
+          </span>
+        </div>
+        <div class="tkRow tkFoot">
+          <button id="inkSave" class="tkBtn" type="button">Save</button>
+        </div>
+      </div>
+    </details>
     <button class="tkBtn" id="tkReload" type="button"
             aria-label="Reload the page on this version">Refresh</button>
   </div>
@@ -12370,24 +12401,36 @@
     // particles. pan lifts the cloud in world units so the product's reading
     // has the lower third to itself; done in world space rather than as a
     // screen offset, so it parallaxes with everything else.
+    // A hold holds the MORPH, not the camera. Two keys naming the same state
+    // is what stops an organ being a blend of two organs -- but when the two
+    // also carry the same camera and the same pan, the scroll goes dead: you
+    // are turning the wheel and the picture is exactly where it was. There
+    // were five of those stretches, and the worst was the title card, where
+    // the field is out and the only thing on screen is a line of type.
+    //
+    // So no two consecutive keys share a camera AND a pan. Through every hold
+    // the camera keeps pushing in and the world keeps rising, slowly, which is
+    // the difference between a scene that is held and a page that has stopped.
+    // pan runs monotonically down the whole way: whatever else is happening,
+    // scrolling moves the content up.
     const KEYS = [
-      { at: 0.000, st: 'dot',   cam: -0.66, spread: 0.00, dof: 0.55, pan:  0.00 },
-      { at: 0.060, st: 'dot',   cam: -0.44, spread: 0.00, dof: 0.80, pan:  0.00 },
-      { at: 0.175, st: 'body',  cam:  0.10, spread: 0.85, dof: 0.40, pan: -0.02 },   // the pull-back forms a person
-      { at: 0.250, st: 'body',  cam:  0.02, spread: 0.00, dof: 0.16, pan: -0.02 },   // HELD, so the body is read
-      { at: 0.335, st: 'uni',   cam:  0.42, spread: 1.00, dof: 1.00, pan:  0.00 },   // and opens into the signals it is made of
-      { at: 0.395, st: 'uni',   cam:  0.72, spread: 1.00, dof: 1.00, pan:  0.00 },
-      { at: 0.450, st: 'dark',  cam:  0.90, spread: 1.00, dof: 1.00, pan:  0.00 },
-      { at: 0.515, st: 'dark',  cam:  0.90, spread: 1.00, dof: 1.00, pan:  0.00 },   // LOOK CLOSER holds
-      { at: 0.600, st: 'heart', cam:  0.20, spread: 0.55, dof: 0.45, pan: -0.06 },   // forming
-      { at: 0.655, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // formed
-      { at: 0.722, st: 'heart', cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // HELD, while the reading is read
-      { at: 0.778, st: 'lung',  cam: -0.02, spread: 0.35, dof: 0.26, pan: -0.17 },   // comes apart, reorganises
-      { at: 0.846, st: 'lung',  cam: -0.02, spread: 0.00, dof: 0.13, pan: -0.17 },   // HELD
+      { at: 0.000, st: 'dot',   cam: -0.66, spread: 0.00, dof: 0.55, pan:  0.10 },
+      { at: 0.060, st: 'dot',   cam: -0.44, spread: 0.00, dof: 0.80, pan:  0.06 },
+      { at: 0.175, st: 'body',  cam:  0.10, spread: 0.85, dof: 0.40, pan:  0.02 },   // the pull-back forms a person
+      { at: 0.250, st: 'body',  cam:  0.17, spread: 0.00, dof: 0.16, pan: -0.04 },   // held, still pushing in
+      { at: 0.335, st: 'uni',   cam:  0.46, spread: 1.00, dof: 1.00, pan: -0.02 },   // and opens into the signals
+      { at: 0.395, st: 'uni',   cam:  0.74, spread: 1.00, dof: 1.00, pan: -0.06 },
+      { at: 0.450, st: 'dark',  cam:  0.90, spread: 1.00, dof: 1.00, pan: -0.08 },
+      { at: 0.515, st: 'dark',  cam:  1.04, spread: 1.00, dof: 1.00, pan: -0.15 },   // held; the title carries the motion
+      { at: 0.600, st: 'heart', cam:  0.20, spread: 0.55, dof: 0.45, pan: -0.07 },   // forming
+      { at: 0.655, st: 'heart', cam: -0.03, spread: 0.00, dof: 0.13, pan: -0.14 },   // formed
+      { at: 0.722, st: 'heart', cam:  0.05, spread: 0.00, dof: 0.13, pan: -0.20 },   // held, reading read
+      { at: 0.778, st: 'lung',  cam: -0.03, spread: 0.35, dof: 0.26, pan: -0.13 },   // comes apart, reorganises
+      { at: 0.846, st: 'lung',  cam:  0.05, spread: 0.00, dof: 0.13, pan: -0.20 },   // held
       { at: 0.898, st: 'field', cam:  0.34, spread: 0.30, dof: 0.26, pan: -0.05 },
-      { at: 0.945, st: 'field', cam:  0.34, spread: 0.00, dof: 0.20, pan: -0.05 },   // HELD
-      { at: 0.985, st: 'phone', cam:  0.06, spread: 0.25, dof: 0.28, pan: -0.02 },
-      { at: 1.000, st: 'phone', cam:  0.06, spread: 0.00, dof: 0.20, pan: -0.02 }
+      { at: 0.945, st: 'field', cam:  0.43, spread: 0.00, dof: 0.20, pan: -0.12 },   // held
+      { at: 0.985, st: 'phone', cam:  0.06, spread: 0.25, dof: 0.28, pan: -0.03 },
+      { at: 1.000, st: 'phone', cam:  0.11, spread: 0.00, dof: 0.20, pan: -0.08 }
     ];
     // The copy. Each line is a range and a place; nothing has a trigger of its
     // own, because two clocks on one page is how it starts to feel assembled.
@@ -12828,7 +12871,12 @@
       for (let n = 0; n < lines.length; n++){
         const L = lines[n], o = band(p, L.a, L.b);
         L.el.style.opacity = o.toFixed(3);
-        L.el.style.transform = 'translateY(' + ((1 - o) * 14).toFixed(1) + 'px)';
+        // two movements, and the second is the one that matters here: the
+        // fade's own lift, plus a slow rise across the whole of the line's
+        // life. On the title card there is nothing else on screen, so without
+        // it the reader scrolls through a beat where the page is a still.
+        const life = clamp01((p - L.a) / Math.max(1e-6, L.b - L.a));
+        L.el.style.transform = 'translateY(' + ((1 - o) * 14 - life * 22).toFixed(1) + 'px)';
       }
       hintEl.style.opacity = (1 - clamp01(p / 0.03)).toFixed(3);
 

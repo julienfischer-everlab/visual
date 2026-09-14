@@ -4589,6 +4589,39 @@ looked at it a dozen times while chasing a different bug. A body arrived with
 its head at the bottom and the mistake was unmissable in one frame. Worth
 remembering: the shapes that hide an error are the ones you verify against.
 
+### 5.163 One control for the inks, and no dead scroll
+
+**"Combine this into one select, Particles colours."** Six elements in a row --
+swatch, hex, swatch, hex, swatch, hex -- took a third of the bar to say one
+thing, and said it without naming which ink was which. They are behind one
+menu now, in the same idiom as Tweaks, Glass and Dock, and in the panel each
+ink has a row and a role: Ink 01 Material, Ink 02 Lighter tone, Ink 03
+Highlight -- the words the Library's Colour page already uses, so the bar and
+the design system call them the same thing. Save moved in with them, since it
+is what makes a pick outlast a reload. Checked that a hex still drives its
+swatch, the cloud and the Colour page's ramp in the same frame.
+
+**"On landing I want the scroll to always move vertically, never stop and
+scroll without anything animated."** Fair, and it was something I introduced.
+A hold in the timeline is two keys naming the same state, which is what stops
+an organ being a permanent blend of two organs -- but I had given both keys the
+same camera and the same pan as well. So through every hold the picture was
+exactly where it had been: you turn the wheel and nothing happens. Five of
+those, and the worst was the title card, where the field is out and the only
+thing on screen is a line of type that was also static.
+
+A hold holds the MORPH, not the camera. No two consecutive keys share a camera
+and a pan now: through every hold the camera keeps pushing in and the world
+keeps rising, and pan runs monotonically down the whole timeline, so whatever
+else is happening, scrolling moves the content up. The copy gained a second
+movement besides its fade -- a slow rise across the whole of each line's life --
+which is what carries the title card, where there is nothing else to carry it.
+
+Measured rather than judged: the timeline walked in twenty-five steps, each
+compared against the last on the ink's centroid, its pixel count and every copy
+block's position. Every step moves. The smallest is the title card, where the
+canvas is legitimately empty and the type is the whole of it.
+
 ---
 
 ## 6. Open items
