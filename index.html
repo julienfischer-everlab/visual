@@ -16332,12 +16332,25 @@
       },
       hold: holdScroll,
       afterApply: setStick,
-      // The skeleton is five rows where the list is a hundred and ten, so
-      // swapping them shortens the page -- and a page that shortens under a
-      // pinned bar unpins it: the bar dropped back into the flow for the 380ms
-      // of the beat and pinned again after. Hold the height the list had.
+      // Two things the beat has to do on the phone. Hold the height the list
+      // had -- the skeleton is five rows where the list is a hundred and ten,
+      // and a page that shortens under a pinned bar unpins it, so the bar
+      // dropped into the flow for the 380ms and pinned again after. And land
+      // at the top of the results, because holding the height alone buys a
+      // second bug: scrolled a thousand pixels down, the reader would be
+      // looking at held-open nothing while the skeleton sat far above. A
+      // scroll position measured in the old list means nothing in the new one
+      // anyway -- the set is being replaced, so the top of it is where to be.
       beforeBeat: () => {
         skel.style.minHeight = Math.max(recs.offsetHeight, sc.clientHeight - wrap.offsetHeight) + 'px';
+        // Measured off the list rather than off the bar: the bar is sticky,
+        // and a sticky element's offsetTop already carries the shift, so it
+        // reports wherever it is pinned rather than where it sits in the flow.
+        // The list's top in content space, less the bar and the status strip,
+        // is the scrollTop at which the bar pins with the list right under it.
+        const listTop = sc.scrollTop + (recs.getBoundingClientRect().top - sc.getBoundingClientRect().top);
+        const pin = Math.max(0, listTop - wrap.offsetHeight - statusH());
+        if (sc.scrollTop > pin + 1){ holdScroll(700); sc.scrollTop = pin; }
       }
     });
     const load = bio.load, typed = bio.typed;

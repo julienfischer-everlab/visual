@@ -5049,6 +5049,31 @@ hidden by the design, so the four chips on screen sum to 100 while All reads
 -- so the number is honest; it is the hidden chip that makes the row look like
 it does not add up. Worth a decision if those pages matter.
 
+### 5.178 The held height bought a second bug
+
+Holding the list's height through the loading beat kept the bar pinned, which
+was the point. It also meant that a chip tapped from a thousand pixels down
+left the reader looking at held-open nothing for 380ms: the skeleton's five
+rows sat far above the viewport, inside a box being held at the old list's
+height. I caught it in a mid-beat screenshot -- the page was simply black --
+which is the sort of thing a measurement of `stuck: true` will happily tell you
+is fine.
+
+The beat now also lands at the top of the results. That is not a patch on the
+hold; it is what should happen anyway. A scroll position measured in the old
+list means nothing in the new one -- the set is being replaced, so the top of
+it is where to be.
+
+The pin point is measured off the LIST, not off the bar. The bar is sticky, and
+a sticky element's `offsetTop` already carries the shift, so it reports
+wherever it is currently pinned rather than where it sits in the flow -- my
+first attempt computed `pin ≈ scrollTop` and so never scrolled at all. The
+list's top in content space, less the bar and the status strip, is the
+scrollTop at which the bar pins with the list right under it.
+
+  from 1400, chip "Suboptimal": lands at 718, bar pinned at 44,
+  skeleton's first row at y 263, then 20 rows at the same position
+
 ---
 
 ## 6. Open items
