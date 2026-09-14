@@ -588,9 +588,13 @@
     transition:background-color .4s ease, color .4s ease, border-color .4s ease;
   }
   .dot.on{background:var(--ink-d);border-color:var(--ink-d);color:#1A1816;}
-  .slides{width:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-  .slides::-webkit-scrollbar{display:none;}
-  .slide{flex:0 0 100%;scroll-snap-align:center;text-align:center;padding:0 6px;box-sizing:border-box;}
+  .slides{width:100%;overflow:hidden;position:relative;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;}
+  .slides.dragging{cursor:grabbing;}
+  .track{display:flex;width:100%;transform:translateX(0);transition:transform .45s cubic-bezier(.2,.7,.2,1);will-change:transform;}
+  .track.nolerp{transition:none;}
+  .slide{flex:0 0 100%;text-align:center;padding:0 6px;box-sizing:border-box;opacity:0;transition:opacity .45s ease;}
+  .slide.on{opacity:1;}
+  .track.nolerp .slide{transition:none;}
   .slide b{display:block;font-weight:500;font-size:15px;line-height:1.3;color:var(--ink-d);margin:0 0 6px;}
   .slide p{margin:0;min-height:3em;font-size:14px;line-height:1.5;color:var(--ink-d2);text-wrap:pretty;}
   /* Cards: the side column is a second card in the same glass, tucked behind
@@ -622,6 +626,23 @@
     -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
   }
   body[data-card="cards"] .side-in{gap:12px;padding:10px 40px 40px;align-items:center;text-align:center;}  /* the foot matches the sides; everything centred */
+  /* Hero tweak "Light": the hero card is warm white with black type, no glass;
+     in dynamic motion the seed keeps its glass on the first fold and turns
+     white as it lands; the panel below keeps its own look */
+  body[data-hero="light"] .card{
+    --ink-d:#171412;--ink-d2:#3A3532;--muted-d:#6B655F;--hair-d:rgba(0,0,0,.10);
+    --btn-d:#171412;--btn-d-ink:#F3EFEA;
+    background:var(--white);-webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+  body[data-hero="light"] .card .act .pill:hover{background:#2A2522;}
+  body[data-hero="light"] .card .info-scroll.can-scroll{
+    -webkit-mask:linear-gradient(180deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+    mask:linear-gradient(180deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+  }
+  body[data-hero="light"][data-motion="dynamic"] .card{background:transparent;}
+  body[data-hero="light"][data-state="revealing"] .seed, body[data-hero="light"][data-state="gift"] .seed{background:var(--white);-webkit-backdrop-filter:none;backdrop-filter:none;}
+  body[data-hero="light"] .seed{transition:transform 1100ms cubic-bezier(.2,.7,.2,1), background-color 700ms ease;}
+  body[data-hero="light"] .card-next{border-top-color:rgba(0,0,0,.10);}
   /* Next tweak "Inside": the What's next block sits in the hero card under the
      button, above a hairline, and the separate panel goes */
   .card-next{display:none;}
@@ -864,8 +885,8 @@
     .incl li{font-size:13.5px;}
     .chip-btn{padding:6px 13px 6px 6px;font-size:12.5px;}
     .chips, .step-desc{display:none;}          /* phones: the carousel instead */
-    .dots{display:flex;}
-    .slides{display:flex;}
+    .dots{display:flex;margin-top:4px;}
+    .slides{display:block;}
     .slide p{font-size:13.5px;}
     .chip-btn .n{width:21px;height:21px;}
     .step-desc{font-size:13.5px;}
@@ -1113,6 +1134,11 @@
       <option value="cards">Cards</option>
       <option value="list">List</option>
     </select>
+    <label for="heroSel">Hero</label>
+    <select id="heroSel" aria-label="Hero card style">
+      <option value="dark">Dark</option>
+      <option value="light">Light</option>
+    </select>
     <label for="nextSel">Next</label>
     <select id="nextSel" aria-label="Where the What's next block sits">
       <option value="outside">Outside</option>
@@ -1246,8 +1272,8 @@
         </div>
         <p class="step-desc" id="stepDesc" aria-live="polite"></p>
         <!-- phones: the same three steps as a swipeable carousel, numbered dots above -->
+        <div class="slides" id="slides" aria-live="polite"><div class="track" id="track"></div></div>
         <div class="dots" id="dots" role="tablist" aria-label="Steps"></div>
-        <div class="slides" id="slides" aria-live="polite"></div>
       </div>
       <ol class="timeline" aria-label="Your next steps">
         <li class="now" aria-current="step"><i></i><span>Unwrap</span></li>
@@ -1613,7 +1639,7 @@
   var STEP_MS = 3000;
   var chipBtns = Array.prototype.slice.call(document.querySelectorAll('#chips .chip-btn'));
   var stepDesc = document.getElementById('stepDesc'), stepI = 0, stepTimer = 0, stepsOn = false;
-  var dotsEl = document.getElementById('dots'), slidesEl = document.getElementById('slides'), dotBtns = [], userSwipe = false;
+  var dotsEl = document.getElementById('dots'), slidesEl = document.getElementById('slides'), trackEl = document.getElementById('track'), dotBtns = [], slideEls = [], userSwipe = false;
   chipBtns.forEach(function(b, k){
     var d = document.createElement('button'); d.type = 'button'; d.className = 'dot'; d.setAttribute('role', 'tab'); d.textContent = String(k + 1);
     d.setAttribute('aria-label', 'Step ' + (k + 1) + ': ' + b.querySelector('span').textContent);
@@ -1622,18 +1648,26 @@
     var sl = document.createElement('div'); sl.className = 'slide';
     var t = document.createElement('b'); t.textContent = b.querySelector('span').textContent;
     var p = document.createElement('p'); p.textContent = b.dataset.desc;
-    sl.appendChild(t); sl.appendChild(p); slidesEl.appendChild(sl);
+    sl.appendChild(t); sl.appendChild(p); trackEl.appendChild(sl); slideEls.push(sl);
   });
   function slidesShown(){ return getComputedStyle(slidesEl).display !== 'none'; }
+  // the track sits at slide i, shifted by dx pixels while a finger drags it;
+  // the outgoing slide fades with the distance and the incoming one fades in
+  function setTrack(i, dx){
+    var w = slidesEl.clientWidth || 1;
+    trackEl.style.transform = 'translateX(calc(' + (-i * 100) + '% + ' + (dx || 0) + 'px))';
+    var f = Math.min(1, Math.abs(dx || 0) / w), to = dx < 0 ? i + 1 : i - 1;
+    slideEls.forEach(function(el, k){
+      el.classList.toggle('on', k === i && !dx);
+      el.style.opacity = dx ? (k === i ? String(1 - f) : (k === to ? String(f) : '0')) : '';
+    });
+  }
   function showStep(i){
     stepI = i;
     chipBtns.forEach(function(b, k){ b.classList.remove('on'); b.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
     chipBtns[i].classList.add('on');
     dotBtns.forEach(function(d, k){ d.classList.toggle('on', k === i); d.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
-    if(slidesShown() && !userSwipe){
-      var w = slidesEl.clientWidth;
-      if(Math.abs(slidesEl.scrollLeft - i * w) > 2) slidesEl.scrollTo({ left: i * w, behavior: reduce ? 'auto' : 'smooth' });
-    }
+    if(!userSwipe){ trackEl.classList.toggle('nolerp', !!reduce); setTrack(i, 0); }
     if(stepDesc.textContent !== chipBtns[i].dataset.desc){
       stepDesc.classList.add('swap');
       setTimeout(function(){ stepDesc.textContent = chipBtns[i].dataset.desc; stepDesc.classList.remove('swap'); }, reduce ? 0 : 220);
@@ -1650,19 +1684,40 @@
     else if(!live && stepsOn){ stepsOn = false; clearTimeout(stepTimer); stepTimer = 0; chipBtns.forEach(function(b){ b.classList.remove('on'); }); }
   }
   chipBtns.forEach(function(b, k){ b.addEventListener('click', function(){ if(stepsOn) showStep(k); }); });
-  // a swipe picks the step under the finger and restarts the three seconds
-  var swipeTimer = 0;
-  slidesEl.addEventListener('touchstart', function(){ userSwipe = true; clearTimeout(stepTimer); }, { passive: true });
-  slidesEl.addEventListener('pointerdown', function(){ userSwipe = true; clearTimeout(stepTimer); });
-  slidesEl.addEventListener('scroll', function(){
-    clearTimeout(swipeTimer);
-    swipeTimer = setTimeout(function(){
-      var idx = Math.max(0, Math.min(chipBtns.length - 1, Math.round(slidesEl.scrollLeft / Math.max(1, slidesEl.clientWidth))));
-      var wasUser = userSwipe; userSwipe = false;
-      if(stepsOn && (idx !== stepI || wasUser)) showStep(idx);
-    }, 90);
-  }, { passive: true });
-  window.addEventListener('resize', function(){ if(slidesShown()) slidesEl.scrollTo({ left: stepI * slidesEl.clientWidth, behavior: 'auto' }); });
+  // a drag (finger or mouse) moves the track with the hand; past half the
+  // width, or a quick flick, the release commits to the next or previous
+  // step and restarts the three seconds; short of it the slide springs back
+  var drag = null;
+  slidesEl.addEventListener('pointerdown', function(e){
+    if(!slidesShown() || e.button) return;
+    drag = { x: e.clientX, y: e.clientY, t: performance.now(), dx: 0, live: false };
+    userSwipe = true; clearTimeout(stepTimer);
+    slidesEl.setPointerCapture(e.pointerId);
+  });
+  slidesEl.addEventListener('pointermove', function(e){
+    if(!drag) return;
+    var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if(!drag.live){ if(Math.abs(dx) < 6 && Math.abs(dy) < 6) return; if(Math.abs(dy) > Math.abs(dx)){ drag = null; userSwipe = false; if(stepsOn) showStep(stepI); return; } drag.live = true; slidesEl.classList.add('dragging'); trackEl.classList.add('nolerp'); }
+    var last = chipBtns.length - 1;
+    if((stepI === 0 && dx > 0) || (stepI === last && dx < 0)) dx *= .35;   // resistance at the ends
+    drag.dx = dx; setTrack(stepI, dx);
+    e.preventDefault();
+  });
+  function endDrag(){
+    if(!drag) return;
+    var d = drag; drag = null;
+    slidesEl.classList.remove('dragging'); trackEl.classList.remove('nolerp');
+    var w = slidesEl.clientWidth || 1, dt = Math.max(1, performance.now() - d.t), v = Math.abs(d.dx) / dt;
+    var target = stepI;
+    if(d.live && (Math.abs(d.dx) > w * .5 || (Math.abs(d.dx) > 24 && v > .5))) target = Math.max(0, Math.min(chipBtns.length - 1, stepI + (d.dx < 0 ? 1 : -1)));
+    userSwipe = false;
+    if(stepsOn) showStep(target); else setTrack(target, 0);
+  }
+  slidesEl.addEventListener('pointerup', endDrag);
+  slidesEl.addEventListener('pointercancel', endDrag);
+  slidesEl.addEventListener('lostpointercapture', endDrag);
+  window.addEventListener('resize', function(){ if(slidesShown()) setTrack(stepI, 0); });
+  setTrack(0, 0);
   document.addEventListener('visibilitychange', syncSteps);
   stepDesc.textContent = chipBtns[0].dataset.desc;
   chipBtns[0].setAttribute('aria-selected', 'true');
@@ -1790,6 +1845,16 @@
   panelColor.addEventListener('input', panelFromBar);
   panelAlpha.addEventListener('input', panelFromBar);
   panelBlur.addEventListener('input', panelFromBar);
+
+  /* ---------- hero tweak: the hero card dark glass (default) or light ---------- */
+  var heroSel = document.getElementById('heroSel');
+  function setHero(v){
+    v = v === 'light' ? 'light' : 'dark';
+    document.body.dataset.hero = v;
+    heroSel.value = v;
+  }
+  setHero((params.get('hero') || '').toLowerCase());
+  heroSel.addEventListener('change', function(){ setHero(heroSel.value); });
 
   /* ---------- next tweak: the What's next block outside (its own card) or inside the hero card ---------- */
   var nextSel = document.getElementById('nextSel');
