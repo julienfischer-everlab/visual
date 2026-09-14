@@ -4246,6 +4246,29 @@ The four are still presentational -- the prototype has one screen -- but the
 island answers a tap now: the brighter layer moves and aria-selected follows
 it, because a nav that does not respond to being pressed cannot be judged.
 
+"More frosted. Remove border line style. Inactive less prominent. Add a 5th
+item in the main island." The blur goes 26px to 44px and the plate 55% to
+66%, with the light gradient pulled back -- more diffusion, less window. The
+outline is gone entirely: the edge is a soft catch of light now (one inset
+highlight, blurred) rather than a drawn line, which is what separates glass
+from a bordered card. Inactive items drop from 68% to 42% (light: 55 to 36),
+so the active one carries the pill on its own. And the island holds five
+again, which means More came back down from the top pill -- it was there
+because four slots could not hold five destinations, and five can.
+
+"Use this nav on the overview mobile screen as well. Keep the nav as a
+master asset because it is common to multiple screens." So it is one asset
+now: the markup is written once in the script (MOBILE_NAV) and mounted into
+each phone that carries it, rather than pasted into the page twice. Each
+mount gets its own id and its own tap wiring. One CSS gate says which modes
+show it -- v8 in the first phone, m6 in the second -- and every other rule
+is keyed to the component's own classes, so the asset is identical wherever
+it lands.
+
+The Overview screen had a bar of its own, .ovtab: a flat row of squares
+under a hairline. It is gone, markup and rules, or the screen would have
+carried two navigations.
+
 ---
 
 ## 6. Open items

@@ -1603,8 +1603,10 @@ black — the phone frame and the dashboard chrome cover them entirely.
   rather than a solid fill. The nav frame itself passes pointer events
   through, so the gap between the two pills is not a dead strip. At the top,
   the same pane as a 48px pill that sticks to the top of the scroller — the
-  content passes under it and the blur does the separating — carrying the
-  title, the overflow that used to be the fifth tab, and share.
+  content passes under it and the blur does the separating.
+  The dock is one asset: written once in the script and mounted into each
+  phone that carries it, so the Overview and Biomarkers screens wear the same
+  navigation rather than two copies of it.
 
 - **Asset export.** Every `makeOrganView` instance can render itself as a
   transparent PNG, no smaller than 1920px on either side. `paint(px, W, H, t,
