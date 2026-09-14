@@ -997,20 +997,32 @@
      longest label needs and the search takes the rest -- the other way round
      and the label would truncate, which is the one thing a control naming the
      current state cannot do. */
-  .msRow{display:flex;align-items:center;gap:8px;position:relative;}
+  .msRow{display:flex;align-items:center;gap:12px;position:relative;}
+  /* 65 / 35 of the space either side of the gap -- taking 6px off each
+     instead skews the ratio, since 6px is a larger share of the smaller one
+     (it came out 65.5 : 34.5). The select gets the larger share because it
+     carries two lines of text when a report is chosen and the search none. */
   .msRec{
-    flex:none;display:flex;align-items:center;gap:8px;
+    flex:0 0 calc((100% - 12px) * .65);display:flex;align-items:center;gap:8px;
     height:56px;padding:0 14px 0 16px;
     font:inherit;font-size:15px;color:#ececec;text-align:left;
-    border:1px solid #2a2a28;border-radius:12px;background:transparent;
-    cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;
+    border:1px solid #2a2a28;border-radius:14px;background:transparent;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
     transition:border-color .16s ease,background .16s ease;
   }
+  .msRec .t{flex:1;min-width:0;}
+  .msRec b{display:block;font-weight:400;font-size:15px;
+           white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* the eyebrow: which report, said the way the menu says it. Only when one is
+     chosen -- "All records" is not a report and has nothing to qualify. */
+  .msRec i{display:block;font-style:normal;font-size:12px;color:#8b8b86;margin-top:2px;
+           white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .msRec i[hidden]{display:none;}
   .msRec svg{width:12px;height:8px;flex:none;color:#8b8b86;transition:transform .22s ease;}
   .msRec:hover{border-color:#5a5a56;}
   .msRec[aria-expanded="true"]{border-color:#5a5a56;background:rgba(255,255,255,.05);}
   .msRec[aria-expanded="true"] svg{transform:rotate(180deg);}
-  .msRow .msBox{flex:1;min-width:0;}
+  .msRow .msBox{flex:0 0 calc((100% - 12px) * .35);min-width:0;}
   body.light .msRec{border-color:#ddd3bf;color:#2e1f1a;}
   body.light .msRec:hover{border-color:#9b8a75;}
   body.light .msRec[aria-expanded="true"]{background:rgba(46,31,26,.05);border-color:#9b8a75;}
@@ -1074,7 +1086,7 @@
   body.light .mRecOpt .n{background:rgba(46,31,26,.1);color:#2e1f1a;}
   .msBox{
     display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;
-    border:1px solid #2a2a28;border-radius:12px;color:#8b8b86;background:transparent;
+    border:1px solid #2a2a28;border-radius:14px;color:#8b8b86;background:transparent;
     transition:border-color .16s ease;
   }
   .msWrap.focus .msBox{border-color:#5a5a56;}
@@ -4924,18 +4936,10 @@
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
     <div class="mV4" id="mV4"><div class="mbrow2 mV4Row" id="mV4Row"></div></div>
-    <!-- Buttons, not divs. A chip that filters is a control: it takes the tab
-         order, it answers the keyboard, and aria-pressed says which one is on.
-         data-st is the status class on a row's pill, so the filter reads the
-         list rather than a second table of what is in it. -->
-    <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
-      <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
-      <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
-      <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>
-      <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</button>
-      <button class="fchip mOther" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</button>
-    </div>
-    <!-- The search sits under the filters. Focused, it sticks to the top of the
+    <!-- The record select and the search, above the filter chips: you choose
+         which records are on the page and search within them before you narrow
+         by range, so the two that decide the SET come first and the chips that
+         cut it come after. Focused, the search sticks to the top of the
          screen and the page scrolls up to it; typing filters the groups below
          through a short skeleton; the cross clears; the main navigation leaves
          while the keyboard is up; a scroll lets the field go. See mSearch. -->
@@ -4944,13 +4948,13 @@
       <!-- Which set of results is on the page, beside the thing that searches
            them: one row, one height, because choosing the record set and
            searching within it are the same question asked twice. -->
-      <button class="msRec" id="mRecSel" type="button" aria-haspopup="dialog" aria-expanded="false">
-        <span id="mRecLbl">All records</span>
+      <button class="msRec" id="mRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
+        <span class="t"><b id="mRecLbl">All records</b><i id="mRecEy" hidden></i></span>
         <svg viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
       <div class="msBox">
         <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.4 10.4 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <input id="mSearchIn" type="search" placeholder="Search biomarkers" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search biomarkers">
+        <input id="mSearchIn" type="search" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search biomarkers">
         <button class="msClear" id="mSearchClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       </div>
     <!-- The record menu, under the button that opens it. A native select has
@@ -4962,6 +4966,17 @@
       <i class="mRecMore" aria-hidden="true"><svg viewBox="0 0 12 8" fill="none"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></i>
     </div>
       </div>
+    </div>
+    <!-- Buttons, not divs. A chip that filters is a control: it takes the tab
+         order, it answers the keyboard, and aria-pressed says which one is on.
+         data-st is the status class on a row's pill, so the filter reads the
+         list rather than a second table of what is in it. -->
+    <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
+      <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
+      <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
+      <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>
+      <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</button>
+      <button class="fchip mOther" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</button>
     </div>
 
     <!-- The skeleton is the list's own shape: a group head (title, two lines of
@@ -15787,7 +15802,14 @@
           x.setAttribute('aria-selected', String(on));
         });
         recSet = o.dataset.r;
-        lbl.textContent = (RECS.find(r => r.id === recSet) || RECS[0]).label;
+        const rec = RECS.find(r => r.id === recSet) || RECS[0];
+        lbl.textContent = rec.label;
+        // the button says which report as well as that one is chosen
+        const ey = document.getElementById('mRecEy');
+        if (ey){
+          ey.hidden = !rec.cat;
+          ey.innerHTML = rec.cat ? rec.cat + ' &nbsp;|&nbsp; ' + rec.date : '';
+        }
         open(false);
         if (countChips) countChips();
         load(false);          // through the skeleton, as everything else is

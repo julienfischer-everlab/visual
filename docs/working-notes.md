@@ -4713,6 +4713,39 @@ design's. Its "folded" set is 80/24/12 against a stated total of 110, and
 80 + 24 + 12 is 116. That is the design's own arithmetic rather than the
 prototype's, so it is flagged rather than quietly rewritten.
 
+### 5.166 The two selects move above the chips
+
+"Put the 2 select above the Chips filters. Increase gap between select and
+search by 4px. Select radius 14px, same for search."
+
+The order is the logic: the record select and the search decide WHICH set is on
+the page, the chips cut that set by range. So the two that choose come first
+and the one that narrows comes after. Gap 8 to 12, both radii to 14.
+
+Moving it exposed a nesting mistake of my own making. Splicing the row above
+the chips, I cut at the row's closing tag and put the chips block there --
+which made the chips a flex child of .msRow, so they laid out on the same line
+as the search and painted over it. The fix was to walk the div depth from
+.msWrap's opening tag to find where it actually closes, rather than counting
+closing tags by eye. Chips and row are siblings now, row first.
+
+Then: "search 35% width, select report 65%. Select needs the eyebrow when an
+option other than All records is selected."
+
+The button carries two lines now -- the report's title over its category and
+date, in the words the menu uses -- and one line for All records, which is not
+a report and has nothing to qualify. That is also why the select takes the
+larger share: it has two lines of text to hold and the search has none.
+
+The split is calc((100% - 12px) * .65), not calc(65% - 6px). Taking half the
+gap off each looks equivalent and is not: 6px is a larger share of the smaller
+box, so the ratio came out 65.5 : 34.5 rather than 65 : 35. Measured 65.0 after.
+
+One thing I changed without being asked, and would undo on a word: at 35% the
+field is 137px, and "Search biomarkers" simply clips there -- a placeholder has
+no ellipsis. The visible placeholder is "Search" now; the accessible label is
+still the full phrase.
+
 ---
 
 ## 6. Open items
