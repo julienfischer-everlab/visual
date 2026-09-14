@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-14, "Label +8 above, panel black 32%" |
+| Captured from version | 2026-09-14, "Next tweak (outside/inside), label spacing fixed" |
 | Captured on | 2026-09-14 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -24,7 +24,7 @@ repo's git history.
 ## Tweaks
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
-with a mono label, seven plain native selects, a colour swatch and two number fields. Each changes the page in
+with a mono label, eight plain native selects, a colour swatch and two number fields. Each changes the page in
 place; nothing reloads. On phones the labels hide and the controls share
 the bar evenly.
 
@@ -35,6 +35,7 @@ the bar evenly.
 | Motion | Dynamic, Static | `motion=static` |
 | Signature | Off, On | `sig=on` |
 | Card | Cards, List | `card=list` |
+| Next | Outside, Inside: where the What's next block sits, in its own card under the hero card or inside the hero card under the button, above a hairline (the separate card then goes) | `next=inside` |
 | Heavy | No, Yes: much more text in the card (a longer description, twelve rows) to test the card's own scroll | `heavy=yes` |
 | Panel | a colour swatch (default black), an opacity in percent (default 32) and a backdrop blur in pixels (default 120, the maximum) for the second card in Cards | `panel=000000&alpha=32&blur=120` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
@@ -191,8 +192,8 @@ background is on the panel itself, in the fold's flow, so it scrolls with the
 content and never lags or clips. It
 arrives in dynamic motion once the hero card has landed: from 1.0s it fades
 in while settling down 16px (0.7s, easing out); on the way back it fades out
-again in 0.3s. It holds, everything centred, under a mono "What's next?" label (8px more above it than the panel's
-padding, 22px to the chips), three chips in a row: Get started, Meet your doctor, Get your plan
+again in 0.3s. It holds, everything centred, under a mono "What's next?" label (26px from the panel's top, 22px to the
+chips), three chips in a row: Get started, Meet your doctor, Get your plan
 (pills with a hairline border, 13px medium, each starting with a 22px numbered circle, 1 to 3, set 7px from the pill's left, top and bottom so
 it fills the pill's height, outlined at 16% when idle and filled in the text
 colour when active). One is active at a time, white at 14% with brighter text
@@ -238,7 +239,7 @@ Every parameter is optional and falls back to the example gift in the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`), six items |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
-| `device`, `theme`, `motion`, `sig`, `card`, `heavy`, `panel`, `alpha`, `blur`, `msg` | The tweaks, as above |
+| `device`, `theme`, `motion`, `sig`, `card`, `next`, `heavy`, `panel`, `alpha`, `blur`, `msg` | The tweaks, as above |
 
 All text is inserted as plain text, never as HTML.
 

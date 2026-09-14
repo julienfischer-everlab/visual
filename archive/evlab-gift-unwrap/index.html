@@ -608,6 +608,15 @@
     -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
   }
   body[data-card="cards"] .side-in{gap:12px;padding:10px 40px 40px;align-items:center;text-align:center;}  /* the foot matches the sides; everything centred */
+  /* Next tweak "Inside": the What's next block sits in the hero card under the
+     button, above a hairline, and the separate panel goes */
+  .card-next{display:none;}
+  body[data-next="inside"] .card-next{
+    display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;
+    margin-top:28px;padding-top:32px;border-top:1px solid rgba(255,255,255,.10);
+  }
+  body[data-next="inside"][data-card="cards"] .side{display:none;}
+  body[data-next="inside"] .card-next .next-label.mono-label{margin-top:0;}
   /* the old stage-level surface is retired: the panel carries its own background */
   .panel-clip{display:none;}
   /* dynamic: once the hero card has landed the panel fades in and settles
@@ -617,7 +626,8 @@
   body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .side-clip{opacity:1;transform:none;transition-delay:1000ms;}
   body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .side-clip{opacity:0;transform:translateY(-16px);transition:opacity .3s ease 0s, transform .3s ease 0s;}
   /* the label above the mini cards, Cards only; the column's gap sits between */
-  .next-label{display:none;margin:8px 0 10px;color:rgba(243,239,234,.62);}  /* 22px to the chips with the column gap; 8px more above */
+  .next-label{display:none;color:rgba(243,239,234,.62);}
+  .side .next-label.mono-label, .card-next .next-label.mono-label{margin:16px 0 10px;}  /* 22px to the chips with the column gap; 16px more above than the column's own label margin (outranks .side .mono-label) */
   body[data-card="cards"] .next-label{display:block;}
   body[data-motion="dynamic"] .next-label{opacity:0;transition:opacity .5s ease;}
   body[data-motion="dynamic"][data-state="revealing"] .next-label,
@@ -1085,6 +1095,11 @@
       <option value="cards">Cards</option>
       <option value="list">List</option>
     </select>
+    <label for="nextSel">Next</label>
+    <select id="nextSel" aria-label="Where the What's next block sits">
+      <option value="outside">Outside</option>
+      <option value="inside">Inside</option>
+    </select>
     <label for="heavy">Heavy</label>
     <select id="heavy" aria-label="Heavy content">
       <option value="no">No</option>
@@ -1199,6 +1214,7 @@
       </div>
       </div>
       <div class="act"><a class="pill" id="claim" href="#">Claim my gift</a></div>
+      <div class="card-next" id="cardNext"></div>
     </div>
   </article>
   <aside class="side" aria-label="Your membership">
@@ -1520,7 +1536,8 @@
     var scroller = document.getElementById('infoScroll');
     if(st.clientWidth > 820){
       var hs = getComputedStyle(document.querySelector('.hero'));
-      var cap = st.clientHeight - (parseFloat(hs.paddingTop) || 0) - (parseFloat(hs.paddingBottom) || 0) - document.querySelector('.side-clip').offsetHeight - 24;
+      var sideH = document.querySelector('.side-clip').offsetHeight;
+      var cap = st.clientHeight - (parseFloat(hs.paddingTop) || 0) - (parseFloat(hs.paddingBottom) || 0) - (sideH ? sideH + 24 : 0);
       $('card').style.setProperty('--card-max', Math.max(240, cap) + 'px');
     } else { $('card').style.removeProperty('--card-max'); }
     scroller.classList.toggle('can-scroll', scroller.scrollHeight > scroller.clientHeight + 1);
@@ -1722,6 +1739,21 @@
   panelColor.addEventListener('input', panelFromBar);
   panelAlpha.addEventListener('input', panelFromBar);
   panelBlur.addEventListener('input', panelFromBar);
+
+  /* ---------- next tweak: the What's next block outside (its own card) or inside the hero card ---------- */
+  var nextSel = document.getElementById('nextSel');
+  function setNext(v){
+    v = v === 'inside' ? 'inside' : 'outside';
+    document.body.dataset.next = v;
+    nextSel.value = v;
+    var label = document.querySelector('.next-label'), steps = document.getElementById('steps');
+    var sideIn = document.querySelector('.side-in'), slot = document.getElementById('cardNext');
+    if(v === 'inside'){ slot.appendChild(label); slot.appendChild(steps); }
+    else { sideIn.insertBefore(steps, document.querySelector('.timeline')); sideIn.insertBefore(label, steps); }
+    requestAnimationFrame(function(){ panelSet(); if(state === 'gift') seedSet(cardRect()); });
+  }
+  setNext((params.get('next') || '').toLowerCase());
+  nextSel.addEventListener('change', function(){ setNext(nextSel.value); });
 
   /* ---------- card tweak: the six rows, or three mini cards ---------- */
   var cardSel = document.getElementById('cardSel');
