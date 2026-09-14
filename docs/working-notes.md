@@ -4269,6 +4269,44 @@ The Overview screen had a bar of its own, .ovtab: a flat row of squares
 under a hairline. It is gone, markup and rules, or the screen would have
 carried two navigations.
 
+### 5.156 The arc opens the other way too
+
+"Arc needs to transition between Bio age and biomarker." It only did in one
+direction. Leaving the biomarker slide, the twenty-eight dots travel along
+the arc into its centre, grow to the indicator's size, take its ink, and the
+indicator takes over from the single dot they become -- a move built when
+the gather went in. Arriving, there was nothing: the age ticks faded out
+over the 260ms swap, the slide landed, and the dots were simply written down
+left to right. A transition on the way out and a cut on the way in, which is
+why the pair never read as one control.
+
+So the gather runs backwards. Same clock (320ms), same path, same easing,
+the same `place()` that draws the travel -- only `m` runs 1 to 0 instead of
+0 to 1. One dot at the indicator's radius opens out along the curve until
+every dot is on the run. Two things differ from a reversed gather, and both
+follow from what the move means. Every dot is at the resting grey through
+the spread, not at its range colour: this is the indicator coming apart, and
+the indicator is one ink. And every dot is at full opacity from the first
+frame rather than rising through the run's taper, because they are all
+already there -- the ends' fade belongs to a run being written, not to one
+being unfolded. The colours arrive after, on the reveal the design already
+had: `dotsRevT` is set to `dotsSpreadT + DOTS_SPREAD`, so the left-to-right
+growth starts the frame the spread finishes and nothing overlaps.
+
+The indicator has to be held for it. Its opacity was falling out with the
+slide (`1 - 2 * bioA`), so by the time the slide landed it was already gone
+and the run would open out of nothing. It is now held at full while the
+biomarker slide is arriving and the spread has not started, and released at
+the spread's first frame -- where the gathered dot sits at exactly its
+radius, its size and its ink, so the hand-over is invisible. That is the
+same trick the gather uses at its end, in the other direction.
+
+The spread's clock starts where the reveal's used to: the slide fully on and
+settled on its integer (`bioOn >= 0.999`, `bxT` within 0.02 of a whole), so
+a swipe still in flight cannot trigger it. Leaving the slide clears both
+clocks, so a swipe back part-way through opens it again from the top rather
+than continuing a spread whose indicator has gone.
+
 ---
 
 ## 6. Open items

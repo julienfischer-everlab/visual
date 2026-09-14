@@ -9503,6 +9503,15 @@
   let dotsMergeT = -1, dotsMergeRev = 0;
   const DOTS_MERGE = 320;   // "the grouping should be faster" (was 520)
   const dotsMerging = t => dotsMergeT >= 0 && t < dotsMergeT + DOTS_MERGE;
+  // Arriving, the same move in reverse: the indicator opens into the run
+  // rather than the run being laid down beside a scale that has just gone.
+  // The gather was only half a transition -- it carried the biomarker slide
+  // out and nothing carried it in. Same clock, same path, same ink, so the
+  // two directions are one move. The colours fill left to right after it, as
+  // they always have.
+  let dotsSpreadT = -1;
+  const DOTS_SPREAD = DOTS_MERGE;
+  const dotsSpreading = t => dotsSpreadT >= 0 && t < dotsSpreadT + DOTS_SPREAD;
   // colour interpolation for the gather: '#rgb', '#rrggbb' and 'rgb()/rgba()'
   const colRGB = c => {
     if (c[0] === '#'){
@@ -9603,10 +9612,16 @@
     // the gather: m runs 0 -> 1 over DOTS_MERGE on a smooth ease, and while it
     // runs the run is as it was when the slide was left (dotsMergeRev)
     const merging = dotsMerging(t);
-    const m = merging ? (x => x * x * (3 - 2 * x))((t - dotsMergeT) / DOTS_MERGE) : 0;
-    const rev = merging ? dotsMergeRev : dotsRevT < 0 ? 0 : Math.min(1, (t - dotsRevT) / DOTS_REVEAL);
+    const spreading = !merging && dotsSpreading(t);
+    const eio = x => x * x * (3 - 2 * x);
+    const m = merging ? eio((t - dotsMergeT) / DOTS_MERGE)
+            : spreading ? 1 - eio((t - dotsSpreadT) / DOTS_SPREAD) : 0;
+    const rev = merging ? dotsMergeRev
+              : dotsRevT < 0 ? 0 : Math.max(0, Math.min(1, (t - dotsRevT) / DOTS_REVEAL));
     const front = rev * (DOTS_N + 2);   // in dots; runs two past the end so the last one completes
-    const sig = (un ? 'u' : 'f') + (light ? 'L' : 'D') + (rev >= 1 ? 'x' : Math.round(front * 6)) + (merging ? 'm' + Math.round(m * 400) : dotsMergeT >= 0 ? 'M' : '');
+    const sig = (un ? 'u' : 'f') + (light ? 'L' : 'D') + (rev >= 1 ? 'x' : Math.round(front * 6)) +
+                (merging ? 'm' + Math.round(m * 400) : dotsMergeT >= 0 ? 'M' : '') +
+                (spreading ? 's' + Math.round(m * 400) : '');
     if (sig === dotsSig) return;
     dotsSig = sig;
     // where the dots stand: on the run, or on their way to the indicator's
@@ -9640,7 +9655,11 @@
     let k = 0;
     // gathering, the ends' taper and the resting dots' faintness lift, so what
     // arrives at the centre is one solid dot and not a pale one
-    const set = (d, fill, op) => place(d, fill, op * (1 - m) + m * rise(k));
+    // Spreading, every dot is already there -- it is the indicator coming
+    // apart, not a run being written -- so each one is at its resting grey and
+    // full where the gathered dot was. The colours arrive after, left to right.
+    const set = (d, fill, op) => place(d, spreading ? rest : fill,
+                                       op * (1 - m) + m * (spreading ? 1 : rise(k)));
     // a dot with a range rises into its colour; one without rises into the
     // resting grey; either way nothing is there before the front reaches it
     for (let s = 0; s < 4; s++) for (let j = 0; j < cnt[s]; j++, k++){
@@ -10079,8 +10098,11 @@
       bioRev = bioRevT < 0 ? 0 : Math.min(1, (t - bioRevT) / BIO_REVEAL);
       // the dots wait for the slide to land ("every time you land on the
       // slide, the coloured dots should grow from left to right")
-      if (!bioWant) dotsRevT = -1;
-      else if (dotsRevT < 0 && bioOn >= 0.999 && Math.abs(bxT - Math.round(bxT)) < 0.02) dotsRevT = t;
+      if (!bioWant){ dotsRevT = -1; dotsSpreadT = -1; }
+      else if (dotsSpreadT < 0 && bioOn >= 0.999 && Math.abs(bxT - Math.round(bxT)) < 0.02){
+        dotsSpreadT = t;                  // the indicator opens
+        dotsRevT = t + DOTS_SPREAD;       // and the colours follow it
+      }
       gl.uniform1f(U.uP, f);
       // The body rides down by what the 30% grew it — on both of its slides,
       // or the step that was meant to hold it still would move it instead.
@@ -13848,7 +13870,14 @@
           indA.setAttribute('cy', ip[1]);
           indA.setAttribute('fill', rangeCol('un'));
           indA.setAttribute('opacity', ((2 * bioA - 1) * bioRev).toFixed(3));
-        } else indA.setAttribute('opacity', dotsMerging(t) ? '0' : Math.max(0, 1 - 2 * bioA).toFixed(3));
+        } else {
+          // Held on the way in until the run opens out of it: the indicator is
+          // what becomes the dots, so it cannot leave before they exist. It
+          // hands over at the spread's first frame, where the gathered dot sits
+          // at its radius, its size and its ink.
+          const handing = CARD_STATE.bioDots && bioA > 0.5 && dotsSpreadT < 0;
+          indA.setAttribute('opacity', dotsMerging(t) ? '0' : handing ? '1' : Math.max(0, 1 - 2 * bioA).toFixed(3));
+        }
       } else {
       // the gathered dot is the indicator: it appears the frame the gather
       // ends, at the spot the dots met, and the sweep starts from there

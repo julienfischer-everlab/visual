@@ -699,11 +699,16 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   at both ends, the outer six dots each side tapering to a tenth. A phone has
   no bar to choose from, so the choice can travel in the link: a trailing
   `d` on the hash (`#m20vd`, or `#m20d`) opens with the dots. Every time the slide is reached — a swipe, the idle
-  cycle, opening the page on it — the coloured run grows from its first dot
-  to its last, left to right over 0.65s, each dot rising as the front reaches
-  it; the growth starts once the slide has landed rather than during the
-  swap, and a late frame (a cold start compiling shaders) moves the clock on
-  instead of eating the run. Leaving the slide, the run does not fade: over
+  cycle, opening the page on it — the indicator opens into the run: over a
+  third of a second the one dot that marks the age comes apart along the arc,
+  every dot travelling out from its radius to its place on the curve and
+  down to the run's size, at the resting grey. The indicator holds at full
+  until that first frame, since it is the thing that becomes the dots. Then
+  the colour follows it: the run grows from its first dot to its last, left
+  to right over 0.65s, each dot rising as the front reaches it. The opening
+  starts once the slide has landed rather than during the swap, and a late
+  frame (a cold start compiling shaders) moves the clock on instead of eating
+  the run. Leaving the slide, the run does not fade: over
   a third of a second the dots travel along the arc to its centre and out to the
   indicator's radius, growing to its size and taking its ink, until they are
   one dot — and that dot is the indicator, which takes over in the same
