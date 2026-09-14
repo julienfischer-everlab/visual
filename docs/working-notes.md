@@ -4888,6 +4888,36 @@ since a horizontal scroller that stops short of the edge tells you it has ended
 when it has not. The chips carry the bar's bottom padding now, so the empty
 biomarkers state -- which hides them -- gets that padding back explicitly.
 
+### 5.171 The gradient above the bar, and it was there
+
+"Seems like there is an overlap gradient above the top bar? Remove that if any."
+There was. Not in the pinned state -- I sampled that column and it is flat
+#0d0d0c all the way from the bezel to the bar -- but in the frames just before
+the bar pins. The backing plate that keeps the list off the hour and the
+battery belonged to the search bar and only switched on at the instant it
+pinned, so on the way up the strip was see-through and the hero showed through
+it: the organ's dots under two blur layers as a pale smudge beside 9:41, with a
+hard seam where the bar's plate started.
+
+A plate that belongs to the status bar has no such moment. `.mstatus` gets its
+own ground on this page, behind its text, fading in over the first 80px of
+scroll -- so at rest the organ still runs to the top of the screen, which is
+the design, and from 80px on the strip is the page's ground at every scroll
+position rather than only at the pin. The bar's `.stuck::before` is gone: two
+plates in one strip is what kept producing a seam to look at.
+
+"Reduce font top line on the select by 2px." 15px to 13px, over a 12px eyebrow.
+That is a flat size hierarchy and it works only because the colour carries it
+-- the title is the ink, the eyebrow is grey. Say the word if it wants to go
+back up.
+
+"Chip opacity 10%" and "text white". The resting plate goes 12% to 10%. I took
+the active one down by the same two points, 20 to 18, to hold the eight-point
+step the first instruction asked for ("inactive light grey, active lighter
+grey" is a relationship, not two numbers). The label is full strength now in
+both states -- and in both themes, which is not the same colour: white on the
+dark ground, the theme's own ink on paper, where white would be no text at all.
+
 ---
 
 ## 6. Open items
