@@ -4971,6 +4971,26 @@ the desk and the tablet now read the same chip rule. Light is untouched at
 10/17: ink over paper needs a little more weight than white over black to read
 the same, and it was tuned there.
 
+### 5.175 The desk takes the phone's arrangement too
+
+"Desktop and tablet should use the same structure as mobile." Style was only
+half of it: the desk still had the select alone on one row and the chips with
+the search pushed to the far right on the next, which is two rows saying three
+things. The phone's arrangement is the select beside the search -- choosing the
+record set and searching within it are the same question asked twice -- with
+the chips under both, cutting whatever that leaves. That is the structure now
+at every width: one `.dRow`, 60 : 40 either side of a 12px gap, then the chips,
+then the list.
+
+The one number that is not the phone's is the row's width. 60/40 of a 1160px
+column is a 690px select with half a foot of empty space inside it, which is a
+different control rather than the same one bigger, so the row is 560px and the
+split is taken from that -- a `--dRowW` on `.dash`, so the two shares and the
+row cannot drift apart. The tablet drops the search, and there the row ends
+where the select does rather than running on into the gap: the select keeps its
+329px either way, because a control that grows when its neighbour leaves is not
+the same control.
+
 ---
 
 ## 6. Open items

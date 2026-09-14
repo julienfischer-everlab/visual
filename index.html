@@ -457,7 +457,7 @@
   body.b2 .dash .dgrid{height:auto;align-items:stretch;}
   body.b2 .dash .dcard.bcard{flex:0 0 211px;}
   body.b2 .dash .drow .hiCard{height:210px;box-sizing:border-box;}
-  body.b2 .dash .drecs{margin-top:34px;}
+  body.b2 .dash .dRow{margin-top:34px;}
   body.b2 .dash .olist{top:64px;bottom:24px;display:flex;flex-direction:column;}
   body.b2 .dash .olist .or{flex:1;padding:0 2px;}
   /* ---- V2's organ card, to the reference ---------------------------------
@@ -591,24 +591,31 @@
   .dash .ilist .li.on{color:var(--ink-bright);border-color:var(--ink-bright);}
   .dash .ilist .dot{width:6px;height:6px;border-radius:50%;flex:none;}
   .dash .filters{display:flex;gap:8px;margin:26px 0 18px;font-size:12.5px;color:#bdbdb9;flex-wrap:wrap;align-items:center;}
-  /* The record select, the search and the chips wear the phone's shells: one
-     component, one set of numbers, whatever the width. 56px on a 14px radius
-     for the two fields, 44px fully rounded on a filled plate for the chips --
-     see .msRec, .msBox and #phone .fchip, which are where these came from. */
+  /* The record select, the search and the chips wear the phone's shells and
+     sit the way the phone sits them: one component, one set of numbers and
+     one arrangement, whatever the width. 56px on a 14px radius for the two
+     fields, split 60 : 40 either side of a 12px gap, and the chips on their
+     own row under both -- see .msRow, .msRec, .msBox and #phone .fchip,
+     which are where all of this came from.
+     The row is 560px rather than the page's full width: the ratio is the
+     phone's, but 60% of a 1160px column is a select with half a foot of empty
+     space inside it, which is a different control, not the same one bigger. */
+  .dash{--dRowW:560px;}
+  .dash .dRow{align-items:center;gap:12px;width:var(--dRowW);max-width:100%;margin:26px 0 0;}
   .dash .drecs{
-    display:none;align-items:center;justify-content:space-between;gap:10px;
-    width:230px;margin:26px 0 0;border:1px solid #2a2a28;border-radius:14px;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    flex:0 0 calc((var(--dRowW) - 12px) * .60);min-width:0;
+    border:1px solid #2a2a28;border-radius:14px;
     height:56px;padding:0 14px 0 16px;font-size:15px;color:#ececec;cursor:pointer;
   }
-  body.b2 .dash .drecs{display:flex;}
   .dash .drecs svg{width:12px;height:8px;flex:none;color:#8b8b86;}
   body.b2 .dash .filters{margin-top:16px;}
   .dash .dsearch{
-    margin-left:auto;display:none;align-items:center;gap:9px;min-width:230px;
+    display:flex;align-items:center;gap:9px;
+    flex:0 0 calc((var(--dRowW) - 12px) * .40);min-width:0;
     border:1px solid #2a2a28;border-radius:14px;height:56px;padding:0 14px 0 16px;
     font-size:15px;color:#8b8b86;cursor:text;
   }
-  body.b2 .dash .dsearch{display:flex;}
   .dash .dsearch svg{width:15px;height:15px;flex:none;}
   body.light .dash .drecs{border-color:#e2dbcc;color:#33291f;}
   body.light .dash .dsearch{border-color:#e2dbcc;color:#9b8a75;}
@@ -3505,6 +3512,11 @@
   body.tabM .dash .filters::-webkit-scrollbar{display:none;}
   body.tabM .dash .fchip{flex:none;}
   body.tabM .dash .dsearch{display:none;}
+  /* with the search gone the row ends where the select does, rather than
+     running on into the gap where the other half was. The select keeps its
+     own width either way -- it is the same control at the desk and here, and
+     a control that grows when its neighbour leaves is a different one. */
+  body.tabM .dash .dRow{width:auto;}
   /* the table drops the sparkline -- the trend is the one column that says
      least at a glance, and the four that are left all carry a reading. The
      fourth child rather than the svg: a row with no trend has an empty span
@@ -4410,7 +4422,7 @@
   }
   body.light .dash .emBioNote i{color:rgba(0,0,0,.55);}
   .dash .emBioNote .emCta{margin-top:2px;flex:0 0 auto;}
-  body.emBio .dash .drecs,
+  body.emBio .dash .dRow,
   body.emBio .dash .filters,
   body.emBio .dash .recs,
   body.emBio #phone .msel,
@@ -4836,8 +4848,20 @@
         <div class="dcard dfill"></div>
       </div>
     </div>
-    <div class="drecs v2Only">32 records
-      <svg viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <!-- Which set of results is on the page, beside the thing that searches
+         them, with the chips under both: the phone's arrangement, because
+         choosing the record set and searching within it are the same question
+         asked twice, and the chips cut whatever that leaves. -->
+    <div class="dRow v2Only">
+      <div class="drecs">32 records
+        <svg viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="dsearch">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/>
+        </svg>
+        <span>Search</span>
+      </div>
     </div>
     <div class="filters">
       <div class="fchip on"><b>81</b> All</div>
@@ -4845,12 +4869,6 @@
       <div class="fchip"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</div>
       <div class="fchip"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</div>
       <div class="fchip v2Only"><i style="background:#7b7b78"></i><b>28</b> Other</div>
-      <div class="dsearch v2Only">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-          <circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/>
-        </svg>
-        <span>Search</span>
-      </div>
     </div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
