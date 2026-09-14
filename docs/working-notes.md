@@ -4960,6 +4960,17 @@ named "active" -- there is no second, inactive set here, and none is needed:
 the artwork is already an outline and the state is carried by colour and the
 plate behind it, as it was.
 
+### 5.174 The chips settle at eight
+
+"Chips bg fff 8%." Back where they started -- 8/16 was the first pair, then
+12/20, then 10/18, now 8/16 again. The eight-point step between resting and
+chosen has held through all of it, which is the part that matters: "inactive
+light grey, active lighter grey" is a relationship, and the absolute value is
+what the eye is being tuned on. One change, three surfaces, because the phone,
+the desk and the tablet now read the same chip rule. Light is untouched at
+10/17: ink over paper needs a little more weight than white over black to read
+the same, and it was tuned there.
+
 ---
 
 ## 6. Open items
