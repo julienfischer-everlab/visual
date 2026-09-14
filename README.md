@@ -610,7 +610,7 @@ arrows in the card's top-right corner and shrinks the dots to a marker.
 
 **Library** — the component workbench
 
-17. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts) and **Organs — Fine Grain** (the same organs at twice the particles). Every tile reports its dot count and downloads as PNG, JPG or SVG.
+17. **Library** — behind a left nav: **Organ Library** (every organ isolated on its own tile, the master component each surface mounts), **Organs — Fine Grain** (the same organs at twice the particles) and **Colour** (the three ink tokens, each over the twenty steps of the opacity scale — 5% to 100% in fives — read live from the same values the engine paints from, so setting a token on the tweak bar moves the ramp with the cloud, and the theme swaps all three; click a step to copy its `rgba()`). Every tile reports its dot count and downloads as PNG, JPG or SVG.
 
 ## Tweaks (top bar)
 
@@ -1189,11 +1189,26 @@ the back. Size, opacity and position then all say the same thing about where a
 particle is: front is larger and occasionally bright, back is smaller and
 almost always faint.
 
-### Opacity: eighteen values, and nothing between them
+### Opacity: twenty values, and nothing between them
 
-Every dot in the file lands on one of **5% / 10% / … / 90%**. Not approximately
-— measured on a live page, the painter emits exactly 18 distinct alpha values
-and none of them is off the grid.
+Every dot in the file lands on one of **5% / 10% / … / 100%**. Not approximately
+— measured on an exported organ, the painter emits exactly those values and
+none of them is off the grid.
+
+The scale is a design-system scale before it is a render detail: **one token
+colour, twenty steps of it**. That is why the ceiling is 1.00 and not the 0.90
+it was for a long time — a scale that stops at 90 cannot express the token at
+full, and the three inks are meant to be set once and taken through the ramp.
+Raising it moves only the top: the highest band tops out at 50%, which `BRIGHT`
+lifts to 71%, five steps clear of the old ceiling, so the normal cloud never
+touched it. What changes is the 10% depth highlights and the non-flow cap in the
+shader — exactly the population the ceiling was ever binding on.
+
+The **Colour** page in the Library is that structure, live: the three tokens by
+their roles, each over the twenty steps, reading the same `INK_CSS` /
+`MID_CSS` / `LIT_CSS` the engine paints from. Change a token on the tweak bar
+and the ramp follows in the same frame the cloud does; switch theme and it shows
+the light three, which are different colours. Click a step to copy its `rgba()`.
 
 That takes two snaps, not one. Once where the opacity is authored, and again as
 the **last line of the vertex shader**, because a particle authored at 30%
@@ -1205,9 +1220,15 @@ at the floor, which is how a fade reaches zero without leaving a residue.
 The 2D painter's fill buckets **are** the grid — 20 of them — and `dot2D`'s
 two-disc soft edge is gone from the batched path for the same reason: a soft
 edge is two fractions of an alpha, which is two values off the grid for every
-dot on it.
+dot on it. The **SVG sink snaps too**. It is deliberately unbatched — one circle
+per dot with its own `fill-opacity` is what makes an export inspectable — and
+that is precisely why it needs its own snap: bucketing is what holds the canvas
+on the grid, so without one the export was the single surface in the file
+carrying values between the steps (a 5% dot seen through a layer fade came out
+at 0.015 or 0.040). An export is the asset that leaves for someone else's tool;
+it states the system, not the arithmetic on the way to it.
 
-**90% — the subtle system.** Each ink over its own band, ranked by structural
+**90% of the cloud — the subtle system.** Each ink over its own band, ranked by structural
 score so opacity still says something about where a particle is, with a `^1.6`
 curve that favours the low end:
 
@@ -1224,7 +1245,7 @@ thing a highlight is meant to let you see past. Sorting the cloud and taking
 the top slice fixes the share at exactly 10%; ranking that slice by frontness
 puts the strongest on the nearest points. They used to be the only thing in the
 cloud above half; with `BRIGHT` at 1.43 the deep ink's band reaches 71%, so what
-separates a highlight now is the gap between that and the 80–90% they occupy,
+separates a highlight now is the gap between that and the 80–100% they occupy,
 not the halfway line.
 
 Ambient strays sit near the floor, 10–25% skewed low.
@@ -1235,14 +1256,16 @@ own line — never the band endpoints. Lifting the endpoints looks equivalent an
 is not: `0.20 × 1.10` is `0.22`, which rounds back to `0.20`, so the low end of
 each band — where most of the cloud lives — would not move at all. Applied to
 the continuous value the rounding falls where it falls, some dots cross a step
-and some do not, and the mean rises with every dot still on one of the eighteen.
+and some do not, and the mean rises with every dot still on one of the twenty.
 Measured as total ink per library tile, 1.43 lands a median +26% against an
 authored +30%; the brain is lowest at +16% because it runs a 16% highlight share
-and the highlights are what meets the ceiling first. `opBright` now tops out at
-`1.43 × 0.90` = 1.287, clamped to 0.90, so its ramp is three steps rather than
-seven and **the highlight headroom is largely spent** — a further lift has to
-come from the bands, from raising `OP_HI`, or from something that is not opacity
-at all: count, dot size, or how large the organ is drawn.
+and the highlights are what meets the ceiling first. `opBright` tops out at
+`1.43 × 0.90` = 1.287, which against the old 0.90 ceiling clamped flat and left
+the highlight ramp three steps rather than seven. `OP_HI` at 1.00 hands that
+headroom back: `opBright` spans **0.80 to 1.00**, five steps, the lift is real
+across the whole of it, and the brightest dots in the cloud are the token at
+full. A further lift beyond this has to come from the bands or from something
+that is not opacity at all: count, dot size, or how large the organ is drawn.
 
 ### No GPU is not a dead page
 

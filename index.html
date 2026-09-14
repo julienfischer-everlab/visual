@@ -1581,6 +1581,41 @@
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
     font-size:10px;color:rgba(242,229,224,.4);
   }
+  /* The colour page: three tokens, each shown as the twenty steps of the
+     opacity scale. The swatches sit directly on the page ground with nothing
+     behind them -- a token ramp that paints its own plate is showing you the
+     plate, not the token, and 5% on this ground genuinely is almost nothing.
+     The percentage under each step carries the reading. */
+  .opWrap{max-width:880px;margin:0;padding:0 28px 72px;}
+  .opTok{margin-bottom:34px;}
+  .opTok:last-child{margin-bottom:0;}
+  .opTokHead{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .opChip{
+    flex:none;width:38px;height:38px;border-radius:11px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);
+  }
+  body.light .opChip{box-shadow:inset 0 0 0 1px rgba(46,31,26,.12);}
+  .opTokHead .olName{margin:0 0 2px;}
+  .opStrip{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;}
+  @media (max-width:820px){ .opStrip{grid-template-columns:repeat(10,minmax(0,1fr));} }
+  .opStep{
+    font:inherit;border:0;background:none;padding:0;cursor:pointer;
+    display:flex;flex-direction:column;align-items:stretch;gap:5px;
+  }
+  .opSw{
+    display:block;height:46px;border-radius:7px;
+    background:rgba(var(--c),var(--a));
+    transition:transform .14s ease;
+  }
+  .opStep:hover .opSw{transform:translateY(-2px);}
+  .opStep:active .opSw{transform:translateY(0);}
+  .opStep:focus-visible{outline:1px solid rgba(242,229,224,.5);outline-offset:2px;border-radius:7px;}
+  .opPc{
+    font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:9px;letter-spacing:.04em;color:rgba(242,229,224,.34);text-align:center;
+  }
+  .opStep.copied .opPc{color:#f78359;}
+  body.light .opPc{color:rgba(46,31,26,.42);}
   body.light .olHead h1{color:#2e1f1a;}
   body.light .olHead p{color:#7d6b58;}
   body.light .olCell{background:rgba(46,31,26,.05);}
@@ -4785,6 +4820,7 @@
     <div class="olNavTitle">Library</div>
     <button class="olNavItem on" data-panel="organs" aria-current="page">Organ Library</button>
     <button class="olNavItem" data-panel="fine">Organs &mdash; Fine Grain</button>
+    <button class="olNavItem" data-panel="colour">Colour</button>
   </aside>
   <main class="olMain">
     <section class="olPanel on" data-panel="organs">
@@ -4817,6 +4853,20 @@
            or <strong>JPG</strong> with the background baked in.</p>
       </div>
       <div class="olGrid" id="olFine"></div>
+    </section>
+    <section class="olPanel" data-panel="colour">
+      <div class="olHead">
+        <h1>Colour</h1>
+        <p>Three tokens, and one scale of twenty steps applied to each: 5% to 100%
+           in increments of 5. Set the token and the ramp follows &mdash; there is no
+           second list of colours to keep in step, and no value between two steps.</p>
+        <p class="olHint">This is the renderer&rsquo;s own grid, not a chart of it.
+           Every particle in the file is snapped to one of these twenty values where
+           its opacity is authored and again at the last line of the shader, so a dot
+           on screen is always a token at one of these steps.
+           <strong>Click any step to copy its value.</strong></p>
+      </div>
+      <div class="opWrap" id="opWrap"></div>
     </section>
   </main>
 </div>
@@ -5215,11 +5265,26 @@
   const wineOn = () => paletteWine;
 
   // ---------- the opacity grid ----------
-  // Every dot in the file lands on one of eighteen values: 5% to 90% in steps
+  // Every dot in the file lands on one of twenty values: 5% to 100% in steps
   // of 5. Nothing sits between them. The snap is applied where the opacity is
   // authored AND again at the end of the shader, because a dozen factors
   // multiply into alpha in between and the guarantee has to survive them.
-  const OP_STEP = 0.05, OP_LO = 0.05, OP_HI = 0.90;
+  //
+  // The ceiling was 0.90 for a long time and it is 1.00 now, because the grid
+  // is a design-system scale before it is a render detail: one token colour,
+  // twenty steps of it, and a scale that stops at 90 cannot express the token
+  // at full. Only the top of the range moves. The normal cloud never reached
+  // the old ceiling -- the highest band tops out at 0.50 and BRIGHT lifts that
+  // to 0.715, five steps clear -- so what changes is the 10% depth highlights
+  // and the non-flow cap in the shader, which is exactly the population the
+  // ceiling was ever binding on.
+  const OP_STEP = 0.05, OP_LO = 0.05, OP_HI = 1.00;
+  // The twenty steps, as the design system states them: 5% to 100%. Written
+  // once here and read by the library's colour page, so the scale a designer
+  // copies out is the scale the renderer snaps to rather than a second list
+  // that agrees with it today.
+  const OP_SCALE = Array.from({ length: Math.round((OP_HI - OP_LO) / OP_STEP) + 1 },
+                              (_, i) => +(OP_LO + i * OP_STEP).toFixed(2));
   const opSnap = v => Math.min(OP_HI, Math.max(OP_LO,
     Math.round(v / OP_STEP) * OP_STEP));
   // 90% of the cloud is the subtle system: each ink over its own band, low
@@ -5233,12 +5298,12 @@
   // Multiplying the continuous value instead lets the rounding fall where it
   // falls: a dot 3/5 of the way through a step crosses, one 1/5 of the way does
   // not, and across thousands of dots the mean rises by the 10% asked for while
-  // every individual dot stays on one of the eighteen values.
+  // every individual dot stays on one of the twenty values.
   // 1.10, then 30% more on top of it. At this height the highlights start
-  // meeting the ceiling: opBright's top half all lands on 0.90, so the
-  // highlight ramp is three steps rather than seven. It still reads as a ramp
-  // and still sits clear above the normal bands, but that headroom is now
-  // mostly spent -- a further lift would have to come from the bands alone.
+  // meeting the ceiling -- against the old 0.90 opBright's top half all landed
+  // on it and the highlight ramp was three steps rather than seven. Raising
+  // the grid to 1.00 hands that headroom back: opBright now spans 0.80 to 1.00,
+  // five steps, and the lift is real across the whole of it again.
   const BRIGHT = 1.43;
   const opNormal = (ink, p) => {
     const b = BAND[ink];
@@ -5300,9 +5365,10 @@
   // whenever the shape of the dot changes, not only its size.
   const DOT_PIX = 5.93;
   const HL_SHARE = 0.10;
-  // The highlights take the same 10%, and are the one place it is mostly spent
-  // against the ceiling: 0.90 x 1.10 clamps back to 0.90, so the top of the
-  // range holds and the lift is real only across the lower two thirds of it.
+  // The highlights take the same 10%, and they are the one population the
+  // ceiling was ever binding on: at 0.90 the top of this ramp clamped flat, and
+  // at 1.00 it runs 0.80 to 1.00 and the brightest dots in the cloud are the
+  // token at full. This is where the extra two steps of the scale are spent.
   const opBright = p => opSnap(BRIGHT * (0.55 + 0.35 * Math.min(1, Math.max(0, p))));
   // What the 2D painter puts on screen, snapped the same way the shader's last
   // line snaps it, so a tile and the engine agree dot for dot. Below half a
@@ -6935,7 +7001,7 @@
       // particle authored at 30% passes through the twinkle, the verdict, the
       // vessel, the theme lift and nine other factors before it reaches a
       // pixel, and every one of them would land it between two steps. Snapped
-      // here, every dot on screen is one of the eighteen values -- and a dot
+      // here, every dot on screen is one of the twenty values -- and a dot
       // fading out steps down through them and then to nothing, which is what
       // the floor is for.
       A = A < 0.5 * OP_STEP ? 0.0 : floor(A / OP_STEP + 0.5) * OP_STEP;
@@ -7188,6 +7254,10 @@
     for (const k in pts2DCache) delete pts2DCache[k];   // the painter bakes an ink per point: rebuild
     for (const k in ambCache) delete ambCache[k];
   }
+  // The library's colour page reads the three tokens live, so a pick on the
+  // tweak bar and a theme change both have to reach it. Declared here, before
+  // the two places that call it, and filled in when the page is built.
+  let paintColour = null;
   function recolour(){
     INK = rgb01(INK_CSS); MID = rgb01(MID_CSS); LIT = rgb01(LIT_CSS);
     INKS[0] = INK; INKS[1] = MID; INKS[2] = LIT;
@@ -7208,6 +7278,7 @@
     // on a control a person moves by hand.
     for (const k in pts2DCache) delete pts2DCache[k];
     for (const k in ambCache) delete ambCache[k];
+    if (paintColour) paintColour();
   }
 
   // spatial mode: every organ gets its own static buffers, so several
@@ -10726,7 +10797,21 @@
         if (m){
           const n = m[1].split(',').map(v => v.trim());
           col = 'rgb(' + n[0] + ',' + n[1] + ',' + n[2] + ')';
-          if (n[3] != null && +n[3] < 1) op = ' fill-opacity="' + (+n[3]).toFixed(3) + '"';
+          // On the grid, the same twenty steps the batch buckets the canvas to.
+          // The sink is deliberately unbatched -- one circle per dot with its
+          // own fill-opacity is what makes an export inspectable -- and that is
+          // exactly why it has to snap here: bucketing is what holds the canvas
+          // on the grid, so without it the export was the one surface in the
+          // file quietly carrying values between the steps (a dot at 5% drawn
+          // through a layer fade came out at 0.015 or 0.040). An export is the
+          // asset that leaves for someone else's tool; it should state the
+          // system, not the arithmetic that happened on the way to it.
+          if (n[3] != null && +n[3] < 1){
+            const a = +n[3];
+            if (a < 0.5 * OP_STEP) return;   // as the batch drops it, so nothing lands under the floor
+            const q = Math.min(OP_HI, Math.max(OP_LO, Math.round(a / OP_STEP) * OP_STEP));
+            if (q < 1) op = ' fill-opacity="' + q.toFixed(3) + '"';
+          }
         }
         parts.push('<circle cx="' + cx.toFixed(2) + '" cy="' + cy.toFixed(2) +
                    '" r="' + r.toFixed(2) + '" fill="' + col + '"' + op + '/>');
@@ -11685,10 +11770,70 @@
         if (on) b2.setAttribute('aria-current', 'page'); else b2.removeAttribute('aria-current');
       });
       if (want === 'fine') buildFine();
+      if (want === 'colour') paintColour();
       panels.forEach(pn => pn.classList.toggle('on', pn.dataset.panel === want));
       if (want === 'organs' || want === 'fine') applyDense(want === 'fine');
       main.scrollTop = 0;   // each section starts at its own top
     }));
+    // ---------- the colour page ----------
+    // Three tokens by the three roles the cloud deals them in, each over the
+    // twenty steps of OP_SCALE. Nothing here is a copy of the palette: the
+    // strings come from the same INK_CSS / MID_CSS / LIT_CSS the engine paints
+    // from, through inkNow(), so the page shows the theme that is actually on
+    // and a pick on the tweak bar lands here in the same frame it lands on the
+    // cloud. Rebuilt rather than patched -- sixty cells is nothing, and a
+    // rebuild cannot drift from the tokens the way a patch can.
+    const TOKENS = [
+      ['Ink 01', 'Material',    () => inkNow(INK_CSS), '60% of the cloud'],
+      ['Ink 02', 'Lighter tone', () => inkNow(MID_CSS), '25% of the cloud'],
+      ['Ink 03', 'Highlight',   () => inkNow(LIT_CSS), '15% of the cloud, and the flow']
+    ];
+    const opWrap = document.getElementById('opWrap');
+    const hex2 = v => (+v).toString(16).padStart(2, '0').toUpperCase();
+    paintColour = function(){
+      if (!opWrap) return;
+      opWrap.textContent = '';
+      TOKENS.forEach(([tok, role, read, share]) => {
+        const css = read(), rgb = css.split(',').map(Number);
+        const hex = '#' + rgb.map(hex2).join('');
+        const block = document.createElement('div');
+        block.className = 'opTok';
+        const head = document.createElement('div');
+        head.className = 'opTokHead';
+        head.innerHTML = '<span class="opChip" style="background:rgb(' + css + ')"></span>' +
+          '<div><div class="olName">' + tok + ' &mdash; ' + role + '</div>' +
+          '<div class="olSpec">' + hex + ' &middot; rgb(' + css + ') &middot; ' + share + '</div></div>';
+        block.appendChild(head);
+        const strip = document.createElement('div');
+        strip.className = 'opStrip';
+        OP_SCALE.forEach(a => {
+          const pc = Math.round(a * 100);
+          const b = document.createElement('button');
+          b.className = 'opStep';
+          b.type = 'button';
+          b.style.setProperty('--c', css);
+          b.style.setProperty('--a', a);
+          const val = 'rgba(' + css.split(',').join(', ') + ', ' + a.toFixed(2) + ')';
+          b.title = tok + ' ' + pc + '% — ' + val;
+          b.innerHTML = '<i class="opSw"></i><span class="opPc">' + pc + '</span>';
+          // A copy is the one thing a token page is for. It can be refused --
+          // no clipboard permission, an insecure origin -- and a refusal is
+          // silent rather than an error the reader cannot act on.
+          b.addEventListener('click', () => {
+            const done = () => {
+              b.classList.add('copied');
+              setTimeout(() => b.classList.remove('copied'), 900);
+            };
+            try { navigator.clipboard.writeText(val).then(done, () => {}); }
+            catch (e){ /* nothing to copy with */ }
+          });
+          strip.appendChild(b);
+        });
+        block.appendChild(strip);
+        opWrap.appendChild(block);
+      });
+    };
+
     // One state, however it was set. The switch drives every surface: the
     // engine draws twice the body, the strays and the flow from the same
     // clouds at the fine-grain dot -- the hero pair and the single-organ pages
@@ -13192,6 +13337,9 @@
     document.body.classList.add('theming');
     clearTimeout(themingT);
     themingT = setTimeout(() => document.body.classList.remove('theming'), 700);
+    // the three tokens are different colours in the two themes, so the colour
+    // page is showing the wrong three until it is told
+    if (paintColour) paintColour();
   });
   // Each of the three cards can be put in an empty state from the bar. setMode
   // writes body.className whole, so these live in a set it reads rather than

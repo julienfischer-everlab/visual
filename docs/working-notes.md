@@ -4307,6 +4307,60 @@ a swipe still in flight cannot trigger it. Leaving the slide clears both
 clocks, so a swipe back part-way through opens it again from the top rather
 than continuing a spread whose indicator has gone.
 
+### 5.157 The scale goes to a hundred, and gets a page
+
+"I want the particle colour system to range from 5% opacity to 100% with 5%
+increments -- 5% 10% 15% etc -- with the 3 colours. On my design system I want
+to follow this structure as I'll set one token colour and apply the opacity
+ranges."
+
+The grid was already the shape of the ask: every dot in the file snapped to a
+multiple of 5%, twice -- once where the opacity is authored and again at the
+last line of the shader, because a dozen factors multiply into alpha in between
+and the guarantee has to survive them. What it was not was complete. It stopped
+at 90%, so the scale could not state the token at full, and a design system
+built on "one token, a ramp of opacities" needs the top of the ramp to be the
+token itself.
+
+So OP_HI goes 0.90 to 1.00 and the grid is twenty values. Only the top moves.
+The normal cloud never reached the old ceiling -- the highest band tops out at
+50%, which BRIGHT lifts to 71%, five steps clear -- so the population that
+changes is the 10% depth highlights and the non-flow cap in the shader, which
+is the only thing the ceiling was ever binding on. opBright was clamping flat
+at 0.90 and losing four of its seven steps; it runs 0.80 to 1.00 now, five
+steps, and the brightest dots in the cloud are the token at full. Measured on
+the hero: mean luminance 14.67 to 14.88 in dark, bright pixels +3.5%, and in
+light very slightly more ink on the pale ground. A touch more depth in the
+highlights, no glitter.
+
+Then the export, which turned out to be lying. The canvas holds the grid by
+bucketing -- DOT_STEPS is 20, and that IS the 5% grid -- but the SVG sink is
+deliberately unbatched, one circle per dot with its own fill-opacity, because
+that is what makes an export inspectable. Unbatched means unsnapped: a 5% dot
+seen through a layer fade came out at 0.015 or 0.040, and an export of one
+organ carried a dozen values that are not on the scale. Pre-existing, and
+invisible until you go looking, which is exactly the problem -- the SVG is the
+asset that leaves for someone else's tool. The sink snaps now, the same way the
+batch does. Same organ, after: 10,659 circles, opacities 0.05 through 0.95 in
+exact fives and nothing between, 123 of them at full with no fill-opacity
+attribute at all.
+
+The structure itself gets a page. Library -> Colour: the three tokens by the
+roles the cloud deals them in -- material at 60%, lighter tone at 25%,
+highlight at 15% and the flow -- each over the twenty steps. It is not a copy
+of the palette. The strings come from INK_CSS / MID_CSS / LIT_CSS through
+inkNow(), the same values the engine paints from, so recolour() repaints it in
+the frame a pick lands and the theme selector swaps all three for the light
+inks, which are different colours rather than the same ones dimmed. Set a token
+to #3366FF on the tweak bar and the whole ramp is blue. Click a step and its
+rgba() is on the clipboard.
+
+The swatches sit directly on the page ground with nothing behind them. A token
+ramp that paints its own plate is showing you the plate, and 5% of the material
+ink on this burgundy genuinely is almost nothing -- which is worth seeing,
+since it is what the bottom of the scale buys. The percentage under each step
+carries the reading.
+
 ---
 
 ## 6. Open items
