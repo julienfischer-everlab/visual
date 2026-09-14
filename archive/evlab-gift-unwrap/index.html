@@ -602,33 +602,20 @@
   .side-clip{display:contents;}
   .side-in{display:flex;flex-direction:column;gap:14px;min-width:0;}
   body[data-card="cards"] .side{--r:44px;position:relative;justify-content:flex-start;padding:0;}
-  body[data-card="cards"] .side-clip{display:block;overflow:hidden;border-radius:var(--r);}
-  body[data-card="cards"] .side-in{gap:12px;padding:10px 40px 40px;align-items:center;text-align:center;}  /* the foot matches the sides; everything centred */
-  /* the panel's surface: one element in the stage, behind the hero card's
-     glass, sized by the script to the card's width and the panel's height
-     plus the corner radius, so it runs up under the card and the card's
-     rounded bottom simply sits over it: no seam, no fillers */
-  .panel-clip{position:absolute;z-index:1;pointer-events:none;display:none;overflow:hidden;}
-  body[data-card="cards"] .panel-clip{display:block;}
-  .panel-bg{
-    position:absolute;left:0;width:100%;
-    background:var(--panel-bg, rgba(197,164,150,.24));  /* the Panel tweak: colour, opacity and blur */
+  body[data-card="cards"] .side-clip{
+    display:block;overflow:hidden;border-radius:var(--r);
+    background:var(--panel-bg, rgba(0,0,0,.96));  /* the Panel tweak: colour, opacity and blur */
     -webkit-backdrop-filter:var(--panel-filter, none);backdrop-filter:var(--panel-filter, none);
-    border-radius:var(--r, 44px);
   }
-  }
-  /* dynamic: once the hero card has landed the panel slides down from behind
-     it (its own height, inside the clip, so it emerges from the card's bottom
-     edge) over 0.8s from 1.0s; the corner fillers fade in as it settles. On
-     the way back it slides up under the card again */
-  body[data-motion="dynamic"][data-card="cards"] .side-in{transform:translateY(-100%);transition:transform .8s var(--ease-out);}
-  body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .side-in,
-  body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .side-in{transform:none;transition-delay:1000ms;}
-  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .side-in{transform:translateY(-100%);transition:transform .35s ease 0s;}
-  body[data-motion="dynamic"][data-card="cards"] .panel-bg{transform:translateY(-100%);transition:transform .8s var(--ease-out);}
-  body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .panel-bg,
-  body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .panel-bg{transform:none;transition:transform .8s var(--ease-out) 1000ms;}
-  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .panel-bg{transform:translateY(-100%);transition:transform .35s ease 0s;}
+  body[data-card="cards"] .side-in{gap:12px;padding:10px 40px 40px;align-items:center;text-align:center;}  /* the foot matches the sides; everything centred */
+  /* the old stage-level surface is retired: the panel carries its own background */
+  .panel-clip{display:none;}
+  /* dynamic: once the hero card has landed the panel fades in and settles
+     down 16px over 0.7s from 1.0s; on the way back it fades out again */
+  body[data-motion="dynamic"][data-card="cards"] .side-clip{opacity:0;transform:translateY(-16px);transition:opacity .6s ease, transform .7s var(--ease-out);}
+  body[data-motion="dynamic"][data-card="cards"][data-state="revealing"] .side-clip,
+  body[data-motion="dynamic"][data-card="cards"][data-state="gift"] .side-clip{opacity:1;transform:none;transition-delay:1000ms;}
+  body[data-motion="dynamic"][data-card="cards"][data-state="returning"] .side-clip{opacity:0;transform:translateY(-16px);transition:opacity .3s ease 0s, transform .3s ease 0s;}
   /* the label above the mini cards, Cards only; the column's gap sits between */
   .next-label{display:none;margin:0 0 10px;color:rgba(243,239,234,.62);}  /* 22px to the chips with the column gap */
   body[data-card="cards"] .next-label{display:block;}
@@ -1104,8 +1091,8 @@
       <option value="yes">Yes</option>
     </select>
     <label for="panelColor">Panel</label>
-    <input type="color" id="panelColor" value="#c5a496" aria-label="Panel colour" title="Panel colour">
-    <input type="number" id="panelAlpha" min="0" max="100" step="1" value="24" aria-label="Panel opacity, percent" title="Panel opacity %">
+    <input type="color" id="panelColor" value="#000000" aria-label="Panel colour" title="Panel colour">
+    <input type="number" id="panelAlpha" min="0" max="100" step="1" value="96" aria-label="Panel opacity, percent" title="Panel opacity %">
     <input type="number" id="panelBlur" min="0" max="120" step="1" value="120" aria-label="Panel blur, pixels" title="Panel blur px">
     <label for="message">Message</label>
     <select id="message" aria-label="Message">
@@ -1722,8 +1709,8 @@
   var panelColor = document.getElementById('panelColor'), panelAlpha = document.getElementById('panelAlpha'), panelBlur = document.getElementById('panelBlur');
   function setPanel(hex, a, bl){
     hex = String(hex || '').replace('#', '');
-    if(!/^[0-9a-f]{6}$/i.test(hex)) hex = 'c5a496';   // warm sand by default
-    a = parseInt(a, 10); if(isNaN(a)) a = 24; a = Math.max(0, Math.min(100, a));
+    if(!/^[0-9a-f]{6}$/i.test(hex)) hex = '000000';   // black by default
+    a = parseInt(a, 10); if(isNaN(a)) a = 96; a = Math.max(0, Math.min(100, a));
     bl = parseInt(bl, 10); if(isNaN(bl)) bl = 120; bl = Math.max(0, Math.min(120, bl));
     var r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
     document.body.style.setProperty('--panel-bg', 'rgba(' + r + ',' + g + ',' + b + ',' + (a / 100) + ')');
