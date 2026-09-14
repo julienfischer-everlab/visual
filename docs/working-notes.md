@@ -4991,6 +4991,31 @@ where the select does rather than running on into the gap: the select keeps its
 329px either way, because a control that grows when its neighbour leaves is not
 the same control.
 
+### 5.176 The smear above the bar, and the bar that let go mid-beat
+
+"There is a blur, should be full black with gradient on the bottom of the fixed
+bar." The strip between the status bar and the search bar was live content
+while the bar was still on its way up -- and on this page live content at the
+top means the hero, whose bottom edge is two backdrop blurs and a halo. So what
+stood there was a soft coloured smear, not the page's ground. The status bar's
+plate now follows the bar down: a second layer whose height IS the gap, so it
+can cover that and nothing else, fading in over the last 40px of the approach
+and solid for the last 20. Appearing at full height would have been a black
+band arriving out of nowhere over the hero, which is a different bug.
+
+  scroll  690  gap 28px  o 0.60   bar at 72
+  scroll  700  gap 18px  o 1.00   bar at 62
+  scroll  718  gap  0px  o 1.00   bar at 44, pinned
+
+"On the chip click, there is a bug: the bar becomes unfixed during the loading
+state." The skeleton is five rows where the list is a hundred and ten. Swapping
+them shortened the page, the scroller clamped, and a pinned bar with nothing
+left to pin against dropped back into the flow for the 380ms of the beat and
+pinned again after. The beat now holds whatever height the list had, so the
+only thing that changes during it is the rows. The same hold was already there
+for the keyboard, but only while the field was focused -- a chip tap focuses
+nothing, which is why it only showed up there.
+
 ---
 
 ## 6. Open items

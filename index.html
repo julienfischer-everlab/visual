@@ -1064,6 +1064,19 @@
     opacity:var(--mstBg, 0);
   }
   body.light.v8 #phone .mstatus::before{background:#f7f2e9;}
+  /* And the gap under it, while the bar is still on its way up. The strip
+     between the two was live content, which on this page means the hero --
+     and the hero's bottom edge is two backdrop blurs and a halo, so what
+     showed there was a soft coloured smear rather than the page's ground.
+     The plate follows the bar down: its height is the gap itself, so it can
+     only ever cover exactly that, and it fades in over the last 40px of the
+     approach rather than appearing at full height, which would be a black
+     band arriving out of nowhere over the hero. */
+  body.v8 #phone .mstatus::after{
+    content:"";position:absolute;left:0;right:0;top:100%;z-index:-1;
+    height:var(--mstGap, 0px);background:#0d0d0c;opacity:var(--mstGapO, 0);
+  }
+  body.light.v8 #phone .mstatus::after{background:#f7f2e9;}
   /* Pinned, the bar's plate used to stop dead and the list carried on from the
      next pixel -- a row cut in half across its own middle. A shadow marks that
      edge; it does not soften it. So the plate carries on past its own bottom
@@ -15906,6 +15919,14 @@
     const setStatusBg = () => {
       if (!statusBar) return;
       statusBar.style.setProperty('--mstBg', Math.min(1, Math.max(0, sc.scrollTop / 80)).toFixed(3));
+      // and the strip between the status bar and the bar on its way up. Height
+      // is the gap itself, so the plate covers that and nothing else; the fade
+      // runs over the last 40px of the approach and is solid for the last 20,
+      // which is where the gap is small enough to matter.
+      const gap = Math.max(0, Math.round(wrap.getBoundingClientRect().top - statusBar.getBoundingClientRect().bottom));
+      statusBar.style.setProperty('--mstGap', (gap <= 40 ? gap : 0) + 'px');
+      statusBar.style.setProperty('--mstGapO',
+        (gap >= 40 ? 0 : Math.min(1, (40 - gap) / 20)).toFixed(3));
     };
     // the fade below the bar once it is pinned
     const setStuck = () => {
@@ -15989,6 +16010,7 @@
       empty.hidden = any;
       holdScroll(250);
       recs.hidden = false; skel.hidden = true;
+      setStick();   // the beat's held height goes; the list is its own again
     }
     // One loading beat, shared. The skeleton stands in, then the list arrives --
     // the same 380ms whether a key was pressed or a chip was tapped, because
@@ -15997,6 +16019,12 @@
       clearTimeout(skelTimer);
       holdScroll(250);
       if (now){ applyFilter(); return; }
+      // The skeleton is five rows where the list is a hundred and ten, so
+      // swapping them shortens the page -- and a page that shortens under a
+      // pinned bar unpins it: the bar dropped back into the flow for the
+      // 380ms of the beat and pinned again after. The beat holds whatever
+      // height the list had, so nothing moves but the rows.
+      skel.style.minHeight = Math.max(recs.offsetHeight, sc.clientHeight - wrap.offsetHeight) + 'px';
       recs.hidden = true; empty.hidden = true; skel.hidden = false;
       skelTimer = setTimeout(applyFilter, 380);
     }
