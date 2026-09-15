@@ -779,6 +779,16 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   are written from `RECS`, the same table the record select reads, so *the
   latest report* is one fact with one source rather than a sentence typed into
   the markup that goes stale on its own.
+- **Turn the organ** — the organ card's corner carries a rotate handle beside
+  the expand and share buttons. Drag it and the cloud turns with the drag —
+  about a full turn across 260px, with the pitch held to a quarter of that,
+  since the cloud is a body and tipping it past its own shoulders reads as
+  broken rather than as looked at from above. Release and it stays where it was
+  put. A press with no drag centres it again and hands the view back to the
+  pointer parallax, so the control that takes the rotation over is the one that
+  gives it back. It does not add a rotation: the yaw and pitch are the numbers
+  the parallax was already driving, eased through the same 0.04 follow, so the
+  organ arrives a beat after the hand rather than cutting to the angle.
 - **Refresh** — reloads the page. Everything the tweaks set lives in memory,
   so this is the way back to the page as it first drew: the states reset, the
   clouds rebuild and the reveals play from the top. The version travels in the

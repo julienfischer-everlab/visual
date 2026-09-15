@@ -5798,6 +5798,38 @@ line, so the report card's title is now a half-pixel *smaller* than the date
 under it and the hierarchy reads flat. Either the meta comes down with it or
 the 6px belongs to the desk alone -- both are one number.
 
+### 5.209 Turning the organ by hand
+
+"On the card nav, make a tool to be able to rotate manually the organ."
+
+The cloud's yaw and pitch are already a pair of numbers -- `look.tx` and
+`look.ty`, eased into `look.x/y` at 0.04 a frame and turned into the rotation
+matrix. What drives them is the pointer, as a parallax: a drift you cannot aim.
+So the tool does not add a rotation, it takes that one over. `look.manual` is
+the switch; while it is set, the parallax handler returns without writing.
+
+The control is the card's own corner button, 30px on a 9px radius, beside the
+expand and the share. Drag it and the organ turns with the drag -- about a full
+turn across 260px, and a pitch held to +-0.42 because the cloud is a body and
+tipping it past its own shoulders reads as broken rather than as looked at from
+above. Release and it stays where it was put.
+
+**A press with no drag is the way back**: it centres the organ and hands the
+parallax its job again. The control that takes the view over is the one that
+gives it back, so there is no second button for undoing and nothing to explain.
+
+It eases rather than snaps, because `look` is read through the drift's own 0.04
+follow -- the organ arrives a beat after the hand, which is what stops a
+60-degree flick from looking like a cut.
+
+Written once and mounted into whichever organ cards the page carries
+(`#organSlot` and `#mOrgCard`), the way the dock is. `touch-action:none`, or a
+drag on it scrolls the page out from under the gesture; the click is swallowed,
+because the card under it changes organ on a click and the handle is not that.
+
+  m10 desk and m11 phone: drag turns the cloud and it holds with the pointer
+  moved away; a press returns it face-on
+
 ---
 
 ## 6. Open items
