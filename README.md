@@ -737,9 +737,13 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   same slot and are not the same card, so it is a choice rather than two cards
   fighting for the room. The report card follows the mini-card pattern — the
   same shell, the eyebrow-then-figure shape, one slide rather than four because
-  there is one report — and its title carries `.big`, since the report's name
-  is to this card what 64% is to Coverage and 2,568 is to Steps, so it takes
-  whatever size that surface gives the figure rather than naming its own. The
+  there is one report — and its title is the card's figure, since the report's
+  name is to this card what 64% is to Coverage and 2,568 is to Steps. The
+  figure's size is a token per surface (`--fig`: 18px on the phone, 24px on the
+  desk) and the title is that plus 4px — it is words where Steps is a number,
+  and words set at a number's size read smaller than the number, so matching
+  them exactly measured level rather than looked level. The cost is that
+  "Pathology test" takes two lines on the phone. The
   eyebrow reads *Latest report*, and the date and the reading count sit under
   the title on two lines: two facts about one report, not a sentence. The
   action fills the card's width with no arrow, because a button that wide has

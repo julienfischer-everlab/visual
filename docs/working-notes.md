@@ -5479,6 +5479,30 @@ on it. Scoped to `body.v8 #phone`, so `#phone2`'s pill on m6 is untouched.
   m20 colour  strip rgb(18,18,18) = header;  m20 light  rgb(236,236,234) = header
   m16 colour  strip rgb(0,0,0)    = header;  title bg none, radius 0, shadow none
 
+### 5.195 The figure's size, and one delta from it
+
+"Use the font size by 4px on the title." Read as *up* 4px: the title is words
+where Steps is a number, and words set at a number's size read smaller than
+the number, so matching them measured level rather than looked level.
+
+Rather than typing three new sizes, the figure's size became a token at the
+three scopes that already set it, and the title is that plus four:
+
+    .hiCard                --fig:22px
+    .dash .hiCard          --fig:24px
+    body.v2 #phone .hiCard --fig:18px
+    .hiRepTitle.big        font-size:calc(var(--fig) + 4px)
+
+Each title selector carries `.big` so it outranks the `.big` rule at its own
+scope -- `body.v2 #phone .hiCard .big` is an id and three classes, and a plain
+`.hiRepTitle` loses to it.
+
+  phone 18 -> 22   desk 24 -> 28   every other figure unmoved
+
+At 22px "Pathology test" no longer fits the phone card's 127px of content
+width and takes two lines; at 18px it fitted on one. That is the cost of the
+bump, not a bug, and one number reverses it.
+
 ---
 
 ## 6. Open items
