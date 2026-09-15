@@ -5329,6 +5329,37 @@ arrived, with coverage there whenever it is asked for.
 
   select, no toggle beside it, boots at "Latest report" with the card up
 
+### 5.188 One spot means one spot
+
+"Left card is one spot only!!! the select selects this spot." Both cards were
+showing -- three cards in a row built for two -- and the reason is worth the
+note. The slot is spoken for by half a dozen rules: b3 hides it, b5 orders it,
+noCov removes it, emBio blanks it, v3 drops it on the phone. My swap was a
+plain `body.leftRep .dash .hiCov`, which several of those out-specify, so the
+coverage card stayed up and the new one arrived beside it.
+
+Fixed by making the report card carry `.hiCov` as well as `.hiRep`. Every rule
+about that slot now lands on both, so the slot behaves the same whichever card
+is in it, and what is left is the choice of WHICH -- stated with !important on
+purpose, because it is not an argument about which of those rules wins, it is a
+switch between two cards inside whatever they decided. The phone's bento gets
+its own copy of the card, so the select means the same thing there.
+
+  m10 m18 m20 m21  exactly one card in the slot, boot / coverage / report
+  m13 m14          the slot does not exist on those pages, and still does not
+
+"Add +8px between row here." 14px to 22px between the fields and the chips.
+
+"On desktop and tablet this should follow the same pattern as the mobile,
+stick to top on scroll." The controls that decide what the list shows should
+still be there a thousand rows in. Both rows pin as ONE block -- two sticky
+blocks would part company the moment one of them changed height -- with the
+page's ground behind it and the same 30px fade under it the phone uses, on only
+once it is actually pinned, since in the flow there is nothing passing beneath
+to fade.
+
+  desk and tablet: pinned from scrollTop 700, block 182px, fade on
+
 ---
 
 ## 6. Open items

@@ -600,7 +600,23 @@
      The phone stacks all three, because 375px cannot hold any of this side by
      side. Same components, same shells (56px on a 14px radius, 44px pills);
      the arrangement is what changes with the room. */
-  .dash .dRow{display:flex;align-items:center;gap:12px;width:100%;margin:26px 0 14px;}
+  .dash .dFilters{
+    position:sticky;top:0;z-index:5;background:#0d0d0c;padding-top:26px;
+  }
+  /* pinned, the block's plate stops dead and the list carries on from the next
+     pixel -- a row cut across its own middle. It carries on past its own bottom
+     as a fade of the page's ground instead, the same 30px the phone uses. */
+  .dash .dFilters::after{
+    content:"";position:absolute;left:0;right:0;top:100%;height:30px;
+    background:linear-gradient(to bottom,#0d0d0c,rgba(13,13,12,0));
+    pointer-events:none;opacity:0;transition:opacity .22s ease;
+  }
+  .dash .dFilters.stuck::after{opacity:1;}
+  body.light .dash .dFilters{background:#f7f2e9;}
+  body.light .dash .dFilters::after{
+    background:linear-gradient(to bottom,#f7f2e9,rgba(247,242,233,0));
+  }
+  .dash .dRow{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 22px;}
   .dash .drecs{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
     width:100%;min-width:0;
@@ -2451,14 +2467,14 @@
   .dash .v2Only{display:none;}
   body.b2 .dash .hiOnly{display:none;}
   body.b2 .dash .v2Only{display:flex;}
-  /* Which of the two holds the left slot. It has to be said HERE, after
-     .v2Only turns the card on: the two rules carry the same specificity, so
-     source order is what decides, and stated earlier the off state lost and
-     the report card showed by default. */
-  body:not(.leftRep) .dash .hiRep,
-  body:not(.leftRep) #phone .hiRep{display:none;}
-  body.leftRep .dash .hiCov,
-  body.leftRep #phone .hiCov{display:none;}
+  /* ONE SPOT, ONE CARD. The report card carries .hiCov as well as .hiRep, so
+     every rule about that slot -- b3 hides it, b5 orders it, noCov removes it,
+     emBio blanks it -- lands on both and the slot behaves the same whichever
+     is in it. What is left is the choice of which, and that is stated with
+     !important on purpose: it is not an argument about which of those rules
+     wins, it is a switch between two cards inside whatever they decided. */
+  body:not(.leftRep) .hiRep{display:none !important;}
+  body.leftRep .hiCov:not(.hiRep){display:none !important;}
   .dash .hiCard{padding:0;border-radius:20px;background:#252522;}
   .dash .hiCard .lbl{
     font-size:10.5px;letter-spacing:.085em;text-transform:uppercase;color:#8b8b86;
@@ -4982,7 +4998,7 @@
                four because there is one report. Its title, date and count are
                written from RECS by the script, so the card and the record
                select cannot disagree about which report is the latest. -->
-          <div class="msn hiCard hiRep dcard v2Only" id="hiRep"><div class="hiSlide">
+          <div class="msn hiCard hiCov hiRep dcard v2Only" id="hiRep"><div class="hiSlide">
             <div class="lbl">Report</div>
             <div class="hiRepTitle" id="hiRepTitle">Pathology test</div>
             <div class="hiRepMeta" id="hiRepMeta"></div>
@@ -5017,6 +5033,12 @@
          them, with the chips under both: the phone's arrangement, because
          choosing the record set and searching within it are the same question
          asked twice, and the chips cut whatever that leaves. -->
+    <!-- The filter block pins to the top of the page, as the phone's does:
+         the controls that decide what the list below shows should still be
+         there when you are a thousand rows into it. One wrapper so the two
+         rows pin together -- two sticky blocks would part company the moment
+         one of them changed height. -->
+    <div class="dFilters" id="dFilters">
     <div class="dRow v2Only">
       <!-- The same two controls the phone carries, and the same behaviour: the
            field opens the list, the cross clears it, and the chevron leaves
@@ -5048,6 +5070,7 @@
       <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</button>
       <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</button>
       <button class="fchip v2Only" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b> Other</button>
+    </div>
     </div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
@@ -5146,7 +5169,7 @@
       </div>
       <div class="hiDots mHeroDots" id="mHeroDots"><i class="on"></i><i></i></div>
       </div>
-      <div class="mbrowV2"><div class="msn hiCard hiCov"><div class="hiSlide"><div class="lbl"><i class="cvS">Coverage</i><i class="cvL">Health coverage</i></div><div class="big">64<span class="pc">%</span></div><div class="hiViz covGauge"><svg class="covDial" viewBox="0 0 100 100" aria-hidden="true"><path class="tk" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="9" stroke-dasharray="1.4 3.3"/><path class="pg" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="114.6 999"/></svg><svg class="covWarn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.6 14.4 13.4H1.6L8 2.6ZM8 6.6v3M8 11.4v.1"/></svg></div></div><div class="hiSlide"><div class="lbl">Screening</div><div class="hiList"><div class="r"><span>Cancer screening</span><span class="hiTag">Due</span></div><div class="r"><span>Skin check</span><span class="hiTag">Due</span></div></div><div class="hiAct">Book now<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Survey</div><div class="hiLead">Complete your questionnaire</div><div class="hiAct">Start<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Report</div><div class="hiLead">Upload this report</div><div class="hiUp"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9.5V2.4M4.4 5 7 2.4 9.6 5M2.4 9v2.3a.9.9 0 0 0 .9.9h7.4a.9.9 0 0 0 .9-.9V9"/></svg><span>Choose file</span></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div><div class="msn hiCard hiSteps"><div class="emNote emActNote"><div class="lbl">Activity</div><div class="emMid"><div class="emTxt">Connect your wearables</div><button class="emCta" type="button">Connect</button></div></div><div class="hiSlide"><div class="lbl">Steps</div><div class="big">2,568</div><div class="hiViz"><div class="stpBars"><i style="height:38px"></i><i style="height:26px"></i><i style="height:16px;opacity:.34"></i><i style="height:35px"></i><i style="height:29px"></i><i style="height:42px"></i><i style="height:13px;opacity:.34"></i></div><div class="stpDays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div></div><div class="hiSlide"><div class="lbl">Heart rate</div><div class="big">72<span class="pc"> bpm</span></div><div class="hiViz"><svg class="hiLine" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true"><line class="gl" x1="0" y1="38" x2="120" y2="38" stroke-dasharray="3 3"/><path class="ln" d="M3 26 C13 24 19 29 29 27 C39 25 45 31 55 28 C65 25 71 22 81 21 C91 20 99 17 108 15 C112 14 115 14 117 13"/></svg><div class="hiXlb"><span>Resting</span><span>Your avg.</span></div></div></div><div class="hiSlide"><div class="lbl">Sleep score</div><div class="big">82</div><div class="hiViz"><svg class="hiLine" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true"><line class="gl" x1="0" y1="38" x2="120" y2="38" stroke-dasharray="3 3"/><path class="ln" d="M3 34 C13 33 19 30 29 31 C39 32 45 25 55 24 C65 23 71 19 81 20 C91 21 99 14 108 12 C112 11 115 11 117 10"/></svg><div class="hiXlb"><span>Last 7 nights</span><span>Good</span></div></div></div><div class="hiSlide"><div class="lbl">Time asleep</div><div class="big">6h 12m</div><div class="hiViz"><div class="stpBars"><i style="height:32px"></i><i style="height:39px"></i><i style="height:24px;opacity:.34"></i><i style="height:36px"></i><i style="height:28px"></i><i style="height:44px"></i><i style="height:30px"></i></div><div class="stpDays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div></div>
+      <div class="mbrowV2"><div class="msn hiCard hiCov hiRep" id="hiRepM"><div class="hiSlide"><div class="lbl">Report</div><div class="hiRepTitle">Pathology Report</div><div class="hiRepMeta"></div><div class="hiAct">View report<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div></div><div class="msn hiCard hiCov"><div class="hiSlide"><div class="lbl"><i class="cvS">Coverage</i><i class="cvL">Health coverage</i></div><div class="big">64<span class="pc">%</span></div><div class="hiViz covGauge"><svg class="covDial" viewBox="0 0 100 100" aria-hidden="true"><path class="tk" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="9" stroke-dasharray="1.4 3.3"/><path class="pg" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="114.6 999"/></svg><svg class="covWarn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.6 14.4 13.4H1.6L8 2.6ZM8 6.6v3M8 11.4v.1"/></svg></div></div><div class="hiSlide"><div class="lbl">Screening</div><div class="hiList"><div class="r"><span>Cancer screening</span><span class="hiTag">Due</span></div><div class="r"><span>Skin check</span><span class="hiTag">Due</span></div></div><div class="hiAct">Book now<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Survey</div><div class="hiLead">Complete your questionnaire</div><div class="hiAct">Start<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Report</div><div class="hiLead">Upload this report</div><div class="hiUp"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9.5V2.4M4.4 5 7 2.4 9.6 5M2.4 9v2.3a.9.9 0 0 0 .9.9h7.4a.9.9 0 0 0 .9-.9V9"/></svg><span>Choose file</span></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div><div class="msn hiCard hiSteps"><div class="emNote emActNote"><div class="lbl">Activity</div><div class="emMid"><div class="emTxt">Connect your wearables</div><button class="emCta" type="button">Connect</button></div></div><div class="hiSlide"><div class="lbl">Steps</div><div class="big">2,568</div><div class="hiViz"><div class="stpBars"><i style="height:38px"></i><i style="height:26px"></i><i style="height:16px;opacity:.34"></i><i style="height:35px"></i><i style="height:29px"></i><i style="height:42px"></i><i style="height:13px;opacity:.34"></i></div><div class="stpDays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div></div><div class="hiSlide"><div class="lbl">Heart rate</div><div class="big">72<span class="pc"> bpm</span></div><div class="hiViz"><svg class="hiLine" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true"><line class="gl" x1="0" y1="38" x2="120" y2="38" stroke-dasharray="3 3"/><path class="ln" d="M3 26 C13 24 19 29 29 27 C39 25 45 31 55 28 C65 25 71 22 81 21 C91 20 99 17 108 15 C112 14 115 14 117 13"/></svg><div class="hiXlb"><span>Resting</span><span>Your avg.</span></div></div></div><div class="hiSlide"><div class="lbl">Sleep score</div><div class="big">82</div><div class="hiViz"><svg class="hiLine" viewBox="0 0 120 46" preserveAspectRatio="none" aria-hidden="true"><line class="gl" x1="0" y1="38" x2="120" y2="38" stroke-dasharray="3 3"/><path class="ln" d="M3 34 C13 33 19 30 29 31 C39 32 45 25 55 24 C65 23 71 19 81 20 C91 21 99 14 108 12 C112 11 115 11 117 10"/></svg><div class="hiXlb"><span>Last 7 nights</span><span>Good</span></div></div></div><div class="hiSlide"><div class="lbl">Time asleep</div><div class="big">6h 12m</div><div class="hiViz"><div class="stpBars"><i style="height:32px"></i><i style="height:39px"></i><i style="height:24px;opacity:.34"></i><i style="height:36px"></i><i style="height:28px"></i><i style="height:44px"></i><i style="height:30px"></i></div><div class="stpDays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div></div>
       <div class="mbrow2">
         <div class="msn msCar" id="msCar">
           <div class="msSlide">
@@ -15139,6 +15162,19 @@
   });
   // Which card holds the left slot. The two are the same shell in the same
   // place, so this is one class and the CSS does the swap.
+  // The desk's filter block pins like the phone's, and wears the same fade
+  // once it is actually pinned -- in the flow there is nothing passing beneath
+  // to fade. The dashboard is the scroller here, not the window.
+  (function dStick(){
+    const sc = document.querySelector('.dash'), blk = document.getElementById('dFilters');
+    if (!sc || !blk) return;
+    const set = () => blk.classList.toggle('stuck',
+      blk.getBoundingClientRect().top <= sc.getBoundingClientRect().top + 0.5 && sc.scrollTop > 0);
+    sc.addEventListener('scroll', set, { passive: true });
+    addEventListener('resize', set);
+    set();
+  })();
+
   const stLeftSel = document.getElementById('stLeft');
   if (stLeftSel) stLeftSel.addEventListener('change', () => {
     CARD_STATE.leftRep = stLeftSel.value === 'rep';
@@ -16057,12 +16093,13 @@
   // one source rather than a sentence typed into the markup that goes stale on
   // its own. RECS is in date order, so the latest is the first real record.
   (function fillLatestReport(){
-    const t = document.getElementById('hiRepTitle'), m = document.getElementById('hiRepMeta');
-    if (!t || !m) return;
     const latest = RECS.find(r => r.id !== 'all');
     if (!latest) return;
-    t.textContent = latest.label;
-    m.textContent = latest.date + '  \u00b7  ' + latest.n + ' biomarkers';
+    // both copies of the card -- the desk's and the phone's
+    document.querySelectorAll('.hiRepTitle').forEach(t => { t.textContent = latest.label; });
+    document.querySelectorAll('.hiRepMeta').forEach(m => {
+      m.textContent = latest.date + '  \u00b7  ' + latest.n + ' biomarkers';
+    });
   })();
 
   // where a row's marker sits, given its status and its name -- deterministic
