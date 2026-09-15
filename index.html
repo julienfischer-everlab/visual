@@ -389,6 +389,8 @@
      reader is looking at. Said in CSS because the nesting comes and goes with
      the layout. */
   .hasRot .hasRot .dcRot{display:none;}
+  /* while it is being turned, the organ says so and stops selecting text */
+  .hasRot.rotating{cursor:grabbing;user-select:none;-webkit-user-select:none;}
   /* the desk's card corner already holds the expand button, so the labelled
      handle sits clear of it */
   #organSlot .dcRot{right:52px;top:14px;}
@@ -9961,7 +9963,7 @@
   const CYCLE = 5000, MANUAL_HOLD = 14000;
 
   // ---------- pointer parallax ----------
-  const look = { x: 0, y: 0, tx: 0, ty: 0, manual: false };
+  const look = { x: 0, y: 0, tx: 0, ty: 0, manual: false, zoom: 1 };
   addEventListener('pointermove', e => {
     if (look.manual) return;   // the rotate tool is holding the view
     look.tx = (e.clientX / innerWidth - 0.5);
@@ -10019,12 +10021,62 @@
         try { btn.releasePointerCapture(d.pid); } catch (err) {}
         d = null;
         btn.classList.remove('on');
-        if (!moved){ look.tx = 0; look.ty = 0; look.manual = false; }
+        if (!moved){ look.tx = 0; look.ty = 0; look.zoom = 1; look.manual = false; }
       };
       btn.addEventListener('pointerup', end);
       btn.addEventListener('pointercancel', end);
       // the card under it changes organ on a click; the handle is not that
       btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); });
+
+      // ---- the organ itself is the control ----
+      // Hold, then move, and it turns like a model on a turntable; the wheel
+      // over it pushes in and pulls out. The handle stays because it is the
+      // only thing that SAYS any of this is possible -- and pressing it is
+      // still the way back to square on.
+      //
+      // Hold, not drag. A drag on the organ already means "next organ" on the
+      // phone and must go on meaning it, so the gesture that rotates has to be
+      // one the swipe cannot be mistaken for: press, wait 180ms, then move.
+      // Move before the timer and it was a swipe, and the hold is cancelled.
+      let g = null, hold = 0;
+      const stop = () => { clearTimeout(hold); hold = 0;
+        if (g && g.rot) card.classList.remove('rotating');
+        g = null; };
+      card.addEventListener('pointerdown', e => {
+        if (e.target.closest('.dcRot')) return;       // the handle runs itself
+        g = { x: e.clientX, y: e.clientY, tx: look.tx, ty: look.ty, rot: false, pid: e.pointerId };
+        hold = setTimeout(() => {
+          if (!g) return;
+          g.rot = true; look.manual = true;
+          card.classList.add('rotating');
+          try { card.setPointerCapture(g.pid); } catch (err) {}
+        }, 180);
+      });
+      card.addEventListener('pointermove', e => {
+        if (!g) return;
+        const dx = e.clientX - g.x, dy = e.clientY - g.y;
+        if (!g.rot){
+          // moved before the hold landed: that is the swipe's gesture, not ours
+          if (Math.abs(dx) > 8 || Math.abs(dy) > 8) stop();
+          return;
+        }
+        e.preventDefault();
+        // the same 260px-per-turn the handle uses, so the two feel like one
+        // control, and the same shallow pitch
+        look.tx = g.tx + dx / 260;
+        look.ty = Math.max(-0.42, Math.min(0.42, g.ty + dy / 420));
+      });
+      card.addEventListener('pointerup', stop);
+      card.addEventListener('pointercancel', stop);
+      card.addEventListener('pointerleave', e => { if (g && !g.rot) stop(); });
+      // The wheel pushes in and pulls out, between a third smaller and three
+      // times larger. Exponential, so a notch is the same proportion of the
+      // view wherever you are in the range rather than a fixed step that
+      // crawls when close and leaps when far.
+      card.addEventListener('wheel', e => {
+        e.preventDefault();
+        look.zoom = Math.max(0.65, Math.min(3, look.zoom * Math.exp(-e.deltaY * 0.0016)));
+      }, { passive: false });
     });
   })();
 
@@ -15808,7 +15860,7 @@
     gl.uniform2f(U.uCB, morphCB.x, morphCB.y);
     gl.uniform1f(U.uOrgR, orgR);
     gl.uniform1f(U.uGhost, ghostVis);
-    setZoom(zoomNow * (isV4Hero(version) ? v5Shrink : 1) *
+    setZoom(zoomNow * look.zoom * (isV4Hero(version) ? v5Shrink : 1) *
             (v7On() ? V6_HERO : 1), orgR);
 
     gl.uniform1f(U.uP, uPnow);

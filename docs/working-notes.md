@@ -5863,6 +5863,37 @@ strip.
 
   one handle on every one of the 14 pages that carry an organ, and only one
 
+### 5.210 The organ is the control
+
+"Scroll up down to zoom inside the organ, and click and hold and move to rotate
+it like a 3D model."
+
+**Hold, then move.** Not drag: a drag on the organ already means *next organ*
+on the phone and has to go on meaning it. So the gesture that rotates is one
+the swipe cannot be mistaken for -- press, wait 180ms, then move. Move before
+the timer lands and the hold is cancelled, because that was a swipe. It is also
+exactly what was asked for, word for word.
+
+Verified: a quick drag never sets `.rotating`; a 260ms press does, and the
+cloud turns with the pointer after it.
+
+**The wheel pushes in and out**, 0.65x to 3x, exponential so a notch is the
+same proportion of the view wherever you are in the range rather than a fixed
+step that crawls up close and leaps far away. It rides on the zoom the camera
+already computes (`setZoom(zoomNow * look.zoom * ...)`), so framing, the organ
+swap and the breath all keep working underneath it. The dots grow with it,
+because `uOrgK` is `uZoom * r` and that pair is deliberately set in one call.
+
+The wheel is taken (`preventDefault`), so the page does not scroll under the
+pointer while you are zooming -- measured: scrollTop 0 before and after two
+notches, on both surfaces.
+
+**The handle stays**, because it is the only thing that says any of this is
+possible, and pressing it is still the one way back: centre, level, zoom 1.
+
+  m20 hero and m10 desk: wheel zooms without scrolling, quick drag does not
+  rotate, a held drag does, and the handle returns all three to square on
+
 ---
 
 ## 6. Open items

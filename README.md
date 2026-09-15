@@ -779,6 +779,14 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   are written from `RECS`, the same table the record select reads, so *the
   latest report* is one fact with one source rather than a sentence typed into
   the markup that goes stale on its own.
+- **The organ is a model you can handle** — press and hold on it, then move, and
+  it turns like a model on a turntable; the wheel over it pushes in and pulls
+  out, between 0.65x and 3x. Hold rather than drag, because a drag on the organ
+  already means *next organ* on the phone and has to go on meaning it — move
+  before the 180ms hold lands and it is a swipe. The zoom rides on the one the
+  camera already computes, so framing, the organ swap and the breath keep
+  working underneath it, and the dots grow with the cloud because their size
+  reads the same pair.
 - **Turn the organ** — the organ card's corner carries a rotate handle beside
   the expand and share buttons, and on V4 and up — where the organ is the
   header rather than a card — it hangs at the top right of the hero, where a
