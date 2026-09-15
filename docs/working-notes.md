@@ -5555,6 +5555,63 @@ room to read as a card rather than as a label with a border round it, and at
   carry one; picking a card narrows the list to that record and the chips
   recount to it (r2: 110 -> 32)
 
+### 5.197 A pinned bar that stays pinned
+
+"On a fixed filter state, when I click on a filter the screen jumps from fixed
+to fixed again." The desk's, and only the desk's: the phone has held its bar
+through the beat since the pinned-bar work, and the desk was given the sticky
+block without the two things that make holding it possible.
+
+The skeleton is a fraction of the list's height. Swapping it in collapsed the
+page's scrollHeight, the browser clamped scrollTop to what was left, the block
+fell out of its pinned position and snapped back when the list returned:
+
+  m10, chip tap at scrollTop 1400
+  block top  0 -> 281 -> 281 -> 281 -> 0    scrollTop 1400 -> 273 -> 1400
+
+So the skeleton is held at the height the list had, or a screenful under the
+block, whichever is more -- nothing shortens, nothing is clamped, nothing
+moves. And the results keep that same screenful afterwards, because a record
+holding two readings leaves less page than there is scroll and the block would
+slide back down when the shorter list arrived. Filtering to a short list is
+still adjusting the filter.
+
+  chip, and cards r5 (56 readings), r3 (2) and All: block top 0 throughout,
+  all four, normal and Expanded Report
+
+### 5.198 The gap was an empty row still charging rent
+
+"Reduce gap by 32px." 56 of the 68px between the carousel and the chips came
+from the row the select and the search used to share: `display:none` never
+applied, because the desk's row wears `.v2Only` and `body.b2 .dash .v2Only` is
+three classes deep -- the same trap the carousel's own gate fell into two
+notes ago. Matched with `.b2` it wins on specificity rather than on force, and
+what was left was an honest 12px, so the carousel states the rest: 36px.
+
+### 5.199 The strip is not the header
+
+"Remove top bg, the hero header should be below the hour and battery bar."
+V5 lifted the status strip out of the flow as an overlay, which is what made
+it need a plate: something had to hold that strip while the hero ran up behind
+the clock. Put the strip back in the flow and the header begins below it, so
+nothing can pass beneath the time and there is nothing for a plate to do.
+
+The two grounds are then two grounds, not one, and are declared apart -- the
+strip shows the phone's own, the header its `--headBg`:
+
+    body.v5 #phone        --headBg:#000   background:#111
+    body.light.v5 #phone  --headBg:#ececea  background:#fff
+    body.v6 #phone        --headBg:rgb(var(--v5head))  background:#000
+
+Light out-specifies the v6 rule, which is why it does not repeat there.
+
+`statusH()` already returned 0 for a strip in the flow, so `--msTop` went to 0
+on its own and the bar now pins at the strip's bottom edge with nothing between
+them:
+
+  m20  scrollTop 680 gap 38 -> 700 gap 18 -> 720 stuck, bar top 44,
+       0px between the bar and the strip above it
+
 ---
 
 ## 6. Open items

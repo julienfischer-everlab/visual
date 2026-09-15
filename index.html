@@ -1186,10 +1186,6 @@
      the bar's own plate coincide they cover the same strip twice rather than
      meeting along an edge -- two surfaces that have to meet perfectly will
      eventually fail to. */
-  body.v5 #phone .mstatus::before{
-    content:"";position:absolute;left:0;right:0;top:-10px;bottom:-2px;z-index:-1;
-    background:var(--headBg, #0d0d0c);
-  }
   /* Pinned, the bar's plate used to stop dead and the list carried on from the
      next pixel -- a row cut in half across its own middle. A shadow marks that
      edge; it does not soften it. So the plate carries on past its own bottom
@@ -1400,7 +1396,9 @@
   body.expRep .msRecWrap,
   body.expRep .dash .dRecWrap{display:none !important;}
   body.expRep #phone .msRow,
-  body.expRep .dash .dRow{display:none;}
+  body.expRep.b2 .dash .dRow{display:none;}
+  /* the space between the two rows, stated once and by the row above it */
+  body.expRep.b2 .dash .rcCar{padding-bottom:36px;}
   .rcCard{
     flex:none;min-width:0;font:inherit;text-align:left;cursor:pointer;
     border:0;border-radius:14px;padding:19px 24px;
@@ -4126,10 +4124,9 @@
      the header carries the safe area as padding so nothing starts hidden, and
      what scrolls up goes under the time and the battery behind the frosted
      glass that was already waiting for it. */
-  body.v5 #phone .mstatus{position:absolute;left:0;right:0;top:0;z-index:5;}
-  /* 39px, not 44: the strip's own height in flow, so lifting it out moves
-     nothing that was below it */
-  body.v5 #phone #mHeadIn{padding-top:39px;}
+  /* (V5 lifted this strip out as an overlay for a while. It is back in the
+     flow: the header begins below the hour and the battery, which is what
+     stops anything passing beneath them -- no plate, no z-index, no state.) */
   /* Full screen has no drawn strip to lift out, so the room reserved for it is
      reserving nothing and the page opens on a band of empty black. The device's
      own bar sits in the safe-area inset `#phone` already pads for, and the title
@@ -4140,8 +4137,8 @@
      it too -- that bar is absolute, so the hero would otherwise run up behind
      the time -- and painting it from a colour of its own is how the strip
      ended up a shade darker than the header under it. */
-  body.v5 #phone{--headBg:#000;background:var(--headBg);}
-  body.light.v5 #phone{--headBg:#ececea;}
+  body.v5 #phone{--headBg:#000;background:#111;}
+  body.light.v5 #phone{--headBg:#ececea;background:#fff;}
   body.v5 .mHead{background:var(--headBg);}
   body.v5 #phone .mBody{background:#111;}
   body.light.v5 #phone .mBody{background:#fff;}
@@ -4156,7 +4153,7 @@
      cards is one wash at two strengths, and close enough at rest that the cards
      read as the same surface carried up into the header rather than as tiles
      laid on a darker one. */
-  body.v6 #phone{--headBg:rgb(var(--v5head, 18 18 18));}
+  body.v6 #phone{--headBg:rgb(var(--v5head, 18 18 18));background:#000;}
   body.v6 #phone .mBody{background:#000;}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
@@ -16537,6 +16534,33 @@
       input: input, fieldEl: field,
       chipsBar: document.querySelector('.dash .filters'),
       cards: document.getElementById('dRecCar'),
+      // The pinned block must not move while the filter is being worked. The
+      // skeleton is a fraction of the list's height, so swapping it in
+      // collapsed the page's scrollHeight, the browser clamped scrollTop to
+      // whatever was left, and the block fell out of its pinned position for
+      // the length of the beat and snapped back at the end of it -- a 280px
+      // jump for a chip tap. Holding the skeleton at the height the list had
+      // (or a screenful under the block, whichever is more) means nothing
+      // shortens, nothing is clamped and nothing moves.
+      beforeBeat: () => {
+        const sk = document.getElementById('dSkel'), sc = document.querySelector('.dash');
+        const blk = document.getElementById('dFilters');
+        if (!sk || !sc) return;
+        sk.style.minHeight =
+          Math.max(host.offsetHeight, sc.clientHeight - (blk ? blk.offsetHeight : 0)) + 'px';
+      },
+      // and the results keep a screenful under the block for the same reason:
+      // a record holding two readings leaves less page than there is scroll,
+      // so the browser clamps and the block slides back down. Filtering to a
+      // short list is still adjusting the filter, and the bar should be where
+      // it was left when the shorter list arrives.
+      afterApply: () => {
+        const sc = document.querySelector('.dash'), blk = document.getElementById('dFilters');
+        const sk = document.getElementById('dSkel');
+        if (sk) sk.style.minHeight = '';
+        if (sc && blk) host.style.minHeight =
+          Math.max(0, sc.clientHeight - blk.offsetHeight) + 'px';
+      },
       rec: {
         btn: document.getElementById('dRecSel'), lbl: document.getElementById('dRecLbl'),
         ey: document.getElementById('dRecEy'), menu: document.getElementById('dRecMenu'),
