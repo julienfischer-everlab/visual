@@ -5382,6 +5382,31 @@ instead.
 
   m10 / m21 / m18, colour and light: page and block report the same value
 
+### 5.190 The report's title is a figure, and its action is the card
+
+"Report card title should use the same font size as the steps title 2,568."
+It did -- at the size I had typed into `.hiRepTitle`, 22px, which is what
+`.hiCard .big` is *before* either surface resizes it. The phone takes `.big`
+down to 18px and the desk up to 24px, so a third number was wrong on both.
+
+The title carries `.big` now and `.hiRepTitle` asks for one thing, a
+line-height, because it wraps and a number never does. The size, weight and
+colour come from wherever `.big` is set for that surface, so the two cards in
+that row cannot drift apart again:
+
+  m11 m16 m17 m19 m20  phone  title 18px = steps 18px
+  m10 m18 m21          desk   title 24px = steps 24px
+
+"CTA view report remove arrow, Full width." The arrow was there to say *this
+goes somewhere*; a button that fills the card already says it, and the other
+mini cards' pills sit next to a slide's worth of other content where a
+left-aligned pill with an arrow still earns its shape. So the rule is scoped
+to this card -- `.hiRep .hiAct{align-self:stretch;justify-content:center}` --
+and Book now / Start keep theirs.
+
+  8 pages, both themes: 0 svg in the pill, inset 22px / 22px on the phone and
+  20px / 20px on the desk -- the card's own padding, edge to edge
+
 ---
 
 ## 6. Open items

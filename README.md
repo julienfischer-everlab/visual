@@ -737,9 +737,12 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   same slot and are not the same card, so it is a choice rather than two cards
   fighting for the room. The report card follows the mini-card pattern — the
   same shell, the eyebrow-then-figure shape, one slide rather than four because
-  there is one report — and its title takes the figure's size, since the
-  report's name is to this card what 64% is to Coverage, with the date and the
-  reading count under it as the line that qualifies it. Title, date and count
+  there is one report — and its title carries `.big`, since the report's name
+  is to this card what 64% is to Coverage and 2,568 is to Steps, so it takes
+  whatever size that surface gives the figure rather than naming its own. The
+  date and the reading count sit under it as the line that qualifies it, and
+  the action fills the card's width with no arrow, because a button that wide
+  has nowhere else it could be going. Title, date and count
   are written from `RECS`, the same table the record select reads, so *the
   latest report* is one fact with one source rather than a sentence typed into
   the markup that goes stale on its own.
