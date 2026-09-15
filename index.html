@@ -1143,7 +1143,7 @@
      on only once it is actually pinned (the script sets .stuck). */
   .msWrap{
     position:sticky;top:var(--msTop, 0px);z-index:4;padding:12px 13px 0;
-    background:#0d0d0c;
+    background:var(--bodyBg, #0d0d0c);
   }
   /* The chips are inside the bar now, so the bar's own side padding would
      stop them short of the edge -- and a horizontal scroller that stops short
@@ -1194,14 +1194,15 @@
      is nothing passing beneath to fade. */
   .msWrap::after{
     content:"";position:absolute;left:0;right:0;top:100%;height:30px;
-    background:linear-gradient(to bottom,#0d0d0c,rgba(13,13,12,0));
+    background:linear-gradient(to bottom,var(--bodyBg, #0d0d0c),var(--bodyBg0, rgba(13,13,12,0)));
     pointer-events:none;opacity:0;transition:opacity .22s ease;
   }
   .msWrap.stuck::after{opacity:1;}
   body.light .msWrap::after{
-    background:linear-gradient(to bottom,#f7f2e9,rgba(247,242,233,0));
+    background:linear-gradient(to bottom,var(--bodyBg, #f7f2e9),var(--bodyBg0, rgba(247,242,233,0)));
   }
-  body.light .msWrap{background:#f7f2e9;}
+  /* each theme keeps its own fallback for the pages that declare no ground */
+  body.light .msWrap{background:var(--bodyBg, #f7f2e9);}
 
   /* the two controls side by side, one height. The select takes what its
      longest label needs and the search takes the rest -- the other way round
@@ -4134,11 +4135,13 @@
      it too -- that bar is absolute, so the hero would otherwise run up behind
      the time -- and painting it from a colour of its own is how the strip
      ended up a shade darker than the header under it. */
-  body.v5 #phone{--headBg:#000;background:#111;}
-  body.light.v5 #phone{--headBg:#ececea;background:#fff;}
+  body.v5 #phone{--headBg:#000;background:var(--headBg);}
+  /* the same read, restated only because `body.light.v4 #phone` sets a
+     background of its own and is a class deeper than the rule above */
+  body.light.v5 #phone{--headBg:#ececea;background:var(--headBg);}
   body.v5 .mHead{background:var(--headBg);}
-  body.v5 #phone .mBody{background:#111;}
-  body.light.v5 #phone .mBody{background:#fff;}
+  body.v5 #phone .mBody{--bodyBg:#111;--bodyBg0:rgba(17,17,17,0);background:var(--bodyBg);}
+  body.light.v5 #phone .mBody{--bodyBg:#fff;--bodyBg0:rgba(255,255,255,0);}
   /* V5 is V4 with the dark theme's two grounds swapped over: the header is the
      lifted grey and the body is the black. Said after V4's pair and at the same
      weight, so it wins on order; the light theme carries `.light` and outranks
@@ -4150,8 +4153,8 @@
      cards is one wash at two strengths, and close enough at rest that the cards
      read as the same surface carried up into the header rather than as tiles
      laid on a darker one. */
-  body.v6 #phone{--headBg:rgb(var(--v5head, 18 18 18));background:#000;}
-  body.v6 #phone .mBody{background:#000;}
+  body.v6 #phone{--headBg:rgb(var(--v5head, 18 18 18));}
+  body.v6 #phone .mBody{--bodyBg:#000;--bodyBg0:rgba(0,0,0,0);}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
   body.light.v5 #phone .mstatus .tm{color:#000;}

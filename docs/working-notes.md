@@ -5615,6 +5615,32 @@ them:
   m20  scrollTop 680 gap 38 -> 700 gap 18 -> 720 stuck, bar top 44,
        0px between the bar and the strip above it
 
+### 5.200 Two grounds, both read rather than named
+
+"No black strip" and "fixed bar should be black bg, not dark grey" are the same
+correction twice, in opposite directions, and both are the same mistake: a
+surface painting a colour of its own instead of the one it belongs to.
+
+The status strip belongs to the header, so it shows `--headBg` -- one grey from
+the top of the screen through the title, with the header still beginning below
+the hour and the battery. The filter bar belongs to the list, so it shows the
+list's ground, which is a token now for the same reason the page's is:
+
+    body.v5 #phone .mBody   --bodyBg:#111   --bodyBg0:rgba(17,17,17,0)
+    body.light.v5 .mBody    --bodyBg:#fff
+    body.v6 #phone .mBody   --bodyBg:#000
+    .msWrap, .msWrap::after read var(--bodyBg, <the theme's old constant>)
+
+The bar lives inside `.mBody`, so it inherits. Each theme keeps its old
+constant as the fallback, for the pages that declare no ground at all.
+
+  m20 bar rgb(0,0,0) = body;  m16 rgb(17,17,17) = body;  light rgb(255,255,255)
+  m11, which declares no --bodyBg, keeps rgb(13,13,12) as before
+
+`body.light.v5 #phone` had to restate `background:var(--headBg)` rather than
+just set the token, because `body.light.v4 #phone` sets a background of its own
+and is a class deeper.
+
 ---
 
 ## 6. Open items
