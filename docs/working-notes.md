@@ -5782,6 +5782,22 @@ Two things had to be true for it to work:
   step across the cut: 0.3 levels at rest, 1.8 at scrollTop 60, 3.2 at 150,
   0.0 by 320 -- against the 8 it started at
 
+### 5.208 The figure comes down 6px
+
+"Reduce font by 6px", over a crop of the two card titles side by side. One
+token, so both come down together and stay level:
+
+    .hiCard                --fig  22 -> 16
+    .dash .hiCard          --fig  24 -> 18
+    body.v2 #phone .hiCard --fig  18 -> 12
+
+  m10 m18 m21 desk 18px, m11 m16 m17 m19 m20 phone 12px, title = steps on all 8
+
+Worth flagging: on the phone that puts the figure at 12px under a 12.5px meta
+line, so the report card's title is now a half-pixel *smaller* than the date
+under it and the hierarchy reads flat. Either the meta comes down with it or
+the 6px belongs to the desk alone -- both are one number.
+
 ---
 
 ## 6. Open items

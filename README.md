@@ -763,7 +763,7 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   about which reports exist or what they carried, and `REP_SLIDES` is the only
   number to change. Its title is the card's figure, since the report's
   name is to this card what 64% is to Coverage and 2,568 is to Steps. The
-  figure's size is a token per surface (`--fig`: 18px on the phone, 24px on the
+  figure's size is a token per surface (`--fig`: 12px on the phone, 18px on the
   desk) and the title takes it exactly — the same size as 2,568 beside it. Set
   4px larger it read better as type but no longer fitted the phone card on one
   line, which cost more than it bought. The
