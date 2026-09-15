@@ -5407,6 +5407,78 @@ and Book now / Start keep theirs.
   8 pages, both themes: 0 svg in the pill, inset 22px / 22px on the phone and
   20px / 20px on the desk -- the card's own padding, edge to edge
 
+### 5.191 The report card, as specified
+
+"Latest report / Pathology test / 13 Aug 2026 / 44 biomarkers. CTA (footer)
+position." Four corrections to the card and one to where its button sits:
+
+- the eyebrow reads *Latest report*, not *Report* -- which is what the card is
+- the title is **Pathology test**. It comes from `RECS`, so the record is what
+  was renamed: the card and the record select now say the same thing, which is
+  the whole reason the card reads from that table. `Pathology test` also sits
+  better beside `VO2 Max Test` and `Comprehensive Blood Tests` than
+  `Pathology Report` did.
+- the date and the count are two lines, not one sentence joined by a middot.
+  Two facts that happen to be about the same report; at 171px the middot line
+  wrapped anywhere it liked.
+- the pill sits on the card's floor. `.hiAct` keeps its 20px bottom margin
+  everywhere else because a dot row sits under those cards; this one has
+  nothing below it, so the margin was just a gap.
+
+### 5.192 One tweak for one slot
+
+"Remove as it's on the Left card select." The Coverage on/off tweak predates
+the Left card select and the select now owns that spot -- Coverage is one of
+the two things that can be in it. Two controls for one slot is one too many,
+so the tweak is gone: the row, the listener, `CARD_STATE.noCov`, the class
+setMode wrote, and the four rules it drove.
+
+### 5.193 Both candidates travel, or the slot goes empty
+
+"When coverage is selected the Steps should be there, always." The V4/V5 phone
+row is built by moving cards into `#mV4Row`, and it moved one left card:
+
+    v4Take(q('#mBento .hiCov'), row);
+
+`querySelector` takes the first `.hiCov` in the markup, and the report card
+wears `.hiCov` **on purpose** -- that is how every rule about the slot (b3
+hides it, b5 orders it, emBio blanks it) lands on whichever card is in it. So
+the row always took the report and left the real Coverage card behind in
+`#mBento`, where it is out of view. Choose Coverage and the slot emptied: the
+report had gone and coverage had never arrived, leaving Steps on its own.
+
+Both candidates travel now and the `leftRep` class picks between them in the
+row, exactly as it does everywhere else:
+
+    document.querySelectorAll('#mBento .hiCov').forEach(c => v4Take(c, row));
+
+  m16 m17 m19 m20  report -> [REP STEPS]   coverage -> [COV STEPS]
+  m10 m18 m21      the desk was already right, and still is
+
+### 5.194 One grey, from the top of the screen down
+
+"Top hour battery bar no bg. Keep grey bg from hero header." The hour and the
+battery sat on a strip of `#0d0d0c` while the header under them was
+`rgb(18 18 18)` -- close enough to look like a mistake and far enough to see.
+The strip cannot simply have no background: it is absolute, so the hero would
+run up behind the time. It had to paint the header's ground rather than a
+colour of its own, so that ground is a token now, declared where the phone
+declares it:
+
+    body.v5 #phone       --headBg:#000       (light: #ececea)
+    body.v6 #phone       --headBg:rgb(var(--v5head, 18 18 18))
+    body.v5 .mHead       background:var(--headBg)
+    .mstatus::before     background:var(--headBg)
+
+"Remove rounded bg on the Title and share icon." The title is a header, not a
+pill. It lives inside `.mHead`, which already carries that grey and is the
+thing that sticks -- the pill was a plate on a plate. Flat, full-bleed and
+static now, with the share button an icon on that surface rather than a disc
+on it. Scoped to `body.v8 #phone`, so `#phone2`'s pill on m6 is untouched.
+
+  m20 colour  strip rgb(18,18,18) = header;  m20 light  rgb(236,236,234) = header
+  m16 colour  strip rgb(0,0,0)    = header;  title bg none, radius 0, shadow none
+
 ---
 
 ## 6. Open items
