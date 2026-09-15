@@ -779,26 +779,18 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   are written from `RECS`, the same table the record select reads, so *the
   latest report* is one fact with one source rather than a sentence typed into
   the markup that goes stale on its own.
-- **The organ is a model you can handle** — press and hold on it, then move, and
-  it turns like a model on a turntable; the wheel over it pushes in and pulls
-  out, between 0.65x and 3x. Hold rather than drag, because a drag on the organ
-  already means *next organ* on the phone and has to go on meaning it — move
-  before the 180ms hold lands and it is a swipe. The zoom rides on the one the
-  camera already computes, so framing, the organ swap and the breath keep
-  working underneath it, and the dots grow with the cloud because their size
-  reads the same pair.
-- **Turn the organ** — the organ card's corner carries a rotate handle beside
-  the expand and share buttons, and on V4 and up — where the organ is the
-  header rather than a card — it hangs at the top right of the hero, where a
-  card's corner would be. Drag it and the cloud turns with the drag —
-  about a full turn across 260px, with the pitch held to a quarter of that,
-  since the cloud is a body and tipping it past its own shoulders reads as
-  broken rather than as looked at from above. Release and it stays where it was
-  put. A press with no drag centres it again and hands the view back to the
-  pointer parallax, so the control that takes the rotation over is the one that
-  gives it back. It does not add a rotation: the yaw and pitch are the numbers
-  the parallax was already driving, eased through the same 0.04 follow, so the
-  organ arrives a beat after the hand rather than cutting to the angle.
+- **Handle the organ** (Card Nav only) — there the organ is the whole screen
+  rather than a card in a column, which is the one worth orbiting. Press and
+  hold on it, then move, and it turns like a model on a turntable; the wheel
+  over it pushes in and pulls out, between 0.65x and 3x. Hold rather than drag,
+  because a plain drag over the canvas belongs to the page — move before the
+  180ms hold lands and nothing rotates. The zoom rides on the one the camera
+  already computes, so framing, the organ swap and the breath keep working
+  underneath it, and the dots grow with the cloud because their size reads the
+  same pair. A labelled **Rotate** handle at the top right says all of this is
+  possible, and pressing it without dragging is the one way back: centred,
+  level, zoom 1. Changing page does the same, since a rotation held into a
+  layout with no way to undo it is a stuck organ.
 - **Refresh** — reloads the page. Everything the tweaks set lives in memory,
   so this is the way back to the page as it first drew: the states reset, the
   clouds rebuild and the reveals play from the top. The version travels in the

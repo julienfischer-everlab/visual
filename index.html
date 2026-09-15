@@ -360,37 +360,29 @@
      same object: a 30px square on a 9px radius. It is a handle, not a switch,
      so it says so with the cursor and takes touch-action:none -- without that
      a drag on it scrolls the page out from under the gesture. */
-  /* It says what it is. An unlabelled icon in a corner full of other icons was
-     asked after twice before this comment was written -- a handle nobody finds
-     is a handle that is not there. The label goes wherever there is room for
-     it, which is everywhere except the phone's small organ card. */
+  /* The organ on Card Nav is the whole screen rather than a card, so its
+     handle is a fixed control rather than a corner one. It says what it is: an
+     unlabelled icon was asked after twice. Card Nav only -- this is the page
+     the organ is big enough to be worth handling on. */
   .dcRot{
-    position:absolute;right:52px;top:14px;z-index:6;
-    height:30px;border-radius:15px;border:0;padding:0 12px 0 9px;gap:6px;
+    display:none;
+    position:fixed;right:20px;top:77px;z-index:9;
+    height:32px;border-radius:16px;border:0;padding:0 13px 0 10px;gap:6px;
     cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent;
-    display:flex;align-items:center;justify-content:center;
+    align-items:center;justify-content:center;
     font:inherit;font-size:11.5px;letter-spacing:.01em;
     background:rgba(242,229,224,.16);color:#f2e5e0;
     transition:background .16s ease,color .16s ease;
   }
-  .dcRot svg{width:15px;height:15px;display:block;flex:none;}
+  body.m0 .dcRot{display:flex;}
+  .dcRot svg{width:16px;height:16px;display:block;flex:none;}
   .dcRot i{font-style:normal;white-space:nowrap;}
   .dcRot:hover{background:rgba(242,229,224,.26);}
   .dcRot.on{background:rgba(242,229,224,.34);cursor:grabbing;}
   .dcRot:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
   body.light .dcRot{background:rgba(46,31,26,.13);color:#2e1f1a;}
   body.light .dcRot:hover,body.light .dcRot.on{background:rgba(46,31,26,.22);}
-  /* the card has to be a positioning root for it; the desk's already is */
-  .hasRot{position:relative;}
-  /* One handle per organ, not per host. On V4 and up the mini organ card is
-     moved inside the hero -- by layoutV4, after the handles are mounted, so no
-     check at mount time can see it -- and both pills landed in the same corner
-     on top of each other. The outer host wins, because that is the organ the
-     reader is looking at. Said in CSS because the nesting comes and goes with
-     the layout. */
-  .hasRot .hasRot .dcRot{display:none;}
-  /* while it is being turned, the organ says so and stops selecting text */
-  .hasRot.rotating{cursor:grabbing;user-select:none;-webkit-user-select:none;}
+  body.m0.rotating{cursor:grabbing;user-select:none;-webkit-user-select:none;}
   /* the desk's card corner already holds the expand button, so the labelled
      handle sits clear of it */
   #organSlot .dcRot{right:52px;top:14px;}
@@ -9839,6 +9831,7 @@
   }
   function setMode(m){
     version = m;
+    document.dispatchEvent(new Event('everlab:mode'));
     DUR = reduced ? 300 : MODES[m].dur;
     document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') +
       (m === 13 ? ' m2 b2 b3' : '') +
@@ -9988,96 +9981,88 @@
       'stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
       '<path d="M2.6 6.4a5.6 5.6 0 0 1 10.1-1.2M13.4 9.6a5.6 5.6 0 0 1-10.1 1.2"/>' +
       '<path d="M2.4 2.9v3.5h3.5M13.6 13.1V9.6h-3.5"/></svg>';
-    document.querySelectorAll('#mHeroOrgan, #organSlot, #mOrgCard').forEach(card => {
-      card.classList.add('hasRot');
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'dcRot';
-      btn.title = 'Drag to turn the organ, press to centre it';
-      btn.setAttribute('aria-label', 'Turn the organ: drag to rotate, press to centre');
-      btn.innerHTML = ICON + '<i>Rotate</i>';
-      card.appendChild(btn);
-      let d = null;
-      btn.addEventListener('pointerdown', e => {
-        e.preventDefault(); e.stopPropagation();
-        d = { x: e.clientX, y: e.clientY, tx: look.tx, ty: look.ty, moved: false, pid: e.pointerId };
-        look.manual = true;
-        btn.classList.add('on');
-        try { btn.setPointerCapture(e.pointerId); } catch (err) {}
-      });
-      btn.addEventListener('pointermove', e => {
-        if (!d) return;
-        const dx = e.clientX - d.x, dy = e.clientY - d.y;
-        if (Math.abs(dx) > 2 || Math.abs(dy) > 2) d.moved = true;
-        // a full turn across about 260px of travel, and a pitch held to a
-        // quarter of that: the cloud is a body, and tipping it past its own
-        // shoulders reads as broken rather than as looked-at from above
-        look.tx = d.tx + dx / 260;
-        look.ty = Math.max(-0.42, Math.min(0.42, d.ty + dy / 420));
-      });
-      const end = e => {
-        if (!d) return;
-        const moved = d.moved;
-        try { btn.releasePointerCapture(d.pid); } catch (err) {}
-        d = null;
-        btn.classList.remove('on');
-        if (!moved){ look.tx = 0; look.ty = 0; look.zoom = 1; look.manual = false; }
-      };
-      btn.addEventListener('pointerup', end);
-      btn.addEventListener('pointercancel', end);
-      // the card under it changes organ on a click; the handle is not that
-      btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); });
+    const host = document.getElementById('field');
+    if (!host) return;
+    // Card Nav only. The class is on the body, which setMode rewrites whole, so
+    // the gate is read at the moment of the gesture rather than wired once.
+    const onPage = () => document.body.classList.contains('m0');
 
-      // ---- the organ itself is the control ----
-      // Hold, then move, and it turns like a model on a turntable; the wheel
-      // over it pushes in and pulls out. The handle stays because it is the
-      // only thing that SAYS any of this is possible -- and pressing it is
-      // still the way back to square on.
-      //
-      // Hold, not drag. A drag on the organ already means "next organ" on the
-      // phone and must go on meaning it, so the gesture that rotates has to be
-      // one the swipe cannot be mistaken for: press, wait 180ms, then move.
-      // Move before the timer and it was a swipe, and the hold is cancelled.
-      let g = null, hold = 0;
-      const stop = () => { clearTimeout(hold); hold = 0;
-        if (g && g.rot) card.classList.remove('rotating');
-        g = null; };
-      card.addEventListener('pointerdown', e => {
-        if (e.target.closest('.dcRot')) return;       // the handle runs itself
-        g = { x: e.clientX, y: e.clientY, tx: look.tx, ty: look.ty, rot: false, pid: e.pointerId };
-        hold = setTimeout(() => {
-          if (!g) return;
-          g.rot = true; look.manual = true;
-          card.classList.add('rotating');
-          try { card.setPointerCapture(g.pid); } catch (err) {}
-        }, 180);
-      });
-      card.addEventListener('pointermove', e => {
-        if (!g) return;
-        const dx = e.clientX - g.x, dy = e.clientY - g.y;
-        if (!g.rot){
-          // moved before the hold landed: that is the swipe's gesture, not ours
-          if (Math.abs(dx) > 8 || Math.abs(dy) > 8) stop();
-          return;
-        }
-        e.preventDefault();
-        // the same 260px-per-turn the handle uses, so the two feel like one
-        // control, and the same shallow pitch
-        look.tx = g.tx + dx / 260;
-        look.ty = Math.max(-0.42, Math.min(0.42, g.ty + dy / 420));
-      });
-      card.addEventListener('pointerup', stop);
-      card.addEventListener('pointercancel', stop);
-      card.addEventListener('pointerleave', e => { if (g && !g.rot) stop(); });
-      // The wheel pushes in and pulls out, between a third smaller and three
-      // times larger. Exponential, so a notch is the same proportion of the
-      // view wherever you are in the range rather than a fixed step that
-      // crawls when close and leaps when far.
-      card.addEventListener('wheel', e => {
-        e.preventDefault();
-        look.zoom = Math.max(0.65, Math.min(3, look.zoom * Math.exp(-e.deltaY * 0.0016)));
-      }, { passive: false });
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'dcRot';
+    btn.title = 'Drag to turn the organ, press to centre it';
+    btn.setAttribute('aria-label', 'Turn the organ: drag to rotate, press to centre');
+    btn.innerHTML = ICON + '<i>Rotate</i>';
+    document.body.appendChild(btn);
+
+    const centre = () => { look.tx = 0; look.ty = 0; look.zoom = 1; look.manual = false; };
+    // A page change hands the view back: a rotation held into a layout that has
+    // no way to undo it is a stuck organ.
+    document.addEventListener('everlab:mode', centre);
+
+    let d = null;
+    btn.addEventListener('pointerdown', e => {
+      e.preventDefault(); e.stopPropagation();
+      d = { x: e.clientX, y: e.clientY, tx: look.tx, ty: look.ty, moved: false, pid: e.pointerId };
+      look.manual = true;
+      btn.classList.add('on');
+      try { btn.setPointerCapture(e.pointerId); } catch (err) {}
     });
+    btn.addEventListener('pointermove', e => {
+      if (!d) return;
+      const dx = e.clientX - d.x, dy = e.clientY - d.y;
+      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) d.moved = true;
+      look.tx = d.tx + dx / 260;
+      look.ty = Math.max(-0.42, Math.min(0.42, d.ty + dy / 420));
+    });
+    const endBtn = () => {
+      if (!d) return;
+      const moved = d.moved;
+      try { btn.releasePointerCapture(d.pid); } catch (err) {}
+      d = null;
+      btn.classList.remove('on');
+      if (!moved) centre();
+    };
+    btn.addEventListener('pointerup', endBtn);
+    btn.addEventListener('pointercancel', endBtn);
+    btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); });
+
+    // ---- the organ itself ----
+    // Hold, then move, and it turns like a model on a turntable; the wheel over
+    // it pushes in and pulls out. Hold rather than drag, because a plain drag
+    // over the canvas belongs to the page, and because that is the gesture that
+    // was asked for: press, wait 180ms, then move.
+    let g = null, hold = 0;
+    const stop = () => { clearTimeout(hold); hold = 0;
+      if (g && g.rot) document.body.classList.remove('rotating');
+      g = null; };
+    host.addEventListener('pointerdown', e => {
+      if (!onPage()) return;
+      g = { x: e.clientX, y: e.clientY, tx: look.tx, ty: look.ty, rot: false, pid: e.pointerId };
+      hold = setTimeout(() => {
+        if (!g) return;
+        g.rot = true; look.manual = true;
+        document.body.classList.add('rotating');
+        try { host.setPointerCapture(g.pid); } catch (err) {}
+      }, 180);
+    });
+    host.addEventListener('pointermove', e => {
+      if (!g) return;
+      const dx = e.clientX - g.x, dy = e.clientY - g.y;
+      if (!g.rot){ if (Math.abs(dx) > 8 || Math.abs(dy) > 8) stop(); return; }
+      e.preventDefault();
+      look.tx = g.tx + dx / 260;
+      look.ty = Math.max(-0.42, Math.min(0.42, g.ty + dy / 420));
+    });
+    host.addEventListener('pointerup', stop);
+    host.addEventListener('pointercancel', stop);
+    // The wheel pushes in and pulls out, 0.65x to 3x. Exponential, so a notch is
+    // the same proportion of the view wherever you are in the range.
+    host.addEventListener('wheel', e => {
+      if (!onPage()) return;
+      e.preventDefault();
+      look.zoom = Math.max(0.65, Math.min(3, look.zoom * Math.exp(-e.deltaY * 0.0016)));
+    }, { passive: false });
   })();
 
   // ---------- resize ----------

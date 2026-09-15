@@ -5894,6 +5894,32 @@ possible, and pressing it is still the one way back: centre, level, zoom 1.
   m20 hero and m10 desk: wheel zooms without scrolling, quick drag does not
   rotate, a held drag does, and the handle returns all three to square on
 
+### 5.211 Card Nav only
+
+"Rotate only on here", over the version menu with **Card Nav** on it.
+
+Which settles what the handle was for. It had been mounted on every organ card
+on every page -- three hosts, a nested-host rule to stop it doubling, a corner
+to find in each layout -- and on those pages the organ is a 200px card in a
+column of other cards, which is not a thing anyone wants to orbit. On Card Nav
+the organ is the whole screen. That is the one worth handling.
+
+So all of it moves to `body.m0` and off everything else:
+
+- the handle is a fixed control at the top right, not a card corner, and its
+  own rule is `display:none` with `body.m0 .dcRot{display:flex}` over it
+- the hold-drag and the wheel hang off the canvas and read the body class at
+  the moment of the gesture, because setMode rewrites that class whole
+- `.hasRot`, the per-card positioning and the nested-host rule are all gone
+  with the cards they were for
+
+`setMode` now fires an `everlab:mode` event and the view centres on it: a
+rotation held into a layout with no way to undo it is a stuck organ.
+
+  m0 shows the handle; m1 m5 m10 m11 m16 m20 m21 do not. On m0 the wheel zooms,
+  a held drag turns the lungs, and the handle puts all three back. All 25 pages
+  clean.
+
 ---
 
 ## 6. Open items
