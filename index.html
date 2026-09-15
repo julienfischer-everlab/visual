@@ -1121,15 +1121,18 @@
     background:inherit;opacity:var(--msPlate, 0);pointer-events:none;
   }
   /* And the screen-top strip itself, which the bar's plate cannot reach while
-     the bar is still a page away: anchored to the status bar, in over the
-     first 80px of scroll, so once the page has moved at all the hour and the
-     battery sit on the page's ground rather than on whatever is passing under
-     them. Where the two plates coincide -- the bar pinned -- they cover the
-     same strip twice rather than meeting along an edge, which is the point:
-     two surfaces that have to meet perfectly will eventually fail to. */
+     the bar is still a page away: anchored to the status bar, and simply
+     opaque. It used to fade in over the first 80px of scroll so the organ
+     could run to the very top at rest -- but a fading plate IS a gradient, and
+     for those 80px the hero showed through it as exactly the wash that kept
+     being reported. A fixed bar is not a thing that arrives gradually: the
+     hour and the battery sit on the page's ground, full stop. Where this and
+     the bar's own plate coincide they cover the same strip twice rather than
+     meeting along an edge -- two surfaces that have to meet perfectly will
+     eventually fail to. */
   body.v5 #phone .mstatus::before{
     content:"";position:absolute;left:0;right:0;top:-10px;bottom:-2px;z-index:-1;
-    background:#0d0d0c;opacity:var(--mstBg, 0);
+    background:#0d0d0c;
   }
   body.light.v5 #phone .mstatus::before{background:#f7f2e9;}
   /* Pinned, the bar's plate used to stop dead and the list carried on from the
@@ -1161,9 +1164,16 @@
      so it is the one that can afford to lose width rather than the field being
      typed into. Both are flex-basis, so the swap is one transition on two
      boxes rather than a reflow. */
-  .msRecWrap{position:relative;flex:1 1 auto;min-width:0;
+  /* Both states are a LENGTH, never `auto`. flex-basis interpolates between
+     two lengths and jumps between auto and one -- so with auto at rest the
+     select snapped to its new width in a single frame, which put the search's
+     left edge there instantly and left its right edge to travel outward. The
+     field grew left to right. With both ends definite the two boxes move
+     together, the search's right edge stays where it is, and the field opens
+     leftward into the room the select gives up. */
+  .msRecWrap{position:relative;flex:0 0 calc(100% - 12px - 56px);min-width:0;
              transition:flex-basis .24s ease;}
-  .msWrap.searchOn .msRecWrap{flex:0 0 calc((100% - 12px) * .40);}
+  .msWrap.searchOn .msRecWrap{flex:0 0 calc((100% - 12px) * .50);}
   .msRec{
     width:100%;display:flex;align-items:center;gap:8px;
     height:56px;padding:0 14px 0 16px;
@@ -1212,7 +1222,7 @@
   .msRec[aria-expanded="true"] .msRecChev{transform:rotate(180deg);}
   .msRow .msBox{flex:0 0 56px;min-width:0;padding:0;justify-content:center;
                 cursor:pointer;transition:flex-basis .24s ease,box-shadow .16s ease;}
-  .msWrap.searchOn .msRow .msBox{flex:0 0 calc((100% - 12px) * .60);
+  .msWrap.searchOn .msRow .msBox{flex:0 0 calc((100% - 12px) * .50);
                                  padding:0 14px 0 16px;justify-content:flex-start;}
   /* Collapsed, the field is zero-wide rather than display:none. It has to stay
      focusable -- the tap on the box opens the search BY focusing the field, and
@@ -16306,17 +16316,17 @@
     // runs over the last 40px of the approach and is solid for the last 20 --
     // a plate that switched on at full height would be a black band arriving
     // out of nowhere over the hero, which is a different bug.
-    const statusBar = document.querySelector('#phone .mstatus');
     const setPlate = () => {
-      // the screen-top strip, in over the first 80px of scroll
-      if (statusBar) statusBar.style.setProperty('--mstBg',
-        Math.min(1, Math.max(0, sc.scrollTop / 80)).toFixed(3));
       const top = parseFloat(getComputedStyle(wrap).top) || 0;
       const gap = Math.max(0, Math.round(
         wrap.getBoundingClientRect().top - sc.getBoundingClientRect().top - top));
-      wrap.style.setProperty('--msGap', (gap <= 40 ? gap : 0) + 'px');
-      wrap.style.setProperty('--msPlate',
-        (gap >= 40 ? 0 : Math.min(1, (40 - gap) / 20)).toFixed(3));
+      // On when the bar is pinned, off when it is not -- no crossfade. A plate
+      // fading in is a gradient over whatever is behind it, and the strip is
+      // meant to be flat. Pinned, its height is the status strip plus a pixel,
+      // covering what the plate above already covers; not pinned, the content
+      // between the two passes under the bar as content should.
+      wrap.style.setProperty('--msGap', gap <= 2 ? '0px' : gap + 'px');
+      wrap.style.setProperty('--msPlate', gap <= 2 ? '1' : '0');
     };
     // the fade below the bar once it is pinned
     const setStuck = () => {

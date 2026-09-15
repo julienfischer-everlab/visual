@@ -5205,6 +5205,36 @@ follow, so the focused field and the chosen chip now wear the same edge.
   collapsed  box 56px  icon 20x20  offset from centre 0.00  ring 1.5px inset
   focused    ring rgb(255,255,255)      light: rgb(46,36,28)
 
+### 5.184 It grew the wrong way, and the gradient was mine all along
+
+"On click search, the field should expand from right to left, not left to
+right." It was growing left to right, and the cause is a CSS detail worth
+keeping: `flex-basis` interpolates between two LENGTHS and jumps between `auto`
+and a length. The select was `flex:1 1 auto` at rest, so it snapped to its new
+width in a single frame -- which put the search's left edge at its final place
+instantly and left the right edge to travel outward. Both ends are definite
+now (`calc(100% - 12px - 56px)` at rest), the two boxes move together, and the
+right edge holds still while the field opens leftward.
+
+  right edge 349.7 at every frame;  left edge 293.7 -> 182.7
+
+"Still feel there is a gradient that overlaps the top part. Remove that." There
+was, and it was mine: two plates with animated opacity. The status strip faded
+in over the first 80px of scroll, and a fading plate over a bright hero IS a
+gradient -- mean row brightness ran 0..68 through that window. The bar's own
+plate crossfaded over the last 40px of its approach for the same reason. Both
+are gone. The status strip is simply opaque, always; the bar's plate is on when
+pinned and off when not. A fixed bar is not a thing that arrives gradually.
+
+  status strip, every scroll: mean row brightness 13..13, flat
+
+The cost is that the organ no longer runs under the hour at rest. Looking at it,
+that costs nothing -- the figure starts well below the strip anyway -- and it
+buys a top bar with no state in it at all.
+
+"Search 50% and report 50% when search is active." 60/40 to 50/50; measured 48
+and 48 either side of the 12px gap.
+
 ---
 
 ## 6. Open items
