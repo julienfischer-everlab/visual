@@ -1098,43 +1098,40 @@
   /* the chips carry the bar's bottom padding, so where they are gone -- the
      empty biomarkers state -- the bar has to carry it itself */
   body.emBio #phone .msWrap{padding-bottom:10px;}
-  /* The hour and the battery keep their own ground once the page has moved.
-     The search bar used to back that strip itself, but only from the moment it
-     pinned -- so on the way up the strip was see-through and the hero showed
-     through it: the organ and its fog as a pale smudge under the status bar,
-     with a hard seam where the bar's plate started. A plate that belongs to
-     the status bar has no such moment. It fades in over the first 80px of
-     scroll, so at rest the organ still runs to the top of the screen, which is
-     the design. Behind the text (z-index -1 inside the bar's own box), so the
-     hour and the battery stay on top of it.
-     Scoped to v5 rather than to v8: the search bar is on every mobile page,
-     and the status bar has lain over the page since V5, so V5, V6 and V7 have
-     the same strip to hold. Scoping it to the current design left a
-     transparent gap on all three -- the list showed through beside the hour.
-     The two plates OVERLAP what they meet rather than abutting it: 10px up
-     past the status bar (the phone's own radius clips it) and 2px down into
-     the search bar. Abutting is correct arithmetic and the wrong construction
-     -- --msTop is offsetHeight, a whole number, so wherever the real height
-     lands between two of them the two plates meet at a fraction of a pixel
-     and the list shows through the difference. An overlap cannot. */
+  /* THE BAR OWNS THE WHOLE STRIP. One surface, from the top of the screen to
+     the bottom of the chips, in the page's own ground, with the status bar's
+     text floating over it and the fade below it -- and nothing between the two
+     because there is no "between".
+     It was two plates for a while: one belonging to the status bar, one to the
+     search bar, meeting where the two boxes met. That is correct arithmetic
+     and the wrong construction. --msTop is offsetHeight, a whole number, so
+     wherever the real height falls between two integers the plates part by a
+     fraction of a pixel, and a fraction of a pixel of a list is exactly the
+     grey smear that kept being reported. Two surfaces that have to meet
+     perfectly will eventually fail to; one surface cannot.
+     --msTop is the status bar's height, --msGap the distance still to run
+     before the bar pins (0 once it has), and the plate is their sum plus a
+     pixel of overlap into the bar's own background. --msPlate fades it in over
+     the last 40px of the approach, so at rest the organ still runs to the top
+     of the screen, which is the design. */
+  .msWrap::before{
+    content:"";position:absolute;left:0;right:0;
+    top:calc(-1 * (var(--msTop, 0px) + var(--msGap, 0px)));
+    height:calc(var(--msTop, 0px) + var(--msGap, 0px) + 1px);
+    background:inherit;opacity:var(--msPlate, 0);pointer-events:none;
+  }
+  /* And the screen-top strip itself, which the bar's plate cannot reach while
+     the bar is still a page away: anchored to the status bar, in over the
+     first 80px of scroll, so once the page has moved at all the hour and the
+     battery sit on the page's ground rather than on whatever is passing under
+     them. Where the two plates coincide -- the bar pinned -- they cover the
+     same strip twice rather than meeting along an edge, which is the point:
+     two surfaces that have to meet perfectly will eventually fail to. */
   body.v5 #phone .mstatus::before{
-    content:"";position:absolute;left:0;right:0;top:-10px;bottom:0;z-index:-1;
+    content:"";position:absolute;left:0;right:0;top:-10px;bottom:-2px;z-index:-1;
     background:#0d0d0c;opacity:var(--mstBg, 0);
   }
   body.light.v5 #phone .mstatus::before{background:#f7f2e9;}
-  /* And the gap under it, while the bar is still on its way up. The strip
-     between the two was live content, which on this page means the hero --
-     and the hero's bottom edge is two backdrop blurs and a halo, so what
-     showed there was a soft coloured smear rather than the page's ground.
-     The plate follows the bar down: its height is the gap itself, so it can
-     only ever cover exactly that, and it fades in over the last 40px of the
-     approach rather than appearing at full height, which would be a black
-     band arriving out of nowhere over the hero. */
-  body.v5 #phone .mstatus::after{
-    content:"";position:absolute;left:0;right:0;top:100%;z-index:-1;
-    height:calc(var(--mstGap, 0px) + 2px);background:#0d0d0c;opacity:var(--mstGapO, 0);
-  }
-  body.light.v5 #phone .mstatus::after{background:#f7f2e9;}
   /* Pinned, the bar's plate used to stop dead and the list carried on from the
      next pixel -- a row cut in half across its own middle. A shadow marks that
      edge; it does not soften it. So the plate carries on past its own bottom
@@ -4107,7 +4104,12 @@
      and the white body rides over it — so the body moves at the scroll's own
      rate while the header stays put, and its content is what recedes. */
   .mHead, .mHeadIn, .mBody{display:contents;}
-  body.v4 .mHead{display:block;position:sticky;top:0;z-index:1;}
+  /* isolation, so the head is a layer of its own no matter what is inside it.
+     The title pill is .lgGlass -- a backdrop-filter -- and a backdrop-filter is
+     the one thing in this file that can be composited outside the stacking
+     context it was painted in. It costs nothing and it closes the one route by
+     which the hero could reach the strip above the bar. */
+  body.v4 .mHead{display:block;position:sticky;top:0;z-index:1;isolation:isolate;}
   /* The header is the backdrop the body rises over, not a surface to be
      scrolled: a swipe up belongs to the content under it. It keeps the
      horizontal axis, which is the carousel's, and gives up the vertical one. */
@@ -16266,21 +16268,22 @@
       return (cs.display !== 'none' && cs.position === 'absolute') ? st.offsetHeight : 0;
     };
     const placeBar = () => wrap.style.setProperty('--msTop', statusH() + 'px');
-    // The status bar's own ground, in over the first 80px of scroll. It is a
-    // ramp rather than a switch because the alternative -- the strip going
-    // opaque the instant the search bar pins -- is what let the hero show
-    // through it on the way up.
+    // How far the bar still has to run before it pins, and how present its
+    // plate is. Both live on the bar, because the plate is the bar's: one
+    // surface from the top of the screen to the bottom of the chips. The fade
+    // runs over the last 40px of the approach and is solid for the last 20 --
+    // a plate that switched on at full height would be a black band arriving
+    // out of nowhere over the hero, which is a different bug.
     const statusBar = document.querySelector('#phone .mstatus');
-    const setStatusBg = () => {
-      if (!statusBar) return;
-      statusBar.style.setProperty('--mstBg', Math.min(1, Math.max(0, sc.scrollTop / 80)).toFixed(3));
-      // and the strip between the status bar and the bar on its way up. Height
-      // is the gap itself, so the plate covers that and nothing else; the fade
-      // runs over the last 40px of the approach and is solid for the last 20,
-      // which is where the gap is small enough to matter.
-      const gap = Math.max(0, Math.round(wrap.getBoundingClientRect().top - statusBar.getBoundingClientRect().bottom));
-      statusBar.style.setProperty('--mstGap', (gap <= 40 ? gap : 0) + 'px');
-      statusBar.style.setProperty('--mstGapO',
+    const setPlate = () => {
+      // the screen-top strip, in over the first 80px of scroll
+      if (statusBar) statusBar.style.setProperty('--mstBg',
+        Math.min(1, Math.max(0, sc.scrollTop / 80)).toFixed(3));
+      const top = parseFloat(getComputedStyle(wrap).top) || 0;
+      const gap = Math.max(0, Math.round(
+        wrap.getBoundingClientRect().top - sc.getBoundingClientRect().top - top));
+      wrap.style.setProperty('--msGap', (gap <= 40 ? gap : 0) + 'px');
+      wrap.style.setProperty('--msPlate',
         (gap >= 40 ? 0 : Math.min(1, (40 - gap) / 20)).toFixed(3));
     };
     // the fade below the bar once it is pinned
@@ -16288,7 +16291,7 @@
       placeBar();   // the page may have changed since init (setMode moves the status bar)
       const top = parseFloat(getComputedStyle(wrap).top) || 0;
       wrap.classList.toggle('stuck', wrap.getBoundingClientRect().top <= sc.getBoundingClientRect().top + top + 0.5 && sc.scrollTop > 0);
-      setStatusBg();
+      setPlate();
     };
     placeBar();
     addEventListener('resize', () => { placeBar(); setStuck(); });
