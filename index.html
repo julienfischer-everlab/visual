@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#e8e4de">
 <title>Everlab — How it works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap">
 <style>
 /* ===========================================================================
    Everlab — "How it works" stacked-card scroll
@@ -30,6 +33,10 @@
 
 /* ---------- tokens ---------- */
 :root{
+  --stage-bg:#dcd5ca;     /* the surface the phone sits on (demo frame only) */
+  --stage-ink:#8a8175;
+  --bezel:#141210;
+
   --page-bg:#e8e4de;
   --card-bg:#ffffff;
   --card-radius:22px;
@@ -42,9 +49,25 @@
   --marker:#b8b2a8;
 
   --gutter:20px;
+  --vph:100vh;            /* height of the box the cards stick against */
 
-  --font:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
-         "Helvetica Neue", Inter, Arial, sans-serif;
+  --font:"Instrument Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text",
+         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Only the surface around the device follows the viewer's theme — the screen
+   itself is a light UI by design, the same in either. */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --stage-bg:#201d19;
+    --stage-ink:#6f675c;
+    --bezel:#0b0a09;
+  }
+}
+:root[data-theme="dark"]{
+  --stage-bg:#201d19;
+  --stage-ink:#6f675c;
+  --bezel:#0b0a09;
 }
 
 /* ---------- reset ---------- */
@@ -69,6 +92,54 @@ p{margin:0;}
 h2{margin:0;}
 ul{margin:0;padding:0;list-style:none;}
 
+/* ---------------------------------------------------------------------------
+   Demo frame.
+   On a phone this is inert: .screen has visible overflow, so the cards stick
+   against the document scrollport and the page runs edge to edge with native
+   momentum. On a desktop window tall enough to hold a real 402 x 853 screen,
+   .screen becomes the scroll container instead and the same markup renders as
+   a device — nothing about the mechanic changes, only which box is scrolled.
+   --------------------------------------------------------------------------- */
+.stage{display:flex;flex-direction:column;align-items:center;}
+.stage__note{display:none;}
+
+@media (min-width:760px) and (min-height:920px){
+  :root{--vph:853px;}
+  body{background:var(--stage-bg);}
+  .stage{
+    min-height:100vh;
+    justify-content:center;
+    gap:18px;
+    padding-block:32px;
+  }
+  .device{
+    padding:11px;
+    background:var(--bezel);
+    border-radius:52px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.07) inset,
+      0 42px 70px -30px rgba(0,0,0,.55);
+  }
+  .screen{
+    width:402px;
+    height:853px;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    border-radius:42px;
+    background:var(--page-bg);
+    scrollbar-width:none;
+  }
+  .screen::-webkit-scrollbar{display:none;}
+  .stage__note{
+    display:block;
+    font-size:11px;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    color:var(--stage-ink);
+    font-variant-numeric:tabular-nums;
+  }
+}
+
 /* ---------- the stack ---------- */
 .stack{
   position:relative;
@@ -84,7 +155,7 @@ ul{margin:0;padding:0;list-style:none;}
   z-index:var(--i);
   display:flex;
   flex-direction:column;
-  min-height:100vh;                /* short steps still cover the one beneath */
+  min-height:var(--vph);           /* short steps still cover the one beneath */
   background:var(--card-bg);
   border-radius:var(--card-radius);
   overflow:hidden;                 /* clips the media to the rounded corners */
@@ -483,10 +554,9 @@ ul{margin:0;padding:0;list-style:none;}
 .res-side i{height:4px;border-radius:99px;background:#eae2d7;}
 .res-side i:nth-child(odd){width:70%;}
 
-/* ---------- desktop courtesy (mobile-only build) ---------- */
+/* Wider window, but too short for the device frame: just centre the column. */
 @media (min-width:640px){
-  body{background:#ddd8d1;}
-  .stack{box-shadow:0 0 0 1px rgba(23,21,15,.06);}
+  body{background:var(--stage-bg);}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -495,6 +565,10 @@ ul{margin:0;padding:0;list-style:none;}
 </style>
 </head>
 <body>
+
+<div class="stage">
+<div class="device">
+<div class="screen" id="screen">
 
 <main class="stack">
 
@@ -620,6 +694,11 @@ ul{margin:0;padding:0;list-style:none;}
 
 </main>
 
+</div>
+</div>
+<p class="stage__note">402 × 853</p>
+</div>
+
 <script>
 /* The one job JS has: tell each card how far it may scroll before it parks.
    pin = viewportHeight - cardHeight, clamped at 0, so a card always parks with
@@ -628,9 +707,18 @@ ul{margin:0;padding:0;list-style:none;}
    starts sliding over it. Nothing here runs on scroll. */
 (function () {
   var panels = [].slice.call(document.querySelectorAll('.panel'));
+  var screenEl = document.getElementById('screen');
+
+  // Whichever box the cards actually stick against: the document on a phone,
+  // the device frame on a desktop window big enough for one.
+  function scrollportHeight() {
+    return getComputedStyle(screenEl).overflowY === 'visible'
+      ? window.innerHeight
+      : screenEl.clientHeight;
+  }
 
   function measure() {
-    var vh = window.innerHeight;
+    var vh = scrollportHeight();
     panels.forEach(function (panel) {
       // getBoundingClientRect keeps the sub-pixel height, so a card parks
       // exactly on the fold instead of leaving a half-pixel sliver.
@@ -650,6 +738,7 @@ ul{margin:0;padding:0;list-style:none;}
   window.addEventListener('resize', measure);
   window.addEventListener('orientationchange', measure);
   window.addEventListener('load', measure);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 })();
 </script>
 

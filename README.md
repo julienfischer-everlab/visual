@@ -1,8 +1,10 @@
 # Everlab — "How it works" stacked scroll
 
-`index.html` — a single self-contained file (no build step, no dependencies, no
-network calls). Open it directly in a browser, ideally in device emulation at
-**402 × 853**.
+`index.html` — a single file, no build step and no dependencies (one webfont is
+the only network request). Open it directly in a browser: on a desktop window
+it renders inside a 402 × 853 device frame, on a phone it runs full-bleed.
+
+Published demo: https://claude.ai/artifact/THBBiSmitXuxcQ6QNuw1uY
 
 Four steps — *Create your account*, *Meet your doctor*, *Complete your testing*,
 *Act, with follow-ups included* — each a white card with a full-bleed visual,
@@ -73,7 +75,30 @@ Keep (or adjust) the `--ratio` on each `.m-*` rule to match the real asset's
 aspect ratio — the card heights, and therefore the scroll hand-off points,
 follow from it.
 
+## Typography
+
+Instrument Sans (Google Fonts), with the platform grotesque as fallback — on
+iOS that means SF Pro, so the page still reads correctly offline. The font swap
+changes card heights, which the `ResizeObserver` and a `document.fonts.ready`
+hook re-measure, so the hand-off points survive it.
+
+## The device frame
+
+One media query, not a second code path. `.screen` has `overflow: visible` by
+default, so on a phone the cards stick against the document scrollport and the
+page runs edge to edge with native momentum. On a window at least 760 × 920 it
+becomes the scroll container at a fixed 402 × 853 and the same markup renders as
+a device. The script asks which box it is measuring:
+
+```js
+getComputedStyle(screen).overflowY === 'visible' ? innerHeight : screen.clientHeight
+```
+
+The surface around the device follows the viewer's light/dark theme. The screen
+itself stays light in both — it is a light UI by design, not a page to invert.
+
 ## Scope
 
-Mobile only for now. Above 640px the column is simply centred at its 402px
-max-width; there is no tablet or desktop treatment yet.
+Mobile only for now. The desktop frame is a test harness, not a desktop
+treatment; between 640px and the frame's threshold the column is simply centred
+at its 402px max-width.
