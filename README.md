@@ -31,6 +31,42 @@ Cards are inset by 20px on every side (`--pad`), with the same 20px as the flow
 gap between them — the gap is what lets the incoming card enter from the very
 bottom edge of the screen rather than from the parked card's bottom edge.
 
+### The deck
+
+Each card parks one `--peek` (10px) higher than the card before it, so every
+card underneath keeps its rounded bottom edge showing: by the last step there
+is a four-deep deck of edges at the bottom of the screen. Two consequences
+worth knowing:
+
+- The card scales about its **bottom** edge (`transform-origin: 50% 100%`). A
+  centred origin lifts the bottom edge by 1% of the card's height — about 15px
+  on these cards — which is more than the 10px stagger, so the deck collapses.
+- The run-out under the last card is a `margin-bottom` on that card, not
+  padding on the stack. A sticky shift is bounded by its containing block, and
+  that block is the stack's *content* box: with padding there instead, the last
+  card parks but drags the staggered cards beneath it back up to its own line.
+
+The edges show whenever cards are parked, which is every read phase. During a
+hand-off the incoming card is taller than the screen and its body covers them
+until it parks.
+
+### The card header
+
+Each card's eyebrow and title sit in a `.panel__head` that is itself sticky, so
+the step you are reading stays named at the top of the screen while its body
+scrolls underneath. Two things this needs:
+
+- **No `overflow: hidden` on the card.** That property makes the card its own
+  scroll container, and a sticky descendant then has nothing to stick to. The
+  media clips itself to the top corners instead.
+- **Scale compensation.** Scaling the card about its bottom edge drags the
+  pinned header down from the top of the screen — up to 17px at full cover —
+  exposing the body text behind it. The script writes `--headtop` with the
+  inverse offset (`-bottom × (1 − scale) / scale`), which holds the header flush
+  to within 0.03px across a whole transition.
+
+The header's rule appears only once it is actually pinned, via `--stuck`.
+
 The cover effect is driven by a second custom property, `--cover` (0 → 1),
 written on scroll inside one rAF:
 
@@ -49,22 +85,23 @@ and scrollbar behaviour are untouched.
 
 ### The JS
 
-Two jobs. `measure()` runs at load and on resize / `ResizeObserver` — never on
-scroll — and writes each card's park offset:
+Two functions. `measure()` runs at load and on resize / `ResizeObserver` —
+never on scroll — and writes each card's park offset:
 
 ```js
-panel.style.setProperty('--pin', Math.min(pad, vh - pad - panel.offsetHeight) + 'px');
+panel.style.setProperty('--pin', Math.min(pad, vh - (pad + i * peek) - h) + 'px');
 ```
 
-That is the only thing that can't be expressed in CSS: the hand-off point
-depends on the card's measured height, so it re-derives itself whenever the
-copy, the imagery, the font or the viewport changes. Nothing is hard-coded to
-`100vh`.
+That is the thing that can't be expressed in CSS: the hand-off point depends on
+the card's measured height, so it re-derives itself whenever the copy, the
+imagery, the font or the viewport changes. Nothing is hard-coded to `100vh`.
 
 `update()` runs on scroll, coalesced into one `requestAnimationFrame`, and only
-writes `--cover`. It reads no layout while scrolling — card positions come from
-flow offsets cached by `measure()`, which also keeps the reading immune to the
-scale transform (`offsetHeight` ignores transforms, a client rect does not).
+writes custom properties — `--cover`, `--stuck` and `--headtop`. It reads no
+layout while scrolling: positions and heights come from arrays cached by
+`measure()`, which also keeps them immune to the scale transform
+(`offsetHeight` ignores transforms, a client rect does not, so measuring a
+scaled card from a rect would compute a wrong park offset).
 
 ### Edge cases
 

@@ -25,11 +25,17 @@
    screen, and it then slides up over card N at 1:1 with the scroll. Card N
    stays where it is underneath, scaling down 2% and dimming as it is covered.
 
-   The JS does two things and neither of them fakes the scroll: it writes each
+   Each card parks one --peek higher than the card before it, so the deck of
+   rounded bottom edges underneath stays visible, and each card's header is
+   itself sticky, so the step you are reading stays named at the top of the
+   screen while its body scrolls under it.
+
+   The JS does three things and none of them fakes the scroll: it writes each
    card's park offset into --pin (so the hand-off follows real content height,
-   not a hard-coded 100vh), and on scroll it writes --cover, how far each card
-   has been covered, which CSS turns into that scale and fade. Scrolling itself
-   is the native document scroll, so iOS momentum is untouched.
+   not a hard-coded 100vh); on scroll it writes --cover, how far each card has
+   been covered, which CSS turns into the scale and fade; and it offsets each
+   header by whatever that scale would otherwise displace it by. Scrolling
+   itself is the native document scroll, so iOS momentum is untouched.
    =========================================================================== */
 
 /* ---------- tokens ---------- */
@@ -51,6 +57,7 @@
 
   --gutter:20px;
   --pad:20px;             /* inset around the cards, and the gap between them */
+  --peek:10px;            /* how much of each parked card stays visible below */
   --vph:100vh;            /* height of the box the cards stick against */
 
   --font:"Instrument Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text",
@@ -166,18 +173,49 @@ ul{margin:0;padding:0;list-style:none;}
   min-height:calc(var(--vph) - 2 * var(--pad));
   background:var(--card-bg);
   border-radius:var(--card-radius);
-  overflow:hidden;                 /* clips the media to the rounded corners */
+  /* No overflow:hidden here — it would make the card its own scroll container
+     and the sticky header inside it would have nothing to stick to. The media
+     clips itself to the top corners instead. */
   box-shadow:
-    0 1px 0 rgba(23,21,15,.04),
-    0 -14px 30px -14px rgba(23,21,15,.30);
-  /* --cover: 0 → 1 as the next card slides over this one (set by the script) */
+    0 -14px 30px -14px rgba(23,21,15,.30),   /* lifts the top edge while sliding */
+    0 10px 18px -8px rgba(23,21,15,.20);     /* separates the parked cards below */
+  /* --cover: 0 → 1 as the next card slides over this one (set by the script).
+     The origin is the bottom edge, so shrinking never lifts the edge that the
+     card below is staggered against — that stagger is only 10px and a centred
+     origin would move the edge further than that. */
   transform:scale(calc(1 - .02 * var(--cover,0)));
+  transform-origin:50% 100%;
 }
-/* The fade sits on the contents, not the card: fading the card itself would
-   make the stack underneath ghost through it. */
+/* The fade sits on the contents, not the card, and not on the header's own
+   background: fading either would let what is behind them ghost through. */
 .panel > .media,
-.panel > .body{
+.panel > .body,
+.panel__head > *{
   opacity:calc(1 - .4 * var(--cover,0));
+}
+
+/* ---------- the card's fixed header ---------- */
+.panel__head{
+  position:sticky;
+  /* 0 normally. While the card is scaled, the script offsets it by exactly the
+     amount the scale would otherwise push it below the top of the screen. */
+  top:var(--headtop,0px);
+  z-index:2;
+  flex:none;
+  background:var(--card-bg);
+  padding:20px var(--gutter) 15px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+/* the rule only appears once the header is actually pinned */
+.panel__head::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:1px;
+  background:var(--hairline);
+  opacity:var(--stuck,0);
 }
 
 /* ---------- media ---------- */
@@ -187,6 +225,7 @@ ul{margin:0;padding:0;list-style:none;}
   aspect-ratio:var(--ratio, 4 / 3);
   flex:none;
   overflow:hidden;
+  border-radius:var(--card-radius) var(--card-radius) 0 0;
   background:#d9d3ca;
 }
 /* Drop-in replacement point: put a real photo here and the placeholder art
@@ -201,7 +240,7 @@ ul{margin:0;padding:0;list-style:none;}
 
 /* ---------- text block ---------- */
 .body{
-  padding:26px var(--gutter) 40px;
+  padding:4px var(--gutter) 40px;
   padding-bottom:calc(40px + env(safe-area-inset-bottom,0px));
   display:flex;
   flex-direction:column;
@@ -238,7 +277,7 @@ ul{margin:0;padding:0;list-style:none;}
   letter-spacing:-.022em;
   font-weight:600;
   color:var(--ink);
-  margin-top:2px;
+  text-wrap:balance;
 }
 
 .lede{
@@ -616,9 +655,12 @@ ul{margin:0;padding:0;list-style:none;}
       </div>
     </div>
 
-    <div class="body">
+    <header class="panel__head">
       <p class="eyebrow"><span class="eyebrow__num">1</span> Get started</p>
       <h2 class="title" id="s1">Create your account</h2>
+    </header>
+
+    <div class="body">
       <p class="lede">Start with the level of care that suits your health goals. Every Everlab plan gives you a connected view of your health, with deeper testing, clinical support and ongoing care available depending on the plan you choose.</p>
       <p class="lede">Once you’ve selected your plan, you’ll set up your Everlab account and app:</p>
       <ul class="list">
@@ -666,9 +708,12 @@ ul{margin:0;padding:0;list-style:none;}
       </div>
     </div>
 
-    <div class="body">
+    <header class="panel__head">
       <p class="eyebrow"><span class="eyebrow__num">2</span> Consult</p>
       <h2 class="title" id="s2">Meet your doctor</h2>
+    </header>
+
+    <div class="body">
       <p class="lede">Choose or get matched with a doctor trained in preventative health, who has reviewed your history before you join the call. This isn’t a fifteen-minute appointment where you need to explain your background from scratch. It’s:</p>
       <ul class="list">
         <li>30 unhurried minutes by video, from anywhere in Australia</li>
@@ -711,9 +756,12 @@ ul{margin:0;padding:0;list-style:none;}
       </div>
     </div>
 
-    <div class="body">
+    <header class="panel__head">
       <p class="eyebrow"><span class="eyebrow__num">3</span> Test</p>
       <h2 class="title" id="s3">Complete your testing</h2>
+    </header>
+
+    <div class="body">
       <p class="lede">You book each test in the app and your Care team handles referrals, coordination and anything that needs chasing.</p>
       <ul class="list">
         <li>Access 1,850+ vetted facilities Australia-wide</li>
@@ -760,9 +808,12 @@ ul{margin:0;padding:0;list-style:none;}
       </div>
     </div>
 
-    <div class="body">
+    <header class="panel__head">
       <p class="eyebrow"><span class="eyebrow__num">4</span> Act</p>
       <h2 class="title" id="s4">Act, with follow-ups included</h2>
+    </header>
+
+    <div class="body">
       <p class="lede">Your doctor takes you through your results marker by marker. Where a result deserves a closer look, our specialist clinicians review it and your doctor arranges what comes next.</p>
       <ul class="list">
         <li>A 45-minute results consultation, and a written plan to follow</li>
@@ -819,6 +870,9 @@ ul{margin:0;padding:0;list-style:none;}
   var vh = 0;          // height of whichever box the cards stick against
   var stackTop = 0;    // the stack's offset inside that box
   var flow = [];       // each card's un-transformed offset within the stack
+  var head = [];       // each card's header offset within the card
+  var high = [];       // each card's un-transformed height
+  var park = [];       // each card's park offset (its sticky top)
   var ticking = false;
 
   function scrollTop() {
@@ -828,8 +882,16 @@ ul{margin:0;padding:0;list-style:none;}
 
   function measure() {
     var cs = getComputedStyle(stack);
-    var pad = parseFloat(cs.paddingBottom) || 0;
+    var pad = parseFloat(cs.getPropertyValue('--pad')) || 0;
+    var peek = parseFloat(cs.getPropertyValue('--peek')) || 0;
     var gap = parseFloat(cs.rowGap) || 0;
+
+    // Run-out under the last card: it parks highest, so without this it never
+    // reaches its park point. It has to sit inside the stack's content box —
+    // that box is what bounds a sticky shift, so padding here would let the
+    // last card park while dragging the staggered cards beneath it back up.
+    var runout = (panels.length - 1) * peek;
+    panels[panels.length - 1].style.marginBottom = runout + 'px';
 
     // The document on a phone; the device frame on a desktop window big enough.
     inner = getComputedStyle(screenEl).overflowY !== 'visible';
@@ -839,13 +901,20 @@ ul{margin:0;padding:0;list-style:none;}
     stackTop = stack.getBoundingClientRect().top - base + scrollTop();
 
     var y = parseFloat(cs.paddingTop) || 0;
-    flow.length = 0;
-    panels.forEach(function (panel) {
+    flow.length = head.length = high.length = park.length = 0;
+    panels.forEach(function (panel, i) {
       flow.push(y);
+      head.push(panel.querySelector('.media').offsetHeight);
       // offsetHeight is the laid-out height — unlike a client rect it ignores
       // the scale transform, so re-measuring mid-transition stays correct.
       var h = panel.offsetHeight;
-      panel.style.setProperty('--pin', Math.min(pad, vh - pad - h) + 'px');
+      // Each card parks one --peek higher than the one before it, so every
+      // card underneath keeps its rounded bottom edge showing.
+      var lift = pad + i * peek;
+      var pin = Math.min(pad, vh - lift - h);
+      high.push(h);
+      park.push(pin);
+      panel.style.setProperty('--pin', pin + 'px');
       y += h + gap;
     });
 
@@ -855,11 +924,26 @@ ul{margin:0;padding:0;list-style:none;}
   function update() {
     ticking = false;
     var s = scrollTop();
-    for (var i = 0; i < panels.length - 1; i++) {
-      var top = stackTop + flow[i + 1] - s;   // where the next card's top edge is
-      var cover = 1 - top / vh;               // 0 at the fold, 1 once it covers
+    for (var i = 0; i < panels.length; i++) {
+      // the header is pinned once the card's own top has left the scrollport
+      var mine = stackTop + flow[i] - s;
+      panels[i].style.setProperty('--stuck', mine + head[i] <= 0 ? 1 : 0);
+
+      var cover = 0;
+      if (i < panels.length - 1) {
+        var top = stackTop + flow[i + 1] - s; // where the next card's top edge is
+        cover = 1 - top / vh;                 // 0 at the fold, 1 once it covers
+        cover = cover < 0 ? 0 : cover > 1 ? 1 : cover;
+        panels[i].style.setProperty('--cover', cover.toFixed(3));
+      }
+
+      // The card scales about its bottom edge, which drags its pinned header
+      // down from the top of the screen and exposes the body text behind it.
+      // Offset the header by the inverse so it stays flush at 0.
+      var scale = 1 - .02 * cover;
+      var bottom = Math.max(mine, park[i]) + high[i];
       panels[i].style.setProperty(
-        '--cover', (cover < 0 ? 0 : cover > 1 ? 1 : cover).toFixed(3)
+        '--headtop', (-bottom * (1 - scale) / scale).toFixed(2) + 'px'
       );
     }
   }
