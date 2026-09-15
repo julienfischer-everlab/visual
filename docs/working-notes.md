@@ -5920,6 +5920,42 @@ rotation held into a layout with no way to undo it is a stuck organ.
   a held drag turns the lungs, and the handle puts all three back. All 25 pages
   clean.
 
+### 5.212 Drag it, and a cage to read it by
+
+"Simple rotate on the organ directly when I drag. An outlined sphere visual that
+indicates what face I'm looking at while rotating. Remove the rotate button, no
+need if I can do it directly on the organ."
+
+**The hold is gone.** It was there because a drag on the organ meant *next
+organ* on the phone -- and the feature is Card Nav only now, where the canvas
+has no swipe to protect. So a drag is a drag: press and move, and it turns from
+the first pixel. Measured: `.rotating` is set and the sphere is at full opacity
+20px into the gesture.
+
+**The button is gone**, which takes the press-to-centre with it. Double-click on
+the organ is the way back now -- centre, level, zoom 1 -- and so is changing
+page.
+
+**The sphere** is a wireframe cage around the organ: the silhouette, the equator
+and two meridians, with a mark on the front pole. It is built from the SAME
+matrix the shader is handed, column for column, from `look.x`/`look.y` rather
+than the targets -- so it eases with the cloud instead of arriving ahead of it,
+and the two cannot disagree about which way the thing is facing.
+
+Each great circle is sampled rather than solved: 48 points projected and joined,
+which is exact for any angle and costs nothing at this size. A ring whose points
+are more than half behind the sphere is drawn at a third of the ink, so the near
+half of the cage reads in front of the far half; the pole mark is filled while
+that pole faces you and hollow once it has gone round the back. That is the
+answer to "what face am I looking at" in one glance.
+
+It shows during the drag and holds for 520ms after, so the last turn can be read
+rather than vanishing with the hand. `requestAnimationFrame` only while it is up.
+
+  m0: button absent, globe display:block at opacity 0 at rest, 1 on the first
+  move, 0.49 mid-fade after release; three rings drawn, one front two back at
+  that angle. All 25 pages clean.
+
 ---
 
 ## 6. Open items

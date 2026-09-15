@@ -360,43 +360,30 @@
      same object: a 30px square on a 9px radius. It is a handle, not a switch,
      so it says so with the cursor and takes touch-action:none -- without that
      a drag on it scrolls the page out from under the gesture. */
-  /* The organ on Card Nav is the whole screen rather than a card, so its
-     handle is a fixed control rather than a corner one. It says what it is: an
-     unlabelled icon was asked after twice. Card Nav only -- this is the page
-     the organ is big enough to be worth handling on. */
-  .dcRot{
-    display:none;
-    position:fixed;right:20px;top:77px;z-index:9;
-    height:32px;border-radius:16px;border:0;padding:0 13px 0 10px;gap:6px;
-    cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent;
-    align-items:center;justify-content:center;
-    font:inherit;font-size:11.5px;letter-spacing:.01em;
-    background:rgba(242,229,224,.16);color:#f2e5e0;
-    transition:background .16s ease,color .16s ease;
+  /* The orientation sphere. A wireframe globe around the organ -- equator and
+     two meridians -- drawn from the same rotation matrix the cloud is drawn
+     with, so it cannot disagree with what it is describing. It is there to
+     answer one question while you turn the thing: which face am I looking at.
+     So it shows only during the drag and for a moment after, and carries a
+     mark on the front pole, filled while that pole faces you and hollow once
+     it has gone round the back. Card Nav only, where the organ is the screen. */
+  .orgGlobe{
+    display:none;position:fixed;left:50%;top:50%;z-index:4;
+    transform:translate(-50%,-50%);pointer-events:none;
+    opacity:0;transition:opacity .28s ease;
   }
-  body.m0 .dcRot{display:flex;}
-  .dcRot svg{width:16px;height:16px;display:block;flex:none;}
-  .dcRot i{font-style:normal;white-space:nowrap;}
-  .dcRot:hover{background:rgba(242,229,224,.26);}
-  .dcRot.on{background:rgba(242,229,224,.34);cursor:grabbing;}
-  .dcRot:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
-  body.light .dcRot{background:rgba(46,31,26,.13);color:#2e1f1a;}
-  body.light .dcRot:hover,body.light .dcRot.on{background:rgba(46,31,26,.22);}
+  body.m0 .orgGlobe{display:block;}
+  body.m0.rotating .orgGlobe{opacity:1;transition-duration:.12s;}
+  .orgGlobe .rim{fill:none;stroke:rgba(242,229,224,.30);stroke-width:.7;}
+  .orgGlobe .ring{fill:none;stroke:rgba(242,229,224,.22);stroke-width:.6;}
+  .orgGlobe .ring.back{stroke:rgba(242,229,224,.09);}
+  .orgGlobe .pole{fill:#f2e5e0;stroke:#f2e5e0;stroke-width:.8;}
+  .orgGlobe .pole.back{fill:none;}
+  body.light .orgGlobe .rim{stroke:rgba(46,31,26,.34);}
+  body.light .orgGlobe .ring{stroke:rgba(46,31,26,.26);}
+  body.light .orgGlobe .ring.back{stroke:rgba(46,31,26,.1);}
+  body.light .orgGlobe .pole{fill:#2e1f1a;stroke:#2e1f1a;}
   body.m0.rotating{cursor:grabbing;user-select:none;-webkit-user-select:none;}
-  /* the desk's card corner already holds the expand button, so the labelled
-     handle sits clear of it */
-  #organSlot .dcRot{right:52px;top:14px;}
-  /* the phone's organ card has no room for a label, and its corner language is
-     already a square, so there it stays one */
-  #mOrgCard .dcRot{right:12px;top:12px;width:28px;height:28px;padding:0;border-radius:8px;}
-  #mOrgCard .dcRot i{display:none;}
-  #mOrgCard .dcRot svg{width:14px;height:14px;}
-  /* On V4 and up the organ IS the header, not a card in it. Sitting at the top
-     right the handle landed directly under the title's share button and read as
-     a second header control rather than as the organ's own -- so it sits on the
-     organ instead, clear of the arc and above the name strip. */
-  #mHeroOrgan .dcRot{right:13px;top:6px;height:32px;border-radius:16px;}
-  #mHeroOrgan .dcRot svg{width:16px;height:16px;}
   .dcExpand:hover{background:rgba(242,229,224,.18);color:#f2e5e0;}
   .dcExpand:focus-visible{outline:2px solid rgba(242,229,224,.5);outline-offset:2px;}
   body.light .dcExpand{background:rgba(46,31,26,.09);color:rgba(46,31,26,.7);}
@@ -9976,88 +9963,136 @@
   // is read through the same 0.04 follow the drift uses -- the organ arrives
   // at the angle a beat after the hand does, which is what keeps a 60-degree
   // flick from looking like a cut.
+  // ---------- turning the organ, on Card Nav ----------
+  // Drag the organ and it turns. The cloud's yaw and pitch are `look`, which
+  // the pointer otherwise drives as a parallax -- a drift you cannot aim -- so
+  // this does not add a rotation, it takes that one over: while look.manual is
+  // set the parallax handler returns without writing. Double-click is the way
+  // back, since there is no button to press: centre, level, zoom 1.
+  //
+  // Card Nav only. There the organ is the whole screen; on every other page it
+  // is a card in a column of cards, which is not a thing to orbit. The class is
+  // on the body, which setMode rewrites whole, so the gate is read at the
+  // moment of the gesture rather than wired once.
   (function organRotate(){
-    const ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" ' +
-      'stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      '<path d="M2.6 6.4a5.6 5.6 0 0 1 10.1-1.2M13.4 9.6a5.6 5.6 0 0 1-10.1 1.2"/>' +
-      '<path d="M2.4 2.9v3.5h3.5M13.6 13.1V9.6h-3.5"/></svg>';
     const host = document.getElementById('field');
     if (!host) return;
-    // Card Nav only. The class is on the body, which setMode rewrites whole, so
-    // the gate is read at the moment of the gesture rather than wired once.
     const onPage = () => document.body.classList.contains('m0');
 
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'dcRot';
-    btn.title = 'Drag to turn the organ, press to centre it';
-    btn.setAttribute('aria-label', 'Turn the organ: drag to rotate, press to centre');
-    btn.innerHTML = ICON + '<i>Rotate</i>';
-    document.body.appendChild(btn);
-
-    const centre = () => { look.tx = 0; look.ty = 0; look.zoom = 1; look.manual = false; };
-    // A page change hands the view back: a rotation held into a layout that has
-    // no way to undo it is a stuck organ.
-    document.addEventListener('everlab:mode', centre);
-
-    let d = null;
-    btn.addEventListener('pointerdown', e => {
-      e.preventDefault(); e.stopPropagation();
-      d = { x: e.clientX, y: e.clientY, tx: look.tx, ty: look.ty, moved: false, pid: e.pointerId };
-      look.manual = true;
-      btn.classList.add('on');
-      try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+    // ---- the orientation sphere ----
+    // Built from the SAME matrix the shader is handed, so the wireframe and the
+    // cloud turn as one object rather than as two things that agree by luck.
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'orgGlobe');
+    svg.setAttribute('viewBox', '-100 -100 200 200');
+    svg.setAttribute('aria-hidden', 'true');
+    const rim = document.createElementNS(NS, 'circle');
+    rim.setAttribute('class', 'rim'); rim.setAttribute('r', '86');
+    svg.appendChild(rim);
+    const rings = [0, 1, 2].map(() => {
+      const el = document.createElementNS(NS, 'path');
+      el.setAttribute('class', 'ring'); svg.appendChild(el); return el;
     });
-    btn.addEventListener('pointermove', e => {
-      if (!d) return;
-      const dx = e.clientX - d.x, dy = e.clientY - d.y;
-      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) d.moved = true;
-      look.tx = d.tx + dx / 260;
-      look.ty = Math.max(-0.42, Math.min(0.42, d.ty + dy / 420));
-    });
-    const endBtn = () => {
-      if (!d) return;
-      const moved = d.moved;
-      try { btn.releasePointerCapture(d.pid); } catch (err) {}
-      d = null;
-      btn.classList.remove('on');
-      if (!moved) centre();
+    const pole = document.createElementNS(NS, 'circle');
+    pole.setAttribute('class', 'pole'); pole.setAttribute('r', '2.8');
+    svg.appendChild(pole);
+    document.body.appendChild(svg);
+    const sizeGlobe = () => {
+      const d = Math.round(Math.min(innerWidth, innerHeight) * 0.74);
+      svg.setAttribute('width', d); svg.setAttribute('height', d);
     };
-    btn.addEventListener('pointerup', endBtn);
-    btn.addEventListener('pointercancel', endBtn);
-    btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); });
+    sizeGlobe(); addEventListener('resize', sizeGlobe);
 
-    // ---- the organ itself ----
-    // Hold, then move, and it turns like a model on a turntable; the wheel over
-    // it pushes in and pulls out. Hold rather than drag, because a plain drag
-    // over the canvas belongs to the page, and because that is the gesture that
-    // was asked for: press, wait 180ms, then move.
-    let g = null, hold = 0;
-    const stop = () => { clearTimeout(hold); hold = 0;
-      if (g && g.rot) document.body.classList.remove('rotating');
-      g = null; };
+    // The engine's matrix, column by column, from the same two angles: ry is
+    // look.x * 1.05 and rx is -look.y * 0.7. Read from look.x/look.y rather
+    // than the targets, so the wireframe eases with the cloud instead of
+    // arriving ahead of it.
+    const project = (px, py, pz) => {
+      const ry = look.x * 1.05, rx = -look.y * 0.7;
+      const cy = Math.cos(ry), sy = Math.sin(ry), cx = Math.cos(rx), sx = Math.sin(rx);
+      return [
+        cy * px + sx * sy * py + cx * sy * pz,
+        cx * py - sx * pz,
+        -sy * px + sx * cy * py + cx * cy * pz
+      ];
+    };
+    const R = 86, STEP = 48;
+    // one great circle: the equator when phi is null, a meridian otherwise
+    function ringPath(phi){
+      let d = '', front = 0;
+      for (let i = 0; i <= STEP; i++){
+        const t = i / STEP * Math.PI * 2;
+        const p = phi === null
+          ? [Math.cos(t), 0, Math.sin(t)]
+          : [Math.cos(t) * Math.sin(phi), Math.sin(t), Math.cos(t) * Math.cos(phi)];
+        const q = project(p[0], p[1], p[2]);
+        if (q[2] > 0) front++;
+        // SVG counts y downward, the cloud counts it up
+        d += (i ? 'L' : 'M') + (q[0] * R).toFixed(1) + ' ' + (-q[1] * R).toFixed(1);
+      }
+      return { d: d + 'Z', front: front / (STEP + 1) };
+    }
+    let raf = 0;
+    function drawGlobe(){
+      raf = 0;
+      const specs = [null, 0, Math.PI / 2];
+      rings.forEach((el, i) => {
+        const r = ringPath(specs[i]);
+        el.setAttribute('d', r.d);
+        // a ring mostly behind the sphere is drawn back, so the near half of
+        // the cage reads in front of the far half
+        el.classList.toggle('back', r.front < 0.5);
+      });
+      const f = project(0, 0, 1);
+      pole.setAttribute('cx', (f[0] * R).toFixed(1));
+      pole.setAttribute('cy', (-f[1] * R).toFixed(1));
+      pole.classList.toggle('back', f[2] <= 0);
+      if (document.body.classList.contains('rotating')) tick();
+    }
+    const tick = () => { if (!raf) raf = requestAnimationFrame(drawGlobe); };
+    drawGlobe();
+
+    // ---- the drag ----
+    let g = null, fade = 0;
+    const stop = () => {
+      if (!g) return;
+      g = null;
+      clearTimeout(fade);
+      // the sphere stays a moment after the hand lets go, so the last turn can
+      // be read rather than vanishing with it
+      fade = setTimeout(() => document.body.classList.remove('rotating'), 520);
+    };
     host.addEventListener('pointerdown', e => {
       if (!onPage()) return;
-      g = { x: e.clientX, y: e.clientY, tx: look.tx, ty: look.ty, rot: false, pid: e.pointerId };
-      hold = setTimeout(() => {
-        if (!g) return;
-        g.rot = true; look.manual = true;
-        document.body.classList.add('rotating');
-        try { host.setPointerCapture(g.pid); } catch (err) {}
-      }, 180);
+      clearTimeout(fade);
+      g = { x: e.clientX, y: e.clientY, tx: look.tx, ty: look.ty, pid: e.pointerId };
+      look.manual = true;
+      document.body.classList.add('rotating');
+      try { host.setPointerCapture(e.pointerId); } catch (err) {}
+      tick();
     });
     host.addEventListener('pointermove', e => {
       if (!g) return;
-      const dx = e.clientX - g.x, dy = e.clientY - g.y;
-      if (!g.rot){ if (Math.abs(dx) > 8 || Math.abs(dy) > 8) stop(); return; }
       e.preventDefault();
-      look.tx = g.tx + dx / 260;
-      look.ty = Math.max(-0.42, Math.min(0.42, g.ty + dy / 420));
+      // a full turn across about 260px of travel, and a pitch held to a
+      // quarter of that: the cloud is a body, and tipping it past its own
+      // shoulders reads as broken rather than as looked at from above
+      look.tx = g.tx + (e.clientX - g.x) / 260;
+      look.ty = Math.max(-0.42, Math.min(0.42, g.ty + (e.clientY - g.y) / 420));
+      tick();
     });
     host.addEventListener('pointerup', stop);
     host.addEventListener('pointercancel', stop);
-    // The wheel pushes in and pulls out, 0.65x to 3x. Exponential, so a notch is
-    // the same proportion of the view wherever you are in the range.
+
+    const centre = () => { look.tx = 0; look.ty = 0; look.zoom = 1; look.manual = false; tick(); };
+    host.addEventListener('dblclick', e => { if (!onPage()) return; e.preventDefault(); centre(); });
+    // a page change hands the view back: a rotation held into a layout with no
+    // way to undo it is a stuck organ
+    document.addEventListener('everlab:mode', centre);
+
+    // The wheel pushes in and pulls out, 0.65x to 3x. Exponential, so a notch
+    // is the same proportion of the view wherever you are in the range.
     host.addEventListener('wheel', e => {
       if (!onPage()) return;
       e.preventDefault();

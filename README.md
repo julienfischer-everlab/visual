@@ -780,17 +780,24 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   latest report* is one fact with one source rather than a sentence typed into
   the markup that goes stale on its own.
 - **Handle the organ** (Card Nav only) — there the organ is the whole screen
-  rather than a card in a column, which is the one worth orbiting. Press and
-  hold on it, then move, and it turns like a model on a turntable; the wheel
-  over it pushes in and pulls out, between 0.65x and 3x. Hold rather than drag,
-  because a plain drag over the canvas belongs to the page — move before the
-  180ms hold lands and nothing rotates. The zoom rides on the one the camera
-  already computes, so framing, the organ swap and the breath keep working
-  underneath it, and the dots grow with the cloud because their size reads the
-  same pair. A labelled **Rotate** handle at the top right says all of this is
-  possible, and pressing it without dragging is the one way back: centred,
-  level, zoom 1. Changing page does the same, since a rotation held into a
-  layout with no way to undo it is a stuck organ.
+  rather than a card in a column, which is the one worth orbiting. Drag it and
+  it turns like a model on a turntable, from the first pixel; the wheel over it
+  pushes in and pulls out, between 0.65x and 3x, exponentially so a notch is the
+  same proportion of the view wherever you are in the range. While you turn it a
+  **wireframe sphere** draws around it — silhouette, equator, two meridians and
+  a mark on the front pole, filled while that pole faces you and hollow once it
+  has gone round the back — so there is always an answer to which face you are
+  looking at. It is built from the same rotation matrix the shader is handed,
+  read from the eased angles rather than the targets, so the cage and the cloud
+  turn as one object rather than as two things that agree by luck; each great
+  circle is 48 projected points joined up, and a ring more than half behind the
+  sphere is drawn at a third of the ink so the near half reads in front. It
+  shows during the drag and holds half a second after it. Double-click is the
+  way back: centred, level, zoom 1. Changing page does the same, since a
+  rotation held into a layout with no way to undo it is a stuck organ. The zoom
+  rides on the one the camera already computes, so framing, the organ swap and
+  the breath keep working underneath it, and the dots grow with the cloud
+  because their size reads the same pair.
 - **Refresh** — reloads the page. Everything the tweaks set lives in memory,
   so this is the way back to the page as it first drew: the states reset, the
   clouds rebuild and the reveals play from the top. The version travels in the
