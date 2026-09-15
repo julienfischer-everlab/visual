@@ -5266,6 +5266,33 @@ second line would push the search off the end. Five chips do not fit between
 two 256px boxes at this width, so the last 28px fade -- a chip sliced at the
 search's edge reads as broken, the same chip fading reads as more to scroll.
 
+### 5.186 Two rows after all, and the accent comes off the assistant
+
+"Record select row 1 left side. Search row 1 right side. Row 2 chips. Same on
+tablet." Which supersedes the one-row version of an hour ago -- and is better.
+The select and the search are the two ends of one question (which set is on the
+page, and what in it are you looking for), so a row with them at either end and
+nothing between reads as a pair of anchors rather than as a control and its
+neighbour. The chips get the second row to themselves, which is the one of the
+three that grows: five now, more later.
+
+  desk    row 1  select 292..548 ......... search 1116..1372
+          row 2  chips 292..1372
+  tablet  the same, and the search comes back -- it was hidden only because
+          the one-row version had no room for it
+
+"Why the right CTA is orange." Asked twice, so I stopped offering options and
+made the call. It was orange because the accent was baked into that one pane as
+a fixed tint -- which is the single thing in the dock that contradicts the
+material's own premise. Every other pane takes its colour from what is behind
+it; on a black page there is nothing behind this one to be orange, so what
+showed was the raw tint, and 42% accent over a warm dark plate lands as brown
+rather than as the accent. The assistant's pill is the island's material now, a
+step brighter: set apart by light, which the glass can actually justify.
+
+If it should be an accent CTA instead, the honest way is a committed #F78359
+with dark ink, not a wash over near-black -- one rule, and the file says where.
+
 ---
 
 ## 6. Open items

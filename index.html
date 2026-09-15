@@ -591,15 +591,16 @@
   .dash .ilist .li.on{color:var(--ink-bright);border-color:var(--ink-bright);}
   .dash .ilist .dot{width:6px;height:6px;border-radius:50%;flex:none;}
   .dash .filters{display:flex;gap:8px;margin:26px 0 18px;font-size:12.5px;color:#bdbdb9;flex-wrap:wrap;align-items:center;}
-  /* The desk has the width the phone does not, so it spends it on one row
-     rather than two: the record select at a fixed 256px, the chips taking
-     whatever is left, and the search pushed to the far right. The phone
-     stacks the same three because 375px cannot hold them side by side -- same
-     components, same shells (56px on a 14px radius, 44px pills), one
-     arrangement per width rather than one arrangement everywhere.
-     .dRow is not itself gated: the chips are inside it and show on every
-     desktop page, while the select and the search are V2's alone. */
-  .dash .dRow{display:flex;align-items:center;gap:12px;width:100%;margin:26px 0 18px;}
+  /* Two rows, and the first one is the full width of the page: the record
+     select on the left, the search on the right, and nothing between them.
+     They are the two ends of one question -- which set is on the page, and
+     what in it are you looking for -- so the row reads as a pair of anchors
+     rather than as a control and its neighbour. The chips take the second row
+     on their own, which is the one thing that grows: five now, more later.
+     The phone stacks all three, because 375px cannot hold any of this side by
+     side. Same components, same shells (56px on a 14px radius, 44px pills);
+     the arrangement is what changes with the room. */
+  .dash .dRow{display:flex;align-items:center;gap:12px;width:100%;margin:26px 0 14px;}
   .dash .drecs{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
     width:100%;min-width:0;
@@ -607,21 +608,15 @@
     height:56px;padding:0 14px 0 16px;font-size:15px;color:#ececec;cursor:pointer;
   }
   .dash .drecs svg{width:12px;height:8px;flex:none;color:#8b8b86;}
-  /* the chips take the middle and scroll rather than wrap: a chip row that
-     wraps stops reading as a row, and here it would also push the search off
-     the end of the line */
-  .dash .dRow .filters{flex:1 1 auto;min-width:0;margin:0;flex-wrap:nowrap;
-                       overflow-x:auto;scrollbar-width:none;}
-  .dash .dRow .filters::-webkit-scrollbar{display:none;}
-  /* The row cannot always hold five chips between a 256px select and a 256px
-     search, so they scroll -- and a chip cut in half at the search's edge
-     reads as broken rather than as scrollable. The last 28px fade out. Where
-     the chips do fit, the fade sits over empty space and shows nothing. */
-  .dash .dRow .filters{
+  /* the chips scroll rather than wrap -- a chip row that wraps stops reading
+     as a row -- and the last 28px fade, so a chip cut at the edge reads as
+     more to scroll rather than as broken. Where they all fit, the fade sits
+     over empty space and shows nothing. */
+  .dash .filters{margin:0 0 18px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
     -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);
-    mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);
-  }
-  .dash .dRow .fchip{flex:none;}
+    mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);}
+  .dash .filters::-webkit-scrollbar{display:none;}
+  .dash .fchip{flex:none;}
   .dash .dsearch{
     display:none;align-items:center;gap:9px;
     flex:0 0 256px;min-width:0;margin-left:auto;
@@ -961,18 +956,27 @@
   .mTab i{font-size:9px;font-style:normal;letter-spacing:0;line-height:1;white-space:nowrap;}
   /* the chat: the same glass, warmed, so it carries a little more weight
      than any one of the four without leaving the system */
+  /* The assistant's pill is the island's material, a step brighter -- not a
+     colour. It used to carry the accent baked in as a fixed tint, which is the
+     one thing in this dock that contradicts the material's own premise: every
+     other pane takes its colour from what is behind it, and on a black page
+     there is nothing behind this one to be orange. What you saw was the raw
+     tint, and 42% accent over a warm dark plate lands as brown rather than as
+     the accent. Set apart by light, which the glass can actually justify.
+     To make it an accent CTA instead, the honest way is a committed
+     #F78359 with dark ink -- not a wash over near-black. One rule, here. */
   .mChat{
     flex:none;width:var(--navH);height:var(--navH);border-radius:calc(var(--navH)/2);padding:0;cursor:pointer;
     display:flex;align-items:center;justify-content:center;color:#fff;
     background:
-      linear-gradient(158deg,rgba(247,131,89,.42) 0%,rgba(247,131,89,.18) 46%,rgba(255,255,255,.12) 100%),
-      rgba(38,20,14,.62);
+      linear-gradient(158deg,rgba(255,255,255,calc(.20 * var(--lgTintK))) 0%,rgba(255,255,255,calc(.08 * var(--lgTintK))) 46%,rgba(255,255,255,calc(.14 * var(--lgTintK))) 100%),
+      rgba(var(--lgPlate),calc(.66 * var(--lgTintK)));
     transition:transform .16s ease,box-shadow .24s ease,background .24s ease;
   }
   .mChat:hover{
     background:
-      linear-gradient(158deg,rgba(247,131,89,.56) 0%,rgba(247,131,89,.26) 46%,rgba(255,255,255,.15) 100%),
-      rgba(46,24,16,.5);
+      linear-gradient(158deg,rgba(255,255,255,calc(.28 * var(--lgTintK))) 0%,rgba(255,255,255,calc(.12 * var(--lgTintK))) 46%,rgba(255,255,255,calc(.18 * var(--lgTintK))) 100%),
+      rgba(var(--lgPlate),calc(.66 * var(--lgTintK)));
   }
   .mChat:active{transform:scale(.94);}
   /* The assistant's mark, solid like the five beside it. The bubble it
@@ -981,10 +985,10 @@
      read a fifth larger for no reason. 20px lands on the same weight. */
   .mChat svg{width:20px;height:20px;fill:currentColor;stroke:none;}
   body.light .mChat{
-    color:#3a1c0e;
+    color:#141413;
     background:
-      linear-gradient(158deg,rgba(247,131,89,.55) 0%,rgba(247,131,89,.3) 46%,rgba(255,255,255,.6) 100%),
-      rgba(255,255,255,.58);
+      linear-gradient(158deg,rgba(255,255,255,calc(.80 * var(--lgTintK))) 0%,rgba(255,255,255,calc(.56 * var(--lgTintK))) 46%,rgba(255,255,255,calc(.70 * var(--lgTintK))) 100%),
+      rgba(var(--lgPlate),calc(.58 * var(--lgTintK)));
   }
 
   /* ---- the top: the same glass, as light as it can be -------------------
@@ -3633,9 +3637,8 @@
      rather than wrapping, because a chip row that wraps stops reading as a
      row. The search goes with it: at this width it would take a line of its
      own, and the chips are the filter the page is actually offering. */
-  /* the search goes at this width: the row is already carrying a select and a
-     scrolling chip row, and the chips are the filter the page is offering */
-  body.tabM .dash .dsearch{display:none;}
+  /* the tablet reads the same two rows: with the chips on a line of their own
+     the first one has room for both ends, so the search stays */
   /* the table drops the sparkline -- the trend is the one column that says
      least at a glance, and the four that are left all carry a reading. The
      fourth child rather than the svg: a row with no trend has an empty span
@@ -4976,7 +4979,7 @@
          them, with the chips under both: the phone's arrangement, because
          choosing the record set and searching within it are the same question
          asked twice, and the chips cut whatever that leaves. -->
-    <div class="dRow">
+    <div class="dRow v2Only">
       <!-- The same two controls the phone carries, and the same behaviour: the
            field opens the list, the cross clears it, and the chevron leaves
            once something is chosen because the useful action is then undoing
@@ -4993,13 +4996,6 @@
           <i class="mRecMore" aria-hidden="true"><svg viewBox="0 0 12 8" fill="none"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></i>
         </div>
       </div>
-      <div class="filters">
-      <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b> All</button>
-      <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</button>
-      <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</button>
-      <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</button>
-        <button class="fchip v2Only" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b> Other</button>
-      </div>
       <div class="dsearch" id="dSearch">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
           <circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/>
@@ -5007,6 +5003,13 @@
         <input id="dSearchIn" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search biomarkers">
         <button class="msClear" id="dSearchClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       </div>
+    </div>
+    <div class="filters">
+      <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b> All</button>
+      <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</button>
+      <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</button>
+      <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</button>
+      <button class="fchip v2Only" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b> Other</button>
     </div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
