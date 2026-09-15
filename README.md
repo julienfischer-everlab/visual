@@ -732,7 +732,7 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   you were reading rather than to the top of the list, and a hash aimed
   straight at an archived mode sets both halves, since they are set from the
   mode rather than from whichever control was touched.
-- **Left card** — Coverage, or the latest report. Coverage is a reading the page
+- **Left card** — the latest report (the default), or Coverage. A select rather than a toggle, unlike the rows around it: Coverage is not the *off* state of Latest report, it is the other thing that could be there, so `stLeft` is one of the few ids `segmentise` leaves as a select. Coverage is a reading the page
   keeps taking; the latest report is a thing that just arrived. They want the
   same slot and are not the same card, so it is a choice rather than two cards
   fighting for the room. The report card follows the mini-card pattern — the

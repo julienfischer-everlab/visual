@@ -5319,6 +5319,16 @@ is what the latest record IS. And the off state had to be declared AFTER
 same specificity, so source order decides, and stated earlier the card showed
 by default in a slot that already had a card in it.
 
+"Left card --> select (2 options). Coverage. Latest report (default)." It had
+come out as a toggle, because `segmentise` turns every two-option select into
+one -- and that is right for the rows around it, which are all on/off. This one
+is not: Coverage is not the off state of Latest report, it is the other thing
+that could be there. So `stLeft` joins the handful of ids segmentise leaves
+alone, and the default flips to the report -- the card that shows what just
+arrived, with coverage there whenever it is asked for.
+
+  select, no toggle beside it, boots at "Latest report" with the card up
+
 ---
 
 ## 6. Open items
