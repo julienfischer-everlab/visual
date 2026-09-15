@@ -10,8 +10,8 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-14, "Light hero: inside block readable" |
-| Captured on | 2026-09-14 |
+| Captured from version | 2026-09-15, "Phone: card edge to edge" |
+| Captured on | 2026-09-15 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
@@ -167,8 +167,9 @@ the "Your gift from Marc" line and the product title out of the card into a
 head above it, centred, with 64px above and below so the photograph shows
 around them (they move back inside when the stage is wide again, ids and all);
 the card itself keeps the very same glass as the half circle on the first
-fold (`rgba(40,38,36,.36)` over a 60px blur), with 30px padding and 32px at
-the foot; the panel below uses the same 30px sides and 32px foot. In dynamic motion the seed morphs to the card as on
+fold (`rgba(40,38,36,.36)` over a 60px blur), runs edge to edge across the
+screen (the panel below too), with 30px padding and 32px at the foot; the
+panel below uses the same 30px sides and 32px foot. In dynamic motion the seed morphs to the card as on
 desktop, unchanged in colour; the head above the card fades in with the
 card's content. The floating **Claim my gift** at the
 foot of the screen fills 70% of the width, centred; in dynamic motion it waits
