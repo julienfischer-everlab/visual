@@ -5235,6 +5235,37 @@ buys a top bar with no state in it at all.
 "Search 50% and report 50% when search is active." 60/40 to 50/50; measured 48
 and 48 either side of the 12px gap.
 
+### 5.185 The assistant gets its own mark, and the desk gets one row
+
+"Use this svg icon." A sparkle, two filled paths on a 24px artboard, replacing
+the speech bubble on the dock's fifth pill. That is not only a redraw: a bubble
+opens a thread, a sparkle opens something that answers. The button's label goes
+with it -- "Chat" to "Ask Everlab" -- because the label is what a screen reader
+reads out and it should say what the button does.
+
+Sized like the five beside it. The bubble was a 1.5px stroke using about two
+thirds of its 24px box; this is filled and uses about five sixths of the same
+box, so 23px would have read a fifth larger for no reason. 20px lands on the
+same weight.
+
+"Desktop, this in one row. Records 256px width, chips, search far right." The
+desk has width the phone does not, and was spending it on two rows for three
+controls. One row now: the select at a fixed 256px, the chips taking whatever
+is left, the search pushed right at 256px to match. The phone still stacks,
+because 375px cannot hold them side by side -- same components, same shells,
+one arrangement per width rather than one arrangement everywhere.
+
+  desk    select 292..548   chips 560..1104   search 1116..1372 (flush right)
+  tablet  select 292..548   chips 606..1302   no search
+
+Two things fell out of it. `.dRow` can no longer be gated on V2, because the
+chips are inside it now and every desktop page shows chips -- so the gate moved
+down to the select and the search, which are V2's alone. And the chips scroll
+rather than wrap: a chip row that wraps stops reading as a row, and here a
+second line would push the search off the end. Five chips do not fit between
+two 256px boxes at this width, so the last 28px fade -- a chip sliced at the
+search's edge reads as broken, the same chip fading reads as more to scroll.
+
 ---
 
 ## 6. Open items
