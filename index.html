@@ -394,7 +394,14 @@
   /* ---- In situ: the concept inside the product dashboard ---- */
   .dash{
     position:fixed;left:0;right:0;bottom:0;top:57px;display:none;overflow:auto;z-index:1;
-    background:#0d0d0c;color:#ececec;
+    /* the page's ground, once. Anything that has to sit ON the page and look
+       like the page reads this rather than naming the colour again -- which is
+       how the pinned filter block ended up grey on the tablet, whose ground is
+       black where the desk's is #0d0d0c. --pageBg0 is the same colour at zero
+       alpha, spelled out rather than `transparent`, which some engines
+       interpolate through grey. */
+    --pageBg:#0d0d0c; --pageBg0:rgba(13,13,12,0);
+    background:var(--pageBg);color:#ececec;
   }
   body.m2 .dash{display:block;}
   .dash *{box-sizing:border-box;}
@@ -601,21 +608,17 @@
      side. Same components, same shells (56px on a 14px radius, 44px pills);
      the arrangement is what changes with the room. */
   .dash .dFilters{
-    position:sticky;top:0;z-index:5;background:#0d0d0c;padding-top:26px;
+    position:sticky;top:0;z-index:5;background:var(--pageBg);padding-top:26px;
   }
   /* pinned, the block's plate stops dead and the list carries on from the next
      pixel -- a row cut across its own middle. It carries on past its own bottom
      as a fade of the page's ground instead, the same 30px the phone uses. */
   .dash .dFilters::after{
     content:"";position:absolute;left:0;right:0;top:100%;height:30px;
-    background:linear-gradient(to bottom,#0d0d0c,rgba(13,13,12,0));
+    background:linear-gradient(to bottom,var(--pageBg),var(--pageBg0));
     pointer-events:none;opacity:0;transition:opacity .22s ease;
   }
   .dash .dFilters.stuck::after{opacity:1;}
-  body.light .dash .dFilters{background:#f7f2e9;}
-  body.light .dash .dFilters::after{
-    background:linear-gradient(to bottom,#f7f2e9,rgba(247,242,233,0));
-  }
   .dash .dRow{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 22px;}
   .dash .drecs{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -3311,7 +3314,7 @@
   body.light #arcA text{fill:#6d5548;}
   /* desktop dashboard */
   /* the biomarker pages sit on white in light; the cards carry the tone */
-  body.light .dash{background:#fff;color:#33291f;}
+  body.light .dash{--pageBg:#fff;--pageBg0:rgba(255,255,255,0);color:#33291f;}
   /* .dash is a *fixed* layer, so anything taller than the viewport it is sized
      to — an embed whose frame is content-height, a full-page capture, an
      over-scroll — shows the page behind it instead. That page is the organ
@@ -3514,8 +3517,8 @@
   body.b5 #organSlot .hiShare{
     display:flex;position:absolute;right:14px;top:14px;z-index:6;margin-left:0;
   }
-  body.b5 .dash{background:#000;}
-  body.light.b5 .dash{background:#fff;}
+  body.b5 .dash{--pageBg:#000;--pageBg0:rgba(0,0,0,0);}
+  body.light.b5 .dash{--pageBg:#fff;--pageBg0:rgba(255,255,255,0);}
   /* body.light.b2 .dash .dcard.organ carries one more class than the plain
      light rule, so the organ card needs saying at that weight here too */
   body.light.b5 .dash .dcard,

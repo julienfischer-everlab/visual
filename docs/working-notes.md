@@ -5360,6 +5360,28 @@ to fade.
 
   desk and tablet: pinned from scrollTop 700, block 182px, fade on
 
+### 5.189 The page's ground, said once
+
+"Why grey bg? Should be same bg colour as the body." Because I had named the
+colour twice. The block was `background:#0d0d0c`, which is the desk's ground --
+and the tablet's is `#000`, so the block sat on it as a grey slab. Light made
+three, and a fourth would have been one more place to forget.
+
+The ground is a token now, declared where each theme declares it and read by
+everything that has to look like the page:
+
+  .dash            --pageBg:#0d0d0c   --pageBg0:rgba(13,13,12,0)
+  body.light       --pageBg:#fff
+  body.b5          --pageBg:#000      (the tablet, and Desktop b5)
+  body.light.b5    --pageBg:#fff
+
+`--pageBg0` is the same colour at zero alpha rather than `transparent`, because
+some engines interpolate a gradient to `transparent` through grey -- the phone's
+fade already spelled its own out for that reason, and now both read the token
+instead.
+
+  m10 / m21 / m18, colour and light: page and block report the same value
+
 ---
 
 ## 6. Open items
