@@ -5119,6 +5119,67 @@ Chromium does not reproduce.
 chips' own top padding rather than on the row, so the negative margins that
 give them the full width are untouched.
 
+### 5.181 The bar is one surface, and the hero cannot reach past it
+
+"Fixed top nav should be above everything and have a black bg, and end with a
+gradient progressive at the bottom. Atm I see a gap at the top."
+
+That sentence is the specification, and it is better than what was there. The
+strip had been treated as a hole to be patched -- a plate here, another plate
+there, each covering what the other missed -- rather than as part of the bar.
+It is the bar's now: one surface from the top of the screen through the fields
+and the chips, ending in the fade, with the hour and the battery floating over
+it. The bar's own plate reaches up by --msTop + --msGap + 1px (the pixel is the
+overlap into its own background), and the status bar carries a second plate,
+anchored to the screen top, that fades in over the first 80px of scroll and
+holds the strip while the bar is still a page away. Where both apply they cover
+the same strip twice rather than meeting along an edge. Two surfaces that have
+to meet perfectly will eventually fail to; two that overlap cannot.
+
+  strip black at every scroll from 100px, pinned or not, on V5 V6 V7 V8
+  pinned frames 600-1400 on all four: nothing in the strip but the notch
+
+And one thing measurement could not reach. The strip was clean in every frame I
+could render, which means the arithmetic was never the problem -- so the
+remaining suspect is the one element headless Chromium does not reproduce
+faithfully: the hero's title pill is `.lgGlass`, a backdrop-filter, sitting at
+exactly the coordinates the reported fragment kept appearing at. A
+backdrop-filter is the one thing in this file that can be composited outside
+the stacking context it was painted in. `#mHead` gets `isolation: isolate`,
+which costs nothing and closes that route.
+
+Worth saying plainly: I could not reproduce this one in four attempts. The fix
+is a change of construction plus a guess at a compositing path. If it survives,
+the next thing to check is not the CSS.
+
+### 5.182 The search is an icon until it is a search
+
+"Search uses too much space. Use a simple search icon CTA only and extend the
+search field on click to cover 60% of the width, which will reduce the width of
+the report select. This is on mobile."
+
+Right: a field that says "Search" and holds nothing was spending 40% of the row
+on a word. At rest it is a 56px square with the magnifier in it and the select
+takes everything else -- 81% rather than 60%, which is enough for the report's
+title and its date on two lines. Tapped, the field opens to 60% and the select
+gives the room back.
+
+Both are flex-basis with a transition, so the swap is two boxes changing width
+rather than a reflow. The select drops its eyebrow while the search is open:
+category and date are the detail you drop first when the room runs out, and one
+line that can be read beats two that cannot.
+
+  rest    select 81%   search 56px
+  tapped  select 39%   search 58%   (60/40 of the row either side of the gap)
+
+The collapsed field is zero-wide, NOT display:none. The tap on the box opens
+the search by focusing the field, and a display:none element cannot take focus
+-- hiding it that way made the icon a button that did nothing, which the first
+run caught.
+
+It stays open while it holds text, closed otherwise. A field with a search in
+it that collapsed to an icon would be a filter you cannot see or undo.
+
 ---
 
 ## 6. Open items

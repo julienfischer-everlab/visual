@@ -1154,12 +1154,16 @@
      and the label would truncate, which is the one thing a control naming the
      current state cannot do. */
   .msRow{display:flex;align-items:center;gap:12px;position:relative;}
-  /* 60 / 40 of the space either side of the gap -- taking 6px off each
-     instead skews the ratio, since 6px is a larger share of the smaller one.
-     The select gets the larger share because it carries two lines of text
-     when a report is chosen and the search none; a title longer than the
-     space ellipsizes rather than wrapping into the date under it. */
-  .msRecWrap{position:relative;flex:0 0 calc((100% - 12px) * .60);min-width:0;}
+  /* At rest the search is its own icon and nothing else, and the select takes
+     everything left over -- a field that says "Search" and holds no text is
+     spending 40% of the row on a word. Tapped, it opens to 60% and the select
+     gives the room back; the select carries two lines when a report is chosen,
+     so it is the one that can afford to lose width rather than the field being
+     typed into. Both are flex-basis, so the swap is one transition on two
+     boxes rather than a reflow. */
+  .msRecWrap{position:relative;flex:1 1 auto;min-width:0;
+             transition:flex-basis .24s ease;}
+  .msWrap.searchOn .msRecWrap{flex:0 0 calc((100% - 12px) * .40);}
   .msRec{
     width:100%;display:flex;align-items:center;gap:8px;
     height:56px;padding:0 14px 0 16px;
@@ -1201,7 +1205,24 @@
   .msRec:hover{border-color:#5a5a56;}
   .msRec[aria-expanded="true"]{border-color:#5a5a56;background:rgba(255,255,255,.05);}
   .msRec[aria-expanded="true"] .msRecChev{transform:rotate(180deg);}
-  .msRow .msBox{flex:0 0 calc((100% - 12px) * .40);min-width:0;}
+  .msRow .msBox{flex:0 0 56px;min-width:0;padding:0;justify-content:center;
+                cursor:pointer;transition:flex-basis .24s ease,border-color .16s ease;}
+  .msWrap.searchOn .msRow .msBox{flex:0 0 calc((100% - 12px) * .60);
+                                 padding:0 14px 0 16px;justify-content:flex-start;}
+  /* Collapsed, the field is zero-wide rather than display:none. It has to stay
+     focusable -- the tap on the box opens the search BY focusing the field, and
+     a display:none element cannot take focus, so hiding it that way made the
+     icon a button that did nothing. */
+  .msRow .msBox input{flex:0 0 0;width:0;opacity:0;pointer-events:none;
+                      transition:opacity .18s ease;}
+  .msWrap.searchOn .msRow .msBox input{flex:1 1 auto;width:auto;opacity:1;pointer-events:auto;}
+  .msWrap:not(.searchOn) .msRow .msBox .msIco{margin:0;}
+  /* With the search open the select has 40% and a cross in it, so the eyebrow
+     goes: category and date are the detail you drop first when the room runs
+     out, and one line that can be read beats two that cannot. It comes back
+     when the search closes. */
+  .msWrap.searchOn .msRec i{display:none;}
+  .msWrap:not(.searchOn) .msClear{display:none !important;}
   body.light .msRec{border-color:#ddd3bf;color:#2e1f1a;}
   body.light .msRec:hover{border-color:#9b8a75;}
   body.light .msRec[aria-expanded="true"]{background:rgba(46,31,26,.05);border-color:#9b8a75;}
@@ -16367,8 +16388,20 @@
       }
     });
     const load = bio.load, typed = bio.typed;
+    // Open while it is being used and while it is holding a result, closed
+    // otherwise: a field with text in it that collapsed to an icon would be a
+    // filter you cannot see or undo.
+    const openSearch = () =>
+      wrap.classList.toggle('searchOn',
+        document.activeElement === input || input.value.length > 0);
+    // the collapsed box is the button: a tap anywhere in it opens the field
+    const box = wrap.querySelector('.msBox');
+    if (box) box.addEventListener('click', e => {
+      if (wrap.classList.contains('searchOn')) return;
+      e.preventDefault(); input.focus();
+    });
     input.addEventListener('focus', () => {
-      wrap.classList.add('focus');
+      wrap.classList.add('focus'); openSearch();
       document.body.classList.add('mSearchOn');
       placeBar(); setStick();
       // bring the field up to its pinned place; this scroll is ours
@@ -16379,6 +16412,7 @@
     input.addEventListener('blur', () => {
       wrap.classList.remove('focus');
       document.body.classList.remove('mSearchOn');
+      openSearch();      // empty and let go: back to an icon
       holdScroll(250);   // the slack going may clamp the scroll; not the reader's doing
       setStick();
     });
@@ -16389,7 +16423,7 @@
     // field". pointerdown is prevented so a focused field is not blurred by
     // the tap, and an unfocused one is not focused by it.
     clear.addEventListener('pointerdown', e => e.preventDefault());
-    clear.addEventListener('click', () => { input.value = ''; typed(); });
+    clear.addEventListener('click', () => { input.value = ''; typed(); openSearch(); });
     // a scroll by the reader dismisses the keyboard; our own scroll-to-top does
     // not. The field stays pinned either way, so a tap brings the keyboard back.
     sc.addEventListener('scroll', () => {
