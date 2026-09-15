@@ -5837,8 +5837,31 @@ likely to be open -- the phone's Overview -- carried the tool only on the small
 organ card far down the list. It hangs at the top right of the hero now, where
 a card's corner would be, above the halo and the arc.
 
-  14 of the 24 pages carry an organ and all 14 now show the tool:
-  m16 m17 m19 m20 carry two, the hero's and the mini card's
+  14 of the 24 pages carry an organ and all 14 now show the tool
+
+"Where is the rotation tool?" -- asked again, and fairly. Two things were wrong
+with it and neither was where it lived.
+
+**It did not say what it was.** An unlabelled icon, 9% white, in a corner that
+already holds other icons. It reads "Rotate" now beside the glyph, at 16% with
+full-strength ink, everywhere there is room for a label -- which is everywhere
+except the phone's small organ card, whose corner language is a square and
+stays one.
+
+**And on the phone there were two of them, stacked.** `#mOrgCard` is moved
+*inside* `#mHeroOrgan` by `layoutV4` -- after the handles are mounted, so no
+check at mount time can see the nesting -- and both pills landed in the same
+corner, one over the other. `.hasRot .hasRot .dcRot{display:none}` settles it:
+one handle per organ, the outer host wins, said in CSS because the nesting
+comes and goes with the layout.
+
+The hero's handle also moved off the top-right corner, where it sat directly
+under the title's share button and read as a second header control rather than
+as the organ's own. Below it now, on the organ, clear of the arc and the
+legend -- the legend is what it collided with when it was tried on the name
+strip.
+
+  one handle on every one of the 14 pages that carry an organ, and only one
 
 ---
 
