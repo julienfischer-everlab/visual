@@ -5503,6 +5503,53 @@ At 22px "Pathology test" no longer fits the phone card's 127px of content
 width and takes two lines; at 18px it fitted on one. That is the cost of the
 bump, not a bug, and one number reverses it.
 
+### 5.196 Expanded Report
+
+A tweak for the filter's shape. Off, the records live behind a select beside
+the search. On, they are the first row -- a carousel of cards, All first and
+six reports after it -- and the second row is the chips with the search at
+their right end.
+
+**A card is the choice, so there is no cross.** Picking another card is how you
+undo this one, and All is a card like the rest rather than a cleared state.
+That is the whole reason the select needed a cross and this does not.
+
+**One selection, one function.** `choose()` moved out of the record menu's
+block in `bioFilter` and now sits in the factory's own scope: the menu, the
+carousel and the list all call it, so no control can say one thing while the
+list shows another. It updates whichever of the two exist -- `rec.listEl` and
+`cards` are both optional -- recounts the chips and runs the same 380ms beat a
+chip and a keystroke run. The carousel is built from `RECS`, the same table
+the menu reads.
+
+**Six reports.** `RECS` gained a sixth (Baseline panel, 18 Jun 2025, 38
+readings; the table is in date order, which `assignRecords` depends on -- a
+reading shows the date of the first record it appears in). `r2` was renamed
+from *Pathology test* to *Lipid panel*: two cards reading the same thing side
+by side in a carousel looks like a bug, where two rows in a dated menu did not.
+
+**The search moves.** It is a child of the row it shares with the select and
+has to become a child of the row the chips are in, which CSS cannot do. So it
+moves, and a comment node holds its seat -- the same trick `layoutV4` uses,
+and for the same reason: a remembered sibling can be somewhere else by the
+time it is handed back, a placeholder cannot. In the chips' row it is shaped
+like a chip: fully rounded, 44px, the chips' own height.
+
+Two gates needed saying outright:
+
+- `body:not(.expRep) .rcCar{display:none !important}`. The desk's carousel
+  wears `.v2Only` for its b2 gate, and `body.b2 .dash .v2Only{display:flex}` is
+  a class deeper than a plain `.rcCar` rule -- so with the tweak off, the row
+  showed on every b2 page.
+- `body.expRep .dash .rcCar{display:none}` with a `.b2` rule over it. The first
+  desktop page filters by chips alone, with no record select and no search, so
+  a carousel of records is a control that page's design does not have.
+
+  24 pages with the tweak on, no script errors; 7 cards everywhere the row
+  appears, search 44px and to the right of the chips on all 13 surfaces that
+  carry one; picking a card narrows the list to that record and the chips
+  recount to it (r2: 110 -> 32)
+
 ---
 
 ## 6. Open items

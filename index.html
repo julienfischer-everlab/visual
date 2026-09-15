@@ -1369,6 +1369,71 @@
   body.light .msBox{--msEdge:#ddd3bf;color:#9b8a75;}
   body.light .msWrap.focus .msBox{--msEdge:#2e241c;}
   .msIco{width:20px;height:20px;flex:none;}
+
+  /* ---- Expanded Report -------------------------------------------------
+     The records stop being a menu and become the first row: a carousel of
+     cards, one per report, All first. A card IS the choice, so there is no
+     cross to dismiss -- picking another card is how you undo this one, and
+     All is a card like the rest rather than a cleared state. The second row
+     is the chips with the search at their right end, shaped like a chip
+     because it now sits in the chips' row: fully rounded and the same 44px.
+     One layout on both surfaces -- the phone and the desk differ only in how
+     much room the row has, which is what scrolling is for. */
+  .rcCar{
+    display:none;gap:8px;overflow-x:auto;scrollbar-width:none;
+    padding:0 0 12px;
+    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 24px),transparent);
+    mask-image:linear-gradient(to right,#000 calc(100% - 24px),transparent);
+  }
+  .rcCar::-webkit-scrollbar{display:none;}
+  /* The desk's carousel wears .v2Only for its b2 gate, and that rule is an
+     extra class deep -- so off has to say so outright, or the row shows on
+     every b2 page with the tweak switched off. */
+  body:not(.expRep) .rcCar{display:none !important;}
+  body.expRep .rcCar{display:flex;}
+  /* and on the desk only where the record select and the search live: the
+     first desktop page filters by chips alone, and a carousel of records is a
+     control that page's design does not have */
+  body.expRep .dash .rcCar{display:none;}
+  body.expRep.b2 .dash .rcCar{display:flex;}
+  /* the select and its cross have no job once every record is on the page */
+  body.expRep .msRecWrap,
+  body.expRep .dash .dRecWrap{display:none !important;}
+  body.expRep #phone .msRow,
+  body.expRep .dash .dRow{display:none;}
+  .rcCard{
+    flex:none;min-width:0;font:inherit;text-align:left;cursor:pointer;
+    border:0;border-radius:14px;padding:11px 16px;
+    background:rgba(255,255,255,.06);color:#ececec;
+    box-shadow:inset 0 0 0 1.5px transparent;
+    -webkit-tap-highlight-color:transparent;
+    transition:background .18s ease,box-shadow .18s ease,transform .12s ease;
+  }
+  .rcCard:active{transform:scale(.97);}
+  .rcCard b{display:block;font-weight:400;font-size:15px;white-space:nowrap;}
+  .rcCard i{display:block;font-style:normal;font-size:12px;color:#8b8b86;
+            margin-top:3px;white-space:nowrap;}
+  .rcCard.on{background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1.5px #fff;}
+  .rcCard:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:2px;}
+  body.light .rcCard{background:rgba(46,31,26,.06);color:#2e1f1a;}
+  body.light .rcCard i{color:#7d6b58;}
+  body.light .rcCard.on{background:rgba(46,31,26,.1);box-shadow:inset 0 0 0 1.5px #2e241c;}
+  /* row two: the chips take the room they need and the search holds its end */
+  body.expRep .msRow2,
+  body.expRep .dRow2{display:flex;align-items:center;gap:12px;}
+  body.expRep .msRow2 .mchips,
+  body.expRep .dRow2 .filters{flex:1 1 auto;min-width:0;margin-bottom:0;}
+  /* the chips keep their bleed to the left edge and stop short of the search */
+  body.expRep .msWrap .mchips{margin:0 0 0 -13px;padding:14px 0 10px 13px;}
+  body.expRep .msRow2 .msBox,
+  body.expRep .dRow2 .dsearch{
+    flex:0 0 auto;height:44px;border-radius:999px;padding:0 16px;gap:8px;
+  }
+  body.expRep .msRow2 .msBox{width:128px;}
+  body.expRep .dRow2 .dsearch{width:248px;margin-left:0;}
+  body.expRep .msRow2 .msBox input,
+  body.expRep .dRow2 .dsearch input{flex:1 1 auto;width:auto;opacity:1;pointer-events:auto;font-size:14px;}
+  body.expRep .msRow2 .msBox .msIco{width:17px;height:17px;}
   .msBox input{
     flex:1;min-width:0;background:none;border:0;outline:none;padding:0;margin:0;
     font:inherit;font-size:15px;color:#ececec;-webkit-appearance:none;appearance:none;
@@ -4880,6 +4945,16 @@
             <option value="empty">Empty</option>
           </select>
         </div>
+        <!-- The filter's shape. Off, the records live behind a select beside
+             the search; on, they are a carousel of cards on a row of their own
+             and the search moves down beside the chips. -->
+        <div class="tkRow">
+          <span class="lbl">Expanded Report</span>
+          <select id="stExpRep" aria-label="Expanded report filter">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+        </div>
         <!-- Which card sits on the left of the pair. Coverage is a reading the
              page keeps taking; the latest report is a thing that just arrived.
              They want the same slot and not the same card, so this is a choice
@@ -5063,6 +5138,10 @@
          rows pin together -- two sticky blocks would part company the moment
          one of them changed height. -->
     <div class="dFilters" id="dFilters">
+    <!-- Expanded Report's first row: the records as a carousel of cards rather
+         than a menu behind a button. Empty here and filled from RECS, the same
+         table the menu reads. -->
+    <div class="rcCar v2Only" id="dRecCar" role="group" aria-label="Choose a report"></div>
     <div class="dRow v2Only">
       <!-- The same two controls the phone carries, and the same behaviour: the
            field opens the list, the cross clears it, and the chevron leaves
@@ -5088,12 +5167,15 @@
         <button class="msClear" id="dSearchClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       </div>
     </div>
+    <!-- row two: the chips, and in Expanded Report the search at their right -->
+    <div class="dRow2" id="dRow2">
     <div class="filters">
       <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b> All</button>
       <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</button>
       <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</button>
       <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</button>
       <button class="fchip v2Only" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b> Other</button>
+    </div>
     </div>
     </div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -5292,6 +5374,8 @@
          through a short skeleton; the cross clears; the main navigation leaves
          while the keyboard is up; a scroll lets the field go. See mSearch. -->
     <div class="msWrap" id="mSearch">
+      <!-- Expanded Report's first row, filled from RECS -->
+      <div class="rcCar" id="mRecCar" role="group" aria-label="Choose a report"></div>
       <div class="msRow">
       <!-- Which set of results is on the page, beside the thing that searches
            them: one row, one height, because choosing the record set and
@@ -5332,12 +5416,14 @@
            middle -- a row of half pills under the plate, which reads as a
            second bar. They are the same filter as the select, so they pin with
            it and the list passes under one edge. -->
+      <div class="msRow2" id="mRow2">
       <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
         <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
         <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
         <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>
         <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</button>
         <button class="fchip mOther" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</button>
+      </div>
       </div>
     </div>
 
@@ -9690,6 +9776,7 @@
       (CARD_STATE.emAge ? ' emAge' : '') +
       (CARD_STATE.emOrg ? ' emOrg' : '') +
       (CARD_STATE.leftRep ? ' leftRep' : '') +
+      (CARD_STATE.expRep ? ' expRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.navBar ? ' navBar' : '') +
@@ -14792,6 +14879,9 @@
                        // The latest report is the default: it is the thing that
                        // just arrived, and coverage is there whenever it is asked for
                        leftRep: true,
+                       // the filter's shape: records behind a select, or as a
+                       // carousel with the search down beside the chips
+                       expRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
@@ -15193,6 +15283,37 @@
     addEventListener('resize', set);
     set();
   })();
+
+  // Expanded Report. The rows it wants cannot be reached by CSS alone: the
+  // search is a child of the row it shares with the select, and it has to end
+  // up a child of the row the chips are in. So it moves, and a comment node
+  // holds its seat -- the same trick the V4 layout uses, and for the same
+  // reason: a remembered sibling can be somewhere else by the time it is
+  // handed back, a placeholder cannot.
+  const EXP_MOVED = [];
+  function expRepLayout(on){
+    while (EXP_MOVED.length){
+      const t = EXP_MOVED.pop();
+      if (t.mark.parentNode) t.mark.parentNode.replaceChild(t.el, t.mark);
+    }
+    if (!on) return;
+    for (const [selBox, rowId] of [['#phone .msRow .msBox', 'mRow2'],
+                                   ['.dash .dRow .dsearch', 'dRow2']]){
+      const el = document.querySelector(selBox), row = document.getElementById(rowId);
+      if (!el || !row) continue;
+      const mark = document.createComment('exp');
+      el.parentNode.insertBefore(mark, el);
+      EXP_MOVED.push({ el, mark });
+      row.appendChild(el);
+    }
+  }
+  const stExpSel = document.getElementById('stExpRep');
+  if (stExpSel) stExpSel.addEventListener('change', () => {
+    CARD_STATE.expRep = stExpSel.value === 'on';
+    document.body.classList.toggle('expRep', CARD_STATE.expRep);
+    expRepLayout(CARD_STATE.expRep);
+    resize();
+  });
 
   const stLeftSel = document.getElementById('stLeft');
   if (stLeftSel) stLeftSel.addEventListener('change', () => {
@@ -16040,10 +16161,11 @@
   const RECS = [
     { id: 'all', label: 'All records' },
     { id: 'r1',  label: 'Pathology test',          cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026' },
-    { id: 'r2',  label: 'Pathology test',          cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026' },
+    { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026' },
     { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026' },
     { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025' },
-    { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025' }
+    { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025' },
+    { id: 'r6',  label: 'Baseline panel',          cat: 'Pathology', date: '18 Jun 2025', n: 38, short: 'Jun 2025' }
   ];
   // where the reading sits on its own range bar: inside the green, into the
   // amber, past it -- an unclassified one has no place to sit and shows none
@@ -16246,29 +16368,6 @@
         if (isOpen() && !rec.menu.contains(e.target) && !rec.btn.contains(e.target)) open(false);
       });
       addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) open(false); });
-      // Everything the choice changes, in one place, so the button can never
-      // say one thing while the list shows another.
-      function choose(id, reload){
-        recSet = id;
-        const r = RECS.find(x => x.id === id) || RECS[0];
-        [].slice.call(rec.listEl.children).forEach(x => {
-          const on = x.dataset.r === id;
-          x.classList.toggle('on', on);
-          x.setAttribute('aria-selected', String(on));
-        });
-        if (rec.lbl) rec.lbl.textContent = r.label;
-        if (rec.ey){
-          rec.ey.hidden = !r.cat;
-          rec.ey.innerHTML = r.cat ? r.cat + ' &nbsp;|&nbsp; ' + r.date : '';
-        }
-        // chevron or cross, never both: with a record chosen the useful action
-        // is undoing it, and All records is the undone state so it needs none
-        const chosen = id !== 'all';
-        if (rec.wrap) rec.wrap.classList.toggle('cleared', chosen);
-        if (rec.clear) rec.clear.setAttribute('aria-hidden', String(!chosen));
-        if (countChips) countChips();
-        if (reload) load(false);
-      }
       rec.listEl.addEventListener('click', e => {
         const o = e.target.closest('.mRecOpt');
         if (!o) return;
@@ -16278,6 +16377,61 @@
       if (rec.clear) rec.clear.addEventListener('click', e => {
         e.stopPropagation();       // clearing is not opening
         choose('all', true);
+      });
+    }
+
+    // Everything the choice changes, in one place, so no control can say one
+    // thing while the list shows another -- the menu, the carousel and the
+    // list all read this one function. It sits outside the menu's block
+    // because the Expanded Report layout has no menu at all.
+    function choose(id, reload){
+      recSet = id;
+      const r = RECS.find(x => x.id === id) || RECS[0];
+      if (rec.listEl){
+        [].slice.call(rec.listEl.children).forEach(x => {
+          const on = x.dataset.r === id;
+          x.classList.toggle('on', on);
+          x.setAttribute('aria-selected', String(on));
+        });
+      }
+      if (cards){
+        [].slice.call(cards.children).forEach(x => {
+          const on = x.dataset.r === id;
+          x.classList.toggle('on', on);
+          x.setAttribute('aria-pressed', String(on));
+        });
+      }
+      if (rec.lbl) rec.lbl.textContent = r.label;
+      if (rec.ey){
+        rec.ey.hidden = !r.cat;
+        rec.ey.innerHTML = r.cat ? r.cat + ' &nbsp;|&nbsp; ' + r.date : '';
+      }
+      // chevron or cross, never both: with a record chosen the useful action
+      // is undoing it, and All records is the undone state so it needs none
+      const chosen = id !== 'all';
+      if (rec.wrap) rec.wrap.classList.toggle('cleared', chosen);
+      if (rec.clear) rec.clear.setAttribute('aria-hidden', String(!chosen));
+      if (countChips) countChips();
+      if (reload) load(false);
+    }
+
+    // The Expanded Report carousel: the same records as the menu, laid out as
+    // a row of cards rather than hidden behind a button. Each card IS the
+    // choice, so there is no cross -- picking another card is how you undo
+    // this one, and All is a card like the rest rather than a cleared state.
+    const cards = cfg.cards;
+    if (cards){
+      cards.innerHTML = RECS.map(r =>
+        '<button class="rcCard' + (r.id === 'all' ? ' on' : '') + '" type="button" ' +
+                'aria-pressed="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
+          '<b>' + r.label + '</b>' +
+          '<i>' + (r.cat ? r.cat + ' &nbsp;|&nbsp; ' + r.date
+                         : (RECS.length - 1) + ' reports') + '</i>' +
+        '</button>').join('');
+      cards.addEventListener('click', e => {
+        const c = e.target.closest('.rcCard');
+        if (!c || c.classList.contains('on')) return;
+        choose(c.dataset.r, true);
       });
     }
 
@@ -16382,6 +16536,7 @@
       skel: document.getElementById('dSkel'), empty: document.getElementById('dSearchEmpty'),
       input: input, fieldEl: field,
       chipsBar: document.querySelector('.dash .filters'),
+      cards: document.getElementById('dRecCar'),
       rec: {
         btn: document.getElementById('dRecSel'), lbl: document.getElementById('dRecLbl'),
         ey: document.getElementById('dRecEy'), menu: document.getElementById('dRecMenu'),
@@ -16518,6 +16673,7 @@
       list: recs, groupSel: '.mgrp', rowSel: '.mbrow',
       skel: skel, empty: empty, input: input, fieldEl: wrap,
       chipsBar: document.getElementById('mChips'),
+      cards: document.getElementById('mRecCar'),
       rec: {
         btn: document.getElementById('mRecSel'), lbl: document.getElementById('mRecLbl'),
         ey: document.getElementById('mRecEy'), menu: document.getElementById('mRecMenu'),
