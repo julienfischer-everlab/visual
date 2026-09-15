@@ -878,17 +878,29 @@
     .card-head .kicker .chip{justify-content:center;}
     .card-head .title-row{margin:0;padding:0;justify-content:center;}
     .card-head h2{text-align:center;font-size:clamp(26px, 6cqw + 4px, 32px);}
-    /* the card keeps the very same glass as the half circle on the first
-       fold (rgba(40,38,36,.36) over a 60px blur): the seed morphs into it
-       unchanged, and the static card carries the same surface */
+    /* the card is one solid black surface from under the title group to the
+       bottom of the screen: the What's next block and the footer sit inside
+       it, so the photograph shows only behind the title group above. In
+       dynamic motion the seed keeps its glass on the first fold, morphs to
+       the card and turns black as it lands */
+    .card{background:#0E0C0B;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:28px 28px 0 0;}
+    body[data-state="revealing"] .seed, body[data-state="gift"] .seed{background:#0E0C0B;-webkit-backdrop-filter:none;backdrop-filter:none;}
+    .seed{transition:transform 1100ms cubic-bezier(.2,.7,.2,1), background-color 700ms ease;}
+    .hero{grid-template-rows:auto minmax(0,1fr);align-content:stretch;}
+    .card{min-height:100%;}
+    .card .info, body[data-card="cards"] .card .info{padding-bottom:132px;}   /* room under the content for the floating button */
+    .card .foot{position:static;margin:36px 0 0;opacity:1;transform:none;}
+    .card-next{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;margin-top:28px;padding-top:32px;border-top:1px solid rgba(255,255,255,.10);}
+    .card-next .next-label.mono-label{margin-top:0;}
+    .side{display:none;}
     .hero{padding-top:72px;}
-    body[data-card="cards"] .hero{height:auto;min-height:0;padding:72px 0 8px;}  /* no desktop frame on phones */
+    body[data-card="cards"] .hero{height:auto;min-height:100cqh;padding:72px 0 0;}  /* no desktop frame on phones; the card runs to the bottom */
     .card .pass{display:none;}
     .title-row{padding-right:0;}
     .blurb{padding-right:0;}
     .incl li{white-space:normal;}
     .more{margin-top:40px;gap:40px;}
-    .gift{overflow-y:auto;justify-content:flex-start;padding:0 0 120px;}  /* edge to edge; room to scroll everything clear of the floating button */
+    .gift{overflow-y:auto;justify-content:flex-start;padding:0;}  /* edge to edge; the card itself keeps room for the floating button */
     .hero{height:auto;min-height:0;padding:88px 0 8px;}
     .card{max-height:none;}
     .foot{position:static;margin-top:28px;white-space:normal;width:100%;}
@@ -1011,10 +1023,12 @@
   body[data-device="phone"] .logo{top:76px;}
   body[data-device="phone"] .back{top:74px;right:22px;}
   body[data-device="phone"] .hero{padding-top:118px;}
+  body[data-device="phone"][data-card="cards"] .hero{padding-top:72px;}   /* the black card runs to the bottom: the frame's own padding goes */
   body[data-device="phone"] .intro{padding-top:60px;padding-bottom:184px;}
   body[data-device="phone"][data-motion="dynamic"] .intro{padding-top:124px;padding-bottom:120px;}
   body[data-device="phone"][data-motion="static"] .intro{padding:80px 22px;}
   body[data-device="phone"] .gift{padding-bottom:140px;}
+  body[data-device="phone"][data-card="cards"] .gift{padding-bottom:0;}
   body[data-device="phone"] .act-float{padding-bottom:48px;border-radius:0 0 50px 50px;}
 
   /* ---- motion tweak: static is two folds on one plain scroll. The intro is
@@ -1807,13 +1821,16 @@
   // phones: the eyebrow and the title move out of the card into the head slot
   // above it (and back when the stage is wide again); ids travel with the nodes
   var cardHead = document.getElementById('cardHead'), headOut = false;
+  var footEl = document.querySelector('.foot'), footHome = footEl.parentNode, footNext = footEl.nextSibling;
+  function isPhoneStage(){ return document.getElementById('stage').clientWidth <= 820; }
   function placeHead(){
-    var phone = document.getElementById('stage').clientWidth <= 820;
+    var phone = isPhoneStage();
     if(phone === headOut) return;
     var info = document.getElementById('infoScroll'), k = document.querySelector('.kicker'), t = document.querySelector('.title-row');
-    if(phone){ cardHead.appendChild(k); cardHead.appendChild(t); }
-    else { info.insertBefore(k, info.firstChild); info.insertBefore(t, document.querySelector('.card .blurb')); }
+    if(phone){ cardHead.appendChild(k); cardHead.appendChild(t); document.querySelector('.card .info').appendChild(footEl); }
+    else { info.insertBefore(k, info.firstChild); info.insertBefore(t, document.querySelector('.card .blurb')); footHome.insertBefore(footEl, footNext); }
     headOut = phone;
+    if(typeof applyNext === 'function') applyNext();
     panelSet(); if(state === 'gift') seedSet(cardRect());
   }
   placeHead();
@@ -1868,15 +1885,22 @@
 
   /* ---------- next tweak: the What's next block outside (its own card) or inside the hero card ---------- */
   var nextSel = document.getElementById('nextSel');
-  function setNext(v){
-    v = v === 'inside' ? 'inside' : 'outside';
+  // phones always keep the block inside the card; the tweak decides on desktop
+  function applyNext(){
+    var v = isPhoneStage() ? 'inside' : nextSel.value;
     document.body.dataset.next = v;
-    nextSel.value = v;
     var label = document.querySelector('.next-label'), steps = document.getElementById('steps');
     var sideIn = document.querySelector('.side-in'), slot = document.getElementById('cardNext');
     if(v === 'inside'){ slot.appendChild(label); slot.appendChild(steps); }
     else { sideIn.insertBefore(steps, document.querySelector('.timeline')); sideIn.insertBefore(label, steps); }
+    // the footer sits after the block inside the card on phones
+    if(isPhoneStage()) document.querySelector('.card .info').appendChild(footEl);
     requestAnimationFrame(function(){ panelSet(); if(state === 'gift') seedSet(cardRect()); });
+  }
+  function setNext(v){
+    v = v === 'inside' ? 'inside' : 'outside';
+    nextSel.value = v;
+    applyNext();
   }
   setNext((params.get('next') || '').toLowerCase());
   nextSel.addEventListener('change', function(){ setNext(nextSel.value); });
