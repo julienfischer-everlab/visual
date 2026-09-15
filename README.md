@@ -20,39 +20,70 @@ Each card is `position: sticky` with a **negative** `top` offset equal to
 ```
 
 A sticky box with a negative top scrolls completely normally until its **bottom
-edge** reaches the bottom of the viewport — i.e. until its last line of content
-has been read — and only then freezes, parked against the fold. The next card
-sits immediately after it in normal document flow, so the moment card N parks,
-card N+1's top edge is exactly at the bottom of the viewport and starts sliding
-up over it, 1:1 with the scroll. Card N is never moved, faded or removed; it
-just stays underneath.
+edge** reaches the fold — i.e. until its last line of content has been read —
+and only then freezes, parked there. The next card sits immediately after it in
+normal document flow, so the moment card N parks, card N+1's top edge is at the
+bottom edge of the screen and starts sliding up over it, 1:1 with the scroll.
+Card N does not move; it stays underneath, scaling down 2% and dimming as it is
+covered.
+
+Cards are inset by 20px on every side (`--pad`), with the same 20px as the flow
+gap between them — the gap is what lets the incoming card enter from the very
+bottom edge of the screen rather than from the parked card's bottom edge.
+
+The cover effect is driven by a second custom property, `--cover` (0 → 1),
+written on scroll inside one rAF:
+
+```css
+.panel            { transform: scale(calc(1 - .02 * var(--cover,0))); }
+.panel > .media,
+.panel > .body    { opacity:   calc(1 - .4  * var(--cover,0)); }
+```
+
+The fade sits on the card's contents rather than the card, because fading the
+card itself would let the parked stack underneath ghost through it. Both are
+disabled under `prefers-reduced-motion`.
 
 Scrolling is the native document scroll throughout, so iOS momentum, rubber-band
 and scrollbar behaviour are untouched.
 
 ### The JS
 
-One function, run at load and on resize / `ResizeObserver`, never on scroll:
+Two jobs. `measure()` runs at load and on resize / `ResizeObserver` — never on
+scroll — and writes each card's park offset:
 
 ```js
-panel.style.setProperty('--pin', Math.min(0, innerHeight - height) + 'px');
+panel.style.setProperty('--pin', Math.min(pad, vh - pad - panel.offsetHeight) + 'px');
 ```
 
-That is the only thing that can't be expressed in CSS — the hand-off point
+That is the only thing that can't be expressed in CSS: the hand-off point
 depends on the card's measured height, so it re-derives itself whenever the
 copy, the imagery, the font or the viewport changes. Nothing is hard-coded to
 `100vh`.
+
+`update()` runs on scroll, coalesced into one `requestAnimationFrame`, and only
+writes `--cover`. It reads no layout while scrolling — card positions come from
+flow offsets cached by `measure()`, which also keeps the reading immune to the
+scale transform (`offsetHeight` ignores transforms, a client rect does not).
 
 ### Edge cases
 
 | | |
 | --- | --- |
-| Card taller than the viewport | Scrolls normally for `height − viewport` px, then parks. |
-| Card shorter than the viewport | `min-height: 100vh` pads it out so it always covers the card beneath; `--pin` clamps at `0`, and because there is nothing left to read the next card begins its slide immediately. |
+| Card taller than the viewport | Scrolls normally for `height − viewport + pad` px, then parks. |
+| Card shorter than the viewport | `min-height` pads it out to the full inset window so it always covers the card beneath; `--pin` clamps at `pad`, and because there is nothing left to read the next card begins its slide immediately. |
 | Copy or image height changes | Re-measured automatically; the hand-off moves with it. |
 
-At 402 × 853, cards 2 and 3 are taller than the viewport (read phase, then
-park); cards 1 and 4 fit within it (park immediately).
+At 402 × 853 every card is taller than the screen, giving read phases of roughly
+570–710px before each hand-off.
+
+### Content length
+
+The second half of each step — *What to have handy*, *Before the call*, *How
+booking works*, *Between consultations*, and the block after each — is
+demo-length copy, written to push every card well past one screen so the
+read-then-hand-off phase is visible while testing. It is placeholder, not
+approved copy. Replace it with the real thing; the hand-off points follow.
 
 ## Imagery
 
