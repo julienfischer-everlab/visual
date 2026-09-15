@@ -759,10 +759,9 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   there is one report — and its title is the card's figure, since the report's
   name is to this card what 64% is to Coverage and 2,568 is to Steps. The
   figure's size is a token per surface (`--fig`: 18px on the phone, 24px on the
-  desk) and the title is that plus 4px — it is words where Steps is a number,
-  and words set at a number's size read smaller than the number, so matching
-  them exactly measured level rather than looked level. The cost is that
-  "Pathology test" takes two lines on the phone. The
+  desk) and the title takes it exactly — the same size as 2,568 beside it. Set
+  4px larger it read better as type but no longer fitted the phone card on one
+  line, which cost more than it bought. The
   eyebrow reads *Latest report*, and the date and the reading count sit under
   the title on two lines: two facts about one report, not a sentence. The
   action fills the card's width with no arrow, because a button that wide has

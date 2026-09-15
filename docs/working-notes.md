@@ -5499,9 +5499,12 @@ scope -- `body.v2 #phone .hiCard .big` is an id and three classes, and a plain
 
   phone 18 -> 22   desk 24 -> 28   every other figure unmoved
 
-At 22px "Pathology test" no longer fits the phone card's 127px of content
-width and takes two lines; at 18px it fitted on one. That is the cost of the
-bump, not a bug, and one number reverses it.
+At 22px "Pathology test" no longer fitted the phone card's 127px of content
+width and took two lines where 18px fitted on one. That was the cost, and it
+was not worth it: **reverted** -- the title is `.big` and nothing else, the
+same size as 2,568 on every surface. What the token bought is still worth
+keeping, though: the figure's size is named once per surface now, so the two
+cards in that row cannot drift apart whoever changes what.
 
 ### 5.196 Expanded Report
 
