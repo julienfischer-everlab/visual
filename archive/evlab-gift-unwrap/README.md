@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-15, "Phone: card edge to edge" |
+| Captured from version | 2026-09-15, "Phone head 48px sides" |
 | Captured on | 2026-09-15 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -164,8 +164,8 @@ the top right of the card, beside the title, sits the membership passport as a
 64px circle of the `Ellipse 4358.png` copper image, crisp, with nothing on
 it. Phones drop the circle, and lay the card out differently: the script moves
 the "Your gift from Marc" line and the product title out of the card into a
-head above it, centred, with 64px above and below so the photograph shows
-around them (they move back inside when the stage is wide again, ids and all);
+head above it, centred, with 64px above and below and 48px at the sides so
+the photograph shows around them (they move back inside when the stage is wide again, ids and all);
 the card itself keeps the very same glass as the half circle on the first
 fold (`rgba(40,38,36,.36)` over a 60px blur), runs edge to edge across the
 screen (the panel below too), with 30px padding and 32px at the foot; the
