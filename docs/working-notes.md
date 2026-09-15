@@ -5694,6 +5694,28 @@ became a carousel.
   m20 and m10: 4 slides, 4 dots, 2 arrows, first slide the latest;
   tapping the third dot shows Other Report on both
 
+### 5.204 The halo had nothing left to veil
+
+"The halo you overlap the top bar with battery and hour should blend together.
+Don't want to see a separator bg." Then, plainly: "remove the blur effect on
+scroll here."
+
+A frosted band sat over the top 84px of the phone -- blur only, masked out
+toward its foot, arriving with the scroll (`--topFog` ramped over the first
+48px and held at 1). It was there to veil whatever was passing behind the hour
+and the battery while the status strip was an overlay.
+
+The strip has been back in the flow since 5.199, and the header begins below
+it, so nothing passes there at all. What the band did instead was blur the top
+of the header and stop, which is the separator that was being reported: an edge
+the strip did not have and the header did.
+
+Gone, with the property it ran on.
+
+  m20 at scrollTop 0 / 30 / 120 / 400: the strip and the header report the same
+  colour at every step -- rgb(18,18,18) down to rgb(0,0,0) as --v5head runs --
+  and there is no blur over either
+
 ---
 
 ## 6. Open items

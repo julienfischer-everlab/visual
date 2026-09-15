@@ -1663,7 +1663,10 @@ black — the phone frame and the dashboard chrome cover them entirely.
   strip out as an overlay for a while, which is the only reason it ever needed
   a plate — something had to hold it while the hero ran up behind the clock.
   In the flow nothing can pass beneath the time, so there is no plate, no
-  z-index and no state in the top bar at all.
+  z-index and no state in the top bar at all — and no frosted band either: one
+  used to arrive with the scroll to veil what passed behind the clock, and with
+  nothing passing there it only blurred the top of the header and stopped,
+  which read as a seam the strip did not have.
   The dock is one asset: written once in the script and mounted into each
   phone that carries it, so the Overview and Biomarkers screens wear the same
   navigation rather than two copies of it. The five icons are the design's own,

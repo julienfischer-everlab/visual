@@ -3809,23 +3809,11 @@
   body.v4 #phone, body.light.v4 #phone{background:#1c0505;position:relative;}
   body.v4 .mHead{background:#1c0505;}
   body.v4 .mstatus{background:none;position:relative;z-index:4;}
-  /* Frosted glass over the safe area: strongest behind the status bar and
-     dissolving into the hero. The mask fades the blur out with the tint, so
-     there is no edge where the backdrop filter stops. Keep the band close to
-     the status bar — the reach is what reads as "too much blur" long before
-     the radius does, because it decides how much of the card gets veiled. */
-  body.v4 #phone::before{
-    content:'';position:absolute;left:0;right:0;top:0;height:84px;z-index:3;
-    pointer-events:none;
-    /* blur only — no tint. The mask is what gives it a gradient: the glass is
-       full strength behind the status bar and gone by the foot, so there is no
-       darkening and no edge where the filter stops. */
-    -webkit-backdrop-filter:blur(5.4px);backdrop-filter:blur(5.4px);
-    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 30%, rgba(0,0,0,.42) 64%, transparent 100%);
-    mask-image:linear-gradient(to bottom, #000 0%, #000 30%, rgba(0,0,0,.42) 64%, transparent 100%);
-    /* nothing to hide at rest: the glass arrives with the scroll */
-    opacity:var(--topFog, 0);
-  }
+  /* (A frosted band used to sit over the safe area here, arriving with the
+     scroll, to veil whatever was passing behind the hour and the battery. The
+     strip is in the flow now and the header begins below it, so nothing passes
+     there: the band had nothing left to veil and only put a soft edge between
+     the strip and the header. Gone, with the --topFog it ran on.) */
   body.v4 #mBento{padding:0 13px 36px;}
 
   /* ---- V4: the header IS the organ, and every card lives in the body -------
@@ -15448,11 +15436,7 @@
       inner.style.transform = reduced ? '' : 'translateY(' + (-y * 0.12).toFixed(1) + 'px)';
       inner.style.opacity = (1 - p).toFixed(3);
       v5Shrink = document.body.classList.contains('v5') ? 1 - 0.10 * p : 1;
-      // the frosted top has nothing to sit over until something scrolls under
-      // it, so it fades in over the first 48px rather than being there at rest
-      const f = Math.min(1, Math.max(0, y / 48));
       const ph = sc.closest('#phone');
-      if (ph) ph.style.setProperty('--topFog', (f * f * (3 - 2 * f)).toFixed(3));
       // V5's header darkens under the body as the body covers it: p is already
       // the fraction of the header that has been scrolled past, so the grey runs
       // to almost-black exactly as the body reaches the top of the screen. Only
