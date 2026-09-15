@@ -780,7 +780,9 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   latest report* is one fact with one source rather than a sentence typed into
   the markup that goes stale on its own.
 - **Turn the organ** — the organ card's corner carries a rotate handle beside
-  the expand and share buttons. Drag it and the cloud turns with the drag —
+  the expand and share buttons, and on V4 and up — where the organ is the
+  header rather than a card — it hangs at the top right of the hero, where a
+  card's corner would be. Drag it and the cloud turns with the drag —
   about a full turn across 260px, with the pitch held to a quarter of that,
   since the cloud is a body and tipping it past its own shoulders reads as
   broken rather than as looked at from above. Release and it stays where it was

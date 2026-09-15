@@ -5830,6 +5830,16 @@ because the card under it changes organ on a click and the handle is not that.
   m10 desk and m11 phone: drag turns the cloud and it holds with the pointer
   moved away; a press returns it face-on
 
+"Where is the rotate tool?" -- on the wrong organ. It went to `#organSlot` and
+`#mOrgCard`, which are the organ *cards*; on V4 and up the organ is the header
+itself (`#mHeroOrgan`) and has no card to put a corner on. So the page most
+likely to be open -- the phone's Overview -- carried the tool only on the small
+organ card far down the list. It hangs at the top right of the hero now, where
+a card's corner would be, above the halo and the arc.
+
+  14 of the 24 pages carry an organ and all 14 now show the tool:
+  m16 m17 m19 m20 carry two, the hero's and the mini card's
+
 ---
 
 ## 6. Open items
