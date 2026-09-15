@@ -5545,6 +5545,11 @@ Two gates needed saying outright:
   desktop page filters by chips alone, with no record select and no search, so
   a carousel of records is a control that page's design does not have.
 
+The cards carry 19px/24px -- 8px more than they opened with -- and sit 12px
+apart rather than 8px. A card holding two lines of different weight needs the
+room to read as a card rather than as a label with a border round it, and at
+8px the row read as one strip that happened to have seams in it.
+
   24 pages with the tweak on, no script errors; 7 cards everywhere the row
   appears, search 44px and to the right of the chips on all 13 surfaces that
   carry one; picking a card narrows the list to that record and the chips
