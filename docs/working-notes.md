@@ -5748,6 +5748,40 @@ Expanded Report search, which was made fully rounded when it moved into the
 chips row; it is 14px again, matching the select and the search everywhere
 else. It keeps the chips' 44px height.
 
+### 5.207 The separator was the hero's own light, cut
+
+"Still this bg separator. The hero bg should blend into this home top bar."
+
+Not a colour mismatch -- the strip and the header had been reading the same
+token since 5.200, and measured identical at every scroll position. The step
+was the halo. Its circle is 730px across with its centre 151px *above* the
+screen, so the brightest band it ever shows is at the very top of the header --
+and `.mscroll` clips it at its own top edge, which is the strip's bottom. Bare
+ground above the line, eight levels of light below it, hard edge between.
+
+  centre column, at rest: rgb(18,18,18) through the strip, rgb(26,26,25) the
+  moment the header starts
+
+So the same circle is drawn once more on the phone itself -- same radius, same
+centre, same stops -- behind everything, and moved by whatever moves the real
+one: the scroll plus the header's 0.12 parallax, faded by the same amount the
+header's content fades. Two halves of one light rather than a light and a copy.
+
+Two things had to be true for it to work:
+
+- **`#phone` has to isolate.** A `z-index:-1` pseudo on an element that is not
+  a stacking context paints behind that element's own background, which here
+  is opaque -- the light was drawn and then buried.
+- **The title's top margin had to stop collapsing out.** `.mHead` sat 8px below
+  the scroller's top because `.mtitle`'s 8px margin escaped through it, and in
+  that band -- above the header's opaque ground, below the clip -- *both*
+  halves painted at once. A bright seam exactly where the two were meant to
+  meet invisibly. `display:flow-root` on `#mHeadIn` contains it; the title does
+  not move, the header's ground reaches up to the cut.
+
+  step across the cut: 0.3 levels at rest, 1.8 at scrollTop 60, 3.2 at 150,
+  0.0 by 320 -- against the 8 it started at
+
 ---
 
 ## 6. Open items

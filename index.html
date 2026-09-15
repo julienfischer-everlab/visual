@@ -1045,6 +1045,11 @@
      runs unbroken from the top of the screen, past the hour and the battery,
      down through the title. The share button is an icon on that surface
      rather than a disc on it, for the same reason. */
+  /* contain the title's top margin: collapsing out through the header pushed
+     .mHead's ground 8px below the scroller's top, and in that band both halves
+     of the hero's light painted at once -- a bright seam exactly where the two
+     were supposed to meet invisibly */
+  body.v8 #phone #mHeadIn{display:flow-root;}
   body.v8 #phone .mtitle{
     position:static;margin:8px 0 14px;padding:0 10px 0 16px;border-radius:0;
     background:none;box-shadow:none;
@@ -3964,6 +3969,38 @@
   body.light.v5 #mHeroOrgan .v4Halo,
   body.light.b5 #organSlot .v4HaloClip{display:none;}
 
+  /* The light carries on above the scroller's edge.
+     The circle's centre sits above the screen, so its brightest band is at the
+     very top of the header -- and the scroller clips it at its own top edge,
+     which is now the status strip's bottom. That cut is the separator that kept
+     being reported: the strip on bare ground, the header eight levels lighter,
+     with a hard line between them.
+     So the same circle is drawn once more on the phone itself, behind
+     everything (z-index:-1 puts it over the phone's ground and under every
+     child, including the header's own opaque one, so only the part above the
+     scroller ever shows). It is the same radius, the same centre and the same
+     stops, moved by whatever moves the real one: the scroll, plus the header's
+     0.12 parallax, and faded by the same amount the header's content fades.
+     Two halves of one light rather than a light and a copy of it. */
+  body.v5 #phone::before{
+    content:"";position:absolute;left:50%;z-index:-1;pointer-events:none;
+    top:calc(var(--v4haloY) - var(--v4haloR));
+    width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
+    background:radial-gradient(closest-side, var(--v4haloStops));
+    opacity:var(--heroLightK, 1);
+    transform:translateX(-50%) translateY(var(--heroLift, 0px));
+    animation:v4BreathTop 11s ease-in-out infinite;
+  }
+  /* the same breath, carrying the lift through so the swell does not drop it */
+  @keyframes v4BreathTop{
+    0%, 100%{transform:translateX(-50%) translateY(var(--heroLift, 0px)) scale(1);}
+    50%     {transform:translateX(-50%) translateY(var(--heroLift, 0px)) scale(1.21);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    body.v5 #phone::before{animation:none;}
+  }
+  body.light.v5 #phone::before{display:none;}
+
   /* ---- The edge the light lands on ----------------------------------------
      A halo without an edge is a wash. What makes it read as light rather than
      as a coloured fog is something for it to catch, so the screen gets a
@@ -4139,7 +4176,10 @@
      it too -- that bar is absolute, so the hero would otherwise run up behind
      the time -- and painting it from a colour of its own is how the strip
      ended up a shade darker than the header under it. */
-  body.v5 #phone{--headBg:#000;background:var(--headBg);}
+  /* isolate, or the light below cannot be drawn: a z-index:-1 pseudo on an
+     element that is not a stacking context paints behind that element's own
+     background, which here is opaque */
+  body.v5 #phone{--headBg:#000;background:var(--headBg);isolation:isolate;}
   /* the same read, restated only because `body.light.v4 #phone` sets a
      background of its own and is a class deeper than the rule above */
   body.light.v5 #phone{--headBg:#ececea;background:var(--headBg);}
@@ -15439,6 +15479,12 @@
       inner.style.opacity = (1 - p).toFixed(3);
       v5Shrink = document.body.classList.contains('v5') ? 1 - 0.10 * p : 1;
       const ph = sc.closest('#phone');
+      // the phone's half of the hero light moves by what moves the header's
+      // half -- the scroll plus the 0.12 parallax above -- and fades with it
+      if (ph){
+        ph.style.setProperty('--heroLift', (-(reduced ? y : y * 1.12)).toFixed(1) + 'px');
+        ph.style.setProperty('--heroLightK', (1 - p).toFixed(3));
+      }
       // V5's header darkens under the body as the body covers it: p is already
       // the fraction of the header that has been scrolled past, so the grey runs
       // to almost-black exactly as the body reaches the top of the screen. Only

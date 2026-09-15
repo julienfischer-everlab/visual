@@ -1663,6 +1663,11 @@ black — the phone frame and the dashboard chrome cover them entirely.
   ground, and the header's grey (`--headBg`) starts under it. V5 lifted the
   strip out as an overlay for a while, which is the only reason it ever needed
   a plate — something had to hold it while the hero ran up behind the clock.
+  The hero's light carries through it: the halo's centre sits above the screen,
+  so the scroller was clipping its brightest band at its own top edge and
+  leaving a hard line under the clock — the same circle is drawn again on the
+  phone behind everything, moved and faded by exactly what moves and fades the
+  real one, so the two are halves of one light rather than a light and a copy.
   In the flow nothing can pass beneath the time, so there is no plate, no
   z-index and no state in the top bar at all — and no frosted band either: one
   used to arrive with the scroll to veil what passed behind the clock, and with
