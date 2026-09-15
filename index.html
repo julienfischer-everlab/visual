@@ -2386,6 +2386,14 @@
   .hiLine .ln{stroke:#f2e5e0;stroke-width:1.8;stroke-linecap:round;fill:none;}
   .hiXlb{display:flex;justify-content:space-between;gap:8px;font-size:9.5px;color:rgba(242,229,224,.5);}
   .hiLead{font-size:14px;line-height:1.3;font-weight:500;margin-top:12px;}
+  /* The latest report's card. Its title is the card's figure -- what 64% is to
+     Coverage, "Pathology test" is to this -- so it takes .big's size rather
+     than .hiLead's, with the date and the reading count under it as the line
+     that qualifies it, the same way the record menu qualifies an option. */
+  .hiRepTitle{font-size:22px;font-weight:500;line-height:1.2;margin-top:2px;
+              letter-spacing:-.2px;}
+  .hiRepMeta{font-size:12.5px;color:#8b8b86;margin-top:6px;}
+  body.light .hiRepMeta{color:#7d6b58;}
   .hiList{display:flex;flex-direction:column;gap:9px;margin-top:12px;}
   .hiList .r{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;line-height:1.3;}
   .hiTag{
@@ -2443,6 +2451,14 @@
   .dash .v2Only{display:none;}
   body.b2 .dash .hiOnly{display:none;}
   body.b2 .dash .v2Only{display:flex;}
+  /* Which of the two holds the left slot. It has to be said HERE, after
+     .v2Only turns the card on: the two rules carry the same specificity, so
+     source order is what decides, and stated earlier the off state lost and
+     the report card showed by default. */
+  body:not(.leftRep) .dash .hiRep,
+  body:not(.leftRep) #phone .hiRep{display:none;}
+  body.leftRep .dash .hiCov,
+  body.leftRep #phone .hiCov{display:none;}
   .dash .hiCard{padding:0;border-radius:20px;background:#252522;}
   .dash .hiCard .lbl{
     font-size:10.5px;letter-spacing:.085em;text-transform:uppercase;color:#8b8b86;
@@ -4824,6 +4840,17 @@
             <option value="off">Off</option>
           </select>
         </div>
+        <!-- Which card sits on the left of the pair. Coverage is a reading the
+             page keeps taking; the latest report is a thing that just arrived.
+             They want the same slot and not the same card, so this is a choice
+             rather than two cards fighting for the room. -->
+        <div class="tkRow">
+          <span class="lbl">Left card</span>
+          <select id="stLeft" aria-label="The left mini card">
+            <option value="cov">Coverage</option>
+            <option value="rep">Latest report</option>
+          </select>
+        </div>
         <div class="tkRow">
           <span class="lbl">Activity</span>
           <select id="stAct" aria-label="Activity card state">
@@ -4950,6 +4977,17 @@
             <div class="foot"><span>Of your panel</span><span class="bars"><i style="height:8px"></i><i style="height:12px"></i><i style="height:9px"></i><i style="height:16px"></i></span></div>
           </div>
           <div class="msn hiCard hiCov dcard v2Only"><div class="hiSlide"><div class="lbl">Coverage</div><div class="big">64<span class="pc">%</span></div><div class="hiViz covGauge"><svg class="covDial" viewBox="0 0 100 100" aria-hidden="true"><path class="tk" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="9" stroke-dasharray="1.4 3.3"/><path class="pg" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="114.6 999"/></svg><svg class="covWarn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.6 14.4 13.4H1.6L8 2.6ZM8 6.6v3M8 11.4v.1"/></svg></div></div><div class="hiSlide"><div class="lbl">Screening</div><div class="hiList"><div class="r"><span>Cancer screening</span><span class="hiTag">Due</span></div><div class="r"><span>Skin check</span><span class="hiTag">Due</span></div></div><div class="hiAct">Book now<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Survey</div><div class="hiLead">Complete your questionnaire</div><div class="hiAct">Start<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div></div><div class="hiSlide"><div class="lbl">Report</div><div class="hiLead">Upload this report</div><div class="hiUp"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9.5V2.4M4.4 5 7 2.4 9.6 5M2.4 9v2.3a.9.9 0 0 0 .9.9h7.4a.9.9 0 0 0 .9-.9V9"/></svg><span>Choose file</span></div></div><button class="hiNav prev" type="button" aria-label="Previous"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="hiNav next" type="button" aria-label="Next"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="hiDots"><i class="on"></i><i></i><i></i><i></i></div></div>
+          <!-- The latest report, as a mini card: the same shell, the same
+               eyebrow-then-title shape the others use, one slide rather than
+               four because there is one report. Its title, date and count are
+               written from RECS by the script, so the card and the record
+               select cannot disagree about which report is the latest. -->
+          <div class="msn hiCard hiRep dcard v2Only" id="hiRep"><div class="hiSlide">
+            <div class="lbl">Report</div>
+            <div class="hiRepTitle" id="hiRepTitle">Pathology test</div>
+            <div class="hiRepMeta" id="hiRepMeta"></div>
+            <div class="hiAct">View report<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.6 3l3 3-3 3"/></svg></div>
+          </div></div>
         </div>
       </div>
       <div class="dright">
@@ -9600,6 +9638,7 @@
       (CARD_STATE.emAge ? ' emAge' : '') +
       (CARD_STATE.emOrg ? ' emOrg' : '') +
       (CARD_STATE.noCov ? ' noCov' : '') +
+      (CARD_STATE.leftRep ? ' leftRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.navBar ? ' navBar' : '') +
@@ -14697,6 +14736,9 @@
   // being toggled onto the element and lost at the next page change.
   const CARD_STATE = { emBio: false, emAct: false, emAge: false,
                        emOrg: false, noCov: false,
+                       // which card holds the left slot of the pair; a class
+                       // setMode would otherwise drop, like the rest of these
+                       leftRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
@@ -15092,6 +15134,14 @@
     CARD_STATE.noCov = stCovSel.value === 'off';
     document.body.classList.toggle('noCov', CARD_STATE.noCov);
     resize();   // the phone's rows just changed height
+  });
+  // Which card holds the left slot. The two are the same shell in the same
+  // place, so this is one class and the CSS does the swap.
+  const stLeftSel = document.getElementById('stLeft');
+  if (stLeftSel) stLeftSel.addEventListener('change', () => {
+    CARD_STATE.leftRep = stLeftSel.value === 'rep';
+    document.body.classList.toggle('leftRep', CARD_STATE.leftRep);
+    resize();
   });
   // the organs' own pair, which never touches the body
   const stOrgSel = document.getElementById('stOrg');
@@ -15999,6 +16049,19 @@
     RECS.forEach(rec => { byId[rec.id] = rec; });
     rows.forEach(r => stampDate(r, byId[r.dataset.r.split(' ')[0]] || {}));
   }
+
+  // The latest-report card's title, date and count come from RECS -- the same
+  // table the record select reads -- so "the latest report" is one fact with
+  // one source rather than a sentence typed into the markup that goes stale on
+  // its own. RECS is in date order, so the latest is the first real record.
+  (function fillLatestReport(){
+    const t = document.getElementById('hiRepTitle'), m = document.getElementById('hiRepMeta');
+    if (!t || !m) return;
+    const latest = RECS.find(r => r.id !== 'all');
+    if (!latest) return;
+    t.textContent = latest.label;
+    m.textContent = latest.date + '  \u00b7  ' + latest.n + ' biomarkers';
+  })();
 
   // where a row's marker sits, given its status and its name -- deterministic
   // within the band so the markers do not stack on one pixel or move between

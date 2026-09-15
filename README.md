@@ -732,6 +732,17 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   you were reading rather than to the top of the list, and a hash aimed
   straight at an archived mode sets both halves, since they are set from the
   mode rather than from whichever control was touched.
+- **Left card** — Coverage, or the latest report. Coverage is a reading the page
+  keeps taking; the latest report is a thing that just arrived. They want the
+  same slot and are not the same card, so it is a choice rather than two cards
+  fighting for the room. The report card follows the mini-card pattern — the
+  same shell, the eyebrow-then-figure shape, one slide rather than four because
+  there is one report — and its title takes the figure's size, since the
+  report's name is to this card what 64% is to Coverage, with the date and the
+  reading count under it as the line that qualifies it. Title, date and count
+  are written from `RECS`, the same table the record select reads, so *the
+  latest report* is one fact with one source rather than a sentence typed into
+  the markup that goes stale on its own.
 - **Refresh** — reloads the page. Everything the tweaks set lives in memory,
   so this is the way back to the page as it first drew: the states reset, the
   clouds rebuild and the reveals play from the top. The version travels in the

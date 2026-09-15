@@ -5293,6 +5293,32 @@ step brighter: set apart by light, which the glass can actually justify.
 If it should be an accent CTA instead, the honest way is a committed #F78359
 with dark ink, not a wash over near-black -- one rule, and the file says where.
 
+### 5.187 A choice for the left slot
+
+"Create a tweak for the left mini card. Option 1 Coverage. Option 2 latest
+report (create this card following the mini card patterns. Title eyebrow:
+Report. Main title Pathology test)."
+
+Coverage is a reading the page keeps taking; the latest report is a thing that
+just arrived. They want the same slot and are not the same card, so this is a
+choice rather than two cards fighting for the room -- one row in Tweaks, one
+class, and the CSS does the swap.
+
+The card follows the pattern: the same shell, the eyebrow-then-figure shape the
+others use, one slide rather than four because there is one report. Its title
+takes .big's size rather than .hiLead's, because the title IS this card's
+figure -- what 64% is to Coverage, the report's name is to this -- with the
+date and the reading count under it as the line that qualifies it, the way the
+record menu qualifies an option.
+
+Two things worth the note. The title, date and count are written from RECS, the
+same table the record select reads, so "the latest report" is one fact with one
+source; it reads "Pathology Report · 13 Aug 2026 · 44 biomarkers" because that
+is what the latest record IS. And the off state had to be declared AFTER
+`body.b2 .dash .v2Only{display:flex}` rather than before it: the two carry the
+same specificity, so source order decides, and stated earlier the card showed
+by default in a slot that already had a card in it.
+
 ---
 
 ## 6. Open items
