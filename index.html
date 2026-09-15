@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8e4de">
+<title>Everlab — How it works</title>
+<style>
+/* ===========================================================================
+   Everlab — "How it works" stacked-card scroll
+   Target viewport: 402 x 853 (mobile only)
+
+   Scroll mechanic:
+   Every step is `position: sticky` with a NEGATIVE top offset equal to
+   (viewport height - its own height). A sticky box with a negative top scrolls
+   completely normally until its bottom edge reaches the bottom of the viewport
+   — i.e. until every last line of its content has been seen — and only then
+   does it freeze, staying parked at the bottom of the viewport.
+
+   Because the next card sits immediately after it in normal document flow, the
+   moment card N freezes, card N+1's top edge is exactly at the bottom of the
+   viewport, and it then slides up over card N at 1:1 with the scroll. Card N
+   is never removed, moved or faded — it simply stays underneath.
+
+   The only JS in the file measures each card and writes that one offset into
+   --pin, so the hand-off is driven by the real content height and re-derives
+   itself whenever the copy, the imagery or the viewport changes. Everything
+   else is CSS + native scrolling, so iOS momentum is untouched.
+   =========================================================================== */
+
+/* ---------- tokens ---------- */
+:root{
+  --page-bg:#e8e4de;
+  --card-bg:#ffffff;
+  --card-radius:22px;
+
+  --ink:#17150f;          /* headings */
+  --ink-soft:#4a453d;     /* list copy */
+  --muted:#8b857c;        /* body copy */
+  --eyebrow:#8b857c;
+  --hairline:#e6e2db;
+  --marker:#b8b2a8;
+
+  --gutter:20px;
+
+  --font:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+         "Helvetica Neue", Inter, Arial, sans-serif;
+}
+
+/* ---------- reset ---------- */
+*,*::before,*::after{box-sizing:border-box;}
+html{
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:auto;            /* momentum scrolling stays native */
+}
+body{
+  margin:0;
+  background:var(--page-bg);
+  color:var(--ink);
+  font-family:var(--font);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overscroll-behavior-y:none;
+}
+img{max-width:100%;display:block;}
+p{margin:0;}
+h2{margin:0;}
+ul{margin:0;padding:0;list-style:none;}
+
+/* ---------- the stack ---------- */
+.stack{
+  position:relative;
+  width:100%;
+  max-width:402px;                 /* mobile-only build */
+  margin-inline:auto;
+  /* cards are full-bleed inside the column, so no padding here */
+}
+
+.panel{
+  position:sticky;
+  top:var(--pin,0px);              /* <- the whole trick, set by the script */
+  z-index:var(--i);
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;                /* short steps still cover the one beneath */
+  background:var(--card-bg);
+  border-radius:var(--card-radius);
+  overflow:hidden;                 /* clips the media to the rounded corners */
+  /* keeps the rounded top corners legible while sliding over a white card */
+  box-shadow:
+    0 -1px 0 rgba(23,21,15,.08),
+    0 -14px 30px -12px rgba(23,21,15,.34);
+}
+/* the first card sits on the page background, it needs no lift */
+.panel:first-child{box-shadow:none;}
+
+/* ---------- media ---------- */
+.media{
+  position:relative;
+  width:100%;
+  aspect-ratio:var(--ratio, 4 / 3);
+  flex:none;
+  overflow:hidden;
+  background:#d9d3ca;
+}
+/* Drop-in replacement point: put a real photo here and the placeholder art
+   underneath is simply covered.  <img class="media__photo" src="..." alt=""> */
+.media__photo{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* ---------- text block ---------- */
+.body{
+  padding:26px var(--gutter) 40px;
+  padding-bottom:calc(40px + env(safe-area-inset-bottom,0px));
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  flex:1 1 auto;
+}
+
+.eyebrow{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--eyebrow);
+}
+.eyebrow__num{
+  display:grid;
+  place-items:center;
+  width:16px;height:16px;
+  flex:none;
+  border:1px solid #cdc7bd;
+  border-radius:50%;
+  font-size:9px;
+  letter-spacing:0;
+  line-height:1;
+  color:#7d776e;
+}
+
+.title{
+  font-size:29px;
+  line-height:1.12;
+  letter-spacing:-.022em;
+  font-weight:600;
+  color:var(--ink);
+  margin-top:2px;
+}
+
+.lede{
+  font-size:14.5px;
+  line-height:1.58;
+  color:var(--muted);
+  letter-spacing:-.003em;
+}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+  margin-top:4px;
+}
+.list li{
+  position:relative;
+  padding-left:16px;
+  font-size:14px;
+  line-height:1.5;
+  color:var(--ink-soft);
+  letter-spacing:-.003em;
+}
+.list li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.52em;
+  width:5px;height:5px;
+  background:var(--marker);
+}
+
+/* ===========================================================================
+   Placeholder artwork — CSS only, so the file stays self-contained.
+   Each block matches the framing/proportion of the reference photograph so the
+   scroll timing is accurate; swap in real imagery via .media__photo.
+   =========================================================================== */
+
+/* --- 1. plan card on a wooden surface --- */
+.m-wood{
+  --ratio:1 / .92;
+  background:
+    linear-gradient(180deg,#c79a63,#b9884e 55%,#a9773f);
+}
+.m-wood::before{                    /* grain */
+  content:"";
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,.05) 0 2px,
+    rgba(90,52,17,.05) 2px 5px,
+    rgba(255,255,255,.02) 5px 11px);
+  opacity:.85;
+}
+.m-wood::after{                     /* soft top light */
+  content:"";
+  position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 50% 0%,rgba(255,236,208,.45),transparent 62%);
+}
+.tray{
+  position:absolute;
+  inset:14% 7% 10%;
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,244,228,.30),rgba(150,102,52,.18));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+  display:grid;
+  place-items:center;
+  padding:0 8%;
+}
+.plan-card{
+  position:relative;
+  width:100%;
+  background:#fff;
+  border-radius:12px;
+  padding:13px 14px 15px;
+  box-shadow:0 12px 26px -12px rgba(60,35,10,.55);
+}
+.plan-card__top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+.plan-card__name{font-size:14px;font-weight:600;letter-spacing:-.01em;color:#17150f;}
+.plan-card__kicker{
+  font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:#a29b90;margin-top:3px;
+}
+.plan-card__dot{
+  width:22px;height:22px;flex:none;border-radius:50%;
+  background:conic-gradient(from 210deg,#d9c3a6,#8e6a45,#c8a884,#6f5334);
+}
+.plan-card__copy{
+  margin-top:14px;
+  font-size:9.5px;
+  line-height:1.45;
+  color:#8b857c;
+}
+
+/* --- 2. phone on orange fabric, video consult --- */
+.m-fabric{
+  --ratio:1 / .97;
+  background:
+    radial-gradient(100% 80% at 30% 15%,#d4763c,transparent 70%),
+    linear-gradient(160deg,#c9662f,#a84b23 70%,#8e3d1d);
+}
+.m-fabric::before{                  /* woven texture */
+  content:"";
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(-45deg,rgba(0,0,0,.06) 0 1px,transparent 1px 3px);
+}
+.m-fabric::after{
+  content:"";
+  position:absolute;inset:0;
+  background:radial-gradient(90% 70% at 50% 110%,rgba(60,20,5,.45),transparent 60%);
+}
+
+.phone{
+  position:absolute;
+  left:50%;
+  translate:-50% 0;
+  width:41%;
+  aspect-ratio:9 / 19;
+  border-radius:26px;
+  background:#111;
+  padding:5px;
+  box-shadow:
+    0 26px 40px -18px rgba(40,12,0,.7),
+    0 0 0 1px rgba(255,255,255,.08) inset;
+}
+.phone__screen{
+  position:relative;
+  width:100%;height:100%;
+  border-radius:22px;
+  overflow:hidden;
+}
+.phone--call{
+  top:8%;
+  rotate:-1.5deg;
+}
+.call{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,#2b2117,#1b150f);
+}
+.call__label{
+  position:absolute;top:10px;left:50%;translate:-50% 0;
+  font-size:6px;letter-spacing:.08em;color:rgba(255,255,255,.72);
+  background:rgba(255,255,255,.12);
+  padding:3px 8px;border-radius:99px;white-space:nowrap;
+}
+.call__person{
+  position:absolute;left:50%;top:46%;translate:-50% -50%;
+  width:58%;aspect-ratio:1;
+}
+.call__head{
+  position:absolute;left:50%;top:0;translate:-50% 0;
+  width:56%;aspect-ratio:1/1.15;border-radius:48% 48% 44% 44%;
+  background:linear-gradient(180deg,#c69a76,#9c6f4e);
+}
+.call__cans{                        /* headphones */
+  position:absolute;left:50%;top:-6%;translate:-50% 0;
+  width:78%;aspect-ratio:1/.58;
+  border:4px solid #33333a;
+  border-bottom:none;
+  border-radius:99px 99px 0 0;
+}
+.call__cans::before,
+.call__cans::after{                 /* ear cups */
+  content:"";
+  position:absolute;bottom:-26%;
+  width:22%;height:46%;
+  border-radius:6px;
+  background:#33333a;
+}
+.call__cans::before{left:-9%;}
+.call__cans::after{right:-9%;}
+.call__body{
+  position:absolute;left:50%;bottom:0;translate:-50% 0;
+  width:96%;height:44%;
+  border-radius:44px 44px 0 0;
+  background:linear-gradient(180deg,#3d3f46,#24262b);
+}
+.call__bar{
+  position:absolute;left:50%;bottom:9px;translate:-50% 0;
+  display:flex;gap:5px;
+}
+.call__bar i{
+  width:13px;height:13px;border-radius:50%;
+  background:rgba(255,255,255,.22);
+}
+.call__bar i:last-child{background:#e3573f;}
+
+/* --- 3. phone on a table showing a score --- */
+.m-table{
+  --ratio:1 / .97;
+  background:
+    radial-gradient(90% 70% at 20% 10%,#c9a377,transparent 70%),
+    linear-gradient(170deg,#b98f62,#8e6640 75%,#6f4d2f);
+}
+.m-table::before{
+  content:"";
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    102deg,
+    rgba(255,255,255,.05) 0 3px,
+    rgba(70,42,18,.07) 3px 9px);
+}
+.glass{
+  position:absolute;
+  right:8%;top:19%;
+  width:21%;aspect-ratio:1/1.5;
+  border-radius:5px 5px 14px 14px;
+  background:
+    linear-gradient(90deg,
+      rgba(255,255,255,.42) 0 14%,
+      rgba(255,255,255,.14) 30% 70%,
+      rgba(255,255,255,.34) 88%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.45),
+    0 16px 24px -16px rgba(50,28,8,.85);
+}
+.glass::before{                     /* water line */
+  content:"";position:absolute;left:5%;right:5%;top:9%;height:11%;
+  border-radius:50%;
+  background:rgba(255,255,255,.5);
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.7);
+}
+.glass::after{                      /* highlight */
+  content:"";position:absolute;left:15%;top:22%;width:9%;height:62%;
+  border-radius:99px;background:rgba(255,255,255,.45);
+}
+.phone--score{
+  top:10%;
+  left:41%;
+  width:43%;
+  rotate:-6deg;
+}
+.score{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,#16130f,#221c15);
+  padding:14% 10% 0;
+}
+.score__ring{
+  position:relative;
+  width:100%;aspect-ratio:1;
+  border-radius:50%;
+  background:conic-gradient(#e8a45c 0 44%,rgba(255,255,255,.10) 44% 100%);
+  display:grid;place-items:center;
+}
+.score__ring::after{
+  content:"";position:absolute;inset:11%;border-radius:50%;background:#18140f;
+}
+.score__num{
+  position:relative;z-index:1;
+  font-size:19px;font-weight:600;color:#fff;letter-spacing:-.03em;
+}
+.score__lines{margin-top:12%;display:flex;flex-direction:column;gap:6px;}
+.score__lines i{height:5px;border-radius:99px;background:rgba(255,255,255,.14);}
+.score__lines i:nth-child(1){width:78%;}
+.score__lines i:nth-child(2){width:54%;}
+.score__lines i:nth-child(3){width:66%;}
+
+/* --- 4. blurred results cards --- */
+.m-results{
+  --ratio:1 / .85;
+  background:
+    radial-gradient(70% 60% at 12% 18%,#f0c9a4,transparent 70%),
+    radial-gradient(60% 60% at 88% 78%,#dcc6ad,transparent 70%),
+    linear-gradient(160deg,#f6efe6,#e7d9c8);
+}
+.m-results::before{                 /* soft out-of-focus wash */
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 40%);
+}
+.res-card{
+  position:absolute;
+  left:15%;right:9%;top:11%;
+  background:#fff;
+  border-radius:10px;
+  padding:11px 12px;
+  box-shadow:0 16px 30px -16px rgba(70,48,24,.55);
+  display:flex;flex-direction:column;gap:7px;
+}
+.res-card p{
+  position:relative;
+  padding-left:11px;
+  font-size:8.5px;
+  line-height:1.3;
+  color:#4a453d;
+}
+.res-card p::before{
+  content:"";position:absolute;left:0;top:.42em;
+  width:4px;height:4px;border-radius:50%;background:#c6a071;
+}
+.res-stats{
+  position:absolute;
+  left:16%;right:8%;bottom:12%;
+  background:#fff;
+  border-radius:10px;
+  padding:10px 12px;
+  display:flex;gap:14px;
+  box-shadow:0 16px 30px -16px rgba(70,48,24,.5);
+}
+.res-stats div{display:flex;flex-direction:column;gap:2px;}
+.res-stats b{font-size:15px;font-weight:600;letter-spacing:-.02em;color:#17150f;}
+.res-stats span{font-size:6.5px;letter-spacing:.11em;text-transform:uppercase;color:#a29b90;}
+.res-edge{                          /* partly cropped card, left edge */
+  position:absolute;
+  left:-7%;top:40%;
+  width:19%;aspect-ratio:1/1.15;
+  border-radius:10px;
+  background:linear-gradient(180deg,#fff,#fdf7ef);
+  box-shadow:0 14px 26px -16px rgba(70,48,24,.6);
+}
+.res-side{                          /* partly cropped card, right edge */
+  position:absolute;
+  right:-9%;top:37%;
+  width:25%;aspect-ratio:1/1.35;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 14px 26px -16px rgba(70,48,24,.6);
+  padding:9px;
+  display:flex;flex-direction:column;gap:6px;
+}
+.res-side i{height:4px;border-radius:99px;background:#eae2d7;}
+.res-side i:nth-child(odd){width:70%;}
+
+/* ---------- desktop courtesy (mobile-only build) ---------- */
+@media (min-width:640px){
+  body{background:#ddd8d1;}
+  .stack{box-shadow:0 0 0 1px rgba(23,21,15,.06);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+}
+</style>
+</head>
+<body>
+
+<main class="stack">
+
+  <!-- ============================ 1 ============================ -->
+  <section class="panel" style="--i:1" aria-labelledby="s1">
+    <div class="media m-wood" role="img" aria-label="An Everlab plan card resting on a wooden surface">
+      <div class="tray">
+        <div class="plan-card">
+          <div class="plan-card__top">
+            <div>
+              <p class="plan-card__name">Protocol</p>
+              <p class="plan-card__kicker">Plan</p>
+            </div>
+            <span class="plan-card__dot"></span>
+          </div>
+          <p class="plan-card__copy">Best for people who want their health actively managed year-round.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="body">
+      <p class="eyebrow"><span class="eyebrow__num">1</span> Get started</p>
+      <h2 class="title" id="s1">Create your account</h2>
+      <p class="lede">Start with the level of care that suits your health goals. Every Everlab plan gives you a connected view of your health, with deeper testing, clinical support and ongoing care available depending on the plan you choose.</p>
+      <p class="lede">Once you’ve selected your plan, you’ll set up your Everlab account and app:</p>
+      <ul class="list">
+        <li>Set up in about 10 minutes on your phone</li>
+        <li>Up to 20 years of records consolidated into one view</li>
+        <li>Your health, family and lifestyle history captured once</li>
+        <li>Wearable and app data connected, if you use one</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ 2 ============================ -->
+  <section class="panel" style="--i:2" aria-labelledby="s2">
+    <div class="media m-fabric" role="img" aria-label="A phone showing an onboarding video consultation">
+      <div class="phone phone--call">
+        <div class="phone__screen">
+          <div class="call">
+            <div class="call__label">Onboarding consultation</div>
+            <div class="call__person">
+              <span class="call__body"></span>
+              <span class="call__head"></span>
+              <span class="call__cans"></span>
+            </div>
+            <div class="call__bar"><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body">
+      <p class="eyebrow"><span class="eyebrow__num">2</span> Consult</p>
+      <h2 class="title" id="s2">Meet your doctor</h2>
+      <p class="lede">Choose or get matched with a doctor trained in preventative health, who has reviewed your history before you join the call. This isn’t a fifteen-minute appointment where you need to explain your background from scratch. It’s:</p>
+      <ul class="list">
+        <li>30 unhurried minutes by video, from anywhere in Australia</li>
+        <li>Your history, family risk and health goals discussed in detail</li>
+        <li>A testing plan tailored to you, with additional tests recommended where your doctor sees a need</li>
+        <li>A recommendation on the membership plan your doctor believes best suits you, and why</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ 3 ============================ -->
+  <section class="panel" style="--i:3" aria-labelledby="s3">
+    <div class="media m-table" role="img" aria-label="A phone on a table showing a health score">
+      <div class="glass"></div>
+      <div class="phone phone--score">
+        <div class="phone__screen">
+          <div class="score">
+            <div class="score__ring"><span class="score__num">44</span></div>
+            <div class="score__lines"><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body">
+      <p class="eyebrow"><span class="eyebrow__num">3</span> Test</p>
+      <h2 class="title" id="s3">Complete your testing</h2>
+      <p class="lede">You book each test in the app and your Care team handles referrals, coordination and anything that needs chasing.</p>
+      <ul class="list">
+        <li>Access 1,850+ vetted facilities Australia-wide</li>
+        <li>Testing is selected for you based on your history, risks and doctor consultation</li>
+        <li><strong>Diagnostic</strong> and <strong>Protocol</strong> plans can include advanced bloods, imaging and deeper diagnostics where appropriate</li>
+        <li><strong>Protocol</strong> members can access at-home blood collection</li>
+        <li>Results are added to your app as they arrive, with further testing recommended if needed</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ 4 ============================ -->
+  <section class="panel" style="--i:4" aria-labelledby="s4">
+    <div class="media m-results" role="img" aria-label="Result cards from the Everlab app">
+      <div class="res-edge"></div>
+      <div class="res-card">
+        <p>Lower Non-HDL-c to below 2.6 mmol/L</p>
+        <p>Shifts unclassified No</p>
+        <p>An insulin IQ works</p>
+      </div>
+      <div class="res-side"><i></i><i></i><i></i><i></i></div>
+      <div class="res-stats">
+        <div><b>12</b><span>Protocols</span></div>
+        <div><b>4</b><span>Event</span></div>
+        <div><b>6</b><span>Scientific</span></div>
+      </div>
+    </div>
+
+    <div class="body">
+      <p class="eyebrow"><span class="eyebrow__num">4</span> Act</p>
+      <h2 class="title" id="s4">Act, with follow-ups included</h2>
+      <p class="lede">Your doctor takes you through your results marker by marker. Where a result deserves a closer look, our specialist clinicians review it and your doctor arranges what comes next.</p>
+      <ul class="list">
+        <li>A 45-minute results consultation, and a written plan to follow</li>
+        <li>Follow-up consultations included, at no extra cost</li>
+        <li>Referral letters and specialist introductions, if your doctor advises it</li>
+        <li>Your results ready to share with your GP from the app</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* The one job JS has: tell each card how far it may scroll before it parks.
+   pin = viewportHeight - cardHeight, clamped at 0, so a card always parks with
+   its own bottom edge flush with the bottom of the viewport — that is the exact
+   moment its last line of content has been read, and the moment the next card
+   starts sliding over it. Nothing here runs on scroll. */
+(function () {
+  var panels = [].slice.call(document.querySelectorAll('.panel'));
+
+  function measure() {
+    var vh = window.innerHeight;
+    panels.forEach(function (panel) {
+      // getBoundingClientRect keeps the sub-pixel height, so a card parks
+      // exactly on the fold instead of leaving a half-pixel sliver.
+      var pin = Math.min(0, vh - panel.getBoundingClientRect().height);
+      panel.style.setProperty('--pin', pin.toFixed(2) + 'px');
+    });
+  }
+
+  measure();
+
+  // Re-measure when the cards themselves change size (web fonts, images,
+  // rotation, copy edits) rather than polling.
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(measure);
+    panels.forEach(function (panel) { ro.observe(panel); });
+  }
+  window.addEventListener('resize', measure);
+  window.addEventListener('orientationchange', measure);
+  window.addEventListener('load', measure);
+})();
+</script>
+
+</body>
+</html>
