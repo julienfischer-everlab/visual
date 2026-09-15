@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-15, "Phone: near-black card, carousel insets" |
+| Captured from version | 2026-09-15, "What's next inside the card by default" |
 | Captured on | 2026-09-15 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -36,7 +36,7 @@ the bar evenly.
 | Signature | Off, On | `sig=on` |
 | Card | Cards, List | `card=list` |
 | Hero | Dark (the glass card), Light: the hero card warm white (`#FCFBF9`, fixed, whatever the Theme) with black type and a black button, no glass; in dynamic motion the seed turns white as it lands; with Next on Inside the label, chips and dots inside the card take the card's dark ink (the active number in white on black) | `hero=light` |
-| Next | Outside, Inside: where the What's next block sits on desktop, in its own card under the hero card or inside the hero card under the button, above a hairline (the separate card then goes); phones always keep it inside | `next=inside` |
+| Next | Inside (default), Outside: where the What's next block sits on desktop, inside the hero card under the button above a hairline, or in its own card 24px under the hero card; phones always keep it inside | `next=outside` |
 | Heavy | No, Yes: much more text in the card (a longer description, twelve rows) to test the card's own scroll | `heavy=yes` |
 | Panel | a colour swatch (default black), an opacity in percent (default 32) and a backdrop blur in pixels (default 120, the maximum) for the second card in Cards | `panel=000000&alpha=32&blur=120` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
