@@ -735,8 +735,9 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
 - **Expanded Report** — off or on. Off, the records live behind a select
   beside the search. On, they become the first row: a carousel of cards, *All
   records* first and six reports after it, with the chips and the search on the
-  second row — the search at the chips' right end, shaped like one, fully
-  rounded and the same 44px. A card **is** the choice, so there is no cross to
+  second row — the search at the chips' right end at the
+  chips' own 44px height, on the 14px radius the select and the search carry
+  everywhere else. A card **is** the choice, so there is no cross to
   dismiss: picking another card is how you undo this one, and All is a card
   like the rest rather than a cleared state, which is exactly why the select
   needed a cross and this does not. The cards are built from `RECS`, the same

@@ -5716,6 +5716,38 @@ Gone, with the property it ran on.
   colour at every step -- rgb(18,18,18) down to rgb(0,0,0) as --v5head runs --
   and there is no blur over either
 
+### 5.205 The plate overlapped the wrong way
+
+"Fix the 1px gap!!" -- a hairline of list between the status strip and the
+pinned bar. The bar's plate exists for exactly this, and it had stopped
+reaching: with `--msTop` at 0 (the strip is in the flow now) its geometry
+resolved to `top:0; height:1px`, which is a pixel *inside* the bar rather than
+above it. It now starts a pixel higher and is a pixel taller, so it always
+overlaps into whatever is above rather than meeting it along an edge -- the
+same reason the two plates were made to overlap in 5.180.
+
+  m20 at scrollTop 760 / 900 / 1400 / 2200: strip bottom 126.00 = bar top
+  126.00, and no row between them carries anything brighter than the ground
+
+Headless layout lands those two on the same whole pixel, so I could not
+reproduce the sliver here; the plate is belt and braces either way.
+
+### 5.206 The chips stand over the list
+
+"Chip bg blur 32px. Bleed more by 16px the gradient black on the bg."
+
+Since 5.201 the ground stops halfway up the chips row, so the lower half of
+every chip has live content behind it rather than a solid plate. A 32px
+backdrop blur is what makes that read as a control standing over the list
+instead of a pill with text showing through it. Both surfaces.
+
+The fade runs 40px past the bar rather than 24.
+
+"Select and search radius 14px." The only 999px left in the app was the
+Expanded Report search, which was made fully rounded when it moved into the
+chips row; it is 14px again, matching the select and the search everywhere
+else. It keeps the chips' 44px height.
+
 ---
 
 ## 6. Open items
