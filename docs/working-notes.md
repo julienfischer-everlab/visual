@@ -5641,6 +5641,59 @@ constant as the fallback, for the pages that declare no ground at all.
 just set the token, because `body.light.v4 #phone` sets a background of its own
 and is a class deeper.
 
+### 5.201 The fade starts inside the bar
+
+"The gradient should start in the middle of the height of the chips row, then
+blend outside the sticky fixed bar by 24px." Which means the bar's own ground
+can no longer run solid to its bottom edge -- it has to stop where the fade
+begins, or the fade is painting over a colour identical to itself.
+
+So the background is a gradient that goes transparent at
+`calc(100% - var(--msFadeUp))`, and the `::after` starts at that same point and
+runs `--msFadeUp + 24px`. It carries `z-index:-1`, which in the painting order
+puts it above the element's own background and below its in-flow content: the
+lower half of a chip sits over fading ground rather than under a wash.
+
+`--msFadeUp` is measured, not typed -- half the chips row, set beside `--msTop`
+-- so it follows the row whatever ends up in it.
+
+  m20 stuck: --msFadeUp 34px of a 68px chips row; ::after top 102px of a 136px
+  bar, height 58px, z-index -1; the fade begins at 228, the chips' own middle
+
+The desk's block is built the same way, from `--dFadeUp`.
+
+### 5.202 The dropdown stands off, and loses its floor
+
+"Dropdown position 4px to the bottom of the Records select. Remove the around
+footer bar on the bottom of the dropdown." It was `top:calc(100% - 6px)`,
+tucked into the select by six pixels; it is `+4px` now, measured at 4.0. The
+chevron under the list is gone: a list that scrolls says so by cutting a row,
+not by drawing an arrow beneath it.
+
+### 5.203 The report card swipes
+
+"Add carousel in latest reports, simulate few reports on swipe." The carousel
+driver already picks up any `.hiCard` holding two or more `.hiSlide`s, with its
+dots and its arrows -- so the card needed slides, not a mechanism.
+
+They are built from `RECS`, which meant moving that table above its first
+consumer: the driver runs long before the biomarker layer does, and a const in
+the temporal dead zone throws rather than reads. `fillLatestReport` is gone --
+the builder writes every slide's title, date and count, so there is still one
+source for what the reports are.
+
+Four slides, the dot count its neighbours carry; `REP_SLIDES` is the only
+number to change. The first slide keeps the eyebrow *Latest report* and the
+rest read *Report*, because only one of them is the latest.
+
+And the pill gets its 20px bottom margin back. It was dropped because "the
+other cards keep that margin for the dot row under them, and this card has
+nothing below" -- which was true, and stopped being true the moment the card
+became a carousel.
+
+  m20 and m10: 4 slides, 4 dots, 2 arrows, first slide the latest;
+  tapping the third dot shows Other Report on both
+
 ---
 
 ## 6. Open items

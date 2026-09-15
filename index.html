@@ -608,13 +608,23 @@
      side. Same components, same shells (56px on a 14px radius, 44px pills);
      the arrangement is what changes with the room. */
   .dash .dFilters{
-    position:sticky;top:0;z-index:5;background:var(--pageBg);padding-top:26px;
+    position:sticky;top:0;z-index:5;padding-top:26px;
+    background:linear-gradient(to bottom,
+      var(--pageBg) 0,
+      var(--pageBg) calc(100% - var(--dFadeUp, 22px)),
+      transparent calc(100% - var(--dFadeUp, 22px)));
   }
-  /* pinned, the block's plate stops dead and the list carries on from the next
-     pixel -- a row cut across its own middle. It carries on past its own bottom
-     as a fade of the page's ground instead, the same 30px the phone uses. */
+  /* Pinned, the block's plate used to stop dead and the list carry on from the
+     next pixel -- a row cut across its own middle. The ground now stops halfway
+     up the chips row and the fade carries it the rest of the way, finishing
+     24px past the block; it sits behind the chips (z-index:-1 paints above the
+     block's background and below its content), so the lower half of a chip is
+     over fading ground rather than under a wash. The phone's bar is built the
+     same way. */
   .dash .dFilters::after{
-    content:"";position:absolute;left:0;right:0;top:100%;height:30px;
+    content:"";position:absolute;left:0;right:0;z-index:-1;
+    top:calc(100% - var(--dFadeUp, 22px));
+    height:calc(var(--dFadeUp, 22px) + 24px);
     background:linear-gradient(to bottom,var(--pageBg),var(--pageBg0));
     pointer-events:none;opacity:0;transition:opacity .22s ease;
   }
@@ -1143,7 +1153,10 @@
      on only once it is actually pinned (the script sets .stuck). */
   .msWrap{
     position:sticky;top:var(--msTop, 0px);z-index:4;padding:12px 13px 0;
-    background:var(--bodyBg, #0d0d0c);
+    background:linear-gradient(to bottom,
+      var(--bodyBg, #0d0d0c) 0,
+      var(--bodyBg, #0d0d0c) calc(100% - var(--msFadeUp, 34px)),
+      transparent calc(100% - var(--msFadeUp, 34px)));
   }
   /* The chips are inside the bar now, so the bar's own side padding would
      stop them short of the edge -- and a horizontal scroller that stops short
@@ -1170,11 +1183,12 @@
      pixel of overlap into the bar's own background. --msPlate fades it in over
      the last 40px of the approach, so at rest the organ still runs to the top
      of the screen, which is the design. */
+  body.light .msWrap::before{background:var(--bodyBg, #f7f2e9);}
   .msWrap::before{
     content:"";position:absolute;left:0;right:0;
     top:calc(-1 * (var(--msTop, 0px) + var(--msGap, 0px)));
     height:calc(var(--msTop, 0px) + var(--msGap, 0px) + 1px);
-    background:inherit;opacity:var(--msPlate, 0);pointer-events:none;
+    background:var(--bodyBg, #0d0d0c);opacity:var(--msPlate, 0);pointer-events:none;
   }
   /* And the screen-top strip itself, which the bar's plate cannot reach while
      the bar is still a page away: anchored to the status bar, and simply
@@ -1193,7 +1207,9 @@
      than being sliced by it. Only while it is stuck, since in the flow there
      is nothing passing beneath to fade. */
   .msWrap::after{
-    content:"";position:absolute;left:0;right:0;top:100%;height:30px;
+    content:"";position:absolute;left:0;right:0;z-index:-1;
+    top:calc(100% - var(--msFadeUp, 34px));
+    height:calc(var(--msFadeUp, 34px) + 24px);
     background:linear-gradient(to bottom,var(--bodyBg, #0d0d0c),var(--bodyBg0, rgba(13,13,12,0)));
     pointer-events:none;opacity:0;transition:opacity .22s ease;
   }
@@ -1202,7 +1218,12 @@
     background:linear-gradient(to bottom,var(--bodyBg, #f7f2e9),var(--bodyBg0, rgba(247,242,233,0)));
   }
   /* each theme keeps its own fallback for the pages that declare no ground */
-  body.light .msWrap{background:var(--bodyBg, #f7f2e9);}
+  body.light .msWrap{
+    background:linear-gradient(to bottom,
+      var(--bodyBg, #f7f2e9) 0,
+      var(--bodyBg, #f7f2e9) calc(100% - var(--msFadeUp, 34px)),
+      transparent calc(100% - var(--msFadeUp, 34px)));
+  }
 
   /* the two controls side by side, one height. The select takes what its
      longest label needs and the search takes the rest -- the other way round
@@ -1300,7 +1321,7 @@
      control that opened it and the control stays visible above it, which is
      what tells you what you are changing. */
   .mRecMenu{
-    position:absolute;left:0;right:0;top:calc(100% - 6px);z-index:9;
+    position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:9;
     background:#131312;border-radius:16px;padding:6px;
     box-shadow:0 24px 48px -18px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.05);
     opacity:0;transform:translateY(-6px);pointer-events:none;
@@ -1318,11 +1339,6 @@
   body.light .mRecMenu{background:#fffdf8;box-shadow:0 24px 48px -22px rgba(46,31,26,.35),0 0 0 1px rgba(46,31,26,.08);}
   .mRecScroll{max-height:min(44vh,330px);overflow-y:auto;scrollbar-width:none;}
   .mRecScroll::-webkit-scrollbar{display:none;}
-  .mRecMore{
-    display:block;text-align:center;color:#8b8b86;padding:2px 0 0;
-    pointer-events:none;
-  }
-  .mRecMore svg{width:12px;height:8px;}
   .mRecOpt{
     display:flex;align-items:center;gap:12px;width:100%;
     padding:13px 12px;font:inherit;text-align:left;
@@ -2509,14 +2525,12 @@
     padding:7px 12px;border-radius:999px;background:rgba(242,229,224,.13);color:#f2e5e0;
   }
   .hiAct svg{width:11px;height:11px;flex:none;}
-  /* the report card has one action and nowhere else to go, so its pill takes
-     the card's width and centres its label -- no arrow, since a button that
-     fills the card is already pointing at the only thing it can do. It sits on
-     the card's floor rather than 20px above it: the other cards keep that
-     margin because a dot row sits under them, and this card has nothing
-     below. */
-  .hiRep .hiAct{align-self:stretch;justify-content:center;padding:9px 12px;
-                margin-bottom:0;}
+  /* the report card's pill takes the card's width and centres its label -- no
+     arrow, since a button that fills the card is already pointing at the only
+     thing it can do. It keeps .hiAct's 20px bottom margin, which is there for
+     the dot row: the card had none when this pill was first drawn and has one
+     now that it is a carousel. */
+  .hiRep .hiAct{align-self:stretch;justify-content:center;padding:9px 12px;}
   .hiRepMeta span{display:block;}
   .hiUp{
     margin-top:auto;margin-bottom:20px;cursor:pointer;
@@ -5153,7 +5167,6 @@
         <button class="msRecClear" id="dRecClear" type="button" aria-label="Clear the chosen record" aria-hidden="true"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
         <div class="mRecMenu" id="dRecMenu" role="listbox" aria-label="Choose a record" hidden>
           <div class="mRecScroll" id="dRecList"></div>
-          <i class="mRecMore" aria-hidden="true"><svg viewBox="0 0 12 8" fill="none"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></i>
         </div>
       </div>
       <div class="dsearch" id="dSearch">
@@ -5400,7 +5413,6 @@
          that record carried. It scrolls when there are more than fit. -->
     <div class="mRecMenu" id="mRecMenu" role="listbox" aria-label="Choose a record" hidden>
       <div class="mRecScroll" id="mRecList"></div>
-      <i class="mRecMore" aria-hidden="true"><svg viewBox="0 0 12 8" fill="none"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></i>
     </div>
       </div>
       <!-- Buttons, not divs. A chip that filters is a control: it takes the tab
@@ -14473,6 +14485,54 @@
     if (L) el.style.setProperty('--len', L.toFixed(1));
   });
 
+  // The records, as the design lists them: a title, the category and date
+  // under it, and how many readings that record carried. The counts sum to
+  // 136 over a panel of 110, which is right rather than wrong -- a biomarker
+  // measured in August and again in May is in both reports. So a reading
+  // belongs to one or more records, "All records" is the 110 distinct ones,
+  // and each record shows exactly the number on its badge.
+  const RECS = [
+    { id: 'all', label: 'All records' },
+    { id: 'r1',  label: 'Pathology test',          cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026' },
+    { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026' },
+    { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026' },
+    { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025' },
+    { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025' },
+    { id: 'r6',  label: 'Baseline panel',          cat: 'Pathology', date: '18 Jun 2025', n: 38, short: 'Jun 2025' }
+  ];
+
+  // The report card is a carousel like the two beside it: one slide per
+  // report, swiped the same way, with the same dots and the same arrows. Built
+  // from RECS rather than written out, so the card and the record list cannot
+  // disagree about which reports exist or what they carried -- and the first
+  // slide is still the latest, which is what the eyebrow promises. Four of
+  // them, which is the dot count its neighbours carry; REP_SLIDES is the only
+  // number to change.
+  const REP_SLIDES = 4;
+  (function buildReportSlides(){
+    const reps = RECS.filter(r => r.id !== 'all').slice(0, REP_SLIDES);
+    if (reps.length < 2) return;
+    const ARROW = dir => '<button class="hiNav ' + dir + '" type="button" aria-label="' +
+      (dir === 'prev' ? 'Previous' : 'Next') + '"><svg viewBox="0 0 12 12" fill="none" ' +
+      'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ' +
+      'aria-hidden="true"><path d="' +
+      (dir === 'prev' ? 'M7.5 2.5 4 6l3.5 3.5' : 'M4.5 2.5 8 6l-3.5 3.5') + '"/></svg></button>';
+    const html =
+      reps.map((r, i) =>
+        '<div class="hiSlide">' +
+          '<div class="lbl">' + (i === 0 ? 'Latest report' : 'Report') + '</div>' +
+          '<div class="hiRepTitle big">' + r.label + '</div>' +
+          '<div class="hiRepMeta"><span>' + r.date + '</span><span>' +
+            r.n + ' biomarkers</span></div>' +
+          '<div class="hiAct">View report</div>' +
+        '</div>').join('') +
+      ARROW('prev') + ARROW('next') +
+      '<div class="hiDots">' +
+        reps.map((r, i) => '<i' + (i === 0 ? ' class="on"' : '') + '></i>').join('') +
+      '</div>';
+    document.querySelectorAll('.hiRep').forEach(card => { card.innerHTML = html; });
+  })();
+
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.
   (function(){
@@ -15274,8 +15334,13 @@
   (function dStick(){
     const sc = document.querySelector('.dash'), blk = document.getElementById('dFilters');
     if (!sc || !blk) return;
-    const set = () => blk.classList.toggle('stuck',
-      blk.getBoundingClientRect().top <= sc.getBoundingClientRect().top + 0.5 && sc.scrollTop > 0);
+    const chips = blk.querySelector('.filters');
+    const set = () => {
+      if (chips) blk.style.setProperty('--dFadeUp',
+        Math.round(chips.offsetHeight / 2) + 'px');
+      blk.classList.toggle('stuck',
+        blk.getBoundingClientRect().top <= sc.getBoundingClientRect().top + 0.5 && sc.scrollTop > 0);
+    };
     sc.addEventListener('scroll', set, { passive: true });
     addEventListener('resize', set);
     set();
@@ -16149,21 +16214,6 @@
   // The record sets. Every reading belongs to one of the two named tests, so
   // "Latest test" is a real subset rather than a label that changes nothing,
   // and the date under each row is the date of the test it came from.
-  // The records, as the design lists them: a title, the category and date
-  // under it, and how many readings that record carried. The counts sum to
-  // 136 over a panel of 110, which is right rather than wrong -- a biomarker
-  // measured in August and again in May is in both reports. So a reading
-  // belongs to one or more records, "All records" is the 110 distinct ones,
-  // and each record shows exactly the number on its badge.
-  const RECS = [
-    { id: 'all', label: 'All records' },
-    { id: 'r1',  label: 'Pathology test',          cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026' },
-    { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026' },
-    { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026' },
-    { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025' },
-    { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025' },
-    { id: 'r6',  label: 'Baseline panel',          cat: 'Pathology', date: '18 Jun 2025', n: 38, short: 'Jun 2025' }
-  ];
   // where the reading sits on its own range bar: inside the green, into the
   // amber, past it -- an unclassified one has no place to sit and shows none
   const MK_AT = { ok: [6, 30], sub: [40, 60], out: [70, 88] };
@@ -16226,25 +16276,6 @@
     rows.forEach(r => stampDate(r, byId[r.dataset.r.split(' ')[0]] || {}));
   }
 
-  // The latest-report card's title, date and count come from RECS -- the same
-  // table the record select reads -- so "the latest report" is one fact with
-  // one source rather than a sentence typed into the markup that goes stale on
-  // its own. RECS is in date order, so the latest is the first real record.
-  (function fillLatestReport(){
-    const latest = RECS.find(r => r.id !== 'all');
-    if (!latest) return;
-    // both copies of the card -- the desk's and the phone's
-    document.querySelectorAll('.hiRepTitle').forEach(t => { t.textContent = latest.label; });
-    // date and count on their own lines: two facts, not one sentence
-    document.querySelectorAll('.hiRepMeta').forEach(m => {
-      m.textContent = '';
-      for (const line of [latest.date, latest.n + ' biomarkers']){
-        const s = document.createElement('span');
-        s.textContent = line;
-        m.appendChild(s);
-      }
-    });
-  })();
 
   // where a row's marker sits, given its status and its name -- deterministic
   // within the band so the markers do not stack on one pixel or move between
@@ -16627,7 +16658,14 @@
       const cs = getComputedStyle(st);
       return (cs.display !== 'none' && cs.position === 'absolute') ? st.offsetHeight : 0;
     };
-    const placeBar = () => wrap.style.setProperty('--msTop', statusH() + 'px');
+    const placeBar = () => {
+      wrap.style.setProperty('--msTop', statusH() + 'px');
+      // where the ground stops and the fade takes over: the middle of the
+      // chips row, measured, so it follows the row rather than a typed number
+      const chips = wrap.querySelector('.mchips');
+      if (chips) wrap.style.setProperty('--msFadeUp',
+        Math.round(chips.offsetHeight / 2) + 'px');
+    };
     // How far the bar still has to run before it pins, and how present its
     // plate is. Both live on the bar, because the plate is the bar's: one
     // surface from the top of the screen to the bottom of the chips. The fade
