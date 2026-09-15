@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-15, "Phone: one black card to the bottom" |
+| Captured from version | 2026-09-15, "Phone: near-black card, carousel insets" |
 | Captured on | 2026-09-15 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -166,12 +166,15 @@ it. Phones drop the circle, and lay the card out differently: the script moves
 the "Your gift from Marc" line and the product title out of the card into a
 head above it, centred, with 64px above and below and 48px at the sides so
 the photograph shows around them (they move back inside when the stage is wide again, ids and all);
-the card itself keeps the very same glass as the half circle on the first
-fold (`rgba(40,38,36,.36)` over a 60px blur), runs edge to edge across the
-screen (the panel below too), with 30px padding and 32px at the foot; the
-panel below uses the same 30px sides and 32px foot. In dynamic motion the seed morphs to the card as on
-desktop, unchanged in colour; the head above the card fades in with the
-card's content. The floating **Claim my gift** at the
+the card itself is one near-black surface, 90% black over a 64px blur, that
+runs edge to edge across the screen from under the title group to the bottom
+of the fold, rounded only at its top corners, with 30px padding and 132px of
+room at its foot for the floating button; the What's next carousel (its
+slides inset 32px each side so the text never reaches the edge fade) and the
+footer sit inside it under a hairline, so the photograph shows only behind the
+title group. In dynamic motion the seed keeps its glass on the first fold,
+morphs to the card as on desktop and turns near-black as it lands; the head
+above the card fades in with the card's content. The floating **Claim my gift** at the
 foot of the screen fills 70% of the width, centred; in dynamic motion it waits
 below the screen and rises into place over 0.75s from 1.5s, once the card has
 landed and its content shown, and drops back below on the way back. Its bar's
