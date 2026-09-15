@@ -1168,9 +1168,14 @@
     width:100%;display:flex;align-items:center;gap:8px;
     height:56px;padding:0 14px 0 16px;
     font:inherit;font-size:15px;color:#ececec;text-align:left;
-    border:1px solid #2a2a28;border-radius:14px;background:transparent;
+    /* The edge is an inset ring, not a border: Chromium floors border-width
+       to whole CSS pixels, so a declared 1.5px border paints at 1 -- the same
+       reason the chips' active edge is a ring. The border stays, transparent,
+       because it is what holds the box's size. */
+    border:1px solid transparent;border-radius:14px;background:transparent;
+    box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);
     cursor:pointer;-webkit-tap-highlight-color:transparent;
-    transition:border-color .16s ease,background .16s ease;
+    transition:box-shadow .16s ease,background .16s ease;
   }
   .msRec .t{flex:1;min-width:0;}
   /* whichever sits at the right, the text stops in the same place */
@@ -1202,11 +1207,11 @@
   .msRecWrap.cleared .msRecClear{display:flex;}
   .msRecClear svg{width:12px;height:12px;display:block;}
   body.light .msRecClear{background:#e6ddca;color:#2e1f1a;}
-  .msRec:hover{border-color:#5a5a56;}
-  .msRec[aria-expanded="true"]{border-color:#5a5a56;background:rgba(255,255,255,.05);}
+  .msRec:hover{--msEdge:#5a5a56;}
+  .msRec[aria-expanded="true"]{--msEdge:#5a5a56;background:rgba(255,255,255,.05);}
   .msRec[aria-expanded="true"] .msRecChev{transform:rotate(180deg);}
   .msRow .msBox{flex:0 0 56px;min-width:0;padding:0;justify-content:center;
-                cursor:pointer;transition:flex-basis .24s ease,border-color .16s ease;}
+                cursor:pointer;transition:flex-basis .24s ease,box-shadow .16s ease;}
   .msWrap.searchOn .msRow .msBox{flex:0 0 calc((100% - 12px) * .60);
                                  padding:0 14px 0 16px;justify-content:flex-start;}
   /* Collapsed, the field is zero-wide rather than display:none. It has to stay
@@ -1216,16 +1221,19 @@
   .msRow .msBox input{flex:0 0 0;width:0;opacity:0;pointer-events:none;
                       transition:opacity .18s ease;}
   .msWrap.searchOn .msRow .msBox input{flex:1 1 auto;width:auto;opacity:1;pointer-events:auto;}
-  .msWrap:not(.searchOn) .msRow .msBox .msIco{margin:0;}
+  /* Collapsed the box has two children -- the icon and a zero-wide field --
+     and a 9px gap between them, which pushes the icon 4.5px off centre for a
+     field that is not there. No gap, no offset. */
+  .msWrap:not(.searchOn) .msRow .msBox{gap:0;}
   /* With the search open the select has 40% and a cross in it, so the eyebrow
      goes: category and date are the detail you drop first when the room runs
      out, and one line that can be read beats two that cannot. It comes back
      when the search closes. */
   .msWrap.searchOn .msRec i{display:none;}
   .msWrap:not(.searchOn) .msClear{display:none !important;}
-  body.light .msRec{border-color:#ddd3bf;color:#2e1f1a;}
-  body.light .msRec:hover{border-color:#9b8a75;}
-  body.light .msRec[aria-expanded="true"]{background:rgba(46,31,26,.05);border-color:#9b8a75;}
+  body.light .msRec{--msEdge:#ddd3bf;color:#2e1f1a;}
+  body.light .msRec:hover{--msEdge:#9b8a75;}
+  body.light .msRec[aria-expanded="true"]{background:rgba(46,31,26,.05);--msEdge:#9b8a75;}
   /* The record menu, anchored under its button. Not a sheet: it belongs to the
      control that opened it and the control stays visible above it, which is
      what tells you what you are changing. */
@@ -1286,13 +1294,16 @@
   body.light .mRecOpt .n{background:rgba(46,31,26,.1);color:#2e1f1a;}
   .msBox{
     display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;
-    border:1px solid #2a2a28;border-radius:14px;color:#8b8b86;background:transparent;
-    transition:border-color .16s ease;
+    border:1px solid transparent;border-radius:14px;color:#8b8b86;background:transparent;
+    box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);
+    transition:box-shadow .16s ease;
   }
-  .msWrap.focus .msBox{border-color:#5a5a56;}
-  body.light .msBox{border-color:#ddd3bf;color:#9b8a75;}
-  body.light .msWrap.focus .msBox{border-color:#9b8a75;}
-  .msIco{width:16px;height:16px;flex:none;}
+  /* focused, the field's edge is full strength -- white on the dark ground,
+     the theme's own ink on paper, where white would be no edge at all */
+  .msWrap.focus .msBox{--msEdge:#fff;}
+  body.light .msBox{--msEdge:#ddd3bf;color:#9b8a75;}
+  body.light .msWrap.focus .msBox{--msEdge:#2e241c;}
+  .msIco{width:20px;height:20px;flex:none;}
   .msBox input{
     flex:1;min-width:0;background:none;border:0;outline:none;padding:0;margin:0;
     font:inherit;font-size:15px;color:#ececec;-webkit-appearance:none;appearance:none;

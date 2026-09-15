@@ -5180,6 +5180,31 @@ run caught.
 It stays open while it holds text, closed otherwise. A field with a search in
 it that collapsed to an icon would be a filter you cannot see or undo.
 
+### 5.183 The icon off centre, and an edge that would not paint at 1.5
+
+"Search should be in the center. Icon 20px. Select and search btn border 1.5px.
+Focus border field white colour."
+
+The icon was 4.5px left of centre, for a reason worth writing down: the
+collapsed box still has two children -- the magnifier and the zero-wide field
+-- and a 9px gap between them. The gap is real even when the thing on the other
+side of it is not, so the PAIR centred rather than the icon. No gap when
+collapsed, and it lands on the middle. 16px to 20px while we are here.
+
+The 1.5px edge is an inset ring, not a border. Chromium floors border-width to
+whole CSS pixels, so a declared 1.5px border paints at 1 -- the same thing the
+chips' active edge ran into months ago. The border stays, transparent, because
+it is what holds the box's size; the visible edge is
+`box-shadow: inset 0 0 0 1.5px`, coloured through a `--msEdge` token so hover,
+open and focus each set one value rather than each restating a border.
+
+Focused, that token goes full strength: white on the dark ground, the theme's
+own ink on paper, where white would be no edge at all. Same rule the chips
+follow, so the focused field and the chosen chip now wear the same edge.
+
+  collapsed  box 56px  icon 20x20  offset from centre 0.00  ring 1.5px inset
+  focused    ring rgb(255,255,255)      light: rgb(46,36,28)
+
 ---
 
 ## 6. Open items
