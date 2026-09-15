@@ -277,7 +277,7 @@
   }
   .sig.sig-in{opacity:1;clip-path:inset(-20% -10% -20% -10%);}
   body[data-motion="static"] .sig{opacity:1;clip-path:none;transition:none;}
-  body[data-sig="off"] .sig{display:none;}
+  .sig{display:none;}   /* the sender signature is retired */
   /* each line is a row that opens from nothing shortly before its letters
      start, so the centred block grows from the middle: the first line is
      pushed up by the second, both by the third */
@@ -1148,11 +1148,6 @@
       <option value="dynamic">Dynamic</option>
       <option value="static">Static</option>
     </select>
-    <label for="sigSel">Signature</label>
-    <select id="sigSel" aria-label="Signature">
-      <option value="off">Off</option>
-      <option value="on">On</option>
-    </select>
     <label for="cardSel">Card</label>
     <select id="cardSel" aria-label="Card">
       <option value="cards">Cards</option>
@@ -1168,10 +1163,10 @@
       <option value="inside">Inside</option>
       <option value="outside">Outside</option>
     </select>
-    <label for="heavy">Heavy</label>
-    <select id="heavy" aria-label="Heavy content">
-      <option value="no">No</option>
-      <option value="yes">Yes</option>
+    <label for="contentSel">Content</label>
+    <select id="contentSel" aria-label="Amount of content">
+      <option value="light">Light</option>
+      <option value="heavy">Heavy</option>
     </select>
     <label for="panelColor">Panel</label>
     <input type="color" id="panelColor" value="#000000" aria-label="Panel colour" title="Panel colour">
@@ -1806,17 +1801,17 @@
     'Hearing and vision baseline',
     'A written year-one plan, updated after each result'
   ];
-  var heavySel = document.getElementById('heavy');
-  function setHeavy(v){
-    v = v === 'yes' ? 'yes' : 'no';
-    heavySel.value = v;
+  var contentSel = document.getElementById('contentSel');
+  function setContent(v){
+    v = (v === 'heavy' || v === 'yes') ? 'heavy' : 'light';
+    contentSel.value = v;
     var g = Object.assign({}, gift);
-    if(v === 'yes'){ g.blurb = gift.blurb + HEAVY_BLURB; g.includes = gift.includes.concat(HEAVY_INCLUDES); }
+    if(v === 'heavy'){ g.blurb = gift.blurb + HEAVY_BLURB; g.includes = gift.includes.concat(HEAVY_INCLUDES); }
     GiftCard(g);
     requestAnimationFrame(function(){ panelSet(); if(state === 'gift') seedSet(cardRect()); });
   }
-  setHeavy((params.get('heavy') || '').toLowerCase());
-  heavySel.addEventListener('change', function(){ setHeavy(heavySel.value); });
+  setContent((params.get('content') || params.get('heavy') || '').toLowerCase());   // heavy=yes still works
+  contentSel.addEventListener('change', function(){ setContent(contentSel.value); });
 
   // phones: the eyebrow and the title move out of the card into the head slot
   // above it (and back when the stage is wide again); ids travel with the nodes
@@ -1846,14 +1841,6 @@
   setTheme((params.get('theme') || DEFAULT_THEME || '').toLowerCase());
   themeSel.addEventListener('change', function(){ setTheme(themeSel.value); });
 
-  var sigSel = document.getElementById('sigSel');
-  function setSig(v){
-    v = v === 'on' ? 'on' : 'off';
-    document.body.dataset.sig = v;
-    sigSel.value = v;
-  }
-  setSig((params.get('sig') || '').toLowerCase());
-  sigSel.addEventListener('change', function(){ setSig(sigSel.value); });
 
   /* ---------- panel tweak: the second card's colour and opacity ---------- */
   var panelColor = document.getElementById('panelColor'), panelAlpha = document.getElementById('panelAlpha'), panelBlur = document.getElementById('panelBlur');

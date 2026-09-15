@@ -10,7 +10,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | --- | --- |
 | Source | https://claude.ai/code/artifact/e92660a9-d2b7-4acb-a8b0-7c566c4a7159 |
 | Title | Unwrap gift-FINAL (renamed from "Unwrap your Everlab gift" on 2026-09-09) |
-| Captured from version | 2026-09-15, "What's next inside the card by default" |
+| Captured from version | 2026-09-15, "Signature tweak gone, Content Light/Heavy" |
 | Captured on | 2026-09-15 |
 | Sharing at capture | Shared with organization |
 | Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
@@ -33,11 +33,10 @@ the bar evenly.
 | Device | Desktop, Mobile | `device=phone` |
 | Theme | Light, Dark | `theme=dark` |
 | Motion | Dynamic, Static | `motion=static` |
-| Signature | Off, On | `sig=on` |
 | Card | Cards, List | `card=list` |
 | Hero | Dark (the glass card), Light: the hero card warm white (`#FCFBF9`, fixed, whatever the Theme) with black type and a black button, no glass; in dynamic motion the seed turns white as it lands; with Next on Inside the label, chips and dots inside the card take the card's dark ink (the active number in white on black) | `hero=light` |
 | Next | Inside (default), Outside: where the What's next block sits on desktop, inside the hero card under the button above a hairline, or in its own card 24px under the hero card; phones always keep it inside | `next=outside` |
-| Heavy | No, Yes: much more text in the card (a longer description, twelve rows) to test the card's own scroll | `heavy=yes` |
+| Content | Light (default), Heavy: much more text in the card (a longer description, twelve rows) to test the card's own scroll | `content=heavy` (`heavy=yes` still accepted) |
 | Panel | a colour swatch (default black), an opacity in percent (default 32) and a backdrop blur in pixels (default 120, the maximum) for the second card in Cards | `panel=000000&alpha=32&blur=120` |
 | Message | Looking after everyone else (default); Happy Birthday; Adventures ahead; What actually matters; More good years; A little push | `msg=0` to `msg=5` (default 1) |
 
@@ -66,13 +65,8 @@ installed, otherwise Geist), under a plain mono eyebrow, all caps and widely
 spaced: a small orange square, blinking once a second like a cursor, then
 "Marc got something special for you". Default copy: "You’ve spent so much
 time looking after everyone else. This one’s for you." over three lines. The
-sender's first name is written across the bottom right of the title in a
-thin script face (Homemade Apple, in the text colour, inclined 7°), laid over
-the last word (starting a third of the way into it, across its lower half,
-placed by the script and re-placed on resize), like a signature; it is off
-unless the Signature tweak is on: in dynamic motion
-it writes itself on from left to right 0.7s after the title's last letter
-starts, and again whenever the message is switched.
+sender's scripted signature over the title, and its Signature tweak, are
+retired: the element stays in the markup but is never shown.
 
 In dynamic motion things arrive in order: the wordmark fades in first (from
 150ms); the eyebrow's letters resolve from 0.73s to 1.7s (on phones the square sits
