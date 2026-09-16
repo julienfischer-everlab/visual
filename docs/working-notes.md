@@ -6392,6 +6392,64 @@ arrives.
 
   phone: 180px wide, 4 -> 188. desk: 111px -> 82px, 4 -> 119.
 
+### 5.230 A card opens a sheet
+
+"Click on a report card open a bottom sheet." Opening a report and going to its
+readings were one step; they are two now. The card opens a sheet -- the kind
+with its dot, the illustration at 148px, the name, what the report measured, and
+its four facts -- and the sheet carries the action the card used to: *See
+results* narrows the biomarkers and hands the page back to the Biomarkers tab,
+through the same `everlab:pickRec` the select and the carousel go through.
+
+It reuses the organ sheet's chrome: the same wrapper, dim, handle and slide,
+because a second bottom sheet that moved differently would read as a second kind
+of thing. It is mounted twice -- inside the phone frame, and fixed over the desk,
+still a bottom sheet -- and each carousel is handed its own, so nothing has to
+guess which surface is on screen.
+
+Two things the shared chrome cost, both found by looking at it:
+
+- **the sheet came up wine-dark.** `.sheet{background:var(--bg)}`, and `--bg`
+  belongs to whichever organ page is behind. It has its own raised neutral now.
+- **the rules did not apply at all** until the block moved. `.rsSheet` and
+  `.sheet` have the same specificity, and `.sheet` was defined 1600 lines later,
+  so `top:32%` and the rest kept winning. The report sheet's CSS now sits
+  directly after the chrome it is overriding.
+
+"Carousel need to be faster and snappy": the glide was 420ms off a cubic, which
+is a pace for a thing being shown. It is 240ms off a quintic -- leaves at once,
+arrives without a slide.
+
+### 5.231 Three labels and a title
+
+"For V2 remove this / Tab on the top." The page title row goes when V2 is on and
+the tabs take the top of the screen: *Health insights* over a control that
+already says Biomarkers or Reports is the page named twice, and the tabs are the
+more useful of the two. (The share button lived in that row and went with it.)
+
+"Insights not biomarkers in the menu" -- the desk sidebar's destination, which is
+the same rename the dock got in 5.220, in the other navigation.
+
+"Reports with 's'" -- both copies of the tab.
+
+### 5.232 The fade let the list through the bar
+
+"One line gap bug": beside the chips, where no chip covers the ground, a row
+passing under the pinned bar showed through it -- half a sparkline and a dashed
+range bar, hanging in the bar.
+
+The construction was doing what it was asked to. The ground stops halfway up the
+chips row (5.184) and the fade runs from there to 40px past the block -- so at
+the block's own bottom edge the fade has run 22 of its 62px and is 65% opaque,
+and whatever passes under shows at the other 35%. Under a chip that is invisible;
+beside one it is a row cut in half.
+
+The fade now holds flat for the part of its run that is still inside the block
+and does its descent below it: a three-stop gradient with the middle stop at
+`var(--dFadeUp)` from the top, which is exactly the block's bottom edge. Both
+bars, phone and desk, since both are built the same way. The blend still happens
+-- it happens where the content it is blending into actually is.
+
 ---
 
 ## 6. Open items
