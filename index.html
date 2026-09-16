@@ -62,7 +62,7 @@
   --ink:#17150f;          /* headings */
   --ink-soft:#3f3a33;     /* list copy */
   --muted:#7e786f;        /* body copy */
-  --eyebrow:#8b857c;
+  --eyebrow:#17150f;
   --hairline:#e6e2db;
   --marker:#17150f;
 
@@ -210,7 +210,7 @@ ul{margin:0;padding:0;list-style:none;}
   /* just enough to read as content passing underneath a fixed bar. In the
      collapsed stack each bar covers the one above's shadow, so only the
      lowest parked bar casts onto the card scrolling beneath it. */
-  box-shadow:0 5px 12px -8px rgba(23,21,15,.22);
+  box-shadow:0 4px 10px -8px rgba(23,21,15,.11);
 }
 
 .eyebrow{
@@ -233,7 +233,7 @@ ul{margin:0;padding:0;list-style:none;}
   font-size:10px;
   letter-spacing:0;
   line-height:1;
-  color:#7d776e;
+  color:var(--ink);
 }
 
 /* ---------- the card ---------- */
@@ -941,19 +941,22 @@ ul{margin:0;padding:0;list-style:none;}
     var base = inner ? screenEl.getBoundingClientRect().top : 0;
     stackTop = stack.getBoundingClientRect().top - base + scrollTop();
 
-    // Pass 1: the headers stack flush under the top gutter, so a slot is that
-    // gutter plus the run of headers above it. Tallest header wins --hh, which
-    // keeps the slots uniform.
-    var slot = gutter.offsetHeight, tallest = 0;
+    // Pass 1: the headers stack under the top gutter, so a slot is that gutter
+    // plus the run of headers above it. Heights come from the client rect, not
+    // offsetHeight: offsetHeight is rounded, and a bar 54.6px tall reported as
+    // 55 would put the next slot 0.4px below it, opening a seam for the card
+    // behind to show through. Each bar then overlaps the one above by 1px, the
+    // same way the steps butt together in flow, so no seam can open at all.
+    var slot = gutter.getBoundingClientRect().height, tallest = 0;
     slots.length = 0;
     heads.forEach(function (head) {
-      var hh = head.offsetHeight;
+      var hh = head.getBoundingClientRect().height;
       slots.push(slot);
-      head.style.setProperty('--slot', slot + 'px');
-      slot += hh;
+      head.style.setProperty('--slot', slot.toFixed(2) + 'px');
+      slot += hh - 1;
       if (hh > tallest) tallest = hh;
     });
-    stack.style.setProperty('--hh', tallest + 'px');
+    stack.style.setProperty('--hh', Math.ceil(tallest) + 'px');
 
     // Pass 2: walk the flow and park each card at the fold.
     var y = (parseFloat(cs.paddingTop) || 0) + gutter.offsetHeight;

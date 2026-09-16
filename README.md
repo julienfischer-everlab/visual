@@ -64,6 +64,12 @@ it:
 - **Header immediately above its own card in flow.** It therefore reaches its
   slot at the exact moment its card arrives underneath it — the two never
   separate, and no gap opens between a parked bar and the card it belongs to.
+- **Slots measured from client rects, with a 1px overlap.** `offsetHeight` is
+  rounded, so a bar 54.7px tall reported as 55 puts the next slot 0.3px below
+  it, and the card passing behind shows through as a hairline of image across
+  the join. Fractional heights plus `slot += hh - 1` close it for good. The bug
+  only appears once the webfont has loaded — with a fallback font the bars land
+  on a whole pixel and the seam never opens, so it is easy to miss locally.
 
 ### Holding the top gap
 
