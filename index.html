@@ -1536,14 +1536,45 @@
   body.repTab .dash .dSkel,
   body.repTab .dash #dSearchEmpty{display:none !important;}
   body.repTab .dash .dMedsWrap{display:block;}
-  /* the reports themselves: the phone's card, at whatever width the page has
-     room for. auto-fill rather than a fixed count, so the shelf reflows with
-     the window instead of at three breakpoints. */
-  .dRepGrid{
-    display:grid;gap:16px;margin:0 0 8px;
-    grid-template-columns:repeat(auto-fill,minmax(232px,1fr));
+  /* The bento goes with the list it summarised. A biomarker count, a bio age
+     and a steps week are the headline of the readings, not of the reports --
+     on this tab the reports themselves take the top of the page, in the same
+     carousel the phone's hero carries. */
+  body.repTab .dash .dgrid{display:none !important;}
+  .dRepShelf{position:relative;margin:0 0 6px;}
+  .dRepCar{
+    display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;padding:2px 0 6px;
+    scroll-snap-type:x mandatory;scrollbar-width:none;
+    overscroll-behavior-x:contain;
   }
-  .dRepGrid .repCard{flex:none;aspect-ratio:4 / 3;}
+  .dRepCar::-webkit-scrollbar{display:none;}
+  /* three and a peek: enough of the fourth showing that the row reads as a
+     scroller rather than as everything there is */
+  .dRepCar .repCard{
+    flex:0 0 calc((100% - 48px) / 3.35);scroll-snap-align:start;
+    aspect-ratio:4 / 3;
+  }
+  .dRepCar .repCard b{font-size:16px;}
+  .dRepCar .repCard i{font-size:13px;}
+  .dRepCar .repCard .when{font-size:12.5px;padding:6px 12px;}
+  /* the arrows: the desk has a pointer to hover with, so it gets the control
+     the phone does without -- over the ends of the row, out of the cards' way */
+  .dRepNav{
+    position:absolute;top:calc(50% - 20px);z-index:3;
+    width:36px;height:36px;border:0;border-radius:50%;padding:0;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    color:#ececec;background:rgba(20,20,19,.72);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+    opacity:0;transition:opacity .18s ease,background .18s ease;
+  }
+  .dRepShelf:hover .dRepNav,.dRepNav:focus-visible{opacity:1;}
+  .dRepNav:hover{background:rgba(40,40,38,.86);}
+  .dRepNav svg{width:14px;height:14px;display:block;}
+  .dRepNav.prev{left:-10px;}
+  .dRepNav.next{right:-10px;}
+  body.light .dRepNav{color:#2e1f1a;background:rgba(255,255,255,.82);
+                      box-shadow:inset 0 0 0 1px rgba(46,31,26,.12);}
   /* the records' own filter block, pinned as the biomarkers' is, with the
      chips and the search on one row because the desk has the width */
   .dash .dMedBar{
@@ -5538,7 +5569,11 @@
          here and built in the script from RECS and MEDS, so the desk and the
          phone can only ever show the same records. -->
     <div class="dRepWrap" id="dRepWrap">
-      <div class="dRepGrid" id="dRepGrid"></div>
+      <div class="dRepShelf">
+        <div class="dRepCar" id="dRepCar" role="group" aria-label="Your reports"></div>
+        <button class="dRepNav prev" id="dRepPrev" type="button" aria-label="Previous report"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button>
+        <button class="dRepNav next" id="dRepNext" type="button" aria-label="Next report"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button>
+      </div>
       <div class="mMedsWrap dMedsWrap" id="dMedsWrap">
         <div class="mMedsHead">
           <h3>Medical records</h3>
@@ -15165,37 +15200,31 @@
           '<span class="t"><b>' + r.label + '</b><i>' + r.by + '</i></span></span>' +
       '</button>';
   })();
-  // the desk's shelf of the same reports: no carousel, because the page has
-  // the width to lay them all out
-  (function deskReports(){
-    const grid = document.getElementById('dRepGrid');
-    if (!grid || !REPS.length) return;
-    grid.innerHTML = REPS.map(repCardHTML).join('');
-    grid.addEventListener('click', e => {
-      const c = e.target.closest('.repCard');
-      if (c) document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: c.dataset.r }));
-    });
-  })();
-
-  (function heroReports(){
-    const car = document.getElementById('v4RepCar');
-    const dots = document.getElementById('v4RepDots');
-    if (!car || !dots) return;
-    if (!REPS.length) return;
+  // The report carousel, wherever the reports are carried: the phone's hero and
+  // the desk's Report tab are the same cards in the same scroller, at different
+  // widths. Arrows are handed in where the surface has a pointer to hover with.
+  function repCarousel(car, dots, nav, opts){
+    if (!car || !REPS.length) return;
+    // Where a card comes to rest. One card fills the phone's hero, so a card
+    // rests in the middle of it; the desk shows three and a peek, and a card
+    // resting in the middle of THAT would put the first and last cards
+    // somewhere the scroller cannot reach -- they rest at its left edge.
+    const toStart = !!(opts && opts.align === 'start');
 
     car.innerHTML = REPS.map(repCardHTML).join('');
-    dots.innerHTML = REPS.map((r, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
-
-    // which card is under the middle of the scroller: the one the dots mark
     const cards = [].slice.call(car.children);
-    const marks = [].slice.call(dots.children);
+    if (dots) dots.innerHTML = REPS.map((r, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
+
+    // which card the dots mark: the one at the resting point
+    const marks = dots ? [].slice.call(dots.children) : [];
     let raf = 0;
     function sync(){
       raf = 0;
-      const mid = car.scrollLeft + car.clientWidth / 2;
+      if (!marks.length) return;
+      const at = toStart ? car.scrollLeft : car.scrollLeft + car.clientWidth / 2;
       let best = 0, d = Infinity;
       cards.forEach((c, i) => {
-        const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+        const dist = Math.abs((toStart ? c.offsetLeft : c.offsetLeft + c.offsetWidth / 2) - at);
         if (dist < d){ d = dist; best = i; }
       });
       marks.forEach((m, i) => m.classList.toggle('on', i === best));
@@ -15220,12 +15249,13 @@
     const CARD_STEP = () => cards.length > 1
       ? cards[1].offsetLeft - cards[0].offsetLeft
       : car.clientWidth;
-    const centreOf = c => c.offsetLeft - (car.clientWidth - c.offsetWidth) / 2;
+    const centreOf = c => toStart ? c.offsetLeft
+                                  : c.offsetLeft - (car.clientWidth - c.offsetWidth) / 2;
     const nearestIdx = () => {
-      const mid = car.scrollLeft + car.clientWidth / 2;
+      const at = toStart ? car.scrollLeft : car.scrollLeft + car.clientWidth / 2;
       let best = 0, d = Infinity;
       cards.forEach((c, i) => {
-        const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+        const dist = Math.abs((toStart ? c.offsetLeft : c.offsetLeft + c.offsetWidth / 2) - at);
         if (dist < d){ d = dist; best = i; }
       });
       return best;
@@ -15301,7 +15331,21 @@
       document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: c.dataset.r }));
     });
 
-  })();
+    // the desk's arrows, where it has them: one card either way, through the
+    // same glide a release goes through, so a click and a drag land the same
+    if (nav) nav.forEach((btn, k) => btn && btn.addEventListener('click', () => {
+      const to = Math.max(0, Math.min(cards.length - 1, nearestIdx() + (k ? 1 : -1)));
+      car.style.scrollSnapType = 'none';
+      glide(centreOf(cards[to]));
+    }));
+  }
+  repCarousel(document.getElementById('v4RepCar'), document.getElementById('v4RepDots'));
+  // No dots at the desk: it shows three cards and a peek, so a dot per card
+  // would be a row of six marking a position that only ever reaches the third.
+  // The arrows say there is more, and so does the card cut off at the edge.
+  repCarousel(document.getElementById('dRepCar'), null,
+              [document.getElementById('dRepPrev'), document.getElementById('dRepNext')],
+              { align: 'start' });
 
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.

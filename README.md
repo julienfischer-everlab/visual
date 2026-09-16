@@ -777,10 +777,18 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   either moves both. They are sized to their words there rather than stretched
   across the page — a segmented control the width of a monitor reads as a
   toolbar, and these are two names. The Report tab does the same thing at the
-  desk that it does on the phone: the biomarkers' filter block and list go, and
-  a shelf of report cards and the medical records arrive. The card is the
-  phone's card, written once and arranged twice — a carousel in the phone's
-  hero, an auto-filling grid at the desk, which has the width. Both records
+  desk that it does on the phone, and takes the bento with it: a biomarker
+  count, a bio age and a steps week are the headline of the *readings*, so on a
+  tab listing reports they summarise something that is not on the page. The
+  reports take the top instead, in the same carousel — one function serving
+  both, so the drag, the half-a-card commit and the 420ms glide are the same
+  code. Two things differ with the room: a card rests in the middle of the
+  phone's hero, which holds one, and at the left edge of the desk's row, which
+  holds three and a peek (centred there, the first and last cards would be
+  somewhere the scroller cannot reach). And the desk has arrows rather than
+  dots — it has a pointer to hover, and a dot per card would mark a position
+  that only ever reaches the third. Below the carousel, the medical records.
+  Both records
   lists are written from `MEDS` by the same builder into whichever hosts the
   page carries, so the two can only ever show the same documents, and the desk's
   filter block pins exactly as the biomarkers' does.

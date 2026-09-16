@@ -6256,6 +6256,39 @@ listening to `everlab:pickRec` nowhere, so it now does.
   "dexa" cuts 20 to 2; the block pins at offset 0; a card narrows the desk
   list to 32 rows and lands on Biomarkers
 
+### 5.223 The bento goes with the list it summarised
+
+"When report is selected remove the bento -- Biomarkers, Bio age, Latest
+report, steps. Replace by the Reports cards in a carousel."
+
+Right: a biomarker count, a bio age and a steps week are the headline of the
+*readings*. On a tab that lists reports they are a summary of something that is
+not on the page. The whole `.dgrid` goes, and the reports take the top.
+
+Which made the grid a carousel, and the carousel shared. `heroReports` became
+`repCarousel(car, dots, nav, opts)` -- the drag, the half-a-card commit rule
+and the 420ms glide are the same code on both surfaces now, and the phone's
+measurements are unchanged.
+
+Two things had to be told apart, and the first only showed up once the desk had
+real numbers under it:
+
+- **where a card rests.** One card fills the phone's hero, so a card rests in
+  the middle of the scroller. The desk shows three and a peek, and a card
+  resting in the middle of *that* is unreachable for the first and last cards
+  -- with `scroll-snap-align:center`, the desk opened at scrollLeft 0 already
+  reading as card **1**, and the arrows walked 1 -> 2 -> back to 1. So the
+  alignment is an option: `centre` on the phone, `start` at the desk, and
+  `nearestIdx`, `centreOf` and the dot sync all read it.
+- **the dots.** With six cards and 3.35 showing, a dot per card marks a
+  position that can only ever reach the third: two dots that never light. The
+  desk has none. It has arrows instead -- which the phone has no pointer to
+  hover -- and the card cut off at the right edge says the rest is there.
+
+  desk: arrows step exactly one card (0 -> 289 -> 0), a 42% drag comes back
+  and a 62% drag commits, the arrows reach scrollLeft 757 = max with the last
+  card fully visible, and a card still opens its readings
+
 ---
 
 ## 6. Open items
