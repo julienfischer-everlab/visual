@@ -2,16 +2,25 @@
   padding: 0 var(--page-gutter) var(--space-24);
 }
 
+/* The bento — the plan card and the metric cards under it — closes to the
+   card-to-card gap; the sections below keep the page's section rhythm. Both
+   come off the same slot rule, so reordering a module carries its spacing. */
 .overview-page__modules {
   display: flex;
   flex-direction: column;
-  gap: var(--module-gap);
+  gap: var(--space-8);
 }
 
 /* A module slot carries no styling of its own beyond placement, so modules
    can be reordered or removed without touching their internals. */
 .overview-page__module {
   min-width: 0;
+  margin-top: calc(var(--module-gap) - var(--space-8));
+}
+
+.overview-page__module:first-child,
+.overview-page__module[data-module='health-metrics'] {
+  margin-top: 0;
 }
 
 /* Between the phone and the desktop breakpoint the mobile composition stays
@@ -58,21 +67,21 @@
     margin-top: 0;
   }
 
+  /* The bento: the plan card on the left, the metric pair on the right, both
+     the same height. Anything else is full width, wherever it sits in the
+     module list. */
   .overview-page__module[data-module='personalised-plan'] {
     grid-column: 1;
-    grid-row: span 2;
     align-self: stretch;
   }
 
-  .overview-page__module[data-module='health-metrics'],
-  .overview-page__module[data-module='tasks-to-complete'] {
+  .overview-page__module[data-module='health-metrics'] {
     grid-column: 2;
+    align-self: stretch;
   }
 
-  /* The top region reads as one block, so it keeps the tight row rhythm. */
   .overview-page__module[data-module='personalised-plan'],
-  .overview-page__module[data-module='health-metrics'],
-  .overview-page__module[data-module='tasks-to-complete'] {
+  .overview-page__module[data-module='health-metrics'] {
     margin-top: 0;
   }
 }

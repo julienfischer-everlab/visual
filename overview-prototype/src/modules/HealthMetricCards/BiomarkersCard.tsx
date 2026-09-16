@@ -15,10 +15,12 @@ export function BiomarkersCard() {
       hasData={biomarkers}
       caption={biomarkers ? caption : emptyCaption}
     >
-      <div className="metric-card__dial">
-        <ScoreDial progress={biomarkers ? score / 100 : 0} />
+      <div className="metric-card__art">
+        <div className="metric-card__dial">
+          <ScoreDial progress={biomarkers ? score / 100 : 0} />
+        </div>
+        {biomarkers ? <span className="metric-card__value">{score}</span> : null}
       </div>
-      {biomarkers ? <span className="metric-card__value">{score}</span> : null}
     </MetricCard>
   )
 }

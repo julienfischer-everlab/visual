@@ -13,8 +13,14 @@
   background-image: var(--metric-insight-bg);
 }
 
-.metric-card--bio {
-  background-image: var(--metric-bio-bg);
+/* The organ sits on the page's own surface — white on the light Overview,
+   near-black on the dark one — so the cloud is painted in the reference's ink
+   set for that ground, and the card's type follows the surface too. */
+.metric-card--organ {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+  color: var(--ink);
 }
 
 .metric-card__header {
@@ -50,6 +56,12 @@
   flex: none;
 }
 
+.metric-card--organ .metric-card__label,
+.metric-card--organ .metric-card__lock {
+  background: var(--surface-sunken);
+  color: var(--ink-secondary);
+}
+
 .metric-card__body {
   position: relative;
   z-index: 1;
@@ -57,9 +69,16 @@
   min-height: 34px;
 }
 
-.metric-card__caption {
+.metric-card__foot {
   position: relative;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.metric-card__caption {
   font-size: var(--text-11);
   color: rgba(255, 255, 255, 0.72);
   letter-spacing: -0.005em;
@@ -69,10 +88,23 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+.metric-card--organ .metric-card__caption {
+  color: var(--ink-secondary);
+}
+
+.metric-card--organ[data-state='locked'] .metric-card__caption {
+  color: var(--ink-muted);
+}
+
 /* Value + artwork -------------------------------------------------------- */
 
 /* The artwork is sized to the body box so the label above and the caption
    below are never crowded — in either state. */
+.metric-card__art {
+  position: absolute;
+  inset: 0;
+}
+
 .metric-card__dial {
   position: absolute;
   left: 50%;
@@ -86,17 +118,6 @@
   opacity: 0.5;
 }
 
-.metric-card__ring {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.metric-card[data-state='locked'] .metric-card__ring {
-  opacity: 0.45;
-}
-
 .metric-card__value {
   position: absolute;
   left: 50%;
@@ -107,13 +128,6 @@
   letter-spacing: -0.03em;
   line-height: 1;
   color: #ffffff;
-}
-
-/* The half dial reads from its baseline, the ring from its centre. */
-.metric-card--bio .metric-card__value {
-  top: 50%;
-  bottom: auto;
-  transform: translate(-50%, -50%);
 }
 
 @container overview (min-width: 1024px) {
@@ -141,9 +155,24 @@
     right: var(--space-16);
   }
 
+  /* A tall bento card centres its artwork rather than dropping it to the
+     baseline, so the dial and the organ sit at the same height. */
   .metric-card__body {
     width: 100%;
     min-height: 96px;
+    display: grid;
+    place-items: center;
+  }
+
+  .metric-card__art {
+    position: relative;
+    inset: auto;
+    width: 74%;
+  }
+
+  .metric-card__foot {
+    width: 100%;
+    justify-content: center;
   }
 
   .metric-card__caption {
@@ -156,7 +185,14 @@
   }
 
   .metric-card__dial {
-    width: 74%;
-    bottom: 2px;
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: 100%;
+    transform: none;
+  }
+
+  .metric-card__value {
+    bottom: 4%;
   }
 }

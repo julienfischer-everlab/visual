@@ -28,15 +28,6 @@ export interface BiomarkersMetric {
   emptyCaption: string
 }
 
-export interface BiologicalAgeMetric {
-  label: string
-  age: number
-  caption: string
-  emptyCaption: string
-  /** Fraction of the ring that is filled, 0–1. */
-  progress: number
-}
-
 /* ------------------------------------------------------------ tasks ------ */
 
 export interface OnboardingTask {

@@ -6,7 +6,6 @@
 
 import type {
   ActionPlanItem,
-  BiologicalAgeMetric,
   BiomarkersMetric,
   DailyHealthContent,
   NavItem,
@@ -42,13 +41,8 @@ export const biomarkersMetric: BiomarkersMetric = {
   emptyCaption: 'You have no data yet',
 }
 
-export const biologicalAgeMetric: BiologicalAgeMetric = {
-  label: 'Biological Age',
-  age: 42,
-  caption: '8 years younger',
-  emptyCaption: 'You have no data yet',
-  progress: 0.62,
-}
+/* Biological age is no longer a card of its own: it is the body reading the
+   Organ Age card leads with (see data/organAge.ts). */
 
 export const onboardingTasks: OnboardingTask[] = [
   {

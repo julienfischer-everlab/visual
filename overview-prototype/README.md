@@ -19,7 +19,7 @@ UI and exposes:
 | Control | Values | Effect |
 | --- | --- | --- |
 | Viewport | Mobile / Desktop | Mobile renders the app inside a fixed 402 × 853 iPhone frame; Desktop drops the frame and fills `100vw / 100vh`. |
-| Biomarkers | ON / OFF | ON shows the biomarker score and biological age. OFF keeps both cards at exactly the same size and position and shows the locked "You have no data yet" state — no layout shift. |
+| Biomarkers | ON / OFF | ON shows the biomarker score and the organ age reading. OFF keeps both cards at exactly the same size and position and shows the locked "You have no data yet" state — no layout shift. |
 | New user | Yes / No | Flips `isNewUser` in prototype state (and `data-new-user` on the app root). The UI is intentionally unchanged until the new-user Overview is defined. |
 | Theme | Light / Dark | Both themes from the references. |
 
@@ -39,7 +39,7 @@ src/
 │   ├── Header/
 │   ├── PersonalisedPlan/
 │   ├── HealthMetricCards/         HealthMetricCards, BiomarkersCard,
-│   │                              BiologicalAgeCard, MetricCard (shared shell)
+│   │                              OrganAgeCard, MetricCard (shared shell)
 │   ├── TasksToComplete/
 │   ├── NextActions/               NextActions, NextActionCard, NextActionMedia
 │   ├── DailyHealth/               DailyHealth, WearableScene
@@ -64,10 +64,10 @@ export const overviewModules: OverviewModuleDefinition[] = [
   { id: 'header', label: 'Header', Component: Header },
   { id: 'personalised-plan', ... },
   { id: 'health-metrics', ... },
-  { id: 'tasks-to-complete', ... },
   { id: 'next-actions', ... },
   { id: 'daily-health', ... },
   { id: 'action-plan', ... },
+  { id: 'tasks-to-complete', ... },   // moved to the foot of the page
 ]
 ```
 
@@ -76,10 +76,12 @@ export const overviewModules: OverviewModuleDefinition[] = [
 
 `Overview.tsx` wraps each entry in a slot that owns the section rhythm and the
 desktop grid placement, so no module knows about its neighbours and removing
-one cannot break spacing. On desktop, `personalised-plan`, `health-metrics` and
-`tasks-to-complete` opt into the two-column top region via
-`[data-module="…"]` rules in `pages/Overview.css`; everything else is full
-width.
+one cannot break spacing. The bento — the plan card and the metric pair under
+it — closes to the 8px card-to-card gap, while the sections below keep the
+page's section rhythm; both come off the same slot rule, so a module carries
+its spacing when it moves. On desktop, `personalised-plan` and
+`health-metrics` opt into the two-column bento via `[data-module="…"]` rules in
+`pages/Overview.css` and match heights; everything else is full width.
 
 ### Responsiveness
 
@@ -118,6 +120,33 @@ swaps the artwork for the type — trend chart, embedded result panel, document,
 video or report stack. `emphasis` is the cream card + filled CTA used by
 "latest results arrived". Adding a sixth notification type means adding a
 variant to `NextActionMedia`, not a new card.
+
+### Organ Age card
+
+The second metric card is the Organ Age reading from the Particle Organs /
+Organ Age concept (`everlab-visual-lite`), at mini-card size. It is that
+file's own figure, not a redraw: `src/data/organClouds.json` holds point
+clouds sampled through the reference's `samplePts` over its own `clouds`, so
+each point carries the position, radius, opacity (already on the reference's
+twenty-step 5% grid), ink index and drift phase its painter reads.
+`components/media/OrganParticles.tsx` paints them on a canvas with the
+reference's rules — the cloud breathes and the heart beats on its pulse, each
+dot drifts on its seeded phase and twinkles, a dot at the front of the volume
+is drawn a fifth larger than one behind it, and dots are bucketed by
+ink × opacity step and filled as paths.
+
+The card follows the page surface rather than carrying its own ground: white
+on the light Overview, near-black on the dark one, painted in the reference's
+ink set for that ground (its light inks with the measured 2.4× alpha lift, or
+its three dark inks). As in the reference's card the carousel leads with the
+body — which is the biological age reading — and then walks the organs; tap
+the card or a dot to move through Body, Heart, Brain, Lungs and Kidney. The
+ages are the reference's own table: chronological age 40 with its per-organ
+deltas.
+
+To ship another organ, re-run the extraction against the reference with that
+organ's label added — the clouds for the other five (cells, bone, gut, liver,
+nerves) and the iris and fingerprint exist in that file already.
 
 ### Notes
 

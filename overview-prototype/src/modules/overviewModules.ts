@@ -38,10 +38,11 @@ export const overviewModules: OverviewModuleDefinition[] = [
   { id: 'header', label: 'Header', Component: Header },
   { id: 'personalised-plan', label: 'Personalised Health Program', Component: PersonalisedPlan },
   { id: 'health-metrics', label: 'Health metrics', Component: HealthMetricCards },
-  { id: 'tasks-to-complete', label: 'Tasks to complete', Component: TasksToComplete },
   { id: 'next-actions', label: 'Your next actions', Component: NextActions },
   { id: 'daily-health', label: 'Daily health', Component: DailyHealth },
   { id: 'action-plan', label: 'Your action plan', Component: ActionPlan },
+  // Onboarding tasks sit at the foot of the page, under the plan.
+  { id: 'tasks-to-complete', label: 'Tasks to complete', Component: TasksToComplete },
 ]
 
 export function visibleOverviewModules(): OverviewModuleDefinition[] {
