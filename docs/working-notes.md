@@ -6289,6 +6289,20 @@ real numbers under it:
   and a 62% drag commits, the arrows reach scrollLeft 757 = max with the last
   card fully visible, and a card still opens its readings
 
+### 5.224 8px more inside the card, 32px less black under the dots
+
+"Add +8px padding on the report cards": the date chip, the play badge and the
+foot were all inset 12px from the card's edges; they are 20px now. One change,
+both surfaces, because they are the same card.
+
+"Reduce top padding black by 32px": between the carousel's dots and the
+*Medical records* heading the phone had 92px of nothing. The 28px under the
+hero is the dots' own clearance and was asked for, so the 32px came off the
+two below it -- the records section's 8px top padding, and the heading's 26px
+top margin, down to 2. The desk sets its own 34px there and is untouched.
+
+  card inset 12 -> 20 on the phone and the desk; dots-to-heading 92 -> 60
+
 ---
 
 ## 6. Open items
