@@ -6096,6 +6096,37 @@ through the same `choose()` everything else uses.
   tapping the second card lands on Biomarkers at 32 rows reading "Lipid panel".
   All 25 pages clean.
 
+### 5.217 Medical records, under the biomarkers' own filter
+
+"Add these under report list, same filtering system as biomarkers one."
+
+The documents behind the reports: grouped by the report they came out of, each
+group a header (category, date, source, download) over its rows (name, file
+mark, View). Under the report list on the Report tab.
+
+**"The same filtering system" turned out to be one word of new code.**
+`bioFilter` already counts from the rows, composes chips with the search and
+runs the 380ms beat. The only thing it assumed was what a chip cuts BY: it read
+`bioRowSt(row)`, a reading's range. That is now `cfg.rowKey`, defaulting to the
+same function, and the records pass `row => row.dataset.c`. One filter, asked a
+different question about each list:
+
+    biomarkers   rowKey = bioRowSt          chips: Optimal / Suboptimal / ...
+    records      rowKey = row.dataset.c     chips: Pathology / Imaging / ...
+
+Everything else came free -- including the thing worth keeping: the counts are
+derived, so All is the sum of the rest by construction rather than by someone
+remembering. 11 + 6 + 3 = 20, and 20 is the row count.
+
+  all 20/6 groups; Imaging alone 6/2; Imaging plus "tumour" 1/1 -- the chip and
+  the search compose, as they do on the biomarkers; cleared, back to 20/6.
+  All 25 pages clean.
+
+Left out on purpose: *Select period* and the date pill beside it. They are a
+different filter -- a range over time -- and the brief asked for the
+biomarkers' one. A control that does not work is worse than no control on a
+page where everything else does.
+
 ---
 
 ## 6. Open items

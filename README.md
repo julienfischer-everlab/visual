@@ -748,7 +748,14 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   photograph. The organ's strips, its gauge and the cloud stand down on this
   tab: the subject is the reports, not the body. Tapping a card narrows the
   readings to it, like a row in the list. No mini cards under it, and the list
-  of all records directly below. The
+  of all records directly below — and under that, **Medical records**: the
+  documents behind the reports, grouped by the report they came out of, each
+  group a header (category, date, source, download) over its rows. They run
+  through the biomarkers' own filter, which needed one addition to serve both:
+  what a chip cuts *by* is now a callback (`rowKey`), a reading's range on one
+  list and a document's category on the other. Everything else is shared —
+  counts derived from the rows so All is the sum of the rest by construction,
+  chips composing with the search, the same 380ms beat. The
   Report tab lists `RECS`, the same table the record select, the record carousel
   and the report card read, with rows in the list's own language: title,
   *category | date*, and the reading count in the badge the record menu uses.
