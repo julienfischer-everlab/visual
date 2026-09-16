@@ -1423,26 +1423,78 @@
      the one that is on: the readings, or the reports they came from. The hero
      stays either way -- it is the same body, and what changes is which set of
      things is being listed under it. */
-  /* On the Report tab the hero carries the reports: the same two strips the
-     organ carousel uses -- the figure at bottom:83 and the names at bottom:38,
-     with the same masks -- built from RECS instead of from the organ list. The
-     cloud stays: it is the body, and the body is whose reports these are.
-     Its own carousel cannot carry them (it is the organ carousel, and the
-     cloud morphs to whatever it lands on), so the reports get strips of their
-     own and a surface to swipe them by. */
-  .v4RepStrip{display:none !important;}
-  .v4Swipe{display:none;}
-  body.repTab #phone #mHeroOrgan .v4RepStrip{display:block !important;}
+  /* On the Report tab the hero is a card carousel of the reports: a cover, the
+     date on it, and the report's name with whoever signed it. A real scroller
+     with scroll-snap rather than a hand-written swipe -- the browser's own
+     panning cannot be stolen by the organ carousel the way a pointer gesture
+     was, and it brings momentum and the keyboard with it. The organ's strips
+     and its gauge stand down, and so does the cloud: on this tab the subject
+     is the reports, not the body. */
+  .v4RepCar, .v4RepDots{display:none;}
   body.repTab #phone #mHeroOrgan #v4Ages,
-  body.repTab #phone #mHeroOrgan #v4Names{display:none !important;}
-  /* the swipe surface covers the hero under the strips; the organ's own
-     carousel sits below it and does not see the gesture */
-  body.repTab #phone #mHeroOrgan .v4Swipe{
-    display:block;position:absolute;inset:0;z-index:4;touch-action:pan-y;
+  body.repTab #phone #mHeroOrgan #v4Names,
+  body.repTab #phone #mHeroOrgan .v4Gauge{display:none !important;}
+  body.repTab #phone canvas#field{opacity:0;}
+  body.repTab #phone #mHeroOrgan .v4RepCar{
+    display:flex;position:absolute;left:0;right:0;top:8px;bottom:44px;z-index:4;
+    gap:12px;padding:0 13px;overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;scrollbar-width:none;
+    overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
   }
-  #v4RepAges .v4AgeN, #v4RepNames .v4Name{
-    transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .34s ease,filter .34s ease;
+  .v4RepCar::-webkit-scrollbar{display:none;}
+  .repCard{
+    flex:0 0 78%;scroll-snap-align:center;position:relative;
+    border-radius:18px;overflow:hidden;cursor:pointer;
+    border:0;padding:0;font:inherit;text-align:left;
+    background:#1b1b1a;-webkit-tap-highlight-color:transparent;
   }
+  .repCard .cover{position:absolute;inset:0;}
+  /* the cover's own light, so a flat duotone reads as a photograph rather than
+     as a swatch: a soft highlight off the top left and a floor under the type */
+  .repCard .cover::after{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(70% 44% at 74% 18%, rgba(255,255,255,.26), rgba(255,255,255,0) 62%),
+      radial-gradient(90% 56% at 14% 40%, rgba(255,255,255,.13), rgba(255,255,255,0) 66%),
+      radial-gradient(60% 40% at 38% 86%, rgba(0,0,0,.34), rgba(0,0,0,0) 70%),
+      linear-gradient(to bottom, rgba(0,0,0,0) 46%, rgba(0,0,0,.76) 100%);
+  }
+  .repCard .when{
+    position:absolute;left:12px;top:12px;z-index:2;
+    padding:5px 10px;border-radius:999px;font-size:11.5px;font-weight:500;
+    color:#fff;background:rgba(0,0,0,.34);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  }
+  .repCard .play{
+    position:absolute;right:12px;top:12px;z-index:2;
+    width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;color:#fff;background:rgba(0,0,0,.34);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  }
+  .repCard .play svg{width:11px;height:11px;display:block;margin-left:1px;}
+  .repCard .foot{
+    position:absolute;left:12px;right:12px;bottom:12px;z-index:2;
+    display:flex;align-items:center;justify-content:flex-start;gap:9px;text-align:left;
+  }
+  .repCard .who{
+    flex:none;width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:600;color:#2e1f1a;background:#e8ded2;
+  }
+  .repCard .foot .t{flex:1 1 auto;min-width:0;text-align:left;}
+  .repCard b{display:block;font-size:14.5px;font-weight:500;color:#fff;
+             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .repCard i{display:block;font-style:normal;font-size:12px;margin-top:1px;
+             color:rgba(255,255,255,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  body.repTab #phone #mHeroOrgan .v4RepDots{
+    display:flex;position:absolute;left:0;right:0;bottom:20px;z-index:4;
+    justify-content:center;gap:5px;pointer-events:none;
+  }
+  .v4RepDots i{width:5px;height:5px;border-radius:3px;background:rgba(242,229,224,.26);
+               transition:width .22s ease,background .22s ease;}
+  .v4RepDots i.on{width:16px;background:#f2e5e0;}
+  body.light .v4RepDots i{background:rgba(46,31,26,.22);}
+  body.light .v4RepDots i.on{background:#2e1f1a;}
   /* no mini cards under it: on this tab the page is the reports and the list of
      them, and a coverage tile between the two is neither */
   body.repTab #phone #mV4Row{display:none !important;}
@@ -5519,7 +5571,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4Swipe" id="v4RepSwipe" aria-hidden="true"></div><div class="v4Ages v4RepStrip" id="v4RepAges"></div><div class="v4Names v4RepStrip" id="v4RepNames"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -14808,12 +14860,22 @@
   // and each record shows exactly the number on its badge.
   const RECS = [
     { id: 'all', label: 'All records' },
-    { id: 'r1',  label: 'Pathology test',          cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026' },
-    { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026' },
-    { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026' },
-    { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025' },
-    { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025' },
-    { id: 'r6',  label: 'Baseline panel',          cat: 'Pathology', date: '18 Jun 2025', n: 38, short: 'Jun 2025' }
+    // `by`, `art` and `media` are the report card's half of a record: who
+    // signed it, the two colours its cover is mixed from, and whether that
+    // cover is a still or a piece of film. Kept on the record rather than in a
+    // second table beside it, so a report is one row wherever it is shown.
+    { id: 'r1',  label: 'Pathology test',          cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026',
+      by: 'Dr. Steven Lu',    art: ['#6f5a4e', '#241a16'], media: 'img' },
+    { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026',
+      by: 'Dr. Amara Osei',   art: ['#4a5d63', '#151d20'], media: 'video' },
+    { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026',
+      by: 'Dr. Steven Lu',    art: ['#6a5570', '#1d1622'], media: 'img' },
+    { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025',
+      by: 'Kate Mercer',      art: ['#5d6b4a', '#181d14'], media: 'video' },
+    { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025',
+      by: 'Dr. Amara Osei',   art: ['#74564a', '#231715'], media: 'img' },
+    { id: 'r6',  label: 'Baseline panel',          cat: 'Pathology', date: '18 Jun 2025', n: 38, short: 'Jun 2025',
+      by: 'Dr. Steven Lu',    art: ['#4f5570', '#161822'], media: 'img' }
   ];
 
   // The report card is a carousel like the two beside it: one slide per
@@ -14866,91 +14928,65 @@
       '</button>').join('');
   })();
 
-  // The hero's report carousel. The organ carousel cannot carry these -- it is
-  // the organ's, and the cloud morphs to whatever it lands on -- so the reports
-  // get the same two strips, built from RECS, and a surface of their own to
-  // swipe. The cloud stays put underneath: it is the body, and these are the
-  // body's reports.
+  // The hero's report carousel. A card per report -- a cover, the date on it,
+  // and the name with whoever signed it -- in a real scroller with scroll-snap
+  // rather than a hand-written swipe. The organ carousel shares this hero and
+  // takes the pointer capture at 7px of sideways travel, which is what killed
+  // the last gesture-built version stone dead; the browser's own panning
+  // cannot be taken that way, and it brings momentum, trackpads and the
+  // keyboard along with it.
   (function heroReports(){
-    const figs = document.getElementById('v4RepAges');
-    const names = document.getElementById('v4RepNames');
-    const swipe = document.getElementById('v4RepSwipe');
-    if (!figs || !names || !swipe) return;
+    const car = document.getElementById('v4RepCar');
+    const dots = document.getElementById('v4RepDots');
+    if (!car || !dots) return;
     const REPS = RECS.filter(r => r.id !== 'all');
     if (!REPS.length) return;
 
-    const fEls = REPS.map(r => {
-      const el = document.createElement('span');
-      el.className = 'v4AgeN';
-      el.innerHTML = String(r.n) +
-        '<span class="v4Gap">biomarkers &nbsp;|&nbsp; ' + r.date + '</span>';
-      figs.appendChild(el);
-      return el;
-    });
-    const nEls = REPS.map((r, i) => {
-      const el = document.createElement('span');
-      el.className = 'v4Name';
-      el.textContent = r.label;
-      el.style.cursor = 'pointer';
-      el.addEventListener('click', () => go(i));
-      names.appendChild(el);
-      return el;
-    });
+    const PLAY = '<span class="play"><svg viewBox="0 0 12 12" aria-hidden="true">' +
+                 '<path d="M3 1.8 10 6l-7 4.2Z" fill="currentColor"/></svg></span>';
+    // initials, so the byline has a face without an asset behind it
+    const mark = n => n.replace(/^Dr\.\s*/, '').split(/\s+/).map(w => w[0]).join('').slice(0, 2);
+    car.innerHTML = REPS.map(r =>
+      '<button class="repCard" type="button" data-r="' + r.id + '">' +
+        '<span class="cover" style="background:linear-gradient(150deg,' +
+          r.art[0] + ',' + r.art[1] + ')"></span>' +
+        '<span class="when">' + r.date + '</span>' +
+        (r.media === 'video' ? PLAY : '') +
+        '<span class="foot"><span class="who">' + mark(r.by) + '</span>' +
+          '<span class="t"><b>' + r.label + '</b><i>' + r.by + '</i></span></span>' +
+      '</button>').join('');
+    dots.innerHTML = REPS.map((r, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
 
-    let idx = 0, w = 375;
-    const measure = () => { w = Math.max(240, names.offsetWidth || 375); };
-    // The figure travels the hero's whole width, so only one is ever legible;
-    // the names travel 62% of it, so the neighbours peek out of the mask at
-    // either side -- which is the strip's own way of saying there are more.
-    function place(){
-      measure();
-      fEls.forEach((el, i) => {
-        const d = i - idx;
-        el.style.transform = 'translate(-50%,-50%) translateX(' + (d * w) + 'px)';
-        el.style.opacity = d ? '0' : '1';
+    // which card is under the middle of the scroller: the one the dots mark
+    const cards = [].slice.call(car.children);
+    const marks = [].slice.call(dots.children);
+    let raf = 0;
+    function sync(){
+      raf = 0;
+      const mid = car.scrollLeft + car.clientWidth / 2;
+      let best = 0, d = Infinity;
+      cards.forEach((c, i) => {
+        const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+        if (dist < d){ d = dist; best = i; }
       });
-      nEls.forEach((el, i) => {
-        const d = i - idx, a = Math.abs(d);
-        el.style.transform = 'translate(-50%,-50%) translateX(' + (d * w * 0.62) + 'px)';
-        el.style.opacity = a === 0 ? '1' : a === 1 ? '0.34' : '0';
-        el.style.filter = a ? 'blur(1.4px)' : 'none';
-        el.style.pointerEvents = a === 1 ? 'auto' : 'none';
-      });
+      marks.forEach((m, i) => m.classList.toggle('on', i === best));
     }
-    function go(i){ idx = Math.max(0, Math.min(REPS.length - 1, i)); place(); }
-    place();
-    addEventListener('resize', place);
-    // the strips are only laid out once the tab shows them
-    document.addEventListener('everlab:repTab', place);
+    car.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(sync); },
+                         { passive: true });
+    document.addEventListener('everlab:repTab', sync);
 
-    // swipe, with the same one-card-per-gesture feel the rest of the phone has
-    let d0 = null;
-    // The gesture stops here. The hero carries the organ carousel's own drag,
-    // and that one takes the pointer capture as soon as it sees 7px of
-    // sideways travel -- so without this the report swipe got exactly one move
-    // event and then the organ carousel owned the rest of the gesture.
-    swipe.addEventListener('pointerdown', e => {
-      e.stopPropagation();
-      d0 = { x: e.clientX, y: e.clientY, i: idx, moved: false, pid: e.pointerId };
+    // A touch-drag on the scroller is the browser's to handle, but the organ
+    // carousel above still sees the pointer events and would start swiping
+    // organs behind the cards. The gesture stops here.
+    ['pointerdown', 'pointermove', 'pointerup'].forEach(t =>
+      car.addEventListener(t, e => e.stopPropagation()));
+
+    // a card is a way into its readings, like a row in the list below it
+    car.addEventListener('click', e => {
+      const c = e.target.closest('.repCard');
+      if (!c) return;
+      document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: c.dataset.r }));
     });
-    // No pointer capture and no preventDefault here. The surface already spans
-    // the hero, so there is nothing to capture the pointer away from -- and
-    // taking the capture mid-gesture is what stopped the drag dead: the first
-    // qualifying move was the last event this element ever saw.
-    swipe.addEventListener('pointermove', e => {
-      if (!d0) return;
-      e.stopPropagation();
-      const dx = e.clientX - d0.x;
-      if (!d0.moved && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(e.clientY - d0.y)) d0.moved = true;
-    });
-    const end = e => {
-      if (!d0) return;
-      const dx = (e.clientX || 0) - d0.x;
-      if (d0.moved && Math.abs(dx) > 40) go(d0.i + (dx < 0 ? 1 : -1));
-      d0 = null;
-    };
-    swipe.addEventListener('pointerup', e => { e.stopPropagation(); end(e); });
-    swipe.addEventListener('pointercancel', () => { d0 = null; });
   })();
 
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
@@ -17232,12 +17268,16 @@
     // carousel go through, so the record is chosen once and everything that
     // shows it agrees.
     const repList = document.getElementById('mRepList');
+    const pick = id => {
+      bio.choose(id, true);
+      document.dispatchEvent(new CustomEvent('everlab:showBio'));
+    };
     if (repList) repList.addEventListener('click', e => {
       const row = e.target.closest('.repRow');
-      if (!row) return;
-      bio.choose(row.dataset.r, true);
-      document.dispatchEvent(new CustomEvent('everlab:showBio'));
+      if (row) pick(row.dataset.r);
     });
+    // and the hero's cards, which are the same choice made higher up the page
+    document.addEventListener('everlab:pickRec', e => pick(e.detail));
     // Open while it is being used and while it is holding a result, closed
     // otherwise: a field with text in it that collapsed to an icon would be a
     // filter you cannot see or undo.

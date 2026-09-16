@@ -6057,6 +6057,45 @@ which pointed at an ancestor rather than at the code.
   listed; a swipe moves the hero to Lipid panel / 32; Biomarkers brings the
   organ strips and the mini row back. All 25 pages clean.
 
+### 5.216 The hero's reports become cards
+
+"For report inside the hero header, use a card carousel to list all report. Can
+be a imgs, a video. We need the name of the report and" -- the message ends
+there, but the reference frame says the rest: a cover, a date chip on it, and
+the name with whoever signed it.
+
+So the strips from 5.215 are gone and the hero is a card carousel. Each card is
+a cover, `12 Jul 2025`-style chip top left, a play badge where the report is
+film rather than a still, and a foot of avatar, name and byline.
+
+**A real scroller, not a hand-written swipe.** The last version had to fight
+the organ carousel for the pointer and needed `stopPropagation` to win; a
+scroller with `scroll-snap-type:x mandatory` cannot be stolen that way at all,
+and brings momentum, trackpads and the keyboard with it. The dots read the
+scroll position -- whichever card is nearest the middle -- rather than being
+told by the gesture, so they cannot drift out of step with it. (The
+`stopPropagation` stays: the organ carousel still sees the pointer events over
+the cards and would swipe organs behind them.)
+
+**Where the covers came from.** There are no assets, and the page inlines
+everything it uses, so each cover is a duotone mixed from two colours on the
+record plus three soft lights over it -- a highlight, a fill and a floor. Flat
+duotone alone reads as a swatch; the lights are what make it read as a
+photograph standing in for a photograph.
+
+`by`, `art` and `media` live on the record in `RECS` rather than in a second
+table beside it, so a report stays one row wherever it is shown.
+
+The organ's strips, its gauge and the cloud itself stand down on this tab: the
+subject is the reports, not the body. And a card is a way in, like a row in the
+list below -- tapping one narrows the readings to it and returns to Biomarkers,
+through the same `choose()` everything else uses.
+
+  m20: 6 cards, 6 dots, 2 of them film; scrolling to the third card moves the
+  dot to index 2; the gauge is display:none and the canvas at opacity 0;
+  tapping the second card lands on Biomarkers at 32 rows reading "Lipid panel".
+  All 25 pages clean.
+
 ---
 
 ## 6. Open items
