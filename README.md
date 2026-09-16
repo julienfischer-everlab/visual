@@ -758,18 +758,32 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   what a chip cuts *by* is now a callback (`rowKey`), a reading's range on one
   list and a document's category on the other. Everything else is shared —
   counts derived from the rows so All is the sum of the rest by construction,
-  chips composing with the search, the same 380ms beat. The
-  Report tab lists `RECS`, the same table the record select, the record carousel
-  and the report card read, with rows in the list's own language: title,
-  *category | date*, and the reading count in the badge the record menu uses.
-  The filter bar goes with the list — a record select and five range chips have
-  nothing to say about a list of records. And a report is a way into the
+  chips composing with the search, the same 380ms beat. They also get the
+  biomarkers' *bar*, not just its filter: the same `.msWrap`, so it pins under
+  the status strip with the same plate and fade, the field blurs when the
+  reader scrolls, and focusing it raises the drawn keyboard — which types into
+  whichever field on the phone has the focus, since the keyboard is the
+  phone's rather than any one field's. The field stays open rather than
+  collapsing to an icon, because there is no record select beside it to make
+  room for. The filter bar goes with the list — a record select and five range
+  chips have nothing to say about a list of records. And a report is a way into the
   readings rather than a dead end: tapping one narrows the biomarkers to that
   record and hands the page back to the Biomarkers tab, through the same
   `choose()` the select and the carousel go through, so the record is chosen
   once and every control showing it agrees. Turning the tweak off clears the
   Report tab with it, so the page cannot be left listing reports with no tab to
-  get back from.
+  get back from. The desk carries the same two tabs, under its own title:
+  `repTab` is a body class, so the two copies cannot disagree and clicking
+  either moves both. They are sized to their words there rather than stretched
+  across the page — a segmented control the width of a monitor reads as a
+  toolbar, and these are two names. The Report tab does the same thing at the
+  desk that it does on the phone: the biomarkers' filter block and list go, and
+  a shelf of report cards and the medical records arrive. The card is the
+  phone's card, written once and arranged twice — a carousel in the phone's
+  hero, an auto-filling grid at the desk, which has the width. Both records
+  lists are written from `MEDS` by the same builder into whichever hosts the
+  page carries, so the two can only ever show the same documents, and the desk's
+  filter block pins exactly as the biomarkers' does.
 - **Expanded Report** — off or on. Off, the records live behind a select
   beside the search. On, they become the first row: a carousel of cards, *All
   records* first and six reports after it, with the chips and the search on the

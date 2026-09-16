@@ -1486,8 +1486,8 @@
              white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .repCard i{display:block;font-style:normal;font-size:12px;margin-top:1px;
              color:rgba(255,255,255,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  /* 16px under the carousel's dots before the page carries on */
-  body.repTab #phone #mHeroOrgan{margin-bottom:16px;}
+  /* 28px under the carousel's dots before the page carries on */
+  body.repTab #phone #mHeroOrgan{margin-bottom:28px;}
   body.repTab #phone #mHeroOrgan .v4RepDots{
     display:flex;position:absolute;left:0;right:0;bottom:20px;z-index:4;
     justify-content:center;gap:5px;pointer-events:none;
@@ -1516,6 +1516,57 @@
   body.light .mTabsV2{background:rgba(46,31,26,.07);}
   body.light .mTabsV2 .v2Tab{color:#7d6b58;}
   body.light .mTabsV2 .v2Tab.on{background:#fff;color:#2e1f1a;}
+  /* The desk's copy of the same two tabs. Under the page's title, where the
+     phone's sit under its own -- but sized to their words rather than stretched
+     across the page: a segmented control the width of a monitor would read as a
+     toolbar, and these are two names, not a row of tools. */
+  body.v2Tab .dash .dTabsV2{
+    display:inline-flex;gap:4px;margin:-8px 0 26px;padding:4px;
+    border-radius:14px;background:rgba(255,255,255,.06);
+  }
+  .dash .dTabsV2 .v2Tab{flex:0 0 auto;height:40px;padding:0 20px;font-size:14px;}
+  /* ---- the Report tab, at the desk -------------------------------------
+     The tab changes what the page is a list of, so the biomarkers' filter
+     goes with their list: a record select and five range chips have nothing
+     to say about a shelf of reports. */
+  .dRepWrap{display:none;}
+  body.repTab .dash .dRepWrap{display:block;}
+  body.repTab .dash .dFilters,
+  body.repTab .dash #dRecsList,
+  body.repTab .dash .dSkel,
+  body.repTab .dash #dSearchEmpty{display:none !important;}
+  body.repTab .dash .dMedsWrap{display:block;}
+  /* the reports themselves: the phone's card, at whatever width the page has
+     room for. auto-fill rather than a fixed count, so the shelf reflows with
+     the window instead of at three breakpoints. */
+  .dRepGrid{
+    display:grid;gap:16px;margin:0 0 8px;
+    grid-template-columns:repeat(auto-fill,minmax(232px,1fr));
+  }
+  .dRepGrid .repCard{flex:none;aspect-ratio:4 / 3;}
+  /* the records' own filter block, pinned as the biomarkers' is, with the
+     chips and the search on one row because the desk has the width */
+  .dash .dMedBar{
+    position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;
+    padding:18px 0 0;
+    background:linear-gradient(to bottom,
+      var(--pageBg) 0,
+      var(--pageBg) calc(100% - var(--dFadeUp, 22px)),
+      transparent calc(100% - var(--dFadeUp, 22px)));
+  }
+  .dash .dMedBar::after{
+    content:"";position:absolute;left:0;right:0;z-index:-1;
+    top:calc(100% - var(--dFadeUp, 22px));
+    height:calc(var(--dFadeUp, 22px) + 40px);
+    background:linear-gradient(to bottom,var(--pageBg),var(--pageBg0));
+    pointer-events:none;opacity:0;transition:opacity .22s ease;
+  }
+  .dash .dMedBar.stuck::after{opacity:1;}
+  .dash .dMedBar .filters{flex:1 1 auto;min-width:0;margin:0 0 18px;}
+  .dash .dMedSearch{display:flex;flex:0 0 248px;margin:0 0 18px auto;}
+  .dash .dMedsWrap .mMedsHead{margin:34px 0 0;}
+  .dash .dMedsWrap .mMedsHead h3{font-size:24px;}
+  .dash .dMedsWrap .mMedNote{max-width:560px;}
   /* the Report tab swaps the list, and with it the filter that was over it --
      a record select and five range chips have nothing to say about a list of
      records */
@@ -1537,8 +1588,17 @@
   }
   .mUpload:hover{background:rgba(255,255,255,.18);}
   body.light .mUpload{background:rgba(46,31,26,.09);color:#2e1f1a;}
-  .mMedsWrap .mchips{margin:0 -13px;padding:0 13px 12px;}
-  .mMedSearch{margin-bottom:14px;}
+  /* The records' filter is the biomarkers' bar with one control fewer: no
+     record select, because the list already is the records. It pulls out to
+     the section's edges so the sticky plate is the width of the screen, and
+     its field stays open -- there is nothing beside it to make room for, so
+     the collapse-to-an-icon the biomarkers' field does would be a trick with
+     no reason behind it. */
+  .mMedBar{margin:0 -13px;}
+  .mMedBar .mchips{padding-bottom:12px;}
+  .mMedBar .mMedSearch{margin:0;}
+  .mMedBar .msClear{display:none;}
+  .mMedBar.hasText .msClear{display:flex !important;}
   /* the one thing on this list the reader cannot act on, said quietly */
   .mMedNote{
     display:flex;flex-direction:column;gap:4px;margin:0 0 18px;padding:13px 14px;
@@ -1589,7 +1649,7 @@
   body.light .mMedRow{border-bottom-color:#ece4d4;color:#2e1f1a;}
   body.light .mMedRow .sep{background:#e2dbcc;}
   body.light .mMedRow .view{color:#2e1f1a;}
-  body.repTab #phone .msWrap,
+  body.repTab #phone .msWrap:not(.mMedBar),
   body.repTab #phone #mRecs,
   body.repTab #phone #mSkel,
   body.repTab #phone #mSearchEmpty{display:none !important;}
@@ -5308,6 +5368,13 @@
   </aside>
   <main>
     <h1>Health insights</h1>
+    <!-- the same two tabs the phone carries, in the same place relative to the
+         page's own title: they say what everything below is a list of, so they
+         belong under the heading and above the first thing they change -->
+    <div class="mTabsV2 dTabsV2" id="dTabsV2" role="tablist" aria-label="What this page lists">
+      <button class="v2Tab on" type="button" role="tab" aria-selected="true" data-tab="bio">Biomarkers</button>
+      <button class="v2Tab" type="button" role="tab" aria-selected="false" data-tab="rep">Report</button>
+    </div>
     <div class="dgrid">
       <div class="dleft">
         <div class="dcard bcard">
@@ -5463,6 +5530,35 @@
          rows while its chips carried the design's figures, so the two could
          only disagree. -->
     <div class="recs" id="dRecsList"></div>
+    <!-- The Report tab's side of the desk. The same two things the phone puts
+         on it -- the reports themselves, then the documents behind them under
+         the same filter -- laid out for the width: a grid of report cards
+         rather than a carousel, and the chips and search side by side in one
+         pinned block, as the biomarkers' own filter is. Both lists are empty
+         here and built in the script from RECS and MEDS, so the desk and the
+         phone can only ever show the same records. -->
+    <div class="dRepWrap" id="dRepWrap">
+      <div class="dRepGrid" id="dRepGrid"></div>
+      <div class="mMedsWrap dMedsWrap" id="dMedsWrap">
+        <div class="mMedsHead">
+          <h3>Medical records</h3>
+          <button class="mUpload" type="button">Upload document</button>
+        </div>
+        <div class="dMedBar" id="dMedBar">
+          <div class="filters" id="dMedChips" role="group" aria-label="Filter records by category"></div>
+          <div class="dsearch dMedSearch" id="dMedBox">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/>
+            </svg>
+            <input id="dMedIn" type="search" placeholder="Search records" autocomplete="off" spellcheck="false" aria-label="Search medical records">
+            <button class="msClear" id="dMedClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          </div>
+        </div>
+        <div class="mMedNote"><b>3 records are processing.</b><span>Feel free to keep browsing. We&rsquo;ll let you know when everything is ready.</span></div>
+        <div class="mMedList" id="dMeds"></div>
+        <div class="dEmpty" id="dMedEmpty" hidden>No records match &ldquo;<span></span>&rdquo;</div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -5714,11 +5810,17 @@
         <h3>Medical records</h3>
         <button class="mUpload" type="button">Upload document</button>
       </div>
-      <div class="mchips" id="mMedChips" role="group" aria-label="Filter records by category"></div>
-      <div class="msBox mMedSearch" id="mMedBox">
-        <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.6 10.6 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <input id="mMedIn" type="search" placeholder="Search records" autocomplete="off" spellcheck="false" aria-label="Search medical records">
-        <button class="msClear" id="mMedClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <!-- The records' filter is the biomarkers' bar, over a different list:
+           same wrapper, so it pins under the status strip with the same plate
+           and the same fade, and the same field, so a scroll dismisses the
+           keyboard and a tap brings it back. -->
+      <div class="msWrap mMedBar" id="mMedBar">
+        <div class="msBox mMedSearch" id="mMedBox">
+          <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.6 10.6 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input id="mMedIn" type="search" placeholder="Search records" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search medical records">
+          <button class="msClear" id="mMedClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="mchips" id="mMedChips" role="group" aria-label="Filter records by category"></div>
       </div>
       <div class="mMedNote"><b>3 records are processing.</b><span>Feel free to keep browsing. We&rsquo;ll let you know when everything is ready.</span></div>
       <div class="mMedList" id="mMeds"></div>
@@ -13232,7 +13334,7 @@
   // and mounted into each phone that carries it rather than copied into the
   // markup twice. A screen that wants it asks for it; the CSS gate decides
   // which modes show it.
-  const MOBILE_NAV = '<nav class="mTabs" id="mTabs" aria-label="Sections">\n  <div class="mDock">\n    <!-- the island: the four destinations, evenly in one pill -->\n    <div class="mIsland lgGlass" role="tablist">\n      <a class="mTab on" role="tab" aria-selected="true"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10.2199 0.843587C10.6581 0.882395 11.0784 1.03634 11.4382 1.28955L11.6131 1.42464L11.6172 1.4279L17.4465 6.42383L17.5482 6.51416C17.779 6.73188 17.9669 6.99221 18.1007 7.28076C18.2536 7.61034 18.3327 7.96972 18.3327 8.33301V15.833C18.3326 16.4959 18.069 17.1327 17.6003 17.6014C17.1315 18.07 16.4955 18.333 15.8327 18.333H4.16602C3.50317 18.333 2.86724 18.07 2.39844 17.6014C1.92969 17.1327 1.66612 16.4959 1.66602 15.833V8.33301C1.66601 7.96971 1.74511 7.61034 1.89795 7.28076C2.05096 6.95101 2.27465 6.65853 2.55225 6.42383L8.38151 1.4279L8.38558 1.42464C8.83681 1.04328 9.40855 0.833008 9.99935 0.833008L10.2199 0.843587ZM9.99935 2.50049C9.80241 2.50049 9.61184 2.57031 9.46143 2.69743L9.46061 2.69661L3.63216 7.69255L3.62809 7.69661C3.53562 7.77483 3.46097 7.8724 3.40999 7.98226C3.35912 8.09206 3.33268 8.21199 3.33268 8.33301V15.833C3.33279 16.0539 3.42064 16.2668 3.57682 16.423C3.73306 16.579 3.9452 16.6663 4.16602 16.6663H6.66602V10.833C6.66602 10.391 6.84174 9.96718 7.1543 9.65462C7.46686 9.34206 7.89065 9.16634 8.33268 9.16634H11.666C12.108 9.16634 12.5318 9.34206 12.8444 9.65462C13.157 9.96718 13.3327 10.391 13.3327 10.833V16.6663H15.8327C16.0535 16.6663 16.2656 16.579 16.4219 16.423C16.5781 16.2668 16.6659 16.0539 16.666 15.833V8.33301C16.666 8.21199 16.6396 8.09206 16.5887 7.98226C16.5377 7.8724 16.4631 7.77483 16.3706 7.69661L16.3665 7.69255L10.5373 2.69661V2.69743C10.4056 2.58615 10.2431 2.5188 10.0726 2.50374L9.99935 2.50049ZM8.33268 16.6663H11.666V10.833H8.33268V16.6663Z"/></svg><i>Overview</i></a>\n      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.1277 1.67229C15.99 1.69936 16.8111 1.96289 17.4234 2.57805L17.4226 2.57805C18.0363 3.19017 18.2997 4.01003 18.3268 4.87135C18.3536 5.7276 18.1516 6.67207 17.7872 7.63502C17.4988 8.39712 17.0988 9.19372 16.6015 9.99993C17.0987 10.8059 17.4989 11.6021 17.7872 12.364C18.1516 13.327 18.3536 14.2715 18.3268 15.1277C18.2997 15.9888 18.0359 16.8073 17.4226 17.4194L17.4234 17.4202C16.811 18.0356 15.9902 18.2997 15.1277 18.3268C14.2715 18.3536 13.3269 18.1516 12.364 17.7872C11.6021 17.4989 10.8059 17.0987 9.99994 16.6015C9.19376 17.0988 8.39709 17.4988 7.63503 17.7872C6.67212 18.1516 5.72757 18.3536 4.87135 18.3268C4.01007 18.2997 3.19016 18.0363 2.57806 17.4226L2.57806 17.4234C1.9629 16.8111 1.69937 15.99 1.6723 15.1277C1.64547 14.2715 1.84747 13.327 2.21185 12.364C2.50017 11.6021 2.90042 10.8059 3.39756 9.99993C2.90032 9.19381 2.5002 8.39703 2.21185 7.63503C1.84751 6.67214 1.64547 5.72755 1.67229 4.87135C1.6994 4.00905 1.96286 3.18796 2.57806 2.57561C3.19012 1.96215 4.01021 1.69938 4.87135 1.67229C5.72753 1.64547 6.67216 1.84752 7.63503 2.21184C8.39687 2.50014 9.19328 2.90042 9.99912 3.39755C10.8053 2.90024 11.6019 2.50024 12.364 2.21184C13.3269 1.84748 14.2715 1.64549 15.1277 1.67229ZM4.44248 11.5152C4.17014 12.0119 3.94433 12.4941 3.77028 12.954C3.45568 13.7855 3.32029 14.5053 3.33815 15.0756C3.35366 15.5692 3.4808 15.9136 3.66937 16.1482L3.754 16.2418L3.75644 16.2451C3.98981 16.4796 4.35929 16.6431 4.92344 16.6609C5.4938 16.6788 6.21353 16.5434 7.04502 16.2288C7.50494 16.0547 7.98723 15.8289 8.48382 15.5566C7.75328 14.9997 7.02737 14.3697 6.32806 13.6734L6.32562 13.671C5.62931 12.9716 4.99943 12.2459 4.44248 11.5152ZM15.5566 11.5152C14.9996 12.2459 14.3698 12.9716 13.6734 13.671L13.671 13.6734C12.9715 14.3699 12.246 15.0004 11.5152 15.5574C12.0117 15.8297 12.4942 16.0547 12.954 16.2288C13.7854 16.5433 14.5053 16.6788 15.0756 16.6609C15.6397 16.6432 16.0084 16.4795 16.2418 16.2451L16.2451 16.2418C16.4795 16.0084 16.6432 15.6397 16.6609 15.0756C16.6788 14.5053 16.5434 13.7855 16.2288 12.954C16.0547 12.4941 15.8289 12.0119 15.5566 11.5152ZM9.99912 5.39544C9.1669 5.98519 8.3219 6.69216 7.504 7.50644C6.69073 8.3236 5.98461 9.16771 5.39544 9.99912C5.98467 10.8307 6.69053 11.6752 7.504 12.4926L7.84824 12.8271C8.55793 13.5021 9.28447 14.096 10.0008 14.6036C10.8328 14.0139 11.6773 13.3068 12.4951 12.4926C13.3085 11.6753 14.0144 10.8307 14.6036 9.99912C14.0145 9.16778 13.3082 8.32351 12.4951 7.50644L12.1508 7.17197C11.4412 6.49696 10.7153 5.90299 9.99912 5.39544ZM9.99994 8.33327C10.9203 8.33338 11.6666 9.07953 11.6666 9.99993C11.6665 10.9203 10.9203 11.6665 9.99994 11.6666C9.07953 11.6666 8.33338 10.9203 8.33327 9.99993C8.33327 9.07946 9.07946 8.33327 9.99994 8.33327ZM4.92344 3.33815C4.35928 3.35591 3.98981 3.51948 3.75644 3.754L3.754 3.75644C3.5195 3.98983 3.3559 4.35926 3.33815 4.92343C3.32026 5.49379 3.45569 6.21353 3.77028 7.04502C3.94423 7.50471 4.17036 7.98669 4.44248 8.48301C4.99934 7.75255 5.62947 7.02729 6.32562 6.32806L6.32806 6.32562C7.02756 5.6292 7.75308 4.99868 8.48382 4.44166C7.98744 4.16945 7.50479 3.94426 7.04502 3.77028C6.21356 3.4557 5.49378 3.32026 4.92344 3.33815ZM15.0756 3.33815C14.5053 3.3203 13.7855 3.4557 12.954 3.77027C12.4944 3.94422 12.0123 4.16956 11.5161 4.44166C12.1188 4.90124 12.7177 5.41122 13.3015 5.96673L13.671 6.32561L13.6734 6.32806C14.3695 7.02721 14.9998 7.75263 15.5566 8.48301C15.8288 7.98659 16.0548 7.50478 16.2288 7.04502C16.5434 6.21348 16.6788 5.49382 16.6609 4.92343C16.6432 4.35923 16.4796 3.98982 16.2451 3.75644L16.2418 3.754C16.0084 3.51964 15.6396 3.35587 15.0756 3.33815Z"/></svg><i>Biomarkers</i></a>\n      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.91016 11.9105C7.23559 11.585 7.7631 11.585 8.08854 11.9105C8.41398 12.2359 8.41398 12.7634 8.08854 13.0889L4.75521 16.4222C4.42977 16.7476 3.90226 16.7476 3.57682 16.4222L1.91016 14.7555C1.58472 14.4301 1.58472 13.9026 1.91016 13.5771C2.23559 13.2517 2.7631 13.2517 3.08854 13.5771L4.16602 14.6546L6.91016 11.9105ZM17.4993 14.1663C17.9596 14.1663 18.3327 14.5394 18.3327 14.9997C18.3327 15.4599 17.9596 15.833 17.4993 15.833H10.8327C10.3724 15.833 9.99935 15.4599 9.99935 14.9997C9.99935 14.5394 10.3724 14.1663 10.8327 14.1663H17.4993ZM17.4993 9.16634C17.9596 9.16634 18.3327 9.53944 18.3327 9.99968C18.3327 10.4599 17.9596 10.833 17.4993 10.833H10.8327C10.3724 10.833 9.99935 10.4599 9.99935 9.99968C9.99935 9.53944 10.3724 9.16634 10.8327 9.16634H17.4993ZM6.66602 3.33301C7.58649 3.33301 8.33268 4.0792 8.33268 4.99967V8.33301C8.33268 9.25348 7.58649 9.99968 6.66602 9.99968H3.33268C2.41221 9.99968 1.66602 9.25348 1.66602 8.33301V4.99967C1.66602 4.0792 2.41221 3.33301 3.33268 3.33301H6.66602ZM3.33268 8.33301H6.66602V4.99967H3.33268V8.33301ZM17.4993 4.16634C17.9596 4.16634 18.3327 4.53944 18.3327 4.99967C18.3327 5.45991 17.9596 5.83301 17.4993 5.83301H10.8327C10.3724 5.83301 9.99935 5.45991 9.99935 4.99967C9.99935 4.53944 10.3724 4.16634 10.8327 4.16634H17.4993Z"/></svg><i>Plan</i></a>\n      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M9.99935 0.834961C10.4368 0.834961 10.8661 0.950548 11.2453 1.16862L11.2461 1.16781L17.0794 4.50114L17.0827 4.50358L17.2218 4.58984C17.5396 4.80222 17.8054 5.08533 17.9974 5.41748C18.2167 5.79696 18.3322 6.22758 18.3327 6.66585V13.3341C18.3322 13.7725 18.2167 14.203 17.9974 14.5825C17.778 14.9621 17.4623 15.2772 17.0827 15.4964L17.0794 15.4989L11.2461 18.8322L11.2453 18.8314C10.892 19.0345 10.4952 19.1471 10.0889 19.1618C10.0595 19.1649 10.0296 19.1667 9.99935 19.1667C9.96883 19.1667 9.93869 19.165 9.90902 19.1618C9.50273 19.147 9.10575 19.0346 8.7526 18.8314V18.8322L2.91927 15.4989L2.91602 15.4964C2.53638 15.2772 2.22068 14.9621 2.0013 14.5825C1.782 14.203 1.66647 13.7725 1.66602 13.3341V6.66585L1.67171 6.50146C1.6972 6.12041 1.80951 5.74941 2.0013 5.41748C2.22067 5.03797 2.53641 4.72278 2.91602 4.50358L2.91927 4.50114L8.7526 1.16781V1.16862C9.13192 0.95032 9.56166 0.834961 9.99935 0.834961ZM3.33268 13.3325L3.34001 13.4416C3.35436 13.5493 3.38948 13.6537 3.44417 13.7484C3.51666 13.8738 3.62103 13.9781 3.74609 14.0511L9.16602 17.1476V10.4818L3.33268 7.12972V13.3325ZM10.8327 10.4818V17.1476L16.2526 14.0511C16.3777 13.9781 16.482 13.8738 16.5545 13.7484C16.6274 13.6222 16.6657 13.479 16.666 13.3333V7.12972L10.8327 10.4818ZM9.99935 2.50163C9.85309 2.50163 9.70935 2.54 9.58268 2.61312L9.57943 2.61475L4.18392 5.69661L9.99854 9.03809L15.8132 5.69661L10.4193 2.61475L10.416 2.61312C10.2893 2.54 10.1456 2.50163 9.99935 2.50163Z"/></svg><i>Services</i></a>\n      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.16667 8.33301C5.08714 8.33301 5.83333 9.0792 5.83333 9.99967C5.83333 10.9201 5.08714 11.6663 4.16667 11.6663C3.24619 11.6663 2.5 10.9201 2.5 9.99967C2.5 9.0792 3.24619 8.33301 4.16667 8.33301ZM10 8.33301C10.9205 8.33301 11.6667 9.0792 11.6667 9.99967C11.6667 10.9201 10.9205 11.6663 10 11.6663C9.07953 11.6663 8.33333 10.9201 8.33333 9.99967C8.33333 9.0792 9.07953 8.33301 10 8.33301ZM15.8333 8.33301C16.7538 8.33301 17.5 9.0792 17.5 9.99967C17.5 10.9201 16.7538 11.6663 15.8333 11.6663C14.9129 11.6663 14.1667 10.9201 14.1667 9.99967C14.1667 9.0792 14.9129 8.33301 15.8333 8.33301Z"/></svg><i>More</i></a>\n    </div>\n    <!-- and the assistant, its own pill beside them -- a sparkle rather than a speech bubble, since it opens something that answers rather than a thread. The same material, a little\n         brighter, so it reads as part of the system and not of the four -->\n    <button class="mChat lgGlass" type="button" aria-label="Ask Everlab">\n      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5455 3.74292C11.5455 3.74292 11.9878 7.42388 14.3179 9.62452C16.648 11.8251 20.5455 12.2429 20.5455 12.2429C20.5455 12.2429 16.648 12.6607 14.3179 14.8613C11.9878 17.062 11.5455 20.7429 11.5455 20.7429C11.5455 20.7429 11.1031 17.062 8.77304 14.8613C6.44296 12.6607 2.54547 12.2429 2.54547 12.2429C2.54547 12.2429 6.44296 11.8251 8.77304 9.62452C11.1031 7.42388 11.5455 3.74292 11.5455 3.74292Z"/><path d="M18.0455 0.542969C18.0455 0.542969 18.1896 2.38044 18.9488 3.13964C19.708 3.89884 21.5455 4.04297 21.5455 4.04297C21.5455 4.04297 19.708 4.1871 18.9488 4.9463C18.1896 5.7055 18.0455 7.54297 18.0455 7.54297C18.0455 7.54297 17.9013 5.7055 17.1421 4.9463C16.3829 4.1871 14.5455 4.04297 14.5455 4.04297C14.5455 4.04297 16.3829 3.89884 17.1421 3.13964C17.9013 2.38044 18.0455 0.542969 18.0455 0.542969Z"/></svg>\n    </button>\n  </div>\n  <!-- the iPhone\'s home indicator, drawn in the frame where the device would\n       draw its own; the dock keeps the same distance above it either way -->\n  <i class="mHome" aria-hidden="true"></i>\n</nav>';
+  const MOBILE_NAV = '<nav class="mTabs" id="mTabs" aria-label="Sections">\n  <div class="mDock">\n    <!-- the island: the four destinations, evenly in one pill -->\n    <div class="mIsland lgGlass" role="tablist">\n      <a class="mTab on" role="tab" aria-selected="true"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10.2199 0.843587C10.6581 0.882395 11.0784 1.03634 11.4382 1.28955L11.6131 1.42464L11.6172 1.4279L17.4465 6.42383L17.5482 6.51416C17.779 6.73188 17.9669 6.99221 18.1007 7.28076C18.2536 7.61034 18.3327 7.96972 18.3327 8.33301V15.833C18.3326 16.4959 18.069 17.1327 17.6003 17.6014C17.1315 18.07 16.4955 18.333 15.8327 18.333H4.16602C3.50317 18.333 2.86724 18.07 2.39844 17.6014C1.92969 17.1327 1.66612 16.4959 1.66602 15.833V8.33301C1.66601 7.96971 1.74511 7.61034 1.89795 7.28076C2.05096 6.95101 2.27465 6.65853 2.55225 6.42383L8.38151 1.4279L8.38558 1.42464C8.83681 1.04328 9.40855 0.833008 9.99935 0.833008L10.2199 0.843587ZM9.99935 2.50049C9.80241 2.50049 9.61184 2.57031 9.46143 2.69743L9.46061 2.69661L3.63216 7.69255L3.62809 7.69661C3.53562 7.77483 3.46097 7.8724 3.40999 7.98226C3.35912 8.09206 3.33268 8.21199 3.33268 8.33301V15.833C3.33279 16.0539 3.42064 16.2668 3.57682 16.423C3.73306 16.579 3.9452 16.6663 4.16602 16.6663H6.66602V10.833C6.66602 10.391 6.84174 9.96718 7.1543 9.65462C7.46686 9.34206 7.89065 9.16634 8.33268 9.16634H11.666C12.108 9.16634 12.5318 9.34206 12.8444 9.65462C13.157 9.96718 13.3327 10.391 13.3327 10.833V16.6663H15.8327C16.0535 16.6663 16.2656 16.579 16.4219 16.423C16.5781 16.2668 16.6659 16.0539 16.666 15.833V8.33301C16.666 8.21199 16.6396 8.09206 16.5887 7.98226C16.5377 7.8724 16.4631 7.77483 16.3706 7.69661L16.3665 7.69255L10.5373 2.69661V2.69743C10.4056 2.58615 10.2431 2.5188 10.0726 2.50374L9.99935 2.50049ZM8.33268 16.6663H11.666V10.833H8.33268V16.6663Z"/></svg><i>Overview</i></a>\n      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.1277 1.67229C15.99 1.69936 16.8111 1.96289 17.4234 2.57805L17.4226 2.57805C18.0363 3.19017 18.2997 4.01003 18.3268 4.87135C18.3536 5.7276 18.1516 6.67207 17.7872 7.63502C17.4988 8.39712 17.0988 9.19372 16.6015 9.99993C17.0987 10.8059 17.4989 11.6021 17.7872 12.364C18.1516 13.327 18.3536 14.2715 18.3268 15.1277C18.2997 15.9888 18.0359 16.8073 17.4226 17.4194L17.4234 17.4202C16.811 18.0356 15.9902 18.2997 15.1277 18.3268C14.2715 18.3536 13.3269 18.1516 12.364 17.7872C11.6021 17.4989 10.8059 17.0987 9.99994 16.6015C9.19376 17.0988 8.39709 17.4988 7.63503 17.7872C6.67212 18.1516 5.72757 18.3536 4.87135 18.3268C4.01007 18.2997 3.19016 18.0363 2.57806 17.4226L2.57806 17.4234C1.9629 16.8111 1.69937 15.99 1.6723 15.1277C1.64547 14.2715 1.84747 13.327 2.21185 12.364C2.50017 11.6021 2.90042 10.8059 3.39756 9.99993C2.90032 9.19381 2.5002 8.39703 2.21185 7.63503C1.84751 6.67214 1.64547 5.72755 1.67229 4.87135C1.6994 4.00905 1.96286 3.18796 2.57806 2.57561C3.19012 1.96215 4.01021 1.69938 4.87135 1.67229C5.72753 1.64547 6.67216 1.84752 7.63503 2.21184C8.39687 2.50014 9.19328 2.90042 9.99912 3.39755C10.8053 2.90024 11.6019 2.50024 12.364 2.21184C13.3269 1.84748 14.2715 1.64549 15.1277 1.67229ZM4.44248 11.5152C4.17014 12.0119 3.94433 12.4941 3.77028 12.954C3.45568 13.7855 3.32029 14.5053 3.33815 15.0756C3.35366 15.5692 3.4808 15.9136 3.66937 16.1482L3.754 16.2418L3.75644 16.2451C3.98981 16.4796 4.35929 16.6431 4.92344 16.6609C5.4938 16.6788 6.21353 16.5434 7.04502 16.2288C7.50494 16.0547 7.98723 15.8289 8.48382 15.5566C7.75328 14.9997 7.02737 14.3697 6.32806 13.6734L6.32562 13.671C5.62931 12.9716 4.99943 12.2459 4.44248 11.5152ZM15.5566 11.5152C14.9996 12.2459 14.3698 12.9716 13.6734 13.671L13.671 13.6734C12.9715 14.3699 12.246 15.0004 11.5152 15.5574C12.0117 15.8297 12.4942 16.0547 12.954 16.2288C13.7854 16.5433 14.5053 16.6788 15.0756 16.6609C15.6397 16.6432 16.0084 16.4795 16.2418 16.2451L16.2451 16.2418C16.4795 16.0084 16.6432 15.6397 16.6609 15.0756C16.6788 14.5053 16.5434 13.7855 16.2288 12.954C16.0547 12.4941 15.8289 12.0119 15.5566 11.5152ZM9.99912 5.39544C9.1669 5.98519 8.3219 6.69216 7.504 7.50644C6.69073 8.3236 5.98461 9.16771 5.39544 9.99912C5.98467 10.8307 6.69053 11.6752 7.504 12.4926L7.84824 12.8271C8.55793 13.5021 9.28447 14.096 10.0008 14.6036C10.8328 14.0139 11.6773 13.3068 12.4951 12.4926C13.3085 11.6753 14.0144 10.8307 14.6036 9.99912C14.0145 9.16778 13.3082 8.32351 12.4951 7.50644L12.1508 7.17197C11.4412 6.49696 10.7153 5.90299 9.99912 5.39544ZM9.99994 8.33327C10.9203 8.33338 11.6666 9.07953 11.6666 9.99993C11.6665 10.9203 10.9203 11.6665 9.99994 11.6666C9.07953 11.6666 8.33338 10.9203 8.33327 9.99993C8.33327 9.07946 9.07946 8.33327 9.99994 8.33327ZM4.92344 3.33815C4.35928 3.35591 3.98981 3.51948 3.75644 3.754L3.754 3.75644C3.5195 3.98983 3.3559 4.35926 3.33815 4.92343C3.32026 5.49379 3.45569 6.21353 3.77028 7.04502C3.94423 7.50471 4.17036 7.98669 4.44248 8.48301C4.99934 7.75255 5.62947 7.02729 6.32562 6.32806L6.32806 6.32562C7.02756 5.6292 7.75308 4.99868 8.48382 4.44166C7.98744 4.16945 7.50479 3.94426 7.04502 3.77028C6.21356 3.4557 5.49378 3.32026 4.92344 3.33815ZM15.0756 3.33815C14.5053 3.3203 13.7855 3.4557 12.954 3.77027C12.4944 3.94422 12.0123 4.16956 11.5161 4.44166C12.1188 4.90124 12.7177 5.41122 13.3015 5.96673L13.671 6.32561L13.6734 6.32806C14.3695 7.02721 14.9998 7.75263 15.5566 8.48301C15.8288 7.98659 16.0548 7.50478 16.2288 7.04502C16.5434 6.21348 16.6788 5.49382 16.6609 4.92343C16.6432 4.35923 16.4796 3.98982 16.2451 3.75644L16.2418 3.754C16.0084 3.51964 15.6396 3.35587 15.0756 3.33815Z"/></svg><i>Insights</i></a>\n      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.91016 11.9105C7.23559 11.585 7.7631 11.585 8.08854 11.9105C8.41398 12.2359 8.41398 12.7634 8.08854 13.0889L4.75521 16.4222C4.42977 16.7476 3.90226 16.7476 3.57682 16.4222L1.91016 14.7555C1.58472 14.4301 1.58472 13.9026 1.91016 13.5771C2.23559 13.2517 2.7631 13.2517 3.08854 13.5771L4.16602 14.6546L6.91016 11.9105ZM17.4993 14.1663C17.9596 14.1663 18.3327 14.5394 18.3327 14.9997C18.3327 15.4599 17.9596 15.833 17.4993 15.833H10.8327C10.3724 15.833 9.99935 15.4599 9.99935 14.9997C9.99935 14.5394 10.3724 14.1663 10.8327 14.1663H17.4993ZM17.4993 9.16634C17.9596 9.16634 18.3327 9.53944 18.3327 9.99968C18.3327 10.4599 17.9596 10.833 17.4993 10.833H10.8327C10.3724 10.833 9.99935 10.4599 9.99935 9.99968C9.99935 9.53944 10.3724 9.16634 10.8327 9.16634H17.4993ZM6.66602 3.33301C7.58649 3.33301 8.33268 4.0792 8.33268 4.99967V8.33301C8.33268 9.25348 7.58649 9.99968 6.66602 9.99968H3.33268C2.41221 9.99968 1.66602 9.25348 1.66602 8.33301V4.99967C1.66602 4.0792 2.41221 3.33301 3.33268 3.33301H6.66602ZM3.33268 8.33301H6.66602V4.99967H3.33268V8.33301ZM17.4993 4.16634C17.9596 4.16634 18.3327 4.53944 18.3327 4.99967C18.3327 5.45991 17.9596 5.83301 17.4993 5.83301H10.8327C10.3724 5.83301 9.99935 5.45991 9.99935 4.99967C9.99935 4.53944 10.3724 4.16634 10.8327 4.16634H17.4993Z"/></svg><i>Plan</i></a>\n      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M9.99935 0.834961C10.4368 0.834961 10.8661 0.950548 11.2453 1.16862L11.2461 1.16781L17.0794 4.50114L17.0827 4.50358L17.2218 4.58984C17.5396 4.80222 17.8054 5.08533 17.9974 5.41748C18.2167 5.79696 18.3322 6.22758 18.3327 6.66585V13.3341C18.3322 13.7725 18.2167 14.203 17.9974 14.5825C17.778 14.9621 17.4623 15.2772 17.0827 15.4964L17.0794 15.4989L11.2461 18.8322L11.2453 18.8314C10.892 19.0345 10.4952 19.1471 10.0889 19.1618C10.0595 19.1649 10.0296 19.1667 9.99935 19.1667C9.96883 19.1667 9.93869 19.165 9.90902 19.1618C9.50273 19.147 9.10575 19.0346 8.7526 18.8314V18.8322L2.91927 15.4989L2.91602 15.4964C2.53638 15.2772 2.22068 14.9621 2.0013 14.5825C1.782 14.203 1.66647 13.7725 1.66602 13.3341V6.66585L1.67171 6.50146C1.6972 6.12041 1.80951 5.74941 2.0013 5.41748C2.22067 5.03797 2.53641 4.72278 2.91602 4.50358L2.91927 4.50114L8.7526 1.16781V1.16862C9.13192 0.95032 9.56166 0.834961 9.99935 0.834961ZM3.33268 13.3325L3.34001 13.4416C3.35436 13.5493 3.38948 13.6537 3.44417 13.7484C3.51666 13.8738 3.62103 13.9781 3.74609 14.0511L9.16602 17.1476V10.4818L3.33268 7.12972V13.3325ZM10.8327 10.4818V17.1476L16.2526 14.0511C16.3777 13.9781 16.482 13.8738 16.5545 13.7484C16.6274 13.6222 16.6657 13.479 16.666 13.3333V7.12972L10.8327 10.4818ZM9.99935 2.50163C9.85309 2.50163 9.70935 2.54 9.58268 2.61312L9.57943 2.61475L4.18392 5.69661L9.99854 9.03809L15.8132 5.69661L10.4193 2.61475L10.416 2.61312C10.2893 2.54 10.1456 2.50163 9.99935 2.50163Z"/></svg><i>Services</i></a>\n      <a class="mTab" role="tab" aria-selected="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.16667 8.33301C5.08714 8.33301 5.83333 9.0792 5.83333 9.99967C5.83333 10.9201 5.08714 11.6663 4.16667 11.6663C3.24619 11.6663 2.5 10.9201 2.5 9.99967C2.5 9.0792 3.24619 8.33301 4.16667 8.33301ZM10 8.33301C10.9205 8.33301 11.6667 9.0792 11.6667 9.99967C11.6667 10.9201 10.9205 11.6663 10 11.6663C9.07953 11.6663 8.33333 10.9201 8.33333 9.99967C8.33333 9.0792 9.07953 8.33301 10 8.33301ZM15.8333 8.33301C16.7538 8.33301 17.5 9.0792 17.5 9.99967C17.5 10.9201 16.7538 11.6663 15.8333 11.6663C14.9129 11.6663 14.1667 10.9201 14.1667 9.99967C14.1667 9.0792 14.9129 8.33301 15.8333 8.33301Z"/></svg><i>More</i></a>\n    </div>\n    <!-- and the assistant, its own pill beside them -- a sparkle rather than a speech bubble, since it opens something that answers rather than a thread. The same material, a little\n         brighter, so it reads as part of the system and not of the four -->\n    <button class="mChat lgGlass" type="button" aria-label="Ask Everlab">\n      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5455 3.74292C11.5455 3.74292 11.9878 7.42388 14.3179 9.62452C16.648 11.8251 20.5455 12.2429 20.5455 12.2429C20.5455 12.2429 16.648 12.6607 14.3179 14.8613C11.9878 17.062 11.5455 20.7429 11.5455 20.7429C11.5455 20.7429 11.1031 17.062 8.77304 14.8613C6.44296 12.6607 2.54547 12.2429 2.54547 12.2429C2.54547 12.2429 6.44296 11.8251 8.77304 9.62452C11.1031 7.42388 11.5455 3.74292 11.5455 3.74292Z"/><path d="M18.0455 0.542969C18.0455 0.542969 18.1896 2.38044 18.9488 3.13964C19.708 3.89884 21.5455 4.04297 21.5455 4.04297C21.5455 4.04297 19.708 4.1871 18.9488 4.9463C18.1896 5.7055 18.0455 7.54297 18.0455 7.54297C18.0455 7.54297 17.9013 5.7055 17.1421 4.9463C16.3829 4.1871 14.5455 4.04297 14.5455 4.04297C14.5455 4.04297 16.3829 3.89884 17.1421 3.13964C17.9013 2.38044 18.0455 0.542969 18.0455 0.542969Z"/></svg>\n    </button>\n  </div>\n  <!-- the iPhone\'s home indicator, drawn in the frame where the device would\n       draw its own; the dock keeps the same distance above it either way -->\n  <i class="mHome" aria-hidden="true"></i>\n</nav>';
   (function mountNav(){
     const hosts = ['phone', 'phone2'].map(id => document.getElementById(id)).filter(Boolean);
     hosts.forEach((host, k) => {
@@ -15000,9 +15102,11 @@
       docs: ['Lipid profile', 'HbA1c', 'Vitamin D'] }
   ];
   (function buildMeds(){
-    const host = document.getElementById('mMeds');
-    const chips = document.getElementById('mMedChips');
-    if (!host || !chips) return;
+    // the phone and the desk get the same rows out of the same table: one
+    // markup, written into whichever hosts the page carries
+    const hosts = ['mMeds', 'dMeds'].map(id => document.getElementById(id)).filter(Boolean);
+    const bars = ['mMedChips', 'dMedChips'].map(id => document.getElementById(id)).filter(Boolean);
+    if (!hosts.length || !bars.length) return;
     const DOC = '<svg class="doc" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
       '<path d="M4 1.8h5l3 3v9.4H4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>' +
       '<path d="M9 1.8v3h3" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>';
@@ -15011,7 +15115,7 @@
       'stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     const byKey = {};
     MED_CATS.forEach(c => { byKey[c.k] = c; });
-    host.innerHTML = MEDS.map(g => {
+    const rows = MEDS.map(g => {
       const cat = byKey[g.c] || MED_CATS[0];
       return '<div class="mMedGrp" data-c="' + g.c + '">' +
         '<div class="mMedTop"><span class="t">' +
@@ -15024,13 +15128,15 @@
           DOC + '<i class="sep"></i><button class="view" type="button">View</button></div>').join('') +
       '</div>';
     }).join('');
+    hosts.forEach(h => { h.innerHTML = rows; });
     // the chips, in the panel's own language: All first, then one per category,
     // each with the dot its group header carries
-    chips.innerHTML =
+    const chipRow =
       '<button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>0</b>&nbsp;All</button>' +
       MED_CATS.map(c =>
         '<button class="fchip" type="button" data-st="' + c.k + '" aria-pressed="false">' +
         '<i style="background:' + c.dot + '"></i><b>0</b>&nbsp;' + c.label + '</button>').join('');
+    bars.forEach(b => { b.innerHTML = chipRow; });
   })();
 
   // The hero's report carousel. A card per report -- a cover, the date on it,
@@ -15040,18 +15146,16 @@
   // the last gesture-built version stone dead; the browser's own panning
   // cannot be taken that way, and it brings momentum, trackpads and the
   // keyboard along with it.
-  (function heroReports(){
-    const car = document.getElementById('v4RepCar');
-    const dots = document.getElementById('v4RepDots');
-    if (!car || !dots) return;
-    const REPS = RECS.filter(r => r.id !== 'all');
-    if (!REPS.length) return;
-
+  // One report card, wherever a report is shown: the phone's hero carousel and
+  // the desk's grid are two arrangements of the same card, so the card itself
+  // is written once.
+  const REPS = RECS.filter(r => r.id !== 'all');
+  const repCardHTML = (function(){
     const PLAY = '<span class="play"><svg viewBox="0 0 12 12" aria-hidden="true">' +
                  '<path d="M3 1.8 10 6l-7 4.2Z" fill="currentColor"/></svg></span>';
     // initials, so the byline has a face without an asset behind it
     const mark = n => n.replace(/^Dr\.\s*/, '').split(/\s+/).map(w => w[0]).join('').slice(0, 2);
-    car.innerHTML = REPS.map(r =>
+    return r =>
       '<button class="repCard" type="button" data-r="' + r.id + '">' +
         '<span class="cover" style="background:linear-gradient(150deg,' +
           r.art[0] + ',' + r.art[1] + ')"></span>' +
@@ -15059,7 +15163,27 @@
         (r.media === 'video' ? PLAY : '') +
         '<span class="foot"><span class="who">' + mark(r.by) + '</span>' +
           '<span class="t"><b>' + r.label + '</b><i>' + r.by + '</i></span></span>' +
-      '</button>').join('');
+      '</button>';
+  })();
+  // the desk's shelf of the same reports: no carousel, because the page has
+  // the width to lay them all out
+  (function deskReports(){
+    const grid = document.getElementById('dRepGrid');
+    if (!grid || !REPS.length) return;
+    grid.innerHTML = REPS.map(repCardHTML).join('');
+    grid.addEventListener('click', e => {
+      const c = e.target.closest('.repCard');
+      if (c) document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: c.dataset.r }));
+    });
+  })();
+
+  (function heroReports(){
+    const car = document.getElementById('v4RepCar');
+    const dots = document.getElementById('v4RepDots');
+    if (!car || !dots) return;
+    if (!REPS.length) return;
+
+    car.innerHTML = REPS.map(repCardHTML).join('');
     dots.innerHTML = REPS.map((r, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
 
     // which card is under the middle of the scroller: the one the dots mark
@@ -15083,54 +15207,88 @@
     // A touch-drag on the scroller is the browser's to handle, but a MOUSE
     // drag is not: a scroller only pans under a finger or a wheel, so on a
     // screen the carousel looked broken -- press, pull, nothing. So the drag
-    // is driven by hand. Snapping is turned off for the length of the gesture,
-    // because mandatory snap fights a scrollLeft written every frame, and
-    // turned back on at the end with a smooth scroll to the nearest card, so
-    // the release still lands on one.
+    // is driven by hand, and the release is decided rather than left to the
+    // browser's snap:
     //
-    // The organ carousel above also sees these events and would swipe organs
-    // behind the cards, so the gesture stops here either way.
-    let d0 = null;
-    const nearest = () => {
+    //   half a card's travel commits to the next one. Nearest-card snapping
+    //   sounds like the same rule and is not -- with the neighbours peeking,
+    //   the centres are a card plus a gap apart, so "nearest" asked for more
+    //   than half a card before it would let go of the one you started on.
+    //
+    // Snapping is off for the length of the gesture and for the glide after
+    // it, because mandatory snap fights a scrollLeft written every frame.
+    const CARD_STEP = () => cards.length > 1
+      ? cards[1].offsetLeft - cards[0].offsetLeft
+      : car.clientWidth;
+    const centreOf = c => c.offsetLeft - (car.clientWidth - c.offsetWidth) / 2;
+    const nearestIdx = () => {
       const mid = car.scrollLeft + car.clientWidth / 2;
-      let best = cards[0], d = Infinity;
-      cards.forEach(c => {
+      let best = 0, d = Infinity;
+      cards.forEach((c, i) => {
         const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
-        if (dist < d){ d = dist; best = c; }
+        if (dist < d){ d = dist; best = i; }
       });
       return best;
     };
+    // The glide is ours too. The browser's smooth scroll is a short, flat
+    // ramp; this is 420ms easing out, which is the pace the rest of the phone
+    // moves at.
+    let anim = 0;
+    function glide(to){
+      if (anim) cancelAnimationFrame(anim);
+      const from = car.scrollLeft, d = to - from, t0 = performance.now();
+      if (Math.abs(d) < 0.5){ car.style.scrollSnapType = ''; return; }
+      const step = now => {
+        const k = Math.min(1, (now - t0) / 420);
+        car.scrollLeft = from + d * (1 - Math.pow(1 - k, 3));
+        if (k < 1){ anim = requestAnimationFrame(step); }
+        else { anim = 0; car.style.scrollSnapType = ''; }
+      };
+      anim = requestAnimationFrame(step);
+    }
+
+    let d0 = null, pend = 0;
+    const apply = () => {
+      pend = 0;
+      if (d0 && d0.moved) car.scrollLeft = d0.left - d0.dx;
+    };
     car.addEventListener('pointerdown', e => {
       e.stopPropagation();
-      d0 = { x: e.clientX, left: car.scrollLeft, moved: false, pid: e.pointerId };
+      if (anim){ cancelAnimationFrame(anim); anim = 0; }
+      d0 = { x: e.clientX, left: car.scrollLeft, dx: 0, i: nearestIdx(),
+             moved: false, pid: e.pointerId };
     });
     car.addEventListener('pointermove', e => {
       e.stopPropagation();
       if (!d0) return;
-      const dx = e.clientX - d0.x;
+      d0.dx = e.clientX - d0.x;
       if (!d0.moved){
-        if (Math.abs(dx) < 6) return;
+        if (Math.abs(d0.dx) < 6) return;
         d0.moved = true;
         car.style.scrollSnapType = 'none';
         try { car.setPointerCapture(d0.pid); } catch (err) {}
       }
       e.preventDefault();
-      car.scrollLeft = d0.left - dx;
+      // written once a frame rather than once an event: the pointer can
+      // outrun the compositor, and every extra write is a layout for nothing
+      if (!pend) pend = requestAnimationFrame(apply);
     });
     // A drag must not also open a card. The click arrives after pointerup, so
     // the fact of having dragged has to outlive the gesture by a frame.
     const release = e => {
       e.stopPropagation();
       if (!d0) return;
-      const moved = d0.moved;
+      const moved = d0.moved, dx = d0.dx, from = d0.i;
       d0 = null;
+      if (pend){ cancelAnimationFrame(pend); pend = 0; }
       car.dataset.dragged = moved ? '1' : '0';
       if (moved) setTimeout(() => { car.dataset.dragged = '0'; }, 0);
       if (!moved) return;
-      car.style.scrollSnapType = '';
-      const c = nearest();
-      car.scrollTo({ left: c.offsetLeft - (car.clientWidth - c.offsetWidth) / 2,
-                     behavior: 'smooth' });
+      const step = CARD_STEP();
+      let to = from;
+      if (Math.abs(dx) >= step * 0.5) to = from + (dx < 0 ? 1 : -1);
+      to = Math.max(0, Math.min(cards.length - 1, to));
+      glide(centreOf(cards[to]));
     };
     car.addEventListener('pointerup', release);
     car.addEventListener('pointercancel', release);
@@ -15946,17 +16104,21 @@
   // once it is actually pinned -- in the flow there is nothing passing beneath
   // to fade. The dashboard is the scroller here, not the window.
   (function dStick(){
-    const sc = document.querySelector('.dash'), blk = document.getElementById('dFilters');
-    if (!sc || !blk) return;
-    const chips = blk.querySelector('.filters');
-    const set = () => {
+    const sc = document.querySelector('.dash');
+    // both pinned blocks -- the biomarkers' filter and the records' -- behave
+    // the same way, and only one of them is ever on the page at a time
+    const blks = ['dFilters', 'dMedBar'].map(id => document.getElementById(id)).filter(Boolean);
+    if (!sc || !blks.length) return;
+    const set = () => blks.forEach(blk => {
+      const chips = blk.querySelector('.filters');
       if (chips) blk.style.setProperty('--dFadeUp',
         Math.round(chips.offsetHeight / 2) + 'px');
       blk.classList.toggle('stuck',
         blk.getBoundingClientRect().top <= sc.getBoundingClientRect().top + 0.5 && sc.scrollTop > 0);
-    };
+    });
     sc.addEventListener('scroll', set, { passive: true });
     addEventListener('resize', set);
+    document.addEventListener('everlab:repTab', set);
     set();
   })();
 
@@ -16005,7 +16167,9 @@
     setTabUI();
     resize();
   });
-  const v2Tabs = [].slice.call(document.querySelectorAll('#mTabsV2 .v2Tab'));
+  // both copies of the tabs -- the phone's and the desk's -- are the same two
+  // tabs over the same state, so they are one list here
+  const v2Tabs = [].slice.call(document.querySelectorAll('.mTabsV2 .v2Tab'));
   function setTabUI(){
     v2Tabs.forEach(t => {
       const on = (t.dataset.tab === 'rep') === !!CARD_STATE.repTab;
@@ -17271,6 +17435,43 @@
     clear.addEventListener('click', () => { input.value = ''; typed(); });
     // the shell is the field's target: a click anywhere in it types
     field.addEventListener('click', e => { if (e.target !== clear && !clear.contains(e.target)) input.focus(); });
+    // picking a report on the Report tab narrows this list to it and hands the
+    // page back to the Biomarkers tab, exactly as it does on the phone
+    document.addEventListener('everlab:pickRec', e => bio.choose(e.detail, true));
+  })();
+
+  // The desk's medical records, through the same filter the biomarkers use and
+  // the same one the phone's records use -- the chips cut by a document's
+  // category rather than by a reading's range, which is all rowKey changes.
+  (function dMedFilter(){
+    const list = document.getElementById('dMeds');
+    const box = document.getElementById('dMedBox');
+    const inp = document.getElementById('dMedIn');
+    if (!list || !box || !inp) return;
+    const med = bioFilter({
+      list: list, groupSel: '.mMedGrp', rowSel: '.mMedRow',
+      empty: document.getElementById('dMedEmpty'),
+      input: inp, fieldEl: box,
+      chipsBar: document.getElementById('dMedChips'),
+      rowKey: row => row.dataset.c
+    });
+    const typed = () => { box.classList.toggle('hasText', inp.value.length > 0); med.typed(); };
+    inp.addEventListener('input', typed);
+    inp.addEventListener('focus', () => box.classList.add('focus'));
+    inp.addEventListener('blur', () => box.classList.remove('focus'));
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') inp.blur();
+      if (e.key === 'Escape'){ inp.value = ''; typed(); inp.blur(); }
+    });
+    const clr = document.getElementById('dMedClear');
+    if (clr){
+      clr.addEventListener('pointerdown', e => e.preventDefault());
+      clr.addEventListener('click', () => { inp.value = ''; typed(); });
+    }
+    box.addEventListener('click', e => {
+      if (clr && (e.target === clr || clr.contains(e.target))) return;
+      inp.focus();
+    });
   })();
 
   // Focus: the wrapper sticks to the top of the scroll container and the page
@@ -17314,13 +17515,20 @@
       const cs = getComputedStyle(st);
       return (cs.display !== 'none' && cs.position === 'absolute') ? st.offsetHeight : 0;
     };
-    const placeBar = () => {
-      wrap.style.setProperty('--msTop', statusH() + 'px');
-      // where the ground stops and the fade takes over: the middle of the
-      // chips row, measured, so it follows the row rather than a typed number
-      const chips = wrap.querySelector('.mchips');
-      if (chips) wrap.style.setProperty('--msFadeUp',
-        Math.round(chips.offsetHeight / 2) + 'px');
+    // Two bars on this phone wear this behaviour -- the biomarkers' and the
+    // medical records' -- and only one of them is on the page at a time, so
+    // everything below is written against a bar rather than against THE bar.
+    const bars = () => [wrap, document.getElementById('mMedBar')].filter(
+      b => b && b.offsetWidth > 0);   // laid out, so there is something to measure
+    const placeBar = (w) => {
+      (w ? [w] : bars()).forEach(b => {
+        b.style.setProperty('--msTop', statusH() + 'px');
+        // where the ground stops and the fade takes over: the middle of the
+        // chips row, measured, so it follows the row rather than a typed number
+        const chips = b.querySelector('.mchips');
+        if (chips) b.style.setProperty('--msFadeUp',
+          Math.round(chips.offsetHeight / 2) + 'px');
+      });
     };
     // How far the bar still has to run before it pins, and how present its
     // plate is. Both live on the bar, because the plate is the bar's: one
@@ -17328,27 +17536,31 @@
     // runs over the last 40px of the approach and is solid for the last 20 --
     // a plate that switched on at full height would be a black band arriving
     // out of nowhere over the hero, which is a different bug.
-    const setPlate = () => {
-      const top = parseFloat(getComputedStyle(wrap).top) || 0;
+    const setPlate = () => bars().forEach(w => {
+      const top = parseFloat(getComputedStyle(w).top) || 0;
       const gap = Math.max(0, Math.round(
-        wrap.getBoundingClientRect().top - sc.getBoundingClientRect().top - top));
+        w.getBoundingClientRect().top - sc.getBoundingClientRect().top - top));
       // On when the bar is pinned, off when it is not -- no crossfade. A plate
       // fading in is a gradient over whatever is behind it, and the strip is
       // meant to be flat. Pinned, its height is the status strip plus a pixel,
       // covering what the plate above already covers; not pinned, the content
       // between the two passes under the bar as content should.
-      wrap.style.setProperty('--msGap', gap <= 2 ? '0px' : gap + 'px');
-      wrap.style.setProperty('--msPlate', gap <= 2 ? '1' : '0');
-    };
+      w.style.setProperty('--msGap', gap <= 2 ? '0px' : gap + 'px');
+      w.style.setProperty('--msPlate', gap <= 2 ? '1' : '0');
+    });
     // the fade below the bar once it is pinned
     const setStuck = () => {
       placeBar();   // the page may have changed since init (setMode moves the status bar)
-      const top = parseFloat(getComputedStyle(wrap).top) || 0;
-      wrap.classList.toggle('stuck', wrap.getBoundingClientRect().top <= sc.getBoundingClientRect().top + top + 0.5 && sc.scrollTop > 0);
+      bars().forEach(w => {
+        const top = parseFloat(getComputedStyle(w).top) || 0;
+        w.classList.toggle('stuck', w.getBoundingClientRect().top <= sc.getBoundingClientRect().top + top + 0.5 && sc.scrollTop > 0);
+      });
       setPlate();
     };
     placeBar();
     addEventListener('resize', () => { placeBar(); setStuck(); });
+    // the records' bar has no width to measure until its tab shows it
+    document.addEventListener('everlab:repTab', () => { placeBar(); setStuck(); });
     // The frame's keyboard. Built here rather than in the markup: four rows,
     // the third with shift and delete, the fourth with 123, space and search
     // (the field's enterkeyhint). pointerdown is prevented so a key press never
@@ -17370,16 +17582,23 @@
       row(key('123', 'n', 'num') + key('space', 'sp', ' ') + key('search', 'go', 'go')) +
       '<div class="kHome"><i></i></div>';
     if (phone) phone.appendChild(kbd);
+    // The phone has more than one field now, and the drawn keyboard is the
+    // phone's rather than any one field's: it types into whichever field
+    // raised it, which is the one with the focus.
+    const kbTarget = () => {
+      const a = document.activeElement;
+      return (a && a.tagName === 'INPUT' && a.closest('#phone')) ? a : input;
+    };
     kbd.addEventListener('pointerdown', e => {
       e.preventDefault();
       const k = e.target.closest('.k'); if (!k) return;
-      const v = k.dataset.k;
+      const v = k.dataset.k, f = kbTarget();
       if (v === 'shift'){ kbd.classList.toggle('shift'); return; }
       if (v === 'num') return;
-      if (v === 'go'){ input.blur(); return; }
-      if (v === 'del') input.value = input.value.slice(0, -1);
-      else { input.value += kbd.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; kbd.classList.remove('shift'); }
-      input.dispatchEvent(new Event('input', { bubbles: true }));
+      if (v === 'go'){ f.blur(); return; }
+      if (v === 'del') f.value = f.value.slice(0, -1);
+      else { f.value += kbd.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; kbd.classList.remove('shift'); }
+      f.dispatchEvent(new Event('input', { bubbles: true }));
     });
     // The chips and the field are one filter, not two. A row has to pass both
     // the typed text and the chosen range, so picking Optimal inside a search
@@ -17439,26 +17658,53 @@
     // 380ms beat -- is the biomarkers' own.
     (function medFilter(){
       const list = document.getElementById('mMeds');
-      const box = document.getElementById('mMedBox');
+      const bar = document.getElementById('mMedBar');
       const inp = document.getElementById('mMedIn');
-      if (!list || !box || !inp) return;
+      if (!list || !bar || !inp) return;
       const med = bioFilter({
         list: list, groupSel: '.mMedGrp', rowSel: '.mMedRow',
         empty: document.getElementById('mMedEmpty'),
-        input: inp, fieldEl: box,
+        input: inp, fieldEl: bar,
         chipsBar: document.getElementById('mMedChips'),
         rowKey: row => row.dataset.c,
-        hold: holdScroll
+        hold: holdScroll,
+        afterApply: () => { placeBar(bar); setStuck(); }
       });
       inp.addEventListener('input', med.typed);
-      inp.addEventListener('focus', () => box.classList.add('focus'));
-      inp.addEventListener('blur', () => box.classList.remove('focus'));
+      // the biomarkers' field behaviour, over this list: focusing raises the
+      // drawn keyboard and brings the bar up to its pinned place, and the
+      // scroll handler below dismisses it again when the reader moves the page
+      inp.addEventListener('focus', () => {
+        bar.classList.add('focus');
+        document.body.classList.add('mSearchOn');
+        placeBar(bar); setStuck();
+        const top = bar.getBoundingClientRect().top - sc.getBoundingClientRect().top
+                  + sc.scrollTop - statusH();
+        progUntil = performance.now() + 900;
+        if (Math.abs(top - sc.scrollTop) > 1) sc.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      });
+      inp.addEventListener('blur', () => {
+        bar.classList.remove('focus');
+        document.body.classList.remove('mSearchOn');
+        holdScroll(250);
+        setStuck();
+      });
       inp.addEventListener('keydown', e => {
         if (e.key === 'Enter') inp.blur();
         if (e.key === 'Escape'){ inp.value = ''; med.typed(); inp.blur(); }
       });
       const clear = document.getElementById('mMedClear');
-      if (clear) clear.addEventListener('click', () => { inp.value = ''; med.typed(); inp.focus(); });
+      if (clear){
+        clear.addEventListener('pointerdown', e => e.preventDefault());
+        clear.addEventListener('click', () => { inp.value = ''; med.typed(); });
+      }
+      // a scroll by the reader dismisses the keyboard here too; our own
+      // scroll-to-the-bar does not
+      sc.addEventListener('scroll', () => {
+        if (document.activeElement !== inp) return;
+        if (performance.now() < progUntil) return;
+        inp.blur();
+      }, { passive: true });
     })();
     // Open while it is being used and while it is holding a result, closed
     // otherwise: a field with text in it that collapsed to an icon would be a

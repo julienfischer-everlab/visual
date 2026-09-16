@@ -6160,6 +6160,102 @@ screen is one too many. Its markup, its styles and its builder went with it.
 "16px padding bottom below the carousel nav": a 16px margin under the hero on
 this tab, so the dots are not sitting on the section below them.
 
+### 5.219 Half a card, and a glide rather than a snap
+
+"Carousel smoother. 50% release should trigger the next or prev slide."
+
+The browser's snap decides where a release lands from momentum, which is why a
+slow half-card drag came back to where it started. The rule now is measured:
+the card step is the distance between two cards' left edges, and a release that
+moved half of that or more commits to the neighbour. Below it, back.
+
+The landing is a 420ms ease-out-cubic written to `scrollLeft` by hand, with
+snapping off for the gesture *and* for the glide and restored at the end --
+mandatory snap fights a scroll position written every frame, and the fight is
+what the jerk was. Writes are batched to one a frame; the pointer can outrun
+the compositor, and every extra write is a layout for nothing.
+
+  card step 285 | half 142.5
+  42% left  -> dot 0    62% left  -> dot 1    55% left  -> dot 2
+  80% right -> dot 1    30% right -> dot 1
+
+"More padding bottom below nav dot +12px": 28px under the hero on this tab. An
+A/B at three margins says it lands 1:1 -- 0px gives 4px of overlap into the
+section below, 16px gives 12px of clearance, 28px gives 24px.
+
+### 5.220 One dock tab renamed
+
+"Change to insights not biomarkers." The dock's second destination is
+**Insights**. The word only appears once, in `MOBILE_NAV`, because the dock is
+one asset mounted into every phone that carries it -- the rename is a one-line
+change for the same reason the icon is.
+
+### 5.221 The records' filter is the biomarkers' bar
+
+"The filter need to be sticky. Search same behaviour as biomarkers. When scroll
+the screen unfocus the search, when search focus trigger keyboard."
+
+The medical records already ran through `bioFilter`; what they did not have was
+the *bar*. They do now, and it is the same element: `.msWrap`, with the chips
+inside it and the field above them, pulled out to the section's edges so the
+plate is the width of the screen.
+
+Three things had to stop being singular:
+
+- **the bar.** `placeBar`, `setPlate` and `setStuck` were written against *the*
+  wrapper; they now run over whichever bars are laid out. Only one ever is --
+  the biomarkers' bar is hidden on the Report tab and the records' off it --
+  and the test is `offsetWidth > 0` rather than a computed `display`, because
+  the records' bar is visible in its own right while an ancestor hides it.
+- **the field.** The drawn keyboard belonged to `mSearchIn`; it belongs to the
+  phone. It types into whichever input inside `#phone` has the focus, so
+  raising it from the records' field fills the records' field.
+- **the gate.** `body.repTab #phone .msWrap{display:none}` was written when
+  there was one `.msWrap` on the phone. It is `:not(.mMedBar)` now, or the
+  tab that shows the records hid their own filter.
+
+The field stays open here rather than collapsing to an icon: the biomarkers'
+field shares its row with a record select and has to make room for it, and
+there is no record select over a list of records.
+
+  bar sticky at offset 0 with the plate on, 35px fade; focus raises the
+  keyboard and pins the bar; three keys on the drawn keyboard type "dex" into
+  the records' field and cut 20 rows to 2; a reader scroll blurs it
+
+### 5.222 The tabs, at the desk
+
+"On desktop add the v2 Biomarkers / Reports tab same as mobile. Below the h1."
+
+Same two tabs, same state -- `repTab` is a body class, so the desk's copy and
+the phone's cannot disagree, and clicking either moves both. The querySelector
+that collected the tabs was `#mTabsV2 .v2Tab`; it is `.mTabsV2 .v2Tab` now.
+
+Sized to their words rather than stretched: the phone's control is
+`display:flex` across 375px, the desk's is `inline-flex`, because a segmented
+control the width of a monitor reads as a toolbar and these are two names.
+
+What the tab changes is the same thing it changes on the phone -- everything
+below it. The biomarkers' filter block and list go; a shelf of report cards and
+the medical records arrive. The card is the phone's card, written once and
+arranged twice: a carousel of 78%-wide cards in the phone's hero, a
+`repeat(auto-fill, minmax(232px, 1fr))` grid at the desk, because the desk has
+the width and a carousel there would be hiding things for no reason.
+
+Two lists, one table, in both places: `buildMeds` writes its rows into whichever
+hosts the page carries, so the phone's records and the desk's are the same
+records by construction rather than by agreement. The desk's records get their
+own `bioFilter` with the same `rowKey`, and its own pinned block beside
+`dFilters` -- `dStick` runs over both now, and only one is ever on the page.
+
+Clicking a report card at the desk narrows the desk's readings to it and hands
+the page back to the Biomarkers tab, which the phone already did; the desk was
+listening to `everlab:pickRec` nowhere, so it now does.
+
+  desk: tabs inline-flex under the h1; Report hides dFilters and the 110-row
+  list, shows 6 cards and 6 record groups / 20 documents; chips 20/11/6/3;
+  "dexa" cuts 20 to 2; the block pins at offset 0; a card narrows the desk
+  list to 32 rows and lands on Biomarkers
+
 ---
 
 ## 6. Open items
