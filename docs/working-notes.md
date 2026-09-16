@@ -5956,6 +5956,41 @@ rather than vanishing with the hand. `requestAnimationFrame` only while it is up
   move, 0.49 mid-fade after release; three rings drawn, one front two back at
   that angle. All 25 pages clean.
 
+### 5.213 V2: what the page is a list of
+
+"Create a tweak V2 toggle. When on, add a tab above the hero header,
+Biomarkers / Report. Tab will change the whole data listed on the page."
+
+A segmented control between the title and the hero. **Above the hero, not
+below it**, because the hero belongs to both tabs -- it is the same body either
+way, and what changes underneath it is which set of things is being listed.
+
+The Report tab lists `RECS`, the same table the record select, the record
+carousel and the report card all read, so the four cannot disagree about which
+reports exist or what they carried. Rows wear the list's own language: title,
+`category | date`, and the reading count in the badge the record menu uses.
+
+**The filter goes with the list.** A record select and five range chips have
+nothing to say about a list of records, so `body.repTab` hides the whole bar
+along with the biomarker groups, the skeleton and the empty line.
+
+**A report is a way into the readings, not a dead end.** Tapping one narrows
+the biomarkers to that record and hands the page back to the Biomarkers tab. It
+goes through the same `choose()` the select and the carousel go through --
+which is why `bioFilter` now returns it -- so the record is chosen once and
+every control showing it agrees.
+
+Both states are body classes, because setMode rewrites `body.className` whole
+and anything toggled onto an element is dropped at the next page change. And
+turning the tweak off clears `repTab` with it: the page cannot be left listing
+reports with no tab to get back from.
+
+  m20: tabs absent with the tweak off; on, the list is still 110 readings;
+  Report shows 6 rows with the bar and the groups gone; tapping Lipid panel
+  returns to Biomarkers at 32 rows with the select reading "Lipid panel";
+  switching the tweak off from the Report tab lands back on Biomarkers.
+  All 25 pages clean.
+
 ---
 
 ## 6. Open items

@@ -1418,6 +1418,57 @@
   body.light .msWrap.focus .msBox{--msEdge:#2e241c;}
   .msIco{width:20px;height:20px;flex:none;}
 
+  /* ---- V2: what the page is a list of ----------------------------------
+     A segmented control above the hero. Two tabs, and the list below follows
+     the one that is on: the readings, or the reports they came from. The hero
+     stays either way -- it is the same body, and what changes is which set of
+     things is being listed under it. */
+  .mTabsV2{display:none;}
+  body.v2Tab #phone .mTabsV2{
+    display:flex;gap:4px;margin:0 13px 14px;padding:4px;
+    border-radius:14px;background:rgba(255,255,255,.06);
+  }
+  .mTabsV2 .v2Tab{
+    flex:1;min-width:0;height:38px;border:0;border-radius:10px;padding:0 10px;
+    font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;
+    background:transparent;color:#8b8b86;-webkit-tap-highlight-color:transparent;
+    transition:background .18s ease,color .18s ease;
+  }
+  .mTabsV2 .v2Tab.on{background:rgba(255,255,255,.12);color:#ececec;}
+  .mTabsV2 .v2Tab:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:2px;}
+  body.light .mTabsV2{background:rgba(46,31,26,.07);}
+  body.light .mTabsV2 .v2Tab{color:#7d6b58;}
+  body.light .mTabsV2 .v2Tab.on{background:#fff;color:#2e1f1a;}
+  /* the Report tab swaps the list, and with it the filter that was over it --
+     a record select and five range chips have nothing to say about a list of
+     records */
+  .mRepList{display:none;}
+  body.repTab #phone .mRepList{display:block;}
+  body.repTab #phone .msWrap,
+  body.repTab #phone #mRecs,
+  body.repTab #phone #mSkel,
+  body.repTab #phone #mSearchEmpty{display:none !important;}
+  .mRepList .repRow{
+    display:flex;align-items:center;gap:12px;width:100%;
+    padding:16px 0;border-bottom:1px solid #1c1c1b;
+    font:inherit;text-align:left;background:none;border-left:0;border-right:0;border-top:0;
+    color:#e4e4e0;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .mRepList .repRow:last-child{border-bottom:0;}
+  .mRepList .repRow .t{flex:1;min-width:0;}
+  .mRepList .repRow b{display:block;font-size:15px;font-weight:400;color:#ececec;}
+  .mRepList .repRow i{display:block;font-style:normal;font-size:12.5px;color:#8b8b86;margin-top:3px;}
+  .mRepList .repRow .n{
+    flex:none;display:flex;align-items:center;gap:6px;height:34px;padding:0 11px;
+    border-radius:10px;background:rgba(255,255,255,.11);color:#fff;
+    font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;
+  }
+  .mRepList .repRow .n svg{width:14px;height:14px;opacity:.75;}
+  body.light .mRepList .repRow{border-bottom-color:#ece4d4;}
+  body.light .mRepList .repRow b{color:#2e1f1a;}
+  body.light .mRepList .repRow i{color:#7d6b58;}
+  body.light .mRepList .repRow .n{background:rgba(46,31,26,.1);color:#2e1f1a;}
+
   /* ---- Expanded Report -------------------------------------------------
      The records stop being a menu and become the first row: a carousel of
      cards, one per report, All first. A card IS the choice, so there is no
@@ -5014,6 +5065,15 @@
             <option value="empty">Empty</option>
           </select>
         </div>
+        <!-- V2: a tab above the hero saying what the page is a list of.
+             Biomarkers or Report, and the list below follows it. -->
+        <div class="tkRow">
+          <span class="lbl">V2</span>
+          <select id="stV2Tab" aria-label="Biomarkers / Report tabs above the hero">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+        </div>
         <!-- The filter's shape. Off, the records live behind a select beside
              the search; on, they are a carousel of cards on a row of their own
              and the search moves down beside the chips. -->
@@ -5427,6 +5487,13 @@
         </div>
       </div>
     </div>
+    <!-- V2's tabs: what the page is a list OF. Above the hero, because the
+         hero belongs to both -- it is the same body either way, and what
+         changes underneath it is which set of things is being listed. -->
+    <div class="mTabsV2" id="mTabsV2" role="tablist" aria-label="What this page lists">
+      <button class="v2Tab on" type="button" role="tab" aria-selected="true" data-tab="bio">Biomarkers</button>
+      <button class="v2Tab" type="button" role="tab" aria-selected="false" data-tab="rep">Report</button>
+    </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
     <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
@@ -5512,6 +5579,9 @@
          mistype one, and the chips' counts have to be a property of the
          data rather than of the file. -->
     <div class="mrecs" id="mRecs"></div>
+    <!-- what the Report tab lists: the same RECS the record select and the
+         report card read, so the three cannot disagree about what exists -->
+    <div class="mrecs mRepList" id="mRepList"></div>
   </div>
       </div>
 <!-- the navigation is mounted here by the script: it is one asset,
@@ -9845,6 +9915,8 @@
       (CARD_STATE.emOrg ? ' emOrg' : '') +
       (CARD_STATE.leftRep ? ' leftRep' : '') +
       (CARD_STATE.expRep ? ' expRep' : '') +
+      (CARD_STATE.v2Tab ? ' v2Tab' : '') +
+      (CARD_STATE.v2Tab && CARD_STATE.repTab ? ' repTab' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.navBar ? ' navBar' : '') +
@@ -14743,6 +14815,24 @@
     document.querySelectorAll('.hiRep').forEach(card => { card.innerHTML = html; });
   })();
 
+  // What the Report tab lists. The same table the record select, the record
+  // carousel and the report card read -- so the four cannot disagree about
+  // which reports exist or what they carried. Tapping one narrows the
+  // biomarkers to it and hands the page back to the Biomarkers tab, which is
+  // what a report is FOR: it is a way into the readings, not a dead end.
+  (function buildReportList(){
+    const host = document.getElementById('mRepList');
+    if (!host) return;
+    const CHART = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+                  '<path d="M2 11.2 5.6 7.2 8.4 9.6 14 3.6" stroke="currentColor" ' +
+                  'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    host.innerHTML = RECS.filter(r => r.id !== 'all').map(r =>
+      '<button class="repRow" type="button" data-r="' + r.id + '">' +
+        '<span class="t"><b>' + r.label + '</b><i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i></span>' +
+        '<span class="n">' + CHART + r.n + '</span>' +
+      '</button>').join('');
+  })();
+
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.
   (function(){
@@ -15149,6 +15239,8 @@
                        // the filter's shape: records behind a select, or as a
                        // carousel with the search down beside the chips
                        expRep: false,
+                       // V2's tabs above the hero, and which of them is on
+                       v2Tab: false, repTab: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
@@ -15586,6 +15678,39 @@
     expRepLayout(CARD_STATE.expRep);
     resize();
   });
+
+  // V2's tabs. The tweak puts them there; the tabs say what the page is a list
+  // of. Both are body classes rather than element state, because setMode
+  // rewrites body.className whole and anything toggled onto an element is
+  // dropped at the next page change.
+  const stV2Sel = document.getElementById('stV2Tab');
+  if (stV2Sel) stV2Sel.addEventListener('change', () => {
+    CARD_STATE.v2Tab = stV2Sel.value === 'on';
+    document.body.classList.toggle('v2Tab', CARD_STATE.v2Tab);
+    // turning the tabs off cannot leave the page listing reports with no tab
+    // to get back from
+    if (!CARD_STATE.v2Tab){ CARD_STATE.repTab = false; document.body.classList.remove('repTab'); }
+    setTabUI();
+    resize();
+  });
+  const v2Tabs = [].slice.call(document.querySelectorAll('#mTabsV2 .v2Tab'));
+  function setTabUI(){
+    v2Tabs.forEach(t => {
+      const on = (t.dataset.tab === 'rep') === !!CARD_STATE.repTab;
+      t.classList.toggle('on', on);
+      t.setAttribute('aria-selected', String(on));
+    });
+  }
+  function showTab(rep){
+    if (rep === !!CARD_STATE.repTab) return;
+    CARD_STATE.repTab = rep;
+    document.body.classList.toggle('repTab', rep);
+    setTabUI();
+    resize();
+  }
+  v2Tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab === 'rep')));
+  document.addEventListener('everlab:showBio', () => showTab(false));
+  setTabUI();
 
   const stLeftSel = document.getElementById('stLeft');
   if (stLeftSel) stLeftSel.addEventListener('change', () => {
@@ -16723,7 +16848,7 @@
         load(false);
       }));
     }
-    return { load: load, typed: typed };
+    return { load: load, typed: typed, choose: choose };
   }
 
   // ---- the dashboard's biomarker list ---------------------------------------
@@ -16978,6 +17103,18 @@
       }
     });
     const load = bio.load, typed = bio.typed;
+    // A report is a way into the readings, not a dead end: tapping one in the
+    // Report tab narrows the biomarkers to it and hands the page back to the
+    // Biomarkers tab. It goes through the same choose() the select and the
+    // carousel go through, so the record is chosen once and everything that
+    // shows it agrees.
+    const repList = document.getElementById('mRepList');
+    if (repList) repList.addEventListener('click', e => {
+      const row = e.target.closest('.repRow');
+      if (!row) return;
+      bio.choose(row.dataset.r, true);
+      document.dispatchEvent(new CustomEvent('everlab:showBio'));
+    });
     // Open while it is being used and while it is holding a result, closed
     // otherwise: a field with text in it that collapsed to an icon would be a
     // filter you cannot see or undo.

@@ -732,6 +732,21 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   you were reading rather than to the top of the list, and a hash aimed
   straight at an archived mode sets both halves, since they are set from the
   mode rather than from whichever control was touched.
+- **V2** — off or on. On, a segmented tab sits between the title and the hero:
+  *Biomarkers* or *Report*, and the list below follows it. Above the hero rather
+  than below, because the hero belongs to both — it is the same body either way,
+  and what changes underneath it is which set of things is being listed. The
+  Report tab lists `RECS`, the same table the record select, the record carousel
+  and the report card read, with rows in the list's own language: title,
+  *category | date*, and the reading count in the badge the record menu uses.
+  The filter bar goes with the list — a record select and five range chips have
+  nothing to say about a list of records. And a report is a way into the
+  readings rather than a dead end: tapping one narrows the biomarkers to that
+  record and hands the page back to the Biomarkers tab, through the same
+  `choose()` the select and the carousel go through, so the record is chosen
+  once and every control showing it agrees. Turning the tweak off clears the
+  Report tab with it, so the page cannot be left listing reports with no tab to
+  get back from.
 - **Expanded Report** — off or on. Off, the records live behind a select
   beside the search. On, they become the first row: a carousel of cards, *All
   records* first and six reports after it, with the chips and the search on the
