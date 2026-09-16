@@ -1,0 +1,84 @@
+.overview-page {
+  padding: 0 var(--page-gutter) var(--space-24);
+}
+
+.overview-page__modules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--module-gap);
+}
+
+/* A module slot carries no styling of its own beyond placement, so modules
+   can be reordered or removed without touching their internals. */
+.overview-page__module {
+  min-width: 0;
+}
+
+/* Between the phone and the desktop breakpoint the mobile composition stays
+   readable by capping and centring its measure rather than stretching. */
+@container overview (min-width: 640px) {
+  .overview-page {
+    --page-gutter: 24px;
+  }
+
+  .overview-page__modules {
+    max-width: 660px;
+    margin-inline: auto;
+  }
+}
+
+/* ------------------------------------------------------------- desktop --- */
+
+@container overview (min-width: 1024px) {
+  .overview-page {
+    --page-gutter: 40px;
+    --module-gap: 40px;
+    padding-bottom: var(--space-48);
+  }
+
+  .overview-page__modules {
+    display: grid;
+    grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr);
+    column-gap: var(--space-24);
+    row-gap: var(--space-24);
+    align-items: start;
+    max-width: 1180px;
+    margin-inline: 0;
+  }
+
+  /* Modules are full width unless they opt into the two-column top region.
+     The extra top margin keeps the looser desktop rhythm between full-width
+     sections while the top region stays tight — and it survives reordering. */
+  .overview-page__module {
+    grid-column: 1 / -1;
+    margin-top: var(--space-16);
+  }
+
+  .overview-page__module:first-child {
+    margin-top: 0;
+  }
+
+  .overview-page__module[data-module='personalised-plan'] {
+    grid-column: 1;
+    grid-row: span 2;
+    align-self: stretch;
+  }
+
+  .overview-page__module[data-module='health-metrics'],
+  .overview-page__module[data-module='tasks-to-complete'] {
+    grid-column: 2;
+  }
+
+  /* The top region reads as one block, so it keeps the tight row rhythm. */
+  .overview-page__module[data-module='personalised-plan'],
+  .overview-page__module[data-module='health-metrics'],
+  .overview-page__module[data-module='tasks-to-complete'] {
+    margin-top: 0;
+  }
+}
+
+@container overview (min-width: 1440px) {
+  .overview-page {
+    --page-gutter: 56px;
+  }
+}
