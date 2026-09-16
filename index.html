@@ -1486,6 +1486,8 @@
              white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .repCard i{display:block;font-style:normal;font-size:12px;margin-top:1px;
              color:rgba(255,255,255,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* 16px under the carousel's dots before the page carries on */
+  body.repTab #phone #mHeroOrgan{margin-bottom:16px;}
   body.repTab #phone #mHeroOrgan .v4RepDots{
     display:flex;position:absolute;left:0;right:0;bottom:20px;z-index:4;
     justify-content:center;gap:5px;pointer-events:none;
@@ -1517,7 +1519,6 @@
   /* the Report tab swaps the list, and with it the filter that was over it --
      a record select and five range chips have nothing to say about a list of
      records */
-  .mRepList{display:none;}
   /* ---- Medical records ---------------------------------------------------
      The documents behind the reports. Same filter as the biomarkers, same
      chips, same 56px search, same beat -- so it is one control the reader
@@ -1588,31 +1589,10 @@
   body.light .mMedRow{border-bottom-color:#ece4d4;color:#2e1f1a;}
   body.light .mMedRow .sep{background:#e2dbcc;}
   body.light .mMedRow .view{color:#2e1f1a;}
-  body.repTab #phone .mRepList{display:block;}
   body.repTab #phone .msWrap,
   body.repTab #phone #mRecs,
   body.repTab #phone #mSkel,
   body.repTab #phone #mSearchEmpty{display:none !important;}
-  .mRepList .repRow{
-    display:flex;align-items:center;gap:12px;width:100%;
-    padding:16px 0;border-bottom:1px solid #1c1c1b;
-    font:inherit;text-align:left;background:none;border-left:0;border-right:0;border-top:0;
-    color:#e4e4e0;cursor:pointer;-webkit-tap-highlight-color:transparent;
-  }
-  .mRepList .repRow:last-child{border-bottom:0;}
-  .mRepList .repRow .t{flex:1;min-width:0;}
-  .mRepList .repRow b{display:block;font-size:15px;font-weight:400;color:#ececec;}
-  .mRepList .repRow i{display:block;font-style:normal;font-size:12.5px;color:#8b8b86;margin-top:3px;}
-  .mRepList .repRow .n{
-    flex:none;display:flex;align-items:center;gap:6px;height:34px;padding:0 11px;
-    border-radius:10px;background:rgba(255,255,255,.11);color:#fff;
-    font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;
-  }
-  .mRepList .repRow .n svg{width:14px;height:14px;opacity:.75;}
-  body.light .mRepList .repRow{border-bottom-color:#ece4d4;}
-  body.light .mRepList .repRow b{color:#2e1f1a;}
-  body.light .mRepList .repRow i{color:#7d6b58;}
-  body.light .mRepList .repRow .n{background:rgba(46,31,26,.1);color:#2e1f1a;}
 
   /* ---- Expanded Report -------------------------------------------------
      The records stop being a menu and become the first row: a carousel of
@@ -5724,9 +5704,6 @@
          mistype one, and the chips' counts have to be a property of the
          data rather than of the file. -->
     <div class="mrecs" id="mRecs"></div>
-    <!-- what the Report tab lists: the same RECS the record select and the
-         report card read, so the three cannot disagree about what exists -->
-    <div class="mrecs mRepList" id="mRepList"></div>
     <!-- Medical records: the documents behind the reports, under the same
          filter the biomarkers use -- chips that count the rows they will show,
          a search over the same set, and the same loading beat. Built from MEDS
@@ -15056,24 +15033,6 @@
         '<i style="background:' + c.dot + '"></i><b>0</b>&nbsp;' + c.label + '</button>').join('');
   })();
 
-  // What the Report tab lists. The same table the record select, the record
-  // carousel and the report card read -- so the four cannot disagree about
-  // which reports exist or what they carried. Tapping one narrows the
-  // biomarkers to it and hands the page back to the Biomarkers tab, which is
-  // what a report is FOR: it is a way into the readings, not a dead end.
-  (function buildReportList(){
-    const host = document.getElementById('mRepList');
-    if (!host) return;
-    const CHART = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
-                  '<path d="M2 11.2 5.6 7.2 8.4 9.6 14 3.6" stroke="currentColor" ' +
-                  'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    host.innerHTML = RECS.filter(r => r.id !== 'all').map(r =>
-      '<button class="repRow" type="button" data-r="' + r.id + '">' +
-        '<span class="t"><b>' + r.label + '</b><i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i></span>' +
-        '<span class="n">' + CHART + r.n + '</span>' +
-      '</button>').join('');
-  })();
-
   // The hero's report carousel. A card per report -- a cover, the date on it,
   // and the name with whoever signed it -- in a real scroller with scroll-snap
   // rather than a hand-written swipe. The organ carousel shares this hero and
@@ -15121,18 +15080,69 @@
                          { passive: true });
     document.addEventListener('everlab:repTab', sync);
 
-    // A touch-drag on the scroller is the browser's to handle, but the organ
-    // carousel above still sees the pointer events and would start swiping
-    // organs behind the cards. The gesture stops here.
-    ['pointerdown', 'pointermove', 'pointerup'].forEach(t =>
-      car.addEventListener(t, e => e.stopPropagation()));
+    // A touch-drag on the scroller is the browser's to handle, but a MOUSE
+    // drag is not: a scroller only pans under a finger or a wheel, so on a
+    // screen the carousel looked broken -- press, pull, nothing. So the drag
+    // is driven by hand. Snapping is turned off for the length of the gesture,
+    // because mandatory snap fights a scrollLeft written every frame, and
+    // turned back on at the end with a smooth scroll to the nearest card, so
+    // the release still lands on one.
+    //
+    // The organ carousel above also sees these events and would swipe organs
+    // behind the cards, so the gesture stops here either way.
+    let d0 = null;
+    const nearest = () => {
+      const mid = car.scrollLeft + car.clientWidth / 2;
+      let best = cards[0], d = Infinity;
+      cards.forEach(c => {
+        const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+        if (dist < d){ d = dist; best = c; }
+      });
+      return best;
+    };
+    car.addEventListener('pointerdown', e => {
+      e.stopPropagation();
+      d0 = { x: e.clientX, left: car.scrollLeft, moved: false, pid: e.pointerId };
+    });
+    car.addEventListener('pointermove', e => {
+      e.stopPropagation();
+      if (!d0) return;
+      const dx = e.clientX - d0.x;
+      if (!d0.moved){
+        if (Math.abs(dx) < 6) return;
+        d0.moved = true;
+        car.style.scrollSnapType = 'none';
+        try { car.setPointerCapture(d0.pid); } catch (err) {}
+      }
+      e.preventDefault();
+      car.scrollLeft = d0.left - dx;
+    });
+    // A drag must not also open a card. The click arrives after pointerup, so
+    // the fact of having dragged has to outlive the gesture by a frame.
+    const release = e => {
+      e.stopPropagation();
+      if (!d0) return;
+      const moved = d0.moved;
+      d0 = null;
+      car.dataset.dragged = moved ? '1' : '0';
+      if (moved) setTimeout(() => { car.dataset.dragged = '0'; }, 0);
+      if (!moved) return;
+      car.style.scrollSnapType = '';
+      const c = nearest();
+      car.scrollTo({ left: c.offsetLeft - (car.clientWidth - c.offsetWidth) / 2,
+                     behavior: 'smooth' });
+    };
+    car.addEventListener('pointerup', release);
+    car.addEventListener('pointercancel', release);
 
-    // a card is a way into its readings, like a row in the list below it
+    // a card is a way into its readings -- but only when it was tapped rather
+    // than dragged, or every swipe would also open something
     car.addEventListener('click', e => {
       const c = e.target.closest('.repCard');
-      if (!c) return;
+      if (!c || car.dataset.dragged === '1') return;
       document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: c.dataset.r }));
     });
+
   })();
 
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
@@ -17417,17 +17427,10 @@
     // Biomarkers tab. It goes through the same choose() the select and the
     // carousel go through, so the record is chosen once and everything that
     // shows it agrees.
-    const repList = document.getElementById('mRepList');
-    const pick = id => {
-      bio.choose(id, true);
+    document.addEventListener('everlab:pickRec', e => {
+      bio.choose(e.detail, true);
       document.dispatchEvent(new CustomEvent('everlab:showBio'));
-    };
-    if (repList) repList.addEventListener('click', e => {
-      const row = e.target.closest('.repRow');
-      if (row) pick(row.dataset.r);
     });
-    // and the hero's cards, which are the same choice made higher up the page
-    document.addEventListener('everlab:pickRec', e => pick(e.detail));
 
     // The medical records run through the same filter, asked a different
     // question: the chips cut by a document's category rather than by a

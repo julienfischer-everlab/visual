@@ -737,18 +737,21 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   than below, because the hero belongs to both — it is the same body either way,
   and what changes underneath it is which set of things is being listed. On the Report tab the hero is a card carousel of the reports: a
   cover, the date on it as a chip, a play badge where the report is film rather
-  than a still, and a foot of avatar, name and byline. It is a real scroller
-  with scroll-snap rather than a hand-written swipe — the organ carousel shares
-  this hero and takes the pointer capture at 7px of sideways travel, which no
-  gesture-built version survives, and the browser's own panning cannot be taken
-  that way — and the dots read the scroll position rather than being told by the
-  gesture, so they cannot drift out of step. The covers are duotones mixed from
+  than a still, and a foot of avatar, name and byline. It is a scroll-snap scroller,
+  so touch, the wheel and the keyboard are the browser's — and the mouse drag is
+  driven by hand on top, because a scroller pans for a finger and for nothing
+  else, which is what made it look broken on a screen. Snapping is off for the
+  length of a drag (mandatory snap fights a `scrollLeft` written every frame)
+  and back on at the release with a smooth scroll to the nearest card; a drag
+  does not also open a card, since the click lands after `pointerup`. The dots
+  read the scroll position rather than the gesture, so they cannot drift out of
+  step. The covers are duotones mixed from
   two colours on the record with three soft lights over them, since the page
   inlines everything it uses and a flat duotone reads as a swatch rather than a
   photograph. The organ's strips, its gauge and the cloud stand down on this
   tab: the subject is the reports, not the body. Tapping a card narrows the
-  readings to it, like a row in the list. No mini cards under it, and the list
-  of all records directly below — and under that, **Medical records**: the
+  readings to it, like a row in the list. No mini cards under it, and no second list of the same six reports —
+  the cards are that list. Below it, and under that, **Medical records**: the
   documents behind the reports, grouped by the report they came out of, each
   group a header (category, date, source, download) over its rows. They run
   through the biomarkers' own filter, which needed one addition to serve both:

@@ -6127,6 +6127,39 @@ different filter -- a range over time -- and the brief asked for the
 biomarkers' one. A control that does not work is worse than no control on a
 page where everything else does.
 
+### 5.218 The carousel did not work because a mouse is not a finger
+
+"Make this carousel work." It did -- under a finger. A scroll-snap scroller
+pans for touch and for the wheel, and for nothing else: on a screen, pressing a
+card and pulling did nothing at all, which is the whole of the report the
+carousel "doesn't work".
+
+So the drag is driven by hand now, and the two halves have to be kept apart:
+
+- snapping is turned **off** for the length of the gesture, because mandatory
+  snap fights a `scrollLeft` written every frame, and back **on** at the end
+  with a smooth scroll to the nearest card, so a release still lands on one
+- a drag must not also open a card. The click arrives after `pointerup`, so the
+  fact of having dragged has to outlive the gesture by a frame -- a flag set in
+  the release and cleared on the next tick. It had to be set *inside* the
+  release rather than in a second listener: at the target, listeners run in
+  registration order whatever their capture flag, so the second one read the
+  state after the first had already cleared it.
+
+The native behaviour stays underneath: touch, wheel and the keyboard are still
+the browser's, and the dots still read the scroll position rather than the
+gesture.
+
+  a 220px mouse drag moves scrollLeft 0 -> 246 and the dot 0 -> 1, landing
+  snapped; a plain click still opens the card and lands on Biomarkers
+
+"No need that on report tab" -- the plain list of records under the hero is
+gone. The cards are that list, and two lists of the same six reports on one
+screen is one too many. Its markup, its styles and its builder went with it.
+
+"16px padding bottom below the carousel nav": a 16px margin under the hero on
+this tab, so the dots are not sitting on the section below them.
+
 ---
 
 ## 6. Open items
