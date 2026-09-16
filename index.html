@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#e8e4de">
+<meta name="theme-color" content="#e4ded5">
 <title>Everlab — How it works</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,29 +13,36 @@
    Everlab — "How it works" stacked-card scroll
    Target viewport: 402 x 853 (mobile only)
 
-   Scroll mechanic:
-   Every step is `position: sticky` with a NEGATIVE top offset equal to
-   (viewport height - its own height). A sticky box with a negative top scrolls
-   completely normally until its bottom edge reaches the bottom of the viewport
-   — i.e. until every last line of its content has been seen — and only then
-   does it freeze, staying parked at the bottom of the viewport.
+   OPEN STATE — a step reads as one card: its step header, then the image, then
+   the heading and copy.
 
-   Because the next card sits immediately after it in normal document flow, the
-   moment card N freezes, card N+1's top edge is at the bottom edge of the
-   screen, and it then slides up over card N at 1:1 with the scroll. Card N
-   stays where it is underneath, scaling down 2% and dimming as it is covered.
+   CLOSED STATE — once you have scrolled past a step it collapses to just its
+   header, and those headers pile up as slim bars at the top of the screen, so
+   the four steps are always in view as a stack.
 
-   Each card parks one --peek higher than the card before it, so the deck of
-   rounded bottom edges underneath stays visible, and each card's header is
-   itself sticky, so the step you are reading stays named at the top of the
-   screen while its body scrolls under it.
+   How both come from one scroll:
 
-   The JS does three things and none of them fakes the scroll: it writes each
-   card's park offset into --pin (so the hand-off follows real content height,
-   not a hard-coded 100vh); on scroll it writes --cover, how far each card has
-   been covered, which CSS turns into the scale and fade; and it offsets each
-   header by whatever that scale would otherwise displace it by. Scrolling
-   itself is the native document scroll, so iOS momentum is untouched.
+   * Each card is `position: sticky` with a NEGATIVE top offset equal to
+     (viewport height - its own height). A sticky box with a negative top
+     scrolls completely normally until its bottom edge reaches the fold — i.e.
+     until its last line of content has been read — and only then freezes.
+     The next step follows in normal document flow, so the moment card N
+     freezes, the next step's header is at the bottom edge of the screen and
+     slides up over it at 1:1 with the scroll.
+
+   * Each step's header is a SIBLING of its card, not a child, and it is sticky
+     at its own slot in the stack: slot N is the total height of the headers
+     before it. Because the headers sit above every card in the z-order, a card
+     sliding up passes behind the headers already parked, which is what leaves
+     the collapsed stack visible. The header is immediately above its own card
+     in flow, so it reaches its slot exactly as its card arrives underneath it —
+     the two never separate.
+
+   The JS measures the cards and headers and writes three custom properties:
+   --slot (where a header parks), --pin (where a card parks) and, on scroll,
+   --cover (how far a card has been covered, which CSS turns into the 2%
+   scale-down and the fade). Scrolling itself is the native document scroll,
+   so iOS momentum is untouched.
    =========================================================================== */
 
 /* ---------- tokens ---------- */
@@ -47,18 +54,19 @@
   --page-bg:#e4ded5;      /* the ground the cards are inset against */
   --card-bg:#ffffff;
   --card-radius:22px;
+  --media-radius:16px;
 
   --ink:#17150f;          /* headings */
-  --ink-soft:#4a453d;     /* list copy */
-  --muted:#8b857c;        /* body copy */
+  --ink-soft:#3f3a33;     /* list copy */
+  --muted:#7e786f;        /* body copy */
   --eyebrow:#8b857c;
   --hairline:#e6e2db;
-  --marker:#b8b2a8;
+  --marker:#17150f;
 
   --gutter:20px;
-  --pad:20px;             /* inset around the cards, and the gap between them */
-  --peek:10px;            /* how much of each parked card stays visible below */
+  --pad:20px;             /* inset around the cards, and the gap between steps */
   --vph:100vh;            /* height of the box the cards stick against */
+  --hh:52px;              /* header height, re-measured by the script */
 
   --font:"Instrument Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text",
          "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -81,10 +89,7 @@
 
 /* ---------- reset ---------- */
 *,*::before,*::after{box-sizing:border-box;}
-html{
-  -webkit-text-size-adjust:100%;
-  scroll-behavior:auto;            /* momentum scrolling stays native */
-}
+html{-webkit-text-size-adjust:100%;}
 body{
   margin:0;
   background:var(--page-bg);
@@ -157,75 +162,82 @@ ul{margin:0;padding:0;list-style:none;}
   margin-inline:auto;
   display:flex;
   flex-direction:column;
-  /* the inset around the cards, and the gap that lets the next card enter from
-     the very bottom edge of the screen rather than from the card above it */
   padding:var(--pad);
-  gap:var(--pad);
 }
 
+/* ---------- step header ---------- */
+/* A sibling of its card rather than a child: a sticky box is bounded by its
+   containing block, so nesting it would unpin it the moment its own card
+   scrolled past, instead of leaving it parked in the stack. */
+.head{
+  position:sticky;
+  top:var(--slot,0px);             /* its slot in the collapsed stack */
+  z-index:calc(10 + var(--i));     /* every header sits above every card */
+  flex:none;
+  background:var(--card-bg);
+  border-radius:var(--card-radius) var(--card-radius) 0 0;
+  padding:18px var(--gutter);
+  /* the leading edge as the step rises, and what separates the parked bars */
+  box-shadow:0 -12px 26px -14px rgba(23,21,15,.34);
+}
+.panel + .head{margin-top:var(--pad);}
+
+.eyebrow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--eyebrow);
+}
+.eyebrow__num{
+  display:grid;
+  place-items:center;
+  width:18px;height:18px;
+  flex:none;
+  border:1px solid #cdc7bd;
+  border-radius:50%;
+  font-size:10px;
+  letter-spacing:0;
+  line-height:1;
+  color:#7d776e;
+}
+
+/* ---------- the card ---------- */
 .panel{
   position:sticky;
-  top:var(--pin,0px);              /* <- the whole trick, set by the script */
+  top:var(--pin,0px);              /* where it parks, set by the script */
   z-index:var(--i);
   flex:none;
   display:flex;
   flex-direction:column;
-  min-height:calc(var(--vph) - 2 * var(--pad));
+  min-height:calc(var(--vph) - 2 * var(--pad) - var(--hh));
   background:var(--card-bg);
-  border-radius:var(--card-radius);
-  /* No overflow:hidden here — it would make the card its own scroll container
-     and the sticky header inside it would have nothing to stick to. The media
-     clips itself to the top corners instead. */
-  box-shadow:
-    0 -14px 30px -14px rgba(23,21,15,.30),   /* lifts the top edge while sliding */
-    0 10px 18px -8px rgba(23,21,15,.20);     /* separates the parked cards below */
-  /* --cover: 0 → 1 as the next card slides over this one (set by the script).
-     The origin is the bottom edge, so shrinking never lifts the edge that the
-     card below is staggered against — that stagger is only 10px and a centred
-     origin would move the edge further than that. */
+  border-radius:0 0 var(--card-radius) var(--card-radius);
+  padding:0 var(--gutter) 38px;
+  /* --cover: 0 → 1 as the next step slides over this one (set by the script).
+     Scaling about the bottom edge keeps the parked edge where the card left
+     it, so the cards below never appear to shift. */
   transform:scale(calc(1 - .02 * var(--cover,0)));
   transform-origin:50% 100%;
 }
-/* The fade sits on the contents, not the card, and not on the header's own
-   background: fading either would let what is behind them ghost through. */
-.panel > .media,
-.panel > .body,
-.panel__head > *{
+/* The fade sits on the contents, not the card: fading the card itself would
+   let the stack underneath ghost through it. */
+.panel > *{
   opacity:calc(1 - .4 * var(--cover,0));
-}
-
-/* ---------- the card's fixed header ---------- */
-.panel__head{
-  position:sticky;
-  /* 0 normally. While the card is scaled, the script offsets it by exactly the
-     amount the scale would otherwise push it below the top of the screen. */
-  top:var(--headtop,0px);
-  z-index:2;
-  flex:none;
-  background:var(--card-bg);
-  padding:20px var(--gutter) 15px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-/* the rule only appears once the header is actually pinned */
-.panel__head::after{
-  content:"";
-  position:absolute;
-  left:0;right:0;bottom:0;
-  height:1px;
-  background:var(--hairline);
-  opacity:var(--stuck,0);
 }
 
 /* ---------- media ---------- */
 .media{
   position:relative;
-  width:100%;
-  aspect-ratio:var(--ratio, 4 / 3);
+  width:calc(100% + 2 * var(--gutter));
+  margin-inline:calc(-1 * var(--gutter));   /* wider than the copy, as in the design */
+  aspect-ratio:var(--ratio, 1 / 1.02);
   flex:none;
   overflow:hidden;
-  border-radius:var(--card-radius) var(--card-radius) 0 0;
+  border-radius:var(--media-radius);
   background:#d9d3ca;
 }
 /* Drop-in replacement point: put a real photo here and the placeholder art
@@ -238,51 +250,27 @@ ul{margin:0;padding:0;list-style:none;}
   object-fit:cover;
 }
 
-/* ---------- text block ---------- */
+/* ---------- text ---------- */
 .body{
-  padding:4px var(--gutter) 40px;
-  padding-bottom:calc(40px + env(safe-area-inset-bottom,0px));
+  padding-top:26px;
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:15px;
   flex:1 1 auto;
 }
 
-.eyebrow{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  font-size:10px;
-  font-weight:500;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--eyebrow);
-}
-.eyebrow__num{
-  display:grid;
-  place-items:center;
-  width:16px;height:16px;
-  flex:none;
-  border:1px solid #cdc7bd;
-  border-radius:50%;
-  font-size:9px;
-  letter-spacing:0;
-  line-height:1;
-  color:#7d776e;
-}
-
 .title{
-  font-size:29px;
-  line-height:1.12;
-  letter-spacing:-.022em;
+  font-size:23px;
+  line-height:1.18;
+  letter-spacing:-.018em;
   font-weight:600;
   color:var(--ink);
   text-wrap:balance;
 }
 
 .lede{
-  font-size:14.5px;
-  line-height:1.58;
+  font-size:15px;
+  line-height:1.5;
   color:var(--muted);
   letter-spacing:-.003em;
 }
@@ -292,20 +280,20 @@ ul{margin:0;padding:0;list-style:none;}
   font-weight:600;
   letter-spacing:-.012em;
   color:var(--ink);
-  margin-top:8px;
+  margin-top:6px;
 }
 
 .list{
   display:flex;
   flex-direction:column;
-  gap:11px;
-  margin-top:4px;
+  gap:9px;
+  margin-top:2px;
 }
 .list li{
   position:relative;
-  padding-left:16px;
-  font-size:14px;
-  line-height:1.5;
+  padding-left:17px;
+  font-size:15px;
+  line-height:1.4;
   color:var(--ink-soft);
   letter-spacing:-.003em;
 }
@@ -313,7 +301,7 @@ ul{margin:0;padding:0;list-style:none;}
   content:"";
   position:absolute;
   left:0;
-  top:.52em;
+  top:.5em;
   width:5px;height:5px;
   background:var(--marker);
 }
@@ -324,44 +312,38 @@ ul{margin:0;padding:0;list-style:none;}
    scroll timing is accurate; swap in real imagery via .media__photo.
    =========================================================================== */
 
-/* --- 1. plan card on a wooden surface --- */
+/* --- 1. plan card on a wooden board --- */
 .m-wood{
-  --ratio:1 / .92;
-  background:
-    linear-gradient(180deg,#c79a63,#b9884e 55%,#a9773f);
+  background:linear-gradient(175deg,#e0bd92,#cda069 48%,#c0925c);
 }
 .m-wood::before{                    /* grain */
   content:"";
   position:absolute;inset:0;
   background:repeating-linear-gradient(
-    90deg,
-    rgba(255,255,255,.05) 0 2px,
-    rgba(90,52,17,.05) 2px 5px,
-    rgba(255,255,255,.02) 5px 11px);
-  opacity:.85;
+    91deg,
+    rgba(255,255,255,.10) 0 2px,
+    rgba(120,76,32,.06) 2px 6px,
+    rgba(255,255,255,.04) 6px 13px);
 }
 .m-wood::after{                     /* soft top light */
   content:"";
   position:absolute;inset:0;
-  background:radial-gradient(120% 90% at 50% 0%,rgba(255,236,208,.45),transparent 62%);
+  background:radial-gradient(110% 80% at 50% 0%,rgba(255,244,226,.5),transparent 60%);
 }
 .tray{
   position:absolute;
-  inset:14% 7% 10%;
-  border-radius:16px;
-  background:linear-gradient(180deg,rgba(255,244,228,.30),rgba(150,102,52,.18));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+  inset:0;
   display:grid;
   place-items:center;
-  padding:0 8%;
+  padding:0 11%;
 }
 .plan-card{
   position:relative;
   width:100%;
   background:#fff;
-  border-radius:12px;
-  padding:13px 14px 15px;
-  box-shadow:0 12px 26px -12px rgba(60,35,10,.55);
+  border-radius:14px;
+  padding:16px 17px 18px;
+  box-shadow:0 16px 30px -14px rgba(70,42,12,.5);
 }
 .plan-card__top{
   display:flex;
@@ -369,26 +351,25 @@ ul{margin:0;padding:0;list-style:none;}
   justify-content:space-between;
   gap:10px;
 }
-.plan-card__name{font-size:14px;font-weight:600;letter-spacing:-.01em;color:#17150f;}
+.plan-card__name{font-size:16px;font-weight:600;letter-spacing:-.015em;color:#17150f;}
 .plan-card__kicker{
   font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:#a29b90;margin-top:3px;
 }
 .plan-card__dot{
-  width:22px;height:22px;flex:none;border-radius:50%;
+  width:26px;height:26px;flex:none;border-radius:50%;
   background:conic-gradient(from 210deg,#d9c3a6,#8e6a45,#c8a884,#6f5334);
 }
 .plan-card__copy{
-  margin-top:14px;
+  margin-top:20px;
   font-size:9.5px;
-  line-height:1.45;
+  line-height:1.5;
   color:#8b857c;
 }
 
 /* --- 2. phone on orange fabric, video consult --- */
 .m-fabric{
-  --ratio:1 / .97;
   background:
-    radial-gradient(100% 80% at 30% 15%,#d4763c,transparent 70%),
+    radial-gradient(100% 80% at 30% 12%,#d4763c,transparent 70%),
     linear-gradient(160deg,#c9662f,#a84b23 70%,#8e3d1d);
 }
 .m-fabric::before{                  /* woven texture */
@@ -401,7 +382,7 @@ ul{margin:0;padding:0;list-style:none;}
 .m-fabric::after{
   content:"";
   position:absolute;inset:0;
-  background:radial-gradient(90% 70% at 50% 110%,rgba(60,20,5,.45),transparent 60%);
+  background:radial-gradient(90% 70% at 50% 112%,rgba(60,20,5,.45),transparent 60%);
 }
 
 .phone{
@@ -424,7 +405,7 @@ ul{margin:0;padding:0;list-style:none;}
   overflow:hidden;
 }
 .phone--call{
-  top:8%;
+  top:9%;
   rotate:-1.5deg;
 }
 .call{
@@ -432,14 +413,14 @@ ul{margin:0;padding:0;list-style:none;}
   background:linear-gradient(180deg,#2b2117,#1b150f);
 }
 .call__label{
-  position:absolute;top:10px;left:50%;translate:-50% 0;
-  font-size:6px;letter-spacing:.08em;color:rgba(255,255,255,.72);
-  background:rgba(255,255,255,.12);
+  position:absolute;top:9px;left:50%;translate:-50% 0;
+  font-size:6px;letter-spacing:.06em;color:rgba(255,255,255,.75);
+  background:rgba(255,255,255,.14);
   padding:3px 8px;border-radius:99px;white-space:nowrap;
 }
 .call__person{
-  position:absolute;left:50%;top:46%;translate:-50% -50%;
-  width:58%;aspect-ratio:1;
+  position:absolute;left:50%;top:47%;translate:-50% -50%;
+  width:60%;aspect-ratio:1;
 }
 .call__head{
   position:absolute;left:50%;top:0;translate:-50% 0;
@@ -467,7 +448,7 @@ ul{margin:0;padding:0;list-style:none;}
   position:absolute;left:50%;bottom:0;translate:-50% 0;
   width:96%;height:44%;
   border-radius:44px 44px 0 0;
-  background:linear-gradient(180deg,#3d3f46,#24262b);
+  background:linear-gradient(180deg,#e9e4dc,#cfc8bd);
 }
 .call__bar{
   position:absolute;left:50%;bottom:9px;translate:-50% 0;
@@ -479,24 +460,23 @@ ul{margin:0;padding:0;list-style:none;}
 }
 .call__bar i:last-child{background:#e3573f;}
 
-/* --- 3. phone on a table showing a score --- */
+/* --- 3. a phone held over a table, beside a glass of water --- */
 .m-table{
-  --ratio:1 / .97;
   background:
-    radial-gradient(90% 70% at 20% 10%,#c9a377,transparent 70%),
-    linear-gradient(170deg,#b98f62,#8e6640 75%,#6f4d2f);
+    radial-gradient(90% 70% at 22% 8%,#d8b389,transparent 70%),
+    linear-gradient(170deg,#c49a6d,#9b7148 75%,#7c5735);
 }
 .m-table::before{
   content:"";
   position:absolute;inset:0;
   background:repeating-linear-gradient(
     102deg,
-    rgba(255,255,255,.05) 0 3px,
-    rgba(70,42,18,.07) 3px 9px);
+    rgba(255,255,255,.06) 0 3px,
+    rgba(70,42,18,.06) 3px 9px);
 }
 .glass{
   position:absolute;
-  right:8%;top:19%;
+  right:7%;top:15%;
   width:21%;aspect-ratio:1/1.5;
   border-radius:5px 5px 14px 14px;
   background:
@@ -512,22 +492,29 @@ ul{margin:0;padding:0;list-style:none;}
   content:"";position:absolute;left:5%;right:5%;top:9%;height:11%;
   border-radius:50%;
   background:rgba(255,255,255,.5);
-  box-shadow:inset 0 -1px 0 rgba(255,255,255,.7);
 }
 .glass::after{                      /* highlight */
   content:"";position:absolute;left:15%;top:22%;width:9%;height:62%;
   border-radius:99px;background:rgba(255,255,255,.45);
 }
+.hand{                              /* the hand holding the phone */
+  position:absolute;
+  left:20%;bottom:-16%;
+  width:54%;height:52%;
+  border-radius:44% 44% 30% 30%;
+  background:linear-gradient(170deg,#cb9d78,#a4724c);
+  box-shadow:0 -10px 24px -14px rgba(40,20,4,.6);
+}
 .phone--score{
-  top:10%;
-  left:41%;
+  top:13%;
+  left:42%;
   width:43%;
-  rotate:-6deg;
+  rotate:-5deg;
 }
 .score{
   position:absolute;inset:0;
   background:linear-gradient(180deg,#16130f,#221c15);
-  padding:14% 10% 0;
+  padding:16% 11% 0;
 }
 .score__ring{
   position:relative;
@@ -543,76 +530,95 @@ ul{margin:0;padding:0;list-style:none;}
   position:relative;z-index:1;
   font-size:19px;font-weight:600;color:#fff;letter-spacing:-.03em;
 }
-.score__lines{margin-top:12%;display:flex;flex-direction:column;gap:6px;}
-.score__lines i{height:5px;border-radius:99px;background:rgba(255,255,255,.14);}
-.score__lines i:nth-child(1){width:78%;}
-.score__lines i:nth-child(2){width:54%;}
-.score__lines i:nth-child(3){width:66%;}
-
-/* --- 4. blurred results cards --- */
-.m-results{
-  --ratio:1 / .85;
-  background:
-    radial-gradient(70% 60% at 12% 18%,#f0c9a4,transparent 70%),
-    radial-gradient(60% 60% at 88% 78%,#dcc6ad,transparent 70%),
-    linear-gradient(160deg,#f6efe6,#e7d9c8);
+.score__bars{
+  margin-top:14%;
+  display:flex;align-items:flex-end;gap:9%;height:18%;
 }
-.m-results::before{                 /* soft out-of-focus wash */
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 40%);
+.score__bars i{
+  flex:1;border-radius:2px 2px 0 0;background:rgba(255,255,255,.18);
+}
+.score__bars i:nth-child(2){height:62%;background:#e8a45c;}
+.score__bars i:nth-child(1){height:38%;}
+.score__bars i:nth-child(3){height:80%;}
+.score__bars i:nth-child(4){height:50%;}
+.score__bars i:nth-child(5){height:70%;}
+
+/* --- 4. result cards over a warm gradient --- */
+.m-results{
+  background:
+    radial-gradient(85% 70% at 8% 6%,#e8e4dc,transparent 62%),
+    linear-gradient(128deg,#d8d2c6 8%,#e39a3c 46%,#a85f17 72%,#4a2c0c);
 }
 .res-card{
   position:absolute;
-  left:15%;right:9%;top:11%;
+  left:17%;right:7%;top:26%;
   background:#fff;
-  border-radius:10px;
-  padding:11px 12px;
-  box-shadow:0 16px 30px -16px rgba(70,48,24,.55);
-  display:flex;flex-direction:column;gap:7px;
+  border-radius:12px;
+  padding:12px 13px;
+  box-shadow:0 18px 34px -16px rgba(50,30,6,.55);
 }
 .res-card p{
   position:relative;
-  padding-left:11px;
+  padding-left:12px;
   font-size:8.5px;
-  line-height:1.3;
-  color:#4a453d;
+  line-height:1.35;
+  color:#3f3a33;
+  margin-bottom:5px;
 }
 .res-card p::before{
-  content:"";position:absolute;left:0;top:.42em;
-  width:4px;height:4px;border-radius:50%;background:#c6a071;
+  content:"";position:absolute;left:0;top:.38em;
+  width:4px;height:4px;background:#17150f;
 }
-.res-stats{
-  position:absolute;
-  left:16%;right:8%;bottom:12%;
-  background:#fff;
-  border-radius:10px;
-  padding:10px 12px;
-  display:flex;gap:14px;
-  box-shadow:0 16px 30px -16px rgba(70,48,24,.5);
+.res-card p:nth-child(2)::before{background:#e0722c;}
+.res-card p:nth-child(3)::before{background:#b9b3a9;}
+.res-card__rule{
+  margin:9px 0 10px;
+  border-top:1px dashed #e0dad0;
 }
-.res-stats div{display:flex;flex-direction:column;gap:2px;}
-.res-stats b{font-size:15px;font-weight:600;letter-spacing:-.02em;color:#17150f;}
-.res-stats span{font-size:6.5px;letter-spacing:.11em;text-transform:uppercase;color:#a29b90;}
-.res-edge{                          /* partly cropped card, left edge */
-  position:absolute;
-  left:-7%;top:40%;
-  width:19%;aspect-ratio:1/1.15;
-  border-radius:10px;
-  background:linear-gradient(180deg,#fff,#fdf7ef);
-  box-shadow:0 14px 26px -16px rgba(70,48,24,.6);
+.res-tiles{display:flex;gap:6px;}
+.res-tiles div{
+  flex:1;
+  background:#f7f4ef;
+  border-radius:7px;
+  padding:6px 7px 7px;
 }
+.res-tiles b{display:block;font-size:13px;font-weight:600;letter-spacing:-.02em;color:#17150f;}
+.res-tiles span{display:block;font-size:5.5px;letter-spacing:.11em;text-transform:uppercase;color:#a29b90;margin-top:2px;}
+
 .res-side{                          /* partly cropped card, right edge */
   position:absolute;
-  right:-9%;top:37%;
-  width:25%;aspect-ratio:1/1.35;
-  border-radius:10px;
+  right:-13%;top:29%;
+  width:26%;
   background:#fff;
-  box-shadow:0 14px 26px -16px rgba(70,48,24,.6);
-  padding:9px;
-  display:flex;flex-direction:column;gap:6px;
+  border-radius:12px;
+  box-shadow:0 14px 26px -16px rgba(50,30,6,.6);
+  padding:11px;
+  display:flex;flex-direction:column;gap:11px;
 }
-.res-side i{height:4px;border-radius:99px;background:#eae2d7;}
-.res-side i:nth-child(odd){width:70%;}
+.res-side div{display:flex;flex-direction:column;gap:2px;}
+.res-side b{font-size:8px;font-weight:600;color:#17150f;}
+.res-side span{font-size:6.5px;color:#a29b90;}
+
+.res-edge{                          /* partly cropped card, left edge */
+  position:absolute;
+  left:-11%;top:33%;
+  width:22%;aspect-ratio:1/1.25;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 14px 26px -16px rgba(50,30,6,.6);
+  padding:10px;
+}
+.res-pill{
+  display:inline-block;
+  background:#e0722c;
+  color:#fff;
+  font-size:6.5px;
+  font-weight:600;
+  letter-spacing:.04em;
+  padding:3px 6px;
+  border-radius:99px;
+  float:right;
+}
 
 /* Wider window, but too short for the device frame: just centre the column. */
 @media (min-width:640px){
@@ -621,8 +627,7 @@ ul{margin:0;padding:0;list-style:none;}
 
 @media (prefers-reduced-motion:reduce){
   .panel{transform:none;}
-  .panel > .media,
-  .panel > .body{opacity:1;}
+  .panel > *{opacity:1;}
 }
 </style>
 </head>
@@ -632,15 +637,19 @@ ul{margin:0;padding:0;list-style:none;}
 <div class="device">
 <div class="screen" id="screen">
 
-<!-- The second half of each step ("What to have handy", "Before the call",
-     "How booking works", "Between consultations") is demo-length copy, written
-     to push every card well past one screen so the read-then-hand-off phase is
-     visible. Replace it with the real copy — the hand-off points follow. -->
+<!-- The blocks after each step's first list ("What to have handy", "Before the
+     call", "How booking works", "Between consultations" and the ones after
+     them) are demo-length copy, written to push every card past one screen so
+     the read-then-hand-off phase is visible. Placeholder, not approved copy —
+     replace it and the hand-off points follow. -->
 <main class="stack">
 
   <!-- ============================ 1 ============================ -->
-  <section class="panel" style="--i:1" aria-labelledby="s1">
-    <div class="media m-wood" role="img" aria-label="An Everlab plan card resting on a wooden surface">
+  <header class="head" style="--i:1">
+    <p class="eyebrow"><span class="eyebrow__num">1</span> Get started</p>
+  </header>
+  <article class="panel" style="--i:1" aria-labelledby="s1">
+    <div class="media m-wood" role="img" aria-label="An Everlab plan card resting on a wooden board">
       <div class="tray">
         <div class="plan-card">
           <div class="plan-card__top">
@@ -655,16 +664,10 @@ ul{margin:0;padding:0;list-style:none;}
       </div>
     </div>
 
-    <header class="panel__head">
-      <p class="eyebrow"><span class="eyebrow__num">1</span> Get started</p>
-      <h2 class="title" id="s1">Create your account</h2>
-    </header>
-
     <div class="body">
-      <p class="lede">Start with the level of care that suits your health goals. Every Everlab plan gives you a connected view of your health, with deeper testing, clinical support and ongoing care available depending on the plan you choose.</p>
-      <p class="lede">Once you’ve selected your plan, you’ll set up your Everlab account and app:</p>
+      <h2 class="title" id="s1">Create your account</h2>
+      <p class="lede">Each Everlab plan gives you a connected view of your health, with deeper testing, clinical support and ongoing care available depending on the plan you choose.</p>
       <ul class="list">
-        <li>Set up in about 10 minutes on your phone</li>
         <li>Up to 20 years of records consolidated into one view</li>
         <li>Your health, family and lifestyle history captured once</li>
         <li>Wearable and app data connected, if you use one</li>
@@ -681,17 +684,20 @@ ul{margin:0;padding:0;list-style:none;}
 
       <p class="subhead">After you sign up</p>
       <ul class="list">
-        <li>A welcome message from your Care team, usually the same day</li>
+        <li>A welcome message from your Care Team, usually the same day</li>
         <li>Your questionnaire saved as you go, so it can be finished in stages</li>
         <li>A checklist of anything still missing from your history</li>
         <li>The app on iOS and Android, with the same view on both</li>
       </ul>
       <p class="lede">Your first consultation slot opens as soon as there is enough history for a doctor to review — for most people that is a day or two after signing up.</p>
     </div>
-  </section>
+  </article>
 
   <!-- ============================ 2 ============================ -->
-  <section class="panel" style="--i:2" aria-labelledby="s2">
+  <header class="head" style="--i:2">
+    <p class="eyebrow"><span class="eyebrow__num">2</span> Consult</p>
+  </header>
+  <article class="panel" style="--i:2" aria-labelledby="s2">
     <div class="media m-fabric" role="img" aria-label="A phone showing an onboarding video consultation">
       <div class="phone phone--call">
         <div class="phone__screen">
@@ -708,18 +714,13 @@ ul{margin:0;padding:0;list-style:none;}
       </div>
     </div>
 
-    <header class="panel__head">
-      <p class="eyebrow"><span class="eyebrow__num">2</span> Consult</p>
-      <h2 class="title" id="s2">Meet your doctor</h2>
-    </header>
-
     <div class="body">
-      <p class="lede">Choose or get matched with a doctor trained in preventative health, who has reviewed your history before you join the call. This isn’t a fifteen-minute appointment where you need to explain your background from scratch. It’s:</p>
+      <h2 class="title" id="s2">Meet your doctor</h2>
+      <p class="lede">You’ll spend 30 unhurried minutes with your preventative healthcare doctor, after they have independently studied your records to understand:</p>
       <ul class="list">
-        <li>30 unhurried minutes by video, from anywhere in Australia</li>
         <li>Your history, family risk and health goals discussed in detail</li>
-        <li>A testing plan tailored to you, with additional tests recommended where your doctor sees a need</li>
-        <li>A recommendation on the membership plan your doctor believes best suits you, and why</li>
+        <li>What a testing plan tailored to you should entail, with additional tests recommended where your doctor sees a need</li>
+        <li>Their recommendation on the membership plan they believe best suits you, and why</li>
       </ul>
 
       <p class="subhead">Before the call</p>
@@ -740,34 +741,32 @@ ul{margin:0;padding:0;list-style:none;}
       </ul>
       <p class="lede">Consultations run to time because the reading is done beforehand. If something needs longer, your doctor books the extra time rather than rushing the end of the call.</p>
     </div>
-  </section>
+  </article>
 
   <!-- ============================ 3 ============================ -->
-  <section class="panel" style="--i:3" aria-labelledby="s3">
-    <div class="media m-table" role="img" aria-label="A phone on a table showing a health score">
+  <header class="head" style="--i:3">
+    <p class="eyebrow"><span class="eyebrow__num">3</span> Test</p>
+  </header>
+  <article class="panel" style="--i:3" aria-labelledby="s3">
+    <div class="media m-table" role="img" aria-label="A phone held over a table showing a health score">
       <div class="glass"></div>
       <div class="phone phone--score">
         <div class="phone__screen">
           <div class="score">
             <div class="score__ring"><span class="score__num">44</span></div>
-            <div class="score__lines"><i></i><i></i><i></i></div>
+            <div class="score__bars"><i></i><i></i><i></i><i></i><i></i></div>
           </div>
         </div>
       </div>
+      <div class="hand"></div>
     </div>
 
-    <header class="panel__head">
-      <p class="eyebrow"><span class="eyebrow__num">3</span> Test</p>
-      <h2 class="title" id="s3">Complete your testing</h2>
-    </header>
-
     <div class="body">
-      <p class="lede">You book each test in the app and your Care team handles referrals, coordination and anything that needs chasing.</p>
+      <h2 class="title" id="s3">Complete your testing</h2>
+      <p class="lede">Book each test in the app and your Care Team will handle referrals, coordination and anything that needs chasing.</p>
       <ul class="list">
         <li>Access 1,850+ vetted facilities Australia-wide</li>
         <li>Testing is selected for you based on your history, risks and doctor consultation</li>
-        <li><strong>Diagnostic</strong> and <strong>Protocol</strong> plans can include advanced bloods, imaging and deeper diagnostics where appropriate</li>
-        <li><strong>Protocol</strong> members can access at-home blood collection</li>
         <li>Results are added to your app as they arrive, with further testing recommended if needed</li>
       </ul>
 
@@ -776,7 +775,7 @@ ul{margin:0;padding:0;list-style:none;}
         <li>Pick a collection centre by suburb and opening hours</li>
         <li>Fasting and preparation instructions the day before</li>
         <li>Reschedule in the app if something comes up</li>
-        <li>Your Care team follows up on anything that hasn’t arrived on time</li>
+        <li>Your Care Team follows up on anything that hasn’t arrived on time</li>
       </ul>
       <p class="lede">Most blood panels come back within a week. Imaging and the more specialised assays take longer, and the app shows you where each one is up to rather than leaving you to ring around.</p>
 
@@ -789,42 +788,46 @@ ul{margin:0;padding:0;list-style:none;}
       </ul>
       <p class="lede">Nothing is held back until your next consultation. If a result needs acting on before then, your doctor contacts you.</p>
     </div>
-  </section>
+  </article>
 
   <!-- ============================ 4 ============================ -->
-  <section class="panel" style="--i:4" aria-labelledby="s4">
+  <header class="head" style="--i:4">
+    <p class="eyebrow"><span class="eyebrow__num">4</span> Act</p>
+  </header>
+  <article class="panel" style="--i:4" aria-labelledby="s4">
     <div class="media m-results" role="img" aria-label="Result cards from the Everlab app">
-      <div class="res-edge"></div>
+      <div class="res-edge"><span class="res-pill">g/dL</span></div>
       <div class="res-card">
-        <p>Lower Non-HDL-c to below 2.6 mmol/L</p>
-        <p>Shifts unclassified No</p>
-        <p>An insulin IQ works</p>
+        <p>Lower Non-HDL under 2.6 mmol/L</p>
+        <p>Shift to unsaturated fats</p>
+        <p>Re-test in 12 weeks</p>
+        <div class="res-card__rule"></div>
+        <div class="res-tiles">
+          <div><b>12</b><span>Protocols</span></div>
+          <div><b>4</b><span>Goals</span></div>
+          <div><b>6</b><span>Diagnostics</span></div>
+        </div>
       </div>
-      <div class="res-side"><i></i><i></i><i></i><i></i></div>
-      <div class="res-stats">
-        <div><b>12</b><span>Protocols</span></div>
-        <div><b>4</b><span>Event</span></div>
-        <div><b>6</b><span>Scientific</span></div>
+      <div class="res-side">
+        <div><b>Serum</b><span>1.1 mmol/L</span></div>
+        <div><b>HDL</b><span>1.32 mmol/L</span></div>
+        <div><b>LDL</b><span>1.8 mmol/L</span></div>
       </div>
     </div>
 
-    <header class="panel__head">
-      <p class="eyebrow"><span class="eyebrow__num">4</span> Act</p>
-      <h2 class="title" id="s4">Act, with follow-ups included</h2>
-    </header>
-
     <div class="body">
-      <p class="lede">Your doctor takes you through your results marker by marker. Where a result deserves a closer look, our specialist clinicians review it and your doctor arranges what comes next.</p>
+      <h2 class="title" id="s4">Act, with follow-ups included</h2>
+      <p class="lede">Your doctor takes you through your results marker by marker. Where a result deserves a closer look, our clinicians review it and arrange what comes next.</p>
       <ul class="list">
         <li>A 45-minute results consultation, and a written plan to follow</li>
         <li>Follow-up consultations included, at no extra cost</li>
         <li>Referral letters and specialist introductions, if your doctor advises it</li>
-        <li>Your results ready to share with your GP from the app</li>
+        <li>Your results ready to share with your GP</li>
       </ul>
 
       <p class="subhead">Between consultations</p>
       <ul class="list">
-        <li>Message your Care team in the app</li>
+        <li>Message your Care Team in the app</li>
         <li>A re-test schedule for the markers worth watching</li>
         <li>Plan updates as new results arrive</li>
         <li>An annual review to reset your goals for the year ahead</li>
@@ -840,7 +843,7 @@ ul{margin:0;padding:0;list-style:none;}
       </ul>
       <p class="lede">Most findings are managed inside your plan. Where they aren’t, you leave with a referral, the reasoning behind it, and a date to come back.</p>
     </div>
-  </section>
+  </article>
 
 </main>
 
@@ -850,29 +853,32 @@ ul{margin:0;padding:0;list-style:none;}
 </div>
 
 <script>
-/* Two jobs, both scroll-driven, neither of them faking the scroll itself.
+/* Everything the CSS can't work out for itself, and nothing else.
 
-   1. measure() tells each card how far it may travel before it parks:
-      pin = scrollportHeight - inset - cardHeight. That is the exact moment its
-      last line of content has been read, and the moment the next card starts
-      sliding over it.
+   measure() — at load, on resize, on ResizeObserver, never on scroll:
+     --slot  where each header parks: the total height of the headers before it
+     --hh    the header height, which sets how much screen a card must fill
+     --pin   where each card parks: scrollport - inset - its own height, so the
+             hand-off follows real content height rather than a fixed 100vh
 
-   2. update() reports how far each card has been covered by the one after it,
-      as --cover (0 → 1), which CSS turns into the 2% scale-down and the fade.
-      It runs on scroll, coalesced into one rAF, and only writes a custom
-      property — no layout is read during the scroll. */
+   update() — on scroll, coalesced into one rAF, writes one property:
+     --cover how far the next step has covered this card, 0 → 1
+
+   update() reads no layout: card and header positions come from the flow
+   offsets cached by measure(). Those are read with offsetHeight, which ignores
+   the scale transform — a client rect does not, so measuring a scaled card
+   that way would compute a wrong park offset. */
 (function () {
-  var panels = [].slice.call(document.querySelectorAll('.panel'));
   var stack = document.querySelector('.stack');
   var screenEl = document.getElementById('screen');
+  var heads = [].slice.call(stack.querySelectorAll('.head'));
+  var panels = [].slice.call(stack.querySelectorAll('.panel'));
 
   var inner = false;   // is the device frame the scroll container?
-  var vh = 0;          // height of whichever box the cards stick against
+  var vh = 0;          // height of whichever box the steps stick against
   var stackTop = 0;    // the stack's offset inside that box
-  var flow = [];       // each card's un-transformed offset within the stack
-  var head = [];       // each card's header offset within the card
-  var high = [];       // each card's un-transformed height
-  var park = [];       // each card's park offset (its sticky top)
+  var headFlow = [];   // each header's un-transformed offset within the stack
+  var slots = [];      // each header's parked position
   var ticking = false;
 
   function scrollTop() {
@@ -883,15 +889,6 @@ ul{margin:0;padding:0;list-style:none;}
   function measure() {
     var cs = getComputedStyle(stack);
     var pad = parseFloat(cs.getPropertyValue('--pad')) || 0;
-    var peek = parseFloat(cs.getPropertyValue('--peek')) || 0;
-    var gap = parseFloat(cs.rowGap) || 0;
-
-    // Run-out under the last card: it parks highest, so without this it never
-    // reaches its park point. It has to sit inside the stack's content box —
-    // that box is what bounds a sticky shift, so padding here would let the
-    // last card park while dragging the staggered cards beneath it back up.
-    var runout = (panels.length - 1) * peek;
-    panels[panels.length - 1].style.marginBottom = runout + 'px';
 
     // The document on a phone; the device frame on a desktop window big enough.
     inner = getComputedStyle(screenEl).overflowY !== 'visible';
@@ -900,22 +897,33 @@ ul{margin:0;padding:0;list-style:none;}
     var base = inner ? screenEl.getBoundingClientRect().top : 0;
     stackTop = stack.getBoundingClientRect().top - base + scrollTop();
 
+    // Pass 1: the headers stack flush, so a slot is just the run of headers
+    // above it. Tallest header wins --hh, which keeps the slots uniform.
+    var slot = 0, tallest = 0;
+    slots.length = 0;
+    heads.forEach(function (head) {
+      var hh = head.offsetHeight;
+      slots.push(slot);
+      head.style.setProperty('--slot', slot + 'px');
+      slot += hh;
+      if (hh > tallest) tallest = hh;
+    });
+    stack.style.setProperty('--hh', tallest + 'px');
+
+    // Pass 2: walk the flow and park each card at the fold.
     var y = parseFloat(cs.paddingTop) || 0;
-    flow.length = head.length = high.length = park.length = 0;
-    panels.forEach(function (panel, i) {
-      flow.push(y);
-      head.push(panel.querySelector('.media').offsetHeight);
-      // offsetHeight is the laid-out height — unlike a client rect it ignores
-      // the scale transform, so re-measuring mid-transition stays correct.
+    headFlow.length = 0;
+    heads.forEach(function (head, i) {
+      if (i) y += pad;                      // the margin between steps
+      headFlow.push(y);
+      y += head.offsetHeight;
+
+      var panel = panels[i];
       var h = panel.offsetHeight;
-      // Each card parks one --peek higher than the one before it, so every
-      // card underneath keeps its rounded bottom edge showing.
-      var lift = pad + i * peek;
-      var pin = Math.min(pad, vh - lift - h);
-      high.push(h);
-      park.push(pin);
+      // A card never parks higher than the underside of its own header.
+      var pin = Math.min(slots[i] + tallest, vh - pad - h);
       panel.style.setProperty('--pin', pin + 'px');
-      y += h + gap;
+      y += h;
     });
 
     update();
@@ -924,26 +932,14 @@ ul{margin:0;padding:0;list-style:none;}
   function update() {
     ticking = false;
     var s = scrollTop();
-    for (var i = 0; i < panels.length; i++) {
-      // the header is pinned once the card's own top has left the scrollport
-      var mine = stackTop + flow[i] - s;
-      panels[i].style.setProperty('--stuck', mine + head[i] <= 0 ? 1 : 0);
-
-      var cover = 0;
-      if (i < panels.length - 1) {
-        var top = stackTop + flow[i + 1] - s; // where the next card's top edge is
-        cover = 1 - top / vh;                 // 0 at the fold, 1 once it covers
-        cover = cover < 0 ? 0 : cover > 1 ? 1 : cover;
-        panels[i].style.setProperty('--cover', cover.toFixed(3));
-      }
-
-      // The card scales about its bottom edge, which drags its pinned header
-      // down from the top of the screen and exposes the body text behind it.
-      // Offset the header by the inverse so it stays flush at 0.
-      var scale = 1 - .02 * cover;
-      var bottom = Math.max(mine, park[i]) + high[i];
+    for (var i = 0; i < panels.length - 1; i++) {
+      // the next step's leading edge is its header, which arrives at the bottom
+      // of the screen and is fully over this card once it reaches its slot
+      var top = stackTop + headFlow[i + 1] - s;
+      var span = vh - slots[i + 1];
+      var cover = span > 0 ? (vh - top) / span : 0;
       panels[i].style.setProperty(
-        '--headtop', (-bottom * (1 - scale) / scale).toFixed(2) + 'px'
+        '--cover', (cover < 0 ? 0 : cover > 1 ? 1 : cover).toFixed(3)
       );
     }
   }
@@ -960,6 +956,7 @@ ul{margin:0;padding:0;list-style:none;}
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(measure);
     panels.forEach(function (panel) { ro.observe(panel); });
+    heads.forEach(function (head) { ro.observe(head); });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   screenEl.addEventListener('scroll', onScroll, { passive: true });

@@ -6,128 +6,135 @@ it renders inside a 402 × 853 device frame, on a phone it runs full-bleed.
 
 Published demo: https://claude.ai/artifact/THBBiSmitXuxcQ6QNuw1uY
 
-Four steps — *Create your account*, *Meet your doctor*, *Complete your testing*,
-*Act, with follow-ups included* — each a white card with a full-bleed visual,
-a numbered eyebrow, a heading, body copy and a bullet list.
+Four steps — *Get started*, *Consult*, *Test*, *Act* — each a white card with a
+step header, a full-width image, a heading, body copy and a bullet list.
+
+## The two states
+
+**Open.** A step reads as one card: its header, then the image, then the
+heading and copy.
+
+**Closed.** Once you scroll past a step it collapses to just its header, and
+those headers pile up as slim bars at the top of the screen, so all four steps
+stay in view as a stack.
+
+Both come out of one scroll, with no state to toggle.
 
 ## How the scroll works
 
 Each card is `position: sticky` with a **negative** `top` offset equal to
-`viewportHeight − cardHeight`:
+`viewportHeight − inset − cardHeight`:
 
 ```css
-.panel { position: sticky; top: var(--pin); }   /* --pin ≤ 0 */
+.panel { position: sticky; top: var(--pin); }   /* --pin ≤ header slot */
 ```
 
 A sticky box with a negative top scrolls completely normally until its **bottom
 edge** reaches the fold — i.e. until its last line of content has been read —
-and only then freezes, parked there. The next card sits immediately after it in
-normal document flow, so the moment card N parks, card N+1's top edge is at the
-bottom edge of the screen and starts sliding up over it, 1:1 with the scroll.
-Card N does not move; it stays underneath, scaling down 2% and dimming as it is
-covered.
+and only then freezes. The next step follows in normal document flow, so the
+moment card N parks, the next step's header is at the bottom edge of the screen
+and slides up over it, 1:1 with the scroll.
 
-Cards are inset by 20px on every side (`--pad`), with the same 20px as the flow
-gap between them — the gap is what lets the incoming card enter from the very
-bottom edge of the screen rather than from the parked card's bottom edge.
+Cards are inset by 20px on every side (`--pad`), and the same 20px separates
+one step from the next, which is what lets the incoming step enter from the
+very bottom edge of the screen rather than from the parked card's edge.
 
-### The deck
+## The header stack
 
-Each card parks one `--peek` (10px) higher than the card before it, so every
-card underneath keeps its rounded bottom edge showing: by the last step there
-is a four-deep deck of edges at the bottom of the screen. Two consequences
-worth knowing:
-
-- The card scales about its **bottom** edge (`transform-origin: 50% 100%`). A
-  centred origin lifts the bottom edge by 1% of the card's height — about 15px
-  on these cards — which is more than the 10px stagger, so the deck collapses.
-- The run-out under the last card is a `margin-bottom` on that card, not
-  padding on the stack. A sticky shift is bounded by its containing block, and
-  that block is the stack's *content* box: with padding there instead, the last
-  card parks but drags the staggered cards beneath it back up to its own line.
-
-The edges show whenever cards are parked, which is every read phase. During a
-hand-off the incoming card is taller than the screen and its body covers them
-until it parks.
-
-### The card header
-
-Each card's eyebrow and title sit in a `.panel__head` that is itself sticky, so
-the step you are reading stays named at the top of the screen while its body
-scrolls underneath. Two things this needs:
-
-- **No `overflow: hidden` on the card.** That property makes the card its own
-  scroll container, and a sticky descendant then has nothing to stick to. The
-  media clips itself to the top corners instead.
-- **Scale compensation.** Scaling the card about its bottom edge drags the
-  pinned header down from the top of the screen — up to 17px at full cover —
-  exposing the body text behind it. The script writes `--headtop` with the
-  inverse offset (`-bottom × (1 − scale) / scale`), which holds the header flush
-  to within 0.03px across a whole transition.
-
-The header's rule appears only once it is actually pinned, via `--stuck`.
-
-The cover effect is driven by a second custom property, `--cover` (0 → 1),
-written on scroll inside one rAF:
+Each step's header is a **sibling** of its card, not a child, and is sticky at
+its own slot — slot N being the total height of the headers before it:
 
 ```css
-.panel            { transform: scale(calc(1 - .02 * var(--cover,0))); }
-.panel > .media,
-.panel > .body    { opacity:   calc(1 - .4  * var(--cover,0)); }
+.head { position: sticky; top: var(--slot); z-index: calc(10 + var(--i)); }
 ```
 
-The fade sits on the card's contents rather than the card, because fading the
-card itself would let the parked stack underneath ghost through it. Both are
+Three things make it work, each of which fails in an obvious way if you skip
+it:
+
+- **Sibling, not child.** A sticky box is bounded by its containing block, so a
+  header nested inside its own card unpins and scrolls away the moment that
+  card's flow position passes the slot. As a sibling of the card its containing
+  block is the whole stack, so it stays parked to the end.
+- **Headers above every card in the z-order** (`10 + i` against the cards'
+  `i`). A card sliding up passes *behind* the bars already parked, which is
+  what leaves the collapsed stack visible. The bars are opaque and flush, so
+  nothing shows between them.
+- **Header immediately above its own card in flow.** It therefore reaches its
+  slot at the exact moment its card arrives underneath it — the two never
+  separate, and no gap opens between a parked bar and the card it belongs to.
+
+## The cover effect
+
+`--cover` (0 → 1) is written on scroll inside one rAF and says how far the next
+step has covered this card — 0 as its header enters at the bottom edge, 1 as
+that header reaches its slot:
+
+```css
+.panel     { transform: scale(calc(1 - .02 * var(--cover,0))); }
+.panel > * { opacity:   calc(1 - .4  * var(--cover,0)); }
+```
+
+The scale origin is the bottom edge, so a card's parked edge stays where it
+was. The fade sits on the card's contents rather than the card, because fading
+the card itself would let the stack underneath ghost through it. Both are
 disabled under `prefers-reduced-motion`.
 
-Scrolling is the native document scroll throughout, so iOS momentum, rubber-band
-and scrollbar behaviour are untouched.
+Scrolling is the native document scroll throughout, so iOS momentum,
+rubber-band and scrollbar behaviour are untouched.
 
-### The JS
+## The JS
 
 Two functions. `measure()` runs at load and on resize / `ResizeObserver` —
-never on scroll — and writes each card's park offset:
+never on scroll — and writes `--slot` per header, `--hh` (the header height,
+which sets how much screen a card must fill) and `--pin` per card:
 
 ```js
-panel.style.setProperty('--pin', Math.min(pad, vh - (pad + i * peek) - h) + 'px');
+panel.style.setProperty('--pin', Math.min(slot + hh, vh - pad - h) + 'px');
 ```
 
 That is the thing that can't be expressed in CSS: the hand-off point depends on
 the card's measured height, so it re-derives itself whenever the copy, the
 imagery, the font or the viewport changes. Nothing is hard-coded to `100vh`.
 
-`update()` runs on scroll, coalesced into one `requestAnimationFrame`, and only
-writes custom properties — `--cover`, `--stuck` and `--headtop`. It reads no
-layout while scrolling: positions and heights come from arrays cached by
-`measure()`, which also keeps them immune to the scale transform
-(`offsetHeight` ignores transforms, a client rect does not, so measuring a
-scaled card from a rect would compute a wrong park offset).
+`update()` runs on scroll, coalesced into one `requestAnimationFrame`, and
+writes only `--cover`. It reads no layout while scrolling: positions come from
+flow offsets cached by `measure()`, taken with `offsetHeight`, which ignores
+the scale transform — a client rect does not, so measuring a scaled card that
+way would compute a wrong park offset.
 
 ### Edge cases
 
 | | |
 | --- | --- |
-| Card taller than the viewport | Scrolls normally for `height − viewport + pad` px, then parks. |
-| Card shorter than the viewport | `min-height` pads it out to the full inset window so it always covers the card beneath; `--pin` clamps at `pad`, and because there is nothing left to read the next card begins its slide immediately. |
+| Card taller than the screen | Scrolls normally for `height − screen + inset` px, then parks; its content scrolls up behind the header stack. |
+| Card shorter than the screen | `min-height` pads it to the inset window minus the header, so it always covers the card beneath; `--pin` clamps at the underside of its own header. |
 | Copy or image height changes | Re-measured automatically; the hand-off moves with it. |
 
-At 402 × 853 every card is taller than the screen, giving read phases of roughly
-570–710px before each hand-off.
+At 402 × 853 every card is taller than the screen, giving read phases of
+roughly 500–670px before each hand-off.
 
 ### Content length
 
-The second half of each step — *What to have handy*, *Before the call*, *How
-booking works*, *Between consultations*, and the block after each — is
-demo-length copy, written to push every card well past one screen so the
-read-then-hand-off phase is visible while testing. It is placeholder, not
-approved copy. Replace it with the real thing; the hand-off points follow.
+The blocks after each step's first list — *What to have handy*, *Before the
+call*, *How booking works*, *Between consultations*, and the ones after them —
+are demo-length copy, written to push every card past one screen so the
+read-then-hand-off phase is visible while testing. They are placeholder, not
+approved copy. Delete them and the hand-off points follow; the cards then fit
+within the screen and each step hands off as soon as it arrives.
+
+## Typography
+
+Instrument Sans (Google Fonts), with the platform grotesque as fallback — on
+iOS that means SF Pro, so the page still reads correctly offline. The font swap
+changes card heights, which the `ResizeObserver` and a `document.fonts.ready`
+hook re-measure, so the hand-off points survive it.
 
 ## Imagery
 
 The four visuals are **CSS-drawn placeholders** — a plan card on a wooden
-surface, a phone on orange fabric mid-consult, a phone and a glass of water on a
-table, and a blurred set of result cards. They match the framing and proportions
-of the reference so the scroll timing is accurate.
+board, a phone on orange fabric mid-consult, a phone held over a table beside a
+glass of water, and result cards over a warm gradient. They match the framing
+and proportions of the reference so the scroll timing is accurate.
 
 To drop in real photography, add an `<img>` as the first child of the `.media`
 block; it covers the placeholder art with no other changes:
@@ -139,24 +146,16 @@ block; it covers the placeholder art with no other changes:
 </div>
 ```
 
-Keep (or adjust) the `--ratio` on each `.m-*` rule to match the real asset's
-aspect ratio — the card heights, and therefore the scroll hand-off points,
-follow from it.
-
-## Typography
-
-Instrument Sans (Google Fonts), with the platform grotesque as fallback — on
-iOS that means SF Pro, so the page still reads correctly offline. The font swap
-changes card heights, which the `ResizeObserver` and a `document.fonts.ready`
-hook re-measure, so the hand-off points survive it.
+Keep (or adjust) `--ratio` to match the real asset's aspect ratio — the card
+heights, and therefore the scroll hand-off points, follow from it.
 
 ## The device frame
 
 One media query, not a second code path. `.screen` has `overflow: visible` by
-default, so on a phone the cards stick against the document scrollport and the
+default, so on a phone the steps stick against the document scrollport and the
 page runs edge to edge with native momentum. On a window at least 760 × 920 it
-becomes the scroll container at a fixed 402 × 853 and the same markup renders as
-a device. The script asks which box it is measuring:
+becomes the scroll container at a fixed 402 × 853 and the same markup renders
+as a device. The script asks which box it is measuring:
 
 ```js
 getComputedStyle(screen).overflowY === 'visible' ? innerHeight : screen.clientHeight
