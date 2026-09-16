@@ -816,6 +816,16 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   lists are written from `MEDS` by the same builder into whichever hosts the
   page carries, so the two can only ever show the same documents, and the desk's
   filter block pins exactly as the biomarkers' does.
+- **Reports** — *Carousel* or *Bento*, the shape the Reports tab takes. Carousel
+  is the card row described above. Bento is two cards side by side where that
+  row was, at the height of the biomarkers' own bento header — measured from
+  `.dgrid` rather than typed, and read on the way back to Biomarkers since the
+  Reports tab hides the grid it is measuring. The first card is the set at a
+  glance (the count, what it is made of, the categories and their shares); the
+  second is the reports stacked, each row opening the same sheet a card does.
+  Both are built from the same `RECS` rows as the carousel, so the two shapes
+  can only ever show the same six reports. On the phone the bento sits inside
+  the hero, so it is the header's height by construction.
 - **Expanded Report** — off or on. Off, the records live behind a select
   beside the search. On, they become the first row: a carousel of cards, *All
   records* first and six reports after it, with the chips and the search on the

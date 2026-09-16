@@ -3371,6 +3371,82 @@
   body.light .oaModal .shClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
   body.light .oaModal .shClose:hover{background:rgba(46,31,26,.18);}
 
+  /* ---- Reports as a bento -----------------------------------------------
+     The other shape the Reports tab can take: two cards side by side where the
+     carousel was, at the height of the biomarkers' own bento header, because
+     the two tabs are two readings of one page and a header that changed height
+     between them would make the tabs feel like two pages.
+     The first card is a summary of the set; the second is the reports
+     themselves, stacked, which is the thing the carousel makes you swipe for. */
+  /* the wrapper's class is NOT repBento: that is the body's state class, and a
+     class selector matches the body too -- the whole page went display:none */
+  .rbWrap{display:none;}
+  body.repTab.repBento #phone #mHeroOrgan .v4RepCar,
+  body.repTab.repBento #phone #mHeroOrgan .v4RepDots,
+  body.repTab.repBento .dash .dRepShelf{display:none !important;}
+  body.repTab.repBento #phone #mHeroOrgan .rbWrap{
+    display:flex;position:absolute;left:13px;right:13px;top:8px;bottom:8px;z-index:4;gap:10px;
+  }
+  /* the desk has the room, so it takes the biomarkers bento's own measured
+     height rather than a number typed here -- see --dBentoH */
+  body.repTab.repBento .dash .dRepBento{
+    display:flex;gap:20px;height:var(--dBentoH, 495px);margin:0 0 6px;
+  }
+  .rbCard{
+    flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+    border-radius:20px;padding:18px;overflow:hidden;
+    background:rgba(255,255,255,.05);
+  }
+  body.light .rbCard{background:rgba(46,31,26,.05);}
+  .dRepBento .rbCard{padding:22px;border-radius:22px;}
+  .rbCard .lbl{flex:none;}
+  .rbHead{
+    flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin-bottom:12px;
+  }
+  .rbHead h4{
+    margin:0;font-size:10px;font-weight:400;letter-spacing:.12em;
+    text-transform:uppercase;color:#8b8b86;
+  }
+  .rbHead em{font-style:normal;font-size:12.5px;color:#8b8b86;}
+  /* --- first card: the set, at a glance --- */
+  .rbBig{font-size:52px;font-weight:500;line-height:1;letter-spacing:-1.5px;color:#ececec;}
+  .dRepBento .rbBig{font-size:72px;letter-spacing:-2px;}
+  body.light .rbBig{color:#2e1f1a;}
+  .rbLead{margin:8px 0 0;font-size:13px;line-height:1.45;color:#8b8b86;}
+  .rbSplit{margin-top:auto;display:flex;flex-direction:column;gap:9px;}
+  .rbSplit .s{display:flex;align-items:center;gap:9px;font-size:13px;color:#e4e4e0;}
+  .rbSplit .s i{flex:none;width:8px;height:8px;border-radius:50%;}
+  .rbSplit .s b{margin-left:auto;font-weight:500;}
+  body.light .rbSplit .s{color:#2e1f1a;}
+  .rbBar{
+    flex:none;display:flex;gap:3px;height:6px;margin-top:14px;border-radius:3px;overflow:hidden;
+  }
+  .rbBar i{display:block;height:100%;border-radius:3px;}
+  /* --- second card: the reports, stacked --- */
+  .rbList{flex:1 1 auto;min-height:0;overflow-y:auto;margin:0 -4px;padding:0 4px;scrollbar-width:none;}
+  .rbList::-webkit-scrollbar{display:none;}
+  .rbRow{
+    display:flex;align-items:center;gap:10px;width:100%;
+    border:0;padding:11px 0;background:none;font:inherit;text-align:left;cursor:pointer;
+    border-bottom:1px solid rgba(242,229,224,.09);-webkit-tap-highlight-color:transparent;
+  }
+  .rbRow:last-child{border-bottom:0;}
+  .rbRow i.d{flex:none;width:9px;height:9px;border-radius:50%;}
+  .rbRow .t{flex:1 1 auto;min-width:0;}
+  .rbRow .t b{
+    display:block;font-size:13.5px;font-weight:500;color:#ececec;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .rbRow .t span{display:block;font-size:12px;color:#8b8b86;margin-top:2px;}
+  .rbRow .go{flex:none;width:13px;height:13px;color:#8b8b86;}
+  .rbRow:hover .t b{color:#fff;}
+  body.light .rbRow{border-bottom-color:rgba(46,31,26,.12);}
+  body.light .rbRow .t b{color:#2e1f1a;}
+  .dRepBento .rbRow{padding:14px 0;}
+  .dRepBento .rbRow .t b{font-size:15px;}
+  .dRepBento .rbRow .t span{font-size:13px;}
+
   /* ---- the report sheet -------------------------------------------------
      A card says what arrived; the sheet says what it is. It reuses the organ
      sheet's chrome -- the same wrapper, dim, handle and slide -- because a
@@ -5424,6 +5500,15 @@
             <option value="off">Off</option>
           </select>
         </div>
+        <!-- and how the Reports tab lays its reports out. Two named shapes,
+             neither of them the other turned off, so this stays a select. -->
+        <div class="tkRow">
+          <span class="lbl">Reports</span>
+          <select id="stRepLay" aria-label="How the Reports tab lays out">
+            <option value="car" selected>Carousel</option>
+            <option value="bento">Bento</option>
+          </select>
+        </div>
         <!-- The filter's shape. Off, the records live behind a select beside
              the search; on, they are a carousel of cards on a row of their own
              and the search moves down beside the chips. -->
@@ -5703,6 +5788,7 @@
          here and built in the script from RECS and MEDS, so the desk and the
          phone can only ever show the same records. -->
     <div class="dRepWrap" id="dRepWrap">
+      <div class="rbWrap dRepBento" id="dRepBento"></div>
       <div class="dRepShelf">
         <div class="dRepCar" id="dRepCar" role="group" aria-label="Your reports"></div>
         <button class="dRepNav prev" id="dRepPrev" type="button" aria-label="Previous report"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button>
@@ -5886,7 +5972,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -10330,6 +10416,7 @@
       (CARD_STATE.expRep ? ' expRep' : '') +
       (CARD_STATE.v2Tab ? ' v2Tab' : '') +
       (CARD_STATE.v2Tab && CARD_STATE.repTab ? ' repTab' : '') +
+      (CARD_STATE.repBento ? ' repBento' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
       (CARD_STATE.navBar ? ' navBar' : '') +
@@ -15638,17 +15725,72 @@
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     return { open: show, close: close };
   }
+  // The bento: the Reports tab's other shape. Two cards where the carousel
+  // was -- the set at a glance, and the reports stacked -- built from the same
+  // RECS rows, so the two layouts can only ever show the same six reports.
+  function buildRepBento(host, sheet){
+    if (!host || !REPS.length) return;
+    const CHEV = '<svg class="go" viewBox="0 0 12 12" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg>';
+    // the set, counted off the rows rather than typed, as every count on this
+    // page is: a figure beside a list has to be a property of the list
+    const cats = [];
+    REPS.forEach(r => {
+      let c = cats.filter(x => x.k === r.cat)[0];
+      if (!c){ c = { k: r.cat, n: 0, dot: r.art[0] }; cats.push(c); }
+      c.n++;
+    });
+    const total = REPS.length, vids = REPS.filter(r => r.media === 'video').length;
+    host.innerHTML =
+      '<div class="rbCard rbSum">' +
+        '<div class="rbHead"><h4>Your reports</h4><em>' + REPS[0].date + '</em></div>' +
+        '<div class="rbBig">' + total + '</div>' +
+        '<p class="rbLead">' + (total - vids) + ' documents and ' + vids +
+          ' recorded read-throughs, across ' + cats.length + ' categories.</p>' +
+        '<div class="rbSplit">' +
+          cats.map(c => '<span class="s"><i style="background:' + c.dot + '"></i>' +
+            c.k + '<b>' + c.n + '</b></span>').join('') +
+        '</div>' +
+        '<div class="rbBar">' +
+          cats.map(c => '<i style="flex:' + c.n + ';background:' + c.dot + '"></i>').join('') +
+        '</div>' +
+      '</div>' +
+      '<div class="rbCard rbAll">' +
+        '<div class="rbHead"><h4>All reports</h4><em>' + total + '</em></div>' +
+        '<div class="rbList">' +
+          REPS.map(r =>
+            '<button class="rbRow" type="button" data-r="' + r.id + '">' +
+              '<i class="d" style="background:' + r.art[0] + '"></i>' +
+              '<span class="t"><b>' + r.label + '</b>' +
+                '<span>' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : 'Document') +
+              '</span></span>' + CHEV +
+            '</button>').join('') +
+        '</div>' +
+      '</div>';
+    // a row is the card's tap: same sheet, same record
+    host.addEventListener('click', e => {
+      const row = e.target.closest('.rbRow');
+      if (!row) return;
+      const rec = RECS.filter(r => r.id === row.dataset.r)[0];
+      if (sheet && rec) sheet.open(rec);
+      else document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: row.dataset.r }));
+    });
+  }
+
   const repSheetM = repSheet(document.getElementById('phone'), false);
   const repSheetD = repSheet(document.body, true);
 
   repCarousel(document.getElementById('v4RepCar'), document.getElementById('v4RepDots'),
               null, { sheet: repSheetM });
+  buildRepBento(document.getElementById('mRepBento'), repSheetM);
   // No dots at the desk: it shows three cards and a peek, so a dot per card
   // would be a row of six marking a position that only ever reaches the third.
   // The arrows say there is more, and so does the card cut off at the edge.
   repCarousel(document.getElementById('dRepCar'), null,
               [document.getElementById('dRepPrev'), document.getElementById('dRepNext')],
               { align: 'start', sheet: repSheetD });
+  buildRepBento(document.getElementById('dRepBento'), repSheetD);
 
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.
@@ -16057,7 +16199,7 @@
                        // carousel with the search down beside the chips
                        expRep: false,
                        // V2's tabs above the hero, and which of them is on
-                       v2Tab: true, repTab: false,
+                       v2Tab: true, repTab: false, repBento: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
@@ -16085,7 +16227,8 @@
       // a switch stands for a thing being on or off; Desktop and Tablet M are
       // two named shells, and neither of them is the other one turned off --
       // nor are the library's two grains, Normal and Dense
-      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stGraph' || sel.id === 'stPal' || sel.id === 'stLeft')
+      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stGraph' || sel.id === 'stPal' ||
+          sel.id === 'stLeft' || sel.id === 'stRepLay')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -16514,6 +16657,26 @@
     setTabUI();
     resize();
   });
+  // Which shape the Reports tab takes. A body class, like everything else that
+  // has to survive setMode writing the list whole.
+  const stRepLaySel = document.getElementById('stRepLay');
+  if (stRepLaySel) stRepLaySel.addEventListener('change', () => {
+    CARD_STATE.repBento = stRepLaySel.value === 'bento';
+    document.body.classList.toggle('repBento', CARD_STATE.repBento);
+    document.dispatchEvent(new CustomEvent('everlab:repTab'));
+    resize();
+  });
+  // The desk bento stands at the height of the biomarkers' bento header, so
+  // the two tabs are two readings of one page rather than two pages. Measured,
+  // not typed -- and measured whenever the grid HAS a height, since the Reports
+  // tab hides it and a hidden element measures 0.
+  function markBentoH(){
+    const g = document.querySelector('.dash .dgrid'), m = document.querySelector('.dash main');
+    if (g && m && g.offsetHeight) m.style.setProperty('--dBentoH', g.offsetHeight + 'px');
+  }
+  addEventListener('resize', markBentoH);
+  document.addEventListener('everlab:mode', () => requestAnimationFrame(markBentoH));
+  requestAnimationFrame(markBentoH);
   // both copies of the tabs -- the phone's and the desk's -- are the same two
   // tabs over the same state, so they are one list here
   const v2Tabs = [].slice.call(document.querySelectorAll('.mTabsV2 .v2Tab'));
@@ -16560,6 +16723,7 @@
   document.addEventListener('everlab:mode', () => requestAnimationFrame(placeThumb));
   function showTab(rep){
     if (rep === !!CARD_STATE.repTab) return;
+    if (!rep) requestAnimationFrame(markBentoH);   // the grid is on screen again
     CARD_STATE.repTab = rep;
     document.body.classList.toggle('repTab', rep);
     setTabUI();

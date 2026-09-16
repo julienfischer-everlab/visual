@@ -6450,6 +6450,40 @@ and does its descent below it: a three-stop gradient with the middle stop at
 bars, phone and desk, since both are built the same way. The blend still happens
 -- it happens where the content it is blending into actually is.
 
+### 5.233 The Reports tab gets a second shape
+
+"Add another version in V2 tweak select: Bento / Carousel (current one). Bento
+should have 2 big cards next to each other. First idk yet. Second the list of
+reports stacked. Same height as the biomarkers bento header."
+
+A new control, **Reports**, beside V2's own switch: two named shapes, and
+neither is the other one turned off, so it stays a select rather than becoming a
+toggle -- the same exemption `stLeft` and `stGraph` carry.
+
+- **first card** is the set at a glance: the count, what it is made of, and the
+  categories with a bar of their shares. It is the open slot -- "first idk yet"
+  -- filled with something honest rather than left blank, and it is one function
+  to replace.
+- **second card** is the reports stacked: dot, name, date and kind, scrolling
+  inside the card, each row opening the same sheet a card does.
+
+"Same height as the biomarkers bento header" is measured, not typed (see 5.227
+for what typing it costs): `--dBentoH` is written from `.dgrid`'s own height
+whenever that grid is on screen -- which the Reports tab is not, since it hides
+it, so the read happens on the way back to Biomarkers and at load. The phone
+needs no measurement at all: its bento sits inside `#mHeroOrgan`, which is the
+header, so it is the header's height by construction.
+
+  desk: bento 495px = the biomarkers grid's 495, two cards at 472 each = its
+  own two columns. phone: hero 410 on both tabs, two cards 181 x 394.
+
+**The whole page went `display:none`.** The wrapper's class was `repBento` and
+so is the body's state class -- and `.repBento{display:none}` is a class
+selector, which matches the body as happily as anything else. The element is
+`.rbWrap` now. A state class and an element class that share a name will find
+each other eventually; the rule is that the body's classes are a namespace of
+their own.
+
 ---
 
 ## 6. Open items
