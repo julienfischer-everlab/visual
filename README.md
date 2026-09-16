@@ -64,6 +64,13 @@ it:
 - **Header immediately above its own card in flow.** It therefore reaches its
   slot at the exact moment its card arrives underneath it — the two never
   separate, and no gap opens between a parked bar and the card it belongs to.
+- **The corner radius is state-dependent.** A rounded top corner interrupts the
+  side border for its own radius, so a stack of rounded bars has a 22px break
+  in its edge at every join. But the rounded leading edge is the whole point of
+  the overlap while a step is sliding in. So `--r` eases from `--card-radius`
+  to `0` over the last bar-height of a header's travel: round while it slides,
+  square once it docks, and the parked column's edges run unbroken. The first
+  bar is never overridden — it is the top of the column and stays round.
 - **Slots measured from client rects, with a 1px overlap.** `offsetHeight` is
   rounded, so a bar 54.7px tall reported as 55 puts the next slot 0.3px below
   it, and the card passing behind shows through as a hairline of image across

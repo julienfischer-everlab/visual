@@ -205,7 +205,13 @@ ul{margin:0;padding:0;list-style:none;}
   background:var(--card-bg);
   border:1px solid var(--card-line);
   border-bottom:0;
-  border-radius:var(--card-radius) var(--card-radius) 0 0;
+  /* Round while the step is sliding in — that leading edge is the whole point
+     of the overlap — then square off as it docks, because a rounded corner
+     interrupts the side border for its own radius and the parked stack has to
+     read as one continuous column. The script eases --r over the last bar's
+     height of travel, so there is no pop. The first bar is never overridden:
+     it is the top of the column and stays round. */
+  border-radius:var(--r,var(--card-radius)) var(--r,var(--card-radius)) 0 0;
   padding:18px var(--gutter);
   /* just enough to read as content passing underneath a fixed bar. In the
      collapsed stack each bar covers the one above's shadow, so only the
@@ -923,6 +929,8 @@ ul{margin:0;padding:0;list-style:none;}
   var stackTop = 0;    // the stack's offset inside that box
   var headFlow = [];   // each header's un-transformed offset within the stack
   var slots = [];      // each header's parked position
+  var barH = 0;        // the tallest header, which sets the slot pitch
+  var radius = 0;      // --card-radius, eased away as a bar docks
   var ticking = false;
 
   function scrollTop() {
@@ -957,6 +965,8 @@ ul{margin:0;padding:0;list-style:none;}
       if (hh > tallest) tallest = hh;
     });
     stack.style.setProperty('--hh', Math.ceil(tallest) + 'px');
+    barH = tallest;
+    radius = parseFloat(cs.getPropertyValue('--card-radius')) || 0;
 
     // Pass 2: walk the flow and park each card at the fold.
     var y = (parseFloat(cs.paddingTop) || 0) + gutter.offsetHeight;
@@ -981,6 +991,16 @@ ul{margin:0;padding:0;list-style:none;}
   function update() {
     ticking = false;
     var s = scrollTop();
+
+    // Square each bar off as it docks into the stack, so the column's side
+    // borders run unbroken. Bar 0 is the top of the column and keeps its
+    // corners, so it is left alone.
+    for (var h = 1; h < heads.length; h++) {
+      var away = (stackTop + headFlow[h] - s - slots[h]) / barH;
+      away = away < 0 ? 0 : away > 1 ? 1 : away;
+      heads[h].style.setProperty('--r', (away * radius).toFixed(2) + 'px');
+    }
+
     for (var i = 0; i < panels.length - 1; i++) {
       // the next step's leading edge is its header, which arrives at the bottom
       // of the screen and is fully over this card once it reaches its slot
