@@ -195,14 +195,22 @@ ul{margin:0;padding:0;list-style:none;}
      through the bar's rounded top corners. */
   background:var(--page-bg);
 }
-.panel + .head{margin-top:var(--pad);}
+/* Steps butt together: -1px so the card's bottom border and the bar's top
+   border land on the same row and read as one line, with no band of ground
+   interrupting the outline. */
+.panel + .head{margin-top:-1px;}
 
 .head__bar{
+  position:relative;
   background:var(--card-bg);
   border:1px solid var(--card-line);
   border-bottom:0;
   border-radius:var(--card-radius) var(--card-radius) 0 0;
   padding:18px var(--gutter);
+  /* just enough to read as content passing underneath a fixed bar. In the
+     collapsed stack each bar covers the one above's shadow, so only the
+     lowest parked bar casts onto the card scrolling beneath it. */
+  box-shadow:0 5px 12px -8px rgba(23,21,15,.22);
 }
 
 .eyebrow{
@@ -240,8 +248,12 @@ ul{margin:0;padding:0;list-style:none;}
   background:var(--card-bg);
   border:1px solid var(--card-line);
   border-top:0;
-  border-radius:0 0 var(--card-radius) var(--card-radius);
   overflow:hidden;                 /* the card clips its own content */
+}
+/* Only the last card closes off the stack; the others run straight into the
+   next step's header, so rounding them would pinch the outline at the join. */
+.stack > .panel:last-of-type{
+  border-radius:0 0 var(--card-radius) var(--card-radius);
 }
 /* --cover: 0 → 1 as the next step slides over this one (set by the script).
    The fade sits on the contents, not the card: fading the card itself would
@@ -947,7 +959,8 @@ ul{margin:0;padding:0;list-style:none;}
     var y = (parseFloat(cs.paddingTop) || 0) + gutter.offsetHeight;
     headFlow.length = 0;
     heads.forEach(function (head, i) {
-      if (i) y += pad;                      // the margin between steps
+      // steps butt together on a shared border row, so read the real margin
+      if (i) y += parseFloat(getComputedStyle(head).marginTop) || 0;
       headFlow.push(y);
       y += head.offsetHeight;
 

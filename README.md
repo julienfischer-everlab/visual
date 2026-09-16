@@ -35,9 +35,11 @@ and only then freezes. The next step follows in normal document flow, so the
 moment card N parks, the next step's header is at the bottom edge of the screen
 and slides up over it, 1:1 with the scroll.
 
-Cards are inset by 20px on every side (`--pad`), and the same 20px separates
-one step from the next, which is what lets the incoming step enter from the
-very bottom edge of the screen rather than from the parked card's edge.
+Cards are inset by 20px on every side (`--pad`). Steps butt straight together —
+`.panel + .head` takes `margin-top: -1px`, so the card's bottom border and the
+next bar's top border land on the same row and read as one line, with no band
+of ground interrupting the outline. Only the last card keeps its bottom
+corners rounded; rounding the others would pinch the outline at each join.
 
 ## The header stack
 
@@ -77,9 +79,9 @@ the bar's rounded top corners.
 
 ## Card styling
 
-White cards on a white ground, separated by a 1px `--card-line` hairline and
-**no shadows**. The header bar carries the top border and the top corners, the
-card the sides, bottom and bottom corners, so the two read as one outline. Each
+White cards on a white ground, separated by a 1px `--card-line` hairline. The
+header bar carries the top border and the top corners, the card the sides and
+bottom, so the two read as one outline. Each
 card is `overflow: hidden`, which is what clips the image to the card rather
 than the image rounding its own corners. That is safe here only because the
 header is no longer a descendant — `overflow: hidden` makes a box its own
@@ -87,6 +89,12 @@ scroll container, and a sticky descendant then has nothing to stick to.
 
 Header bar, card and image are all exactly the same width (the image inset by
 the 1px border), because anything else shows as a step in the edge.
+
+The only shadow in the design is a very light one under the header bar, so
+content reads as passing underneath a fixed bar rather than colliding with it.
+In the collapsed stack each bar covers the shadow of the one above, so only the
+lowest parked bar casts onto the card scrolling beneath it. The cards
+themselves carry no shadow at all.
 
 ## The cover effect
 
