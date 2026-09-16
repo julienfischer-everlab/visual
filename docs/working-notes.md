@@ -6303,6 +6303,95 @@ top margin, down to 2. The desk sets its own 34px there and is untouched.
 
   card inset 12 -> 20 on the phone and the desk; dots-to-heading 92 -> 60
 
+### 5.225 V2 on by default, and the switch that read backwards
+
+"The version with the Biomarker tab and Report tab at the top (V2 off
+currently) should be V2 ON." The tabs are the page now, so the tweak starts on.
+
+Which turned up a second thing. `segmentise` turns any two-option select into a
+switch, and its rule is written down: *the first option is the on position*.
+`stV2Tab` and `stExpRep` were both written off-first, so both switches read
+`aria-checked` true while their tweak was off. Reordered, with `selected` on
+the option that was the default, so V2 now defaults **on** and Expanded Report
+still defaults **off** -- and both switches say which.
+
+### 5.226 The dock said Overview on the insights page
+
+"Make this Menu active for this page." The dock is one asset mounted into every
+phone that carries it, so its markup can only name one destination, and it named
+Overview. `#phone` is the insights screen and `#phone2` is the Overview screen,
+and `mountNav` already knows which it is mounting into -- so it marks the one
+this screen *is*, rather than the one the markup happens to carry.
+
+### 5.227 The line under the status bar was a typed 109
+
+"Bug line gap?" -- a hairline across the screen at the top.
+
+The hero light is painted twice: once inside the header's organ block, and once
+on `#phone::before` so it carries on above the scroller. `--v4haloY` is the
+centre in the PHONE's coordinates, so the copy inside the block has to come back
+by however far down the phone that block starts -- and that distance was typed:
+`calc(var(--v4haloY) - 109px - var(--v4haloR))`.
+
+109 was right when it was written. V2's tabs went in above the hero and made it
+**174**. The two copies of the same light were then 65px apart, and where one
+stops and the other carries on -- exactly the scroller's top edge -- they
+disagreed. That is the line.
+
+It is measured now (`--v4heroTop`, written beside `--heroLift` in the scroll
+handler) and re-read a frame after anything that moves the hero, since
+`everlab:mode` fires at the top of setMode, before the page is rebuilt.
+
+  the step across the scroller's top edge: 2.8 lum -> 1.0, which is the 8-bit
+  quantisation floor of the gradient itself; the two halves now share a centre
+  at -151px, measured on both
+
+### 5.228 The report card, after the framework
+
+The card is no longer a photograph with type over it. Following the reference:
+a kind with its dot, a dismiss, the report's name, the date and who signed it,
+an illustration, and one full-width action.
+
+The illustration is drawn, not fetched -- the page inlines everything it uses,
+and two tilted sheets with a coloured band say "a document" faster at 150px than
+a photograph of one would. A video is the same sheet with a tinted frame and the
+play badge the record rows already carry. Both take their tint from the record's
+own colour pair, so six cards stay six things.
+
+Two consequences worth writing down:
+
+- **the card stopped being a `<button>`.** It has a dismiss and an action
+  inside it, and a button cannot contain a button. It is a div the click
+  delegate already found by class; the CTA and the cross are the real buttons.
+- **the card list can change.** Dismissing one means the cards and the dots
+  cannot be captured once at build time -- a stale index is a dot marking a
+  card that is not there. Both are re-read from the DOM after every change.
+
+### 5.229 Scroll from anywhere, and a ground that moves
+
+"Should be able to scroll up from the entire screen (not only on body card
+section)." Two rules said otherwise, both written for the hero carousel's
+sideways swipe and both too wide:
+
+- `body.v4 .mHead{touch-action:pan-x}` -- a finger on the hero could only pan
+  sideways, so a scroll had to be started below it. `pan-x pan-y` lets the
+  browser pick the axis from the gesture, which is what it is for.
+- the header's wheel handler called `preventDefault` on every wheel event. It
+  now turns away only the sideways ones; a vertical wheel is the page's.
+
+  a wheel over the middle of the hero moves the scroller 0 -> 400
+
+"Fully rounded. On click the active state bg should move left right to the
+related active tab." The track and the tabs are pills, and the active ground is
+one element that moves rather than two that swap. It is measured off the tab it
+lands on -- the phone's two are equal halves, the desk's are as wide as their
+words -- so one mechanism serves both. A control that has no width yet (its page
+is not on screen) is left alone, and its first placement is made with the
+transition off, or the ground would slide in from nowhere the moment the page
+arrives.
+
+  phone: 180px wide, 4 -> 188. desk: 111px -> 82px, 4 -> 119.
+
 ---
 
 ## 6. Open items

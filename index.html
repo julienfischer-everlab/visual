@@ -1442,50 +1442,67 @@
     overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
   }
   .v4RepCar::-webkit-scrollbar{display:none;}
+  /* THE REPORT CARD, after the framework the design set: a kind with its dot,
+     a dismiss, the report's own name, the date and who signed it, an
+     illustration of the thing itself, and one full-width action. Not a photo
+     with type over it -- a card that says what arrived and what to do about
+     it, which is a different object and reads at a glance in a row of six. */
   .repCard{
     flex:0 0 78%;scroll-snap-align:center;position:relative;
-    border-radius:18px;overflow:hidden;cursor:pointer;
-    border:0;padding:0;font:inherit;text-align:left;
-    background:#1b1b1a;-webkit-tap-highlight-color:transparent;
+    display:flex;flex-direction:column;
+    border-radius:20px;overflow:hidden;cursor:pointer;
+    padding:18px;font:inherit;text-align:left;
+    background:rgba(255,255,255,.05);-webkit-tap-highlight-color:transparent;
   }
-  .repCard .cover{position:absolute;inset:0;}
-  /* the cover's own light, so a flat duotone reads as a photograph rather than
-     as a swatch: a soft highlight off the top left and a floor under the type */
-  .repCard .cover::after{
-    content:"";position:absolute;inset:0;
-    background:
-      radial-gradient(70% 44% at 74% 18%, rgba(255,255,255,.26), rgba(255,255,255,0) 62%),
-      radial-gradient(90% 56% at 14% 40%, rgba(255,255,255,.13), rgba(255,255,255,0) 66%),
-      radial-gradient(60% 40% at 38% 86%, rgba(0,0,0,.34), rgba(0,0,0,0) 70%),
-      linear-gradient(to bottom, rgba(0,0,0,0) 46%, rgba(0,0,0,.76) 100%);
+  body.light .repCard{background:rgba(46,31,26,.05);}
+  .repCard .rcTop{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .repCard .rcKind{
+    display:flex;align-items:center;gap:8px;min-width:0;
+    font-size:13.5px;color:#8b8b86;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
-  .repCard .when{
-    position:absolute;left:20px;top:20px;z-index:2;
-    padding:5px 10px;border-radius:999px;font-size:11.5px;font-weight:500;
-    color:#fff;background:rgba(0,0,0,.34);
-    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  }
-  .repCard .play{
-    position:absolute;right:20px;top:20px;z-index:2;
-    width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
-    justify-content:center;color:#fff;background:rgba(0,0,0,.34);
-    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  }
-  .repCard .play svg{width:11px;height:11px;display:block;margin-left:1px;}
-  .repCard .foot{
-    position:absolute;left:20px;right:20px;bottom:20px;z-index:2;
-    display:flex;align-items:center;justify-content:flex-start;gap:9px;text-align:left;
-  }
-  .repCard .who{
-    flex:none;width:32px;height:32px;border-radius:50%;
+  .repCard .rcKind i{flex:none;width:8px;height:8px;border-radius:50%;background:#8b8b86;}
+  /* the dismiss is a button inside a clickable card, so it has to be the one
+     thing a tap on it means -- it stops the card's own click rather than
+     opening the report on the way out */
+  .repCard .rcX{
+    flex:none;width:28px;height:28px;border:0;border-radius:50%;padding:0;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
-    font-size:12px;font-weight:600;color:#2e1f1a;background:#e8ded2;
+    color:#8b8b86;background:rgba(255,255,255,.07);
+    -webkit-tap-highlight-color:transparent;transition:background .16s ease,color .16s ease;
   }
-  .repCard .foot .t{flex:1 1 auto;min-width:0;text-align:left;}
-  .repCard b{display:block;font-size:14.5px;font-weight:500;color:#fff;
-             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .repCard i{display:block;font-style:normal;font-size:12px;margin-top:1px;
-             color:rgba(255,255,255,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .repCard .rcX:hover{background:rgba(255,255,255,.14);color:#ececec;}
+  .repCard .rcX svg{width:11px;height:11px;display:block;}
+  body.light .repCard .rcX{background:rgba(46,31,26,.08);color:#7d6b58;}
+  .repCard .rcH{
+    display:block;margin-top:10px;font-size:18px;font-weight:500;line-height:1.28;
+    letter-spacing:-.2px;color:#ececec;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  body.light .repCard .rcH{color:#2e1f1a;}
+  .repCard .rcMeta{
+    display:block;margin-top:5px;font-size:12.5px;color:#8b8b86;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  /* the illustration takes whatever height is left, and centres in it: the
+     phone's card is as tall as the hero and the desk's is not, and the same
+     card has to sit in both without a second set of numbers */
+  .repCard .rcArt{
+    flex:1 1 auto;min-height:74px;position:relative;display:block;
+    margin:12px 0;
+  }
+  .repCard .rcArt svg{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(58%, 150px);height:auto;display:block;overflow:visible;
+  }
+  .repCard .rcCta{
+    flex:none;width:100%;height:46px;border:0;border-radius:14px;padding:0 14px;
+    font:inherit;font-size:14px;font-weight:500;cursor:pointer;
+    color:#ececec;background:rgba(255,255,255,.08);
+    -webkit-tap-highlight-color:transparent;transition:background .16s ease;
+  }
+  .repCard .rcCta:hover{background:rgba(255,255,255,.15);}
+  body.light .repCard .rcCta{background:rgba(46,31,26,.08);color:#2e1f1a;}
   /* 28px under the carousel's dots before the page carries on */
   body.repTab #phone #mHeroOrgan{margin-bottom:28px;}
   body.repTab #phone #mHeroOrgan .v4RepDots{
@@ -1503,26 +1520,40 @@
   .mTabsV2{display:none;}
   body.v2Tab #phone .mTabsV2{
     display:flex;gap:4px;margin:0 13px 14px;padding:4px;
-    border-radius:14px;background:rgba(255,255,255,.06);
+    border-radius:999px;background:rgba(255,255,255,.06);
   }
+  .mTabsV2{position:relative;}
   .mTabsV2 .v2Tab{
-    flex:1;min-width:0;height:38px;border:0;border-radius:10px;padding:0 10px;
+    position:relative;z-index:1;
+    flex:1;min-width:0;height:38px;border:0;border-radius:999px;padding:0 10px;
     font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;
     background:transparent;color:#8b8b86;-webkit-tap-highlight-color:transparent;
-    transition:background .18s ease,color .18s ease;
+    transition:color .18s ease;
   }
-  .mTabsV2 .v2Tab.on{background:rgba(255,255,255,.12);color:#ececec;}
+  .mTabsV2 .v2Tab.on{color:#ececec;}
+  /* One ground that moves, rather than two that swap. The tab it is under is
+     measured -- the phone's two are equal halves, the desk's are as wide as
+     their words -- so the same element serves both without a second rule. */
+  .mTabsV2 .v2Thumb{
+    position:absolute;top:4px;bottom:4px;left:0;width:0;z-index:0;
+    border-radius:999px;background:rgba(255,255,255,.12);
+    transform:translateX(0);pointer-events:none;
+    transition:transform .34s cubic-bezier(.22,.61,.36,1),
+               width .34s cubic-bezier(.22,.61,.36,1);
+  }
+  .mTabsV2.noAnim .v2Thumb{transition:none;}
+  body.light .mTabsV2 .v2Thumb{background:#fff;}
   .mTabsV2 .v2Tab:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:2px;}
   body.light .mTabsV2{background:rgba(46,31,26,.07);}
   body.light .mTabsV2 .v2Tab{color:#7d6b58;}
-  body.light .mTabsV2 .v2Tab.on{background:#fff;color:#2e1f1a;}
+  body.light .mTabsV2 .v2Tab.on{color:#2e1f1a;}
   /* The desk's copy of the same two tabs. Under the page's title, where the
      phone's sit under its own -- but sized to their words rather than stretched
      across the page: a segmented control the width of a monitor would read as a
      toolbar, and these are two names, not a row of tools. */
   body.v2Tab .dash .dTabsV2{
     display:inline-flex;gap:4px;margin:-8px 0 26px;padding:4px;
-    border-radius:14px;background:rgba(255,255,255,.06);
+    border-radius:999px;background:rgba(255,255,255,.06);
   }
   .dash .dTabsV2 .v2Tab{flex:0 0 auto;height:40px;padding:0 20px;font-size:14px;}
   /* ---- the Report tab, at the desk -------------------------------------
@@ -1552,11 +1583,10 @@
      scroller rather than as everything there is */
   .dRepCar .repCard{
     flex:0 0 calc((100% - 48px) / 3.35);scroll-snap-align:start;
-    aspect-ratio:4 / 3;
+    aspect-ratio:1 / 1.12;
   }
-  .dRepCar .repCard b{font-size:16px;}
-  .dRepCar .repCard i{font-size:13px;}
-  .dRepCar .repCard .when{font-size:12.5px;padding:6px 12px;}
+  .dRepCar .repCard{padding:20px;}
+  .dRepCar .repCard .rcH{font-size:19px;}
   /* the arrows: the desk has a pointer to hover with, so it gets the control
      the phone does without -- over the ends of the row, out of the cards' way */
   .dRepNav{
@@ -4244,9 +4274,15 @@
   }
   body.v5 #mHeroOrgan .v4Halo{
     display:block;position:absolute;left:50%;
-    /* --v4haloY is measured from the phone; the header's organ block starts
-       109px below that, and the box hangs a radius above the centre */
-    top:calc(var(--v4haloY) - 109px - var(--v4haloR));
+    /* --v4haloY is the centre in the PHONE's coordinates; this copy lives in
+       the header's organ block, so it has to come back by however far down the
+       phone that block starts, and the box hangs a radius above the centre.
+       That distance is measured (--v4heroTop, set in the scroll handler) rather
+       than typed: it was 109px until V2's tabs went in above the hero and made
+       it 174, and the two halves of the light then disagreed by 65px -- which
+       is a visible line across the screen at the scroller's top edge, where one
+       copy stops and the other carries on. */
+    top:calc(var(--v4haloY) - var(--v4heroTop, 109px) - var(--v4haloR));
     width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
     transform:translateX(-50%);
     z-index:2;pointer-events:none;will-change:transform;
@@ -4631,7 +4667,11 @@
   /* The header is the backdrop the body rises over, not a surface to be
      scrolled: a swipe up belongs to the content under it. It keeps the
      horizontal axis, which is the carousel's, and gives up the vertical one. */
-  body.v4 .mHead{touch-action:pan-x;}
+  /* The hero is part of the page, so a finger on it scrolls the page. pan-x
+     alone meant the reader could only start a scroll from the list below --
+     the browser picks the axis from the gesture, and the carousel's own
+     handler takes the sideways one. */
+  body.v4 .mHead{touch-action:pan-x pan-y;}
   body.v4 .mHeadIn{display:block;will-change:transform,opacity;}
   body.v4 .mBody{
     display:block;position:relative;z-index:2;background:#0d0d0c;
@@ -5286,8 +5326,8 @@
         <div class="tkRow">
           <span class="lbl">V2</span>
           <select id="stV2Tab" aria-label="Biomarkers / Report tabs above the hero">
+            <option value="on" selected>On</option>
             <option value="off">Off</option>
-            <option value="on">On</option>
           </select>
         </div>
         <!-- The filter's shape. Off, the records live behind a select beside
@@ -5296,8 +5336,8 @@
         <div class="tkRow">
           <span class="lbl">Expanded Report</span>
           <select id="stExpRep" aria-label="Expanded report filter">
-            <option value="off">Off</option>
             <option value="on">On</option>
+            <option value="off" selected>Off</option>
           </select>
         </div>
         <!-- Which card sits on the left of the pair. Coverage is a reading the
@@ -13383,6 +13423,15 @@
       // screen each), but the island has to answer a tap: the brighter layer
       // moves and aria-selected follows it, per island.
       const tabs = [].slice.call(nav.querySelectorAll('.mTab'));
+      // Which destination this screen IS. The dock is one asset, so its markup
+      // can only carry one of them -- but a dock that says Overview on the
+      // insights page is telling the reader they are somewhere they are not.
+      // #phone is Insights, #phone2 is the Overview screen.
+      const here = k ? 0 : 1;
+      tabs.forEach((o, i) => {
+        o.classList.toggle('on', i === here);
+        o.setAttribute('aria-selected', String(i === here));
+      });
       tabs.forEach(t => t.addEventListener('click', e => {
         e.preventDefault();
         tabs.forEach(o => {
@@ -15186,19 +15235,61 @@
   // is written once.
   const REPS = RECS.filter(r => r.id !== 'all');
   const repCardHTML = (function(){
-    const PLAY = '<span class="play"><svg viewBox="0 0 12 12" aria-hidden="true">' +
-                 '<path d="M3 1.8 10 6l-7 4.2Z" fill="currentColor"/></svg></span>';
-    // initials, so the byline has a face without an asset behind it
-    const mark = n => n.replace(/^Dr\.\s*/, '').split(/\s+/).map(w => w[0]).join('').slice(0, 2);
-    return r =>
-      '<button class="repCard" type="button" data-r="' + r.id + '">' +
-        '<span class="cover" style="background:linear-gradient(150deg,' +
-          r.art[0] + ',' + r.art[1] + ')"></span>' +
-        '<span class="when">' + r.date + '</span>' +
-        (r.media === 'video' ? PLAY : '') +
-        '<span class="foot"><span class="who">' + mark(r.by) + '</span>' +
-          '<span class="t"><b>' + r.label + '</b><i>' + r.by + '</i></span></span>' +
-      '</button>';
+    const X = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true">' +
+      '<path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    // The illustration, drawn rather than fetched: the page inlines everything
+    // it uses, and two tilted sheets with a coloured band say "a document"
+    // faster at 150px than any photograph of one would. The tint comes off the
+    // record's own pair, so six cards stay six things rather than one thing
+    // six times.
+    const DOC = c =>
+      '<svg viewBox="0 0 120 120" aria-hidden="true">' +
+        '<g transform="rotate(9 60 60)">' +
+          '<rect x="34" y="20" width="60" height="80" rx="7" fill="rgba(255,255,255,.055)"/>' +
+        '</g>' +
+        '<g transform="rotate(-7 60 60)">' +
+          '<rect x="26" y="16" width="60" height="80" rx="7" fill="rgba(255,255,255,.12)"/>' +
+          '<rect x="34" y="25" width="44" height="14" rx="3" fill="' + c + '"/>' +
+          '<rect x="34" y="46" width="44" height="3.4" rx="1.7" fill="rgba(255,255,255,.34)"/>' +
+          '<rect x="34" y="54" width="36" height="3.4" rx="1.7" fill="rgba(255,255,255,.26)"/>' +
+          '<rect x="34" y="62" width="40" height="3.4" rx="1.7" fill="rgba(255,255,255,.26)"/>' +
+          '<rect x="34" y="70" width="22" height="3.4" rx="1.7" fill="rgba(255,255,255,.26)"/>' +
+          '<rect x="58" y="70" width="20" height="16" rx="3" fill="rgba(255,255,255,.14)"/>' +
+          '<path d="M61 82l4-5 3.4 3 5.6-6" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.6" ' +
+            'stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</g>' +
+      '</svg>';
+    // and a video is the same sheet with the frame on it: one tile, tinted,
+    // with the play badge the reader already knows from the record rows
+    const VID = (a, b) =>
+      '<svg viewBox="0 0 120 120" aria-hidden="true">' +
+        '<g transform="rotate(9 60 60)">' +
+          '<rect x="34" y="26" width="58" height="68" rx="10" fill="rgba(255,255,255,.055)"/>' +
+        '</g>' +
+        '<g transform="rotate(-8 60 60)">' +
+          '<defs><linearGradient id="rcv' + a.replace(/[^a-z0-9]/gi, '') + '" x1="0" y1="0" x2="1" y2="1">' +
+            '<stop offset="0" stop-color="' + a + '"/><stop offset="1" stop-color="' + b + '"/>' +
+          '</linearGradient></defs>' +
+          '<rect x="28" y="22" width="62" height="68" rx="11" ' +
+            'fill="url(#rcv' + a.replace(/[^a-z0-9]/gi, '') + ')"/>' +
+          '<circle cx="59" cy="56" r="14" fill="rgba(255,255,255,.28)"/>' +
+          '<path d="M55 50l10 6-10 6Z" fill="#fff"/>' +
+        '</g>' +
+      '</svg>';
+    return r => {
+      const vid = r.media === 'video';
+      return '<div class="repCard" data-r="' + r.id + '">' +
+        '<span class="rcTop">' +
+          '<span class="rcKind"><i style="background:' + r.art[0] + '"></i>' +
+            (vid ? 'New video' : 'New document') + '</span>' +
+          '<button class="rcX" type="button" aria-label="Dismiss ' + r.label + '">' + X + '</button>' +
+        '</span>' +
+        '<span class="rcH">' + r.label + '</span>' +
+        '<span class="rcMeta">' + r.date + ' &middot; ' + r.by + '</span>' +
+        '<span class="rcArt">' + (vid ? VID(r.art[0], r.art[1]) : DOC(r.art[0])) + '</span>' +
+        '<button class="rcCta" type="button" tabindex="-1">See results</button>' +
+      '</div>';
+    };
   })();
   // The report carousel, wherever the reports are carried: the phone's hero and
   // the desk's Report tab are the same cards in the same scroller, at different
@@ -15212,11 +15303,21 @@
     const toStart = !!(opts && opts.align === 'start');
 
     car.innerHTML = REPS.map(repCardHTML).join('');
-    const cards = [].slice.call(car.children);
-    if (dots) dots.innerHTML = REPS.map((r, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
+    // A card can be dismissed, so the list of them and the row of dots are
+    // read from the DOM after every change rather than captured once -- a
+    // stale index here is a dot marking a card that is no longer there.
+    let cards = [].slice.call(car.children);
+    let marks = [];
+    const redraw = () => {
+      cards = [].slice.call(car.children);
+      if (dots){
+        dots.innerHTML = cards.map((c, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
+        marks = [].slice.call(dots.children);
+      }
+    };
+    redraw();
 
     // which card the dots mark: the one at the resting point
-    const marks = dots ? [].slice.call(dots.children) : [];
     let raf = 0;
     function sync(){
       raf = 0;
@@ -15328,6 +15429,15 @@
     car.addEventListener('click', e => {
       const c = e.target.closest('.repCard');
       if (!c || car.dataset.dragged === '1') return;
+      // the dismiss is the one place in the card that does not open it
+      if (e.target.closest('.rcX')){
+        const keep = cards.indexOf(c);
+        c.remove();
+        redraw();
+        if (cards.length) glide(centreOf(cards[Math.max(0, Math.min(cards.length - 1, keep))]));
+        sync();
+        return;
+      }
       document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: c.dataset.r }));
     });
 
@@ -15754,7 +15864,7 @@
                        // carousel with the search down beside the chips
                        expRep: false,
                        // V2's tabs above the hero, and which of them is on
-                       v2Tab: false, repTab: false,
+                       v2Tab: true, repTab: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
@@ -16214,13 +16324,47 @@
   // both copies of the tabs -- the phone's and the desk's -- are the same two
   // tabs over the same state, so they are one list here
   const v2Tabs = [].slice.call(document.querySelectorAll('.mTabsV2 .v2Tab'));
+  // the moving ground, one per control, put in here rather than in two copies
+  // of the markup -- it is a mechanism, not content
+  const v2Bars = [].slice.call(document.querySelectorAll('.mTabsV2')).map(bar => {
+    let th = bar.querySelector('.v2Thumb');
+    if (!th){
+      th = document.createElement('i');
+      th.className = 'v2Thumb'; th.setAttribute('aria-hidden', 'true');
+      bar.insertBefore(th, bar.firstChild);
+    }
+    return bar;
+  });
+  // Measured rather than computed from a fraction: the phone's two tabs are
+  // equal halves and the desk's are as wide as their words. A control with no
+  // width yet (its page is not on screen) is left alone -- moving the ground to
+  // 0 would animate it back from nowhere the moment the page arrives, so the
+  // first placement on a freshly shown control is made without the transition.
+  function placeThumb(){
+    v2Bars.forEach(bar => {
+      const th = bar.querySelector('.v2Thumb');
+      const on = bar.querySelector('.v2Tab.on');
+      if (!th || !on || !bar.offsetWidth) return;
+      const w = on.offsetWidth;
+      if (!th.dataset.set){
+        bar.classList.add('noAnim');
+        requestAnimationFrame(() => bar.classList.remove('noAnim'));
+        th.dataset.set = '1';
+      }
+      th.style.width = w + 'px';
+      th.style.transform = 'translateX(' + on.offsetLeft + 'px)';
+    });
+  }
   function setTabUI(){
     v2Tabs.forEach(t => {
       const on = (t.dataset.tab === 'rep') === !!CARD_STATE.repTab;
       t.classList.toggle('on', on);
       t.setAttribute('aria-selected', String(on));
     });
+    placeThumb();
   }
+  addEventListener('resize', placeThumb);
+  document.addEventListener('everlab:mode', () => requestAnimationFrame(placeThumb));
   function showTab(rep){
     if (rep === !!CARD_STATE.repTab) return;
     CARD_STATE.repTab = rep;
@@ -16288,9 +16432,13 @@
     const inner = document.getElementById('mHeadIn');
     if (!sc || !head || !inner) return;
     // touch-action settles the finger; a trackpad has no gesture for it to
-    // honour, so the wheel is turned away here by the same rule
+    // honour, so the wheel is sorted here by the same rule: a sideways wheel
+    // is the hero carousel's and is turned away, a vertical one is the page's
+    // and passes -- the reader scrolls from anywhere on the screen, not only
+    // from the list below the hero.
     head.addEventListener('wheel', e => {
-      if (document.body.classList.contains('v4')) e.preventDefault();
+      if (!document.body.classList.contains('v4')) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) e.preventDefault();
     }, { passive: false });
     let queued = false;
     function apply(){
@@ -16312,6 +16460,16 @@
       if (ph){
         ph.style.setProperty('--heroLift', (-(reduced ? y : y * 1.12)).toFixed(1) + 'px');
         ph.style.setProperty('--heroLightK', (1 - p).toFixed(3));
+        // and the two halves have to agree on where the centre is. The header
+        // copy is positioned inside the organ block, so it needs that block's
+        // distance down the phone -- measured in the unscrolled layout, which
+        // is what scrollTop adds back.
+        const org = document.getElementById('mHeroOrgan');
+        if (org){
+          const top = Math.round(
+            org.getBoundingClientRect().top - ph.getBoundingClientRect().top + y);
+          ph.style.setProperty('--v4heroTop', top + 'px');
+        }
       }
       // V5's header darkens under the body as the body covers it: p is already
       // the fraction of the header that has been scrolled past, so the grey runs
@@ -16341,6 +16499,13 @@
       requestAnimationFrame(apply);
     }, { passive: true });
     addEventListener('resize', apply);
+    // The light's two halves are placed from a measurement, so anything that
+    // moves the hero has to re-measure. everlab:mode fires at the TOP of
+    // setMode, before the page is rebuilt, so the read waits a frame.
+    const relight = () => requestAnimationFrame(apply);
+    document.addEventListener('everlab:mode', relight);
+    document.addEventListener('everlab:repTab', relight);
+    relight();
     parallaxApply = apply;
   })();
 

@@ -735,9 +735,16 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
 - **V2** — off or on. On, a segmented tab sits between the title and the hero:
   *Biomarkers* or *Report*, and the list below follows it. Above the hero rather
   than below, because the hero belongs to both — it is the same body either way,
-  and what changes underneath it is which set of things is being listed. On the Report tab the hero is a card carousel of the reports: a
-  cover, the date on it as a chip, a play badge where the report is film rather
-  than a still, and a foot of avatar, name and byline. It is a scroll-snap scroller,
+  and what changes underneath it is which set of things is being listed. On the Report tab the hero is a card carousel of the
+  reports. Each card follows the notification framework: the kind with its dot
+  (*New document* or *New video*), a dismiss, the report's name, the date beside
+  who signed it, a drawn illustration, and one full-width *See results*. The
+  illustration is drawn rather than fetched — the page inlines everything it
+  uses, and two tilted sheets with a coloured band say "a document" faster at
+  150px than a photograph of one would; a video is the same sheet with a tinted
+  frame and a play badge. Both take their tint from the record's own colour
+  pair. Dismissing a card removes it, so the cards and the dots are re-read from
+  the DOM after every change rather than captured once. It is a scroll-snap scroller,
   so touch, the wheel and the keyboard are the browser's — and the mouse drag is
   driven by hand on top, because a scroller pans for a finger and for nothing
   else, which is what made it look broken on a screen. Snapping is off for the
