@@ -796,7 +796,11 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   the markup that goes stale on its own.
 - **Handle the organ** (Card Nav only) — there the organ is the whole screen
   rather than a card in a column, which is the one worth orbiting. Drag it and
-  it turns like a model on a turntable, from the first pixel; the wheel over it
+  it turns like a model on a turntable, from the first pixel — sideways and
+  vertically at the same rate, about 0.23° a pixel, with the pitch stopping at
+  a quarter turn because past that the model is upside down and the yaw axis
+  runs backwards (every face is reachable without going there, since the yaw
+  is free); the wheel over it
   pushes in and pulls out, between 0.65x and 3x, exponentially so a notch is the
   same proportion of the view wherever you are in the range. While you turn it a
   **wireframe sphere** draws around it — silhouette, equator, two meridians and

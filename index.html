@@ -10090,6 +10090,18 @@
       ];
     };
     const R = 86, STEP = 48;
+    // The two axes, in the units `look` is kept in. The engine reads yaw as
+    // look.x * 1.05 and pitch as -look.y * 0.7, so a pixel of travel has to be
+    // divided by a different number on each axis to turn the organ at the same
+    // rate in both -- which is what makes a diagonal drag feel like one
+    // gesture rather than two speeds.
+    const RAD_PER_PX = 1.05 / 260;              // about 0.23 degrees a pixel
+    const YAW_PX = 1 / 260, PITCH_PX = RAD_PER_PX / 0.7;
+    // Pitch stops at a quarter turn: past it the model is upside down and the
+    // yaw axis runs backwards, which reads as the control breaking rather than
+    // as the organ turning. Every face is reachable without going there, since
+    // the yaw is free.
+    const PITCH_MAX = (Math.PI / 2) / 0.7;
     // one great circle: the equator when phi is null, a meridian otherwise
     function ringPath(phi){
       let d = '', front = 0;
@@ -10147,11 +10159,9 @@
     host.addEventListener('pointermove', e => {
       if (!g) return;
       e.preventDefault();
-      // a full turn across about 260px of travel, and a pitch held to a
-      // quarter of that: the cloud is a body, and tipping it past its own
-      // shoulders reads as broken rather than as looked at from above
-      look.tx = g.tx + (e.clientX - g.x) / 260;
-      look.ty = Math.max(-0.42, Math.min(0.42, g.ty + (e.clientY - g.y) / 420));
+      look.tx = g.tx + (e.clientX - g.x) * YAW_PX;
+      look.ty = Math.max(-PITCH_MAX, Math.min(PITCH_MAX,
+                         g.ty + (e.clientY - g.y) * PITCH_PX));
       tick();
     });
     host.addEventListener('pointerup', stop);

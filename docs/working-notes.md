@@ -5991,6 +5991,32 @@ reports with no tab to get back from.
   switching the tweak off from the Report tab lands back on Biomarkers.
   All 25 pages clean.
 
+### 5.214 The vertical axis was a tilt, not a rotation
+
+"Should be able to rotate vertically as well." It could -- by 17 degrees, at
+half the speed of the horizontal. Which is a parallax tilt wearing a rotation's
+clothes, and not what a model on a turntable does.
+
+Two numbers were wrong, and both because they were typed rather than derived.
+The engine reads yaw as `look.x * 1.05` and pitch as `-look.y * 0.7`, so a pixel
+of travel has to be divided by a *different* number on each axis to turn the
+organ at the same rate in both -- otherwise a diagonal drag is two speeds. The
+rate is now stated once and each axis converts into its own units:
+
+    RAD_PER_PX = 1.05 / 260        about 0.23 degrees a pixel
+    YAW_PX     = 1 / 260
+    PITCH_PX   = RAD_PER_PX / 0.7  (1/173, because pitch's scale is smaller)
+
+And the clamp is a quarter turn rather than 0.42 of nothing in particular:
+`PITCH_MAX = (PI/2) / 0.7`. Past a quarter turn the model is upside down and
+the yaw axis runs backwards, which reads as the control breaking rather than as
+the organ turning -- and every face is reachable without going there, because
+the yaw is free.
+
+  drag down: the sphere's front pole climbs 0 -> -39.7 -> -84.6 and stops at
+  -86, which is the rim's own radius -- exactly a quarter turn, and it holds
+  there however much further the hand goes
+
 ---
 
 ## 6. Open items
