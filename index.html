@@ -1423,6 +1423,29 @@
      the one that is on: the readings, or the reports they came from. The hero
      stays either way -- it is the same body, and what changes is which set of
      things is being listed under it. */
+  /* On the Report tab the hero carries the reports: the same two strips the
+     organ carousel uses -- the figure at bottom:83 and the names at bottom:38,
+     with the same masks -- built from RECS instead of from the organ list. The
+     cloud stays: it is the body, and the body is whose reports these are.
+     Its own carousel cannot carry them (it is the organ carousel, and the
+     cloud morphs to whatever it lands on), so the reports get strips of their
+     own and a surface to swipe them by. */
+  .v4RepStrip{display:none !important;}
+  .v4Swipe{display:none;}
+  body.repTab #phone #mHeroOrgan .v4RepStrip{display:block !important;}
+  body.repTab #phone #mHeroOrgan #v4Ages,
+  body.repTab #phone #mHeroOrgan #v4Names{display:none !important;}
+  /* the swipe surface covers the hero under the strips; the organ's own
+     carousel sits below it and does not see the gesture */
+  body.repTab #phone #mHeroOrgan .v4Swipe{
+    display:block;position:absolute;inset:0;z-index:4;touch-action:pan-y;
+  }
+  #v4RepAges .v4AgeN, #v4RepNames .v4Name{
+    transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .34s ease,filter .34s ease;
+  }
+  /* no mini cards under it: on this tab the page is the reports and the list of
+     them, and a coverage tile between the two is neither */
+  body.repTab #phone #mV4Row{display:none !important;}
   .mTabsV2{display:none;}
   body.v2Tab #phone .mTabsV2{
     display:flex;gap:4px;margin:0 13px 14px;padding:4px;
@@ -5496,7 +5519,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4Swipe" id="v4RepSwipe" aria-hidden="true"></div><div class="v4Ages v4RepStrip" id="v4RepAges"></div><div class="v4Names v4RepStrip" id="v4RepNames"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -14843,6 +14866,93 @@
       '</button>').join('');
   })();
 
+  // The hero's report carousel. The organ carousel cannot carry these -- it is
+  // the organ's, and the cloud morphs to whatever it lands on -- so the reports
+  // get the same two strips, built from RECS, and a surface of their own to
+  // swipe. The cloud stays put underneath: it is the body, and these are the
+  // body's reports.
+  (function heroReports(){
+    const figs = document.getElementById('v4RepAges');
+    const names = document.getElementById('v4RepNames');
+    const swipe = document.getElementById('v4RepSwipe');
+    if (!figs || !names || !swipe) return;
+    const REPS = RECS.filter(r => r.id !== 'all');
+    if (!REPS.length) return;
+
+    const fEls = REPS.map(r => {
+      const el = document.createElement('span');
+      el.className = 'v4AgeN';
+      el.innerHTML = String(r.n) +
+        '<span class="v4Gap">biomarkers &nbsp;|&nbsp; ' + r.date + '</span>';
+      figs.appendChild(el);
+      return el;
+    });
+    const nEls = REPS.map((r, i) => {
+      const el = document.createElement('span');
+      el.className = 'v4Name';
+      el.textContent = r.label;
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => go(i));
+      names.appendChild(el);
+      return el;
+    });
+
+    let idx = 0, w = 375;
+    const measure = () => { w = Math.max(240, names.offsetWidth || 375); };
+    // The figure travels the hero's whole width, so only one is ever legible;
+    // the names travel 62% of it, so the neighbours peek out of the mask at
+    // either side -- which is the strip's own way of saying there are more.
+    function place(){
+      measure();
+      fEls.forEach((el, i) => {
+        const d = i - idx;
+        el.style.transform = 'translate(-50%,-50%) translateX(' + (d * w) + 'px)';
+        el.style.opacity = d ? '0' : '1';
+      });
+      nEls.forEach((el, i) => {
+        const d = i - idx, a = Math.abs(d);
+        el.style.transform = 'translate(-50%,-50%) translateX(' + (d * w * 0.62) + 'px)';
+        el.style.opacity = a === 0 ? '1' : a === 1 ? '0.34' : '0';
+        el.style.filter = a ? 'blur(1.4px)' : 'none';
+        el.style.pointerEvents = a === 1 ? 'auto' : 'none';
+      });
+    }
+    function go(i){ idx = Math.max(0, Math.min(REPS.length - 1, i)); place(); }
+    place();
+    addEventListener('resize', place);
+    // the strips are only laid out once the tab shows them
+    document.addEventListener('everlab:repTab', place);
+
+    // swipe, with the same one-card-per-gesture feel the rest of the phone has
+    let d0 = null;
+    // The gesture stops here. The hero carries the organ carousel's own drag,
+    // and that one takes the pointer capture as soon as it sees 7px of
+    // sideways travel -- so without this the report swipe got exactly one move
+    // event and then the organ carousel owned the rest of the gesture.
+    swipe.addEventListener('pointerdown', e => {
+      e.stopPropagation();
+      d0 = { x: e.clientX, y: e.clientY, i: idx, moved: false, pid: e.pointerId };
+    });
+    // No pointer capture and no preventDefault here. The surface already spans
+    // the hero, so there is nothing to capture the pointer away from -- and
+    // taking the capture mid-gesture is what stopped the drag dead: the first
+    // qualifying move was the last event this element ever saw.
+    swipe.addEventListener('pointermove', e => {
+      if (!d0) return;
+      e.stopPropagation();
+      const dx = e.clientX - d0.x;
+      if (!d0.moved && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(e.clientY - d0.y)) d0.moved = true;
+    });
+    const end = e => {
+      if (!d0) return;
+      const dx = (e.clientX || 0) - d0.x;
+      if (d0.moved && Math.abs(dx) > 40) go(d0.i + (dx < 0 ? 1 : -1));
+      d0 = null;
+    };
+    swipe.addEventListener('pointerup', e => { e.stopPropagation(); end(e); });
+    swipe.addEventListener('pointercancel', () => { d0 = null; });
+  })();
+
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.
   (function(){
@@ -15716,6 +15826,9 @@
     CARD_STATE.repTab = rep;
     document.body.classList.toggle('repTab', rep);
     setTabUI();
+    // the hero's report strips are laid out from their own width, which is
+    // nothing until the tab shows them
+    document.dispatchEvent(new CustomEvent('everlab:repTab'));
     resize();
   }
   v2Tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab === 'rep')));

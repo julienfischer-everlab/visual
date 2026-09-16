@@ -6017,6 +6017,46 @@ the yaw is free.
   -86, which is the rim's own radius -- exactly a quarter turn, and it holds
   there however much further the hand goes
 
+### 5.215 The Report tab carries reports in the hero
+
+"Report table will change the carousel, will report inside the carousel. Below
+no mini card. Just the list of all records captured."
+
+The hero's carousel cannot carry them. It IS the organ carousel -- the cloud
+morphs to whatever it lands on -- so the reports get the same two strips
+instead, built from `RECS` and hung on the same geometry: the figure at
+`bottom:83px` at 64/64/-1, the names at `bottom:38px` under the same edge mask.
+The cloud stays put: it is the body, and these are the body's reports.
+
+    figure   the reading count, with "biomarkers | date" under it
+    strip    the report's title, neighbours peeking at 34% and blurred
+
+The figure travels the hero's whole width so only one is ever legible; the
+names travel 62% of it, so the neighbours crop out of the mask at either side,
+which is the strip's own way of saying there are more. Tap a neighbour or swipe
+the hero.
+
+**No mini cards below**, and the list of all records directly under it.
+
+**The swipe needed `stopPropagation`, and that was the whole bug.** The hero
+carries the organ carousel's own drag, and that one takes the pointer capture
+as soon as it sees 7px of sideways travel -- so the report swipe got exactly
+one `pointermove` and the organ carousel owned the rest of the gesture. The
+trace is unambiguous:
+
+    before   pointermove@720  pointerdown@720  pointermove@706
+    after    pointerdown@720  then all eight moves  then pointerup@608
+
+Worth recording how that was found, because two plausible culprits were wrong
+first: pointer capture on my own element, and `preventDefault`. Removing both
+changed nothing. What settled it was driving the same gesture synthetically --
+which worked -- so the handlers were right and the input path was being stolen,
+which pointed at an ancestor rather than at the code.
+
+  m20: Report shows the report strips, no organ strips, no mini row, 6 rows
+  listed; a swipe moves the hero to Lipid panel / 32; Biomarkers brings the
+  organ strips and the mini row back. All 25 pages clean.
+
 ---
 
 ## 6. Open items

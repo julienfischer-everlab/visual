@@ -735,7 +735,13 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
 - **V2** — off or on. On, a segmented tab sits between the title and the hero:
   *Biomarkers* or *Report*, and the list below follows it. Above the hero rather
   than below, because the hero belongs to both — it is the same body either way,
-  and what changes underneath it is which set of things is being listed. The
+  and what changes underneath it is which set of things is being listed. On the Report tab the hero carries the reports too: the organ's own
+  carousel cannot, since the cloud morphs to whatever it lands on, so the
+  reports get the same two strips — the count as the figure with *biomarkers |
+  date* under it, the title on the name strip with its neighbours peeking and
+  blurred — hung on the same geometry, over the same body. Tap a neighbour or
+  swipe the hero to move between them. No mini cards under it, and the list of
+  all records directly below. The
   Report tab lists `RECS`, the same table the record select, the record carousel
   and the report card read, with rows in the list's own language: title,
   *category | date*, and the reading count in the badge the record menu uses.
