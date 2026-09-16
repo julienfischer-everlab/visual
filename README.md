@@ -732,8 +732,14 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   you were reading rather than to the top of the list, and a hash aimed
   straight at an archived mode sets both halves, since they are set from the
   mode rather than from whichever control was touched.
-- **V2** — off or on. On, a segmented tab sits between the title and the hero:
-  *Biomarkers* or *Report*, and the list below follows it. Above the hero rather
+- **V2** — on by default now, since the tabs are the page. A segmented pill
+  sits above the hero: *Biomarkers* or *Reports*, and the list below follows
+  it. The active ground is one element that slides between the two rather than
+  two that swap, measured off whichever tab it lands on, so the phone's equal
+  halves and the desk's word-width tabs need one mechanism rather than two. On
+  the phone the tabs take the top of the screen and the page title goes with
+  them — *Health insights* over a control that already says Biomarkers or
+  Reports is the page named twice. Above the hero rather
   than below, because the hero belongs to both — it is the same body either way,
   and what changes underneath it is which set of things is being listed. On the Report tab the hero is a card carousel of the
   reports. Each card follows the notification framework: the kind with its dot
@@ -743,7 +749,17 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   uses, and two tilted sheets with a coloured band say "a document" faster at
   150px than a photograph of one would; a video is the same sheet with a tinted
   frame and a play badge. Both take their tint from the record's own colour
-  pair. Dismissing a card removes it, so the cards and the dots are re-read from
+  pair. Tapping a card opens a **bottom sheet** — the kind with its dot, the
+  illustration, the name, what the report measured and its four facts — and the
+  sheet carries the action: *See results* narrows the biomarkers and hands the
+  page back to the Biomarkers tab, through the same `choose()` everything else
+  goes through, so opening a report and going to its readings are two steps
+  rather than one. The sheet reuses the organ sheet's chrome — wrapper, dim,
+  handle, slide — because a second bottom sheet that moved differently would
+  read as a second kind of thing, and it is mounted twice, inside the phone
+  frame and fixed over the desk, with each carousel handed its own so nothing
+  has to guess which surface is on screen.
+  Dismissing a card removes it, so the cards and the dots are re-read from
   the DOM after every change rather than captured once. It is a scroll-snap scroller,
   so touch, the wheel and the keyboard are the browser's — and the mouse drag is
   driven by hand on top, because a scroller pans for a finger and for nothing
@@ -752,10 +768,11 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   and back on at the release with a smooth scroll to the nearest card; a drag
   does not also open a card, since the click lands after `pointerup`. The dots
   read the scroll position rather than the gesture, so they cannot drift out of
-  step. The covers are duotones mixed from
-  two colours on the record with three soft lights over them, since the page
-  inlines everything it uses and a flat duotone reads as a swatch rather than a
-  photograph. The organ's strips, its gauge and the cloud stand down on this
+  step. The pinned filter bars stop their
+  ground halfway up the chips row, then hold it flat for the rest of the bar and
+  fade out below it: a fade that began its descent at the chips' middle left the
+  bottom of the bar part-transparent, and beside a chip a row passing under
+  showed through it. The organ's strips, its gauge and the cloud stand down on this
   tab: the subject is the reports, not the body. Tapping a card narrows the
   readings to it, like a row in the list. No mini cards under it, and no second list of the same six reports —
   the cards are that list. Below it, and under that, **Medical records**: the
