@@ -63,6 +63,31 @@ it:
   slot at the exact moment its card arrives underneath it — the two never
   separate, and no gap opens between a parked bar and the card it belongs to.
 
+### Holding the top gap
+
+The bars would otherwise pin flush to `top: 0` and take the ground strip above
+them. `.gutter-top` is a sticky, opaque band of ground the height of `--pad`,
+sitting over every card and under every header, so the gap survives scrolling
+and the cards passing behind it stay hidden. Slots are measured from its
+underside, so changing `--pad` moves the whole stack.
+
+Each header also carries its own opaque ground backing behind the white bar
+(`.head` / `.head__bar`). Without it, the card scrolling behind shows through
+the bar's rounded top corners.
+
+## Card styling
+
+White cards on a white ground, separated by a 1px `--card-line` hairline and
+**no shadows**. The header bar carries the top border and the top corners, the
+card the sides, bottom and bottom corners, so the two read as one outline. Each
+card is `overflow: hidden`, which is what clips the image to the card rather
+than the image rounding its own corners. That is safe here only because the
+header is no longer a descendant — `overflow: hidden` makes a box its own
+scroll container, and a sticky descendant then has nothing to stick to.
+
+Header bar, card and image are all exactly the same width (the image inset by
+the 1px border), because anything else shows as a step in the edge.
+
 ## The cover effect
 
 `--cover` (0 → 1) is written on scroll inside one rAF and says how far the next
@@ -70,14 +95,17 @@ step has covered this card — 0 as its header enters at the bottom edge, 1 as
 that header reaches its slot:
 
 ```css
-.panel     { transform: scale(calc(1 - .02 * var(--cover,0))); }
-.panel > * { opacity:   calc(1 - .4  * var(--cover,0)); }
+.panel > * { opacity: calc(1 - .4 * var(--cover,0)); }
 ```
 
-The scale origin is the bottom edge, so a card's parked edge stays where it
-was. The fade sits on the card's contents rather than the card, because fading
-the card itself would let the stack underneath ghost through it. Both are
-disabled under `prefers-reduced-motion`.
+The fade sits on the card's contents rather than the card, because fading the
+card itself would let the stack underneath ghost through it. It is disabled
+under `prefers-reduced-motion`.
+
+There is deliberately **no scale** on the covered card. A 2% scale-down makes a
+362px card 354.8px, so its edges no longer line up with the header bar above it
+or the card sliding over it, and that mismatch reads as a step in the white
+edge. Even widths and a scale are mutually exclusive here.
 
 Scrolling is the native document scroll throughout, so iOS momentum,
 rubber-band and scrollbar behaviour are untouched.

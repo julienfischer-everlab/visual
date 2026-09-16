@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#e4ded5">
+<meta name="theme-color" content="#ffffff">
 <title>Everlab — How it works</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,11 +38,14 @@
      in flow, so it reaches its slot exactly as its card arrives underneath it —
      the two never separate.
 
+   Cards and headers carry a hairline border and no shadow, every one of them
+   exactly the same width, and each card clips its own content to its corners.
+
    The JS measures the cards and headers and writes three custom properties:
    --slot (where a header parks), --pin (where a card parks) and, on scroll,
-   --cover (how far a card has been covered, which CSS turns into the 2%
-   scale-down and the fade). Scrolling itself is the native document scroll,
-   so iOS momentum is untouched.
+   --cover (how far a card has been covered, which CSS turns into the fade).
+   Scrolling itself is the native document scroll, so iOS momentum is
+   untouched.
    =========================================================================== */
 
 /* ---------- tokens ---------- */
@@ -51,10 +54,10 @@
   --stage-ink:#8a8175;
   --bezel:#141210;
 
-  --page-bg:#e4ded5;      /* the ground the cards are inset against */
+  --page-bg:#ffffff;      /* the ground the cards are inset against */
   --card-bg:#ffffff;
   --card-radius:22px;
-  --media-radius:16px;
+  --card-line:#e4e1db;    /* the card outline — there are no shadows */
 
   --ink:#17150f;          /* headings */
   --ink-soft:#3f3a33;     /* list copy */
@@ -162,7 +165,21 @@ ul{margin:0;padding:0;list-style:none;}
   margin-inline:auto;
   display:flex;
   flex-direction:column;
-  padding:var(--pad);
+  /* no padding-top: .gutter-top below provides it, and keeps providing it
+     once the page is scrolled */
+  padding:0 var(--pad) var(--pad);
+}
+
+/* The strip of ground above the stack. It is sticky and painted over
+   everything, so the gap at the top survives scrolling instead of being taken
+   by the first header bar — and the cards passing behind it stay hidden. */
+.gutter-top{
+  position:sticky;
+  top:0;
+  z-index:10;                      /* over every card, under every header */
+  flex:none;
+  height:var(--pad);
+  background:var(--page-bg);
 }
 
 /* ---------- step header ---------- */
@@ -172,15 +189,21 @@ ul{margin:0;padding:0;list-style:none;}
 .head{
   position:sticky;
   top:var(--slot,0px);             /* its slot in the collapsed stack */
-  z-index:calc(10 + var(--i));     /* every header sits above every card */
+  z-index:calc(11 + var(--i));     /* every header sits above every card */
   flex:none;
-  background:var(--card-bg);
-  border-radius:var(--card-radius) var(--card-radius) 0 0;
-  padding:18px var(--gutter);
-  /* the leading edge as the step rises, and what separates the parked bars */
-  box-shadow:0 -12px 26px -14px rgba(23,21,15,.34);
+  /* Opaque ground behind the bar, so the card passing behind is not visible
+     through the bar's rounded top corners. */
+  background:var(--page-bg);
 }
 .panel + .head{margin-top:var(--pad);}
+
+.head__bar{
+  background:var(--card-bg);
+  border:1px solid var(--card-line);
+  border-bottom:0;
+  border-radius:var(--card-radius) var(--card-radius) 0 0;
+  padding:18px var(--gutter);
+}
 
 .eyebrow{
   display:flex;
@@ -215,29 +238,28 @@ ul{margin:0;padding:0;list-style:none;}
   flex-direction:column;
   min-height:calc(var(--vph) - 2 * var(--pad) - var(--hh));
   background:var(--card-bg);
+  border:1px solid var(--card-line);
+  border-top:0;
   border-radius:0 0 var(--card-radius) var(--card-radius);
-  padding:0 var(--gutter) 38px;
-  /* --cover: 0 → 1 as the next step slides over this one (set by the script).
-     Scaling about the bottom edge keeps the parked edge where the card left
-     it, so the cards below never appear to shift. */
-  transform:scale(calc(1 - .02 * var(--cover,0)));
-  transform-origin:50% 100%;
+  overflow:hidden;                 /* the card clips its own content */
 }
-/* The fade sits on the contents, not the card: fading the card itself would
-   let the stack underneath ghost through it. */
+/* --cover: 0 → 1 as the next step slides over this one (set by the script).
+   The fade sits on the contents, not the card: fading the card itself would
+   let the stack underneath ghost through it. There is no scale — every card,
+   covered or not, has to stay exactly as wide as the header bars above it. */
 .panel > *{
   opacity:calc(1 - .4 * var(--cover,0));
 }
 
 /* ---------- media ---------- */
+/* Full card width — the copy is inset by the body's own padding, so the image
+   needs no margin arithmetic and its edges land exactly on the card's. */
 .media{
   position:relative;
-  width:calc(100% + 2 * var(--gutter));
-  margin-inline:calc(-1 * var(--gutter));   /* wider than the copy, as in the design */
+  width:100%;
   aspect-ratio:var(--ratio, 1 / 1.02);
   flex:none;
   overflow:hidden;
-  border-radius:var(--media-radius);
   background:#d9d3ca;
 }
 /* Drop-in replacement point: put a real photo here and the placeholder art
@@ -252,7 +274,7 @@ ul{margin:0;padding:0;list-style:none;}
 
 /* ---------- text ---------- */
 .body{
-  padding-top:26px;
+  padding:26px var(--gutter) 38px;
   display:flex;
   flex-direction:column;
   gap:15px;
@@ -626,7 +648,6 @@ ul{margin:0;padding:0;list-style:none;}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .panel{transform:none;}
   .panel > *{opacity:1;}
 }
 </style>
@@ -644,9 +665,13 @@ ul{margin:0;padding:0;list-style:none;}
      replace it and the hand-off points follow. -->
 <main class="stack">
 
+  <div class="gutter-top" aria-hidden="true"></div>
+
   <!-- ============================ 1 ============================ -->
   <header class="head" style="--i:1">
-    <p class="eyebrow"><span class="eyebrow__num">1</span> Get started</p>
+    <div class="head__bar">
+      <p class="eyebrow"><span class="eyebrow__num">1</span> Get started</p>
+    </div>
   </header>
   <article class="panel" style="--i:1" aria-labelledby="s1">
     <div class="media m-wood" role="img" aria-label="An Everlab plan card resting on a wooden board">
@@ -695,7 +720,9 @@ ul{margin:0;padding:0;list-style:none;}
 
   <!-- ============================ 2 ============================ -->
   <header class="head" style="--i:2">
-    <p class="eyebrow"><span class="eyebrow__num">2</span> Consult</p>
+    <div class="head__bar">
+      <p class="eyebrow"><span class="eyebrow__num">2</span> Consult</p>
+    </div>
   </header>
   <article class="panel" style="--i:2" aria-labelledby="s2">
     <div class="media m-fabric" role="img" aria-label="A phone showing an onboarding video consultation">
@@ -745,7 +772,9 @@ ul{margin:0;padding:0;list-style:none;}
 
   <!-- ============================ 3 ============================ -->
   <header class="head" style="--i:3">
-    <p class="eyebrow"><span class="eyebrow__num">3</span> Test</p>
+    <div class="head__bar">
+      <p class="eyebrow"><span class="eyebrow__num">3</span> Test</p>
+    </div>
   </header>
   <article class="panel" style="--i:3" aria-labelledby="s3">
     <div class="media m-table" role="img" aria-label="A phone held over a table showing a health score">
@@ -792,7 +821,9 @@ ul{margin:0;padding:0;list-style:none;}
 
   <!-- ============================ 4 ============================ -->
   <header class="head" style="--i:4">
-    <p class="eyebrow"><span class="eyebrow__num">4</span> Act</p>
+    <div class="head__bar">
+      <p class="eyebrow"><span class="eyebrow__num">4</span> Act</p>
+    </div>
   </header>
   <article class="panel" style="--i:4" aria-labelledby="s4">
     <div class="media m-results" role="img" aria-label="Result cards from the Everlab app">
@@ -870,6 +901,7 @@ ul{margin:0;padding:0;list-style:none;}
    that way would compute a wrong park offset. */
 (function () {
   var stack = document.querySelector('.stack');
+  var gutter = stack.querySelector('.gutter-top');
   var screenEl = document.getElementById('screen');
   var heads = [].slice.call(stack.querySelectorAll('.head'));
   var panels = [].slice.call(stack.querySelectorAll('.panel'));
@@ -897,9 +929,10 @@ ul{margin:0;padding:0;list-style:none;}
     var base = inner ? screenEl.getBoundingClientRect().top : 0;
     stackTop = stack.getBoundingClientRect().top - base + scrollTop();
 
-    // Pass 1: the headers stack flush, so a slot is just the run of headers
-    // above it. Tallest header wins --hh, which keeps the slots uniform.
-    var slot = 0, tallest = 0;
+    // Pass 1: the headers stack flush under the top gutter, so a slot is that
+    // gutter plus the run of headers above it. Tallest header wins --hh, which
+    // keeps the slots uniform.
+    var slot = gutter.offsetHeight, tallest = 0;
     slots.length = 0;
     heads.forEach(function (head) {
       var hh = head.offsetHeight;
@@ -911,7 +944,7 @@ ul{margin:0;padding:0;list-style:none;}
     stack.style.setProperty('--hh', tallest + 'px');
 
     // Pass 2: walk the flow and park each card at the fold.
-    var y = parseFloat(cs.paddingTop) || 0;
+    var y = (parseFloat(cs.paddingTop) || 0) + gutter.offsetHeight;
     headFlow.length = 0;
     heads.forEach(function (head, i) {
       if (i) y += pad;                      // the margin between steps
