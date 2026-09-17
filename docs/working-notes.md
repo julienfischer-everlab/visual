@@ -7310,6 +7310,29 @@ page it opens is a filtered set of readings, not a document. A report is the
 file; the results are what the reader came for. Both copies of the card, and
 the tweak that switches them, now say results.
 
+### 5.276 Seven nights, seven bars
+
+"Can use 7 vertical bar here instead." The sleep tile's caption already said
+*Last 7 nights*, and a line between seven nightly scores draws a continuity the
+readings do not have -- they are seven separate nights, which is what the steps
+chart beside it already says about seven days. Same `.stpBars` and the same day
+letters, so the two tiles are one chart with two subjects.
+
+Changed at the source slide rather than in the clone, so the carousel's own
+Sleep score slide agrees with the tile. The cost is that Sleep score and Time
+asleep now look alike inside that carousel; the alternative was the same metric
+drawn two ways in one product, which is worse.
+
+"+8px gap after title" then "less gap by 16px": the titles get 18px under them
+on the phone and 24 at the desk, and the run from the tabs to the first title
+comes down from 58 to 42 -- the Insights tab drops the pair like the Reports
+tab does, and the 32px foot under it is there to keep the biomarkers' filter
+clear of the dock, which is not what follows here.
+
+Third time this week: the trim did nothing until its selector carried the same
+class count as the rule it was correcting. `body.insTab #phone #mV4` is two
+classes short of `body.v5.v8 #phone #mV4`.
+
 ---
 
 ## 6. Open items
