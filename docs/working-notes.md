@@ -6757,6 +6757,19 @@ moved out to 1280ms: at 420ms it was firing mid-glide and snapping the very
 travel it was checking (0 -> 5 -> 67 -> 722 in three samples; now 0 -> 4 -> 61
 -> 280 -> 608 -> 707 -> 722).
 
+### 5.248 V2's tabs, 70% and centred
+
+"V2 bug, top bar cut bg. Reduce tab width 70% center."
+
+The two are one thing. V2's tab track ran the full width of the screen with a
+flat bottom edge and a 6% fill, so under the status strip it read as a *band*
+that stopped -- a cut in the ground rather than a control on it. At 70% and
+centred it is a pill on a continuous ground, which is what it always was.
+
+Worth saying plainly: I scanned a column down the phone's top looking for a hard
+colour step and did not find one -- every change was under 2 lum, which is the
+hero halo's own gradient. The cut was the track's shape, not the ground.
+
 ### 5.247 Two more names, and a hero that stopped blinking
 
 "Rename --> Insights, not Biomarkers page": the menu group.
