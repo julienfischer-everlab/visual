@@ -7182,6 +7182,25 @@ absolute inside the header rather than sticky: it belongs to the hero, so it
 lifts and fades with it instead of pinning over the list. Measured at 300px of
 scroll: opacity .2 and still rising.
 
+### 5.270 Reports leaves the sidebar, and the three tabs open at one distance
+
+"V3 and V4: remove Reports in the main nav desktop." Right -- those versions
+fold reports into the Insights page as a tab, so the sidebar entry is a second
+door to the same room. Hidden on `v3Tab`, still there on V1 and V2, which do
+not have the tab.
+
+"Add gap +8px" (on the Reports tab) and "reduce gap by 16px" (on Biomarkers).
+Taken together they level the three: each block was opening at its own
+distance under the rule, because each carries its own lead-in -- the filter
+block had 26px of padding on top of the control's own margin, and the report
+shelf and the insight list had nothing but the margin. Now 30 and 28.
+
+Done through the control's margin plus one pull on the filter block, not by
+adding margins to the blocks: adjacent siblings collapse, so an 8px margin-top
+under a 20px margin-bottom is 20px and nothing happens. And the filter block is
+pulled up by a negative margin rather than by trimming its padding, because
+that padding is the plate above the select when the bar pins.
+
 ---
 
 ## 6. Open items
