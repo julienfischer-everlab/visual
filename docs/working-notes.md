@@ -7006,6 +7006,29 @@ versions put the pair on the body card's own ground rather than on the page's,
 and a 6% fill that read as a card over black reads as a box drawn around
 nothing here.
 
+### 5.260 A chosen record is an answer, not a field
+
+"When the select is active, add light grey background and remove the border to
+make it more prominent."
+
+Both halves are the same move. An outlined box reads as somewhere to go and
+type; filled, it reads as the answer. At rest the select keeps its 1.5px inset
+ring (an inset ring rather than a border, because Chromium floors border-width
+to whole pixels); chosen, it drops the ring and takes a 10% fill, 14% while its
+menu is open. The desk keeps its border and makes it transparent, since that is
+what holds the box's 56px. Measured in both themes on both surfaces: fill on,
+edge off, height unchanged.
+
+### 5.261 One fill for two tabs
+
+"The biomarker cards and the report cards should have the same background: 6%
+white opacity."
+
+Reverting 5.259's third item, and rightly. The pair and the report row are the
+same card in two tabs -- one replaces the other on a tap -- so they are the one
+place on the page that must agree about their material. Taking the pair to 3.5%
+made them two different materials. Both 6%.
+
 ---
 
 ## 6. Open items
