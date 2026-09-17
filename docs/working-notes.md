@@ -6981,6 +6981,31 @@ exactly as `.rsSheet` did. Moved below `.rsDesk`. Worth remembering as a rule:
 **a sheet's own ground is declared after the sheet chrome, never beside its
 feature.**
 
+### 5.259 Two tabs, one starting line
+
+"The report card carousel and the biomarker card should be at the same height
+from the tab group."
+
+They were 32px apart and the reason was mine. V3 hides the pair on the Reports
+tab, so `#mV4` is an empty block there — but it still carried the 32px foot
+5.256 gave it to keep the biomarkers' filter clear of the dock. Mini cards
+began 18px under the tabs; the report row began 50px under them. An empty block
+keeps its gutter and gives up its foot: `padding:2px 13px 0`. Both 18 now.
+
+It took two goes because the fix tied on specificity with the rule it was
+correcting (two ids, three classes each) and lost on source order. Moved to sit
+directly after it, which is also where it reads.
+
+"For V4 the tab group should fill the entire width of the screen." 70% fitted
+two words and cut Insights in half. V4 takes the width the cards take — the same
+13px gutter — so the control lines up with the block under it instead of
+floating inside it.
+
+"For V3 and V4 you can reduce the opacity of the mini card." .06 → .035. Those
+versions put the pair on the body card's own ground rather than on the page's,
+and a 6% fill that read as a card over black reads as a box drawn around
+nothing here.
+
 ---
 
 ## 6. Open items
