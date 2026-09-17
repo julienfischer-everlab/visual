@@ -6568,6 +6568,77 @@ The hero **is** the bento header on the phone; the anchor is `#mHeroOrgan`.
   becomes #mRepCarHost and it goes static. desk: tabs 154 -> 675, below the
   grid. Switching back to V2 puts all three where they were.
 
+### 5.237 V3, settled
+
+Four passes over the same layout, each one the consequence of the last:
+
+- **the hero bento stays on both tabs.** V2 takes the desk's `.dgrid` away on
+  the Reports tab, because the tabs sit above it and the bento is the
+  biomarkers' summary. V3 keeps it: the tabs sit BELOW it there, so the bento
+  is the page's header rather than one tab's content, and a header that came
+  and went with the tab under it would make two tabs read as two pages.
+- **the phone's tabs go under the two mini cards**, not under the hero: the
+  bento is the hero *and* the minis, so the anchor is `#mV4`.
+- **which puts them inside the rounded body card**, and the card then carries
+  the HEADER's ground rather than the list's -- `rgb(var(--v5head))`, the same
+  number the header paints, so the card reads as the page continuing and
+  darkens to black on the same curve as the reader scrolls past the header.
+  That rule has to sit after the v5/v6 grounds: same specificity, and source
+  order was handing it to them.
+- **75% wide, centred**, so the control is the middle of the card.
+
+### 5.238 The Onboarding page became two, over the Overview
+
+"Just use the overview backgrounds... but I need two screens: the desktop
+screen on one page, the mobile screen on another."
+
+So `#m24` is the desk Overview (m9's chain) with the modal, and `#m25` is the
+Overview phone (m6's chain, `#phone2`) with the sheet. The message arrives while
+you are looking at your Overview, which is where it would actually arrive.
+
+"When you click Explore your result, it's going to go to the inside page and
+scroll down to the sticky filter position." It does -- smoothly, because the
+travel is the explanation: what the message is about is the list below, not the
+header above it. The scroll is **asked for again until it lands**, because a
+single scroll timed to "after the beat" is a guess and the guess was wrong: the
+list is hidden while the skeleton is up, so the page is short, and a scroll to a
+place the page does not reach yet clamps to the top and stays there. The first
+attempt is smooth; a retry sets the position outright, since a smooth scroll is
+driven by frames and where frames are not coming, asking politely never arrives.
+
+  phone: lands scrolled with the bar pinned (offset 0, stuck) and 44 rows.
+  desk: lands scrolled at deviceScaleFactor 1; under Playwright at dsf 2 the
+  scroll does not take, which is a capture artifact rather than a page bug --
+  the same code path, same page, same waits, differs only by that flag.
+
+### 5.239 Three tidies
+
+- **Bio graph is gone.** Every read of it was already null-guarded and the
+  `#...dots` hash flag sets `CARD_STATE.bioDots` directly, so the row could
+  simply leave; its dead exemption in `segmentise` went with it.
+- **V2 is Layout**, and its values are named for the three layouts rather than
+  for on and off: V1 / V2 / V3.
+- **No horizontal scroll in the body.** `.dash` was `overflow:auto`, which is
+  both axes, and the organ card's halo and arc reach past the container at
+  narrow widths -- 14px of sideways travel at 1280, 36px at 1100, with every
+  tweak and none. It is `overflow-y:auto; overflow-x:hidden` now: the page
+  scrolls down, never sideways, and anything wide enough to need a horizontal
+  scroller carries its own.
+
+### 5.240 The New report notice floats
+
+"Make it floating ghost cta, above the main bottom nav, no border." It was a
+card in the filter block; it is a floating pill over the page now, blue at
+three-quarter strength over a 24px blur with no outline at all, and on the phone
+it sits above the dock -- the one thing it must not cover. Floating means it
+belongs to the surface rather than to the block it was written in, so both
+copies are moved out of their bars into `#phone` and `.dash`: an absolutely
+positioned child of the sticky filter bar would ride the bar rather than the
+screen.
+
+  phone: 9px of clearance above the dock, rgba(22,41,74,.72), box-shadow none.
+  desk: fixed, 26px off the bottom, 560 wide, and the tap still gives 44 rows.
+
 ---
 
 ## 6. Open items

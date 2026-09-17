@@ -421,7 +421,10 @@
 
   /* ---- In situ: the concept inside the product dashboard ---- */
   .dash{
-    position:fixed;left:0;right:0;bottom:0;top:57px;display:none;overflow:auto;z-index:1;
+    position:fixed;left:0;right:0;bottom:0;top:57px;display:none;z-index:1;
+    /* the page scrolls down, never sideways: anything wide enough to need a
+       horizontal scroller carries its own (the report row, the chips) */
+    overflow-y:auto;overflow-x:hidden;
     /* the page's ground, once. Anything that has to sit ON the page and look
        like the page reads this rather than naming the colour again -- which is
        how the pinned filter block ended up grey on the tablet, whose ground is
@@ -1599,7 +1602,12 @@
      and a steps week are the headline of the readings, not of the reports --
      on this tab the reports themselves take the top of the page, in the same
      carousel the phone's hero carries. */
-  body.repTab .dash .dgrid{display:none !important;}
+  /* V2 takes the bento away on the Reports tab, because the tabs sit above it
+     and the bento is the biomarkers' summary. V3 keeps it on both tabs: the
+     tabs sit BELOW it there, so the bento is the page's header rather than one
+     tab's content, and a header that came and went with the tab underneath it
+     would make the two tabs read as two pages. */
+  body.repTab:not(.v3Tab) .dash .dgrid{display:none !important;}
   .dRepShelf{position:relative;margin:0 0 6px;}
   .dRepCar{
     display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;padding:2px 0 6px;
@@ -3457,7 +3465,8 @@
      in it -- it moves down to sit with the records it belongs with.
      The elements are moved rather than duplicated (see v3Layout), so there is
      one carousel with one set of handlers however the page is laid out. */
-  body.v3Tab #phone #mTabsV2{margin:2px 13px 16px;}
+  /* the tabs are inside the body card in V3, and sized to the middle of it */
+  body.v3Tab #phone #mTabsV2{width:75%;margin:2px auto 16px;}
   body.v3Tab .dash .dTabsV2{margin:22px 0 26px;}
   .mRepCarHost{display:none;}
   body.v3Tab.repTab #phone .mRepCarHost{display:block;padding:8px 0 0;}
@@ -3481,15 +3490,29 @@
      way into the report -- it chooses the record, which is what the select
      below would have done the long way. */
   .nrCard{display:none;}
+  /* It floats now rather than sitting in the filter block: a thing that has
+     just arrived belongs over the page, not in the middle of the controls.
+     Ghost -- the blue is carried at three-quarter strength over a blur, with
+     no outline at all -- and above the dock on the phone, because the dock is
+     the one thing it must not cover. */
   body.newRep .nrCard{
-    display:flex;align-items:center;gap:12px;width:100%;
-    margin:0 0 14px;padding:13px 13px 13px 16px;border:0;border-radius:16px;
-    font:inherit;text-align:left;cursor:pointer;
-    background:#16294a;color:#dbe6fb;
-    box-shadow:inset 0 0 0 1px rgba(143,169,216,.2);
+    display:flex;align-items:center;gap:12px;z-index:9;
+    padding:13px 13px 13px 16px;border:0;border-radius:18px;
+    font:inherit;text-align:left;cursor:pointer;box-shadow:none;
+    background:rgba(22,41,74,.72);color:#dbe6fb;
+    -webkit-backdrop-filter:blur(24px) saturate(1.4);
+    backdrop-filter:blur(24px) saturate(1.4);
     -webkit-tap-highlight-color:transparent;transition:background .16s ease;
   }
-  body.newRep .nrCard:hover{background:#1c3159;}
+  body.newRep .nrCard:hover{background:rgba(28,49,89,.86);}
+  body.newRep #phone .nrCard{
+    position:absolute;left:13px;right:13px;
+    bottom:calc(var(--navH, 56px) + var(--navInset, 12px) + 26px);
+  }
+  body.newRep .dash .nrCard{
+    position:fixed;left:calc(50% + 112px);transform:translateX(-50%);
+    bottom:26px;width:min(560px, calc(100% - 320px));
+  }
   .nrCard .t{flex:1 1 auto;min-width:0;}
   .nrCard b{display:block;font-size:14px;font-weight:500;color:#eaf1ff;}
   .nrCard i{
@@ -3502,43 +3525,33 @@
     background:rgba(219,230,251,.14);color:#eaf1ff;
   }
   .nrCard .go svg{width:12px;height:12px;display:block;}
-  .dash .nrCard{margin-bottom:18px;padding:16px 16px 16px 18px;}
+  .dash .nrCard{padding:16px 16px 16px 18px;}
   .dash .nrCard b{font-size:15px;}
   /* acted on, so it has nothing left to say */
   .nrCard.done{display:none !important;}
 
   /* ---- Past results: one message, two dresses -------------------------
-     A modal on the desk and a bottom sheet on the phone, on one page so the
-     pair can be read together. The page splits: the dashboard takes the left,
-     the phone the right, and each carries its own copy of the message. */
-  body.pastRes .dash{right:46%;}
-  body.pastRes #phoneShell{
-    left:auto;right:3.5%;top:calc(50% + 22px);transform:translateY(-50%);
-    --phH:min(calc(100vh - 92px), 880px);
-  }
-  /* the page behind the message is not the subject: it is dimmed, and nothing
-     on it answers a click while the message is up */
-  body.pastRes .dash main,body.pastRes .dash .side{filter:saturate(.7) brightness(.55);}
-  /* the page wears both chains, so the engine still had a canvas to paint on --
-     a cloud of particles in the gap between the two surfaces, which is neither
-     of them. The subject here is the message. */
-  body.pastRes canvas#field{display:none;}
-  body.pastRes .dash,body.pastRes #phone .mscroll{pointer-events:none;}
+     A modal on the desk and a bottom sheet on the phone, each a page of its
+     own and each over the Overview page it would actually appear on -- the
+     message arrives while you are looking at your Overview, not at the list it
+     is about. */
+  body.pastRes .dvWrap{filter:saturate(.7) brightness(.5);}
+  body.pastM #phone2 .mscroll{filter:saturate(.7) brightness(.5);}
+  body.pastRes .dvWrap,body.pastM #phone2 .mscroll{pointer-events:none;}
   body.pastRes .prWrap{pointer-events:auto;}
   .prWrap{display:none;}
-  body.pastRes .prDesk{
-    display:block;position:fixed;left:0;right:46%;top:57px;bottom:0;z-index:40;
-  }
+  body.pastD .prDesk{display:block;position:fixed;left:0;right:0;top:57px;bottom:0;z-index:40;}
   .prDim{position:absolute;inset:0;background:rgba(0,0,0,.5);}
   .prModal{
     position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(92%, 540px);max-height:88%;display:flex;flex-direction:column;
+    width:min(92%, 560px);max-height:88%;display:flex;flex-direction:column;
     border-radius:26px;overflow:hidden;background:#1b1b1a;
     box-shadow:0 40px 120px rgba(0,0,0,.55);
   }
   body.light .prModal{background:#fff;}
-  /* the phone's copy, in the sheet chrome the rest of the phone uses */
-  body.pastRes #phone .prSheetWrap{display:block;}
+  /* the phone's copy lives in the Overview phone, in the sheet chrome the rest
+     of the phone uses */
+  body.pastM #phone2 .prSheetWrap{display:block;}
   .prSheet{
     top:auto;max-height:92%;border-radius:26px 26px 0 0;background:#1b1b1a;
   }
@@ -4864,6 +4877,14 @@
      laid on a darker one. */
   body.v6 #phone{--headBg:rgb(var(--v5head, 18 18 18));}
   body.v6 #phone .mBody{--bodyBg:#000;--bodyBg0:rgba(0,0,0,0);}
+  /* V3's body card carries the HEADER's ground rather than the list's, so the
+     card reads as the page continuing rather than as a second surface -- and it
+     darkens to black on the same curve the header does, because that is the
+     scroll saying the header is behind you now. --v5head is the grey the header
+     is painting, written by the scroll handler: one number, two surfaces, so
+     they cannot drift. It has to sit AFTER the v5/v6 grounds above, which carry
+     the same specificity and would otherwise win on source order. */
+  body.v3Tab #phone .mBody{background:rgb(var(--v5head, 18 18 18));}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
   body.light.v5 #phone .mstatus .tm{color:#000;}
@@ -5658,11 +5679,11 @@
         <!-- V2: a tab above the hero saying what the page is a list of.
              Biomarkers or Report, and the list below follows it. -->
         <div class="tkRow">
-          <span class="lbl">V2</span>
-          <select id="stV2Tab" aria-label="Where the Biomarkers / Reports tabs live">
+          <span class="lbl">Layout</span>
+          <select id="stV2Tab" aria-label="Page layout">
+            <option value="off">V1</option>
             <option value="on" selected>V2</option>
             <option value="v3">V3</option>
-            <option value="off">Off</option>
           </select>
         </div>
         <!-- and how the Reports tab lays its reports out. Two named shapes,
@@ -5709,16 +5730,6 @@
           <select id="stAct" aria-label="Activity card state">
             <option value="on">Completed</option>
             <option value="empty">Empty</option>
-          </select>
-        </div>
-        <!-- The biomarker slide's graph: the arc, or a line of dots filled with
-             the ranges' colours by share. Two named readings, not on and off,
-             so it stays a select. -->
-        <div class="tkRow">
-          <span class="lbl">Bio graph</span>
-          <select id="stGraph" aria-label="Biomarker graph">
-            <option value="dots">Dots</option>
-            <option value="arc" selected>Arc</option>
           </select>
         </div>
         <!-- Palette: the three inks the file is built on, or a wine family
@@ -6793,12 +6804,15 @@
     // the universe becomes an organ, the organ becomes the product. Built on
     // first view like the storyboard and the instrument (#m23).
     { name: 'Organ Age', dur: 850, ease: 0, group: 'Landing page' },
-    // What a reader meets the first time their history has been pulled in: the
-    // same message in the two dresses it needs, a modal on the desk and a
-    // bottom sheet on the phone, side by side so the pair can be read at once.
-    // Its CTA is the point of it -- it lands on Health insights with the latest
-    // record already chosen, which is the state the message is describing.
-    { name: 'Past results', dur: 850, ease: 0, group: 'Onboarding' },
+    // What a reader meets the first time their history has been pulled in: a
+    // modal on the desk, a bottom sheet on the phone, each over the Overview
+    // page it would actually appear on, and each a page of its own so it can be
+    // linked and sat beside its sibling in the menu. The CTA is the point of
+    // them -- it lands on Health insights with the latest record already chosen
+    // AND scrolled to the filter, because what the message is about is the list
+    // below it, not the header above it.
+    { name: 'Desktop', dur: 850, ease: 0, group: 'Onboarding', sort: 1 },
+    { name: 'Mobile',  dur: 850, ease: 0, group: 'Onboarding', sort: 2 },
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
@@ -10594,10 +10608,10 @@
       (m === 18 ? ' m2 b2 b3 b5' : '') +
       // the tablet is V5's chain plus the marker its layout is written against
       (m === 21 ? ' m2 b2 b3 b5 tabM' : '') +
-      // Past results shows both surfaces at once, so it wears both chains --
-      // the desk's and the phone's -- plus a marker of its own that splits the
-      // screen between them.
-      (m === 24 ? ' m2 b2 b3 b5 m5 v2 v3 v4 v5 v6 v7 v8 pastRes' : '') +
+      // Past results is the Overview page with a message over it: m9's desk and
+      // m6's phone, each with a marker saying which dress the message wears.
+      (m === 24 ? ' m9 pastRes pastD' : '') +
+      (m === 25 ? ' m6 pastRes pastM' : '') +
       (m === 15 ? ' m5 v2 v3 v4' : '') +
       (m === 11 ? ' m5 v2' : '') +
       (m === 12 ? ' m5 v2 v3' : '') +
@@ -16082,19 +16096,53 @@
     // the set is decided here, and the page the reader arrives on is already
     // showing it. The filter's state lives in its own closure rather than in
     // the markup, so it survives setMode rewriting the class list whole.
+    //
+    // And then the page scrolls itself down to the filter. What the message is
+    // about is the LIST -- the reader is being handed a narrowed set, not a
+    // header -- so the page travels there rather than landing at the top and
+    // leaving them to find it. Smooth, because the travel is the explanation.
     wrap.querySelector('.prCta').addEventListener('click', () => {
       hide();
       const latest = REPS[0];
       if (latest) document.dispatchEvent(
         new CustomEvent('everlab:pickRec', { detail: latest.id }));
       setMode(desk ? 18 : 20);
+      // The travel is asked for again until it lands. A single scroll timed to
+      // "after the beat" is a guess, and the guess was wrong on the desk: the
+      // list is hidden while the skeleton is up, so the page is short, and a
+      // scroll to a place the page does not reach yet clamps to the top and
+      // stays there. Asking again costs nothing and cannot be early.
+      let tries = 0;
+      const reach = () => {
+        const sc = desk ? document.querySelector('.dash') : document.getElementById('mScroll');
+        const blk = desk ? document.getElementById('dFilters') : document.getElementById('mSearch');
+        if (!sc || !blk || ++tries > 10) return;
+        // where the block pins: its top in the scroller's own content space,
+        // less whatever the bar already sits under (the phone's status strip)
+        const st = document.querySelector('#phone .mstatus');
+        const stH = (!desk && st && getComputedStyle(st).position === 'absolute')
+          ? st.offsetHeight : 0;
+        const gap = blk.getBoundingClientRect().top - sc.getBoundingClientRect().top - stH;
+        if (Math.abs(gap) <= 2) return;      // pinned; the travel is done
+        const to = Math.max(0, Math.round(sc.scrollTop + gap));
+        // Smooth the first time, because the travel is the explanation. A
+        // retry sets the position outright: a smooth scroll is driven by
+        // frames, and where frames are not coming -- a background tab, a
+        // screenshot -- asking for it again politely never arrives.
+        if (tries === 1) sc.scrollTo({ top: to, behavior: 'smooth' });
+        else sc.scrollTop = to;
+        setTimeout(reach, 260);
+      };
+      setTimeout(reach, 460);
     });
     raise();
     return { reset: () => { wrap.style.display = ''; raise(); } };
   }
   {
     const prD = pastResults(document.body, true);
-    const prM = pastResults(document.getElementById('phone'), false);
+    // the phone's copy belongs to the Overview phone, which is the screen the
+    // message arrives on
+    const prM = pastResults(document.getElementById('phone2'), false);
     // a fresh visit to the page is a fresh message
     document.addEventListener('everlab:mode', () => {
       if (prD) prD.reset();
@@ -16551,7 +16599,7 @@
       // a switch stands for a thing being on or off; Desktop and Tablet M are
       // two named shells, and neither of them is the other one turned off --
       // nor are the library's two grains, Normal and Dense
-      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stGraph' || sel.id === 'stPal' ||
+      if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
           sel.id === 'stLeft' || sel.id === 'stRepLay')
         continue;
       const seg = document.createElement('button');
@@ -17006,10 +17054,11 @@
     });
   }
   {
-    // "below the hero bento": on the phone the hero IS that header, and
-    // #mBento is a zero-height wrapper around it -- anchoring to the wrapper
-    // moved the tabs by twelve pixels and nothing else.
-    const bento = document.getElementById('mHeroOrgan');
+    // "Below the hero bento", and the bento is the hero AND the two mini cards
+    // under it -- so the anchor is the mini-card row, not the hero. (#mBento is
+    // a zero-height wrapper around the hero; anchoring there moved the tabs
+    // twelve pixels and nothing else.)
+    const bento = document.getElementById('mV4') || document.getElementById('mHeroOrgan');
     const mTabs = document.getElementById('mTabsV2');
     const dTabs = document.getElementById('dTabsV2');
     const grid = document.querySelector('.dash .dgrid');
@@ -17038,6 +17087,14 @@
   // performs the long way, so it goes through the same choose().
   {
     const cards = [].slice.call(document.querySelectorAll('.nrCard'));
+    // Floating means it belongs to the surface, not to the block it was
+    // written in: an absolutely positioned child of the sticky filter bar
+    // would ride the bar rather than the screen.
+    const ph = document.getElementById('phone'), dash = document.querySelector('.dash');
+    cards.forEach(c => {
+      const host = c.closest('#phone') ? ph : dash;
+      if (host && c.parentNode !== host) host.appendChild(c);
+    });
     const latest = REPS[0];
     if (cards.length && latest){
       cards.forEach(c => {
