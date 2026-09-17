@@ -6856,6 +6856,33 @@ count. So the first slide read "undefined / undefined biomarkers". Range records
 are now excluded by `!r.all` as well, and the card opens on Pathology test,
 13 Aug 2026, 44 biomarkers.
 
+### 5.253 One piece of news, said once
+
+"When come from the bottom sheet trigger, when we land on the biomarkers screen
+the blur card floating shouldn't be there."
+
+Right: the sheet has just told the reader what was found and they asked to see
+it. Landing on a floating card announcing a report is the page repeating itself,
+over the list it sent them to. The CTA marks the notice acted-on -- the state
+its own tap leaves it in -- before it navigates. Nothing on the Results-received
+surfaces shows the card (measured on m24, m25, m9 and m6: `vis:false` on both
+copies), so there is no fade to see on the way out.
+
+Scoped to that CTA rather than to `everlab:pickRec`. Four other things dispatch
+that event -- a report card, a sheet, a record row -- and dismissing the notice
+whenever any report is opened is a bigger claim than was asked for.
+
+### 5.254 110, not 0
+
+Landing there showed the bug next to it: chips reading **0 All, 0 Optimal,
+0 Suboptimal** over a full list. `countChips` tallies rows whose `data-r`
+carries the chosen record, and Historical records is a range -- no row is
+stamped with it. `applyFilter` has known that since 5.246 (`recSet === 'all' ||
+recAll || ...`); the tally never got the clause. Two filters, one of them
+answering a question the other had stopped asking.
+
+Now 110 / 68 / 20 on the same screen.
+
 ---
 
 ## 6. Open items

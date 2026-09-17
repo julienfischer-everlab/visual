@@ -16328,6 +16328,13 @@
     // leaving them to find it. Smooth, because the travel is the explanation.
     wrap.querySelector('.prCta').addEventListener('click', () => {
       hide();
+      // The floating notice and this message are the same news. Someone who
+      // has just been told what was found and asked to see it should not land
+      // on a card offering them a report -- that is the page repeating itself,
+      // over the list it just sent them to. It is marked acted-on rather than
+      // hidden, which is the state the card's own tap leaves it in. Nothing on
+      // this surface shows it, so there is no fade to see.
+      document.querySelectorAll('.nrCard').forEach(c => c.classList.add('done'));
       // the range, not the newest report: what was found is a history, and
       // that is what the page should be showing when the reader lands
       document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: 'hist' }));
@@ -18566,7 +18573,11 @@
       countChips = function(){
         const tally = {};
         allRows.forEach(r => {
-          if (recSet !== 'all' && (' ' + r.dataset.r + ' ').indexOf(' ' + recSet + ' ') < 0) return;
+          // the same test applyFilter makes, recAll and all: a range passes
+          // every row, and counting without that clause had the chips read
+          // 0 / 0 / 0 over a full list on Historical records
+          if (recSet !== 'all' && !recAll &&
+              (' ' + r.dataset.r + ' ').indexOf(' ' + recSet + ' ') < 0) return;
           const k = rowKey(r); tally[k] = (tally[k] || 0) + 1;
         });
         let total = 0;
