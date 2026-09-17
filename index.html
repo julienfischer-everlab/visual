@@ -1621,7 +1621,7 @@
      before you press. The sliding thumb becomes the underline: same element,
      same measurement, so the travel is the one that was already there. */
   body.v3Tab .dash .dTabsV2{
-    display:flex;width:auto;gap:30px;margin:16px 0 26px;padding:0;
+    display:flex;width:auto;gap:30px;margin:40px 0 20px;padding:0;
     justify-content:flex-start;border-radius:0;background:none;
     box-shadow:inset 0 -1px 0 rgba(255,255,255,.1);
   }
@@ -1629,24 +1629,33 @@
   body.v3Tab .dash .dTabsV2 .v2Tab{
     display:flex;align-items:center;gap:8px;
     height:auto;padding:0 0 13px;border-radius:0;background:none;font-size:15px;
+    /* regular, active included: the underline says which one you are on, and
+       a second signal saying the same thing makes the row look heavier on one
+       side than the other */
+    font-weight:400;
   }
   /* the display above out-specifies the V4 gate, so the gate is restated here
      rather than left to be quietly overridden */
   body.v3Tab .dash .dTabsV2 .v2Tab.v4Only{display:none;}
   body.v3Tab.v4Tab .dash .dTabsV2 .v2Tab.v4Only{display:flex;}
+  /* 86px under the rule -- 26 from the control, 26 from the filter block's
+     own lead-in and 34 from the row inside it -- which is a page break, not a
+     gap between a tab and the thing it lists. The row's 34 goes and the
+     control keeps 20, so 46 is left. */
+  body.v3Tab .dash .dRow{margin-top:0;}
   body.v3Tab .dash .dTabsV2 .v2Thumb{
     top:auto;bottom:0;height:2px;border-radius:2px;background:#ececec;
   }
   body.light.v3Tab .dash .dTabsV2 .v2Thumb{background:#2e1f1a;}
+  /* The badge counts what is NEW, not what is there. A number beside every tab
+     is a table of contents -- the reader can see the list is long by looking
+     at it -- and a number that only appears where something arrived is the one
+     that makes them press. So: orange, on the one tab with something waiting,
+     in the same warm the Pathology dot uses. */
   .dTabsV2 .tCount{
     font-size:12px;line-height:1;padding:4px 7px;border-radius:7px;
-    background:rgba(255,255,255,.1);color:#a6a6a0;
+    background:#e0865f;color:#1a0f08;font-weight:500;
   }
-  body.light .dTabsV2 .tCount{background:rgba(46,31,26,.08);color:#6d5c4b;}
-  /* the active count is the one you are reading, so it takes the page's
-     primary pair rather than another grey */
-  .dTabsV2 .v2Tab.on .tCount{background:#ececec;color:#141413;}
-  body.light .dTabsV2 .v2Tab.on .tCount{background:#2e1f1a;color:#f7f2e9;}
   /* the pill keeps its counts to itself: at 14px in a 40px pill there is no
      room for a second thing per tab, and the phone has fewer still */
   body:not(.v3Tab) .dTabsV2 .tCount,
@@ -1663,6 +1672,29 @@
      on the next tab, which is the one place they must agree. */
   body.v3Tab #phone #mV4 .msn{background:rgba(255,255,255,.06);}
   body.light.v3Tab #phone #mV4 .msn{background:rgba(46,31,26,.028);}
+  /* V3 and V4 drop the title row -- the tabs name the page -- but the share it
+     carried is still the one thing you do to a page like this. It comes back
+     on its own at the hero's top right, without the title's glass pill under
+     it, and it belongs to the hero: absolute inside the header rather than
+     sticky, so it lifts and fades with the header on a swipe up instead of
+     pinning over the list. */
+  body.v2Tab.v3Tab #phone .mtitle{
+    display:flex;position:absolute;top:calc(var(--msTop, 0px) + 8px);
+    right:13px;left:auto;z-index:7;margin:0;padding:0;height:auto;
+    background:none;box-shadow:none;
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+  body.v2Tab.v3Tab #phone .mtitle::before,
+  body.v2Tab.v3Tab #phone .mtitle::after{display:none;}
+  body.v2Tab.v3Tab #phone .mtitle h2{display:none;}
+  /* secondary: a filled disc rather than the bare icon the title row used --
+     with no pill under it there is nothing else to tell it from the hero */
+  body.v2Tab.v3Tab #phone .mtitle .hiShare{
+    background:rgba(255,255,255,.1);color:#ececea;
+  }
+  body.light.v2Tab.v3Tab #phone .mtitle .hiShare{
+    background:rgba(46,31,26,.08);color:#2e1f1a;
+  }
   .v2Tab.v4Only{display:none;}
   body.v4Tab .mTabsV2 .v2Tab.v4Only{display:block;}
   /* Three words need more of the line than two, and at 70% Insights was cut in
@@ -3647,7 +3679,7 @@
      one carousel with one set of handlers however the page is laid out. */
   /* the tabs are inside the body card in V3, and sized to the middle of it */
   body.v3Tab #phone #mTabsV2{width:70%;margin:2px auto 16px;}
-  body.v3Tab .dash .dTabsV2{margin:16px 0 26px;}
+  body.v3Tab .dash .dTabsV2{margin:40px 0 20px;}
   .mRepCarHost{display:none;}
   body.v3Tab.repTab #phone .mRepCarHost{display:block;padding:8px 0 0;}
   /* the records heading follows the carousel rather than the hero */
@@ -3662,7 +3694,7 @@
   body.v3Tab.repTab #phone #mV4Row{display:none !important;}
   body.v3Tab.repTab #phone .mRepCarHost{display:block;padding:0 0 4px;}
   body.v3Tab.repTab #phone .mRepCarHost .v4RepCar{
-    display:flex;position:static;height:222px;gap:12px;padding:0 13px;
+    display:flex;position:static;height:198px;gap:12px;padding:0 13px;
     /* scroll-snap-align:start snaps to the SCROLLPORT's edge, not the
        padding edge, so the row scrolled 13px on its own and cancelled its
        own gutter -- the section then began flush where the bento's cards
@@ -3679,7 +3711,7 @@
        scroller's 13px right padding, so the width it eats is the two 12px gaps
        plus the peek, less that padding: (100% - (12+12+24-13)) / 2. */
     flex:0 0 calc((100% - 35px) / 2);scroll-snap-align:start;
-    height:222px;border-radius:22px;padding:15px;
+    height:198px;border-radius:22px;padding:15px;
     background:rgba(255,255,255,.06);
   }
   body.light.v3Tab.repTab #phone .mRepCarHost .repCard{background:rgba(46,31,26,.05);}
@@ -3723,6 +3755,13 @@
   .dash main.tabSwap > *{animation:tabSwap .26s ease;}
   .dash main.tabSwap > h1,
   .dash main.tabSwap > .mTabsV2{animation:none;}
+  /* V3 and V4 move the desk's tabs below the hero and into .v3Slot, so the
+     exclusion above stops matching them -- and the hero bento they moved under
+     belongs to all three tabs, exactly as the phone's does. Both out of the
+     fade: what the tab changes is everything below the control, and a header
+     that blinks on every tap reads as the page reloading. */
+  body.v3Tab .dash main.tabSwap > .v3Slot,
+  body.v3Tab .dash main.tabSwap > .dgrid{animation:none;}
   /* V3 and V4 put the tabs and the hero bento inside the body card, so fading
      the body faded both of them -- the whole page appeared to reload on a tap
      that changes one list. Same move as the desk's: the container hands the
@@ -5234,10 +5273,24 @@
      movement rather than a card sliding over a picture. The blur is switched
      on by a class rather than left at blur(0): a backdrop-filter on a
      full-height element costs frames even when it is doing nothing. */
-  body.v3Tab #phone .mBody{background:rgba(0,0,0,var(--v3BodyK, 0));}
+  body.v3Tab #phone .mBody{
+    background:rgba(0,0,0,var(--v3BodyK, 0));
+    /* and everything the card holds paints the same ground, because they read
+       --bodyBg for it: the filter bar's plate, the fades at its edges, the
+       list's own ground. Left at #000 they were an opaque patch on a card that
+       was not there yet -- you could see the bar's rectangle over the hero.
+       One token, so the card and its contents can only ever be the same
+       colour. */
+    --bodyBg:rgba(0,0,0,var(--v3BodyK, 0));
+    --bodyBg0:rgba(0,0,0,0);
+  }
+  /* The blur runs its own, much faster curve than the fill. The fill is the
+     header being covered, which takes the whole header's height; the blur is
+     the reader lifting the card, which they should feel in the first
+     centimetre of the gesture. --v3BlurK is full within ~110px of scroll. */
   body.v3Tab #phone.v3Blur .mBody{
-    -webkit-backdrop-filter:blur(calc(var(--v3BodyK, 0) * 20px));
-    backdrop-filter:blur(calc(var(--v3BodyK, 0) * 20px));
+    -webkit-backdrop-filter:blur(calc(var(--v3BlurK, 0) * 22px));
+    backdrop-filter:blur(calc(var(--v3BlurK, 0) * 22px));
   }
   body.light.v3Tab #phone .mBody{background:rgba(255,255,255,var(--v3BodyK, 0));}
   /* the header is a page surface now, not a coloured block, so in light it
@@ -5292,6 +5345,13 @@
      guaranteed, since they are one rule and one grid row. */
   body.v5 #phone .hiViz{height:96px;}
   body.v5 #phone .hiCard{height:222px;}
+  /* V3 and V4 take 24px out of the pair: the tabs sit above it now, so the
+     block has one more thing to make room for before the list starts. The
+     report row is the same card in the next tab (5.261), so it comes down with
+     it, and the steps chart gives up the height rather than the type -- the
+     visual is the only part of the tile with slack in it. */
+  body.v3Tab #phone .hiCard{height:198px;}
+  body.v3Tab #phone .hiSteps .stpBars{height:48px;}
   /* the wider gap takes 2px off each card, which is all it took to wrap
      "Health coverage" — the tile already carries a short form for exactly this */
   body.v5 #phone #mV4 .hiCov .lbl .cvL{display:none;}
@@ -17944,24 +18004,21 @@
     });
     placeThumb();
   }
-  // The desk's inline tabs carry a count each. Read from the lists themselves
-  // rather than typed, for the reason every other figure on the page is: a
-  // number beside a tab is a promise about what is behind it, and one written
-  // by hand goes stale the first time a row is added.
+  // The desk's inline tabs carry a badge for what is NEW, not for what is
+  // there: a number on every tab is a table of contents, and the reader can
+  // already see the list is long by looking at it. One report has arrived --
+  // the same one the New report notice is about -- so Reports carries a 1 and
+  // nothing else carries anything.
+  const TAB_NEW = { rep: 1 };
   function tabCounts(){
     const dTabs = document.getElementById('dTabsV2');
     if (!dTabs) return;
-    const n = {
-      bio: document.querySelectorAll('#dRecsList .brow').length,
-      rep: (typeof REPS !== 'undefined' ? REPS.length : 0),
-      ins: (typeof INSIGHTS !== 'undefined' ? INSIGHTS.length : 0)
-    };
     [].slice.call(dTabs.querySelectorAll('.v2Tab')).forEach(t => {
-      const k = t.dataset.tab || 'bio';
-      if (!n[k]) return;
+      const n = TAB_NEW[t.dataset.tab || 'bio'];
       let c = t.querySelector('.tCount');
+      if (!n){ if (c) c.remove(); return; }
       if (!c){ c = document.createElement('span'); c.className = 'tCount'; t.appendChild(c); }
-      c.textContent = n[k];
+      c.textContent = n;
     });
     placeThumb();          // the label grew, so the underline has to re-measure
   }
@@ -18126,10 +18183,16 @@
         // at 0 on the versions V6 is off for.
         if (document.body.classList.contains('v3Tab')){
           const k = p * p * (3 - 2 * p);
+          // the blur is off the reader's gesture rather than off the header's
+          // height: a card being lifted should go soft in the first centimetre,
+          // not a third of the way down a 500px hero
+          const q = Math.min(1, y / 110);
           ph.style.setProperty('--v3BodyK', k.toFixed(3));
-          ph.classList.toggle('v3Blur', k > 0.01);
+          ph.style.setProperty('--v3BlurK', (q * (2 - q)).toFixed(3));
+          ph.classList.toggle('v3Blur', y > 1);
         } else {
           ph.style.removeProperty('--v3BodyK');
+          ph.style.removeProperty('--v3BlurK');
           ph.classList.remove('v3Blur');
         }
       }

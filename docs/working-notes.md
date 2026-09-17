@@ -7102,6 +7102,86 @@ Two things the change broke and had to restate: the inline `display:flex` on
 not have; and the older `margin:24px auto` rule sits later in the sheet at the
 same specificity, so the 16px never landed until that rule was the one edited.
 
+### 5.265 The desk tabs, second pass
+
+"+24px margin top. Tab regular not bold. Remove badge on biomarkers. Keep
+Reports badge but orange 1." And, in the same run, "reduce gap below tab group
+by 40px."
+
+40px above, regular weight on every tab (the underline says which one you are
+on, and a second signal saying the same thing makes the row look heavier on one
+side), and the badge changes meaning: it counts what is NEW, not what is there.
+A number on every tab is a table of contents -- the reader can see the list is
+long by looking at it -- and one that only appears where something arrived is
+the one that makes them press. So orange, on Reports, in the warm the Pathology
+dot already uses, and nothing on the others. `TAB_NEW` is the one place it is
+written.
+
+The gap under the rule was 86px: 26 from the control, 26 from the filter
+block's own lead-in and 34 from the row inside it. That is a page break, not a
+gap between a tab and the thing it lists. The row's 34 goes and the control
+keeps 20, leaving 46.
+
+Twice in one turn the same trap: a later rule at equal specificity. The 16px
+margin-top never landed until I edited `body.v3Tab .dash .dTabsV2` itself
+rather than the block I had just written, and the inline `display:flex` on
+`.v2Tab` out-specified the V4 gate, so V3's desk grew an Insights tab it does
+not have. **On this sheet, check what already matches the selector you are
+about to write.**
+
+### 5.266 The hero stops blinking at the desk too
+
+"When the tab changes the hero header bento shouldn't blink/clip. Only the
+content below the tab should update."
+
+5.255 excluded `h1` and `.mTabsV2` from the desk's fade, which was right for V2
+and useless for V3 and V4: those move the tabs below the hero and *into*
+`.v3Slot`, so the exclusion stopped matching them, and `.dgrid` -- the hero
+bento they moved under -- was never excluded at all. Measured: tabs .42, grid
+.42, content .42, all climbing together. Both are out of it now, and the
+measurement reads tabs 1, grid 1, content .42 → 1.
+
+### 5.267 The blur belongs to the gesture
+
+"The blur effect on swipe up V3 V4 should be efficient at the very beginning of
+the scroll."
+
+It was riding the fill's curve, which is the header's height -- 500px, so at
+40px of scroll the blur was 3% of nothing. The two are different events: the
+fill is the header being covered, the blur is the reader lifting the card, and
+a card being lifted should go soft in the first centimetre. `--v3BlurK` is its
+own number, full within 110px. Measured: at y=40 the fill is .03 and the blur
+is already 13px of 22.
+
+### 5.268 One ground, card and contents
+
+"The content on the body card should have the same colour bg, transparent to
+black. ALL content."
+
+The card ramped and the blocks inside it did not: the filter bar's plate, the
+fades at its edges and the list's ground all read `--bodyBg`, which was still
+`#000`. So an opaque rectangle sat on a card that was not there yet -- you
+could see the bar's edges over the hero. `--bodyBg` is now the same
+`rgba(0,0,0,var(--v3BodyK))` the card paints, redefined on `.mBody` so
+everything that reads the token follows without being named. Measured through a
+scroll, the bar's gradient and the card's fill carry the same alpha at every
+step.
+
+### 5.269 24px out of the pair, and a share that belongs to the hero
+
+"Reduce height of the mini card by 24px, compress the chart steps." 222 → 198,
+and the steps chart gives up the height rather than the type -- the visual is
+the only part of the tile with slack in it (70 → 48). The report row comes down
+with it: same card, next tab (5.261).
+
+"V3 V4: add share button secondary rounded on mobile, top right hero, go away
+when swipe up with the hero header." The button already existed -- V3 and V4
+hide the title row that carried it, because the tabs name the page. It comes
+back on its own at the hero's top right, without the glass pill under it, and
+absolute inside the header rather than sticky: it belongs to the hero, so it
+lifts and fades with it instead of pinning over the list. Measured at 300px of
+scroll: opacity .2 and still rising.
+
 ---
 
 ## 6. Open items
