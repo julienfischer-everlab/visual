@@ -6731,8 +6731,10 @@ the content starts. (A scroller also keeps its scrollLeft across a layout
 change, so the row opened wherever the hero's carousel had been left; v3Layout
 resets it.)
 
-"The width of the card needs to be a bit less to see the 3rd card overflow":
-half the row divided by 2.28 rather than 2.
+"The width of the card needs to be a bit less to see the 3rd card overflow",
+then "3rd card should be visible 24px" -- so it is measured rather than eyeballed.
+The peek runs past the scroller's 13px right padding, so what it eats is the two
+12px gaps plus the peek, less that padding: `calc((100% - 35px) / 2)`.
 
   the bento's card and the report card both start 18px from the phone's edge;
   card 147 x 222, and the third breaks the right edge
