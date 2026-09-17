@@ -1588,8 +1588,12 @@
      phone's sit under its own -- but sized to their words rather than stretched
      across the page: a segmented control the width of a monitor would read as a
      toolbar, and these are two names, not a row of tools. */
+  /* Centred, and off the title: flex with a fitted width rather than
+     inline-flex, because auto margins are what centre a block and an inline
+     box has none to give. 24px above it, so the control reads as its own row
+     rather than as something hung off the heading. */
   body.v2Tab .dash .dTabsV2{
-    display:inline-flex;gap:4px;margin:-8px 0 26px;padding:4px;
+    display:flex;width:fit-content;gap:4px;margin:40px auto 26px;padding:4px;
     border-radius:999px;background:rgba(255,255,255,.06);
   }
   .dash .dTabsV2 .v2Tab{flex:0 0 auto;height:40px;padding:0 20px;font-size:14px;}
@@ -3504,7 +3508,7 @@
      one carousel with one set of handlers however the page is laid out. */
   /* the tabs are inside the body card in V3, and sized to the middle of it */
   body.v3Tab #phone #mTabsV2{width:70%;margin:2px auto 16px;}
-  body.v3Tab .dash .dTabsV2{margin:22px 0 26px;}
+  body.v3Tab .dash .dTabsV2{margin:24px auto 26px;}
   .mRepCarHost{display:none;}
   body.v3Tab.repTab #phone .mRepCarHost{display:block;padding:8px 0 0;}
   /* the records heading follows the carousel rather than the hero */
@@ -3569,6 +3573,27 @@
      just enough that the swap is felt rather than seen as a cut */
   .tabSwap{animation:tabSwap .26s ease;}
   @keyframes tabSwap{from{opacity:.42;}to{opacity:1;}}
+  /* The desk's tabs live in <main> with everything the tab changes, so fading
+     main faded the control too -- measured at .42 and climbing on every
+     switch, which is the ground going dark under a thumb that is still
+     sliding. The phone's copy was taken out of the fade the same way (the head
+     fades its hero, not itself); here the fade moves down one level, onto
+     main's children, and the title and the control keep out of it. A control
+     must not move or dim while it is being used. */
+  .dash main.tabSwap{animation:none;}
+  .dash main.tabSwap > *{animation:tabSwap .26s ease;}
+  .dash main.tabSwap > h1,
+  .dash main.tabSwap > .mTabsV2{animation:none;}
+  /* V3 and V4 put the tabs and the hero bento inside the body card, so fading
+     the body faded both of them -- the whole page appeared to reload on a tap
+     that changes one list. Same move as the desk's: the container hands the
+     fade to its children, and the two things that belong to BOTH tabs -- the
+     control and the header under it -- keep out of it. The rest is what the
+     tab actually changes. */
+  body.v3Tab #phone .mBody.tabSwap{animation:none;}
+  body.v3Tab #phone .mBody.tabSwap > *{animation:tabSwap .26s ease;}
+  body.v3Tab #phone .mBody.tabSwap > .v3Slot,
+  body.v3Tab #phone .mBody.tabSwap > #mV4{animation:none;}
 
   /* ---- New report -------------------------------------------------------
      A notice under the record select, in the one colour on the page that is
@@ -3593,6 +3618,12 @@
     transition:background .16s ease, opacity .3s ease, transform .3s ease;
   }
   body.newRep .nrCard:hover{background:rgba(28,49,89,.86);}
+  /* Biomarkers only. The notice's whole act is to prefilter the readings, and
+     it floats over the page rather than in it, so on the Reports tab it was a
+     card about a list that is not on screen, sitting over the one that is.
+     Display, not the fade: this is not the notice being acted on, it is the
+     notice not belonging here. */
+  body.newRep.repTab .nrCard{display:none;}
   body.newRep #phone .nrCard{
     position:absolute;left:13px;right:13px;
     bottom:calc(var(--navH, 56px) + var(--navInset, 12px) + 26px);
@@ -5005,12 +5036,17 @@
      itself; scrolled, the bar pins at the top as before and the gap passes
      with the content. Eight px of slack because the three versions land the
      bar within ten px of each other.
-     Biomarkers only: the Reports tab drops the pair, so its own block starts
-     high enough to clear the dock on its own and the reserve would only push
-     "Medical records" into the band it is there to keep clear. */
-  body.v5.v8:not(.repTab) #phone #mV4{
-    padding-bottom:calc(18px + var(--navH, 56px) + var(--navLift, 29px) + 8px);
-  }
+     Reserving it in the flow cost 93px of black to scroll past, which is a lot
+     of nothing to ask for. The scrim below does the same job in no space at
+     all, so the gap is only a gap again -- 32px, which is the breath between
+     the pair and the next block rather than the dock's room. */
+  body.v5.v8 #phone #mV4{padding-bottom:32px;}
+  /* And the dock gets its ground. This is the screen the scrim was built for:
+     a list that runs under a floating island, with the filter bar coming to
+     rest in the island's own band at 780 of an 844 screen. Held on rather than
+     left to the slider -- the slider is a demo of the material, and this is
+     the one screen where the island is unreadable without it. */
+  body.v8 #phone > .mTabs::before{opacity:1;}
   /* the pair is a real two-up again: .mbrow2 folds to one column from V2 on,
      and hides the two cards V2-V3 do not use — V4 is the page that wants them */
   body.v5 #mV4Row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}

@@ -6883,6 +6883,64 @@ answering a question the other had stopped asking.
 
 Now 110 / 68 / 20 on the same screen.
 
+### 5.255 A control must not dim while it is being used
+
+"The tab is clipping when the tab switch, should be smooth. Don't reload the
+tab group on item change."
+
+5.251 took the phone's V2 tabs out of the fade and I reported it fixed. It was,
+for one of three controls. The desk's tabs live in `<main>` with everything the
+tab changes, and V3's live in the body card with everything the tab changes --
+both still dipped to .42 and climbed back on every switch. Measured, not read:
+`dTabsV2` went `.42 → .448 → .665 → .853 → .948 → 1` while its thumb was still
+sliding. A ground that goes dark under a moving thumb is exactly what clipping
+looks like.
+
+Three containers, one move: the container hands the fade to its children and
+the things that belong to *both* tabs keep out of it.
+
+    .dash main.tabSwap > *        { animation:tabSwap .26s ease; }
+    .dash main.tabSwap > h1,
+    .dash main.tabSwap > .mTabsV2 { animation:none; }
+
+and the same for `.mBody` in V3, excluding `.v3Slot` (the tabs) and `#mV4` (the
+hero bento). Opacity multiplies, so a child cannot out-run a fading parent --
+the fade has to move down a level, it cannot be opted out of from inside.
+
+"On V3 and V4 only the content BELOW the tab should load new content, not the
+hero bento header. It currently looks like it's reloading the whole page." Same
+rule, and now measured through a switch: tabs 1, hero 1, content .42 → 1.
+
+One hour lost to `#v3Slot`: it is a *class*, not an id. The exclusion silently
+matched nothing and the probe said .42 as before.
+
+### 5.256 32, and the scrim doing the work instead
+
+"Too much gap here. Should be 32."
+
+Fair. 5.249 bought the island's legibility with 93px of black to scroll past,
+which is a lot of nothing to ask a reader for. The scrim buys the same thing in
+no space at all: the bar comes to rest at 780 of an 844 screen, inside the
+dock's band, and at full strength the ground rising behind the island hides it
+completely. Tested at .75 and .88 first -- "All records" still legible through
+both -- so it is held at 1 on this screen rather than left to the slider. The
+slider is a demo of the material; this is the screen the material exists for.
+
+The gap is 32px on both tabs now, and it is a gap again rather than the dock's
+room.
+
+Also on the desk: the tab group is centred and 40px under the title. Centred
+needs `display:flex; width:fit-content` -- an inline box has no auto margins to
+give.
+
+### 5.257 The notice belongs to one tab
+
+"Blue new report should only be visible for the Tab Biomarker." Its whole act
+is to prefilter the readings, and it floats over the page rather than in it, so
+on Reports it was a card about a list that is not on screen, sitting over the
+one that is. `display:none`, not the fade -- this is not the notice being acted
+on, it is the notice not belonging here.
+
 ---
 
 ## 6. Open items
