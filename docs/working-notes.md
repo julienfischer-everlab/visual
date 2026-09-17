@@ -7201,6 +7201,54 @@ under a 20px margin-bottom is 20px and nothing happens. And the filter block is
 pulled up by a negative margin rather than by trimming its padding, because
 that padding is the plate above the select when the bar pins.
 
+### 5.271 The insight card, and a figure that was never rescaled
+
+"Insights card +8px padding. Title regular font." 16/18/15 → 24/26/23 on the
+phone, 20/22/19 → 28/30/27 at the desk, and the title drops from 500 to 400:
+the coloured status above it is already doing the work a bold line would.
+
+"V3 V4 mobile: visual particles scale down .9x." Those versions put the tabs
+and the pair under the hero, so the figure shares the screen with more than it
+was drawn for. Folded into `v5Shrink`, which is the factor the renderer already
+multiplies into the zoom -- both are the same thing to it, how big the body is
+in its frame.
+
+It did not land at first, and the reason is worth keeping: `v5Shrink` is only
+written by the parallax handler, which runs on scroll. Changing the version
+from the tweak bar does not scroll anything, so the figure kept the last
+version's size until the reader moved the page. `setMode` has called
+`parallaxApply()` for exactly this reason since it was written; the layout
+select now does too.
+
+Measuring it took two goes as well. A bounding box over an animated particle
+cloud is noise -- V3 and V4, which are the same size by construction, measured
+180 and 139. The horizontal standard deviation of the warm pixels is stable:
+31.2 → 28.9, which is the 0.9 (the residual is the crop truncating the
+distribution).
+
+### 5.272 The desk's report sheet becomes a drawer
+
+"Report → drawer on desktop."
+
+A bottom sheet is a phone gesture: it comes up under your thumb and you push
+it back down. On a 1440 screen it was a short letterbox across the middle of a
+page with plenty of side, and the insight drawer beside it made the
+inconsistency plain. Same geometry as that one -- 460 wide, flush right, full
+height -- so the two read as one surface arriving from one place.
+
+The drag-to-dismiss is the phone's gesture and is now bound only there: it
+writes `translateY`, which is the axis the drawer uses for nothing and its
+close uses for everything. The desk closes on the dim, the cross and Escape.
+
+"Remove the cross top right. Add right gradient fade out." Both on the desk's
+report shelf: it is a set you browse, not a stack of notices to clear, and
+four crosses over three cards and a peek is four things asking to be dealt
+with. The row now ends in a fade at the width of the peek -- a card sliced down
+its middle by the column's edge reads as broken, the same card fading out reads
+as more to scroll. Same device the chip row already uses.
+
+"+4px gap dot nav and card carousel, V3 V4 mobile": 12 → 16.
+
 ---
 
 ## 6. Open items

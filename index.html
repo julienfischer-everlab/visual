@@ -1719,14 +1719,14 @@
   body.insTab .dash .dInsWrap{padding:0 0 40px;gap:14px;}
   .insCard{
     display:block;width:100%;text-align:left;font:inherit;cursor:pointer;
-    border:0;border-radius:22px;padding:16px 18px 15px;
+    border:0;border-radius:22px;padding:24px 26px 23px;
     background:rgba(255,255,255,.06);color:inherit;
     -webkit-tap-highlight-color:transparent;transition:background .16s ease;
   }
   body.light .insCard{background:rgba(46,31,26,.05);}
   .insCard:hover{background:rgba(255,255,255,.09);}
   body.light .insCard:hover{background:rgba(46,31,26,.08);}
-  .dash .insCard{border-radius:18px;padding:20px 22px 19px;}
+  .dash .insCard{border-radius:18px;padding:28px 30px 27px;}
   /* the eyebrow carries the panel it came from and, in the dot, how the
      reading sits -- the same three colours the chips and the pills use, so a
      finding and a row agree about what "out of range" looks like */
@@ -1742,7 +1742,7 @@
   /* the status in its own colour, the way the chips and the pills carry it --
      the eyebrow IS the reading's state, so it is the one line worth colouring */
   .insCard .insH{
-    display:block;margin:9px 0 0;font-size:15.5px;font-weight:500;
+    display:block;margin:9px 0 0;font-size:15.5px;font-weight:400;
     line-height:1.32;color:#ececec;
   }
   body.light .insCard .insH{color:#2e1f1a;}
@@ -1804,6 +1804,18 @@
     overscroll-behavior-x:contain;
   }
   .dRepCar::-webkit-scrollbar{display:none;}
+  /* The row runs off the right edge, so it ends in a fade rather than a cut:
+     a card sliced down its middle by the column's edge reads as broken, the
+     same card fading out reads as more to scroll. Same device the chip row
+     uses, at the width of the peek. */
+  .dRepCar{
+    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 64px),transparent);
+    mask-image:linear-gradient(to right,#000 calc(100% - 64px),transparent);
+  }
+  /* and no dismiss at the desk: the shelf is a set you browse, not a stack of
+     notices you clear, and a cross per card over three and a peek is four
+     crosses asking to be dealt with */
+  .dRepCar .repCard .rcX{display:none;}
   /* three and a peek: enough of the fourth showing that the row reads as a
      scroller rather than as everything there is */
   .dRepCar .repCard{
@@ -3746,7 +3758,7 @@
   }
   body.v3Tab.repTab #phone .mRepCarHost .v4RepDots{
     display:flex;position:static;justify-content:center;gap:5px;
-    margin:12px 0 0;pointer-events:none;
+    margin:16px 0 0;pointer-events:none;
   }
   /* switching tabs is a change of set, not of page: the lightest crossfade,
      just enough that the swap is felt rather than seen as a cut */
@@ -4004,6 +4016,19 @@
   body.light .rsCta{background:#2e1f1a;color:#f6ece6;}
   .rsDesk .shHome{display:none;}
   .rsDesk .rsFoot{padding-bottom:20px;}
+  /* The desk's copy is a drawer, not a sheet. A bottom sheet is a phone
+     gesture -- it comes up under your thumb and you push it back down -- and
+     on a 1440 screen it was a short letterbox across the middle of a page
+     that had plenty of side. The insight drawer beside it made the
+     inconsistency plain. Same geometry as that one, so the two read as one
+     surface arriving from one place. */
+  .rsDesk .rsSheet{
+    top:0;bottom:0;left:auto;right:0;width:min(460px, 92vw);max-width:none;
+    max-height:none;margin:0;border-radius:0;
+    transform:translateX(100%);transition:transform .42s cubic-bezier(.22,.61,.36,1);
+  }
+  .rsDesk.on .rsSheet{transform:translateX(0);}
+  .rsDesk .shHandle{display:none;}
 
   /* The finding in full. A bottom sheet on the phone, a right-hand drawer on
      the desk -- the same content, in the shape each surface reads a long thing
@@ -16452,6 +16477,10 @@
     // sits in take the gesture, and past a third of the way down it goes
     let g = null;
     const grab = q('.rsTop');
+    // A drawer is not dragged away: the gesture writes translateY, which is
+    // the axis the drawer's own slide uses for nothing and its close uses for
+    // everything. The desk closes on the dim, the cross and Escape.
+    if (!desk)
     [q('.shHandle'), grab].forEach(el => el.addEventListener('pointerdown', e => {
       if (e.target.closest('.shClose')) return;
       g = { y: e.clientY, dy: 0, pid: e.pointerId };
@@ -17847,6 +17876,11 @@
     // from Insights.
     if (!CARD_STATE.v2Tab){ CARD_STATE.repTab = false; document.body.classList.remove('repTab'); }
     if (!CARD_STATE.v4Tab){ CARD_STATE.insTab = false; document.body.classList.remove('insTab'); }
+    // the hero's framing is one of the things the version decides, and the
+    // renderer only reads it when the parallax runs -- which is on a scroll,
+    // so without this the figure kept the last version's size until the
+    // reader moved the page
+    if (parallaxApply) parallaxApply();
     setTabUI();
     resize();
   });
@@ -18149,7 +18183,13 @@
       const p = Math.min(1, Math.max(0, y / span));
       inner.style.transform = reduced ? '' : 'translateY(' + (-y * 0.12).toFixed(1) + 'px)';
       inner.style.opacity = (1 - p).toFixed(3);
-      v5Shrink = document.body.classList.contains('v5') ? 1 - 0.10 * p : 1;
+      // V5's shrink on scroll, times V3/V4's own framing: those versions put
+      // the tabs and the pair under the hero, so the figure is sharing the
+      // screen with more than it was drawn for and comes down a notch. One
+      // factor, because both are the same thing to the renderer -- how big the
+      // body is in its frame.
+      v5Shrink = (document.body.classList.contains('v5') ? 1 - 0.10 * p : 1) *
+                 (document.body.classList.contains('v3Tab') ? 0.9 : 1);
       const ph = sc.closest('#phone');
       // the phone's half of the hero light moves by what moves the header's
       // half -- the scroll plus the 0.12 parallax above -- and fades with it
