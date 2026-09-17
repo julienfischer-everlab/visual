@@ -7249,6 +7249,33 @@ as more to scroll. Same device the chip row already uses.
 
 "+4px gap dot nav and card carousel, V3 V4 mobile": 12 → 16.
 
+### 5.273 The Insights tab gets a top half
+
+"Insights tab active. Title: On going tracking. Replace report card by Sleep
+score (no carousel inside). Keep heart rate (remove carousel inside). Add a
+title before the list of insights cards: 'What your body tells you'."
+
+So the tab is two halves: what is being watched between tests, and what the
+tests found. Both tiles are slides the steps carousel already carries, cloned
+out of it and stood still -- on this tab they are the subject, and a subject
+does not rotate away while you are reading it. Cloning rather than re-writing
+means the chart, the type and the axis labels cannot drift from the ones on
+the other tabs.
+
+The page's own pair comes down on this tab (`#mV4Row`), because two pairs one
+under the other is the same shelf twice. The desk keeps its bento: that one
+carries the organ card as well and is the page's summary rather than this
+tab's subject.
+
+One trap: the pair was invisible at first because I gave it `.mbrow2` for the
+two-column grid. That class is folded to one column and half hidden from V2
+on -- it is the V4-and-earlier pair, not a layout primitive. `.insPair` has its
+own grid.
+
+"Make sure it leads to desktop and mobile V2." Verified rather than changed:
+m24 → m18 on the desk and m25 → m20 on the phone, both landing in the V2 tab
+layout with Historical records chosen and the filter pinned at the top.
+
 ---
 
 ## 6. Open items

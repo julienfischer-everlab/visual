@@ -1717,6 +1717,22 @@
   .insWrap{display:none;}
   body.insTab .insWrap{display:flex;flex-direction:column;gap:12px;padding:2px 13px 18px;}
   body.insTab .dash .dInsWrap{padding:0 0 40px;gap:14px;}
+  /* The tab's own pair stands in for the page's on this tab, so the page's
+     comes down -- two pairs one under the other is the same shelf twice. The
+     desk keeps its bento, which carries the organ card as well and is the
+     page's summary rather than this tab's subject. */
+  body.insTab #phone #mV4Row{display:none !important;}
+  .insHead{
+    margin:6px 0 -2px;font-size:15px;font-weight:500;color:#ececec;
+  }
+  body.light .insHead{color:#2e1f1a;}
+  .dash .insHead{font-size:17px;margin:10px 0 2px;}
+  /* two tiles that do not rotate: the slide is cloned out of its carousel, so
+     it keeps the card's own type and chart and leaves the dots behind */
+  .insPair{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .dash .insPair{gap:14px;}
+  .insStat{position:relative;}
+  .insStat .hiSlide{position:absolute;inset:0;transform:none;opacity:1;}
   .insCard{
     display:block;width:100%;text-align:left;font:inherit;cursor:pointer;
     border:0;border-radius:22px;padding:24px 26px 23px;
@@ -16963,6 +16979,29 @@
       m: insSheet(document.getElementById('phone'), false),
       d: insSheet(document.body, true)
     };
+    // The tab opens on what is being watched rather than on the findings: two
+    // tiles that update between tests -- sleep and heart rate -- then the
+    // findings the tests produced. Both tiles are slides the steps carousel
+    // already carries, cloned out of it and stood still: on this tab they are
+    // the subject, and a subject does not rotate away while you read it.
+    function trackPair(){
+      const src = document.querySelector('#phone .hiSteps') ||
+                  document.querySelector('.hiSteps');
+      if (!src) return '';
+      const want = ['Sleep score', 'Heart rate'];
+      const cards = want.map(name => {
+        const slide = [].slice.call(src.querySelectorAll('.hiSlide')).find(sl => {
+          const l = sl.querySelector('.lbl'); return l && l.textContent.trim() === name;
+        });
+        return slide
+          ? '<div class="msn hiCard insStat">' + slide.outerHTML + '</div>'
+          : '';
+      }).join('');
+      return '<div class="insHead">On going tracking</div>' +
+             // not .mbrow2: that class is folded to one column and half
+             // hidden from V2 on, and this pair is neither of those things
+             '<div class="insPair">' + cards + '</div>';
+    }
     const html = INSIGHTS.map(i => {
       const col = INS_DOT[i.st] || INS_DOT.ok;
       return '<button class="insCard" type="button" data-i="' + i.id + '">' +
@@ -16978,8 +17017,9 @@
         '</span>' +
       '</button>';
     }).join('');
+    const top = trackPair() + '<div class="insHead">What your body tells you</div>';
     [].slice.call(document.querySelectorAll('.insWrap')).forEach(hostEl => {
-      hostEl.innerHTML = html;
+      hostEl.innerHTML = top + html;
       const desk = !hostEl.closest('#phone');
       hostEl.addEventListener('click', e => {
         const card = e.target.closest('.insCard');
