@@ -7301,6 +7301,15 @@ version menu showing Archives and the archive select showing its name.
 broken for twenty-odd notes because nothing fails when a filter matches
 nothing -- it just quietly lists everything.
 
+### 5.275 Results, not a report
+
+"New results available. Not new report available."
+
+Right, and it matches the CTA under it: the card says View results and the
+page it opens is a filtered set of readings, not a document. A report is the
+file; the results are what the reader came for. Both copies of the card, and
+the tweak that switches them, now say results.
+
 ---
 
 ## 6. Open items
