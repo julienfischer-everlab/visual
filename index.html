@@ -2349,16 +2349,16 @@
      and a sliver of rotation with it, so the grid reads as a plane in space
      rather than a flat wall. Once out, the move is almost imperceptible. */
   @keyframes tzMoZoom{
-    0%   {transform:translateZ(0) rotateX(0deg) rotateY(0deg) scale(3.25);}
-    11%  {transform:translateZ(0) rotateX(0deg) rotateY(0deg) scale(3.05);}
-    62%  {transform:translateZ(0) rotateX(2.4deg) rotateY(-2.6deg) scale(1.04);}
+    0%   {transform:translateZ(0) rotateX(0deg) rotateY(0deg) scale(5.4);}
+    30%  {transform:translateZ(0) rotateX(0deg) rotateY(0deg) scale(5.1);}
+    78%  {transform:translateZ(0) rotateX(2.4deg) rotateY(-2.6deg) scale(1.05);}
     100% {transform:translateZ(0) rotateX(1.7deg) rotateY(-1.8deg) scale(1);}
   }
   .tzMoGrid{
     /* sized from the frame's HEIGHT rather than a container-query unit: the
        frame is landscape, so height is the binding dimension, and cqh
        resolves differently for a frame that is not on screen yet. */
-    height:80%;aspect-ratio:1;width:auto;max-width:86%;display:grid;
+    height:72%;aspect-ratio:1;width:auto;max-width:82%;display:grid;
     /* minmax(0,1fr), not 1fr: a 1fr row's min-height is auto, so a cell whose
        organ, scale and reading come to more than its share pushes the row --
        and three pushed rows are a grid taller than the frame, with the top and
@@ -2388,8 +2388,6 @@
   .tzMoArc{width:56%;height:2cqw;margin-top:3%;flex:none;}
   .tzMoArc svg{display:block;width:100%;height:100%;overflow:visible;}
   .tzMoAge{margin-top:1.1cqw;text-align:center;line-height:1;flex:none;}
-  .tzMoAge b{display:block;font-size:2.5cqw;font-weight:500;letter-spacing:-.4px;
-             color:#f2e5e0;font-variant-numeric:tabular-nums;}
   .tzMoAge i{display:block;font-style:normal;font-size:1.05cqw;margin-top:.6cqw;
              letter-spacing:.11em;text-transform:uppercase;color:rgba(242,229,224,.5);
              font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;}
@@ -3515,6 +3513,41 @@
   }
   /* the records heading follows the carousel rather than the hero */
   body.v3Tab.repTab #phone .mMedsHead{margin-top:22px;}
+
+  /* ---- V3, mobile, Reports: the reports as mini cards -------------------
+     The bento's pair is the shape the reader already knows at the top of this
+     card -- 222px tall, 22px radius, the same 6% ground -- so on the Reports
+     tab the reports take that shape rather than inventing one, and scroll as a
+     carousel instead of sitting as a pair. The mini-card row steps aside for
+     them: it is the biomarkers' pair, and this tab is not the biomarkers. */
+  body.v3Tab.repTab #phone #mV4Row{display:none !important;}
+  body.v3Tab.repTab #phone .mRepCarHost{display:block;padding:0 0 4px;}
+  body.v3Tab.repTab #phone .mRepCarHost .v4RepCar{
+    display:flex;position:static;height:222px;gap:12px;padding:0 13px;
+    overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;scrollbar-width:none;
+    overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+  }
+  body.v3Tab.repTab #phone .mRepCarHost .repCard{
+    flex:0 0 calc((100% - 38px) / 2);scroll-snap-align:start;
+    height:222px;border-radius:22px;padding:15px;
+    background:rgba(255,255,255,.06);
+  }
+  body.light.v3Tab.repTab #phone .mRepCarHost .repCard{background:rgba(46,31,26,.05);}
+  body.v3Tab.repTab #phone .mRepCarHost .rcH{font-size:15px;margin-top:8px;}
+  body.v3Tab.repTab #phone .mRepCarHost .rcMeta{font-size:11.5px;}
+  body.v3Tab.repTab #phone .mRepCarHost .rcKind{font-size:11.5px;}
+  body.v3Tab.repTab #phone .mRepCarHost .rcCta{height:36px;border-radius:11px;font-size:12.5px;}
+  body.v3Tab.repTab #phone .mRepCarHost .rcArt{min-height:0;margin:8px 0;}
+  body.v3Tab.repTab #phone .mRepCarHost .rcArt svg{width:min(66%, 92px);}
+  body.v3Tab.repTab #phone .mRepCarHost .v4RepDots{
+    display:flex;position:static;justify-content:center;gap:5px;
+    margin:12px 0 0;pointer-events:none;
+  }
+  /* switching tabs is a change of set, not of page: the lightest crossfade,
+     just enough that the swap is felt rather than seen as a cut */
+  .tabSwap{animation:tabSwap .26s ease;}
+  @keyframes tabSwap{from{opacity:.42;}to{opacity:1;}}
 
   /* ---- New report -------------------------------------------------------
      A notice under the record select, in the one colour on the page that is
@@ -14684,7 +14717,7 @@
             '<rect x="70" y="4" width="30" height="2.6" rx="1.3" fill="#e0685f" opacity=".5"/>' +
             '<path d="M' + at + ' 0.4 l2.6 2.6 h-5.2 Z" fill="#f2e5e0"/>' +
           '</svg></div>' +
-          '<div class="tzMoAge"><b>' + (CHRONO + d.delta) + '</b><i>' + d.label + ' age</i></div>' +
+          '<div class="tzMoAge"><i>' + d.label + ' age</i></div>' +
         '</div>';
       }).join('') +
       '</div></div><div class="tzMoVig"></div></div>';
@@ -14957,10 +14990,10 @@
       gCells.forEach((c, i) => c.classList.toggle('on', i === 4));
       // the reveal runs with the pull-back and finishes with a beat to spare
       const rest = MO_ORDER.length - 1;
-      const step = (SLOT[6] * 1000 - 1500) / Math.max(1, rest);
+      const step = (SLOT[6] * 1000 - 2100) / Math.max(1, rest);
       for (let k = 1; k < MO_ORDER.length; k++){
         const cell = gCells[MO_ORDER[k]];
-        if (cell) gridTimers.push(setTimeout(() => cell.classList.add('on'), 420 + k * step));
+        if (cell) gridTimers.push(setTimeout(() => cell.classList.add('on'), 1000 + k * step));
       }
       gridTimers.push(setTimeout(gridStart, SLOT[6] * 1000));   // the camera's own cycle
     };
@@ -15041,8 +15074,12 @@
     const tzMoViews = [...document.querySelectorAll('#tzS07 .tzMoCell')].map((cell, i) => {
       const o = PILL[i].organIdx, r = MO_RING[i];
       return makeOrganView(cell.querySelector('.tzMoOrg'), o, {
-        target: organN(Math.round(fullTarget(clouds[o]) * (ORGANS[o].dots || 1) * 0.5)),
-        fill: 0.44, dot: 1.0, alpha: [1.3, 1.05, 0.9][r],
+        // The concept's dotted reading: separate points, not a mass of them.
+        // A tile here is a sixth of the frame, so the engine's own density
+        // fills in solid at this size -- the dots have to be FEWER and finer,
+        // not more, for the organ to read as a speckle.
+        target: organN(Math.round(fullTarget(clouds[o]) * (ORGANS[o].dots || 1) * 0.34)),
+        fill: 0.3, dot: 0.85, alpha: [1.35, 1.1, 0.95][r],
         name: 'teaser-mosaic-' + i
       });
     });
@@ -17273,6 +17310,17 @@
     // the hero's report strips are laid out from their own width, which is
     // nothing until the tab shows them
     document.dispatchEvent(new CustomEvent('everlab:repTab'));
+    // the lightest crossfade on whatever the tab changed -- re-triggered by
+    // taking the class off and putting it back a frame later, since an
+    // animation does not replay while its class is already on
+    ['mBody', 'mHeadIn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('tabSwap');
+      requestAnimationFrame(() => el.classList.add('tabSwap'));
+    });
+    const dm = document.querySelector('.dash main');
+    if (dm){ dm.classList.remove('tabSwap'); requestAnimationFrame(() => dm.classList.add('tabSwap')); }
     resize();
   }
   v2Tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab === 'rep')));

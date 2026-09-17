@@ -6675,6 +6675,41 @@ Two layout traps, both about a grid whose cells hold more than a square:
   nine cells, eighteen canvases (each view is a cloud and a flow), the ages
   and labels off PILL; the reveal cycles with the camera at SLOT[6] = 3.83s
 
+### 5.243 The mosaic, on the notes
+
+"Remove hero number on the mosaic. Stay longer on the first organ and zoom more.
+Use the dotted particles organ, same as the concept on the grid one."
+
+- the number goes; the organ and its scale carry the tile, and nine big numbers
+  at that size was a table rather than a constellation
+- 5.4x rather than 3.25x, held to 30% of the slot rather than 11% -- the reveal
+  waits with it (its first tile now lands a second in, not 420ms)
+- **and the dots had to go the other way from the obvious.** "Dotted like the
+  concept" first read as *more* density, so I gave the tiles the engine's own
+  count -- and they filled in solid. A tile here is a sixth of the frame, so
+  the points have to be FEWER and finer for the organ to read as a speckle:
+  a third of the density at dot 0.85, fill 0.3.
+
+### 5.244 V3's reports wear the mini card
+
+"On report mobile v3, use the card style as the Latest report and steps (same
+style and height) but put the reports there as a carousel."
+
+222px tall, 22px radius, the same 6% ground -- read off the bento's own pair
+rather than typed -- and the reports scroll through that shape two-and-a-peek at
+a time. The mini-card row steps aside on this tab: it is the biomarkers' pair,
+and this tab is not the biomarkers.
+
+"When switch between the two tabs, light fade transition, super light": a 260ms
+fade from 42% on whatever the tab changed, re-triggered by taking the class off
+and putting it back a frame later, since an animation does not replay while its
+class is already on.
+
+**Known, not fixed:** the dots under this carousel mark from the centre of the
+scroller, which is right for one card in the hero and half a card out with two
+in view. Making the alignment follow the layout is a bigger change than it
+looks, and I would rather not ship it unverified.
+
 ---
 
 ## 6. Open items
