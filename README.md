@@ -732,14 +732,26 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   you were reading rather than to the top of the list, and a hash aimed
   straight at an archived mode sets both halves, since they are set from the
   mode rather than from whichever control was touched.
-- **V2** — on by default now, since the tabs are the page. A segmented pill
+- **New report** — off or on. On, a dark blue notice sits under the record
+  select on both surfaces, carrying the latest report's category and date with a
+  chevron. Blue because it is the system speaking rather than a reading. Tapping
+  it chooses that record through the same `choose()` the select performs the
+  long way, and the notice goes once it has been acted on.
+- **V2** — *V2*, *V3* or *Off*. V2 is the default, since the tabs are the page. A segmented pill
   sits above the hero: *Biomarkers* or *Reports*, and the list below follows
   it. The active ground is one element that slides between the two rather than
   two that swap, measured off whichever tab it lands on, so the phone's equal
   halves and the desk's word-width tabs need one mechanism rather than two. On
   the phone the tabs take the top of the screen and the page title goes with
   them — *Health insights* over a control that already says Biomarkers or
-  Reports is the page named twice. Above the hero rather
+  Reports is the page named twice. **V3** puts the tabs *below* the hero
+  instead, and takes the consequence: the hero is then the biomarkers' own
+  header rather than a shared one, so the report carousel cannot live in it — it
+  moves down into the content to sit with the medical records, and the hero
+  keeps its organ, ages and mini cards on both tabs. Nothing is drawn twice: the
+  two tab strips and the carousel are moved, each leaving a comment node in its
+  seat, because `layoutV4` shuffles this hero's contents and a remembered
+  sibling can be somewhere else by the time it is handed back. In V2, above the hero rather
   than below, because the hero belongs to both — it is the same body either way,
   and what changes underneath it is which set of things is being listed. On the Report tab the hero is a card carousel of the
   reports. Each card follows the notification framework: the kind with its dot
@@ -826,6 +838,15 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   Both are built from the same `RECS` rows as the carousel, so the two shapes
   can only ever show the same six reports. On the phone the bento sits inside
   the hero, so it is the header's height by construction.
+- **Past results** (*Onboarding* in the Version menu, `#m24`) — the message a
+  reader meets the first time their history has been pulled in, in the two
+  dresses it needs: a modal on the desk and a bottom sheet on the phone, shown
+  side by side on one page so the pair can be read together. The page wears both
+  class chains and splits the screen between the two surfaces. Its CTA is the
+  point of it: it chooses the latest record and then lands on Health insights —
+  the desk's copy on the desktop page, the phone's on the phone — so the reader
+  arrives on the state the message was describing, the list already narrowed to
+  that report's 44 biomarkers.
 - **Expanded Report** — off or on. Off, the records live behind a select
   beside the search. On, they become the first row: a carousel of cards, *All
   records* first and six reports after it, with the chips and the search on the

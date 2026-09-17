@@ -6484,6 +6484,90 @@ selector, which matches the body as happily as anything else. The element is
 each other eventually; the rule is that the body's classes are a namespace of
 their own.
 
+### 5.234 Past results: one message, two dresses, one destination
+
+"Create an additional page where we show a modal (desktop) and bottom sheet
+(mobile), that on CTA click it lead the user to the Health insights page
+filtered by the latest results."
+
+A page of its own (#m24, *Onboarding* in the menu), and it shows **both**
+surfaces at once: the dashboard takes the left of the screen with the modal over
+it, the phone takes the right with the sheet up. It wears both class chains --
+the desk's and the phone's -- plus a marker that splits the screen. One
+consequence of wearing both: the engine still had a canvas to paint on, and a
+cloud of particles appeared in the gap between the two surfaces, which is
+neither of them. The canvas is off on this page.
+
+**The CTA is the point of it**, and getting it right turned up a real bug.
+
+The hand-off started as `setMode(...)` then a two-rAF dispatch of
+`everlab:pickRec`. It worked by hand and failed under the probe -- and the probe
+was right: **nothing paints while a screenshot is being taken**, so the frames
+never came and the record was silently dropped. A frame is not a scheduler.
+
+Moving to a timeout surfaced the real problem underneath. The record's NAME
+landed on the control and the list stayed at all 110 rows, with `#dRecsList`
+stuck at `display:none`. The filter's 380ms beat hides the list, shows the
+skeleton, and restores both when it lands -- and a page change *during* that
+beat means nothing the new page does next is the thing that takes the skeleton
+down. The list stays hidden for good. That is not this page's bug; it is every
+page's bug, and it was reachable by any mode change made within 380ms of a
+filter change:
+
+    pick then navigate +0ms   -> 110 rows, list display:none
+    pick then navigate +120ms -> 110 rows, list display:none
+    pick then navigate +420ms -> 44 rows,  list block
+
+`bioFilter` now lands a pending beat the moment `everlab:mode` fires -- the set
+is already decided by then, only the pause was outstanding. All three orderings
+give 44 rows after it. The CTA chooses the record first and changes the page
+second, which is also the order that says what happens.
+
+### 5.235 New report
+
+"Add a tweak 'New report'. Add a card dark blue below the select saying New
+report available + CTA chevron. On click it will prefilter the select and update
+the list below."
+
+A notice under the record select, on both surfaces, in the one colour on this
+page that is not the palette -- blue reads as the system speaking rather than as
+a reading, which is what "something arrived" is. It carries the latest report's
+category and date, and tapping it goes through the same `choose()` the select
+performs the long way. Acted on, it goes; turning the tweak off and on again is
+a fresh notice.
+
+  both surfaces: hidden off, rgb(22,41,74) below the select on, and a tap
+  gives "Pathology test" over 44 rows
+
+### 5.236 V3: the tabs below the hero, and what that costs the carousel
+
+"Create a V3 where the Biomarkers / Reports tab live below the hero bento. The
+Carousel inside report is not in the hero anymore in this version but inside the
+content with the list of medical records."
+
+V2's tabs sit above the hero because the hero belongs to both of them. V3 puts
+them below it, and the consequence follows: the hero is then the *biomarkers'*
+header rather than a shared one, so the report carousel cannot live in it. It
+moves down to sit with the records it belongs with, and the hero keeps its
+organ, its ages and its mini cards on both tabs -- every rule that emptied the
+hero on the Reports tab is now `:not(.v3Tab)`.
+
+The V2 control is a three-way now (V2 / V3 / Off), which takes it out of
+`segmentise` on its own -- only two-option selects become switches.
+
+Nothing is drawn twice. The two tab strips and the phone's carousel are *moved*,
+each leaving a comment node in its seat, because a remembered sibling can be
+somewhere else by the time it is handed back -- `layoutV4` moves this hero's
+contents around. The same trick Expanded Report uses, for the same reason.
+
+One measurement worth keeping: anchoring the phone's tabs to `#mBento` moved
+them twelve pixels and no further, because `#mBento` is a zero-height wrapper.
+The hero **is** the bento header on the phone; the anchor is `#mHeroOrgan`.
+
+  phone: tabs 146 -> 548, below the hero's 542 bottom; the carousel's parent
+  becomes #mRepCarHost and it goes static. desk: tabs 154 -> 675, below the
+  grid. Switching back to V2 puts all three where they were.
+
 ---
 
 ## 6. Open items
