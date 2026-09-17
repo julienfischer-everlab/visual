@@ -7333,6 +7333,21 @@ Third time this week: the trim did nothing until its selector carried the same
 class count as the rule it was correcting. `body.insTab #phone #mV4` is two
 classes short of `body.v5.v8 #phone #mV4`.
 
+### 5.277 One section title
+
+"Keep the same size for the title across all different tabs and sections. Use
+the reference as the medical record."
+
+The Insights tab's headings were 15 and 17 against Medical records' 20 and 24,
+which reads as two levels of heading where the page has one. They are now one
+rule with Medical records in it, rather than a copy of its numbers -- a size
+written twice is a size that drifts, and this one already had.
+
+Type and spacing stay separate: the shared rule carries the font, each title
+keeps its own margins. Folding `margin:0` into the shared rule silently ate the
+18px under the insight headings, because that rule sits later in the sheet than
+the one that set them.
+
 ---
 
 ## 6. Open items
