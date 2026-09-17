@@ -6711,6 +6711,60 @@ scroller, which is right for one card in the hero and half a card out with two
 in view. Making the alignment follow the layout is a bigger change than it
 looks, and I would rather not ship it unverified.
 
+### 5.245 The report card becomes the bento's card
+
+"Make sure the reports cards look exactly the same as the Biomarkers cards.
+Just need to be in a carousel."
+
+So on this tab the report card IS *Latest report*: the same eyebrow, title, two
+lines of detail and pill at the foot. What it is not is the notification card --
+no dismiss, no illustration, no dot. The second line needed the biomarker count
+beside the date, so `.rcMeta` is three named parts now (date, byline, count) and
+each surface shows the two it wants: the hero and the desk keep date and byline,
+the mini card takes date and count.
+
+"Make sure the left gap of this section is the same" -- and it was not, by
+exactly 13px, for a reason worth writing down: **`scroll-snap-align:start` snaps
+to the SCROLLPORT's edge, not the padding edge**, so the row scrolled 13px on
+its own and cancelled its own gutter. `scroll-padding-left` tells the snap where
+the content starts. (A scroller also keeps its scrollLeft across a layout
+change, so the row opened wherever the hero's carousel had been left; v3Layout
+resets it.)
+
+"The width of the card needs to be a bit less to see the 3rd card overflow":
+half the row divided by 2.28 rather than 2.
+
+  the bento's card and the report card both start 18px from the phone's edge;
+  card 147 x 222, and the third breaks the right edge
+
+### 5.246 Historical records, and a travel that can be read
+
+"Select should be Historical records / 2011 - 2026." So the sheet's CTA no
+longer picks the newest report -- it picks a **range**. `RECS` carries one now:
+`all: true` means it passes every row rather than the rows stamped with its id,
+because it is not a test that was taken and stamps none; `sub` writes its own
+second line, since a range is a pair of years and not a category and a date. It
+is excluded from `REPS`, so it gets no report card, and from `assignRecords`,
+so it stamps nothing.
+
+"Slower the animation scroll down auto by 2x": `behavior:'smooth'` has a
+duration the browser picks and will not be told, so the travel is driven by hand
+now -- 1000ms on an ease-in-out, with a reader gesture winning the moment the
+position is not where we put it. The retry that checks the landing had to be
+moved out to 1280ms: at 420ms it was firing mid-glide and snapping the very
+travel it was checking (0 -> 5 -> 67 -> 722 in three samples; now 0 -> 4 -> 61
+-> 280 -> 608 -> 707 -> 722).
+
+### 5.247 Two more names, and a hero that stopped blinking
+
+"Rename --> Insights, not Biomarkers page": the menu group.
+
+"V3, when switching tab the hero needs to stay intact, at the moment it's
+blinking." The crossfade was applied to the header as well as the body. In V2
+that is right -- the hero IS what changes. In V3 the hero belongs to both tabs
+and does not change with them, so a shared header that blinks on every tap reads
+as the page reloading. V3 fades the body only.
+
 ---
 
 ## 6. Open items

@@ -1510,6 +1510,10 @@
     display:block;margin-top:5px;font-size:12.5px;color:#8b8b86;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
+  /* the date and the byline read as one line here; the count is the mini
+     card's second line and waits for it */
+  .repCard .rcMeta .w::before{content:" \00b7 ";}
+  .repCard .rcMeta .n{display:none;}
   /* the illustration takes whatever height is left, and centres in it: the
      phone's card is as tall as the hero and the desk's is not, and the same
      card has to sit in both without a second set of numbers */
@@ -3501,16 +3505,6 @@
   body.v3Tab .dash .dTabsV2{margin:22px 0 26px;}
   .mRepCarHost{display:none;}
   body.v3Tab.repTab #phone .mRepCarHost{display:block;padding:8px 0 0;}
-  body.v3Tab.repTab #phone .mRepCarHost .v4RepCar{
-    display:flex;position:static;height:250px;gap:12px;padding:0 13px;
-    overflow-x:auto;overflow-y:hidden;
-    scroll-snap-type:x mandatory;scrollbar-width:none;
-    overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
-  }
-  body.v3Tab.repTab #phone .mRepCarHost .v4RepDots{
-    display:flex;position:static;justify-content:center;gap:5px;
-    margin:14px 0 0;pointer-events:none;
-  }
   /* the records heading follows the carousel rather than the hero */
   body.v3Tab.repTab #phone .mMedsHead{margin-top:22px;}
 
@@ -3524,22 +3518,44 @@
   body.v3Tab.repTab #phone .mRepCarHost{display:block;padding:0 0 4px;}
   body.v3Tab.repTab #phone .mRepCarHost .v4RepCar{
     display:flex;position:static;height:222px;gap:12px;padding:0 13px;
+    /* scroll-snap-align:start snaps to the SCROLLPORT's edge, not the
+       padding edge, so the row scrolled 13px on its own and cancelled its
+       own gutter -- the section then began flush where the bento's cards
+       begin at 13. scroll-padding tells the snap where the content starts. */
+    scroll-padding-left:13px;
     overflow-x:auto;overflow-y:hidden;
     scroll-snap-type:x mandatory;scrollbar-width:none;
     overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
   }
+  /* narrower than the bento's half, so the third card breaks the right edge
+     and the row says it carries on */
   body.v3Tab.repTab #phone .mRepCarHost .repCard{
-    flex:0 0 calc((100% - 38px) / 2);scroll-snap-align:start;
+    flex:0 0 calc((100% - 38px) / 2.28);scroll-snap-align:start;
     height:222px;border-radius:22px;padding:15px;
     background:rgba(255,255,255,.06);
   }
   body.light.v3Tab.repTab #phone .mRepCarHost .repCard{background:rgba(46,31,26,.05);}
-  body.v3Tab.repTab #phone .mRepCarHost .rcH{font-size:15px;margin-top:8px;}
-  body.v3Tab.repTab #phone .mRepCarHost .rcMeta{font-size:11.5px;}
-  body.v3Tab.repTab #phone .mRepCarHost .rcKind{font-size:11.5px;}
-  body.v3Tab.repTab #phone .mRepCarHost .rcCta{height:36px;border-radius:11px;font-size:12.5px;}
-  body.v3Tab.repTab #phone .mRepCarHost .rcArt{min-height:0;margin:8px 0;}
-  body.v3Tab.repTab #phone .mRepCarHost .rcArt svg{width:min(66%, 92px);}
+  /* On this tab a report card IS the bento's card -- the same eyebrow, title,
+     two lines of detail and pill at the foot as Latest report. What it is not
+     is the notification card: no dismiss, no illustration, no dot. */
+  body.v3Tab.repTab #phone .mRepCarHost .rcArt,
+  body.v3Tab.repTab #phone .mRepCarHost .rcX,
+  body.v3Tab.repTab #phone .mRepCarHost .rcKind i{display:none;}
+  body.v3Tab.repTab #phone .mRepCarHost .rcKind{
+    font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;gap:0;
+  }
+  body.v3Tab.repTab #phone .mRepCarHost .rcH{
+    font-size:17px;font-weight:500;margin-top:7px;-webkit-line-clamp:1;
+  }
+  body.v3Tab.repTab #phone .mRepCarHost .rcMeta{
+    margin-top:7px;font-size:13px;line-height:1.45;white-space:normal;
+  }
+  body.v3Tab.repTab #phone .mRepCarHost .rcMeta .d,
+  body.v3Tab.repTab #phone .mRepCarHost .rcMeta .n{display:block;}
+  body.v3Tab.repTab #phone .mRepCarHost .rcMeta .w{display:none;}
+  body.v3Tab.repTab #phone .mRepCarHost .rcCta{
+    margin-top:auto;height:40px;border-radius:999px;font-size:13.5px;
+  }
   body.v3Tab.repTab #phone .mRepCarHost .v4RepDots{
     display:flex;position:static;justify-content:center;gap:5px;
     margin:12px 0 0;pointer-events:none;
@@ -6829,7 +6845,7 @@
   const MODES = [
     { name: 'Card Nav', dur: 1800, ease: 1, group: 'Concept' }, // card carousel, hard S-curve pace
     { name: 'Pill Nav', dur: 850,  ease: 0, group: 'Concept' }, // pill chips, arc below the organ
-    { name: 'Desktop', dur: 850, ease: 0, group: 'Biomarkers page', sort: 1 }, // organ card inside the product dashboard
+    { name: 'Desktop', dur: 850, ease: 0, group: 'Insights', sort: 1 }, // organ card inside the product dashboard
     { name: 'Card flip', dur: 850, ease: 0, group: 'Concept' }, // rotating card carousel of organs
     { name: 'Grid',     dur: 850,  ease: 0, group: 'Concept' }, // outlined 3-across organ grid
     { name: 'Mobile', dur: 850, ease: 0, group: 'Base', sort: 4 }, // the bento every mobile variant wears; not offered on its own
@@ -6837,21 +6853,21 @@
     { name: 'Library',  dur: 850,  ease: 0, group: 'Library' }, // the isolated-organ component library
     { name: 'Immersive experience (modal)', dur: 850, ease: 0, group: 'Concept' }, // organ age as a lab instrument
     { name: 'Desktop', dur: 850, ease: 0, group: 'Overview page', sort: 1 },
-    { name: 'Desktop V2', dur: 850, ease: 0, group: 'Biomarkers page', sort: 2 }, // organ age split off its own card
-    { name: 'Mobile V2', dur: 850, ease: 0, group: 'Biomarkers page', sort: 6 }, // hero pair, coverage beside steps, organ age wide beneath
-    { name: 'Mobile V1', dur: 850, ease: 0, group: 'Biomarkers page', sort: 7 }, // coverage folded into the hero, organ age beside steps
-    { name: 'Desktop V1', dur: 900, ease: 0, group: 'Biomarkers page', sort: 3 }, // coverage in the hero, one mini card, the body list given room
-    { name: 'Desktop V3', dur: 900, ease: 0, group: 'Biomarkers page', sort: 4 }, // the insight header as one coloured block over a white page
-    { name: 'Mobile V3', dur: 850, ease: 0, group: 'Biomarkers page', sort: 9 },
-    { name: 'Mobile V4', dur: 850, ease: 0, group: 'Biomarkers page', sort: 10 },
-    { name: 'Mobile V5', dur: 850, ease: 0, group: 'Biomarkers page', sort: 11 }, // the same, folded to the phone
+    { name: 'Desktop V2', dur: 850, ease: 0, group: 'Insights', sort: 2 }, // organ age split off its own card
+    { name: 'Mobile V2', dur: 850, ease: 0, group: 'Insights', sort: 6 }, // hero pair, coverage beside steps, organ age wide beneath
+    { name: 'Mobile V1', dur: 850, ease: 0, group: 'Insights', sort: 7 }, // coverage folded into the hero, organ age beside steps
+    { name: 'Desktop V1', dur: 900, ease: 0, group: 'Insights', sort: 3 }, // coverage in the hero, one mini card, the body list given room
+    { name: 'Desktop V3', dur: 900, ease: 0, group: 'Insights', sort: 4 }, // the insight header as one coloured block over a white page
+    { name: 'Mobile V3', dur: 850, ease: 0, group: 'Insights', sort: 9 },
+    { name: 'Mobile V4', dur: 850, ease: 0, group: 'Insights', sort: 10 },
+    { name: 'Mobile V5', dur: 850, ease: 0, group: 'Insights', sort: 11 }, // the same, folded to the phone
     // Named for what it is rather than for how many came before it. The
     // version number was the menu carrying its own history, which is what the
     // archive is for now; the marker class stays `b5`, because renaming that
     // rewires the renderer.
-    { name: 'Desktop', dur: 900, ease: 0, group: 'Biomarkers page', sort: 5 }, // V1 wearing the phone's reading of the organ
-    { name: 'Mobile V6', dur: 850, ease: 0, group: 'Biomarkers page', sort: 12 }, // V5 with the biomarkers folded into the hero
-    { name: 'Mobile', dur: 850, ease: 0, group: 'Biomarkers page', sort: 13 }, // V6 again, to diverge from; marker stays `v8`
+    { name: 'Desktop', dur: 900, ease: 0, group: 'Insights', sort: 5 }, // V1 wearing the phone's reading of the organ
+    { name: 'Mobile V6', dur: 850, ease: 0, group: 'Insights', sort: 12 }, // V5 with the biomarkers folded into the hero
+    { name: 'Mobile', dur: 850, ease: 0, group: 'Insights', sort: 13 }, // V6 again, to diverge from; marker stays `v8`
     // Desktop V5 in a frame two hundred pixels narrower. It was a tweak on V5
     // first, which made it a state of another page rather than a design you
     // can link to, sit beside its siblings in the menu, or open on its own.
@@ -6859,7 +6875,7 @@
     // rule V5 wears plus the marker the tablet layout is written against.
     // 5.5 rather than 6: it sits between the two current designs in the menu,
     // and saying so with a fraction cannot collide with an existing sort.
-    { name: 'Tablet', dur: 900, ease: 0, group: 'Biomarkers page', sort: 5.5 },
+    { name: 'Tablet', dur: 900, ease: 0, group: 'Insights', sort: 5.5 },
     // The teaser's storyboard: nine sequences, each a loosely animated frame
     // in the product's own system, with the script and notes for the motion
     // designer who polishes it in After Effects. A page, so it can be linked
@@ -10505,7 +10521,7 @@
   // nothing anywhere to say so. The Organ Age landing page shipped that way and
   // read as never built, because the only way to reach it was to know to type
   // #m23. Adding a mode means adding its group here too.
-  const MODE_GROUPS = ['Concept', 'Biomarkers page', 'Overview page', 'Library',
+  const MODE_GROUPS = ['Concept', 'Insights', 'Overview page', 'Library',
                        'Results received', 'Video', 'Landing page'];
   MODE_GROUPS.forEach(g => {
     const inGroup = MODES.map((v, i) => [v, i])
@@ -10526,7 +10542,7 @@
     // sets -- so the class chain and every `version === 20` stay one thing.
     // Picked from the bar, the bar stays (it is how you get back); opened by
     // its hash, #m20v, the bar is gone and the design has the whole screen.
-    if (g === 'Biomarkers page'){
+    if (g === 'Insights'){
       const o = document.createElement('option');
       o.value = VIEWPORT_VAL;
       o.textContent = 'Mobile (viewport)';
@@ -15632,6 +15648,12 @@
   // and each record shows exactly the number on its badge.
   const RECS = [
     { id: 'all', label: 'All records' },
+    // Not a report but a range: everything on the page, named for the span
+    // it covers. `all: true` means it passes every row rather than the rows
+    // stamped with its id -- there are none, because it is not a test that
+    // was taken. `sub` writes its own second line, since a range is a pair
+    // of years and not a category and a date.
+    { id: 'hist', label: 'Historical records', sub: '2011 \u2013 2026', all: true },
     // `by`, `art` and `media` are the report card's half of a record: who
     // signed it, the two colours its cover is mixed from, and whether that
     // cover is a still or a piece of film. Kept on the record rather than in a
@@ -15752,7 +15774,7 @@
   // One report card, wherever a report is shown: the phone's hero carousel and
   // the desk's grid are two arrangements of the same card, so the card itself
   // is written once.
-  const REPS = RECS.filter(r => r.id !== 'all');
+  const REPS = RECS.filter(r => r.id !== 'all' && !r.all);
   // The report's illustration, drawn rather than fetched: the page inlines
   // everything it uses, and two tilted sheets with a coloured band say "a
   // document" faster at 150px than a photograph of one would. The tint comes
@@ -15805,7 +15827,9 @@
           '<button class="rcX" type="button" aria-label="Dismiss ' + r.label + '">' + X + '</button>' +
         '</span>' +
         '<span class="rcH">' + r.label + '</span>' +
-        '<span class="rcMeta">' + r.date + ' &middot; ' + r.by + '</span>' +
+        '<span class="rcMeta"><span class="d">' + r.date + '</span>' +
+          '<span class="w">' + r.by + '</span>' +
+          '<span class="n">' + r.n + ' biomarkers</span></span>' +
         '<span class="rcArt">' + repArtHTML(r, 'c') + '</span>' +
         '<button class="rcCta" type="button" tabindex="-1">See results</button>' +
       '</div>';
@@ -16165,6 +16189,22 @@
           '<path d="M12 11v5.4" fill="none" stroke="currentColor" stroke-width="1.7" ' +
           'stroke-linecap="round"/><circle cx="12" cy="7.9" r="1.1" fill="currentColor"/>'
   };
+  // A scroll we time ourselves. cubic-bezier-ish ease-in-out, so it leaves and
+  // arrives without a jolt, and a reader gesture during it wins: the moment the
+  // position is not where we put it, the travel stops.
+  function glideTo(sc, to, dur){
+    const from = sc.scrollTop, d = to - from, t0 = performance.now();
+    if (Math.abs(d) < 1) return;
+    let last = from;
+    const step = now => {
+      if (Math.abs(sc.scrollTop - last) > 2) return;   // the reader took over
+      const k = Math.min(1, (now - t0) / (dur || 1000));
+      const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      last = sc.scrollTop = Math.round(from + d * e);
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
   function pastResults(host, desk){
     if (!host) return null;
     const svg = k => '<svg viewBox="0 0 24 24" aria-hidden="true">' + PR_ICON[k] + '</svg>';
@@ -16222,9 +16262,9 @@
     // leaving them to find it. Smooth, because the travel is the explanation.
     wrap.querySelector('.prCta').addEventListener('click', () => {
       hide();
-      const latest = REPS[0];
-      if (latest) document.dispatchEvent(
-        new CustomEvent('everlab:pickRec', { detail: latest.id }));
+      // the range, not the newest report: what was found is a history, and
+      // that is what the page should be showing when the reader lands
+      document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: 'hist' }));
       setMode(desk ? 18 : 20);
       // The travel is asked for again until it lands. A single scroll timed to
       // "after the beat" is a guess, and the guess was wrong on the desk: the
@@ -16244,13 +16284,18 @@
         const gap = blk.getBoundingClientRect().top - sc.getBoundingClientRect().top - stH;
         if (Math.abs(gap) <= 2) return;      // pinned; the travel is done
         const to = Math.max(0, Math.round(sc.scrollTop + gap));
-        // Smooth the first time, because the travel is the explanation. A
-        // retry sets the position outright: a smooth scroll is driven by
-        // frames, and where frames are not coming -- a background tab, a
-        // screenshot -- asking for it again politely never arrives.
-        if (tries === 1) sc.scrollTo({ top: to, behavior: 'smooth' });
+        // Driven by hand rather than by behavior:'smooth'. The browser picks
+        // that duration and will not be told, and this travel is the
+        // explanation -- it wants to be read, so it runs at half the pace the
+        // browser would have chosen. A retry sets the position outright: an
+        // animated scroll needs frames, and where frames are not coming -- a
+        // background tab, a screenshot -- asking again politely never arrives.
+        if (tries === 1) glideTo(sc, to, 1000);
         else sc.scrollTop = to;
-        setTimeout(reach, 260);
+        // the first check waits out the glide; anything after it is a
+        // correction, not a competitor. It used to fire at 420ms and snap
+        // the travel it was supposed to be checking.
+        setTimeout(reach, tries === 1 ? 1280 : 420);
       };
       setTimeout(reach, 460);
     });
@@ -17165,6 +17210,11 @@
   }
   function v3Layout(){
     const on = !!(CARD_STATE.v2Tab && CARD_STATE.v3Tab);
+    // A scroller keeps its scrollLeft across a layout change, so the report row
+    // opened wherever the hero's carousel had been left -- which reads as a
+    // section whose left gutter is wrong, not as a scrolled row.
+    const car = document.getElementById('v4RepCar');
+    if (car) car.scrollLeft = 0;
     V3_MOVES.forEach(m => {
       const host = typeof m.to === 'function' ? m.to() : m.to;
       if (on){ if (host && m.el.parentNode !== host) host.appendChild(m.el); }
@@ -17313,7 +17363,11 @@
     // the lightest crossfade on whatever the tab changed -- re-triggered by
     // taking the class off and putting it back a frame later, since an
     // animation does not replay while its class is already on
-    ['mBody', 'mHeadIn'].forEach(id => {
+    // In V3 the hero belongs to both tabs and does not change with them, so it
+    // must not fade -- a shared header that blinks on every tap reads as the
+    // page reloading. In V2 the hero IS what changes, so it fades with the rest.
+    const swap = CARD_STATE.v3Tab ? ['mBody'] : ['mBody', 'mHeadIn'];
+    swap.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       el.classList.remove('tabSwap');
@@ -18236,7 +18290,7 @@
     rows.forEach(r => { r.dataset.r = ''; });
     let ptr = 0;
     RECS.forEach(rec => {
-      if (rec.id === 'all') return;
+      if (rec.id === 'all' || rec.all) return;
       for (let k = 0; k < rec.n; k++, ptr++){
         const row = rows[(ptr * 37) % N];
         row.dataset.r += (row.dataset.r ? ' ' : '') + rec.id;
@@ -18288,7 +18342,7 @@
     const hold = cfg.hold || function(){};
     const afterApply = cfg.afterApply || function(){};
     const beforeBeat = cfg.beforeBeat || function(){};
-    let chipSt = 'all', recSet = 'all', countChips = null, skelTimer = 0;
+    let chipSt = 'all', recSet = 'all', recAll = false, countChips = null, skelTimer = 0;
     // What the chips cut by. The biomarker list cuts by a reading's range, the
     // records list by a document's category -- one filter, asked a different
     // question about each row.
@@ -18302,7 +18356,7 @@
         for (const row of g.querySelectorAll(cfg.rowSel)){
           const hit = (!q || row.firstElementChild.textContent.toLowerCase().includes(q)) &&
                       (chipSt === 'all' || rowKey(row) === chipSt) &&
-                      (recSet === 'all' ||
+                      (recSet === 'all' || recAll ||
                        (' ' + row.dataset.r + ' ').indexOf(' ' + recSet + ' ') >= 0);
           row.hidden = !hit; if (hit) shown++;
         }
@@ -18358,7 +18412,7 @@
         '<button class="mRecOpt' + (r.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
                 'aria-selected="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
           '<span class="t"><b>' + r.label + '</b>' +
-            (r.cat ? '<i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i>' : '') + '</span>' +
+            (r.sub ? '<i>' + r.sub + '</i>' : r.cat ? '<i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i>' : '') + '</span>' +
           (r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
         '</button>').join('');
       const isOpen = () => document.body.classList.contains('mRecOn') && !rec.menu.hidden;
@@ -18396,6 +18450,8 @@
     // because the Expanded Report layout has no menu at all.
     function choose(id, reload){
       recSet = id;
+      // a range passes every row; a report passes the rows it stamped
+      recAll = !!(RECS.find(x => x.id === id) || {}).all;
       const r = RECS.find(x => x.id === id) || RECS[0];
       if (rec.listEl){
         [].slice.call(rec.listEl.children).forEach(x => {
@@ -18413,8 +18469,8 @@
       }
       if (rec.lbl) rec.lbl.textContent = r.label;
       if (rec.ey){
-        rec.ey.hidden = !r.cat;
-        rec.ey.innerHTML = r.cat ? r.cat + ' &nbsp;|&nbsp; ' + r.date : '';
+        rec.ey.hidden = !(r.sub || r.cat);
+        rec.ey.innerHTML = r.sub ? r.sub : (r.cat ? r.cat + ' &nbsp;|&nbsp; ' + r.date : '');
       }
       // chevron or cross, never both: with a record chosen the useful action
       // is undoing it, and All records is the undone state so it needs none
