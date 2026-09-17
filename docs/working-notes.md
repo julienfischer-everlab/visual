@@ -6585,7 +6585,8 @@ Four passes over the same layout, each one the consequence of the last:
   darkens to black on the same curve as the reader scrolls past the header.
   That rule has to sit after the v5/v6 grounds: same specificity, and source
   order was handing it to them.
-- **75% wide, centred**, so the control is the middle of the card.
+- **70% wide, centred**, so the control is the middle of the card (75% first,
+  then trimmed).
 
 ### 5.238 The Onboarding page became two, over the Overview
 
