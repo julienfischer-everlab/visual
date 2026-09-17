@@ -7029,6 +7029,79 @@ same card in two tabs -- one replaces the other on a tap -- so they are the one
 place on the page that must agree about their material. Taking the pair to 3.5%
 made them two different materials. Both 6%.
 
+### 5.262 The body card arrives at black
+
+"On V3 and V4 the body card should be transparent in the default state, and
+when you start to swipe up it should tend to a black background, with a blur
+while you scroll. At some point it turns fully black and the whole screen is
+black."
+
+The card was painting `rgb(var(--v5head))` -- the header's own grey, from the
+earlier "keep the body the same colour as the header". That made it a surface
+from the first frame. It is now nothing at rest and black by the time it has
+the screen: `rgba(0,0,0,var(--v3BodyK))`, with a blur on the same number, and
+`--v3BodyK` runs the smoothstep the header's grey already runs, so the two
+arrive at black together.
+
+The blur is switched on by a class rather than left at `blur(0)`. A
+backdrop-filter on a full-height element costs frames even when it is doing
+nothing, and this page has a WebGL field behind it.
+
+Measured through a scroll: k 0 → .468 → .995 → 1, blur 0 → 9.4 → 19.9 → 20px,
+and the card's rounded top still opens 16px above the tab group on both tabs.
+
+### 5.263 The insight card, as a card rather than a page
+
+"A lot of examples of card content for the insights. Keep the content, the
+visuals, the graph and the chart. Put the title on the left and the visual on
+the right. You can drop the description and the tag below, because you can
+click on it and open the full description."
+
+Right, and it is the same argument as the New report notice: a card that says
+everything is a card you read instead of press. The lead paragraph and the
+marker row went to the sheet, which is where there is room for them. What is
+left is the finding in a line and the shape of the reading it came from.
+
+Three shapes, because findings come in three kinds: a **series** that moved
+(insulin rising, hs-CRP falling, eGFR flat), a **single reading against its
+bands** (ApoB, ALT -- drawn as the same three range pills the biomarker rows
+carry, so a finding and a row agree about what the ranges are), and a **place
+in a population** (free testosterone, with the marker riding the curve rather
+than floating over it, so its height reads as how many people are there).
+
+Each is drawn from the finding's own numbers, so a card cannot show a rise its
+readings do not have. `preserveAspectRatio="none"` with
+`vector-effect="non-scaling-stroke"`: the box is a share of the card, so its
+aspect changes between a 390 phone and a 1080 column, and a scaled stroke would
+thin out on the desk.
+
+The eyebrow is now the status in its own colour -- Optimal, To monitor, Out of
+range -- because that is the line worth colouring. The panel name went to the
+sheet with everything else.
+
+### 5.264 Inline tabs at the desk
+
+"Can you do an inline tab instead of a segmented tab, and add a 16px margin
+top? V3, V4. Only for desktop, not mobile -- for mobile keep the segmented tab."
+
+A pill is a control you switch; an underlined row is a place you are. The phone
+has two or three words and a thumb to slide between them, which is what a pill
+is for. The desk has the width to lay them out as a row with a rule under it,
+and a count beside each label says how much is behind it before you press.
+
+The sliding thumb becomes the underline -- same element, same measurement, so
+the travel is the one that was already there, at 2px on the rule instead of
+40px behind the label.
+
+Counts are read from the lists rather than typed, for the reason every other
+figure on the page is: a number beside a tab is a promise about what is behind
+it, and one written by hand goes stale the first time a row is added.
+
+Two things the change broke and had to restate: the inline `display:flex` on
+`.v2Tab` out-specifies the V4 gate, so V3's desk grew an Insights tab it does
+not have; and the older `margin:24px auto` rule sits later in the sheet at the
+same specificity, so the 16px never landed until that rule was the one edited.
+
 ---
 
 ## 6. Open items

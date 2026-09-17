@@ -1612,6 +1612,45 @@
     border-radius:999px;background:rgba(255,255,255,.06);
   }
   .dash .dTabsV2 .v2Tab{flex:0 0 auto;height:40px;padding:0 20px;font-size:14px;}
+  /* ---- V3 and V4's desk tabs: inline, not segmented --------------------
+     A pill is a control you switch; an underlined row is a place you are. On
+     the phone the pill is right -- there are two or three words and a thumb
+     to slide between them. The desk has the width to lay them out as a row
+     with a rule under it, which is what the rest of the product's tables and
+     shelves use, and the count beside each label says how much is behind it
+     before you press. The sliding thumb becomes the underline: same element,
+     same measurement, so the travel is the one that was already there. */
+  body.v3Tab .dash .dTabsV2{
+    display:flex;width:auto;gap:30px;margin:16px 0 26px;padding:0;
+    justify-content:flex-start;border-radius:0;background:none;
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,.1);
+  }
+  body.light.v3Tab .dash .dTabsV2{box-shadow:inset 0 -1px 0 rgba(46,31,26,.13);}
+  body.v3Tab .dash .dTabsV2 .v2Tab{
+    display:flex;align-items:center;gap:8px;
+    height:auto;padding:0 0 13px;border-radius:0;background:none;font-size:15px;
+  }
+  /* the display above out-specifies the V4 gate, so the gate is restated here
+     rather than left to be quietly overridden */
+  body.v3Tab .dash .dTabsV2 .v2Tab.v4Only{display:none;}
+  body.v3Tab.v4Tab .dash .dTabsV2 .v2Tab.v4Only{display:flex;}
+  body.v3Tab .dash .dTabsV2 .v2Thumb{
+    top:auto;bottom:0;height:2px;border-radius:2px;background:#ececec;
+  }
+  body.light.v3Tab .dash .dTabsV2 .v2Thumb{background:#2e1f1a;}
+  .dTabsV2 .tCount{
+    font-size:12px;line-height:1;padding:4px 7px;border-radius:7px;
+    background:rgba(255,255,255,.1);color:#a6a6a0;
+  }
+  body.light .dTabsV2 .tCount{background:rgba(46,31,26,.08);color:#6d5c4b;}
+  /* the active count is the one you are reading, so it takes the page's
+     primary pair rather than another grey */
+  .dTabsV2 .v2Tab.on .tCount{background:#ececec;color:#141413;}
+  body.light .dTabsV2 .v2Tab.on .tCount{background:#2e1f1a;color:#f7f2e9;}
+  /* the pill keeps its counts to itself: at 14px in a 40px pill there is no
+     room for a second thing per tab, and the phone has fewer still */
+  body:not(.v3Tab) .dTabsV2 .tCount,
+  #phone .tCount{display:none;}
   /* ---- V4: a third tab, and the findings under it ------------------------
      V2 and V3 ask what the page is a list OF and answer with two nouns, both
      of them things the clinic produced: readings, documents. V4 adds the
@@ -1651,28 +1690,37 @@
   /* the eyebrow carries the panel it came from and, in the dot, how the
      reading sits -- the same three colours the chips and the pills use, so a
      finding and a row agree about what "out of range" looks like */
-  .insTop{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#8b8b86;}
-  body.light .insTop{color:#7d6b58;}
+  /* Two columns: what it says on the left, what it looks like on the right.
+     The description and the marker row went with the sheet -- the whole card
+     opens, so a card that says everything twice is a card you read instead of
+     press. What is left is the finding in a line and the shape of the reading
+     it came from, which is the pair you can take in without stopping. */
+  .insCard{display:flex;align-items:center;gap:14px;}
+  .insTxt{flex:1 1 auto;min-width:0;}
+  .insTop{display:flex;align-items:center;gap:7px;font-size:12.5px;}
   .insTop i{flex:none;width:8px;height:8px;border-radius:50%;}
-  .insTop .insWhen{margin-left:auto;}
-  .insCard h4{
-    margin:9px 0 0;font-size:16px;font-weight:500;line-height:1.3;color:#ececec;
+  /* the status in its own colour, the way the chips and the pills carry it --
+     the eyebrow IS the reading's state, so it is the one line worth colouring */
+  .insCard .insH{
+    display:block;margin:9px 0 0;font-size:15.5px;font-weight:500;
+    line-height:1.32;color:#ececec;
   }
-  body.light .insCard h4{color:#2e1f1a;}
-  .dash .insCard h4{font-size:17px;}
-  .insCard p{
-    margin:6px 0 0;font-size:13.5px;line-height:1.45;color:#8b8b86;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  body.light .insCard .insH{color:#2e1f1a;}
+  .dash .insCard .insH{font-size:17px;}
+  /* the visual: a fixed share of the card rather than a fixed width, so it
+     holds its proportion from a 390 phone to a 1080 column */
+  .insViz{
+    flex:0 0 38%;max-width:150px;display:flex;flex-direction:column;
+    align-items:flex-end;gap:6px;
   }
-  body.light .insCard p{color:#7d6b58;}
-  /* the readings it was drawn from, named: a finding with no marker under it
-     is an opinion, and the row is what makes it checkable */
-  .insMarks{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
-  .insMarks span{
-    font-size:11.5px;line-height:1;padding:6px 9px;border-radius:999px;
-    background:rgba(255,255,255,.07);color:#a6a6a0;
+  .dash .insViz{flex:0 0 26%;max-width:220px;}
+  .insVal{
+    font-size:15px;font-weight:500;color:#ececec;white-space:nowrap;line-height:1;
   }
-  body.light .insMarks span{background:rgba(46,31,26,.06);color:#6d5c4b;}
+  body.light .insVal{color:#2e1f1a;}
+  .insVal i{font-style:normal;font-size:11.5px;color:#8b8b86;margin-left:3px;}
+  .insSvg{display:block;width:100%;height:44px;overflow:visible;}
+  .insCap{font-size:11px;color:#8b8b86;white-space:nowrap;}
 
   /* What the Insights tab is not: the readings and the documents. Both lists
      and both filters stand down, and the hero bento stays, because it belongs
@@ -3599,7 +3647,7 @@
      one carousel with one set of handlers however the page is laid out. */
   /* the tabs are inside the body card in V3, and sized to the middle of it */
   body.v3Tab #phone #mTabsV2{width:70%;margin:2px auto 16px;}
-  body.v3Tab .dash .dTabsV2{margin:24px auto 26px;}
+  body.v3Tab .dash .dTabsV2{margin:16px 0 26px;}
   .mRepCarHost{display:none;}
   body.v3Tab.repTab #phone .mRepCarHost{display:block;padding:8px 0 0;}
   /* the records heading follows the carousel rather than the hero */
@@ -5178,7 +5226,20 @@
      is painting, written by the scroll handler: one number, two surfaces, so
      they cannot drift. It has to sit AFTER the v5/v6 grounds above, which carry
      the same specificity and would otherwise win on source order. */
-  body.v3Tab #phone .mBody{background:rgb(var(--v5head, 18 18 18));}
+  /* V3 and V4: the card is nothing at rest and black by the time it has the
+     screen. Transparent over the page at the top, so the header reads as
+     continuing under it rather than as a second surface butted against it;
+     then it fills with black and gathers a blur on the same curve the header's
+     own grey runs, so the two arrive at black together and the swipe up is one
+     movement rather than a card sliding over a picture. The blur is switched
+     on by a class rather than left at blur(0): a backdrop-filter on a
+     full-height element costs frames even when it is doing nothing. */
+  body.v3Tab #phone .mBody{background:rgba(0,0,0,var(--v3BodyK, 0));}
+  body.v3Tab #phone.v3Blur .mBody{
+    -webkit-backdrop-filter:blur(calc(var(--v3BodyK, 0) * 20px));
+    backdrop-filter:blur(calc(var(--v3BodyK, 0) * 20px));
+  }
+  body.light.v3Tab #phone .mBody{background:rgba(255,255,255,var(--v3BodyK, 0));}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
   body.light.v5 #phone .mstatus .tm{color:#000;}
@@ -16589,6 +16650,60 @@
   // it checkable. Written here rather than derived, because the reasoning is
   // the content: there is no rule in the prototype that would produce it.
   const INS_DOT = { ok: 'var(--rgOpt)', sub: 'var(--rgSub)', out: 'var(--rgOut)' };
+  // The eyebrow is the reading's state, said in the product's words rather
+  // than in the data's: the panel it came from is in the sheet, where there is
+  // room for it.
+  const INS_WORD = { ok: 'Optimal', sub: 'To monitor', out: 'Out of range' };
+  // Three shapes, because findings come in three kinds: a series that moved, a
+  // single reading against its bands, and a place in a population. Drawn from
+  // the finding's own numbers rather than picked per card, so a card cannot
+  // show a rise its readings do not have. 120x44 and scaled, with non-scaling
+  // strokes -- the box is a share of the card, so its aspect changes with the
+  // column and a scaled stroke would thin out on the desk.
+  function vizTrend(vals, col){
+    const n = vals.length, mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+    const sp = (mx - mn) || 1;
+    const pt = i => [4 + 112 * (i / (n - 1)), 40 - 32 * ((vals[i] - mn) / sp)];
+    const d = vals.map((v, i) => {
+      const q = pt(i); return (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1);
+    }).join(' ');
+    const last = pt(n - 1);
+    return '<svg class="insSvg" viewBox="0 0 120 44" fill="none" preserveAspectRatio="none" ' +
+      'aria-hidden="true">' +
+      '<path d="' + d + '" stroke="' + col + '" stroke-width="2" stroke-linecap="round" ' +
+        'stroke-linejoin="round" vector-effect="non-scaling-stroke"/>' +
+      '<circle cx="' + last[0].toFixed(1) + '" cy="' + last[1].toFixed(1) + '" r="3.2" ' +
+        'fill="' + col + '" vector-effect="non-scaling-stroke"/></svg>';
+  }
+  // the same three bands the rows under a biomarker carry, with the reading's
+  // place on them -- so a finding and a row agree about what the ranges are
+  function vizRange(pos, col){
+    const x = 4 + 112 * Math.min(1, Math.max(0, pos));
+    return '<svg class="insSvg" viewBox="0 0 120 44" fill="none" preserveAspectRatio="none" ' +
+      'aria-hidden="true">' +
+      '<rect x="4" y="24" width="56" height="7" rx="3.5" fill="var(--rgOpt)" opacity=".85"/>' +
+      '<rect x="63" y="24" width="27" height="7" rx="3.5" fill="var(--rgSub)" opacity=".85"/>' +
+      '<rect x="93" y="24" width="23" height="7" rx="3.5" fill="var(--rgOut)" opacity=".85"/>' +
+      '<path d="M' + x.toFixed(1) + ' 20 l5 -8 h-10 Z" fill="' + col + '"/></svg>';
+  }
+  // where you sit among everyone else. The marker rides the curve rather than
+  // floating over it, so the height reads as "how many people are here".
+  function vizCurve(pos, col){
+    const x = 8 + 104 * Math.min(1, Math.max(0, pos));
+    const t = (x - 60) / 27;
+    const y = 40 - 32 * Math.exp(-t * t);
+    return '<svg class="insSvg" viewBox="0 0 120 44" fill="none" preserveAspectRatio="none" ' +
+      'aria-hidden="true">' +
+      '<path d="M2 40 C24 40 28 8 60 8 C92 8 96 40 118 40" stroke="currentColor" ' +
+        'stroke-width="1.4" stroke-opacity=".28" vector-effect="non-scaling-stroke"/>' +
+      '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3.6" fill="' + col + '" ' +
+        'vector-effect="non-scaling-stroke"/></svg>';
+  }
+  function insViz(i, col){
+    if (i.viz === 'range') return vizRange(i.pos, col);
+    if (i.viz === 'curve') return vizCurve(i.pos, col);
+    return vizTrend(i.series, col);
+  }
   const INSIGHTS = [
     { id: 'i1', panel: 'Metabolic', st: 'out', when: '13 Aug 2026',
       title: 'Your fasting insulin has risen across three tests',
@@ -16605,6 +16720,7 @@
              'Move the largest carbohydrate of the day to after training.',
              'Re-test fasting insulin in twelve weeks rather than at the next ' +
              'annual panel.'],
+      val: ['12.4', 'mIU/L'], viz: 'trend', series: [7.8, 9.6, 12.4],
       rows: [['Fasting insulin', '12.4 mIU/L', 'out'],
              ['HbA1c', '5.4 %', 'ok'],
              ['Triglycerides', '1.9 mmol/L', 'sub']] },
@@ -16619,6 +16735,7 @@
       what: ['Ask for ApoB on every future lipid panel, not LDL alone.',
              'Lp(a) is largely inherited and worth measuring once — yours has been.',
              'Discuss the gap with your doctor before changing anything.'],
+      val: ['1.12', 'g/L'], viz: 'range', pos: 0.72,
       rows: [['ApoB', '1.12 g/L', 'sub'],
              ['LDL cholesterol', '3.1 mmol/L', 'ok'],
              ['Lp(a)', '18 nmol/L', 'ok']] },
@@ -16632,6 +16749,7 @@
            'margin and the most responsive to change.',
       what: ['Re-test in eight weeks — a single reading is a point, not a trend.',
              'The metabolic finding above and this one likely share a cause.'],
+      val: ['48', 'U/L'], viz: 'range', pos: 0.67,
       rows: [['ALT', '48 U/L', 'sub'],
              ['AST', '21 U/L', 'ok'],
              ['GGT', '24 U/L', 'ok']] },
@@ -16645,6 +16763,7 @@
            'held across two tests is unlikely to be noise.',
       what: ['Keep whatever changed — the number says it worked.',
              'One more reading in six months confirms it has settled.'],
+      val: ['0.9', 'mg/L'], viz: 'trend', series: [3.4, 2.2, 0.9],
       rows: [['hs-CRP', '0.9 mg/L', 'ok'],
              ['Ferritin', '142 µg/L', 'ok'],
              ['White cell count', '6.1 ×10⁹/L', 'ok']] },
@@ -16658,6 +16777,7 @@
            'both push SHBG up.',
       what: ['Re-test in the morning, fasted — the number moves a lot by time of day.',
              'Sleep is the largest lever here and the cheapest to pull.'],
+      val: ['182', 'pmol/L'], viz: 'curve', pos: 0.26, cap: 'Lower third for your age',
       rows: [['Free testosterone', '182 pmol/L', 'sub'],
              ['Total testosterone', '16.1 nmol/L', 'ok'],
              ['SHBG', '62 nmol/L', 'sub']] },
@@ -16670,6 +16790,7 @@
            'this many years is worth naming, because it is the background the ' +
            'other findings are read against.',
       what: ['Nothing to do. This one is here so the picture is complete.'],
+      val: ['96', 'mL/min'], viz: 'trend', series: [98, 97, 96, 97, 96],
       rows: [['eGFR', '96 mL/min', 'ok'],
              ['Serum creatinine', '82 µmol/L', 'ok'],
              ['Urea', '5.2 mmol/L', 'ok']] }
@@ -16743,16 +16864,21 @@
       m: insSheet(document.getElementById('phone'), false),
       d: insSheet(document.body, true)
     };
-    const html = INSIGHTS.map(i =>
-      '<button class="insCard" type="button" data-i="' + i.id + '">' +
-        '<span class="insTop"><i style="background:' + (INS_DOT[i.st] || INS_DOT.ok) +
-          '"></i>' + i.panel + '<span class="insWhen">' + i.when + '</span></span>' +
-        '<h4>' + i.title + '</h4>' +
-        '<p>' + i.lead + '</p>' +
-        '<span class="insMarks">' +
-          i.marks.map(m => '<span>' + m + '</span>').join('') +
+    const html = INSIGHTS.map(i => {
+      const col = INS_DOT[i.st] || INS_DOT.ok;
+      return '<button class="insCard" type="button" data-i="' + i.id + '">' +
+        '<span class="insTxt">' +
+          '<span class="insTop" style="color:' + col + '">' +
+            '<i style="background:' + col + '"></i>' + INS_WORD[i.st] + '</span>' +
+          '<b class="insH">' + i.title + '</b>' +
         '</span>' +
-      '</button>').join('');
+        '<span class="insViz">' +
+          (i.val ? '<span class="insVal">' + i.val[0] + '<i>' + i.val[1] + '</i></span>' : '') +
+          insViz(i, col) +
+          (i.cap ? '<span class="insCap">' + i.cap + '</span>' : '') +
+        '</span>' +
+      '</button>';
+    }).join('');
     [].slice.call(document.querySelectorAll('.insWrap')).forEach(hostEl => {
       hostEl.innerHTML = html;
       const desk = !hostEl.closest('#phone');
@@ -17818,6 +17944,28 @@
     });
     placeThumb();
   }
+  // The desk's inline tabs carry a count each. Read from the lists themselves
+  // rather than typed, for the reason every other figure on the page is: a
+  // number beside a tab is a promise about what is behind it, and one written
+  // by hand goes stale the first time a row is added.
+  function tabCounts(){
+    const dTabs = document.getElementById('dTabsV2');
+    if (!dTabs) return;
+    const n = {
+      bio: document.querySelectorAll('#dRecsList .brow').length,
+      rep: (typeof REPS !== 'undefined' ? REPS.length : 0),
+      ins: (typeof INSIGHTS !== 'undefined' ? INSIGHTS.length : 0)
+    };
+    [].slice.call(dTabs.querySelectorAll('.v2Tab')).forEach(t => {
+      const k = t.dataset.tab || 'bio';
+      if (!n[k]) return;
+      let c = t.querySelector('.tCount');
+      if (!c){ c = document.createElement('span'); c.className = 'tCount'; t.appendChild(c); }
+      c.textContent = n[k];
+    });
+    placeThumb();          // the label grew, so the underline has to re-measure
+  }
+  requestAnimationFrame(tabCounts);
   addEventListener('resize', placeThumb);
   document.addEventListener('everlab:mode', () => requestAnimationFrame(placeThumb));
   function showTab(which){
@@ -17971,6 +18119,18 @@
         } else {
           v5HeadP = 0;
           ph.style.removeProperty('--v5head');
+        }
+        // V3 and V4's body card runs the same curve on its own alpha: nothing
+        // at the top, black by the time it has the screen. Computed here
+        // rather than read from v5HeadP because that one is V6's and is left
+        // at 0 on the versions V6 is off for.
+        if (document.body.classList.contains('v3Tab')){
+          const k = p * p * (3 - 2 * p);
+          ph.style.setProperty('--v3BodyK', k.toFixed(3));
+          ph.classList.toggle('v3Blur', k > 0.01);
+        } else {
+          ph.style.removeProperty('--v3BodyK');
+          ph.classList.remove('v3Blur');
         }
       }
     }
