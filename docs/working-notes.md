@@ -7276,6 +7276,31 @@ own grid.
 m24 → m18 on the desk and m25 → m20 on the phone, both landing in the V2 tab
 layout with Historical records chosen and the filter pinned at the top.
 
+### 5.274 The archive that was archiving nothing
+
+"Keep only this desktop and these 2 mobiles, the rest put under one page
+'Archives'."
+
+The machinery for this was built a while back and has been dead since 5.247:
+it filtered on `v.group === 'Biomarkers page'`, and that group was renamed
+**Insights**. Nothing matched, `ARCHIVED` was empty, and all fourteen versions
+listed themselves again -- the exact menu the archive exists to prevent. The
+group name is a constant now, `ARC_GROUP`, read by both the filter and the
+option, so a rename cannot separate them a second time.
+
+`LIVE` drops to Desktop and Mobile. Tablet joins the archive: it is a version
+of this design like the rest, not a third current surface. Mobile (viewport)
+stays, and is not in `LIVE` because it is an entry rather than a mode --
+Mobile wearing the `fullscr` flag.
+
+The group now reads Desktop / Mobile / Mobile (viewport) / Archives, and
+nothing about the modes changed: `#m13` still opens Desktop V1, with the
+version menu showing Archives and the archive select showing its name.
+
+**A rename is a refactor when a string is doing the joining.** This one sat
+broken for twenty-odd notes because nothing fails when a filter matches
+nothing -- it just quietly lists everything.
+
 ---
 
 ## 6. Open items

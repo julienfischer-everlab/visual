@@ -10921,9 +10921,19 @@
   // each version keeps its index, its class chain and its hash. Only the way
   // in is re-hung, which means #m13 still opens Desktop V1 exactly as it did,
   // with the dropdown showing Archive and the archive select showing the name.
-  const LIVE = [18, 21, 20];           // Desktop V5, Tablet and Mobile V7
+  // The group is named Insights now. The archive was still keyed to its old
+  // name, which matched nothing, so every version listed itself again and the
+  // menu read as history rather than as a choice -- fourteen entries to find
+  // three in. Named once here, and used by both the filter and the option
+  // below, so a rename cannot separate them again.
+  const ARC_GROUP = 'Insights';
+  // Desktop and Mobile. Tablet joins the archive: it is a version of this
+  // design like the rest, not a third current surface. Mobile (viewport) is
+  // kept too, but it is an entry rather than a mode -- Mobile wearing the
+  // fullscr flag -- so it is not in this list.
+  const LIVE = [18, 20];               // Desktop V5 and Mobile V7
   const ARCHIVED = MODES.map((v, i) => [v, i])
-    .filter(([v, i]) => v.group === 'Biomarkers page' && !LIVE.includes(i))
+    .filter(([v, i]) => v.group === ARC_GROUP && !LIVE.includes(i))
     .sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0))
     .map(([, i]) => i);
   const isArchived = m => ARCHIVED.includes(m);
@@ -10971,10 +10981,10 @@
     }
     // the archive sits at the foot of the group it belongs to, after the
     // designs that superseded it
-    if (g === 'Biomarkers page' && ARCHIVED.length){
+    if (g === ARC_GROUP && ARCHIVED.length){
       const o = document.createElement('option');
       o.value = ARCHIVE_VAL;
-      o.textContent = 'Archive';
+      o.textContent = 'Archives';
       og.appendChild(o);
     }
     versionSel.appendChild(og);
