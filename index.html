@@ -1563,7 +1563,9 @@
     flex:1;min-width:0;height:38px;border:0;border-radius:999px;padding:0 10px;
     font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;
     background:transparent;color:#8b8b86;-webkit-tap-highlight-color:transparent;
-    transition:color .18s ease;
+    /* the label travels with the ground rather than ahead of it -- at .18s it
+       arrived first and the pill looked like it was catching up */
+    transition:color .34s cubic-bezier(.22,.61,.36,1);
   }
   .mTabsV2 .v2Tab.on{color:#ececec;}
   /* One ground that moves, rather than two that swap. The tab it is under is
@@ -3587,7 +3589,8 @@
     background:rgba(22,41,74,.72);color:#dbe6fb;
     -webkit-backdrop-filter:blur(24px) saturate(1.4);
     backdrop-filter:blur(24px) saturate(1.4);
-    -webkit-tap-highlight-color:transparent;transition:background .16s ease;
+    -webkit-tap-highlight-color:transparent;
+    transition:background .16s ease, opacity .3s ease, transform .3s ease;
   }
   body.newRep .nrCard:hover{background:rgba(28,49,89,.86);}
   body.newRep #phone .nrCard{
@@ -3604,16 +3607,23 @@
     display:block;font-style:normal;font-size:12.5px;margin-top:3px;color:#9fb6de;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
+  /* The way in is named rather than implied: a chevron makes the reader guess
+     where it goes, "View results" says it. A pill, so it still reads as the
+     one thing on the card you press. */
   .nrCard .go{
-    flex:none;width:30px;height:30px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
+    flex:none;padding:9px 15px;border-radius:999px;
+    font-size:13px;font-weight:500;line-height:1;white-space:nowrap;
     background:rgba(219,230,251,.14);color:#eaf1ff;
   }
-  .nrCard .go svg{width:12px;height:12px;display:block;}
   .dash .nrCard{padding:16px 16px 16px 18px;}
+  .dash .nrCard .go{padding:10px 17px;font-size:13.5px;}
   .dash .nrCard b{font-size:15px;}
-  /* acted on, so it has nothing left to say */
-  .nrCard.done{display:none !important;}
+  /* Acted on, so it has nothing left to say -- and it goes the way a notice
+     goes, out rather than off: the page travels down to the filter at the same
+     moment, and a card that vanished on the frame of the tap would read as the
+     tap having broken something. It stays in the layout at nothing, which is
+     free where it is the only absolutely positioned thing on the surface. */
+  .nrCard.done{opacity:0;transform:translateY(8px);pointer-events:none;}
 
   /* ---- Past results: one message, two dresses -------------------------
      A modal on the desk and a bottom sheet on the phone, each a page of its
@@ -4987,6 +4997,20 @@
 
   /* the body stack: full-width biomarkers, a pair, activity, coverage */
   body.v5 #mV4{display:flex;flex-direction:column;gap:12px;padding:2px 13px 18px;}
+  /* The dock floats over the page, so whatever follows the pair comes to rest
+     under it. On an 844 screen the filter bar landed at 766 -- which is the
+     dock's own band -- and the record select stood across the island, which
+     reads as the nav being eaten. The pair reserves the band the dock takes,
+     so at rest the bar is below the fold and the island has the foot to
+     itself; scrolled, the bar pins at the top as before and the gap passes
+     with the content. Eight px of slack because the three versions land the
+     bar within ten px of each other.
+     Biomarkers only: the Reports tab drops the pair, so its own block starts
+     high enough to clear the dock on its own and the reserve would only push
+     "Medical records" into the band it is there to keep clear. */
+  body.v5.v8:not(.repTab) #phone #mV4{
+    padding-bottom:calc(18px + var(--navH, 56px) + var(--navLift, 29px) + 8px);
+  }
   /* the pair is a real two-up again: .mbrow2 folds to one column from V2 on,
      and hides the two cards V2-V3 do not use — V4 is the page that wants them */
   body.v5 #mV4Row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -6013,7 +6037,7 @@
          figure on the page. -->
     <button class="nrCard" type="button">
       <span class="t"><b>New report available</b><i></i></span>
-      <span class="go"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></span>
+      <span class="go">View results</span>
     </button>
     <div class="dRow2" id="dRow2">
     <div class="filters">
@@ -6308,7 +6332,7 @@
            figure on the page. -->
       <button class="nrCard" type="button">
         <span class="t"><b>New report available</b><i></i></span>
-        <span class="go"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></span>
+        <span class="go">View results</span>
       </button>
       <div class="msRow2" id="mRow2">
       <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
@@ -15684,7 +15708,10 @@
   // number to change.
   const REP_SLIDES = 4;
   (function buildReportSlides(){
-    const reps = RECS.filter(r => r.id !== 'all').slice(0, REP_SLIDES);
+    // The two range records -- All records and Historical records -- are spans
+    // rather than documents: they carry no date and no reading count, so a
+    // slide built from one says "undefined biomarkers".
+    const reps = RECS.filter(r => r.id !== 'all' && !r.all).slice(0, REP_SLIDES);
     if (reps.length < 2) return;
     const ARROW = dir => '<button class="hiNav ' + dir + '" type="button" aria-label="' +
       (dir === 'prev' ? 'Previous' : 'Next') + '"><svg viewBox="0 0 12 12" fill="none" ' +
@@ -16208,6 +16235,42 @@
     };
     requestAnimationFrame(step);
   }
+  // Put the filter block at the top of its own scroller -- the state a reader
+  // is handed when something else chose the record for them. Asked for again
+  // until it lands: a single scroll timed to "after the beat" is a guess, and
+  // the guess was wrong on the desk, where the list is hidden while the
+  // skeleton is up, so the page is short and a scroll to a place the page does
+  // not reach yet clamps to the top and stays there. Asking again costs
+  // nothing and cannot be early.
+  function reachFilter(desk, wait){
+    let tries = 0;
+    const reach = () => {
+      const sc = desk ? document.querySelector('.dash') : document.getElementById('mScroll');
+      const blk = desk ? document.getElementById('dFilters') : document.getElementById('mSearch');
+      if (!sc || !blk || ++tries > 10) return;
+      // where the block pins: its top in the scroller's own content space,
+      // less whatever the bar already sits under (the phone's status strip)
+      const st = document.querySelector('#phone .mstatus');
+      const stH = (!desk && st && getComputedStyle(st).position === 'absolute')
+        ? st.offsetHeight : 0;
+      const gap = blk.getBoundingClientRect().top - sc.getBoundingClientRect().top - stH;
+      if (Math.abs(gap) <= 2) return;      // pinned; the travel is done
+      const to = Math.max(0, Math.round(sc.scrollTop + gap));
+      // Driven by hand rather than by behavior:'smooth'. The browser picks
+      // that duration and will not be told, and this travel is the
+      // explanation -- it wants to be read, so it runs at half the pace the
+      // browser would have chosen. A retry sets the position outright: an
+      // animated scroll needs frames, and where frames are not coming -- a
+      // background tab, a screenshot -- asking again politely never arrives.
+      if (tries === 1) glideTo(sc, to, 1000);
+      else sc.scrollTop = to;
+      // the first check waits out the glide; anything after it is a
+      // correction, not a competitor. It used to fire at 420ms and snap
+      // the travel it was supposed to be checking.
+      setTimeout(reach, tries === 1 ? 1280 : 420);
+    };
+    setTimeout(reach, wait == null ? 460 : wait);
+  }
   function pastResults(host, desk){
     if (!host) return null;
     const svg = k => '<svg viewBox="0 0 24 24" aria-hidden="true">' + PR_ICON[k] + '</svg>';
@@ -16269,38 +16332,9 @@
       // that is what the page should be showing when the reader lands
       document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: 'hist' }));
       setMode(desk ? 18 : 20);
-      // The travel is asked for again until it lands. A single scroll timed to
-      // "after the beat" is a guess, and the guess was wrong on the desk: the
-      // list is hidden while the skeleton is up, so the page is short, and a
-      // scroll to a place the page does not reach yet clamps to the top and
-      // stays there. Asking again costs nothing and cannot be early.
-      let tries = 0;
-      const reach = () => {
-        const sc = desk ? document.querySelector('.dash') : document.getElementById('mScroll');
-        const blk = desk ? document.getElementById('dFilters') : document.getElementById('mSearch');
-        if (!sc || !blk || ++tries > 10) return;
-        // where the block pins: its top in the scroller's own content space,
-        // less whatever the bar already sits under (the phone's status strip)
-        const st = document.querySelector('#phone .mstatus');
-        const stH = (!desk && st && getComputedStyle(st).position === 'absolute')
-          ? st.offsetHeight : 0;
-        const gap = blk.getBoundingClientRect().top - sc.getBoundingClientRect().top - stH;
-        if (Math.abs(gap) <= 2) return;      // pinned; the travel is done
-        const to = Math.max(0, Math.round(sc.scrollTop + gap));
-        // Driven by hand rather than by behavior:'smooth'. The browser picks
-        // that duration and will not be told, and this travel is the
-        // explanation -- it wants to be read, so it runs at half the pace the
-        // browser would have chosen. A retry sets the position outright: an
-        // animated scroll needs frames, and where frames are not coming -- a
-        // background tab, a screenshot -- asking again politely never arrives.
-        if (tries === 1) glideTo(sc, to, 1000);
-        else sc.scrollTop = to;
-        // the first check waits out the glide; anything after it is a
-        // correction, not a competitor. It used to fire at 420ms and snap
-        // the travel it was supposed to be checking.
-        setTimeout(reach, tries === 1 ? 1280 : 420);
-      };
-      setTimeout(reach, 460);
+      // the page rebuilds and the filter takes a beat, so the travel starts
+      // after both rather than racing them
+      reachFilter(desk, 460);
     });
     raise();
     return { reset: () => { wrap.style.display = ''; raise(); } };
@@ -17275,8 +17309,12 @@
       cards.forEach(c => {
         c.querySelector('i').textContent = latest.cat + '  |  ' + latest.date;
         c.addEventListener('click', () => {
+          // the notice fades out, the record is chosen, and the page brings the
+          // filter to the top -- the reader is already on this page, so there
+          // is no rebuild to wait out, only the filter's own beat
           cards.forEach(x => x.classList.add('done'));
           document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: latest.id }));
+          reachFilter(!c.closest('#phone'), 80);
         });
       });
     }
@@ -17369,7 +17407,12 @@
     // In V3 the hero belongs to both tabs and does not change with them, so it
     // must not fade -- a shared header that blinks on every tap reads as the
     // page reloading. In V2 the hero IS what changes, so it fades with the rest.
-    const swap = CARD_STATE.v3Tab ? ['mBody'] : ['mBody', 'mHeadIn'];
+    // The hero, not the whole head: the tabs live in #mHeadIn too, and fading
+    // that dipped the control itself to 42% and back on every switch -- the
+    // ground under the active tab went dark mid-slide, which reads as the
+    // thumb clipping rather than as a crossfade. The control is the one thing
+    // on the screen that must not move while it is being used.
+    const swap = CARD_STATE.v3Tab ? ['mBody'] : ['mBody', 'mHeroOrgan'];
     swap.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;

@@ -6780,6 +6780,82 @@ that is right -- the hero IS what changes. In V3 the hero belongs to both tabs
 and does not change with them, so a shared header that blinks on every tap reads
 as the page reloading. V3 fades the body only.
 
+### 5.249 The island the filter bar was standing on
+
+"Main nav menu is missing! the island."
+
+It was not missing. It was being stood on. On the Insights phone at rest the
+content above the filter bar measures 766 of an 844 screen, and the dock's band
+runs 750-835 -- so the record select came to rest exactly across the island,
+and what you see is a nav with a dark bar through it. Every version does it:
+V1 762, V2 766, V3 756.
+
+Four probes said the dock was `display:block` at top 778 and screenshotted it
+rendering, which is how I spent a turn looking in the wrong place. A screenshot
+of the *foot* rather than of the element settled it in one frame. Measuring the
+thing you were asked about proves it exists; it does not prove it is legible.
+
+The fix reserves the band the dock takes -- `--navH + --navLift + 8` under the
+pair -- so at rest the bar is below the fold and the island has the foot to
+itself. Biomarkers only: the Reports tab drops the pair, so its own block starts
+at 568 and clears the dock unaided; the reserve there would only push "Medical
+records" into the band it exists to keep clear.
+
+The cost is ~93px of black you scroll past once, between the pair and the bar.
+That is the dock's own room, which is what the gap is.
+
+Not the scrim: `--navScrim` at 60% left the select plainly readable under the
+island. The scrim fades a ground; the thing in the way was a control.
+
+### 5.250 View results, and what a tap does next
+
+"View results --> CTA instead of chevron." A chevron makes the reader guess
+where the card goes. The pill says it.
+
+"When click on the blue floating: the card should disappear fade out and the
+screen should be positioned with the fixed filter group at the top."
+
+Both halves were already built, just not joined. `.nrCard.done` was
+`display:none !important` -- gone on the frame of the tap, which reads as the
+tap having broken something; it is now an opacity/translate fade with
+`pointer-events:none`, and the card stays in the layout at nothing, which costs
+nothing where it is the only absolutely positioned thing on the surface.
+
+The travel is the one the Past-results CTA already drives. It was written
+inside that handler, so it came out as `reachFilter(desk, wait)` -- the same
+retry loop, the same hand-driven glide, the same 1280ms first check that stops
+it snapping the travel it is checking. The card passes a shorter wait (80ms):
+the reader is already on the page, so there is no rebuild to wait out, only the
+filter's own beat.
+
+Measured: opacity 1 → .65 → .15 → 0 over ~300ms, and the scroller lands with
+the bar's gap at 0 on both surfaces.
+
+### 5.251 The tabs were being faded while you used them
+
+"Weird transition on the bg of tab item, need smoother. It feels like clipping."
+
+`#mTabsV2` lives inside `#mHeadIn`, and `#mHeadIn` was one of the two elements
+carrying the tab crossfade. So every switch dipped the control itself to 42% and
+back over 260ms while its thumb slid 340ms -- the ground under the active tab
+went dark mid-travel, which is exactly what clipping looks like.
+
+The fade wants the hero, not the head: `['mBody', 'mHeroOrgan']`. Sampled
+through a switch, the control now holds opacity 1 for all 43 frames and the
+thumb travels 589 → 722 on its ease-out. The label's colour went from .18s to
+the thumb's own .34s curve, so it no longer arrives before the ground it is on.
+
+V3 is unchanged -- it fades the body only, because its hero belongs to both
+tabs (5.247).
+
+### 5.252 undefined biomarkers
+
+The Latest report card builds its slides from `RECS.filter(r => r.id !== 'all')`.
+Historical records (5.246) is a *span*, not a document: no date, no reading
+count. So the first slide read "undefined / undefined biomarkers". Range records
+are now excluded by `!r.all` as well, and the card opens on Pathology test,
+13 Aug 2026, 44 biomarkers.
+
 ---
 
 ## 6. Open items
