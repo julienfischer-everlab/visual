@@ -6639,6 +6639,42 @@ screen.
   phone: 9px of clearance above the dock, rgba(22,41,74,.72), box-shadow none.
   desk: fixed, 26px off the bottom, 560 wide, and the tap still gives 44 rows.
 
+### 5.241 V3's tabs settle above the two cards, and the group is renamed
+
+"Tab above 2 cards on v3": inside the rounded body card, before the mini-card
+row rather than after it. `#mV4` is the first thing in the body card, so the
+slot goes before it instead of after.
+
+"Onboarding --> Results received": the menu group.
+
+### 5.242 Sequence 07 is drawn now, not photographed
+
+A 3x3 of the product's own particle organs, each with its age scale and its
+reading, on black. The camera starts inside the centre organ at 3.25x, holds a
+beat, then pulls back into the grid on an ease-out that keeps drifting -- with a
+sliver of rotateX/rotateY, so the grid reads as a plane in space rather than a
+wall. The other eight come up one after another as it goes, in a sequence across
+the grid (centre, then the cross, then the corners) rather than in reading
+order, so it reads as lights being switched on. Hierarchy holds after the
+reveal: the ring a tile is in sets both its settled opacity and its view's
+alpha, so the centre is the brightest thing in frame, its neighbours softer, the
+corners atmospheric. The old plate -- one photograph tiled nine ways -- is gone,
+and with it the last inlined image on this page.
+
+Two layout traps, both about a grid whose cells hold more than a square:
+
+- **`1fr` rows have `min-height:auto`**, so a cell whose organ, scale and
+  reading came to more than its share pushed its row -- and three pushed rows
+  are a grid taller than the frame, with the top and bottom rows hanging off
+  it. `minmax(0,1fr)` on both axes, and the cell clips.
+- **`cqh` resolves differently for a frame that is not on screen yet**, so the
+  grid measured one size and rendered another. It is sized from the frame's own
+  height now (`height:80%; aspect-ratio:1`), which is the binding dimension on
+  a landscape frame and needs no container at all.
+
+  nine cells, eighteen canvases (each view is a cloud and a flow), the ages
+  and labels off PILL; the reveal cycles with the camera at SLOT[6] = 3.83s
+
 ---
 
 ## 6. Open items

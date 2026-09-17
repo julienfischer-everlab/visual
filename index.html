@@ -2331,39 +2331,72 @@
      the particle organ, the age scale, the age, the verdict -- with the
      camera starting in on the middle cell and pulling back over the
      sequence while the cells arrive. */
-  .tzGridI{position:absolute;inset:0;overflow:hidden;perspective:130cqw;perspective-origin:54% 46%;}
-  .tzGridI .zoom{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    transform-origin:50% 50%;animation:tzGridZoom var(--tzCyc,7s) cubic-bezier(.65,0,.35,1) infinite;}
-  /* "zoom out slow": a drift back rather than a pull -- a small scale over
-     the whole slot on an ease-out, so it is still moving as it settles */
-  @keyframes tzGridZoom{0%{scale:1.55;}100%{scale:1;}}
-  /* The tablet: the grid is on a screen, turned away from the camera and
-     shot shallow, so 07 sits with 05's plate rather than floating on black.
-     The body is a rim of brushed metal round a black screen; the whole thing
-     carries a touch of softness, and a depth-of-field wash deepens toward
-     the far edge, where the light falls off too. */
-  .tzPad{height:74%;aspect-ratio:4/3;padding:.85cqw;box-sizing:border-box;border-radius:2.4cqw;
-    background:linear-gradient(142deg,#4a4a50,#202024 26%,#35353b 52%,#141417 78%,#0c0c0e);
-    transform:rotateX(7deg) rotateY(-25deg) rotateZ(-1.2deg);
-    box-shadow:0 4cqw 9cqw rgba(0,0,0,.75), inset 0 0 0 .08cqw rgba(255,255,255,.16);
-    filter:blur(.45px);}
-  .tzPad .screen{position:relative;width:100%;height:100%;border-radius:1.7cqw;overflow:hidden;
-    background:#0a0a0a;display:flex;align-items:center;justify-content:center;}
-  /* the nine tiles are one file at 300%, each showing its own third, so a
-     tile can arrive on its own without the picture being remade */
-  .tzGridI .plate{height:100%;aspect-ratio:1936/1878;display:grid;
-    grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);}
-  .tzPad .dof{position:absolute;inset:0;pointer-events:none;backdrop-filter:blur(2.6px);-webkit-backdrop-filter:blur(2.6px);
-    -webkit-mask-image:linear-gradient(102deg,rgba(0,0,0,0) 26%,rgba(0,0,0,.3) 56%,#000 92%);
-    mask-image:linear-gradient(102deg,rgba(0,0,0,0) 26%,rgba(0,0,0,.3) 56%,#000 92%);}
-  /* the light falls off toward the far edge -- enough to read as depth, not
-     so much that the far cards go out */
-  .tzPad .fall{position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(102deg,rgba(0,0,0,0) 34%,rgba(0,0,0,.14) 68%,rgba(0,0,0,.34) 100%);}
-  /* the cards come up one after the other, each fading rather than cutting */
-  .tzTile{background-image:url(assets/teaser/organ-grid.webp);background-size:300% 300%;background-repeat:no-repeat;
-    opacity:0;transition:opacity .5s ease;}
-  .tzTile.on{opacity:1;}   /* in, then a cut back; no reverse */
+  /* ---- 07: the organ-age mosaic ---------------------------------------
+     Nine organs, drawn rather than photographed: the same particle component
+     the product draws, nine of it. The camera starts inside the centre organ
+     and pulls back into the grid, and the other eight come up one after
+     another as it goes -- lights being switched on, not a wipe.
+     The hierarchy stays after the reveal: the centre is the brightest thing
+     in frame, its neighbours a little softer, the corners atmospheric. */
+  .tzMo{position:absolute;inset:0;overflow:hidden;background:#000;
+        perspective:170cqw;perspective-origin:50% 48%;}
+  .tzMoCam{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    transform-origin:50% 50%;transform-style:preserve-3d;
+    animation:tzMoZoom var(--tzCyc,7s) cubic-bezier(.16,.86,.28,1) infinite;
+  }
+  /* Macro, a held beat, then a quick smooth pull-back that keeps drifting --
+     and a sliver of rotation with it, so the grid reads as a plane in space
+     rather than a flat wall. Once out, the move is almost imperceptible. */
+  @keyframes tzMoZoom{
+    0%   {transform:translateZ(0) rotateX(0deg) rotateY(0deg) scale(3.25);}
+    11%  {transform:translateZ(0) rotateX(0deg) rotateY(0deg) scale(3.05);}
+    62%  {transform:translateZ(0) rotateX(2.4deg) rotateY(-2.6deg) scale(1.04);}
+    100% {transform:translateZ(0) rotateX(1.7deg) rotateY(-1.8deg) scale(1);}
+  }
+  .tzMoGrid{
+    /* sized from the frame's HEIGHT rather than a container-query unit: the
+       frame is landscape, so height is the binding dimension, and cqh
+       resolves differently for a frame that is not on screen yet. */
+    height:80%;aspect-ratio:1;width:auto;max-width:86%;display:grid;
+    /* minmax(0,1fr), not 1fr: a 1fr row's min-height is auto, so a cell whose
+       organ, scale and reading come to more than its share pushes the row --
+       and three pushed rows are a grid taller than the frame, with the top and
+       bottom rows hanging off it. */
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-rows:repeat(3,minmax(0,1fr));
+    gap:3.4cqw;transform-style:preserve-3d;
+  }
+  /* a tile is off until its light comes on: it is faintly there first, which
+     is what makes the switch-on read as a reveal rather than as an arrival */
+  .tzMoCell{
+    position:relative;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;min-width:0;min-height:0;overflow:hidden;
+    opacity:var(--o0,.14);
+    transition:opacity 1.05s cubic-bezier(.3,0,.2,1), filter 1.05s ease;
+    filter:brightness(.6) saturate(.75);
+  }
+  .tzMoCell.on{opacity:var(--o1,1);filter:none;}
+  /* Sized from the cell's HEIGHT, not its width: a square at 78% of the width
+     plus the scale and the reading under it came to more than the cell was
+     tall, and the top row's organs were pushed off the frame. */
+  .tzMoOrg{position:relative;height:50%;aspect-ratio:1;width:auto;flex:none;}
+  .tzMoOrg canvas{position:absolute;inset:0;display:block;width:100%;height:100%;}
+  /* the component brings its own download control; a storyboard frame is a
+     picture of the product, not the product */
+  .tzMoOrg .dlBtn, .tzMoOrg .dlMenu{display:none !important;}
+  .tzMoArc{width:56%;height:2cqw;margin-top:3%;flex:none;}
+  .tzMoArc svg{display:block;width:100%;height:100%;overflow:visible;}
+  .tzMoAge{margin-top:1.1cqw;text-align:center;line-height:1;flex:none;}
+  .tzMoAge b{display:block;font-size:2.5cqw;font-weight:500;letter-spacing:-.4px;
+             color:#f2e5e0;font-variant-numeric:tabular-nums;}
+  .tzMoAge i{display:block;font-style:normal;font-size:1.05cqw;margin-top:.6cqw;
+             letter-spacing:.11em;text-transform:uppercase;color:rgba(242,229,224,.5);
+             font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;}
+  /* the room the grid sits in: black at the edges, so the corners read as
+     atmosphere rather than as tiles that were left dim */
+  .tzMoVig{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(68% 60% at 50% 48%, rgba(0,0,0,0) 38%, rgba(0,0,0,.55) 82%, rgba(0,0,0,.86) 100%);}
   @keyframes tzPush{from{scale:1;}to{scale:1.07;}}
   .tzOrgan{position:absolute;left:4%;right:4%;top:10%;height:31%;}
   .tzOrgan .dlBtn, .tzOrgan .dlMenu{display:none !important;}
@@ -6811,8 +6844,8 @@
     // them -- it lands on Health insights with the latest record already chosen
     // AND scrolled to the filter, because what the message is about is the list
     // below it, not the header above it.
-    { name: 'Desktop', dur: 850, ease: 0, group: 'Onboarding', sort: 1 },
-    { name: 'Mobile',  dur: 850, ease: 0, group: 'Onboarding', sort: 2 },
+    { name: 'Desktop', dur: 850, ease: 0, group: 'Results received', sort: 1 },
+    { name: 'Mobile',  dur: 850, ease: 0, group: 'Results received', sort: 2 },
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
@@ -10440,7 +10473,7 @@
   // read as never built, because the only way to reach it was to know to type
   // #m23. Adding a mode means adding its group here too.
   const MODE_GROUPS = ['Concept', 'Biomarkers page', 'Overview page', 'Library',
-                       'Onboarding', 'Video', 'Landing page'];
+                       'Results received', 'Video', 'Landing page'];
   MODE_GROUPS.forEach(g => {
     const inGroup = MODES.map((v, i) => [v, i])
       .filter(([v, i]) => v.group === g && !isArchived(i));
@@ -14624,10 +14657,37 @@
     // tile the same file at 300% with its own background-position), so they
     // can arrive one at a time without a pixel of it being remade. The image
     // is square, so it sits centred at the stage's height on the black.
-    const s7 = '<div class="tzGridI"><div class="zoom"><div class="tzPad"><div class="screen"><div class="plate">' +
-      [0,1,2,3,4,5,6,7,8].map(i =>
-        '<div class="tzTile" style="background-position:' + (i % 3) * 50 + '% ' + Math.floor(i / 3) * 50 + '%"></div>').join('') +
-      '</div><div class="dof"></div><div class="fall"></div></div></div></div></div>';
+    // 07 -- every organ at once, drawn rather than photographed. Nine of the
+    // product's own particle organs in a 3x3, each with its age scale and its
+    // reading, on black. The camera starts inside the centre one and pulls
+    // back into the grid; the other eight come up one after another as it
+    // goes. The stages are empty here and filled with live views once the page
+    // is built (see tzMoViews), so the frame costs nothing until it is opened.
+    // The ring a tile is in sets how present it stays after the reveal: the
+    // centre is the brightest thing in frame, its neighbours a little softer,
+    // the corners atmospheric.
+    const MO_RING = [2,1,2, 1,0,1, 2,1,2];            // 0 centre, 1 edge-mid, 2 corner
+    const MO_OUT = [1, .9, .72];                       // what each ring settles at
+    const MO_DIM = [1, .16, .11];                      // and where it starts
+    const s7 = '<div class="tzMo"><div class="tzMoCam"><div class="tzMoGrid">' +
+      PILL.slice(0, 9).map((d, i) => {
+        const r = MO_RING[i];
+        // the indicator's place on the scale: the delta, eight years either
+        // way, read as a fraction of the bar
+        const at = Math.max(4, Math.min(96, 50 + (d.delta / 8) * 42));
+        return '<div class="tzMoCell" data-i="' + i + '" ' +
+          'style="--o0:' + MO_DIM[r] + ';--o1:' + MO_OUT[r] + '">' +
+          '<div class="tzMoOrg"></div>' +
+          '<div class="tzMoArc"><svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">' +
+            '<rect x="0" y="4" width="30" height="2.6" rx="1.3" fill="#5cc47f" opacity=".55"/>' +
+            '<rect x="35" y="4" width="30" height="2.6" rx="1.3" fill="#e3b341" opacity=".5"/>' +
+            '<rect x="70" y="4" width="30" height="2.6" rx="1.3" fill="#e0685f" opacity=".5"/>' +
+            '<path d="M' + at + ' 0.4 l2.6 2.6 h-5.2 Z" fill="#f2e5e0"/>' +
+          '</svg></div>' +
+          '<div class="tzMoAge"><b>' + (CHRONO + d.delta) + '</b><i>' + d.label + ' age</i></div>' +
+        '</div>';
+      }).join('') +
+      '</div></div><div class="tzMoVig"></div></div>';
     h.push('<div class="tzLayout"><div class="tzFocus">' +
       frame('01', 'Signals', '0:00 \u2013 0:04', s0, { text: '\u201CYour body holds millions of signals.\u201D', cycle: 10 },
         '<b>Motion.</b> Black, and one dot, close \u2014 an ordinary one, off-white, drifting a little. A zoom out, slow \u2014 about 1.6s for the dot to become one of a universe of dots, already drifting in one direction, the far ones small, dim and soft, the near ones large and out of focus; nothing is pinned to the centre, the dot drifts with the rest. The camera keeps pulling back through the readings and is still moving at the cut: the move is paced to run twice the length of the shot, so the sequence never reaches the end of it. That is the point \u2014 a zoom out that carries on past the cut, not one that parks. The universe drifts consistently in one direction, like a pull \u2014 four depths at four speeds, the far barely moving and the near sweeping past, so it parallaxes hard; the far depths small, dim and well out of focus, the nearest large and soft, the middle sharp. No glow on any dot. Readings type on, letter by letter, the way the Card nav\u2019s annotation does: a filled square, the label in the mono (VO\u2082 MAX, MAX HR, O\u2082 UPTAKE, HRV, GLUCOSE, SPO\u2082\u2026), then the value on the line below (42.8 ML/KG/MIN, 184 BPM, 3.2 L/MIN\u2026), a square cursor typing at 34ms a character and blinking off; the first as the field resolves (about 1.8s in), then 1.4s apart, five a sequence, at staggered places, each holding about 2s and fading. <b>Cut.</b> Hard, to 02, at 10s. <b>Grade.</b> Black; mostly the off-white and the sand, a twelfth salmon, the grain fine; the readings in white at 88%.') +
@@ -14884,15 +14944,25 @@
     // over half a second, evenly across the slot so the last is up with a
     // beat to spare. The first is there from the frame's first moment -- a
     // stage that starts empty reads as a dropped frame rather than as a cut.
-    const gCells = [...wrap.querySelectorAll('#tzS07 .tzTile')];
+    // The centre is lit from the first frame -- the camera is inside it -- and
+    // the other eight come up as it pulls back, in a sequence across the grid
+    // rather than in reading order: the cross first, then the corners, so it
+    // reads as lights being switched on and not as a wipe. Nothing arrives at
+    // the same moment as its neighbour.
+    const gCells = [...wrap.querySelectorAll('#tzS07 .tzMoCell')];
+    const MO_ORDER = [4, 1, 5, 7, 3, 0, 8, 2, 6];
     let gridTimers = [];
     const gridStart = () => {
       gridTimers.forEach(clearTimeout); gridTimers = [];
-      gCells.forEach((c, i) => c.classList.toggle('on', i === 0));
-      const rest = gCells.length - 1;
-      const step = (SLOT[6] * 1000 - 1100) / Math.max(1, rest);
-      for (let k = 1; k < gCells.length; k++) gridTimers.push(setTimeout(() => gCells[k].classList.add('on'), k * step));
-      gridTimers.push(setTimeout(gridStart, SLOT[6] * 1000));   // the drift's own cycle
+      gCells.forEach((c, i) => c.classList.toggle('on', i === 4));
+      // the reveal runs with the pull-back and finishes with a beat to spare
+      const rest = MO_ORDER.length - 1;
+      const step = (SLOT[6] * 1000 - 1500) / Math.max(1, rest);
+      for (let k = 1; k < MO_ORDER.length; k++){
+        const cell = gCells[MO_ORDER[k]];
+        if (cell) gridTimers.push(setTimeout(() => cell.classList.add('on'), 420 + k * step));
+      }
+      gridTimers.push(setTimeout(gridStart, SLOT[6] * 1000));   // the camera's own cycle
     };
     gridStart();
     onShow.push(i => { if (i === 6) gridStart(); });
@@ -14964,6 +15034,18 @@
     // dots that were faint come up; the bright ones cap), and a brightness
     // lift on the canvas in CSS
     const bodyView = makeOrganView(document.getElementById('tzBodyV'), BODY_I, Object.assign(libOpts(BODY_I), { name: 'teaser-body', alpha: 1.35 }));
+    // 07's nine. Half the library's density, because nine of them share the
+    // frame and each is a third of its width -- and an alpha per ring, so the
+    // hierarchy is in the particles themselves and not only in the opacity the
+    // reveal animates.
+    const tzMoViews = [...document.querySelectorAll('#tzS07 .tzMoCell')].map((cell, i) => {
+      const o = PILL[i].organIdx, r = MO_RING[i];
+      return makeOrganView(cell.querySelector('.tzMoOrg'), o, {
+        target: organN(Math.round(fullTarget(clouds[o]) * (ORGANS[o].dots || 1) * 0.5)),
+        fill: 0.44, dot: 1.0, alpha: [1.3, 1.05, 0.9][r],
+        name: 'teaser-mosaic-' + i
+      });
+    });
     const chip = document.getElementById('tzChip'), chip2 = document.getElementById('tzChip2'), bodyHost = document.getElementById('tzBodyV'), bodyStage = bodyHost.parentNode;
     // The cloud the frame opens on: the body's own particles, every one,
     // scattered through a ball the body's height -- a cloud derived from the
@@ -17065,10 +17147,13 @@
     const carHost = document.getElementById('mRepCarHost');
     // the phone's tabs go under the bento, the desk's under its grid: both are
     // appended to the hero's own parent, after it
+    // Inside the body card, above the two mini cards: the card's rounded top
+    // comes first, then the tabs, then the bento's pair. (#mV4 is the mini-card
+    // row and the first thing in the body card.)
     if (mTabs && bento && bento.parentNode){
-      const after = document.createElement('div');
-      after.className = 'v3Slot'; bento.parentNode.insertBefore(after, bento.nextSibling);
-      v3Mark(mTabs, after);
+      const slot = document.createElement('div');
+      slot.className = 'v3Slot'; bento.parentNode.insertBefore(slot, bento);
+      v3Mark(mTabs, slot);
     }
     if (dTabs && grid && grid.parentNode){
       const after = document.createElement('div');
