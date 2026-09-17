@@ -6941,6 +6941,46 @@ on Reports it was a card about a list that is not on screen, sitting over the
 one that is. `display:none`, not the fade -- this is not the notice being acted
 on, it is the notice not belonging here.
 
+### 5.258 V4, and the third noun
+
+"V4: add a tab Insights. Inside this tab show a list of insight cards stacked,
+that open drawer or bottom sheet on mobile."
+
+V2 and V3 ask what the page is a list *of* and answer with two nouns, both of
+them things the clinic produced: readings, documents. The third is the one the
+reader actually came for — what those readings mean. So V4 is V3's shape with
+one more destination, and nothing in its CSS re-states V3's layout: `v4Tab`
+carries `v3Tab` too.
+
+Stacked, not a carousel. A carousel is for a set you skim; six findings you read
+one at a time, in the order the page put them in, is a list.
+
+Each card: the panel it came from, a dot in the same three range colours the
+chips and the pills use, the finding in a sentence, and the readings it was
+drawn from. That last row is the point — a finding with no marker under it is an
+opinion, and naming the readings is what makes it checkable. The sheet carries
+them again with their values.
+
+A bottom sheet on the phone and a right-hand drawer on the desk: the same
+content, in the shape each surface reads a long thing in. The CTA goes to the
+Biomarkers tab, because the readings are the evidence.
+
+Two booleans rather than a string, because every rule on the page is keyed to a
+body class and a class is what `setMode` can rewrite and put back. `tabNow()` is
+the one place that reads them as one name, and `showTab` still takes the
+booleans its two older callers speak in.
+
+A version cannot strand the page on a tab it does not have: leaving V4 from
+Insights lands on Biomarkers with the list restored (measured).
+
+And the wine-dark sheet, for the second time in this file: `.sheet{background:
+var(--bg)}` belongs to whichever organ page is behind, and `.isSheet` has equal
+specificity, so it only wins from *after* the shared chrome. I wrote it beside
+the other V4 rules at line 1600 and it came up the colour of the page behind it,
+exactly as `.rsSheet` did. Moved below `.rsDesk`. Worth remembering as a rule:
+**a sheet's own ground is declared after the sheet chrome, never beside its
+feature.**
+
 ---
 
 ## 6. Open items

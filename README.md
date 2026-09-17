@@ -828,6 +828,20 @@ Version, Mode, Density, the ink pickers and Refresh stay in the bar.
   lists are written from `MEDS` by the same builder into whichever hosts the
   page carries, so the two can only ever show the same documents, and the desk's
   filter block pins exactly as the biomarkers' does.
+- **Layout: V4** — V3's shape with a third destination. V2 and V3 ask what the
+  page is a list *of* and answer with two nouns, both of them things the clinic
+  produced: readings, documents. V4 adds the one the reader came for — what
+  those readings mean. Six findings, stacked (not a carousel: a carousel is for
+  a set you skim, and this is a set you read one at a time, in the order the
+  page put them in). Each card carries the panel it came from, a dot in the
+  same three range colours the chips and pills use, the finding in a sentence,
+  and the readings it was drawn from — a finding with no marker under it is an
+  opinion, and the row is what makes it checkable. Tapping one opens the whole
+  thing: why it matters, what to do, and the readings with their values. A
+  bottom sheet on the phone, a right-hand drawer on the desk — the same content
+  in the shape each surface reads a long thing in. Its CTA goes to the
+  Biomarkers tab, because the readings are the evidence. `INSIGHTS` is the only
+  place the findings are written; both surfaces are built from it.
 - **Reports** — *Carousel* or *Bento*, the shape the Reports tab takes. Carousel
   is the card row described above. Bento is two cards side by side where that
   row was, at the height of the biomarkers' own bento header — measured from

@@ -1597,6 +1597,74 @@
     border-radius:999px;background:rgba(255,255,255,.06);
   }
   .dash .dTabsV2 .v2Tab{flex:0 0 auto;height:40px;padding:0 20px;font-size:14px;}
+  /* ---- V4: a third tab, and the findings under it ------------------------
+     V2 and V3 ask what the page is a list OF and answer with two nouns, both
+     of them things the clinic produced: readings, documents. V4 adds the
+     third, which is the one the reader came for -- what those readings mean.
+     It is V3's shape (tabs and hero inside the body card) with one more
+     destination, so nothing here re-states V3's layout. */
+  .v2Tab.v4Only{display:none;}
+  body.v4Tab .mTabsV2 .v2Tab.v4Only{display:block;}
+  /* three words need more of the line than two: 70% fits Biomarkers and
+     Reports, and cuts Insights in half */
+  body.v3Tab.v4Tab #phone #mTabsV2{width:88%;}
+
+  /* The findings, stacked. Not a carousel: a carousel is for a set you skim
+     and this is a set you read, one at a time, in the order the page put them
+     in. Each card is a pressable row that opens the whole finding. */
+  .insWrap{display:none;}
+  body.insTab .insWrap{display:flex;flex-direction:column;gap:12px;padding:2px 13px 18px;}
+  body.insTab .dash .dInsWrap{padding:0 0 40px;gap:14px;}
+  .insCard{
+    display:block;width:100%;text-align:left;font:inherit;cursor:pointer;
+    border:0;border-radius:22px;padding:16px 18px 15px;
+    background:rgba(255,255,255,.06);color:inherit;
+    -webkit-tap-highlight-color:transparent;transition:background .16s ease;
+  }
+  body.light .insCard{background:rgba(46,31,26,.05);}
+  .insCard:hover{background:rgba(255,255,255,.09);}
+  body.light .insCard:hover{background:rgba(46,31,26,.08);}
+  .dash .insCard{border-radius:18px;padding:20px 22px 19px;}
+  /* the eyebrow carries the panel it came from and, in the dot, how the
+     reading sits -- the same three colours the chips and the pills use, so a
+     finding and a row agree about what "out of range" looks like */
+  .insTop{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#8b8b86;}
+  body.light .insTop{color:#7d6b58;}
+  .insTop i{flex:none;width:8px;height:8px;border-radius:50%;}
+  .insTop .insWhen{margin-left:auto;}
+  .insCard h4{
+    margin:9px 0 0;font-size:16px;font-weight:500;line-height:1.3;color:#ececec;
+  }
+  body.light .insCard h4{color:#2e1f1a;}
+  .dash .insCard h4{font-size:17px;}
+  .insCard p{
+    margin:6px 0 0;font-size:13.5px;line-height:1.45;color:#8b8b86;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  body.light .insCard p{color:#7d6b58;}
+  /* the readings it was drawn from, named: a finding with no marker under it
+     is an opinion, and the row is what makes it checkable */
+  .insMarks{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+  .insMarks span{
+    font-size:11.5px;line-height:1;padding:6px 9px;border-radius:999px;
+    background:rgba(255,255,255,.07);color:#a6a6a0;
+  }
+  body.light .insMarks span{background:rgba(46,31,26,.06);color:#6d5c4b;}
+
+  /* What the Insights tab is not: the readings and the documents. Both lists
+     and both filters stand down, and the hero bento stays, because it belongs
+     to the page rather than to a tab. */
+  body.insTab #phone #mSearch,
+  body.insTab #phone #mSkel,
+  body.insTab #phone #mSearchEmpty,
+  body.insTab #phone #mRecs,
+  body.insTab #phone #mRepCarHost,
+  body.insTab #phone #mMedsWrap{display:none !important;}
+  body.insTab .dash #dFilters,
+  body.insTab .dash #dSkel,
+  body.insTab .dash #dSearchEmpty,
+  body.insTab .dash #dRecsList,
+  body.insTab .dash .dRepWrap{display:none !important;}
   /* ---- the Report tab, at the desk -------------------------------------
      The tab changes what the page is a list of, so the biomarkers' filter
      goes with their list: a record select and five range chips have nothing
@@ -3818,6 +3886,83 @@
   body.light .rsCta{background:#2e1f1a;color:#f6ece6;}
   .rsDesk .shHome{display:none;}
   .rsDesk .rsFoot{padding-bottom:20px;}
+
+  /* The finding in full. A bottom sheet on the phone, a right-hand drawer on
+     the desk -- the same content, in the shape each surface reads a long thing
+     in. Its own ground, for the reason the report sheet has one: the sheet
+     default's --bg belongs to whichever organ page is behind. */
+  .isWrap{display:none;}
+  .isWrap.isDesk{position:fixed;inset:0;z-index:60;}
+  .isSheet{
+    top:auto;max-height:88%;border-radius:26px 26px 0 0;background:#1b1b1a;
+    max-width:560px;margin-left:auto;margin-right:auto;
+  }
+  body.light .isSheet{background:#f6ece6;}
+  /* the desk's drawer: full height at the right edge, sliding in from it */
+  .isDesk .isSheet{
+    top:0;bottom:0;left:auto;right:0;width:min(460px, 92vw);max-width:none;
+    max-height:none;margin:0;border-radius:0;
+    transform:translateX(100%);transition:transform .42s cubic-bezier(.22,.61,.36,1);
+  }
+  .isDesk.on .isSheet{transform:translateX(0);}
+  .isDesk .shHandle, .isDesk .shHome{display:none;}
+  .isTop{
+    flex:none;display:flex;align-items:center;justify-content:space-between;
+    gap:12px;padding:26px 20px 0;
+  }
+  .isDesk .isTop{padding:24px 24px 0;}
+  .isKind{display:flex;align-items:center;gap:8px;min-width:0;font-size:13.5px;color:#8b8b86;}
+  .isKind i{flex:none;width:8px;height:8px;border-radius:50%;}
+  .isSheet .shClose{
+    position:static;flex:none;width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .isScroll{flex:0 1 auto;min-height:0;overflow-y:auto;padding:0 20px;}
+  .isDesk .isScroll{flex:1 1 auto;padding:0 24px;}
+  .isScroll h3{margin:14px 0 0;font-size:22px;font-weight:500;line-height:1.25;}
+  .isLead{margin:10px 0 0;font-size:14.5px;line-height:1.5;color:#a6a6a0;}
+  body.light .isLead{color:#6d5c4b;}
+  .isSec{margin-top:22px;}
+  .isSec .lbl{
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8b8b86;
+  }
+  .isSec p{margin:8px 0 0;font-size:14px;line-height:1.55;color:#c9c9c4;}
+  body.light .isSec p{color:#3f342c;}
+  .isSec ul{margin:8px 0 0;padding:0;list-style:none;}
+  .isSec li{
+    position:relative;padding:0 0 0 18px;margin-top:8px;
+    font-size:14px;line-height:1.5;color:#c9c9c4;
+  }
+  body.light .isSec li{color:#3f342c;}
+  .isSec li::before{
+    content:"";position:absolute;left:3px;top:8px;width:5px;height:5px;
+    border-radius:50%;background:#8b8b86;
+  }
+  /* the readings behind the finding, with their values: the row is the
+     evidence, so it carries the same three range colours the list does */
+  .isRows{margin-top:10px;}
+  .isRows .r{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:11px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  body.light .isRows .r{border-bottom-color:rgba(46,31,26,.09);}
+  .isRows .r:last-child{border-bottom:0;}
+  .isRows .r span{color:#8b8b86;}
+  .isRows .r b{font-weight:400;display:flex;align-items:center;gap:8px;}
+  .isRows .r i{flex:none;width:8px;height:8px;border-radius:50%;}
+  .isFoot{
+    flex:none;display:flex;gap:10px;padding:16px 20px calc(20px + env(safe-area-inset-bottom));
+  }
+  .isDesk .isFoot{padding:16px 24px 20px;}
+  .isFoot button{
+    flex:1;height:46px;border:0;border-radius:999px;font:inherit;font-size:14.5px;
+    font-weight:500;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .isGhost{background:rgba(255,255,255,.08);color:#ececec;}
+  body.light .isGhost{background:rgba(46,31,26,.07);color:#2e1f1a;}
+  .isCta{background:#ececec;color:#141413;}
+  body.light .isCta{background:#2e1f1a;color:#f7f2e9;}
+
   body.light .oaBadge.older{background:#f4e5bd;color:#7a5c15;}
   body.light .oaBadge.younger,body.light .oaBadge.par{background:#d7eddd;color:#1f6438;}
   body.light .oaName{color:#2e1f1a;}
@@ -5829,6 +5974,7 @@
             <option value="off">V1</option>
             <option value="on" selected>V2</option>
             <option value="v3">V3</option>
+            <option value="v4">V4</option>
           </select>
         </div>
         <!-- and how the Reports tab lays its reports out. Two named shapes,
@@ -5954,6 +6100,9 @@
     <div class="mTabsV2 dTabsV2" id="dTabsV2" role="tablist" aria-label="What this page lists">
       <button class="v2Tab on" type="button" role="tab" aria-selected="true" data-tab="bio">Biomarkers</button>
       <button class="v2Tab" type="button" role="tab" aria-selected="false" data-tab="rep">Reports</button>
+      <!-- V4 only: a third thing the page can be a list of. Not readings and
+           not documents -- what the readings mean, one card per finding. -->
+      <button class="v2Tab v4Only" type="button" role="tab" aria-selected="false" data-tab="ins">Insights</button>
     </div>
     <div class="dgrid">
       <div class="dleft">
@@ -6124,6 +6273,7 @@
          pinned block, as the biomarkers' own filter is. Both lists are empty
          here and built in the script from RECS and MEDS, so the desk and the
          phone can only ever show the same records. -->
+    <div class="insWrap dInsWrap" id="dInsWrap"></div>
     <div class="dRepWrap" id="dRepWrap">
       <div class="rbWrap dRepBento" id="dRepBento"></div>
       <div class="dRepShelf">
@@ -6306,6 +6456,9 @@
     <div class="mTabsV2" id="mTabsV2" role="tablist" aria-label="What this page lists">
       <button class="v2Tab on" type="button" role="tab" aria-selected="true" data-tab="bio">Biomarkers</button>
       <button class="v2Tab" type="button" role="tab" aria-selected="false" data-tab="rep">Reports</button>
+      <!-- V4 only: a third thing the page can be a list of. Not readings and
+           not documents -- what the readings mean, one card per finding. -->
+      <button class="v2Tab v4Only" type="button" role="tab" aria-selected="false" data-tab="ins">Insights</button>
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
@@ -6409,6 +6562,10 @@
          copied, so there is one carousel with one set of handlers however the
          page is laid out. -->
     <div class="mRepCarHost" id="mRepCarHost"></div>
+    <!-- V4's third tab: the findings themselves, stacked. Each one opens a
+         sheet on the phone and a drawer on the desk. Built from INSIGHTS in
+         the script, like every other list on the page. -->
+    <div class="insWrap" id="mInsWrap"></div>
     <div class="mMedsWrap" id="mMedsWrap">
       <div class="mMedsHead">
         <h3>Medical records</h3>
@@ -10778,7 +10935,9 @@
       (CARD_STATE.expRep ? ' expRep' : '') +
       (CARD_STATE.v2Tab ? ' v2Tab' : '') +
       (CARD_STATE.v2Tab && CARD_STATE.v3Tab ? ' v3Tab' : '') +
+      (CARD_STATE.v2Tab && CARD_STATE.v4Tab ? ' v4Tab' : '') +
       (CARD_STATE.v2Tab && CARD_STATE.repTab ? ' repTab' : '') +
+      (CARD_STATE.v4Tab && CARD_STATE.insTab ? ' insTab' : '') +
       (CARD_STATE.repBento ? ' repBento' : '') +
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
@@ -16394,6 +16553,190 @@
     });
   }
 
+  // ---- V4's third tab: the findings ------------------------------------
+  // Readings and documents are what the clinic produced; this is what they
+  // mean. One card per finding, each naming the readings it was drawn from --
+  // a finding with no marker under it is an opinion, and the row is what makes
+  // it checkable. Written here rather than derived, because the reasoning is
+  // the content: there is no rule in the prototype that would produce it.
+  const INS_DOT = { ok: 'var(--rgOpt)', sub: 'var(--rgSub)', out: 'var(--rgOut)' };
+  const INSIGHTS = [
+    { id: 'i1', panel: 'Metabolic', st: 'out', when: '13 Aug 2026',
+      title: 'Your fasting insulin has risen across three tests',
+      lead: 'Insulin is climbing while glucose holds steady — the pattern that ' +
+            'usually shows years before glucose itself moves.',
+      marks: ['Fasting insulin', 'HbA1c', 'Triglycerides'],
+      why: 'Insulin rises first because the pancreas compensates: it makes more ' +
+           'of the hormone to keep the same glucose reading. By the time glucose ' +
+           'drifts, that compensation has been running for a while. Your HbA1c is ' +
+           'still comfortably in range, which is why this is a finding rather than ' +
+           'a diagnosis.',
+      what: ['Bring resistance training to three sessions a week — muscle is the ' +
+             'largest place glucose goes.',
+             'Move the largest carbohydrate of the day to after training.',
+             'Re-test fasting insulin in twelve weeks rather than at the next ' +
+             'annual panel.'],
+      rows: [['Fasting insulin', '12.4 mIU/L', 'out'],
+             ['HbA1c', '5.4 %', 'ok'],
+             ['Triglycerides', '1.9 mmol/L', 'sub']] },
+    { id: 'i2', panel: 'Cardiovascular', st: 'sub', when: '13 Aug 2026',
+      title: 'ApoB is the number to watch, not LDL',
+      lead: 'Your LDL reads mid-range, but ApoB counts the particles rather than ' +
+            'the cholesterol inside them — and it sits higher than the LDL suggests.',
+      marks: ['ApoB', 'LDL cholesterol', 'Lp(a)'],
+      why: 'LDL measures how much cholesterol is being carried. ApoB counts how ' +
+           'many particles are carrying it. Risk tracks the particle count, so ' +
+           'when the two disagree, ApoB is the one that matters. Yours disagree.',
+      what: ['Ask for ApoB on every future lipid panel, not LDL alone.',
+             'Lp(a) is largely inherited and worth measuring once — yours has been.',
+             'Discuss the gap with your doctor before changing anything.'],
+      rows: [['ApoB', '1.12 g/L', 'sub'],
+             ['LDL cholesterol', '3.1 mmol/L', 'ok'],
+             ['Lp(a)', '18 nmol/L', 'ok']] },
+    { id: 'i3', panel: 'Liver', st: 'sub', when: '13 Aug 2026',
+      title: 'A mild ALT rise, with everything around it clean',
+      lead: 'ALT is a little above range while AST, GGT and bilirubin are all ' +
+            'where they should be. That combination narrows the list considerably.',
+      marks: ['ALT', 'AST', 'GGT'],
+      why: 'An isolated ALT rise with a normal GGT points away from alcohol and ' +
+           'towards fat in the liver, which is the most common cause by a wide ' +
+           'margin and the most responsive to change.',
+      what: ['Re-test in eight weeks — a single reading is a point, not a trend.',
+             'The metabolic finding above and this one likely share a cause.'],
+      rows: [['ALT', '48 U/L', 'sub'],
+             ['AST', '21 U/L', 'ok'],
+             ['GGT', '24 U/L', 'ok']] },
+    { id: 'i4', panel: 'Inflammation', st: 'ok', when: '15 May 2026',
+      title: 'hs-CRP came down after the last review',
+      lead: 'Your inflammatory marker has moved from 3.4 to 0.9 mg/L across two ' +
+            'tests — the clearest improvement in this panel.',
+      marks: ['hs-CRP', 'Ferritin', 'White cell count'],
+      why: 'hs-CRP is sensitive to the things that change quickly: sleep, ' +
+           'training load, an infection that has passed. A fall of this size ' +
+           'held across two tests is unlikely to be noise.',
+      what: ['Keep whatever changed — the number says it worked.',
+             'One more reading in six months confirms it has settled.'],
+      rows: [['hs-CRP', '0.9 mg/L', 'ok'],
+             ['Ferritin', '142 µg/L', 'ok'],
+             ['White cell count', '6.1 ×10⁹/L', 'ok']] },
+    { id: 'i5', panel: 'Hormones', st: 'sub', when: '15 May 2026',
+      title: 'Free testosterone sits low for your age band',
+      lead: 'Total testosterone is in range; the free fraction is not, because ' +
+            'SHBG is carrying more of it than usual.',
+      marks: ['Free testosterone', 'Total testosterone', 'SHBG'],
+      why: 'Only the free fraction is available to tissue, so a normal total with ' +
+           'a high SHBG can still read as a deficit. Sleep debt and low body fat ' +
+           'both push SHBG up.',
+      what: ['Re-test in the morning, fasted — the number moves a lot by time of day.',
+             'Sleep is the largest lever here and the cheapest to pull.'],
+      rows: [['Free testosterone', '182 pmol/L', 'sub'],
+             ['Total testosterone', '16.1 nmol/L', 'ok'],
+             ['SHBG', '62 nmol/L', 'sub']] },
+    { id: 'i6', panel: 'Kidney', st: 'ok', when: '24 Sep 2025',
+      title: 'Kidney function is steady across fifteen years of records',
+      lead: 'eGFR has not moved outside a two-point band since 2011, which is ' +
+            'the most reassuring thing in your historical file.',
+      marks: ['eGFR', 'Serum creatinine', 'Urea'],
+      why: 'eGFR declines slowly with age in almost everyone. A flat line across ' +
+           'this many years is worth naming, because it is the background the ' +
+           'other findings are read against.',
+      what: ['Nothing to do. This one is here so the picture is complete.'],
+      rows: [['eGFR', '96 mL/min', 'ok'],
+             ['Serum creatinine', '82 µmol/L', 'ok'],
+             ['Urea', '5.2 mmol/L', 'ok']] }
+  ];
+
+  // The finding in full. A bottom sheet on the phone and a right-hand drawer on
+  // the desk -- the same content, in the shape each surface reads a long thing
+  // in. Built once per surface and refilled, like the report sheet beside it.
+  function insSheet(host, desk){
+    if (!host) return null;
+    const wrap = document.createElement('div');
+    wrap.className = 'shWrap isWrap' + (desk ? ' isDesk' : '');
+    wrap.innerHTML =
+      '<div class="shDim"></div>' +
+      '<div class="sheet isSheet">' +
+        '<div class="shHandle"></div>' +
+        '<div class="isTop"><span class="isKind"><i></i><b></b></span>' +
+          '<button class="shClose" type="button" aria-label="Close">&#10005;</button></div>' +
+        '<div class="isScroll">' +
+          '<h3></h3>' +
+          '<p class="isLead"></p>' +
+          '<div class="isSec isWhy"><div class="lbl">Why this matters</div><p></p></div>' +
+          '<div class="isSec isWhat"><div class="lbl">What to do</div><ul></ul></div>' +
+          '<div class="isSec isEvid"><div class="lbl">The readings behind it</div>' +
+            '<div class="isRows"></div></div>' +
+        '</div>' +
+        '<div class="isFoot">' +
+          '<button class="isGhost" type="button">Close</button>' +
+          '<button class="isCta" type="button">See the biomarkers</button>' +
+        '</div>' +
+        '<div class="shHome"></div>' +
+      '</div>';
+    host.appendChild(wrap);
+    const q = sel => wrap.querySelector(sel);
+    let open = false;
+
+    function close(){
+      if (!open) return;
+      open = false;
+      wrap.classList.remove('on');
+      setTimeout(() => { wrap.style.display = 'none'; }, 520);
+    }
+    function show(ins){
+      q('.isKind i').style.background = INS_DOT[ins.st] || INS_DOT.ok;
+      q('.isKind b').textContent = ins.panel;
+      q('.isScroll h3').textContent = ins.title;
+      q('.isLead').textContent = ins.lead;
+      q('.isWhy p').textContent = ins.why;
+      q('.isWhat ul').innerHTML = ins.what.map(w => '<li>' + w + '</li>').join('');
+      q('.isRows').innerHTML = ins.rows.map(r =>
+        '<div class="r"><span>' + r[0] + '</span><b><i style="background:' +
+        (INS_DOT[r[2]] || INS_DOT.ok) + '"></i>' + r[1] + '</b></div>').join('');
+      q('.isScroll').scrollTop = 0;
+      open = true;
+      wrap.style.display = 'block';
+      requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
+    }
+    q('.shClose').addEventListener('click', close);
+    q('.shDim').addEventListener('click', close);
+    q('.isGhost').addEventListener('click', close);
+    // the readings are the evidence, so the way out of a finding is into them
+    q('.isCta').addEventListener('click', () => {
+      close();
+      document.dispatchEvent(new CustomEvent('everlab:showBio'));
+    });
+    return { show: show, close: close };
+  }
+
+  {
+    const sheets = {
+      m: insSheet(document.getElementById('phone'), false),
+      d: insSheet(document.body, true)
+    };
+    const html = INSIGHTS.map(i =>
+      '<button class="insCard" type="button" data-i="' + i.id + '">' +
+        '<span class="insTop"><i style="background:' + (INS_DOT[i.st] || INS_DOT.ok) +
+          '"></i>' + i.panel + '<span class="insWhen">' + i.when + '</span></span>' +
+        '<h4>' + i.title + '</h4>' +
+        '<p>' + i.lead + '</p>' +
+        '<span class="insMarks">' +
+          i.marks.map(m => '<span>' + m + '</span>').join('') +
+        '</span>' +
+      '</button>').join('');
+    [].slice.call(document.querySelectorAll('.insWrap')).forEach(hostEl => {
+      hostEl.innerHTML = html;
+      const desk = !hostEl.closest('#phone');
+      hostEl.addEventListener('click', e => {
+        const card = e.target.closest('.insCard');
+        if (!card) return;
+        const ins = INSIGHTS.find(x => x.id === card.dataset.i);
+        const sh = desk ? sheets.d : sheets.m;
+        if (ins && sh) sh.show(ins);
+      });
+    });
+  }
+
   const repSheetM = repSheet(document.getElementById('phone'), false);
   const repSheetD = repSheet(document.body, true);
 
@@ -16815,7 +17158,8 @@
                        // carousel with the search down beside the chips
                        expRep: false,
                        // V2's tabs above the hero, and which of them is on
-                       v2Tab: true, v3Tab: false, repTab: false, repBento: false, newRep: false,
+                       v2Tab: true, v3Tab: false, v4Tab: false,
+                       repTab: false, insTab: false, repBento: false, newRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
@@ -17266,13 +17610,18 @@
   const stV2Sel = document.getElementById('stV2Tab');
   if (stV2Sel) stV2Sel.addEventListener('change', () => {
     CARD_STATE.v2Tab = stV2Sel.value !== 'off';
-    CARD_STATE.v3Tab = stV2Sel.value === 'v3';
+    // V4 is V3's shape with a third destination, so it carries V3's class too
+    CARD_STATE.v3Tab = stV2Sel.value === 'v3' || stV2Sel.value === 'v4';
+    CARD_STATE.v4Tab = stV2Sel.value === 'v4';
     document.body.classList.toggle('v3Tab', CARD_STATE.v2Tab && CARD_STATE.v3Tab);
+    document.body.classList.toggle('v4Tab', CARD_STATE.v2Tab && CARD_STATE.v4Tab);
     v3Layout();
     document.body.classList.toggle('v2Tab', CARD_STATE.v2Tab);
-    // turning the tabs off cannot leave the page listing reports with no tab
-    // to get back from
+    // A version cannot strand the page on a tab it does not have: turning the
+    // tabs off leaves no way back from Reports, and leaving V4 leaves none
+    // from Insights.
     if (!CARD_STATE.v2Tab){ CARD_STATE.repTab = false; document.body.classList.remove('repTab'); }
+    if (!CARD_STATE.v4Tab){ CARD_STATE.insTab = false; document.body.classList.remove('insTab'); }
     setTabUI();
     resize();
   });
@@ -17425,9 +17774,16 @@
       th.style.transform = 'translateX(' + on.offsetLeft + 'px)';
     });
   }
+  // Three destinations now, so the pair of booleans reads through one name.
+  // They stay booleans because every CSS rule on the page is keyed to a body
+  // class, and a class is what setMode can rewrite and put back.
+  function tabNow(){
+    return CARD_STATE.insTab ? 'ins' : (CARD_STATE.repTab ? 'rep' : 'bio');
+  }
   function setTabUI(){
+    const now = tabNow();
     v2Tabs.forEach(t => {
-      const on = (t.dataset.tab === 'rep') === !!CARD_STATE.repTab;
+      const on = (t.dataset.tab || 'bio') === now;
       t.classList.toggle('on', on);
       t.setAttribute('aria-selected', String(on));
     });
@@ -17435,11 +17791,16 @@
   }
   addEventListener('resize', placeThumb);
   document.addEventListener('everlab:mode', () => requestAnimationFrame(placeThumb));
-  function showTab(rep){
-    if (rep === !!CARD_STATE.repTab) return;
-    if (!rep) requestAnimationFrame(markBentoH);   // the grid is on screen again
-    CARD_STATE.repTab = rep;
-    document.body.classList.toggle('repTab', rep);
+  function showTab(which){
+    // the two callers that predate the third tab still speak in booleans
+    if (which === true) which = 'rep';
+    else if (which === false || !which) which = 'bio';
+    if (which === tabNow()) return;
+    if (which === 'bio') requestAnimationFrame(markBentoH);  // the grid is back
+    CARD_STATE.repTab = which === 'rep';
+    CARD_STATE.insTab = which === 'ins';
+    document.body.classList.toggle('repTab', CARD_STATE.repTab);
+    document.body.classList.toggle('insTab', CARD_STATE.insTab);
     setTabUI();
     // the hero's report strips are laid out from their own width, which is
     // nothing until the tab shows them
@@ -17466,8 +17827,8 @@
     if (dm){ dm.classList.remove('tabSwap'); requestAnimationFrame(() => dm.classList.add('tabSwap')); }
     resize();
   }
-  v2Tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab === 'rep')));
-  document.addEventListener('everlab:showBio', () => showTab(false));
+  v2Tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab || 'bio')));
+  document.addEventListener('everlab:showBio', () => showTab('bio'));
   setTabUI();
 
   const stLeftSel = document.getElementById('stLeft');
