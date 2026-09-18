@@ -7383,6 +7383,21 @@ here was pushed, so `git reset --hard origin/<branch>` restored it whole;
 `7ebfbdb` is on several other branches, so nothing of anyone's was lost.
 The lesson is the one that already holds: push every batch.
 
+### 5.279 The tabs come up, and give room below
+
+"Move up Tab (+ content below) by 16px" and "tab margin bottom +8px".
+
+Both on the one control, so both in the one rule: `margin:-14px auto 24px`
+(V4's copy keeps its own gutter, `-14px 13px 24px`). The negative top exactly
+cancels `.mBody`'s 14px of padding, which is what puts the pill at the card's
+own top edge -- the card's rounded top does not move with it, so the header
+keeps its overlap and only the contents rise.
+
+Measured on both tabs in both versions: the card's top holds at 436 while the
+bar goes 452 → 436, and the gap under it goes 16 → 24. The tabs are nearer the
+hero they belong to and further from the set they change, which is the right
+way round.
+
 ---
 
 ## 6. Open items
