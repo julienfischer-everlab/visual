@@ -10,6 +10,8 @@
     --deep:#050506;         /* what sits underneath it */
     --ink:232,238,242;      /* clinical cool grey, used at low alpha */
     --orange:#ff6a1a;
+    /* one family for every word on screen: wall, conditions and copy alike */
+    --mono:ui-monospace,'SF Mono','JetBrains Mono','Roboto Mono',Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;}
   html,body{height:100%;margin:0;}
@@ -18,7 +20,7 @@
       radial-gradient(120% 90% at 50% 0%, var(--room-1) 0%, var(--room-2) 68%),
       var(--room-2);
     color:rgba(var(--ink),.7);
-    font-family:'Suisse Intl','SuisseIntl',"Suisse Int'l",'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family:var(--mono);
     display:grid;place-items:center;
     overflow:hidden;
     -webkit-font-smoothing:antialiased;
@@ -108,7 +110,7 @@
     padding:0 46px;text-align:center;
   }
   .intro{
-    font-size:19px;line-height:1.5;letter-spacing:.005em;font-weight:400;
+    font-size:14px;line-height:1.7;letter-spacing:.055em;font-weight:400;
     color:rgba(var(--ink),.88);
     opacity:0;
     text-wrap:balance;
@@ -123,7 +125,6 @@
   .closer{
     position:absolute;left:0;right:0;bottom:132px;z-index:2;pointer-events:none;
     text-align:center;
-    font-family:ui-monospace,'SF Mono','JetBrains Mono','Roboto Mono',Menlo,Consolas,monospace;
     font-size:11px;letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;
     color:rgba(var(--ink),.5);
     opacity:0;
@@ -170,12 +171,11 @@
   const DPR = Math.min(2, window.devicePixelRatio || 1);
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const MONO = "ui-monospace,'SF Mono','JetBrains Mono','Roboto Mono',Menlo,Consolas,monospace";
-  const SANS = "'Suisse Intl','SuisseIntl',\"Suisse Int'l\",'Helvetica Neue',Helvetica,Arial,sans-serif";
-
-  /* one source of truth for the palette: the custom properties above */
+  /* one source of truth for the palette and the type: the properties above */
   const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const MONO = cssVar('--mono');
   const FOG = cssVar('--fog'), DEEP = cssVar('--deep'), INK_RGB = cssVar('--ink');
+  const wordFont = (s, w) => `${w} ${s}px ${MONO}`;
   const CO = (h => ({ r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16) }))(cssVar('--orange'));
 
   const rnd = (a, b) => a + Math.random() * (b - a);
@@ -200,7 +200,7 @@
   const cond = make(W, H, DPR);   // hidden layer: orange conditions
   const MS   = 0.5;               // mask resolution (upscaling feathers it further)
   const mask = make(W * MS, H * MS, 1);   // raw accumulation
-  const mrun = make(W * MS, H * MS, 1);   // mask², so the tail resolves to true zero
+  const mrun = make(W * MS, H * MS, 1);   // mask³, so the tail resolves to true zero
   const tiny = make(60, 128, 1);  // cheap read-back of the mask for per-item logic
   const tinyCx = tiny.cx;
   let tinyData = null;
@@ -309,20 +309,20 @@
 
   /* ---------- the hidden layer ---------------------------------------- */
   const WORDS = [
-    { t: 'CARDIOVASCULAR',     ideal: 58, maxW: 402, style: 'fill',    weight: 700, track: 0.5, x: 6 },
-    { t: 'INSULIN RESISTANCE', ideal: 34, maxW: 372, style: 'outline', weight: 500, track: 1.6, x: 30 },
-    { t: 'METABOLIC',          ideal: 74, maxW: 388, style: 'fill',    weight: 700, track: 0,   x: 14 },
-    { t: 'DIABETES',           ideal: 62, maxW: 356, style: 'fill',    weight: 600, track: .5,  x: 44 },
-    { t: 'LIVER',              ideal: 86, maxW: 420, style: 'fill',    weight: 700, track: 0,   x: 10 },
-    { t: 'INFLAMMATION',       ideal: 46, maxW: 378, style: 'fill',    weight: 500, track: 1,   x: 26 },
-    { t: 'KIDNEY',             ideal: 78, maxW: 380, style: 'fill',    weight: 700, track: 0,   x: 88 },
-    { t: 'ATHEROSCLEROSIS',    ideal: 32, maxW: 366, style: 'outline', weight: 500, track: 1.8, x: 18 },
-    { t: 'BONE DENSITY',       ideal: 52, maxW: 384, style: 'fill',    weight: 600, track: .4,  x: 8 }
+    { t: 'CARDIOVASCULAR',     ideal: 54, maxW: 398, style: 'fill',    weight: 700, track: 0,   x: 6 },
+    { t: 'INSULIN RESISTANCE', ideal: 32, maxW: 372, style: 'outline', weight: 500, track: .8,  x: 30 },
+    { t: 'METABOLIC',          ideal: 70, maxW: 388, style: 'fill',    weight: 700, track: 0,   x: 14 },
+    { t: 'DIABETES',           ideal: 60, maxW: 356, style: 'fill',    weight: 600, track: 0,   x: 44 },
+    { t: 'LIVER',              ideal: 84, maxW: 420, style: 'fill',    weight: 700, track: 0,   x: 10 },
+    { t: 'INFLAMMATION',       ideal: 44, maxW: 378, style: 'fill',    weight: 500, track: .4,  x: 26 },
+    { t: 'KIDNEY',             ideal: 76, maxW: 380, style: 'fill',    weight: 700, track: 0,   x: 88 },
+    { t: 'ATHEROSCLEROSIS',    ideal: 30, maxW: 366, style: 'outline', weight: 500, track: .9,  x: 18 },
+    { t: 'BONE DENSITY',       ideal: 50, maxW: 384, style: 'fill',    weight: 600, track: 0,   x: 8 }
   ];
   (function layoutWords() {
     let total = 0;
     for (const w of WORDS) {
-      meas.font = `${w.weight} 100px ${SANS}`;
+      meas.font = wordFont(100, w.weight);
       meas.letterSpacing = (w.track) + 'px';
       const unit = meas.measureText(w.t).width / 100;
       w.size = Math.min(w.ideal, w.maxW / unit);
@@ -337,7 +337,7 @@
       w.y = y;                          // baseline
       w.cy = y - w.h * .5;
       y += gap;
-      meas.font = `${w.weight} ${w.size}px ${SANS}`;
+      meas.font = wordFont(w.size, w.weight);
       meas.letterSpacing = w.track + 'px';
       w.w = meas.measureText(w.t).width;
       w.cx = w.x + w.w / 2;
@@ -359,12 +359,14 @@
     const s = make(R * 2 * MS + 2, R * 2 * MS + 2, 1);
     const c = R * MS + 1;
     const g = s.cx.createRadialGradient(c, c, 0, c, c, R * MS);
-    /* stops sit high because the mask is later squared — the curve is the feather */
+    /* stops are the cube roots of the falloff wanted on screen, because the
+       mask is cubed before use — the curve here is the feather */
     g.addColorStop(0,   'rgba(255,255,255,1)');
-    g.addColorStop(.34, 'rgba(255,255,255,.97)');
-    g.addColorStop(.62, 'rgba(255,255,255,.78)');
-    g.addColorStop(.82, 'rgba(255,255,255,.42)');
-    g.addColorStop(.94, 'rgba(255,255,255,.13)');
+    g.addColorStop(.30, 'rgba(255,255,255,.985)');
+    g.addColorStop(.55, 'rgba(255,255,255,.94)');
+    g.addColorStop(.75, 'rgba(255,255,255,.80)');
+    g.addColorStop(.88, 'rgba(255,255,255,.60)');
+    g.addColorStop(.96, 'rgba(255,255,255,.32)');
     g.addColorStop(1,   'rgba(255,255,255,0)');
     s.cx.fillStyle = g;
     s.cx.fillRect(0, 0, s.cv.width, s.cv.height);
@@ -504,18 +506,23 @@
 
     /* the fog closes back over ~3s */
     mask.cx.globalCompositeOperation = 'destination-out';
-    mask.cx.fillStyle = `rgba(0,0,0,${1 - Math.exp(-dt / 1.5)})`;
+    mask.cx.fillStyle = `rgba(0,0,0,${1 - Math.exp(-dt / .8)})`;
     mask.cx.fillRect(0, 0, W * MS, H * MS);
     mask.cx.globalCompositeOperation = 'source-over';
 
-    /* square it: keeps the opened core, crushes the long tail to true zero */
+    /* cube it. Canvas compositing can only multiply alpha, so a power is the
+       only curve available — and it has to be steep: erosion alone leaves a
+       wide, low-alpha wash after a broad wipe, which made every hidden word
+       faintly legible at once. Cubed, that wash is gone inside a second while
+       the opened core is untouched. */
     mrun.cx.globalCompositeOperation = 'copy';
     mrun.cx.drawImage(mask.cv, 0, 0);
     mrun.cx.globalCompositeOperation = 'destination-in';
     mrun.cx.drawImage(mask.cv, 0, 0);
+    mrun.cx.drawImage(mask.cv, 0, 0);
     mrun.cx.globalCompositeOperation = 'source-over';
 
-    energy *= Math.exp(-dt / .75);
+    energy *= Math.exp(-dt / .45);
     const wiping = energy > .004;
 
     /* nothing open? then the hidden layer cannot show, and none of its work
@@ -539,9 +546,9 @@
         w.lit += (cov - w.lit) * Math.min(1, dt * 7);
         const lit = w.lit;
 
-        cc.font = `${w.weight} ${w.size}px ${SANS}`;
+        cc.font = wordFont(w.size, w.weight);
         cc.letterSpacing = w.track + 'px';
-        const a = .52 + lit * .48;
+        const a = .45 + lit * .55;
         const g = Math.round(CO.g + lit * 40), b = Math.round(CO.b + lit * 46);
         cc.shadowColor = `rgba(${CO.r},${CO.g + 4},${CO.b + 4},${lit * .5})`;
         cc.shadowBlur = lit * 26;

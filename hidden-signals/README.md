@@ -3,7 +3,8 @@
 An interaction prototype for Everlab: a wall of biomarker names covering the
 screen like fog on glass, with larger orange condition words hidden underneath.
 Dragging a finger or cursor wipes the fog away, exposes what the data may be
-pointing toward, and the fog then closes back over in about three seconds.
+pointing toward, and the fog closes back over about a second behind the
+gesture, so nothing underneath is ever legible except where you are touching.
 
 Open `index.html` directly in a browser — no server or build step. The page is
 self-contained: no CDN scripts, external stylesheets, remote images, or network
@@ -31,7 +32,11 @@ Each frame the fog is drawn, the mask is punched through it with
 with `destination-over`. The top layer is the mask, as the brief asks — not a
 set of per-element hover states.
 
-Every name on the wall is set at one size (10px mono, one weight, one tracking).
+One typeface carries the whole piece — wall, condition words and copy are all
+set in the same mono stack, declared once as `--mono` and read back by the
+canvas code so CSS and JS cannot drift apart.
+
+Every name on the wall is set at one size (10px, one weight, one tracking).
 Depth is carried entirely by opacity and by how far a row drifts under parallax
 — rows are skewed toward the far, near-invisible end, so the field stays quiet
 and the few forward rows read as surface. Setting the type once per frame
@@ -39,12 +44,16 @@ rather than per item is also most of why the wall is cheap to draw.
 
 Two details matter to how it feels:
 
-- **The mask is squared before use.** Erosion is multiplicative
-  (`destination-out` with a flat alpha), which decays fast but never reaches
-  zero, so the hidden layer used to stay faintly legible long after a wipe.
-  Drawing the mask into itself with `destination-in` squares its alpha: the
-  opened core is preserved, and the tail is crushed to nothing. The brush
-  gradient's stops sit high to compensate, and the curve itself is the feather.
+- **The mask is cubed before use.** Canvas compositing can only multiply
+  alpha, so a power is the only curve available, and it has to be a steep one.
+  Erosion on its own (`destination-out` with a flat alpha) decays fast but
+  never reaches zero: after a broad wipe it left a wide, low-alpha wash that
+  made every hidden word faintly legible at once — measurably, up to 16/255 of
+  orange still spread across the screen a second and a half later. Drawing the
+  mask into itself twice with `destination-in` cubes its alpha, which leaves
+  the opened core untouched and takes that wash to nothing inside a second.
+  The brush gradient's stops are the cube roots of the falloff wanted on
+  screen, so the curve there is the feather.
 - **Stamps are spaced by distance, not by frame.** The brush lays a soft sprite
   down every 5px along the interpolated path, so a wipe deposits the same
   amount of clearing at 30fps as at 120fps. A held, still finger is the one
@@ -80,8 +89,13 @@ crossfade, and suppresses the hint stroke.
 
 Checked headlessly in Chromium at each stage of the sequence: opening copy,
 wall, hint graze, an active wipe, a held press, and full recovery — with no
-console or page errors, nothing of the hidden layer visible at rest, and the
-frame centred and fully on-screen at iPhone and Pixel viewport sizes.
+console or page errors, and the frame centred and fully on-screen at iPhone
+and Pixel viewport sizes.
+
+Concealment is measured rather than eyeballed: the test wipes the entire
+screen in a serpentine, then samples the canvas for warmth (`r - b`) as the
+fog closes. Untouched it reads 0 everywhere; after a full-screen wipe it is
+back to 0 within 1.5s.
 
 Frame cost is dominated by two full-size canvas blits. Under headless software
 rasterisation the page runs around 30fps; on a GPU-composited canvas, which is
