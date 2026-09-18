@@ -24,12 +24,18 @@ Three layers, composited each frame onto the visible canvas:
 | --- | --- |
 | Hidden | Nine condition words (`CARDIOVASCULAR` … `BONE DENSITY`), auto-fitted to the screen width and distributed down its height, on an opaque near-black ground |
 | Mask | A half-resolution canvas the brush stamps into, and time erodes |
-| Fog | An opaque haze plus ~700 metric names, drawn straight onto the visible canvas |
+| Fog | An opaque haze plus ~390 metric names, drawn straight onto the visible canvas |
 
 Each frame the fog is drawn, the mask is punched through it with
 `destination-out`, and the hidden layer is slid in beneath the resulting holes
 with `destination-over`. The top layer is the mask, as the brief asks — not a
 set of per-element hover states.
+
+Every name on the wall is set at one size (10px mono, one weight, one tracking).
+Depth is carried entirely by opacity and by how far a row drifts under parallax
+— rows are skewed toward the far, near-invisible end, so the field stays quiet
+and the few forward rows read as surface. Setting the type once per frame
+rather than per item is also most of why the wall is cheap to draw.
 
 Two details matter to how it feels:
 

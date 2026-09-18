@@ -275,34 +275,36 @@
   };
   const nextMetric = deck(METRICS), nextValue = deck(VALUES);
 
+  /* one type size across the whole wall — depth reads through opacity and
+     parallax alone, never through scale */
+  const SIZE = 10, WEIGHT = 400, TRACK = .8, WALL_FONT = mfont(SIZE, WEIGHT);
+
   const items = [];
   (function buildWall() {
+    meas.font = WALL_FONT;
+    meas.letterSpacing = TRACK + 'px';
     let y = -6;
     while (y < H + 26) {
-      const r = Math.random();
-      const size = r < .56 ? rnd(7.5, 9.5) : r < .88 ? rnd(10, 12.2) : rnd(13, 16);
-      const weight = size > 12.5 ? (Math.random() < .45 ? 500 : 400) : 400;
-      const track = size > 12.5 ? rnd(1.1, 2.2) : rnd(.35, 1.15);
-      const depth = clamp((size - 7.5) / 8.5 + rnd(-.16, .16), .1, 1);  // closer = bigger
+      /* a row sits at one depth, so it drifts as one — skewed to the far
+         layers, which is what kept the old mixed-size wall quiet */
+      const depth = Math.pow(rnd(0, 1), 2.6);
       let x = -rnd(0, 110);
-      meas.font = mfont(size, weight);
-      meas.letterSpacing = track + 'px';
       while (x < W + 44) {
         const text = Math.random() < .09 ? nextValue() : nextMetric();
         const w = meas.measureText(text).width;
         const accent = Math.random() < .045;
         const yy = y + rnd(-1.4, 1.4);
-        const alpha = clamp(.05 + depth * .155 + rnd(-.03, .05), .038, .27) * (accent ? 1.6 : 1);
+        /* wider tonal range than the mixed-size wall needed: with every name
+           the same size, opacity is the only thing left to separate them */
+        const alpha = clamp(.035 + depth * .22 + rnd(-.02, .035), .028, .3) * (accent ? 1.5 : 1);
         items.push({
-          text, x, y: yy, size, weight, track, depth, w, alpha, ink: ink(alpha),
-          cx: x + w / 2, cy: yy - size * .35,
-          key: size.toFixed(1) + '|' + weight + '|' + track.toFixed(1)
+          text, x, y: yy, depth, w, alpha, ink: ink(alpha),
+          cx: x + w / 2, cy: yy - SIZE * .35
         });
-        x += w + rnd(9, 30);
+        x += w + rnd(8, 26);
       }
-      y += size * 1.3 + rnd(2.5, 7);
+      y += SIZE * 1.25 + rnd(2, 6);      // uneven leading, so the field is not a grid
     }
-    items.sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0); // fewer font switches
   })();
 
   /* ---------- the hidden layer ---------------------------------------- */
@@ -561,13 +563,9 @@
     fc.drawImage(back, 0, 0, W, H);
     fc.globalCompositeOperation = 'source-over';
 
-    let key = '';
+    fc.font = WALL_FONT;                  // one size, so the font is set once
+    fc.letterSpacing = TRACK + 'px';
     for (const it of items) {
-      if (it.key !== key) {
-        key = it.key;
-        fc.font = mfont(it.size, it.weight);
-        fc.letterSpacing = it.track + 'px';
-      }
       let x = it.x + par.x * it.depth * 7;
       let y = it.y + par.y * it.depth * 4.5;
 
