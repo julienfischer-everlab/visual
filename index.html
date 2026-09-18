@@ -3782,8 +3782,17 @@
   }
   /* switching tabs is a change of set, not of page: the lightest crossfade,
      just enough that the swap is felt rather than seen as a cut */
-  .tabSwap{animation:tabSwap .26s ease;}
-  @keyframes tabSwap{from{opacity:.42;}to{opacity:1;}}
+  /* The incoming set arrives rather than appearing: it comes in from the side
+     the reader moved towards, a short way, and fades up as it lands. The
+     travel is what says "this is the next thing along", which a crossfade on
+     its own cannot -- two sets that dissolve into each other read as one set
+     changing its mind. Ease-out, so it decelerates into place like the tab's
+     own thumb. --swapX carries the direction, written per switch. */
+  .tabSwap{animation:tabSwap .3s cubic-bezier(.22,.61,.36,1);}
+  @keyframes tabSwap{
+    from{opacity:.42;transform:translate3d(var(--swapX, 0px),0,0);}
+    to{opacity:1;transform:translate3d(0,0,0);}
+  }
   /* The desk's tabs live in <main> with everything the tab changes, so fading
      main faded the control too -- measured at .42 and climbing on every
      switch, which is the ground going dark under a thumb that is still
@@ -18128,11 +18137,20 @@
   requestAnimationFrame(tabCounts);
   addEventListener('resize', placeThumb);
   document.addEventListener('everlab:mode', () => requestAnimationFrame(placeThumb));
+  // left to right, which is the order the tabs are read in and the order the
+  // travel below is measured against
+  const TAB_ORDER = ['bio', 'rep', 'ins'];
   function showTab(which){
     // the two callers that predate the third tab still speak in booleans
     if (which === true) which = 'rep';
     else if (which === false || !which) which = 'bio';
-    if (which === tabNow()) return;
+    const was = tabNow();
+    if (which === was) return;
+    // Which way the set comes in: towards a tab on the right, from the right.
+    // 14px -- far enough to read as a movement, short enough that nothing is
+    // ever seen out of place.
+    document.body.style.setProperty('--swapX',
+      (TAB_ORDER.indexOf(which) > TAB_ORDER.indexOf(was) ? 14 : -14) + 'px');
     if (which === 'bio') requestAnimationFrame(markBentoH);  // the grid is back
     CARD_STATE.repTab = which === 'rep';
     CARD_STATE.insTab = which === 'ins';

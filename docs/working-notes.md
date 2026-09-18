@@ -7348,6 +7348,41 @@ keeps its own margins. Folding `margin:0` into the shared rule silently ate the
 18px under the insight headings, because that rule sits later in the sheet than
 the one that set them.
 
+### 5.278 The set arrives from the side you moved towards
+
+A screen recording, with "tab should behave like this, effect".
+
+Read it frame by frame at 20fps. The underline does **not** slide -- it jumps
+in one frame, and the label's weight with it. What moves is the content: the
+incoming panel starts about 14px to the left of its place and travels into it
+while fading up from near-nothing, and the outgoing panel fades out where it
+stands. Clicking the left-hand tab brings the new set in from the left, so the
+travel carries the direction.
+
+That is what our crossfade was missing: two sets that dissolve into each other
+read as one set changing its mind, where a set that arrives from the side reads
+as the next thing along. `--swapX` is written per switch from the two tabs'
+positions in the row, and the keyframes carry it; the easing is the ease-out
+the thumb already uses, so both decelerate into place together.
+
+Measured: +14 → 0 going right, -14 → 0 going left, opacity .42 → 1 over ~260ms,
+on the phone and the desk. The tabs and the hero stay at 0 throughout in all
+three versions -- they are out of the fade (5.266) and so out of the travel.
+And no horizontal scroll: `#mScroll` is `overflow-x:hidden`, and its scrollWidth
+is the same at rest as mid-swap.
+
+**Getting at the recording.** Chromium here is the open-source build with no
+H.264, and Playwright's bundled ffmpeg only muxes what it records. The npm
+registry is reachable, so `ffmpeg-static` did it in one line. Worth remembering
+the order: try the decoder you have, then the one you can fetch.
+
+**The container had been rebuilt.** The working tree came back on this branch
+at `7ebfbdb Add files via upload` -- another session's commit, nothing to do
+with this work -- and the scratchpad and node_modules were gone. Everything
+here was pushed, so `git reset --hard origin/<branch>` restored it whole;
+`7ebfbdb` is on several other branches, so nothing of anyone's was lost.
+The lesson is the one that already holds: push every batch.
+
 ---
 
 ## 6. Open items
