@@ -7398,6 +7398,27 @@ bar goes 452 → 436, and the gap under it goes 16 → 24. The tabs are nearer t
 hero they belong to and further from the set they change, which is the right
 way round.
 
+### 5.280 The shelf gets its name
+
+"Add Everlab Report as title of the report carousel."
+
+Written as **Everlab reports** -- sentence case like Medical records beside it,
+and plural because the shelf holds six. The brand is Everlab; the message said
+Everlan.
+
+It joins the shared section-title rule as a third class rather than borrowing
+`.insHead`, whose name is about a different tab. One rule now carries Medical
+records, the insight headings and this, so the three cannot drift apart.
+
+Shown only where the shelf is a section of the page: V3 and V4 on the phone,
+and every version at the desk. V2 keeps the carousel inside the hero, where a
+title would be a second heading over a block that already has one.
+
+The phone's row is a scroller with its 13px gutter inside it, so the title had
+to be given that gutter rather than inheriting a padding the host does not
+have. Measured: the heading's text, the first card and Medical records all
+start at the same x on both surfaces.
+
 ---
 
 ## 6. Open items
