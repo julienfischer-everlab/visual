@@ -1,0 +1,623 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hidden Signals — Everlab</title>
+<style>
+  :root{
+    --room-1:#111317;
+    --room-2:#050506;
+    --fog:#0a0b0d;          /* the surface layer: fog on the glass */
+    --deep:#050506;         /* what sits underneath it */
+    --ink:232,238,242;      /* clinical cool grey, used at low alpha */
+    --orange:#ff6a1a;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    background:
+      radial-gradient(120% 90% at 50% 0%, var(--room-1) 0%, var(--room-2) 68%),
+      var(--room-2);
+    color:rgba(var(--ink),.7);
+    font-family:'Suisse Intl','SuisseIntl',"Suisse Int'l",'Helvetica Neue',Helvetica,Arial,sans-serif;
+    display:grid;place-items:center;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- device ------------------------------------------------------- */
+  /* fixed + translate, not grid centring: an oversized grid item gets
+     start-aligned, which pushes the frame off-centre before it is scaled */
+  .stage{position:fixed;left:50%;top:50%;transform-origin:50% 50%;transform:translate(-50%,-50%);}
+  .phone{
+    position:relative;
+    width:430px;height:881px;          /* screen 402x853 + 14px bezel */
+    border-radius:64px;
+    padding:14px;
+    background:
+      linear-gradient(148deg,#4a4e55 0%,#202226 18%,#16171a 42%,#34383e 62%,#101114 84%,#3a3e44 100%);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.07),
+      inset 0 0 0 1.5px rgba(255,255,255,.12),
+      inset 0 1px 1px rgba(255,255,255,.22),
+      0 44px 90px -30px rgba(0,0,0,.9),
+      0 8px 24px rgba(0,0,0,.6);
+  }
+  .phone::after{               /* inner black rim between titanium and glass */
+    content:"";position:absolute;inset:11px;border-radius:53px;
+    background:#000;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  .screen{
+    position:absolute;inset:14px;
+    border-radius:50px;
+    overflow:hidden;
+    background:#000;
+    touch-action:none;
+    cursor:crosshair;
+    z-index:1;
+  }
+  .screen canvas{
+    position:absolute;inset:0;width:100%;height:100%;display:block;
+    opacity:0;animation:wallIn 1500ms cubic-bezier(.4,0,.2,1) 1750ms forwards;
+  }
+  @keyframes wallIn{to{opacity:1;}}
+
+  .island{
+    position:absolute;z-index:4;top:12px;left:50%;transform:translateX(-50%);
+    width:118px;height:34px;border-radius:20px;background:#000;
+    pointer-events:none;
+  }
+  .island::after{
+    content:"";position:absolute;right:11px;top:50%;transform:translateY(-50%);
+    width:9px;height:9px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#1c2430,#05070a 70%);
+    box-shadow:inset 0 0 0 .5px rgba(120,150,180,.25);
+  }
+  .indicator{
+    position:absolute;z-index:4;bottom:9px;left:50%;transform:translateX(-50%);
+    width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.16);
+    pointer-events:none;
+  }
+  .vig{                         /* screen-edge falloff: clinical, not flat */
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(112% 74% at 50% 50%,
+      rgba(0,0,0,0) 38%, rgba(0,0,0,.10) 66%, rgba(0,0,0,.30) 100%);
+  }
+  .gloss{                       /* glass sheen over the whole screen */
+    position:absolute;inset:0;z-index:3;pointer-events:none;
+    background:
+      linear-gradient(118deg,
+        rgba(255,255,255,.055) 0%,
+        rgba(255,255,255,.012) 16%,
+        rgba(255,255,255,0) 38%,
+        rgba(255,255,255,0) 72%,
+        rgba(255,255,255,.022) 100%);
+  }
+  .btn{position:absolute;background:linear-gradient(90deg,#3d4148,#1b1d21 60%,#2e3238);border-radius:2px;}
+  .btn.l{left:-2.5px;width:3.5px;border-radius:2px 0 0 2px;}
+  .btn.r{right:-2.5px;width:3.5px;border-radius:0 2px 2px 0;}
+  .b-action{top:158px;height:30px;}
+  .b-up{top:214px;height:62px;}
+  .b-down{top:292px;height:62px;}
+  .b-power{top:246px;height:96px;}
+
+  /* ---- copy layers --------------------------------------------------- */
+  .copy{
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    display:grid;place-items:center;
+    padding:0 46px;text-align:center;
+  }
+  .intro{
+    font-size:19px;line-height:1.5;letter-spacing:.005em;font-weight:400;
+    color:rgba(var(--ink),.88);
+    opacity:0;
+    text-wrap:balance;
+  }
+  .intro.in{animation:introFade 3200ms cubic-bezier(.4,0,.2,1) forwards;}
+  @keyframes introFade{
+    0%{opacity:0;transform:translateY(6px);filter:blur(6px);}
+    19%{opacity:1;transform:none;filter:blur(0);}
+    66%{opacity:1;transform:none;filter:blur(0);}
+    100%{opacity:0;transform:translateY(-4px);filter:blur(4px);}
+  }
+  .closer{
+    position:absolute;left:0;right:0;bottom:132px;z-index:2;pointer-events:none;
+    text-align:center;
+    font-family:ui-monospace,'SF Mono','JetBrains Mono','Roboto Mono',Menlo,Consolas,monospace;
+    font-size:11px;letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;
+    color:rgba(var(--ink),.5);
+    opacity:0;
+  }
+  .closer.in{animation:closerFade 6200ms cubic-bezier(.4,0,.2,1) forwards;}
+  @keyframes closerFade{
+    0%{opacity:0;letter-spacing:.62em;}
+    18%{opacity:.85;letter-spacing:.42em;}
+    72%{opacity:.85;}
+    100%{opacity:0;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .screen canvas{animation-delay:0ms;animation-duration:1ms;}
+    .intro.in{animation-duration:1600ms;}
+    .closer.in{animation-duration:4000ms;}
+  }
+</style>
+
+<div class="stage" id="stage">
+  <div class="phone">
+    <div class="btn l b-action"></div>
+    <div class="btn l b-up"></div>
+    <div class="btn l b-down"></div>
+    <div class="btn r b-power"></div>
+
+    <div class="screen" id="screen">
+      <canvas id="c"></canvas>
+      <div class="vig"></div>
+      <div class="copy"><div class="intro" id="intro">Your body holds millions of signals.</div></div>
+      <div class="closer" id="closer">Look closer.</div>
+      <div class="gloss"></div>
+      <div class="island"></div>
+      <div class="indicator"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const W = 402, H = 853;                     // internal mobile composition
+  const DPR = Math.min(2, window.devicePixelRatio || 1);
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const MONO = "ui-monospace,'SF Mono','JetBrains Mono','Roboto Mono',Menlo,Consolas,monospace";
+  const SANS = "'Suisse Intl','SuisseIntl',\"Suisse Int'l\",'Helvetica Neue',Helvetica,Arial,sans-serif";
+
+  /* one source of truth for the palette: the custom properties above */
+  const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const FOG = cssVar('--fog'), DEEP = cssVar('--deep'), INK_RGB = cssVar('--ink');
+  const CO = (h => ({ r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16) }))(cssVar('--orange'));
+
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+
+  /* ---------- canvases ------------------------------------------------ */
+  const make = (w, h, dpr = 1) => {
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    const cx = cv.getContext('2d');
+    cx.scale(dpr, dpr);
+    return { cv, cx };
+  };
+
+  const view = document.getElementById('c');
+  view.width = Math.round(W * DPR); view.height = Math.round(H * DPR);
+  const ctx = view.getContext('2d');
+  ctx.scale(DPR, DPR);
+
+  /* the top layer is drawn straight onto the visible canvas, the hidden layer
+     is composited in underneath it — one offscreen instead of two. */
+  const cond = make(W, H, DPR);   // hidden layer: orange conditions
+  const MS   = 0.5;               // mask resolution (upscaling feathers it further)
+  const mask = make(W * MS, H * MS, 1);   // raw accumulation
+  const mrun = make(W * MS, H * MS, 1);   // mask², so the tail resolves to true zero
+  const tiny = make(60, 128, 1);  // cheap read-back of the mask for per-item logic
+  const tinyCx = tiny.cx;
+  let tinyData = null;
+
+  /* ---------- glass: haze + grain, baked once -------------------------- */
+  const back = (() => {
+    const g = make(96, 96, 1);
+    const img = g.cx.createImageData(96, 96);
+    for (let i = 0; i < img.data.length; i += 4) {
+      const v = 128 + (Math.random() - .5) * 190;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+      img.data[i + 3] = 255;
+    }
+    g.cx.putImageData(img, 0, 0);
+    const b = make(W, H, DPR);
+    b.cx.fillStyle = FOG;
+    b.cx.fillRect(0, 0, W, H);
+    b.cx.globalAlpha = .028;
+    b.cx.fillStyle = b.cx.createPattern(g.cv, 'repeat');
+    b.cx.fillRect(0, 0, W, H);
+    b.cx.globalAlpha = 1;
+    return b.cv;
+  })();
+
+  /* quantised ink colours, so the hot loop never builds strings */
+  const INK = new Array(160);
+  for (let i = 0; i < 160; i++) INK[i] = `rgba(${INK_RGB},${(i / 500).toFixed(3)})`;
+  const ink = a => INK[clamp((a * 500) | 0, 0, 159)];
+
+  /* ---------- the data wall ------------------------------------------- */
+  const METRICS = [
+    'LDL','HDL','APOB','LP(A)','HBA1C','FASTING INSULIN','EGFR','CRP','HS-CRP','ALT','AST','GGT',
+    'ALP','BILIRUBIN','ALBUMIN','BLOOD PRESSURE','BIOLOGICAL AGE','BONE DENSITY','TRIGLYCERIDES',
+    'CREATININE','CYSTATIN C','UREA','URIC ACID','SODIUM','POTASSIUM','CALCIUM','MAGNESIUM',
+    'PHOSPHATE','FERRITIN','TRANSFERRIN','HAEMOGLOBIN','HAEMATOCRIT','MCV','MCH','RDW','PLATELETS',
+    'WBC','NEUTROPHILS','LYMPHOCYTES','MONOCYTES','EOSINOPHILS','TSH','FREE T3','FREE T4','CORTISOL',
+    'DHEA-S','TESTOSTERONE','SHBG','OESTRADIOL','PROGESTERONE','IGF-1','VITAMIN D','VITAMIN B12',
+    'FOLATE','HOMOCYSTEINE','OMEGA-3 INDEX','ZINC','SELENIUM','IODINE','TOTAL CHOLESTEROL','NON-HDL',
+    'REMNANT CHOL','LDL PARTICLE NO.','HOMA-IR','FASTING GLUCOSE','C-PEPTIDE','ADIPONECTIN','LEPTIN',
+    'VO2 MAX','GRIP STRENGTH','RESTING HR','HRV','SPO2','BODY FAT %','VISCERAL FAT','LEAN MASS',
+    'WAIST:HIP','BMI','T-SCORE','Z-SCORE','CAC SCORE','CIMT','PULSE WAVE VELOCITY','ABI','ACR',
+    'MICROALBUMIN','PSA','CA 19-9','CEA','AFP','FIB-4','NAFLD SCORE','APRI','INR','FIBRINOGEN',
+    'D-DIMER','APOA1','APOB:APOA1','IL-6','TNF-α','SLEEP EFFICIENCY','REM %','DEEP SLEEP',
+    'TELOMERE LENGTH','DNA METHYLATION','EPIGENETIC AGE','PACE OF AGING','GLYCAN AGE','RETINAL AGE',
+    'FEV1','FVC','FEV1/FVC','PEAK FLOW','GRIP ASYMMETRY','GAIT SPEED','SKELETAL MUSCLE INDEX',
+    'ANDROSTENEDIONE','PROLACTIN','PARATHYROID HORMONE','THYROID PEROXIDASE AB','COELIAC AB',
+    'EOSINOPHIL CATIONIC','MTHFR','APOE','SLEEP LATENCY','VAT AREA','RHR TREND','LUNG AGE'
+  ];
+  const VALUES = [
+    '3.4 mmol/L','5.4 %','88 mL/min','1.2 mg/L','0.9 nmol/L','142 mg/dL','0.74 ratio','24 U/L',
+    '4.1 pmol/L','118/76','61 bpm','32 ms','96 %','1.08 g/L','7.2 µmol/L','0.31 mg/mmol',
+    '2.1 mmol/L','76 nmol/L','0.42 g/L','13.8 g/dL','5.9 ×10⁹/L','41 mL/kg/min','0.86 index',
+    '19 kg/m²','−0.4 SD','182 mg/dL','0.07 mg/L','11.4 µg/L','1.6 mIU/L','29 %','604 pg/mL'
+  ];
+
+  const mfont = (s, w) => `${w} ${s}px ${MONO}`;
+  const meas = document.createElement('canvas').getContext('2d');
+
+  /* draw from a shuffled deck so the wall reads varied, never repetitive */
+  const deck = (src) => {
+    let bag = [];
+    return () => {
+      if (!bag.length) {
+        bag = src.slice();
+        for (let i = bag.length - 1; i > 0; i--) {
+          const j = (Math.random() * (i + 1)) | 0;
+          [bag[i], bag[j]] = [bag[j], bag[i]];
+        }
+      }
+      return bag.pop();
+    };
+  };
+  const nextMetric = deck(METRICS), nextValue = deck(VALUES);
+
+  const items = [];
+  (function buildWall() {
+    let y = -6;
+    while (y < H + 26) {
+      const r = Math.random();
+      const size = r < .56 ? rnd(7.5, 9.5) : r < .88 ? rnd(10, 12.2) : rnd(13, 16);
+      const weight = size > 12.5 ? (Math.random() < .45 ? 500 : 400) : 400;
+      const track = size > 12.5 ? rnd(1.1, 2.2) : rnd(.35, 1.15);
+      const depth = clamp((size - 7.5) / 8.5 + rnd(-.16, .16), .1, 1);  // closer = bigger
+      let x = -rnd(0, 110);
+      meas.font = mfont(size, weight);
+      meas.letterSpacing = track + 'px';
+      while (x < W + 44) {
+        const text = Math.random() < .09 ? nextValue() : nextMetric();
+        const w = meas.measureText(text).width;
+        const accent = Math.random() < .045;
+        const yy = y + rnd(-1.4, 1.4);
+        const alpha = clamp(.05 + depth * .155 + rnd(-.03, .05), .038, .27) * (accent ? 1.6 : 1);
+        items.push({
+          text, x, y: yy, size, weight, track, depth, w, alpha, ink: ink(alpha),
+          cx: x + w / 2, cy: yy - size * .35,
+          key: size.toFixed(1) + '|' + weight + '|' + track.toFixed(1)
+        });
+        x += w + rnd(9, 30);
+      }
+      y += size * 1.3 + rnd(2.5, 7);
+    }
+    items.sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0); // fewer font switches
+  })();
+
+  /* ---------- the hidden layer ---------------------------------------- */
+  const WORDS = [
+    { t: 'CARDIOVASCULAR',     ideal: 58, maxW: 402, style: 'fill',    weight: 700, track: 0.5, x: 6 },
+    { t: 'INSULIN RESISTANCE', ideal: 34, maxW: 372, style: 'outline', weight: 500, track: 1.6, x: 30 },
+    { t: 'METABOLIC',          ideal: 74, maxW: 388, style: 'fill',    weight: 700, track: 0,   x: 14 },
+    { t: 'DIABETES',           ideal: 62, maxW: 356, style: 'fill',    weight: 600, track: .5,  x: 44 },
+    { t: 'LIVER',              ideal: 86, maxW: 420, style: 'fill',    weight: 700, track: 0,   x: 10 },
+    { t: 'INFLAMMATION',       ideal: 46, maxW: 378, style: 'fill',    weight: 500, track: 1,   x: 26 },
+    { t: 'KIDNEY',             ideal: 78, maxW: 380, style: 'fill',    weight: 700, track: 0,   x: 88 },
+    { t: 'ATHEROSCLEROSIS',    ideal: 32, maxW: 366, style: 'outline', weight: 500, track: 1.8, x: 18 },
+    { t: 'BONE DENSITY',       ideal: 52, maxW: 384, style: 'fill',    weight: 600, track: .4,  x: 8 }
+  ];
+  (function layoutWords() {
+    let total = 0;
+    for (const w of WORDS) {
+      meas.font = `${w.weight} 100px ${SANS}`;
+      meas.letterSpacing = (w.track) + 'px';
+      const unit = meas.measureText(w.t).width / 100;
+      w.size = Math.min(w.ideal, w.maxW / unit);
+      w.h = w.size * .74;
+      total += w.h;
+    }
+    const top = 62, bottom = H - 58;
+    const gap = (bottom - top - total) / (WORDS.length - 1);
+    let y = top;
+    for (const w of WORDS) {
+      y += w.h;
+      w.y = y;                          // baseline
+      w.cy = y - w.h * .5;
+      y += gap;
+      meas.font = `${w.weight} ${w.size}px ${SANS}`;
+      meas.letterSpacing = w.track + 'px';
+      w.w = meas.measureText(w.t).width;
+      w.cx = w.x + w.w / 2;
+      w.lit = 0;
+    }
+  })();
+
+  /* ---------- wipe state ---------------------------------------------- */
+  const R = 62;                           // brush radius (≈124px brush)
+  const brush = { x: W / 2, y: H / 2, tx: W / 2, ty: H / 2, on: false, str: 0, act: 0 };
+  let lastStamp = null, pressed = false, touched = false;
+  const par = { x: 0, y: 0, tx: 0, ty: 0 };
+
+  const GC = 24, GR = 52, grid = new Uint8Array(GC * GR);   // "has ever been wiped"
+  let explored = 0;
+  let energy = 0;                 // is anything open right now (skips per-item work)
+
+  const brushSprite = (() => {
+    const s = make(R * 2 * MS + 2, R * 2 * MS + 2, 1);
+    const c = R * MS + 1;
+    const g = s.cx.createRadialGradient(c, c, 0, c, c, R * MS);
+    /* stops sit high because the mask is later squared — the curve is the feather */
+    g.addColorStop(0,   'rgba(255,255,255,1)');
+    g.addColorStop(.34, 'rgba(255,255,255,.97)');
+    g.addColorStop(.62, 'rgba(255,255,255,.78)');
+    g.addColorStop(.82, 'rgba(255,255,255,.42)');
+    g.addColorStop(.94, 'rgba(255,255,255,.13)');
+    g.addColorStop(1,   'rgba(255,255,255,0)');
+    s.cx.fillStyle = g;
+    s.cx.fillRect(0, 0, s.cv.width, s.cv.height);
+    return s.cv;
+  })();
+
+  const CW = W / GC, CH = H / GR, GRAD = (R * .72) ** 2;
+  function stamp(x, y, strength) {
+    const mx = x * MS, my = y * MS, r = R * MS + 1;
+    mask.cx.globalAlpha = .5 * strength;
+    mask.cx.drawImage(brushSprite, mx - r, my - r);
+    mask.cx.globalAlpha = 1;
+    energy = 1;
+
+    const gx = (x / CW) | 0, gy = (y / CH) | 0;
+    const sx = Math.ceil(R / CW), sy = Math.ceil(R / CH);
+    for (let j = gy - sy; j <= gy + sy; j++) {
+      if (j < 0 || j >= GR) continue;
+      for (let i = gx - sx; i <= gx + sx; i++) {
+        if (i < 0 || i >= GC) continue;
+        const k = j * GC + i;
+        if (grid[k]) continue;
+        const dx = (i + .5) * CW - x, dy = (j + .5) * CH - y;
+        if (dx * dx + dy * dy < GRAD) { grid[k] = 1; explored++; }
+      }
+    }
+  }
+
+  /* stamps are spaced by distance, so their strength must not scale with dt */
+  function strokeTo(x, y, strength) {
+    if (!lastStamp) { stamp(x, y, strength); lastStamp = { x, y }; return true; }
+    const dx = x - lastStamp.x, dy = y - lastStamp.y;
+    const d = Math.hypot(dx, dy);
+    if (d < 4) return false;
+    const steps = Math.min(40, Math.ceil(d / 5));
+    for (let i = 1; i <= steps; i++) {
+      stamp(lastStamp.x + dx * i / steps, lastStamp.y + dy * i / steps, strength);
+    }
+    lastStamp = { x, y };
+    return true;
+  }
+
+  /* ---------- pointer -------------------------------------------------- */
+  const screen = document.getElementById('screen');
+  const toLocal = e => {
+    const r = screen.getBoundingClientRect();
+    return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H };
+  };
+  const engage = p => {
+    brush.tx = p.x; brush.ty = p.y;
+    par.tx = (p.x / W - .5) * 2; par.ty = (p.y / H - .5) * 2;
+    if (!touched) { touched = true; hint.active = false; }
+  };
+
+  screen.addEventListener('pointerdown', e => {
+    const p = toLocal(e);
+    pressed = true; brush.on = true;
+    brush.x = p.x; brush.y = p.y; lastStamp = null;
+    engage(p);
+    try { screen.setPointerCapture(e.pointerId); } catch (_) { /* pointer already gone */ }
+    e.preventDefault();
+  });
+  screen.addEventListener('pointermove', e => {
+    const p = toLocal(e);
+    brush.on = true;
+    engage(p);
+  });
+  /* a finger that lifts is gone; a cursor that lifts is still on the glass */
+  const release = e => {
+    pressed = false; lastStamp = null;
+    if (e && e.pointerType !== 'mouse') brush.on = false;
+  };
+  screen.addEventListener('pointerup', release);
+  screen.addEventListener('pointercancel', release);
+  screen.addEventListener('pointerleave', () => { pressed = false; brush.on = false; lastStamp = null; });
+
+  /* ---------- silent hint (only until the user touches it) ------------- */
+  const hint = { active: false, t: 0, dur: 1.15, next: 4.2 };
+
+  /* ---------- copy cues ------------------------------------------------ */
+  const introEl = document.getElementById('intro');
+  const closerEl = document.getElementById('closer');
+  introEl.classList.add('in');
+  let closerShown = false;
+
+  /* ---------- render --------------------------------------------------- */
+  let prev = performance.now(), clock = 0;
+
+  function sampleTiny(x, y) {                     // bilinear read of the mask
+    if (!tinyData) return 0;
+    const fx = clamp(x / W * 60 - .5, 0, 59), fy = clamp(y / H * 128 - .5, 0, 127);
+    const x0 = fx | 0, y0 = fy | 0, x1 = Math.min(59, x0 + 1), y1 = Math.min(127, y0 + 1);
+    const ax = fx - x0, ay = fy - y0, d = tinyData;
+    const a = d[(y0 * 60 + x0) * 4 + 3], b = d[(y0 * 60 + x1) * 4 + 3];
+    const c = d[(y1 * 60 + x0) * 4 + 3], e = d[(y1 * 60 + x1) * 4 + 3];
+    return ((a + (b - a) * ax) + ((c + (e - c) * ax) - (a + (b - a) * ax)) * ay) / 255;
+  }
+
+  function frame(now) {
+    const dt = Math.min(.05, (now - prev) / 1000);
+    prev = now; clock += dt;
+
+    /* hint stroke: a single quiet sweep, until the user takes over */
+    if (!touched && !REDUCED) {
+      if (!hint.active && clock > hint.next) { hint.active = true; hint.t = 0; }
+      if (hint.active) {
+        hint.t += dt;
+        const k = hint.t / hint.dur;
+        if (k >= 1) { hint.active = false; hint.next = clock + 9; }
+        else {
+          /* one short graze — enough to say "wipe me", not enough to give it away */
+          const e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+          brush.tx = 148 + e * 118;
+          brush.ty = 498 - Math.sin(e * Math.PI * .9) * 52;
+          par.tx = (brush.tx / W - .5) * 2; par.ty = (brush.ty / H - .5) * 2;
+        }
+      }
+    }
+
+    /* brush follows the gesture with a little inertia */
+    const lag = 1 - Math.pow(.001, dt);
+    brush.x += (brush.tx - brush.x) * lag * .22;
+    brush.y += (brush.ty - brush.y) * lag * .22;
+
+    const wantStr = hint.active ? .32 : brush.on ? (pressed ? 1 : .3) : 0;
+    brush.str += (wantStr - brush.str) * Math.min(1, dt * 14);
+    if (brush.str > .02) {
+      /* a held, still finger keeps clearing — but at a rate set by time, not frames */
+      if (!strokeTo(brush.x, brush.y, brush.str) && pressed) {
+        stamp(brush.x, brush.y, brush.str * dt * 3);
+      }
+    }
+    brush.act += ((brush.str > .05 ? 1 : 0) - brush.act) * Math.min(1, dt * 6);
+
+    par.x += (par.tx - par.x) * Math.min(1, dt * 2.6);
+    par.y += (par.ty - par.y) * Math.min(1, dt * 2.6);
+
+    /* the fog closes back over ~3s */
+    mask.cx.globalCompositeOperation = 'destination-out';
+    mask.cx.fillStyle = `rgba(0,0,0,${1 - Math.exp(-dt / 1.5)})`;
+    mask.cx.fillRect(0, 0, W * MS, H * MS);
+    mask.cx.globalCompositeOperation = 'source-over';
+
+    /* square it: keeps the opened core, crushes the long tail to true zero */
+    mrun.cx.globalCompositeOperation = 'copy';
+    mrun.cx.drawImage(mask.cv, 0, 0);
+    mrun.cx.globalCompositeOperation = 'destination-in';
+    mrun.cx.drawImage(mask.cv, 0, 0);
+    mrun.cx.globalCompositeOperation = 'source-over';
+
+    energy *= Math.exp(-dt / .75);
+    const wiping = energy > .004;
+
+    /* nothing open? then the hidden layer cannot show, and none of its work
+       needs doing — the fog alone is the frame. */
+    if (wiping) {
+      tinyCx.clearRect(0, 0, 60, 128);
+      tinyCx.drawImage(mrun.cv, 0, 0, 60, 128);
+      tinyData = tinyCx.getImageData(0, 0, 60, 128).data;
+
+      /* --- hidden layer: orange conditions, brighter where exposed ---- */
+      const cc = cond.cx;
+      cc.fillStyle = DEEP;
+      cc.fillRect(0, 0, W, H);
+      const pxC = -par.x * 3, pyC = -par.y * 2;
+      for (const w of WORDS) {
+        let cov = 0;
+        for (let i = 0; i < 5; i++) {
+          cov = Math.max(cov, sampleTiny(w.x + w.w * (i / 4), w.cy));
+        }
+        cov = Math.max(cov, sampleTiny(w.cx, w.cy));
+        w.lit += (cov - w.lit) * Math.min(1, dt * 7);
+        const lit = w.lit;
+
+        cc.font = `${w.weight} ${w.size}px ${SANS}`;
+        cc.letterSpacing = w.track + 'px';
+        const a = .52 + lit * .48;
+        const g = Math.round(CO.g + lit * 40), b = Math.round(CO.b + lit * 46);
+        cc.shadowColor = `rgba(${CO.r},${CO.g + 4},${CO.b + 4},${lit * .5})`;
+        cc.shadowBlur = lit * 26;
+        if (w.style === 'outline') {
+          cc.lineWidth = Math.max(1, w.size * .035);
+          cc.strokeStyle = `rgba(${CO.r},${g},${b},${a * .92})`;
+          cc.strokeText(w.t, w.x + pxC, w.y + pyC);
+        } else {
+          cc.fillStyle = `rgba(${CO.r},${g},${b},${a})`;
+          cc.fillText(w.t, w.x + pxC, w.y + pyC);
+        }
+        cc.shadowBlur = 0;
+      }
+    }
+
+    /* --- top layer: haze + the data wall ------------------------------ */
+    const fc = ctx;
+    fc.globalCompositeOperation = 'copy';
+    fc.drawImage(back, 0, 0, W, H);
+    fc.globalCompositeOperation = 'source-over';
+
+    let key = '';
+    for (const it of items) {
+      if (it.key !== key) {
+        key = it.key;
+        fc.font = mfont(it.size, it.weight);
+        fc.letterSpacing = it.track + 'px';
+      }
+      let x = it.x + par.x * it.depth * 7;
+      let y = it.y + par.y * it.depth * 4.5;
+
+      /* the signal underneath nudges the noise aside */
+      if (brush.act > .02) {
+        const dx = it.cx - brush.x, dy = it.cy - brush.y;
+        const d = Math.hypot(dx, dy) || 1;
+        if (d < 170) {
+          const push = Math.pow(1 - d / 170, 2) * 7.5 * brush.act;
+          x += dx / d * push; y += dy / d * push;
+        }
+      }
+      const rev = wiping ? sampleTiny(it.cx, it.cy) : 0;
+      fc.fillStyle = rev > .01 ? ink(it.alpha * (1 - rev * .72)) : it.ink;
+      fc.fillText(it.text, x, y);
+    }
+
+    /* punch the wipe through the top layer, then slide the hidden layer in
+       underneath the holes it opened */
+    if (wiping) {
+      fc.globalCompositeOperation = 'destination-out';
+      fc.drawImage(mrun.cv, 0, 0, W, H);
+      fc.globalCompositeOperation = 'destination-over';
+      fc.drawImage(cond.cv, 0, 0, W, H);
+      fc.globalCompositeOperation = 'source-over';
+    }
+
+    /* --- "look closer." once enough has been uncovered ---------------- */
+    if (!closerShown && touched && explored / (GC * GR) > .24) {
+      closerShown = true;
+      closerEl.classList.add('in');
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+
+  /* ---------- responsive device --------------------------------------- */
+  const stage = document.getElementById('stage');
+  function fit() {
+    const root = document.documentElement;
+    const vw = root.clientWidth, vh = root.clientHeight;
+    const pad = vw < 520 ? 0 : 28;
+    const s = Math.min(1.18, (vw - pad) / 430, (vh - pad) / 881);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  }
+  addEventListener('resize', fit, { passive: true });
+  addEventListener('orientationchange', fit);
+  new ResizeObserver(fit).observe(document.documentElement);   // mobile URL-bar reflows
+  fit();
+})();
+</script>

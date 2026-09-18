@@ -1,0 +1,82 @@
+# Hidden Signals
+
+An interaction prototype for Everlab: a wall of biomarker names covering the
+screen like fog on glass, with larger orange condition words hidden underneath.
+Dragging a finger or cursor wipes the fog away, exposes what the data may be
+pointing toward, and the fog then closes back over in about three seconds.
+
+Open `index.html` directly in a browser — no server or build step. The page is
+self-contained: no CDN scripts, external stylesheets, remote images, or network
+calls of any kind.
+
+## The composition
+
+The app fills an iPhone frame at the internal size the brief specifies,
+402 × 853. The frame scales to fit the viewport (down on small screens, up to
+1.18× on large ones) while the composition inside stays fixed, so the layout is
+identical everywhere.
+
+## How the reveal works
+
+Three layers, composited each frame onto the visible canvas:
+
+| Layer | What it is |
+| --- | --- |
+| Hidden | Nine condition words (`CARDIOVASCULAR` … `BONE DENSITY`), auto-fitted to the screen width and distributed down its height, on an opaque near-black ground |
+| Mask | A half-resolution canvas the brush stamps into, and time erodes |
+| Fog | An opaque haze plus ~700 metric names, drawn straight onto the visible canvas |
+
+Each frame the fog is drawn, the mask is punched through it with
+`destination-out`, and the hidden layer is slid in beneath the resulting holes
+with `destination-over`. The top layer is the mask, as the brief asks — not a
+set of per-element hover states.
+
+Two details matter to how it feels:
+
+- **The mask is squared before use.** Erosion is multiplicative
+  (`destination-out` with a flat alpha), which decays fast but never reaches
+  zero, so the hidden layer used to stay faintly legible long after a wipe.
+  Drawing the mask into itself with `destination-in` squares its alpha: the
+  opened core is preserved, and the tail is crushed to nothing. The brush
+  gradient's stops sit high to compensate, and the curve itself is the feather.
+- **Stamps are spaced by distance, not by frame.** The brush lays a soft sprite
+  down every 5px along the interpolated path, so a wipe deposits the same
+  amount of clearing at 30fps as at 120fps. A held, still finger is the one
+  exception and clears at a rate set by elapsed time.
+
+A 60 × 128 downscale of the mask is read back once per frame. Metric names
+sample it to fade where the signal is coming through, and to drift a few pixels
+away from the brush; condition words sample it across their width to brighten
+and bloom as they are exposed. When nothing is open, none of that work runs and
+the frame is just the fog.
+
+## The sequence
+
+1. `Your body holds millions of signals.` holds on black for ~1.5s.
+2. The wall fades in as the line leaves.
+3. If the screen is untouched, one short brush graze runs across it — enough to
+   suggest the gesture, not enough to give a word away — repeating every 9s
+   until the first real interaction.
+4. Once roughly a quarter of the screen has been uncovered, `LOOK CLOSER.`
+   fades in near the bottom, then away.
+
+## Input
+
+Pointer events cover mouse, touch and pen. Pressing gives a full-strength
+brush; on desktop, moving without pressing gives a much weaker one, so the
+surface answers the cursor before anyone thinks to drag. A lifted finger leaves
+the glass; a cursor stays on it.
+
+`prefers-reduced-motion` shortens the opening, drops the wall in without a
+crossfade, and suppresses the hint stroke.
+
+## Verification
+
+Checked headlessly in Chromium at each stage of the sequence: opening copy,
+wall, hint graze, an active wipe, a held press, and full recovery — with no
+console or page errors, nothing of the hidden layer visible at rest, and the
+frame centred and fully on-screen at iPhone and Pixel viewport sizes.
+
+Frame cost is dominated by two full-size canvas blits. Under headless software
+rasterisation the page runs around 30fps; on a GPU-composited canvas, which is
+what any real device gives it, that work is far cheaper.
