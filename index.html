@@ -11243,6 +11243,32 @@
     }
   }
   addEventListener('message', e => { if (e.data && e.data.tzHero && window.__heroAgain) window.__heroAgain(); });
+  // ---------- responsive preview: resize the window, not the menu ----------
+  // Scoped to the one design that has all three surfaces built -- Desktop
+  // (18), Tablet (21, otherwise reached only from the archive) and Mobile
+  // (20, wearing the same `fullscr` flag the viewport entry above sets, so it
+  // fills the narrow window edge to edge rather than floating a phone-shaped
+  // island in it). Nothing else in the prototype claims to be responsive, so
+  // resizing the window anywhere else is left alone.
+  const RESP_DESK = 18, RESP_TAB = 21, RESP_MOB = VIEWPORT_MODE;
+  const RESP_TRIO = [RESP_DESK, RESP_TAB, RESP_MOB];
+  function responsiveTarget(){
+    const w = innerWidth;
+    return w < 640 ? RESP_MOB : w < 1024 ? RESP_TAB : RESP_DESK;
+  }
+  function responsiveSync(){
+    if (!RESP_TRIO.includes(version)) return;
+    const target = responsiveTarget();
+    if (target === version) return;
+    CARD_STATE.fullscr = target === RESP_MOB;
+    CARD_STATE.showBar = target === RESP_MOB;
+    setMode(target);
+    if (target === RESP_MOB) versionSel.value = VIEWPORT_VAL;
+    else if (isArchived(target)){ versionSel.value = ARCHIVE_VAL; arcSel.value = String(target); }
+    else versionSel.value = String(target);
+    resize();
+  }
+  addEventListener('resize', responsiveSync);
   // V4 rebuilds the phone out of the same parts rather than new ones: the
   // organ card leaves the bento for the header, and the four content cards
   // leave it for the white body in a new order. Nothing is duplicated — each

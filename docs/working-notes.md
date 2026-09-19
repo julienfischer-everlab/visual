@@ -7569,6 +7569,45 @@ not move, since neither depends on which element scrolls.
 
 ---
 
+### 5.285 A trio you can resize between, not a page rebuilt to reflow
+
+**"Make this responsive for desktop, tablet, and mobile -- on the same page,
+so people can test on the mobile phone by resizing the screen."** Asked as a
+follow-up to the bar-and-card work above, and worth pausing on before
+building anything: every other page here is mode-switching, not responsive --
+Desktop, Tablet and Mobile are three separate markups (different DOM
+families, `.dash` versus `#phone`), picked from a menu, not one layout that
+reflows. Asked which of two very different builds this meant -- a real fluid
+rewrite of the page's CSS, or wiring the menu's existing three designs to
+switch on width instead of on a click -- and the answer was the second, which
+is what shipped.
+
+Desktop (18) and Mobile (20) are already the two live entries the menu opens
+to by default; Tablet (21) sits in the archive, a variant of the same design
+rather than a third current surface (see 5.274, the archive rename). All
+three are already built, so the feature is a width check, not new layout: a
+`resize` listener that, only while the current mode is one of these three,
+measures `innerWidth` and calls the same `setMode` the menu's own dropdown
+calls -- under 640px Mobile, under 1024px Tablet, above that Desktop -- then
+mirrors the choice back onto the dropdown so it never shows a design other
+than the one on screen. Landing on any other page and resizing the window
+does nothing, same as before; this is one design's own behaviour, not a
+change to how the prototype works.
+
+Mobile's normal dress is a drawn phone -- bezel, rounded shell, fixed to a
+height-derived width -- floating in whatever space the browser leaves around
+it, which is right for browsing the menu but wrong for testing a breakpoint:
+shrinking the window would just shrink the empty space, not the page. The
+menu already has an answer for this, "Mobile (viewport)", which is Mobile
+wearing a `fullscr` flag that drops the bezel and lets the design fill
+whatever frame it's given; the auto-switch reaches for that state rather than
+the framed one, so a narrow browser window reads the same as a narrow phone.
+`showBar` stays on through all three, for the same reason the viewport entry
+keeps it on when picked by hand: it is the only way back to a wider design
+without the menu to reopen it from.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
