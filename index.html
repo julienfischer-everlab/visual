@@ -432,12 +432,19 @@
        alpha, spelled out rather than `transparent`, which some engines
        interpolate through grey. */
     --pageBg:#0d0d0c; --pageBg0:rgba(13,13,12,0);
-    /* the sidebar, the bar over the card and the strip of ground between them
-       are one continuous surface, not three -- this is the one colour all
-       three read, so a card floating over it reads as the one thing that
-       isn't that surface, rather than as one bar of several. */
+    /* the sidebar and the 16px strip above the card are one continuous
+       surface, not two -- this is the one colour both read, so the card
+       floating under that strip reads as the one thing that isn't the
+       shell, rather than as one bar among several.
+       Below that strip, .dash's own ground has to be the card's OWN colour
+       rather than the shell's: the card is capped at 1160px and centred, so
+       on anything wider the shell would otherwise show down both of its
+       flanks as a paler rail beside a darker card -- two grounds fighting
+       for the same margin. A hard-stop gradient, not a second element,
+       keeps the split pinned to the same 16px the card's own top reads. */
     --shellBg:#1c1c1a;
-    background:var(--shellBg);color:#ececec;
+    background:linear-gradient(var(--shellBg) 16px, var(--pageBg) 16px);
+    color:#ececec;
   }
   body.m2 .dash{display:block;}
   .dash *{box-sizing:border-box;}
@@ -450,27 +457,23 @@
   .dash .side .nv{padding:9px 10px;border-radius:8px;margin-bottom:2px;}
   .dash .side .nv.on{background:#1e1e1c;color:#ececec;}
   .dash{padding-left:224px;}
-  /* ---- The content pane: a bar, then a card that owns its own scroll ------
-     Fixed over the sidebar's ground, the bar and the gap under it never move;
+  /* ---- The content pane: a card that owns its own scroll -----------------
+     Fixed over the sidebar's ground -- which is what the card floats over,
+     now that the two share --shellBg -- the 16px gap above it never moves;
      what scrolls is #dMain alone, clipped to its own rounded top by its own
-     overflow rather than by anything upstream. --dBarH and --dBarGap are the
-     one pair of numbers both the bar and the card read their geometry from,
-     so the two cannot drift out of step with each other. */
-  :root{ --dBarH:52px; --dBarGap:16px; }
-  .dTopBar{
-    position:fixed;top:57px;left:224px;right:0;height:var(--dBarH);z-index:4;
-    background:var(--shellBg);
-  }
+     overflow rather than by anything upstream. A separate bar element used
+     to hold that gap open before the sidebar and the ground it sits on read
+     as the same surface; once they did, the bar was drawing over its own
+     background and the gap can just be #dMain's own offset. */
   #dMain{
-    position:absolute;left:224px;right:0;bottom:0;
-    top:calc(var(--dBarH) + var(--dBarGap));
+    position:absolute;left:224px;right:0;bottom:0;top:16px;
     overflow-y:auto;overflow-x:hidden;z-index:1;
     border-radius:20px 20px 0 0;background:var(--pageBg);
     margin:0 auto;max-width:1160px;
-    /* 16px is the safe space the scroller itself keeps above whatever it is
-       showing -- the rounded corner is not read as a lid to clear, and the
-       64/60 either side is the page's own established rhythm, untouched */
-    padding:16px 40px 60px;
+    /* 32px clears the rounded corner with room to spare now that the bar
+       above it is gone and the corner sits close behind the h1; the 64/60
+       either side is the page's own established rhythm, untouched */
+    padding:32px 40px 60px;
   }
   .dash h1{font-size:26px;font-weight:500;letter-spacing:-0.5px;margin:0 0 22px;}
   .dash h1 span{color:#8b8b86;}
@@ -4982,10 +4985,9 @@
      page margin, and the left column stacked one-up because half of a narrower
      page is not two cards wide. */
   body.tabM .dash{padding-left:200px;}
-  body.tabM .dTopBar{left:200px;}
   body.tabM .dash .side{width:200px;padding:22px 16px;font-size:13px;}
   body.tabM .dash .side .logo{font-size:16px;margin-bottom:26px;}
-  body.tabM #dMain{left:200px;padding:44px 28px 52px;padding-top:16px;max-width:1020px;}
+  body.tabM #dMain{left:200px;padding:44px 28px 52px;padding-top:32px;max-width:1020px;}
   body.tabM .dash h1{font-size:23px;margin:0 0 18px;}
   body.tabM .dash .dgrid{gap:20px;}
   body.tabM .dash .dleft{gap:20px;}
@@ -6481,10 +6483,6 @@
     <div class="nv nvRep">Reports</div>
     <div class="nv">Timeline</div>
   </aside>
-  <!-- The bar the content pane sits under: fixed, over the sidebar's own
-       ground, so it and the card below it never move for a reader scrolling
-       the page -- only what the card holds does. -->
-  <div class="dTopBar" id="dTopBar"></div>
   <main id="dMain">
     <h1>Health insights</h1>
     <!-- the same two tabs the phone carries, in the same place relative to the
@@ -11653,11 +11651,6 @@
     document.querySelector('.dash').style.top = tbH + 'px';
     document.querySelector('.dash .side').style.top = tbH + 'px';
     document.getElementById('grid').style.top = tbH + 'px';
-    // the bar and the card under it both hang off the same measured height --
-    // one written value, so neither can end up reading a different toolbar
-    // than the other did
-    { const bar = document.getElementById('dTopBar');
-      if (bar) bar.style.top = tbH + 'px'; }
     // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
     { const ho = document.getElementById('mHeroOrgan');
       if (ho && ho.clientWidth) ho.style.setProperty('--heroW', ho.clientWidth + 'px'); }

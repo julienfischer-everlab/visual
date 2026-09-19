@@ -7656,6 +7656,43 @@ a 12px gap it left a 12px sliver on screen -- so the slide-out distance became
 
 ---
 
+### 5.287 The bar that was drawing over its own background
+
+5.284 gave the dashboard a bar, a gap, then the card; 5.286 gave the bar and
+the sidebar one shared colour. Put together, the bar had nothing left to do:
+once `.dash`'s own ground read the same as the bar sitting on it, the bar was
+a rectangle drawn over a rectangle already that colour. Confirmed with
+`getBoundingClientRect` before touching anything -- the visible gap really
+was 68px (52px bar plus 16px gap), not the 16px the bar's own height was
+supposed to leave -- then removed the bar element outright (HTML, CSS and the
+one `resize()` line that positioned it) rather than shrinking it to nothing,
+since a 0-height fixed element some future change re-inflates is worse than
+one that was never there. `#dMain`'s `top` is a flat `16px` now, off `.dash`
+itself, which already sits at the toolbar's own height -- the bar had been
+adding that height a second time, which is the other reason the gap read
+large.
+
+Asked which of two things "the edge one" meant when told the space above it
+needed 16px more: the drawer, or the dashboard's own h1. It was the h1 --
+`#dMain`'s own top padding, `16px 40px 60px`, doubled to `32px 40px 60px` on
+both the desk and the tablet, so the heading keeps its distance now that the
+corner it used to clear by a 68px run-up is 16px behind it.
+
+**"Make sure the background of the viewport is darker than this."** Once the
+bar was gone and `.dash`'s ground was the one colour the whole strip above
+the card reads, that same colour was showing somewhere it never used to: the
+card is capped at 1160px and centred, and on anything wider than sidebar plus
+that, the ground used to be the card's own colour past both of the card's
+flanks -- invisible, since the two matched. Pointing `.dash` at the shared
+shell colour for 5.286 meant that flank was now visibly paler than the card
+sitting in the middle of it, a rail down both sides on any wide desk. Fixed
+with a hard-stop gradient rather than a second element -- `linear-gradient(
+var(--shellBg) 16px, var(--pageBg) 16px)` -- so the same 16px that ends the
+strip above the card also ends the shell everywhere else in `.dash`'s own
+ground, and the flanks read as more of the card rather than more of the bar.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
