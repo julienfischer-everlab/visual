@@ -7443,6 +7443,22 @@ tabs reads as; a centred line looks unrooted in a way a centred pill does not.
 Verified in both themes, on Desktop and every archived Desktop variant, with
 the phone's pill (which stays a pill by design, per 5.264) untouched.
 
+### 5.282 The line hugs the label; the rule still runs the row
+
+"Tab shouldn't fill the width." Then, once the full-width hairline itself was
+confirmed as wanted: "bottom border yes but not the tab, should be hug the
+tab."
+
+Both tabs were 525px wide, half the row each, with 500px of nothing between
+"Biomarkers" and "Reports" -- because merging the pill rule into the line rule
+at 5.281 dropped `flex:0 0 auto` along the way, so each tab fell back to the
+phone pill's `flex:1`, sized to fill half a segmented control it no longer is.
+
+The container keeps its width -- that's what draws the hairline the full row
+across -- only the tabs inside it stop stretching to match. Verified: 76px and
+81px, 30px apart, on V2, V3 and V4, in the same position the user's screenshot
+showed it acted on.
+
 ---
 
 ## 6. Open items
