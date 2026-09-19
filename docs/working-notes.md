@@ -7459,6 +7459,64 @@ across -- only the tabs inside it stop stretching to match. Verified: 76px and
 81px, 30px apart, on V2, V3 and V4, in the same position the user's screenshot
 showed it acted on.
 
+### 5.283 See all, a quiet arrow, a step under the section title, and a badge that already existed
+
+Five small requests landed in one batch; each is its own change.
+
+**"Add See all on the top right that opens a drawer with all of the other
+reports."** A right-hand drawer at the desk, a bottom sheet on the phone --
+the same two dresses every other drawer on this page wears -- stacked with
+every report rather than the three-and-a-peek the shelf shows. A row hands off
+to the report's own single sheet rather than repeating it, closing itself
+first so the two never show at once. "Put the report with the orange badge
+one" landed as a small `New` chip on `REPS[0]`, the same report the shelf's
+own tab badge already points at (`TAB_NEW`) -- one flag, read in two places,
+so they cannot name two different reports as the new one. There is no report
+dated 2020 in `REPS` (the six span Jun 2025 to Aug 2026); I did not invent one
+to match the number named, since that would be silently changing the app's
+data rather than building the drawer that was asked for -- say the word if a
+seventh, older record should exist and I will add it.
+
+Two bugs came out of building it, both older than this feature. `<i class="d">`
+was already this page's way of writing an empty coloured dot, and I reused it
+for the "New" chip -- except this one holds text, and an `<i>` is italic by
+default. And the drawer's own heading and close button were both left to
+inherit rather than told what colour to be: `document.body` carries a warm ink
+on some pages (V4's organ-tinted ground sets it), and a drawer mounted on
+`document.body` -- which every desk drawer on this page is -- picks that up
+where nothing more specific overrides it. `.isScroll h3` had the exact same
+gap already, unexercised because nobody had opened the insight drawer from a
+warm-ground page before; `.rsSheet`/`.isSheet .shClose` had the matching gap
+in light theme, where the base close button's near-white icon sits on a sheet
+that has gone cream. Fixed all three alongside the new one, since it is the
+same missing declaration in each place.
+
+**"The arrow should be smaller, without a border. Use a light gray instead of
+black, and fade it out behind the carousel."** Scoped to `.dRepNav`, the report
+shelf's own prev/next -- `.hiNav`, the mini-cards' arrows, was already
+borderless, backgroundless and small, so applying the same request there would
+have been solving a problem that rule does not have. 36px to 30px, the inset
+ring gone, the near-black fill replaced with the same translucent light wash
+the page's other secondary chips use. The fade is a radial gradient in the
+page's own ground, sitting behind the button rather than on the scroller's
+mask: the arrow floats over the seam between two cards, and the card's own
+edge now softens into that gradient instead of ending under a hard-edged
+circle.
+
+**"There's a small line under the hour and the battery."** The same banding
+this file already diagnosed and left open, asked a second time. Measured
+again to be sure -- the column still steps by under 2 luminance units the
+whole way down, still no hard edge -- and rather than hand back the same three
+options a second time, took the least invasive of them: a five-percent film of
+turbulence noise over `.v4Halo`, in `overlay` blend, which breaks up the 8-bit
+steps without moving a single gradient stop. One rule serves both copies of
+the halo, since a `display:none` host draws no pseudo-element and costs
+nothing on the pages that never turn it on.
+
+**"These two titles should be smaller -- 8px smaller than the H1."** 24px to
+18px at the desk (26px h1 minus 8), on the one shared rule Medical records,
+Everlab reports and the insight headings all already read from.
+
 ---
 
 ## 6. Open items

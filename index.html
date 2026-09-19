@@ -1733,13 +1733,27 @@
      like one. Hidden where the carousel is not a section but the hero's own
      contents -- V2 keeps it inside the header, where a title would be a
      second heading over a block that already has one. */
-  .secHead{display:none;margin:0 0 14px;}
+  .secHead{
+    display:none;align-items:baseline;justify-content:space-between;
+    gap:16px;margin:0 0 14px;
+  }
   /* the row is a scroller with its gutter inside it, so the title has to be
      given the same 13px rather than inheriting a padding the host does not
      have -- otherwise the heading starts at the screen edge and the cards do
      not */
-  body.v3Tab.repTab #phone .mRepCarHost .secHead{display:block;padding-left:13px;}
-  body.repTab .dash .dRepWrap .secHead{display:block;margin:0 0 16px;}
+  body.v3Tab.repTab #phone .mRepCarHost .secHead{display:flex;padding:0 13px;}
+  body.repTab .dash .dRepWrap .secHead{display:flex;margin:0 0 16px;}
+  /* "See all" reads as text with somewhere to go, not a button drawn over the
+     shelf: the same weight the record menu's chevron carries, not a chip */
+  .secSeeAll{
+    flex:none;display:flex;align-items:center;gap:4px;
+    border:0;background:none;padding:2px 0;font:inherit;font-size:13px;
+    color:#8b8b86;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .secSeeAll:hover{color:#ececec;}
+  body.light .secSeeAll{color:#7d6b58;}
+  body.light .secSeeAll:hover{color:#2e1f1a;}
+  .secSeeAll svg{width:11px;height:11px;display:block;}
   .dash .insHead{margin:10px 0;}
   /* two tiles that do not rotate: the slide is cloned out of its carousel, so
      it keeps the card's own type and chart and leaves the dots behind */
@@ -1855,23 +1869,34 @@
   .dRepCar .repCard{padding:20px;}
   .dRepCar .repCard .rcH{font-size:19px;}
   /* the arrows: the desk has a pointer to hover with, so it gets the control
-     the phone does without -- over the ends of the row, out of the cards' way */
+     the phone does without -- over the ends of the row, out of the cards' way.
+     Quiet rather than a chip on top of the cards: no ring, a light wash rather
+     than a dark disc, and a halo behind it in the page's own ground so the
+     card it sits over softens into that wash instead of ending in a hard
+     edge under a floating circle. */
   .dRepNav{
-    position:absolute;top:calc(50% - 20px);z-index:3;
-    width:36px;height:36px;border:0;border-radius:50%;padding:0;cursor:pointer;
+    position:absolute;top:calc(50% - 16px);z-index:3;
+    width:30px;height:30px;border:0;border-radius:50%;padding:0;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
-    color:#ececec;background:rgba(20,20,19,.72);
-    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+    color:#ececec;background:rgba(255,255,255,.12);
     opacity:0;transition:opacity .18s ease,background .18s ease;
   }
+  .dRepNav::before{
+    content:"";position:absolute;z-index:-1;
+    left:50%;top:50%;width:110px;height:110px;transform:translate(-50%,-50%);
+    border-radius:50%;pointer-events:none;
+    background:radial-gradient(closest-side,var(--pageBg,#0d0d0c) 0%,var(--pageBg,#0d0d0c) 40%,rgba(0,0,0,0) 100%);
+  }
   .dRepShelf:hover .dRepNav,.dRepNav:focus-visible{opacity:1;}
-  .dRepNav:hover{background:rgba(40,40,38,.86);}
-  .dRepNav svg{width:14px;height:14px;display:block;}
+  .dRepNav:hover{background:rgba(255,255,255,.18);}
+  .dRepNav svg{width:12px;height:12px;display:block;}
   .dRepNav.prev{left:-10px;}
   .dRepNav.next{right:-10px;}
-  body.light .dRepNav{color:#2e1f1a;background:rgba(255,255,255,.82);
-                      box-shadow:inset 0 0 0 1px rgba(46,31,26,.12);}
+  body.light .dRepNav{color:#2e1f1a;background:rgba(46,31,26,.08);}
+  body.light .dRepNav:hover{background:rgba(46,31,26,.14);}
+  body.light .dRepNav::before{
+    background:radial-gradient(closest-side,var(--pageBg,#f7f2e9) 0%,var(--pageBg,#f7f2e9) 40%,rgba(0,0,0,0) 100%);
+  }
   /* the records' own filter block, pinned as the biomarkers' is, with the
      chips and the search on one row because the desk has the width */
   .dash .dMedBar{
@@ -1893,7 +1918,10 @@
   .dash .dMedBar .filters{flex:1 1 auto;min-width:0;margin:0 0 18px;}
   .dash .dMedSearch{display:flex;flex:0 0 248px;margin:0 0 18px auto;}
   .dash .dMedsWrap .mMedsHead{margin:34px 0 0;}
-  .dash .dMedsWrap .mMedsHead h3, .dash .insHead, .dash .secHead{font-size:24px;}
+  /* A section title is one step under the page's own h1, not level with it:
+     8px under the desk's 26px h1, so "Medical records" and "Everlab reports"
+     read as what is inside the page rather than a second page title. */
+  .dash .dMedsWrap .mMedsHead h3, .dash .insHead, .dash .secHead{font-size:18px;}
   .dash .dMedsWrap .mMedNote{max-width:560px;}
   /* the Report tab swaps the list, and with it the filter that was over it --
      a record select and five range chips have nothing to say about a list of
@@ -4023,6 +4051,10 @@
     position:static;flex:none;width:32px;height:32px;
     display:flex;align-items:center;justify-content:center;
   }
+  /* the base close button is near-white for a dark sheet; on this one's light
+     dress the sheet itself goes cream, and the same near-white icon on cream
+     is a close button that cannot be found */
+  body.light .rsSheet .shClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
   /* the sheet is as tall as what is in it, up to the cap; the body only
      scrolls once it would pass that, so a short report has no dead space and a
      long one keeps its footer on screen */
@@ -4108,9 +4140,15 @@
     position:static;flex:none;width:32px;height:32px;
     display:flex;align-items:center;justify-content:center;
   }
+  body.light .isSheet .shClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
   .isScroll{flex:0 1 auto;min-height:0;overflow-y:auto;padding:0 20px;}
   .isDesk .isScroll{flex:1 1 auto;padding:0 24px;}
-  .isScroll h3{margin:14px 0 0;font-size:22px;font-weight:500;line-height:1.25;}
+  /* colour named rather than left to inherit: the desk's copy mounts on
+     document.body, and body's own ambient colour is the warm ink some organ
+     pages set for their content -- a heading with nothing of its own picks
+     that up on those pages, which is how a plain white title turned salmon */
+  .isScroll h3{margin:14px 0 0;font-size:22px;font-weight:500;line-height:1.25;color:#ececec;}
+  body.light .isScroll h3{color:#2e1f1a;}
   .isLead{margin:10px 0 0;font-size:14.5px;line-height:1.5;color:#a6a6a0;}
   body.light .isLead{color:#6d5c4b;}
   .isSec{margin-top:22px;}
@@ -4153,6 +4191,64 @@
   body.light .isGhost{background:rgba(46,31,26,.07);color:#2e1f1a;}
   .isCta{background:#ececec;color:#141413;}
   body.light .isCta{background:#2e1f1a;color:#f7f2e9;}
+
+  /* The "See all" drawer: every report the shelf and the carousel only show
+     three or four of, stacked in one list rather than scrolled sideways --
+     the same distinction the bento's second card already draws (5.x, "the
+     reports stacked") between browsing a set and reading all of it. Same
+     geometry as the insight drawer, because the two are one surface arriving
+     from one place: a sheet on the phone, a drawer at the right on the desk. */
+  .arWrap{display:none;}
+  .arWrap.arDesk{position:fixed;inset:0;z-index:60;}
+  .arSheet{
+    top:auto;max-height:82%;border-radius:26px 26px 0 0;background:#1b1b1a;
+    max-width:480px;margin-left:auto;margin-right:auto;
+  }
+  body.light .arSheet{background:#f6ece6;}
+  .arDesk .arSheet{
+    top:0;bottom:0;left:auto;right:0;width:min(420px, 92vw);max-width:none;
+    max-height:none;margin:0;border-radius:0;
+    transform:translateX(100%);transition:transform .42s cubic-bezier(.22,.61,.36,1);
+  }
+  .arDesk.on .arSheet{transform:translateX(0);}
+  .arDesk .shHandle, .arDesk .shHome{display:none;}
+  .arTop{
+    flex:none;display:flex;align-items:center;justify-content:space-between;
+    gap:12px;padding:26px 20px 16px;
+  }
+  .arDesk .arTop{padding:24px 24px 16px;}
+  .arTop h3{margin:0;font-size:18px;font-weight:500;letter-spacing:-.2px;color:#ececec;}
+  body.light .arTop h3{color:#2e1f1a;}
+  .arSheet .shClose{
+    position:static;flex:none;width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  body.light .arSheet .shClose{background:rgba(46,31,26,.1);color:#2e1f1a;}
+  .arList{flex:0 1 auto;min-height:0;overflow-y:auto;padding:0 12px 12px;}
+  .arDesk .arList{flex:1 1 auto;padding:0 16px 16px;}
+  .arRow{
+    display:flex;align-items:center;gap:12px;width:100%;
+    padding:12px 8px;border:0;background:none;border-radius:14px;
+    font:inherit;text-align:left;color:inherit;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;transition:background .16s ease;
+  }
+  .arRow:hover{background:rgba(255,255,255,.05);}
+  body.light .arRow:hover{background:rgba(46,31,26,.04);}
+  .arRow .d{flex:none;width:8px;height:8px;border-radius:50%;}
+  .arRow .t{flex:1 1 auto;min-width:0;}
+  .arRow b{display:block;font-weight:500;font-size:14.5px;color:#ececec;
+           white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  body.light .arRow b{color:#2e1f1a;}
+  .arRow span{display:block;margin-top:2px;font-size:12.5px;color:#8b8b86;}
+  /* the one report the shelf's own badge points at, named the same way here:
+     an orange chip rather than a second dot, so the row that is new reads as
+     new at a glance rather than by matching a colour to a category */
+  .arRow .arNew{
+    flex:none;font-style:normal;font-size:11px;font-weight:500;line-height:1;
+    padding:4px 8px;border-radius:7px;background:#e0865f;color:#1a0f08;
+  }
+  .arRow .go{flex:none;color:#5a5a56;}
+  .arRow .go svg{width:12px;height:12px;display:block;}
 
   body.light .oaBadge.older{background:#f4e5bd;color:#7a5c15;}
   body.light .oaBadge.younger,body.light .oaBadge.par{background:#d7eddd;color:#1f6438;}
@@ -5040,6 +5136,20 @@
      diameter the tail does reach the status bar, which is why the peak is held
      low enough that what arrives up there is a couple of levels, not a wash. */
   .v4Halo{display:none;}
+  /* The gradient itself has no hard edge anywhere in it -- measured, a column
+     through it steps by under 2 luminance units, row to row, the whole way
+     down. What reads as a line on a real screen is 8-bit banding: a smooth
+     ramp the display can only draw in whole steps. A film of noise over the
+     ramp breaks the steps up without moving a single stop, which is the
+     standard fix for banding rather than a redraw of the light itself. One
+     rule for both copies -- the desk's b5 organ card and the phone's hero --
+     since a display:none host draws no pseudo-element, this costs nothing on
+     the pages that never turn .v4Halo on. */
+  .v4Halo::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:64px 64px;opacity:.05;mix-blend-mode:overlay;
+  }
   /* How strong the light is, in one number. The stop list is a gaussian pitched
      against the ground it was drawn on; raising it is a scale on every stop at
      once, not nine hand-edited alphas that would drift out of shape. The dark
@@ -6514,7 +6624,7 @@
     <div class="insWrap dInsWrap" id="dInsWrap"></div>
     <div class="dRepWrap" id="dRepWrap">
       <div class="rbWrap dRepBento" id="dRepBento"></div>
-      <div class="secHead">Everlab reports</div>
+      <div class="secHead"><span>Everlab reports</span><button class="secSeeAll arOpen" type="button">See all<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div>
       <div class="dRepShelf">
         <div class="dRepCar" id="dRepCar" role="group" aria-label="Your reports"></div>
         <button class="dRepNav prev" id="dRepPrev" type="button" aria-label="Previous report"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button>
@@ -6800,7 +6910,7 @@
          above the records it belongs with. The nodes are moved rather than
          copied, so there is one carousel with one set of handlers however the
          page is laid out. -->
-    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead">Everlab reports</div></div>
+    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports</span><button class="secSeeAll arOpen" type="button">See all<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div></div>
     <!-- V4's third tab: the findings themselves, stacked. Each one opens a
          sheet on the phone and a drawer on the desk. Built from INSIGHTS in
          the script, like every other list on the page. -->
@@ -16565,6 +16675,67 @@
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     return { open: show, close: close };
   }
+
+  // "See all": every report, stacked, rather than the three-and-a-peek the
+  // shelf shows or the four the carousel does. A drawer over whichever surface
+  // it was opened from -- the sheet the row itself opens is the one that
+  // surface already carries, so a row here and a card on the shelf land on the
+  // exact same reading.
+  function allRepsSheet(host, desk, singleSheet){
+    if (!host) return null;
+    const wrap = document.createElement('div');
+    wrap.className = 'shWrap arWrap' + (desk ? ' arDesk' : '');
+    wrap.innerHTML =
+      '<div class="shDim"></div>' +
+      '<div class="sheet arSheet">' +
+        '<div class="shHandle"></div>' +
+        '<div class="arTop"><h3>Everlab reports</h3>' +
+          '<button class="shClose" type="button" aria-label="Close">&#10005;</button></div>' +
+        '<div class="arList"></div>' +
+        '<div class="shHome"></div>' +
+      '</div>';
+    host.appendChild(wrap);
+    const q = sel => wrap.querySelector(sel);
+    let open = false;
+    const CHEV = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg>';
+    // the newest is the one the shelf's own badge already points at (TAB_NEW),
+    // so the two never disagree about which report is "new"
+    q('.arList').innerHTML = REPS.map((r, i) =>
+      '<button class="arRow" type="button" data-r="' + r.id + '">' +
+        '<i class="d" style="background:' + r.art[0] + '"></i>' +
+        '<span class="t"><b>' + r.label + '</b>' +
+          '<span>' + r.date + ' &middot; ' + r.by + '</span></span>' +
+        (i === 0 ? '<i class="arNew">New</i>' : '') +
+        '<span class="go">' + CHEV + '</span>' +
+      '</button>').join('');
+    function close(){
+      if (!open) return;
+      open = false;
+      wrap.classList.remove('on');
+      setTimeout(() => { wrap.style.display = 'none'; }, 520);
+    }
+    function show(){
+      open = true;
+      wrap.style.display = 'block';
+      requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
+    }
+    q('.shClose').addEventListener('click', close);
+    q('.shDim').addEventListener('click', close);
+    addEventListener('keydown', e => { if (e.key === 'Escape' && open) close(); });
+    // a row hands off to the report's own sheet -- this drawer's whole job is
+    // choosing which one, not showing what is in it a second time
+    q('.arList').addEventListener('click', e => {
+      const row = e.target.closest('.arRow');
+      if (!row) return;
+      const rec = RECS.filter(x => x.id === row.dataset.r)[0];
+      close();
+      if (singleSheet && rec) setTimeout(() => singleSheet.open(rec), 260);
+    });
+    return { open: show, close: close };
+  }
+
   // The bento: the Reports tab's other shape. Two cards where the carousel
   // was -- the set at a glance, and the reports stacked -- built from the same
   // RECS rows, so the two layouts can only ever show the same six reports.
@@ -17081,6 +17252,14 @@
 
   const repSheetM = repSheet(document.getElementById('phone'), false);
   const repSheetD = repSheet(document.body, true);
+  const allRepsM = allRepsSheet(document.getElementById('phone'), false, repSheetM);
+  const allRepsD = allRepsSheet(document.body, true, repSheetD);
+  // Both "See all" buttons -- the phone's V3/V4 row and the desk's shelf --
+  // open whichever drawer belongs to the surface they are standing on.
+  [].slice.call(document.querySelectorAll('.arOpen')).forEach(btn => {
+    const desk = !btn.closest('#phone');
+    btn.addEventListener('click', () => (desk ? allRepsD : allRepsM).open());
+  });
 
   repCarousel(document.getElementById('v4RepCar'), document.getElementById('v4RepDots'),
               null, { sheet: repSheetM });
