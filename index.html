@@ -428,10 +428,10 @@
     /* the page's ground, once. Anything that has to sit ON the page and look
        like the page reads this rather than naming the colour again -- which is
        how the pinned filter block ended up grey on the tablet, whose ground is
-       black where the desk's is #0d0d0c. --pageBg0 is the same colour at zero
+       black where the desk's is #0f0f0f. --pageBg0 is the same colour at zero
        alpha, spelled out rather than `transparent`, which some engines
        interpolate through grey. */
-    --pageBg:#0d0d0c; --pageBg0:rgba(13,13,12,0);
+    --pageBg:#0f0f0f; --pageBg0:rgba(15,15,15,0);
     /* the sidebar and the 16px strip above the card are one continuous
        surface, not two -- this is the one colour both read, so the card
        floating under that strip reads as the one thing that isn't the
@@ -442,7 +442,7 @@
        flanks as a paler rail beside a darker card -- two grounds fighting
        for the same margin. A hard-stop gradient, not a second element,
        keeps the split pinned to the same 16px the card's own top reads. */
-    --shellBg:#1c1c1a;
+    --shellBg:#181818;
     background:linear-gradient(var(--shellBg) 16px, var(--pageBg) 16px);
     color:#ececec;
   }
@@ -468,7 +468,11 @@
   #dMain{
     position:absolute;left:224px;right:0;bottom:0;top:16px;
     overflow-y:auto;overflow-x:hidden;z-index:1;
-    border-radius:20px 20px 0 0;background:var(--pageBg);
+    /* top-left and top-right already eased away from the bar above; the
+       left edge floats free of the sidebar for its whole height, not just
+       at the top, so bottom-left rounds too. Bottom-right stays square --
+       it meets the browser's own corner, with nothing to ease away from. */
+    border-radius:20px 20px 0 20px;background:var(--pageBg);
     margin:0 auto;max-width:1160px;
     /* 32px clears the rounded corner with room to spare now that the bar
        above it is gone and the corner sits close behind the h1; the 64/60
@@ -1877,13 +1881,14 @@
     overscroll-behavior-x:contain;
   }
   .dRepCar::-webkit-scrollbar{display:none;}
-  /* The row runs off the right edge, so it ends in a fade rather than a cut:
+  /* The row runs off both edges, so each ends in a fade rather than a cut:
      a card sliced down its middle by the column's edge reads as broken, the
      same card fading out reads as more to scroll. Same device the chip row
-     uses, at the width of the peek. */
+     uses, at the width of the peek -- mirrored, so the arrow at the start
+     sits over the same kind of fade as the one at the end. */
   .dRepCar{
-    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 64px),transparent);
-    mask-image:linear-gradient(to right,#000 calc(100% - 64px),transparent);
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 64px,#000 calc(100% - 64px),transparent);
+    mask-image:linear-gradient(to right,transparent,#000 64px,#000 calc(100% - 64px),transparent);
   }
   /* and no dismiss at the desk: the shelf is a set you browse, not a stack of
      notices you clear, and a cross per card over three and a peek is four
@@ -1924,11 +1929,11 @@
      into the page instead. */
   .dRepNav.prev::before{
     left:-10px;
-    background:linear-gradient(to right,var(--pageBg,#0d0d0c) 0%,var(--pageBg,#0d0d0c) 25%,rgba(0,0,0,0) 100%);
+    background:linear-gradient(to right,var(--pageBg,#0f0f0f) 0%,var(--pageBg,#0f0f0f) 25%,rgba(0,0,0,0) 100%);
   }
   .dRepNav.next::before{
     right:-10px;
-    background:linear-gradient(to left,var(--pageBg,#0d0d0c) 0%,var(--pageBg,#0d0d0c) 25%,rgba(0,0,0,0) 100%);
+    background:linear-gradient(to left,var(--pageBg,#0f0f0f) 0%,var(--pageBg,#0f0f0f) 25%,rgba(0,0,0,0) 100%);
   }
   body.light .dRepNav{color:#2e1f1a;background:rgba(46,31,26,.08);}
   body.light .dRepNav:hover{background:rgba(46,31,26,.14);}
@@ -4144,9 +4149,13 @@
      inconsistency plain. Same geometry as that one, so the two read as one
      surface arriving from one place. */
   .rsDesk .rsSheet{
-    top:0;bottom:0;left:auto;right:0;width:min(460px, 92vw);max-width:none;
-    max-height:none;margin:0;border-radius:0;
-    transform:translateX(100%);transition:transform .42s cubic-bezier(.22,.61,.36,1);
+    /* 12px in from the dimmed page on three sides, 24px rounded all round --
+       the same floating-card geometry every desk drawer on this page now
+       shares (see the reports drawer, 5.283/5.286), rather than a panel
+       bolted flush to the glass. */
+    top:12px;bottom:12px;left:auto;right:12px;width:min(460px, 92vw);max-width:none;
+    max-height:none;margin:0;border-radius:24px;
+    transform:translateX(calc(100% + 12px));transition:transform .42s cubic-bezier(.22,.61,.36,1);
   }
   .rsDesk.on .rsSheet{transform:translateX(0);}
   .rsDesk .shHandle{display:none;}
@@ -4164,9 +4173,9 @@
   body.light .isSheet{background:#f6ece6;}
   /* the desk's drawer: full height at the right edge, sliding in from it */
   .isDesk .isSheet{
-    top:0;bottom:0;left:auto;right:0;width:min(460px, 92vw);max-width:none;
-    max-height:none;margin:0;border-radius:0;
-    transform:translateX(100%);transition:transform .42s cubic-bezier(.22,.61,.36,1);
+    top:12px;bottom:12px;left:auto;right:12px;width:min(460px, 92vw);max-width:none;
+    max-height:none;margin:0;border-radius:24px;
+    transform:translateX(calc(100% + 12px));transition:transform .42s cubic-bezier(.22,.61,.36,1);
   }
   .isDesk.on .isSheet{transform:translateX(0);}
   .isDesk .shHandle, .isDesk .shHome{display:none;}
@@ -4710,7 +4719,7 @@
      over-scroll — shows the page behind it instead. That page is the organ
      ground, which reads as a dark hole under light chrome. Give the dashboard
      pages the dashboard's own ground so there is nothing dark left to expose. */
-  body.m2{background:#0d0d0c;}
+  body.m2{background:#0f0f0f;}
   body.light.m2{background:#fff;}
   body.light.m5 #phone{background:#fff;}
   body.light .dash .side{color:#6b5c4a;}
@@ -4898,7 +4907,7 @@
   body.b5 #organSlot .hiShare{
     display:flex;position:absolute;right:14px;top:14px;z-index:6;margin-left:0;
   }
-  body.b5 .dash{--pageBg:#000;--pageBg0:rgba(0,0,0,0);}
+  body.b5 .dash{--pageBg:#0f0f0f;--pageBg0:rgba(15,15,15,0);}
   body.light.b5 .dash{--pageBg:#fff;--pageBg0:rgba(255,255,255,0);}
   /* body.light.b2 .dash .dcard.organ carries one more class than the plain
      light rule, so the organ card needs saying at that weight here too */

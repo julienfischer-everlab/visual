@@ -7693,6 +7693,53 @@ ground, and the flanks read as more of the card rather than more of the bar.
 
 ---
 
+### 5.288 One fade, not two -- and a darker floor under both of them
+
+**"The left fade-out is wrong. It should be like the right fade-out."** The
+report shelf's own fade (`.dRepCar`'s mask, "three and a peek") only ever
+ran off the trailing edge -- `mask-image:linear-gradient(to right,#000
+calc(100% - 64px),transparent)` -- because the leading edge had nothing
+before it to fade at scroll position zero. But 5.283's arrow halo made the
+*start* look like it should fade too, and never delivered one: the previous
+card's own content stayed crisp right up to the `<` button instead of easing
+into the page the way the trailing peek does under `>`. Mirrored the mask --
+`transparent, #000 64px, #000 calc(100% - 64px), transparent` -- rather than
+making it conditional on scroll position, since a card fading in from a
+position you can still scroll back to and one you can still scroll forward
+to are the same kind of edge; happens to also mean the first card fades in
+very slightly at rest, which reads as the row's own framing rather than as a
+mistake.
+
+**Colours, given as exact values rather than "darker":** `--shellBg` (the
+sidebar and the strip above the card) to `#181818`, `--pageBg` (the card
+itself) to `#0f0f0f`. Both had a second definition that would have kept the
+old value regardless of the first -- `body.m2{background:#0d0d0c}`, the
+safety net under an overscrolled `.dash` ("give the dashboard pages the
+dashboard's own ground, so there is nothing dark left to expose"), and
+`body.b5 .dash{--pageBg:#000}`, a full override for the organ-tinted `b5`
+family the page actually shown (m18) belongs to. Missing the second would
+have meant the numbers were right everywhere except the one page being
+looked at.
+
+**"A rounded corner on the left of the black body."** `#dMain`'s
+`border-radius` was `20px 20px 0 0` -- both top corners, easing away from
+the bar 5.287 removed, and both bottom corners square, since the card met
+the sidebar and the browser's own edge with nothing to ease into. The
+sidebar is gone from that account now that the card floats the full height
+of its left side rather than starting under a bar; bottom-left rounds to
+match, bottom-right stays square, since that corner still meets the
+browser's own.
+
+**"All drawers on the desktop should have the same behaviour with the
+padding around."** `.rsDesk .rsSheet` (the single report) and `.isDesk
+.isSheet` (the insight) still had 5.283's original geometry -- flush to the
+top, right and bottom, square -- because only the reports drawer had been
+asked for the 12px-inset, 24px-radius treatment since. Given both the same
+rule verbatim, including the `100% + 12px` slide-out distance the flush
+`translateX(100%)` would have left a sliver on screen for.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
