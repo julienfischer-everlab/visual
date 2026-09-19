@@ -7519,6 +7519,56 @@ Everlab reports and the insight headings all already read from.
 
 ---
 
+### 5.284 The bar and the card stay put; only what is inside moves
+
+**"On desktop, the top should be rounded -- a grey bar, then a card below it,
+and neither should move when you scroll. The scroll should happen inside the
+card, with 16px of safe space above whatever it's showing."** Reference was
+another app's own chrome: a bar pinned above a card whose only rounded corners
+are the top ones, the gap between the two never closing.
+
+`.dash` was already `position:fixed` with its own `overflow-y:auto` -- it
+looked like the scroll container, but it was really just the fixed shell the
+sidebar and the page both sat in, and scrolling it meant scrolling the
+sidebar's ground along with everything else. Giving the bar and the gap a
+fixed home meant moving the actual scrolling one level down, onto something
+that isn't `.dash` itself: a new `#dTopBar` (the grey/cream strip) and a new
+`#dMain` (the rounded card, `overflow-y:auto`) inside it, with `.dash` now
+just the static shell both sit on. `--dBarH`/`--dBarGap` are the one pair of
+numbers the bar's height and the card's top both read, so a future resize of
+either can't put them out of step.
+
+Two other `<main>`s on this page -- `.dvMain` (Overview) and `.olMain` --
+already scroll themselves independently and were never touched; the reference
+was this one dashboard, not every page that happens to use `<main>`.
+
+Two bugs, both caught by measuring rather than by eye, since a screenshot of
+one near-black rectangle beside another does not show a wrong number:
+
+- `#dMain` was given `left:0;right:0`, matching neither the sidebar's width nor
+  `#dTopBar`'s own `left:224px`. Centering `max-width:1160px` inside the FULL
+  viewport width, instead of the width to the right of the sidebar, put the
+  card's own edge 84px to the left of where the bar starts -- under the
+  sidebar rather than beside it. Given `left:224px` (`200px` at the tablet
+  width) to match the bar, it centers in the same box the bar already spans.
+- The gap between bar and card measured 61px, not the requested 16. `#dMain`
+  sits inside `.dash`, whose own fixed `top` is already synced to the page's
+  toolbar height in JS; `#dMain`'s `top` is relative to `.dash`'s own edge, so
+  adding that same toolbar height a second time (both in the base CSS and in
+  the resize handler that re-synced it) double-counted it. `#dMain`'s `top` is
+  now just `--dBarH + --dBarGap`, nothing else, and the resize handler no
+  longer touches it at all -- it never needed to.
+
+Four places that used to read `.dash`'s own scroll position -- the sticky
+filter (`dStick`), the "scroll the filter into view" glide (`reachFilter`),
+the record-skeleton height guard, and the sun-follow listener on the organ
+hero -- now read `#dMain` instead, since that is where the scrolling actually
+happens now. `.dash`'s own two remaining jobs, syncing its `top` to the
+toolbar and giving the "new results" notice somewhere to append itself, did
+not move, since neither depends on which element scrolls.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

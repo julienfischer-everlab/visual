@@ -445,7 +445,29 @@
   .dash .side .nv{padding:9px 10px;border-radius:8px;margin-bottom:2px;}
   .dash .side .nv.on{background:#1e1e1c;color:#ececec;}
   .dash{padding-left:224px;}
-  .dash main{margin:0 auto;padding:64px 40px 60px;max-width:1160px;}
+  /* ---- The content pane: a bar, then a card that owns its own scroll ------
+     Fixed over the sidebar's ground, the bar and the gap under it never move;
+     what scrolls is #dMain alone, clipped to its own rounded top by its own
+     overflow rather than by anything upstream. --dBarH and --dBarGap are the
+     one pair of numbers both the bar and the card read their geometry from,
+     so the two cannot drift out of step with each other. */
+  :root{ --dBarH:52px; --dBarGap:16px; }
+  .dTopBar{
+    position:fixed;top:57px;left:224px;right:0;height:var(--dBarH);z-index:4;
+    background:#1c1c1a;border-bottom:1px solid #262624;
+  }
+  body.light .dTopBar{background:#efe7d8;border-bottom-color:#e2d9c5;}
+  #dMain{
+    position:absolute;left:224px;right:0;bottom:0;
+    top:calc(var(--dBarH) + var(--dBarGap));
+    overflow-y:auto;overflow-x:hidden;z-index:1;
+    border-radius:20px 20px 0 0;background:var(--pageBg);
+    margin:0 auto;max-width:1160px;
+    /* 16px is the safe space the scroller itself keeps above whatever it is
+       showing -- the rounded corner is not read as a lid to clear, and the
+       64/60 either side is the page's own established rhythm, untouched */
+    padding:16px 40px 60px;
+  }
   .dash h1{font-size:26px;font-weight:500;letter-spacing:-0.5px;margin:0 0 22px;}
   .dash h1 span{color:#8b8b86;}
   .dash .dgrid{display:grid;grid-template-columns:1fr 1.26fr;gap:16px;align-items:stretch;height:400px;}
@@ -4942,9 +4964,10 @@
      page margin, and the left column stacked one-up because half of a narrower
      page is not two cards wide. */
   body.tabM .dash{padding-left:200px;}
+  body.tabM .dTopBar{left:200px;}
   body.tabM .dash .side{width:200px;padding:22px 16px;font-size:13px;}
   body.tabM .dash .side .logo{font-size:16px;margin-bottom:26px;}
-  body.tabM .dash main{padding:44px 28px 52px;max-width:1020px;}
+  body.tabM #dMain{left:200px;padding:44px 28px 52px;padding-top:16px;max-width:1020px;}
   body.tabM .dash h1{font-size:23px;margin:0 0 18px;}
   body.tabM .dash .dgrid{gap:20px;}
   body.tabM .dash .dleft{gap:20px;}
@@ -6440,7 +6463,11 @@
     <div class="nv nvRep">Reports</div>
     <div class="nv">Timeline</div>
   </aside>
-  <main>
+  <!-- The bar the content pane sits under: fixed, over the sidebar's own
+       ground, so it and the card below it never move for a reader scrolling
+       the page -- only what the card holds does. -->
+  <div class="dTopBar" id="dTopBar"></div>
+  <main id="dMain">
     <h1>Health insights</h1>
     <!-- the same two tabs the phone carries, in the same place relative to the
          page's own title: they say what everything below is a list of, so they
@@ -11582,6 +11609,11 @@
     document.querySelector('.dash').style.top = tbH + 'px';
     document.querySelector('.dash .side').style.top = tbH + 'px';
     document.getElementById('grid').style.top = tbH + 'px';
+    // the bar and the card under it both hang off the same measured height --
+    // one written value, so neither can end up reading a different toolbar
+    // than the other did
+    { const bar = document.getElementById('dTopBar');
+      if (bar) bar.style.top = tbH + 'px'; }
     // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
     { const ho = document.getElementById('mHeroOrgan');
       if (ho && ho.clientWidth) ho.style.setProperty('--heroW', ho.clientWidth + 'px'); }
@@ -11702,7 +11734,9 @@
     st.style.left = (slot.left + 24) + 'px';
     st.style.top = (slot.top + 24) + 'px';
   }
-  document.querySelector('.dash').addEventListener('scroll',
+  // the card's own scroll now, not .dash's -- .dash stopped moving when the
+  // bar above the card went in
+  document.getElementById('dMain').addEventListener('scroll',
     () => requestAnimationFrame(situFollow), { passive: true });
   // ---------- spatial cover-flow ----------
   const spWrap = document.getElementById('spatial');
@@ -16864,7 +16898,7 @@
   function reachFilter(desk, wait){
     let tries = 0;
     const reach = () => {
-      const sc = desk ? document.querySelector('.dash') : document.getElementById('mScroll');
+      const sc = desk ? document.getElementById('dMain') : document.getElementById('mScroll');
       const blk = desk ? document.getElementById('dFilters') : document.getElementById('mSearch');
       if (!sc || !blk || ++tries > 10) return;
       // where the block pins: its top in the scroller's own content space,
@@ -18073,9 +18107,10 @@
   // place, so this is one class and the CSS does the swap.
   // The desk's filter block pins like the phone's, and wears the same fade
   // once it is actually pinned -- in the flow there is nothing passing beneath
-  // to fade. The dashboard is the scroller here, not the window.
+  // to fade. The card is the scroller here, not the window and not .dash,
+  // which stopped moving once the bar above the card went in.
   (function dStick(){
-    const sc = document.querySelector('.dash');
+    const sc = document.getElementById('dMain');
     // both pinned blocks -- the biomarkers' filter and the records' -- behave
     // the same way, and only one of them is ever on the page at a time
     const blks = ['dFilters', 'dMedBar'].map(id => document.getElementById(id)).filter(Boolean);
@@ -19644,7 +19679,7 @@
       // (or a screenful under the block, whichever is more) means nothing
       // shortens, nothing is clamped and nothing moves.
       beforeBeat: () => {
-        const sk = document.getElementById('dSkel'), sc = document.querySelector('.dash');
+        const sk = document.getElementById('dSkel'), sc = document.getElementById('dMain');
         const blk = document.getElementById('dFilters');
         if (!sk || !sc) return;
         sk.style.minHeight =
@@ -19656,7 +19691,7 @@
       // short list is still adjusting the filter, and the bar should be where
       // it was left when the shorter list arrives.
       afterApply: () => {
-        const sc = document.querySelector('.dash'), blk = document.getElementById('dFilters');
+        const sc = document.getElementById('dMain'), blk = document.getElementById('dFilters');
         const sk = document.getElementById('dSkel');
         if (sk) sk.style.minHeight = '';
         if (sc && blk) host.style.minHeight =
