@@ -7419,6 +7419,30 @@ to be given that gutter rather than inheriting a padding the host does not
 have. Measured: the heading's text, the first card and Medical records all
 start at the same x on both surfaces.
 
+### 5.281 The desk's pill was only ever V2's
+
+"Use a normal tab line, V3 V4" -- with a screenshot that turned out to be
+neither: it matched V2's tab pixel for pixel (same cards, same share icon,
+same spacing), and V2's desk tab has been a segmented pill since it was built.
+V3 and V4 already carry the underline from 5.264. Asked which one needed the
+change; V2's pill, to the underline.
+
+There was never a reason for the two versions to differ here -- the pill
+belonged to no design decision about V2 itself, just to which rule happened to
+load first. `body.v2Tab .dash .dTabsV2` and `body.v3Tab .dash .dTabsV2` sat at
+equal specificity, so V3/V4 (which always carry `v2Tab` too) silently won on
+source order; V2 alone fell through to the pill underneath. One rule now, on
+`v2Tab`, so V2, V3 and V4 read the same control. The margin, the underline
+colour and the thumb-as-underline all moved with it; the things that were
+genuinely V3/V4-only -- the tab row's placement inside the body card, the
+filter block's negative offset -- stayed where they were, since V2's page
+structure never created that gap to begin with.
+
+Left-aligned under the title now rather than centred, which is what a line of
+tabs reads as; a centred line looks unrooted in a way a centred pill does not.
+Verified in both themes, on Desktop and every archived Desktop variant, with
+the phone's pill (which stays a pill by design, per 5.264) untouched.
+
 ---
 
 ## 6. Open items
