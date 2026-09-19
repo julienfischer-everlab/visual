@@ -7763,7 +7763,33 @@ before 24 was the number anything on this page used).
 
 ---
 
-## 6. Open items
+### 5.290 The rectangle that was always there, just the same colour as the card
+
+**"What the fuck is this shape?"**, about the branching particle cloud under
+"Mental age". Traced, not guessed: `PILL`'s own comment says it plainly --
+*"The names swapped, at the user's word: the brain organ is 'Brain age' and
+the nerve is 'Mental age'."* -- a deliberate relabelling from earlier in this
+project, not a bug. Reported that back rather than touching anything, and
+asked what to do about it now that it reads as wrong; told to leave it and
+wait, so nothing changed here.
+
+**"Remove the black background below the organ and the range."** Not the
+organ or the dial's own doing -- `#field`, the one canvas the whole
+prototype's organs share, sits (z-index 2) between the organ card's
+background (0) and its text (3, 5), so whatever colour the canvas clears to
+IS the card's ground for as long as the canvas covers it. `body.b5 .dcard
+.organ`'s own background is `rgba(255,255,255,.06)` -- a 6% white wash OVER
+`--pageBg`, not `--pageBg` alone -- and the canvas's `lift` clear colour
+(the code's own name for this exact card) was `[0.06,0.06,0.06]`, `--pageBg`
+un-washed. A rule already carried the reason as a comment -- *"the canvas
+clears to the value, not to the wash, so the two drift apart"* -- documented
+as an accepted gap, apparently small enough not to chase before; today's
+darker `--pageBg` (5.288) didn't cause it, but the fresh colours made it
+worth reading the comment as a bug report rather than a shrug. Composited
+by hand -- `#0f0f0f` under 6% white is `#1d1d1d` -- and swapped in for the
+flat value. The light `lift` colour was already doing this correctly
+(`0.9725` is white under a 2.8% black wash, not white on its own), which is
+what gave away that the dark one had simply never been.
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
   *Survey* because *QUESTIONNAIRE* does not fit beside the arrows below ~1300px

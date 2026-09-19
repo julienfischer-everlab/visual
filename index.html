@@ -19164,10 +19164,14 @@
                              (V6_HEAD - V6_HEAD * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
-               // 6% white on the card's black ground, which is what the card
-               // paints: the canvas clears to the value, not to the wash, so
-               // the two drift apart the moment the card's opacity changes
-               : lift ? [0.0600, 0.0600, 0.0600]           // #0f0f0f, V5's card
+               // the card's ground is --pageBg, but its own background is a
+               // 6% white wash OVER that ground (body.b5 .dcard.organ) -- the
+               // canvas sits above the card's background and below its text,
+               // so clearing to --pageBg alone left a visible rectangle a
+               // shade darker than the wash around it. #1d1d1d is #0f0f0f
+               // composited under 6% white, which is what the card paints.
+               : lift ? [0.1153, 0.1153, 0.1153]           // #1d1d1d, V5's card, washed
+
                : flat ? [0.1451, 0.1451, 0.1333]           // #252522, the header card
                :        [0.1330, 0.0240, 0.0240];          // #220606, the organ ground
       const lt = bare             ? [0.9255, 0.9255, 0.9176]   // #ececea, the same in light
