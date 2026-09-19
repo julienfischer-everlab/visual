@@ -7791,6 +7791,32 @@ flat value. The light `lift` colour was already doing this correctly
 (`0.9725` is white under a 2.8% black wash, not white on its own), which is
 what gave away that the dark one had simply never been.
 
+---
+
+### 5.291 A fixed number where a measured one belonged
+
+The fix above for the invisible left corners used a flat 264px shell strip,
+tuned against the one viewport width it was checked at. Re-checked against
+the actual geometry and it wasn't a constant at all: `#dMain`'s left edge is
+`224px` (or `200px` on the tablet) *plus* whatever `margin:0 auto` adds once
+the viewport is wide enough to centre the width-capped card past its
+sidebar -- 260px at 1456px wide, 492px at 1920px, a different number again
+on the tablet at either width, since its sidebar and cap are both narrower.
+264px was only ever going to be right by luck, at the one width it was
+built against; anything wider left the curve cutting into flank-matched
+`--pageBg` again, the exact bug it was meant to fix.
+
+Measured instead: `resize()` now reads `#dMain`'s real
+`getBoundingClientRect().left` and writes it to `--dMainLeft` on `.dash`,
+which the shell strip's width reads directly (`calc(var(--dMainLeft) +
+40px)`) rather than guessing at. Checked six combinations -- both modes at
+900px, 1456px and 1920px -- since the two fixed numbers this replaced had
+each looked right at exactly one width apiece.
+
+---
+
+## 6. Open items
+
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
   *Survey* because *QUESTIONNAIRE* does not fit beside the arrows below ~1300px
   and was ellipsizing. The headline still reads "Complete your questionnaire".

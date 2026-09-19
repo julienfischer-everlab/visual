@@ -441,9 +441,26 @@
        on anything wider the shell would otherwise show down both of its
        flanks as a paler rail beside a darker card -- two grounds fighting
        for the same margin. A hard-stop gradient, not a second element,
-       keeps the split pinned to the same 16px the card's own top reads. */
+       keeps the split pinned to the same 16px the card's own top reads.
+       That gradient alone left the card's rounded LEFT corners invisible,
+       though: #dMain's own top-left and bottom-left curves cut away a sliver
+       of it right next to the card's own left edge, at every y, not just the
+       first 16px -- and below 16px the gradient is already --pageBg there,
+       the same colour the card fills the curve with, so the cut showed
+       nothing. A second, opaque layer -- a --shellBg block reaching exactly
+       to that edge plus the radius's width, full height -- sits in front of
+       the gradient there, so both corners cut into shell instead of into
+       more of the card's own colour; past it, the gradient alone still
+       governs, which is what keeps the flanks matching the card.
+       --dMainLeft (set in resize(), since margin:auto centring puts that
+       edge at a different x for every viewport width and every sidebar
+       width) is that edge; a fixed pixel number here would only ever be
+       right at the one width it was measured against. */
     --shellBg:#181818;
-    background:linear-gradient(var(--shellBg) 16px, var(--pageBg) 16px);
+    background:
+      linear-gradient(var(--shellBg), var(--shellBg))
+        left/calc(var(--dMainLeft, 224px) + 40px) 100% no-repeat,
+      linear-gradient(var(--shellBg) 16px, var(--pageBg) 16px);
     color:#ececec;
   }
   body.m2 .dash{display:block;}
@@ -11677,6 +11694,17 @@
     document.querySelector('.dash').style.top = tbH + 'px';
     document.querySelector('.dash .side').style.top = tbH + 'px';
     document.getElementById('grid').style.top = tbH + 'px';
+    // #dMain's own left edge, measured rather than assumed: the sidebar's
+    // width plus whatever margin:auto adds once the viewport is wide enough
+    // to centre the capped card, which is a different number on the tablet
+    // (200px sidebar, 1020px cap) than the desk (224px, 1160px) and changes
+    // again at every width in between. .dash's shell-coloured strip -- the
+    // one that gives #dMain's rounded left corners something other than
+    // more of the card's own colour to cut into -- has to reach exactly
+    // that far, or a viewport width the fixed number wasn't tuned for
+    // leaves the curve cutting into flank-matched --pageBg again.
+    { const dm = document.getElementById('dMain');
+      if (dm) document.querySelector('.dash').style.setProperty('--dMainLeft', dm.getBoundingClientRect().left + 'px'); }
     // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
     { const ho = document.getElementById('mHeroOrgan');
       if (ho && ho.clientWidth) ho.style.setProperty('--heroW', ho.clientWidth + 'px'); }
