@@ -432,13 +432,18 @@
        alpha, spelled out rather than `transparent`, which some engines
        interpolate through grey. */
     --pageBg:#0d0d0c; --pageBg0:rgba(13,13,12,0);
-    background:var(--pageBg);color:#ececec;
+    /* the sidebar, the bar over the card and the strip of ground between them
+       are one continuous surface, not three -- this is the one colour all
+       three read, so a card floating over it reads as the one thing that
+       isn't that surface, rather than as one bar of several. */
+    --shellBg:#1c1c1a;
+    background:var(--shellBg);color:#ececec;
   }
   body.m2 .dash{display:block;}
   .dash *{box-sizing:border-box;}
   .dash .side{
     position:fixed;left:0;top:57px;bottom:0;width:224px;
-    background:#111110;border-right:1px solid #1f1f1e;padding:26px 20px;
+    background:var(--shellBg);padding:26px 20px;
     font-size:13.5px;color:#bdbdb9;
   }
   .dash .side .logo{font-size:17px;font-weight:600;color:#ececec;margin-bottom:34px;}
@@ -454,9 +459,8 @@
   :root{ --dBarH:52px; --dBarGap:16px; }
   .dTopBar{
     position:fixed;top:57px;left:224px;right:0;height:var(--dBarH);z-index:4;
-    background:#1c1c1a;border-bottom:1px solid #262624;
+    background:var(--shellBg);
   }
-  body.light .dTopBar{background:#efe7d8;border-bottom-color:#e2d9c5;}
   #dMain{
     position:absolute;left:224px;right:0;bottom:0;
     top:calc(var(--dBarH) + var(--dBarGap));
@@ -1904,20 +1908,32 @@
     opacity:0;transition:opacity .18s ease,background .18s ease;
   }
   .dRepNav::before{
-    content:"";position:absolute;z-index:-1;
-    left:50%;top:50%;width:110px;height:110px;transform:translate(-50%,-50%);
-    border-radius:50%;pointer-events:none;
-    background:radial-gradient(closest-side,var(--pageBg,#0d0d0c) 0%,var(--pageBg,#0d0d0c) 40%,rgba(0,0,0,0) 100%);
+    content:"";position:absolute;z-index:-1;pointer-events:none;
+    top:-45px;bottom:-45px;width:70px;
   }
   .dRepShelf:hover .dRepNav,.dRepNav:focus-visible{opacity:1;}
   .dRepNav:hover{background:rgba(255,255,255,.18);}
   .dRepNav svg{width:12px;height:12px;display:block;}
   .dRepNav.prev{left:-10px;}
   .dRepNav.next{right:-10px;}
+  /* straight, not radial -- a blob centred on the button read as an angled
+     smudge over a busy card; a vertical-edge fade reads as the card easing
+     into the page instead. */
+  .dRepNav.prev::before{
+    left:-10px;
+    background:linear-gradient(to right,var(--pageBg,#0d0d0c) 0%,var(--pageBg,#0d0d0c) 25%,rgba(0,0,0,0) 100%);
+  }
+  .dRepNav.next::before{
+    right:-10px;
+    background:linear-gradient(to left,var(--pageBg,#0d0d0c) 0%,var(--pageBg,#0d0d0c) 25%,rgba(0,0,0,0) 100%);
+  }
   body.light .dRepNav{color:#2e1f1a;background:rgba(46,31,26,.08);}
   body.light .dRepNav:hover{background:rgba(46,31,26,.14);}
-  body.light .dRepNav::before{
-    background:radial-gradient(closest-side,var(--pageBg,#f7f2e9) 0%,var(--pageBg,#f7f2e9) 40%,rgba(0,0,0,0) 100%);
+  body.light .dRepNav.prev::before{
+    background:linear-gradient(to right,var(--pageBg,#f7f2e9) 0%,var(--pageBg,#f7f2e9) 25%,rgba(0,0,0,0) 100%);
+  }
+  body.light .dRepNav.next::before{
+    background:linear-gradient(to left,var(--pageBg,#f7f2e9) 0%,var(--pageBg,#f7f2e9) 25%,rgba(0,0,0,0) 100%);
   }
   /* the records' own filter block, pinned as the biomarkers' is, with the
      chips and the search on one row because the desk has the width */
@@ -4228,9 +4244,11 @@
   }
   body.light .arSheet{background:#f6ece6;}
   .arDesk .arSheet{
-    top:0;bottom:0;left:auto;right:0;width:min(420px, 92vw);max-width:none;
-    max-height:none;margin:0;border-radius:0;
-    transform:translateX(100%);transition:transform .42s cubic-bezier(.22,.61,.36,1);
+    /* 12px in from the dimmed page on three sides, so the dim reads as the
+       backdrop it is rather than the drawer meeting the glass edge to edge */
+    top:12px;bottom:12px;left:auto;right:12px;width:min(420px, 92vw);max-width:none;
+    max-height:none;margin:0;border-radius:24px;
+    transform:translateX(calc(100% + 12px));transition:transform .42s cubic-bezier(.22,.61,.36,1);
   }
   .arDesk.on .arSheet{transform:translateX(0);}
   .arDesk .shHandle, .arDesk .shHome{display:none;}
@@ -4683,7 +4701,7 @@
   body.light #arcA text{fill:#6d5548;}
   /* desktop dashboard */
   /* the biomarker pages sit on white in light; the cards carry the tone */
-  body.light .dash{--pageBg:#fff;--pageBg0:rgba(255,255,255,0);color:#33291f;}
+  body.light .dash{--pageBg:#fff;--pageBg0:rgba(255,255,255,0);--shellBg:#efe7d8;color:#33291f;}
   /* .dash is a *fixed* layer, so anything taller than the viewport it is sized
      to — an embed whose frame is content-height, a full-page capture, an
      over-scroll — shows the page behind it instead. That page is the organ
@@ -4692,7 +4710,7 @@
   body.m2{background:#0d0d0c;}
   body.light.m2{background:#fff;}
   body.light.m5 #phone{background:#fff;}
-  body.light .dash .side{background:#faf5ec;border-right-color:#e7ddc9;color:#6b5c4a;}
+  body.light .dash .side{color:#6b5c4a;}
   body.light .dash .side .logo{color:#2e241c;}
   body.light .dash .side .nv.on{background:#ece4d3;color:#2e241c;}
   body.light .dash h1 span{color:#9b8a75;}
@@ -16310,7 +16328,49 @@
     { id: 'r5',  label: 'Comprehensive Blood Tests', cat: 'Pathology', date: '20 Oct 2025', n: 56, short: 'Oct 2025',
       by: 'Dr. Amara Osei',   art: ['#74564a', '#231715'], media: 'img' },
     { id: 'r6',  label: 'Baseline panel',          cat: 'Pathology', date: '18 Jun 2025', n: 38, short: 'Jun 2025',
-      by: 'Dr. Steven Lu',    art: ['#4f5570', '#161822'], media: 'img' }
+      by: 'Dr. Steven Lu',    art: ['#4f5570', '#161822'], media: 'img' },
+    // The drawer only ever showed six -- the shelf's own three-and-a-peek --
+    // so nothing had exercised its scroll. Nineteen more, backdated into the
+    // history `hist`'s own range already promised (2011 to 2026), so a list
+    // long enough to need scrolling was one the record already implied.
+    { id: 'r7',  label: 'Thyroid panel',           cat: 'Pathology', date: '02 Apr 2025', n: 18, short: 'Apr 2025',
+      by: 'Dr. Amara Osei',   art: ['#6f5a4e', '#241a16'], media: 'img' },
+    { id: 'r8',  label: 'Cardiac MRI',              cat: 'Imaging',   date: '14 Feb 2025', n: 2,  short: 'Feb 2025',
+      by: 'Dr. Steven Lu',    art: ['#4a5d63', '#151d20'], media: 'video' },
+    { id: 'r9',  label: 'Vitamin panel',            cat: 'Pathology', date: '30 Nov 2024', n: 12, short: 'Nov 2024',
+      by: 'Kate Mercer',      art: ['#6a5570', '#1d1622'], media: 'img' },
+    { id: 'r10', label: 'Bone density scan',        cat: 'Imaging',   date: '08 Sep 2024', n: 4,  short: 'Sep 2024',
+      by: 'Dr. Amara Osei',   art: ['#5d6b4a', '#181d14'], media: 'img' },
+    { id: 'r11', label: 'Allergy panel',            cat: 'Pathology', date: '22 Jul 2024', n: 26, short: 'Jul 2024',
+      by: 'Dr. Steven Lu',    art: ['#74564a', '#231715'], media: 'img' },
+    { id: 'r12', label: 'Gut microbiome test',      cat: 'Other',     date: '03 May 2024', n: 8,  short: 'May 2024',
+      by: 'Dr. Amara Osei',   art: ['#4f5570', '#161822'], media: 'video' },
+    { id: 'r13', label: 'Full blood count',         cat: 'Pathology', date: '19 Feb 2024', n: 22, short: 'Feb 2024',
+      by: 'Dr. Steven Lu',    art: ['#5c6f5a', '#171d16'], media: 'img' },
+    { id: 'r14', label: 'Skin check',               cat: 'Imaging',   date: '27 Dec 2023', n: 1,  short: 'Dec 2023',
+      by: 'Kate Mercer',      art: ['#6b5a63', '#201820'], media: 'img' },
+    { id: 'r15', label: 'Hormone panel',            cat: 'Pathology', date: '14 Oct 2023', n: 16, short: 'Oct 2023',
+      by: 'Dr. Amara Osei',   art: ['#4a6068', '#141c1f'], media: 'img' },
+    { id: 'r16', label: 'Sleep study',              cat: 'Other',     date: '06 Aug 2023', n: 3,  short: 'Aug 2023',
+      by: 'Dr. Steven Lu',    art: ['#705a4a', '#231a13'], media: 'video' },
+    { id: 'r17', label: 'Liver function',           cat: 'Pathology', date: '21 May 2023', n: 14, short: 'May 2023',
+      by: 'Dr. Amara Osei',   art: ['#5a5d70', '#181a22'], media: 'img' },
+    { id: 'r18', label: 'Cardiac stress test',      cat: 'Imaging',   date: '15 Feb 2023', n: 2,  short: 'Feb 2023',
+      by: 'Dr. Steven Lu',    art: ['#68704a', '#1c2014'], media: 'video' },
+    { id: 'r19', label: 'Iron studies',             cat: 'Pathology', date: '09 Nov 2022', n: 10, short: 'Nov 2022',
+      by: 'Kate Mercer',      art: ['#704a5a', '#22151a'], media: 'img' },
+    { id: 'r20', label: 'Coronary calcium score',   cat: 'Imaging',   date: '30 Jul 2022', n: 1,  short: 'Jul 2022',
+      by: 'Dr. Amara Osei',   art: ['#4a705d', '#142216'], media: 'img' },
+    { id: 'r21', label: 'Kidney function panel',    cat: 'Pathology', date: '12 Apr 2022', n: 13, short: 'Apr 2022',
+      by: 'Dr. Steven Lu',    art: ['#5f4a70', '#1a1422'], media: 'img' },
+    { id: 'r22', label: 'VO2 max retest',           cat: 'Other',     date: '18 Jan 2022', n: 2,  short: 'Jan 2022',
+      by: 'Kate Mercer',      art: ['#70694a', '#221f14'], media: 'video' },
+    { id: 'r23', label: 'DEXA scan',                cat: 'Imaging',   date: '25 Sep 2021', n: 4,  short: 'Sep 2021',
+      by: 'Dr. Amara Osei',   art: ['#4a5870', '#141a22'], media: 'img' },
+    { id: 'r24', label: 'Genetic screening',        cat: 'Other',     date: '11 May 2021', n: 30, short: 'May 2021',
+      by: 'Dr. Steven Lu',    art: ['#704a4f', '#221516'], media: 'video' },
+    { id: 'r25', label: 'Baseline health check',    cat: 'Pathology', date: '14 Feb 2021', n: 42, short: 'Feb 2021',
+      by: 'Dr. Amara Osei',   art: ['#5a704a', '#182214'], media: 'img' }
   ];
 
   // The report card is a carousel like the two beside it: one slide per

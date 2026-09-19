@@ -7608,6 +7608,54 @@ without the menu to reopen it from.
 
 ---
 
+### 5.286 One surface, not three -- the shell, the arrow, the drawer, the list
+
+**"The top part is fucked up. Follow the screenshot I sent you, only for the
+layout style."** Sampling the reference's own pixels (`.dash`'s ground, the
+sidebar, the card) rather than eyeballing it settled what the screenshot
+actually showed: sidebar and the bar over the card share one exact colour
+with no seam between them, and the gap under that bar -- the strip the
+rounded card's top corner reveals -- is that *same* colour again, not a
+third, darker one. This build had three: `.side` at `#111110`, `.dTopBar` at
+`#1c1c1a`, and the gap showing `.dash`'s own `--pageBg`, which is also what
+the card itself is drawn in. Three tones reading as three surfaces is what
+"fucked up" meant. Fixed by naming the shared one -- `--shellBg` -- and
+pointing `.dash`, `.side` and `.dTopBar` at it together, dropping the
+border-right and border-bottom that used to mark where one supposedly ended
+and the next began. The card keeps its own `--pageBg`, darker still, which is
+the whole trick: one ground behind everything, one card floating over it,
+never three bars stacked into a wall.
+
+**"The gradient should be vertical, not at an angle. The same on the right
+side."** `.dRepNav`'s halo (5.283) was a `radial-gradient` centred on the
+30px button -- a soft circle, which over a busy report card reads as an
+off-centre smudge rather than an edge easing away. Replaced with a
+`linear-gradient` running straight off the shelf's edge, tall enough
+(`top/bottom:-45px`) to cover the card's full height, mirrored for `.prev`
+and `.next` rather than shared: one rule doesn't turn "fades right" into
+"fades left" by itself.
+
+**"25 documents ... the header is fixed."** The drawer (5.283) had only ever
+carried the shelf's own six, so its header-stays-put-while-the-list-scrolls
+behaviour -- already correct, `.arSheet` is a flex column with `.arTop`
+un-shrinking and `.arList` the only thing that scrolls -- had nothing to
+prove it against. Nineteen more records, backdated from Apr 2025 to Feb 2021,
+inside the span `hist`'s own "2011 to 2026" already promised, so a list long
+enough to scroll was one the data already implied rather than padding for
+its own sake. Confirmed rather than assumed: the header's `top` in viewport
+coordinates read the same before and after scrolling the list 800px.
+
+**"12px padding from the viewport edge ... 24px rounded corners."** `.arDesk
+.arSheet` sat flush against the top, right and bottom of the screen, square.
+Given the same inset on those three sides (left is the sliding edge, not a
+resting one) and a 24px radius on all four corners now that the shape reads
+as a floating card rather than a panel bolted to the glass. Its closed
+position was `translateX(100%)`, which only clears a flush-right sheet -- with
+a 12px gap it left a 12px sliver on screen -- so the slide-out distance became
+`100% + 12px`.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
