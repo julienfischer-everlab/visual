@@ -472,7 +472,7 @@
        left edge floats free of the sidebar for its whole height, not just
        at the top, so bottom-left rounds too. Bottom-right stays square --
        it meets the browser's own corner, with nothing to ease away from. */
-    border-radius:20px 20px 0 20px;background:var(--pageBg);
+    border-radius:24px 24px 0 24px;background:var(--pageBg);
     margin:0 auto;max-width:1160px;
     /* 32px clears the rounded corner with room to spare now that the bar
        above it is gone and the corner sits close behind the h1; the 64/60
@@ -1885,11 +1885,24 @@
      a card sliced down its middle by the column's edge reads as broken, the
      same card fading out reads as more to scroll. Same device the chip row
      uses, at the width of the peek -- mirrored, so the arrow at the start
-     sits over the same kind of fade as the one at the end. */
+     sits over the same kind of fade as the one at the end.
+     Except at the ends themselves: a fade says "more this way", which is
+     false once there is nothing left to scroll to, so `.atStart`/`.atEnd`
+     (set from scroll position, see repCarousel's edgeSync) drop whichever
+     side has run out. */
   .dRepCar{
     -webkit-mask-image:linear-gradient(to right,transparent,#000 64px,#000 calc(100% - 64px),transparent);
     mask-image:linear-gradient(to right,transparent,#000 64px,#000 calc(100% - 64px),transparent);
   }
+  .dRepShelf.atStart .dRepCar{
+    -webkit-mask-image:linear-gradient(to right,#000,#000 calc(100% - 64px),transparent);
+    mask-image:linear-gradient(to right,#000,#000 calc(100% - 64px),transparent);
+  }
+  .dRepShelf.atEnd .dRepCar{
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 64px,#000);
+    mask-image:linear-gradient(to right,transparent,#000 64px,#000);
+  }
+  .dRepShelf.atStart.atEnd .dRepCar{-webkit-mask-image:none;mask-image:none;}
   /* and no dismiss at the desk: the shelf is a set you browse, not a stack of
      notices you clear, and a cross per card over three and a peek is four
      crosses asking to be dealt with */
@@ -1921,6 +1934,10 @@
   }
   .dRepShelf:hover .dRepNav,.dRepNav:focus-visible{opacity:1;}
   .dRepNav:hover{background:rgba(255,255,255,.18);}
+  /* an arrow that goes nowhere shouldn't offer to: same rule as the fade */
+  .dRepShelf.atStart .dRepNav.prev,.dRepShelf.atEnd .dRepNav.next{
+    opacity:0 !important;pointer-events:none;
+  }
   .dRepNav svg{width:12px;height:12px;display:block;}
   .dRepNav.prev{left:-10px;}
   .dRepNav.next{right:-10px;}
@@ -16551,6 +16568,9 @@
     // resting in the middle of THAT would put the first and last cards
     // somewhere the scroller cannot reach -- they rest at its left edge.
     const toStart = !!(opts && opts.align === 'start');
+    // the desk's shelf: where the fade and the arrow both go quiet, since
+    // neither should say there's more when there isn't (see edgeSync below)
+    const shelf = car.closest('.dRepShelf');
 
     car.innerHTML = REPS.map(repCardHTML).join('');
     // A card can be dismissed, so the list of them and the row of dots are
@@ -16567,10 +16587,22 @@
     };
     redraw();
 
+    // There is nothing before the first card or after the last one: an arrow
+    // that would take you there, and a fade that reads as more to scroll,
+    // are both saying something false right at either end.
+    function edgeSync(){
+      if (!shelf) return;
+      const max = car.scrollWidth - car.clientWidth;
+      shelf.classList.toggle('atStart', car.scrollLeft <= 1);
+      shelf.classList.toggle('atEnd', car.scrollLeft >= max - 1);
+    }
+    edgeSync();
+
     // which card the dots mark: the one at the resting point
     let raf = 0;
     function sync(){
       raf = 0;
+      edgeSync();
       if (!marks.length) return;
       const at = toStart ? car.scrollLeft : car.scrollLeft + car.clientWidth / 2;
       let best = 0, d = Infinity;

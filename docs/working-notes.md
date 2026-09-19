@@ -7740,6 +7740,29 @@ rule verbatim, including the `100% + 12px` slide-out distance the flush
 
 ---
 
+### 5.289 An arrow that goes nowhere shouldn't offer to
+
+5.288's mirrored fade was symmetric on principle -- the start and the end are
+"the same kind of edge" -- and that principle turned out to be wrong at the
+edges themselves: at rest, on the very first card, the left fade and the
+`<` arrow were both saying there was something to scroll back to, when there
+wasn't. The same is true in reverse on the last card.
+
+`repCarousel` already tracked scroll position for its dots; added an
+`edgeSync` beside it that reads `car.scrollLeft` against `car.scrollWidth -
+car.clientWidth` and toggles `.atStart`/`.atEnd` on the shelf itself, run on
+every scroll and once before the first paint. Three CSS states off those two
+classes -- fade only the far edge, only the near edge, or (both, if a shelf
+ever holds too few cards to scroll at all) neither -- replace the one
+unconditional mask 5.288 shipped, and the arrow at whichever end is
+`opacity:0 !important` over its own hover rule, not just quiet until
+hovered.
+
+Also given `#dMain` a 24px radius to match the drawers' own (was 20px, set
+before 24 was the number anything on this page used).
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
