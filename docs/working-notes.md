@@ -8274,6 +8274,26 @@ plainly). One property, brought in line with its neighbours.
 
 ---
 
+### 5.304 A top that scrolled content hit instead of faded into
+
+`#dMain` (the Insights page's own content card) owns its own scroll and its
+own rounded top corner, and `overflow-y:auto` clips whatever scrolls past
+that corner clean -- a card sliced flat across its own middle, no different
+in kind from the row `.dFilters` already exists to fix further down the
+same page, just further up, at the very top, with nothing there to fade it.
+`.dTopFade`, a zero-height div sticking flush with that same corner
+(`top:-32px`, the same cancelled-padding trick `.dFilters` uses, since
+sticky's `top` reads off #dMain's padding edge, 32px short of the corner it
+needs to sit on), fades from `--pageBg` to `--pageBg0` over 56px -- the
+card's own colour to nothing, so whatever is currently scrolled to the top,
+heading or card, dissolves into the ground it's sitting on rather than
+stopping dead against it. One rule, reused by every `.dash` variant that
+carries this markup (`--pageBg` is already themed and re-themed per
+version), and zero height of its own -- a matching negative margin gives
+the space back -- so it never pushes the heading down.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

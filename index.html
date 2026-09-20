@@ -496,6 +496,21 @@
        either side is the page's own established rhythm, untouched */
     padding:32px 40px 60px;
   }
+  /* Sticks flush with #dMain's own rounded top the same way .dFilters
+     sticks flush with it lower down (top:-32px cancels the same 32px
+     padding, for the same reason: sticky's `top` reads off the padding
+     edge, 32px short of the corner it needs to sit on). Zero height of
+     its own -- the negative margin gives the space back to whatever comes
+     after it -- so it never pushes the heading down, only sits over
+     whatever has scrolled up to meet it. */
+  .dash .dTopFade{
+    position:sticky;top:-32px;z-index:6;pointer-events:none;
+    height:56px;margin-bottom:-56px;
+    background:linear-gradient(to bottom,
+      var(--pageBg) 0,
+      var(--pageBg) 30%,
+      var(--pageBg0) 100%);
+  }
   .dash h1{font-size:26px;font-weight:500;letter-spacing:-0.5px;margin:0 0 22px;}
   .dash h1 span{color:#8b8b86;}
   .dash .dgrid{display:grid;grid-template-columns:1fr 1.26fr;gap:16px;align-items:stretch;height:400px;}
@@ -6584,6 +6599,13 @@
     <div class="nv">Timeline</div>
   </aside>
   <main id="dMain">
+    <!-- #dMain owns its own scroll and its own rounded top corner, so
+         whatever is scrolled to the top used to hit that corner and stop
+         dead -- a card sliced flat rather than fading into the ground it
+         sits on. This sticks to the same top edge and fades from the
+         card's own colour (--pageBg) to nothing, the same recipe .dFilters
+         already uses to fade the list scrolling in behind IT. -->
+    <div class="dTopFade" aria-hidden="true"></div>
     <h1>Health insights</h1>
     <!-- the same two tabs the phone carries, in the same place relative to the
          page's own title: they say what everything below is a list of, so they
