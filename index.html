@@ -4972,9 +4972,8 @@
     top:calc(var(--v4haloY) - var(--v4haloR));
     width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
     transform:translateX(-50%);
-    pointer-events:none;will-change:transform;
+    pointer-events:none;
     background:radial-gradient(closest-side, var(--v4haloStops));
-    animation:v4Breath 11s ease-in-out infinite;
   }
   /* the card's corner is the phone's share button, not the expand arrows */
   body.b5 #organSlot .dcExpand{display:none;}
@@ -5308,15 +5307,12 @@
     --v4haloR:365px;
     --v4haloY:-151px;
   }
-  /* The light breathes: one slow swell out to 1.21 and back, eleven seconds a
-     cycle. It scales about the circle's own centre, which is above the screen,
-     so the visible cap widens and brightens together — at a given row the
-     gradient is a smaller fraction of a larger radius — rather than sliding.
-     Composited on the transform, and stilled for anyone who asks for less. */
-  @keyframes v4Breath{
-    0%, 100%{transform:translateX(-50%) scale(1);}
-    50%     {transform:translateX(-50%) scale(1.21);}
-  }
+  /* The light is static: it used to breathe, a slow swell scaling about the
+     circle's own centre, but the animated transform kept promoting the
+     gradient to its own composited layer and re-rasterising it every frame,
+     and the layer's edge is where the hard line kept getting reported --
+     across the organ, across the card, wherever a halo sat. A still gradient
+     never re-rasterises after paint, so there is no edge left to see. */
   body.v5 #mHeroOrgan .v4Halo{
     display:block;position:absolute;left:50%;
     /* --v4haloY is the centre in the PHONE's coordinates; this copy lives in
@@ -5330,13 +5326,8 @@
     top:calc(var(--v4haloY) - var(--v4heroTop, 109px) - var(--v4haloR));
     width:calc(var(--v4haloR) * 2);height:calc(var(--v4haloR) * 2);
     transform:translateX(-50%);
-    z-index:2;pointer-events:none;will-change:transform;
+    z-index:2;pointer-events:none;
     background:radial-gradient(closest-side, var(--v4haloStops));
-    animation:v4Breath 11s ease-in-out infinite;
-  }
-  @media (prefers-reduced-motion: reduce){
-    body.v5 #mHeroOrgan .v4Halo,
-    body.b5 #organSlot .v4Halo{animation:none;}
   }
   /* The light theme carries no halo. It is light thrown on a surface, and it
      only reads as that on a dark one -- on the pale ground it turned into a
@@ -5365,15 +5356,6 @@
     background:radial-gradient(closest-side, var(--v4haloStops));
     opacity:var(--heroLightK, 1);
     transform:translateX(-50%) translateY(var(--heroLift, 0px));
-    animation:v4BreathTop 11s ease-in-out infinite;
-  }
-  /* the same breath, carrying the lift through so the swell does not drop it */
-  @keyframes v4BreathTop{
-    0%, 100%{transform:translateX(-50%) translateY(var(--heroLift, 0px)) scale(1);}
-    50%     {transform:translateX(-50%) translateY(var(--heroLift, 0px)) scale(1.21);}
-  }
-  @media (prefers-reduced-motion: reduce){
-    body.v5 #phone::before{animation:none;}
   }
   body.light.v5 #phone::before{display:none;}
 

@@ -8205,6 +8205,33 @@ hidden the one thing the shot opens on.
 
 ---
 
+### 5.301 The halo's breath was leaving a line behind
+
+A straight horizontal line kept getting reported wherever `.v4Halo` sits --
+behind the organ silhouette in the phone's V5 header, across the desktop
+card's organ-and-gauge column, next to the status bar's clock and battery.
+Three different hosts, one shared cause: the halo is a large radial-gradient
+div, and it was breathing -- `animation:v4Breath 11s ease-in-out infinite`
+(and its `v4BreathTop` twin for the copy that echoes above the phone's
+scroller), a slow `scale(1)` to `scale(1.21)` and back. An animated `transform`
+promotes the element to its own composited layer, and that layer gets
+rasterised fresh every frame; at whatever row its box (or the `overflow:hidden`
+clip it sits inside) lands on a fractional pixel, the resample leaves a seam --
+worse than the static 8-bit banding `.v4Halo::after`'s noise film was already
+built to hide, because it is a moving edge rather than a fixed one, and no
+single screenshot ever showed the same row twice.
+
+The fix is not a bigger gaussian or another film of noise: it is removing the
+one thing forcing a re-rasterise. `animation:v4Breath` / `v4BreathTop` is gone
+from all three rules that carried it (`body.b5 #organSlot .v4Halo`,
+`body.v5 #mHeroOrgan .v4Halo`, `body.v5 #phone::before`), along with the
+`@keyframes` themselves and the `will-change:transform` hints that existed
+only to prep for that animation. The halo now paints once and sits there --
+static, as asked -- and with nothing left to re-rasterise, the line has
+nowhere to appear.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
