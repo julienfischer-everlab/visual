@@ -8089,6 +8089,49 @@ a better pairing for what is on screen than either line had before.
 
 ---
 
+### 5.298 One clock per particle, not one clock for the field
+
+5.297's dot-to-universe morph moved every one of the nine thousand
+particles on the same `e` -- the whole field arriving in lockstep, which
+is a dissolve, not particles finding their own way. Three notes on it
+("particles should appear progressively, more scroll more particles",
+"some particles should navigate faster than others, not all at the same
+speed", and separately "the first dot should stay in the centre, smaller
+and smaller") turned out to be two problems, not three.
+
+Each particle now carries its own fixed stagger (`pStg`, set once at
+build time, a plain `Math.random()`), which slices out its own share of
+a key's local progress to actually move across: `g = pStg[i] * 0.65`,
+then the particle's own `ei = smooth((lp - g) / (1 - g))`. A particle
+with `g` near 0 starts the moment the key does and takes the whole span
+to arrive; one nearer the 0.65 ceiling waits, then closes its own,
+shorter, remaining distance -- faster, because it has less of the key
+left to do it in. Both complaints came out of that one number: a particle
+isn't there at all (it is still at `A`'s position, which for the dot-to-
+universe leg means invisible, since only particle 0 is lit in the `dot`
+state) until its own window opens, which is what makes more of the field
+visible as the scroll advances rather than the same count fading up
+together; and a later start finishing at the same place in less local
+progress is a particle visibly overtaking the ones already under way.
+`cam`/`dof`/`pan`/`zoom` stay on the single global `e` throughout --
+those describe the one camera, which does not have nine thousand copies
+of itself to stagger. Off (`STAG = 0`) under reduced motion, where a
+key's content is asked to arrive exactly on the scroll position and nothing
+should be left mid-flight for its own separate clock to finish later.
+
+The third note was a separate, smaller fix: the "one signal" dot was
+never pinned to the centre once the universe state took over -- particle
+0 has a position in `uni` like any of the other nine thousand, wherever
+the general scatter put it, so the previous cut had it drifting off
+toward wherever that happened to be rather than staying the one point the
+shot opened on. `uni.x[0]`/`uni.y[0]` are now forced to zero, the same
+fix already in place for the `dot` state itself (5.297), so the dot
+holds dead centre through the whole reveal and only ever reads as
+smaller -- the same particle throughout, not a hand-off to a stranger
+nearby.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

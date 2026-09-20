@@ -14710,7 +14710,7 @@
     // per particle and fixed for the life of the page: which ink, the authored
     // opacity, the size, three phases, and which organ it belongs to in the
     // spatial field
-    let pInk, pA, pR, pH0, pH1, pH2, pGrp, pFlow;
+    let pInk, pA, pR, pH0, pH1, pH2, pGrp, pFlow, pStg;
     const ST = {};                 // the states, each four Float32Arrays
     const lines = [];              // the copy blocks, with the range each lives in
     let card, cardDot, cardOrgan, cardAge, cardDelta, legend, phoneEl, hintEl;
@@ -14974,6 +14974,11 @@
         uni.v[i] = 1;
         uni.a[i] = pA[i]; uni.r[i] = pR[i];
       }
+      // the dot does not go anywhere when the universe arrives around it --
+      // it stays exactly where it opened, at the centre, reading only as
+      // smaller while everything else grows in around it, the same particle
+      // throughout rather than one that hands off to a stranger nearby
+      uni.x[0] = 0; uni.y[0] = 0;
       ST.uni = uni;
 
       // 03 — the dark. Every point carries on outward past the frame and goes
@@ -15035,7 +15040,7 @@
     function buildParticles(){
       pInk = new Uint8Array(N); pA = new Float32Array(N); pR = new Float32Array(N);
       pH0 = new Float32Array(N); pH1 = new Float32Array(N); pH2 = new Float32Array(N);
-      pGrp = new Uint8Array(N); pFlow = new Uint8Array(N);
+      pGrp = new Uint8Array(N); pFlow = new Uint8Array(N); pStg = new Float32Array(N);
       for (let i = 0; i < N; i++){
         const r = Math.random();
         const ink = r < INK_SHARE ? 0 : r < INK_SHARE + MID_SHARE ? 1 : 2;
@@ -15052,6 +15057,10 @@
         // flow is: a stream of near-white through a warmer cloud
         pFlow[i] = Math.random() < 0.07 ? 1 : 0;
         if (pFlow[i]) pInk[i] = 2;   // the third ink, as the file's flow is
+        // each particle's own start line in the stagger every morph now
+        // runs on (tick) -- 0 is first off the mark, 1 waits for the whole
+        // handoff to nearly clear before it moves at all
+        pStg[i] = Math.random();
       }
       // particle 0 is the one the dot state ever lights (see buildStates):
       // the brightest ink and near-peak alpha, so "a single luminous dot"
@@ -15182,14 +15191,21 @@
       // carry the field.
       const zoomA = kA.zoom != null ? kA.zoom : 1, zoomB = kB.zoom != null ? kB.zoom : 1;
       const zoomK = zoomA + (zoomB - zoomA) * e;
-      // the strands only exist where there is an organ for them to run inside
-      const organK = (kA.st === 'heart' || kA.st === 'lung' ? 1 - e : 0) +
-                     (kB.st === 'heart' || kB.st === 'lung' ? e : 0);
-      // the travel arc: a point takes its own way across rather than the
-      // straight line every other point is taking, which is what makes a morph
-      // read as particles moving and not as one picture sliding into another
-      const arcK = (kA.st === kB.st ? 0 : Math.sin(Math.PI * e)) *
-                   (kA.spread + (kB.spread - kA.spread) * e) * (reduced ? 0.25 : 1);
+      const sameSt = kA.st === kB.st, orgA = kA.st === 'heart' || kA.st === 'lung',
+            orgB = kB.st === 'heart' || kB.st === 'lung';
+      // Every particle used to morph on the same `e` -- the whole field
+      // arriving in lockstep, one dissolve rather than a crowd each finding
+      // its own way there. STAG carves each particle's OWN slice of the key's
+      // local progress to move across (`pStg`, fixed per particle for the
+      // life of the page): 0 starts the moment the key does and takes the
+      // whole span to arrive, nearer 1 waits and then closes its own,
+      // shorter, distance faster. That is both of what was asked for --
+      // "more scroll, more particles" (a particle isn't there at all until
+      // its own window opens) and "some faster than others" (a later start
+      // finishing at the same place means less time to cover the ground) --
+      // from the one number. Off for reduced motion, where a key's content
+      // arrives exactly on its own progress and nothing is left mid-flight.
+      const STAG = reduced ? 0 : 0.65;
 
       ctx.clearRect(0, 0, W, H);
       const batch = makeBatch(ctx);
@@ -15205,6 +15221,14 @@
       const rush = Math.min(1, vel * 26);
 
       for (let i = 0; i < N; i++){
+        // this particle's own share of the key's local progress -- see STAG
+        // above. Same maths as the camera's `e`, just started later and run
+        // over what is left.
+        const g = pStg[i] * STAG;
+        const ei = smooth(clamp01((lp - g) / Math.max(1e-6, 1 - g)));
+        const organK = (orgA ? 1 - ei : 0) + (orgB ? ei : 0);
+        const arcK = (sameSt ? 0 : Math.sin(Math.PI * ei)) *
+                     (kA.spread + (kB.spread - kA.spread) * ei) * (reduced ? 0.25 : 1);
         // `zoomK` on the point's own position, before the arc/drift/flow
         // jitter get added below: those are authored as small, constant
         // screen-scale nudges (a thirteen-thousandth of a world unit of
@@ -15212,14 +15236,14 @@
         // right along with the position would turn a barely-there wobble
         // into the whole frame shaking. Only the point's real position is
         // what the opening dot's magnification is actually for.
-        let x = (A.x[i] + (B.x[i] - A.x[i]) * e) * zoomK;
-        let y = (A.y[i] + (B.y[i] - A.y[i]) * e) * zoomK;
-        let z = A.z[i] + (B.z[i] - A.z[i]) * e;
-        let v = A.v[i] + (B.v[i] - A.v[i]) * e;
+        let x = (A.x[i] + (B.x[i] - A.x[i]) * ei) * zoomK;
+        let y = (A.y[i] + (B.y[i] - A.y[i]) * ei) * zoomK;
+        let z = A.z[i] + (B.z[i] - A.z[i]) * ei;
+        let v = A.v[i] + (B.v[i] - A.v[i]) * ei;
         if (v <= 0.002) continue;
         let flowLift = 0;
-        const au = A.a[i] + (B.a[i] - A.a[i]) * e;
-        const rr = A.r[i] + (B.r[i] - A.r[i]) * e;
+        const au = A.a[i] + (B.a[i] - A.a[i]) * ei;
+        const rr = A.r[i] + (B.r[i] - A.r[i]) * ei;
         if (arcK){
           const ang = pH0[i], amp = arcK * (0.04 + 0.20 * (pH1[i] / 6.2832));
           x += Math.cos(ang) * amp;
