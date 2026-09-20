@@ -7938,6 +7938,47 @@ option") was for reviewing a shot at its own size, not the board.
 
 ---
 
+### 5.295 Five named phases inside the one shot
+
+5.294's dot-to-body pull-back worked as one continuous move, but the brief
+that followed named five distinct phases -- empty to dot, slow zoom-out,
+space travel, universe reveal, body reveal, each with its own character --
+and asked for them explicitly, not just implied by one smooth curve. The
+shot is still one `fill` animation on one canvas; what changed is giving
+each phase its own span of it, named (`PH.dot`, `PH.zoom`, `PH.travel`,
+`PH.universe`), rather than the five arbitrary-looking keys 5.294 shipped.
+
+The two open items were the "dot" itself and the accelerate-then-decelerate
+of phase five. The seed (`.tzSeed`) used to be a binary CSS
+opacity-transition, on for the opening beat and off once the field had
+taken over -- which does not "gradually emerge" (phase one) or read as
+"progressively smaller" (phase two), since a flat dot that only fades
+cannot also shrink. It is JS-driven now, opacity AND scale both a function
+of `u` (`seedAt`): growing 0.55x to 1.6x as it fades up through phase one,
+while the camera itself holds flat (no zoom yet -- that is what makes phase
+one its own beat and not just the first instant of phase two), then
+shrinking 1.6x to 0.35x as it fades back down through phase two, so the
+same dot reads as retreating rather than as a picture cross-fading to a
+smaller one. Phase three (`bodyView.feed`, the ambient particles that
+spiral in from beyond the cloud's own radius) now switches on exactly where
+the seed switches off, at `PH.zoom` -- the "space travel" sensation is
+handed cleanly from the one asset to the other, not overlapped or gapped.
+
+Phase five ("gradually accelerate... then smoothly decelerate") is not a
+separate easing bolted on -- it is what a SINGLE key-to-key blend already
+does. 5.294 had two rates from `.56` to `1` (fast, then a gentler one to the
+settled value); collapsing that into one `smoothU` span from `PH.universe`
+(.64) to a new `PH.settle` (.90) puts the whole accelerate-decelerate arc in
+one continuous curve, with a short flat tail to 1.0 for the residual settle
+rather than a second phase. The morph into the body now starts at
+`PH.universe` and finishes by `PH.settle`, so the shape gathers while the
+camera is still accelerating and lands as it decelerates -- "the body is
+the larger structure the shot has been inside since the dot," which is
+also now the literal last line of the frame's own director's note, rewritten
+phase by phase to match.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
