@@ -689,7 +689,15 @@
      side. Same components, same shells (56px on a 14px radius, 44px pills);
      the arrangement is what changes with the room. */
   .dash .dFilters{
-    position:sticky;top:0;z-index:5;padding-top:26px;
+    /* sticky's `top` is read against #dMain's PADDING edge, which sits
+       32px below its border edge (#dMain's own top padding, 5.288) -- so
+       `top:0` stuck the bar there, 32px short of the card's real top, with
+       nothing painted in the gap it left above itself. -32px cancels that
+       padding out, so the bar sticks flush with the card's own top edge --
+       which is also what dStick()'s "is it stuck" check compares against,
+       so the gap being gone is what let .stuck (and the fade it turns on
+       below) start matching again. */
+    position:sticky;top:-32px;z-index:5;padding-top:26px;
     background:linear-gradient(to bottom,
       var(--pageBg) 0,
       var(--pageBg) calc(100% - var(--dFadeUp, 22px)),
@@ -1980,7 +1988,10 @@
   /* the records' own filter block, pinned as the biomarkers' is, with the
      chips and the search on one row because the desk has the width */
   .dash .dMedBar{
-    position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;
+    /* -32px for the same reason as .dFilters just above: cancels out
+       #dMain's own 32px top padding, so this sticks flush with the card's
+       top instead of 32px short of it. */
+    position:sticky;top:-32px;z-index:5;display:flex;align-items:center;gap:12px;
     padding:18px 0 0;
     background:linear-gradient(to bottom,
       var(--pageBg) 0,

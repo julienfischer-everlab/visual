@@ -7815,6 +7815,35 @@ each looked right at exactly one width apiece.
 
 ---
 
+### 5.292 One offset, reported three ways
+
+Three reports in close succession, all the same bug seen from different
+angles: a gap above the pinned filter chips that should be the card's own
+black; a request to "push the fixed bar up by 32px"; the fixed bar's own
+fade gradient reading as gone, with scrolled rows visible through it.
+
+`#dMain`'s top padding went from 16px to 32px in 5.288, for the h1's sake.
+`.dFilters` and `.dMedBar` are both `position:sticky;top:0` -- and sticky's
+`top` is measured against the scroll container's PADDING edge, not its
+border edge, so `top:0` had always meant "stick 32px short of the card's
+visible top," painted over by nothing, since neither block carries its own
+background there. Below 16px of padding this read as a design choice (a
+sliver of breathing room above a pinned bar); at 32px it read as a mistake,
+which is what it was pointing at.
+
+It also broke the thing that was supposed to *finish* the bar's own fade:
+`dStick()`'s stuck check is `blk.top <= scroller.top + 0.5`, comparing the
+sticky block's edge to the scroll container's BORDER edge -- correct once
+the block sticks flush with it, permanently false once a 32px gap sits
+between them. `.stuck` never matched, so `.dFilters.stuck::after` (the
+second layer that extends solid ground the 40px past the bar's own
+gradient) never turned on, and rows scrolling under the bar's own
+short fade showed through it. One fix for both: `top:-32px` on each block
+cancels the padding out, so they stick flush with the border edge --
+exactly what the stuck check was already written to expect.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
