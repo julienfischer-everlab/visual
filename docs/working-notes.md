@@ -7844,6 +7844,40 @@ exactly what the stuck check was already written to expect.
 
 ---
 
+### 5.293 A card that opts out of the wine, and the last of the padding
+
+**"Why did you change this bg? Keep same bg as the cards, colour 181818."**
+About Desktop V3's organ card, wine-tinted since before this session --
+`body.b4 .dash .dcard, .dcard.bcard, .dcard.scard, .hiCard, .dcard.organ
+{background:#280707}`, one rule for every card the page has, in both
+themes ("the same #280707 light or dark, because it is the organ's ground
+rather than the page's surface"). Said so rather than taking the blame for
+a design already there, then made the change asked for: the organ card
+alone comes out of that rule and gets `#181818` instead, `:not(.organTint)`
+so the separate user-facing toggle of the same name -- which paints the
+same wine tint onto any organ card, on any page, when switched on by hand
+-- still wins if someone turns it on here too. The shared WebGL canvas
+that draws INTO that card needed the same split: its clear colour used one
+`tint` flag for `organTint`, `b4` and `v4` alike, so leaving `b4` in it
+would have kept painting the canvas wine under a card that no longer is.
+`b4` came out of `tint`; a new `v3Neutral` flag (`b4` without `organTint`)
+clears the canvas to `#181818` on its own, so the rectangle problem 5.290
+fixed doesn't reopen here.
+
+**"Too much top padding... total padding top is 24px" / "padding top fixed
+bar 24px."** Two more angles on the pinned filter blocks 5.292 just fixed
+the sticking of. `.dFilters`'s own `padding-top` was 26px, `.dMedBar`'s was
+18px -- both set to 24px. But the biomarkers block also carries `body.b2
+.dash .dRow{margin-top:34px}`, breathing room under the summary cards in
+normal flow, written before this block could ever pin itself to the top of
+the screen. Pinned, there are no summary cards above it to breathe under,
+and the same 34px just reads as too much padding on a bar sitting flush
+against the card's own edge -- which is what "reduce by 32" and "total
+24px" were both pointing at. `.dFilters.stuck .dRow{margin-top:0}` collapses
+it exactly when stuck, leaving the natural, unpinned spacing alone.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

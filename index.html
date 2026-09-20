@@ -546,6 +546,11 @@
   body.b2 .dash .dcard.bcard{flex:0 0 211px;}
   body.b2 .dash .drow .hiCard{height:210px;box-sizing:border-box;}
   body.b2 .dash .dRow{margin-top:34px;}
+  /* that 34px was breathing room under the summary cards, in normal flow --
+     pinned to the top of the scroller, there are no summary cards above it
+     any more to breathe under, and the same gap just reads as too much
+     padding on a bar sitting flush against the card's own edge. */
+  body.b2 .dash .dFilters.stuck .dRow{margin-top:0;}
   body.b2 .dash .olist{top:64px;bottom:24px;display:flex;flex-direction:column;}
   body.b2 .dash .olist .or{flex:1;padding:0 2px;}
   /* ---- V2's organ card, to the reference ---------------------------------
@@ -697,7 +702,7 @@
        which is also what dStick()'s "is it stuck" check compares against,
        so the gap being gone is what let .stuck (and the fade it turns on
        below) start matching again. */
-    position:sticky;top:-32px;z-index:5;padding-top:26px;
+    position:sticky;top:-32px;z-index:5;padding-top:24px;
     background:linear-gradient(to bottom,
       var(--pageBg) 0,
       var(--pageBg) calc(100% - var(--dFadeUp, 22px)),
@@ -1992,7 +1997,7 @@
        #dMain's own 32px top padding, so this sticks flush with the card's
        top instead of 32px short of it. */
     position:sticky;top:-32px;z-index:5;display:flex;align-items:center;gap:12px;
-    padding:18px 0 0;
+    padding:24px 0 0;
     background:linear-gradient(to bottom,
       var(--pageBg) 0,
       var(--pageBg) calc(100% - var(--dFadeUp, 22px)),
@@ -4845,15 +4850,19 @@
   body.b4 .dash .dcard,
   body.b4 .dash .dcard.bcard,
   body.b4 .dash .dcard.scard,
-  body.b4 .dash .hiCard,
-  body.b4 .dash .dcard.organ{background:#280707;}
+  body.b4 .dash .hiCard{background:#280707;}
   /* body.light.b2 .dash .dcard.organ carries one more class, so the light
      theme needs saying again here rather than left to the b4 rule above */
   body.light.b4 .dash .dcard,
   body.light.b4 .dash .dcard.bcard,
   body.light.b4 .dash .dcard.scard,
-  body.light.b4 .dash .hiCard,
-  body.light.b4 .dash .dcard.organ{background:#280707;}
+  body.light.b4 .dash .hiCard{background:#280707;}
+  /* the organ card stays the shell's neutral tone rather than taking the
+     wine tint the rest of this page's cards do, in both themes -- unless
+     organTint's own toggle (3167) has asked for the tint there explicitly,
+     which :not() lets keep winning regardless of which rule comes later */
+  body.b4:not(.organTint) .dash .dcard.organ,
+  body.light.b4:not(.organTint) .dash .dcard.organ{background:#181818;}
 
   /* ---- Desktop V5: V1 reading the organ the way the phone does -------------
      Same dashboard, same cards, two things changed. The organ card carries the
@@ -19188,8 +19197,12 @@
       // the tint is the organ's own ground, so it overrides both the card
       // surface and the theme — the canvas clears to exactly the card
       // V3's whole header keeps the organ's ground, so its card is tinted too
-      const tint = flat && (cls.contains('organTint') ||
-                            cls.contains('b4') || cls.contains('v4'));
+      const tint = flat && (cls.contains('organTint') || cls.contains('v4'));
+      // V3's own card (b4) stopped taking the wine tint by default -- it only
+      // still does under organTint's own explicit toggle, which is `tint`
+      // above already. Otherwise it clears to the same neutral --shellBg
+      // tone the card's own CSS now paints (4849), not the header's ground.
+      const v3Neutral = flat && cls.contains('b4') && !cls.contains('organTint');
       // V4 has no card under the organ at all — it clears to the header itself,
       // so there is no rectangle to see against the background. That header is a
       // neutral page surface, so it has a reading per theme like any other.
@@ -19203,6 +19216,7 @@
                              (V6_HEAD - V6_HEAD * v5HeadP) / 255]
                           : [0.0, 0.0, 0.0])                // #000, V4's header
                : tint ? [0.1569, 0.0275, 0.0275]           // #280707, the tinted card
+               : v3Neutral ? [0.0941, 0.0941, 0.0941]      // #181818, V3's card, off the tint now
                // the card's ground is --pageBg, but its own background is a
                // 6% white wash OVER that ground (body.b5 .dcard.organ) -- the
                // canvas sits above the card's background and below its text,
@@ -19215,6 +19229,7 @@
                :        [0.1330, 0.0240, 0.0240];          // #220606, the organ ground
       const lt = bare             ? [0.9255, 0.9255, 0.9176]   // #ececea, the same in light
                : tint             ? [0.1569, 0.0275, 0.0275]
+               : v3Neutral        ? [0.0941, 0.0941, 0.0941]   // #181818, same in light as dark
                : lift             ? [0.9725, 0.9725, 0.9725]   // #f8f8f8, V5's light card
                : flat === 'dash'  ? [0.9569, 0.9373, 0.9294]   // #f4efed, the light card
                : flat === 'bento' ? [0.9570, 0.9370, 0.9290]   // #f4efed, the light card
