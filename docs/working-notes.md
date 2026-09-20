@@ -8132,6 +8132,43 @@ nearby.
 
 ---
 
+### 5.299 Earlier company, a bigger universe, a wider body
+
+Four notes on 5.297/5.298, arriving in a run: the field around the dot
+should start "right after the first scroll", the dot "should feel...not
+alone since the beginning", the universe the body gathers out of should
+be bigger, and the body itself "should zoom out more". All four are the
+same shape of note -- the opening was still too close and too late --
+and landed on the timeline and the universe's own build.
+
+Phase one (dot alone) was three keys over the first 9.5% of the track;
+it is two keys over the first 2% now, and the field starts fading up
+immediately after -- by 6%, not ~21%. The dot is only ever truly by
+itself for the first couple of percent of the scroll, which is what
+"not alone since the beginning" asked for: not zero, but as close to it
+as a phase that still needs to exist at all can be.
+
+`buildStates`' `uni` -- the cluster and free-floating radii both -- is
+roughly a third wider in every dimension than 5.297 shipped. The body
+that gathers out of it (`organInto`) is the same fixed size it always
+was, so a bigger field to gather FROM is what makes the convergence read
+as a bigger pull-back, not a change to the body itself. Giving the
+universe more of the track to open out into (phase three now runs to
+36%, not 33%, over three keys instead of two) is what keeps a bigger
+field from reading as merely a slower reveal of the same one.
+
+And the body's own key had its `cam` cut from 1.25 to 0.15 -- down from
+the universe's 0.65, not up. 5.297's read of "the pull-back's rate
+should be steeper here" pushed `cam` further in the direction it had
+been going the whole page, which is a bigger push IN: the body arrived
+close and cropped, filling most of the frame. What "zoom out more"
+wanted was the opposite direction entirely -- `cam` actually falling
+across this key, a real retreat rather than a continued advance, so the
+body settles small and whole in the middle of a mostly black frame, the
+"larger structure" it came out of still legible as space around it.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

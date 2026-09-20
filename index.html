@@ -14772,32 +14772,36 @@
     // it only ever touches the phase it was built for.
     const KEYS = [
       // one, empty to an oversized dot: no camera move yet, only the
-      // magnification collapsing -- fast at first, easing into the
-      // ordinary close-up phase two starts from ("retreating faster than
-      // the dot itself is moving")
+      // magnification collapsing fast -- and short, because the dot reads
+      // as alone for exactly as long as this phase lasts. Two keys, not
+      // three: the field starts arriving at the very next key rather than
+      // after a separate settle, so the dot is only ever truly by itself
+      // for the first couple of percent of the scroll.
       { at: 0.000, st: 'dot', cam: -0.25, zoom: 180, spread: 0.00, dof: 0.30, pan:  0.10 },
-      { at: 0.045, st: 'dot', cam: -0.25, zoom:  10, spread: 0.00, dof: 0.48, pan:  0.08 },
-      { at: 0.095, st: 'dot', cam: -0.25, zoom:   1, spread: 0.00, dof: 0.62, pan:  0.06 },
-      // two, travel through particles: the dot resolves into the universe
-      // cloud: mostly still the one dot (v blends in from 0), but the
-      // camera has already pushed into the cloud's own near depths, so
-      // whichever of its points end up close pass large and recede as the
-      // rest keep fading up around them
-      { at: 0.210, st: 'uni',  cam:  0.20, spread: 0.75, dof: 0.85, pan:  0.00 },
+      { at: 0.020, st: 'dot', cam: -0.25, zoom:   9, spread: 0.00, dof: 0.45, pan:  0.09 },
+      // two, travel through particles: the field starts fading up around
+      // the dot almost immediately (by 6%, not the ~10% this used to take),
+      // so it stops reading as alone right after the reader starts
+      // scrolling rather than partway through the first phase
+      { at: 0.060, st: 'uni',  cam:  0.05, spread: 0.65, dof: 0.55, pan:  0.04 },
       // three, the universe reveal: still one state (nothing morphs, only
-      // the camera and the defocus), density and depth building as it goes
-      { at: 0.330, st: 'uni',  cam:  0.62, spread: 1.00, dof: 1.00, pan: -0.05 },
-      // four, the body reveal: the pull-back's rate over scroll is steeper
-      // here than anywhere in two or three (cam covers more ground in less
-      // of the track) -- the one smooth() blend across the whole span is
-      // what makes that read as accelerating into the shape and easing out
-      // of it, rather than a speed bolted on top
-      { at: 0.420, st: 'body', cam:  1.25, spread: 0.00, dof: 0.18, pan: -0.10 },   // resolves, and settles
+      // the camera and the defocus), density and depth building progressively
+      // as it goes, over more of the track than before -- a bigger cloud
+      // (buildStates) needs more room to open out into before it reads as
+      // reached rather than merely started
+      { at: 0.220, st: 'uni',  cam:  0.35, spread: 0.90, dof: 0.85, pan: -0.02 },
+      { at: 0.360, st: 'uni',  cam:  0.65, spread: 1.00, dof: 1.00, pan: -0.06 },
+      // four, the body reveal: `cam` actually falls here, from the universe's
+      // 0.65 back down to 0.15 -- a real pull-back rather than a continued
+      // push-in, so the body settles wider in frame, with room around it,
+      // instead of arriving already close. The one smooth() blend across
+      // the whole span is what makes that read as accelerating into the
+      // shape and easing out of it, rather than a speed bolted on top.
+      { at: 0.470, st: 'body', cam:  0.15, spread: 0.00, dof: 0.18, pan: -0.09 },   // resolves, and settles wide
       // the release: a beat of black (title card) before the feature itself
-      // starts at heart, unchanged from here on but for the ten-thousandths
-      // this shifted to make room above
-      { at: 0.460, st: 'dark',  cam:  1.35, spread: 1.00, dof: 1.00, pan: -0.12 },
-      { at: 0.520, st: 'dark',  cam:  1.50, spread: 1.00, dof: 1.00, pan: -0.15 },   // held; the title carries the motion
+      // starts at heart, unchanged from here on
+      { at: 0.495, st: 'dark',  cam:  0.30, spread: 1.00, dof: 1.00, pan: -0.12 },
+      { at: 0.545, st: 'dark',  cam:  0.45, spread: 1.00, dof: 1.00, pan: -0.15 },   // held; the title carries the motion
       { at: 0.600, st: 'heart', cam:  0.20, spread: 0.55, dof: 0.45, pan: -0.07 },   // forming
       { at: 0.655, st: 'heart', cam: -0.03, spread: 0.00, dof: 0.13, pan: -0.14 },   // formed
       { at: 0.722, st: 'heart', cam:  0.05, spread: 0.00, dof: 0.13, pan: -0.20 },   // held, reading read
@@ -14815,10 +14819,10 @@
     // (signal, then the body, then the universe) -- swapped rather than
     // reworded, since the two lines already made this argument either way.
     const COPY = [
-      { a: 0.010, b: 0.090, cls: 'lpLow',         t: 'It all starts with one signal.' },
-      { a: 0.140, b: 0.310, cls: 'lpLow',         t: 'Millions of signals, from across your body.' },
-      { a: 0.345, b: 0.415, cls: 'lpLow',         t: 'Your body is constantly sending them.' },
-      { a: 0.468, b: 0.572, cls: 'lpMid lpTitle', t: 'Look closer.' },
+      { a: 0.010, b: 0.100, cls: 'lpLow',         t: 'It all starts with one signal.' },
+      { a: 0.150, b: 0.340, cls: 'lpLow',         t: 'Millions of signals, from across your body.' },
+      { a: 0.385, b: 0.455, cls: 'lpLow',         t: 'Your body is constantly sending them.' },
+      { a: 0.503, b: 0.593, cls: 'lpMid lpTitle', t: 'Look closer.' },
       { a: 0.600, b: 0.672, cls: 'lpLow',         t: 'Your organs age differently.' },
       { a: 0.686, b: 0.744, cls: 'lpLow',         t: 'Some exactly as they should.' },
       { a: 0.792, b: 0.868, cls: 'lpLow',         t: 'Others may be ageing faster.' },
@@ -14949,22 +14953,26 @@
       // one of seventy loose clusters and the rest float free, which is the
       // difference between a sky and a sample. The centre is deliberately the
       // thinnest part -- the camera flies through it, and a dense middle is a
-      // wall rather than a volume.
+      // wall rather than a volume. Spread further out than the first cut of
+      // this (every radius here is roughly a third wider): the body that
+      // gathers out of it (KEYS' `body` key) is the same fixed size, so a
+      // bigger field it is drawn from reads as more of a pull-back to reach,
+      // not a change to the body itself.
       const uni = newState();
       const CLN = 70, cx = [], cy = [], cz = [], cs = [];
       for (let k = 0; k < CLN; k++){
-        const r = 0.55 + 1.15 * Math.sqrt(Math.random()), th = Math.random() * 6.2832;
-        cx[k] = Math.cos(th) * r * 1.30;
-        cy[k] = Math.sin(th) * r * 0.82;
-        cz[k] = -1.0 + Math.random() * 2.8;
-        cs[k] = 0.09 + 0.20 * Math.random();
+        const r = 0.75 + 1.55 * Math.sqrt(Math.random()), th = Math.random() * 6.2832;
+        cx[k] = Math.cos(th) * r * 1.55;
+        cy[k] = Math.sin(th) * r * 0.95;
+        cz[k] = -1.3 + Math.random() * 3.6;
+        cs[k] = 0.10 + 0.24 * Math.random();
       }
       for (let i = 0; i < N; i++){
         if (i % 3 === 0){                       // free floating
-          const r = 0.62 + 1.25 * Math.sqrt(Math.random()), th = Math.random() * 6.2832;
-          uni.x[i] = Math.cos(th) * r * 1.42;
-          uni.y[i] = Math.sin(th) * r * 0.92;
-          uni.z[i] = -1.1 + Math.random() * 3.0;
+          const r = 0.85 + 1.70 * Math.sqrt(Math.random()), th = Math.random() * 6.2832;
+          uni.x[i] = Math.cos(th) * r * 1.75;
+          uni.y[i] = Math.sin(th) * r * 1.15;
+          uni.z[i] = -1.4 + Math.random() * 3.8;
         } else {
           const k = (i * 7919) % CLN, sp = cs[k];
           uni.x[i] = cx[k] + gauss() * sp * 1.35;
