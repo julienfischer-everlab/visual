@@ -2547,8 +2547,14 @@
   .tzScript li[data-i]{padding-left:32px;}
   .tzProg{position:absolute;left:0;width:2px;border-radius:1px;background:rgba(242,229,224,.1);overflow:hidden;}
   .tzProg i{position:absolute;left:0;top:0;width:100%;height:0;background:#F78359;}
-  .tzNav button.play{width:auto;padding:0 9px;font-size:10px;letter-spacing:.08em;}
+  .tzNav button.play, .tzNav button.zoom{width:auto;padding:0 9px;font-size:10px;letter-spacing:.08em;}
   .tzNav button.play.on{background:rgba(247,131,89,.16);border-color:rgba(247,131,89,.5);}
+  /* the full-screen control: every frame's own, for reviewing a shot at its
+     size rather than the board's -- the stage itself goes full-screen, bar
+     and notes left behind, since it is the shot being reviewed and not the
+     script around it */
+  .tzStage:fullscreen, .tzStage:-webkit-full-screen{width:100vw;height:100vh;max-width:none;
+    aspect-ratio:auto;border-radius:0;border:none;margin:0;background:#000;}
   .tzScript li .tc{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:10.5px;color:rgba(242,229,224,.4);padding-top:2px;}
   .tzScript li .vo{color:#f2e5e0;}
   .tzScript li .vo.silent{color:rgba(242,229,224,.45);}
@@ -2591,11 +2597,22 @@
   .tzSys li code{font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:rgba(242,229,224,.5);margin-left:6px;}
 
 
-  /* scenes 01 and 02: the universe of dots -- depth, drift, zoom */
-  .tzUni{position:absolute;inset:0;overflow:hidden;background:#000;}
-  .tzUni .zoom{position:absolute;inset:0;transform-origin:50% 50%;}
-  .tzUni .lay{position:absolute;inset:-30%;animation:tzVac linear infinite;}
-  .tzUni .lay i{position:absolute;border-radius:50%;}
+  /* scene 01: one continuous shot, dot to universe to body -- one canvas
+     (the Library's own particle view), its `fill` run down from a close,
+     huge scale to the Library's own settled one in JS (teaserCycle), which
+     is the whole pull-back; no CSS zoom or scene cut inside it any more. */
+  .tzUniBody{position:absolute;inset:0;overflow:hidden;background:#000;}
+  .tzUniBody .tzOrgan{left:20%;right:20%;top:2%;height:96%;}
+  /* "more shiny": the body's dots lifted in brightness and a touch of
+     saturation on the canvas itself, so the tile's own drawing stays as it is */
+  .tzUniBody .tzOrgan canvas{filter:brightness(1.35) saturate(1.15);}
+  /* the seed: an explicit dot standing in for the cloud's own centre, which a
+     scattered field has no particle reliably AT -- shown for the opening
+     beat and faded once the field is dense enough to carry the shot alone */
+  .tzSeed{position:absolute;left:50%;top:50%;width:.32cqw;height:.32cqw;min-width:3px;min-height:3px;
+    margin:-.16cqw 0 0 -.16cqw;border-radius:50%;background:#f6f0ec;opacity:0;
+    transition:opacity .4s ease;z-index:2;}
+  .tzSeed.on{opacity:.95;}
   /* the readings, typed: the Card nav annotation's mono, upper case and
      letter-spaced, a filled square before the label and a square cursor that
      types on; the entry fades once it has said its piece */
@@ -2606,32 +2623,6 @@
   .tzM .v{padding-left:1.8cqw;}
   .tzM .sq{display:inline-block;width:1.05cqw;height:1.05cqw;background:#fff;margin-right:.75cqw;}
   .tzM .cur{display:inline-block;width:.85cqw;height:1.2cqw;background:currentColor;margin-left:.35cqw;vertical-align:-.1cqw;}
-  @keyframes tzVac{from{translate:0 0;}to{translate:var(--dx) var(--dy);}}
-  /* 01: the dot close (x10), the pull-back to the field over 2s, then the
-     same move easing on gently to 1x for the rest of the cycle, the readings
-     typing through it -- a 10s cycle ("more screen time, +2s") */
-  /* the move runs at half the rate of the slot -- twice the slot's length,
-     so the shot cuts while the camera is still pulling back, which is what a
-     zoom out that carries into the next shot looks like */
-  .tzUni1 .zoom{animation:tzZoom1 calc(var(--tzCyc,8s) * 2) cubic-bezier(.65,0,.35,1) infinite;}
-  .tzUni1{animation:tzUniFade var(--tzCyc,8s) linear infinite;}
-  @keyframes tzZoom1{0%,3%{scale:10;}24%{scale:1.35;}100%{scale:1;}}
-  @keyframes tzUniFade{0%,100%{opacity:1;}}   /* no fade: the loop's reset is the cut */
-  /* scene 02: the bigger story -- the body, and the chip pinned to it */
-  .tzBody{position:absolute;inset:0;}
-  /* the cloud becoming the body: the frame opens on a loose ball of the
-     body's own particles and they travel into the body (the concept's morph,
-     in the painter) while the camera pulls back a touch, 1.25x to 1x over 3s
-     on an ease-in-out; the chips land as it settles. Then a hard cut back to
-     the cloud (.snap turns the transition off for the jump) and it plays
-     again: no reverse, as a cut in the edit. */
-  .tzBody .tzOrgan{left:20%;right:20%;top:2%;height:96%;transform-origin:50% 50%;opacity:.85;
-    transform:scale(1.25);transition:transform 3s cubic-bezier(.65,0,.35,1),opacity 2.2s ease-in-out;}
-  .tzBody.out .tzOrgan{transform:scale(1);opacity:1;}
-  .tzBody.snap .tzOrgan{transition:none;}
-  /* "more shiny": the body's dots lifted in brightness and a touch of
-     saturation on the canvas itself, so the tile's own drawing stays as it is */
-  .tzBody .tzOrgan canvas{filter:brightness(1.35) saturate(1.15);}
   /* The chips: half the type they were, and written on rather than cut in --
      the count first, then the verdict once the count has finished. The box is
      sized by its letters, so it grows as they are typed, and a square cursor
@@ -14659,8 +14650,7 @@
   // 05-07 are the painter's, the same component the library draws, so the
   // sketch and the product cannot drift apart on the one thing that matters.
   const TZ_SCRIPT = [
-    { tc: '00:00', vo: 'Your body holds millions of signals.', on: 'One dot; a zoom out shows it one of a universe of dots, drifting like a vacuum, in depth and blur; readings type on and go through the zoom out' },
-    { tc: '00:04', vo: 'Together, they tell a bigger story. | But not the full story.', on: 'A cloud of particles travels into the body, the concept\u2019s morph; two chips: 124 biomarkers, 8 years younger; the body holds for the second line' },
+    { tc: '00:00', vo: 'Your body holds millions of signals. | Together, they tell a bigger story. | But not the full story.', on: 'One continuous pull-back: a dot becomes a universe of particles, readings typing through it, then the same particles travel into the body as the camera keeps retreating; two chips land as it settles' },
     { tc: '00:10', vo: 'Introducing | Organ ages.', on: 'Black. Introducing, a beat, then Organ ages, each turning in on a vertical axis' },
     { tc: '00:12', vo: 'A deeper view of your organs.', on: 'The app on a tablet, the organ ages beside the reading; a slow push in' },
     { tc: '00:14', vo: 'Some age exactly as they should.', on: 'The heart held; the arc and the reading hold' },
@@ -15274,13 +15264,11 @@
     wrap.dataset.built = '1';
     // by the label's stem: the organ table says "Lungs" where the pills say "Lung"
     const HEART = ORGANS.findIndex(o => /^heart/i.test(o.label)), LUNG = ORGANS.findIndex(o => /^lung/i.test(o.label));
-    const inkRGB = ['247,131,89', '240,217,168', '246,240,236'];   // the three inks, as the engine has them by default
-    const rnd = (a, b) => a + Math.random() * (b - a);
     const h = [];
     // the sequences in their four acts: a heading in the mono over the first
     // line of each -- Introduction (01-02), New feature (03-06), Value (07),
     // Closure (08-09)
-    const TZ_GROUPS = { 0: 'Introduction', 2: 'New feature', 6: 'Value', 7: 'Closure' };
+    const TZ_GROUPS = { 0: 'Introduction', 1: 'New feature', 5: 'Value', 6: 'Closure' };
     const script = '<div class="tzScript"><div class="tzMono tzEyebrow" style="margin-bottom:2px">Script &amp; timecodes</div><ol id="tzLines">' +
       TZ_SCRIPT.map((l, i) => (TZ_GROUPS[i] ? '<li class="grp tzMono" aria-hidden="true">' + TZ_GROUPS[i] + '</li>' : '') +
         '<li data-i="' + i + '"' + (i === 0 ? ' class="on"' : '') + '><span class="tc">' + l.tc + '</span><span><span class="vo' + (l.vo ? '' : ' silent') + '"><span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + (l.vo ? '\u201C' + l.vo.replace(/ \| /g, ' ') + '\u201D' : 'no VO') + '</span><small>' + l.on + '</small></span></li>').join('') +
@@ -15302,19 +15290,26 @@
     // single word held does). The board is timed to this rather than to the
     // board's own timecodes: a sequence runs its line and then holds a beat,
     // so the cuts fall in the pauses and not over the voice.
-    const VO_CUES = [[0.00, 2.72], [2.72, 6.34], [6.34, 8.30], [8.30, 10.23], [10.23, 12.79],
+    const VO_CUES = [[0.00, 6.34], [6.34, 8.30], [8.30, 10.23], [10.23, 12.79],
                      [12.79, 14.84], [14.84, 17.67], [17.67, 19.61], [19.61, 20.74]];
     const VO_PAUSE = 1.0, VO_TAIL = 2.4;   // the beat after a line; the last one longer, for the black
-    // A line said in two parts divides inside the take: VO_SPLIT is where,
-    // VO_HOLD is how long the board waits before the second part -- silence
-    // it makes, since the reader ran the two together. The board holds the
-    // recording for that beat, so the picture and the voice keep step.
-    const VO_SPLIT = { 1: 4.89, 2: 7.22, 7: 18.69 };
-    const VO_HOLD  = { 1: 2.0,  2: 0.5,  7: 1.5  };
-    const voPieces = i => { const [a, b] = VO_CUES[i], cut = VO_SPLIT[i]; return cut ? [[a, cut], [cut, b]] : [[a, b]]; };
-    const voHold = i => VO_HOLD[i] != null ? VO_HOLD[i] : 0.3;
+    // A line said in several parts divides inside the take: VO_SPLIT is where
+    // (one cut point per division), VO_HOLD is how long the board waits after
+    // each part before the next -- silence it makes, since the reader ran the
+    // parts together. 01 is said in three: the first two run straight into
+    // each other in the take (no hold, the boundary is only a division of the
+    // shot into two thoughts), the third waits its own beat, as before.
+    const VO_SPLIT = { 0: [2.72, 4.89], 1: [7.22], 6: [18.69] };
+    const VO_HOLD  = { 0: [0, 2.0],     1: [0.5],  6: [1.5]  };
+    const voPieces = i => {
+      const [a, b] = VO_CUES[i], cuts = VO_SPLIT[i];
+      if (!cuts) return [[a, b]];
+      const pts = [a, ...cuts, b];
+      return pts.slice(0, -1).map((s, k) => [s, pts[k + 1]]);
+    };
+    const voHold = (i, k) => { const h = VO_HOLD[i]; return h ? (h[k] != null ? h[k] : h[h.length - 1]) : 0.3; };
     // where each part begins inside its own slot, and where the last one ends
-    const voStarts = i => { let o = 0; return voPieces(i).map(([a, b]) => { const at = o; o += (b - a) + voHold(i); return at; }); };
+    const voStarts = i => { let o = 0; return voPieces(i).map(([a, b], k) => { const at = o; o += (b - a) + voHold(i, k); return at; }); };
     const voSpan = i => { const ps = voPieces(i), st = voStarts(i), k = ps.length - 1; return st[k] + (ps[k][1] - ps[k][0]); };
     const SLOT = VO_CUES.map((c, i) => Math.max(2.4, voSpan(i) + (i === VO_CUES.length - 1 ? VO_TAIL : VO_PAUSE)));
     const subKeys = new Set();
@@ -15336,53 +15331,23 @@
       }).join('');
     };
     const frame = (n, title, dur, stage, line, note) =>
-      '<div class="tzFrame' + (n === '01' ? ' on' : '') + '" data-i="' + (+n - 1) + '"><div class="tzBar tzMono"><span><b>' + n + '</b>&nbsp;&nbsp;' + title + '</span><span style="display:flex;gap:14px;align-items:center"><span class="tzDur">' + dur + '</span><span class="tzNav"><button type="button" class="play tzMono" data-play aria-label="Pause">Pause</button><button type="button" data-go="-1" aria-label="Previous frame">&larr;</button><button type="button" data-go="1" aria-label="Next frame">&rarr;</button></span></span></div>' +
+      '<div class="tzFrame' + (n === '01' ? ' on' : '') + '" data-i="' + (+n - 1) + '"><div class="tzBar tzMono"><span><b>' + n + '</b>&nbsp;&nbsp;' + title + '</span><span style="display:flex;gap:14px;align-items:center"><span class="tzDur">' + dur + '</span><span class="tzNav"><button type="button" class="play tzMono" data-play aria-label="Pause">Pause</button><button type="button" data-go="-1" aria-label="Previous frame">&larr;</button><button type="button" data-go="1" aria-label="Next frame">&rarr;</button><button type="button" class="zoom tzMono" data-zoom aria-label="Full screen">Zoom</button></span></span></div>' +
       '<div class="tzStage" id="tzS' + n + '" style="--tzCyc:' + SLOT[+n - 1].toFixed(2) + 's">' + stage + (line.silent ? '' : subtitle(line.text, SLOT[+n - 1], voStarts(+n - 1), voPieces(+n - 1).map(q => q[1] - q[0]))) + '</div>' +
       note.split(/(?=<b>)/).filter(Boolean).map(pt => '<p class="tzNote">' + pt.trim() + '</p>').join('') + '</div>';
-    // 01 and 02 -- the universe of dots. One field in four depths: the far
-    // ones small, dim and blurred, the near ones large and out of focus, the
-    // sharp ones between; every depth drifts the same way at its own speed
-    // (the parallax; one direction, like a pull), and the whole field sits in
-    // a zoom that pulls back over the frame. 01 opens on one dot at the
-    // centre, scaled ten times; the pull-back shows it to be one of many and
-    // then keeps easing back gently while readings surface and go in the
-    // sharp depths -- one sequence, one shot.
-    const universe = (cls, metrics) => {
-      // "more dots filling the screen; less orange, more neutral shiny ones":
-      // the field mostly off-white and sand, a fifth salmon, bright, and dense
-      // the depths far apart, for the parallax: the far ones barely move,
-      // small, dim and well out of focus; the near ones sweep past, large and
-      // soft; the sharp depth between. No glow on any dot. Mostly neutral: a
-      // twelfth salmon, a third sand, the rest off-white.
-      const layers = [
-        { n: 1100, sz: [.8, 1.4], blur: 1.8, op: [.18, .42], drift: 18, dur: 15 },
-        { n: 700, sz: [1.2, 2.2], blur: .8, op: [.38, .72], drift: 62, dur: 15 },
-        { n: 380, sz: [2, 3.2], blur: 0, op: [.7, 1], drift: 150, dur: 15 },
-        { n: 40, sz: [5, 9], blur: 2.4, op: [.2, .45], drift: 300, dur: 15 }
-      ];
-      const pickInkU = () => { const r = Math.random(); return r < 0.08 ? 0 : r < 0.4 ? 1 : 2; };
-      let u = '<div class="tzUni ' + cls + '"><div class="zoom">';
-      layers.forEach((L, d) => {
-        u += '<div class="lay" style="filter:blur(' + L.blur + 'px);--dx:' + (-L.drift) + 'px;--dy:' + (-L.drift * 0.55).toFixed(0) + 'px;animation-duration:' + L.dur + 's">';
-        for (let i = 0; i < L.n; i++){
-          let x, y; do { x = rnd(0, 100); y = rnd(0, 100); } while (cls === 'tzUni1' && Math.hypot(x - 50, y - 50) < 9);   // 01 opens on one dot alone
-          const ink = pickInkU(), sz = rnd(L.sz[0], L.sz[1]);
-          u += '<i style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;width:' + sz.toFixed(1) + 'px;height:' + sz.toFixed(1) + 'px;background:rgb(' + inkRGB[ink] + ');opacity:' + rnd(L.op[0], L.op[1]).toFixed(2) + '"></i>';
-        }
-        u += '</div>';
-      });
-      // 01 opens on one dot: an ordinary one of the sharp depth, at the
-      // centre, on a drift of its own so slow the close-up holds it -- not a
-      // fixed mark
-      if (cls === 'tzUni1') u += '<div class="lay" style="--dx:-6px;--dy:-3px;animation-duration:15s"><i style="left:50%;top:50%;width:4.2px;height:4.2px;margin:-2.1px 0 0 -2.1px;background:rgb(' + inkRGB[2] + ');opacity:.95"></i></div>';
-      u += '</div>' + (metrics ? '<div class="tzMet" id="tzMet"></div>' : '') + '</div>';
-      return u;
-    };
-    const s0 = universe('tzUni1', true);
-    // 02 -- the body: the Library's particle body, exactly, from a cloud and
-    // then whole as the camera pulls back, with the reading's chip landing
-    // as it settles
-    const s2 = '<div class="tzBody"><div class="tzOrgan" id="tzBodyV"></div><div class="tzChip w" id="tzChip2"><span></span><i></i></div><div class="tzChip" id="tzChip"><span></span><i></i></div></div>';
+    // 01 -- one continuous shot, dot to universe to body. A single canvas (the
+    // Library's own particle view, `makeOrganView`) carries the whole thing:
+    // the same cloud that becomes the body opens scattered to a sphere, and
+    // the camera's `fill` -- how large the cloud is drawn -- runs from a
+    // close, huge scale down to the Library's own, so the one dot the shot
+    // opens on is simply that scale before the rest of the cloud has room to
+    // show. No cut inside it: the field is still opening out when the same
+    // particles start travelling into the body, point for point, the
+    // concept's own morph, and the reading's chips land as it settles. An
+    // explicit seed dot (`tzSeed`) sits over the canvas for the first beat,
+    // since a scattered cloud has no dot reliably AT the centre to hold the
+    // opening on; it fades once the field has taken over.
+    const sDot = '<div class="tzUniBody"><div class="tzOrgan" id="tzBodyV"></div><i class="tzSeed" id="tzSeed"></i>' +
+      '<div class="tzMet" id="tzMet"></div><div class="tzChip w" id="tzChip2"><span></span><i></i></div><div class="tzChip" id="tzChip"><span></span><i></i></div></div>';
     // 03 / 08 / 09 -- type on black
     // 03 in two phases: "Introducing", then "Organ ages" -- sentence case,
     // Saans medium, small; each turns in about a horizontal axis (a vertical
@@ -15464,24 +15429,22 @@
       }).join('') +
       '</div></div><div class="tzMoVig"></div></div>';
     h.push('<div class="tzLayout"><div class="tzFocus">' +
-      frame('01', 'Signals', '0:00 \u2013 0:04', s0, { text: '\u201CYour body holds millions of signals.\u201D', cycle: 10 },
-        '<b>Motion.</b> Black, and one dot, close \u2014 an ordinary one, off-white, drifting a little. A zoom out, slow \u2014 about 1.6s for the dot to become one of a universe of dots, already drifting in one direction, the far ones small, dim and soft, the near ones large and out of focus; nothing is pinned to the centre, the dot drifts with the rest. The camera keeps pulling back through the readings and is still moving at the cut: the move is paced to run twice the length of the shot, so the sequence never reaches the end of it. That is the point \u2014 a zoom out that carries on past the cut, not one that parks. The universe drifts consistently in one direction, like a pull \u2014 four depths at four speeds, the far barely moving and the near sweeping past, so it parallaxes hard; the far depths small, dim and well out of focus, the nearest large and soft, the middle sharp. No glow on any dot. Readings type on, letter by letter, the way the Card nav\u2019s annotation does: a filled square, the label in the mono (VO\u2082 MAX, MAX HR, O\u2082 UPTAKE, HRV, GLUCOSE, SPO\u2082\u2026), then the value on the line below (42.8 ML/KG/MIN, 184 BPM, 3.2 L/MIN\u2026), a square cursor typing at 34ms a character and blinking off; the first as the field resolves (about 1.8s in), then 1.4s apart, five a sequence, at staggered places, each holding about 2s and fading. <b>Cut.</b> Hard, to 02, at 10s. <b>Grade.</b> Black; mostly the off-white and the sand, a twelfth salmon, the grain fine; the readings in white at 88%.') +
-      frame('02', 'The bigger story', '0:04 \u2013 0:10', s2, { text: '\u201CTogether, they tell a bigger story.\u201D | \u201CBut not the full story.\u201D' },
-        '<b>Motion.</b> Open on a cloud of particles, centred: a loose ball about the body\u2019s height, drifting, the body\u2019s own ten thousand dots scattered. At 0.5s they travel \u2014 the concept\u2019s morph, point for point, each dot to its own place in the body along a slight arc \u2014 over 2.4s, while the camera pulls back a touch (1.25x to 1x over 3s), and the cloud is the body: the Library\u2019s own particle body, exactly as the Library page draws it, the strays still drifting round it. As the camera settles, two chips, the same mono in black: 124 BIOMARKERS on white over the left shoulder, then a beat later 8 YEARS YOUNGER in the accent (F78359) over the right. <b>Ease.</b> The morph eases in and out (cubic); ease-in-out on the pull-back (cubic-bezier .65 0 .35 1); the chips cut in, no fade, 0.4s apart. <b>Hold.</b> The body and the chips hold while the second line lands \u2014 \u201CBut not the full story\u201D, its own subtitle, coming once the first has held and gone \u2014 to the 8s mark, still, the strays drifting; no phone, no cut between the two lines. Then a hard cut to black. <b>Note.</b> Every sketch plays through once and cuts back to its start; nothing reverses.') +
-      frame('03', 'Introducing', '0:10 \u2013 0:12', s3, { text: '\u201CIntroducing\u201D | \u201COrgan ages.\u201D' },
-        '<b>Motion.</b> Two phases on black, each a turn on a vertical axis with a fade. \u201CIntroducing\u201D turns in toward the camera from below (rotateX 70\u00B0 to 0, rising about a third of its height) as it fades up (0.5s), holds about a second, then turns on and away (0 to \u221270\u00B0, rising) as it fades (0.5s); \u201COrgan ages\u201D turns in the same way as it goes, and holds to the cut. Sentence case; Saans medium, small (about 45px at 1080p), centred; no scale. <b>Ease.</b> Ease-in-out on both the turn and the fade. <b>Cut.</b> Hard, to 04.') +
-      frame('04', 'A deeper view', '0:12 \u2013 0:14', s5, { text: '\u201CA deeper view of your organs.\u201D' },
+      frame('01', 'Signals to the body', '0:00 \u2013 0:10', sDot, { text: '\u201CYour body holds millions of signals.\u201D | \u201CTogether, they tell a bigger story.\u201D | \u201CBut not the full story.\u201D' },
+        '<b>Motion.</b> One continuous pull-back, no cut inside it. Opens on a single seed dot, close and alone, at scale. As the camera retreats the dot resolves into the same cloud the body is made of, sent out to a loose sphere \u2014 the body\u2019s own thousands of particles, given their own place at random and held there until the shot calls them home; depth alone reads as parallax, the far particles smaller, dimmer and out of focus, the near ones large and soft, the render\u2019s own perspective on every dot in the file. Readings type on through the reveal, the Card nav\u2019s own hand: a filled square, the label in the mono (VO\u2082 MAX, MAX HR, O\u2082 UPTAKE, HRV, GLUCOSE, SPO\u2082\u2026), the value below, a square cursor typing at 34ms a character; the first as the field resolves, then several more, staggered, each holding and fading. About four tenths of the way through, without slowing the camera, the same particles begin travelling \u2014 point for point, along their own slight arc \u2014 into the body, while the pull-back keeps easing on the whole time; the two motions overlap on purpose, so the field is still opening out as the body starts to gather, and the strays keep drifting round it once it has landed. As the camera settles on the finished body, two chips land in the same mono: 124 BIOMARKERS in white over the left shoulder, then a beat later 8 YEARS YOUNGER in the accent over the right \u2014 the body and the chips hold, drifting, while the second line lands, to the cut. <b>Pace.</b> Not one easing the whole way: fast out of the dot, a held beat while the readings resolve, faster again as it goes, gentler where the body settles \u2014 a camera with rhythm, never a stop. <b>Zoom.</b> A full-screen control sits on every frame\u2019s bar, for reviewing the shot at its own size. <b>Cut.</b> Hard, to 02, at 10s. <b>Grade.</b> Black; mostly the off-white and the sand, a twelfth salmon, the grain fine; the readings in white at 88%. <b>Note.</b> The sequence plays through once and cuts back to its start; nothing reverses.') +
+      frame('02', 'Introducing', '0:10 \u2013 0:12', s3, { text: '\u201CIntroducing\u201D | \u201COrgan ages.\u201D' },
+        '<b>Motion.</b> Two phases on black, each a turn on a vertical axis with a fade. \u201CIntroducing\u201D turns in toward the camera from below (rotateX 70\u00B0 to 0, rising about a third of its height) as it fades up (0.5s), holds about a second, then turns on and away (0 to \u221270\u00B0, rising) as it fades (0.5s); \u201COrgan ages\u201D turns in the same way as it goes, and holds to the cut. Sentence case; Saans medium, small (about 45px at 1080p), centred; no scale. <b>Ease.</b> Ease-in-out on both the turn and the fade. <b>Cut.</b> Hard, to 03.') +
+      frame('03', 'A deeper view', '0:12 \u2013 0:14', s5, { text: '\u201CA deeper view of your organs.\u201D' },
         '<b>The plate.</b> A photograph of the app on a phone, shot close and shallow and straight on \u2014 the particle heart above, the arc, then the reading: 36, four years younger. The screen is the only lit thing in the frame and the body falls off into black. This is the reference still, not a sketch: match its framing, its angle and its fall-off. <b>Motion.</b> A slow push in over the sequence (about 7%, then the cut). <b>Ease.</b> Ease-in-out, no hold at either end. <b>In the edit.</b> A screen recording of this same view, shot on the device at the same angle, replaces the still.') +
-      frame('05', 'The right pace', '0:14 \u2013 0:16', s5b, { text: '\u201CSome age exactly as they should.\u201D' },
-        '<b>The plate.</b> The same app on a tablet, wider: every organ age listed down the left with its verdict dot, the reading and its particle organ to the right. Where 04 was one organ close, this is the whole set at a glance \u2014 which is what makes \u201Csome age exactly as they should\u201D land. Shot at the same angle and fall-off as 04, so the two cut together. <b>Motion.</b> The same slow push (about 7%, then the cut). <b>Ease.</b> Ease-in-out. <b>Cut.</b> Hard, to 06.') +
-      frame('06', 'Lungs / older', '0:16 \u2013 0:19', s6, { text: '\u201COthers are ageing faster.\u201D' },
-        '<b>The plate.</b> The phone again, at an angle now and further back \u2014 the heart drawn in the orange, the arc filled past the centre, 44, eight years older. Where 04 was the same organ in the green, this is the turn: the same frame, the other verdict. Match its angle and its fall-off. <b>Motion.</b> The camera moves inside rather than straight in \u2014 the push is centred on the screen, about 9% over the sequence, so it travels into the reading and not into the middle of the plate. <b>Ease.</b> Ease-in-out, no hold at either end. <b>In the edit.</b> The arc\u2019s colour going and the orange portion growing from the centre to the right, the number counting 37\u219244, can be played live on the device and shot in one take.') +
-      frame('07', 'All of them', '0:19 \u2013 0:23', s7, { text: '\u201CEverlab tracks them all, for better decisions.\u201D' },
-        '<b>The frame.</b> Every organ age at once, each cell the product\u2019s own: the particle organ, the age scale with the coloured gap and the indicator, the age, the verdict. Nine of them, the app\u2019s nine, with the app\u2019s numbers. <b>The plate.</b> The grid on a tablet, turned away from the camera and shot shallow \u2014 the same device and the same fall-off as 05, so the two belong to one shoot. The screen is the only lit thing; the far edge goes soft and dark. <b>Motion.</b> A slow drift back over the whole sequence \u2014 a small move, still going as it settles, not a pull. The cards come up one after the other in reading order as it goes, each fading in over half a second, evenly spaced so the last is up with a beat to spare. <b>Ease.</b> Ease-out on the drift; the cards fade, they do not cut. <b>Why.</b> The count is what the line says, so the frame should be felt as a count and not read as a chart \u2014 nine things arriving is the argument.') +
-      frame('08', 'Look closer', '0:23 \u2013 0:26', s8, { text: '\u201CAvailable now.\u201D | \u201CLook closer.\u201D' },
-        '<b>As 03.</b> Two phases on black, each a turn on a vertical axis with a fade: \u201CAvailable now\u201D turns in toward the camera as it fades up (0.5s), holds about a second, turns on and away as it fades; \u201CLook closer\u201D comes the same way and holds to the cut. Sentence case, no full stop, Saans medium, small (about 45px at 1080p), centred. <b>Cut.</b> Hard, to black \u2014 no fade out. The cut is the beat before the mark.') +
-      frame('09', 'Closure', '0:26 \u2013 0:30', s9, { text: '\u201CEverlab\u201D' },
-        '<b>Motion.</b> The wordmark fades up (0.5s), holds 1.3s, fades (0.4s). Beat. The accent dot scales in from 60% (0.4s, ease-out), holds, fades. Beat. Black to the end. <b>Rhythm.</b> Three even beats; the dot is the same dot the signals gathered into in 02.') +
+      frame('04', 'The right pace', '0:14 \u2013 0:16', s5b, { text: '\u201CSome age exactly as they should.\u201D' },
+        '<b>The plate.</b> The same app on a tablet, wider: every organ age listed down the left with its verdict dot, the reading and its particle organ to the right. Where 03 was one organ close, this is the whole set at a glance \u2014 which is what makes \u201Csome age exactly as they should\u201D land. Shot at the same angle and fall-off as 03, so the two cut together. <b>Motion.</b> The same slow push (about 7%, then the cut). <b>Ease.</b> Ease-in-out. <b>Cut.</b> Hard, to 05.') +
+      frame('05', 'Lungs / older', '0:16 \u2013 0:19', s6, { text: '\u201COthers are ageing faster.\u201D' },
+        '<b>The plate.</b> The phone again, at an angle now and further back \u2014 the heart drawn in the orange, the arc filled past the centre, 44, eight years older. Where 03 was the same organ in the green, this is the turn: the same frame, the other verdict. Match its angle and its fall-off. <b>Motion.</b> The camera moves inside rather than straight in \u2014 the push is centred on the screen, about 9% over the sequence, so it travels into the reading and not into the middle of the plate. <b>Ease.</b> Ease-in-out, no hold at either end. <b>In the edit.</b> The arc\u2019s colour going and the orange portion growing from the centre to the right, the number counting 37\u219244, can be played live on the device and shot in one take.') +
+      frame('06', 'All of them', '0:19 \u2013 0:23', s7, { text: '\u201CEverlab tracks them all, for better decisions.\u201D' },
+        '<b>The frame.</b> Every organ age at once, each cell the product\u2019s own: the particle organ, the age scale with the coloured gap and the indicator, the age, the verdict. Nine of them, the app\u2019s nine, with the app\u2019s numbers. <b>The plate.</b> The grid on a tablet, turned away from the camera and shot shallow \u2014 the same device and the same fall-off as 04, so the two belong to one shoot. The screen is the only lit thing; the far edge goes soft and dark. <b>Motion.</b> A slow drift back over the whole sequence \u2014 a small move, still going as it settles, not a pull. The cards come up one after the other in reading order as it goes, each fading in over half a second, evenly spaced so the last is up with a beat to spare. <b>Ease.</b> Ease-out on the drift; the cards fade, they do not cut. <b>Why.</b> The count is what the line says, so the frame should be felt as a count and not read as a chart \u2014 nine things arriving is the argument.') +
+      frame('07', 'Look closer', '0:23 \u2013 0:26', s8, { text: '\u201CAvailable now.\u201D | \u201CLook closer.\u201D' },
+        '<b>As 02.</b> Two phases on black, each a turn on a vertical axis with a fade: \u201CAvailable now\u201D turns in toward the camera as it fades up (0.5s), holds about a second, turns on and away as it fades; \u201CLook closer\u201D comes the same way and holds to the cut. Sentence case, no full stop, Saans medium, small (about 45px at 1080p), centred. <b>Cut.</b> Hard, to black \u2014 no fade out. The cut is the beat before the mark.') +
+      frame('08', 'Closure', '0:26 \u2013 0:30', s9, { text: '\u201CEverlab\u201D' },
+        '<b>Motion.</b> The wordmark fades up (0.5s), holds 1.3s, fades (0.4s). Beat. The accent dot scales in from 60% (0.4s, ease-out), holds, fades. Beat. Black to the end. <b>Rhythm.</b> Three even beats; the dot is the same dot the signals gathered into in 01.') +
       '</div>' + script + '</div>');
     h.push('<div class="tzSys">' +
       '<div class="tzCard"><h3 class="tzMono">Palette</h3><ul>' +
@@ -15506,7 +15469,7 @@
         '<li>1920 \u00D7 1080, 24 fps, black ground throughout</li>' +
         '<li>Particles: three inks, opacity carries the anatomy (see the Library page)</li>' +
         '<li>Arc: dashed ticks, portion revealed left to right, indicator at its end</li>' +
-        '<li>Organs for 04, 06, 07 and 08: export stills or frames from the Library page (download button on each tile)</li></ul></div>' +
+        '<li>Organs for 03, 05, 06 and 07: export stills or frames from the Library page (download button on each tile)</li></ul></div>' +
       '</div>');
     wrap.innerHTML = h.join('');
     // the subtitles' fade-out, one keyframes rule per (word count, start,
@@ -15532,7 +15495,7 @@
     // the captions do: the first is up while its part is said and turns away
     // through the hold, the second comes as the second part starts and holds
     // to the cut. Written per frame, since the beats differ.
-    [2, 7].forEach(fi => {
+    [1, 6].forEach(fi => {
       const cyc = SLOT[fi], ps = voPieces(fi), starts = voStarts(fi);
       if (ps.length < 2) return;
       const F = 0.34, pc = t => (Math.max(0, Math.min(cyc, t)) / cyc * 100).toFixed(2);
@@ -15651,6 +15614,22 @@
     lines.forEach(l => l.addEventListener('click', () => show(+l.dataset.i)));
     wrap.querySelectorAll('.tzNav button[data-go]').forEach(b => b.addEventListener('click', () => show(focus + (+b.dataset.go))));
     playBtns.forEach(b => b.addEventListener('click', () => setPlay(!playing)));
+    // the full-screen review: the stage alone goes full, not the bar or the
+    // notes around it -- it is the shot being reviewed
+    const zoomBtns = [...wrap.querySelectorAll('.tzNav button[data-zoom]')];
+    zoomBtns.forEach(b => b.addEventListener('click', () => {
+      const stage = b.closest('.tzFrame').querySelector('.tzStage');
+      if (document.fullscreenElement === stage) document.exitFullscreen();
+      else if (stage.requestFullscreen) stage.requestFullscreen().catch(() => {});
+    }));
+    document.addEventListener('fullscreenchange', () => {
+      zoomBtns.forEach(b => {
+        const stage = b.closest('.tzFrame').querySelector('.tzStage');
+        const on = document.fullscreenElement === stage;
+        b.classList.toggle('on', on);
+        b.textContent = on ? 'Exit' : 'Zoom';
+      });
+    });
     document.addEventListener('keydown', e => {
       if (!document.body.classList.contains('m22') || e.target.matches('input, select, textarea, button')) return;
       if (e.key === 'ArrowRight') show(focus + 1); else if (e.key === 'ArrowLeft') show(focus - 1);
@@ -15724,7 +15703,7 @@
     // rather than in reading order: the cross first, then the corners, so it
     // reads as lights being switched on and not as a wipe. Nothing arrives at
     // the same moment as its neighbour.
-    const gCells = [...wrap.querySelectorAll('#tzS07 .tzMoCell')];
+    const gCells = [...wrap.querySelectorAll('#tzS06 .tzMoCell')];
     const MO_ORDER = [4, 1, 5, 7, 3, 0, 8, 2, 6];
     let gridTimers = [];
     const gridStart = () => {
@@ -15732,20 +15711,20 @@
       gCells.forEach((c, i) => c.classList.toggle('on', i === 4));
       // the reveal runs with the pull-back and finishes with a beat to spare
       const rest = MO_ORDER.length - 1;
-      const step = (SLOT[6] * 1000 - 2100) / Math.max(1, rest);
+      const step = (SLOT[5] * 1000 - 2100) / Math.max(1, rest);
       for (let k = 1; k < MO_ORDER.length; k++){
         const cell = gCells[MO_ORDER[k]];
         if (cell) gridTimers.push(setTimeout(() => cell.classList.add('on'), 1000 + k * step));
       }
-      gridTimers.push(setTimeout(gridStart, SLOT[6] * 1000));   // the camera's own cycle
+      gridTimers.push(setTimeout(gridStart, SLOT[5] * 1000));   // the camera's own cycle
     };
     gridStart();
-    onShow.push(i => { if (i === 6) gridStart(); });
-    // 02: the readings. Real metrics in the Card nav annotation's manner --
+    onShow.push(i => { if (i === 5) gridStart(); });
+    // 01: the readings. Real metrics in the Card nav annotation's manner --
     // the mono, uppercase, letter-spaced, a filled square cursor that types
     // the label on, then the value, blinks off, holds, and the entry goes --
     // seven a cycle at staggered times and places, while the field pulls
-    // back behind them. The cycle runs only while 02 is in focus.
+    // back behind them. The cycle runs only while 01 is in focus.
     const METRICS = [
       ['VO\u2082 MAX', '42.8 ML/KG/MIN'], ['MAX HR', '184 BPM'], ['O\u2082 UPTAKE', '3.2 L/MIN'],
       ['RESTING HR', '52 BPM'], ['HRV', '68 MS'], ['GLUCOSE', '5.1 MMOL/L'], ['LDL', '2.4 MMOL/L'],
@@ -15800,20 +15779,21 @@
       metLater(runMetrics, SLOT[0] * 1000);   // the frame's cycle
     };
     if (focus === 0) runMetrics();   // 01 is in focus at boot, and only show() starts the readings otherwise
-    // 02: the Library's body, exactly -- the same view with the same options
-    // the library tile is built with (its own dot count, fill .46, dot 1.0),
-    // and no morph: the cloud the frame opens on IS the body, seen close, and
-    // the pull-back resolves it. The chip comes on as the camera settles.
+    // The Library's body, exactly -- the same view with the same options the
+    // library tile is built with (its own dot count, dot 1.0). `fill` is the
+    // camera here: the view has no notion of a scale beyond it, so the whole
+    // dot-to-universe-to-body pull-back of 01 is this one property, driven by
+    // teaserCycle below, run down to the library's own settled value.
     const libOpts = i => ({ target: organN(Math.round(fullTarget(clouds[i]) * (ORGANS[i].dots || 1))), fill: 0.46, dot: 1.0 });
     // "more shiny": the library's body with its alpha lifted a third (the
     // dots that were faint come up; the bright ones cap), and a brightness
     // lift on the canvas in CSS
     const bodyView = makeOrganView(document.getElementById('tzBodyV'), BODY_I, Object.assign(libOpts(BODY_I), { name: 'teaser-body', alpha: 1.35 }));
-    // 07's nine. Half the library's density, because nine of them share the
+    // 06's nine. Half the library's density, because nine of them share the
     // frame and each is a third of its width -- and an alpha per ring, so the
     // hierarchy is in the particles themselves and not only in the opacity the
     // reveal animates.
-    const tzMoViews = [...document.querySelectorAll('#tzS07 .tzMoCell')].map((cell, i) => {
+    const tzMoViews = [...document.querySelectorAll('#tzS06 .tzMoCell')].map((cell, i) => {
       const o = PILL[i].organIdx, r = MO_RING[i];
       return makeOrganView(cell.querySelector('.tzMoOrg'), o, {
         // The concept's dotted reading: separate points, not a mass of them.
@@ -15825,8 +15805,8 @@
         name: 'teaser-mosaic-' + i
       });
     });
-    const chip = document.getElementById('tzChip'), chip2 = document.getElementById('tzChip2'), bodyHost = document.getElementById('tzBodyV'), bodyStage = bodyHost.parentNode;
-    // The cloud the frame opens on: the body's own particles, every one,
+    const chip = document.getElementById('tzChip'), chip2 = document.getElementById('tzChip2'), bodyHost = document.getElementById('tzBodyV'), seed = document.getElementById('tzSeed');
+    // The cloud the shot opens on: the body's own particles, every one,
     // scattered through a ball the body's height -- a cloud derived from the
     // body's, so it carries the body's inks, seeds and count, and the morph
     // (the concept's, in the painter: both clouds sampled at the same target,
@@ -15842,10 +15822,10 @@
         scatter.pos[i * 3] = r * Math.sin(ph) * Math.cos(th); scatter.pos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th); scatter.pos[i * 3 + 2] = r * Math.cos(ph);
       } }
     // The chips are written rather than cut in, one after the other: the
-    // count types on at 3.1s, and when it has finished (a letter every 38ms,
+    // count types on first, and when it has finished (a letter every 38ms,
     // its cursor blinking off) the verdict starts. The same hand as the
-    // readings in 01 -- it is the board's one way of putting words on a
-    // frame.
+    // readings earlier in the shot -- it is the board's one way of putting
+    // words on a frame.
     let chipT = [];
     const chipWrite = (el, text, then) => {
       const sp = el.firstChild, cur = el.lastChild;
@@ -15862,33 +15842,85 @@
       }, 38);
       chipT.push(iv);
     };
-    // the cycle: cut to the cloud, the particles travel into the body from
-    // 0.5s over 2.4s as the camera pulls back (3s), the chips written from
-    // 3.1s (the count, then the verdict), the hold while the second line
-    // lands, and the cut back to the cloud -- forward only, every 8s (the
-    // subtitles' cycle too)
-    let morphT = 0;
-    const bodyCycle = () => {
-      if (bodyHost.offsetParent === null) return;
-      chipT.forEach(t => { clearTimeout(t); clearInterval(t); }); chipT = [];
-      bodyStage.classList.add('snap'); bodyStage.classList.remove('out'); chip.classList.remove('on'); chip2.classList.remove('on');
-      bodyView.morph = null; bodyView.cl = scatter; bodyView.key = 'tzScatter'; bodyView.target = bodyTarget; bodyView._rt = null;
-      clearTimeout(morphT);
-      morphT = setTimeout(() => { if (bodyStage.classList.contains('out')) bodyView.morphTo(bodyCl, 'o' + BODY_I, bodyTarget, Math.max(1200, SLOT[1] * 1000 - 2900)); }, 400);
-      bodyHost.offsetHeight;   // apply the jump before the transition is back on
-      bodyStage.classList.remove('snap');
-      requestAnimationFrame(() => requestAnimationFrame(() => bodyStage.classList.add('out')));
-      // the white chip first (the count), the accent one once it has finished (the verdict)
-      chipT.push(setTimeout(() => {
-        if (!bodyStage.classList.contains('out')) return;
-        chipWrite(chip2, '124 biomarkers', () => chipWrite(chip, '8 years younger'));
-      }, Math.max(1200, SLOT[1] * 1000 - 2500)));
+    // The camera, as a scale rather than a position: `fill` is what a
+    // makeOrganView draws its cloud at, so running it from a close, huge
+    // value down to the Library's own settled one IS the pull-back -- the
+    // same field, always the same points, just how much of the frame they
+    // are asked to fill. Five keys, not one easing: fast out of the dot
+    // (u .15), a held beat while the readings resolve (to .24, barely
+    // moving), faster again as it pulls the field open (to .56), then
+    // gentler through to where it settles (.86 to 1) -- the "occasional
+    // speed-up" asked for, without ever actually stopping.
+    // The opening key is much tighter than it looks: the cloud is a uniform
+    // ball, and a ball's own DEPTH means even a small on-screen disc around
+    // its centre still passes a sliver of the whole thing -- the count falls
+    // off with the SQUARE of how far the camera has pulled back, not with the
+    // cube, so getting genuinely close to a single dot takes a much larger
+    // opening scale than the later, gentler pull-back does.
+    const smoothU = x => x * x * (3 - 2 * x);
+    const FILL_KEYS = [
+      { u: 0.000, f: 120 },
+      { u: 0.150, f: 3.6 },
+      { u: 0.240, f: 3.1 },
+      { u: 0.560, f: 1.05 },
+      { u: 0.860, f: 0.50 },
+      { u: 1.000, f: 0.46 }
+    ];
+    const fillAt = u => {
+      for (let k = 1; k < FILL_KEYS.length; k++){
+        const a = FILL_KEYS[k - 1], b = FILL_KEYS[k];
+        if (u <= b.u || k === FILL_KEYS.length - 1){
+          const e = smoothU(Math.max(0, Math.min(1, (u - a.u) / (b.u - a.u))));
+          return a.f + (b.f - a.f) * e;
+        }
+      }
     };
-    // the cycle starts with 02's slot (and at boot, for the tile's first paint)
-    let bodyIv = 0;
-    const bodyStart = () => { clearInterval(bodyIv); bodyCycle(); bodyIv = setInterval(bodyCycle, SLOT[1] * 1000); };
-    setTimeout(bodyStart, 600);
-    onShow.push(i => { if (i === 1) bodyStart(); });
+    // the cycle: the scatter cloud at the close scale, a seed dot standing in
+    // for it until the field is dense enough to hold the shot on its own; the
+    // camera pulls back throughout; the particles begin travelling into the
+    // body a little under halfway through, overlapping the pull-back rather
+    // than waiting for it, and the chips are written once the body is nearly
+    // formed -- forward only, every slot (the subtitles' cycle too)
+    let teaserRaf = 0, teaserT0 = 0, morphed = false, chipsAt = false;
+    const teaserFrame = () => {
+      if (bodyHost.offsetParent === null){ teaserRaf = 0; return; }
+      teaserRaf = requestAnimationFrame(teaserFrame);
+      const dur = SLOT[0] * 1000, u = Math.min(1, (performance.now() - teaserT0) / dur);
+      bodyView.fill = fillAt(u);
+      // the ambient feed spirals in from well beyond the cloud's own radius
+      // (see makeOrganView's `feed`), which at this shot's opening scale would
+      // otherwise put a few of its own points inside the frame regardless of
+      // how tight the zoom is -- exactly the scatter of stray light the seed
+      // dot is there to avoid. Held off until the field itself has opened.
+      bodyView.feed = u >= 0.16;
+      if (seed) seed.classList.toggle('on', u < 0.13);
+      if (!morphed && u >= 0.40){
+        morphed = true;
+        bodyView.morphTo(bodyCl, 'o' + BODY_I, bodyTarget, Math.max(1200, dur * 0.42));
+      }
+      if (!chipsAt && u >= 0.80){
+        chipsAt = true;
+        chipWrite(chip2, '124 biomarkers', () => chipWrite(chip, '8 years younger'));
+      }
+    };
+    const teaserCycle = () => {
+      if (bodyHost.offsetParent === null) return;
+      cancelAnimationFrame(teaserRaf);
+      chipT.forEach(t => { clearTimeout(t); clearInterval(t); }); chipT = [];
+      chip.classList.remove('on'); chip2.classList.remove('on');
+      bodyView.morph = null; bodyView.cl = scatter; bodyView.key = 'tzScatter'; bodyView.target = bodyTarget; bodyView._rt = null;
+      bodyView.fill = FILL_KEYS[0].f;
+      bodyView.feed = false;
+      if (seed) seed.classList.add('on');
+      morphed = false; chipsAt = false;
+      teaserT0 = performance.now();
+      teaserRaf = requestAnimationFrame(teaserFrame);
+    };
+    // the cycle starts with 01's own slot (and at boot, for the tile's first paint)
+    let teaserIv = 0;
+    const teaserStart = () => { clearInterval(teaserIv); teaserCycle(); teaserIv = setInterval(teaserCycle, SLOT[0] * 1000); };
+    setTimeout(teaserStart, 600);
+    onShow.push(i => { if (i === 0) teaserStart(); });
   };
 
   const libViews = [];   // the Organ Library's tiles, by organ index: the fine-grain set doubles these

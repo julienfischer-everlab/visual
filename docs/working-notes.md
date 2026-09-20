@@ -7878,6 +7878,66 @@ it exactly when stuck, leaving the natural, unpinned spacing alone.
 
 ---
 
+### 5.294 One shot, not two: the teaser's opening dot, universe and body
+
+A reference clip and a clear brief: DOT, then PARTICLE UNIVERSE, then BODY
+SHAPE, as one continuous camera pullback -- no cuts, no pause between
+stages, morphing throughout. The teaser's own sequences 01 and 02 already
+told that story in that order, but as two separate shots: 01 was a CSS
+starfield (`universe()`, four `<i>`-div depth layers under a `transform:
+scale` zoom) that cut hard to 02, a `makeOrganView` canvas holding its own
+independent cycle, morphing a scattered cloud into the body on a clock of
+its own. Two renderers, two clocks, one hard cut between them -- exactly
+what "avoid cuts" and "one continuous camera pullback" rule out.
+
+The fix was to stop treating them as two sequences. 01 and 02 are now one
+frame (still called 01; 03 through 09 renumber down to 02 through 08, the
+TZ_GROUPS/VO tables/`onShow` indices and the odd cross-reference in a later
+frame's note -- "Where 04 was..." -- moving with them). The whole shot runs
+on the one piece of infrastructure that was already proven: `makeOrganView`
+and its `.morphTo()`, the same real per-particle morph 02 was already
+doing, just given the WHOLE arc to carry instead of half of it.
+
+The dot and the universe turn out to already be inside that engine, not
+separate assets. A `makeOrganView`'s `fill` is nothing but how large it
+draws its cloud (`sc = min(W,H) * fill`); run it from a very tight value
+down to the library's own settled one and that IS a camera pullback --
+the same points, the same canvas, just how much of the frame they are
+asked to fill. So the "universe" is the existing scatter cloud (10s already
+built for 02: the body's own particles sent out to a random sphere, seeded
+so the morph back is point-for-point), viewed at a scale so tight only a
+sliver of it is on screen; pulling back over the cycle reveals the rest of
+the sphere as "a universe of dots" for free, before the same points travel
+into the body on the existing morph, well before the pullback finishes
+(`morphTo` fires at 40% through the cycle, so the field is still opening as
+the body starts to gather -- the overlap the brief asked for). The camera
+runs on five keys eased into each other (`smoothU`, a plain S-curve),
+fast-slow-fast-slow rather than one constant ease, for the "occasional
+speed-up... without breaking continuity" the reference wanted -- never a
+stop, always still moving.
+
+Getting genuinely close to a single dot took a surprise: a uniform-density
+BALL does not thin out toward its centre in projection the way a shell
+count would suggest. A 2D disc around the axis sees the whole depth of the
+ball through it, so the expected count in a small window falls off with the
+SQUARE of how far the camera has pulled back, not the cube -- at the scale
+that looked right by eye (10x) the sphere still put a dozen-odd of its own
+points inside the frame, no zoom involved. Getting under one meant a much
+higher opening `fill` (120, not 10) and holding the ambient "feed" (matter
+that spirals in from beyond the cloud's own radius, on its own clock) off
+until the field has properly opened at u=0.16 -- otherwise it puts a few of
+its own points on screen regardless of the camera. What actually reads as
+"one dot, alone" is an explicit CSS seed (`.tzSeed`), faded out once the
+canvas's own field has taken over; the same trick the old CSS starfield
+already used, just carried onto the new single-shot canvas.
+
+A `Zoom` button on every frame's bar, alongside Play and the arrows,
+`requestFullscreen()`s that frame's `.tzStage` alone -- the shot, not the
+bar or the notes around it -- since the ask ("a zoom, full screen viewport
+option") was for reviewing a shot at its own size, not the board.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
