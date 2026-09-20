@@ -8232,6 +8232,48 @@ nowhere to appear.
 
 ---
 
+### 5.302 The line wasn't the breath -- it was the noise film's own edge
+
+5.301 stopped short: the line behind the organ was still there after the
+halo went static, which means the animation was never the whole story for
+that one. `.v4Halo::after` lays a flat tile of noise over the light to break
+up 8-bit banding (5.301's own account of it), at one even 5% across the
+*entire* box -- but the light itself is not even across that box: past
+roughly half its radius the gradient has already all but reached zero (the
+comment above it says as much -- "the last third of the radius ... there is
+no boundary left to see"). A texture that keeps going at full strength past
+the point the thing it's disguising has already faded out stops tracking the
+light and starts drawing an edge of its own, at the box's plain boundary --
+which is what sat across the organ's torso, roughly half the header down,
+exactly where `.v4Halo`'s own box ends. `--v4NoiseFade`, a radial mask on
+`.v4Halo::after` shaped like the light's own falloff (solid to 50% of the
+radius, gone by 82%), retires the film at the same rate the light does, so
+there is nothing left at the box edge for either of them to draw.
+
+The line by the status bar was a different bug wearing the same name.
+`#phone::before` -- the copy of the halo that carries on above the
+scroller's own clip, so the light still reads at the very top of the header
+-- is a plain element, not `.v4Halo`, so the noise-film rule never reached
+it: that copy has been running with the 8-bit banding the film exists to
+hide since the day it was added, unmasked by anything. `#phone` is
+dark-mode-idle on its OTHER pseudo-element -- `::after` there is spoken for
+only in light theme, for the card's rim highlight -- so `body.v5:not(.light)
+#phone::after` now carries this copy's own noise film, same geometry as the
+`::before` it sits behind, same `--v4NoiseFade` mask, rather than a second
+nested pseudo that plain CSS has no way to write.
+
+---
+
+### 5.303 A cursor that forgot it was a list
+
+"My Reports" (`.hiRepRow`) carried no `cursor` rule of its own, so hovering
+its rows fell back to the browser's own default over text -- an I-beam,
+not the hand every other clickable row in the file shows (`.olist .or`,
+the organ list this same page's halo sits beside, sets `cursor:pointer`
+plainly). One property, brought in line with its neighbours.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
