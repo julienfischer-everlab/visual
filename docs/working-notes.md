@@ -8016,6 +8016,79 @@ screenshot at one variant and not the others would miss.
 
 ---
 
+### 5.297 The Organ Age landing page, in the order the brief always meant
+
+The teaser's dot-to-body pullback (5.294, 5.295) got the order right on a
+flat 2D canvas. The Organ Age landing page (`#m23`, `__lpBoot`) is the
+other place this story lives, on a real page you scroll rather than a
+looping tile, with a genuine perspective camera (`tick`: a focal length,
+a camera position, a divide) instead of a flat scale -- and it shipped
+with the reveal in the wrong place: dot, then body, then the universe,
+then a black title card. The brief wants dot, particles, universe, body --
+the reveal held back to the end, "the larger structure we have been
+inside all along" -- so the fix is the same reorder 5.294 did to the
+teaser, done to this page's own `KEYS` timeline instead of rebuilding it:
+the existing `dot`/`uni`/`body`/`dark` states, unmoved, just walked in a
+different sequence, with the `dark` title card (unchanged in every value)
+shifted later to follow the body instead of leading into the universe.
+`heart` onward -- the whole rest of the Organ Age feature -- starts at
+`0.600` exactly as it always did; nothing past the title card moved.
+
+The one thing the existing engine had no knob for was "oversized": `cam`
+moving the camera is how everything else on this page gets closer or
+further, but pushing it far enough for a point at the origin to fill the
+screen pushes `d` (the perspective divide's denominator) toward its own
+near-clip floor, and `dof`'s defocus math -- which measures distance from
+a focal plane pinned just past the camera -- goes with it; the dot would
+have rendered as a fully-blurred haze, not a crisp close-up. So it is not
+`cam` at all: a new per-key `zoom` (default 1, read by only the three
+opening keys) is a plain multiplier on the perspective scale, applied
+to a point's own `x`/`y` before anything else touches them. 180 down to 1
+across the first two legs is the whole of "empty to oversized dot, then
+let it shrink" -- fast at first, easing into the ordinary scale phase two
+starts from, which is what "retreating faster than the dot itself is
+moving" actually is here: not a camera cut, a still camera and a
+magnification collapsing under it.
+
+Two bugs came out of putting a number that large into a formula tuned for
+values near 1. First, `pan` (a small constant screen-space lift, unrelated
+to any one particle's position) was being multiplied by `zoomK` along with
+everything else -- 0.1 world units is a gentle nudge at 1x and eight
+thousand pixels at 180x, which threw every particle straight past the
+screen-bounds check and rendered nothing at all. `pan` now gets the
+ordinary scale and nothing more. Second, the same fate met the idle drift
+(the small per-particle sine wobble that plays while the scroll is still)
+until `zoomK` moved to apply to the base position alone, before drift, arc
+travel and the organ flow-current are added -- those stay at the tiny
+scale they were authored at, so a wobble that is imperceptible at 1x
+stays imperceptible at 180x instead of shaking the whole frame. Both were
+found the same way: adding a temporary `window.__lpDebug` hook to read
+back the actual `sx`/`sy`/`zoomK` for particle 0 mid-render, since a
+canvas either draws a pixel or it doesn't and a screenshot alone does not
+say why not. Removed once both were fixed.
+
+The dot itself needed two more things a scale factor alone could not give
+it. Its screen position is particle 0's own tiny `Math.random()` scatter
+(the `dot` state spreads all nine thousand points within a hundredth of a
+unit of the origin, though only particle 0 is ever lit) -- invisible at
+1x, but magnified 180 times over it becomes "which corner of the screen
+the one dot lands in," different on every load. Particle 0's `x`/`y` are
+now forced to exactly zero once, after the state is built, so the dot the
+page opens on is always dead centre. And "luminous" turned out to mean
+nothing at this engine's own alpha grid and whatever ink and opacity
+particle 0 happened to draw at random -- usually a muted, unlit brown, not
+a glow. Particle 0's ink and alpha are now forced too: the brightest ink
+in the file and a near-peak opacity, one particle out of nine thousand,
+never visible again once any other state has more lit than it does.
+
+The three lines of copy across this stretch swap position rather than
+reword -- "one signal" still opens, "millions of signals" now plays
+across the particle field instead of the body, and "your body is
+constantly sending them" now lands as the body itself resolves, which is
+a better pairing for what is on screen than either line had before.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

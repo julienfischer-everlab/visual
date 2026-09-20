@@ -14761,15 +14761,43 @@
     // the difference between a scene that is held and a page that has stopped.
     // pan runs monotonically down the whole way: whatever else is happening,
     // scrolling moves the content up.
+    // 0.000-0.420: the opening shot, in the order the reference asks for --
+    // dot, then depth, then the universe, then the body it was inside all
+    // along -- rewritten from the order this page shipped with (dot, body,
+    // universe, dark), which put the reveal in the middle instead of at the
+    // end. `zoom` (see tick) is what makes the first key an "oversized dot"
+    // rather than a small one seen very close: pushing `cam` far enough for
+    // that would also push `dof`'s focal-plane math somewhere it was never
+    // meant to run. Every key from `uni` on leaves it at 1 (the default), so
+    // it only ever touches the phase it was built for.
     const KEYS = [
-      { at: 0.000, st: 'dot',   cam: -0.66, spread: 0.00, dof: 0.55, pan:  0.10 },
-      { at: 0.060, st: 'dot',   cam: -0.44, spread: 0.00, dof: 0.80, pan:  0.06 },
-      { at: 0.175, st: 'body',  cam:  0.10, spread: 0.85, dof: 0.40, pan:  0.02 },   // the pull-back forms a person
-      { at: 0.250, st: 'body',  cam:  0.17, spread: 0.00, dof: 0.16, pan: -0.04 },   // held, still pushing in
-      { at: 0.335, st: 'uni',   cam:  0.46, spread: 1.00, dof: 1.00, pan: -0.02 },   // and opens into the signals
-      { at: 0.395, st: 'uni',   cam:  0.74, spread: 1.00, dof: 1.00, pan: -0.06 },
-      { at: 0.450, st: 'dark',  cam:  0.90, spread: 1.00, dof: 1.00, pan: -0.08 },
-      { at: 0.515, st: 'dark',  cam:  1.04, spread: 1.00, dof: 1.00, pan: -0.15 },   // held; the title carries the motion
+      // one, empty to an oversized dot: no camera move yet, only the
+      // magnification collapsing -- fast at first, easing into the
+      // ordinary close-up phase two starts from ("retreating faster than
+      // the dot itself is moving")
+      { at: 0.000, st: 'dot', cam: -0.25, zoom: 180, spread: 0.00, dof: 0.30, pan:  0.10 },
+      { at: 0.045, st: 'dot', cam: -0.25, zoom:  10, spread: 0.00, dof: 0.48, pan:  0.08 },
+      { at: 0.095, st: 'dot', cam: -0.25, zoom:   1, spread: 0.00, dof: 0.62, pan:  0.06 },
+      // two, travel through particles: the dot resolves into the universe
+      // cloud: mostly still the one dot (v blends in from 0), but the
+      // camera has already pushed into the cloud's own near depths, so
+      // whichever of its points end up close pass large and recede as the
+      // rest keep fading up around them
+      { at: 0.210, st: 'uni',  cam:  0.20, spread: 0.75, dof: 0.85, pan:  0.00 },
+      // three, the universe reveal: still one state (nothing morphs, only
+      // the camera and the defocus), density and depth building as it goes
+      { at: 0.330, st: 'uni',  cam:  0.62, spread: 1.00, dof: 1.00, pan: -0.05 },
+      // four, the body reveal: the pull-back's rate over scroll is steeper
+      // here than anywhere in two or three (cam covers more ground in less
+      // of the track) -- the one smooth() blend across the whole span is
+      // what makes that read as accelerating into the shape and easing out
+      // of it, rather than a speed bolted on top
+      { at: 0.420, st: 'body', cam:  1.25, spread: 0.00, dof: 0.18, pan: -0.10 },   // resolves, and settles
+      // the release: a beat of black (title card) before the feature itself
+      // starts at heart, unchanged from here on but for the ten-thousandths
+      // this shifted to make room above
+      { at: 0.460, st: 'dark',  cam:  1.35, spread: 1.00, dof: 1.00, pan: -0.12 },
+      { at: 0.520, st: 'dark',  cam:  1.50, spread: 1.00, dof: 1.00, pan: -0.15 },   // held; the title carries the motion
       { at: 0.600, st: 'heart', cam:  0.20, spread: 0.55, dof: 0.45, pan: -0.07 },   // forming
       { at: 0.655, st: 'heart', cam: -0.03, spread: 0.00, dof: 0.13, pan: -0.14 },   // formed
       { at: 0.722, st: 'heart', cam:  0.05, spread: 0.00, dof: 0.13, pan: -0.20 },   // held, reading read
@@ -14782,11 +14810,15 @@
     ];
     // The copy. Each line is a range and a place; nothing has a trigger of its
     // own, because two clocks on one page is how it starts to feel assembled.
+    // The first three lines follow the new order (signal, then the universe
+    // of them, then the body they were coming from) rather than the old one
+    // (signal, then the body, then the universe) -- swapped rather than
+    // reworded, since the two lines already made this argument either way.
     const COPY = [
-      { a: 0.010, b: 0.130, cls: 'lpLow',         t: 'It all starts with one signal.' },
-      { a: 0.196, b: 0.300, cls: 'lpLow',         t: 'Your body is constantly sending them.' },
-      { a: 0.342, b: 0.432, cls: 'lpLow',         t: 'Millions of signals, from across your body.' },
-      { a: 0.458, b: 0.562, cls: 'lpMid lpTitle', t: 'Look closer.' },
+      { a: 0.010, b: 0.090, cls: 'lpLow',         t: 'It all starts with one signal.' },
+      { a: 0.140, b: 0.310, cls: 'lpLow',         t: 'Millions of signals, from across your body.' },
+      { a: 0.345, b: 0.415, cls: 'lpLow',         t: 'Your body is constantly sending them.' },
+      { a: 0.468, b: 0.572, cls: 'lpMid lpTitle', t: 'Look closer.' },
       { a: 0.600, b: 0.672, cls: 'lpLow',         t: 'Your organs age differently.' },
       { a: 0.686, b: 0.744, cls: 'lpLow',         t: 'Some exactly as they should.' },
       { a: 0.792, b: 0.868, cls: 'lpLow',         t: 'Others may be ageing faster.' },
@@ -14905,6 +14937,12 @@
         dot.v[i] = i === 0 ? 1 : 0;
         dot.a[i] = pA[i]; dot.r[i] = pR[i];
       }
+      // particle 0 is the one the opening key's `zoom` (tick) magnifies up to
+      // a couple of hundred times over -- at that multiple, Math.random()'s
+      // own quarter-thousandth-radius scatter stops being invisible and
+      // starts being a different corner of the screen on every load. Dead
+      // centre, exactly, is what "a single dot" needs to mean here.
+      dot.x[0] = 0; dot.y[0] = 0;
       ST.dot = dot;
 
       // 02 — the universe. Not a starfield: two thirds of the points belong to
@@ -15015,6 +15053,12 @@
         pFlow[i] = Math.random() < 0.07 ? 1 : 0;
         if (pFlow[i]) pInk[i] = 2;   // the third ink, as the file's flow is
       }
+      // particle 0 is the one the dot state ever lights (see buildStates):
+      // the brightest ink and near-peak alpha, so "a single luminous dot"
+      // does not come down to whichever of the twenty alpha steps and three
+      // inks it happened to draw. One particle out of nine thousand -- never
+      // visible again once any other state has more than it lit.
+      pInk[0] = 2; pA[0] = opBright(0.92);
     }
 
     // ---- the DOM the timeline drives ---------------------------------------
@@ -15128,6 +15172,16 @@
       const cam = kA.cam + (kB.cam - kA.cam) * e;
       const dofK = kA.dof + (kB.dof - kA.dof) * e;
       const pan = kA.pan + (kB.pan - kA.pan) * e;
+      // an extra magnification, independent of the perspective divide: pushing
+      // `cam` far enough for a point at the origin to fill the screen also
+      // pushes it past where `dof` (measured off a focal plane pinned near the
+      // camera) still makes sense, so the opening dot is not close-up-by-cam
+      // at all -- it is close-up by this, a plain multiplier on the perspective
+      // scale that every other key leaves at 1 and only the dot's own keys
+      // move. Undefined reads as 1 so nothing else on the timeline has to
+      // carry the field.
+      const zoomA = kA.zoom != null ? kA.zoom : 1, zoomB = kB.zoom != null ? kB.zoom : 1;
+      const zoomK = zoomA + (zoomB - zoomA) * e;
       // the strands only exist where there is an organ for them to run inside
       const organK = (kA.st === 'heart' || kA.st === 'lung' ? 1 - e : 0) +
                      (kB.st === 'heart' || kB.st === 'lung' ? e : 0);
@@ -15151,8 +15205,15 @@
       const rush = Math.min(1, vel * 26);
 
       for (let i = 0; i < N; i++){
-        let x = A.x[i] + (B.x[i] - A.x[i]) * e;
-        let y = A.y[i] + (B.y[i] - A.y[i]) * e;
+        // `zoomK` on the point's own position, before the arc/drift/flow
+        // jitter get added below: those are authored as small, constant
+        // screen-scale nudges (a thirteen-thousandth of a world unit of
+        // idle drift, say), and multiplying them by a couple of hundred
+        // right along with the position would turn a barely-there wobble
+        // into the whole frame shaking. Only the point's real position is
+        // what the opening dot's magnification is actually for.
+        let x = (A.x[i] + (B.x[i] - A.x[i]) * e) * zoomK;
+        let y = (A.y[i] + (B.y[i] - A.y[i]) * e) * zoomK;
         let z = A.z[i] + (B.z[i] - A.z[i]) * e;
         let v = A.v[i] + (B.v[i] - A.v[i]) * e;
         if (v <= 0.002) continue;
@@ -15207,7 +15268,7 @@
         // actually looks like and costs nothing. The focal plane sits a little
         // in front of the camera, where the organ forms.
         const def = Math.min(1, dofK * Math.abs(z - cam - 0.12) / 1.35);
-        const r = rr * s * (DP * 1.12) * (1 + def * 2.3) * (1 + rush * 0.25);
+        const r = rr * s * (DP * 1.12) * zoomK * (1 + def * 2.3) * (1 + rush * 0.25);
         const a = opRender(Math.max(au, flowLift * 0.85) * v * themeA *
                            (1 - 0.74 * def) * (1 + rush * 0.10));
         if (a <= 0) continue;
