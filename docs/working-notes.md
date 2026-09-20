@@ -8169,6 +8169,42 @@ body settles small and whole in the middle of a mostly black frame, the
 
 ---
 
+### 5.300 A second, independent gate on the reveal; a camera that actually travels
+
+"Still bad, need to feel we are in space, the more travel the more dot"
+-- 5.299 widened the universe and moved its arrival earlier, but two
+things were still short of what was asked. Both came from the same root:
+`cam`'s own range through the universe was 0.05 to 0.65, a 0.60 span,
+which against `FOC` (2.45) is not far enough for near and far points to
+actually separate. Every point's perspective scale moves by roughly the
+same small amount as `cam` sweeps that little, which is what a zoom looks
+like, not what flying through a volume does -- nothing is ever close
+enough to swell and pass out of frame, because nothing is ever close
+enough. `cam` now runs 0.05 to 1.35 across the same two keys (more than
+double), and `buildStates`' universe reaches further toward the camera's
+own path (`z` as low as -2.2, not -1.4) so points actually exist in the
+range this bigger sweep sends past the lens rather than merely away from
+it -- the low end of a particle's `z` is what "behind the camera" (tick:
+`d = FOC + z - cam`, clipped under 0.16) is measured off, so without
+particles reaching that low, widening `cam` alone would have swept
+through empty space.
+
+The other half: STAG (5.298) staggers a particle's arrival within
+whichever key pair is CURRENT, which for the dot-to-universe morph is one
+key pair's worth of track (6% to 22%) -- once past it, every particle
+already at the universe's own state held there, fully arrived, for the
+rest of the universe's build (22% to 36%) with nothing left for "more
+scroll" to do. A second, independent gate now runs on top of it, off the
+raw scroll position rather than any one key's local progress: each
+particle's own arrival point is spread evenly across the WHOLE stretch
+from where the universe is introduced to where it is called built
+(0.06 to 0.36), so the count on screen keeps climbing for as long as that
+stretch lasts, not just its first key pair. Particle 0 -- the dot -- is
+explicitly exempt, or its own turn in that same random queue would have
+hidden the one thing the shot opens on.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

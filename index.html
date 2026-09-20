@@ -14788,12 +14788,17 @@
       // the camera and the defocus), density and depth building progressively
       // as it goes, over more of the track than before -- a bigger cloud
       // (buildStates) needs more room to open out into before it reads as
-      // reached rather than merely started
-      { at: 0.220, st: 'uni',  cam:  0.35, spread: 0.90, dof: 0.85, pan: -0.02 },
-      { at: 0.360, st: 'uni',  cam:  0.65, spread: 1.00, dof: 1.00, pan: -0.06 },
+      // reached rather than merely started. `cam` covers much more ground
+      // across these two keys than it used to (0.05 to 1.35, not 0.65): the
+      // perspective divide (tick: `d = FOC + z - cam`) only reads as motion
+      // through a volume once it moves far enough for near and far points to
+      // separate -- a small sweep left every point changing by nearly the
+      // same amount, which is a zoom, not a flight.
+      { at: 0.220, st: 'uni',  cam:  0.70, spread: 0.90, dof: 0.85, pan: -0.02 },
+      { at: 0.360, st: 'uni',  cam:  1.35, spread: 1.00, dof: 1.00, pan: -0.06 },
       // four, the body reveal: `cam` actually falls here, from the universe's
-      // 0.65 back down to 0.15 -- a real pull-back rather than a continued
-      // push-in, so the body settles wider in frame, with room around it,
+      // 1.35 back down to 0.15 -- a real retreat rather than a continued
+      // push-in, so the body settles wide in frame, with room around it,
       // instead of arriving already close. The one smooth() blend across
       // the whole span is what makes that read as accelerating into the
       // shape and easing out of it, rather than a speed bolted on top.
@@ -14958,13 +14963,22 @@
       // gathers out of it (KEYS' `body` key) is the same fixed size, so a
       // bigger field it is drawn from reads as more of a pull-back to reach,
       // not a change to the body itself.
+      // `z` reaches further negative than it needs to just to fill a volume:
+      // the camera (KEYS) now sweeps `cam` from 0.05 to 1.35 through this
+      // state, and a point stops being drawn once `cam` runs past it (tick:
+      // `d = FOC + z - cam`, clipped under 0.16 -- a point behind the
+      // camera). A point is "behind" once z drops under roughly cam - 2.29,
+      // so the low end of z has to reach past where the latest `cam` this
+      // phase ever reaches will send it, or nothing is ever close enough to
+      // fly past and out of frame -- which is most of what reads as flight
+      // through a volume rather than a field that is merely receding.
       const uni = newState();
       const CLN = 70, cx = [], cy = [], cz = [], cs = [];
       for (let k = 0; k < CLN; k++){
         const r = 0.75 + 1.55 * Math.sqrt(Math.random()), th = Math.random() * 6.2832;
         cx[k] = Math.cos(th) * r * 1.55;
         cy[k] = Math.sin(th) * r * 0.95;
-        cz[k] = -1.3 + Math.random() * 3.6;
+        cz[k] = -2.0 + Math.random() * 4.5;
         cs[k] = 0.10 + 0.24 * Math.random();
       }
       for (let i = 0; i < N; i++){
@@ -14972,7 +14986,7 @@
           const r = 0.85 + 1.70 * Math.sqrt(Math.random()), th = Math.random() * 6.2832;
           uni.x[i] = Math.cos(th) * r * 1.75;
           uni.y[i] = Math.sin(th) * r * 1.15;
-          uni.z[i] = -1.4 + Math.random() * 3.8;
+          uni.z[i] = -2.2 + Math.random() * 5.0;
         } else {
           const k = (i * 7919) % CLN, sp = cs[k];
           uni.x[i] = cx[k] + gauss() * sp * 1.35;
@@ -15214,6 +15228,20 @@
       // from the one number. Off for reduced motion, where a key's content
       // arrives exactly on its own progress and nothing is left mid-flight.
       const STAG = reduced ? 0 : 0.65;
+      // STAG staggers the MORPH inside whichever key pair is current, which
+      // is one key pair's worth of scroll -- the dot-to-universe leg was
+      // done arriving by the key after it, and every particle held there
+      // (dot to uni's `at`s) for the rest of the universe's own build,
+      // ungated, however far short of it the reader still was. "More
+      // travel, more dot" wants that arriving to keep pace with the WHOLE
+      // stretch the universe takes to open out, not just the one morph --
+      // so this is a second, independent gate on top of it, reckoned off
+      // the raw scroll `p` rather than any one key's local progress, each
+      // particle's own arrival spread evenly from the first key that
+      // introduces the universe (REVEAL_A) to the one where it is called
+      // built (REVEAL_B). Left at 1 outside that stretch, so nothing past
+      // it is held back a second time by a gate whose stretch has ended.
+      const REVEAL_A = 0.060, REVEAL_B = 0.360, REVEAL_WIN = 0.05;
 
       ctx.clearRect(0, 0, W, H);
       const batch = makeBatch(ctx);
@@ -15248,6 +15276,13 @@
         let y = (A.y[i] + (B.y[i] - A.y[i]) * ei) * zoomK;
         let z = A.z[i] + (B.z[i] - A.z[i]) * ei;
         let v = A.v[i] + (B.v[i] - A.v[i]) * ei;
+        // the second gate (see REVEAL_ above): particle 0 is the dot itself
+        // and is exempt, or its own random turn in the queue would hide the
+        // one thing this whole stretch opens on
+        if (i !== 0 && p < REVEAL_B){
+          const arrive = REVEAL_A + pStg[i] * (REVEAL_B - REVEAL_A);
+          v *= smooth(clamp01((p - arrive + REVEAL_WIN) / REVEAL_WIN));
+        }
         if (v <= 0.002) continue;
         let flowLift = 0;
         const au = A.a[i] + (B.a[i] - A.a[i]) * ei;
