@@ -7979,6 +7979,43 @@ phase by phase to match.
 
 ---
 
+### 5.296 The bento's report card, a list instead of a carousel
+
+"Reduce the card of the report, it's too big" and "add the title 'Everlab
+Report' above it, like desktop" arrived first; before either was built, a
+third message redrew the card outright: My Reports, the four latest as a
+plain list, no CTA, a New badge on the first row. Built the third version
+-- it supersedes the first two rather than sitting beside them, since a
+list sized to its own rows answers "too big" by construction and carries
+its own heading in place of the requested title.
+
+The card (`.hiRep`) was one carousel shared by two surfaces --
+`buildReportSlides()` wrote the same four-slide, dots-and-arrows markup
+into every `.hiRep` on the page, desktop's `#hiRep` and the mobile bento's
+`#hiRepM` alike ("ONE SPOT, ONE CARD", 3.332's own comment). The desktop
+card stays exactly that; only `#hiRepM` gets the new shape, so
+`buildReportSlides()` now branches on the element's id and writes one of
+two markups from the same four `reps`, everything else about the function
+(the RECS-driven data, the slice of four) unchanged. The row itself is not
+a new pattern: dot, title, meta, New badge, chevron is the all-records
+drawer's own `.arRow`, copied rather than shared (that row is a real
+`<button>` with a click handler; this one, like the rest of `.hiRep`
+today, is not wired to anything yet, so making it a real button would have
+implied a tap that does nothing).
+
+The one snag was sizing. `.hiCard{height:210px}` is shared with the
+carousel beside it so the pair lines up, and every V2/V3/V5-tab variant
+adds its OWN fixed height on top (`body.v2 #phone .hiCard{height:234px}`,
+and two more like it) at a specificity an id-plus-class selector cannot
+beat. `#hiRepM.hiCard{height:auto !important}` is what actually wins auto
+back across all of them; `align-self:start` stops the grid row stretching
+it back out to match its still-fixed-height neighbour. Without the
+`!important` the fourth row was being cut mid-line by whichever variant's
+height rule was highest specificity -- exactly the kind of thing a
+screenshot at one variant and not the others would miss.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
