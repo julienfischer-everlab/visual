@@ -3949,6 +3949,12 @@
     background:linear-gradient(150deg, var(--a0, #3a3a3a), var(--a1, #1e1e1e));
   }
   .rbThumb svg{width:72%;height:72%;display:block;}
+  /* with a photograph on the tile (the placeholder set, dealt in JS), the
+     photograph is the visual: it covers the tile and the drawing stands
+     down; the report's gradient stays under it for the frame the image
+     has not painted yet */
+  .rbThumb.hasImg, .rcVis.hasImg{background-size:cover;background-position:center;background-repeat:no-repeat;}
+  .rbThumb.hasImg svg, .rcVis.hasImg svg{display:none;}
   .rbThumb::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.2), rgba(0,0,0,0) 50%);}
   .rbNew{
     display:inline-block;vertical-align:middle;margin:-2px 0 0 8px;font-style:normal;
@@ -17450,6 +17456,12 @@
   // CARD_STATE because the carousel and the bento are built at boot, before
   // CARD_STATE is declared (5.306 hit that TDZ once already); the select is
   // in the document from the start and survives setMode the same way.
+  // The report visuals' placeholder photographs ("use this image for the
+  // report visual placeholder"): three, dealt round the reports in order, so
+  // neighbouring cards never share one. Cropped to the tile's 16:10 at
+  // 800px; the build inlines them like every other asset.
+  const REP_ART = ['assets/reports/smoothie.webp', 'assets/reports/globe.webp', 'assets/reports/virus.webp'];
+  const repImg = r => REP_ART[Math.max(0, REPS.indexOf(r)) % REP_ART.length];
   const repsShown = () => {
     const sel = document.getElementById('stRepCount');
     const n = sel ? parseInt(sel.value, 10) : 0;
@@ -17892,7 +17904,7 @@
       // cats, rbBig, rbSplit, rbBar -- is gone; its rules stay unused.)
       const thumbRow = (r, i) =>
         '<button class="rbRow rbVRow" type="button" data-r="' + r.id + '">' +
-          '<span class="rbThumb" style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + '">' + repArtHTML(r, 'b') + '</span>' +
+          '<span class="rbThumb hasImg" style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + ';background-image:url(' + repImg(r) + ')">' + repArtHTML(r, 'b') + '</span>' +
           '<span class="t"><b>' + r.label + (i === 0 ? ' <i class="rbNew">New</i>' : '') + '</b>' +
             '<span>' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : r.n + ' biomarkers') +
           '</span></span>' + CHEV +
@@ -17965,8 +17977,8 @@
     const big = (r, row, lbl, dateTop) =>
       '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + (lbl === LATEST ? ' rcNewCard' : '') + '">' +
         (lbl === LATEST ? '<span class="rcNew">New</span>' : '') +
-        '<button class="rcVis" type="button" data-r="' + r.id + '" aria-label="View ' + r.label + '" ' +
-          'style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + '">' + repArtHTML(r, 'v') + '</button>' +
+        '<button class="rcVis hasImg" type="button" data-r="' + r.id + '" aria-label="View ' + r.label + '" ' +
+          'style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + ';background-image:url(' + repImg(r) + ')">' + repArtHTML(r, 'v') + '</button>' +
         '<div class="rcInfo">' +
           '<div class="rcEyebrow">' + (dateTop ? r.date : lbl) + '</div>' +
           '<div class="rcTitle">' + r.label + '</div>' +

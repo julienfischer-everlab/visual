@@ -9013,6 +9013,19 @@ clipping and the rows' own 10px put the text back at the card's padding
 four rows each, so it shows the stack alone at the hero's width. The
 summary's rules (`.rbBig`, `.rbSplit`, `.rbBar`) stay, unused.
 
+### 5.321 Photographs on the report visuals
+
+"Use this image for the report visual placeholder" -- three photographs
+(a green smoothie, a dotted globe on sage, a red micrograph), cropped to
+the tile's 16:10 at 800px and saved as webp under `assets/reports/`
+(41–54KB each; the build inlines them as data URIs like the teaser's).
+`REP_ART` deals them round the reports in order (`repImg(r)`), so
+neighbouring cards never share one. They go on the Visual card's tile
+(`.rcVis`) and the Bento row's thumb (`.rbThumb`) as an inline
+`background-image`, `cover`, centred; with a photograph on the tile
+(`.hasImg`) the document/video drawing stands down and the report's
+gradient stays underneath for the frame the image has not painted yet.
+
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as
   the design drew them, so the meter's green share is now 80/142. The
