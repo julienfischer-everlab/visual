@@ -8635,6 +8635,31 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
   it hugged to). And the eyebrow on the other cards reads **Other
   report(s)**, not Recent.
 
+- **Then the phone's latest-report card stopped being a row** ("CTA below
+  content left bottom (margin top 24px)"): eyebrow, title, meta, 24px, CTA
+  at the left, the card hugging that (168px) -- the 162 floor went with the
+  row. The badge stays absolute in the corner. The desk keeps its 128px
+  row with the CTA at the right. Phone card titles are 18px (22 wrapped
+  "Pathology test" onto two lines at two cards across).
+
+- **"Header hug height based on content"**: under the cards the header ran
+  86px before the next section -- the hero's 8px padding, its 28 margin,
+  the body's 14, and 34 of padding on the mini-card row `#mV4` around a
+  row the Reports tab hides. The 8 and the 34 are gone under V2.5's Reports
+  tab; the 28 stays as the one gap.
+
+- **"reduce gap by 24px"** on the biomarkers tab: undoing the body's 24px
+  ride over the header (5.312) had opened exactly 24px of air between the
+  organ names and the mini cards (60 against V2's 36). The hero gives it
+  back on its own margin (`margin-bottom:-18px` = 6 − 24) on the biomarkers
+  tab only; measured 36 again.
+
+- **The halo fades out on the Reports tab** -- "Halo bg concern only
+  biomarker hero section". Both halves (`.v4Halo` in the header and the
+  `#phone::before` echo) go to opacity 0 under `body.v5.repTab:not(.v3Tab)`
+  on a .35s transition, the tab crossfade's own length, and come back on
+  Biomarkers. Opacity rather than display so it is a fade, not a cut.
+
 ---
 
 ## 6. Open items

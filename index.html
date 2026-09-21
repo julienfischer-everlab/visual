@@ -3951,7 +3951,16 @@
   /* the row card hugged its three lines at 114px; "latest report height by
      48px" -- so 48 more than that, held as a floor rather than a height so a
      long title still has room */
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{height:auto;min-height:162px;gap:16px;}
+  /* On the phone the "row" card is not a row: the CTA goes under the three
+     lines, bottom left, 24px below the meta, and the card hugs that. (It was
+     a row with the CTA at the right and a 162px floor; "CTA below content
+     left bottom (margin top 24px)".) The New badge stays in its corner,
+     absolute, untouched by the direction. The desk keeps the 128px row. */
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{
+    height:auto;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;
+  }
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo{display:contents;}
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcCta{margin-top:24px;align-self:flex-start;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n1 .rcCard{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2{flex-direction:row;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:192px;}
@@ -3967,7 +3976,13 @@
      the flow, and the hero takes their height: a title and one 128px card
      on one report, a title and the carousel on more than two. */
   .rcHeroHead{display:none;}
-  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan{height:auto;padding-bottom:8px;}
+  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan{height:auto;padding-bottom:0;}
+  /* "Header hug height based on content": below the cards the header ran on
+     for 86px -- 8 of hero padding, its 28 margin, the body's 14, and 34 from
+     the mini-card row's own padding around a row this tab hides. The padding
+     goes (the row is empty here) and so does the hero's 8; the 28 stays as
+     the one gap between the cards and what follows. */
+  body.v25Tab.repTab:not(.v3Tab) #phone #mV4{padding-top:0;padding-bottom:0;}
   body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcHeroHead{
     display:flex;position:relative;z-index:4;padding:8px 13px 0;margin:0 0 12px;
   }
@@ -4043,6 +4058,10 @@
     color:#ececec;
   }
   .dash .rcTitle{font-size:26px;}
+  /* two cards across a phone leave ~170px each; 22px wrapped "Pathology test"
+     onto two lines -- "reduce font size --> 18px", on every phone card so the
+     one-card and two-card shapes agree */
+  #phone .rcTitle{font-size:18px;}
   body.light .rcTitle{color:#2e1f1a;}
   .rcMeta{flex:none;margin-top:8px;font-size:13px;color:#8b8b86;}
   .rcCta{
@@ -5594,6 +5613,14 @@
     transform:translateX(-50%) translateY(var(--heroLift, 0px));
   }
   body.light.v5 #phone::before{display:none;}
+  /* The light belongs to the biomarkers' hero -- the figure it sits behind.
+     On the Reports tab there is no figure, only cards, so both halves of it
+     fade out (and back, on the way back): "Halo bg concern only biomarker
+     hero section". Opacity rather than display, so it is a fade and not a
+     cut, on the same .35s the tab's own crossfade takes. */
+  body.v5 #mHeroOrgan .v4Halo, body.v5 #phone::before{transition:opacity .35s ease;}
+  body.v5.repTab:not(.v3Tab) #mHeroOrgan .v4Halo,
+  body.v5.repTab:not(.v3Tab) #phone::before{opacity:0;}
   /* (A noise film once sat here too, on #phone::after, so this copy of the
      light would be dithered like .v4Halo's. The two films did not lift their
      halves equally and drew the very line at the strip's edge this copy
@@ -6039,6 +6066,12 @@
   body.v4.v25Tab:not(.v3Tab) #phone .mHead{position:relative;z-index:auto;}
   body.v4.v25Tab:not(.v3Tab) #phone .mHeadIn{position:relative;will-change:auto;}
   body.v4.v25Tab:not(.v3Tab) #phone .mBody{margin-top:0;border-radius:0;min-height:100%;}
+  /* Undoing the body's 24px ride over the header opened 24px of air under
+     the biomarkers' hero (its 410px box ends well below the organ names).
+     "reduce gap by 24px": the hero gives those back on its own margin (6 -
+     24), on the biomarkers tab only -- the Reports tab hugs its cards and has
+     no air to give. */
+  body.v4.v25Tab:not(.v3Tab):not(.repTab) #phone #mHeroOrgan{margin-bottom:-18px;}
   body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2{
     position:sticky;top:8px;z-index:9;
     background:rgba(255,255,255,.08);
