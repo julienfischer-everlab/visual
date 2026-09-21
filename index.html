@@ -881,6 +881,12 @@
   .dash .st{border-radius:8px;padding:5px 11px;font-size:12.5px;justify-self:start;}
   .dash .st.ok{background:#17251a;color:#9fc98f;}
   .dash .st.sub{background:#272113;color:#f2c744;}
+  /* the desk had no rule of its own for the other two readings, so an
+     out-of-range pill fell to whatever the generic .st carried; the phone's
+     pair, red on red ("the out-of-range should be a red background and red
+     text") and grey on grey */
+  .dash .st.out{background:#2b1416;color:#fe8087;}
+  .dash .st.other{background:#1e1e1d;color:#9a9a96;}
   .dash .recs{margin-top:14px;}
   .dash .grp{display:grid;grid-template-columns:230px 1fr;gap:0 26px;padding:30px 6px;border-top:1px solid #1f1f1e;}
   .dash .grp:first-child{border-top:0;}
@@ -3962,7 +3968,9 @@
   body.repVisual .rcCard.rcBig .rcVis.hasImg{background-size:cover;background-position:center;background-repeat:no-repeat;}
   /* the Cards layout's stack rows: a smaller thumb, and only in Visual */
   .rcStack .rbThumb{display:none;}
-  body.repVisual .rcStack .rbThumb{display:flex;width:52px;height:34px;border-radius:7px;}
+  /* 44x30, and 8px of its own before the text on top of the row's 10px gap
+     ("the thumbnail is too wide, and the text is too close to it") */
+  body.repVisual .rcStack .rbThumb{display:flex;width:44px;height:30px;border-radius:7px;margin-right:8px;}
   .rbThumb.hasImg svg,
   body.repVisual .rcCard.rcBig .rcVis.hasImg svg{display:none;}
   .rbThumb::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.2), rgba(0,0,0,0) 50%);}
@@ -4220,6 +4228,20 @@
      margin-top:auto. */
   .rcWrap.n4 > .rcCard{flex:1 1 0;min-width:0;}
   .rcWrap.n4 .rcCard.rcStack{flex:1 1 0;min-width:0;}
+  /* the right column: the stack, and in Visual the small My documents card
+     under it; each hugs its rows, the column is their sum, and the main card
+     on the left stretches to it */
+  .rcWrap.n4 .rcCol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:20px;}
+  .rcWrap.n4 .rcCol .rcCard{flex:none;}
+  .rcCard.rcDocs{display:none;}
+  body.repVisual .rcCard.rcDocs{display:flex;}
+  .rcDocs .rbList{flex:none;}
+  .rbDocIco{
+    flex:none;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.07);color:#c9c9c4;
+  }
+  .rbDocIco svg{width:16px;height:16px;display:block;}
+  body.light .rbDocIco{background:rgba(46,31,26,.07);color:#5a4a3c;}
   .rcCard{
     position:relative;
     display:flex;flex-direction:column;border-radius:20px;padding:22px;
@@ -4298,11 +4320,11 @@
     display:inline-block;position:static;float:right;top:auto;right:auto;bottom:auto;left:auto;
     margin:-3px 0 0 8px;order:0;align-self:auto;
   }
-  /* one size for the Visual card's title on both screens ("it should be
-     font size 20") */
+  /* one size for the Visual card's title on both screens: 20 was asked for,
+     then "still too big, put 18px" */
   body.repVisual .rcCard.rcBig .rcTitle,
   body.repVisual #phone .rcCard.rcBig .rcTitle,
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcTitle{font-size:20px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcTitle{font-size:18px;}
   /* heights were the card's; the tile and its lines set them now. On the
      desk the tile is held at 200px rather than 16:10 of a 500px column,
      which made a 320px poster of a document icon. */
@@ -4724,6 +4746,8 @@
     background:rgba(255,255,255,.05);
   }
   body.light .rsArt{background:rgba(46,31,26,.05);}
+  .rsArt.hasImg{background-size:cover;background-position:center;background-repeat:no-repeat;overflow:hidden;}
+  .rsArt.hasImg svg{display:none;}
   .rsArt svg{
     position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
     width:148px;height:148px;display:block;overflow:visible;
@@ -5368,6 +5392,8 @@
   body.light .dash .grp .gd{color:#9b8a75;}
   body.light .dash .st.ok{background:#e5efdb;color:#55763f;}
   body.light .dash .st.sub{background:#f3ead0;color:#8f7327;}
+  body.light .dash .st.out{background:#f7dcda;color:#a33c39;}
+  body.light .dash .st.other{background:#ebebe8;color:#6b6b66;}
   body.light .dash .organ{background:#f3e2d8;}
   body.light .dash .olist .or{color:rgba(46,31,26,.28);border-bottom-color:rgba(46,31,26,.1);}
   body.light .dash .olist .or:hover, body.light .dash .olist .or.on{color:#2e1f1a;}
@@ -17491,7 +17517,11 @@
   // report visual placeholder"): three, dealt round the reports in order, so
   // neighbouring cards never share one. Cropped to the tile's 16:10 at
   // 800px; the build inlines them like every other asset.
-  const REP_ART = ['assets/reports/smoothie.webp', 'assets/reports/globe.webp', 'assets/reports/virus.webp'];
+  // in this order so the first report (Pathology test) wears the red
+  // pathology micrograph and the third (Other Report) the celery ("for the
+  // pathology test use the red pathology image; replace the other report
+  // with the celery image")
+  const REP_ART = ['assets/reports/virus.webp', 'assets/reports/globe.webp', 'assets/reports/smoothie.webp'];
   const repImg = r => REP_ART[Math.max(0, REPS.indexOf(r)) % REP_ART.length];
   const repsShown = () => {
     const sel = document.getElementById('stRepCount');
@@ -17793,7 +17823,10 @@
       const vid = r.media === 'video';
       q('.rsKind i').style.background = r.art[0];
       q('.rsKind b').textContent = vid ? 'New video' : 'New document';
-      q('.rsArt').innerHTML = repArtHTML(r, 'sheet' + (desk ? 'd' : 'm'));
+      // the cover wears the report's photograph, the same one its thumbnail
+      // wears ("on the drawer, use the visual from the thumbnail on the cover")
+      { const art = q('.rsArt'); art.innerHTML = repArtHTML(r, 'sheet' + (desk ? 'd' : 'm'));
+        art.classList.add('hasImg'); art.style.backgroundImage = 'url(' + repImg(r) + ')'; }
       q('.rsTitle').textContent = r.label;
       q('.rsSub').textContent = vid
         ? 'A recorded read-through of this report, from ' + r.by + '.'
@@ -18055,10 +18088,30 @@
       shape === 'n1' ? big(shown[0], true, LATEST) :
       shape === 'n2' ? big(shown[0], false, LATEST) + big(shown[1], false, RECENT) :
       shape === 'nCar' ? shown.map((r, i) => big(r, false, i ? RECENT : LATEST, true)).join('') :
+      // past two on the desk: the main card, and a right column of the stack
+      // and -- in the Visual layout -- a small full-width My documents card
+      // under it with one document in it ("on the right, two cards: the
+      // report card you have, and below it a small card, same full width,
+      // a My documents card with just one item"). Written always, shown by
+      // body.repVisual; the column hugs its cards and the main card follows.
       big(shown[0], onPhone, LATEST) +
+        '<div class="rcCol">' +
         '<div class="rcCard rcStack' + (count > 4 ? ' hasMore' : '') + '">' +
           '<div class="rcStackHead"><div class="rcEyebrow">Other reports</div>' + MORE + '</div>' +
           '<div class="rbList">' + shown.slice(1, 4).map(rowItem).join('') + '</div>' +
+        '</div>' +
+        (typeof MEDS !== 'undefined' && MEDS[0] ?
+        '<div class="rcCard rcStack rcDocs">' +
+          '<div class="rcStackHead"><div class="rcEyebrow">My documents</div></div>' +
+          '<div class="rbList">' +
+            '<button class="rbRow rbDoc" type="button">' +
+              '<span class="rbDocIco"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                '<path d="M4 1.5h5.5L13 5v9.5H4z"/><path d="M9.5 1.5V5H13"/><path d="M6 8.5h5M6 11h5"/></svg></span>' +
+              '<span class="t"><b>' + MEDS[0].docs[0] + '</b>' +
+                '<span>' + MEDS[0].date + ' &middot; ' + MEDS[0].src.split(' very long')[0] + '</span></span>' + CHEV +
+            '</button>' +
+          '</div>' +
+        '</div>' : '') +
         '</div>';
     host.className = host.dataset.rcBase + ' ' + shape;
     host.scrollLeft = 0;   // a rebuilt carousel opens on its first card
@@ -18165,6 +18218,12 @@
     });
     host.addEventListener('click', e => {
       if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); return; }
+      // the My documents row takes the reader to the records below
+      if (e.target.closest('.rbDoc')){
+        const h = document.querySelector('.dash .mMedsHead');
+        if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
       if (e.target.closest('.rcMore')){
         (host.closest('#phone') ? allRepsM : allRepsD).open();
         return;

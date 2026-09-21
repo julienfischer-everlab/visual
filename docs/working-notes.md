@@ -9058,7 +9058,37 @@ the overrides are said at that weight now (cover, centred, drawing off).
 - **The Visual title is 20px on both screens** ("the title is too big, it
   should be font size 20") -- the desk already measured 20; the phone's
   Visual cards (16 and 18) came up to it. `#phone .rcTitle{18px}` is an id
-  rule, so the phone's line is said with `#phone` in it.
+  rule, so the phone's line is said with `#phone` in it. Then "still too
+  big, put 18px" -- 18 on both screens.
+
+### 5.323 The desk's out-of-range pill, the Visual right column, the drawer's cover
+
+- **Out of range on the desk was never styled.** `.dash .st.ok` and `.sub`
+  existed; `.out` and `.other` did not, so those pills fell to the generic
+  `.st` (no ground, page ink). The phone's pair, red on red and grey on
+  grey, is on the desk now, light theme included -- "the out-of-range
+  should be a red background and red text". Measured over every desk
+  pill: 68 ok, 20 sub, 12 out, 10 other, each with its own ground.
+
+- **Visual, past two: a right column of two cards.** "The latest report
+  on the left as it is; on the right, two cards: the report card you
+  have, and below it a small card, same full width, a My documents card
+  with just one item." The stack sits in `.rcCol` with `.rcDocs` under it
+  -- the stack's shell, a "My documents" eyebrow and one row (a document
+  icon, the first record's first document, its date and source) that
+  scrolls the reader to the records below. Written always, shown by
+  `body.repVisual`; both cards hug (`flex:none` inside the column), the
+  column is their sum and the main card stretches to it: 233 + 20 + 115 =
+  368 on both sides, measured. Neutral shows the stack alone at 233.
+
+- **Thumbs and photos**: the stack's thumbs are 44×30 with 8px of their
+  own before the text ("too wide, text too close"); the photos are dealt
+  so the Pathology test wears the red micrograph and Other Report the
+  celery ("for the pathology test use the red pathology image; the other
+  report the celery"); and the report drawer's cover wears the same
+  photograph as the report's thumbnail ("on the drawer, use the visual
+  from the thumbnail on the cover") -- `.rsArt.hasImg`, cover, the drawing
+  off.
 
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as
