@@ -8818,6 +8818,35 @@ and a narrow window IS the mobile viewport. `#m20v` and the `/phone` path
 still reach the full-screen phone; the select simply shows the mode's
 own entry when they do.
 
+### 5.316 Reports tab, four small ones and a phone carousel
+
+- **The row wash was being clipped, not under-sized.** `.rbList` scrolls
+  (`overflow-y:auto`), and a scrolling box clips sideways as well -- so the
+  row's 14px overhang past its list showed as the list's own 4px padding
+  ("hover bg should bleed more"). The list reaches out now (`margin:0
+  -10px; padding:0 10px` in the stack card, 12 on the desk) and the row
+  stays inside it with `padding:12px 14px` (16 on the desk): the wash runs
+  14/16px past the text on each side, measured, and the text is still
+  level with the eyebrow above.
+
+- **No press scale on the report cards.** `.rcCard:active{transform:
+  scale(.97)}` belonged to the record chips in `.rcCar`, which share the
+  class name; scoped to `.rcCar .rcCard:active` -- "no report card should
+  be clickable, so no press state that scales down the card".
+
+- **The Reports tab's orange 1.** `.tCount` on the desk tabs was V3's alone
+  (`body:not(.v3Tab) ... {display:none}`); it shows on every line-of-tabs
+  layout now (`body:not(.v2Tab)` hides it, i.e. only the pill).
+
+- **Phone Cards past two is a carousel.** `buildRepCards()` returns `nCar`
+  on the phone for 3+: every report as the two-up card (192px, CTA at the
+  foot), in a row that scrolls and snaps card by card. Width is
+  `calc(50% - 12px)` with a 16px right padding: 50% is of the content box
+  the padding has already shortened, so (W-16)/2 - 12 = (W - 2·12 - 16)/2,
+  and two cards stand in the row with exactly 16px of the third at the
+  right edge ("card width based on the 3rd card visible 16px on the right
+  side"); -20 had left 32. The desk keeps the main card and the stack.
+
 ---
 
 ## 6. Open items
