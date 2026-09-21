@@ -8329,6 +8329,44 @@ decoration, not tab content, with its own fade already spoken for.
 
 ---
 
+### 5.306 A third shape for the Reports tab: one card per report
+
+The Reports tab already has two shapes behind the `Reports` tweak --
+Carousel (swipe) and Bento (a summary tile beside a scrolling list of
+every record) -- both fixed regardless of how many reports there are. The
+brief asked for a third that isn't fixed: how many reports there are
+decides the shape itself, not just what's inside it. One report is a
+single full-width card at 256px; two sit side by side at 320px each; past
+two, the third report onward has nowhere left to sit beside a card
+without shrinking it every time a new one arrives, so they move into a
+second card and stack there instead -- the same `.rbList`/`.rbRow` the
+Bento's own "All reports" card already draws, reused rather than rebuilt.
+
+`buildRepCards()` (beside `buildRepBento()`, same shape of function) reads
+a report-*count* off a new tweak, `Reports shown` (1 / 2 / more than 2),
+not off `REPS.length` -- this is a review tool for a shape the live
+account's real count may never actually put it in, same as `stAge`'s
+Completed/Empty is for the biological-age card. Both tweaks live in the
+same select-and-body-class pattern every other one here does: `Reports`
+gained a third option (`cards`), driving a new `repCards` class alongside
+the existing `repBento`, and `Reports shown` writes `CARD_STATE.repCount`
+and re-fires `everlab:repTab` -- the same event the tab switch itself
+already dispatches, which is how the rebuild reaches this without a
+direct reference to a function declared in a different part of the file
+(`dStick()`'s own `.stuck` recompute and half a dozen other listeners
+already reach across the same way).
+
+One bug on the way there: the first cut called `rebuildRepCards()` once,
+immediately, right where `buildRepBento()`'s own boot-time calls sit --
+but `CARD_STATE` is declared further down this same scope, so that read
+it mid-TDZ (`Cannot access 'CARD_STATE' before initialization`).
+`buildRepBento()`'s calls never touch `CARD_STATE`, which is why they were
+never at risk of the same thing. Dropping the eager call and leaving only
+the event listener fixed it -- the tab switch that first shows Reports
+supplies the first real call, by which point `CARD_STATE` exists.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

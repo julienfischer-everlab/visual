@@ -3900,6 +3900,60 @@
   .dRepBento .rbRow .t b{font-size:15px;}
   .dRepBento .rbRow .t span{font-size:13px;}
 
+  /* ---- Reports as cards ---------------------------------------------------
+     The third shape, alongside the carousel and the bento: one card per
+     report rather than a summary tile plus a list, and how many of them
+     there are decides the shape rather than the shape staying fixed --
+     one report is a single full-width card, two sit side by side, and past
+     two the third report onward has nowhere left to sit beside a card
+     without shrinking it, so they stack inside a second card instead, the
+     same list `.rbList`/`.rbRow` already draws for the bento's own "All
+     reports" card. Built by buildRepCards() off however many the Reports
+     count tweak asks for, not off the live record count -- a design review
+     tool for a shape the real account may never actually be in. */
+  .rcWrap{display:none;}
+  body.repTab.repCards #phone .v4RepCar,
+  body.repTab.repCards #phone .v4RepDots,
+  body.repTab.repCards #phone .rbWrap,
+  body.repTab.repCards .dash .dRepShelf,
+  body.repTab.repCards .dash .dRepBento{display:none !important;}
+  body.repTab.repCards #phone #mHeroOrgan .rcWrap{
+    display:flex;position:absolute;left:13px;right:13px;top:8px;z-index:4;gap:10px;
+  }
+  body.repTab.repCards .dash .rcWrap.dRepCards{display:flex;gap:20px;margin:0 0 6px;}
+  .rcWrap.n1 .rcCard{flex:1 1 auto;height:256px;}
+  .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:320px;}
+  .rcWrap.n3 .rcCard{flex:1 1 0;min-width:0;height:320px;}
+  .rcCard{
+    display:flex;flex-direction:column;border-radius:20px;padding:22px;
+    background:rgba(255,255,255,.05);
+  }
+  body.light .rcCard{background:rgba(46,31,26,.05);}
+  .dash .rcCard{border-radius:22px;}
+  .rcEyebrow{
+    flex:none;font-size:10px;font-weight:400;letter-spacing:.12em;
+    text-transform:uppercase;color:#8b8b86;
+  }
+  .rcTitle{
+    flex:none;margin-top:10px;font-size:22px;font-weight:500;letter-spacing:-.3px;
+    color:#ececec;
+  }
+  .dash .rcTitle{font-size:26px;}
+  body.light .rcTitle{color:#2e1f1a;}
+  .rcMeta{flex:none;margin-top:8px;font-size:13px;color:#8b8b86;}
+  .rcCta{
+    margin-top:auto;align-self:flex-start;flex:none;
+    padding:10px 16px;border-radius:999px;border:0;font:inherit;font-size:13px;font-weight:500;
+    background:rgba(255,255,255,.08);color:#ececec;cursor:pointer;
+  }
+  body.light .rcCta{background:rgba(46,31,26,.08);color:#2e1f1a;}
+  /* the stack: the same card shell, holding the same list the bento's own
+     "All reports" card scrolls -- report 2 onward, never report 1, which
+     already has the big card beside this one */
+  .rcCard.rcStack{padding:18px 18px 4px;}
+  .dash .rcCard.rcStack{padding:20px 20px 4px;}
+  .rcCard.rcStack .rbList{flex:1 1 auto;min-height:0;padding:0 4px 14px;}
+
   /* ---- V3: the tabs below the hero, the carousel in the content ---------
      V2 puts the tabs above the hero, because the hero belongs to both tabs.
      V3 puts them below it and takes the consequence: the hero is then the
@@ -6520,6 +6574,19 @@
           <select id="stRepLay" aria-label="How the Reports tab lays out">
             <option value="car" selected>Carousel</option>
             <option value="bento">Bento</option>
+            <option value="cards">Cards</option>
+          </select>
+        </div>
+        <!-- Cards only: how many reports that shape is being asked to hold.
+             A design-review control, not a reading of the real count -- one
+             report, two, or past two, where the shape itself changes rather
+             than just the number inside it. -->
+        <div class="tkRow">
+          <span class="lbl">Reports shown</span>
+          <select id="stRepCount" aria-label="How many reports the Cards layout shows">
+            <option value="1">1 report</option>
+            <option value="2">2 reports</option>
+            <option value="4" selected>More than 2</option>
           </select>
         </div>
         <!-- The filter's shape. Off, the records live behind a select beside
@@ -6812,6 +6879,7 @@
     <div class="insWrap dInsWrap" id="dInsWrap"></div>
     <div class="dRepWrap" id="dRepWrap">
       <div class="rbWrap dRepBento" id="dRepBento"></div>
+      <div class="rcWrap dRepCards" id="dRepCards"></div>
       <div class="secHead"><span>Everlab reports</span><button class="secSeeAll arOpen" type="button">See all<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div>
       <div class="dRepShelf">
         <div class="dRepCar" id="dRepCar" role="group" aria-label="Your reports"></div>
@@ -6999,7 +7067,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -11512,6 +11580,7 @@
       (CARD_STATE.v2Tab && CARD_STATE.repTab ? ' repTab' : '') +
       (CARD_STATE.v4Tab && CARD_STATE.insTab ? ' insTab' : '') +
       (CARD_STATE.repBento ? ' repBento' : '') +
+      (CARD_STATE.repCards ? ' repCards' : '') +
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
@@ -17297,6 +17366,52 @@
     });
   }
 
+  // The third shape: one card per report, the count deciding it rather than
+  // the count filling a fixed one. `n` is the tweak's demo count, not
+  // REPS.length -- this is a review tool for a shape the live account may
+  // never actually reach. `host.dataset.rcBase` remembers the element's own
+  // starting class (set once, off the DOM) so re-running on a tweak change
+  // replaces last time's n1/n2/n3 rather than piling another one on.
+  function buildRepCards(host, sheet, n){
+    if (!host || !REPS.length) return;
+    if (host.dataset.rcBase === undefined) host.dataset.rcBase = host.className;
+    const CHEV = '<svg class="go" viewBox="0 0 12 12" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg>';
+    const count = Math.max(1, Math.min(n, REPS.length));
+    const shown = REPS.slice(0, count);
+    const big = r =>
+      '<div class="rcCard rcBig">' +
+        '<div class="rcEyebrow">' + r.cat + '</div>' +
+        '<div class="rcTitle">' + r.label + '</div>' +
+        '<div class="rcMeta">' + r.date + ' &middot; ' +
+          (r.media === 'video' ? 'Video' : r.n + ' biomarkers') + '</div>' +
+        '<button class="rcCta" type="button" data-r="' + r.id + '">View report</button>' +
+      '</div>';
+    const shape = count === 1 ? 'n1' : count === 2 ? 'n2' : 'n3';
+    host.innerHTML = shape !== 'n3' ? shown.map(big).join('') :
+      big(shown[0]) +
+      '<div class="rcCard rcStack"><div class="rbList">' +
+        shown.slice(1).map(r =>
+          '<button class="rbRow" type="button" data-r="' + r.id + '">' +
+            '<i class="d" style="background:' + r.art[0] + '"></i>' +
+            '<span class="t"><b>' + r.label + '</b>' +
+              '<span>' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : 'Document') +
+            '</span></span>' + CHEV +
+          '</button>').join('') +
+      '</div></div>';
+    host.className = host.dataset.rcBase + ' ' + shape;
+    if (host.dataset.rcBound) return;
+    host.dataset.rcBound = '1';
+    host.addEventListener('click', e => {
+      const el = e.target.closest('[data-r]');
+      if (!el) return;
+      const rec = RECS.filter(r => r.id === el.dataset.r)[0];
+      if (sheet && rec) sheet.open(rec);
+      else document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: el.dataset.r }));
+    });
+  }
+
   // ---- Past results ------------------------------------------------------
   // The message a reader meets the first time their history has been pulled in.
   // One body, two dresses: a modal on the desk and a bottom sheet on the phone.
@@ -17779,6 +17894,21 @@
               [document.getElementById('dRepPrev'), document.getElementById('dRepNext')],
               { align: 'start', sheet: repSheetD });
   buildRepBento(document.getElementById('dRepBento'), repSheetD);
+  // The tweak lives far below this scope (it shares a file, not a closure),
+  // so it reaches this the way everything else that far down already talks
+  // to a tab it doesn't hold a reference to: the same event the tab switch
+  // itself fires, not a function handed across a boundary that may not
+  // still exist by the time it's called.
+  // CARD_STATE is declared further down this same scope, so calling this
+  // eagerly here (as buildRepBento's own calls do, above -- but they never
+  // touch CARD_STATE) would read it mid-TDZ. The 'everlab:repTab' listener
+  // never fires that early, so registering it here is safe; the tab switch
+  // that first shows the Reports tab supplies the first real call.
+  function rebuildRepCards(){
+    buildRepCards(document.getElementById('mRepCards'), repSheetM, CARD_STATE.repCount);
+    buildRepCards(document.getElementById('dRepCards'), repSheetD, CARD_STATE.repCount);
+  }
+  document.addEventListener('everlab:repTab', rebuildRepCards);
 
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.
@@ -18188,7 +18318,8 @@
                        expRep: false,
                        // V2's tabs above the hero, and which of them is on
                        v2Tab: true, v3Tab: false, v4Tab: false,
-                       repTab: false, insTab: false, repBento: false, newRep: false,
+                       repTab: false, insTab: false, repBento: false, repCards: false,
+                       repCount: 4, newRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
@@ -18764,9 +18895,16 @@
   const stRepLaySel = document.getElementById('stRepLay');
   if (stRepLaySel) stRepLaySel.addEventListener('change', () => {
     CARD_STATE.repBento = stRepLaySel.value === 'bento';
+    CARD_STATE.repCards = stRepLaySel.value === 'cards';
     document.body.classList.toggle('repBento', CARD_STATE.repBento);
+    document.body.classList.toggle('repCards', CARD_STATE.repCards);
     document.dispatchEvent(new CustomEvent('everlab:repTab'));
     resize();
+  });
+  const stRepCountSel = document.getElementById('stRepCount');
+  if (stRepCountSel) stRepCountSel.addEventListener('change', () => {
+    CARD_STATE.repCount = parseInt(stRepCountSel.value, 10) || 4;
+    document.dispatchEvent(new CustomEvent('everlab:repTab'));
   });
   // The desk bento stands at the height of the biomarkers' bento header, so
   // the two tabs are two readings of one page rather than two pages. Measured,
