@@ -4225,8 +4225,8 @@
      document cards) sizing the row; the main card follows it, so its typed
      height gives way */
   .dash .rcWrap.n1 > .rcCard, .dash .rcWrap.n1 .rcCol, .dash .rcWrap.n2 .rcCol{flex:1 1 0;min-width:0;}
-  .dash .rcWrap.n2 > .rcCard.rcBig{height:auto;}
-  .dash .rcWrap.n1 > .rcCard.rcRow{height:auto;min-height:128px;}
+  body:not(.noDocs) .dash .rcWrap.n2 > .rcCard.rcBig{height:auto;}
+  body:not(.noDocs) .dash .rcWrap.n1 > .rcCard.rcRow{height:auto;min-height:128px;}
   /* Three and past three share a frame: the main card on the left and a
      column on the right, and NO height typed on either -- the row's own
      stretch (flex's default) makes the two the same height, and what sets it
@@ -4269,6 +4269,11 @@
   /* the button is in the card now, so the header has no second one -- on
      every screen, wherever the row happens to stand at the moment */
   .mMedsHead .mUpload{display:none;}
+  /* the panel's Documents switch, Off: no row anywhere, the header's Upload
+     back, and the desk's one-report shape rid of its empty right column */
+  body.noDocs .docRow{display:none;}
+  body.noDocs .mMedsHead .mUpload{display:inline-block;}
+  body.noDocs .dash .rcWrap.n1 .rcCol{display:none;}
   /* In the desk cards layout's right column (three or more reports) the row
      stands under the Other reports stack, so the whole block -- main card,
      stack, the two -- is one bento at the biomarker bento's 16px gap; the
@@ -7236,6 +7241,13 @@
         <div class="tkRow">
           <span class="lbl">Title</span>
           <select id="stRepTitle" aria-label="Heading above the Reports tab's cards">
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Documents</span>
+          <select id="stDocs" aria-label="The My documents and New document cards">
             <option value="on" selected>On</option>
             <option value="off">Off</option>
           </select>
@@ -12243,6 +12255,7 @@
       (CARD_STATE.repCards ? ' repCards' : '') +
       (CARD_STATE.repFew ? ' repFew' : '') +
       (CARD_STATE.repTitle ? '' : ' noRepTitle') +
+      (CARD_STATE.docs === false ? ' noDocs' : '') +
       (CARD_STATE.repVisual ? ' repVisual' : '') +
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
@@ -19899,6 +19912,17 @@
   if (stRepStyleSel) stRepStyleSel.addEventListener('change', () => {
     CARD_STATE.repVisual = stRepStyleSel.value === 'visual';
     document.body.classList.toggle('repVisual', CARD_STATE.repVisual);
+    document.dispatchEvent(new CustomEvent('everlab:repTab'));   // the hero re-measures its height
+    resize();
+  });
+  // The document cards, On/Off ("add toggle on/off for this"). Off hides the
+  // row on both screens and hands the records header its Upload button back;
+  // the desk's one-report shape drops its empty right column so the card is
+  // full width again. A body class, kept on CARD_STATE for setMode.
+  const stDocsSel = document.getElementById('stDocs');
+  if (stDocsSel) stDocsSel.addEventListener('change', () => {
+    CARD_STATE.docs = stDocsSel.value !== 'off';
+    document.body.classList.toggle('noDocs', !CARD_STATE.docs);
     document.dispatchEvent(new CustomEvent('everlab:repTab'));   // the hero re-measures its height
     resize();
   });

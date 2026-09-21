@@ -9202,6 +9202,23 @@ badge (it overlapped "44 biomarkers"), so there it is the corner badge
 again. Above-records remains the fallback for Bento and Carousel. Check:
 `docrow2.js` at ×1/×2 in both styles, `visual.js`, `docs.js` -- no errors.
 
+### 5.325 Documents On/Off
+
+"Add toggle on/off for this" (the two document cards). A **Documents** row
+under Title in the panel's Reports group, `#stDocs`, a two-option select
+that `segmentise` renders as a switch like Title's. Off is `body.noDocs`,
+kept as `CARD_STATE.docs` and re-emitted by setMode so a tab change or a
+version switch keeps it: the `.docRow` is hidden on both screens, the
+records header gets its Upload button back (`body.noDocs .mMedsHead
+.mUpload{display:inline-block}` over the `.mMedsHead .mUpload{display:none}`
+the cards brought in), and the desk's one-report shape drops its empty right
+column so the row card is full width again (1080 from 554); the height
+overrides that let the main card stretch to the column are gated on
+`body:not(.noDocs)`, so at two reports the card goes back to its typed 192.
+The handler fires `everlab:repTab` and `resize()` for the hero and the
+sidebar. Check: `doctoggle.js` -- desk ×3/×2/×1 Off/On, after a tab
+round-trip, phone Off/On; no errors.
+
 ---
 
 ## 6. Open items
