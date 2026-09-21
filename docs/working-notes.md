@@ -8847,6 +8847,25 @@ own entry when they do.
   right edge ("card width based on the 3rd card visible 16px on the right
   side"); -20 had left 32. The desk keeps the main card and the stack.
 
+- **The row runs edge to edge.** The hero's 13px inset was cutting the
+  third card flat ("no cut on the right side"); the row is `left/right:0`
+  (margin 0 under V2.5) with the 13 back as padding and as the snap line,
+  so the third card runs off the screen instead and its 16px shows from
+  the screen's own edge. Two-up cards (n2 and the row): 208px (192 + 16),
+  16px titles (18 − 2), and the New badge in the flow under the meta line
+  -- in the corner it landed on the eyebrow's letters -- via `order` on
+  the badge and the CTA, since `.rcInfo` is display:contents and the three
+  lines are the card's own flex items. "Everlab reports" has 20px under it
+  (12 + 8).
+
+- **Swipable under a mouse** ("make it swipable"): a pointer drag on the
+  row moves `scrollLeft`, followed on the WINDOW for the drag's length
+  rather than captured -- `setPointerCapture` on the row stalled after
+  the first move and never released in Chromium. Mandatory snapping is off
+  while the pointer is down (`.dragging`) and the row is asked to settle on
+  the nearest card on release; the click that follows a drag is swallowed
+  so a swipe never opens a report. Touch keeps the native scroll.
+
 ---
 
 ## 6. Open items

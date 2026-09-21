@@ -4006,7 +4006,7 @@
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcCta{margin-top:24px;align-self:flex-start;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n1 .rcCard{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2{flex-direction:row;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:192px;}
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:208px;}
   /* Past two: a row that scrolls, snapping card by card. Each card is
      (width - 2 gaps - 16) / 2 wide, so two stand in the row and the third
      shows 16px at the right edge -- the hint that there is more. The cards
@@ -4015,20 +4015,37 @@
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar{
     flex-direction:row;gap:12px;overflow-x:auto;overflow-y:hidden;
     scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;
-    padding-right:16px;scroll-padding-left:0;
+    /* edge to edge, so the third card runs off the screen rather than being
+       cut at the hero's 13px inset ("no cut on the right side"); the 13px
+       comes back as padding, and the snap lines up on it */
+    left:0;right:0;padding-left:13px;padding-right:16px;scroll-padding-left:13px;
   }
+  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcWrap.nCar{margin:0;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar::-webkit-scrollbar{display:none;}
-  /* On a 150-170px card the corner badge lands on the eyebrow's letters, so
-     on the two-up cards (side by side, or in the row) it sits at the foot
-     instead, level with the CTA's middle at the right edge. */
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcNew{
-    top:auto;right:16px;bottom:calc(22px + 19px - 10px);
+  /* dragged under a mouse (buildRepCards): no snap while the pointer is
+     down, no text selection, and the hand says so */
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar{cursor:grab;}
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar.dragging{
+    scroll-snap-type:none;cursor:grabbing;user-select:none;-webkit-user-select:none;
   }
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar.dragging .rcCard{pointer-events:none;}
+  /* The two-up cards (side by side, or in the row) are 150-170px wide, so
+     they are set differently from the full-width card: the title two points
+     smaller, the card 16px taller (208), and the New badge in the flow
+     under the meta line rather than in the corner, where it landed on the
+     eyebrow's letters ("put NEW badge below sub title"). The card is a flex
+     column and the eyebrow/title/meta are its items through display:
+     contents, so `order` puts the badge after the meta and the CTA last. */
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcTitle{font-size:16px;}
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcNew{
+    position:static;order:1;align-self:flex-start;margin-top:10px;
+  }
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcCta{order:2;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar .rcCard{
     /* 50% is of the content box, which the 16px right padding has already
        shortened: (W-16)/2 - 12 = (W - 2*12 - 16)/2, the width that leaves
        exactly 16px of the third card (measured: -20 here left 32) */
-    flex:none;width:calc(50% - 12px);height:192px;scroll-snap-align:start;
+    flex:none;width:calc(50% - 12px);height:208px;scroll-snap-align:start;
   }
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 > .rcCard.rcBig{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 .rcCard.rcStack{flex:1 1 auto;min-height:0;}
@@ -4050,7 +4067,7 @@
      the one gap between the cards and what follows. */
   body.v25Tab.repTab:not(.v3Tab) #phone #mV4{padding-top:0;padding-bottom:0;}
   body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcHeroHead{
-    display:flex;position:relative;z-index:4;padding:8px 13px 0;margin:0 0 12px;
+    display:flex;position:relative;z-index:4;padding:8px 13px 0;margin:0 0 20px;   /* 12 + 8: "add margin bottom +8px" */
   }
   /* title off: the heading's own 8px top stays as the hero's, so the cards
      sit in the hero the way they did under the heading */
@@ -17791,7 +17808,53 @@
     host.scrollLeft = 0;   // a rebuilt carousel opens on its first card
     if (host.dataset.rcBound) return;
     host.dataset.rcBound = '1';
+    // The row scrolls natively under a finger; under a mouse (the phone mock
+    // on a desk) it has to be dragged, so a pointer drag moves scrollLeft
+    // ("make it swipable"). Snapping is off while the finger is down -- a
+    // mandatory snap fights every programmatic scroll -- and back on release,
+    // when the row is asked to settle on the nearest card. A drag is not a
+    // click: the click that follows one is swallowed.
+    // The pointer is followed on the window for the length of the drag rather
+    // than captured: the moves and the release then arrive whatever the
+    // pointer is over, or has left.
+    let drag = null, dragged = false;
+    const move = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x;
+      if (!dragged && Math.abs(dx) < 4) return;
+      if (!dragged){ dragged = true; host.classList.add('dragging'); }
+      host.scrollLeft = drag.left - dx;
+      e.preventDefault();
+    };
+    const release = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      drag = null;
+      removeEventListener('pointermove', move);
+      removeEventListener('pointerup', release);
+      removeEventListener('pointercancel', release);
+      if (!dragged) return;
+      host.classList.remove('dragging');
+      // settle on the nearest card edge, at the row's own snap line (13px in)
+      const first = host.querySelector('.rcCard');
+      if (first){
+        const step = first.offsetWidth + 12;
+        const x = Math.max(0, Math.min(host.scrollWidth - host.clientWidth, Math.round(host.scrollLeft / step) * step));
+        host.scrollTo({ left: x, behavior: 'smooth' });
+      }
+      // the click that follows a drag is swallowed (see below); a drag with
+      // no click after it must not swallow the next real one
+      setTimeout(() => { dragged = false; }, 0);
+    };
+    host.addEventListener('pointerdown', e => {
+      if (!host.classList.contains('nCar') || e.pointerType === 'touch' || e.button !== 0) return;
+      drag = { x: e.clientX, left: host.scrollLeft, id: e.pointerId };
+      dragged = false;
+      addEventListener('pointermove', move);
+      addEventListener('pointerup', release);
+      addEventListener('pointercancel', release);
+    });
     host.addEventListener('click', e => {
+      if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); return; }
       if (e.target.closest('.rcMore')){
         (host.closest('#phone') ? allRepsM : allRepsD).open();
         return;
