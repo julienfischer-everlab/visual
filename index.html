@@ -579,8 +579,16 @@
   /* that 34px was breathing room under the summary cards, in normal flow --
      pinned to the top of the scroller, there are no summary cards above it
      any more to breathe under, and the same gap just reads as too much
-     padding on a bar sitting flush against the card's own edge. */
-  body.b2 .dash .dFilters.stuck .dRow{margin-top:0;}
+     padding on a bar sitting flush against the card's own edge. It used to
+     be taken away when the bar pinned (`.stuck .dRow{margin-top:0}`) -- and
+     that was THE jump: the block lost 34px of height the instant it stuck,
+     and the whole list under it leapt up by 34 (measured, 911 -> 877). So
+     the margin stays and the bar pins 34px higher instead: the select still
+     ends up 24px under the card's edge, the block's height never changes,
+     and nothing below it moves. The class flips exactly where the block
+     passes the -32px line, so moving `top` there does not move the block --
+     it simply carries on in the flow for 34px more and then holds. */
+  body.b2 .dash .dFilters.stuck{top:-66px;}
   body.b2 .dash .olist{top:64px;bottom:24px;display:flex;flex-direction:column;}
   body.b2 .dash .olist .or{flex:1;padding:0 2px;}
   /* ---- V2's organ card, to the reference ---------------------------------
@@ -1722,9 +1730,9 @@
   body.v2Tab .dash .dTabsV2{
     display:flex;width:auto;gap:30px;margin:40px 0 28px;padding:0;
     justify-content:flex-start;border-radius:0;background:none;
-    box-shadow:inset 0 -1px 0 rgba(255,255,255,.1);
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,.06);   /* was .1: "divider a bit less prominent" */
   }
-  body.light.v2Tab .dash .dTabsV2{box-shadow:inset 0 -1px 0 rgba(46,31,26,.13);}
+  body.light.v2Tab .dash .dTabsV2{box-shadow:inset 0 -1px 0 rgba(46,31,26,.09);}
   .dash .dTabsV2 .v2Tab{
     display:flex;align-items:center;gap:8px;
     /* the shared rule above sizes the phone's pill tabs flex:1, equal halves

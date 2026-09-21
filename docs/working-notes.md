@@ -8745,6 +8745,29 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
   offering a pointer -- `.rcCard{cursor:default}`; what is pressed is
   inside it (CTA, rows, See more), each with its own.
 
+### 5.314 The jump, found: the pinned filter bar lost 34px of height
+
+"when I hit that there is a jump" (asked about several rounds ago, and
+again as "the fixed bar jump when reach the Dropdown / search section")
+was on the live Desktop, whose body carries `b2`. `body.b2 .dash
+.dRow{margin-top:34px}` gives the filter row its breathing room under the
+summary cards, and `body.b2 .dash .dFilters.stuck .dRow{margin-top:0}` took
+it away the instant the block pinned, so the block went from 180px to 146
+and everything under it leapt up 34 (measured: the list's absolute top
+911 -> 877 at the pin). The archived m2 does not carry `b2`, which is why
+the first probe on it saw nothing.
+
+The margin stays now and the bar pins 34px higher instead:
+`body.b2 .dash .dFilters.stuck{top:-66px}` (the -32 that cancels #dMain's
+padding, and 34 more). The class flips exactly as the block passes the
+-32 line, so changing `top` there does not move it -- it carries on in
+the flow for 34px and holds -- and the select still rests 24px under the
+card's edge (85 against the scroller's 61). Swept 600–760 and back in 1px
+steps: the list's absolute top never changed.
+
+Also: the desk tabs' divider is `rgba(255,255,255,.06)` (was .1) --
+"divider a bit less prominent".
+
 ---
 
 ## 6. Open items
