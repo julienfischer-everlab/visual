@@ -8866,6 +8866,19 @@ own entry when they do.
   the nearest card on release; the click that follows a drag is swallowed
   so a swipe never opens a report. Touch keeps the native scroll.
 
+- **Dots under the row** ("add carousel nav dot"): `.rcDots`, the hero
+  carousel's own dot language (5px marks, the current one 16 wide), a
+  sibling AFTER the row because the row is the scroller and anything
+  inside it would scroll away. One dot per scroll POSITION, not per card:
+  two cards stand in the row, so the last card is never the leading one
+  and a fifth dot could never light -- n cards, n−1 dots, the active index
+  clamped. They follow the scroll and a tapped dot scrolls to its card.
+  In V2's fixed hero they sit at 8+208+14; in V2.5's they follow in the
+  flow. First pass painted nothing: the tap padding was drawn on the mark
+  itself, and `#phone *{box-sizing:border-box}` (an id) beat the
+  content-box the rule asked for, leaving a 5px box entirely padding. The
+  tap target is a pseudo now (`inset:-8px -4px`).
+
 ---
 
 ## 6. Open items

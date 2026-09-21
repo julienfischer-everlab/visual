@@ -4029,6 +4029,29 @@
     scroll-snap-type:none;cursor:grabbing;user-select:none;-webkit-user-select:none;
   }
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar.dragging .rcCard{pointer-events:none;}
+  /* the row's dots: the hero carousel's dots (.v4RepDots), under the row.
+     In V2's fixed 410px hero the row is absolute, so the dots are placed
+     under where it ends (8 + 208 + 14); in V2.5's hugging hero they follow
+     it in the flow. Each dot has an 8px tap margin drawn as padding on a
+     transparent box, so a 5px mark can still be pressed. */
+  .rcDots{display:none;}
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcDots{
+    display:flex;justify-content:center;gap:5px;
+    position:absolute;left:0;right:0;top:calc(8px + 208px + 14px);z-index:4;
+  }
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcDots[hidden]{display:none;}
+  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcDots{position:relative;top:auto;margin-top:14px;}
+  .rcDots i{
+    position:relative;display:block;width:5px;height:5px;border-radius:3px;
+    background:rgba(242,229,224,.26);cursor:pointer;
+    transition:width .22s ease,background .22s ease;
+  }
+  /* the tap target, drawn on a pseudo: padding on the mark itself met
+     #phone's border-box and left a 5px box with nothing to paint */
+  .rcDots i::before{content:"";position:absolute;inset:-8px -4px;}
+  .rcDots i.on{width:16px;background:#f2e5e0;}
+  body.light .rcDots i{background:rgba(46,31,26,.22);}
+  body.light .rcDots i.on{background:#2e1f1a;}
   /* The two-up cards (side by side, or in the row) are 150-170px wide, so
      they are set differently from the full-width card: the title two points
      smaller, the card 16px taller (208), and the New badge in the flow
@@ -17806,7 +17829,39 @@
         '</div>';
     host.className = host.dataset.rcBase + ' ' + shape;
     host.scrollLeft = 0;   // a rebuilt carousel opens on its first card
+    // The row's dots ("add carousel nav dot"), one per card, in the hero
+    // carousel's own dot language. They live AFTER the row, as its sibling,
+    // because the row is the scroller and anything inside it would scroll
+    // away with the cards. Hidden whenever the shape is not the row.
+    if (onPhone){
+      let dots = host.nextElementSibling;
+      if (!dots || !dots.classList.contains('rcDots')){
+        dots = document.createElement('div');
+        dots.className = 'rcDots'; dots.setAttribute('aria-hidden', 'true');
+        host.parentNode.insertBefore(dots, host.nextSibling);
+      }
+      if (shape === 'nCar'){
+        // one dot per scroll position, not per card: two cards stand in the
+        // row, so the last card is never the leading one and its dot could
+        // never light -- n cards have n-1 positions
+        dots.innerHTML = shown.slice(1).map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
+        dots.hidden = false;
+      } else dots.hidden = true;
+    }
     if (host.dataset.rcBound) return;
+    // the dots follow the scroll and the scroll follows a tapped dot
+    const dotsEl = () => { const d = host.nextElementSibling; return d && d.classList.contains('rcDots') ? d : null; };
+    const stepW = () => { const c = host.querySelector('.rcCard'); return c ? c.offsetWidth + 12 : 0; };
+    const syncDots = () => {
+      const d = dotsEl(), step = stepW(); if (!d || !step) return;
+      const k = Math.min(d.children.length - 1, Math.round(host.scrollLeft / step));
+      [].slice.call(d.children).forEach((i, n) => i.classList.toggle('on', n === k));
+    };
+    host.addEventListener('scroll', () => requestAnimationFrame(syncDots), { passive: true });
+    { const d = dotsEl(); if (d) d.addEventListener('click', e => {
+        const i = e.target.closest('i'); if (!i) return;
+        host.scrollTo({ left: [].indexOf.call(d.children, i) * stepW(), behavior: 'smooth' });
+      }); }
     host.dataset.rcBound = '1';
     // The row scrolls natively under a finger; under a mouse (the phone mock
     // on a desk) it has to be dragged, so a pointer drag moves scrollLeft
