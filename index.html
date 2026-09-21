@@ -110,10 +110,14 @@
   /* a group of rows as a card of its own: the page's card wash on the
      panel's ground, the heading inside it at the top */
   .topbar .tkGroup{
-    display:flex;flex-direction:column;gap:2px;margin-top:4px;padding:2px 2px 4px;
+    display:flex;flex-direction:column;gap:0;margin-top:4px;padding:2px 2px 3px;
     border-radius:10px;background:rgba(255,255,255,.045);
   }
-  .topbar .tkGroup .tkSub{padding:8px 10px 4px;}
+  /* condensed inside the card: rows 4px closer, and the card's title set
+     regular and a size down ("the title group of each card should be
+     regular and smaller") */
+  .topbar .tkGroup .tkRow{padding:5px 10px;}
+  .topbar .tkGroup .tkSub{padding:7px 10px 3px;font-size:9.5px;font-weight:400;letter-spacing:.08em;color:#8b8b90;}
   .topbar .tkPanel > .tkSub:first-child{padding-top:4px;}
   .topbar .tkRow{
     display:flex;align-items:center;justify-content:space-between;gap:28px;
@@ -1456,6 +1460,25 @@
            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .msRec i[hidden]{display:none;}
   .msRecChev{width:12px;height:8px;flex:none;color:#8b8b86;transition:transform .22s ease;}
+  /* A new result, read off the record select: a blue dot beside the chevron
+     ("when there is a new result, put a blue dot next to the chevron"), and
+     in the list the newest report wears the New badge. Both while the New
+     results notice is live (body.newRep) and until the report is opened --
+     from the list or from the notice -- which marks the wrap .seen. */
+  /* said against the buttons, because `.msRec i` / `.dash .drecs i` style the
+     eyebrow line and would otherwise dress this <i> as text */
+  .msRec .msRecNew, .dash .drecs .msRecNew{
+    display:none;width:7px;height:7px;border-radius:50%;background:#5b9cf5;
+    flex:none;margin:0 4px 0 0;font-size:0;
+  }
+  body.newRep .dRecWrap:not(.seen):not(.cleared) .msRecNew,
+  body.newRep .msRecWrap:not(.seen):not(.cleared) .msRecNew{display:block;}
+  .mRecOpt .mRecNew{
+    display:none;vertical-align:middle;margin:-2px 0 0 8px;
+    font-size:11px;font-weight:500;line-height:1;padding:4px 8px;border-radius:7px;
+    background:#e0865f;color:#1a0f08;
+  }
+  body.newRep .mRecMenu:not(.seen) .mRecOpt .mRecNew{display:inline-block;}
   /* Driven by the wrapper's class, not by the hidden property. `hidden` is an
      HTMLElement property and this is an SVG element, which does not implement
      it: el.hidden = true set a plain JS field, reported true when read back,
@@ -7250,6 +7273,7 @@
       <div class="dRecWrap" id="dRecWrap">
         <button class="drecs" id="dRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
           <span class="t"><b id="dRecLbl">All records</b><i id="dRecEy" hidden></i></span>
+          <i class="msRecNew" aria-hidden="true"></i>
           <svg class="msRecChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </button>
         <button class="msRecClear" id="dRecClear" type="button" aria-label="Clear the chosen record" aria-hidden="true"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
@@ -7542,6 +7566,7 @@
       <div class="msRecWrap" id="mRecWrap">
         <button class="msRec" id="mRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
           <span class="t"><b id="mRecLbl">All records</b><i id="mRecEy" hidden></i></span>
+          <i class="msRecNew" aria-hidden="true"></i>
           <svg class="msRecChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </button>
         <button class="msRecClear" id="mRecClear" type="button" aria-label="Clear the chosen record" aria-hidden="true"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
@@ -19572,6 +19597,8 @@
           // filter to the top -- the reader is already on this page, so there
           // is no rebuild to wait out, only the filter's own beat
           cards.forEach(x => x.classList.add('done'));
+          // ...and the record select's dot and the list's New badge with it
+          document.querySelectorAll('.dRecWrap, .msRecWrap, .mRecMenu').forEach(w => w.classList.add('seen'));
           document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: latest.id }));
           reachFilter(!c.closest('#phone'), 80);
         });
@@ -19581,8 +19608,9 @@
     if (sel) sel.addEventListener('change', () => {
       CARD_STATE.newRep = sel.value === 'on';
       document.body.classList.toggle('newRep', CARD_STATE.newRep);
-      // turning it back on is a fresh notice
+      // turning it back on is a fresh notice -- dot and badge included
       cards.forEach(x => x.classList.remove('done'));
+      document.querySelectorAll('.dRecWrap, .msRecWrap, .mRecMenu').forEach(w => w.classList.remove('seen'));
       resize();
     });
   }
@@ -20820,10 +20848,13 @@
       const CHART = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
                     '<path d="M2 11.2 5.6 7.2 8.4 9.6 14 3.6" stroke="currentColor" stroke-width="1.6" ' +
                     'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      // the newest report carries a New badge beside its name while the New
+      // results notice is live (body.newRep, and the wrap not yet .seen)
+      const newest = (typeof REPS !== 'undefined' && REPS[0]) ? REPS[0].id : null;
       rec.listEl.innerHTML = RECS.map(r =>
         '<button class="mRecOpt' + (r.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
                 'aria-selected="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
-          '<span class="t"><b>' + r.label + '</b>' +
+          '<span class="t"><b>' + r.label + (r.id === newest ? ' <span class="mRecNew">New</span>' : '') + '</b>' +
             (r.sub ? '<i>' + r.sub + '</i>' : r.cat ? '<i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i>' : '') + '</span>' +
           (r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
         '</button>').join('');
@@ -20848,6 +20879,10 @@
         const o = e.target.closest('.mRecOpt');
         if (!o) return;
         open(false);
+        // opening the new report is seeing it: the dot and the badge go
+        // (the wrap carries the dot; the menu carries the badge -- on the
+        // phone the menu is not inside the wrap, so both are marked)
+        if (o.dataset.r === newest){ const w = rec.btn.closest('.dRecWrap, .msRecWrap'); if (w) w.classList.add('seen'); rec.menu.classList.add('seen'); }
         choose(o.dataset.r, true);
       });
       if (rec.clear) rec.clear.addEventListener('click', e => {

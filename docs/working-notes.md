@@ -8973,7 +8973,28 @@ own entry when they do.
   Layout, Reports title → Title -- labels only, ids and handlers
   untouched. And **Expanded Report is out of the panel** ("remove this
   tweak"): the row is gone, the handler null-guards and `body.expRep`'s
-  rules stay.
+  rules stay. Then the cards were **condensed** ("condense the property
+  inside the cards, make it a bit smaller; the title group of each card
+  should be regular and smaller"): rows at 5px vertical padding inside a
+  card (7 outside), no gap between them, and the card's title at 9.5px
+  regular.
+
+### 5.319 A new result, read off the record select
+
+"When there is a new result, put a blue dot next to the chevron, and then
+on the list item, you should put a badge: New." Both hang off the New
+results notice (`body.newRep`, the Tweaks toggle), so the three say one
+thing together: a **7px blue dot** (`.msRecNew`, `#5b9cf5`) stands beside
+the chevron in both record selects, and in the list the newest report
+(`REPS[0]`) wears the orange **New** badge beside its name. Opening that
+report -- from the list, or through the notice card -- marks the wrap and
+the menu `.seen` and both go; turning the notice back on brings them back
+with the fresh notice. Two things the first pass missed: the dot is an
+`<i>` inside the select button, which `.msRec i` / `.dash .drecs i`
+already dress as the eyebrow line (display:block), so the dot's rule is
+said against the buttons at that weight; and the phone's menu
+(`#mRecMenu`) is NOT inside its wrap -- it lives in `.msRow` -- so the
+badge's rule and the `.seen` mark address the menu itself.
 
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as
