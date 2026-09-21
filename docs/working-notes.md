@@ -8309,6 +8309,24 @@ both of theirs, so once either is actually pinned, its own opaque top
 simply paints over this one rather than the two adding up. One fade, at
 the bottom of whichever bar is actually fixed, never two stacked.
 
+### 5.305 A flash on every tab switch, nothing to do with scroll at all
+
+Reported as "the gradient appears for a bit" on switching Biomarkers/
+Reports -- not scroll-related, since it happened sitting at the very top
+of the page, where `.dTopFade` should never show at all (5.304's fix). The
+`.stuck` toggle was innocent; the tab switch runs its own crossfade
+entirely apart from it: `.dash main.tabSwap > *{animation:tabSwap .26s}`
+plays a 0.42-to-1 opacity climb on every DIRECT CHILD of `#dMain` when a
+tab changes, so the new content slides and fades in together (5.294's
+account of it). `.dTopFade` is a direct child too, and a running CSS
+*animation* overrides a property's own rule for as long as it plays,
+`.stuck` or not -- so every switch played the climb regardless of scroll
+position, then handed back to `.stuck`'s real value once it finished. The
+rule already carries an exclusion list for exactly this -- `h1` and
+`.mTabsV2` don't crossfade either, because a control fading while it's
+being used reads as the page reloading -- `.dTopFade` joins it: a
+decoration, not tab content, with its own fade already spoken for.
+
 ---
 
 ## 6. Open items
