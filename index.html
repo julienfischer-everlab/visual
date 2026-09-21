@@ -4232,7 +4232,7 @@
      the main card stretches to it; in Visual the main card's photo header
      makes it the taller, and the stack grows to meet it rather than leave a
      hole under its three rows */
-  .rcWrap.n4 .rcCol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:20px;}
+  .rcWrap.n4 .rcCol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:16px;}
   .rcWrap.n4 .rcCol > .rcCard{flex:1 1 auto;}
   /* ---- The document cards ---------------------------------------------------
      Two cards just above Medical records, side by side: the count of
@@ -4259,8 +4259,16 @@
   .rcBigN{font-size:40px;font-weight:500;letter-spacing:-1.2px;line-height:1;color:#ececec;margin:14px 0 0;}
   body.light .rcBigN{color:#2e1f1a;}
   .docUpload .rcUpBtn{margin:12px 0 0;max-width:100%;white-space:nowrap;}
-  /* the button is in the card now, so the header has no second one */
-  .docRow + .mMedsHead .mUpload{display:none;}
+  /* the button is in the card now, so the header has no second one -- on
+     every screen, wherever the row happens to stand at the moment */
+  .mMedsHead .mUpload{display:none;}
+  /* In the desk cards layout's right column (three or more reports) the row
+     stands under the Other reports stack, so the whole block -- main card,
+     stack, the two -- is one bento at the biomarker bento's 16px gap; the
+     34px it takes above the records header is not wanted here */
+  .rcWrap.n4 .rcCol > .docRow{flex:none;}
+  .dash .rcCol .docRow{margin-top:0;}
+  body.repTab.repCards .dash .rcWrap.dRepCards.n4{gap:16px;}
   /* the desk: the biomarker bento's 16px gap (20 on the tablet), 20px
      corners, 24px padding and V5's .06 wash; the row takes the 34px the
      header stood off the reports by, and the header stands 28px under it */
@@ -18083,6 +18091,12 @@
   function buildRepCards(host, sheet){
     if (!host || !REPS.length) return;
     if (host.dataset.rcBase === undefined) host.dataset.rcBase = host.className;
+    // the desk's document row may be standing in this host's right column;
+    // it is the page's node, not this build's, so it steps back to its place
+    // above the records before the rewrite (placeDeskDocRow brings it back
+    // into the new column after, when there is one)
+    const parked = host.querySelector('.docRow');
+    if (parked){ const head = document.querySelector('#dMedsWrap .mMedsHead'); if (head) head.parentNode.insertBefore(parked, head); }
     const CHEV = '<svg class="go" viewBox="0 0 12 12" fill="none" stroke="currentColor" ' +
       'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
       '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg>';
@@ -18797,6 +18811,24 @@
                            !CARD_STATE.repBento && !CARD_STATE.repCards &&
                            repsShown().length <= 2);
     document.body.classList.toggle('repFew', CARD_STATE.repFew);
+    placeDeskDocRow();
+  }
+  // The desk's two document cards (My documents, New document) have two
+  // homes, and it is one node moved between them so its handler and its
+  // state come along: under the Other reports stack in the cards layout's
+  // right column when there are three or more reports ("these two need to be
+  // in the second column below the other reports"), and otherwise just above
+  // the Medical records header, where the phone always keeps its own. The
+  // column exists only in that one shape; every other shape, style or count
+  // hands the row back so the records never lose it.
+  function placeDeskDocRow(){
+    const row = document.querySelector('.dash .docRow');
+    if (!row) return;
+    const host = document.getElementById('dRepCards');
+    const col = CARD_STATE.repCards && host && host.classList.contains('n4') ? host.querySelector('.rcCol') : null;
+    if (col){ if (row.parentNode !== col) col.appendChild(row); return; }
+    const head = document.querySelector('#dMedsWrap .mMedsHead');
+    if (head && row.nextElementSibling !== head) head.parentNode.insertBefore(row, head);
   }
   document.addEventListener('everlab:repTab', rebuildRepCards);
 
@@ -18804,7 +18836,10 @@
   // counts: a tap brings the list's head up under the pinned bar
   document.querySelectorAll('.docCard.docCardN').forEach(b => {
     b.addEventListener('click', () => {
-      const list = b.closest('.mMedsWrap').querySelector('.mMedList');
+      // the desk's row may be standing in the reports column, so the list
+      // is found by screen, not by ancestry
+      const wrap = b.closest('.mMedsWrap') || document.getElementById(b.closest('#phone') ? 'mMedsWrap' : 'dMedsWrap');
+      const list = wrap && wrap.querySelector('.mMedList');
       if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });

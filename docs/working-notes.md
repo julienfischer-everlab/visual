@@ -9159,6 +9159,27 @@ need to be higher."
   button fits, header Upload hidden, no `.rcDocRow` left), `docs.js`,
   `visual.js` -- no errors.
 
+**Follow-up, same round** -- "these two need to be in the second column,
+below the other reports": on the desk, in the cards layout at three or more
+reports, the row stands under the *Other reports* stack in the right column
+after all -- but it is still the records section's node. `placeDeskDocRow()`
+(called from `rebuildRepCards`) moves the one `.docRow` into `.rcCol` when
+`CARD_STATE.repCards` and the desk host is `.n4`, and back to just above the
+*Medical records* header in every other case (one or two reports, the Bento
+and Carousel styles), so the records never lose it; `buildRepCards` parks it
+back above the records before it rewrites the host's HTML, or the rewrite
+would have dropped it. The block is one bento at the biomarker bento's gap:
+16px between the main card and the column (`.dRepCards.n4`), between the
+stack and the row, and between the two cards; the row's 34px top margin
+only applies above the records. Heights: Neutral 233 + 16 + 125 = 374,
+which the main card stretches to; Visual at three reports 173 + 16 + 125 =
+314 = the main card. The header's Upload is hidden outright now
+(`.mMedsHead .mUpload`), since the row is not always its sibling. The
+phone keeps its row above the records. Check: `docrow2.js` -- home of the
+row at n4 Neutral/Visual/×5 (column), ×2 and Bento (above records), back to
+cards (column), after a tab round-trip; the count card scrolls `dMain`
+0→668 from the column; no errors.
+
 ---
 
 ## 6. Open items
