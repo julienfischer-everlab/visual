@@ -3917,9 +3917,26 @@
   body.repTab.repCards #phone .rbWrap,
   body.repTab.repCards .dash .dRepShelf,
   body.repTab.repCards .dash .dRepBento{display:none !important;}
+  /* The phone stacks its cards down the column: two side by side on a
+     375px screen leave each too narrow to read (the title wraps to three
+     lines, the meta to two). The hero's own fixed height (410px, the same
+     box the bento fills with top/bottom:8px) is what the column shares out:
+     two reports split it evenly -- which lands each at the same 192px the
+     desk gives them -- and past two, the big card takes the compact row
+     shape one report already uses and the stack takes what is left. */
   body.repTab.repCards #phone #mHeroOrgan .rcWrap{
-    display:flex;position:absolute;left:13px;right:13px;top:8px;z-index:4;gap:10px;
+    display:flex;flex-direction:column;position:absolute;left:13px;right:13px;top:8px;bottom:8px;
+    z-index:4;gap:10px;
   }
+  body.repTab.repCards #phone #mHeroOrgan .rcWrap.n1 .rcCard{flex:none;}
+  body.repTab.repCards #phone #mHeroOrgan .rcWrap.n2 .rcCard{flex:1 1 0;height:auto;min-height:0;}
+  body.repTab.repCards #phone #mHeroOrgan .rcWrap.n3 .rcCard.rcBig{
+    flex:none;height:auto;flex-direction:row;align-items:center;
+    justify-content:space-between;gap:16px;
+  }
+  body.repTab.repCards #phone #mHeroOrgan .rcWrap.n3 .rcInfo{display:block;min-width:0;}
+  body.repTab.repCards #phone #mHeroOrgan .rcWrap.n3 .rcBig .rcCta{margin-top:0;}
+  body.repTab.repCards #phone #mHeroOrgan .rcWrap.n3 .rcCard.rcStack{flex:1 1 auto;height:auto;min-height:0;}
   body.repTab.repCards .dash .rcWrap.dRepCards{display:flex;gap:20px;margin:0 0 6px;}
   /* One report reads as a row -- title on the left, the way in on the
      right, both centred on a shorter strip -- because a report alone has
@@ -5732,7 +5749,14 @@
      movement rather than a card sliding over a picture. The blur is switched
      on by a class rather than left at blur(0): a backdrop-filter on a
      full-height element costs frames even when it is doing nothing. */
-  body.v3Tab #phone .mBody{
+  /* V2.5 shares this ground outright -- one selector list, not a restated
+     copy: "the body is the header's grey at rest and black once it has the
+     screen" is the one thing V2.5 takes from V3, so the two drifting apart
+     would be a bug here, not a freedom. What V2.5 does NOT take is v3Tab's
+     other half, the tabs moving below the hero (v3Layout) -- its tabs stay
+     where V2 puts them. */
+  body.v3Tab #phone .mBody,
+  body.v25Tab #phone .mBody{
     background:rgba(0,0,0,var(--v3BodyK, 0));
     /* and everything the card holds paints the same ground, because they read
        --bodyBg for it: the filter bar's plate, the fades at its edges, the
@@ -5747,11 +5771,13 @@
      header being covered, which takes the whole header's height; the blur is
      the reader lifting the card, which they should feel in the first
      centimetre of the gesture. --v3BlurK is full within ~110px of scroll. */
-  body.v3Tab #phone.v3Blur .mBody{
+  body.v3Tab #phone.v3Blur .mBody,
+  body.v25Tab #phone.v3Blur .mBody{
     -webkit-backdrop-filter:blur(calc(var(--v3BlurK, 0) * 22px));
     backdrop-filter:blur(calc(var(--v3BlurK, 0) * 22px));
   }
-  body.light.v3Tab #phone .mBody{background:rgba(255,255,255,var(--v3BodyK, 0));}
+  body.light.v3Tab #phone .mBody,
+  body.light.v25Tab #phone .mBody{background:rgba(255,255,255,var(--v3BodyK, 0));}
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
   body.light.v5 #phone .mstatus .tm{color:#000;}
@@ -5940,37 +5966,6 @@
   body.light.v4 .mBody{background:#fff;}
   body.v4 #phone #mBento .msn,
   body.v4 #phone #mBento .msn.morganMini{background:#280707;}
-
-  /* ---- V2.5: V2's own bento, V3's dark ground -----------------------------
-     `body.v4`'s ground is entangled with its sticky header: `.mHead`'s
-     background only ever paints once `.mHead` is also given `display:block`
-     (a `display:contents` box paints nothing of its own), and that same
-     switch is what turns it into the real, positioned box `position:sticky`
-     pins. Taking the whole bundle onto V2's bento -- built for a slim,
-     one-screen-tall organ header, not V2's own two full rows of cards plus
-     the tabs plus the report carousel -- pinned nearly all of it: the sticky
-     box never released, the carousel's own measurements (taken against
-     `.mHead` as a plain, unboxed ancestor) came out wrong, and the tabs
-     scrolled out of reach behind it. So this takes only the colour, off
-     `#phone` alone, which already paints a real box in every version: the
-     header and the mini-cards sitting on it read dark red because nothing
-     opaque sits between them and `#phone`'s own ground, exactly as they do
-     under `v4` -- without asking `.mHead` to become a box it was never
-     built, here, to be.
-
-     Dark theme only, unlike `v4`'s own copy: V4 forces the dark ground even
-     under `.light` because everything downstream of it -- every card, every
-     label -- has its own `body.light.v4` reading to match. V2's cards and
-     text have their light-theme readings too, but tuned against V2's own
-     light ground, not this one, and porting every one of those across just
-     to keep a dark island lit for a theme that has otherwise turned
-     everything else pale is the same overreach the sticky header was. The
-     dark ground is what V2.5 is for; on the one theme that doesn't want it,
-     it quietly sits out and V2.5 reads as V2 again, the way the halo already
-     sits out of `.light` for the same reason (5273 on). */
-  body.v25:not(.light) #phone{background:#1c0505;}
-  body.v25:not(.light) #phone #mBento .msn,
-  body.v25:not(.light) #phone #mBento .msn.morganMini{background:#280707;}
 
   .nogl{
     position:fixed;inset:0;display:none;place-items:center;z-index:99;
@@ -6618,6 +6613,10 @@
           <select id="stV2Tab" aria-label="Page layout">
             <option value="off">V1</option>
             <option value="on" selected>V2</option>
+            <!-- V2's tabs, above the hero, over V3's ground: a body card that
+                 is the header's own grey at rest and fills to black as it
+                 rises -- see body.v25Tab beside body.v3Tab in the CSS -->
+            <option value="v25">V2.5</option>
             <option value="v3">V3</option>
             <option value="v4">V4</option>
           </select>
@@ -7775,12 +7774,6 @@
     // below it, not the header above it.
     { name: 'Desktop', dur: 850, ease: 0, group: 'Results received', sort: 1 },
     { name: 'Mobile',  dur: 850, ease: 0, group: 'Results received', sort: 2 },
-    // V2's own bento (hero pair, coverage beside steps, organ age wide
-    // beneath -- the tabs and arrangement m11 wears) with V3's environment
-    // (m15's dark, sticky-headed ground, `v4`'s marker -- see `v25` below):
-    // sits between the two in the menu, same fractional-sort move as the
-    // Tablet entry above.
-    { name: 'Mobile V2.5', dur: 850, ease: 0, group: 'Insights', sort: 6.5 },
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
@@ -7789,7 +7782,7 @@
                       v === 21;
   // V2 is the same bento with the row re-laid out
   const isBento = v => v === 5 || v === 11 || v === 12 || v === 15 || v === 16 ||
-                       v === 17 || v === 19 || v === 20 || v === 26;
+                       v === 17 || v === 19 || v === 20;
   // V5 is V4 with one thing changed, so it wears every V4 class and adds a
   // marker of its own; everything that asks "is this the V4 hero?" asks for v5
   const isV4Hero = m => m === 16 || m === 17 || m === 19 || m === 20;
@@ -11619,11 +11612,6 @@
       (m === 15 ? ' m5 v2 v3 v4' : '') +
       (m === 11 ? ' m5 v2' : '') +
       (m === 12 ? ' m5 v2 v3' : '') +
-      // V2's own chain (its bento, its tabs) plus `v25`, a marker of its own
-      // rather than `v3`/`v4`: those two carry V3's card-arrangement changes
-      // as well as its dark ground, and this wants only the ground -- see
-      // `v25`'s rules, written directly against `v4`'s.
-      (m === 26 ? ' m5 v2 v25' : '') +
       (m === 16 ? ' m5 v2 v3 v4 v5' : '') +
       (m === 17 ? ' m5 v2 v3 v4 v5 v6' : '') +
       (m === 19 ? ' m5 v2 v3 v4 v5 v6 v7' : '') +
@@ -11642,6 +11630,7 @@
       (CARD_STATE.expRep ? ' expRep' : '') +
       (CARD_STATE.v2Tab ? ' v2Tab' : '') +
       (CARD_STATE.v2Tab && CARD_STATE.v3Tab ? ' v3Tab' : '') +
+      (CARD_STATE.v2Tab && CARD_STATE.v25Tab ? ' v25Tab' : '') +
       (CARD_STATE.v2Tab && CARD_STATE.v4Tab ? ' v4Tab' : '') +
       (CARD_STATE.v2Tab && CARD_STATE.repTab ? ' repTab' : '') +
       (CARD_STATE.v4Tab && CARD_STATE.insTab ? ' insTab' : '') +
@@ -16987,6 +16976,18 @@
   // the desk's grid are two arrangements of the same card, so the card itself
   // is written once.
   const REPS = RECS.filter(r => r.id !== 'all' && !r.all);
+  // How many of them the Reports tab shows, in every shape it takes --
+  // Carousel, Bento and Cards alike -- read off the `Reports shown` tweak. A
+  // review tool: the live account has all of REPS, the shape being reviewed
+  // may be for an account with one. Read from the select rather than from
+  // CARD_STATE because the carousel and the bento are built at boot, before
+  // CARD_STATE is declared (5.306 hit that TDZ once already); the select is
+  // in the document from the start and survives setMode the same way.
+  const repsShown = () => {
+    const sel = document.getElementById('stRepCount');
+    const n = sel ? parseInt(sel.value, 10) : 0;
+    return n > 0 ? REPS.slice(0, n) : REPS;
+  };
   // The report's illustration, drawn rather than fetched: the page inlines
   // everything it uses, and two tilted sheets with a coloured band say "a
   // document" faster at 150px than a photograph of one would. The tint comes
@@ -17061,7 +17062,7 @@
     // neither should say there's more when there isn't (see edgeSync below)
     const shelf = car.closest('.dRepShelf');
 
-    car.innerHTML = REPS.map(repCardHTML).join('');
+    car.innerHTML = repsShown().map(repCardHTML).join('');
     // A card can be dismissed, so the list of them and the row of dots are
     // read from the DOM after every change rather than captured once -- a
     // stale index here is a dot marking a card that is no longer there.
@@ -17103,6 +17104,19 @@
     }
     car.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(sync); },
                          { passive: true });
+    // Rebuilt only when the shown count actually changes -- the same event
+    // fires on every tab switch, and rebuilding then would throw away a
+    // dismissed card and the scroll position for nothing.
+    let shownN = cards.length;
+    document.addEventListener('everlab:repTab', () => {
+      const shown = repsShown();
+      if (shown.length === shownN) return;
+      shownN = shown.length;
+      car.innerHTML = shown.map(repCardHTML).join('');
+      car.scrollLeft = 0;
+      redraw();
+      edgeSync();
+    });
     document.addEventListener('everlab:repTab', sync);
 
     // A touch-drag on the scroller is the browser's to handle, but a MOUSE
@@ -17388,40 +17402,51 @@
       'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
       '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg>';
     // the set, counted off the rows rather than typed, as every count on this
-    // page is: a figure beside a list has to be a property of the list
-    const cats = [];
-    REPS.forEach(r => {
-      let c = cats.filter(x => x.k === r.cat)[0];
-      if (!c){ c = { k: r.cat, n: 0, dot: r.art[0] }; cats.push(c); }
-      c.n++;
+    // page is: a figure beside a list has to be a property of the list.
+    // Drawn from repsShown(), the same slice the Carousel and the Cards read,
+    // and redrawn when that slice changes size -- and only then, since the
+    // event it rides also fires on every plain tab switch.
+    const render = () => {
+      const shown = repsShown();
+      const cats = [];
+      shown.forEach(r => {
+        let c = cats.filter(x => x.k === r.cat)[0];
+        if (!c){ c = { k: r.cat, n: 0, dot: r.art[0] }; cats.push(c); }
+        c.n++;
+      });
+      const total = shown.length, vids = shown.filter(r => r.media === 'video').length;
+      host.innerHTML =
+        '<div class="rbCard rbSum">' +
+          '<div class="rbHead"><h4>Your reports</h4><em>' + shown[0].date + '</em></div>' +
+          '<div class="rbBig">' + total + '</div>' +
+          '<p class="rbLead">' + (total - vids) + ' documents and ' + vids +
+            ' recorded read-throughs, across ' + cats.length + ' categories.</p>' +
+          '<div class="rbSplit">' +
+            cats.map(c => '<span class="s"><i style="background:' + c.dot + '"></i>' +
+              c.k + '<b>' + c.n + '</b></span>').join('') +
+          '</div>' +
+          '<div class="rbBar">' +
+            cats.map(c => '<i style="flex:' + c.n + ';background:' + c.dot + '"></i>').join('') +
+          '</div>' +
+        '</div>' +
+        '<div class="rbCard rbAll">' +
+          '<div class="rbHead"><h4>All reports</h4><em>' + total + '</em></div>' +
+          '<div class="rbList">' +
+            shown.map(r =>
+              '<button class="rbRow" type="button" data-r="' + r.id + '">' +
+                '<i class="d" style="background:' + r.art[0] + '"></i>' +
+                '<span class="t"><b>' + r.label + '</b>' +
+                  '<span>' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : 'Document') +
+                '</span></span>' + CHEV +
+              '</button>').join('') +
+          '</div>' +
+        '</div>';
+      return total;
+    };
+    let shownN = render();
+    document.addEventListener('everlab:repTab', () => {
+      if (repsShown().length !== shownN) shownN = render();
     });
-    const total = REPS.length, vids = REPS.filter(r => r.media === 'video').length;
-    host.innerHTML =
-      '<div class="rbCard rbSum">' +
-        '<div class="rbHead"><h4>Your reports</h4><em>' + REPS[0].date + '</em></div>' +
-        '<div class="rbBig">' + total + '</div>' +
-        '<p class="rbLead">' + (total - vids) + ' documents and ' + vids +
-          ' recorded read-throughs, across ' + cats.length + ' categories.</p>' +
-        '<div class="rbSplit">' +
-          cats.map(c => '<span class="s"><i style="background:' + c.dot + '"></i>' +
-            c.k + '<b>' + c.n + '</b></span>').join('') +
-        '</div>' +
-        '<div class="rbBar">' +
-          cats.map(c => '<i style="flex:' + c.n + ';background:' + c.dot + '"></i>').join('') +
-        '</div>' +
-      '</div>' +
-      '<div class="rbCard rbAll">' +
-        '<div class="rbHead"><h4>All reports</h4><em>' + total + '</em></div>' +
-        '<div class="rbList">' +
-          REPS.map(r =>
-            '<button class="rbRow" type="button" data-r="' + r.id + '">' +
-              '<i class="d" style="background:' + r.art[0] + '"></i>' +
-              '<span class="t"><b>' + r.label + '</b>' +
-                '<span>' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : 'Document') +
-              '</span></span>' + CHEV +
-            '</button>').join('') +
-        '</div>' +
-      '</div>';
     // a row is the card's tap: same sheet, same record
     host.addEventListener('click', e => {
       const row = e.target.closest('.rbRow');
@@ -17438,14 +17463,14 @@
   // never actually reach. `host.dataset.rcBase` remembers the element's own
   // starting class (set once, off the DOM) so re-running on a tweak change
   // replaces last time's n1/n2/n3 rather than piling another one on.
-  function buildRepCards(host, sheet, n){
+  function buildRepCards(host, sheet){
     if (!host || !REPS.length) return;
     if (host.dataset.rcBase === undefined) host.dataset.rcBase = host.className;
     const CHEV = '<svg class="go" viewBox="0 0 12 12" fill="none" stroke="currentColor" ' +
       'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
       '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg>';
-    const count = Math.max(1, Math.min(n, REPS.length));
-    const shown = REPS.slice(0, count);
+    const shown = repsShown();
+    const count = shown.length;
     const big = r =>
       '<div class="rcCard rcBig">' +
         '<div class="rcInfo">' +
@@ -17986,8 +18011,8 @@
   // never fires that early, so registering it here is safe; the tab switch
   // that first shows the Reports tab supplies the first real call.
   function rebuildRepCards(){
-    buildRepCards(document.getElementById('mRepCards'), repSheetM, CARD_STATE.repCount);
-    buildRepCards(document.getElementById('dRepCards'), repSheetD, CARD_STATE.repCount);
+    buildRepCards(document.getElementById('mRepCards'), repSheetM);
+    buildRepCards(document.getElementById('dRepCards'), repSheetD);
   }
   document.addEventListener('everlab:repTab', rebuildRepCards);
 
@@ -18398,9 +18423,9 @@
                        // carousel with the search down beside the chips
                        expRep: false,
                        // V2's tabs above the hero, and which of them is on
-                       v2Tab: true, v3Tab: false, v4Tab: false,
+                       v2Tab: true, v25Tab: false, v3Tab: false, v4Tab: false,
                        repTab: false, insTab: false, repBento: false, repCards: false,
-                       repCount: 4, newRep: false,
+                       newRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
                        fullscr: false, showBar: false,
@@ -18856,9 +18881,15 @@
   const stV2Sel = document.getElementById('stV2Tab');
   if (stV2Sel) stV2Sel.addEventListener('change', () => {
     CARD_STATE.v2Tab = stV2Sel.value !== 'off';
+    // V2.5 is V2's tabs over V3's ground: it does NOT carry v3Tab, whose
+    // class also moves the tabs below the hero (v3Layout) -- only the body
+    // card's ground follows, by its own class, in the CSS and the scroll
+    // handler both.
+    CARD_STATE.v25Tab = stV2Sel.value === 'v25';
     // V4 is V3's shape with a third destination, so it carries V3's class too
     CARD_STATE.v3Tab = stV2Sel.value === 'v3' || stV2Sel.value === 'v4';
     CARD_STATE.v4Tab = stV2Sel.value === 'v4';
+    document.body.classList.toggle('v25Tab', CARD_STATE.v2Tab && CARD_STATE.v25Tab);
     document.body.classList.toggle('v3Tab', CARD_STATE.v2Tab && CARD_STATE.v3Tab);
     document.body.classList.toggle('v4Tab', CARD_STATE.v2Tab && CARD_STATE.v4Tab);
     v3Layout();
@@ -18983,8 +19014,9 @@
     resize();
   });
   const stRepCountSel = document.getElementById('stRepCount');
+  // the count itself lives on the select (repsShown() reads it there); this
+  // only tells every shape of the Reports tab to read it again
   if (stRepCountSel) stRepCountSel.addEventListener('change', () => {
-    CARD_STATE.repCount = parseInt(stRepCountSel.value, 10) || 4;
     document.dispatchEvent(new CustomEvent('everlab:repTab'));
   });
   // The desk bento stands at the height of the biomarkers' bento header, so
@@ -19239,7 +19271,8 @@
         // at the top, black by the time it has the screen. Computed here
         // rather than read from v5HeadP because that one is V6's and is left
         // at 0 on the versions V6 is off for.
-        if (document.body.classList.contains('v3Tab')){
+        if (document.body.classList.contains('v3Tab') ||
+            document.body.classList.contains('v25Tab')){     // V2.5 shares V3's body ground
           const k = p * p * (3 - 2 * p);
           // the blur is off the reader's gesture rather than off the header's
           // height: a card being lifted should go soft in the first centimetre,
@@ -19725,13 +19758,8 @@
                             : (isBento(version) && cls.contains('v2') ? 'bento' : '');
       // the tint is the organ's own ground, so it overrides both the card
       // surface and the theme — the canvas clears to exactly the card
-      // V3's whole header keeps the organ's ground, so its card is tinted too.
-      // V2.5 takes the same ground under V2's own card (see body.v25's CSS,
-      // #280707) without wearing `v4` itself, so it needs naming here too --
-      // this is JS, reading class names rather than cascading off one shared
-      // rule, and does not pick up a class it was never told to check.
-      const tint = flat && (cls.contains('organTint') || cls.contains('v4') ||
-                            (cls.contains('v25') && !cls.contains('light')));
+      // V3's whole header keeps the organ's ground, so its card is tinted too
+      const tint = flat && (cls.contains('organTint') || cls.contains('v4'));
       // V3's own card (b4) stopped taking the wine tint by default -- it only
       // still does under organTint's own explicit toggle, which is `tint`
       // above already. Otherwise it clears to the same neutral --shellBg

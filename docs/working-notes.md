@@ -8485,6 +8485,58 @@ that existed at boot -- this one is built long after, on a tab switch.
 
 ---
 
+### 5.310 V2.5 was a Layout, not a Mode -- and the count reaches every shape
+
+5.307 built "Mobile V2.5" as a new entry in the Mode menu. It was the wrong
+door. The V2 and V3 being asked about were the **Layout** tweak's options
+(V1 / V2 / V3 / V4 in the Tweaks panel -- `#stV2Tab`, `CARD_STATE.v2Tab`/
+`v3Tab`/`v4Tab`), not the archived Mode-menu versions that happen to share
+the names. The screenshot that finally said so had the Layout dropdown open.
+Mode 26 is gone -- its MODES entry, class chain, `isBento` index, `LIVE`
+promotion, `body.v25` ground and the canvas tint's check for it -- and
+`#m26` now falls back to the last mode the way any out-of-range hash does.
+
+V2.5 lives where it was meant to: a fifth Layout option, between V2 and
+V3, wearing `v2Tab` (tabs above the hero, exactly where V2 puts them --
+measured, 140px, against V3's 116 after `v3Layout()` moves them) plus a
+class of its own, `v25Tab`. What `v25Tab` carries is precisely the half of
+V3 that was wanted: the body card's ground. Under V3 that card is
+`rgba(0,0,0,var(--v3BodyK))` -- nothing at rest, so the header's own grey
+(`--headBg`, `rgb(18 18 18)` under V6) reads straight through it, and black
+by the time it has the screen, on the same curve the header darkens
+(`headerParallax()` writes `--v3BodyK` and `--v3BlurK`). "Body no black
+bg, use same grey as the hero header; on scroll body become black" is that
+rule word for word. So `v25Tab` joins `v3Tab` in the selector list of those
+three rules rather than restating them -- the two sharing one ground is the
+point, and drift between them would be a bug -- and in the scroll handler's
+`if`. What it does NOT carry is `v3Tab` itself, whose class also relocates
+the tabs and the carousel (`v3Layout()`), and V3's `v5Shrink` factor, which
+pays for those relocated tabs sharing the hero's screen.
+
+Two more asks from the same review, both about the Cards shape:
+
+- **The phone stacks.** Two cards side by side on a 375px screen left each
+  too narrow to read. `body.repTab.repCards #phone #mHeroOrgan .rcWrap` is a
+  column now, filling the hero's fixed 410px the same way the bento does
+  (`top/bottom:8px`). Two reports split it evenly -- which lands each at the
+  same 192px the desk gives them, unasked. Past two, the big card takes the
+  compact row shape one report already uses and the stack takes what's
+  left (`flex:1 1 auto; min-height:0`, so `.rbList` scrolls inside it).
+
+- **"Reports shown" reaches every shape, not just Cards.** The Carousel
+  showed all twenty reports with the tweak at "1 report" -- the count was
+  Cards' alone. `repsShown()` is now the one slice all three shapes read,
+  and it reads the SELECT rather than `CARD_STATE`: the carousel and the
+  bento are built at boot, before `CARD_STATE` is declared (the TDZ 5.306
+  already hit once), and the select is in the document from the first
+  line. Each shape rebuilds on `everlab:repTab` only when the slice's
+  LENGTH changed -- that event fires on every plain tab switch too, and
+  rebuilding then would throw away a dismissed carousel card and its
+  scroll position for nothing. `CARD_STATE.repCount` is gone; the select is
+  the state, and it survives `setMode()` the same way.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
