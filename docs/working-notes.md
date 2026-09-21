@@ -8535,6 +8535,64 @@ Two more asks from the same review, both about the Cards shape:
   scroll position for nothing. `CARD_STATE.repCount` is gone; the select is
   the state, and it survives `setMode()` the same way.
 
+### 5.311 V2.5's hero hugs its tab, and the Cards shape grows to four counts
+
+One long review round on the V2.5 Layout, all of it in the Reports tab.
+
+- **The cut line below the status bar** (5.303's seam, back again) was the
+  halo's two noise films: `.v4Halo::after` in the header and the
+  `#phone::after` echo above the scroller. Each composites its grain over a
+  different stack, so the two halves of the same film never matched to
+  better than ~3 levels along the joint, and that joint sits exactly at the
+  status bar's bottom edge. Measured over the clean columns (200–296 and
+  464–560 at 2x, clear of the clock and the island) the halves agree to
+  within 0.5 level once the films are gone. The header film is now scoped
+  to the desk (`body.b5 #organSlot .v4Halo::after`), where there is no
+  echo to disagree with; the phone film is deleted.
+
+- **The hero hugs its content in V2.5** (`HERO25` block, `#mHeroOrgan
+  height:auto`). Under V2 the hero is a fixed 410px box with the carousel
+  and the dots absolutely placed in it. Under `v25Tab.repTab` those
+  children come back into the flow -- carousel, dots, bento, cards, each
+  with its `position:absolute` undone -- and a heading, `.rcHeroHead`
+  ("Everlab reports" / See all), is the hero's first child. The title had
+  been missing because only V3's relocated host carried one.
+
+- **One or two reports are cards, not a carousel, in V2.5.** A carousel of
+  one is a card with a dot under it; of two, a card and a hint. So
+  `rebuildRepCards()` derives `repFew` -- V2.5, Carousel layout, slice of
+  two or fewer -- and the phone's Cards rules take `:is(.repCards,.repFew)`:
+  one report is the 128px row card filling the hero's width, two are side
+  by side at 192px. Past two the carousel stays. `repFew` rides in
+  `CARD_STATE` so `setMode()` re-emits it.
+
+- **`#hiRepM` (the My Reports mini card) shows the carousel under V2.5**,
+  not the list: `buildReportSlides` writes both and CSS picks, so the
+  Layout tweak needs no rebuild.
+
+- **The Cards shape has four counts now**, on both screens. `repsShown()`
+  gives 1, 2, 3 or 5 (the select's "More than 3"). `n1`: one row card,
+  CTA on the right, 128px. `n2`: two cards side by side, 192px. `n3`:
+  the main card left, and right a column of two row cards splitting the
+  main card's height equally. `n4`: the main card left and ONE card right
+  holding three list rows and a "See more" in its head when there are more
+  than four. No fixed heights on n3 and n4: the right column hugs its
+  rows and the left card follows it (`flex:1 1 0` on both, `align-items`
+  stretch) -- measured 229/229 on the desk at five reports, 258 against
+  119+20+119 at three. Eyebrows: "Latest report" on the main card, "Recent
+  report(s)" on the others. The phone stacks them all in a column.
+
+- **Smaller ones:** `.mTabsV2` gets `margin-bottom:30px` under V2.5 (the
+  asked +16 over V2's 14). The list rows' dots are one neutral grey now
+  (`.rbRow i.d`, `rgba(242,229,224,.22)`) rather than each report's colour
+  -- a list marker, not a legend; the inline `style` came off the two
+  builders that write `.rbRow`. And a **"Reports title"** tweak
+  (`#stRepTitle`, `CARD_STATE.repTitle`, class `noRepTitle` when off) hides
+  the "Everlab reports" heading over the cards in all three places it can
+  stand -- the desk's `.dRepWrap`, V3's `.mRepCarHost`, V2.5's hero --
+  with the hero keeping the heading's 8px top so the cards do not touch its
+  edge.
+
 ---
 
 ## 6. Open items
