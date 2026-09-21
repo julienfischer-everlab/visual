@@ -9180,6 +9180,28 @@ row at n4 Neutral/Visual/×5 (column), ×2 and Bento (above records), back to
 cards (column), after a tab round-trip; the count card scrolls `dMain`
 0→668 from the column; no errors.
 
+**Second follow-up** -- "these two should be below the report card on the
+right, in the right column; the left column is only for the latest
+report": the screenshot was the desk at one or two reports, where there was
+no right column and the row had fallen back above the records. The desk is
+two columns at every count now. `buildRepCards` wraps the second report in
+`.rcCol` at two, and writes an empty `.rcCol` at one, so `placeDeskDocRow`
+has a column to fill whenever the cards layout is showing (its test is
+"host has a `.rcCol`", not the shape); the phone's shapes are untouched
+(`onPhone` skips the wrapper). The `.rcCol` rules lost their `.n4`
+qualifier; `.dash .rcWrap.n1 > .rcCard, .n1 .rcCol, .n2 .rcCol` share the
+row at `flex:1 1 0`; the main card's typed heights give way (`.n2 >
+.rcBig{height:auto}`, `.n1 > .rcRow{height:auto;min-height:128px}`) so it
+stretches to the column; at one report the row is the whole column and
+stretches to the card (`.n1 .rcCol > .docRow{flex:1 1 auto}`). The desk
+cards wrap's own gap is 16px now too, at every count. Heights: two reports
+Neutral 192 + 16 + 125 = 333, Visual 313 + 16 + 125 = 454; one report
+Neutral 128, Visual 200 (the photo tile's floor). The one-report Visual row
+card is half the page now and its meta line had no room for the inline New
+badge (it overlapped "44 biomarkers"), so there it is the corner badge
+again. Above-records remains the fallback for Bento and Carousel. Check:
+`docrow2.js` at ×1/×2 in both styles, `visual.js`, `docs.js` -- no errors.
+
 ---
 
 ## 6. Open items

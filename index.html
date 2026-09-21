@@ -4162,7 +4162,7 @@
   }
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 > .rcCard.rcBig{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 .rcCard.rcStack{flex:1 1 auto;min-height:0;}
-  body.repTab.repCards .dash .rcWrap.dRepCards{display:flex;gap:20px;margin:0 0 6px;}
+  body.repTab.repCards .dash .rcWrap.dRepCards{display:flex;gap:16px;margin:0 0 6px;}   /* the biomarker bento's gap */
 
   /* ---- V2.5's Reports tab: the hero hugs the section ----------------------
      The hero is a fixed 410px because it was drawn for the organ; on the
@@ -4220,6 +4220,13 @@
   .rcCard.rcRow .rcCta{margin-top:24px;align-self:center;}
   .rcWrap.n1 .rcCard{flex:1 1 auto;}
   .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:192px;}
+  /* the desk at one or two reports is two columns too: the latest report
+     alone on the left, the right column (the other report, then the two
+     document cards) sizing the row; the main card follows it, so its typed
+     height gives way */
+  .dash .rcWrap.n1 > .rcCard, .dash .rcWrap.n1 .rcCol, .dash .rcWrap.n2 .rcCol{flex:1 1 0;min-width:0;}
+  .dash .rcWrap.n2 > .rcCard.rcBig{height:auto;}
+  .dash .rcWrap.n1 > .rcCard.rcRow{height:auto;min-height:128px;}
   /* Three and past three share a frame: the main card on the left and a
      column on the right, and NO height typed on either -- the row's own
      stretch (flex's default) makes the two the same height, and what sets it
@@ -4232,8 +4239,8 @@
      the main card stretches to it; in Visual the main card's photo header
      makes it the taller, and the stack grows to meet it rather than leave a
      hole under its three rows */
-  .rcWrap.n4 .rcCol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:16px;}
-  .rcWrap.n4 .rcCol > .rcCard{flex:1 1 auto;}
+  .rcWrap .rcCol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:16px;}
+  .rcWrap .rcCol > .rcCard{flex:1 1 auto;}
   /* ---- The document cards ---------------------------------------------------
      Two cards just above Medical records, side by side: the count of
      documents (a way down to the list) and the upload, which took the CTA the
@@ -4266,9 +4273,11 @@
      stands under the Other reports stack, so the whole block -- main card,
      stack, the two -- is one bento at the biomarker bento's 16px gap; the
      34px it takes above the records header is not wanted here */
-  .rcWrap.n4 .rcCol > .docRow{flex:none;}
+  /* past two the column is a sum and the row hugs; at one report the row is
+     the whole column and stretches to the main card's height instead */
+  .rcWrap .rcCol > .docRow{flex:none;}
+  .rcWrap.n1 .rcCol > .docRow{flex:1 1 auto;}
   .dash .rcCol .docRow{margin-top:0;}
-  body.repTab.repCards .dash .rcWrap.dRepCards.n4{gap:16px;}
   /* the desk: the biomarker bento's 16px gap (20 on the tablet), 20px
      corners, 24px padding and V5's .06 wash; the row takes the 34px the
      header stood off the reports by, and the header stands 28px under it */
@@ -4371,6 +4380,11 @@
     display:inline-block;position:static;float:right;top:auto;right:auto;bottom:auto;left:auto;
     margin:-3px 0 0 8px;order:0;align-self:auto;
   }
+  /* the desk's one-report row card is half the page now, and its meta line
+     beside the photo has no room for the badge: there it is the corner badge
+     again, as in Neutral */
+  .dash .rcWrap.n1 .rcCard.rcRow .rcNew.rcNewInline{display:none;}
+  body.repVisual .dash .rcWrap.n1 .rcCard.rcRow .rcNew:not(.rcNewInline){display:inline-block;}
   /* one size for the Visual card's title on both screens: 20 was asked for,
      then "still too big, put 18px" */
   body.repVisual .rcCard.rcBig .rcTitle,
@@ -18166,9 +18180,17 @@
     // "Recent" became "Other": the eyebrow says what these are next to the
     // latest one, not how old they are
     const LATEST = 'Latest report', RECENT = 'Other report';
+    // On the desk every count is two columns: the latest report alone on the
+    // left, and on the right a column that holds the other report (at two),
+    // the stack (past two) and, under whichever of those, the two document
+    // cards that placeDeskDocRow moves in ("the left column is only for the
+    // latest report; these two go below the report card in the right
+    // column"). At one report the right column is the document cards alone.
+    // The phone keeps its single-column shapes.
+    const COL = inner => '<div class="rcCol">' + inner + '</div>';
     host.innerHTML =
-      shape === 'n1' ? big(shown[0], true, LATEST) :
-      shape === 'n2' ? big(shown[0], false, LATEST) + big(shown[1], false, RECENT) :
+      shape === 'n1' ? big(shown[0], true, LATEST) + (onPhone ? '' : COL('')) :
+      shape === 'n2' ? big(shown[0], false, LATEST) + (onPhone ? big(shown[1], false, RECENT) : COL(big(shown[1], false, RECENT))) :
       shape === 'nCar' ? shown.map((r, i) => big(r, false, i ? RECENT : LATEST, true)).join('') :
       // past two on the desk: the main card, and a right column of the stack
       // and -- in the Visual layout -- a small full-width My documents card
@@ -18825,7 +18847,7 @@
     const row = document.querySelector('.dash .docRow');
     if (!row) return;
     const host = document.getElementById('dRepCards');
-    const col = CARD_STATE.repCards && host && host.classList.contains('n4') ? host.querySelector('.rcCol') : null;
+    const col = CARD_STATE.repCards && host ? host.querySelector('.rcCol') : null;
     if (col){ if (row.parentNode !== col) col.appendChild(row); return; }
     const head = document.querySelector('#dMedsWrap .mMedsHead');
     if (head && row.nextElementSibling !== head) head.parentNode.insertBefore(row, head);
