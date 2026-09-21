@@ -8736,6 +8736,15 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
 
 - **Desk card titles are 20px** (26 → 24 → 20 across three asks).
 
+- **The stack's rows take the organ list's row exactly** (`body.b5 .dash
+  .olist .or`: `margin:0 -14px; padding:9px 14px; border-radius:12px`,
+  hover `rgba(242,229,224,.07)`): 14px of highlight past the text on each
+  side rather than the 10 of the first pass ("padding is not enough left
+  right. Keep exactly same pattern as the organ age list item hover
+  state"), 12px radius, the 7% wash. And the card itself stopped
+  offering a pointer -- `.rcCard{cursor:default}`; what is pressed is
+  inside it (CTA, rows, See more), each with its own.
+
 ---
 
 ## 6. Open items
