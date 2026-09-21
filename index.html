@@ -4063,10 +4063,13 @@
      column and the eyebrow/title/meta are its items through display:
      contents, so `order` puts the badge after the meta and the CTA last. */
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcTitle{font-size:16px;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcNew{
+  /* the badge in the flow is the side-by-side pair's (n2, ~168px cards);
+     the row's cards are a full card wide again, so theirs went back to the
+     corner ("badge top right"), over a date eyebrow short enough to clear it */
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcNew{
     position:static;order:1;align-self:flex-start;margin-top:10px;
   }
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcCta{order:2;}
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcCta{order:2;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar .rcCard{
     /* the content box: W - 13 - 108, which leaves the 12px gap and 96px of
        the next card to the screen's edge */
@@ -17804,13 +17807,16 @@
     // and rest (buildReportSlides).
     // the latest report is the one that has arrived (TAB_NEW's 1 is the same
     // report), so its card alone carries a New badge, top right
-    const big = (r, row, lbl) =>
+    // dateTop: the phone's carousel cards carry the DATE as the eyebrow
+    // ("eyebrow replace by date"), and the meta line then says only what the
+    // report is, so the date is not read twice on one card
+    const big = (r, row, lbl, dateTop) =>
       '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + (lbl === LATEST ? ' rcNewCard' : '') + '">' +
         (lbl === LATEST ? '<span class="rcNew">New</span>' : '') +
         '<div class="rcInfo">' +
-          '<div class="rcEyebrow">' + lbl + '</div>' +
+          '<div class="rcEyebrow">' + (dateTop ? r.date : lbl) + '</div>' +
           '<div class="rcTitle">' + r.label + '</div>' +
-          '<div class="rcMeta">' + r.date + ' &middot; ' +
+          '<div class="rcMeta">' + (dateTop ? '' : r.date + ' &middot; ') +
             (r.media === 'video' ? 'Video' : r.n + ' biomarkers') + '</div>' +
         '</div>' +
         '<button class="rcCta" type="button" data-r="' + r.id + '">View report</button>' +
@@ -17843,7 +17849,7 @@
     host.innerHTML =
       shape === 'n1' ? big(shown[0], true, LATEST) :
       shape === 'n2' ? big(shown[0], false, LATEST) + big(shown[1], false, RECENT) :
-      shape === 'nCar' ? shown.map((r, i) => big(r, false, i ? RECENT : LATEST)).join('') :
+      shape === 'nCar' ? shown.map((r, i) => big(r, false, i ? RECENT : LATEST, true)).join('') :
       big(shown[0], onPhone, LATEST) +
         '<div class="rcCard rcStack' + (count > 4 ? ' hasMore' : '') + '">' +
           '<div class="rcStackHead"><div class="rcEyebrow">Other reports</div>' + MORE + '</div>' +

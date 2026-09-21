@@ -8911,6 +8911,15 @@ own entry when they do.
   settles on the nearest. Measured an 80px flick: 80 → 160 → 212 → 243 →
   258 → 263, landed on card 2; a slow 30px drag settled back.
 
+- **The row's cards, once more** ("badge top right; eyebrow replace by
+  date"): with the card a full card wide again the badge went back to its
+  corner, and the eyebrow is the report's DATE -- `big()` takes a
+  `dateTop` flag; the meta line then says only what the report is ("44
+  biomarkers", "Video"), so the date is not read twice. The side-by-side
+  pair (n2, ~168px) keeps the label eyebrow and the badge in the flow,
+  where a corner badge landed on the letters. Measured 102px between the
+  date's last letter and the badge.
+
 ---
 
 ## 6. Open items
