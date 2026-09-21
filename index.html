@@ -4015,10 +4015,13 @@
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar{
     flex-direction:row;gap:12px;overflow-x:auto;overflow-y:hidden;
     scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;
-    /* edge to edge, so the third card runs off the screen rather than being
+    /* edge to edge, so the next card runs off the screen rather than being
        cut at the hero's 13px inset ("no cut on the right side"); the 13px
-       comes back as padding, and the snap lines up on it */
-    left:0;right:0;padding-left:13px;padding-right:16px;scroll-padding-left:13px;
+       comes back as padding, and the snap lines up on it. One card stands in
+       the row and the next shows 96px ("1 card + 2nd card 96px on the right
+       side"): the right padding is 96 + the 12px gap, so the card is exactly
+       the content box (width:100%) and the last card can still lead. */
+    left:0;right:0;padding-left:13px;padding-right:108px;scroll-padding-left:13px;
   }
   body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcWrap.nCar{margin:0;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar::-webkit-scrollbar{display:none;}
@@ -4065,10 +4068,9 @@
   }
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcCta{order:2;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar .rcCard{
-    /* 50% is of the content box, which the 16px right padding has already
-       shortened: (W-16)/2 - 12 = (W - 2*12 - 16)/2, the width that leaves
-       exactly 16px of the third card (measured: -20 here left 32) */
-    flex:none;width:calc(50% - 12px);height:208px;scroll-snap-align:start;
+    /* the content box: W - 13 - 108, which leaves the 12px gap and 96px of
+       the next card to the screen's edge */
+    flex:none;width:100%;height:208px;scroll-snap-align:start;
   }
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 > .rcCard.rcBig{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 .rcCard.rcStack{flex:1 1 auto;min-height:0;}
@@ -4152,6 +4154,21 @@
   /* the New badge on the latest report's card: a small light pill in the top
      right corner, out of the flow so the eyebrow/title/meta and the CTA lay
      out exactly as they do without it */
+  /* The New card carries a halo in its top-right corner: a radial wash the
+     size of two cards (radii 100% x 100%, so a diameter of 200%), centred on
+     the corner, so the quarter that falls inside the card lights it from
+     that corner and fades out toward the far one -- "add a top right halo
+     (200% the card size) when the report is New". The badge's own warm, at
+     a whisper. Drawn on a pseudo under the content (z-index:-1 inside the
+     card's own stacking context), clipped by the card. */
+  .rcCard.rcNewCard{isolation:isolate;overflow:hidden;}
+  .rcCard.rcNewCard::before{
+    content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;
+    background:radial-gradient(100% 100% at 100% 0%, rgba(224,134,95,.26) 0%, rgba(224,134,95,.08) 45%, rgba(224,134,95,0) 72%);
+  }
+  body.light .rcCard.rcNewCard::before{
+    background:radial-gradient(100% 100% at 100% 0%, rgba(224,134,95,.30) 0%, rgba(224,134,95,.10) 45%, rgba(224,134,95,0) 72%);
+  }
   /* the same badge as the tabs' count, the All-reports sheet's row and the My
      Reports row ("keep same badge for new report everywhere"): #e0865f, 11px,
      4x8 padding, 7px radius -- one mark for one fact, wherever it is shown */
@@ -17788,7 +17805,7 @@
     // the latest report is the one that has arrived (TAB_NEW's 1 is the same
     // report), so its card alone carries a New badge, top right
     const big = (r, row, lbl) =>
-      '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + '">' +
+      '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + (lbl === LATEST ? ' rcNewCard' : '') + '">' +
         (lbl === LATEST ? '<span class="rcNew">New</span>' : '') +
         '<div class="rcInfo">' +
           '<div class="rcEyebrow">' + lbl + '</div>' +
@@ -17846,10 +17863,9 @@
         host.parentNode.insertBefore(dots, host.nextSibling);
       }
       if (shape === 'nCar'){
-        // one dot per scroll position, not per card: two cards stand in the
-        // row, so the last card is never the leading one and its dot could
-        // never light -- n cards have n-1 positions
-        dots.innerHTML = shown.slice(1).map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
+        // one dot per card: the row's right padding is sized so the last
+        // card can lead too, so every card is a scroll position
+        dots.innerHTML = shown.map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
         dots.hidden = false;
       } else dots.hidden = true;
     }
@@ -17877,37 +17893,60 @@
     // The pointer is followed on the window for the length of the drag rather
     // than captured: the moves and the release then arrive whatever the
     // pointer is over, or has left.
-    let drag = null, dragged = false;
+    let drag = null, dragged = false, glide = 0;
     const move = e => {
       if (!drag || e.pointerId !== drag.id) return;
       const dx = e.clientX - drag.x;
       if (!dragged && Math.abs(dx) < 4) return;
       if (!dragged){ dragged = true; host.classList.add('dragging'); }
       host.scrollLeft = drag.left - dx;
+      // the last few moves, for the release's velocity
+      const now = performance.now();
+      drag.vx = (e.clientX - drag.lastX) / Math.max(1, now - drag.lastT);
+      drag.lastX = e.clientX; drag.lastT = now;
       e.preventDefault();
+    };
+    // The release settles the row on a card with an eased glide of its own
+    // (rAF, ease-out cubic, 480ms): the browser's smooth scroll and the
+    // mandatory snap coming back at the same moment fought, and the row
+    // snapped hard ("too brutal"). Snapping stays off until the glide has
+    // landed exactly on a snap line, so there is nothing left to snap. A
+    // flick past 0.35px/ms carries to the next card in its direction, the
+    // way a swipe would; anything slower settles on the nearest.
+    const settle = (x, done) => {
+      cancelAnimationFrame(glide);
+      const from = host.scrollLeft, dist = x - from, t0 = performance.now(), dur = 480;
+      const tick = now => {
+        const p = Math.min(1, (now - t0) / dur), k = 1 - Math.pow(1 - p, 3);
+        host.scrollLeft = from + dist * k;
+        if (p < 1) glide = requestAnimationFrame(tick); else done();
+      };
+      glide = requestAnimationFrame(tick);
     };
     const release = e => {
       if (!drag || e.pointerId !== drag.id) return;
+      const vx = drag.vx || 0;
       drag = null;
       removeEventListener('pointermove', move);
       removeEventListener('pointerup', release);
       removeEventListener('pointercancel', release);
       if (!dragged) return;
-      host.classList.remove('dragging');
-      // settle on the nearest card edge, at the row's own snap line (13px in)
       const first = host.querySelector('.rcCard');
       if (first){
-        const step = first.offsetWidth + 12;
-        const x = Math.max(0, Math.min(host.scrollWidth - host.clientWidth, Math.round(host.scrollLeft / step) * step));
-        host.scrollTo({ left: x, behavior: 'smooth' });
-      }
+        const step = first.offsetWidth + 12, max = host.scrollWidth - host.clientWidth;
+        const at = host.scrollLeft / step;
+        const idx = Math.abs(vx) > 0.35 ? (vx < 0 ? Math.ceil(at) : Math.floor(at)) : Math.round(at);
+        const x = Math.max(0, Math.min(max, idx * step));
+        settle(x, () => host.classList.remove('dragging'));
+      } else host.classList.remove('dragging');
       // the click that follows a drag is swallowed (see below); a drag with
       // no click after it must not swallow the next real one
       setTimeout(() => { dragged = false; }, 0);
     };
     host.addEventListener('pointerdown', e => {
       if (!host.classList.contains('nCar') || e.pointerType === 'touch' || e.button !== 0) return;
-      drag = { x: e.clientX, left: host.scrollLeft, id: e.pointerId };
+      cancelAnimationFrame(glide);   // a new grab takes over from a glide
+      drag = { x: e.clientX, left: host.scrollLeft, id: e.pointerId, lastX: e.clientX, lastT: performance.now(), vx: 0 };
       dragged = false;
       addEventListener('pointermove', move);
       addEventListener('pointerup', release);

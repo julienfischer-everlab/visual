@@ -8879,6 +8879,38 @@ own entry when they do.
   content-box the rule asked for, leaving a 5px box entirely padding. The
   tap target is a pseudo now (`inset:-8px -4px`).
 
+### 5.317 One card and 96px of the next; the New card's halo; the release glides
+
+- **The row shows one card and 96px of the next** ("1 card + 2nd card
+  96px on the right side"), not two and a sliver. Right padding is 108 (96
+  + the 12px gap), so the card is exactly the row's content box
+  (`width:100%` = W − 13 − 108, 251px on the 372px phone) and the second
+  card's left edge is 96px from the screen's edge -- measured. With that
+  padding the last card can lead as well, so the dots are one per card
+  again (five for five; the 1px the sub-pixel widths lose at the far end
+  is absorbed by the clamp).
+
+- **The New card's halo** ("add a top right halo (200% the card size) when
+  the report is New"): `.rcCard.rcNewCard::before`, a radial wash with
+  radii 100% × 100% -- a diameter of two cards -- centred on the top-right
+  corner, so the quarter inside the card lights that corner and fades
+  toward the far one; the badge's warm at 26% down to nothing by 72%.
+  Under the content (z-index −1 in the card's own stacking context,
+  `isolation:isolate`) and clipped by the card. Every shape, both screens:
+  `big()` puts the class on whichever card gets the Latest eyebrow.
+
+- **The release glides** ("make sure the carousel has a smooth effect on
+  release when swipe the card, too brutal atm"). The brutality was two
+  things landing at once: the browser's smooth `scrollTo` and the
+  mandatory snap coming back the same frame `.dragging` left, so the snap
+  won and the row jumped. Now the row settles on its own rAF glide
+  (ease-out cubic, 480ms) and `.dragging` -- snap off -- stays until the
+  glide has landed exactly on a snap line, where there is nothing left to
+  snap. The release also reads the last moves' velocity: a flick past
+  0.35px/ms carries to the next card in its direction, anything slower
+  settles on the nearest. Measured an 80px flick: 80 → 160 → 212 → 243 →
+  258 → 263, landed on card 2; a slow 30px drag settled back.
+
 ---
 
 ## 6. Open items
