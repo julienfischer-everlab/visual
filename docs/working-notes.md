@@ -8697,6 +8697,12 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
   z-index:-1, under the buttons and the thumb. The blur on the pill went
   with it -- an opaque plate has nothing to blur.
 
+- **One New badge.** The card's `.rcNew` had been drawn as a light pill;
+  the sheet's row, the My Reports row and the desk tabs' count already
+  shared the orange one (`#e0865f` on `#1a0f08`, 11px, 4×8, 7px radius).
+  "keep same badge for new report everywhere" -- so the card's took that,
+  and nothing else changed about where it sits.
+
 ---
 
 ## 6. Open items
