@@ -5908,6 +5908,37 @@
   body.v4 #phone #mBento .msn,
   body.v4 #phone #mBento .msn.morganMini{background:#280707;}
 
+  /* ---- V2.5: V2's own bento, V3's dark ground -----------------------------
+     `body.v4`'s ground is entangled with its sticky header: `.mHead`'s
+     background only ever paints once `.mHead` is also given `display:block`
+     (a `display:contents` box paints nothing of its own), and that same
+     switch is what turns it into the real, positioned box `position:sticky`
+     pins. Taking the whole bundle onto V2's bento -- built for a slim,
+     one-screen-tall organ header, not V2's own two full rows of cards plus
+     the tabs plus the report carousel -- pinned nearly all of it: the sticky
+     box never released, the carousel's own measurements (taken against
+     `.mHead` as a plain, unboxed ancestor) came out wrong, and the tabs
+     scrolled out of reach behind it. So this takes only the colour, off
+     `#phone` alone, which already paints a real box in every version: the
+     header and the mini-cards sitting on it read dark red because nothing
+     opaque sits between them and `#phone`'s own ground, exactly as they do
+     under `v4` -- without asking `.mHead` to become a box it was never
+     built, here, to be.
+
+     Dark theme only, unlike `v4`'s own copy: V4 forces the dark ground even
+     under `.light` because everything downstream of it -- every card, every
+     label -- has its own `body.light.v4` reading to match. V2's cards and
+     text have their light-theme readings too, but tuned against V2's own
+     light ground, not this one, and porting every one of those across just
+     to keep a dark island lit for a theme that has otherwise turned
+     everything else pale is the same overreach the sticky header was. The
+     dark ground is what V2.5 is for; on the one theme that doesn't want it,
+     it quietly sits out and V2.5 reads as V2 again, the way the halo already
+     sits out of `.light` for the same reason (5273 on). */
+  body.v25:not(.light) #phone{background:#1c0505;}
+  body.v25:not(.light) #phone #mBento .msn,
+  body.v25:not(.light) #phone #mBento .msn.morganMini{background:#280707;}
+
   .nogl{
     position:fixed;inset:0;display:none;place-items:center;z-index:99;
     background:rgba(13,13,12,.94);color:#f2e5e0;text-align:center;padding:0 24px;
@@ -7720,6 +7751,12 @@
     // below it, not the header above it.
     { name: 'Desktop', dur: 850, ease: 0, group: 'Results received', sort: 1 },
     { name: 'Mobile',  dur: 850, ease: 0, group: 'Results received', sort: 2 },
+    // V2's own bento (hero pair, coverage beside steps, organ age wide
+    // beneath -- the tabs and arrangement m11 wears) with V3's environment
+    // (m15's dark, sticky-headed ground, `v4`'s marker -- see `v25` below):
+    // sits between the two in the menu, same fractional-sort move as the
+    // Tablet entry above.
+    { name: 'Mobile V2.5', dur: 850, ease: 0, group: 'Insights', sort: 6.5 },
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
@@ -7728,7 +7765,7 @@
                       v === 21;
   // V2 is the same bento with the row re-laid out
   const isBento = v => v === 5 || v === 11 || v === 12 || v === 15 || v === 16 ||
-                       v === 17 || v === 19 || v === 20;
+                       v === 17 || v === 19 || v === 20 || v === 26;
   // V5 is V4 with one thing changed, so it wears every V4 class and adds a
   // marker of its own; everything that asks "is this the V4 hero?" asks for v5
   const isV4Hero = m => m === 16 || m === 17 || m === 19 || m === 20;
@@ -11558,6 +11595,11 @@
       (m === 15 ? ' m5 v2 v3 v4' : '') +
       (m === 11 ? ' m5 v2' : '') +
       (m === 12 ? ' m5 v2 v3' : '') +
+      // V2's own chain (its bento, its tabs) plus `v25`, a marker of its own
+      // rather than `v3`/`v4`: those two carry V3's card-arrangement changes
+      // as well as its dark ground, and this wants only the ground -- see
+      // `v25`'s rules, written directly against `v4`'s.
+      (m === 26 ? ' m5 v2 v25' : '') +
       (m === 16 ? ' m5 v2 v3 v4 v5' : '') +
       (m === 17 ? ' m5 v2 v3 v4 v5 v6' : '') +
       (m === 19 ? ' m5 v2 v3 v4 v5 v6 v7' : '') +
@@ -19644,8 +19686,13 @@
                             : (isBento(version) && cls.contains('v2') ? 'bento' : '');
       // the tint is the organ's own ground, so it overrides both the card
       // surface and the theme — the canvas clears to exactly the card
-      // V3's whole header keeps the organ's ground, so its card is tinted too
-      const tint = flat && (cls.contains('organTint') || cls.contains('v4'));
+      // V3's whole header keeps the organ's ground, so its card is tinted too.
+      // V2.5 takes the same ground under V2's own card (see body.v25's CSS,
+      // #280707) without wearing `v4` itself, so it needs naming here too --
+      // this is JS, reading class names rather than cascading off one shared
+      // rule, and does not pick up a class it was never told to check.
+      const tint = flat && (cls.contains('organTint') || cls.contains('v4') ||
+                            (cls.contains('v25') && !cls.contains('light')));
       // V3's own card (b4) stopped taking the wine tint by default -- it only
       // still does under organTint's own explicit toggle, which is `tint`
       // above already. Otherwise it clears to the same neutral --shellBg

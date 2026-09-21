@@ -8367,6 +8367,64 @@ supplies the first real call, by which point `CARD_STATE` exists.
 
 ---
 
+### 5.307 Mobile V2.5: V2's own bento, V3's dark ground
+
+A new Mode-menu entry (`Mobile V2.5`, index 26, sort 6.5 -- between V2 and
+V1, the same fractional-sort move the Tablet entry made against V5) wearing
+`m5 v2 v25`: V2's own chain, wearing none of `v3`/`v4`, plus a marker of
+its own for the one thing asked for on top of it -- the dark ground `v4`
+carries. "V3" in the Mode menu is display-only, kept "for what it is
+rather than for how many came before it" the way Desktop's own naming
+already is (7541 on): the menu entry named `Mobile V3` is mode index 15,
+which wears `v2 v3 v4` -- so the marker its dark ground is actually written
+against is `v4`, not `v3`.
+
+The obvious move -- add `v4` to the chain, or copy its rules wholesale onto
+a new class -- brought its WHOLE bundle, and most of that bundle is not
+"the ground," it is the sticky header V3/V4 was built around: `.mHead`
+switching from `display:contents` (nothing painted, nothing measured) to a
+real, `position:sticky` box. That box is sized for a slim, one-screen organ
+header. Put V2's own header in it instead -- two full rows of cards, the
+tabs, the report carousel -- and it barely ever released: the carousel's
+own measurements, taken against `.mHead` as a plain ancestor, came out
+wrong (every organ slide landed at `display:flex; transform:none`
+simultaneously -- names and ages from ten different organs overlapping in
+one card, `Kidney` printed through `Muscle & bone`), and the tabs scrolled
+out of reach behind the pinned block. `v25`'s rules are `v4`'s own,
+restated: only the two that pay for colour (`#phone`'s background, and the
+mini-cards sitting on it), none of the ones that pay for structure.
+
+Two more places had `v4` -- not `v3`, not "the dark mode," literally that
+one class name -- hard-coded as the only way something knew to turn dark:
+
+- `isBento`, a plain list of mode INDICES the mini-organ carousel's own
+  frame loop (`bentoFrame`) is allowed to run for. Index 26 wearing `v2`
+  looks exactly like index 11 to every rule keyed off `.v2`, but a numbered
+  list does not know that automatically -- it is not a class, it is
+  arithmetic, and 26 was never in it. This is what produced the garbled
+  carousel above; once 26 joined the list, the windowing came back.
+- The canvas's own clear colour, computed in JS off `cls.contains('v4')`
+  for whether the organ's card is "tinted" (cleared to the ground colour
+  rather than to whatever plain surface a card normally clears to). Without
+  it, the CSS said dark red and the canvas said `#252522` (V2's own,
+  untinted mini-card grey) -- a visibly mismatched rectangle behind the
+  particles, on the one card in the header where the canvas IS the card.
+  Reads `v25` now, alongside `v4` and `organTint`.
+
+And the ground itself is dark-theme only, where `v4`'s copy is not: `v4`
+forces it under `.light` too because every card and label downstream of it
+carries its OWN `body.light.v4` reading, tuned to still work against it.
+V2's cards have `body.light` readings of their own, tuned against V2's
+light ground -- porting every one of them across to keep one dark island
+lit under a theme that has turned everything else pale is the same
+overreach the sticky header was. `body.v25:not(.light)` and the matching
+`&& !cls.contains('light')` on the canvas tint: on the one theme that
+doesn't want a dark island, V2.5 quietly reads as V2 again, the same way
+the halo already sits out of `.light` entirely (5273 on) rather than being
+forced to work somewhere it was never asked to.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
