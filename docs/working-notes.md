@@ -8451,6 +8451,40 @@ uses, so a missing element is not a missing handler.
 
 ---
 
+### 5.309 Cards, round two: a header moved, sizes corrected, an overflow earned
+
+5.308's count in the "Everlab reports" header turned out not to be wanted
+after seeing it rendered -- reverted back to the plain plural, and the
+label's own reach into `buildRepCards()` (the `CARD_STATE.repCards` guard,
+the switch handler's reset) went with it. Simpler code for the same reason
+5.306 keeps citing: a rule that isn't there cannot regress.
+
+The header itself moved: `.secHead` sat AFTER `#dRepBento`/`#dRepCards` in
+the markup, so on both of those shapes it rendered BELOW the grid it was
+naming -- correct only for the Carousel, which sits later still. Moved
+before both, it now reads above every shape the same way.
+
+The three sizes were re-specified once seen at their first numbers: one
+report is 128px, not 256, and reads as a row -- title on the left, "View
+report" on the right, both centred on the shorter strip, because a report
+alone has nothing to stack under it. Two is 192px, not 320. `.rcInfo`, a
+new wrapper around the eyebrow/title/meta trio, is what let one report's
+CTA move to the row's end without the other two shapes' vertical stack
+following it there -- `display:contents` everywhere but `.n1`, so it is
+invisible to layout except on the one shape that needs it as a real block.
+
+And the stack (the right card, past two reports) earns a "See more" in its
+own top-right corner, but only once it is actually too tall to read at a
+glance -- measured after render (`scrollHeight` against `clientHeight`),
+not assumed from the count, since whether it overflows depends on the
+demo count *and* the host's own height (the phone's card is shorter than
+the desk's). Opens the same "Everlab reports" drawer the section header's
+own "See all" does (`allRepsD`/`allRepsM`), reached directly rather than
+through the boot-time `.arOpen` wiring, which only ever saw the buttons
+that existed at boot -- this one is built long after, on a tab switch.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to

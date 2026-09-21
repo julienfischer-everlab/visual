@@ -3921,8 +3921,15 @@
     display:flex;position:absolute;left:13px;right:13px;top:8px;z-index:4;gap:10px;
   }
   body.repTab.repCards .dash .rcWrap.dRepCards{display:flex;gap:20px;margin:0 0 6px;}
-  .rcWrap.n1 .rcCard{flex:1 1 auto;height:256px;}
-  .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:320px;}
+  /* One report reads as a row -- title on the left, the way in on the
+     right, both centred on a shorter strip -- because a report alone has
+     nothing to stack under it; two and up keep the tall card the stack
+     (n3's right column) needs room to hold. */
+  .rcWrap.n1 .rcCard{
+    flex:1 1 auto;height:128px;flex-direction:row;align-items:center;
+    justify-content:space-between;gap:24px;
+  }
+  .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:192px;}
   .rcWrap.n3 .rcCard{flex:1 1 0;min-width:0;height:320px;}
   .rcCard{
     display:flex;flex-direction:column;border-radius:20px;padding:22px;
@@ -3930,6 +3937,13 @@
   }
   body.light .rcCard{background:rgba(46,31,26,.05);}
   .dash .rcCard{border-radius:22px;}
+  /* Invisible to layout everywhere but n1: the eyebrow/title/meta stay
+     direct flex children of .rcCard's own column, same as before this
+     wrapper existed. n1 turns it into a real block so the three of them
+     move as one item, left of the CTA, rather than each spacing out along
+     the row on their own. */
+  .rcInfo{display:contents;}
+  .rcWrap.n1 .rcInfo{display:block;min-width:0;}
   .rcEyebrow{
     flex:none;font-size:10px;font-weight:400;letter-spacing:.12em;
     text-transform:uppercase;color:#8b8b86;
@@ -3946,6 +3960,7 @@
     padding:10px 16px;border-radius:999px;border:0;font:inherit;font-size:13px;font-weight:500;
     background:rgba(255,255,255,.08);color:#ececec;cursor:pointer;
   }
+  .rcWrap.n1 .rcCta{margin-top:0;}
   body.light .rcCta{background:rgba(46,31,26,.08);color:#2e1f1a;}
   /* the stack: the same card shell, holding the same list the bento's own
      "All reports" card scrolls -- report 2 onward, never report 1, which
@@ -3953,6 +3968,24 @@
   .rcCard.rcStack{padding:18px 18px 4px;}
   .dash .rcCard.rcStack{padding:20px 20px 4px;}
   .rcCard.rcStack .rbList{flex:1 1 auto;min-height:0;padding:0 4px 14px;}
+  /* "See more" only when the stack is actually taller than it can show --
+     buildRepCards() measures that and adds .hasMore, so a short demo count
+     (this is a review tool; the real account may have far more than fits)
+     never carries a way in to nothing extra. Top-right of the stack card
+     itself, not the section header above both cards -- that one already
+     has its own "See all", and this is specifically the stack's own overflow. */
+  .rcStackHead{display:none;}
+  .rcCard.rcStack.hasMore .rcStackHead{
+    flex:none;display:flex;justify-content:flex-end;margin:-4px -4px 10px 0;
+  }
+  .rcMore{
+    display:flex;align-items:center;gap:4px;border:0;background:none;padding:4px 0;
+    font:inherit;font-size:12.5px;font-weight:500;color:#8b8b86;cursor:pointer;
+  }
+  .rcMore svg{width:9px;height:9px;}
+  .rcMore:hover{color:#ececec;}
+  body.light .rcMore{color:#7d6b58;}
+  body.light .rcMore:hover{color:#2e1f1a;}
 
   /* ---- V3: the tabs below the hero, the carousel in the content ---------
      V2 puts the tabs above the hero, because the hero belongs to both tabs.
@@ -6900,9 +6933,9 @@
          phone can only ever show the same records. -->
     <div class="insWrap dInsWrap" id="dInsWrap"></div>
     <div class="dRepWrap" id="dRepWrap">
+      <div class="secHead"><span>Everlab reports</span><button class="secSeeAll arOpen" type="button">See all<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div>
       <div class="rbWrap dRepBento" id="dRepBento"></div>
       <div class="rcWrap dRepCards" id="dRepCards"></div>
-      <div class="secHead"><span>Everlab reports</span><button class="secSeeAll arOpen" type="button">See all<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div>
       <div class="dRepShelf">
         <div class="dRepCar" id="dRepCar" role="group" aria-label="Your reports"></div>
         <button class="dRepNav prev" id="dRepPrev" type="button" aria-label="Previous report"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button>
@@ -17415,16 +17448,22 @@
     const shown = REPS.slice(0, count);
     const big = r =>
       '<div class="rcCard rcBig">' +
-        '<div class="rcEyebrow">' + r.cat + '</div>' +
-        '<div class="rcTitle">' + r.label + '</div>' +
-        '<div class="rcMeta">' + r.date + ' &middot; ' +
-          (r.media === 'video' ? 'Video' : r.n + ' biomarkers') + '</div>' +
+        '<div class="rcInfo">' +
+          '<div class="rcEyebrow">' + r.cat + '</div>' +
+          '<div class="rcTitle">' + r.label + '</div>' +
+          '<div class="rcMeta">' + r.date + ' &middot; ' +
+            (r.media === 'video' ? 'Video' : r.n + ' biomarkers') + '</div>' +
+        '</div>' +
         '<button class="rcCta" type="button" data-r="' + r.id + '">View report</button>' +
       '</div>';
     const shape = count === 1 ? 'n1' : count === 2 ? 'n2' : 'n3';
+    const MORE = '<button class="rcMore" type="button">See more' +
+      '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button>';
     host.innerHTML = shape !== 'n3' ? shown.map(big).join('') :
       big(shown[0]) +
-      '<div class="rcCard rcStack"><div class="rbList">' +
+      '<div class="rcCard rcStack"><div class="rcStackHead">' + MORE + '</div><div class="rbList">' +
         shown.slice(1).map(r =>
           '<button class="rbRow" type="button" data-r="' + r.id + '">' +
             '<i class="d" style="background:' + r.art[0] + '"></i>' +
@@ -17434,24 +17473,18 @@
           '</button>').join('') +
       '</div></div>';
     host.className = host.dataset.rcBase + ' ' + shape;
-    // The desk names the set above the cards -- "Everlab reports", however
-    // many there are, the same header the Carousel and the Bento both sit
-    // under. Cards is the one shape where that count is the whole point of
-    // the tweak, so it reads it off the same `count` the cards themselves
-    // were built from rather than leaving it a plain, uncounted plural.
-    // Only the desk carries this label this close to the grid -- the phone's
-    // copy of it belongs to a different host (v3Tab's carousel), not this one.
-    // Guarded on repCards actually being the live layout: this rebuild also
-    // runs on every OTHER tab-switch event, whichever layout is showing, and
-    // would otherwise overwrite the plain label right back after the switch
-    // handler resets it.
-    if (CARD_STATE.repCards){
-      const secLbl = host.parentElement && host.parentElement.querySelector(':scope > .secHead span');
-      if (secLbl) secLbl.textContent = count + ' Everlab report' + (count === 1 ? '' : 's');
-    }
+    // "See more" only earns its place once the stack is actually too tall to
+    // read at a glance -- measured, not assumed, since whether it overflows
+    // depends on the demo count and the host's own height (phone vs desk).
+    const stack = host.querySelector('.rcCard.rcStack .rbList');
+    if (stack) stack.parentElement.classList.toggle('hasMore', stack.scrollHeight > stack.clientHeight + 1);
     if (host.dataset.rcBound) return;
     host.dataset.rcBound = '1';
     host.addEventListener('click', e => {
+      if (e.target.closest('.rcMore')){
+        (host.closest('#phone') ? allRepsM : allRepsD).open();
+        return;
+      }
       const el = e.target.closest('[data-r]');
       if (!el) return;
       const rec = RECS.filter(r => r.id === el.dataset.r)[0];
@@ -18946,12 +18979,6 @@
     CARD_STATE.repCards = stRepLaySel.value === 'cards';
     document.body.classList.toggle('repBento', CARD_STATE.repBento);
     document.body.classList.toggle('repCards', CARD_STATE.repCards);
-    // Cards is the only shape that writes a count into "Everlab reports";
-    // leaving it behind should leave the label as it found it.
-    if (!CARD_STATE.repCards){
-      const secLbl = document.querySelector('.dRepWrap > .secHead span');
-      if (secLbl) secLbl.textContent = 'Everlab reports';
-    }
     document.dispatchEvent(new CustomEvent('everlab:repTab'));
     resize();
   });
