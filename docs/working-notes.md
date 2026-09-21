@@ -8965,6 +8965,16 @@ own entry when they do.
   Reports shown, Report card, Reports title and Expanded Report. Rows
   moved, none renamed; every handler still finds its id.
 
+  Then three more asks on the same panel. The two groups are **cards**
+  inside the dropdown (`.tkGroup`: the page's card wash on the panel's
+  ground, 10px radius, the heading inside at the top -- "use the cards
+  style for the grouping"). The Reports card's rows are **renamed** as
+  given -- Reports → Style, Reports shown → How many, Report card →
+  Layout, Reports title → Title -- labels only, ids and handlers
+  untouched. And **Expanded Report is out of the panel** ("remove this
+  tweak"): the row is gone, the handler null-guards and `body.expRep`'s
+  rules stay.
+
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as
   the design drew them, so the meter's green share is now 80/142. The
