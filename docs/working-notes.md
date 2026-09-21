@@ -8660,6 +8660,11 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
   on a .35s transition, the tab crossfade's own length, and come back on
   Biomarkers. Opacity rather than display so it is a fade, not a cut.
 
+- **The list rows' dot is gone** ("No need dot"): `.rbRow i.d{display:none}`.
+  It had been the report's colour, then a neutral grey; the row is the
+  title, the date and the chevron now. The `<i>` stays in the markup so
+  the two builders need not change.
+
 ---
 
 ## 6. Open items
