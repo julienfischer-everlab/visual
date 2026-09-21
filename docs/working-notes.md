@@ -9025,6 +9025,40 @@ neighbouring cards never share one. They go on the Visual card's tile
 `background-image`, `cover`, centred; with a photograph on the tile
 (`.hasImg`) the document/video drawing stands down and the report's
 gradient stays underneath for the frame the image has not painted yet.
+Two corrections followed the first render. The globe's crop had asked
+PIL for a 1250px band out of a 901px image and PIL padded the rest with
+black -- a letterboxed tile; wide photographs take the full height and
+trim the sides now. And the tile's own rule (`body.repVisual .rcCard.rcBig
+.rcVis`, background shorthand, the drawing at 58%) outranked the `.hasImg`
+overrides, so the photo tiled at natural size under a visible drawing;
+the overrides are said at that weight now (cover, centred, drawing off).
+
+### 5.322 Visual: thumbs on the stack, the badge on the meta line, 20px
+
+- **The stack card's rows carry a thumbnail too** ("the right card is
+  missing [the visual]; put a small thumbnail next to each stacked
+  element"): `.rbThumb.rbThumbS` in `rowItem()`, 52×34 with the same
+  photograph, cover and centred, shown only in Visual.
+
+- **The record dropdown**: the desk's menu is 440px wide under its 256px
+  button ("make the dropdown wider"), so a title with the New badge beside
+  it is no longer cut; the count badge is 32px high at 13px (was 34/15,
+  "smaller, maybe 32 high"); and the in-list New badge is BLUE like the
+  dot on the button -- "the dot means something new is inside the
+  dropdown, and this is the something" -- one colour for one signal.
+
+- **The Visual card's New badge is in the footer, right, off the image.**
+  Not the corner badge moved: pinning it to the card's bottom put it
+  below the meta line on the phone's row, where cards stretch to the
+  tallest. A second copy is written INTO the meta line and floated to its
+  right end (`.rcNewInline`), so it is level with the meta on a card of
+  any height; Neutral shows the corner one and hides this, Visual the
+  reverse. Measured level with the meta on every shape, both screens.
+
+- **The Visual title is 20px on both screens** ("the title is too big, it
+  should be font size 20") -- the desk already measured 20; the phone's
+  Visual cards (16 and 18) came up to it. `#phone .rcTitle{18px}` is an id
+  rule, so the phone's line is said with `#phone` in it.
 
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as

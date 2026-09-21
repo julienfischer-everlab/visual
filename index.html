@@ -1473,10 +1473,12 @@
   }
   body.newRep .dRecWrap:not(.seen):not(.cleared) .msRecNew,
   body.newRep .msRecWrap:not(.seen):not(.cleared) .msRecNew{display:block;}
+  /* blue, like the dot on the button: the dot says something new is inside
+     the dropdown, and this is the something -- one colour for one signal */
   .mRecOpt .mRecNew{
     display:none;vertical-align:middle;margin:-2px 0 0 8px;
     font-size:11px;font-weight:500;line-height:1;padding:4px 8px;border-radius:7px;
-    background:#e0865f;color:#1a0f08;
+    background:#5b9cf5;color:#0b1a33;
   }
   body.newRep .mRecMenu:not(.seen) .mRecOpt .mRecNew{display:inline-block;}
   /* Driven by the wrapper's class, not by the hidden property. `hidden` is an
@@ -1580,12 +1582,15 @@
   body.light .mRecOpt i{color:#7d6b58;}
   /* the count of readings that record carried */
   .mRecOpt .n{
-    flex:none;display:flex;align-items:center;gap:6px;
-    height:34px;padding:0 11px;border-radius:10px;
+    flex:none;display:flex;align-items:center;gap:5px;
+    height:32px;padding:0 10px;border-radius:9px;
     background:rgba(255,255,255,.11);color:#fff;
-    font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;
+    font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;   /* 34/15 -> 32/13: "smaller, maybe 32 high" */
   }
-  .mRecOpt .n svg{width:14px;height:14px;opacity:.75;}
+  .mRecOpt .n svg{width:12px;height:12px;opacity:.75;}
+  /* the desk's menu is wider than the 256px button it hangs from, so a title
+     with the New badge beside it is not cut ("make the dropdown wider") */
+  .dRecWrap .mRecMenu{right:auto;width:440px;}
   body.light .mRecOpt .n{background:rgba(46,31,26,.1);color:#2e1f1a;}
   .msBox{
     display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;
@@ -3955,6 +3960,9 @@
      has not painted yet */
   .rbThumb.hasImg,
   body.repVisual .rcCard.rcBig .rcVis.hasImg{background-size:cover;background-position:center;background-repeat:no-repeat;}
+  /* the Cards layout's stack rows: a smaller thumb, and only in Visual */
+  .rcStack .rbThumb{display:none;}
+  body.repVisual .rcStack .rbThumb{display:flex;width:52px;height:34px;border-radius:7px;}
   .rbThumb.hasImg svg,
   body.repVisual .rcCard.rcBig .rcVis.hasImg svg{display:none;}
   .rbThumb::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.2), rgba(0,0,0,0) 50%);}
@@ -4276,7 +4284,25 @@
   body.repVisual .rcCard.rcBig .rcTitle{margin-top:6px;}
   body.repVisual .rcCard.rcBig .rcMeta{margin-top:4px;}
   body.repVisual .rcCard.rcBig .rcCta{display:none;}
-  body.repVisual .rcCard.rcBig .rcNew{position:absolute;top:12px;right:12px;margin:0;order:0;align-self:auto;z-index:1;}
+  /* The New badge sits in the card's footer, right, off the image ("on this
+     layout the new badge should be on the footer on the right side, but
+     outside the image"). Not the corner badge moved: a second copy written
+     INTO the meta line and floated to its right end, so it stays level with
+     the meta on a card of any height -- cards in the phone's row stretch to
+     the tallest, and a badge pinned to the card's bottom drifted below the
+     line there. Neutral shows the corner badge and hides this one; Visual
+     the reverse. */
+  .rcNew.rcNewInline{display:none;}
+  body.repVisual .rcCard.rcBig .rcNew:not(.rcNewInline){display:none;}
+  body.repVisual .rcCard.rcBig .rcNew.rcNewInline{
+    display:inline-block;position:static;float:right;top:auto;right:auto;bottom:auto;left:auto;
+    margin:-3px 0 0 8px;order:0;align-self:auto;
+  }
+  /* one size for the Visual card's title on both screens ("it should be
+     font size 20") */
+  body.repVisual .rcCard.rcBig .rcTitle,
+  body.repVisual #phone .rcCard.rcBig .rcTitle,
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcTitle{font-size:20px;}
   /* heights were the card's; the tile and its lines set them now. On the
      desk the tile is held at 200px rather than 16:10 of a 500px column,
      which made a 320px poster of a document icon. */
@@ -4291,14 +4317,14 @@
   body.repVisual .rcCard.rcRow .rcInfo{display:block;padding:0 22px;}
   body.repVisual .rcCard.rcRow .rcInfo > *{padding:0;}
   body.repVisual .rcCard.rcRow .rcEyebrow{margin-top:0;}
-  body.repVisual .rcCard.rcRow .rcNew{top:12px;left:12px;right:auto;}
+  body.repVisual .rcCard.rcRow .rcNew{top:auto;bottom:22px;right:22px;left:auto;}
   /* the phone's one-report card is a column even in Neutral; the header on top */
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{height:auto;flex-direction:column;align-items:stretch;gap:0;padding:0 0 22px;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcVis{width:100%;height:auto;aspect-ratio:16 / 10;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo{display:contents;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo > *{padding:0 22px;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcEyebrow{margin-top:18px;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcNew{left:auto;right:12px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcNew{top:auto;bottom:22px;right:22px;left:auto;}
   /* the same badge as the tabs' count, the All-reports sheet's row and the My
      Reports row ("keep same badge for new report everywhere"): #e0865f, 11px,
      4x8 padding, 7px radius -- one mark for one fact, wherever it is shown */
@@ -4525,6 +4551,9 @@
      Display, not the fade: this is not the notice being acted on, it is the
      notice not belonging here. */
   body.newRep.repTab .nrCard{display:none;}
+  /* and it steps aside while the record menu is open: it floated over the
+     menu's first rows, and the menu's own New badge is saying the same thing */
+  body.mRecOn .nrCard{opacity:0 !important;pointer-events:none;transition:opacity .15s ease;}
   body.newRep #phone .nrCard{
     position:absolute;left:13px;right:13px;
     bottom:calc(var(--navH, 56px) + var(--navInset, 12px) + 26px);
@@ -17985,12 +18014,20 @@
           '<div class="rcEyebrow">' + (dateTop ? r.date : lbl) + '</div>' +
           '<div class="rcTitle">' + r.label + '</div>' +
           '<div class="rcMeta">' + (dateTop ? '' : r.date + ' &middot; ') +
-            (r.media === 'video' ? 'Video' : r.n + ' biomarkers') + '</div>' +
+            (r.media === 'video' ? 'Video' : r.n + ' biomarkers') +
+            // the Visual layout's badge: on the meta line, floated to its right
+            // end -- the card's footer, off the image, on a card of any height
+            (lbl === LATEST ? '<span class="rcNew rcNewInline">New</span>' : '') +
+          '</div>' +
         '</div>' +
         '<button class="rcCta" type="button" data-r="' + r.id + '">View report</button>' +
       '</div>';
+    // the stack's rows carry a small thumbnail of the report's visual in
+    // the Visual layout ("put a small thumbnail next to each stacked
+    // element"); Neutral hides it, as it hides the row's dot
     const rowItem = r =>
       '<button class="rbRow" type="button" data-r="' + r.id + '">' +
+        '<span class="rbThumb rbThumbS hasImg" style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + ';background-image:url(' + repImg(r) + ')">' + repArtHTML(r, 's') + '</span>' +
         '<i class="d"></i>' +
         '<span class="t"><b>' + r.label + '</b>' +
           '<span>' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : 'Document') +
