@@ -8920,6 +8920,36 @@ own entry when they do.
   where a corner badge landed on the letters. Measured 102px between the
   date's last letter and the badge.
 
+### 5.318 The Visual report card, the phone's tab count, 142
+
+- **A "Report card" tweak: Neutral / Visual.** Neutral is the card as it
+  was. Visual ("put the content below like this", a media shelf: a tile
+  and its caption) drops the card's ground and padding and stands a tile
+  where the card was -- the report's two colours (`r.art`) as a gradient
+  with the shelf's own document/video drawing (`repArtHTML`) centred on it,
+  16px radius, 16:10 on the phone and a held 200px on the desk (16:10 of a
+  500px column made a 320px poster of an icon) -- with the eyebrow, title
+  and meta under it on the page. The tile is the way in (a button carrying
+  `data-r`, answered by the click the CTA already answered), so the CTA
+  goes; the New badge moves onto the tile's corner and the halo, which lit
+  a card that is not there, goes. The desk's one-report row puts the tile
+  on the left at 220px. `.rcVis` is in the markup always; `body.repVisual`
+  (`CARD_STATE.repVisual`, `#stRepStyle`) shows it, so the tweak is CSS
+  alone and no shape rebuilds.
+
+- **The phone's pill carries the Reports count too** ("put the same '1'
+  badge on mobile on report tab; rounded badge as the segmented tab"):
+  `tabCounts()` writes to both tab controls, and the pill's copy is
+  smaller (10.5px) and fully rounded like the pill and its thumb, 6px
+  after the label. A first pass set the phone's tabs to inline-flex for
+  the gap and thereby un-hid V4's Insights tab, whose hiding is a display
+  rule of its own -- so the badge spaces itself with a margin instead.
+
+- **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
+  "Biomarkers 142" readings in the desk markup; the three readings stay as
+  the design drew them, so the meter's green share is now 80/142. The
+  filter chips still count the rows (110 distinct), as they always did.
+
 ---
 
 ## 6. Open items

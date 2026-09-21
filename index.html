@@ -1789,8 +1789,17 @@
      desk's line of tabs (v2Tab, every layout from V2 up) has the room, so
      the count shows there -- "put a '1' badge orange on report"; it had been
      V3's alone. */
-  body:not(.v2Tab) .dTabsV2 .tCount,
-  #phone .tCount{display:none;}
+  body:not(.v2Tab) .dTabsV2 .tCount{display:none;}
+  /* the pill's copy: smaller, and rounded the way the pill and its thumb are
+     ("rounded badge as the segmented tab"), beside the label */
+  /* (a margin, not a flex gap on the tab: a display rule on the phone's tabs
+     at this weight un-hid V4's Insights tab, whose hiding is a display rule
+     of its own) */
+  #phone .tCount{
+    display:inline-block;vertical-align:middle;margin:-2px 0 0 6px;
+    font-size:10.5px;line-height:1;padding:3px 6px;border-radius:999px;
+    background:#e0865f;color:#1a0f08;font-weight:500;
+  }
   /* ---- V4: a third tab, and the findings under it ------------------------
      V2 and V3 ask what the page is a list OF and answer with two nouns, both
      of them things the clinic produced: readings, documents. V4 adds the
@@ -4172,6 +4181,51 @@
   body.light .rcCard.rcNewCard::before{
     background:radial-gradient(100% 100% at 100% 0%, rgba(224,134,95,.30) 0%, rgba(224,134,95,.10) 45%, rgba(224,134,95,0) 72%);
   }
+  /* ---- Report card: Visual --------------------------------------------------
+     The tweak's second dress. The card stops being a card: no ground, no
+     padding. A tile stands where the card was -- the report's two colours as
+     a gradient, the shelf's document/video drawing centred on it, rounded --
+     and the eyebrow, title and meta sit under it on the page, the way a media
+     shelf lists its items. The tile is the way in (it carries data-r, the
+     same click the CTA answers), so the CTA goes; the New badge moves onto
+     the tile's corner and the halo, which lit a card that is not there now,
+     goes too. The row card (one report, desk) puts the tile on the left. */
+  .rcVis{display:none;}
+  body.repVisual .rcCard.rcBig{background:none;padding:0;border-radius:0;overflow:visible;isolation:auto;}
+  body.repVisual .rcCard.rcBig.rcNewCard::before{display:none;}
+  body.repVisual .rcCard.rcBig .rcVis{
+    display:flex;align-items:center;justify-content:center;flex:none;
+    width:100%;aspect-ratio:16 / 10;border:0;padding:0;cursor:pointer;
+    border-radius:16px;overflow:hidden;position:relative;
+    background:linear-gradient(150deg, var(--a0, #3a3a3a), var(--a1, #1e1e1e));
+  }
+  body.repVisual .rcCard.rcBig .rcVis svg{width:58%;height:58%;display:block;}
+  body.repVisual .rcCard.rcBig .rcVis::after{     /* a little depth at the foot */
+    content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.22), rgba(0,0,0,0) 45%);pointer-events:none;
+  }
+  body.repVisual .rcCard.rcBig .rcEyebrow{margin-top:14px;}
+  body.repVisual .rcCard.rcBig .rcTitle{margin-top:6px;}
+  body.repVisual .rcCard.rcBig .rcMeta{margin-top:4px;}
+  body.repVisual .rcCard.rcBig .rcCta{display:none;}
+  body.repVisual .rcCard.rcBig .rcNew{position:absolute;top:12px;right:12px;margin:0;order:0;align-self:auto;z-index:1;}
+  /* heights were the card's; the tile and its lines set them now. On the
+     desk the tile is held at 200px rather than 16:10 of a 500px column,
+     which made a 320px poster of a document icon. */
+  body.repVisual .rcWrap.n2 .rcCard, body.repVisual .rcWrap.n4 > .rcCard.rcBig{height:auto;}
+  body.repVisual .dash .rcCard.rcBig .rcVis{aspect-ratio:auto;height:200px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcCard{height:auto;}
+  /* the desk's one-report row: tile left, lines right */
+  body.repVisual .rcCard.rcRow{height:auto;flex-direction:row;align-items:center;gap:20px;}
+  body.repVisual .rcCard.rcRow .rcVis{width:220px;}
+  body.repVisual .rcCard.rcRow .rcInfo{display:block;}
+  body.repVisual .rcCard.rcRow .rcEyebrow{margin-top:0;}
+  body.repVisual .rcCard.rcRow .rcNew{top:12px;left:12px;right:auto;}
+  /* the phone's one-report card is a column even in Neutral; the tile on top */
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{flex-direction:column;align-items:stretch;gap:0;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcVis{width:100%;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo{display:contents;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcEyebrow{margin-top:14px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcNew{left:auto;right:12px;}
   /* the same badge as the tabs' count, the All-reports sheet's row and the My
      Reports row ("keep same badge for new report everywhere"): #e0865f, 11px,
      4x8 padding, 7px radius -- one mark for one fact, wherever it is shown */
@@ -6945,6 +6999,16 @@
         <!-- The "Everlab reports" heading over the Reports tab's cards, on
              every shape and both screens. Off, the cards start where the
              heading stood. -->
+        <!-- How the report cards are dressed: the neutral card (text on a
+             tinted card) or the visual one (a coloured tile with the text
+             under it, the way a media shelf lists its items). -->
+        <div class="tkRow">
+          <span class="lbl">Report card</span>
+          <select id="stRepStyle" aria-label="How the report cards are styled">
+            <option value="neutral" selected>Neutral</option>
+            <option value="visual">Visual</option>
+          </select>
+        </div>
         <div class="tkRow">
           <span class="lbl">Reports title</span>
           <select id="stRepTitle" aria-label="Heading above the Reports tab's cards">
@@ -7066,7 +7130,7 @@
         <div class="dcard bcard">
           <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
           <div class="bcTop">
-            <div><div class="lbl">Biomarkers</div><div class="big">110 <span class="inf">i</span></div></div>
+            <div><div class="lbl">Biomarkers</div><div class="big">142 <span class="inf">i</span></div></div>
             <div class="b3Off"><div class="lbl">Biological age</div><div class="big">40 <span style="font-size:14px;font-weight:400">years old</span></div></div>
             <div class="b3On"><div class="lbl">Health coverage</div><div class="big">64%</div></div>
             <div class="b5On"><div class="lbl">Untested</div><div class="big">76</div></div>
@@ -7299,7 +7363,7 @@
       <div class="msn mHeroCard">
         <div class="emNote emBioNote"><div class="lbl">Biomarkers</div><div class="emMid"><b>Discover what&rsquo;s happening inside your body</b><i>Get tested to understand your key biomarkers and identify what may need attention.</i><button class="emCta" type="button">Get tested</button></div></div>
         <div class="mHeroTop">
-          <div><div class="lbl">Biomarkers</div><div class="big">110 <span class="inf">i</span></div></div>
+          <div><div class="lbl">Biomarkers</div><div class="big">142 <span class="inf">i</span></div></div>
           <div class="v3Off"><div class="lbl">Biological age</div><div class="big">40 <span class="yrs">years old</span></div></div>
           <div class="mHeroUt"><div class="lbl">Untested</div><div class="big">76</div></div>
           <button class="mHeroGet" type="button">Get test</button>
@@ -11951,6 +12015,7 @@
       (CARD_STATE.repCards ? ' repCards' : '') +
       (CARD_STATE.repFew ? ' repFew' : '') +
       (CARD_STATE.repTitle ? '' : ' noRepTitle') +
+      (CARD_STATE.repVisual ? ' repVisual' : '') +
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
@@ -12904,8 +12969,10 @@
   // drawn -- the "without" three sum to 116 against the 110 shown, which is
   // the mock's arithmetic and kept as given rather than corrected here.
   const BIO_SETS = {
-    on:  { total: 110, optimal: 68, sub: 20, out: 12, un: 10 },
-    off: { total: 110, optimal: 80, sub: 24, out: 12, un: 0 }
+    // the panel reads 142 now ("110 --> 142"); the three readings stay as
+    // the design drew them, so the meter's green share is 80/142
+    on:  { total: 142, optimal: 68, sub: 20, out: 12, un: 10 },
+    off: { total: 142, optimal: 80, sub: 24, out: 12, un: 0 }
   };
   const bioSet = () => BIO_SETS[CARD_STATE.unclass ? 'on' : 'off'];
   const BIO_N = BIO_SETS.off;   // the opening state; applyUnclass moves it
@@ -17810,9 +17877,15 @@
     // dateTop: the phone's carousel cards carry the DATE as the eyebrow
     // ("eyebrow replace by date"), and the meta line then says only what the
     // report is, so the date is not read twice on one card
+    // .rcVis is the Visual style's tile (the "Report card" tweak): the report's
+    // own two colours as its ground and the shelf's document/video drawing on
+    // it; the card's text then sits under it, on the page. It is in the
+    // markup always and shown by body.repVisual, so the tweak is CSS alone.
     const big = (r, row, lbl, dateTop) =>
       '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + (lbl === LATEST ? ' rcNewCard' : '') + '">' +
         (lbl === LATEST ? '<span class="rcNew">New</span>' : '') +
+        '<button class="rcVis" type="button" data-r="' + r.id + '" aria-label="View ' + r.label + '" ' +
+          'style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + '">' + repArtHTML(r, 'v') + '</button>' +
         '<div class="rcInfo">' +
           '<div class="rcEyebrow">' + (dateTop ? r.date : lbl) + '</div>' +
           '<div class="rcTitle">' + r.label + '</div>' +
@@ -18904,6 +18977,8 @@
                        // the "Everlab reports" heading over the Reports tab;
                        // off is the class, so the default needs no class
                        repTitle: true,
+                       // the Visual dress on the report cards (Report card tweak)
+                       repVisual: false,
                        newRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
@@ -19500,6 +19575,13 @@
   if (stRepCountSel) stRepCountSel.addEventListener('change', () => {
     document.dispatchEvent(new CustomEvent('everlab:repTab'));
   });
+  const stRepStyleSel = document.getElementById('stRepStyle');
+  if (stRepStyleSel) stRepStyleSel.addEventListener('change', () => {
+    CARD_STATE.repVisual = stRepStyleSel.value === 'visual';
+    document.body.classList.toggle('repVisual', CARD_STATE.repVisual);
+    document.dispatchEvent(new CustomEvent('everlab:repTab'));   // the hero re-measures its height
+    resize();
+  });
   const stRepTitleSel = document.getElementById('stRepTitle');
   if (stRepTitleSel) stRepTitleSel.addEventListener('change', () => {
     CARD_STATE.repTitle = stRepTitleSel.value !== 'off';
@@ -19575,9 +19657,11 @@
   // nothing else carries anything.
   const TAB_NEW = { rep: 1 };
   function tabCounts(){
-    const dTabs = document.getElementById('dTabsV2');
-    if (!dTabs) return;
-    [].slice.call(dTabs.querySelectorAll('.v2Tab')).forEach(t => {
+    // both tab controls carry it: the desk's line and the phone's pill
+    // ("put the same '1' badge on mobile on report tab")
+    const tabs = [].slice.call(document.querySelectorAll('#dTabsV2 .v2Tab, #mTabsV2 .v2Tab'));
+    if (!tabs.length) return;
+    tabs.forEach(t => {
       const n = TAB_NEW[t.dataset.tab || 'bio'];
       let c = t.querySelector('.tCount');
       if (!n){ if (c) c.remove(); return; }
