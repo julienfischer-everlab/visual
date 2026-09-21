@@ -4032,7 +4032,14 @@
   }
   /* centred on the row, not at its top: align-self:flex-start is the column
      shape's, and up here it put the CTA under the New badge's corner */
-  .rcCard.rcRow .rcCta{margin-top:0;align-self:center;}
+  /* Centred on the TITLE AND META, not on the card: the card's centre is also
+     the eyebrow's block's centre, and with the eyebrow riding above the
+     title the button then sat level with the title and read as high ("CTA
+     vertically centered"). The eyebrow's line (14px) plus the title's 10px
+     margin above is 24px; a 24px top margin on a centred flex item moves its
+     centre down by half of that, onto the middle of the two lines below the
+     eyebrow. */
+  .rcCard.rcRow .rcCta{margin-top:24px;align-self:center;}
   .rcWrap.n1 .rcCard{flex:1 1 auto;}
   .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:192px;}
   /* Three and past three share a frame: the main card on the left and a
@@ -6093,11 +6100,8 @@
      over. It scrolls with everything else at the scroll's own rate (no sticky,
      no parallax, no fade -- headerParallax() skips those for it), and the
      body starts under it rather than 24px over it, square-cornered because
-     there is no edge to round any more. The tabs are the one thing that
-     holds: sticky INSIDE the header, so they pin under the hour while the
-     hero scrolls past beneath them, and the header's own end -- the cards
-     below -- is what pushes them off. A blur on the pill keeps it legible
-     over whatever is passing under it. */
+     there is no edge to round any more. The tabs scroll with it: they were
+     sticky for a round (see the note below the .mBody rule) and are not. */
   body.v4.v25Tab:not(.v3Tab) #phone .mHead{position:relative;z-index:auto;}
   body.v4.v25Tab:not(.v3Tab) #phone .mHeadIn{position:relative;will-change:auto;}
   body.v4.v25Tab:not(.v3Tab) #phone .mBody{margin-top:0;border-radius:0;min-height:100%;}
@@ -6107,25 +6111,11 @@
      24), on the biomarkers tab only -- the Reports tab hugs its cards and has
      no air to give. */
   body.v4.v25Tab:not(.v3Tab):not(.repTab) #phone #mHeroOrgan{margin-bottom:-18px;}
-  body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2{position:sticky;top:8px;z-index:9;background:transparent;}
-  /* Two pseudos under the buttons and the thumb (both z-index:-1, so they
-     paint above nothing but each other, in tree order). ::before is a plate
-     the full width of the screen in the phone's own ground colour, running
-     from the scroller's top edge to a soft fade 14px under the pill: the
-     header scrolls under the pinned pill, and without this the organ's
-     particles showed in the 8px between the hour and the pill. ::after is
-     the pill's own tint, moved off the element so the plate can sit under
-     it. The pill is 70% wide, so the plate reaches 15/70 of its width out
-     on either side. */
-  body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2::before{
-    content:"";position:absolute;z-index:-1;left:-21.5%;right:-21.5%;top:-8px;bottom:-14px;
-    background:linear-gradient(var(--headBg) 60%, transparent);pointer-events:none;
-  }
-  body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2::after{
-    content:"";position:absolute;z-index:-1;inset:0;border-radius:999px;
-    background:rgba(255,255,255,.08);pointer-events:none;
-  }
-  body.light.v4.v25Tab:not(.v3Tab) #phone .mTabsV2::after{background:rgba(46,31,26,.09);}
+  /* (The tabs were sticky here for one round -- pinned under the hour while
+     the hero scrolled past, with a full-width plate in the ground colour
+     under the pill to hide what passed beneath. The plate's opaque band cut
+     the top of the organ at rest, and "Tab group remove fixed state. Don't
+     need" ended it: the tabs scroll with the header like everything else.) */
   body.v4 #phone #mBento .msn,
   body.v4 #phone #mBento .msn.morganMini{background:#280707;}
 

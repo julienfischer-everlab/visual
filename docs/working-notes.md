@@ -8721,6 +8721,21 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
   medical records is `display:none`, phone and desk. Markup and rules
   stay for when the processing state is shown again.
 
+- **The sticky tabs are gone again** (5.312, 5.313). The plate under the
+  pinned pill -- opaque from the scroller's top to 14px under the pill --
+  was what "cut the top part" of the organ at rest, and "Tab group remove
+  fixed state. Don't need" settled it: no sticky, no plate, no pseudo tint;
+  the pill is back on its own 6% ground and scrolls with the header.
+
+- **Desk one-report card**: the CTA is centred on the title-and-meta pair,
+  not on the card. It WAS at the card's centre (measured), but the eyebrow
+  above the title puts the text's visual mass below that centre, so the
+  button read as high. A 24px top margin (eyebrow line 14 + title margin
+  10) on the centred item moves its centre down by 12, onto the two lines'
+  middle: title 311–334, meta 342–357, CTA 318–353.
+
+- **Desk card titles are 20px** (26 → 24 → 20 across three asks).
+
 ---
 
 ## 6. Open items
