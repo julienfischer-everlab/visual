@@ -6648,15 +6648,6 @@
             <option value="empty">Empty</option>
           </select>
         </div>
-        <!-- Palette: the three inks the file is built on, or a wine family
-             drawn per particle beside them (see WINE_SETS in the script) -->
-        <div class="tkRow">
-          <span class="lbl">Palette</span>
-          <select id="stPal" aria-label="Particle palette">
-            <option value="inks" selected>Three inks</option>
-            <option value="wine">Wine family</option>
-          </select>
-        </div>
       </div>
     </details>
     <!-- The three inks, behind one control. Six elements in a row -- swatch,
@@ -17443,6 +17434,21 @@
           '</button>').join('') +
       '</div></div>';
     host.className = host.dataset.rcBase + ' ' + shape;
+    // The desk names the set above the cards -- "Everlab reports", however
+    // many there are, the same header the Carousel and the Bento both sit
+    // under. Cards is the one shape where that count is the whole point of
+    // the tweak, so it reads it off the same `count` the cards themselves
+    // were built from rather than leaving it a plain, uncounted plural.
+    // Only the desk carries this label this close to the grid -- the phone's
+    // copy of it belongs to a different host (v3Tab's carousel), not this one.
+    // Guarded on repCards actually being the live layout: this rebuild also
+    // runs on every OTHER tab-switch event, whichever layout is showing, and
+    // would otherwise overwrite the plain label right back after the switch
+    // handler resets it.
+    if (CARD_STATE.repCards){
+      const secLbl = host.parentElement && host.parentElement.querySelector(':scope > .secHead span');
+      if (secLbl) secLbl.textContent = count + ' Everlab report' + (count === 1 ? '' : 's');
+    }
     if (host.dataset.rcBound) return;
     host.dataset.rcBound = '1';
     host.addEventListener('click', e => {
@@ -18940,6 +18946,12 @@
     CARD_STATE.repCards = stRepLaySel.value === 'cards';
     document.body.classList.toggle('repBento', CARD_STATE.repBento);
     document.body.classList.toggle('repCards', CARD_STATE.repCards);
+    // Cards is the only shape that writes a count into "Everlab reports";
+    // leaving it behind should leave the label as it found it.
+    if (!CARD_STATE.repCards){
+      const secLbl = document.querySelector('.dRepWrap > .secHead span');
+      if (secLbl) secLbl.textContent = 'Everlab reports';
+    }
     document.dispatchEvent(new CustomEvent('everlab:repTab'));
     resize();
   });

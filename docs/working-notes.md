@@ -8425,6 +8425,32 @@ forced to work somewhere it was never asked to.
 
 ---
 
+### 5.308 A count in the Cards header, and one tweak retired
+
+The Reports tab's "Everlab reports" header sits above whichever shape is
+showing -- Carousel, Bento, or now Cards -- and never used to say more than
+that plain plural. Asked for Cards specifically: "1 report should show 1
+Everlab report" -- the count that decides the shape should say itself in
+the header above it too, singular where there is only the one. `buildRepCards()`
+writes it now, off the same `count` the cards themselves come from.
+
+Fixing it exposed the same trap 5.306 already hit once: `buildRepCards()`
+runs on every `everlab:repTab` firing, whichever layout is actually showing
+-- so the first cut kept writing the counted label even while Carousel or
+Bento was on screen, and switching away from Cards never got the plain
+label back (the switch handler's own reset ran, then this immediately
+overwrote it on the same event). Guarded on `CARD_STATE.repCards` actually
+being true, the same flag the body class reads: no card, no touch.
+
+Separately, the Palette tweak (Three inks / Wine family, `#stPal`) was
+removed from the tweaks panel on request -- the row alone; `applyPalette()`
+and `WINE_SETS` stay as they were; the default (Three inks) is what every
+page now shows without a control to leave it. `stPalSel`'s own listener
+was already written `if (stPalSel) ...`, the pattern every tweak here
+uses, so a missing element is not a missing handler.
+
+---
+
 ## 6. Open items
 
 - **"Survey" vs "Questionnaire".** That slide's category label was shortened to
