@@ -4191,19 +4191,28 @@
      the tile's corner and the halo, which lit a card that is not there now,
      goes too. The row card (one report, desk) puts the tile on the left. */
   .rcVis{display:none;}
-  body.repVisual .rcCard.rcBig{background:none;padding:0;border-radius:0;overflow:visible;isolation:auto;}
+  /* (The first pass dropped the card's ground and stood the tile alone on
+     the page; "need to fill with a card bg below the content, the visual is
+     the header of the card" -- so the card stays, the tile is its header,
+     flush to its top edge and corners, and the lines sit in the card's
+     padding under it. The lines carry the side padding themselves, since
+     the card's own had to go for the header to reach its edges.) */
+  body.repVisual .rcCard.rcBig{padding:0 0 22px;overflow:hidden;}
   body.repVisual .rcCard.rcBig.rcNewCard::before{display:none;}
   body.repVisual .rcCard.rcBig .rcVis{
     display:flex;align-items:center;justify-content:center;flex:none;
     width:100%;aspect-ratio:16 / 10;border:0;padding:0;cursor:pointer;
-    border-radius:16px;overflow:hidden;position:relative;
+    border-radius:0;overflow:hidden;position:relative;
     background:linear-gradient(150deg, var(--a0, #3a3a3a), var(--a1, #1e1e1e));
   }
   body.repVisual .rcCard.rcBig .rcVis svg{width:58%;height:58%;display:block;}
   body.repVisual .rcCard.rcBig .rcVis::after{     /* a little depth at the foot */
     content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.22), rgba(0,0,0,0) 45%);pointer-events:none;
   }
-  body.repVisual .rcCard.rcBig .rcEyebrow{margin-top:14px;}
+  body.repVisual .rcCard.rcBig .rcEyebrow,
+  body.repVisual .rcCard.rcBig .rcTitle,
+  body.repVisual .rcCard.rcBig .rcMeta{padding:0 22px;}
+  body.repVisual .rcCard.rcBig .rcEyebrow{margin-top:18px;}
   body.repVisual .rcCard.rcBig .rcTitle{margin-top:6px;}
   body.repVisual .rcCard.rcBig .rcMeta{margin-top:4px;}
   body.repVisual .rcCard.rcBig .rcCta{display:none;}
@@ -4214,17 +4223,21 @@
   body.repVisual .rcWrap.n2 .rcCard, body.repVisual .rcWrap.n4 > .rcCard.rcBig{height:auto;}
   body.repVisual .dash .rcCard.rcBig .rcVis{aspect-ratio:auto;height:200px;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcCard{height:auto;}
-  /* the desk's one-report row: tile left, lines right */
-  body.repVisual .rcCard.rcRow{height:auto;flex-direction:row;align-items:center;gap:20px;}
-  body.repVisual .rcCard.rcRow .rcVis{width:220px;}
-  body.repVisual .rcCard.rcRow .rcInfo{display:block;}
+  /* the desk's one-report row: the header on the left at the card's full
+     height, the lines beside it in the card's padding */
+  body.repVisual .rcCard.rcRow{height:140px;flex-direction:row;align-items:center;gap:0;padding:0;}
+  body.repVisual .rcCard.rcRow .rcVis,
+  body.repVisual .dash .rcCard.rcRow .rcVis{width:220px;height:100%;aspect-ratio:auto;align-self:stretch;}
+  body.repVisual .rcCard.rcRow .rcInfo{display:block;padding:0 22px;}
+  body.repVisual .rcCard.rcRow .rcInfo > *{padding:0;}
   body.repVisual .rcCard.rcRow .rcEyebrow{margin-top:0;}
   body.repVisual .rcCard.rcRow .rcNew{top:12px;left:12px;right:auto;}
-  /* the phone's one-report card is a column even in Neutral; the tile on top */
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{flex-direction:column;align-items:stretch;gap:0;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcVis{width:100%;}
+  /* the phone's one-report card is a column even in Neutral; the header on top */
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{height:auto;flex-direction:column;align-items:stretch;gap:0;padding:0 0 22px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcVis{width:100%;height:auto;aspect-ratio:16 / 10;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo{display:contents;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcEyebrow{margin-top:14px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo > *{padding:0 22px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcEyebrow{margin-top:18px;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcNew{left:auto;right:12px;}
   /* the same badge as the tabs' count, the All-reports sheet's row and the My
      Reports row ("keep same badge for new report everywhere"): #e0865f, 11px,
@@ -6916,6 +6929,27 @@
     <details class="tkMenu" id="tkMenu">
       <summary aria-label="Tweaks">Tweaks</summary>
       <div class="tkPanel" role="group" aria-label="Tweaks">
+        <!-- The panel reads top-down the way the page does: the Layout first,
+             since it decides what every row under it is dressing; then the
+             Biomarkers tab's controls under their own heading, then the
+             Reports tab's under theirs ("this tweak first / this under a
+             group Biomarkers tab / this under a group Reports"). -->
+        <!-- V2: a tab above the hero saying what the page is a list of.
+             Biomarkers or Report, and the list below follows it. -->
+        <div class="tkRow">
+          <span class="lbl">Layout</span>
+          <select id="stV2Tab" aria-label="Page layout">
+            <option value="off">V1</option>
+            <option value="on">V2</option>
+            <!-- V2's tabs, above the hero, over V3's ground: a body card that
+                 is the header's own grey at rest and fills to black as it
+                 rises -- see body.v25Tab beside body.v3Tab in the CSS -->
+            <option value="v25" selected>V2.5</option>
+            <option value="v3">V3</option>
+            <option value="v4">V4</option>
+          </select>
+        </div>
+        <div class="tkSub">Biomarkers tab</div>
         <div class="tkRow">
           <span class="lbl">Biomarkers</span>
           <select id="stBio" aria-label="Biomarker card state">
@@ -6949,23 +6983,24 @@
             <option value="empty">Empty</option>
           </select>
         </div>
-        <!-- V2: a tab above the hero saying what the page is a list of.
-             Biomarkers or Report, and the list below follows it. -->
+        <!-- Which card sits on the left of the pair. Coverage is a reading the
+             page keeps taking; the latest report is a thing that just arrived.
+             They want the same slot and not the same card, so this is a choice
+             rather than two cards fighting for the room. -->
         <div class="tkRow">
-          <span class="lbl">Layout</span>
-          <select id="stV2Tab" aria-label="Page layout">
-            <option value="off">V1</option>
-            <option value="on">V2</option>
-            <!-- V2's tabs, above the hero, over V3's ground: a body card that
-                 is the header's own grey at rest and fills to black as it
-                 rises -- see body.v25Tab beside body.v3Tab in the CSS -->
-            <option value="v25" selected>V2.5</option>
-            <option value="v3">V3</option>
-            <option value="v4">V4</option>
+          <span class="lbl">Left card</span>
+          <select id="stLeft" aria-label="The left mini card">
+            <option value="cov">Coverage</option>
+            <option value="rep" selected>Latest report</option>
           </select>
         </div>
-        <!-- and how the Reports tab lays its reports out. Two named shapes,
-             neither of them the other turned off, so this stays a select. -->
+        <div class="tkRow">
+          <span class="lbl">Activity</span>
+          <select id="stAct" aria-label="Activity card state">
+            <option value="on">Completed</option>
+            <option value="empty">Empty</option>
+          </select>
+        </div>
         <!-- A notice under the record select: a report has landed, and this is
              the way into it. -->
         <div class="tkRow">
@@ -6975,6 +7010,9 @@
             <option value="off" selected>Off</option>
           </select>
         </div>
+        <div class="tkSub">Reports</div>
+        <!-- how the Reports tab lays its reports out. Named shapes, none of
+             them another turned off, so this stays a select. -->
         <div class="tkRow">
           <span class="lbl">Reports</span>
           <select id="stRepLay" aria-label="How the Reports tab lays out">
@@ -7024,24 +7062,6 @@
           <select id="stExpRep" aria-label="Expanded report filter">
             <option value="on">On</option>
             <option value="off" selected>Off</option>
-          </select>
-        </div>
-        <!-- Which card sits on the left of the pair. Coverage is a reading the
-             page keeps taking; the latest report is a thing that just arrived.
-             They want the same slot and not the same card, so this is a choice
-             rather than two cards fighting for the room. -->
-        <div class="tkRow">
-          <span class="lbl">Left card</span>
-          <select id="stLeft" aria-label="The left mini card">
-            <option value="cov">Coverage</option>
-            <option value="rep" selected>Latest report</option>
-          </select>
-        </div>
-        <div class="tkRow">
-          <span class="lbl">Activity</span>
-          <select id="stAct" aria-label="Activity card state">
-            <option value="on">Completed</option>
-            <option value="empty">Empty</option>
           </select>
         </div>
       </div>
@@ -19007,8 +19027,9 @@
       // a switch stands for a thing being on or off; Desktop and Tablet M are
       // two named shells, and neither of them is the other one turned off --
       // nor are the library's two grains, Normal and Dense
+      // ...nor the report card's two dresses, Neutral and Visual
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stLeft' || sel.id === 'stRepLay')
+          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';

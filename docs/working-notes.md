@@ -8945,6 +8945,26 @@ own entry when they do.
   the gap and thereby un-hid V4's Insights tab, whose hiding is a display
   rule of its own -- so the badge spaces itself with a margin instead.
 
+- **Visual, second pass: the tile is the card's HEADER.** "Need to fill
+  with a card bg below the content, the visual is the header of the card"
+  -- so the card keeps its ground; the tile sits flush to its top edge and
+  corners (radius 0 of its own, clipped by the card's `overflow:hidden`),
+  and the eyebrow, title and meta sit in the card under it, carrying the
+  22px side padding themselves since the card's own had to go for the
+  header to reach the edges. The desk's one-report row is 140px with the
+  header on the left at the card's full height (the `.dash` 200px rule had
+  to be outranked there). The Report card control stays a SELECT --
+  Neutral / Visual are two dresses, not one turned off -- so `segmentise()`
+  skips `#stRepStyle` like `#stRepLay`.
+
+- **The Tweaks panel reads top-down** ("this tweak first / this under a
+  group Biomarkers tab / this under a group Reports"): Layout first, then
+  a **Biomarkers tab** heading (`.tkSub`, the panel's existing group
+  style) over Biomarkers, Unclassified, Biological age, Organ ages, Left
+  card, Activity and New results, then a **Reports** heading over Reports,
+  Reports shown, Report card, Reports title and Expanded Report. Rows
+  moved, none renamed; every handler still finds its id.
+
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as
   the design drew them, so the meter's green share is now 80/142. The
