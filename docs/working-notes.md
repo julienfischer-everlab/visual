@@ -8292,6 +8292,23 @@ carries this markup (`--pageBg` is already themed and re-themed per
 version), and zero height of its own -- a matching negative margin gives
 the space back -- so it never pushes the heading down.
 
+The first cut left it on all the time, since sticky's static position (its
+resting spot before it has anything to catch) is still in the document,
+still painting -- which put a permanent wash straight over the heading and
+tabs sitting right where it rests at scroll 0, nothing there yet worth
+fading. It also stacked above `.dFilters` and `.dMedBar`, the page's other
+two sticky bars, which land on this exact same stuck position once
+scrolled far enough -- so their own chips and search sat under a second,
+uncoordinated fade on top of the bottom-edge one they already draw for
+themselves, in the wrong place for their own height. Both are the same
+mistake: `.dTopFade` behaving as a blanket rather than as a third fixed
+bar with no fade logic of its own. `dStick()` -- the script that already
+toggles `.stuck` on the other two off the scroll position -- now toggles
+it on this one too (opacity 0 until then), and its z-index moved under
+both of theirs, so once either is actually pinned, its own opaque top
+simply paints over this one rather than the two adding up. One fade, at
+the bottom of whichever bar is actually fixed, never two stacked.
+
 ---
 
 ## 6. Open items

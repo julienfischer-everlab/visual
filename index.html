@@ -502,15 +502,30 @@
      edge, 32px short of the corner it needs to sit on). Zero height of
      its own -- the negative margin gives the space back to whatever comes
      after it -- so it never pushes the heading down, only sits over
-     whatever has scrolled up to meet it. */
+     whatever has scrolled up to meet it.
+
+     Off until dStick() marks it .stuck, the same switch .dFilters and
+     .dMedBar use: sticky's static position (before it has anything to
+     catch) is still IN the document, still painting, so an always-on fade
+     washed straight over the heading and tabs sitting right where it
+     rests at scroll 0 -- there was nothing wrong to fade yet.
+
+     z-index sits BELOW .dFilters and .dMedBar (both 5), not above: those
+     two are their own fixed area with their own bottom-edge fade already
+     built for it (5.288), and once scrolled far enough both land on
+     exactly the same stuck position this does. Painting under them means
+     their own opaque top simply covers this one -- one fade at the bottom
+     of whichever bar is actually pinned, never two stacked. */
   .dash .dTopFade{
-    position:sticky;top:-32px;z-index:6;pointer-events:none;
+    position:sticky;top:-32px;z-index:4;pointer-events:none;
     height:56px;margin-bottom:-56px;
+    opacity:0;transition:opacity .22s ease;
     background:linear-gradient(to bottom,
       var(--pageBg) 0,
       var(--pageBg) 30%,
       var(--pageBg0) 100%);
   }
+  .dash .dTopFade.stuck{opacity:1;}
   .dash h1{font-size:26px;font-weight:500;letter-spacing:-0.5px;margin:0 0 22px;}
   .dash h1 span{color:#8b8b86;}
   .dash .dgrid{display:grid;grid-template-columns:1fr 1.26fr;gap:16px;align-items:stretch;height:400px;}
@@ -6605,7 +6620,7 @@
          sits on. This sticks to the same top edge and fades from the
          card's own colour (--pageBg) to nothing, the same recipe .dFilters
          already uses to fade the list scrolling in behind IT. -->
-    <div class="dTopFade" aria-hidden="true"></div>
+    <div class="dTopFade" id="dTopFade" aria-hidden="true"></div>
     <h1>Health insights</h1>
     <!-- the same two tabs the phone carries, in the same place relative to the
          page's own title: they say what everything below is a list of, so they
@@ -18563,8 +18578,12 @@
   (function dStick(){
     const sc = document.getElementById('dMain');
     // both pinned blocks -- the biomarkers' filter and the records' -- behave
-    // the same way, and only one of them is ever on the page at a time
-    const blks = ['dFilters', 'dMedBar'].map(id => document.getElementById(id)).filter(Boolean);
+    // the same way, and only one of them is ever on the page at a time.
+    // dTopFade is the third: it has no filter row of its own, just the
+    // plain top-of-card fade for whenever neither of the other two is
+    // there to pin instead (it sticks at the same spot they do, so once
+    // either IS stuck, its own z-index puts it under them anyway).
+    const blks = ['dFilters', 'dMedBar', 'dTopFade'].map(id => document.getElementById(id)).filter(Boolean);
     if (!sc || !blks.length) return;
     const set = () => blks.forEach(blk => {
       const chips = blk.querySelector('.filters');
