@@ -3948,7 +3948,10 @@
     display:flex;flex-direction:column;position:absolute;left:13px;right:13px;top:8px;bottom:8px;
     z-index:4;gap:10px;
   }
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{height:auto;gap:16px;}
+  /* the row card hugged its three lines at 114px; "latest report height by
+     48px" -- so 48 more than that, held as a floor rather than a height so a
+     long title still has room */
+  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{height:auto;min-height:162px;gap:16px;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n1 .rcCard{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2{flex-direction:row;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:192px;}
@@ -3994,7 +3997,9 @@
     height:128px;flex-direction:row;align-items:center;
     justify-content:space-between;gap:24px;
   }
-  .rcCard.rcRow .rcCta{margin-top:0;}
+  /* centred on the row, not at its top: align-self:flex-start is the column
+     shape's, and up here it put the CTA under the New badge's corner */
+  .rcCard.rcRow .rcCta{margin-top:0;align-self:center;}
   .rcWrap.n1 .rcCard{flex:1 1 auto;}
   .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:192px;}
   /* Three and past three share a frame: the main card on the left and a
@@ -4006,11 +4011,22 @@
   .rcWrap.n4 > .rcCard{flex:1 1 0;min-width:0;}
   .rcWrap.n4 .rcCard.rcStack{flex:1 1 0;min-width:0;}
   .rcCard{
+    position:relative;
     display:flex;flex-direction:column;border-radius:20px;padding:22px;
     background:rgba(255,255,255,.05);
   }
   body.light .rcCard{background:rgba(46,31,26,.05);}
   .dash .rcCard{border-radius:22px;}
+  /* the New badge on the latest report's card: a small light pill in the top
+     right corner, out of the flow so the eyebrow/title/meta and the CTA lay
+     out exactly as they do without it */
+  .rcNew{
+    position:absolute;top:16px;right:16px;z-index:1;
+    padding:3px 9px;border-radius:999px;
+    font-size:10.5px;font-weight:600;letter-spacing:.02em;line-height:1.4;
+    background:#ececec;color:#111;
+  }
+  body.light .rcNew{background:#2e1f1a;color:#fff;}
   /* Invisible to layout everywhere but n1: the eyebrow/title/meta stay
      direct flex children of .rcCard's own column, same as before this
      wrapper existed. n1 turns it into a real block so the three of them
@@ -6011,6 +6027,24 @@
     min-height:calc(100% + 24px);
   }
   body.light.v4 .mBody{background:#fff;}
+  /* V2.5: the header is a section of the page, not the backdrop the body rides
+     over. It scrolls with everything else at the scroll's own rate (no sticky,
+     no parallax, no fade -- headerParallax() skips those for it), and the
+     body starts under it rather than 24px over it, square-cornered because
+     there is no edge to round any more. The tabs are the one thing that
+     holds: sticky INSIDE the header, so they pin under the hour while the
+     hero scrolls past beneath them, and the header's own end -- the cards
+     below -- is what pushes them off. A blur on the pill keeps it legible
+     over whatever is passing under it. */
+  body.v4.v25Tab:not(.v3Tab) #phone .mHead{position:relative;z-index:auto;}
+  body.v4.v25Tab:not(.v3Tab) #phone .mHeadIn{position:relative;will-change:auto;}
+  body.v4.v25Tab:not(.v3Tab) #phone .mBody{margin-top:0;border-radius:0;min-height:100%;}
+  body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2{
+    position:sticky;top:8px;z-index:9;
+    background:rgba(255,255,255,.08);
+    -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  }
+  body.light.v4.v25Tab:not(.v3Tab) #phone .mTabsV2{background:rgba(46,31,26,.09);}
   body.v4 #phone #mBento .msn,
   body.v4 #phone #mBento .msn.morganMini{background:#280707;}
 
@@ -6990,7 +7024,9 @@
          phone can only ever show the same records. -->
     <div class="insWrap dInsWrap" id="dInsWrap"></div>
     <div class="dRepWrap" id="dRepWrap">
-      <div class="secHead"><span>Everlab reports</span><button class="secSeeAll arOpen" type="button">See all<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div>
+      <!-- a title only: the way to the rest of the reports is the stack card's
+           own "See more", which appears when there are more than it shows -->
+      <div class="secHead"><span>Everlab reports</span></div>
       <div class="rbWrap dRepBento" id="dRepBento"></div>
       <div class="rcWrap dRepCards" id="dRepCards"></div>
       <div class="dRepShelf">
@@ -7179,7 +7215,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="secHead rcHeroHead"><span>Everlab reports</span><button class="secSeeAll arOpen" type="button">See all<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="secHead rcHeroHead"><span>Everlab reports</span></div><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -7278,7 +7314,7 @@
          above the records it belongs with. The nodes are moved rather than
          copied, so there is one carousel with one set of handlers however the
          page is laid out. -->
-    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports</span><button class="secSeeAll arOpen" type="button">See all<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div></div>
+    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports</span></div></div>
     <!-- V4's third tab: the findings themselves, stacked. Each one opens a
          sheet on the phone and a drawer on the desk. Built from INSIGHTS in
          the script, like every other list on the page. -->
@@ -17545,8 +17581,11 @@
     // -- "Latest report" on the main card, "Recent report" on the ones beside
     // it -- the same words the carousel's own slides already use for first
     // and rest (buildReportSlides).
+    // the latest report is the one that has arrived (TAB_NEW's 1 is the same
+    // report), so its card alone carries a New badge, top right
     const big = (r, row, lbl) =>
       '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + '">' +
+        (lbl === LATEST ? '<span class="rcNew">New</span>' : '') +
         '<div class="rcInfo">' +
           '<div class="rcEyebrow">' + lbl + '</div>' +
           '<div class="rcTitle">' + r.label + '</div>' +
@@ -17573,13 +17612,15 @@
       '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" ' +
       'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
       '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button>';
-    const LATEST = 'Latest report', RECENT = 'Recent report';
+    // "Recent" became "Other": the eyebrow says what these are next to the
+    // latest one, not how old they are
+    const LATEST = 'Latest report', RECENT = 'Other report';
     host.innerHTML =
       shape === 'n1' ? big(shown[0], true, LATEST) :
       shape === 'n2' ? big(shown[0], false, LATEST) + big(shown[1], false, RECENT) :
       big(shown[0], onPhone, LATEST) +
         '<div class="rcCard rcStack' + (count > 4 ? ' hasMore' : '') + '">' +
-          '<div class="rcStackHead"><div class="rcEyebrow">Recent reports</div>' + MORE + '</div>' +
+          '<div class="rcStackHead"><div class="rcEyebrow">Other reports</div>' + MORE + '</div>' +
           '<div class="rbList">' + shown.slice(1, 4).map(rowItem).join('') + '</div>' +
         '</div>';
     host.className = host.dataset.rcBase + ' ' + shape;
@@ -19324,8 +19365,12 @@
       const y = sc.scrollTop;
       const span = Math.max(1, head.offsetHeight - 40);
       const p = Math.min(1, Math.max(0, y / span));
-      inner.style.transform = reduced ? '' : 'translateY(' + (-y * 0.12).toFixed(1) + 'px)';
-      inner.style.opacity = (1 - p).toFixed(3);
+      // V2.5's header is in the flow -- it scrolls, nothing in it recedes or
+      // fades, and the hero light's outer half moves at the scroll's own rate
+      const flow = document.body.classList.contains('v25Tab') &&
+                   !document.body.classList.contains('v3Tab');
+      inner.style.transform = (reduced || flow) ? '' : 'translateY(' + (-y * 0.12).toFixed(1) + 'px)';
+      inner.style.opacity = flow ? '' : (1 - p).toFixed(3);
       // V5's shrink on scroll, times V3/V4's own framing: those versions put
       // the tabs and the pair under the hero, so the figure is sharing the
       // screen with more than it was drawn for and comes down a notch. One
@@ -19337,8 +19382,8 @@
       // the phone's half of the hero light moves by what moves the header's
       // half -- the scroll plus the 0.12 parallax above -- and fades with it
       if (ph){
-        ph.style.setProperty('--heroLift', (-(reduced ? y : y * 1.12)).toFixed(1) + 'px');
-        ph.style.setProperty('--heroLightK', (1 - p).toFixed(3));
+        ph.style.setProperty('--heroLift', (-((reduced || flow) ? y : y * 1.12)).toFixed(1) + 'px');
+        ph.style.setProperty('--heroLightK', flow ? '1' : (1 - p).toFixed(3));
         // and the two halves have to agree on where the centre is. The header
         // copy is positioned inside the organ block, so it needs that block's
         // distance down the phone -- measured in the unscrolled layout, which
@@ -19383,7 +19428,9 @@
           const q = Math.min(1, y / 110);
           ph.style.setProperty('--v3BodyK', k.toFixed(3));
           ph.style.setProperty('--v3BlurK', (q * (2 - q)).toFixed(3));
-          ph.classList.toggle('v3Blur', y > 1);
+          // no blur when the body has nothing under it to blur (V2.5's flow):
+          // a backdrop-filter on a full-height card costs frames for nothing
+          ph.classList.toggle('v3Blur', y > 1 && !flow);
         } else {
           ph.style.removeProperty('--v3BodyK');
           ph.style.removeProperty('--v3BlurK');

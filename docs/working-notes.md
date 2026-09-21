@@ -8595,6 +8595,46 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
   with the hero keeping the heading's 8px top so the cards do not touch its
   edge.
 
+### 5.312 V2.5's header joins the flow; the tabs are what holds
+
+- **The header scrolls with the page under V2.5.** V4's model -- the
+  header pinned to the scroller's top (`position:sticky`), its content
+  receding at 0.12 and fading, the body riding 24px over it on rounded
+  corners -- is exactly what was asked away: "the hero header should just
+  be part of the flow, the body shouldn't overlap the hero". So under
+  `body.v4.v25Tab:not(.v3Tab)` the header is `position:relative`, the
+  body's `margin-top` is 0 and its corners square (there is no edge to
+  round any more), and `headerParallax()` skips the transform and the
+  opacity for it (`flow`), moving the hero light's outer half at the
+  scroll's own rate and leaving it lit -- the header is not receding, so
+  nothing on it should look as if it were. The body's ground still runs
+  from the header's grey to black on the scroll, which was V2.5's founding
+  ask; the backdrop blur is left off in the flow, since the body has
+  nothing under it to blur.
+
+- **The tabs pin, until the cards push them off.** `position:sticky;
+  top:8px` on `.mTabsV2` -- and the trick is where it sits: INSIDE
+  `#mHeadIn`, so its containing block is the header, and sticky's own rule
+  ("stay within the containing block") is what unpins it: the pill holds
+  under the hour while the hero scrolls past beneath it (measured: at
+  y=120 and y=300 the pill is at 134, scroller top + 8) and is carried off
+  as the header's end reaches it (76 at y=480, gone at y=700), which is
+  "fixed on scroll until the group reach the cards below" without a line
+  of script. A `backdrop-filter:blur(16px)` on the pill keeps it legible
+  over whatever passes under it.
+
+- **From the same review:** the "See all" is gone from the "Everlab
+  reports" heading in all three places -- "if See more exists it should be
+  in the >3 reports inside the stacked item card", where it already is
+  (`.hasMore`). The latest report's card carries a **New** badge, top
+  right (`.rcNew`, absolute, so the card's own layout is untouched); on
+  the row shape that put the badge's corner over the CTA, which was
+  sitting at the top of the row on the column shape's
+  `align-self:flex-start` -- it is centred on the row now. The phone's
+  row card has a 162px floor ("latest report height by 48px" over the 114
+  it hugged to). And the eyebrow on the other cards reads **Other
+  report(s)**, not Recent.
+
 ---
 
 ## 6. Open items
