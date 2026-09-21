@@ -8572,14 +8572,16 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
 
 - **The Cards shape has four counts now**, on both screens. `repsShown()`
   gives 1, 2, 3 or 5 (the select's "More than 3"). `n1`: one row card,
-  CTA on the right, 128px. `n2`: two cards side by side, 192px. `n3`:
-  the main card left, and right a column of two row cards splitting the
-  main card's height equally. `n4`: the main card left and ONE card right
-  holding three list rows and a "See more" in its head when there are more
-  than four. No fixed heights on n3 and n4: the right column hugs its
-  rows and the left card follows it (`flex:1 1 0` on both, `align-items`
-  stretch) -- measured 229/229 on the desk at five reports, 258 against
-  119+20+119 at three. Eyebrows: "Latest report" on the main card, "Recent
+  CTA on the right, 128px. `n2`: two cards side by side, 192px. `n4`
+  (past two): the main card left and ONE card right holding the rest as
+  list rows -- two at three reports, three past that -- with a "See more"
+  in its head when there are more than the rows show. A three-report
+  shape of its own (two row cards stacked on the right) lived for one
+  publish and was taken back: "just the 1 report big card, the rest of
+  reports inside one card, stacked". No fixed heights on n4: the right
+  card hugs its rows and the left card follows it (`flex:1 1 0` on both,
+  `align-items` stretch) -- measured 229/229 on the desk at five reports,
+  164/164 at three. Eyebrows: "Latest report" on the main card, "Recent
   report(s)" on the others. The phone stacks them all in a column.
 
 - **Smaller ones:** `.mTabsV2` gets `margin-bottom:30px` under V2.5 (the

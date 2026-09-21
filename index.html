@@ -3952,10 +3952,6 @@
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n1 .rcCard{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2{flex-direction:row;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:192px;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n3 > .rcCard,
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n3 .rcCol,
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n3 .rcCol .rcCard{flex:none;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n3 .rcCol{gap:10px;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 > .rcCard.rcBig{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 .rcCard.rcStack{flex:1 1 auto;min-height:0;}
   body.repTab.repCards .dash .rcWrap.dRepCards{display:flex;gap:20px;margin:0 0 6px;}
@@ -4004,12 +4000,10 @@
   /* Three and past three share a frame: the main card on the left and a
      column on the right, and NO height typed on either -- the row's own
      stretch (flex's default) makes the two the same height, and what sets it
-     is the right column's own content: two row cards at three, the one card
-     of three list rows past that. The main card takes whatever that comes
-     to, its CTA riding the bottom edge on its margin-top:auto. */
-  .rcWrap.n3 > .rcCard, .rcWrap.n4 > .rcCard{flex:1 1 0;min-width:0;}
-  .rcWrap.n3 .rcCol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:20px;}
-  .rcWrap.n3 .rcCol .rcCard{flex:1 1 0;}
+     is the right card's own content: its two or three list rows. The main
+     card takes whatever that comes to, its CTA riding the bottom edge on its
+     margin-top:auto. */
+  .rcWrap.n4 > .rcCard{flex:1 1 0;min-width:0;}
   .rcWrap.n4 .rcCard.rcStack{flex:1 1 0;min-width:0;}
   .rcCard{
     display:flex;flex-direction:column;border-radius:20px;padding:22px;
@@ -17568,12 +17562,13 @@
           '<span>' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : 'Document') +
         '</span></span>' + CHEV +
       '</button>';
-    // n1: one row card. n2: two tall cards side by side. n3: the main card and,
-    // beside it, the other two as row cards stacked. n4 (past three): the main
-    // card and, beside it, ONE card holding the next three as list rows; the
-    // rows set that card's height and the main card stretches to match. "See
-    // more" appears there only when the three are not all there is.
-    const shape = count === 1 ? 'n1' : count === 2 ? 'n2' : count === 3 ? 'n3' : 'n4';
+    // n1: one row card. n2: two tall cards side by side. n4 (past two): the
+    // main card and, beside it, ONE card holding the rest -- up to three -- as
+    // list rows; the rows set that card's height and the main card stretches
+    // to match. "See more" appears there only when the rows are not all there
+    // is. (A separate three-report shape, two row cards stacked, was tried
+    // and taken back: "the rest of reports inside one card, stacked".)
+    const shape = count === 1 ? 'n1' : count === 2 ? 'n2' : 'n4';
     const MORE = '<button class="rcMore" type="button">See more' +
       '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" ' +
       'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -17582,8 +17577,6 @@
     host.innerHTML =
       shape === 'n1' ? big(shown[0], true, LATEST) :
       shape === 'n2' ? big(shown[0], false, LATEST) + big(shown[1], false, RECENT) :
-      shape === 'n3' ? big(shown[0], onPhone, LATEST) +
-        '<div class="rcCol">' + big(shown[1], true, RECENT) + big(shown[2], true, RECENT) + '</div>' :
       big(shown[0], onPhone, LATEST) +
         '<div class="rcCard rcStack' + (count > 4 ? ' hasMore' : '') + '">' +
           '<div class="rcStackHead"><div class="rcEyebrow">Recent reports</div>' + MORE + '</div>' +
