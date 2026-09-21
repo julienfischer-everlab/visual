@@ -3936,6 +3936,28 @@
   body.light .rbCard{background:rgba(46,31,26,.05);}
   .dRepBento .rbCard{padding:22px;border-radius:22px;}
   .rbCard .lbl{flex:none;}
+  /* the Bento's left card: four report rows, visual left, lines right. The
+     list does not scroll here (four rows fit), so it can reach 10px out on
+     each side for the rows' wash without clipping it; the rows' own 10px
+     puts the text back at the card's padding. */
+  .rbStackV .rbList{flex:none;overflow:visible;margin:0 -10px;padding:0;}
+  .rbRow.rbVRow{padding:8px 10px;gap:14px;}
+  .dRepBento .rbRow.rbVRow{padding:10px 10px;}
+  .rbThumb{
+    flex:none;width:64px;height:44px;border-radius:9px;overflow:hidden;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg, var(--a0, #3a3a3a), var(--a1, #1e1e1e));
+  }
+  .rbThumb svg{width:72%;height:72%;display:block;}
+  .rbThumb::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.2), rgba(0,0,0,0) 50%);}
+  .rbNew{
+    display:inline-block;vertical-align:middle;margin:-2px 0 0 8px;font-style:normal;
+    font-size:11px;font-weight:500;line-height:1;padding:4px 8px;border-radius:7px;
+    background:#e0865f;color:#1a0f08;
+  }
+  /* the phone has no room for two bento cards side by side and four rows
+     each: the stack alone, the width of the hero */
+  body.repTab.repBento #phone #mHeroOrgan .rbWrap .rbAll{display:none;}
   .rbHead{
     flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
     margin-bottom:12px;
@@ -17859,20 +17881,26 @@
         if (!c){ c = { k: r.cat, n: 0, dot: r.art[0] }; cats.push(c); }
         c.n++;
       });
-      const total = shown.length, vids = shown.filter(r => r.media === 'video').length;
+      const total = shown.length;
+      // The left card is the reports themselves, not a summary of them: up
+      // to four, stacked, each with the report's visual on the left (the
+      // Visual card's tile, small) and its lines on the right ("on the Bento
+      // one, use the card layout for your report, with a list of four
+      // reports: the visual on the left, text on the right, and stack four
+      // items"). The newest wears the New badge. The right card stays the
+      // documents list. (The count-and-categories summary this replaced --
+      // cats, rbBig, rbSplit, rbBar -- is gone; its rules stay unused.)
+      const thumbRow = (r, i) =>
+        '<button class="rbRow rbVRow" type="button" data-r="' + r.id + '">' +
+          '<span class="rbThumb" style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + '">' + repArtHTML(r, 'b') + '</span>' +
+          '<span class="t"><b>' + r.label + (i === 0 ? ' <i class="rbNew">New</i>' : '') + '</b>' +
+            '<span>' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : r.n + ' biomarkers') +
+          '</span></span>' + CHEV +
+        '</button>';
       host.innerHTML =
-        '<div class="rbCard rbSum">' +
-          '<div class="rbHead"><h4>Your reports</h4><em>' + shown[0].date + '</em></div>' +
-          '<div class="rbBig">' + total + '</div>' +
-          '<p class="rbLead">' + (total - vids) + ' documents and ' + vids +
-            ' recorded read-throughs, across ' + cats.length + ' categories.</p>' +
-          '<div class="rbSplit">' +
-            cats.map(c => '<span class="s"><i style="background:' + c.dot + '"></i>' +
-              c.k + '<b>' + c.n + '</b></span>').join('') +
-          '</div>' +
-          '<div class="rbBar">' +
-            cats.map(c => '<i style="flex:' + c.n + ';background:' + c.dot + '"></i>').join('') +
-          '</div>' +
+        '<div class="rbCard rbStackV">' +
+          '<div class="rbHead"><h4>Your reports</h4><em>' + total + '</em></div>' +
+          '<div class="rbList">' + shown.slice(0, 4).map(thumbRow).join('') + '</div>' +
         '</div>' +
         '<div class="rbCard rbAll">' +
           '<div class="rbHead"><h4>All reports</h4><em>' + total + '</em></div>' +

@@ -8996,6 +8996,23 @@ said against the buttons at that weight; and the phone's menu
 (`#mRecMenu`) is NOT inside its wrap -- it lives in `.msRow` -- so the
 badge's rule and the `.seen` mark address the menu itself.
 
+### 5.320 The Bento's left card is the reports, stacked
+
+"On the Bento one, use the card layout for your report, with a list of
+four reports: the visual on the left, text on the right, and stack four
+items. On the right side, keep the documents." The left card had been a
+summary -- a count, a lead line, the categories and their bar. It is the
+reports now: up to four `.rbVRow`s, each with the report's visual on the
+left (the Visual card's tile at 64×44, the report's two colours and the
+shelf's drawing) and its title and date · kind on the right, the newest
+wearing the New badge; a row opens the report as the list's rows always
+did. The right card is the documents list, untouched. The list does not
+scroll (four rows fit), so it reaches 10px out for the rows' wash without
+clipping and the rows' own 10px put the text back at the card's padding
+(thumb at 22, measured). The phone has no room for two bento cards with
+four rows each, so it shows the stack alone at the hero's width. The
+summary's rules (`.rbBig`, `.rbSplit`, `.rbBar`) stay, unused.
+
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as
   the design drew them, so the meter's green share is now 80/142. The
