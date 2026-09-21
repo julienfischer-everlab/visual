@@ -4228,25 +4228,51 @@
      margin-top:auto. */
   .rcWrap.n4 > .rcCard{flex:1 1 0;min-width:0;}
   .rcWrap.n4 .rcCard.rcStack{flex:1 1 0;min-width:0;}
-  /* the right column: the stack, and in Visual the small My documents card
-     under it; each hugs its rows, the column is their sum, and the main card
-     on the left stretches to it */
+  /* the right column: the stack alone now. In Neutral it sets the height and
+     the main card stretches to it; in Visual the main card's photo header
+     makes it the taller, and the stack grows to meet it rather than leave a
+     hole under its three rows */
   .rcWrap.n4 .rcCol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:20px;}
-  .rcWrap.n4 .rcCol > .rcCard{flex:none;}
-  /* the two small cards under the stack, side by side: the count of
-     documents (a way to the records) and the upload, which takes the CTA
-     the records header had -- that one steps back while this is showing */
-  .rcDocRow{display:none;}
-  body.repVisual .rcDocRow{display:flex;gap:20px;}
-  .rcDocRow .rcCard{flex:1 1 0;min-width:0;}
-  .rcCard.rcDocs{display:flex;padding-bottom:18px;font:inherit;text-align:left;color:inherit;border:0;}
-  .dash .rcCard.rcDocs{padding-bottom:20px;}
-  .rcCard.rcDocsN{cursor:pointer;}
-  .rcBigN{font-size:40px;font-weight:500;letter-spacing:-1.2px;line-height:1;color:#ececec;margin:6px 4px 0;}
+  .rcWrap.n4 .rcCol > .rcCard{flex:1 1 auto;}
+  /* ---- The document cards ---------------------------------------------------
+     Two cards just above Medical records, side by side: the count of
+     documents (a way down to the list) and the upload, which took the CTA the
+     records header had -- that button steps back for good. They stand in the
+     biomarker bento's frame on each screen -- its gap, its corners, its
+     padding, its wash -- not in the report cards', so the row reads as one
+     more row of the page's grid ("same bento gap as the biomarker bento,
+     same rounded corners as the biomarker card"). Taller than a caption and
+     a figure need: the extra is all at the bottom ("more padding on the
+     bottom, they need to be higher"). */
+  .docRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}                /* the phone's .mbrowV2 */
+  .docCard{
+    display:flex;flex-direction:column;align-items:flex-start;min-width:0;
+    border-radius:22px;padding:22px 22px 34px;border:0;                       /* the phone's .msn */
+    background:rgba(255,255,255,.04);
+    font:inherit;text-align:left;color:inherit;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .docCard.docCardN{cursor:pointer;transition:background .18s ease;}
+  .docCard.docCardN:hover{background:rgba(255,255,255,.08);}
+  body.light .docCard{background:rgba(46,31,26,.05);}
+  body.light .docCard.docCardN:hover{background:rgba(46,31,26,.09);}
+  .rcBigN{font-size:40px;font-weight:500;letter-spacing:-1.2px;line-height:1;color:#ececec;margin:14px 0 0;}
   body.light .rcBigN{color:#2e1f1a;}
-  .rcUpload .rcUpBtn{align-self:flex-start;margin:6px 4px 0;}
-  body.repVisual .dash .mMedsHead .mUpload{display:none;}
-  .rcDocs .rbList{flex:none;}
+  .docUpload .rcUpBtn{margin:12px 0 0;max-width:100%;white-space:nowrap;}
+  /* the button is in the card now, so the header has no second one */
+  .docRow + .mMedsHead .mUpload{display:none;}
+  /* the desk: the biomarker bento's 16px gap (20 on the tablet), 20px
+     corners, 24px padding and V5's .06 wash; the row takes the 34px the
+     header stood off the reports by, and the header stands 28px under it */
+  .dash .docRow{gap:16px;margin-top:34px;}
+  body.tabM .dash .docRow{gap:20px;}
+  .dash .docCard{border-radius:20px;padding:24px 24px 36px;background:#252522;}
+  body.b5 .dash .docCard{background:rgba(255,255,255,.06);}
+  body.b5 .dash .docCard.docCardN:hover{background:rgba(255,255,255,.1);}
+  body.light .dash .docCard{background:#f4efed;}
+  .dash .docRow + .mMedsHead{margin-top:28px;}
+  /* the phone: 24px under the row to the header, the hero's own beat */
+  #phone .docRow + .mMedsHead{margin-top:24px;}
   .rbDocIco{
     flex:none;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
     background:rgba(255,255,255,.07);color:#c9c9c4;
@@ -7461,6 +7487,20 @@
         <button class="dRepNav next" id="dRepNext" type="button" aria-label="Next report"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button>
       </div>
       <div class="mMedsWrap dMedsWrap" id="dMedsWrap">
+        <!-- Two cards just above the records, side by side in the biomarker
+             bento's own frame: how many documents there are (a way down to
+             the list), and the upload, which took the CTA out of the records
+             header. The 47 is the design's figure, as the panel's 142 is. -->
+        <div class="docRow">
+          <button class="docCard docCardN" type="button" aria-label="My documents, 47">
+            <div class="rcEyebrow">My documents</div>
+            <div class="rcBigN">47</div>
+          </button>
+          <div class="docCard docUpload">
+            <div class="rcEyebrow">New document</div>
+            <button class="mUpload rcUpBtn" type="button">Upload document</button>
+          </div>
+        </div>
         <div class="mMedsHead">
           <h3>Medical records</h3>
           <button class="mUpload" type="button">Upload document</button>
@@ -7747,6 +7787,17 @@
          the script, like every other list on the page. -->
     <div class="insWrap" id="mInsWrap"></div>
     <div class="mMedsWrap" id="mMedsWrap">
+      <!-- the same two document cards the desk stands above its records -->
+      <div class="docRow">
+        <button class="docCard docCardN" type="button" aria-label="My documents, 47">
+          <div class="rcEyebrow">My documents</div>
+          <div class="rcBigN">47</div>
+        </button>
+        <div class="docCard docUpload">
+          <div class="rcEyebrow">New document</div>
+          <button class="mUpload rcUpBtn" type="button">Upload document</button>
+        </div>
+      </div>
       <div class="mMedsHead">
         <h3>Medical records</h3>
         <button class="mUpload" type="button">Upload document</button>
@@ -18111,25 +18162,14 @@
       // report card you have, and below it a small card, same full width,
       // a My documents card with just one item"). Written always, shown by
       // body.repVisual; the column hugs its cards and the main card follows.
+      // (The two small document cards that sat under the stack in Visual
+      // moved out of the reports altogether: they are the .docRow just above
+      // the Medical records header, in the page's own markup.)
       big(shown[0], onPhone, LATEST) +
         '<div class="rcCol">' +
         '<div class="rcCard rcStack' + (count > 4 ? ' hasMore' : '') + '">' +
           '<div class="rcStackHead"><div class="rcEyebrow">Other reports</div>' + MORE + '</div>' +
           '<div class="rbList">' + shown.slice(1, 4).map(rowItem).join('') + '</div>' +
-        '</div>' +
-        // ...two small cards side by side under the stack ("split that into
-        // two cards: left, My documents with the number 47; right, New
-        // document with the Upload document CTA, moved up from the records
-        // header"). The count is the design's figure, as the panel's 142 is.
-        '<div class="rcDocRow">' +
-          '<button class="rcCard rcStack rcDocs rcDocsN" type="button" aria-label="My documents, 47">' +
-            '<div class="rcStackHead"><div class="rcEyebrow">My documents</div></div>' +
-            '<div class="rcBigN">47</div>' +
-          '</button>' +
-          '<div class="rcCard rcStack rcDocs rcUpload">' +
-            '<div class="rcStackHead"><div class="rcEyebrow">New document</div></div>' +
-            '<button class="mUpload rcUpBtn" type="button">Upload document</button>' +
-          '</div>' +
         '</div>' +
         '</div>';
     host.className = host.dataset.rcBase + ' ' + shape;
@@ -18238,7 +18278,7 @@
     host.addEventListener('click', e => {
       if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); return; }
       // the My documents card takes the reader to the records below
-      if (e.target.closest('.rbDoc, .rcDocsN')){
+      if (e.target.closest('.rbDoc')){
         const h = document.querySelector('.dash .mMedsHead');
         if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
@@ -18759,6 +18799,15 @@
     document.body.classList.toggle('repFew', CARD_STATE.repFew);
   }
   document.addEventListener('everlab:repTab', rebuildRepCards);
+
+  // the My documents card above the records is a way down to the list it
+  // counts: a tap brings the list's head up under the pinned bar
+  document.querySelectorAll('.docCard.docCardN').forEach(b => {
+    b.addEventListener('click', () => {
+      const list = b.closest('.mMedsWrap').querySelector('.mMedList');
+      if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
 
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.

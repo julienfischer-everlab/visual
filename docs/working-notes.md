@@ -9110,12 +9110,54 @@ the overrides are said at that weight now (cover, centred, drawing off).
   `.mUpload` button, and the records header's own Upload steps back while
   the Visual layout is showing (`body.repVisual .dash .mMedsHead
   .mUpload{display:none}`). Both hug at 89px; the column and the main card
-  follow.
+  follow. (Superseded in 5.324: the two cards left the column for the
+  records section.)
 
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as
   the design drew them, so the meter's green share is now 80/142. The
   filter chips still count the rows (110 distinct), as they always did.
+
+### 5.324 The document cards move above Medical records
+
+"Just above the medical record, you can put the two cards (My Documents
+and Upload New Document) next to each other, in the same card style as
+the biomarker card. Use the same bento gap between cards as the biomarker
+bento, and the same rounded corners. Add more padding on the bottom; they
+need to be higher."
+
+- **Out of the reports, into the page.** The two cards are no longer built
+  by `buildRepCards` into the Visual layout's right column; they are static
+  markup, `.docRow` with two `.docCard`s, standing first inside both records
+  sections (`#dMedsWrap` on the desk, `#mMedsWrap` on the phone), just above
+  the *Medical records* header. Being the page's own markup rather than a
+  layout's, they show in every report style -- Neutral as well as Visual --
+  and on both screens, wherever the Reports tab shows its records. The
+  header's own Upload button steps back for good (`.docRow + .mMedsHead
+  .mUpload{display:none}`): the CTA lives in the New document card.
+- **The biomarker bento's frame, per screen.** The desk row is a two-column
+  grid at the `.dgrid`'s 16px gap (20 on the tablet, as `.dgrid` goes), and
+  its cards take `.dcard.bcard`'s 20px corners, 24px padding, `#252522`
+  ground and V5's `.06` wash (`#f4efed` in light). The phone row is at the
+  `.mbrowV2`'s 8px gap and its cards take `.msn`'s 22px corners, 22px
+  padding and `.04` wash. Measured: desk cards 532×125 at a 16px gap, phone
+  169×121 at 8px; radii 20/22.
+- **Taller, at the bottom.** Padding is 24/24/36 on the desk and 22/22/34 on
+  the phone -- 12px more below than on the other sides -- with the figure 14px
+  under its eyebrow and the button 12px under its own. The row takes the 34px
+  the header used to stand off the reports by; the header stands 28px under
+  the row (24 on the phone).
+- **The count is a way down.** *My documents* is a button; a tap scrolls the
+  records list itself into view (desk `dMain` 0→821 in the check), where the
+  older in-column card scrolled to the header.
+- **The Visual column.** With nothing under the stack, the right column in
+  the Visual layout at 3+ reports had 81px of ground under the stack's three
+  rows (the main card's photo header makes it 314px against the stack's
+  233). The stack now grows to the column (`.rcCol > .rcCard{flex:1 1
+  auto}`); in Neutral both are 233 and nothing changes.
+- Checks: `docrow.js` (both screens; row grid, gap, radius, padding, wash,
+  button fits, header Upload hidden, no `.rcDocRow` left), `docs.js`,
+  `visual.js` -- no errors.
 
 ---
 
