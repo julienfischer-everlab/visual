@@ -8703,6 +8703,24 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
   "keep same badge for new report everywhere" -- so the card's took that,
   and nothing else changed about where it sits.
 
+- **Mobile (viewport) with the bar** (`?phone&bar`): the tweak bar is
+  fixed and was covering the tabs. `resize()` now writes the bar's
+  measured height to `--barH` on the root, `body.fullscr.showBar #phone`
+  pads for it on top of the safe area, and the tabs sit 16px under it
+  ("make the tab group 16px from the top below the Tweak bar"). Without
+  `?bar` the bar is display:none, `--barH` is 0 and nothing moves.
+
+- **The stack's rows press like the organ-age items.** Each `.rbRow` is a
+  14px-rounded row that lights up on hover (`rgba(242,229,224,.06)`) and
+  on press (.1), with no rule between rows -- the highlight is the
+  separation. It bleeds 10px into the card's padding on both sides so the
+  text stays put and the highlight is wider than it. Rows were already
+  buttons that open the report sheet; this is the affordance saying so.
+
+- **"remove for this demo"**: the "3 records are processing" note over the
+  medical records is `display:none`, phone and desk. Markup and rules
+  stay for when the processing state is shown again.
+
 ---
 
 ## 6. Open items

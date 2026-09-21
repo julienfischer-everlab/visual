@@ -931,6 +931,12 @@
     padding-top:env(safe-area-inset-top);
     padding-bottom:env(safe-area-inset-bottom);
   }
+  /* With the bar showing (?bar), the page starts under it rather than behind
+     it: the bar is fixed and was covering the tabs. --barH is the bar's
+     measured height (resize()), and the tabs sit 16px below it -- "make the
+     tab group 16px from the top below the Tweak bar". */
+  body.fullscr.showBar #phone{padding-top:calc(env(safe-area-inset-top) + var(--barH, 0px));}
+  body.fullscr.showBar.v2Tab #phone .mTabsV2{margin-top:16px;}
   /* ---- Mobile V7: the sheet and the tab bar --------------------------------
      The sheet the reference shows was already here: V4 gave the body its own
      rounded shoulder, and the header going to a 5% wash is what turned the
@@ -2100,6 +2106,9 @@
   }
   .mMedNote b{font-size:13.5px;font-weight:500;color:#ececec;}
   .mMedNote span{font-size:12.5px;line-height:1.45;color:#8b8b86;}
+  /* off for this demo ("remove for this demo"): the markup and the rules stay
+     for the day the processing state is being shown again */
+  .mMedNote{display:none;}
   body.light .mMedNote{background:rgba(46,31,26,.05);}
   body.light .mMedNote b{color:#2e1f1a;}
   body.light .mMedNote span{color:#7d6b58;}
@@ -3893,12 +3902,22 @@
   /* --- second card: the reports, stacked --- */
   .rbList{flex:1 1 auto;min-height:0;overflow-y:auto;margin:0 -4px;padding:0 4px;scrollbar-width:none;}
   .rbList::-webkit-scrollbar{display:none;}
+  /* Each row is a thing to press, drawn the way the organ-age list draws its
+     items ("keep same pattern as the organ age items"): a rounded row that
+     lights up under the pointer or the finger, and no rule between rows --
+     the highlight is the separation. It bleeds 10px into the card's padding
+     on both sides so the text stays where it was and the highlight is wider
+     than it. */
   .rbRow{
-    display:flex;align-items:center;gap:10px;width:100%;
-    border:0;padding:11px 0;background:none;font:inherit;text-align:left;cursor:pointer;
-    border-bottom:1px solid rgba(242,229,224,.09);-webkit-tap-highlight-color:transparent;
+    display:flex;align-items:center;gap:10px;width:calc(100% + 20px);margin:0 -10px;
+    border:0;padding:11px 10px;background:none;font:inherit;text-align:left;cursor:pointer;
+    border-radius:14px;-webkit-tap-highlight-color:transparent;
+    transition:background .16s ease;
   }
-  .rbRow:last-child{border-bottom:0;}
+  .rbRow:hover{background:rgba(242,229,224,.06);}
+  .rbRow:active{background:rgba(242,229,224,.1);}
+  body.light .rbRow:hover{background:rgba(46,31,26,.05);}
+  body.light .rbRow:active{background:rgba(46,31,26,.09);}
   /* no dot at all: it was the report's colour, then a neutral marker, and
      then "No need dot" -- the row is the title, the date and the chevron.
      The <i> stays in the markup so nothing else has to know. */
@@ -3911,7 +3930,6 @@
   .rbRow .t span{display:block;font-size:12px;color:#8b8b86;margin-top:2px;}
   .rbRow .go{flex:none;width:13px;height:13px;color:#8b8b86;}
   .rbRow:hover .t b{color:#fff;}
-  body.light .rbRow{border-bottom-color:rgba(46,31,26,.12);}
   body.light .rbRow .t b{color:#2e1f1a;}
   .dRepBento .rbRow{padding:14px 0;}
   .dRepBento .rbRow .t b{font-size:15px;}
@@ -12076,6 +12094,9 @@
     dpr = Math.min(devicePixelRatio || 1, 2);
     // the dashboard starts exactly where the bar ends — no background sliver
     const tbH = document.querySelector('.topbar').offsetHeight || 0;
+    // and the full-screen phone with the bar showing pads for it the same way
+    // (body.fullscr.showBar #phone reads --barH); 0 when the bar is hidden
+    document.documentElement.style.setProperty('--barH', tbH + 'px');
     document.querySelector('.dash').style.top = tbH + 'px';
     document.querySelector('.dash .side').style.top = tbH + 'px';
     document.getElementById('grid').style.top = tbH + 'px';
