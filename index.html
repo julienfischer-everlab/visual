@@ -4232,9 +4232,20 @@
      under it; each hugs its rows, the column is their sum, and the main card
      on the left stretches to it */
   .rcWrap.n4 .rcCol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:20px;}
-  .rcWrap.n4 .rcCol .rcCard{flex:none;}
-  .rcCard.rcDocs{display:none;}
-  body.repVisual .rcCard.rcDocs{display:flex;}
+  .rcWrap.n4 .rcCol > .rcCard{flex:none;}
+  /* the two small cards under the stack, side by side: the count of
+     documents (a way to the records) and the upload, which takes the CTA
+     the records header had -- that one steps back while this is showing */
+  .rcDocRow{display:none;}
+  body.repVisual .rcDocRow{display:flex;gap:20px;}
+  .rcDocRow .rcCard{flex:1 1 0;min-width:0;}
+  .rcCard.rcDocs{display:flex;padding-bottom:18px;font:inherit;text-align:left;color:inherit;border:0;}
+  .dash .rcCard.rcDocs{padding-bottom:20px;}
+  .rcCard.rcDocsN{cursor:pointer;}
+  .rcBigN{font-size:40px;font-weight:500;letter-spacing:-1.2px;line-height:1;color:#ececec;margin:6px 4px 0;}
+  body.light .rcBigN{color:#2e1f1a;}
+  .rcUpload .rcUpBtn{align-self:flex-start;margin:6px 4px 0;}
+  body.repVisual .dash .mMedsHead .mUpload{display:none;}
   .rcDocs .rbList{flex:none;}
   .rbDocIco{
     flex:none;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
@@ -4287,10 +4298,15 @@
      flush to its top edge and corners, and the lines sit in the card's
      padding under it. The lines carry the side padding themselves, since
      the card's own had to go for the header to reach its edges.) */
-  body.repVisual .rcCard.rcBig{padding:0 0 22px;overflow:hidden;}
+  /* the header takes whatever height the card is given -- a card stretched
+     to its column or its row grows its image, not a gap under the text --
+     and the lines sit at the foot with 8px more above and below them ("use
+     the full height of the image; the footer on the bottom with +8px top
+     and bottom padding") */
+  body.repVisual .rcCard.rcBig{padding:0 0 30px;overflow:hidden;}
   body.repVisual .rcCard.rcBig.rcNewCard::before{display:none;}
   body.repVisual .rcCard.rcBig .rcVis{
-    display:flex;align-items:center;justify-content:center;flex:none;
+    display:flex;align-items:center;justify-content:center;flex:1 1 auto;min-height:0;
     width:100%;aspect-ratio:16 / 10;border:0;padding:0;cursor:pointer;
     border-radius:0;overflow:hidden;position:relative;
     background:linear-gradient(150deg, var(--a0, #3a3a3a), var(--a1, #1e1e1e));
@@ -4302,8 +4318,9 @@
   body.repVisual .rcCard.rcBig .rcEyebrow,
   body.repVisual .rcCard.rcBig .rcTitle,
   body.repVisual .rcCard.rcBig .rcMeta{padding:0 22px;}
-  body.repVisual .rcCard.rcBig .rcEyebrow{margin-top:18px;}
-  body.repVisual .rcCard.rcBig .rcTitle{margin-top:6px;}
+  body.repVisual .rcCard.rcBig .rcEyebrow{flex:none;margin-top:26px;}
+  body.repVisual .rcCard.rcBig .rcTitle{flex:none;margin-top:6px;}
+  body.repVisual .rcCard.rcBig .rcMeta{flex:none;}
   body.repVisual .rcCard.rcBig .rcMeta{margin-top:4px;}
   body.repVisual .rcCard.rcBig .rcCta{display:none;}
   /* The New badge sits in the card's footer, right, off the image ("on this
@@ -4329,7 +4346,7 @@
      desk the tile is held at 200px rather than 16:10 of a 500px column,
      which made a 320px poster of a document icon. */
   body.repVisual .rcWrap.n2 .rcCard, body.repVisual .rcWrap.n4 > .rcCard.rcBig{height:auto;}
-  body.repVisual .dash .rcCard.rcBig .rcVis{aspect-ratio:auto;height:200px;}
+  body.repVisual .dash .rcCard.rcBig .rcVis{aspect-ratio:auto;height:auto;min-height:200px;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcCard{height:auto;}
   /* the desk's one-report row: the header on the left at the card's full
      height, the lines beside it in the card's padding */
@@ -4341,11 +4358,11 @@
   body.repVisual .rcCard.rcRow .rcEyebrow{margin-top:0;}
   body.repVisual .rcCard.rcRow .rcNew{top:auto;bottom:22px;right:22px;left:auto;}
   /* the phone's one-report card is a column even in Neutral; the header on top */
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{height:auto;flex-direction:column;align-items:stretch;gap:0;padding:0 0 22px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{height:auto;flex-direction:column;align-items:stretch;gap:0;padding:0 0 30px;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcVis{width:100%;height:auto;aspect-ratio:16 / 10;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo{display:contents;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo > *{padding:0 22px;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcEyebrow{margin-top:18px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcEyebrow{margin-top:26px;}
   body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcNew{top:auto;bottom:22px;right:22px;left:auto;}
   /* the same badge as the tabs' count, the All-reports sheet's row and the My
      Reports row ("keep same badge for new report everywhere"): #e0865f, 11px,
@@ -17323,7 +17340,7 @@
       by: 'Dr. Steven Lu',    art: ['#6f5a4e', '#241a16'], media: 'img' },
     { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026',
       by: 'Dr. Amara Osei',   art: ['#4a5d63', '#151d20'], media: 'video' },
-    { id: 'r3',  label: 'Other Report',            cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026',
+    { id: 'r3',  label: 'Nutritional review',      cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026',
       by: 'Dr. Steven Lu',    art: ['#6a5570', '#1d1622'], media: 'img' },
     { id: 'r4',  label: 'VO2 Max Test',            cat: 'Other',     date: '22 Dec 2025', n: 2,  short: 'Dec 2025',
       by: 'Kate Mercer',      art: ['#5d6b4a', '#181d14'], media: 'video' },
@@ -17518,7 +17535,7 @@
   // neighbouring cards never share one. Cropped to the tile's 16:10 at
   // 800px; the build inlines them like every other asset.
   // in this order so the first report (Pathology test) wears the red
-  // pathology micrograph and the third (Other Report) the celery ("for the
+  // pathology micrograph and the third (Nutritional review) the celery ("for the
   // pathology test use the red pathology image; replace the other report
   // with the celery image")
   const REP_ART = ['assets/reports/virus.webp', 'assets/reports/globe.webp', 'assets/reports/smoothie.webp'];
@@ -18100,18 +18117,20 @@
           '<div class="rcStackHead"><div class="rcEyebrow">Other reports</div>' + MORE + '</div>' +
           '<div class="rbList">' + shown.slice(1, 4).map(rowItem).join('') + '</div>' +
         '</div>' +
-        (typeof MEDS !== 'undefined' && MEDS[0] ?
-        '<div class="rcCard rcStack rcDocs">' +
-          '<div class="rcStackHead"><div class="rcEyebrow">My documents</div></div>' +
-          '<div class="rbList">' +
-            '<button class="rbRow rbDoc" type="button">' +
-              '<span class="rbDocIco"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-                '<path d="M4 1.5h5.5L13 5v9.5H4z"/><path d="M9.5 1.5V5H13"/><path d="M6 8.5h5M6 11h5"/></svg></span>' +
-              '<span class="t"><b>' + MEDS[0].docs[0] + '</b>' +
-                '<span>' + MEDS[0].date + ' &middot; ' + MEDS[0].src.split(' very long')[0] + '</span></span>' + CHEV +
-            '</button>' +
+        // ...two small cards side by side under the stack ("split that into
+        // two cards: left, My documents with the number 47; right, New
+        // document with the Upload document CTA, moved up from the records
+        // header"). The count is the design's figure, as the panel's 142 is.
+        '<div class="rcDocRow">' +
+          '<button class="rcCard rcStack rcDocs rcDocsN" type="button" aria-label="My documents, 47">' +
+            '<div class="rcStackHead"><div class="rcEyebrow">My documents</div></div>' +
+            '<div class="rcBigN">47</div>' +
+          '</button>' +
+          '<div class="rcCard rcStack rcDocs rcUpload">' +
+            '<div class="rcStackHead"><div class="rcEyebrow">New document</div></div>' +
+            '<button class="mUpload rcUpBtn" type="button">Upload document</button>' +
           '</div>' +
-        '</div>' : '') +
+        '</div>' +
         '</div>';
     host.className = host.dataset.rcBase + ' ' + shape;
     host.scrollLeft = 0;   // a rebuilt carousel opens on its first card
@@ -18218,8 +18237,8 @@
     });
     host.addEventListener('click', e => {
       if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); return; }
-      // the My documents row takes the reader to the records below
-      if (e.target.closest('.rbDoc')){
+      // the My documents card takes the reader to the records below
+      if (e.target.closest('.rbDoc, .rcDocsN')){
         const h = document.querySelector('.dash .mMedsHead');
         if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;

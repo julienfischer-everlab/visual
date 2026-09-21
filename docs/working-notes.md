@@ -9090,6 +9090,28 @@ the overrides are said at that weight now (cover, centred, drawing off).
   from the thumbnail on the cover") -- `.rsArt.hasImg`, cover, the drawing
   off.
 
+- **"Other Report" is "Nutritional review"** ("here you can put a
+  nutritional review") -- the placeholder that wears the celery, r3 in
+  RECS; a label, nothing keyed on it.
+
+- **The Visual header fills the card.** A card stretched to its column or
+  its row used to leave the gap under the text; the header is `flex:1 1
+  auto` now (min 200 on the desk, 16:10 as the base elsewhere) so the
+  stretch goes into the image, and the lines sit at the foot with 8px more
+  above and below them (eyebrow 26 up, card 30 down) -- "use the full
+  height of the image; the footer on the bottom with +8px top and bottom
+  padding". Desk past two: 342 card, 228 image; the footer's 30 measured.
+
+- **The documents card became two** ("split that into two cards: left, My
+  documents with the number 47; right, New document with the Upload
+  document CTA, moved up from the bottom"): `.rcDocRow`, side by side
+  under the stack. The left is a button -- eyebrow and a 40px **47**, the
+  design's figure -- that scrolls to the records; the right carries the
+  `.mUpload` button, and the records header's own Upload steps back while
+  the Visual layout is showing (`body.repVisual .dash .mMedsHead
+  .mUpload{display:none}`). Both hug at 89px; the column and the main card
+  follow.
+
 - **142.** `BIO_SETS.*.total` is 142 (was 110) and so are the two static
   "Biomarkers 142" readings in the desk markup; the three readings stay as
   the design drew them, so the meter's green share is now 80/142. The
