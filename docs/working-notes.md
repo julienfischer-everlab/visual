@@ -8663,7 +8663,39 @@ One long review round on the V2.5 Layout, all of it in the Reports tab.
 - **The list rows' dot is gone** ("No need dot"): `.rbRow i.d{display:none}`.
   It had been the report's colour, then a neutral grey; the row is the
   title, the date and the chevron now. The `<i>` stays in the markup so
-  the two builders need not change.
+  the two builders need not change. The All-reports sheet's rows lost
+  theirs too (`.arRow .d`).
+
+### 5.313 V2.5 is the default, and its body is not a card
+
+- **Defaults.** The Layout select opens on V2.5 and the Reports select on
+  Cards -- `selected` on the options AND `CARD_STATE.v25Tab:true` /
+  `repCards:true`, which have to keep agreeing (setMode writes the body's
+  classes from CARD_STATE; the selects are what the handlers read).
+
+- **"Abandon the content card system."** V2.5 had taken V3's body ground
+  -- a card that is transparent at rest and fills to black on the scroll
+  (`rgba(0,0,0,var(--v3BodyK))`). With the header in the flow that card
+  had an edge, and for a moment on the way up the card's alpha and the
+  header's grey ran different curves and the edge showed under the organ
+  names. Now the body paints nothing (`background:transparent`) and the
+  phone's ONE ground does the darkening: `--headBg` is
+  `rgb(var(--v5head))` under V6, and the scroll handler already runs
+  `--v5head` from 18 to 0 as the header goes by -- so status bar, header
+  and body are one surface going to black together. Measured
+  phone/header at 18/18, 10/10, 0/0 at y = 0, 200, 400. `--bodyBg` (what
+  the filter bar's plate and the list paint) is that same grey, and
+  `--bodyBg0` is it at alpha 0 for the fades. The handler no longer
+  computes `--v3BodyK` for V2.5.
+
+- **A plate under the pinned tabs.** With the header scrolling under the
+  sticky pill, the organ's particles showed in the 8px between the hour
+  and the pill. `.mTabsV2::before` is now a full-width plate in
+  `--headBg` (the pill is 70% wide, so it reaches 15/70 out on each side)
+  from the scroller's top edge to a soft fade 14px under the pill; the
+  pill's own tint moved to `::after` so the plate could sit under it. Both
+  z-index:-1, under the buttons and the thumb. The blur on the pill went
+  with it -- an opaque plate has nothing to blur.
 
 ---
 

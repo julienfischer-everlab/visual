@@ -4057,7 +4057,7 @@
     flex:none;margin-top:10px;font-size:22px;font-weight:500;letter-spacing:-.3px;
     color:#ececec;
   }
-  .dash .rcTitle{font-size:26px;}
+  .dash .rcTitle{font-size:24px;}   /* was 26: "reduce title to 24px" */
   /* two cards across a phone leave ~170px each; 22px wrapped "Pathology test"
      onto two lines -- "reduce font size --> 18px", on every phone card so the
      one-card and two-card shapes agree */
@@ -4591,7 +4591,8 @@
   }
   .arRow:hover{background:rgba(255,255,255,.05);}
   body.light .arRow:hover{background:rgba(46,31,26,.04);}
-  .arRow .d{flex:none;width:8px;height:8px;border-radius:50%;}
+  /* no dot ("remove dot see all reports"), same as the stack card's rows */
+  .arRow .d{display:none;}
   .arRow .t{flex:1 1 auto;min-width:0;}
   .arRow b{display:block;font-weight:500;font-size:14.5px;color:#ececec;
            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -5839,14 +5840,10 @@
      movement rather than a card sliding over a picture. The blur is switched
      on by a class rather than left at blur(0): a backdrop-filter on a
      full-height element costs frames even when it is doing nothing. */
-  /* V2.5 shares this ground outright -- one selector list, not a restated
-     copy: "the body is the header's grey at rest and black once it has the
-     screen" is the one thing V2.5 takes from V3, so the two drifting apart
-     would be a bug here, not a freedom. What V2.5 does NOT take is v3Tab's
-     other half, the tabs moving below the hero (v3Layout) -- its tabs stay
-     where V2 puts them. */
-  body.v3Tab #phone .mBody,
-  body.v25Tab #phone .mBody{
+  /* (V2.5 shared this ground for a while. It has none of its own now -- see
+     the V2.5 block under it: the body is a plain section on the phone's one
+     ground, and the GROUND is what darkens.) */
+  body.v3Tab #phone .mBody{
     background:rgba(0,0,0,var(--v3BodyK, 0));
     /* and everything the card holds paints the same ground, because they read
        --bodyBg for it: the filter bar's plate, the fades at its edges, the
@@ -5861,13 +5858,31 @@
      header being covered, which takes the whole header's height; the blur is
      the reader lifting the card, which they should feel in the first
      centimetre of the gesture. --v3BlurK is full within ~110px of scroll. */
-  body.v3Tab #phone.v3Blur .mBody,
-  body.v25Tab #phone.v3Blur .mBody{
+  body.v3Tab #phone.v3Blur .mBody{
     -webkit-backdrop-filter:blur(calc(var(--v3BlurK, 0) * 22px));
     backdrop-filter:blur(calc(var(--v3BlurK, 0) * 22px));
   }
-  body.light.v3Tab #phone .mBody,
-  body.light.v25Tab #phone .mBody{background:rgba(255,255,255,var(--v3BodyK, 0));}
+  body.light.v3Tab #phone .mBody{background:rgba(255,255,255,var(--v3BodyK, 0));}
+  /* V2.5: no body card at all. "Abandon the content card system, should be
+     just a normal section where the whole viewport bg changes to black on
+     scroll up." The body paints nothing; what shows through is the phone's
+     one ground, --headBg, which under V6 is rgb(var(--v5head)) -- the grey
+     the scroll handler runs from 18 to 0 as the header goes by. Status bar,
+     header and body are then one surface darkening together, and there is
+     no edge where a card's black met the header's grey (there was one: the
+     card's alpha and the header's grey ran different curves for a moment,
+     and it read as a seam under the organ names). Everything in the body
+     that paints its ground -- the filter bar's plate, the fades at its edges,
+     the list -- reads --bodyBg, so those take the same grey, and --bodyBg0
+     is that grey at alpha 0 for the fades. */
+  body.v25Tab:not(.v3Tab) #phone .mBody{
+    background:transparent;
+    --bodyBg:rgb(var(--v5head, 18 18 18));
+    --bodyBg0:rgb(var(--v5head, 18 18 18) / 0);
+  }
+  body.light.v25Tab:not(.v3Tab) #phone .mBody{
+    background:transparent;--bodyBg:#ececea;--bodyBg0:rgba(236,236,234,0);
+  }
   /* the header is a page surface now, not a coloured block, so in light it
      takes the light ink — the dark themes already read correctly */
   body.light.v5 #phone .mstatus .tm{color:#000;}
@@ -6072,12 +6087,25 @@
      24), on the biomarkers tab only -- the Reports tab hugs its cards and has
      no air to give. */
   body.v4.v25Tab:not(.v3Tab):not(.repTab) #phone #mHeroOrgan{margin-bottom:-18px;}
-  body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2{
-    position:sticky;top:8px;z-index:9;
-    background:rgba(255,255,255,.08);
-    -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2{position:sticky;top:8px;z-index:9;background:transparent;}
+  /* Two pseudos under the buttons and the thumb (both z-index:-1, so they
+     paint above nothing but each other, in tree order). ::before is a plate
+     the full width of the screen in the phone's own ground colour, running
+     from the scroller's top edge to a soft fade 14px under the pill: the
+     header scrolls under the pinned pill, and without this the organ's
+     particles showed in the 8px between the hour and the pill. ::after is
+     the pill's own tint, moved off the element so the plate can sit under
+     it. The pill is 70% wide, so the plate reaches 15/70 of its width out
+     on either side. */
+  body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2::before{
+    content:"";position:absolute;z-index:-1;left:-21.5%;right:-21.5%;top:-8px;bottom:-14px;
+    background:linear-gradient(var(--headBg) 60%, transparent);pointer-events:none;
   }
-  body.light.v4.v25Tab:not(.v3Tab) #phone .mTabsV2{background:rgba(46,31,26,.09);}
+  body.v4.v25Tab:not(.v3Tab) #phone .mTabsV2::after{
+    content:"";position:absolute;z-index:-1;inset:0;border-radius:999px;
+    background:rgba(255,255,255,.08);pointer-events:none;
+  }
+  body.light.v4.v25Tab:not(.v3Tab) #phone .mTabsV2::after{background:rgba(46,31,26,.09);}
   body.v4 #phone #mBento .msn,
   body.v4 #phone #mBento .msn.morganMini{background:#280707;}
 
@@ -6749,9 +6777,9 @@
         <div class="tkRow">
           <span class="lbl">Reports</span>
           <select id="stRepLay" aria-label="How the Reports tab lays out">
-            <option value="car" selected>Carousel</option>
+            <option value="car">Carousel</option>
             <option value="bento">Bento</option>
-            <option value="cards">Cards</option>
+            <option value="cards" selected>Cards</option>
           </select>
         </div>
         <!-- Cards only: how many reports that shape is being asked to hold.
@@ -18588,7 +18616,9 @@
                        // this and the Layout select's `selected` say the same
                        // thing, and have to keep saying it together
                        v2Tab: true, v25Tab: true, v3Tab: false, v4Tab: false,
-                       repTab: false, insTab: false, repBento: false, repCards: false,
+                       // Cards is the default Reports shape ("as default") --
+                       // with the Reports select's `selected`, as with the Layout
+                       repTab: false, insTab: false, repBento: false, repCards: true,
                        // derived, not chosen: V2.5's carousel at one or two
                        // reports reads as cards -- set by rebuildRepCards()
                        repFew: false,
@@ -19455,8 +19485,9 @@
         // at the top, black by the time it has the screen. Computed here
         // rather than read from v5HeadP because that one is V6's and is left
         // at 0 on the versions V6 is off for.
-        if (document.body.classList.contains('v3Tab') ||
-            document.body.classList.contains('v25Tab')){     // V2.5 shares V3's body ground
+        // (V2.5 used to share this; its body paints nothing now, and the
+        // phone's ground darkens on --v5head above)
+        if (document.body.classList.contains('v3Tab')){
           const k = p * p * (3 - 2 * p);
           // the blur is off the reader's gesture rather than off the header's
           // height: a card being lifted should go soft in the first centimetre,
