@@ -463,7 +463,7 @@
       linear-gradient(var(--shellBg) 16px, var(--pageBg) 16px);
     color:#ececec;
   }
-  body.m2 .dash{display:block;}
+  body.m2 .dash, body.m9 .dash{display:block;}
   .dash *{box-sizing:border-box;}
   .dash .side{
     position:fixed;left:0;top:57px;bottom:0;width:224px;
@@ -482,7 +482,7 @@
      to hold that gap open before the sidebar and the ground it sits on read
      as the same surface; once they did, the bar was drawing over its own
      background and the gap can just be #dMain's own offset. */
-  #dMain{
+  #dMain, #dOver{
     position:absolute;left:224px;right:0;bottom:0;top:16px;
     overflow-y:auto;overflow-x:hidden;z-index:1;
     /* top-left and top-right already eased away from the bar above; the
@@ -934,7 +934,14 @@
     background:none;box-shadow:none;
   }
   body.fullscr .pbtn, body.fullscr .mstatus{display:none;}
-  body.fullscr #phone{
+  /* the Overview phone (m6, #phoneShell2/#phone2) fills a narrow window the
+     same way -- it is the Overview desk's breakpoint, as m20 is Insights' */
+  body.fullscr.m6 #phoneShell2{
+    left:0;top:0;transform:none;padding:0;border-radius:0;
+    width:100%;height:100vh;height:100dvh;
+    background:none;box-shadow:none;
+  }
+  body.fullscr #phone, body.fullscr #phone2{
     border:0;border-radius:0;
     padding-top:env(safe-area-inset-top);
     padding-bottom:env(safe-area-inset-bottom);
@@ -943,7 +950,7 @@
      it: the bar is fixed and was covering the tabs. --barH is the bar's
      measured height (resize()), and the tabs sit 16px below it -- "make the
      tab group 16px from the top below the Tweak bar". */
-  body.fullscr.showBar #phone{padding-top:calc(env(safe-area-inset-top) + var(--barH, 0px));}
+  body.fullscr.showBar #phone, body.fullscr.showBar #phone2{padding-top:calc(env(safe-area-inset-top) + var(--barH, 0px));}
   body.fullscr.showBar.v2Tab #phone .mTabsV2{margin-top:16px;}
   /* ---- Mobile V7: the sheet and the tab bar --------------------------------
      The sheet the reference shows was already here: V4 gave the body its own
@@ -4325,9 +4332,13 @@
      own and each over the Overview page it would actually appear on -- the
      message arrives while you are looking at your Overview, not at the list it
      is about. */
-  body.pastRes .dvWrap{filter:saturate(.7) brightness(.5);}
+  /* the Overview is on .dash now; the filter goes on the shell's two children
+     rather than on .dash itself, because a filter on .dash would make it the
+     containing block of its fixed sidebar and move the sidebar down by the
+     bar's height */
+  body.pastRes .dvWrap, body.pastRes .dash .side, body.pastRes .dash #dOver{filter:saturate(.7) brightness(.5);}
   body.pastM #phone2 .mscroll{filter:saturate(.7) brightness(.5);}
-  body.pastRes .dvWrap,body.pastM #phone2 .mscroll{pointer-events:none;}
+  body.pastRes .dvWrap,body.pastRes .dash,body.pastM #phone2 .mscroll{pointer-events:none;}
   body.pastRes .prWrap{pointer-events:auto;}
   .prWrap{display:none;}
   body.pastD .prDesk{display:block;position:fixed;left:0;right:0;top:57px;bottom:0;z-index:40;}
@@ -4663,7 +4674,18 @@
     background:#0d0d0d;color:#ececec;
     grid-template-columns:302px 1fr;overflow:hidden;
   }
-  body.m9 .dvWrap{display:grid;}
+  /* The Overview (m9, and m24 which wears m9) is on the Insights shell now:
+     .dash's sidebar and its card, with #dOver standing exactly where #dMain
+     does (the two share the card rule above) and #dMain put away. The old
+     .dvWrap shell -- its own nav, its own grid -- stays display:none; the
+     <main> it held is moved into .dash at boot. The sidebar's lit entry
+     follows the page: Insights' .on is quieted and Overview's lit. */
+  #dOver{display:none;}
+  body.m9 #dMain{display:none;}
+  body.m9 #dOver{display:block;}
+  body.m9 .dash .side .nvIns{background:none;color:inherit;}
+  body.m9 .dash .side .nvOver{background:#1e1e1c;color:#ececec;}
+  body.light.m9 .dash .side .nvOver{background:#ece4d3;color:#2e241c;}
   .dvNav{
     display:flex;flex-direction:column;padding:26px 20px 22px;gap:26px;
     border-right:1px solid rgba(255,255,255,.06);min-height:0;
@@ -6908,8 +6930,8 @@
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g fill="#ececec"><rect x="3" y="2" width="12" height="2.6" rx="1.3"/><rect x="1" y="7.7" width="16" height="2.6" rx="1.3"/><rect x="3" y="13.4" width="12" height="2.6" rx="1.3"/></g></svg>
       <span>everlab</span>
     </div>
-    <div class="nv">Overview</div>
-    <div class="nv on">Insights</div>
+    <div class="nv nvOver">Overview</div>
+    <div class="nv on nvIns">Insights</div>
     <div class="nv">Plan</div>
     <div class="nv">Services</div>
     <!-- V3 and V4 fold reports into the Insights page as a tab, so the
@@ -7603,7 +7625,12 @@
       <a><i></i>Menu</a>
     </div>
   </aside>
-  <main class="dvMain">
+  <!-- The Overview page. Written here beside the shell it used to have, but
+       it does not live here: at boot it is moved into .dash, after #dMain,
+       and stands where #dMain stands -- the Insights shell (sidebar + card,
+       breakpoint-ready) is the one structure every desk page is built on
+       now ("I want all pages be based on this structure from now"). -->
+  <main class="dvMain" id="dOver">
     <h1 class="dvH1">Welcome back, <span>Julien</span></h1>
     <div class="dvTop">
       <section class="dvPlan">
@@ -11608,12 +11635,10 @@
     // sets -- so the class chain and every `version === 20` stay one thing.
     // Picked from the bar, the bar stays (it is how you get back); opened by
     // its hash, #m20v, the bar is gone and the design has the whole screen.
-    if (g === 'Insights'){
-      const o = document.createElement('option');
-      o.value = VIEWPORT_VAL;
-      o.textContent = 'Mobile (viewport)';
-      og.appendChild(o);
-    }
+    // (The entry itself is gone from the menu -- "remove mobile viewport as I
+    // have it on desktop": Desktop is responsive, and a narrow window IS the
+    // mobile viewport. The value still works from a hash (#m20v) and the
+    // /phone path, which is where a real phone reaches it.)
     // the archive sits at the foot of the group it belongs to, after the
     // designs that superseded it
     if (g === ARC_GROUP && ARCHIVED.length){
@@ -11669,7 +11694,7 @@
       const g = document.getElementById('stGraph'); if (g) g.value = 'dots';
     }
     setMode(h);
-    if (vp){ versionSel.value = VIEWPORT_VAL; resize(); }
+    if (vp) resize();
     // the hero suffix: land on the pill's slide once setMode's own settle
     // (60ms, which puts V6 on the biomarkers) has run; with a second pill,
     // glide between the two the way a swipe would, every 5.5s
@@ -11710,22 +11735,30 @@
   // fills the narrow window edge to edge rather than floating a phone-shaped
   // island in it). Nothing else in the prototype claims to be responsive, so
   // resizing the window anywhere else is left alone.
+  // Two families now, each a desk with its breakpoints: Insights (desk 18,
+  // tablet 21, phone 20) and the Overview (desk 9, phone 6 -- no tablet of
+  // its own, so the desk holds until 640). The menu keeps showing the desk
+  // entry whatever the width: the window changed, not the choice.
   const RESP_DESK = 18, RESP_TAB = 21, RESP_MOB = VIEWPORT_MODE;
-  const RESP_TRIO = [RESP_DESK, RESP_TAB, RESP_MOB];
-  function responsiveTarget(){
+  const RESP_FAMILIES = [
+    { desk: RESP_DESK, tab: RESP_TAB, mob: RESP_MOB },
+    { desk: 9, tab: 9, mob: 6 },
+  ];
+  const respFamily = v => RESP_FAMILIES.find(f => f.desk === v || f.tab === v || f.mob === v);
+  function responsiveTarget(fam){
     const w = innerWidth;
-    return w < 640 ? RESP_MOB : w < 1024 ? RESP_TAB : RESP_DESK;
+    return w < 640 ? fam.mob : w < 1024 ? fam.tab : fam.desk;
   }
   function responsiveSync(){
-    if (!RESP_TRIO.includes(version)) return;
-    const target = responsiveTarget();
+    const fam = respFamily(version);
+    if (!fam) return;
+    const target = responsiveTarget(fam);
     if (target === version) return;
-    CARD_STATE.fullscr = target === RESP_MOB;
-    CARD_STATE.showBar = target === RESP_MOB;
+    const mob = target === fam.mob;
+    CARD_STATE.fullscr = mob;
+    CARD_STATE.showBar = mob;
     setMode(target);
-    if (target === RESP_MOB) versionSel.value = VIEWPORT_VAL;
-    else if (isArchived(target)){ versionSel.value = ARCHIVE_VAL; arcSel.value = String(target); }
-    else versionSel.value = String(target);
+    versionSel.value = String(fam.desk);
     resize();
   }
   addEventListener('resize', responsiveSync);
@@ -11890,7 +11923,7 @@
     // link would both land back on the framed phone.
     const vp = CARD_STATE.fullscr && m === VIEWPORT_MODE;
     if (isArchived(m)){ versionSel.value = ARCHIVE_VAL; arcSel.value = String(m); }
-    else versionSel.value = vp ? VIEWPORT_VAL : String(m);
+    else versionSel.value = String(m);   // the viewport flag has no entry of its own any more
     // replace rather than push: stepping through versions should not fill the
     // back button with them, but the address bar should still be linkable
     // ...keeping a hero suffix (.p0, .p0-3) if the hash carried one, so a
@@ -12111,7 +12144,9 @@
     // more of the card's own colour to cut into -- has to reach exactly
     // that far, or a viewport width the fixed number wasn't tuned for
     // leaves the curve cutting into flank-matched --pageBg again.
-    { const dm = document.getElementById('dMain');
+    // ...measured off whichever card is showing: #dOver stands in for #dMain
+    // on the Overview, and a hidden #dMain measures left:0
+    { const dm = document.body.classList.contains('m9') ? document.getElementById('dOver') : document.getElementById('dMain');
       if (dm) document.querySelector('.dash').style.setProperty('--dMainLeft', dm.getBoundingClientRect().left + 'px'); }
     // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
     { const ho = document.getElementById('mHeroOrgan');
@@ -18508,8 +18543,15 @@
       if (e.target.closest('.x')) return;   // the dismiss cross never opens it
       organModal.open(1);                   // Mental: the brain on the card
     });
-    // the sidebars move between the two desktop pages
-    const goto = { 'Overview': 9, 'Biomarkers': 2 };
+    // The Overview's <main> joins the Insights shell: one .dash, one sidebar,
+    // two cards, and the mode says which is showing (body.m9 #dOver). Moved,
+    // not copied, so its script (the organ tile, the rail) finds the nodes
+    // it always did.
+    { const over = document.getElementById('dOver'), dash = document.querySelector('.dash');
+      if (over && dash && over.parentNode !== dash) dash.appendChild(over); }
+    // the sidebar moves between the desk pages: the live Insights (18), and
+    // the Overview (9); "Biomarkers" is the retired .dvNav's name for it
+    const goto = { 'Overview': 9, 'Insights': 18, 'Biomarkers': 2 };
     document.querySelectorAll('.dvNav a').forEach(a2 => {
       const to = goto[a2.textContent.trim()];
       if (to == null) return;

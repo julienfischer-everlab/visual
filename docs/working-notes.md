@@ -8768,6 +8768,56 @@ steps: the list's absolute top never changed.
 Also: the desk tabs' divider is `rgba(255,255,255,.06)` (was .1) --
 "divider a bit less prominent".
 
+### 5.315 Every desk page on the Insights shell -- the Overview first
+
+"Keep this desktop (breakpoint ready) for the Overview page. I want all
+pages be based on this structure from now!" The structure is `.dash`:
+the fixed sidebar (`.side`, 224px, the shell's ground) and the card that
+owns its own scroll (`#dMain`, rounded top, capped at 1160 and centred),
+with the responsive switch that turns the desk into the tablet and the
+phone as the window narrows.
+
+The Overview (m9) had a shell of its own -- `.dvWrap`, a 302px `.dvNav`
+with placeholder "Menu" entries, and `.dvMain` scrolling inside a grid.
+It is on `.dash` now:
+
+- **The `<main>` moved, not copied.** `#dOver` (the old `.dvMain`, given
+  an id) is appended into `.dash` after `#dMain` at boot, so its own
+  script -- the organ tile, the rail -- finds the nodes it always did.
+  `.dvWrap` and its nav stay in the markup at display:none; nothing reads
+  them.
+- **One card rule, two cards.** `#dMain, #dOver{...}` share the card
+  (position, radius, cap, padding); `body.m9 #dMain{display:none}` and
+  `body.m9 #dOver{display:block}` say which is showing, and `body.m9
+  .dash{display:block}` joins `body.m2`'s. `resize()` measures
+  `--dMainLeft` off whichever card is showing, since a hidden `#dMain`
+  measures left:0 and the shell strip behind the rounded corners would
+  have shrunk to 40px.
+- **The sidebar lights the page it is on.** `.nvOver` / `.nvIns` classes
+  on the two entries; under m9 Insights' `.on` is quieted and Overview is
+  lit. Clicking moves between them: `goto` maps Overview → 9 and Insights
+  → 18 (it mapped only Overview and the old nav's "Biomarkers" → 2, the
+  archived first desk).
+- **The Overview is a responsive family too.** `responsiveSync()` works
+  from `RESP_FAMILIES` now -- Insights {18, 21, 20} and Overview {9, 9, 6}
+  (no tablet of its own, so the desk holds until 640) -- and the phone
+  end of each wears `fullscr`+`showBar`; `body.fullscr.m6 #phoneShell2`
+  fills the window the way m5's shell does, and `#phone2` takes the same
+  border/padding rules as `#phone`, bar padding included. The menu keeps
+  showing the desk entry at every width: the window changed, not the
+  choice. Checked: m9 at 600px → m6 full-bleed, back at 1600 → m9; m18 →
+  m20 → m18 likewise.
+- **Past results (m24) still sits over it.** Its dimming filter moved from
+  `.dvWrap` to `.dash .side` and `.dash #dOver` rather than onto `.dash`
+  itself: a filter on `.dash` would make it the containing block of its
+  own fixed sidebar and drop the sidebar by the bar's height.
+
+And the **"Mobile (viewport)" entry is gone from the Version menu** --
+"remove mobile viewport as I have it on desktop": Desktop is responsive,
+and a narrow window IS the mobile viewport. `#m20v` and the `/phone` path
+still reach the full-screen phone; the select simply shows the mode's
+own entry when they do.
+
 ---
 
 ## 6. Open items
