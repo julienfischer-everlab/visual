@@ -4847,7 +4847,16 @@
   body.ia4:not(.repTab):not(.insTab) .dash .testsWrap{display:block;margin-top:34px;}
   body.ia4:not(.repTab):not(.insTab) #phone .testsWrap{display:block;padding:0 13px;margin-top:10px;}
   .testsWrap .secHead{display:flex;margin:0 0 16px;}
-  .testsGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+  .testsGrid{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;}   /* one column, stacked ("manage that stacked") */
+  /* the desk's card is wide, so it lies down: the picture on the left at
+     full height, and on the right the two halves side by side -- what the
+     test is and found, then the documents it left behind */
+  .dash .tcard{flex-direction:row;}
+  .dash .tcArt{width:260px;height:auto;flex:none;min-height:200px;}
+  .dash .tcBody{flex:1;min-width:0;display:grid;grid-template-columns:1.25fr 1fr;gap:16px 36px;padding:22px 26px;align-items:start;}
+  .tcMain, .tcSide{display:flex;flex-direction:column;gap:12px;min-width:0;}
+  .dash .tcSide .tcDocs{border-top:0;padding-top:0;}
+  .dash .tcSide .tcLbl{margin-top:2px;}
   #phone .testsGrid{grid-template-columns:1fr;gap:12px;}
   .tcard{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.06);}
   #phone .tcard{border-radius:22px;background:rgba(255,255,255,.04);}
@@ -20550,13 +20559,20 @@
       const docs = (rep ? ['Everlab report'] : []).concat(g.docs);
       return '<article class="tcard' + (rep ? ' hasRep' : '') + '" data-s="' + g.s + '"' + (rep ? ' data-r="' + rep.id + '"' : '') + '>' +
         '<div class="tcArt hasImg" style="background-image:url(' + ART[g.c] + ')"' + (rep ? ' role="button" tabindex="0" aria-label="Open the report"' : '') + '></div>' +
+        // two halves, so the desk's wide card can stand them side by side
+        // ("manage that stacked"): what the test is and found, then what
+        // it left behind -- the documents and the clinician's word
         '<div class="tcBody">' +
-          '<div class="tcEyebrow"><i style="background:' + cat.dot + '"></i>' + cat.label + ' &middot; ' + g.date + '</div>' +
-          (rep ? '<button class="tcTitle tcOpen" type="button">' + g.sr + '</button>' : '<h3 class="tcTitle">' + g.sr + '</h3>') +
-          (t && t.n ? '<div class="tcBio"><b>' + t.n + ' biomarker' + (t.n === 1 ? '' : 's') + '</b><span class="tcSt">' +
-            STS.filter(p => t[p[0]]).map(p => '<span><i class="' + p[0] + '"></i>' + t[p[0]] + ' ' + p[1] + '</span>').join('') + '</span></div>' : '') +
-          '<div class="tcDocs"><div class="tcLbl">Documents</div>' + docs.map(d => '<div class="tcDoc">' + DOC + '<span>' + d + '</span></div>').join('') + '</div>' +
-          (g.note ? '<div class="tcNote"><div class="tcNoteBy">Note from ' + g.note.by + '</div><p>&ldquo;' + g.note.text + '&rdquo;</p></div>' : '') +
+          '<div class="tcMain">' +
+            '<div class="tcEyebrow"><i style="background:' + cat.dot + '"></i>' + cat.label + ' &middot; ' + g.date + '</div>' +
+            (rep ? '<button class="tcTitle tcOpen" type="button">' + g.sr + '</button>' : '<h3 class="tcTitle">' + g.sr + '</h3>') +
+            (t && t.n ? '<div class="tcBio"><b>' + t.n + ' biomarker' + (t.n === 1 ? '' : 's') + '</b><span class="tcSt">' +
+              STS.filter(p => t[p[0]]).map(p => '<span><i class="' + p[0] + '"></i>' + t[p[0]] + ' ' + p[1] + '</span>').join('') + '</span></div>' : '') +
+            (g.note ? '<div class="tcNote"><div class="tcNoteBy">Note from ' + g.note.by + '</div><p>&ldquo;' + g.note.text + '&rdquo;</p></div>' : '') +
+          '</div>' +
+          '<div class="tcSide">' +
+            '<div class="tcDocs"><div class="tcLbl">Documents</div>' + docs.map(d => '<div class="tcDoc">' + DOC + '<span>' + d + '</span></div>').join('') + '</div>' +
+          '</div>' +
         '</div></article>';
     }).join('');
     hosts.forEach(([h, desk]) => {

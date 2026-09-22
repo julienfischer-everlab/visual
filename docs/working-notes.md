@@ -9578,6 +9578,16 @@ neighbour showing (was left-aligned with a 96px peek on the right). The
 dots and the glide already worked in card steps, so nothing else moved.
 Check: `carcenter.js`.
 
+### 5.344 The test cards, stacked
+
+"Manage that stacked": one column on the desk too. A card with the whole
+width lies down -- the picture on the left at 260 wide and the card's full
+height (200 at least), and on the right two halves side by side
+(`.tcMain` 1.25fr: eyebrow, title, the readings' standing, the note;
+`.tcSide` 1fr: the documents), 36px apart. The phone's card is unchanged:
+picture on top, the two halves stacked, the documents under their
+hairline. Nine cards, 200–246 tall. Check: `teststack.js`.
+
 ---
 
 ## 6. Open items
