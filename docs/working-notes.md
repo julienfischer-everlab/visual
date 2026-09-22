@@ -9815,6 +9815,15 @@ night, so a wearable reading's date is not a record's. `assignRecords`
 hands the date stamp `Today` to every row typed Wearables (52 of them, on
 both screens) and the records' dates to the rest. Check: `today.js`.
 
+### 5.356 The latest report is "Advanced blood panel"
+
+"Diagnostic review shouldn't be a record. Use Advanced blood panel instead":
+a diagnostic review is what the clinician does with the results, not a
+record in the list. Report `r1` (the New one, 44 biomarkers) is renamed in
+`RECS` and in the two static bento titles, so the Visual card, the bento,
+the report select and the phone carousel all read *Advanced blood panel*.
+Nothing else changes. Check: `rename.js` (zero leftovers on both screens).
+
 ---
 
 ## 6. Open items
