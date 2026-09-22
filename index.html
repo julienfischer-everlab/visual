@@ -2051,6 +2051,20 @@
      tab's content, and a header that came and went with the tab underneath it
      would make the two tabs read as two pages. */
   body.repTab:not(.v3Tab) .dash .dgrid{display:none !important;}
+  /* ...and under the V4 IA on every layout: the Results tab is the reports
+     and the database, the bento is the Overview's ("V4: remove bento on
+     Results tab"). The phone's hero and card row are its bento. */
+  body.ia4.repTab .dash .dgrid{display:none !important;}
+  body.ia4.repTab #phone #mHeroOrgan, body.ia4.repTab #phone #mV4{display:none !important;}
+  /* two tabs under the V4 IA ("remove insights"): the layout's third one goes */
+  body.ia4 .v2Tab.v4Only{display:none !important;}
+  /* with the phone's hero gone from this tab, what leaned on it straightens
+     up: the body card no longer climbs 24px over the hero's foot, the tab
+     strip no longer sits 14px into it, and the hero's share button -- which
+     stands outside the hero in the frame -- goes with the hero */
+  body.ia4.repTab #phone #mBody{margin-top:0;}
+  body.ia4.repTab #phone #mTabsV2{margin-top:12px;}
+  body.ia4.repTab #phone .hiShare{display:none !important;}
   .dRepShelf{position:relative;margin:0 0 6px;}
   .dRepCar{
     display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;padding:2px 0 6px;
@@ -4240,7 +4254,7 @@
     position:relative;left:auto;right:auto;top:auto;bottom:auto;height:auto;margin:0 0 4px;
   }
   body.v3Tab.repTab #phone #mRepCarHost .rcWrap.nCar{margin:0 0 4px;}
-  body.v3Tab.repTab #phone #mRepCarHost .rcDots{position:relative;left:auto;right:auto;bottom:auto;margin:10px 0 18px;}
+  body.v3Tab.repTab #phone #mRepCarHost .rcDots{position:relative;left:auto;right:auto;top:auto;bottom:auto;margin:10px 0 18px;}
   body.v3Tab.repTab #phone #mRepCarHost .rcWrap.n4 .rcCard.rcStack{flex:none;}
   body.v3Tab.repTab:not(.repCards):not(.repFew) #phone #mRepCarHost .rcWrap{display:none;}
   .rcHeroHead{display:none;}
@@ -4937,16 +4951,23 @@
   .resHead{display:none;}
   body.ia4 .dash .resHead{display:block;margin-top:34px;}
   body.ia4 #phone .resHead{display:block;margin-top:24px;}
-  .resHead .secHead{display:flex;margin:0 0 16px;}
-  .resBar{display:flex;align-items:center;gap:12px;margin:0 0 16px;}
-  .resSeg{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.06);}
+  .resHead .secHead{display:flex;align-items:center;margin:0 0 16px;}
+  /* Biomarkers | Records in the tab pill's dress (the phone's .mTabsV2: a
+     4px pill, 38px segments, the chosen one on a .12 ground), 44 tall like
+     the chips it leads; placed by script at the head of the showing half's
+     chip row, with the row's divider after it */
+  .resSegWrap{display:flex;align-items:center;flex:none;}
+  .resSeg{display:inline-flex;gap:4px;padding:3px;border-radius:999px;background:rgba(255,255,255,.06);}
   .resSeg button{
     border:0;background:none;color:#8b8b86;font:inherit;font-size:13.5px;font-weight:500;
-    height:36px;padding:0 16px;border-radius:999px;cursor:pointer;-webkit-tap-highlight-color:transparent;
-    transition:background .16s ease,color .16s ease;
+    height:38px;padding:0 16px;border-radius:999px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:background .16s ease,color .16s ease;white-space:nowrap;
   }
-  .resSeg button.on{background:rgba(255,255,255,.14);color:#ececec;}
-  body.light .resSeg{background:rgba(46,31,26,.06);} body.light .resSeg button{color:#7d6b58;} body.light .resSeg button.on{background:#fff;color:#2e1f1a;}
+  .resSeg button.on{background:rgba(255,255,255,.12);color:#ececec;}
+  body.light .resSeg{background:rgba(46,31,26,.07);} body.light .resSeg button{color:#7d6b58;} body.light .resSeg button.on{background:#fff;color:#2e1f1a;}
+  /* the pill has taken the types chip's place, and there is no All: the
+     types chip and its divider step back, the sub-headings too */
+  body.ia4 .fchip.catChip, body.ia4 .fchip.catChip + .chipDiv, body.ia4 .resSub{display:none !important;}
   .resSearch{
     display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;min-width:0;
     border:1px solid #2a2a28;border-radius:14px;color:#8b8b86;cursor:text;position:relative;
@@ -7810,20 +7831,24 @@
            biomarker filter block and list move in here from the Overview
            (applyIA), and the records section below is the other half. -->
       <div class="resHead" id="dResHead">
-        <div class="secHead"><span>All results</span></div>
-        <div class="resBar">
-          <div class="resSeg" role="tablist" aria-label="Which results">
-            <button class="on" type="button" role="tab" aria-selected="true" data-res="all">All</button>
-            <button type="button" role="tab" aria-selected="false" data-res="bio">Biomarkers</button>
-            <button type="button" role="tab" aria-selected="false" data-res="rec">Records</button>
-          </div>
+        <div class="secHead"><span>All results</span>
           <div class="resSearch">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/></svg>
-            <input type="search" placeholder="Search all results" autocomplete="off" spellcheck="false" aria-label="Search all results">
+            <input type="search" placeholder="Search biomarkers" autocomplete="off" spellcheck="false" aria-label="Search results">
             <button class="msClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
           </div>
         </div>
-        <div class="resSub bio">Biomarkers</div>
+        <!-- Biomarkers | Records, in the tab pill's dress: placed by script at
+             the head of whichever half's chip row is showing, where the types
+             chip stood ("put this segmented tab, without All, instead of All
+             types"); it waits here only until the page has been laid out -->
+        <div class="resSegWrap" id="dResSeg">
+          <div class="resSeg" role="tablist" aria-label="Which results">
+            <button class="on" type="button" role="tab" aria-selected="true" data-res="bio">Biomarkers</button>
+            <button type="button" role="tab" aria-selected="false" data-res="rec">Records</button>
+          </div>
+          <i class="chipDiv" aria-hidden="true"></i>
+        </div>
       </div>
       <div class="mMedsWrap dMedsWrap" id="dMedsWrap">
         <!-- Two cards just above the records, side by side in the biomarker
@@ -8158,19 +8183,19 @@
       <!-- V4 IA: the one results database, phone side (see #dResHead) -->
       <div class="resHead" id="mResHead">
         <div class="secHead"><span>All results</span></div>
-        <div class="resBar">
-          <div class="resSeg" role="tablist" aria-label="Which results">
-            <button class="on" type="button" role="tab" aria-selected="true" data-res="all">All</button>
-            <button type="button" role="tab" aria-selected="false" data-res="bio">Biomarkers</button>
-            <button type="button" role="tab" aria-selected="false" data-res="rec">Records</button>
-          </div>
-        </div>
         <div class="resSearch">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/></svg>
-          <input type="search" placeholder="Search all results" autocomplete="off" spellcheck="false" aria-label="Search all results">
+          <input type="search" placeholder="Search biomarkers" autocomplete="off" spellcheck="false" aria-label="Search results">
           <button class="msClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
         </div>
-        <div class="resSub bio">Biomarkers</div>
+        <!-- the phone's Biomarkers | Records pill, placed by script (see #dResSeg) -->
+        <div class="resSegWrap" id="mResSeg">
+          <div class="resSeg" role="tablist" aria-label="Which results">
+            <button class="on" type="button" role="tab" aria-selected="true" data-res="bio">Biomarkers</button>
+            <button type="button" role="tab" aria-selected="false" data-res="rec">Records</button>
+          </div>
+          <i class="chipDiv" aria-hidden="true"></i>
+        </div>
       </div>
       <div class="mMedsHead">
         <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.99996 0.666016C12.05 0.666016 15.3333 3.94926 15.3333 7.99935C15.3333 12.0494 12.05 15.3327 7.99996 15.3327C3.94987 15.3327 0.666626 12.0494 0.666626 7.99935C0.666626 3.94926 3.94987 0.666016 7.99996 0.666016ZM7.99996 1.99935C4.68625 1.99935 1.99996 4.68564 1.99996 7.99935C1.99996 11.3131 4.68625 13.9993 7.99996 13.9993C11.3137 13.9993 14 11.3131 14 7.99935C14 4.68564 11.3137 1.99935 7.99996 1.99935ZM7.99996 7.33268C8.36815 7.33268 8.66663 7.63116 8.66663 7.99935V10.666C8.66663 11.0342 8.36815 11.3327 7.99996 11.3327C7.63177 11.3327 7.33329 11.0342 7.33329 10.666V7.99935C7.33329 7.63116 7.63177 7.33268 7.99996 7.33268ZM8.00647 4.66602C8.37466 4.66602 8.67314 4.96449 8.67314 5.33268C8.67314 5.70087 8.37466 5.99935 8.00647 5.99935H7.99996C7.63177 5.99935 7.33329 5.70087 7.33329 5.33268C7.33329 4.96449 7.63177 4.66602 7.99996 4.66602H8.00647Z"/></svg></button></h3>
@@ -19798,7 +19823,7 @@
                        // the information architecture (IA tweak): V4's
                        // Overview / Results, and which half of the results
                        // database is showing ('all' | 'bio' | 'rec')
-                       ia4: true, res: 'all',
+                       ia4: true, res: 'bio',
                        newRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
@@ -20559,9 +20584,11 @@
     }
     placeThumb();
     placeDeskDocRow();
+    placeResSeg();
   }
   // which half of the database shows; a body class, kept on CARD_STATE
   function setRes(v){
+    if (v !== 'rec') v = 'bio';   // two halves, no All ("without All")
     CARD_STATE.res = v;
     document.body.classList.toggle('resBio', v === 'bio');
     document.body.classList.toggle('resRec', v === 'rec');
@@ -20570,9 +20597,23 @@
       b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on));
     });
     document.querySelectorAll('.resSearch input').forEach(i => {
-      i.placeholder = v === 'bio' ? 'Search biomarkers' : v === 'rec' ? 'Search records' : 'Search all results';
+      i.placeholder = v === 'rec' ? 'Search records' : 'Search biomarkers';
     });
+    placeResSeg();
     document.dispatchEvent(new CustomEvent('everlab:repTab'));   // the pinned bars re-measure
+  }
+  // The pill stands at the head of the showing half's chip row -- the
+  // biomarkers' range chips ("if Biomarkers is active show the chips: All,
+  // Optimal…") or the records' type chips ("if Records, hide the group
+  // chips") -- where the types chip stood. One node per surface, moved;
+  // under the old IA it rests in the (hidden) results head.
+  function placeResSeg(){
+    [['dResSeg', '#dRow2 .filters', '#dMedChips', 'dResHead'], ['mResSeg', '#mChips', '#mMedChips', 'mResHead']].forEach(([id, bioRow, recRow, home]) => {
+      const seg = document.getElementById(id); if (!seg) return;
+      const to = CARD_STATE.ia4 ? document.querySelector(CARD_STATE.res === 'rec' ? recRow : bioRow) : document.getElementById(home);
+      if (to && seg.parentNode !== to) to.insertBefore(seg, to.firstChild);
+      else if (to && CARD_STATE.ia4 && to.firstChild !== seg) to.insertBefore(seg, to.firstChild);
+    });
   }
   document.querySelectorAll('.resSeg button').forEach(b => b.addEventListener('click', () => setRes(b.dataset.res)));
   // One search over both halves: what is typed here is typed into the two
@@ -20668,7 +20709,7 @@
           const card = see.closest('.tcard');
           const tab = document.querySelector(desk ? '#dTabsV2 [data-tab="rep"]' : '#mTabsV2 [data-tab="rep"]');
           if (tab) tab.click();
-          setRes(card.dataset.r ? 'all' : 'rec');
+          setRes(card.dataset.r ? 'bio' : 'rec');
           document.dispatchEvent(new CustomEvent('everlab:pickMed', { detail: card.dataset.s }));
           // the report, or All records when the test produced none, so an
           // earlier choice does not hang over a test that has nothing to do with it

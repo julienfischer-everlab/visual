@@ -9669,6 +9669,40 @@ draws it. Check: `deskv4.js`, `v4ia.js`.
   request group; Travel vaccinations → Records alone, one group, the
   biomarkers back on All records. Check: `infoicon.js`, `seeres.js`.
 
+### 5.349 V4's Results tab: no bento, no Insights; the pill leads the chip row
+
+Four asks on the V4 Results tab.
+
+- **No bento** ("V4: remove bento on Results tab"): `body.ia4.repTab` hides
+  the desk grid on every layout, and the phone's hero and card row with it.
+  What leaned on the phone's hero straightened up: the body card no longer
+  climbs 24px over the hero's foot, the tab strip stands 12px under the
+  status bar rather than 14px into the hero, the hero's share button (which
+  stands outside the hero in the frame) goes with it, and the cards row's
+  dots -- which a hero rule still placed 230px down -- take `top:auto` in
+  the V3 host.
+- **No Insights** ("remove insights"): `body.ia4 .v2Tab.v4Only` is hidden,
+  so V4 is two tabs on both screens, Overview | Results.
+- **Biomarkers | Records, no All, in the types chip's place** ("put this
+  segmented tab, without All, instead of All types"; "if Biomarkers is
+  active show the chips All, Optimal…; if Records, hide the group chips").
+  The pill is the phone tab pill's dress -- a 3px pill, 38px segments, the
+  chosen one on a .12 ground, 44 tall like the chips -- and `placeResSeg`
+  moves it (one node per surface, `#dResSeg` / `#mResSeg`, with the row's
+  divider after it) to the head of whichever half's chip row is showing:
+  the biomarkers' range chips or the records' type chips. The types chip
+  and its divider step back under V4; the sub-headings too, since only one
+  half shows. `setRes` knows two values now, `bio` (the default) and `rec`;
+  See results lands on Biomarkers for a test with a report, Records
+  otherwise. The results head keeps the title and the one search, on the
+  title's line on the desk.
+- Check: `seg.js` -- the pill first in `.filters` at 44 tall, Biomarkers on,
+  range chips showing, records hidden; Records → the pill first in
+  `#dMedChips`, type chips showing, biomarkers hidden, placeholder "Search
+  records"; back; See results on a report-less test → Records; the phone
+  the same, its hero and share button gone, tabs at 70, dots 10px under the
+  cards; no errors.
+
 ---
 
 ## 6. Open items
