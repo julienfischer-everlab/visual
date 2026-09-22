@@ -9937,6 +9937,20 @@ clear → 28). Seen on the way: a records search that found nothing said "No
 biomarkers match" -- the filter's one hard-coded noun; it takes `noun` now,
 and both records lists pass `records`.
 
+### 5.365 Mobile: no upload card, the link in the heading
+
+"Mobile: kill the card. Put the link Upload records + icon on the right
+side of the title Medical records." The phone's `.docRow` (the "Got a
+record from your provider?" card over the records) is gone, and the
+heading's hidden Upload document pill is replaced by the same
+`.docLink.rcUpBtn` the card carried -- Upload records with the tray glyph,
+14px, at the title's right on the title's line. The heading stands where
+the card stood, 42px under the hero (its margin and the body's padding);
+its own top margin is 0 on the phone so it does not add to that. The desk
+keeps its card.
+Check: `headup.js` (no `.docRow` on the phone, link flush right and
+centred on the title, desk card still one).
+
 ---
 
 ## 6. Open items
