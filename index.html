@@ -894,7 +894,7 @@
   .dash .grp .gd{font-size:12.5px;color:#8b8b86;line-height:1.55;max-width:210px;}
   .dash .brow{
     display:grid;grid-template-columns:1.35fr .6fr .55fr 90px 130px 96px;
-    align-items:center;gap:16px;padding:16px 0;
+    align-items:center;gap:16px;padding:18px 0;   /* 16 -> 18: "add padding on the row" */
     border-bottom:1px solid #1c1c1b;font-size:13.5px;color:#e4e4e0;
   }
   .dash .brow:last-child{border-bottom:0;}
@@ -1321,7 +1321,7 @@
   .mrecs .gd{font-size:12.5px;color:#8b8b86;line-height:1.55;margin-bottom:4px;}
   .mbrow{
     display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;
-    padding:14px 0;border-bottom:1px solid #1c1c1b;font-size:14px;color:#e4e4e0;
+    padding:16px 0;border-bottom:1px solid #1c1c1b;font-size:14px;color:#e4e4e0;   /* 14 -> 16: "add padding on the row" */
   }
   .mbrow .g{color:#8b8b86;font-size:12.5px;}
   /* rows in a group: the last carries no rule (it used to be an inline style
@@ -2176,7 +2176,7 @@
      search on the first, the chips on the second ("add filter below Medical
      records") -- so the bar stacks rather than lines up */
   .dash .dMedBar{flex-direction:column;align-items:stretch;}
-  .dash .dMedRow{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 22px;}
+  .dash .dMedRow{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 10px;}   /* 22px to the chips, as the biomarkers' row stands ("consistent spacing") */
   .dash .dMedRow .dRecWrap{display:block;}
   .dash .dMedRow .dsearch{display:flex;}
   .dash .dMedBar .filters{flex:none;width:100%;min-width:0;margin:0 0 18px;}
@@ -7887,7 +7887,7 @@
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
               <circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/>
             </svg>
-            <input id="dMedIn" type="search" placeholder="Search records" autocomplete="off" spellcheck="false" aria-label="Search medical records">
+            <input id="dMedIn" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search medical records">
             <button class="msClear" id="dMedClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
             </div>
           </div>
@@ -8208,7 +8208,7 @@
       <div class="msWrap mMedBar" id="mMedBar">
         <div class="msBox mMedSearch" id="mMedBox">
           <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.6 10.6 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          <input id="mMedIn" type="search" placeholder="Search records" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search medical records">
+          <input id="mMedIn" type="search" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search medical records">
           <button class="msClear" id="mMedClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
         </div>
         <div class="mchips" id="mMedChips" role="group" aria-label="Filter records by category"></div>
@@ -19790,6 +19790,11 @@
   // Each of the three cards can be put in an empty state from the bar. setMode
   // writes body.className whole, so these live in a set it reads rather than
   // being toggled onto the element and lost at the next page change.
+  // which record each half of the results database has chosen -- the
+  // biomarkers' report and the records' request -- so a switch between the
+  // two can carry the test across ("when switching to Records, keep the
+  // test active above"). Written by the filters' onChoose.
+  const LAST_PICK = { bio: 'all', med: 'all' };
   const CARD_STATE = { emBio: false, emAct: false, emAge: false,
                        emOrg: false,
                        // which card holds the left slot of the pair; a class
@@ -20600,6 +20605,19 @@
       i.placeholder = v === 'rec' ? 'Search records' : 'Search biomarkers';
     });
     placeResSeg();
+    // the test carries across ("when switching to Records, keep the test
+    // active above"): the report the biomarkers had chosen becomes the
+    // request that produced it, and the other way round -- All records when
+    // the choice has no counterpart
+    if (CARD_STATE.ia4){
+      if (v === 'rec'){
+        const g = MEDS.find(x => x.rep && x.rep === LAST_PICK.bio);
+        document.dispatchEvent(new CustomEvent('everlab:pickMed', { detail: g ? g.s : 'all' }));
+      } else {
+        const g = MEDS.find(x => x.s === LAST_PICK.med);
+        document.dispatchEvent(new CustomEvent('everlab:pickRep', { detail: g && g.rep ? g.rep : 'all' }));
+      }
+    }
     document.dispatchEvent(new CustomEvent('everlab:repTab'));   // the pinned bars re-measure
   }
   // The pill stands at the head of the showing half's chip row -- the
@@ -21561,6 +21579,13 @@
   // a few readings that sit in a blood group but came from elsewhere
   const TYPE_OF = {
     'Lipoprotein(a)': 'Genetics',
+    // the genomic panel's variants, each filed under the health area it
+    // speaks to rather than in a Genetics group of their own
+    'APOE genotype': 'Genetics', 'LPA rs10455872': 'Genetics', 'PCSK9 loss-of-function': 'Genetics',
+    '9p21.3 (rs1333049)': 'Genetics', 'Polygenic CAD risk score': 'Genetics',
+    'Factor V Leiden': 'Genetics', 'Prothrombin G20210A': 'Genetics',
+    'MTHFR C677T': 'Genetics', 'TCF7L2 rs7903146': 'Genetics', 'FTO rs9939609': 'Genetics',
+    'CYP2C19 metaboliser status': 'Genetics', 'SLCO1B1 statin response': 'Genetics', 'HLA-B27': 'Genetics',
     'Postprandial glucose': 'Wearables',                          // a CGM's reading
     'Urine albumin / creatinine': 'Urine',
     'Bile acids': 'Microbiome'
@@ -21568,7 +21593,7 @@
   // ...and the groups that are one source through and through, so the group
   // says it once rather than every row being listed above
   const GROUP_TYPE = {
-    'Sleep & Recovery': 'Wearables', 'Genetics': 'Genetics', 'Imaging': 'Imaging', 'Urine': 'Urine',
+    'Sleep & Recovery': 'Wearables', 'Imaging': 'Imaging', 'Urine': 'Urine',
     'Gut Microbiome': 'Microbiome', 'Body Composition': 'Body composition', 'Lifestyle & Self-reported': 'Self-reported',
     'Cardiorespiratory Fitness': 'Wearables'
   };
@@ -21589,7 +21614,9 @@
       Lactate dehydrogenase (LDH)|sub|238 U/L
       Alpha-fetoprotein|sub|7.9 ug/L
       Bile acids|out|14.2 umol/L
-      Hyaluronic acid|other|— `],
+      Hyaluronic acid|other|—
+      CYP2C19 metaboliser status|ok|Normal
+      SLCO1B1 statin response|ok|Normal `],
     ['Kidney Health',
      'How well the kidneys filter the blood and keep its chemistry in balance.', `
       Serum creatinine|ok|82 umol/L
@@ -21626,7 +21653,12 @@
       Myeloperoxidase|out|512 pmol/L
       Oxidised LDL|ok|48 U/L
       Omega-3 index|other|—
-      Coenzyme Q10|other|— `],
+      Coenzyme Q10|other|—
+      APOE genotype|sub|e3/e4
+      LPA rs10455872|out|Risk allele
+      PCSK9 loss-of-function|ok|Not detected
+      9p21.3 (rs1333049)|sub|Heterozygous
+      Polygenic CAD risk score|sub|71st percentile `],
     ['Metabolic Health',
      'How the body handles sugar and stores energy.', `
       HbA1c|ok|5.2 %
@@ -21642,7 +21674,10 @@
       Free fatty acids|sub|0.62 mmol/L
       Vitamin D (25-OH)|out|42 nmol/L
       Insulin sensitivity index|ok|4.8
-      1,5-anhydroglucitol|other|— `],
+      1,5-anhydroglucitol|other|—
+      MTHFR C677T|ok|Heterozygous
+      TCF7L2 rs7903146|ok|Non-risk
+      FTO rs9939609|sub|Heterozygous `],
     ['Thyroid',
      'The gland that sets the pace of the metabolism.', `
       TSH|ok|1.8 mIU/L
@@ -21678,7 +21713,9 @@
       Ferritin|out|22 ug/L
       Vitamin B12|sub|246 pmol/L
       Folate|other|—
-      Reticulocyte count|other|— `],
+      Reticulocyte count|other|—
+      Factor V Leiden|ok|Not detected
+      Prothrombin G20210A|ok|Not detected `],
     ['Inflammation',
      'Low-grade inflammation, the background hum behind many chronic conditions.', `
       High-sensitivity CRP|ok|0.8 mg/L
@@ -21693,7 +21730,8 @@
       Immunoglobulin A|ok|2.1 g/L
       Immunoglobulin M|sub|0.42 g/L
       Neutrophil / lymphocyte ratio|out|3.4
-      Galectin-3|other|— `],
+      Galectin-3|other|—
+      HLA-B27|ok|Negative `],
     // What a wearable records ("add real wearable data, e.g. Oura"): the
     // ring's own measures, nightly and daily, in its own units -- every one
     // of them a Wearables reading for the types chip
@@ -21719,21 +21757,10 @@
     // least ten readings behind it ("make sure all types have appropriate,
     // realistic biomarkers, min 10"). Genotypes and qualitative results are
     // written as they are reported.
-    ['Genetics',
-     'Variants from your genomic panel that shape risk and how you respond to food, drugs and exercise.', `
-      APOE genotype|sub|e3/e4
-      MTHFR C677T|ok|Heterozygous
-      Factor V Leiden|ok|Not detected
-      Prothrombin G20210A|ok|Not detected
-      LPA rs10455872|out|Risk allele
-      PCSK9 loss-of-function|ok|Not detected
-      9p21.3 (rs1333049)|sub|Heterozygous
-      TCF7L2 rs7903146|ok|Non-risk
-      FTO rs9939609|sub|Heterozygous
-      CYP2C19 metaboliser status|ok|Normal
-      SLCO1B1 statin response|ok|Normal
-      HLA-B27|ok|Negative
-      Polygenic CAD risk score|sub|71st percentile `],
+    // (The genetic variants are no longer a group of their own: each sits in
+    // the health area it speaks to -- Heart, Blood, Metabolic, Liver,
+    // Inflammation -- and TYPE_OF keeps it a Genetics reading. "Remove the
+    // repeated Genetics heading; group genetic results by health area.")
     ['Imaging',
      'Measurements read off your scans: heart, vessels, liver, bone and body fat, as the radiologist reported them.', `
       Coronary artery calcium score|ok|0 Agatston
@@ -21896,7 +21923,7 @@
     r21: { groups: ['Kidney Health', 'Urine'] },                            // Kidney function panel
     r22: { groups: ['Cardiorespiratory Fitness'] },                         // VO2 max retest
     r23: { groups: ['Body Composition'], names: /T-score/i },               // DEXA scan
-    r24: { groups: ['Genetics'], names: /Lipoprotein\(a\)/i },              // Genetic screening
+    r24: { types: ['genetics'] },                                           // Genetic screening: every variant, wherever it is filed
     r25: { groups: BLOOD_WORK }                                             // Baseline health check
   };
   const ST_WORD = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range', other: 'Unclassified' };
@@ -21977,8 +22004,8 @@
       const rule = REC_POOL[rec.id];
       let pool;
       if (rule){
-        const gs = (rule.groups || []).map(catKey);
-        pool = rows.filter(r => gs.indexOf(r.dataset.grp) >= 0 || (rule.names && rule.names.test(nameOf(r))));
+        const gs = (rule.groups || []).map(catKey), ts = rule.types || [];
+        pool = rows.filter(r => gs.indexOf(r.dataset.grp) >= 0 || ts.indexOf(r.dataset.type) >= 0 || (rule.names && rule.names.test(nameOf(r))));
       } else {
         const kinds = recTypes(rec);
         pool = rows.filter(r => kinds.indexOf(r.dataset.type || 'blood') >= 0);
@@ -22203,6 +22230,7 @@
     // because the Expanded Report layout has no menu at all.
     function choose(id, reload){
       recSet = id;
+      if (cfg.onChoose) cfg.onChoose(id);
       // a range passes every row; a report passes the rows it stamped
       recAll = !!(recs.find(x => x.id === id) || {}).all;
       const r = recs.find(x => x.id === id) || recs[0];
@@ -22416,6 +22444,7 @@
       skel: document.getElementById('dSkel'), empty: document.getElementById('dSearchEmpty'),
       input: input, fieldEl: field,
       chipsBar: document.querySelector('.dash .filters'),
+      onChoose: id => { LAST_PICK.bio = id; },
       cat: { chip: document.getElementById('dCatChip'), lbl: document.querySelector('#dCatChip .catLbl'),
              menu: document.getElementById('dCatMenu'), listEl: document.getElementById('dCatList'),
              cats: TYPES },
@@ -22495,6 +22524,7 @@
       // the provider select over the list: the biomarkers' rec block, with
       // the providers as its options and the row's provider as its key
       recs: MED_SRCS, recKey: row => row.dataset.s,
+      onChoose: id => { LAST_PICK.med = id; },
       rec: {
         wrap: document.getElementById('dMedRecWrap'), btn: document.getElementById('dMedRecSel'),
         menu: document.getElementById('dMedRecMenu'), listEl: document.getElementById('dMedRecList'),
@@ -22659,6 +22689,7 @@
       list: recs, groupSel: '.mgrp', rowSel: '.mbrow',
       skel: skel, empty: empty, input: input, fieldEl: wrap,
       chipsBar: document.getElementById('mChips'),
+      onChoose: id => { LAST_PICK.bio = id; },
       cat: { chip: document.getElementById('mCatChip'), lbl: document.querySelector('#mCatChip .catLbl'),
              menu: document.getElementById('mCatMenu'), listEl: document.getElementById('mCatList'),
              cats: TYPES },
@@ -22724,6 +22755,7 @@
         // no request select on the phone, but the requests are still what a
         // chosen record means here (a test card's See results chooses one)
         recs: MED_SRCS, recKey: row => row.dataset.s,
+        onChoose: id => { LAST_PICK.med = id; },
         hold: holdScroll,
         afterApply: () => { placeBar(bar); setStuck(); }
       });

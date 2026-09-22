@@ -9703,6 +9703,38 @@ Four asks on the V4 Results tab.
   the same, its hero and share button gone, tabs at 70, dots 10px under the
   cards; no errors.
 
+### 5.350 Genetics filed by health area; rows padded; the test carries across; the V2.5 bars agree
+
+- **No Genetics group** ("remove the repeated Genetics heading; group
+  genetic results by health area"). The thirteen variants are filed where
+  they speak: APOE, the LPA and PCSK9 variants, 9p21 and the polygenic CAD
+  score in Heart Health; Factor V Leiden and prothrombin in Blood Health;
+  MTHFR, TCF7L2 and FTO in Metabolic Health; the CYP2C19 and SLCO1B1
+  metaboliser calls in Liver Health; HLA-B27 in Inflammation. `TYPE_OF`
+  keeps every one a Genetics reading, and the Genetic screening report
+  deals by TYPE now (`REC_POOL` learned `types`), so choosing it shows its
+  14 rows across five health groups and no Genetics heading. 17 groups.
+- **Rows padded** ("align vertically text, add padding on the row"): the
+  desk's list rows are 18px top and bottom (were 16), the phone's 16 (were
+  14); both already centre their cells. Taken as the list rows, there being
+  no screenshot -- say if another row was meant.
+- **The test carries across** ("V4: when switching to Records, keep the
+  test active above"). `bioFilter.choose` reports through `cfg.onChoose`,
+  and the four filters write `LAST_PICK.bio` / `.med`; `setRes` then maps
+  the biomarkers' report to the request that produced it (`MEDS.rep`) on
+  the way to Records, and the request back to its report on the way to
+  Biomarkers -- All records when there is no counterpart. DEXA scan →
+  *DEXA & body composition*; *Full blood & tumour markers* → Pathology
+  test.
+- **The V2.5 records bar in the biomarkers bar's structure** ("keep the
+  biomarkers' structure for the record filter; consistent spacing, style"):
+  the records row stands 22px off its chips as the biomarkers' does (its
+  margin was giving 34), and its search says *Search*, as the other does.
+  Both selects are 256 wide and both show a second line on All records.
+  The records chips have no leading types chip: the chips ARE the record
+  types.
+- Check: `genrows.js`, `carry.js`.
+
 ---
 
 ## 6. Open items
