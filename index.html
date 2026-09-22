@@ -1563,7 +1563,9 @@
   body.mRecOn .msWrap{z-index:10;}
   body.mRecOn #phone > .mTabs{z-index:1;}
   body.light .mRecMenu{background:#fffdf8;box-shadow:0 24px 48px -22px rgba(46,31,26,.35),0 0 0 1px rgba(46,31,26,.08);}
-  .mRecScroll{max-height:min(44vh,330px);overflow-y:auto;scrollbar-width:none;}
+  /* rows 2px apart on every menu ("2px gap on all dropdown item lists");
+     the hairline a row draws above itself lands in that gap */
+  .mRecScroll{max-height:min(44vh,330px);overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:2px;}
   .mRecScroll::-webkit-scrollbar{display:none;}
   .mRecOpt{
     display:flex;align-items:center;gap:12px;width:100%;
@@ -1615,6 +1617,10 @@
      its own .open class stands in for body.mRecOn, which would light the
      record menus too. */
   .fchip.catChip{gap:9px;}
+  /* a hairline between the type chip and the range chips: two questions on
+     one row ("small divider between type and all") */
+  .chipDiv{flex:none;width:1px;height:20px;border-radius:1px;background:rgba(255,255,255,.14);align-self:center;}
+  body.light .chipDiv{background:rgba(46,31,26,.16);}
   .fchip.catChip .catChev{width:11px;height:7px;flex:none;color:#8b8b86;transition:transform .18s ease;}
   .fchip.catChip[aria-expanded="true"] .catChev{transform:rotate(180deg);}
   .fchip.catChip.on .catChev{color:#fff;}
@@ -7558,6 +7564,7 @@
            ("add a chip (1st), Categories, 'All categories'"). The menu hangs
            off the row, not the chip, because the chip row scrolls and clips. -->
       <button class="fchip catChip" id="dCatChip" type="button" data-cat="all" aria-haspopup="listbox" aria-expanded="false"><span class="catLbl">All types</span><svg class="catChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <i class="chipDiv" aria-hidden="true"></i>
       <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b> All</button>
       <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</button>
       <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</button>
@@ -7896,6 +7903,7 @@
       <div class="msRow2" id="mRow2">
       <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
         <button class="fchip catChip" id="mCatChip" type="button" data-cat="all" aria-haspopup="listbox" aria-expanded="false"><span class="catLbl">All types</span><svg class="catChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <i class="chipDiv" aria-hidden="true"></i>
         <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
         <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
         <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>

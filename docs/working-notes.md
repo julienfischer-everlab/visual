@@ -9376,6 +9376,18 @@ Five asks in one round.
   0 / 0), Imaging + Out of range empty, reset, Genetics on the phone, the
   three badges at 28 and `.055`; no errors.
 
+### 5.331 Menu rows 2px apart; a divider after the types chip
+
+"2px gap on all dropdown item lists" -- `.mRecScroll` is a column flex with
+`gap:2px`, so every record, request and type menu spaces its rows the
+same; the hairline a row draws above itself (`top:-1px`) lands in the gap.
+"Small divider between type and all" -- `i.chipDiv`, a 1×20 hairline at
+`.14` (light `.16`), centred on the row, between the types chip and the
+range chips on both screens; with the row's 8px gaps either side it reads
+as two questions on one row. Check: `chipdiv.js` -- 1×20, 8/8, centred;
+2px between every pair of rows on the three desk menus; the phone's
+divider; no errors.
+
 ---
 
 ## 6. Open items
