@@ -18050,7 +18050,9 @@
   const MED_SPAN = (() => { const my = d => d.split(' ').slice(1).join(' '); return my(MEDS[MEDS.length - 1].date) + ' – ' + my(MEDS[0].date); })();
   const MED_SRCS = [{ id: 'all', label: 'All records', all: true, sub: MED_SPAN }].concat(
     MEDS.map((g, i) => ({ id: g.s, label: g.sr, sub: g.date, isNew: i === 0,
-                          nText: g.docs.length + (g.docs.length === 1 ? ' record' : ' records') })));
+                          // the count, drawn by the menu with the document glyph
+                          // ("put a doc icon instead of 'records'")
+                          nDocs: g.docs.length })));
   (function buildMeds(){
     // the phone and the desk get the same rows out of the same table: one
     // markup, written into whichever hosts the page carries
@@ -22334,6 +22336,11 @@
       const CHART = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
                     '<path d="M2 11.2 5.6 7.2 8.4 9.6 14 3.6" stroke="currentColor" stroke-width="1.6" ' +
                     'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      // the document: a page with a folded corner and two lines, the same
+      // 16-box and stroke as the chart
+      const DOC = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+                  '<path d="M4 1.8h5.2L13 5.6v7.6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2.8a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>' +
+                  '<path d="M9.2 1.8v3.8H13M5.6 8.4h4.8M5.6 11h3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       // the newest report carries a New badge beside its name while the New
       // results notice is live (body.newRep, and the wrap not yet .seen)
       const newest = (typeof REPS !== 'undefined' && REPS[0]) ? REPS[0].id : null;
@@ -22351,7 +22358,11 @@
           // biomarkers' menu, records on the records' ("All records: add
           // number badge right side")
           // ...and so does any range (Historical records: "add badge")
-          (r.id === 'all' || r.all ? '<span class="n">' + (cfg.recKey ? allRows.length + ' records' : CHART + allRows.length) + '</span>' :
+          // ...a document glyph with the count on the records' menu, as the
+          // chart glyph with the count on the biomarkers' ("put a doc icon
+          // instead of 'records'")
+          (r.id === 'all' || r.all ? '<span class="n">' + (cfg.recKey ? DOC : CHART) + allRows.length + '</span>' :
+           r.nDocs != null ? '<span class="n">' + DOC + r.nDocs + '</span>' :
            r.nText ? '<span class="n">' + r.nText + '</span>' : r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
         '</button>').join('');
       const isOpen = () => document.body.classList.contains('mRecOn') && !rec.menu.hidden;

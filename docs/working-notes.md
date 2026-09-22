@@ -9909,6 +9909,16 @@ count; the other shapes keep theirs. The play disc is 44px on this tile.
 Check: `onerep2.js` (thumb 22/22 off the corner, CTA 22 from the left,
 still centred at 0,0 with Video on).
 
+### 5.363 A document glyph on the records menu's badges
+
+"Put a doc icon instead of 'records'": the records menu's count pills read
+"4 records"; they now carry a page glyph (folded corner, two lines, the
+chart glyph's 16-box and stroke) with the number -- `DOC` beside `CHART` in
+the menu builder, and `MED_SRCS` hands the menu `nDocs` instead of the
+sentence. All records draws the same glyph with the row count (28). The
+biomarkers' menu keeps its chart glyph. The phone has no request select,
+so this is the desk's alone. Check: `docicon.js`.
+
 ---
 
 ## 6. Open items
