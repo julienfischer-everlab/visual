@@ -9763,6 +9763,15 @@ Four asks on the V4 Results tab.
   time, so it is still the one search.
 - Check: `types10.js`, `seg.js`, `carry.js`, `v4top.js`.
 
+### 5.352 The upload card's gap; the New badge at the design system's 28
+
+"Reduce gap": the link stands 8px under the question in the upload card
+(was 14). "Height 28 as DS component" (the Figma badge: 51 hug × 28): every
+New badge -- the report card's corner and inline badge, the bento row's,
+the hero-rows sheet's and both menus' -- is 28 tall now, a 13px label on
+10px of side padding, 8px corners, the amber unchanged. Check: `upgap.js`
+(gap 8), `newbadge.js` (heights).
+
 ---
 
 ## 6. Open items
