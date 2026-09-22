@@ -2121,8 +2121,17 @@
     pointer-events:none;opacity:0;transition:opacity .22s ease;
   }
   .dash .dMedBar.stuck::after{opacity:1;}
-  .dash .dMedBar .filters{flex:1 1 auto;min-width:0;margin:0 0 18px;}
-  .dash .dMedSearch{display:flex;flex:0 0 248px;margin:0 0 18px auto;}
+  /* two rows now, as the biomarkers' block is: the provider select and the
+     search on the first, the chips on the second ("add filter below Medical
+     records") -- so the bar stacks rather than lines up */
+  .dash .dMedBar{flex-direction:column;align-items:stretch;}
+  .dash .dMedRow{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 22px;}
+  .dash .dMedRow .dRecWrap{display:block;}
+  .dash .dMedRow .dsearch{display:flex;}
+  .dash .dMedBar .filters{flex:none;width:100%;min-width:0;margin:0 0 18px;}
+  .dash .dMedSearch{flex:0 0 256px;margin:0 0 0 auto;}
+  /* the New dot is the reports' select's; a provider is never new */
+  .dMedRecWrap .msRecNew{display:none !important;}
   .dash .dMedsWrap .mMedsHead{margin:34px 0 0;}
   /* A section title is one step under the page's own h1, not level with it:
      8px under the desk's 26px h1, so "Medical records" and "Everlab reports"
@@ -7540,14 +7549,31 @@
           <button class="mUpload" type="button">Upload document</button>
         </div>
         <div class="dMedBar" id="dMedBar">
-          <div class="filters" id="dMedChips" role="group" aria-label="Filter records by category"></div>
-          <div class="dsearch dMedSearch" id="dMedBox">
+          <!-- Row one, the biomarkers' bar asked of the records ("add filter
+               below Medical records"): which provider's records, beside the
+               search within them. Same markup as .dRecWrap above so the one
+               stylesheet and the one script (bioFilter's rec block) serve both;
+               no New dot, since a provider is never new. Row two, the chips. -->
+          <div class="dMedRow">
+            <div class="dRecWrap dMedRecWrap" id="dMedRecWrap">
+              <button class="drecs" id="dMedRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
+                <span class="t"><b id="dMedRecLbl">All records</b><i id="dMedRecEy" hidden></i></span>
+                <svg class="msRecChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </button>
+              <button class="msRecClear" id="dMedRecClear" type="button" aria-label="Clear the chosen provider" aria-hidden="true"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+              <div class="mRecMenu" id="dMedRecMenu" role="listbox" aria-label="Choose a provider" hidden>
+                <div class="mRecScroll" id="dMedRecList"></div>
+              </div>
+            </div>
+            <div class="dsearch dMedSearch" id="dMedBox">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
               <circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/>
             </svg>
             <input id="dMedIn" type="search" placeholder="Search records" autocomplete="off" spellcheck="false" aria-label="Search medical records">
             <button class="msClear" id="dMedClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+            </div>
           </div>
+          <div class="filters" id="dMedChips" role="group" aria-label="Filter records by category"></div>
         </div>
         <div class="mMedNote"><b>3 records are processing.</b><span>Feel free to keep browsing. We&rsquo;ll let you know when everything is ready.</span></div>
         <div class="mMedList" id="dMeds"></div>
@@ -17546,20 +17572,31 @@
     { k: 'imag', label: 'Imaging',      dot: '#8fa9d8' },
     { k: 'immu', label: 'Immunisation', dot: '#8b8b86' }
   ];
+  // `s` is the provider the group came from, the key the desk's record select
+  // above the list cuts by (the chips cut by category `c`)
   const MEDS = [
-    { c: 'path', date: '24 Sep 2025', src: 'COMRAD / PRP Diagnostic Imaging very long COMRAD / PRP Diagnostic Imaging',
+    { c: 'path', s: 'comrad', date: '24 Sep 2025', src: 'COMRAD / PRP Diagnostic Imaging very long COMRAD / PRP Diagnostic Imaging',
       docs: ['Dexa scan', 'Metal', 'Tumour markers', 'Breast Ultrasound'] },
-    { c: 'imag', date: '23 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
+    { c: 'imag', s: 'comrad', date: '23 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
       docs: ['Dexa scan', 'Breast Ultrasound', 'Total body composition', 'Tumour markers'] },
-    { c: 'immu', date: '12 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
+    { c: 'immu', s: 'comrad', date: '12 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
       docs: ['Metal blood', 'Hormones', 'Tumour markers'] },
-    { c: 'path', date: '15 May 2025', src: 'Everlab Pathology',
+    { c: 'path', s: 'ever', date: '15 May 2025', src: 'Everlab Pathology',
       docs: ['Full blood count', 'Liver function', 'Iron studies', 'Thyroid panel'] },
-    { c: 'imag', date: '02 Mar 2025', src: 'COMRAD / PRP Diagnostic Imaging',
+    { c: 'imag', s: 'comrad', date: '02 Mar 2025', src: 'COMRAD / PRP Diagnostic Imaging',
       docs: ['Cardiac CT', 'Coronary calcium score'] },
-    { c: 'path', date: '18 Jun 2024', src: 'Everlab Pathology',
+    { c: 'path', s: 'ever', date: '18 Jun 2024', src: 'Everlab Pathology',
       docs: ['Lipid profile', 'HbA1c', 'Vitamin D'] }
   ];
+  // The record select over the desk's records list ("add filter below
+  // Medical records", V2.5): the biomarkers' own control, asking the records
+  // list its own question -- which provider's records. All records first, as
+  // the biomarkers' has; then one option per provider, with how many records
+  // it sent as the option's second line. Counted off MEDS, so the menu and
+  // the list cannot disagree.
+  const MED_SRCS = [{ id: 'all', label: 'All records', all: true }].concat(
+    [{ id: 'comrad', label: 'COMRAD / PRP Diagnostic Imaging' }, { id: 'ever', label: 'Everlab Pathology' }]
+      .map(p => { const n = MEDS.filter(g => g.s === p.id).length; return Object.assign(p, { sub: n + (n === 1 ? ' record' : ' records') }); }));
   (function buildMeds(){
     // the phone and the desk get the same rows out of the same table: one
     // markup, written into whichever hosts the page carries
@@ -17576,14 +17613,14 @@
     MED_CATS.forEach(c => { byKey[c.k] = c; });
     const rows = MEDS.map(g => {
       const cat = byKey[g.c] || MED_CATS[0];
-      return '<div class="mMedGrp" data-c="' + g.c + '">' +
+      return '<div class="mMedGrp" data-c="' + g.c + '" data-s="' + g.s + '">' +
         '<div class="mMedTop"><span class="t">' +
           '<span class="cat"><i style="background:' + cat.dot + '"></i>' + cat.label +
             '<em>' + g.date + '</em></span>' +
           '<span class="src">' + g.src + '</span>' +
         '</span><button class="mMedDl" type="button" aria-label="Download ' + cat.label + ' records">' + DL + '</button></div>' +
         g.docs.map(d =>
-          '<div class="mMedRow" data-c="' + g.c + '"><span class="nm">' + d + '</span>' +
+          '<div class="mMedRow" data-c="' + g.c + '" data-s="' + g.s + '"><span class="nm">' + d + '</span>' +
           DOC + '<i class="sep"></i><button class="view" type="button">View</button></div>').join('') +
       '</div>';
     }).join('');
@@ -21074,6 +21111,14 @@
     // records list by a document's category -- one filter, asked a different
     // question about each row.
     const rowKey = cfg.rowKey || bioRowSt;
+    // What the record select offers and what it cuts by. The biomarkers'
+    // offers the reports (RECS) and passes the rows a report stamped
+    // (data-r, several per row); the records list's offers the providers
+    // (MED_SRCS) and passes the rows one provider sent (recKey).
+    const recs = cfg.recs || RECS;
+    const recHit = cfg.recKey
+      ? row => cfg.recKey(row) === recSet
+      : row => (' ' + row.dataset.r + ' ').indexOf(' ' + recSet + ' ') >= 0;
 
     function applyFilter(){
       const q = input ? input.value.trim().toLowerCase() : '';
@@ -21083,8 +21128,7 @@
         for (const row of g.querySelectorAll(cfg.rowSel)){
           const hit = (!q || row.firstElementChild.textContent.toLowerCase().includes(q)) &&
                       (chipSt === 'all' || rowKey(row) === chipSt) &&
-                      (recSet === 'all' || recAll ||
-                       (' ' + row.dataset.r + ' ').indexOf(' ' + recSet + ' ') >= 0);
+                      (recSet === 'all' || recAll || recHit(row));
           row.hidden = !hit; if (hit) shown++;
         }
         g.hidden = shown === 0; if (shown) any = true;
@@ -21138,7 +21182,7 @@
       // the newest report carries a New badge beside its name while the New
       // results notice is live (body.newRep, and the wrap not yet .seen)
       const newest = (typeof REPS !== 'undefined' && REPS[0]) ? REPS[0].id : null;
-      rec.listEl.innerHTML = RECS.map(r =>
+      rec.listEl.innerHTML = recs.map(r =>
         '<button class="mRecOpt' + (r.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
                 'aria-selected="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
           '<span class="t"><b>' + r.label + (r.id === newest ? ' <span class="mRecNew">New</span>' : '') + '</b>' +
@@ -21185,8 +21229,8 @@
     function choose(id, reload){
       recSet = id;
       // a range passes every row; a report passes the rows it stamped
-      recAll = !!(RECS.find(x => x.id === id) || {}).all;
-      const r = RECS.find(x => x.id === id) || RECS[0];
+      recAll = !!(recs.find(x => x.id === id) || {}).all;
+      const r = recs.find(x => x.id === id) || recs[0];
       if (rec.listEl){
         [].slice.call(rec.listEl.children).forEach(x => {
           const on = x.dataset.r === id;
@@ -21409,7 +21453,16 @@
       empty: document.getElementById('dMedEmpty'),
       input: inp, fieldEl: box,
       chipsBar: document.getElementById('dMedChips'),
-      rowKey: row => row.dataset.c
+      rowKey: row => row.dataset.c,
+      // the provider select over the list: the biomarkers' rec block, with
+      // the providers as its options and the row's provider as its key
+      recs: MED_SRCS, recKey: row => row.dataset.s,
+      rec: {
+        wrap: document.getElementById('dMedRecWrap'), btn: document.getElementById('dMedRecSel'),
+        menu: document.getElementById('dMedRecMenu'), listEl: document.getElementById('dMedRecList'),
+        lbl: document.getElementById('dMedRecLbl'), ey: document.getElementById('dMedRecEy'),
+        clear: document.getElementById('dMedRecClear')
+      }
     });
     const typed = () => { box.classList.toggle('hasText', inp.value.length > 0); med.typed(); };
     inp.addEventListener('input', typed);

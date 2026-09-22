@@ -9219,6 +9219,35 @@ The handler fires `everlab:repTab` and `resize()` for the hero and the
 sidebar. Check: `doctoggle.js` -- desk ×3/×2/×1 Off/On, after a tab
 round-trip, phone Off/On; no errors.
 
+### 5.326 The records' filter bar takes the biomarkers' shape (V2.5)
+
+"V2.5 -- add filter below Medical records", with the biomarkers' bar as the
+picture: the record select on the left, the search on the right.
+
+- **Two rows, as the biomarkers' block.** The desk's `#dMedBar` is a column
+  now: `.dMedRow` -- a `.dRecWrap` select (`#dMedRecSel`, same markup as
+  `#dRecSel` so the one stylesheet serves both, minus the New dot) and the
+  search, both 256×56 at the row's two ends -- then the category chips under
+  it, as before. It still pins as one block and its fade still measures off
+  the chips.
+- **What the select asks.** The biomarkers' select chooses a report; the
+  records list has no report to choose, so its select asks the list's own
+  second question -- which provider's records: *All records*, *COMRAD / PRP
+  Diagnostic Imaging* (4 records), *Everlab Pathology* (2 records), from
+  `MED_SRCS`, counted off MEDS. Each MEDS group carries its provider key `s`,
+  stamped on its rows as `data-s`.
+- **`bioFilter` learned a second option set.** `cfg.recs` (default RECS) is
+  what the rec block lists and `choose` looks up; `cfg.recKey` (default: the
+  `data-r` stamp match the biomarkers use) is how a row is judged against the
+  chosen record. The desk records filter passes MED_SRCS and `row.dataset.s`;
+  the biomarkers' two filters and the phone's records filter pass nothing
+  and behave as before (27 options on the desk's report menu, all six phone
+  groups). A provider and a chip cut together -- Everlab + Imaging shows the
+  empty line -- and the cross returns to All records.
+- Check: `medbar.js` -- geometry, menu (440 wide, three options with their
+  counts), Everlab → 2 groups with the label and "2 records" on the button,
+  chip on top, clear, the biomarkers' menu, the phone; no errors.
+
 ---
 
 ## 6. Open items
