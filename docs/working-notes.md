@@ -9772,6 +9772,13 @@ the hero-rows sheet's and both menus' -- is 28 tall now, a 13px label on
 10px of side padding, 8px corners, the amber unchanged. Check: `upgap.js`
 (gap 8), `newbadge.js` (heights).
 
+### 5.353 The latest report is "Diagnostic review"
+
+"Title → Diagnostic review": the first report (`r1`) is *Diagnostic
+review* everywhere it is named -- RECS, the two bento cards' static title
+(desk and phone), the report cards, the menus, the drawer, the test card's
+link. Its readings, date and badge are unchanged. Check: `rename.js`.
+
 ---
 
 ## 6. Open items
