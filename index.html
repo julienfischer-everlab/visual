@@ -1487,6 +1487,7 @@
     background:#5b9cf5;color:#0b1a33;
   }
   body.newRep .mRecMenu:not(.seen) .mRecOpt .mRecNew{display:inline-block;}
+  .mRecOpt .mRecNew.always{display:inline-block;}   /* an option's own badge, not the notice's */
   /* Driven by the wrapper's class, not by the hidden property. `hidden` is an
      HTMLElement property and this is an SVG element, which does not implement
      it: el.hidden = true set a plain JS field, reported true when read back,
@@ -1577,6 +1578,16 @@
     background:rgba(236,236,234,.09);
   }
   body.light .mRecOpt + .mRecOpt::before{background:rgba(46,31,26,.1);}
+  /* the hover is the selected plate at a whisper, and like the organ list's
+     pill it bleeds past the text column: the hairlines run 12px in from the
+     plate's edges, so the plate stands 12px outside the text on both sides
+     ("hover state following the pattern that bleeds outside the container");
+     the hairlines either side of it go, as they do for the chosen row */
+  @media (hover:hover){
+    .mRecOpt:hover{background:rgba(255,255,255,.045);}
+    .mRecOpt:hover::before,.mRecOpt:hover + .mRecOpt::before{opacity:0;}
+    body.light .mRecOpt:hover{background:rgba(46,31,26,.04);}
+  }
   .mRecOpt.on{background:rgba(255,255,255,.07);}
   .mRecOpt.on::before,.mRecOpt.on + .mRecOpt::before{opacity:0;}
   body.light .mRecOpt.on{background:rgba(46,31,26,.06);}
@@ -2219,6 +2230,10 @@
   .mMedTop .cat{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;color:#ececec;}
   .mMedTop .cat i{width:9px;height:9px;border-radius:3px;flex:none;font-style:normal;}
   .mMedTop .cat em{font-style:normal;font-weight:400;color:#8b8b86;margin-left:2px;}
+  /* with a provider chosen above the list every group is that provider's,
+     so the line naming it under each header steps back ("when the filter is
+     active, no need for the subtitle below the grouping") */
+  .mMedList.recChosen .mMedTop .src{display:none;}
   .mMedTop .src{font-size:12.5px;line-height:1.4;color:#8b8b86;margin-top:4px;
                 display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .mMedDl{
@@ -4767,6 +4782,36 @@
   .prX:hover{background:rgba(255,255,255,.16);}
   .prX svg{width:13px;height:13px;display:block;}
   body.light .prX{background:rgba(46,31,26,.07);color:#2e1f1a;}
+  /* ---- The section i and its sheet -----------------------------------------
+     The i is the panel's own i, made a button, sat on the heading's line. Its
+     sheet is the past-results chrome on the desk (dim + centred card, fixed to
+     the page) and the phone's sheet chrome in the phone frame; .show puts it
+     in the tree, .on a frame later runs the fade and the slide. */
+  button.secInf{
+    padding:0;background:none;cursor:pointer;font-family:inherit;
+    vertical-align:3px;margin-left:8px;
+    transition:border-color .16s ease,color .16s ease;
+  }
+  button.secInf:hover{border-color:#8b8b86;color:#ececec;}
+  .secHead .secInf, .mMedsHead .secInf{vertical-align:3px;}
+  .siWrap{display:none;}
+  .siWrap.show{display:block;}
+  .siWrap.siDesk{position:fixed;inset:0;z-index:40;}
+  .siWrap.siDesk .prDim{opacity:0;transition:opacity .3s ease;}
+  .siWrap.siDesk .prModal{opacity:0;transform:translate(-50%,-50%) scale(.98);transition:opacity .3s ease,transform .3s ease;}
+  .siWrap.siDesk.on .prDim{opacity:1;}
+  .siWrap.siDesk.on .prModal{opacity:1;transform:translate(-50%,-50%);}
+  .siWrap.siDesk .siModal{width:min(92%, 480px);}
+  .siSheet{top:auto;max-height:70%;border-radius:26px 26px 0 0;background:#1b1b1a;}
+  body.light .siSheet{background:#f6ece6;}
+  .siScroll{padding:0 22px 26px;}
+  .siSheet .siScroll{padding:0 18px 8px;}
+  .siTitle{margin:6px 0 10px;font-size:22px;font-weight:500;letter-spacing:-.3px;color:#ececec;}
+  .siBody{margin:0;font-size:15px;line-height:1.5;color:#bdbdb9;}
+  body.light .siTitle{color:#2e1f1a;}
+  body.light .siBody{color:#5a4a3c;}
+  /* the sheet's home bar has room under the copy */
+  .siSheet .shHome{margin-top:22px;}
   .prScroll{flex:0 1 auto;min-height:0;overflow-y:auto;padding:0 22px;scrollbar-width:none;}
   .prScroll::-webkit-scrollbar{display:none;}
   .prMark{
@@ -7564,8 +7609,9 @@
     <div class="insWrap dInsWrap" id="dInsWrap"></div>
     <div class="dRepWrap" id="dRepWrap">
       <!-- a title only: the way to the rest of the reports is the stack card's
-           own "See more", which appears when there are more than it shows -->
-      <div class="secHead"><span>Everlab reports</span></div>
+           own "See more", which appears when there are more than it shows.
+           The i opens what the section is (a modal here, a sheet on the phone). -->
+      <div class="secHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span></div>
       <div class="rbWrap dRepBento" id="dRepBento"></div>
       <div class="rcWrap dRepCards" id="dRepCards"></div>
       <div class="dRepShelf">
@@ -7589,7 +7635,7 @@
           </div>
         </div>
         <div class="mMedsHead">
-          <h3>Medical records</h3>
+          <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records">i</button></h3>
           <button class="mUpload" type="button">Upload document</button>
         </div>
         <div class="dMedBar" id="dMedBar">
@@ -7785,7 +7831,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="secHead rcHeroHead"><span>Everlab reports</span></div><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="secHead rcHeroHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span></div><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -7887,7 +7933,7 @@
          above the records it belongs with. The nodes are moved rather than
          copied, so there is one carousel with one set of handlers however the
          page is laid out. -->
-    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports</span></div></div>
+    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span></div></div>
     <!-- V4's third tab: the findings themselves, stacked. Each one opens a
          sheet on the phone and a drawer on the desk. Built from INSIGHTS in
          the script, like every other list on the page. -->
@@ -7905,7 +7951,7 @@
         </div>
       </div>
       <div class="mMedsHead">
-        <h3>Medical records</h3>
+        <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records">i</button></h3>
         <button class="mUpload" type="button">Upload document</button>
       </div>
       <!-- The records' filter is the biomarkers' bar, over a different list:
@@ -17483,7 +17529,10 @@
   // belongs to one or more records, "All records" is the 110 distinct ones,
   // and each record shows exactly the number on its badge.
   const RECS = [
-    { id: 'all', label: 'All records' },
+    // its second line is the whole span, as Historical's is ("All records:
+    // date as well below, full date range"); its count -- every distinct
+    // reading -- is put on by the menu, which has the rows to count
+    { id: 'all', label: 'All records', sub: '2011 – 2026' },
     // Not a report but a range: everything on the page, named for the span
     // it covers. `all: true` means it passes every row rather than the rows
     // stamped with its id -- there are none, because it is not a test that
@@ -17618,31 +17667,38 @@
     { k: 'imag', label: 'Imaging',      dot: '#8fa9d8' },
     { k: 'immu', label: 'Immunisation', dot: '#8b8b86' }
   ];
-  // `s` is the provider the group came from, the key the desk's record select
-  // above the list cuts by (the chips cut by category `c`)
+  // Each group is one SERVICE REQUEST -- the order that produced these
+  // records -- named by `sr` (the desk's record select above the list offers
+  // them and cuts by `s`, the request's id; the chips cut by category `c`).
   const MEDS = [
-    { c: 'path', s: 'comrad', date: '24 Sep 2025', src: 'COMRAD / PRP Diagnostic Imaging very long COMRAD / PRP Diagnostic Imaging',
+    { c: 'path', s: 'sr1', sr: 'Full blood & tumour markers', date: '24 Sep 2025', src: 'COMRAD / PRP Diagnostic Imaging very long COMRAD / PRP Diagnostic Imaging',
       docs: ['Dexa scan', 'Metal', 'Tumour markers', 'Breast Ultrasound'] },
-    { c: 'imag', s: 'comrad', date: '23 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
+    { c: 'imag', s: 'sr2', sr: 'DEXA & body composition', date: '23 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
       docs: ['Dexa scan', 'Breast Ultrasound', 'Total body composition', 'Tumour markers'] },
-    { c: 'immu', s: 'comrad', date: '12 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
+    { c: 'immu', s: 'sr3', sr: 'Travel vaccinations', date: '12 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
       docs: ['Metal blood', 'Hormones', 'Tumour markers'] },
-    { c: 'path', s: 'ever', date: '15 May 2025', src: 'Everlab Pathology',
+    { c: 'path', s: 'sr4', sr: 'Liver, iron & thyroid panel', date: '15 May 2025', src: 'Everlab Pathology',
       docs: ['Full blood count', 'Liver function', 'Iron studies', 'Thyroid panel'] },
-    { c: 'imag', s: 'comrad', date: '02 Mar 2025', src: 'COMRAD / PRP Diagnostic Imaging',
+    { c: 'imag', s: 'sr5', sr: 'Cardiac CT & calcium score', date: '02 Mar 2025', src: 'COMRAD / PRP Diagnostic Imaging',
       docs: ['Cardiac CT', 'Coronary calcium score'] },
-    { c: 'path', s: 'ever', date: '18 Jun 2024', src: 'Everlab Pathology',
+    { c: 'path', s: 'sr6', sr: 'Lipid & glucose check', date: '18 Jun 2024', src: 'Everlab Pathology',
       docs: ['Lipid profile', 'HbA1c', 'Vitamin D'] }
   ];
   // The record select over the desk's records list ("add filter below
   // Medical records", V2.5): the biomarkers' own control, asking the records
-  // list its own question -- which provider's records. All records first, as
-  // the biomarkers' has; then one option per provider, with how many records
-  // it sent as the option's second line. Counted off MEDS, so the menu and
-  // the list cannot disagree.
-  const MED_SRCS = [{ id: 'all', label: 'All records', all: true }].concat(
-    [{ id: 'comrad', label: 'COMRAD / PRP Diagnostic Imaging' }, { id: 'ever', label: 'Everlab Pathology' }]
-      .map(p => { const n = MEDS.filter(g => g.s === p.id).length; return Object.assign(p, { sub: n + (n === 1 ? ' record' : ' records') }); }));
+  // list its own question -- which service request's records ("list a few
+  // examples of service requests in the dropdown: Title, NEW, X records,
+  // Date"). All records first, as the biomarkers' has; then one option per
+  // request -- its title with a New badge on the latest, its date beneath,
+  // and how many records it produced in the pill on the right. Read off MEDS,
+  // so the menu and the list cannot disagree.
+  // All records carries the span of the requests it covers, oldest to newest,
+  // month and year ("date as well below, full date range"); its count is put
+  // on by the menu, which has the rows
+  const MED_SPAN = (() => { const my = d => d.split(' ').slice(1).join(' '); return my(MEDS[MEDS.length - 1].date) + ' – ' + my(MEDS[0].date); })();
+  const MED_SRCS = [{ id: 'all', label: 'All records', all: true, sub: MED_SPAN }].concat(
+    MEDS.map((g, i) => ({ id: g.s, label: g.sr, sub: g.date, isNew: i === 0,
+                          nText: g.docs.length + (g.docs.length === 1 ? ' record' : ' records') })));
   (function buildMeds(){
     // the phone and the desk get the same rows out of the same table: one
     // markup, written into whichever hosts the page carries
@@ -18961,6 +19017,65 @@
       if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
+
+  // ---- What a section is: the i beside its title --------------------------
+  // "Add an i icon for both titles -> opens a bottom sheet on mobile, a modal
+  // on the desktop." One piece of copy per section, one sheet per surface --
+  // the desk's a centred card over the page (the past-results modal's
+  // chrome), the phone's a sheet in the phone frame (the sheet chrome the rest
+  // of the phone uses) -- and the i says which copy to show. The button
+  // decides the surface by where it stands.
+  const SEC_INFO = {
+    reports: { title: 'Everlab reports',
+               body: 'Reports written by Everlab from your results. Each one is your data read for you: what was found, what it means, and what to do next.' },
+    records: { title: 'Medical records',
+               body: 'The raw documents, exactly as they came from your providers: pathology, imaging and immunisation records, kept in one place so nothing is lost.' }
+  };
+  function infoSheet(host, desk){
+    if (!host) return null;
+    const X = '<button class="prX siX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>';
+    const body = '<div class="prTop">' + X + '</div>' +
+      '<div class="siScroll"><h3 class="siTitle"></h3><p class="siBody"></p></div>';
+    const wrap = document.createElement('div');
+    if (desk){
+      wrap.className = 'siWrap siDesk';
+      wrap.innerHTML = '<div class="prDim"></div><div class="prModal siModal" role="dialog" aria-modal="true">' + body + '</div>';
+    } else {
+      wrap.className = 'shWrap siWrap siSheetWrap';
+      wrap.innerHTML = '<div class="shDim"></div><div class="sheet siSheet" role="dialog" aria-modal="true">' +
+        '<div class="shHandle"></div>' + body + '<div class="shHome"></div></div>';
+    }
+    host.appendChild(wrap);
+    const show = key => {
+      const c = SEC_INFO[key]; if (!c) return;
+      wrap.querySelector('.siTitle').textContent = c.title;
+      wrap.querySelector('.siBody').textContent = c.body;
+      wrap.classList.add('show');
+      requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
+    };
+    const hide = () => {
+      wrap.classList.remove('on');
+      setTimeout(() => { if (!wrap.classList.contains('on')) wrap.classList.remove('show'); }, 480);
+    };
+    wrap.querySelector('.siX').addEventListener('click', hide);
+    wrap.querySelector('.prDim, .shDim').addEventListener('click', hide);
+    addEventListener('keydown', e => { if (e.key === 'Escape' && wrap.classList.contains('on')) hide(); });
+    return { show, hide, wrap };
+  }
+  {
+    const siD = infoSheet(document.body, true);
+    const siM = infoSheet(document.getElementById('phone'), false);
+    document.addEventListener('click', e => {
+      const b = e.target.closest('.secInf');
+      if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      const onPhone = !!b.closest('#phone');
+      const s = onPhone ? siM : siD;
+      if (s) s.show(b.dataset.info);
+    });
+    // a page change closes whichever is open
+    document.addEventListener('everlab:mode', () => { if (siD) siD.hide(); if (siM) siM.hide(); });
+  }
 
   // the two mini cards swipe: coverage runs the dial then its prompts, steps
   // runs the week then heart rate and sleep. Every copy on the page joins in.
@@ -21200,6 +21315,10 @@
         empty.hidden = any;
       }
       hold(250);
+      // the list knows a record is chosen, so what the choice already says
+      // need not be said again on every group (the records list drops the
+      // provider line under its group headers while a provider is chosen)
+      list.classList.toggle('recChosen', recSet !== 'all' && !recAll);
       list.hidden = false; if (skel) skel.hidden = true;
       afterApply();
     }
@@ -21241,9 +21360,18 @@
       rec.listEl.innerHTML = recs.map(r =>
         '<button class="mRecOpt' + (r.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
                 'aria-selected="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
-          '<span class="t"><b>' + r.label + (r.id === newest ? ' <span class="mRecNew">New</span>' : '') + '</b>' +
+          // the badge: the newest report's, live with the New results notice;
+          // or an option's own (`isNew`, the records menu's latest request),
+          // shown whatever the notice is doing
+          '<span class="t"><b>' + r.label + (r.isNew ? ' <span class="mRecNew always">New</span>' : r.id === newest ? ' <span class="mRecNew">New</span>' : '') + '</b>' +
             (r.sub ? '<i>' + r.sub + '</i>' : r.cat ? '<i>' + r.cat + ' &nbsp;|&nbsp; ' + r.date + '</i>' : '') + '</span>' +
-          (r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
+          // the pill on the right: a count of readings with the chart glyph,
+          // or the option's own words ("4 records")
+          // All records counts every row the list has -- readings on the
+          // biomarkers' menu, records on the records' ("All records: add
+          // number badge right side")
+          (r.id === 'all' ? '<span class="n">' + (cfg.recKey ? allRows.length + ' records' : CHART + allRows.length) + '</span>' :
+           r.nText ? '<span class="n">' + r.nText + '</span>' : r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
         '</button>').join('');
       const isOpen = () => document.body.classList.contains('mRecOn') && !rec.menu.hidden;
       const open = on => {

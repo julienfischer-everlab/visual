@@ -9300,6 +9300,57 @@ of the Layout tweak, "as default".
   in view, the upload card's centring; `stRepStyle` reads visual and the body
   wears repVisual at load; no errors.
 
+### 5.329 Service requests in the records menu; the menus' All row and hover; the section i
+
+Five asks in one round.
+
+- **The records menu lists service requests, not providers** ("list a few
+  examples of service requests in the dropdown: Title, NEW, X records,
+  Date"). Each MEDS group is one request now, named by `sr` and keyed by `s`
+  (`sr1`…`sr6`): *Full blood & tumour markers* (New, 4 records, 24 Sep 2025),
+  *DEXA & body composition*, *Travel vaccinations*, *Liver, iron & thyroid
+  panel*, *Cardiac CT & calcium score*, *Lipid & glucose check*. The option
+  builder took two more fields: `isNew` (an option's own badge, `.mRecNew
+  .always`, shown whatever the New results notice is doing) and `nText` (the
+  pill's own words, "4 records", in place of the chart glyph and a count).
+- **No provider line while a request is chosen** ("when the filter is
+  active, no need for the subtitle below the grouping"): `applyFilter` marks
+  the list `recChosen` when a record other than a range is chosen, and
+  `.mMedList.recChosen .mMedTop .src` hides. The biomarkers' list wears the
+  class too and nothing there answers to it. The chips' tally also went
+  through `recHit`, so they count the chosen request (the screenshot's 0 / 0
+  / 0 was the old `data-r` test against a key it could not match).
+- **All records carries a count and a span** ("add number badge right side,
+  date as well below, full date range"): on both menus the All row gets the
+  pill -- every row the list has, counted by the menu (110 readings; "20
+  records") -- and a second line: `2011 – 2026` on the biomarkers' (RECS
+  `sub`, as Historical has), `Jun 2024 – Sep 2025` on the records' (`MED_SPAN`,
+  oldest to newest request, month and year).
+- **Hover on the menu rows** ("following the pattern that bleeds outside the
+  container"): the selected plate at a whisper (`.045`), on `@media
+  (hover:hover)`; the hairlines run 12px in from the plate's edges so the
+  plate stands 12px outside the text on both sides, as the organ list's pill
+  stands outside its column; the hairlines either side of the hovered row go,
+  as they do for the chosen one. Measured: plate at 378, text at 390.
+- **The i beside both section titles** ("opens a bottom sheet on mobile, a
+  modal on desktop"): `button.inf.secInf` -- the panel's own i, made a
+  button -- after *Everlab reports* (desk `.secHead`, the phone's V2.5
+  `.rcHeroHead` and V3 host) and *Medical records* (both `.mMedsHead h3`).
+  `infoSheet(host, desk)` builds one per surface: the desk's in the
+  past-results modal chrome (dim + centred card, 480 wide, fixed to the
+  page, fading in) on `body`, the phone's in the phone frame's sheet chrome
+  (handle, home bar, slide up). `SEC_INFO` holds the copy, from the brief:
+  *Reports written by Everlab from your results. Each one is your data read
+  for you: what was found, what it means, and what to do next.* / *The raw
+  documents, exactly as they came from your providers: pathology, imaging
+  and immunisation records, kept in one place so nothing is lost.* Close on
+  the cross, the dim, Escape, or a page change.
+- Checks: `medsrc.js` (options with badge, pill and date; sr1 and sr4 chosen
+  -- one group, no provider line, chips re-counted; cleared; the biomarkers'
+  menu untouched), `secinfo.js` (All rows on both menus, hover plate and
+  hairline, both desk i's open and close their modal by Escape and the dim,
+  the phone i opens the sheet and the dim closes it); no errors.
+
 ---
 
 ## 6. Open items
