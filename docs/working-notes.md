@@ -9779,6 +9779,35 @@ review* everywhere it is named -- RECS, the two bento cards' static title
 (desk and phone), the report cards, the menus, the drawer, the test card's
 link. Its readings, date and badge are unchanged. Check: `rename.js`.
 
+### 5.354 One select over both halves; the Visual card's badge and CTA
+
+- **The filter above stays the same one** ("when switching to Records the
+  filter above should stay the same one"). Under V4 the biomarkers' record
+  select and search are the database's only ones: their row stays up on
+  both halves and the records' own row (select and search) is hidden.
+  Records hides only the biomarkers' chips and list. Choosing a report
+  there drives the records to the request that produced it (`syncMed`, from
+  the filter's `onChoose` and on the switch to Records; All records when
+  none did), and what is typed in the one search is typed into the records'
+  hidden field too. The other direction is gone: the records never choose
+  for the biomarkers, so a report with no request behind it is not lost on
+  the way back.
+- **The same gap and margin on both halves** ("the same gap and margin on
+  the filter section across the active tab"): the chips stand 22px under
+  the select row on both -- the records' bar brings no padding of its own
+  under V4 -- and both chip rows start on the row's left edge (372 on the
+  desk). The records' bar pins under the pinned select row (top 46).
+- **The Visual card** ("New next to title; need CTA rounded, See report
+  right side bottom"): the badge stands beside the title (28 tall, on the
+  title's middle), the corner copy hidden as before; the CTA is back in the
+  Visual dress as a rounded pill reading *See report*, 34 tall, 22px off the
+  card's right and bottom, on the meta line's level, the meta line leaving
+  it 150px.
+- Check: `oneselect.js` -- desk: Diagnostic review chosen, Records keeps
+  the label and shows its one request, "tumour" filters the records, clear
+  returns both to All; row-to-chips 22 on both halves; the card's badge and
+  CTA; the phone the same, its records bar's own search gone.
+
 ---
 
 ## 6. Open items

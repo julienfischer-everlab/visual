@@ -4488,7 +4488,13 @@
   body.repVisual .rcCard.rcBig .rcTitle{flex:none;margin-top:6px;}
   body.repVisual .rcCard.rcBig .rcMeta{flex:none;}
   body.repVisual .rcCard.rcBig .rcMeta{margin-top:4px;}
-  body.repVisual .rcCard.rcBig .rcCta{display:none;}
+  /* the CTA stays, bottom right, off the lines ("need CTA rounded, See
+     report right side bottom"): a rounded pill on the meta line's level */
+  body.repVisual .rcCard.rcBig .rcCta{
+    display:inline-flex;align-items:center;position:absolute;right:22px;bottom:22px;margin:0;
+    height:34px;padding:0 16px;border-radius:999px;
+  }
+  body.repVisual .rcCard.rcBig .rcMeta{padding-right:150px;}   /* room for the pill */
   /* The New badge sits in the card's footer, right, off the image ("on this
      layout the new badge should be on the footer on the right side, but
      outside the image"). Not the corner badge moved: a second copy written
@@ -4500,8 +4506,8 @@
   .rcNew.rcNewInline{display:none;}
   body.repVisual .rcCard.rcBig .rcNew:not(.rcNewInline){display:none;}
   body.repVisual .rcCard.rcBig .rcNew.rcNewInline{
-    display:inline-block;position:static;float:right;top:auto;right:auto;bottom:auto;left:auto;
-    margin:-3px 0 0 8px;order:0;align-self:auto;
+    display:inline-block;position:static;float:none;top:auto;right:auto;bottom:auto;left:auto;
+    margin:0 0 0 10px;vertical-align:middle;order:0;align-self:auto;   /* beside the title ("New next to title") */
   }
   /* the desk's one-report row card is half the page now, and its meta line
      beside the photo has no room for the badge: there it is the corner badge
@@ -5013,9 +5019,22 @@
   body.ia4 .dash #dRecsList{margin-top:14px;}
   body.ia4 #phone #mMedsWrap > .msWrap:not(.mMedBar){margin-left:-13px;margin-right:-13px;}
   body.ia4 #phone #mMedsWrap .mrecs{padding-left:0;padding-right:0;}
-  /* the segments */
-  body.ia4.resRec .dash .dFilters, body.ia4.resRec .dash #dRecsList, body.ia4.resRec .dash .dSkel, body.ia4.resRec .dash #dSearchEmpty,
-  body.ia4.resRec #phone .msWrap:not(.mMedBar), body.ia4.resRec #phone #mRecs, body.ia4.resRec #phone #mSkel, body.ia4.resRec #phone #mSearchEmpty{display:none !important;}
+  /* The segments. ONE record select and one search over both halves ("when
+     switching to Records the filter above should stay the same one"): the
+     biomarkers' row stays up whichever half shows, the records' own row and
+     select go, and picking a report there filters the records to the
+     request that produced it (syncMed). Records hides only the biomarkers'
+     chips and list. */
+  body.ia4 .dash .dMedRow, body.ia4 #phone #mMedBox{display:none !important;}
+  body.ia4.resRec .dash #dRow2, body.ia4.resRec .dash #dRecsList, body.ia4.resRec .dash .dSkel, body.ia4.resRec .dash #dSearchEmpty,
+  body.ia4.resRec #phone #mRow2, body.ia4.resRec #phone #mRecs, body.ia4.resRec #phone #mSkel, body.ia4.resRec #phone #mSearchEmpty{display:none !important;}
+  /* the same gap under the select row on both halves ("the same gap and
+     margin across the active tab"): the row's own 22px, so the records' bar
+     brings no padding of its own, and it pins under the pinned row */
+  body.ia4 .dash .dMedBar{padding-top:0;}
+  body.ia4.resRec .dash .dMedBar{top:46px;}
+  body.ia4.resRec .dash .dFilters{margin-bottom:0;}
+  body.ia4 #phone .mMedBar{position:static;}
   body.ia4.resBio .mMedsHead, body.ia4.resBio .dMedBar, body.ia4.resBio .mMedBar, body.ia4.resBio .mMedNote,
   body.ia4.resBio .mMedList, body.ia4.resBio #dMedEmpty, body.ia4.resBio #mMedEmpty{display:none !important;}
   .prScroll{flex:0 1 auto;min-height:0;overflow-y:auto;padding:0 22px;scrollbar-width:none;}
@@ -18572,15 +18591,15 @@
           'style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + ';background-image:url(' + repImg(r) + ')">' + repArtHTML(r, 'v') + '</button>' +
         '<div class="rcInfo">' +
           '<div class="rcEyebrow">' + (dateTop ? r.date : lbl) + '</div>' +
-          '<div class="rcTitle">' + r.label + '</div>' +
+          // the Visual layout's badge stands beside the title ("New next to
+          // the title"); the corner badge serves the other dress
+          '<div class="rcTitle">' + r.label + (lbl === LATEST ? '<span class="rcNew rcNewInline">New</span>' : '') + '</div>' +
           '<div class="rcMeta">' + (dateTop ? '' : r.date + ' &middot; ') +
             (r.media === 'video' ? 'Video' : r.n + ' biomarkers') +
-            // the Visual layout's badge: on the meta line, floated to its right
-            // end -- the card's footer, off the image, on a card of any height
-            (lbl === LATEST ? '<span class="rcNew rcNewInline">New</span>' : '') +
           '</div>' +
         '</div>' +
-        '<button class="rcCta" type="button" data-r="' + r.id + '">View report</button>' +
+        // the way in: a rounded CTA, bottom right in the Visual dress
+        '<button class="rcCta" type="button" data-r="' + r.id + '">See report</button>' +
       '</div>';
     // the stack's rows carry a small thumbnail of the report's visual in
     // the Visual layout ("put a small thumbnail next to each stacked
@@ -19808,6 +19827,15 @@
   // two can carry the test across ("when switching to Records, keep the
   // test active above"). Written by the filters' onChoose.
   const LAST_PICK = { bio: 'all', med: 'all' };
+  // Under V4 the biomarkers' record select is the database's only one, so
+  // the report chosen there decides the records too: the request that
+  // produced it, or All records when none did ("when switching to Records
+  // the filter above should stay the same one")
+  function syncMed(){
+    if (!CARD_STATE.ia4 || typeof MEDS === 'undefined') return;
+    const g = MEDS.find(x => x.rep && x.rep === LAST_PICK.bio);
+    document.dispatchEvent(new CustomEvent('everlab:pickMed', { detail: g ? g.s : 'all' }));
+  }
   const CARD_STATE = { emBio: false, emAct: false, emAge: false,
                        emOrg: false,
                        // which card holds the left slot of the pair; a class
@@ -20622,15 +20650,10 @@
     // active above"): the report the biomarkers had chosen becomes the
     // request that produced it, and the other way round -- All records when
     // the choice has no counterpart
-    if (CARD_STATE.ia4){
-      if (v === 'rec'){
-        const g = MEDS.find(x => x.rep && x.rep === LAST_PICK.bio);
-        document.dispatchEvent(new CustomEvent('everlab:pickMed', { detail: g ? g.s : 'all' }));
-      } else {
-        const g = MEDS.find(x => x.s === LAST_PICK.med);
-        document.dispatchEvent(new CustomEvent('everlab:pickRep', { detail: g && g.rep ? g.rep : 'all' }));
-      }
-    }
+    // (one direction only: the one select is the biomarkers', so the records
+    // follow it, never the other way -- a report with no request behind it
+    // would otherwise be lost on the way back)
+    if (CARD_STATE.ia4 && v === 'rec') syncMed();
     document.dispatchEvent(new CustomEvent('everlab:repTab'));   // the pinned bars re-measure
   }
   // The pill stands at the head of the showing half's chip row -- the
@@ -20669,6 +20692,17 @@
       clr.addEventListener('click', () => { inp.value = ''; push(); inp.focus(); });
     }
     box.addEventListener('click', e => { if (clr && clr.contains(e.target)) return; inp.focus(); });
+  });
+  // Under V4 the one search is the biomarkers' field, which stays up on
+  // both halves: what is typed there is typed into the records' (hidden)
+  // field too, so the records half filters by it as well
+  [['dSearchIn', 'dMedIn'], ['mSearchIn', 'mMedIn']].forEach(([from, to]) => {
+    const a = document.getElementById(from), b = document.getElementById(to);
+    if (!a || !b) return;
+    a.addEventListener('input', () => {
+      if (!CARD_STATE.ia4 || b.value === a.value) return;
+      b.value = a.value; b.dispatchEvent(new Event('input', { bubbles: true }));
+    });
   });
   // (the IA select was merged into the Layout select: see stV2Sel's handler)
   // Your tests: one card per service request -- its picture (by category,
@@ -22498,7 +22532,7 @@
       skel: document.getElementById('dSkel'), empty: document.getElementById('dSearchEmpty'),
       input: input, fieldEl: field,
       chipsBar: document.querySelector('.dash .filters'),
-      onChoose: id => { LAST_PICK.bio = id; },
+      onChoose: id => { LAST_PICK.bio = id; syncMed(); },
       cat: { chip: document.getElementById('dCatChip'), lbl: document.querySelector('#dCatChip .catLbl'),
              menu: document.getElementById('dCatMenu'), listEl: document.getElementById('dCatList'),
              cats: TYPES },
@@ -22743,7 +22777,7 @@
       list: recs, groupSel: '.mgrp', rowSel: '.mbrow',
       skel: skel, empty: empty, input: input, fieldEl: wrap,
       chipsBar: document.getElementById('mChips'),
-      onChoose: id => { LAST_PICK.bio = id; },
+      onChoose: id => { LAST_PICK.bio = id; syncMed(); },
       cat: { chip: document.getElementById('mCatChip'), lbl: document.querySelector('#mCatChip .catLbl'),
              menu: document.getElementById('mCatMenu'), listEl: document.getElementById('mCatList'),
              cats: TYPES },
