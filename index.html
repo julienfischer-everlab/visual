@@ -1619,7 +1619,7 @@
   .fchip.catChip{gap:9px;}
   /* a hairline between the type chip and the range chips: two questions on
      one row ("small divider between type and all") */
-  .chipDiv{flex:none;width:1px;height:20px;border-radius:1px;background:rgba(255,255,255,.14);align-self:center;}
+  .chipDiv{flex:none;width:1px;height:20px;border-radius:1px;background:rgba(255,255,255,.14);align-self:center;margin:0 8px;}   /* 8 + the row's 8 each side ("+8px left and right") */
   body.light .chipDiv{background:rgba(46,31,26,.16);}
   .fchip.catChip .catChev{width:11px;height:7px;flex:none;color:#8b8b86;transition:transform .18s ease;}
   .fchip.catChip[aria-expanded="true"] .catChev{transform:rotate(180deg);}
@@ -2229,7 +2229,9 @@
   .mMedGrp{margin-bottom:22px;}
   .mMedGrp[hidden]{display:none;}
   .mMedTop{
-    display:flex;align-items:flex-start;gap:10px;padding:13px 14px;
+    /* centred, not top-aligned: with the provider line hidden the title is
+       one line beside a 34px button and sat high ("centered vertically") */
+    display:flex;align-items:center;gap:10px;padding:13px 14px;
     border-radius:14px;background:rgba(255,255,255,.05);
   }
   .mMedTop .t{flex:1;min-width:0;}
@@ -4814,6 +4816,11 @@
   .siSheet .siScroll{padding:0 18px 8px;}
   .siTitle{margin:6px 0 10px;font-size:22px;font-weight:500;letter-spacing:-.3px;color:#ececec;}
   .siBody{margin:0;font-size:15px;line-height:1.5;color:#bdbdb9;}
+  .siBody p{margin:0 0 12px;}
+  .siBody p:last-child{margin-bottom:0;}
+  /* three paragraphs on the phone can outrun a short sheet: the copy scrolls */
+  .siSheet .siScroll{flex:0 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;}
+  .siSheet{max-height:80%;}
   body.light .siTitle{color:#2e1f1a;}
   body.light .siBody{color:#5a4a3c;}
   /* the sheet's home bar has room under the copy */
@@ -17673,7 +17680,10 @@
   const MED_CATS = [
     { k: 'path', label: 'Pathology',    dot: '#e0865f' },
     { k: 'imag', label: 'Imaging',      dot: '#8fa9d8' },
-    { k: 'immu', label: 'Immunisation', dot: '#8b8b86' }
+    { k: 'immu', label: 'Immunisation', dot: '#8b8b86' },
+    // a colonoscopy is neither a test nor a picture: its own category, so the
+    // chips and the group header can name it
+    { k: 'proc', label: 'Procedures',   dot: '#c9a56b' }
   ];
   // Each group is one SERVICE REQUEST -- the order that produced these
   // records -- named by `sr` (the desk's record select above the list offers
@@ -17690,7 +17700,15 @@
     { c: 'imag', s: 'sr5', sr: 'Cardiac CT & calcium score', date: '02 Mar 2025', src: 'COMRAD / PRP Diagnostic Imaging',
       docs: ['Cardiac CT', 'Coronary calcium score'] },
     { c: 'path', s: 'sr6', sr: 'Lipid & glucose check', date: '18 Jun 2024', src: 'Everlab Pathology',
-      docs: ['Lipid profile', 'HbA1c', 'Vitamin D'] }
+      docs: ['Lipid profile', 'HbA1c', 'Vitamin D'] },
+    // three more, further back ("Colonoscopy, Microbiome test, MRI scan --
+    // put some random records below in the list")
+    { c: 'proc', s: 'sr7', sr: 'Colonoscopy', date: '02 Nov 2023', src: 'Sydney Endoscopy Centre',
+      docs: ['Colonoscopy report', 'Histopathology', 'Recall letter'] },
+    { c: 'path', s: 'sr8', sr: 'Microbiome test', date: '19 Sep 2023', src: 'Microba Life Sciences',
+      docs: ['Gut microbiome profile', 'Stool culture', 'Dietary recommendations'] },
+    { c: 'imag', s: 'sr9', sr: 'MRI scan', date: '07 Mar 2023', src: 'I-MED Radiology',
+      docs: ['Lumbar spine MRI', 'Radiologist summary'] }
   ];
   // The record select over the desk's records list ("add filter below
   // Medical records", V2.5): the biomarkers' own control, asking the records
@@ -19033,17 +19051,24 @@
   // chrome), the phone's a sheet in the phone frame (the sheet chrome the rest
   // of the phone uses) -- and the i says which copy to show. The button
   // decides the surface by where it stands.
+  // a few short paragraphs each ("elaborate a bit"), the records' the fuller
   const SEC_INFO = {
-    reports: { title: 'Everlab reports',
-               body: 'Reports written by Everlab from your results. Each one is your data read for you: what was found, what it means, and what to do next.' },
-    records: { title: 'Medical records',
-               body: 'The raw documents, exactly as they came from your providers: pathology, imaging and immunisation records, kept in one place so nothing is lost.' }
+    reports: { title: 'Everlab reports', body: [
+      'Everlab reports are written by our clinical team from your results. Where a medical record is the raw document, a report is the reading of it: what was measured, what stands out, and how it compares with where you were last time.',
+      'Each report explains what the findings mean for you and what to do next, whether that is a change worth making, a follow-up test, or nothing at all. Your latest report sits first; the earlier ones stay here so you can see how things have moved.',
+      'A New badge marks a report you have not opened yet. Open any of them to read it in full, with the biomarkers it draws on listed beneath.'
+    ] },
+    records: { title: 'Medical records', body: [
+      'Medical records are the raw documents behind your results, exactly as they came from the providers who produced them: pathology reports, imaging and scan reports, immunisation histories, and the letters and summaries that follow a procedure such as a colonoscopy.',
+      'Everlab keeps them here in one place, grouped by the service request that produced them, so you can find the original whenever you need it, download it, or hand it to another clinician. Filter by request or by type above, or search for a document by name.',
+      'Got a record from another provider? Upload it and it will sit alongside the rest.'
+    ] }
   };
   function infoSheet(host, desk){
     if (!host) return null;
     const X = '<button class="prX siX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>';
     const body = '<div class="prTop">' + X + '</div>' +
-      '<div class="siScroll"><h3 class="siTitle"></h3><p class="siBody"></p></div>';
+      '<div class="siScroll"><h3 class="siTitle"></h3><div class="siBody"></div></div>';
     const wrap = document.createElement('div');
     if (desk){
       wrap.className = 'siWrap siDesk';
@@ -19057,7 +19082,7 @@
     const show = key => {
       const c = SEC_INFO[key]; if (!c) return;
       wrap.querySelector('.siTitle').textContent = c.title;
-      wrap.querySelector('.siBody').textContent = c.body;
+      wrap.querySelector('.siBody').innerHTML = [].concat(c.body).map(p => '<p>' + p + '</p>').join('');
       wrap.classList.add('show');
       requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
     };
@@ -21057,14 +21082,17 @@
   const TYPES = ['Blood', 'Genetics', 'Wearables', 'Imaging', 'Urine', 'Microbiome', 'Body composition', 'Self-reported'];
   const TYPE_OF = {
     'Lipoprotein(a)': 'Genetics',
-    'Resting metabolic rate': 'Wearables', 'Postprandial glucose': 'Wearables',
+    'Postprandial glucose': 'Wearables',                          // a CGM's reading
     'Visceral fat index': 'Imaging',
     'Urine albumin / creatinine': 'Urine',
     'Bile acids': 'Microbiome',
-    'Body fat percentage': 'Body composition',
+    'Body fat percentage': 'Body composition', 'Resting metabolic rate': 'Body composition',
     'Waist-to-height ratio': 'Self-reported'
   };
-  const rowType = name => catKey(TYPE_OF[name] || 'Blood');
+  // every reading in the Sleep & Recovery group is the ring's, so the group
+  // says so once rather than each row being listed above
+  const WEARABLE_GROUPS = { 'Sleep & Recovery': true };
+  const rowType = (name, group) => catKey(TYPE_OF[name] || (group && WEARABLE_GROUPS[group] ? 'Wearables' : 'Blood'));
   const PANEL = [
     ['Liver Health',
      'Biomarkers that indicate liver health and function, critical in metabolic processes.', `
@@ -21189,7 +21217,28 @@
       Immunoglobulin A|ok|2.1 g/L
       Immunoglobulin M|sub|0.42 g/L
       Neutrophil / lymphocyte ratio|out|3.4
-      Galectin-3|other|— `]
+      Galectin-3|other|— `],
+    // What a wearable records ("add real wearable data, e.g. Oura"): the
+    // ring's own measures, nightly and daily, in its own units -- every one
+    // of them a Wearables reading for the types chip
+    ['Sleep & Recovery',
+     'What your Oura ring records overnight and through the day: rest, recovery and movement, averaged over the last 30 nights.', `
+      Sleep score|sub|76
+      Readiness score|ok|84
+      Activity score|ok|88
+      Total sleep|sub|6 h 48 min
+      Deep sleep|sub|1 h 12 min
+      REM sleep|ok|1 h 38 min
+      Sleep efficiency|ok|91 %
+      Sleep latency|ok|11 min
+      Resting heart rate|ok|52 bpm
+      Heart rate variability|ok|48 ms
+      Respiratory rate|ok|14.2 /min
+      Blood oxygen (SpO2)|ok|97 %
+      Skin temperature deviation|ok|+0.1 °C
+      Daily steps|ok|9,400
+      Active calories|sub|410 kcal
+      Sedentary time|out|9 h 20 min `]
   ];
   const ST_WORD = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range', other: 'Unclassified' };
   // The record sets. Every reading belongs to one of the two named tests, so
@@ -21212,7 +21261,7 @@
         // all stack on one pixel and do not move between loads
         let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
         const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
-        html += '<div class="mbrow" data-type="' + rowType(name) + '">' +
+        html += '<div class="mbrow" data-type="' + rowType(name, title) + '">' +
                   '<span>' + name + '</span>' +
                   '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
                   '<span class="g" data-v="' + val + '">' + val + '</span>' +
@@ -21628,7 +21677,7 @@
         const spark = st === 'other' ? '<span></span>' :
           '<svg width="76" height="24" viewBox="0 0 76 24" aria-hidden="true"><path d="' +
           SPARK[h % SPARK.length] + '" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>';
-        html += '<div class="brow" data-type="' + rowType(name) + '">' +
+        html += '<div class="brow" data-type="' + rowType(name, title) + '">' +
                   '<span>' + name + '</span>' +
                   '<span class="g">' + val + '</span>' +
                   '<span class="g dDate"></span>' +

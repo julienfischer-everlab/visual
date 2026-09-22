@@ -9388,6 +9388,67 @@ as two questions on one row. Check: `chipdiv.js` -- 1×20, 8/8, centred;
 2px between every pair of rows on the three desk menus; the phone's
 divider; no errors.
 
+### 5.332 The group header centres its line
+
+"Centered vertically": with a request chosen the provider line hides and
+the group header's title is one line beside a 34px button; the header was
+`align-items:flex-start`, so the title sat high with the button centred.
+It is `align-items:center` now, in both states -- text and button both 0px
+off the header's centre at 63px (two lines) and 60px (one). Check:
+`medtop.js`.
+
+### 5.333 Three more requests at the foot of the records
+
+"Colonoscopy, Microbiome test, MRI scan -- put some random records below in
+the list." Three MEDS groups after the six, further back in time: a
+*Colonoscopy* (Sydney Endoscopy Centre, Nov 2023: report, histopathology,
+recall letter), a *Microbiome test* (Microba, Sep 2023: gut profile, stool
+culture, dietary recommendations) and an *MRI scan* (I-MED, Mar 2023:
+lumbar spine MRI, radiologist summary). A colonoscopy is neither a test nor
+a picture, so `MED_CATS` gained *Procedures* (`proc`, a sand dot), which
+the chips row, the group headers and the counts take up on their own: 28
+All / 14 Pathology / 8 Imaging / 3 Immunisation / 3 Procedures. The menu
+lists nine requests and All records spans Mar 2023 – Sep 2025. Check:
+`medsrc.js`, `medtail.js`.
+
+### 5.334 The explainers, elaborated
+
+"Elaborate a bit" / "same here": each section's copy is three short
+paragraphs now (`SEC_INFO.*.body` is an array; the sheet writes one `<p>`
+per entry, 12px apart). Medical records: what they are and where they come
+from, with the procedure letters named; that they are kept in one place,
+grouped by service request, to find, download or hand on, with the filters
+and search pointed at; and the upload. Everlab reports: written by the
+clinical team from the results, the reading of the record rather than the
+record; what the findings mean and what to do next, latest first; and what
+the New badge means and that a report opens in full with its biomarkers.
+The desk modal is 480×416 for the records' copy; the phone sheet caps at
+80% and its copy scrolls if it must (it does not, at 389px). Check:
+`secinfo.js`, `modalshot.js`.
+
+### 5.335 The chip divider, wider
+
+"+8px left and right from divider": `.chipDiv{margin:0 8px}`, so with the
+row's own 8px gaps the hairline stands 16px off the chip on either side.
+Check: `chipdiv.js` -- 16/16 on both screens.
+
+### 5.336 Real wearable data: an Oura group
+
+"Add real wearable data, e.g. Oura wearables." A ninth PANEL group, *Sleep
+& Recovery* -- "what your Oura ring records overnight and through the day,
+averaged over the last 30 nights" -- with sixteen of the ring's own
+measures in its own units: sleep, readiness and activity scores; total,
+deep and REM sleep, efficiency and latency; resting heart rate, HRV,
+respiratory rate, SpO2, skin temperature deviation; steps, active calories
+and sedentary time (the one out of range). `rowType(name, group)` reads the
+group: everything in a `WEARABLE_GROUPS` group is Wearables without being
+listed one by one; resting metabolic rate moved to Body composition, since
+the ring does not measure it, and postprandial glucose stays a CGM's
+Wearables reading. The list is 126 readings now (79 / 24 / 13 / 10), and
+Wearables shows 17 across two groups (12 / 4 / 1 / 0). The hero's 142 is
+untouched -- it is the account's figure, not the panel's count. Check:
+`wear.js` -- both screens.
+
 ---
 
 ## 6. Open items
