@@ -9896,6 +9896,19 @@ its buttons at 5 (8 less the 3px inset), no longer a pill. "Player no
 border / increase blur bg": the play disc drops its inset ring and blurs
 what is behind it at 18px (was 8). Check: `menuw.js`.
 
+### 5.362 One report: thumbnail top right, CTA under the lines
+
+"If one report: put the thumbnail top right following the card padding;
+content on the left and the CTA below the content on the left." The desk's
+one-report row card is a grid inside its own 22px padding: the eyebrow,
+title and meta in the left column, the See report pill under them (static,
+16px below the meta, on the card's bottom padding), and a 160x106 tile at
+12px radius in the right column, top-aligned -- 22px from the top and the
+right. The full-height tile bleeding to the card's edge is gone at this
+count; the other shapes keep theirs. The play disc is 44px on this tile.
+Check: `onerep2.js` (thumb 22/22 off the corner, CTA 22 from the left,
+still centred at 0,0 with Video on).
+
 ---
 
 ## 6. Open items
