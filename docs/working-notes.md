@@ -9643,6 +9643,32 @@ the desk tabs answers null under `ia4`, and `v3Layout` reads null as "stay
 in the seat". The phone keeps its tabs under the hero, as that layout
 draws it. Check: `deskv4.js`, `v4ia.js`.
 
+### 5.348 The design's i; the test card trimmed; See results
+
+- **The i glyph** ("use this SVG for the i icon", `li-new_info.svg`): a
+  16px ring with the i drawn in, inlined as the five section buttons'
+  content with `fill:currentColor`. The button draws nothing of its own
+  now -- `.dash .inf.secInf` / `#phone .inf.secInf` outrank the bordered
+  circle the `.inf` class gave it -- and the glyph takes the text's grey,
+  white on hover. 16×16, no border, centred on the heading's line.
+- **The card, trimmed** ("remove biomarkers, remove the dot colour before
+  category"): the eyebrow is the category's word alone and the status line
+  under the title is gone; the footer's Biomarkers figure is what the card
+  says about its readings.
+- **See results** ("bottom right footer: See results → go to the Results
+  tab filtering by the test"): a link at the footer's right end, in the
+  upload link's dress at the figures' size. It opens the Results tab,
+  chooses the test's request in the records half (`everlab:pickMed`, a new
+  hook both records filters answer; the phone's records filter took
+  `MED_SRCS` and the `data-s` key so it can) and, when the test produced
+  a report, that report in the biomarkers half (`everlab:pickRep`: the
+  pick without `pickRec`'s change of page) -- All records otherwise, so an
+  earlier choice does not hang over it -- sets the segment to All or
+  Records to match, and scrolls the database into view. Measured: Full
+  blood & tumour markers → 44 readings under *Pathology test* and one
+  request group; Travel vaccinations → Records alone, one group, the
+  biomarkers back on All records. Check: `infoicon.js`, `seeres.js`.
+
 ---
 
 ## 6. Open items

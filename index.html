@@ -4821,13 +4821,18 @@
      sheet is the past-results chrome on the desk (dim + centred card, fixed to
      the page) and the phone's sheet chrome in the phone frame; .show puts it
      in the tree, .on a frame later runs the fade and the slide. */
-  button.secInf{
-    padding:0;background:none;cursor:pointer;font-family:inherit;
-    vertical-align:3px;margin-left:8px;
-    transition:border-color .16s ease,color .16s ease;
+  /* the i is the design's own glyph now (li-new_info.svg: a 16px ring with
+     the i drawn in), so the button draws nothing of its own -- no border, no
+     ground -- and the glyph takes the text's grey, white on hover */
+  .dash .inf.secInf, #phone .inf.secInf{      /* outranks .dash .inf / #phone .inf, the bordered circle */
+    width:16px;height:16px;border:0;padding:0;background:none;cursor:pointer;
+    display:inline-block;vertical-align:-1px;margin-left:8px;line-height:0;color:#8b8b86;
+    transition:color .16s ease;
   }
-  button.secInf:hover{border-color:#8b8b86;color:#ececec;}
-  .secHead .secInf, .mMedsHead .secInf{vertical-align:3px;}
+  .inf.secInf svg{width:16px;height:16px;display:block;}
+  .dash .inf.secInf:hover, #phone .inf.secInf:hover{color:#ececec;}
+  body.light .dash .inf.secInf, body.light #phone .inf.secInf{color:#9b8a75;}
+  body.light .dash .inf.secInf:hover, body.light #phone .inf.secInf:hover{color:#2e1f1a;}
   .siWrap{display:none;}
   .siWrap.show{display:block;}
   .siWrap.siDesk{position:fixed;inset:0;z-index:40;}
@@ -4885,6 +4890,18 @@
   .tcStat b{font-size:15px;font-weight:500;color:#ececec;white-space:nowrap;}
   body.light .tcStat b{color:#2e1f1a;}
   #phone .tcFoot{gap:32px;}
+  /* the way into the results, at the footer's right end -- the stack's See
+     more in its dress, at the figures' size */
+  .tcFoot .tcSee{
+    margin-left:auto;align-self:end;display:inline-flex;align-items:center;gap:5px;
+    border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:500;color:#ececec;
+    cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;
+    text-decoration:underline;text-decoration-color:rgba(236,236,236,.35);text-underline-offset:4px;
+    transition:text-decoration-color .16s ease;
+  }
+  .tcFoot .tcSee:hover{text-decoration-color:currentColor;}
+  .tcFoot .tcSee svg{width:10px;height:10px;}
+  body.light .tcFoot .tcSee{color:#2e1f1a;text-decoration-color:rgba(46,31,26,.35);}
   #phone .testsGrid{grid-template-columns:1fr;gap:12px;}
   .tcard{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.06);}
   #phone .tcard{border-radius:22px;background:rgba(255,255,255,.04);}
@@ -7779,7 +7796,7 @@
       <!-- a title only: the way to the rest of the reports is the stack card's
            own "See more", which appears when there are more than it shows.
            The i opens what the section is (a modal here, a sheet on the phone). -->
-      <div class="secHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span></div>
+      <div class="secHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.99996 0.666016C12.05 0.666016 15.3333 3.94926 15.3333 7.99935C15.3333 12.0494 12.05 15.3327 7.99996 15.3327C3.94987 15.3327 0.666626 12.0494 0.666626 7.99935C0.666626 3.94926 3.94987 0.666016 7.99996 0.666016ZM7.99996 1.99935C4.68625 1.99935 1.99996 4.68564 1.99996 7.99935C1.99996 11.3131 4.68625 13.9993 7.99996 13.9993C11.3137 13.9993 14 11.3131 14 7.99935C14 4.68564 11.3137 1.99935 7.99996 1.99935ZM7.99996 7.33268C8.36815 7.33268 8.66663 7.63116 8.66663 7.99935V10.666C8.66663 11.0342 8.36815 11.3327 7.99996 11.3327C7.63177 11.3327 7.33329 11.0342 7.33329 10.666V7.99935C7.33329 7.63116 7.63177 7.33268 7.99996 7.33268ZM8.00647 4.66602C8.37466 4.66602 8.67314 4.96449 8.67314 5.33268C8.67314 5.70087 8.37466 5.99935 8.00647 5.99935H7.99996C7.63177 5.99935 7.33329 5.70087 7.33329 5.33268C7.33329 4.96449 7.63177 4.66602 7.99996 4.66602H8.00647Z"/></svg></button></span></div>
       <div class="rbWrap dRepBento" id="dRepBento"></div>
       <div class="rcWrap dRepCards" id="dRepCards"></div>
       <div class="dRepShelf">
@@ -7821,7 +7838,7 @@
           </div>
         </div>
         <div class="mMedsHead">
-          <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records">i</button></h3>
+          <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.99996 0.666016C12.05 0.666016 15.3333 3.94926 15.3333 7.99935C15.3333 12.0494 12.05 15.3327 7.99996 15.3327C3.94987 15.3327 0.666626 12.0494 0.666626 7.99935C0.666626 3.94926 3.94987 0.666016 7.99996 0.666016ZM7.99996 1.99935C4.68625 1.99935 1.99996 4.68564 1.99996 7.99935C1.99996 11.3131 4.68625 13.9993 7.99996 13.9993C11.3137 13.9993 14 11.3131 14 7.99935C14 4.68564 11.3137 1.99935 7.99996 1.99935ZM7.99996 7.33268C8.36815 7.33268 8.66663 7.63116 8.66663 7.99935V10.666C8.66663 11.0342 8.36815 11.3327 7.99996 11.3327C7.63177 11.3327 7.33329 11.0342 7.33329 10.666V7.99935C7.33329 7.63116 7.63177 7.33268 7.99996 7.33268ZM8.00647 4.66602C8.37466 4.66602 8.67314 4.96449 8.67314 5.33268C8.67314 5.70087 8.37466 5.99935 8.00647 5.99935H7.99996C7.63177 5.99935 7.33329 5.70087 7.33329 5.33268C7.33329 4.96449 7.63177 4.66602 7.99996 4.66602H8.00647Z"/></svg></button></h3>
           <button class="mUpload" type="button">Upload document</button>
         </div>
         <div class="dMedBar" id="dMedBar">
@@ -8017,7 +8034,7 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="secHead rcHeroHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span><button class="rcMore arOpen" type="button">See more<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="secHead rcHeroHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.99996 0.666016C12.05 0.666016 15.3333 3.94926 15.3333 7.99935C15.3333 12.0494 12.05 15.3327 7.99996 15.3327C3.94987 15.3327 0.666626 12.0494 0.666626 7.99935C0.666626 3.94926 3.94987 0.666016 7.99996 0.666016ZM7.99996 1.99935C4.68625 1.99935 1.99996 4.68564 1.99996 7.99935C1.99996 11.3131 4.68625 13.9993 7.99996 13.9993C11.3137 13.9993 14 11.3131 14 7.99935C14 4.68564 11.3137 1.99935 7.99996 1.99935ZM7.99996 7.33268C8.36815 7.33268 8.66663 7.63116 8.66663 7.99935V10.666C8.66663 11.0342 8.36815 11.3327 7.99996 11.3327C7.63177 11.3327 7.33329 11.0342 7.33329 10.666V7.99935C7.33329 7.63116 7.63177 7.33268 7.99996 7.33268ZM8.00647 4.66602C8.37466 4.66602 8.67314 4.96449 8.67314 5.33268C8.67314 5.70087 8.37466 5.99935 8.00647 5.99935H7.99996C7.63177 5.99935 7.33329 5.70087 7.33329 5.33268C7.33329 4.96449 7.63177 4.66602 7.99996 4.66602H8.00647Z"/></svg></button></span><button class="rcMore arOpen" type="button">See more<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
@@ -8125,7 +8142,7 @@
          above the records it belongs with. The nodes are moved rather than
          copied, so there is one carousel with one set of handlers however the
          page is laid out. -->
-    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span><button class="rcMore arOpen" type="button">See more<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div></div>
+    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.99996 0.666016C12.05 0.666016 15.3333 3.94926 15.3333 7.99935C15.3333 12.0494 12.05 15.3327 7.99996 15.3327C3.94987 15.3327 0.666626 12.0494 0.666626 7.99935C0.666626 3.94926 3.94987 0.666016 7.99996 0.666016ZM7.99996 1.99935C4.68625 1.99935 1.99996 4.68564 1.99996 7.99935C1.99996 11.3131 4.68625 13.9993 7.99996 13.9993C11.3137 13.9993 14 11.3131 14 7.99935C14 4.68564 11.3137 1.99935 7.99996 1.99935ZM7.99996 7.33268C8.36815 7.33268 8.66663 7.63116 8.66663 7.99935V10.666C8.66663 11.0342 8.36815 11.3327 7.99996 11.3327C7.63177 11.3327 7.33329 11.0342 7.33329 10.666V7.99935C7.33329 7.63116 7.63177 7.33268 7.99996 7.33268ZM8.00647 4.66602C8.37466 4.66602 8.67314 4.96449 8.67314 5.33268C8.67314 5.70087 8.37466 5.99935 8.00647 5.99935H7.99996C7.63177 5.99935 7.33329 5.70087 7.33329 5.33268C7.33329 4.96449 7.63177 4.66602 7.99996 4.66602H8.00647Z"/></svg></button></span><button class="rcMore arOpen" type="button">See more<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div></div>
     <!-- V4's third tab: the findings themselves, stacked. Each one opens a
          sheet on the phone and a drawer on the desk. Built from INSIGHTS in
          the script, like every other list on the page. -->
@@ -8156,7 +8173,7 @@
         <div class="resSub bio">Biomarkers</div>
       </div>
       <div class="mMedsHead">
-        <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records">i</button></h3>
+        <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.99996 0.666016C12.05 0.666016 15.3333 3.94926 15.3333 7.99935C15.3333 12.0494 12.05 15.3327 7.99996 15.3327C3.94987 15.3327 0.666626 12.0494 0.666626 7.99935C0.666626 3.94926 3.94987 0.666016 7.99996 0.666016ZM7.99996 1.99935C4.68625 1.99935 1.99996 4.68564 1.99996 7.99935C1.99996 11.3131 4.68625 13.9993 7.99996 13.9993C11.3137 13.9993 14 11.3131 14 7.99935C14 4.68564 11.3137 1.99935 7.99996 1.99935ZM7.99996 7.33268C8.36815 7.33268 8.66663 7.63116 8.66663 7.99935V10.666C8.66663 11.0342 8.36815 11.3327 7.99996 11.3327C7.63177 11.3327 7.33329 11.0342 7.33329 10.666V7.99935C7.33329 7.63116 7.63177 7.33268 7.99996 7.33268ZM8.00647 4.66602C8.37466 4.66602 8.67314 4.96449 8.67314 5.33268C8.67314 5.70087 8.37466 5.99935 8.00647 5.99935H7.99996C7.63177 5.99935 7.33329 5.70087 7.33329 5.33268C7.33329 4.96449 7.63177 4.66602 7.99996 4.66602H8.00647Z"/></svg></button></h3>
         <button class="mUpload" type="button">Upload document</button>
       </div>
       <!-- The records' filter is the biomarkers' bar, over a different list:
@@ -20622,16 +20639,19 @@
         // Documents")
         '<div class="tcBody">' +
           '<div class="tcMain">' +
-            '<div class="tcEyebrow"><i style="background:' + cat.dot + '"></i>' + cat.label + '</div>' +
+            // the category alone, no dot, and no status line under the title
+            // ("remove biomarkers, remove the dot colour before category"):
+            // the footer's count is what the card says about its readings
+            '<div class="tcEyebrow">' + cat.label + '</div>' +
             (rep ? '<button class="tcTitle tcOpen" type="button">' + g.sr + '</button>' : '<h3 class="tcTitle">' + g.sr + '</h3>') +
-            (t && t.n ? '<div class="tcBio"><span class="tcSt">' +
-              STS.filter(p => t[p[0]]).map(p => '<span><i class="' + p[0] + '"></i>' + t[p[0]] + ' ' + p[1] + '</span>').join('') + '</span></div>' : '') +
           '</div>' +
           (g.note ? '<div class="tcSide"><div class="tcNote"><div class="tcNoteBy">Note from ' + g.note.by + '</div><p>&ldquo;' + g.note.text + '&rdquo;</p></div></div>' : '') +
           '<div class="tcFoot">' +
             '<div class="tcStat"><div class="tcLbl">Date</div><b>' + g.date + '</b></div>' +
             (t && t.n ? '<div class="tcStat"><div class="tcLbl">Biomarkers</div><b>' + t.n + '</b></div>' : '') +
             '<div class="tcStat"><div class="tcLbl">Documents</div><b>' + docs.length + '</b></div>' +
+            // bottom right: into the Results tab, filtered to this test
+            '<button class="tcSee" type="button">See results<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button>' +
           '</div>' +
         '</div></article>';
     }).join('');
@@ -20639,6 +20659,24 @@
       const grid = h.querySelector('.testsGrid');
       grid.innerHTML = html;
       grid.addEventListener('click', e => {
+        // See results: the Results tab, filtered to this test -- its request
+        // in the records half and, when it produced a report, that report in
+        // the biomarkers half; both halves showing when there are two, the
+        // records alone when there is one; then the database scrolled to
+        const see = e.target.closest('.tcSee');
+        if (see){
+          const card = see.closest('.tcard');
+          const tab = document.querySelector(desk ? '#dTabsV2 [data-tab="rep"]' : '#mTabsV2 [data-tab="rep"]');
+          if (tab) tab.click();
+          setRes(card.dataset.r ? 'all' : 'rec');
+          document.dispatchEvent(new CustomEvent('everlab:pickMed', { detail: card.dataset.s }));
+          // the report, or All records when the test produced none, so an
+          // earlier choice does not hang over a test that has nothing to do with it
+          document.dispatchEvent(new CustomEvent('everlab:pickRep', { detail: card.dataset.r || 'all' }));
+          const head = document.getElementById(desk ? 'dResHead' : 'mResHead');
+          if (head) setTimeout(() => head.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+          return;
+        }
         const c = e.target.closest('.tcard.hasRep');
         if (!c || !e.target.closest('.tcOpen, .tcArt')) return;
         const r = RECS.find(x => x.id === c.dataset.r);
@@ -22394,6 +22432,9 @@
     // picking a report on the Report tab narrows this list to it and hands the
     // page back to the Biomarkers tab, exactly as it does on the phone
     document.addEventListener('everlab:pickRec', e => bio.choose(e.detail, true));
+    // ...and a pick that stays on the page it was made from (the test card's
+    // See results, which has already gone to the Results tab)
+    document.addEventListener('everlab:pickRep', e => bio.choose(e.detail, true));
   })();
 
   // The desk's medical records, through the same filter the biomarkers use and
@@ -22420,6 +22461,8 @@
         clear: document.getElementById('dMedRecClear')
       }
     });
+    // a test card's See results chooses its request here
+    document.addEventListener('everlab:pickMed', e => med.choose(e.detail, true));
     const typed = () => { box.classList.toggle('hasText', inp.value.length > 0); med.typed(); };
     inp.addEventListener('input', typed);
     inp.addEventListener('focus', () => box.classList.add('focus'));
@@ -22618,6 +22661,8 @@
       bio.choose(e.detail, true);
       document.dispatchEvent(new CustomEvent('everlab:showBio'));
     });
+    // the same pick without the page change (the test card's See results)
+    document.addEventListener('everlab:pickRep', e => bio.choose(e.detail, true));
 
     // The medical records run through the same filter, asked a different
     // question: the chips cut by a document's category rather than by a
@@ -22635,9 +22680,13 @@
         input: inp, fieldEl: bar,
         chipsBar: document.getElementById('mMedChips'),
         rowKey: row => row.dataset.c,
+        // no request select on the phone, but the requests are still what a
+        // chosen record means here (a test card's See results chooses one)
+        recs: MED_SRCS, recKey: row => row.dataset.s,
         hold: holdScroll,
         afterApply: () => { placeBar(bar); setStuck(); }
       });
+      document.addEventListener('everlab:pickMed', e => med.choose(e.detail, true));
       inp.addEventListener('input', med.typed);
       // the biomarkers' field behaviour, over this list: focusing raises the
       // drawn keyboard and brings the bar up to its pinned place, and the
