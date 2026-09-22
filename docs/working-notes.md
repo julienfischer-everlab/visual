@@ -9461,6 +9461,37 @@ The Reports tab's "1" is a count, not a New badge, and keeps its orange.
 Check: `newbadge.js` -- card (both dresses), bento, records menu, report
 menu all `rgb(51,41,16)` / `rgb(255,226,159)`; the halo's gradient.
 
+### 5.338 Every type has its readings
+
+"Make sure all types have appropriate, realistic biomarkers, min 10." Six
+more PANEL groups, one per source: *Genetics* (13: APOE e3/e4, MTHFR,
+Factor V Leiden, LPA and PCSK9 variants, 9p21, TCF7L2, FTO, CYP2C19 and
+SLCO1B1 metaboliser status, HLA-B27, a polygenic CAD score), *Imaging* (12:
+calcium score, carotid IMT and plaque, LVEF, aortic root, epicardial fat,
+liver fat and stiffness, DEXA visceral fat, spine and femoral T-scores, a
+thyroid nodule), *Urine* (12: ACR, PCR, pH, specific gravity, the dipstick
+panel, sodium, creatinine, iodine), *Gut Microbiome* (12: Shannon
+diversity, F/B ratio, four genera, butyrate capacity, calprotectin, sIgA,
+zonulin, elastase, occult blood), *Body Composition* (12: fat %, lean and
+muscle mass, visceral fat index, A/G ratio, ALMI, bone mass, water, BMI,
+waist, waist-to-height, RMR -- the four body readings left Metabolic Health
+for it) and *Lifestyle & Self-reported* (13: exercise, strength, alcohol,
+smoking, caffeine, produce, diet score, sleep quality, PSS-10, PHQ-9,
+sitting, water, family history). `GROUP_TYPE` maps a group to its source;
+`TYPE_OF` keeps the four strays. Per type: Blood 102, Wearables 17,
+Genetics 14, Microbiome 13, Urine 13, Self-reported 13, Imaging 12, Body
+composition 12 -- 196 readings, 14 groups. The categories the V4 brief asks
+the results database to filter by are these group titles. Check:
+`types10.js`, both screens.
+
+### 5.339 The explainer ends on Upload records
+
+"Add a link to upload records at the end." `SEC_INFO.records.link` renders
+as the sheet's last line: *Upload records* with the upload glyph, in the
+`.docLink` dress (now unscoped from the upload card so both can wear it).
+It closes the sheet and scrolls the upload card into view. Check:
+`types10.js`.
+
 ---
 
 ## 6. Open items

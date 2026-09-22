@@ -4327,16 +4327,16 @@
   .dash .docCard.docUpload{padding-bottom:24px;}
   .docAsk{font-size:13px;line-height:1.35;color:#8b8b86;}
   body.light .docAsk{color:#6f6058;}
-  .docUpload .docLink{
+  .docLink{
     display:inline-flex;align-items:center;gap:7px;margin:14px 0 0;max-width:100%;
     padding:0;border:0;background:none;font:inherit;font-size:15px;font-weight:500;
     color:#ececec;cursor:pointer;white-space:nowrap;
     text-decoration:underline;text-decoration-color:rgba(236,236,236,.35);text-underline-offset:4px;
     transition:text-decoration-color .16s ease;
   }
-  .docUpload .docLink:hover{text-decoration-color:currentColor;}
-  .docUpload .docLink svg{width:16px;height:16px;flex:none;}
-  body.light .docUpload .docLink{color:#2e1f1a;text-decoration-color:rgba(46,31,26,.35);}
+  .docLink:hover{text-decoration-color:currentColor;}
+  .docLink svg{width:16px;height:16px;flex:none;}
+  body.light .docLink{color:#2e1f1a;text-decoration-color:rgba(46,31,26,.35);}
   /* the button is in the card now, so the header has no second one -- on
      every screen, wherever the row happens to stand at the moment */
   .mMedsHead .mUpload{display:none;}
@@ -4819,6 +4819,7 @@
   .siBody{margin:0;font-size:15px;line-height:1.5;color:#bdbdb9;}
   .siBody p{margin:0 0 12px;}
   .siBody p:last-child{margin-bottom:0;}
+  .siBody .siLink{margin-top:16px;}
   /* three paragraphs on the phone can outrun a short sheet: the copy scrolls */
   .siSheet .siScroll{flex:0 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;}
   .siSheet{max-height:80%;}
@@ -19063,7 +19064,7 @@
       'Medical records are the raw documents behind your results, exactly as they came from the providers who produced them: pathology reports, imaging and scan reports, immunisation histories, and the letters and summaries that follow a procedure such as a colonoscopy.',
       'Everlab keeps them here in one place, grouped by the service request that produced them, so you can find the original whenever you need it, download it, or hand it to another clinician. Filter by request or by type above, or search for a document by name.',
       'Got a record from another provider? Upload it and it will sit alongside the rest.'
-    ] }
+    ], link: { label: 'Upload records', act: 'upload' } }   /* "add a link to upload records at the end" */
   };
   function infoSheet(host, desk){
     if (!host) return null;
@@ -19083,7 +19084,10 @@
     const show = key => {
       const c = SEC_INFO[key]; if (!c) return;
       wrap.querySelector('.siTitle').textContent = c.title;
-      wrap.querySelector('.siBody').innerHTML = [].concat(c.body).map(p => '<p>' + p + '</p>').join('');
+      const UP = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.5V2.8M4.8 6 8 2.8 11.2 6M2.5 10.8v2.2a.8.8 0 0 0 .8.8h9.4a.8.8 0 0 0 .8-.8v-2.2"/></svg>';
+      wrap.querySelector('.siBody').innerHTML = [].concat(c.body).map(p => '<p>' + p + '</p>').join('') +
+        // the way to act on what was just read, as the last line
+        (c.link ? '<button class="docLink siLink" type="button" data-act="' + c.link.act + '">' + c.link.label + UP + '</button>' : '');
       wrap.classList.add('show');
       requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
     };
@@ -19093,6 +19097,14 @@
     };
     wrap.querySelector('.siX').addEventListener('click', hide);
     wrap.querySelector('.prDim, .shDim').addEventListener('click', hide);
+    // the link at the end: close, and take the reader to the upload card
+    wrap.addEventListener('click', e => {
+      const l = e.target.closest('.siLink');
+      if (!l) return;
+      hide();
+      const up = document.querySelector(desk ? '.dash .docUpload' : '#phone .docUpload');
+      if (up) setTimeout(() => up.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+    });
     addEventListener('keydown', e => { if (e.key === 'Escape' && wrap.classList.contains('on')) hide(); });
     return { show, hide, wrap };
   }
@@ -21081,19 +21093,20 @@
   // named here, because the panel is a blood panel with a few readings from
   // elsewhere in it.
   const TYPES = ['Blood', 'Genetics', 'Wearables', 'Imaging', 'Urine', 'Microbiome', 'Body composition', 'Self-reported'];
+  // a few readings that sit in a blood group but came from elsewhere
   const TYPE_OF = {
     'Lipoprotein(a)': 'Genetics',
     'Postprandial glucose': 'Wearables',                          // a CGM's reading
-    'Visceral fat index': 'Imaging',
     'Urine albumin / creatinine': 'Urine',
-    'Bile acids': 'Microbiome',
-    'Body fat percentage': 'Body composition', 'Resting metabolic rate': 'Body composition',
-    'Waist-to-height ratio': 'Self-reported'
+    'Bile acids': 'Microbiome'
   };
-  // every reading in the Sleep & Recovery group is the ring's, so the group
-  // says so once rather than each row being listed above
-  const WEARABLE_GROUPS = { 'Sleep & Recovery': true };
-  const rowType = (name, group) => catKey(TYPE_OF[name] || (group && WEARABLE_GROUPS[group] ? 'Wearables' : 'Blood'));
+  // ...and the groups that are one source through and through, so the group
+  // says it once rather than every row being listed above
+  const GROUP_TYPE = {
+    'Sleep & Recovery': 'Wearables', 'Genetics': 'Genetics', 'Imaging': 'Imaging', 'Urine': 'Urine',
+    'Gut Microbiome': 'Microbiome', 'Body Composition': 'Body composition', 'Lifestyle & Self-reported': 'Self-reported'
+  };
+  const rowType = (name, group) => catKey(TYPE_OF[name] || GROUP_TYPE[group] || 'Blood');
   const PANEL = [
     ['Liver Health',
      'Biomarkers that indicate liver health and function, critical in metabolic processes.', `
@@ -21162,10 +21175,6 @@
       Adiponectin|out|4.1 mg/L
       Free fatty acids|sub|0.62 mmol/L
       Vitamin D (25-OH)|out|42 nmol/L
-      Visceral fat index|sub|9
-      Body fat percentage|ok|21.4 %
-      Waist-to-height ratio|ok|0.47
-      Resting metabolic rate|ok|1680 kcal
       Insulin sensitivity index|ok|4.8
       1,5-anhydroglucitol|other|— `],
     ['Thyroid',
@@ -21239,7 +21248,97 @@
       Skin temperature deviation|ok|+0.1 °C
       Daily steps|ok|9,400
       Active calories|sub|410 kcal
-      Sedentary time|out|9 h 20 min `]
+      Sedentary time|out|9 h 20 min `],
+    // One group per source the types chip offers, so every type has at
+    // least ten readings behind it ("make sure all types have appropriate,
+    // realistic biomarkers, min 10"). Genotypes and qualitative results are
+    // written as they are reported.
+    ['Genetics',
+     'Variants from your genomic panel that shape risk and how you respond to food, drugs and exercise.', `
+      APOE genotype|sub|e3/e4
+      MTHFR C677T|ok|Heterozygous
+      Factor V Leiden|ok|Not detected
+      Prothrombin G20210A|ok|Not detected
+      LPA rs10455872|out|Risk allele
+      PCSK9 loss-of-function|ok|Not detected
+      9p21.3 (rs1333049)|sub|Heterozygous
+      TCF7L2 rs7903146|ok|Non-risk
+      FTO rs9939609|sub|Heterozygous
+      CYP2C19 metaboliser status|ok|Normal
+      SLCO1B1 statin response|ok|Normal
+      HLA-B27|ok|Negative
+      Polygenic CAD risk score|sub|71st percentile `],
+    ['Imaging',
+     'Measurements read off your scans: heart, vessels, liver, bone and body fat, as the radiologist reported them.', `
+      Coronary artery calcium score|ok|0 Agatston
+      Carotid intima-media thickness|ok|0.62 mm
+      Carotid plaque|ok|None
+      Left ventricular ejection fraction|ok|62 %
+      Aortic root diameter|ok|31 mm
+      Epicardial fat thickness|sub|5.2 mm
+      Liver fat fraction (MRI-PDFF)|ok|4.1 %
+      Liver stiffness (elastography)|ok|4.8 kPa
+      Visceral fat area (DEXA)|sub|112 cm²
+      Lumbar spine T-score|sub|-1.1
+      Femoral neck T-score|ok|-0.6
+      Thyroid nodule, largest|other|6 mm `],
+    ['Urine',
+     'What the kidneys let through and what the body clears, from a first-morning sample.', `
+      Urine albumin / creatinine ratio|ok|1.8 mg/mmol
+      Urine protein / creatinine ratio|ok|9 mg/mmol
+      Urine pH|ok|6.0
+      Specific gravity|ok|1.018
+      Urine glucose|ok|Negative
+      Urine ketones|ok|Negative
+      Urine blood|ok|Negative
+      Urine leukocytes|ok|Negative
+      Urine nitrite|ok|Negative
+      Urine sodium|sub|142 mmol/L
+      Urine creatinine|ok|9.8 mmol/L
+      Urine iodine|sub|84 ug/L `],
+    ['Gut Microbiome',
+     'The make-up of your gut bacteria and the markers of how the gut wall is holding up, from a stool sample.', `
+      Shannon diversity index|ok|4.2
+      Firmicutes / Bacteroidetes ratio|ok|1.8
+      Akkermansia muciniphila|sub|0.4 %
+      Faecalibacterium prausnitzii|ok|7.9 %
+      Bifidobacterium|sub|1.1 %
+      Lactobacillus|ok|0.3 %
+      Butyrate-producing capacity|ok|High
+      Faecal calprotectin|ok|22 ug/g
+      Secretory IgA|ok|1,240 ug/g
+      Zonulin|sub|68 ng/mL
+      Pancreatic elastase|ok|412 ug/g
+      Faecal occult blood|ok|Negative `],
+    ['Body Composition',
+     'How the body is built, from your DEXA scan and the clinic scales.', `
+      Body fat percentage|ok|21.4 %
+      Lean mass|ok|58.2 kg
+      Skeletal muscle mass|ok|31.6 kg
+      Visceral fat index|sub|9
+      Android / gynoid fat ratio|sub|1.08
+      Appendicular lean mass index|ok|8.1 kg/m²
+      Bone mass|ok|3.1 kg
+      Total body water|ok|58 %
+      Body mass index|ok|23.8 kg/m²
+      Waist circumference|ok|84 cm
+      Waist-to-height ratio|ok|0.47
+      Resting metabolic rate|ok|1680 kcal `],
+    ['Lifestyle & Self-reported',
+     'What you told us in your questionnaire: the habits and history behind the numbers.', `
+      Exercise per week|ok|180 min
+      Strength sessions per week|sub|1
+      Alcohol per week|sub|6 standard drinks
+      Smoking status|ok|Never
+      Caffeine per day|ok|2 cups
+      Fruit & vegetables per day|sub|3 serves
+      Diet quality score|sub|68 / 100
+      Sleep quality, self-rated|ok|7 / 10
+      Perceived stress (PSS-10)|ok|14
+      Mood screen (PHQ-9)|ok|4
+      Sitting per day|out|9 h
+      Water per day|ok|2.1 L
+      Family history of heart disease|other|Yes `]
   ];
   const ST_WORD = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range', other: 'Unclassified' };
   // The record sets. Every reading belongs to one of the two named tests, so
