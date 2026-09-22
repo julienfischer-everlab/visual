@@ -2065,6 +2065,16 @@
   body.ia4.repTab #phone #mBody{margin-top:0;}
   body.ia4.repTab #phone #mTabsV2{margin-top:12px;}
   body.ia4.repTab #phone .hiShare{display:none !important;}
+  /* no section titles over the database under V4 ("remove Medical records
+     title on V4", "All results title as well"): the pill says which half
+     this is. The desk keeps the search where the title's line put it. */
+  body.ia4 .mMedsHead{display:none !important;}
+  body.ia4 .resHead .secHead{display:none !important;}   /* over the reports heading's own .dRepWrap .secHead{display:flex} */
+  /* what is left of the head is its place in the flow: the 34px the
+     database stands off the reports on the desk; nothing on the phone */
+  body.ia4 .dash .resHead{margin-top:34px;height:0;}
+  body.ia4 #phone .resHead{display:none;}
+  body.ia4.b2 .dash .dRow{margin-top:0;}
   .dRepShelf{position:relative;margin:0 0 6px;}
   .dRepCar{
     display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;padding:2px 0 6px;
@@ -4983,9 +4993,10 @@
   .resSearch .msClear{display:none;position:static;transform:none;margin-left:auto;}
   .resSearch.hasText .msClear{display:flex;}
   body.light .resSearch{border-color:#e2dbcc;} body.light .resSearch input{color:#2e1f1a;}
-  /* the two blocks' own searches step back: the one above searches both */
-  body.ia4 .dash .dRow .dsearch, body.ia4 .dash .dMedSearch,
-  body.ia4 #phone #mSearch .msBox, body.ia4 #phone .mMedSearch{display:none !important;}
+  /* the search stands on the select's row ("search same level as the
+     dropdown select"): each half keeps its own field there -- only one half
+     shows at a time, so it is the one search -- and the head's field goes */
+  body.ia4 .resHead .resSearch{display:none !important;}
   /* sub-headings, only while both halves show */
   .resSub{display:none;font-size:15px;font-weight:500;color:#ececec;margin:0 0 4px;}
   body.ia4:not(.resBio):not(.resRec) .resSub{display:block;}
@@ -21586,16 +21597,19 @@
     'Factor V Leiden': 'Genetics', 'Prothrombin G20210A': 'Genetics',
     'MTHFR C677T': 'Genetics', 'TCF7L2 rs7903146': 'Genetics', 'FTO rs9939609': 'Genetics',
     'CYP2C19 metaboliser status': 'Genetics', 'SLCO1B1 statin response': 'Genetics', 'HLA-B27': 'Genetics',
-    'Postprandial glucose': 'Wearables',                          // a CGM's reading
+    // the ring's two heart readings, filed in Heart Health ("Wearables: Heart
+    // Health -- resting heart rate, HRV")
+    'Resting heart rate': 'Wearables', 'Heart rate variability': 'Wearables',
     'Urine albumin / creatinine': 'Urine',
     'Bile acids': 'Microbiome'
   };
   // ...and the groups that are one source through and through, so the group
   // says it once rather than every row being listed above
   const GROUP_TYPE = {
-    'Sleep & Recovery': 'Wearables', 'Imaging': 'Imaging', 'Urine': 'Urine',
-    'Gut Microbiome': 'Microbiome', 'Body Composition': 'Body composition', 'Lifestyle & Self-reported': 'Self-reported',
-    'Cardiorespiratory Fitness': 'Wearables'
+    'Sleep': 'Wearables', 'Activity & Movement': 'Wearables', 'Fitness': 'Wearables',
+    'Respiratory Health': 'Wearables', 'Temperature': 'Wearables',
+    'Imaging': 'Imaging', 'Urine': 'Urine',
+    'Gut Microbiome': 'Microbiome', 'Body Composition': 'Body composition', 'Lifestyle & Self-reported': 'Self-reported'
   };
   const rowType = (name, group) => catKey(TYPE_OF[name] || GROUP_TYPE[group] || 'Blood');
   const PANEL = [
@@ -21658,7 +21672,9 @@
       LPA rs10455872|out|Risk allele
       PCSK9 loss-of-function|ok|Not detected
       9p21.3 (rs1333049)|sub|Heterozygous
-      Polygenic CAD risk score|sub|71st percentile `],
+      Polygenic CAD risk score|sub|71st percentile
+      Resting heart rate|ok|52 bpm
+      Heart rate variability|ok|48 ms `],
     ['Metabolic Health',
      'How the body handles sugar and stores energy.', `
       HbA1c|ok|5.2 %
@@ -21735,24 +21751,58 @@
     // What a wearable records ("add real wearable data, e.g. Oura"): the
     // ring's own measures, nightly and daily, in its own units -- every one
     // of them a Wearables reading for the types chip
-    ['Sleep & Recovery',
-     'What your Oura ring records overnight and through the day: rest, recovery and movement, averaged over the last 30 nights.', `
+    // What the Oura ring records, by health area ("Wearables: Heart Health,
+    // Sleep, Activity & Movement, Fitness, Respiratory Health, Temperature")
+    // -- resting heart rate and HRV sit in Heart Health above; the rest are
+    // these groups, every row a Wearables reading, 30-night averages
+    ['Sleep',
+     'How you slept, from your Oura ring: how long, how deeply, and how steadily, averaged over the last 30 nights.', `
       Sleep score|sub|76
       Readiness score|ok|84
-      Activity score|ok|88
       Total sleep|sub|6 h 48 min
       Deep sleep|sub|1 h 12 min
       REM sleep|ok|1 h 38 min
+      Light sleep|ok|3 h 58 min
       Sleep efficiency|ok|91 %
       Sleep latency|ok|11 min
-      Resting heart rate|ok|52 bpm
-      Heart rate variability|ok|48 ms
+      Time awake overnight|ok|22 min
+      Sleep regularity|sub|78 / 100 `],
+    ['Activity & Movement',
+     'How much you move through the day, from your Oura ring: steps, active minutes and the hours spent still.', `
+      Activity score|ok|88
+      Daily steps|ok|9,400
+      Active minutes|ok|48 min
+      Sedentary time|out|9 h 20 min
+      Active calories|sub|410 kcal
+      Walking distance|ok|6.8 km
+      Training sessions per week|ok|3
+      Hourly movement met|sub|68 %
+      Inactivity alerts|sub|4 / day
+      Stairs climbed|ok|12 floors `],
+    ['Respiratory Health',
+     'How you breathe overnight, from your Oura ring: rate, regularity and blood oxygen.', `
       Respiratory rate|ok|14.2 /min
       Blood oxygen (SpO2)|ok|97 %
-      Skin temperature deviation|ok|+0.1 °C
-      Daily steps|ok|9,400
-      Active calories|sub|410 kcal
-      Sedentary time|out|9 h 20 min `],
+      Lowest overnight SpO2|sub|92 %
+      Breathing regularity|ok|96 %
+      Breathing disturbances|ok|2.1 /h
+      Nightly SpO2 variation|ok|1.4 %
+      Snoring time|sub|12 min
+      Daytime respiratory rate|ok|15.1 /min
+      Respiratory rate, 30-night trend|ok|Stable
+      Altitude-adjusted SpO2|ok|97 % `],
+    ['Temperature',
+     'Your overnight skin temperature, from your Oura ring, and how far it strays from your own baseline.', `
+      Overnight skin temperature|ok|34.6 °C
+      Temperature deviation|ok|+0.1 °C
+      Temperature deviation, 30-night|ok|+0.05 °C
+      Nightly temperature range|ok|0.6 °C
+      Peak overnight temperature|ok|35.1 °C
+      Lowest overnight temperature|ok|34.0 °C
+      Temperature trend, 7-night|ok|Stable
+      Fever alerts|ok|0
+      Cycle-phase temperature shift|ok|+0.3 °C
+      Ambient-adjusted temperature|ok|34.4 °C `],
     // One group per source the types chip offers, so every type has at
     // least ten readings behind it ("make sure all types have appropriate,
     // realistic biomarkers, min 10"). Genotypes and qualitative results are
@@ -21826,9 +21876,11 @@
       Magnesium|ok|0.88 mmol/L
       Manganese|ok|9.4 nmol/L
       Chromium|other|— `],
-    ['Cardiorespiratory Fitness',
+    ['Fitness',
      'How hard the heart and lungs can work, from your VO2 max test and the ring between tests.', `
       VO2 max|ok|46 mL/kg/min
+      Estimated VO2 max (ring)|ok|44 mL/kg/min
+      Cardio fitness age|ok|34 years
       Maximum heart rate|ok|184 bpm
       Heart rate recovery, 1 min|ok|31 bpm
       Lactate threshold heart rate|ok|158 bpm
@@ -21903,7 +21955,7 @@
     r1:  { groups: BLOOD_WORK },                                            // Pathology test
     r2:  { names: /cholesterol|LDL|HDL|Triglycer|Apolipo|Lipoprotein|Remnant|Omega-3/i },   // Lipid panel
     r3:  { groups: ['Lifestyle & Self-reported', 'Body Composition'] },    // Nutritional review
-    r4:  { groups: ['Cardiorespiratory Fitness'] },                         // VO2 Max Test
+    r4:  { groups: ['Fitness'] },                                           // VO2 Max Test
     r5:  { groups: BLOOD_WORK },                                            // Comprehensive Blood Tests
     r6:  { groups: BLOOD_WORK },                                            // Baseline panel
     r7:  { groups: ['Thyroid'] },                                           // Thyroid panel
@@ -21915,13 +21967,13 @@
     r13: { groups: ['Blood Health'] },                                      // Full blood count
     r14: { names: /Skin lesions/i },                                        // Skin check
     r15: { groups: ['Hormones'] },                                          // Hormone panel
-    r16: { names: /sleep|Respiratory rate|SpO2|Resting heart rate/i },      // Sleep study
+    r16: { groups: ['Sleep', 'Respiratory Health'] },                       // Sleep study
     r17: { groups: ['Liver Health'] },                                      // Liver function
     r18: { names: /heart rate|Peak power|Anaerobic|VO2/i },                 // Cardiac stress test
     r19: { names: /iron|Transferrin|Ferritin|Haemoglobin|Haematocrit|corpuscular|Red cell/i },   // Iron studies
     r20: { names: /calcium score/i },                                       // Coronary calcium score
     r21: { groups: ['Kidney Health', 'Urine'] },                            // Kidney function panel
-    r22: { groups: ['Cardiorespiratory Fitness'] },                         // VO2 max retest
+    r22: { groups: ['Fitness'] },                                           // VO2 max retest
     r23: { groups: ['Body Composition'], names: /T-score/i },               // DEXA scan
     r24: { types: ['genetics'] },                                           // Genetic screening: every variant, wherever it is filed
     r25: { groups: BLOOD_WORK }                                             // Baseline health check

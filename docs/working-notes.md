@@ -9735,6 +9735,34 @@ Four asks on the V4 Results tab.
   types.
 - Check: `genrows.js`, `carry.js`.
 
+### 5.351 Wearables by health area; the database loses its titles; the search on the select's row
+
+- **Wearables filed where they speak** ("nonsense: Metabolic Health in
+  Wearables"; then the six areas). Postprandial glucose is a blood reading
+  again. The ring's two heart readings (resting heart rate, HRV) sit in
+  Heart Health, typed Wearables by name; the *Sleep & Recovery* group is
+  gone and in its place five groups the brief named, every row a Wearables
+  reading: *Sleep* (10: the sleep and readiness scores, total, deep, REM and
+  light sleep, efficiency, latency, time awake, regularity), *Activity &
+  Movement* (10: the activity score, steps, active minutes, sedentary time,
+  active calories, distance, sessions, hourly movement, inactivity alerts,
+  stairs), *Fitness* (the VO2 max group renamed, 10 with the ring's VO2
+  estimate and a cardio fitness age), *Respiratory Health* (10: rate, SpO2
+  and its overnight low, regularity, disturbances, variation, snoring,
+  daytime rate, trend, altitude-adjusted) and *Temperature* (10: overnight
+  skin temperature, its deviation nightly and over 30 nights, range, peak,
+  low, trend, fever alerts, cycle shift, ambient-adjusted). The VO2 reports
+  deal from Fitness, the sleep study from Sleep and Respiratory Health.
+- **No titles over the database under V4** ("remove Medical records title
+  on V4"; "All results title as well"): the pill says which half this is.
+  The results head keeps only its 34px place in the flow on the desk and is
+  gone on the phone.
+- **The search on the select's row** ("search same level as the dropdown
+  select All records"): each half's own field is back beside its select
+  under V4, and the head's field is hidden -- only one half shows at a
+  time, so it is still the one search.
+- Check: `types10.js`, `seg.js`, `carry.js`, `v4top.js`.
+
 ---
 
 ## 6. Open items
