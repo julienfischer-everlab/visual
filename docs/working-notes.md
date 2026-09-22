@@ -9988,6 +9988,59 @@ bar's top against the scroller's). Two failed and one half-failed:
   scrollers also carry `overflow-anchor:none`: the swap is managed, and the
   browser re-anchoring to a moved row only fought it.
 
+### 5.367 Carousel: the resting card lit, the rest faded
+
+"Fade out the inactive card 80%, fade in when active." The phone's report
+carousel marks the card at rest `.cur` from the same scroll sync that
+lights the dot (`syncDots`, now also stamped on the host as `_syncCar` so
+a rebuild can call it: new cards, no scroll event). The CSS fades every
+card in the row to opacity .2 and brings `.cur` to 1, over .28s. Read
+"80%" as the amount faded, so a fifth remains; one number to change if it
+was meant as the opacity left. Check: `carfade.js`.
+
+### 5.368 Badge by the date, title at 17
+
+"NEW badge next to date. Title font size bigger +4px." Where the card's
+eyebrow is the date (the phone's carousel, `dateTop`), the inline New
+badge is written into the eyebrow after the date, with the eyebrow's small
+caps and tracking stopped at the badge; elsewhere it stays beside the
+title (the desk's eyebrow is LATEST REPORT). The Visual card's title is
+17px (13 + 4) on both screens.
+
+### 5.369 Mobile: the record menus are bottom sheets
+
+"For the dropdown use a bottom sheet (mobile only)." On the phone the two
+record menus (`#mRecMenu`, `#mMedRecMenu`) are moved into a sheet built on
+the explainers' pattern -- `shWrap` dim, `sheet` with handle, close and
+home bar, a title (Filter results / Filter records) -- mounted on `#phone`
+at first bind. The menu node itself is the sheet's body (position static,
+no plate, no fade of its own; the sheet scrolls), so the tab head, the
+panes, the rows and every handler are unchanged; only `open()`/`isOpen()`
+in `bioFilter` branch on the sheet. The dim, the X, Escape and a pick
+close it. The desk keeps the anchored plate. Check: `recsheet.js`.
+
+### 5.370 The records lists load through a skeleton too
+
+"When data fetch, use skeleton loading same as biomarker to simulate the
+loading state." The two records lists (`#dMeds`, `#mMeds`) had no skeleton
+in their filter config, so `load()` applied at once. Each now clones the
+biomarkers' skeleton at init (`#dMedSkel`, `#mMedSkel`, the same nodes and
+classes, seated before the list) and passes it, with a `beforeBeat` that
+holds the skeleton at the list's height or a screenful under the bar. The
+rules that hide `.dSkel` on the Reports tab and under V4's Records half
+exclude the records' own, and V4's Biomarkers half hides it with the list.
+The phone's clone drops the skeleton's 13px side padding, which the
+section carries. Check: `medskel.js` (skeleton up and list away at 120ms,
+list back at 720ms; the pinned bar stays at 0 through the beat).
+
+### 5.371 A chosen request drops the group's date
+
+"When a filter is selected, no need the date below on the group list."
+With a request chosen the select above names it and its date, so the date
+beside the category in each group header goes with the provider line that
+already went: `.mMedList.recChosen .mMedTop .cat em{display:none}`. Both
+screens. Check: `medskel.js` (dates 9 → 0 on choosing a request).
+
 ---
 
 ## 6. Open items
