@@ -9449,6 +9449,18 @@ Wearables shows 17 across two groups (12 / 4 / 1 / 0). The hero's 142 is
 untouched -- it is the account's figure, not the panel's count. Check:
 `wear.js` -- both screens.
 
+### 5.337 Every New badge in one amber
+
+"All New badges this colour: 332910 bg, FFE29F fg." The report card's
+corner and inline badge (`.rcNew`), the bento row's (`.rbNew`), the
+hero-rows sheet's (`.arNew`) and both menus' (`.mRecOpt .mRecNew`, which
+was blue) are `#332910` on `#ffe29f` now, in both modes -- they had no
+light variants and need none. The New card's corner halo follows: the
+badge's amber at a whisper (`.16` dark, `.34` light) in place of the orange.
+The Reports tab's "1" is a count, not a New badge, and keeps its orange.
+Check: `newbadge.js` -- card (both dresses), bento, records menu, report
+menu all `rgb(51,41,16)` / `rgb(255,226,159)`; the halo's gradient.
+
 ---
 
 ## 6. Open items
