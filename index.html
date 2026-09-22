@@ -22133,7 +22133,10 @@
     // RECS is in date order, so it is the first one listed
     const byId = {};
     RECS.forEach(rec => { byId[rec.id] = rec; });
-    rows.forEach(r => stampDate(r, byId[(r.dataset.r || r.dataset.rd || '').split(' ')[0]] || {}));
+    // a wearable's reading is today's: the ring reports every night, so its
+    // date is not a record's ("date should be Today for wearable biomarkers")
+    const TODAY = { short: 'Today', date: 'Today' };
+    rows.forEach(r => stampDate(r, r.dataset.type === 'wearables' ? TODAY : (byId[(r.dataset.r || r.dataset.rd || '').split(' ')[0]] || {})));
   }
 
 

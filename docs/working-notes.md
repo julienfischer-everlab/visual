@@ -9808,6 +9808,13 @@ link. Its readings, date and badge are unchanged. Check: `rename.js`.
   returns both to All; row-to-chips 22 on both halves; the card's badge and
   CTA; the phone the same, its records bar's own search gone.
 
+### 5.355 Wearables are dated Today
+
+"Date should be Today for wearable biomarkers": the ring reports every
+night, so a wearable reading's date is not a record's. `assignRecords`
+hands the date stamp `Today` to every row typed Wearables (52 of them, on
+both screens) and the records' dates to the rest. Check: `today.js`.
+
 ---
 
 ## 6. Open items
