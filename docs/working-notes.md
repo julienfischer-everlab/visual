@@ -10090,6 +10090,15 @@ not the skeleton's. Check: `nomore.js` (`left` 0 after a pick or an empty
 search on every list, a push scrolls nowhere; the one list longer than a
 screen keeps its own scroll).
 
+### 5.375 Desk: a pick leaves the page where it is
+
+"On desktop no need to stick at the top when a record is selected, keep
+the current vertical." The desk's two filters drop their `afterPick`: a
+pick from the dropdown filters in place, the scroll untouched. The phone's
+sheet pick still scrolls to the pinned bar (5.372), and the desk's focus
+still pins (5.366). Check: `pickpin.js` (desk scrollTop unchanged by a
+pick).
+
 ---
 
 ## 6. Open items
