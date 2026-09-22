@@ -10041,6 +10041,34 @@ beside the category in each group header goes with the provider line that
 already went: `.mMedList.recChosen .mMedTop .cat em{display:none}`. Both
 screens. Check: `medskel.js` (dates 9 → 0 on choosing a request).
 
+### 5.372 A pick pins the bar
+
+"When the user clicks an option, the screen behind should be positioned
+with the filter bar fixed at the top, always, so the user can focus on the
+results -- the bottom sheet closes and the screen scrolls up to the sticky
+bar." `bioFilter` takes `afterPick`, called from the menu's record rows and
+the Category pane (All included). The phone's is `pinBar(bar)`: the bar's
+flow position less the status strip is the scrollTop, reached with a smooth
+scroll under `holdScroll`; the desk's is `dPinBar`, the focus behaviour
+shared out. So the page has somewhere to go, the phone's bars now hold a
+screenful under themselves while a record or a type is held as well as
+while the field is focused -- the list marks `recChosen`/`catChosen` the
+moment a pick is made, not after the beat, and `setStick` no longer clears
+the skeleton's hold mid-beat (that clamp left the bar 53px short on the
+first build). Check: `pickpin.js` (bar at 0 after a pick from the page top,
+biomarkers and records, phone and desk).
+
+### 5.373 A chosen request hides the records' chips
+
+"Remove the chips filter when a record is selected above." One request's
+records are one category, so with a request chosen the records' chip row
+(`#mMedChips`, `#dMedChips`) steps back, marked `recChosen` from
+`applyFilter`; the select row keeps the chips' gap to the list. A range
+left on a chip would have filtered from out of sight, so a choice resets
+the chips to All (`resetChips`, records lists only). Clearing the request
+brings the chips back. Check: `pickpin.js` (Imaging chip on, request
+picked → chips hidden, All lit, 4 rows; cleared → chips back, 28).
+
 ---
 
 ## 6. Open items

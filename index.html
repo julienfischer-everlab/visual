@@ -2273,6 +2273,11 @@
      request and its date ("when a filter is selected, no need for the date
      below on the group list") */
   .mMedList.recChosen .mMedTop .cat em{display:none;}
+  /* ...and the category chips go with them ("remove the chips filter when a
+     record is selected above"); the row above keeps the chips' gap to the list */
+  #mMedChips.recChosen, #dMedChips.recChosen{display:none !important;}
+  #phone .mMedBar:has(#mMedChips.recChosen) .msRow{margin-bottom:12px;}
+  .dash .dMedBar:has(#dMedChips.recChosen) .dMedRow{margin-bottom:18px;}
   .mMedTop .src{font-size:12.5px;line-height:1.4;color:#8b8b86;margin-top:4px;
                 display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .mMedDl{
@@ -22319,6 +22324,7 @@
     // the group it sits in carries the key.
     let catSet = 'all';
     let markCat = function(){};   // lights the Category pane's chosen row; set with the pane
+    let resetChips = function(){};   // All again; set with the chips
     // a row passes when its own type stamp is the chosen one (the pane asks
     // where a reading came from, not which group it sits in)
     const catHit = row => catSet === 'all' || row.dataset.type === catSet;
@@ -22364,6 +22370,11 @@
       // need not be said again on every group (the records list drops the
       // provider line under its group headers while a provider is chosen)
       list.classList.toggle('recChosen', recSet !== 'all' && !recAll);
+      list.classList.toggle('catChosen', catSet !== 'all');   // the phone's bars read both to hold their room
+      // the chip row knows too: the records' category chips step back while
+      // a request is chosen ("remove the chips filter when a record is
+      // selected above") -- one request's records are one category
+      if (cfg.chipsBar) cfg.chipsBar.classList.toggle('recChosen', recSet !== 'all' && !recAll);
       // afterApply runs BEFORE the swap. It measures the scroller to hold the
       // list a screen tall, and a measurement forces a layout: taken with the
       // skeleton already gone and the list not yet held, that layout was a
@@ -22493,6 +22504,10 @@
         // phone the menu is not inside the wrap, so both are marked)
         if (o.dataset.r === newest){ const w = rec.btn.closest('.dRecWrap, .msRecWrap'); if (w) w.classList.add('seen'); rec.menu.classList.add('seen'); }
         choose(o.dataset.r, true);
+        // a pick lands the page with the bar pinned at the top, the results
+        // right under it ("when the user clicks an option, the screen behind
+        // should be positioned with the filter bar fixed at the top")
+        if (cfg.afterPick) cfg.afterPick();
       });
       // The Category pane: the menu's second tab, the types a reading can come
       // from (Blood, Genetics, Wearables…) each with its count, behind the same
@@ -22541,11 +22556,12 @@
         cat.listEl.addEventListener('click', e => {
           const o = e.target.closest('.mRecOpt'); if (!o) return;
           open(false);
-          if (o.dataset.cat === 'all'){ choose('all', true); return; }
+          if (o.dataset.cat === 'all'){ choose('all', true); if (cfg.afterPick) cfg.afterPick(); return; }
           // choose('all') lets the record go and clears the type with it
           // (marking every control), so the type is held after
           choose('all', false);
           catSet = o.dataset.cat; markCat();
+          list.classList.add('catChosen');   // marked now, for the bar's hold (applyFilter keeps it)
           const c = cats.find(x => x.id === catSet) || cats[0];
           if (rec.lbl) rec.lbl.textContent = c.label;
           if (rec.ey){ rec.ey.hidden = false; rec.ey.textContent = 'Category'; }
@@ -22553,6 +22569,7 @@
           if (rec.clear) rec.clear.setAttribute('aria-hidden', 'false');
           if (countChips) countChips();
           load(false);
+          if (cfg.afterPick) cfg.afterPick();
         });
       }
       if (rec.clear) rec.clear.addEventListener('click', e => {
@@ -22568,6 +22585,13 @@
     function choose(id, reload){
       recSet = id;
       catSet = 'all'; markCat();   // a record and a type are not held together
+      // the records' chips hide behind a chosen request, so a range left on
+      // one would filter from out of sight: back to All with every choice
+      if (cfg.recKey) resetChips();
+      // the list marks its choice now, not after the beat: the phone's bars
+      // read the mark to hold their room the moment a pick is made
+      list.classList.toggle('recChosen', id !== 'all' && !(recs.find(x => x.id === id) || {}).all);
+      list.classList.remove('catChosen');
       if (cfg.onChoose) cfg.onChoose(id);
       // a range passes every row; a report passes the rows it stamped
       recAll = !!(recs.find(x => x.id === id) || {}).all;
@@ -22661,6 +22685,10 @@
         // changing the filter out from under the reader.
       };
       countChips();
+      resetChips = () => {
+        chipSt = 'all';
+        chips.forEach(o => { const on = o.dataset.st === 'all'; o.classList.toggle('on', on); o.setAttribute('aria-pressed', String(on)); });
+      };
       chips.forEach(c => c.addEventListener('click', () => {
         if (c.classList.contains('on')) return;
         chips.forEach(o => {
@@ -22686,17 +22714,20 @@
   // the block's stuck place, so the field is at the top while it is typed
   // in; the list under it is held a screenful tall by each filter's
   // afterApply, so a short result cannot pull the block back down.
-  function dPinOnFocus(input, bar){
+  function dPinBar(bar){
     const sc = document.getElementById('dMain');
-    if (!sc || !input || !bar) return;
-    input.addEventListener('focus', () => requestAnimationFrame(() => {
+    if (!sc || !bar) return;
+    requestAnimationFrame(() => {
       // how far the bar still stands below the scroller's top edge. Not yet
       // stuck, its rect is its place in the flow and that distance is the
       // scroll that pins it; already stuck, the distance is nought and
       // there is nothing to do.
       const below = bar.getBoundingClientRect().top - sc.getBoundingClientRect().top;
       if (below > 1) sc.scrollTo({ top: sc.scrollTop + below, behavior: 'smooth' });
-    }));
+    });
+  }
+  function dPinOnFocus(input, bar){
+    if (input && bar) input.addEventListener('focus', () => dPinBar(bar));
   }
   (function dashBioInit(){
     const host = document.getElementById('dRecsList');
@@ -22744,6 +22775,7 @@
       input: input, fieldEl: field,
       chipsBar: document.querySelector('.dash .filters'),
       onChoose: id => { LAST_PICK.bio = id; syncMed(); },
+      afterPick: () => dPinBar(document.getElementById('dFilters')),   // a pick pins the block, as a focus does
       cat: { listEl: document.getElementById('dCatList'), cats: TYPES },   // the menu's Category pane
       cards: document.getElementById('dRecCar'),
       // The pinned block must not move while the filter is being worked. The
@@ -22837,6 +22869,7 @@
       // the providers as its options and the row's provider as its key
       recs: MED_SRCS, recKey: row => row.dataset.s, noun: 'records',
       onChoose: id => { LAST_PICK.med = id; },
+      afterPick: () => dPinBar(document.getElementById('dMedBar')),
       rec: {
         wrap: document.getElementById('dMedRecWrap'), btn: document.getElementById('dMedRecSel'),
         menu: document.getElementById('dMedRecMenu'), listEl: document.getElementById('dMedRecList'),
@@ -22900,9 +22933,22 @@
       // field blurs the slack goes: "the screen always fits the content" --
       // with three rows left, the page is three rows long, and if that lets
       // the bar back into the flow, so be it; it is still there to tap.
-      const on = document.activeElement === input;
+      // ...and while a record or a type is held: a pick lands the page with
+      // the bar pinned, and a short result must not pull it back down
+      const on = document.activeElement === input || recs.classList.contains('recChosen') || recs.classList.contains('catChosen');
       const mh = on ? Math.max(0, sc.clientHeight - wrap.offsetHeight) + 'px' : '';
-      recs.style.minHeight = mh; skel.style.minHeight = mh;
+      recs.style.minHeight = mh;
+      // the skeleton's hold is only ever raised here, never taken: mid-beat
+      // it is the thing keeping the page a screen tall, and clearing it
+      // (as a pick once did, before the list had marked its choice) let the
+      // scroll clamp 53px short of the pin. beforeBeat sets it afresh anyway.
+      if (on) skel.style.minHeight = mh;
+    };
+    // a pick from the menu: the bar to its pinned place, the results under it
+    // ("the bottom sheet closes and the screen scrolls up to the sticky bar")
+    const pinBar = bar => {
+      const top = bar.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - statusH();
+      if (top > sc.scrollTop + 1){ holdScroll(900); sc.scrollTo({ top: top, behavior: 'smooth' }); }
     };
     // Where the status bar lies over the page (V4 on, position:absolute), the
     // bar pins under it rather than beneath its text: --msTop is its height,
@@ -23019,6 +23065,7 @@
       },
       hold: holdScroll,
       afterApply: setStick,
+      afterPick: () => { setStick(); pinBar(wrap); },
       // Two things the beat has to do on the phone. Hold the height the list
       // had -- the skeleton is five rows where the list is a hundred and ten,
       // and a page that shortens under a pinned bar unpins it, so the bar
@@ -23097,7 +23144,8 @@
           clear: document.getElementById('mMedRecClear')
         },
         hold: holdScroll,
-        afterApply: () => { holdMed(); placeBar(bar); setStuck(); }
+        afterApply: () => { holdMed(); placeBar(bar); setStuck(); },
+        afterPick: () => { holdMed(); pinBar(bar); }
       });
       // While the field is focused the records area is at least a screen
       // tall, as the biomarkers' is (setStick): a search that leaves two
@@ -23105,7 +23153,7 @@
       // ("when focused the filter bar should stick at the top, even if the
       // list leaves empty space -- that's ok"). Blurred, the slack goes.
       function holdMed(){
-        const on = document.activeElement === inp;
+        const on = document.activeElement === inp || list.classList.contains('recChosen');
         list.style.minHeight = on ? Math.max(0, sc.clientHeight - bar.offsetHeight) + 'px' : '';
       }
       document.addEventListener('everlab:pickMed', e => med.choose(e.detail, true));
