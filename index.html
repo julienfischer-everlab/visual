@@ -1600,8 +1600,8 @@
   /* the count of readings that record carried */
   .mRecOpt .n{
     flex:none;display:flex;align-items:center;gap:5px;
-    height:32px;padding:0 10px;border-radius:9px;
-    background:rgba(255,255,255,.11);color:#fff;
+    height:28px;padding:0 10px;border-radius:8px;                        /* 32 -> 28: "badge height 28px" */
+    background:rgba(255,255,255,.055);color:#fff;                          /* .11 -> .055: "lower bg opacity by 50%" */
     font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;   /* 34/15 -> 32/13: "smaller, maybe 32 high" */
   }
   .mRecOpt .n svg{width:12px;height:12px;opacity:.75;}
@@ -1626,7 +1626,7 @@
   /* the phone's chips scroll under the pinned bar's plate; the menu has to
      clear it and the dock, as the record menu does */
   #phone .mRecMenu.catMenu{z-index:12;}
-  body.light .mRecOpt .n{background:rgba(46,31,26,.1);color:#2e1f1a;}
+  body.light .mRecOpt .n{background:rgba(46,31,26,.05);color:#2e1f1a;}
   .msBox{
     display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;
     border:1px solid transparent;border-radius:14px;color:#8b8b86;background:transparent;
@@ -7557,14 +7557,14 @@
       <!-- first, the Categories chip: which group of biomarkers, from a menu
            ("add a chip (1st), Categories, 'All categories'"). The menu hangs
            off the row, not the chip, because the chip row scrolls and clips. -->
-      <button class="fchip catChip" id="dCatChip" type="button" data-cat="all" aria-haspopup="listbox" aria-expanded="false"><span class="catLbl">All categories</span><svg class="catChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <button class="fchip catChip" id="dCatChip" type="button" data-cat="all" aria-haspopup="listbox" aria-expanded="false"><span class="catLbl">All types</span><svg class="catChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b> All</button>
       <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</button>
       <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</button>
       <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</button>
       <button class="fchip v2Only" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b> Other</button>
     </div>
-    <div class="mRecMenu catMenu" id="dCatMenu" role="listbox" aria-label="Choose a category" hidden><div class="mRecScroll" id="dCatList"></div></div>
+    <div class="mRecMenu catMenu" id="dCatMenu" role="listbox" aria-label="Choose a type" hidden><div class="mRecScroll" id="dCatList"></div></div>
     </div>
     </div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -7895,14 +7895,14 @@
       </button>
       <div class="msRow2" id="mRow2">
       <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
-        <button class="fchip catChip" id="mCatChip" type="button" data-cat="all" aria-haspopup="listbox" aria-expanded="false"><span class="catLbl">All categories</span><svg class="catChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <button class="fchip catChip" id="mCatChip" type="button" data-cat="all" aria-haspopup="listbox" aria-expanded="false"><span class="catLbl">All types</span><svg class="catChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
         <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
         <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
         <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>
         <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</button>
         <button class="fchip mOther" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</button>
       </div>
-      <div class="mRecMenu catMenu" id="mCatMenu" role="listbox" aria-label="Choose a category" hidden><div class="mRecScroll" id="mCatList"></div></div>
+      <div class="mRecMenu catMenu" id="mCatMenu" role="listbox" aria-label="Choose a type" hidden><div class="mRecScroll" id="mCatList"></div></div>
       </div>
     </div>
 
@@ -21041,6 +21041,22 @@
   // a group's title as a key -- what the Categories chip cuts by, stamped on
   // every group both lists build from PANEL
   const catKey = t => t.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '');
+  // The TYPES chip ("All types: Blood, Genetics, Wearables, Imaging + 4
+  // more"): where a reading came from, which is a different question from
+  // the group it sits in. Eight sources; a reading is Blood unless it is
+  // named here, because the panel is a blood panel with a few readings from
+  // elsewhere in it.
+  const TYPES = ['Blood', 'Genetics', 'Wearables', 'Imaging', 'Urine', 'Microbiome', 'Body composition', 'Self-reported'];
+  const TYPE_OF = {
+    'Lipoprotein(a)': 'Genetics',
+    'Resting metabolic rate': 'Wearables', 'Postprandial glucose': 'Wearables',
+    'Visceral fat index': 'Imaging',
+    'Urine albumin / creatinine': 'Urine',
+    'Bile acids': 'Microbiome',
+    'Body fat percentage': 'Body composition',
+    'Waist-to-height ratio': 'Self-reported'
+  };
+  const rowType = name => catKey(TYPE_OF[name] || 'Blood');
   const PANEL = [
     ['Liver Health',
      'Biomarkers that indicate liver health and function, critical in metabolic processes.', `
@@ -21188,7 +21204,7 @@
         // all stack on one pixel and do not move between loads
         let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
         const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
-        html += '<div class="mbrow">' +
+        html += '<div class="mbrow" data-type="' + rowType(name) + '">' +
                   '<span>' + name + '</span>' +
                   '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
                   '<span class="g" data-v="' + val + '">' + val + '</span>' +
@@ -21276,7 +21292,9 @@
     // the Categories chip's choice: a group's key, or all. A row passes when
     // the group it sits in carries the key.
     let catSet = 'all';
-    const catHit = row => { if (catSet === 'all') return true; const g = row.closest(cfg.groupSel); return !!g && g.dataset.cat === catSet; };
+    // a row passes when its own type stamp is the chosen one (the chip asks
+    // where a reading came from, not which group it sits in)
+    const catHit = row => catSet === 'all' || row.dataset.type === catSet;
     // What the chips cut by. The biomarker list cuts by a reading's range, the
     // records list by a document's category -- one filter, asked a different
     // question about each row.
@@ -21370,7 +21388,8 @@
           // All records counts every row the list has -- readings on the
           // biomarkers' menu, records on the records' ("All records: add
           // number badge right side")
-          (r.id === 'all' ? '<span class="n">' + (cfg.recKey ? allRows.length + ' records' : CHART + allRows.length) + '</span>' :
+          // ...and so does any range (Historical records: "add badge")
+          (r.id === 'all' || r.all ? '<span class="n">' + (cfg.recKey ? allRows.length + ' records' : CHART + allRows.length) + '</span>' :
            r.nText ? '<span class="n">' + r.nText + '</span>' : r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
         '</button>').join('');
       const isOpen = () => document.body.classList.contains('mRecOn') && !rec.menu.hidden;
@@ -21525,7 +21544,7 @@
     // same beat as everything else; the chips then count that group alone.
     const cat = cfg.cat || {};
     if (cat.chip && cat.menu && cat.listEl){
-      const cats = [{ id: 'all', label: 'All categories' }].concat(
+      const cats = [{ id: 'all', label: 'All types' }].concat(
         (cat.cats || []).map(t => ({ id: catKey(t), label: t })));
       cat.listEl.innerHTML = cats.map(c =>
         '<button class="mRecOpt' + (c.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
@@ -21601,7 +21620,7 @@
         const spark = st === 'other' ? '<span></span>' :
           '<svg width="76" height="24" viewBox="0 0 76 24" aria-hidden="true"><path d="' +
           SPARK[h % SPARK.length] + '" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>';
-        html += '<div class="brow">' +
+        html += '<div class="brow" data-type="' + rowType(name) + '">' +
                   '<span>' + name + '</span>' +
                   '<span class="g">' + val + '</span>' +
                   '<span class="g dDate"></span>' +
@@ -21627,7 +21646,7 @@
       chipsBar: document.querySelector('.dash .filters'),
       cat: { chip: document.getElementById('dCatChip'), lbl: document.querySelector('#dCatChip .catLbl'),
              menu: document.getElementById('dCatMenu'), listEl: document.getElementById('dCatList'),
-             cats: PANEL.map(g => g[0]) },
+             cats: TYPES },
       cards: document.getElementById('dRecCar'),
       // The pinned block must not move while the filter is being worked. The
       // skeleton is a fraction of the list's height, so swapping it in
@@ -21865,7 +21884,7 @@
       chipsBar: document.getElementById('mChips'),
       cat: { chip: document.getElementById('mCatChip'), lbl: document.querySelector('#mCatChip .catLbl'),
              menu: document.getElementById('mCatMenu'), listEl: document.getElementById('mCatList'),
-             cats: PANEL.map(g => g[0]) },
+             cats: TYPES },
       cards: document.getElementById('mRecCar'),
       rec: {
         btn: document.getElementById('mRecSel'), lbl: document.getElementById('mRecLbl'),

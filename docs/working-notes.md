@@ -9351,6 +9351,31 @@ Five asks in one round.
   hairline, both desk i's open and close their modal by Escape and the dim,
   the phone i opens the sheet and the dim closes it); no errors.
 
+### 5.330 The chip asks for the TYPE; the menus' badges
+
+"All types -- Blood, Genetics, Wearables, Imaging, + add 4 more." and
+"Historical records: add badge. All badges: lower bg opacity by 50%, height
+28px."
+
+- **Types, not groups.** The first chip reads *All types* and its menu
+  offers where a reading came from -- Blood, Genetics, Wearables, Imaging,
+  Urine, Microbiome, Body composition, Self-reported (`TYPES`) -- rather than
+  the group it sits in. A reading is Blood unless `TYPE_OF` names it: Lp(a)
+  is Genetics; resting metabolic rate and postprandial glucose Wearables;
+  visceral fat index Imaging; the urine ACR Urine; bile acids Microbiome;
+  body fat percentage Body composition; waist-to-height Self-reported. Both
+  lists stamp `data-type` on their rows (`rowType(name)`); `catHit` reads
+  the row's stamp, so a type cuts across groups and empties the ones with
+  none of it (Imaging: one row, in Metabolic Health; Genetics: one, in Heart
+  Health). The group `data-cat` stamps stay, unused.
+- **The badges.** Every range row on a record menu carries the count pill
+  now -- Historical records as well as All records, both at every reading
+  the list has (110) -- and every pill is 28 tall (was 32) on half the wash
+  (`.055`, was `.11`; light `.05`), corners 8.
+- Check: `catchip.js` -- the chip's options, Imaging on the desk (1 / 0 / 1 /
+  0 / 0), Imaging + Out of range empty, reset, Genetics on the phone, the
+  three badges at 28 and `.055`; no errors.
+
 ---
 
 ## 6. Open items
