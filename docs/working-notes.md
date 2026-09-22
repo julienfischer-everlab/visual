@@ -9951,6 +9951,43 @@ keeps its card.
 Check: `headup.js` (no `.docRow` on the phone, link flush right and
 centred on the title, desk card still one).
 
+### 5.366 Focus pins the bar, on every search
+
+"For ALL search behaviour: even if the list returns not enough results and
+leaves empty space, when focused the filter bar should stick at the top.
+Will see a lot of empty space below, but that's ok." Probed all four bars
+(`sticky.js`: focus, type a query that leaves little or nothing, read the
+bar's top against the scroller's). Two failed and one half-failed:
+
+- **Desk records** had no held height under its bar, so a search that left
+  three records shortened the page and the browser clamped the scroll with
+  the bar 484px down. `dMedFilter` now holds `#dMeds` a screenful under
+  the bar in `afterApply`, as the biomarkers' list is held.
+- **Phone records** held nothing while focused either: `holdMed()` gives
+  `#mMeds` the biomarkers' `setStick` treatment -- a screen less the bar
+  while the field is focused, nothing once it blurs.
+- **Phone biomarkers** pinned on focus and then lost it as letters were
+  typed: `beforeBeat` measured the pin off the LIST, and from the second
+  keystroke on the list was already hidden behind the skeleton, so it
+  measured nought at the top of the page and each letter scrolled the bar
+  further up (752 → 38 over five letters). It measures off whichever of
+  the list and the skeleton is laid out.
+- **Desk**, both bars: focusing now runs the scroller up to the bar's stuck
+  place (`dPinOnFocus`: the bar's distance below the scroller's top is the
+  scroll, and nought when already stuck), so the field is at the top while
+  it is typed in, as the phone has always done.
+- **Desk biomarkers** came down 9px on every search that found little: in
+  `applyFilter` the skeleton was hidden, then `afterApply` measured the
+  scroller to hold the list -- and that measurement forced a layout of a
+  page with neither skeleton nor held list, which the browser clamped the
+  scroll to. `afterApply` now runs before the swap -- the skeleton still
+  standing at its held height when the list is measured and held -- and the
+  two are swapped in one layout, so nothing is ever measured shorter than a
+  screen. (Showing both for a moment was tried first and set off scroll
+  anchoring: the scroll flew 659px up when the skeleton went.) The two list
+  scrollers also carry `overflow-anchor:none`: the swap is managed, and the
+  browser re-anchoring to a moved row only fought it.
+
 ---
 
 ## 6. Open items

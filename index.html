@@ -1567,6 +1567,11 @@
      the hairline a row draws above itself lands in that gap */
   .mRecScroll{max-height:min(44vh,330px);overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:2px;}
   .mRecScroll[hidden]{display:none;}   /* the pane the tab head has put away (display:flex would outrank the attribute) */
+  /* No scroll anchoring in the two list scrollers. The filters swap a
+     skeleton for a list under a pinned bar, and hold heights so the page
+     never shortens -- the swap is managed; the browser re-anchoring the
+     scroll to a row that moved was throwing the pinned bar off the top. */
+  #dMain, #mScroll{overflow-anchor:none;}
   .mRecScroll::-webkit-scrollbar{display:none;}
   .mRecOpt{
     display:flex;align-items:center;gap:12px;width:100%;
@@ -22323,8 +22328,18 @@
       // need not be said again on every group (the records list drops the
       // provider line under its group headers while a provider is chosen)
       list.classList.toggle('recChosen', recSet !== 'all' && !recAll);
-      list.hidden = false; if (skel) skel.hidden = true;
+      // afterApply runs BEFORE the swap. It measures the scroller to hold the
+      // list a screen tall, and a measurement forces a layout: taken with the
+      // skeleton already gone and the list not yet held, that layout was a
+      // short page, the browser clamped the scroll to it, and the pinned bar
+      // came down 9px with every search that found little. Measured now, the
+      // skeleton is still standing at its held height, and the list arrives
+      // already held; the two are then swapped in one layout, so the page is
+      // never shorter than a screen and nothing above the reader moves
+      // (having both on the page for a moment set off scroll anchoring
+      // instead, which threw the scroll 659px up when the skeleton went).
       afterApply();
+      list.hidden = false; if (skel) skel.hidden = true;
     }
     // One loading beat, shared. The skeleton stands in, then the list arrives --
     // the same 380ms whether a key was pressed, a chip was tapped or a record
@@ -22601,6 +22616,24 @@
   // count the desk's rows and a record narrows both surfaces to the same
   // readings. It used to be six placeholder rows under chips carrying the
   // design's figures, which is two sources for one number.
+  // Focus pins the bar ("for all search behaviour: when focused, the filter
+  // bar should stick at the top, even if the list returns too few results
+  // and leaves empty space below"): on focus the desk's scroller runs up to
+  // the block's stuck place, so the field is at the top while it is typed
+  // in; the list under it is held a screenful tall by each filter's
+  // afterApply, so a short result cannot pull the block back down.
+  function dPinOnFocus(input, bar){
+    const sc = document.getElementById('dMain');
+    if (!sc || !input || !bar) return;
+    input.addEventListener('focus', () => requestAnimationFrame(() => {
+      // how far the bar still stands below the scroller's top edge. Not yet
+      // stuck, its rect is its place in the flow and that distance is the
+      // scroll that pins it; already stuck, the distance is nought and
+      // there is nothing to do.
+      const below = bar.getBoundingClientRect().top - sc.getBoundingClientRect().top;
+      if (below > 1) sc.scrollTo({ top: sc.scrollTop + below, behavior: 'smooth' });
+    }));
+  }
   (function dashBioInit(){
     const host = document.getElementById('dRecsList');
     if (!host) return;
@@ -22671,8 +22704,8 @@
       // it was left when the shorter list arrives.
       afterApply: () => {
         const sc = document.getElementById('dMain'), blk = document.getElementById('dFilters');
-        const sk = document.getElementById('dSkel');
-        if (sk) sk.style.minHeight = '';
+        // (the skeleton's held height is not cleared here: it is still on the
+        // page at this moment, and beforeBeat sets it afresh every beat)
         if (sc && blk) host.style.minHeight =
           Math.max(0, sc.clientHeight - blk.offsetHeight) + 'px';
       },
@@ -22686,6 +22719,7 @@
       // place and no keyboard to keep the field out from under
     });
     if (!input) return;
+    dPinOnFocus(input, document.getElementById('dFilters'));
     const typed = () => { field.classList.toggle('hasText', input.value.length > 0); bio.load(!input.value.trim()); };
     input.addEventListener('input', typed);
     input.addEventListener('focus', () => field.classList.add('focus'));
@@ -22730,8 +22764,15 @@
         menu: document.getElementById('dMedRecMenu'), listEl: document.getElementById('dMedRecList'),
         lbl: document.getElementById('dMedRecLbl'), ey: document.getElementById('dMedRecEy'),
         clear: document.getElementById('dMedRecClear')
+      },
+      // a screenful under the bar, as the biomarkers' list keeps one: a search
+      // that leaves three records cannot pull the pinned bar back down
+      afterApply: () => {
+        const sc = document.getElementById('dMain'), bar = document.getElementById('dMedBar');
+        if (sc && bar) list.style.minHeight = Math.max(0, sc.clientHeight - bar.offsetHeight) + 'px';
       }
     });
+    dPinOnFocus(inp, document.getElementById('dMedBar'));
     // a test card's See results chooses its request here
     document.addEventListener('everlab:pickMed', e => med.choose(e.detail, true));
     const typed = () => { box.classList.toggle('hasText', inp.value.length > 0); med.typed(); };
@@ -22910,13 +22951,20 @@
       // scroll position measured in the old list means nothing in the new one
       // anyway -- the set is being replaced, so the top of it is where to be.
       beforeBeat: () => {
-        skel.style.minHeight = Math.max(recs.offsetHeight, sc.clientHeight - wrap.offsetHeight) + 'px';
+        // A second keystroke lands mid-beat, with the list already hidden and
+        // the skeleton standing in its place: then the skeleton is the thing
+        // with a height and a position, and the list measures nought at the
+        // top of the page. Measuring the hidden list put the pin hundreds of
+        // pixels up and the bar was scrolled off the top with every letter
+        // typed ("when focused the filter bar should stick at the top").
+        const anchor = recs.offsetHeight ? recs : skel;
+        skel.style.minHeight = Math.max(anchor.offsetHeight, sc.clientHeight - wrap.offsetHeight) + 'px';
         // Measured off the list rather than off the bar: the bar is sticky,
         // and a sticky element's offsetTop already carries the shift, so it
         // reports wherever it is pinned rather than where it sits in the flow.
         // The list's top in content space, less the bar and the status strip,
         // is the scrollTop at which the bar pins with the list right under it.
-        const listTop = sc.scrollTop + (recs.getBoundingClientRect().top - sc.getBoundingClientRect().top);
+        const listTop = sc.scrollTop + (anchor.getBoundingClientRect().top - sc.getBoundingClientRect().top);
         const pin = Math.max(0, listTop - wrap.offsetHeight - statusH());
         if (sc.scrollTop > pin + 1){ holdScroll(700); sc.scrollTop = pin; }
       }
@@ -22962,8 +23010,17 @@
           clear: document.getElementById('mMedRecClear')
         },
         hold: holdScroll,
-        afterApply: () => { placeBar(bar); setStuck(); }
+        afterApply: () => { holdMed(); placeBar(bar); setStuck(); }
       });
+      // While the field is focused the records area is at least a screen
+      // tall, as the biomarkers' is (setStick): a search that leaves two
+      // records, or none, cannot pull the pinned bar down from the top
+      // ("when focused the filter bar should stick at the top, even if the
+      // list leaves empty space -- that's ok"). Blurred, the slack goes.
+      function holdMed(){
+        const on = document.activeElement === inp;
+        list.style.minHeight = on ? Math.max(0, sc.clientHeight - bar.offsetHeight) + 'px' : '';
+      }
       document.addEventListener('everlab:pickMed', e => med.choose(e.detail, true));
       // the field rests as an icon beside the select and opens while it is
       // used or holding text -- the biomarkers' field, exactly
@@ -22980,6 +23037,7 @@
       inp.addEventListener('focus', () => {
         bar.classList.add('focus'); openSearch();
         document.body.classList.add('mSearchOn');
+        holdMed();   // the room under the bar first, so the scroll below has somewhere to go
         placeBar(bar); setStuck();
         const top = bar.getBoundingClientRect().top - sc.getBoundingClientRect().top
                   + sc.scrollTop - statusH();
@@ -22990,6 +23048,7 @@
         bar.classList.remove('focus');
         document.body.classList.remove('mSearchOn');
         openSearch();      // empty and let go: back to an icon
+        holdMed();         // the slack goes with the focus
         holdScroll(250);
         setStuck();
       });
