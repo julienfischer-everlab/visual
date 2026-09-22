@@ -9824,6 +9824,16 @@ record in the list. Report `r1` (the New one, 44 biomarkers) is renamed in
 the report select and the phone carousel all read *Advanced blood panel*.
 Nothing else changes. Check: `rename.js` (zero leftovers on both screens).
 
+### 5.356a Layout V2.5 is the default again
+
+"Layout V2.5 as default": the Layout select's `selected` moves from V4 to
+V2.5 and `CARD_STATE` boots `v25Tab:true, v3Tab:false, v4Tab:false,
+ia4:false`. The page opens on Biomarkers | Reports with the old IA (the
+filters in their home seats, the results pill parked in the hidden
+head); picking V4 in the select still turns the Overview | Results IA on,
+and V2.5 turns it back off, with no errors either way. The V4 work is
+unchanged, only no longer the door. Check: `v25default.js`.
+
 ---
 
 ## 6. Open items
