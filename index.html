@@ -4124,7 +4124,7 @@
      two, which sit side by side as they do on the desk. The main card takes
      the row shape (buildRepCards adds .rcRow on the phone), the two beside
      it at three are rows too, and past three the stack takes what is left. */
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap{
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap{
     display:flex;flex-direction:column;position:absolute;left:13px;right:13px;top:8px;bottom:8px;
     z-index:4;gap:10px;
   }
@@ -4136,20 +4136,20 @@
      a row with the CTA at the right and a 162px floor; "CTA below content
      left bottom (margin top 24px)".) The New badge stays in its corner,
      absolute, untouched by the direction. The desk keeps the 128px row. */
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow{
     height:auto;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;
   }
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo{display:contents;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcCta{margin-top:24px;align-self:flex-start;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n1 .rcCard{flex:none;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2{flex-direction:row;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:208px;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow .rcInfo{display:contents;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow .rcCta{margin-top:24px;align-self:flex-start;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n1 .rcCard{flex:none;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n2{flex-direction:row;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n2 .rcCard{flex:1 1 0;min-width:0;height:208px;}
   /* Past two: a row that scrolls, snapping card by card. Each card is
      (width - 2 gaps - 16) / 2 wide, so two stand in the row and the third
      shows 16px at the right edge -- the hint that there is more. The cards
      are the two-up shape (192px, CTA at the foot). A 16px right padding
      lets the last card land where the first did. */
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar{
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar{
     flex-direction:row;gap:12px;overflow-x:auto;overflow-y:hidden;
     scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;
     /* edge to edge, so the next card runs off the screen rather than being
@@ -4162,29 +4162,34 @@
        visible equally"): the same padding on both sides, so a card of the
        content box's width sits in the middle with 44px of its neighbours
        showing past the 12px gaps, and the snap is to the centre. */
-    left:0;right:0;padding-left:56px;padding-right:56px;scroll-padding:0 56px;
+    /* ...clamped ("the first card should be larger and start from the
+       container on the left"): the hero's own 13px inset on both sides, cards
+       snapping to the centre, so the first and last cards pin to the edges
+       (a centre snap that would need a negative scroll is clamped to 0) and
+       the ones between stand centred with equal peeks of their neighbours. */
+    left:0;right:0;padding-left:13px;padding-right:13px;
   }
-  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcWrap.nCar{margin:0;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar::-webkit-scrollbar{display:none;}
+  body.v25Tab.repTab:not(.v3Tab) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar{margin:0;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar::-webkit-scrollbar{display:none;}
   /* dragged under a mouse (buildRepCards): no snap while the pointer is
      down, no text selection, and the hand says so */
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar{cursor:grab;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar.dragging{
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar{cursor:grab;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar.dragging{
     scroll-snap-type:none;cursor:grabbing;user-select:none;-webkit-user-select:none;
   }
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar.dragging .rcCard{pointer-events:none;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar.dragging .rcCard{pointer-events:none;}
   /* the row's dots: the hero carousel's dots (.v4RepDots), under the row.
      In V2's fixed 410px hero the row is absolute, so the dots are placed
      under where it ends (8 + 208 + 14); in V2.5's hugging hero they follow
      it in the flow. Each dot has an 8px tap margin drawn as padding on a
      transparent box, so a 5px mark can still be pressed. */
   .rcDots{display:none;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcDots{
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcDots{
     display:flex;justify-content:center;gap:5px;
     position:absolute;left:0;right:0;top:calc(8px + 208px + 14px);z-index:4;
   }
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcDots[hidden]{display:none;}
-  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcDots{position:relative;top:auto;margin-top:14px;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcDots[hidden]{display:none;}
+  body.v25Tab.repTab:not(.v3Tab) #phone :is(#mHeroOrgan,#mRepCarHost) .rcDots{position:relative;top:auto;margin-top:14px;}
   .rcDots i{
     position:relative;display:block;width:5px;height:5px;border-radius:3px;
     background:rgba(242,229,224,.26);cursor:pointer;
@@ -4203,21 +4208,21 @@
      eyebrow's letters ("put NEW badge below sub title"). The card is a flex
      column and the eyebrow/title/meta are its items through display:
      contents, so `order` puts the badge after the meta and the CTA last. */
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcTitle{font-size:16px;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap:is(.n2,.nCar) .rcTitle{font-size:16px;}
   /* the badge in the flow is the side-by-side pair's (n2, ~168px cards);
      the row's cards are a full card wide again, so theirs went back to the
      corner ("badge top right"), over a date eyebrow short enough to clear it */
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcNew{
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n2 .rcNew{
     position:static;order:1;align-self:flex-start;margin-top:10px;
   }
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n2 .rcCta{order:2;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar .rcCard{
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n2 .rcCta{order:2;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar .rcCard{
     /* the content box: W - 13 - 108, which leaves the 12px gap and 96px of
        the next card to the screen's edge */
-    flex:none;width:100%;height:208px;scroll-snap-align:center;
+    flex:none;width:calc(100% - 60px);height:208px;scroll-snap-align:center;   /* 60 = the neighbour's peek + gap; the first card fills the rest */
   }
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 > .rcCard.rcBig{flex:none;}
-  body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 .rcCard.rcStack{flex:1 1 auto;min-height:0;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n4 > .rcCard.rcBig{flex:none;}
+  body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n4 .rcCard.rcStack{flex:1 1 auto;min-height:0;}
   body.repTab.repCards .dash .rcWrap.dRepCards{display:flex;gap:16px;margin:0 0 6px;}   /* the biomarker bento's gap */
 
   /* ---- V2.5's Reports tab: the hero hugs the section ----------------------
@@ -4227,6 +4232,17 @@
      is in it. So the hero's children come out of their absolute boxes into
      the flow, and the hero takes their height: a title and one 128px card
      on one report, a title and the carousel on more than two. */
+  /* In the V3/V4 layouts the row lives under the layout's own "Everlab
+     reports" header in the body (moved there by v3Layout), in the flow rather
+     than laid over the hero: no absolute frame, no hero height, the dots
+     under it. The rows' own rules above already reach this home. */
+  body.v3Tab.repTab #phone #mRepCarHost .rcWrap{
+    position:relative;left:auto;right:auto;top:auto;bottom:auto;height:auto;margin:0 0 4px;
+  }
+  body.v3Tab.repTab #phone #mRepCarHost .rcWrap.nCar{margin:0 0 4px;}
+  body.v3Tab.repTab #phone #mRepCarHost .rcDots{position:relative;left:auto;right:auto;bottom:auto;margin:10px 0 18px;}
+  body.v3Tab.repTab #phone #mRepCarHost .rcWrap.n4 .rcCard.rcStack{flex:none;}
+  body.v3Tab.repTab:not(.repCards):not(.repFew) #phone #mRepCarHost .rcWrap{display:none;}
   .rcHeroHead{display:none;}
   body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan{height:auto;padding-bottom:0;}
   /* "Header hug height based on content": below the cards the header ran on
@@ -4235,12 +4251,12 @@
      goes (the row is empty here) and so does the hero's 8; the 28 stays as
      the one gap between the cards and what follows. */
   body.v25Tab.repTab:not(.v3Tab) #phone #mV4{padding-top:0;padding-bottom:0;}
-  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcHeroHead{
+  body.v25Tab.repTab:not(.v3Tab) #phone :is(#mHeroOrgan,#mRepCarHost) .rcHeroHead{
     display:flex;position:relative;z-index:4;padding:8px 13px 0;margin:0 0 20px;   /* 12 + 8: "add margin bottom +8px" */
   }
   /* title off: the heading's own 8px top stays as the hero's, so the cards
      sit in the hero the way they did under the heading */
-  body.noRepTitle.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcHeroHead{display:none;}
+  body.noRepTitle.v25Tab.repTab:not(.v3Tab) #phone :is(#mHeroOrgan,#mRepCarHost) .rcHeroHead{display:none;}
   body.noRepTitle.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan{padding-top:8px;}
   body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .v4RepCar{
     position:relative;top:auto;bottom:auto;height:358px;
@@ -4251,12 +4267,12 @@
   body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rbWrap{
     position:relative;inset:auto;margin:0 13px;height:394px;
   }
-  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcWrap{
+  body.v25Tab.repTab:not(.v3Tab) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap{
     position:relative;left:auto;right:auto;top:auto;bottom:auto;margin:0 13px;
   }
   /* the stack has no leftover height to fill in a hero that hugs, so it is
      as tall as its three rows, as on the desk */
-  body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcWrap.n4 .rcCard.rcStack{flex:none;}
+  body.v25Tab.repTab:not(.v3Tab) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n4 .rcCard.rcStack{flex:none;}
   /* The row card: title on the left, the way in on the right, both centred
      on a short strip. One report is always this (nothing to stack under it);
      so are the two beside the main card at three. */
@@ -4472,13 +4488,13 @@
      then "still too big, put 18px" */
   body.repVisual .rcCard.rcBig .rcTitle,
   body.repVisual #phone .rcCard.rcBig .rcTitle,
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcTitle{font-size:18px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap:is(.n2,.nCar) .rcTitle{font-size:18px;}
   /* heights were the card's; the tile and its lines set them now. On the
      desk the tile is held at 200px rather than 16:10 of a 500px column,
      which made a 320px poster of a document icon. */
   body.repVisual .rcWrap.n2 .rcCard, body.repVisual .rcWrap.n4 > .rcCard.rcBig{height:auto;}
   body.repVisual .dash .rcCard.rcBig .rcVis{aspect-ratio:auto;height:auto;min-height:200px;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap:is(.n2,.nCar) .rcCard{height:auto;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap:is(.n2,.nCar) .rcCard{height:auto;}
   /* the desk's one-report row: the header on the left at the card's full
      height, the lines beside it in the card's padding */
   body.repVisual .rcCard.rcRow{height:140px;flex-direction:row;align-items:center;gap:0;padding:0;}
@@ -4489,12 +4505,12 @@
   body.repVisual .rcCard.rcRow .rcEyebrow{margin-top:0;}
   body.repVisual .rcCard.rcRow .rcNew{top:auto;bottom:22px;right:22px;left:auto;}
   /* the phone's one-report card is a column even in Neutral; the header on top */
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow{height:auto;flex-direction:column;align-items:stretch;gap:0;padding:0 0 30px;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcVis{width:100%;height:auto;aspect-ratio:16 / 10;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo{display:contents;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcInfo > *{padding:0 22px;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcEyebrow{margin-top:26px;}
-  body.repTab.repVisual:is(.repCards,.repFew) #phone #mHeroOrgan .rcCard.rcRow .rcNew{top:auto;bottom:22px;right:22px;left:auto;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow{height:auto;flex-direction:column;align-items:stretch;gap:0;padding:0 0 30px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow .rcVis{width:100%;height:auto;aspect-ratio:16 / 10;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow .rcInfo{display:contents;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow .rcInfo > *{padding:0 22px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow .rcEyebrow{margin-top:26px;}
+  body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcCard.rcRow .rcNew{top:auto;bottom:22px;right:22px;left:auto;}
   /* the same badge as the tabs' count, the All-reports sheet's row and the My
      Reports row ("keep same badge for new report everywhere"): #e0865f, 11px,
      4x8 padding, 7px radius -- one mark for one fact, wherever it is shown */
@@ -7349,9 +7365,9 @@
             <!-- V2's tabs, above the hero, over V3's ground: a body card that
                  is the header's own grey at rest and fills to black as it
                  rises -- see body.v25Tab beside body.v3Tab in the CSS -->
-            <option value="v25" selected>V2.5</option>
+            <option value="v25">V2.5</option>
             <option value="v3">V3</option>
-            <option value="v4">V4</option>
+            <option value="v4" selected>V4</option>
           </select>
         </div>
         <!-- The information architecture: V4 renames the tabs Overview and
@@ -8103,7 +8119,7 @@
          above the records it belongs with. The nodes are moved rather than
          copied, so there is one carousel with one set of handlers however the
          page is laid out. -->
-    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span></div></div>
+    <div class="mRepCarHost" id="mRepCarHost"><div class="secHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span><button class="rcMore arOpen" type="button">See more<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div></div>
     <!-- V4's third tab: the findings themselves, stacked. Each one opens a
          sheet on the phone and a drawer on the desk. Built from INSIGHTS in
          the script, like every other list on the page. -->
@@ -18585,16 +18601,33 @@
     if (host.dataset.rcBound) return;
     // the dots follow the scroll and the scroll follows a tapped dot
     const dotsEl = () => { const d = host.nextElementSibling; return d && d.classList.contains('rcDots') ? d : null; };
-    const stepW = () => { const c = host.querySelector('.rcCard'); return c ? c.offsetWidth + 12 : 0; };
+    // Where the row rests for card i: the card centred in the row, clamped to
+    // the row's range -- so the first card rests at 0 (on the left inset) and
+    // the last at the end, as the centre snap itself does. Everything that
+    // reads or sets a position goes through these two, so the dots, a tapped
+    // dot and a released drag agree with the snap.
+    const cardsOf = () => [].slice.call(host.querySelectorAll('.rcCard'));
+    const snapAt = i => {
+      const cs = cardsOf(), c = cs[Math.max(0, Math.min(cs.length - 1, i))];
+      if (!c) return 0;
+      const hr = host.getBoundingClientRect(), cr = c.getBoundingClientRect();
+      const pos = (cr.left - hr.left + host.scrollLeft) - (host.clientWidth - cr.width) / 2;
+      return Math.max(0, Math.min(host.scrollWidth - host.clientWidth, pos));
+    };
+    const idxAt = x => {
+      const cs = cardsOf(); let best = 0, bd = Infinity;
+      cs.forEach((c, i) => { const d = Math.abs(snapAt(i) - x); if (d < bd){ bd = d; best = i; } });
+      return best;
+    };
     const syncDots = () => {
-      const d = dotsEl(), step = stepW(); if (!d || !step) return;
-      const k = Math.min(d.children.length - 1, Math.round(host.scrollLeft / step));
+      const d = dotsEl(); if (!d) return;
+      const k = Math.min(d.children.length - 1, idxAt(host.scrollLeft));
       [].slice.call(d.children).forEach((i, n) => i.classList.toggle('on', n === k));
     };
     host.addEventListener('scroll', () => requestAnimationFrame(syncDots), { passive: true });
     { const d = dotsEl(); if (d) d.addEventListener('click', e => {
         const i = e.target.closest('i'); if (!i) return;
-        host.scrollTo({ left: [].indexOf.call(d.children, i) * stepW(), behavior: 'smooth' });
+        host.scrollTo({ left: snapAt([].indexOf.call(d.children, i)), behavior: 'smooth' });
       }); }
     host.dataset.rcBound = '1';
     // The row scrolls natively under a finger; under a mouse (the phone mock
@@ -18644,13 +18677,16 @@
       removeEventListener('pointerup', release);
       removeEventListener('pointercancel', release);
       if (!dragged) return;
-      const first = host.querySelector('.rcCard');
-      if (first){
-        const step = first.offsetWidth + 12, max = host.scrollWidth - host.clientWidth;
-        const at = host.scrollLeft / step;
-        const idx = Math.abs(vx) > 0.35 ? (vx < 0 ? Math.ceil(at) : Math.floor(at)) : Math.round(at);
-        const x = Math.max(0, Math.min(max, idx * step));
-        settle(x, () => host.classList.remove('dragging'));
+      const cs = cardsOf();
+      if (cs.length){
+        // the nearest rest, or -- on a flick -- the next one in its direction
+        const near = idxAt(host.scrollLeft);
+        let idx = near;
+        if (Math.abs(vx) > 0.35){
+          const x0 = host.scrollLeft, sn = snapAt(near);
+          idx = vx < 0 ? (sn > x0 ? near : near + 1) : (sn < x0 ? near : near - 1);
+        }
+        settle(snapAt(idx), () => host.classList.remove('dragging'));
       } else host.classList.remove('dragging');
       // the click that follows a drag is swallowed (see below); a drag with
       // no click after it must not swallow the next real one
@@ -19720,7 +19756,9 @@
                        // V2.5 is the default view ("use v2.5 as default view"):
                        // this and the Layout select's `selected` say the same
                        // thing, and have to keep saying it together
-                       v2Tab: true, v25Tab: true, v3Tab: false, v4Tab: false,
+                       // ...and since the IA tweak took over: IA V4 rides the
+                       // V4 layout, IA V3 the V2.5 one, and V4 is the default
+                       v2Tab: true, v25Tab: false, v3Tab: true, v4Tab: true,
                        // Cards is the default Reports shape ("as default") --
                        // with the Reports select's `selected`, as with the Layout
                        repTab: false, insTab: false, repBento: false, repCards: true,
@@ -20248,6 +20286,10 @@
       else if (m.el.parentNode !== m.seat.parentNode)
         m.seat.parentNode.insertBefore(m.el, m.seat);
     });
+    // the cards row's dots are made beside the row (buildRepCards) and stay
+    // its next sibling wherever the row has gone
+    const rc = document.getElementById('mRepCards'), dots = document.querySelector('#phone .rcDots');
+    if (rc && dots && rc.nextElementSibling !== dots) rc.parentNode.insertBefore(dots, rc.nextSibling);
   }
   {
     // "Below the hero bento", and the bento is the hero AND the two mini cards
@@ -20276,6 +20318,9 @@
     }
     v3Mark(document.getElementById('v4RepCar'), carHost);
     v3Mark(document.getElementById('v4RepDots'), carHost);
+    // the Cards shape's row goes the same way: under the layout's own header
+    // rather than laid over the biomarker hero (its dots follow in v3Layout)
+    v3Mark(document.getElementById('mRepCards'), carHost);
     // setMode rebuilds the page around these, so the layout is re-asserted
     // after it rather than trusted to survive it
     document.addEventListener('everlab:mode', () => requestAnimationFrame(v3Layout));
@@ -20526,6 +20571,10 @@
     CARD_STATE.ia4 = stIASel.value === 'v4';
     document.body.classList.toggle('ia4', CARD_STATE.ia4);
     applyIA(CARD_STATE.ia4);
+    // the IA brings its layout with it ("IA V3 should be the 2.5 layout, IA
+    // V4 the V4 layout"): the Layout select is set and its own handler runs
+    const lay = document.getElementById('stV2Tab');
+    if (lay){ lay.value = CARD_STATE.ia4 ? 'v4' : 'v25'; lay.dispatchEvent(new Event('change')); }
     document.dispatchEvent(new CustomEvent('everlab:repTab'));
     resize();
   });

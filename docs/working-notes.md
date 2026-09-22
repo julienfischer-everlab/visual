@@ -9588,6 +9588,32 @@ height (200 at least), and on the right two halves side by side
 picture on top, the two halves stacked, the documents under their
 hairline. Nine cards, 200–246 tall. Check: `teststack.js`.
 
+### 5.345 The IA brings its layout; the phone carousel clamps to the edges
+
+"IA V3 should be the 2.5 layout, IA V4 the V4 layout." The IA select sets
+the Layout select (`v4` / `v25`) and fires its handler, and the defaults
+moved with it: Layout V4, `v25Tab:false, v3Tab:true, v4Tab:true` -- three
+tabs (Overview | Results | Insights), the tabs under the bento, the bento on
+every tab. Under that layout the phone's Cards row had been laid over the
+biomarker hero while its "Everlab reports" header sat below the tabs, so
+the row (`#mRepCards`, and its dots after it) joined the V3 moves into
+`#mRepCarHost`, in the flow under the header; the 34 phone card rules
+that named `#mHeroOrgan` now name `:is(#mHeroOrgan,#mRepCarHost)`. The V3
+host's header carries the See more too.
+
+"The first card should be larger and start from the container on the
+left" (and the middle ones centred, from 5.343): the row's padding is the
+hero's own 13px on both sides and the cards snap to the CENTRE at
+`calc(100% - 60px)` wide -- a centre snap that would need a negative
+scroll is clamped to 0, so the first card pins to the left inset with 66px
+of the next showing, the last pins to the right, and the ones between
+stand centred with 36px of each neighbour. The dots, a tapped dot and a
+released drag all go through `snapAt(i)` / `idxAt(x)` -- the clamped
+centre position of card i and the nearest card to a position -- instead
+of card-width multiples. Check: `carcenter.js` (first card at the inset,
+card 1 at 48/48, peeks 36/36, See more on the visible header opens the
+sheet), `phonev4.js`, `v4ia.js` (IA V3 → two tabs, V4 → three).
+
 ---
 
 ## 6. Open items
