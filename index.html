@@ -22387,6 +22387,12 @@
       // instead, which threw the scroll 659px up when the skeleton went).
       afterApply();
       list.hidden = false; if (skel) skel.hidden = true;
+      // ...and once more with the list itself laid out: the hold that ends
+      // the page at the screen's edge is measured off what follows the list,
+      // and the skeleton's margins are not quite the list's (12px over, and
+      // the page scrolled 12px past the pin). The page is held by now, so
+      // this layout is never a short one.
+      afterApply();
     }
     // One loading beat, shared. The skeleton stands in, then the list arrives --
     // the same 380ms whether a key was pressed, a chip was tapped or a record
@@ -22718,16 +22724,52 @@
     const sc = document.getElementById('dMain');
     if (!sc || !bar) return;
     requestAnimationFrame(() => {
-      // how far the bar still stands below the scroller's top edge. Not yet
-      // stuck, its rect is its place in the flow and that distance is the
-      // scroll that pins it; already stuck, the distance is nought and
-      // there is nothing to do.
-      const below = bar.getBoundingClientRect().top - sc.getBoundingClientRect().top;
-      if (below > 1) sc.scrollTo({ top: sc.scrollTop + below, behavior: 'smooth' });
+      // the scroll at which the block is stuck: its place in the flow, plus
+      // the `tuck` it sits above the scroller's edge once stuck
+      const pin = dFlowTop(sc, bar) + dTuck(sc, bar);
+      if (pin > sc.scrollTop + 1) sc.scrollTo({ top: pin, behavior: 'smooth' });
     });
+  }
+  // where a block sits in the flow: read as static for one measurement (a
+  // stuck block's rect is where it is pinned, and offsetTop carries the
+  // sticky shift too), and put back in the same task
+  function dFlowTop(sc, el){
+    const was = el.style.position; el.style.position = 'static';
+    const y = el.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+    el.style.position = was; return y;
+  }
+  // how far above the scroller's top edge a block sits once stuck: its
+  // sticky `top` is read against the scroller's padding edge, and the block
+  // wears a different `top` with .stuck on (b2: -66 over 32px of padding,
+  // so 34 of it goes out of view) -- read with .stuck on, whichever state
+  // it is in now
+  function dTuck(sc, bar){
+    const had = bar.classList.contains('stuck'); if (!had) bar.classList.add('stuck');
+    const t = parseFloat(getComputedStyle(bar).top) || 0;
+    if (!had) bar.classList.remove('stuck');
+    const p = parseFloat(getComputedStyle(sc).paddingTop) || 0;
+    return Math.max(0, -t - p);
   }
   function dPinOnFocus(input, bar){
     if (input && bar) input.addEventListener('focus', () => dPinBar(bar));
+  }
+  // the held height that ends the page exactly a screen under the pinned
+  // block: a screen less the block and whatever follows the list (the
+  // scroller's own bottom padding), measured off the list or, mid-beat, the
+  // skeleton standing in for it -- so the scroll stops with the block at the
+  // top ("I shouldn't be able to scroll down more")
+  function dHoldFor(list, skel, bar){
+    const sc = document.getElementById('dMain');
+    if (!sc || !bar) return 0;
+    const ref = list && list.offsetHeight ? list : skel;
+    if (!ref || !ref.offsetHeight) return Math.max(0, sc.clientHeight - bar.offsetHeight);
+    // from the stuck block's top to the page's end -- the block (less the
+    // `tuck` of it out of view), whatever stands between it and the list, the
+    // list, and everything after -- fills exactly one screen; the list's hold
+    // is what is left over
+    const top = ref.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+    const tail = sc.scrollHeight - (top + ref.offsetHeight);
+    return Math.max(0, Math.round(sc.clientHeight - (top - dFlowTop(sc, bar)) + dTuck(sc, bar) - Math.max(0, tail)));
   }
   (function dashBioInit(){
     const host = document.getElementById('dRecsList');
@@ -22799,11 +22841,10 @@
       // short list is still adjusting the filter, and the bar should be where
       // it was left when the shorter list arrives.
       afterApply: () => {
-        const sc = document.getElementById('dMain'), blk = document.getElementById('dFilters');
+        const blk = document.getElementById('dFilters');
         // (the skeleton's held height is not cleared here: it is still on the
         // page at this moment, and beforeBeat sets it afresh every beat)
-        if (sc && blk) host.style.minHeight =
-          Math.max(0, sc.clientHeight - blk.offsetHeight) + 'px';
+        if (blk) host.style.minHeight = dHoldFor(host, document.getElementById('dSkel'), blk) + 'px';
       },
       rec: {
         btn: document.getElementById('dRecSel'), lbl: document.getElementById('dRecLbl'),
@@ -22879,8 +22920,8 @@
       // a screenful under the bar, as the biomarkers' list keeps one: a search
       // that leaves three records cannot pull the pinned bar back down
       afterApply: () => {
-        const sc = document.getElementById('dMain'), bar = document.getElementById('dMedBar');
-        if (sc && bar) list.style.minHeight = Math.max(0, sc.clientHeight - bar.offsetHeight) + 'px';
+        const bar = document.getElementById('dMedBar');
+        if (bar) list.style.minHeight = dHoldFor(list, skel, bar) + 'px';
       }
     });
     dPinOnFocus(inp, document.getElementById('dMedBar'));
@@ -22936,7 +22977,12 @@
       // ...and while a record or a type is held: a pick lands the page with
       // the bar pinned, and a short result must not pull it back down
       const on = document.activeElement === input || recs.classList.contains('recChosen') || recs.classList.contains('catChosen');
-      const mh = on ? Math.max(0, sc.clientHeight - wrap.offsetHeight) + 'px' : '';
+      // exactly the room that puts the page's end at the screen's: a screen,
+      // less the status strip, the bar and everything that follows the list
+      // (the body's padding under the dock, chiefly). Held any taller the
+      // page ran on past the pin ("here I shouldn't be able to scroll down
+      // more"); held shorter the bar could not reach the top.
+      const mh = on ? holdFor(recs.offsetHeight ? recs : skel, wrap) + 'px' : '';
       recs.style.minHeight = mh;
       // the skeleton's hold is only ever raised here, never taken: mid-beat
       // it is the thing keeping the page a screen tall, and clearing it
@@ -22947,7 +22993,7 @@
     // a pick from the menu: the bar to its pinned place, the results under it
     // ("the bottom sheet closes and the screen scrolls up to the sticky bar")
     const pinBar = bar => {
-      const top = bar.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - statusH();
+      const top = flowTop(bar) - statusH();
       if (top > sc.scrollTop + 1){ holdScroll(900); sc.scrollTo({ top: top, behavior: 'smooth' }); }
     };
     // Where the status bar lies over the page (V4 on, position:absolute), the
@@ -22958,6 +23004,28 @@
       if (!st) return 0;
       const cs = getComputedStyle(st);
       return (cs.display !== 'none' && cs.position === 'absolute') ? st.offsetHeight : 0;
+    };
+    // the min-height that ends the page exactly a screen under the pinned
+    // bar: what follows `ref` (the list, or the skeleton standing in for it)
+    // down to the page's end is measured and taken off, so the scroll stops
+    // with the bar at the top rather than running on into the padding
+    // Where a bar sits in the flow. A stuck bar's rect is where it is pinned,
+    // and Chrome's offsetTop carries the sticky shift too, so the bar is read
+    // as static for one measurement and put back -- same task, nothing paints.
+    const flowTop = el => {
+      const was = el.style.position; el.style.position = 'static';
+      const y = el.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+      el.style.position = was; return y;
+    };
+    const holdFor = (ref, bar) => {
+      if (!ref || !ref.offsetHeight) return Math.max(0, sc.clientHeight - statusH() - bar.offsetHeight);
+      // from the pinned bar's top to the page's end: the bar, whatever stands
+      // between it and the list (the empty line, the row's gap), the list, and
+      // everything after the list -- the whole of it must fill exactly one
+      // screen, and the list's hold is what is left over
+      const top = ref.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+      const tail = sc.scrollHeight - (top + ref.offsetHeight);
+      return Math.max(0, Math.round(sc.clientHeight - statusH() - (top - flowTop(bar)) - Math.max(0, tail)));
     };
     // Two bars on this phone wear this behaviour -- the biomarkers' and the
     // medical records' -- and only one of them is on the page at a time, so
@@ -23154,7 +23222,7 @@
       // list leaves empty space -- that's ok"). Blurred, the slack goes.
       function holdMed(){
         const on = document.activeElement === inp || list.classList.contains('recChosen');
-        list.style.minHeight = on ? Math.max(0, sc.clientHeight - bar.offsetHeight) + 'px' : '';
+        list.style.minHeight = on ? holdFor(list.offsetHeight ? list : skel, bar) + 'px' : '';
       }
       document.addEventListener('everlab:pickMed', e => med.choose(e.detail, true));
       // the field rests as an icon beside the select and opens while it is

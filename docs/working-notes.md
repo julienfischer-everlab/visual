@@ -10069,6 +10069,27 @@ the chips to All (`resetChips`, records lists only). Clearing the request
 brings the chips back. Check: `pickpin.js` (Imaging chip on, request
 picked → chips hidden, All lit, 4 rows; cleared → chips back, 28).
 
+### 5.374 The page ends where the screen does
+
+"Here I shouldn't be able to scroll down more." With the bar pinned over
+four records the page still scrolled on: the held height was a screen less
+the bar, and the body's padding under the dock (and whatever else follows
+the list) came after it. The hold is now the whole geometry -- `holdFor`
+on the phone, `dHoldFor` on the desk: from the pinned bar's top to the
+page's end (the bar, whatever stands between it and the list -- the empty
+line on the biomarkers, the row's 12px gap on the records -- the list, and
+everything after the list) must fill exactly one screen, and the list's
+hold is what is left over. The bar's place in the flow is read with the
+bar set static for one measurement (a stuck bar's rect is where it is
+pinned, and Chrome's offsetTop carries the sticky shift too). On the desk
+the block sticks 34px above the scroller's edge once `.stuck` (`top:-66px`
+over 32px of padding), which `dTuck` reads with the class on and gives
+back to the hold and to the pin scroll. `applyFilter` runs `afterApply`
+again once the list is laid out, so the measurement is the list's own and
+not the skeleton's. Check: `nomore.js` (`left` 0 after a pick or an empty
+search on every list, a push scrolls nowhere; the one list longer than a
+screen keeps its own scroll).
+
 ---
 
 ## 6. Open items
