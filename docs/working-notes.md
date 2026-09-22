@@ -9888,6 +9888,14 @@ the same badge for it, as it did for a flagged request). Check:
 `.dash .rcWrap.n1 .rcCol{flex:0 0 320px;max-width:320px}` and the row card
 `flex:1 1 auto` -- 744 + 320 across the 1080 row. Check: `onerep.js`.
 
+### 5.361 Menu at 376, tab head at 8, player without a ring
+
+"Dropdown width reduce by 64px": the desk's record menu is 376px (was
+440). "Segmented tab 8 corner radius, not full": `.mRecTabs` is 8px with
+its buttons at 5 (8 less the 3px inset), no longer a pill. "Player no
+border / increase blur bg": the play disc drops its inset ring and blurs
+what is behind it at 18px (was 8). Check: `menuw.js`.
+
 ---
 
 ## 6. Open items
