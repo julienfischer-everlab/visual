@@ -4869,10 +4869,22 @@
      test is and found, then the documents it left behind */
   .dash .tcard{flex-direction:row;}
   .dash .tcArt{width:260px;height:auto;flex:none;min-height:200px;}
-  .dash .tcBody{flex:1;min-width:0;display:grid;grid-template-columns:1.25fr 1fr;gap:16px 36px;padding:22px 26px;align-items:start;}
+  .dash .tcBody{
+    flex:1;min-width:0;display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:1fr auto;
+    gap:16px 36px;padding:22px 26px;align-items:start;
+  }
   .tcMain, .tcSide{display:flex;flex-direction:column;gap:12px;min-width:0;}
-  .dash .tcSide .tcDocs{border-top:0;padding-top:0;}
-  .dash .tcSide .tcLbl{margin-top:2px;}
+  .dash .tcMain{grid-column:1;grid-row:1;}
+  .dash .tcSide{grid-column:2;grid-row:1;}      /* the note, top right */
+  .dash .tcFoot{grid-column:1 / -1;grid-row:2;}
+  /* the footer: three figures under their small labels, on a hairline */
+  .tcFoot{display:flex;gap:44px;border-top:1px solid rgba(255,255,255,.08);padding-top:14px;}
+  body.light .tcFoot{border-top-color:rgba(46,31,26,.1);}
+  .tcStat{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .tcStat .tcLbl{margin:0;}
+  .tcStat b{font-size:15px;font-weight:500;color:#ececec;white-space:nowrap;}
+  body.light .tcStat b{color:#2e1f1a;}
+  #phone .tcFoot{gap:32px;}
   #phone .testsGrid{grid-template-columns:1fr;gap:12px;}
   .tcard{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.06);}
   #phone .tcard{border-radius:22px;background:rgba(255,255,255,.04);}
@@ -20282,7 +20294,8 @@
     if (car) car.scrollLeft = 0;
     V3_MOVES.forEach(m => {
       const host = typeof m.to === 'function' ? m.to() : m.to;
-      if (on){ if (host && m.el.parentNode !== host) host.appendChild(m.el); }
+      // a destination that answers null keeps the node in its seat
+      if (on && host){ if (m.el.parentNode !== host) host.appendChild(m.el); }
       else if (m.el.parentNode !== m.seat.parentNode)
         m.seat.parentNode.insertBefore(m.el, m.seat);
     });
@@ -20314,7 +20327,9 @@
     if (dTabs && grid && grid.parentNode){
       const after = document.createElement('div');
       after.className = 'v3Slot'; grid.parentNode.insertBefore(after, grid.nextSibling);
-      v3Mark(dTabs, after);
+      // under the V4 IA the desk's tabs stay ABOVE the bento ("above bento"):
+      // the tabs say which page this is, and the bento is on every page
+      v3Mark(dTabs, () => CARD_STATE.ia4 ? null : after);
     }
     v3Mark(document.getElementById('v4RepCar'), carHost);
     v3Mark(document.getElementById('v4RepDots'), carHost);
@@ -20600,16 +20615,23 @@
         // two halves, so the desk's wide card can stand them side by side
         // ("manage that stacked"): what the test is and found, then what
         // it left behind -- the documents and the clinician's word
+        // the kind, the title and the readings' standing on the left; the
+        // clinician's note top right; and a footer of three figures -- the
+        // date, how many biomarkers, how many documents ("doctor note top
+        // right, remove the list of documents, footer: Date / Biomarkers /
+        // Documents")
         '<div class="tcBody">' +
           '<div class="tcMain">' +
-            '<div class="tcEyebrow"><i style="background:' + cat.dot + '"></i>' + cat.label + ' &middot; ' + g.date + '</div>' +
+            '<div class="tcEyebrow"><i style="background:' + cat.dot + '"></i>' + cat.label + '</div>' +
             (rep ? '<button class="tcTitle tcOpen" type="button">' + g.sr + '</button>' : '<h3 class="tcTitle">' + g.sr + '</h3>') +
-            (t && t.n ? '<div class="tcBio"><b>' + t.n + ' biomarker' + (t.n === 1 ? '' : 's') + '</b><span class="tcSt">' +
+            (t && t.n ? '<div class="tcBio"><span class="tcSt">' +
               STS.filter(p => t[p[0]]).map(p => '<span><i class="' + p[0] + '"></i>' + t[p[0]] + ' ' + p[1] + '</span>').join('') + '</span></div>' : '') +
-            (g.note ? '<div class="tcNote"><div class="tcNoteBy">Note from ' + g.note.by + '</div><p>&ldquo;' + g.note.text + '&rdquo;</p></div>' : '') +
           '</div>' +
-          '<div class="tcSide">' +
-            '<div class="tcDocs"><div class="tcLbl">Documents</div>' + docs.map(d => '<div class="tcDoc">' + DOC + '<span>' + d + '</span></div>').join('') + '</div>' +
+          (g.note ? '<div class="tcSide"><div class="tcNote"><div class="tcNoteBy">Note from ' + g.note.by + '</div><p>&ldquo;' + g.note.text + '&rdquo;</p></div></div>' : '') +
+          '<div class="tcFoot">' +
+            '<div class="tcStat"><div class="tcLbl">Date</div><b>' + g.date + '</b></div>' +
+            (t && t.n ? '<div class="tcStat"><div class="tcLbl">Biomarkers</div><b>' + t.n + '</b></div>' : '') +
+            '<div class="tcStat"><div class="tcLbl">Documents</div><b>' + docs.length + '</b></div>' +
           '</div>' +
         '</div></article>';
     }).join('');

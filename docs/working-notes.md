@@ -9623,6 +9623,26 @@ V1, V2, V2.5 and V3 are the page as it was. The IA row and its handler are
 gone; the default is unchanged (Layout V4). Check: `v4ia.js`, now
 switching the Layout to V2.5 and back.
 
+### 5.347 The test card's second shape; the desk tabs above the bento
+
+"Put the doctor note top right of the card. Remove the list of documents.
+Footer: Date / Biomarkers / Documents." The desk card's body is a grid of
+two columns and two rows: the kind (category alone now), the title and
+the readings' standing on the left; the clinician's note in the right
+column, top; and across the bottom `.tcFoot`, a hairline with three
+figures under small labels -- the date, how many biomarkers (when the test
+produced any), how many documents. The document list is gone (the count
+stands for it); the "N biomarkers" line went too, since the footer says
+it. Cards are 209 tall at their tallest. The phone card stacks the same
+three parts.
+
+"Above bento": under the V4 IA the desk's tab strip stays above the bento
+rather than moving under it with the V3/V4 layout -- the tabs say which
+page this is and the bento is on every page. `v3Mark`'s destination for
+the desk tabs answers null under `ia4`, and `v3Layout` reads null as "stay
+in the seat". The phone keeps its tabs under the hero, as that layout
+draws it. Check: `deskv4.js`, `v4ia.js`.
+
 ---
 
 ## 6. Open items
