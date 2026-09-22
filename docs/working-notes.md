@@ -9919,6 +9919,24 @@ sentence. All records draws the same glyph with the row count (28). The
 biomarkers' menu keeps its chart glyph. The phone has no request select,
 so this is the desk's alone. Check: `docicon.js`.
 
+### 5.364 The phone's records bar is the biomarkers' row
+
+"Same pattern as the biomarkers tab: need the filter dropdown and the
+search; search exactly the same pattern as the biomarker search." The
+phone's Medical records bar (`#mMedBar`) carried a full-width search field
+alone. It is now the biomarkers' `.msRow`: the request select
+(`#mMedRecSel`, with its cross and its menu of the nine requests plus All
+records, the same MED_SRCS the desk's shows, with the document-glyph
+counts) and beside it the search resting as a 56px icon, opening leftward
+to half the row on a tap or while it holds text, and closing back to the
+icon when let go empty -- `searchOn`/`hasText` on the bar, as on the
+biomarkers'. The filter behind it is unchanged (the request select was
+already in the config for See results, only without controls). Check:
+`medrow.js` (select 278 + icon 56 at rest, 167 + 167 open; DEXA → 4 rows;
+clear → 28). Seen on the way: a records search that found nothing said "No
+biomarkers match" -- the filter's one hard-coded noun; it takes `noun` now,
+and both records lists pass `records`.
+
 ---
 
 ## 6. Open items

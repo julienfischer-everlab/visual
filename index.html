@@ -2231,8 +2231,8 @@
   .mMedBar{margin:0 -13px;}
   .mMedBar .mchips{padding-bottom:12px;}
   .mMedBar .mMedSearch{margin:0;}
-  .mMedBar .msClear{display:none;}
-  .mMedBar.hasText .msClear{display:flex !important;}
+  /* (the field's open/closed and its cross are the row pattern's now, as on
+     the biomarkers' bar: .searchOn and .hasText on the wrapper) */
   /* the one thing on this list the reader cannot act on, said quietly */
   .mMedNote{
     display:flex;flex-direction:column;gap:4px;margin:0 0 18px;padding:13px 14px;
@@ -8291,10 +8291,28 @@
            and the same fade, and the same field, so a scroll dismisses the
            keyboard and a tap brings it back. -->
       <div class="msWrap mMedBar" id="mMedBar">
-        <div class="msBox mMedSearch" id="mMedBox">
-          <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.6 10.6 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          <input id="mMedIn" type="search" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search medical records">
-          <button class="msClear" id="mMedClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        <!-- the biomarkers' row, over the records ("same pattern as the
+             biomarkers tab: the filter dropdown and the search, the search
+             exactly the same pattern"): the request select with its cross and
+             menu, and beside it the search that rests as an icon and opens
+             leftward into the room the select gives up -->
+        <div class="msRow">
+          <div class="msRecWrap" id="mMedRecWrap">
+            <button class="msRec" id="mMedRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <span class="t"><b id="mMedRecLbl">All records</b><i id="mMedRecEy" hidden></i></span>
+              <i class="msRecNew" aria-hidden="true"></i>
+              <svg class="msRecChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+            <button class="msRecClear" id="mMedRecClear" type="button" aria-label="Clear the chosen record" aria-hidden="true"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          </div>
+          <div class="msBox mMedSearch" id="mMedBox">
+            <svg class="msIco" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.5"/><path d="M10.6 10.6 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input id="mMedIn" type="search" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search medical records">
+            <button class="msClear" id="mMedClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          </div>
+          <div class="mRecMenu" id="mMedRecMenu" role="listbox" aria-label="Choose a request" hidden>
+            <div class="mRecScroll" id="mMedRecList"></div>
+          </div>
         </div>
         <div class="mchips" id="mMedChips" role="group" aria-label="Filter records by category"></div>
       </div>
@@ -22292,7 +22310,7 @@
       // and reads as one, rather than as a list that failed to load.
       if (empty){
         const es = empty.querySelector('span');
-        if (!any && q){ empty.firstChild.textContent = 'No biomarkers match “'; es.textContent = input.value.trim(); es.hidden = false; empty.lastChild.textContent = '”'; }
+        if (!any && q){ empty.firstChild.textContent = 'No ' + (cfg.noun || 'biomarkers') + ' match “'; es.textContent = input.value.trim(); es.hidden = false; empty.lastChild.textContent = '”'; }
         else if (!any){ empty.firstChild.textContent = ST_EMPTY[chipSt] || 'Nothing to show.'; es.hidden = true; empty.lastChild.textContent = ''; }
         empty.hidden = any;
       }
@@ -22701,7 +22719,7 @@
       rowKey: row => row.dataset.c,
       // the provider select over the list: the biomarkers' rec block, with
       // the providers as its options and the row's provider as its key
-      recs: MED_SRCS, recKey: row => row.dataset.s,
+      recs: MED_SRCS, recKey: row => row.dataset.s, noun: 'records',
       onChoose: id => { LAST_PICK.med = id; },
       rec: {
         wrap: document.getElementById('dMedRecWrap'), btn: document.getElementById('dMedRecSel'),
@@ -22928,20 +22946,35 @@
         input: inp, fieldEl: bar,
         chipsBar: document.getElementById('mMedChips'),
         rowKey: row => row.dataset.c,
-        // no request select on the phone, but the requests are still what a
-        // chosen record means here (a test card's See results chooses one)
-        recs: MED_SRCS, recKey: row => row.dataset.s,
+        // the request select, the biomarkers' record select over the requests
+        // ("same pattern as the biomarkers tab: the filter dropdown and the
+        // search"); a test card's See results chooses one too
+        recs: MED_SRCS, recKey: row => row.dataset.s, noun: 'records',   // "No records match" on the empty line
         onChoose: id => { LAST_PICK.med = id; },
+        rec: {
+          wrap: document.getElementById('mMedRecWrap'), btn: document.getElementById('mMedRecSel'),
+          menu: document.getElementById('mMedRecMenu'), listEl: document.getElementById('mMedRecList'),
+          lbl: document.getElementById('mMedRecLbl'), ey: document.getElementById('mMedRecEy'),
+          clear: document.getElementById('mMedRecClear')
+        },
         hold: holdScroll,
         afterApply: () => { placeBar(bar); setStuck(); }
       });
       document.addEventListener('everlab:pickMed', e => med.choose(e.detail, true));
+      // the field rests as an icon beside the select and opens while it is
+      // used or holding text -- the biomarkers' field, exactly
+      const openSearch = () => bar.classList.toggle('searchOn', document.activeElement === inp || inp.value.length > 0);
+      const box = document.getElementById('mMedBox');
+      if (box) box.addEventListener('click', e => {
+        if (bar.classList.contains('searchOn')) return;
+        e.preventDefault(); inp.focus();
+      });
       inp.addEventListener('input', med.typed);
       // the biomarkers' field behaviour, over this list: focusing raises the
       // drawn keyboard and brings the bar up to its pinned place, and the
       // scroll handler below dismisses it again when the reader moves the page
       inp.addEventListener('focus', () => {
-        bar.classList.add('focus');
+        bar.classList.add('focus'); openSearch();
         document.body.classList.add('mSearchOn');
         placeBar(bar); setStuck();
         const top = bar.getBoundingClientRect().top - sc.getBoundingClientRect().top
@@ -22952,6 +22985,7 @@
       inp.addEventListener('blur', () => {
         bar.classList.remove('focus');
         document.body.classList.remove('mSearchOn');
+        openSearch();      // empty and let go: back to an icon
         holdScroll(250);
         setStuck();
       });
