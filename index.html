@@ -2034,10 +2034,12 @@
      to say about a shelf of reports. */
   .dRepWrap{display:none;}
   body.repTab .dash .dRepWrap{display:block;}
-  body.repTab .dash .dFilters,
-  body.repTab .dash #dRecsList,
-  body.repTab .dash .dSkel,
-  body.repTab .dash #dSearchEmpty{display:none !important;}
+  /* (V3 IA only: under V4 these four live INSIDE the Results tab, moved
+     there by applyIA, and the tab's own display rules govern them) */
+  body.repTab:not(.ia4) .dash .dFilters,
+  body.repTab:not(.ia4) .dash #dRecsList,
+  body.repTab:not(.ia4) .dash .dSkel,
+  body.repTab:not(.ia4) .dash #dSearchEmpty{display:none !important;}
   body.repTab .dash .dMedsWrap{display:block;}
   /* The bento goes with the list it summarised. A biomarker count, a bio age
      and a steps week are the headline of the readings, not of the reports --
@@ -2270,10 +2272,10 @@
   body.light .mMedRow{border-bottom-color:#ece4d4;color:#2e1f1a;}
   body.light .mMedRow .sep{background:#e2dbcc;}
   body.light .mMedRow .view{color:#2e1f1a;}
-  body.repTab #phone .msWrap:not(.mMedBar),
-  body.repTab #phone #mRecs,
-  body.repTab #phone #mSkel,
-  body.repTab #phone #mSearchEmpty{display:none !important;}
+  body.repTab:not(.ia4) #phone .msWrap:not(.mMedBar),
+  body.repTab:not(.ia4) #phone #mRecs,
+  body.repTab:not(.ia4) #phone #mSkel,
+  body.repTab:not(.ia4) #phone #mSearchEmpty{display:none !important;}
 
   /* ---- Expanded Report -------------------------------------------------
      The records stop being a menu and become the first row: a carousel of
@@ -4156,7 +4158,11 @@
        the row and the next shows 96px ("1 card + 2nd card 96px on the right
        side"): the right padding is 96 + the 12px gap, so the card is exactly
        the content box (width:100%) and the last card can still lead. */
-    left:0;right:0;padding-left:13px;padding-right:108px;scroll-padding-left:13px;
+    /* ...and then centred instead ("the active card centered, prev and next
+       visible equally"): the same padding on both sides, so a card of the
+       content box's width sits in the middle with 44px of its neighbours
+       showing past the 12px gaps, and the snap is to the centre. */
+    left:0;right:0;padding-left:56px;padding-right:56px;scroll-padding:0 56px;
   }
   body.v25Tab.repTab:not(.v3Tab) #phone #mHeroOrgan .rcWrap.nCar{margin:0;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar::-webkit-scrollbar{display:none;}
@@ -4208,7 +4214,7 @@
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.nCar .rcCard{
     /* the content box: W - 13 - 108, which leaves the 12px gap and 96px of
        the next card to the screen's edge */
-    flex:none;width:100%;height:208px;scroll-snap-align:start;
+    flex:none;width:100%;height:208px;scroll-snap-align:center;
   }
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 > .rcCard.rcBig{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone #mHeroOrgan .rcWrap.n4 .rcCard.rcStack{flex:1 1 auto;min-height:0;}
@@ -4301,7 +4307,7 @@
      same rounded corners as the biomarker card"). Taller than a caption and
      a figure need: the extra is all at the bottom ("more padding on the
      bottom, they need to be higher"). */
-  .docRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}                /* the phone's .mbrowV2 */
+  .docRow{display:grid;grid-template-columns:1fr;gap:8px;}                    /* one card since the count card went ("remove") */
   .docCard{
     display:flex;flex-direction:column;align-items:flex-start;min-width:0;
     border-radius:22px;padding:22px 22px 34px;border:0;                       /* the phone's .msn */
@@ -4553,6 +4559,9 @@
     gap:12px;padding:0 4px;margin:0 0 8px;
   }
   .rcStackHead .rcMore{display:none;}
+  /* the phone's reports header carries one too, top right ("See more missing
+     top right"), into the all-reports sheet by way of .arOpen */
+  .rcHeroHead .rcMore{align-self:center;flex:none;}
   .rcCard.rcStack.hasMore .rcMore{display:flex;}
   .rcMore{
     display:flex;align-items:center;gap:4px;border:0;background:none;padding:4px 0;
@@ -4827,6 +4836,100 @@
   body.light .siBody{color:#5a4a3c;}
   /* the sheet's home bar has room under the copy */
   .siSheet .shHome{margin-top:22px;}
+  /* ---- V4 IA ---------------------------------------------------------------
+     Overview | Results. The Overview keeps the bento and puts the tests under
+     it, one card each; the Results tab keeps the reports and puts ONE results
+     database under them -- readings and records behind one heading, one
+     segmented control and one search. Same cards, same type, same dark
+     ground: the architecture moved, not the dress. */
+  /* -- Your tests -- */
+  .testsWrap{display:none;}
+  body.ia4:not(.repTab):not(.insTab) .dash .testsWrap{display:block;margin-top:34px;}
+  body.ia4:not(.repTab):not(.insTab) #phone .testsWrap{display:block;padding:0 13px;margin-top:10px;}
+  .testsWrap .secHead{display:flex;margin:0 0 16px;}
+  .testsGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+  #phone .testsGrid{grid-template-columns:1fr;gap:12px;}
+  .tcard{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.06);}
+  #phone .tcard{border-radius:22px;background:rgba(255,255,255,.04);}
+  body.light .tcard{background:#f4efed;}
+  .tcArt{height:150px;background-size:cover;background-position:center;cursor:default;}
+  .tcard.hasRep .tcArt{cursor:pointer;}
+  .tcBody{padding:18px 20px 20px;display:flex;flex-direction:column;gap:12px;}
+  .tcEyebrow{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;}
+  .tcEyebrow i{width:8px;height:8px;border-radius:3px;flex:none;font-style:normal;}
+  .tcTitle{margin:-4px 0 0;padding:0;border:0;background:none;text-align:left;font:inherit;font-size:18px;font-weight:500;letter-spacing:-.2px;color:#ececec;}
+  .tcTitle.tcOpen{cursor:pointer;}
+  .tcTitle.tcOpen:hover{text-decoration:underline;text-decoration-color:rgba(236,236,236,.35);text-underline-offset:4px;}
+  body.light .tcTitle{color:#2e1f1a;}
+  .tcBio{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#bdbdb9;}
+  .tcBio b{font-weight:500;font-size:14px;color:#ececec;}
+  body.light .tcBio b{color:#2e1f1a;}
+  .tcSt{display:flex;flex-wrap:wrap;gap:4px 12px;}
+  .tcSt span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+  .tcSt i{display:inline-block;width:8px;height:8px;border-radius:3px;font-style:normal;}
+  .tcSt i.ok{background:var(--rgOpt);} .tcSt i.sub{background:var(--rgSub);} .tcSt i.out{background:var(--rgOut);} .tcSt i.other{background:#7b7b78;}
+  .tcDocs{border-top:1px solid rgba(255,255,255,.08);padding-top:12px;}
+  body.light .tcDocs{border-top-color:rgba(46,31,26,.1);}
+  .tcLbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;margin:0 0 6px;}
+  .tcDoc{display:flex;align-items:center;gap:8px;font-size:13.5px;color:#e4e4e0;padding:5px 0;}
+  .tcDoc svg{width:15px;height:15px;color:#8b8b86;flex:none;}
+  body.light .tcDoc{color:#2e1f1a;}
+  .tcNote{border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.05);}
+  body.light .tcNote{background:rgba(46,31,26,.05);}
+  .tcNoteBy{font-size:12px;font-weight:500;color:#ececec;margin:0 0 4px;}
+  .tcNote p{margin:0;font-size:13.5px;line-height:1.45;color:#bdbdb9;}
+  body.light .tcNoteBy{color:#2e1f1a;} body.light .tcNote p{color:#5a4a3c;}
+  /* -- All results -- */
+  .resHead{display:none;}
+  body.ia4 .dash .resHead{display:block;margin-top:34px;}
+  body.ia4 #phone .resHead{display:block;margin-top:24px;}
+  .resHead .secHead{display:flex;margin:0 0 16px;}
+  .resBar{display:flex;align-items:center;gap:12px;margin:0 0 16px;}
+  .resSeg{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.06);}
+  .resSeg button{
+    border:0;background:none;color:#8b8b86;font:inherit;font-size:13.5px;font-weight:500;
+    height:36px;padding:0 16px;border-radius:999px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:background .16s ease,color .16s ease;
+  }
+  .resSeg button.on{background:rgba(255,255,255,.14);color:#ececec;}
+  body.light .resSeg{background:rgba(46,31,26,.06);} body.light .resSeg button{color:#7d6b58;} body.light .resSeg button.on{background:#fff;color:#2e1f1a;}
+  .resSearch{
+    display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;min-width:0;
+    border:1px solid #2a2a28;border-radius:14px;color:#8b8b86;cursor:text;position:relative;
+    transition:border-color .16s ease;
+  }
+  .dash .resSearch{flex:0 0 256px;margin-left:auto;}
+  #phone .resSearch{margin:0 0 16px;}
+  .resSearch.focus{border-color:#5a5a56;}
+  .resSearch svg{width:15px;height:15px;flex:none;}
+  .resSearch input{flex:1;min-width:0;background:none;border:0;outline:0;padding:0;margin:0;font:inherit;font-size:15px;color:#ececec;-webkit-appearance:none;appearance:none;}
+  .resSearch input::placeholder{color:#8b8b86;}
+  .resSearch input::-webkit-search-cancel-button,.resSearch input::-webkit-search-decoration{-webkit-appearance:none;display:none;}
+  .resSearch .msClear{display:none;position:static;transform:none;margin-left:auto;}
+  .resSearch.hasText .msClear{display:flex;}
+  body.light .resSearch{border-color:#e2dbcc;} body.light .resSearch input{color:#2e1f1a;}
+  /* the two blocks' own searches step back: the one above searches both */
+  body.ia4 .dash .dRow .dsearch, body.ia4 .dash .dMedSearch,
+  body.ia4 #phone #mSearch .msBox, body.ia4 #phone .mMedSearch{display:none !important;}
+  /* sub-headings, only while both halves show */
+  .resSub{display:none;font-size:15px;font-weight:500;color:#ececec;margin:0 0 4px;}
+  body.ia4:not(.resBio):not(.resRec) .resSub{display:block;}
+  body.light .resSub{color:#2e1f1a;}
+  body.ia4 .dash .dMedsWrap .mMedsHead{margin:28px 0 0;}
+  body.ia4 .dash .dMedsWrap .mMedsHead h3, body.ia4 #phone .mMedsHead h3{font-size:15px;}
+  body.ia4.resRec .mMedsHead, body.ia4.resRec .dash .dMedsWrap .mMedsHead{margin-top:0;}
+  body.ia4 #phone .mMedsHead{margin:20px 0 14px;}
+  /* the biomarker block's row and list, moved in: the record select's row
+     stood 34px off the bento; here it stands under the sub-heading */
+  body.ia4.b2 .dash .dRow{margin-top:10px;}
+  body.ia4 .dash #dRecsList{margin-top:14px;}
+  body.ia4 #phone #mMedsWrap > .msWrap:not(.mMedBar){margin-left:-13px;margin-right:-13px;}
+  body.ia4 #phone #mMedsWrap .mrecs{padding-left:0;padding-right:0;}
+  /* the segments */
+  body.ia4.resRec .dash .dFilters, body.ia4.resRec .dash #dRecsList, body.ia4.resRec .dash .dSkel, body.ia4.resRec .dash #dSearchEmpty,
+  body.ia4.resRec #phone .msWrap:not(.mMedBar), body.ia4.resRec #phone #mRecs, body.ia4.resRec #phone #mSkel, body.ia4.resRec #phone #mSearchEmpty{display:none !important;}
+  body.ia4.resBio .mMedsHead, body.ia4.resBio .dMedBar, body.ia4.resBio .mMedBar, body.ia4.resBio .mMedNote,
+  body.ia4.resBio .mMedList, body.ia4.resBio #dMedEmpty, body.ia4.resBio #mMedEmpty{display:none !important;}
   .prScroll{flex:0 1 auto;min-height:0;overflow-y:auto;padding:0 22px;scrollbar-width:none;}
   .prScroll::-webkit-scrollbar{display:none;}
   .prMark{
@@ -7242,6 +7345,16 @@
             <option value="v4">V4</option>
           </select>
         </div>
+        <!-- The information architecture: V4 renames the tabs Overview and
+             Results, puts the tests under the bento and one results database
+             under the reports; V3 is the page as it was. -->
+        <div class="tkRow">
+          <span class="lbl">IA</span>
+          <select id="stIA" aria-label="Information architecture">
+            <option value="v4" selected>V4</option>
+            <option value="v3">V3</option>
+          </select>
+        </div>
         <!-- each group is a card of its own inside the panel ("use the cards
              style for the grouping inside the dropdown"): heading and rows
              on one tinted, rounded ground -->
@@ -7520,6 +7633,14 @@
         <div class="dcard dfill"></div>
       </div>
     </div>
+    <!-- V4 IA, the Overview tab: under the bento, one card per test the reader
+         has had -- its picture, its date and kind, the readings it produced
+         and how they stand, the documents behind it, and the clinician's
+         note when there is one. Built from MEDS in the script. -->
+    <div class="testsWrap" id="dTests">
+      <div class="secHead"><span>Your tests</span></div>
+      <div class="testsGrid"></div>
+    </div>
     <!-- Which set of results is on the page, beside the thing that searches
          them, with the chips under both: the phone's arrangement, because
          choosing the record set and searching within it are the same question
@@ -7635,16 +7756,34 @@
         <button class="dRepNav prev" id="dRepPrev" type="button" aria-label="Previous report"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button>
         <button class="dRepNav next" id="dRepNext" type="button" aria-label="Next report"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button>
       </div>
+      <!-- V4 IA, the Results tab: under the reports, ONE database of every
+           result -- readings and records -- behind one heading, one
+           segmented control (All | Biomarkers | Records) and one search. The
+           biomarker filter block and list move in here from the Overview
+           (applyIA), and the records section below is the other half. -->
+      <div class="resHead" id="dResHead">
+        <div class="secHead"><span>All results</span></div>
+        <div class="resBar">
+          <div class="resSeg" role="tablist" aria-label="Which results">
+            <button class="on" type="button" role="tab" aria-selected="true" data-res="all">All</button>
+            <button type="button" role="tab" aria-selected="false" data-res="bio">Biomarkers</button>
+            <button type="button" role="tab" aria-selected="false" data-res="rec">Records</button>
+          </div>
+          <div class="resSearch">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/></svg>
+            <input type="search" placeholder="Search all results" autocomplete="off" spellcheck="false" aria-label="Search all results">
+            <button class="msClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          </div>
+        </div>
+        <div class="resSub bio">Biomarkers</div>
+      </div>
       <div class="mMedsWrap dMedsWrap" id="dMedsWrap">
         <!-- Two cards just above the records, side by side in the biomarker
              bento's own frame: how many documents there are (a way down to
              the list), and the upload, which took the CTA out of the records
              header. The 47 is the design's figure, as the panel's 142 is. -->
         <div class="docRow">
-          <button class="docCard docCardN" type="button" aria-label="My documents, 47">
-            <div class="rcEyebrow">My documents</div>
-            <div class="rcBigN">47</div>
-          </button>
+          <!-- (the My documents count card that stood beside this was removed: "remove") -->
           <div class="docCard docUpload">
             <div class="docAsk">Got a record from your provider?</div>
             <button class="docLink rcUpBtn" type="button">Upload records<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.5V2.8M4.8 6 8 2.8 11.2 6M2.5 10.8v2.2a.8.8 0 0 0 .8.8h9.4a.8.8 0 0 0 .8-.8v-2.2"/></svg></button>
@@ -7847,11 +7986,16 @@
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
-    <div class="mHeroOrgan" id="mHeroOrgan"><div class="secHead rcHeroHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span></div><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
+    <div class="mHeroOrgan" id="mHeroOrgan"><div class="secHead rcHeroHead"><span>Everlab reports<button class="inf secInf" type="button" data-info="reports" aria-label="About Everlab reports">i</button></span><button class="rcMore arOpen" type="button">See more<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button></div><div class="emNote emAgeNote"><div class="emTxt">Unlock your biological age by completing your test.</div><button class="emCta" type="button">Unlock now</button></div><div class="v4Halo" id="v4Halo"></div><div class="v4Foot" id="v4Foot"><i class="v4FogA"></i><i class="v4FogB"></i><i class="v4FogC"></i></div><div class="v4Gauge" id="v4Gauge"></div><div class="v4Ages" id="v4Ages"></div><div class="v4Names" id="v4Names"></div><div class="v4RepCar" id="v4RepCar"></div><div class="v4RepDots" id="v4RepDots" aria-hidden="true"></div><div class="rbWrap" id="mRepBento"></div><div class="rcWrap" id="mRepCards"></div></div>
     </div></div>
     <div class="mBody" id="mBody">
     <!-- V4 only: every card moves down here, in the V4 order -->
     <div class="mV4" id="mV4"><div class="mbrow2 mV4Row" id="mV4Row"></div></div>
+    <!-- V4 IA, the Overview tab: the tests, one card each, built from MEDS -->
+    <div class="testsWrap" id="mTests">
+      <div class="secHead"><span>Your tests</span></div>
+      <div class="testsGrid"></div>
+    </div>
     <!-- The record select and the search, above the filter chips: you choose
          which records are on the page and search within them before you narrow
          by range, so the two that decide the SET come first and the chips that
@@ -7958,14 +8102,27 @@
     <div class="mMedsWrap" id="mMedsWrap">
       <!-- the same two document cards the desk stands above its records -->
       <div class="docRow">
-        <button class="docCard docCardN" type="button" aria-label="My documents, 47">
-          <div class="rcEyebrow">My documents</div>
-          <div class="rcBigN">47</div>
-        </button>
         <div class="docCard docUpload">
           <div class="docAsk">Got a record from your provider?</div>
           <button class="docLink rcUpBtn" type="button">Upload records<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.5V2.8M4.8 6 8 2.8 11.2 6M2.5 10.8v2.2a.8.8 0 0 0 .8.8h9.4a.8.8 0 0 0 .8-.8v-2.2"/></svg></button>
         </div>
+      </div>
+      <!-- V4 IA: the one results database, phone side (see #dResHead) -->
+      <div class="resHead" id="mResHead">
+        <div class="secHead"><span>All results</span></div>
+        <div class="resBar">
+          <div class="resSeg" role="tablist" aria-label="Which results">
+            <button class="on" type="button" role="tab" aria-selected="true" data-res="all">All</button>
+            <button type="button" role="tab" aria-selected="false" data-res="bio">Biomarkers</button>
+            <button type="button" role="tab" aria-selected="false" data-res="rec">Records</button>
+          </div>
+        </div>
+        <div class="resSearch">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.6"/><path d="M10.6 10.6 14 14"/></svg>
+          <input type="search" placeholder="Search all results" autocomplete="off" spellcheck="false" aria-label="Search all results">
+          <button class="msClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="resSub bio">Biomarkers</div>
       </div>
       <div class="mMedsHead">
         <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records">i</button></h3>
@@ -12391,6 +12548,8 @@
       (CARD_STATE.repFew ? ' repFew' : '') +
       (CARD_STATE.repTitle ? '' : ' noRepTitle') +
       (CARD_STATE.docs === false ? ' noDocs' : '') +
+      (CARD_STATE.ia4 ? ' ia4' : '') +
+      (CARD_STATE.res === 'bio' ? ' resBio' : CARD_STATE.res === 'rec' ? ' resRec' : '') +
       (CARD_STATE.repVisual ? ' repVisual' : '') +
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
@@ -17562,7 +17721,7 @@
     // second table beside it, so a report is one row wherever it is shown.
     { id: 'r1',  label: 'Pathology test',          cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026',
       by: 'Dr. Steven Lu',    art: ['#6f5a4e', '#241a16'], media: 'img' },
-    { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 32, short: 'May 2026',
+    { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 15, short: 'May 2026',
       by: 'Dr. Amara Osei',   art: ['#4a5d63', '#151d20'], media: 'video' },
     { id: 'r3',  label: 'Nutritional review',      cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026',
       by: 'Dr. Steven Lu',    art: ['#6a5570', '#1d1622'], media: 'img' },
@@ -17576,15 +17735,15 @@
     // so nothing had exercised its scroll. Nineteen more, backdated into the
     // history `hist`'s own range already promised (2011 to 2026), so a list
     // long enough to need scrolling was one the record already implied.
-    { id: 'r7',  label: 'Thyroid panel',           cat: 'Pathology', date: '02 Apr 2025', n: 18, short: 'Apr 2025',
+    { id: 'r7',  label: 'Thyroid panel',           cat: 'Pathology', date: '02 Apr 2025', n: 10, short: 'Apr 2025',
       by: 'Dr. Amara Osei',   art: ['#6f5a4e', '#241a16'], media: 'img' },
     { id: 'r8',  label: 'Cardiac MRI',              cat: 'Imaging',   date: '14 Feb 2025', n: 2,  short: 'Feb 2025',
       by: 'Dr. Steven Lu',    art: ['#4a5d63', '#151d20'], media: 'video' },
     { id: 'r9',  label: 'Vitamin panel',            cat: 'Pathology', date: '30 Nov 2024', n: 12, short: 'Nov 2024',
       by: 'Kate Mercer',      art: ['#6a5570', '#1d1622'], media: 'img' },
-    { id: 'r10', label: 'Bone density scan',        cat: 'Imaging',   date: '08 Sep 2024', n: 4,  short: 'Sep 2024',
+    { id: 'r10', label: 'Bone density scan',        cat: 'Imaging',   date: '08 Sep 2024', n: 3,  short: 'Sep 2024',
       by: 'Dr. Amara Osei',   art: ['#5d6b4a', '#181d14'], media: 'img' },
-    { id: 'r11', label: 'Allergy panel',            cat: 'Pathology', date: '22 Jul 2024', n: 26, short: 'Jul 2024',
+    { id: 'r11', label: 'Allergy panel',            cat: 'Pathology', date: '22 Jul 2024', n: 16, short: 'Jul 2024',
       by: 'Dr. Steven Lu',    art: ['#74564a', '#231715'], media: 'img' },
     { id: 'r12', label: 'Gut microbiome test',      cat: 'Other',     date: '03 May 2024', n: 8,  short: 'May 2024',
       by: 'Dr. Amara Osei',   art: ['#4f5570', '#161822'], media: 'video' },
@@ -17592,7 +17751,7 @@
       by: 'Dr. Steven Lu',    art: ['#5c6f5a', '#171d16'], media: 'img' },
     { id: 'r14', label: 'Skin check',               cat: 'Imaging',   date: '27 Dec 2023', n: 1,  short: 'Dec 2023',
       by: 'Kate Mercer',      art: ['#6b5a63', '#201820'], media: 'img' },
-    { id: 'r15', label: 'Hormone panel',            cat: 'Pathology', date: '14 Oct 2023', n: 16, short: 'Oct 2023',
+    { id: 'r15', label: 'Hormone panel',            cat: 'Pathology', date: '14 Oct 2023', n: 14, short: 'Oct 2023',
       by: 'Dr. Amara Osei',   art: ['#4a6068', '#141c1f'], media: 'img' },
     { id: 'r16', label: 'Sleep study',              cat: 'Other',     date: '06 Aug 2023', n: 3,  short: 'Aug 2023',
       by: 'Dr. Steven Lu',    art: ['#705a4a', '#231a13'], media: 'video' },
@@ -17610,7 +17769,7 @@
       by: 'Kate Mercer',      art: ['#70694a', '#221f14'], media: 'video' },
     { id: 'r23', label: 'DEXA scan',                cat: 'Imaging',   date: '25 Sep 2021', n: 4,  short: 'Sep 2021',
       by: 'Dr. Amara Osei',   art: ['#4a5870', '#141a22'], media: 'img' },
-    { id: 'r24', label: 'Genetic screening',        cat: 'Other',     date: '11 May 2021', n: 30, short: 'May 2021',
+    { id: 'r24', label: 'Genetic screening',        cat: 'Other',     date: '11 May 2021', n: 14, short: 'May 2021',
       by: 'Dr. Steven Lu',    art: ['#704a4f', '#221516'], media: 'video' },
     { id: 'r25', label: 'Baseline health check',    cat: 'Pathology', date: '14 Feb 2021', n: 42, short: 'Feb 2021',
       by: 'Dr. Amara Osei',   art: ['#5a704a', '#182214'], media: 'img' }
@@ -17691,24 +17850,30 @@
   // records -- named by `sr` (the desk's record select above the list offers
   // them and cuts by `s`, the request's id; the chips cut by category `c`).
   const MEDS = [
+    // `rep` is the Everlab report a request produced (its biomarkers are the
+    // rows stamped with that id); `note` is the clinician's word on it. Both
+    // are the test card's, on the V4 Overview.
     { c: 'path', s: 'sr1', sr: 'Full blood & tumour markers', date: '24 Sep 2025', src: 'COMRAD / PRP Diagnostic Imaging very long COMRAD / PRP Diagnostic Imaging',
-      docs: ['Dexa scan', 'Metal', 'Tumour markers', 'Breast Ultrasound'] },
+      docs: ['Dexa scan', 'Metal', 'Tumour markers', 'Breast Ultrasound'], rep: 'r1',
+      note: { by: 'Dr Sarah Chen', text: 'Your ApoB has come down since May, which is the trend we wanted. Keep to the current plan and we will re-check it in six months.' } },
     { c: 'imag', s: 'sr2', sr: 'DEXA & body composition', date: '23 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
-      docs: ['Dexa scan', 'Breast Ultrasound', 'Total body composition', 'Tumour markers'] },
+      docs: ['Dexa scan', 'Breast Ultrasound', 'Total body composition', 'Tumour markers'], rep: 'r23',
+      note: { by: 'Dr Sarah Chen', text: 'Visceral fat is a little above where we would like it. Two strength sessions a week would move it.' } },
     { c: 'immu', s: 'sr3', sr: 'Travel vaccinations', date: '12 Aug 2025', src: 'COMRAD / PRP Diagnostic Imaging',
       docs: ['Metal blood', 'Hormones', 'Tumour markers'] },
     { c: 'path', s: 'sr4', sr: 'Liver, iron & thyroid panel', date: '15 May 2025', src: 'Everlab Pathology',
-      docs: ['Full blood count', 'Liver function', 'Iron studies', 'Thyroid panel'] },
+      docs: ['Full blood count', 'Liver function', 'Iron studies', 'Thyroid panel'], rep: 'r2' },
     { c: 'imag', s: 'sr5', sr: 'Cardiac CT & calcium score', date: '02 Mar 2025', src: 'COMRAD / PRP Diagnostic Imaging',
-      docs: ['Cardiac CT', 'Coronary calcium score'] },
+      docs: ['Cardiac CT', 'Coronary calcium score'], rep: 'r20',
+      note: { by: 'Dr James Okafor', text: 'A calcium score of zero is the best result this scan can give. Nothing to act on; we would not repeat it for five years.' } },
     { c: 'path', s: 'sr6', sr: 'Lipid & glucose check', date: '18 Jun 2024', src: 'Everlab Pathology',
-      docs: ['Lipid profile', 'HbA1c', 'Vitamin D'] },
+      docs: ['Lipid profile', 'HbA1c', 'Vitamin D'], rep: 'r3' },
     // three more, further back ("Colonoscopy, Microbiome test, MRI scan --
     // put some random records below in the list")
     { c: 'proc', s: 'sr7', sr: 'Colonoscopy', date: '02 Nov 2023', src: 'Sydney Endoscopy Centre',
       docs: ['Colonoscopy report', 'Histopathology', 'Recall letter'] },
     { c: 'path', s: 'sr8', sr: 'Microbiome test', date: '19 Sep 2023', src: 'Microba Life Sciences',
-      docs: ['Gut microbiome profile', 'Stool culture', 'Dietary recommendations'] },
+      docs: ['Gut microbiome profile', 'Stool culture', 'Dietary recommendations'], rep: 'r12' },
     { c: 'imag', s: 'sr9', sr: 'MRI scan', date: '07 Mar 2023', src: 'I-MED Radiology',
       docs: ['Lumbar spine MRI', 'Radiologist summary'] }
   ];
@@ -18290,7 +18455,7 @@
     // above the records before the rewrite (placeDeskDocRow brings it back
     // into the new column after, when there is one)
     const parked = host.querySelector('.docRow');
-    if (parked){ const head = document.querySelector('#dMedsWrap .mMedsHead'); if (head) head.parentNode.insertBefore(parked, head); }
+    if (parked){ const head = docRowHome(); if (head) head.parentNode.insertBefore(parked, head); }
     const CHEV = '<svg class="go" viewBox="0 0 12 12" fill="none" stroke="currentColor" ' +
       'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
       '<path d="M4.5 2.5 8 6l-3.5 3.5"/></svg>';
@@ -19029,8 +19194,14 @@
     const host = document.getElementById('dRepCards');
     const col = CARD_STATE.repCards && host ? host.querySelector('.rcCol') : null;
     if (col){ if (row.parentNode !== col) col.appendChild(row); return; }
-    const head = document.querySelector('#dMedsWrap .mMedsHead');
+    const head = docRowHome();
     if (head && row.nextElementSibling !== head) head.parentNode.insertBefore(row, head);
+  }
+  // where the desk's document row falls back to: above the Medical records
+  // header -- or, under the V4 IA, above the whole results database, since
+  // the records are its second half and the row belongs with the reports
+  function docRowHome(){
+    return (CARD_STATE.ia4 && document.getElementById('dResHead')) || document.querySelector('#dMedsWrap .mMedsHead');
   }
   document.addEventListener('everlab:repTab', rebuildRepCards);
 
@@ -19554,6 +19725,10 @@
                        // tweak) -- the default ("as default"), with the
                        // Layout select's `selected`, as with the others
                        repVisual: true,
+                       // the information architecture (IA tweak): V4's
+                       // Overview / Results, and which half of the results
+                       // database is showing ('all' | 'bio' | 'rec')
+                       ia4: true, res: 'all',
                        newRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
@@ -19584,7 +19759,7 @@
       // nor are the library's two grains, Normal and Dense
       // ...nor the report card's two dresses, Neutral and Visual
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle')
+          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -20261,6 +20436,141 @@
     placeThumb();          // the label grew, so the underline has to re-measure
   }
   requestAnimationFrame(tabCounts);
+
+  // ---- The V4 information architecture ---------------------------------------
+  // Overview | Results. The tabs are renamed in place (the count badge is a
+  // child of the tab, so only the label's own text node is touched); the
+  // biomarker filter block and its list move from the Overview into the
+  // Results tab, under the "All results" heading and above the records, so
+  // the two are one database behind one segmented control and one search.
+  // Moved, not copied -- a comment holds each node's seat, as the Expanded
+  // Report layout does, so V3 can be put back exactly.
+  const IA_MOVED = [];
+  function applyIA(on){
+    document.querySelectorAll('#dTabsV2 .v2Tab, #mTabsV2 .v2Tab').forEach(t => {
+      const k = t.dataset.tab || 'bio';
+      const txt = k === 'bio' ? (on ? 'Overview' : 'Biomarkers') : k === 'rep' ? (on ? 'Results' : 'Reports') : null;
+      if (txt && t.firstChild && t.firstChild.nodeType === 3) t.firstChild.nodeValue = txt;
+    });
+    while (IA_MOVED.length){
+      const m = IA_MOVED.pop();
+      if (m.mark.parentNode) m.mark.parentNode.replaceChild(m.el, m.mark);
+    }
+    if (on){
+      const mv = (ids, before) => {
+        if (!before) return;
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const mark = document.createComment('ia');
+          el.parentNode.insertBefore(mark, el);
+          IA_MOVED.push({ el, mark });
+          before.parentNode.insertBefore(el, before);
+        });
+      };
+      mv(['dFilters', 'dSkel', 'dRecsList', 'dSearchEmpty'], document.getElementById('dMedsWrap'));
+      mv(['mSearch', 'mSkel', 'mSearchEmpty', 'mRecs'], document.querySelector('#mMedsWrap .mMedsHead'));
+    }
+    placeThumb();
+    placeDeskDocRow();
+  }
+  // which half of the database shows; a body class, kept on CARD_STATE
+  function setRes(v){
+    CARD_STATE.res = v;
+    document.body.classList.toggle('resBio', v === 'bio');
+    document.body.classList.toggle('resRec', v === 'rec');
+    document.querySelectorAll('.resSeg button').forEach(b => {
+      const on = b.dataset.res === v;
+      b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on));
+    });
+    document.querySelectorAll('.resSearch input').forEach(i => {
+      i.placeholder = v === 'bio' ? 'Search biomarkers' : v === 'rec' ? 'Search records' : 'Search all results';
+    });
+    document.dispatchEvent(new CustomEvent('everlab:repTab'));   // the pinned bars re-measure
+  }
+  document.querySelectorAll('.resSeg button').forEach(b => b.addEventListener('click', () => setRes(b.dataset.res)));
+  // One search over both halves: what is typed here is typed into the two
+  // filters' own fields (hidden under V4), which run their own beats.
+  document.querySelectorAll('.resSearch').forEach(box => {
+    const inp = box.querySelector('input'), clr = box.querySelector('.msClear');
+    const phone = !!box.closest('#phone');
+    const targets = () => (phone ? ['mSearchIn', 'mMedIn'] : ['dSearchIn', 'dMedIn']).map(id => document.getElementById(id)).filter(Boolean);
+    const push = () => {
+      box.classList.toggle('hasText', inp.value.length > 0);
+      targets().forEach(t => { t.value = inp.value; t.dispatchEvent(new Event('input', { bubbles: true })); });
+    };
+    inp.addEventListener('input', push);
+    inp.addEventListener('focus', () => box.classList.add('focus'));
+    inp.addEventListener('blur', () => box.classList.remove('focus'));
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') inp.blur();
+      if (e.key === 'Escape'){ inp.value = ''; push(); inp.blur(); }
+    });
+    if (clr){
+      clr.addEventListener('pointerdown', e => e.preventDefault());
+      clr.addEventListener('click', () => { inp.value = ''; push(); inp.focus(); });
+    }
+    box.addEventListener('click', e => { if (clr && clr.contains(e.target)) return; inp.focus(); });
+  });
+  const stIASel = document.getElementById('stIA');
+  if (stIASel) stIASel.addEventListener('change', () => {
+    CARD_STATE.ia4 = stIASel.value === 'v4';
+    document.body.classList.toggle('ia4', CARD_STATE.ia4);
+    applyIA(CARD_STATE.ia4);
+    document.dispatchEvent(new CustomEvent('everlab:repTab'));
+    resize();
+  });
+  // Your tests: one card per service request -- its picture (by category,
+  // from the report art), its kind and date, the readings the linked report
+  // produced and how they stand (counted off the rows stamped with it), the
+  // documents behind it (the Everlab report first when there is one), and
+  // the clinician's note when there is one. Built once the lists exist, so
+  // the tallies are the lists' own.
+  function buildTests(){
+    const hosts = [['dTests', true], ['mTests', false]].map(([id, desk]) => [document.getElementById(id), desk]).filter(h => h[0]);
+    if (!hosts.length) return;
+    const byKey = {}; MED_CATS.forEach(c => { byKey[c.k] = c; });
+    const ART = { path: REP_ART[0], imag: REP_ART[1], immu: REP_ART[2], proc: REP_ART[2] };
+    const DOC = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 1.8h5l3 3v9.4H4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M9 1.8v3h3" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>';
+    const STS = [['ok', 'Optimal'], ['sub', 'Suboptimal'], ['out', 'Out of range'], ['other', 'Other']];
+    const tally = id => {
+      const t = { ok: 0, sub: 0, out: 0, other: 0, n: 0 };
+      document.querySelectorAll('#dRecsList .brow').forEach(r => {
+        if ((' ' + (r.dataset.r || '') + ' ').indexOf(' ' + id + ' ') < 0) return;
+        const s = r.querySelector('.st');
+        const k = STS.map(p => p[0]).find(c => s && s.classList.contains(c)) || 'other';
+        t[k]++; t.n++;
+      });
+      return t;
+    };
+    const html = MEDS.map(g => {
+      const cat = byKey[g.c] || MED_CATS[0];
+      const rep = g.rep ? RECS.find(r => r.id === g.rep) : null;
+      const t = rep ? tally(rep.id) : null;
+      const docs = (rep ? ['Everlab report'] : []).concat(g.docs);
+      return '<article class="tcard' + (rep ? ' hasRep' : '') + '" data-s="' + g.s + '"' + (rep ? ' data-r="' + rep.id + '"' : '') + '>' +
+        '<div class="tcArt hasImg" style="background-image:url(' + ART[g.c] + ')"' + (rep ? ' role="button" tabindex="0" aria-label="Open the report"' : '') + '></div>' +
+        '<div class="tcBody">' +
+          '<div class="tcEyebrow"><i style="background:' + cat.dot + '"></i>' + cat.label + ' &middot; ' + g.date + '</div>' +
+          (rep ? '<button class="tcTitle tcOpen" type="button">' + g.sr + '</button>' : '<h3 class="tcTitle">' + g.sr + '</h3>') +
+          (t && t.n ? '<div class="tcBio"><b>' + t.n + ' biomarker' + (t.n === 1 ? '' : 's') + '</b><span class="tcSt">' +
+            STS.filter(p => t[p[0]]).map(p => '<span><i class="' + p[0] + '"></i>' + t[p[0]] + ' ' + p[1] + '</span>').join('') + '</span></div>' : '') +
+          '<div class="tcDocs"><div class="tcLbl">Documents</div>' + docs.map(d => '<div class="tcDoc">' + DOC + '<span>' + d + '</span></div>').join('') + '</div>' +
+          (g.note ? '<div class="tcNote"><div class="tcNoteBy">Note from ' + g.note.by + '</div><p>&ldquo;' + g.note.text + '&rdquo;</p></div>' : '') +
+        '</div></article>';
+    }).join('');
+    hosts.forEach(([h, desk]) => {
+      const grid = h.querySelector('.testsGrid');
+      grid.innerHTML = html;
+      grid.addEventListener('click', e => {
+        const c = e.target.closest('.tcard.hasRep');
+        if (!c || !e.target.closest('.tcOpen, .tcArt')) return;
+        const r = RECS.find(x => x.id === c.dataset.r);
+        if (r) (desk ? repSheetD : repSheetM).open(r);
+      });
+    });
+  }
+  requestAnimationFrame(() => { buildTests(); applyIA(CARD_STATE.ia4); });
   addEventListener('resize', placeThumb);
   document.addEventListener('everlab:mode', () => requestAnimationFrame(placeThumb));
   // left to right, which is the order the tabs are read in and the order the
@@ -21104,7 +21414,8 @@
   // says it once rather than every row being listed above
   const GROUP_TYPE = {
     'Sleep & Recovery': 'Wearables', 'Genetics': 'Genetics', 'Imaging': 'Imaging', 'Urine': 'Urine',
-    'Gut Microbiome': 'Microbiome', 'Body Composition': 'Body composition', 'Lifestyle & Self-reported': 'Self-reported'
+    'Gut Microbiome': 'Microbiome', 'Body Composition': 'Body composition', 'Lifestyle & Self-reported': 'Self-reported',
+    'Cardiorespiratory Fitness': 'Wearables'
   };
   const rowType = (name, group) => catKey(TYPE_OF[name] || GROUP_TYPE[group] || 'Blood');
   const PANEL = [
@@ -21281,7 +21592,68 @@
       Visceral fat area (DEXA)|sub|112 cm²
       Lumbar spine T-score|sub|-1.1
       Femoral neck T-score|ok|-0.6
-      Thyroid nodule, largest|other|6 mm `],
+      Thyroid nodule, largest|other|6 mm
+      Skin lesions of concern|ok|0 `],
+    // Panels the reports are named for, so each report can hold its own kind
+    // of reading ("review each panel and reflect realistic biomarker names")
+    ['Allergy & Immune Response',
+     'Total and specific IgE against the common triggers, and the markers of an allergic response.', `
+      Total IgE|sub|142 kU/L
+      House dust mite IgE|out|3.8 kUA/L
+      Rye grass pollen IgE|sub|0.9 kUA/L
+      Birch pollen IgE|ok|< 0.35 kUA/L
+      Cat dander IgE|sub|0.7 kUA/L
+      Dog dander IgE|ok|< 0.35 kUA/L
+      Peanut IgE|ok|< 0.35 kUA/L
+      Tree nut mix IgE|ok|< 0.35 kUA/L
+      Egg white IgE|ok|< 0.35 kUA/L
+      Cow's milk IgE|ok|< 0.35 kUA/L
+      Wheat IgE|ok|< 0.35 kUA/L
+      Shellfish mix IgE|ok|< 0.35 kUA/L
+      Mould mix IgE|ok|< 0.35 kUA/L
+      Eosinophil count|sub|0.52 x10⁹/L
+      Tryptase|ok|4.1 ug/L
+      Eosinophil cationic protein|ok|11 ug/L `],
+    ['Hormones',
+     'The sex, stress and growth hormones, from a fasting morning sample.', `
+      Total testosterone|ok|18.4 nmol/L
+      Free testosterone|ok|380 pmol/L
+      SHBG|ok|34 nmol/L
+      Free androgen index|ok|54
+      Oestradiol|ok|92 pmol/L
+      Progesterone|ok|1.8 nmol/L
+      LH|ok|4.2 IU/L
+      FSH|ok|3.9 IU/L
+      Prolactin|ok|210 mIU/L
+      DHEA-S|sub|4.1 umol/L
+      Morning cortisol|ok|412 nmol/L
+      IGF-1|ok|24 nmol/L
+      Growth hormone|other|—
+      AMH|other|— `],
+    ['Vitamins & Minerals',
+     'The vitamins and trace minerals the body has to be given.', `
+      Vitamin A (retinol)|ok|2.1 umol/L
+      Vitamin B1 (thiamine)|ok|142 nmol/L
+      Vitamin B6|ok|68 nmol/L
+      Vitamin C|sub|38 umol/L
+      Vitamin E|ok|28 umol/L
+      Vitamin K1|ok|0.9 nmol/L
+      Zinc|ok|13.2 umol/L
+      Copper|ok|15.1 umol/L
+      Selenium|sub|0.92 umol/L
+      Magnesium|ok|0.88 mmol/L
+      Manganese|ok|9.4 nmol/L
+      Chromium|other|— `],
+    ['Cardiorespiratory Fitness',
+     'How hard the heart and lungs can work, from your VO2 max test and the ring between tests.', `
+      VO2 max|ok|46 mL/kg/min
+      Maximum heart rate|ok|184 bpm
+      Heart rate recovery, 1 min|ok|31 bpm
+      Lactate threshold heart rate|ok|158 bpm
+      Anaerobic threshold|sub|74 % of VO2 max
+      Peak power output|ok|312 W
+      Respiratory exchange ratio, peak|ok|1.14
+      Grip strength|ok|48 kg `],
     ['Urine',
      'What the kidneys let through and what the body clears, from a first-morning sample.', `
       Urine albumin / creatinine ratio|ok|1.8 mg/mmol
@@ -21340,6 +21712,38 @@
       Water per day|ok|2.1 L
       Family history of heart disease|other|Yes `]
   ];
+  // What each report holds, by the panel it is named for: whole groups, and
+  // names where a panel is a slice of one (iron studies out of Blood Health,
+  // the lipids out of Heart Health). The broad panels take the whole blood
+  // work. A record's `n` is at most what its rule reaches.
+  const BLOOD_WORK = ['Liver Health', 'Kidney Health', 'Heart Health', 'Metabolic Health', 'Thyroid', 'Blood Health', 'Inflammation', 'Vitamins & Minerals', 'Hormones'];
+  const REC_POOL = {
+    r1:  { groups: BLOOD_WORK },                                            // Pathology test
+    r2:  { names: /cholesterol|LDL|HDL|Triglycer|Apolipo|Lipoprotein|Remnant|Omega-3/i },   // Lipid panel
+    r3:  { groups: ['Lifestyle & Self-reported', 'Body Composition'] },    // Nutritional review
+    r4:  { groups: ['Cardiorespiratory Fitness'] },                         // VO2 Max Test
+    r5:  { groups: BLOOD_WORK },                                            // Comprehensive Blood Tests
+    r6:  { groups: BLOOD_WORK },                                            // Baseline panel
+    r7:  { groups: ['Thyroid'] },                                           // Thyroid panel
+    r8:  { names: /ejection|Aortic|Epicardial/i },                          // Cardiac MRI
+    r9:  { groups: ['Vitamins & Minerals'], names: /^Vitamin|Folate|Iodine/i },   // Vitamin panel
+    r10: { names: /T-score|Bone mass/i },                                   // Bone density scan
+    r11: { groups: ['Allergy & Immune Response'] },                         // Allergy panel
+    r12: { groups: ['Gut Microbiome'] },                                    // Gut microbiome test
+    r13: { groups: ['Blood Health'] },                                      // Full blood count
+    r14: { names: /Skin lesions/i },                                        // Skin check
+    r15: { groups: ['Hormones'] },                                          // Hormone panel
+    r16: { names: /sleep|Respiratory rate|SpO2|Resting heart rate/i },      // Sleep study
+    r17: { groups: ['Liver Health'] },                                      // Liver function
+    r18: { names: /heart rate|Peak power|Anaerobic|VO2/i },                 // Cardiac stress test
+    r19: { names: /iron|Transferrin|Ferritin|Haemoglobin|Haematocrit|corpuscular|Red cell/i },   // Iron studies
+    r20: { names: /calcium score/i },                                       // Coronary calcium score
+    r21: { groups: ['Kidney Health', 'Urine'] },                            // Kidney function panel
+    r22: { groups: ['Cardiorespiratory Fitness'] },                         // VO2 max retest
+    r23: { groups: ['Body Composition'], names: /T-score/i },               // DEXA scan
+    r24: { groups: ['Genetics'], names: /Lipoprotein\(a\)/i },              // Genetic screening
+    r25: { groups: BLOOD_WORK }                                             // Baseline health check
+  };
   const ST_WORD = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range', other: 'Unclassified' };
   // The record sets. Every reading belongs to one of the two named tests, so
   // "Latest test" is a real subset rather than a label that changes nothing,
@@ -21361,7 +21765,7 @@
         // all stack on one pixel and do not move between loads
         let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
         const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
-        html += '<div class="mbrow" data-type="' + rowType(name, title) + '">' +
+        html += '<div class="mbrow" data-type="' + rowType(name, title) + '" data-grp="' + catKey(title) + '">' +
                   '<span>' + name + '</span>' +
                   '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
                   '<span class="g" data-v="' + val + '">' + val + '</span>' +
@@ -21386,24 +21790,80 @@
   // Deterministic, so a record is the same set on every load AND the same set
   // on every surface: the phone and the desk build their own markup from the
   // same table in the same order, so the same walk lands on the same readings.
+  // What kind of reading a record can carry, by what it is: a pathology report
+  // holds blood (and urine) work, an imaging report holds what was read off the
+  // scan, and the "Other" reports are named for what they are -- a microbiome
+  // test holds microbiome readings, a sleep study the ring's, a genetic screen
+  // the variants. Without this the dealer below put microbiome readings in an
+  // allergy panel ("that make sense?" -- it did not).
+  function recTypes(rec){
+    const L = (rec.label || '').toLowerCase();
+    if (/microbiome|gut/.test(L)) return ['microbiome'];
+    if (/sleep|vo2|fitness|wearable/.test(L)) return ['wearables'];
+    if (/genetic|genom|dna/.test(L)) return ['genetics'];
+    if (/dexa|bone density|body comp/.test(L)) return ['body-composition', 'imaging'];
+    if (/nutrition|lifestyle|questionnaire/.test(L)) return ['self-reported', 'body-composition'];
+    if (/kidney|urine/.test(L)) return ['blood', 'urine'];
+    if (rec.cat === 'Imaging') return ['imaging'];
+    if (rec.cat === 'Pathology') return ['blood'];
+    return ['blood'];
+  }
   function assignRecords(nodes, stampDate){
     const rows = [].slice.call(nodes);
     const N = rows.length;
     if (!N) return;
     rows.forEach(r => { r.dataset.r = ''; });
-    let ptr = 0;
-    RECS.forEach(rec => {
+    // Each record deals its readings from the rows that are ITS OWN: the
+    // groups a panel of that name reports, or the rows whose names say so
+    // ("review each panel and reflect realistic biomarker names"). A report
+    // with no rule falls back to the rows of its kind.
+    const nameOf = r => (r.firstElementChild ? r.firstElementChild.textContent : '').trim();
+    const poolFor = rec => {
+      const rule = REC_POOL[rec.id];
+      let pool;
+      if (rule){
+        const gs = (rule.groups || []).map(catKey);
+        pool = rows.filter(r => gs.indexOf(r.dataset.grp) >= 0 || (rule.names && rule.names.test(nameOf(r))));
+      } else {
+        const kinds = recTypes(rec);
+        pool = rows.filter(r => kinds.indexOf(r.dataset.type || 'blood') >= 0);
+      }
+      return pool.length ? pool : rows;
+    };
+    // EXACTLY n distinct rows per record, so the badge is the count of what
+    // the list shows when the record is chosen ("the number on the badge
+    // should reflect the number of biomarkers in the list"): a stride coprime
+    // with the pool's size walks it as a permutation, so the first n steps
+    // are n different rows. A record asking for more than its pool holds is
+    // capped at the pool, and its badge says so.
+    const gcd = (a, b) => b ? gcd(b, a % b) : a;
+    let start = 0;
+    RECS.forEach((rec, i) => {
       if (rec.id === 'all' || rec.all) return;
-      for (let k = 0; k < rec.n; k++, ptr++){
-        const row = rows[(ptr * 37) % N];
+      const pool = poolFor(rec), P = pool.length;
+      let step = 37; while (gcd(step, P) !== 1) step++;
+      if (rec.n > P) rec.n = P;
+      for (let k = 0; k < rec.n; k++){
+        const row = pool[(start + k * step) % P];
         row.dataset.r += (row.dataset.r ? ' ' : '') + rec.id;
       }
+      start += rec.n * 7 + i;   // the next record starts elsewhere in its own pool
+    });
+    // a row no record reached still needs a date: the newest record of its
+    // kind takes it, so nothing on the list is undated
+    // -- as a DATE DONOR only (data-rd), not as a member: a record's badge is
+    // the count of the rows it dealt, and a row it never dealt must not be
+    // counted against it
+    rows.forEach(row => {
+      if (row.dataset.r) return;
+      const rec = RECS.find(r => r.id !== 'all' && !r.all && recTypes(r).indexOf(row.dataset.type || 'blood') >= 0);
+      if (rec) row.dataset.rd = rec.id;
     });
     // the date a reading shows is the most recent record it appears in, and
     // RECS is in date order, so it is the first one listed
     const byId = {};
     RECS.forEach(rec => { byId[rec.id] = rec; });
-    rows.forEach(r => stampDate(r, byId[r.dataset.r.split(' ')[0]] || {}));
+    rows.forEach(r => stampDate(r, byId[(r.dataset.r || r.dataset.rd || '').split(' ')[0]] || {}));
   }
 
 
@@ -21777,7 +22237,7 @@
         const spark = st === 'other' ? '<span></span>' :
           '<svg width="76" height="24" viewBox="0 0 76 24" aria-hidden="true"><path d="' +
           SPARK[h % SPARK.length] + '" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>';
-        html += '<div class="brow" data-type="' + rowType(name, title) + '">' +
+        html += '<div class="brow" data-type="' + rowType(name, title) + '" data-grp="' + catKey(title) + '">' +
                   '<span>' + name + '</span>' +
                   '<span class="g">' + val + '</span>' +
                   '<span class="g dDate"></span>' +

@@ -9492,6 +9492,92 @@ as the sheet's last line: *Upload records* with the upload glyph, in the
 It closes the sheet and scrolls the upload card into view. Check:
 `types10.js`.
 
+### 5.340 The V4 information architecture: Overview | Results
+
+The brief: keep the dress, move the architecture. Two tabs still, renamed;
+the Overview keeps the bento and gains the tests; the Results tab keeps
+the reports and gains one results database. Built as the default, with an
+**IA** row in the panel (V4 / V3) that puts the page back exactly.
+
+- **The tabs.** `applyIA` writes *Overview* / *Results* into the two tabs'
+  own text nodes (the count badge is a child and untouched), on both
+  screens; V3 writes *Biomarkers* / *Reports* back.
+- **Your tests.** `#dTests` under the desk bento, `#mTests` under the
+  phone's card row, shown on the Overview under V4 only. `buildTests`
+  writes one `.tcard` per MEDS request: its picture (the report art by
+  category), a dotted category-and-date eyebrow, the title (a button that
+  opens the report drawer/sheet when the request has a `rep`), the readings
+  that report produced with their standing (counted off the rows stamped
+  with the report -- *44 biomarkers · 29 Optimal · 8 Suboptimal · 4 Out of
+  range · 3 Other*), the documents (the Everlab report first when there is
+  one), and the clinician's `note` when there is one (three have). Two
+  columns on the desk, one on the phone; V5's wash, 20/22px corners.
+- **All results.** `#dResHead` / `#mResHead` -- the heading, a segmented
+  control *All | Biomarkers | Records* and one search -- stands in the
+  Results tab under the reports; `applyIA` moves the biomarker filter block
+  and its list in beneath it (a comment holds each node's seat, as Expanded
+  Report does), so the records section below is the database's other half.
+  The segments are `body.resBio` / `body.resRec` (kept as `CARD_STATE.res`)
+  hiding the other half; *All* shows both under small sub-headings. The
+  one search writes into both blocks' own fields (hidden under V4) and
+  they run their own beats -- "iron" finds two readings and one record.
+  Categories = the group titles (the chip), status = the range chips, types
+  the second chip, record types the records' chips: the brief's filters,
+  all already there. Under V4 the desk document row's fallback home is
+  above the database (`docRowHome`).
+- Check: `v4ia.js` -- tabs, Overview (bento + 9 cards, filters gone),
+  Results (order: reports > head > filters > list > records), the three
+  segments, the shared search, IA back to V3 and to V4 again; the phone's
+  Overview and Results and its Records segment; no errors.
+
+### 5.341 Each report holds its own readings; the badge is the count
+
+"That make sense?" (an allergy panel showing microbiome readings) and
+"the number on the badge should reflect the number of biomarkers in the
+list." Two faults in `assignRecords`: it dealt any row to any record, and
+its stride could land on one row twice, so a badge of 26 stood over fewer
+rows.
+
+- **Panels for the reports** ("review each panel and reflect realistic
+  biomarker names"): four more PANEL groups -- *Allergy & Immune Response*
+  (16: total and specific IgE, eosinophils, tryptase, ECP), *Hormones*
+  (14), *Vitamins & Minerals* (12), *Cardiorespiratory Fitness* (8, a
+  Wearables group: VO2 max, max HR, recovery, thresholds, peak power, grip)
+  -- and a skin-lesions row in Imaging. 247 readings, 18 groups.
+- **`REC_POOL`**: what each report can hold, by the panel it is named for
+  -- whole groups (Full blood count → Blood Health, Thyroid panel →
+  Thyroid, Allergy panel → Allergy, Gut microbiome test → Gut Microbiome,
+  Genetic screening → Genetics + Lp(a)…) or names where a panel is a slice
+  of one (Lipid panel → the lipids in Heart Health, Iron studies → the iron
+  and red-cell rows, Sleep study → the sleep rows, Cardiac MRI → LVEF,
+  aortic root, epicardial fat). The broad panels take the whole blood work.
+  Rows carry `data-grp` for it. Declared beside PANEL, above the first
+  list that deals (it was below it, and the phone's build hit the TDZ).
+- **Exactly n distinct rows**: a stride coprime with the pool's size walks
+  it as a permutation, so a record's first n steps are n different rows;
+  a record asking for more than its pool is capped, and six counts were
+  set to their panels (Lipid 15, Thyroid 10, Bone density 3, Allergy 16,
+  Hormone 14, Genetic 14). A row no record reached takes the newest
+  compatible record as its DATE DONOR only (`data-rd`), never as a member.
+  All 25 badges equal their rows; the allergy panel is 16 allergy rows,
+  the microbiome test 8 microbiome rows.
+
+### 5.342 The My documents card goes
+
+"Remove": the count card left the document row on both screens; the
+upload card stands alone, full width of its column.
+
+### 5.343 The phone carousel centres; See more on its header
+
+"See more missing top right" -- the phone's reports header carries the
+stack's *See more ›* (`.rcMore.arOpen`, into the all-reports sheet), 13px
+off the right edge. "Prev and next visible equally and the active card
+centered" -- the carousel's padding is 56px both sides and the cards snap
+to the centre, so the active card stands in the middle with 49px of each
+neighbour showing (was left-aligned with a 96px peek on the right). The
+dots and the glide already worked in card steps, so nothing else moved.
+Check: `carcenter.js`.
+
 ---
 
 ## 6. Open items
