@@ -9834,6 +9834,60 @@ head); picking V4 in the select still turns the Overview | Results IA on,
 and V2.5 turns it back off, with no errors either way. The V4 work is
 unchanged, only no longer the door. Check: `v25default.js`.
 
+### 5.357 Two ways in, one menu: Records | Category
+
+"On the dropdown offer 2 ways to filter, by Records or by Category (the
+type). Remove the type below and put it inside the dropdown with a tab
+inside the dropdown content." The types chip that led the chip row (and its
+divider and floating menu) is gone on both screens. The record select's
+menu opens on a segmented head, `.mRecTabs` -- Records | Category, the
+results pill's shape at the menu's scale -- with a pane under each:
+`#dRecList`/`#mRecList` as before, and `#dCatList`/`#mCatList` with All
+types and the eight types, each with its counted badge. A tab click keeps
+the menu open (`stopPropagation`); the pane that opens is the one holding
+the filter, else the one last looked at.
+
+The two are two answers to one question, so they are exclusive: choosing a
+type calls `choose('all')` first (letting the record go and marking every
+control), then holds the type, names it on the button with the eyebrow
+*Category*, and shows the cross; choosing a record clears `catSet` inside
+`choose()`; the cross clears both. The chips count what is held either way.
+`.mRecScroll[hidden]{display:none}` because the pane's `display:flex`
+outranked the attribute -- both lists showed at once on the first build.
+Check: `menutabs.js` (Genetics → 14 rows, then Lipid panel → 15 with the
+type let go, then clear → 275; phone Wearables → 52).
+
+### 5.358 Report Video tweak
+
+"Add a tweak Report Video: add a player centred on the visual." A Video
+select in the Reports tweaks (Off by default) sets `body.repVideo` through
+`CARD_STATE.repVideo`. The Visual card's tile carries a `.rcPlay` span
+always -- a 64px frosted disc with a play triangle, centred by measurement
+(0,0 off the tile's centre), 52px on the row card -- and the class shows
+it. `display:block` on its svg, because the tile hides its own drawing's
+svg under an image. The tile's click is the play.
+
+### 5.359 Smaller titles, and the Lipid panel is new
+
+"Smaller font for titles, same font size as sub titles": the Visual card's
+title is the meta line's 13px on both screens (18 → 13; the phone's carousel
+rule carried the same change, or it kept 18). With the title that small the
+one-report row card no longer needs the corner badge in the CTA's corner
+-- the badge sits beside the title there too, and the corner rule is gone
+(it was drawing "New" over "See report").
+
+"Add NEW badge on the Lipid panel on the right col next to the chevron
+(left of chevron)": `RECS` r2 carries `isNew: true`, and a stack row writes
+`.rbNew.rbNewRow` before its chevron for a flagged report (the menu shows
+the same badge for it, as it did for a flagged request). Check:
+`menutabs.js` ("badge then chevron").
+
+### 5.360 One report: the upload card at 320
+
+"One report: use max width 320px for the upload card, the other card fill."
+`.dash .rcWrap.n1 .rcCol{flex:0 0 320px;max-width:320px}` and the row card
+`flex:1 1 auto` -- 744 + 320 across the 1080 row. Check: `onerep.js`.
+
 ---
 
 ## 6. Open items
