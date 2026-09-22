@@ -7370,16 +7370,10 @@
             <option value="v4" selected>V4</option>
           </select>
         </div>
-        <!-- The information architecture: V4 renames the tabs Overview and
-             Results, puts the tests under the bento and one results database
-             under the reports; V3 is the page as it was. -->
-        <div class="tkRow">
-          <span class="lbl">IA</span>
-          <select id="stIA" aria-label="Information architecture">
-            <option value="v4" selected>V4</option>
-            <option value="v3">V3</option>
-          </select>
-        </div>
+        <!-- (The information architecture rides the Layout: V4 renames the
+             tabs Overview and Results, puts the tests under the bento and one
+             results database under the reports; every other layout is the
+             page as it was. The separate IA row was merged into it.) -->
         <!-- each group is a card of its own inside the panel ("use the cards
              style for the grouping inside the dropdown"): heading and rows
              on one tinted, rounded ground -->
@@ -20241,6 +20235,12 @@
     // V4 is V3's shape with a third destination, so it carries V3's class too
     CARD_STATE.v3Tab = stV2Sel.value === 'v3' || stV2Sel.value === 'v4';
     CARD_STATE.v4Tab = stV2Sel.value === 'v4';
+    // the information architecture rides the layout ("IA V3: merge and
+    // replace Layout 2.5"): V4 is Overview | Results with the tests and the
+    // one results database; every other layout is the page as it was
+    CARD_STATE.ia4 = stV2Sel.value === 'v4';
+    document.body.classList.toggle('ia4', CARD_STATE.ia4);
+    applyIA(CARD_STATE.ia4);
     document.body.classList.toggle('v25Tab', CARD_STATE.v2Tab && CARD_STATE.v25Tab);
     document.body.classList.toggle('v3Tab', CARD_STATE.v2Tab && CARD_STATE.v3Tab);
     document.body.classList.toggle('v4Tab', CARD_STATE.v2Tab && CARD_STATE.v4Tab);
@@ -20566,18 +20566,7 @@
     }
     box.addEventListener('click', e => { if (clr && clr.contains(e.target)) return; inp.focus(); });
   });
-  const stIASel = document.getElementById('stIA');
-  if (stIASel) stIASel.addEventListener('change', () => {
-    CARD_STATE.ia4 = stIASel.value === 'v4';
-    document.body.classList.toggle('ia4', CARD_STATE.ia4);
-    applyIA(CARD_STATE.ia4);
-    // the IA brings its layout with it ("IA V3 should be the 2.5 layout, IA
-    // V4 the V4 layout"): the Layout select is set and its own handler runs
-    const lay = document.getElementById('stV2Tab');
-    if (lay){ lay.value = CARD_STATE.ia4 ? 'v4' : 'v25'; lay.dispatchEvent(new Event('change')); }
-    document.dispatchEvent(new CustomEvent('everlab:repTab'));
-    resize();
-  });
+  // (the IA select was merged into the Layout select: see stV2Sel's handler)
   // Your tests: one card per service request -- its picture (by category,
   // from the report art), its kind and date, the readings the linked report
   // produced and how they stand (counted off the rows stamped with it), the

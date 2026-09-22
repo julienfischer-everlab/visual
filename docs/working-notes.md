@@ -9614,6 +9614,15 @@ of card-width multiples. Check: `carcenter.js` (first card at the inset,
 card 1 at 48/48, peeks 36/36, See more on the visible header opens the
 sheet), `phonev4.js`, `v4ia.js` (IA V3 → two tabs, V4 → three).
 
+### 5.346 The IA row merges into Layout
+
+"IA V3 → merge and replace Layout 2.5": one control. The Layout select's
+own handler sets `CARD_STATE.ia4` (V4 and only V4) and runs `applyIA`, so
+V4 is Overview | Results with the tests and the one results database, and
+V1, V2, V2.5 and V3 are the page as it was. The IA row and its handler are
+gone; the default is unchanged (Layout V4). Check: `v4ia.js`, now
+switching the Layout to V2.5 and back.
+
 ---
 
 ## 6. Open items
