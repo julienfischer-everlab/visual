@@ -1597,6 +1597,24 @@
   /* the desk's menu is wider than the 256px button it hangs from, so a title
      with the New badge beside it is not cut ("make the dropdown wider") */
   .dRecWrap .mRecMenu{right:auto;width:440px;}
+  /* The Categories chip and its menu. The chip is a chip with a chevron in
+     the dot's place; chosen, it wears the ring the chosen range chip wears.
+     The menu is the record menu's plate hung off the chip row's wrapper
+     (placed by script), so it rides over the scroller instead of inside it;
+     its own .open class stands in for body.mRecOn, which would light the
+     record menus too. */
+  .fchip.catChip{gap:9px;}
+  .fchip.catChip .catChev{width:11px;height:7px;flex:none;color:#8b8b86;transition:transform .18s ease;}
+  .fchip.catChip[aria-expanded="true"] .catChev{transform:rotate(180deg);}
+  .fchip.catChip.on .catChev{color:#fff;}
+  body.light .fchip.catChip .catChev{color:#7d6b58;}
+  .dRow2, .msRow2{position:relative;}
+  .mRecMenu.catMenu{left:0;right:auto;width:300px;top:auto;}
+  .mRecMenu.catMenu.up{transform:translateY(6px);}   /* opened above the chip, it arrives from below */
+  .mRecMenu.catMenu.open{opacity:1;transform:none;pointer-events:auto;}
+  /* the phone's chips scroll under the pinned bar's plate; the menu has to
+     clear it and the dock, as the record menu does */
+  #phone .mRecMenu.catMenu{z-index:12;}
   body.light .mRecOpt .n{background:rgba(46,31,26,.1);color:#2e1f1a;}
   .msBox{
     display:flex;align-items:center;gap:9px;height:56px;padding:0 14px 0 16px;
@@ -4279,6 +4297,11 @@
      (small grey) / Upload records + upload icon (link)"). The link is the
      card's only control, so it takes the eyebrow's line and the figure's,
      and stands where the 47 stands on the card beside it. */
+  /* ...both centred in the card, on both axes ("centered vertical /
+     horizontal"); the bottom padding is pulled level so the centre is the
+     card's, not a point above it */
+  .docCard.docUpload{justify-content:center;align-items:center;text-align:center;padding-bottom:22px;}
+  .dash .docCard.docUpload{padding-bottom:24px;}
   .docAsk{font-size:13px;line-height:1.35;color:#8b8b86;}
   body.light .docAsk{color:#6f6058;}
   .docUpload .docLink{
@@ -7259,8 +7282,8 @@
         <div class="tkRow">
           <span class="lbl">Layout</span>
           <select id="stRepStyle" aria-label="How the report cards are styled">
-            <option value="neutral" selected>Neutral</option>
-            <option value="visual">Visual</option>
+            <option value="neutral">Neutral</option>
+            <option value="visual" selected>Visual</option>
           </select>
         </div>
         <div class="tkRow">
@@ -7486,12 +7509,17 @@
     </button>
     <div class="dRow2" id="dRow2">
     <div class="filters">
+      <!-- first, the Categories chip: which group of biomarkers, from a menu
+           ("add a chip (1st), Categories, 'All categories'"). The menu hangs
+           off the row, not the chip, because the chip row scrolls and clips. -->
+      <button class="fchip catChip" id="dCatChip" type="button" data-cat="all" aria-haspopup="listbox" aria-expanded="false"><span class="catLbl">All categories</span><svg class="catChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b> All</button>
       <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b> Optimal</button>
       <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b> Suboptimal</button>
       <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b> Out of range</button>
       <button class="fchip v2Only" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b> Other</button>
     </div>
+    <div class="mRecMenu catMenu" id="dCatMenu" role="listbox" aria-label="Choose a category" hidden><div class="mRecScroll" id="dCatList"></div></div>
     </div>
     </div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -7821,12 +7849,14 @@
       </button>
       <div class="msRow2" id="mRow2">
       <div class="mchips" id="mChips" role="group" aria-label="Filter biomarkers by range">
+        <button class="fchip catChip" id="mCatChip" type="button" data-cat="all" aria-haspopup="listbox" aria-expanded="false"><span class="catLbl">All categories</span><svg class="catChev" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
         <button class="fchip on" type="button" data-st="all" aria-pressed="true"><b>81</b>&nbsp;All</button>
         <button class="fchip" type="button" data-st="ok" aria-pressed="false"><i style="background:var(--rgOpt)"></i><b>81</b>&nbsp;Optimal</button>
         <button class="fchip" type="button" data-st="sub" aria-pressed="false"><i style="background:var(--rgSub)"></i><b>9</b>&nbsp;Suboptimal</button>
         <button class="fchip" type="button" data-st="out" aria-pressed="false"><i style="background:var(--rgOut)"></i><b>6</b>&nbsp;Out of range</button>
         <button class="fchip mOther" type="button" data-st="other" aria-pressed="false"><i style="background:#7b7b78"></i><b>28</b>&nbsp;Other</button>
       </div>
+      <div class="mRecMenu catMenu" id="mCatMenu" role="listbox" aria-label="Choose a category" hidden><div class="mRecScroll" id="mCatList"></div></div>
       </div>
     </div>
 
@@ -19359,8 +19389,10 @@
                        // the "Everlab reports" heading over the Reports tab;
                        // off is the class, so the default needs no class
                        repTitle: true,
-                       // the Visual dress on the report cards (Report card tweak)
-                       repVisual: false,
+                       // the Visual dress on the report cards (Report card
+                       // tweak) -- the default ("as default"), with the
+                       // Layout select's `selected`, as with the others
+                       repVisual: true,
                        newRep: false,
                        // not a card state, but the same problem: a class that
                        // has to survive setMode writing the list whole
@@ -20891,6 +20923,9 @@
   //
   // Name | status | value. The names are the standard panel; the values are
   // plausible placeholders, as the original twenty-five were.
+  // a group's title as a key -- what the Categories chip cuts by, stamped on
+  // every group both lists build from PANEL
+  const catKey = t => t.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '');
   const PANEL = [
     ['Liver Health',
      'Biomarkers that indicate liver health and function, critical in metabolic processes.', `
@@ -21029,7 +21064,7 @@
     if (!host) return;
     let html = '';
     PANEL.forEach(([title, desc, rows]) => {
-      html += '<section class="mgrp"><h3>' + title + '</h3>' +
+      html += '<section class="mgrp" data-cat="' + catKey(title) + '"><h3>' + title + '</h3>' +
               '<div class="gd">' + desc + '</div>';
       rows.trim().split('\n').forEach(line => {
         const [name, st, val] = line.trim().split('|');
@@ -21123,6 +21158,10 @@
     const afterApply = cfg.afterApply || function(){};
     const beforeBeat = cfg.beforeBeat || function(){};
     let chipSt = 'all', recSet = 'all', recAll = false, countChips = null, skelTimer = 0;
+    // the Categories chip's choice: a group's key, or all. A row passes when
+    // the group it sits in carries the key.
+    let catSet = 'all';
+    const catHit = row => { if (catSet === 'all') return true; const g = row.closest(cfg.groupSel); return !!g && g.dataset.cat === catSet; };
     // What the chips cut by. The biomarker list cuts by a reading's range, the
     // records list by a document's category -- one filter, asked a different
     // question about each row.
@@ -21144,7 +21183,8 @@
         for (const row of g.querySelectorAll(cfg.rowSel)){
           const hit = (!q || row.firstElementChild.textContent.toLowerCase().includes(q)) &&
                       (chipSt === 'all' || rowKey(row) === chipSt) &&
-                      (recSet === 'all' || recAll || recHit(row));
+                      (recSet === 'all' || recAll || recHit(row)) &&
+                      catHit(row);
           row.hidden = !hit; if (hit) shown++;
         }
         g.hidden = shown === 0; if (shown) any = true;
@@ -21299,7 +21339,7 @@
     // the one already on does nothing rather than clearing the filter, since a
     // list with no range chosen is what All is for.
     if (cfg.chipsBar){
-      const chips = [].slice.call(cfg.chipsBar.querySelectorAll('.fchip'));
+      const chips = [].slice.call(cfg.chipsBar.querySelectorAll('.fchip:not(.catChip)'));   // the Categories chip is a menu, not a range
       // The counts are COUNTED, not written down. They were the design's
       // figures over a list of twenty-five rows, so every chip disagreed with
       // what tapping it showed and All agreed with nothing. A number beside a
@@ -21317,8 +21357,8 @@
           // the same test applyFilter makes, recAll and all: a range passes
           // every row, and counting without that clause had the chips read
           // 0 / 0 / 0 over a full list on Historical records
-          if (recSet !== 'all' && !recAll &&
-              (' ' + r.dataset.r + ' ').indexOf(' ' + recSet + ' ') < 0) return;
+          if (recSet !== 'all' && !recAll && !recHit(r)) return;
+          if (!catHit(r)) return;   // the chips count the chosen category, as they count the chosen record
           const k = rowKey(r); tally[k] = (tally[k] || 0) + 1;
         });
         let total = 0;
@@ -21347,6 +21387,63 @@
         load(false);
       }));
     }
+    // The Categories chip: the first chip on the row, a menu of the list's
+    // groups behind it ("add a chip (1st), Categories, 'All categories'").
+    // Its menu is the record select's menu -- same plate, same rows -- hung
+    // off the ROW rather than the chip, because the chip row scrolls sideways
+    // and would clip anything absolutely placed inside it; on open it is put
+    // under the chip by measurement. Choosing a group names it on the chip,
+    // lights the chip as a chosen chip is lit, and runs the list through the
+    // same beat as everything else; the chips then count that group alone.
+    const cat = cfg.cat || {};
+    if (cat.chip && cat.menu && cat.listEl){
+      const cats = [{ id: 'all', label: 'All categories' }].concat(
+        (cat.cats || []).map(t => ({ id: catKey(t), label: t })));
+      cat.listEl.innerHTML = cats.map(c =>
+        '<button class="mRecOpt' + (c.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
+                'aria-selected="' + (c.id === 'all') + '" data-cat="' + c.id + '">' +
+          '<span class="t"><b>' + c.label + '</b></span></button>').join('');
+      const isOpen = () => !cat.menu.hidden && cat.menu.classList.contains('open');
+      // under the chip, or -- when the chip row sits low in the viewport and
+      // the menu would run off the bottom -- above it, so it is never opened
+      // into a place the reader has to scroll to find
+      const place = () => {
+        const row = cat.menu.offsetParent || cat.menu.parentNode;
+        const r = row.getBoundingClientRect(), c = cat.chip.getBoundingClientRect();
+        const mh = cat.menu.offsetHeight, GAP = 6;
+        const fitsBelow = c.bottom + GAP + mh <= innerHeight - 8, fitsAbove = c.top - GAP - mh >= 8;
+        const up = !fitsBelow && fitsAbove;
+        cat.menu.classList.toggle('up', up);
+        cat.menu.style.left = Math.max(0, Math.round(c.left - r.left)) + 'px';
+        cat.menu.style.top = Math.round(up ? c.top - r.top - GAP - mh : c.bottom - r.top + GAP) + 'px';
+      };
+      const open = on => {
+        cat.chip.setAttribute('aria-expanded', String(on));
+        if (on){ cat.menu.hidden = false; place(); requestAnimationFrame(() => cat.menu.classList.add('open')); }
+        else { cat.menu.classList.remove('open'); setTimeout(() => { if (!cat.menu.classList.contains('open')) cat.menu.hidden = true; }, 200); }
+      };
+      cat.chip.addEventListener('click', e => { e.stopPropagation(); open(!isOpen()); });
+      addEventListener('pointerdown', e => {
+        if (isOpen() && !cat.menu.contains(e.target) && !cat.chip.contains(e.target)) open(false);
+      });
+      addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) open(false); });
+      cat.listEl.addEventListener('click', e => {
+        const o = e.target.closest('.mRecOpt');
+        if (!o) return;
+        open(false);
+        catSet = o.dataset.cat;
+        [].slice.call(cat.listEl.children).forEach(x => {
+          const on = x.dataset.cat === catSet;
+          x.classList.toggle('on', on); x.setAttribute('aria-selected', String(on));
+        });
+        const chosen = cats.find(c => c.id === catSet) || cats[0];
+        if (cat.lbl) cat.lbl.textContent = chosen.label;
+        cat.chip.classList.toggle('on', catSet !== 'all');
+        cat.chip.dataset.cat = catSet;
+        if (countChips) countChips();
+        load(false);
+      });
+    }
     return { load: load, typed: typed, choose: choose };
   }
 
@@ -21366,7 +21463,7 @@
     ];
     let html = '';
     PANEL.forEach(([title, desc, rows]) => {
-      html += '<div class="grp"><div><h3>' + title + '</h3>' +
+      html += '<div class="grp" data-cat="' + catKey(title) + '"><div><h3>' + title + '</h3>' +
               '<div class="gd">' + desc + '</div></div><div>';
       rows.trim().split('\n').forEach(line => {
         const [name, st, val] = line.trim().split('|');
@@ -21400,6 +21497,9 @@
       skel: document.getElementById('dSkel'), empty: document.getElementById('dSearchEmpty'),
       input: input, fieldEl: field,
       chipsBar: document.querySelector('.dash .filters'),
+      cat: { chip: document.getElementById('dCatChip'), lbl: document.querySelector('#dCatChip .catLbl'),
+             menu: document.getElementById('dCatMenu'), listEl: document.getElementById('dCatList'),
+             cats: PANEL.map(g => g[0]) },
       cards: document.getElementById('dRecCar'),
       // The pinned block must not move while the filter is being worked. The
       // skeleton is a fraction of the list's height, so swapping it in
@@ -21635,6 +21735,9 @@
       list: recs, groupSel: '.mgrp', rowSel: '.mbrow',
       skel: skel, empty: empty, input: input, fieldEl: wrap,
       chipsBar: document.getElementById('mChips'),
+      cat: { chip: document.getElementById('mCatChip'), lbl: document.querySelector('#mCatChip .catLbl'),
+             menu: document.getElementById('mCatMenu'), listEl: document.getElementById('mCatList'),
+             cats: PANEL.map(g => g[0]) },
       cards: document.getElementById('mRecCar'),
       rec: {
         btn: document.getElementById('mRecSel'), lbl: document.getElementById('mRecLbl'),

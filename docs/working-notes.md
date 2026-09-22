@@ -9261,6 +9261,45 @@ card (desk `#dMedsWrap`, phone `#mMedsWrap`) carry it; the card keeps the
 at 125 (desk) / 122 (phone) against My documents. Check: `uplink.js` -- both
 screens, text, sizes, colour, no pill or eyebrow left, link fits the card.
 
+**Follow-up** -- "centered vertical / horizontal": the question and the link
+are centred on both axes of the card (`.docCard.docUpload{justify-content:
+center;align-items:center;text-align:center}`), with the bottom padding
+pulled level with the top (22/24) so the centre is the card's. Measured 0px
+off on both axes.
+
+### 5.328 The Categories chip; Visual as the default Layout
+
+"Add a chip (1st): Categories, 'All categories' -- Genetics, ..., ..." and,
+of the Layout tweak, "as default".
+
+- **The chip.** First on the biomarkers' chip row on both screens
+  (`#dCatChip`, `#mCatChip`): a chip like the others with a chevron in the
+  dot's place, reading *All categories*. Behind it a menu of the list's
+  groups -- the seven PANEL titles, Liver Health through Inflammation; there
+  is no Genetics group in the data, so none is offered -- plus *All
+  categories* first. Choosing one names it on the chip, lights the chip as a
+  chosen range chip is lit, filters the list to that group and re-counts the
+  range chips for it (Heart Health: 20 / 10 / 4 / 4 / 2), through the same
+  380ms beat. A range chip on top narrows further (Heart Health + Out of
+  range: 4 rows). Both lists stamp `data-cat` (`catKey(title)`) on their
+  groups; `bioFilter` takes `cfg.cat` and judges a row by its group's stamp.
+- **Where the menu hangs.** The chip row scrolls sideways and would clip a
+  menu inside it, so the menu (`.catMenu`, the record menu's plate at 300px)
+  is the row wrapper's child (`.dRow2`/`.msRow2` are `position:relative`),
+  placed under the chip by measurement on open -- or ABOVE it when the chip
+  sits low in the viewport and the menu would run off the bottom (`.up`,
+  arriving from below), which is the desk's case at first load. It opens on
+  its own `.open` class, not `body.mRecOn`, which would light the record
+  menus too.
+- **Visual as default.** `CARD_STATE.repVisual: true` and the Layout
+  select's `selected` on Visual -- the two say the same thing, as with the
+  other defaults.
+- Check: `catchip.js` -- chip first on both screens, menu options, Heart
+  Health on the desk and Thyroid on the phone (chips re-counted, one group
+  shown), a range chip on top, reset to All, the desk menu opening upward and
+  in view, the upload card's centring; `stRepStyle` reads visual and the body
+  wears repVisual at load; no errors.
+
 ---
 
 ## 6. Open items
