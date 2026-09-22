@@ -9248,6 +9248,19 @@ picture: the record select on the left, the search on the right.
   counts), Everlab → 2 groups with the label and "2 records" on the button,
   chip on top, clear, the biomarkers' menu, the phone; no errors.
 
+### 5.327 The upload card: a question and a link
+
+"Got a record from your provider? (small grey) / Upload records + upload
+icon (link)". The New document card's eyebrow and pill are gone; in their
+place `.docAsk` -- the question at 13px in the eyebrow's grey, wrapping to
+two lines on the phone -- and `.docLink`, a bare button: *Upload records* at
+15px medium with a 16px upload glyph (arrow out of a tray) after it, a soft
+underline that firms on hover, 14px under the question. Both copies of the
+card (desk `#dMedsWrap`, phone `#mMedsWrap`) carry it; the card keeps the
+`rcUpBtn` class so nothing that looks for the control changes. Heights hold
+at 125 (desk) / 122 (phone) against My documents. Check: `uplink.js` -- both
+screens, text, sizes, colour, no pill or eyebrow left, link fits the card.
+
 ---
 
 ## 6. Open items
