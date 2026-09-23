@@ -10425,6 +10425,13 @@ it is cleared after the hand-off so the next open starts clean.
 from .96/.92 to .48/.46, the 24px blur doing more of the separating; the
 75% stop and the fade over the last quarter stay.
 
+"The carousel should go to the edge of the viewport, not stop on the
+container; fade out on the right side." The chips' folding block was
+clipping the row at the card's padding, so the row's negative margins never
+reached the edge. The block itself is now card-wide (its own -16px
+margins) and the row pads 16 inside it, so the pills run under the card's
+right edge and the mask fades them over the last 64px there.
+
 ---
 
 ## 6. Open items
