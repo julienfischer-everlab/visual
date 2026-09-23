@@ -10286,6 +10286,11 @@ copy read through. The ground is now solid (.92) and fully blurred (24px)
 down to the field's foot; only the last 40px fade -- the bar's bottom
 padding and the 28px run past it.
 
+"Overlay with a 25% black blanket when the field is focused." While the
+top field is live a blanket (`.ovDim`, 25% black) lies over the page: under
+the bar and the keys, over the scroller and the dock, fading in over .28s.
+A tap on it lets the field go, which lifts the blanket with the keyboard.
+
 ---
 
 ## 6. Open items

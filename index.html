@@ -5688,6 +5688,11 @@
   #phone2.ovTyping .ovAva{margin-left:-66px;opacity:0;pointer-events:none;}   /* its width and the gap: the field lands on the bar's own 13px padding */
   #phone2.ovTyping .ovBell .icBell{opacity:0;transform:rotate(90deg) scale(.6);}
   #phone2.ovTyping .ovBell .icX{opacity:1;transform:none;}
+  /* and a 25% black blanket over the page while the field is live: under the
+     bar (7) and the keys (7), over the scroller and the dock; a tap on it
+     lets the field go */
+  #phone2 .ovDim{position:absolute;inset:0;z-index:6;background:rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .28s ease;}
+  #phone2.ovTyping .ovDim{opacity:1;pointer-events:auto;}
   body.light #phone2 .ovTop::before{
     background:linear-gradient(180deg,rgba(247,242,233,.96) 0%,rgba(247,242,233,.92) calc(100% - 44px),rgba(247,242,233,0) 100%);
   }
@@ -16553,6 +16558,11 @@
           e.preventDefault();                               // keep the blur from landing before we do
           pin.value = ''; pin.blur();
         });
+        // the blanket over the page while the field is live; a tap on it lets go
+        const dim = document.createElement('div');
+        dim.className = 'ovDim';
+        ph.appendChild(dim);
+        dim.addEventListener('pointerdown', e => { e.preventDefault(); pin.blur(); });
       }
     });
   })();
