@@ -10432,6 +10432,8 @@ reached the edge. The block itself is now card-wide (its own -16px
 margins) and the row pads 16 inside it, so the pills run under the card's
 right edge and the mask fades them over the last 64px there.
 
+"Regular font": the Overview's mini service pills drop from 500 to 400.
+
 ---
 
 ## 6. Open items
