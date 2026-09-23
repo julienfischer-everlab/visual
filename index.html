@@ -2549,7 +2549,8 @@
   /* a plain cut ("a full-screen modal over the page with the full chat, no
      fancy transition"): the modal is simply there, and simply gone. It used
      to grow out of the field on a half-second morph. */
-  .chModal{position:absolute;left:0;right:0;top:0;bottom:0;background:#121211;overflow:hidden;}
+  .chModal{position:absolute;left:0;right:0;top:0;bottom:0;background:#121211;overflow:hidden;opacity:0;transition:opacity .22s ease;}
+  .chWrap.on .chModal{opacity:1;}   /* a fade over the screen where it stands ("no movement entrance") */
   .chBody{position:absolute;inset:0;display:flex;flex-direction:column;}
   .chHead{flex:none;display:flex;align-items:center;gap:10px;padding:10px 12px 8px;}
   .chHead h3{flex:1;margin:0 4px;font-size:16px;font-weight:500;letter-spacing:-.1px;color:#ececec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -5659,9 +5660,9 @@
        the fade began at 55% and the field's lower half sat on half a blur,
        and the copy under it read through ("the AI field doesn't have enough
        blur") */
-    background:linear-gradient(180deg,rgba(13,13,12,.96) 0%,rgba(13,13,12,.92) calc(100% - 44px),rgba(13,13,12,0) 100%);
+    background:linear-gradient(180deg,rgba(13,13,12,.96) 0%,rgba(13,13,12,.92) 75%,rgba(13,13,12,0) 100%);   /* "the black should stop at 75% of the height" */
     -webkit-backdrop-filter:blur(24px) saturate(120%);backdrop-filter:blur(24px) saturate(120%);
-    -webkit-mask-image:linear-gradient(#000 calc(100% - 40px),transparent);mask-image:linear-gradient(#000 calc(100% - 40px),transparent);
+    -webkit-mask-image:linear-gradient(#000 75%,transparent);mask-image:linear-gradient(#000 75%,transparent);
   }
   #phone2 .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;padding:0;}
   #phone2 .ovTop .ovChatBox{
@@ -5698,7 +5699,7 @@
   #phone2 .ovDim{position:absolute;inset:0;z-index:6;background:rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .28s ease;}
   #phone2.ovTyping .ovDim{opacity:1;pointer-events:auto;}
   body.light #phone2 .ovTop::before{
-    background:linear-gradient(180deg,rgba(247,242,233,.96) 0%,rgba(247,242,233,.92) calc(100% - 44px),rgba(247,242,233,0) 100%);
+    background:linear-gradient(180deg,rgba(247,242,233,.96) 0%,rgba(247,242,233,.92) 75%,rgba(247,242,233,0) 100%);
   }
   body.light #phone2 .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   body.light #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(46,31,26,.09);}
@@ -16516,14 +16517,17 @@
         modal.style.bottom = (k ? k.offsetHeight : 0) + 'px';           // the composer stands on the keys
         modal.style.top = (floating ? 0 : stH) + 'px';
         body.style.paddingTop = (floating ? stH : 0) + 'px';
-        wrap.classList.add('show', 'on');
+        wrap.classList.add('show');
+        modal.getBoundingClientRect();        // lay it out at 0 first, so the fade has somewhere to start
+        wrap.classList.add('on');
         inp.focus({ preventScroll: true });   // in the tap, so a device opens its keyboard
         stream();
       };
       const close = () => {
         if (!wrap.classList.contains('on')) return;
         stopStream(); inp.blur();
-        wrap.classList.remove('on', 'show');
+        wrap.classList.remove('on');
+        setTimeout(() => { if (!wrap.classList.contains('on')) wrap.classList.remove('show'); }, 240);
       };
       ph._chat = { open, close };
       wrap.querySelector('.chX').addEventListener('click', close);

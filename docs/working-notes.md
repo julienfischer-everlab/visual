@@ -10325,6 +10325,16 @@ status strip floats, the modal runs up behind the strip and pads its body
 by the strip's height; on the Insights phone, where the strip is in the
 flow, it starts under it as before. It still stands on the keyboard.
 
+"It should just fade in over the current screen, no movement entrance."
+So not a hard cut: the modal fades from 0 to 1 over .22s where it stands,
+full size from the first frame, and fades out the same way on the cross.
+The wrap is shown and laid out at 0 before `on` lands, or the two would
+resolve in one style pass and there would be nothing to fade from.
+
+"The black gradient should stop at 75% of the height." The top group's
+ground and its blur mask hold to 75% of the pseudo's height and fade to
+nothing over the last quarter, in place of the fixed 40px tail.
+
 ---
 
 ## 6. Open items
