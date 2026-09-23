@@ -2488,7 +2488,19 @@
   .aiWrap:not(.on) .aiCard{border-radius:50%;}      /* the button's disc, until it opens */
   .aiBody{opacity:0;transition:opacity .22s ease;}
   .aiWrap.on .aiBody{opacity:1;transition-delay:.18s;}   /* the contents arrive once the card has its shape */
-  .aiRowTop{display:flex;align-items:center;gap:10px;}
+  .aiRowTop{display:flex;align-items:center;gap:0;}
+  /* the bento disc grows in beside the live field (width and gap from 0),
+     and goes the same way when the field lets go */
+  .aiBentoBtn{
+    flex:none;width:0;height:56px;margin-left:0;border:0;border-radius:50%;padding:0;cursor:pointer;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;opacity:0;
+    background:rgba(255,255,255,.08);color:#ececec;
+    transition:width .32s cubic-bezier(.2,.8,.2,1),margin-left .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease,background .16s ease;
+  }
+  .aiBentoBtn svg{flex:none;width:22px;height:22px;}
+  .aiBentoBtn:hover{background:rgba(255,255,255,.14);}
+  .aiWrap.typing .aiBentoBtn{width:56px;margin-left:10px;opacity:1;}
+  body.light .aiBentoBtn{background:rgba(46,31,26,.08);color:#2e1f1a;}
   .aiCard .aiField, #phone2 .aiCard .aiField{
     flex:1 1 auto;width:auto;min-width:0;height:56px;
     box-shadow:none;   /* no ring on the card's field ("remove the border on the AI field") -- the plate alone */
@@ -2498,7 +2510,7 @@
      focused"); during the hand-off to the chat it holds its live look, so the
      blur the chat causes moves nothing under the fade */
   .aiCard .aiField .ovChatGo{opacity:0;transform:scale(.6);pointer-events:none;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1),background .16s ease;}
-  .aiCard .aiField:focus-within .ovChatGo, .aiWrap.handoff .aiField .ovChatGo{opacity:1;transform:none;pointer-events:auto;background:#ececec;color:#111;}
+  .aiCard .aiField.hasText:focus-within .ovChatGo, .aiWrap.handoff .aiField.hasText .ovChatGo{opacity:1;transform:none;pointer-events:auto;background:#ececec;color:#111;}   /* and only once there is something to send ("if nothing typed, remove the arrow") */
   .aiWrap.handoff .aiField{background:rgba(255,255,255,.09);}
   .aiWrap.handoff .aiField .ovChatGo{transition:none;}
   /* the dismiss floats above the card's top-right corner, on the dim, and
@@ -2543,18 +2555,20 @@
   /* the label with its spark, and outlined pills under it ("suggestion
      chips, e.g.": a grey 'Suggestions' with a mark, then pills drawn with a
      hairline rather than filled) */
-  .aiChipsLbl{display:flex;align-items:center;gap:8px;margin:0 0 12px 2px;color:#8b8b86;font-size:15px;font-weight:500;}
-  .aiChipsLbl svg{width:18px;height:18px;}
-  .aiChipsRow{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;margin:0 -16px;padding:0 16px;}
+  /* no label ("remove the title"); the row runs out under the card's right
+     edge and fades there ("fade out on the right side") */
+  .aiChipsRow{
+    display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;margin:0 -16px;padding:0 16px;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);
+  }
   .aiChipsRow::-webkit-scrollbar{display:none;}
   .aiChip{
     flex:none;height:44px;padding:0 18px;border:0;border-radius:22px;cursor:pointer;
-    background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);color:#ececec;font:inherit;font-size:15px;font-weight:400;white-space:nowrap;
+    background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);color:#ececec;font:inherit;font-size:15px;font-weight:400;white-space:nowrap;   /* "border opacity 4%" */
     transition:background .16s ease;
   }
   .aiChip:hover{background:rgba(255,255,255,.06);}
-  body.light .aiChipsLbl{color:#7d6b58;}
-  body.light .aiChip{box-shadow:inset 0 0 0 1px rgba(46,31,26,.2);color:#2e1f1a;}
+  body.light .aiChip{box-shadow:inset 0 0 0 1px rgba(46,31,26,.08);color:#2e1f1a;}
   /* the Overview's services, mini, under the greeting: the same five, as a
      row of small pills with the glyph, scrolling sideways */
   /* a bento, two to a row ("this bento 2x per row"); the odd one out takes
@@ -16359,13 +16373,16 @@
               '<input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Everlab">' +
               '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
             '</div>' +
+            // the bento button, beside the live field: back to the card with
+            // its services ("add a bento icon when the chat field is focused;
+            // on click, back to the initial card with chat and bento")
+            '<button class="aiBentoBtn" type="button" aria-label="Show services"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.8"/><rect x="11" y="3" width="6" height="6" rx="1.8"/><rect x="3" y="11" width="6" height="6" rx="1.8"/><rect x="11" y="11" width="6" height="6" rx="1.8"/></svg></button>' +
           '</div>' +
           // Suggestions under the live field, in the context of the page behind
           // ("when the chat is focused, suggest some chips behind the field"):
           // folded while the services show, unfolding as they fold. A chip
           // asks its question straight away.
           '<div class="aiChips"><div class="aiChipsIn">' +
-            '<div class="aiChipsLbl"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 2v4M10 14v4M2 10h4M14 10h4M4.3 4.3l2.9 2.9M12.8 12.8l2.9 2.9M4.3 15.7l2.9-2.9M12.8 7.2l2.9-2.9"/></svg>Suggestions</div>' +
             '<div class="aiChipsRow">' + (id === 'phone2' ? CHIPS_OVERVIEW : CHIPS_INSIGHTS).map(c => '<button class="aiChip" type="button">' + c + '</button>').join('') + '</div>' +
           '</div></div>' +
           // the services (and the home bar under them) in a block that folds:
@@ -16420,10 +16437,17 @@
         inp.value = '';
         setTimeout(() => {
           ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show', 'handoff'); card.style.transform = ''; card.style.bottom = '';
+          field.classList.remove('hasText');   // the words went with the chat; the next open starts clean
         }, 300);
       };
       inp.addEventListener('everlab:go', submit);
       wrap.querySelector('.aiField .ovChatGo').addEventListener('click', e => { e.preventDefault(); submit(); });
+      // the send disc waits for words: the field marks hasText as they arrive
+      const field = wrap.querySelector('.aiField');
+      const markText = () => field.classList.toggle('hasText', inp.value.trim().length > 0);
+      inp.addEventListener('input', markText);
+      // the bento button lets the field go: the services unfold, the keys drop
+      wrap.querySelector('.aiBentoBtn').addEventListener('pointerdown', e => { e.preventDefault(); inp.blur(); });
       // a chip is the question, asked: on pointerdown, so the field keeps its focus through the hand-off
       wrap.querySelectorAll('.aiChip').forEach(c => c.addEventListener('pointerdown', e => { e.preventDefault(); inp.value = c.textContent; submit(); }));
       // Typing: the field is tapped, the services go and the keyboard comes,

@@ -10404,6 +10404,23 @@ then -- "this bento, 2x per row" -- as a two-column grid of 48px pills at 6%
 white, the glyph at 20 and the label at 14/500, the fifth taking the last
 row alone. The greeting gives up 2px of its bottom padding to them.
 
+"Add a bento icon when the chat field is focused; on click, back to the
+initial card with chat and bento." A 56px disc with a four-square glyph
+grows in beside the sheet's live field (width and gap from 0, on the fold's
+curve) and, pressed, lets the field go: the keys drop, the suggestions fold
+and the services unfold, the card as it first opened.
+
+"Remove the Suggestions title. Fade out on the right side." The label and
+its spark go; the chips start straight under the field, and the row is
+masked over its last 56px so the pills run out under the card's edge in a
+fade rather than a cut. "Border opacity 4%": the pills' hairline drops from
+18% to 4% white.
+
+"If nothing is typed, remove the arrow." The sheet field's send disc now
+waits for words as well as focus: the field marks `hasText` on input and
+the disc scales in on the first character, out again when the last goes;
+it is cleared after the hand-off so the next open starts clean.
+
 ---
 
 ## 6. Open items
