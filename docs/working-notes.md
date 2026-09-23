@@ -10438,6 +10438,12 @@ right edge and the mask fades them over the last 64px there.
 the bento sits 26 under it. "Blanket on chat focus, +24% opacity": the
 Overview's blanket under the live field goes from 25% to 49% black.
 
+"The arrow submit should go to the full chat modal." It was wired on click,
+and a press on the disc blurred the field first: the disc hid with the
+blur (it shows only while the field is live), and the click that followed
+had nothing to land on. It submits on pointerdown now, with the default
+prevented, so the field keeps its focus and the words go to the chat.
+
 ---
 
 ## 6. Open items
