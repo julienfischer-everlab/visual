@@ -10158,6 +10158,23 @@ Insights phone's, wired to type into its focused field. Close (X, dim,
 Escape, a page change) shrinks the card back to where the button was --
 its rect is kept from the open, since the keyboard hides the dock. Check:
 `aisheet.js` (both phones: card opens, keys type into the field, closes).
+"Star button not start" came back once: the live artifact carried the
+code and a copy of that exact file opened the card under Chromium at
+every size, the full-screen entry and a touch tap included, so the page
+in hand was a cached older one; republished. The field's focus moved
+into the tap itself (a device browser opens its keyboard for a focus in
+the gesture, not for one a frame later).
+
+### 5.381 Overview: one title style, the chat under the centred greeting
+
+"Keep all titles the same style, refer to the report page. Put the AI
+field below the h1. H1 centred, AI field just below, centred as well,
+80% width." The Overview's titles wear the Everlab reports heading's
+20 / 500 / -.2 on both screens -- the desk's greeting (`.dvH1`, was 29)
+and section heads (`.dvSec`, was 19), the phone's greeting (was 17) and
+section heads (`.ovsec`, was 16). The greeting is centred, and the chat
+field sits under it at 80% of the content column, centred (the desk's
+640px cap is gone). Check: `ovchat.js`.
 
 ---
 
