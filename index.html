@@ -16042,13 +16042,16 @@
         o.classList.toggle('on', i === here);
         o.setAttribute('aria-selected', String(i === here));
       });
-      tabs.forEach(t => t.addEventListener('click', e => {
+      // The dock goes where it says ("nav should redirect to the corresponding
+      // page"): Overview is the Overview phone (m6), Insights the Insights
+      // phone (m20). Plan, Services and More have no screen in the prototype,
+      // so a tap on them does nothing -- the lit tab keeps saying where the
+      // reader actually is rather than moving to a place that does not exist.
+      const DEST = [6, 20, null, null, null];
+      tabs.forEach((t, i) => t.addEventListener('click', e => {
         e.preventDefault();
-        tabs.forEach(o => {
-          const on = o === t;
-          o.classList.toggle('on', on);
-          o.setAttribute('aria-selected', String(on));
-        });
+        if (DEST[i] == null || i === here) return;
+        setMode(DEST[i]);
       }));
     });
   })();

@@ -10130,6 +10130,15 @@ now means "content is passing under the bar": the first laid-out thing
 after the bar has its top above the bar's bottom. At the pin, off; a pixel
 further, on. Check: `fadeover.js`.
 
+### 5.379 The phone dock goes where it says
+
+"Nav should redirect to the corresponding page." The dock's tabs only
+moved their own highlight. Overview now opens the Overview phone (m6) and
+Insights the Insights phone (m20), through `setMode`, from either screen;
+each screen's own dock lights the tab it IS. Plan, Services and More have
+no screen in the prototype, so a tap on them does nothing and the lit tab
+keeps saying where the reader is. The assistant's spark is unchanged.
+
 ---
 
 ## 6. Open items
