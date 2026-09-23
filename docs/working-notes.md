@@ -10260,6 +10260,12 @@ running 28px past its foot: black at .96 fading to nothing, with the blur
 masked away along the same run, so the page dissolves into the group rather
 than meeting a plate's bottom line. The greeting goes to 24/500, -.3.
 
+Then, from a capture of the hero's copy reading through the field: "field
+AI needs blur 64px bg." The field carries its own 64px backdrop blur, so
+whatever scrolls behind it is a wash rather than words. And "avatar and
+bell should follow the field's height, 56px": the field goes to 56 and the
+two discs with it.
+
 ---
 
 ## 6. Open items
