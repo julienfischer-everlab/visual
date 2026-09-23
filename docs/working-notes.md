@@ -10291,6 +10291,11 @@ top field is live a blanket (`.ovDim`, 25% black) lies over the page: under
 the bar and the keys, over the scroller and the dock, fading in over .28s.
 A tap on it lets the field go, which lifts the blanket with the keyboard.
 
+"Julien, same font weight as the rest." The name in the greeting was 400
+against the greeting's 500; it keeps its grey and takes the weight. Then
+"align left" and "+8px margin top": the greeting sits on the cards' 13px
+column, 22px under the bar instead of 14.
+
 ---
 
 ## 6. Open items
