@@ -10346,6 +10346,22 @@ keeps its live state for 300ms after a blur that the chat caused, and the
 sheet marks a `handoff` on submit, ignores the blur, and is removed without
 animation at 300ms.
 
+Then a capture of the sheet with the orange icon discs and the "EVERLAB
+SERVICES" eyebrow -- the bento from before 5.388 -- alongside "still a weird
+circular transition": the page being looked at is a cached copy, and the
+circle is the old pill morph. Noted to Julien; a hard refresh brings the
+current build.
+
+### 5.390 The sheet, lighter
+
+"No arrow CTA if not focused. Remove the divider. Title 'Services', not
+full caps. Cards lighter, like the example." The sheet's send disc shows
+only while its field is live (it scales in from .6 on focus and goes on
+blur; through the hand-off to the chat it holds its live look so nothing
+moves under the fade). The rule above the services is gone, the title is
+"Services" at 15/500 in a soft grey with 20px of air above it, and the
+tiles go from 8% to 10% white, a shade lighter, with the hover following.
+
 ---
 
 ## 6. Open items

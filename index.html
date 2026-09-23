@@ -2494,6 +2494,13 @@
     box-shadow:none;   /* no ring on the card's field ("remove the border on the AI field") -- the plate alone */
   }
   .aiCard .aiField:focus-within, #phone2 .aiCard .aiField:focus-within{box-shadow:none;background:rgba(255,255,255,.09);}
+  /* the send disc only while the field is live ("no arrow CTA if not
+     focused"); during the hand-off to the chat it holds its live look, so the
+     blur the chat causes moves nothing under the fade */
+  .aiCard .aiField .ovChatGo{opacity:0;transform:scale(.6);pointer-events:none;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1),background .16s ease;}
+  .aiCard .aiField:focus-within .ovChatGo, .aiWrap.handoff .aiField .ovChatGo{opacity:1;transform:none;pointer-events:auto;background:#ececec;color:#111;}
+  .aiWrap.handoff .aiField{background:rgba(255,255,255,.09);}
+  .aiWrap.handoff .aiField .ovChatGo{transition:none;}
   /* the dismiss floats above the card's top-right corner, on the dim, and
      rides with the card (it is the card's child); it fades in once the card
      is open, so it never shows scaled during the morph */
@@ -2508,8 +2515,10 @@
   .aiX svg{width:14px;height:14px;}
   body.light .aiX{background:rgba(46,31,26,.14);color:#2e1f1a;}
   body.light .aiCard .aiField:focus-within{box-shadow:none;background:rgba(46,31,26,.08);}
-  .aiRule{height:1px;margin:16px 0;background:rgba(255,255,255,.08);}
-  .aiEyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;margin:0 0 12px 2px;}
+  /* the services title, a title rather than an eyebrow ("not full caps"), and
+     no rule above it ("remove divider"): the field's 20px of air does the
+     separating */
+  .aiEyebrow{font-size:15px;font-weight:500;letter-spacing:-.1px;color:#b5b5b0;margin:20px 0 12px 2px;}
   .aiBento{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
   /* the tile ("bento this style"): a soft grey slab, big corners, the glyph
      bare in the top-left corner and the label under it, left, on up to two
@@ -2517,11 +2526,11 @@
   .aiTile{
     grid-column:span 2;min-height:120px;padding:16px 12px 16px 16px;border:0;border-radius:24px;cursor:pointer;
     display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;text-align:left;
-    background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:15px;font-weight:400;line-height:1.25;letter-spacing:-.1px;
+    background:rgba(255,255,255,.1);color:#ececec;font:inherit;font-size:15px;font-weight:400;line-height:1.25;letter-spacing:-.1px;   /* a lighter slab ("card lighter, like the example") */
     transition:background .16s ease;
   }
   .aiTile.wide{grid-column:span 3;}
-  .aiTile:hover{background:rgba(255,255,255,.12);}
+  .aiTile:hover{background:rgba(255,255,255,.14);}
   .aiIc{display:flex;width:26px;height:26px;color:#ececec;}
   .aiIc svg{width:26px;height:26px;}
   .aiCard .shHome{margin-top:18px;}
@@ -2539,7 +2548,6 @@
   body.light .aiIc{color:#2e1f1a;}
   body.light .aiEyebrow{color:#7d6b58;}
   body.light .aiHandle{background:rgba(46,31,26,.22);}
-  body.light .aiRule{background:rgba(46,31,26,.1);}
   /* ---- The chat thread, grown from the Overview's field ("the top field
      should merge smoothly to a full modal"): full screen under the status
      strip, standing on the keyboard; a head, the thread, the composer. */
@@ -16309,8 +16317,7 @@
           // a grid row going from 1fr to 0fr, so its height animates from
           // whatever the content needs to nothing
           '<div class="aiServices"><div class="aiServicesIn">' +
-            '<div class="aiRule"></div>' +
-            '<div class="aiEyebrow">Everlab services</div>' +
+            '<div class="aiEyebrow">Services</div>' +
             '<div class="aiBento">' + SERVICES.map(s =>
               '<button class="aiTile' + (s.wide ? ' wide' : '') + '" type="button"><span class="aiIc">' + IC[s.ic] + '</span><span>' + s.l + '</span></button>').join('') + '</div>' +
             '<div class="shHome" aria-hidden="true"></div>' +
