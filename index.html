@@ -2481,7 +2481,8 @@
     padding:10px 16px 0;border-radius:26px 26px 0 0;background:#1b1b1a;
     box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);
     transform-origin:center;will-change:transform;
-    transition:transform .46s cubic-bezier(.2,.8,.2,1),border-radius .46s cubic-bezier(.2,.8,.2,1),bottom .3s ease;
+    /* the ride up onto the keyboard runs on the keyboard's own curve and time */
+    transition:transform .46s cubic-bezier(.2,.8,.2,1),border-radius .46s cubic-bezier(.2,.8,.2,1),bottom .32s cubic-bezier(.2,.8,.2,1),padding-bottom .32s cubic-bezier(.2,.8,.2,1);
   }
   .aiWrap:not(.on) .aiCard{border-radius:50%;}      /* the button's disc, until it opens */
   .aiBody{opacity:0;transition:opacity .22s ease;}
@@ -2502,9 +2503,14 @@
   .aiIc{display:flex;width:44px;height:44px;border-radius:14px;align-items:center;justify-content:center;background:rgba(255,255,255,.07);color:#e6a96b;}
   .aiIc svg{width:24px;height:24px;}
   .aiCard .shHome{margin-top:18px;}
-  /* typing: the services fold away and the home bar goes (the keyboard draws
-     its own); the field alone stands on the keys */
-  .aiWrap.typing .aiServices, .aiWrap.typing .shHome{display:none;}
+  /* Typing: the services fold away and the home bar with them (the keyboard
+     draws its own), the card hugging what is left while it rides up onto the
+     keys ("service section fades out, keyboard appears while the card height
+     adjusts to hug the content"). The block is a one-row grid whose row goes
+     from 1fr to 0fr -- an auto height that animates -- and fades on the way. */
+  .aiServices{display:grid;grid-template-rows:1fr;opacity:1;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease .06s;}
+  .aiServicesIn{min-height:0;overflow:hidden;}
+  .aiWrap.typing .aiServices{grid-template-rows:0fr;opacity:0;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1),opacity .16s ease;}
   .aiWrap.typing .aiCard{padding-bottom:16px;}
   body.light .aiCard{background:#f6ece6;box-shadow:0 -20px 60px -30px rgba(46,31,26,.5),0 0 0 1px rgba(46,31,26,.08);}
   body.light .aiTile{color:#2e1f1a;background:rgba(46,31,26,.05);} body.light .aiTile:hover{background:rgba(46,31,26,.09);}
@@ -16203,13 +16209,16 @@
             '<input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Everlab">' +
             '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
           '</div>' +
-          '<div class="aiServices">' +
+          // the services (and the home bar under them) in a block that folds:
+          // a grid row going from 1fr to 0fr, so its height animates from
+          // whatever the content needs to nothing
+          '<div class="aiServices"><div class="aiServicesIn">' +
             '<div class="aiRule"></div>' +
             '<div class="aiEyebrow">Everlab services</div>' +
             '<div class="aiBento">' + SERVICES.map(s =>
               '<button class="aiTile' + (s.wide ? ' wide' : '') + '" type="button"><span class="aiIc">' + IC[s.ic] + '</span><span>' + s.l + '</span></button>').join('') + '</div>' +
-          '</div>' +
-          '<div class="shHome" aria-hidden="true"></div>' +
+            '<div class="shHome" aria-hidden="true"></div>' +
+          '</div></div>' +
         '</div></div>';
       ph.appendChild(wrap);
       const card = wrap.querySelector('.aiCard'), inp = wrap.querySelector('input');

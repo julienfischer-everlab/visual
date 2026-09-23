@@ -10207,6 +10207,18 @@ Check: `chat.js` (pill tap → keyboard only; typed "hi" → search key →
 chat with "hi" in the bubble, 105 words streamed; the sheet's field → Enter
 → chat, sheet gone).
 
+### 5.383 The sheet folds on the keyboard's own time
+
+"Need a better transition when the keyboard appears here: the service
+section fades out, the keyboard appears while the card height adjusts to
+hug the content." The services (and the home bar under them) sit in a
+one-row grid whose row runs from 1fr to 0fr -- an auto height that
+animates -- fading on the way, and the card's ride onto the keys
+(`bottom`, `padding-bottom`) runs on the keyboard's own .32s curve. Traced
+after a tap: card 414 → 153 → 108 → 103px over 300ms as the keys rise
+(807 → 594 → 557 → 553), and back the same way on blur. Before, the
+services went in one frame and the card jumped.
+
 ---
 
 ## 6. Open items
