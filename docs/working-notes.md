@@ -10266,6 +10266,19 @@ whatever scrolls behind it is a wash rather than words. And "avatar and
 bell should follow the field's height, 56px": the field goes to 56 and the
 two discs with it.
 
+### 5.387 The top field, live
+
+"On the field in the top bar: push the avatar off the screen to the left,
+extend the field left, replace the bell with a dismiss." While the top
+field has focus (`#phone2.ovTyping`) the avatar rides off the left edge on
+a negative margin -- its width and the gap, 66px -- and fades as it goes,
+so the field grows into its room on the same curve and lands on the bar's
+own 13px padding, level with the dismiss on the right. The
+bell's glyph turns a quarter and fades into a cross; a press on it while
+the field is live clears and blurs the field (on pointerdown, with the
+default prevented, so the blur does not land first and turn it back into a
+bell), which drops the keyboard and brings the avatar back.
+
 ---
 
 ## 6. Open items

@@ -5674,7 +5674,15 @@
     transition:background .16s ease;
   }
   .ovBell:hover{background:rgba(255,255,255,.1);}
-  .ovBell svg{width:22px;height:22px;}
+  .ovBell{position:relative;}
+  .ovBell svg{position:absolute;width:22px;height:22px;transition:opacity .2s ease,transform .28s cubic-bezier(.2,.8,.2,1);}
+  .ovBell .icX{width:14px;height:14px;opacity:0;transform:rotate(-90deg) scale(.6);}
+  /* the field live: the avatar rides off the left edge (its width and the
+     gap), the field grows into its room, the bell turns into the dismiss */
+  .ovAva{transition:margin-left .32s cubic-bezier(.2,.8,.2,1),opacity .22s ease;}
+  #phone2.ovTyping .ovAva{margin-left:-66px;opacity:0;pointer-events:none;}   /* its width and the gap: the field lands on the bar's own 13px padding */
+  #phone2.ovTyping .ovBell .icBell{opacity:0;transform:rotate(90deg) scale(.6);}
+  #phone2.ovTyping .ovBell .icX{opacity:1;transform:none;}
   body.light #phone2 .ovTop::before{
     background:linear-gradient(180deg,rgba(247,242,233,.96) 0%,rgba(247,242,233,.88) 50%,rgba(247,242,233,.6) 76%,rgba(247,242,233,0) 100%);
   }
@@ -8610,7 +8618,10 @@
             <input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Ask Everlab">
           </div>
         </div>
-        <button class="ovBell" type="button" aria-label="Notifications"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 8.6a4.8 4.8 0 0 1 9.6 0v3l1.4 2.3H3.8l1.4-2.3Z"/><path d="M8.3 16.2a1.8 1.8 0 0 0 3.4 0"/></svg></button>
+        <button class="ovBell" type="button" aria-label="Notifications">
+          <svg class="icBell" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 8.6a4.8 4.8 0 0 1 9.6 0v3l1.4 2.3H3.8l1.4-2.3Z"/><path d="M8.3 16.2a1.8 1.8 0 0 0 3.4 0"/></svg>
+          <svg class="icX" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+        </button>
       </div>
       <div class="mtitle"><h2>Welcome back, <span>Julien</span></h2></div>
       <div class="ovhero">
@@ -16523,12 +16534,20 @@
       const pill = ph.querySelector('.ovChat .ovChatBox');
       if (pill){
         const pin = pill.querySelector('input'), go = pill.querySelector('.ovChatGo');
-        pin.addEventListener('focus', () => { keyboard(); document.body.classList.add('mSearchOn'); });
-        pin.addEventListener('blur', () => document.body.classList.remove('mSearchOn'));
+        // Typing in the top bar: the avatar slides off the left edge, the field
+        // takes its room, and the bell becomes the dismiss.
+        pin.addEventListener('focus', () => { keyboard(); document.body.classList.add('mSearchOn'); ph.classList.add('ovTyping'); });
+        pin.addEventListener('blur', () => { document.body.classList.remove('mSearchOn'); ph.classList.remove('ovTyping'); });
         const submit = () => { const q = pin.value; pin.value = ''; open(pill, q); };
         pin.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submit(); } });
         pin.addEventListener('everlab:go', submit);
         if (go) go.addEventListener('click', e => { e.preventDefault(); submit(); });
+        const bell = ph.querySelector('.ovTop .ovBell');
+        if (bell) bell.addEventListener('pointerdown', e => {
+          if (!ph.classList.contains('ovTyping')) return;   // a bell, until the field is live
+          e.preventDefault();                               // keep the blur from landing before we do
+          pin.value = ''; pin.blur();
+        });
       }
     });
   })();
