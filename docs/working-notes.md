@@ -10099,6 +10099,17 @@ sheet pick still scrolls to the pinned bar (5.372), and the desk's focus
 still pins (5.366). Check: `pickpin.js` (desk scrollTop unchanged by a
 pick).
 
+### 5.376 A chat at the top of the Overview
+
+"On Overview put a chat top centered." Both Overview screens (the desk's
+`#dOver`, m9; the phone's `#phone2`, m6) open on `.ovChat`: a 56px pill
+(52 on the phone) with the assistant's spark at the left, a field ("Ask
+Everlab anything about your health"; the phone's shorter) and a send disc
+at the right, over the greeting. The desk holds it to 640px in the middle
+of the page (260px each side at 1600); the phone gives it the screen's
+width. Focus lights the ring and fills the send disc. Light mode carries
+its own colours. Check: `ovchat.js`.
+
 ---
 
 ## 6. Open items
