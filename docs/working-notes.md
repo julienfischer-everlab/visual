@@ -10279,6 +10279,13 @@ the field is live clears and blurs the field (on pointerdown, with the
 default prevented, so the blur does not land first and turn it back into a
 bell), which drops the keyboard and brings the avatar back.
 
+"The AI field doesn't have enough blur." The field's own 64px blur was
+there, but the group's ground under it faded from 55% of its height, so the
+lower half of the field stood on half a blur and a .6 plate, and the hero's
+copy read through. The ground is now solid (.92) and fully blurred (24px)
+down to the field's foot; only the last 40px fade -- the bar's bottom
+padding and the 28px run past it.
+
 ---
 
 ## 6. Open items
