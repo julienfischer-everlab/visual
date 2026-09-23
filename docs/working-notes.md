@@ -10307,6 +10307,13 @@ lines at the foot. Icon and label sit at the tile's two ends
 row shares the glyph line and the baseline. The 3/6 + 2/6 spans stay: two
 wide tiles, then three.
 
+"Put the dismiss cross outside, above the card." The cross leaves the
+field's row -- the field has the row to itself again -- and floats 16px
+above the card's top-right corner, a 48px disc of 14% white on the dim
+with a little blur. It stays the card's child, so it rides up with the
+card onto the keyboard and stays put through the fold; it fades in .2s
+after the card lands so it never shows scaled inside the morph.
+
 ---
 
 ## 6. Open items

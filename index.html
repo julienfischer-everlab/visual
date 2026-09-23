@@ -2494,14 +2494,19 @@
     box-shadow:none;   /* no ring on the card's field ("remove the border on the AI field") -- the plate alone */
   }
   .aiCard .aiField:focus-within, #phone2 .aiCard .aiField:focus-within{box-shadow:none;background:rgba(255,255,255,.09);}
+  /* the dismiss floats above the card's top-right corner, on the dim, and
+     rides with the card (it is the card's child); it fades in once the card
+     is open, so it never shows scaled during the morph */
   .aiX{
-    flex:none;width:56px;height:56px;border:0;border-radius:50%;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);color:#ececec;
-    transition:background .16s ease;
+    position:absolute;top:-64px;right:16px;width:48px;height:48px;border:0;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.14);color:#fff;
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    opacity:0;transition:background .16s ease,opacity .2s ease;
   }
-  .aiX:hover{background:rgba(255,255,255,.14);}
+  .aiWrap.on .aiX{opacity:1;transition:background .16s ease,opacity .24s ease .2s;}
+  .aiX:hover{background:rgba(255,255,255,.22);}
   .aiX svg{width:14px;height:14px;}
-  body.light .aiX{background:rgba(46,31,26,.08);color:#2e1f1a;}
+  body.light .aiX{background:rgba(46,31,26,.14);color:#2e1f1a;}
   body.light .aiCard .aiField:focus-within{box-shadow:none;background:rgba(46,31,26,.08);}
   .aiRule{height:1px;margin:16px 0;background:rgba(255,255,255,.08);}
   .aiEyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;margin:0 0 12px 2px;}
@@ -16302,7 +16307,6 @@
               '<input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Everlab">' +
               '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
             '</div>' +
-            '<button class="aiX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>' +
           '</div>' +
           // the services (and the home bar under them) in a block that folds:
           // a grid row going from 1fr to 0fr, so its height animates from
@@ -16314,7 +16318,11 @@
               '<button class="aiTile' + (s.wide ? ' wide' : '') + '" type="button"><span class="aiIc">' + IC[s.ic] + '</span><span>' + s.l + '</span></button>').join('') + '</div>' +
             '<div class="shHome" aria-hidden="true"></div>' +
           '</div></div>' +
-        '</div></div>';
+        '</div>' +
+        // the dismiss, floating above the card's top-right corner ("put the
+        // dismiss cross outside, above the card"); it rides with the card
+        '<button class="aiX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>' +
+        '</div>';
       ph.appendChild(wrap);
       const card = wrap.querySelector('.aiCard'), inp = wrap.querySelector('input');
       // the frame's keyboard types into the focused field; the phone that has
