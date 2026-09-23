@@ -5637,13 +5637,22 @@
      middle -- full round, no ring, no send disc -- and the bell. It rides the
      top of the scroller and the page passes under its blur; the greeting is
      the page's h1, in the body below it. */
+  /* The status strip is transparent and floats over the scroller, which now
+     starts at the very top of the screen; the bar leaves room for it with
+     --stH (its measured height), so the strip and the bar read as one group.
+     The group's ground is a pseudo running 28px past the bar's foot: black
+     fading to nothing, and the blur fading with it through a mask -- one
+     progressive edge instead of a plate with a bottom line. */
+  #phone2 .mstatus{position:absolute;left:0;right:0;top:0;z-index:9;background:none;}
   #phone2 .ovTop{
     position:sticky;top:0;z-index:7;
-    display:flex;align-items:center;gap:10px;padding:6px 13px 10px;
-    background:
-      linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02)),
-      rgba(13,13,12,.55);
+    display:flex;align-items:center;gap:10px;padding:calc(var(--stH,0px) + 6px) 13px 10px;
+  }
+  #phone2 .ovTop::before{
+    content:"";position:absolute;left:0;right:0;top:0;bottom:-28px;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(13,13,12,.96) 0%,rgba(13,13,12,.88) 50%,rgba(13,13,12,.6) 76%,rgba(13,13,12,0) 100%);
     -webkit-backdrop-filter:blur(18px) saturate(120%);backdrop-filter:blur(18px) saturate(120%);
+    -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent);
   }
   #phone2 .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;padding:0;}
   #phone2 .ovTop .ovChatBox{width:100%;height:44px;padding:0 16px;font-size:14px;box-shadow:none;background:rgba(255,255,255,.07);}
@@ -5663,8 +5672,8 @@
   }
   .ovBell:hover{background:rgba(255,255,255,.1);}
   .ovBell svg{width:20px;height:20px;}
-  body.light #phone2 .ovTop{
-    background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.25)),rgba(247,242,233,.6);
+  body.light #phone2 .ovTop::before{
+    background:linear-gradient(180deg,rgba(247,242,233,.96) 0%,rgba(247,242,233,.88) 50%,rgba(247,242,233,.6) 76%,rgba(247,242,233,0) 100%);
   }
   body.light #phone2 .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   body.light #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(46,31,26,.09);}
@@ -5674,7 +5683,7 @@
     position:static;height:auto;margin:0;padding:14px 16px 16px;border-radius:0;
     justify-content:center;text-align:center;
   }
-  body.m6 #phone2 .mtitle h2{font-size:20px;letter-spacing:-.2px;}
+  body.m6 #phone2 .mtitle h2{font-size:24px;font-weight:500;letter-spacing:-.3px;}   /* "H1 medium, 24px" */
   .dvH1 span{color:#7f7f7f;}
   .dvSec{
     display:flex;align-items:center;gap:12px;margin:34px 0 14px;
@@ -16501,6 +16510,13 @@
       // The Overview's pill under the greeting: a tap raises the keyboard and
       // the words go in there; Enter, the send disc or the keyboard's search
       // key hands them to the chat, which grows out of the pill.
+      // the top bar clears the floating status strip by the strip's own height
+      const st = ph.querySelector('.mstatus');
+      if (st && ph.querySelector('.ovTop')){
+        const setStH = () => ph.style.setProperty('--stH', st.offsetHeight + 'px');
+        setStH(); addEventListener('resize', setStH); document.addEventListener('everlab:mode', setStH);
+        if (window.ResizeObserver) new ResizeObserver(setStH).observe(st);   // the phone is hidden at load; the strip has no height until it shows
+      }
       const pill = ph.querySelector('.ovChat .ovChatBox');
       if (pill){
         const pin = pill.querySelector('input'), go = pill.querySelector('.ovChatGo');

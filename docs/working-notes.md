@@ -10248,6 +10248,18 @@ the body, 14px under the bar, centred, at the report page's 20/500. A tap on
 the field still raises only the keyboard; the search key still grows the
 chat thread out of the field.
 
+### 5.386 One group at the top, fading into the page; the greeting at 24
+
+"Status bar transparent. Status and top bar in one group. Progressive
+black gradient + blur on the background." And: "H1 medium, +6px, 24px."
+The Overview phone's status strip goes transparent and floats over the
+scroller, which now starts at the top edge of the screen; the bar pads
+itself by the strip's measured height (`--stH`), so hour, battery, avatar,
+field and bell sit on one ground. That ground is a pseudo behind the bar
+running 28px past its foot: black at .96 fading to nothing, with the blur
+masked away along the same run, so the page dissolves into the group rather
+than meeting a plate's bottom line. The greeting goes to 24/500, -.3.
+
 ---
 
 ## 6. Open items
