@@ -10176,6 +10176,16 @@ section heads (`.ovsec`, was 16). The greeting is centred, and the chat
 field sits under it at 80% of the content column, centred (the desk's
 640px cap is gone). Check: `ovchat.js`.
 
+### 5.382 The Overview's field morphs into the assistant
+
+"On click, the field morphs to a full modal; keyboard appears." On the
+Overview phone the Ask Everlab pill under the greeting is a second way
+into the spark's card: `aiSheet.open()` takes the element tapped and grows
+the card from its rect, so the pill stretches into the modal (bento,
+field, keyboard up) and the card shrinks back into the pill on close. A
+tap on the pill or a focus landing in its field opens it. Check:
+`aisheet.js` (Overview field → card on, keyboard up).
+
 ---
 
 ## 6. Open items

@@ -16183,8 +16183,8 @@
         return 'translate(' + ((B.left + B.width / 2) - (C.left + C.width / 2)) + 'px,' + ((B.top + B.height / 2) - (C.top + C.height / 2)) + 'px) ' +
                'scale(' + (B.width / C.width) + ',' + (B.height / C.height) + ')';
       };
-      const open = () => {
-        from = btn.getBoundingClientRect();
+      const open = src => {
+        from = (src || btn).getBoundingClientRect();   // the card grows from whatever was tapped
         const k = keyboard();
         card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // the card stands on the keys
         wrap.classList.add('show');
@@ -16205,6 +16205,15 @@
         setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); card.style.transform = ''; } }, 480);
       };
       btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); open(); });
+      // the Overview's field is the other way in ("on click, the field morphs
+      // to a full modal, keyboard appears"): the pill under the greeting
+      // grows into the same card, and the card shrinks back into it on close
+      const ovBox = ph.querySelector('.ovChat .ovChatBox');
+      if (ovBox){
+        const ovIn = ovBox.querySelector('input');
+        ovBox.addEventListener('click', e => { e.preventDefault(); if (!wrap.classList.contains('on')) open(ovBox); });
+        if (ovIn) ovIn.addEventListener('focus', () => { if (!wrap.classList.contains('on')) open(ovBox); });
+      }
       wrap.querySelector('.aiDim').addEventListener('click', close);
       wrap.querySelector('.aiX').addEventListener('click', close);
       addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
