@@ -10230,6 +10230,23 @@ and under focus (the plate alone, a shade brighter when focused); the
 Overview's pill keeps its ring, being a field on the page rather than in a
 card.
 
+### 5.385 The Overview phone gets a top bar
+
+"Top nav fixed on scroll (blur bg + light gradient): profile avatar circle,
+AI field filling the container (full rounded, no border, no submit arrow),
+bell icon (circle, blurred #fff at 4%). Below, in the body, the h1." The
+Overview phone's greeting stops being the sticky pill. A 60px bar (`.ovTop`)
+rides the top of the scroller: a 40px profile disc at the left (a warm
+gradient and a figure -- the photo in the brief is not in the repo, so a
+placeholder), the assistant's field filling the middle at 44px with no
+ring and no send disc, and a 40px bell on a 4% white plate at the right. It
+is sticky at 0 with an 18px blur and a faint white gradient over a 55% dark
+plate, so the page passes under it; the assistant sheet's dim still covers
+it (`#phone2.aiOpen`). "Welcome back, Julien" is now the page's heading in
+the body, 14px under the bar, centred, at the report page's 20/500. A tap on
+the field still raises only the keyboard; the search key still grows the
+chat thread out of the field.
+
 ---
 
 ## 6. Open items
