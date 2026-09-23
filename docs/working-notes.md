@@ -10176,15 +10176,23 @@ section heads (`.ovsec`, was 16). The greeting is centred, and the chat
 field sits under it at 80% of the content column, centred (the desk's
 640px cap is gone). Check: `ovchat.js`.
 
-### 5.382 The Overview's field morphs into the assistant
+### 5.382 The Overview's field grows into the chat thread
 
-"On click, the field morphs to a full modal; keyboard appears." On the
-Overview phone the Ask Everlab pill under the greeting is a second way
-into the spark's card: `aiSheet.open()` takes the element tapped and grows
-the card from its rect, so the pill stretches into the modal (bento,
-field, keyboard up) and the card shrinks back into the pill on close. A
-tap on the pill or a focus landing in its field opens it. Check:
-`aisheet.js` (Overview field → card on, keyboard up).
+"On click, the field morphs to a full modal; keyboard appears" -- and,
+when the first cut sent it into the spark's services card: "no, that's
+only the view when the user clicks the bottom nav icon; the top field
+should merge smoothly to a full modal, see capture of the UI + keyboard".
+So `chatModal`, on the Overview phone: the Ask Everlab pill under the
+greeting stretches (translate + scale from its measured rect, pill radius
+to none, .5s) into a full-screen chat under the status strip, standing on
+the keyboard -- a head (menu, *Protein intake*, more, close), the thread
+(the reader's question in a bubble with its time and copy/edit, *Thinking
+· Looking at your records* pulsing, then Eva's three paragraphs streaming
+in word by word after a 900ms beat) and the composer at the foot (*Ask
+Eva …*, +, *Eva ⌄*, send), its field focused in the tap so the keyboard
+rises. Close (X, Escape, a page change) shrinks it back into the pill. The
+dock's spark keeps the services card (5.380); `aiSheet.open()` still
+takes a source element, unused for now. Check: `chat.js`.
 
 ---
 
