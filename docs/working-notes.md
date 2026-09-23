@@ -10139,6 +10139,26 @@ each screen's own dock lights the tab it IS. Plan, Services and More have
 no screen in the prototype, so a tap on them does nothing and the lit tab
 keeps saying where the reader is. The assistant's spark is unchanged.
 
+### 5.380 The spark grows into the assistant's card
+
+"On click the star button, the button should expand to be a large card +
+open the keyboard. We need this entry point for Everlab services in this
+card as bento. So: bento, AI field, keyboard." `aiSheet` builds, per
+phone, a dim and a card (`.aiWrap`/`.aiCard`) mounted on the frame. The
+card holds a head (spark, *Ask Everlab*, close), an *Everlab services*
+bento -- Telehealth and Check Symptoms wide on the first row, Med Certs,
+Pathology and Treatments on the second, each a line icon on a tinted
+plate -- and the Overview's chat field. On tap the card starts as the
+button (its rect measured, a translate + scale and a 50% radius), and
+opens to its own shape over .46s; the contents fade in once it has it. The
+field is focused on open, which raises the frame's keyboard (`mSearchOn`),
+and the card stands 12px above the keys (`bottom` set from the keyboard's
+height). The Overview phone had no keyboard, so it gets a clone of the
+Insights phone's, wired to type into its focused field. Close (X, dim,
+Escape, a page change) shrinks the card back to where the button was --
+its rect is kept from the open, since the keyboard hides the dock. Check:
+`aisheet.js` (both phones: card opens, keys type into the field, closes).
+
 ---
 
 ## 6. Open items

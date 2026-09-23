@@ -2436,8 +2436,8 @@
     transform:translateY(100%);visibility:hidden;pointer-events:none;
     transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s linear .32s;
   }
-  body:not(.fullscr) #phone .mKbd{display:block;}
-  body.mSearchOn:not(.fullscr) #phone .mKbd{
+  body:not(.fullscr) :is(#phone,#phone2) .mKbd{display:block;}   /* the Overview phone has a copy, for the assistant's field */
+  body.mSearchOn:not(.fullscr) :is(#phone,#phone2) .mKbd{
     transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;
   }
   body.mSearchOn:not(.fullscr) #phone .mscroll{padding-bottom:280px;}   /* the list can rise above the keys */
@@ -2465,6 +2465,52 @@
   body.light .mKbd.shift .k.shift{background:#fff;}
   body.light .mKbd .k.go{background:#0a7aff;color:#fff;}
   body.light .mKbd .kHome i{background:rgba(0,0,0,.24);}
+  /* ---- The assistant's card, grown from the dock's spark ("the button should
+     expand to be a large card + open the keyboard"): a dim over the page, and
+     a card standing on the keyboard with the services as a bento (two wide
+     tiles, then three), the field under them. The card's transform is set by
+     the script from the button's measured place; the CSS only carries it. */
+  .aiWrap{position:absolute;inset:0;z-index:6;display:none;}
+  .aiWrap.show{display:block;}
+  .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .35s ease;}
+  .aiWrap.on .aiDim{opacity:1;}
+  .aiCard{
+    position:absolute;left:12px;right:12px;bottom:12px;
+    padding:16px 16px 14px;border-radius:28px;background:#1b1b1a;
+    box-shadow:0 30px 60px -24px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.05);
+    transform-origin:center;will-change:transform;
+    transition:transform .46s cubic-bezier(.2,.8,.2,1),border-radius .46s cubic-bezier(.2,.8,.2,1);
+  }
+  .aiWrap:not(.on) .aiCard{border-radius:50%;}      /* the button's disc, until it opens */
+  .aiBody{opacity:0;transition:opacity .22s ease;}
+  .aiWrap.on .aiBody{opacity:1;transition-delay:.18s;}   /* the contents arrive once the card has its shape */
+  .aiHead{display:flex;align-items:center;gap:10px;margin:0 0 14px;}
+  .aiSpark{display:flex;color:#ececec;} .aiSpark svg{width:18px;height:18px;}
+  .aiHead h3{flex:1;margin:0;font-size:18px;font-weight:500;letter-spacing:-.2px;color:#ececec;}
+  .aiX{
+    flex:none;width:34px;height:34px;border:0;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);color:#ececec;
+  }
+  .aiX svg{width:12px;height:12px;}
+  .aiEyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;margin:0 0 10px 2px;}
+  .aiBento{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:0 0 14px;}
+  .aiTile{
+    grid-column:span 2;height:100px;border:0;border-radius:18px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    background:rgba(255,255,255,.06);color:#ececec;font:inherit;font-size:13px;font-weight:500;
+    transition:background .16s ease;
+  }
+  .aiTile.wide{grid-column:span 3;}
+  .aiTile:hover{background:rgba(255,255,255,.1);}
+  .aiIc{display:flex;width:44px;height:44px;border-radius:14px;align-items:center;justify-content:center;background:rgba(255,255,255,.07);color:#e6a96b;}
+  .aiIc svg{width:24px;height:24px;}
+  .aiField{height:52px;}
+  body.light .aiCard{background:#f6ece6;box-shadow:0 30px 60px -24px rgba(46,31,26,.45),0 0 0 1px rgba(46,31,26,.08);}
+  body.light .aiSpark, body.light .aiHead h3, body.light .aiTile{color:#2e1f1a;}
+  body.light .aiX{background:rgba(46,31,26,.08);color:#2e1f1a;}
+  body.light .aiTile{background:rgba(46,31,26,.05);} body.light .aiTile:hover{background:rgba(46,31,26,.09);}
+  body.light .aiIc{background:#fff;color:#b8785e;}
+  body.light .aiEyebrow{color:#7d6b58;}
   #phone .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;justify-self:end;}
   #phone .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
   #phone .rng .s1{width:34px;background:var(--rgOpt);}
@@ -5477,6 +5523,7 @@
      of the page, the phone gives it the screen's width. */
   .ovChat{display:flex;justify-content:center;margin:0 0 28px;}
   .ovChatBox{
+    box-sizing:border-box;   /* the Overview phone sizes content-box by default, and the field ran past the card */
     display:flex;align-items:center;gap:12px;width:100%;max-width:640px;height:56px;
     padding:0 8px 0 18px;border-radius:999px;background:rgba(255,255,255,.06);
     box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.08);color:#8b8b86;
@@ -16053,6 +16100,105 @@
         if (DEST[i] == null || i === here) return;
         setMode(DEST[i]);
       }));
+    });
+  })();
+  // ---- the assistant's card --------------------------------------------------
+  // The dock's spark grows into a card ("on click the star button, the button
+  // should expand to be a large card and open the keyboard"): the entry points
+  // to Everlab's services as a bento, the field to ask anything, and the
+  // frame's keyboard up under it. Built once per phone; the card starts as the
+  // button (its size and place, measured) and opens to its own, and shrinks
+  // back the same way on close.
+  (function aiSheet(){
+    const IC = {
+      tele: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10.5 21 8v8l-5-2.5"/><circle cx="9.5" cy="11" r="2"/><path d="M6.5 15.5c.6-1.3 1.7-2 3-2s2.4.7 3 2"/></svg>',
+      symp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 5h3"/><path d="M12 15.5s-3-1.9-3-4a1.7 1.7 0 0 1 3-1 1.7 1.7 0 0 1 3 1c0 2.1-3 4-3 4Z"/></svg>',
+      cert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v4h4"/><path d="m9 14 2 2 4-4"/></svg>',
+      path: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5h6"/><path d="M10 2.5v10.2l-3.6 6A2 2 0 0 0 8.1 21.5h7.8a2 2 0 0 0 1.7-2.8L14 12.7V2.5"/><path d="M8.2 16h7.6"/></svg>',
+      treat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-40 12 12)"/><path d="m9.3 15.6 5.4-7.2"/></svg>'
+    };
+    const SERVICES = [
+      { l: 'Telehealth', ic: 'tele', wide: true }, { l: 'Check Symptoms', ic: 'symp', wide: true },
+      { l: 'Med Certs', ic: 'cert' }, { l: 'Pathology', ic: 'path' }, { l: 'Treatments', ic: 'treat' }
+    ];
+    const SPARK = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>';
+    ['phone', 'phone2'].forEach(id => {
+      const ph = document.getElementById(id); if (!ph) return;
+      const btn = ph.querySelector('.mChat'); if (!btn) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'aiWrap';
+      wrap.innerHTML = '<div class="aiDim"></div>' +
+        '<div class="aiCard" role="dialog" aria-modal="true" aria-label="Ask Everlab"><div class="aiBody">' +
+          '<div class="aiHead"><span class="aiSpark">' + SPARK + '</span><h3>Ask Everlab</h3>' +
+            '<button class="aiX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>' +
+          '<div class="aiEyebrow">Everlab services</div>' +
+          '<div class="aiBento">' + SERVICES.map(s =>
+            '<button class="aiTile' + (s.wide ? ' wide' : '') + '" type="button"><span class="aiIc">' + IC[s.ic] + '</span><span>' + s.l + '</span></button>').join('') + '</div>' +
+          '<div class="ovChatBox aiField">' + SPARK.replace('<svg ', '<svg class="ovChatSpark" ') +
+            '<input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Everlab">' +
+            '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
+          '</div>' +
+        '</div></div>';
+      ph.appendChild(wrap);
+      const card = wrap.querySelector('.aiCard'), inp = wrap.querySelector('input');
+      // the frame's keyboard types into the focused field; the phone that has
+      // none (the Overview) gets a copy of the Insights phone's, wired the same
+      const keyboard = () => {
+        let k = ph.querySelector('.mKbd');
+        if (k) return k;
+        const src = document.getElementById('mKbd'); if (!src) return null;
+        k = src.cloneNode(true); k.removeAttribute('id'); ph.appendChild(k);
+        k.addEventListener('pointerdown', e => {
+          e.preventDefault();
+          const key = e.target.closest('.k'); if (!key) return;
+          const v = key.dataset.k, a = document.activeElement;
+          const f = (a && a.tagName === 'INPUT' && ph.contains(a)) ? a : inp;
+          if (v === 'shift'){ k.classList.toggle('shift'); return; }
+          if (v === 'num') return;
+          if (v === 'go'){ f.blur(); return; }
+          if (v === 'del') f.value = f.value.slice(0, -1);
+          else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
+          f.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        return k;
+      };
+      // the field raises and drops the keyboard as the search fields do
+      inp.addEventListener('focus', () => document.body.classList.add('mSearchOn'));
+      inp.addEventListener('blur', () => document.body.classList.remove('mSearchOn'));
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
+      // where the button is, kept from the open: the dock may be off the page
+      // by the time the card closes (the keyboard hides it), and the card
+      // shrinks back to where the button was
+      let from = null;
+      const fromBtn = () => {
+        const B = from || btn.getBoundingClientRect(), C = card.getBoundingClientRect();
+        if (!C.width || !B.width) return '';
+        return 'translate(' + ((B.left + B.width / 2) - (C.left + C.width / 2)) + 'px,' + ((B.top + B.height / 2) - (C.top + C.height / 2)) + 'px) ' +
+               'scale(' + (B.width / C.width) + ',' + (B.height / C.height) + ')';
+      };
+      const open = () => {
+        from = btn.getBoundingClientRect();
+        const k = keyboard();
+        card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // the card stands on the keys
+        wrap.classList.add('show');
+        card.style.transition = 'none';
+        card.style.transform = fromBtn();
+        card.getBoundingClientRect();   // the start is laid out before the transition begins
+        card.style.transition = '';
+        requestAnimationFrame(() => { wrap.classList.add('on'); card.style.transform = ''; inp.focus(); });
+      };
+      const close = () => {
+        if (!wrap.classList.contains('on')) return;
+        inp.blur();
+        card.style.transform = fromBtn();
+        wrap.classList.remove('on');
+        setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); card.style.transform = ''; } }, 480);
+      };
+      btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); open(); });
+      wrap.querySelector('.aiDim').addEventListener('click', close);
+      wrap.querySelector('.aiX').addEventListener('click', close);
+      addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+      document.addEventListener('everlab:mode', close);
     });
   })();
 
