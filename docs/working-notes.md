@@ -10237,8 +10237,9 @@ AI field filling the container (full rounded, no border, no submit arrow),
 bell icon (circle, blurred #fff at 4%). Below, in the body, the h1." The
 Overview phone's greeting stops being the sticky pill. A 60px bar (`.ovTop`)
 rides the top of the scroller: a 40px profile disc at the left (a warm
-gradient and a figure -- the photo in the brief is not in the repo, so a
-placeholder), the assistant's field filling the middle at 44px with no
+gradient and a figure at first; then the photo Julien sent,
+`assets/overview/avatar.png`, inlined by the build like every other asset),
+the assistant's field filling the middle at 44px with no
 ring and no send disc, and a 40px bell on a 4% white plate at the right. It
 is sticky at 0 with an 18px blur and a faint white gradient over a 55% dark
 plate, so the page passes under it; the assistant sheet's dim still covers
