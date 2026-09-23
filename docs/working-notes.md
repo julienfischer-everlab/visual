@@ -10314,6 +10314,17 @@ with a little blur. It stays the card's child, so it rides up with the
 card onto the keyboard and stays put through the fold; it fades in .2s
 after the card lands so it never shows scaled inside the morph.
 
+### 5.389 The chat cuts in
+
+"On submit I want a full-screen modal over the page with the full chat, no
+fancy transition." The thread used to grow out of the field on a
+half-second morph, the pill's radius unrolling as it went. Now it is a cut:
+the modal is there on submit and gone on the cross, no transform, no
+radius, no fade. It fills the screen: on the Overview phone, where the
+status strip floats, the modal runs up behind the strip and pads its body
+by the strip's height; on the Insights phone, where the strip is in the
+flow, it starts under it as before. It still stands on the keyboard.
+
 ---
 
 ## 6. Open items

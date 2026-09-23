@@ -2546,15 +2546,11 @@
   .chWrap{position:absolute;inset:0;z-index:8;display:none;}   /* over the sticky greeting (7); it never covers the keyboard, which stands under it */
   #phone2.aiOpen :is(.mtitle,.ovTop){z-index:1;}   /* the services card's dim covers the top bar too, while the card is open */
   .chWrap.show{display:block;}
-  .chModal{
-    position:absolute;left:0;right:0;top:0;bottom:0;background:#121211;overflow:hidden;
-    transform-origin:center;will-change:transform;
-    transition:transform .5s cubic-bezier(.2,.8,.2,1),border-radius .5s cubic-bezier(.2,.8,.2,1);
-  }
-  .chWrap:not(.on) .chModal{border-radius:999px;}   /* the pill, until it opens */
-  .chWrap.on .chModal{border-radius:0;}
-  .chBody{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;transition:opacity .24s ease;}
-  .chWrap.on .chBody{opacity:1;transition-delay:.22s;}
+  /* a plain cut ("a full-screen modal over the page with the full chat, no
+     fancy transition"): the modal is simply there, and simply gone. It used
+     to grow out of the field on a half-second morph. */
+  .chModal{position:absolute;left:0;right:0;top:0;bottom:0;background:#121211;overflow:hidden;}
+  .chBody{position:absolute;inset:0;display:flex;flex-direction:column;}
   .chHead{flex:none;display:flex;align-items:center;gap:10px;padding:10px 12px 8px;}
   .chHead h3{flex:1;margin:0 4px;font-size:16px;font-weight:500;letter-spacing:-.1px;color:#ececec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .chIcon{
@@ -16460,7 +16456,7 @@
           '<button class="chModel" type="button">Eva ' + ICON.chev + '</button><button class="chSend" type="button" aria-label="Send">' + ICON.up + '</button></div></div>' +
       '</div></div>';
       ph.appendChild(wrap);
-      const modal = wrap.querySelector('.chModal'), inp = wrap.querySelector('.chComposer input'), paras = [].slice.call(wrap.querySelectorAll('.chAns p'));
+      const modal = wrap.querySelector('.chModal'), body = wrap.querySelector('.chBody'), inp = wrap.querySelector('.chComposer input'), paras = [].slice.call(wrap.querySelectorAll('.chAns p'));
       const think = wrap.querySelector('.chThink'), bubble = wrap.querySelector('.chBubble'), title = wrap.querySelector('.chHead h3'), time = wrap.querySelector('.chTime');
       // the frame's keyboard under the composer; the phone that has none gets
       // a copy of the Insights phone's, wired the same (the sheet does too --
@@ -16505,38 +16501,29 @@
           t += 180;
         });
       };
-      let from = null;
-      const fromRect = () => {
-        const B = from, C = modal.getBoundingClientRect();
-        if (!B || !C.width || !B.width) return '';
-        return 'translate(' + ((B.left + B.width / 2) - (C.left + C.width / 2)) + 'px,' + ((B.top + B.height / 2) - (C.top + C.height / 2)) + 'px) ' +
-               'scale(' + (B.width / C.width) + ',' + (B.height / C.height) + ')';
-      };
+      // A plain cut, both ways ("no fancy transition"). The modal fills the
+      // screen: where the status strip floats over the page (the Overview
+      // phone) the modal runs up behind it and pads its body by the strip's
+      // height; where the strip is in the flow it starts under it.
       const open = (src, question) => {
         if (wrap.classList.contains('on')) return;
-        from = (src || ph.querySelector('.mChat')).getBoundingClientRect();
         const q = (question || '').trim() || DEFAULT_Q;
         bubble.textContent = q;
         title.textContent = q === DEFAULT_Q ? 'Protein intake' : q;
         time.textContent = q === DEFAULT_Q ? '26 Jun, 3:50 PM' : now();
         const k = keyboard(), st = ph.querySelector('.mstatus');
+        const stH = st ? st.offsetHeight : 0, floating = st && getComputedStyle(st).position === 'absolute';
         modal.style.bottom = (k ? k.offsetHeight : 0) + 'px';           // the composer stands on the keys
-        modal.style.top = (st ? st.offsetHeight : 0) + 'px';             // under the status strip
-        wrap.classList.add('show');
-        modal.style.transition = 'none';
-        modal.style.transform = fromRect();
-        modal.getBoundingClientRect();
-        modal.style.transition = '';
+        modal.style.top = (floating ? 0 : stH) + 'px';
+        body.style.paddingTop = (floating ? stH : 0) + 'px';
+        wrap.classList.add('show', 'on');
         inp.focus({ preventScroll: true });   // in the tap, so a device opens its keyboard
-        requestAnimationFrame(() => { wrap.classList.add('on'); modal.style.transform = ''; });
         stream();
       };
       const close = () => {
         if (!wrap.classList.contains('on')) return;
         stopStream(); inp.blur();
-        modal.style.transform = fromRect();
-        wrap.classList.remove('on');
-        setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); modal.style.transform = ''; } }, 520);
+        wrap.classList.remove('on', 'show');
       };
       ph._chat = { open, close };
       wrap.querySelector('.chX').addEventListener('click', close);
