@@ -10434,6 +10434,8 @@ right edge and the mask fades them over the last 64px there.
 
 "Regular font": the Overview's mini service pills drop from 500 to 400.
 "Bg opacity 2%, cards": their plate goes from 6% to 2% white (hover 6%).
+"Title +12px after": the greeting's bottom padding goes from 14 to 26, so
+the bento sits 26 under it.
 
 ---
 
