@@ -10371,6 +10371,38 @@ white (hover 8%) -- the lighter look of 5.390 was the stale page talking.
 "+8px padding, cards": the tiles pad 24 (16 at the right, for a two-line
 label's sake) instead of 16.
 
+### 5.391 The chat keeps its keys; the sheet loses its handle
+
+"The full chat should always have the keyboard, even unfocused." The keys
+came and went with the composer's focus, so a tap anywhere in the thread
+dropped them and the composer fell to the foot. Now the phone carries
+`chatOn` while the chat is open and the keyboard stands regardless; with
+nothing focused the keys type into the composer (`ph._kbdTarget`), on the
+frame's own keyboard and on the copies alike.
+
+"Remove the notch swipe-down indicator, then reduce the padding." The
+sheet's handle is gone -- the dim, the cross and the star's own close are
+the ways out -- and the card opens with 16px of air above the field instead
+of the handle's 10 + 5 + 16.
+
+### 5.392 Suggestions under the live field; the services, mini, on Overview
+
+"When the chat is focused we should suggest some chips under the field, in
+the context of the page behind, e.g. show latest results." The sheet gets
+a row of chips (`.aiChips`) that is folded while the services show and
+opens as they fold, on the same curve: a grey "Suggestions" label with a
+spark, then one line of outlined 44px pills (a hairline at 18% white, no
+fill, 15/400) scrolling sideways -- from Julien's capture of the pattern. The Insights phone offers its biomarkers -- latest
+results, what is out of range, biological age, trends since the last test;
+the Overview its plan -- latest results, next step, review my plan, book a
+consult. A chip is the question asked: on pointerdown, so the field keeps
+its focus through the hand-off, the words go into the field and submit.
+
+"Put the services below the h1 on Overview, in a mini way." The same five
+services, as a row of small pills under the greeting (`.ovSvc`): the glyph
+at 18 and the label at 13/500 on a 36px pill at 6% white, scrolling
+sideways. The greeting gives up 2px of its bottom padding to them.
+
 ---
 
 ## 6. Open items

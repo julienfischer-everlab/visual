@@ -2437,7 +2437,8 @@
     transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s linear .32s;
   }
   body:not(.fullscr) :is(#phone,#phone2) .mKbd{display:block;}   /* the Overview phone has a copy, for the assistant's field */
-  body.mSearchOn:not(.fullscr) :is(#phone,#phone2) .mKbd{
+  body.mSearchOn:not(.fullscr) :is(#phone,#phone2) .mKbd,
+  body:not(.fullscr) :is(#phone,#phone2).chatOn .mKbd{   /* the full chat always stands on the keys, focused or not */
     transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;
   }
   body.mSearchOn:not(.fullscr) #phone .mscroll{padding-bottom:280px;}   /* the list can rise above the keys */
@@ -2478,7 +2479,7 @@
   .aiWrap.on .aiDim{opacity:1;}
   .aiCard{
     position:absolute;left:0;right:0;bottom:0;
-    padding:10px 16px 0;border-radius:26px 26px 0 0;background:#1b1b1a;
+    padding:16px 16px 0;border-radius:26px 26px 0 0;background:#1b1b1a;   /* no handle ("remove the swipe-down indicator"): 16 of air, then the field */
     box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);
     transform-origin:center;will-change:transform;
     /* the ride up onto the keyboard runs on the keyboard's own curve and time */
@@ -2487,7 +2488,6 @@
   .aiWrap:not(.on) .aiCard{border-radius:50%;}      /* the button's disc, until it opens */
   .aiBody{opacity:0;transition:opacity .22s ease;}
   .aiWrap.on .aiBody{opacity:1;transition-delay:.18s;}   /* the contents arrive once the card has its shape */
-  .aiHandle{width:44px;height:5px;border-radius:3px;margin:0 auto 16px;background:rgba(255,255,255,.22);cursor:pointer;}
   .aiRowTop{display:flex;align-items:center;gap:10px;}
   .aiCard .aiField, #phone2 .aiCard .aiField{
     flex:1 1 auto;width:auto;min-width:0;height:56px;
@@ -2534,6 +2534,39 @@
   .aiIc{display:flex;width:26px;height:26px;color:#ececec;}
   .aiIc svg{width:26px;height:26px;}
   .aiCard .shHome{margin-top:18px;}
+  /* the suggestions under the live field: a folded row (0fr) that opens as
+     the services fold, one line of chips that scrolls sideways */
+  .aiChips{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1),opacity .16s ease;}
+  .aiChipsIn{box-sizing:border-box;min-height:0;overflow:hidden;}
+  .aiWrap.typing .aiChips{grid-template-rows:1fr;opacity:1;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease .1s;}
+  .aiWrap.typing .aiChipsIn{padding-top:18px;}
+  /* the label with its spark, and outlined pills under it ("suggestion
+     chips, e.g.": a grey 'Suggestions' with a mark, then pills drawn with a
+     hairline rather than filled) */
+  .aiChipsLbl{display:flex;align-items:center;gap:8px;margin:0 0 12px 2px;color:#8b8b86;font-size:15px;font-weight:500;}
+  .aiChipsLbl svg{width:18px;height:18px;}
+  .aiChipsRow{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;margin:0 -16px;padding:0 16px;}
+  .aiChipsRow::-webkit-scrollbar{display:none;}
+  .aiChip{
+    flex:none;height:44px;padding:0 18px;border:0;border-radius:22px;cursor:pointer;
+    background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);color:#ececec;font:inherit;font-size:15px;font-weight:400;white-space:nowrap;
+    transition:background .16s ease;
+  }
+  .aiChip:hover{background:rgba(255,255,255,.06);}
+  body.light .aiChipsLbl{color:#7d6b58;}
+  body.light .aiChip{box-shadow:inset 0 0 0 1px rgba(46,31,26,.2);color:#2e1f1a;}
+  /* the Overview's services, mini, under the greeting: the same five, as a
+     row of small pills with the glyph, scrolling sideways */
+  .ovSvc{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 13px 18px;}
+  .ovSvc::-webkit-scrollbar{display:none;}
+  .ovSvcChip{
+    flex:none;display:flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 11px;border:0;border-radius:18px;cursor:pointer;
+    background:rgba(255,255,255,.06);color:#ececec;font:inherit;font-size:13px;font-weight:500;white-space:nowrap;
+    transition:background .16s ease;
+  }
+  .ovSvcChip svg{width:18px;height:18px;}
+  .ovSvcChip:hover{background:rgba(255,255,255,.1);}
+  body.light .ovSvcChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
   /* Typing: the services fold away and the home bar with them (the keyboard
      draws its own), the card hugging what is left while it rides up onto the
      keys ("service section fades out, keyboard appears while the card height
@@ -2547,7 +2580,6 @@
   body.light .aiTile{color:#2e1f1a;background:rgba(46,31,26,.05);} body.light .aiTile:hover{background:rgba(46,31,26,.09);}
   body.light .aiIc{color:#2e1f1a;}
   body.light .aiEyebrow{color:#7d6b58;}
-  body.light .aiHandle{background:rgba(46,31,26,.22);}
   /* ---- The chat thread, grown from the Overview's field ("the top field
      should merge smoothly to a full modal"): full screen under the status
      strip, standing on the keyboard; a head, the thread, the composer. */
@@ -5714,7 +5746,7 @@
   body.light .ovBell{background:rgba(46,31,26,.05);color:#2e1f1a;}
   /* the greeting: a page heading in the body, not a bar */
   body.m6 #phone2 .mtitle{
-    position:static;height:auto;margin:0;padding:22px 13px 16px;border-radius:0;   /* "align left", "+8px margin top": on the cards' 13px column, 22 under the bar */
+    position:static;height:auto;margin:0;padding:22px 13px 14px;border-radius:0;   /* "align left", "+8px margin top": on the cards' 13px column, 22 under the bar; the mini services follow */
     justify-content:flex-start;text-align:left;
   }
   body.m6 #phone2 .mtitle h2{font-size:24px;font-weight:500;letter-spacing:-.3px;}   /* "H1 medium, 24px" */
@@ -16293,8 +16325,21 @@
       { l: 'Med Certs', ic: 'cert' }, { l: 'Pathology', ic: 'path' }, { l: 'Treatments', ic: 'treat' }
     ];
     const SPARK = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>';
+    // what the reader is most likely to ask from where they are: the Insights
+    // phone is on its biomarkers, the Overview on its plan
+    const CHIPS_INSIGHTS = ['Show my latest results', 'What’s out of range?', 'Explain my biological age', 'Trends since my last test'];
+    const CHIPS_OVERVIEW = ['Show my latest results', 'What’s my next step?', 'Review my plan', 'Book a consult'];
     ['phone', 'phone2'].forEach(id => {
       const ph = document.getElementById(id); if (!ph) return;
+      // the Overview carries the services in a mini row under its greeting
+      // ("put the services below the h1 on Overview, in a mini way")
+      const title = id === 'phone2' && ph.querySelector('.mtitle');
+      if (title && !ph.querySelector('.ovSvc')){
+        const row = document.createElement('div');
+        row.className = 'ovSvc';
+        row.innerHTML = SERVICES.map(s => '<button class="ovSvcChip" type="button">' + IC[s.ic] + '<span>' + s.l + '</span></button>').join('');
+        title.after(row);
+      }
       const btn = ph.querySelector('.mChat'); if (!btn) return;
       // The sheet ("same pattern as this: a card that overlaps the bottom of
       // the screen, no morph or shape change in the star CTA; the field first,
@@ -16304,7 +16349,6 @@
       wrap.className = 'aiWrap';
       wrap.innerHTML = '<div class="aiDim"></div>' +
         '<div class="aiCard" role="dialog" aria-modal="true" aria-label="Ask Everlab"><div class="aiBody">' +
-          '<div class="aiHandle" aria-hidden="true"></div>' +
           // the field, and beside it the cross that dismisses the card back
           // to the screen ("add a cross top right next to the AI field")
           '<div class="aiRowTop">' +
@@ -16313,6 +16357,14 @@
               '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
             '</div>' +
           '</div>' +
+          // Suggestions under the live field, in the context of the page behind
+          // ("when the chat is focused, suggest some chips behind the field"):
+          // folded while the services show, unfolding as they fold. A chip
+          // asks its question straight away.
+          '<div class="aiChips"><div class="aiChipsIn">' +
+            '<div class="aiChipsLbl"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 2v4M10 14v4M2 10h4M14 10h4M4.3 4.3l2.9 2.9M12.8 12.8l2.9 2.9M4.3 15.7l2.9-2.9M12.8 7.2l2.9-2.9"/></svg>Suggestions</div>' +
+            '<div class="aiChipsRow">' + (id === 'phone2' ? CHIPS_OVERVIEW : CHIPS_INSIGHTS).map(c => '<button class="aiChip" type="button">' + c + '</button>').join('') + '</div>' +
+          '</div></div>' +
           // the services (and the home bar under them) in a block that folds:
           // a grid row going from 1fr to 0fr, so its height animates from
           // whatever the content needs to nothing
@@ -16340,7 +16392,7 @@
           e.preventDefault();
           const key = e.target.closest('.k'); if (!key) return;
           const v = key.dataset.k, a = document.activeElement;
-          const f = (a && a.tagName === 'INPUT' && ph.contains(a)) ? a : inp;
+          const f = (a && a.tagName === 'INPUT' && ph.contains(a)) ? a : (ph._kbdTarget || inp);   // nothing focused: the open chat's composer, else this field
           if (v === 'shift'){ k.classList.toggle('shift'); return; }
           if (v === 'num') return;
           if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
@@ -16369,6 +16421,8 @@
       };
       inp.addEventListener('everlab:go', submit);
       wrap.querySelector('.aiField .ovChatGo').addEventListener('click', e => { e.preventDefault(); submit(); });
+      // a chip is the question, asked: on pointerdown, so the field keeps its focus through the hand-off
+      wrap.querySelectorAll('.aiChip').forEach(c => c.addEventListener('pointerdown', e => { e.preventDefault(); inp.value = c.textContent; submit(); }));
       // Typing: the field is tapped, the services go and the keyboard comes,
       // the card standing on the keys ("on field click the list of services
       // disappears and the keyboard appears"). Let go empty, they come back.
@@ -16419,7 +16473,6 @@
       };
       btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); open(); });
       wrap.querySelector('.aiDim').addEventListener('click', close);
-      wrap.querySelector('.aiHandle').addEventListener('click', close);
       wrap.querySelector('.aiX').addEventListener('click', e => { e.preventDefault(); close(); });
       addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
       document.addEventListener('everlab:mode', close);
@@ -16484,7 +16537,7 @@
           e.preventDefault();
           const key = e.target.closest('.k'); if (!key) return;
           const v = key.dataset.k, a = document.activeElement;
-          const f = (a && a.tagName === 'INPUT' && ph.contains(a)) ? a : inp;
+          const f = (a && a.tagName === 'INPUT' && ph.contains(a)) ? a : (ph._kbdTarget || inp);   // nothing focused: the open chat's composer, else this field
           if (v === 'shift'){ k.classList.toggle('shift'); return; }
           if (v === 'num') return;
           if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
@@ -16532,6 +16585,7 @@
         modal.style.top = (floating ? 0 : stH) + 'px';
         body.style.paddingTop = (floating ? stH : 0) + 'px';
         wrap.classList.add('show');
+        ph.classList.add('chatOn'); ph._kbdTarget = inp;   // the keys stay up for as long as the chat is, focused or not, and type into the composer
         modal.getBoundingClientRect();        // lay it out at 0 first, so the fade has somewhere to start
         wrap.classList.add('on');
         inp.focus({ preventScroll: true });   // in the tap, so a device opens its keyboard
@@ -16541,6 +16595,7 @@
         if (!wrap.classList.contains('on')) return;
         stopStream(); inp.blur();
         wrap.classList.remove('on');
+        ph.classList.remove('chatOn'); ph._kbdTarget = null;
         setTimeout(() => { if (!wrap.classList.contains('on')) wrap.classList.remove('show'); }, 240);
       };
       ph._chat = { open, close };
@@ -23709,7 +23764,7 @@
     // raised it, which is the one with the focus.
     const kbTarget = () => {
       const a = document.activeElement;
-      return (a && a.tagName === 'INPUT' && a.closest('#phone')) ? a : input;
+      return (a && a.tagName === 'INPUT' && a.closest('#phone')) ? a : (phone && phone._kbdTarget) || input;   // nothing focused: the open chat's composer, else the search
     };
     kbd.addEventListener('pointerdown', e => {
       e.preventDefault();
