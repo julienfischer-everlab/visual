@@ -10139,31 +10139,32 @@ each screen's own dock lights the tab it IS. Plan, Services and More have
 no screen in the prototype, so a tap on them does nothing and the lit tab
 keeps saying where the reader is. The assistant's spark is unchanged.
 
-### 5.380 The spark grows into the assistant's card
+### 5.380 The spark grows into the assistant's sheet
 
 "On click the star button, the button should expand to be a large card +
 open the keyboard. We need this entry point for Everlab services in this
-card as bento. So: bento, AI field, keyboard." `aiSheet` builds, per
-phone, a dim and a card (`.aiWrap`/`.aiCard`) mounted on the frame. The
-card holds a head (spark, *Ask Everlab*, close), an *Everlab services*
-bento -- Telehealth and Check Symptoms wide on the first row, Med Certs,
-Pathology and Treatments on the second, each a line icon on a tinted
-plate -- and the Overview's chat field. On tap the card starts as the
-button (its rect measured, a translate + scale and a 50% radius), and
-opens to its own shape over .46s; the contents fade in once it has it. The
-field is focused on open, which raises the frame's keyboard (`mSearchOn`),
-and the card stands 12px above the keys (`bottom` set from the keyboard's
-height). The Overview phone had no keyboard, so it gets a clone of the
-Insights phone's, wired to type into its focused field. Close (X, dim,
-Escape, a page change) shrinks the card back to where the button was --
-its rect is kept from the open, since the keyboard hides the dock. Check:
-`aisheet.js` (both phones: card opens, keys type into the field, closes).
+card as bento." Then, against an Oura capture: "same pattern as this for
+the bottom star CTA -- a card that overlaps the bottom of the screen; the
+field placed first in the card, then the list of services below; on field
+click the list of services disappears and the keyboard appears" -- and
+"actually the star button should expand to a card, so a morph effect
+would be nice." So `aiSheet`, per phone: a dim and a sheet over the foot
+of the screen (`.aiCard`: rounded top, a handle, the Ask Everlab field,
+a rule, *Everlab services* as a bento -- Telehealth and Check Symptoms
+wide, then Med Certs, Pathology, Treatments -- and the home bar). On tap
+the sheet starts as the button (its rect measured, a translate + scale
+and a 50% radius) and opens to its place over .46s, the contents fading
+in once it has its shape; nothing is focused. Tapping the field folds
+the services and the home bar away and raises the frame's keyboard, the
+sheet standing on the keys (`typing`); letting the field go empty brings
+them back. The Overview phone had no keyboard, so it gets a clone of the
+Insights phone's, wired to type into its focused field. Close (dim,
+handle, Escape, a page change) shrinks the sheet back to where the button
+was. Check: `aisheet.js`.
 "Star button not start" came back once: the live artifact carried the
 code and a copy of that exact file opened the card under Chromium at
 every size, the full-screen entry and a touch tap included, so the page
-in hand was a cached older one; republished. The field's focus moved
-into the tap itself (a device browser opens its keyboard for a focus in
-the gesture, not for one a frame later).
+in hand was a cached older one; republished.
 
 ### 5.381 Overview: one title style, the chat under the centred greeting
 
@@ -10176,23 +10177,35 @@ section heads (`.ovsec`, was 16). The greeting is centred, and the chat
 field sits under it at 80% of the content column, centred (the desk's
 640px cap is gone). Check: `ovchat.js`.
 
-### 5.382 The Overview's field grows into the chat thread
+### 5.382 Ask, then the chat
 
-"On click, the field morphs to a full modal; keyboard appears" -- and,
-when the first cut sent it into the spark's services card: "no, that's
-only the view when the user clicks the bottom nav icon; the top field
-should merge smoothly to a full modal, see capture of the UI + keyboard".
-So `chatModal`, on the Overview phone: the Ask Everlab pill under the
-greeting stretches (translate + scale from its measured rect, pill radius
-to none, .5s) into a full-screen chat under the status strip, standing on
-the keyboard -- a head (menu, *Protein intake*, more, close), the thread
-(the reader's question in a bubble with its time and copy/edit, *Thinking
-· Looking at your records* pulsing, then Eva's three paragraphs streaming
-in word by word after a 900ms beat) and the composer at the foot (*Ask
-Eva …*, +, *Eva ⌄*, send), its field focused in the tap so the keyboard
-rises. Close (X, Escape, a page change) shrinks it back into the pill. The
-dock's spark keeps the services card (5.380); `aiSheet.open()` still
-takes a source element, unused for now. Check: `chat.js`.
+"On click, the field morphs to a full modal; keyboard appears" -- then,
+against a chat-thread capture: "no, that's only the view when the user
+clicks the bottom nav icon; the top field should merge smoothly to a full
+modal" -- then: "on field tap, keyboard appears; can type, and when
+submitted, overlapped by the full chat experience." So, on both phones
+(`chatModal`, one chat each, `ph._chat.open(from, question)`):
+
+- The Overview's pill under the greeting: a tap raises the frame's
+  keyboard and the words go into the pill; Enter, the send disc or the
+  keyboard's search key (now `everlab:go` from every drawn keyboard, then
+  the blur) hands them to the chat.
+- The assistant sheet's field (5.380): the same -- typing folds the
+  services away; submit opens the chat over the sheet and the sheet steps
+  away under it.
+- The chat grows out of the field it came from (translate + scale from its
+  rect, pill radius to none, .5s) into a full screen under the status
+  strip, standing on the keyboard: a head (menu, the question as title --
+  *Protein intake* for the default --, more, close), the thread (the
+  question in a bubble with its time and copy/edit, *Thinking · Looking at
+  your records* pulsing, then Eva's three paragraphs streaming in word by
+  word after a 900ms beat -- the protein answer whatever was asked, this
+  being a prototype), and the composer (*Ask Eva …*, +, *Eva ⌄*, send)
+  focused so the keyboard stays up. Close shrinks it back into the field.
+
+Check: `chat.js` (pill tap → keyboard only; typed "hi" → search key →
+chat with "hi" in the bubble, 105 words streamed; the sheet's field → Enter
+→ chat, sheet gone).
 
 ---
 

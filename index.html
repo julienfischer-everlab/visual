@@ -2465,35 +2465,32 @@
   body.light .mKbd.shift .k.shift{background:#fff;}
   body.light .mKbd .k.go{background:#0a7aff;color:#fff;}
   body.light .mKbd .kHome i{background:rgba(0,0,0,.24);}
-  /* ---- The assistant's card, grown from the dock's spark ("the button should
-     expand to be a large card + open the keyboard"): a dim over the page, and
-     a card standing on the keyboard with the services as a bento (two wide
-     tiles, then three), the field under them. The card's transform is set by
-     the script from the button's measured place; the CSS only carries it. */
+  /* ---- The assistant's card, grown from the dock's spark. A sheet over the
+     foot of the screen ("a card that overlaps the bottom of the screen"): a
+     handle, the field first, a rule, then the services as a bento (two wide
+     tiles, then three). It grows out of the star -- the script sets the
+     start transform from the button's measured place; the CSS carries it --
+     and with the field tapped the services go and the card stands on the
+     keyboard. */
   .aiWrap{position:absolute;inset:0;z-index:6;display:none;}
   .aiWrap.show{display:block;}
   .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .35s ease;}
   .aiWrap.on .aiDim{opacity:1;}
   .aiCard{
-    position:absolute;left:12px;right:12px;bottom:12px;
-    padding:16px 16px 14px;border-radius:28px;background:#1b1b1a;
-    box-shadow:0 30px 60px -24px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.05);
+    position:absolute;left:0;right:0;bottom:0;
+    padding:10px 16px 0;border-radius:26px 26px 0 0;background:#1b1b1a;
+    box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);
     transform-origin:center;will-change:transform;
-    transition:transform .46s cubic-bezier(.2,.8,.2,1),border-radius .46s cubic-bezier(.2,.8,.2,1);
+    transition:transform .46s cubic-bezier(.2,.8,.2,1),border-radius .46s cubic-bezier(.2,.8,.2,1),bottom .3s ease;
   }
   .aiWrap:not(.on) .aiCard{border-radius:50%;}      /* the button's disc, until it opens */
   .aiBody{opacity:0;transition:opacity .22s ease;}
   .aiWrap.on .aiBody{opacity:1;transition-delay:.18s;}   /* the contents arrive once the card has its shape */
-  .aiHead{display:flex;align-items:center;gap:10px;margin:0 0 14px;}
-  .aiSpark{display:flex;color:#ececec;} .aiSpark svg{width:18px;height:18px;}
-  .aiHead h3{flex:1;margin:0;font-size:18px;font-weight:500;letter-spacing:-.2px;color:#ececec;}
-  .aiX{
-    flex:none;width:34px;height:34px;border:0;border-radius:50%;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);color:#ececec;
-  }
-  .aiX svg{width:12px;height:12px;}
-  .aiEyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;margin:0 0 10px 2px;}
-  .aiBento{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:0 0 14px;}
+  .aiHandle{width:44px;height:5px;border-radius:3px;margin:0 auto 16px;background:rgba(255,255,255,.22);cursor:pointer;}
+  .aiCard .aiField, #phone2 .aiCard .aiField{width:100%;height:56px;}   /* the card's field fills the card; the Overview's 80% is the pill's, not this one's (the phone's id-scoped rule needs the id here too) */
+  .aiRule{height:1px;margin:16px 0;background:rgba(255,255,255,.08);}
+  .aiEyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;margin:0 0 12px 2px;}
+  .aiBento{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
   .aiTile{
     grid-column:span 2;height:100px;border:0;border-radius:18px;cursor:pointer;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
@@ -2504,17 +2501,22 @@
   .aiTile:hover{background:rgba(255,255,255,.1);}
   .aiIc{display:flex;width:44px;height:44px;border-radius:14px;align-items:center;justify-content:center;background:rgba(255,255,255,.07);color:#e6a96b;}
   .aiIc svg{width:24px;height:24px;}
-  .aiCard .aiField, #phone2 .aiCard .aiField{width:100%;height:52px;}   /* the card's field fills the card; the Overview's 80% is the pill's, not this one's (the phone's id-scoped rule needs the id here too) */
-  body.light .aiCard{background:#f6ece6;box-shadow:0 30px 60px -24px rgba(46,31,26,.45),0 0 0 1px rgba(46,31,26,.08);}
-  body.light .aiSpark, body.light .aiHead h3, body.light .aiTile{color:#2e1f1a;}
-  body.light .aiX{background:rgba(46,31,26,.08);color:#2e1f1a;}
-  body.light .aiTile{background:rgba(46,31,26,.05);} body.light .aiTile:hover{background:rgba(46,31,26,.09);}
+  .aiCard .shHome{margin-top:18px;}
+  /* typing: the services fold away and the home bar goes (the keyboard draws
+     its own); the field alone stands on the keys */
+  .aiWrap.typing .aiServices, .aiWrap.typing .shHome{display:none;}
+  .aiWrap.typing .aiCard{padding-bottom:16px;}
+  body.light .aiCard{background:#f6ece6;box-shadow:0 -20px 60px -30px rgba(46,31,26,.5),0 0 0 1px rgba(46,31,26,.08);}
+  body.light .aiTile{color:#2e1f1a;background:rgba(46,31,26,.05);} body.light .aiTile:hover{background:rgba(46,31,26,.09);}
   body.light .aiIc{background:#fff;color:#b8785e;}
   body.light .aiEyebrow{color:#7d6b58;}
+  body.light .aiHandle{background:rgba(46,31,26,.22);}
+  body.light .aiRule{background:rgba(46,31,26,.1);}
   /* ---- The chat thread, grown from the Overview's field ("the top field
      should merge smoothly to a full modal"): full screen under the status
      strip, standing on the keyboard; a head, the thread, the composer. */
-  .chWrap{position:absolute;inset:0;z-index:6;display:none;}
+  .chWrap{position:absolute;inset:0;z-index:8;display:none;}   /* over the sticky greeting (7); it never covers the keyboard, which stands under it */
+  #phone2.aiOpen .mtitle{z-index:1;}   /* the services card's dim covers the greeting too, while the card is open */
   .chWrap.show{display:block;}
   .chModal{
     position:absolute;left:0;right:0;top:0;bottom:0;background:#121211;overflow:hidden;
@@ -16188,19 +16190,26 @@
     ['phone', 'phone2'].forEach(id => {
       const ph = document.getElementById(id); if (!ph) return;
       const btn = ph.querySelector('.mChat'); if (!btn) return;
+      // The sheet ("same pattern as this: a card that overlaps the bottom of
+      // the screen, no morph or shape change in the star CTA; the field first,
+      // then the list of services below"): a handle, the field, a rule, the
+      // services as a bento. It slides up from the bottom edge over a dim.
       const wrap = document.createElement('div');
       wrap.className = 'aiWrap';
       wrap.innerHTML = '<div class="aiDim"></div>' +
         '<div class="aiCard" role="dialog" aria-modal="true" aria-label="Ask Everlab"><div class="aiBody">' +
-          '<div class="aiHead"><span class="aiSpark">' + SPARK + '</span><h3>Ask Everlab</h3>' +
-            '<button class="aiX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>' +
-          '<div class="aiEyebrow">Everlab services</div>' +
-          '<div class="aiBento">' + SERVICES.map(s =>
-            '<button class="aiTile' + (s.wide ? ' wide' : '') + '" type="button"><span class="aiIc">' + IC[s.ic] + '</span><span>' + s.l + '</span></button>').join('') + '</div>' +
+          '<div class="aiHandle" aria-hidden="true"></div>' +
           '<div class="ovChatBox aiField">' + SPARK.replace('<svg ', '<svg class="ovChatSpark" ') +
             '<input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Everlab">' +
             '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
           '</div>' +
+          '<div class="aiServices">' +
+            '<div class="aiRule"></div>' +
+            '<div class="aiEyebrow">Everlab services</div>' +
+            '<div class="aiBento">' + SERVICES.map(s =>
+              '<button class="aiTile' + (s.wide ? ' wide' : '') + '" type="button"><span class="aiIc">' + IC[s.ic] + '</span><span>' + s.l + '</span></button>').join('') + '</div>' +
+          '</div>' +
+          '<div class="shHome" aria-hidden="true"></div>' +
         '</div></div>';
       ph.appendChild(wrap);
       const card = wrap.querySelector('.aiCard'), inp = wrap.querySelector('input');
@@ -16218,20 +16227,46 @@
           const f = (a && a.tagName === 'INPUT' && ph.contains(a)) ? a : inp;
           if (v === 'shift'){ k.classList.toggle('shift'); return; }
           if (v === 'num') return;
-          if (v === 'go'){ f.blur(); return; }
+          if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
           if (v === 'del') f.value = f.value.slice(0, -1);
           else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
           f.dispatchEvent(new Event('input', { bubbles: true }));
         });
         return k;
       };
-      // the field raises and drops the keyboard as the search fields do
-      inp.addEventListener('focus', () => document.body.classList.add('mSearchOn'));
-      inp.addEventListener('blur', () => document.body.classList.remove('mSearchOn'));
-      inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
-      // where the button is, kept from the open: the dock may be off the page
-      // by the time the card closes (the keyboard hides it), and the card
-      // shrinks back to where the button was
+      // Submit -- Enter, the send disc, the keyboard's search key -- hands the
+      // question to the full chat ("can type, and when submitted, overlapped
+      // by the full chat experience"): the thread opens over this sheet with
+      // the words as the reader's message, and the sheet steps away under it.
+      const submit = () => {
+        const q = inp.value.trim();
+        if (!ph._chat) return;
+        ph._chat.open(card, q);
+        inp.value = '';
+        ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show'); card.style.transform = ''; card.style.bottom = '';
+      };
+      inp.addEventListener('everlab:go', submit);
+      wrap.querySelector('.aiField .ovChatGo').addEventListener('click', e => { e.preventDefault(); submit(); });
+      // Typing: the field is tapped, the services go and the keyboard comes,
+      // the card standing on the keys ("on field click the list of services
+      // disappears and the keyboard appears"). Let go empty, they come back.
+      inp.addEventListener('focus', () => {
+        const k = keyboard();
+        wrap.classList.add('typing');
+        card.style.bottom = (k ? k.offsetHeight : 0) + 'px';
+        document.body.classList.add('mSearchOn');
+      });
+      inp.addEventListener('blur', () => {
+        wrap.classList.remove('typing');
+        card.style.bottom = '';
+        document.body.classList.remove('mSearchOn');
+      });
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submit(); } });
+      // The card grows out of the star ("the star button should expand to a
+      // card, so a morph effect would be nice"): it starts as the button --
+      // its rect, measured, as a translate + scale and a round radius -- and
+      // opens to its own place at the foot of the screen; close runs it back.
+      // The button's rect is kept from the open: the dock may be gone by then.
       let from = null;
       const fromBtn = () => {
         const B = from || btn.getBoundingClientRect(), C = card.getBoundingClientRect();
@@ -16239,47 +16274,44 @@
         return 'translate(' + ((B.left + B.width / 2) - (C.left + C.width / 2)) + 'px,' + ((B.top + B.height / 2) - (C.top + C.height / 2)) + 'px) ' +
                'scale(' + (B.width / C.width) + ',' + (B.height / C.height) + ')';
       };
-      const open = src => {
-        from = (src || btn).getBoundingClientRect();   // the card grows from whatever was tapped
-        const k = keyboard();
-        card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // the card stands on the keys
+      const open = () => {
+        if (wrap.classList.contains('on')) return;
+        from = btn.getBoundingClientRect();
+        keyboard();   // built now, so its height is there to measure when the field is tapped
         wrap.classList.add('show');
+        ph.classList.add('aiOpen');   // the sticky greeting steps under the dim
         card.style.transition = 'none';
         card.style.transform = fromBtn();
         card.getBoundingClientRect();   // the start is laid out before the transition begins
         card.style.transition = '';
-        // the focus inside the tap itself: a device browser opens its keyboard
-        // for a focus made in the user's gesture, not for one a frame later
-        inp.focus({ preventScroll: true });
         requestAnimationFrame(() => { wrap.classList.add('on'); card.style.transform = ''; });
       };
       const close = () => {
         if (!wrap.classList.contains('on')) return;
         inp.blur();
+        ph.classList.remove('aiOpen');
         card.style.transform = fromBtn();
         wrap.classList.remove('on');
         setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); card.style.transform = ''; } }, 480);
       };
       btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); open(); });
-      // (the Overview's field is NOT a way into this card: it grows into the
-      // chat thread instead -- see chatModal below)
       wrap.querySelector('.aiDim').addEventListener('click', close);
-      wrap.querySelector('.aiX').addEventListener('click', close);
+      wrap.querySelector('.aiHandle').addEventListener('click', close);
       addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
       document.addEventListener('everlab:mode', close);
     });
   })();
-  // ---- the chat thread, grown from the Overview's field -----------------------
-  // "The top field should merge smoothly to a full modal": on the Overview
-  // phone the Ask Everlab pill under the greeting stretches into a full-screen
-  // chat -- head (menu, title, more, close), the thread (the reader's
-  // question with its time and copy/edit, Eva thinking over the records, her
-  // answer streaming in) and the composer at the foot with the keyboard up
-  // under it. Close shrinks it back into the pill. The dock's spark keeps the
-  // services card; this is the conversation itself.
+  // ---- the chat thread -----------------------------------------------------
+  // "On field tap, keyboard appears; can type, and when submitted, overlapped
+  // by the full chat experience." One chat per phone, opened by whichever field
+  // the question was typed in -- the Overview's pill under the greeting, or the
+  // assistant sheet's field -- and grown out of that field ("the top field
+  // should merge smoothly to a full modal"): a head (menu, title, more, close),
+  // the thread (the question in a bubble with its time and copy/edit, Eva
+  // thinking over the records, her answer streaming in) and the composer at
+  // the foot with the keyboard up under it. Close shrinks it back into the
+  // field it came from.
   (function chatModal(){
-    const ph = document.getElementById('phone2'); if (!ph) return;
-    const pill = ph.querySelector('.ovChat .ovChatBox'); if (!pill) return;
     const ICON = {
       menu: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h12M4 10h12M4 14h12"/></svg>',
       more: '<svg viewBox="0 0 20 20" fill="currentColor"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg>',
@@ -16290,107 +16322,127 @@
       chev: '<svg viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 1.5 6 6.5 11 1.5"/></svg>',
       up: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg>'
     };
+    const DEFAULT_Q = 'How much protein should I actually be eating?';
     const ANSWER = [
       'Good one to ask. Your last body composition scan put your lean mass at 54 kg, which is what we’d use to set a target rather than your total weight. The 0.8 g per kg figure most people know was set as the floor to avoid deficiency, not the level that keeps muscle on as you age.',
       'Current guidance for active adults sits higher, around 1.2 to 1.6 g per kg, which for you works out to roughly 120 to 140 g a day, spread across meals rather than loaded into dinner.',
       'Your dietitian can build this into your nutrition plan if you’d like to go further.'
     ];
-    const wrap = document.createElement('div');
-    wrap.className = 'chWrap';
-    wrap.innerHTML = '<div class="chModal" role="dialog" aria-modal="true" aria-label="Chat with Eva"><div class="chBody">' +
-      '<div class="chHead"><button class="chIcon" type="button" aria-label="Menu">' + ICON.menu + '</button><h3>Protein intake</h3>' +
-        '<button class="chIcon" type="button" aria-label="More">' + ICON.more + '</button><button class="chIcon chX" type="button" aria-label="Close">' + ICON.x + '</button></div>' +
-      '<div class="chThread">' +
-        '<div class="chUser"><div class="chBubble">How much protein should I actually be eating?</div>' +
-          '<div class="chMeta"><span>26 Jun, 3:50 PM</span><button type="button" aria-label="Copy">' + ICON.copy + '</button><button type="button" aria-label="Edit">' + ICON.edit + '</button></div></div>' +
-        '<div class="chThink"><span class="chDots">' + ICON.dots + '</span><b>Thinking</b><i>&middot;</i><span class="chStep">Looking at your records</span></div>' +
-        '<div class="chAns">' + ANSWER.map(() => '<p></p>').join('') + '</div>' +
-      '</div>' +
-      '<div class="chComposer"><input type="text" placeholder="Ask Eva &hellip;" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Eva">' +
-        '<div class="chRow"><button class="chPlus" type="button" aria-label="Add">+</button><span class="chSpace"></span>' +
-        '<button class="chModel" type="button">Eva ' + ICON.chev + '</button><button class="chSend" type="button" aria-label="Send">' + ICON.up + '</button></div></div>' +
-    '</div></div>';
-    ph.appendChild(wrap);
-    const modal = wrap.querySelector('.chModal'), inp = wrap.querySelector('.chComposer input'), paras = [].slice.call(wrap.querySelectorAll('.chAns p'));
-    const think = wrap.querySelector('.chThink');
-    // the keyboard under the composer, as the assistant's card raises it: the
-    // Overview phone's copy exists once the card has been opened; make it now
-    const keyboard = () => {
-      let k = ph.querySelector('.mKbd'); if (k) return k;
-      const src = document.getElementById('mKbd'); if (!src) return null;
-      k = src.cloneNode(true); k.removeAttribute('id'); ph.appendChild(k);
-      k.addEventListener('pointerdown', e => {
-        e.preventDefault();
-        const key = e.target.closest('.k'); if (!key) return;
-        const v = key.dataset.k, a = document.activeElement;
-        const f = (a && a.tagName === 'INPUT' && ph.contains(a)) ? a : inp;
-        if (v === 'shift'){ k.classList.toggle('shift'); return; }
-        if (v === 'num') return;
-        if (v === 'go'){ f.blur(); return; }
-        if (v === 'del') f.value = f.value.slice(0, -1);
-        else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
-        f.dispatchEvent(new Event('input', { bubbles: true }));
-      });
-      return k;
-    };
-    inp.addEventListener('focus', () => document.body.classList.add('mSearchOn'));
-    inp.addEventListener('blur', () => document.body.classList.remove('mSearchOn'));
-    inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
-    // the answer arrives as Eva writes it: a beat of thinking, then the words
-    let streamT = [];
-    const stopStream = () => { streamT.forEach(clearTimeout); streamT = []; };
-    const stream = () => {
-      stopStream();
-      paras.forEach(p => { p.textContent = ''; });
-      think.classList.add('live');
-      let t = 900;   // the thinking beat
-      ANSWER.forEach((text, i) => {
-        const words = text.split(' ');
-        words.forEach((w, j) => {
-          streamT.push(setTimeout(() => {
-            if (i === 0 && j === 0) think.classList.remove('live');
-            paras[i].textContent += (j ? ' ' : '') + w;
-          }, t));
-          t += 22;
+    const now = () => { const d = new Date(); const h = d.getHours(), m = d.getMinutes(); return d.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()] + ', ' + ((h % 12) || 12) + ':' + (m < 10 ? '0' : '') + m + ' ' + (h < 12 ? 'AM' : 'PM'); };
+    ['phone', 'phone2'].forEach(id => {
+      const ph = document.getElementById(id); if (!ph) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'chWrap';
+      wrap.innerHTML = '<div class="chModal" role="dialog" aria-modal="true" aria-label="Chat with Eva"><div class="chBody">' +
+        '<div class="chHead"><button class="chIcon" type="button" aria-label="Menu">' + ICON.menu + '</button><h3>Protein intake</h3>' +
+          '<button class="chIcon" type="button" aria-label="More">' + ICON.more + '</button><button class="chIcon chX" type="button" aria-label="Close">' + ICON.x + '</button></div>' +
+        '<div class="chThread">' +
+          '<div class="chUser"><div class="chBubble"></div>' +
+            '<div class="chMeta"><span class="chTime"></span><button type="button" aria-label="Copy">' + ICON.copy + '</button><button type="button" aria-label="Edit">' + ICON.edit + '</button></div></div>' +
+          '<div class="chThink"><span class="chDots">' + ICON.dots + '</span><b>Thinking</b><i>&middot;</i><span class="chStep">Looking at your records</span></div>' +
+          '<div class="chAns">' + ANSWER.map(() => '<p></p>').join('') + '</div>' +
+        '</div>' +
+        '<div class="chComposer"><input type="text" placeholder="Ask Eva &hellip;" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Eva">' +
+          '<div class="chRow"><button class="chPlus" type="button" aria-label="Add">+</button><span class="chSpace"></span>' +
+          '<button class="chModel" type="button">Eva ' + ICON.chev + '</button><button class="chSend" type="button" aria-label="Send">' + ICON.up + '</button></div></div>' +
+      '</div></div>';
+      ph.appendChild(wrap);
+      const modal = wrap.querySelector('.chModal'), inp = wrap.querySelector('.chComposer input'), paras = [].slice.call(wrap.querySelectorAll('.chAns p'));
+      const think = wrap.querySelector('.chThink'), bubble = wrap.querySelector('.chBubble'), title = wrap.querySelector('.chHead h3'), time = wrap.querySelector('.chTime');
+      // the frame's keyboard under the composer; the phone that has none gets
+      // a copy of the Insights phone's, wired the same (the sheet does too --
+      // whichever asks first builds it)
+      const keyboard = () => {
+        let k = ph.querySelector('.mKbd'); if (k) return k;
+        const src = document.getElementById('mKbd'); if (!src) return null;
+        k = src.cloneNode(true); k.removeAttribute('id'); ph.appendChild(k);
+        k.addEventListener('pointerdown', e => {
+          e.preventDefault();
+          const key = e.target.closest('.k'); if (!key) return;
+          const v = key.dataset.k, a = document.activeElement;
+          const f = (a && a.tagName === 'INPUT' && ph.contains(a)) ? a : inp;
+          if (v === 'shift'){ k.classList.toggle('shift'); return; }
+          if (v === 'num') return;
+          if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
+          if (v === 'del') f.value = f.value.slice(0, -1);
+          else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
+          f.dispatchEvent(new Event('input', { bubbles: true }));
         });
-        t += 180;
-      });
-    };
-    let from = null;
-    const fromPill = () => {
-      const B = from || pill.getBoundingClientRect(), C = modal.getBoundingClientRect();
-      if (!C.width || !B.width) return '';
-      return 'translate(' + ((B.left + B.width / 2) - (C.left + C.width / 2)) + 'px,' + ((B.top + B.height / 2) - (C.top + C.height / 2)) + 'px) ' +
-             'scale(' + (B.width / C.width) + ',' + (B.height / C.height) + ')';
-    };
-    const open = () => {
-      if (wrap.classList.contains('on')) return;
-      from = pill.getBoundingClientRect();
-      const k = keyboard(), st = ph.querySelector('.mstatus');
-      modal.style.bottom = (k ? k.offsetHeight : 0) + 'px';           // the composer stands on the keys
-      modal.style.top = (st ? st.offsetHeight : 0) + 'px';             // under the status strip
-      wrap.classList.add('show');
-      modal.style.transition = 'none';
-      modal.style.transform = fromPill();
-      modal.getBoundingClientRect();
-      modal.style.transition = '';
-      inp.focus({ preventScroll: true });   // in the tap, so a device opens its keyboard
-      requestAnimationFrame(() => { wrap.classList.add('on'); modal.style.transform = ''; });
-      stream();
-    };
-    const close = () => {
-      if (!wrap.classList.contains('on')) return;
-      stopStream(); inp.blur();
-      modal.style.transform = fromPill();
-      wrap.classList.remove('on');
-      setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); modal.style.transform = ''; } }, 520);
-    };
-    pill.addEventListener('click', e => { e.preventDefault(); open(); });
-    const pin = pill.querySelector('input');
-    if (pin) pin.addEventListener('focus', open);
-    wrap.querySelector('.chX').addEventListener('click', close);
-    addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-    document.addEventListener('everlab:mode', close);
+        return k;
+      };
+      inp.addEventListener('focus', () => document.body.classList.add('mSearchOn'));
+      inp.addEventListener('blur', () => document.body.classList.remove('mSearchOn'));
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
+      // the answer arrives as Eva writes it: a beat of thinking, then the words
+      let streamT = [];
+      const stopStream = () => { streamT.forEach(clearTimeout); streamT = []; };
+      const stream = () => {
+        stopStream();
+        paras.forEach(p => { p.textContent = ''; });
+        think.classList.add('live');
+        let t = 900;   // the thinking beat
+        ANSWER.forEach((text, i) => {
+          text.split(' ').forEach((w, j) => {
+            streamT.push(setTimeout(() => {
+              if (i === 0 && j === 0) think.classList.remove('live');
+              paras[i].textContent += (j ? ' ' : '') + w;
+            }, t));
+            t += 22;
+          });
+          t += 180;
+        });
+      };
+      let from = null;
+      const fromRect = () => {
+        const B = from, C = modal.getBoundingClientRect();
+        if (!B || !C.width || !B.width) return '';
+        return 'translate(' + ((B.left + B.width / 2) - (C.left + C.width / 2)) + 'px,' + ((B.top + B.height / 2) - (C.top + C.height / 2)) + 'px) ' +
+               'scale(' + (B.width / C.width) + ',' + (B.height / C.height) + ')';
+      };
+      const open = (src, question) => {
+        if (wrap.classList.contains('on')) return;
+        from = (src || ph.querySelector('.mChat')).getBoundingClientRect();
+        const q = (question || '').trim() || DEFAULT_Q;
+        bubble.textContent = q;
+        title.textContent = q === DEFAULT_Q ? 'Protein intake' : q;
+        time.textContent = q === DEFAULT_Q ? '26 Jun, 3:50 PM' : now();
+        const k = keyboard(), st = ph.querySelector('.mstatus');
+        modal.style.bottom = (k ? k.offsetHeight : 0) + 'px';           // the composer stands on the keys
+        modal.style.top = (st ? st.offsetHeight : 0) + 'px';             // under the status strip
+        wrap.classList.add('show');
+        modal.style.transition = 'none';
+        modal.style.transform = fromRect();
+        modal.getBoundingClientRect();
+        modal.style.transition = '';
+        inp.focus({ preventScroll: true });   // in the tap, so a device opens its keyboard
+        requestAnimationFrame(() => { wrap.classList.add('on'); modal.style.transform = ''; });
+        stream();
+      };
+      const close = () => {
+        if (!wrap.classList.contains('on')) return;
+        stopStream(); inp.blur();
+        modal.style.transform = fromRect();
+        wrap.classList.remove('on');
+        setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); modal.style.transform = ''; } }, 520);
+      };
+      ph._chat = { open, close };
+      wrap.querySelector('.chX').addEventListener('click', close);
+      addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+      document.addEventListener('everlab:mode', close);
+      // The Overview's pill under the greeting: a tap raises the keyboard and
+      // the words go in there; Enter, the send disc or the keyboard's search
+      // key hands them to the chat, which grows out of the pill.
+      const pill = ph.querySelector('.ovChat .ovChatBox');
+      if (pill){
+        const pin = pill.querySelector('input'), go = pill.querySelector('.ovChatGo');
+        pin.addEventListener('focus', () => { keyboard(); document.body.classList.add('mSearchOn'); });
+        pin.addEventListener('blur', () => document.body.classList.remove('mSearchOn'));
+        const submit = () => { const q = pin.value; pin.value = ''; open(pill, q); };
+        pin.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submit(); } });
+        pin.addEventListener('everlab:go', submit);
+        if (go) go.addEventListener('click', e => { e.preventDefault(); submit(); });
+      }
+    });
   })();
 
   // ---- Teaser video: the storyboard page ----
@@ -23519,7 +23571,9 @@
       const v = k.dataset.k, f = kbTarget();
       if (v === 'shift'){ kbd.classList.toggle('shift'); return; }
       if (v === 'num') return;
-      if (v === 'go'){ f.blur(); return; }
+      // the search key: a submit for the fields that take one (the assistant's
+      // -- everlab:go), and the keyboard drops for all of them
+      if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
       if (v === 'del') f.value = f.value.slice(0, -1);
       else { f.value += kbd.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; kbd.classList.remove('shift'); }
       f.dispatchEvent(new Event('input', { bubbles: true }));
