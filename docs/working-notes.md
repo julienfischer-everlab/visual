@@ -10399,9 +10399,10 @@ consult. A chip is the question asked: on pointerdown, so the field keeps
 its focus through the hand-off, the words go into the field and submit.
 
 "Put the services below the h1 on Overview, in a mini way." The same five
-services, as a row of small pills under the greeting (`.ovSvc`): the glyph
-at 18 and the label at 13/500 on a 36px pill at 6% white, scrolling
-sideways. The greeting gives up 2px of its bottom padding to them.
+services under the greeting (`.ovSvc`), first as a sideways row of pills,
+then -- "this bento, 2x per row" -- as a two-column grid of 48px pills at 6%
+white, the glyph at 20 and the label at 14/500, the fifth taking the last
+row alone. The greeting gives up 2px of its bottom padding to them.
 
 ---
 
