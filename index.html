@@ -2488,7 +2488,21 @@
   .aiBody{opacity:0;transition:opacity .22s ease;}
   .aiWrap.on .aiBody{opacity:1;transition-delay:.18s;}   /* the contents arrive once the card has its shape */
   .aiHandle{width:44px;height:5px;border-radius:3px;margin:0 auto 16px;background:rgba(255,255,255,.22);cursor:pointer;}
-  .aiCard .aiField, #phone2 .aiCard .aiField{width:100%;height:56px;}   /* the card's field fills the card; the Overview's 80% is the pill's, not this one's (the phone's id-scoped rule needs the id here too) */
+  .aiRowTop{display:flex;align-items:center;gap:10px;}
+  .aiCard .aiField, #phone2 .aiCard .aiField{
+    flex:1 1 auto;width:auto;min-width:0;height:56px;
+    box-shadow:none;   /* no ring on the card's field ("remove the border on the AI field") -- the plate alone */
+  }
+  .aiCard .aiField:focus-within, #phone2 .aiCard .aiField:focus-within{box-shadow:none;background:rgba(255,255,255,.09);}
+  .aiX{
+    flex:none;width:56px;height:56px;border:0;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);color:#ececec;
+    transition:background .16s ease;
+  }
+  .aiX:hover{background:rgba(255,255,255,.14);}
+  .aiX svg{width:14px;height:14px;}
+  body.light .aiX{background:rgba(46,31,26,.08);color:#2e1f1a;}
+  body.light .aiCard .aiField:focus-within{box-shadow:none;background:rgba(46,31,26,.08);}
   .aiRule{height:1px;margin:16px 0;background:rgba(255,255,255,.08);}
   .aiEyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;margin:0 0 12px 2px;}
   .aiBento{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
@@ -16205,9 +16219,14 @@
       wrap.innerHTML = '<div class="aiDim"></div>' +
         '<div class="aiCard" role="dialog" aria-modal="true" aria-label="Ask Everlab"><div class="aiBody">' +
           '<div class="aiHandle" aria-hidden="true"></div>' +
-          '<div class="ovChatBox aiField">' + SPARK.replace('<svg ', '<svg class="ovChatSpark" ') +
-            '<input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Everlab">' +
-            '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
+          // the field, and beside it the cross that dismisses the card back
+          // to the screen ("add a cross top right next to the AI field")
+          '<div class="aiRowTop">' +
+            '<div class="ovChatBox aiField">' + SPARK.replace('<svg ', '<svg class="ovChatSpark" ') +
+              '<input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Everlab">' +
+              '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
+            '</div>' +
+            '<button class="aiX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>' +
           '</div>' +
           // the services (and the home bar under them) in a block that folds:
           // a grid row going from 1fr to 0fr, so its height animates from
@@ -16306,6 +16325,7 @@
       btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); open(); });
       wrap.querySelector('.aiDim').addEventListener('click', close);
       wrap.querySelector('.aiHandle').addEventListener('click', close);
+      wrap.querySelector('.aiX').addEventListener('click', e => { e.preventDefault(); close(); });
       addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
       document.addEventListener('everlab:mode', close);
     });

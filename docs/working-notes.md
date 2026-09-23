@@ -10219,6 +10219,17 @@ after a tap: card 414 → 153 → 108 → 103px over 300ms as the keys rise
 (807 → 594 → 557 → 553), and back the same way on blur. Before, the
 services went in one frame and the card jumped.
 
+### 5.384 A cross beside the sheet's field, and no ring on it
+
+"Add a cross top right next to the AI field to dismiss the card and go
+back to the initial screen. Also remove the border on the AI field." The
+sheet's field row is the field and, beside it, a 56px disc with a cross
+(`.aiX`) that runs the close -- the card shrinks back into the star,
+keyboard down if it was up. The card's field drops its inset ring at rest
+and under focus (the plate alone, a shade brighter when focused); the
+Overview's pill keeps its ring, being a field on the page rather than in a
+card.
+
 ---
 
 ## 6. Open items
