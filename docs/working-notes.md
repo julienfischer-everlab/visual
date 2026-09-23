@@ -10296,6 +10296,17 @@ against the greeting's 500; it keeps its grey and takes the weight. Then
 "align left" and "+8px margin top": the greeting sits on the cards' 13px
 column, 22px under the bar instead of 14.
 
+### 5.388 The bento, restyled
+
+"Bento, this style" -- a capture of three grey slabs with big corners, a
+bare glyph top-left and a two-line label under it, left. The sheet's tiles
+take it: 24px corners, an 8% white plate, 16px padding, the glyph 26px in
+the page's ink with no disc and no accent, the label 15/400 on up to two
+lines at the foot. Icon and label sit at the tile's two ends
+(`justify-content:space-between`) on a 120px minimum, so every tile in a
+row shares the glyph line and the baseline. The 3/6 + 2/6 spans stay: two
+wide tiles, then three.
+
 ---
 
 ## 6. Open items
