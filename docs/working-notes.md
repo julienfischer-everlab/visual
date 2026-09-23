@@ -10110,6 +10110,26 @@ of the page (260px each side at 1600); the phone gives it the screen's
 width. Focus lights the ring and fills the send disc. Light mode carries
 its own colours. Check: `ovchat.js`.
 
+### 5.377 The rail's arrows, 8px right
+
+"Push right by 8px the arrow group CTA." The Overview's "Your next
+actions" header carries the rail's prev/next discs at its right, flush
+with the rail's edge; they now stand 8px past it (`margin-right:-8px` on
+`.dvSec .nav`), so the disc's round edge rather than its box lines up with
+the cards below.
+
+### 5.378 The fade only over content
+
+"The gradient on sticky should only occur when the bar overlaps the
+content, not when the sticky is at position 0." `.stuck` -- which turns
+on the fade under the desk's blocks (`dStick`) and the phone's bars
+(`setStuck`) -- meant "the bar has reached the top". With the page resting
+at the pin that is true while the list starts exactly where the bar ends,
+so the fade blended into nothing and greyed the first group header. It
+now means "content is passing under the bar": the first laid-out thing
+after the bar has its top above the bar's bottom. At the pin, off; a pixel
+further, on. Check: `fadeover.js`.
+
 ---
 
 ## 6. Open items

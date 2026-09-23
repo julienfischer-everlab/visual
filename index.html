@@ -5521,7 +5521,7 @@
     background:#e6a96b;color:#241505;border-radius:7px;padding:1px 7px;
     font-size:11px;font-weight:500;
   }
-  .dvSec .nav{display:flex;gap:6px;}
+  .dvSec .nav{display:flex;gap:6px;margin-right:-8px;}   /* the arrows' discs overhang the rail's edge by 8 ("push right by 8px the arrow group CTA") */
   .dvSec .nav button{
     width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;
     background:rgba(255,255,255,.06);color:#c9c9c9;font:inherit;font-size:12px;
@@ -20466,12 +20466,21 @@
     // either IS stuck, its own z-index puts it under them anyway).
     const blks = ['dFilters', 'dMedBar', 'dTopFade'].map(id => document.getElementById(id)).filter(Boolean);
     if (!sc || !blks.length) return;
+    // stuck means content is passing under the block, not that the block has
+    // reached the top: the fade is a blend into what is behind, and with the
+    // page resting at the pin the list starts where the block ends and there
+    // is nothing behind it ("the gradient on sticky should only occur when
+    // the bar overlaps the content, not when the sticky is at position 0")
+    const overlaps = blk => {
+      let next = blk.nextElementSibling;
+      while (next && next.getBoundingClientRect().height === 0) next = next.nextElementSibling;
+      return !!next && next.getBoundingClientRect().top < blk.getBoundingClientRect().bottom - 0.5;
+    };
     const set = () => blks.forEach(blk => {
       const chips = blk.querySelector('.filters');
       if (chips) blk.style.setProperty('--dFadeUp',
         Math.round(chips.offsetHeight / 2) + 'px');
-      blk.classList.toggle('stuck',
-        blk.getBoundingClientRect().top <= sc.getBoundingClientRect().top + 0.5 && sc.scrollTop > 0);
+      blk.classList.toggle('stuck', sc.scrollTop > 0 && overlaps(blk));
     });
     sc.addEventListener('scroll', set, { passive: true });
     addEventListener('resize', set);
@@ -23121,8 +23130,14 @@
     const setStuck = () => {
       placeBar();   // the page may have changed since init (setMode moves the status bar)
       bars().forEach(w => {
-        const top = parseFloat(getComputedStyle(w).top) || 0;
-        w.classList.toggle('stuck', w.getBoundingClientRect().top <= sc.getBoundingClientRect().top + top + 0.5 && sc.scrollTop > 0);
+        // stuck means content is passing under the bar (the fade is a blend
+        // into what is behind it); at the pin the list starts where the bar
+        // ends and nothing is behind it ("the gradient should only occur when
+        // the bar overlaps the content, not when the sticky is at position 0")
+        let next = w.nextElementSibling;
+        while (next && next.getBoundingClientRect().height === 0) next = next.nextElementSibling;
+        const over = !!next && next.getBoundingClientRect().top < w.getBoundingClientRect().bottom - 0.5;
+        w.classList.toggle('stuck', sc.scrollTop > 0 && over);
       });
       setPlate();
     };
