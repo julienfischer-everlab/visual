@@ -10362,6 +10362,15 @@ moves under the fade). The rule above the services is gone, the title is
 "Services" at 15/500 in a soft grey with 20px of air above it, and the
 tiles go from 8% to 10% white, a shade lighter, with the hover following.
 
+"Height of the component 44px." The Overview top bar's row comes down from
+56 to 44: the field, the avatar and the bell alike, the bell's glyph to 20,
+and the avatar's ride off the left edge to 54px (its width and the gap).
+"Cross CTA 44px": the sheet's floating dismiss comes down from 48 to 44,
+still 16 above the card. "Card #fff 4% opacity": the tiles settle at 4%
+white (hover 8%) -- the lighter look of 5.390 was the stale page talking.
+"+8px padding, cards": the tiles pad 24 (16 at the right, for a two-line
+label's sake) instead of 16.
+
 ---
 
 ## 6. Open items
