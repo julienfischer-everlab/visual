@@ -10335,6 +10335,17 @@ resolve in one style pass and there would be nothing to fade from.
 ground and its blur mask hold to 75% of the pseudo's height and fade to
 nothing over the last quarter, in place of the fixed 40px tail.
 
+"There is a weird circular transition when the full chat appears." Not the
+chat's: the screen under the fade was still moving. The chat's composer
+takes the focus the moment it opens, and the field that had it lets go --
+on the Overview the avatar slid back in and the cross turned a quarter into
+the bell, on the sheet the services unfolded and then the whole sheet
+vanished at frame 0 -- all of it showing through a modal at .2 opacity. Now
+whatever is under the chat holds still until the chat is opaque: the bar
+keeps its live state for 300ms after a blur that the chat caused, and the
+sheet marks a `handoff` on submit, ignores the blur, and is removed without
+animation at 300ms.
+
 ---
 
 ## 6. Open items

@@ -16347,12 +16347,18 @@
       // question to the full chat ("can type, and when submitted, overlapped
       // by the full chat experience"): the thread opens over this sheet with
       // the words as the reader's message, and the sheet steps away under it.
+      // The chat fades in over this sheet, so the sheet holds perfectly still
+      // under the fade (`handoff`: the blur that follows changes nothing) and
+      // is removed, without any animation, once the chat is opaque.
       const submit = () => {
         const q = inp.value.trim();
         if (!ph._chat) return;
+        wrap.classList.add('handoff');   // before the open: the chat takes the focus at once, and that blur must change nothing
         ph._chat.open(card, q);
         inp.value = '';
-        ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show'); card.style.transform = ''; card.style.bottom = '';
+        setTimeout(() => {
+          ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show', 'handoff'); card.style.transform = ''; card.style.bottom = '';
+        }, 300);
       };
       inp.addEventListener('everlab:go', submit);
       wrap.querySelector('.aiField .ovChatGo').addEventListener('click', e => { e.preventDefault(); submit(); });
@@ -16366,9 +16372,10 @@
         document.body.classList.add('mSearchOn');
       });
       inp.addEventListener('blur', () => {
+        document.body.classList.remove('mSearchOn');
+        if (wrap.classList.contains('handoff')) return;   // the chat is fading in over us: nothing moves
         wrap.classList.remove('typing');
         card.style.bottom = '';
-        document.body.classList.remove('mSearchOn');
       });
       inp.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submit(); } });
       // The card grows out of the star ("the star button should expand to a
@@ -16549,7 +16556,15 @@
         // Typing in the top bar: the avatar slides off the left edge, the field
         // takes its room, and the bell becomes the dismiss.
         pin.addEventListener('focus', () => { keyboard(); document.body.classList.add('mSearchOn'); ph.classList.add('ovTyping'); });
-        pin.addEventListener('blur', () => { document.body.classList.remove('mSearchOn'); ph.classList.remove('ovTyping'); });
+        // Let go with the chat fading in over the bar, the bar holds still --
+        // avatar off, cross showing, blanket down -- until the chat is opaque;
+        // otherwise the slide back and the cross turning into the bell showed
+        // through the fade as a movement the chat does not have.
+        pin.addEventListener('blur', () => {
+          document.body.classList.remove('mSearchOn');
+          const reset = () => { if (document.activeElement !== pin) ph.classList.remove('ovTyping'); };
+          if (ph.querySelector('.chWrap.on')) setTimeout(reset, 300); else reset();
+        });
         const submit = () => { const q = pin.value; pin.value = ''; open(pill, q); };
         pin.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submit(); } });
         pin.addEventListener('everlab:go', submit);
