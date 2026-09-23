@@ -10421,6 +10421,10 @@ waits for words as well as focus: the field marks `hasText` on input and
 the disc scales in on the first character, out again when the last goes;
 it is cleared after the hand-off so the next open starts clean.
 
+"Black gradient, reduce opacity 50%." The Overview top group's ground goes
+from .96/.92 to .48/.46, the 24px blur doing more of the separating; the
+75% stop and the fade over the last quarter stay.
+
 ---
 
 ## 6. Open items
