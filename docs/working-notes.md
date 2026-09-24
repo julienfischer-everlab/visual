@@ -10606,6 +10606,13 @@ last row of two shares it at three columns each, so five make 3 + 2 with no
 empty slot. The pills keep the glyph at the left (18) and the label at
 12.5, wrapping to two lines where the width asks.
 
+The same words again, with a capture of Header V2's card: "put 3 cards
+next to each other" was about the hub. Its two rows become three tiles in
+a row -- Inbox with its count beside the glyph, Services, and Records --
+each the glyph top-left and the label at the foot on the 4% plate, 96 tall
+with 20px corners. Inbox and Services keep their sheets; Records is the
+third slot, waiting for its page.
+
 ---
 
 ## 6. Open items

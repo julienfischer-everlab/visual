@@ -2591,23 +2591,22 @@
   /* ---- Header V2 (Overview tweak): the inbox and the services as two rows
      on one card under the greeting. The top bar gives up its inbox disc and
      the mini bento stands down; the card takes their place. */
-  .ovHub{display:none;margin:0 13px 18px;padding:4px;border-radius:22px;background:rgba(255,255,255,.04);}
-  body.hdrV2 #phone2 .ovHub{display:block;}
+  /* three tiles in a row ("put 3 cards next to each other"): the glyph
+     top-left with the inbox's count beside it, the label at the foot, on the
+     4% plate with the bento's corners */
+  .ovHub{display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 13px 18px;}
+  body.hdrV2 #phone2 .ovHub{display:grid;}
   body.hdrV2 #phone2 .ovSvc, body.hdrV2 #phone2 .ovInbox{display:none;}
-  .ovHubRow{
-    display:flex;align-items:center;gap:12px;width:100%;height:52px;padding:0 14px;border:0;border-radius:18px;cursor:pointer;
-    background:none;color:#ececec;font:inherit;font-size:15px;text-align:left;position:relative;
+  .ovHubTile{
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;min-height:96px;padding:14px 12px 14px 14px;
+    border:0;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.04);color:#ececec;font:inherit;font-size:14px;text-align:left;
     transition:background .16s ease;
   }
-  .ovHubRow:hover{background:rgba(255,255,255,.04);}
-  .ovHubRow > span{flex:1 1 auto;min-width:0;}
-  .ovHubRow svg{flex:none;width:20px;height:20px;}
-  .ovHubRow .chev{width:16px;height:16px;color:#8b8b86;}
-  .ovHubRow + .ovHubRow::before{content:"";position:absolute;left:46px;right:14px;top:0;height:1px;background:rgba(255,255,255,.06);}
+  .ovHubTile:hover{background:rgba(255,255,255,.08);}
+  .ovHubIc{display:flex;align-items:center;gap:8px;}
+  .ovHubIc svg{flex:none;width:22px;height:22px;}
   .ovHubN{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:#f78359;color:#1a120e;font-size:12px;font-weight:600;font-style:normal;}
-  body.light .ovHub{background:rgba(46,31,26,.05);}
-  body.light .ovHubRow{color:#2e1f1a;}
-  body.light .ovHubRow + .ovHubRow::before{background:rgba(46,31,26,.08);}
+  body.light .ovHubTile{background:rgba(46,31,26,.05);color:#2e1f1a;}
   /* Typing: the services fold away and the home bar with them (the keyboard
      draws its own), the card hugging what is left while it rides up onto the
      keys ("service section fades out, keyboard appears while the card height
@@ -8848,16 +8847,20 @@
       <!-- Header V2 (Overview tweak): the inbox and the services as two rows
            on one card under the greeting; the top bar keeps the field and the
            bell. Hidden unless body.hdrV2. -->
+      <!-- ...then three tiles side by side ("put 3 cards next to each
+           other"): Inbox with its count, Services, Records -->
       <div class="ovHub">
-        <button class="ovHubRow ovHubInbox" type="button">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 5.2 5.4A1.4 1.4 0 0 1 6.5 4.5h7a1.4 1.4 0 0 1 1.3.9l2.2 6.1V15a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 15Z"/><path d="M3 11.5h4.2l.9 1.8h3.8l.9-1.8H17"/></svg>
-          <span>Inbox</span><em class="ovHubN">3</em>
-          <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
+        <button class="ovHubTile ovHubInbox" type="button">
+          <span class="ovHubIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 5.2 5.4A1.4 1.4 0 0 1 6.5 4.5h7a1.4 1.4 0 0 1 1.3.9l2.2 6.1V15a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 15Z"/><path d="M3 11.5h4.2l.9 1.8h3.8l.9-1.8H17"/></svg><em class="ovHubN">3</em></span>
+          <span>Inbox</span>
         </button>
-        <button class="ovHubRow ovHubSvc" type="button">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.8"/><rect x="11" y="3" width="6" height="6" rx="1.8"/><rect x="3" y="11" width="6" height="6" rx="1.8"/><rect x="11" y="11" width="6" height="6" rx="1.8"/></svg>
+        <button class="ovHubTile ovHubSvc" type="button">
+          <span class="ovHubIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.8"/><rect x="11" y="3" width="6" height="6" rx="1.8"/><rect x="3" y="11" width="6" height="6" rx="1.8"/><rect x="11" y="11" width="6" height="6" rx="1.8"/></svg></span>
           <span>Services</span>
-          <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
+        </button>
+        <button class="ovHubTile ovHubRec" type="button">
+          <span class="ovHubIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2.5h6l3 3V16a1.5 1.5 0 0 1-1.5 1.5h-7.5A1.5 1.5 0 0 1 4.5 16V4A1.5 1.5 0 0 1 6 2.5Z"/><path d="M12 2.5v3h3M7 9.5h6M7 12.5h6"/></svg></span>
+          <span>Records</span>
         </button>
       </div>
       <!-- the next step: book the consultation ("replace by this card instead
