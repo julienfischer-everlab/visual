@@ -10687,6 +10687,10 @@ plus the organ's delta, "34 years old" for the biological age at the demo's
 40 -- 18/500 white, centred, fading out and back as a swipe changes the
 organ. The eyebrow gives the organ 14 instead of 22.
 
+"Push the arc down by 16px. Push up 'years old' by 6px." The arc takes 16
+of air above it again; the reading closes up to the arc (its 6 gone).
+"Smaller font size, xx years old, by 2px": 18 to 16.
+
 ---
 
 ## 6. Open items
