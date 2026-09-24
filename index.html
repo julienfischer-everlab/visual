@@ -5827,15 +5827,20 @@
     display:flex;align-items:center;gap:10px;padding:calc(var(--stH,0px) + 6px) 13px 10px;
   }
   #phone2 .ovTop::before{
-    content:"";position:absolute;left:0;right:0;top:0;bottom:-28px;z-index:-1;pointer-events:none;
+    content:"";position:absolute;left:0;right:0;top:0;bottom:-56px;z-index:-1;pointer-events:none;   /* a longer run past the bar for a smoother fade ("more progressive") */
     /* solid ground and full blur down to the field's foot; the fade is the
        last 40px -- the bar's own bottom padding and the run past it. Before,
        the fade began at 55% and the field's lower half sat on half a blur,
        and the copy under it read through ("the AI field doesn't have enough
        blur") */
-    background:linear-gradient(180deg,rgba(13,13,12,.48) 0%,rgba(13,13,12,.46) 75%,rgba(13,13,12,0) 100%);   /* "the black should stop at 75% of the height"; then "reduce the black's opacity by 50%" -- the blur does more of the work */
+    /* "the gradient and blur should be more progressive, smoother": no
+       corner at 75% -- the black holds to the field's foot and then eases out
+       over the rest on a curve (stops at .46, .42, .32, .2, .09, 0), and the
+       blur's mask follows the same curve, so neither has an edge */
+    background:linear-gradient(180deg,rgba(13,13,12,.48) 0%,rgba(13,13,12,.46) 55%,rgba(13,13,12,.42) 66%,rgba(13,13,12,.32) 76%,rgba(13,13,12,.2) 85%,rgba(13,13,12,.09) 93%,rgba(13,13,12,0) 100%);
     -webkit-backdrop-filter:blur(24px) saturate(120%);backdrop-filter:blur(24px) saturate(120%);
-    -webkit-mask-image:linear-gradient(#000 75%,transparent);mask-image:linear-gradient(#000 75%,transparent);
+    -webkit-mask-image:linear-gradient(#000 55%,rgba(0,0,0,.9) 66%,rgba(0,0,0,.68) 76%,rgba(0,0,0,.42) 85%,rgba(0,0,0,.18) 93%,transparent 100%);
+    mask-image:linear-gradient(#000 55%,rgba(0,0,0,.9) 66%,rgba(0,0,0,.68) 76%,rgba(0,0,0,.42) 85%,rgba(0,0,0,.18) 93%,transparent 100%);
   }
   #phone2 .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;padding:0;}
   #phone2 .ovTop .ovChatBox{
@@ -5870,7 +5875,7 @@
   #phone2 .ovDim{position:absolute;inset:0;z-index:6;background:rgba(0,0,0,.49);opacity:0;pointer-events:none;transition:opacity .28s ease;}   /* 25%, then "+24%" */
   #phone2.ovTyping .ovDim{opacity:1;pointer-events:auto;}
   body.light #phone2 .ovTop::before{
-    background:linear-gradient(180deg,rgba(247,242,233,.48) 0%,rgba(247,242,233,.46) 75%,rgba(247,242,233,0) 100%);
+    background:linear-gradient(180deg,rgba(247,242,233,.48) 0%,rgba(247,242,233,.46) 55%,rgba(247,242,233,.42) 66%,rgba(247,242,233,.32) 76%,rgba(247,242,233,.2) 85%,rgba(247,242,233,.09) 93%,rgba(247,242,233,0) 100%);
   }
   body.light #phone2 .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   body.light #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(46,31,26,.09);}

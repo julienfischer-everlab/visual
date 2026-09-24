@@ -10744,6 +10744,16 @@ ground -- and that plate is 6% white now rather than the strip's #0f0f0f.
 Four renders for five cards: the report render serves the Dexa report and
 the blood panel both.
 
+### 5.408 The top group's fade, eased
+
+"The gradient and blur should be more progressive, smoother." The ground
+held to 75% and then fell to nothing in a straight line, and the mask cut
+the blur the same way -- a visible band under the bar in the capture. The
+pseudo now runs 56px past the bar (from 28), the black holds to the
+field's foot (55%) and eases out on a curve -- .46, .42, .32, .2, .09, 0 --
+and the blur's mask follows the same stops, so neither the tint nor the
+blur has an edge.
+
 ---
 
 ## 6. Open items
