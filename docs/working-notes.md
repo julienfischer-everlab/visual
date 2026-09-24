@@ -10628,6 +10628,29 @@ Overview group ends with a Build row -- "dev" in the source, and in dist
 the build's time (UTC) and commit, written by tools/build.js -- so a page
 in front of someone can be checked against the last publish.
 
+### 5.403 The age card morphs, as the hero does
+
+"Use this organ visual" -- the iris. "Put a small nav carousel below the
+arc, 16px from the footer, centred. Swipe left and right: the organ morphs
+and the arc changes, the same as the Insights page. Push the organ down
+16px. Reduce the gap between organ and arc by 12px."
+
+The card is one organ that changes rather than a row of slides. The
+biological age is the iris -- the row's own organ, which the first cut had
+overridden with the figure. A swipe (40px sideways, finger or mouse) goes
+to the next or previous of the ten readings, biological age first then the
+nine organs in product order, and the card does what the hero does: the
+particles travel into the new shape (`morphTo`, 900ms, at the dense
+target), the arc's indicator sweeps to the new reading on the hero's
+quintic clock with the lit run following (`arcACopyLive`: the still copy's
+svg built once, painted per frame by the same rules), and the eyebrow
+leaves the way the swipe went and returns from the far side. Small dots
+under the arc mark where it stands, 16 from the card's foot, and a tap on
+one goes there. The eyebrow gives the organ 22 of air instead of 6, and the
+arc sits straight under the organ (the 12 it had is gone). The card
+scrolls the page up and down as before (touch-action pan-y) and only a
+sideways move is a swipe; the click after a swipe is swallowed.
+
 ---
 
 ## 6. Open items

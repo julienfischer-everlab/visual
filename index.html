@@ -6091,22 +6091,23 @@
   .ovCov .covGauge .covDial{width:96px;height:96px;}
   /* the age card: a snapping carousel of slides, each centred -- eyebrow,
      the particle organ, the age, the tablet's arc -- and its own small dots */
-  .msn.ovAge{padding:18px 0 14px;text-align:center;overflow:hidden;}   /* hidden: the arc runs past the edges and is cut by them */
+  .msn.ovAge{padding:18px 0 16px;text-align:center;overflow:hidden;touch-action:pan-y;cursor:grab;}   /* hidden: the arc runs past the edges and is cut by them; 16 below, for the dots ("16px from the footer"); swipes sideways, scrolls up and down */
   .ovAgeCar{display:block;}
   .ovAgeSl{display:flex;flex-direction:column;align-items:center;padding:0 12px;box-sizing:border-box;}
-  .ovAgeSl .lbl{margin-bottom:6px;white-space:nowrap;}
+  .ovAgeSl .lbl{margin-bottom:22px;white-space:nowrap;}   /* "push the organ down by 16px": 6 + 16 */
+  .ovAgeSl .lbl span{display:inline-block;}   /* so the eyebrow can slide with a swipe */
   .ovAgeOrg{position:relative;width:106px;height:106px;}   /* "organ bigger by 15%": 92 -> 106 */
   .ovAgeOrg canvas{position:absolute;inset:0;display:block;}
   #phone2 .ovAgeSl .big{margin-top:2px;font-size:28px;line-height:1.1;}
   /* the Insights arc, a still copy, with its side fade; the svg's box is the
      hero's, so the card gets the same curve at a smaller size */
   .ovAgeSl .ovArc{
-    width:150%;flex:none;margin:12px -25% 0;   /* "the arc should bleed over the edges", "down by 16px": half again as wide as the card, its ends cut by the card's own edges; 12 = the -4 it sat at plus 16 */
+    width:150%;flex:none;margin:0 -25% 0;   /* "the arc should bleed over the edges": half again as wide as the card, its ends cut by the card's own edges; the gap to the organ was 12 ("down by 16px"), then "reduce the gap by 12px" */
     -webkit-mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
     mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
   }
   .ovAgeSl .ovArc svg{display:block;width:100%;height:auto;overflow:visible;}
-  .ovAgeDots{display:flex;gap:4px;justify-content:center;align-items:center;margin-top:10px;}
+  .ovAgeDots{display:flex;gap:4px;justify-content:center;align-items:center;margin-top:12px;}   /* "a small nav carousel below the arc, centred" */
   .ovAgeDots i{width:5px;height:5px;border-radius:3px;background:rgba(236,236,236,.25);}
   .ovAgeDots i.on{width:14px;background:#ececec;}
   body.light .ovAgeDots i{background:rgba(46,31,26,.25);} body.light .ovAgeDots i.on{background:#2e241c;}
@@ -20755,20 +20756,93 @@
   // body) first and then three organs, each slide the eyebrow, a mini
   // particle organ, the age and the tablet's arc, centred. The organs are
   // the library's own views at the small target, so the card costs little.
+  // The Insights arc, live, for a card: the still copy's svg built once and
+  // then painted per frame the way the hero paints its own -- the indicator
+  // sweeping on the hero's quintic clock, the lit run following it -- so a
+  // card can carry the same reading and change it the same way.
+  function arcACopyLive(host, delta){
+    host.innerHTML = arcAMarkup(delta);
+    const svg = host.firstElementChild, lines = [].slice.call(svg.querySelectorAll('line')), ind = svg.querySelector('circle');
+    const vs = []; for (let v = -15; v <= 15; v += 0.5) vs.push(v);
+    const baseOpOf = v => { const rel = Math.abs(v) / 15; return Math.max(0.02, 0.03 + 0.26 * (1 - Math.pow(rel, 1.4))); };
+    const paint = now => {
+      const col = ageColor(now), base = tickBase(), lo = Math.min(0, now), hi = Math.max(0, now), active = hi - lo > 0.08, span = Math.max(0.001, Math.abs(now));
+      const alignK = Math.max(0, 1 - Math.abs(now) / 0.5), alignOp = document.body.classList.contains('light') ? 0.95 : 0.48;
+      lines.forEach((ln, i) => {
+        const v = vs[i], b = baseOpOf(v); let stroke = base, op = b;
+        if (v === 0 && alignK > 0.001){ stroke = indFill(); op = b + (alignOp - b) * alignK; }
+        else if (active && v !== 0 && v >= lo - 0.01 && v <= hi + 0.01){ const p = Math.min(1, Math.abs(v) / span); stroke = col; op = p < 0.3 ? b + (p / 0.3) * (0.95 - b) : 0.95; }
+        ln.setAttribute('stroke', stroke); ln.setAttribute('opacity', op.toFixed(3));
+      });
+      const ip = ptA(now, AG.R + 13); ind.setAttribute('cx', ip[0].toFixed(1)); ind.setAttribute('cy', ip[1].toFixed(1)); ind.setAttribute('fill', indFill());
+    };
+    let cur = delta, raf = 0;
+    return {
+      get value(){ return cur; },
+      sweepTo(to, dur){
+        cancelAnimationFrame(raf);
+        const from = cur, t0 = performance.now();
+        const tick = t => {
+          const p = Math.min(1, (t - t0) / (dur || 900)), e = p < 0.5 ? 16 * Math.pow(p, 5) : 1 - Math.pow(-2 * p + 2, 5) / 2;
+          cur = from + (to - from) * e; paint(cur);
+          if (p < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      }
+    };
+  }
+  // The Overview's age card: one organ that morphs. The biological age as the
+  // iris ("use this organ visual"), and a swipe left or right takes it to the
+  // next organ the way the Insights hero does -- the particles travel into the
+  // new shape, the arc's indicator sweeps to the new reading with the lit run
+  // following, the eyebrow leaves the way the swipe went and returns from the
+  // far side -- with small dots under the arc for where it stands.
   (function ovAgeCard(){
     const card = document.querySelector('#phone2 .ovAge');
     if (!card || typeof makeOrganView !== 'function' || typeof PILL === 'undefined') return;
-    // One reading, the biological age ("remove the carousel; remove the age"):
-    // the eyebrow, the figure, and the Insights arc bleeding past the card's
-    // edges -- no number, the arc is the reading
     const body = PILL.find(p => p.label === 'Body'); if (!body) return;
-    const car = card.querySelector('.ovAgeCar'), dots = card.querySelector('.ovAgeDots');
-    car.innerHTML = '<div class="ovAgeSl"><div class="lbl">' + (body.slide || 'Biological age') + '</div><div class="ovAgeOrg"></div>' +
-      '<div class="ovArc">' + arcAMarkup(body.delta) + '</div></div>';   // the Insights page's own arc ("just use the arc from the Insights page")
-    if (dots) dots.remove();
-    // the biological age is the figure here (BODY_I), not the iris its row
-    // can otherwise read as; dense, so a small organ still has a body to it
-    makeOrganView(car.querySelector('.ovAgeOrg'), BODY_I >= 0 ? BODY_I : body.organIdx, { dl: false, dense: true });
+    const list = [body].concat(PILL.filter(p => p !== body));   // the biological age first, then the nine organs in product order
+    const car = card.querySelector('.ovAgeCar');
+    const old = card.querySelector('.ovAgeDots'); if (old) old.remove();
+    car.innerHTML = '<div class="ovAgeSl"><div class="lbl"><span>' + (body.slide || 'Biological age') + '</span></div><div class="ovAgeOrg"></div><div class="ovArc"></div></div>';
+    const dots = document.createElement('div'); dots.className = 'ovAgeDots'; card.appendChild(dots);
+    dots.innerHTML = list.map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
+    const lbl = car.querySelector('.lbl span');
+    const view = makeOrganView(car.querySelector('.ovAgeOrg'), body.organIdx, { dl: false, dense: true });   // the row's own organ: the iris
+    const arc = arcACopyLive(car.querySelector('.ovArc'), body.delta);
+    let cur = 0, lblT = 0;
+    const go = (i, dir) => {
+      i = Math.max(0, Math.min(list.length - 1, i));
+      if (i === cur) return;
+      dir = dir || (i > cur ? 1 : -1); cur = i;
+      const d = list[i];
+      view.idx = d.organIdx; view.beat = !!(ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart');
+      view.morphTo(clouds[d.organIdx], 'o' + d.organIdx, shapeTarget(clouds[d.organIdx], 2600), 900);
+      arc.sweepTo(d.delta, 900);
+      lbl.style.transition = 'opacity .18s ease,transform .18s ease'; lbl.style.opacity = '0'; lbl.style.transform = 'translateX(' + (-14 * dir) + 'px)';
+      clearTimeout(lblT);
+      lblT = setTimeout(() => {
+        lbl.textContent = d.slide || d.label + ' age';
+        lbl.style.transition = 'none'; lbl.style.transform = 'translateX(' + (14 * dir) + 'px)'; void lbl.offsetWidth;
+        lbl.style.transition = 'opacity .22s ease,transform .22s ease'; lbl.style.opacity = '1'; lbl.style.transform = 'none';
+      }, 190);
+      [].forEach.call(dots.children, (el, k) => el.classList.toggle('on', k === cur));
+    };
+    // a swipe, finger or mouse: 40px sideways, more across than down, is a
+    // slide in that direction; the click that follows one is swallowed
+    let drag = null, swiped = false;
+    card.addEventListener('pointerdown', e => { if (e.button !== 0) return; drag = { x: e.clientX, y: e.clientY, id: e.pointerId }; swiped = false; });
+    const end = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){ swiped = true; go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); setTimeout(() => { swiped = false; }, 0); }
+    };
+    addEventListener('pointerup', end); addEventListener('pointercancel', end);
+    card.addEventListener('click', e => {
+      if (swiped){ e.preventDefault(); e.stopPropagation(); return; }
+      const i = e.target.closest('.ovAgeDots i'); if (i) go([].indexOf.call(dots.children, i));
+    });
+    card._ovAge = { go, list: () => list, at: () => cur };
   })();
   // The Overview's inbox sheet ("the inbox icon should trigger a bottom
   // sheet"): from the top bar's disc and Header V2's row alike. Three
