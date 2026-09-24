@@ -10548,6 +10548,14 @@ soft and dark at its left already), anchored right where the figure is,
 covering the card. The card stays dark on the light page: it is a picture
 now, not a plate.
 
+### 5.400 Health coverage in the left slot
+
+"Health coverage card instead here." The Overview's left mini card, which
+read Health insights 75 / Biomarkers, is the Insights phone's coverage
+card now: the eyebrow, 64% with a small grey sign, and the dotted dial with
+its warning in the middle, centred in the room under the figure so the two
+cards in the row match, the dial at 96 to the organ's 92.
+
 ---
 
 ## 6. Open items
