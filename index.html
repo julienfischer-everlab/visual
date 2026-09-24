@@ -2594,20 +2594,43 @@
     transition:background .16s ease;position:relative;overflow:hidden;
   }
   .ovSvcChip span{min-width:0;}
-  .ovSvcChip > svg, .ovSvcChip > span{position:relative;z-index:1;}
+  .ovSvcChip > *{position:relative;z-index:1;}
+  .ovSvcVis{display:flex;align-items:center;justify-content:center;width:22px;height:22px;}
+  .ovSvcTx{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .ovSvcTx b{font-weight:400;}
+  .ovSvcTx small{display:none;}
+  /* ---- the Large dress (Services tweak, body.svcLg): one card and 48px of
+     the next, the title with a line of support at the left and the visual
+     -- the glyph on a soft disc -- at the right, not under the words */
+  body.svcLg #phone2 .ovSvcChip{
+    flex:0 0 calc(100% - 43px);flex-direction:row;align-items:center;justify-content:space-between;gap:14px;
+    height:128px;padding:18px 16px 18px 20px;
+  }
+  body.svcLg #phone2 .ovSvcTx{gap:6px;text-align:left;}
+  body.svcLg #phone2 .ovSvcTx b{font-size:16px;font-weight:500;letter-spacing:-.1px;}
+  body.svcLg #phone2 .ovSvcTx small{display:block;font-size:12.5px;line-height:1.35;color:#8b8b86;}
+  body.svcLg #phone2 .ovSvcVis{flex:none;order:2;width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.06);}   /* order 2: the visual at the right of the words */
+  body.svcLg #phone2 .ovSvcVis svg{width:30px;height:30px;}
+  body.svcLg #phone2 .ovSvcNew .ovSvcVis{background:rgba(247,131,89,.12);color:#ffb08a;}
+  body.svcLg #phone2 .ovSvcChip > .ovNewBadge{top:12px;right:12px;}
+  body.light.svcLg #phone2 .ovSvcVis{background:rgba(46,31,26,.06);} body.light.svcLg #phone2 .ovSvcTx small{color:#7d6b58;}
   /* the Concierge tile: a ring of light turning round its edge -- a conic
      sweep on a pseudo twice the tile's size, spinning under a plate inset by
      the ring's width -- and the New badge in the corner */
   .ovSvcNew{background:#151514;}
   .ovSvcHalo{position:absolute;left:50%;top:50%;width:260%;aspect-ratio:1;margin:-130% 0 0 -130%;pointer-events:none;
-    background:conic-gradient(from 0deg,transparent 0 62%,rgba(247,131,89,.35) 78%,rgba(255,226,159,.95) 88%,#fff 92%,transparent 100%);
-    animation:ovHalo 3.2s linear infinite;}
-  .ovSvcNew::after{content:"";position:absolute;inset:2px;border-radius:18px;background:#1a1a19;}
+    /* warm orange, not gold ("more like warm orange, smoother, subtle"): the
+       accent alone, rising over a long ramp to .7 and falling away as slowly,
+       no white peak */
+    background:conic-gradient(from 0deg,transparent 0 50%,rgba(247,131,89,.12) 66%,rgba(247,131,89,.7) 82%,rgba(247,131,89,.12) 96%,transparent 100%);
+    animation:ovHalo 3.6s linear infinite;}
+  .ovSvcNew::after{content:"";position:absolute;inset:1px;border-radius:19px;background:#1a1a19;}   /* a 1px ring ("border thinner") */
   .ovSvcNew > svg, .ovSvcNew > span{z-index:2;}
   @keyframes ovHalo{to{transform:rotate(360deg);}}
   .ovSvcChip > .ovNewBadge{position:absolute;top:10px;right:10px;z-index:2;font-size:11px;font-weight:500;line-height:20px;height:20px;padding:0 7px;border-radius:6px;background:#332910;color:#ffe29f;}   /* past the children's position:relative */
   body.light .ovSvcNew{background:#efe6dc;} body.light .ovSvcNew::after{background:#f6f0e8;}
   .ovSvcChip svg{flex:none;width:22px;height:22px;}
+  .ovSvcChip > .ovSvcVis > svg{position:static;}
   .ovSvcChip:hover{background:rgba(255,255,255,.08);}
   body.light .ovSvcChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
   /* ---- Header V2 (Overview tweak): the inbox and the services as two rows
@@ -8072,6 +8095,15 @@
             <option value="v2">V2</option>
           </select>
         </div>
+        <!-- the service cards under the greeting: tiles (glyph, label) or
+             large (title, a line of support, the visual at the right) -->
+        <div class="tkRow">
+          <span class="lbl">Services</span>
+          <select id="stSvc" aria-label="The Overview's service cards">
+            <option value="tiles" selected>Tiles</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
         <!-- which build this page is: the source says dev, dist says when it
              was built and from which commit (tools/build.js) -->
         <div class="tkRow">
@@ -13324,6 +13356,7 @@
       (CARD_STATE.repVisual ? ' repVisual' : '') +
       (CARD_STATE.repVideo ? ' repVideo' : '') +
       (CARD_STATE.hdrV2 ? ' hdrV2' : '') +
+      (CARD_STATE.svcLg ? ' svcLg' : '') +
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
@@ -16570,9 +16603,9 @@
       treat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-40 12 12)"/><path d="m9.3 15.6 5.4-7.2"/></svg>'
     };
     const SERVICES = [
-      { l: 'Telehealth', ic: 'tele', wide: true }, { l: 'Check Symptoms', ic: 'symp', wide: true },
-      { l: 'Med Certs', ic: 'cert' }, { l: 'Pathology', ic: 'path' }, { l: 'Treatments', ic: 'treat' }
-    ];
+      { l: 'Telehealth', ic: 'tele', wide: true, d: 'See a doctor from home, today' }, { l: 'Check Symptoms', ic: 'symp', wide: true, d: 'Describe how you feel, get guidance' },
+      { l: 'Med Certs', ic: 'cert', d: 'A certificate in minutes' }, { l: 'Pathology', ic: 'path', d: 'Book tests at a clinic near you' }, { l: 'Treatments', ic: 'treat', d: 'Plans and prescriptions, managed' }
+    ];   // `d`: the line of support the Large cards carry under the title
     const SPARK = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>';
     // what the reader is most likely to ask from where they are: the Insights
     // phone is on its biomarkers, the Overview on its plan
@@ -16590,8 +16623,14 @@
         // badge top right NEW"): the same tile with a turning ring of light
         // around it and the New badge in its corner
         const BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17h16"/><path d="M5 17a7 7 0 0 1 14 0"/><path d="M12 10V7.5"/><circle cx="12" cy="6" r="1.5"/><path d="M3 20h18"/></svg>';
-        row.innerHTML = '<button class="ovSvcChip ovSvcNew" type="button"><i class="ovSvcHalo" aria-hidden="true"></i><span class="ovNewBadge">New</span>' + BELL + '<span>Concierge</span></button>' +
-          SERVICES.map(s => '<button class="ovSvcChip" type="button">' + IC[s.ic] + '<span>' + s.l + '</span></button>').join('');
+        // one markup for both dresses: the visual (the glyph, or in Large a
+        // disc with the glyph) and the text (the title, and in Large a line
+        // of support); the Services tweak (body.svcLg) lays them out
+        const tile = (ic, l, d, extra) => '<button class="ovSvcChip' + (extra || '') + '" type="button">' +
+          (extra ? '<i class="ovSvcHalo" aria-hidden="true"></i><span class="ovNewBadge">New</span>' : '') +
+          '<span class="ovSvcVis">' + ic + '</span><span class="ovSvcTx"><b>' + l + '</b><small>' + d + '</small></span></button>';
+        row.innerHTML = tile(BELL, 'Concierge', 'Your care team, one message away', ' ovSvcNew') +
+          SERVICES.map(s => tile(IC[s.ic], s.l, s.d)).join('');
         title.after(row);
       }
       const btn = ph.querySelector('.mChat'); if (!btn) return;
@@ -21207,6 +21246,8 @@
                        // the Overview's Header tweak: V2 puts a card with the
                        // inbox and the services under the greeting
                        hdrV2: false,  // V1 again ("keep the header top like this"): the field, the inbox disc and the bell; the tiles under the title are the services
+                       // the Services tweak: Large cards, title + support with the visual at the right
+                       svcLg: false,
                        // the information architecture (IA tweak): V4's
                        // Overview / Results, and which half of the results
                        // database is showing ('all' | 'bio' | 'rec') -- off
@@ -21848,6 +21889,11 @@
   if (stHdrSel) stHdrSel.addEventListener('change', () => {
     CARD_STATE.hdrV2 = stHdrSel.value === 'v2';
     document.body.classList.toggle('hdrV2', CARD_STATE.hdrV2);
+  });
+  const stSvcSel = document.getElementById('stSvc');
+  if (stSvcSel) stSvcSel.addEventListener('change', () => {
+    CARD_STATE.svcLg = stSvcSel.value === 'large';
+    document.body.classList.toggle('svcLg', CARD_STATE.svcLg);
   });
   const stRepStyleSel = document.getElementById('stRepStyle');
   if (stRepStyleSel) stRepStyleSel.addEventListener('change', () => {

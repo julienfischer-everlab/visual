@@ -10691,6 +10691,29 @@ organ. The eyebrow gives the organ 14 instead of 22.
 of air above it again; the reading closes up to the arc (its 6 gone).
 "Smaller font size, xx years old, by 2px": 18 to 16.
 
+### 5.406 Services, Large: a second dress for the cards
+
+"Add another version based on this one, with a bigger card, title +
+support, the visual at the right side (not below the content)" -- with a
+capture of Casa's feature cards for the feel. A Services select in the
+Overview tweak group: Tiles (the default) or Large (`CARD_STATE.svcLg`,
+`body.svcLg`). The cards are one markup in two dresses: the visual (the
+glyph, or in Large the glyph at 30 on a 64px soft disc) and the text (the
+title, and in Large a line of support under it in grey). Large lays them
+in a row -- words at the left, the disc at the right -- on a card 128 tall
+and one card wide with 48px of the next showing (13 + w + 8 + 48 = the
+width). The support lines: Concierge "Your care team, one message away",
+Telehealth "See a doctor from home, today", Check Symptoms "Describe how
+you feel, get guidance", Med Certs "A certificate in minutes", Pathology
+"Book tests at a clinic near you", Treatments "Plans and prescriptions,
+managed". Concierge keeps its halo and badge, its disc warmed with the
+accent.
+
+"Border thinner. More like warm orange than gold, smoother, subtle." The
+ring goes to 1px (the plate inset by 1), and the sweep is the accent alone
+-- rising over a long ramp to .7 and falling away as slowly, the amber and
+the white peak gone -- turning once every 3.6s.
+
 ---
 
 ## 6. Open items
