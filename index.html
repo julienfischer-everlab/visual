@@ -2574,20 +2574,28 @@
      row of small pills with the glyph, scrolling sideways */
   /* a bento, two to a row ("this bento 2x per row"); the odd one out takes
      the whole last row */
-  /* three to a row ("put 3 cards next to each other"): a six-column grid,
-     each pill two columns wide; a row left with two pills shares it (three
-     columns each), so no slot stands empty. Labels wrap to two lines. */
-  .ovSvc{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:0 13px 18px;}
+  /* The services as cards in a carousel ("use the services as cards; two
+     visible + 48px of the third"): the hub tile's shape -- glyph top-left,
+     label at the foot, the 4% plate, 20px corners -- in a row that scrolls
+     sideways and snaps to the 13px inset. Two stand in the row and 48px of
+     the third shows past the second gap: 13 + w + 8 + w + 8 + 48 = the width,
+     so w = (content - 51) / 2. Dragged under a mouse like the other rows. */
+  .ovSvc{
+    display:flex;gap:8px;padding:0 13px 18px;overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;scroll-padding-left:13px;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab;
+  }
+  .ovSvc::-webkit-scrollbar{display:none;}
+  .ovSvc.dragging{scroll-snap-type:none;cursor:grabbing;user-select:none;-webkit-user-select:none;}
+  .ovSvc.dragging .ovSvcChip{pointer-events:none;}
   .ovSvcChip{
-    grid-column:span 2;display:flex;align-items:center;gap:8px;min-width:0;min-height:48px;padding:8px 10px 8px 12px;border:0;border-radius:16px;cursor:pointer;
-    background:rgba(255,255,255,.02);color:#ececec;font:inherit;font-size:12.5px;font-weight:400;line-height:1.15;text-align:left;   /* "regular font"; "bg opacity 2%" */
+    flex:0 0 calc((100% - 51px) / 2);scroll-snap-align:start;
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;min-height:96px;padding:14px 12px 14px 14px;
+    border:0;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.04);color:#ececec;font:inherit;font-size:14px;font-weight:400;line-height:1.2;text-align:left;
     transition:background .16s ease;
   }
-  .ovSvcChip:nth-child(3n+1):nth-last-child(2), .ovSvcChip:nth-child(3n+2):last-child{grid-column:span 3;}
-  .ovSvcChip:nth-child(3n+1):last-child{grid-column:1 / -1;}
   .ovSvcChip span{min-width:0;}
-  .ovSvcChip svg{flex:none;width:18px;height:18px;}
-  .ovSvcChip:hover{background:rgba(255,255,255,.06);}
+  .ovSvcChip svg{flex:none;width:22px;height:22px;}
+  .ovSvcChip:hover{background:rgba(255,255,255,.08);}
   body.light .ovSvcChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
   /* ---- Header V2 (Overview tweak): the inbox and the services as two rows
      on one card under the greeting. The top bar gives up its inbox disc and
@@ -8044,8 +8052,8 @@
         <div class="tkRow">
           <span class="lbl">Header</span>
           <select id="stHdr" aria-label="The Overview's header">
-            <option value="v1">V1</option>
-            <option value="v2" selected>V2</option>
+            <option value="v1" selected>V1</option>
+            <option value="v2">V2</option>
           </select>
         </div>
         <!-- which build this page is: the source says dev, dist says when it
@@ -20844,6 +20852,44 @@
     });
     card._ovAge = { go, list: () => list, at: () => cur };
   })();
+  // The services row under the greeting scrolls natively under a finger and
+  // is dragged under a mouse, as the other rows are: snap off while the
+  // pointer is down, an eased glide onto the nearest card's start (or the
+  // next, on a flick) when it lets go, the click after a drag swallowed.
+  (function ovSvcRow(){
+    const row = document.querySelector('#phone2 .ovSvc'); if (!row) return;
+    const cards = () => [].slice.call(row.children);
+    const snapAt = i => { const cs = cards(), c = cs[Math.max(0, Math.min(cs.length - 1, i))]; if (!c) return 0; return Math.max(0, Math.min(row.scrollWidth - row.clientWidth, c.offsetLeft - 13)); };
+    const idxAt = x => { let best = 0, bd = Infinity; cards().forEach((c, i) => { const d = Math.abs(snapAt(i) - x); if (d < bd){ bd = d; best = i; } }); return best; };
+    let drag = null, dragged = false, glide = 0;
+    const move = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x;
+      if (!dragged && Math.abs(dx) < 4) return;
+      if (!dragged){ dragged = true; row.classList.add('dragging'); }
+      row.scrollLeft = drag.left - dx;
+      const now = performance.now(); drag.vx = (e.clientX - drag.lastX) / Math.max(1, now - drag.lastT); drag.lastX = e.clientX; drag.lastT = now;
+      e.preventDefault();
+    };
+    const settle = (x, done) => { cancelAnimationFrame(glide); const from = row.scrollLeft, dist = x - from, t0 = performance.now(); const tick = now => { const p = Math.min(1, (now - t0) / 480), k = 1 - Math.pow(1 - p, 3); row.scrollLeft = from + dist * k; if (p < 1) glide = requestAnimationFrame(tick); else done(); }; glide = requestAnimationFrame(tick); };
+    const release = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const vx = drag.vx || 0; drag = null;
+      removeEventListener('pointermove', move); removeEventListener('pointerup', release); removeEventListener('pointercancel', release);
+      if (!dragged) return;
+      const near = idxAt(row.scrollLeft); let idx = near;
+      if (Math.abs(vx) > 0.35){ const x0 = row.scrollLeft, sn = snapAt(near); idx = vx < 0 ? (sn > x0 ? near : near + 1) : (sn < x0 ? near : near - 1); }
+      settle(snapAt(idx), () => row.classList.remove('dragging'));
+      setTimeout(() => { dragged = false; }, 0);
+    };
+    row.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'touch' || e.button !== 0) return;
+      cancelAnimationFrame(glide);
+      drag = { x: e.clientX, left: row.scrollLeft, id: e.pointerId, lastX: e.clientX, lastT: performance.now(), vx: 0 }; dragged = false;
+      addEventListener('pointermove', move); addEventListener('pointerup', release); addEventListener('pointercancel', release);
+    });
+    row.addEventListener('click', e => { if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); } });
+  })();
   // The Overview's inbox sheet ("the inbox icon should trigger a bottom
   // sheet"): from the top bar's disc and Header V2's row alike. Three
   // messages -- the doctor, Eva with a Suggested tag, a prescription that
@@ -21142,7 +21188,7 @@
                        repVideo: false,
                        // the Overview's Header tweak: V2 puts a card with the
                        // inbox and the services under the greeting
-                       hdrV2: true,   // the default now: the three tiles were being looked for on a fresh load, where V1 stood
+                       hdrV2: false,  // V1 again ("keep the header top like this"): the field, the inbox disc and the bell; the tiles under the title are the services
                        // the information architecture (IA tweak): V4's
                        // Overview / Results, and which half of the results
                        // database is showing ('all' | 'bio' | 'rec') -- off

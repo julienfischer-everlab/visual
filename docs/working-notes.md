@@ -10651,6 +10651,21 @@ arc sits straight under the organ (the 12 it had is gone). The card
 scrolls the page up and down as before (touch-action pan-y) and only a
 sideways move is a swipe; the click after a swipe is swallowed.
 
+### 5.404 The services as cards in a row
+
+"Keep the header top like this" -- V1: the field, the inbox disc, the
+bell -- so V1 is the default again. "Below the title, the same as the other
+version with cards next to each other, but use the services as the cards.
+Carousel: two cards visible + 48px of the third." The pills under the
+greeting become the hub tile's shape -- glyph top-left, label at the foot,
+the 4% plate, 20px corners, 96 tall -- in a row that scrolls sideways and
+snaps to the 13px inset. Two stand in the row and 48px of the third shows
+past the second gap: 13 + w + 8 + w + 8 + 48 = the width, so w is
+(content - 51) / 2, about 147. Dragged under a mouse like the other rows
+(`ovSvcRow`: snap off while the pointer is down, an eased glide onto the
+nearest card's start or the next on a flick, the click after a drag
+swallowed). The V2 hub tiles stay behind the Header tweak.
+
 ---
 
 ## 6. Open items
