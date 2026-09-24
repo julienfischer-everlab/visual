@@ -10818,6 +10818,10 @@ Large card's 303, .99 of the desk tile's 206 -- over .12s, the corners and
 the render shrinking with it, and it comes back on release. Measured on the
 phone: 147.4 → 145.4 pressed → 147.4 released; the desk 206.4 → 204.3.
 
+"Title should be Insights." The Explore cards' section reads *Insights*
+now, on the phone and the desk, in place of *Your next actions*; the See
+all count and the desk's arrows stay.
+
 ---
 
 ## 6. Open items
