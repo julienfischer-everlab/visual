@@ -10838,6 +10838,10 @@ third with the words clear of her, and a dark run from the left (.72 to
 nothing by 78%) gives the copy a ground whatever the window shows. The
 desk's headline is held to 62% of the card for the same reason.
 
+"Push visual up by 4px. Desaturated by 20%." The service render sits 4px
+higher (14 from the tile's top, the title where it was) and keeps four
+fifths of its colour rather than three quarters (`saturate(.8)`).
+
 ---
 
 ## 6. Open items
