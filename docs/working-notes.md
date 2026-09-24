@@ -10578,6 +10578,18 @@ nearest card -- or the next, on a flick past .35px/ms -- when it lets go;
 a tapped dot glides to its card; the click after a drag is swallowed, so a
 drag never dismisses or opens anything.
 
+### 5.402 The age card takes the Insights arc
+
+"Just use the arc from the Insights page." The tablet's tick arc
+(ageArcMarkup) leaves the age card for the hero's own instrument. #arcA is
+one live element the pages pass around, so the card gets a still copy
+(`arcAMarkup`) drawn by the same geometry -- ptA and AG, the half-year
+ticks, the fade to the ends and the stepped end blur -- and painted the way
+the frame paints a landed reading: the ticks between the centre and the
+organ's age in the age's colour, ramping in over the first 30%, an aligned
+organ lighting the centre tick in white, the indicator riding outside the
+ticks. No labels, as the phone hero shows it, and the hero's side mask.
+
 ---
 
 ## 6. Open items

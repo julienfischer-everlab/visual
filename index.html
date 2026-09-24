@@ -6095,8 +6095,14 @@
   .ovAgeOrg{position:relative;width:92px;height:92px;}
   .ovAgeOrg canvas{position:absolute;inset:0;display:block;}
   #phone2 .ovAgeSl .big{margin-top:2px;font-size:28px;line-height:1.1;}
-  .ovAgeSl .imArc{width:100%;margin-top:0;}
-  .ovAgeSl .imArc svg{height:34px;}
+  /* the Insights arc, a still copy, with its side fade; the svg's box is the
+     hero's, so the card gets the same curve at a smaller size */
+  .ovAgeSl .ovArc{
+    width:100%;margin-top:-4px;
+    -webkit-mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
+    mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
+  }
+  .ovAgeSl .ovArc svg{display:block;width:100%;height:auto;overflow:visible;}
   .ovAgeDots{display:flex;gap:4px;justify-content:center;align-items:center;margin-top:10px;}
   .ovAgeDots i{width:5px;height:5px;border-radius:3px;background:rgba(236,236,236,.25);}
   .ovAgeDots i.on{width:14px;background:#ececec;}
@@ -12518,6 +12524,38 @@
     dotsSig = '';
   }
   buildArcA();
+  // The same instrument, still, for a card: #arcA is one live element the
+  // pages pass around, so a card that wants the Insights arc at rest gets a
+  // static copy drawn by the same geometry (ptA, AG) with the same ticks,
+  // fade, end blur and indicator, painted the way the frame paints a landed
+  // reading -- the gap between the centre and the organ's age lit in the
+  // age's colour, an aligned organ lighting the centre tick in white -- and
+  // no labels, as the phone hero shows it. Ids are per instance.
+  let arcAN = 0;
+  function arcAMarkup(delta){
+    const fid = 'oa' + (arcAN++) + '_';
+    const STEPS = [0.8, 1.5, 2.5, 3.5, 4.7, 5.8];
+    let s = '<defs>' + STEPS.map((sd, i) => '<filter id="' + fid + (i + 1) + '" filterUnits="userSpaceOnUse" x="-40" y="-60" width="520" height="240"><feGaussianBlur stdDeviation="' + sd + '"/></filter>').join('') + '</defs>';
+    const col = ageColor(delta), base = tickBase();
+    const lo = Math.min(0, delta), hi = Math.max(0, delta), active = hi - lo > 0.08, span = Math.max(0.001, Math.abs(delta));
+    const alignK = Math.max(0, 1 - Math.abs(delta) / 0.5), alignOp = document.body.classList.contains('light') ? 0.95 : 0.48;
+    for (let v = -15; v <= 15; v += 0.5){
+      const a = ptA(v, AG.R), b = ptA(v, AG.R - 13);
+      const rel = Math.abs(v) / 15, baseOp = Math.max(0.02, 0.03 + 0.26 * (1 - Math.pow(rel, 1.4)));
+      const q = Math.max(0, Math.min(1, (rel - 0.6) / 0.4)), bl = q <= 0 ? 0 : Math.min(STEPS.length, Math.ceil(q * STEPS.length));
+      let stroke = base, op = baseOp;
+      if (v === 0 && alignK > 0.001){ stroke = indFill(); op = baseOp + (alignOp - baseOp) * alignK; }
+      else if (active && v !== 0 && v >= lo - 0.01 && v <= hi + 0.01){
+        const p = Math.min(1, Math.abs(v) / span);
+        stroke = col; op = p < 0.3 ? baseOp + (p / 0.3) * (0.95 - baseOp) : 0.95;
+      }
+      s += '<line x1="' + a[0].toFixed(1) + '" y1="' + a[1].toFixed(1) + '" x2="' + b[0].toFixed(1) + '" y2="' + b[1].toFixed(1) +
+           '" stroke="' + stroke + '" stroke-width="1.1" stroke-linecap="round" opacity="' + op.toFixed(3) + '"' + (bl ? ' filter="url(#' + fid + bl + ')"' : '') + '/>';
+    }
+    const ip = ptA(delta, AG.R + 13);
+    s += '<circle cx="' + ip[0].toFixed(1) + '" cy="' + ip[1].toFixed(1) + '" r="4" fill="' + indFill() + '"/>';
+    return '<svg class="arcACopy" viewBox="0 -14 440 114" aria-hidden="true">' + s + '</svg>';
+  }
 
   // per-digit odometer: every digit is its own wheel with an unwrapped
   // continuous value, so 8→4 downward visibly travels 8→7→6→5→4 rather
@@ -20712,7 +20750,7 @@
     const car = card.querySelector('.ovAgeCar'), dots = card.querySelector('.ovAgeDots');
     car.innerHTML = list.map(p =>
       '<div class="ovAgeSl"><div class="lbl">' + (p.slide || p.label + ' age') + '</div><div class="ovAgeOrg"></div>' +
-      '<div class="big">' + (CHRONO + p.delta) + '</div><div class="imArc">' + ageArcMarkup(p.delta) + '</div></div>').join('');
+      '<div class="big">' + (CHRONO + p.delta) + '</div><div class="ovArc">' + arcAMarkup(p.delta) + '</div></div>').join('');   // the Insights page's own arc ("just use the arc from the Insights page")
     dots.innerHTML = list.map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
     // the biological age is the figure here (BODY_I), not the iris its row
     // can otherwise read as; dense, so a 92px organ still has a body to it
