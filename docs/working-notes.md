@@ -10822,6 +10822,12 @@ phone: 147.4 → 145.4 pressed → 147.4 released; the desk 206.4 → 204.3.
 now, on the phone and the desk, in place of *Your next actions*; the See
 all count and the desk's arrows stay.
 
+"Smaller visual, 40 × 40px. Increase cards padding +4px." The render is
+40 × 40 and flush with the title's left (the 4px pull into the padding
+went); the tile's padding is 18 / 16 / 18 / 18 on the phone (from 14 / 12 /
+14 / 14) and 20 on the desk (from 16). Measured: render 40 × 40 at 18 / 18
+from the corner, title 18 from the foot and the left.
+
 ---
 
 ## 6. Open items
