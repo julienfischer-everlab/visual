@@ -10556,6 +10556,28 @@ card now: the eyebrow, 64% with a small grey sign, and the dotted dial with
 its warning in the middle, centred in the room under the figure so the two
 cards in the row match, the dial at 96 to the organ's 92.
 
+### 5.401 Card imagery, the renders
+
+"Card imagery" -- a zip of five 400px renders: the Everlab report, the
+clipboard questionnaire with two orange ticks, the blood tube with its red
+cap, the watch with its trace, the watch syncing. They are shot on a light
+grey (#e3e3e3) with soft shadows baked for it, so keying them onto the dark
+card would leave grey shadow blobs; instead each sits in a light tile the
+card's width and 200 tall, corners at 18, the image contained and the
+tile's grey the image's own, so the tile reads as the picture's ground.
+They replace the keyed icons of 5.398 (`assets/overview/card-*.webp`; the
+keyed set is gone).
+
+"Need to be able to swipe as a carousel, same behaviour as all carousels
+on this project." The Explore row takes the report carousel's rules
+(5.31x, buildRepCards): cards snap to the centre, the first and last
+clamped to the edges; the card at rest is lit and the others fade to .2;
+under a finger it scrolls natively, under a mouse it is dragged, snapping
+off while the pointer is down and an eased 480ms glide settling it on the
+nearest card -- or the next, on a flick past .35px/ms -- when it lets go;
+a tapped dot glides to its card; the click after a drag is swallowed, so a
+drag never dismisses or opens anything.
+
 ---
 
 ## 6. Open items
