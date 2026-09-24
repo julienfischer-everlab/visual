@@ -2573,15 +2573,19 @@
      row of small pills with the glyph, scrolling sideways */
   /* a bento, two to a row ("this bento 2x per row"); the odd one out takes
      the whole last row */
-  .ovSvc{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 13px 18px;}
+  /* three to a row ("put 3 cards next to each other"): a six-column grid,
+     each pill two columns wide; a row left with two pills shares it (three
+     columns each), so no slot stands empty. Labels wrap to two lines. */
+  .ovSvc{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:0 13px 18px;}
   .ovSvcChip{
-    display:flex;align-items:center;gap:10px;min-width:0;height:48px;padding:0 14px;border:0;border-radius:16px;cursor:pointer;
-    background:rgba(255,255,255,.02);color:#ececec;font:inherit;font-size:14px;font-weight:400;white-space:nowrap;text-align:left;   /* "regular font"; "bg opacity 2%" */
+    grid-column:span 2;display:flex;align-items:center;gap:8px;min-width:0;min-height:48px;padding:8px 10px 8px 12px;border:0;border-radius:16px;cursor:pointer;
+    background:rgba(255,255,255,.02);color:#ececec;font:inherit;font-size:12.5px;font-weight:400;line-height:1.15;text-align:left;   /* "regular font"; "bg opacity 2%" */
     transition:background .16s ease;
   }
-  .ovSvcChip:last-child:nth-child(odd){grid-column:1 / -1;}
-  .ovSvcChip span{overflow:hidden;text-overflow:ellipsis;}
-  .ovSvcChip svg{flex:none;width:20px;height:20px;}
+  .ovSvcChip:nth-child(3n+1):nth-last-child(2), .ovSvcChip:nth-child(3n+2):last-child{grid-column:span 3;}
+  .ovSvcChip:nth-child(3n+1):last-child{grid-column:1 / -1;}
+  .ovSvcChip span{min-width:0;}
+  .ovSvcChip svg{flex:none;width:18px;height:18px;}
   .ovSvcChip:hover{background:rgba(255,255,255,.06);}
   body.light .ovSvcChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
   /* ---- Header V2 (Overview tweak): the inbox and the services as two rows
@@ -6027,7 +6031,7 @@
   #phone2 .mtitle h2 span{color:#8b8b86;}   /* the name in grey, at the greeting's own weight */
   .ovsec{
     display:flex;align-items:center;justify-content:space-between;
-    padding:22px 13px 10px;font-size:20px;font-weight:500;letter-spacing:-.2px;color:#ececec;   /* the report page's heading ("keep all titles the same style") */
+    padding:22px 13px 26px;font-size:20px;font-weight:500;letter-spacing:-.2px;color:#ececec;   /* the report page's heading ("keep all titles the same style"); 26 below ("+16px margin after title") */
   }
   .ovsec .see{
     font-size:11px;color:#8b8b86;display:flex;align-items:center;gap:5px;font-weight:400;
@@ -6087,18 +6091,17 @@
   .ovCov .covGauge .covDial{width:96px;height:96px;}
   /* the age card: a snapping carousel of slides, each centred -- eyebrow,
      the particle organ, the age, the tablet's arc -- and its own small dots */
-  .msn.ovAge{padding:18px 0 14px;text-align:center;overflow:hidden;}
-  .ovAgeCar{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;}
-  .ovAgeCar::-webkit-scrollbar{display:none;}
-  .ovAgeSl{flex:0 0 100%;min-width:0;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;padding:0 12px;box-sizing:border-box;}
+  .msn.ovAge{padding:18px 0 14px;text-align:center;overflow:hidden;}   /* hidden: the arc runs past the edges and is cut by them */
+  .ovAgeCar{display:block;}
+  .ovAgeSl{display:flex;flex-direction:column;align-items:center;padding:0 12px;box-sizing:border-box;}
   .ovAgeSl .lbl{margin-bottom:6px;white-space:nowrap;}
-  .ovAgeOrg{position:relative;width:92px;height:92px;}
+  .ovAgeOrg{position:relative;width:106px;height:106px;}   /* "organ bigger by 15%": 92 -> 106 */
   .ovAgeOrg canvas{position:absolute;inset:0;display:block;}
   #phone2 .ovAgeSl .big{margin-top:2px;font-size:28px;line-height:1.1;}
   /* the Insights arc, a still copy, with its side fade; the svg's box is the
      hero's, so the card gets the same curve at a smaller size */
   .ovAgeSl .ovArc{
-    width:100%;margin-top:-4px;
+    width:150%;flex:none;margin:12px -25% 0;   /* "the arc should bleed over the edges", "down by 16px": half again as wide as the card, its ends cut by the card's own edges; 12 = the -4 it sat at plus 16 */
     -webkit-mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
     mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
   }
@@ -20745,18 +20748,17 @@
   (function ovAgeCard(){
     const card = document.querySelector('#phone2 .ovAge');
     if (!card || typeof makeOrganView !== 'function' || typeof PILL === 'undefined') return;
-    const body = PILL.find(p => p.label === 'Body');
-    const list = [body].concat(PILL.filter(p => p !== body).slice(0, 3)).filter(Boolean);
+    // One reading, the biological age ("remove the carousel; remove the age"):
+    // the eyebrow, the figure, and the Insights arc bleeding past the card's
+    // edges -- no number, the arc is the reading
+    const body = PILL.find(p => p.label === 'Body'); if (!body) return;
     const car = card.querySelector('.ovAgeCar'), dots = card.querySelector('.ovAgeDots');
-    car.innerHTML = list.map(p =>
-      '<div class="ovAgeSl"><div class="lbl">' + (p.slide || p.label + ' age') + '</div><div class="ovAgeOrg"></div>' +
-      '<div class="big">' + (CHRONO + p.delta) + '</div><div class="ovArc">' + arcAMarkup(p.delta) + '</div></div>').join('');   // the Insights page's own arc ("just use the arc from the Insights page")
-    dots.innerHTML = list.map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
+    car.innerHTML = '<div class="ovAgeSl"><div class="lbl">' + (body.slide || 'Biological age') + '</div><div class="ovAgeOrg"></div>' +
+      '<div class="ovArc">' + arcAMarkup(body.delta) + '</div></div>';   // the Insights page's own arc ("just use the arc from the Insights page")
+    if (dots) dots.remove();
     // the biological age is the figure here (BODY_I), not the iris its row
-    // can otherwise read as; dense, so a 92px organ still has a body to it
-    car.querySelectorAll('.ovAgeOrg').forEach((h, i) => makeOrganView(h, list[i].label === 'Body' && BODY_I >= 0 ? BODY_I : list[i].organIdx, { dl: false, dense: true }));
-    const sync = () => { const i = Math.round(car.scrollLeft / Math.max(1, car.clientWidth)); dots.querySelectorAll('i').forEach((el, k) => el.classList.toggle('on', k === i)); };
-    car.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
+    // can otherwise read as; dense, so a small organ still has a body to it
+    makeOrganView(car.querySelector('.ovAgeOrg'), BODY_I >= 0 ? BODY_I : body.organIdx, { dl: false, dense: true });
   })();
   // The Overview's inbox sheet ("the inbox icon should trigger a bottom
   // sheet"): from the top bar's disc and Header V2's row alike. Three

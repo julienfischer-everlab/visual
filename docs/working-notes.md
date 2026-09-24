@@ -10590,6 +10590,22 @@ organ's age in the age's colour, ramping in over the first 30%, an aligned
 organ lighting the centre tick in white, the indicator riding outside the
 ticks. No labels, as the phone hero shows it, and the hero's side mask.
 
+"Remove the carousel. The arc should bleed over the edges. Put the arc
+down by 16px. Remove the age. Organ bigger by 15%." The card is one
+reading again: the eyebrow, the body at 106 (from 92), and the arc alone as
+the reading -- no number. The arc is drawn half again as wide as the card
+(150%, margins of -25%) so its ends run under the card's edges and the
+card's own overflow cuts them; it sits 16 lower than it did.
+
+"+16px margin after the title": the Overview's section headings (`.ovsec`)
+pad 26 below instead of 10, before what they head.
+
+"Instead put 3 cards next to each other": the services under the greeting
+go three to a row, on a six-column grid with each pill two columns wide; a
+last row of two shares it at three columns each, so five make 3 + 2 with no
+empty slot. The pills keep the glyph at the left (18) and the label at
+12.5, wrapping to two lines where the width asks.
+
 ---
 
 ## 6. Open items
