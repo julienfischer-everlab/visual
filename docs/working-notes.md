@@ -10842,6 +10842,13 @@ desk's headline is held to 62% of the card for the same reason.
 higher (14 from the tile's top, the title where it was) and keeps four
 fifths of its colour rather than three quarters (`saturate(.8)`).
 
+"Reduce height. Padding between content and footer 32px. Reduce CTA Book,
+44px height. Break line before 'starts'." The booking card: the footer's
+run above it is 32 (from 56) and the card's 250px floor is gone, so the
+content sets the height -- 242 on the phone, from 292; the desk's is the
+right column's, as before. Book is 44 tall (from 52), 15px type on a 15px
+corner. The headline breaks after *journey* on both surfaces.
+
 ---
 
 ## 6. Open items
