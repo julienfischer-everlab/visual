@@ -1268,8 +1268,8 @@
   .mtitle .cbtn{display:inline-block;width:36px;height:36px;border-radius:50%;background:#1c1c1b;border:1px solid #2c2c2a;margin-left:8px;}
   /* fixed-height hero carousel; a sliver of the next card signals swipe */
   .msn{background:rgba(255,255,255,.04);border-radius:22px;padding:22px;display:flex;flex-direction:column;}
-  #phone .lbl, #phone2 .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;}
-  #phone .big, #phone2 .big{font-size:28px;font-weight:500;margin-top:6px;color:#ececec;}
+  #phone .lbl, #phone2 .lbl, #dOver .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b86;}
+  #phone .big, #phone2 .big, #dOver .big{font-size:28px;font-weight:500;margin-top:6px;color:#ececec;}
   #phone .inf{
     display:inline-block;width:14px;height:14px;border:1px solid #4a4a46;border-radius:50%;
     font-size:9px;line-height:13px;text-align:center;color:#8b8b86;
@@ -2589,7 +2589,7 @@
   .ovSvc.dragging .ovSvcChip{pointer-events:none;}
   .ovSvcChip{
     flex:0 0 calc((100% - 51px) / 2);scroll-snap-align:start;
-    display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;height:112px;box-sizing:border-box;padding:14px 12px 14px 14px;   /* 96 + 16 ("increase height by 16px"); a set height, so the row's cards agree whatever their labels do */
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;height:124px;box-sizing:border-box;padding:14px 12px 12px 14px;   /* 96 + 16 ("increase height by 16px"); then 124 for the render; a set height, so the row's cards agree whatever their labels do */
     border:0;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.04);color:#ececec;font:inherit;font-size:14px;font-weight:400;line-height:1.2;text-align:left;
     transition:background .16s ease;position:relative;overflow:hidden;
   }
@@ -2597,7 +2597,11 @@
   .ovSvcChip > *{position:relative;z-index:1;}
   .ovSvcChip > .ovSvcHalo{position:absolute;z-index:0;}   /* the ring stays under the plate: the children's z-index:1 had lifted it over */
   .ovSvcNew::after{z-index:0;}
-  .ovSvcVis{display:flex;align-items:center;justify-content:center;width:22px;height:22px;}
+  /* the visual ("one visual for each card"): the render, 64px, at the
+     card's bottom-right corner with the title above it at the left -- the
+     New badge keeps the top-right corner */
+  .ovSvcVis{display:flex;align-items:center;justify-content:center;width:64px;height:64px;align-self:flex-end;margin:-4px -2px -2px 0;}
+  .ovSvcVis img{display:block;width:100%;height:100%;object-fit:contain;}
   .ovSvcTx{display:flex;flex-direction:column;gap:5px;min-width:0;}
   .ovSvcTx b{font-weight:400;}
   .ovSvcTx small{display:none;}
@@ -2611,11 +2615,9 @@
   body.svcLg #phone2 .ovSvcTx{gap:6px;text-align:left;}
   body.svcLg #phone2 .ovSvcTx b{font-size:16px;font-weight:500;letter-spacing:-.1px;}
   body.svcLg #phone2 .ovSvcTx small{display:block;font-size:12.5px;line-height:1.35;color:#8b8b86;}
-  body.svcLg #phone2 .ovSvcVis{flex:none;order:2;width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.06);}   /* order 2: the visual at the right of the words */
-  body.svcLg #phone2 .ovSvcVis svg{width:30px;height:30px;}
-  body.svcLg #phone2 .ovSvcNew .ovSvcVis{background:rgba(247,131,89,.12);color:#ffb08a;}
+  body.svcLg #phone2 .ovSvcVis{flex:none;order:2;align-self:center;width:88px;height:88px;margin:0;}   /* order 2: the visual at the right of the words; the render itself, no disc under it */
   body.svcLg #phone2 .ovSvcChip > .ovNewBadge{top:12px;right:12px;}
-  body.light.svcLg #phone2 .ovSvcVis{background:rgba(46,31,26,.06);} body.light.svcLg #phone2 .ovSvcTx small{color:#7d6b58;}
+  body.light.svcLg #phone2 .ovSvcTx small{color:#7d6b58;}
   /* the Concierge tile: a ring of light turning round its edge -- a conic
      sweep on a pseudo twice the tile's size, spinning under a plate inset by
      the ring's width -- and the New badge in the corner */
@@ -6064,6 +6066,57 @@
   body.light .dvStat.age .sub{color:rgba(46,31,26,.6);}
   body.light .dvDots i{background:rgba(46,31,26,.25);}
   body.light .dvDots i.on{background:#2e241c;}
+  /* ---- The desk's Overview wearing the phone's ("adapt the desktop based on
+     the recent update on mobile"). The phone's pieces -- the top bar, the
+     greeting as a heading, the services row, the booking card, the coverage
+     and age cards, the Explore cards -- laid out for the width: the bar full
+     across the card's top, the five services in one row, the booking card
+     beside the two small cards and the tasks, the Explore cards three and a
+     half to the rail with the arrows stepping it. */
+  /* the top bar rides the card's top (sticky, cancelling the card's 32px of
+     top padding the way .dFilters does); its ground and its blur end 16px
+     under the field, as on the phone */
+  #dOver .ovTop{position:sticky;top:-32px;z-index:5;display:flex;align-items:center;gap:10px;margin:-32px -40px 0;padding:24px 40px 12px;}
+  #dOver .ovTop::before{
+    content:"";position:absolute;left:0;right:0;top:0;bottom:-4px;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(13,13,12,.48) 0%,rgba(13,13,12,.48) calc(100% - 16px),rgba(13,13,12,.42) calc(100% - 12px),rgba(13,13,12,.3) calc(100% - 8px),rgba(13,13,12,.16) calc(100% - 4px),rgba(13,13,12,.06) calc(100% - 1px),rgba(13,13,12,0) 100%);
+    -webkit-backdrop-filter:blur(24px) saturate(120%);backdrop-filter:blur(24px) saturate(120%);
+    -webkit-mask-image:linear-gradient(#000 calc(100% - 16px),rgba(0,0,0,.88) calc(100% - 12px),rgba(0,0,0,.62) calc(100% - 8px),rgba(0,0,0,.33) calc(100% - 4px),rgba(0,0,0,.12) calc(100% - 1px),transparent 100%);
+    mask-image:linear-gradient(#000 calc(100% - 16px),rgba(0,0,0,.88) calc(100% - 12px),rgba(0,0,0,.62) calc(100% - 8px),rgba(0,0,0,.33) calc(100% - 4px),rgba(0,0,0,.12) calc(100% - 1px),transparent 100%);
+  }
+  body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.48) 0%,rgba(247,242,233,.48) calc(100% - 16px),rgba(247,242,233,.42) calc(100% - 12px),rgba(247,242,233,.3) calc(100% - 8px),rgba(247,242,233,.16) calc(100% - 4px),rgba(247,242,233,.06) calc(100% - 1px),rgba(247,242,233,0) 100%);}
+  #dOver .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;}
+  #dOver .ovTop .ovChatBox{width:100%;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.07);-webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);}
+  #dOver .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
+  body.light #dOver .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
+  #dOver .ovInbox, #dOver .ovBell{width:48px;height:48px;}
+  /* the greeting: the page's heading, left, in the phone's 24 / 500 */
+  #dOver .dvH1{margin:22px 0 22px;text-align:left;font-size:24px;letter-spacing:-.3px;}
+  #dOver .dvH1 span{color:#8b8b86;}
+  body.light #dOver .dvH1 span{color:#7d6b58;}
+  /* the services: the five in one row, no scroll, a little taller for the
+     room; the render 76px */
+  #dOver .ovSvc{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:0;margin:0 0 20px;overflow:visible;cursor:default;}
+  #dOver .ovSvcChip{flex:none;height:140px;padding:16px 14px 12px 16px;font-size:14.5px;}
+  #dOver .ovSvcVis{width:76px;height:76px;}
+  /* the top band: the booking card at the left, stretched to the column of
+     the two small cards and the tasks at the right */
+  #dOver .ovhero{margin:0;border-radius:20px;min-height:0;}
+  #dOver .ovBook h3{font-size:23px;max-width:80%;}
+  #dOver .ovrow2{padding:0;gap:20px;}
+  #dOver .ovrow2 .msn{border-radius:20px;}
+  #dOver .ovCov .covGauge .covDial{width:112px;height:112px;}
+  #dOver .ovAge{cursor:pointer;}
+  /* the rail: the Explore cards at the rail's width and corners, resting
+     on their left edge, all lit; the button the rail's own */
+  #dOver .ovcar{display:flex;gap:20px;padding:0;margin:0;overflow-x:auto;}
+  #dOver .ovcard{flex:0 0 302px;scroll-snap-align:start;min-height:352px;border-radius:20px;padding:18px;opacity:1;}
+  #dOver .ovcard h4{font-size:15.5px;line-height:1.38;}
+  #dOver .ovbtn{border-radius:11px;font-size:13.5px;padding:12px 0;background:rgba(255,255,255,.09);color:#ececec;cursor:pointer;transition:background .16s ease;}
+  #dOver .ovbtn:hover{background:rgba(255,255,255,.16);}
+  body.light #dOver .ovbtn{background:rgba(46,31,26,.09);color:#2e1f1a;}
+  #dOver .oclab .ocx{cursor:pointer;}
+  #dOver .ovcdots{margin-top:22px;}
 
   /* ---- Overview frame: a sibling screen in the same language ---- */
   #phoneShell2{display:none;}
@@ -6135,7 +6188,7 @@
   .ovrow2 .msn{min-height:150px;}   /* the age card sets the row's height now; the two stretch to it */
   /* the coverage card in the left slot: the Insights phone's dial, centred
      in the room under the figure */
-  #phone2 .ovCov .big .pc{font-size:13px;font-weight:400;color:#8b8b86;margin-left:1px;}
+  #phone2 .ovCov .big .pc, #dOver .ovCov .big .pc{font-size:13px;font-weight:400;color:#8b8b86;margin-left:1px;}
   .ovCov .covGauge{flex:1 1 auto;display:flex;margin-top:6px;}
   .ovCov .covGauge .covDial{width:96px;height:96px;}
   /* the age card: a snapping carousel of slides, each centred -- eyebrow,
@@ -9096,50 +9149,52 @@
        breakpoint-ready) is the one structure every desk page is built on
        now ("I want all pages be based on this structure from now"). -->
   <main class="dvMain" id="dOver">
-    <h1 class="dvH1">Welcome back, <span>Julien</span></h1>
-    <!-- the chat, centred under the greeting ("put the AI field below the h1;
-         h1 centred, AI field just below, centred as well, 80% width"): one
-         field to ask Everlab anything, the way into the assistant from the
-         page you land on -->
-    <div class="ovChat">
-      <div class="ovChatBox">
-        <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>
-        <input type="text" placeholder="Ask Everlab anything about your health" autocomplete="off" spellcheck="false" aria-label="Ask Everlab">
-        <button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>
+    <!-- The desk wears the phone's Overview ("adapt the desktop based on the
+         recent update on mobile"): the top bar first -- the assistant's field
+         filling the left, the inbox with its dot, the bell -- riding the top
+         of the card while the page passes under its blur; then the greeting
+         as the page's heading, left; the services row (built by the sheet's
+         script, after the h1); the booking card beside the coverage and age
+         cards with the tasks under them; the Explore cards in the rail. -->
+    <div class="ovTop">
+      <div class="ovChat">
+        <div class="ovChatBox">
+          <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>
+          <input type="text" placeholder="Ask Everlab anything" autocomplete="off" spellcheck="false" aria-label="Ask Everlab">
+          <button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>
+        </div>
       </div>
+      <button class="ovInbox" type="button" aria-label="Inbox"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 5.2 5.4A1.4 1.4 0 0 1 6.5 4.5h7a1.4 1.4 0 0 1 1.3.9l2.2 6.1V15a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 15Z"/><path d="M3 11.5h4.2l.9 1.8h3.8l.9-1.8H17"/></svg></button>
+      <button class="ovBell" type="button" aria-label="Notifications"><svg class="icBell" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 8.6a4.8 4.8 0 0 1 9.6 0v3l1.4 2.3H3.8l1.4-2.3Z"/><path d="M8.3 16.2a1.8 1.8 0 0 0 3.4 0"/></svg></button>
     </div>
+    <h1 class="dvH1">Welcome back, <span>Julien</span></h1>
     <div class="dvTop">
-      <section class="dvPlan">
-        <div class="dvPlanTop">
-          <div>
-            <span class="dvTag">Next step</span>
-            <h3>Sarah&rsquo;s<br><span>Everlab Plan</span></h3>
-          </div>
-          <div class="dvThumbs">
-            <i style="background:linear-gradient(160deg,#c9a389,#8d6a52)"></i>
-            <i style="background:linear-gradient(160deg,#b8785e,#6e4030)"></i>
-            <i style="background:linear-gradient(160deg,#7d9469,#41573a)"></i>
-          </div>
+      <!-- the next step: book the consultation, the phone's own card -->
+      <div class="ovhero ovBook">
+        <div class="ovBookArt" aria-hidden="true"></div>
+        <div class="tag">Next step</div>
+        <h3><span>Your health journey starts here.</span> Book your consultation now.</h3>
+        <div class="ovBookFoot">
+          <div class="ovBookWhen"><b>Next availability</b><span>Tomorrow 8:00am</span></div>
+          <button class="ovBookBtn" type="button">Book</button>
         </div>
-        <p class="d">Here are the services your Everlab doctor has recommended, brought together into a customised plan to support your health goals.</p>
-        <div class="dvSvc">
-          <div>Hormone Balance Panel</div>
-          <div>Weight Management Program (GLP-1)</div>
-          <div>Thyroid &amp; Energy Check</div>
-          <div>+ 6 more</div>
-        </div>
-        <button class="dvBtn">Review my plan</button>
-      </section>
+      </div>
       <div>
-        <div class="dvStats">
-          <section class="dvStat ins">
-            <span class="cap">Health Insights</span>
-            <div class="dvGauge"><svg viewBox="0 0 200 130" aria-hidden="true"><path d="M22 116a78 78 0 0 1 156 0" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="13" stroke-linecap="round"/><path d="M22 116a78 78 0 0 1 156 0" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-dasharray="184 245" stroke-dashoffset="0"/><path d="M22 116a78 78 0 0 1 156 0" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="13" stroke-linecap="butt" stroke-dasharray="26 245" stroke-dashoffset="-184"/></svg><div class="val">75</div><div class="sub">Biomarkers</div></div>
-          </section>
-          <section class="dvStat age">
-            <span class="cap">Biological Age</span>
-            <div class="dvGauge"><svg viewBox="0 0 200 130" aria-hidden="true"><path d="M22 116a78 78 0 0 1 156 0" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="2.5" stroke-linecap="round"/><circle cx="58" cy="52" r="5" fill="#fff"/></svg><div class="val">42</div><div class="sub">8 years younger</div></div>
-          </section>
+        <div class="ovrow2 dvStats">
+          <div class="msn ovCov">
+            <div class="lbl">Health coverage</div>
+            <div class="big">64<span class="pc">%</span></div>
+            <div class="covGauge">
+              <svg class="covDial" viewBox="0 0 100 100" aria-hidden="true"><path class="tk" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="9" stroke-dasharray="1.4 3.3"/><path class="pg" d="M23.1 76.9 A38 38 0 1 1 76.9 76.9" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="114.6 999"/></svg>
+              <svg class="covWarn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.6 14.4 13.4H1.6L8 2.6ZM8 6.6v3M8 11.4v.1"/></svg>
+            </div>
+          </div>
+          <!-- the age card, the phone's: the particle organ, the arc, the
+               reading in words; a swipe (or a drag) moves through the organs,
+               a click goes to Insights. Built by buildOvAge(). -->
+          <div class="msn ovAge">
+            <div class="ovAgeCar"></div>
+          </div>
         </div>
         <div class="dvSec">Tasks to complete <span class="see">See all <b>12</b></span></div>
         <div class="dvTasks"><div class="dvTask"><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="rgba(236,236,236,.75)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 3v3M13 3v3"/></svg></span><span class="tx"><b>Book your onboarding</b><span>Small description</span></span><button class="go">Book</button></div><div class="dvTask"><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="rgba(236,236,236,.75)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 3v3M13 3v3"/></svg></span><span class="tx"><b>Book your onboarding consult</b><span>Small description</span></span><button class="go">Book</button></div><div class="dvTask"><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="rgba(236,236,236,.75)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 3v3M13 3v3"/></svg></span><span class="tx"><b>Book your onboarding consult</b><span>Small description</span></span><button class="go">Book</button></div></div>
@@ -9151,61 +9206,11 @@
       <span class="bar"></span>
       <span class="nav"><button aria-label="Previous">&#8249;</button><button aria-label="Next">&#8250;</button></span>
     </div>
-    <div class="dvRail">
-      <article class="dvAct red" id="dvOrganCard">
-        <div class="dvActTop"><i></i>Explore<span class="x">&#10005;</span></div>
-        <h4>Your health insights go deeper.<br>Discover your organ age.</h4>
-        <div class="art" id="dvOrgan"></div>
-        <button class="dvActBtn">Discover organ age</button>
-      </article>
-      <article class="dvAct">
-        <div class="dvActTop"><i></i>New document<span class="x">&#10005;</span></div>
-        <h4>A new document has been published.</h4>
-        <div class="art">
-          <svg viewBox="0 0 200 140" aria-hidden="true">
-            <rect x="34" y="30" width="106" height="86" rx="7" fill="#2a2a2a" transform="rotate(-6 87 73)"/>
-            <rect x="50" y="26" width="106" height="88" rx="7" fill="#3a3a3a"/>
-            <rect x="62" y="38" width="46" height="20" rx="4" fill="#e0543a"/>
-            <g fill="rgba(236,236,236,.32)">
-              <rect x="62" y="66" width="82" height="4" rx="2"/>
-              <rect x="62" y="76" width="82" height="4" rx="2"/>
-              <rect x="62" y="86" width="60" height="4" rx="2"/>
-              <rect x="62" y="96" width="70" height="4" rx="2"/>
-            </g>
-          </svg>
-        </div>
-        <button class="dvActBtn">See results</button>
-      </article>
-      <article class="dvAct amber">
-        <div class="dvActTop"><i></i>To monitor<span class="x">&#10005;</span></div>
-        <h4>Your ApoB is above the optimal range. Let&rsquo;s take action.</h4>
-        <div class="art">
-          <svg viewBox="0 0 240 140" preserveAspectRatio="none" aria-hidden="true">
-            <g stroke="rgba(255,255,255,.08)" stroke-width="1">
-              <path d="M0 34h240M0 74h240M0 114h240"/>
-            </g>
-            <path d="M10 106 L56 100 L102 92 L148 66 L194 30" fill="none" stroke="#4ade80"
-                  stroke-width="2.5" stroke-linecap="round" stroke-dasharray="96 400"/>
-            <path d="M10 106 L56 100 L102 92 L148 66 L194 30" fill="none" stroke="#e6a96b"
-                  stroke-width="2.5" stroke-linecap="round" stroke-dasharray="60 400" stroke-dashoffset="-96"/>
-            <path d="M10 106 L56 100 L102 92 L148 66 L194 30" fill="none" stroke="#e05a45"
-                  stroke-width="2.5" stroke-linecap="round" stroke-dasharray="70 400" stroke-dashoffset="-156"/>
-            <circle cx="10" cy="106" r="4" fill="#4ade80"/>
-            <circle cx="102" cy="92" r="4" fill="#e6a96b"/>
-            <circle cx="194" cy="30" r="4.5" fill="#e05a45"/>
-          </svg>
-          <span class="dvChip">146 mg/dL</span>
-        </div>
-        <button class="dvActBtn">See insight</button>
-      </article>
-      <article class="dvAct">
-        <div class="dvActTop"><i></i>New document<span class="x">&#10005;</span></div>
-        <h4>24 historical documents added to your account.</h4>
-        <div class="art"></div>
-        <button class="dvActBtn">See results</button>
-      </article>
-    </div>
-    <div class="dvDots"><i class="on"></i><i></i><i></i></div>
+    <!-- the Explore cards, the phone's ("replace the next actions by these"),
+         in the rail: built by buildOvExplore() with the rendered imagery; the
+         arrows above step the rail a card at a time -->
+    <div class="ovcar dvRail"></div>
+    <div class="ovcdots dvDots"></div>
 
     <div class="dvSec">Your action plan</div>
     <div class="dvPlanGrid"><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#8e7a63,#4c4035)"></span><span class="badge">Protocol</span></div><div><b>Onboarding Consult</b><p>Speak with an Everlab doctor about trends from your existing data, and gaps in your screening.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="9" rx="2"/><path d="M6 15h4"/></svg><span>Online video call</span><button class="go pri">Book</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#e0693f,#b83a1e)"></span><span class="badge">Protocol</span></div><div><b>Pathology Test</b><p>Visit an Everlab or partner clinic to complete your pathology tests.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#6f6f72,#37373a)"></span><span class="badge">Protocol</span></div><div><b>Dexa Scan</b><p>Visit an Everlab or partner clinic to get your full body composition scan.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#3a3a44,#17171c)"></span><span class="badge">Protocol</span></div><div><b>MRI Scan</b><p>Title of the event lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#c2a08a,#7a5a47)"></span><span class="badge">Protocol</span></div><div><b>Physical Assessment</b><p>A 90 minute longevity focused physical assessment to guide your exercise plan.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:linear-gradient(150deg,#9aa87d,#4e5a3c)"></span><span class="badge">Protocol</span></div><div><b>Nutrition Review</b><p>Transform your health data into actionable insights with an Accredited Dietitian.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="9" rx="2"/><path d="M6 15h4"/></svg><span>Online video call</span><button class="go">View</button></div></article></div>
@@ -16617,28 +16622,45 @@
     // phone is on its biomarkers, the Overview on its plan
     const CHIPS_INSIGHTS = ['Show my latest results', 'What’s out of range?', 'Explain my biological age', 'Trends since my last test'];
     const CHIPS_OVERVIEW = ['Show my latest results', 'What’s my next step?', 'Review my plan', 'Book a consult'];
+    // The services row under the Overview's greeting ("put the services
+    // below the h1 on Overview, in a mini way"), one markup for the phone and
+    // the desk. Concierge leads ("first card: Concierge, with a rotating halo
+    // border, badge top right NEW"): the same card with a turning ring of
+    // light around it and the New badge in its corner.
+    // Each card carries a rendered visual ("use these images at the cards
+    // below the h1, one visual for each card"): Julien's strip of five -- the
+    // bell, the laptop with the doctor on call, the signed Rx sheets, the
+    // bottle with its pills, the folder with its arrow -- cut to squares on a
+    // transparent ground, so they sit on the card's own plate. Five renders,
+    // five cards: Check Symptoms has no visual and stays in the sheet's
+    // bento only. Literal paths, one each: the build inlines an asset only
+    // where it can read its path in the source.
+    const SVC_IMG = {
+      concierge: 'assets/overview/svc-concierge.webp', tele: 'assets/overview/svc-tele.webp', cert: 'assets/overview/svc-cert.webp',
+      treat: 'assets/overview/svc-treat.webp', path: 'assets/overview/svc-path.webp'
+    };
+    const SVC_ROW = [
+      { l: 'Concierge', img: 'concierge', d: 'Your care team, one message away', extra: ' ovSvcNew' },
+      { l: 'Telehealth', img: 'tele', d: 'See a doctor from home, today' },
+      { l: 'Med Certs', img: 'cert', d: 'A certificate in minutes' },
+      { l: 'Treatments', img: 'treat', d: 'Plans and prescriptions, managed' },
+      { l: 'Pathology', img: 'path', d: 'Book tests at a clinic near you' }
+    ];
+    // one markup for both dresses: the visual (the render) and the text (the
+    // title, and in Large a line of support); the Services tweak (body.svcLg)
+    // lays them out
+    const svcTile = s => '<button class="ovSvcChip' + (s.extra || '') + '" type="button">' +
+      (s.extra ? '<i class="ovSvcHalo" aria-hidden="true"></i><span class="ovNewBadge">New</span>' : '') +
+      '<span class="ovSvcTx"><b>' + s.l + '</b><small>' + s.d + '</small></span>' +
+      '<span class="ovSvcVis"><img src="' + SVC_IMG[s.img] + '" alt="" width="360" height="360"></span></button>';
+    const svcRow = () => { const row = document.createElement('div'); row.className = 'ovSvc'; row.innerHTML = SVC_ROW.map(svcTile).join(''); return row; };
+    // ...and on the desk, under its own greeting ("adapt the desktop based on
+    // the recent update on mobile"): the five in one row, no scroll
+    { const h1 = document.querySelector('#dOver .dvH1'); if (h1 && !document.querySelector('#dOver .ovSvc')) h1.after(svcRow()); }
     ['phone', 'phone2'].forEach(id => {
       const ph = document.getElementById(id); if (!ph) return;
-      // the Overview carries the services in a mini row under its greeting
-      // ("put the services below the h1 on Overview, in a mini way")
       const title = id === 'phone2' && ph.querySelector('.mtitle');
-      if (title && !ph.querySelector('.ovSvc')){
-        const row = document.createElement('div');
-        row.className = 'ovSvc';
-        // Concierge leads ("first card: Concierge, with a rotating halo border,
-        // badge top right NEW"): the same tile with a turning ring of light
-        // around it and the New badge in its corner
-        const BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17h16"/><path d="M5 17a7 7 0 0 1 14 0"/><path d="M12 10V7.5"/><circle cx="12" cy="6" r="1.5"/><path d="M3 20h18"/></svg>';
-        // one markup for both dresses: the visual (the glyph, or in Large a
-        // disc with the glyph) and the text (the title, and in Large a line
-        // of support); the Services tweak (body.svcLg) lays them out
-        const tile = (ic, l, d, extra) => '<button class="ovSvcChip' + (extra || '') + '" type="button">' +
-          (extra ? '<i class="ovSvcHalo" aria-hidden="true"></i><span class="ovNewBadge">New</span>' : '') +
-          '<span class="ovSvcVis">' + ic + '</span><span class="ovSvcTx"><b>' + l + '</b><small>' + d + '</small></span></button>';
-        row.innerHTML = tile(BELL, 'Concierge', 'Your care team, one message away', ' ovSvcNew') +
-          SERVICES.map(s => tile(IC[s.ic], s.l, s.d)).join('');
-        title.after(row);
-      }
+      if (title && !ph.querySelector('.ovSvc')) title.after(svcRow());
       const btn = ph.querySelector('.mChat'); if (!btn) return;
       // The sheet ("same pattern as this: a card that overlaps the bottom of
       // the screen, no morph or shape change in the star CTA; the field first,
@@ -20780,16 +20802,20 @@
   const organModal = makeSheet(document.body, { desktop: true, overlay: true });
   organSheets.push(organModal);
   (function desktopOverview(){
+    if (!document.getElementById('dOver')) return;
+    // the organ card that used to lead the rail (gone with the phone's
+    // Explore cards, which the desk wears now); guarded, should it return
     const card = document.getElementById('dvOrganCard');
-    if (!card) return;
-    // the same master component the library and the modal mount
-    makeOrganView(document.getElementById('dvOrgan'), 0, {
-      target: shapeTarget(clouds[0], 900), fill: 0.44, dot: 0.95, dl: false
-    });
-    card.addEventListener('click', e => {
-      if (e.target.closest('.x')) return;   // the dismiss cross never opens it
-      organModal.open(1);                   // Mental: the brain on the card
-    });
+    if (card){
+      // the same master component the library and the modal mount
+      makeOrganView(document.getElementById('dvOrgan'), 0, {
+        target: shapeTarget(clouds[0], 900), fill: 0.44, dot: 0.95, dl: false
+      });
+      card.addEventListener('click', e => {
+        if (e.target.closest('.x')) return;   // the dismiss cross never opens it
+        organModal.open(1);                   // Mental: the brain on the card
+      });
+    }
     // The Overview's <main> joins the Insights shell: one .dash, one sidebar,
     // two cards, and the mode says which is showing (body.m9 #dOver). Moved,
     // not copied, so its script (the organ tile, the rail) finds the nodes
@@ -20871,8 +20897,10 @@
   // new shape, the arc's indicator sweeps to the new reading with the lit run
   // following, the eyebrow leaves the way the swipe went and returns from the
   // far side -- with small dots under the arc for where it stands.
-  (function ovAgeCard(){
-    const card = document.querySelector('#phone2 .ovAge');
+  // One builder for the phone's card and the desk's ("adapt the desktop
+  // based on the recent update on mobile"): `onTap` is where a tap goes --
+  // the Insights phone from the phone, the Insights desk from the desk.
+  function buildOvAge(card, onTap){
     if (!card || typeof makeOrganView !== 'function' || typeof PILL === 'undefined') return;
     const body = PILL.find(p => p.label === 'Body'); if (!body) return;
     const list = [body].concat(PILL.filter(p => p !== body));   // the biological age first, then the nine organs in product order
@@ -20916,10 +20944,12 @@
     // reading lives ("tap: go to the Insights page") -- the dock's own route
     card.addEventListener('click', e => {
       if (swiped){ e.preventDefault(); e.stopPropagation(); return; }
-      if (typeof setMode === 'function') setMode(20);
+      if (onTap) onTap();
     });
     card._ovAge = { go, list: () => list, at: () => cur };
-  })();
+  }
+  buildOvAge(document.querySelector('#phone2 .ovAge'), () => setMode(20));   // the Insights phone
+  buildOvAge(document.querySelector('#dOver .ovAge'), () => setMode(18));    // the Insights desk
   // The services row under the greeting scrolls natively under a finger and
   // is dragged under a mouse, as the other rows are: snap off while the
   // pointer is down, an eased glide onto the nearest card's start (or the
@@ -21006,8 +21036,13 @@
   // the dismiss, the line with the source in bold, a drawn illustration of
   // two stacked sheets, and See insights. The illustration is an SVG built
   // from a few parts, so the five stay one family.
-  (function ovExplore(){
-    const car = document.querySelector('#phone2 .ovcar'), dots = document.querySelector('#phone2 .ovcdots');
+  // One builder for the phone's row and the desk's rail. `opts.align`: where
+  // a card comes to rest -- 'center' on the phone (one card at a time, lit,
+  // the rest faded), 'start' on the desk (three and a half in view, the row
+  // snapping to a card's left edge). `opts.nav`: the desk's arrow pair, a
+  // card per press.
+  function buildOvExplore(car, dots, opts){
+    opts = opts || {};
     if (!car) return;
     const sheets = inner =>
       '<svg class="ovIll" viewBox="0 0 160 150" aria-hidden="true">' +
@@ -21051,8 +21086,8 @@
       { ill: 'watch', t: 'We have some insights from your <b>Apple Watch</b>.' },
       { ill: 'sync',  t: 'We are syncing with your <b>Oura ring</b> for insights.', cta: 'Provide consent' }
     ];
-    // the one red used across the five: a gradient the first card's image block takes
-    car.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ovRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0644a"/><stop offset="1" stop-color="#b8321f"/></linearGradient></defs></svg>');
+    // the one red used across the five: a gradient the first card's image block takes (once in the document)
+    if (!document.getElementById('ovRed')) car.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ovRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0644a"/><stop offset="1" stop-color="#b8321f"/></linearGradient></defs></svg>');
     CARDS.forEach(c => {
       const el = document.createElement('div');
       el.className = 'ovcard ovExp';
@@ -21074,7 +21109,8 @@
       const cs = cardsOf(), c = cs[Math.max(0, Math.min(cs.length - 1, i))];
       if (!c) return 0;
       const hr = car.getBoundingClientRect(), cr = c.getBoundingClientRect();
-      const pos = (cr.left - hr.left + car.scrollLeft) - (car.clientWidth - cr.width) / 2;
+      const left = cr.left - hr.left + car.scrollLeft;
+      const pos = opts.align === 'start' ? left : left - (car.clientWidth - cr.width) / 2;
       return Math.max(0, Math.min(car.scrollWidth - car.clientWidth, pos));
     };
     const idxAt = x => { const cs = cardsOf(); let best = 0, bd = Infinity; cs.forEach((c, i) => { const d = Math.abs(snapAt(i) - x); if (d < bd){ bd = d; best = i; } }); return best; };
@@ -21087,6 +21123,8 @@
     drawDots(); sync();
     car.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
     if (dots) dots.addEventListener('click', e => { const i = e.target.closest('i'); if (i) car.scrollTo({ left: snapAt([].indexOf.call(dots.children, i)), behavior: 'smooth' }); });
+    // the desk's arrows: a card back, a card on
+    if (opts.nav){ const b = opts.nav.querySelectorAll('button'); if (b[0]) b[0].addEventListener('click', () => car.scrollTo({ left: snapAt(idxAt(car.scrollLeft) - 1), behavior: 'smooth' })); if (b[1]) b[1].addEventListener('click', () => car.scrollTo({ left: snapAt(idxAt(car.scrollLeft) + 1), behavior: 'smooth' })); }
     let drag = null, dragged = false, glide = 0;
     const move = e => {
       if (!drag || e.pointerId !== drag.id) return;
@@ -21132,7 +21170,11 @@
       card.style.transition = 'opacity .2s ease, transform .2s ease'; card.style.opacity = '0'; card.style.transform = 'scale(.96)';
       setTimeout(() => { card.remove(); drawDots(); sync(); }, 220);
     });
-  })();
+  }
+  buildOvExplore(document.querySelector('#phone2 .ovcar'), document.querySelector('#phone2 .ovcdots'), { align: 'center' });
+  { const over = document.getElementById('dOver');
+    if (over){ const secs = [].slice.call(over.querySelectorAll('.dvSec')), sec = secs.find(s => s.querySelector('.nav'));
+      buildOvExplore(over.querySelector('.ovcar'), over.querySelector('.ovcdots'), { align: 'start', nav: sec && sec.querySelector('.nav') }); } }
   // hover: cell and its organ fade together, .5 resting -> 1 hovered
   const gHov = new Array(PILL.length).fill(0);
   const gA = new Array(PILL.length).fill(0.32);

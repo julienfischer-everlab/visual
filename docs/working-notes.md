@@ -10767,6 +10767,42 @@ The stops are `calc(100% - Npx)` from the foot, so the run is 16px whatever
 the status strip measures. Measured: field foot at 176, ground's foot at
 192.
 
+### 5.409 The services with their renders; the desk wears the phone
+
+"Use these images at the cards below the h1. One visual for each card."
+Julien's strip of five renders -- the bell, the laptop with the doctor on
+call, the signed Rx sheets, the bottle with its pills, the folder with its
+arrow -- cut to squares on a transparent ground (`assets/overview/svc-*.webp`,
+360px) and given one to a card: Concierge, Telehealth, Med Certs,
+Treatments, Pathology. Five renders, five cards, so Check Symptoms leaves
+the row (it stays in the assistant's bento). The tile turns over: the title
+at the top-left, the render 64px at the bottom-right, the New badge keeping
+its corner; 124px tall for the room. The Large dress puts the render at the
+right of the words at 88px, with no disc under it now. The row is one
+markup for the phone and the desk (`svcRow()` in the sheet's script).
+
+"Adapt the desktop based on the recent update on mobile." The desk's
+Overview (#m9) wears the phone's pieces, laid out for the width. The top
+bar first -- the field filling the left, the inbox with its dot, the bell,
+48px -- sticky on the card's top (top:-32px, the way .dFilters cancels the
+card's padding) with the same ground and blur, ending 16px under the field.
+The greeting as the page's heading, left, 24 / 500. The five services in
+one grid row, 140px tall, the render 76px. The top band keeps its two
+columns: the booking card at the left, stretched to the right column's
+height (573 in the capture), and at the right the coverage and age cards
+(the dial 112px, the same particle organ, arc and reading) over the tasks.
+The rail is the phone's Explore cards -- the five renders on the 6% plate,
+302px wide, resting on their left edge, all lit, the arrows stepping a card
+at a time and the dots following. The old plan card, the two gauges and the
+organ card are gone from the page; `desktopOverview()` guards the organ
+card should it return, and still moves the page into the shell and wires
+the sidebar. `buildOvAge(card, onTap)` and `buildOvExplore(car, dots,
+{align, nav})` build both surfaces: on the desk a tap on the age card goes
+to the Insights desk (#m18), a drag still moves through the organs.
+Measured at 1440: bar 84 tall, bleed 16, services 5 × 140, hero 465 × 573,
+rail 5 cards / 5 dots, next arrow → card 2. No console errors, phone
+unchanged in behaviour (5 service cards, 5 Explore cards).
+
 ---
 
 ## 6. Open items
