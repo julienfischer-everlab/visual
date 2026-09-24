@@ -10483,6 +10483,22 @@ stands 12px off the left, right and bottom edges with all four corners at
 26, its drawn home bar gone (the phone's own shows under it); on the keys
 it keeps the 12px float above them.
 
+### 5.396 Five Explore cards in the next-actions row
+
+"Add more of these cards" -- a sheet of five: "We have some insights from
+*documentname*", from a questionnaire, an item, a device, and "we are
+syncing with your device", each with a stacked-sheets illustration and See
+insights. The Overview's carousel gets the five after the News card, built
+in `ovExplore()` from one family of parts: two stacked sheets (the back one
+turned 7deg, the front -6) and, on the front sheet, the thing itself -- a
+red image block over text lines, a checklist with the first box lit, plain
+text, a device face with bars and a trace, and the same face dimmed with a
+turning spark for the sync. The sources are real ones from the concept:
+the Advanced blood panel, the Health questionnaire, the Dexa report, the
+Oura ring, the Apple Watch (syncing, its button dimmed). The dots now
+count the cards and the lit one follows the scroll; the dismiss on an
+Explore card takes it out of the row and the dots shrink with it.
+
 ---
 
 ## 6. Open items
