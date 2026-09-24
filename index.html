@@ -2663,13 +2663,24 @@
      carousel follows as before. The field is one node, moved by
      placeOvChat() -- here it stands in the scroller, and while it is live it
      rises over the blanket (z 7, the bar's own) so the words stay lit. */
-  body.hdrV3 #phone2 .ovTop{justify-content:flex-end;}
-  body.hdrV3.m6 #phone2 .mtitle{padding:32px 13px 0;justify-content:center;text-align:center;}
-  body.hdrV3 #phone2 .mscroll > .ovChat{position:relative;z-index:7;display:flex;justify-content:center;margin:32px 13px;}
+  /* the profile at the bar's left, the discs at its right; V1 and V2 never show it */
+  .ovAvatar{display:none;flex:none;width:44px;height:44px;margin-right:auto;padding:0;border:0;border-radius:50%;overflow:hidden;cursor:pointer;background:rgba(255,255,255,.06);}
+  .ovAvatar img{display:block;width:100%;height:100%;object-fit:cover;}
+  body.hdrV3 #phone2 .ovAvatar{display:block;}
+  body.hdrV3.m6 #phone2 .mtitle{padding:16px 13px 0;justify-content:center;text-align:center;}   /* 32, then "push up h1 by 16px" */
+  body.hdrV3 #phone2 .mscroll > .ovChat{position:relative;z-index:7;display:flex;justify-content:center;margin:24px 13px 32px;}   /* "reduce gap between h1 and chat field by 8px": 32 -> 24 */
   body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox{
-    width:100%;height:44px;padding:0 16px;font-size:14px;box-shadow:none;background:rgba(255,255,255,.08);
+    width:75%;height:44px;padding:0 16px;font-size:14px;box-shadow:none;background:rgba(255,255,255,.08);   /* "75% of the width" */
     -webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);
   }
+  /* Past the services ("on scroll past the service carousel, display the
+     chat field inside the top sticky bar"): the field moves into the bar,
+     between the profile and the discs, and a spacer of its height and
+     margins holds its place in the page so nothing jumps; it comes back when
+     the page scrolls up again. The move fades the field in where it lands. */
+  body.hdrV3 #phone2 .ovChatSpace{height:100px;}   /* 44 + 24 + 32 */
+  body.hdrV3 #phone2 .ovChat{animation:ovChatIn .28s ease;}
+  @keyframes ovChatIn{from{opacity:0;transform:translateY(6px);}}
   body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.11);}
   body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox input, body.hdrV3 #phone2 .mscroll > .ovChat .ovPh{font-size:14px;}
   body.hdrV3 #phone2 .mscroll > .ovChat .ovChatSpark{width:16px;height:16px;}
@@ -5880,16 +5891,18 @@
   }
   #phone2 .ovTop::before{
     content:"";position:absolute;left:0;right:0;top:0;bottom:-6px;z-index:-1;pointer-events:none;   /* "max 16px bleed": the bar's 10px of bottom padding plus 6 past it */
-    /* solid ground and full blur down to the field's foot, then the whole
-       fade in the 16px under it -- the tint and the blur's mask on the same
-       eased curve (.48, .42, .3, .16, .06, 0), so there is no edge, and no
-       long wash over the greeting either ("progressive bleeds too much after
-       the UI element"). The stops are measured from the foot in px so the
-       run does not depend on the status strip's height. */
-    background:linear-gradient(180deg,rgba(13,13,12,.48) 0%,rgba(13,13,12,.48) calc(100% - 16px),rgba(13,13,12,.42) calc(100% - 12px),rgba(13,13,12,.3) calc(100% - 8px),rgba(13,13,12,.16) calc(100% - 4px),rgba(13,13,12,.06) calc(100% - 1px),rgba(13,13,12,0) 100%);
+    /* the ground ran solid to the field's foot and faded in the 16px under
+       it ("progressive bleeds too much after the UI element"); the ground
+       still ends 16px under the field, but the fade now runs the whole way
+       (below) */
+    /* "make the bg progress smoother: top -> full blur, end of the bar -> no
+       blur": one run over the whole ground rather than a plate with a 16px
+       edge -- the tint and the blur's mask both full at the top and easing
+       to nothing at the foot on the same curve (.94, .82, .64, .42, .2, 0) */
+    background:linear-gradient(180deg,rgba(13,13,12,.48) 0%,rgba(13,13,12,.45) 18%,rgba(13,13,12,.39) 36%,rgba(13,13,12,.31) 54%,rgba(13,13,12,.2) 72%,rgba(13,13,12,.1) 88%,rgba(13,13,12,0) 100%);
     -webkit-backdrop-filter:blur(24px) saturate(120%);backdrop-filter:blur(24px) saturate(120%);
-    -webkit-mask-image:linear-gradient(#000 calc(100% - 16px),rgba(0,0,0,.88) calc(100% - 12px),rgba(0,0,0,.62) calc(100% - 8px),rgba(0,0,0,.33) calc(100% - 4px),rgba(0,0,0,.12) calc(100% - 1px),transparent 100%);
-    mask-image:linear-gradient(#000 calc(100% - 16px),rgba(0,0,0,.88) calc(100% - 12px),rgba(0,0,0,.62) calc(100% - 8px),rgba(0,0,0,.33) calc(100% - 4px),rgba(0,0,0,.12) calc(100% - 1px),transparent 100%);
+    -webkit-mask-image:linear-gradient(#000 0%,rgba(0,0,0,.94) 18%,rgba(0,0,0,.82) 36%,rgba(0,0,0,.64) 54%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.2) 88%,transparent 100%);
+    mask-image:linear-gradient(#000 0%,rgba(0,0,0,.94) 18%,rgba(0,0,0,.82) 36%,rgba(0,0,0,.64) 54%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.2) 88%,transparent 100%);
   }
   #phone2 .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;padding:0;}
   #phone2 .ovTop .ovChatBox{
@@ -5924,7 +5937,7 @@
   #phone2 .ovDim{position:absolute;inset:0;z-index:6;background:rgba(0,0,0,.49);opacity:0;pointer-events:none;transition:opacity .28s ease;}   /* 25%, then "+24%" */
   #phone2.ovTyping .ovDim{opacity:1;pointer-events:auto;}
   body.light #phone2 .ovTop::before{
-    background:linear-gradient(180deg,rgba(247,242,233,.48) 0%,rgba(247,242,233,.48) calc(100% - 16px),rgba(247,242,233,.42) calc(100% - 12px),rgba(247,242,233,.3) calc(100% - 8px),rgba(247,242,233,.16) calc(100% - 4px),rgba(247,242,233,.06) calc(100% - 1px),rgba(247,242,233,0) 100%);
+    background:linear-gradient(180deg,rgba(247,242,233,.48) 0%,rgba(247,242,233,.45) 18%,rgba(247,242,233,.39) 36%,rgba(247,242,233,.31) 54%,rgba(247,242,233,.2) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);
   }
   body.light #phone2 .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   body.light #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(46,31,26,.09);}
@@ -6128,12 +6141,16 @@
   #dOver .ovTop{position:sticky;top:-32px;z-index:5;display:flex;align-items:center;gap:10px;margin:-32px -40px 0;padding:24px 40px 12px;}
   #dOver .ovTop::before{
     content:"";position:absolute;left:0;right:0;top:0;bottom:-4px;z-index:-1;pointer-events:none;
-    background:linear-gradient(180deg,rgba(13,13,12,.48) 0%,rgba(13,13,12,.48) calc(100% - 16px),rgba(13,13,12,.42) calc(100% - 12px),rgba(13,13,12,.3) calc(100% - 8px),rgba(13,13,12,.16) calc(100% - 4px),rgba(13,13,12,.06) calc(100% - 1px),rgba(13,13,12,0) 100%);
+    /* "make the bg progress smoother: top -> full blur, end of the bar -> no
+       blur": one run over the whole ground rather than a plate with a 16px
+       edge -- the tint and the blur's mask both full at the top and easing
+       to nothing at the foot on the same curve (.94, .82, .64, .42, .2, 0) */
+    background:linear-gradient(180deg,rgba(13,13,12,.48) 0%,rgba(13,13,12,.45) 18%,rgba(13,13,12,.39) 36%,rgba(13,13,12,.31) 54%,rgba(13,13,12,.2) 72%,rgba(13,13,12,.1) 88%,rgba(13,13,12,0) 100%);
     -webkit-backdrop-filter:blur(24px) saturate(120%);backdrop-filter:blur(24px) saturate(120%);
-    -webkit-mask-image:linear-gradient(#000 calc(100% - 16px),rgba(0,0,0,.88) calc(100% - 12px),rgba(0,0,0,.62) calc(100% - 8px),rgba(0,0,0,.33) calc(100% - 4px),rgba(0,0,0,.12) calc(100% - 1px),transparent 100%);
-    mask-image:linear-gradient(#000 calc(100% - 16px),rgba(0,0,0,.88) calc(100% - 12px),rgba(0,0,0,.62) calc(100% - 8px),rgba(0,0,0,.33) calc(100% - 4px),rgba(0,0,0,.12) calc(100% - 1px),transparent 100%);
+    -webkit-mask-image:linear-gradient(#000 0%,rgba(0,0,0,.94) 18%,rgba(0,0,0,.82) 36%,rgba(0,0,0,.64) 54%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.2) 88%,transparent 100%);
+    mask-image:linear-gradient(#000 0%,rgba(0,0,0,.94) 18%,rgba(0,0,0,.82) 36%,rgba(0,0,0,.64) 54%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.2) 88%,transparent 100%);
   }
-  body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.48) 0%,rgba(247,242,233,.48) calc(100% - 16px),rgba(247,242,233,.42) calc(100% - 12px),rgba(247,242,233,.3) calc(100% - 8px),rgba(247,242,233,.16) calc(100% - 4px),rgba(247,242,233,.06) calc(100% - 1px),rgba(247,242,233,0) 100%);}
+  body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.48) 0%,rgba(247,242,233,.45) 18%,rgba(247,242,233,.39) 36%,rgba(247,242,233,.31) 54%,rgba(247,242,233,.2) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);}
   #dOver .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;}
   #dOver .ovTop .ovChatBox{width:100%;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.07);-webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);}
   #dOver .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
@@ -9012,6 +9029,9 @@
            field filling the left, then the inbox (with its dot) and the bell
            ("remove the avatar and fit with that") -->
       <div class="ovTop">
+        <!-- Header V3's profile, at the bar's left ("put avatar profile on top
+             nav left side"); hidden in V1 and V2 -->
+        <button class="ovAvatar" type="button" aria-label="Profile"><img src="assets/overview/avatar.png" alt="" width="88" height="88"></button>
         <div class="ovChat">
           <div class="ovChatBox">
             <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>
@@ -22063,20 +22083,41 @@
   // V3 moves the field itself: out of the bar and under the greeting (one
   // field, one set of wiring -- the focus, the keyboard, the hand-off to the
   // chat all stay attached), and back to the bar's front for V1 and V2
+  // ...and in V3, once the services carousel has scrolled under the bar, the
+  // field goes back up into the bar ("on scroll past the service carousel,
+  // display the chat field inside the top sticky bar"), a spacer keeping its
+  // room in the page; it returns when the page scrolls up again
+  let ovPast = false;
   const placeOvChat = () => {
     const ph = document.getElementById('phone2'); if (!ph) return;
-    const chat = ph.querySelector('.ovTop .ovChat, .mscroll > .ovChat'), top = ph.querySelector('.ovTop'), title = ph.querySelector('.mtitle');
+    const chat = ph.querySelector('.ovTop .ovChat, .mscroll > .ovChat'), top = ph.querySelector('.ovTop'), title = ph.querySelector('.mtitle'), av = top && top.querySelector('.ovAvatar');
     if (!chat || !top || !title) return;
-    if (CARD_STATE.hdrV3){ if (chat.parentNode === top) title.after(chat); }
-    else if (chat.parentNode !== top) top.prepend(chat);
+    let space = ph.querySelector('.ovChatSpace');
+    const underTitle = CARD_STATE.hdrV3 && !ovPast;
+    if (underTitle){
+      if (space){ space.replaceWith(chat); }
+      else if (chat.parentNode === top) title.after(chat);
+    } else {
+      if (CARD_STATE.hdrV3 && chat.parentNode !== top && !space){ space = document.createElement('div'); space.className = 'ovChatSpace'; chat.replaceWith(space); }
+      else if (space && !CARD_STATE.hdrV3){ space.remove(); }
+      if (chat.parentNode !== top){ if (av) av.after(chat); else top.prepend(chat); }
+    }
   };
   placeOvChat();
+  { const ph = document.getElementById('phone2'), sc = ph && ph.querySelector('.mscroll');
+    if (sc) sc.addEventListener('scroll', () => {
+      if (!CARD_STATE.hdrV3) return;
+      const svc = ph.querySelector('.ovSvc'), top = ph.querySelector('.ovTop'); if (!svc || !top) return;
+      const past = sc.scrollTop > svc.offsetTop + svc.offsetHeight - top.offsetHeight;   // the row's foot has gone under the bar
+      if (past !== ovPast){ ovPast = past; placeOvChat(); }
+    }, { passive: true }); }
   if (stHdrSel) stHdrSel.addEventListener('change', () => {
     CARD_STATE.hdrV2 = stHdrSel.value === 'v2';
     CARD_STATE.hdrV3 = stHdrSel.value === 'v3';
     document.body.classList.toggle('hdrV2', CARD_STATE.hdrV2);
     document.body.classList.toggle('hdrV3', CARD_STATE.hdrV3);
-    placeOvChat();
+    ovPast = false; placeOvChat();
+    { const sc = document.querySelector('#phone2 .mscroll'); if (sc) sc.dispatchEvent(new Event('scroll')); }   // read the scroll position as it stands
   });
   const stSvcSel = document.getElementById('stSvc');
   if (stSvcSel) stSvcSel.addEventListener('change', () => {

@@ -10903,6 +10903,30 @@ centred to the pixel; typing lands on the field over the blanket, the
 bell lets go, Enter opens the chat; V1 and V2 put the field back in the
 bar.
 
+"V3: put the avatar profile on the top nav's left side. Push up the h1 by
+16px. Reduce the width of the chat field to 75%. Reduce the gap between
+the h1 and the chat field by 8px. On scroll past the service carousel,
+display the chat field inside the top sticky bar." The profile disc (the
+avatar render, 44px) stands at the bar's left in V3 only, the discs at
+the right; the greeting is 16 under the bar (from 32); the field is 75% of
+the content's width (259 of 346), 24 under the greeting (from 32), 32
+above the services. And once the services row's foot has gone under the
+bar, `placeOvChat()` moves the field up into the bar between the profile
+and the discs -- a spacer of its height and margins (100px) holds its
+place in the page so nothing jumps and the page keeps its length -- and
+brings it back under the greeting when the page scrolls up again; the
+move fades the field in where it lands. Measured: field under the title
+at scroll 264, in the bar at 284 (the row's foot at 378 in the phone, the
+bar 104 tall); typing from the bar raises the keyboard; scroll height
+2200 before and after; V1 hides the profile and never spaces.
+
+"Make the bg progress smoother: top → full blur, end of the bar → no
+blur." The bar's ground, on the phone and the desk: no plate with a 16px
+edge any more -- the tint and the blur's mask are full at the top and
+ease to nothing at the ground's foot on one curve (.94, .82, .64, .42,
+.2, 0 at 18 / 36 / 54 / 72 / 88 / 100%). The ground still ends 16px under
+the field.
+
 ---
 
 ## 6. Open items
