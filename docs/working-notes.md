@@ -10828,6 +10828,16 @@ went); the tile's padding is 18 / 16 / 18 / 18 on the phone (from 14 / 12 /
 14 / 14) and 20 on the desk (from 16). Measured: render 40 × 40 at 18 / 18
 from the corner, title 18 from the foot and the left.
 
+"Update next step bg img." The booking card's photo is Julien's second
+one: the doctor, arms folded, at the right of a dim office (1059 × 672,
+`assets/overview/hero-consult.webp`, 10 KB). Cover on a card narrower than
+the picture shows less than half its width, and anchored right the first
+pass put her face under the headline on both surfaces; the anchor is 70%
+on the phone and 65% on the desk now, which keeps her in the card's right
+third with the words clear of her, and a dark run from the left (.72 to
+nothing by 78%) gives the copy a ground whatever the window shows. The
+desk's headline is held to 62% of the card for the same reason.
+
 ---
 
 ## 6. Open items
