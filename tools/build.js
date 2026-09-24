@@ -36,6 +36,17 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|mp3|m
   return uri;
 });
 
+// A build stamp, read in the Tweaks panel: which build a page in front of
+// someone actually is. The source says "dev"; dist says when it was built and
+// from which commit, so a stale copy in a viewer can be told from a fresh one.
+{
+  let hash = '';
+  try { hash = require('child_process').execSync('git rev-parse --short HEAD', { cwd: root, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch (e) {}
+  const d = new Date();
+  const stamp = d.toISOString().slice(0, 16).replace('T', ' ') + ' UTC' + (hash ? ' · ' + hash : '');
+  src = src.replace('id="tkBuild">dev<', 'id="tkBuild">' + stamp + '<');
+}
+
 (async () => {
   let out = '';
   let cssIn = 0, cssOut = 0, jsIn = 0, jsOut = 0, htmlIn = 0, htmlOut = 0;

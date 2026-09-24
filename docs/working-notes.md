@@ -10613,6 +10613,21 @@ each the glyph top-left and the label at the foot on the 4% plate, 96 tall
 with 20px corners. Inbox and Services keep their sheets; Records is the
 third slot, waiting for its page.
 
+"Where are the 3 cards next to each other?" Nowhere, on a fresh load: the
+tiles live in Header V2, and the tweak reset to V1 with every reload, so
+the page came up with the pills and no hub. V2 is the default now
+(`hdrV2: true`, the select's `selected` with it), as with the other
+switches whose chosen state became the default.
+
+"Also no arc change as requested" -- with a capture that still shows the
+age, the dots and the arc inside the card: the build before the change.
+The viewer has served a copy several versions behind more than once today
+(the Suggestions label, the icon discs, the two-row hub), and there was no
+way to tell from the page itself. Now there is: the Tweaks panel's
+Overview group ends with a Build row -- "dev" in the source, and in dist
+the build's time (UTC) and commit, written by tools/build.js -- so a page
+in front of someone can be checked against the last publish.
+
 ---
 
 ## 6. Open items
