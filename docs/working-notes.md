@@ -10859,6 +10859,14 @@ on the row applies to them as to the rest.
 the phone (from 20) and 19 on the desk (from 23), the leading a touch
 looser at 1.3; the card is 229 tall on the phone now.
 
+"Update all visuals, crop them." A third set, the five together on one
+1536 × 1024 sheet with a soft glow behind each -- the bell, the laptop, the
+sheets with the bow-tie mark, the bottle with its pills, the folder. The
+sheet's glow runs the five together, so each is cut from its own cell of
+the grid, trimmed to where the alpha passes 40 (the faint halo left
+behind), squared and scaled to the same 360px; the row's saturate(.8)
+applies as before. All five of `svc-*.webp` replaced.
+
 ---
 
 ## 6. Open items
