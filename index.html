@@ -20914,7 +20914,12 @@
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){ swiped = true; go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); setTimeout(() => { swiped = false; }, 0); }
     };
     addEventListener('pointerup', end); addEventListener('pointercancel', end);
-    card.addEventListener('click', e => { if (swiped){ e.preventDefault(); e.stopPropagation(); } });
+    // a tap (not a swipe) takes the reader to the Insights page, where the
+    // reading lives ("tap: go to the Insights page") -- the dock's own route
+    card.addEventListener('click', e => {
+      if (swiped){ e.preventDefault(); e.stopPropagation(); return; }
+      if (typeof setMode === 'function') setMode(20);
+    });
     card._ovAge = { go, list: () => list, at: () => cur };
   })();
   // The services row under the greeting scrolls natively under a finger and

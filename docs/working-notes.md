@@ -10754,6 +10754,10 @@ field's foot (55%) and eases out on a curve -- .46, .42, .32, .2, .09, 0 --
 and the blur's mask follows the same stops, so neither the tint nor the
 blur has an edge.
 
+"Tap: go to the Insights page." A tap on the age card (a press that does
+not travel sideways) takes the reader to the Insights page by the dock's
+own route (`setMode(20)`); a swipe is still a swipe and stays.
+
 ---
 
 ## 6. Open items
