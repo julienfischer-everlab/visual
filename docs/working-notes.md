@@ -10849,6 +10849,16 @@ content sets the height -- 242 on the phone, from 292; the desk's is the
 right column's, as before. Book is 44 tall (from 52), 15px type on a 15px
 corner. The headline breaks after *journey* on both surfaces.
 
+"Update visuals Concierge and Med Certs, keep same saturation." Two new
+renders -- the bell alone, larger in its frame, and the stacked sheets with
+a bow-tie mark and a signature -- cut to the same 360px squares and
+dropped in for `svc-concierge.webp` and `svc-cert.webp`; the `saturate(.8)`
+on the row applies to them as to the rest.
+
+"Reduce text font size by 4px." The booking card's headline is 16px on
+the phone (from 20) and 19 on the desk (from 23), the leading a touch
+looser at 1.3; the card is 229 tall on the phone now.
+
 ---
 
 ## 6. Open items
