@@ -10885,6 +10885,24 @@ and middle). The turn pauses while the tab is hidden or the phone is off
 screen, and reduced-motion drops the slide, keeping the fade. The
 assistant's sheet keeps its still placeholder. `ovPlaceholders()`.
 
+### 5.411 Header V3: the greeting and the field centred
+
+"Do another version: title centred, chat field below the h1 centred,
+margin 32px, keep the carousel cards." A third Header on the Overview
+tweak (`body.hdrV3`). The bar keeps the inbox and the bell at its right
+and gives up the field; the greeting is centred, 32 under the bar; the
+field stands centred under it at the content's width (346 on the phone),
+32 below the greeting and 32 above the services carousel, which stays.
+The field is one node rather than two copies: `placeOvChat()` moves it
+from the bar's front to after the greeting for V3 and back for V1 and V2,
+so its wiring -- the focus that raises the keyboard, the bell as dismiss,
+the hand-off to the chat -- goes with it. In the scroller it takes z 7,
+the bar's own, so it stands over the blanket while live. Measured: bar →
+greeting 32, greeting → field 32, field → services 32, greeting and field
+centred to the pixel; typing lands on the field over the blanket, the
+bell lets go, Enter opens the chat; V1 and V2 put the field back in the
+bar.
+
 ---
 
 ## 6. Open items

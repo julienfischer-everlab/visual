@@ -2656,6 +2656,25 @@
   .ovHub{display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 13px 18px;}
   body.hdrV2 #phone2 .ovHub{display:grid;}
   body.hdrV2 #phone2 .ovSvc, body.hdrV2 #phone2 .ovInbox{display:none;}
+  /* ---- Header V3 (Overview tweak, "do another version"): the greeting
+     centred as the page's heading, the field centred under it at the
+     content's width, 32px above the greeting, between the two and below the
+     field; the bar keeps the inbox and the bell at its right; the services
+     carousel follows as before. The field is one node, moved by
+     placeOvChat() -- here it stands in the scroller, and while it is live it
+     rises over the blanket (z 7, the bar's own) so the words stay lit. */
+  body.hdrV3 #phone2 .ovTop{justify-content:flex-end;}
+  body.hdrV3.m6 #phone2 .mtitle{padding:32px 13px 0;justify-content:center;text-align:center;}
+  body.hdrV3 #phone2 .mscroll > .ovChat{position:relative;z-index:7;display:flex;justify-content:center;margin:32px 13px;}
+  body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox{
+    width:100%;height:44px;padding:0 16px;font-size:14px;box-shadow:none;background:rgba(255,255,255,.08);
+    -webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);
+  }
+  body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.11);}
+  body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox input, body.hdrV3 #phone2 .mscroll > .ovChat .ovPh{font-size:14px;}
+  body.hdrV3 #phone2 .mscroll > .ovChat .ovChatSpark{width:16px;height:16px;}
+  body.light.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox{background:rgba(46,31,26,.06);}
+  body.light.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox:focus-within{background:rgba(46,31,26,.09);}
   .ovHubTile{
     display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;min-height:96px;padding:14px 12px 14px 14px;
     border:0;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.04);color:#ececec;font:inherit;font-size:14px;text-align:left;
@@ -8190,6 +8209,7 @@
           <select id="stHdr" aria-label="The Overview's header">
             <option value="v1" selected>V1</option>
             <option value="v2">V2</option>
+            <option value="v3">V3</option>
           </select>
         </div>
         <!-- the service cards under the greeting: tiles (glyph, label) or
@@ -13405,6 +13425,7 @@
       (CARD_STATE.repVisual ? ' repVisual' : '') +
       (CARD_STATE.repVideo ? ' repVideo' : '') +
       (CARD_STATE.hdrV2 ? ' hdrV2' : '') +
+      (CARD_STATE.hdrV3 ? ' hdrV3' : '') +
       (CARD_STATE.svcLg ? ' svcLg' : '') +
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
@@ -21397,6 +21418,8 @@
                        // the Overview's Header tweak: V2 puts a card with the
                        // inbox and the services under the greeting
                        hdrV2: false,  // V1 again ("keep the header top like this"): the field, the inbox disc and the bell; the tiles under the title are the services
+                       // V3 ("do another version"): the greeting centred, the field centred under it, 32px margins, the services carousel kept; the bar keeps the inbox and the bell
+                       hdrV3: false,
                        // the Services tweak: Large cards, title + support with the visual at the right
                        svcLg: false,
                        // the information architecture (IA tweak): V4's
@@ -22037,9 +22060,23 @@
   });
   // the Overview's Header tweak: a body class the Overview phone reads
   const stHdrSel = document.getElementById('stHdr');
+  // V3 moves the field itself: out of the bar and under the greeting (one
+  // field, one set of wiring -- the focus, the keyboard, the hand-off to the
+  // chat all stay attached), and back to the bar's front for V1 and V2
+  const placeOvChat = () => {
+    const ph = document.getElementById('phone2'); if (!ph) return;
+    const chat = ph.querySelector('.ovTop .ovChat, .mscroll > .ovChat'), top = ph.querySelector('.ovTop'), title = ph.querySelector('.mtitle');
+    if (!chat || !top || !title) return;
+    if (CARD_STATE.hdrV3){ if (chat.parentNode === top) title.after(chat); }
+    else if (chat.parentNode !== top) top.prepend(chat);
+  };
+  placeOvChat();
   if (stHdrSel) stHdrSel.addEventListener('change', () => {
     CARD_STATE.hdrV2 = stHdrSel.value === 'v2';
+    CARD_STATE.hdrV3 = stHdrSel.value === 'v3';
     document.body.classList.toggle('hdrV2', CARD_STATE.hdrV2);
+    document.body.classList.toggle('hdrV3', CARD_STATE.hdrV3);
+    placeOvChat();
   });
   const stSvcSel = document.getElementById('stSvc');
   if (stSvcSel) stSvcSel.addEventListener('change', () => {
