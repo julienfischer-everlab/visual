@@ -20947,7 +20947,12 @@
       drag = { x: e.clientX, left: row.scrollLeft, id: e.pointerId, lastX: e.clientX, lastT: performance.now(), vx: 0 }; dragged = false;
       addEventListener('pointermove', move); addEventListener('pointerup', release); addEventListener('pointercancel', release);
     });
-    row.addEventListener('click', e => { if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); } });
+    row.addEventListener('click', e => {
+      if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); return; }
+      // Concierge opens the full chat ("Concierge should open the chat full modal")
+      const ph = row.closest('#phone2');
+      if (e.target.closest('.ovSvcNew') && ph && ph._chat) ph._chat.open(e.target.closest('.ovSvcNew'));
+    });
   })();
   // The Overview's inbox sheet ("the inbox icon should trigger a bottom
   // sheet"): from the top bar's disc and Header V2's row alike. Three

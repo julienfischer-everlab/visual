@@ -10714,6 +10714,10 @@ ring goes to 1px (the plate inset by 1), and the sweep is the accent alone
 -- rising over a long ramp to .7 and falling away as slowly, the amber and
 the white peak gone -- turning once every 3.6s.
 
+"Concierge should open the chat full modal." A tap on the Concierge card
+opens the full chat (the thread as it opens from the star, on the default
+question); a drag that begins on it is still a drag and opens nothing.
+
 ---
 
 ## 6. Open items
