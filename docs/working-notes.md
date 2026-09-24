@@ -10735,6 +10735,15 @@ Explore cards take that ground (#0f0f0f), so the picture and the card are
 one surface with no tile. The renders of 5.401 are gone; the syncing card
 says Provide consent, as designed, instead of a dimmed Syncing.
 
+"Use these images for the insight card; also the card bg should be #fff
+6%." A zip of the same stacked sheets as transparent renders at 2x (816 x
+520): Dr Edward's card over a report, the questionnaire with its orange
+header and radio dots, the Garmin card over a gold-headed sheet, the
+syncing spark. They replace the strip cuts, so the card's own plate is the
+ground -- and that plate is 6% white now rather than the strip's #0f0f0f.
+Four renders for five cards: the report render serves the Dexa report and
+the blood panel both.
+
 ---
 
 ## 6. Open items
