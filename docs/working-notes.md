@@ -10867,6 +10867,24 @@ the grid, trimmed to where the alpha passes 40 (the faint halo left
 behind), squared and scaled to the same 360px; the row's saturate(.8)
 applies as before. All five of `svc-*.webp` replaced.
 
+### 5.410 The field's placeholder turns over
+
+"Make this placeholder rotate every 3 seconds, vertically, fade in and
+out: Where is my latest results / When my Microbiome results will arrive /
+What's on my workout plan tomorrow / ..." The top bar's field, on the
+Overview phone and the Overview desk, carries seven lines in turn --
+*Ask Everlab anything*, then the reader's likely questions: latest
+results, the Microbiome results' arrival, tomorrow's workout plan,
+biological age explained, the next step, a consult next week. Every three
+seconds the line leaves upward as it fades (.3s, 10px) and the next rises
+in from below; the input's own placeholder is cleared so the two never
+show together, and the line hides while there are words in the field and
+returns when they go. The input is wrapped in a host so the line sits
+exactly where the typed words will (measured 0 / 0 off the input's left
+and middle). The turn pauses while the tab is hidden or the phone is off
+screen, and reduced-motion drops the slide, keeping the fade. The
+assistant's sheet keeps its still placeholder. `ovPlaceholders()`.
+
 ---
 
 ## 6. Open items

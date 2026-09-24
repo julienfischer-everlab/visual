@@ -5806,6 +5806,26 @@
     flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;color:#ececec;outline:none;
   }
   .ovChatBox input::placeholder{color:#8b8b86;}
+  /* ---- The rotating placeholder ("make this placeholder rotate every 3
+     seconds, vertically, fade in and out"): the field's own placeholder is
+     cleared and a line is drawn over the input instead, in the placeholder's
+     grey, every three seconds leaving upward as it fades and the next
+     arriving from below. It hides the moment there are words in the field.
+     Built by ovPlaceholders(); the host wraps the input so the line sits
+     exactly where the typed words will. */
+  .ovPhHost{flex:1 1 auto;min-width:0;position:relative;display:flex;align-items:center;}
+  .ovPhHost input{width:100%;}
+  .ovPh{
+    position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);pointer-events:none;
+    font-size:inherit;color:#8b8b86;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    transition:opacity .28s ease,transform .32s cubic-bezier(.2,.8,.2,1);
+  }
+  .ovPh.out{opacity:0;transform:translateY(calc(-50% - 10px));}
+  .ovPh.in{opacity:0;transform:translateY(calc(-50% + 10px));transition:none;}
+  .ovPhHost.hasText .ovPh{opacity:0;transition:opacity .12s ease;}
+  body.light .ovPh{color:#7d6b58;}
+  #phone2 .ovTop .ovPh{font-size:14px;}
+  @media (prefers-reduced-motion: reduce){ .ovPh{transition:opacity .28s ease;} .ovPh.out, .ovPh.in{transform:translateY(-50%);} }
   .ovChatGo{
     flex:none;width:40px;height:40px;border:0;border-radius:50%;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
@@ -16997,6 +17017,51 @@
         ph.appendChild(dim);
         dim.addEventListener('pointerdown', e => { e.preventDefault(); pin.blur(); });
       }
+    });
+  })();
+  // ---- The top bar's rotating placeholder ("make this placeholder rotate
+  // every 3 seconds, vertically, fade in and out"): the questions a reader
+  // is most likely to bring to the field, one at a time -- the line leaves
+  // upward as it fades, the next arrives from below -- on the Overview phone
+  // and the Overview desk. The input's own placeholder is cleared so the two
+  // never show together; the line hides while there are words in the field
+  // and comes back when they go.
+  (function ovPlaceholders(){
+    const LINES = [
+      'Ask Everlab anything',
+      'Where are my latest results?',
+      'When will my Microbiome results arrive?',
+      'What’s on my workout plan tomorrow?',
+      'Explain my biological age',
+      'What’s my next step?',
+      'Book a consult for next week'
+    ];
+    const PERIOD = 3000, OUT = 300;
+    document.querySelectorAll('#phone2 .ovTop .ovChatBox input, #dOver .ovTop .ovChatBox input').forEach(inp => {
+      if (inp.closest('.ovPhHost')) return;
+      const host = document.createElement('span'); host.className = 'ovPhHost';
+      inp.parentNode.insertBefore(host, inp); host.appendChild(inp);
+      const line = document.createElement('span'); line.className = 'ovPh'; line.setAttribute('aria-hidden', 'true');
+      line.textContent = LINES[0]; host.appendChild(line);
+      inp.setAttribute('aria-label', inp.getAttribute('aria-label') || LINES[0]);
+      inp.placeholder = '';
+      let i = 0, timer = 0;
+      const sync = () => host.classList.toggle('hasText', !!inp.value);
+      inp.addEventListener('input', sync); sync();
+      const next = () => {
+        line.classList.add('out');
+        setTimeout(() => {
+          i = (i + 1) % LINES.length; line.textContent = LINES[i];
+          line.classList.remove('out'); line.classList.add('in'); void line.offsetWidth;   // placed below, then released to rise
+          line.classList.remove('in');
+        }, OUT);
+      };
+      // ticking only while the field is on screen and the page is in view:
+      // a hidden phone need not turn the words over
+      const start = () => { if (!timer) timer = setInterval(() => { if (inp.offsetParent && !document.hidden) next(); }, PERIOD); };
+      start();
+      document.addEventListener('visibilitychange', () => { if (document.hidden){ clearInterval(timer); timer = 0; } else start(); });
+      host._ovPh = { lines: LINES, at: () => i, next };
     });
   })();
 
