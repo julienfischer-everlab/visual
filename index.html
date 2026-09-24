@@ -2589,7 +2589,7 @@
   .ovSvc.dragging .ovSvcChip{pointer-events:none;}
   .ovSvcChip{
     flex:0 0 calc((100% - 51px) / 2);scroll-snap-align:start;
-    display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;height:124px;box-sizing:border-box;padding:14px 12px 12px 14px;   /* 96 + 16 ("increase height by 16px"); then 124 for the render; a set height, so the row's cards agree whatever their labels do */
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;height:112px;box-sizing:border-box;padding:14px 12px 14px 14px;   /* 96 + 16 ("increase height by 16px"); a set height, so the row's cards agree whatever their labels do */
     border:0;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.04);color:#ececec;font:inherit;font-size:14px;font-weight:400;line-height:1.2;text-align:left;
     transition:background .16s ease;position:relative;overflow:hidden;
   }
@@ -2597,11 +2597,13 @@
   .ovSvcChip > *{position:relative;z-index:1;}
   .ovSvcChip > .ovSvcHalo{position:absolute;z-index:0;}   /* the ring stays under the plate: the children's z-index:1 had lifted it over */
   .ovSvcNew::after{z-index:0;}
-  /* the visual ("one visual for each card"): the render, 64px, at the
-     card's bottom-right corner with the title above it at the left -- the
+  /* the visual ("one visual for each card"): the render, 48 x 48, at the
+     card's top-left with the title at the foot ("top left placement, text
+     bottom left, smaller, ratio 1:1, 48px"), a quarter of its colour taken
+     out so it sits with the page ("desaturate the 3D visual by 25%") -- the
      New badge keeps the top-right corner */
-  .ovSvcVis{display:flex;align-items:center;justify-content:center;width:64px;height:64px;align-self:flex-end;margin:-4px -2px -2px 0;}
-  .ovSvcVis img{display:block;width:100%;height:100%;object-fit:contain;}
+  .ovSvcVis{display:flex;align-items:center;justify-content:center;width:48px;height:48px;order:-1;margin:-4px 0 0 -4px;}
+  .ovSvcVis img{display:block;width:100%;height:100%;object-fit:contain;filter:saturate(.75);}
   .ovSvcTx{display:flex;flex-direction:column;gap:5px;min-width:0;}
   .ovSvcTx b{font-weight:400;}
   .ovSvcTx small{display:none;}
@@ -2615,7 +2617,7 @@
   body.svcLg #phone2 .ovSvcTx{gap:6px;text-align:left;}
   body.svcLg #phone2 .ovSvcTx b{font-size:16px;font-weight:500;letter-spacing:-.1px;}
   body.svcLg #phone2 .ovSvcTx small{display:block;font-size:12.5px;line-height:1.35;color:#8b8b86;}
-  body.svcLg #phone2 .ovSvcVis{flex:none;order:2;align-self:center;width:88px;height:88px;margin:0;}   /* order 2: the visual at the right of the words; the render itself, no disc under it */
+  body.svcLg #phone2 .ovSvcVis{flex:none;order:2;align-self:center;width:72px;height:72px;margin:0;}   /* order 2: the visual at the right of the words; the render itself, no disc under it */
   body.svcLg #phone2 .ovSvcChip > .ovNewBadge{top:12px;right:12px;}
   body.light.svcLg #phone2 .ovSvcTx small{color:#7d6b58;}
   /* the Concierge tile: a ring of light turning round its edge -- a conic
@@ -2636,6 +2638,14 @@
   .ovSvcChip svg{flex:none;width:22px;height:22px;}
   .ovSvcChip > .ovSvcVis > svg{position:static;}
   .ovSvcChip:hover{background:rgba(255,255,255,.08);}
+  /* pressed, the card gives 2px ("on click on these cards scale down by
+     2px"): a scale, so the corners and the render shrink with it -- .986 of
+     the phone tile's 147px is 2px; the desk's and the Large card's are wider
+     and get their own */
+  .ovSvcChip{transition:background .16s ease,transform .12s ease;}
+  .ovSvcChip:active{transform:scale(.986);}
+  body.svcLg #phone2 .ovSvcChip:active{transform:scale(.9934);}   /* 2 of 303 */
+  #dOver .ovSvcChip:active{transform:scale(.99);}   /* 2 of ~206 */
   body.light .ovSvcChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
   /* ---- Header V2 (Overview tweak): the inbox and the services as two rows
      on one card under the greeting. The top bar gives up its inbox disc and
@@ -6097,8 +6107,7 @@
   /* the services: the five in one row, no scroll, a little taller for the
      room; the render 76px */
   #dOver .ovSvc{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:0;margin:0 0 20px;overflow:visible;cursor:default;}
-  #dOver .ovSvcChip{flex:none;height:140px;padding:16px 14px 12px 16px;font-size:14.5px;}
-  #dOver .ovSvcVis{width:76px;height:76px;}
+  #dOver .ovSvcChip{flex:none;height:124px;padding:16px;font-size:14.5px;}
   /* the top band: the booking card at the left, stretched to the column of
      the two small cards and the tasks at the right */
   #dOver .ovhero{margin:0;border-radius:20px;min-height:0;}

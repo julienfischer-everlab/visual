@@ -10803,6 +10803,21 @@ Measured at 1440: bar 84 tall, bleed 16, services 5 × 140, hero 465 × 573,
 rail 5 cards / 5 dots, next arrow → card 2. No console errors, phone
 unchanged in behaviour (5 service cards, 5 Explore cards).
 
+"Desaturate the 3D visual by 25%. Top-left placement, text bottom-left.
+Smaller, ratio 1:1, 48px." The tile turns back over: the render 48 × 48 at
+the top-left (`order:-1`, pulled 4px into the padding), the title at the
+foot, the New badge in its corner; a `saturate(.75)` on the image takes a
+quarter of the colour out so the renders sit with the page rather than on
+it. The tile is 112 again (124 on the desk); the Large dress keeps the
+render at the right of the words, 72px. Measured: render 48 × 48 at 10 / 10
+from the corner, title 14 from the foot.
+
+"On click on these cards scale down by 2px." A press (`:active`) scales the
+card so its width gives 2px -- .986 of the phone tile's 147, .9934 of the
+Large card's 303, .99 of the desk tile's 206 -- over .12s, the corners and
+the render shrinking with it, and it comes back on release. Measured on the
+phone: 147.4 → 145.4 pressed → 147.4 released; the desk 206.4 → 204.3.
+
 ---
 
 ## 6. Open items
