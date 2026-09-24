@@ -5729,25 +5729,23 @@
   #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.11);}
   #phone2 .ovTop .ovChatBox input{font-size:14px;}
   #phone2 .ovTop .ovChatSpark{width:16px;height:16px;}
-  .ovAva, .ovBell{
+  .ovInbox, .ovBell{
     flex:none;width:44px;height:44px;border-radius:50%;border:0;padding:0;cursor:pointer;   /* the field's own height */
-    display:flex;align-items:center;justify-content:center;
-  }
-  .ovAva{overflow:hidden;background:#2a2320;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);}
-  .ovAva img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;}
-  .ovBell{
+    display:flex;align-items:center;justify-content:center;position:relative;
     background:rgba(255,255,255,.04);color:#ececec;
     -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
     transition:background .16s ease;
   }
-  .ovBell:hover{background:rgba(255,255,255,.1);}
-  .ovBell{position:relative;}
+  .ovInbox:hover, .ovBell:hover{background:rgba(255,255,255,.1);}
+  /* the inbox: a tray with the accent's dot at its shoulder for the unread */
+  .ovInbox svg{width:20px;height:20px;}
+  .ovInbox::after{content:"";position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:50%;background:#f78359;}
+  /* the field live: the inbox folds away (width and gap to 0) so the field
+     grows to the right; the bell turns into the dismiss */
+  .ovInbox{transition:width .32s cubic-bezier(.2,.8,.2,1),margin-right .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease,background .16s ease;overflow:hidden;}
+  #phone2.ovTyping .ovInbox{width:0;margin-right:-10px;opacity:0;pointer-events:none;}
   .ovBell svg{position:absolute;width:20px;height:20px;transition:opacity .2s ease,transform .28s cubic-bezier(.2,.8,.2,1);}
   .ovBell .icX{width:14px;height:14px;opacity:0;transform:rotate(-90deg) scale(.6);}
-  /* the field live: the avatar rides off the left edge (its width and the
-     gap), the field grows into its room, the bell turns into the dismiss */
-  .ovAva{transition:margin-left .32s cubic-bezier(.2,.8,.2,1),opacity .22s ease;}
-  #phone2.ovTyping .ovAva{margin-left:-54px;opacity:0;pointer-events:none;}   /* its width and the gap: the field lands on the bar's own 13px padding */
   #phone2.ovTyping .ovBell .icBell{opacity:0;transform:rotate(90deg) scale(.6);}
   #phone2.ovTyping .ovBell .icX{opacity:1;transform:none;}
   /* and a 25% black blanket over the page while the field is live: under the
@@ -5760,7 +5758,7 @@
   }
   body.light #phone2 .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   body.light #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(46,31,26,.09);}
-  body.light .ovBell{background:rgba(46,31,26,.05);color:#2e1f1a;}
+  body.light .ovInbox, body.light .ovBell{background:rgba(46,31,26,.05);color:#2e1f1a;}
   /* the greeting: a page heading in the body, not a bar */
   body.m6 #phone2 .mtitle{
     position:static;height:auto;margin:0;padding:22px 13px 26px;border-radius:0;   /* "align left", "+8px margin top": on the cards' 13px column, 22 under the bar; 26 below ("title +12px after") before the mini services */
@@ -8680,16 +8678,17 @@
       </svg>
     </div>
     <div class="mscroll">
-      <!-- the top bar, fixed while the page scrolls under it: the profile,
-           the assistant's field filling the middle, the bell -->
+      <!-- the top bar, fixed while the page scrolls under it: the assistant's
+           field filling the left, then the inbox (with its dot) and the bell
+           ("remove the avatar and fit with that") -->
       <div class="ovTop">
-        <button class="ovAva" type="button" aria-label="Profile"><img src="assets/overview/avatar.png" alt="" width="44" height="44"></button>
         <div class="ovChat">
           <div class="ovChatBox">
             <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>
             <input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Ask Everlab">
           </div>
         </div>
+        <button class="ovInbox" type="button" aria-label="Inbox"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 5.2 5.4A1.4 1.4 0 0 1 6.5 4.5h7a1.4 1.4 0 0 1 1.3.9l2.2 6.1V15a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 15Z"/><path d="M3 11.5h4.2l.9 1.8h3.8l.9-1.8H17"/></svg></button>
         <button class="ovBell" type="button" aria-label="Notifications">
           <svg class="icBell" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 8.6a4.8 4.8 0 0 1 9.6 0v3l1.4 2.3H3.8l1.4-2.3Z"/><path d="M8.3 16.2a1.8 1.8 0 0 0 3.4 0"/></svg>
           <svg class="icX" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>

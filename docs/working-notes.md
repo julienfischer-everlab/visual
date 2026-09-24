@@ -10444,6 +10444,17 @@ blur (it shows only while the field is live), and the click that followed
 had nothing to land on. It submits on pointerdown now, with the default
 prevented, so the field keeps its focus and the words go to the chat.
 
+### 5.393 The top bar without the avatar
+
+"Remove the avatar and fit with that" -- a capture: the field at the left
+filling the row, then two discs, an inbox tray with an orange dot and the
+bell. The avatar and its photo leave the bar; the field starts on the
+bar's 13px padding and runs to the discs. The inbox (`.ovInbox`) is the
+bell's twin, 44px on 4% white, a tray glyph with the accent's 8px dot at
+its shoulder. When the field goes live the inbox folds away -- width and
+gap to 0, on the fold's curve -- so the field grows to the right, and the
+bell turns into the dismiss as before.
+
 ---
 
 ## 6. Open items
