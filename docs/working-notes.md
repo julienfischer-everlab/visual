@@ -10499,6 +10499,19 @@ Oura ring, the Apple Watch (syncing, its button dimmed). The dots now
 count the cards and the lit one follows the scroll; the dismiss on an
 Explore card takes it out of the row and the dots shrink with it.
 
+### 5.397 The age card: a carousel of particle organs
+
+"Keep the neutral grey card. A mini 3D particle organ here, the bio age
+one. The arc as on the tablet. Eyebrow, organ, age, arc. Carousel.
+Centred." The Overview's right mini card drops its red and joins its
+neighbour's grey, and becomes a snapping carousel (`ovAgeCard()`): the
+biological age first -- the body, from the library at the small target --
+then three organ ages, each slide centred: the eyebrow, a 92px particle
+organ, the age (chronological plus the organ's delta, as everywhere else)
+and the tablet's own tick arc (`ageArcMarkup`) with its dot. Small dots
+under the row follow the scroll; the two cards in the row now stretch to
+the same height.
+
 ---
 
 ## 6. Open items

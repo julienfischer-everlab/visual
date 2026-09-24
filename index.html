@@ -6041,7 +6041,23 @@
     font:inherit;font-size:12.5px;font-weight:500;padding:11px 0;text-align:center;
   }
   .ovrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 13px 0;}
-  .ovrow2 .msn{height:150px;}
+  .ovrow2 .msn{min-height:150px;}   /* the age card sets the row's height now; the two stretch to it */
+  /* the age card: a snapping carousel of slides, each centred -- eyebrow,
+     the particle organ, the age, the tablet's arc -- and its own small dots */
+  .msn.ovAge{padding:18px 0 14px;text-align:center;overflow:hidden;}
+  .ovAgeCar{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;}
+  .ovAgeCar::-webkit-scrollbar{display:none;}
+  .ovAgeSl{flex:0 0 100%;min-width:0;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;padding:0 12px;box-sizing:border-box;}
+  .ovAgeSl .lbl{margin-bottom:6px;white-space:nowrap;}
+  .ovAgeOrg{position:relative;width:92px;height:92px;}
+  .ovAgeOrg canvas{position:absolute;inset:0;display:block;}
+  #phone2 .ovAgeSl .big{margin-top:2px;font-size:28px;line-height:1.1;}
+  .ovAgeSl .imArc{width:100%;margin-top:0;}
+  .ovAgeSl .imArc svg{height:34px;}
+  .ovAgeDots{display:flex;gap:4px;justify-content:center;align-items:center;margin-top:10px;}
+  .ovAgeDots i{width:5px;height:5px;border-radius:3px;background:rgba(236,236,236,.25);}
+  .ovAgeDots i.on{width:14px;background:#ececec;}
+  body.light .ovAgeDots i{background:rgba(46,31,26,.25);} body.light .ovAgeDots i.on{background:#2e241c;}
   .ovrow2 .mono{
     font-family:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
     font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:auto;
@@ -8799,10 +8815,15 @@
           <div class="big">75</div>
           <div class="mono" style="color:rgba(242,229,224,.5)">Biomarkers</div>
         </div>
-        <div class="msn" style="background:var(--bg)">
-          <div class="lbl" style="color:rgba(242,229,224,.6)">Biological age</div>
-          <div class="big" style="color:#f2e5e0">42</div>
-          <div class="mono" style="color:#5cc47f">8 years younger</div>
+        <!-- the age card ("keep the neutral grey; a mini 3D particle organ,
+             the bio age one; the arc as on the tablet; eyebrow, organ, age,
+             arc; a carousel; centred"): the same grey as its neighbour, and
+             inside it a carousel of ages -- the biological age first, then the
+             organs -- each slide the eyebrow, the particle organ, the age and
+             the tablet's arc, centred. Built by ovAgeCard(). -->
+        <div class="msn ovAge">
+          <div class="ovAgeCar"></div>
+          <div class="ovAgeDots"></div>
         </div>
       </div>
       <div class="ovsec">Tasks to complete <span class="see">See all <b>12</b></span></div>
@@ -20629,6 +20650,26 @@
       if (e.target.closest('.ocx')) return; // the dismiss X never opens it
       sheetR.open(0); // heart first
     });
+  })();
+  // The Overview's age card: a carousel of ages, the biological age (the
+  // body) first and then three organs, each slide the eyebrow, a mini
+  // particle organ, the age and the tablet's arc, centred. The organs are
+  // the library's own views at the small target, so the card costs little.
+  (function ovAgeCard(){
+    const card = document.querySelector('#phone2 .ovAge');
+    if (!card || typeof makeOrganView !== 'function' || typeof PILL === 'undefined') return;
+    const body = PILL.find(p => p.label === 'Body');
+    const list = [body].concat(PILL.filter(p => p !== body).slice(0, 3)).filter(Boolean);
+    const car = card.querySelector('.ovAgeCar'), dots = card.querySelector('.ovAgeDots');
+    car.innerHTML = list.map(p =>
+      '<div class="ovAgeSl"><div class="lbl">' + (p.slide || p.label + ' age') + '</div><div class="ovAgeOrg"></div>' +
+      '<div class="big">' + (CHRONO + p.delta) + '</div><div class="imArc">' + ageArcMarkup(p.delta) + '</div></div>').join('');
+    dots.innerHTML = list.map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
+    // the biological age is the figure here (BODY_I), not the iris its row
+    // can otherwise read as; dense, so a 92px organ still has a body to it
+    car.querySelectorAll('.ovAgeOrg').forEach((h, i) => makeOrganView(h, list[i].label === 'Body' && BODY_I >= 0 ? BODY_I : list[i].organIdx, { dl: false, dense: true }));
+    const sync = () => { const i = Math.round(car.scrollLeft / Math.max(1, car.clientWidth)); dots.querySelectorAll('i').forEach((el, k) => el.classList.toggle('on', k === i)); };
+    car.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
   })();
   // The Overview's Explore cards ("add more of these cards"): one per thing
   // that has something to say -- a document, a questionnaire, a report, a
