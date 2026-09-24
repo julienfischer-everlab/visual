@@ -2621,7 +2621,53 @@
      should merge smoothly to a full modal"): full screen under the status
      strip, standing on the keyboard; a head, the thread, the composer. */
   .chWrap{position:absolute;inset:0;z-index:8;display:none;}   /* over the sticky greeting (7); it never covers the keyboard, which stands under it */
-  #phone2.aiOpen :is(.mtitle,.ovTop){z-index:1;}   /* the services card's dim covers the top bar too, while the card is open */
+  #phone2:is(.aiOpen,.ibOpen) :is(.mtitle,.ovTop){z-index:1;}   /* a sheet's dim covers the top bar too, while the sheet is open */
+  /* ---- The inbox sheet ("the inbox icon should trigger a bottom sheet"):
+     a floating card like the assistant's, sliding up over a dim. Title and
+     close, the unread count and See all, three messages, Explore more. */
+  .ibWrap{position:absolute;inset:0;z-index:6;display:none;}
+  .ibWrap.show{display:block;}
+  .ibDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .35s ease;}
+  .ibWrap.on .ibDim{opacity:1;}
+  .ibCard{
+    position:absolute;left:12px;right:12px;bottom:12px;padding:10px 20px 20px;border-radius:26px;background:#1b1b1a;color:#ececec;
+    box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);
+    transform:translateY(110%);transition:transform .46s cubic-bezier(.2,.8,.2,1);
+  }
+  .ibWrap.on .ibCard{transform:none;}
+  .ibHandle{width:44px;height:5px;border-radius:3px;margin:0 auto 18px;background:rgba(255,255,255,.22);}
+  .ibHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+  .ibHead h3{margin:0;font-size:22px;font-weight:500;letter-spacing:-.3px;}
+  .ibX{width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#ececec;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .ibX svg{width:14px;height:14px;}
+  .ibUnread{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:500;margin-bottom:6px;}
+  .ibUnread em{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:24px;padding:0 8px;border-radius:12px;background:#f78359;color:#1a120e;font-size:13px;font-weight:600;font-style:normal;}
+  .ibUnread .see{margin-left:auto;display:flex;align-items:center;gap:6px;font-weight:400;color:#ececec;}
+  .ibUnread .see svg{width:14px;height:14px;color:#8b8b86;}
+  .ibRow{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.07);}
+  .ibRow:last-of-type{border-bottom:0;}
+  .ibAv{flex:none;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:#ececec;font-size:15px;font-weight:500;}
+  .ibAv.sq{border-radius:16px;}
+  .ibAv.photo{background:linear-gradient(145deg,#8fa3b8,#4a5b70);color:#fff;}
+  .ibAv svg{width:22px;height:22px;}
+  .ibTx{flex:1 1 auto;min-width:0;}
+  .ibTx .who{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:500;margin-bottom:6px;}
+  .ibTag{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);font-size:12px;font-weight:400;color:#ececec;}
+  .ibTag svg{width:11px;height:11px;}
+  .ibTx p{margin:0;font-size:14px;line-height:1.4;color:#a8a8a3;}
+  .ibTx .need{display:block;margin-top:8px;font-size:14px;font-weight:500;color:#f78359;}
+  .ibWhen{flex:none;display:flex;align-items:center;gap:7px;font-size:14px;color:#8b8b86;align-self:flex-start;}
+  .ibWhen i{width:7px;height:7px;border-radius:50%;background:#7aa2ff;}
+  .ibMore{margin:22px 0 12px;font-size:16px;font-weight:500;}
+  .ibChips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);}
+  .ibChips::-webkit-scrollbar{display:none;}
+  .ibChip{flex:none;display:flex;align-items:center;gap:10px;height:48px;padding:0 16px;border:0;border-radius:24px;background:rgba(255,255,255,.06);color:#ececec;font:inherit;font-size:14px;white-space:nowrap;cursor:pointer;}
+  .ibChip svg{width:18px;height:18px;}
+  body.light .ibCard{background:#f6ece6;color:#2e1f1a;} body.light .ibX{background:rgba(46,31,26,.08);color:#2e1f1a;}
+  body.light .ibHandle{background:rgba(46,31,26,.22);} body.light .ibRow{border-color:rgba(46,31,26,.08);}
+  body.light .ibAv{background:rgba(46,31,26,.06);color:#2e1f1a;} body.light .ibTx p{color:#7d6b58;} body.light .ibUnread .see{color:#2e1f1a;}
+  body.light .ibTag{box-shadow:inset 0 0 0 1px rgba(46,31,26,.2);color:#2e1f1a;} body.light .ibChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
   .chWrap.show{display:block;}
   /* a plain cut ("a full-screen modal over the page with the full chat, no
      fancy transition"): the modal is simply there, and simply gone. It used
@@ -6012,14 +6058,11 @@
      for the clinic photo (a warm wall, a dark figure), drawn as blurred
      gradients so the card reads before any photo lands. */
   .ovhero.ovBook{position:relative;overflow:hidden;background:#161514;min-height:250px;gap:0;padding:22px 20px 20px;}
+  /* the clinic photo ("hero card bg"), soft already and dark at its left, so
+     the text sits on it without a wash; anchored right, where the figure is */
   .ovBookArt{
-    position:absolute;inset:-10%;pointer-events:none;
-    background:
-      radial-gradient(38% 55% at 82% 32%,rgba(150,138,126,.6),rgba(150,138,126,0) 70%),
-      radial-gradient(24% 60% at 93% 62%,rgba(28,25,23,.95),rgba(28,25,23,0) 72%),
-      radial-gradient(30% 40% at 66% 88%,rgba(70,64,58,.7),rgba(70,64,58,0) 70%),
-      linear-gradient(90deg,#161514 28%,rgba(22,21,20,.55) 58%,rgba(22,21,20,0) 100%);
-    filter:blur(16px);
+    position:absolute;inset:0;pointer-events:none;
+    background:url(assets/overview/hero-consult.webp) right center / cover no-repeat;
   }
   .ovBook .tag{position:relative;background:rgba(255,255,255,.14);color:#f2efec;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;padding:6px 12px;}
   .ovBook h3{position:relative;margin:22px 0 0;max-width:74%;font-size:20px;font-weight:500;color:#f4f4f4;line-height:1.25;letter-spacing:-.2px;}
@@ -6030,12 +6073,7 @@
   .ovBookWhen span{color:#8b8b86;}
   .ovBookBtn{flex:none;height:52px;padding:0 30px;border:0;border-radius:18px;background:#fff;color:#111;font:inherit;font-size:16px;font-weight:500;cursor:pointer;transition:transform .16s ease;}
   .ovBookBtn:active{transform:scale(.97);}
-  body.light .ovhero.ovBook{background:#e9dfd4;}
-  body.light .ovBook .tag{background:rgba(46,31,26,.08);color:#2e1f1a;}
-  body.light .ovBook h3{color:#2e1f1a;} body.light .ovBook h3 span{color:rgba(46,31,26,.5);}
-  body.light .ovBookWhen{color:#2e1f1a;} body.light .ovBookWhen span{color:#7d6b58;}
-  body.light .ovBookBtn{background:#2e1f1a;color:#fff;}
-  body.light .ovBookArt{background:radial-gradient(38% 55% at 82% 32%,rgba(255,255,255,.7),rgba(255,255,255,0) 70%),radial-gradient(24% 60% at 93% 62%,rgba(120,95,80,.5),rgba(120,95,80,0) 72%),linear-gradient(90deg,#e9dfd4 28%,rgba(233,223,212,.5) 58%,rgba(233,223,212,0) 100%);}
+  body.light .ovhero.ovBook{background:#161514;}   /* the photo card stays dark on the light page: it is a picture, not a plate */
   .ovbtn{
     background:rgba(242,229,224,.1);color:#f2e5e0;border:none;border-radius:999px;
     font:inherit;font-size:12.5px;font-weight:500;padding:11px 0;text-align:center;
@@ -6115,6 +6153,7 @@
   .ovcard.ovExp h4{font-weight:400;color:rgba(242,229,224,.92);}
   .ovIllWrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:150px;}
   .ovIll{width:190px;height:178px;}
+  .ovIllImg{display:block;width:210px;height:210px;object-fit:contain;}
   .ovbtn.dim{color:rgba(242,229,224,.5);}
   .ovSpin{animation:ovSpin 2.4s linear infinite;transform-origin:77px 74px;transform-box:view-box;}
   @keyframes ovSpin{to{transform:translate(77px,74px) rotate(360deg);}}
@@ -8833,21 +8872,10 @@
         <div class="ovtask"><span class="ic"></span><span class="tx"><b>Schedule your pathology test</b><span>Small description</span></span><span class="go">Book</span></div>
       </div>
       <div class="ovsec">Your next actions <span class="see">See all <b>12</b></span></div>
-      <div class="ovcar">
-        <div class="ovcard red">
-          <div class="oclab"><span><i></i>Explore</span><span class="ocx">&#10005;</span></div>
-          <h4>Your health insights go deeper. <span>Discover your organ age.</span></h4>
-          <div class="ovOrgan" id="ovOrgan"></div>
-          <div class="ovbtn">Discover organ age</div>
-        </div>
-        <div class="ovcard">
-          <div class="oclab"><span><i></i>News</span></div>
-          <h4>A new longevity study was published this week.</h4>
-          <div style="flex:1"></div>
-          <div class="ovbtn">Read the summary</div>
-        </div>
-      </div>
-      <div class="ovcdots"><i class="on"></i><i></i><i></i></div>
+      <!-- the Explore cards only ("replace the next actions by these"); built
+           by ovExplore(), with the rendered icons from assets/overview -->
+      <div class="ovcar"></div>
+      <div class="ovcdots"></div>
       <div class="ovsec">Your action plan</div>
       <div class="ovplan">
         <div class="ovact"><span class="ph" style="background:#22150f"></span><span class="tx"><b>Onboarding Consult</b><span>Speak with an Everlab doctor about trends within your existing data.</span><span class="pr">Protocol</span></span><span class="go">Book</span></div>
@@ -20671,6 +20699,43 @@
     const sync = () => { const i = Math.round(car.scrollLeft / Math.max(1, car.clientWidth)); dots.querySelectorAll('i').forEach((el, k) => el.classList.toggle('on', k === i)); };
     car.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
   })();
+  // The Overview's inbox sheet ("the inbox icon should trigger a bottom
+  // sheet"): from the top bar's disc and Header V2's row alike. Three
+  // messages -- the doctor, Eva with a Suggested tag, a prescription that
+  // needs input -- then Explore more as chips.
+  (function inboxSheet(){
+    const ph = document.getElementById('phone2'); if (!ph) return;
+    const X = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>';
+    const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>';
+    const SPARK = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5Z"/></svg>';
+    const EVA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5 8h14M5 12h14M5 16h14"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/><circle cx="15" cy="12" r="1.6" fill="currentColor"/><circle cx="10" cy="16" r="1.6" fill="currentColor"/></svg>';
+    const PILLS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="9.5" width="13" height="6" rx="3" transform="rotate(-35 9 12.5)"/><path d="m6.6 15.1 5-3.6"/><circle cx="16.5" cy="15.5" r="4"/></svg>';
+    const RESULTS = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h7l3 3v11H5Z"/><path d="M12 3v3h3"/><circle cx="9.5" cy="12" r="2.2"/><path d="m11.2 13.7 1.8 1.8"/></svg>';
+    const PLAN = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5h9M8 10h9M8 15h9"/><path d="m3 5 1 1 2-2M3 10l1 1 2-2M3 15l1 1 2-2"/></svg>';
+    const wrap = document.createElement('div');
+    wrap.className = 'ibWrap';
+    wrap.innerHTML = '<div class="ibDim"></div>' +
+      '<div class="ibCard" role="dialog" aria-modal="true" aria-label="Inbox">' +
+        '<div class="ibHandle" aria-hidden="true"></div>' +
+        '<div class="ibHead"><h3>Inbox</h3><button class="ibX" type="button" aria-label="Close">' + X + '</button></div>' +
+        '<div class="ibUnread">Unread <em>12</em><span class="see">See all ' + CHEV + '</span></div>' +
+        '<div class="ibRow"><span class="ibAv photo">SL</span><div class="ibTx"><div class="who">Dr. Steven Lu</div><p>Hello Julien, I have adjusted your dosage for xyz medicine.</p></div><span class="ibWhen"><i></i>Now</span></div>' +
+        '<div class="ibRow"><span class="ibAv sq">' + EVA + '</span><div class="ibTx"><div class="who">Eva <span class="ibTag">' + SPARK + 'Suggested</span></div><p>It’s been a while since your last test. Let’s look at what’s pending.</p></div><span class="ibWhen"><i></i>1d</span></div>' +
+        '<div class="ibRow"><span class="ibAv sq">' + PILLS + '</span><div class="ibTx"><div class="who">Prescription</div><p>We need more information from you.</p><span class="need">Requires input</span></div><span class="ibWhen"><i></i>1d</span></div>' +
+        '<div class="ibMore">Explore more</div>' +
+        '<div class="ibChips"><button class="ibChip" type="button">' + RESULTS + 'Explore my latest results</button><button class="ibChip" type="button">' + PLAN + 'Review my plan progress</button></div>' +
+      '</div>';
+    ph.appendChild(wrap);
+    const open = () => { if (wrap.classList.contains('on')) return; wrap.classList.add('show'); ph.classList.add('ibOpen'); requestAnimationFrame(() => wrap.classList.add('on')); };
+    const close = () => { if (!wrap.classList.contains('on')) return; wrap.classList.remove('on'); ph.classList.remove('ibOpen'); setTimeout(() => { if (!wrap.classList.contains('on')) wrap.classList.remove('show'); }, 480); };
+    ph.querySelectorAll('.ovInbox, .ovHubInbox').forEach(b => b.addEventListener('click', e => { e.preventDefault(); open(); }));
+    wrap.quereySelector = null;
+    wrap.querySelector('.ibX').addEventListener('click', close);
+    wrap.querySelector('.ibDim').addEventListener('click', close);
+    addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    document.addEventListener('everlab:mode', close);
+    ph._inbox = { open, close };
+  })();
   // The Overview's Explore cards ("add more of these cards"): one per thing
   // that has something to say -- a document, a questionnaire, a report, a
   // device, and a device still syncing. Each is the eyebrow with its dot and
@@ -20693,12 +20758,20 @@
       dev:  sheets('<rect x="46" y="30" width="62" height="40" rx="6" fill="#1c1c1b"/>' + [0, 1, 2, 3, 4, 5].map(i => '<rect x="' + (52 + i * 9) + '" y="' + (62 - [14, 22, 10, 26, 18, 24][i]) + '" width="5" height="' + [14, 22, 10, 26, 18, 24][i] + '" rx="1.5" fill="#6b6b68"/>').join('') + '<rect x="46" y="76" width="62" height="42" rx="6" fill="#1c1c1b"/><path d="M50 108c8 0 10-14 18-14s8 10 14 8 8-14 14-12 8 2 10 4" fill="none" stroke="#c9c9c5" stroke-width="2" stroke-linecap="round"/><circle cx="104" cy="94" r="3.5" fill="#ececec"/>'),
       sync: sheets('<rect x="46" y="30" width="62" height="40" rx="6" fill="#1c1c1b"/>' + [0, 1, 2, 3, 4, 5].map(i => '<rect x="' + (52 + i * 9) + '" y="' + (62 - [14, 22, 10, 26, 18, 24][i]) + '" width="5" height="' + [14, 22, 10, 26, 18, 24][i] + '" rx="1.5" fill="#3f3f3d"/>').join('') + '<rect x="46" y="76" width="62" height="42" rx="6" fill="#1c1c1b"/><path d="M50 108c8 0 10-14 18-14s8 10 14 8 8-14 14-12 8 2 10 4" fill="none" stroke="#6b6b68" stroke-width="2" stroke-linecap="round"/><circle cx="104" cy="94" r="3.5" fill="#8b8b86"/><g class="ovSpin" transform="translate(77 74)"><path d="M0-9V-5M0 5V9M-9 0h4M5 0h4M-6.4-6.4l2.8 2.8M3.6 3.6l2.8 2.8M-6.4 6.4l2.8-2.8M3.6-3.6l2.8-2.8" stroke="#ececec" stroke-width="1.8" stroke-linecap="round"/></g>')
     };
+    // the rendered icons ("include the icons"): the report, the checklist,
+    // the tube, the watch, the spinner -- keyed off their black ground so they
+    // sit on the card's grey. Literal paths, one each: the build inlines an
+    // asset only where it can read its path in the source.
+    const ILL_IMG = {
+      doc: 'assets/overview/ill-doc.webp', quiz: 'assets/overview/ill-quiz.webp', tube: 'assets/overview/ill-tube.webp',
+      watch: 'assets/overview/ill-watch.webp', sync: 'assets/overview/ill-sync.webp'
+    };
     const CARDS = [
-      { ill: 'doc',   t: 'We have some insights from your <b>Advanced blood panel</b>.' },
+      { ill: 'doc',   t: 'We have some insights from your <b>Dexa report</b>.' },
       { ill: 'quiz',  t: 'We have some insights from your <b>Health questionnaire</b>.' },
-      { ill: 'plain', t: 'We have some insights from your <b>Dexa report</b>.' },
-      { ill: 'dev',   t: 'We have some insights from your <b>Oura ring</b>.' },
-      { ill: 'sync',  t: 'We are syncing with your <b>Apple Watch</b> for insights.', cta: 'Syncing…', dim: true }
+      { ill: 'tube',  t: 'We have some insights from your <b>Advanced blood panel</b>.' },
+      { ill: 'watch', t: 'We have some insights from your <b>Apple Watch</b>.' },
+      { ill: 'sync',  t: 'We are syncing with your <b>Oura ring</b> for insights.', cta: 'Syncing…', dim: true }
     ];
     // the one red used across the five: a gradient the first card's image block takes
     car.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ovRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0644a"/><stop offset="1" stop-color="#b8321f"/></linearGradient></defs></svg>');
@@ -20707,7 +20780,7 @@
       el.className = 'ovcard ovExp';
       el.innerHTML = '<div class="oclab"><span><i></i>Explore</span><span class="ocx">&#10005;</span></div>' +
         '<h4>' + c.t + '</h4>' +
-        '<div class="ovIllWrap">' + ILL[c.ill] + '</div>' +
+        '<div class="ovIllWrap"><img class="ovIllImg" src="' + ILL_IMG[c.ill] + '" alt="" width="320" height="320"></div>' +
         '<div class="ovbtn' + (c.dim ? ' dim' : '') + '">' + (c.cta || 'See insights') + '</div>';
       car.appendChild(el);
     });

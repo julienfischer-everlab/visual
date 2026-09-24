@@ -10512,6 +10512,42 @@ and the tablet's own tick arc (`ageArcMarkup`) with its dot. Small dots
 under the row follow the scroll; the two cards in the row now stretch to
 the same height.
 
+### 5.398 Next actions: the five Explore cards, with the rendered icons
+
+"Replace the next actions section by these, and include the icons." The
+organ-age card and the News card leave the row; the five Explore cards are
+the row. The icons are Julien's renders -- the report with its red image
+block, the checklist with one red tick, the blood tube with its red cap,
+the watch with its red trace, the spinner of dots turning from grey to red
+-- cropped from the strip and keyed off their black ground (alpha from
+luminance: black to nothing, the dark plates whole, the glows half), so
+they sit on the card's grey. They live in assets/overview and the build
+inlines them like everything else. The tube is the blood panel now, the
+watch the Apple Watch, the spinner the syncing Oura ring; the SVG sheets
+of 5.396 stay in the code as the fallback family. (The paths are written
+out one by one: the build inlines an asset only where it can read its path
+in the source, and a path built from pieces at run time slipped past it.)
+
+### 5.399 The inbox sheet
+
+"The inbox icon should trigger a bottom sheet" -- a capture of the sheet:
+Inbox and a close, Unread with its count and See all, three messages with
+avatars, times and unread dots, then Explore more as chips. Built as
+`inboxSheet()` on the Overview phone, a floating card like the
+assistant's, sliding up over a dim from the top bar's inbox disc and from
+Header V2's Inbox row alike. Dr. Steven Lu (initials on a cool plate, the
+photo not being in the repo), Eva with a Suggested tag and her spark, and
+a Prescription that requires input in the accent; the unread dots in the
+capture's blue. Explore more: two chips, latest results and plan progress.
+The dim covers the top bar (`#phone2.ibOpen`), and the cross, the dim and
+Escape close it.
+
+"Hero card bg" -- the clinic photo, sent as a zip. It replaces the drawn
+scene on the booking card: `assets/overview/hero-consult.webp` (720 wide,
+soft and dark at its left already), anchored right where the figure is,
+covering the card. The card stays dark on the light page: it is a picture
+now, not a plate.
+
 ---
 
 ## 6. Open items
