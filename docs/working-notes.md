@@ -10927,6 +10927,18 @@ ease to nothing at the ground's foot on one curve (.94, .82, .64, .42,
 .2, 0 at 18 / 36 / 54 / 72 / 88 / 100%). The ground still ends 16px under
 the field.
 
+"Replicate the same as mobile V3 on desktop." The desk's Overview wears
+V3 too: the profile (48px) at the bar's left, the greeting centred 16
+under the bar, the field centred at 75% of the content (810 of 1080), 24
+under the greeting and 32 above the services row; and once the row's foot
+has gone under the bar the field moves up into it, between the profile
+and the discs, a 104px spacer holding its place. `placeOvChat()` runs over
+both hosts now (`OV_HOSTS`: the phone with its scroller and `.mtitle`, the
+desk with itself and `.dvH1`), each keeping its own past-the-row flag.
+Measured on the desk: under the title at scroll 262, in the bar at 282,
+scroll height 2060 throughout; V1 puts the field back and hides the
+profile; the phone unchanged.
+
 ---
 
 ## 6. Open items

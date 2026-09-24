@@ -2679,7 +2679,21 @@
      margins holds its place in the page so nothing jumps; it comes back when
      the page scrolls up again. The move fades the field in where it lands. */
   body.hdrV3 #phone2 .ovChatSpace{height:100px;}   /* 44 + 24 + 32 */
-  body.hdrV3 #phone2 .ovChat{animation:ovChatIn .28s ease;}
+  body.hdrV3 #phone2 .ovChat, body.hdrV3 #dOver .ovChat{animation:ovChatIn .28s ease;}
+  /* ...and the desk the same ("replicate the same as mobile V3 on desktop"):
+     the profile at the bar's left, the greeting centred 16 under the bar,
+     the field centred at 75% of the content, 24 under the greeting and 32
+     above the services; past the services it rides in the bar */
+  body.hdrV3 #dOver .ovAvatar{display:block;width:48px;height:48px;}
+  body.hdrV3 #dOver .dvH1{text-align:center;margin:16px 0 0;}
+  body.hdrV3 #dOver > .ovChat{position:relative;z-index:4;display:flex;justify-content:center;margin:24px 0 32px;}
+  body.hdrV3 #dOver > .ovChat .ovChatBox{
+    width:75%;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.07);
+    -webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);
+  }
+  body.hdrV3 #dOver > .ovChat .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
+  body.light.hdrV3 #dOver > .ovChat .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
+  body.hdrV3 #dOver .ovChatSpace{height:104px;}   /* 48 + 24 + 32 */
   @keyframes ovChatIn{from{opacity:0;transform:translateY(6px);}}
   body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.11);}
   body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox input, body.hdrV3 #phone2 .mscroll > .ovChat .ovPh{font-size:14px;}
@@ -9235,6 +9249,7 @@
          script, after the h1); the booking card beside the coverage and age
          cards with the tasks under them; the Explore cards in the rail. -->
     <div class="ovTop">
+      <button class="ovAvatar" type="button" aria-label="Profile"><img src="assets/overview/avatar.png" alt="" width="88" height="88"></button>
       <div class="ovChat">
         <div class="ovChatBox">
           <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>
@@ -22087,13 +22102,17 @@
   // field goes back up into the bar ("on scroll past the service carousel,
   // display the chat field inside the top sticky bar"), a spacer keeping its
   // room in the page; it returns when the page scrolls up again
-  let ovPast = false;
-  const placeOvChat = () => {
-    const ph = document.getElementById('phone2'); if (!ph) return;
-    const chat = ph.querySelector('.ovTop .ovChat, .mscroll > .ovChat'), top = ph.querySelector('.ovTop'), title = ph.querySelector('.mtitle'), av = top && top.querySelector('.ovAvatar');
+  // ...on the Overview phone and the Overview desk alike ("replicate the same
+  // as mobile V3 on desktop"): each host names its scroller and its greeting
+  const OV_HOSTS = [
+    { ph: document.getElementById('phone2'), sc: h => h.querySelector('.mscroll'), title: '.mtitle' },
+    { ph: document.getElementById('dOver'), sc: h => h, title: '.dvH1' }
+  ].filter(h => h.ph);
+  const placeOvChat = () => OV_HOSTS.forEach(({ ph, title: tSel }) => {
+    const top = ph.querySelector('.ovTop'), chat = ph.querySelector('.ovTop .ovChat') || ph.querySelector('.ovChat'), title = ph.querySelector(tSel), av = top && top.querySelector('.ovAvatar');
     if (!chat || !top || !title) return;
     let space = ph.querySelector('.ovChatSpace');
-    const underTitle = CARD_STATE.hdrV3 && !ovPast;
+    const underTitle = CARD_STATE.hdrV3 && !ph._ovPast;
     if (underTitle){
       if (space){ space.replaceWith(chat); }
       else if (chat.parentNode === top) title.after(chat);
@@ -22102,22 +22121,24 @@
       else if (space && !CARD_STATE.hdrV3){ space.remove(); }
       if (chat.parentNode !== top){ if (av) av.after(chat); else top.prepend(chat); }
     }
-  };
+  });
   placeOvChat();
-  { const ph = document.getElementById('phone2'), sc = ph && ph.querySelector('.mscroll');
-    if (sc) sc.addEventListener('scroll', () => {
+  OV_HOSTS.forEach(({ ph, sc: scOf }) => {
+    const sc = scOf(ph); if (!sc) return;
+    sc.addEventListener('scroll', () => {
       if (!CARD_STATE.hdrV3) return;
       const svc = ph.querySelector('.ovSvc'), top = ph.querySelector('.ovTop'); if (!svc || !top) return;
       const past = sc.scrollTop > svc.offsetTop + svc.offsetHeight - top.offsetHeight;   // the row's foot has gone under the bar
-      if (past !== ovPast){ ovPast = past; placeOvChat(); }
-    }, { passive: true }); }
+      if (past !== !!ph._ovPast){ ph._ovPast = past; placeOvChat(); }
+    }, { passive: true });
+  });
   if (stHdrSel) stHdrSel.addEventListener('change', () => {
     CARD_STATE.hdrV2 = stHdrSel.value === 'v2';
     CARD_STATE.hdrV3 = stHdrSel.value === 'v3';
     document.body.classList.toggle('hdrV2', CARD_STATE.hdrV2);
     document.body.classList.toggle('hdrV3', CARD_STATE.hdrV3);
-    ovPast = false; placeOvChat();
-    { const sc = document.querySelector('#phone2 .mscroll'); if (sc) sc.dispatchEvent(new Event('scroll')); }   // read the scroll position as it stands
+    OV_HOSTS.forEach(h => { h.ph._ovPast = false; }); placeOvChat();
+    OV_HOSTS.forEach(h => { const sc = h.sc(h.ph); if (sc) sc.dispatchEvent(new Event('scroll')); });   // read the scroll position as it stands
   });
   const stSvcSel = document.getElementById('stSvc');
   if (stSvcSel) stSvcSel.addEventListener('change', () => {
