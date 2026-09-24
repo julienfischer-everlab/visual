@@ -10758,6 +10758,15 @@ blur has an edge.
 not travel sideways) takes the reader to the Insights page by the dock's
 own route (`setMode(20)`); a swipe is still a swipe and stays.
 
+"Progressive bleeds too much after the UI element. Max 16px bleed." The
+56px run washed the greeting and the hero's copy under the bar. The pseudo
+now ends 6px past the bar -- 16 past the field's foot, the bar's own 10 of
+padding included -- and the whole fade happens in those 16px, on the same
+eased curve as before (.48, .42, .3, .16, .06, 0; the blur's mask alike).
+The stops are `calc(100% - Npx)` from the foot, so the run is 16px whatever
+the status strip measures. Measured: field foot at 176, ground's foot at
+192.
+
 ---
 
 ## 6. Open items
