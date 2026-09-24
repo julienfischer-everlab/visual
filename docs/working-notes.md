@@ -10666,6 +10666,27 @@ past the second gap: 13 + w + 8 + w + 8 + 48 = the width, so w is
 nearest card's start or the next on a flick, the click after a drag
 swallowed). The V2 hub tiles stay behind the Header tweak.
 
+"Increase the height by 16px. First card: Concierge, with a rotating halo
+border; badge top right, NEW." The tiles go to 112. Concierge leads the
+row: the same tile with a service bell, a ring of light turning round its
+edge -- a conic sweep (accent into the amber into white, then nothing) on a
+pseudo twice the tile's size spinning once every 3.2s under a plate inset
+by 2px, so only the ring shows at the edge -- and the New badge in the
+corner in the reports' badge colours. (The badge is a span, and the tile's
+children are position:relative for the ring's sake; the badge's own rule
+had lost to that and it sat in the flow, over the bell. Its selector now
+outranks the children's.)
+
+### 5.405 The age card: arc up a fifth, the reading in words, no dots
+
+"Arc bigger by 20%. Put '32 years old' below the arc, 18px, white,
+medium, centred. Remove the nav. Push the organ up by 8px." The arc goes
+from 150% to 180% of the card's width, its ends still cut by the card. The
+dots go; under the arc the reading stands in words -- the chronological age
+plus the organ's delta, "34 years old" for the biological age at the demo's
+40 -- 18/500 white, centred, fading out and back as a swipe changes the
+organ. The eyebrow gives the organ 14 instead of 22.
+
 ---
 
 ## 6. Open items

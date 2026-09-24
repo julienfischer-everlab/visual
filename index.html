@@ -2589,11 +2589,24 @@
   .ovSvc.dragging .ovSvcChip{pointer-events:none;}
   .ovSvcChip{
     flex:0 0 calc((100% - 51px) / 2);scroll-snap-align:start;
-    display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;min-height:96px;padding:14px 12px 14px 14px;
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;height:112px;box-sizing:border-box;padding:14px 12px 14px 14px;   /* 96 + 16 ("increase height by 16px"); a set height, so the row's cards agree whatever their labels do */
     border:0;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.04);color:#ececec;font:inherit;font-size:14px;font-weight:400;line-height:1.2;text-align:left;
-    transition:background .16s ease;
+    transition:background .16s ease;position:relative;overflow:hidden;
   }
   .ovSvcChip span{min-width:0;}
+  .ovSvcChip > svg, .ovSvcChip > span{position:relative;z-index:1;}
+  /* the Concierge tile: a ring of light turning round its edge -- a conic
+     sweep on a pseudo twice the tile's size, spinning under a plate inset by
+     the ring's width -- and the New badge in the corner */
+  .ovSvcNew{background:#151514;}
+  .ovSvcHalo{position:absolute;left:50%;top:50%;width:260%;aspect-ratio:1;margin:-130% 0 0 -130%;pointer-events:none;
+    background:conic-gradient(from 0deg,transparent 0 62%,rgba(247,131,89,.35) 78%,rgba(255,226,159,.95) 88%,#fff 92%,transparent 100%);
+    animation:ovHalo 3.2s linear infinite;}
+  .ovSvcNew::after{content:"";position:absolute;inset:2px;border-radius:18px;background:#1a1a19;}
+  .ovSvcNew > svg, .ovSvcNew > span{z-index:2;}
+  @keyframes ovHalo{to{transform:rotate(360deg);}}
+  .ovSvcChip > .ovNewBadge{position:absolute;top:10px;right:10px;z-index:2;font-size:11px;font-weight:500;line-height:20px;height:20px;padding:0 7px;border-radius:6px;background:#332910;color:#ffe29f;}   /* past the children's position:relative */
+  body.light .ovSvcNew{background:#efe6dc;} body.light .ovSvcNew::after{background:#f6f0e8;}
   .ovSvcChip svg{flex:none;width:22px;height:22px;}
   .ovSvcChip:hover{background:rgba(255,255,255,.08);}
   body.light .ovSvcChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
@@ -6102,7 +6115,7 @@
   .msn.ovAge{padding:18px 0 16px;text-align:center;overflow:hidden;touch-action:pan-y;cursor:grab;}   /* hidden: the arc runs past the edges and is cut by them; 16 below, for the dots ("16px from the footer"); swipes sideways, scrolls up and down */
   .ovAgeCar{display:block;}
   .ovAgeSl{display:flex;flex-direction:column;align-items:center;padding:0 12px;box-sizing:border-box;}
-  .ovAgeSl .lbl{margin-bottom:22px;white-space:nowrap;}   /* "push the organ down by 16px": 6 + 16 */
+  .ovAgeSl .lbl{margin-bottom:14px;white-space:nowrap;}   /* "push the organ down by 16px": 6 + 16; then "push the organ up by 8px" */
   .ovAgeSl .lbl span{display:inline-block;}   /* so the eyebrow can slide with a swipe */
   .ovAgeOrg{position:relative;width:106px;height:106px;}   /* "organ bigger by 15%": 92 -> 106 */
   .ovAgeOrg canvas{position:absolute;inset:0;display:block;}
@@ -6110,12 +6123,15 @@
   /* the Insights arc, a still copy, with its side fade; the svg's box is the
      hero's, so the card gets the same curve at a smaller size */
   .ovAgeSl .ovArc{
-    width:150%;flex:none;margin:0 -25% 0;   /* "the arc should bleed over the edges": half again as wide as the card, its ends cut by the card's own edges; the gap to the organ was 12 ("down by 16px"), then "reduce the gap by 12px" */
+    width:180%;flex:none;margin:0 -40% 0;   /* "the arc should bleed over the edges", then "arc bigger by 20%": 150 -> 180, its ends cut by the card's own edges; the gap to the organ was 12 ("down by 16px"), then "reduce the gap by 12px" */
     -webkit-mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
     mask-image:linear-gradient(to right,transparent 4%,#000 30%,#000 70%,transparent 96%);
   }
   .ovAgeSl .ovArc svg{display:block;width:100%;height:auto;overflow:visible;}
-  .ovAgeDots{display:flex;gap:4px;justify-content:center;align-items:center;margin-top:12px;}   /* "a small nav carousel below the arc, centred" */
+  /* the reading in words under the arc ("32 years old, 18px, white, medium, centred"); the dots went ("remove nav") */
+  .ovAgeYrs{margin-top:6px;font-size:18px;font-weight:500;color:#fff;text-align:center;letter-spacing:-.2px;}
+  body.light .ovAgeYrs{color:#2e1f1a;}
+  .ovAgeDots{display:flex;gap:4px;justify-content:center;align-items:center;margin-top:12px;}
   .ovAgeDots i{width:5px;height:5px;border-radius:3px;background:rgba(236,236,236,.25);}
   .ovAgeDots i.on{width:14px;background:#ececec;}
   body.light .ovAgeDots i{background:rgba(46,31,26,.25);} body.light .ovAgeDots i.on{background:#2e241c;}
@@ -16570,7 +16586,12 @@
       if (title && !ph.querySelector('.ovSvc')){
         const row = document.createElement('div');
         row.className = 'ovSvc';
-        row.innerHTML = SERVICES.map(s => '<button class="ovSvcChip" type="button">' + IC[s.ic] + '<span>' + s.l + '</span></button>').join('');
+        // Concierge leads ("first card: Concierge, with a rotating halo border,
+        // badge top right NEW"): the same tile with a turning ring of light
+        // around it and the New badge in its corner
+        const BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17h16"/><path d="M5 17a7 7 0 0 1 14 0"/><path d="M12 10V7.5"/><circle cx="12" cy="6" r="1.5"/><path d="M3 20h18"/></svg>';
+        row.innerHTML = '<button class="ovSvcChip ovSvcNew" type="button"><i class="ovSvcHalo" aria-hidden="true"></i><span class="ovNewBadge">New</span>' + BELL + '<span>Concierge</span></button>' +
+          SERVICES.map(s => '<button class="ovSvcChip" type="button">' + IC[s.ic] + '<span>' + s.l + '</span></button>').join('');
         title.after(row);
       }
       const btn = ph.querySelector('.mChat'); if (!btn) return;
@@ -20812,10 +20833,9 @@
     const list = [body].concat(PILL.filter(p => p !== body));   // the biological age first, then the nine organs in product order
     const car = card.querySelector('.ovAgeCar');
     const old = card.querySelector('.ovAgeDots'); if (old) old.remove();
-    car.innerHTML = '<div class="ovAgeSl"><div class="lbl"><span>' + (body.slide || 'Biological age') + '</span></div><div class="ovAgeOrg"></div><div class="ovArc"></div></div>';
-    const dots = document.createElement('div'); dots.className = 'ovAgeDots'; card.appendChild(dots);
-    dots.innerHTML = list.map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('');
-    const lbl = car.querySelector('.lbl span');
+    car.innerHTML = '<div class="ovAgeSl"><div class="lbl"><span>' + (body.slide || 'Biological age') + '</span></div><div class="ovAgeOrg"></div><div class="ovArc"></div>' +
+      '<div class="ovAgeYrs"><span>' + (CHRONO + body.delta) + ' years old</span></div></div>';   // "32 years old below the arc": the reading in words, following the organ
+    const lbl = car.querySelector('.lbl span'), yrs = car.querySelector('.ovAgeYrs span');
     const view = makeOrganView(car.querySelector('.ovAgeOrg'), body.organIdx, { dl: false, dense: true });   // the row's own organ: the iris
     const arc = arcACopyLive(car.querySelector('.ovArc'), body.delta);
     let cur = 0, lblT = 0;
@@ -20829,12 +20849,13 @@
       arc.sweepTo(d.delta, 900);
       lbl.style.transition = 'opacity .18s ease,transform .18s ease'; lbl.style.opacity = '0'; lbl.style.transform = 'translateX(' + (-14 * dir) + 'px)';
       clearTimeout(lblT);
+      yrs.style.transition = 'opacity .18s ease'; yrs.style.opacity = '0';
       lblT = setTimeout(() => {
         lbl.textContent = d.slide || d.label + ' age';
         lbl.style.transition = 'none'; lbl.style.transform = 'translateX(' + (14 * dir) + 'px)'; void lbl.offsetWidth;
         lbl.style.transition = 'opacity .22s ease,transform .22s ease'; lbl.style.opacity = '1'; lbl.style.transform = 'none';
+        yrs.textContent = (CHRONO + d.delta) + ' years old'; yrs.style.transition = 'opacity .3s ease .25s'; yrs.style.opacity = '1';
       }, 190);
-      [].forEach.call(dots.children, (el, k) => el.classList.toggle('on', k === cur));
     };
     // a swipe, finger or mouse: 40px sideways, more across than down, is a
     // slide in that direction; the click that follows one is swallowed
@@ -20846,10 +20867,7 @@
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){ swiped = true; go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); setTimeout(() => { swiped = false; }, 0); }
     };
     addEventListener('pointerup', end); addEventListener('pointercancel', end);
-    card.addEventListener('click', e => {
-      if (swiped){ e.preventDefault(); e.stopPropagation(); return; }
-      const i = e.target.closest('.ovAgeDots i'); if (i) go([].indexOf.call(dots.children, i));
-    });
+    card.addEventListener('click', e => { if (swiped){ e.preventDefault(); e.stopPropagation(); } });
     card._ovAge = { go, list: () => list, at: () => cur };
   })();
   // The services row under the greeting scrolls natively under a finger and
