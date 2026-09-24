@@ -10691,6 +10691,10 @@ organ. The eyebrow gives the organ 14 instead of 22.
 of air above it again; the reading closes up to the arc (its 6 gone).
 "Smaller font size, xx years old, by 2px": 18 to 16.
 
+"Push up the age by 32px. Arc also up 16px." The arc's 16 of air goes
+again; the reading rises 16 with it and 16 more of its own, into the empty
+foot of the arc's box (the ticks end well above it).
+
 ### 5.406 Services, Large: a second dress for the cards
 
 "Add another version based on this one, with a bigger card, title +
