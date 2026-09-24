@@ -10718,6 +10718,19 @@ the white peak gone -- turning once every 3.6s.
 opens the full chat (the thread as it opens from the star, on the default
 question); a drag that begins on it is still a drag and opens nothing.
 
+### 5.407 Card imagery, third pass: the dark set
+
+"Replace by this!" -- a strip of the five Explore cards as designed: dark
+cards (#0f0f0f), and on each a pair of stacked sheets -- the doctor's card
+(Dr Steven, a trace, a moon, bars) over a document, over a questionnaire
+with its orange header and radio dots, over a report, a Garmin card over a
+device, and the syncing spark -- with the last card's button reading
+Provide consent. The illustrations are cut from the strip (276 x 170, the
+band between the line and the button) with their own ground, and the
+Explore cards take that ground (#0f0f0f), so the picture and the card are
+one surface with no tile. The renders of 5.401 are gone; the syncing card
+says Provide consent, as designed, instead of a dimmed Syncing.
+
 ---
 
 ## 6. Open items
