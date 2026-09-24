@@ -10455,6 +10455,34 @@ its shoulder. When the field goes live the inbox folds away -- width and
 gap to 0, on the fold's curve -- so the field grows to the right, and the
 bell turns into the dismiss as before.
 
+### 5.394 Header V2, a tweak
+
+"Tweak header v2: put a card below the h1 -- Inbox, Services." A new
+Overview group in the Tweaks panel with a Header select, V1 (the default)
+or V2, carried as `CARD_STATE.hdrV2` / `body.hdrV2` like the other
+switches. In V2 a card (`.ovHub`, 4% white, 22px corners) sits under the
+greeting with two 52px rows: Inbox, its tray glyph, an accent count pill
+(3) and a chevron; and Services, the bento glyph and a chevron, which opens
+the assistant sheet. The top bar gives up its inbox disc and the mini
+bento stands down -- the card holds both now. V1 is untouched.
+
+### 5.395 The booking card; the sheet floats
+
+"Replace by this card instead of Personalised Health" -- a capture: a dark
+card, a soft-focus clinic scene at the right, a "Next step" pill, "Your
+health journey starts here. Book your consultation now." with the first
+sentence dimmed, and at the foot "Next availability / Tomorrow 8:00am" on
+the left and a white Book button on the right. The Overview's hero takes
+that shape (`.ovhero.ovBook`, 250px min). The photo is not in the repo, so
+the scene is drawn: three blurred radial washes (a warm wall, a dark
+figure, a low shelf) fading in from the right over the card's near-black.
+Drop a photo into assets/overview and it can sit under the same text.
+
+"Put a 12px gap so the card feels more like floating." The assistant sheet
+stands 12px off the left, right and bottom edges with all four corners at
+26, its drawn home bar gone (the phone's own shows under it); on the keys
+it keeps the 12px float above them.
+
 ---
 
 ## 6. Open items

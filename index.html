@@ -2478,8 +2478,8 @@
   .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .35s ease;}
   .aiWrap.on .aiDim{opacity:1;}
   .aiCard{
-    position:absolute;left:0;right:0;bottom:0;
-    padding:16px 16px 0;border-radius:26px 26px 0 0;background:#1b1b1a;   /* no handle ("remove the swipe-down indicator"): 16 of air, then the field */
+    position:absolute;left:12px;right:12px;bottom:12px;   /* floating, 12 off the edges ("a 12px gap so the card feels more like floating") */
+    padding:16px;border-radius:26px;background:#1b1b1a;   /* no handle ("remove the swipe-down indicator"): 16 of air, then the field */
     box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);
     transform-origin:center;will-change:transform;
     /* the ride up onto the keyboard runs on the keyboard's own curve and time */
@@ -2545,7 +2545,7 @@
   .aiTile:hover{background:rgba(255,255,255,.08);}
   .aiIc{display:flex;width:26px;height:26px;color:#ececec;}
   .aiIc svg{width:26px;height:26px;}
-  .aiCard .shHome{margin-top:18px;}
+  .aiCard .shHome{display:none;}   /* the card floats now; the phone's own home bar shows under it */
   /* the suggestions under the live field: a folded row (0fr) that opens as
      the services fold, one line of chips that scrolls sideways */
   .aiChips{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1),opacity .16s ease;}
@@ -2584,6 +2584,26 @@
   .ovSvcChip svg{flex:none;width:20px;height:20px;}
   .ovSvcChip:hover{background:rgba(255,255,255,.06);}
   body.light .ovSvcChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
+  /* ---- Header V2 (Overview tweak): the inbox and the services as two rows
+     on one card under the greeting. The top bar gives up its inbox disc and
+     the mini bento stands down; the card takes their place. */
+  .ovHub{display:none;margin:0 13px 18px;padding:4px;border-radius:22px;background:rgba(255,255,255,.04);}
+  body.hdrV2 #phone2 .ovHub{display:block;}
+  body.hdrV2 #phone2 .ovSvc, body.hdrV2 #phone2 .ovInbox{display:none;}
+  .ovHubRow{
+    display:flex;align-items:center;gap:12px;width:100%;height:52px;padding:0 14px;border:0;border-radius:18px;cursor:pointer;
+    background:none;color:#ececec;font:inherit;font-size:15px;text-align:left;position:relative;
+    transition:background .16s ease;
+  }
+  .ovHubRow:hover{background:rgba(255,255,255,.04);}
+  .ovHubRow > span{flex:1 1 auto;min-width:0;}
+  .ovHubRow svg{flex:none;width:20px;height:20px;}
+  .ovHubRow .chev{width:16px;height:16px;color:#8b8b86;}
+  .ovHubRow + .ovHubRow::before{content:"";position:absolute;left:46px;right:14px;top:0;height:1px;background:rgba(255,255,255,.06);}
+  .ovHubN{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:#f78359;color:#1a120e;font-size:12px;font-weight:600;font-style:normal;}
+  body.light .ovHub{background:rgba(46,31,26,.05);}
+  body.light .ovHubRow{color:#2e1f1a;}
+  body.light .ovHubRow + .ovHubRow::before{background:rgba(46,31,26,.08);}
   /* Typing: the services fold away and the home bar with them (the keyboard
      draws its own), the card hugging what is left while it rides up onto the
      keys ("service section fades out, keyboard appears while the card height
@@ -5988,6 +6008,34 @@
     font-size:12px;color:rgba(242,229,224,.85);
   }
   .ovhero .svc div:last-child{border-bottom:none;color:rgba(242,229,224,.45);}
+  /* ---- The booking card. The scene at the right is a soft-focus stand-in
+     for the clinic photo (a warm wall, a dark figure), drawn as blurred
+     gradients so the card reads before any photo lands. */
+  .ovhero.ovBook{position:relative;overflow:hidden;background:#161514;min-height:250px;gap:0;padding:22px 20px 20px;}
+  .ovBookArt{
+    position:absolute;inset:-10%;pointer-events:none;
+    background:
+      radial-gradient(38% 55% at 82% 32%,rgba(150,138,126,.6),rgba(150,138,126,0) 70%),
+      radial-gradient(24% 60% at 93% 62%,rgba(28,25,23,.95),rgba(28,25,23,0) 72%),
+      radial-gradient(30% 40% at 66% 88%,rgba(70,64,58,.7),rgba(70,64,58,0) 70%),
+      linear-gradient(90deg,#161514 28%,rgba(22,21,20,.55) 58%,rgba(22,21,20,0) 100%);
+    filter:blur(16px);
+  }
+  .ovBook .tag{position:relative;background:rgba(255,255,255,.14);color:#f2efec;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;padding:6px 12px;}
+  .ovBook h3{position:relative;margin:22px 0 0;max-width:74%;font-size:20px;font-weight:500;color:#f4f4f4;line-height:1.25;letter-spacing:-.2px;}
+  .ovBook h3 span{color:rgba(244,244,244,.55);}
+  .ovBookFoot{position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:auto;padding-top:56px;}
+  .ovBookWhen{display:flex;flex-direction:column;gap:3px;font-size:14px;color:#ececec;}
+  .ovBookWhen b{font-weight:500;}
+  .ovBookWhen span{color:#8b8b86;}
+  .ovBookBtn{flex:none;height:52px;padding:0 30px;border:0;border-radius:18px;background:#fff;color:#111;font:inherit;font-size:16px;font-weight:500;cursor:pointer;transition:transform .16s ease;}
+  .ovBookBtn:active{transform:scale(.97);}
+  body.light .ovhero.ovBook{background:#e9dfd4;}
+  body.light .ovBook .tag{background:rgba(46,31,26,.08);color:#2e1f1a;}
+  body.light .ovBook h3{color:#2e1f1a;} body.light .ovBook h3 span{color:rgba(46,31,26,.5);}
+  body.light .ovBookWhen{color:#2e1f1a;} body.light .ovBookWhen span{color:#7d6b58;}
+  body.light .ovBookBtn{background:#2e1f1a;color:#fff;}
+  body.light .ovBookArt{background:radial-gradient(38% 55% at 82% 32%,rgba(255,255,255,.7),rgba(255,255,255,0) 70%),radial-gradient(24% 60% at 93% 62%,rgba(120,95,80,.5),rgba(120,95,80,0) 72%),linear-gradient(90deg,#e9dfd4 28%,rgba(233,223,212,.5) 58%,rgba(233,223,212,0) 100%);}
   .ovbtn{
     background:rgba(242,229,224,.1);color:#f2e5e0;border:none;border-radius:999px;
     font:inherit;font-size:12.5px;font-weight:500;padding:11px 0;text-align:center;
@@ -7899,6 +7947,18 @@
         </div>
         </div>
         <div class="tkGroup">
+        <div class="tkSub">Overview</div>
+        <!-- Header v2: a card under the greeting that holds the inbox and the
+             services; the top bar keeps only the field and the bell -->
+        <div class="tkRow">
+          <span class="lbl">Header</span>
+          <select id="stHdr" aria-label="The Overview's header">
+            <option value="v1" selected>V1</option>
+            <option value="v2">V2</option>
+          </select>
+        </div>
+        </div>
+        <div class="tkGroup">
         <div class="tkSub">Reports</div>
         <!-- how the Reports tab lays its reports out. Named shapes, none of
              them another turned off, so this stays a select. -->
@@ -8695,17 +8755,32 @@
         </button>
       </div>
       <div class="mtitle"><h2>Welcome back, <span>Julien</span></h2></div>
-      <div class="ovhero">
+      <!-- Header V2 (Overview tweak): the inbox and the services as two rows
+           on one card under the greeting; the top bar keeps the field and the
+           bell. Hidden unless body.hdrV2. -->
+      <div class="ovHub">
+        <button class="ovHubRow ovHubInbox" type="button">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 5.2 5.4A1.4 1.4 0 0 1 6.5 4.5h7a1.4 1.4 0 0 1 1.3.9l2.2 6.1V15a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 3 15Z"/><path d="M3 11.5h4.2l.9 1.8h3.8l.9-1.8H17"/></svg>
+          <span>Inbox</span><em class="ovHubN">3</em>
+          <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
+        </button>
+        <button class="ovHubRow ovHubSvc" type="button">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.8"/><rect x="11" y="3" width="6" height="6" rx="1.8"/><rect x="3" y="11" width="6" height="6" rx="1.8"/><rect x="11" y="11" width="6" height="6" rx="1.8"/></svg>
+          <span>Services</span>
+          <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
+        </button>
+      </div>
+      <!-- the next step: book the consultation ("replace by this card instead
+           of Personalised Health"). A dark card with a soft scene at the
+           right, the pill, the line, then the next slot and the Book button. -->
+      <div class="ovhero ovBook">
+        <div class="ovBookArt" aria-hidden="true"></div>
         <div class="tag">Next step</div>
-        <h3>Sarah's <span>Personalised Health Program</span></h3>
-        <div class="d">Here are the services your Everlab doctor has recommended, brought together into a customised plan to support your health goals.</div>
-        <div class="svc">
-          <div>Hormone Balance Panel</div>
-          <div>Weight Management Program (GLP-1)</div>
-          <div>Thyroid &amp; Energy Check</div>
-          <div>+ 6 more</div>
+        <h3><span>Your health journey starts here.</span> Book your consultation now.</h3>
+        <div class="ovBookFoot">
+          <div class="ovBookWhen"><b>Next availability</b><span>Tomorrow 8:00am</span></div>
+          <button class="ovBookBtn" type="button">Book</button>
         </div>
-        <div class="ovbtn">Review my plan</div>
       </div>
       <div class="ovrow2">
         <div class="msn">
@@ -13091,6 +13166,7 @@
       (CARD_STATE.res === 'bio' ? ' resBio' : CARD_STATE.res === 'rec' ? ' resRec' : '') +
       (CARD_STATE.repVisual ? ' repVisual' : '') +
       (CARD_STATE.repVideo ? ' repVideo' : '') +
+      (CARD_STATE.hdrV2 ? ' hdrV2' : '') +
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
@@ -16458,7 +16534,7 @@
       inp.addEventListener('focus', () => {
         const k = keyboard();
         wrap.classList.add('typing');
-        card.style.bottom = (k ? k.offsetHeight : 0) + 'px';
+        card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // on the keys, keeping its 12px float
         document.body.classList.add('mSearchOn');
       });
       inp.addEventListener('blur', () => {
@@ -16501,6 +16577,8 @@
         setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); card.style.transform = ''; } }, 480);
       };
       btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); open(); });
+      const hubSvc = ph.querySelector('.ovHubSvc');   // Header V2's Services row opens the same sheet
+      if (hubSvc) hubSvc.addEventListener('click', e => { e.preventDefault(); open(); });
       wrap.querySelector('.aiDim').addEventListener('click', close);
       wrap.querySelector('.aiX').addEventListener('click', e => { e.preventDefault(); close(); });
       addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
@@ -20677,6 +20755,9 @@
                        repVisual: true,
                        // the Video tweak: a player centred on the Visual card's tile
                        repVideo: false,
+                       // the Overview's Header tweak: V2 puts a card with the
+                       // inbox and the services under the greeting
+                       hdrV2: false,
                        // the information architecture (IA tweak): V4's
                        // Overview / Results, and which half of the results
                        // database is showing ('all' | 'bio' | 'rec') -- off
@@ -21312,6 +21393,12 @@
   if (stRepVideoSel) stRepVideoSel.addEventListener('change', () => {
     CARD_STATE.repVideo = stRepVideoSel.value === 'on';
     document.body.classList.toggle('repVideo', CARD_STATE.repVideo);
+  });
+  // the Overview's Header tweak: a body class the Overview phone reads
+  const stHdrSel = document.getElementById('stHdr');
+  if (stHdrSel) stHdrSel.addEventListener('change', () => {
+    CARD_STATE.hdrV2 = stHdrSel.value === 'v2';
+    document.body.classList.toggle('hdrV2', CARD_STATE.hdrV2);
   });
   const stRepStyleSel = document.getElementById('stRepStyle');
   if (stRepStyleSel) stRepStyleSel.addEventListener('change', () => {
