@@ -10976,6 +10976,17 @@ list and its heading hidden, both back on Tasks.
 the panel, before Biological age; it sits in the Overview group now, after
 Services and before Build, where the page it changes is.
 
+### 5.413 Organs: density and the inks under one button
+
+"Density and Particles colours, under one tweak: Organs." The bar's
+Density select and the Particles colours menu were two controls about one
+thing, the particle organ. They are one menu now, *Organs* (`#inkMenu`,
+the same details), in two named halves: Density -- the Normal / Dense
+select, keeping its id so its handler and the engine read it where it
+stands -- and Particle colours, the three inks with Save as before. The
+`#densGrp` span is gone from the bar. Checked: the switch to Dense still
+puts `dense` on the body from inside the menu.
+
 ---
 
 ## 6. Open items
