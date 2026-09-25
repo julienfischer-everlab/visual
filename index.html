@@ -2834,6 +2834,15 @@
   body.light .ibAv{background:rgba(46,31,26,.06);color:#2e1f1a;} body.light .ibTx p{color:#7d6b58;} body.light .ibUnread .see{color:#2e1f1a;}
   body.light .ibTag{box-shadow:inset 0 0 0 1px rgba(46,31,26,.2);color:#2e1f1a;} body.light .ibChip{background:rgba(46,31,26,.06);color:#2e1f1a;}
   .chWrap.show{display:block;}
+  /* the desk's chat: over the shell, a dim and a centred card at M and L;
+     the whole frame at XS and S, and in a window under 992 */
+  body[data-bp="xs"]:has(.dash.chatOn) #bpFrame > .mTabs{display:none;}   /* the chat's composer stands where the device's dock was */
+  .dash .chWrap{z-index:9;background:rgba(0,0,0,0);transition:background .22s ease;}
+  .dash .chWrap.on{background:rgba(0,0,0,.55);}
+  body:not([data-bp="xs"]):not([data-bp="s"]) .dash .chModal{left:50%;right:auto;top:50% !important;bottom:auto !important;width:min(640px, calc(100% - 48px));height:min(720px, calc(100% - 64px));transform:translate(-50%,-50%);border-radius:22px;box-shadow:0 30px 90px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06);}
+  body:not([data-bp="xs"]):not([data-bp="s"]) .dash .chBody{padding-top:8px !important;}
+  @media (max-width:991px){ body:not([data-bp]) .dash .chModal{left:0;right:0;top:0 !important;bottom:0 !important;width:auto;height:auto;transform:none;border-radius:0;} }
+  body[data-bp="xs"] .dash .chBody{padding-top:48px !important;}
   /* a plain cut ("a full-screen modal over the page with the full chat, no
      fancy transition"): the modal is simply there, and simply gone. It used
      to grow out of the field on a half-second morph. */
@@ -6355,6 +6364,13 @@
   body.homeOn #tkMenu, body.homeOn #inkMenu{display:none;}   /* the home page has no tweaks */
   .tkPanel [data-pages][hidden], .tkMenu[hidden]{display:none !important;}
   .tkBuildRow{padding-top:6px;}
+  /* ---- Persona: New user (body.psNew) ---- */
+  body.psNew #phone2 .ovsecIns, body.psNew #phone2 .ovcar, body.psNew #phone2 .ovcdots, body.psNew #phone2 .ovsecPlan, body.psNew #phone2 .ovplan, body.psNew #phone2 .ovplan + .ovtl,
+  body.psNew #dOver .dvSecIns, body.psNew #dOver .dvRail, body.psNew #dOver .dvDots, body.psNew #dOver .dvSecPlan, body.psNew #dOver .dvPlanGrid, body.psNew #dOver .dvPlanList, body.psNew #dOver .dvPlanTl{display:none !important;}
+  body.psNew #phone2 .ovrow2{display:grid;}
+  body.psNew #dOver > .ovrow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;padding:0;}
+  body.psNew[data-bp="xs"] #dOver > .ovrow2{gap:8px;margin-top:8px;}
+  body.psNew #dOver > .ovrow2 .ovAgeSl{max-width:300px;margin:0 auto;}   /* the age card twice as wide as it was drawn for: its organ, arc and reading keep their own width, centred, so the arc does not grow and push the reading out */
   /* ---- The home mosaic ---- */
   .home{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;overflow-y:auto;background:#0b0b0b;color:#ececec;}
   body.homeOn .home{display:block;}
@@ -8845,7 +8861,8 @@
         <div class="tkRow">
           <span class="lbl">Persona</span>
           <select id="stPersona" aria-label="The Overview's persona">
-            <option value="julien" selected>Julien &middot; new member</option>
+            <option value="julien" selected>Julien &middot; member</option>
+            <option value="new">New user</option>
           </select>
         </div>
         <!-- the service cards under the greeting: tiles (glyph, label) or
@@ -9806,7 +9823,7 @@
            by ovExplore(), with the rendered icons from assets/overview -->
       <div class="ovcar"></div>
       <div class="ovcdots"></div>
-      <div class="ovsec">Your action plan</div>
+      <div class="ovsec ovsecPlan">Your action plan</div>
       <div class="ovplan">
         <div class="ovact">
           <div class="ovactTop"><span class="ph" style="background:url(assets/overview/plan-consult.webp) center / cover"></span><span class="tx"><b>Onboarding Consult</b><span>Speak with an Everlab doctor about trends from your existing data, and gaps in your screening.</span><span class="pr">Protocol</span></span></div>
@@ -10087,7 +10104,7 @@
     <div class="ovcar dvRail"></div>
     <div class="ovcdots dvDots"></div>
 
-    <div class="dvSec">Your action plan</div>
+    <div class="dvSec dvSecPlan">Your action plan</div>
     <div class="dvPlanGrid"><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-consult.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Onboarding Consult</b><p>Speak with an Everlab doctor about trends from your existing data, and gaps in your screening.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="9" rx="2"/><path d="M6 15h4"/></svg><span>Online video call</span><button class="go pri">Book</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-path.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Pathology Test</b><p>Visit an Everlab or partner clinic to complete your pathology tests.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-dexa.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Dexa Scan</b><p>Visit an Everlab or partner clinic to get your full body composition scan.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-mri.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>MRI Scan</b><p>Title of the event lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-physical.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Physical Assessment</b><p>A 90 minute longevity focused physical assessment to guide your exercise plan.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-nutrition.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Nutrition Review</b><p>Transform your health data into actionable insights with an Accredited Dietitian.</p></div><div class="dvProtFoot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="9" rx="2"/><path d="M6 15h4"/></svg><span>Online video call</span><button class="go">View</button></div></article></div>
     <div class="ovplan dvPlanList">
         <div class="ovact">
@@ -17810,8 +17827,13 @@
       'Your dietitian can build this into your nutrition plan if you’d like to go further.'
     ];
     const now = () => { const d = new Date(); const h = d.getHours(), m = d.getMinutes(); return d.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()] + ', ' + ((h % 12) || 12) + ':' + (m < 10 ? '0' : '') + m + ' ' + (h < 12 ? 'AM' : 'PM'); };
-    ['phone', 'phone2'].forEach(id => {
-      const ph = document.getElementById(id); if (!ph) return;
+    // the phones' chats, and the desk's ("all should be clickable": the
+    // desk's service tiles open the chat as the phone's do) -- mounted on the
+    // shell, a centred card at M and L, the whole frame at XS and S, with no
+    // drawn keyboard; the desk's own field hands its question to it too
+    ['phone', 'phone2', 'dash'].forEach(id => {
+      const isDesk = id === 'dash';
+      const ph = isDesk ? document.querySelector('.dash') : document.getElementById(id); if (!ph) return;
       const wrap = document.createElement('div');
       wrap.className = 'chWrap';
       wrap.innerHTML = '<div class="chModal" role="dialog" aria-modal="true" aria-label="Chat with Eva"><div class="chBody">' +
@@ -17834,6 +17856,7 @@
       // a copy of the Insights phone's, wired the same (the sheet does too --
       // whichever asks first builds it)
       const keyboard = () => {
+        if (isDesk) return null;   // a desk types on its own keyboard
         let k = ph.querySelector('.mKbd'); if (k) return k;
         const src = document.getElementById('mKbd'); if (!src) return null;
         k = src.cloneNode(true); k.removeAttribute('id'); ph.appendChild(k);
@@ -17851,8 +17874,7 @@
         });
         return k;
       };
-      inp.addEventListener('focus', () => document.body.classList.add('mSearchOn'));
-      inp.addEventListener('blur', () => document.body.classList.remove('mSearchOn'));
+      if (!isDesk){ inp.addEventListener('focus', () => document.body.classList.add('mSearchOn')); inp.addEventListener('blur', () => document.body.classList.remove('mSearchOn')); }
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
       // the answer arrives as Eva writes it: a beat of thinking, then the words
       let streamT = [];
@@ -17909,6 +17931,17 @@
       wrap.querySelector('.chX').addEventListener('click', close);
       addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
       document.addEventListener('everlab:mode', close);
+      if (isDesk){
+        wrap.addEventListener('click', e => { if (e.target === wrap) close(); });   // the dim around the card lets go
+        // the desk's field: Enter or its send disc opens the chat with what was typed
+        document.querySelectorAll('#dOver .ovChatBox').forEach(box => {
+          const pin = box.querySelector('input'), go = box.querySelector('.ovChatGo'); if (!pin) return;
+          const submit = () => { const q = pin.value; pin.value = ''; pin.dispatchEvent(new Event('input', { bubbles: true })); open(box, q); };
+          pin.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submit(); } });
+          if (go) go.addEventListener('click', e => { e.preventDefault(); submit(); });
+        });
+        return;
+      }
       // The Overview's pill under the greeting: a tap raises the keyboard and
       // the words go in there; Enter, the send disc or the keyboard's search
       // key hands them to the chat, which grows out of the pill.
@@ -22179,7 +22212,7 @@
       // a tile opens the full chat in its service's context ("this should
       // trigger the chat in the context of the card, ideate discussion"):
       // the question the tile stands for, Eva's opening on it, the title
-      const ph = row.closest('#phone2'), tile = e.target.closest('.ovSvcChip');
+      const ph = row.closest('#phone2') || (row.closest('#dOver') && document.querySelector('.dash')), tile = e.target.closest('.ovSvcChip');
       if (tile && ph && ph._chat){ const ctx = SERVICE_CHAT[tile.querySelector('b').textContent] || SERVICE_CHAT.Concierge; ph._chat.open(tile, ctx.q, ctx); }
     });
   }
@@ -23407,9 +23440,18 @@
     if (CARD_STATE.hero !== 'consult') document.body.classList.add('hero' + CARD_STATE.hero[0].toUpperCase() + CARD_STATE.hero.slice(1));
   };
   // the personas: one for now; a second is a row here and an option above
-  const PERSONAS = { julien: { name: 'Julien', avatar: 'assets/overview/avatar.png' } };
+  // New user ("create a persona, New user: remove the Insights section, add
+  // the Health profile and Bio age cards below the next step card, no
+  // action plan section"): body.psNew drops the two sections and brings the
+  // two small cards back under the booking card -- on the phone where they
+  // stand; on the desk moved from the hero's column to a row under the hero
+  const PERSONAS = { julien: { name: 'Julien', avatar: 'assets/overview/avatar.png' }, new: { name: 'Julien', avatar: 'assets/overview/avatar.png', cls: 'psNew' } };
   const paintPersona = key => {
     const pp = PERSONAS[key] || PERSONAS.julien;
+    document.body.classList.toggle('psNew', pp.cls === 'psNew');
+    { const over = document.getElementById('dOver'), row = over && over.querySelector('.ovrow2'), top = over && over.querySelector('.dvTop');
+      if (row && top){ if (pp.cls === 'psNew'){ if (row.parentNode !== over) top.after(row); } else if (row.parentNode === over){ const col = top.lastElementChild; const svc = col.querySelector('.ovSvc'); if (svc) svc.after(row); else col.prepend(row); } }
+      document.querySelectorAll('#phone2 .ovCov .lbl, #dOver .ovCov .lbl').forEach(l => { l.textContent = pp.cls === 'psNew' ? 'Health profile' : 'Health coverage'; }); }
     document.querySelectorAll('#phone2 .mtitle h2:not(.ovAsk) span, #dOver .dvH1 span').forEach(el => { el.textContent = pp.name; });
     document.querySelectorAll('#phone2 .ovAvatar img, #dOver .ovAvatar img').forEach(img => { img.src = pp.avatar; });
   };
