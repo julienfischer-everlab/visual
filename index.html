@@ -6395,9 +6395,20 @@
   /* ---- The service detail page (desk #dSvc, phone .svcMob) ---- */
   #dSvc{display:none;padding:32px 40px 60px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));color:#ececec;}
   body.m9.svcOn #dSvc{display:block;} body.m9.svcOn #dOver{display:none;}
+  /* the back button rides a bar like every top bar ("same behaviour as all
+     top nav, with gradient, blur, fixed on scroll"): sticky at the card's
+     top, its tint and its ten blur bands (the Overview's .ovGround) shown
+     once the page has scrolled under it (#dSvc.ovScrolled) */
+  .svTop{position:sticky;top:-32px;z-index:5;display:flex;align-items:center;margin:-32px -40px 0;padding:24px 40px 12px;isolation:isolate;}
+  .svTop::before{content:"";position:absolute;left:0;right:0;top:0;bottom:-36px;z-index:-1;pointer-events:none;opacity:0;transition:opacity .28s ease;
+    background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.5) 18%,rgba(0,0,0,.43) 36%,rgba(0,0,0,.33) 54%,rgba(0,0,0,.21) 72%,rgba(0,0,0,.1) 88%,rgba(0,0,0,0) 100%);}
+  .svTop .ovGround{bottom:-36px;}
+  #dSvc.ovScrolled .svTop::before, #dSvc.ovScrolled .svTop .ovGround{opacity:1;}
+  body.light .svTop::before{background:linear-gradient(180deg,rgba(247,242,233,.55) 0%,rgba(247,242,233,.5) 18%,rgba(247,242,233,.43) 36%,rgba(247,242,233,.33) 54%,rgba(247,242,233,.21) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);}
+  body[data-bp="xs"] #dSvc .svTop{top:-24px;margin:-24px -13px 0;padding:45px 13px 10px;}
   .svBack{width:28px;height:28px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .svBack svg{width:14px;height:14px;}
-  .svHead{display:flex;gap:20px;align-items:flex-start;margin:40px 0 44px;max-width:680px;}
+  .svHead{display:flex;gap:20px;align-items:flex-start;margin:28px 0 44px;max-width:680px;}   /* 40 under the back button, 28 now the bar's own 12 sits between */
   .svHead img{flex:none;width:104px;height:104px;border-radius:12px;object-fit:cover;}
   .svHead h1{margin:0;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:#f4f4f4;}
   .svStart{margin-top:8px;font-size:16px;color:#8b8b86;}
@@ -10116,7 +10127,7 @@
        duration / clinician rows, the referrals card and the instructions at
        the left; the progress steps and About the service at the right. -->
   <main class="dvMain" id="dSvc">
-    <button class="svBack" type="button" aria-label="Back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button>
+    <div class="svTop"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svBack" type="button" aria-label="Back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button></div>
     <div class="svHead">
       <img src="assets/overview/plan-dexa.webp" alt="" width="312" height="312">
       <div class="svHeadTx"><h1>Dexa Body Composition and Bone Mineral Density</h1><div class="svStart">Started on 20 February 2026</div></div>
@@ -22225,7 +22236,8 @@
   (function servicePage(){
     const ph = document.getElementById('phone2'), over = document.getElementById('dOver'), desk = document.getElementById('dSvc'), mob = document.getElementById('svcMob');
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
-    const openDesk = () => { document.body.classList.add('svcOn'); if (desk) desk.scrollTop = 0; mark('svcD'); };
+    const openDesk = () => { document.body.classList.add('svcOn'); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); };
+    if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });   // the bar's ground, once the page moves under it
     const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 40), { passive: true });
     const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); };
