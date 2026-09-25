@@ -11209,6 +11209,13 @@ returns it. (Julien's "L problem, right side should fill the container"
 turned out to be the L frame, 1440, standing wider than his window --
 "actually is ok".)
 
+"Insights: the full section, an on / off toggle." An *Insights section*
+row under Card hero bento in the Tweaks panel (Shown / Hidden, a toggle):
+off, the section goes whole -- its heading with See all and the arrows,
+the Explore cards' rail, the dots -- on the phone and the desk
+(`body.noInsSec`, a CARD_STATE flag so a page change keeps it); the
+action plan closes up to the bento. Shown is the default.
+
 ---
 
 ## 6. Open items

@@ -6423,6 +6423,8 @@
   .ovInsCard{display:none;position:relative;height:224px;box-sizing:border-box;margin:8px 13px 0;padding:0;border-radius:22px;background:rgba(255,255,255,.04);flex-direction:column;overflow:hidden;}   /* 12 under the two small cards, the page's rhythm; 128, then 192, then "insights card 256 − 32": 224 */
   body.tkIns .ovInsCard{display:flex;}
   body.tkIns #phone2 .ovsecTasks, body.tkIns #phone2 .ovtasks, body.tkIns #dOver .dvSecTasks, body.tkIns #dOver .dvTasks{display:none;}
+  /* the Insights section off (the Tweaks row): its heading, its rail, its dots, on both surfaces */
+  body.noInsSec #phone2 .ovsecIns, body.noInsSec #phone2 .ovcar, body.noInsSec #phone2 .ovcdots, body.noInsSec #dOver .dvSecIns, body.noInsSec #dOver .ovcar, body.noInsSec #dOver .ovcdots{display:none;}
   /* the carousel inside the card ("a carousel inside the carousel, all
      breakpoints"): a track of slides the card's width, snapping; the dots
      at the card's foot */
@@ -8402,6 +8404,15 @@
             <option value="insight" selected>Insights</option>
           </select>
         </div>
+        <!-- the Insights section -- the heading, the Explore cards' rail, the
+             dots -- shown or not ("inside full section on / off toggle") -->
+        <div class="tkRow">
+          <span class="lbl">Insights section</span>
+          <select id="stInsSec" aria-label="The Insights section">
+            <option value="on" selected>Shown</option>
+            <option value="off">Hidden</option>
+          </select>
+        </div>
         <!-- which build this page is: the source says dev, dist says when it
              was built and from which commit (tools/build.js) -->
         <div class="tkRow">
@@ -9310,7 +9321,7 @@
       </div>
       <!-- the Tasks tweak's other card ("Insights: one card with a chart, 128px height"): the block as one insight -- the eyebrow, the line, the reading -- with the ApoB trend at the right; shown by body.tkIns in place of the tasks -->
       <div class="ovInsCard"></div>
-      <div class="ovsec">Insights <span class="see">See all <b>12</b></span></div>
+      <div class="ovsec ovsecIns">Insights <span class="see">See all <b>12</b></span></div>
       <!-- the Explore cards only ("replace the next actions by these"); built
            by ovExplore(), with the rendered icons from assets/overview -->
       <div class="ovcar"></div>
@@ -9486,7 +9497,7 @@
       </div>
     </div>
 
-    <div class="dvSec">Insights
+    <div class="dvSec dvSecIns">Insights
       <span class="see">See all <b>12</b></span>
       <span class="bar"></span>
       <span class="nav"><button aria-label="Previous">&#8249;</button><button aria-label="Next">&#8250;</button></span>
@@ -13655,7 +13666,8 @@
       (CARD_STATE.hdrV3 ? ' hdrV3' : '') +
       (CARD_STATE.svcLg ? ' svcLg' : '') +
       (CARD_STATE.insCard ? ' tkIns' : '') +
-      (CARD_STATE.sideMin ? ' sideMin' : '') +   // tkIns, not insCard: .insCard is a card component already, and a body wearing it took its font:inherit
+      (CARD_STATE.sideMin ? ' sideMin' : '') +
+      (CARD_STATE.insSec ? '' : ' noInsSec') +   // tkIns, not insCard: .insCard is a card component already, and a body wearing it took its font:inherit
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
@@ -21739,6 +21751,8 @@
                        insCard: true,   // the default now ("make Insights the default hero bento card")
                        // the desk's navigation retracted to its glyphs (the sidebar's own toggle)
                        sideMin: false,
+                       // the Insights section (the Explore cards' rail), shown or not
+                       insSec: true,
                        // the information architecture (IA tweak): V4's
                        // Overview / Results, and which half of the results
                        // database is showing ('all' | 'bio' | 'rec') -- off
@@ -22462,6 +22476,11 @@
       if (win && win.resizeTo) setTimeout(() => { try { win.resizeTo(w + (win.outerWidth - win.innerWidth), h); } catch (e) {} }, 400);   // the chrome's own width added back, so the viewport is the floor
     });
   }
+  const stInsSecSel = document.getElementById('stInsSec');
+  if (stInsSecSel) stInsSecSel.addEventListener('change', () => {
+    CARD_STATE.insSec = stInsSecSel.value === 'on';
+    document.body.classList.toggle('noInsSec', !CARD_STATE.insSec);
+  });
   const stTasksSel = document.getElementById('stTasks');
   if (stTasksSel) stTasksSel.addEventListener('change', () => {
     CARD_STATE.insCard = stTasksSel.value === 'insight';
