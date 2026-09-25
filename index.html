@@ -6184,23 +6184,22 @@
      padding top-bottom 24 / 28 / 32 / 36, left-right 16 / 16 / 24 / 24, gap
      24 / 28 / 32 / 36 across xs / s / m / l, and the container's max-width
      steps (sm 1080 is the Overview's content). The table names no screen
-     widths, so the max-width steps stand in: xs below 800, s to 1080, m to
-     1280, l from there. The desk's Overview reads them; the Insights desk
+     widths; Julien's floors: xs 402, s from 600, m from 992, l from 1440. The desk's Overview reads them; the Insights desk
      keeps its own tuned numbers. */
   :root{--ctPadY:24px;--ctPadX:16px;--ctGap:24px;}
-  @media (min-width:800px){:root{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;}}
-  @media (min-width:1080px){:root{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;}}
-  @media (min-width:1280px){:root{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;}}
+  @media (min-width:600px){:root{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;}}
+  @media (min-width:992px){:root{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;}}
+  @media (min-width:1440px){:root{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;}}
   /* a forced breakpoint (the Layout tweak, body[data-bp]): the tokens of
      that breakpoint whatever the window measures, and the desk's card held
      to what the breakpoint's minimum width would leave it beside the 224px
      sidebar -- so the page is seen as at that width's floor ("the default
      breakpoint view is always set on the min width of the breakpoint").
-     XS has no floor in the table; 480 stands in. */
-  body[data-bp="xs"]{--ctPadY:24px;--ctPadX:16px;--ctGap:24px;--bpW:480px;}
-  body[data-bp="s"]{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;--bpW:800px;}
-  body[data-bp="m"]{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;--bpW:1080px;}
-  body[data-bp="l"]{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;--bpW:1280px;}
+     XS has no floor in the table; 402 -- the phone's width -- stands in. */
+  body[data-bp="xs"]{--ctPadY:24px;--ctPadX:16px;--ctGap:24px;--bpW:402px;}
+  body[data-bp="s"]{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;--bpW:600px;}
+  body[data-bp="m"]{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;--bpW:992px;}
+  body[data-bp="l"]{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;--bpW:1440px;}
   /* ...and the whole shell is the viewport ("the viewport should vary, not
      just the body"): forced, the desk -- sidebar and card -- is framed at
      the breakpoint's width and centred in the window, a hairline round it,
@@ -6226,13 +6225,13 @@
   #dOver .dvTop > *, #dOver .ovrow2 > *{min-width:0;}   /* the grid's cells shrink with it; a card's own content never holds a column open */
   body[data-bp="xs"] #dOver .ovBookFoot{flex-wrap:wrap;}
   body[data-bp="xs"] #dOver .ovBook h3{max-width:none;}
-  @media (max-width:1079px){
+  @media (max-width:991px){
     body:not([data-bp]) #dOver .dvTop{grid-template-columns:1fr;}
     body:not([data-bp]) #dOver .ovSvc{grid-template-columns:repeat(3,1fr);}
     body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:repeat(2,1fr);}
     body:not([data-bp]) #dOver .ovBook{min-height:260px;}
   }
-  @media (max-width:799px){
+  @media (max-width:599px){
     body:not([data-bp]) #dOver .ovrow2, body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:1fr;}
     body:not([data-bp]) #dOver .ovSvc{grid-template-columns:repeat(2,1fr);}
   }
@@ -22402,8 +22401,8 @@
   // falls in (or the one forced); and the select that forces one
   {
     const vw = document.getElementById('tkVw'), bpSel = document.getElementById('stBp');
-    const BP = w => w >= 1280 ? 'L' : w >= 1080 ? 'M' : w >= 800 ? 'S' : 'XS';
-    const W = { xs: 480, s: 800, m: 1080, l: 1280 };   // the breakpoints' floors, the frame's width when one is forced
+    const BP = w => w >= 1440 ? 'L' : w >= 992 ? 'M' : w >= 600 ? 'S' : 'XS';
+    const W = { xs: 402, s: 600, m: 992, l: 1440 };   // Julien's floors: XS the phone's 402, S 600, M 992, L 1440   // the breakpoints' floors, the frame's width when one is forced
     const read = () => { if (!vw) return; const forced = document.body.dataset.bp; vw.textContent = forced ? W[forced] + ' px · ' + forced.toUpperCase() + ' (forced, window ' + innerWidth + ')' : innerWidth + ' px · ' + BP(innerWidth); };
     read(); addEventListener('resize', read);
     const openBtn = document.getElementById('tkBpOpen');

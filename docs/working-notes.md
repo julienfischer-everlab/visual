@@ -11176,6 +11176,14 @@ take over and the bar reads "800 px · S" on its own. The in-window frame
 stays for a viewer that blocks pop-ups. Checked: the button is hidden on
 Auto, shows on S, and the window it opens measures 800 and lands on #m9.
 
+"XS should be 402." "S should be 600px." "M 992." "L 1440." The floors
+are Julien's now: XS 402 (the phone's width; 480 had stood in), S 600
+(from 800), M 992 (from 1080), L 1440 (from 1280) -- for the frame, the
+window Open makes, the readout, and the Auto thresholds alike (the S
+tokens from 600, M's from 992, L's from 1440; the XS reflow below 600,
+the S reflow below 992). At a 1440 window Auto reads L, just; a 1439
+window is M.
+
 ---
 
 ## 6. Open items
