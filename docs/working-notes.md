@@ -11214,7 +11214,31 @@ row under Card hero bento in the Tweaks panel (Shown / Hidden, a toggle):
 off, the section goes whole -- its heading with See all and the arrows,
 the Explore cards' rail, the dots -- on the phone and the desk
 (`body.noInsSec`, a CARD_STATE flag so a page change keeps it); the
-action plan closes up to the bento. Shown is the default.
+action plan closes up to the bento. Shown is the default. ("Where is the
+full section tweak?" -- in the Tweaks dropdown, Overview group, under
+Card hero bento; a Build stamp before 4498139 has not got it.)
+
+### 5.420 The bar's bands, finer and longer; the age cards, by surface
+
+"The gradient is not well managed. Reduce black by opacity. Increase blur
+progress +32." Safari draws each band's edge as a step it cannot feather,
+and six steps over 100px read as bands. Ten now, the steps halved (1.5, 2,
+3, 4, 5, 6, 8, 10, 12, 14px, compounding to about 24 at the top), over a
+run 32px longer -- the ground ends 38 past the phone's bar and 36 past the
+desk's (from 6 and 4) -- so each step is smaller and there are more of
+them across more height; the tint is black at .55 at the top (from .78)
+on the same curve, running the longer way too. Measured: ten bands, 120
+down to 34 tall on the desk's 84px bar; the phone's ground 137 tall on
+its 99px bar.
+
+"On desktop we have space: push down years old, arc down 8px, organ +10%."
+The desk's age card: the organ 80 (from 72), the arc's top margin 0 (from
+−8), the reading following them down 16 -- organ at 35, arc at 115,
+reading at 156, 18 above the foot. "Mobile: push down years old 12px, arc
+8px, organ 4px." The phone's, scoped apart: the eyebrow's gap 10 (from
+6), the arc's margin 0 (from −8), the reading pulled 8 into the arc's
+foot (from 20) -- organ at 39, arc at 111, reading at 159, 15 above the
+foot.
 
 ---
 

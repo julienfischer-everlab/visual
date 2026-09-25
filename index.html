@@ -5927,7 +5927,7 @@
     display:flex;align-items:center;gap:10px;padding:calc(var(--stH,0px) + 6px) 13px 10px;
   }
   #phone2 .ovTop::before{
-    content:"";position:absolute;left:0;right:0;top:0;bottom:-6px;z-index:-1;pointer-events:none;   /* "max 16px bleed": the bar's 10px of bottom padding plus 6 past it */
+    content:"";position:absolute;left:0;right:0;top:0;bottom:-38px;z-index:-1;pointer-events:none;   /* 6 past the bar ("max 16px bleed"), then 38 ("increase blur progress +32") */
     /* the ground ran solid to the field's foot and faded in the 16px under
        it ("progressive bleeds too much after the UI element"); the ground
        still ends 16px under the field, but the fade now runs the whole way
@@ -5938,7 +5938,7 @@
        to nothing at the foot on the same curve (.94, .82, .64, .42, .2, 0) */
     /* "a gradient black, progressive, 50% opacity": black at .5 at the top,
        easing to nothing at the foot on the blur's own curve */
-    background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.72) 18%,rgba(0,0,0,.62) 36%,rgba(0,0,0,.48) 54%,rgba(0,0,0,.3) 72%,rgba(0,0,0,.14) 88%,rgba(0,0,0,0) 100%);   /* "black gradient more intense": .5 -> .78 at the top, the same curve */
+    background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.5) 18%,rgba(0,0,0,.43) 36%,rgba(0,0,0,.33) 54%,rgba(0,0,0,.21) 72%,rgba(0,0,0,.1) 88%,rgba(0,0,0,0) 100%);   /* .5, then .78 ("more intense"), then .55 ("reduce black by opacity") at the top, the same curve */
     /* the blur moved to the .ovGround bands (below); the tint alone here */
   }
   /* ---- The bar's blur, as bands ("still no progressive gradient on the
@@ -5952,16 +5952,25 @@
      blur steps down from the top to a 2px whisper at the foot with no mask
      needed. The masks stay on the bands for Chrome, feathering each step.
      Built by ovGround() into each bar; the tint stays on ::before. */
+  /* "the gradient is not well managed; increase the blur progress +32": ten
+     bands in place of six, the steps between them halved (1.5 to 14px,
+     compounding to about 24 at the top), over a run 32px longer -- so each
+     edge Safari cannot feather is a smaller step, and there are more of
+     them across more height */
   .ovGround{position:absolute;left:0;right:0;top:0;z-index:-1;pointer-events:none;}
-  #phone2 .ovTop .ovGround{bottom:-6px;}
-  #dOver .ovTop .ovGround{bottom:-4px;}
+  #phone2 .ovTop .ovGround{bottom:-38px;}
+  #dOver .ovTop .ovGround{bottom:-36px;}
   .ovGround i{position:absolute;left:0;right:0;top:0;display:block;}
-  .ovGround i:nth-child(1){height:100%;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent);}
-  .ovGround i:nth-child(2){height:90%;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent);}
-  .ovGround i:nth-child(3){height:78%;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);-webkit-mask-image:linear-gradient(#000 76%,transparent);mask-image:linear-gradient(#000 76%,transparent);}
-  .ovGround i:nth-child(4){height:64%;-webkit-backdrop-filter:blur(11px);backdrop-filter:blur(11px);-webkit-mask-image:linear-gradient(#000 74%,transparent);mask-image:linear-gradient(#000 74%,transparent);}
-  .ovGround i:nth-child(5){height:50%;-webkit-backdrop-filter:blur(16px) saturate(115%);backdrop-filter:blur(16px) saturate(115%);-webkit-mask-image:linear-gradient(#000 72%,transparent);mask-image:linear-gradient(#000 72%,transparent);}
-  .ovGround i:nth-child(6){height:36%;-webkit-backdrop-filter:blur(24px) saturate(120%);backdrop-filter:blur(24px) saturate(120%);-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent);}
+  .ovGround i:nth-child(1){height:100%;-webkit-backdrop-filter:blur(1.5px);backdrop-filter:blur(1.5px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(2){height:92%;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(3){height:84%;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(4){height:76%;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(5){height:68%;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(6){height:60%;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(7){height:52%;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(8){height:44%;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(9){height:36%;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
+  .ovGround i:nth-child(10){height:28%;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);-webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent);}
   #phone2 .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;padding:0;}
   #phone2 .ovTop .ovChatBox{
     width:100%;height:44px;padding:0 16px;font-size:14px;box-shadow:none;background:rgba(255,255,255,.08);   /* "height of the component 44px" */
@@ -5995,7 +6004,7 @@
   #phone2 .ovDim{position:absolute;inset:0;z-index:6;background:rgba(0,0,0,.49);opacity:0;pointer-events:none;transition:opacity .28s ease;}   /* 25%, then "+24%" */
   #phone2.ovTyping .ovDim{opacity:1;pointer-events:auto;}
   body.light #phone2 .ovTop::before{
-    background:linear-gradient(180deg,rgba(247,242,233,.78) 0%,rgba(247,242,233,.72) 18%,rgba(247,242,233,.62) 36%,rgba(247,242,233,.48) 54%,rgba(247,242,233,.3) 72%,rgba(247,242,233,.14) 88%,rgba(247,242,233,0) 100%);
+    background:linear-gradient(180deg,rgba(247,242,233,.55) 0%,rgba(247,242,233,.5) 18%,rgba(247,242,233,.43) 36%,rgba(247,242,233,.33) 54%,rgba(247,242,233,.21) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);
   }
   body.light #phone2 .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   body.light #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(46,31,26,.09);}
@@ -6258,17 +6267,17 @@
   #dOver .dvTop{gap:12px;}   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
   #dOver .ovTop{position:sticky;top:calc(-1 * var(--ctPadY));z-index:5;display:flex;align-items:center;gap:10px;margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ctPadX)) 0;padding:24px var(--ctPadX) 12px;}   /* the card's own padding cancelled, whatever the breakpoint sets it to */
   #dOver .ovTop::before{
-    content:"";position:absolute;left:0;right:0;top:0;bottom:-4px;z-index:-1;pointer-events:none;
+    content:"";position:absolute;left:0;right:0;top:0;bottom:-36px;z-index:-1;pointer-events:none;   /* 4 past the bar, then 36 ("+32") */
     /* "make the bg progress smoother: top -> full blur, end of the bar -> no
        blur": one run over the whole ground rather than a plate with a 16px
        edge -- the tint and the blur's mask both full at the top and easing
        to nothing at the foot on the same curve (.94, .82, .64, .42, .2, 0) */
     /* "a gradient black, progressive, 50% opacity": black at .5 at the top,
        easing to nothing at the foot on the blur's own curve */
-    background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.72) 18%,rgba(0,0,0,.62) 36%,rgba(0,0,0,.48) 54%,rgba(0,0,0,.3) 72%,rgba(0,0,0,.14) 88%,rgba(0,0,0,0) 100%);   /* "black gradient more intense": .5 -> .78 at the top, the same curve */
+    background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.5) 18%,rgba(0,0,0,.43) 36%,rgba(0,0,0,.33) 54%,rgba(0,0,0,.21) 72%,rgba(0,0,0,.1) 88%,rgba(0,0,0,0) 100%);   /* .5, then .78 ("more intense"), then .55 ("reduce black by opacity") at the top, the same curve */
     /* the blur moved to the .ovGround bands (below); the tint alone here */
   }
-  body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.78) 0%,rgba(247,242,233,.72) 18%,rgba(247,242,233,.62) 36%,rgba(247,242,233,.48) 54%,rgba(247,242,233,.3) 72%,rgba(247,242,233,.14) 88%,rgba(247,242,233,0) 100%);}
+  body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.55) 0%,rgba(247,242,233,.5) 18%,rgba(247,242,233,.43) 36%,rgba(247,242,233,.33) 54%,rgba(247,242,233,.21) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);}
   #dOver .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;}
   #dOver .ovTop .ovChatBox{width:100%;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.07);-webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);}
   #dOver .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
@@ -6290,8 +6299,13 @@
   #dOver .ovrow2{padding:0;gap:12px;}
   #dOver .ovrow2 .msn{border-radius:20px;}
   #dOver .ovCov .covGauge .covDial{width:96px;height:96px;}   /* 112 in the 256 card */
-  #dOver .ovAgeSl .ovArc{width:96%;margin:-8px 0 0;}   /* the desk's card is wider: the arc at the card's width lands the reading 16 above the 192 foot */
-  #dOver .ovAgeYrs{margin-top:-26px;}   /* the desk's card is wider, so the arc at 180% stood 123 tall and the card 290; at 130% it is 89, and the reading lands 16 above the 256 foot */
+  #dOver .ovAgeSl .ovArc{width:96%;margin:0;}   /* "arc push down 8px" on the desk */
+  #dOver .ovAgeOrg{width:80px;height:80px;}   /* "organ +10% scale up" on the desk: 72 -> 80 */   /* the desk's card is wider: the arc at the card's width lands the reading 16 above the 192 foot */
+  #dOver .ovAgeYrs{margin-top:-26px;}
+  /* the phone's, apart ("mobile: push down years old 12px, arc 8px, organ 4px") */
+  #phone2 .ovAgeSl .lbl{margin-bottom:10px;}
+  #phone2 .ovAgeSl .ovArc{margin-top:0;}
+  #phone2 .ovAgeYrs{margin-top:-8px;}   /* the desk's card is wider, so the arc at 180% stood 123 tall and the card 290; at 130% it is 89, and the reading lands 16 above the 256 foot */
   #dOver .ovAge{cursor:pointer;}
   /* the rail: the Explore cards at the rail's width and corners, resting
      on their left edge, all lit; the button the rail's own */
@@ -22424,7 +22438,7 @@
     document.querySelectorAll('#phone2 .ovTop, #dOver .ovTop').forEach(top => {
       if (top.querySelector('.ovGround')) return;
       const g = document.createElement('div'); g.className = 'ovGround'; g.setAttribute('aria-hidden', 'true');
-      g.innerHTML = '<i></i><i></i><i></i><i></i><i></i><i></i>';
+      g.innerHTML = '<i></i>'.repeat(10);
       top.prepend(g);
     });
   })();
