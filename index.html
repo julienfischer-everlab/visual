@@ -3007,15 +3007,15 @@
       rgb(var(--v4halo) / calc(.004 * var(--haloK))) 91%,
       rgb(var(--v4halo) / 0) 100%);}
   .lpHero{position:relative;}
-  .lpNav{display:flex;align-items:center;justify-content:space-between;height:88px;padding:0 40px;}
+  .lpNav{display:flex;align-items:center;justify-content:space-between;height:88px;padding:0 40px;max-width:1160px;width:100%;margin:0 auto;box-sizing:border-box;}   /* on the same 1080 container as the hero */
   .lpBrand{display:flex;align-items:center;color:#f4f4f4;}
   .lpLogo{display:block;height:24px;width:auto;}
   .lpStart{font:inherit;font-size:15px;font-weight:500;color:#111;background:#fff;border-radius:999px;padding:16px 26px;text-decoration:none;transition:transform .16s ease;}
   .lpStart:hover{transform:translateY(-1px);}
-  .lpHero{flex:1 1 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:24px 40px 64px;max-width:1440px;width:100%;margin:0 auto;}
+  .lpHero{flex:1 1 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:24px 40px 64px;max-width:1160px;width:100%;margin:0 auto;}   /* 1440, then "landing page container 1080px": 1080 of content in the 40s */
   .lpHeroTx{max-width:560px;justify-self:center;}
   .lpHeroTx .lpEyebrow{color:rgba(244,244,244,.5);font-size:11px;}
-  .lpHeroTx h1{margin:0 0 22px;font-weight:500;font-size:clamp(38px,calc(var(--lpW) * .046),64px);line-height:.96;   /* 1.04, then "reduce line height" */letter-spacing:-1.8px;color:#f4f4f4;}   /* the page's own sans ("use h1 sans, not serif") */
+  .lpHeroTx h1{margin:0 0 22px;font-weight:500;font-size:clamp(34px,calc(var(--lpW) * .04),56px);line-height:.96;   /* 64 at the top, then "h1 landing smaller by 8px": 56 */   /* 1.04, then "reduce line height" */letter-spacing:-1.8px;color:#f4f4f4;}   /* the page's own sans ("use h1 sans, not serif") */
   .lpHeroTx p{margin:0 0 16px;font-size:16.5px;line-height:1.5;color:rgba(244,244,244,.84);}
   .lpHeroCta{margin-top:18px;border:0;cursor:pointer;color:#111;background:#fff;}
   .lpHeroVis{position:relative;top:-64px;display:flex;flex-direction:column;align-items:center;gap:14px;justify-self:center;width:100%;max-width:560px;}   /* 64 above centre ("push up the organ group by 64px") */
@@ -3029,7 +3029,7 @@
      faded and softened as on the phone */
   .lpAgeView{display:flex;flex-direction:column;align-items:center;width:100%;max-width:560px;text-align:center;user-select:none;-webkit-user-select:none;cursor:grab;touch-action:pan-y;}
   .lpAgeView.dragging{cursor:grabbing;}
-  .lpAvOrg{position:relative;width:300px;height:300px;}
+  .lpAvOrg{position:relative;top:-24px;width:300px;height:300px;}   /* "push up organ by 24px": the organ alone, the arc and the rest staying */
   .lpAvOrg canvas{position:absolute;inset:0;display:block;}
   .lpAvArc{width:100%;margin-top:-6px;-webkit-mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);}
   .lpAvArc svg{display:block;width:100%;height:auto;overflow:visible;}
@@ -21614,8 +21614,8 @@
     names.innerHTML = list.map(d => '<span>' + name(d) + '</span>').join('');
     const items = [].slice.call(names.children);
     const deltaText = d => d.delta < 0 ? (-d.delta) + ' year' + (d.delta === -1 ? '' : 's') + ' younger' : d.delta > 0 ? d.delta + ' year' + (d.delta === 1 ? '' : 's') + ' older' : 'matches your age';
-    const DOTS = 5200;   // twice the engine's dense 2600 ("organ hero more dot 2x, dense")
-    const view = makeOrganView(org, body.organIdx, { dl: false, dense: true, target: shapeTarget(clouds[body.organIdx], DOTS), fill: 0.62, dot: 1.1 });
+    const DOTS = 9000;   // twice the engine's dense 2600 ("organ hero more dot 2x, dense"), then "organ more dense, more particles": 9,000
+    const view = makeOrganView(org, body.organIdx, { dl: false, dense: true, target: shapeTarget(clouds[body.organIdx], DOTS), fill: 0.78, dot: 1.1 });
     const arc = arcACopyLive(arcHost, body.delta, 42);   // 42 ticks a side: 1.4x the .5 step ("1.4x more increment")
     arcHost.querySelector('circle').setAttribute('r', '3');   // the indicator at half the card's 6 ("arc white dot smaller 2x")
     // the light: the concept phone's three verdicts, blended from the one
@@ -21626,7 +21626,7 @@
     const writeHalo = () => { head.style.setProperty('--v4halo', Math.round(haloNow[0]) + ' ' + Math.round(haloNow[1]) + ' ' + Math.round(haloNow[2])); head.style.setProperty('--haloK', haloKFor(haloNow[3])); };
     const haloTo = (tgt, dur) => { cancelAnimationFrame(haloRaf); const from = haloNow.slice(), t0 = performance.now(); const step = t => { const p = Math.min(1, (t - t0) / dur), e = p < 0.5 ? 16 * Math.pow(p, 5) : 1 - Math.pow(-2 * p + 2, 5) / 2; for (let i = 0; i < 4; i++) haloNow[i] = from[i] + (tgt[i] - from[i]) * e; writeHalo(); if (p < 1) haloRaf = requestAnimationFrame(step); }; haloRaf = requestAnimationFrame(step); };
     writeHalo();
-    let cur = 0, timer = 0, rest = 0;
+    let cur = 0, timer = 0, rest = 0, swapT = 0;
     const paint = () => { const d = list[cur]; num.textContent = CHRONO + d.delta; delta.textContent = deltaText(d); };
     // where a name sits in the track, and the scroll that centres it
     const centreOf = i => items[i].offsetLeft + items[i].offsetWidth / 2 - names.clientWidth / 2;
@@ -21642,8 +21642,11 @@
       view.idx = d.organIdx; view.beat = !!(ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart');
       view.morphTo(clouds[d.organIdx], 'o' + d.organIdx, shapeTarget(clouds[d.organIdx], DOTS), 900);
       arc.sweepTo(d.delta, 900); haloTo(verdict(d), 900);
-      num.style.opacity = '0'; delta.style.opacity = '0';
-      setTimeout(() => { paint(); num.style.opacity = '1'; delta.style.opacity = '1'; }, 220);
+      // the age and its line leave to the right and return from the left, 24px
+      // ("should fade in out when active item changes, from left to right, 24px movement")
+      [num, delta].forEach(el => { el.style.transition = 'opacity .18s ease,transform .18s ease'; el.style.opacity = '0'; el.style.transform = 'translateX(24px)'; });
+      clearTimeout(swapT);
+      swapT = setTimeout(() => { paint(); [num, delta].forEach(el => { el.style.transition = 'none'; el.style.transform = 'translateX(-24px)'; void el.offsetWidth; el.style.transition = 'opacity .28s ease,transform .28s cubic-bezier(.2,.8,.2,1)'; el.style.opacity = '1'; el.style.transform = 'none'; }); }, 190);
       if (!fromTrack) show(i);
       shade();
     };
@@ -21693,8 +21696,8 @@
         q.cy = 0.1 + Math.random() * 0.5;
       }
       q.t = fresh ? Math.random() : 0;
-      q.v = (0.0022 + Math.random() * 0.0034) / 3;   // a third of the pace ("floating particles way slower")
-      q.r = 0.7 + Math.random() * 1.3;
+      q.v = (0.0022 + Math.random() * 0.0034) / 6;   // a third of the pace ("floating particles way slower"), then half again ("slower 2x")
+      q.r = 0.4 + Math.random() * 0.7;   // .7-2, then "finer": .4-1.1
       q.ink = INKS[Math.random() < 0.55 ? 0 : Math.random() < 0.7 ? 1 : 2];
       q.a = 0.35 + Math.random() * 0.45;
     };
