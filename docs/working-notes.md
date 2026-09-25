@@ -10972,6 +10972,10 @@ grid's 20 on the desk, where the booking card shortens to the column (452
 from 573). Measured: 128 × 346 on the phone, 128 × 595 on the desk, the
 list and its heading hidden, both back on Tasks.
 
+"Put this tweak on Overview." The row had landed in the Insights group of
+the panel, before Biological age; it sits in the Overview group now, after
+Services and before Build, where the page it changes is.
+
 ---
 
 ## 6. Open items
