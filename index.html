@@ -3036,6 +3036,11 @@
      the delta under it, the names' row at the foot with the neighbours
      faded and softened as on the phone */
   .lpAgeView{display:flex;flex-direction:column;align-items:center;width:100%;max-width:560px;text-align:center;user-select:none;-webkit-user-select:none;cursor:grab;touch-action:pan-y;}
+  /* the visual in a card ("try another landing page version where the right
+     visual is included inside a card, rounded corner 32px, #fff 4% bg,
+     blur"): the streams behind it go to a wash through the glass */
+  body.tkLpCard .lpAgeView{background:rgba(255,255,255,.04);border-radius:32px;padding:40px 24px 32px;-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);}
+  body.tkLpCard .lpAvOrg{top:0;margin-top:-30px;}   /* the -24 lift reads as a cut against a card's edge */
   .lpAgeView.dragging{cursor:grabbing;}
   .lpAvOrg{position:relative;top:-24px;width:300px;height:300px;transform:scale(.85);margin:-22px auto;}   /* 300, then "reduce organ by 15%": the 300 canvas shown at .85 (255 of layout, the -22s), so the shape keeps its drawing room and is not cut at the canvas's edge ("avoid cut the organ") */   /* "push up organ by 24px": the organ alone, the arc and the rest staying */
   .lpAvOrg canvas{position:absolute;inset:0;display:block;}
@@ -3048,7 +3053,7 @@
   .lpAvArr.prev{left:0;} .lpAvArr.next{right:0;}
   .lpAvArr svg{width:12px;height:12px;}
   .lpAvArr:hover{background:rgba(255,255,255,.12);} .lpAvArr:active{transform:scale(.94);}
-  .lpAvNum{white-space:nowrap;font-size:84px;font-weight:500;letter-spacing:-3px;line-height:1;color:#f4f4f4;font-variant-numeric:tabular-nums;transition:opacity .2s ease;}
+  .lpAvNum{white-space:nowrap;font-size:76px;   /* 84, then "reduce the age by 8px font size" */font-weight:500;letter-spacing:-3px;line-height:1;color:#f4f4f4;font-variant-numeric:tabular-nums;transition:opacity .2s ease;}
   .lpAvDelta{white-space:nowrap;margin-top:-2px;   /* 10, then "reduce gap XX and XX younger by 12px" */font-size:16px;color:rgba(244,244,244,.55);transition:opacity .2s ease;}
   /* the names' row is the phone's carousel ("this should act as a carousel,
      same as the mobile view"): every age in one track that scrolls and
@@ -3077,7 +3082,7 @@
     .lpHeroCta{margin-left:auto;margin-right:auto;display:block;}
     .lpHeroVis{top:0;justify-self:center;}
     .lpAvOrg{width:220px;height:220px;margin:-16px auto;}
-    .lpAvNum{font-size:64px;}
+    .lpAvNum{font-size:56px;}
     .lpAvNames{font-size:17px;gap:22px;}
   }
   body[data-bp="xs"] .lp, body[data-bp="s"] .lp{overflow-y:auto;scrollbar-width:none;}
@@ -8678,6 +8683,19 @@
         </div>
         </div>
         <div class="tkGroup">
+        <div class="tkSub">Organ Age landing</div>
+        <!-- the hero's visual: open on the page, or in a card ("try another
+             landing page version where the right visual is included inside a
+             card, rounded corner 32px, #fff 4% bg, blur") -->
+        <div class="tkRow">
+          <label for="stLpCard">Hero visual</label>
+          <select id="stLpCard" aria-label="The landing hero's visual">
+            <option value="open">Open</option>
+            <option value="card" selected>Card</option>
+          </select>
+        </div>
+        </div>
+        <div class="tkGroup">
         <div class="tkSub">Reports</div>
         <!-- how the Reports tab lays its reports out. Named shapes, none of
              them another turned off, so this stays a select. -->
@@ -13993,6 +14011,7 @@
       (CARD_STATE.hdrV2 ? ' hdrV2' : '') +
       (CARD_STATE.hdrV3 ? ' hdrV3' : '') +
       (CARD_STATE.hdrV4 ? ' hdrV4' : '') +
+      (CARD_STATE.lpCard ? ' tkLpCard' : '') +
       (CARD_STATE.svcLg ? ' svcLg' : '') +
       (CARD_STATE.insCard ? ' tkIns' : '') +
       (CARD_STATE.hero && CARD_STATE.hero !== 'consult' ? ' hero' + CARD_STATE.hero[0].toUpperCase() + CARD_STATE.hero.slice(1) : '') +
@@ -22226,6 +22245,7 @@
                        // the Tasks tweak: one insight card with a chart in place of the task list
                        insCard: true,   // the default now ("make Insights the default hero bento card")
                        hero: 'consult',   // the hero action card: consult / dexa / report ("create a tweak 'Hero action'")
+                       lpCard: true,   // → body.tkLpCard (tk-, since .lpCard is the old story's copy card, with a will-change that made the body a containing block); the landing hero's visual in a card ("try another landing page version ... inside a card")
                        // the desk's navigation retracted to its glyphs (the sidebar's own toggle)
                        sideMin: false,
                        // the Insights section (the Explore cards' rail), shown or not
@@ -22266,7 +22286,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stTasks' || sel.id === 'stHero')
+          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stTasks' || sel.id === 'stHero' || sel.id === 'stLpCard')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -23003,6 +23023,8 @@
     ['heroDexa', 'heroReport'].forEach(c => document.body.classList.remove(c));
     if (CARD_STATE.hero !== 'consult') document.body.classList.add('hero' + CARD_STATE.hero[0].toUpperCase() + CARD_STATE.hero.slice(1));
   };
+  const stLpCardSel = document.getElementById('stLpCard');
+  if (stLpCardSel) stLpCardSel.addEventListener('change', () => { CARD_STATE.lpCard = stLpCardSel.value === 'card'; document.body.classList.toggle('tkLpCard', CARD_STATE.lpCard); });
   const stHeroSel = document.getElementById('stHero');
   if (stHeroSel) stHeroSel.addEventListener('change', () => { CARD_STATE.hero = stHeroSel.value; paintHero(); });
   const stRepStyleSel = document.getElementById('stRepStyle');
