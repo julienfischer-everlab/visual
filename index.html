@@ -543,7 +543,7 @@
      cap centred on its own left the main 20 further in at 1440 and flush
      against the rail at 1363. Retracted, the rail's 152 go to the page, and
      the edge holds ("nav inconsistent"). */
-  #dMain{max-width:min(1328px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}
+  #dMain{max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}   /* 1280 in the 40s, as the Overview's */
   /* Sticks flush with #dMain's own rounded top the same way .dFilters
      sticks flush with it lower down (top:-32px cancels the same 32px
      padding, for the same reason: sticky's `top` reads off the padding
@@ -2814,6 +2814,15 @@
   .ibTx .need{display:block;margin-top:8px;font-size:14px;font-weight:500;color:#f78359;}
   .ibWhen{flex:none;display:flex;align-items:center;gap:7px;font-size:14px;color:#8b8b86;align-self:flex-start;}
   .ibWhen i{width:7px;height:7px;border-radius:50%;background:#7aa2ff;}
+  /* the desk's inbox: over the shell (the .dash frame, so a forced device
+     frames it too); at M and L a centred 440 modal that fades and settles
+     in, no handle; at XS and S the phone's sheet at the frame's foot */
+  .dash .ibWrap{z-index:9;}
+  .dash .ibRow:last-of-type{padding-bottom:6px;}
+  body:not([data-bp="xs"]):not([data-bp="s"]) .dash .ibCard{left:50%;right:auto;top:50%;bottom:auto;width:440px;max-width:calc(100% - 48px);padding:24px 24px 20px;transform:translate(-50%,-50%) scale(.96);opacity:0;transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .24s ease;box-shadow:0 30px 90px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06);}
+  body:not([data-bp="xs"]):not([data-bp="s"]) .dash .ibWrap.on .ibCard{transform:translate(-50%,-50%);opacity:1;}
+  body:not([data-bp="xs"]):not([data-bp="s"]) .dash .ibHandle{display:none;}
+  @media (max-width:991px){ body:not([data-bp]) .dash .ibCard{left:12px;right:12px;top:auto;bottom:12px;width:auto;max-width:none;padding:10px 20px 20px;transform:translateY(110%);opacity:1;transition:transform .46s cubic-bezier(.2,.8,.2,1);} body:not([data-bp]) .dash .ibWrap.on .ibCard{transform:none;} body:not([data-bp]) .dash .ibHandle{display:block;} }
   .ibMore{margin:22px 0 12px;font-size:16px;font-weight:500;}
   .ibChips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px;
     -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);}
@@ -6278,7 +6287,7 @@
   /* action plan */
   .dvPlanGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   .dvProt{
-    background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);border-radius:18px;padding:18px;   /* "action plan card: no bg, light grey border" */
+    background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);border-radius:18px;padding:18px;   /* "action plan card: no bg, light grey border"; .12, then "light border colour": .22 */
     display:flex;flex-direction:column;gap:12px;min-height:250px;
   }
   .dvProtTop{display:flex;align-items:flex-start;gap:12px;}
@@ -6372,6 +6381,7 @@
   body[data-bp="s"] .dash .side, body[data-bp="xs"] .dash .side{display:none;}
   body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;--dMainLeft:0px !important;}
   body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver{left:0;border-radius:24px 24px 0 0;}
+  body:not([data-bp="xs"]):not([data-bp="s"]) #dOver{--ctPadY:32px;--ctPadX:40px;}   /* the Insights desk's body padding, 32 above and 40 at the sides ("body padding: keep this structure for Overview"); the bar and the caps read the same tokens */
   #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:min(calc(1280px + 2 * var(--ctPadX)),   /* 1080, then "overview container max width 1280px" */ calc(var(--bpW, 100vw) - var(--sideW, 224px) - 16px));}   /* --sideW: 224, 72 retracted, 0 at S and XS */
   /* and the page reflows at S and XS -- forced, or a window that narrow --
      so a breakpoint's view is that breakpoint's layout, not the desk's
@@ -6470,7 +6480,7 @@
     body:not([data-bp]) #dOver .ovrow2, body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:1fr;}
   }
   #dOver .dvPlanGrid{gap:20px;}   /* "grid gap 20px" for the action plan */
-  #dOver .dvTop{gap:16px;grid-template-columns:1fr 1fr;}   /* 12, then 24, then "gap grid 16px" */   /* "2 col 50 50" */   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
+  #dOver .dvTop{gap:12px;grid-template-columns:1fr 1fr;}   /* 12, 24, 16, then "grid 12px gap" */   /* "2 col 50 50" */   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
   #dOver .ovTop{position:sticky;top:calc(-1 * var(--ctPadY));z-index:5;display:flex;align-items:center;gap:10px;margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ctPadX)) 0;padding:24px var(--ctPadX) 12px;}   /* the card's own padding cancelled, whatever the breakpoint sets it to */
   #dOver .ovTop::before{
     content:"";position:absolute;left:0;right:0;top:0;bottom:-36px;z-index:-1;pointer-events:none;   /* 4 past the bar, then 36 ("+32") */
@@ -6699,7 +6709,8 @@
      booking card's height */
   body.hdrV4 .ovSvcChip.ovSvcNew{display:none;}
   /* V4's bar keeps the inbox disc beside the bell on both hosts ("add inbox as V2"), the field before them */
-  body.hdrV4 #dOver .ovTop .dvH1{flex:1 1 auto;margin:0;text-align:left;font-size:24px;min-width:0;}   /* the greeting in the bar, at the left ("title on left side") */
+  body.hdrV4 #dOver .ovTop .dvH1{flex:1 1 auto;margin:0;text-align:left;font-size:24px;min-width:0;transition:opacity .28s ease;}   /* the greeting in the bar, at the left ("title on left side") */
+  body.hdrV4 #dOver.ovScrolled .ovTop .dvH1{opacity:0;}   /* gone once the bar sticks over the page ("fade out the title on sticky state") */
   body.hdrV4 #dOver .ovTop .ovChat{flex:0 1 256px;max-width:256px;}
   body.hdrV4 #dOver .ovTop .ovChatBox{max-width:256px;}   /* "place field on the right side next to the bell, 256 max width" */
   body.hdrV4 .ovrow2, body.hdrV4 .ovInsCard{display:none;}
@@ -6707,7 +6718,7 @@
   body.hdrV4:not([data-bp="xs"]) #dOver .dvTop{margin-top:24px;}   /* "+24px gap between section": the hero 24 further under the bar that carries the greeting */
   body.hdrV4 #dOver .dvTop > div{display:flex;flex-direction:column;min-height:0;}
   body:not([data-bp="xs"]) #dOver .ovhero.ovBook{min-height:320px;}   /* "hero desktop height 320px" */
-  body.hdrV4 #dOver .dvTop .ovSvc{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:minmax(124px,1fr);gap:16px;margin:0;padding:0;flex:1 1 auto;overflow:visible;}
+  body.hdrV4 #dOver .dvTop .ovSvc{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:minmax(124px,1fr);gap:12px;margin:0;padding:0;flex:1 1 auto;overflow:visible;}
   body.hdrV4 #dOver .dvTop .ovSvcChip{height:auto;min-height:124px;flex:none;}
   body.hdrV4 #phone2 .ovInsCard + .ovsec, body.hdrV4 #dOver .ovInsCard + .dvSec{margin-top:0;}
   #dOver .ovInsTx b{font-size:18px;}   /* 16, then "+2px" */
@@ -17570,7 +17581,7 @@
           '<button class="chModel" type="button">Eva ' + ICON.chev + '</button><button class="chSend" type="button" aria-label="Send">' + ICON.up + '</button></div></div>' +
       '</div></div>';
       ph.appendChild(wrap);
-      const modal = wrap.querySelector('.chModal'), body = wrap.querySelector('.chBody'), inp = wrap.querySelector('.chComposer input'), paras = [].slice.call(wrap.querySelectorAll('.chAns p'));
+      const modal = wrap.querySelector('.chModal'), body = wrap.querySelector('.chBody'), inp = wrap.querySelector('.chComposer input'); let paras = [].slice.call(wrap.querySelectorAll('.chAns p')), curAns = ANSWER;
       const think = wrap.querySelector('.chThink'), bubble = wrap.querySelector('.chBubble'), title = wrap.querySelector('.chHead h3'), time = wrap.querySelector('.chTime');
       // the frame's keyboard under the composer; the phone that has none gets
       // a copy of the Insights phone's, wired the same (the sheet does too --
@@ -17604,7 +17615,7 @@
         paras.forEach(p => { p.textContent = ''; });
         think.classList.add('live');
         let t = 900;   // the thinking beat
-        ANSWER.forEach((text, i) => {
+        curAns.forEach((text, i) => {
           text.split(' ').forEach((w, j) => {
             streamT.push(setTimeout(() => {
               if (i === 0 && j === 0) think.classList.remove('live');
@@ -17619,11 +17630,14 @@
       // screen: where the status strip floats over the page (the Overview
       // phone) the modal runs up behind it and pads its body by the strip's
       // height; where the strip is in the flow it starts under it.
-      const open = (src, question) => {
+      const open = (src, question, ctx) => {
         if (wrap.classList.contains('on')) return;
         const q = (question || '').trim() || DEFAULT_Q;
         bubble.textContent = q;
-        title.textContent = q === DEFAULT_Q ? 'Protein intake' : q;
+        // a context (a service tile's) brings its own title and answer ("trigger the chat in the context of the card, ideate discussion"); the default is the protein thread
+        curAns = (ctx && ctx.answer) || ANSWER;
+        wrap.querySelector('.chAns').innerHTML = curAns.map(() => '<p></p>').join(''); paras = [].slice.call(wrap.querySelectorAll('.chAns p'));
+        title.textContent = (ctx && ctx.title) || (q === DEFAULT_Q ? 'Protein intake' : q);
         time.textContent = q === DEFAULT_Q ? '26 Jun, 3:50 PM' : now();
         const k = keyboard(), st = ph.querySelector('.mstatus');
         const stH = st ? st.offsetHeight : 0, floating = st && getComputedStyle(st).position === 'absolute';
@@ -21898,19 +21912,30 @@
     });
     row.addEventListener('click', e => {
       if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); return; }
-      // Concierge opens the full chat ("Concierge should open the chat full modal")
-      const ph = row.closest('#phone2');
-      if (e.target.closest('.ovSvcNew') && ph && ph._chat) ph._chat.open(e.target.closest('.ovSvcNew'));
+      // a tile opens the full chat in its service's context ("this should
+      // trigger the chat in the context of the card, ideate discussion"):
+      // the question the tile stands for, Eva's opening on it, the title
+      const ph = row.closest('#phone2'), tile = e.target.closest('.ovSvcChip');
+      if (tile && ph && ph._chat){ const ctx = SERVICE_CHAT[tile.querySelector('b').textContent] || SERVICE_CHAT.Concierge; ph._chat.open(tile, ctx.q, ctx); }
     });
   }
+  // what each service opens the chat with: the ask, and Eva's opening --
+  // what the service is, where things stand, the next step she can take
+  const SERVICE_CHAT = {
+    'Concierge': { title: 'Concierge', q: 'I’d like to message my care team', answer: ['Your care team is here. Dr Steven Lu and your coordinator both see this thread, and one of them usually answers within the hour during the day.', 'If it’s about your dosage change from this morning, Dr Lu has already noted it and asked to hear how you go over the week.', 'What would you like to raise with them?'] },
+    'Telehealth': { title: 'Telehealth', q: 'I’d like to see a doctor today', answer: ['Telehealth gets you in front of an Everlab doctor from home, usually within the hour, with your records already open on their side.', 'There are two slots left today, 2:15 pm and 4:40 pm, both video. Your last consult was with Dr Lu in June, and he has the afternoon one.', 'Shall I hold the 2:15 with Dr Lu, and add a line about what you want to cover?'] },
+    'Med Certs': { title: 'Med Certs', q: 'I need a medical certificate', answer: ['A medical certificate comes from a short telehealth check, and is in your inbox as a PDF within minutes of it ending. Most employers take it as is.', 'I can set one up for today or tomorrow. If it’s for time you have already taken, tell me the dates and the doctor can cover them where that’s appropriate.', 'Which dates does it need to cover?'] },
+    'Treatments': { title: 'Treatments', q: 'Help me with my treatments', answer: ['You have two active treatment plans, the vitamin D protocol from March and the new dosage Dr Lu adjusted this morning. Both refills are on file with your pharmacy.', 'The next repeat is due on the 4th. I can move it forward, switch the pharmacy, or ask Dr Lu a question about either plan.', 'What would you like to change?'] },
+    'Pathology': { title: 'Pathology', q: 'Book my pathology tests', answer: ['Your pathology request from the onboarding plan is still open: a fasting blood panel and a urine sample, at any Everlab or partner clinic.', 'Quantum Therapy Sydney is the closest to you, with fasting slots from 7:30 am. Results land in your Insights within two to three days.', 'Want me to book a morning this week?'] }
+  };
   ovSvcRow(document.querySelector('#phone2 .ovSvc'), 13);
   ovSvcRow(document.querySelector('#dOver .ovSvc'), 0);   // a grid at M and L (nothing to drag), the carousel at S and XS
   // The Overview's inbox sheet ("the inbox icon should trigger a bottom
   // sheet"): from the top bar's disc and Header V2's row alike. Three
   // messages -- the doctor, Eva with a Suggested tag, a prescription that
   // needs input -- then Explore more as chips.
-  (function inboxSheet(){
-    const ph = document.getElementById('phone2'); if (!ph) return;
+  function inboxSheet(ph, mount, triggers){
+    if (!ph || !mount) return;
     const X = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>';
     const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>';
     const SPARK = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5Z"/></svg>';
@@ -21928,20 +21953,22 @@
         '<div class="ibRow"><span class="ibAv photo">SL</span><div class="ibTx"><div class="who">Dr. Steven Lu</div><p>Hello Julien, I have adjusted your dosage for xyz medicine.</p></div><span class="ibWhen"><i></i>Now</span></div>' +
         '<div class="ibRow"><span class="ibAv sq">' + EVA + '</span><div class="ibTx"><div class="who">Eva <span class="ibTag">' + SPARK + 'Suggested</span></div><p>It’s been a while since your last test. Let’s look at what’s pending.</p></div><span class="ibWhen"><i></i>1d</span></div>' +
         '<div class="ibRow"><span class="ibAv sq">' + PILLS + '</span><div class="ibTx"><div class="who">Prescription</div><p>We need more information from you.</p><span class="need">Requires input</span></div><span class="ibWhen"><i></i>1d</span></div>' +
-        '<div class="ibMore">Explore more</div>' +
-        '<div class="ibChips"><button class="ibChip" type="button">' + RESULTS + 'Explore my latest results</button><button class="ibChip" type="button">' + PLAN + 'Review my plan progress</button></div>' +
-      '</div>';
-    ph.appendChild(wrap);
+      '</div>';   // Explore more and its chips are gone ("remove explore more on inbox sheet")
+    mount.appendChild(wrap);
     const open = () => { if (wrap.classList.contains('on')) return; wrap.classList.add('show'); ph.classList.add('ibOpen'); requestAnimationFrame(() => wrap.classList.add('on')); };
     const close = () => { if (!wrap.classList.contains('on')) return; wrap.classList.remove('on'); ph.classList.remove('ibOpen'); setTimeout(() => { if (!wrap.classList.contains('on')) wrap.classList.remove('show'); }, 480); };
-    ph.querySelectorAll('.ovInbox, .ovHubInbox').forEach(b => b.addEventListener('click', e => { e.preventDefault(); open(); }));
-    wrap.quereySelector = null;
+    triggers.forEach(b => b.addEventListener('click', e => { e.preventDefault(); open(); }));
     wrap.querySelector('.ibX').addEventListener('click', close);
     wrap.querySelector('.ibDim').addEventListener('click', close);
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     document.addEventListener('everlab:mode', close);
     ph._inbox = { open, close };
-  })();
+  }
+  { const ph = document.getElementById('phone2'); if (ph) inboxSheet(ph, ph, [].slice.call(ph.querySelectorAll('.ovInbox, .ovHubInbox'))); }
+  // ...and the desk's, from its bar's disc: the same card as a centred modal
+  // at M and L, the bottom sheet inside the device at XS and S ("use a modal
+  // on desktop M L, keep bottom sheet for XS S")
+  { const over = document.getElementById('dOver'), dash = document.querySelector('.dash'); if (over && dash) inboxSheet(over, dash, [].slice.call(over.querySelectorAll('.ovInbox'))); }
   // The Overview's Explore cards ("add more of these cards"): one per thing
   // that has something to say -- a document, a questionnaire, a report, a
   // device, and a device still syncing. Each is the eyebrow with its dot and
