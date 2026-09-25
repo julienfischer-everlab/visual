@@ -11133,6 +11133,25 @@ the reading pulled 20 up into the arc's empty foot (26 on the desk); the
 desk's dial 96 (from 112). Measured: organ at 39, arc at 119, reading at
 155 (phone) / 159 (desk), 19 / 15 above the foot.
 
+### 5.418 The forced breakpoint frames the whole shell
+
+"The viewport should vary, not just the body." Forcing a breakpoint had
+narrowed the card and left the sidebar and the window as they were. Now
+the whole desk shell -- the sidebar and the card -- is framed at the
+breakpoint's floor (480 / 800 / 1080 / 1280) and centred in the window,
+a hairline round it, as a browser that wide would show it. At S and XS
+the sidebar folds away and the card takes the frame's width, as a shell
+that narrow would; the sidebar's width is a variable so the card's cap
+follows, and the shell's ground gradient measures the card's edge off the
+shell's own left rather than the window's. The bar's readout says the
+frame's width first ("800 px · S (forced, window 1440)"). Measured at a
+1440 window: L → frame 1280 at 80, sidebar shown, card 1040; M → 1080 at
+180, card 840; S → 800 at 320, sidebar hidden, card 784, one column,
+services three across; XS → 480, card 464, two across; Auto → the window.
+
+"Grid gap 12px." The desk's hero bento is on the page's 12 (from 20):
+the top band, the two small cards, the insight card's margin.
+
 ---
 
 ## 6. Open items

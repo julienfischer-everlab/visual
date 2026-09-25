@@ -6201,7 +6201,18 @@
   body[data-bp="s"]{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;--bpW:800px;}
   body[data-bp="m"]{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;--bpW:1080px;}
   body[data-bp="l"]{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;--bpW:1280px;}
-  #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:min(calc(1080px + 2 * var(--ctPadX)), calc(var(--bpW, 100vw) - 224px - 16px));}
+  /* ...and the whole shell is the viewport ("the viewport should vary, not
+     just the body"): forced, the desk -- sidebar and card -- is framed at
+     the breakpoint's width and centred in the window, a hairline round it,
+     as a browser that wide would show it; at S and XS the sidebar folds
+     away and the card takes the frame's width, as a shell that narrow
+     would. The sidebar's width is a variable so the card's cap follows. */
+  body[data-bp] .dash{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);box-sizing:border-box;box-shadow:0 0 0 1px rgba(255,255,255,.08);}   /* border-box: the sidebar's padding is inside the frame's width */
+  body[data-bp] .dash .side{left:calc(50vw - var(--bpW) / 2);}
+  body[data-bp="s"] .dash .side, body[data-bp="xs"] .dash .side{display:none;}
+  body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;--dMainLeft:0px !important;}
+  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver{left:0;border-radius:24px 24px 0 0;}
+  #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:min(calc(1080px + 2 * var(--ctPadX)), calc(var(--bpW, 100vw) - var(--sideW, 224px) - 16px));}
   /* and the page reflows at S and XS -- forced, or a window that narrow --
      so a breakpoint's view is that breakpoint's layout, not the desk's
      two columns squeezed: the top band stacks, the services go three
@@ -6226,7 +6237,7 @@
     body:not([data-bp]) #dOver .ovSvc{grid-template-columns:repeat(2,1fr);}
   }
   #dOver .dvPlanGrid{gap:var(--ctGap);}
-  #dOver .dvTop{gap:20px;}   /* "bento gap 20px grid": the hero bento keeps the desk's 20, not the container's gap */
+  #dOver .dvTop{gap:12px;}   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
   #dOver .ovTop{position:sticky;top:calc(-1 * var(--ctPadY));z-index:5;display:flex;align-items:center;gap:10px;margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ctPadX)) 0;padding:24px var(--ctPadX) 12px;}   /* the card's own padding cancelled, whatever the breakpoint sets it to */
   #dOver .ovTop::before{
     content:"";position:absolute;left:0;right:0;top:0;bottom:-4px;z-index:-1;pointer-events:none;
@@ -6258,7 +6269,7 @@
   #dOver .ovhero{margin:0;border-radius:20px;min-height:0;}
   #dOver .ovBook h3{font-size:19px;max-width:62%;}   /* the desk's 23, less the same 4 */
   #dOver .ovBookArt{background-position:65% center;}
-  #dOver .ovrow2{padding:0;gap:20px;}
+  #dOver .ovrow2{padding:0;gap:12px;}
   #dOver .ovrow2 .msn{border-radius:20px;}
   #dOver .ovCov .covGauge .covDial{width:96px;height:96px;}   /* 112 in the 256 card */
   #dOver .ovAgeSl .ovArc{width:96%;margin:0;}   /* the desk's card is wider: the arc at the card's width lands the reading 16 above the 192 foot */
@@ -6420,7 +6431,7 @@
   body.light .ovInsChart g{stroke:rgba(46,31,26,.1);} body.light .ovInsChip{background:#2e1f1a;color:#fff;}
   body.light .ovInsCta{background:rgba(46,31,26,.09);color:#2e1f1a;} body.light .ovInsDots i{background:rgba(46,31,26,.25);} body.light .ovInsDots i.on{background:#2e241c;}
   /* the desk's: in the right column under the two small cards, at the column's width, with the section's 34px above it */
-  #dOver .ovInsCard{margin:20px 0 0;border-radius:20px;}   /* the bento's 20 */
+  #dOver .ovInsCard{margin:12px 0 0;border-radius:20px;}   /* the bento's 12 */
   #dOver .ovInsTx b{font-size:18px;}   /* 16, then "+2px" */
   #dOver .ovInsChart{flex:0 0 46%;}
   #dOver .ovInsSl{padding:20px 22px 34px 24px;gap:24px;}
@@ -13915,7 +13926,7 @@
     // ...measured off whichever card is showing: #dOver stands in for #dMain
     // on the Overview, and a hidden #dMain measures left:0
     { const dm = document.body.classList.contains('m9') ? document.getElementById('dOver') : document.getElementById('dMain');
-      if (dm) document.querySelector('.dash').style.setProperty('--dMainLeft', dm.getBoundingClientRect().left + 'px'); }
+      if (dm){ const dash = document.querySelector('.dash'); dash.style.setProperty('--dMainLeft', (dm.getBoundingClientRect().left - dash.getBoundingClientRect().left) + 'px'); } }   // off the shell's own left: a forced breakpoint frames the shell away from the window's edge
     // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
     { const ho = document.getElementById('mHeroOrgan');
       if (ho && ho.clientWidth) ho.style.setProperty('--heroW', ho.clientWidth + 'px'); }
@@ -22387,7 +22398,8 @@
   {
     const vw = document.getElementById('tkVw'), bpSel = document.getElementById('stBp');
     const BP = w => w >= 1280 ? 'L' : w >= 1080 ? 'M' : w >= 800 ? 'S' : 'XS';
-    const read = () => { if (!vw) return; const forced = document.body.dataset.bp; vw.textContent = innerWidth + ' px · ' + (forced ? forced.toUpperCase() + ' (forced)' : BP(innerWidth)); };
+    const W = { xs: 480, s: 800, m: 1080, l: 1280 };   // the breakpoints' floors, the frame's width when one is forced
+    const read = () => { if (!vw) return; const forced = document.body.dataset.bp; vw.textContent = forced ? W[forced] + ' px · ' + forced.toUpperCase() + ' (forced, window ' + innerWidth + ')' : innerWidth + ' px · ' + BP(innerWidth); };
     read(); addEventListener('resize', read);
     if (bpSel) bpSel.addEventListener('change', () => {
       if (bpSel.value === 'auto') delete document.body.dataset.bp; else document.body.dataset.bp = bpSel.value;
