@@ -11014,6 +11014,10 @@ page's before, during and after the switch.
 cut the same way as the set -- to where the alpha passes 40, squared,
 360px -- into `svc-path.webp`; the row's saturation applies as before.
 
+"Desktop: +24px gap after the chat field." The desk's field sits 56 above
+the services row (from 32), the spacer that holds its place while it
+rides in the bar 120 (48 + 16 + 56); the phone keeps its 32.
+
 ---
 
 ## 6. Open items
