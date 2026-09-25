@@ -10987,6 +10987,29 @@ stands -- and Particle colours, the three inks with Save as before. The
 `#densGrp` span is gone from the bar. Checked: the switch to Dense still
 puts `dense` on the body from inside the menu.
 
+### 5.414 Sizes, the default header, and a font that went serif
+
+"Insights card 192px. Bio age and health coverage need to fit in 256px
+height." The Tasks tweak's card is 192 tall (from 128), the chart growing
+with it. The two small cards are 256 each, on both surfaces (`height`,
+not the age card's own measure): the phone's parts already fit (the
+reading at 200, 38 above the foot); the desk's arc, at 180% of a wider
+card, stood 123 tall and pushed the card to 290, so on the desk it is 130%
+(89 tall) and the reading lands at 222, 16 above the foot.
+
+"Use V3 Overview as the default one." `hdrV3: true`, the Header select on
+V3; a fresh load puts the field under the greeting on the phone and the
+desk, the profile on the phone alone, and the other pages are untouched.
+
+"When Tasks turns off, the font becomes serif. Shouldn't; please check."
+It did, and the capture in 5.412 had shown it (read then as the headless
+browser missing the web font). The body flag for the tweak was `insCard`,
+and `.insCard` is a card component already, with `font:inherit` -- so a
+body wearing the class inherited its font from the root, which has none
+set, and the browser's serif came through everywhere. The flag is `tkIns`
+now; the component keeps its name. Checked: the body's font family is the
+page's before, during and after the switch.
+
 ---
 
 ## 6. Open items
