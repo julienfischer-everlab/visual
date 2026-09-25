@@ -11184,6 +11184,31 @@ tokens from 600, M's from 992, L's from 1440; the XS reflow below 600,
 the S reflow below 992). At a 1440 window Auto reads L, just; a 1439
 window is M.
 
+"S: keep the carousel, as XS." At S and XS -- forced, or a window that
+narrow -- the desk's services are the phone's carousel rather than a
+wrapped grid: two cards and 48 of the third, snapping, dragged under a
+mouse (`ovSvcRow()` takes the row and its inset now, 13 on the phone and
+0 on the desk, and runs on both).
+
+### 5.419 The sidebar: the wordmark, the glyphs, the retract
+
+"Put the logo top; also add a retract action top right of the nav that
+retracts, to see only the icons." The desk's sidebar has a head now:
+Julien's wordmark (his SVG, its fills on currentColor so the light page
+inks it dark, 20 tall) at the left and a retract button (a panel glyph)
+at the right; each entry carries a line glyph -- home, the atom for
+Insights, the checklist, the cube, the document with a heart, the
+calendar -- before its label. Retracted (`body.sideMin`, a CARD_STATE
+flag so a page change keeps it) the rail is 72 wide: the wordmark gone,
+the toggle centred, each entry its glyph alone with the label as a title,
+the lit entry keeping its plate; the card moves in to 72, its cap follows
+through `--sideW`, and the engine re-measures. Measured at 1440: open,
+sidebar 224 and the card at 268 / 1128; retracted, sidebar 72 and the
+card at 192 / 1128; the flag survives Insights and back; the toggle
+returns it. (Julien's "L problem, right side should fill the container"
+turned out to be the L frame, 1440, standing wider than his window --
+"actually is ok".)
+
 ---
 
 ## 6. Open items
