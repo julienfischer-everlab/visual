@@ -11053,6 +11053,51 @@ the bar, stands on the bar's own centre (absolute, 320 wide) rather than
 in the room left of the discs, fading in without the slide. Measured:
 field centre 0 off the card's centre at 1440, 1180 and 1000.
 
+### 5.416 The Insights card as a carousel; the Layout tweak
+
+"Have a carousel inside the carousel, all breakpoints. Nav at the bottom.
+Content left: eyebrow, title (+2px), support, AUTO, CTA View results.
+Right: the data visual, the entire height. Make it swipable inside the
+card." The hero bento's Insights card holds three insights now -- ApoB
+above the optimal range, Vitamin D back in range, resting heart rate
+trending down -- each a slide the card's width: at the left the eyebrow,
+the title (17px on the phone, 18 on the desk, from 15 / 16), the support
+line, then the room, then *View results* at the foot; at the right the
+chart at the slide's whole height, its chip above the last point; the
+dots at the card's foot. A finger scrolls it natively and snaps, a mouse
+drags it (snap off while down, an eased glide onto the nearest slide or
+the next on a flick), a dot glides to its slide, the click after a drag
+is swallowed. The chart is drawn from the reading's five points, each
+segment in its status colour, with `vector-effect:non-scaling-stroke` on
+the lines and on the dots (zero-length paths with round caps) so the
+strokes keep their weight however the box stretches -- the old chart's
+dots had squashed into ovals. `buildOvInsights(card)`, for both hosts.
+Measured: 3 slides, each the card's width, the chart the slide's height;
+a drag lands slide 2 and the dot follows; a dot click lands slide 3.
+
+"Make Insights the default hero bento card." `insCard: true`, the select
+on Insights.
+
+"On the tweak control I want to see the viewport width, updating as the
+viewport resizes; also a select to pick the breakpoint XS / S / M / L as
+the variables shared. The default breakpoint view is always set on the
+min width of the breakpoint." A Layout group at the top of the Tweaks
+panel: *Viewport* reads the window's width live with the breakpoint it
+falls in (1440 px · L), and *Breakpoint* -- Auto, XS, S, M, L -- forces
+one: `body[data-bp]` sets that breakpoint's three tokens whatever the
+window measures, and holds the desk's card to what the breakpoint's
+minimum width would leave it beside the sidebar (S: 800 − 224 − 16 = 560),
+so the page is seen at that width's floor. XS has no floor in the table;
+480 stands in. The readout says "(forced)" while one is. Auto is the
+default. Measured: Auto at 1440 → L, 36 / 24 / 36, card 1128; at 1000 →
+S, 28 / 16 / 28; forced S at 1440 → card 560, 28 / 16 / 28; forced XS →
+240; forced L → 1040 (1280 − 224 − 16, under the token's own 1128). And
+the page reflows at S and XS, forced or in a window that narrow, so the
+breakpoint's view is that breakpoint's layout rather than the desk's two
+columns squeezed: the top band stacks, the services go three across (two
+at XS), the plan two across (one at XS), the two small cards one above
+the other at XS.
+
 ---
 
 ## 6. Open items

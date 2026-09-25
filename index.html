@@ -6182,7 +6182,40 @@
   @media (min-width:800px){:root{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;}}
   @media (min-width:1080px){:root{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;}}
   @media (min-width:1280px){:root{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;}}
-  #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:calc(1080px + 2 * var(--ctPadX));}
+  /* a forced breakpoint (the Layout tweak, body[data-bp]): the tokens of
+     that breakpoint whatever the window measures, and the desk's card held
+     to what the breakpoint's minimum width would leave it beside the 224px
+     sidebar -- so the page is seen as at that width's floor ("the default
+     breakpoint view is always set on the min width of the breakpoint").
+     XS has no floor in the table; 480 stands in. */
+  body[data-bp="xs"]{--ctPadY:24px;--ctPadX:16px;--ctGap:24px;--bpW:480px;}
+  body[data-bp="s"]{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;--bpW:800px;}
+  body[data-bp="m"]{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;--bpW:1080px;}
+  body[data-bp="l"]{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;--bpW:1280px;}
+  #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:min(calc(1080px + 2 * var(--ctPadX)), calc(var(--bpW, 100vw) - 224px - 16px));}
+  /* and the page reflows at S and XS -- forced, or a window that narrow --
+     so a breakpoint's view is that breakpoint's layout, not the desk's
+     two columns squeezed: the top band stacks, the services go three
+     across (two at XS), the plan two across (one at XS), the two small
+     cards one above the other at XS */
+  body[data-bp="s"] #dOver .dvTop, body[data-bp="xs"] #dOver .dvTop, body[data-bp="xs"] #dOver .ovrow2, body[data-bp="xs"] #dOver .dvPlanGrid{grid-template-columns:1fr;}
+  body[data-bp="s"] #dOver .ovSvc{grid-template-columns:repeat(3,1fr);}
+  body[data-bp="xs"] #dOver .ovSvc{grid-template-columns:repeat(2,1fr);}
+  body[data-bp="s"] #dOver .dvPlanGrid{grid-template-columns:repeat(2,1fr);}
+  body[data-bp="s"] #dOver .ovBook, body[data-bp="xs"] #dOver .ovBook{min-height:260px;}
+  #dOver .dvTop > *, #dOver .ovrow2 > *{min-width:0;}   /* the grid's cells shrink with it; a card's own content never holds a column open */
+  body[data-bp="xs"] #dOver .ovBookFoot{flex-wrap:wrap;}
+  body[data-bp="xs"] #dOver .ovBook h3{max-width:none;}
+  @media (max-width:1079px){
+    body:not([data-bp]) #dOver .dvTop{grid-template-columns:1fr;}
+    body:not([data-bp]) #dOver .ovSvc{grid-template-columns:repeat(3,1fr);}
+    body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:repeat(2,1fr);}
+    body:not([data-bp]) #dOver .ovBook{min-height:260px;}
+  }
+  @media (max-width:799px){
+    body:not([data-bp]) #dOver .ovrow2, body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:1fr;}
+    body:not([data-bp]) #dOver .ovSvc{grid-template-columns:repeat(2,1fr);}
+  }
   #dOver .dvTop, #dOver .dvPlanGrid{gap:var(--ctGap);}
   #dOver .ovTop{position:sticky;top:calc(-1 * var(--ctPadY));z-index:5;display:flex;align-items:center;gap:10px;margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ctPadX)) 0;padding:24px var(--ctPadX) 12px;}   /* the card's own padding cancelled, whatever the breakpoint sets it to */
   #dOver .ovTop::before{
@@ -6349,21 +6382,39 @@
      left, the ApoB trend drawn at the right with its chip -- on the small
      cards' own plate. It stands in for the task list and its heading, on
      the phone and the desk. */
-  .ovInsCard{display:none;height:192px;box-sizing:border-box;margin:12px 13px 0;padding:18px 18px 18px 22px;border-radius:22px;background:rgba(255,255,255,.04);align-items:center;gap:16px;cursor:pointer;}   /* 12 under the two small cards, the page's rhythm; 128, then "insights card 192px" */
+  .ovInsCard{display:none;position:relative;height:192px;box-sizing:border-box;margin:12px 13px 0;padding:0;border-radius:22px;background:rgba(255,255,255,.04);flex-direction:column;overflow:hidden;}   /* 12 under the two small cards, the page's rhythm; 128, then "insights card 192px" */
   body.tkIns .ovInsCard{display:flex;}
   body.tkIns #phone2 .ovsecTasks, body.tkIns #phone2 .ovtasks, body.tkIns #dOver .dvSecTasks, body.tkIns #dOver .dvTasks{display:none;}
+  /* the carousel inside the card ("a carousel inside the carousel, all
+     breakpoints"): a track of slides the card's width, snapping; the dots
+     at the card's foot */
+  .ovInsTrack{flex:1 1 auto;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab;}
+  .ovInsTrack::-webkit-scrollbar{display:none;}
+  .ovInsTrack.dragging{scroll-snap-type:none;cursor:grabbing;user-select:none;-webkit-user-select:none;}
+  .ovInsTrack.dragging .ovInsSl{pointer-events:none;}
+  .ovInsSl{flex:0 0 100%;min-width:0;scroll-snap-align:start;display:flex;gap:16px;padding:18px 18px 24px 22px;box-sizing:border-box;}   /* 24 below for the dots */
+  /* the content, left: eyebrow, title, support, then the CTA at the foot
+     ("AUTO": the room between the support and the CTA takes the slack) */
   .ovInsTx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px;}
-  .ovInsTx b{font-size:15px;font-weight:500;line-height:1.3;color:#ececec;}
+  .ovInsTx b{font-size:17px;font-weight:500;line-height:1.3;color:#ececec;letter-spacing:-.1px;}   /* 15, then "+2px font size" */
   .ovInsSub{font-size:12.5px;color:#8b8b86;}
-  .ovInsChart{position:relative;flex:0 0 42%;height:100%;}
+  .ovInsCta{margin-top:auto;align-self:flex-start;height:32px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.1);color:#ececec;font:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:background .16s ease;}
+  .ovInsCta:hover{background:rgba(255,255,255,.16);}
+  /* the data visual, right, the slide's whole height */
+  .ovInsChart{position:relative;flex:0 0 42%;align-self:stretch;}
   .ovInsChart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
-  .ovInsChip{position:absolute;right:0;top:-6px;background:#ececec;color:#141414;font-size:11px;border-radius:7px;padding:3px 7px;}
+  .ovInsChip{position:absolute;right:0;top:-6px;background:#ececec;color:#141414;font-size:11px;border-radius:7px;padding:3px 7px;white-space:nowrap;}
+  .ovInsDots{position:absolute;left:0;right:0;bottom:9px;display:flex;justify-content:center;align-items:center;gap:4px;pointer-events:none;}
+  .ovInsDots i{width:5px;height:5px;border-radius:3px;background:rgba(236,236,236,.25);pointer-events:auto;cursor:pointer;transition:width .2s ease,background .2s ease;}
+  .ovInsDots i.on{width:14px;background:#ececec;}
   body.light .ovInsCard{background:rgba(46,31,26,.055);} body.light .ovInsTx b{color:#2e1f1a;} body.light .ovInsSub{color:#7d6b58;}
   body.light .ovInsChart g{stroke:rgba(46,31,26,.1);} body.light .ovInsChip{background:#2e1f1a;color:#fff;}
+  body.light .ovInsCta{background:rgba(46,31,26,.09);color:#2e1f1a;} body.light .ovInsDots i{background:rgba(46,31,26,.25);} body.light .ovInsDots i.on{background:#2e241c;}
   /* the desk's: in the right column under the two small cards, at the column's width, with the section's 34px above it */
   #dOver .ovInsCard{margin:var(--ctGap) 0 0;border-radius:20px;}   /* the container's gap */
-  #dOver .ovInsTx b{font-size:16px;}
+  #dOver .ovInsTx b{font-size:18px;}   /* 16, then "+2px" */
   #dOver .ovInsChart{flex:0 0 46%;}
+  #dOver .ovInsSl{padding:20px 22px 26px 24px;gap:24px;}
   .ovtasks{margin:0 13px;background:rgba(255,255,255,.04);border-radius:22px;padding:4px 16px;}
   .ovtask{
     display:flex;align-items:center;gap:12px;padding:13px 0;
@@ -8219,6 +8270,27 @@
         <!-- each group is a card of its own inside the panel ("use the cards
              style for the grouping inside the dropdown"): heading and rows
              on one tinted, rounded ground -->
+        <!-- Layout: the viewport's width as it stands (live, on resize) with
+             the breakpoint it falls in, and a select that forces one -- the
+             container tokens follow it, and the desk's card is held to the
+             breakpoint's minimum width, as a viewport of that width would -->
+        <div class="tkGroup">
+        <div class="tkSub">Layout</div>
+        <div class="tkRow">
+          <span class="lbl">Viewport</span>
+          <span class="tkBuild" id="tkVw">–</span>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Breakpoint</span>
+          <select id="stBp" aria-label="Force a breakpoint">
+            <option value="auto" selected>Auto</option>
+            <option value="xs">XS</option>
+            <option value="s">S</option>
+            <option value="m">M</option>
+            <option value="l">L</option>
+          </select>
+        </div>
+        </div>
         <div class="tkGroup">
         <div class="tkSub">Biomarkers tab</div>
         <div class="tkRow">
@@ -8308,8 +8380,8 @@
         <div class="tkRow">
           <span class="lbl">Card hero bento</span>
           <select id="stTasks" aria-label="The card under the small cards">
-            <option value="tasks" selected>Tasks</option>
-            <option value="insight">Insights</option>
+            <option value="tasks">Tasks</option>
+            <option value="insight" selected>Insights</option>
           </select>
         </div>
         <!-- which build this page is: the source says dev, dist says when it
@@ -9193,7 +9265,7 @@
         <div class="ovtask"><span class="ic"></span><span class="tx"><b>Schedule your pathology test</b><span>Small description</span></span><span class="go">Book</span></div>
       </div>
       <!-- the Tasks tweak's other card ("Insights: one card with a chart, 128px height"): the block as one insight -- the eyebrow, the line, the reading -- with the ApoB trend at the right; shown by body.tkIns in place of the tasks -->
-      <div class="ovInsCard"><div class="ovInsTx"><span class="lbl">Insights</span><b>ApoB is above the optimal range</b><span class="ovInsSub">146 mg/dL &middot; See insight</span></div><div class="ovInsChart" aria-hidden="true"><svg viewBox="0 0 240 100" preserveAspectRatio="none"><g stroke="rgba(255,255,255,.08)" stroke-width="1"><path d="M0 22h240M0 52h240M0 82h240"/></g><path d="M10 78 L56 72 L102 64 L148 42 L194 14" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="96 400"/><path d="M10 78 L56 72 L102 64 L148 42 L194 14" fill="none" stroke="#e6a96b" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="52 400" stroke-dashoffset="-96"/><path d="M10 78 L56 72 L102 64 L148 42 L194 14" fill="none" stroke="#e05a45" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="70 400" stroke-dashoffset="-148"/><circle cx="10" cy="78" r="4" fill="#4ade80"/><circle cx="102" cy="64" r="4" fill="#e6a96b"/><circle cx="194" cy="14" r="4.5" fill="#e05a45"/></svg><span class="ovInsChip">146 mg/dL</span></div></div>
+      <div class="ovInsCard"></div>
       <div class="ovsec">Insights <span class="see">See all <b>12</b></span></div>
       <!-- the Explore cards only ("replace the next actions by these"); built
            by ovExplore(), with the rendered icons from assets/overview -->
@@ -9366,7 +9438,7 @@
         </div>
         <div class="dvSec dvSecTasks">Tasks to complete <span class="see">See all <b>12</b></span></div>
         <div class="dvTasks"><div class="dvTask"><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="rgba(236,236,236,.75)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 3v3M13 3v3"/></svg></span><span class="tx"><b>Book your onboarding</b><span>Small description</span></span><button class="go">Book</button></div><div class="dvTask"><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="rgba(236,236,236,.75)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 3v3M13 3v3"/></svg></span><span class="tx"><b>Book your onboarding consult</b><span>Small description</span></span><button class="go">Book</button></div><div class="dvTask"><span class="ic"><svg viewBox="0 0 20 20" fill="none" stroke="rgba(236,236,236,.75)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 3v3M13 3v3"/></svg></span><span class="tx"><b>Book your onboarding consult</b><span>Small description</span></span><button class="go">Book</button></div></div>
-        <div class="ovInsCard dvInsCard"><div class="ovInsTx"><span class="lbl">Insights</span><b>ApoB is above the optimal range</b><span class="ovInsSub">146 mg/dL &middot; See insight</span></div><div class="ovInsChart" aria-hidden="true"><svg viewBox="0 0 240 100" preserveAspectRatio="none"><g stroke="rgba(255,255,255,.08)" stroke-width="1"><path d="M0 22h240M0 52h240M0 82h240"/></g><path d="M10 78 L56 72 L102 64 L148 42 L194 14" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="96 400"/><path d="M10 78 L56 72 L102 64 L148 42 L194 14" fill="none" stroke="#e6a96b" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="52 400" stroke-dashoffset="-96"/><path d="M10 78 L56 72 L102 64 L148 42 L194 14" fill="none" stroke="#e05a45" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="70 400" stroke-dashoffset="-148"/><circle cx="10" cy="78" r="4" fill="#4ade80"/><circle cx="102" cy="64" r="4" fill="#e6a96b"/><circle cx="194" cy="14" r="4.5" fill="#e05a45"/></svg><span class="ovInsChip">146 mg/dL</span></div></div>
+        <div class="ovInsCard dvInsCard"></div>
       </div>
     </div>
 
@@ -21391,6 +21463,77 @@
   { const over = document.getElementById('dOver');
     if (over){ const secs = [].slice.call(over.querySelectorAll('.dvSec')), sec = secs.find(s => s.querySelector('.nav'));
       buildOvExplore(over.querySelector('.ovcar'), over.querySelector('.ovcdots'), { align: 'start', nav: sec && sec.querySelector('.nav') }); } }
+  // The Insights card of the hero bento (the Tasks tweak's other card) is a
+  // carousel of insights inside the card ("a carousel inside the carousel,
+  // all breakpoints; nav at the bottom; content left: eyebrow, title,
+  // support, then the CTA View results pushed to the foot; right: the data
+  // visual at the card's whole height; swipable inside the card"). Each
+  // slide is the card's width; a finger scrolls it natively and snaps, a
+  // mouse drags it (snap off while the pointer is down, an eased glide onto
+  // the nearest slide -- or the next, on a flick -- when it lets go), a dot
+  // glides to its slide, the click after a drag is swallowed. The chart is
+  // drawn from the reading's points, each segment in its own status colour,
+  // the strokes and the dots holding their weight however the box stretches.
+  function buildOvInsights(card){
+    if (!card) return;
+    const X = [10, 56, 102, 148, 194];
+    const INS = [
+      { t: 'ApoB is above the optimal range', s: '146 mg/dL · optimal is under 90', chip: '146 mg/dL', pts: [78, 72, 64, 42, 14], cols: ['#4ade80', '#4ade80', '#e6a96b', '#e05a45'] },
+      { t: 'Vitamin D is back in range', s: '78 nmol/L · up from 41 in March', chip: '78 nmol/L', pts: [82, 74, 58, 36, 24], cols: ['#e05a45', '#e6a96b', '#4ade80', '#4ade80'] },
+      { t: 'Resting heart rate is trending down', s: '58 bpm · seven-day average', chip: '58 bpm', pts: [26, 34, 44, 58, 72], cols: ['#e6a96b', '#e6a96b', '#4ade80', '#4ade80'] }
+    ];
+    const chart = d => {
+      let segs = '', dots = '';
+      for (let i = 0; i < 4; i++) segs += '<path d="M' + X[i] + ' ' + d.pts[i] + 'L' + X[i + 1] + ' ' + d.pts[i + 1] + '" stroke="' + d.cols[i] + '" stroke-width="2.5" stroke-linecap="round" fill="none" vector-effect="non-scaling-stroke"/>';
+      [0, 2, 4].forEach(i => { dots += '<path d="M' + X[i] + ' ' + d.pts[i] + 'h0.01" stroke="' + d.cols[Math.max(0, i - 1)] + '" stroke-width="' + (i === 4 ? 9 : 8) + '" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'; });
+      return '<div class="ovInsChart" aria-hidden="true"><svg viewBox="0 0 240 100" preserveAspectRatio="none">' +
+        '<g stroke="rgba(255,255,255,.08)" stroke-width="1" vector-effect="non-scaling-stroke"><path d="M0 22h240M0 52h240M0 82h240" vector-effect="non-scaling-stroke"/></g>' + segs + dots + '</svg>' +
+        '<span class="ovInsChip">' + d.chip + '</span></div>';
+    };
+    card.innerHTML = '<div class="ovInsTrack">' + INS.map(d =>
+      '<div class="ovInsSl"><div class="ovInsTx"><span class="lbl">Insights</span><b>' + d.t + '</b><span class="ovInsSub">' + d.s + '</span>' +
+      '<button class="ovInsCta" type="button">View results</button></div>' + chart(d) + '</div>').join('') +
+      '</div><div class="ovInsDots">' + INS.map(() => '<i></i>').join('') + '</div>';
+    const track = card.querySelector('.ovInsTrack'), dots = [].slice.call(card.querySelectorAll('.ovInsDots i'));
+    const n = INS.length, w = () => track.clientWidth;
+    const idxAt = x => Math.max(0, Math.min(n - 1, Math.round(x / Math.max(1, w()))));
+    const sync = () => { const k = idxAt(track.scrollLeft); dots.forEach((d, i) => d.classList.toggle('on', i === k)); };
+    sync();
+    track.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
+    let drag = null, dragged = false, glide = 0;
+    const settle = (x, done) => { cancelAnimationFrame(glide); const from = track.scrollLeft, dist = x - from, t0 = performance.now(); const tick = now => { const p = Math.min(1, (now - t0) / 420), k = 1 - Math.pow(1 - p, 3); track.scrollLeft = from + dist * k; if (p < 1) glide = requestAnimationFrame(tick); else done && done(); }; glide = requestAnimationFrame(tick); };
+    const move = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x;
+      if (!dragged && Math.abs(dx) < 4) return;
+      if (!dragged){ dragged = true; track.classList.add('dragging'); }
+      track.scrollLeft = drag.left - dx;
+      const now = performance.now(); drag.vx = (e.clientX - drag.lastX) / Math.max(1, now - drag.lastT); drag.lastX = e.clientX; drag.lastT = now;
+      e.preventDefault();
+    };
+    const release = e => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const vx = drag.vx || 0; drag = null;
+      removeEventListener('pointermove', move); removeEventListener('pointerup', release); removeEventListener('pointercancel', release);
+      if (!dragged) return;
+      let idx = idxAt(track.scrollLeft);
+      if (Math.abs(vx) > 0.35){ const near = track.scrollLeft / w(); idx = vx < 0 ? Math.ceil(near) : Math.floor(near); idx = Math.max(0, Math.min(n - 1, idx)); }
+      settle(idx * w(), () => track.classList.remove('dragging'));
+      setTimeout(() => { dragged = false; }, 0);
+    };
+    track.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'touch' || e.button !== 0) return;
+      cancelAnimationFrame(glide);
+      drag = { x: e.clientX, left: track.scrollLeft, id: e.pointerId, lastX: e.clientX, lastT: performance.now(), vx: 0 }; dragged = false;
+      addEventListener('pointermove', move); addEventListener('pointerup', release); addEventListener('pointercancel', release);
+    });
+    card.addEventListener('click', e => {
+      if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); return; }
+      const dot = e.target.closest('.ovInsDots i'); if (dot) settle(dots.indexOf(dot) * w());
+    });
+    card._ovIns = { at: () => idxAt(track.scrollLeft), go: i => settle(Math.max(0, Math.min(n - 1, i)) * w()), n };
+  }
+  document.querySelectorAll('.ovInsCard').forEach(buildOvInsights);
   // hover: cell and its organ fade together, .5 resting -> 1 hovered
   const gHov = new Array(PILL.length).fill(0);
   const gA = new Array(PILL.length).fill(0.32);
@@ -21535,7 +21678,7 @@
                        // the Services tweak: Large cards, title + support with the visual at the right
                        svcLg: false,
                        // the Tasks tweak: one insight card with a chart in place of the task list
-                       insCard: false,
+                       insCard: true,   // the default now ("make Insights the default hero bento card")
                        // the information architecture (IA tweak): V4's
                        // Overview / Results, and which half of the results
                        // database is showing ('all' | 'bio' | 'rec') -- off
@@ -22225,6 +22368,18 @@
     CARD_STATE.svcLg = stSvcSel.value === 'large';
     document.body.classList.toggle('svcLg', CARD_STATE.svcLg);
   });
+  // the Layout tweak: the viewport's width, live, with the breakpoint it
+  // falls in (or the one forced); and the select that forces one
+  {
+    const vw = document.getElementById('tkVw'), bpSel = document.getElementById('stBp');
+    const BP = w => w >= 1280 ? 'L' : w >= 1080 ? 'M' : w >= 800 ? 'S' : 'XS';
+    const read = () => { if (!vw) return; const forced = document.body.dataset.bp; vw.textContent = innerWidth + ' px · ' + (forced ? forced.toUpperCase() + ' (forced)' : BP(innerWidth)); };
+    read(); addEventListener('resize', read);
+    if (bpSel) bpSel.addEventListener('change', () => {
+      if (bpSel.value === 'auto') delete document.body.dataset.bp; else document.body.dataset.bp = bpSel.value;
+      read(); dispatchEvent(new Event('resize'));   // the engine re-measures the card
+    });
+  }
   const stTasksSel = document.getElementById('stTasks');
   if (stTasksSel) stTasksSel.addEventListener('change', () => {
     CARD_STATE.insCard = stTasksSel.value === 'insight';
