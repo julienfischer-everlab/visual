@@ -5961,6 +5961,9 @@
   body.m9 #dOver{display:block;}
   body.m9 .dash .side .nvIns{background:none;color:inherit;}
   body.m9 .dash .side .nvOver{background:#1e1e1c;color:#ececec;}
+  body.m9.svcOn .dash .side .nvOver{background:none;color:inherit;}
+  body.m9.svcOn .dash .side .nvSvc{background:#1e1e1c;color:#ececec;}   /* the service page lights Services */
+  body.light.m9.svcOn .dash .side .nvSvc{background:#ece4d3;color:#2e241c;} body.light.m9.svcOn .dash .side .nvOver{background:none;}
   body.light.m9 .dash .side .nvOver{background:#ece4d3;color:#2e241c;}
   .dvNav{
     display:flex;flex-direction:column;padding:26px 20px 22px;gap:26px;
@@ -6284,6 +6287,8 @@
   .dvDots i.on{width:24px;background:#ececec;}
   /* action plan */
   .dvPlanGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .dvProt, .ovact{cursor:pointer;}
+  .dvProt{transition:box-shadow .16s ease,background .16s ease;} .dvProt:hover{background:rgba(255,255,255,.025);}
   .dvProt{
     background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);border-radius:18px;padding:18px;   /* "action plan card: no bg, light grey border"; .12, .22, .02, then "border 8%" */
     display:flex;flex-direction:column;gap:12px;min-height:250px;
@@ -21863,7 +21868,13 @@
       if (side) side.addEventListener('transitionend', e => { if (e.propertyName === 'width') dispatchEvent(new Event('resize')); }); }
     document.querySelectorAll('.dash .side .nv').forEach(nv => {
       nv.title = nv.textContent.trim();   // the label, for the retracted rail
-      const to = goto[nv.textContent.trim()];
+      const label = nv.textContent.trim();
+      if (label === 'Services'){   // the service page ("service access from menu"), over the Overview's desk
+        nv.classList.add('nvSvc'); nv.style.cursor = 'pointer';
+        nv.addEventListener('click', () => { if (window._home) window._home.hide(); if (version !== 9) { setMode(9); resize(); } if (window._svc) window._svc.openDesk(); });
+        return;
+      }
+      const to = goto[label];
       if (to == null) return;
       nv.style.cursor = 'pointer';
       nv.addEventListener('click', () => setMode(to));
@@ -22230,8 +22241,8 @@
     const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 40), { passive: true });
     const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); };
-    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt .go, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openDesk(); });
-    if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact .go, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openMob(); });
+    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openDesk(); });   /* the whole plan card, not only its button */
+    if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openMob(); });
     document.querySelectorAll('#dSvc .svBack, #svcMob .svBack').forEach(b => b.addEventListener('click', close));
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     document.addEventListener('everlab:mode', close);
