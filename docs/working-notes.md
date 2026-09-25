@@ -10939,6 +10939,21 @@ Measured on the desk: under the title at scroll 262, in the bar at 282,
 scroll height 2060 throughout; V1 puts the field back and hides the
 profile; the phone unchanged.
 
+Five small ones after it. "The fixed top header bar needs a gradient
+black, progressive, 50% opacity": the bar's tint is black at .5 at the top
+now (from the page's own dark at .48), easing to nothing at the foot on
+the blur's curve, on both surfaces; the light page keeps its light tint at
+the same .5. "Reduce gap by 8px": the greeting to the field is 16 (from
+24), the spacers 92 / 96 to match. "Bento: use the same padding / gap,
+12px": the services row's gap is 12 (from 8) and it sits 12 above the
+booking card (from 18), so the row, the card and the two small cards all
+keep the page's 12; the tile is (100% − 59) / 2 and the Large card 100% −
+47, the third and second still peeking 48 (measured 53 with the phone's
+own edge). "Reduce the max width of the field by 256px": the desk's field
+is capped at 554 (75% of the 1080 content was 810). "No avatar on
+desktop": the desk's bar shows the discs only; the phone keeps its
+profile.
+
 ---
 
 ## 6. Open items
