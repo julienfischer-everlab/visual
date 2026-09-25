@@ -14087,6 +14087,16 @@
     // /phone path, which is where a real phone reaches it.)
     // the archive sits at the foot of the group it belongs to, after the
     // designs that superseded it
+    // the service detail page is two entries of its own ("put service detail
+    // in a new group"): it is not a mode but a page over the Overview's, so
+    // each entry opens its Overview and the page over it
+    if (g === 'Overview page'){
+      versionSel.appendChild(og);
+      const sg = document.createElement('optgroup'); sg.label = 'Service detail';
+      [['svcD', 'Desktop'], ['svcM', 'Mobile']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
+      versionSel.appendChild(sg);
+      return;
+    }
     if (g === ARC_GROUP && ARCHIVED.length){
       const o = document.createElement('option');
       o.value = ARCHIVE_VAL;
@@ -14106,6 +14116,7 @@
     const v = versionSel.value;
     if (v === 'home'){ if (window._home) window._home.show(); return; }
     if (window._home) window._home.hide();
+    if (v === 'svcD' || v === 'svcM'){ setMode(v === 'svcD' ? 9 : 6); resize(); if (window._svc) (v === 'svcD' ? window._svc.openDesk : window._svc.openMob)(); return; }
     CARD_STATE.fullscr = v === VIEWPORT_VAL;
     CARD_STATE.showBar = v === VIEWPORT_VAL;
     setMode(v === ARCHIVE_VAL ? +arcSel.value : v === VIEWPORT_VAL ? VIEWPORT_MODE : +v);
@@ -22214,10 +22225,11 @@
   // a change of mode) closes it
   (function servicePage(){
     const ph = document.getElementById('phone2'), over = document.getElementById('dOver'), desk = document.getElementById('dSvc'), mob = document.getElementById('svcMob');
-    const openDesk = () => { document.body.classList.add('svcOn'); if (desk) desk.scrollTop = 0; };
-    const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); };
+    const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
+    const openDesk = () => { document.body.classList.add('svcOn'); if (desk) desk.scrollTop = 0; mark('svcD'); };
+    const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 40), { passive: true });
-    const close = () => { document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); };
+    const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); };
     if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt .go, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openDesk(); });
     if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact .go, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openMob(); });
     document.querySelectorAll('#dSvc .svBack, #svcMob .svBack').forEach(b => b.addEventListener('click', close));
