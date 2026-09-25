@@ -11331,6 +11331,14 @@ size is different" between Overview and Insights: measured the same on
 both -- 224 wide, 26 / 20 padding, 13.5px, the first entry at 133 -- it is
 one `.dash .side`; the two captures were at different zooms.
 
+"Keep only this, remove the rest of the scroll." The landing page is its
+header alone: the pinned stage, its scroll track and the end scene stay in
+the markup but are hidden and not built (`LP_STORY = false` gates
+`__lpBoot`), the page does not scroll, and the header fills it. With no
+story to scroll to, *See your Organ Age* goes where *Start Today* goes,
+the Insights phone. Checked: nothing scrolls under a wheel, the story's
+canvas is never sized, the CTA lands #m20.
+
 ---
 
 ## 6. Open items
@@ -11365,3 +11373,7 @@ one `.dash .side`; the two captures were at different zooms.
   git bundle instead. It was granted later and the whole branch went up at
   once. If a push starts failing that way again, the grant lives at
   claude.ai/admin-settings/claude-tag; the bundle is a stopgap, not a fix.
+
+**5.423 — The landing's names as a carousel, and a round of asks on it and the phone.** "This should act as a carousel, same as the mobile view": the three names under the hero (prev · current · next) are now one track of all ten ages, `.lpAvNames`, that scrolls and snaps with the current one centred and lit and the others fading and softening with their distance from the centre, as the phone's pills read mid-swipe. It is scrolled by a finger, dragged under a mouse (snap off while the pointer is down, the nearest name chosen on release), a tapped name is chosen, and the view's own turns scroll it. The end scene had still been showing after "keep only this": `.lpEnd`'s own rule set `display:flex` later in the sheet, so the hide now leads with `.lp`; the header takes the page's own height (under the bar) rather than `100vh`, and the page no longer measures as scrollable. Then, from the screenshots: the streams at a third of the pace ("floating particles way slower"), and a third of them born along the top edge rather than at the two corners, landing on the organ's upper rim ("should come from the top as well"); the organ at twice the engine's dense count, 5,200 dots ("more dot 2x, dense"); the arc's indicator at r 3 in place of 6, the ticks at .8 in place of 1.1, and 42 ticks a side in place of 30 — `arcAMarkup` and `arcACopyLive` take a ticks-per-side count now, the zero tick placed by index so it always lands ("1.4x more increment"). The halo is the concept phone's, exactly ("keep exact same halo top right system as the concept mobile UI"): the same nine-stop gaussian on `.lpHead::before`, the same three verdicts from `HALO` — younger 88AB74 at 16%, older E7B69C at 12%, aligned white at 8% — written as `--v4halo`/`--haloK` by the hero and blended from the light showing to the new organ's on the morph's own 900ms S-curve, so Lung goes warm and Body green. The turning is every 4.5 seconds ("auto carousel rotate every 4-5 sec"), resting seven after a hand. The h1's leading is .96 ("reduce line height"). And the forced breakpoints frame this page as they frame the shell ("make the breakpoint working on this page"): `body[data-bp] .lp` sits at the floor's width, centred, with the hairline; `.lp` is a container so the page's one responsive block answers to its own width (`@container lp`), and the h1 and halo take `--lpW` in place of `vw`. Measured: S frames at 600 centred, one column, h1 38.
+
+On the phone's Overview, from the two screenshots: the age card's "34 years old" up 8 (margin -16); the Insights visual keeps 24 clear above it — the svg starts 24 down its box and the chip rides with it ("insight data visu safe padding top 24px"); the bar's field and discs at #fff 8% with more blur — the field 96 in place of 64 on every host, the discs 48 in place of 12 ("increase field and cta bg blur and #fff 8% bg"). And the field live: the greeting rolls up and out and "How can we help you?" rolls in, white, on one axis — the `.mtitle` lifted to z-index 7 with the field so both sit over the blanket ("on click the h1 should rotate fade in out and another title should appear when field focused and title should be above blanket").

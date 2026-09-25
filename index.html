@@ -2695,11 +2695,20 @@
   .ovAvatar{display:none;flex:none;width:44px;height:44px;margin-right:auto;padding:0;border:0;border-radius:50%;overflow:hidden;cursor:pointer;background:rgba(255,255,255,.06);}
   .ovAvatar img{display:block;width:100%;height:100%;object-fit:cover;}
   body.hdrV3 #phone2 .ovAvatar{display:block;}
-  body.hdrV3.m6 #phone2 .mtitle{padding:16px 13px 0;justify-content:center;text-align:center;}   /* 32, then "push up h1 by 16px" */
+  body.hdrV3.m6 #phone2 .mtitle{padding:16px 13px 0;justify-content:center;text-align:center;position:relative;z-index:7;}   /* 32, then "push up h1 by 16px"; over the blanket (6), with the field */
+  /* the field live: the greeting turns away and the question turns in ("on
+     click the h1 should rotate fade in out and another title should appear
+     when field focused": the two lines roll on one axis, the greeting up and
+     out, the question up and in), the question white, both over the blanket */
+  body.hdrV3.m6 #phone2 .mtitle h2{transition:opacity .28s ease,transform .32s cubic-bezier(.2,.8,.2,1);transform-origin:50% 50%;}
+  body.hdrV3.m6 #phone2 .mtitle .ovAsk{position:absolute;left:13px;right:13px;top:16px;margin:0;color:#fff;opacity:0;transform:translateY(12px) rotateX(-40deg);pointer-events:none;}
+  body.hdrV3.m6 #phone2.ovTyping .mtitle h2:not(.ovAsk){opacity:0;transform:translateY(-12px) rotateX(40deg);}
+  body.hdrV3.m6 #phone2.ovTyping .mtitle .ovAsk{opacity:1;transform:none;}
+  body.m6 #phone2 .mtitle .ovAsk{display:none;} body.hdrV3.m6 #phone2 .mtitle .ovAsk{display:block;}
   body.hdrV3 #phone2 .mscroll > .ovChat{position:relative;z-index:7;display:flex;justify-content:center;margin:16px 13px 32px;}   /* "reduce gap between h1 and chat field by 8px": 32 -> 24; then "reduce gap by 8px" again: 16 */
   body.hdrV3 #phone2 .mscroll > .ovChat .ovChatBox{
     width:75%;height:44px;padding:0 16px;font-size:14px;box-shadow:none;background:rgba(255,255,255,.08);   /* "75% of the width" */
-    -webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);
+    -webkit-backdrop-filter:blur(96px) saturate(120%);backdrop-filter:blur(96px) saturate(120%);   /* 64, then "increase field and cta bg blur" */
   }
   /* Past the services ("on scroll past the service carousel, display the
      chat field inside the top sticky bar"): the field moves into the bar,
@@ -2722,7 +2731,7 @@
   body.hdrV3 #dOver > .ovChat{position:relative;z-index:4;display:flex;justify-content:center;margin:16px 0 56px;}   /* "desktop: +24px gap after the chat field": 32 -> 56 above the services */
   body.hdrV3 #dOver > .ovChat .ovChatBox{
     width:75%;max-width:554px;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.07);   /* "reduce max width of the field by 256px": 75% of the 1080 content was 810 */
-    -webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);
+    -webkit-backdrop-filter:blur(96px) saturate(120%);backdrop-filter:blur(96px) saturate(120%);   /* 64, then "increase field and cta bg blur" */
   }
   body.hdrV3 #dOver > .ovChat .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
   body.light.hdrV3 #dOver > .ovChat .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
@@ -2967,11 +2976,36 @@
   body.m23 .lp{display:block;}
   body.m23 #field,body.m23 .carousel,body.m23 .pillui,body.m23 .note{display:none;}
   .lp *{box-sizing:border-box;}
+  /* The page is the header alone now ("keep only this, remove the rest of
+     the scroll"): the pinned stage, its scroll track and the end scene stay
+     in the markup but are not shown or built, and the page does not scroll. */
+  .lp{overflow:hidden;container-type:inline-size;container-name:lp;--lpW:100vw;}   /* a container: the page's own width is what its layout answers to, the window's or a forced frame's */
+  .lp .lpStage, .lp .lpScroll, .lp .lpEnd{display:none;}
+  /* a forced breakpoint frames this page as it frames the shell ("make the
+     breakpoint working on this page"): the page at the floor's width,
+     centred, a hairline round it; its widths in --lpW rather than vw */
+  body[data-bp] .lp{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);box-shadow:0 0 0 1px rgba(255,255,255,.08);--lpW:var(--bpW);}   /* .lp on the front: .lpEnd's own rule sets display later in the file */
   /* ---- The header: page-high, black, the copy white at the left, the age
      card at the right. The stage below pins once it has scrolled past. */
-  .lpHead{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;background:#000;color:#f4f4f4;overflow:hidden;}
+  .lpHead{position:relative;z-index:2;min-height:100%;height:100%;   /* the page's own height (under the bar), not the window's: the page does not scroll */display:flex;flex-direction:column;background:#000;color:#f4f4f4;overflow:hidden;}
   /* a warm halo at the header's top right ("put the halo at the top right of the header"): the accent, soft, off the corner */
-  .lpHead::before{content:"";position:absolute;top:-28vw;right:-22vw;width:70vw;height:70vw;max-width:1000px;max-height:1000px;border-radius:50%;pointer-events:none;background:radial-gradient(closest-side,rgba(247,131,89,.2),rgba(247,131,89,.07) 46%,rgba(247,131,89,0) 72%);}
+  /* ...the concept phone's light, exactly ("keep exact same halo top right
+     system as the concept mobile UI"): the same nine-stop gaussian, the same
+     three verdicts -- younger 88AB74 at 16%, older E7B69C at 12%, aligned
+     white at 8% (HALO) -- written by the view as --v4halo / --haloK and
+     blended across each turn as the phone blends them across a swipe */
+  .lpHead{--v4halo:136 171 116;--haloK:0.557;}
+  .lpHead::before{content:"";position:absolute;top:calc(var(--lpW) * -.28);right:calc(var(--lpW) * -.22);width:calc(var(--lpW) * .7);height:calc(var(--lpW) * .7);max-width:1000px;max-height:1000px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(closest-side,
+      rgb(var(--v4halo) / calc(.287 * var(--haloK))) 0%,
+      rgb(var(--v4halo) / calc(.253 * var(--haloK))) 14%,
+      rgb(var(--v4halo) / calc(.185 * var(--haloK))) 28%,
+      rgb(var(--v4halo) / calc(.123 * var(--haloK))) 42%,
+      rgb(var(--v4halo) / calc(.073 * var(--haloK))) 56%,
+      rgb(var(--v4halo) / calc(.039 * var(--haloK))) 69%,
+      rgb(var(--v4halo) / calc(.016 * var(--haloK))) 81%,
+      rgb(var(--v4halo) / calc(.004 * var(--haloK))) 91%,
+      rgb(var(--v4halo) / 0) 100%);}
   .lpHero{position:relative;}
   .lpNav{display:flex;align-items:center;justify-content:space-between;height:88px;padding:0 40px;}
   .lpBrand{display:flex;align-items:center;color:#f4f4f4;}
@@ -2981,7 +3015,7 @@
   .lpHero{flex:1 1 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:24px 40px 64px;max-width:1440px;width:100%;margin:0 auto;}
   .lpHeroTx{max-width:560px;justify-self:center;}
   .lpHeroTx .lpEyebrow{color:rgba(244,244,244,.5);font-size:11px;}
-  .lpHeroTx h1{margin:0 0 22px;font-weight:500;font-size:clamp(38px,4.6vw,64px);line-height:1.04;letter-spacing:-1.8px;color:#f4f4f4;}   /* the page's own sans ("use h1 sans, not serif") */
+  .lpHeroTx h1{margin:0 0 22px;font-weight:500;font-size:clamp(38px,calc(var(--lpW) * .046),64px);line-height:.96;   /* 1.04, then "reduce line height" */letter-spacing:-1.8px;color:#f4f4f4;}   /* the page's own sans ("use h1 sans, not serif") */
   .lpHeroTx p{margin:0 0 16px;font-size:16.5px;line-height:1.5;color:rgba(244,244,244,.84);}
   .lpHeroCta{margin-top:18px;border:0;cursor:pointer;color:#111;background:#fff;}
   .lpHeroVis{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;justify-self:center;width:100%;max-width:560px;}
@@ -2999,22 +3033,27 @@
   .lpAvOrg canvas{position:absolute;inset:0;display:block;}
   .lpAvArc{width:100%;margin-top:-6px;-webkit-mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);}
   .lpAvArc svg{display:block;width:100%;height:auto;overflow:visible;}
-  .lpAvArc line{stroke-width:1.1;}
+  .lpAvArc line{stroke-width:.8;}   /* 1.1, then "increments a bit thinner" */
   .lpAvNum{margin-top:-34px;font-size:84px;font-weight:500;letter-spacing:-3px;line-height:1;color:#f4f4f4;font-variant-numeric:tabular-nums;transition:opacity .2s ease;}
   .lpAvDelta{margin-top:10px;font-size:16px;color:rgba(244,244,244,.55);transition:opacity .2s ease;}
-  .lpAvPills{display:grid;grid-template-columns:1fr auto 1fr;gap:28px;align-items:center;margin-top:44px;width:100%;font-size:20px;font-weight:500;letter-spacing:-.2px;white-space:nowrap;}
-  .lpAvPills span{transition:opacity .25s ease,transform .3s ease;}
-  .lpAvPills .prev{text-align:right;opacity:.26;filter:blur(1.2px);cursor:pointer;overflow:hidden;text-overflow:ellipsis;}
-  .lpAvPills .next{text-align:left;opacity:.26;filter:blur(1.2px);cursor:pointer;overflow:hidden;text-overflow:ellipsis;}
-  .lpAvPills .cur{color:#f4f4f4;}
-  .lpAvPills .prev:hover, .lpAvPills .next:hover{opacity:.5;}
-  @media (max-width:900px){
+  /* the names' row is the phone's carousel ("this should act as a carousel,
+     same as the mobile view"): every age in one track that scrolls and
+     snaps, the one at the centre lit and the rest fading and softening with
+     their distance from it; swiped, dragged, or moved by the view */
+  .lpAvNames{display:flex;gap:32px;align-items:center;width:100%;margin-top:44px;padding:4px calc(50% - 60px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab;
+    font-size:20px;font-weight:500;letter-spacing:-.2px;white-space:nowrap;
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(to right,transparent,#000 18%,#000 82%,transparent);}
+  .lpAvNames::-webkit-scrollbar{display:none;}
+  .lpAvNames.dragging{scroll-snap-type:none;cursor:grabbing;}
+  .lpAvNames span{flex:0 0 auto;scroll-snap-align:center;color:#f4f4f4;opacity:.26;filter:blur(1.2px);transition:opacity .2s ease,filter .2s ease;cursor:pointer;}
+  .lpAvNames span.on{opacity:1;filter:none;}
+  @container lp (max-width:900px){
     .lpNav{height:72px;padding:0 20px;}
     .lpHero{grid-template-columns:1fr;gap:32px;padding:16px 20px 56px;}
     .lpHeroTx{max-width:none;justify-self:stretch;}
     .lpAvOrg{width:220px;height:220px;}
     .lpAvNum{font-size:64px;}
-    .lpAvPills{font-size:17px;gap:18px;}
+    .lpAvNames{font-size:17px;gap:22px;}
   }
   /* the pinned stage. `position:sticky` on a full-height block inside the
      scroller, so the visual holds while the document moves under it */
@@ -6036,7 +6075,7 @@
   #phone2 .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;padding:0;}
   #phone2 .ovTop .ovChatBox{
     width:100%;height:44px;padding:0 16px;font-size:14px;box-shadow:none;background:rgba(255,255,255,.08);   /* "height of the component 44px" */
-    -webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);   /* "field AI needs blur 64px bg": the page under it goes to a wash, not words */
+    -webkit-backdrop-filter:blur(96px) saturate(120%);backdrop-filter:blur(96px) saturate(120%);   /* "field AI needs blur 64px bg": the page under it goes to a wash, not words; then "increase field and cta bg blur": 96 */
   }
   #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.11);}
   #phone2 .ovTop .ovChatBox input{font-size:14px;}
@@ -6044,11 +6083,11 @@
   .ovInbox, .ovBell{
     flex:none;width:44px;height:44px;border-radius:50%;border:0;padding:0;cursor:pointer;   /* the field's own height */
     display:flex;align-items:center;justify-content:center;position:relative;
-    background:rgba(255,255,255,.04);color:#ececec;
-    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    background:rgba(255,255,255,.08);color:#ececec;   /* .04, then "#fff 8% bg" */
+    -webkit-backdrop-filter:blur(48px) saturate(120%);backdrop-filter:blur(48px) saturate(120%);   /* 12, then "increase field and cta bg blur" */
     transition:background .16s ease;
   }
-  .ovInbox:hover, .ovBell:hover{background:rgba(255,255,255,.1);}
+  .ovInbox:hover, .ovBell:hover{background:rgba(255,255,255,.14);}
   /* the inbox: a tray with the accent's dot at its shoulder for the unread */
   .ovInbox svg{width:20px;height:20px;}
   .ovInbox::after{content:"";position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:50%;background:#f78359;}
@@ -6342,7 +6381,7 @@
   }
   body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.55) 0%,rgba(247,242,233,.5) 18%,rgba(247,242,233,.43) 36%,rgba(247,242,233,.33) 54%,rgba(247,242,233,.21) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);}
   #dOver .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;}
-  #dOver .ovTop .ovChatBox{width:100%;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.07);-webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);}
+  #dOver .ovTop .ovChatBox{width:100%;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(96px) saturate(120%);backdrop-filter:blur(96px) saturate(120%);}   /* .07 / 64, then "#fff 8% bg", "increase field bg blur" */
   #dOver .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
   body.light #dOver .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   #dOver .ovInbox, #dOver .ovBell{width:48px;height:48px;}
@@ -6368,7 +6407,7 @@
   /* the phone's, apart ("mobile: push down years old 12px, arc 8px, organ 4px") */
   #phone2 .ovAgeSl .lbl{margin-bottom:10px;}
   #phone2 .ovAgeSl .ovArc{margin-top:0;}
-  #phone2 .ovAgeYrs{margin-top:-8px;}   /* the desk's card is wider, so the arc at 180% stood 123 tall and the card 290; at 130% it is 89, and the reading lands 16 above the 256 foot */
+  #phone2 .ovAgeYrs{margin-top:-16px;}   /* -8, then "xx years old up by 8px" */   /* the desk's card is wider, so the arc at 180% stood 123 tall and the card 290; at 130% it is 89, and the reading lands 16 above the 256 foot */
   #dOver .ovAge{cursor:pointer;}
   /* the rail: the Explore cards at the rail's width and corners, resting
      on their left edge, all lit; the button the rail's own */
@@ -6531,6 +6570,9 @@
   #dOver .ovInsCard{margin:12px 0 0;border-radius:20px;}   /* the bento's 12 */
   #dOver .ovInsTx b{font-size:18px;}   /* 16, then "+2px" */
   #dOver .ovInsChart{flex:0 0 46%;}
+  /* the phone's visual keeps 24 clear above it ("insight data visu safe padding top 24px"): the drawing starts 24 down its box, the chip riding with it */
+  #phone2 .ovInsChart svg{top:24px;height:calc(100% - 24px);}
+  #phone2 .ovInsChip{top:18px;}
   #dOver .ovInsSl{padding:20px 22px 34px 24px;gap:24px;}
   .ovtasks{margin:0 13px;background:rgba(255,255,255,.04);border-radius:22px;padding:4px 16px;}
   .ovtask{
@@ -9336,7 +9378,7 @@
           <svg class="icX" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8"/></svg>
         </button>
       </div>
-      <div class="mtitle"><h2>Welcome back, <span>Julien</span></h2></div>
+      <div class="mtitle"><h2>Welcome back, <span>Julien</span></h2><h2 class="ovAsk" aria-hidden="true">How can we help you?</h2></div>
       <!-- Header V2 (Overview tweak): the inbox and the services as two rows
            on one card under the greeting; the top bar keeps the field and the
            bell. Hidden unless body.hdrV2. -->
@@ -9470,7 +9512,7 @@
           <div class="lpAvArc"></div>
           <div class="lpAvNum">34</div>
           <div class="lpAvDelta">6 years younger</div>
-          <div class="lpAvPills"><span class="prev"></span><span class="cur"></span><span class="next"></span></div>
+          <div class="lpAvNames" aria-label="Ages"></div>
         </div>
       </div>
     </div>
@@ -13027,14 +13069,16 @@
   // age's colour, an aligned organ lighting the centre tick in white -- and
   // no labels, as the phone hero shows it. Ids are per instance.
   let arcAN = 0;
-  function arcAMarkup(delta){
+  function arcAMarkup(delta, K){
+    K = K || 30;   // ticks per side: 30 is the .5-year step; the landing's hero takes 42 ("1.4x more increments")
     const fid = 'oa' + (arcAN++) + '_';
     const STEPS = [0.8, 1.5, 2.5, 3.5, 4.7, 5.8];
     let s = '<defs>' + STEPS.map((sd, i) => '<filter id="' + fid + (i + 1) + '" filterUnits="userSpaceOnUse" x="-40" y="-60" width="520" height="240"><feGaussianBlur stdDeviation="' + sd + '"/></filter>').join('') + '</defs>';
     const col = ageColor(delta), base = tickBase();
     const lo = Math.min(0, delta), hi = Math.max(0, delta), active = hi - lo > 0.08, span = Math.max(0.001, Math.abs(delta));
     const alignK = Math.max(0, 1 - Math.abs(delta) / 0.5), alignOp = document.body.classList.contains('light') ? 0.95 : 0.48;
-    for (let v = -15; v <= 15; v += 0.5){
+    for (let i = 0; i <= 2 * K; i++){
+      const v = i === K ? 0 : -15 + i * (15 / K);
       const a = ptA(v, AG.R), b = ptA(v, AG.R - 13);
       const rel = Math.abs(v) / 15, baseOp = Math.max(0.02, 0.03 + 0.26 * (1 - Math.pow(rel, 1.4)));
       const q = Math.max(0, Math.min(1, (rel - 0.6) / 0.4)), bl = q <= 0 ? 0 : Math.min(STEPS.length, Math.ceil(q * STEPS.length));
@@ -13849,7 +13893,7 @@
     else gl.clearColor(0.133, 0.024, 0.024, 1);   // #220606, in situ and full bleed
     if (m === 8 && window.__imBoot) window.__imBoot();  // the instrument builds on first view
     if (m === 22 && window.__tzBoot) window.__tzBoot();  // the teaser storyboard too
-    if (m === 23 && window.__lpBoot) window.__lpBoot();  // and the landing page
+    if (m === 23 && window.__lpBoot && LP_STORY) window.__lpBoot();  // and the landing page's story, when it is shown
     if (m === 3) spTarget = pillCurrent; // card flip picks up the active organ
     // An archived version is reached through the Archive entry, so the two
     // selects say the same thing between them: the dropdown names the entry
@@ -17477,6 +17521,7 @@
   // figures are the product's own (PILL, CHRONO). What is new is the camera --
   // a perspective divide and a defocus term, which the flat surfaces have no
   // use for and a page that moves through a volume cannot do without.
+  const LP_STORY = false;   // the landing page is its header alone ("keep only this"); the story below waits, unbuilt
   window.__lpBoot = (function(){
     let built = false;
     let cvs, ctx, stage, track, scroller, headEl;
@@ -21341,10 +21386,11 @@
   // then painted per frame the way the hero paints its own -- the indicator
   // sweeping on the hero's quintic clock, the lit run following it -- so a
   // card can carry the same reading and change it the same way.
-  function arcACopyLive(host, delta){
-    host.innerHTML = arcAMarkup(delta);
+  function arcACopyLive(host, delta, K){
+    K = K || 30;
+    host.innerHTML = arcAMarkup(delta, K);
     const svg = host.firstElementChild, lines = [].slice.call(svg.querySelectorAll('line')), ind = svg.querySelector('circle');
-    const vs = []; for (let v = -15; v <= 15; v += 0.5) vs.push(v);
+    const vs = []; for (let i = 0; i <= 2 * K; i++) vs.push(i === K ? 0 : -15 + i * (15 / K));
     const baseOpOf = v => { const rel = Math.abs(v) / 15; return Math.max(0.02, 0.03 + 0.26 * (1 - Math.pow(rel, 1.4))); };
     const paint = now => {
       const col = ageColor(now), base = tickBase(), lo = Math.min(0, now), hi = Math.max(0, now), active = hi - lo > 0.08, span = Math.max(0.001, Math.abs(now));
@@ -21441,40 +21487,65 @@
     const body = PILL.find(p => p.label === 'Body'); if (!body) return;
     const list = [body].concat(PILL.filter(p => p !== body)), n = list.length;
     const org = host.querySelector('.lpAvOrg'), arcHost = host.querySelector('.lpAvArc'), num = host.querySelector('.lpAvNum'), delta = host.querySelector('.lpAvDelta');
-    const pills = { prev: host.querySelector('.prev'), cur: host.querySelector('.cur'), next: host.querySelector('.next') };
+    const names = host.querySelector('.lpAvNames');
     const name = d => d.slide || (d.label + ' age');
+    names.innerHTML = list.map(d => '<span>' + name(d) + '</span>').join('');
+    const items = [].slice.call(names.children);
     const deltaText = d => d.delta < 0 ? (-d.delta) + ' year' + (d.delta === -1 ? '' : 's') + ' younger' : d.delta > 0 ? d.delta + ' year' + (d.delta === 1 ? '' : 's') + ' older' : 'matches your age';
-    const view = makeOrganView(org, body.organIdx, { dl: false, dense: true, fill: 0.62, dot: 1.1 });
-    const arc = arcACopyLive(arcHost, body.delta);
+    const DOTS = 5200;   // twice the engine's dense 2600 ("organ hero more dot 2x, dense")
+    const view = makeOrganView(org, body.organIdx, { dl: false, dense: true, target: shapeTarget(clouds[body.organIdx], DOTS), fill: 0.62, dot: 1.1 });
+    const arc = arcACopyLive(arcHost, body.delta, 42);   // 42 ticks a side: 1.4x the .5 step ("1.4x more increment")
+    arcHost.querySelector('circle').setAttribute('r', '3');   // the indicator at half the card's 6 ("arc white dot smaller 2x")
+    // the light: the concept phone's three verdicts, blended from the one
+    // showing to the new organ's on the morph's own clock (HALO, haloKFor)
+    const head = host.closest('.lpHead') || host;
+    const verdict = d => d.delta > 0 ? HALO.older : d.delta < 0 ? HALO.younger : HALO.aligned;
+    let haloNow = verdict(body).slice(), haloRaf = 0;
+    const writeHalo = () => { head.style.setProperty('--v4halo', Math.round(haloNow[0]) + ' ' + Math.round(haloNow[1]) + ' ' + Math.round(haloNow[2])); head.style.setProperty('--haloK', haloKFor(haloNow[3])); };
+    const haloTo = (tgt, dur) => { cancelAnimationFrame(haloRaf); const from = haloNow.slice(), t0 = performance.now(); const step = t => { const p = Math.min(1, (t - t0) / dur), e = p < 0.5 ? 16 * Math.pow(p, 5) : 1 - Math.pow(-2 * p + 2, 5) / 2; for (let i = 0; i < 4; i++) haloNow[i] = from[i] + (tgt[i] - from[i]) * e; writeHalo(); if (p < 1) haloRaf = requestAnimationFrame(step); }; haloRaf = requestAnimationFrame(step); };
+    writeHalo();
     let cur = 0, timer = 0, rest = 0;
-    const paint = () => {
-      const d = list[cur];
-      pills.prev.textContent = name(list[(cur - 1 + n) % n]); pills.cur.textContent = name(d); pills.next.textContent = name(list[(cur + 1) % n]);
-      num.textContent = CHRONO + d.delta; delta.textContent = deltaText(d);
-    };
-    const go = (i, dir) => {
+    const paint = () => { const d = list[cur]; num.textContent = CHRONO + d.delta; delta.textContent = deltaText(d); };
+    // where a name sits in the track, and the scroll that centres it
+    const centreOf = i => items[i].offsetLeft + items[i].offsetWidth / 2 - names.clientWidth / 2;
+    const nearest = () => { const x = names.scrollLeft + names.clientWidth / 2; let best = 0, bd = Infinity; items.forEach((el, i) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - x); if (d < bd){ bd = d; best = i; } }); return best; };
+    // each name lit by its distance from the centre, as the phone's pills read mid-swipe
+    const shade = () => { const x = names.scrollLeft + names.clientWidth / 2, w = names.clientWidth; items.forEach((el, i) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - x) / (w / 2); el.classList.toggle('on', i === cur); if (i !== cur){ el.style.opacity = Math.max(0.16, 0.5 - d * 0.5).toFixed(3); el.style.filter = 'blur(' + Math.min(1.6, 0.6 + d * 1.6).toFixed(2) + 'px)'; } else { el.style.opacity = ''; el.style.filter = ''; } }); };
+    let scrollingByView = false, settleT = 0;
+    const show = (i, animate) => { scrollingByView = true; names.scrollTo({ left: centreOf(i), behavior: animate === false ? 'auto' : 'smooth' }); clearTimeout(settleT); settleT = setTimeout(() => { scrollingByView = false; }, 600); };
+    const go = (i, dir, fromTrack) => {
       i = ((i % n) + n) % n; if (i === cur) return;
-      dir = dir || (i > cur ? 1 : -1); cur = i;
+      cur = i;
       const d = list[i];
       view.idx = d.organIdx; view.beat = !!(ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart');
-      view.morphTo(clouds[d.organIdx], 'o' + d.organIdx, shapeTarget(clouds[d.organIdx], 2600), 900);
-      arc.sweepTo(d.delta, 900);
+      view.morphTo(clouds[d.organIdx], 'o' + d.organIdx, shapeTarget(clouds[d.organIdx], DOTS), 900);
+      arc.sweepTo(d.delta, 900); haloTo(verdict(d), 900);
       num.style.opacity = '0'; delta.style.opacity = '0';
-      Object.values(pills).forEach(el => { el.style.opacity = ''; el.style.transform = 'translateX(' + (-18 * dir) + 'px)'; el.style.opacity = '0'; });
-      setTimeout(() => { paint(); num.style.opacity = '1'; delta.style.opacity = '1'; Object.values(pills).forEach(el => { el.style.transition = 'none'; el.style.transform = 'translateX(' + (18 * dir) + 'px)'; void el.offsetWidth; el.style.transition = ''; el.style.transform = ''; el.style.opacity = ''; }); }, 220);
+      setTimeout(() => { paint(); num.style.opacity = '1'; delta.style.opacity = '1'; }, 220);
+      if (!fromTrack) show(i);
+      shade();
     };
-    paint();
-    // the turning: every three seconds while the page is the one showing, resting six after a hand
+    paint(); shade(); requestAnimationFrame(() => show(0, false));
+    // the track: scrolled by a finger, it shades as it goes and, once it has
+    // settled, the view follows the name at the centre; dragged under a
+    // mouse like the other rows; a tapped name is chosen
+    let trackT = 0;
+    names.addEventListener('scroll', () => { shade(); if (scrollingByView) return; clearTimeout(trackT); trackT = setTimeout(() => { const k = nearest(); if (k !== cur){ byHand(); go(k, k > cur ? 1 : -1, true); } }, 120); }, { passive: true });
+    let tdrag = null, tdragged = false;
+    names.addEventListener('pointerdown', e => { if (e.pointerType === 'touch' || e.button !== 0) return; tdrag = { x: e.clientX, left: names.scrollLeft, id: e.pointerId }; tdragged = false; e.stopPropagation(); });
+    addEventListener('pointermove', e => { if (!tdrag || e.pointerId !== tdrag.id) return; const dx = e.clientX - tdrag.x; if (!tdragged && Math.abs(dx) < 4) return; if (!tdragged){ tdragged = true; names.classList.add('dragging'); } names.scrollLeft = tdrag.left - dx; e.preventDefault(); });
+    addEventListener('pointerup', e => { if (!tdrag || e.pointerId !== tdrag.id) return; tdrag = null; if (!tdragged) return; names.classList.remove('dragging'); const k = nearest(); byHand(); if (k !== cur) go(k, k > cur ? 1 : -1); else show(k); setTimeout(() => { tdragged = false; }, 0); });
+    names.addEventListener('click', e => { if (tdragged){ e.preventDefault(); return; } const el = e.target.closest('span'); if (!el) return; e.stopPropagation(); byHand(); go(items.indexOf(el)); });
+    addEventListener('resize', () => show(cur, false));
+    // the turning: every four and a half seconds while the page is the one showing ("auto carousel rotate every 4-5 sec"), resting seven after a hand
     const tick = () => { if (!document.body.classList.contains('m23') || document.hidden || performance.now() < rest) return; go(cur + 1, 1); };
-    timer = setInterval(tick, 3000);
-    const byHand = () => { rest = performance.now() + 6000; };
+    timer = setInterval(tick, 4500);
+    const byHand = () => { rest = performance.now() + 7000; };
     // a swipe or a drag, 40px sideways; the click after one is swallowed
     let drag = null, swiped = false;
     host.addEventListener('pointerdown', e => { if (e.button !== 0) return; drag = { x: e.clientX, y: e.clientY, id: e.pointerId }; swiped = false; host.classList.add('dragging'); });
     const end = e => { if (!drag || e.pointerId !== drag.id) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = null; host.classList.remove('dragging'); if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){ swiped = true; byHand(); go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); setTimeout(() => { swiped = false; }, 0); } };
     addEventListener('pointerup', end); addEventListener('pointercancel', end);
-    pills.prev.addEventListener('click', e => { if (swiped) return; e.stopPropagation(); byHand(); go(cur - 1, -1); });
-    pills.next.addEventListener('click', e => { if (swiped) return; e.stopPropagation(); byHand(); go(cur + 1, 1); });
     host._lpHero = { go, at: () => cur, list: () => list, stop: () => clearInterval(timer) };
   }
   // The streams under the header's view: particles born at the column's two
@@ -21488,13 +21559,19 @@
     const INKS = ['163,84,66', '208,164,150', '242,235,231'];
     const N = 150, P = [];
     const born = (q, fresh) => {
-      q.side = Math.random() < 0.5 ? 0 : 1;
-      q.sx = q.side ? 1 + Math.random() * 0.08 : -Math.random() * 0.08;   // just off the corner
-      q.sy = Math.random() * 0.22 - 0.06;
-      q.cx = q.side ? 0.75 + Math.random() * 0.35 : -0.1 + Math.random() * 0.35;   // the curve's pull, out past the corner's side
-      q.cy = 0.1 + Math.random() * 0.5;
+      // born at the left corner, the right corner, or along the top edge ("should come from the top as well")
+      const r = Math.random(); q.side = r < 0.34 ? 0 : r < 0.68 ? 1 : 2;
+      if (q.side === 2){
+        q.sx = 0.12 + Math.random() * 0.76; q.sy = -0.08 - Math.random() * 0.1;   // just above the top, across it
+        q.cx = q.sx + (Math.random() - 0.5) * 0.3; q.cy = 0.05 + Math.random() * 0.3;   // a gentle pull, nearly straight down
+      } else {
+        q.sx = q.side ? 1 + Math.random() * 0.08 : -Math.random() * 0.08;   // just off the corner
+        q.sy = Math.random() * 0.22 - 0.06;
+        q.cx = q.side ? 0.75 + Math.random() * 0.35 : -0.1 + Math.random() * 0.35;   // the curve's pull, out past the corner's side
+        q.cy = 0.1 + Math.random() * 0.5;
+      }
       q.t = fresh ? Math.random() : 0;
-      q.v = 0.0022 + Math.random() * 0.0034;
+      q.v = (0.0022 + Math.random() * 0.0034) / 3;   // a third of the pace ("floating particles way slower")
       q.r = 0.7 + Math.random() * 1.3;
       q.ink = INKS[Math.random() < 0.55 ? 0 : Math.random() < 0.7 ? 1 : 2];
       q.a = 0.35 + Math.random() * 0.45;
@@ -21513,7 +21590,7 @@
         q.t += q.v; if (q.t >= 1){ born(q, false); continue; }
         const t = q.t, u = 1 - t;
         // a quadratic curve from the corner through the pull to a point on the organ's rim
-        const ang = (q.side ? -0.6 : Math.PI + 0.6) + (q.cy - 0.35) * 1.6;
+        const ang = q.side === 2 ? -Math.PI / 2 + (q.cx - 0.5) * 1.8 : (q.side ? -0.6 : Math.PI + 0.6) + (q.cy - 0.35) * 1.6;   // from the top it lands on the upper rim
         const ex = tx + Math.cos(ang) * tr, ey = ty + Math.sin(ang) * tr;
         const x = u * u * q.sx * W + 2 * u * t * q.cx * W + t * t * ex;
         const y = u * u * q.sy * H + 2 * u * t * q.cy * H + t * t * ey;
@@ -21524,8 +21601,8 @@
     };
     requestAnimationFrame(frame);
   }
-  { const lp = document.getElementById('lp'), head = document.getElementById('lpHead');
-    const down = () => { if (lp && head) lp.scrollTo({ top: head.offsetHeight, behavior: 'smooth' }); };
+  { // with the story gone, See your Organ Age goes where Start Today goes: the Insights phone
+    const down = () => { if (typeof setMode === 'function') setMode(20); };
     buildLpHero(document.getElementById('lpAgeView'));
     lpStreams(document.getElementById('lpStreams'), document.getElementById('lpAgeView'));
     const cta = document.getElementById('lpHeroCta'); if (cta) cta.addEventListener('click', down); }
