@@ -2987,7 +2987,7 @@
   body[data-bp] .lp{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);box-shadow:0 0 0 1px rgba(255,255,255,.08);--lpW:var(--bpW);}   /* .lp on the front: .lpEnd's own rule sets display later in the file */
   /* ---- The header: page-high, black, the copy white at the left, the age
      card at the right. The stage below pins once it has scrolled past. */
-  .lpHead{position:relative;z-index:2;min-height:100%;height:100%;   /* the page's own height (under the bar), not the window's: the page does not scroll */display:flex;flex-direction:column;background:#000;color:#f4f4f4;overflow:hidden;}
+  .lpHead{position:relative;z-index:2;min-height:100%;height:100%;   /* the page's own height (under the bar), not the window's: the page does not scroll */display:flex;flex-direction:column;background:#121212;color:#f4f4f4;overflow:hidden;}   /* black, then "bg hero #121212" */
   /* a warm halo at the header's top right ("put the halo at the top right of the header"): the accent, soft, off the corner */
   /* ...the concept phone's light, exactly ("keep exact same halo top right
      system as the concept mobile UI"): the same nine-stop gaussian, the same
@@ -3035,20 +3035,20 @@
   .lpAvArc svg{display:block;width:100%;height:auto;overflow:visible;}
   .lpAvArc line{stroke-width:.8;}   /* 1.1, then "increments a bit thinner" */
   /* the reading, with an arrow either side ("add arrow left and right CTAs on both sides"): round, quiet, brighter under the pointer, each a step of the carousel */
-  .lpAvRead{position:relative;margin-top:-34px;padding:0 72px;display:flex;flex-direction:column;align-items:center;}
-  .lpAvArr{position:absolute;top:50%;width:44px;height:44px;margin-top:-22px;border:0;border-radius:50%;padding:0;background:rgba(255,255,255,.06);color:#f4f4f4;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .16s ease,transform .12s ease;}
+  .lpAvRead{position:relative;margin-top:-34px;padding:0 48px;display:flex;flex-direction:column;align-items:center;}
+  .lpAvArr{position:absolute;top:50%;width:22px;height:22px;margin-top:-11px;   /* 44, then "reduce arrow CTA by 2x" */border:0;border-radius:50%;padding:0;background:rgba(255,255,255,.06);color:#f4f4f4;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .16s ease,transform .12s ease;}
   .lpAvArr.prev{left:0;} .lpAvArr.next{right:0;}
-  .lpAvArr svg{width:20px;height:20px;}
+  .lpAvArr svg{width:12px;height:12px;}
   .lpAvArr:hover{background:rgba(255,255,255,.12);} .lpAvArr:active{transform:scale(.94);}
   .lpAvNum{font-size:84px;font-weight:500;letter-spacing:-3px;line-height:1;color:#f4f4f4;font-variant-numeric:tabular-nums;transition:opacity .2s ease;}
-  .lpAvDelta{margin-top:10px;font-size:16px;color:rgba(244,244,244,.55);transition:opacity .2s ease;}
+  .lpAvDelta{margin-top:-2px;   /* 10, then "reduce gap XX and XX younger by 12px" */font-size:16px;color:rgba(244,244,244,.55);transition:opacity .2s ease;}
   /* the names' row is the phone's carousel ("this should act as a carousel,
      same as the mobile view"): every age in one track that scrolls and
      snaps, the one at the centre lit and the rest fading and softening with
      their distance from it; swiped, dragged, or moved by the view */
   .lpAvNames{display:flex;gap:32px;align-items:center;width:100%;margin-top:44px;padding:4px calc(50% - 60px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab;
     font-size:20px;font-weight:500;letter-spacing:-.2px;white-space:nowrap;
-    -webkit-mask-image:linear-gradient(to right,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(to right,transparent,#000 18%,#000 82%,transparent);}
+    -webkit-mask-image:linear-gradient(to right,transparent 2%,rgba(0,0,0,.35) 18%,#000 38%,#000 62%,rgba(0,0,0,.35) 82%,transparent 98%);mask-image:linear-gradient(to right,transparent 2%,rgba(0,0,0,.35) 18%,#000 38%,#000 62%,rgba(0,0,0,.35) 82%,transparent 98%);}   /* a long fade to either edge ("need a fade out left and right"), the neighbours whole, the ones past them going */
   .lpAvNames::-webkit-scrollbar{display:none;}
   .lpAvNames.dragging{scroll-snap-type:none;cursor:grabbing;}
   .lpAvNames span{flex:0 0 auto;scroll-snap-align:center;color:#f4f4f4;opacity:.26;filter:blur(1.2px);transition:opacity .2s ease,filter .2s ease;cursor:pointer;}
@@ -21624,8 +21624,9 @@
     names.innerHTML = list.map(d => '<span>' + name(d) + '</span>').join('');
     const items = [].slice.call(names.children);
     const deltaText = d => d.delta < 0 ? (-d.delta) + ' year' + (d.delta === -1 ? '' : 's') + ' younger' : d.delta > 0 ? d.delta + ' year' + (d.delta === 1 ? '' : 's') + ' older' : 'matches your age';
-    const DOTS = 9000;   // twice the engine's dense 2600 ("organ hero more dot 2x, dense"), then "organ more dense, more particles": 9,000
-    const view = makeOrganView(org, body.organIdx, { dl: false, dense: true, target: shapeTarget(clouds[body.organIdx], DOTS), fill: 0.78, dot: 1.1 });
+    const DOTS = 12150;   // twice the engine's dense 2600 ("organ hero more dot 2x, dense"), then 9,000 ("more dense, more particles"), then "1.35x": 12,150
+    // fill .62: the shape at 80% of the .78 it filled the canvas at ("scale down by 20%"), which is also the room that keeps its edges inside the canvas ("avoid cut on organ")
+    const view = makeOrganView(org, body.organIdx, { dl: false, dense: true, target: shapeTarget(clouds[body.organIdx], DOTS), fill: 0.62, dot: 1.1 });
     const arc = arcACopyLive(arcHost, body.delta, 42);   // 42 ticks a side: 1.4x the .5 step ("1.4x more increment")
     arcHost.querySelector('circle').setAttribute('r', '3');   // the indicator at half the card's 6 ("arc white dot smaller 2x")
     // the light: the concept phone's three verdicts, blended from the one
@@ -21642,7 +21643,7 @@
     const centreOf = i => items[i].offsetLeft + items[i].offsetWidth / 2 - names.clientWidth / 2;
     const nearest = () => { const x = names.scrollLeft + names.clientWidth / 2; let best = 0, bd = Infinity; items.forEach((el, i) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - x); if (d < bd){ bd = d; best = i; } }); return best; };
     // each name lit by its distance from the centre, as the phone's pills read mid-swipe
-    const shade = () => { const x = names.scrollLeft + names.clientWidth / 2, w = names.clientWidth; items.forEach((el, i) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - x) / (w / 2); el.classList.toggle('on', i === cur); if (i !== cur){ el.style.opacity = Math.max(0.16, 0.5 - d * 0.5).toFixed(3); el.style.filter = 'blur(' + Math.min(1.6, 0.6 + d * 1.6).toFixed(2) + 'px)'; } else { el.style.opacity = ''; el.style.filter = ''; } }); };
+    const shade = () => { const x = names.scrollLeft + names.clientWidth / 2, w = names.clientWidth; items.forEach((el, i) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - x) / (w / 2); el.classList.toggle('on', i === cur); if (i !== cur){ el.style.opacity = Math.max(0.08, 0.52 - d * 0.62).toFixed(3); el.style.filter = 'blur(' + Math.min(3.2, 0.5 + d * 3.2).toFixed(2) + 'px)';   /* fading and softening further with the distance ("+ blur fade") */ } else { el.style.opacity = ''; el.style.filter = ''; } }); };
     let scrollingByView = false, settleT = 0;
     const show = (i, animate) => { scrollingByView = true; names.scrollTo({ left: centreOf(i), behavior: animate === false ? 'auto' : 'smooth' }); clearTimeout(settleT); settleT = setTimeout(() => { scrollingByView = false; }, 600); };
     const go = (i, dir, fromTrack) => {
