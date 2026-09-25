@@ -3029,12 +3029,18 @@
      faded and softened as on the phone */
   .lpAgeView{display:flex;flex-direction:column;align-items:center;width:100%;max-width:560px;text-align:center;user-select:none;-webkit-user-select:none;cursor:grab;touch-action:pan-y;}
   .lpAgeView.dragging{cursor:grabbing;}
-  .lpAvOrg{position:relative;top:-24px;width:300px;height:300px;}   /* "push up organ by 24px": the organ alone, the arc and the rest staying */
+  .lpAvOrg{position:relative;top:-24px;width:300px;height:300px;transform:scale(.85);margin:-22px auto;}   /* 300, then "reduce organ by 15%": the 300 canvas shown at .85 (255 of layout, the -22s), so the shape keeps its drawing room and is not cut at the canvas's edge ("avoid cut the organ") */   /* "push up organ by 24px": the organ alone, the arc and the rest staying */
   .lpAvOrg canvas{position:absolute;inset:0;display:block;}
-  .lpAvArc{width:100%;margin-top:-6px;-webkit-mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);}
+  .lpAvArc{width:100%;margin-top:18px;   /* -6, then "arc down by 24px" */-webkit-mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);}
   .lpAvArc svg{display:block;width:100%;height:auto;overflow:visible;}
   .lpAvArc line{stroke-width:.8;}   /* 1.1, then "increments a bit thinner" */
-  .lpAvNum{margin-top:-34px;font-size:84px;font-weight:500;letter-spacing:-3px;line-height:1;color:#f4f4f4;font-variant-numeric:tabular-nums;transition:opacity .2s ease;}
+  /* the reading, with an arrow either side ("add arrow left and right CTAs on both sides"): round, quiet, brighter under the pointer, each a step of the carousel */
+  .lpAvRead{position:relative;margin-top:-34px;padding:0 72px;display:flex;flex-direction:column;align-items:center;}
+  .lpAvArr{position:absolute;top:50%;width:44px;height:44px;margin-top:-22px;border:0;border-radius:50%;padding:0;background:rgba(255,255,255,.06);color:#f4f4f4;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .16s ease,transform .12s ease;}
+  .lpAvArr.prev{left:0;} .lpAvArr.next{right:0;}
+  .lpAvArr svg{width:20px;height:20px;}
+  .lpAvArr:hover{background:rgba(255,255,255,.12);} .lpAvArr:active{transform:scale(.94);}
+  .lpAvNum{font-size:84px;font-weight:500;letter-spacing:-3px;line-height:1;color:#f4f4f4;font-variant-numeric:tabular-nums;transition:opacity .2s ease;}
   .lpAvDelta{margin-top:10px;font-size:16px;color:rgba(244,244,244,.55);transition:opacity .2s ease;}
   /* the names' row is the phone's carousel ("this should act as a carousel,
      same as the mobile view"): every age in one track that scrolls and
@@ -3051,7 +3057,7 @@
     .lpNav{height:72px;padding:0 20px;}
     .lpHero{grid-template-columns:1fr;gap:32px;padding:16px 20px 56px;}
     .lpHeroTx{max-width:none;justify-self:stretch;}
-    .lpAvOrg{width:220px;height:220px;}
+    .lpAvOrg{width:220px;height:220px;margin:-16px auto;}
     .lpAvNum{font-size:64px;}
     .lpAvNames{font-size:17px;gap:22px;}
   }
@@ -9623,8 +9629,12 @@
         <div class="lpAgeView" id="lpAgeView">
           <div class="lpAvOrg"></div>
           <div class="lpAvArc"></div>
-          <div class="lpAvNum">34</div>
-          <div class="lpAvDelta">6 years younger</div>
+          <div class="lpAvRead">
+            <button class="lpAvArr prev" type="button" aria-label="Previous age"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l-6 6 6 6"/></svg></button>
+            <div class="lpAvNum">34</div>
+            <div class="lpAvDelta">6 years younger</div>
+            <button class="lpAvArr next" type="button" aria-label="Next age"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l6 6-6 6"/></svg></button>
+          </div>
           <div class="lpAvNames" aria-label="Ages"></div>
         </div>
       </div>
@@ -21662,6 +21672,7 @@
     addEventListener('pointerup', e => { if (!tdrag || e.pointerId !== tdrag.id) return; tdrag = null; if (!tdragged) return; names.classList.remove('dragging'); const k = nearest(); byHand(); if (k !== cur) go(k, k > cur ? 1 : -1); else show(k); setTimeout(() => { tdragged = false; }, 0); });
     names.addEventListener('click', e => { if (tdragged){ e.preventDefault(); return; } const el = e.target.closest('span'); if (!el) return; e.stopPropagation(); byHand(); go(items.indexOf(el)); });
     addEventListener('resize', () => show(cur, false));
+    host.querySelectorAll('.lpAvArr').forEach(btn => { const step = btn.classList.contains('next') ? 1 : -1; btn.addEventListener('pointerdown', e => e.stopPropagation()); btn.addEventListener('click', e => { e.stopPropagation(); byHand(); go(cur + step, step); }); });
     // the turning: every four and a half seconds while the page is the one showing ("auto carousel rotate every 4-5 sec"), resting seven after a hand
     const tick = () => { if (!document.body.classList.contains('m23') || document.hidden || performance.now() < rest) return; go(cur + 1, 1); };
     timer = setInterval(tick, 4500);
