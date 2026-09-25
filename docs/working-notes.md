@@ -10951,8 +10951,11 @@ keep the page's 12; the tile is (100% − 59) / 2 and the Large card 100% −
 47, the third and second still peeking 48 (measured 53 with the phone's
 own edge). "Reduce the max width of the field by 256px": the desk's field
 is capped at 554 (75% of the 1080 content was 810). "No avatar on
-desktop": the desk's bar shows the discs only; the phone keeps its
-profile.
+desktop": the desk's bar shows the discs only, at the right (with no
+profile to push them there, the bar ends its row at the right); the phone
+keeps its profile. "Field scroll state 320px max width": in the bar, the
+desk's field is at most 320 wide and stands beside the discs, 10 from the
+inbox (measured 554 under the greeting, 320 in the bar).
 
 ---
 
