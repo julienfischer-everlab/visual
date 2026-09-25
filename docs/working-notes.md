@@ -11291,6 +11291,46 @@ right at the moment": retracted, the rail's padding is 0 and each entry
 is a 44px plate centred by its own margins, 14 either side, the toggle
 the same.
 
+### 5.422 The landing header's right side: the phone's hero, turning
+
+"Use h1 sans, not serif. No bg on the card, right side. Autorotate every
+3 sec. Increments too thick on the arc. The organ doesn't seem to be the
+same as the mobile. I want that view." The right side is the Insights
+phone's hero as a view now (`buildLpHero`), not the Overview card: no
+plate; the particle organ at 300 (dense, its fill .62 and dot 1.1 so it
+reads as the phone's); the arc across the column with hairline ticks
+(1.1); the age at 84px with the delta under it ("3 years younger"); and
+at the foot the ages' names in a row -- the one in the middle lit, its
+neighbours faded and softened, as the phone's pills read mid-swipe. It
+turns to the next organ every three seconds while the page is the one
+showing (the organ morphs, the arc sweeps, the number and the names cross
+over), and a swipe, a drag or a tap on a neighbour's name takes it there
+by hand and rests the turning for six seconds. The h1 is the page's sans
+at 500. Measured: 300 organ, ticks 1.1, 84px number; at 3.4s the view is
+on Heart (37, 3 years younger), at 6.4s on Brain; a drag back lands and
+holds through the next tick; a tap on the next name moves on.
+
+"Put more floating particles coming from the right column's top left and
+top right, attracted into the organ. Also put the halo at the top right
+of the header." A canvas under the view (`lpStreams`): 150 particles born
+just off the column's two top corners, each on its own curve -- pulled
+out past its corner's side, then in to a point on the organ's rim --
+brightening and growing as they arrive, reborn at a corner; the three
+inks, mostly the material one; drawn while the page is the one showing.
+And the header carries a warm halo off its top-right corner: the accent
+in a soft radial, .2 at the centre, gone by 72%, on a disc 70vw across.
+
+"All nav items should have a hover and press state." Every entry lights
+on hover (.05 white) and presses darker (.1), the lit one a shade brighter
+on hover; the light page has its own. "Still too much right padding on
+the nav when retracted": Chromium measured 14 / 14, so this is WebKit --
+a flex item's automatic minimum width holds its text's width whatever
+max-width says, and the folded label kept its room; `min-width:0` on the
+label and the wordmark lets them fold to nothing there too. And "the nav
+size is different" between Overview and Insights: measured the same on
+both -- 224 wide, 26 / 20 padding, 13.5px, the first entry at 133 -- it is
+one `.dash .side`; the two captures were at different zooms.
+
 ---
 
 ## 6. Open items

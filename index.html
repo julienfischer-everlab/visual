@@ -492,9 +492,13 @@
   .dash .side .sideTgl{flex:none;width:28px;height:28px;padding:0;border:0;border-radius:7px;background:none;color:#bdbdb9;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .dash .side .sideTgl svg{width:18px;height:18px;}
   .dash .side .sideTgl:hover{background:rgba(255,255,255,.06);color:#ececec;}
-  .dash .side .nv{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:8px;margin-bottom:2px;position:relative;white-space:nowrap;transition:padding .32s cubic-bezier(.2,.8,.2,1),gap .32s cubic-bezier(.2,.8,.2,1),width .32s cubic-bezier(.2,.8,.2,1);}
-  .dash .side .nv span{display:block;max-width:160px;overflow:hidden;transition:max-width .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
-  .dash .side .logo{overflow:hidden;max-width:160px;transition:max-width .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
+  .dash .side .nv{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:8px;margin-bottom:2px;position:relative;white-space:nowrap;cursor:pointer;transition:padding .32s cubic-bezier(.2,.8,.2,1),gap .32s cubic-bezier(.2,.8,.2,1),width .32s cubic-bezier(.2,.8,.2,1),background .15s ease,color .15s ease;}
+  /* every entry answers the hand ("all nav items should have a hover and press state") */
+  .dash .side .nv:hover{background:rgba(255,255,255,.05);color:#ececec;}
+  .dash .side .nv:active{background:rgba(255,255,255,.1);}
+  .dash .side .nv.on:hover{background:#242422;}
+  .dash .side .nv span{display:block;min-width:0;max-width:160px;overflow:hidden;transition:max-width .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}   /* min-width 0: a flex item's automatic minimum would hold the text's width in WebKit, which is the right-hand room Julien kept seeing */
+  .dash .side .logo{overflow:hidden;min-width:0;max-width:160px;transition:max-width .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
   .dash .side .nv svg{flex:none;width:20px;height:20px;}
   .dash .side .nv.on{background:#1e1e1c;color:#ececec;}
   .dash{padding-left:224px;}
@@ -2965,7 +2969,10 @@
   .lp *{box-sizing:border-box;}
   /* ---- The header: page-high, black, the copy white at the left, the age
      card at the right. The stage below pins once it has scrolled past. */
-  .lpHead{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;background:#000;color:#f4f4f4;}
+  .lpHead{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;background:#000;color:#f4f4f4;overflow:hidden;}
+  /* a warm halo at the header's top right ("put the halo at the top right of the header"): the accent, soft, off the corner */
+  .lpHead::before{content:"";position:absolute;top:-28vw;right:-22vw;width:70vw;height:70vw;max-width:1000px;max-height:1000px;border-radius:50%;pointer-events:none;background:radial-gradient(closest-side,rgba(247,131,89,.2),rgba(247,131,89,.07) 46%,rgba(247,131,89,0) 72%);}
+  .lpHero{position:relative;}
   .lpNav{display:flex;align-items:center;justify-content:space-between;height:88px;padding:0 40px;}
   .lpBrand{display:flex;align-items:center;color:#f4f4f4;}
   .lpLogo{display:block;height:24px;width:auto;}
@@ -2974,25 +2981,40 @@
   .lpHero{flex:1 1 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:24px 40px 64px;max-width:1440px;width:100%;margin:0 auto;}
   .lpHeroTx{max-width:560px;justify-self:center;}
   .lpHeroTx .lpEyebrow{color:rgba(244,244,244,.5);font-size:11px;}
-  .lpHeroTx h1{margin:0 0 22px;font-family:'Tiempos Headline','Times New Roman',Georgia,serif;font-weight:400;font-size:clamp(38px,4.6vw,66px);line-height:1.04;letter-spacing:-1.2px;color:#f4f4f4;}
+  .lpHeroTx h1{margin:0 0 22px;font-weight:500;font-size:clamp(38px,4.6vw,64px);line-height:1.04;letter-spacing:-1.8px;color:#f4f4f4;}   /* the page's own sans ("use h1 sans, not serif") */
   .lpHeroTx p{margin:0 0 16px;font-size:16.5px;line-height:1.5;color:rgba(244,244,244,.84);}
   .lpHeroCta{margin-top:18px;border:0;cursor:pointer;color:#111;background:#fff;}
-  .lpHeroVis{display:flex;flex-direction:column;align-items:center;gap:14px;justify-self:center;width:100%;max-width:560px;}
-  /* the age card, at the header's scale: the same parts as the phone's --
-     eyebrow, organ, arc, reading -- and the same swipe, at three times the
-     size; a hand under a mouse */
-  .lpHead .ovAge{width:100%;height:auto;min-height:520px;padding:36px 0 40px;justify-content:center;border-radius:28px;background:rgba(255,255,255,.05);cursor:grab;}
-  .lpHead .ovAge .lbl{font-size:12px;letter-spacing:.14em;color:rgba(244,244,244,.5);margin-bottom:18px;}
-  .lpHead .ovAgeOrg{width:220px;height:220px;}
-  .lpHead .ovAgeSl .ovArc{width:110%;margin:8px -5% 0;}
-  .lpHead .ovAgeYrs{margin-top:-28px;font-size:24px;letter-spacing:-.4px;}
-  .lpHeroHint{margin:0;font-size:12px;color:rgba(244,244,244,.4);}
+  .lpHeroVis{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;justify-self:center;width:100%;max-width:560px;}
+  /* the streams: matter drawn in from the column's top corners into the organ, on a canvas under the view ("more floating particles coming from the right column's top left and top right, attracted into the organ") */
+  .lpStreams{position:absolute;left:-80px;right:-80px;top:-120px;bottom:0;pointer-events:none;}
+  .lpStreams canvas{position:absolute;inset:0;width:100%;height:100%;display:block;}
+  .lpAgeView{position:relative;z-index:1;}
+  /* the view: no plate ("no bg on the card"), the organ 300, the arc across
+     the column with hairline ticks ("increments too thick"), the age 84px,
+     the delta under it, the names' row at the foot with the neighbours
+     faded and softened as on the phone */
+  .lpAgeView{display:flex;flex-direction:column;align-items:center;width:100%;max-width:560px;text-align:center;user-select:none;-webkit-user-select:none;cursor:grab;touch-action:pan-y;}
+  .lpAgeView.dragging{cursor:grabbing;}
+  .lpAvOrg{position:relative;width:300px;height:300px;}
+  .lpAvOrg canvas{position:absolute;inset:0;display:block;}
+  .lpAvArc{width:100%;margin-top:-6px;-webkit-mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);mask-image:linear-gradient(to right,transparent 3%,#000 28%,#000 72%,transparent 97%);}
+  .lpAvArc svg{display:block;width:100%;height:auto;overflow:visible;}
+  .lpAvArc line{stroke-width:1.1;}
+  .lpAvNum{margin-top:-34px;font-size:84px;font-weight:500;letter-spacing:-3px;line-height:1;color:#f4f4f4;font-variant-numeric:tabular-nums;transition:opacity .2s ease;}
+  .lpAvDelta{margin-top:10px;font-size:16px;color:rgba(244,244,244,.55);transition:opacity .2s ease;}
+  .lpAvPills{display:grid;grid-template-columns:1fr auto 1fr;gap:28px;align-items:center;margin-top:44px;width:100%;font-size:20px;font-weight:500;letter-spacing:-.2px;white-space:nowrap;}
+  .lpAvPills span{transition:opacity .25s ease,transform .3s ease;}
+  .lpAvPills .prev{text-align:right;opacity:.26;filter:blur(1.2px);cursor:pointer;overflow:hidden;text-overflow:ellipsis;}
+  .lpAvPills .next{text-align:left;opacity:.26;filter:blur(1.2px);cursor:pointer;overflow:hidden;text-overflow:ellipsis;}
+  .lpAvPills .cur{color:#f4f4f4;}
+  .lpAvPills .prev:hover, .lpAvPills .next:hover{opacity:.5;}
   @media (max-width:900px){
     .lpNav{height:72px;padding:0 20px;}
     .lpHero{grid-template-columns:1fr;gap:32px;padding:16px 20px 56px;}
     .lpHeroTx{max-width:none;justify-self:stretch;}
-    .lpHead .ovAge{min-height:440px;}
-    .lpHead .ovAgeOrg{width:180px;height:180px;}
+    .lpAvOrg{width:220px;height:220px;}
+    .lpAvNum{font-size:64px;}
+    .lpAvPills{font-size:17px;gap:18px;}
   }
   /* the pinned stage. `position:sticky` on a full-height block inside the
      scroller, so the visual holds while the document moves under it */
@@ -6675,6 +6697,7 @@
   body.light .dash .side .logo{color:#2e241c;}
   body.light .dash .side .sideTgl{color:#6b5c4a;} body.light .dash .side .sideTgl:hover{background:rgba(46,31,26,.08);color:#2e241c;}
   body.light .dash .side .nv.on{background:#ece4d3;color:#2e241c;}
+  body.light .dash .side .nv:hover{background:rgba(46,31,26,.06);color:#2e241c;} body.light .dash .side .nv:active{background:rgba(46,31,26,.1);} body.light .dash .side .nv.on:hover{background:#e6dccb;}
   body.light .dash h1 span{color:#9b8a75;}
   body.light .dash .dcard, body.light .dash .dcard.bcard, body.light .dash .dcard.scard{background:#f4efed;}
   body.light .dash .dcard.organ{background:#f3e2d8;}
@@ -9435,8 +9458,20 @@
         <button class="lpCta lpHeroCta" type="button" id="lpHeroCta">See your Organ Age</button>
       </div>
       <div class="lpHeroVis">
-        <div class="msn ovAge lpAgeCard" id="lpAgeCard"><div class="ovAgeCar"></div></div>
-        <p class="lpHeroHint">Swipe or drag to move through the organs</p>
+        <!-- the Insights phone's hero, as a view ("I want that view"): the
+             particle organ, the arc with its indicator, the age large, the
+             years younger, and the ages' names in a row -- the one in the
+             middle lit, its neighbours faded. It turns to the next organ
+             every three seconds, and a swipe, a drag or a tap on a neighbour
+             takes it there by hand. Built by buildLpHero(). -->
+        <div class="lpStreams" id="lpStreams" aria-hidden="true"><canvas></canvas></div>
+        <div class="lpAgeView" id="lpAgeView">
+          <div class="lpAvOrg"></div>
+          <div class="lpAvArc"></div>
+          <div class="lpAvNum">34</div>
+          <div class="lpAvDelta">6 years younger</div>
+          <div class="lpAvPills"><span class="prev"></span><span class="cur"></span><span class="next"></span></div>
+        </div>
       </div>
     </div>
   </header>
@@ -21396,10 +21431,103 @@
   }
   buildOvAge(document.querySelector('#phone2 .ovAge'), () => setMode(20));   // the Insights phone
   buildOvAge(document.querySelector('#dOver .ovAge'), () => setMode(18));    // the Insights desk
-  // the landing page's header card: a tap (not a swipe) scrolls to the story below, as the CTA does
+  // The landing page's header view: the Insights phone's hero as a view --
+  // the organ, the arc, the age, the delta, the names' row -- turning to the
+  // next organ every three seconds ("autorotate every 3 sec"), and moved by
+  // hand with a swipe, a drag, or a tap on a neighbour's name (which rests
+  // the turning for a while). The CTA scrolls to the story.
+  function buildLpHero(host){
+    if (!host || typeof makeOrganView !== 'function' || typeof PILL === 'undefined') return;
+    const body = PILL.find(p => p.label === 'Body'); if (!body) return;
+    const list = [body].concat(PILL.filter(p => p !== body)), n = list.length;
+    const org = host.querySelector('.lpAvOrg'), arcHost = host.querySelector('.lpAvArc'), num = host.querySelector('.lpAvNum'), delta = host.querySelector('.lpAvDelta');
+    const pills = { prev: host.querySelector('.prev'), cur: host.querySelector('.cur'), next: host.querySelector('.next') };
+    const name = d => d.slide || (d.label + ' age');
+    const deltaText = d => d.delta < 0 ? (-d.delta) + ' year' + (d.delta === -1 ? '' : 's') + ' younger' : d.delta > 0 ? d.delta + ' year' + (d.delta === 1 ? '' : 's') + ' older' : 'matches your age';
+    const view = makeOrganView(org, body.organIdx, { dl: false, dense: true, fill: 0.62, dot: 1.1 });
+    const arc = arcACopyLive(arcHost, body.delta);
+    let cur = 0, timer = 0, rest = 0;
+    const paint = () => {
+      const d = list[cur];
+      pills.prev.textContent = name(list[(cur - 1 + n) % n]); pills.cur.textContent = name(d); pills.next.textContent = name(list[(cur + 1) % n]);
+      num.textContent = CHRONO + d.delta; delta.textContent = deltaText(d);
+    };
+    const go = (i, dir) => {
+      i = ((i % n) + n) % n; if (i === cur) return;
+      dir = dir || (i > cur ? 1 : -1); cur = i;
+      const d = list[i];
+      view.idx = d.organIdx; view.beat = !!(ORGANS[d.organIdx] && ORGANS[d.organIdx].label === 'Heart');
+      view.morphTo(clouds[d.organIdx], 'o' + d.organIdx, shapeTarget(clouds[d.organIdx], 2600), 900);
+      arc.sweepTo(d.delta, 900);
+      num.style.opacity = '0'; delta.style.opacity = '0';
+      Object.values(pills).forEach(el => { el.style.opacity = ''; el.style.transform = 'translateX(' + (-18 * dir) + 'px)'; el.style.opacity = '0'; });
+      setTimeout(() => { paint(); num.style.opacity = '1'; delta.style.opacity = '1'; Object.values(pills).forEach(el => { el.style.transition = 'none'; el.style.transform = 'translateX(' + (18 * dir) + 'px)'; void el.offsetWidth; el.style.transition = ''; el.style.transform = ''; el.style.opacity = ''; }); }, 220);
+    };
+    paint();
+    // the turning: every three seconds while the page is the one showing, resting six after a hand
+    const tick = () => { if (!document.body.classList.contains('m23') || document.hidden || performance.now() < rest) return; go(cur + 1, 1); };
+    timer = setInterval(tick, 3000);
+    const byHand = () => { rest = performance.now() + 6000; };
+    // a swipe or a drag, 40px sideways; the click after one is swallowed
+    let drag = null, swiped = false;
+    host.addEventListener('pointerdown', e => { if (e.button !== 0) return; drag = { x: e.clientX, y: e.clientY, id: e.pointerId }; swiped = false; host.classList.add('dragging'); });
+    const end = e => { if (!drag || e.pointerId !== drag.id) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = null; host.classList.remove('dragging'); if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){ swiped = true; byHand(); go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); setTimeout(() => { swiped = false; }, 0); } };
+    addEventListener('pointerup', end); addEventListener('pointercancel', end);
+    pills.prev.addEventListener('click', e => { if (swiped) return; e.stopPropagation(); byHand(); go(cur - 1, -1); });
+    pills.next.addEventListener('click', e => { if (swiped) return; e.stopPropagation(); byHand(); go(cur + 1, 1); });
+    host._lpHero = { go, at: () => cur, list: () => list, stop: () => clearInterval(timer) };
+  }
+  // The streams under the header's view: particles born at the column's two
+  // top corners, each on its own curve into the organ's centre, brightening
+  // as they arrive and reborn at a corner -- the ambient feed the organ view
+  // draws, at the scale of the column. A 2D canvas, drawn while the landing
+  // page is the one showing.
+  function lpStreams(host, view){
+    if (!host || !view) return;
+    const cvs = host.querySelector('canvas'), ctx = cvs.getContext('2d');
+    const INKS = ['163,84,66', '208,164,150', '242,235,231'];
+    const N = 150, P = [];
+    const born = (q, fresh) => {
+      q.side = Math.random() < 0.5 ? 0 : 1;
+      q.sx = q.side ? 1 + Math.random() * 0.08 : -Math.random() * 0.08;   // just off the corner
+      q.sy = Math.random() * 0.22 - 0.06;
+      q.cx = q.side ? 0.75 + Math.random() * 0.35 : -0.1 + Math.random() * 0.35;   // the curve's pull, out past the corner's side
+      q.cy = 0.1 + Math.random() * 0.5;
+      q.t = fresh ? Math.random() : 0;
+      q.v = 0.0022 + Math.random() * 0.0034;
+      q.r = 0.7 + Math.random() * 1.3;
+      q.ink = INKS[Math.random() < 0.55 ? 0 : Math.random() < 0.7 ? 1 : 2];
+      q.a = 0.35 + Math.random() * 0.45;
+    };
+    for (let i = 0; i < N; i++){ const q = {}; born(q, true); P.push(q); }
+    let W = 0, H = 0;
+    const fit = () => { const r = host.getBoundingClientRect(), dp = Math.min(2, devicePixelRatio || 1); if (!r.width || !r.height) return false; if (cvs.width !== Math.round(r.width * dp) || cvs.height !== Math.round(r.height * dp)){ cvs.width = Math.round(r.width * dp); cvs.height = Math.round(r.height * dp); } W = cvs.width; H = cvs.height; return true; };
+    const frame = () => {
+      requestAnimationFrame(frame);
+      if (!document.body.classList.contains('m23') || document.hidden || !fit()) return;
+      // the organ's centre, in the canvas's own pixels
+      const o = view.querySelector('.lpAvOrg').getBoundingClientRect(), hr = host.getBoundingClientRect(), dp = W / hr.width;
+      const tx = (o.left + o.width / 2 - hr.left) * dp, ty = (o.top + o.height / 2 - hr.top) * dp, tr = o.width * 0.36 * dp;
+      ctx.clearRect(0, 0, W, H);
+      for (const q of P){
+        q.t += q.v; if (q.t >= 1){ born(q, false); continue; }
+        const t = q.t, u = 1 - t;
+        // a quadratic curve from the corner through the pull to a point on the organ's rim
+        const ang = (q.side ? -0.6 : Math.PI + 0.6) + (q.cy - 0.35) * 1.6;
+        const ex = tx + Math.cos(ang) * tr, ey = ty + Math.sin(ang) * tr;
+        const x = u * u * q.sx * W + 2 * u * t * q.cx * W + t * t * ex;
+        const y = u * u * q.sy * H + 2 * u * t * q.cy * H + t * t * ey;
+        const a = q.a * Math.min(1, t / 0.12) * (1 - Math.max(0, (t - 0.82) / 0.18)) * (0.55 + 0.45 * t);
+        ctx.fillStyle = 'rgba(' + q.ink + ',' + a.toFixed(3) + ')';
+        ctx.beginPath(); ctx.arc(x, y, q.r * dp * (0.7 + 0.5 * t), 0, 6.2832); ctx.fill();
+      }
+    };
+    requestAnimationFrame(frame);
+  }
   { const lp = document.getElementById('lp'), head = document.getElementById('lpHead');
     const down = () => { if (lp && head) lp.scrollTo({ top: head.offsetHeight, behavior: 'smooth' }); };
-    buildOvAge(document.getElementById('lpAgeCard'), down);
+    buildLpHero(document.getElementById('lpAgeView'));
+    lpStreams(document.getElementById('lpStreams'), document.getElementById('lpAgeView'));
     const cta = document.getElementById('lpHeroCta'); if (cta) cta.addEventListener('click', down); }
   // The services row under the greeting scrolls natively under a finger and
   // is dragged under a mouse, as the other rows are: snap off while the
