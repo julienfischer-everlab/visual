@@ -6967,7 +6967,12 @@
   }
   .ovcard h4{margin:0;padding-right:48px;font-size:14px;font-weight:400;color:#f2e5e0;line-height:1.35;}   /* "title padding right +48px"; 16 and medium, then "keep regular, reduce font size by 2px" */
   .ovcard h4 span{color:rgba(242,229,224,.5);}
-  .ovcard .ovbtn{margin-top:24px;}   /* 24 above the card's footer ("add 24px padding top on insight card footer"); was auto, the slack, before the card hugged its content */
+  .ovcard .ovbtn{margin-top:24px;}
+  /* the source under the title: the doctor (or device) and the date, grey, a short rule between */
+  .ocBy{display:flex;align-items:center;gap:8px;margin-top:-2px;font-size:13px;color:#8b8b86;white-space:nowrap;overflow:hidden;}
+  .ocBy i{flex:none;width:1px;height:11px;background:rgba(236,236,236,.22);}
+  #dOver .ocBy{font-size:12.5px;}
+  body.light .ocBy{color:#7d6b58;} body.light .ocBy i{background:rgba(46,31,26,.2);}   /* 24 above the card's footer ("add 24px padding top on insight card footer"); was auto, the slack, before the card hugged its content */
   .ovOrgan{flex:1;min-height:150px;position:relative;}
   .ovOrgan canvas{position:absolute;inset:0;display:block;}
   /* the Explore cards: the source in bold in the line, the two stacked
@@ -22379,11 +22384,12 @@
       watch: 'assets/overview/card3-watch.webp', sync: 'assets/overview/card3-sync.webp'
     };
     const CARDS = [
-      { ill: 'doc',   t: 'We have some insights from your <b>Dexa report</b>.' },
-      { ill: 'quiz',  t: 'We have some insights from your <b>Health questionnaire</b>.' },
-      { ill: 'tube',  t: 'We have some insights from your <b>Advanced blood panel</b>.' },
-      { ill: 'watch', t: 'We have some insights from your <b>Apple Watch</b>.' },
-      { ill: 'sync',  t: 'We are syncing with your <b>Oura ring</b> for insights.', cta: 'Provide consent' }
+      // who it comes from and when ("add a small title with doctor and date"): the doctor for a document, the device for a device
+      { ill: 'doc',   t: 'We have some insights from your <b>Dexa report</b>.', by: 'Dr Steven Lu', d: '14 Apr 2026' },
+      { ill: 'quiz',  t: 'We have some insights from your <b>Health questionnaire</b>.', by: 'Dr Steven Lu', d: '12 Apr 2026' },
+      { ill: 'tube',  t: 'We have some insights from your <b>Advanced blood panel</b>.', by: 'Dr Edward Lim', d: '10 Apr 2026' },
+      { ill: 'watch', t: 'We have some insights from your <b>Apple Watch</b>.', by: 'Apple Watch', d: '9 Apr 2026' },
+      { ill: 'sync',  t: 'We are syncing with your <b>Oura ring</b> for insights.', cta: 'Provide consent', by: 'Oura ring', d: 'Syncing' }
     ];
     // the one red used across the five: a gradient the first card's image block takes (once in the document)
     if (!document.getElementById('ovRed')) car.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ovRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0644a"/><stop offset="1" stop-color="#b8321f"/></linearGradient></defs></svg>');
@@ -22392,6 +22398,7 @@
       el.className = 'ovcard ovExp';
       el.innerHTML = '<div class="oclab"><span><i></i>Explore</span><span class="ocx">&#10005;</span></div>' +
         '<h4>' + c.t + '</h4>' +
+        (c.by ? '<div class="ocBy"><span>' + c.by + '</span><i aria-hidden="true"></i><span>' + c.d + '</span></div>' : '') +
         '<div class="ovIllWrap"><img class="ovIllImg" src="' + ILL_IMG[c.ill] + '" alt="" width="400" height="400"></div>' +
         '<div class="ovbtn' + (c.dim ? ' dim' : '') + '">' + (c.cta || 'See insights') + '</div>';
       car.appendChild(el);
