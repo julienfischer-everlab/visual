@@ -11432,3 +11432,5 @@ And "create a tweak 'Hero action' with different examples of the hero action car
 
 **5.449 — The Explore card's visual slot and title.** "Visual slot fix height 160px": the render's slot is a fixed 160 on both hosts, the image fitted to it (it had been the card's slack, growing with the card and the title's length). "Title padding right +48px", "keep regular, reduce font size by 2px": the title clears the dismiss disc with 48 at its right, at 14 (from 16; the desk's 13.5 from 15.5), regular — the source still white but no longer heavier.
 With the slot fixed, the card's slack had moved under the button on the phone (the card has a 380 floor); the button takes `margin-top:auto`, so the slack sits above it and See insights stays at the foot.
+
+**5.450 — "Hug content."** The Explore cards' floors go (380 on the phone, 352 on the desk): each card is its content's height — the eyebrow, the title, the 160 slot and the button — 326 on the phone, 328 on the desk, the same across the row.
