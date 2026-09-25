@@ -6502,11 +6502,18 @@
   .svcMob{position:absolute;inset:0;z-index:5;display:none;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:#0d0d0c;color:#ececec;}
   .svcMob::-webkit-scrollbar{display:none;}
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
-  #phone2.svcOn.svcScrolled .mstatus{background:rgba(13,13,12,.92);}   /* the strip takes a ground once the sheet has scrolled under it */
-  .svmHero{position:relative;padding:calc(var(--stH,54px) + 8px) 16px 16px;background:linear-gradient(180deg,#2b1a12,#161311 70%,#0d0d0c);overflow:hidden;}
+  .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 64px));padding:calc(var(--stH,54px) + 120px) 16px 16px;   /* up under the sticky bar (its height), the title where it stood */background:linear-gradient(180deg,#2b1a12,#161311 70%,#0d0d0c);overflow:hidden;}
   .svmHero::before{content:"";position:absolute;inset:0;background:url(assets/overview/plan-dexa.webp) center 20% / cover no-repeat;opacity:.38;-webkit-mask-image:linear-gradient(#000 30%,transparent 95%);mask-image:linear-gradient(#000 30%,transparent 95%);}
   .svmHero > *{position:relative;}
-  .svmNav{display:flex;align-items:center;justify-content:space-between;margin-bottom:68px;}
+  /* the back and more discs ride a bar like the Overview's ("same behaviour as
+     the home page's top bar, on scroll"): sticky at the screen's top, the
+     hero running up under it, and once the page has scrolled the same black
+     tint and ten blur bands fading in behind them */
+  .svmNav{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:calc(var(--stH,54px) + 8px) 16px 12px;isolation:isolate;}
+  .svmNav::before{content:"";position:absolute;left:0;right:0;top:0;bottom:-38px;z-index:-1;pointer-events:none;opacity:0;transition:opacity .28s ease;
+    background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.5) 18%,rgba(0,0,0,.43) 36%,rgba(0,0,0,.33) 54%,rgba(0,0,0,.21) 72%,rgba(0,0,0,.1) 88%,rgba(0,0,0,0) 100%);}
+  .svmNav .ovGround{bottom:-38px;}
+  #phone2.svcScrolled .svmNav::before, #phone2.svcScrolled .svmNav .ovGround{opacity:1;}
   .svmBtn{width:44px;height:44px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.16);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
   .svmBtn svg{width:16px;height:16px;} .svmBtn.svBack{background:rgba(255,255,255,.16);}
   .svmHero h1{margin:0;font-size:22px;font-weight:500;line-height:1.2;letter-spacing:-.3px;color:#fff;}
@@ -9886,8 +9893,8 @@
          title and start date, the progress card; then the sheet with the same
          sections stacked, the instructions and About the service at the foot -->
     <div class="svcMob" id="svcMob">
+      <div class="svmNav"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svmBtn svBack" type="button" aria-label="Back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button><button class="svmBtn" type="button" aria-label="More"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg></button></div>
       <div class="svmHero">
-        <div class="svmNav"><button class="svmBtn svBack" type="button" aria-label="Back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button><button class="svmBtn" type="button" aria-label="More"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg></button></div>
         <h1>Dexa Body Composition and Bone Mineral Density</h1>
         <div class="svmStart">Started on 20 February 2026</div>
         <div class="svmProg"><div class="svProgHead">Your progress <em>1/4</em></div><div class="svmBar"><i class="on"></i><i></i><i></i><i></i></div><div class="svmStepName">Step name</div></div>
@@ -22325,7 +22332,7 @@
     const openDesk = () => { document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });   // the bar's ground, once the page moves under it
     const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
-    if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 40), { passive: true });
+    if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });   // past 6, as the Overview's bar
     const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); };
     if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openDesk(); });   /* the whole plan card, not only its button */
     if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openMob(); });
