@@ -11152,6 +11152,30 @@ services three across; XS → 480, card 464, two across; Auto → the window.
 "Grid gap 12px." The desk's hero bento is on the page's 12 (from 20):
 the top band, the two small cards, the insight card's margin.
 
+Then the age card again, in three steps: "push arc up 8px" (the arc's top
+margin −8, the reading held where it was, so the two part); "organ
+smaller by 10%, up by 4px, years old up by 8px" (the organ 72 from 80,
+the eyebrow's gap 6 from 10, the reading pulled 20 into the arc's foot
+from 12; 26 on the desk). Measured: organ at 35, arc at 99, the reading
+at 135 (phone) / 140 (desk). And the Insights card: "reduce line height"
+(the title's leading 1.15 from 1.3) and "CTA full rounded" (View results
+a pill, 999 from 10, its padding 16).
+
+"Reduce grid gap mobile by 4px." The phone's bento is on 8 (from 12): the
+services row's gap and the 8 under it, the two small cards' gap and the 8
+above them, the insight card's margin; the tile is (100% − 51) / 2 again
+and the Large card 100% − 43, the third and second still peeking 48.
+
+"This is the viewport to resize, the entire window -- possible?" Not from
+inside: a page cannot resize the window it runs in; browsers let a script
+size only a window it opened itself. So, with a breakpoint forced, an
+*Open ↗* beside the select opens the same page (hash and all) in a new
+window exactly the breakpoint's floor wide, the browser's own chrome
+added back so the viewport is the floor -- there the real media queries
+take over and the bar reads "800 px · S" on its own. The in-window frame
+stays for a viewer that blocks pop-ups. Checked: the button is hidden on
+Auto, shows on S, and the window it opens measures 800 and lands on #m9.
+
 ---
 
 ## 6. Open items
