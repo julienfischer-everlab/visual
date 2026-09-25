@@ -11417,3 +11417,5 @@ And "create a tweak 'Hero action' with different examples of the hero action car
 **5.441 — "Add inbox as V2."** The phone's V4 bar keeps the inbox disc beside the bell, as the desk's does; the rule that hid it goes.
 
 **5.442 — "+8% opacity on blanket when top field is focus."** The phone's blanket under the live field at 57% black (from 49).
+
+**5.443 — "+24px gap between section."** On the desk's V4 the hero bento sits 24 further under the bar that carries the greeting (a margin on the grid; XS keeps the phone's spacing).
