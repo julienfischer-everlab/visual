@@ -11419,3 +11419,5 @@ And "create a tweak 'Hero action' with different examples of the hero action car
 **5.442 — "+8% opacity on blanket when top field is focus."** The phone's blanket under the live field at 57% black (from 49).
 
 **5.443 — "+24px gap between section."** On the desk's V4 the hero bento sits 24 further under the bar that carries the greeting (a margin on the grid; XS keeps the phone's spacing).
+
+**5.444 — "Gap grid 16px. Item gap 16px."** The desk's hero bento and its services grid on 16 (from 24), and the Insights rail's cards 16 apart (from 24).
