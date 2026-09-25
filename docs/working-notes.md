@@ -10957,6 +10957,21 @@ keeps its profile. "Field scroll state 320px max width": in the bar, the
 desk's field is at most 320 wide and stands beside the discs, 10 from the
 inbox (measured 554 under the greeting, 320 in the bar).
 
+### 5.412 The Tasks tweak: the list, or one insight card
+
+"Tweak control here: Tasks to complete (current), or Insights -- one card
+with a chart, 128px height." A Tasks row on the Overview tweak
+(`#stTasks`, `body.insCard`). *Tasks to complete* is the list as it was;
+*Insights card* stands one card in its place -- and in place of its
+heading -- on the phone and the desk: 128 tall, the small cards' plate,
+the eyebrow *Insights*, the line "ApoB is above the optimal range", the
+reading "146 mg/dL · See insight" at the left, and at the right the ApoB
+trend from the old desk card (green to amber to red over three gridlines,
+the chip at the top-right). 12 under the two small cards on the phone, the
+grid's 20 on the desk, where the booking card shortens to the column (452
+from 573). Measured: 128 × 346 on the phone, 128 × 595 on the desk, the
+list and its heading hidden, both back on Tasks.
+
 ---
 
 ## 6. Open items
