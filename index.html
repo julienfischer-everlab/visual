@@ -6153,7 +6153,7 @@
   body.m6 #phone2 .mtitle h2{font-size:24px;font-weight:500;letter-spacing:-.3px;}   /* "H1 medium, 24px" */
   .dvH1 span{color:#7f7f7f;}
   .dvSec{
-    display:flex;align-items:center;gap:12px;margin:50px 0 10px;   /* 34/14, then "increase section gap +8px", "increase gap above +8px, below title decrease 4px" */
+    display:flex;align-items:center;gap:12px;margin:50px 0 18px;   /* then "title margin bottom +8px" */   /* 34/14, then "increase section gap +8px", "increase gap above +8px, below title decrease 4px" */
     font-size:20px;font-weight:500;letter-spacing:-.2px;color:#f4f4f4;   /* the report page's heading ("keep all titles the same style") */
   }
   .dvSec .see{
@@ -6470,7 +6470,7 @@
     body:not([data-bp]) #dOver .ovrow2, body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:1fr;}
   }
   #dOver .dvPlanGrid{gap:20px;}   /* "grid gap 20px" for the action plan */
-  #dOver .dvTop{gap:12px;grid-template-columns:1fr 1fr;}   /* "2 col 50 50" */   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
+  #dOver .dvTop{gap:24px;grid-template-columns:1fr 1fr;}   /* 12, then "grid gap 24px" */   /* "2 col 50 50" */   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
   #dOver .ovTop{position:sticky;top:calc(-1 * var(--ctPadY));z-index:5;display:flex;align-items:center;gap:10px;margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ctPadX)) 0;padding:24px var(--ctPadX) 12px;}   /* the card's own padding cancelled, whatever the breakpoint sets it to */
   #dOver .ovTop::before{
     content:"";position:absolute;left:0;right:0;top:0;bottom:-36px;z-index:-1;pointer-events:none;   /* 4 past the bar, then 36 ("+32") */
@@ -6485,7 +6485,7 @@
   }
   body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.55) 0%,rgba(247,242,233,.5) 18%,rgba(247,242,233,.43) 36%,rgba(247,242,233,.33) 54%,rgba(247,242,233,.21) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);}
   #dOver .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;}
-  #dOver .ovTop .ovChatBox{width:100%;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(96px) saturate(120%);backdrop-filter:blur(96px) saturate(120%);}   /* .07 / 64, then "#fff 8% bg", "increase field bg blur" */
+  #dOver .ovTop .ovChatBox{width:100%;max-width:320px;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.08);   /* "desktop chat max width 320px", in the bar too */-webkit-backdrop-filter:blur(96px) saturate(120%);backdrop-filter:blur(96px) saturate(120%);}   /* .07 / 64, then "#fff 8% bg", "increase field bg blur" */
   #dOver .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
   body.light #dOver .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   #dOver .ovInbox, #dOver .ovBell{width:48px;height:48px;}
@@ -6515,7 +6515,11 @@
   #dOver .ovAge{cursor:pointer;}
   /* the rail: the Explore cards at the rail's width and corners, resting
      on their left edge, all lit; the button the rail's own */
-  #dOver .ovcar{display:flex;gap:var(--ctGap);padding:0;margin:0;overflow-x:auto;}
+  #dOver .ovcar{display:flex;gap:24px;padding:0;margin:0;overflow-x:auto;}
+  /* the rail's edges: a fade where cards run on past them (.fadeL / .fadeR, set by the scroll) */
+  #dOver .ovcar.fadeR{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 96px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 96px),transparent);}
+  #dOver .ovcar.fadeL{-webkit-mask-image:linear-gradient(to right,transparent,#000 96px);mask-image:linear-gradient(to right,transparent,#000 96px);}
+  #dOver .ovcar.fadeL.fadeR{-webkit-mask-image:linear-gradient(to right,transparent,#000 96px,#000 calc(100% - 96px),transparent);mask-image:linear-gradient(to right,transparent,#000 96px,#000 calc(100% - 96px),transparent);}   /* the container's gap, then "insights desktop item gap 24px" */
   #dOver .ovcard{flex:0 0 302px;scroll-snap-align:start;min-height:352px;border-radius:20px;padding:18px;opacity:1;}
   #dOver .ovcard h4{font-size:15.5px;line-height:1.38;}
   #dOver .ovbtn{border-radius:11px;font-size:13.5px;padding:12px 0;background:rgba(255,255,255,.09);color:#ececec;cursor:pointer;transition:background .16s ease;}
@@ -6694,11 +6698,15 @@
      desk the services fill the hero's right column, two by two, to the
      booking card's height */
   body.hdrV4 .ovSvcChip.ovSvcNew{display:none;}
-  body.hdrV4 .ovInbox{display:none;}   /* V2's bar: the field and the bell ("on V4 keep the header of the V2") */
+  body.hdrV4 #phone2 .ovInbox{display:none;}   /* V2's bar on the phone: the field and the bell ("on V4 keep the header of the V2"); the desk keeps the inbox beside the bell ("add the inbox next to the bell CTA same as mobile view") */
+  body.hdrV4 #dOver .ovTop .dvH1{flex:1 1 auto;margin:0;text-align:left;font-size:24px;min-width:0;}   /* the greeting in the bar, at the left ("title on left side") */
+  body.hdrV4 #dOver .ovTop .ovChat{flex:0 1 256px;max-width:256px;}
+  body.hdrV4 #dOver .ovTop .ovChatBox{max-width:256px;}   /* "place field on the right side next to the bell, 256 max width" */
   body.hdrV4 .ovrow2, body.hdrV4 .ovInsCard{display:none;}
   body.hdrV4 #dOver .dvSecTasks, body.hdrV4 #dOver .dvTasks{display:none;}
   body.hdrV4 #dOver .dvTop > div{display:flex;flex-direction:column;min-height:0;}
-  body.hdrV4 #dOver .dvTop .ovSvc{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:minmax(124px,1fr);gap:12px;margin:0;padding:0;flex:1 1 auto;overflow:visible;}
+  body:not([data-bp="xs"]) #dOver .ovhero.ovBook{min-height:320px;}   /* "hero desktop height 320px" */
+  body.hdrV4 #dOver .dvTop .ovSvc{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:minmax(124px,1fr);gap:24px;margin:0;padding:0;flex:1 1 auto;overflow:visible;}
   body.hdrV4 #dOver .dvTop .ovSvcChip{height:auto;min-height:124px;flex:none;}
   body.hdrV4 #phone2 .ovInsCard + .ovsec, body.hdrV4 #dOver .ovInsCard + .dvSec{margin-top:0;}
   #dOver .ovInsTx b{font-size:18px;}   /* 16, then "+2px" */
@@ -6777,6 +6785,9 @@
   @keyframes ovSpin{to{transform:translate(77px,74px) rotate(360deg);}}
   body.light .ovcard.ovExp h4{color:#2e1f1a;} body.light .ovcard.ovExp h4 b{color:#000;}
   body.light .ovIll rect[fill="#2a2a29"]{fill:#efe6dc;} body.light .ovIll rect[fill="#1f1f1e"]{fill:#e2d6c8;}
+  .ovcard.hid{display:none;}
+  body.insN1 #phone2 .ovcard{flex:0 0 100%;}   /* one insight: the card at the column's width */
+  body.insN1 .ovcdots, body.insN1 #dOver .dvSec .nav, body.insN2 #dOver .ovcdots, body.insN2 #dOver .dvSec .nav{display:none;}   /* nothing to page through */
   .ovcdots{display:flex;gap:6px;justify-content:center;align-items:center;padding:0;margin-top:24px;}
   .ovcdots i{width:8px;height:8px;border-radius:4px;background:rgba(236,236,236,.25);}
   .ovcdots i.on{width:24px;background:#ececec;}
@@ -8674,10 +8685,12 @@
         <!-- the Insights section -- the heading, the Explore cards' rail, the
              dots -- shown or not ("inside full section on / off toggle") -->
         <div class="tkRow">
-          <span class="lbl">Insights section</span>
-          <select id="stInsSec" aria-label="The Insights section">
-            <option value="on" selected>Shown</option>
-            <option value="off">Hidden</option>
+          <span class="lbl">Insights</span>
+          <select id="stInsSec" aria-label="How many insights the Insights section shows">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3" selected>3+</option>
           </select>
         </div>
         <!-- which build this page is: the source says dev, dist says when it
@@ -14061,7 +14074,8 @@
       (CARD_STATE.insCard ? ' tkIns' : '') +
       (CARD_STATE.hero && CARD_STATE.hero !== 'consult' ? ' hero' + CARD_STATE.hero[0].toUpperCase() + CARD_STATE.hero.slice(1) : '') +
       (CARD_STATE.sideMin ? ' sideMin' : '') +
-      (CARD_STATE.insSec ? '' : ' noInsSec') +   // tkIns, not insCard: .insCard is a card component already, and a body wearing it took its font:inherit
+      (CARD_STATE.insSec ? '' : ' noInsSec') +
+      (CARD_STATE.insN === 1 ? ' insN1' : CARD_STATE.insN === 2 ? ' insN2' : '') +   // tkIns, not insCard: .insCard is a card component already, and a body wearing it took its font:inherit
       (CARD_STATE.newRep ? ' newRep' : '') +
       (CARD_STATE.fullscr ? ' fullscr' : '') +
       (CARD_STATE.showBar ? ' showBar' : '') +
@@ -22001,7 +22015,7 @@
     // on the nearest card (or the next, on a flick) when it lets go; a tapped
     // dot glides to its card; the click after a drag is swallowed. The same
     // rules as buildRepCards', for the same reasons.
-    const cardsOf = () => [].slice.call(car.querySelectorAll('.ovcard'));
+    const cardsOf = () => [].slice.call(car.querySelectorAll('.ovcard:not(.hid)'));   // the Insights tweak hides the ones past its count
     const snapAt = i => {
       const cs = cardsOf(), c = cs[Math.max(0, Math.min(cs.length - 1, i))];
       if (!c) return 0;
@@ -22012,12 +22026,19 @@
     };
     const idxAt = x => { const cs = cardsOf(); let best = 0, bd = Infinity; cs.forEach((c, i) => { const d = Math.abs(snapAt(i) - x); if (d < bd){ bd = d; best = i; } }); return best; };
     const drawDots = () => { if (dots) dots.innerHTML = cardsOf().map(() => '<i></i>').join(''); };
+    // the desk's rail fades at whichever edge has more behind it ("on desktop
+    // if overflow on carousel add a fade out to show there is more item
+    // behind it; valid on left and/or right, depending on overflow")
+    const edges = () => { if (opts.align !== 'start') return; const max = car.scrollWidth - car.clientWidth; car.classList.toggle('fadeL', car.scrollLeft > 4); car.classList.toggle('fadeR', car.scrollLeft < max - 4); };
     const sync = () => {
       const k = idxAt(car.scrollLeft);
       cardsOf().forEach((c, n) => c.classList.toggle('cur', n === k));
       if (dots) [].slice.call(dots.children).forEach((i, n) => i.classList.toggle('on', n === k));
+      edges();
     };
     drawDots(); sync();
+    addEventListener('resize', edges);
+    if (opts.align === 'start' && 'ResizeObserver' in window) new ResizeObserver(edges).observe(car);   // the rail has no width until its page shows; the fades read it when it does
     car.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
     if (dots) dots.addEventListener('click', e => { const i = e.target.closest('i'); if (i) car.scrollTo({ left: snapAt([].indexOf.call(dots.children, i)), behavior: 'smooth' }); });
     // the desk's arrows: a card back, a card on
@@ -22067,6 +22088,8 @@
       card.style.transition = 'opacity .2s ease, transform .2s ease'; card.style.opacity = '0'; card.style.transform = 'scale(.96)';
       setTimeout(() => { card.remove(); drawDots(); sync(); }, 220);
     });
+    // the Insights tweak's count: 1, 2, or all ("0 / 1 / 2 / 3+"; 0 hides the section)
+    car._ovExp = { setCount(n){ [].slice.call(car.querySelectorAll('.ovcard')).forEach((c, i) => c.classList.toggle('hid', i >= n)); car.scrollLeft = 0; drawDots(); sync(); } };
   }
   buildOvExplore(document.querySelector('#phone2 .ovcar'), document.querySelector('#phone2 .ovcdots'), { align: 'center' });
   { const over = document.getElementById('dOver');
@@ -22295,6 +22318,7 @@
                        sideMin: false,
                        // the Insights section (the Explore cards' rail), shown or not
                        insSec: true,
+                       insN: 3,   // how many Explore cards the Insights section shows: 0 (the section gone), 1, 2, or 3+ (all) ("Tweak Insights: 0 / 1 / 2 / 3+")
                        // the information architecture (IA tweak): V4's
                        // Overview / Results, and which half of the results
                        // database is showing ('all' | 'bio' | 'rec') -- off
@@ -22993,6 +23017,9 @@
     const inCol = CARD_STATE.hdrV4 && document.body.dataset.bp !== 'xs';
     if (inCol && row.parentNode !== col) col.prepend(row);
     else if (!inCol && row.parentNode === col) top.before(row);
+    // ...and the greeting into the bar's left for V4 on the desk ("title on left side"), back under it otherwise
+    const h1 = over.querySelector('.dvH1'), bar = over.querySelector('.ovTop');
+    if (h1 && bar){ if (inCol && h1.parentNode !== bar) bar.prepend(h1); else if (!inCol && h1.parentNode === bar) bar.after(h1); }
   };
   placeSvcV4();   // at load, for the default
   if (stHdrSel) stHdrSel.addEventListener('change', () => {
@@ -23039,8 +23066,11 @@
   }
   const stInsSecSel = document.getElementById('stInsSec');
   if (stInsSecSel) stInsSecSel.addEventListener('change', () => {
-    CARD_STATE.insSec = stInsSecSel.value === 'on';
+    CARD_STATE.insN = +stInsSecSel.value;
+    CARD_STATE.insSec = CARD_STATE.insN > 0;
     document.body.classList.toggle('noInsSec', !CARD_STATE.insSec);
+    document.body.classList.toggle('insN1', CARD_STATE.insN === 1); document.body.classList.toggle('insN2', CARD_STATE.insN === 2);
+    document.querySelectorAll('.ovcar').forEach(car => { if (car._ovExp) car._ovExp.setCount(CARD_STATE.insN >= 3 ? Infinity : CARD_STATE.insN); });
   });
   const stTasksSel = document.getElementById('stTasks');
   if (stTasksSel) stTasksSel.addEventListener('change', () => {
