@@ -3068,7 +3068,7 @@
      same as the mobile view"): every age in one track that scrolls and
      snaps, the one at the centre lit and the rest fading and softening with
      their distance from it; swiped, dragged, or moved by the view */
-  .lpAvNames{display:flex;gap:32px;align-items:center;width:100%;margin-top:44px;padding:4px calc(50% - 60px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab;
+  .lpAvNames{position:relative;display:flex;gap:32px;align-items:center;width:100%;margin-top:44px;   /* positioned, so the names' offsetLeft is measured from the track itself: the glide's target and the snap's rest were 24 apart without it, and the track landed in a jump */padding:4px calc(50% - 60px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab;
     font-size:20px;font-weight:500;letter-spacing:-.2px;white-space:nowrap;
     -webkit-mask-image:linear-gradient(to right,transparent 2%,rgba(0,0,0,.35) 18%,#000 38%,#000 62%,rgba(0,0,0,.35) 82%,transparent 98%);mask-image:linear-gradient(to right,transparent 2%,rgba(0,0,0,.35) 18%,#000 38%,#000 62%,rgba(0,0,0,.35) 82%,transparent 98%);}   /* a long fade to either edge ("need a fade out left and right"), the neighbours whole, the ones past them going */
   .lpAvNames::-webkit-scrollbar{display:none;}
@@ -21775,8 +21775,18 @@
     const nearest = () => { const x = names.scrollLeft + names.clientWidth / 2; let best = 0, bd = Infinity; items.forEach((el, i) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - x); if (d < bd){ bd = d; best = i; } }); return best; };
     // each name lit by its distance from the centre, as the phone's pills read mid-swipe
     const shade = () => { const x = names.scrollLeft + names.clientWidth / 2, w = names.clientWidth; items.forEach((el, i) => { const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - x) / (w / 2); el.classList.toggle('on', i === cur); if (i !== cur){ el.style.opacity = Math.max(0.08, 0.52 - d * 0.62).toFixed(3); el.style.filter = 'blur(' + Math.min(3.2, 0.5 + d * 3.2).toFixed(2) + 'px)';   /* fading and softening further with the distance ("+ blur fade") */ } else { el.style.opacity = ''; el.style.filter = ''; } }); };
-    let scrollingByView = false, settleT = 0;
-    const show = (i, animate) => { scrollingByView = true; names.scrollTo({ left: centreOf(i), behavior: animate === false ? 'auto' : 'smooth' }); clearTimeout(settleT); settleT = setTimeout(() => { scrollingByView = false; }, 600); };
+    // the track moves on one eased glide ("carousel needs to be smoother on
+    // release"): snap held off while it runs (the snap used to catch the
+    // track mid-way and land it in a jump), an ease-out over 520ms, the
+    // snap back on at rest
+    let scrollingByView = false, glideRaf = 0;
+    const glide = (x, done) => {
+      cancelAnimationFrame(glideRaf); names.classList.add('dragging'); scrollingByView = true;
+      const from = names.scrollLeft, dist = x - from, t0 = performance.now();
+      const tick = now => { const p = Math.min(1, (now - t0) / 520), k = 1 - Math.pow(1 - p, 3); names.scrollLeft = from + dist * k; if (p < 1) glideRaf = requestAnimationFrame(tick); else { names.classList.remove('dragging'); setTimeout(() => { scrollingByView = false; }, 60); if (done) done(); } };
+      glideRaf = requestAnimationFrame(tick);
+    };
+    const show = (i, animate) => { if (animate === false){ cancelAnimationFrame(glideRaf); scrollingByView = true; names.scrollLeft = centreOf(i); setTimeout(() => { scrollingByView = false; }, 60); return; } glide(centreOf(i)); };
     const go = (i, dir, fromTrack) => {
       i = ((i % n) + n) % n; if (i === cur) return;
       cur = i;
@@ -21801,7 +21811,7 @@
     let tdrag = null, tdragged = false;
     names.addEventListener('pointerdown', e => { if (e.pointerType === 'touch' || e.button !== 0) return; tdrag = { x: e.clientX, left: names.scrollLeft, id: e.pointerId }; tdragged = false; e.stopPropagation(); });
     addEventListener('pointermove', e => { if (!tdrag || e.pointerId !== tdrag.id) return; const dx = e.clientX - tdrag.x; if (!tdragged && Math.abs(dx) < 4) return; if (!tdragged){ tdragged = true; names.classList.add('dragging'); } names.scrollLeft = tdrag.left - dx; e.preventDefault(); });
-    addEventListener('pointerup', e => { if (!tdrag || e.pointerId !== tdrag.id) return; tdrag = null; if (!tdragged) return; names.classList.remove('dragging'); const k = nearest(); byHand(); if (k !== cur) go(k, k > cur ? 1 : -1); else show(k); setTimeout(() => { tdragged = false; }, 0); });
+    addEventListener('pointerup', e => { if (!tdrag || e.pointerId !== tdrag.id) return; tdrag = null; if (!tdragged) return; const k = nearest(); byHand(); if (k !== cur) go(k, k > cur ? 1 : -1); else show(k); setTimeout(() => { tdragged = false; }, 0); });   // the glide takes the track from where the hand left it; snap stays off until it lands
     names.addEventListener('click', e => { if (tdragged){ e.preventDefault(); return; } const el = e.target.closest('span'); if (!el) return; e.stopPropagation(); byHand(); go(items.indexOf(el)); });
     addEventListener('resize', () => show(cur, false));
     host.querySelectorAll('.lpAvArr').forEach(btn => { const step = btn.classList.contains('next') ? 1 : -1; btn.addEventListener('pointerdown', e => e.stopPropagation()); btn.addEventListener('click', e => { e.stopPropagation(); byHand(); go(cur + step, step); }); });
