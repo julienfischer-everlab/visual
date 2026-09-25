@@ -11429,3 +11429,5 @@ And "create a tweak 'Hero action' with different examples of the hero action car
 **5.447 — "Border #fff 2%."** The desk's plan cards' hairline at 2% white (from 22): all but gone against the page.
 
 **5.448 — "Border 8%."** The plan cards' hairline at 8% white.
+
+**5.449 — The Explore card's visual slot and title.** "Visual slot fix height 160px": the render's slot is a fixed 160 on both hosts, the image fitted to it (it had been the card's slack, growing with the card and the title's length). "Title padding right +48px", "keep regular, reduce font size by 2px": the title clears the dismiss disc with 48 at its right, at 14 (from 16; the desk's 13.5 from 15.5), regular — the source still white but no longer heavier.
