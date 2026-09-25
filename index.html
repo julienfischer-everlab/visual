@@ -512,7 +512,6 @@
   body.sideMin .dash .side .nv span{max-width:0;opacity:0;}
   body.sideMin .dash{padding-left:72px;--sideW:72px;}
   body.sideMin #dMain, body.sideMin #dOver{left:72px;}
-  body.sideMin #dMain{max-width:1312px;}   /* the rail's 152 go to the page, not to the gutters: with margin:auto centring, the main would otherwise step 76 to the right when the nav retracts, where the Overview's card holds its edge ("nav inconsistent") */
   .dash{transition:padding-left .32s cubic-bezier(.2,.8,.2,1);}
   #dMain, #dOver{transition:left .32s cubic-bezier(.2,.8,.2,1);}
   /* ---- The content pane: a card that owns its own scroll -----------------
@@ -537,6 +536,14 @@
        either side is the page's own established rhythm, untouched */
     padding:32px 40px 60px;
   }
+  /* The Insights desk's main takes the Overview card's cap and reserve
+     ("different padding"): the same 1280 of content in its padding, or the
+     shell less the rail less 16 -- so the two pages sit the same distance
+     from the rail at every window width, open or retracted, where a 1160
+     cap centred on its own left the main 20 further in at 1440 and flush
+     against the rail at 1363. Retracted, the rail's 152 go to the page, and
+     the edge holds ("nav inconsistent"). */
+  #dMain{max-width:min(1328px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}
   /* Sticks flush with #dMain's own rounded top the same way .dFilters
      sticks flush with it lower down (top:-32px cancels the same 32px
      padding, for the same reason: sticky's `top` reads off the padding
@@ -6491,7 +6498,8 @@
   #dOver .ovhero{margin:0;border-radius:20px;min-height:0;}
   #dOver .ovBook h3{font-size:19px;max-width:62%;}   /* the desk's 23, less the same 4 */
   #dOver .ovrow2{padding:0;gap:12px;}
-  #dOver .ovrow2 .msn{border-radius:20px;}
+  #dOver .ovrow2 .msn{border-radius:20px;height:224px;}   /* the desk's two small cards 32 taller than the phone's 192 ("increase height by 32"): the age card's organ, arc and reading breathe */
+  body[data-bp="xs"] #dOver .ovrow2 .msn{height:192px;}   /* XS keeps the phone's */
   #dOver .ovCov .covGauge .covDial{width:96px;height:96px;}   /* 112 in the 256 card */
   #dOver .ovAgeSl .ovArc{width:96%;margin:0;}   /* "arc push down 8px" on the desk */
   #dOver .ovAgeOrg{width:80px;height:80px;}   /* "organ +10% scale up" on the desk: 72 -> 80 */   /* the desk's card is wider: the arc at the card's width lands the reading 16 above the 192 foot */
