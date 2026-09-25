@@ -11018,6 +11018,11 @@ cut the same way as the set -- to where the alpha passes 40, squared,
 the services row (from 32), the spacer that holds its place while it
 rides in the bar 120 (48 + 16 + 56); the phone keeps its 32.
 
+"Card hero bento: Tasks, Insights." The Tweaks row for that card is named
+*Card hero bento* and reads as a select of the two -- Tasks, Insights --
+rather than the toggle segmentise() had made of it: neither card is the
+other turned off, so `#stTasks` joins the selects the toggle pass skips.
+
 ---
 
 ## 6. Open items
