@@ -11450,3 +11450,5 @@ With the slot fixed, the card's slack had moved under the button on the phone (t
 **5.457 — "Version, not Header."** The Overview's first tweak row reads Version (V1–V4): it has chosen the whole page's shape since V4, not only the header.
 
 **5.458 — Library in Concept; the Explore render clear of its button.** "Remove group, put library inside Concept group": the Library mode's group is Concept now (last in it), the Library group gone from the Version menu, and the home's library card labelled Concept. And the Explore card's render had come to sit over See insights: the -32 margin was set against the 160 slot, and at 128 the render's clear foot (17.5% of its height, measured off the alpha) is only 22 — so the margin is -14, the drawing's bottom 18 above the button, the card 280.
+
+**5.459 — "Insights badge, height 20."** See all's count on both hosts is the design's pill: 20 tall, a ring and the number in warm cream (#fbe9d8) on dark amber (#43220b), 6/8 of padding and 4 between ring and number; the phone's and the desk's share one rule now.
