@@ -11023,6 +11023,36 @@ rides in the bar 120 (48 + 16 + 56); the phone keeps its 32.
 rather than the toggle segmentise() had made of it: neither card is the
 other turned off, so `#stTasks` joins the selects the toggle pass skips.
 
+### 5.415 Container tokens, and the bar's ground in two layers
+
+"Consider these breakpoint values." Julien's layout / container table:
+padding top-bottom 24 / 28 / 32 / 36 and left-right 16 / 16 / 24 / 24, gap
+24 / 28 / 32 / 36, across xs / s / m / l, and the container's max-width
+steps (2xs Full / 512 / 544 / 576, xs 800, sm 1080, md 1280, lg 1440). The
+table names no screen widths, so the max-width steps stand in for them:
+xs below 800, s from 800, m from 1080, l from 1280. Three custom
+properties on the root (`--ctPadY`, `--ctPadX`, `--ctGap`) carry the
+values through media queries, and the desk's Overview reads them: the
+card's padding, its max-width (1080 of content plus the two paddings, so
+1128 at l where it was 1160), the top band's and the plan grid's gap, the
+small cards' gap, the rail's gap, the insight card's margin. The bar
+cancels the card's padding by the same variables, so it stays flush at
+every breakpoint. The Insights desk keeps its own numbers. Measured: at
+1440 padding 36 / 24, gap 36, card 1128; at 1180 32 / 24, gap 32, card 956;
+at 1000 28 / 16, gap 28, card 776; the bar flush at 0 / 0 in each.
+
+"Progressive gradient and blur. Field centred." and "Black gradient more
+intense." The desk's bar had a readable edge where its one blur ended.
+The ground is two layers now, on both surfaces: the strong blur (24px)
+whose mask falls away sooner (.92, .74, .5, .26, .1, 0 at 22 / 42 / 60 /
+76 / 90 / 100%), and under it a soft blur (8px) masked in from 22% and
+out at the foot, so the blur steps down in two stages and the foot has no
+edge. The tint is black at .78 at the top (from .5) on the same curve,
+the light page's light tint alike. And the desk's field, when it rides in
+the bar, stands on the bar's own centre (absolute, 320 wide) rather than
+in the room left of the discs, fading in without the slide. Measured:
+field centre 0 off the card's centre at 1440, 1180 and 1000.
+
 ---
 
 ## 6. Open items

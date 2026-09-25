@@ -2687,8 +2687,9 @@
   body.hdrV3 #dOver .ovAvatar{display:none;}   /* "no avatar on desktop": the desk's sidebar carries the account; the bar keeps the discs only */
   body.hdrV3 #dOver .ovTop{justify-content:flex-end;}   /* ...at the right, with no profile to push them there */
   /* in the bar (the scroll state) the field is at most 320 wide, beside the discs ("field scroll state 320px max width") */
-  body.hdrV3 #dOver .ovTop .ovChat{display:flex;justify-content:flex-end;}
+  body.hdrV3 #dOver .ovTop .ovChat{position:absolute;left:50%;top:24px;transform:translateX(-50%);width:320px;flex:none;display:flex;justify-content:center;animation:ovChatFade .28s ease;}   /* "field centred": on the bar's own centre, not the room left of the discs */
   body.hdrV3 #dOver .ovTop .ovChatBox{max-width:320px;}
+  @keyframes ovChatFade{from{opacity:0;}}
   body.hdrV3 #dOver .dvH1{text-align:center;margin:16px 0 0;}
   body.hdrV3 #dOver > .ovChat{position:relative;z-index:4;display:flex;justify-content:center;margin:16px 0 56px;}   /* "desktop: +24px gap after the chat field": 32 -> 56 above the services */
   body.hdrV3 #dOver > .ovChat .ovChatBox{
@@ -5919,11 +5920,23 @@
        to nothing at the foot on the same curve (.94, .82, .64, .42, .2, 0) */
     /* "a gradient black, progressive, 50% opacity": black at .5 at the top,
        easing to nothing at the foot on the blur's own curve */
-    background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,.47) 18%,rgba(0,0,0,.41) 36%,rgba(0,0,0,.32) 54%,rgba(0,0,0,.21) 72%,rgba(0,0,0,.1) 88%,rgba(0,0,0,0) 100%);
+    background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.72) 18%,rgba(0,0,0,.62) 36%,rgba(0,0,0,.48) 54%,rgba(0,0,0,.3) 72%,rgba(0,0,0,.14) 88%,rgba(0,0,0,0) 100%);   /* "black gradient more intense": .5 -> .78 at the top, the same curve */
     -webkit-backdrop-filter:blur(24px) saturate(120%);backdrop-filter:blur(24px) saturate(120%);
-    -webkit-mask-image:linear-gradient(#000 0%,rgba(0,0,0,.94) 18%,rgba(0,0,0,.82) 36%,rgba(0,0,0,.64) 54%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.2) 88%,transparent 100%);
-    mask-image:linear-gradient(#000 0%,rgba(0,0,0,.94) 18%,rgba(0,0,0,.82) 36%,rgba(0,0,0,.64) 54%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.2) 88%,transparent 100%);
+    -webkit-mask-image:linear-gradient(#000 0%,rgba(0,0,0,.92) 22%,rgba(0,0,0,.74) 42%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.26) 76%,rgba(0,0,0,.1) 90%,transparent 100%);
+    mask-image:linear-gradient(#000 0%,rgba(0,0,0,.92) 22%,rgba(0,0,0,.74) 42%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.26) 76%,rgba(0,0,0,.1) 90%,transparent 100%);
   }
+  /* the progressive blur's second layer ("progressive gradient and blur"):
+     a softer blur (8px) masked in from a quarter of the way down and out at
+     the foot, under the strong layer -- so the blur steps down in two
+     stages rather than one mask fading one blur, and the foot has no edge */
+  #phone2 .ovTop::after, #dOver .ovTop::after{
+    content:"";position:absolute;left:0;right:0;top:0;z-index:-1;pointer-events:none;
+    -webkit-backdrop-filter:blur(8px) saturate(110%);backdrop-filter:blur(8px) saturate(110%);
+    -webkit-mask-image:linear-gradient(transparent 22%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.3) 78%,transparent 100%);
+    mask-image:linear-gradient(transparent 22%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.3) 78%,transparent 100%);
+  }
+  #phone2 .ovTop::after{bottom:-6px;}
+  #dOver .ovTop::after{bottom:-4px;}
   #phone2 .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;padding:0;}
   #phone2 .ovTop .ovChatBox{
     width:100%;height:44px;padding:0 16px;font-size:14px;box-shadow:none;background:rgba(255,255,255,.08);   /* "height of the component 44px" */
@@ -5957,7 +5970,7 @@
   #phone2 .ovDim{position:absolute;inset:0;z-index:6;background:rgba(0,0,0,.49);opacity:0;pointer-events:none;transition:opacity .28s ease;}   /* 25%, then "+24%" */
   #phone2.ovTyping .ovDim{opacity:1;pointer-events:auto;}
   body.light #phone2 .ovTop::before{
-    background:linear-gradient(180deg,rgba(247,242,233,.5) 0%,rgba(247,242,233,.47) 18%,rgba(247,242,233,.41) 36%,rgba(247,242,233,.32) 54%,rgba(247,242,233,.21) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);
+    background:linear-gradient(180deg,rgba(247,242,233,.78) 0%,rgba(247,242,233,.72) 18%,rgba(247,242,233,.62) 36%,rgba(247,242,233,.48) 54%,rgba(247,242,233,.3) 72%,rgba(247,242,233,.14) 88%,rgba(247,242,233,0) 100%);
   }
   body.light #phone2 .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   body.light #phone2 .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(46,31,26,.09);}
@@ -6158,7 +6171,20 @@
   /* the top bar rides the card's top (sticky, cancelling the card's 32px of
      top padding the way .dFilters does); its ground and its blur end 16px
      under the field, as on the phone */
-  #dOver .ovTop{position:sticky;top:-32px;z-index:5;display:flex;align-items:center;gap:10px;margin:-32px -40px 0;padding:24px 40px 12px;}
+  /* ---- layout / container tokens ("consider these breakpoint values"):
+     padding top-bottom 24 / 28 / 32 / 36, left-right 16 / 16 / 24 / 24, gap
+     24 / 28 / 32 / 36 across xs / s / m / l, and the container's max-width
+     steps (sm 1080 is the Overview's content). The table names no screen
+     widths, so the max-width steps stand in: xs below 800, s to 1080, m to
+     1280, l from there. The desk's Overview reads them; the Insights desk
+     keeps its own tuned numbers. */
+  :root{--ctPadY:24px;--ctPadX:16px;--ctGap:24px;}
+  @media (min-width:800px){:root{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;}}
+  @media (min-width:1080px){:root{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;}}
+  @media (min-width:1280px){:root{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;}}
+  #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:calc(1080px + 2 * var(--ctPadX));}
+  #dOver .dvTop, #dOver .dvPlanGrid{gap:var(--ctGap);}
+  #dOver .ovTop{position:sticky;top:calc(-1 * var(--ctPadY));z-index:5;display:flex;align-items:center;gap:10px;margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ctPadX)) 0;padding:24px var(--ctPadX) 12px;}   /* the card's own padding cancelled, whatever the breakpoint sets it to */
   #dOver .ovTop::before{
     content:"";position:absolute;left:0;right:0;top:0;bottom:-4px;z-index:-1;pointer-events:none;
     /* "make the bg progress smoother: top -> full blur, end of the bar -> no
@@ -6167,12 +6193,12 @@
        to nothing at the foot on the same curve (.94, .82, .64, .42, .2, 0) */
     /* "a gradient black, progressive, 50% opacity": black at .5 at the top,
        easing to nothing at the foot on the blur's own curve */
-    background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,.47) 18%,rgba(0,0,0,.41) 36%,rgba(0,0,0,.32) 54%,rgba(0,0,0,.21) 72%,rgba(0,0,0,.1) 88%,rgba(0,0,0,0) 100%);
+    background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.72) 18%,rgba(0,0,0,.62) 36%,rgba(0,0,0,.48) 54%,rgba(0,0,0,.3) 72%,rgba(0,0,0,.14) 88%,rgba(0,0,0,0) 100%);   /* "black gradient more intense": .5 -> .78 at the top, the same curve */
     -webkit-backdrop-filter:blur(24px) saturate(120%);backdrop-filter:blur(24px) saturate(120%);
-    -webkit-mask-image:linear-gradient(#000 0%,rgba(0,0,0,.94) 18%,rgba(0,0,0,.82) 36%,rgba(0,0,0,.64) 54%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.2) 88%,transparent 100%);
-    mask-image:linear-gradient(#000 0%,rgba(0,0,0,.94) 18%,rgba(0,0,0,.82) 36%,rgba(0,0,0,.64) 54%,rgba(0,0,0,.42) 72%,rgba(0,0,0,.2) 88%,transparent 100%);
+    -webkit-mask-image:linear-gradient(#000 0%,rgba(0,0,0,.92) 22%,rgba(0,0,0,.74) 42%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.26) 76%,rgba(0,0,0,.1) 90%,transparent 100%);
+    mask-image:linear-gradient(#000 0%,rgba(0,0,0,.92) 22%,rgba(0,0,0,.74) 42%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.26) 76%,rgba(0,0,0,.1) 90%,transparent 100%);
   }
-  body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.5) 0%,rgba(247,242,233,.47) 18%,rgba(247,242,233,.41) 36%,rgba(247,242,233,.32) 54%,rgba(247,242,233,.21) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);}
+  body.light #dOver .ovTop::before{background:linear-gradient(180deg,rgba(247,242,233,.78) 0%,rgba(247,242,233,.72) 18%,rgba(247,242,233,.62) 36%,rgba(247,242,233,.48) 54%,rgba(247,242,233,.3) 72%,rgba(247,242,233,.14) 88%,rgba(247,242,233,0) 100%);}
   #dOver .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;}
   #dOver .ovTop .ovChatBox{width:100%;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.07);-webkit-backdrop-filter:blur(64px) saturate(120%);backdrop-filter:blur(64px) saturate(120%);}
   #dOver .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
@@ -6191,14 +6217,14 @@
   #dOver .ovhero{margin:0;border-radius:20px;min-height:0;}
   #dOver .ovBook h3{font-size:19px;max-width:62%;}   /* the desk's 23, less the same 4 */
   #dOver .ovBookArt{background-position:65% center;}
-  #dOver .ovrow2{padding:0;gap:20px;}
+  #dOver .ovrow2{padding:0;gap:var(--ctGap);}
   #dOver .ovrow2 .msn{border-radius:20px;}
   #dOver .ovCov .covGauge .covDial{width:112px;height:112px;}
   #dOver .ovAgeSl .ovArc{width:130%;margin:0 -15%;}   /* the desk's card is wider, so the arc at 180% stood 123 tall and the card 290; at 130% it is 89, and the reading lands 16 above the 256 foot */
   #dOver .ovAge{cursor:pointer;}
   /* the rail: the Explore cards at the rail's width and corners, resting
      on their left edge, all lit; the button the rail's own */
-  #dOver .ovcar{display:flex;gap:20px;padding:0;margin:0;overflow-x:auto;}
+  #dOver .ovcar{display:flex;gap:var(--ctGap);padding:0;margin:0;overflow-x:auto;}
   #dOver .ovcard{flex:0 0 302px;scroll-snap-align:start;min-height:352px;border-radius:20px;padding:18px;opacity:1;}
   #dOver .ovcard h4{font-size:15.5px;line-height:1.38;}
   #dOver .ovbtn{border-radius:11px;font-size:13.5px;padding:12px 0;background:rgba(255,255,255,.09);color:#ececec;cursor:pointer;transition:background .16s ease;}
@@ -6335,7 +6361,7 @@
   body.light .ovInsCard{background:rgba(46,31,26,.055);} body.light .ovInsTx b{color:#2e1f1a;} body.light .ovInsSub{color:#7d6b58;}
   body.light .ovInsChart g{stroke:rgba(46,31,26,.1);} body.light .ovInsChip{background:#2e1f1a;color:#fff;}
   /* the desk's: in the right column under the two small cards, at the column's width, with the section's 34px above it */
-  #dOver .ovInsCard{margin:20px 0 0;border-radius:20px;}   /* the desk grid's 20 */
+  #dOver .ovInsCard{margin:var(--ctGap) 0 0;border-radius:20px;}   /* the container's gap */
   #dOver .ovInsTx b{font-size:16px;}
   #dOver .ovInsChart{flex:0 0 46%;}
   .ovtasks{margin:0 13px;background:rgba(255,255,255,.04);border-radius:22px;padding:4px 16px;}
