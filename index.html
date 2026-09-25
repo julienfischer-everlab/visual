@@ -17595,9 +17595,15 @@
       // phone (m20). Plan, Services and More have no screen in the prototype,
       // so a tap on them does nothing -- the lit tab keeps saying where the
       // reader actually is rather than moving to a place that does not exist.
-      const DEST = [6, 20, null, null, null];
+      const DEST = [6, 20, null, 'svc', null];   // Services: the service detail page ("go to service")
       tabs.forEach((t, i) => t.addEventListener('click', e => {
         e.preventDefault();
+        if (DEST[i] === 'svc'){
+          if (!window._svc) return;
+          if (host.id === 'bpFrame'){ if (version !== 9){ setMode(9); resize(); } window._svc.openDesk(); }   // the forced XS device: the desk's page, over its Overview
+          else { if (version !== 6){ setMode(6); resize(); } window._svc.openMob(); }                         // a phone: the phone's page, over its Overview
+          return;
+        }
         if (DEST[i] == null || i === here) return;
         setMode(DEST[i]);
       }));
@@ -22306,11 +22312,12 @@
   (function servicePage(){
     const ph = document.getElementById('phone2'), over = document.getElementById('dOver'), desk = document.getElementById('dSvc'), mob = document.getElementById('svcMob');
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
-    const openDesk = () => { document.body.classList.add('svcOn'); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); };
+    const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
+    const openDesk = () => { document.body.classList.add('svcOn'); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });   // the bar's ground, once the page moves under it
     const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 40), { passive: true });
-    const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); };
+    const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')) lightDock(0); document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); };
     if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openDesk(); });   /* the whole plan card, not only its button */
     if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openMob(); });
     document.querySelectorAll('#dSvc .svBack, #svcMob .svBack').forEach(b => b.addEventListener('click', close));
