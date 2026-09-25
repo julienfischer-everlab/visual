@@ -6365,6 +6365,26 @@
   .tkPanel [data-pages][hidden], .tkMenu[hidden]{display:none !important;}
   .tkBuildRow{padding-top:6px;}
   /* ---- Persona: New user (body.psNew) ---- */
+  .ovLocked .ovAgeYrs{display:none;}
+  .ovLocked .ovAgeOrg canvas{filter:grayscale(1);opacity:.45;}
+  .ovLocked .ovArc{opacity:.35;filter:grayscale(1);}
+  .ovLocked{cursor:default !important;}
+  .ovLockIc{position:absolute;left:50%;top:50%;width:32px;height:32px;margin:-16px 0 0 -16px;border-radius:50%;background:rgba(20,20,20,.72);color:#ececec;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(255,255,255,.1);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);z-index:2;}
+  .ovLockIc svg{width:14px;height:14px;}
+  .ovAge:not(.ovLocked) .ovLockIc{display:none;}
+  body.psNew .ovCov > .big, body.psNew .ovCov > .covGauge{display:none;}
+  .ovTodo{display:none;}
+  body.psNew .ovTodo{display:flex;flex-direction:column;margin-top:auto;}
+  .ovTodoN{margin:6px 0 10px;font-size:13px;color:#8b8b86;}
+  .ovTodoRow{display:flex;align-items:center;gap:10px;width:100%;padding:9px 0;border:0;border-top:1px solid rgba(255,255,255,.07);background:none;color:#ececec;font:inherit;font-size:14px;text-align:left;cursor:pointer;}
+  .ovTodoRow i{flex:none;width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(236,236,236,.4);}
+  .ovTodoRow span{min-width:0;line-height:1.25;}   /* a long step wraps rather than widening the card */
+  .ovTodoRow:hover i{box-shadow:inset 0 0 0 1.5px #ececec;}
+  #dOver .ovTodoRow{font-size:15px;padding:11px 0;} #dOver .ovTodoN{font-size:14px;}
+  body.psNew .ovCov{display:flex;flex-direction:column;}
+  body.psNew #phone2 .ovrow2 > *{min-width:0;}   /* the two cards share the row equally */
+  body.psNew #phone2 .ovrow2 .msn{height:auto;min-height:192px;}   /* the steps set the height; the age card matches it */
+  body.light .ovTodoRow{color:#2e1f1a;border-top-color:rgba(46,31,26,.1);} body.light .ovTodoRow i{box-shadow:inset 0 0 0 1.5px rgba(46,31,26,.4);}
   body.psNew #phone2 .ovsecIns, body.psNew #phone2 .ovcar, body.psNew #phone2 .ovcdots, body.psNew #phone2 .ovsecPlan, body.psNew #phone2 .ovplan, body.psNew #phone2 .ovplan + .ovtl,
   body.psNew #dOver .dvSecIns, body.psNew #dOver .dvRail, body.psNew #dOver .dvDots, body.psNew #dOver .dvSecPlan, body.psNew #dOver .dvPlanGrid, body.psNew #dOver .dvPlanList, body.psNew #dOver .dvPlanTl{display:none !important;}
   body.psNew #phone2 .ovrow2{display:grid;}
@@ -21987,8 +22007,9 @@
     const lbl = car.querySelector('.lbl span'), yrs = car.querySelector('.ovAgeYrs span');
     const view = makeOrganView(car.querySelector('.ovAgeOrg'), body.organIdx, { dl: false, dense: true });   // the row's own organ: the iris
     const arc = arcACopyLive(car.querySelector('.ovArc'), body.delta);
-    let cur = 0, lblT = 0;
+    let cur = 0, lblT = 0, locked = false;
     const go = (i, dir) => {
+      if (locked) return;
       i = Math.max(0, Math.min(list.length - 1, i));
       if (i === cur) return;
       dir = dir || (i > cur ? 1 : -1); cur = i;
@@ -22020,9 +22041,25 @@
     // reading lives ("tap: go to the Insights page") -- the dock's own route
     card.addEventListener('click', e => {
       if (swiped){ e.preventDefault(); e.stopPropagation(); return; }
+      if (locked) return;   // nothing to open until the biomarkers are in
       if (onTap) onTap();
     });
-    card._ovAge = { go, list: () => list, at: () => cur };
+    // Locked ("for the new user this should be the biomarker visual, locked;
+    // title Biomarkers; the footer title removed"): the human body the
+    // biomarker slide shows, greyed under a lock, the eyebrow Biomarkers, no
+    // reading, no swipe; unlocked it returns to the reading it was on
+    const BODY_FIG = ORGANS.findIndex(o => o.label === 'Body');
+    const orgHost = car.querySelector('.ovAgeOrg');
+    const lock = on => {
+      if (on === locked) return; locked = on; card.classList.toggle('ovLocked', on);
+      if (on && !orgHost.querySelector('.ovLockIc')) orgHost.insertAdjacentHTML('beforeend', '<span class="ovLockIc" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3.5" y="7" width="9" height="6.5" rx="1.6"/><path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7"/></svg></span>');
+      const d = on ? null : list[cur], idx = on ? BODY_FIG : d.organIdx;
+      view.idx = idx; view.beat = !on && !!(ORGANS[idx] && ORGANS[idx].label === 'Heart');
+      view.morphTo(clouds[idx], 'o' + idx, shapeTarget(clouds[idx], 2600), 700);
+      arc.sweepTo(on ? 0 : d.delta, 700);
+      lbl.textContent = on ? 'Biomarkers' : (d.slide || d.label + ' age');
+    };
+    card._ovAge = { go, list: () => list, at: () => cur, lock };
   }
   buildOvAge(document.querySelector('#phone2 .ovAge'), () => setMode(20));   // the Insights phone
   buildOvAge(document.querySelector('#dOver .ovAge'), () => setMode(18));    // the Insights desk
@@ -23452,6 +23489,16 @@
     { const over = document.getElementById('dOver'), row = over && over.querySelector('.ovrow2'), top = over && over.querySelector('.dvTop');
       if (row && top){ if (pp.cls === 'psNew'){ if (row.parentNode !== over) top.after(row); } else if (row.parentNode === over){ const col = top.lastElementChild; const svc = col.querySelector('.ovSvc'); if (svc) svc.after(row); else col.prepend(row); } }
       document.querySelectorAll('#phone2 .ovCov .lbl, #dOver .ovCov .lbl').forEach(l => { l.textContent = pp.cls === 'psNew' ? 'Health profile' : 'Health coverage'; }); }
+    // the new user's Health profile is three steps to do, not a reading
+    // ("replace by a simple 3 steps to-do style: connect wearable, complete
+    // questionnaire, book consult"): written once into both hosts' card
+    document.querySelectorAll('#phone2 .ovAge, #dOver .ovAge').forEach(card => { if (card._ovAge && card._ovAge.lock) card._ovAge.lock(pp.cls === 'psNew'); });
+    document.querySelectorAll('#phone2 .ovCov, #dOver .ovCov').forEach(card => {
+      if (card.querySelector('.ovTodo')) return;
+      const t = document.createElement('div'); t.className = 'ovTodo';
+      t.innerHTML = '<div class="ovTodoN">0 of 3 done</div>' + ['Connect wearable', 'Complete questionnaire', 'Book consult'].map(x => '<button class="ovTodoRow" type="button"><i aria-hidden="true"></i><span>' + x + '</span></button>').join('');
+      card.appendChild(t);
+    });
     document.querySelectorAll('#phone2 .mtitle h2:not(.ovAsk) span, #dOver .dvH1 span').forEach(el => { el.textContent = pp.name; });
     document.querySelectorAll('#phone2 .ovAvatar img, #dOver .ovAvatar img').forEach(img => { img.src = pp.avatar; });
   };
