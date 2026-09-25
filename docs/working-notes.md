@@ -11240,6 +11240,57 @@ reading at 156, 18 above the foot. "Mobile: push down years old 12px, arc
 foot (from 20) -- organ at 39, arc at 111, reading at 159, 15 above the
 foot.
 
+### 5.421 The landing page's header
+
+"Organ Age landing page: create a header following this structure. Keep
+the organ + arc + years old on the right side, same as the mobile
+carousel. Header full dark, left content white, right side interactive
+with the carousel mobile organ." A page-high black header stands above
+the landing page's pinned stage (`.lpHead`): a nav with Julien's wordmark
+at the left and *Start Today* (a white pill, to #m20) at the right; then
+two columns at 50 / 50 -- at the left the eyebrow *Organage*, the serif
+line "Your body has more than one age." (Tiempos Headline where it is
+installed, Times otherwise, 66px at 1440), the two paragraphs from the
+reference, and *See your Organ Age*; at the right the Overview's age card
+at three times the scale (`buildOvAge`, the organ 220, the arc at 110%,
+the reading 24px), swiped or dragged through the organs as on the phone,
+with a line under it saying so. The CTA, and a tap on the card, scroll
+the page to the story. Below 900 the columns stack. The stage's timeline
+now runs from where the stage pins: the header's height comes off the
+scroll position and the run. Two things found on the way: a stuck sticky
+element's offsetTop is the scroll position itself (so the first cut read
+zero for ever; the header's own height is the fixed number), and the page
+sat under the prototype's bar (it starts at `--barH` now, as the other
+pages do). Measured at 1440 × 900: header 900 tall, the card 560 × 520, a
+drag lands the heart; the CTA lands the stage at 0 with the timeline at
+its start.
+
+"On rest the top bar gradient / blur." At rest the Overview bar's ground
+had been blurring the greeting under it. The ground -- the bands and the
+tint -- is off at rest now and comes in (.28s) once the page has scrolled
+6px under the bar, on the phone and the desk alike (`.ovScrolled` on the
+host). "2 col 50 50": the desk's hero bento is two equal columns (from 1 :
+1.28). "Action plan card: no bg, light grey border; grid gap 20px": the
+plan's cards are outlined (a 1px ring at .12 white; .16 dark on the light
+page) with no fill, on a 20px grid.
+
+"This white state only when > 0 characters are typed inside the field."
+The send disc went white on focus; it goes white with characters now
+(`.ovChatBox.hasText`, toggled with the rotating placeholder's own
+input listener), and back to grey when the field is emptied.
+
+"Need a smooth transition on the retract system. This is a common nav for
+all pages on M and L." The rail's width and padding, the shell's left
+padding and the cards' left edge ease over .32s on one curve; the labels
+and the wordmark fold by max-width and opacity rather than vanishing; the
+ground and the engine re-measure once the rail has landed. It is the one
+`.dash .side`, so the Insights desk wears the same rail and the same
+retract (checked: retracted, Insights opens with the rail at 72 and its
+card at 176). "Make the left and right padding even, too much on the
+right at the moment": retracted, the rail's padding is 0 and each entry
+is a 44px plate centred by its own margins, 14 either side, the toggle
+the same.
+
 ---
 
 ## 6. Open items

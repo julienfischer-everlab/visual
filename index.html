@@ -483,6 +483,8 @@
     position:fixed;left:0;top:57px;bottom:0;width:224px;
     background:var(--shellBg);padding:26px 20px;
     font-size:13.5px;color:#bdbdb9;
+    transition:width .32s cubic-bezier(.2,.8,.2,1),padding .32s cubic-bezier(.2,.8,.2,1);   /* the retract, eased ("need a smooth transition on the retract"); the card follows on the same curve */
+    overflow:hidden;
   }
   .dash .side .sideHead{display:flex;align-items:center;justify-content:space-between;margin:0 0 34px;padding:0 4px 0 8px;}
   .dash .side .logo{display:flex;align-items:center;color:#ececec;}
@@ -490,20 +492,24 @@
   .dash .side .sideTgl{flex:none;width:28px;height:28px;padding:0;border:0;border-radius:7px;background:none;color:#bdbdb9;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .dash .side .sideTgl svg{width:18px;height:18px;}
   .dash .side .sideTgl:hover{background:rgba(255,255,255,.06);color:#ececec;}
-  .dash .side .nv{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:8px;margin-bottom:2px;position:relative;}
+  .dash .side .nv{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:8px;margin-bottom:2px;position:relative;white-space:nowrap;transition:padding .32s cubic-bezier(.2,.8,.2,1),gap .32s cubic-bezier(.2,.8,.2,1),width .32s cubic-bezier(.2,.8,.2,1);}
+  .dash .side .nv span{display:block;max-width:160px;overflow:hidden;transition:max-width .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
+  .dash .side .logo{overflow:hidden;max-width:160px;transition:max-width .32s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
   .dash .side .nv svg{flex:none;width:20px;height:20px;}
   .dash .side .nv.on{background:#1e1e1c;color:#ececec;}
   .dash{padding-left:224px;}
   /* retracted ("to see only the icons"): a 72px rail, the wordmark gone, the
      toggle centred, each entry its glyph alone with the label as a title;
      the lit entry keeps its plate. The card moves in with it. */
-  body.sideMin .dash .side{width:72px;padding:26px 14px;}
-  body.sideMin .dash .side .sideHead{justify-content:center;padding:0;}
-  body.sideMin .dash .side .logo{display:none;}
-  body.sideMin .dash .side .nv{justify-content:center;padding:11px 0;gap:0;}
-  body.sideMin .dash .side .nv span{display:none;}
+  body.sideMin .dash .side{width:72px;padding:26px 0;}
+  body.sideMin .dash .side .sideHead{justify-content:center;padding:0;margin:0 auto 34px;width:44px;}
+  body.sideMin .dash .side .logo{max-width:0;opacity:0;}
+  body.sideMin .dash .side .nv{width:44px;height:44px;margin:0 auto 2px;justify-content:center;padding:0;gap:0;}   /* the plate centred on the rail's own axis: 14 either side ("make the left and right padding even") */
+  body.sideMin .dash .side .nv span{max-width:0;opacity:0;}
   body.sideMin .dash{padding-left:72px;--sideW:72px;}
   body.sideMin #dMain, body.sideMin #dOver{left:72px;}
+  .dash{transition:padding-left .32s cubic-bezier(.2,.8,.2,1);}
+  #dMain, #dOver{transition:left .32s cubic-bezier(.2,.8,.2,1);}
   /* ---- The content pane: a card that owns its own scroll -----------------
      Fixed over the sidebar's ground -- which is what the card floats over,
      now that the two share --shellBg -- the 16px gap above it never moves;
@@ -2951,12 +2957,43 @@
      particles, so there are no sections to fade between -- the only reason the
      document is tall is to give the timeline somewhere to run. Black in every
      theme, like the teaser: this is a graded film, not a surface. */
-  .lp{display:none;position:fixed;inset:0;z-index:8;background:#000;color:#f2e5e0;
+  .lp{display:none;position:fixed;inset:0;top:var(--barH,0px);z-index:8;background:#000;color:#f2e5e0;   /* under the prototype's bar (--barH, 0 in full screen), so the header's nav is not under it */
       overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
       -webkit-overflow-scrolling:touch;}
   body.m23 .lp{display:block;}
   body.m23 #field,body.m23 .carousel,body.m23 .pillui,body.m23 .note{display:none;}
   .lp *{box-sizing:border-box;}
+  /* ---- The header: page-high, black, the copy white at the left, the age
+     card at the right. The stage below pins once it has scrolled past. */
+  .lpHead{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;background:#000;color:#f4f4f4;}
+  .lpNav{display:flex;align-items:center;justify-content:space-between;height:88px;padding:0 40px;}
+  .lpBrand{display:flex;align-items:center;color:#f4f4f4;}
+  .lpLogo{display:block;height:24px;width:auto;}
+  .lpStart{font:inherit;font-size:15px;font-weight:500;color:#111;background:#fff;border-radius:999px;padding:16px 26px;text-decoration:none;transition:transform .16s ease;}
+  .lpStart:hover{transform:translateY(-1px);}
+  .lpHero{flex:1 1 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:24px 40px 64px;max-width:1440px;width:100%;margin:0 auto;}
+  .lpHeroTx{max-width:560px;justify-self:center;}
+  .lpHeroTx .lpEyebrow{color:rgba(244,244,244,.5);font-size:11px;}
+  .lpHeroTx h1{margin:0 0 22px;font-family:'Tiempos Headline','Times New Roman',Georgia,serif;font-weight:400;font-size:clamp(38px,4.6vw,66px);line-height:1.04;letter-spacing:-1.2px;color:#f4f4f4;}
+  .lpHeroTx p{margin:0 0 16px;font-size:16.5px;line-height:1.5;color:rgba(244,244,244,.84);}
+  .lpHeroCta{margin-top:18px;border:0;cursor:pointer;color:#111;background:#fff;}
+  .lpHeroVis{display:flex;flex-direction:column;align-items:center;gap:14px;justify-self:center;width:100%;max-width:560px;}
+  /* the age card, at the header's scale: the same parts as the phone's --
+     eyebrow, organ, arc, reading -- and the same swipe, at three times the
+     size; a hand under a mouse */
+  .lpHead .ovAge{width:100%;height:auto;min-height:520px;padding:36px 0 40px;justify-content:center;border-radius:28px;background:rgba(255,255,255,.05);cursor:grab;}
+  .lpHead .ovAge .lbl{font-size:12px;letter-spacing:.14em;color:rgba(244,244,244,.5);margin-bottom:18px;}
+  .lpHead .ovAgeOrg{width:220px;height:220px;}
+  .lpHead .ovAgeSl .ovArc{width:110%;margin:8px -5% 0;}
+  .lpHead .ovAgeYrs{margin-top:-28px;font-size:24px;letter-spacing:-.4px;}
+  .lpHeroHint{margin:0;font-size:12px;color:rgba(244,244,244,.4);}
+  @media (max-width:900px){
+    .lpNav{height:72px;padding:0 20px;}
+    .lpHero{grid-template-columns:1fr;gap:32px;padding:16px 20px 56px;}
+    .lpHeroTx{max-width:none;justify-self:stretch;}
+    .lpHead .ovAge{min-height:440px;}
+    .lpHead .ovAgeOrg{width:180px;height:180px;}
+  }
   /* the pinned stage. `position:sticky` on a full-height block inside the
      scroller, so the visual holds while the document moves under it */
   .lpStage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;}
@@ -5900,13 +5937,13 @@
   }
   .ovChatGo svg{width:16px;height:16px;}
   .ovChatGo:hover{background:rgba(255,255,255,.18);}
-  .ovChatBox:focus-within .ovChatGo{background:#ececec;color:#111;}
+  .ovChatBox.hasText .ovChatGo{background:#ececec;color:#111;}   /* white once there are characters in the field, not on focus alone ("this white state only when > 0 characters typed") */
   body.light .ovChatBox{background:rgba(46,31,26,.05);box-shadow:inset 0 0 0 1.5px rgba(46,31,26,.1);color:#7d6b58;}
   body.light .ovChatBox:focus-within{box-shadow:inset 0 0 0 1.5px #2e241c;}
   body.light .ovChatSpark, body.light .ovChatBox input{color:#2e1f1a;}
   body.light .ovChatBox input::placeholder{color:#7d6b58;}
   body.light .ovChatGo{background:rgba(46,31,26,.08);color:#2e1f1a;}
-  body.light .ovChatBox:focus-within .ovChatGo{background:#2e1f1a;color:#fff;}
+  body.light .ovChatBox.hasText .ovChatGo{background:#2e1f1a;color:#fff;}
   /* the phone: under the greeting, the field 80% of the content column and
      centred; the greeting itself centred in the report page's heading style */
   /* ---- The Overview phone's top bar ("top nav fixed on scroll, blur bg +
@@ -5957,7 +5994,10 @@
      compounding to about 24 at the top), over a run 32px longer -- so each
      edge Safari cannot feather is a smaller step, and there are more of
      them across more height */
-  .ovGround{position:absolute;left:0;right:0;top:0;z-index:-1;pointer-events:none;}
+  .ovGround{position:absolute;left:0;right:0;top:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .28s ease;}   /* at rest, no ground: the greeting under the bar was blurring ("on rest the top bar gradient / blur"); it comes in as the page scrolls under */
+  #phone2.ovScrolled .ovGround, #dOver.ovScrolled .ovGround{opacity:1;}
+  #phone2 .ovTop::before, #dOver .ovTop::before{opacity:0;transition:opacity .28s ease;}
+  #phone2.ovScrolled .ovTop::before, #dOver.ovScrolled .ovTop::before{opacity:1;}
   #phone2 .ovTop .ovGround{bottom:-38px;}
   #dOver .ovTop .ovGround{bottom:-36px;}
   .ovGround i{position:absolute;left:0;right:0;top:0;display:block;}
@@ -6143,7 +6183,7 @@
   /* action plan */
   .dvPlanGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   .dvProt{
-    background:rgba(255,255,255,.045);border-radius:18px;padding:18px;
+    background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);border-radius:18px;padding:18px;   /* "action plan card: no bg, light grey border" */
     display:flex;flex-direction:column;gap:12px;min-height:250px;
   }
   .dvProtTop{display:flex;align-items:flex-start;gap:12px;}
@@ -6184,7 +6224,8 @@
   body.light .dvNav a{color:#5d5148;}
   body.light .dvNav a:hover{background:rgba(46,31,26,.06);color:#2e1f1a;}
   body.light .dvNav a i{border-color:rgba(46,31,26,.35);}
-  body.light .dvTasks,body.light .dvAct,body.light .dvProt{background:rgba(46,31,26,.05);}
+  body.light .dvTasks,body.light .dvAct{background:rgba(46,31,26,.05);}
+  body.light .dvProt{background:none;box-shadow:inset 0 0 0 1px rgba(46,31,26,.16);}
   body.light .dvTask .tx b,body.light .dvAct h4,body.light .dvProt b{color:#2e1f1a;}
   body.light .dvTask .go,body.light .dvActBtn,body.light .dvProtFoot .go{
     background:rgba(46,31,26,.09);color:#2e1f1a;
@@ -6263,8 +6304,8 @@
   @media (max-width:599px){
     body:not([data-bp]) #dOver .ovrow2, body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:1fr;}
   }
-  #dOver .dvPlanGrid{gap:var(--ctGap);}
-  #dOver .dvTop{gap:12px;}   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
+  #dOver .dvPlanGrid{gap:20px;}   /* "grid gap 20px" for the action plan */
+  #dOver .dvTop{gap:12px;grid-template-columns:1fr 1fr;}   /* "2 col 50 50" */   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
   #dOver .ovTop{position:sticky;top:calc(-1 * var(--ctPadY));z-index:5;display:flex;align-items:center;gap:10px;margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ctPadX)) 0;padding:24px var(--ctPadX) 12px;}   /* the card's own padding cancelled, whatever the breakpoint sets it to */
   #dOver .ovTop::before{
     content:"";position:absolute;left:0;right:0;top:0;bottom:-36px;z-index:-1;pointer-events:none;   /* 4 past the bar, then 36 ("+32") */
@@ -9371,6 +9412,34 @@
      distance and copy; everything visual happens on the canvas. Built on first
      view by __lpBoot. -->
 <div class="lp" id="lp" aria-label="Organ Age">
+  <!-- The header ("Organ Age landing page: create a header following this
+       structure"): a page-high dark block above the pinned stage -- the nav
+       with the wordmark and Start Today, then the copy at the left (the
+       eyebrow, the serif line, two paragraphs, See your Organ Age) and, at
+       the right, the Overview's age card at a larger size: the particle
+       organ, the arc and the reading, swiped or dragged through the organs
+       as on the phone ("keep the organ + arc + years old on the right side,
+       same as the mobile carousel; right side interactive"). The stage's
+       timeline starts where the header ends. -->
+  <header class="lpHead" id="lpHead">
+    <nav class="lpNav">
+      <a class="lpBrand" href="#m23"><svg class="lpLogo" aria-label="Everlab" viewBox="0 0 124 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M49.3525 19.1583L49.3188 19.2517C49.3007 19.3036 49.254 19.3218 49.2178 19.3218C49.1815 19.3218 49.1375 19.3036 49.1193 19.2517L44.4665 6.2639H42.3629L47.7178 20.8275C47.9484 21.4557 48.552 21.8763 49.2204 21.8763C49.8887 21.8763 50.495 21.4531 50.7229 20.8223L56.0467 6.2613H54.0312L49.3551 19.1557L49.3525 19.1583Z" fill="currentColor"/> <path d="M38.1096 6.96507L38.1018 6.95988C37.0837 6.33943 35.8894 6.02531 34.5526 6.02531C33.0967 6.02531 31.791 6.38097 30.6744 7.07929C29.5553 7.75945 28.677 8.72257 28.0579 9.94009C27.4413 11.1369 27.1278 12.5231 27.1278 14.0574C27.1278 15.5916 27.4413 16.9857 28.0579 18.2032C28.677 19.4207 29.5553 20.3942 30.6744 21.0925C31.791 21.7701 33.0941 22.1154 34.5526 22.1154C35.6692 22.1154 36.7003 21.9233 37.6173 21.5442C38.5577 21.1445 39.3479 20.5552 39.9671 19.7971C40.6044 19.0391 41.0318 18.0942 41.2313 16.9934L41.2442 16.9182H39.3246L39.3142 16.9727C39.1381 17.9851 38.607 18.7925 37.7339 19.374C36.8557 19.9607 35.7858 20.2592 34.5526 20.2592C32.9516 20.2592 31.6433 19.7037 30.6692 18.6108C29.7418 17.5308 29.2573 16.0537 29.2288 14.2131H41.2857L41.2935 14.1586C41.3349 13.8756 41.3556 13.5615 41.3556 13.2266C41.3764 11.8508 41.094 10.6047 40.5137 9.52733C39.9541 8.42922 39.1458 7.56734 38.1122 6.97026L38.1096 6.96507ZM31.6977 8.65247C32.5008 8.14366 33.4594 7.88665 34.5526 7.88665C35.4697 7.88665 36.2806 8.08395 36.9619 8.47595C37.6432 8.86535 38.1743 9.4183 38.5474 10.1218C38.9282 10.7864 39.1536 11.5574 39.221 12.4115H29.3661C29.4749 11.8248 29.6459 11.2848 29.8713 10.802C30.3014 9.88039 30.9153 9.1587 31.6951 8.65247H31.6977Z" fill="currentColor"/> <path d="M67.7854 6.95986C66.7672 6.34201 65.5755 6.02789 64.2388 6.02789C62.7828 6.02789 61.4771 6.38354 60.3606 7.08187C59.2414 7.76202 58.3632 8.72514 57.744 9.94267C57.1274 11.1394 56.814 12.5231 56.814 14.0599C56.814 15.5968 57.1274 16.9882 57.744 18.2058C58.3606 19.4233 59.2414 20.3968 60.3606 21.0951C61.4771 21.7727 62.7802 22.1179 64.2388 22.1179C65.3527 22.1179 66.3838 21.9258 67.3035 21.5468C68.2439 21.147 69.034 20.5577 69.6532 19.7997C70.2905 19.0417 70.718 18.0967 70.9174 16.996L70.9304 16.9207H69.0107L69.0004 16.9753C68.8268 17.9877 68.2931 18.7951 67.4201 19.3766C66.5419 19.9633 65.4719 20.2618 64.2388 20.2618C62.6377 20.2618 61.3295 19.7063 60.3554 18.6133C59.4279 17.5334 58.9435 16.0563 58.915 14.2157H70.9744L70.9822 14.1612C71.0237 13.8756 71.0444 13.5615 71.0444 13.2292C71.0651 11.8533 70.7827 10.6072 70.2024 9.5299C69.6429 8.4292 68.832 7.56732 67.7905 6.96505L67.7854 6.95986ZM59.0523 12.4115C59.1611 11.8248 59.3321 11.2822 59.5575 10.8019C59.9875 9.88036 60.6015 9.15868 61.3813 8.65245C62.1844 8.14364 63.1455 7.88663 64.2388 7.88663C65.1559 7.88663 65.9667 8.08393 66.6507 8.47592C67.3294 8.86532 67.8631 9.41827 68.2361 10.1218C68.617 10.7864 68.8423 11.5574 68.9097 12.4115H59.0523Z" fill="currentColor"/> <path d="M102.881 8.61613C102.381 7.89444 101.663 7.28697 100.744 6.80931C99.7436 6.29011 98.7099 6.02531 97.6736 6.02531C96.1193 6.02531 94.7618 6.39135 93.6452 7.11045C92.5468 7.80877 91.697 8.77968 91.1193 9.9998C90.5416 11.1966 90.2489 12.5621 90.2489 14.0548C90.2489 15.5475 90.5312 16.9234 91.0882 18.1383C91.6659 19.3584 92.526 20.3397 93.6452 21.0588C94.7618 21.7597 96.1167 22.1128 97.6736 22.1128C98.8705 22.1128 99.9845 21.8402 100.982 21.3002C101.873 20.8174 102.513 20.2385 102.881 19.5765V21.8739H104.889V6.26415H102.881V8.61613ZM103.093 14.0548C103.093 15.2905 102.865 16.3964 102.415 17.3387L102.409 17.3543C101.979 18.2655 101.35 18.9846 100.534 19.4908C99.7332 19.9996 98.7928 20.2566 97.7358 20.2566C96.6788 20.2566 95.7281 19.9996 94.9094 19.4908C94.1063 18.982 93.4742 18.2473 93.026 17.3102C92.5753 16.3678 92.3473 15.2749 92.3473 14.0574C92.3473 12.8398 92.5753 11.7573 93.026 10.8357C93.4742 9.89856 94.1089 9.16389 94.9094 8.65507C95.7307 8.14625 96.6814 7.88925 97.7358 7.88925C98.7902 7.88925 99.7332 8.14625 100.534 8.65507C101.352 9.16129 101.987 9.89596 102.417 10.8357C102.868 11.7573 103.096 12.8398 103.096 14.0574L103.093 14.0548Z" fill="currentColor"/> <path d="M81.0387 6.02531C79.9766 6.02531 78.9611 6.37058 78.0206 7.05074L77.9637 7.09227C77.1502 7.67897 76.544 8.41364 76.158 9.28071V6.26415H74.1502V21.8765H76.158V15.8175C76.158 14.1223 76.3678 12.6633 76.7797 11.4821C77.1916 10.2854 77.7564 9.37157 78.4585 8.7667C79.1761 8.16442 79.974 7.8581 80.8315 7.8581C81.461 7.8581 82.0051 7.92819 82.4507 8.06318L82.5335 8.08914V6.19146L82.4869 6.17848C82.145 6.07723 81.6579 6.02531 81.0387 6.02531Z" fill="currentColor"/> <path d="M121.987 9.99982C121.407 8.7797 120.547 7.80879 119.433 7.11047C118.334 6.39137 116.987 6.02533 115.433 6.02533C114.394 6.02533 113.36 6.29013 112.363 6.80933C111.441 7.28959 110.72 7.89706 110.223 8.61875V0H108.215V21.8766H110.223V19.5791C110.594 20.2411 111.231 20.82 112.125 21.3028C113.122 21.8428 114.236 22.1154 115.433 22.1154C116.99 22.1154 118.345 21.7597 119.461 21.0614C120.58 20.3397 121.433 19.3584 121.987 18.1409C122.565 16.9234 122.858 15.5501 122.858 14.0574C122.858 12.5647 122.565 11.1992 121.987 10.0024V9.99982ZM120.762 14.0574C120.762 15.2386 120.547 16.3055 120.122 17.2271L120.083 17.3076C119.635 18.2473 118.99 18.9794 118.169 19.4882C117.368 19.9971 116.428 20.2541 115.373 20.2541C114.319 20.2541 113.366 19.9971 112.547 19.4882C111.744 18.9794 111.112 18.2551 110.666 17.3387C110.236 16.3964 110.016 15.2931 110.016 14.0548C110.016 12.8165 110.228 11.7651 110.663 10.8331C111.112 9.89598 111.746 9.16131 112.544 8.6525C113.366 8.14368 114.316 7.88667 115.371 7.88667C116.425 7.88667 117.368 8.14368 118.169 8.6525C118.99 9.16131 119.632 9.89339 120.083 10.8331C120.534 11.7547 120.762 12.8373 120.762 14.0548V14.0574Z" fill="currentColor"/> <path d="M88.4119 20.2281H88.0233C87.6192 20.2281 87.3135 20.1165 87.0881 19.8906C86.8808 19.644 86.7746 19.3273 86.7746 18.9483V0H84.7669V19.1871C84.7669 20.0178 85.0337 20.7058 85.5622 21.2328C86.1088 21.7597 86.8446 22.0271 87.7539 22.0271C87.9508 22.0271 88.1347 22.0167 88.2979 21.9986C88.4637 21.9778 88.6062 21.9467 88.728 21.9051L88.772 21.8895V20.1476L88.6917 20.1684C88.6062 20.1918 88.4974 20.2099 88.4119 20.2255V20.2281Z" fill="currentColor"/> <path d="M6.17797 9.27846L15.9385 9.27846C16.4583 9.27846 16.9465 9.49391 17.328 9.8497C17.5593 10.0651 17.8755 10.1897 18.2214 10.164C18.8243 10.1205 19.3125 9.60262 19.3204 8.99976C19.3303 8.33562 18.7947 7.796 18.1345 7.796C17.8182 7.796 17.5316 7.91855 17.3201 8.12017C16.9564 8.4641 16.4939 8.68548 15.9938 8.68548H6.15426C5.58104 8.68548 5.06119 8.4048 4.69354 7.96599C4.38124 7.59439 3.90092 7.36708 3.36922 7.40463C2.57067 7.45998 1.92432 8.13795 1.90257 8.9365C1.87688 9.82993 2.59439 10.5633 3.48386 10.5633C3.96615 10.5633 4.39705 10.3478 4.68761 10.0058C5.06514 9.56111 5.59685 9.27846 6.17797 9.27846Z" fill="currentColor"/> <path d="M17.7394 19.3869C18.6269 19.3869 19.3445 18.6536 19.3207 17.7602C19.299 16.9617 18.6507 16.2837 17.8541 16.2283C17.3224 16.1908 16.8421 16.4181 16.5298 16.7897C16.1621 17.2285 15.6403 17.5092 15.0691 17.5092H5.28484C4.76499 17.5092 4.27677 17.2937 3.89726 16.9379C3.666 16.7225 3.34974 16.598 3.00384 16.6237C2.40097 16.6671 1.91275 17.185 1.90484 17.7899C1.89496 18.452 2.43062 18.9936 3.09081 18.9936C3.40707 18.9936 3.69367 18.8711 3.90517 18.6694C4.26887 18.3255 4.73139 18.1041 5.23147 18.1041H15.0453C15.6284 18.1041 16.1582 18.3888 16.5357 18.8315C16.8263 19.1715 17.2572 19.3889 17.7394 19.3889V19.3869Z" fill="currentColor"/> <path d="M14.6025 23.998C15.6027 23.998 16.4111 23.1718 16.3815 22.1637C16.3518 21.2169 15.5493 20.4401 14.6006 20.4401C14.0313 20.4401 13.5273 20.7089 13.2031 21.124C12.8196 21.6142 12.2445 21.9166 11.6218 21.9166H7.72395C7.26735 21.9166 6.81669 21.7684 6.47276 21.4679C6.25731 21.2802 5.95884 21.1873 5.63863 21.2485C5.25912 21.3217 4.94682 21.6241 4.86775 22.0036C4.73334 22.644 5.21761 23.2073 5.83234 23.2073C6.07348 23.2073 6.29486 23.1204 6.46485 22.9761C6.82064 22.6756 7.27131 22.5116 7.73581 22.5116H11.5961C12.2089 22.5116 12.8078 22.7784 13.1715 23.2726C13.4956 23.7134 14.0155 24 14.6045 24L14.6025 23.998Z" fill="currentColor"/> <path d="M9.62577 4.86667H13.496C13.9545 4.86667 14.4072 5.01887 14.7531 5.31932C14.9685 5.50709 15.267 5.60197 15.5872 5.5407C15.9687 5.46756 16.279 5.16514 16.3601 4.78563C16.4945 4.14521 16.0102 3.58188 15.3955 3.58188C15.1543 3.58188 14.9349 3.66885 14.765 3.81314C14.4111 4.11161 13.9605 4.27369 13.4979 4.27369L9.60996 4.27369C8.98535 4.27369 8.41016 3.96929 8.02472 3.47712C7.69858 3.06005 7.19257 2.79123 6.62528 2.79123C5.67651 2.78926 4.87203 3.56606 4.84238 4.51484C4.81076 5.52291 5.61919 6.34913 6.62133 6.34913C7.20838 6.34913 7.72823 6.0645 8.05239 5.62569C8.41609 5.13154 9.01303 4.86667 9.62577 4.86667Z" fill="currentColor"/> <path d="M19.8405 14.7772C20.6963 14.7772 21.3704 14.0024 21.1964 13.1149C21.0897 12.5634 20.6371 12.1246 20.0836 12.0297C19.5736 11.9428 19.1052 12.1365 18.8028 12.4784C18.445 12.8856 17.9113 13.0951 17.3677 13.0951L3.85565 13.0951C3.31208 13.0951 2.7784 12.8856 2.42063 12.4784C2.11821 12.1345 1.64976 11.9428 1.13979 12.0297C0.586342 12.1246 0.133699 12.5634 0.0269615 13.1149C-0.145003 14.0004 0.529021 14.7772 1.38291 14.7772C1.79603 14.7772 2.16763 14.5954 2.42063 14.3068C2.78038 13.8976 3.31801 13.6901 3.86356 13.6901L17.3598 13.6901C17.9054 13.6901 18.443 13.8976 18.8028 14.3068C19.0558 14.5954 19.4274 14.7772 19.8405 14.7772Z" fill="currentColor"/> </svg></a>
+      <a class="lpStart" href="#m20">Start Today</a>
+    </nav>
+    <div class="lpHero">
+      <div class="lpHeroTx">
+        <p class="lpEyebrow">Organage</p>
+        <h1>Your body has more than one age.</h1>
+        <p>We all know our chronological age, but now you can get a sense of the biological age for your major organs and systems, based on your health data.</p>
+        <p>Your heart may be tracking younger than you, your liver may be tracking older, and your metabolic health may tell a different story again. It&rsquo;s all part of understanding your biology as a whole.</p>
+        <button class="lpCta lpHeroCta" type="button" id="lpHeroCta">See your Organ Age</button>
+      </div>
+      <div class="lpHeroVis">
+        <div class="msn ovAge lpAgeCard" id="lpAgeCard"><div class="ovAgeCar"></div></div>
+        <p class="lpHeroHint">Swipe or drag to move through the organs</p>
+      </div>
+    </div>
+  </header>
   <div class="lpStage" id="lpStage" aria-hidden="true">
     <canvas id="lpField"></canvas>
     <!-- the product, drawn in DOM over the cloud: it is the one thing on the
@@ -17322,7 +17391,7 @@
       inp.setAttribute('aria-label', inp.getAttribute('aria-label') || LINES[0]);
       inp.placeholder = '';
       let i = 0, timer = 0;
-      const sync = () => host.classList.toggle('hasText', !!inp.value);
+      const sync = () => { host.classList.toggle('hasText', !!inp.value); const box = inp.closest('.ovChatBox'); if (box) box.classList.toggle('hasText', !!inp.value); };   // the box too: its send disc turns white with text
       inp.addEventListener('input', sync); sync();
       const next = () => {
         line.classList.add('out');
@@ -17375,7 +17444,7 @@
   // use for and a page that moves through a volume cannot do without.
   window.__lpBoot = (function(){
     let built = false;
-    let cvs, ctx, stage, track, scroller;
+    let cvs, ctx, stage, track, scroller, headEl;
     let W = 0, H = 0, DP = 1, N = 0;
     // per particle and fixed for the life of the page: which ink, the authored
     // opacity, the size, three phases, and which organ it belongs to in the
@@ -17768,6 +17837,7 @@
       cvs = document.getElementById('lpField');
       ctx = cvs.getContext('2d');
       track = document.getElementById('lpScroll');
+      headEl = document.getElementById('lpHead');
       scroller = document.getElementById('lp');
       card = document.getElementById('lpCard');
       cardDot = card.querySelector('.lpDot');
@@ -17856,8 +17926,11 @@
       // dragged; the ease is the whole difference between following the reader
       // and lurching after them. Reduced motion reads it straight, since the
       // picture should then be exactly where the reader put it.
-      const max = Math.max(1, track.offsetTop + track.offsetHeight - stage.clientHeight);
-      const raw = clamp01(scroller.scrollTop / max);
+      // ...from where the stage pins: the header above it is scrolled through
+      // first, so its height comes off both the position and the run
+      const head = headEl ? headEl.offsetHeight : 0;   // not stage.offsetTop: a stuck sticky reports where it is stuck, which is the scroll position itself
+      const max = Math.max(1, track.offsetTop + track.offsetHeight - stage.clientHeight - head);
+      const raw = clamp01((scroller.scrollTop - head) / max);
       pSm = reduced ? raw : pSm + (raw - pSm) * 0.10;
       vel = reduced ? 0 : vel + (Math.abs(pSm - pPrev) - vel) * 0.2;
       pPrev = pSm;
@@ -21198,7 +21271,10 @@
         tgl.setAttribute('aria-expanded', String(!CARD_STATE.sideMin));
         tgl.setAttribute('aria-label', CARD_STATE.sideMin ? 'Expand the navigation' : 'Retract the navigation');
         dispatchEvent(new Event('resize'));
-      }); }
+      });
+      // ...and once the rail has finished moving, the ground and the engine measure the card where it landed
+      const side = document.querySelector('.dash .side');
+      if (side) side.addEventListener('transitionend', e => { if (e.propertyName === 'width') dispatchEvent(new Event('resize')); }); }
     document.querySelectorAll('.dash .side .nv').forEach(nv => {
       nv.title = nv.textContent.trim();   // the label, for the retracted rail
       const to = goto[nv.textContent.trim()];
@@ -21320,6 +21396,11 @@
   }
   buildOvAge(document.querySelector('#phone2 .ovAge'), () => setMode(20));   // the Insights phone
   buildOvAge(document.querySelector('#dOver .ovAge'), () => setMode(18));    // the Insights desk
+  // the landing page's header card: a tap (not a swipe) scrolls to the story below, as the CTA does
+  { const lp = document.getElementById('lp'), head = document.getElementById('lpHead');
+    const down = () => { if (lp && head) lp.scrollTo({ top: head.offsetHeight, behavior: 'smooth' }); };
+    buildOvAge(document.getElementById('lpAgeCard'), down);
+    const cta = document.getElementById('lpHeroCta'); if (cta) cta.addEventListener('click', down); }
   // The services row under the greeting scrolls natively under a finger and
   // is dragged under a mouse, as the other rows are: snap off while the
   // pointer is down, an eased glide onto the nearest card's start (or the
@@ -22446,6 +22527,7 @@
   OV_HOSTS.forEach(({ ph, sc: scOf }) => {
     const sc = scOf(ph); if (!sc) return;
     sc.addEventListener('scroll', () => {
+      ph.classList.toggle('ovScrolled', sc.scrollTop > 6);   // the bar's ground, once the page moves under it
       if (!CARD_STATE.hdrV3) return;
       const svc = ph.querySelector('.ovSvc'), top = ph.querySelector('.ovTop'); if (!svc || !top) return;
       const past = sc.scrollTop > svc.offsetTop + svc.offsetHeight - top.offsetHeight;   // the row's foot has gone under the bar
