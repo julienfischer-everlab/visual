@@ -3054,14 +3054,30 @@
   .lpAvNames.dragging{scroll-snap-type:none;cursor:grabbing;}
   .lpAvNames span{flex:0 0 auto;scroll-snap-align:center;color:#f4f4f4;opacity:.26;filter:blur(1.2px);transition:opacity .2s ease,filter .2s ease;cursor:pointer;}
   .lpAvNames span.on{opacity:1;filter:none;}
+  /* Under 900 (S and XS, forced or a narrow window) the hero is one column
+     and the content is centred ("centered content on XS S"). The column is
+     minmax(0,1fr) and the pieces min-width:0: the names' track is one
+     nowrap line, and its min-content width was what a 1fr column grew to,
+     which pushed the h1 and the copy off the frame's right edge ("fix the
+     breakpoint"). */
   @container lp (max-width:900px){
     .lpNav{height:72px;padding:0 20px;}
-    .lpHero{grid-template-columns:1fr;gap:32px;padding:16px 20px 56px;}
-    .lpHeroTx{max-width:none;justify-self:stretch;}
+    .lpHead{height:auto;min-height:100%;}   /* one column is taller than the frame: the page scrolls here (the rule below), so the header takes its content's height */
+    .lpHero{grid-template-columns:minmax(0,1fr);gap:32px;padding:16px 20px 56px;align-items:start;}
+    .lpHeroTx, .lpHeroVis, .lpAgeView, .lpAvNames{min-width:0;}
+    .lpHeroTx{max-width:none;justify-self:stretch;text-align:center;}
+    .lpHeroTx .lpEyebrow{text-align:center;}
+    .lpHeroCta{margin-left:auto;margin-right:auto;display:block;}
+    .lpHeroVis{top:0;justify-self:center;}
     .lpAvOrg{width:220px;height:220px;margin:-16px auto;}
     .lpAvNum{font-size:64px;}
     .lpAvNames{font-size:17px;gap:22px;}
   }
+  body[data-bp="xs"] .lp, body[data-bp="s"] .lp{overflow-y:auto;scrollbar-width:none;}
+  body[data-bp="xs"] .lp::-webkit-scrollbar, body[data-bp="s"] .lp::-webkit-scrollbar{display:none;}
+  @media (max-width:900px){.lp{overflow-y:auto;}}
+  body[data-bp="xs"] .lpHeroVis{top:64px;}   /* "on XS organ push down by 64px" */
+  body[data-bp="xs"] .lpHero{padding-bottom:120px;}
   /* the pinned stage. `position:sticky` on a full-height block inside the
      scroller, so the visual holds while the document moves under it */
   .lpStage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;}
