@@ -6348,6 +6348,44 @@
      beside the two small cards and the tasks, the Explore cards three and a
      half to the rail with the arrows stepping it. */
 
+
+  /* ---- The home mosaic ---- */
+  .home{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;overflow-y:auto;background:#0b0b0b;color:#ececec;}
+  body.homeOn .home{display:block;}
+  .homeIn{max-width:1320px;margin:0 auto;padding:56px 40px 80px;}
+  .homeHead{margin-bottom:40px;}
+  .homeBrand{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8b8b86;}
+  .homeHead h1{margin:10px 0 8px;font-size:40px;font-weight:500;letter-spacing:-1px;color:#f4f4f4;}
+  .homeHead p{margin:0;font-size:16px;color:#8b8b86;}
+  .homeGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:dense;gap:16px;}
+  .hmCard{display:flex;flex-direction:column;gap:14px;padding:12px 12px 16px;border:0;border-radius:20px;background:rgba(255,255,255,.035);color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .18s ease,transform .18s ease;}
+  .hmCard:hover{background:rgba(255,255,255,.07);}
+  .hmCard:active{transform:scale(.985);}
+  /* the mosaic: a wide card takes two columns and two rows, its miniature
+     filling the height, so the four small cards beside it lock to its edges */
+  .hmCard.wide{grid-column:1 / span 2;grid-row:span 2;}
+  .hmCard.wide.r{grid-column:3 / span 2;}
+  .hmCard.wide .hmShot{flex:1 1 auto;min-height:340px;aspect-ratio:auto;}   /* a floor: two wides on their own rows (the landing and the teaser) have no small cards to set the height */
+  .hmShot{position:relative;aspect-ratio:16 / 10;border-radius:12px;background:#131313;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);}
+  .hmShot i{position:absolute;display:block;background:rgba(255,255,255,.07);border-radius:4px;}
+  .hmShot i.hi{background:rgba(255,255,255,.14);}
+  .hmShot i.lt{background:#ececec;}
+  .hmShot i.ac{background:#f78359;}
+  .hmShot i.pe{background:rgba(247,131,89,.16);}
+  .hmShot i.ph{background:linear-gradient(135deg,#4a3d33,#221b17);}
+  .hmShot i.org{background:radial-gradient(circle,rgba(247,150,110,.95) 0 .9px,transparent 1.3px) 0 0 / 4px 4px;-webkit-mask-image:radial-gradient(closest-side,#000 55%,transparent 100%);mask-image:radial-gradient(closest-side,#000 55%,transparent 100%);border-radius:50%;}
+  .hmShot i.arc{background:none;border:1.5px dashed rgba(255,255,255,.28);border-bottom:0;border-radius:50% 50% 0 0 / 100% 100% 0 0;}
+  .hmShot i.dev{background:#0d0d0c;border-radius:10px;box-shadow:0 0 0 2px #2a2a2e;}
+  .hmShot i.dim{background:rgba(0,0,0,.55);border-radius:0;}
+  .hmShot i.card{background:#1d1d1c;border-radius:6px;}
+  .hmMeta{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 4px;}
+  .hmMeta small{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8b8b86;}
+  .hmMeta b{display:block;margin-top:4px;font-size:16px;font-weight:500;color:#f4f4f4;}
+  .hmMeta svg{flex:none;width:16px;height:16px;color:#8b8b86;transition:transform .18s ease,color .18s ease;}
+  .hmCard:hover .hmMeta svg{transform:translate(2px,-2px);color:#f4f4f4;}
+  @media (max-width:1100px){ .homeGrid{grid-template-columns:repeat(3,minmax(0,1fr));} .hmCard.wide, .hmCard.wide.r{grid-column:span 2;grid-row:auto;} .hmCard.wide .hmShot{flex:none;aspect-ratio:16 / 8.4;} }
+  @media (max-width:800px){ .homeGrid{grid-template-columns:repeat(2,minmax(0,1fr));} .homeIn{padding:40px 20px 60px;} }
+  @media (max-width:520px){ .homeGrid{grid-template-columns:1fr;} .hmCard.wide{grid-column:auto;} .homeHead h1{font-size:32px;} }
   /* ---- The service detail page (desk #dSvc, phone .svcMob) ---- */
   #dSvc{display:none;padding:32px 40px 60px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));color:#ececec;}
   body.m9.svcOn #dSvc{display:block;} body.m9.svcOn #dOver{display:none;}
@@ -6470,7 +6508,8 @@
   body[data-bp] .dash .side{left:calc(50vw - var(--bpW) / 2);}
   body[data-bp="s"] .dash .side, body[data-bp="xs"] .dash .side{display:none;}
   body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;--dMainLeft:0px !important;}
-  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc{left:0;border-radius:24px 24px 0 0;}
+  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc{left:0;top:0;border-radius:0;max-width:none;scrollbar-width:none;}   /* in a device the page is the screen: no 16 band above, no 16 gutter at the right, no card corners, no scrollbar ("remove unnecessary padding on tablet S") */
+  body[data-bp="s"] #dOver::-webkit-scrollbar, body[data-bp="xs"] #dOver::-webkit-scrollbar, body[data-bp="s"] #dSvc::-webkit-scrollbar, body[data-bp="xs"] #dSvc::-webkit-scrollbar{display:none;}
   body:not([data-bp="xs"]):not([data-bp="s"]) #dOver{--ctPadY:32px;--ctPadX:40px;}   /* the Insights desk's body padding, 32 above and 40 at the sides ("body padding: keep this structure for Overview"); the bar and the caps read the same tokens */
   #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:min(calc(1280px + 2 * var(--ctPadX)),   /* 1080, then "overview container max width 1280px" */ calc(var(--bpW, 100vw) - var(--sideW, 224px) - 16px));}   /* --sideW: 224, 72 retracted, 0 at S and XS */
   /* and the page reflows at S and XS -- forced, or a window that narrow --
@@ -6478,7 +6517,7 @@
      two columns squeezed: the top band stacks, the services go three
      across (two at XS), the plan two across (one at XS), the two small
      cards one above the other at XS */
-  body[data-bp="s"] #dOver .dvTop, body[data-bp="xs"] #dOver .dvTop, body[data-bp="xs"] #dOver .ovrow2, body[data-bp="xs"] #dOver .dvPlanGrid{grid-template-columns:1fr;}
+  body[data-bp="xs"] #dOver .dvTop, body[data-bp="xs"] #dOver .ovrow2, body[data-bp="xs"] #dOver .dvPlanGrid{grid-template-columns:1fr;}   /* S keeps the hero's two columns, as M and L ("tablet overview 2 cols same as M L") */
   /* the services at S and XS: the phone's carousel, not a wrapped grid ("S:
      keep the carousel, as XS") -- two cards and 48 of the third, snapping,
      dragged under a mouse by ovSvcRow() */
@@ -6560,13 +6599,13 @@
   body[data-bp="xs"] #dOver .dvPlanList{display:block;margin:0;}
   body[data-bp="xs"] #dOver .dvPlanTl{display:flex;margin:16px 0 20px;}
   @media (max-width:991px){
-    body:not([data-bp]) #dOver .dvTop{grid-template-columns:1fr;}
     body:not([data-bp]) #dOver .ovSvc{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-left:0;cursor:grab;padding:0 0 4px;}
     body:not([data-bp]) #dOver .ovSvcChip{flex:0 0 calc((100% - 64px) / 2);}   /* two cards, two 8px gaps and 48 of the third */
     body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:repeat(2,1fr);}
     body:not([data-bp]) #dOver .ovBook{min-height:260px;}
   }
   @media (max-width:599px){
+    body:not([data-bp]) #dOver .dvTop{grid-template-columns:1fr;}   /* one column only under the tablet's 600 */
     body:not([data-bp]) #dOver .ovrow2, body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:1fr;}
   }
   #dOver .dvPlanGrid{gap:20px;}   /* "grid gap 20px" for the action plan */
@@ -8500,6 +8539,16 @@
 
 <canvas id="field"></canvas>
 
+<!-- The home page ("first page of this artifact should be a mosaic of cards,
+     showing each page in a minimal version"): under the bar, one card per
+     page -- a drawn miniature of the page, its group and its name -- the
+     card opening the page. Built by homeMosaic() from HOME_PAGES. -->
+<div class="home" id="home" aria-label="All pages">
+  <div class="homeIn">
+    <header class="homeHead"><div class="homeBrand">everlab</div><h1>Prototype</h1><p>Every page of the design in one place. Pick a card to open it.</p></header>
+    <div class="homeGrid" id="homeGrid"></div>
+  </div>
+</div>
 <div class="topbar">
   <div class="tweaks">
     <span class="lbl">Version</span>
@@ -8765,6 +8814,15 @@
             <option value="v2">V2</option>
             <option value="v3">V3</option>
             <option value="v4" selected>V4</option>
+          </select>
+        </div>
+        <!-- who the Overview is for ("for overview I need a tweak Personas,
+             create just one for now"): each persona a name and a profile
+             photo, written into both hosts' greeting and avatar -->
+        <div class="tkRow">
+          <label for="stPersona">Persona</label>
+          <select id="stPersona" aria-label="The Overview's persona">
+            <option value="julien" selected>Julien &middot; new member</option>
           </select>
         </div>
         <!-- the service cards under the greeting: tiles (glyph, label) or
@@ -13997,6 +14055,7 @@
   // nothing anywhere to say so. The Organ Age landing page shipped that way and
   // read as never built, because the only way to reach it was to know to type
   // #m23. Adding a mode means adding its group here too.
+  { const o = document.createElement('option'); o.value = 'home'; o.textContent = 'Home'; versionSel.appendChild(o); }   // the mosaic of every page
   const MODE_GROUPS = ['Concept', 'Insights', 'Overview page', 'Library',
                        'Results received', 'Video', 'Landing page'];
   MODE_GROUPS.forEach(g => {
@@ -14041,6 +14100,8 @@
     // archive select is already showing, so stepping out and back returns to
     // the one you were reading rather than to the top of the list.
     const v = versionSel.value;
+    if (v === 'home'){ if (window._home) window._home.show(); return; }
+    if (window._home) window._home.hide();
     CARD_STATE.fullscr = v === VIEWPORT_VAL;
     CARD_STATE.showBar = v === VIEWPORT_VAL;
     setMode(v === ARCHIVE_VAL ? +arcSel.value : v === VIEWPORT_VAL ? VIEWPORT_MODE : +v);
@@ -14191,6 +14252,7 @@
   function setMode(m){
     version = m;
     document.dispatchEvent(new Event('everlab:mode'));
+    { const ink = document.getElementById('inkMenu'); if (ink){ const concept = MODES[m] && MODES[m].group === 'Concept'; ink.hidden = !concept; if (!concept) ink.open = false; } }   // the Organs menu (density, inks) only on the Concept pages ("tweak organ ONLY concern Concept pages")
     DUR = reduced ? 300 : MODES[m].dur;
     document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') +
       (m === 13 ? ' m2 b2 b3' : '') +
@@ -22569,7 +22631,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stTasks' || sel.id === 'stHero' || sel.id === 'stLpCard')
+          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stTasks' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stPersona')
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -23313,6 +23375,15 @@
     ['heroDexa', 'heroReport'].forEach(c => document.body.classList.remove(c));
     if (CARD_STATE.hero !== 'consult') document.body.classList.add('hero' + CARD_STATE.hero[0].toUpperCase() + CARD_STATE.hero.slice(1));
   };
+  // the personas: one for now; a second is a row here and an option above
+  const PERSONAS = { julien: { name: 'Julien', avatar: 'assets/overview/avatar.png' } };
+  const paintPersona = key => {
+    const pp = PERSONAS[key] || PERSONAS.julien;
+    document.querySelectorAll('#phone2 .mtitle h2:not(.ovAsk) span, #dOver .dvH1 span').forEach(el => { el.textContent = pp.name; });
+    document.querySelectorAll('#phone2 .ovAvatar img, #dOver .ovAvatar img').forEach(img => { img.src = pp.avatar; });
+  };
+  const stPersonaSel = document.getElementById('stPersona');
+  if (stPersonaSel) stPersonaSel.addEventListener('change', () => paintPersona(stPersonaSel.value));
   const stLpCardSel = document.getElementById('stLpCard');
   if (stLpCardSel) stLpCardSel.addEventListener('change', () => { CARD_STATE.lpCard = stLpCardSel.value === 'card'; document.body.classList.toggle('tkLpCard', CARD_STATE.lpCard); });
   const stHeroSel = document.getElementById('stHero');
@@ -24410,6 +24481,87 @@
     if (h !== null && (h !== version || viewportFromHash() !== CARD_STATE.fullscr)) applyHashMode(h);
   });
   { const h = modeFromHash(); if (h !== null) applyHashMode(h); }
+  // ---- The home mosaic: one card per page, a drawn miniature of each
+  // (blocks for text and cards, the organ as a dot cloud, the arc as a dashed
+  // curve, the accent where the page has one), its group and its name. A
+  // card opens its page; the service pages open over their Overview.
+  (function homeMosaic(){
+    const grid = document.getElementById('homeGrid'); if (!grid) return;
+    const B = (x, y, w, h, c, r) => '<i class="' + (c || '') + '" style="left:' + x + '%;top:' + y + '%;width:' + w + '%;height:' + h + '%' + (r ? ';border-radius:' + r : '') + '"></i>';
+    const side = () => B(0, 0, 17, 100, '', '0') + B(2.5, 7, 9, 3, 'hi') + [18, 25, 32, 39, 46].map(y => B(2.5, y, 11, 3)).join('');
+    const phone = inner => B(34, 5, 32, 90, 'dev') + inner;
+    const SHOT = {
+      ovDesk: () => side() + B(21, 7, 22, 5, 'hi') + B(62, 6, 20, 7, '', '99px') + B(84, 6, 5, 7, '', '50%') + B(91, 6, 5, 7, '', '50%') +
+        B(21, 19, 36, 40, 'ph', '8px') + B(24, 24, 10, 4, 'hi', '99px') + B(24, 33, 18, 4, 'lt') + B(24, 50, 8, 5, 'lt', '99px') +
+        B(59, 19, 18, 19, 'card', '8px') + B(79, 19, 18, 19, 'card', '8px') + B(59, 40, 18, 19, 'card', '8px') + B(79, 40, 18, 19, 'card', '8px') +
+        B(21, 66, 14, 4, 'hi') + [21, 40, 59, 78].map(x => B(x, 74, 17, 26, 'card', '8px')).join(''),
+      ovMob: () => phone(B(37, 10, 20, 5, '', '99px') + B(59, 10, 3, 5, '', '50%') + B(63, 10, 3, 5, '', '50%') + B(37, 19, 18, 4, 'hi') +
+        B(37, 27, 9, 12, 'card', '5px') + B(47, 27, 9, 12, 'card', '5px') + B(57, 27, 7, 12, 'card', '5px') + B(37, 42, 26, 22, 'ph', '6px') + B(39, 57, 5, 4, 'lt', '99px') +
+        B(37, 69, 12, 3, 'hi') + B(37, 75, 22, 16, 'card', '6px')),
+      insDesk: () => side() + B(21, 8, 24, 6, 'hi') + B(21, 19, 9, 3, 'lt') + B(33, 19, 9, 3) + B(21, 23, 76, .6) +
+        B(21, 30, 36, 30, 'card', '8px') + B(24, 35, 10, 3) + B(24, 41, 8, 6, 'hi') + B(24, 53, 30, 2.5, 'ac') +
+        B(21, 64, 17, 36, 'card', '8px') + B(40, 64, 17, 36, 'card', '8px') + B(60, 30, 37, 70, 'card', '8px') + B(67, 36, 22, 36, 'org') + B(64, 70, 29, 16, 'arc'),
+      insMob: () => phone(B(37, 12, 14, 3, 'hi') + B(41, 20, 18, 30, 'org') + B(37, 48, 26, 12, 'arc') + B(45, 58, 10, 7, 'lt') + [37, 44, 51, 58].map(x => B(x, 70, 5, 3, x === 44 ? 'lt' : '', '99px')).join('') + B(37, 78, 26, 12, 'card', '6px')),
+      svcDesk: () => side() + B(21, 7, 2.5, 4, '', '50%') + B(21, 15, 8, 13, 'ph', '6px') + B(31, 16, 30, 4, 'hi') + B(31, 22, 16, 3) +
+        B(21, 34, 50, 18, 'pe', '8px') + B(24, 38, 8, 3, 'ac') + B(24, 43, 28, 4, 'lt') + B(60, 40, 9, 7, 'lt', '5px') +
+        B(21, 57, 20, 4, 'hi') + B(21, 64, 50, 6, 'pe', '6px') + [74, 80, 86].map(y => B(21, y, 50, .6) + B(21, y + 2, 8, 2.5) + B(36, y + 2, 20, 2.5, 'hi')).join('') +
+        B(75, 34, 22, 26, 'card', '8px') + B(77, 39, .8, 5, 'ac') + B(77, 47, .8, 5) + B(77, 55, .8, 4) + B(79, 39, 14, 2.5, 'hi') + B(79, 47, 12, 2.5) + B(79, 55, 10, 2.5) + B(75, 66, 16, 4, 'hi'),
+      svcMob: () => phone(B(34, 5, 32, 38, 'ph', '10px 10px 0 0') + B(37, 9, 4, 5, 'hi', '50%') + B(59, 9, 4, 5, 'hi', '50%') + B(37, 22, 24, 4, 'lt') + B(37, 30, 26, 9, 'hi', '5px') + B(39, 35, 6, 1.5, 'ac') +
+        B(37, 45, 26, 20, 'pe', '6px') + B(39, 48, 6, 2.5, 'ac') + B(39, 53, 20, 3, 'lt') + B(39, 59, 22, 4, 'lt', '4px') + B(37, 70, 16, 3, 'hi') + B(37, 76, 26, 5, 'pe', '4px') + B(37, 84, 26, .6) + B(37, 88, 26, .6)),
+      landing: () => B(6, 7, 10, 4, 'hi') + B(84, 5, 10, 7, 'lt', '99px') + B(6, 32, 8, 2.5) + B(6, 38, 34, 7, 'lt') + B(6, 47, 26, 7, 'lt') + B(6, 60, 34, 2.5) + B(6, 65, 30, 2.5) + B(6, 76, 14, 7, 'hi', '99px') +
+        B(52, 12, 42, 80, 'card', '12px') + B(63, 18, 20, 36, 'org') + B(56, 54, 34, 16, 'arc') + B(68, 66, 10, 8, 'lt') + [60, 70, 80].map((x, i) => B(x, 82, 8, 3, i === 1 ? 'lt' : '')).join(''),
+      resDesk: () => side() + B(21, 8, 30, 5, 'hi') + B(21, 20, 36, 40, 'ph', '8px') + B(59, 20, 38, 40, 'card', '8px') + B(0, 0, 100, 100, 'dim') +
+        B(36, 10, 28, 80, 'card', '10px') + B(47, 16, 6, 9, 'hi', '6px') + B(40, 30, 20, 4, 'lt') + B(42, 37, 16, 2.5) + B(39, 46, 22, 11, '', '6px') + B(39, 59, 22, 11, '', '6px') + B(39, 74, 22, 6, 'lt', '5px') + B(39, 82, 22, 5, '', '5px'),
+      resMob: () => phone(B(34, 5, 32, 90, 'dim', '10px') + B(36, 14, 28, 76, 'card', '8px') + B(47, 19, 6, 7, 'hi', '5px') + B(39, 30, 22, 4, 'lt') + B(40, 37, 20, 2.5) + B(38, 46, 24, 12, '', '5px') + B(38, 61, 24, 8, '', '5px') + B(38, 74, 24, 6, 'lt', '5px') + B(38, 82, 24, 5, '', '5px')),
+      library: () => B(0, 0, 18, 100, '', '0') + B(3, 8, 9, 3, 'hi') + B(3, 16, 12, 4, 'hi', '5px') + B(3, 23, 10, 3) + B(22, 8, 22, 5, 'lt') + B(22, 16, 40, 2.5) +
+        [0, 1, 2, 3, 4, 5].map(i => { const x = 22 + (i % 3) * 25, y = 26 + Math.floor(i / 3) * 37; return B(x, y, 23, 34, 'card', '8px') + B(x + 5, y + 4, 13, 22, 'org'); }).join(''),
+      teaser: () => B(5, 8, 55, 84, 'card', '10px') + B(9, 13, 18, 3) + B(9, 20, 47, 44, '', '6px') + B(31, 41, 2, 3, 'lt', '50%') + B(9, 70, 44, 2.5) + B(9, 76, 40, 2.5) + B(9, 82, 30, 2.5) +
+        B(64, 8, 31, 84, 'card', '10px') + B(68, 14, 20, 3, 'lt') + [24, 38, 52, 66].map((y, i) => B(68, y, 3, 2.5, i ? '' : 'ac') + B(73, y, 18, 3, i ? '' : 'lt') + B(73, y + 5, 14, 2)).join(''),
+      cardNav: () => B(30, 8, 40, 56, 'org') + [10, 27, 44, 61, 78].map((x, i) => B(x, 72, 14, 20, i === 1 ? 'hi' : 'card', '6px')).join(''),
+      pillNav: () => B(52, 8, 30, 40, 'org') + B(56, 46, 22, 12, 'lt') + B(50, 58, 34, 16, 'arc') + [8, 20, 32, 44, 56, 68, 80].map((x, i) => B(x, 84, 10, 5, i === 1 ? 'lt' : '', '99px')).join(''),
+      cardFlip: () => [12, 34, 56, 78].map((x, i) => B(x - 6, 30, 20, 38, 'org') ).join('') + B(38, 22, 24, 50, 'org'),
+      gridC: () => [0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => { const x = 6 + (i % 3) * 31, y = 6 + Math.floor(i / 3) * 31; return B(x, y, 26, 26, 'org') + B(x, y + 20, 8, 4, 'hi'); }).join(''),
+      immersive: () => B(4, 8, 36, 40, 'ac', '8px') + B(7, 13, 14, 5, 'lt') + B(4, 52, 17, 20, 'card', '6px') + B(23, 52, 17, 20, 'card', '6px') + B(4, 75, 17, 18, 'card', '6px') + B(23, 75, 17, 18, 'card', '6px') + B(52, 14, 32, 58, 'org') + [48, 58, 68, 78, 88].map((x, i) => B(x, 84, 8, 10, i ? 'card' : 'hi', '5px')).join('')
+    };
+    // four wide cards (two columns, two rows) and twelve small ones: the
+    // Overview at the left with its mobile, service and results pages beside
+    // it; Insights at the right with its mobile and the library; the landing
+    // page and the teaser side by side; the concepts along the foot
+    const P = [
+      { g: 'Overview', n: 'Desktop', m: 9, s: 'ovDesk', wide: true },
+      { g: 'Overview', n: 'Mobile', m: 6, s: 'ovMob' },
+      { g: 'Service detail', n: 'Desktop', m: 9, s: 'svcDesk', svc: 'desk' },
+      { g: 'Service detail', n: 'Mobile', m: 6, s: 'svcMob', svc: 'mob' },
+      { g: 'Results received', n: 'Desktop', m: 24, s: 'resDesk' },
+      { g: 'Insights', n: 'Desktop', m: 18, s: 'insDesk', wide: true, r: true },
+      { g: 'Insights', n: 'Mobile', m: 20, s: 'insMob' },
+      { g: 'Results received', n: 'Mobile', m: 25, s: 'resMob' },
+      { g: 'Library', n: 'Organ library', m: 7, s: 'library' },
+      { g: 'Concept', n: 'Card Nav', m: 0, s: 'cardNav' },
+      { g: 'Landing page', n: 'Organ Age', m: 23, s: 'landing', wide: true },
+      { g: 'Video', n: 'Teaser video', m: 22, s: 'teaser', wide: true, r: true },
+      { g: 'Concept', n: 'Pill Nav', m: 1, s: 'pillNav' },
+      { g: 'Concept', n: 'Card flip', m: 3, s: 'cardFlip' },
+      { g: 'Concept', n: 'Grid', m: 4, s: 'gridC' },
+      { g: 'Concept', n: 'Immersive experience', m: 8, s: 'immersive' }
+    ];
+    const ARR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"/></svg>';
+    grid.innerHTML = P.map((p, i) => '<button class="hmCard' + (p.wide ? ' wide' : '') + (p.r ? ' r' : '') + '" type="button" data-i="' + i + '"><div class="hmShot" aria-hidden="true">' + SHOT[p.s]() + '</div><div class="hmMeta"><div><small>' + p.g + '</small><b>' + p.n + '</b></div>' + ARR + '</div></button>').join('');
+    const show = () => { document.body.classList.add('homeOn'); if (versionSel) versionSel.value = 'home'; try { history.replaceState(null, '', '#home'); } catch (e){} const h = document.getElementById('home'); if (h) h.scrollTop = 0; };
+    const hide = () => document.body.classList.remove('homeOn');
+    grid.addEventListener('click', e => {
+      const c = e.target.closest('.hmCard'); if (!c) return;
+      const p = P[+c.dataset.i]; hide();
+      setMode(p.m); resize();
+      if (p.svc && window._svc) (p.svc === 'desk' ? window._svc.openDesk : window._svc.openMob)();
+    });
+    window._home = { show, hide };
+    // the first page: no hash, or #home, opens here; any page hash opens that page
+    const want = () => !location.hash || location.hash === '#home';
+    if (want()) show();
+    addEventListener('hashchange', () => { if (want()) show(); else hide(); });
+  })();
+
   // Full screen, for carrying the phone design on a phone. The path is what
   // the deploy rewrites (/phone), the query is what works without a rewrite,
   // and either way it is V6 -- the page this is the design of.
