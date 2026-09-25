@@ -6662,9 +6662,15 @@
      on their left edge, all lit; the button the rail's own */
   #dOver .ovcar{display:flex;gap:16px;padding:0;margin:0;overflow-x:auto;}   /* 24, then "item gap 16px" */
   /* the rail's edges: a fade where cards run on past them (.fadeL / .fadeR, set by the scroll) */
-  #dOver .ovcar.fadeR{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 96px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 96px),transparent);}
-  #dOver .ovcar.fadeL{-webkit-mask-image:linear-gradient(to right,transparent,#000 96px);mask-image:linear-gradient(to right,transparent,#000 96px);}
-  #dOver .ovcar.fadeL.fadeR{-webkit-mask-image:linear-gradient(to right,transparent,#000 96px,#000 calc(100% - 96px),transparent);mask-image:linear-gradient(to right,transparent,#000 96px,#000 calc(100% - 96px),transparent);}   /* the container's gap, then "insights desktop item gap 24px" */
+  /* ...eased in and out rather than switched ("should appear smoothly"): one
+     mask always on, its two fade widths registered as lengths so they
+     transition -- 0 where nothing runs past the edge, 96 where cards do */
+  @property --fadeL{syntax:'<length>';inherits:false;initial-value:0px;}
+  @property --fadeR{syntax:'<length>';inherits:false;initial-value:0px;}
+  #dOver .ovcar{--fadeL:0px;--fadeR:0px;transition:--fadeL .38s ease,--fadeR .38s ease;
+    -webkit-mask-image:linear-gradient(to right,transparent 0,#000 var(--fadeL),#000 calc(100% - var(--fadeR)),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 var(--fadeL),#000 calc(100% - var(--fadeR)),transparent 100%);}
+  #dOver .ovcar.fadeL{--fadeL:96px;}
+  #dOver .ovcar.fadeR{--fadeR:96px;}   /* the container's gap, then "insights desktop item gap 24px" */
   #dOver .ovcard{flex:0 0 302px;scroll-snap-align:start;min-height:0;border-radius:20px;padding:18px;opacity:1;}   /* 352, then "hug content" */
   #dOver .ovcard h4{font-size:13.5px;line-height:1.38;}   /* 15.5, then -2 */
   #dOver .ovbtn{border-radius:11px;font-size:13.5px;padding:12px 0;background:rgba(255,255,255,.09);color:#ececec;cursor:pointer;transition:background .16s ease;}
@@ -6696,10 +6702,9 @@
   /* the count as a pill ("insights badge, height 20"): a ring and the number,
      warm cream on a dark amber ground, on both hosts */
   .ovsec .see b, .dvSec .see b{
-    display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px 0 6px;border-radius:10px;
-    background:#43220b;color:#fbe9d8;font-size:12px;font-weight:500;line-height:1;letter-spacing:0;
+    display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 10px;border-radius:14px;box-sizing:border-box;   /* 20 with a ring, then "badge Insights, NO icon, height 28px" */
+    background:#43220b;color:#fbe9d8;font-size:13px;font-weight:500;line-height:1;letter-spacing:0;
   }
-  .ovsec .see b::before, .dvSec .see b::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;box-shadow:inset 0 0 0 1.5px currentColor;}
   .ovhero{
     margin:0 13px;background:var(--bg);border-radius:22px;padding:20px;
     display:flex;flex-direction:column;gap:10px;
@@ -6917,7 +6922,7 @@
   }
   .ovcard h4{margin:0;padding-right:48px;font-size:14px;font-weight:400;color:#f2e5e0;line-height:1.35;}   /* "title padding right +48px"; 16 and medium, then "keep regular, reduce font size by 2px" */
   .ovcard h4 span{color:rgba(242,229,224,.5);}
-  .ovcard .ovbtn{margin-top:auto;}   /* with the visual's slot fixed, the card's slack sits above the button, not under it */
+  .ovcard .ovbtn{margin-top:24px;}   /* 24 above the card's footer ("add 24px padding top on insight card footer"); was auto, the slack, before the card hugged its content */
   .ovOrgan{flex:1;min-height:150px;position:relative;}
   .ovOrgan canvas{position:absolute;inset:0;display:block;}
   /* the Explore cards: the source in bold in the line, the two stacked
