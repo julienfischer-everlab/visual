@@ -511,9 +511,9 @@
   body.sideMin .dash .side .nv{width:44px;height:44px;margin:0 auto 2px;justify-content:center;padding:0;gap:0;}   /* the plate centred on the rail's own axis: 14 either side ("make the left and right padding even") */
   body.sideMin .dash .side .nv span{max-width:0;opacity:0;}
   body.sideMin .dash{padding-left:72px;--sideW:72px;}
-  body.sideMin #dMain, body.sideMin #dOver{left:72px;}
+  body.sideMin #dMain, body.sideMin #dOver, body.sideMin #dSvc{left:72px;}
   .dash{transition:padding-left .32s cubic-bezier(.2,.8,.2,1);}
-  #dMain, #dOver{transition:left .32s cubic-bezier(.2,.8,.2,1);}
+  #dMain, #dOver, #dSvc{transition:left .32s cubic-bezier(.2,.8,.2,1);}
   /* ---- The content pane: a card that owns its own scroll -----------------
      Fixed over the sidebar's ground -- which is what the card floats over,
      now that the two share --shellBg -- the 16px gap above it never moves;
@@ -522,7 +522,7 @@
      to hold that gap open before the sidebar and the ground it sits on read
      as the same surface; once they did, the bar was drawing over its own
      background and the gap can just be #dMain's own offset. */
-  #dMain, #dOver{
+  #dMain, #dOver, #dSvc{
     position:absolute;left:224px;right:0;bottom:0;top:16px;
     overflow-y:auto;overflow-x:hidden;z-index:1;
     /* top-left and top-right already eased away from the bar above; the
@@ -6347,6 +6347,96 @@
      across the card's top, the five services in one row, the booking card
      beside the two small cards and the tasks, the Explore cards three and a
      half to the rail with the arrows stepping it. */
+
+  /* ---- The service detail page (desk #dSvc, phone .svcMob) ---- */
+  #dSvc{display:none;padding:32px 40px 60px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));color:#ececec;}
+  body.m9.svcOn #dSvc{display:block;} body.m9.svcOn #dOver{display:none;}
+  .svBack{width:28px;height:28px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .svBack svg{width:14px;height:14px;}
+  .svHead{display:flex;gap:20px;align-items:flex-start;margin:40px 0 44px;max-width:680px;}
+  .svHead img{flex:none;width:104px;height:104px;border-radius:12px;object-fit:cover;}
+  .svHead h1{margin:0;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:#f4f4f4;}
+  .svStart{margin-top:8px;font-size:16px;color:#8b8b86;}
+  .svMore{flex:none;margin-left:auto;width:36px;height:36px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .svMore svg{width:18px;height:18px;}
+  .svGrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:44px;align-items:start;}
+  .svPend{display:flex;align-items:center;gap:24px;padding:24px;border-radius:16px;background:rgba(247,131,89,.12);}
+  .svPendTx{flex:1 1 auto;min-width:0;}
+  .svPendTag{display:flex;align-items:center;gap:8px;font-size:15px;color:#f78359;}
+  .svPendTag i{width:7px;height:7px;border-radius:50%;background:#f78359;}
+  .svPend h3{margin:8px 0 6px;font-size:22px;font-weight:500;line-height:1.25;letter-spacing:-.2px;color:#f4f4f4;}
+  .svPend p{margin:0;font-size:14px;line-height:1.4;color:#b5b3ae;}
+  .svBtn{flex:none;height:56px;padding:0 32px;border:0;border-radius:12px;background:#fff;color:#111;font:inherit;font-size:16px;font-weight:500;cursor:pointer;}
+  .svH2{margin:40px 0 16px;font-size:22px;font-weight:500;letter-spacing:-.2px;color:#f4f4f4;}
+  .svWarn{display:flex;gap:10px;align-items:flex-start;padding:16px;border-radius:12px;background:rgba(247,131,89,.12);font-size:14px;line-height:1.35;color:#e8dcd7;}
+  .svWarn svg{flex:none;width:18px;height:18px;color:#f78359;}
+  .svRows{margin-top:16px;}
+  .svRow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:14px 0;border-top:1px solid rgba(255,255,255,.08);font-size:14px;}
+  .svRow:last-child{border-bottom:1px solid rgba(255,255,255,.08);}
+  .svRow .k{display:flex;align-items:flex-start;gap:6px;color:#8b8b86;}
+  .svRow .k svg{flex:none;width:16px;height:16px;margin-top:1px;}
+  .svRow .v{color:#f4f4f4;line-height:1.35;}
+  .svRef{margin-top:40px;display:flex;align-items:center;gap:18px;padding:24px;border-radius:20px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+  .svRefIc{flex:none;width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,.06);color:#b5b3ae;display:flex;align-items:center;justify-content:center;}
+  .svRefIc svg{width:28px;height:20px;}
+  .svRef div{flex:1 1 auto;min-width:0;}
+  .svRef b{display:block;font-size:16px;font-weight:500;color:#f4f4f4;}
+  .svRef span{display:block;margin-top:2px;font-size:15px;color:#8b8b86;line-height:1.35;}
+  .svRefBtn{flex:none;height:36px;padding:0 16px;border:0;border-radius:12px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:14px;font-weight:500;cursor:pointer;}
+  .svRefChev{width:36px;padding:0;display:flex;align-items:center;justify-content:center;} .svRefChev svg{width:14px;height:14px;}
+  .svBody{font-size:16px;color:#ececec;}
+  .svProg{background:rgba(255,255,255,.04);border-radius:20px;padding:24px;}
+  .svProgHead{display:flex;align-items:center;justify-content:space-between;font-size:18px;font-weight:500;color:#f4f4f4;margin-bottom:20px;}
+  .svProgHead em{font-style:normal;font-size:14px;font-weight:400;color:#8b8b86;}
+  .svStep{position:relative;padding-left:22px;margin-bottom:20px;}
+  .svStep:last-child{margin-bottom:0;}
+  .svStep::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;border-radius:2px;background:rgba(255,255,255,.12);}
+  .svStep.on::before{background:#f78359;}
+  .svStep b{display:block;font-size:16px;font-weight:500;color:#f4f4f4;}
+  .svStep span{display:block;margin-top:2px;font-size:14px;color:#8b8b86;}
+  .svAbout{margin-top:44px;}
+  .svAbout h3{margin:0 0 20px;font-size:20px;font-weight:500;letter-spacing:-.2px;color:#f4f4f4;}
+  .svAbout p{margin:0 0 14px;font-size:16px;color:#ececec;}
+  .svLink{display:inline-flex;align-items:center;gap:8px;padding:0;border:0;background:none;font:inherit;font-size:16px;font-weight:500;color:#f4f4f4;text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(244,244,244,.4);cursor:pointer;}
+  .svLink svg{width:16px;height:16px;}
+  body[data-bp="s"] #dSvc .svGrid, body[data-bp="xs"] #dSvc .svGrid{grid-template-columns:1fr;}
+  body[data-bp="xs"] #dSvc{padding:24px 13px 92px;}
+  body.light #dSvc{color:#2e1f1a;} body.light #dSvc .svHead h1, body.light .svPend h3, body.light .svH2, body.light .svRow .v, body.light .svRef b, body.light .svStep b, body.light .svAbout h3, body.light .svAbout p, body.light .svBody, body.light .svLink, body.light .svProgHead{color:#111;}
+  body.light .svPend, body.light .svWarn{background:#fdf0e6;} body.light .svWarn{color:#3a2a20;} body.light .svPend p{color:#6b5c4a;}
+  body.light .svBtn{background:#111;color:#fff;} body.light .svBack, body.light .svMore, body.light .svRefBtn, body.light .svRefIc{background:rgba(46,31,26,.08);color:#2e1f1a;}
+  body.light .svProg{background:rgba(46,31,26,.04);} body.light .svRef{box-shadow:inset 0 0 0 1px rgba(46,31,26,.1);} body.light .svRow, body.light .svRow:last-child{border-color:rgba(46,31,26,.1);}
+  body.light .svStep::before{background:rgba(46,31,26,.12);} body.light .svStep.on::before{background:#f78359;}
+  /* the phone's screen */
+  .svcMob{position:absolute;inset:0;z-index:5;display:none;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:#0d0d0c;color:#ececec;}
+  .svcMob::-webkit-scrollbar{display:none;}
+  #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
+  #phone2.svcOn.svcScrolled .mstatus{background:rgba(13,13,12,.92);}   /* the strip takes a ground once the sheet has scrolled under it */
+  .svmHero{position:relative;padding:calc(var(--stH,54px) + 8px) 16px 16px;background:linear-gradient(180deg,#2b1a12,#161311 70%,#0d0d0c);overflow:hidden;}
+  .svmHero::before{content:"";position:absolute;inset:0;background:url(assets/overview/plan-dexa.webp) center 20% / cover no-repeat;opacity:.38;-webkit-mask-image:linear-gradient(#000 30%,transparent 95%);mask-image:linear-gradient(#000 30%,transparent 95%);}
+  .svmHero > *{position:relative;}
+  .svmNav{display:flex;align-items:center;justify-content:space-between;margin-bottom:68px;}
+  .svmBtn{width:44px;height:44px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.16);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+  .svmBtn svg{width:16px;height:16px;} .svmBtn.svBack{background:rgba(255,255,255,.16);}
+  .svmHero h1{margin:0;font-size:22px;font-weight:500;line-height:1.2;letter-spacing:-.3px;color:#fff;}
+  .svmStart{margin-top:8px;font-size:15px;color:rgba(255,255,255,.6);}
+  .svmProg{margin-top:20px;padding:20px 22px;border-radius:16px;background:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
+  .svmProg .svProgHead{margin-bottom:0;}
+  .svmBar{display:flex;gap:4px;margin:14px 0 10px;}
+  .svmBar i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.18);}
+  .svmBar i.on{background:#f78359;}
+  .svmStepName{font-size:14px;color:rgba(255,255,255,.55);}
+  .svmBody{position:relative;margin-top:-22px;padding:16px 16px calc(var(--navH,56px) + 40px);border-radius:22px 22px 0 0;background:#0d0d0c;}
+  .svcMob .svPend{flex-direction:column;align-items:stretch;gap:20px;padding:24px;}
+  .svcMob .svPend h3{font-size:20px;} .svcMob .svPend p{font-size:15px;}
+  .svcMob .svBtn{height:52px;padding:0;}
+  .svcMob .svH2{margin:32px 0 14px;font-size:18px;}
+  .svcMob .svRow{grid-template-columns:120px minmax(0,1fr);}
+  .svcMob .svRef{margin-top:24px;padding:18px;gap:14px;}
+  .svcMob .svRefIc{width:52px;height:52px;}
+  .svcMob .svRef b{font-size:15px;} .svcMob .svRef span{font-size:14px;}
+  .svRule{border:0;height:1px;background:rgba(255,255,255,.08);margin:32px 0 28px;}
+  .svcMob .svAbout{margin-top:0;} .svcMob .svAbout h3{font-size:18px;margin-bottom:14px;}
+  body.light .svcMob, body.light .svmBody{background:#fff;color:#111;}
   /* the top bar rides the card's top (sticky, cancelling the card's 32px of
      top padding the way .dFilters does); its ground and its blur end 16px
      under the field, as on the phone */
@@ -6380,7 +6470,7 @@
   body[data-bp] .dash .side{left:calc(50vw - var(--bpW) / 2);}
   body[data-bp="s"] .dash .side, body[data-bp="xs"] .dash .side{display:none;}
   body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;--dMainLeft:0px !important;}
-  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver{left:0;border-radius:24px 24px 0 0;}
+  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc{left:0;border-radius:24px 24px 0 0;}
   body:not([data-bp="xs"]):not([data-bp="s"]) #dOver{--ctPadY:32px;--ctPadX:40px;}   /* the Insights desk's body padding, 32 above and 40 at the sides ("body padding: keep this structure for Overview"); the bar and the caps read the same tokens */
   #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:min(calc(1280px + 2 * var(--ctPadX)),   /* 1080, then "overview container max width 1280px" */ calc(var(--bpW, 100vw) - var(--sideW, 224px) - 16px));}   /* --sideW: 224, 72 retracted, 0 at S and XS */
   /* and the page reflows at S and XS -- forced, or a window that narrow --
@@ -6786,7 +6876,7 @@
      sheets drawn in the middle, See insights at the foot */
   .ovcard.ovExp h4 b{font-weight:400;color:#fff;}   /* the source in white, not in weight ("keep regular") */
   .ovcard.ovExp h4{font-weight:400;color:rgba(242,229,224,.92);}
-  .ovIllWrap{flex:none;height:160px;margin-bottom:-32px;display:flex;align-items:center;justify-content:center;}   /* the render's own clear foot overlaps the room above the button: 32 off the card ("reduce by 32px, so the card height decreases") */   /* a fixed 160 slot ("visual slot fix height 160px"), the render fitted inside it; it was the card's slack, growing with the card */
+  .ovIllWrap{flex:none;height:128px;margin-bottom:-32px;   /* 160, then "reduce the visual by 32px height, keep ratio": the render fits the 128, its width following */display:flex;align-items:center;justify-content:center;}   /* the render's own clear foot overlaps the room above the button: 32 off the card ("reduce by 32px, so the card height decreases") */   /* a fixed 160 slot ("visual slot fix height 160px"), the render fitted inside it; it was the card's slack, growing with the card */
   .ovIll{width:190px;height:178px;}
   /* the light tile the renders were shot on: the image's own grey continues
      under it, so the tile is the picture's ground rather than a frame */
@@ -9677,6 +9767,25 @@
       </div>
       <div class="ovtl">See full timeline <span aria-hidden="true">&nearr;</span></div>
     </div>
+    <!-- the service detail as a screen over the Overview (#phone2.svcOn), the
+         design's phone: the hero with back and more over the particles, the
+         title and start date, the progress card; then the sheet with the same
+         sections stacked, the instructions and About the service at the foot -->
+    <div class="svcMob" id="svcMob">
+      <div class="svmHero">
+        <div class="svmNav"><button class="svmBtn svBack" type="button" aria-label="Back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button><button class="svmBtn" type="button" aria-label="More"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg></button></div>
+        <h1>Dexa Body Composition and Bone Mineral Density</h1>
+        <div class="svmStart">Started on 20 February 2026</div>
+        <div class="svmProg"><div class="svProgHead">Your progress <em>1/4</em></div><div class="svmBar"><i class="on"></i><i></i><i></i><i></i></div><div class="svmStepName">Step name</div></div>
+      </div>
+      <div class="svmBody">
+        <div class="svPend"><div class="svPendTx"><div class="svPendTag"><i></i>Pending action</div><h3>Unfortunately, your originally requested time isn’t available.</h3><p>Our provider has shared a few alternative appointment times.<br>Choose the one that works best for you.</p></div><button class="svBtn" type="button">View Available Times</button></div><h2 class="svH2">Confirm your appointment</h2><div class="svWarn"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5 16 15H2Z"/><path d="M9 7.5v3.5M9 13.2v.2"/></svg><span>We’re unable to fulfill your original requested time. Confirm your booking to view alternative times.</span></div><div class="svRows"><div class="svRow"><span class="k"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg>Location</span><span class="v">Clinic ABC<br>10 Monckton Road,<br>Bundoora, Vic 3083</span></div><div class="svRow"><span class="k"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="9" r="5.5"/><path d="M8 6v3l2 1.5M6.5 1.5h3"/></svg>Duration</span><span class="v">30min</span></div><div class="svRow"><span class="k"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="6.5" r="2.2"/><path d="M4 12.5c1-1.6 2.4-2.3 4-2.3s3 .7 4 2.3"/></svg>Clinician</span><span class="v">Radiology Victoria Burwood East Imaging Consultant</span></div></div><div class="svRef"><span class="svRefIc"><svg viewBox="0 0 28 20" fill="currentColor" aria-hidden="true"><rect x="2" y="3" width="2" height="14"/><rect x="6" y="3" width="1" height="14"/><rect x="9" y="3" width="2" height="14"/><rect x="13" y="3" width="1" height="14"/><rect x="16" y="3" width="3" height="14"/><rect x="21" y="3" width="1" height="14"/><rect x="24" y="3" width="2" height="14"/></svg></span><div><b>Your referrals</b><span>Show your referrals when you get to your appointment.</span></div><button class="svRefBtn svRefChev" type="button" aria-label="Show"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></button></div>
+        <h2 class="svH2">Instructions</h2>
+        <div class="svBody">Content here</div>
+        <hr class="svRule">
+        <div class="svAbout"><h3>About the service</h3><p>Content here</p><button class="svLink" type="button">Read more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></button></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -9941,6 +10050,38 @@
         </div>
       </div>
       <div class="ovtl dvPlanTl">See full timeline <span aria-hidden="true">&nearr;</span></div>
+  </main>
+  <!-- ---- The service detail page ("create a service detail page following
+       the same layout as the Insights and Overview page"): the shell's main,
+       shown over the Overview's when a plan card's Book or View, or the
+       booking card's Book, is pressed (body.svcOn), the back chevron
+       returning. The design: back; the service's photo, title and start
+       date with a more disc; then two columns -- the pending action, the
+       appointment to confirm with its warning strip and the location /
+       duration / clinician rows, the referrals card and the instructions at
+       the left; the progress steps and About the service at the right. -->
+  <main class="dvMain" id="dSvc">
+    <button class="svBack" type="button" aria-label="Back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button>
+    <div class="svHead">
+      <img src="assets/overview/plan-dexa.webp" alt="" width="312" height="312">
+      <div class="svHeadTx"><h1>Dexa Body Composition and Bone Mineral Density</h1><div class="svStart">Started on 20 February 2026</div></div>
+      <button class="svMore" type="button" aria-label="More"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg></button>
+    </div>
+    <div class="svGrid">
+      <div class="svMain">
+        <div class="svPend"><div class="svPendTx"><div class="svPendTag"><i></i>Pending action</div><h3>Unfortunately, your originally requested time isn’t available.</h3><p>Our provider has shared a few alternative appointment times.<br>Choose the one that works best for you.</p></div><button class="svBtn" type="button">View options</button></div><h2 class="svH2">Confirm your appointment</h2><div class="svWarn"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2.5 16 15H2Z"/><path d="M9 7.5v3.5M9 13.2v.2"/></svg><span>We’re unable to fulfill your original requested time. Confirm your booking to view alternative times.</span></div><div class="svRows"><div class="svRow"><span class="k"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 14.5s5-4.6 5-8a5 5 0 1 0-10 0c0 3.4 5 8 5 8Z"/><circle cx="8" cy="6.5" r="1.8"/></svg>Location</span><span class="v">Clinic ABC<br>10 Monckton Road,<br>Bundoora, Vic 3083</span></div><div class="svRow"><span class="k"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="9" r="5.5"/><path d="M8 6v3l2 1.5M6.5 1.5h3"/></svg>Duration</span><span class="v">30min</span></div><div class="svRow"><span class="k"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="6.5" r="2.2"/><path d="M4 12.5c1-1.6 2.4-2.3 4-2.3s3 .7 4 2.3"/></svg>Clinician</span><span class="v">Radiology Victoria Burwood East Imaging Consultant</span></div></div><div class="svRef"><span class="svRefIc"><svg viewBox="0 0 28 20" fill="currentColor" aria-hidden="true"><rect x="2" y="3" width="2" height="14"/><rect x="6" y="3" width="1" height="14"/><rect x="9" y="3" width="2" height="14"/><rect x="13" y="3" width="1" height="14"/><rect x="16" y="3" width="3" height="14"/><rect x="21" y="3" width="1" height="14"/><rect x="24" y="3" width="2" height="14"/></svg></span><div><b>Your referrals</b><span>Show your referrals when you get to your appointment.</span></div><button class="svRefBtn" type="button">Show</button></div>
+        <h2 class="svH2">Instructions</h2>
+        <div class="svBody">Content here</div>
+      </div>
+      <aside class="svAside">
+        <div class="svProg"><div class="svProgHead">Your progress <em>1/3</em></div>
+          <div class="svStep on"><b>Book your appointment</b><span>Schedule with your referred provider</span></div>
+          <div class="svStep"><b>Go to your appointment</b><span>Complete the colonoscopy</span></div>
+          <div class="svStep"><b>Get your results</b><span>Track your result here</span></div>
+        </div>
+        <div class="svAbout"><h3>About the service</h3><p>Content here</p><button class="svLink" type="button">Read more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></button></div>
+      </aside>
+    </div>
   </main>
 </div>
 <div class="olib" id="oLib">
@@ -21612,7 +21753,8 @@
     // not copied, so its script (the organ tile, the rail) finds the nodes
     // it always did.
     { const over = document.getElementById('dOver'), dash = document.querySelector('.dash');
-      if (over && dash && over.parentNode !== dash) dash.appendChild(over); }
+      if (over && dash && over.parentNode !== dash) dash.appendChild(over);
+      const svc = document.getElementById('dSvc'); if (svc && dash && svc.parentNode !== dash) dash.appendChild(svc); }   // the service detail main rides along: it is written beside #dOver in the old shell
     // the sidebar moves between the desk pages: the live Insights (18), and
     // the Overview (9); "Biomarkers" is the retired .dvNav's name for it
     const goto = { 'Overview': 9, 'Insights': 18, 'Biomarkers': 2 };
@@ -21992,6 +22134,23 @@
     ph._inbox = { open, close };
   }
   { const ph = document.getElementById('phone2'); if (ph) inboxSheet(ph, ph, [].slice.call(ph.querySelectorAll('.ovInbox, .ovHubInbox'))); }
+  // The service detail page: a plan card's Book or View, or the booking
+  // card's Book, opens it -- the desk's main in place of the Overview's, the
+  // phone's screen over its scroller -- and the back chevron (or Escape, or
+  // a change of mode) closes it
+  (function servicePage(){
+    const ph = document.getElementById('phone2'), over = document.getElementById('dOver'), desk = document.getElementById('dSvc'), mob = document.getElementById('svcMob');
+    const openDesk = () => { document.body.classList.add('svcOn'); if (desk) desk.scrollTop = 0; };
+    const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); };
+    if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 40), { passive: true });
+    const close = () => { document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); };
+    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt .go, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openDesk(); });
+    if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact .go, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openMob(); });
+    document.querySelectorAll('#dSvc .svBack, #svcMob .svBack').forEach(b => b.addEventListener('click', close));
+    addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    document.addEventListener('everlab:mode', close);
+    window._svc = { openDesk, openMob, close };
+  })();
   // ...and the desk's, from its bar's disc: the same card as a centred modal
   // at M and L, the bottom sheet inside the device at XS and S ("use a modal
   // on desktop M L, keep bottom sheet for XS S")
