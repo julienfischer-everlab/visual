@@ -11010,6 +11010,10 @@ set, and the browser's serif came through everywhere. The flag is `tkIns`
 now; the component keeps its name. Checked: the body's font family is the
 page's before, during and after the switch.
 
+"Replace the Pathology icon / visual." A new render for the fifth card,
+cut the same way as the set -- to where the alpha passes 40, squared,
+360px -- into `svc-path.webp`; the row's saturation applies as before.
+
 ---
 
 ## 6. Open items
