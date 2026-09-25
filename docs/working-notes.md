@@ -11098,6 +11098,41 @@ columns squeezed: the top band stacks, the services go three across (two
 at XS), the plan two across (one at XS), the two small cards one above
 the other at XS.
 
+### 5.417 The bar's blur as bands; the Layout controls on the bar
+
+"Still no progressive gradient on the desktop top sticky." Sampled in
+Chromium the ground fades without a step; Julien's captures are Safari's,
+and WebKit does not mask a backdrop filter -- the blur runs to its box's
+edge whatever the mask says, so the one-layer (then two-layer) ground
+ended in a line at the bar's foot. The ground is six bands now
+(`.ovGround`, built into each bar by `ovGround()`): the tallest the
+softest (2px), each shorter one sharper -- 4, 7, 11, 16, 24px at 90, 78,
+64, 50, 36% of the height -- painted in that order so each blurs the ones
+beneath. Every browser bounds a backdrop filter to its own box, so the
+blur steps down from the top to a 2px whisper at the foot with no mask
+needed; the masks stay on the bands for Chrome, feathering each step.
+The tint keeps to ::before.
+
+"Visible viewport size directly on the tweak bar, plus the breakpoint
+select -- this top level, next to Organs." The Layout group leaves the
+Tweaks panel for the bar itself: *Viewport 1440 px · L* and the
+Breakpoint select stand between Organs and Refresh, on every page.
+
+"Bento gap 20px grid." The desk's hero bento -- the top band, the two
+small cards, the insight card's margin -- keeps the desk's 20 rather than
+the container's gap, which the plan grid and the rail still take.
+"Insights card 256 − 32 height": 224 (from 192). "Insights card nav
+carousel: push up 8px": the dots 17 from the foot (from 9), the slide's
+bottom padding 32 (from 24) so the CTA clears them.
+
+"Reduce the height of these cards to 192px." The two small cards, 192
+(from 256), on both surfaces, with the age card's parts scaled to fit:
+the organ 80 (from 106), the eyebrow's gap 10 (from 14), the arc 150% on
+the phone (from 180) and the card's own width on the desk (from 130%),
+the reading pulled 20 up into the arc's empty foot (26 on the desk); the
+desk's dial 96 (from 112). Measured: organ at 39, arc at 119, reading at
+155 (phone) / 159 (desk), 19 / 15 above the foot.
+
 ---
 
 ## 6. Open items
