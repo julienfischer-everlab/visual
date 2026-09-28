@@ -6584,7 +6584,7 @@
   body.m9.tlOn .dash .side .nvOver{background:none;color:inherit;}
   body.m9.tlOn .dash .side .nvTl{background:#1e1e1c;color:#ececec;}   /* the page lights Timeline */
   body.light.m9.tlOn .dash .side .nvTl{background:#ece4d3;color:#2e241c;} body.light.m9.tlOn .dash .side .nvOver{background:none;}
-  body.tlOn #tkMenu{display:none;}   /* no tweaks concern this page */
+  #tkMenu [data-tl]{display:none !important;} body.tlOn #tkMenu [data-tl]{display:flex !important;} body.tlOn #tkMenu [data-pages]{display:none !important;}   /* on the Timeline, only its own tweaks */
   .tlCol{max-width:760px;margin:0 auto;}
   .tlH1{margin:0 0 14px;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:var(--tlInk);}
   /* the tabs and the search ride a bar like every top bar: sticky at the
@@ -9222,6 +9222,20 @@
           <select id="stNewRep" aria-label="New results notice under the record select">
             <option value="on">On</option>
             <option value="off" selected>Off</option>
+          </select>
+        </div>
+        </div>
+        <!-- the Timeline's own ("add tweak, open steps only current month"):
+             which objects come with their steps open -- the primary ones of the
+             current month only (the default), every primary one, or none -->
+        <div class="tkGroup" data-tl>
+        <div class="tkSub">Timeline</div>
+        <div class="tkRow">
+          <span class="lbl">Open steps</span>
+          <select id="stTlOpen" aria-label="Which objects open their steps">
+            <option value="month" selected>Current month</option>
+            <option value="all">All primary</option>
+            <option value="none">None</option>
           </select>
         </div>
         </div>
@@ -23012,14 +23026,15 @@
     // a primary action (Book, Collect sample, Claim) comes with its steps
     // already open ("when it's a primary action, show the card inside
     // upfront"): what is asked of you now is the first thing read
-    const row = r => { let pg = prog(r); const cta = isCta(r), up = !!(cta && pg); if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
+    let OPEN = 'month', SEC = null;   // which objects open their steps (the Timeline tweak), and the section being drawn
+    const row = r => { let pg = prog(r); const cta = isCta(r), up = !!(cta && pg) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
       return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">' +
       '<div class="tlTx"><div class="tlTl"><b>' + esc(r.t) + '</b></div><p>' + esc(r.d) + '</p></div>' +
       '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +
       (r.act ? '<div class="tlAct' + (r.more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +
       (r.more ? '<button class="tlMore" type="button" aria-label="More options">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
-    const sec = x => '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : '') + '</i>' + esc(x.h) + '</h2>' +
+    const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : '') + '</i>' + esc(x.h) + '</h2>' +
       '<div class="tlItems">' + ordered(x.rows).map(row).join('') + '</div>' +
       (x.sug ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + x.sug.map(row).join('') + '</div></div>' : '') +
       '</section>';
@@ -23042,6 +23057,7 @@
       list.classList.toggle('noRail', !any);
       navState();
     };
+    { const o = document.getElementById('stTlOpen'); if (o) o.addEventListener('change', () => { OPEN = o.value; render(); }); }   // the tweak redraws the list
     const render = () => {
       ROWS = []; list.innerHTML = layout(TL[tab]).map(sec).join('');
       // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")

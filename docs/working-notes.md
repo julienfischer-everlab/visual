@@ -11754,3 +11754,11 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 **5.529 — Unfilled step bars at #fff 24%.** "Progressing grey 24% bg fff": the bars of the steps still to fill have their own token, `--tlBar`, at #fff 24% instead of 16% (ink 20% in light mode). That covers the steps to come and the in-hand step's track under its fill. The rings and locks keep their 16%.
 
 **5.530 — A passive step's moving part at #fff 24%.** "The moving part, bg fff 24%": the fill that runs down a passive step's bar ("Get your results", in progress) is #fff at 24% (`--tlBar`), where it was the 72% light grey. It runs over an 8% track so the movement still reads; with reduced motion the bar is a solid 24%. The badge's passive increment keeps its lighter grey.
+
+**5.531 — A Timeline tweak: which objects open their steps.** "Add tweak, open steps only current month": the Tweaks menu now shows on the Timeline, with only the Timeline's own group ("Timeline"). Leaving the page brings back the Overview's tweaks.
+
+- **Open steps:** a primary object comes with its steps open, depending on the setting:
+  - Current month (the default): only in the current month, the section with the "now" dot (August 2026).
+  - All primary: the earlier behaviour.
+  - None: no object opens its steps.
+- **Measured:** Current month opens August's three (MRI Briefing, DEXA Scan, Onboarding consult). All opens nine: July 1, August 3, September 5. None opens 0.
