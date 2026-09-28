@@ -11507,3 +11507,5 @@ Every other row stays a simple service. A group's Details opens one vertical lin
 - "Img radius 12px": the 80px pictures have 12 corners (8 at XS's 44).
 - "When it's a primary action, show the card inside upfront": a row whose button is the primary one (Book, Collect sample, Claim) renders with its steps already open (aria-expanded true). Today that is MRI Briefing, MRI Scan and the Microbiome group, and the three Claim rows. A tap still closes it; View rows stay closed.
 - "Reduce card padding by 6px, even on all sides": the hover tile reaches 18 past the picture and the buttons (from 24), the same 18 as above and below. Measured 18/18/18/18. The divider between rows follows it.
+
+**5.479 — "Reduce padding by 4px" (the row's hover tile).** The tile reaches 14 past the picture and the buttons (from 18), and sits 4 inside the row's own 18 above and below, so it is 14 on every side while the rows keep their spacing. Measured 14/14/14/14. The divider between rows follows the tile's width.
