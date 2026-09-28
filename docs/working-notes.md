@@ -11672,3 +11672,11 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Size:** 20px high, 11.5px text in the sub colour, pushed right with `margin-left:auto`.
 - **Active card:** keeps its description and steps, with no badge.
 - **Coverage:** shows the same in the inline stack and the XS/S sheet.
+
+**5.510 — An orange badge means a primary object; the care team section becomes July 2026.**
+
+- **Rule:** "Orange badge -> primary -> always CTA primary." When an object's step in hand is the member's to do (its orange "Your next step"), the object is primary. `isCta(r)` is either the row's own `cta` or its plan (`planOf`: a single service's steps, or the group's own or active service) having a step in hand that isn't passive.
+- **What primary means:** a white primary button (split included), open by default, and first in its month.
+- **Newly primary:** the July Pathology Test (Complete your test), the booked Onboarding consult, Dexa Scan and Nutrition review (Meet your doctor / Go to your appointment / Join the call).
+- **Unchanged:** passive ones (Dexa waiting on its results, a pathology waiting on its referral) and ones not started keep the quiet button.
+- **Section heading:** "Change to July 2026": the first section's heading, "With your care team", is now "July 2026" (its care dot unchanged).

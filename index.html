@@ -22865,7 +22865,7 @@
     // suggestions that fall in it
     const TL = {
       up: [
-        { h: 'With your care team', dot: 'care', rows: [{ t: 'Pathology Test', d: 'A follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'path', state: 'request',
+        { h: 'July 2026', dot: 'care', rows: [{ t: 'Pathology Test', d: 'A follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'path', state: 'request',
             steps: [['Complete your test', 'Go to a collection centre and do your test.'], ['Get your results', 'Ready in 2\u20133 weeks']], at: 0 },   // the first one, a pathology ("first one replace by pathology")
           // waiting on the results, nothing for the member to do: its step in hand is neutral
           { t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['clock', 'Scanned 2 days ago \u00b7 results usually within 3 to 5 days']], act: 'View', more: 1, svc: 'dexa', state: 'active', at: 2 }] },
@@ -22942,7 +22942,11 @@
       const all = S.map(x => Object.assign({}, x, { rows: x.rows.filter(r => { if (r.lock){ later.push(r); return false; } return true; }) })).filter(x => x.rows.length || (x.sug && x.sug.length));
       const out = all.filter(x => !x.tail), tail = all.filter(x => x.tail);   // the ages come after Later ("after Later")
       if (later.length) out.push({ h: 'Later', rows: later }); return out.concat(tail); };
-    const ordered = rows0 => { const rows = rows0.slice().sort((a, b) => (b.cta ? 1 : 0) - (a.cta ? 1 : 0)), out = [], rest = rows.slice();   // a primary action first in its month ("primary object always first")
+    // the step in hand, when it is the member's to do (the orange badge): that object is a primary one, its button the primary CTA ("orange badge -> primary -> always CTA primary")
+    const planOf = r => { if (r.group){ const { g, a } = groupOf(r); if (a < 0) return null; const x = r.focus != null ? g[r.focus] : g[a]; return x.state === 'locked' ? null : x.p; }
+      if (!r.svc || r.lockAge || r.state === 'locked' || r.state === 'suggested') return null; const p = PL(r.svc, r.state); return p ? { steps: r.steps || p.steps, at: r.at != null ? r.at : p.at } : null; };
+    const isCta = r => !!r.cta || (() => { const p = planOf(r); return !!p && p.at >= 0 && p.at < p.steps.length && !pas(p.steps[p.at]); })();
+    const ordered = rows0 => { const rows = rows0.slice().sort((a, b) => (isCta(b) ? 1 : 0) - (isCta(a) ? 1 : 0)), out = [], rest = rows.slice();   // a primary action first in its month ("primary object always first")
       const place = x => { out.push(x); rest.filter(y => y.need === x.t).forEach(y => { rest.splice(rest.indexOf(y), 1); place(y); }); };
       rows.forEach(x => { if (rest.indexOf(x) < 0) return; if (x.need && rows.some(y => y !== x && y.t === x.need)) return; rest.splice(rest.indexOf(x), 1); place(x); });
       return out.concat(rest); };
@@ -22996,12 +23000,12 @@
     // a primary action (Book, Collect sample, Claim) comes with its steps
     // already open ("when it's a primary action, show the card inside
     // upfront"): what is asked of you now is the first thing read
-    const row = r => { let pg = prog(r); const up = !!(r.cta && pg); if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
+    const row = r => { let pg = prog(r); const cta = isCta(r), up = !!(cta && pg); if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
       return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">' +
       '<div class="tlTx"><div class="tlTl"><b>' + esc(r.t) + '</b>' + (r.tag ? '<span class="tlChip' + (r.lock ? '' : ' o') + '">' + esc(r.tag) + '</span>' : '') + '</div><p>' + esc(r.d) + '</p></div>' +
       '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +
-      (r.act ? '<div class="tlAct' + (r.more ? ' split' : '') + (r.cta ? ' cta' : '') + '"><button class="tlBtn' + (r.cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +
+      (r.act ? '<div class="tlAct' + (r.more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +
       (r.more ? '<button class="tlMore" type="button" aria-label="More options">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
     const sec = x => '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : '') + '</i>' + esc(x.h) + '</h2>' +
       '<div class="tlItems">' + ordered(x.rows).map(row).join('') + '</div>' +
