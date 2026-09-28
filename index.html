@@ -6724,13 +6724,14 @@
   .tlGrp > li:hover{background:var(--tlGhostH);}
   .tlGrp > li.me{box-shadow:inset 0 0 0 1px var(--tlRing);}   /* the object's own service in its group's list */
   :is(#dTl, .tlShPanel) .tlGrp > li.cur{box-shadow:none;background:rgba(255,255,255,.135);} :is(#dTl, .tlShPanel) .tlGrp > li.cur:hover{background:rgba(255,255,255,.17);}   /* the service in hand: no border, its ground 8% lighter than the others ("remove border, increase #fff opacity by 8%") */
+  :is(#dTl, .tlShPanel) .tlDetBox.tlDetAct{background:rgba(255,255,255,.135);}   /* a single service is the one in hand too: the same ground ("if not part of a group, still active, same bg opacity") */ body.light :is(#dTl, .tlShPanel) .tlDetBox.tlDetAct{background:rgba(46,31,26,.13);}
   body.light :is(#dTl, .tlShPanel) .tlGrp > li.cur{background:rgba(46,31,26,.13);} body.light :is(#dTl, .tlShPanel) .tlGrp > li.cur:hover{background:rgba(46,31,26,.16);}
   .tlGrp > li::before{display:none;}
   .tlGrp > li{position:relative;display:flex;gap:12px;padding:0 0 16px;cursor:pointer;}
   .tlGrp > li:last-child{padding-bottom:2px;}
   .tlGrp > li:not(:last-child)::before{content:"";position:absolute;left:9.5px;top:24px;bottom:4px;width:1px;background:var(--tlDotRing);}
-  .tlGrp > li > .tlMk{width:20px;height:20px;margin-top:0;}
-  .tlGrp > li.on > .tlMk svg{width:12px;height:12px;}
+  .tlGrp > li > .tlMk{width:16px;height:16px;margin:2px;}   /* 16 in the old 20 slot ("reduce circle") */
+  .tlGrp > li.on > .tlMk svg{width:10px;height:10px;}
   .tlGrp .cur > .tlMk{box-shadow:inset 0 0 0 2px #f78359;} .tlGrp .cur > .tlMk::after{display:none;}
   .tlGrp .lock > .tlMk{box-shadow:inset 0 0 0 2px var(--tlDotRing);}
   .tlGtx{min-width:0;flex:1 1 auto;padding-top:1px;}
@@ -6774,7 +6775,7 @@
   :is(#dTl, .tlShPanel) .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkFut);}
   :is(#dTl, .tlShPanel) .cur > .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkCur);} :is(#dTl, .tlShPanel) .cur > .tlMk::after{display:none;}
   :is(#dTl, .tlShPanel) .on > .tlMk{box-shadow:none;}
-  :is(#dTl, .tlShPanel) .tlGrp > li.lock > .tlMk{box-shadow:none !important;color:var(--tlMkFut);} :is(#dTl, .tlShPanel) .tlGrp > li.lock > .tlMk svg{width:20px;height:20px;}
+  :is(#dTl, .tlShPanel) .tlGrp > li.lock > .tlMk{box-shadow:none !important;color:var(--tlMkFut);} :is(#dTl, .tlShPanel) .tlGrp > li.lock > .tlMk svg{width:18px;height:18px;flex:none;}
   :is(#dTl, .tlShPanel) .tlGrp > li:not(.lock) > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkFut);} :is(#dTl, .tlShPanel) .tlGrp > li.cur > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkCur);} :is(#dTl, .tlShPanel) .tlGrp > li.on > .tlMk{box-shadow:none;}
   .tlStepL li{position:relative;display:flex;gap:10px;padding:0 0 12px;}
   .tlStepL li:last-child{padding-bottom:0;}
@@ -22833,7 +22834,7 @@
     const main = document.getElementById('dTl'), list = document.getElementById('tlList'), q = document.getElementById('tlQ');
     if (!main || !list) return;
     const IMG = { dexa: 'assets/overview/plan-dexa.webp', consult: 'assets/overview/plan-consult.webp', mri: 'assets/overview/plan-mri.webp',
-      nutri: 'assets/overview/plan-nutrition.webp', brief: 'assets/overview/hero-consult.webp', dr: 'assets/overview/avatar-dr.webp', move: 'assets/overview/plan-physical.webp' };
+      nutri: 'assets/overview/plan-nutrition.webp', brief: 'assets/overview/hero-consult.webp', dr: 'assets/overview/avatar-dr.webp', move: 'assets/overview/plan-physical.webp', path: 'assets/overview/tl-path.webp' };
     const I = {
       clock: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2 1.3"/></svg>',
       pin: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M8 14.5s-4.5-4.2-4.5-7.6a4.5 4.5 0 0 1 9 0c0 3.4-4.5 7.6-4.5 7.6Z"/><circle cx="8" cy="6.8" r="1.6"/></svg>',
@@ -22864,9 +22865,10 @@
     // suggestions that fall in it
     const TL = {
       up: [
-        { h: 'With your care team', dot: 'care', rows: [{ t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'dexa', state: 'request' },
-          // waiting on the lab, nothing for the member to do: its step in hand is neutral
-          { t: 'Pathology Test', d: 'Your follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['clock', 'Collected 2 days ago \u00b7 results usually within 3 to 5 days']], act: 'View', more: 1, svc: 'path', state: 'active', at: 2 }] },
+        { h: 'With your care team', dot: 'care', rows: [{ t: 'Pathology Test', d: 'A follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'path', state: 'request',
+            steps: [['Complete your test', 'Go to a collection centre and do your test.'], ['Get your results', 'Ready in 2\u20133 weeks']], at: 0 },   // the first one, a pathology ("first one replace by pathology")
+          // waiting on the results, nothing for the member to do: its step in hand is neutral
+          { t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['clock', 'Scanned 2 days ago \u00b7 results usually within 3 to 5 days']], act: 'View', more: 1, svc: 'dexa', state: 'active', at: 2 }] },
         { h: 'August 2026', dot: 'now', rows: [
           { t: 'Onboarding consult', d: VISIT, img: 'consult', meta: [CLINIC, WHEN], act: 'View', svc: 'consult', state: 'booked', when: WHEN[1] },
           { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1, svc: 'brief', state: 'book' },
@@ -22989,14 +22991,14 @@
       const n = p.steps.length, done = p.at >= n;
       const lab = done ? 'Completed' : p.at < 0 ? 'Not started' : 'Step ' + (p.at + 1) + ' of ' + n;
       return '<div class="tlProg' + (done ? ' done' : '') + (!done && pas(p.steps[p.at]) ? ' pas' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show steps"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lab + CHEV + '</button>' + (!done && p.at >= 0 && p.steps[p.at] ? curB(p.steps[p.at]) : '') + '</div>' +
-        '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + stepList(p) + (r.then ? '<ol class="tlStepL tlRel">' + r.then.map((x, i) => '<li class="rel" data-rel="' + i + '"><i class="tlMk"></i><div class="tx"><div class="tlRelH"><b>' + esc(x.t) + '</b>' + (x.tag ? '<span class="tlChip">' + esc(x.tag) + '</span>' : '') + '</div><p>You need to complete your ' + esc(x.need) + ' before you can book this appointment.</p></div></li>').join('') + '</ol>' : '') + '</div></div></div>';
+        '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetAct">' + stepList(p) + (r.then ? '<ol class="tlStepL tlRel">' + r.then.map((x, i) => '<li class="rel" data-rel="' + i + '"><i class="tlMk"></i><div class="tx"><div class="tlRelH"><b>' + esc(x.t) + '</b>' + (x.tag ? '<span class="tlChip">' + esc(x.tag) + '</span>' : '') + '</div><p>You need to complete your ' + esc(x.need) + ' before you can book this appointment.</p></div></li>').join('') + '</ol>' : '') + '</div></div></div>';
     };
     // a primary action (Book, Collect sample, Claim) comes with its steps
     // already open ("when it's a primary action, show the card inside
     // upfront"): what is asked of you now is the first thing read
     const row = r => { let pg = prog(r); const up = !!(r.cta && pg); if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
       return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
-      (r.img === 'path' ? '<i class="tlTh tlThPath" aria-hidden="true"></i>' : '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">') +
+      '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">' +
       '<div class="tlTx"><div class="tlTl"><b>' + esc(r.t) + '</b>' + (r.tag ? '<span class="tlChip' + (r.lock ? '' : ' o') + '">' + esc(r.tag) + '</span>' : '') + '</div><p>' + esc(r.d) + '</p></div>' +
       '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +
       (r.act ? '<div class="tlAct' + (r.more ? ' split' : '') + (r.cta ? ' cta' : '') + '"><button class="tlBtn' + (r.cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +

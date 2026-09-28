@@ -11658,3 +11658,11 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Locked cards:** a service locked behind another has a filled lock (`LOCKF`) in place of the empty ring, in the ring's grey (`--tlMkFut`). This follows "for locked service, replace circle by a filled lock icon same grey colour".
 - **Inactive cards:** a card that isn't the one in hand (done, coming up or locked) shows only its name, with no "You need to complete…" line and no badge. This follows "if service is not active, remove the sub title and badge on the cards".
 - **Active card:** the "Step x / y" on its right is gone ("remove step right side"). Its steps list and "Your next step" say it.
+
+**5.508 — Pathology first in "With your care team", with its photo; a single service's steps on the active ground; smaller marks.**
+
+- **First row:** "First one replace by pathology." The care team's first object is now a Pathology Test, requested 11 days ago. It has two steps: "Complete your test" (in hand, "Your next step") and "Get your results".
+- **Pathology photo:** the uploaded photo becomes the Timeline's pathology thumbnail (`assets/overview/tl-path.webp`, a 312 square crop). It replaces the orange placeholder on every pathology row.
+- **Passive-step example:** now a Dexa Scan waiting on its results (step 3 of 3, neutral badge), so the section doesn't show two pathologies.
+- **Single service's steps box:** "If a service is not part of a group, it is still active, so the same bg opacity." The steps box of a single service (`.tlDetBox.tlDetAct`) takes the active card's ground, `rgba(255,255,255,.135)`, with the ink equivalent in light mode. Locked and age boxes keep the quiet ground.
+- **Group card marks:** "Reduce circle." The circle was already 20 × 20, so it is now 16 × 16, centred in the same 20px slot. The check and the lock shrink with it (10px tick, 18px lock), so the three marks read the same size.
