@@ -11687,3 +11687,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **Card grounds:** "Active service card use #fff 8% opacity bg, inactive use 4%." In a group's list, the service in hand sits on `rgba(255,255,255,.08)` (.10 on hover) and the others on `.04` (.06 on hover). A single service's steps box, being the one in hand, takes the same 8%. Light mode uses the ink equivalents.
 - **Image gap:** "Increase gap between img and content +6px." The thumbnail column is 6px wider than its image (86px for the 80 thumbnail on desk, 50 for the 44 at XS). The text now starts 24px after the image instead of 18 (22 instead of 16 at XS). The other column gaps are unchanged.
+
+**5.513 — No badge beside an object's title.** "Remove badge": the locked objects (Diagnostics Review, Member Check-In) lose the "Book appointment" badge after their title, and no object's title carries one now. The tag still travels to the service page, where it names the ask.
