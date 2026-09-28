@@ -6736,7 +6736,7 @@
   .tlGrp .lock > .tlMk{box-shadow:inset 0 0 0 2px var(--tlDotRing);}
   .tlGtx{min-width:0;flex:1 1 auto;padding-top:1px;}
   .tlGtx small{display:block;margin-bottom:2px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--tlSub);}
-  .tlGh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;}
+  .tlGh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;} .tlGh .tlRelB{margin-left:auto;height:20px;padding:0 7px;border-radius:6px;font-size:11.5px;line-height:1;color:var(--tlSub);white-space:nowrap;}
   .tlGh b{font-size:14px;font-weight:500;color:var(--tlTx);line-height:18px;}
   .tlGrp .on .tlGh b, .tlGrp .lock .tlGh b{color:var(--tlSub);}
   .tlGrp > li:hover .tlGh b{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--tlRing);}
@@ -22957,7 +22957,7 @@
         const lab = a < 0 ? 'Completed' : one ? 'Step ' + (os.at + 1) + ' of ' + os.steps.length : 'Service ' + (a + 1) + ' of ' + g.length;   // the count is the chip ("Step 1 of 3 -> merge into chip"), no status beside it
         const kind = (x, i) => x.state === 'done' ? 'on' : i === a ? 'cur' : x.state === 'soon' ? 'soon' : 'lock';
         const item = (x, i) => { const k = kind(x, i);
-          const chip = '';   // no badge on any card: the one in hand has its button, the rest are just their names ("if service is not active, remove the sub title and badge")
+          const chip = k !== 'cur' ? '<span class="tlChip tlRelB">Related service</span>' : '';   // the ones not in hand: just their names and a mini badge on the right ("remove the sub title and badge"; "add a mini badge right side of the inactive service card 'Related service'")
           const line = k === 'cur' && x.d ? esc(x.d) : '';
           const subs = k === 'cur' && x.p.steps.length ? '<div class="tlSubL">' + stepList(x.p) + '</div>' : '';   // the same rings as a single service's steps ("keep same style for bullet indicator")
           return '<li class="' + k + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + (r.focus === i ? ' me' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : k === 'lock' ? LOCKF : '') + '</i><div class="tlGtx">' + 

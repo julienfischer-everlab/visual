@@ -11666,3 +11666,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Passive-step example:** now a Dexa Scan waiting on its results (step 3 of 3, neutral badge), so the section doesn't show two pathologies.
 - **Single service's steps box:** "If a service is not part of a group, it is still active, so the same bg opacity." The steps box of a single service (`.tlDetBox.tlDetAct`) takes the active card's ground, `rgba(255,255,255,.135)`, with the ink equivalent in light mode. Locked and age boxes keep the quiet ground.
 - **Group card marks:** "Reduce circle." The circle was already 20 × 20, so it is now 16 × 16, centred in the same 20px slot. The check and the lock shrink with it (10px tick, 18px lock), so the three marks read the same size.
+
+**5.509 — "Related service" on the inactive service cards.** "Add a mini badge right side of the inactive service card 'Related service'": every card in a group's list that isn't the one in hand (done, coming up or locked) carries a small grey "Related service" badge at the right of its name line.
+
+- **Size:** 20px high, 11.5px text in the sub colour, pushed right with `margin-left:auto`.
+- **Active card:** keeps its description and steps, with no badge.
+- **Coverage:** shows the same in the inline stack and the XS/S sheet.
