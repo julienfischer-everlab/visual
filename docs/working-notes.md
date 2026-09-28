@@ -11572,3 +11572,14 @@ A row has the page's name, one line on what it is and its count of entry points 
 - **Rings:** the ring rules now reach the sheet too, which sits outside #dTl (its first build showed the old orange ring).
 
 "Remove badge orange": the service in hand in a group has no chip ("Collect sample", DEXA's "Book appointment"), since the row's button says it. The locked services keep their grey "Book appointment".
+
+**5.492 — Later; sticky months; primary first; quieter rules; no trail; no chip on suggestions; square-ish chips.**
+
+- **"All locked objects need to appear under a group 'Later' at the end of the list":** the renderer takes every locked row out of its month into a last section, Later (Diagnostics Review, then Member Check-In, still in blocker order). A month left with nothing is dropped.
+- **"Make the month title stacked sticky on scroll, same as the alphabetical names in the Contacts app":** each month's title is sticky inside its month, just under the tabs bar, on the page's ground (its dot with it). When the next month arrives it pushes the previous title up and out. The stick point is measured off the bar wherever it sticks (24px on the desk, 95 in the XS device, under the status strip).
+- **"+4px top bottom on divider":** 12 between the hover tile and the rules (rows 26 above and below, the tile 12 in), the tile still 14 inside.
+- **"Primary object always first in the month group list":** within a month, rows whose button is the primary one come first. August is MRI Briefing, DEXA Scan, then Onboarding consult; September leads with MRI Scan, the genetic test and the Microbiome group.
+- **"Divider reduce opacity 30%":** the rules between rows are 5% (from 7%).
+- **"No need trail":** the steps' rings stand alone, no line between them.
+- **"Suggested item no need step chip":** the suggestions have no steps chip.
+- **"Radius 8px, not fully rounded":** the steps chip, and its copy in the sheet, have 8 corners.
