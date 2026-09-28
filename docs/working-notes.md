@@ -11626,3 +11626,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **The related chips:** these grey chips were caught by the old subline rule for spans too, like the next-step badge; they are set past it and centred on their names.
 
 **5.501 — "Remove gradient, just normal movement."** The step in hand's segment no longer carries a flowing gradient. A solid orange fill grows down it from top to bottom over its faint track, holds full, and starts again (1.6s). It stays still and solid under reduced motion.
+
+**5.502 — DEXA inside its group, with service cards.** "No — the DEXA is part of a group of services, same as this one: use the separate service cards when it's part of a service group":
+
+- **August:** the DEXA Scan row (with its steps and the two related services listed under it, 5.500) is replaced by the Member Check-In service group, drawn as Microbiome is. The DEXA Scan card is in hand (its line, Step 1 / 3, its steps Book appointment · Booked · Done with "Your next step"), then the Diagnostics Review and Member Check-In cards, locked, each with its grey chip and "You need to complete your …".
+- **The group row:** Service 1 of 3, the badge carrying the increments and the step in hand, `[Book | ⋯]`, open as a primary.
+- **Removed as duplicates of it:** the two locked rows it made redundant (so Later, now empty, is gone), and the second Member Check-In group in October.
+- **What stays:** a single service can still name the services after it (`then`), and a locked service standing on its own still goes to Later.

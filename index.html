@@ -22857,14 +22857,11 @@
         { h: 'August 2026', dot: 'now', rows: [
           { t: 'Onboarding consult', d: VISIT, img: 'consult', meta: [CLINIC, WHEN], act: 'View', svc: 'consult', state: 'booked', when: WHEN[1] },
           { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1, svc: 'brief', state: 'book' },
-          // service groups ("some e.g. of service group, the rest can be simple
-          // service"): each service in turn, the next locked until the one
-          // before it is done; the row's own is the one in hand
-          // the DEXA flow as three rows in the one block ("need these 3 objects in the timeline, all in the same timeline block"): each its own object, the next locked until the one before it is done
-          { t: 'DEXA Scan', d: 'Book your DEXA scan to measure body composition and bone density', img: 'dexa', meta: [['sug', 'Member Check-In \u00b7 1 of 3']], act: 'Book', cta: 1, more: 1, svc: 'dexa', state: 'book', steps: [['Book appointment', ''], ['Booked', ''], ['Done', '']],
-            then: [{ t: 'Diagnostics Review', svc: 'diag', tag: 'Book appointment', need: 'DEXA Scan' }, { t: 'Member Check-In', svc: 'checkin', tag: 'Book appointment', need: 'Diagnostics Review' }] },   // the services after it, shown with its steps ("the DEXA should also show the 2 other related services")
-          { t: 'Diagnostics Review', d: 'You need to complete your DEXA Scan before you can book this appointment.', img: 'consult', tag: 'Book appointment', lock: 1, meta: [['sug', 'Member Check-In \u00b7 2 of 3']], svc: 'diag', state: 'locked', need: 'DEXA Scan' },
-          { t: 'Member Check-In', d: 'You need to complete your Diagnostics Review before you can book this appointment.', img: 'brief', tag: 'Book appointment', lock: 1, meta: [['sug', 'Member Check-In \u00b7 3 of 3']], svc: 'checkin', state: 'locked', need: 'Diagnostics Review' }
+          // DEXA is part of the Member Check-In service group, so it is the group, with a card per service ("the DEXA is part of a group of services, same as this one: use the separate service cards")
+          { t: 'Member Check-In', d: 'Your yearly check-in: a DEXA scan, a review of your diagnostics, then your care team.', img: 'dexa', meta: [['sug', '3 services'], ['clock', 'Due by 30 Sep 2026']], act: 'Book', cta: 1, more: 1,
+            group: [{ svc: 'dexa', state: 'book', t: 'DEXA Scan', tag: 'Book appointment', d: 'Book your DEXA scan to measure body composition and bone density', steps: [['Book appointment', ''], ['Booked', ''], ['Done', '']], at: 0 },
+              { svc: 'diag', state: 'locked', tag: 'Book appointment', need: 'DEXA Scan' },
+              { svc: 'checkin', state: 'locked', tag: 'Book appointment', need: 'Diagnostics Review' }] },
         ], sug: SUG },
         { h: 'September 2026', rows: [
           { t: 'MRI Scan', d: VISIT, img: 'mri', meta: [['pin', 'In person']], act: 'Book', cta: 1, more: 1, svc: 'mri', state: 'book' },
@@ -22880,11 +22877,6 @@
               { svc: 'gutrev', state: 'locked', next: true, tag: 'Book appointment', need: 'Microbiome Report' }] }
         ] },
         { h: 'October 2026', rows: [
-          // the Member Check-In as a service group ("add this one"): the three in one object, DEXA in hand, the two after it locked
-          { t: 'Member Check-In', d: 'Your yearly check-in: a DEXA scan, a review of your diagnostics, then your care team.', img: 'dexa', meta: [['sug', '3 services'], ['clock', 'Due by 31 Oct 2026']], act: 'Book', cta: 1, more: 1,
-            group: [{ svc: 'dexa', state: 'book', t: 'DEXA Scan', tag: 'Book appointment', d: 'Book your DEXA scan to measure body composition and bone density', steps: [['Book appointment', ''], ['Booked', ''], ['Done', '']], at: 0 },
-              { svc: 'diag', state: 'locked', tag: 'Book appointment', need: 'DEXA Scan' },
-              { svc: 'checkin', state: 'locked', tag: 'Book appointment', need: 'Diagnostics Review' }] },
           { t: 'Pathology Test', d: VISIT, img: 'path', meta: [DR], act: 'View', more: 1, svc: 'path', state: 'book', st: 'Recommended by Dr Sarah Chen' },
           { t: 'CT Scan', d: VISIT, img: 'dexa', meta: [DR], act: 'Purchase', more: 1, svc: 'ct', state: 'purchase' }
         ], sug: SUG },
