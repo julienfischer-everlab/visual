@@ -11689,3 +11689,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Image gap:** "Increase gap between img and content +6px." The thumbnail column is 6px wider than its image (86px for the 80 thumbnail on desk, 50 for the 44 at XS). The text now starts 24px after the image instead of 18 (22 instead of 16 at XS). The other column gaps are unchanged.
 
 **5.513 — No badge beside an object's title.** "Remove badge": the locked objects (Diagnostics Review, Member Check-In) lose the "Book appointment" badge after their title, and no object's title carries one now. The tag still travels to the service page, where it names the ask.
+
+**5.514 — A coming-up service shows the lock too.** "Lock icon, not circle": in a group's list, a service that is coming up but not locked behind another (Microbiome Report) now takes the same filled grey lock as the locked ones, not the empty ring. Only the service in hand keeps a ring, and done ones keep the green tick.
