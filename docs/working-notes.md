@@ -11762,3 +11762,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
   - All primary: the earlier behaviour.
   - None: no object opens its steps.
 - **Measured:** Current month opens August's three (MRI Briefing, DEXA Scan, Onboarding consult). All opens nine: July 1, August 3, September 5. None opens 0.
+
+**5.532 — 4px more between the dividers and the objects.** "Add divider margin top bottom 4px": the hover tile now sits 16px clear of the dividers above and below (from 12). The row's padding grows by the same 4 on each side (30 from 26), so the content keeps its 14 inside the tile. XS unchanged.
