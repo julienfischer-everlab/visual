@@ -11721,3 +11721,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **Name:** "On active card, if an object is before the active service, keep the title." The steps-only card (5.518) shows its service's name again when another card sits above it in the list (Microbiome, after the done questionnaire). There is no ring and no description. When it is first (DEXA), it stays steps only.
 - **Alignment:** "Make sure the progress and text are vertically aligned with the rest." Its bars are centred under the other cards' marks (8px into the 20px mark slot), and its step names and its own name start where the other cards' names start (32px in). Measured: mark and bar centres at 622, name and step starts at 644.
+
+**5.520 — The step chip at 28.** "28 height": the step chip beside the badge ("Step 1 of 2") goes from 30px to 28px, the badge's height, so the two sit level. At XS it keeps its 56 next to the button.
