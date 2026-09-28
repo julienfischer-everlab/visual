@@ -511,9 +511,9 @@
   body.sideMin .dash .side .nv{width:44px;height:44px;margin:0 auto 2px;justify-content:center;padding:0;gap:0;}   /* the plate centred on the rail's own axis: 14 either side ("make the left and right padding even") */
   body.sideMin .dash .side .nv span{max-width:0;opacity:0;}
   body.sideMin .dash{padding-left:72px;--sideW:72px;}
-  body.sideMin #dMain, body.sideMin #dOver, body.sideMin #dSvc{left:72px;}
+  body.sideMin #dMain, body.sideMin #dOver, body.sideMin #dSvc, body.sideMin #dTl{left:72px;}
   .dash{transition:padding-left .32s cubic-bezier(.2,.8,.2,1);}
-  #dMain, #dOver, #dSvc{transition:left .32s cubic-bezier(.2,.8,.2,1);}
+  #dMain, #dOver, #dSvc, #dTl{transition:left .32s cubic-bezier(.2,.8,.2,1);}
   /* ---- The content pane: a card that owns its own scroll -----------------
      Fixed over the sidebar's ground -- which is what the card floats over,
      now that the two share --shellBg -- the 16px gap above it never moves;
@@ -522,7 +522,7 @@
      to hold that gap open before the sidebar and the ground it sits on read
      as the same surface; once they did, the bar was drawing over its own
      background and the gap can just be #dMain's own offset. */
-  #dMain, #dOver, #dSvc{
+  #dMain, #dOver, #dSvc, #dTl{
     position:absolute;left:224px;right:0;bottom:0;top:16px;
     overflow-y:auto;overflow-x:hidden;z-index:1;
     /* top-left and top-right already eased away from the bar above; the
@@ -6544,6 +6544,118 @@
   .svRule{border:0;height:1px;background:rgba(255,255,255,.08);margin:32px 0 28px;}
   .svcMob .svAbout{margin-top:0;} .svcMob .svAbout h3{font-size:18px;margin-bottom:14px;}
   body.light .svcMob, body.light .svmBody{background:#fff;color:#111;}
+
+  /* ---- The Timeline page (desk #dTl) -----------------------------------------
+     "Your health journey", from the two captures (L and XS): one main in the
+     desk's shell -- the sidebar, the card, the forced breakpoints and their
+     device frames, as the Overview and the service page -- whose own width
+     picks its layout (a container query), so a breakpoint's view is that
+     breakpoint's page: the rail of months with the rows beside it from S up,
+     the phone's stacked rows and the suggestions as a carousel at XS. */
+  #dTl{display:none;padding:32px 40px 80px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:tl / inline-size;
+    --tlInk:#f4f4f4;--tlTx:#ececec;--tlSub:#8b8b86;--tlLine:rgba(255,255,255,.08);--tlRing:rgba(255,255,255,.14);
+    --tlPill:rgba(255,255,255,.08);--tlPillH:rgba(255,255,255,.13);--tlCta:#fff;--tlCtaInk:#111;
+    --tlBox:rgba(255,255,255,.04);--tlCard:#1a1a19;--tlCardRing:rgba(255,255,255,.06);color:var(--tlTx);}
+  body.light #dTl{--tlInk:#111;--tlTx:#2e1f1a;--tlSub:#7a716a;--tlLine:rgba(46,31,26,.1);--tlRing:rgba(46,31,26,.16);
+    --tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;
+    --tlBox:rgba(46,31,26,.05);--tlCard:#fff;--tlCardRing:rgba(46,31,26,.06);}
+  body.m9.tlOn #dTl{display:block;} body.m9.tlOn #dOver, body.m9.tlOn #dSvc{display:none;}
+  body.m9.tlOn .dash .side .nvOver{background:none;color:inherit;}
+  body.m9.tlOn .dash .side .nvTl{background:#1e1e1c;color:#ececec;}   /* the page lights Timeline */
+  body.light.m9.tlOn .dash .side .nvTl{background:#ece4d3;color:#2e241c;} body.light.m9.tlOn .dash .side .nvOver{background:none;}
+  body.tlOn #tkMenu{display:none;}   /* no tweaks concern this page */
+  .tlCol{max-width:760px;margin:0 auto;}
+  .tlH1{margin:0 0 14px;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:var(--tlInk);}
+  /* the tabs and the search ride a bar like every top bar: sticky at the
+     card's top once the title has gone under, the tint and the ten blur
+     bands coming in then (#dTl.ovScrolled) */
+  .tlBar{position:sticky;top:-32px;z-index:5;margin:0 -40px;padding:0 40px;isolation:isolate;}
+  .tlBar::before{content:"";position:absolute;left:0;right:0;top:0;bottom:-28px;z-index:-1;pointer-events:none;opacity:0;transition:opacity .28s ease;
+    background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.5) 18%,rgba(0,0,0,.43) 36%,rgba(0,0,0,.33) 54%,rgba(0,0,0,.21) 72%,rgba(0,0,0,.1) 88%,rgba(0,0,0,0) 100%);}
+  body.light .tlBar::before{background:linear-gradient(180deg,rgba(247,242,233,.7) 0%,rgba(247,242,233,.6) 30%,rgba(247,242,233,.35) 65%,rgba(247,242,233,0) 100%);}
+  .tlBar .ovGround{bottom:-28px;}
+  #dTl.ovScrolled .tlBar::before, #dTl.ovScrolled .tlBar .ovGround{opacity:1;}
+  .tlBarIn{display:flex;align-items:center;gap:16px;padding:10px 0 8px;}
+  .tlTabs{display:flex;gap:4px;}
+  .tlTab{height:40px;padding:0 12px;border:0;border-bottom:2px solid transparent;background:none;font:inherit;font-size:14px;color:var(--tlSub);cursor:pointer;transition:color .16s ease,border-color .16s ease;}
+  .tlTab:hover{color:var(--tlTx);}
+  .tlTab.on{color:var(--tlInk);border-bottom-color:var(--tlInk);}
+  .tlSearch{margin-left:auto;display:flex;align-items:center;gap:8px;width:200px;height:40px;padding:0 14px;border-radius:10px;box-shadow:inset 0 0 0 1px var(--tlRing);color:var(--tlSub);box-sizing:border-box;}
+  .tlSearch svg{flex:none;width:16px;height:16px;}
+  .tlSearch input{flex:1 1 auto;min-width:0;border:0;background:none;outline:0;font:inherit;font-size:14px;color:var(--tlTx);padding:0;}
+  .tlSearch input::placeholder{color:var(--tlSub);}
+  .tlSearch input::-webkit-search-cancel-button{display:none;}
+  .tlSearch:focus-within{box-shadow:inset 0 0 0 1px var(--tlSub);}
+  /* the months: a rail down the left, a dot at each heading -- the care
+     team's spark, this month's filled, the ones ahead hollow */
+  .tlList{position:relative;padding:12px 0 0 40px;}
+  .tlList::before{content:"";position:absolute;left:8px;top:32px;bottom:0;width:1px;background:var(--tlLine);}
+  .tlSec{position:relative;}
+  .tlH{position:relative;display:flex;align-items:center;margin:26px 0 6px;font-size:16px;font-weight:500;letter-spacing:-.1px;color:var(--tlInk);}
+  .tlSec:first-child .tlH{margin-top:14px;}
+  .tlDot{position:absolute;left:-40px;top:50%;width:17px;height:17px;margin-top:-8.5px;border-radius:50%;box-sizing:border-box;background:var(--pageBg);box-shadow:inset 0 0 0 1.5px var(--tlRing);}
+  .tlSec.now .tlDot{background:var(--tlInk);box-shadow:none;} .tlSec.now .tlDot::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--pageBg);}
+  .tlSec.care .tlDot{box-shadow:none;color:var(--tlSub);display:flex;align-items:center;justify-content:center;} .tlSec.care .tlDot svg{width:15px;height:15px;}
+  /* a row: the picture, the title and the line, what and where under them,
+     the actions at the right */
+  .tlRow{display:grid;grid-template-columns:80px minmax(0,1fr) auto;grid-template-areas:"th tx act" "th meta act";column-gap:14px;align-items:start;padding:18px 0;}
+  .tlItems .tlRow + .tlRow, .tlSugTrack .tlRow + .tlRow{border-top:1px solid var(--tlLine);}
+  .tlTh{grid-area:th;width:80px;height:80px;border-radius:8px;object-fit:cover;display:block;background:#222;}
+  .tlTh.tlThPath{background:radial-gradient(120% 90% at 70% 20%,#f59a6e 0%,#ef6a3a 45%,#b8401c 100%);}
+  .tlTx{grid-area:tx;min-width:0;padding-top:2px;}
+  .tlTx b{display:block;font-size:15px;font-weight:500;color:var(--tlInk);line-height:1.3;}
+  .tlTx p{margin:3px 0 0;font-size:13px;line-height:1.4;color:var(--tlSub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tlMeta{grid-area:meta;display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:12.5px;color:var(--tlSub);min-width:0;}
+  .tlMeta span{display:inline-flex;align-items:center;gap:6px;min-width:0;} .tlMeta em{font-style:normal;}
+  .tlMeta svg{flex:none;width:14px;height:14px;}
+  .tlMeta a{color:var(--tlInk);font-weight:500;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--tlRing);cursor:pointer;}
+  .tlMeta img{flex:none;width:18px;height:18px;border-radius:50%;object-fit:cover;object-position:50% 20%;}
+  .tlAct{grid-area:act;display:flex;gap:8px;padding-top:2px;}
+  .tlBtn{height:36px;padding:0 15px;border:0;border-radius:10px;background:var(--tlPill);color:var(--tlTx);font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .16s ease;}
+  .tlBtn:hover{background:var(--tlPillH);}
+  .tlBtn.cta{background:var(--tlCta);color:var(--tlCtaInk);} .tlBtn.cta:hover{opacity:.9;}
+  .tlMore{width:36px;height:36px;flex:none;border:0;border-radius:10px;background:var(--tlPill);color:var(--tlTx);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+  .tlMore:hover{background:var(--tlPillH);} .tlMore svg{width:16px;height:16px;}
+  /* suggestions: a tray of their own, a card of rows inside it */
+  .tlSug{margin:10px 0 6px -18px;padding:0 4px 4px;border-radius:18px;background:var(--tlBox);}
+  .tlSugHead{display:flex;align-items:center;gap:7px;padding:12px 14px 10px;font-size:12.5px;color:var(--tlSub);}
+  .tlSugHead svg{width:14px;height:14px;}
+  .tlSugNav{margin-left:auto;display:none;gap:6px;}
+  .tlSugNav button{width:28px;height:28px;border:0;border-radius:50%;padding:0;background:var(--tlPill);color:var(--tlTx);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .tlSugNav button:disabled{opacity:.35;cursor:default;} .tlSugNav svg{width:12px;height:12px;}
+  .tlSugTrack{background:var(--tlCard);border-radius:14px;padding:0 16px 0 14px;box-shadow:0 0 0 1px var(--tlCardRing),0 2px 6px rgba(0,0,0,.08);}
+  .tlEmpty{padding:48px 0;text-align:center;font-size:14px;color:var(--tlSub);}
+  .tlSec.gone, .tlRow.gone, .tlSug.gone{display:none;}
+  /* XS, the phone's capture: no rail, the rows stacked -- the picture beside
+     the title, what and where under them, the actions full width -- and the
+     suggestions a carousel of cards with its arrows */
+  @container tl (max-width:540px){   /* XS's 370 of content; S's 552 keeps the rail, as the tablet keeps the desk's columns elsewhere */
+    .tlH1{font-size:26px;margin-bottom:10px;}
+    .tlBarIn{flex-direction:column;align-items:stretch;gap:14px;padding:4px 0 10px;}
+    .tlTabs{gap:0;} .tlTab{flex:1 1 0;height:44px;padding:0;font-size:15px;}
+    .tlSearch{width:auto;margin:0;height:44px;border-radius:12px;} .tlSearch input{font-size:15px;}
+    .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
+    .tlH{font-size:18px;margin:30px 0 4px;} .tlSec:first-child .tlH{margin-top:18px;}
+    .tlRow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"th tx" "meta meta" "act act";column-gap:12px;padding:18px 0 20px;}
+    .tlTh{width:44px;height:44px;border-radius:8px;}
+    .tlTx{padding-top:0;} .tlTx p{white-space:normal;font-size:13.5px;}
+    .tlMeta{flex-direction:column;flex-wrap:nowrap;gap:8px;margin-top:14px;font-size:13.5px;}
+    .tlMeta span{max-width:100%;} .tlMeta span > em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .tlAct{margin-top:16px;padding:0;} .tlBtn{flex:1 1 auto;height:40px;font-size:14px;} .tlMore{width:40px;height:40px;background:var(--tlPill);}
+    .tlSug{margin:14px 0 8px;padding:0 0 12px;}
+    .tlSugHead{padding:12px 12px 10px 14px;font-size:14px;} .tlSugNav{display:flex;}
+    .tlSugTrack{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;background:none;box-shadow:none;border-radius:0;padding:2px 12px;scroll-padding:0 12px;}
+    .tlSugTrack::-webkit-scrollbar{display:none;}
+    .tlSugTrack .tlRow{flex:0 0 86%;scroll-snap-align:start;box-sizing:border-box;padding:16px;border-radius:18px;background:var(--tlCard);box-shadow:0 0 0 1px var(--tlCardRing);}
+    .tlSugTrack .tlRow + .tlRow{border-top:0;}
+  }
+  body[data-bp="xs"] #dTl{padding:64px 16px 110px;}
+  body[data-bp="xs"] #dTl .tlBar{top:-19px;margin:0 -16px;padding:0 16px;}   /* stuck under the status strip, its ground reaching up behind it */
+  body[data-bp="xs"] #dTl .tlBar::before, body[data-bp="xs"] #dTl .tlBar .ovGround{top:-45px;}
+  body[data-bp="s"] #dTl{padding:52px 24px 120px;}
+  body[data-bp="s"] #dTl .tlBar{top:-24px;margin:0 -24px;padding:0 24px;}
+  body[data-bp="s"] #dTl .tlBar::before, body[data-bp="s"] #dTl .tlBar .ovGround{top:-28px;}
+  @media (max-width:599px){ body:not([data-bp]) #dTl{padding:24px 16px 96px;} body:not([data-bp]) #dTl .tlBar{top:-24px;margin:0 -16px;padding:0 16px;} }
   /* the top bar rides the card's top (sticky, cancelling the card's 32px of
      top padding the way .dFilters does); its ground and its blur end 16px
      under the field, as on the phone */
@@ -6577,8 +6689,8 @@
   body[data-bp] .dash .side{left:calc(50vw - var(--bpW) / 2);}
   body[data-bp="s"] .dash .side, body[data-bp="xs"] .dash .side{display:none;}
   body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;--dMainLeft:0px !important;}
-  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc{left:0;top:0;border-radius:0;max-width:none;scrollbar-width:none;}   /* in a device the page is the screen: no 16 band above, no 16 gutter at the right, no card corners, no scrollbar ("remove unnecessary padding on tablet S") */
-  body[data-bp="s"] #dOver::-webkit-scrollbar, body[data-bp="xs"] #dOver::-webkit-scrollbar, body[data-bp="s"] #dSvc::-webkit-scrollbar, body[data-bp="xs"] #dSvc::-webkit-scrollbar{display:none;}
+  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc, body[data-bp="s"] #dTl, body[data-bp="xs"] #dTl{left:0;top:0;border-radius:0;max-width:none;scrollbar-width:none;}   /* in a device the page is the screen: no 16 band above, no 16 gutter at the right, no card corners, no scrollbar ("remove unnecessary padding on tablet S") */
+  body[data-bp="s"] #dOver::-webkit-scrollbar, body[data-bp="xs"] #dOver::-webkit-scrollbar, body[data-bp="s"] #dSvc::-webkit-scrollbar, body[data-bp="xs"] #dSvc::-webkit-scrollbar, body[data-bp="s"] #dTl::-webkit-scrollbar, body[data-bp="xs"] #dTl::-webkit-scrollbar{display:none;}
   body:not([data-bp="xs"]):not([data-bp="s"]) #dOver{--ctPadY:32px;--ctPadX:40px;}   /* the Insights desk's body padding, 32 above and 40 at the sides ("body padding: keep this structure for Overview"); the bar and the caps read the same tokens */
   #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:min(calc(1280px + 2 * var(--ctPadX)),   /* 1080, then "overview container max width 1280px" */ calc(var(--bpW, 100vw) - var(--sideW, 224px) - 16px));}   /* --sideW: 224, 72 retracted, 0 at S and XS */
   /* and the page reflows at S and XS -- forced, or a window that narrow --
@@ -7113,6 +7225,7 @@
   body.light .dash .side .logo{color:#2e241c;}
   body.light .dash .side .sideTgl{color:#6b5c4a;} body.light .dash .side .sideTgl:hover{background:rgba(46,31,26,.08);color:#2e241c;}
   body.light .dash .side .nv.on{background:#ece4d3;color:#2e241c;}
+  body.light.m9 .dash .side .nv.nvIns{background:none;color:inherit;}   /* the Overview's shell (and the pages over it) never light Insights: the light plate above outranked the rule that unlights it */
   body.light .dash .side .nv:hover{background:rgba(46,31,26,.06);color:#2e241c;} body.light .dash .side .nv:active{background:rgba(46,31,26,.1);} body.light .dash .side .nv.on:hover{background:#e6dccb;}
   body.light .dash h1 span{color:#9b8a75;}
   body.light .dash .dcard, body.light .dash .dcard.bcard, body.light .dash .dcard.scard{background:#f4efed;}
@@ -10210,6 +10323,20 @@
         <div class="svAbout"><h3>About the service</h3><p>Content here</p><button class="svLink" type="button">Read more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></button></div>
       </aside>
     </div>
+  </main>
+  <!-- The Timeline page ("create a new page with breakpoint control called
+       Timeline"): its rows are written by timelinePage() from TL below -->
+  <main class="dvMain" id="dTl" aria-label="Timeline">
+    <div class="tlCol"><h1 class="tlH1">Your health journey</h1></div>
+    <div class="tlBar"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tlCol tlBarIn">
+      <div class="tlTabs" role="tablist" aria-label="Timeline">
+        <button class="tlTab on" type="button" role="tab" aria-selected="true" data-t="up">Upcoming</button>
+        <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="claim">Yours to claim</button>
+        <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="past">Past</button>
+      </div>
+      <label class="tlSearch"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.7"/><path d="m10.8 10.8 3 3"/></svg><input id="tlQ" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search your health journey"></label>
+    </div></div>
+    <div class="tlCol"><div class="tlList" id="tlList"></div></div>
   </main>
 </div>
 <div class="olib" id="oLib">
@@ -14161,6 +14288,9 @@
       const sg = document.createElement('optgroup'); sg.label = 'Service detail';
       [['svcD', 'Desktop'], ['svcM', 'Mobile']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
       versionSel.appendChild(sg);
+      const tg = document.createElement('optgroup'); tg.label = 'Timeline';   // "a new page ... called Timeline"
+      const to = document.createElement('option'); to.value = 'tl'; to.textContent = 'Timeline'; tg.appendChild(to);
+      versionSel.appendChild(tg);
       return;
     }
     if (g === ARC_GROUP && ARCHIVED.length){
@@ -14182,6 +14312,7 @@
     const v = versionSel.value;
     if (v === 'home'){ if (window._home) window._home.show(); return; }
     if (window._home) window._home.hide();
+    if (v === 'tl'){ setMode(9); resize(); if (window._tl) window._tl.open(); return; }
     if (v === 'svcD' || v === 'svcM'){ setMode(v === 'svcD' ? 9 : 6); resize(); if (window._svc) (v === 'svcD' ? window._svc.openDesk : window._svc.openMob)(); return; }
     CARD_STATE.fullscr = v === VIEWPORT_VAL;
     CARD_STATE.showBar = v === VIEWPORT_VAL;
@@ -14696,7 +14827,7 @@
     // leaves the curve cutting into flank-matched --pageBg again.
     // ...measured off whichever card is showing: #dOver stands in for #dMain
     // on the Overview, and a hidden #dMain measures left:0
-    { const dm = document.body.classList.contains('svcOn') ? document.getElementById('dSvc') : document.body.classList.contains('m9') ? document.getElementById('dOver') : document.getElementById('dMain');   // the service page too: measured off a hidden card, the shell's corner block went to the wrong edge and the page's top-left corner showed square
+    { const dm = document.body.classList.contains('tlOn') ? document.getElementById('dTl') : document.body.classList.contains('svcOn') ? document.getElementById('dSvc') : document.body.classList.contains('m9') ? document.getElementById('dOver') : document.getElementById('dMain');   // the service page too: measured off a hidden card, the shell's corner block went to the wrong edge and the page's top-left corner showed square
       if (dm){ const dash = document.querySelector('.dash'); dash.style.setProperty('--dMainLeft', (dm.getBoundingClientRect().left - dash.getBoundingClientRect().left) + 'px'); } }   // off the shell's own left: a forced breakpoint frames the shell away from the window's edge
     // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
     { const ho = document.getElementById('mHeroOrgan');
@@ -17629,6 +17760,7 @@
           else { if (version !== 6){ setMode(6); resize(); } window._svc.openMob(); }                         // a phone: the phone's page, over its Overview
           return;
         }
+        if (host.id === 'bpFrame' && i === 0){ if (window._tl) window._tl.close(); if (window._svc) window._svc.close(); return; }   // the forced device's Overview: back from the Timeline or a service to the Overview under them
         if (DEST[i] == null || i === here) return;
         setMode(DEST[i]);
       }));
@@ -21927,7 +22059,8 @@
     // it always did.
     { const over = document.getElementById('dOver'), dash = document.querySelector('.dash');
       if (over && dash && over.parentNode !== dash) dash.appendChild(over);
-      const svc = document.getElementById('dSvc'); if (svc && dash && svc.parentNode !== dash) dash.appendChild(svc); }   // the service detail main rides along: it is written beside #dOver in the old shell
+      const svc = document.getElementById('dSvc'); if (svc && dash && svc.parentNode !== dash) dash.appendChild(svc);
+      const tl = document.getElementById('dTl'); if (tl && dash && tl.parentNode !== dash) dash.appendChild(tl); }   // and the Timeline's   // the service detail main rides along: it is written beside #dOver in the old shell
     // the sidebar moves between the desk pages: the live Insights (18), and
     // the Overview (9); "Biomarkers" is the retired .dvNav's name for it
     const goto = { 'Overview': 9, 'Insights': 18, 'Biomarkers': 2 };
@@ -21952,6 +22085,11 @@
     document.querySelectorAll('.dash .side .nv').forEach(nv => {
       nv.title = nv.textContent.trim();   // the label, for the retracted rail
       const label = nv.textContent.trim();
+      if (label === 'Timeline'){   // the Timeline page, in the Overview's shell
+        nv.classList.add('nvTl'); nv.style.cursor = 'pointer';
+        nv.addEventListener('click', () => { if (window._home) window._home.hide(); if (version !== 9) { setMode(9); resize(); } if (window._tl) window._tl.open(); });
+        return;
+      }
       if (label === 'Services'){   // the service page ("service access from menu"), over the Overview's desk
         nv.classList.add('nvSvc'); nv.style.cursor = 'pointer';
         nv.addEventListener('click', () => { if (window._home) window._home.hide(); if (version !== 9) { setMode(9); resize(); } if (window._svc) window._svc.openDesk(); });
@@ -22338,7 +22476,7 @@
     const ph = document.getElementById('phone2'), over = document.getElementById('dOver'), desk = document.getElementById('dSvc'), mob = document.getElementById('svcMob');
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
-    const openDesk = () => { document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
+    const openDesk = () => { if (window._tl) window._tl.close(); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });   // the bar's ground, once the page moves under it
     const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });   // past 6, as the Overview's bar
@@ -22349,6 +22487,149 @@
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     document.addEventListener('everlab:mode', close);
     window._svc = { openDesk, openMob, close };
+  })();
+
+  // The Timeline page: "Your health journey" -- the months ahead with what
+  // falls in each, from the care team's requests to the scans due at 50 and
+  // 60, the suggestions in a tray of their own. Three tabs (Upcoming, Yours
+  // to claim, Past) and a search over the one showing. Opened from the
+  // sidebar's Timeline, the menu or the home page, over the Overview's desk.
+  (function timelinePage(){
+    const main = document.getElementById('dTl'), list = document.getElementById('tlList'), q = document.getElementById('tlQ');
+    if (!main || !list) return;
+    const IMG = { dexa: 'assets/overview/plan-dexa.webp', consult: 'assets/overview/plan-consult.webp', mri: 'assets/overview/plan-mri.webp',
+      nutri: 'assets/overview/plan-nutrition.webp', brief: 'assets/overview/hero-consult.webp', dr: 'assets/overview/avatar-dr.webp', move: 'assets/overview/plan-physical.webp' };
+    const I = {
+      clock: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2 1.3"/></svg>',
+      pin: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M8 14.5s-4.5-4.2-4.5-7.6a4.5 4.5 0 0 1 9 0c0 3.4-4.5 7.6-4.5 7.6Z"/><circle cx="8" cy="6.8" r="1.6"/></svg>',
+      cal: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="3.5" width="11" height="10" rx="1.6"/><path d="M2.5 6.8h11M5.5 2v2.6M10.5 2v2.6"/></svg>',
+      video: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="12" height="9" rx="1.6"/><path d="M5.5 14h5M7 6v3.2L9.6 7.6Z"/></svg>',
+      rec: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2h5l3 3v8.5a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z"/><path d="M9.5 2v3h3M6 9.5h4M6 12h2.5"/></svg>',
+      check: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="m5.6 8.2 1.7 1.7 3.2-3.4"/></svg>',
+      gift: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="11" height="3" rx=".8"/><path d="M3.5 9v4.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V9M8 6v8.5M8 6S6.9 2.5 5.3 3.2C4 3.8 5 6 8 6Zm0 0s1.1-3.5 2.7-2.8C12 3.8 11 6 8 6Z"/></svg>',
+      sug: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.6"/><path d="M11 5V3.6A1.6 1.6 0 0 0 9.4 2H3.6A1.6 1.6 0 0 0 2 3.6v5.8A1.6 1.6 0 0 0 3.6 11H5"/></svg>',
+      spark: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3M3.4 3.4l2.1 2.1M10.5 10.5l2.1 2.1M3.4 12.6l2.1-2.1M10.5 5.5l2.1-2.1"/></svg>',
+      dots: '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg>',
+      prev: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg>',
+      next: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6 4.5 9.5"/></svg>'
+    };
+    const VISIT = 'Visit an Everlab or partner clinic to get your full body composition scan.';
+    const EVERY = 'Recommended every 5 years from age 25';
+    const WHEN = ['cal', '1 Sep 2026, 10:30 - 11:10 am'], CLINIC = ['pin', 'Quantum Therapy Sydney', 'link'];
+    const DR = ['dr', 'Recommended by Dr Sarah Chen'];   // the face on the avatar is hers
+    const SUG = [
+      { t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['rec', 'No records']], act: 'View', more: 1 },
+      { t: 'MRI Scan', d: EVERY, img: 'mri', meta: [['rec', 'No records']], act: 'View', more: 1 }
+    ];
+    // each tab: its sections, each a heading (and its dot), its rows, and the
+    // suggestions that fall in it
+    const TL = {
+      up: [
+        { h: 'With your care team', dot: 'care', rows: [{ t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1 }] },
+        { h: 'August 2026', dot: 'now', rows: [
+          { t: 'Onboarding consult', d: VISIT, img: 'consult', meta: [CLINIC, WHEN], act: 'View' },
+          { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1 }
+        ], sug: SUG },
+        { h: 'September 2026', rows: [
+          { t: 'MRI Scan', d: VISIT, img: 'mri', meta: [['pin', 'In person']], act: 'Book', cta: 1, more: 1 },
+          { t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [CLINIC, WHEN], act: 'View' },
+          { t: 'Nutrition review', d: VISIT, img: 'nutri', meta: [['dr', 'Online video call with Dr Sarah Chen'], WHEN], act: 'View' }
+        ] },
+        { h: 'October 2026', rows: [
+          { t: 'Pathology Test', d: VISIT, img: 'path', meta: [DR], act: 'View', more: 1 },
+          { t: 'CT Scan', d: VISIT, img: 'dexa', meta: [DR], act: 'Purchase', more: 1 }
+        ], sug: SUG },
+        { h: '50 years old', rows: [{ t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [['pin', 'In person']], act: 'View', more: 1 }] },
+        { h: '60 years old', rows: [{ t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [['pin', 'In person']], act: 'View', more: 1 }] }
+      ],
+      claim: [
+        { h: 'Included in your membership', dot: 'now', rows: [
+          { t: 'Dexa Scan', d: 'Your yearly body composition and bone density scan.', img: 'dexa', meta: [['gift', 'Included'], ['clock', 'Claim by 31 Dec 2026']], act: 'Claim', cta: 1, more: 1 },
+          { t: 'Pathology Test', d: 'A follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['gift', 'Included'], DR], act: 'Claim', cta: 1, more: 1 },
+          { t: 'Nutrition review', d: 'A 30 minute call with a dietitian on your results.', img: 'nutri', meta: [['gift', 'Included'], ['video', 'Online video call']], act: 'Claim', cta: 1 }
+        ] },
+        { h: 'Partner offers', rows: [
+          { t: 'Movement assessment', d: 'A physio-led assessment of mobility, strength and gait.', img: 'move', meta: [['gift', '20% off with Everlab'], ['pin', 'In person']], act: 'View', more: 1 }
+        ] }
+      ],
+      past: [
+        { h: 'July 2026', dot: 'now', rows: [
+          { t: 'Advanced blood panel', d: '44 biomarkers across heart, metabolic, liver and kidney health.', img: 'path', meta: [['check', 'Completed 13 Jul 2026'], ['rec', 'Report ready']], act: 'View report' },
+          { t: 'Onboarding consult', d: 'Your first consult with your Everlab doctor.', img: 'consult', meta: [['check', 'Completed 2 Jul 2026'], ['dr', 'With Dr Sarah Chen']], act: 'View' }
+        ] },
+        { h: 'February 2026', rows: [
+          { t: 'Dexa Scan', d: 'Body composition and bone mineral density.', img: 'dexa', meta: [['check', 'Completed 20 Feb 2026'], CLINIC], act: 'View report', more: 1 }
+        ] }
+      ]
+    };
+    const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+    const meta = m => '<span>' + (m[0] === 'dr' ? '<img src="' + IMG.dr + '" alt="">' : I[m[0]]) + (m[2] === 'link' ? '<a>' + esc(m[1]) + '</a>' : '<em>' + esc(m[1]) + '</em>') + '</span>';
+    const row = r => '<article class="tlRow" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ')).toLowerCase()) + '">' +
+      (r.img === 'path' ? '<i class="tlTh tlThPath" aria-hidden="true"></i>' : '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">') +
+      '<div class="tlTx"><b>' + esc(r.t) + '</b><p>' + esc(r.d) + '</p></div>' +
+      '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' +
+      '<div class="tlAct"><button class="tlBtn' + (r.cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +
+      (r.more ? '<button class="tlMore" type="button" aria-label="More options">' + I.dots + '</button>' : '') + '</div></article>';
+    const sec = x => '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : '') + '</i>' + esc(x.h) + '</h2>' +
+      '<div class="tlItems">' + x.rows.map(row).join('') + '</div>' +
+      (x.sug ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + x.sug.map(row).join('') + '</div></div>' : '') +
+      '</section>';
+    let tab = 'up';
+    const navState = () => list.querySelectorAll('.tlSug').forEach(g => {
+      const t = g.querySelector('.tlSugTrack'), [pv, nx] = g.querySelectorAll('.tlSugNav button');
+      pv.disabled = t.scrollLeft < 4; nx.disabled = t.scrollLeft + t.clientWidth > t.scrollWidth - 4;
+    });
+    const filter = () => {
+      const v = (q && q.value || '').trim().toLowerCase(); let any = false;
+      list.querySelectorAll('.tlSec').forEach(sc => {
+        let n = 0;
+        sc.querySelectorAll('.tlRow').forEach(r => { const hit = !v || r.dataset.s.indexOf(v) >= 0; r.classList.toggle('gone', !hit); if (hit) n++; });
+        const g = sc.querySelector('.tlSug'); if (g) g.classList.toggle('gone', !g.querySelector('.tlRow:not(.gone)'));
+        sc.classList.toggle('gone', !n); if (n) any = true;
+      });
+      let e = list.querySelector('.tlEmpty');
+      if (!any){ if (!e){ e = document.createElement('div'); e.className = 'tlEmpty'; list.appendChild(e); } e.textContent = 'Nothing matches “' + q.value.trim() + '”'; }
+      else if (e) e.remove();
+      list.classList.toggle('noRail', !any);
+      navState();
+    };
+    const render = () => {
+      list.innerHTML = TL[tab].map(sec).join('');
+      list.querySelectorAll('.tlSugTrack').forEach(t => t.addEventListener('scroll', navState, { passive: true }));
+      filter();
+    };
+    main.querySelectorAll('.tlTab').forEach(b => b.addEventListener('click', () => {
+      tab = b.dataset.t;
+      main.querySelectorAll('.tlTab').forEach(o => { o.classList.toggle('on', o === b); o.setAttribute('aria-selected', String(o === b)); });
+      render();
+    }));
+    if (q) q.addEventListener('input', filter);
+    list.addEventListener('click', e => {
+      const b = e.target.closest('.tlSugNav button'); if (!b) return;
+      const t = b.closest('.tlSug').querySelector('.tlSugTrack'), card = t.querySelector('.tlRow');
+      t.scrollBy({ left: +b.dataset.d * (card ? card.offsetWidth + 8 : t.clientWidth), behavior: 'smooth' });
+    });
+    render();
+    // the bar's ground once the title has gone under it
+    const bar = main.querySelector('.tlBar');
+    main.addEventListener('scroll', () => main.classList.toggle('ovScrolled', bar.getBoundingClientRect().top - main.getBoundingClientRect().top < 60 && main.scrollTop > 6), { passive: true });
+    const sel = document.getElementById('versionSel');
+    const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
+    const open = () => {
+      if (window._svc) window._svc.close();
+      document.body.classList.add('tlOn'); main.scrollTop = 0; main.classList.remove('ovScrolled');
+      if (sel) sel.value = 'tl'; lightDock(-1);   // no tab of the dock is the Timeline
+      requestAnimationFrame(() => { resize(); navState(); });
+    };
+    const close = () => {
+      if (!document.body.classList.contains('tlOn')) return;
+      document.body.classList.remove('tlOn'); lightDock(0);
+      if (sel && sel.value === 'tl') sel.value = '9';
+      requestAnimationFrame(() => resize());
+    };
+    document.addEventListener('everlab:mode', close);
+    addEventListener('resize', navState);
+    window._tl = { open, close };
   })();
   // ...and the desk's, from its bar's disc: the same card as a centred modal
   // at M and L, the bottom sheet inside the device at XS and S ("use a modal
@@ -24662,6 +24943,9 @@
         B(75, 34, 22, 26, 'card', '8px') + B(77, 39, .8, 5, 'ac') + B(77, 47, .8, 5) + B(77, 55, .8, 4) + B(79, 39, 14, 2.5, 'hi') + B(79, 47, 12, 2.5) + B(79, 55, 10, 2.5) + B(75, 66, 16, 4, 'hi'),
       svcMob: () => phone(B(34, 5, 32, 38, 'ph', '10px 10px 0 0') + B(37, 9, 4, 5, 'hi', '50%') + B(59, 9, 4, 5, 'hi', '50%') + B(37, 22, 24, 4, 'lt') + B(37, 30, 26, 9, 'hi', '5px') + B(39, 35, 6, 1.5, 'ac') +
         B(37, 45, 26, 20, 'pe', '6px') + B(39, 48, 6, 2.5, 'ac') + B(39, 53, 20, 3, 'lt') + B(39, 59, 22, 4, 'lt', '4px') + B(37, 70, 16, 3, 'hi') + B(37, 76, 26, 5, 'pe', '4px') + B(37, 84, 26, .6) + B(37, 88, 26, .6)),
+      tlDesk: () => side() + B(30, 8, 26, 5, 'hi') + B(30, 17, 8, 3, 'lt') + B(40, 17, 10, 3) + B(52, 17, 8, 3) + B(78, 15, 16, 7, '', '5px') + B(30, 21.5, 8, .7, 'lt') + B(24.6, 30, 1, 70) +
+        [[29, 'ac'], [48, 'lt'], [72, '']].map(([y, c]) => B(23.6, y, 3, 5, c, '50%') + B(30, y + .5, 14, 3.5, 'hi')).join('') +
+        [35, 55, 78].map(y => B(30, y, 6, 10, 'ph', '4px') + B(38, y + 1, 18, 3, 'lt') + B(38, y + 5.5, 30, 2.5) + B(84, y + 2, 6, 5, '', '4px') + B(91, y + 2, 4, 5, '', '4px')).join(''),
       landing: () => B(6, 7, 10, 4, 'hi') + B(84, 5, 10, 7, 'lt', '99px') + B(6, 32, 8, 2.5) + B(6, 38, 34, 7, 'lt') + B(6, 47, 26, 7, 'lt') + B(6, 60, 34, 2.5) + B(6, 65, 30, 2.5) + B(6, 76, 14, 7, 'hi', '99px') +
         B(52, 12, 42, 80, 'card', '12px') + B(63, 18, 20, 36, 'org') + B(56, 54, 34, 16, 'arc') + B(68, 66, 10, 8, 'lt') + [60, 70, 80].map((x, i) => B(x, 82, 8, 3, i === 1 ? 'lt' : '')).join(''),
       resDesk: () => side() + B(21, 8, 30, 5, 'hi') + B(21, 20, 36, 40, 'ph', '8px') + B(59, 20, 38, 40, 'card', '8px') + B(0, 0, 100, 100, 'dim') +
@@ -24690,6 +24974,7 @@
       { g: 'Insights', n: 'Desktop', m: 18, s: 'insDesk', wide: true, r: true },
       { g: 'Insights', n: 'Mobile', m: 20, s: 'insMob' },
       { g: 'Results received', n: 'Mobile', m: 25, s: 'resMob' },
+      { g: 'Timeline', n: 'Your health journey', m: 9, s: 'tlDesk', tl: true, wide: true },
       { g: 'Concept', n: 'Organ library', m: 7, s: 'library' },
       { g: 'Concept', n: 'Card Nav', m: 0, s: 'cardNav' },
       { g: 'Landing page', n: 'Organ Age', m: 23, s: 'landing', wide: true },
@@ -24708,6 +24993,7 @@
       const p = P[+c.dataset.i]; hide();
       setMode(p.m); resize();
       if (p.svc && window._svc) (p.svc === 'desk' ? window._svc.openDesk : window._svc.openMob)();
+      if (p.tl && window._tl) window._tl.open();
     });
     window._home = { show, hide };
     // the first page: no hash, or #home, opens here; any page hash opens that page
