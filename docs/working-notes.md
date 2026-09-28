@@ -11734,3 +11734,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 **5.523 — Step rows 4px shorter.** "Compress vertically each row by 4px": in the steps list every row is 4px shorter. The bars' minimum goes from 26px to 22px, and the words' padding from 3px to 1px, so the row with the "Your next step" badge shrinks too. Measured rows go from 28/28/26 to 24/24/22, with the 2px between the bars kept.
 
 **5.524 — A single service's steps box on the group cards' lines.** "Top card should follow the same padding as the bottom card; same element alignment, progress and content": a single service's steps box (Pathology, Onboarding consult, MRI Briefing and the rest) keeps its 14/16 padding, the same as the group cards. Its bars and words now sit where they do in a group's cards: bars 8px in (centred under the cards' marks) and words 32px in. Measured in every open object: bars at 620, words at 644.
+
+**5.525 — The waiting Dexa is part of its Member Check-In; a lighter passive grey; thumbnails at radius 16.**
+
+- **Waiting Dexa:** "Wrong, a DEXA includes other related services." The July Dexa Scan waiting on its results is now a member of its Member Check-In, not a lone service. It carries the "Member Check-In · 1 of 3" meta and the "Service 1 of 3" chip, and its list shows its own card (steps only: two done, "Get your results" in progress) above the Diagnostics Review and Member Check-In cards, locked, with "Related service". Its button opens the DEXA page at 3/3.
+- **Passive grey:** "Lighter grey colour." A passive step's progress uses its own token, `--tlPas`: #fff at 72% (ink at 60% in light mode) instead of 50%. That covers the badge's increment and the bar's fill.
+- **Thumbnails:** "Radius 16." Object thumbnails are at radius 16 on desk (from 12). XS keeps its 8 on the 44px thumbnail.
