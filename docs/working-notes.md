@@ -11522,3 +11522,13 @@ Every other row stays a simple service. A group's Details opens one vertical lin
   - A group of one counts its steps rather than its one service: seven segments, "Step 3 of 7".
   - Its button is Confirm delivery, a primary action, so the row comes open.
   - The service has its own page (`gene` in SVC): at home, posted back, Eugene Genetics, referral, saliva-sample instructions and an about; opened from the row it reads "In progress · Confirm delivery. · 3/7".
+
+**5.483 — The DEXA flow as three rows; step titles regular.** "DEXA timeline: need these 3 objects in the timeline, all in the same timeline block" (answered: three separate rows): the Member Check-In group row in August is replaced by its three services, one after the other in the August block.
+
+- **DEXA Scan:** an orange "Book appointment" chip after its title, "Book your DEXA scan to measure body composition and bone density". Its own steps are Book appointment · Booked · Done (a row can now name its steps; its page shows the same three, 1/3). `[Book | ⋯]`, primary, so it comes open.
+- **Diagnostics Review:** a grey chip, "You need to complete your DEXA Scan before you can book this appointment.", no button, its picture and title dimmed (`.tlRow.lock`), no steps. Its page is the locked one, with Book appointment greyed out.
+- **Member Check-In:** the same, waiting on Diagnostics Review.
+
+Each carries "Member Check-In · x of 3" to say they belong together. Rows can now take a chip after the title (`tag`) and go without buttons.
+
+"Regular": the steps' titles are weight 400 (from 500), the current one included; the orange ring and the brighter colour still mark it.
