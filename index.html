@@ -6565,11 +6565,11 @@
        Purchase on a light grey plate (#484848 on the page), the ⋯ on a faint
        one (#1d1d1d), the suggestions a #1d1d1d tray round a solid #2a2a2a
        card, the field filled, the rail, the dots and the rules barely there */
-    --tlInk:#f4f4f4;--tlTx:#ececec;--tlSub:#8b8b86;--tlLine:rgba(255,255,255,.04);--tlRing:rgba(255,255,255,.12);
+    --tlInk:#f4f4f4;--tlTx:#ececec;--tlSub:#8b8b86;--tlLine:rgba(255,255,255,.07);--tlHover:rgba(255,255,255,.055);--tlRing:rgba(255,255,255,.12);
     --tlRail:rgba(255,255,255,.035);--tlDotRing:rgba(255,255,255,.1);--tlField:rgba(255,255,255,.055);
     --tlPill:rgba(255,255,255,.24);--tlPillH:rgba(255,255,255,.3);--tlGhost:rgba(255,255,255,.055);--tlGhostH:rgba(255,255,255,.1);--tlCta:#fff;--tlCtaInk:#111;--tlSplit:rgba(0,0,0,.32);--tlSplitC:rgba(0,0,0,.14);
     --tlBox:rgba(255,255,255,.055);--tlCard:#2a2a2a;--tlCardRing:transparent;color:var(--tlTx);}
-  body.light #dTl{--tlInk:#111;--tlTx:#2e1f1a;--tlSub:#7a716a;--tlLine:rgba(46,31,26,.1);--tlRing:rgba(46,31,26,.16);
+  body.light #dTl{--tlInk:#111;--tlTx:#2e1f1a;--tlSub:#7a716a;--tlLine:rgba(46,31,26,.1);--tlHover:rgba(46,31,26,.045);--tlRing:rgba(46,31,26,.16);
     --tlRail:rgba(46,31,26,.1);--tlDotRing:rgba(46,31,26,.16);--tlField:transparent;
     --tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlGhost:rgba(46,31,26,.07);--tlGhostH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;--tlSplit:rgba(46,31,26,.14);--tlSplitC:rgba(255,255,255,.22);
     --tlBox:rgba(46,31,26,.05);--tlCard:#fff;--tlCardRing:rgba(46,31,26,.06);}
@@ -6589,11 +6589,21 @@
   body.light .tlBar::before{background:linear-gradient(180deg,rgba(247,242,233,.7) 0%,rgba(247,242,233,.6) 30%,rgba(247,242,233,.35) 65%,rgba(247,242,233,0) 100%);}
   .tlBar .ovGround{bottom:-28px;}
   #dTl.ovScrolled .tlBar::before, #dTl.ovScrolled .tlBar .ovGround{opacity:1;}
-  .tlBarIn{display:flex;align-items:center;gap:16px;padding:10px 0 8px;}
-  .tlTabs{display:flex;gap:4px;}
-  .tlTab{height:40px;padding:0 12px;border:0;border-bottom:2px solid transparent;background:none;font:inherit;font-size:14px;color:var(--tlSub);cursor:pointer;transition:color .16s ease,border-color .16s ease;}
+  .tlBarIn{display:flex;align-items:flex-end;gap:16px;padding:10px 0 0;box-shadow:inset 0 -1px 0 rgba(255,255,255,.06);}   /* the hairline the whole width, as Insights' */
+  body.light .tlBarIn{box-shadow:inset 0 -1px 0 rgba(46,31,26,.09);}
+  .tlBarIn .tlSearch{margin-bottom:6px;}
+  /* the tabs as the Insights desk's ("same behaviour as the tabs from
+     Insights, with movement"): the words at 15 on a hairline, 30 apart, and
+     a 2px underline that slides and resizes to the one pressed, on the same
+     curve and time as theirs */
+  .tlTabs{position:relative;display:flex;gap:30px;}
+  .tlTab{position:relative;z-index:1;height:auto;padding:10px 0 13px;border:0;background:none;font:inherit;font-size:15px;color:var(--tlSub);cursor:pointer;transition:color .16s ease;}
   .tlTab:hover{color:var(--tlTx);}
-  .tlTab.on{color:var(--tlInk);border-bottom-color:var(--tlInk);}
+  .tlTab.on{color:var(--tlInk);}
+  .tlThumb{position:absolute;left:0;bottom:0;height:2px;width:0;border-radius:2px;background:#ececec;pointer-events:none;
+    transition:transform .34s cubic-bezier(.22,.61,.36,1), width .34s cubic-bezier(.22,.61,.36,1);}
+  body.light .tlThumb{background:#2e1f1a;}
+  .tlTabs.noAnim .tlThumb{transition:none;}
   .tlSearch{margin-left:auto;display:flex;align-items:center;gap:8px;width:200px;height:40px;padding:0 14px;border-radius:10px;background:var(--tlField);box-shadow:inset 0 0 0 1px var(--tlRing);color:var(--tlSub);box-sizing:border-box;}
   .tlSearch svg{flex:none;width:16px;height:16px;}
   .tlSearch input{flex:1 1 auto;min-width:0;border:0;background:none;outline:0;font:inherit;font-size:14px;color:var(--tlTx);padding:0;}
@@ -6613,7 +6623,17 @@
   /* a row: the picture, the title and the line, what and where under them,
      the actions at the right */
   .tlRow{cursor:pointer;display:grid;grid-template-columns:80px minmax(0,1fr) auto;grid-template-areas:"th tx act" "th meta act";column-gap:14px;align-items:start;padding:18px 0;}
-  .tlItems .tlRow + .tlRow, .tlSugTrack .tlRow + .tlRow{border-top:1px solid var(--tlLine);}
+  /* hover: the whole row lifts onto a rounded tile reaching 24 past the
+     picture and the buttons ("add hover state"); the rule between rows is
+     as wide as the tile ("also need small divider") and steps aside for it */
+  .tlRow{position:relative;isolation:isolate;}
+  .tlRow::before{content:"";position:absolute;top:0;bottom:0;left:-24px;right:-24px;z-index:-1;border-radius:20px;background:var(--tlHover);opacity:0;transition:opacity .18s ease;pointer-events:none;}
+  .tlItems .tlRow + .tlRow::after, .tlSugTrack .tlRow + .tlRow::after{content:"";position:absolute;top:0;left:-24px;right:-24px;height:1px;background:var(--tlLine);transition:opacity .18s ease;}
+  .tlSugTrack .tlRow::before{left:-8px;right:-10px;border-radius:14px;background:rgba(255,255,255,.04);} .tlSugTrack .tlRow + .tlRow::after{left:0;right:0;}
+  @media (hover:hover){
+    .tlRow:hover::before{opacity:1;}
+    .tlRow:hover::after, .tlRow:hover + .tlRow::after{opacity:0;}
+  }
   .tlTh{grid-area:th;width:80px;height:80px;border-radius:8px;object-fit:cover;display:block;background:#222;}
   .tlTh.tlThPath{background:radial-gradient(120% 90% at 70% 20%,#f59a6e 0%,#ef6a3a 45%,#b8401c 100%);}
   .tlTx{grid-area:tx;min-width:0;padding-top:2px;}
@@ -6716,8 +6736,9 @@
      suggestions a carousel of cards with its arrows */
   @container tl (max-width:540px){   /* XS's 370 of content; S's 552 keeps the rail, as the tablet keeps the desk's columns elsewhere */
     .tlH1{font-size:26px;margin-bottom:10px;}
-    .tlBarIn{flex-direction:column;align-items:stretch;gap:14px;padding:4px 0 10px;}
-    .tlTabs{gap:0;} .tlTab{flex:1 1 0;height:44px;padding:0;font-size:15px;}
+    .tlBarIn{flex-direction:column;align-items:stretch;gap:14px;padding:4px 0 10px;box-shadow:none !important;} .tlBarIn .tlSearch{margin-bottom:0;}
+    .tlTabs{box-shadow:inset 0 -1px 0 rgba(255,255,255,.06);} body.light .tlTabs{box-shadow:inset 0 -1px 0 rgba(46,31,26,.09);}
+    .tlTabs{gap:0;align-self:stretch;} .tlTab{flex:1 1 0;padding:12px 0 13px;font-size:15px;}
     .tlSearch{width:auto;margin:0;height:44px;border-radius:12px;} .tlSearch input{font-size:15px;}
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:30px 0 4px;} .tlSec:first-child .tlH{margin-top:18px;}
@@ -6732,7 +6753,8 @@
     .tlSugTrack{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;background:none;box-shadow:none;border-radius:0;padding:2px 12px;scroll-padding:0 12px;}
     .tlSugTrack::-webkit-scrollbar{display:none;}
     .tlSugTrack .tlRow{flex:0 0 86%;scroll-snap-align:start;box-sizing:border-box;padding:16px;border-radius:18px;background:var(--tlCard);box-shadow:0 0 0 1px var(--tlCardRing);}
-    .tlSugTrack .tlRow + .tlRow{border-top:0;}
+    .tlSugTrack .tlRow + .tlRow::after{display:none;} .tlSugTrack .tlRow::before{display:none;}
+    .tlRow::before{left:-10px;right:-10px;border-radius:16px;} .tlItems .tlRow + .tlRow::after{left:0;right:0;}
   }
   body[data-bp="xs"] #dTl{padding:64px 16px 110px;}
   body[data-bp="xs"] #dTl .tlBar{top:-19px;margin:0 -16px;padding:0 16px;}   /* stuck under the status strip, its ground reaching up behind it */
@@ -10414,7 +10436,7 @@
   <main class="dvMain" id="dTl" aria-label="Timeline">
     <div class="tlCol"><h1 class="tlH1">Your health journey</h1></div>
     <div class="tlBar"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tlCol tlBarIn">
-      <div class="tlTabs" role="tablist" aria-label="Timeline">
+      <div class="tlTabs" role="tablist" aria-label="Timeline"><i class="tlThumb" aria-hidden="true"></i>
         <button class="tlTab on" type="button" role="tab" aria-selected="true" data-t="up">Upcoming</button>
         <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="claim">Yours to claim</button>
         <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="past">Past</button>
@@ -22837,11 +22859,19 @@
       list.querySelectorAll('.tlSugTrack').forEach(t => t.addEventListener('scroll', navState, { passive: true }));
       filter();
     };
+    // the underline: measured off the pressed tab, placed without the slide
+    // the first time the bar has a width (the page just came up)
+    const tabsEl = main.querySelector('.tlTabs'), thumb = main.querySelector('.tlThumb');
+    const placeThumb = () => { const on = main.querySelector('.tlTab.on'); if (!thumb || !on || !tabsEl.offsetWidth) return;
+      if (!thumb.dataset.set){ tabsEl.classList.add('noAnim'); requestAnimationFrame(() => requestAnimationFrame(() => tabsEl.classList.remove('noAnim'))); thumb.dataset.set = '1'; }
+      thumb.style.width = on.offsetWidth + 'px'; thumb.style.transform = 'translateX(' + on.offsetLeft + 'px)'; };
     main.querySelectorAll('.tlTab').forEach(b => b.addEventListener('click', () => {
       tab = b.dataset.t;
       main.querySelectorAll('.tlTab').forEach(o => { o.classList.toggle('on', o === b); o.setAttribute('aria-selected', String(o === b)); });
-      render();
+      placeThumb(); render();
     }));
+    addEventListener('resize', placeThumb);
+    if (window.ResizeObserver && tabsEl) new ResizeObserver(() => placeThumb()).observe(tabsEl);   // a breakpoint's new width re-measures it, with no slide from the old place
     if (q) q.addEventListener('input', filter);
     // the whole row opens its service's page (View, Book and the rest with
     // it), its content the row's own; the ⋯ is its own menu, and the back
@@ -22875,7 +22905,7 @@
       if (window._svc && document.body.classList.contains('svcOn')) window._svc.close();
       document.body.classList.add('tlOn'); main.scrollTop = keep ? lastTop : 0; main.classList.toggle('ovScrolled', !!keep && lastTop > 6);
       if (sel) sel.value = 'tl'; lightDock(-1);   // no tab of the dock is the Timeline
-      requestAnimationFrame(() => { resize(); navState(); });
+      requestAnimationFrame(() => { resize(); navState(); if (thumb) delete thumb.dataset.set; placeThumb(); });   // a new width (a breakpoint, the rail) places it afresh
     };
     const close = quiet => {
       if (!document.body.classList.contains('tlOn')) return;
