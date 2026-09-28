@@ -11541,3 +11541,9 @@ Each carries "Member Check-In · x of 3" to say they belong together. Rows can n
 - Concept (six)
 
 A row has the page's name, one line on what it is and its count of entry points at the left, and its entry points at the right, cards of one size (every shot the same 16:10, so the drawings keep their proportions) that wrap when there are many. The cards drop their eyebrow, since the row names the page, and read just Desktop, Mobile or the concept's name. Timeline gains a Mobile entry point: the same page opened at the forced XS in the phone frame (its Desktop card puts the viewport back to Auto). Under 900px a row stacks its header over its cards, and under 520px the cards go one per line.
+
+**5.485 — A locked object stands under its blocker, and says so.** "If an object is not available it's because another is not finished yet; then it needs to be below the blocker object, and we need to see a step chip so we know what blocks it."
+
+- **Order:** the renderer puts each row that waits on another (`need`) directly under that row, chains included (DEXA Scan → Diagnostics Review → Member Check-In). This holds in every section and tab whatever order the data lists them in; a row whose blocker is not in the section keeps its place.
+- **Chip:** a locked row's progress chip is a blocker chip. It shows a lock, then the blocker's own progress (DEXA's three segments with step 1 in hand; Diagnostics Review's three still empty, since it is itself waiting), then "Waiting on DEXA Scan".
+- **Tap:** the chip scrolls to the blocker and lights it for a moment (the hover tile, washed orange, fading back); it never opens a page. The lock line under the title stays as it was.

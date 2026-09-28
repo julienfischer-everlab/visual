@@ -6646,6 +6646,10 @@
   .tlTx b{display:block;font-size:17px;font-weight:500;color:var(--tlInk);line-height:1.3;letter-spacing:-.1px;}   /* 15 -> 17: "increase title font size by 2px" */
   .tlTl{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;} .tlTl .tlChip{height:24px;}
   .tlRow.lock .tlTh{opacity:.45;} .tlRow.lock .tlTx b{color:var(--tlSub);}
+  /* the blocker chip: a lock, the blocker's progress, whom it waits on; it takes you there */
+  .tlBlk .tlLk{width:12px;height:12px;color:var(--tlSub);} .tlBlk .tlSeg{margin-right:2px;}
+  .tlRow.flash::before{opacity:1 !important;animation:tlFlash 1.6s ease;}
+  @keyframes tlFlash{0%{background:rgba(247,131,89,.16);}100%{background:var(--tlHover);}}
   .tlTx p{margin:3px 0 0;font-size:13px;line-height:1.4;color:var(--tlSub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .tlMeta{grid-area:meta;display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:12.5px;color:var(--tlSub);min-width:0;}
   .tlMeta span{display:inline-flex;align-items:center;gap:6px;min-width:0;} .tlMeta em{font-style:normal;}
@@ -22835,6 +22839,15 @@
     // the row's own service and state: a group's is its active service's
     const own = r => { if (!r.group) return r; const { g, a } = groupOf(r), x = g[a < 0 ? g.length - 1 : a]; return x; };
     const svcOpts = x => ({ from: 'tl', t: x.t, tag: x.tag, d: x.d, at: x.at, need: x.need, steps: x.steps });   // what a group's service tells its page
+    const LOCK = '<svg class="tlLk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>';
+    // the row another waits on, in the tab showing; and where a row stands in its own steps
+    const blockerOf = r => { for (const sc of TL[tab]) for (const x of sc.rows) if (x !== r && x.t === r.need) return x; return null; };
+    const rowPlan = x => { if (x.state === 'locked') { const q = PL(x.svc, x.state); return q ? Object.assign({}, q, { steps: x.steps || q.steps, at: -1 }) : null; } let q = PL(x.svc, x.state); if (q && x.steps) q = Object.assign({}, q, { steps: x.steps }); return q; };
+    // a row waiting on another stands under it ("the object needs to be below the blocker"), however the data lists them
+    const ordered = rows => { const out = [], rest = rows.slice();
+      const place = x => { out.push(x); rest.filter(y => y.need === x.t).forEach(y => { rest.splice(rest.indexOf(y), 1); place(y); }); };
+      rows.forEach(x => { if (rest.indexOf(x) < 0) return; if (x.need && rows.some(y => y !== x && y.t === x.need)) return; rest.splice(rest.indexOf(x), 1); place(x); });
+      return out.concat(rest); };
     const stepList = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : ''; return '<li class="' + c + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b></div></li>'; }).join('') + '</ol>';   // titles only ("keep the steps short, just title, not sub")
     const prog = r => {
       if (r.group){
@@ -22850,6 +22863,11 @@
             '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
         return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button></div>' +
           '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
+      }
+      if (r.state === 'locked' && r.need){   // waiting on another: its chip says which, with the blocker's own progress
+        const bk = blockerOf(r), bp = bk ? rowPlan(bk) : null;
+        const segs = bp ? bp.steps.map((st, j) => '<i class="' + (bp.at >= bp.steps.length || j < bp.at ? 'on' : j === bp.at ? 'cur' : '') + '"></i>').join('') : '';
+        return '<div class="tlProg"><button class="tlTgl tlBlk" type="button" data-need="' + esc(r.need) + '" aria-label="Waiting on ' + esc(r.need) + ', show it">' + LOCK + (segs ? '<span class="tlSeg" aria-hidden="true">' + segs + '</span>' : '') + 'Waiting on ' + esc(r.need) + '</button></div>';
       }
       if (!r.svc || r.state === 'suggested' || r.state === 'later' || r.state === 'locked') return '';   // not yours yet: no steps to show
       let p = PL(r.svc, r.state); if (!p) return ''; if (r.steps) p = Object.assign({}, p, { steps: r.steps });
@@ -22869,7 +22887,7 @@
       (r.act ? '<div class="tlAct' + (r.more ? ' split' : '') + (r.cta ? ' cta' : '') + '"><button class="tlBtn' + (r.cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +
       (r.more ? '<button class="tlMore" type="button" aria-label="More options">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
     const sec = x => '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : '') + '</i>' + esc(x.h) + '</h2>' +
-      '<div class="tlItems">' + x.rows.map(row).join('') + '</div>' +
+      '<div class="tlItems">' + ordered(x.rows).map(row).join('') + '</div>' +
       (x.sug ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + x.sug.map(row).join('') + '</div></div>' : '') +
       '</section>';
     let tab = 'up';
@@ -22916,6 +22934,9 @@
     list.addEventListener('click', e => {
       const r = e.target.closest('.tlRow');
       if (!r || e.target.closest('.tlMore') || !window._svc) return;
+      const bl = e.target.closest('.tlBlk');
+      if (bl){ const t = bl.dataset.need, to = [...list.querySelectorAll('.tlRow')].find(x => ROWS[+x.dataset.r] && ROWS[+x.dataset.r].t === t);
+        if (to){ to.scrollIntoView({ behavior: 'smooth', block: 'center' }); to.classList.remove('flash'); void to.offsetWidth; to.classList.add('flash'); setTimeout(() => to.classList.remove('flash'), 1600); } return; }
       const tg = e.target.closest('.tlTgl');
       if (tg){ const o = r.classList.toggle('open'); tg.setAttribute('aria-expanded', String(o)); return; }
       const d = ROWS[+r.dataset.r]; if (!d) return;
