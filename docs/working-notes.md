@@ -11748,3 +11748,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Dexa waiting on results:** "Step 3 of 3", two green and the passive grey, "Get your results".
 - **DEXA to book:** "Step 1 of 3", "Book appointment".
 - **Microbiome:** "Step 4 of 8", "Collect sample".
+
+**5.528 — The service in hand marked with a filled disc, not the white ring.** "Replace by circle filled 8% bg fff" (this one: the white ring): in a group's list, the service in hand is marked with a filled 16px disc at #fff 8% (ink 8% in light mode) instead of the 2px white ring. This covers the ring on the active card's name and on DEXA's card in the locked objects' lists. The done tick and the locks stay.
