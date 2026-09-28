@@ -4955,6 +4955,14 @@
   body.noDocs .docRow{display:none;}
   body.noDocs .mMedsHead .mUpload{display:inline-block;}
   body.noDocs .dash .rcWrap.n1 .rcCol{display:none;}
+  /* The desk as the phone: the upload is a link at the Medical records
+     title's right, on its line ("Upload record ... at the same level than
+     the title Medical records on the right side"), and the card that held it
+     goes -- so at one report the column that was only that card goes too,
+     and past one the Other reports stack is the right column alone */
+  .dash .docRow{display:none !important;}
+  .dash .rcWrap.n1 .rcCol{display:none;}
+  body.noDocs .dash .mMedsHead .docLink.headUp{display:none;}
   /* In the desk cards layout's right column (three or more reports) the row
      stands under the Other reports stack, so the whole block -- main card,
      stack, the two -- is one bento at the biomarker bento's 16px gap; the
@@ -5103,7 +5111,7 @@
      desk the tile is held at 200px rather than 16:10 of a 500px column,
      which made a 320px poster of a document icon. */
   body.repVisual .rcWrap.n2 .rcCard, body.repVisual .rcWrap.n4 > .rcCard.rcBig{height:auto;}
-  body.repVisual .dash .rcCard.rcBig .rcVis{aspect-ratio:auto;height:auto;min-height:200px;}
+  body.repVisual .dash .rcCard.rcBig .rcVis{aspect-ratio:auto;height:auto;min-height:156px;}   /* 64 under the 220 it stood at ("reduce height bg 64"): the card and the column beside it come down with it */
   body.repTab.repVisual:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap:is(.n2,.nCar) .rcCard{height:auto;}
   /* the desk's one-report row: the header on the left at the card's full
      height, the lines beside it in the card's padding */
@@ -9385,6 +9393,7 @@
         </div>
         <div class="mMedsHead">
           <h3>Medical records<button class="inf secInf" type="button" data-info="records" aria-label="About medical records"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.99996 0.666016C12.05 0.666016 15.3333 3.94926 15.3333 7.99935C15.3333 12.0494 12.05 15.3327 7.99996 15.3327C3.94987 15.3327 0.666626 12.0494 0.666626 7.99935C0.666626 3.94926 3.94987 0.666016 7.99996 0.666016ZM7.99996 1.99935C4.68625 1.99935 1.99996 4.68564 1.99996 7.99935C1.99996 11.3131 4.68625 13.9993 7.99996 13.9993C11.3137 13.9993 14 11.3131 14 7.99935C14 4.68564 11.3137 1.99935 7.99996 1.99935ZM7.99996 7.33268C8.36815 7.33268 8.66663 7.63116 8.66663 7.99935V10.666C8.66663 11.0342 8.36815 11.3327 7.99996 11.3327C7.63177 11.3327 7.33329 11.0342 7.33329 10.666V7.99935C7.33329 7.63116 7.63177 7.33268 7.99996 7.33268ZM8.00647 4.66602C8.37466 4.66602 8.67314 4.96449 8.67314 5.33268C8.67314 5.70087 8.37466 5.99935 8.00647 5.99935H7.99996C7.63177 5.99935 7.33329 5.70087 7.33329 5.33268C7.33329 4.96449 7.63177 4.66602 7.99996 4.66602H8.00647Z"/></svg></button></h3>
+          <button class="docLink rcUpBtn headUp" type="button">Upload records<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.5V2.8M4.8 6 8 2.8 11.2 6M2.5 10.8v2.2a.8.8 0 0 0 .8.8h9.4a.8.8 0 0 0 .8-.8v-2.2"/></svg></button>
           <button class="mUpload" type="button">Upload document</button>
         </div>
         <div class="dMedBar" id="dMedBar">
@@ -21609,7 +21618,7 @@
       const l = e.target.closest('.siLink');
       if (!l) return;
       hide();
-      const up = document.querySelector(desk ? '.dash .docUpload' : '#phone .docUpload');
+      const up = document.querySelector(desk ? '#dMedsWrap .headUp' : '#phone .docUpload');
       if (up) setTimeout(() => up.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
     });
     addEventListener('keydown', e => { if (e.key === 'Escape' && wrap.classList.contains('on')) hide(); });
