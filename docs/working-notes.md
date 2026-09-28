@@ -11703,3 +11703,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **Locked object:** when the object's own service is locked (Diagnostics Review, Member Check-In), its card stays the context one (8%, full title, no badge) but carries no steps. The group's service in hand, the one everything waits on (DEXA Scan), opens instead with its description and its steps (Book appointment with "Your next step", Booked, Done). It keeps its "Related service" badge.
 - **Object in hand:** when the object's own service is the one in hand (DEXA's object), nothing changes; its own card carries the steps.
+
+**5.517 — Steps only ever show in their own service's object.** "Never show the step breakdown outside of the parent service": a service's steps appear only in its own object's list.
+
+- **Locked object:** in Diagnostics Review's or Member Check-In's list, the group's services are names only. DEXA carries its ring and "Related service". The object's own card is marked at 8% with its lock, with no steps on any card.
+- **DEXA:** its steps (Book appointment / Booked / Done) show only in DEXA's own object.
+- **Microbiome:** the group object with no focus is its own service in hand, so it still shows that service's steps.
+- **Removed:** the blocker-first step list for a locked group card (5.515) is gone.

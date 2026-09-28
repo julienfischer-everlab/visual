@@ -22963,15 +22963,12 @@
         const lab = a < 0 ? 'Completed' : one ? 'Step ' + (os.at + 1) + ' of ' + os.steps.length : 'Service ' + (a + 1) + ' of ' + g.length;   // the count is the chip ("Step 1 of 3 -> merge into chip"), no status beside it
         const kind = (x, i) => x.state === 'done' ? 'on' : i === a ? 'cur' : x.state === 'soon' ? 'soon' : 'lock';
         const mi = r.focus != null ? r.focus : a < 0 ? g.length - 1 : a;   // the card that opens is the object's own service, not the group's one in hand ("the master active card should always == the context")
-        const waitList = x => { const bk = g.find(y => nm(y) === x.need), bl = bk ? (bk.state === 'done' ? 'Completed' : bk.p.at < 0 ? 'Not started' : 'Step ' + (bk.p.at + 1) + ' of ' + bk.p.steps.length) : '';
-          return '<ol class="tlStepL"><li class="cur"><i class="tlMk"></i><div class="tx"><b>Complete your ' + esc(x.need) + '</b><span class="tlChip o tlNext">Your next step</span><button class="tlGo" type="button" data-need="' + esc(x.need) + '">' + esc(x.need) + (bl ? ' \u00b7 ' + bl : '') + ' \u2192</button></div></li>' +
-            x.p.steps.map(st => '<li><i class="tlMk"></i><div class="tx"><b>' + esc(st[0]) + '</b></div></li>').join('') + '</ol>'; };   // a locked one's steps: its blocker first, then its own, as a locked object's
         const item = (x, i) => { const k = kind(x, i), m = i === mi;
           const chip = m ? '' : '<span class="tlChip tlRelB">Related service</span>';   // the ones not in hand: just their names and a mini badge on the right ("remove the sub title and badge"; "add a mini badge right side of the inactive service card 'Related service'")
-          // the steps sit on the card whose step is in hand: the object's own, or, when it is locked, the group's service in hand it waits on ("don't show the steps in the active but in the blocker before, DEXA scan")
-          const ml = g[mi] && g[mi].state === 'locked', st = ml ? i === a && !m : m;
+          // a service's steps only ever show in its own object: a locked object's list is its group's names, its own card marked, no steps ("never show the step breakdown outside of the parent service")
+          const st = m && !(g[mi] && g[mi].state === 'locked');
           const line = st && x.d ? esc(x.d) : '';
-          const subs = st && x.p.steps.length ? '<div class="tlSubL">' + stepList(x.p) + '</div>' : m && ml && a < 0 && x.need ? '<div class="tlSubL">' + waitList(x) + '</div>' : '';   // the same rings as a single service's steps ("keep same style for bullet indicator")
+          const subs = st && x.p.steps.length ? '<div class="tlSubL">' + stepList(x.p) + '</div>' : '';   // the same rings as a single service's steps ("keep same style for bullet indicator")
           return '<li class="' + k + (m ? ' main' : '') + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : k === 'lock' || k === 'soon' ? LOCKF : '') + '</i><div class="tlGtx">' + 
             '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + '' + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
         const stack = '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
