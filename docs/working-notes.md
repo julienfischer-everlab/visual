@@ -11633,3 +11633,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **The group row:** Service 1 of 3, the badge carrying the increments and the step in hand, `[Book | ⋯]`, open as a primary.
 - **Removed as duplicates of it:** the two locked rows it made redundant (so Later, now empty, is gone), and the second Member Check-In group in October.
 - **What stays:** a single service can still name the services after it (`then`), and a locked service standing on its own still goes to Later.
+
+**5.503 — A group's services as objects placed by their own state, each with the group's cards.** "This is locked because the DEXA is not completed yet, so it should appear in Later; need to use the same list of services inside the DEXA service": the Member Check-In group's three services are now three objects, each placed by its own state. DEXA Scan in August (in hand, `[Book | ⋯]`, open). Diagnostics Review and Member Check-In in Later, dimmed, with their "Waiting on DEXA Scan" / "Waiting on Diagnostics Review" chips, in blocker order.
+
+- **Inside each:** the same list of the group's service cards (one `CHECKIN` definition for all three): DEXA in hand with its steps and "Your next step", then the two locked cards. The object's own card is outlined in the list (`focus`).
+- **Chip:** Service 1 of 3 on DEXA's object; the Waiting on chip over the same list on the locked ones.
+- **Taps:** an object's button, title or row opens its own service's page, not the group's active one. A card in the list opens that card's service.

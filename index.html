@@ -6722,6 +6722,7 @@
   .tlGrp > li{background:var(--tlBox);border-radius:10px;padding:14px 16px !important;transition:background .16s ease;}
   .tlSugTrack .tlGrp > li{background:rgba(255,255,255,.05);}
   .tlGrp > li:hover{background:var(--tlGhostH);}
+  .tlGrp > li.me{box-shadow:inset 0 0 0 1px var(--tlRing);}   /* the object's own service in its group's list */
   .tlGrp > li::before{display:none;}
   .tlGrp > li{position:relative;display:flex;gap:12px;padding:0 0 16px;cursor:pointer;}
   .tlGrp > li:last-child{padding-bottom:2px;}
@@ -22845,6 +22846,10 @@
     const EVERY = 'Recommended every 5 years from age 25';
     const WHEN = ['cal', '1 Sep 2026, 10:30 - 11:10 am'], CLINIC = ['pin', 'Quantum Therapy Sydney', 'link'];
     const DR = ['dr', 'Recommended by Dr Sarah Chen'];   // the face on the avatar is hers
+    const BOOK3 = [['Book appointment', ''], ['Booked', ''], ['Done', '']];
+    const CHECKIN = [{ svc: 'dexa', state: 'book', t: 'DEXA Scan', tag: 'Book appointment', d: 'Book your DEXA scan to measure body composition and bone density', steps: BOOK3, at: 0 },
+      { svc: 'diag', state: 'locked', tag: 'Book appointment', need: 'DEXA Scan' },
+      { svc: 'checkin', state: 'locked', tag: 'Book appointment', need: 'Diagnostics Review' }];
     const SUG = [
       { t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['rec', 'No records']], act: 'View', more: 1, svc: 'dexa', state: 'suggested' },
       { t: 'MRI Scan', d: EVERY, img: 'mri', meta: [['rec', 'No records']], act: 'View', more: 1, svc: 'mri', state: 'suggested' }
@@ -22857,11 +22862,13 @@
         { h: 'August 2026', dot: 'now', rows: [
           { t: 'Onboarding consult', d: VISIT, img: 'consult', meta: [CLINIC, WHEN], act: 'View', svc: 'consult', state: 'booked', when: WHEN[1] },
           { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1, svc: 'brief', state: 'book' },
-          // DEXA is part of the Member Check-In service group, so it is the group, with a card per service ("the DEXA is part of a group of services, same as this one: use the separate service cards")
-          { t: 'Member Check-In', d: 'Your yearly check-in: a DEXA scan, a review of your diagnostics, then your care team.', img: 'dexa', meta: [['sug', '3 services'], ['clock', 'Due by 30 Sep 2026']], act: 'Book', cta: 1, more: 1,
-            group: [{ svc: 'dexa', state: 'book', t: 'DEXA Scan', tag: 'Book appointment', d: 'Book your DEXA scan to measure body composition and bone density', steps: [['Book appointment', ''], ['Booked', ''], ['Done', '']], at: 0 },
-              { svc: 'diag', state: 'locked', tag: 'Book appointment', need: 'DEXA Scan' },
-              { svc: 'checkin', state: 'locked', tag: 'Book appointment', need: 'Diagnostics Review' }] },
+          // each service of the Member Check-In group is its own object, placed by its own state -- DEXA here, the two waiting on it in Later -- and each shows the group's list of service cards, its own outlined ("locked because DEXA isn't done, so for Later"; "the same list of services inside the DEXA")
+          { t: 'DEXA Scan', d: 'Book your DEXA scan to measure body composition and bone density', img: 'dexa', meta: [['sug', 'Member Check-In \u00b7 1 of 3'], ['clock', 'Due by 30 Sep 2026']], act: 'Book', cta: 1, more: 1,
+            svc: 'dexa', state: 'book', steps: BOOK3, group: CHECKIN, focus: 0 },
+          { t: 'Diagnostics Review', d: 'You need to complete your DEXA Scan before you can book this appointment.', img: 'consult', tag: 'Book appointment', lock: 1, meta: [['sug', 'Member Check-In \u00b7 2 of 3']],
+            svc: 'diag', state: 'locked', need: 'DEXA Scan', group: CHECKIN, focus: 1 },
+          { t: 'Member Check-In', d: 'You need to complete your Diagnostics Review before you can book this appointment.', img: 'brief', tag: 'Book appointment', lock: 1, meta: [['sug', 'Member Check-In \u00b7 3 of 3']],
+            svc: 'checkin', state: 'locked', need: 'Diagnostics Review', group: CHECKIN, focus: 2 },
         ], sug: SUG },
         { h: 'September 2026', rows: [
           { t: 'MRI Scan', d: VISIT, img: 'mri', meta: [['pin', 'In person']], act: 'Book', cta: 1, more: 1, svc: 'mri', state: 'book' },
@@ -22912,7 +22919,7 @@
     // a group's services, the one in hand first not done
     const groupOf = r => { const g = r.group.map(x => { const p = PL(x.svc, x.state) || { t: '', steps: [], at: -1 }; return Object.assign({}, x, { p: { t: p.t, steps: x.steps || p.steps, at: x.at != null ? x.at : p.at } }); }); const a = g.findIndex(x => x.state !== 'done'); return { g, a }; };
     // the row's own service and state: a group's is its active service's
-    const own = r => { if (!r.group) return r; const { g, a } = groupOf(r), x = g[a < 0 ? g.length - 1 : a]; return x; };
+    const own = r => { if (!r.group) return r; const { g, a } = groupOf(r); if (r.focus != null) return g[r.focus]; const x = g[a < 0 ? g.length - 1 : a]; return x; };
     const svcOpts = x => ({ from: 'tl', t: x.t, tag: x.tag, d: x.d, at: x.at, need: x.need, steps: x.steps });   // what a group's service tells its page
     const LOCK = '<svg class="tlLk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>';
     // the row another waits on, in the tab showing; and where a row stands in its own steps
@@ -22939,10 +22946,15 @@
           const chip = x.tag && k !== 'on' && k !== 'cur' ? '<span class="tlChip">' + esc(x.tag) + '</span>' : '';   // the one in hand has no badge ("remove badge orange"): the row's button says it; the locked keep theirs
           const line = k === 'lock' && x.need ? 'You need to complete your ' + esc(x.need) + ' before you can book this appointment.' : k === 'cur' && x.d ? esc(x.d) : '';
           const subs = k === 'cur' && x.p.steps.length ? '<div class="tlSubL">' + stepList(x.p) + '</div>' : '';   // the same rings as a single service's steps ("keep same style for bullet indicator")
-          return '<li class="' + k + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : '') + '</i><div class="tlGtx">' + 
+          return '<li class="' + k + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + (r.focus === i ? ' me' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : '') + '</i><div class="tlGtx">' + 
             '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + (k === 'cur' && x.p.steps.length && x.p.at >= 0 ? '<span class="tlGn">Step ' + Math.min(x.p.at + 1, x.p.steps.length) + ' / ' + x.p.steps.length + '</span>' : '') + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
-        return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button>' + (a >= 0 && act.p.steps[act.p.at] ? '<span class="tlChip o tlCurB">' + esc(act.p.steps[act.p.at][0]) + '</span>' : '') + '</div>' +
-          '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
+        const stack = '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
+        if (r.state === 'locked' && r.need){   // a member of the group still waiting: the Waiting on chip, over the same list of the group's services
+          const bk = blockerOf(r), bp = bk ? rowPlan(bk) : null;
+          const segs = bp ? bp.steps.map((st, j) => '<i class="' + (bp.at >= bp.steps.length || j < bp.at ? 'on' : j === bp.at ? 'cur' : '') + '"></i>').join('') : '';
+          return '<div class="tlProg"><button class="tlTgl tlBlk" type="button" aria-expanded="false" aria-label="Waiting on ' + esc(r.need) + ', show details">' + LOCK + (segs ? '<span class="tlSeg" aria-hidden="true">' + segs + '</span>' : '') + 'Waiting on ' + esc(r.need) + CHEV + '</button></div>' + stack;
+        }
+        return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button>' + (a >= 0 && act.p.steps[act.p.at] ? '<span class="tlChip o tlCurB">' + esc(act.p.steps[act.p.at][0]) + '</span>' : '') + '</div>' + stack;
       }
       if (r.lockAge){   // locked by age ("also should be locked"): nothing to do until then
         const own = rowPlan(Object.assign({}, r, { state: 'locked' }));
