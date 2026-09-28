@@ -11730,3 +11730,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Gap:** "+8px gap, row." The step chip and the badge beside it are 18px apart instead of 10.
 
 **5.522 — Chip and badge 8 apart; 8 more above their row.** "8px gap": the step chip and the badge beside it are 8px apart. I had read the earlier "+8px gap, row" as between them; it was the row. "Add 8px gap between row": the chip's row now sits 20px below the meta line instead of 12 on desk. XS keeps its 16.
+
+**5.523 — Step rows 4px shorter.** "Compress vertically each row by 4px": in the steps list every row is 4px shorter. The bars' minimum goes from 26px to 22px, and the words' padding from 3px to 1px, so the row with the "Your next step" badge shrinks too. Measured rows go from 28/28/26 to 24/24/22, with the 2px between the bars kept.
