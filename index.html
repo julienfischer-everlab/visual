@@ -6741,10 +6741,15 @@
   .tlSeg.lin{display:block;flex:none;width:96px;height:4px;border-radius:2px;background:var(--tlDotRing);overflow:hidden;}
   .tlSeg.lin i{display:block;height:100%;border-radius:2px;background:#f78359;}
   .tlSeg.lin.full i{background:#9cc088;}
-  .tlSeg.grp{display:flex;flex:none;width:96px;gap:3px;} .tlSeg.grp i{flex:1 1 0;width:auto !important;height:4px;border-radius:2px;background:var(--tlDotRing);}
+  .tlSeg.grp{display:flex;flex:none;width:96px !important;gap:3px;}   /* always 96 in total, however many steps ("the increment group must be always 96px") */ .tlSeg.grp i{flex:1 1 0;width:auto !important;height:4px;border-radius:2px;background:var(--tlDotRing);}
   .tlSeg.grp i.on{background:#9cc088;} .tlSeg.grp i.cur{background:#f78359;}
   /* beside the chip, the step in hand, in orange, while the steps are closed ("a badge next to it that reuses the current step in progress; when the steps are open it disappears, the list says the same") */
-  .tlProg .tlCurB{height:28px;padding:0 10px;border-radius:8px;font-size:12.5px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .tlProg .tlCurB{height:28px;padding:0 10px 0 12px;gap:10px;border-radius:8px;font-size:12.5px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .tlCurB .tlSeg.grp i{background:rgba(247,131,89,.22);} .tlCurB .tlSeg.grp i.on{background:#9cc088;} .tlCurB .tlSeg.grp i.cur{background:#f78359;}
+  /* the chip shows its increments only when the badge does not */
+  body:not(.tlSheetMode) .tlProg:has(.tlCurB) .tlTgl .tlSeg{display:none;}
+  body:not(.tlSheetMode) .tlRow.open .tlProg .tlTgl .tlSeg{display:flex;}
+  body.tlSheetMode .tlProg:has(.tlCurB) .tlTgl .tlSeg{display:none;}
   body:not(.tlSheetMode) .tlRow.open .tlProg .tlCurB{display:none;}
   .tlGn{margin-left:auto;font-size:12.5px;color:var(--tlSub);white-space:nowrap;}   /* where the service in hand stands in its own steps ("indicate Step x / x on the active step card") */
   .tlGtx p{margin:5px 0 0;font-size:12.5px;line-height:1.45;color:var(--tlSub);}
@@ -6840,7 +6845,7 @@
     .tlMeta span{max-width:100%;} .tlMeta span > em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .tlAct{margin-top:16px;padding:0;margin-left:-8px;} .tlProg{margin-top:16px;} .tlProg .lb{flex:1 1 auto;} .tlSeg i{width:14px;}
     /* the chip and the button side by side, one height ("next to each other, same height 56px"); a row with no chip gives the button the line */
-    .tlProg .tlTgl{height:56px;padding:0 12px 0 14px;border-radius:12px !important;} .tlProg .tlCurB{display:none;}   /* no room beside the chip and the button */ .tlProg .tlTgl .tlSeg.lin, .tlProg .tlTgl .tlSeg.grp{width:72px;}
+    .tlProg .tlTgl{height:56px;padding:0 12px 0 14px;border-radius:12px !important;} .tlProg .tlCurB{display:none;} .tlProg .tlTgl .tlSeg{display:flex !important;}   /* no room for the badge beside the chip and the button: the chip keeps the increments */
     .tlAct{min-width:0;} .tlAct .tlBtn{min-width:0;padding:0 12px;overflow:hidden;text-overflow:ellipsis;} .tlAct .tlMore{flex:none;width:44px;}   /* a long label gives way, never the screen */
     .tlAct .tlBtn, .tlAct .tlMore{height:56px;} .tlAct .tlBtn{border-radius:12px;} .tlAct.split .tlBtn{border-radius:12px 0 0 12px;} .tlAct.split .tlMore{border-radius:0 12px 12px 0;}
     .tlRow.noProg{grid-template-areas:"th tx tx" "meta meta meta" "act act act" "det det det";} .tlRow.noProg .tlAct{margin-left:0;}
@@ -23002,6 +23007,8 @@
       ROWS = []; list.innerHTML = layout(TL[tab]).map(sec).join('');
       // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")
       list.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp'));
+      // ...and where there is a step in hand, they ride in its orange badge ("put the step increment progress inside the active badge")
+      list.querySelectorAll('.tlProg').forEach(pr => { const bd = pr.querySelector('.tlCurB'), sg = pr.querySelector('.tlTgl .tlSeg'); if (bd && sg) bd.insertBefore(sg.cloneNode(true), bd.firstChild); });
       list.querySelectorAll('.tlSugTrack').forEach(t => t.addEventListener('scroll', navState, { passive: true }));
       filter();
     };

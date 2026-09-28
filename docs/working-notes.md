@@ -11611,3 +11611,10 @@ A row has the page's name, one line on what it is and its count of entry points 
 These rows stay in their own sections (a `tail` section) rather than joining Later, which holds the rows waiting on another service.
 
 **5.498 — "Show increments, related to the number of steps inside the service."** The chip's linear bar gives way to increments everywhere, still across 96 (3 apart), one per step of the service: three for most, seven for the genetic test, eight for a service with eight. Done steps are green, the one in hand orange, the rest faint, matching the vertical bar in the list below. A group keeps one per service, the Waiting on chips show their blocker's steps the same way, and a completed row is all green (Past).
+
+**5.499 — The increments ride in the active badge, always 96.** "Put the step increment progress inside the active badge; the increment group must always be 96px in total width":
+
+- **Badge:** where a row has a step in hand, the increments sit in its orange badge ahead of the step's name (▬▬▬ Meet your doctor). Done green, the one in hand orange, to come a faint orange on the badge's tint.
+- **Chip:** it then reads "Step 2 of 3 ⌄" alone.
+- **When the badge isn't there, the chip keeps the increments:** while the steps are open (the badge hides), at XS (the badge has no room), and on rows with nothing in hand (not started, complete, locked).
+- **Width:** the group is 96 wide whatever the number of steps, XS included (it had been 72 there).
