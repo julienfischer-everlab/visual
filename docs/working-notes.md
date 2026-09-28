@@ -11698,3 +11698,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **The other cards:** the rest (DEXA with its white ring, Member Check-In with its lock) are collapsed at 4% with "Related service".
 - **Groups without a focus:** a group object with no `focus` (Microbiome) still opens its service in hand.
 - **Borders:** "Remove all border in step service card." The 1px outline that marked the object's own card (`.me`) is gone. No card in the list has a border or ring now, only the grounds.
+
+**5.516 — A locked object's list shows the steps on its blocker's card.** "Don't show the steps in the active but in the blocker step before, DEXA scan."
+
+- **Locked object:** when the object's own service is locked (Diagnostics Review, Member Check-In), its card stays the context one (8%, full title, no badge) but carries no steps. The group's service in hand, the one everything waits on (DEXA Scan), opens instead with its description and its steps (Book appointment with "Your next step", Booked, Done). It keeps its "Related service" badge.
+- **Object in hand:** when the object's own service is the one in hand (DEXA's object), nothing changes; its own card carries the steps.
