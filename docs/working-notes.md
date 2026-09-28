@@ -11509,3 +11509,5 @@ Every other row stays a simple service. A group's Details opens one vertical lin
 - "Reduce card padding by 6px, even on all sides": the hover tile reaches 18 past the picture and the buttons (from 24), the same 18 as above and below. Measured 18/18/18/18. The divider between rows follows it.
 
 **5.479 — "Reduce padding by 4px" (the row's hover tile).** The tile reaches 14 past the picture and the buttons (from 18), and sits 4 inside the row's own 18 above and below, so it is 14 on every side while the rows keep their spacing. Measured 14/14/14/14. The divider between rows follows the tile's width.
+
+**5.480 — "The item divider should be outside the object, 8px margin top and bottom; on hover we see a gap of 8px between the card and the divider."** The rows' padding is 22 above and below (from 18): 8 of gap plus the tile's 14. The hover tile sits 8 in from the row's edges (top and bottom 8, sides −14). The dividers no longer fade out beside the row under the pointer: they stay, with an 8px band of page between them and the tile. Measured gap 8 above and 8 below, 14 inside, both dividers at full opacity on hover.
