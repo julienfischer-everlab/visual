@@ -11645,3 +11645,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Passive step in hand:** the badge beside the chip is grey with light text, and its increment is white rather than orange. In the step list, the bar fills white and the badge reads "In progress" instead of an orange "Your next step".
 - **Action step in hand:** unchanged, orange.
 - **Example:** a Pathology Test in "With your care team" waiting on its results (step 3 of 3).
+
+**5.505 — The active service card has a 2px white border.** "Active service 2px border white": in a group's list of service cards, the one in hand (`li.cur`) is bordered with a 2px inset in `--tlMkCur`. That is white in dark mode and dark ink in light mode, matching its ring. It applies in the inline stack and the bottom sheet. An object's own card that isn't active keeps the faint 1px outline.
