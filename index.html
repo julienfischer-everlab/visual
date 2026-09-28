@@ -6693,7 +6693,18 @@
   /* a group: its services down a line of rings -- done a green check, the
      one in hand orange (opened into its own steps, dots), what is coming
      blue, what waits on another grey with why -- each with its status chip */
-  .tlGrp{list-style:none;margin:0;padding:0;}
+  .tlGrp{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+  /* one card per service, stacked 2 apart ("spread by 4 cards, one per
+     service, stacked, gap 2px"): the stack's outer corners round, the inner
+     ones tight, so the four read as one pile; no line between the rings now
+     the cards part them */
+  .tlDetBox.tlDetGrp{padding:0;background:none;}
+  .tlGrp > li{background:var(--tlBox);border-radius:4px;padding:14px 16px !important;transition:background .16s ease;}
+  .tlSugTrack .tlGrp > li{background:rgba(255,255,255,.05);}
+  .tlGrp > li:first-child{border-top-left-radius:12px;border-top-right-radius:12px;}
+  .tlGrp > li:last-child{border-bottom-left-radius:12px;border-bottom-right-radius:12px;}
+  .tlGrp > li:hover{background:var(--tlGhostH);}
+  .tlGrp > li::before{display:none;}
   .tlGrp > li{position:relative;display:flex;gap:12px;padding:0 0 16px;cursor:pointer;}
   .tlGrp > li:last-child{padding-bottom:2px;}
   .tlGrp > li:not(:last-child)::before{content:"";position:absolute;left:9.5px;top:24px;bottom:4px;width:1px;background:var(--tlDotRing);}
@@ -22815,7 +22826,7 @@
           return '<li class="' + k + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : '') + '</i><div class="tlGtx">' + (x.next ? '<small>Next steps</small>' : '') +
             '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
         return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><span class="tlSeg" aria-hidden="true">' + g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('') + '</span><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details">' + lab + CHEV + '</button></div>' +
-          '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
+          '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
       }
       if (!r.svc || r.state === 'suggested' || r.state === 'later') return '';   // not yours yet: no steps to show
       const p = PL(r.svc, r.state); if (!p) return '';
