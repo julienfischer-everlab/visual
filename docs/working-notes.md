@@ -11716,3 +11716,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Where:** DEXA's object and the Microbiome object.
 - **Other cards:** the related cards keep their tick, ring or lock, their names and "Related service".
 - **Locked object:** its own card (no steps) keeps its lock and name.
+
+**5.519 — The active card keeps its name when a card is above it, and lines up with the rest.**
+
+- **Name:** "On active card, if an object is before the active service, keep the title." The steps-only card (5.518) shows its service's name again when another card sits above it in the list (Microbiome, after the done questionnaire). There is no ring and no description. When it is first (DEXA), it stays steps only.
+- **Alignment:** "Make sure the progress and text are vertically aligned with the rest." Its bars are centred under the other cards' marks (8px into the 20px mark slot), and its step names and its own name start where the other cards' names start (32px in). Measured: mark and bar centres at 622, name and step starts at 644.
