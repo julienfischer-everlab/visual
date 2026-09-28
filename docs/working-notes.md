@@ -11723,3 +11723,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Alignment:** "Make sure the progress and text are vertically aligned with the rest." Its bars are centred under the other cards' marks (8px into the 20px mark slot), and its step names and its own name start where the other cards' names start (32px in). Measured: mark and bar centres at 622, name and step starts at 644.
 
 **5.520 — The step chip at 28.** "28 height": the step chip beside the badge ("Step 1 of 2") goes from 30px to 28px, the badge's height, so the two sit level. At XS it keeps its 56 next to the button.
+
+**5.521 — A ring on the active card's name; 8px more between the chip and the badge.**
+
+- **Ring:** "Active card title add a circle border icon." When the active card shows its name (a card above it), the name carries the white ring (`.tlMkH`, 16px, 2px ring). It sits in the same slot as the other cards' marks: its centre is on the same line as their ticks and locks and the bars below.
+- **Gap:** "+8px gap, row." The step chip and the badge beside it are 18px apart instead of 10.
