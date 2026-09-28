@@ -11583,3 +11583,5 @@ A row has the page's name, one line on what it is and its count of entry points 
 - **"No need trail":** the steps' rings stand alone, no line between them.
 - **"Suggested item no need step chip":** the suggestions have no steps chip.
 - **"Radius 8px, not fully rounded":** the steps chip, and its copy in the sheet, have 8 corners.
+
+**5.493 — "No need trail, use vertical progress bar."** The steps' rings are gone: each step has a 4px segment at its left, the height of its line, 4 apart from the next. Done is green, the one in hand orange, and to come faint (16% white), so the list reads as the chip's increments stood on end. This applies to a single service's steps, the service in hand inside a group, a locked row's list (its "Complete your DEXA Scan" segment orange), and the XS/S sheet. A group's service cards keep their 20px rings. Done steps are still struck through, and dates stay beside them.
