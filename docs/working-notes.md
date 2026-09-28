@@ -11750,3 +11750,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Microbiome:** "Step 4 of 8", "Collect sample".
 
 **5.528 — The service in hand marked with a filled disc, not the white ring.** "Replace by circle filled 8% bg fff" (this one: the white ring): in a group's list, the service in hand is marked with a filled 16px disc at #fff 8% (ink 8% in light mode) instead of the 2px white ring. This covers the ring on the active card's name and on DEXA's card in the locked objects' lists. The done tick and the locks stay.
+
+**5.529 — Unfilled step bars at #fff 24%.** "Progressing grey 24% bg fff": the bars of the steps still to fill have their own token, `--tlBar`, at #fff 24% instead of 16% (ink 20% in light mode). That covers the steps to come and the in-hand step's track under its fill. The rings and locks keep their 16%.
