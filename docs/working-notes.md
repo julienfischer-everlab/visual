@@ -11585,3 +11585,10 @@ A row has the page's name, one line on what it is and its count of entry points 
 - **"Radius 8px, not fully rounded":** the steps chip, and its copy in the sheet, have 8 corners.
 
 **5.493 — "No need trail, use vertical progress bar."** The steps' rings are gone: each step has a 4px segment at its left, the height of its line, 4 apart from the next. Done is green, the one in hand orange, and to come faint (16% white), so the list reads as the chip's increments stood on end. This applies to a single service's steps, the service in hand inside a group, a locked row's list (its "Complete your DEXA Scan" segment orange), and the XS/S sheet. A group's service cards keep their 20px rings. Done steps are still struck through, and dates stay beside them.
+
+**5.494 — XS: chip and button side by side; the stuck title's fade; the step in hand fills; the bars to the reference.**
+
+- **"Next to each other, same height 56px":** at XS the steps chip and the row's button share a line, both 56 tall, 12 corners. The chip is as wide as its words (a 72 bar inside) and the button fills the rest, its label giving way (ellipsis) before the screen does; the XS page had been 15px too wide with "Confirm delivery ⋯". A row with no chip (a suggestion) gives the button the whole line.
+- **"The sticky gradient should be at the end of the vertical":** a month title stuck under the bar carries the stack's fade at its foot, 28px from the page's ground to clear. It shows only while stuck (marked on scroll), so rows at rest are never dimmed.
+- **"First increment move top to bottom, so we feel it's currently happening":** the step in hand's segment fills from top to bottom in orange over its faint track, holds, fades a little and starts again (1.8s). It stays still and solid under reduced motion.
+- **"Ignore sub" (the reference's bars):** the steps stay titles only; the segments are 6 wide (3 corners), 8 apart, 16 from the words.

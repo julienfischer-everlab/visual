@@ -6624,6 +6624,9 @@
   .tlSec{position:relative;}
   .tlH{position:sticky;top:var(--tlHTop,26px);z-index:4;display:flex;align-items:center;margin:16px -14px 0 -40px;padding:10px 14px 8px 40px;background:var(--pageBg);font-size:16px;font-weight:500;letter-spacing:-.1px;color:var(--tlInk);}   /* sticky in its month under the tabs, pushed out by the next month's ("stacked sticky on scroll, as Contacts") */
   .tlSec:first-child .tlH{margin-top:4px;}
+  /* stuck under the bar, the title carries the stack's fade at its foot ("the sticky gradient should be at the end of the vertical") */
+  .tlH::after{content:"";position:absolute;left:0;right:0;top:100%;height:28px;pointer-events:none;opacity:0;transition:opacity .2s ease;background:linear-gradient(180deg,var(--pageBg) 0%,var(--pageBg0) 100%);}
+  .tlH.stuck::after{opacity:1;}
   .tlDot{position:absolute;left:0;top:50%;width:17px;height:17px;margin-top:-8.5px;border-radius:50%;box-sizing:border-box;background:var(--pageBg);box-shadow:inset 0 0 0 1.5px var(--tlDotRing);}
   .tlSec.now .tlDot{background:var(--tlInk);box-shadow:none;} .tlSec.now .tlDot::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--pageBg);}
   .tlSec.care .tlDot{box-shadow:none;color:var(--tlSub);display:flex;align-items:center;justify-content:center;} .tlSec.care .tlDot svg{width:15px;height:15px;}
@@ -6773,11 +6776,13 @@
      progress bar"): a 4px segment beside each step, 4 apart -- done green,
      the one in hand orange, the rest faint -- the increments of the chip,
      stood on end */
-  .tlStepL li{align-items:stretch;gap:12px;padding-bottom:4px;}
-  :is(#dTl, .tlShPanel) .tlStepL li > .tlMk{width:4px;height:auto;min-height:22px;flex:none;border-radius:2px;box-shadow:none !important;background:var(--tlMkFut);}
+  .tlStepL li{align-items:stretch;gap:16px;padding-bottom:8px;}   /* the reference's bars: 6 wide, 8 apart, 16 to the words (its subs ignored) */
+  :is(#dTl, .tlShPanel) .tlStepL li > .tlMk{width:6px;height:auto;min-height:22px;flex:none;border-radius:3px;box-shadow:none !important;background:var(--tlMkFut);}
   :is(#dTl, .tlShPanel) .tlStepL li > .tlMk::after, :is(#dTl, .tlShPanel) .tlStepL li > .tlMk svg{display:none;}
   :is(#dTl, .tlShPanel) .tlStepL li.on > .tlMk{background:#9cc088;}
-  :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{background:#f78359;}
+  :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{background:var(--tlMkFut) linear-gradient(#f78359,#f78359) no-repeat 0 0 / 100% 0%;animation:tlFill 1.8s cubic-bezier(.45,0,.25,1) infinite;}   /* it fills top to bottom, over and over ("so we feel it's currently happening") */
+  @keyframes tlFill{0%{background-size:100% 0%;} 65%{background-size:100% 100%;} 88%{background-size:100% 100%;opacity:1;} 100%{background-size:100% 100%;opacity:.35;}}
+  @media (prefers-reduced-motion:reduce){ :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{animation:none;background:#f78359;} }
   .tlStepL .tx{padding:3px 0;}   /* 6 between steps ("compress a bit"), the line still joining ring to ring */
   /* complete is struck through ("complete -> strikethrough"): a done step, a done service, a done sub-step */
   .tlStepL li.on b, .tlGrp .on .tlGh b, .tlSub li.on{text-decoration:line-through;text-decoration-color:currentColor;text-decoration-thickness:1px;color:var(--tlSub);}
@@ -6824,12 +6829,18 @@
     .tlSearch{width:auto;margin:0;height:44px;border-radius:12px;} .tlSearch input{font-size:15px;}
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:18px -16px 0;padding:12px 16px 8px;} .tlSec:first-child .tlH{margin-top:6px;}
-    .tlRow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"th tx" "meta meta" "prog prog" "det det" "act act";column-gap:16px;padding:18px 0 20px;}
+    .tlRow{grid-template-columns:44px auto minmax(0,1fr);grid-template-areas:"th tx tx" "meta meta meta" "prog prog act" "det det det";column-gap:16px;padding:18px 0 20px;}
     .tlTh{width:44px;height:44px;border-radius:8px;}
     .tlTx{padding-top:0;} .tlTx p{white-space:normal;font-size:13.5px;}
     .tlMeta{flex-direction:column;flex-wrap:nowrap;gap:8px;margin-top:14px;font-size:13.5px;}
     .tlMeta span{max-width:100%;} .tlMeta span > em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .tlAct{margin-top:16px;padding:0;} .tlProg{margin-top:14px;} .tlProg .lb{flex:1 1 auto;} .tlSeg i{width:14px;} .tlBtn{flex:1 1 auto;height:40px;font-size:14px;} .tlMore{height:40px;} .tlAct.split .tlMore{width:44px;}
+    .tlAct{margin-top:16px;padding:0;margin-left:-8px;} .tlProg{margin-top:16px;} .tlProg .lb{flex:1 1 auto;} .tlSeg i{width:14px;}
+    /* the chip and the button side by side, one height ("next to each other, same height 56px"); a row with no chip gives the button the line */
+    .tlProg .tlTgl{height:56px;padding:0 12px 0 14px;border-radius:12px !important;} .tlProg .tlTgl .tlSeg.lin, .tlProg .tlTgl .tlSeg.grp{width:72px;}
+    .tlAct{min-width:0;} .tlAct .tlBtn{min-width:0;padding:0 12px;overflow:hidden;text-overflow:ellipsis;} .tlAct .tlMore{flex:none;width:44px;}   /* a long label gives way, never the screen */
+    .tlAct .tlBtn, .tlAct .tlMore{height:56px;} .tlAct .tlBtn{border-radius:12px;} .tlAct.split .tlBtn{border-radius:12px 0 0 12px;} .tlAct.split .tlMore{border-radius:0 12px 12px 0;}
+    .tlRow.noProg{grid-template-areas:"th tx tx" "meta meta meta" "act act act" "det det det";} .tlRow.noProg .tlAct{margin-left:0;}
+    .tlSugTrack .tlRow{grid-template-areas:"th tx tx" "meta meta meta" "act act act" "det det det";} .tlSugTrack .tlRow .tlAct{margin-left:0;} .tlBtn{flex:1 1 auto;height:40px;font-size:14px;} .tlMore{height:40px;} .tlAct.split .tlMore{width:44px;}
     .tlSug{margin:14px 0 8px;padding:0 0 12px;}
     .tlSugHead{padding:12px 12px 10px 14px;font-size:14px;} .tlSugNav{display:flex;}
     .tlSugTrack{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;background:none;box-shadow:none;border-radius:0;padding:2px 12px;scroll-padding:0 12px;}
@@ -22947,7 +22958,7 @@
     // already open ("when it's a primary action, show the card inside
     // upfront"): what is asked of you now is the first thing read
     const row = r => { let pg = prog(r); const up = !!(r.cta && pg); if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
-      return '<article class="tlRow' + (up ? ' open' : '') + (r.lock ? ' lock' : '') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
+      return '<article class="tlRow' + (up ? ' open' : '') + (r.lock ? ' lock' : '') + (pg ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       (r.img === 'path' ? '<i class="tlTh tlThPath" aria-hidden="true"></i>' : '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">') +
       '<div class="tlTx"><div class="tlTl"><b>' + esc(r.t) + '</b>' + (r.tag ? '<span class="tlChip' + (r.lock ? '' : ' o') + '">' + esc(r.tag) + '</span>' : '') + '</div><p>' + esc(r.d) + '</p></div>' +
       '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +
@@ -23067,6 +23078,9 @@
     const setHTop = () => { if (!bar.offsetHeight) return; main.style.setProperty('--tlHTop', (parseFloat(getComputedStyle(bar).top) + bar.offsetHeight) + 'px'); };
     if (window.ResizeObserver) new ResizeObserver(setHTop).observe(bar);
     addEventListener('resize', setHTop);
+    // which month title is stuck under the bar (its fade shows then)
+    const markStuck = () => { const bb = bar.getBoundingClientRect().bottom; list.querySelectorAll('.tlH').forEach(h => h.classList.toggle('stuck', Math.abs(h.getBoundingClientRect().top - bb) < 1.5 && main.scrollTop > 6)); };
+    main.addEventListener('scroll', markStuck, { passive: true });
     main.addEventListener('scroll', () => main.classList.toggle('ovScrolled', bar.getBoundingClientRect().top - main.getBoundingClientRect().top < 60 && main.scrollTop > 6), { passive: true });
     const sel = document.getElementById('versionSel');
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
