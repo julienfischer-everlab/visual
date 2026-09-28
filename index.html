@@ -6792,6 +6792,9 @@
   :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{background:var(--tlMkFut) linear-gradient(#f78359,#f78359) no-repeat 0 0 / 100% 0%;animation:tlFill 1.6s cubic-bezier(.45,0,.25,1) infinite;}
   @keyframes tlFill{0%{background-size:100% 0%;} 70%{background-size:100% 100%;} 100%{background-size:100% 100%;}}
   @media (prefers-reduced-motion:reduce){ :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{animation:none;background:#f78359;} }
+  :is(#dTl, .tlShPanel) .tlStepL li.cur.pas > .tlMk{background:var(--tlMkFut) linear-gradient(var(--tlMkCur),var(--tlMkCur)) no-repeat 0 0 / 100% 0%;}   /* a passive step fills neutral, not orange */
+  @media (prefers-reduced-motion:reduce){ :is(#dTl, .tlShPanel) .tlStepL li.cur.pas > .tlMk{background:var(--tlMkCur);} }
+  .tlChip.n{background:var(--tlGhost);color:var(--tlTx);} .tlCurB.n .tlSeg.grp i{background:var(--tlMkFut);} .tlCurB.n .tlSeg.grp i.on{background:#9cc088;} .tlCurB.n .tlSeg.grp i.cur, .tlProg.pas .tlSeg.grp i.cur{background:var(--tlMkCur);}
   .tlStepL .tx{padding:3px 0;}
   /* the services after this one: a bar the height of its two lines, the name, its grey chip, why it waits */
   .tlRel{margin-top:10px;} .tlRel li.rel{cursor:pointer;} .tlRel .tx{display:block !important;padding:4px 0;}
@@ -22858,7 +22861,9 @@
     // suggestions that fall in it
     const TL = {
       up: [
-        { h: 'With your care team', dot: 'care', rows: [{ t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'dexa', state: 'request' },] },
+        { h: 'With your care team', dot: 'care', rows: [{ t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'dexa', state: 'request' },
+          // waiting on the lab, nothing for the member to do: its step in hand is neutral
+          { t: 'Pathology Test', d: 'Your follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['clock', 'Collected 2 days ago \u00b7 results usually within 3 to 5 days']], act: 'View', more: 1, svc: 'path', state: 'active', at: 2 }] },
         { h: 'August 2026', dot: 'now', rows: [
           { t: 'Onboarding consult', d: VISIT, img: 'consult', meta: [CLINIC, WHEN], act: 'View', svc: 'consult', state: 'booked', when: WHEN[1] },
           { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1, svc: 'brief', state: 'book' },
@@ -22935,7 +22940,10 @@
       const place = x => { out.push(x); rest.filter(y => y.need === x.t).forEach(y => { rest.splice(rest.indexOf(y), 1); place(y); }); };
       rows.forEach(x => { if (rest.indexOf(x) < 0) return; if (x.need && rows.some(y => y !== x && y.t === x.need)) return; rest.splice(rest.indexOf(x), 1); place(x); });
       return out.concat(rest); };
-    const stepList = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : ''; return '<li class="' + c + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? '<span class="tlChip o tlNext">Your next step</span>' : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
+    // a step that isn't on the member (results on their way, a report being written): neutral, not orange ("if a step is passive, the badge neutral, no orange, and neutral progress")
+    const PASSIVE = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/, pas = st => !!st && PASSIVE.test(st[0]);
+    const curB = st => '<span class="tlChip tlCurB' + (pas(st) ? ' n' : ' o') + '">' + esc(st[0]) + '</span>';
+    const stepList = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : '', w = c === 'cur' && pas(st); return '<li class="' + c + (w ? ' pas' : '') + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? (w ? '<span class="tlChip n tlNext">In progress</span>' : '<span class="tlChip o tlNext">Your next step</span>') : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
     const prog = r => {
       if (r.group){
         const { g, a } = groupOf(r), act = g[a < 0 ? g.length - 1 : a], nm = x => x.t || x.p.t;
@@ -22954,7 +22962,7 @@
           const segs = bp ? bp.steps.map((st, j) => '<i class="' + (bp.at >= bp.steps.length || j < bp.at ? 'on' : j === bp.at ? 'cur' : '') + '"></i>').join('') : '';
           return '<div class="tlProg"><button class="tlTgl tlBlk" type="button" aria-expanded="false" aria-label="Waiting on ' + esc(r.need) + ', show details">' + LOCK + (segs ? '<span class="tlSeg" aria-hidden="true">' + segs + '</span>' : '') + 'Waiting on ' + esc(r.need) + CHEV + '</button></div>' + stack;
         }
-        return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button>' + (a >= 0 && act.p.steps[act.p.at] ? '<span class="tlChip o tlCurB">' + esc(act.p.steps[act.p.at][0]) + '</span>' : '') + '</div>' + stack;
+        return '<div class="tlProg' + (a < 0 ? ' done' : '') + (a >= 0 && pas(act.p.steps[act.p.at]) ? ' pas' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button>' + (a >= 0 && act.p.steps[act.p.at] ? curB(act.p.steps[act.p.at]) : '') + '</div>' + stack;
       }
       if (r.lockAge){   // locked by age ("also should be locked"): nothing to do until then
         const own = rowPlan(Object.assign({}, r, { state: 'locked' }));
@@ -22976,7 +22984,7 @@
       let p = PL(r.svc, r.state); if (!p) return ''; if (r.steps) p = Object.assign({}, p, { steps: r.steps }); if (r.at != null) p = Object.assign({}, p, { at: r.at });
       const n = p.steps.length, done = p.at >= n;
       const lab = done ? 'Completed' : p.at < 0 ? 'Not started' : 'Step ' + (p.at + 1) + ' of ' + n;
-      return '<div class="tlProg' + (done ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show steps"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lab + CHEV + '</button>' + (!done && p.at >= 0 && p.steps[p.at] ? '<span class="tlChip o tlCurB">' + esc(p.steps[p.at][0]) + '</span>' : '') + '</div>' +
+      return '<div class="tlProg' + (done ? ' done' : '') + (!done && pas(p.steps[p.at]) ? ' pas' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show steps"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lab + CHEV + '</button>' + (!done && p.at >= 0 && p.steps[p.at] ? curB(p.steps[p.at]) : '') + '</div>' +
         '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + stepList(p) + (r.then ? '<ol class="tlStepL tlRel">' + r.then.map((x, i) => '<li class="rel" data-rel="' + i + '"><i class="tlMk"></i><div class="tx"><div class="tlRelH"><b>' + esc(x.t) + '</b>' + (x.tag ? '<span class="tlChip">' + esc(x.tag) + '</span>' : '') + '</div><p>You need to complete your ' + esc(x.need) + ' before you can book this appointment.</p></div></li>').join('') + '</ol>' : '') + '</div></div></div>';
     };
     // a primary action (Book, Collect sample, Claim) comes with its steps

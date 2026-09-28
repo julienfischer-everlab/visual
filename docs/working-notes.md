@@ -11639,3 +11639,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Inside each:** the same list of the group's service cards (one `CHECKIN` definition for all three): DEXA in hand with its steps and "Your next step", then the two locked cards. The object's own card is outlined in the list (`focus`).
 - **Chip:** Service 1 of 3 on DEXA's object; the Waiting on chip over the same list on the locked ones.
 - **Taps:** an object's button, title or row opens its own service's page, not the group's active one. A card in the list opens that card's service.
+
+**5.504 — A passive step reads neutral.** "If a service has a passive step (one that isn't on them, e.g. Get your results), the badge status needs to be neutral, no orange, and neutral progress." Steps that wait on someone else (Get your results / plan / referral / cleared, the kit being prepared, Ordered, Pending results, Results in, Report written, Report ready) are passive (`PASSIVE`).
+
+- **Passive step in hand:** the badge beside the chip is grey with light text, and its increment is white rather than orange. In the step list, the bar fills white and the badge reads "In progress" instead of an orange "Your next step".
+- **Action step in hand:** unchanged, orange.
+- **Example:** a Pathology Test in "With your care team" waiting on its results (step 3 of 3).
