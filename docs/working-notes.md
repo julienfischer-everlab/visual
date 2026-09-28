@@ -11740,3 +11740,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Waiting Dexa:** "Wrong, a DEXA includes other related services." The July Dexa Scan waiting on its results is now a member of its Member Check-In, not a lone service. It carries the "Member Check-In · 1 of 3" meta and the "Service 1 of 3" chip, and its list shows its own card (steps only: two done, "Get your results" in progress) above the Diagnostics Review and Member Check-In cards, locked, with "Related service". Its button opens the DEXA page at 3/3.
 - **Passive grey:** "Lighter grey colour." A passive step's progress uses its own token, `--tlPas`: #fff at 72% (ink at 60% in light mode) instead of 50%. That covers the badge's increment and the bar's fill.
 - **Thumbnails:** "Radius 16." Object thumbnails are at radius 16 on desk (from 12). XS keeps its 8 on the 44px thumbnail.
+
+**5.526 — Secondary CTA at #fff 8%.** "CTA secondary 8% bg fff": the secondary button (and its ⋯ half in a split) sits on #fff at 8% (12% on hover), down from 24%/30%, in the page and in the sheet. The primary stays white. Light mode keeps its ink 7%.
