@@ -23000,11 +23000,8 @@
     };
     const render = () => {
       ROWS = []; list.innerHTML = layout(TL[tab]).map(sec).join('');
-      // one linear bar in place of the segments ("no increment, linear progress, width 96px"): what is done, and half the step in hand; green once complete
-      // ...but a service group keeps its increments, one per service ("increment only when service group, each increment is one service")
-      list.querySelectorAll('.tlSeg').forEach(sg => { const rw = sg.closest('.tlRow'), rd = rw && ROWS[+rw.dataset.r]; if (rd && rd.group && !sg.closest('.tlBlk')){ sg.classList.add('grp'); return; }
-        const is = sg.querySelectorAll('i'), n = is.length, on = sg.querySelectorAll('i.on').length, cur = sg.querySelectorAll('i.cur').length;
-        const f = n ? Math.min(1, (on + cur * .5) / n) : 0; sg.classList.add('lin'); sg.classList.toggle('full', !!n && on === n); sg.innerHTML = '<i style="width:' + (f * 100).toFixed(1) + '%"></i>'; });
+      // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")
+      list.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp'));
       list.querySelectorAll('.tlSugTrack').forEach(t => t.addEventListener('scroll', navState, { passive: true }));
       filter();
     };

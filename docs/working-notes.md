@@ -11609,3 +11609,5 @@ A row has the page's name, one line on what it is and its count of entry points 
 - **Page:** the row still opens its page, "Due when you turn 50."
 
 These rows stay in their own sections (a `tail` section) rather than joining Later, which holds the rows waiting on another service.
+
+**5.498 — "Show increments, related to the number of steps inside the service."** The chip's linear bar gives way to increments everywhere, still across 96 (3 apart), one per step of the service: three for most, seven for the genetic test, eight for a service with eight. Done steps are green, the one in hand orange, the rest faint, matching the vertical bar in the list below. A group keeps one per service, the Waiting on chips show their blocker's steps the same way, and a completed row is all green (Past).
