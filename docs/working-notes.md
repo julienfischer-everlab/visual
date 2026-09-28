@@ -11647,3 +11647,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Example:** a Pathology Test in "With your care team" waiting on its results (step 3 of 3).
 
 **5.505 — The active service card has a 2px white border.** "Active service 2px border white": in a group's list of service cards, the one in hand (`li.cur`) is bordered with a 2px inset in `--tlMkCur`. That is white in dark mode and dark ink in light mode, matching its ring. It applies in the inline stack and the bottom sheet. An object's own card that isn't active keeps the faint 1px outline.
+
+**5.506 — The active service card is lighter instead of bordered; the service page's done steps are green.**
+
+- **Active card:** "No, remove border, just increase #fff opacity by 8% on the active service bg." The in-hand card in a group's list has no border. Its ground is `rgba(255,255,255,.135)` instead of `.055`, and `.17` on hover. Light mode uses the ink equivalent.
+- **Service page:** "First bar progress needs to be green." The service page's "Your progress" bars are now split by state. Done steps are green (`.svStep.ok`, #9cc088), the step in hand is orange, and future steps stay faint. Before, every step up to the current one was orange.

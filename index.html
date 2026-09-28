@@ -6506,7 +6506,7 @@
   .svStep{position:relative;padding-left:22px;margin-bottom:20px;}
   .svStep:last-child{margin-bottom:0;}
   .svStep::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;border-radius:2px;background:rgba(255,255,255,.12);}
-  .svStep.on::before{background:#f78359;}
+  .svStep.on::before{background:#f78359;} .svStep.ok::before{background:#9cc088;}   /* done green, the step in hand orange ("first bar progress needs to be green") */
   .svStep b{display:block;font-size:16px;font-weight:500;color:#f4f4f4;}
   .svStep span{display:block;margin-top:2px;font-size:14px;color:#8b8b86;}
   .svAbout{margin-top:44px;}
@@ -6520,7 +6520,7 @@
   body.light .svPend, body.light .svWarn{background:#fdf0e6;} body.light .svWarn{color:#3a2a20;} body.light .svPend p{color:#6b5c4a;}
   body.light .svBtn{background:#111;color:#fff;} body.light .svBack, body.light .svMore, body.light .svRefBtn, body.light .svRefIc{background:rgba(46,31,26,.08);color:#2e1f1a;}
   body.light .svProg{background:rgba(46,31,26,.04);} body.light .svRef{box-shadow:inset 0 0 0 1px rgba(46,31,26,.1);} body.light .svRow, body.light .svRow:last-child{border-color:rgba(46,31,26,.1);}
-  body.light .svStep::before{background:rgba(46,31,26,.12);} body.light .svStep.on::before{background:#f78359;}
+  body.light .svStep::before{background:rgba(46,31,26,.12);} body.light .svStep.on::before{background:#f78359;} body.light .svStep.ok::before{background:#9cc088;}
   /* the phone's screen */
   .svcMob{position:absolute;inset:0;z-index:5;display:none;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:#0d0d0c;color:#ececec;}
   .svcMob::-webkit-scrollbar{display:none;}
@@ -6723,7 +6723,8 @@
   .tlSugTrack .tlGrp > li{background:rgba(255,255,255,.05);}
   .tlGrp > li:hover{background:var(--tlGhostH);}
   .tlGrp > li.me{box-shadow:inset 0 0 0 1px var(--tlRing);}   /* the object's own service in its group's list */
-  :is(#dTl, .tlShPanel) .tlGrp > li.cur{box-shadow:inset 0 0 0 2px var(--tlMkCur);}   /* the service in hand: a 2px white border ("active service 2px border white") */
+  :is(#dTl, .tlShPanel) .tlGrp > li.cur{box-shadow:none;background:rgba(255,255,255,.135);} :is(#dTl, .tlShPanel) .tlGrp > li.cur:hover{background:rgba(255,255,255,.17);}   /* the service in hand: no border, its ground 8% lighter than the others ("remove border, increase #fff opacity by 8%") */
+  body.light :is(#dTl, .tlShPanel) .tlGrp > li.cur{background:rgba(46,31,26,.13);} body.light :is(#dTl, .tlShPanel) .tlGrp > li.cur:hover{background:rgba(46,31,26,.16);}
   .tlGrp > li::before{display:none;}
   .tlGrp > li{position:relative;display:flex;gap:12px;padding:0 0 16px;cursor:pointer;}
   .tlGrp > li:last-child{padding-bottom:2px;}
@@ -22785,7 +22786,7 @@
       const ref = chev => d.ref ? '<div class="svRef"><span class="svRefIc">' + IC.ref + '</span><div><b>Your referrals</b><span>Show your referrals when you get to your appointment.</span></div>' + (chev ? '<button class="svRefBtn svRefChev" type="button" aria-label="Show">' + IC.chev + '</button>' : '<button class="svRefBtn" type="button">Show</button>') + '</div>' : '';
       const instr = '<h2 class="svH2">Instructions</h2><div class="svBody"><ul class="svList">' + d.instr.map(i => '<li>' + escS(i) + '</li>').join('') + '</ul></div>';
       const about = '<div class="svAbout"><h3>About the service</h3><p>' + escS(d.about) + '</p><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
-      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i <= at ? ' on' : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
+      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
       const title = o && o.t || d.t, start = o && o.st || x.st;
       if (desk){
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
