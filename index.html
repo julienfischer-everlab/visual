@@ -6723,8 +6723,8 @@
   .tlGrp > li{position:relative;display:flex;gap:12px;padding:0 0 16px;cursor:pointer;}
   .tlGrp > li:last-child{padding-bottom:2px;}
   .tlGrp > li:not(:last-child)::before{content:"";position:absolute;left:9.5px;top:24px;bottom:4px;width:1px;background:var(--tlDotRing);}
-  .tlGrp .tlMk{width:20px;height:20px;margin-top:0;}
-  .tlGrp .on > .tlMk svg{width:12px;height:12px;}
+  .tlGrp > li > .tlMk{width:20px;height:20px;margin-top:0;}
+  .tlGrp > li.on > .tlMk svg{width:12px;height:12px;}
   .tlGrp .cur > .tlMk{box-shadow:inset 0 0 0 2px #f78359;} .tlGrp .cur > .tlMk::after{display:none;}
   .tlGrp .lock > .tlMk{box-shadow:inset 0 0 0 2px var(--tlDotRing);}
   .tlGtx{min-width:0;flex:1 1 auto;padding-top:1px;}
@@ -6742,6 +6742,7 @@
   .tlSeg.grp i.on{background:#9cc088;} .tlSeg.grp i.cur{background:#f78359;}
   .tlGn{margin-left:auto;font-size:12.5px;color:var(--tlSub);white-space:nowrap;}   /* where the service in hand stands in its own steps ("indicate Step x / x on the active step card") */
   .tlGtx p{margin:5px 0 0;font-size:12.5px;line-height:1.45;color:var(--tlSub);}
+  .tlSubL{margin-top:12px;}
   .tlSub{list-style:none;margin:10px 0 0;padding:0;}
   .tlSub li{position:relative;padding:3px 0 3px 16px;font-size:12.5px;color:var(--tlSub);}
   .tlSub li::before{content:"";position:absolute;left:1px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--tlDotRing);}
@@ -6760,14 +6761,14 @@
   #dTl .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkFut);}
   #dTl .cur > .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkCur);} #dTl .cur > .tlMk::after{display:none;}
   #dTl .on > .tlMk{box-shadow:none;}
-  #dTl .tlGrp .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkFut);} #dTl .tlGrp .cur > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkCur);} #dTl .tlGrp .on > .tlMk{box-shadow:none;}
+  #dTl .tlGrp > li > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkFut);} #dTl .tlGrp > li.cur > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkCur);} #dTl .tlGrp > li.on > .tlMk{box-shadow:none;}
   .tlStepL li{position:relative;display:flex;gap:10px;padding:0 0 12px;}
   .tlStepL li:last-child{padding-bottom:0;}
   .tlStepL li:not(:last-child)::before{content:"";position:absolute;left:7.5px;top:18px;bottom:2px;width:1px;background:var(--tlDotRing);}
   .tlStepL li.on:not(:last-child)::before{background:#9cc088;}
   .tlStepL .tx{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:10px;} .tlStepL .tx em{display:inline-block;font-style:normal;font-size:12.5px;color:var(--tlSub);opacity:.8;} .tlStepL b{display:block;font-size:13.5px;font-weight:400;color:var(--tlTx);line-height:16px;} .tlStepL span{display:block;margin-top:2px;font-size:12.5px;color:var(--tlSub);}
   .tlStepL li:not(.on):not(.cur) b{color:var(--tlSub);}
-  .tlStepL li{padding-bottom:10px;} .tlStepL li:not(:last-child)::before{top:17px;bottom:1px;}
+  .tlStepL li{padding-bottom:6px;} .tlStepL li:not(:last-child)::before{top:16px;bottom:0;}   /* 6 between steps ("compress a bit"), the line still joining ring to ring */
   /* complete is struck through ("complete -> strikethrough"): a done step, a done service, a done sub-step */
   .tlStepL li.on b, .tlGrp .on .tlGh b, .tlSub li.on{text-decoration:line-through;text-decoration-color:currentColor;text-decoration-thickness:1px;color:var(--tlSub);}
   .tlGrp > li.on:hover .tlGh b{text-decoration:line-through;}
@@ -22815,6 +22816,11 @@
               { svc: 'gutrev', state: 'locked', next: true, tag: 'Book appointment', need: 'Microbiome Report' }] }
         ] },
         { h: 'October 2026', rows: [
+          // the Member Check-In as a service group ("add this one"): the three in one object, DEXA in hand, the two after it locked
+          { t: 'Member Check-In', d: 'Your yearly check-in: a DEXA scan, a review of your diagnostics, then your care team.', img: 'dexa', meta: [['sug', '3 services'], ['clock', 'Due by 31 Oct 2026']], act: 'Book', cta: 1, more: 1,
+            group: [{ svc: 'dexa', state: 'book', t: 'DEXA Scan', tag: 'Book appointment', d: 'Book your DEXA scan to measure body composition and bone density', steps: [['Book appointment', ''], ['Booked', ''], ['Done', '']], at: 0 },
+              { svc: 'diag', state: 'locked', tag: 'Book appointment', need: 'DEXA Scan' },
+              { svc: 'checkin', state: 'locked', tag: 'Book appointment', need: 'Diagnostics Review' }] },
           { t: 'Pathology Test', d: VISIT, img: 'path', meta: [DR], act: 'View', more: 1, svc: 'path', state: 'book', st: 'Recommended by Dr Sarah Chen' },
           { t: 'CT Scan', d: VISIT, img: 'dexa', meta: [DR], act: 'Purchase', more: 1, svc: 'ct', state: 'purchase' }
         ], sug: SUG },
@@ -22871,7 +22877,7 @@
         const item = (x, i) => { const k = kind(x, i);
           const chip = x.tag && k !== 'on' ? '<span class="tlChip' + (k === 'cur' ? (x.tone === 'wait' ? ' b' : ' o') : '') + '">' + esc(x.tag) + '</span>' : '';
           const line = k === 'lock' && x.need ? 'You need to complete your ' + esc(x.need) + ' before you can book this appointment.' : k === 'cur' && x.d ? esc(x.d) : '';
-          const subs = k === 'cur' && x.p.steps.length ? '<ul class="tlSub">' + x.p.steps.map((st, j) => '<li class="' + (j < x.p.at ? 'on' : j === x.p.at ? 'cur' : '') + '">' + esc(st[0]) + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</li>').join('') + '</ul>' : '';
+          const subs = k === 'cur' && x.p.steps.length ? '<div class="tlSubL">' + stepList(x.p) + '</div>' : '';   // the same rings as a single service's steps ("keep same style for bullet indicator")
           return '<li class="' + k + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : '') + '</i><div class="tlGtx">' + 
             '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + (k === 'cur' && x.p.steps.length && x.p.at >= 0 ? '<span class="tlGn">Step ' + Math.min(x.p.at + 1, x.p.steps.length) + ' / ' + x.p.steps.length + '</span>' : '') + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
         return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button></div>' +
