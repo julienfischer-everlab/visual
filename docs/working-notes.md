@@ -11682,3 +11682,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Section heading:** "Change to July 2026": the first section's heading, "With your care team", is now "July 2026" (its care dot unchanged).
 
 **5.511 — A passive step's progress in light grey.** "Passive step light grey, not white": a passive step in hand now marks its progress in `--tlFutTx` (50% ink), light grey rather than white. This covers its increment in the badge, the chip's increment and its bar's fill in the steps list. Done steps stay green, and steps to come stay faint.
+
+**5.512 — Service cards at 8% / 4%; 6px more between the image and the content.**
+
+- **Card grounds:** "Active service card use #fff 8% opacity bg, inactive use 4%." In a group's list, the service in hand sits on `rgba(255,255,255,.08)` (.10 on hover) and the others on `.04` (.06 on hover). A single service's steps box, being the one in hand, takes the same 8%. Light mode uses the ink equivalents.
+- **Image gap:** "Increase gap between img and content +6px." The thumbnail column is 6px wider than its image (86px for the 80 thumbnail on desk, 50 for the 44 at XS). The text now starts 24px after the image instead of 18 (22 instead of 16 at XS). The other column gaps are unchanged.
