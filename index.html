@@ -6743,6 +6743,9 @@
   .tlSeg.lin.full i{background:#9cc088;}
   .tlSeg.grp{display:flex;flex:none;width:96px;gap:3px;} .tlSeg.grp i{flex:1 1 0;width:auto !important;height:4px;border-radius:2px;background:var(--tlDotRing);}
   .tlSeg.grp i.on{background:#9cc088;} .tlSeg.grp i.cur{background:#f78359;}
+  /* beside the chip, the step in hand, in orange, while the steps are closed ("a badge next to it that reuses the current step in progress; when the steps are open it disappears, the list says the same") */
+  .tlProg .tlCurB{height:28px;padding:0 10px;border-radius:8px;font-size:12.5px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  body:not(.tlSheetMode) .tlRow.open .tlProg .tlCurB{display:none;}
   .tlGn{margin-left:auto;font-size:12.5px;color:var(--tlSub);white-space:nowrap;}   /* where the service in hand stands in its own steps ("indicate Step x / x on the active step card") */
   .tlGtx p{margin:5px 0 0;font-size:12.5px;line-height:1.45;color:var(--tlSub);}
   .tlSubL{margin-top:12px;}
@@ -6837,7 +6840,7 @@
     .tlMeta span{max-width:100%;} .tlMeta span > em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .tlAct{margin-top:16px;padding:0;margin-left:-8px;} .tlProg{margin-top:16px;} .tlProg .lb{flex:1 1 auto;} .tlSeg i{width:14px;}
     /* the chip and the button side by side, one height ("next to each other, same height 56px"); a row with no chip gives the button the line */
-    .tlProg .tlTgl{height:56px;padding:0 12px 0 14px;border-radius:12px !important;} .tlProg .tlTgl .tlSeg.lin, .tlProg .tlTgl .tlSeg.grp{width:72px;}
+    .tlProg .tlTgl{height:56px;padding:0 12px 0 14px;border-radius:12px !important;} .tlProg .tlCurB{display:none;}   /* no room beside the chip and the button */ .tlProg .tlTgl .tlSeg.lin, .tlProg .tlTgl .tlSeg.grp{width:72px;}
     .tlAct{min-width:0;} .tlAct .tlBtn{min-width:0;padding:0 12px;overflow:hidden;text-overflow:ellipsis;} .tlAct .tlMore{flex:none;width:44px;}   /* a long label gives way, never the screen */
     .tlAct .tlBtn, .tlAct .tlMore{height:56px;} .tlAct .tlBtn{border-radius:12px;} .tlAct.split .tlBtn{border-radius:12px 0 0 12px;} .tlAct.split .tlMore{border-radius:0 12px 12px 0;}
     .tlRow.noProg{grid-template-areas:"th tx tx" "meta meta meta" "act act act" "det det det";} .tlRow.noProg .tlAct{margin-left:0;}
@@ -22935,7 +22938,7 @@
           const subs = k === 'cur' && x.p.steps.length ? '<div class="tlSubL">' + stepList(x.p) + '</div>' : '';   // the same rings as a single service's steps ("keep same style for bullet indicator")
           return '<li class="' + k + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : '') + '</i><div class="tlGtx">' + 
             '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + (k === 'cur' && x.p.steps.length && x.p.at >= 0 ? '<span class="tlGn">Step ' + Math.min(x.p.at + 1, x.p.steps.length) + ' / ' + x.p.steps.length + '</span>' : '') + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
-        return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button></div>' +
+        return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button>' + (a >= 0 && act.p.steps[act.p.at] ? '<span class="tlChip o tlCurB">' + esc(act.p.steps[act.p.at][0]) + '</span>' : '') + '</div>' +
           '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
       }
       if (r.state === 'locked' && r.need){   // waiting on another: its chip says which, with the blocker's own progress
@@ -22952,7 +22955,7 @@
       let p = PL(r.svc, r.state); if (!p) return ''; if (r.steps) p = Object.assign({}, p, { steps: r.steps }); if (r.at != null) p = Object.assign({}, p, { at: r.at });
       const n = p.steps.length, done = p.at >= n;
       const lab = done ? 'Completed' : p.at < 0 ? 'Not started' : 'Step ' + (p.at + 1) + ' of ' + n;
-      return '<div class="tlProg' + (done ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show steps"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lab + CHEV + '</button></div>' +
+      return '<div class="tlProg' + (done ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show steps"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lab + CHEV + '</button>' + (!done && p.at >= 0 && p.steps[p.at] ? '<span class="tlChip o tlCurB">' + esc(p.steps[p.at][0]) + '</span>' : '') + '</div>' +
         '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + stepList(p) + '</div></div></div>';
     };
     // a primary action (Book, Collect sample, Claim) comes with its steps
