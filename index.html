@@ -6735,6 +6735,9 @@
   .tlGrp > li:hover .tlGh b{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--tlRing);}
   .tlChip{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:7px;background:var(--tlGhost);font-size:12px;font-weight:500;color:var(--tlTx);}
   .tlChip.o{background:rgba(247,131,89,.14);color:#f78359;}
+  .tlSeg.lin{display:block;flex:none;width:96px;height:4px;border-radius:2px;background:var(--tlDotRing);overflow:hidden;}
+  .tlSeg.lin i{display:block;height:100%;border-radius:2px;background:#f78359;}
+  .tlSeg.lin.full i{background:#9cc088;}
   .tlGn{margin-left:auto;font-size:12.5px;color:var(--tlSub);white-space:nowrap;}   /* where the service in hand stands in its own steps ("indicate Step x / x on the active step card") */
   .tlGtx p{margin:5px 0 0;font-size:12.5px;line-height:1.45;color:var(--tlSub);}
   .tlSub{list-style:none;margin:10px 0 0;padding:0;}
@@ -22924,6 +22927,9 @@
     };
     const render = () => {
       ROWS = []; list.innerHTML = TL[tab].map(sec).join('');
+      // one linear bar in place of the segments ("no increment, linear progress, width 96px"): what is done, and half the step in hand; green once complete
+      list.querySelectorAll('.tlSeg').forEach(sg => { const is = sg.querySelectorAll('i'), n = is.length, on = sg.querySelectorAll('i.on').length, cur = sg.querySelectorAll('i.cur').length;
+        const f = n ? Math.min(1, (on + cur * .5) / n) : 0; sg.classList.add('lin'); sg.classList.toggle('full', !!n && on === n); sg.innerHTML = '<i style="width:' + (f * 100).toFixed(1) + '%"></i>'; });
       list.querySelectorAll('.tlSugTrack').forEach(t => t.addEventListener('scroll', navState, { passive: true }));
       filter();
     };
