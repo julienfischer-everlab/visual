@@ -11680,3 +11680,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Newly primary:** the July Pathology Test (Complete your test), the booked Onboarding consult, Dexa Scan and Nutrition review (Meet your doctor / Go to your appointment / Join the call).
 - **Unchanged:** passive ones (Dexa waiting on its results, a pathology waiting on its referral) and ones not started keep the quiet button.
 - **Section heading:** "Change to July 2026": the first section's heading, "With your care team", is now "July 2026" (its care dot unchanged).
+
+**5.511 — A passive step's progress in light grey.** "Passive step light grey, not white": a passive step in hand now marks its progress in `--tlFutTx` (50% ink), light grey rather than white. This covers its increment in the badge, the chip's increment and its bar's fill in the steps list. Done steps stay green, and steps to come stay faint.
