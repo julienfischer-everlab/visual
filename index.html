@@ -22878,8 +22878,8 @@
           { t: 'Pathology Test', d: VISIT, img: 'path', meta: [DR], act: 'View', more: 1, svc: 'path', state: 'book', st: 'Recommended by Dr Sarah Chen' },
           { t: 'CT Scan', d: VISIT, img: 'dexa', meta: [DR], act: 'Purchase', more: 1, svc: 'ct', state: 'purchase' }
         ], sug: SUG },
-        { h: '50 years old', rows: [{ t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [['pin', 'In person']], act: 'View', more: 1, svc: 'dexa', state: 'later', age: 50 }] },
-        { h: '60 years old', rows: [{ t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [['pin', 'In person']], act: 'View', more: 1, svc: 'dexa', state: 'later', age: 60 }] }
+        { h: '50 years old', tail: 1, rows: [{ t: 'Dexa Scan', d: 'Available when you turn 50.', img: 'dexa', meta: [['pin', 'In person']], svc: 'dexa', state: 'later', age: 50, lockAge: 50 }] },
+        { h: '60 years old', tail: 1, rows: [{ t: 'Dexa Scan', d: 'Available when you turn 60.', img: 'dexa', meta: [['pin', 'In person']], svc: 'dexa', state: 'later', age: 60, lockAge: 60 }] }
       ],
       claim: [
         { h: 'Included in your membership', dot: 'now', rows: [
@@ -22919,8 +22919,9 @@
     // a row waiting on another stands under it ("the object needs to be below the blocker"), however the data lists them
     // every locked object goes to "Later", after everything ("all locked objects under a group 'Later' at the end of the list")
     const layout = S => { const later = [];
-      const out = S.map(x => Object.assign({}, x, { rows: x.rows.filter(r => { if (r.lock){ later.push(r); return false; } return true; }) })).filter(x => x.rows.length || (x.sug && x.sug.length));
-      if (later.length) out.push({ h: 'Later', rows: later }); return out; };
+      const all = S.map(x => Object.assign({}, x, { rows: x.rows.filter(r => { if (r.lock){ later.push(r); return false; } return true; }) })).filter(x => x.rows.length || (x.sug && x.sug.length));
+      const out = all.filter(x => !x.tail), tail = all.filter(x => x.tail);   // the ages come after Later ("after Later")
+      if (later.length) out.push({ h: 'Later', rows: later }); return out.concat(tail); };
     const ordered = rows0 => { const rows = rows0.slice().sort((a, b) => (b.cta ? 1 : 0) - (a.cta ? 1 : 0)), out = [], rest = rows.slice();   // a primary action first in its month ("primary object always first")
       const place = x => { out.push(x); rest.filter(y => y.need === x.t).forEach(y => { rest.splice(rest.indexOf(y), 1); place(y); }); };
       rows.forEach(x => { if (rest.indexOf(x) < 0) return; if (x.need && rows.some(y => y !== x && y.t === x.need)) return; rest.splice(rest.indexOf(x), 1); place(x); });
@@ -22940,6 +22941,12 @@
             '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + (k === 'cur' && x.p.steps.length && x.p.at >= 0 ? '<span class="tlGn">Step ' + Math.min(x.p.at + 1, x.p.steps.length) + ' / ' + x.p.steps.length + '</span>' : '') + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
         return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button>' + (a >= 0 && act.p.steps[act.p.at] ? '<span class="tlChip o tlCurB">' + esc(act.p.steps[act.p.at][0]) + '</span>' : '') + '</div>' +
           '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
+      }
+      if (r.lockAge){   // locked by age ("also should be locked"): nothing to do until then
+        const own = rowPlan(Object.assign({}, r, { state: 'locked' }));
+        const list = '<ol class="tlStepL"><li><i class="tlMk"></i><div class="tx"><b>Available when you turn ' + r.lockAge + '</b></div></li>' + (own ? own.steps.map(st => '<li><i class="tlMk"></i><div class="tx"><b>' + esc(st[0]) + '</b></div></li>').join('') : '') + '</ol>';
+        return '<div class="tlProg"><button class="tlTgl tlBlk" type="button" aria-expanded="false" aria-label="Unlocks at ' + r.lockAge + ', show steps">' + LOCK + 'Unlocks at ' + r.lockAge + CHEV + '</button></div>' +
+          '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + list + '</div></div></div>';
       }
       if (r.state === 'locked' && r.need){   // waiting on another: its chip says which, with the blocker's own progress
         const bk = blockerOf(r), bp = bk ? rowPlan(bk) : null;
@@ -22962,7 +22969,7 @@
     // already open ("when it's a primary action, show the card inside
     // upfront"): what is asked of you now is the first thing read
     const row = r => { let pg = prog(r); const up = !!(r.cta && pg); if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
-      return '<article class="tlRow' + (up ? ' open' : '') + (r.lock ? ' lock' : '') + (pg ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
+      return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       (r.img === 'path' ? '<i class="tlTh tlThPath" aria-hidden="true"></i>' : '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">') +
       '<div class="tlTx"><div class="tlTl"><b>' + esc(r.t) + '</b>' + (r.tag ? '<span class="tlChip' + (r.lock ? '' : ' o') + '">' + esc(r.tag) + '</span>' : '') + '</div><p>' + esc(r.d) + '</p></div>' +
       '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +

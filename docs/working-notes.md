@@ -11600,3 +11600,12 @@ A row has the page's name, one line on what it is and its count of entry points 
 - **"Add badge 'Your next step', orange":** the step in hand in every list carries an orange "Your next step" badge beside its title, 20 tall and 6 corners. That covers a single service, the service in hand in a group, a locked row's "Complete your DEXA Scan", and the XS/S sheet. It first sat high, because an old rule for the steps' sublines styled every span in the list as a block; the badge is set past it and centred on the title.
 
 **5.496 — The step in hand beside the chip.** "Add an orange badge next to it that reuses the current step in progress; when the steps are open it disappears, as we see the same on the list": beside the steps chip, an orange badge names the step in hand (28 tall, 8 corners), e.g. "Meet your doctor", "Get your referral". A group shows its active service's step in hand ("Collect sample", "Book appointment"). It hides while the steps are open, since the list then shows that step with its "Your next step" badge; the rows that come open (the primary ones) show it once closed. There is none on rows that are not started, complete or locked (a locked row's chip already says what it waits on). At S, in sheet mode, it always shows, since the steps never open inline there. At XS it stays hidden, since the chip and the button fill the line.
+
+**5.497 — The ages after Later, and locked.** "After Later, also should be locked":
+
+- **Order:** the 50 and 60 years old sections now close the list, after Later.
+- **Their DEXA rows:** locked by age. Dimmed like the other locked rows, no buttons, and "Available when you turn 50." (60) as their line.
+- **Chip:** a lock with "Unlocks at 50", no progress, since there is none yet. It opens their steps: "Available when you turn 50" first, then the scan's own three, all to come.
+- **Page:** the row still opens its page, "Due when you turn 50."
+
+These rows stay in their own sections (a `tail` section) rather than joining Later, which holds the rows waiting on another service.
