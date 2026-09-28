@@ -6769,19 +6769,20 @@
   .tlStepL li:last-child{padding-bottom:0;}
   .tlStepL li:not(:last-child)::before{content:"";position:absolute;left:7.5px;top:18px;bottom:2px;width:1px;background:var(--tlDotRing);}
   .tlStepL li.on:not(:last-child)::before{background:#9cc088;}
-  .tlStepL .tx{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:10px;} .tlStepL .tx em{display:inline-block;font-style:normal;font-size:12.5px;color:var(--tlSub);opacity:.8;} .tlStepL b{display:block;font-size:13.5px;font-weight:400;color:var(--tlTx);line-height:16px;} .tlStepL span{display:block;margin-top:2px;font-size:12.5px;color:var(--tlSub);}
+  .tlStepL .tx{min-width:0;display:flex;flex-wrap:wrap;align-items:center;column-gap:10px;row-gap:4px;} .tlStepL .tx .tlNext{display:inline-flex;align-items:center;margin:0;height:20px;padding:0 7px;border-radius:6px;font-size:11.5px;line-height:1;}   /* past the old subline rule for spans */ .tlStepL .tx em{display:inline-block;font-style:normal;font-size:12.5px;color:var(--tlSub);opacity:.8;} .tlStepL b{display:block;font-size:13.5px;font-weight:400;color:var(--tlTx);line-height:16px;} .tlStepL span{display:block;margin-top:2px;font-size:12.5px;color:var(--tlSub);}
   .tlStepL li:not(.on):not(.cur) b{color:var(--tlSub);}
   .tlStepL li{padding-bottom:6px;} .tlStepL li::before{display:none !important;}   /* no trail between the rings ("no need trail") */
   /* the steps as a vertical progress bar ("no need trail, use vertical
      progress bar"): a 4px segment beside each step, 4 apart -- done green,
      the one in hand orange, the rest faint -- the increments of the chip,
      stood on end */
-  .tlStepL li{align-items:stretch;gap:16px;padding-bottom:8px;}   /* the reference's bars: 6 wide, 8 apart, 16 to the words (its subs ignored) */
-  :is(#dTl, .tlShPanel) .tlStepL li > .tlMk{width:6px;height:auto;min-height:22px;flex:none;border-radius:3px;box-shadow:none !important;background:var(--tlMkFut);}
+  .tlStepL li{align-items:stretch;gap:16px;padding-bottom:2px;}   /* 2 between the segments ("vertical gap 2px") */   /* the reference's bars: 6 wide, 8 apart, 16 to the words (its subs ignored) */
+  :is(#dTl, .tlShPanel) .tlStepL li > .tlMk{width:4px;height:auto;min-height:26px;flex:none;border-radius:2px;box-shadow:none !important;background:var(--tlMkFut);}
   :is(#dTl, .tlShPanel) .tlStepL li > .tlMk::after, :is(#dTl, .tlShPanel) .tlStepL li > .tlMk svg{display:none;}
   :is(#dTl, .tlShPanel) .tlStepL li.on > .tlMk{background:#9cc088;}
-  :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{background:var(--tlMkFut) linear-gradient(#f78359,#f78359) no-repeat 0 0 / 100% 0%;animation:tlFill 1.8s cubic-bezier(.45,0,.25,1) infinite;}   /* it fills top to bottom, over and over ("so we feel it's currently happening") */
-  @keyframes tlFill{0%{background-size:100% 0%;} 65%{background-size:100% 100%;} 88%{background-size:100% 100%;opacity:1;} 100%{background-size:100% 100%;opacity:.35;}}
+  /* the step in hand: an orange gradient flowing down it, without end ("first increment moves top to bottom, so we feel it's happening", "movement with gradient") -- one period is the segment's height, so the loop has no seam */
+  :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{background:linear-gradient(180deg,rgba(247,131,89,.28) 0%,#f78359 25%,rgba(247,131,89,.28) 50%,#f78359 75%,rgba(247,131,89,.28) 100%) 0 0 / 100% 200%;animation:tlFlow 1.4s linear infinite;}
+  @keyframes tlFlow{from{background-position:0 100%;} to{background-position:0 0;}}
   @media (prefers-reduced-motion:reduce){ :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{animation:none;background:#f78359;} }
   .tlStepL .tx{padding:3px 0;}   /* 6 between steps ("compress a bit"), the line still joining ring to ring */
   /* complete is struck through ("complete -> strikethrough"): a done step, a done service, a done sub-step */
@@ -22921,7 +22922,7 @@
       const place = x => { out.push(x); rest.filter(y => y.need === x.t).forEach(y => { rest.splice(rest.indexOf(y), 1); place(y); }); };
       rows.forEach(x => { if (rest.indexOf(x) < 0) return; if (x.need && rows.some(y => y !== x && y.t === x.need)) return; rest.splice(rest.indexOf(x), 1); place(x); });
       return out.concat(rest); };
-    const stepList = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : ''; return '<li class="' + c + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // titles only ("keep the steps short, just title, not sub")
+    const stepList = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : ''; return '<li class="' + c + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? '<span class="tlChip o tlNext">Your next step</span>' : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
     const prog = r => {
       if (r.group){
         const { g, a } = groupOf(r), act = g[a < 0 ? g.length - 1 : a], nm = x => x.t || x.p.t;
@@ -22942,7 +22943,7 @@
         const segs = bp ? bp.steps.map((st, j) => '<i class="' + (bp.at >= bp.steps.length || j < bp.at ? 'on' : j === bp.at ? 'cur' : '') + '"></i>').join('') : '';
         const own = rowPlan(r), bl = bp ? (bp.at >= bp.steps.length ? 'Completed' : bp.at < 0 ? 'Not started' : 'Step ' + (bp.at + 1) + ' of ' + bp.steps.length) : '';
         // its step block ("when it's locked I still need to see why"): first the blocker, as the step in hand, with the way to it; then its own steps, all to come
-        const list = '<ol class="tlStepL"><li class="cur"><i class="tlMk"></i><div class="tx"><b>Complete your ' + esc(r.need) + '</b><button class="tlGo" type="button" data-need="' + esc(r.need) + '">' + esc(r.need) + (bl ? ' \u00b7 ' + bl : '') + ' \u2192</button></div></li>' +
+        const list = '<ol class="tlStepL"><li class="cur"><i class="tlMk"></i><div class="tx"><b>Complete your ' + esc(r.need) + '</b>' + '<span class="tlChip o tlNext">Your next step</span>' + '<button class="tlGo" type="button" data-need="' + esc(r.need) + '">' + esc(r.need) + (bl ? ' \u00b7 ' + bl : '') + ' \u2192</button></div></li>' +
           (own ? own.steps.map(st => '<li><i class="tlMk"></i><div class="tx"><b>' + esc(st[0]) + '</b></div></li>').join('') : '') + '</ol>';
         return '<div class="tlProg"><button class="tlTgl tlBlk" type="button" aria-expanded="false" aria-label="Waiting on ' + esc(r.need) + ', show steps">' + LOCK + (segs ? '<span class="tlSeg" aria-hidden="true">' + segs + '</span>' : '') + 'Waiting on ' + esc(r.need) + CHEV + '</button></div>' +
           '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + list + '</div></div></div>';

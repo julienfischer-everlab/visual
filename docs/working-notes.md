@@ -11592,3 +11592,9 @@ A row has the page's name, one line on what it is and its count of entry points 
 - **"The sticky gradient should be at the end of the vertical":** a month title stuck under the bar carries the stack's fade at its foot, 28px from the page's ground to clear. It shows only while stuck (marked on scroll), so rows at rest are never dimmed.
 - **"First increment move top to bottom, so we feel it's currently happening":** the step in hand's segment fills from top to bottom in orange over its faint track, holds, fades a little and starts again (1.8s). It stays still and solid under reduced motion.
 - **"Ignore sub" (the reference's bars):** the steps stay titles only; the segments are 6 wide (3 corners), 8 apart, 16 from the words.
+
+**5.495 — Thinner bars 2 apart; the step in hand flows; "Your next step".**
+
+- **"Reduce width 2px, vertical gap 2px":** the step segments are 4 wide (2 corners), 2 apart and 26 tall, so the words keep their spacing and the segments read nearly as one bar.
+- **"Movement with gradient":** the step in hand no longer fills and resets. An orange gradient flows down it without end (bright and faint orange bands, one period the segment's height, 1.4s linear, so the loop has no seam); still and solid under reduced motion.
+- **"Add badge 'Your next step', orange":** the step in hand in every list carries an orange "Your next step" badge beside its title, 20 tall and 6 corners. That covers a single service, the service in hand in a group, a locked row's "Complete your DEXA Scan", and the XS/S sheet. It first sat high, because an old rule for the steps' sublines styled every span in the list as a block; the badge is set past it and centred on the title.
