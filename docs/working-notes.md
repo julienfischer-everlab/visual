@@ -11652,3 +11652,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **Active card:** "No, remove border, just increase #fff opacity by 8% on the active service bg." The in-hand card in a group's list has no border. Its ground is `rgba(255,255,255,.135)` instead of `.055`, and `.17` on hover. Light mode uses the ink equivalent.
 - **Service page:** "First bar progress needs to be green." The service page's "Your progress" bars are now split by state. Done steps are green (`.svStep.ok`, #9cc088), the step in hand is orange, and future steps stay faint. Before, every step up to the current one was orange.
+
+**5.507 — Quieter service cards: a filled lock, names only when not active, no step count.** In a group's list of service cards:
+
+- **Locked cards:** a service locked behind another has a filled lock (`LOCKF`) in place of the empty ring, in the ring's grey (`--tlMkFut`). This follows "for locked service, replace circle by a filled lock icon same grey colour".
+- **Inactive cards:** a card that isn't the one in hand (done, coming up or locked) shows only its name, with no "You need to complete…" line and no badge. This follows "if service is not active, remove the sub title and badge on the cards".
+- **Active card:** the "Step x / y" on its right is gone ("remove step right side"). Its steps list and "Your next step" say it.

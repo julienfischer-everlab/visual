@@ -6774,7 +6774,8 @@
   :is(#dTl, .tlShPanel) .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkFut);}
   :is(#dTl, .tlShPanel) .cur > .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkCur);} :is(#dTl, .tlShPanel) .cur > .tlMk::after{display:none;}
   :is(#dTl, .tlShPanel) .on > .tlMk{box-shadow:none;}
-  :is(#dTl, .tlShPanel) .tlGrp > li > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkFut);} :is(#dTl, .tlShPanel) .tlGrp > li.cur > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkCur);} :is(#dTl, .tlShPanel) .tlGrp > li.on > .tlMk{box-shadow:none;}
+  :is(#dTl, .tlShPanel) .tlGrp > li.lock > .tlMk{box-shadow:none !important;color:var(--tlMkFut);} :is(#dTl, .tlShPanel) .tlGrp > li.lock > .tlMk svg{width:20px;height:20px;}
+  :is(#dTl, .tlShPanel) .tlGrp > li:not(.lock) > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkFut);} :is(#dTl, .tlShPanel) .tlGrp > li.cur > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkCur);} :is(#dTl, .tlShPanel) .tlGrp > li.on > .tlMk{box-shadow:none;}
   .tlStepL li{position:relative;display:flex;gap:10px;padding:0 0 12px;}
   .tlStepL li:last-child{padding-bottom:0;}
   .tlStepL li:not(:last-child)::before{content:"";position:absolute;left:7.5px;top:18px;bottom:2px;width:1px;background:var(--tlDotRing);}
@@ -22928,6 +22929,7 @@
     // the row's own service and state: a group's is its active service's
     const own = r => { if (!r.group) return r; const { g, a } = groupOf(r); if (r.focus != null) return g[r.focus]; const x = g[a < 0 ? g.length - 1 : a]; return x; };
     const svcOpts = x => ({ from: 'tl', t: x.t, tag: x.tag, d: x.d, at: x.at, need: x.need, steps: x.steps });   // what a group's service tells its page
+    const LOCKF = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>';   // a locked service's mark, filled ("replace circle by a filled lock icon, same grey")
     const LOCK = '<svg class="tlLk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>';
     // the row another waits on, in the tab showing; and where a row stands in its own steps
     const blockerOf = r => { for (const sc of TL[tab]) for (const x of sc.rows) if (x !== r && x.t === r.need) return x; return null; };
@@ -22953,11 +22955,11 @@
         const lab = a < 0 ? 'Completed' : one ? 'Step ' + (os.at + 1) + ' of ' + os.steps.length : 'Service ' + (a + 1) + ' of ' + g.length;   // the count is the chip ("Step 1 of 3 -> merge into chip"), no status beside it
         const kind = (x, i) => x.state === 'done' ? 'on' : i === a ? 'cur' : x.state === 'soon' ? 'soon' : 'lock';
         const item = (x, i) => { const k = kind(x, i);
-          const chip = x.tag && k !== 'on' && k !== 'cur' ? '<span class="tlChip">' + esc(x.tag) + '</span>' : '';   // the one in hand has no badge ("remove badge orange"): the row's button says it; the locked keep theirs
-          const line = k === 'lock' && x.need ? 'You need to complete your ' + esc(x.need) + ' before you can book this appointment.' : k === 'cur' && x.d ? esc(x.d) : '';
+          const chip = '';   // no badge on any card: the one in hand has its button, the rest are just their names ("if service is not active, remove the sub title and badge")
+          const line = k === 'cur' && x.d ? esc(x.d) : '';
           const subs = k === 'cur' && x.p.steps.length ? '<div class="tlSubL">' + stepList(x.p) + '</div>' : '';   // the same rings as a single service's steps ("keep same style for bullet indicator")
-          return '<li class="' + k + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + (r.focus === i ? ' me' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : '') + '</i><div class="tlGtx">' + 
-            '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + (k === 'cur' && x.p.steps.length && x.p.at >= 0 ? '<span class="tlGn">Step ' + Math.min(x.p.at + 1, x.p.steps.length) + ' / ' + x.p.steps.length + '</span>' : '') + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
+          return '<li class="' + k + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + (r.focus === i ? ' me' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : k === 'lock' ? LOCKF : '') + '</i><div class="tlGtx">' + 
+            '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + '' + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
         const stack = '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
         if (r.state === 'locked' && r.need){   // a member of the group still waiting: the Waiting on chip, over the same list of the group's services
           const bk = blockerOf(r), bp = bk ? rowPlan(bk) : null;
