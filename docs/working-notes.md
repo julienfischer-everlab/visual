@@ -11691,3 +11691,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 **5.513 — No badge beside an object's title.** "Remove badge": the locked objects (Diagnostics Review, Member Check-In) lose the "Book appointment" badge after their title, and no object's title carries one now. The tag still travels to the service page, where it names the ask.
 
 **5.514 — A coming-up service shows the lock too.** "Lock icon, not circle": in a group's list, a service that is coming up but not locked behind another (Microbiome Report) now takes the same filled grey lock as the locked ones, not the empty ring. Only the service in hand keeps a ring, and done ones keep the green tick.
+
+**5.515 — The open card in a group's list is always the object's own service; no borders on the cards.** "The master active card should always == the context, e.g. here Diag review." In a group's list, the card that opens (`li.main`: #fff 8%, description, steps, no badge) is now the object's own service (`focus`), not the group's service in hand.
+
+- **Diagnostics Review:** its own card opens. It keeps its lock, its title reads in full, and its steps are those of a locked object: first "Complete your DEXA Scan" with "Your next step" and the `DEXA Scan · Step 1 of 3 →` link (it scrolls to and flashes the DEXA object), then its own Book appointment / Booked / Done.
+- **The other cards:** the rest (DEXA with its white ring, Member Check-In with its lock) are collapsed at 4% with "Related service".
+- **Groups without a focus:** a group object with no `focus` (Microbiome) still opens its service in hand.
+- **Borders:** "Remove all border in step service card." The 1px outline that marked the object's own card (`.me`) is gone. No card in the list has a border or ring now, only the grounds.
