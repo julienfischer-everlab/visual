@@ -6622,19 +6622,19 @@
   .tlSec.care .tlDot{box-shadow:none;color:var(--tlSub);display:flex;align-items:center;justify-content:center;} .tlSec.care .tlDot svg{width:15px;height:15px;}
   /* a row: the picture, the title and the line, what and where under them,
      the actions at the right */
-  .tlRow{cursor:pointer;display:grid;grid-template-columns:80px minmax(0,1fr) auto;grid-template-areas:"th tx act" "th meta act";column-gap:14px;align-items:start;padding:18px 0;}
+  .tlRow{cursor:pointer;display:grid;grid-template-columns:80px minmax(0,1fr) auto;grid-template-areas:"th tx act" "th meta act";column-gap:18px;align-items:start;padding:18px 0;}
   /* hover: the whole row lifts onto a rounded tile reaching 24 past the
      picture and the buttons ("add hover state"); the rule between rows is
      as wide as the tile ("also need small divider") and steps aside for it */
   .tlRow{position:relative;isolation:isolate;}
-  .tlRow::before{content:"";position:absolute;top:0;bottom:0;left:-24px;right:-24px;z-index:-1;border-radius:20px;background:var(--tlHover);opacity:0;transition:opacity .18s ease;pointer-events:none;}
-  .tlItems .tlRow + .tlRow::after, .tlSugTrack .tlRow + .tlRow::after{content:"";position:absolute;top:0;left:-24px;right:-24px;height:1px;background:var(--tlLine);transition:opacity .18s ease;}
+  .tlRow::before{content:"";position:absolute;top:0;bottom:0;left:-18px;right:-18px;   /* 18 on every side, as the row's own 18 above and below ("reduce card padding by 6px, even on all sides") */z-index:-1;border-radius:20px;background:var(--tlHover);opacity:0;transition:opacity .18s ease;pointer-events:none;}
+  .tlItems .tlRow + .tlRow::after, .tlSugTrack .tlRow + .tlRow::after{content:"";position:absolute;top:0;left:-18px;right:-18px;height:1px;background:var(--tlLine);transition:opacity .18s ease;}
   .tlSugTrack .tlRow::before{left:-8px;right:-10px;border-radius:14px;background:rgba(255,255,255,.04);} .tlSugTrack .tlRow + .tlRow::after{left:0;right:0;}
   @media (hover:hover){
     .tlRow:hover::before{opacity:1;}
     .tlRow:hover::after, .tlRow:hover + .tlRow::after{opacity:0;}
   }
-  .tlTh{grid-area:th;width:80px;height:80px;border-radius:8px;object-fit:cover;display:block;background:#222;}
+  .tlTh{grid-area:th;width:80px;height:80px;border-radius:12px;object-fit:cover;display:block;background:#222;}
   .tlTh.tlThPath{background:radial-gradient(120% 90% at 70% 20%,#f59a6e 0%,#ef6a3a 45%,#b8401c 100%);}
   .tlTx{grid-area:tx;min-width:0;padding-top:2px;}
   .tlTx b{display:block;font-size:17px;font-weight:500;color:var(--tlInk);line-height:1.3;letter-spacing:-.1px;}   /* 15 -> 17: "increase title font size by 2px" */
@@ -6678,7 +6678,7 @@
   .tlSeg i.on{background:#f78359;} .tlSeg i.cur{background:linear-gradient(90deg,#f78359 50%,rgba(247,131,89,.3) 50%);}
   .tlProg .lb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .tlProg .lb b{font-weight:500;color:var(--tlTx);}
   .tlProg.done .tlSeg i{background:#9cc088;} .tlProg.done .lb b{color:#9cc088;}
-  .tlTgl{flex:none;display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;margin-left:2px;border:0;border-radius:999px;background:var(--tlGhost);color:var(--tlTx);font:inherit;font-size:12px;cursor:pointer;}
+  .tlTgl{flex:none;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px 0 12px;margin-left:0;font-weight:500;border:0;border-radius:999px;background:var(--tlGhost);color:var(--tlTx);font:inherit;font-size:12px;cursor:pointer;}
   .tlTgl:hover{background:var(--tlGhostH);} .tlTgl svg{width:10px;height:10px;transition:transform .25s ease;}
   .tlRow.open .tlTgl svg{transform:rotate(180deg);}
   .tlDet{grid-area:det;display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.2,.8,.2,1);min-width:0;}
@@ -6742,7 +6742,7 @@
     .tlSearch{width:auto;margin:0;height:44px;border-radius:12px;} .tlSearch input{font-size:15px;}
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:30px 0 4px;} .tlSec:first-child .tlH{margin-top:18px;}
-    .tlRow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"th tx" "meta meta" "prog prog" "det det" "act act";column-gap:12px;padding:18px 0 20px;}
+    .tlRow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"th tx" "meta meta" "prog prog" "det det" "act act";column-gap:16px;padding:18px 0 20px;}
     .tlTh{width:44px;height:44px;border-radius:8px;}
     .tlTx{padding-top:0;} .tlTx p{white-space:normal;font-size:13.5px;}
     .tlMeta{flex-direction:column;flex-wrap:nowrap;gap:8px;margin-top:14px;font-size:13.5px;}
@@ -22807,7 +22807,7 @@
     const prog = r => {
       if (r.group){
         const { g, a } = groupOf(r), act = g[a < 0 ? g.length - 1 : a], nm = x => x.t || x.p.t;
-        const lab = a < 0 ? '<b>Completed</b> · ' + g.length + ' services' : '<b>Service ' + (a + 1) + ' of ' + g.length + '</b> · ' + esc(act.tag || nm(act));
+        const lab = a < 0 ? 'Completed' : 'Service ' + (a + 1) + ' of ' + g.length;   // the count is the chip ("Step 1 of 3 -> merge into chip"), no status beside it
         const kind = (x, i) => x.state === 'done' ? 'on' : i === a ? 'cur' : x.state === 'soon' ? 'soon' : 'lock';
         const item = (x, i) => { const k = kind(x, i);
           const chip = x.tag && k !== 'on' ? '<span class="tlChip' + (k === 'cur' ? ' o' : '') + '">' + esc(x.tag) + '</span>' : '';
@@ -22815,22 +22815,26 @@
           const subs = k === 'cur' && x.p.steps.length ? '<ul class="tlSub">' + x.p.steps.map((st, j) => '<li class="' + (j < x.p.at ? 'on' : j === x.p.at ? 'cur' : '') + '">' + esc(st[0]) + '</li>').join('') + '</ul>' : '';
           return '<li class="' + k + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : '') + '</i><div class="tlGtx">' + (x.next ? '<small>Next steps</small>' : '') +
             '<div class="tlGh"><b>' + esc(nm(x)) + '</b>' + chip + '</div>' + (line ? '<p>' + line + '</p>' : '') + subs + '</div></li>'; };
-        return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><span class="tlSeg" aria-hidden="true">' + g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('') + '</span><span class="lb">' + lab + '</span><button class="tlTgl" type="button" aria-expanded="false">Details' + CHEV + '</button></div>' +
+        return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><span class="tlSeg" aria-hidden="true">' + g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('') + '</span><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details">' + lab + CHEV + '</button></div>' +
           '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox"><ol class="tlGrp">' + g.map(item).join('') + '</ol></div></div></div>';
       }
       if (!r.svc || r.state === 'suggested' || r.state === 'later') return '';   // not yours yet: no steps to show
       const p = PL(r.svc, r.state); if (!p) return '';
       const n = p.steps.length, done = p.at >= n;
-      const lab = done ? '<b>Completed</b> · ' + n + ' of ' + n + ' steps' : p.at < 0 ? '<b>Not started</b> · ' + n + ' steps' : '<b>Step ' + (p.at + 1) + ' of ' + n + '</b> · ' + esc(p.steps[p.at][0]);
-      return '<div class="tlProg' + (done ? ' done' : '') + '"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span><span class="lb">' + lab + '</span><button class="tlTgl" type="button" aria-expanded="false">Steps' + CHEV + '</button></div>' +
+      const lab = done ? 'Completed' : p.at < 0 ? 'Not started' : 'Step ' + (p.at + 1) + ' of ' + n;
+      return '<div class="tlProg' + (done ? ' done' : '') + '"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show steps">' + lab + CHEV + '</button></div>' +
         '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + stepList(p) + '</div></div></div>';
     };
-    const row = r => '<article class="tlRow" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
+    // a primary action (Book, Collect sample, Claim) comes with its steps
+    // already open ("when it's a primary action, show the card inside
+    // upfront"): what is asked of you now is the first thing read
+    const row = r => { let pg = prog(r); const up = !!(r.cta && pg); if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
+      return '<article class="tlRow' + (up ? ' open' : '') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       (r.img === 'path' ? '<i class="tlTh tlThPath" aria-hidden="true"></i>' : '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">') +
       '<div class="tlTx"><b>' + esc(r.t) + '</b><p>' + esc(r.d) + '</p></div>' +
-      '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + prog(r) +
+      '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +
       '<div class="tlAct' + (r.more ? ' split' : '') + (r.cta ? ' cta' : '') + '"><button class="tlBtn' + (r.cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +
-      (r.more ? '<button class="tlMore" type="button" aria-label="More options">' + I.dots + '</button>' : '') + '</div></article>';
+      (r.more ? '<button class="tlMore" type="button" aria-label="More options">' + I.dots + '</button>' : '') + '</div></article>'; };
     const sec = x => '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : '') + '</i>' + esc(x.h) + '</h2>' +
       '<div class="tlItems">' + x.rows.map(row).join('') + '</div>' +
       (x.sug ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + x.sug.map(row).join('') + '</div></div>' : '') +
