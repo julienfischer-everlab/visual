@@ -6464,6 +6464,13 @@
   .svPendTx{flex:1 1 auto;min-width:0;}
   .svPendTag{display:flex;align-items:center;gap:8px;font-size:15px;color:#f78359;}
   .svPendTag i{width:7px;height:7px;border-radius:50%;background:#f78359;}
+  /* the card's tone follows the service's state: orange when something is
+     asked of you, green when it is settled, neutral when it is only on offer */
+  .svPend.ok{background:rgba(136,171,116,.13);} .svPend.ok .svPendTag{color:#9cc088;} .svPend.ok .svPendTag i{background:#9cc088;}
+  .svPend.info{background:rgba(255,255,255,.05);} .svPend.info .svPendTag{color:#b5b3ae;} .svPend.info .svPendTag i{background:#b5b3ae;}
+  body.light .svPend.ok{background:#eef3e9;} body.light .svPend.ok .svPendTag{color:#5d7f4c;} body.light .svPend.ok .svPendTag i{background:#5d7f4c;}
+  body.light .svPend.info{background:rgba(46,31,26,.05);} body.light .svPend.info .svPendTag{color:#6b5c4a;} body.light .svPend.info .svPendTag i{background:#6b5c4a;}
+  .svList{margin:0;padding:0 0 0 20px;} .svList li{margin:0 0 10px;line-height:1.45;} .svList li:last-child{margin-bottom:0;}
   .svPend h3{margin:8px 0 6px;font-size:22px;font-weight:500;line-height:1.25;letter-spacing:-.2px;color:#f4f4f4;}
   .svPend p{margin:0;font-size:14px;line-height:1.4;color:#b5b3ae;}
   .svBtn{flex:none;height:56px;padding:0 32px;border:0;border-radius:12px;background:#fff;color:#111;font:inherit;font-size:16px;font-weight:500;cursor:pointer;}
@@ -6511,7 +6518,7 @@
   .svcMob::-webkit-scrollbar{display:none;}
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
   .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 64px));padding:calc(var(--stH,54px) + 120px) 16px 16px;   /* up under the sticky bar (its height), the title where it stood */background:linear-gradient(180deg,#2b1a12,#161311 70%,#0d0d0c);overflow:hidden;}
-  .svmHero::before{content:"";position:absolute;inset:0;background:url(assets/overview/plan-dexa.webp) center 20% / cover no-repeat;opacity:.38;-webkit-mask-image:linear-gradient(#000 30%,transparent 95%);mask-image:linear-gradient(#000 30%,transparent 95%);}
+  .svmHero::before{content:"";position:absolute;inset:0;background:var(--svmImg, url(assets/overview/plan-dexa.webp)) center 20% / cover no-repeat;opacity:.38;-webkit-mask-image:linear-gradient(#000 30%,transparent 95%);mask-image:linear-gradient(#000 30%,transparent 95%);}
   .svmHero > *{position:relative;}
   /* the back and more discs ride a bar like the Overview's ("same behaviour as
      the home page's top bar, on scroll"): sticky at the screen's top, the
@@ -6553,11 +6560,17 @@
      breakpoint's page: the rail of months with the rows beside it from S up,
      the phone's stacked rows and the suggestions as a carousel at XS. */
   #dTl{display:none;padding:32px 40px 80px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:tl / inline-size;
-    --tlInk:#f4f4f4;--tlTx:#ececec;--tlSub:#8b8b86;--tlLine:rgba(255,255,255,.08);--tlRing:rgba(255,255,255,.14);
-    --tlPill:rgba(255,255,255,.08);--tlPillH:rgba(255,255,255,.13);--tlCta:#fff;--tlCtaInk:#111;
-    --tlBox:rgba(255,255,255,.04);--tlCard:#1a1a19;--tlCardRing:rgba(255,255,255,.06);color:var(--tlTx);}
+    /* dark, read off the dark captures ("adjust dark mode"): View and
+       Purchase on a light grey plate (#484848 on the page), the ⋯ on a faint
+       one (#1d1d1d), the suggestions a #1d1d1d tray round a solid #2a2a2a
+       card, the field filled, the rail, the dots and the rules barely there */
+    --tlInk:#f4f4f4;--tlTx:#ececec;--tlSub:#8b8b86;--tlLine:rgba(255,255,255,.04);--tlRing:rgba(255,255,255,.12);
+    --tlRail:rgba(255,255,255,.035);--tlDotRing:rgba(255,255,255,.1);--tlField:rgba(255,255,255,.055);
+    --tlPill:rgba(255,255,255,.24);--tlPillH:rgba(255,255,255,.3);--tlGhost:rgba(255,255,255,.055);--tlGhostH:rgba(255,255,255,.1);--tlCta:#fff;--tlCtaInk:#111;
+    --tlBox:rgba(255,255,255,.055);--tlCard:#2a2a2a;--tlCardRing:transparent;color:var(--tlTx);}
   body.light #dTl{--tlInk:#111;--tlTx:#2e1f1a;--tlSub:#7a716a;--tlLine:rgba(46,31,26,.1);--tlRing:rgba(46,31,26,.16);
-    --tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;
+    --tlRail:rgba(46,31,26,.1);--tlDotRing:rgba(46,31,26,.16);--tlField:transparent;
+    --tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlGhost:rgba(46,31,26,.07);--tlGhostH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;
     --tlBox:rgba(46,31,26,.05);--tlCard:#fff;--tlCardRing:rgba(46,31,26,.06);}
   body.m9.tlOn #dTl{display:block;} body.m9.tlOn #dOver, body.m9.tlOn #dSvc{display:none;}
   body.m9.tlOn .dash .side .nvOver{background:none;color:inherit;}
@@ -6580,7 +6593,7 @@
   .tlTab{height:40px;padding:0 12px;border:0;border-bottom:2px solid transparent;background:none;font:inherit;font-size:14px;color:var(--tlSub);cursor:pointer;transition:color .16s ease,border-color .16s ease;}
   .tlTab:hover{color:var(--tlTx);}
   .tlTab.on{color:var(--tlInk);border-bottom-color:var(--tlInk);}
-  .tlSearch{margin-left:auto;display:flex;align-items:center;gap:8px;width:200px;height:40px;padding:0 14px;border-radius:10px;box-shadow:inset 0 0 0 1px var(--tlRing);color:var(--tlSub);box-sizing:border-box;}
+  .tlSearch{margin-left:auto;display:flex;align-items:center;gap:8px;width:200px;height:40px;padding:0 14px;border-radius:10px;background:var(--tlField);box-shadow:inset 0 0 0 1px var(--tlRing);color:var(--tlSub);box-sizing:border-box;}
   .tlSearch svg{flex:none;width:16px;height:16px;}
   .tlSearch input{flex:1 1 auto;min-width:0;border:0;background:none;outline:0;font:inherit;font-size:14px;color:var(--tlTx);padding:0;}
   .tlSearch input::placeholder{color:var(--tlSub);}
@@ -6589,16 +6602,16 @@
   /* the months: a rail down the left, a dot at each heading -- the care
      team's spark, this month's filled, the ones ahead hollow */
   .tlList{position:relative;padding:12px 0 0 40px;}
-  .tlList::before{content:"";position:absolute;left:8px;top:32px;bottom:0;width:1px;background:var(--tlLine);}
+  .tlList::before{content:"";position:absolute;left:8px;top:32px;bottom:0;width:1px;background:var(--tlRail);}
   .tlSec{position:relative;}
   .tlH{position:relative;display:flex;align-items:center;margin:26px 0 6px;font-size:16px;font-weight:500;letter-spacing:-.1px;color:var(--tlInk);}
   .tlSec:first-child .tlH{margin-top:14px;}
-  .tlDot{position:absolute;left:-40px;top:50%;width:17px;height:17px;margin-top:-8.5px;border-radius:50%;box-sizing:border-box;background:var(--pageBg);box-shadow:inset 0 0 0 1.5px var(--tlRing);}
+  .tlDot{position:absolute;left:-40px;top:50%;width:17px;height:17px;margin-top:-8.5px;border-radius:50%;box-sizing:border-box;background:var(--pageBg);box-shadow:inset 0 0 0 1.5px var(--tlDotRing);}
   .tlSec.now .tlDot{background:var(--tlInk);box-shadow:none;} .tlSec.now .tlDot::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--pageBg);}
   .tlSec.care .tlDot{box-shadow:none;color:var(--tlSub);display:flex;align-items:center;justify-content:center;} .tlSec.care .tlDot svg{width:15px;height:15px;}
   /* a row: the picture, the title and the line, what and where under them,
      the actions at the right */
-  .tlRow{display:grid;grid-template-columns:80px minmax(0,1fr) auto;grid-template-areas:"th tx act" "th meta act";column-gap:14px;align-items:start;padding:18px 0;}
+  .tlRow{cursor:pointer;display:grid;grid-template-columns:80px minmax(0,1fr) auto;grid-template-areas:"th tx act" "th meta act";column-gap:14px;align-items:start;padding:18px 0;}
   .tlItems .tlRow + .tlRow, .tlSugTrack .tlRow + .tlRow{border-top:1px solid var(--tlLine);}
   .tlTh{grid-area:th;width:80px;height:80px;border-radius:8px;object-fit:cover;display:block;background:#222;}
   .tlTh.tlThPath{background:radial-gradient(120% 90% at 70% 20%,#f59a6e 0%,#ef6a3a 45%,#b8401c 100%);}
@@ -6614,16 +6627,54 @@
   .tlBtn{height:36px;padding:0 15px;border:0;border-radius:10px;background:var(--tlPill);color:var(--tlTx);font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .16s ease;}
   .tlBtn:hover{background:var(--tlPillH);}
   .tlBtn.cta{background:var(--tlCta);color:var(--tlCtaInk);} .tlBtn.cta:hover{opacity:.9;}
-  .tlMore{width:36px;height:36px;flex:none;border:0;border-radius:10px;background:var(--tlPill);color:var(--tlTx);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
-  .tlMore:hover{background:var(--tlPillH);} .tlMore svg{width:16px;height:16px;}
+  .tlMore{width:36px;height:36px;flex:none;border:0;border-radius:10px;background:var(--tlGhost);color:var(--tlTx);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+  .tlMore:hover{background:var(--tlGhostH);} .tlMore svg{width:16px;height:16px;}
   /* suggestions: a tray of their own, a card of rows inside it */
   .tlSug{margin:10px 0 6px -18px;padding:0 4px 4px;border-radius:18px;background:var(--tlBox);}
   .tlSugHead{display:flex;align-items:center;gap:7px;padding:12px 14px 10px;font-size:12.5px;color:var(--tlSub);}
   .tlSugHead svg{width:14px;height:14px;}
   .tlSugNav{margin-left:auto;display:none;gap:6px;}
-  .tlSugNav button{width:28px;height:28px;border:0;border-radius:50%;padding:0;background:var(--tlPill);color:var(--tlTx);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .tlSugNav button{width:28px;height:28px;border:0;border-radius:50%;padding:0;background:var(--tlGhost);color:var(--tlTx);display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .tlSugNav button:disabled{opacity:.35;cursor:default;} .tlSugNav svg{width:12px;height:12px;}
   .tlSugTrack{background:var(--tlCard);border-radius:14px;padding:0 16px 0 14px;box-shadow:0 0 0 1px var(--tlCardRing),0 2px 6px rgba(0,0,0,.08);}
+  /* progress in the row ("a sense of progress through the steps via a mini
+     increment visual"): a segment per step -- or per service, for a group --
+     done and current in the page's orange, the rest faint; beside it which
+     step it is, and a toggle opening the steps (and a group's services)
+     under the row, an accordion */
+  .tlRow{grid-template-areas:"th tx act" "th meta act" "th prog prog" "th det det";}
+  .tlProg{grid-area:prog;display:flex;align-items:center;gap:10px;margin-top:12px;min-width:0;font-size:12.5px;color:var(--tlSub);}
+  .tlSeg{display:flex;gap:3px;flex:none;}
+  .tlSeg i{width:16px;height:4px;border-radius:2px;background:var(--tlDotRing);}
+  .tlSeg i.on{background:#f78359;} .tlSeg i.cur{background:linear-gradient(90deg,#f78359 50%,rgba(247,131,89,.3) 50%);}
+  .tlProg .lb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .tlProg .lb b{font-weight:500;color:var(--tlTx);}
+  .tlProg.done .tlSeg i{background:#9cc088;} .tlProg.done .lb b{color:#9cc088;}
+  .tlTgl{flex:none;display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;margin-left:2px;border:0;border-radius:999px;background:var(--tlGhost);color:var(--tlTx);font:inherit;font-size:12px;cursor:pointer;}
+  .tlTgl:hover{background:var(--tlGhostH);} .tlTgl svg{width:10px;height:10px;transition:transform .25s ease;}
+  .tlRow.open .tlTgl svg{transform:rotate(180deg);}
+  .tlDet{grid-area:det;display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.2,.8,.2,1);min-width:0;}
+  .tlRow.open .tlDet{grid-template-rows:1fr;}
+  .tlDetIn{overflow:hidden;min-height:0;}
+  .tlDetBox{margin-top:12px;padding:14px 16px;border-radius:12px;background:var(--tlBox);cursor:default;}
+  .tlSugTrack .tlDetBox{background:rgba(255,255,255,.05);}
+  .tlDetH{margin:0 0 10px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--tlSub);}
+  .tlDetH + .tlSvcs, .tlDetH + .tlStepL{margin-top:0;}
+  .tlSvcs{list-style:none;margin:0 0 16px;padding:0;}
+  .tlSvcs li{display:flex;align-items:center;gap:10px;padding:8px 8px;margin:0 -8px;border-radius:8px;font-size:13.5px;color:var(--tlTx);cursor:pointer;}
+  .tlSvcs li:hover{background:var(--tlGhost);}
+  .tlSvcs li .nm{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tlSvcs li em{flex:none;font-style:normal;font-size:12px;color:var(--tlSub);}
+  .tlSvcs li.cur em{color:#f78359;} .tlSvcs li.on em{color:#9cc088;}
+  .tlMk{flex:none;width:16px;height:16px;border-radius:50%;box-sizing:border-box;box-shadow:inset 0 0 0 1.5px var(--tlDotRing);display:flex;align-items:center;justify-content:center;}
+  .on > .tlMk{background:#9cc088;box-shadow:none;color:#0f0f0f;} .on > .tlMk svg{width:10px;height:10px;}
+  .cur > .tlMk{box-shadow:inset 0 0 0 1.5px #f78359;} .cur > .tlMk::after{content:"";width:6px;height:6px;border-radius:50%;background:#f78359;}
+  .tlStepL{list-style:none;margin:0;padding:0;position:relative;}
+  .tlStepL li{position:relative;display:flex;gap:10px;padding:0 0 12px;}
+  .tlStepL li:last-child{padding-bottom:0;}
+  .tlStepL li:not(:last-child)::before{content:"";position:absolute;left:7.5px;top:18px;bottom:2px;width:1px;background:var(--tlDotRing);}
+  .tlStepL li.on:not(:last-child)::before{background:#9cc088;}
+  .tlStepL .tx{min-width:0;} .tlStepL b{display:block;font-size:13.5px;font-weight:500;color:var(--tlTx);line-height:16px;} .tlStepL span{display:block;margin-top:2px;font-size:12.5px;color:var(--tlSub);}
+  .tlStepL li:not(.on):not(.cur) b{color:var(--tlSub);}
   .tlEmpty{padding:48px 0;text-align:center;font-size:14px;color:var(--tlSub);}
   .tlSec.gone, .tlRow.gone, .tlSug.gone{display:none;}
   /* XS, the phone's capture: no rail, the rows stacked -- the picture beside
@@ -6636,12 +6687,12 @@
     .tlSearch{width:auto;margin:0;height:44px;border-radius:12px;} .tlSearch input{font-size:15px;}
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:30px 0 4px;} .tlSec:first-child .tlH{margin-top:18px;}
-    .tlRow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"th tx" "meta meta" "act act";column-gap:12px;padding:18px 0 20px;}
+    .tlRow{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"th tx" "meta meta" "prog prog" "det det" "act act";column-gap:12px;padding:18px 0 20px;}
     .tlTh{width:44px;height:44px;border-radius:8px;}
     .tlTx{padding-top:0;} .tlTx p{white-space:normal;font-size:13.5px;}
     .tlMeta{flex-direction:column;flex-wrap:nowrap;gap:8px;margin-top:14px;font-size:13.5px;}
     .tlMeta span{max-width:100%;} .tlMeta span > em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .tlAct{margin-top:16px;padding:0;} .tlBtn{flex:1 1 auto;height:40px;font-size:14px;} .tlMore{width:40px;height:40px;background:var(--tlPill);}
+    .tlAct{margin-top:16px;padding:0;} .tlProg{margin-top:14px;} .tlProg .lb{flex:1 1 auto;} .tlSeg i{width:14px;} .tlBtn{flex:1 1 auto;height:40px;font-size:14px;} .tlMore{width:40px;height:40px;} .tlItems .tlBtn.cta + .tlMore{background:none;}   /* beside Book the ⋯ stands bare, as the phone's capture */
     .tlSug{margin:14px 0 8px;padding:0 0 12px;}
     .tlSugHead{padding:12px 12px 10px 14px;font-size:14px;} .tlSugNav{display:flex;}
     .tlSugTrack{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;background:none;box-shadow:none;border-radius:0;padding:2px 12px;scroll-padding:0 12px;}
@@ -22474,19 +22525,108 @@
   // a change of mode) closes it
   (function servicePage(){
     const ph = document.getElementById('phone2'), over = document.getElementById('dOver'), desk = document.getElementById('dSvc'), mob = document.getElementById('svcMob');
+    // One page, each service's own content ("adapt the content on each
+    // service detail page based on where you come from"): what the service
+    // is, where and how long, what to do before it, its steps -- and the
+    // state the entry you came from is in (asked of you, to book, booked,
+    // suggested, to buy, to claim, due later, done), which sets the card at
+    // the top, the progress and the line under the title.
+    const IC = {};   // the page's own glyphs, taken from its markup before the first repaint
+    if (desk){ const k = desk.querySelectorAll('.svRow .k svg'); IC.loc = k[0] ? k[0].outerHTML : ''; IC.dur = k[1] ? k[1].outerHTML : ''; IC.clin = k[2] ? k[2].outerHTML : '';
+      const q = sel => { const e = desk.querySelector(sel); return e ? e.outerHTML : ''; };
+      IC.warn = q('.svWarn svg'); IC.ref = q('.svRefIc svg'); IC.more = q('.svMore svg'); IC.read = q('.svLink svg'); IC.cal = IC.dur; }
+    if (mob){ const e = mob.querySelector('.svRefChev svg'); IC.chev = e ? e.outerHTML : ''; }
+    const SIMG = { dexa: 'assets/overview/plan-dexa.webp', consult: 'assets/overview/plan-consult.webp', mri: 'assets/overview/plan-mri.webp', nutri: 'assets/overview/plan-nutrition.webp',
+      path: 'assets/overview/plan-path.webp', phys: 'assets/overview/plan-physical.webp', brief: 'assets/overview/hero-consult.webp' };
+    const CLINIC = 'Quantum Therapy Sydney<br>Level 2, 50 Holt Street,<br>Surry Hills, NSW 2010';
+    const SCAN = s => [['Book your appointment', 'Choose a time at a partner clinic'], ['Go to your appointment', 'Complete your ' + s], ['Get your results', 'Your doctor reviews them with you']];
+    const SVC = {
+      dexa: { t: 'Dexa Body Composition and Bone Mineral Density', short: 'DEXA scan', img: 'dexa', dur: '30min', loc: CLINIC, clin: 'Radiology Victoria Burwood East Imaging Consultant', ref: true, steps: SCAN('DEXA scan'),
+        instr: ['Wear comfortable clothes with no metal: zips, underwire and buttons show on the scan.', 'Skip calcium supplements for 24 hours before; eat and drink as you normally would.', 'If you might be pregnant, or had a contrast scan in the last week, tell the clinic before you go.'],
+        about: 'A DEXA scan uses two low-dose X-ray beams to measure your bone mineral density, lean muscle and body fat, including where the fat sits. You lie still on an open table for about ten minutes, with less radiation than a day of normal background exposure.' },
+      consult: { t: 'Onboarding consult', short: 'consult', img: 'consult', dur: '40min', loc: CLINIC, clin: 'Dr Sarah Chen, Everlab GP', steps: [['Book your consult', 'Pick a time with your doctor'], ['Meet your doctor', 'Go through your history and goals'], ['Get your plan', 'Your tests and next steps, in the app']],
+        instr: ['Arrive ten minutes early to check in.', 'Bring a list of the medications and supplements you take, with their doses.', 'Write down your questions beforehand; nothing is too small to ask.'],
+        about: 'Your first consult with your Everlab doctor: your history, your family history and what you want from Everlab, and from those the tests that make sense for you now.' },
+      brief: { t: 'MRI Briefing', short: 'MRI briefing', img: 'brief', dur: '15min', loc: 'Online video call', clin: 'Dr Sarah Chen, Everlab GP', steps: [['Book the call', 'A short call before your scan'], ['Join the call', 'Your doctor checks it is safe for you'], ['Get cleared', 'Book your MRI scan']],
+        instr: ['Find a quiet spot with a stable connection, on a phone or a laptop.', 'Have your history handy, including any implants, surgery or metal in the body.', 'Join from the link in your confirmation email, or from this page.'],
+        about: 'A short call before your MRI to check the scan is safe for you, go through what happens on the day, and answer your questions.' },
+      mri: { t: 'Full Body MRI Scan', short: 'MRI scan', img: 'mri', dur: '60min', loc: CLINIC, clin: 'Radiology Victoria Burwood East Imaging Consultant', ref: true, steps: SCAN('MRI scan'),
+        instr: ['Remove all metal before the scan: jewellery, watches, hairpins and piercings.', 'Tell the clinic about any implant, pacemaker or metal fragment, however small.', 'Eat and drink as usual; ear protection is provided in the scanner.'],
+        about: 'A full-body MRI uses magnetic fields, not radiation, to image your brain, organs and spine in detail, looking for early signs of disease before they cause symptoms.' },
+      nutri: { t: 'Nutrition review', short: 'review', img: 'nutri', dur: '30min', loc: 'Online video call', clin: 'Dr Sarah Chen, Everlab GP', steps: [['Book your review', 'A call with your doctor'], ['Join the call', 'Go through your results and your meals'], ['Get your plan', 'Food changes that move your markers']],
+        instr: ['Log three days of meals beforehand, if you can.', 'Have your latest blood results open; you will go through them together.', 'Note any foods you avoid or react to.'],
+        about: 'A 30 minute call on what you eat and what your results say about it, ending with a few changes aimed at the markers that matter most for you.' },
+      path: { t: 'Pathology Test', short: 'blood test', img: 'path', dur: '15min', loc: 'Any Laverty collection centre', clin: 'Laverty Pathology', ref: true, steps: [['Get your referral', 'Sent to you by your doctor'], ['Visit a collection centre', 'A quick blood draw, no booking needed'], ['Get your results', 'Usually within 3 to 5 days']],
+        instr: ['Fast for 10 to 12 hours before; water is fine and helps the draw.', 'Go in the morning so most of the fast is overnight.', 'Bring your referral, on your phone or printed.'],
+        about: 'An advanced blood panel of 44 biomarkers across heart, metabolic, liver and kidney health, hormones and inflammation, well beyond a standard check-up.' },
+      ct: { t: 'CT Coronary Calcium Score', short: 'CT scan', img: 'dexa', dur: '15min', loc: CLINIC, clin: 'Radiology Victoria Burwood East Imaging Consultant', ref: true, steps: SCAN('CT scan'),
+        instr: ['Avoid caffeine for 4 hours before; it raises your heart rate.', 'Wear a top with no metal, or change into a gown at the clinic.', 'Tell the clinic if you might be pregnant.'],
+        about: 'A quick, low-dose CT of your heart that measures calcium in the coronary arteries, one of the strongest single predictors of heart attack risk.' },
+      phys: { t: 'Physical Assessment', short: 'assessment', img: 'phys', dur: '90min', loc: CLINIC, clin: 'Everlab exercise physiologist', steps: [['Book your assessment', 'Pick a time at the clinic'], ['Go to your assessment', 'Strength, mobility, balance and fitness'], ['Get your exercise plan', 'Built on your results']],
+        instr: ['Wear clothes you can move in, and trainers.', 'Eat a light meal two hours before, not a heavy one.', 'Bring water and anything you use to train, such as a heart-rate strap.'],
+        about: 'A 90 minute longevity-focused physical assessment of your strength, mobility, balance and VO2 max, used to build the exercise plan that guides your training.' }
+    };
+    // what a state says at the top, and where it puts the progress
+    const STATE = {
+      request: d => ({ tone: '', tag: 'Pending action', h: 'Unfortunately, your originally requested time isn’t available.', p: 'Our provider has shared a few alternative appointment times.<br>Choose the one that works best for you.', btn: 'View options', sec: 'Confirm your appointment', warn: 'We’re unable to fulfill your original requested time. Confirm your booking to view alternative times.', at: 0, st: 'Requested 11 days ago' }),
+      book: d => ({ tone: '', tag: 'Next step', h: 'Book your ' + d.short + '.', p: 'Choose a time that works for you. It takes a minute.', btn: 'Book now', sec: 'Your appointment', at: 0, st: 'Added to your plan' }),
+      booked: d => ({ tone: 'ok', tag: 'Confirmed', h: 'You’re booked in for ' + (d.when || '1 Sep 2026, 10:30 am') + '.', p: 'We’ll send you a reminder the day before.', btn: 'Add to calendar', sec: 'Your appointment', at: 1, st: d.when || '1 Sep 2026, 10:30 - 11:10 am' }),
+      suggested: d => ({ tone: 'info', tag: 'Suggested for you', h: 'Recommended every 5 years from age 25.', p: 'You have no records of this yet. Add it to your plan to book it.', btn: 'Add to plan', sec: 'What to expect', at: -1, st: 'No records' }),
+      purchase: d => ({ tone: 'info', tag: 'Recommended by Dr Sarah Chen', h: 'Not included in your membership.', p: 'Your doctor suggests it from your results. You can add it to your plan as a one-off.', btn: 'Purchase', sec: 'What to expect', at: -1, st: 'Recommended by Dr Sarah Chen' }),
+      claim: d => ({ tone: 'ok', tag: 'Included in your membership', h: 'Yours to claim, at no extra cost.', p: 'Claim it and book a time that suits you.', btn: 'Claim', sec: 'What to expect', at: -1, st: 'Claim by 31 Dec 2026' }),
+      later: d => ({ tone: 'info', tag: 'Coming up', h: 'Due when you turn ' + (d.age || 50) + '.', p: 'We’ll remind you when it’s time to book.', btn: 'Remind me', sec: 'What to expect', at: -1, st: 'Due at ' + (d.age || 50) }),
+      done: d => ({ tone: 'ok', tag: 'Completed', h: 'Your results are ready.', p: 'Your doctor has reviewed them. Read the report, or ask a question about it.', btn: 'View report', sec: 'Your appointment', at: 99, st: d.when || 'Completed' })
+    };
+    const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+    let cur = { key: 'dexa', state: 'request' };
+    const paint = (key, state, o) => {
+      const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
+      const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
+      const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
+      const pend = mobile => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div><button class="svBtn" type="button">' + escS(x.btn) + '</button></div>';
+      const rows = (state === 'booked' || state === 'done' ? '<div class="svRow"><span class="k">' + IC.cal + 'Date</span><span class="v">' + escS(o && o.when || x.st) + '</span></div>' : '') +
+        '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' +
+        '<div class="svRow"><span class="k">' + IC.dur + 'Duration</span><span class="v">' + escS(d.dur) + '</span></div>' +
+        '<div class="svRow"><span class="k">' + IC.clin + 'Clinician</span><span class="v">' + escS(d.clin) + '</span></div>';
+      const sec = '<h2 class="svH2">' + escS(x.sec) + '</h2>' + (x.warn ? '<div class="svWarn">' + IC.warn + '<span>' + escS(x.warn) + '</span></div>' : '') + '<div class="svRows">' + rows + '</div>';
+      const ref = chev => d.ref ? '<div class="svRef"><span class="svRefIc">' + IC.ref + '</span><div><b>Your referrals</b><span>Show your referrals when you get to your appointment.</span></div>' + (chev ? '<button class="svRefBtn svRefChev" type="button" aria-label="Show">' + IC.chev + '</button>' : '<button class="svRefBtn" type="button">Show</button>') + '</div>' : '';
+      const instr = '<h2 class="svH2">Instructions</h2><div class="svBody"><ul class="svList">' + d.instr.map(i => '<li>' + escS(i) + '</li>').join('') + '</ul></div>';
+      const about = '<div class="svAbout"><h3>About the service</h3><p>' + escS(d.about) + '</p><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
+      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i <= at ? ' on' : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
+      const title = o && o.t || d.t, start = o && o.st || x.st;
+      if (desk){
+        const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
+        if (m) m.innerHTML = '<div class="svHead"><img src="' + img + '" alt="" width="312" height="312"><div class="svHeadTx"><h1>' + escS(title) + '</h1><div class="svStart">' + escS(start) + '</div></div><button class="svMore" type="button" aria-label="More">' + IC.more + '</button></div>' +
+          pend(false) + sec + ref(false) + instr;
+        if (a) a.innerHTML = '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>' + about;
+      }
+      if (mob){
+        const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
+        mob.style.setProperty('--svmImg', 'url(' + img + ')');
+        if (h) h.innerHTML = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div><div class="svmProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div><div class="svmBar">' + d.steps.map((st, i) => '<i' + (at >= 0 && i <= at ? ' class="on"' : '') + '></i>').join('') + '</div><div class="svmStepName">' + escS(at < 0 ? 'Not started' : at >= n ? 'All done' : d.steps[at][0]) + '</div></div>';
+        if (b) b.innerHTML = pend(true) + sec + ref(true) + instr + '<hr class="svRule">' + about;
+      }
+      cur = { key, state };
+    };
+    // which service a card of the Overview is, by its title
+    const keyOf = el => { const t = (el.textContent || '').toLowerCase();
+      return /onboarding|consult/.test(t) ? 'consult' : /dexa/.test(t) ? 'dexa' : /mri/.test(t) ? 'mri' : /physical/.test(t) ? 'phys' : /nutrition/.test(t) ? 'nutri' : /patholog|blood/.test(t) ? 'path' : 'dexa'; };
+    let backTo = null;   // where the back chevron returns: the Overview, or the Timeline the page was opened from
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
-    const openDesk = () => { if (window._tl) window._tl.close(); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
+    const openDesk = (key, state, o) => { backTo = o && o.from || null; paint(key || 'dexa', state || 'request', o); if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });   // the bar's ground, once the page moves under it
-    const openMob = () => { if (!ph) return; ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
+    const openMob = (key, state, o) => { if (!ph) return; paint(key || 'dexa', state || 'request', o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });   // past 6, as the Overview's bar
-    const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); };
-    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openDesk(); });   /* the whole plan card, not only its button */
-    if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); openMob(); });
+    const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
+    const heroKey = () => document.body.classList.contains('heroDexa') ? 'dexa' : 'consult';   // the booking card's Book: whichever service its hero shows
+    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openDesk(heroKey(), 'book'); else openDesk(keyOf(b), /book/i.test(b.textContent) ? 'book' : 'booked'); });   /* the whole plan card, not only its button */
+    if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openMob(heroKey(), 'book'); else openMob(keyOf(b), /book/i.test(b.textContent) ? 'book' : 'booked'); });
     document.querySelectorAll('#dSvc .svBack, #svcMob .svBack').forEach(b => b.addEventListener('click', close));
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     document.addEventListener('everlab:mode', close);
-    window._svc = { openDesk, openMob, close };
+    const plan = (key, state) => { const d = SVC[key] || SVC.dexa, x = (STATE[state] || STATE.request)(d); return { t: d.t, short: d.short, steps: d.steps, at: Math.min(x.at, d.steps.length) }; };
+    window._svc = { openDesk, openMob, close, plan };
   })();
 
   // The Timeline page: "Your health journey" -- the months ahead with what
@@ -22518,56 +22658,84 @@
     const WHEN = ['cal', '1 Sep 2026, 10:30 - 11:10 am'], CLINIC = ['pin', 'Quantum Therapy Sydney', 'link'];
     const DR = ['dr', 'Recommended by Dr Sarah Chen'];   // the face on the avatar is hers
     const SUG = [
-      { t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['rec', 'No records']], act: 'View', more: 1 },
-      { t: 'MRI Scan', d: EVERY, img: 'mri', meta: [['rec', 'No records']], act: 'View', more: 1 }
+      { t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['rec', 'No records']], act: 'View', more: 1, svc: 'dexa', state: 'suggested' },
+      { t: 'MRI Scan', d: EVERY, img: 'mri', meta: [['rec', 'No records']], act: 'View', more: 1, svc: 'mri', state: 'suggested' }
     ];
     // each tab: its sections, each a heading (and its dot), its rows, and the
     // suggestions that fall in it
     const TL = {
       up: [
-        { h: 'With your care team', dot: 'care', rows: [{ t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1 }] },
+        { h: 'With your care team', dot: 'care', rows: [{ t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'dexa', state: 'request' },
+          // a service group: three services under one heading, the one in hand the row's own
+          { t: 'Heart health check', d: 'Three steps your doctor put together from your cholesterol results.', img: 'path', meta: [['sug', '3 services'], DR], act: 'View', more: 1,
+            group: [{ svc: 'path', state: 'done', t: 'Advanced blood panel' }, { svc: 'ct', state: 'book' }, { svc: 'consult', state: 'book', t: 'Cardiology review' }] }] },
         { h: 'August 2026', dot: 'now', rows: [
-          { t: 'Onboarding consult', d: VISIT, img: 'consult', meta: [CLINIC, WHEN], act: 'View' },
-          { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1 }
+          { t: 'Onboarding consult', d: VISIT, img: 'consult', meta: [CLINIC, WHEN], act: 'View', svc: 'consult', state: 'booked', when: WHEN[1] },
+          { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1, svc: 'brief', state: 'book' }
         ], sug: SUG },
         { h: 'September 2026', rows: [
-          { t: 'MRI Scan', d: VISIT, img: 'mri', meta: [['pin', 'In person']], act: 'Book', cta: 1, more: 1 },
-          { t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [CLINIC, WHEN], act: 'View' },
-          { t: 'Nutrition review', d: VISIT, img: 'nutri', meta: [['dr', 'Online video call with Dr Sarah Chen'], WHEN], act: 'View' }
+          { t: 'MRI Scan', d: VISIT, img: 'mri', meta: [['pin', 'In person']], act: 'Book', cta: 1, more: 1, svc: 'mri', state: 'book' },
+          { t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [CLINIC, WHEN], act: 'View', svc: 'dexa', state: 'booked', when: WHEN[1] },
+          { t: 'Nutrition review', d: VISIT, img: 'nutri', meta: [['dr', 'Online video call with Dr Sarah Chen'], WHEN], act: 'View', svc: 'nutri', state: 'booked', when: WHEN[1] }
         ] },
         { h: 'October 2026', rows: [
-          { t: 'Pathology Test', d: VISIT, img: 'path', meta: [DR], act: 'View', more: 1 },
-          { t: 'CT Scan', d: VISIT, img: 'dexa', meta: [DR], act: 'Purchase', more: 1 }
+          { t: 'Pathology Test', d: VISIT, img: 'path', meta: [DR], act: 'View', more: 1, svc: 'path', state: 'book', st: 'Recommended by Dr Sarah Chen' },
+          { t: 'CT Scan', d: VISIT, img: 'dexa', meta: [DR], act: 'Purchase', more: 1, svc: 'ct', state: 'purchase' }
         ], sug: SUG },
-        { h: '50 years old', rows: [{ t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [['pin', 'In person']], act: 'View', more: 1 }] },
-        { h: '60 years old', rows: [{ t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [['pin', 'In person']], act: 'View', more: 1 }] }
+        { h: '50 years old', rows: [{ t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [['pin', 'In person']], act: 'View', more: 1, svc: 'dexa', state: 'later', age: 50 }] },
+        { h: '60 years old', rows: [{ t: 'Dexa Scan', d: VISIT, img: 'dexa', meta: [['pin', 'In person']], act: 'View', more: 1, svc: 'dexa', state: 'later', age: 60 }] }
       ],
       claim: [
         { h: 'Included in your membership', dot: 'now', rows: [
-          { t: 'Dexa Scan', d: 'Your yearly body composition and bone density scan.', img: 'dexa', meta: [['gift', 'Included'], ['clock', 'Claim by 31 Dec 2026']], act: 'Claim', cta: 1, more: 1 },
-          { t: 'Pathology Test', d: 'A follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['gift', 'Included'], DR], act: 'Claim', cta: 1, more: 1 },
-          { t: 'Nutrition review', d: 'A 30 minute call with a dietitian on your results.', img: 'nutri', meta: [['gift', 'Included'], ['video', 'Online video call']], act: 'Claim', cta: 1 }
+          { t: 'Dexa Scan', d: 'Your yearly body composition and bone density scan.', img: 'dexa', meta: [['gift', 'Included'], ['clock', 'Claim by 31 Dec 2026']], act: 'Claim', cta: 1, more: 1, svc: 'dexa', state: 'claim' },
+          { t: 'Pathology Test', d: 'A follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['gift', 'Included'], DR], act: 'Claim', cta: 1, more: 1, svc: 'path', state: 'claim' },
+          { t: 'Nutrition review', d: 'A 30 minute call with a dietitian on your results.', img: 'nutri', meta: [['gift', 'Included'], ['video', 'Online video call']], act: 'Claim', cta: 1, svc: 'nutri', state: 'claim' }
         ] },
         { h: 'Partner offers', rows: [
-          { t: 'Movement assessment', d: 'A physio-led assessment of mobility, strength and gait.', img: 'move', meta: [['gift', '20% off with Everlab'], ['pin', 'In person']], act: 'View', more: 1 }
+          { t: 'Physical Assessment', d: 'A 90 minute assessment of strength, mobility, balance and fitness.', img: 'move', meta: [['gift', '20% off with Everlab'], ['pin', 'In person']], act: 'View', more: 1, svc: 'phys', state: 'purchase' }
         ] }
       ],
       past: [
         { h: 'July 2026', dot: 'now', rows: [
-          { t: 'Advanced blood panel', d: '44 biomarkers across heart, metabolic, liver and kidney health.', img: 'path', meta: [['check', 'Completed 13 Jul 2026'], ['rec', 'Report ready']], act: 'View report' },
-          { t: 'Onboarding consult', d: 'Your first consult with your Everlab doctor.', img: 'consult', meta: [['check', 'Completed 2 Jul 2026'], ['dr', 'With Dr Sarah Chen']], act: 'View' }
+          { t: 'Advanced blood panel', d: '44 biomarkers across heart, metabolic, liver and kidney health.', img: 'path', meta: [['check', 'Completed 13 Jul 2026'], ['rec', 'Report ready']], act: 'View report', svc: 'path', state: 'done', when: 'Completed 13 Jul 2026', title: 'Advanced blood panel' },
+          { t: 'Onboarding consult', d: 'Your first consult with your Everlab doctor.', img: 'consult', meta: [['check', 'Completed 2 Jul 2026'], ['dr', 'With Dr Sarah Chen']], act: 'View', svc: 'consult', state: 'done', when: 'Completed 2 Jul 2026' }
         ] },
         { h: 'February 2026', rows: [
-          { t: 'Dexa Scan', d: 'Body composition and bone mineral density.', img: 'dexa', meta: [['check', 'Completed 20 Feb 2026'], CLINIC], act: 'View report', more: 1 }
+          { t: 'Dexa Scan', d: 'Body composition and bone mineral density.', img: 'dexa', meta: [['check', 'Completed 20 Feb 2026'], CLINIC], act: 'View report', more: 1, svc: 'dexa', state: 'done', when: 'Completed 20 Feb 2026' }
         ] }
       ]
     };
     const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
     const meta = m => '<span>' + (m[0] === 'dr' ? '<img src="' + IMG.dr + '" alt="">' : I[m[0]]) + (m[2] === 'link' ? '<a>' + esc(m[1]) + '</a>' : '<em>' + esc(m[1]) + '</em>') + '</span>';
-    const row = r => '<article class="tlRow" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ')).toLowerCase()) + '">' +
+    let ROWS = [];
+    const CHK = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>';
+    const CHEV = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 3.8 2.5 2.5 2.5-2.5"/></svg>';
+    const PL = (k, st) => window._svc && window._svc.plan ? window._svc.plan(k, st) : null;
+    // a group's services, the one in hand first not done
+    const groupOf = r => { const g = r.group.map(x => Object.assign({}, x, { p: PL(x.svc, x.state) })); const a = g.findIndex(x => x.state !== 'done'); return { g, a }; };
+    // the row's own service and state: a group's is its active service's
+    const own = r => { if (!r.group) return r; const { g, a } = groupOf(r), x = g[a < 0 ? g.length - 1 : a]; return { svc: x.svc, state: x.state, title: x.t }; };
+    const stepList = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : ''; return '<li class="' + c + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b><span>' + esc(st[1]) + '</span></div></li>'; }).join('') + '</ol>';
+    const prog = r => {
+      if (r.group){
+        const { g, a } = groupOf(r), act = g[a < 0 ? g.length - 1 : a], nm = x => x.t || x.p.t;
+        const lab = a < 0 ? '<b>Completed</b> · ' + g.length + ' services' : '<b>Service ' + (a + 1) + ' of ' + g.length + '</b> · ' + esc(nm(act));
+        return '<div class="tlProg' + (a < 0 ? ' done' : '') + '"><span class="tlSeg" aria-hidden="true">' + g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('') + '</span><span class="lb">' + lab + '</span><button class="tlTgl" type="button" aria-expanded="false">Details' + CHEV + '</button></div>' +
+          '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox"><div class="tlDetH">Services</div><ul class="tlSvcs">' +
+          g.map((x, i) => { const c = x.state === 'done' ? 'on' : i === a ? 'cur' : ''; return '<li class="' + c + '" data-g="' + i + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><span class="nm">' + esc(nm(x)) + '</span><em>' + (c === 'on' ? 'Done' : c === 'cur' ? 'In progress' : 'Up next') + '</em></li>'; }).join('') +
+          '</ul><div class="tlDetH">Steps · ' + esc(nm(act)) + '</div>' + stepList(act.p) + '</div></div></div>';
+      }
+      if (!r.svc || r.state === 'suggested' || r.state === 'later') return '';   // not yours yet: no steps to show
+      const p = PL(r.svc, r.state); if (!p) return '';
+      const n = p.steps.length, done = p.at >= n;
+      const lab = done ? '<b>Completed</b> · ' + n + ' of ' + n + ' steps' : p.at < 0 ? '<b>Not started</b> · ' + n + ' steps' : '<b>Step ' + (p.at + 1) + ' of ' + n + '</b> · ' + esc(p.steps[p.at][0]);
+      return '<div class="tlProg' + (done ? ' done' : '') + '"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span><span class="lb">' + lab + '</span><button class="tlTgl" type="button" aria-expanded="false">Steps' + CHEV + '</button></div>' +
+        '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + stepList(p) + '</div></div></div>';
+    };
+    const row = r => '<article class="tlRow" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       (r.img === 'path' ? '<i class="tlTh tlThPath" aria-hidden="true"></i>' : '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">') +
       '<div class="tlTx"><b>' + esc(r.t) + '</b><p>' + esc(r.d) + '</p></div>' +
-      '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' +
+      '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + prog(r) +
       '<div class="tlAct"><button class="tlBtn' + (r.cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +
       (r.more ? '<button class="tlMore" type="button" aria-label="More options">' + I.dots + '</button>' : '') + '</div></article>';
     const sec = x => '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : '') + '</i>' + esc(x.h) + '</h2>' +
@@ -22594,7 +22762,7 @@
       navState();
     };
     const render = () => {
-      list.innerHTML = TL[tab].map(sec).join('');
+      ROWS = []; list.innerHTML = TL[tab].map(sec).join('');
       list.querySelectorAll('.tlSugTrack').forEach(t => t.addEventListener('scroll', navState, { passive: true }));
       filter();
     };
@@ -22604,6 +22772,22 @@
       render();
     }));
     if (q) q.addEventListener('input', filter);
+    // the whole row opens its service's page (View, Book and the rest with
+    // it), its content the row's own; the ⋯ is its own menu, and the back
+    // chevron comes back here
+    list.addEventListener('click', e => {
+      const r = e.target.closest('.tlRow');
+      if (!r || e.target.closest('.tlMore') || !window._svc) return;
+      const tg = e.target.closest('.tlTgl');
+      if (tg){ const o = r.classList.toggle('open'); tg.setAttribute('aria-expanded', String(o)); return; }
+      const d = ROWS[+r.dataset.r]; if (!d) return;
+      const li = e.target.closest('.tlSvcs li');
+      if (li && d.group){ const x = d.group[+li.dataset.g]; lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, { from: 'tl', t: x.t }); return; }
+      if (e.target.closest('.tlDetBox')) return;   // reading the steps is not a click through
+      const w = own(d); if (!w.svc) return;
+      lastTop = main.scrollTop;
+      window._svc.openDesk(w.svc, w.state, { from: 'tl', when: d.when, age: d.age, t: w.title || d.title });
+    });
     list.addEventListener('click', e => {
       const b = e.target.closest('.tlSugNav button'); if (!b) return;
       const t = b.closest('.tlSug').querySelector('.tlSugTrack'), card = t.querySelector('.tlRow');
@@ -22615,15 +22799,16 @@
     main.addEventListener('scroll', () => main.classList.toggle('ovScrolled', bar.getBoundingClientRect().top - main.getBoundingClientRect().top < 60 && main.scrollTop > 6), { passive: true });
     const sel = document.getElementById('versionSel');
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
-    const open = () => {
-      if (window._svc) window._svc.close();
-      document.body.classList.add('tlOn'); main.scrollTop = 0; main.classList.remove('ovScrolled');
+    let lastTop = 0;
+    const open = keep => {
+      if (window._svc && document.body.classList.contains('svcOn')) window._svc.close();
+      document.body.classList.add('tlOn'); main.scrollTop = keep ? lastTop : 0; main.classList.toggle('ovScrolled', !!keep && lastTop > 6);
       if (sel) sel.value = 'tl'; lightDock(-1);   // no tab of the dock is the Timeline
       requestAnimationFrame(() => { resize(); navState(); });
     };
-    const close = () => {
+    const close = quiet => {
       if (!document.body.classList.contains('tlOn')) return;
-      document.body.classList.remove('tlOn'); lightDock(0);
+      document.body.classList.remove('tlOn'); if (!quiet) lightDock(0);
       if (sel && sel.value === 'tl') sel.value = '9';
       requestAnimationFrame(() => resize());
     };
