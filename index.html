@@ -6748,7 +6748,6 @@
   .tlCurB .tlSeg.grp i{background:rgba(247,131,89,.22);} .tlCurB .tlSeg.grp i.on{background:#9cc088;} .tlCurB .tlSeg.grp i.cur{background:#f78359;}
   /* the chip shows its increments only when the badge does not */
   body:not(.tlSheetMode) .tlProg:has(.tlCurB) .tlTgl .tlSeg{display:none;}
-  body:not(.tlSheetMode) .tlRow.open .tlProg .tlTgl .tlSeg{display:flex;}
   body.tlSheetMode .tlProg:has(.tlCurB) .tlTgl .tlSeg{display:none;}
   body:not(.tlSheetMode) .tlRow.open .tlProg .tlCurB{display:none;}
   .tlGn{margin-left:auto;font-size:12.5px;color:var(--tlSub);white-space:nowrap;}   /* where the service in hand stands in its own steps ("indicate Step x / x on the active step card") */
@@ -6792,7 +6791,12 @@
   :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{background:linear-gradient(180deg,rgba(247,131,89,.28) 0%,#f78359 25%,rgba(247,131,89,.28) 50%,#f78359 75%,rgba(247,131,89,.28) 100%) 0 0 / 100% 200%;animation:tlFlow 1.4s linear infinite;}
   @keyframes tlFlow{from{background-position:0 100%;} to{background-position:0 0;}}
   @media (prefers-reduced-motion:reduce){ :is(#dTl, .tlShPanel) .tlStepL li.cur > .tlMk{animation:none;background:#f78359;} }
-  .tlStepL .tx{padding:3px 0;}   /* 6 between steps ("compress a bit"), the line still joining ring to ring */
+  .tlStepL .tx{padding:3px 0;}
+  /* the services after this one: a bar the height of its two lines, the name, its grey chip, why it waits */
+  .tlRel{margin-top:10px;} .tlRel li.rel{cursor:pointer;} .tlRel .tx{display:block !important;padding:4px 0;}
+  .tlRelH{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;} .tlStepL .tlRelH .tlChip{display:inline-flex;align-items:center;margin:0;height:22px;padding:0 8px;border-radius:6px;font-size:12px;line-height:1;color:var(--tlTx);}
+  .tlRel p{margin:4px 0 0;font-size:12.5px;line-height:1.4;color:var(--tlSub);}
+  .tlRel li.rel:hover .tlRelH b{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--tlRing);}   /* 6 between steps ("compress a bit"), the line still joining ring to ring */
   /* complete is struck through ("complete -> strikethrough"): a done step, a done service, a done sub-step */
   .tlStepL li.on b, .tlGrp .on .tlGh b, .tlSub li.on{text-decoration:line-through;text-decoration-color:currentColor;text-decoration-thickness:1px;color:var(--tlSub);}
   .tlGrp > li.on:hover .tlGh b{text-decoration:line-through;}
@@ -22857,7 +22861,8 @@
           // service"): each service in turn, the next locked until the one
           // before it is done; the row's own is the one in hand
           // the DEXA flow as three rows in the one block ("need these 3 objects in the timeline, all in the same timeline block"): each its own object, the next locked until the one before it is done
-          { t: 'DEXA Scan', d: 'Book your DEXA scan to measure body composition and bone density', img: 'dexa', meta: [['sug', 'Member Check-In \u00b7 1 of 3']], act: 'Book', cta: 1, more: 1, svc: 'dexa', state: 'book', steps: [['Book appointment', ''], ['Booked', ''], ['Done', '']] },
+          { t: 'DEXA Scan', d: 'Book your DEXA scan to measure body composition and bone density', img: 'dexa', meta: [['sug', 'Member Check-In \u00b7 1 of 3']], act: 'Book', cta: 1, more: 1, svc: 'dexa', state: 'book', steps: [['Book appointment', ''], ['Booked', ''], ['Done', '']],
+            then: [{ t: 'Diagnostics Review', svc: 'diag', tag: 'Book appointment', need: 'DEXA Scan' }, { t: 'Member Check-In', svc: 'checkin', tag: 'Book appointment', need: 'Diagnostics Review' }] },   // the services after it, shown with its steps ("the DEXA should also show the 2 other related services")
           { t: 'Diagnostics Review', d: 'You need to complete your DEXA Scan before you can book this appointment.', img: 'consult', tag: 'Book appointment', lock: 1, meta: [['sug', 'Member Check-In \u00b7 2 of 3']], svc: 'diag', state: 'locked', need: 'DEXA Scan' },
           { t: 'Member Check-In', d: 'You need to complete your Diagnostics Review before you can book this appointment.', img: 'brief', tag: 'Book appointment', lock: 1, meta: [['sug', 'Member Check-In \u00b7 3 of 3']], svc: 'checkin', state: 'locked', need: 'Diagnostics Review' }
         ], sug: SUG },
@@ -22968,7 +22973,7 @@
       const n = p.steps.length, done = p.at >= n;
       const lab = done ? 'Completed' : p.at < 0 ? 'Not started' : 'Step ' + (p.at + 1) + ' of ' + n;
       return '<div class="tlProg' + (done ? ' done' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show steps"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lab + CHEV + '</button>' + (!done && p.at >= 0 && p.steps[p.at] ? '<span class="tlChip o tlCurB">' + esc(p.steps[p.at][0]) + '</span>' : '') + '</div>' +
-        '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + stepList(p) + '</div></div></div>';
+        '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + stepList(p) + (r.then ? '<ol class="tlStepL tlRel">' + r.then.map((x, i) => '<li class="rel" data-rel="' + i + '"><i class="tlMk"></i><div class="tx"><div class="tlRelH"><b>' + esc(x.t) + '</b>' + (x.tag ? '<span class="tlChip">' + esc(x.tag) + '</span>' : '') + '</div><p>You need to complete your ' + esc(x.need) + ' before you can book this appointment.</p></div></li>').join('') + '</ol>' : '') + '</div></div></div>';
     };
     // a primary action (Book, Collect sample, Claim) comes with its steps
     // already open ("when it's a primary action, show the card inside
@@ -23054,6 +23059,8 @@
       const go = e.target.closest('.tlGo');
       if (go){ const t = go.dataset.need; closeSheet(); const to = [...list.querySelectorAll('.tlRow')].find(x => ROWS[+x.dataset.r] && ROWS[+x.dataset.r].t === t);
         if (to){ to.scrollIntoView({ behavior: 'smooth', block: 'center' }); to.classList.remove('flash'); void to.offsetWidth; to.classList.add('flash'); setTimeout(() => to.classList.remove('flash'), 1600); } return; }
+      const rl = e.target.closest('.tlRel li.rel');
+      if (rl && d.then){ const x = d.then[+rl.dataset.rel]; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(x.svc, 'locked', { from: 'tl', t: x.t, need: x.need }); return; }
       const gi = e.target.closest('.tlGrp > li');
       if (gi && d.group){ const x = d.group[+gi.dataset.g]; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, svcOpts(x)); return; }
       if (e.target.closest('.tlBtn')){ const w = own(d); if (!w.svc) return; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.state, d.group ? svcOpts(w) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line }); }
@@ -23077,6 +23084,8 @@
       const d = ROWS[+r.dataset.r]; if (!d) return;
             const gi = e.target.closest('.tlGrp > li');
       if (gi && d.group){ const x = d.group[+gi.dataset.g]; lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, svcOpts(x)); return; }
+      const rl = e.target.closest('.tlRel li.rel');
+      if (rl && d.then){ const x = d.then[+rl.dataset.rel]; lastTop = main.scrollTop; window._svc.openDesk(x.svc, 'locked', { from: 'tl', t: x.t, need: x.need }); return; }
       if (e.target.closest('.tlDetBox')) return;   // reading the steps is not a click through
       const w = own(d); if (!w.svc) return;
       lastTop = main.scrollTop;

@@ -11618,3 +11618,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Chip:** it then reads "Step 2 of 3 ⌄" alone.
 - **When the badge isn't there, the chip keeps the increments:** while the steps are open (the badge hides), at XS (the badge has no room), and on rows with nothing in hand (not started, complete, locked).
 - **Width:** the group is 96 wide whatever the number of steps, XS included (it had been 72 there).
+
+**5.500 — DEXA shows what comes after it; the chip the same open or closed.**
+
+- **"The DEXA should also show the 2 other services related":** the August DEXA Scan row (Member Check-In · 1 of 3) lists, under its own steps, the two services that wait on it, Diagnostics Review and Member Check-In. Each has a faint bar the height of its two lines, its name, a grey "Book appointment" chip and "You need to complete your … before you can book this appointment." (a row's `then`). Either opens its locked page, from the row or from the XS/S sheet.
+- **"When collapsed, keep the same chip, just turn the chevron":** the steps chip reads "Step 1 of 3" whether the steps are open or closed, the same width, with only its chevron turning. It no longer takes the increments back when opened; they live in the active badge, which hides while open.
+- **The related chips:** these grey chips were caught by the old subline rule for spans too, like the next-step badge; they are set past it and centred on their names.
