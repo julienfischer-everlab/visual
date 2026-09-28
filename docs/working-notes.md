@@ -11710,3 +11710,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **DEXA:** its steps (Book appointment / Booked / Done) show only in DEXA's own object.
 - **Microbiome:** the group object with no focus is its own service in hand, so it still shows that service's steps.
 - **Removed:** the blocker-first step list for a locked group card (5.515) is gone.
+
+**5.518 — The object's own card is just its steps.** "On active service card, no need to repeat the title and sub"; "also remove the left progress indicator, the vertical bars are the indicator": the open card in a group's list (`li.main.solo`) now holds only its steps. Its title and description are the object's own, above, and the vertical bars say where it stands. So the ring, the name and the description are gone from it.
+
+- **Where:** DEXA's object and the Microbiome object.
+- **Other cards:** the related cards keep their tick, ring or lock, their names and "Related service".
+- **Locked object:** its own card (no steps) keeps its lock and name.
