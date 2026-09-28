@@ -11728,3 +11728,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **Ring:** "Active card title add a circle border icon." When the active card shows its name (a card above it), the name carries the white ring (`.tlMkH`, 16px, 2px ring). It sits in the same slot as the other cards' marks: its centre is on the same line as their ticks and locks and the bars below.
 - **Gap:** "+8px gap, row." The step chip and the badge beside it are 18px apart instead of 10.
+
+**5.522 — Chip and badge 8 apart; 8 more above their row.** "8px gap": the step chip and the badge beside it are 8px apart. I had read the earlier "+8px gap, row" as between them; it was the row. "Add 8px gap between row": the chip's row now sits 20px below the meta line instead of 12 on desk. XS keeps its 16.
