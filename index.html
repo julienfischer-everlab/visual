@@ -6757,11 +6757,11 @@
   /* the rings, one rule for the steps and the services ("complete: green
      check; current: white circle; future / locked: white at 30%") */
   #dTl{--tlMkCur:#fff;--tlMkFut:rgba(255,255,255,.16);--tlFutTx:rgba(255,255,255,.5);} body.light #dTl{--tlMkCur:#2e1f1a;--tlMkFut:rgba(46,31,26,.16);--tlFutTx:rgba(46,31,26,.5);}   /* future rings 16% ("circle border 16% opacity"), their titles 50% ("the locked step title opacity 50%") */
-  #dTl .tlStepL li:not(.on):not(.cur) b, #dTl .tlGrp .soon .tlGh b, #dTl .tlGrp .lock .tlGh b{color:var(--tlFutTx);}
-  #dTl .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkFut);}
-  #dTl .cur > .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkCur);} #dTl .cur > .tlMk::after{display:none;}
-  #dTl .on > .tlMk{box-shadow:none;}
-  #dTl .tlGrp > li > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkFut);} #dTl .tlGrp > li.cur > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkCur);} #dTl .tlGrp > li.on > .tlMk{box-shadow:none;}
+  :is(#dTl, .tlShPanel) .tlStepL li:not(.on):not(.cur) b, :is(#dTl, .tlShPanel) .tlGrp .soon .tlGh b, :is(#dTl, .tlShPanel) .tlGrp .lock .tlGh b{color:var(--tlFutTx);}
+  :is(#dTl, .tlShPanel) .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkFut);}
+  :is(#dTl, .tlShPanel) .cur > .tlMk{box-shadow:inset 0 0 0 1.5px var(--tlMkCur);} :is(#dTl, .tlShPanel) .cur > .tlMk::after{display:none;}
+  :is(#dTl, .tlShPanel) .on > .tlMk{box-shadow:none;}
+  :is(#dTl, .tlShPanel) .tlGrp > li > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkFut);} :is(#dTl, .tlShPanel) .tlGrp > li.cur > .tlMk{box-shadow:inset 0 0 0 2px var(--tlMkCur);} :is(#dTl, .tlShPanel) .tlGrp > li.on > .tlMk{box-shadow:none;}
   .tlStepL li{position:relative;display:flex;gap:10px;padding:0 0 12px;}
   .tlStepL li:last-child{padding-bottom:0;}
   .tlStepL li:not(:last-child)::before{content:"";position:absolute;left:7.5px;top:18px;bottom:2px;width:1px;background:var(--tlDotRing);}
@@ -6772,6 +6772,35 @@
   /* complete is struck through ("complete -> strikethrough"): a done step, a done service, a done sub-step */
   .tlStepL li.on b, .tlGrp .on .tlGh b, .tlSub li.on{text-decoration:line-through;text-decoration-color:currentColor;text-decoration-thickness:1px;color:var(--tlSub);}
   .tlGrp > li.on:hover .tlGh b{text-decoration:line-through;}
+  /* XS and S: the steps open in a bottom sheet ("on mobile XS S always open
+     the steps detail inside a bottom sheet"), inside the device; the inline
+     accordion stays for M and L */
+  body.tlSheetMode #dTl .tlDet{display:none;}
+  body.tlSheetMode #dTl .tlRow.open .tlTgl svg:last-child{transform:none;}
+  .tlSheet{position:absolute;inset:0;z-index:30;pointer-events:none;}
+  .tlSheet.on{pointer-events:auto;}
+  .tlShDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .25s ease;}
+  .tlSheet.on .tlShDim{opacity:1;}
+  .tlShPanel{position:absolute;left:0;right:0;bottom:0;max-height:86%;display:flex;flex-direction:column;background:#1c1c1b;border-radius:24px 24px 0 0;transform:translateY(102%);transition:transform .34s cubic-bezier(.2,.8,.2,1);color:#ececec;
+    --tlInk:#f4f4f4;--tlTx:#ececec;--tlSub:#8b8b86;--tlLine:rgba(255,255,255,.07);--tlRing:rgba(255,255,255,.12);--tlDotRing:rgba(255,255,255,.1);--tlPill:rgba(255,255,255,.24);--tlPillH:rgba(255,255,255,.3);--tlGhost:rgba(255,255,255,.055);--tlGhostH:rgba(255,255,255,.1);--tlCta:#fff;--tlCtaInk:#111;--tlBox:rgba(255,255,255,.055);--tlSplit:rgba(0,0,0,.32);--tlSplitC:rgba(0,0,0,.14);--tlMkCur:#fff;--tlMkFut:rgba(255,255,255,.16);--tlFutTx:rgba(255,255,255,.5);}
+  body.light .tlShPanel{background:#fff;color:#2e1f1a;--tlInk:#111;--tlTx:#2e1f1a;--tlSub:#7a716a;--tlLine:rgba(46,31,26,.1);--tlRing:rgba(46,31,26,.16);--tlDotRing:rgba(46,31,26,.16);--tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlGhost:rgba(46,31,26,.07);--tlGhostH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;--tlBox:rgba(46,31,26,.05);--tlSplit:rgba(46,31,26,.14);--tlSplitC:rgba(255,255,255,.22);--tlMkCur:#2e1f1a;--tlMkFut:rgba(46,31,26,.16);--tlFutTx:rgba(46,31,26,.5);}
+  .tlSheet.on .tlShPanel{transform:none;}
+  .tlShGrab{flex:none;width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);margin:10px auto 4px;}
+  .tlShHead{flex:none;display:flex;align-items:flex-start;gap:12px;padding:10px 16px 14px;}
+  .tlShHead > div{flex:1 1 auto;min-width:0;}
+  .tlShHead b{display:block;font-size:18px;font-weight:500;color:var(--tlInk);line-height:1.25;}
+  .tlShChip{display:inline-flex;align-items:center;gap:8px;margin-top:10px;height:30px;padding:0 12px;border-radius:999px;background:var(--tlGhost);font-size:12px;font-weight:500;color:var(--tlTx);}
+  .tlShChip .tlLk{width:12px;height:12px;color:var(--tlSub);}
+  .tlShX{flex:none;width:32px;height:32px;border:0;border-radius:50%;padding:0;background:var(--tlGhost);color:var(--tlTx);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .tlShX svg{width:12px;height:12px;}
+  .tlShBody{flex:1 1 auto;overflow-y:auto;padding:0 16px 16px;scrollbar-width:none;}
+  .tlShBody::-webkit-scrollbar{display:none;}
+  .tlShBody .tlDetBox{margin-top:0;}
+  .tlShAct{flex:none;display:flex;padding:12px 16px 28px;border-top:1px solid var(--tlLine);}
+  .tlShAct:empty{display:none;}
+  .tlShAct .tlAct{flex:1 1 auto;display:flex;margin:0;padding:0;} .tlShAct .tlBtn{flex:1 1 auto;height:44px;font-size:14px;} .tlShAct .tlMore{height:44px;width:48px;}
+  body[data-bp="xs"]:has(.tlSheet.on) #bpFrame > .mTabs, body[data-bp="s"]:has(.tlSheet.on) #bpFrame > .mTabs{display:none;}   /* the sheet stands where the dock was */
+  body[data-bp="s"] .tlShPanel{left:50%;right:auto;width:480px;transform:translate(-50%,102%);} body[data-bp="s"] .tlSheet.on .tlShPanel{transform:translate(-50%,0);}
   .tlEmpty{padding:48px 0;text-align:center;font-size:14px;color:var(--tlSub);}
   .tlSec.gone, .tlRow.gone, .tlSug.gone{display:none;}
   /* XS, the phone's capture: no rail, the rows stacked -- the picture beside
@@ -22875,7 +22904,7 @@
         const lab = a < 0 ? 'Completed' : one ? 'Step ' + (os.at + 1) + ' of ' + os.steps.length : 'Service ' + (a + 1) + ' of ' + g.length;   // the count is the chip ("Step 1 of 3 -> merge into chip"), no status beside it
         const kind = (x, i) => x.state === 'done' ? 'on' : i === a ? 'cur' : x.state === 'soon' ? 'soon' : 'lock';
         const item = (x, i) => { const k = kind(x, i);
-          const chip = x.tag && k !== 'on' ? '<span class="tlChip' + (k === 'cur' ? (x.tone === 'wait' ? ' b' : ' o') : '') + '">' + esc(x.tag) + '</span>' : '';
+          const chip = x.tag && k !== 'on' && k !== 'cur' ? '<span class="tlChip">' + esc(x.tag) + '</span>' : '';   // the one in hand has no badge ("remove badge orange"): the row's button says it; the locked keep theirs
           const line = k === 'lock' && x.need ? 'You need to complete your ' + esc(x.need) + ' before you can book this appointment.' : k === 'cur' && x.d ? esc(x.d) : '';
           const subs = k === 'cur' && x.p.steps.length ? '<div class="tlSubL">' + stepList(x.p) + '</div>' : '';   // the same rings as a single service's steps ("keep same style for bullet indicator")
           return '<li class="' + k + (x.tone === 'wait' && k === 'cur' ? ' wait' : '') + '" data-g="' + i + '"><i class="tlMk">' + (k === 'on' ? CHK : '') + '</i><div class="tlGtx">' + 
@@ -22957,6 +22986,42 @@
     addEventListener('resize', placeThumb);
     if (window.ResizeObserver && tabsEl) new ResizeObserver(() => placeThumb()).observe(tabsEl);   // a breakpoint's new width re-measures it, with no slide from the old place
     if (q) q.addEventListener('input', filter);
+    // the bottom sheet (XS and S): the row's title, its chip, the same detail the accordion holds, and its buttons
+    const isSheet = () => { const bp = document.body.dataset.bp; return bp === 'xs' || bp === 's' || (!bp && innerWidth < 992); };
+    const syncMode = () => document.body.classList.toggle('tlSheetMode', isSheet());
+    const XS = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 3l6 6M9 3 3 9"/></svg>';
+    const shHost = document.querySelector('.dash') || document.body, sheet = document.createElement('div');
+    sheet.className = 'tlSheet'; sheet.setAttribute('aria-hidden', 'true');
+    sheet.innerHTML = '<div class="tlShDim"></div><div class="tlShPanel" role="dialog" aria-modal="true" aria-label="Steps"><i class="tlShGrab" aria-hidden="true"></i><div class="tlShHead"><div><b></b><div class="tlShChip"></div></div><button class="tlShX" type="button" aria-label="Close">' + XS + '</button></div><div class="tlShBody"></div><div class="tlShAct"></div></div>';
+    shHost.appendChild(sheet);
+    let shRow = null;
+    const closeSheet = () => { sheet.classList.remove('on'); sheet.setAttribute('aria-hidden', 'true'); shRow = null; };
+    const openSheet = rw => {
+      const d = ROWS[+rw.dataset.r]; if (!d) return; shRow = d;
+      sheet.querySelector('.tlShHead b').textContent = d.t;
+      const chip = rw.querySelector('.tlTgl').cloneNode(true), last = chip.lastElementChild; if (last && last.tagName.toLowerCase() === 'svg' && !last.classList.contains('tlLk')) last.remove();
+      sheet.querySelector('.tlShChip').innerHTML = chip.innerHTML;
+      const box = rw.querySelector('.tlDetBox'); sheet.querySelector('.tlShBody').innerHTML = box ? box.outerHTML : '';
+      const act = rw.querySelector('.tlAct'); sheet.querySelector('.tlShAct').innerHTML = act ? act.outerHTML : '';
+      sheet.querySelector('.tlShBody').scrollTop = 0;
+      sheet.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sheet.classList.add('on'));
+    };
+    sheet.querySelector('.tlShDim').addEventListener('click', closeSheet);
+    sheet.querySelector('.tlShX').addEventListener('click', closeSheet);
+    addEventListener('keydown', e => { if (e.key === 'Escape' && sheet.classList.contains('on')) closeSheet(); });
+    sheet.addEventListener('click', e => {
+      const d = shRow; if (!d || !window._svc) return;
+      const go = e.target.closest('.tlGo');
+      if (go){ const t = go.dataset.need; closeSheet(); const to = [...list.querySelectorAll('.tlRow')].find(x => ROWS[+x.dataset.r] && ROWS[+x.dataset.r].t === t);
+        if (to){ to.scrollIntoView({ behavior: 'smooth', block: 'center' }); to.classList.remove('flash'); void to.offsetWidth; to.classList.add('flash'); setTimeout(() => to.classList.remove('flash'), 1600); } return; }
+      const gi = e.target.closest('.tlGrp > li');
+      if (gi && d.group){ const x = d.group[+gi.dataset.g]; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, svcOpts(x)); return; }
+      if (e.target.closest('.tlBtn')){ const w = own(d); if (!w.svc) return; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.state, d.group ? svcOpts(w) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line }); }
+    });
+    document.addEventListener('everlab:mode', closeSheet);
+    addEventListener('resize', syncMode);
+    if (window.ResizeObserver) new ResizeObserver(syncMode).observe(main);
+    syncMode();
     // the whole row opens its service's page (View, Book and the rest with
     // it), its content the row's own; the ⋯ is its own menu, and the back
     // chevron comes back here
@@ -22967,6 +23032,7 @@
       if (bl){ const t = bl.dataset.need, to = [...list.querySelectorAll('.tlRow')].find(x => ROWS[+x.dataset.r] && ROWS[+x.dataset.r].t === t);
         if (to){ to.scrollIntoView({ behavior: 'smooth', block: 'center' }); to.classList.remove('flash'); void to.offsetWidth; to.classList.add('flash'); setTimeout(() => to.classList.remove('flash'), 1600); } return; }
       const tg = e.target.closest('.tlTgl');
+      if (tg && isSheet()){ openSheet(r); return; }   // XS and S: in the sheet
       if (tg){ const o = r.classList.toggle('open'); tg.setAttribute('aria-expanded', String(o)); return; }
       const d = ROWS[+r.dataset.r]; if (!d) return;
             const gi = e.target.closest('.tlGrp > li');
@@ -22996,7 +23062,7 @@
     };
     const close = quiet => {
       if (!document.body.classList.contains('tlOn')) return;
-      document.body.classList.remove('tlOn'); if (!quiet) lightDock(0);
+      document.body.classList.remove('tlOn'); closeSheet(); if (!quiet) lightDock(0);
       if (sel && sel.value === 'tl') sel.value = '9';
       requestAnimationFrame(() => resize());
     };
