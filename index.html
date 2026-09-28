@@ -6407,15 +6407,22 @@
   .homeBrand{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8b8b86;}
   .homeHead h1{margin:10px 0 8px;font-size:40px;font-weight:500;letter-spacing:-1px;color:#f4f4f4;}
   .homeHead p{margin:0;font-size:16px;color:#8b8b86;}
-  .homeGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:dense;gap:16px;}
+  /* one row per page ("use one row per page, then inside put the entry
+     points"): the page's name and what it is at the left, its entry points
+     (Desktop, Mobile, the concepts) as cards beside it, wrapping when there
+     are many; every shot the same 16:10, so the drawings keep their shape */
+  .homeGrid{display:flex;flex-direction:column;gap:16px;}
+  .hmRow{display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px;align-items:start;padding:24px;border-radius:24px;background:rgba(255,255,255,.025);}
+  .hmRowHd{padding:6px 4px 0;position:sticky;top:0;}
+  .hmRowHd h2{margin:0;font-size:22px;font-weight:500;letter-spacing:-.3px;color:#f4f4f4;}
+  .hmRowHd p{margin:8px 0 0;font-size:14px;line-height:1.45;color:#8b8b86;}
+  .hmRowHd span{display:inline-block;margin-top:14px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6b;}
+  .hmRowCards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
   .hmCard{display:flex;flex-direction:column;gap:14px;padding:12px 12px 16px;border:0;border-radius:20px;background:rgba(255,255,255,.035);color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .18s ease,transform .18s ease;}
   .hmCard:hover{background:rgba(255,255,255,.07);}
   .hmCard:active{transform:scale(.985);}
   /* the mosaic: a wide card takes two columns and two rows, its miniature
      filling the height, so the four small cards beside it lock to its edges */
-  .hmCard.wide{grid-column:1 / span 2;grid-row:span 2;}
-  .hmCard.wide.r{grid-column:3 / span 2;}
-  .hmCard.wide .hmShot{flex:1 1 auto;min-height:340px;aspect-ratio:auto;}   /* a floor: two wides on their own rows (the landing and the teaser) have no small cards to set the height */
   .hmShot{position:relative;aspect-ratio:16 / 10;border-radius:12px;background:#131313;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);}
   .hmShot i{position:absolute;display:block;background:rgba(255,255,255,.07);border-radius:4px;}
   .hmShot i.x-hi{background:rgba(255,255,255,.14);}
@@ -6433,9 +6440,9 @@
   .hmMeta b{display:block;margin-top:4px;font-size:16px;font-weight:500;color:#f4f4f4;}
   .hmMeta svg{flex:none;width:16px;height:16px;color:#8b8b86;transition:transform .18s ease,color .18s ease;}
   .hmCard:hover .hmMeta svg{transform:translate(2px,-2px);color:#f4f4f4;}
-  @media (max-width:1100px){ .homeGrid{grid-template-columns:repeat(3,minmax(0,1fr));} .hmCard.wide, .hmCard.wide.r{grid-column:span 2;grid-row:auto;} .hmCard.wide .hmShot{flex:none;aspect-ratio:16 / 8.4;} }
-  @media (max-width:800px){ .homeGrid{grid-template-columns:repeat(2,minmax(0,1fr));} .homeIn{padding:40px 20px 60px;} }
-  @media (max-width:520px){ .homeGrid{grid-template-columns:1fr;} .hmCard.wide{grid-column:auto;} .homeHead h1{font-size:32px;} }
+  @media (max-width:900px){ .hmRow{grid-template-columns:1fr;gap:18px;padding:18px;} .hmRowHd{position:static;} }
+  @media (max-width:800px){ .homeIn{padding:40px 20px 60px;} }
+  @media (max-width:520px){ .hmRowCards{grid-template-columns:1fr;} .homeHead h1{font-size:32px;} }
   /* ---- The service detail page (desk #dSvc, phone .svcMob) ---- */
   #dSvc{display:none;padding:32px 40px 60px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));color:#ececec;}
   body.m9.svcOn #dSvc{display:block;} body.m9.svcOn #dOver{display:none;}
@@ -25262,6 +25269,8 @@
       tlDesk: () => side() + B(30, 8, 26, 5, 'hi') + B(30, 17, 8, 3, 'lt') + B(40, 17, 10, 3) + B(52, 17, 8, 3) + B(78, 15, 16, 7, '', '5px') + B(30, 21.5, 8, .7, 'lt') + B(24.6, 30, 1, 70) +
         [[29, 'ac'], [48, 'lt'], [72, '']].map(([y, c]) => B(23.6, y, 3, 5, c, '50%') + B(30, y + .5, 14, 3.5, 'hi')).join('') +
         [35, 55, 78].map(y => B(30, y, 6, 10, 'ph', '4px') + B(38, y + 1, 18, 3, 'lt') + B(38, y + 5.5, 30, 2.5) + B(84, y + 2, 6, 5, '', '4px') + B(91, y + 2, 4, 5, '', '4px')).join(''),
+      tlMob: () => phone(B(37, 10, 18, 4, 'hi') + B(37, 17, 7, 2.5, 'lt') + B(46, 17, 8, 2.5) + B(56, 17, 6, 2.5) + B(37, 20.5, 7, .6, 'lt') + B(37, 24, 26, 5, '', '4px') +
+        [34, 58].map(y => B(37, y, 12, 3, 'hi') + B(37, y + 6, 6, 8, 'ph', '3px') + B(45, y + 7, 16, 2.5, 'lt') + B(37, y + 16, 26, 5, y === 34 ? 'lt' : '', '4px')).join('') + B(37, 84, 26, 6, 'card', '5px')),
       landing: () => B(6, 7, 10, 4, 'hi') + B(84, 5, 10, 7, 'lt', '99px') + B(6, 32, 8, 2.5) + B(6, 38, 34, 7, 'lt') + B(6, 47, 26, 7, 'lt') + B(6, 60, 34, 2.5) + B(6, 65, 30, 2.5) + B(6, 76, 14, 7, 'hi', '99px') +
         B(52, 12, 42, 80, 'card', '12px') + B(63, 18, 20, 36, 'org') + B(56, 54, 34, 16, 'arc') + B(68, 66, 10, 8, 'lt') + [60, 70, 80].map((x, i) => B(x, 82, 8, 3, i === 1 ? 'lt' : '')).join(''),
       resDesk: () => side() + B(21, 8, 30, 5, 'hi') + B(21, 20, 36, 40, 'ph', '8px') + B(59, 20, 38, 40, 'card', '8px') + B(0, 0, 100, 100, 'dim') +
@@ -25290,7 +25299,8 @@
       { g: 'Insights', n: 'Desktop', m: 18, s: 'insDesk', wide: true, r: true },
       { g: 'Insights', n: 'Mobile', m: 20, s: 'insMob' },
       { g: 'Results received', n: 'Mobile', m: 25, s: 'resMob' },
-      { g: 'Timeline', n: 'Your health journey', m: 9, s: 'tlDesk', tl: true, wide: true },
+      { g: 'Timeline', n: 'Desktop', m: 9, s: 'tlDesk', tl: true },
+      { g: 'Timeline', n: 'Mobile', m: 9, s: 'tlMob', tl: true, bp: 'xs' },   // the same page at the forced XS, in the phone frame
       { g: 'Concept', n: 'Organ library', m: 7, s: 'library' },
       { g: 'Concept', n: 'Card Nav', m: 0, s: 'cardNav' },
       { g: 'Landing page', n: 'Organ Age', m: 23, s: 'landing', wide: true },
@@ -25301,7 +25311,20 @@
       { g: 'Concept', n: 'Immersive experience', m: 8, s: 'immersive' }
     ];
     const ARR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"/></svg>';
-    grid.innerHTML = P.map((p, i) => '<button class="hmCard' + (p.wide ? ' wide' : '') + (p.r ? ' r' : '') + '" type="button" data-i="' + i + '"><div class="hmShot" aria-hidden="true">' + SHOT[p.s]() + '</div><div class="hmMeta"><div><small>' + p.g + '</small><b>' + p.n + '</b></div>' + ARR + '</div></button>').join('');
+    // the pages in the order they are worked on, each with its line
+    const ROWS = [
+      ['Overview', 'The member\u2019s home: the next step, services, insights and the plan.'],
+      ['Insights', 'Biomarkers, reports and insights, with the organ at the centre.'],
+      ['Service detail', 'One service end to end: its state, what to do, and the steps.'],
+      ['Timeline', 'The health journey: what is due, month by month, and what is yours to claim.'],
+      ['Results received', 'The moment results land, over the Overview.'],
+      ['Landing page', 'Organ Age, for people who are not members yet.'],
+      ['Video', 'The social teaser.'],
+      ['Concept', 'The organ concepts the prototype grew from.']
+    ];
+    const cardOf = (p, i) => '<button class="hmCard' + (p.wide ? ' wide' : '') + (p.r ? ' r' : '') + '" type="button" data-i="' + i + '"><div class="hmShot" aria-hidden="true">' + SHOT[p.s]() + '</div><div class="hmMeta"><div><b>' + p.n + '</b></div>' + ARR + '</div></button>';
+    grid.innerHTML = ROWS.map(([g, line]) => { const its = P.map((p, i) => [p, i]).filter(([p]) => p.g === g); if (!its.length) return '';
+      return '<section class="hmRow"><div class="hmRowHd"><h2>' + g + '</h2><p>' + line + '</p><span>' + its.length + (its.length > 1 ? ' entry points' : ' entry point') + '</span></div><div class="hmRowCards">' + its.map(([p, i]) => cardOf(p, i)).join('') + '</div></section>'; }).join('');
     const show = () => { document.body.classList.add('homeOn'); if (versionSel) versionSel.value = 'home'; try { history.replaceState(null, '', '#home'); } catch (e){} const h = document.getElementById('home'); if (h) h.scrollTop = 0; };
     const hide = () => document.body.classList.remove('homeOn');
     grid.addEventListener('click', e => {
@@ -25309,6 +25332,8 @@
       const p = P[+c.dataset.i]; hide();
       setMode(p.m); resize();
       if (p.svc && window._svc) (p.svc === 'desk' ? window._svc.openDesk : window._svc.openMob)();
+      if (p.bp){ const bs = document.getElementById('stBp'); if (bs){ bs.value = p.bp; bs.dispatchEvent(new Event('change', { bubbles: true })); } }
+      else if (p.tl){ const bs = document.getElementById('stBp'); if (bs && bs.value === 'xs'){ bs.value = 'auto'; bs.dispatchEvent(new Event('change', { bubbles: true })); } }   // Desktop after Mobile: the window's own width again
       if (p.tl && window._tl) window._tl.open();
     });
     window._home = { show, hide };

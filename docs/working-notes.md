@@ -11532,3 +11532,12 @@ Every other row stays a simple service. A group's Details opens one vertical lin
 Each carries "Member Check-In · x of 3" to say they belong together. Rows can now take a chip after the title (`tag`) and go without buttons.
 
 "Regular": the steps' titles are weight 400 (from 500), the current one included; the orange ring and the brighter colour still mark it.
+
+**5.484 — The home page, one row per page ("use one row per page, then inside put the entry points").** The mosaic of sixteen cards is regrouped. Each page is a row, in the order the pages are worked on:
+
+- Overview, Insights, Service detail, Timeline and Results received (Desktop · Mobile each)
+- Landing page (Organ Age)
+- Video (Teaser video)
+- Concept (six)
+
+A row has the page's name, one line on what it is and its count of entry points at the left, and its entry points at the right, cards of one size (every shot the same 16:10, so the drawings keep their proportions) that wrap when there are many. The cards drop their eyebrow, since the row names the page, and read just Desktop, Mobile or the concept's name. Timeline gains a Mobile entry point: the same page opened at the forced XS in the phone frame (its Desktop card puts the viewport back to Auto). Under 900px a row stacks its header over its cards, and under 520px the cards go one per line.
