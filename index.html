@@ -22981,7 +22981,9 @@
           const segs = bp ? bp.steps.map((st, j) => '<i class="' + (bp.at >= bp.steps.length || j < bp.at ? 'on' : j === bp.at ? 'cur' : '') + '"></i>').join('') : '';
           return '<div class="tlProg"><button class="tlTgl tlBlk" type="button" aria-expanded="false" aria-label="Waiting on ' + esc(r.need) + ', show details">' + LOCK + (segs ? '<span class="tlSeg" aria-hidden="true">' + segs + '</span>' : '') + 'Waiting on ' + esc(r.need) + CHEV + '</button></div>' + stack;
         }
-        return '<div class="tlProg' + (a < 0 ? ' done' : '') + (a >= 0 && pas(act.p.steps[act.p.at]) ? ' pas' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show details"><span class="tlSeg" aria-hidden="true">' + (one ? os.steps.map((st, j) => '<i class="' + (j < os.at ? 'on' : j === os.at ? 'cur' : '') + '"></i>').join('') : g.map((x, i) => '<i class="' + (x.state === 'done' ? 'on' : i === a ? 'cur' : '') + '"></i>').join('')) + '</span>' + lab + CHEV + '</button>' + (a >= 0 && act.p.steps[act.p.at] ? curB(act.p.steps[act.p.at]) : '') + '</div>' + stack;
+        // the chip counts the object's own service's steps, never the group's services ("always step, not service")
+        const op = g[mi].p, on = op.steps.length, dn = g[mi].state === 'done' || op.at >= on, lb = dn ? 'Completed' : op.at < 0 ? 'Not started' : 'Step ' + (op.at + 1) + ' of ' + on;
+        return '<div class="tlProg' + (dn ? ' done' : '') + (!dn && pas(op.steps[op.at]) ? ' pas' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lb + ', show details"><span class="tlSeg" aria-hidden="true">' + op.steps.map((st, j) => '<i class="' + (dn || j < op.at ? 'on' : j === op.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lb + CHEV + '</button>' + (!dn && op.at >= 0 && op.steps[op.at] ? curB(op.steps[op.at]) : '') + '</div>' + stack;
       }
       if (r.lockAge){   // locked by age ("also should be locked"): nothing to do until then
         const own = rowPlan(Object.assign({}, r, { state: 'locked' }));

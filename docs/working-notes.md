@@ -11742,3 +11742,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Thumbnails:** "Radius 16." Object thumbnails are at radius 16 on desk (from 12). XS keeps its 8 on the 44px thumbnail.
 
 **5.526 — Secondary CTA at #fff 8%.** "CTA secondary 8% bg fff": the secondary button (and its ⋯ half in a split) sits on #fff at 8% (12% on hover), down from 24%/30%, in the page and in the sheet. The primary stays white. Light mode keeps its ink 7%.
+
+**5.527 — A group object's chip counts steps, never services.** "Always step, not service": the chip on a group object now counts the object's own service's steps, not the group's services. Its increments and its badge are that service's too. The locked ones keep their "Waiting on …" chip.
+
+- **Dexa waiting on results:** "Step 3 of 3", two green and the passive grey, "Get your results".
+- **DEXA to book:** "Step 1 of 3", "Book appointment".
+- **Microbiome:** "Step 4 of 8", "Collect sample".
