@@ -11828,3 +11828,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
   - Services outside any group (MRI…) have none.
 - **Tweaks:** "Service detail should only show the Service detail tweak, not the Overview." The service page's Tweaks show a single group, "Service detail" (`data-svc`). The Timeline shows only its "Timeline" group (Open steps), and the Overview its own.
   - The journey setting is a switch, "Journey in body" (the bar turns a two-option select into one): off, the right column; on, the body.
+
+**5.541 — Step chip and badge on the Overview's action plan cards; no count in the service page's status.**
+
+- **Overview cards:** "Add the badge step + badge status on the Overview action plan items." Each action plan card (the desk grid and the phone list) now carries the Timeline's pair above its footer: the step chip ("Step 2 of 3") and the badge of the step in hand with its increments ("Visit a collection centre"). The badge is orange when the step is the member's, neutral when it isn't.
+  - The state is the one the card opens its page in (Book: to book; View: booked), so the card and its page agree.
+  - The card remembers its service and state (`data-key`, `data-st`), since the injected step names would otherwise mislead the title matching.
+- **Service page status:** "Service detail remove Step X of X." The status block's tag is just "Your next step" or "In progress". The progress beside it counts the steps.

@@ -6318,6 +6318,13 @@
   }
   .dvProt b{display:block;font-size:15px;font-weight:500;color:#ececec;}
   .dvProt p{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:#8b8b86;}
+  /* the step chip and the step in hand's badge on the action plan cards, as on the Timeline */
+  .ovStep{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0;} .ovact .ovStep{margin:14px 0 0 106px;}
+  .ovStepC, .ovStepB{display:inline-flex;align-items:center;gap:10px;height:28px;padding:0 10px;border-radius:8px;font-size:12.5px;font-weight:500;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .ovStepC{background:rgba(255,255,255,.055);color:#ececec;} .ovStepB{background:rgba(247,131,89,.14);color:#f78359;} .ovStepB.n{background:rgba(255,255,255,.055);color:#ececec;}
+  .ovSeg{display:flex;flex:none;width:64px;gap:3px;} .ovSeg i{flex:1 1 0;height:4px;border-radius:2px;background:rgba(255,255,255,.16);} .ovStepB .ovSeg i{background:rgba(247,131,89,.22);} .ovStepB.n .ovSeg i{background:rgba(255,255,255,.16);}
+  .ovSeg i.on{background:#9cc088 !important;} .ovSeg i.cur{background:#f78359;} .ovStepB.n .ovSeg i.cur{background:rgba(255,255,255,.72);}
+  body.light .ovStepC, body.light .ovStepB.n{background:rgba(46,31,26,.07);color:#2e241c;} body.light .ovStepB{background:#fdece2;color:#d4602f;} body.light .ovSeg i{background:rgba(46,31,26,.16);}
   .dvProtFoot{
     margin-top:auto;display:flex;align-items:center;gap:8px;
     font-size:12.5px;color:#8b8b86;
@@ -22832,7 +22839,7 @@
       const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
       // the status block says the step in hand, the one lit on the right ("body status block needs to reflect the current step on the right side"): its name and its line, and neutral when it isn't the member's to do; a time to re-choose (request) keeps its own message
       if (state !== 'request' && at >= 0 && at < n){ const cs = d.steps[at], pv = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/.test(cs[0]);
-        x.tag = (pv ? 'In progress' : 'Your next step') + ' \u00b7 Step ' + (at + 1) + ' of ' + n; x.h = cs[0] + '.'; x.p = escS(cs[1] || ''); x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
+        x.tag = pv ? 'In progress' : 'Your next step'; /* no count here ("service detail remove Step X of X"): the progress beside says it */ x.h = cs[0] + '.'; x.p = escS(cs[1] || ''); x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
       // the journey: every service of the group, the page's own marked and carrying its status (in the body, the status block itself)
       // ...passed by the Timeline, or, from anywhere else (Service detail, the Overview), the group the service belongs to, the page's own in its state ("where are the journey cards?")
       const JDEF = { dexa: 'ci', diag: 'ci', checkin: 'ci', gutq: 'gut', gut: 'gut', gutrep: 'gut', gutrev: 'gut' };
@@ -22874,7 +22881,7 @@
       cur = { key, state, o, J };
     };
     // which service a card of the Overview is, by its title
-    const keyOf = el => { const t = (el.textContent || '').toLowerCase();
+    const keyOf = el => { if (el.dataset && el.dataset.key) return el.dataset.key; const t = (el.textContent || '').toLowerCase();
       return /onboarding|consult/.test(t) ? 'consult' : /dexa/.test(t) ? 'dexa' : /mri/.test(t) ? 'mri' : /physical/.test(t) ? 'phys' : /nutrition/.test(t) ? 'nutri' : /patholog|blood/.test(t) ? 'path' : 'dexa'; };
     let backTo = null;   // where the back chevron returns: the Overview, or the Timeline the page was opened from
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
@@ -22885,7 +22892,7 @@
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });   // past 6, as the Overview's bar
     const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
     const heroKey = () => document.body.classList.contains('heroDexa') ? 'dexa' : 'consult';   // the booking card's Book: whichever service its hero shows
-    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openDesk(heroKey(), 'book'); else openDesk(keyOf(b), /book/i.test(b.textContent) ? 'book' : 'booked'); });   /* the whole plan card, not only its button */
+    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openDesk(heroKey(), 'book'); else openDesk(keyOf(b), b.dataset.st || (/book/i.test(b.textContent) ? 'book' : 'booked')); });   /* the whole plan card, not only its button */
     if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openMob(heroKey(), 'book'); else openMob(keyOf(b), /book/i.test(b.textContent) ? 'book' : 'booked'); });
     document.querySelectorAll('#dSvc .svBack, #svcMob .svBack').forEach(b => b.addEventListener('click', close));
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
@@ -22897,6 +22904,18 @@
       if (li.closest('#svcMob, .svcMob')) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); });
     { const t = document.getElementById('stJr'); if (t) t.addEventListener('change', () => { JR = t.value; paint(cur.key, cur.state, cur.o); }); }
     window._svc = { openDesk, openMob, close, plan };
+    // the Overview's action plan cards carry the Timeline's step chip and the step in hand's badge ("add the badge step + badge status on the Overview action plan items"): the state is the one the card opens its page in (Book: to book; View: booked), so the card and its page agree
+    { const PV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;
+      document.querySelectorAll('.dvProt, .ovact').forEach(c => {
+        const btn = c.querySelector('.go'); if (!btn || c.querySelector('.ovStep')) return;
+        const key = keyOf(c), st = /book/i.test(btn.textContent) ? 'book' : 'booked', p = plan(key, st); if (!p) return;
+        c.dataset.key = key; c.dataset.st = st;
+        const n = p.steps.length, at = p.at, done = at >= n, cs = !done && at >= 0 ? p.steps[at] : null, pv = cs && PV.test(cs[0]);
+        const seg = '<span class="ovSeg" aria-hidden="true">' + p.steps.map((x, i) => '<i class="' + (done || i < at ? 'on' : i === at ? 'cur' : '') + '"></i>').join('') + '</span>';
+        const lab = done ? 'Completed' : at < 0 ? 'Not started' : 'Step ' + (at + 1) + ' of ' + n;
+        const el = document.createElement('div'); el.className = 'ovStep' + (pv ? ' pas' : '');
+        el.innerHTML = '<span class="ovStepC">' + (cs ? '' : seg) + escS(lab) + '</span>' + (cs ? '<span class="ovStepB' + (pv ? ' n' : '') + '">' + seg + escS(cs[0]) + '</span>' : '');
+        const foot = c.querySelector('.dvProtFoot, .ovactFoot'); if (foot) foot.parentNode.insertBefore(el, foot); }); }
   })();
 
   // The Timeline page: "Your health journey" -- the months ahead with what
