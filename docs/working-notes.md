@@ -11924,3 +11924,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 **5.560 — Finer dashes at #fff 6%.** "Reduce increment and dash width; opacity #fff 6%." The related cards' dashed outline is now 6px dashes with 6px gaps, 1.5px wide, at #fff 6% (ink 12% in light mode).
 
 **5.561 — Tighter dashes at #fff 12%.** "12% border dashed; reduce more width and gap." The related cards' outline is now 4px dashes with 4px gaps, 1px wide, at #fff 12% (ink 20% in light mode).
+
+**5.562 — "Right column merged": the progress inside the journey's own card.** "Add another tweak that merges Your progress inside the service card on Your journey"; "call this tweak Right column merged." "Journey module" gains a fourth choice, "Right column merged".
+
+- **Right column:** the journey sits there, and the separate "Your progress" panel goes. The page's own card ("This service") carries the service's steps under its name, with bars and lines as in the progress panel, done green, in hand orange.
+- **Body:** the status block stays in the body.
+- **Other choices:** unchanged, their progress panel kept.
