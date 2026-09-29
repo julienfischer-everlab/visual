@@ -11835,3 +11835,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
   - The state is the one the card opens its page in (Book: to book; View: booked), so the card and its page agree.
   - The card remembers its service and state (`data-key`, `data-st`), since the injected step names would otherwise mislead the title matching.
 - **Service page status:** "Service detail remove Step X of X." The status block's tag is just "Your next step" or "In progress". The progress beside it counts the steps.
+
+**5.542 — A locked service's journey card is just its name and "Complete your … first"; the blocker has a View.** "When a service is locked, just keep the title and sub title 'Complete your DEXA Scan first'. No CTA in this service card. And put a CTA on the blocker service, 'View'."
+
+- **Locked service's own card:** on a locked service's page, its own card in "Your journey" (either placement) shows only its name and "Complete your DEXA Scan first.". There is no status block and no button.
+- **Blocker card:** the card of the service it waits on (`jB`, found by the `need`) carries a "View" button in place of "Related service". It opens that service's page, the journey kept.
+- **Examples:** Diagnostics Review → DEXA Scan has the View; Member Check-In → Diagnostics Review has it.
+- **Services in hand:** a service that is in hand (DEXA) keeps its status and button in its card in the body version.
