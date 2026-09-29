@@ -11940,3 +11940,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Timeline labels:** the group lists on the Timeline follow the journey's labels too: "Locked" for locked or coming-up services, none for done ones, "Related service" only for an open one that isn't the object's own.
 
 **5.564 — Merged: a locked service shows no steps.** "On merged tweak, locked service hides the steps." In "Right column merged", a locked page's own journey card shows its name and "Complete your DEXA Scan first", without the step list. A service in hand (DEXA) keeps its steps in its card.
+
+**5.565 — "This service" on the Timeline's group cards; the blocker always orange with its View.** "Active service: add badge 'This service'. Blocker service needs to always be orange theme + CTA View."
+
+- **Timeline group lists:** the object's own card carries "This service". This includes the in-hand card when its name shows.
+- **Blocker:** on a locked object, the service the chain waits on (DEXA) is orange (the status orange, #F78359 at 12%) with a white "View" (28px). Tapping it opens DEXA's page.
+- **Service page journey:** its blocker card is orange the same way (no dashed outline), with its primary View.
