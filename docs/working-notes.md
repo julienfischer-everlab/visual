@@ -11952,3 +11952,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Default:** the "Locked pattern" switch starts on, so locked service cards show the pattern from the first load. Switching it off removes the pattern and keeps it off across pages.
 - **Switch order:** its two choices are On/Off, since the bar's switch reads its first choice as on.
 - **Pattern:** 0.7px lines every 4px (from 1px every 7px), at #fff 4% (ink 6% in light mode).
+
+**5.567 — Merged card: no line under the name; steps on the name's and the dot's lines.** "No need sub title 'Book appt'. Align vertically content with title, and vertical progress with dot (centred)."
+
+- **No line under the name:** in "Right column merged", the page's own card no longer repeats its status under its name.
+- **Steps aligned:** the step names start where the service's name starts (32px in). The progress bars are centred under the dot (10px in). Measured: dot and bar centres both at 1097, name and steps both at 1119.
