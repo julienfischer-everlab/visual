@@ -11791,3 +11791,7 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **Suggestions:** "+8px gap between timeline line and suggested card." The suggestions tray starts 8px further from the rail (its outset −14 from −22).
 - **Dexa:** "Remove this DEXA." The booked Dexa Scan in September (Quantum Therapy Sydney, 1 Sep) is gone. September now holds MRI Scan, Nutrition review, the Genetic Test and the Microbiome assessment.
+
+**5.537 — July folded into August.** "Push these 2 into August, remove the July group": the Pathology Test (Complete your test) and the Dexa Scan waiting on its results move into August 2026, and the July section is gone. August, the current month, now opens with them.
+
+- **Order:** primary first, so Pathology, Onboarding consult, MRI Briefing and DEXA Scan, all open; then the waiting Dexa Scan (not primary: its step is passive), collapsed.
