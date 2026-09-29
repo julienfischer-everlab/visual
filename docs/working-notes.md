@@ -11888,3 +11888,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Status in the card:** "Put status in a card inside a card." In "Body, status in the card", the status is a card of its own inside the service's card, under its name.
   - It has 18/20 padding and radius 12, on its tone's ground: orange when the step is the member's, #fff 6% when it isn't.
   - The service's card keeps its 8%.
+
+**5.551 — The page's own journey card, a border only; the status card at 4% grey or the usual orange.** "Active card: just border, no bg. Status card bg #fff 4% opacity, grey or orange (orange keeps the same as usual)."
+
+- **Page's own card:** no ground, a 1px border (#fff 14%; ink 18% in light mode). This is in every journey placement.
+- **Status card inside it:** #fff 4% when the step isn't the member's, the status block's usual orange when it is.
