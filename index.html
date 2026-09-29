@@ -6504,10 +6504,10 @@
   .svProg{background:rgba(255,255,255,.04);border-radius:20px;padding:24px;}
   .svProgHead{display:flex;align-items:center;justify-content:space-between;font-size:18px;font-weight:500;color:#f4f4f4;margin-bottom:20px;}
   .svProgHead em{font-style:normal;font-size:14px;font-weight:400;color:#8b8b86;}
-  .svStep{position:relative;padding-left:22px;margin-bottom:8px;}   /* 8 between the steps ("gap between item 8px") */
+  .svStep{position:relative;padding:8px 0 8px 22px;margin-bottom:4px;}   /* 8 above and below its words, the bar with them ("in the content add 8px padding top bottom") */   /* 4 between the steps ("gap between stacked item 4px") */
   .svStep:last-child{margin-bottom:0;}
   .svStep::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;border-radius:2px;background:rgba(255,255,255,.12);}
-  .svStep.on::before{background:#f78359;} .svStep.ok::before{background:#9cc088;}   /* done green, the step in hand orange ("first bar progress needs to be green") */
+  .svStep.on::before{background:#f78359;} .svStep.ok::before{background:#9cc088;} .svStep.on.pas::before{background:rgba(255,255,255,.72);}   /* done green, the step in hand orange ("first bar progress needs to be green") */
   .svStep b{display:block;font-size:14px;font-weight:500;color:#f4f4f4;}   /* 2 smaller ("reduce title font size by 2px") */
   .svStep span{display:block;margin-top:2px;font-size:14px;color:#8b8b86;}
   .svAbout{margin-top:44px;}
@@ -6521,7 +6521,7 @@
   body.light .svPend, body.light .svWarn{background:#fdf0e6;} body.light .svWarn{color:#3a2a20;} body.light .svPend p{color:#6b5c4a;}
   body.light .svBtn{background:#111;color:#fff;} body.light .svBack, body.light .svMore, body.light .svRefBtn, body.light .svRefIc{background:rgba(46,31,26,.08);color:#2e1f1a;}
   body.light .svProg{background:rgba(46,31,26,.04);} body.light .svRef{box-shadow:inset 0 0 0 1px rgba(46,31,26,.1);} body.light .svRow, body.light .svRow:last-child{border-color:rgba(46,31,26,.1);}
-  body.light .svStep::before{background:rgba(46,31,26,.12);} body.light .svStep.on::before{background:#f78359;} body.light .svStep.ok::before{background:#9cc088;}
+  body.light .svStep::before{background:rgba(46,31,26,.12);} body.light .svStep.on::before{background:#f78359;} body.light .svStep.ok::before{background:#9cc088;} body.light .svStep.on.pas::before{background:rgba(46,31,26,.6);}
   /* the phone's screen */
   .svcMob{position:absolute;inset:0;z-index:5;display:none;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:#0d0d0c;color:#ececec;}
   .svcMob::-webkit-scrollbar{display:none;}
@@ -22749,10 +22749,10 @@
       path: { t: 'Pathology Test', short: 'blood test', img: 'path', dur: '15min', loc: 'Any Laverty collection centre', clin: 'Laverty Pathology', ref: true, steps: [['Get your referral', 'Sent to you by your doctor'], ['Visit a collection centre', 'A quick blood draw, no booking needed'], ['Get your results', 'Usually within 3 to 5 days']],
         instr: ['Fast for 10 to 12 hours before; water is fine and helps the draw.', 'Go in the morning so most of the fast is overnight.', 'Bring your referral, on your phone or printed.'],
         about: 'An advanced blood panel of 44 biomarkers across heart, metabolic, liver and kidney health, hormones and inflammation, well beyond a standard check-up.' },
-      skin: { t: 'Skin Check', short: 'skin check', img: 'skin', dur: '30min', loc: CLINIC, clin: 'Everlab partner dermatology clinic', steps: SCAN('skin check'),
+      skin: { t: 'Skin Check', short: 'skin check', every: 'Recommended every year from age 30', img: 'skin', dur: '30min', loc: CLINIC, clin: 'Everlab partner dermatology clinic', steps: SCAN('skin check'),
         instr: ['Come without make-up, fake tan or nail polish, so every spot can be seen.', 'Note any mole that is new, has changed or itches.', 'Wear clothes that are easy to take off.'],
         about: 'A full-body skin check with a dermatoscope, looking for the early signs of skin cancer, the most common cancer in Australia.' },
-      colon: { t: 'Colonoscopy', short: 'colonoscopy', img: 'colon', dur: '45min', loc: CLINIC, clin: 'Everlab partner endoscopy clinic', ref: true, steps: SCAN('colonoscopy'),
+      colon: { t: 'Colonoscopy', short: 'colonoscopy', every: 'Recommended every 5 years from age 45', img: 'colon', dur: '45min', loc: CLINIC, clin: 'Everlab partner endoscopy clinic', ref: true, steps: SCAN('colonoscopy'),
         instr: ['Follow the bowel prep you are sent, starting the day before.', 'Arrange for someone to take you home; you will be sedated.', 'Tell the clinic about any blood thinners you take.'],
         about: 'A camera look at the lining of your large bowel, to find and remove polyps before they can turn into bowel cancer.' },
       ct: { t: 'CT Coronary Calcium Score', short: 'CT scan', img: 'dexa', dur: '15min', loc: CLINIC, clin: 'Radiology Victoria Burwood East Imaging Consultant', ref: true, steps: SCAN('CT scan'),
@@ -22790,7 +22790,7 @@
       request: d => ({ tone: '', tag: 'Pending action', h: 'Unfortunately, your originally requested time isn’t available.', p: 'Our provider has shared a few alternative appointment times.<br>Choose the one that works best for you.', btn: 'View options', sec: 'Confirm your appointment', warn: 'We’re unable to fulfill your original requested time. Confirm your booking to view alternative times.', at: 0, st: 'Requested 11 days ago' }),
       book: d => ({ tone: '', tag: 'Next step', h: 'Book your ' + d.short + '.', p: 'Choose a time that works for you. It takes a minute.', btn: 'Book now', sec: 'Your appointment', at: 0, st: 'Added to your plan' }),
       booked: d => ({ tone: 'ok', tag: 'Confirmed', h: 'You’re booked in for ' + (d.when || '1 Sep 2026, 10:30 am') + '.', p: 'We’ll send you a reminder the day before.', btn: 'Add to calendar', sec: 'Your appointment', at: 1, st: d.when || '1 Sep 2026, 10:30 - 11:10 am' }),
-      suggested: d => ({ tone: 'info', tag: 'Suggested for you', h: 'Recommended every 5 years from age 25.', p: 'You have no records of this yet. Add it to your plan to book it.', btn: 'Add to plan', sec: 'What to expect', at: -1, st: 'No records' }),
+      suggested: d => ({ tone: 'info', tag: 'Suggested for you', h: (d.every || 'Recommended every 5 years from age 25') + '.', p: 'You have no records of this yet. Add it to your plan to book it.', btn: 'Add to plan', sec: 'What to expect', at: -1, st: 'No records' }),
       purchase: d => ({ tone: 'info', tag: 'Recommended by Dr Sarah Chen', h: 'Not included in your membership.', p: 'Your doctor suggests it from your results. You can add it to your plan as a one-off.', btn: 'Purchase', sec: 'What to expect', at: -1, st: 'Recommended by Dr Sarah Chen' }),
       claim: d => ({ tone: 'ok', tag: 'Included in your membership', h: 'Yours to claim, at no extra cost.', p: 'Claim it and book a time that suits you.', btn: 'Claim', sec: 'What to expect', at: -1, st: 'Claim by 31 Dec 2026' }),
       later: d => ({ tone: 'info', tag: 'Coming up', h: 'Due when you turn ' + (d.age || 50) + '.', p: 'We’ll remind you when it’s time to book.', btn: 'Remind me', sec: 'What to expect', at: -1, st: 'Due at ' + (d.age || 50) }),
@@ -22805,6 +22805,9 @@
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
       const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
       const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
+      // the status block says the step in hand, the one lit on the right ("body status block needs to reflect the current step on the right side"): its name and its line, and neutral when it isn't the member's to do; a time to re-choose (request) keeps its own message
+      if (state !== 'request' && at >= 0 && at < n){ const cs = d.steps[at], pv = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/.test(cs[0]);
+        x.tag = (pv ? 'In progress' : 'Your next step') + ' \u00b7 Step ' + (at + 1) + ' of ' + n; x.h = cs[0] + '.'; x.p = escS(cs[1] || ''); x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
       const pend = mobile => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div><button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + '>' + escS(x.btn) + '</button></div>';
       const rows = (state === 'booked' || state === 'done' ? '<div class="svRow"><span class="k">' + IC.cal + 'Date</span><span class="v">' + escS(o && o.when || x.st) + '</span></div>' : '') +
         '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' +
@@ -22814,7 +22817,8 @@
       const ref = chev => d.ref ? '<div class="svRef"><span class="svRefIc">' + IC.ref + '</span><div><b>Your referrals</b><span>Show your referrals when you get to your appointment.</span></div>' + (chev ? '<button class="svRefBtn svRefChev" type="button" aria-label="Show">' + IC.chev + '</button>' : '<button class="svRefBtn" type="button">Show</button>') + '</div>' : '';
       const instr = '<h2 class="svH2">Instructions</h2><div class="svBody"><ul class="svList">' + d.instr.map(i => '<li>' + escS(i) + '</li>').join('') + '</ul></div>';
       const about = '<div class="svAbout"><h3>About the service</h3><p>' + escS(d.about) + '</p><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
-      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
+      const PASV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;   // a step that isn't the member's: its bar grey, as on the Timeline
+      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
       const title = o && o.t || d.t, start = o && o.st || x.st;
       if (desk){
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');

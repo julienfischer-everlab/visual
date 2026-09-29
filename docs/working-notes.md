@@ -11795,3 +11795,14 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 **5.537 — July folded into August.** "Push these 2 into August, remove the July group": the Pathology Test (Complete your test) and the Dexa Scan waiting on its results move into August 2026, and the July section is gone. August, the current month, now opens with them.
 
 - **Order:** primary first, so Pathology, Onboarding consult, MRI Briefing and DEXA Scan, all open; then the waiting Dexa Scan (not primary: its step is passive), collapsed.
+
+**5.538 — Service page: tighter steps, a status block that follows the step in hand, the Timeline's steps.**
+
+- **Steps list:** "Gap between stacked items 4px"; "in the content add 8px padding top/bottom." In "Your progress" the steps are 4px apart and each has 8px above and below its words, the bar running their height. The sub line was already 14px ("reduce sub title to 14px"), so it is unchanged.
+- **Status block:** "The body status block (the orange one) needs to reflect the current step on the right side." The block now says the step lit on the right: "Your next step · Step 2 of 3", the step's name as the heading, its line under it.
+  - It is orange when the step is the member's, and neutral with "In progress" when it isn't (results on their way).
+  - A time to re-choose (request), a locked service and one not started keep their own message. The button stays the state's.
+  - Suggested pages read the service's own recommendation (Skin Check: every year from 30; Colonoscopy: every 5 years from 45).
+- **Steps as on the Timeline:** "The detail page should reflect the same steps as the timeline page." Every Upcoming object's page lists the same steps with the same one in hand, checked row by row, e.g. the waiting Dexa at 3/3 "Get your results".
+  - A passive step in hand is now grey there too, not orange.
+  - The locked ones differ only where the Timeline shows no steps (Later) or its "Available when you turn 50" line.
