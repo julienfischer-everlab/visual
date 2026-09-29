@@ -11938,3 +11938,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
   - It sits in both the Service detail and the Timeline tweaks, one setting, and survives a change of page (`body.svLockPat`, set again after a page rewrites the body's classes).
 - **Second Dexa:** "Remove the 2nd DEXA item." The Dexa Scan waiting on its results is gone from August, which now holds Pathology Test, Onboarding consult, MRI Briefing and DEXA Scan.
 - **Timeline labels:** the group lists on the Timeline follow the journey's labels too: "Locked" for locked or coming-up services, none for done ones, "Related service" only for an open one that isn't the object's own.
+
+**5.564 — Merged: a locked service shows no steps.** "On merged tweak, locked service hides the steps." In "Right column merged", a locked page's own journey card shows its name and "Complete your DEXA Scan first", without the step list. A service in hand (DEXA) keeps its steps in its card.
