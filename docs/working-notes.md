@@ -11989,3 +11989,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **New Timeline object:** "In the timeline, add a Diagnostics Review item when DEXA is fully completed." September gains the Member Check-In a step further on, as a Diagnostics Review now to book: "Member Check-In · 2 of 3", "DEXA Scan completed", a primary "Book", Step 1 of 3.
   - Its group list shows DEXA Scan done (tick, struck, no badge), its own card in hand with its steps and "This service", and Member Check-In locked.
   - Its page reads "Pending action · Book appointment" with "Book". The journey shows DEXA done, then Diagnostics Review as this service with its steps, then Member Check-In locked.
+
+**5.575 — Every locked status says "View".** "Status block when locked: CTA 'View'." A locked page's status button is always an active "View", never a greyed "Book appointment".
+
+- **In a journey:** it opens the service the chain waits on (5.570).
+- **Without a journey:** a locked service with no group now does the same by name. For example, an MRI Scan locked behind its briefing opens the MRI Briefing page.
+- **Checked:** Diagnostics Review and Member Check-In (to DEXA), Gut Health Review (to the gut assessment), MRI Scan (to MRI Briefing), and every Timeline entry to a locked page, desk and phone.
+- **Stale view:** the greyed button in the screenshot is the build before 5.570. A reload shows the View.
