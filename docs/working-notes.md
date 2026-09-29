@@ -12037,3 +12037,6 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 5.589 Timeline September MRI Scan on step 3 (Get your results): state active, at 2, a neutral grey bar, CTA View secondary (no cta flag; the step is passive). A passive step in hand whose name is about results is badged "Waiting for results" (others keep "In progress").
 - Service page, a passive step in hand (e.g. MRI on Get your results): the status reads "Waiting for results" (results steps) or "In progress", grey, and has no button (the Continue is gone); a step with its own act override keeps its buttons.
+
+5.590 Phone service page (Mobile version and the desk at XS): the Your progress card is gone from the hero ("remove this on mobile"); hero padding-bottom 48 so the start date clears the sheet. The steps stay in the sheet: the journey card lists them, and a single service (no journey) gets the desk's Your progress list under its status.
+- The desk's service page at XS and S hides the main nav (the device's dock, #mTabs3): a sub page, as the phone's already is.
