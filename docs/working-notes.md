@@ -12042,3 +12042,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - The desk's service page at XS and S hides the main nav (the device's dock, #mTabs3): a sub page, as the phone's already is.
 
 5.591 Journey cards: the group's service in hand, when it is not the page's own (or the Timeline card's object) and not a blocker, shows a secondary View (#fff 8%) in place of "Related service" ("if an active is not locked but is not a parent, add the CTA View"). Service page and Timeline group cards alike.
+
+5.592 A single service (no journey) lists its progress as a journey of one: the "Your progress" heading outside, then its own card (grey 8%, name, "This service", its steps inside), the same as a group's. Right column merged on the desk, and the phone's sheet (Mobile and XS). A locked single service shows its lock and no steps. Other Journey module modes keep the old progress panel for a single service.
