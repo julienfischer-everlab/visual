@@ -11980,3 +11980,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **Status buttons:** "44px height CTA for all status blocks." Every button in a status block is 44px high: Book, View, Add to calendar, and Pathology's two. This covers the page, the status-in-card journey, XS and the phone page.
 - **Orange dot:** "Add orange dot inside the grey dot." The service in hand's grey disc now carries a 6px orange dot at its centre. This shows in the service page's journey and in the Timeline's group lists, including the disc on the in-hand card's name.
+
+**5.573 — Locked pattern at #fff 12%.** "Pattern opacity 12% #fff": the locked pattern's lines go to #fff 12% (ink 14% in light mode), still 0.8px every 4px.
