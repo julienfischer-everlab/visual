@@ -11842,3 +11842,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Blocker card:** the card of the service it waits on (`jB`, found by the `need`) carries a "View" button in place of "Related service". It opens that service's page, the journey kept.
 - **Examples:** Diagnostics Review → DEXA Scan has the View; Member Check-In → Diagnostics Review has it.
 - **Services in hand:** a service that is in hand (DEXA) keeps its status and button in its card in the body version.
+
+**5.543 — No card round the journey block.** "No need a card style, just keep cards for the stacked service items." The "Your journey" block loses its own ground, padding and radius, in the right column and in the body. Its heading sits on the page, with the services' cards (8% for the page's own, 4% for the rest) stacked under it, 32px below the progress.
