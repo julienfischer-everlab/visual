@@ -11975,3 +11975,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **Steps:** "Padding top bottom 4px." Each step in "Your progress" has 4px above and below (from 6).
 - **Merged journey:** "Merge tweak: push up the right col so the title 'Your journey' is vertically aligned with the content on the body." In "Right column merged", the journey is the column's first block and starts on the body's top line. It drops its 32px top margin, so its heading and the page's picture and title all start at the same height (153px, measured).
+
+**5.572 — Status buttons at 44; an orange dot in the in-hand service's disc.**
+
+- **Status buttons:** "44px height CTA for all status blocks." Every button in a status block is 44px high: Book, View, Add to calendar, and Pathology's two. This covers the page, the status-in-card journey, XS and the phone page.
+- **Orange dot:** "Add orange dot inside the grey dot." The service in hand's grey disc now carries a 6px orange dot at its centre. This shows in the service page's journey and in the Timeline's group lists, including the disc on the in-hand card's name.
