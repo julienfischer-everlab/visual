@@ -11996,3 +11996,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Without a journey:** a locked service with no group now does the same by name. For example, an MRI Scan locked behind its briefing opens the MRI Briefing page.
 - **Checked:** Diagnostics Review and Member Check-In (to DEXA), Gut Health Review (to the gut assessment), MRI Scan (to MRI Briefing), and every Timeline entry to a locked page, desk and phone.
 - **Stale view:** the greyed button in the screenshot is the build before 5.570. A reload shows the View.
+
+5.576 Status CTA full round, pattern +12%, blur bug, Timeline group cards
+- Status block buttons (.svPend .svBtn): 44px, border-radius 999px.
+- Locked pattern stripes: #fff .12 → .24 (light: .14 → .26).
+- Blur bug: the top bars' ten blur bands (.ovGround) ran 28–38px past the bar's bottom edge, blurring content still in view (the Timeline's sticky month, the service page's status block). On .tlBar, .svTop and .svmNav they now end at the bar's edge; the tint alone fades on.
+- Timeline group cards: badge (.tlRelB) 28px high like the View button (padding 0 10, radius 8, 12.5px); card padding 14/16 → 10/12; name row min-height 28 and the left indicator margin 6px 2px, so it is centred on the title.
