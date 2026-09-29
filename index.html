@@ -6468,7 +6468,7 @@
   .svBack svg{width:14px;height:14px;}
   .svHead{display:flex;gap:20px;align-items:flex-start;margin:0 0 44px;}   /* in the left column now, so the right panel starts level with it ("push up the right side panel, same level as the left body content") */
   #dSvc .svGrid{margin-top:28px;}   /* 40 under the back button, 28 now the bar's own 12 sits between */
-  .svHead img{flex:none;width:104px;height:104px;border-radius:12px;object-fit:cover;}
+  .svHead img{flex:none;width:104px;height:104px;border-radius:24px;object-fit:cover;}   /* 24 ("radius service detail page visual 24") */
   .svHead h1{margin:0;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:#f4f4f4;}
   .svStart{margin-top:8px;font-size:16px;color:#8b8b86;}
   .svHead .svHeadTx{margin-right:28px;}   /* 48 from the title to the more button, with the head's 20 ("gap 48px between title and more cta") */
@@ -22879,6 +22879,7 @@
     const paint = (key, state, o) => {
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
       const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
+      if (key === 'dexa' || !SVC[key]) d.steps = SVC.dexa.steps;   // a DEXA page always lists the DEXA's own steps, whatever opened it
       const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
       // the status block says the step in hand, the one lit on the right ("body status block needs to reflect the current step on the right side"): its name and its line, and neutral when it isn't the member's to do; a time to re-choose (request) keeps its own message
       if (state !== 'request' && at >= 0 && at < n){ const cs = d.steps[at], pv = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/.test(cs[0]);
@@ -22997,7 +22998,8 @@
     const WHEN = ['cal', '1 Sep 2026, 10:30 - 11:10 am'], CLINIC = ['pin', 'Quantum Therapy Sydney', 'link'];
     const DR = ['dr', 'Recommended by Dr Sarah Chen'];   // the face on the avatar is hers
     const BOOK3 = [['Book appointment', ''], ['Booked', ''], ['Done', '']];
-    const CHECKIN = [{ svc: 'dexa', state: 'book', t: 'DEXA Scan', tag: 'Book appointment', d: 'Book your DEXA scan to measure body composition and bone density', steps: BOOK3, at: 0 },
+    const DEXA_ST = [['Book your appointment', 'Schedule with your referred provider'], ['Go to your appointment', 'Complete your DEXA scan'], ['Get your results', 'Track your result here']];   // the DEXA's own steps, the design's, wherever it shows ("make sure all steps on DEXA have this content")
+    const CHECKIN = [{ svc: 'dexa', state: 'book', t: 'DEXA Scan', tag: 'Book appointment', d: 'Book your DEXA scan to measure body composition and bone density', steps: DEXA_ST, at: 0 },
       { svc: 'diag', state: 'locked', tag: 'Book appointment', need: 'DEXA Scan' },
       { svc: 'checkin', state: 'locked', tag: 'Book appointment', need: 'Diagnostics Review' }];
     const SUG = [   // what the care team suggests next ("use Skin Check, Colonoscopy for suggested")
@@ -23016,7 +23018,7 @@
           { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1, svc: 'brief', state: 'book' },
           // each service of the Member Check-In group is its own object, placed by its own state -- DEXA here, the two waiting on it in Later -- and each shows the group's list of service cards, its own outlined ("locked because DEXA isn't done, so for Later"; "the same list of services inside the DEXA")
           { t: 'DEXA Scan', d: 'Book your DEXA scan to measure body composition and bone density', img: 'dexa', meta: [['sug', 'Member Check-In \u00b7 1 of 3'], ['clock', 'Due by 30 Sep 2026']], act: 'Book', cta: 1, more: 1,
-            svc: 'dexa', state: 'book', steps: BOOK3, group: CHECKIN, focus: 0 },
+            svc: 'dexa', state: 'book', steps: DEXA_ST, group: CHECKIN, focus: 0 },
           { t: 'Diagnostics Review', d: 'You need to complete your DEXA Scan before you can book this appointment.', img: 'consult', tag: 'Book appointment', lock: 1, meta: [['sug', 'Member Check-In \u00b7 2 of 3']],
             svc: 'diag', state: 'locked', need: 'DEXA Scan', group: CHECKIN, focus: 1 },
           { t: 'Member Check-In', d: 'You need to complete your Diagnostics Review before you can book this appointment.', img: 'brief', tag: 'Book appointment', lock: 1, meta: [['sug', 'Member Check-In \u00b7 3 of 3']],

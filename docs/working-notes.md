@@ -11963,3 +11963,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Pattern:** "Pattern needs to be more visible." The locked pattern's lines go to #fff 8% (ink 10% in light mode) and 0.8px, still every 4px.
 - **Dash:** "Dashed border 1.5px width." The related cards' dashed outline is 1.5px wide (4/4 dashes, #fff 12%).
 - **Steps:** "Content item padding top bottom 6px." Each step in "Your progress" (and in the merged card) has 6px above and below its words, from 8; they stay 4px apart.
+
+**5.569 — The DEXA's own steps everywhere; the service page's picture at radius 24.**
+
+- **DEXA steps:** "Make sure all steps on DEXA have this content on the service detail page." A DEXA page always lists the DEXA's own three steps, whatever state or entry opened it: "Book your appointment" / "Schedule with your referred provider", "Go to your appointment" / "Complete your DEXA scan", "Get your results" / "Track your result here". The Timeline's DEXA object (and its Member Check-In group) uses the same steps (`DEXA_ST`) in place of the older "Book appointment / Booked / Done". Checked in every state: book, request, booked, suggested, later, claim, done, and active at 3.
+- **Picture:** "Radius service detail page visual 24." The service page's header picture is at radius 24 (from 12), desk and XS.
