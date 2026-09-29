@@ -11881,3 +11881,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Body, status in the card:** the journey in the body, with no status block of its own. The page's own card ("This service") carries the status under its name: tag, heading, line and button, tinted orange when the step is the member's. A locked page's card has its status without a button, and the service it waits on keeps its View. At XS the status stacks and its button goes full width.
 - **Right column:** under "Your progress".
 - **Fix:** the right-column block no longer also draws in any mode other than Right column.
+
+**5.550 — The blocker is the service the chain waits on now, with a primary View; the status as a card inside the card.**
+
+- **Blocker:** "Wrong, the DEXA is the blocker here!!! Also use primary CTA for blocker service." On a locked page, the "View" sits on the group's service in hand, the one the whole chain waits on (DEXA), not on the locked one just before it (Diagnostics Review, for Member Check-In). It is a primary button now (white; ink in light mode). Checked: Diagnostics Review and Member Check-In both put the View on DEXA Scan, and it opens the DEXA page.
+- **Status in the card:** "Put status in a card inside a card." In "Body, status in the card", the status is a card of its own inside the service's card, under its name.
+  - It has 18/20 padding and radius 12, on its tone's ground: orange when the step is the member's, #fff 6% when it isn't.
+  - The service's card keeps its 8%.
