@@ -6483,7 +6483,7 @@
   @container (max-width:400px){ .svJrL > li{padding:12px;} }
   .svJrL{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
   .svJrL > li{display:flex;flex-wrap:wrap;align-items:center;column-gap:12px;padding:12px 14px;box-sizing:border-box;min-height:56px;   /* every card the height of the one with its View ("all service cards the same size, based on the one with a CTA") */border-radius:10px;background:rgba(255,255,255,.04);cursor:pointer;transition:background .16s ease;}
-  .svJrL > li:not(.main):hover{background:rgba(255,255,255,.06);} .svJrL > li.main{background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);cursor:default;}   /* the page's own: a border, no ground ("active card, just border, no bg") */
+  .svJrL > li:not(.main){background:none;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.1);} .svJrL > li:not(.main):hover{background:rgba(255,255,255,.03);}   /* the others, outlined ("non active / locked outlined 1.5px border") */ body.light .svJrL > li:not(.main){background:none;box-shadow:inset 0 0 0 1.5px rgba(46,31,26,.14);} .svJrL > li.main{background:rgba(255,255,255,.08);box-shadow:none;cursor:default;}   /* the page's own: filled grey ("active filled grey bg") */   /* the page's own: a border, no ground ("active card, just border, no bg") */
   .svJrMk{flex:none;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px;}
   .svJrL .on .svJrMk{background:#9cc088;color:#0f0f0f;} .svJrL .on .svJrMk svg{width:10px;height:10px;} .svJrL .cur .svJrMk{background:rgba(255,255,255,.08);} .svJrL .lock .svJrMk{border-radius:0;color:rgba(255,255,255,.16);} .svJrL .lock .svJrMk svg{width:18px;height:18px;flex:none;}
   .svJrTx{flex:1 1 0;min-width:0;} .svJrTx b{display:block;font-size:14px;font-weight:500;color:#f4f4f4;} .svJrL > li:not(.main) .svJrTx b{color:#8b8b86;} .svJrL > li.on .svJrTx b{text-decoration:line-through;}
@@ -6492,10 +6492,10 @@
   .svJrGo{flex:none;height:32px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:13px;font-weight:500;cursor:pointer;} .svJrGo:hover{background:rgba(255,255,255,.12);} body.light .svJrGo{background:rgba(46,31,26,.07);color:#2e241c;}
   .svJr.body .svJrL > li.main .svJrTx span{font-size:14px;}
   .svJrB.me{background:rgba(255,255,255,.1);color:#ececec;} body.light .svJrB.me{background:rgba(46,31,26,.1);color:#2e241c;}
-  .svJrB{flex:none;display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;background:rgba(255,255,255,.055);font-size:11.5px;color:#8b8b86;white-space:nowrap;}
+  .svJrB{flex:none;display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:8px;background:rgba(255,255,255,.055);font-size:12.5px;color:#8b8b86;white-space:nowrap;}   /* 28 high ("label 28px height") */
   .svJrL > li.main.solo > .svPend{margin:0 0 0 32px;} .svJrL > li.main.solo .svPend h3{margin:0;}
   .svJrL > li.main > .svPend{flex:1 1 100%;margin:12px 0 2px 32px;padding:18px 20px;border-radius:12px;}   /* the status as a card of its own inside the service's card ("put status in a card inside a card") */ .svJrL > li.main > .svPend.info{background:rgba(255,255,255,.04);}   /* grey at #fff 4%; the orange as ever */ .svJrL > li.main > .svPend h3{font-size:19px;}
-  body.light .svJrL > li{background:rgba(46,31,26,.04);} body.light .svJrL > li.main{background:none;box-shadow:inset 0 0 0 1px rgba(46,31,26,.18);} body.light .svJrTx b{color:#2e1f1a;} body.light .svJrL .cur .svJrMk{background:rgba(46,31,26,.08);} body.light .svJrL .lock .svJrMk{color:rgba(46,31,26,.2);}
+  body.light .svJrL > li{background:rgba(46,31,26,.04);} body.light .svJrL > li.main{background:rgba(46,31,26,.08);box-shadow:none;} body.light .svJrTx b{color:#2e1f1a;} body.light .svJrL .cur .svJrMk{background:rgba(46,31,26,.08);} body.light .svJrL .lock .svJrMk{color:rgba(46,31,26,.2);}
   .svPendTag{display:flex;align-items:center;gap:8px;font-size:15px;color:#f78359;}
   .svPendTag i{width:7px;height:7px;border-radius:50%;background:#f78359;}
   /* the card's tone follows the service's state: orange when something is
@@ -22879,18 +22879,19 @@
       const about = '<div class="svAbout"><h3>About the service</h3><p>' + escS(d.about) + '</p><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
       const PASV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;   // a step that isn't the member's: its bar grey, as on the Timeline
       const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
+      const toBook = state === 'book' || (at >= 0 && at < n && /^book/i.test(d.steps[at][0]));   // still to book: no appointment to describe ("if state is book appt, doesn't make sense to show Your appointment")
       const title = o && o.t || d.t, start = o && o.st || x.st;
       if (desk){
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
         if (m) m.innerHTML = '<div class="svHead"><img src="' + img + '" alt="" width="312" height="312"><div class="svHeadTx"><h1>' + escS(title) + '</h1><div class="svStart">' + escS(start) + '</div></div><button class="svMore" type="button" aria-label="More">' + IC.more + '</button></div>' +
-          (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(false, state === 'locked') + jr(true) : pend(false)) + sec + ref(false) + instr;   // the status block out of the journey, above it ("externalise the status block above the section")
+          (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(false, state === 'locked') + jr(true) : pend(false)) + (toBook ? '' : sec) + ref(false) + instr;   // the status block out of the journey, above it ("externalise the status block above the section")
         if (a) a.innerHTML = '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>' + (J && JR === 'right' ? jr(false) : '') + about;
       }
       if (mob){
         const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
         mob.style.setProperty('--svmImg', 'url(' + img + ')');
         if (h) h.innerHTML = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div><div class="svmProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div><div class="svmBar">' + d.steps.map((st, i) => '<i' + (at >= 0 && i <= at ? ' class="on"' : '') + '></i>').join('') + '</div><div class="svmStepName">' + escS(at < 0 ? 'Not started' : at >= n ? 'All done' : d.steps[at][0]) + '</div></div>';
-        if (b) b.innerHTML = (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(true, state === 'locked') + jr(true) : pend(true) + (J ? jr(false) : '')) + sec + ref(true) + instr + '<hr class="svRule">' + about;
+        if (b) b.innerHTML = (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(true, state === 'locked') + jr(true) : pend(true) + (J ? jr(false) : '')) + (toBook ? '' : sec) + ref(true) + instr + '<hr class="svRule">' + about;
       }
       cur = { key, state, o, J };
     };
