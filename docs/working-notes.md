@@ -12002,3 +12002,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - Locked pattern stripes: #fff .12 → .24 (light: .14 → .26).
 - Blur bug: the top bars' ten blur bands (.ovGround) ran 28–38px past the bar's bottom edge, blurring content still in view (the Timeline's sticky month, the service page's status block). On .tlBar, .svTop and .svmNav they now end at the bar's edge; the tint alone fades on.
 - Timeline group cards: badge (.tlRelB) 28px high like the View button (padding 0 10, radius 8, 12.5px); card padding 14/16 → 10/12; name row min-height 28 and the left indicator margin 6px 2px, so it is centred on the title.
+
+5.577 Service detail is the first page; journey heading on the title line; pattern stronger
+- No hash now opens Service detail · Desktop (DEXA to book, Journey module Right column merged). #home still opens the gallery; any page hash opens that page.
+- The service page is remembered through a reload (sessionStorage 'everlab:svc' = [key, state]), as the Timeline is; closing it forgets it.
+- Right column merged: "Your journey" heading 36 high, centred, so it sits on the line of the page title's first line and its … button (centres 169/171/171); list 12 below it.
+- Locked pattern stripes 1px (from .8) at #fff 24%.
+- Diagnostics Review with DEXA done (September) checked: DEXA done, Diagnostics Review "This service" with its steps, Member Check-In locked, no orange blocker.

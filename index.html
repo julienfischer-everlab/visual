@@ -6490,9 +6490,9 @@
   .svJrTx span{display:block;margin-top:2px;font-size:13px;color:#8b8b86;}
   /* the disabled pattern: fine diagonal lines, barely there, behind a locked card's content */
   .svJrL > li, :is(#dTl, .tlShPanel) .tlGrp > li{isolation:isolate;}
-  body.svLockPat .svJrL > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(-45deg, rgba(255,255,255,.24) 0 .8px, transparent .8px 4px);}
+  body.svLockPat .svJrL > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(-45deg, rgba(255,255,255,.24) 0 1px, transparent 1px 4px);}
   .svJrL > li{position:relative;}
-  body.light.svLockPat .svJrL > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{background:repeating-linear-gradient(-45deg, rgba(46,31,26,.26) 0 .8px, transparent .8px 4px);}
+  body.light.svLockPat .svJrL > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{background:repeating-linear-gradient(-45deg, rgba(46,31,26,.26) 0 1px, transparent 1px 4px);}
   /* the blocker, orange with its View, on the service page and the Timeline alike ("blocker service always orange theme + CTA View") */
   .svJrL > li.blk, .svJrL > li.blk:hover{background:rgba(247,131,89,.12) !important;} .svJrL > li.blk .svJrTx b{color:#f4f4f4 !important;}
   :is(#dTl, .tlShPanel) .tlGrp > li.blk, :is(#dTl, .tlShPanel) .tlGrp > li.blk:hover{background:rgba(247,131,89,.12);} :is(#dTl, .tlShPanel) .tlGrp > li.blk .tlGh b{color:var(--tlTx);}
@@ -6589,6 +6589,7 @@
   .svmStart{margin-top:8px;font-size:15px;color:rgba(255,255,255,.6);}
   .svmProg{margin-top:20px;padding:20px 22px;border-radius:16px;background:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
   .svmProg .svProgHead{margin-bottom:0;}
+  .svAside > .svJr:first-child > .svProgHead{min-height:36px;margin-bottom:12px;}   /* "Your journey" on the line of the page's title and its … button (36 high, centred) ("align Your journey with the title and the CTA") */
   .svmBar{display:flex;gap:4px;margin:14px 0 10px;}
   .svmBar i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.18);}
   .svmBar i.on{background:#f78359;}
@@ -22937,11 +22938,11 @@
     let backTo = null;   // where the back chevron returns: the Overview, or the Timeline the page was opened from
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
-    const openDesk = (key, state, o) => { backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
+    const openDesk = (key, state, o) => { backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key || 'dexa', state || (key ? 'request' : 'book')])); } catch (e){} };   /* remembered through a reload, as the Timeline */
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });   // the bar's ground, once the page moves under it
     const openMob = (key, state, o) => { if (!ph) return; paint(key || 'dexa', state || (key ? 'request' : 'book'), o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });   // past 6, as the Overview's bar
-    const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
+    const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was) try { sessionStorage.removeItem('everlab:svc'); } catch (e){} if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
     const heroKey = () => document.body.classList.contains('heroDexa') ? 'dexa' : 'consult';   // the booking card's Book: whichever service its hero shows
     if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openDesk(heroKey(), 'book'); else openDesk(keyOf(b), b.dataset.st || (/book/i.test(b.textContent) ? 'book' : 'booked')); });   /* the whole plan card, not only its button */
     if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openMob(heroKey(), 'book'); else openMob(keyOf(b), /book/i.test(b.textContent) ? 'book' : 'booked'); });
@@ -23314,6 +23315,8 @@
     document.addEventListener('everlab:mode', close);
     addEventListener('resize', navState);
     window._tl = { open, close };
+    { let sv = null; try { sv = JSON.parse(sessionStorage.getItem('everlab:svc') || 'null'); } catch (e){}
+      if (sv && location.hash) setTimeout(() => { if (document.body.classList.contains('m9') && !document.body.classList.contains('homeOn') && window._svc) window._svc.openDesk(sv[0], sv[1]); }, 0); }   // a reload on the service page comes back to it
     // a reload while the Timeline was showing comes back to it (the Overview's hash, #m9, is the page under it)
     { let back = false; try { back = sessionStorage.getItem('everlab:tl') === '1'; } catch (e){}
       if (back) setTimeout(() => { if (document.body.classList.contains('m9') && !document.body.classList.contains('homeOn')) open(); }, 0); }
@@ -25702,8 +25705,9 @@
     });
     window._home = { show, hide };
     // the first page: no hash, or #home, opens here; any page hash opens that page
-    const want = () => !location.hash || location.hash === '#home';
+    const want = () => location.hash === '#home';
     if (want()) show();
+    else if (!location.hash && versionSel && window._svc){ versionSel.value = 'svcD'; versionSel.dispatchEvent(new Event('change')); }   // no hash: the Service detail page, desktop, is the first page ("the detail page should be the default one"); #home still opens the gallery
     addEventListener('hashchange', () => { if (want()) show(); else hide(); });
   })();
 
