@@ -6882,7 +6882,7 @@
      accordion stays for M and L */
   body.tlSheetMode #dTl .tlDet{display:none;}
   body.tlSheetMode #dTl .tlRow.open .tlTgl svg:last-child{transform:none;}
-  .tlSheet{position:absolute;inset:0;z-index:30;pointer-events:none;}
+  .tlSheet{position:absolute;inset:0;z-index:30;pointer-events:none;} body:not(.tlOn) .tlSheet{display:none;}   /* the Timeline's own: never over another page ("why is this bottom sheet here?") */
   .tlSheet.on{pointer-events:auto;}
   .tlShDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .25s ease;}
   .tlSheet.on .tlShDim{opacity:1;}
@@ -23363,8 +23363,9 @@
       requestAnimationFrame(() => { resize(); navState(); if (thumb) delete thumb.dataset.set; placeThumb(); setHTop(); });   // a new width (a breakpoint, the rail) places it afresh
     };
     const close = quiet => {
+      closeSheet();   // first: a change of page can take tlOn off the body before this runs, and the sheet stayed up over the next page
       if (!document.body.classList.contains('tlOn')) return;
-      document.body.classList.remove('tlOn'); closeSheet(); if (!quiet) lightDock(0);
+      document.body.classList.remove('tlOn'); if (!quiet) lightDock(0);
       try { sessionStorage.removeItem('everlab:tl'); } catch (e){}
       if (sel && sel.value === 'tl') sel.value = '9';
       requestAnimationFrame(() => resize());
