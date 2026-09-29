@@ -11850,3 +11850,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Page's own card:** in the body version, when the page's own service isn't waiting on another (DEXA to book, DEXA waiting on its results), its card drops its mark, its name, the status tag and the line. What stays is the step's action ("Book your appointment.", "Get your results.") and its button, aligned with the other cards' names. It is tinted orange when the step is the member's.
 - **Locked page:** a locked page keeps its name and "Complete your … first" (5.542).
 - **XS:** the button goes full width under the action.
+
+**5.545 — "Your journey" without the group's name beside it.** "Remove right content": the journey heading is just "Your journey"; the group's name ("Member Check-In") on its right is gone.
