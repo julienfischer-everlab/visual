@@ -11852,3 +11852,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **XS:** the button goes full width under the action.
 
 **5.545 — "Your journey" without the group's name beside it.** "Remove right content": the journey heading is just "Your journey"; the group's name ("Member Check-In") on its right is gone.
+
+**5.546 — "Journey module" as a menu, Body content by default.** The service detail tweak is now "Journey module", a dropdown with two choices: "Body content" (the default) and "Right column". The bar's switch-making skips it (`stJr`), since the two are places, not on and off. A group service's page now opens with the journey in the body, in place of the status block.
