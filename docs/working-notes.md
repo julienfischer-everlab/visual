@@ -11946,3 +11946,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Timeline group lists:** the object's own card carries "This service". This includes the in-hand card when its name shows.
 - **Blocker:** on a locked object, the service the chain waits on (DEXA) is orange (the status orange, #F78359 at 12%) with a white "View" (28px). Tapping it opens DEXA's page.
 - **Service page journey:** its blocker card is orange the same way (no dashed outline), with its primary View.
+
+**5.566 — Locked pattern on by default, finer and denser.** "Locked pattern by default ON (ON: pattern displayed, OFF: not displayed). Pattern: reduce gap, thinner a bit."
+
+- **Default:** the "Locked pattern" switch starts on, so locked service cards show the pattern from the first load. Switching it off removes the pattern and keeps it off across pages.
+- **Switch order:** its two choices are On/Off, since the bar's switch reads its first choice as on.
+- **Pattern:** 0.7px lines every 4px (from 1px every 7px), at #fff 4% (ink 6% in light mode).
