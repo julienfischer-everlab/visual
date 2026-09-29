@@ -11970,3 +11970,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Picture:** "Radius service detail page visual 24." The service page's header picture is at radius 24 (from 12), desk and XS.
 
 **5.570 — A locked page's status button is "View", to the service to do now.** "CTA should be 'View'." On a locked page in a journey, the status block's button is an active "View" (no longer a greyed "Book appointment"). It opens the page of the service the chain waits on (DEXA), the journey kept. This applies in the body, right-column and merged layouts. In "status in the card", the card still carries no button; the blocker's card has the View.
+
+**5.571 — Steps at 4px padding; the merged journey on the body's top line.**
+
+- **Steps:** "Padding top bottom 4px." Each step in "Your progress" has 4px above and below (from 6).
+- **Merged journey:** "Merge tweak: push up the right col so the title 'Your journey' is vertically aligned with the content on the body." In "Right column merged", the journey is the column's first block and starts on the body's top line. It drops its 32px top margin, so its heading and the page's picture and title all start at the same height (153px, measured).
