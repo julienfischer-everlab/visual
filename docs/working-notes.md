@@ -12032,3 +12032,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - Timeline: the search moved from the tab bar to the title's line, right (.tlHead). At XS only its 44px round icon; a tap opens the field over the title's line, and it closes on blur when empty.
 
 5.587 Bug: the Timeline's step sheet (XS/S, or a window under 992) stayed up over the service page. A change of page through the Version menu rewrote the body's classes, so tlOn was gone before the Timeline's close() ran, and close() returned before closing the sheet. close() now closes the sheet first, and the sheet is hidden whenever the Timeline isn't on.
+
+5.588 The journey module's heading reads "Your progress" (was "Your journey"), in every mode.
