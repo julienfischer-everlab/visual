@@ -11910,3 +11910,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 **5.555 — Journey cards at radius 14.** "+4 radius cards": the service cards in "Your journey" go from radius 10 to 14.
 
 **5.556 — "Your journey" set as the page's section headings.** "Adjust Your journey size based on the Instructions size." In the body, "Your journey" is the page's section heading, the same as "Instructions" (`.svH2`, 22px, 40px above, 16px below). The right-column version keeps the side panel's smaller heading, as "Your progress".
+
+**5.557 — Dashed outlines for the related services.** "Dashed": the journey cards other than the page's own are outlined with a 1.5px dashed border (#fff 16%; ink 20% in light mode). The page's own card keeps a clear border of the same width, so names and badges line up. Vertical padding goes to 10, so every card stays 56px with its border and the View's 32.
