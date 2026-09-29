@@ -11806,3 +11806,15 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Steps as on the Timeline:** "The detail page should reflect the same steps as the timeline page." Every Upcoming object's page lists the same steps with the same one in hand, checked row by row, e.g. the waiting Dexa at 3/3 "Get your results".
   - A passive step in hand is now grey there too, not orange.
   - The locked ones differ only where the Timeline shows no steps (Later) or its "Available when you turn 50" line.
+
+**5.539 — A "Your journey" block on a group service's page, under the progress or in the body.** "We need to add a block below Your progress, or in the body instead of the status block (tweak 'Detail journey block: Right col or Body'). It should list all services related in the journey; the active block should be the context of the page, e.g. here Diag Review."
+
+- **The block:** a group service's page (Member Check-In's DEXA Scan, Diagnostics Review and Member Check-In, the Microbiome group) now carries "Your journey" with the group's name. It lists every service of the group as cards, with a tick (done), a filled disc (in hand) or a lock.
+  - The page's own card is at 8%, its name in full.
+  - The others are at 4% with "Related service" and open their own page when tapped, the journey kept.
+- **Placement, from Tweaks → Timeline → Journey block:**
+  - Right column (the default): under "Your progress". The page's card carries its status line ("Complete your DEXA Scan first."), and the status block stays in the body.
+  - Body: the block takes the status block's place. The page's own card holds the status: tag, heading, line and button. It is tinted orange when the step is the member's, as the block was.
+  - At XS the body version stacks its status and gives the button full width; the right-column version sits under the progress.
+- **Wiring:** the Timeline passes the journey (`journey: {name, items, i}`) with every group service it opens, from a row, its button or a card in its list. A single service has no journey and keeps its page as it was.
+- **Tweaks:** the Timeline's tweaks now also show on the service page, and the Overview's no longer do there.

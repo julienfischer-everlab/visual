@@ -6470,6 +6470,20 @@
   .svGrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:44px;align-items:start;}
   .svPend{display:flex;align-items:center;gap:24px;padding:24px;border-radius:16px;background:rgba(247,131,89,.12);}
   .svPendTx{flex:1 1 auto;min-width:0;}
+  /* the journey block: the group's services as cards, the page's own at 8% with its status, the rest at 4% with "Related service" */
+  .svJr{container-type:inline-size;margin-top:24px;padding:24px;border-radius:20px;background:rgba(255,255,255,.04);} .svJr.body{margin:0;padding:20px;}
+  @container (max-width:520px){ .svJrL > li.main > .svPend{flex-direction:column;align-items:stretch;gap:14px;margin-left:0;} .svJrL > li.main > .svPend .svBtn{width:100%;} .svJr .svPend h3{font-size:19px;} }   /* narrow: the status stacks, its button full width */
+  @container (max-width:400px){ .svJr.body{padding:16px;} .svJrL > li{padding:12px;} }
+  .svJrL{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .svJrL > li{display:flex;flex-wrap:wrap;align-items:center;column-gap:12px;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.04);cursor:pointer;transition:background .16s ease;}
+  .svJrL > li:not(.main):hover{background:rgba(255,255,255,.06);} .svJrL > li.main{background:rgba(255,255,255,.08);cursor:default;}
+  .svJrMk{flex:none;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:2px;}
+  .svJrL .on .svJrMk{background:#9cc088;color:#0f0f0f;} .svJrL .on .svJrMk svg{width:10px;height:10px;} .svJrL .cur .svJrMk{background:rgba(255,255,255,.08);} .svJrL .lock .svJrMk{border-radius:0;color:rgba(255,255,255,.16);} .svJrL .lock .svJrMk svg{width:18px;height:18px;flex:none;}
+  .svJrTx{flex:1 1 0;min-width:0;} .svJrTx b{display:block;font-size:14px;font-weight:500;color:#f4f4f4;} .svJrL > li:not(.main) .svJrTx b{color:#8b8b86;} .svJrL > li.on .svJrTx b{text-decoration:line-through;}
+  .svJrTx span{display:block;margin-top:2px;font-size:13px;color:#8b8b86;}
+  .svJrB{flex:none;display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;background:rgba(255,255,255,.055);font-size:11.5px;color:#8b8b86;white-space:nowrap;}
+  .svJrL > li.main > .svPend{flex:1 1 100%;margin:4px 0 4px 32px;padding:0;background:none !important;}   /* in the body: the status inside the page's own card, under its name */ .svJrL > li.main:has(> .svPend:not(.info):not(.ok)){background:rgba(247,131,89,.12);} .svJrL > li.main:has(> .svPend.ok){background:rgba(136,171,116,.13);}
+  body.light .svJr, body.light .svJrL > li{background:rgba(46,31,26,.04);} body.light .svJrL > li.main{background:rgba(46,31,26,.08);} body.light .svJrTx b{color:#2e1f1a;} body.light .svJrL .cur .svJrMk{background:rgba(46,31,26,.08);} body.light .svJrL .lock .svJrMk{color:rgba(46,31,26,.2);}
   .svPendTag{display:flex;align-items:center;gap:8px;font-size:15px;color:#f78359;}
   .svPendTag i{width:7px;height:7px;border-radius:50%;background:#f78359;}
   /* the card's tone follows the service's state: orange when something is
@@ -6585,7 +6599,7 @@
   body.m9.tlOn .dash .side .nvOver{background:none;color:inherit;}
   body.m9.tlOn .dash .side .nvTl{background:#1e1e1c;color:#ececec;}   /* the page lights Timeline */
   body.light.m9.tlOn .dash .side .nvTl{background:#ece4d3;color:#2e241c;} body.light.m9.tlOn .dash .side .nvOver{background:none;}
-  #tkMenu [data-tl]{display:none !important;} body.tlOn #tkMenu [data-tl]{display:flex !important;} body.tlOn #tkMenu [data-pages]{display:none !important;}   /* on the Timeline, only its own tweaks */
+  #tkMenu [data-tl]{display:none !important;} body.tlOn #tkMenu [data-tl], body.svcOn #tkMenu [data-tl]{display:flex !important;} body.tlOn #tkMenu [data-pages], body.svcOn #tkMenu [data-pages]{display:none !important;}   /* on the Timeline, only its own tweaks */
   .tlCol{max-width:760px;margin:0 auto;}
   .tlH1{margin:0 0 14px;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:var(--tlInk);}
   /* the tabs and the search ride a bar like every top bar: sticky at the
@@ -9237,6 +9251,14 @@
             <option value="month" selected>Current month</option>
             <option value="all">All primary</option>
             <option value="none">None</option>
+          </select>
+        </div>
+        <!-- where a group's service page lists its journey ("tweak: detail journey block, right col or body") -->
+        <div class="tkRow">
+          <span class="lbl">Journey block</span>
+          <select id="stJr" aria-label="Where the service page lists its journey">
+            <option value="right" selected>Right column</option>
+            <option value="body">Body</option>
           </select>
         </div>
         </div>
@@ -22800,7 +22822,7 @@
       done: d => ({ tone: 'ok', tag: 'Completed', h: 'Your results are ready.', p: 'Your doctor has reviewed them. Read the report, or ask a question about it.', btn: 'View report', sec: 'Your appointment', at: 99, st: d.when || 'Completed' })
     };
     const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-    let cur = { key: 'dexa', state: 'request' };
+    let cur = { key: 'dexa', state: 'request' }, JR = 'right';   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
     const paint = (key, state, o) => {
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
       const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
@@ -22808,6 +22830,13 @@
       // the status block says the step in hand, the one lit on the right ("body status block needs to reflect the current step on the right side"): its name and its line, and neutral when it isn't the member's to do; a time to re-choose (request) keeps its own message
       if (state !== 'request' && at >= 0 && at < n){ const cs = d.steps[at], pv = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/.test(cs[0]);
         x.tag = (pv ? 'In progress' : 'Your next step') + ' \u00b7 Step ' + (at + 1) + ' of ' + n; x.h = cs[0] + '.'; x.p = escS(cs[1] || ''); x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
+      // the journey: every service of the group, the page's own marked and carrying its status (in the body, the status block itself)
+      const J = o && o.journey, jA = J ? J.items.findIndex(y => y.state !== 'done') : -1;
+      const jr = inBody => !J ? '' : '<div class="svJr' + (inBody ? ' body' : '') + '"><div class="svProgHead">Your journey <em>' + escS(J.name) + '</em></div><ol class="svJrL">' + J.items.map((y, i) => {
+        const k = y.state === 'done' ? 'on' : i === jA ? 'cur' : 'lock', me = i === J.i, nm = y.t || (SVC[y.svc] || {}).t || '';
+        const mk = k === 'on' ? '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>' : k === 'lock' ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' : '';
+        return '<li class="' + k + (me ? ' main' : '') + '" data-j="' + i + '"><i class="svJrMk">' + mk + '</i><div class="svJrTx"><b>' + escS(nm) + '</b>' + (me && !inBody ? '<span>' + escS(x.h) + '</span>' : '') + '</div>' + (me ? '' : '<span class="svJrB">Related service</span>') +
+          (me && inBody ? pend(false) : '') + '</li>'; }).join('') + '</ol></div>';
       const pend = mobile => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div><button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + '>' + escS(x.btn) + '</button></div>';
       const rows = (state === 'booked' || state === 'done' ? '<div class="svRow"><span class="k">' + IC.cal + 'Date</span><span class="v">' + escS(o && o.when || x.st) + '</span></div>' : '') +
         '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' +
@@ -22823,16 +22852,16 @@
       if (desk){
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
         if (m) m.innerHTML = '<div class="svHead"><img src="' + img + '" alt="" width="312" height="312"><div class="svHeadTx"><h1>' + escS(title) + '</h1><div class="svStart">' + escS(start) + '</div></div><button class="svMore" type="button" aria-label="More">' + IC.more + '</button></div>' +
-          pend(false) + sec + ref(false) + instr;
-        if (a) a.innerHTML = '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>' + about;
+          (J && JR === 'body' ? jr(true) : pend(false)) + sec + ref(false) + instr;
+        if (a) a.innerHTML = '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>' + (J && JR !== 'body' ? jr(false) : '') + about;
       }
       if (mob){
         const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
         mob.style.setProperty('--svmImg', 'url(' + img + ')');
         if (h) h.innerHTML = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div><div class="svmProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div><div class="svmBar">' + d.steps.map((st, i) => '<i' + (at >= 0 && i <= at ? ' class="on"' : '') + '></i>').join('') + '</div><div class="svmStepName">' + escS(at < 0 ? 'Not started' : at >= n ? 'All done' : d.steps[at][0]) + '</div></div>';
-        if (b) b.innerHTML = pend(true) + sec + ref(true) + instr + '<hr class="svRule">' + about;
+        if (b) b.innerHTML = (J && JR === 'body' ? jr(true) : pend(true) + (J ? jr(false) : '')) + sec + ref(true) + instr + '<hr class="svRule">' + about;
       }
-      cur = { key, state };
+      cur = { key, state, o };
     };
     // which service a card of the Overview is, by its title
     const keyOf = el => { const t = (el.textContent || '').toLowerCase();
@@ -22852,6 +22881,11 @@
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     document.addEventListener('everlab:mode', close);
     const plan = (key, state) => { const d = SVC[key] || SVC.dexa, x = (STATE[state] || STATE.request)(d); return { t: d.t, short: d.short, steps: d.steps, at: Math.min(x.at, d.steps.length) }; };
+    // a related service's card opens its page, the journey kept; the tweak moves the block and repaints the page showing
+    document.addEventListener('click', e => { const li = e.target.closest('.svJrL > li[data-j]'); if (!li || li.classList.contains('main') || e.target.closest('.svBtn')) return; const J = cur.o && cur.o.journey; if (!J) return;
+      const y = J.items[+li.dataset.j], op = { from: backTo, t: y.t, tag: y.tag, d: y.d, at: y.at, need: y.need, steps: y.steps, journey: Object.assign({}, J, { i: +li.dataset.j }) };
+      if (li.closest('#svcMob, .svcMob')) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); });
+    { const t = document.getElementById('stJr'); if (t) t.addEventListener('change', () => { JR = t.value; paint(cur.key, cur.state, cur.o); }); }
     window._svc = { openDesk, openMob, close, plan };
   })();
 
@@ -22961,6 +22995,9 @@
     const groupOf = r => { const g = r.group.map(x => { const p = PL(x.svc, x.state) || { t: '', steps: [], at: -1 }; return Object.assign({}, x, { p: { t: p.t, steps: x.steps || p.steps, at: x.at != null ? x.at : p.at } }); }); const a = g.findIndex(x => x.state !== 'done'); return { g, a }; };
     // the row's own service and state: a group's is its active service's
     const own = r => { if (!r.group) return r; const { g, a } = groupOf(r); if (r.focus != null) return g[r.focus]; const x = g[a < 0 ? g.length - 1 : a]; return x; };
+    // the journey a group's service belongs to, for its page: the group's name, its services, and which one the page is ("list all services related in the journey")
+    const jOf = (d, i) => ({ name: ((d.meta.find(m => m[0] === 'sug' && /\u00b7/.test(m[1])) || [0, d.t])[1]).split(' \u00b7 ')[0], items: d.group, i });
+    const ownI = d => d.focus != null ? d.focus : (a => a < 0 ? d.group.length - 1 : a)(groupOf(d).a);
     const svcOpts = x => ({ from: 'tl', t: x.t, tag: x.tag, d: x.d, at: x.at, need: x.need, steps: x.steps });   // what a group's service tells its page
     const LOCKF = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>';   // a locked service's mark, filled ("replace circle by a filled lock icon, same grey")
     const LOCK = '<svg class="tlLk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>';
@@ -23124,8 +23161,8 @@
       const rl = e.target.closest('.tlRel li.rel');
       if (rl && d.then){ const x = d.then[+rl.dataset.rel]; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(x.svc, 'locked', { from: 'tl', t: x.t, need: x.need }); return; }
       const gi = e.target.closest('.tlGrp > li');
-      if (gi && d.group){ const x = d.group[+gi.dataset.g]; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, svcOpts(x)); return; }
-      if (e.target.closest('.tlBtn')){ const w = own(d); if (!w.svc) return; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.state, d.group ? svcOpts(w) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line }); }
+      if (gi && d.group){ const x = d.group[+gi.dataset.g]; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, Object.assign(svcOpts(x), { journey: jOf(d, +gi.dataset.g) })); return; }
+      if (e.target.closest('.tlBtn')){ const w = own(d); if (!w.svc) return; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.state, d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line }); }
     });
     document.addEventListener('everlab:mode', closeSheet);
     addEventListener('resize', syncMode);
@@ -23145,13 +23182,13 @@
       if (tg){ const o = r.classList.toggle('open'); tg.setAttribute('aria-expanded', String(o)); return; }
       const d = ROWS[+r.dataset.r]; if (!d) return;
             const gi = e.target.closest('.tlGrp > li');
-      if (gi && d.group){ const x = d.group[+gi.dataset.g]; lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, svcOpts(x)); return; }
+      if (gi && d.group){ const x = d.group[+gi.dataset.g]; lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, Object.assign(svcOpts(x), { journey: jOf(d, +gi.dataset.g) })); return; }
       const rl = e.target.closest('.tlRel li.rel');
       if (rl && d.then){ const x = d.then[+rl.dataset.rel]; lastTop = main.scrollTop; window._svc.openDesk(x.svc, 'locked', { from: 'tl', t: x.t, need: x.need }); return; }
       if (e.target.closest('.tlDetBox')) return;   // reading the steps is not a click through
       const w = own(d); if (!w.svc) return;
       lastTop = main.scrollTop;
-      window._svc.openDesk(w.svc, w.state, d.group ? svcOpts(w) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line });
+      window._svc.openDesk(w.svc, w.state, d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line });
     });
     list.addEventListener('click', e => {
       const b = e.target.closest('.tlSugNav button'); if (!b) return;
