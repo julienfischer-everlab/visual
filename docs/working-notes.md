@@ -11922,3 +11922,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Unchanged:** "Related service" stays only on a service that is open but not the page's own (the gut assessment, seen from the Microbiome Report's page). The blocker keeps its View, and the page's own keeps "This service".
 
 **5.560 — Finer dashes at #fff 6%.** "Reduce increment and dash width; opacity #fff 6%." The related cards' dashed outline is now 6px dashes with 6px gaps, 1.5px wide, at #fff 6% (ink 12% in light mode).
+
+**5.561 — Tighter dashes at #fff 12%.** "12% border dashed; reduce more width and gap." The related cards' outline is now 4px dashes with 4px gaps, 1px wide, at #fff 12% (ink 20% in light mode).
