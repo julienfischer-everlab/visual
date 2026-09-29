@@ -6478,7 +6478,7 @@
   .svPend{display:flex;align-items:center;gap:24px;padding:24px;border-radius:16px;background:rgba(247,131,89,.12);}
   .svPendTx{flex:1 1 auto;min-width:0;}
   /* the journey block: the group's services as cards, the page's own at 8% with its status, the rest at 4% with "Related service" */
-  .svJr{container-type:inline-size;margin-top:32px;padding:0;background:none;} .svJr.body{margin:0;}   /* no card round the block, only the services' cards ("no need a card style, just keep cards for the stacked service items") */
+  .svJr{container-type:inline-size;margin-top:32px;padding:0;background:none;} .svJr.body{margin:40px 0 0;}   /* under the status block, clear of it */   /* no card round the block, only the services' cards ("no need a card style, just keep cards for the stacked service items") */
   @container (max-width:520px){ .svJrL > li.main > .svPend{flex-direction:column;align-items:stretch;gap:14px;margin-left:0;} .svJrL > li.main > .svPend .svBtn{width:100%;} .svJr .svPend h3{font-size:19px;} }   /* narrow: the status stacks, its button full width */
   @container (max-width:400px){ .svJrL > li{padding:12px;} }
   .svJrL{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
@@ -6490,6 +6490,7 @@
   .svJrTx span{display:block;margin-top:2px;font-size:13px;color:#8b8b86;}
   .svJrGo{flex:none;height:32px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:13px;font-weight:500;cursor:pointer;} .svJrGo:hover{background:rgba(255,255,255,.12);} body.light .svJrGo{background:rgba(46,31,26,.07);color:#2e241c;}
   .svJr.body .svJrL > li.main .svJrTx span{font-size:14px;}
+  .svJrB.me{background:rgba(255,255,255,.1);color:#ececec;} body.light .svJrB.me{background:rgba(46,31,26,.1);color:#2e241c;}
   .svJrB{flex:none;display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;background:rgba(255,255,255,.055);font-size:11.5px;color:#8b8b86;white-space:nowrap;}
   .svJrL > li.main.solo > .svPend{margin:0 0 0 32px;} .svJrL > li.main.solo .svPend h3{margin:0;}
   .svJrL > li.main > .svPend{flex:1 1 100%;margin:4px 0 4px 32px;padding:0;background:none !important;}   /* in the body: the status inside the page's own card, under its name */ .svJrL > li.main:has(> .svPend:not(.info):not(.ok)){background:rgba(247,131,89,.12);} .svJrL > li.main:has(> .svPend.ok){background:rgba(136,171,116,.13);}
@@ -22766,7 +22767,8 @@
     const CLINIC = 'Quantum Therapy Sydney<br>Level 2, 50 Holt Street,<br>Surry Hills, NSW 2010';
     const SCAN = s => [['Book your appointment', 'Choose a time at a partner clinic'], ['Go to your appointment', 'Complete your ' + s], ['Get your results', 'Your doctor reviews them with you']];
     const SVC = {
-      dexa: { t: 'Dexa Body Composition and Bone Mineral Density', short: 'DEXA scan', img: 'dexa', dur: '30min', loc: CLINIC, clin: 'Radiology Victoria Burwood East Imaging Consultant', ref: true, steps: SCAN('DEXA scan'),
+      dexa: { t: 'Dexa Body Composition and Bone Mineral Density', short: 'DEXA scan', img: 'dexa', dur: '30min', loc: CLINIC, clin: 'Radiology Victoria Burwood East Imaging Consultant', ref: true, started: 'Started on 20 February 2026',
+        steps: [['Book your appointment', 'Schedule with your referred provider'], ['Go to your appointment', 'Complete your DEXA scan'], ['Get your results', 'Track your result here']],   // the design's copy ("adjust content for DEXA based on this design")
         instr: ['Wear comfortable clothes with no metal: zips, underwire and buttons show on the scan.', 'Skip calcium supplements for 24 hours before; eat and drink as you normally would.', 'If you might be pregnant, or had a contrast scan in the last week, tell the clinic before you go.'],
         about: 'A DEXA scan uses two low-dose X-ray beams to measure your bone mineral density, lean muscle and body fat, including where the fat sits. You lie still on an open table for about ten minutes, with less radiation than a day of normal background exposure.' },
       consult: { t: 'Onboarding consult', short: 'consult', img: 'consult', dur: '40min', loc: CLINIC, clin: 'Dr Sarah Chen, Everlab GP', steps: [['Book your consult', 'Pick a time with your doctor'], ['Meet your doctor', 'Go through your history and goals'], ['Get your plan', 'Your tests and next steps, in the app']],
@@ -22823,7 +22825,7 @@
     // what a state says at the top, and where it puts the progress
     const STATE = {
       request: d => ({ tone: '', tag: 'Pending action', h: 'Unfortunately, your originally requested time isn’t available.', p: 'Our provider has shared a few alternative appointment times.<br>Choose the one that works best for you.', btn: 'View options', sec: 'Confirm your appointment', warn: 'We’re unable to fulfill your original requested time. Confirm your booking to view alternative times.', at: 0, st: 'Requested 11 days ago' }),
-      book: d => ({ tone: '', tag: 'Next step', h: 'Book your ' + d.short + '.', p: 'Choose a time that works for you. It takes a minute.', btn: 'Book now', sec: 'Your appointment', at: 0, st: 'Added to your plan' }),
+      book: d => ({ tone: '', tag: 'Next step', h: 'Book your ' + d.short + '.', p: 'Choose a time that works for you. It takes a minute.', btn: 'Book', sec: 'Your appointment', at: 0, st: d.started || 'Added to your plan' }),
       booked: d => ({ tone: 'ok', tag: 'Confirmed', h: 'You’re booked in for ' + (d.when || '1 Sep 2026, 10:30 am') + '.', p: 'We’ll send you a reminder the day before.', btn: 'Add to calendar', sec: 'Your appointment', at: 1, st: d.when || '1 Sep 2026, 10:30 - 11:10 am' }),
       suggested: d => ({ tone: 'info', tag: 'Suggested for you', h: (d.every || 'Recommended every 5 years from age 25') + '.', p: 'You have no records of this yet. Add it to your plan to book it.', btn: 'Add to plan', sec: 'What to expect', at: -1, st: 'No records' }),
       purchase: d => ({ tone: 'info', tag: 'Recommended by Dr Sarah Chen', h: 'Not included in your membership.', p: 'Your doctor suggests it from your results. You can add it to your plan as a one-off.', btn: 'Purchase', sec: 'What to expect', at: -1, st: 'Recommended by Dr Sarah Chen' }),
@@ -22842,7 +22844,7 @@
       const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
       // the status block says the step in hand, the one lit on the right ("body status block needs to reflect the current step on the right side"): its name and its line, and neutral when it isn't the member's to do; a time to re-choose (request) keeps its own message
       if (state !== 'request' && at >= 0 && at < n){ const cs = d.steps[at], pv = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/.test(cs[0]);
-        x.tag = pv ? 'In progress' : 'Your next step'; /* no count here ("service detail remove Step X of X"): the progress beside says it */ x.h = cs[0] + '.'; x.p = escS(cs[1] || ''); x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
+        x.tag = pv ? 'In progress' : 'Pending action'; x.h = cs[0]; x.p = ''; /* the design's block: "Pending action", the step's name, no line, its button; no count here ("service detail remove Step X of X"): the progress beside says it */ x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
       // the journey: every service of the group, the page's own marked and carrying its status (in the body, the status block itself)
       // ...passed by the Timeline, or, from anywhere else (Service detail, the Overview), the group the service belongs to, the page's own in its state ("where are the journey cards?")
       const JDEF = { dexa: 'ci', diag: 'ci', checkin: 'ci', gutq: 'gut', gut: 'gut', gutrep: 'gut', gutrev: 'gut' };
@@ -22857,10 +22859,8 @@
         const k = y.state === 'done' ? 'on' : i === jA ? 'cur' : 'lock', me = i === J.i, nm = y.t || (SVC[y.svc] || {}).t || '';
         const mk = k === 'on' ? '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>' : k === 'lock' ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' : '';
         const lk = me && state === 'locked', bl = i === jB;
-        if (me && inBody && !lk) return '<li class="' + k + ' main solo" data-j="' + i + '"><div class="svPend' + (x.tone ? ' ' + x.tone : '') + '"><div class="svPendTx"><h3>' + escS(x.h) + '</h3></div><button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + '>' + escS(x.btn) + '</button></div></li>';   // not waiting on another: no name, no status, just the action and its button ("no need to repeat the service title, neither the status")   // the page's own, locked: its name and "Complete your … first", no button; the one it waits on carries a View ("when a service is locked just keep the title and sub title; no CTA in this card; a CTA on the blocker service, View")
-        return '<li class="' + k + (me ? ' main' : '') + '" data-j="' + i + '"><i class="svJrMk">' + mk + '</i><div class="svJrTx"><b>' + escS(nm) + '</b>' + (me && (!inBody || lk) ? '<span>' + escS(x.h) + '</span>' : '') + '</div>' + (me ? '' : bl ? '<button class="svJrGo" type="button">View</button>' : '<span class="svJrB">Related service</span>') +
-          (me && inBody && !lk ? pend(false) : '') + '</li>'; }).join('') + '</ol></div>';
-      const pend = mobile => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div><button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + '>' + escS(x.btn) + '</button></div>';
+        return '<li class="' + k + (me ? ' main' : '') + '" data-j="' + i + '"><i class="svJrMk">' + mk + '</i><div class="svJrTx"><b>' + escS(nm) + '</b>' + (me && !inBody ? '<span>' + escS(x.h) + '</span>' : '') + '</div>' + (me ? '<span class="svJrB me">This service</span>' : bl ? '<button class="svJrGo" type="button">View</button>' : '<span class="svJrB">Related service</span>') + '</li>'; }).join('') + '</ol></div>';   // the page's own, badged ("in my journey add the active service, DEXA Scan (current page), + badge this service"); its status sits above the block
+      const pend = (mobile, noBtn) => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div>' + (noBtn ? '' : '<button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + '>' + escS(x.btn) + '</button>') + '</div>';
       const rows = (state === 'booked' || state === 'done' ? '<div class="svRow"><span class="k">' + IC.cal + 'Date</span><span class="v">' + escS(o && o.when || x.st) + '</span></div>' : '') +
         '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' +
         '<div class="svRow"><span class="k">' + IC.dur + 'Duration</span><span class="v">' + escS(d.dur) + '</span></div>' +
@@ -22875,14 +22875,14 @@
       if (desk){
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
         if (m) m.innerHTML = '<div class="svHead"><img src="' + img + '" alt="" width="312" height="312"><div class="svHeadTx"><h1>' + escS(title) + '</h1><div class="svStart">' + escS(start) + '</div></div><button class="svMore" type="button" aria-label="More">' + IC.more + '</button></div>' +
-          (J && JR === 'body' ? jr(true) : pend(false)) + sec + ref(false) + instr;
+          (J && JR === 'body' ? pend(false, state === 'locked') + jr(true) : pend(false)) + sec + ref(false) + instr;   // the status block out of the journey, above it ("externalise the status block above the section")
         if (a) a.innerHTML = '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>' + (J && JR !== 'body' ? jr(false) : '') + about;
       }
       if (mob){
         const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
         mob.style.setProperty('--svmImg', 'url(' + img + ')');
         if (h) h.innerHTML = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div><div class="svmProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div><div class="svmBar">' + d.steps.map((st, i) => '<i' + (at >= 0 && i <= at ? ' class="on"' : '') + '></i>').join('') + '</div><div class="svmStepName">' + escS(at < 0 ? 'Not started' : at >= n ? 'All done' : d.steps[at][0]) + '</div></div>';
-        if (b) b.innerHTML = (J && JR === 'body' ? jr(true) : pend(true) + (J ? jr(false) : '')) + sec + ref(true) + instr + '<hr class="svRule">' + about;
+        if (b) b.innerHTML = (J && JR === 'body' ? pend(true, state === 'locked') + jr(true) : pend(true) + (J ? jr(false) : '')) + sec + ref(true) + instr + '<hr class="svRule">' + about;
       }
       cur = { key, state, o, J };
     };
@@ -22892,9 +22892,9 @@
     let backTo = null;   // where the back chevron returns: the Overview, or the Timeline the page was opened from
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
-    const openDesk = (key, state, o) => { backTo = o && o.from || null; paint(key || 'dexa', state || 'request', o); if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
+    const openDesk = (key, state, o) => { backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); };
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });   // the bar's ground, once the page moves under it
-    const openMob = (key, state, o) => { if (!ph) return; paint(key || 'dexa', state || 'request', o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
+    const openMob = (key, state, o) => { if (!ph) return; paint(key || 'dexa', state || (key ? 'request' : 'book'), o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });   // past 6, as the Overview's bar
     const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
     const heroKey = () => document.body.classList.contains('heroDexa') ? 'dexa' : 'consult';   // the booking card's Book: whichever service its hero shows

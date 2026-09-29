@@ -11854,3 +11854,14 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 **5.545 — "Your journey" without the group's name beside it.** "Remove right content": the journey heading is just "Your journey"; the group's name ("Member Check-In") on its right is gone.
 
 **5.546 — "Journey module" as a menu, Body content by default.** The service detail tweak is now "Journey module", a dropdown with two choices: "Body content" (the default) and "Right column". The bar's switch-making skips it (`stJr`), since the two are places, not on and off. A group service's page now opens with the journey in the body, in place of the status block.
+
+**5.547 — The status block back out above the journey; the page's own service badged "This service"; the DEXA page as the design.**
+
+- **Status above the journey:** "Externalise the status block above the section 'Your journey'." In the body version, the status block is its own block again, above "Your journey" (40px clear). A locked page's has no button.
+- **This service:** "In my journey add the active service (DEXA Scan, current page) + badge 'This service'." The journey lists every service as a plain card, the page's own at 8% with a "This service" badge. The one a locked page waits on carries its View; the rest are "Related service".
+- **DEXA from the design:** "Adjust content for DEXA based on this design."
+  - "Started on 20 February 2026" under the title.
+  - A status of "Pending action" / "Book your appointment" with a "Book" button, no line under it.
+  - The steps' lines: "Schedule with your referred provider", "Complete your DEXA scan" (the design's "colonoscopy" read as a slip), "Track your result here".
+  - Service detail's own entry opens the DEXA to book, as the design (it opened the re-choose-a-time case).
+- **Across services:** a status that follows the step in hand now reads as the design everywhere: "Pending action" (or "In progress" when it isn't the member's), the step's name, no line. Booking buttons read "Book".
