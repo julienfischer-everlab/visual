@@ -11914,3 +11914,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 **5.557 — Dashed outlines for the related services.** "Dashed": the journey cards other than the page's own are outlined with a 1.5px dashed border (#fff 16%; ink 20% in light mode). The page's own card keeps a clear border of the same width, so names and badges line up. Vertical padding goes to 10, so every card stays 56px with its border and the View's 32.
 
 **5.558 — Longer, wider-spaced, 2px dashes at #fff 4%.** "Dashed: increase increment, gap and width; colour opacity #fff 4%." A CSS dashed border can't be tuned, so the related cards' outline is now drawn as an SVG rounded rectangle behind them. It uses 10px dashes, 8px gaps, 2px wide, at #fff 4% (ink 10% in light mode), following the card's 14 radius. The cards keep their clear 1.5px border for alignment and their 56px height.
+
+**5.559 — Journey badges say what a service is: Locked, or nothing when done.** "Replace Related with 'Locked' if locked. If completed, no badge necessary."
+
+- **Locked or coming-up services:** the badge reads "Locked".
+- **Completed ones:** no badge; the tick and the strike say it.
+- **Unchanged:** "Related service" stays only on a service that is open but not the page's own (the gut assessment, seen from the Microbiome Report's page). The blocker keeps its View, and the page's own keeps "This service".
