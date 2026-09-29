@@ -11908,3 +11908,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Labels:** "Label 28px height." "This service" and "Related service" are 28px high (12.5px text, 10px sides, radius 8).
 
 **5.555 — Journey cards at radius 14.** "+4 radius cards": the service cards in "Your journey" go from radius 10 to 14.
+
+**5.556 — "Your journey" set as the page's section headings.** "Adjust Your journey size based on the Instructions size." In the body, "Your journey" is the page's section heading, the same as "Instructions" (`.svH2`, 22px, 40px above, 16px below). The right-column version keeps the side panel's smaller heading, as "Your progress".

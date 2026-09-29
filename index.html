@@ -6478,7 +6478,7 @@
   .svPend{display:flex;align-items:center;gap:24px;padding:24px;border-radius:16px;background:rgba(247,131,89,.12);}
   .svPendTx{flex:1 1 auto;min-width:0;}
   /* the journey block: the group's services as cards, the page's own at 8% with its status, the rest at 4% with "Related service" */
-  .svJr{container-type:inline-size;margin-top:32px;padding:0;background:none;} .svJr.body{margin:40px 0 0;} .svHead + .svJr.body{margin-top:0;}   /* under the status block, clear of it */   /* no card round the block, only the services' cards ("no need a card style, just keep cards for the stacked service items") */
+  .svJr{container-type:inline-size;margin-top:32px;padding:0;background:none;} .svJr.body{margin:0;} .svJr.body > .svH2{margin-top:40px;} .svHead + .svJr.body > .svH2{margin-top:0;} .svJr.body .svJrL{margin-top:0;}   /* under the status block, clear of it */   /* no card round the block, only the services' cards ("no need a card style, just keep cards for the stacked service items") */
   @container (max-width:520px){ .svJrL > li.main > .svPend{flex-direction:column;align-items:stretch;gap:14px;margin-left:0;} .svJrL > li.main > .svPend .svBtn{width:100%;} .svJr .svPend h3{font-size:19px;} }   /* narrow: the status stacks, its button full width */
   @container (max-width:400px){ .svJrL > li{padding:12px;} }
   .svJrL{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
@@ -22863,7 +22863,7 @@
       const J = (o && o.journey) || jDef(), jA = J ? J.items.findIndex(y => y.state !== 'done') : -1;
       const jNeed = J && state === 'locked' ? (J.items[J.i].need || d.need) : null, jB = !J || !jNeed ? -1 : jA;   // the blocker is the service the chain waits on now, the group's one in hand, not the locked one just before ("wrong, the DEXA is the blocker here")
       if (J && state === 'locked' && jA >= 0 && jA !== J.i){ const rt = J.items[jA].t || (SVC[J.items[jA].svc] || {}).t || jNeed; x.h = 'Complete your ' + rt + ' first.'; x.p = 'You need to complete your ' + escS(rt) + ' before you can book this appointment.'; }   // the one to do now, the chain's first, not the step just before ("no, complete your DEXA Scan first, sub adapt as well")
-      const jr = (inBody, inCard) => !J ? '' : '<div class="svJr' + (inBody ? ' body' : '') + '"><div class="svProgHead">Your journey</div><ol class="svJrL">' + J.items.map((y, i) => {
+      const jr = (inBody, inCard) => !J ? '' : '<div class="svJr' + (inBody ? ' body' : '') + '">' + (inBody ? '<h2 class="svH2">Your journey</h2>' : '<div class="svProgHead">Your journey</div>') + '<ol class="svJrL">' + J.items.map((y, i) => {
         const k = y.state === 'done' ? 'on' : i === jA ? 'cur' : 'lock', me = i === J.i, nm = y.t || (SVC[y.svc] || {}).t || '';
         const mk = k === 'on' ? '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>' : k === 'lock' ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' : '';
         const lk = me && state === 'locked', bl = i === jB;
