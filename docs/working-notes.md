@@ -12034,3 +12034,6 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 5.587 Bug: the Timeline's step sheet (XS/S, or a window under 992) stayed up over the service page. A change of page through the Version menu rewrote the body's classes, so tlOn was gone before the Timeline's close() ran, and close() returned before closing the sheet. close() now closes the sheet first, and the sheet is hidden whenever the Timeline isn't on.
 
 5.588 The journey module's heading reads "Your progress" (was "Your journey"), in every mode.
+
+5.589 Timeline September MRI Scan on step 3 (Get your results): state active, at 2, a neutral grey bar, CTA View secondary (no cta flag; the step is passive). A passive step in hand whose name is about results is badged "Waiting for results" (others keep "In progress").
+- Service page, a passive step in hand (e.g. MRI on Get your results): the status reads "Waiting for results" (results steps) or "In progress", grey, and has no button (the Continue is gone); a step with its own act override keeps its buttons.
