@@ -12040,3 +12040,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 5.590 Phone service page (Mobile version and the desk at XS): the Your progress card is gone from the hero ("remove this on mobile"); hero padding-bottom 48 so the start date clears the sheet. The steps stay in the sheet: the journey card lists them, and a single service (no journey) gets the desk's Your progress list under its status.
 - The desk's service page at XS and S hides the main nav (the device's dock, #mTabs3): a sub page, as the phone's already is.
+
+5.591 Journey cards: the group's service in hand, when it is not the page's own (or the Timeline card's object) and not a blocker, shows a secondary View (#fff 8%) in place of "Related service" ("if an active is not locked but is not a parent, add the CTA View"). Service page and Timeline group cards alike.
