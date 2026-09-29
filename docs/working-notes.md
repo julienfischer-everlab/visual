@@ -11930,3 +11930,11 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Right column:** the journey sits there, and the separate "Your progress" panel goes. The page's own card ("This service") carries the service's steps under its name, with bars and lines as in the progress panel, done green, in hand orange.
 - **Body:** the status block stays in the body.
 - **Other choices:** unchanged, their progress panel kept.
+
+**5.563 — A "Locked pattern" tweak; the waiting Dexa removed; Timeline group labels as the journey's.**
+
+- **Locked pattern:** "Add a tweak for all locked service cards with a disabled pattern on the bg, super light." A "Locked pattern" switch (off by default) lays fine diagonal lines behind every locked service card: 1px at #fff 3.5% every 7px (ink 5% in light mode).
+  - It covers the service page's journey and the Timeline's group lists.
+  - It sits in both the Service detail and the Timeline tweaks, one setting, and survives a change of page (`body.svLockPat`, set again after a page rewrites the body's classes).
+- **Second Dexa:** "Remove the 2nd DEXA item." The Dexa Scan waiting on its results is gone from August, which now holds Pathology Test, Onboarding consult, MRI Briefing and DEXA Scan.
+- **Timeline labels:** the group lists on the Timeline follow the journey's labels too: "Locked" for locked or coming-up services, none for done ones, "Related service" only for an open one that isn't the object's own.
