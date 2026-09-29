@@ -12017,3 +12017,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 5.580 Locked pattern gap 3 → 4px (period 4 → 5px), stripes still 1px at 8%.
 
 5.581 Locked journey cards on the service page filled #fff 4% (hover 6%) under the dashes and pattern, as the Timeline's locked cards already are.
+
+5.582 Service page steps (.svStep): padding 4 → 6px top and bottom; the bars grow with the step.
