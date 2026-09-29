@@ -11780,3 +11780,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
   - Checked: reload on the Timeline returns to it (menu on "Timeline"); reload after going back to the Overview stays there.
   - In a private window the flag may not stick. The reload then lands on the Overview as before.
 - **Rail:** "Make the line on the left side of the timeline more prominent, increase line opacity by 6%." The rail (`--tlRail`) goes from #fff 3.5% to 9.5% (ink 10% to 16% in light mode).
+
+**5.535 — The badge and the steps fade as they open and close.** "Fade in/out on collapse, and the badge that disappears":
+
+- **Badge:** the step-in-hand badge beside the chip no longer vanishes when the steps open. It fades out (.18s), then turns hidden, and fades back in (.22s) as they close. It keeps its place, so nothing beside it moves. At XS, where there is no badge, nothing changes.
+- **Steps:** the steps panel fades with its height: in (.3s, a touch after the opening starts) and out (.2s).
+- **Measured:** badge opacity .36 at 80ms into opening, .65 at 90ms into closing; the panel at .27 halfway open.
