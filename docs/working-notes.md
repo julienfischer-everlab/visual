@@ -11895,3 +11895,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Status card inside it:** #fff 4% when the step isn't the member's, the status block's usual orange when it is.
 
 **5.552 — A locked page names the service to do now.** "No, 'Complete your DEXA Scan first', sub adapted as well." A locked page in a journey names the service the chain waits on now, the group's in hand, not the step just before it. It does so in its status, its line and its journey card's line: "Complete your DEXA Scan first." / "You need to complete your DEXA Scan before you can book this appointment." This matches the View on DEXA Scan (5.550). The header keeps "After your Diagnostics Review", its place in the order.
+
+**5.553 — Every journey card the height of the one with its View.** "Make sure all service detail service cards have the same size, based on the one with a CTA." Every card in "Your journey" is at least 56px, the height of the card that carries the View button, so the list reads as one set: 56/56/56 in the body.
+
+- **Right column:** the page's own card is taller only where it carries its status line.
+- **Card mode:** it is taller only where it carries its status card.
