@@ -11865,3 +11865,12 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
   - The steps' lines: "Schedule with your referred provider", "Complete your DEXA scan" (the design's "colonoscopy" read as a slip), "Track your result here".
   - Service detail's own entry opens the DEXA to book, as the design (it opened the re-choose-a-time case).
 - **Across services:** a status that follows the step in hand now reads as the design everywhere: "Pending action" (or "In progress" when it isn't the member's), the step's name, no line. Booking buttons read "Book".
+
+**5.548 — The Pathology page from its reference design.** "Pathology content, e.g. for ref." The August Pathology Test (step 1 of 2, "Complete your test") opens its page with:
+
+- **Header:** "Started on 20 February 2026" under the title, and the red photo (`tl-path.webp`) on the page as on the Timeline.
+- **Status:** "Pending action" / "Complete your pathology test".
+  - Lines: "Find a collection centre near you and schedule your test. We'll notify you when it's time for your test, so you don't forget.", and a second paragraph, "If you've already completed it on your own, click 'I've already done the test.'".
+  - Two buttons under the text: "I've already done the test" (secondary, #fff 8%) and "Find collection centre" (primary). They stack full width when the block is narrow.
+- **Wiring:** a service can now carry a step's own status (`act`, keyed by the step's name) with its heading, lines and buttons. Only Pathology's "Complete your test" has one.
+- **Row state:** the row's state is now "active" (it was the re-choose-a-time "request"), so the page no longer shows that case's copy. The design's "About the service" text reads as microbiome placeholder copy, so the pathology's own is kept.

@@ -6507,6 +6507,9 @@
   .svPend h3{margin:8px 0 6px;font-size:22px;font-weight:500;line-height:1.25;letter-spacing:-.2px;color:#f4f4f4;}
   .svPend p{margin:0;font-size:14px;line-height:1.4;color:#b5b3ae;}
   .svBtn:disabled{opacity:.35;cursor:default;}
+  .svPend.stack{flex-direction:column;align-items:stretch;} .svPendBtns{display:flex;gap:16px;} .svPendBtns .svBtn{flex:1 1 0;padding:0 16px;} .svBtn.sec{background:rgba(255,255,255,.08);color:#ececec;} body.light .svBtn.sec{background:rgba(46,31,26,.07);color:#2e1f1a;}
+  .svPend p.svPendNote{margin-top:10px;}   /* the design's second paragraph */
+  .svPend.stack{container-type:inline-size;} @container (max-width:460px){ .svPendBtns{flex-direction:column;gap:10px;} .svPendBtns .svBtn{flex:none;width:100%;} }   /* narrow: the two buttons one above the other */
   .svBtn{flex:none;height:56px;padding:0 32px;border:0;border-radius:12px;background:#fff;color:#111;font:inherit;font-size:16px;font-weight:500;cursor:pointer;}
   .svH2{margin:40px 0 16px;font-size:22px;font-weight:500;letter-spacing:-.2px;color:#f4f4f4;}
   .svWarn{display:flex;gap:10px;align-items:flex-start;padding:16px;border-radius:12px;background:rgba(247,131,89,.12);font-size:14px;line-height:1.35;color:#e8dcd7;}
@@ -22763,7 +22766,7 @@
       IC.warn = q('.svWarn svg'); IC.ref = q('.svRefIc svg'); IC.more = q('.svMore svg'); IC.read = q('.svLink svg'); IC.cal = IC.dur; }
     if (mob){ const e = mob.querySelector('.svRefChev svg'); IC.chev = e ? e.outerHTML : ''; }
     const SIMG = { dexa: 'assets/overview/plan-dexa.webp', consult: 'assets/overview/plan-consult.webp', mri: 'assets/overview/plan-mri.webp', nutri: 'assets/overview/plan-nutrition.webp',
-      path: 'assets/overview/plan-path.webp', phys: 'assets/overview/plan-physical.webp', brief: 'assets/overview/hero-consult.webp', skin: 'assets/overview/tl-skin.webp', colon: 'assets/overview/tl-colon.webp' };
+      path: 'assets/overview/tl-path.webp', phys: 'assets/overview/plan-physical.webp', brief: 'assets/overview/hero-consult.webp', skin: 'assets/overview/tl-skin.webp', colon: 'assets/overview/tl-colon.webp' };
     const CLINIC = 'Quantum Therapy Sydney<br>Level 2, 50 Holt Street,<br>Surry Hills, NSW 2010';
     const SCAN = s => [['Book your appointment', 'Choose a time at a partner clinic'], ['Go to your appointment', 'Complete your ' + s], ['Get your results', 'Your doctor reviews them with you']];
     const SVC = {
@@ -22783,7 +22786,9 @@
       nutri: { t: 'Nutrition review', short: 'review', img: 'nutri', dur: '30min', loc: 'Online video call', clin: 'Dr Sarah Chen, Everlab GP', steps: [['Book your review', 'A call with your doctor'], ['Join the call', 'Go through your results and your meals'], ['Get your plan', 'Food changes that move your markers']],
         instr: ['Log three days of meals beforehand, if you can.', 'Have your latest blood results open; you will go through them together.', 'Note any foods you avoid or react to.'],
         about: 'A 30 minute call on what you eat and what your results say about it, ending with a few changes aimed at the markers that matter most for you.' },
-      path: { t: 'Pathology Test', short: 'blood test', img: 'path', dur: '15min', loc: 'Any Laverty collection centre', clin: 'Laverty Pathology', ref: true, steps: [['Get your referral', 'Sent to you by your doctor'], ['Visit a collection centre', 'A quick blood draw, no booking needed'], ['Get your results', 'Usually within 3 to 5 days']],
+      path: { t: 'Pathology Test', short: 'blood test', img: 'path', started: 'Started on 20 February 2026', dur: '15min',
+        // a step's own status, when it has one (the design's Pathology, "for ref"): its heading, its lines, and two buttons, the second the primary
+        act: { 'Complete your test': { h: 'Complete your pathology test', p: 'Find a collection centre near you and schedule your test.<br>We\u2019ll notify you when it\u2019s time for your test, so you don\u2019t forget.</p><p class="svPendNote">If you\u2019ve already completed it on your own, click \u201cI\u2019ve already done the test.\u201d', btns: ['I\u2019ve already done the test', 'Find collection centre'] } }, loc: 'Any Laverty collection centre', clin: 'Laverty Pathology', ref: true, steps: [['Get your referral', 'Sent to you by your doctor'], ['Visit a collection centre', 'A quick blood draw, no booking needed'], ['Get your results', 'Usually within 3 to 5 days']],
         instr: ['Fast for 10 to 12 hours before; water is fine and helps the draw.', 'Go in the morning so most of the fast is overnight.', 'Bring your referral, on your phone or printed.'],
         about: 'An advanced blood panel of 44 biomarkers across heart, metabolic, liver and kidney health, hormones and inflammation, well beyond a standard check-up.' },
       skin: { t: 'Skin Check', short: 'skin check', every: 'Recommended every year from age 30', img: 'skin', dur: '30min', loc: CLINIC, clin: 'Everlab partner dermatology clinic', steps: SCAN('skin check'),
@@ -22844,7 +22849,7 @@
       const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
       // the status block says the step in hand, the one lit on the right ("body status block needs to reflect the current step on the right side"): its name and its line, and neutral when it isn't the member's to do; a time to re-choose (request) keeps its own message
       if (state !== 'request' && at >= 0 && at < n){ const cs = d.steps[at], pv = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/.test(cs[0]);
-        x.tag = pv ? 'In progress' : 'Pending action'; x.h = cs[0]; x.p = ''; /* the design's block: "Pending action", the step's name, no line, its button; no count here ("service detail remove Step X of X"): the progress beside says it */ x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
+        x.tag = pv ? 'In progress' : 'Pending action'; x.h = cs[0]; x.p = ''; if (d.act && d.act[cs[0]]) { const A = d.act[cs[0]]; x.h = A.h; x.p = A.p; x.btns = A.btns; } if (d.started && (state === 'book' || state === 'active')) x.st = d.started; /* the design's block: "Pending action", the step's name, no line, its button; no count here ("service detail remove Step X of X"): the progress beside says it */ x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
       // the journey: every service of the group, the page's own marked and carrying its status (in the body, the status block itself)
       // ...passed by the Timeline, or, from anywhere else (Service detail, the Overview), the group the service belongs to, the page's own in its state ("where are the journey cards?")
       const JDEF = { dexa: 'ci', diag: 'ci', checkin: 'ci', gutq: 'gut', gut: 'gut', gutrep: 'gut', gutrev: 'gut' };
@@ -22860,7 +22865,7 @@
         const mk = k === 'on' ? '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>' : k === 'lock' ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' : '';
         const lk = me && state === 'locked', bl = i === jB;
         return '<li class="' + k + (me ? ' main' : '') + '" data-j="' + i + '"><i class="svJrMk">' + mk + '</i><div class="svJrTx"><b>' + escS(nm) + '</b>' + (me && !inBody ? '<span>' + escS(x.h) + '</span>' : '') + '</div>' + (me ? '<span class="svJrB me">This service</span>' : bl ? '<button class="svJrGo" type="button">View</button>' : '<span class="svJrB">Related service</span>') + '</li>'; }).join('') + '</ol></div>';   // the page's own, badged ("in my journey add the active service, DEXA Scan (current page), + badge this service"); its status sits above the block
-      const pend = (mobile, noBtn) => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div>' + (noBtn ? '' : '<button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + '>' + escS(x.btn) + '</button>') + '</div>';
+      const pend = (mobile, noBtn) => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + (x.btns ? ' stack' : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div>' + (noBtn ? '' : x.btns ? '<div class="svPendBtns">' + x.btns.map((t, i) => '<button class="svBtn' + (i < x.btns.length - 1 ? ' sec' : '') + '" type="button">' + escS(t) + '</button>').join('') + '</div>' : '<button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + '>' + escS(x.btn) + '</button>') + '</div>';
       const rows = (state === 'booked' || state === 'done' ? '<div class="svRow"><span class="k">' + IC.cal + 'Date</span><span class="v">' + escS(o && o.when || x.st) + '</span></div>' : '') +
         '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' +
         '<div class="svRow"><span class="k">' + IC.dur + 'Duration</span><span class="v">' + escS(d.dur) + '</span></div>' +
@@ -22966,7 +22971,7 @@
       up: [
         { h: 'August 2026', dot: 'now', rows: [
           // the two from July, now in the current month ("push these 2 into August, remove the July group")
-          { t: 'Pathology Test', d: 'A follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'path', state: 'request',
+          { t: 'Pathology Test', d: 'A follow-up blood panel on the markers your doctor flagged.', img: 'path', meta: [['clock', 'Requested 11 days ago']], act: 'View', more: 1, svc: 'path', state: 'active',
             steps: [['Complete your test', 'Go to a collection centre and do your test.'], ['Get your results', 'Ready in 2\u20133 weeks']], at: 0 },   // the first one, a pathology ("first one replace by pathology")
           // waiting on the results, nothing for the member to do: its step in hand is neutral; a DEXA is part of its Member Check-In, so it lists the group's services ("wrong, a DEXA includes other related services")
           { t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['sug', 'Member Check-In \u00b7 1 of 3'], ['clock', 'Scanned 2 days ago \u00b7 results usually within 3 to 5 days']], act: 'View', more: 1, svc: 'dexa', state: 'active', at: 2,
