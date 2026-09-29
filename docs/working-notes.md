@@ -11957,3 +11957,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 
 - **No line under the name:** in "Right column merged", the page's own card no longer repeats its status under its name.
 - **Steps aligned:** the step names start where the service's name starts (32px in). The progress bars are centred under the dot (10px in). Measured: dot and bar centres both at 1097, name and steps both at 1119.
+
+**5.568 — A stronger locked pattern, a 1.5px dash, 6px around each step.**
+
+- **Pattern:** "Pattern needs to be more visible." The locked pattern's lines go to #fff 8% (ink 10% in light mode) and 0.8px, still every 4px.
+- **Dash:** "Dashed border 1.5px width." The related cards' dashed outline is 1.5px wide (4/4 dashes, #fff 12%).
+- **Steps:** "Content item padding top bottom 6px." Each step in "Your progress" (and in the merged card) has 6px above and below its words, from 8; they stay 4px apart.
