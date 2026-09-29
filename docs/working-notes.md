@@ -12009,3 +12009,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - Right column merged: "Your journey" heading 36 high, centred, so it sits on the line of the page title's first line and its … button (centres 169/171/171); list 12 below it.
 - Locked pattern stripes 1px (from .8) at #fff 24%.
 - Diagnostics Review with DEXA done (September) checked: DEXA done, Diagnostics Review "This service" with its steps, Member Check-In locked, no orange blocker.
+
+5.578 Locked pattern stripes #fff 6% (light: .08) ("pattern 6% opacity").
