@@ -12025,3 +12025,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 5.584 Save / Reset at the foot of the Timeline and Service detail tweak groups: Open steps, Journey module, Locked pattern and Pattern opacity kept in localStorage 'everlab:tkPages' and put back on load, before the first page opens. Reset clears it and puts the defaults back (Current month, Right column merged, On, 8%).
 
 5.585 Service page journey: locked cards drop the dashed outline (fill 4% and the pattern only); related and done cards keep it.
+
+5.586 XS service page as the phone's design; journey card and dot; Timeline search on the title line
+- Desk service page at XS: paint() writes the phone's hero (image behind, title, start date, Your progress card) and sheet (status, journey, sections, referrals, instructions, About) into #dSvc; the hero runs up under the bar to the card's top, title 56 below the bar. The bar gets 44px back and more discs (.svXsMore). The page repaints on a breakpoint change. The phone's body rules are shared (:is(.svcMob, .svXsBody)).
+- Journey: the page's own card 4px more padding above and below (14, 16 when narrow). In-hand dot white (ink in light mode), was orange.
+- Timeline: the search moved from the tab bar to the title's line, right (.tlHead). At XS only its 44px round icon; a tap opens the field over the title's line, and it closes on blur when empty.
