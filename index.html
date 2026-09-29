@@ -6490,10 +6490,10 @@
   .svJrTx span{display:block;margin-top:2px;font-size:13px;color:#8b8b86;}
   /* the disabled pattern: fine diagonal lines, barely there, behind a locked card's content */
   .svJrL > li, :is(#dTl, .tlShPanel) .tlGrp > li{isolation:isolate;}
-  body.svLockPat .svJrL > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(-45deg, rgba(255,255,255,.08) 0 1px, transparent 1px 5px);}
+  body.svLockPat .svJrL > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(-45deg, rgba(255,255,255,var(--lpA, .08)) 0 1px, transparent 1px 5px);}
   .svJrL > li{position:relative;}
-  .svJrL > li.lock{background-color:rgba(255,255,255,.04);} .svJrL > li.lock:hover{background-color:rgba(255,255,255,.06);} body.light .svJrL > li.lock{background-color:rgba(46,31,26,.04);}   /* a locked card filled grey at 4% under its dashes and pattern, as the Timeline's ("bg grey opacity 4%") */
-  body.light.svLockPat .svJrL > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{background:repeating-linear-gradient(-45deg, rgba(46,31,26,.1) 0 1px, transparent 1px 5px);}
+  .svJrL > li.lock{background-color:rgba(255,255,255,.04);background-image:none;}   /* no dashes on a locked card ("for locked card no need dashed border"), the fill and the pattern only */ .svJrL > li.lock:hover{background-color:rgba(255,255,255,.06);} body.light .svJrL > li.lock{background-color:rgba(46,31,26,.04);}   /* a locked card filled grey at 4% under its dashes and pattern, as the Timeline's ("bg grey opacity 4%") */
+  body.light.svLockPat .svJrL > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{background:repeating-linear-gradient(-45deg, rgba(46,31,26,calc(var(--lpA, .08) + .02)) 0 1px, transparent 1px 5px);}
   /* the blocker, orange with its View, on the service page and the Timeline alike ("blocker service always orange theme + CTA View") */
   .svJrL > li.blk, .svJrL > li.blk:hover{background:rgba(247,131,89,.12) !important;} .svJrL > li.blk .svJrTx b{color:#f4f4f4 !important;}
   :is(#dTl, .tlShPanel) .tlGrp > li.blk, :is(#dTl, .tlShPanel) .tlGrp > li.blk:hover{background:rgba(247,131,89,.12);} :is(#dTl, .tlShPanel) .tlGrp > li.blk .tlGh b{color:var(--tlTx);}
@@ -9300,6 +9300,19 @@
             <option value="off">Off</option>
           </select>
         </div>
+        <!-- how strong the stripes are ("locked pattern opacity adjust tweak") -->
+        <div class="tkRow">
+          <span class="lbl">Pattern opacity</span>
+          <span class="tkSlide">
+            <input type="range" id="stLockOpT" class="stLockOp" min="2" max="30" step="1" value="8" aria-label="Locked pattern stripe opacity">
+            <i class="tkVal">8%</i>
+          </span>
+        </div>
+        <!-- keeps these tweaks through a reload ("add save tweak in controller") -->
+        <div class="tkRow tkFoot">
+          <button class="tkBtn stTkSave" type="button">Save</button>
+          <button class="tkBtn stTkReset" type="button">Reset</button>
+        </div>
         </div>
         <!-- the service page's own ("service detail should only show the Service detail tweak"): where a group's service lists its journey ("detail journey block, right col or body") -->
         <div class="tkGroup" data-svc>
@@ -9321,6 +9334,19 @@
             <option value="on" selected>On</option>
             <option value="off">Off</option>
           </select>
+        </div>
+        <!-- how strong the stripes are ("locked pattern opacity adjust tweak") -->
+        <div class="tkRow">
+          <span class="lbl">Pattern opacity</span>
+          <span class="tkSlide">
+            <input type="range" id="stLockOpS" class="stLockOp" min="2" max="30" step="1" value="8" aria-label="Locked pattern stripe opacity">
+            <i class="tkVal">8%</i>
+          </span>
+        </div>
+        <!-- keeps these tweaks through a reload ("add save tweak in controller") -->
+        <div class="tkRow tkFoot">
+          <button class="tkBtn stTkSave" type="button">Save</button>
+          <button class="tkBtn stTkReset" type="button">Reset</button>
         </div>
 
         </div>
@@ -22966,6 +22992,7 @@
       if (li.closest('#svcMob, .svcMob')) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); });
     { const t = document.getElementById('stJr'); if (t) t.addEventListener('change', () => { JR = t.value; JP = JR === 'rightm'; paint(cur.key, cur.state, cur.o); }); }
     // the locked pattern: one switch on each page's tweaks, both the same setting
+    { const ops = [...document.querySelectorAll('.stLockOp')]; ops.forEach(t => t.addEventListener('input', () => { document.documentElement.style.setProperty('--lpA', (t.value / 100).toFixed(2)); ops.forEach(u => { u.value = t.value; const v = u.parentElement.querySelector('.tkVal'); if (v) v.textContent = t.value + '%'; }); })); }   // the stripes' opacity, on the root so a change of page keeps it ("locked pattern opacity adjust tweak")
     { const all = [...document.querySelectorAll('.stLockPat')]; all.forEach(t => t.addEventListener('change', () => { const on = t.value === 'on'; document.body.classList.toggle('svLockPat', on);
         all.forEach(u => { if (u !== t && u.value !== t.value){ u.value = t.value; const g = u.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(on)); } }); }));
       const keep = () => requestAnimationFrame(() => document.body.classList.toggle('svLockPat', !!all[0] && all[0].value === 'on')); keep(); /* on by default ("locked pattern by default ON") */ document.addEventListener('everlab:mode', keep); if (sel) sel.addEventListener('change', keep); }   // a change of page rewrites the body's classes: the setting comes back with it
@@ -25617,6 +25644,26 @@
   // (blocks for text and cards, the organ as a dot cloud, the arc as a dashed
   // curve, the accent where the page has one), its group and its name. A
   // card opens its page; the service pages open over their Overview.
+  // Save and Reset for the Timeline's and the service page's tweaks ("add save tweak in controller"):
+  // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
+  // put back on load, before the first page opens
+  {
+    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stLockPatS: 'on', stLockOpS: '8' };
+    const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
+      el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
+      const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
+    let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e){}
+    if (saved) Object.keys(DEF).forEach(id => put(id, saved[id]));
+    document.querySelectorAll('.stTkSave').forEach(b => b.addEventListener('click', () => {
+      const v = {}; Object.keys(DEF).forEach(id => { const el = document.getElementById(id); if (el) v[id] = el.value; });
+      let ok = true; try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e){ ok = false; }
+      document.querySelectorAll('.stTkSave').forEach(x => { x.textContent = ok ? 'Saved' : 'Cannot save'; setTimeout(() => { x.textContent = 'Save'; }, ok ? 1400 : 2600); });
+    }));
+    document.querySelectorAll('.stTkReset').forEach(b => b.addEventListener('click', () => {
+      try { localStorage.removeItem(KEY); } catch (e){}
+      Object.keys(DEF).forEach(id => put(id, DEF[id]));
+    }));
+  }
   (function homeMosaic(){
     const grid = document.getElementById('homeGrid'); if (!grid) return;
     const B = (x, y, w, h, c, r) => '<i class="' + (c ? 'x-' + c : '') + '" style="left:' + x + '%;top:' + y + '%;width:' + w + '%;height:' + h + '%' + (r ? ';border-radius:' + r : '') + '"></i>';

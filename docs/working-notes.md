@@ -12019,3 +12019,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 5.581 Locked journey cards on the service page filled #fff 4% (hover 6%) under the dashes and pattern, as the Timeline's locked cards already are.
 
 5.582 Service page steps (.svStep): padding 4 → 6px top and bottom; the bars grow with the step.
+
+5.583 Tweak "Pattern opacity" (2–30%, default 8%) under Locked pattern, in the Timeline and Service detail groups (kept in step). Sets --lpA on the root; the stripes read rgba(255,255,255,var(--lpA)), light mode var(--lpA) + .02.
+
+5.584 Save / Reset at the foot of the Timeline and Service detail tweak groups: Open steps, Journey module, Locked pattern and Pattern opacity kept in localStorage 'everlab:tkPages' and put back on load, before the first page opens. Reset clears it and puts the defaults back (Current month, Right column merged, On, 8%).
+
+5.585 Service page journey: locked cards drop the dashed outline (fill 4% and the pattern only); related and done cards keep it.
