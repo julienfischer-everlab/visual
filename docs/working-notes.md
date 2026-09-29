@@ -11982,3 +11982,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Orange dot:** "Add orange dot inside the grey dot." The service in hand's grey disc now carries a 6px orange dot at its centre. This shows in the service page's journey and in the Timeline's group lists, including the disc on the in-hand card's name.
 
 **5.573 — Locked pattern at #fff 12%.** "Pattern opacity 12% #fff": the locked pattern's lines go to #fff 12% (ink 14% in light mode), still 0.8px every 4px.
+
+**5.574 — Right column merged by default; a Diagnostics Review once the DEXA is done.**
+
+- **Default layout:** "Use as default." The service page's "Journey module" starts on "Right column merged": the journey in the right column with the page's own steps in its card, and no separate progress panel. The locked pattern stays on by default.
+- **New Timeline object:** "In the timeline, add a Diagnostics Review item when DEXA is fully completed." September gains the Member Check-In a step further on, as a Diagnostics Review now to book: "Member Check-In · 2 of 3", "DEXA Scan completed", a primary "Book", Step 1 of 3.
+  - Its group list shows DEXA Scan done (tick, struck, no badge), its own card in hand with its steps and "This service", and Member Check-In locked.
+  - Its page reads "Pending action · Book appointment" with "Book". The journey shows DEXA done, then Diagnostics Review as this service with its steps, then Member Check-In locked.

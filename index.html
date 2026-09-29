@@ -9299,11 +9299,11 @@
         <div class="tkRow">
           <span class="lbl">Journey module</span>
           <select id="stJr" aria-label="Where the service page lists its journey">
-            <option value="body" selected>Body content</option>
+            <option value="body">Body content</option>
             <option value="card">Body, status in the card</option>
             <option value="right">Right column</option>
             <!-- the right column, "Your progress" folded into the page's own card ("a tweak that merges Your progress inside the service card"; "call it Right column merged") -->
-            <option value="rightm">Right column merged</option>
+            <option value="rightm" selected>Right column merged</option>
           </select>
         </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
@@ -22879,7 +22879,7 @@
       done: d => ({ tone: 'ok', tag: 'Completed', h: 'Your results are ready.', p: 'Your doctor has reviewed them. Read the report, or ask a question about it.', btn: 'View report', sec: 'Your appointment', at: 99, st: d.when || 'Completed' })
     };
     const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-    let cur = { key: 'dexa', state: 'request' }, JR = 'body', JP = false;   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
+    let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true;   // Right column merged by default ("use as default")   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
     const paint = (key, state, o) => {
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
       const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
@@ -23030,6 +23030,9 @@
             svc: 'checkin', state: 'locked', need: 'Diagnostics Review', group: CHECKIN, focus: 2 },
         ], sug: SUG },
         { h: 'September 2026', rows: [
+          // the Member Check-In a step on: the DEXA done, the Diagnostics Review now to book ("add a Diagnostics Review item when DEXA is fully completed")
+          { t: 'Diagnostics Review', d: 'Go through your DEXA and latest blood results with your doctor.', img: 'consult', meta: [['sug', 'Member Check-In \u00b7 2 of 3'], ['check', 'DEXA Scan completed']], act: 'Book', cta: 1, more: 1,
+            svc: 'diag', state: 'book', group: [{ svc: 'dexa', state: 'done', t: 'DEXA Scan', steps: DEXA_ST, at: 3 }, { svc: 'diag', state: 'book', t: 'Diagnostics Review', tag: 'Book appointment', at: 0 }, { svc: 'checkin', state: 'locked', tag: 'Book appointment', need: 'Diagnostics Review' }], focus: 1 },
           { t: 'MRI Scan', d: VISIT, img: 'mri', meta: [['pin', 'In person']], act: 'Book', cta: 1, more: 1, svc: 'mri', state: 'book' },
           { t: 'Nutrition review', d: VISIT, img: 'nutri', meta: [['dr', 'Online video call with Dr Sarah Chen'], WHEN], act: 'View', svc: 'nutri', state: 'booked', when: WHEN[1] },
           // a single service, not a group: its steps are the row's own, level one ("if the service is not a service group, treat the steps as level one, with the circle indicator")
