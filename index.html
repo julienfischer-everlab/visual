@@ -6574,11 +6574,11 @@
        one (#1d1d1d), the suggestions a #1d1d1d tray round a solid #2a2a2a
        card, the field filled, the rail, the dots and the rules barely there */
     --tlInk:#f4f4f4;--tlTx:#ececec;--tlSub:#8b8b86;--tlLine:rgba(255,255,255,.05);--tlHover:rgba(255,255,255,.055);--tlRing:rgba(255,255,255,.12);
-    --tlRail:rgba(255,255,255,.035);--tlDotRing:rgba(255,255,255,.1);--tlField:rgba(255,255,255,.055);
+    --tlRail:rgba(255,255,255,.095);--tlDotRing:rgba(255,255,255,.1);--tlField:rgba(255,255,255,.055);
     --tlPill:rgba(255,255,255,.08);--tlPillH:rgba(255,255,255,.12);--tlGhost:rgba(255,255,255,.055);--tlGhostH:rgba(255,255,255,.1);--tlCta:#fff;--tlCtaInk:#111;--tlSplit:rgba(0,0,0,.32);--tlSplitC:rgba(0,0,0,.14);
     --tlBox:rgba(255,255,255,.055);--tlCard:#2a2a2a;--tlCardRing:transparent;color:var(--tlTx);}
   body.light #dTl{--tlInk:#111;--tlTx:#2e1f1a;--tlSub:#7a716a;--tlLine:rgba(46,31,26,.07);--tlHover:rgba(46,31,26,.045);--tlRing:rgba(46,31,26,.16);
-    --tlRail:rgba(46,31,26,.1);--tlDotRing:rgba(46,31,26,.16);--tlField:transparent;
+    --tlRail:rgba(46,31,26,.16);--tlDotRing:rgba(46,31,26,.16);--tlField:transparent;
     --tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlGhost:rgba(46,31,26,.07);--tlGhostH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;--tlSplit:rgba(46,31,26,.14);--tlSplitC:rgba(255,255,255,.22);
     --tlBox:rgba(46,31,26,.05);--tlCard:#fff;--tlCardRing:rgba(46,31,26,.06);}
   body.m9.tlOn #dTl{display:block;} body.m9.tlOn #dOver, body.m9.tlOn #dSvc{display:none;}
@@ -23171,17 +23171,22 @@
       if (window._svc && document.body.classList.contains('svcOn')) window._svc.close();
       document.body.classList.add('tlOn'); main.scrollTop = keep ? lastTop : 0; main.classList.toggle('ovScrolled', !!keep && lastTop > 6);
       if (sel) sel.value = 'tl'; lightDock(-1);   // no tab of the dock is the Timeline
+      try { sessionStorage.setItem('everlab:tl', '1'); } catch (e){}   // remembered through a reload ("refresh button doesn't work": it came back on the Overview)
       requestAnimationFrame(() => { resize(); navState(); if (thumb) delete thumb.dataset.set; placeThumb(); setHTop(); });   // a new width (a breakpoint, the rail) places it afresh
     };
     const close = quiet => {
       if (!document.body.classList.contains('tlOn')) return;
       document.body.classList.remove('tlOn'); closeSheet(); if (!quiet) lightDock(0);
+      try { sessionStorage.removeItem('everlab:tl'); } catch (e){}
       if (sel && sel.value === 'tl') sel.value = '9';
       requestAnimationFrame(() => resize());
     };
     document.addEventListener('everlab:mode', close);
     addEventListener('resize', navState);
     window._tl = { open, close };
+    // a reload while the Timeline was showing comes back to it (the Overview's hash, #m9, is the page under it)
+    { let back = false; try { back = sessionStorage.getItem('everlab:tl') === '1'; } catch (e){}
+      if (back) setTimeout(() => { if (document.body.classList.contains('m9') && !document.body.classList.contains('homeOn')) open(); }, 0); }
   })();
   // ...and the desk's, from its bar's disc: the same card as a centred modal
   // at M and L, the bottom sheet inside the device at XS and S ("use a modal

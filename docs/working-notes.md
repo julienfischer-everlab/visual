@@ -11773,3 +11773,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Service page, "Your progress":** "Reduce title font size by 2px; gap between items 8px." Step names at 14px (from 16), 8px between the steps (from 20).
 - **Service page, header:** "Gap 48px between title and more CTA." The title keeps at least 48px from the ⋯ button (its 20 gap plus 28).
 - **Yours to claim:** "Never display the steps, neither the badge step." The tab's objects show no step chip, no badge and no steps; nothing opens.
+
+**5.534 — Refresh comes back to the Timeline; the rail 6% stronger.**
+
+- **Refresh:** "Refresh button doesn't work." It did reload, but the Timeline isn't in the hash (it sits over the Overview's #m9), so the page came back on the Overview. Opening the Timeline now leaves a flag in `sessionStorage` (`everlab:tl`), which leaving it clears. A reload with the flag set opens the Timeline again.
+  - Checked: reload on the Timeline returns to it (menu on "Timeline"); reload after going back to the Overview stays there.
+  - In a private window the flag may not stick. The reload then lands on the Overview as before.
+- **Rail:** "Make the line on the left side of the timeline more prominent, increase line opacity by 6%." The rail (`--tlRail`) goes from #fff 3.5% to 9.5% (ink 10% to 16% in light mode).
