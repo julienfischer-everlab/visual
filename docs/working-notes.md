@@ -11906,3 +11906,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Nothing booked yet:** "If state is Book appt, it doesn't make sense to show the Your appointment section below, just remove it." While the step in hand is a booking (the "book" state, or any "Book…" step), the page has no appointment section (location, duration, clinician). It goes straight from the status and journey to the referrals and instructions. Once booked, the section returns.
 - **Journey cards:** "Active filled grey bg; non-active / locked outlined 1.5px border." The page's own card is filled (#fff 8%). The others have no ground and a 1.5px outline (#fff 10%; ink 14% in light mode).
 - **Labels:** "Label 28px height." "This service" and "Related service" are 28px high (12.5px text, 10px sides, radius 8).
+
+**5.555 — Journey cards at radius 14.** "+4 radius cards": the service cards in "Your journey" go from radius 10 to 14.
