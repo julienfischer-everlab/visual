@@ -11818,3 +11818,13 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
   - At XS the body version stacks its status and gives the button full width; the right-column version sits under the progress.
 - **Wiring:** the Timeline passes the journey (`journey: {name, items, i}`) with every group service it opens, from a row, its button or a card in its list. A single service has no journey and keeps its page as it was.
 - **Tweaks:** the Timeline's tweaks now also show on the service page, and the Overview's no longer do there.
+
+**5.540 — The journey on every grouped service's page, however it is opened; a Service detail tweak group of its own.**
+
+- **Journey from any entry:** "So where are the journey cards?" They only came with pages opened from the Timeline. Opened from Service detail, the Overview or anywhere else, a service that belongs to a group now builds its journey itself (`JDEF`), with the page's own service in the state it opened in:
+  - DEXA, Diagnostics Review, Member Check-In → Member Check-In.
+  - The four gut services → Microbiome.
+  - Checked: the home page's Service detail (DEXA) shows DEXA · Diagnostics Review · Member Check-In, as does the Overview's Dexa card. Its Diagnostics card opens that page with the journey kept.
+  - Services outside any group (MRI…) have none.
+- **Tweaks:** "Service detail should only show the Service detail tweak, not the Overview." The service page's Tweaks show a single group, "Service detail" (`data-svc`). The Timeline shows only its "Timeline" group (Open steps), and the Overview its own.
+  - The journey setting is a switch, "Journey in body" (the bar turns a two-option select into one): off, the right column; on, the body.
