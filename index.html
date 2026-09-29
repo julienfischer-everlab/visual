@@ -6464,6 +6464,7 @@
   .svHead img{flex:none;width:104px;height:104px;border-radius:12px;object-fit:cover;}
   .svHead h1{margin:0;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:#f4f4f4;}
   .svStart{margin-top:8px;font-size:16px;color:#8b8b86;}
+  .svHead .svHeadTx{margin-right:28px;}   /* 48 from the title to the more button, with the head's 20 ("gap 48px between title and more cta") */
   .svMore{flex:none;margin-left:auto;width:36px;height:36px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .svMore svg{width:18px;height:18px;}
   .svGrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:44px;align-items:start;}
@@ -6503,11 +6504,11 @@
   .svProg{background:rgba(255,255,255,.04);border-radius:20px;padding:24px;}
   .svProgHead{display:flex;align-items:center;justify-content:space-between;font-size:18px;font-weight:500;color:#f4f4f4;margin-bottom:20px;}
   .svProgHead em{font-style:normal;font-size:14px;font-weight:400;color:#8b8b86;}
-  .svStep{position:relative;padding-left:22px;margin-bottom:20px;}
+  .svStep{position:relative;padding-left:22px;margin-bottom:8px;}   /* 8 between the steps ("gap between item 8px") */
   .svStep:last-child{margin-bottom:0;}
   .svStep::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;border-radius:2px;background:rgba(255,255,255,.12);}
   .svStep.on::before{background:#f78359;} .svStep.ok::before{background:#9cc088;}   /* done green, the step in hand orange ("first bar progress needs to be green") */
-  .svStep b{display:block;font-size:16px;font-weight:500;color:#f4f4f4;}
+  .svStep b{display:block;font-size:14px;font-weight:500;color:#f4f4f4;}   /* 2 smaller ("reduce title font size by 2px") */
   .svStep span{display:block;margin-top:2px;font-size:14px;color:#8b8b86;}
   .svAbout{margin-top:44px;}
   .svAbout h3{margin:0 0 20px;font-size:20px;font-weight:500;letter-spacing:-.2px;color:#f4f4f4;}
@@ -22726,7 +22727,7 @@
       IC.warn = q('.svWarn svg'); IC.ref = q('.svRefIc svg'); IC.more = q('.svMore svg'); IC.read = q('.svLink svg'); IC.cal = IC.dur; }
     if (mob){ const e = mob.querySelector('.svRefChev svg'); IC.chev = e ? e.outerHTML : ''; }
     const SIMG = { dexa: 'assets/overview/plan-dexa.webp', consult: 'assets/overview/plan-consult.webp', mri: 'assets/overview/plan-mri.webp', nutri: 'assets/overview/plan-nutrition.webp',
-      path: 'assets/overview/plan-path.webp', phys: 'assets/overview/plan-physical.webp', brief: 'assets/overview/hero-consult.webp' };
+      path: 'assets/overview/plan-path.webp', phys: 'assets/overview/plan-physical.webp', brief: 'assets/overview/hero-consult.webp', skin: 'assets/overview/tl-skin.webp', colon: 'assets/overview/tl-colon.webp' };
     const CLINIC = 'Quantum Therapy Sydney<br>Level 2, 50 Holt Street,<br>Surry Hills, NSW 2010';
     const SCAN = s => [['Book your appointment', 'Choose a time at a partner clinic'], ['Go to your appointment', 'Complete your ' + s], ['Get your results', 'Your doctor reviews them with you']];
     const SVC = {
@@ -22748,6 +22749,12 @@
       path: { t: 'Pathology Test', short: 'blood test', img: 'path', dur: '15min', loc: 'Any Laverty collection centre', clin: 'Laverty Pathology', ref: true, steps: [['Get your referral', 'Sent to you by your doctor'], ['Visit a collection centre', 'A quick blood draw, no booking needed'], ['Get your results', 'Usually within 3 to 5 days']],
         instr: ['Fast for 10 to 12 hours before; water is fine and helps the draw.', 'Go in the morning so most of the fast is overnight.', 'Bring your referral, on your phone or printed.'],
         about: 'An advanced blood panel of 44 biomarkers across heart, metabolic, liver and kidney health, hormones and inflammation, well beyond a standard check-up.' },
+      skin: { t: 'Skin Check', short: 'skin check', img: 'skin', dur: '30min', loc: CLINIC, clin: 'Everlab partner dermatology clinic', steps: SCAN('skin check'),
+        instr: ['Come without make-up, fake tan or nail polish, so every spot can be seen.', 'Note any mole that is new, has changed or itches.', 'Wear clothes that are easy to take off.'],
+        about: 'A full-body skin check with a dermatoscope, looking for the early signs of skin cancer, the most common cancer in Australia.' },
+      colon: { t: 'Colonoscopy', short: 'colonoscopy', img: 'colon', dur: '45min', loc: CLINIC, clin: 'Everlab partner endoscopy clinic', ref: true, steps: SCAN('colonoscopy'),
+        instr: ['Follow the bowel prep you are sent, starting the day before.', 'Arrange for someone to take you home; you will be sedated.', 'Tell the clinic about any blood thinners you take.'],
+        about: 'A camera look at the lining of your large bowel, to find and remove polyps before they can turn into bowel cancer.' },
       ct: { t: 'CT Coronary Calcium Score', short: 'CT scan', img: 'dexa', dur: '15min', loc: CLINIC, clin: 'Radiology Victoria Burwood East Imaging Consultant', ref: true, steps: SCAN('CT scan'),
         instr: ['Avoid caffeine for 4 hours before; it raises your heart rate.', 'Wear a top with no metal, or change into a gown at the clinic.', 'Tell the clinic if you might be pregnant.'],
         about: 'A quick, low-dose CT of your heart that measures calcium in the coronary arteries, one of the strongest single predictors of heart attack risk.' },
@@ -22853,7 +22860,7 @@
     const main = document.getElementById('dTl'), list = document.getElementById('tlList'), q = document.getElementById('tlQ');
     if (!main || !list) return;
     const IMG = { dexa: 'assets/overview/plan-dexa.webp', consult: 'assets/overview/plan-consult.webp', mri: 'assets/overview/plan-mri.webp',
-      nutri: 'assets/overview/plan-nutrition.webp', brief: 'assets/overview/hero-consult.webp', dr: 'assets/overview/avatar-dr.webp', move: 'assets/overview/plan-physical.webp', path: 'assets/overview/tl-path.webp' };
+      nutri: 'assets/overview/plan-nutrition.webp', brief: 'assets/overview/hero-consult.webp', dr: 'assets/overview/avatar-dr.webp', move: 'assets/overview/plan-physical.webp', path: 'assets/overview/tl-path.webp', skin: 'assets/overview/tl-skin.webp', colon: 'assets/overview/tl-colon.webp' };
     const I = {
       clock: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2 1.3"/></svg>',
       pin: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M8 14.5s-4.5-4.2-4.5-7.6a4.5 4.5 0 0 1 9 0c0 3.4-4.5 7.6-4.5 7.6Z"/><circle cx="8" cy="6.8" r="1.6"/></svg>',
@@ -22876,9 +22883,9 @@
     const CHECKIN = [{ svc: 'dexa', state: 'book', t: 'DEXA Scan', tag: 'Book appointment', d: 'Book your DEXA scan to measure body composition and bone density', steps: BOOK3, at: 0 },
       { svc: 'diag', state: 'locked', tag: 'Book appointment', need: 'DEXA Scan' },
       { svc: 'checkin', state: 'locked', tag: 'Book appointment', need: 'Diagnostics Review' }];
-    const SUG = [
-      { t: 'Dexa Scan', d: EVERY, img: 'dexa', meta: [['rec', 'No records']], act: 'View', more: 1, svc: 'dexa', state: 'suggested' },
-      { t: 'MRI Scan', d: EVERY, img: 'mri', meta: [['rec', 'No records']], act: 'View', more: 1, svc: 'mri', state: 'suggested' }
+    const SUG = [   // what the care team suggests next ("use Skin Check, Colonoscopy for suggested")
+      { t: 'Skin Check', d: 'Recommended every year from age 30', img: 'skin', meta: [['rec', 'No records']], act: 'View', more: 1, svc: 'skin', state: 'suggested' },
+      { t: 'Colonoscopy', d: 'Recommended every 5 years from age 45', img: 'colon', meta: [['rec', 'No records']], act: 'View', more: 1, svc: 'colon', state: 'suggested' }
     ];
     // each tab: its sections, each a heading (and its dot), its rows, and the
     // suggestions that fall in it
@@ -22916,7 +22923,7 @@
         { h: 'October 2026', rows: [
           { t: 'Pathology Test', d: VISIT, img: 'path', meta: [DR], act: 'View', more: 1, svc: 'path', state: 'book', st: 'Recommended by Dr Sarah Chen' },
           { t: 'CT Scan', d: VISIT, img: 'dexa', meta: [DR], act: 'Purchase', more: 1, svc: 'ct', state: 'purchase' }
-        ], sug: SUG },
+        ] },   // one suggestions block, in the current month ("just use one suggested block")
         { h: '50 years old', tail: 1, rows: [{ t: 'Dexa Scan', d: 'Available when you turn 50.', img: 'dexa', meta: [['pin', 'In person']], svc: 'dexa', state: 'later', age: 50, lockAge: 50 }] },
         { h: '60 years old', tail: 1, rows: [{ t: 'Dexa Scan', d: 'Available when you turn 60.', img: 'dexa', meta: [['pin', 'In person']], svc: 'dexa', state: 'later', age: 60, lockAge: 60 }] }
       ],
@@ -22975,6 +22982,7 @@
     const curB = st => '<span class="tlChip tlCurB' + (pas(st) ? ' n' : ' o') + '">' + esc(st[0]) + '</span>';
     const stepList = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : '', w = c === 'cur' && pas(st); return '<li class="' + c + (w ? ' pas' : '') + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? (w ? '<span class="tlChip n tlNext">In progress</span>' : '<span class="tlChip o tlNext">Your next step</span>') : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
     const prog = r => {
+      if (tab === 'claim') return '';   // yours to claim: no steps, no step chip ("never display the steps, neither the badge step")
       if (r.group){
         const { g, a } = groupOf(r), act = g[a < 0 ? g.length - 1 : a], nm = x => x.t || x.p.t;
         const one = g.length === 1 && a === 0, os = one ? act.p : null;   // a group of one counts its steps, not its one service
