@@ -11874,3 +11874,10 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
   - Two buttons under the text: "I've already done the test" (secondary, #fff 8%) and "Find collection centre" (primary). They stack full width when the block is narrow.
 - **Wiring:** a service can now carry a step's own status (`act`, keyed by the step's name) with its heading, lines and buttons. Only Pathology's "Complete your test" has one.
 - **Row state:** the row's state is now "active" (it was the re-choose-a-time "request"), so the page no longer shows that case's copy. The design's "About the service" text reads as microbiome placeholder copy, so the pathology's own is kept.
+
+**5.549 — A third journey setting: the status inside the service's card.** "Add a new tweak where the status block is included inside the service card." "Journey module" now has three choices:
+
+- **Body content (the default):** the status block above "Your journey".
+- **Body, status in the card:** the journey in the body, with no status block of its own. The page's own card ("This service") carries the status under its name: tag, heading, line and button, tinted orange when the step is the member's. A locked page's card has its status without a button, and the service it waits on keeps its View. At XS the status stacks and its button goes full width.
+- **Right column:** under "Your progress".
+- **Fix:** the right-column block no longer also draws in any mode other than Right column.
