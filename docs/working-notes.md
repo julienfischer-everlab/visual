@@ -12013,3 +12013,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 5.578 Locked pattern stripes #fff 6% (light: .08) ("pattern 6% opacity").
 
 5.579 In-hand disc: orange dot 6 → 8px; a grey ripple (box-shadow 0 → 8px, #fff 18% → 0, 2s, off for reduced motion) on the service page's journey and the Timeline's group cards. Locked pattern stripes #fff 8% (light .10).
+
+5.580 Locked pattern gap 3 → 4px (period 4 → 5px), stripes still 1px at 8%.
