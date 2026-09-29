@@ -11786,3 +11786,8 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - **Badge:** the step-in-hand badge beside the chip no longer vanishes when the steps open. It fades out (.18s), then turns hidden, and fades back in (.22s) as they close. It keeps its place, so nothing beside it moves. At XS, where there is no badge, nothing changes.
 - **Steps:** the steps panel fades with its height: in (.3s, a touch after the opening starts) and out (.2s).
 - **Measured:** badge opacity .36 at 80ms into opening, .65 at 90ms into closing; the panel at .27 halfway open.
+
+**5.536 — Suggestions 8px further from the rail; the booked September Dexa removed.**
+
+- **Suggestions:** "+8px gap between timeline line and suggested card." The suggestions tray starts 8px further from the rail (its outset −14 from −22).
+- **Dexa:** "Remove this DEXA." The booked Dexa Scan in September (Quantum Therapy Sydney, 1 Sep) is gone. September now holds MRI Scan, Nutrition review, the Genetic Test and the Microbiome assessment.
