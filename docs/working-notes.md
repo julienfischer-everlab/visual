@@ -12062,3 +12062,4 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.605 Phone service hero: 20 more below the title group (padding-bottom 48 -> 68), Mobile and desk XS.
 - 5.606 Phone service hero: the ground under the picture neutral (#151515 -> #0d0d0c; the warm #2b1a12 read as an orange shade). Desk XS: the sticky hero's top set to minus the card's padding (24), so the picture reaches the card's top again (a 24 band showed above it).
 - 5.607 Tweak "Active card steps" (Service detail): Vertical (default, the steps listed) or Horizontal: the page's own card keeps its name row, then one row of bars coloured by status (green done, orange in hand, grey passive in hand, #fff 14% to come) and the step in hand's name under them. A single service shows its name in this layout. Kept by Save.
+- 5.608 Phone service hero: the picture's fade to black half as long (mask from 62%, was 30%); the gap under the title group back to 48.
