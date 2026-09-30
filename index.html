@@ -511,9 +511,9 @@
   body.sideMin .dash .side .nv{width:44px;height:44px;margin:0 auto 2px;justify-content:center;padding:0;gap:0;}   /* the plate centred on the rail's own axis: 14 either side ("make the left and right padding even") */
   body.sideMin .dash .side .nv span{max-width:0;opacity:0;}
   body.sideMin .dash{padding-left:72px;--sideW:72px;}
-  body.sideMin #dMain, body.sideMin #dOver, body.sideMin #dSvc, body.sideMin #dTl{left:72px;}
+  body.sideMin #dMain, body.sideMin #dOver, body.sideMin #dSvc, body.sideMin #dTl, body.sideMin #dApt{left:72px;}
   .dash{transition:padding-left .32s cubic-bezier(.2,.8,.2,1);}
-  #dMain, #dOver, #dSvc, #dTl{transition:left .32s cubic-bezier(.2,.8,.2,1);}
+  #dMain, #dOver, #dSvc, #dTl, #dApt{transition:left .32s cubic-bezier(.2,.8,.2,1);}
   /* ---- The content pane: a card that owns its own scroll -----------------
      Fixed over the sidebar's ground -- which is what the card floats over,
      now that the two share --shellBg -- the 16px gap above it never moves;
@@ -522,7 +522,7 @@
      to hold that gap open before the sidebar and the ground it sits on read
      as the same surface; once they did, the bar was drawing over its own
      background and the gap can just be #dMain's own offset. */
-  #dMain, #dOver, #dSvc, #dTl{
+  #dMain, #dOver, #dSvc, #dTl, #dApt{
     position:absolute;left:224px;right:0;bottom:0;top:16px;
     overflow-y:auto;overflow-x:hidden;z-index:1;
     /* top-left and top-right already eased away from the bar above; the
@@ -6705,6 +6705,65 @@
   #dSvc .svXsBody{margin-left:-13px;margin-right:-13px;}
   .svcMob{position:absolute;inset:0;z-index:5;display:none;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:#0d0d0c;color:#ececec;}
   .svcMob::-webkit-scrollbar{display:none;}
+  /* ---- the appointment page (#dApt on the desk, .aptMob on the phone): the booking as the app shows it ("add the appointment page") ---- */
+  .apPg{--apInk:#f4f4f4;--apTx:#e6e6e3;--apSub:#8b8b86;--apLine:rgba(255,255,255,.08);--apTile:rgba(255,255,255,.07);--apSoft:rgba(255,255,255,.045);--apBd:rgba(255,255,255,.18);--apPri:#fff;--apPriInk:#111;--apBg:#0d0d0c;--apLink:#8fb0ff;color:var(--apTx);}
+  body.light .apPg{--apInk:#111;--apTx:#1a1a1a;--apSub:#8a8a86;--apLine:rgba(0,0,0,.08);--apTile:#f2f2f2;--apSoft:#f5f5f4;--apBd:rgba(0,0,0,.14);--apPri:#000;--apPriInk:#fff;--apBg:#fff;--apLink:#3b6fd4;}
+  #dApt{display:none;padding:32px 40px 80px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:apt / inline-size;}
+  body.m9.aptOn #dApt{display:block;} body.m9.aptOn #dOver, body.m9.aptOn #dSvc, body.m9.aptOn #dTl{display:none !important;}
+  body.m9.aptOn .dash .side .nvOver{background:none;color:inherit;} body.m9.aptOn .dash .side .nvSvc{background:#1e1e1c;color:#ececec;} body.light.m9.aptOn .dash .side .nvSvc{background:#ece4d3;color:#2e241c;}
+  body.aptOn:is([data-bp="xs"], [data-bp="s"]) #mTabs3{display:none;}
+  .apIn{max-width:1148px;margin:0 auto;}
+  .apTop{display:flex;margin-bottom:24px;}
+  .apHead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;padding-bottom:24px;border-bottom:1px solid var(--apLine);}
+  .apHeadTx{display:flex;flex-direction:column;min-width:0;}
+  .apHeadTx h1{margin:0;font-size:32px;font-weight:500;letter-spacing:-.4px;color:var(--apInk);}
+  .apHeadTx .apSp{flex:1 1 auto;min-height:40px;}
+  .apTags{display:flex;flex-wrap:wrap;gap:8px;}
+  .apTag{display:inline-flex;align-items:center;height:32px;padding:0 9px;border-radius:8px;box-shadow:inset 0 0 0 1px var(--apBd);font-size:14.5px;font-weight:500;color:var(--apInk);}
+  .apDesc{margin:18px 0 0;font-size:15px;line-height:1.35;color:var(--apTx);max-width:540px;}
+  .apBook{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:62px;margin-top:28px;border:0;border-radius:12px;background:var(--apPri);color:var(--apPriInk);font:inherit;font-size:17px;font-weight:500;cursor:pointer;} .apBook svg{width:18px;height:18px;}
+  .apImg{display:block;width:100%;aspect-ratio:553 / 444;object-fit:cover;border-radius:16px;}
+  .apGrid{display:grid;grid-template-columns:minmax(0,640fr) minmax(0,445fr);gap:62px;margin-top:48px;align-items:start;}
+  .apMain > section + section{margin-top:56px;}
+  .apPg h2{margin:0 0 16px;font-size:24px;font-weight:500;letter-spacing:-.3px;color:var(--apInk);}
+  .apTask{display:flex;align-items:center;gap:18px;padding:12px 0;border-bottom:1px solid var(--apLine);} .apTask:last-child{border-bottom:0;}
+  .apIc{position:relative;flex:none;width:48px;height:48px;border-radius:12px;background:var(--apTile);color:var(--apInk);display:flex;align-items:center;justify-content:center;} .apIc svg{width:20px;height:20px;}
+  .apIc.dot::after{content:"";position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:#f7641f;}
+  .apTask b{flex:1 1 auto;min-width:0;font-size:17px;font-weight:400;color:var(--apInk);}
+  .apOut{flex:none;height:48px;padding:0 26px;border:0;border-radius:12px;background:none;box-shadow:inset 0 0 0 1.5px var(--apBd);color:var(--apInk);font:inherit;font-size:15px;font-weight:500;cursor:pointer;}
+  .apList{margin:0;padding:0 0 0 30px;list-style:square;} .apList li{margin:0 0 4px;font-size:17px;line-height:1.3;color:var(--apInk);} .apList li::marker{color:var(--apInk);}
+  .apVid{display:flex;align-items:center;gap:18px;width:100%;margin-top:20px;padding:13px 22px 13px 13px;border:0;border-radius:14px;background:var(--apSoft);color:var(--apInk);font:inherit;text-align:left;cursor:pointer;}
+  .apVid .apIc{background:var(--apPri);color:var(--apSub);} body:not(.light) .apVid .apIc{background:rgba(255,255,255,.08);}
+  .apVid > span:not(.apIc){flex:1 1 auto;font-size:17px;font-weight:500;line-height:1.3;} .apVid > svg{flex:none;width:16px;height:16px;}
+  .apHelp{margin-top:56px;padding:20px 22px;border-radius:14px;background:var(--apSoft);}
+  .apHelp b{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:500;color:var(--apInk);} .apHelp b svg{width:18px;height:18px;}
+  .apHelp p{margin:8px 0 0;font-size:15px;color:var(--apTx);} .apHelp a{color:var(--apLink);text-decoration:none;}
+  .apNote{display:flex;align-items:flex-start;gap:10px;padding:16px 22px;border-radius:14px;background:var(--apSoft);font-size:15.5px;line-height:1.35;color:var(--apInk);} .apNote svg{flex:none;width:18px;height:18px;margin-top:1px;}
+  .apKvs{margin-top:10px;}
+  .apKv{display:grid;grid-template-columns:168px minmax(0,1fr);gap:8px;padding:14px 0;border-bottom:1px solid var(--apLine);} .apKv:last-child{border-bottom:0;}
+  .apKv .k{display:flex;align-items:flex-start;gap:6px;font-size:15px;color:var(--apSub);} .apKv .k svg{flex:none;width:16px;height:16px;margin-top:1px;}
+  .apKv .v{font-size:15px;line-height:1.25;color:var(--apInk);}
+  .apBadge{display:inline-flex;align-items:center;height:24px;margin-top:10px;padding:0 10px;border-radius:6px;background:rgba(247,100,31,.12);color:#f7641f;font-size:13px;font-weight:500;}
+  @container apt (max-width:860px){ .apHead, .apGrid{grid-template-columns:minmax(0,1fr);} .apGrid{gap:40px;} .apSide{order:-1;} }
+  /* the phone's: the picture full bleed with the title on it, the sheet over it; the details first, then the lists */
+  #dApt .apNarrow{display:none;} body[data-bp="xs"] #dApt .apWide{display:none;} body[data-bp="xs"] #dApt .apNarrow{display:block;} body[data-bp="xs"] #dApt{padding:0 0 92px;}
+  .aptMob{position:absolute;inset:0;z-index:6;display:none;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:var(--apBg);} .aptMob::-webkit-scrollbar{display:none;}
+  #phone2.aptOn .aptMob{display:block;} #phone2.aptOn .mscroll{display:none;} body.m6 #phone2.aptOn > .mTabs{display:none;}
+  .apM{position:relative;background:var(--apBg);}
+  .apMBack{position:absolute;z-index:2;left:16px;top:calc(var(--stH,54px) + 8px);}
+  .apMHero{position:relative;height:300px;background:var(--apImg, url(assets/overview/plan-dexa.webp)) center 30% / cover no-repeat;}
+  .apMHero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 35%,transparent 55%,rgba(0,0,0,.55));}
+  .apMHero h1{position:absolute;z-index:1;left:16px;right:16px;bottom:38px;margin:0;font-size:26px;font-weight:500;letter-spacing:-.3px;color:#fff;}
+  .apMSheet{position:relative;z-index:1;margin-top:-20px;padding:10px 16px 60px;border-radius:22px 22px 0 0;background:var(--apBg);}
+  .apGrab{display:block;width:36px;height:4px;margin:0 auto 16px;border-radius:2px;background:var(--apBd);}
+  .apM .apDesc{margin-top:14px;font-size:15px;}
+  .apM .apNote{margin-top:22px;padding:16px 18px;font-size:15px;}
+  .apM .apKv{grid-template-columns:150px minmax(0,1fr);}
+  .apM section{margin-top:40px;} .apM h2{font-size:20px;margin-bottom:10px;}
+  .apM .apTask{gap:14px;padding:12px 0;} .apM .apTask b{font-size:16px;} .apM .apOut{height:46px;padding:0 22px;}
+  .apM .apList{padding-left:28px;} .apM .apList li{font-size:16px;}
+  .apM .apVid > span:not(.apIc){font-size:16px;} .apM .apHelp{margin-top:40px;}
+  .svH2.svH2Apt{display:flex;align-items:center;gap:12px;} .svAptGo{margin-left:auto;height:32px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:13px;font-weight:500;cursor:pointer;} body.light .svAptGo{background:rgba(46,31,26,.07);color:#2e241c;}
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
   .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 64px));padding:calc(var(--stH,54px) + 120px) 16px 16px;   /* up under the sticky bar (its height), the title where it stood */background:linear-gradient(180deg,#151515,#111 70%,#0d0d0c);overflow:hidden;}   /* neutral: the warm brown read as an orange shade ("remove this weird orange shade") */
   .svmHero::before{content:"";position:absolute;inset:0 0 -32px;transform:translateY(var(--hpy, 0px));background:var(--svmImg, url(assets/overview/plan-dexa.webp)) center 20% / cover no-repeat;opacity:.38;}   /* no fade at the foot ("remove gradient bottom hero"): the picture runs to the sheet's edge */
@@ -7111,7 +7170,7 @@
   body[data-bp] .dash .side{left:calc(50vw - var(--bpW) / 2);}
   body[data-bp="s"] .dash .side, body[data-bp="xs"] .dash .side{display:none;}
   body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;--dMainLeft:0px !important;}
-  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc, body[data-bp="s"] #dTl, body[data-bp="xs"] #dTl{left:0;top:0;border-radius:0;max-width:none;scrollbar-width:none;}   /* in a device the page is the screen: no 16 band above, no 16 gutter at the right, no card corners, no scrollbar ("remove unnecessary padding on tablet S") */
+  body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc, body[data-bp="s"] #dTl, body[data-bp="xs"] #dTl, body[data-bp="s"] #dApt, body[data-bp="xs"] #dApt{left:0;top:0;border-radius:0;max-width:none;scrollbar-width:none;}   /* in a device the page is the screen: no 16 band above, no 16 gutter at the right, no card corners, no scrollbar ("remove unnecessary padding on tablet S") */
   body[data-bp="s"] #dOver::-webkit-scrollbar, body[data-bp="xs"] #dOver::-webkit-scrollbar, body[data-bp="s"] #dSvc::-webkit-scrollbar, body[data-bp="xs"] #dSvc::-webkit-scrollbar, body[data-bp="s"] #dTl::-webkit-scrollbar, body[data-bp="xs"] #dTl::-webkit-scrollbar{display:none;}
   body:not([data-bp="xs"]):not([data-bp="s"]) #dOver{--ctPadY:32px;--ctPadX:40px;}   /* the Insights desk's body padding, 32 above and 40 at the sides ("body padding: keep this structure for Overview"); the bar and the caps read the same tokens */
   #dOver{padding:var(--ctPadY) var(--ctPadX) 60px;max-width:min(calc(1280px + 2 * var(--ctPadX)),   /* 1080, then "overview container max width 1280px" */ calc(var(--bpW, 100vw) - var(--sideW, 224px) - 16px));}   /* --sideW: 224, 72 retracted, 0 at S and XS */
@@ -10523,6 +10582,7 @@
          design's phone: the hero with back and more over the particles, the
          title and start date, the progress card; then the sheet with the same
          sections stacked, the instructions and About the service at the foot -->
+    <div class="aptMob" id="aptMob" aria-label="Appointment"></div>
     <div class="svcMob" id="svcMob">
       <div class="svmNav"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svmBtn svBack" type="button" aria-label="Back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button><button class="svmBtn" type="button" aria-label="More"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg></button></div>
       <div class="svmHero">
@@ -10861,6 +10921,10 @@
       </aside>
     </div>
   </main>
+  <!-- the appointment page ("add the appointment page"): the service's booking as the app shows it -- title, tags, line and Book beside the
+       picture; then consents, questionnaires, what to expect, how to prepare and the care team at the left, the booking's status and details
+       at the right. Written by aptPage() below; at XS the phone's layout. -->
+  <main class="dvMain" id="dApt" aria-label="Appointment"></main>
   <!-- The Timeline page ("create a new page with breakpoint control called
        Timeline"): its rows are written by timelinePage() from TL below -->
   <main class="dvMain" id="dTl" aria-label="Timeline">
@@ -14825,6 +14889,9 @@
       const sg = document.createElement('optgroup'); sg.label = 'Service detail';
       [['svcD', 'Desktop'], ['svcM', 'Mobile']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
       versionSel.appendChild(sg);
+      const ag = document.createElement('optgroup'); ag.label = 'Appointment';   // "add the appointment page"
+      [['aptD', 'Desktop'], ['aptM', 'Mobile']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; ag.appendChild(o); });
+      versionSel.appendChild(ag);
       const tg = document.createElement('optgroup'); tg.label = 'Timeline';   // "a new page ... called Timeline"
       const to = document.createElement('option'); to.value = 'tl'; to.textContent = 'Timeline'; tg.appendChild(to);
       versionSel.appendChild(tg);
@@ -14850,6 +14917,7 @@
     if (v === 'home'){ if (window._home) window._home.show(); return; }
     if (window._home) window._home.hide();
     if (v === 'tl'){ setMode(9); resize(); if (window._tl) window._tl.open(); return; }
+    if (v === 'aptD' || v === 'aptM'){ setMode(v === 'aptD' ? 9 : 6); resize(); if (window._apt) (v === 'aptD' ? window._apt.openDesk : window._apt.openMob)(); return; }
     if (v === 'svcD' || v === 'svcM'){ setMode(v === 'svcD' ? 9 : 6); resize(); if (window._svc) (v === 'svcD' ? window._svc.openDesk : window._svc.openMob)(); return; }
     CARD_STATE.fullscr = v === VIEWPORT_VAL;
     CARD_STATE.showBar = v === VIEWPORT_VAL;
@@ -23174,7 +23242,7 @@
         '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' +
         '<div class="svRow"><span class="k">' + IC.dur + 'Duration</span><span class="v">' + escS(d.dur) + '</span></div>' +
         '<div class="svRow"><span class="k">' + IC.clin + 'Clinician</span><span class="v">' + escS(d.clin) + '</span></div>';
-      const sec = '<h2 class="svH2">' + escS(x.sec) + '</h2>' + (x.warn ? '<div class="svWarn">' + IC.warn + '<span>' + escS(x.warn) + '</span></div>' : '') + '<div class="svRows">' + rows + '</div>';
+      const sec = (x.sec === 'Your appointment' ? '<h2 class="svH2 svH2Apt">' + escS(x.sec) + '<button class="svAptGo" type="button">View appointment</button></h2>' : '<h2 class="svH2">' + escS(x.sec) + '</h2>')   /* the booking's own page ("add the appointment page") */ + (x.warn ? '<div class="svWarn">' + IC.warn + '<span>' + escS(x.warn) + '</span></div>' : '') + '<div class="svRows">' + rows + '</div>';
       const ref = chev => d.ref ? '<div class="svRef"><span class="svRefIc">' + IC.ref + '</span><div><b>Your referrals</b><span>Show your referrals when you get to your appointment.</span></div>' + (chev ? '<button class="svRefBtn svRefChev" type="button" aria-label="Show">' + IC.chev + '</button>' : '<button class="svRefBtn" type="button">Show</button>') + '</div>' : '';
       const instr = '<h2 class="svH2">Instructions</h2><div class="svBody"><ul class="svList">' + d.instr.map(i => '<li>' + escS(i) + '</li>').join('') + '</ul></div>';
       const about = '<div class="svAbout"><h3>About the service</h3><p>' + escS(d.about) + '</p><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
@@ -25914,6 +25982,53 @@
   // (blocks for text and cards, the organ as a dot cloud, the arc as a dashed
   // curve, the accent where the page has one), its group and its name. A
   // card opens its page; the service pages open over their Overview.
+  // ---- the appointment page ("add the appointment page"): the booking's own screen, the desk's two columns and the phone's sheet over its
+  // picture; from the Version menu (Appointment) or View appointment on a service page's Your appointment, back returning there
+  (function aptPage(){
+    const desk = document.getElementById('dApt'), ph = document.getElementById('phone2'), mob = document.getElementById('aptMob'), sel = document.getElementById('versionSel');
+    if (!desk || !mob) return;
+    { const sv = document.getElementById('dSvc'); if (sv && desk.parentElement !== sv.parentElement) sv.after(desk); }   // beside the service page, in the desk's frame
+    const S = (d, w) => '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="' + (w || 1.5) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
+    const IC = {
+      back: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg>',
+      arrow: S('<path d="M4 10h12M11 5l5 5-5 5"/>', 1.6), sign: S('<path d="M11.5 3.5H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9.5"/><path d="m9 12 .6-2.4 6-6a1.2 1.2 0 0 1 1.8 1.8l-6 6Z"/>'),
+      form: S('<rect x="4.5" y="3" width="11" height="14" rx="2"/><path d="M7.5 7h5M7.5 10h5M7.5 13h3"/>'), play: S('<rect x="3" y="5" width="14" height="10" rx="2.5"/><path d="m8.5 8 3.5 2-3.5 2Z"/>'),
+      chev: S('<path d="m8 5 5 5-5 5"/>', 1.6), info: S('<circle cx="10" cy="10" r="7"/><path d="M10 6.5v4.2M10 13.3v.2"/>'),
+      cal: S('<rect x="3.5" y="4.5" width="13" height="12" rx="2"/><path d="M3.5 8.5h13M7 3v3M13 3v3"/>'), pin: S('<path d="M10 17s5.5-4.8 5.5-9a5.5 5.5 0 1 0-11 0c0 4.2 5.5 9 5.5 9Z"/><circle cx="10" cy="8" r="2"/>'),
+      dur: S('<circle cx="10" cy="11" r="6"/><path d="M10 8v3l2 1.5M8 3h4"/>')
+    };
+    const D = { t: 'Dexa Scan', img: 'assets/overview/plan-dexa.webp', tags: ['Physical appointment', 'Cancer'],
+      d: 'Speak with an Everlab doctor about trends from your existing data, and gaps in your screening.',
+      note: 'We’ll notify you once we hear back with next steps.',
+      kv: [['cal', 'Date & Time', 'Monday, September 6th<br>8:00 am - 9:00 am<br>(Sydney, GST + 11)<br><span class="apBadge">Pending confirmation</span>'], ['pin', 'Location', 'Clinic ABC<br>10 Monckton Road,<br>Bundoora, Vic 3083'], ['pin', 'Type', 'In person'], ['dur', 'Duration', '30min']],
+      consents: ['DEXA Scan Consent', 'Medical Imaging Consent'], forms: ['Pre-Scan Health &amp; Medical History', 'DEXA Scan Health Questionnaire'],
+      expect: ['Meet your Everlab doctor for a one-on-one video call.', 'Deep dive into your goals, medical history, data and questionnaires.', 'Explore the Everlab approach, diagnostics, and protocols.', 'Get a tailored diagnostic plan recommendation based on your specific risks and goals.'],
+      prep: ['Join from your computer (rather than a mobile) for easier viewing of reports and test results.', 'Choose a quiet and private space for a confidential, uninterrupted chat.'] };
+    const tags = '<div class="apTags">' + D.tags.map(t => '<span class="apTag">' + t + '</span>').join('') + '</div><p class="apDesc">' + D.d + '</p>';
+    const side = '<div class="apNote">' + IC.info + '<span>' + D.note + '</span></div><div class="apKvs">' + D.kv.map(([i, k, v]) => '<div class="apKv"><span class="k">' + IC[i] + k + '</span><span class="v">' + v + '</span></div>').join('') + '</div>';
+    const task = (ic, t, b) => '<div class="apTask"><span class="apIc dot">' + IC[ic] + '</span><b>' + t + '</b><button class="apOut" type="button">' + b + '</button></div>';
+    const vid = t => '<button class="apVid" type="button"><span class="apIc">' + IC.play + '</span><span>Watch a quick video preview<br>' + t + '</span>' + IC.chev + '</button>';
+    const lists = '<section><h2>Consents</h2>' + D.consents.map(t => task('sign', t, 'Review')).join('') + '</section>' +
+      '<section><h2>Questionnaires</h2>' + D.forms.map(t => task('form', t, 'Complete')).join('') + '</section>' +
+      '<section><h2>What to expect</h2><ul class="apList">' + D.expect.map(t => '<li>' + t + '</li>').join('') + '</ul>' + vid('to know what to expect') + '</section>' +
+      '<section><h2>How to prepare</h2><ul class="apList">' + D.prep.map(t => '<li>' + t + '</li>').join('') + '</ul>' + vid('to know how to prepare') + '</section>' +
+      '<div class="apHelp"><b>' + IC.info + 'Questions about your appointment?</b><p>Contact our care team at <a href="mailto:support@everlab.com.au">support@everlab.com.au</a>.</p></div>';
+    const narrow = back => '<div class="apM"><button class="svmBtn svBack apMBack apBack" type="button" aria-label="Back">' + IC.back + '</button><div class="apMHero"><h1>' + D.t + '</h1></div><div class="apMSheet"><i class="apGrab" aria-hidden="true"></i>' + tags + side + lists + '</div></div>';
+    desk.innerHTML = '<div class="apPg"><div class="apWide apIn"><div class="apTop"><button class="svBack apBack" type="button" aria-label="Back">' + IC.back + '</button></div>' +
+      '<div class="apHead"><div class="apHeadTx"><h1>' + D.t + '</h1><i class="apSp"></i>' + tags + '<button class="apBook" type="button">Book ' + IC.arrow + '</button></div><img class="apImg" src="' + D.img + '" alt="" width="553" height="444"></div>' +
+      '<div class="apGrid"><div class="apMain">' + lists + '</div><aside class="apSide">' + side + '</aside></div></div><div class="apNarrow">' + narrow() + '</div></div>';
+    mob.innerHTML = '<div class="apPg">' + narrow() + '</div>';
+    let from = null;
+    const openDesk = o => { from = o && o.from || null; if (!from){ if (window._tl) window._tl.close(true); } document.body.classList.add('aptOn'); desk.scrollTop = 0; if (sel) sel.value = 'aptD'; };
+    const openMob = o => { if (!ph) return; from = o && o.from || null; ph.classList.add('aptOn'); mob.scrollTop = 0; if (sel) sel.value = 'aptM'; };
+    const close = () => { const d = document.body.classList.contains('aptOn'), m = ph && ph.classList.contains('aptOn'); if (!d && !m) return;
+      document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn');
+      if (sel) sel.value = from === 'svc' ? (d ? 'svcD' : 'svcM') : (d ? '9' : '6'); from = null; };
+    document.addEventListener('click', e => { if (e.target.closest('.apBack')) { close(); return; }
+      const g = e.target.closest('.svAptGo'); if (g) (g.closest('#svcMob') ? openMob : openDesk)({ from: 'svc' }); });
+    document.addEventListener('everlab:mode', () => { document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn'); });
+    window._apt = { openDesk, openMob, close };
+  })();
   // Save and Reset for the Timeline's and the service page's tweaks ("add save tweak in controller"):
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens

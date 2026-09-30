@@ -12072,3 +12072,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.615 Steps sheets: the title centred on the close button's line (align-items center); the title forced plain (no text-decoration, border or ground). The line the user saw across it did not reproduce here.
 - 5.616 The horizontal card tweak applies to the phone layouts only (Mobile, desk XS); the desk keeps the vertical steps.
 - 5.617 The service page's steps sheet never shows on the desktop (only at XS on the desk, and on the Mobile phone); a breakpoint change closes it.
+
+5.618 The appointment page ("add the appointment page"), from the two designs (desktop, mobile)
+- Desk #dApt (a dvMain beside #dSvc, moved there at start): back; the head in two columns (title, then at the foot the tags Physical appointment / Cancer, the line and a full-width Book with an arrow; the picture 553 x 444, radius 16); a hairline; then the main column (Consents with Review, Questionnaires with Complete, each an icon tile with an orange dot and an outlined button; What to expect and How to prepare as square-bulleted lists, each with a Watch a quick video preview card; the Questions about your appointment box with the care team's address) and the side (the We'll notify you note; Date & Time with a Pending confirmation badge, Location, Type, Duration). Under 860 of page width one column, the side first.
+- Phone .aptMob in #phone2 (over the service screen, z 6), and the desk at XS: the picture full bleed with the title on it and a back disc; a sheet over it with its grab, the tags and line, the note and details, then the lists. No Book, as the design.
+- Colours from the page's theme (.apPg tokens): dark by default, the design's own white, black and grey in light mode.
+- Doors: Version menu, Appointment (Desktop, Mobile); and View appointment on a service page's Your appointment heading (booked services), back returning to that service page.
