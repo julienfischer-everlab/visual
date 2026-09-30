@@ -7004,7 +7004,10 @@
      accordion stays for M and L */
   body.tlSheetMode #dTl .tlDet{display:none;}
   body.tlSheetMode #dTl .tlRow.open .tlTgl svg:last-child{transform:none;}
-  .tlSheet{position:absolute;inset:0;z-index:30;pointer-events:none;} .tlShAct:empty{display:none;} body:not(.tlOn) .tlSheet{display:none;}   /* the Timeline's own: never over another page ("why is this bottom sheet here?") */
+  .tlSheet{position:absolute;inset:0;z-index:30;pointer-events:none;} .tlShAct:empty{display:none;} body:not(.tlOn) .tlSheet:not(.svSheet){display:none;} body:not(.svcOn) .dash > .svSheet, #phone2:not(.svcOn) > .svSheet{display:none;}   /* the service page's own steps sheet, only over its page */
+  .svJrL > li.main.hz{cursor:pointer;} .svJrL > li.main.hz:hover{background:rgba(255,255,255,.1);}
+  .svShSteps{margin:4px 0 0;} .svShSteps .svStep{padding-left:22px;} .svShSteps .svStep::before{left:0;}
+  body:not([data-bp="xs"]) .dash > .svSheet .tlShPanel{left:50%;right:auto;width:480px;transform:translate(-50%,102%);} body:not([data-bp="xs"]) .dash > .svSheet.on .tlShPanel{transform:translate(-50%,0);}   /* wider than the phone: a 480 sheet, centred */   /* the Timeline's own: never over another page ("why is this bottom sheet here?") */
   .tlSheet.on{pointer-events:auto;}
   .tlShDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .25s ease;}
   .tlSheet.on .tlShDim{opacity:1;}
@@ -23189,7 +23192,7 @@
         if (h) h.innerHTML = heroH;
         if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + ref(true) + jr(true) : pend(true) + ref(true) + jr(false)) + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about;
       }
-      cur = { key, state, o, J };
+      cur = { key, state, o, J, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n };   // what the steps sheet shows
     };
     // which service a card of the Overview is, by its title
     const keyOf = el => { if (el.dataset && el.dataset.key) return el.dataset.key; const t = (el.textContent || '').toLowerCase();
@@ -23207,7 +23210,22 @@
     const openMob = (key, state, o) => { if (!ph) return; paint(key || 'dexa', state || (key ? 'request' : 'book'), o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });
     if (mob) mob.addEventListener('scroll', fxOn(mob), { passive: true });   // past 6, as the Overview's bar
-    const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was) try { sessionStorage.removeItem('everlab:svc'); } catch (e){} if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
+    // the steps sheet: a tap on the page's own card in the horizontal layout opens its steps listed, in the Timeline's bottom sheet ("on click on active step card open bottom sheet with vertical breakdown, same as the timeline view bottom sheet")
+    const SX = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 3l6 6M9 3 3 9"/></svg>';
+    const mkSheet = host => { if (!host) return null; const sh = document.createElement('div'); sh.className = 'tlSheet svSheet'; sh.setAttribute('aria-hidden', 'true');
+      sh.innerHTML = '<div class="tlShDim"></div><div class="tlShPanel" role="dialog" aria-modal="true" aria-label="Steps"><i class="tlShGrab" aria-hidden="true"></i><div class="tlShHead"><div><b></b><div class="tlShChip"></div></div><button class="tlShX" type="button" aria-label="Close">' + SX + '</button></div><div class="tlShBody"></div></div>';
+      host.appendChild(sh); const shut = () => { sh.classList.remove('on'); sh.setAttribute('aria-hidden', 'true'); };
+      sh.querySelector('.tlShDim').addEventListener('click', shut); sh.querySelector('.tlShX').addEventListener('click', shut); sh.shut = shut; return sh; };
+    const shD = mkSheet(document.querySelector('.dash')), shM = mkSheet(ph);
+    const shutAll = () => { [shD, shM].forEach(x => x && x.shut()); };
+    document.addEventListener('click', e => { const li = e.target.closest('.svJrL > li.main.hz'); if (!li || e.target.closest('button')) return;
+      const sh = li.closest('#svcMob') ? shM : shD; if (!sh) return; e.stopPropagation();
+      sh.querySelector('.tlShHead b').textContent = cur.shT || ''; sh.querySelector('.tlShChip').textContent = cur.shChip || '';
+      sh.querySelector('.tlShBody').innerHTML = '<div class="svJrSteps svShSteps">' + (cur.shSteps || '') + '</div>'; sh.querySelector('.tlShBody').scrollTop = 0;
+      sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); }, true);
+    addEventListener('keydown', e => { if (e.key === 'Escape') shutAll(); });
+    document.addEventListener('everlab:mode', shutAll);
+    const close = () => { shutAll(); const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was) try { sessionStorage.removeItem('everlab:svc'); } catch (e){} if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
     const heroKey = () => document.body.classList.contains('heroDexa') ? 'dexa' : 'consult';   // the booking card's Book: whichever service its hero shows
     if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openDesk(heroKey(), 'book'); else openDesk(keyOf(b), b.dataset.st || (/book/i.test(b.textContent) ? 'book' : 'booked')); });   /* the whole plan card, not only its button */
     if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openMob(heroKey(), 'book'); else openMob(keyOf(b), /book/i.test(b.textContent) ? 'book' : 'booked'); });

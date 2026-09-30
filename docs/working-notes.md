@@ -12067,3 +12067,4 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.610 Timeline steps bottom sheet (XS/S): no CTA row; the sheet ends with the steps.
 - 5.611 Phone service sheet: 2 more padding at its top (18).
 - 5.612 Phone service hero: a black gradient at its foot again as an overlay (transparent 45% -> black), at 30%; the picture moves up to 32 px as the sheet scrolls over (its layer 32 taller at the foot so no edge shows).
+- 5.613 Horizontal card (tweak): a tap on the page's own card opens its steps listed (the service page's step list) in the Timeline's bottom sheet (.tlSheet.svSheet): the service's name, "Step x of n", the steps; dim, x or Escape closes it. On the phone inside #phone2, on the desk over .dash (480 wide and centred except at XS). Shown only while its page is up.
