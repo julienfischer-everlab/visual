@@ -6715,6 +6715,7 @@
   .apIn{max-width:1148px;margin:0 auto;}
   #dApt .apTop{margin-bottom:24px;} #dApt.ovScrolled .svTop::before, #dApt.ovScrolled .svTop .ovGround{opacity:1;}   /* the desk's sticky bar, as the service page's ("respect the top sticky nav system") */
   #dApt .apIn{position:relative;}
+  .apProg .svJrL > li{cursor:pointer;} .apProg .svJrL > li.main{cursor:default;}
   .apSide .apProg{margin-top:40px;} .apM .apProg{margin-top:40px;}
   .aptMob.ovScrolled .svmNav::before, .aptMob.ovScrolled .svmNav .ovGround, #dApt.ovScrolled .apNarrow .svmNav::before, #dApt.ovScrolled .apNarrow .svmNav .ovGround{opacity:1;}
   .apM .svmHero{padding-bottom:48px;} .apM .svmHero h1{font-size:26px;}
@@ -26015,27 +26016,32 @@
       '<div class="apHelp"><b>' + IC.info + 'Questions about your appointment?</b><p>Contact our care team at <a href="mailto:support@everlab.com.au">support@everlab.com.au</a>.</p></div>';
     const LOCK = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>';
     // the journey's services as cards, no steps ("add the progress module without mentioning any step, just the service cards")
-    const prog = '<div class="svJr apProg"><div class="svProgHead">Your progress</div><ol class="svJrL">' + [['DEXA Scan', 'cur', 1], ['Diagnostics Review', 'lock'], ['Member Check-In', 'lock']].map(([t, k, me]) =>
-      '<li class="' + k + (me ? ' main' : '') + '"><i class="svJrMk">' + (k === 'lock' ? LOCK : '') + '</i><div class="svJrTx"><b>' + t + '</b></div>' + (me ? '<span class="svJrB me">This service</span>' : '<span class="svJrB">Locked</span>') + '</li>').join('') + '</ol></div>';
+    // the journey's services; a tap on one opens its own appointment page ("on click on a service inside the appointment, redirect to the appointment detail page")
+    const JI = [{ t: 'DEXA Scan', h: 'Dexa Scan', k: 'cur', img: 'assets/overview/plan-dexa.webp' }, { t: 'Diagnostics Review', h: 'Diagnostics Review', k: 'lock', img: 'assets/overview/plan-consult.webp' }, { t: 'Member Check-In', h: 'Member Check-In', k: 'lock', img: 'assets/overview/plan-physical.webp' }];
+    let AI = 0;
+    const progOf = () => '<div class="svJr apProg"><div class="svProgHead">Your progress</div><ol class="svJrL">' + JI.map((y, i) =>
+      '<li class="' + y.k + (i === AI ? ' main' : '') + '" data-ai="' + i + '"><i class="svJrMk">' + (y.k === 'lock' ? LOCK : '') + '</i><div class="svJrTx"><b>' + y.t + '</b></div>' + (i === AI ? '<span class="svJrB me">This service</span>' : y.k === 'lock' ? '<span class="svJrB">Locked</span>' : '') + '</li>').join('') + '</ol></div>';
     const MORE = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg>';
     // the phone's: the service page's own structure, so its interactions come with it ("follow the same interaction as the service detail page, parallax etc"): the sticky bar with back and more, the hero pinned under the sheet, the sheet sliding up over it
     const narrow = () => '<div class="apM"><div class="svmNav"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svmBtn svBack apBack" type="button" aria-label="Back">' + IC.back + '</button><button class="svmBtn" type="button" aria-label="More">' + MORE + '</button></div>' +
-      '<div class="svmHero apHero" style="--svmImg:url(' + D.img + ')"><h1>' + D.t + '</h1></div><div class="svmBody apMSheet"><i class="apGrab" aria-hidden="true"></i>' + tags + side + prog + lists + '</div></div>';
-    desk.innerHTML = '<div class="apPg"><div class="apWide"><div class="svTop apTop"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svBack apBack" type="button" aria-label="Back">' + IC.back + '</button></div><div class="apIn">' +
-      '<div class="apHead"><div class="apHeadTx"><h1>' + D.t + '</h1><i class="apSp"></i>' + tags + '<button class="apBook" type="button">Book ' + IC.arrow + '</button></div><img class="apImg" src="' + D.img + '" alt="" width="553" height="444"></div>' +
-      '<div class="apGrid"><div class="apMain">' + lists + '</div><aside class="apSide">' + side + prog + '</aside></div></div></div><div class="apNarrow">' + narrow() + '</div></div>';
-    mob.innerHTML = '<div class="apPg">' + narrow() + '</div>';
+      '<div class="svmHero apHero" style="--svmImg:url(' + JI[AI].img + ')"><h1>' + JI[AI].h + '</h1></div><div class="svmBody apMSheet"><i class="apGrab" aria-hidden="true"></i>' + tags + side + progOf() + lists + '</div></div>';
+    const paintA = () => { desk.innerHTML = '<div class="apPg"><div class="apWide"><div class="svTop apTop"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svBack apBack" type="button" aria-label="Back">' + IC.back + '</button></div><div class="apIn">' +
+      '<div class="apHead"><div class="apHeadTx"><h1>' + JI[AI].h + '</h1><i class="apSp"></i>' + tags + '<button class="apBook" type="button">Book ' + IC.arrow + '</button></div><img class="apImg" src="' + JI[AI].img + '" alt="" width="553" height="444"></div>' +
+      '<div class="apGrid"><div class="apMain">' + lists + '</div><aside class="apSide">' + side + progOf() + '</aside></div></div></div><div class="apNarrow">' + narrow() + '</div></div>';
+      mob.innerHTML = '<div class="apPg">' + narrow() + '</div>'; };
+    paintA();
     let from = null;
     const fx = sc => { sc.classList.toggle('ovScrolled', sc.scrollTop > 6); if (sc === mob && ph) ph.classList.toggle('aptScrolled', sc.scrollTop > 6);
       const h = [...sc.querySelectorAll('.apHero')].find(x => x.offsetParent); if (!h) return; const y = sc.scrollTop, k = Math.min(1, Math.max(0, y / Math.max(1, h.offsetHeight - 40)));
       const rd = matchMedia('(prefers-reduced-motion: reduce)').matches; h.style.setProperty('--hy', (rd ? 0 : -y * 0.25).toFixed(1) + 'px'); h.style.setProperty('--hk', (1 - k).toFixed(3)); h.style.setProperty('--hpy', (rd ? 0 : -32 * k).toFixed(1) + 'px'); };   // the service page's hero: words drift and fade, the picture 32 up
     [desk, mob].forEach(sc => { let q = 0; sc.addEventListener('scroll', () => { if (q) return; q = requestAnimationFrame(() => { q = 0; fx(sc); }); }, { passive: true }); });
-    const openDesk = o => { from = o && o.from || null; if (!from){ if (window._tl) window._tl.close(true); } document.body.classList.add('aptOn'); desk.scrollTop = 0; fx(desk); if (sel) sel.value = 'aptD'; requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };   // resize: the shell's corner block measured off this card
-    const openMob = o => { if (!ph) return; from = o && o.from || null; ph.classList.add('aptOn'); mob.scrollTop = 0; fx(mob); if (sel) sel.value = 'aptM'; };
+    const openDesk = o => { if (AI){ AI = 0; paintA(); } from = o && o.from || null; if (!from){ if (window._tl) window._tl.close(true); } document.body.classList.add('aptOn'); desk.scrollTop = 0; fx(desk); if (sel) sel.value = 'aptD'; requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };   // resize: the shell's corner block measured off this card
+    const openMob = o => { if (!ph) return; if (AI){ AI = 0; paintA(); } from = o && o.from || null; ph.classList.add('aptOn'); mob.scrollTop = 0; fx(mob); if (sel) sel.value = 'aptM'; };
     const close = () => { const d = document.body.classList.contains('aptOn'), m = ph && ph.classList.contains('aptOn'); if (!d && !m) return;
       document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn'); if (d) requestAnimationFrame(() => { if (typeof resize === 'function') resize(); });
       if (sel) sel.value = from === 'svc' ? (d ? 'svcD' : 'svcM') : (d ? '9' : '6'); from = null; };
     document.addEventListener('click', e => { if (e.target.closest('.apBack')) { close(); return; }
+      const li = e.target.closest('.apProg .svJrL > li[data-ai]'); if (li && +li.dataset.ai !== AI){ AI = +li.dataset.ai; paintA(); desk.scrollTop = 0; mob.scrollTop = 0; fx(desk); fx(mob); return; }
       const g = e.target.closest('.svAptGo'); if (g) (g.closest('#svcMob') ? openMob : openDesk)({ from: 'svc' }); });
     document.addEventListener('everlab:mode', () => { document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn'); });
     window._apt = { openDesk, openMob, close };
