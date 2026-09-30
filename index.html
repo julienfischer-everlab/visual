@@ -6716,6 +6716,12 @@
   #dApt .apTop{margin-bottom:24px;} #dApt.ovScrolled .svTop::before, #dApt.ovScrolled .svTop .ovGround{opacity:1;}   /* the desk's sticky bar, as the service page's ("respect the top sticky nav system") */
   #dApt .apIn{position:relative;}
   .apProg .svJrL > li{cursor:pointer;} .apProg .svJrL > li.main{cursor:default;}
+  .apBookCard{padding:22px;border-radius:20px;box-shadow:inset 0 0 0 1px var(--apBd);}
+  .apBkHd{display:flex;align-items:center;gap:16px;margin-bottom:14px;} .apBkHd b{font-size:20px;font-weight:500;color:var(--apInk);}
+  .apBkIc{flex:none;width:44px;height:44px;border-radius:10px;background:#4a74c9;color:#fff;display:flex;align-items:center;justify-content:center;} .apBkIc svg{width:22px;height:22px;}
+  .apBookCard .apKv{border-bottom:0;padding:10px 0;} .apBookCard .apBook{height:52px;margin-top:10px;}
+  .apBook:disabled{opacity:.35;cursor:default;} .apBkNote{margin:10px 0 0;font-size:13.5px;color:var(--apSub);text-align:center;}
+  .apM .apBookCard{margin-top:22px;} .apM .apBkIc{width:52px;height:52px;border-radius:12px;} .apM .apBkHd b{font-size:19px;}
   .apSide .apProg{margin-top:40px;} .apM .apProg{margin-top:40px;}
   .aptMob.ovScrolled .svmNav::before, .aptMob.ovScrolled .svmNav .ovGround, #dApt.ovScrolled .apNarrow .svmNav::before, #dApt.ovScrolled .apNarrow .svmNav .ovGround{opacity:1;}
   .apM .svmHero{padding-bottom:48px;} .apM .svmHero h1{font-size:26px;}
@@ -26006,28 +26012,34 @@
       expect: ['Meet your Everlab doctor for a one-on-one video call.', 'Deep dive into your goals, medical history, data and questionnaires.', 'Explore the Everlab approach, diagnostics, and protocols.', 'Get a tailored diagnostic plan recommendation based on your specific risks and goals.'],
       prep: ['Join from your computer (rather than a mobile) for easier viewing of reports and test results.', 'Choose a quiet and private space for a confidential, uninterrupted chat.'] };
     const tags = '<div class="apTags">' + D.tags.map(t => '<span class="apTag">' + t + '</span>').join('') + '</div><p class="apDesc">' + D.d + '</p>';
+    // not booked yet: the booking card in place of the note and the details ("adjust the design with these CTAs"); a locked service's Book waits
+    const CALP = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="13" height="12" rx="2"/><path d="M3.5 8.5h13M7 3v3M13 3v3M10 10.8v3.4M8.3 12.5h3.4"/></svg>';
+    const sideOf = y => !y.book ? side : '<div class="apBookCard"><div class="apBkHd"><span class="apBkIc">' + CALP + '</span><b>Book your appointment</b></div>' +
+      '<div class="apKv"><span class="k">' + IC.dur + 'Duration</span><span class="v">30min</span></div>' +
+      (y.k === 'lock' ? '<button class="apBook" type="button" disabled>Book ' + IC.arrow + '</button><p class="apBkNote">Available once your ' + JI[0].t + ' is complete.</p>' : '<button class="apBook" type="button">Book ' + IC.arrow + '</button>') + '</div>';
     const side = '<div class="apNote">' + IC.info + '<span>' + D.note + '</span></div><div class="apKvs">' + D.kv.map(([i, k, v]) => '<div class="apKv"><span class="k">' + IC[i] + k + '</span><span class="v">' + v + '</span></div>').join('') + '</div>';
     const task = (ic, t, b) => '<div class="apTask"><span class="apIc dot">' + IC[ic] + '</span><b>' + t + '</b><button class="apOut" type="button">' + b + '</button></div>';
     const vid = t => '<button class="apVid" type="button"><span class="apIc">' + IC.play + '</span><span>Watch a quick video preview<br>' + t + '</span>' + IC.chev + '</button>';
-    const lists = '<section><h2>Consents</h2>' + D.consents.map(t => task('sign', t, 'Review')).join('') + '</section>' +
-      '<section><h2>Questionnaires</h2>' + D.forms.map(t => task('form', t, 'Complete')).join('') + '</section>' +
-      '<section><h2>What to expect</h2><ul class="apList">' + D.expect.map(t => '<li>' + t + '</li>').join('') + '</ul>' + vid('to know what to expect') + '</section>' +
+    const listsOf = y => (y.noForms ? '' : '<section><h2>Consents</h2>' + D.consents.map(t => task('sign', t, 'Review')).join('') + '</section>' +
+      '<section><h2>Questionnaires</h2>' + D.forms.map(t => task('form', t, 'Complete')).join('') + '</section>') +   /* a review has neither ("for Diagnostic Review remove the consents and questionnaires") */
+      '<section><h2>What to expect</h2><ul class="apList">' + (y.expect || D.expect).map(t => '<li>' + t + '</li>').join('') + '</ul>' + vid('to know what to expect') + '</section>' +
       '<section><h2>How to prepare</h2><ul class="apList">' + D.prep.map(t => '<li>' + t + '</li>').join('') + '</ul>' + vid('to know how to prepare') + '</section>' +
       '<div class="apHelp"><b>' + IC.info + 'Questions about your appointment?</b><p>Contact our care team at <a href="mailto:support@everlab.com.au">support@everlab.com.au</a>.</p></div>';
     const LOCK = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>';
     // the journey's services as cards, no steps ("add the progress module without mentioning any step, just the service cards")
     // the journey's services; a tap on one opens its own appointment page ("on click on a service inside the appointment, redirect to the appointment detail page")
-    const JI = [{ t: 'DEXA Scan', h: 'Dexa Scan', k: 'cur', img: 'assets/overview/plan-dexa.webp' }, { t: 'Diagnostics Review', h: 'Diagnostics Review', k: 'lock', img: 'assets/overview/plan-consult.webp' }, { t: 'Member Check-In', h: 'Member Check-In', k: 'lock', img: 'assets/overview/plan-physical.webp' }];
+    const JI = [{ t: 'DEXA Scan', h: 'Dexa Scan', k: 'cur', img: 'assets/overview/plan-dexa.webp' }, { t: 'Diagnostics Review', h: 'Diagnostics Review', k: 'lock', img: 'assets/overview/plan-consult.webp', noForms: true, book: true,
+      expect: ['Meet your Everlab doctor for a one-on-one video call.', 'Go through your DEXA results: bone density, lean mass and where your body fat sits.', 'Read them alongside your latest blood results and what has changed since.', 'Leave with the next steps: what to keep, what to change, and what to test next.'] /* adapted ("and adapt what to expect") */ }, { t: 'Member Check-In', h: 'Member Check-In', k: 'lock', img: 'assets/overview/plan-physical.webp', book: true }];
     let AI = 0;
     const progOf = () => '<div class="svJr apProg"><div class="svProgHead">Your progress</div><ol class="svJrL">' + JI.map((y, i) =>
       '<li class="' + y.k + (i === AI ? ' main' : '') + '" data-ai="' + i + '"><i class="svJrMk">' + (y.k === 'lock' ? LOCK : '') + '</i><div class="svJrTx"><b>' + y.t + '</b></div>' + (i === AI ? '<span class="svJrB me">This service</span>' : y.k === 'lock' ? '<span class="svJrB">Locked</span>' : '') + '</li>').join('') + '</ol></div>';
     const MORE = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg>';
     // the phone's: the service page's own structure, so its interactions come with it ("follow the same interaction as the service detail page, parallax etc"): the sticky bar with back and more, the hero pinned under the sheet, the sheet sliding up over it
     const narrow = () => '<div class="apM"><div class="svmNav"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svmBtn svBack apBack" type="button" aria-label="Back">' + IC.back + '</button><button class="svmBtn" type="button" aria-label="More">' + MORE + '</button></div>' +
-      '<div class="svmHero apHero" style="--svmImg:url(' + JI[AI].img + ')"><h1>' + JI[AI].h + '</h1></div><div class="svmBody apMSheet"><i class="apGrab" aria-hidden="true"></i>' + tags + side + progOf() + lists + '</div></div>';
+      '<div class="svmHero apHero" style="--svmImg:url(' + JI[AI].img + ')"><h1>' + JI[AI].h + '</h1></div><div class="svmBody apMSheet"><i class="apGrab" aria-hidden="true"></i>' + tags + sideOf(JI[AI]) + progOf() + listsOf(JI[AI]) + '</div></div>';
     const paintA = () => { desk.innerHTML = '<div class="apPg"><div class="apWide"><div class="svTop apTop"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svBack apBack" type="button" aria-label="Back">' + IC.back + '</button></div><div class="apIn">' +
-      '<div class="apHead"><div class="apHeadTx"><h1>' + JI[AI].h + '</h1><i class="apSp"></i>' + tags + '<button class="apBook" type="button">Book ' + IC.arrow + '</button></div><img class="apImg" src="' + JI[AI].img + '" alt="" width="553" height="444"></div>' +
-      '<div class="apGrid"><div class="apMain">' + lists + '</div><aside class="apSide">' + side + progOf() + '</aside></div></div></div><div class="apNarrow">' + narrow() + '</div></div>';
+      '<div class="apHead"><div class="apHeadTx"><h1>' + JI[AI].h + '</h1><i class="apSp"></i>' + tags + '<button class="apBook" type="button"' + (JI[AI].k === 'lock' ? ' disabled' : '') + '>Book ' + IC.arrow + '</button></div><img class="apImg" src="' + JI[AI].img + '" alt="" width="553" height="444"></div>' +
+      '<div class="apGrid"><div class="apMain">' + listsOf(JI[AI]) + '</div><aside class="apSide">' + sideOf(JI[AI]) + progOf() + '</aside></div></div></div><div class="apNarrow">' + narrow() + '</div></div>';
       mob.innerHTML = '<div class="apPg">' + narrow() + '</div>'; };
     paintA();
     let from = null;
