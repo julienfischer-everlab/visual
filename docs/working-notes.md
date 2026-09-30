@@ -12071,3 +12071,4 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.614 Every bottom sheet a 32 safe space at its foot (.sheet padding-bottom 32, not the desk's side drawers; the steps sheets' body 32). The steps sheets (Timeline and service page) drop the step chip under their title. The dock's Plan is now Timeline (the sidebar's calendar): it opens the Timeline page (on a phone, the desk's in the XS device) and is lit there.
 - 5.615 Steps sheets: the title centred on the close button's line (align-items center); the title forced plain (no text-decoration, border or ground). The line the user saw across it did not reproduce here.
 - 5.616 The horizontal card tweak applies to the phone layouts only (Mobile, desk XS); the desk keeps the vertical steps.
+- 5.617 The service page's steps sheet never shows on the desktop (only at XS on the desk, and on the Mobile phone); a breakpoint change closes it.

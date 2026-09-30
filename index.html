@@ -7008,7 +7008,7 @@
   .tlSheet{position:absolute;inset:0;z-index:30;pointer-events:none;} .tlShAct:empty{display:none;} body:not(.tlOn) .tlSheet:not(.svSheet){display:none;} body:not(.svcOn) .dash > .svSheet, #phone2:not(.svcOn) > .svSheet{display:none;}   /* the service page's own steps sheet, only over its page */
   .svJrL > li.main.hz{cursor:pointer;} .svJrL > li.main.hz:hover{background:rgba(255,255,255,.1);}
   .svShSteps{margin:4px 0 0;} .svShSteps .svStep{padding-left:22px;} .svShSteps .svStep::before{left:0;}
-  body:not([data-bp="xs"]) .dash > .svSheet .tlShPanel{left:50%;right:auto;width:480px;transform:translate(-50%,102%);} body:not([data-bp="xs"]) .dash > .svSheet.on .tlShPanel{transform:translate(-50%,0);}   /* wider than the phone: a 480 sheet, centred */   /* the Timeline's own: never over another page ("why is this bottom sheet here?") */
+  body:not([data-bp="xs"]) .dash > .svSheet{display:none !important;}   /* never on the desktop ("remove bottom sheet on desktop"): the phone layouts only */   /* the Timeline's own: never over another page ("why is this bottom sheet here?") */
   .tlSheet.on{pointer-events:auto;}
   .tlShDim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .25s ease;}
   .tlSheet.on .tlShDim{opacity:1;}
@@ -23257,7 +23257,7 @@
     { const all = [...document.querySelectorAll('.stLockPat')]; all.forEach(t => t.addEventListener('change', () => { const on = t.value === 'on'; document.body.classList.toggle('svLockPat', on);
         all.forEach(u => { if (u !== t && u.value !== t.value){ u.value = t.value; const g = u.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(on)); } }); }));
       const keep = () => requestAnimationFrame(() => document.body.classList.toggle('svLockPat', !!all[0] && all[0].value === 'on')); keep(); /* on by default ("locked pattern by default ON") */ document.addEventListener('everlab:mode', keep); if (sel) sel.addEventListener('change', keep); }   // a change of page rewrites the body's classes: the setting comes back with it
-    { const bpS = document.getElementById('stBp'); if (bpS) bpS.addEventListener('change', () => setTimeout(() => { if (document.body.classList.contains('svcOn') && cur) paint(cur.key, cur.state, cur.o); }, 0)); }   // XS and back: the page redrawn for its width
+    { const bpS = document.getElementById('stBp'); if (bpS) bpS.addEventListener('change', () => setTimeout(() => { shutAll(); if (document.body.classList.contains('svcOn') && cur) paint(cur.key, cur.state, cur.o); }, 0)); }   // XS and back: the page redrawn for its width
     window._svc = { openDesk, openMob, close, plan };
     // the Overview's action plan cards carry the Timeline's step chip and the step in hand's badge ("add the badge step + badge status on the Overview action plan items"): the state is the one the card opens its page in (Book: to book; View: booked), so the card and its page agree
     { const PV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;
