@@ -6706,8 +6706,9 @@
   .svcMob::-webkit-scrollbar{display:none;}
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
   .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 64px));padding:calc(var(--stH,54px) + 120px) 16px 16px;   /* up under the sticky bar (its height), the title where it stood */background:linear-gradient(180deg,#151515,#111 70%,#0d0d0c);overflow:hidden;}   /* neutral: the warm brown read as an orange shade ("remove this weird orange shade") */
-  .svmHero::before{content:"";position:absolute;inset:0;background:var(--svmImg, url(assets/overview/plan-dexa.webp)) center 20% / cover no-repeat;opacity:.38;}   /* no fade at the foot ("remove gradient bottom hero"): the picture runs to the sheet's edge */
-  .svmHero > *{position:relative;transform:translateY(var(--hy, 0px));opacity:var(--hk, 1);}
+  .svmHero::before{content:"";position:absolute;inset:0 0 -32px;transform:translateY(var(--hpy, 0px));background:var(--svmImg, url(assets/overview/plan-dexa.webp)) center 20% / cover no-repeat;opacity:.38;}   /* no fade at the foot ("remove gradient bottom hero"): the picture runs to the sheet's edge */
+  .svmHero > *{position:relative;z-index:1;transform:translateY(var(--hy, 0px));opacity:var(--hk, 1);}
+  .svmHero::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,transparent 45%,#000 100%);opacity:.3;}   /* the black at the foot again, at 30% ("re-add the black gradient on the bottom of the hero but with 30% opacity") */
   .svmHero{position:sticky;top:0;z-index:0;}   /* pinned: the sheet (z 1) slides up over it */ .svmHero::before{opacity:calc(.38 * (.35 + .65 * var(--hk, 1)));}
   .svmHero{padding-bottom:48px;}   /* 68 -> 48 again ("less bottom gap by 20px") */   /* no progress card any more: the start date clear of the sheet's lip */ .svProg.svmList{margin-top:32px;}
   /* the back and more discs ride a bar like the Overview's ("same behaviour as
@@ -23199,7 +23200,7 @@
     const openDesk = (key, state, o) => { backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key || 'dexa', state || (key ? 'request' : 'book')])); } catch (e){} };   /* remembered through a reload, as the Timeline */
     // the hero holds while the sheet slides up over it, its words drifting up and fading, as the Insights phone's header ("remember the scroll parallax used for Insights mobile? do the same here; the body should overlap the hero")
     const heroFx = sc => { const h = sc && sc.querySelector('.svmHero'); if (!h) return; const y = sc.scrollTop, k = Math.min(1, Math.max(0, y / Math.max(1, h.offsetHeight - 40)));
-      h.style.setProperty('--hy', (reduced ? 0 : -y * 0.25).toFixed(1) + 'px'); h.style.setProperty('--hk', (1 - k).toFixed(3)); };
+      h.style.setProperty('--hy', (reduced ? 0 : -y * 0.25).toFixed(1) + 'px'); h.style.setProperty('--hk', (1 - k).toFixed(3)); h.style.setProperty('--hpy', (reduced ? 0 : -32 * k).toFixed(1) + 'px'); };   // the picture itself 32 up over the hero's height ("add a 32px vertical parallax on scroll up")
     let fxQ = 0; const fxOn = sc => () => { if (fxQ) return; fxQ = requestAnimationFrame(() => { fxQ = 0; heroFx(sc); }); };
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });
     if (desk) desk.addEventListener('scroll', fxOn(desk), { passive: true });   // the bar's ground, once the page moves under it
