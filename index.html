@@ -3005,7 +3005,7 @@
   /* The page is the header alone now ("keep only this, remove the rest of
      the scroll"): the pinned stage, its scroll track and the end scene stay
      in the markup but are not shown or built, and the page does not scroll. */
-  .lp{overflow:hidden;container-type:inline-size;container-name:lp;--lpW:100vw;}   /* a container: the page's own width is what its layout answers to, the window's or a forced frame's */
+  .lp{overflow-x:hidden;overflow-y:auto;scrollbar-width:none;container-type:inline-size;container-name:lp;--lpW:100vw;}   /* a container: the page's own width is what its layout answers to, the window's or a forced frame's */
   .lp .lpStage, .lp .lpScroll, .lp .lpEnd{display:none;}
   /* a forced breakpoint frames this page as it frames the shell ("make the
      breakpoint working on this page"): the page at the floor's width,
@@ -3102,12 +3102,39 @@
     .lpAvOrg{width:220px;height:220px;margin:-16px auto;}
     .lpAvNum{font-size:56px;}
     .lpAvNames{font-size:17px;gap:22px;}
+    /* the copy and its button under the organ ("move the description + CTA below the organ group"): the eyebrow and the title, the organ, then the rest */
+    .lpHero{display:flex;flex-direction:column;align-items:stretch;gap:0;}
+    .lpHeroTx{display:contents;}
+    .lpHeroTx > *{order:3;max-width:560px;margin-left:auto;margin-right:auto;text-align:center;}
+    .lpHeroTx > .lpEyebrow, .lpHeroTx > h1{order:1;}
+    .lpHeroVis{order:2;margin:8px auto 36px;}
+    .lp .lpOrgs{padding:64px 20px 88px;} .lp .lpOrgsHd{margin-bottom:40px;}
+    .lp .lpOrgGrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  /* the phone: the nine as a list, the title and the line, centred, no organ ("on mobile just title, content centered") */
+  @container lp (max-width:600px){
+    .lp .lpOrgGrid{grid-template-columns:minmax(0,1fr);gap:32px;}
+    .lp .lpOg{background:none;padding:0;}
+    .lp .lpOgVis{display:none;}
   }
   body[data-bp="xs"] .lp, body[data-bp="s"] .lp{overflow-y:auto;scrollbar-width:none;}
   body[data-bp="xs"] .lp::-webkit-scrollbar, body[data-bp="s"] .lp::-webkit-scrollbar{display:none;}
   @media (max-width:900px){.lp{overflow-y:auto;}}
-  body[data-bp="xs"] .lpHeroVis{top:64px;}   /* "on XS organ push down by 64px" */
-  body[data-bp="xs"] .lpHero{padding-bottom:120px;}
+  body[data-bp="xs"] .lpHeroVis{top:0;margin-top:24px;}   /* was top:64 ("on XS organ push down by 64px"); the organ now sits between the title and the copy */
+  body[data-bp="xs"] .lpHero{padding-bottom:24px;}   /* 120 when the header was the page; the organs' section follows now */
+  /* the nine organs, 3 x 3, under the header ("create a section grid where the nine organs are listed 3x3"): each its particle organ, its age's name and what it describes */
+  .lpOrgs{position:relative;z-index:2;background:#121212;color:#f4f4f4;padding:96px 40px 120px;}
+  .lpOrgsIn{max-width:1080px;margin:0 auto;}
+  .lpOrgsHd{max-width:640px;margin:0 auto 56px;text-align:center;}
+  .lpOrgsHd .lpEyebrow{color:rgba(244,244,244,.5);font-size:11px;}
+  .lpOrgsHd h2{margin:0 0 16px;font-weight:500;font-size:clamp(30px,calc(var(--lpW) * .03),44px);line-height:1.02;letter-spacing:-1.2px;color:#f4f4f4;}
+  .lpOrgsHd p{margin:0;font-size:16.5px;line-height:1.5;color:rgba(244,244,244,.72);}
+  .lpOrgGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
+  .lpOg{border-radius:24px;padding:20px 28px 32px;background:rgba(255,255,255,.04);text-align:center;}
+  .lpOgVis{position:relative;width:200px;height:200px;margin:0 auto 8px;}
+  .lpOgVis canvas{position:absolute;inset:0;display:block;}
+  .lpOg h3{margin:0 0 8px;font-size:20px;font-weight:500;letter-spacing:-.3px;color:#f4f4f4;}
+  .lpOg p{margin:0;font-size:15px;line-height:1.5;color:rgba(244,244,244,.64);}
   /* the pinned stage. `position:sticky` on a full-height block inside the
      scroller, so the visual holds while the document moves under it */
   .lpStage{position:sticky;top:0;height:100vh;height:100svh;width:100%;overflow:hidden;}
@@ -10479,6 +10506,16 @@
       </div>
     </div>
   </header>
+  <section class="lpOrgs" id="lpOrgs" aria-labelledby="lpOrgsH">
+    <div class="lpOrgsIn">
+      <div class="lpOrgsHd">
+        <p class="lpEyebrow">Nine ages</p>
+        <h2 id="lpOrgsH">Every system tells its own story.</h2>
+        <p>Organ Age reads nine systems across your body, each measured against your chronological age.</p>
+      </div>
+      <div class="lpOrgGrid" id="lpOrgGrid"></div>
+    </div>
+  </section>
   <div class="lpStage" id="lpStage" aria-hidden="true">
     <canvas id="lpField"></canvas>
     <!-- the product, drawn in DOM over the cloud: it is the one thing on the
@@ -22740,6 +22777,13 @@
   { // with the story gone, See your Organ Age goes where Start Today goes: the Insights phone
     const down = () => { if (typeof setMode === 'function') setMode(20); };
     buildLpHero(document.getElementById('lpAgeView'));
+    // the nine organs' grid: the particle organ (the file's own clouds through makeOrganView), the age's name, what it describes (AGE_DESC)
+    { const g = document.getElementById('lpOrgGrid');
+      if (g && typeof PILL !== 'undefined'){
+        const nine = PILL.filter(d => d.label !== 'Body');
+        g.innerHTML = nine.map(d => '<article class="lpOg"><div class="lpOgVis" aria-hidden="true"></div><h3>' + (d.slide || d.label + ' age') + '</h3><p>' + ((typeof AGE_DESC !== 'undefined' && AGE_DESC[d.label]) || '') + '</p></article>').join('');
+        if (typeof makeOrganView === 'function') [].forEach.call(g.querySelectorAll('.lpOgVis'), (v, i) => makeOrganView(v, nine[i].organIdx, { dl: false, dense: true, fill: 0.56 }));
+      } }
     lpStreams(document.getElementById('lpStreams'), document.getElementById('lpAgeView'));
     const cta = document.getElementById('lpHeroCta'); if (cta) cta.addEventListener('click', down); }
   // The services row under the greeting scrolls natively under a finger and
