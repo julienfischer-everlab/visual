@@ -12064,3 +12064,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.607 Tweak "Active card steps" (Service detail): Vertical (default, the steps listed) or Horizontal: the page's own card keeps its name row, then one row of bars coloured by status (green done, orange in hand, grey passive in hand, #fff 14% to come) and the step in hand's name under them. A single service shows its name in this layout. Kept by Save.
 - 5.608 Phone service hero: the picture's fade to black half as long (mask from 62%, was 30%); the gap under the title group back to 48.
 - 5.609 Phone service hero: no fade at the picture's foot (the mask gone); title to start line 6 (8).
+- 5.610 Timeline steps bottom sheet (XS/S): no CTA row; the sheet ends with the steps.
+- 5.611 Phone service sheet: 2 more padding at its top (18).
