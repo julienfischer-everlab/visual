@@ -12051,3 +12051,4 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.595 A single service's progress card (no related services) drops its name row (dot, name, This service): the steps alone in the card, words 22 in, bars at its left. A locked single service keeps the name row with its lock, since it has no steps to show.
 - 5.596 Organs grid rounded 16 as a whole (one outline, inner hairlines only). Under 600: the organ 77 (was 96), the cells 4 more padding (16 10 22).
 - 5.597 Landing h1 in Tobias ('Tobias', then Georgia/serif; not in the repo, so named as Suisse is and shown where installed), weight 400, -1px, line-height 1; broken as "Your body has more / than one age." at every width.
+- 5.598 Landing header at 900 and under: the arc (and the reading under it) 40 up (margin-top 18 -> -22).
