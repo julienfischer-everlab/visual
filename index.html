@@ -6713,7 +6713,12 @@
   body.m9.aptOn .dash .side .nvOver{background:none;color:inherit;} body.m9.aptOn .dash .side .nvSvc{background:#1e1e1c;color:#ececec;} body.light.m9.aptOn .dash .side .nvSvc{background:#ece4d3;color:#2e241c;}
   body.aptOn:is([data-bp="xs"], [data-bp="s"]) #mTabs3{display:none;}
   .apIn{max-width:1148px;margin:0 auto;}
-  .apTop{display:flex;margin-bottom:24px;}
+  #dApt .apTop{margin-bottom:24px;} #dApt.ovScrolled .svTop::before, #dApt.ovScrolled .svTop .ovGround{opacity:1;}   /* the desk's sticky bar, as the service page's ("respect the top sticky nav system") */
+  #dApt .apIn{position:relative;}
+  .apSide .apProg{margin-top:40px;} .apM .apProg{margin-top:40px;}
+  .aptMob.ovScrolled .svmNav::before, .aptMob.ovScrolled .svmNav .ovGround, #dApt.ovScrolled .apNarrow .svmNav::before, #dApt.ovScrolled .apNarrow .svmNav .ovGround{opacity:1;}
+  .apM .svmHero{padding-bottom:48px;} .apM .svmHero h1{font-size:26px;}
+  .apM .apMSheet{margin-top:-22px;padding:10px 16px 60px;}
   .apHead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;padding-bottom:24px;border-bottom:1px solid var(--apLine);}
   .apHeadTx{display:flex;flex-direction:column;min-width:0;}
   .apHeadTx h1{margin:0;font-size:32px;font-weight:500;letter-spacing:-.4px;color:var(--apInk);}
@@ -6750,11 +6755,6 @@
   .aptMob{position:absolute;inset:0;z-index:6;display:none;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;background:var(--apBg);} .aptMob::-webkit-scrollbar{display:none;}
   #phone2.aptOn .aptMob{display:block;} #phone2.aptOn .mscroll{display:none;} body.m6 #phone2.aptOn > .mTabs{display:none;}
   .apM{position:relative;background:var(--apBg);}
-  .apMBack{position:absolute;z-index:2;left:16px;top:calc(var(--stH,54px) + 8px);}
-  .apMHero{position:relative;height:300px;background:var(--apImg, url(assets/overview/plan-dexa.webp)) center 30% / cover no-repeat;}
-  .apMHero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 35%,transparent 55%,rgba(0,0,0,.55));}
-  .apMHero h1{position:absolute;z-index:1;left:16px;right:16px;bottom:38px;margin:0;font-size:26px;font-weight:500;letter-spacing:-.3px;color:#fff;}
-  .apMSheet{position:relative;z-index:1;margin-top:-20px;padding:10px 16px 60px;border-radius:22px 22px 0 0;background:var(--apBg);}
   .apGrab{display:block;width:36px;height:4px;margin:0 auto 16px;border-radius:2px;background:var(--apBd);}
   .apM .apDesc{margin-top:14px;font-size:15px;}
   .apM .apNote{margin-top:22px;padding:16px 18px;font-size:15px;}
@@ -15433,7 +15433,7 @@
     // leaves the curve cutting into flank-matched --pageBg again.
     // ...measured off whichever card is showing: #dOver stands in for #dMain
     // on the Overview, and a hidden #dMain measures left:0
-    { const dm = document.body.classList.contains('tlOn') ? document.getElementById('dTl') : document.body.classList.contains('svcOn') ? document.getElementById('dSvc') : document.body.classList.contains('m9') ? document.getElementById('dOver') : document.getElementById('dMain');   // the service page too: measured off a hidden card, the shell's corner block went to the wrong edge and the page's top-left corner showed square
+    { const dm = document.body.classList.contains('aptOn') && document.body.classList.contains('m9') ? document.getElementById('dApt') : document.body.classList.contains('tlOn') ? document.getElementById('dTl') : document.body.classList.contains('svcOn') ? document.getElementById('dSvc') : document.body.classList.contains('m9') ? document.getElementById('dOver') : document.getElementById('dMain');   // the service page too: measured off a hidden card, the shell's corner block went to the wrong edge and the page's top-left corner showed square
       if (dm){ const dash = document.querySelector('.dash'); dash.style.setProperty('--dMainLeft', (dm.getBoundingClientRect().left - dash.getBoundingClientRect().left) + 'px'); } }   // off the shell's own left: a forced breakpoint frames the shell away from the window's edge
     // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
     { const ho = document.getElementById('mHeroOrgan');
@@ -26013,16 +26013,27 @@
       '<section><h2>What to expect</h2><ul class="apList">' + D.expect.map(t => '<li>' + t + '</li>').join('') + '</ul>' + vid('to know what to expect') + '</section>' +
       '<section><h2>How to prepare</h2><ul class="apList">' + D.prep.map(t => '<li>' + t + '</li>').join('') + '</ul>' + vid('to know how to prepare') + '</section>' +
       '<div class="apHelp"><b>' + IC.info + 'Questions about your appointment?</b><p>Contact our care team at <a href="mailto:support@everlab.com.au">support@everlab.com.au</a>.</p></div>';
-    const narrow = back => '<div class="apM"><button class="svmBtn svBack apMBack apBack" type="button" aria-label="Back">' + IC.back + '</button><div class="apMHero"><h1>' + D.t + '</h1></div><div class="apMSheet"><i class="apGrab" aria-hidden="true"></i>' + tags + side + lists + '</div></div>';
-    desk.innerHTML = '<div class="apPg"><div class="apWide apIn"><div class="apTop"><button class="svBack apBack" type="button" aria-label="Back">' + IC.back + '</button></div>' +
+    const LOCK = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>';
+    // the journey's services as cards, no steps ("add the progress module without mentioning any step, just the service cards")
+    const prog = '<div class="svJr apProg"><div class="svProgHead">Your progress</div><ol class="svJrL">' + [['DEXA Scan', 'cur', 1], ['Diagnostics Review', 'lock'], ['Member Check-In', 'lock']].map(([t, k, me]) =>
+      '<li class="' + k + (me ? ' main' : '') + '"><i class="svJrMk">' + (k === 'lock' ? LOCK : '') + '</i><div class="svJrTx"><b>' + t + '</b></div>' + (me ? '<span class="svJrB me">This service</span>' : '<span class="svJrB">Locked</span>') + '</li>').join('') + '</ol></div>';
+    const MORE = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15" cy="10" r="1.6"/></svg>';
+    // the phone's: the service page's own structure, so its interactions come with it ("follow the same interaction as the service detail page, parallax etc"): the sticky bar with back and more, the hero pinned under the sheet, the sheet sliding up over it
+    const narrow = () => '<div class="apM"><div class="svmNav"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svmBtn svBack apBack" type="button" aria-label="Back">' + IC.back + '</button><button class="svmBtn" type="button" aria-label="More">' + MORE + '</button></div>' +
+      '<div class="svmHero apHero" style="--svmImg:url(' + D.img + ')"><h1>' + D.t + '</h1></div><div class="svmBody apMSheet"><i class="apGrab" aria-hidden="true"></i>' + tags + side + prog + lists + '</div></div>';
+    desk.innerHTML = '<div class="apPg"><div class="apWide"><div class="svTop apTop"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><button class="svBack apBack" type="button" aria-label="Back">' + IC.back + '</button></div><div class="apIn">' +
       '<div class="apHead"><div class="apHeadTx"><h1>' + D.t + '</h1><i class="apSp"></i>' + tags + '<button class="apBook" type="button">Book ' + IC.arrow + '</button></div><img class="apImg" src="' + D.img + '" alt="" width="553" height="444"></div>' +
-      '<div class="apGrid"><div class="apMain">' + lists + '</div><aside class="apSide">' + side + '</aside></div></div><div class="apNarrow">' + narrow() + '</div></div>';
+      '<div class="apGrid"><div class="apMain">' + lists + '</div><aside class="apSide">' + side + prog + '</aside></div></div></div><div class="apNarrow">' + narrow() + '</div></div>';
     mob.innerHTML = '<div class="apPg">' + narrow() + '</div>';
     let from = null;
-    const openDesk = o => { from = o && o.from || null; if (!from){ if (window._tl) window._tl.close(true); } document.body.classList.add('aptOn'); desk.scrollTop = 0; if (sel) sel.value = 'aptD'; };
-    const openMob = o => { if (!ph) return; from = o && o.from || null; ph.classList.add('aptOn'); mob.scrollTop = 0; if (sel) sel.value = 'aptM'; };
+    const fx = sc => { sc.classList.toggle('ovScrolled', sc.scrollTop > 6); if (sc === mob && ph) ph.classList.toggle('aptScrolled', sc.scrollTop > 6);
+      const h = [...sc.querySelectorAll('.apHero')].find(x => x.offsetParent); if (!h) return; const y = sc.scrollTop, k = Math.min(1, Math.max(0, y / Math.max(1, h.offsetHeight - 40)));
+      const rd = matchMedia('(prefers-reduced-motion: reduce)').matches; h.style.setProperty('--hy', (rd ? 0 : -y * 0.25).toFixed(1) + 'px'); h.style.setProperty('--hk', (1 - k).toFixed(3)); h.style.setProperty('--hpy', (rd ? 0 : -32 * k).toFixed(1) + 'px'); };   // the service page's hero: words drift and fade, the picture 32 up
+    [desk, mob].forEach(sc => { let q = 0; sc.addEventListener('scroll', () => { if (q) return; q = requestAnimationFrame(() => { q = 0; fx(sc); }); }, { passive: true }); });
+    const openDesk = o => { from = o && o.from || null; if (!from){ if (window._tl) window._tl.close(true); } document.body.classList.add('aptOn'); desk.scrollTop = 0; fx(desk); if (sel) sel.value = 'aptD'; requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };   // resize: the shell's corner block measured off this card
+    const openMob = o => { if (!ph) return; from = o && o.from || null; ph.classList.add('aptOn'); mob.scrollTop = 0; fx(mob); if (sel) sel.value = 'aptM'; };
     const close = () => { const d = document.body.classList.contains('aptOn'), m = ph && ph.classList.contains('aptOn'); if (!d && !m) return;
-      document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn');
+      document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn'); if (d) requestAnimationFrame(() => { if (typeof resize === 'function') resize(); });
       if (sel) sel.value = from === 'svc' ? (d ? 'svcD' : 'svcM') : (d ? '9' : '6'); from = null; };
     document.addEventListener('click', e => { if (e.target.closest('.apBack')) { close(); return; }
       const g = e.target.closest('.svAptGo'); if (g) (g.closest('#svcMob') ? openMob : openDesk)({ from: 'svc' }); });
