@@ -6700,7 +6700,8 @@
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
   .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 64px));padding:calc(var(--stH,54px) + 120px) 16px 16px;   /* up under the sticky bar (its height), the title where it stood */background:linear-gradient(180deg,#2b1a12,#161311 70%,#0d0d0c);overflow:hidden;}
   .svmHero::before{content:"";position:absolute;inset:0;background:var(--svmImg, url(assets/overview/plan-dexa.webp)) center 20% / cover no-repeat;opacity:.38;-webkit-mask-image:linear-gradient(#000 30%,transparent 95%);mask-image:linear-gradient(#000 30%,transparent 95%);}
-  .svmHero > *{position:relative;}
+  .svmHero > *{position:relative;transform:translateY(var(--hy, 0px));opacity:var(--hk, 1);}
+  .svmHero{position:sticky;top:0;z-index:0;}   /* pinned: the sheet (z 1) slides up over it */ .svmHero::before{opacity:calc(.38 * (.35 + .65 * var(--hk, 1)));}
   .svmHero{padding-bottom:48px;}   /* no progress card any more: the start date clear of the sheet's lip */ .svProg.svmList{margin-top:32px;}
   /* the back and more discs ride a bar like the Overview's ("same behaviour as
      the home page's top bar, on scroll"): sticky at the screen's top, the
@@ -6722,7 +6723,7 @@
   .svmBar i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.18);}
   .svmBar i.on{background:#f78359;}
   .svmStepName{font-size:14px;color:rgba(255,255,255,.55);}
-  .svmBody{position:relative;margin-top:-22px;padding:16px 16px calc(var(--navH,56px) + 40px);border-radius:22px 22px 0 0;background:#0d0d0c;}
+  .svmBody{position:relative;z-index:1;margin-top:-22px;padding:16px 16px calc(var(--navH,56px) + 40px);border-radius:22px 22px 0 0;background:#0d0d0c;}
   :is(.svcMob, .svXsBody) .svPend{flex-direction:column;align-items:stretch;gap:20px;padding:24px;}
   :is(.svcMob, .svXsBody) .svPend h3{font-size:20px;} :is(.svcMob, .svXsBody) .svPend p{font-size:15px;}
   :is(.svcMob, .svXsBody) .svBtn{height:52px;padding:0;}
@@ -7035,7 +7036,7 @@
     .tlSearch.open{position:absolute;left:0;right:0;top:50%;margin-top:-22px;width:auto;justify-content:flex-start;padding:0 14px;border-radius:12px;background:#1b1b1b;} body.light .tlSearch.open{background:#fff;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line */
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:18px -16px 0;padding:12px 16px 8px;} .tlSec:first-child .tlH{margin-top:6px;}
-    .tlRow{grid-template-columns:66px auto minmax(0,1fr);grid-template-areas:"th tx tx" "meta meta meta" "prog prog act" "det det det";column-gap:16px;padding:18px 0 20px;}
+    .tlRow{grid-template-columns:66px auto minmax(0,1fr);grid-template-areas:"th tx tx" "meta meta meta" "prog prog act" "det det det";column-gap:16px;padding:30px 0 32px;}   /* 12 more round the divider (+8, "+8px top and bottom around divider") and 4 more inside the card ("card padding +4px") */
     .tlTh{width:60px;height:60px;border-radius:12px;}   /* +16 ("increase visual +16px") */
     .tlTx{padding-top:0;} .tlTx p{white-space:normal;font-size:13.5px;}
     .tlMeta{flex-direction:column;flex-wrap:nowrap;gap:8px;margin-top:14px;font-size:13.5px;}
@@ -7053,7 +7054,8 @@
     .tlSugTrack::-webkit-scrollbar{display:none;}
     .tlSugTrack .tlRow{flex:0 0 86%;scroll-snap-align:start;box-sizing:border-box;padding:16px;border-radius:18px;background:var(--tlCard);box-shadow:0 0 0 1px var(--tlCardRing);}
     .tlSugTrack .tlRow + .tlRow::after{display:none;} .tlSugTrack .tlRow::before{display:none;}
-    .tlRow::before{left:-10px;right:-10px;top:4px;bottom:4px;border-radius:20px;}   /* the hover's ground 14 above the picture and below the buttons, not flush ("padding top bottom missing on hover"); radius 20 */ .tlItems .tlRow + .tlRow::after{left:0;right:0;}
+    .tlRow::before{left:-14px;right:-14px;top:12px;bottom:12px;border-radius:20px;}   /* 12 clear of the dividers, 18 of padding inside */
+    .tlRow:not(.noProg) .tlAct{justify-self:end;} .tlRow:not(.noProg) .tlAct .tlBtn{flex:0 0 auto;padding:0 24px;}   /* the CTA hugs its label ("hug content not fill") */   /* the hover's ground 14 above the picture and below the buttons, not flush ("padding top bottom missing on hover"); radius 20 */ .tlItems .tlRow + .tlRow::after{left:0;right:0;}
   }
   body[data-bp="xs"] #dTl{padding:64px 16px 110px;}
   body[data-bp="xs"] #dTl .tlBar{top:-19px;margin:0 -16px;padding:0 16px;}   /* stuck under the status strip, its ground reaching up behind it */
@@ -23157,19 +23159,19 @@
       if (desk){
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
         if (m && document.body.dataset.bp === 'xs'){   /* XS: the phone's page ("XS view like this") */
-          m.innerHTML = '<div class="svmHero svXsHero" style="--svmImg:url(' + img + ')">' + heroH + '</div><div class="svmBody svXsBody">' + (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(true) + jr(true) : pend(true) + jr(false)) + (toBook ? '' : sec) + ref(true) + instr + '<hr class="svRule">' + about + '</div>';
+          m.innerHTML = '<div class="svmHero svXsHero" style="--svmImg:url(' + img + ')">' + heroH + '</div><div class="svmBody svXsBody">' + (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + ref(true) + jr(true) : pend(true) + ref(true) + jr(false)) + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about + '</div>';
           if (a) a.innerHTML = '';
           const fit = () => { const hh = m.querySelector('.svXsHero'); if (!hh) return; hh.style.marginTop = '0px'; const off = hh.getBoundingClientRect().top - desk.getBoundingClientRect().top + desk.scrollTop; hh.style.marginTop = -off + 'px'; const tb = desk.querySelector('.svTop'); hh.style.paddingTop = ((tb ? tb.getBoundingClientRect().bottom - desk.getBoundingClientRect().top : off) + 56) + 'px'; }; requestAnimationFrame(fit); setTimeout(fit, 400);   // up under the bar to the card's top, the title 56 below the bar, as the phone's
         } else
         if (m) m.innerHTML = '<div class="svHead"><img src="' + img + '" alt="" width="312" height="312"><div class="svHeadTx"><h1>' + escS(title) + '</h1><div class="svStart">' + escS(start) + '</div></div><button class="svMore" type="button" aria-label="More">' + IC.more + '</button></div>' +
           (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(false) + jr(true) : pend(false)) + (toBook ? '' : sec) + ref(false) + instr;   // the status block out of the journey, above it ("externalise the status block above the section")
-        if (a) a.innerHTML = (JP ? '' : '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>') + (JP || (J && JR === 'right') ? jr(false) : '') + about;   /* merged into the journey card, the progress panel goes */
+        if (a && document.body.dataset.bp !== 'xs') a.innerHTML = (JP ? '' : '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>') + (JP || (J && JR === 'right') ? jr(false) : '') + about;   /* merged into the journey card, the progress panel goes */
       }
       if (mob){
         const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
         mob.style.setProperty('--svmImg', 'url(' + img + ')');
         if (h) h.innerHTML = heroH;
-        if (b) b.innerHTML = (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(true) + jr(true) : pend(true) + jr(false)) + (toBook ? '' : sec) + ref(true) + instr + '<hr class="svRule">' + about;
+        if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + ref(true) + jr(true) : pend(true) + ref(true) + jr(false)) + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about;
       }
       cur = { key, state, o, J };
     };
@@ -23180,9 +23182,15 @@
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
     const openDesk = (key, state, o) => { backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key || 'dexa', state || (key ? 'request' : 'book')])); } catch (e){} };   /* remembered through a reload, as the Timeline */
-    if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });   // the bar's ground, once the page moves under it
+    // the hero holds while the sheet slides up over it, its words drifting up and fading, as the Insights phone's header ("remember the scroll parallax used for Insights mobile? do the same here; the body should overlap the hero")
+    const heroFx = sc => { const h = sc && sc.querySelector('.svmHero'); if (!h) return; const y = sc.scrollTop, k = Math.min(1, Math.max(0, y / Math.max(1, h.offsetHeight - 40)));
+      h.style.setProperty('--hy', (reduced ? 0 : -y * 0.25).toFixed(1) + 'px'); h.style.setProperty('--hk', (1 - k).toFixed(3)); };
+    let fxQ = 0; const fxOn = sc => () => { if (fxQ) return; fxQ = requestAnimationFrame(() => { fxQ = 0; heroFx(sc); }); };
+    if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });
+    if (desk) desk.addEventListener('scroll', fxOn(desk), { passive: true });   // the bar's ground, once the page moves under it
     const openMob = (key, state, o) => { if (!ph) return; paint(key || 'dexa', state || (key ? 'request' : 'book'), o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
-    if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });   // past 6, as the Overview's bar
+    if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });
+    if (mob) mob.addEventListener('scroll', fxOn(mob), { passive: true });   // past 6, as the Overview's bar
     const close = () => { const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was) try { sessionStorage.removeItem('everlab:svc'); } catch (e){} if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM')) mark(sel.value === 'svcD' ? '9' : '6'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
     const heroKey = () => document.body.classList.contains('heroDexa') ? 'dexa' : 'consult';   // the booking card's Book: whichever service its hero shows
     if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovBookBtn'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.classList.contains('ovBookBtn')) openDesk(heroKey(), 'book'); else openDesk(keyOf(b), b.dataset.st || (/book/i.test(b.textContent) ? 'book' : 'booked')); });   /* the whole plan card, not only its button */
