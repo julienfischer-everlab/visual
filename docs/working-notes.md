@@ -12052,3 +12052,4 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.596 Organs grid rounded 16 as a whole (one outline, inner hairlines only). Under 600: the organ 77 (was 96), the cells 4 more padding (16 10 22).
 - 5.597 Landing h1 in Tobias ('Tobias', then Georgia/serif; not in the repo, so named as Suisse is and shown where installed), weight 400, -1px, line-height 1; broken as "Your body has more / than one age." at every width.
 - 5.598 Landing header at 900 and under: the arc (and the reading under it) 40 up (margin-top 18 -> -22).
+- 5.599 Timeline at XS: the step chip and the CTA 44 high (56); the chip shows a ring (20px, 3px stroke, conic to the count, orange / green done / grey passive) in place of the increments; the picture 60 (44), radius 12, its column 66; the hover ground 4 in from the row's edges (14 of padding round the content, was flush at the top) and radius 20.

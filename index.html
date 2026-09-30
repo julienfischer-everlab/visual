@@ -6788,6 +6788,8 @@
   .tlRow{grid-template-areas:"th tx act" "th meta act" "th prog prog" "th det det";}
   .tlProg{grid-area:prog;display:flex;align-items:center;gap:8px;margin-top:20px;min-width:0;font-size:12.5px;color:var(--tlSub);}
   .tlSeg{display:flex;gap:3px;flex:none;}
+  .tlRing{display:none;flex:none;width:20px;height:20px;border-radius:50%;--rc:#f78359;background:conic-gradient(var(--rc) calc(var(--p, 0) * 1turn), var(--tlDotRing) 0);-webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));}
+  .tlProg.done .tlRing{--rc:#9cc088;} .tlProg.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlBlk .tlRing{--rc:var(--tlSub);}
   .tlSeg i{width:16px;height:4px;border-radius:2px;background:var(--tlDotRing);}
   .tlSeg i.on{background:#f78359;} .tlSeg i.cur{background:linear-gradient(90deg,#f78359 50%,rgba(247,131,89,.3) 50%);}
   .tlProg .lb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .tlProg .lb b{font-weight:500;color:var(--tlTx);}
@@ -6955,16 +6957,16 @@
     .tlSearch.open{position:absolute;left:0;right:0;top:50%;margin-top:-22px;width:auto;justify-content:flex-start;padding:0 14px;border-radius:12px;background:#1b1b1b;} body.light .tlSearch.open{background:#fff;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line */
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:18px -16px 0;padding:12px 16px 8px;} .tlSec:first-child .tlH{margin-top:6px;}
-    .tlRow{grid-template-columns:50px auto minmax(0,1fr);grid-template-areas:"th tx tx" "meta meta meta" "prog prog act" "det det det";column-gap:16px;padding:18px 0 20px;}
-    .tlTh{width:44px;height:44px;border-radius:8px;}
+    .tlRow{grid-template-columns:66px auto minmax(0,1fr);grid-template-areas:"th tx tx" "meta meta meta" "prog prog act" "det det det";column-gap:16px;padding:18px 0 20px;}
+    .tlTh{width:60px;height:60px;border-radius:12px;}   /* +16 ("increase visual +16px") */
     .tlTx{padding-top:0;} .tlTx p{white-space:normal;font-size:13.5px;}
     .tlMeta{flex-direction:column;flex-wrap:nowrap;gap:8px;margin-top:14px;font-size:13.5px;}
     .tlMeta span{max-width:100%;} .tlMeta span > em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .tlAct{margin-top:16px;padding:0;margin-left:-8px;} .tlProg{margin-top:16px;} .tlProg .lb{flex:1 1 auto;} .tlSeg i{width:14px;}
     /* the chip and the button side by side, one height ("next to each other, same height 56px"); a row with no chip gives the button the line */
-    .tlProg .tlTgl{height:56px;padding:0 12px 0 14px;border-radius:12px !important;} .tlProg .tlCurB{display:none;} .tlProg .tlTgl .tlSeg{display:flex !important;}   /* no room for the badge beside the chip and the button: the chip keeps the increments */
+    .tlProg .tlTgl{height:44px;padding:0 12px 0 12px;border-radius:12px !important;gap:10px;} .tlProg .tlCurB{display:none;} .tlProg .tlTgl .tlSeg{display:none !important;} .tlProg .tlTgl .tlRing{display:block;}   /* 44 ("44px badge"), a ring for the increments */   /* no room for the badge beside the chip and the button: the chip keeps the increments */
     .tlAct{min-width:0;} .tlAct .tlBtn{min-width:0;padding:0 12px;overflow:hidden;text-overflow:ellipsis;} .tlAct .tlMore{flex:none;width:44px;}   /* a long label gives way, never the screen */
-    .tlAct .tlBtn, .tlAct .tlMore{height:56px;} .tlAct .tlBtn{border-radius:12px;} .tlAct.split .tlBtn{border-radius:12px 0 0 12px;} .tlAct.split .tlMore{border-radius:0 12px 12px 0;}
+    .tlAct .tlBtn, .tlAct .tlMore{height:44px;}   /* 44 ("44px height CTA") */ .tlAct .tlBtn{border-radius:12px;} .tlAct.split .tlBtn{border-radius:12px 0 0 12px;} .tlAct.split .tlMore{border-radius:0 12px 12px 0;}
     .tlRow.noProg{grid-template-areas:"th tx tx" "meta meta meta" "act act act" "det det det";} .tlRow.noProg .tlAct{margin-left:0;}
     .tlSugTrack .tlRow{grid-template-areas:"th tx tx" "meta meta meta" "act act act" "det det det";} .tlSugTrack .tlRow .tlAct{margin-left:0;} .tlBtn{flex:1 1 auto;height:40px;font-size:14px;} .tlMore{height:40px;} .tlAct.split .tlMore{width:44px;}
     .tlSug{margin:14px 0 8px;padding:0 0 12px;}
@@ -6973,7 +6975,7 @@
     .tlSugTrack::-webkit-scrollbar{display:none;}
     .tlSugTrack .tlRow{flex:0 0 86%;scroll-snap-align:start;box-sizing:border-box;padding:16px;border-radius:18px;background:var(--tlCard);box-shadow:0 0 0 1px var(--tlCardRing);}
     .tlSugTrack .tlRow + .tlRow::after{display:none;} .tlSugTrack .tlRow::before{display:none;}
-    .tlRow::before{left:-10px;right:-10px;border-radius:16px;} .tlItems .tlRow + .tlRow::after{left:0;right:0;}
+    .tlRow::before{left:-10px;right:-10px;top:4px;bottom:4px;border-radius:20px;}   /* the hover's ground 14 above the picture and below the buttons, not flush ("padding top bottom missing on hover"); radius 20 */ .tlItems .tlRow + .tlRow::after{left:0;right:0;}
   }
   body[data-bp="xs"] #dTl{padding:64px 16px 110px;}
   body[data-bp="xs"] #dTl .tlBar{top:-19px;margin:0 -16px;padding:0 16px;}   /* stuck under the status strip, its ground reaching up behind it */
@@ -23304,6 +23306,7 @@
     { const o = document.getElementById('stTlOpen'); if (o) o.addEventListener('change', () => { OPEN = o.value; render(); }); }   // the tweak redraws the list
     const render = () => {
       ROWS = []; list.innerHTML = layout(TL[tab]).map(sec).join('');
+      list.querySelectorAll('.tlTgl .tlSeg').forEach(sg => { const is = [...sg.children], n = is.length || 1, k = is.filter(i => i.classList.contains('on') || i.classList.contains('cur')).length; sg.insertAdjacentHTML('beforebegin', '<i class="tlRing" aria-hidden="true" style="--p:' + (k / n).toFixed(3) + '"></i>'); });   // XS: a ring of the same count in place of the increments ("use circular progress instead of increments")
       // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")
       list.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp'));
       // ...and where there is a step in hand, they ride in its orange badge ("put the step increment progress inside the active badge")
