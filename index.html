@@ -6600,6 +6600,13 @@
   .svJrL > li, :is(#dTl, .tlShPanel) .tlGrp > li{isolation:isolate;}
   body.svLockPat .svJrL > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(-45deg, rgba(255,255,255,var(--lpA, .08)) 0 1px, transparent 1px 5px);}
   .svJrL > li{position:relative;}
+  /* the tweak's horizontal card: the name, one row of bars coloured by status, the step in hand under them */
+  .svJrHz{flex:1 1 100%;margin:14px 0 2px 32px;} .svJrL > li.one .svJrHz{margin-left:0;}
+  .svJrBars{display:flex;gap:4px;} .svJrBars i{flex:1 1 0;height:5px;border-radius:3px;background:rgba(255,255,255,.14);}
+  .svJrBars i.on{background:#9cc088;} .svJrBars i.cur{background:#f78359;} .svJrBars i.cur.pas{background:rgba(255,255,255,.5);}
+  .svJrHzT{margin-top:10px;font-size:14px;color:#8b8b86;}
+  body.light .svJrBars i{background:rgba(46,31,26,.12);} body.light .svJrBars i.cur.pas{background:rgba(46,31,26,.4);}
+  .svJrL > li.one.hz > .svJrTx{display:block;}   /* a single service keeps its name in this layout: the bars need a title */
   .svJrL > li.one > .svJrMk, .svJrL > li.one > .svJrTx, .svJrL > li.one > .svJrB{display:none;} .svJrL > li.one > .svJrSteps{margin:4px 0;} .svJrL > li.one .svJrSteps .svStep{padding-left:22px;} .svJrL > li.one .svJrSteps .svStep::before{left:0;}   /* a service with no related ones: its steps alone in the card, no name, dot or badge ("if no other related service is attached to the parent, no need the title, dot and badge") */
   .svJrL > li.lock{background-color:rgba(255,255,255,.04);background-image:none;}   /* no dashes on a locked card ("for locked card no need dashed border"), the fill and the pattern only */ .svJrL > li.lock:hover{background-color:rgba(255,255,255,.06);} body.light .svJrL > li.lock{background-color:rgba(46,31,26,.04);}   /* a locked card filled grey at 4% under its dashes and pattern, as the Timeline's ("bg grey opacity 4%") */
   body.light.svLockPat .svJrL > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.lock::after, body.light.svLockPat :is(#dTl, .tlShPanel) .tlGrp > li.soon::after{background:repeating-linear-gradient(-45deg, rgba(46,31,26,calc(var(--lpA, .08) + .02)) 0 1px, transparent 1px 5px);}
@@ -9453,6 +9460,14 @@
             <option value="right">Right column</option>
             <!-- the right column, "Your progress" folded into the page's own card ("a tweak that merges Your progress inside the service card"; "call it Right column merged") -->
             <option value="rightm" selected>Right column merged</option>
+          </select>
+        </div>
+        <!-- the page's own card: its steps listed, or one row of bars with the step in hand ("for the active card service, keep an horizontal structure (tweak)") -->
+        <div class="tkRow">
+          <span class="lbl">Active card steps</span>
+          <select id="stJrHz" aria-label="How the page's own journey card shows its steps">
+            <option value="v" selected>Vertical</option>
+            <option value="h">Horizontal</option>
           </select>
         </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
@@ -23116,7 +23131,7 @@
       done: d => ({ tone: 'ok', tag: 'Completed', h: 'Your results are ready.', p: 'Your doctor has reviewed them. Read the report, or ask a question about it.', btn: 'View report', sec: 'Your appointment', at: 99, st: d.when || 'Completed' })
     };
     const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-    let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true;   // Right column merged by default ("use as default")   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
+    let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true, HZ = false;   // HZ: the own card's steps as one row of bars (the tweak)   // Right column merged by default ("use as default")   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
     const paint = (key, state, o) => {
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
       const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
@@ -23141,7 +23156,7 @@
         const k = y.state === 'done' ? 'on' : !J && state === 'locked' ? 'lock' : i === (J ? jA : 0) ? 'cur' : 'lock', me = i === JJ.i, nm = y.t || (SVC[y.svc] || {}).t || '';
         const mk = k === 'on' ? '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>' : k === 'lock' ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' : '';
         const lk = me && state === 'locked', bl = !!J && i === jB;
-        return '<li class="' + k + (me ? ' main' : '') + (!J && !lk ? ' one' : '') + (bl ? ' blk' : '') + '" data-j="' + i + '"><i class="svJrMk">' + mk + '</i><div class="svJrTx"><b>' + escS(nm) + '</b>' + (me && !inBody && !JP ? '<span>' + escS(x.h) + '</span>' : '') + '</div>' + (me ? '<span class="svJrB me">This service</span>' : bl ? '<button class="svJrGo pri" type="button">View</button>' : k === 'cur' ? '<button class="svJrGo" type="button">View</button>' : k === 'on' ? '' : '<span class="svJrB">' + (k === 'lock' ? 'Locked' : 'Related service') + '</span>')   /* locked: "Locked"; done: no badge ("replace Related by Locked if locked; if completed, no badge") */ + (me && (JP || !J) && !lk ? '<div class="svJrSteps">' + steps + '</div>' : '') + (me && inCard ? pend(false, lk) : '') + '</li>';   /* the third way: the status inside the page's own card ("a new tweak where the status block is included inside the service card") */ }).join('') + '</ol></div>';   // the page's own, badged ("in my journey add the active service, DEXA Scan (current page), + badge this service"); its status sits above the block
+        return '<li class="' + k + (me ? ' main' : '') + (!J && !lk ? ' one' : '') + (me && HZ ? ' hz' : '') + (bl ? ' blk' : '') + '" data-j="' + i + '"><i class="svJrMk">' + mk + '</i><div class="svJrTx"><b>' + escS(nm) + '</b>' + (me && !inBody && !JP ? '<span>' + escS(x.h) + '</span>' : '') + '</div>' + (me ? '<span class="svJrB me">This service</span>' : bl ? '<button class="svJrGo pri" type="button">View</button>' : k === 'cur' ? '<button class="svJrGo" type="button">View</button>' : k === 'on' ? '' : '<span class="svJrB">' + (k === 'lock' ? 'Locked' : 'Related service') + '</span>')   /* locked: "Locked"; done: no badge ("replace Related by Locked if locked; if completed, no badge") */ + (me && (JP || !J) && !lk ? (HZ ? '<div class="svJrHz"><div class="svJrBars">' + d.steps.map((st, j) => '<i class="' + (at >= n || (at >= 0 && j < at) ? 'on' : j === at ? 'cur' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"></i>').join('') + '</div><div class="svJrHzT">' + escS(at < 0 ? 'Not started' : at >= n ? 'All done' : d.steps[at][0]) + '</div></div>' : '<div class="svJrSteps">' + steps + '</div>') : '') + (me && inCard ? pend(false, lk) : '') + '</li>';   /* the third way: the status inside the page's own card ("a new tweak where the status block is included inside the service card") */ }).join('') + '</ol></div>';   // the page's own, badged ("in my journey add the active service, DEXA Scan (current page), + badge this service"); its status sits above the block
       const pend = (mobile, noBtn) => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + (x.btns ? ' stack' : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div>' + (noBtn || x.noBtn ? '' : x.btns ? '<div class="svPendBtns">' + x.btns.map((t, i) => '<button class="svBtn' + (i < x.btns.length - 1 ? ' sec' : '') + '" type="button">' + escS(t) + '</button>').join('') + '</div>' : '<button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + (x.goJ != null ? ' data-j="' + x.goJ + '"' : x.goNeed ? ' data-need="' + escS(x.goNeed) + '"' : '') + '>' + escS(x.btn) + '</button>') + '</div>';
       const rows = (state === 'booked' || state === 'done' ? '<div class="svRow"><span class="k">' + IC.cal + 'Date</span><span class="v">' + escS(o && o.when || x.st) + '</span></div>' : '') +
         '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' +
@@ -23207,6 +23222,7 @@
       const y = J.items[+li.dataset.j], op = { from: backTo, t: y.t, tag: y.tag, d: y.d, at: y.at, need: y.need, steps: y.steps, journey: Object.assign({}, J, { i: +li.dataset.j }) };
       if (li.closest('#svcMob, .svcMob')) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); });
     { const t = document.getElementById('stJr'); if (t) t.addEventListener('change', () => { JR = t.value; JP = JR === 'rightm'; paint(cur.key, cur.state, cur.o); }); }
+    { const t = document.getElementById('stJrHz'); if (t) t.addEventListener('change', () => { HZ = t.value === 'h'; paint(cur.key, cur.state, cur.o); }); }
     // the locked pattern: one switch on each page's tweaks, both the same setting
     { const ops = [...document.querySelectorAll('.stLockOp')]; ops.forEach(t => t.addEventListener('input', () => { document.documentElement.style.setProperty('--lpA', (t.value / 100).toFixed(2)); ops.forEach(u => { u.value = t.value; const v = u.parentElement.querySelector('.tkVal'); if (v) v.textContent = t.value + '%'; }); })); }   // the stripes' opacity, on the root so a change of page keeps it ("locked pattern opacity adjust tweak")
     { const all = [...document.querySelectorAll('.stLockPat')]; all.forEach(t => t.addEventListener('change', () => { const on = t.value === 'on'; document.body.classList.toggle('svLockPat', on);
@@ -23998,7 +24014,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr')   // ...nor the journey module's two places
+          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -25873,7 +25889,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
