@@ -6770,6 +6770,20 @@
   .apM .apTask{gap:14px;padding:12px 0;} .apM .apTask b{font-size:16px;} .apM .apOut{height:46px;padding:0 22px;}
   .apM .apList{padding-left:28px;} .apM .apList li{font-size:16px;}
   .apM .apVid > span:not(.apIc){font-size:16px;} .apM .apHelp{margin-top:40px;}
+  /* the documents (the tweak): rows with an icon, the name and its button; in the status block as cards on its ground, in the step in hand as small rows */
+  .svDoc{display:flex;align-items:center;gap:14px;}
+  .svDocIc{position:relative;flex:none;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(255,255,255,.08);color:#ececec;}
+  .svDocIc::after{content:"";position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:#f7641f;}
+  .svDoc b{flex:1 1 auto;min-width:0;font-weight:400;color:#f4f4f4;}
+  .svDocBtn{flex:none;border:0;font:inherit;font-weight:500;cursor:pointer;}
+  .svPend.hasDocs{flex-wrap:wrap;} .svDocs.inPend{flex:1 1 100%;display:grid;gap:8px;margin-top:4px;}
+  .svDocs.inPend .svDoc{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.06);} .svDocs.inPend .svDocIc{width:40px;height:40px;} .svDocs.inPend .svDocIc svg{width:18px;height:18px;}
+  .svDocs.inPend .svDoc b{font-size:15px;} .svDocs.inPend .svDocBtn{height:40px;padding:0 18px;border-radius:10px;background:#fff;color:#111;font-size:14px;}
+  .svDocs.inStep{display:grid;gap:6px;margin:10px 0 2px;}
+  .svDocs.inStep .svDoc{gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.05);} .svDocs.inStep .svDocIc{width:28px;height:28px;border-radius:8px;} .svDocs.inStep .svDocIc svg{width:14px;height:14px;} .svDocs.inStep .svDocIc::after{width:6px;height:6px;top:-2px;right:-2px;}
+  .svDocs.inStep .svDoc b{font-size:13px;color:#e6e6e3;} .svDocs.inStep .svDocBtn{height:28px;padding:0 10px;border-radius:8px;background:rgba(255,255,255,.1);color:#ececec;font-size:12px;}
+  body.light .svDocs.inPend .svDoc{background:#fff;} body.light .svDocIc{background:#f2f2f2;color:#1a1a1a;} body.light .svDoc b{color:#1a1a1a;} body.light .svDocs.inPend .svDocBtn{background:#000;color:#fff;} body.light .svDocs.inStep .svDoc{background:rgba(46,31,26,.05);} body.light .svDocs.inStep .svDocBtn{background:rgba(46,31,26,.08);color:#2e241c;}
+  .svcMob .svDocs.inPend .svDoc b, .svXsBody .svDocs.inPend .svDoc b{font-size:14px;}
   .svH2.svH2Apt{display:flex;align-items:center;gap:12px;} .svAptGo{margin-left:auto;height:32px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:13px;font-weight:500;cursor:pointer;} body.light .svAptGo{background:rgba(46,31,26,.07);color:#2e241c;}
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
   .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 64px));padding:calc(var(--stH,54px) + 120px) 16px 16px;   /* up under the sticky bar (its height), the title where it stood */background:linear-gradient(180deg,#151515,#111 70%,#0d0d0c);overflow:hidden;}   /* neutral: the warm brown read as an orange shade ("remove this weird orange shade") */
@@ -6835,7 +6849,7 @@
   body.m9.tlOn .dash .side .nvOver{background:none;color:inherit;}
   body.m9.tlOn .dash .side .nvTl{background:#1e1e1c;color:#ececec;}   /* the page lights Timeline */
   body.light.m9.tlOn .dash .side .nvTl{background:#ece4d3;color:#2e241c;} body.light.m9.tlOn .dash .side .nvOver{background:none;}
-  #tkMenu [data-tl], #tkMenu [data-svc]{display:none !important;} body.tlOn:not(.svcOn) #tkMenu [data-tl], body.svcOn #tkMenu [data-svc]{display:flex !important;} body.tlOn #tkMenu [data-pages], body.svcOn #tkMenu [data-pages]{display:none !important;}   /* on the Timeline, only its own tweaks */
+  #tkMenu [data-tl], #tkMenu [data-svc]{display:none !important;} body.tlOn:not(.svcOn) #tkMenu [data-tl], body.svcOn #tkMenu [data-svc], body.aptOn #tkMenu [data-svc]{display:flex !important;} body.tlOn #tkMenu [data-pages], body.svcOn #tkMenu [data-pages], body.aptOn #tkMenu [data-pages]{display:none !important;}   /* on the Timeline, only its own tweaks */
   .tlCol{max-width:760px;margin:0 auto;}
   .tlH1{margin:0 0 14px;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:var(--tlInk);}
   /* the tabs and the search ride a bar like every top bar: sticky at the
@@ -9541,6 +9555,23 @@
           <select id="stJrHz" aria-label="How the page's own journey card shows its steps">
             <option value="v" selected>Vertical</option>
             <option value="h">Horizontal</option>
+          </select>
+        </div>
+        <!-- the documents a service asks for (consents, questionnaires), to ideate where they live ("docs included in the timeline step" / "doc micro steps inside the hero card state") -->
+        <div class="tkRow">
+          <span class="lbl">Documents</span>
+          <select id="stDocs" aria-label="Where the service's documents are shown">
+            <option value="off" selected>None</option>
+            <option value="steps">In the steps</option>
+            <option value="status">In the status block</option>
+          </select>
+        </div>
+        <!-- which page a service opens on: the appointment page (the app's current one) or the service detail ("add a tweak Layout: Appointment (old), Service detail (new)") -->
+        <div class="tkRow">
+          <span class="lbl">Layout</span>
+          <select id="stLayout" aria-label="Which page a service opens on">
+            <option value="apt">Appointment (old)</option>
+            <option value="svc" selected>Service detail (new)</option>
           </select>
         </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
@@ -23218,7 +23249,7 @@
       done: d => ({ tone: 'ok', tag: 'Completed', h: 'Your results are ready.', p: 'Your doctor has reviewed them. Read the report, or ask a question about it.', btn: 'View report', sec: 'Your appointment', at: 99, st: d.when || 'Completed' })
     };
     const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-    let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true, HZ = false, PH = false;   // PH: painting a phone layout (the horizontal card is the phone's only, "not horizontal on desktop")   // HZ: the own card's steps as one row of bars (the tweak)   // Right column merged by default ("use as default")   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
+    let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true, HZ = false, PH = false, DOCS = 'off', LAY = 'svc';   // DOCS: where the documents show (the tweak); LAY: which page a service opens on   // PH: painting a phone layout (the horizontal card is the phone's only, "not horizontal on desktop")   // HZ: the own card's steps as one row of bars (the tweak)   // Right column merged by default ("use as default")   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
     const paint = (key, state, o) => {
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
       const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
@@ -23244,7 +23275,7 @@
         const mk = k === 'on' ? '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>' : k === 'lock' ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' : '';
         const lk = me && state === 'locked', bl = !!J && i === jB;
         return '<li class="' + k + (me ? ' main' : '') + (!J && !lk ? ' one' : '') + (me && HZ && PH ? ' hz' : '') + (bl ? ' blk' : '') + '" data-j="' + i + '"><i class="svJrMk">' + mk + '</i><div class="svJrTx"><b>' + escS(nm) + '</b>' + (me && !inBody && !JP ? '<span>' + escS(x.h) + '</span>' : '') + '</div>' + (me ? '<span class="svJrB me">This service</span>' : bl ? '<button class="svJrGo pri" type="button">View</button>' : k === 'cur' ? '<button class="svJrGo" type="button">View</button>' : k === 'on' ? '' : '<span class="svJrB">' + (k === 'lock' ? 'Locked' : 'Related service') + '</span>')   /* locked: "Locked"; done: no badge ("replace Related by Locked if locked; if completed, no badge") */ + (me && (JP || !J) && !lk ? (HZ && PH ? '<div class="svJrHz"><div class="svJrBars">' + d.steps.map((st, j) => '<i class="' + (at >= n || (at >= 0 && j < at) ? 'on' : j === at ? 'cur' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"></i>').join('') + '</div><div class="svJrHzT">' + escS(at < 0 ? 'Not started' : at >= n ? 'All done' : d.steps[at][0]) + '</div></div>' : '<div class="svJrSteps">' + steps + '</div>') : '') + (me && inCard ? pend(false, lk) : '') + '</li>';   /* the third way: the status inside the page's own card ("a new tweak where the status block is included inside the service card") */ }).join('') + '</ol></div>';   // the page's own, badged ("in my journey add the active service, DEXA Scan (current page), + badge this service"); its status sits above the block
-      const pend = (mobile, noBtn) => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + (x.btns ? ' stack' : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div>' + (noBtn || x.noBtn ? '' : x.btns ? '<div class="svPendBtns">' + x.btns.map((t, i) => '<button class="svBtn' + (i < x.btns.length - 1 ? ' sec' : '') + '" type="button">' + escS(t) + '</button>').join('') + '</div>' : '<button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + (x.goJ != null ? ' data-j="' + x.goJ + '"' : x.goNeed ? ' data-need="' + escS(x.goNeed) + '"' : '') + '>' + escS(x.btn) + '</button>') + '</div>';
+      const pend = (mobile, noBtn) => '<div class="svPend' + (x.tone ? ' ' + x.tone : '') + (x.btns ? ' stack' : '') + (DOCS === 'status' && docsOn ? ' hasDocs' : '') + '"><div class="svPendTx"><div class="svPendTag"><i></i>' + escS(x.tag) + '</div><h3>' + escS(x.h) + '</h3><p>' + x.p + '</p></div>' + (noBtn || x.noBtn ? '' : x.btns ? '<div class="svPendBtns">' + x.btns.map((t, i) => '<button class="svBtn' + (i < x.btns.length - 1 ? ' sec' : '') + '" type="button">' + escS(t) + '</button>').join('') + '</div>' : '<button class="svBtn" type="button"' + (x.dis ? ' disabled' : '') + (x.goJ != null ? ' data-j="' + x.goJ + '"' : x.goNeed ? ' data-need="' + escS(x.goNeed) + '"' : '') + '>' + escS(x.btn) + '</button>') + (DOCS === 'status' ? docs('inPend') : '') + '</div>';   /* the documents inside the status block ("see doc inside hero card state") */
       const rows = (state === 'booked' || state === 'done' ? '<div class="svRow"><span class="k">' + IC.cal + 'Date</span><span class="v">' + escS(o && o.when || x.st) + '</span></div>' : '') +
         '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' +
         '<div class="svRow"><span class="k">' + IC.dur + 'Duration</span><span class="v">' + escS(d.dur) + '</span></div>' +
@@ -23254,7 +23285,11 @@
       const instr = '<h2 class="svH2">Instructions</h2><div class="svBody"><ul class="svList">' + d.instr.map(i => '<li>' + escS(i) + '</li>').join('') + '</ul></div>';
       const about = '<div class="svAbout"><h3>About the service</h3><p>' + escS(d.about) + '</p><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
       const PASV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;   // a step that isn't the member's: its bar grey, as on the Timeline
-      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
+      const DI = { sign: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 3.5H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9.5"/><path d="m9 12 .6-2.4 6-6a1.2 1.2 0 0 1 1.8 1.8l-6 6Z"/></svg>', form: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3" width="11" height="14" rx="2"/><path d="M7.5 7h5M7.5 10h5M7.5 13h3"/></svg>' };
+      const dl = key === 'dexa' ? [['sign', 'DEXA Scan Consent', 'Review'], ['sign', 'Medical Imaging Consent', 'Review'], ['form', 'Pre-Scan Health & Medical History', 'Complete'], ['form', 'DEXA Scan Health Questionnaire', 'Complete']] : [['form', 'Health Questionnaire', 'Complete']];
+      const docsOn = state !== 'done' && state !== 'locked' && state !== 'later' && at < n;
+      const docs = (k) => !docsOn ? '' : '<div class="svDocs ' + k + '">' + dl.map(([ic, t, b]) => '<div class="svDoc"><span class="svDocIc">' + DI[ic] + '</span><b>' + escS(t) + '</b><button class="svDocBtn" type="button">' + b + '</button></div>').join('') + '</div>';   // the documents as micro steps ("doc micro steps")
+      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span>' + (DOCS === 'steps' && i === Math.max(0, at) ? docs('inStep') : '') + '</div>').join('');   // under the step in hand ("docs included in the timeline step")
       const toBook = state === 'book' || (at >= 0 && at < n && /^book/i.test(d.steps[at][0]));   // still to book: no appointment to describe ("if state is book appt, doesn't make sense to show Your appointment")
       const title = o && o.t || d.t, start = o && o.st || x.st;
       const heroH = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div>';   // no progress card in the phone's hero ("remove this on mobile"): the steps are listed in the sheet
@@ -23285,14 +23320,14 @@
     let backTo = null;   // where the back chevron returns: the Overview, or the Timeline the page was opened from
     const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
-    const openDesk = (key, state, o) => { backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key || 'dexa', state || (key ? 'request' : 'book')])); } catch (e){} };   /* remembered through a reload, as the Timeline */
+    const openDesk = (key, state, o) => { if (LAY === 'apt' && window._apt){ window._apt.openDesk({ from: o && o.from === 'tl' ? 'tl' : null }); return; } backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key || 'dexa', state || (key ? 'request' : 'book')])); } catch (e){} };   /* remembered through a reload, as the Timeline */
     // the hero holds while the sheet slides up over it, its words drifting up and fading, as the Insights phone's header ("remember the scroll parallax used for Insights mobile? do the same here; the body should overlap the hero")
     const heroFx = sc => { const h = sc && sc.querySelector('.svmHero'); if (!h) return; const y = sc.scrollTop, k = Math.min(1, Math.max(0, y / Math.max(1, h.offsetHeight - 40)));
       h.style.setProperty('--hy', (reduced ? 0 : -y * 0.25).toFixed(1) + 'px'); h.style.setProperty('--hk', (1 - k).toFixed(3)); h.style.setProperty('--hpy', (reduced ? 0 : -32 * k).toFixed(1) + 'px'); };   // the picture itself 32 up over the hero's height ("add a 32px vertical parallax on scroll up")
     let fxQ = 0; const fxOn = sc => () => { if (fxQ) return; fxQ = requestAnimationFrame(() => { fxQ = 0; heroFx(sc); }); };
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });
     if (desk) desk.addEventListener('scroll', fxOn(desk), { passive: true });   // the bar's ground, once the page moves under it
-    const openMob = (key, state, o) => { if (!ph) return; paint(key || 'dexa', state || (key ? 'request' : 'book'), o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
+    const openMob = (key, state, o) => { if (!ph) return; if (LAY === 'apt' && window._apt){ window._apt.openMob({ from: o && o.from === 'tl' ? 'tl' : null }); return; } paint(key || 'dexa', state || (key ? 'request' : 'book'), o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
     if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });
     if (mob) mob.addEventListener('scroll', fxOn(mob), { passive: true });   // past 6, as the Overview's bar
     // the steps sheet: a tap on the page's own card in the horizontal layout opens its steps listed, in the Timeline's bottom sheet ("on click on active step card open bottom sheet with vertical breakdown, same as the timeline view bottom sheet")
@@ -23327,6 +23362,11 @@
       if (li.closest('#svcMob, .svcMob')) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); });
     { const t = document.getElementById('stJr'); if (t) t.addEventListener('change', () => { JR = t.value; JP = JR === 'rightm'; paint(cur.key, cur.state, cur.o); }); }
     { const t = document.getElementById('stJrHz'); if (t) t.addEventListener('change', () => { HZ = t.value === 'h'; paint(cur.key, cur.state, cur.o); }); }
+    { const t = document.getElementById('stDocs'); if (t) t.addEventListener('change', () => { DOCS = t.value; paint(cur.key, cur.state, cur.o); }); }
+    { const t = document.getElementById('stLayout'); if (t) t.addEventListener('change', () => { LAY = t.value;   // switch the page in view to the other layout
+        const dk = document.body.classList.contains('svcOn'), mb = ph && ph.classList.contains('svcOn'), ad = document.body.classList.contains('aptOn'), am = ph && ph.classList.contains('aptOn');
+        if (LAY === 'apt' && (dk || mb) && window._apt){ const bt = backTo; backTo = null; document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); (mb && !dk ? window._apt.openMob : window._apt.openDesk)({ from: bt === 'tl' ? 'tl' : null }); }
+        else if (LAY === 'svc' && (ad || am) && window._apt){ window._apt.close(true); (am && !ad ? openMob : openDesk)('dexa', 'book'); } }); }
     // the locked pattern: one switch on each page's tweaks, both the same setting
     { const ops = [...document.querySelectorAll('.stLockOp')]; ops.forEach(t => t.addEventListener('input', () => { document.documentElement.style.setProperty('--lpA', (t.value / 100).toFixed(2)); ops.forEach(u => { u.value = t.value; const v = u.parentElement.querySelector('.tkVal'); if (v) v.textContent = t.value + '%'; }); })); }   // the stripes' opacity, on the root so a change of page keeps it ("locked pattern opacity adjust tweak")
     { const all = [...document.querySelectorAll('.stLockPat')]; all.forEach(t => t.addEventListener('change', () => { const on = t.value === 'on'; document.body.classList.toggle('svLockPat', on);
@@ -24118,7 +24158,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz')   // ...nor the journey module's two places
+          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stDocs' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -26050,9 +26090,9 @@
     [desk, mob].forEach(sc => { let q = 0; sc.addEventListener('scroll', () => { if (q) return; q = requestAnimationFrame(() => { q = 0; fx(sc); }); }, { passive: true }); });
     const openDesk = o => { if (AI){ AI = 0; paintA(); } from = o && o.from || null; if (!from){ if (window._tl) window._tl.close(true); } document.body.classList.add('aptOn'); desk.scrollTop = 0; fx(desk); if (sel) sel.value = 'aptD'; requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };   // resize: the shell's corner block measured off this card
     const openMob = o => { if (!ph) return; if (AI){ AI = 0; paintA(); } from = o && o.from || null; ph.classList.add('aptOn'); mob.scrollTop = 0; fx(mob); if (sel) sel.value = 'aptM'; };
-    const close = () => { const d = document.body.classList.contains('aptOn'), m = ph && ph.classList.contains('aptOn'); if (!d && !m) return;
+    const close = quiet => { const d = document.body.classList.contains('aptOn'), m = ph && ph.classList.contains('aptOn'); if (!d && !m) return; const wasTl = from === 'tl';
       document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn'); if (d) requestAnimationFrame(() => { if (typeof resize === 'function') resize(); });
-      if (sel) sel.value = from === 'svc' ? (d ? 'svcD' : 'svcM') : (d ? '9' : '6'); from = null; };
+      if (sel) sel.value = from === 'svc' ? (d ? 'svcD' : 'svcM') : (d ? '9' : '6'); from = null; if (wasTl && !quiet && window._tl) window._tl.open(true); };   // opened from the Timeline: back to it
     document.addEventListener('click', e => { if (e.target.closest('.apBack')) { close(); return; }
       const li = e.target.closest('.apProg .svJrL > li[data-ai]'); if (li && +li.dataset.ai !== AI){ AI = +li.dataset.ai; paintA(); desk.scrollTop = 0; mob.scrollTop = 0; fx(desk); fx(mob); return; }
       const g = e.target.closest('.svAptGo'); if (g) (g.closest('#svcMob') ? openMob : openDesk)({ from: 'svc' }); });
@@ -26063,7 +26103,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stDocs: 'off', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
