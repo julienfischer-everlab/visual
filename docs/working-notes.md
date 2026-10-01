@@ -12139,3 +12139,4 @@ The status block title is now an action ("Sign your Scan Consent", "Complete you
 - Questionnaire: how the answers help prepare the visit and keep the scan safe, and that the doctor reads them.
 - Photo ID: matching the member to the referral, and that the photo is stored securely.
 Once the documents are done (from Book on), Instructions comes back.
+5.658 — "Your referrals" is now a row in the My documents style, not an outlined card: the barcode in a 48px tile, "Your referrals" with a small grey line ("Show them when you get to your appointment"), and an outlined Show button. Same on desktop and phone (the phone's chevron button is gone). It still sits right after the status block.
