@@ -23356,13 +23356,15 @@
       items.forEach((y, i) => { if (y.state === 'locked' && items.slice(0, i).every(z => z.state === 'done')) items[i] = Object.assign({}, y, { state: 'book' }); }); return items; };   // the simulated flow ("let's simulate the flow"): each service's state as the member moves it on, and the documents done
     const CHKS = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 6.2 2.2 2.2 4.8-5"/></svg>';
     const simIn = (key, state, o) => { const k = key || 'dexa'; if (!SIM[k]) return [key, state, o]; return [k, SIM[k].state, Object.assign({}, o, SIM[k].o)]; };   // DOCS: where the documents show (the tweak); LAY: which page a service opens on   // PH: painting a phone layout (the horizontal card is the phone's only, "not horizontal on desktop")   // HZ: the own card's steps as one row of bars (the tweak)   // Right column merged by default ("use as default")   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
+    const DONE_ST = /^(done|completed?)$/i;
     const paint = (key, state, o) => {
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
       // a locked page whose services before it are all done is in hand, not locked ("DEXA is done, so it shouldn't be orange, and we should see the steps")
       if (state === 'locked'){ const its = o.journey ? o.journey.items.map(y => SIM[y.svc] ? Object.assign({}, y, { state: SIM[y.svc].state }) : y) : JDEF[key] ? jBase(JDEF[key]) : null, ii = o.journey ? o.journey.i : its ? its.findIndex(y => y.svc === key) : -1;
         if (its && ii > 0 && its.slice(0, ii).every(y => y.state === 'done')){ state = 'book'; if (o.journey) o.journey = Object.assign({}, o.journey, { items: its }); } }
-      const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
+      const d = Object.assign({}, SVC[key] || SVC.dexa, o); let x = (STATE[state] || STATE.request)(d);
       if (key === 'dexa' || !SVC[key]) d.steps = SVC.dexa.steps;   // a DEXA page always lists the DEXA's own steps, whatever opened it
+      if (state !== 'done' && x.at >= 0 && d.steps[x.at] && DONE_ST.test(d.steps[x.at][0])){ state = 'done'; x = STATE.done(d); }   /* a last step that just says Done is the done state: no warning, no CTA ("done doesn't need a warning state, neither a CTA") */
       const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
       // the status block says the step in hand, the one lit on the right ("body status block needs to reflect the current step on the right side"): its name and its line, and neutral when it isn't the member's to do; a time to re-choose (request) keeps its own message
       if (state !== 'request' && at >= 0 && at < n){ const cs = d.steps[at], pv = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/.test(cs[0]);
@@ -23490,7 +23492,7 @@
     const simGo = (k, state, extra, quiet) => { if (!SIM0[k]) SIM0[k] = { state: cur.state, o: cur.o }; SIM[k] = { state, o: Object.assign({}, SIM[k] && SIM[k].o, extra) };
       paint(k, state, Object.assign({}, cur.o, SIM[k].o)); if (!quiet) requestAnimationFrame(() => document.querySelectorAll('#dSvc .svPend, #svcMob .svPend').forEach(x => { x.classList.remove('svFlash'); void x.offsetWidth; x.classList.add('svFlash'); })); };
     // the skipper walks one sequence: the steps before Book, the documents (when the Documents tweak is on), then Book and the rest ("when I click next I go to the next step")
-    const simStep = dir => { const k = cur.key, n = cur.n, st = cur.steps || [], bookFirst = st[0] && /^book/i.test(st[0][0]), bI = cur.bI || 0, dn = cur.docs || [], L = dn.length;
+    const simStep = dir => { const k = cur.key, st = cur.steps || [], n = cur.n - (st.length && DONE_ST.test(st[st.length - 1][0]) ? 1 : 0), bookFirst = st[0] && /^book/i.test(st[0][0]), bI = cur.bI || 0, dn = cur.docs || [], L = dn.length;
       let from; if (cur.state === 'done') from = n + L; else { const a = Math.max(0, cur.at); if (L && a <= bI){ const fp = dn.findIndex(t => !DOCDONE.has(t)); from = fp < 0 ? bI + L : bI + fp; } else from = a < bI ? a : a + L; }
       const to = Math.max(0, Math.min(n + L, from + dir)); if (to === from) return;
       if (L) dn.forEach((t, i) => { if (to > bI + i) DOCDONE.add(t); else DOCDONE.delete(t); });
@@ -23706,7 +23708,7 @@
       const dl = DOCL(p.svc), k = dl.findIndex(([t]) => !DOCDN().has(t)), bI = Math.max(0, p.steps.findIndex(st => /^book/i.test(st[0]))), at = Math.max(0, p.at);   // always just before Book, the first still to do in hand while Book is not done
       const steps = p.steps.slice(0, bI).concat(dl.map(([t]) => [t]), p.steps.slice(bI));
       return stepList0(Object.assign({}, p, { steps, at: at < bI ? at : at === bI && k >= 0 ? bI + k : p.at + dl.length })); };
-    const stepList0 = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : '', w = c === 'cur' && pas(st); return '<li class="' + c + (w ? ' pas' : '') + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? (w ? '<span class="tlChip n tlNext">' + (/result/i.test(st[0]) ? 'Waiting for results' : 'In progress') + '</span>' : '<span class="tlChip o tlNext">Your next step</span>') : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
+    const stepList0 = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at || (i === p.at && /^(done|completed?)$/i.test(st[0])) ? 'on' : i === p.at ? 'cur' : '', w = c === 'cur' && pas(st); return '<li class="' + c + (w ? ' pas' : '') + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? (w ? '<span class="tlChip n tlNext">' + (/result/i.test(st[0]) ? 'Waiting for results' : 'In progress') + '</span>' : '<span class="tlChip o tlNext">Your next step</span>') : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
     const prog = r => {
       if (tab === 'claim') return '';   // yours to claim: no steps, no step chip ("never display the steps, neither the badge step")
       if (r.group){
