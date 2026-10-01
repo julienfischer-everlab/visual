@@ -6679,7 +6679,7 @@
   .svStep:last-child{margin-bottom:0;}
   .svStep::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;border-radius:2px;background:rgba(255,255,255,.12);}
   .svStep.on::before{background:#f78359;} .svStep.ok::before{background:#9cc088;} .svStep.on.pas::before{background:rgba(255,255,255,.72);}   /* done green, the step in hand orange ("first bar progress needs to be green") */
-  .svStep b{display:block;font-size:14px;font-weight:500;color:#f4f4f4;}   /* 2 smaller ("reduce title font size by 2px") */
+  .svStep b{display:block;font-size:14px;font-weight:400;color:#f4f4f4;}   /* 2 smaller ("reduce title font size by 2px"), regular ("steps title, regular") */
   .svStep span{display:block;margin-top:2px;font-size:14px;color:#8b8b86;}
   .svAbout{margin-top:44px;}
   .svAbout h3{margin:0 0 20px;font-size:20px;font-weight:500;letter-spacing:-.2px;color:#f4f4f4;}
@@ -6784,6 +6784,7 @@
   .tlDocs{margin:10px 0 2px 32px;} .tlDocs .svDocOk{font-size:12px;}
   .svDocB .svDoc{gap:18px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07);} .svDocB .svDoc:last-child{border-bottom:0;}
   .svDocB .svDocIc{width:48px;height:48px;border-radius:12px;} .svDocB .svDocIc svg{width:20px;height:20px;} .svDocB .svDoc b{font-size:16px;color:#f4f4f4;}
+  .svRep .svDocIc::after{display:none;} .svRepT{flex:1 1 auto;min-width:0;display:grid;gap:2px;} .svRepT b{display:block;} .svRepT small{font-size:13.5px;color:rgba(255,255,255,.5);} body.light .svRepT small{color:rgba(46,31,26,.55);}
   .svDocView{flex:none;height:40px;padding:0 20px;border:0;border-radius:10px;background:none;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18);color:#ececec;font:inherit;font-size:14px;font-weight:500;cursor:pointer;}
   body.light .svDocB .svDoc{border-bottom-color:rgba(46,31,26,.1);} body.light .svDocB .svDoc b{color:#1a1a1a;} body.light .svDocView{box-shadow:inset 0 0 0 1.5px rgba(46,31,26,.2);color:#2e241c;}
   .svDocs.inStep{display:grid;gap:6px;margin:10px 0 2px;}
@@ -9553,11 +9554,20 @@
         <div class="tkRow">
           <span class="lbl">Documents</span>
           <select id="stDocsOnT" class="stDocsOn" aria-label="Show the service's documents">
-            <option value="on">On</option>
-            <option value="off" selected>Off</option>
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
           </select>
         </div>
-        <div class="tkRow stDocsLayRow" hidden>
+        <div class="tkRow stDocsLayRow">
+          <span class="lbl">Doc number</span>
+          <select id="stDocsNT" class="stDocsN tkSegSel" aria-label="How many documents the service asks for">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4" selected>4</option>
+          </select>
+        </div>
+        <div class="tkRow stDocsLayRow">
           <span class="lbl">Document layout</span>
           <select id="stDocsLayT" class="stDocsLay" aria-label="Where the documents go">
             <option value="asSteps" selected>Part of step timeline</option>
@@ -9566,8 +9576,8 @@
         </div>
         <div class="tkRow" hidden>
           <select id="stDocsT" class="stDocsSel" aria-label="Where the service's documents are shown">
-            <option value="off" selected>None</option>
-            <option value="asSteps">As steps</option>
+            <option value="off">None</option>
+            <option value="asSteps" selected>As steps</option>
             <option value="status">In the status block</option>
           </select>
         </div>
@@ -9619,11 +9629,20 @@
         <div class="tkRow">
           <span class="lbl">Documents</span>
           <select id="stDocsOnS" class="stDocsOn" aria-label="Show the service's documents">
-            <option value="on">On</option>
-            <option value="off" selected>Off</option>
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
           </select>
         </div>
-        <div class="tkRow stDocsLayRow" hidden>
+        <div class="tkRow stDocsLayRow">
+          <span class="lbl">Doc number</span>
+          <select id="stDocsNS" class="stDocsN tkSegSel" aria-label="How many documents the service asks for">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4" selected>4</option>
+          </select>
+        </div>
+        <div class="tkRow stDocsLayRow">
           <span class="lbl">Document layout</span>
           <select id="stDocsLayS" class="stDocsLay" aria-label="Where the documents go">
             <option value="asSteps" selected>Part of step timeline</option>
@@ -9632,8 +9651,8 @@
         </div>
         <div class="tkRow" hidden>
           <select id="stSvDocs" class="stDocsSel" aria-label="Where the service's documents are shown">
-            <option value="off" selected>None</option>
-            <option value="asSteps">As steps</option>
+            <option value="off">None</option>
+            <option value="asSteps" selected>As steps</option>
             <option value="status">In the status block</option>
           </select>
         </div>
@@ -23324,8 +23343,12 @@
       done: d => ({ tone: 'ok', tag: 'Completed', h: 'Your results are ready.', p: 'Your doctor has reviewed them. Read the report, or ask a question about it.', btn: 'View report', sec: 'Your appointment', at: 99, st: d.when || 'Completed' })
     };
     const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-    let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true, HZ = false, PH = false, DOCS = 'off', LAY = 'svc';
-    const SIM = {}, SIM0 = {}, DOCDONE = new Set(); window.__docDone = DOCDONE; window.__docsMode = 'off';
+    let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true, HZ = false, PH = false, DOCS = 'asSteps', LAY = 'svc';
+    const SIM = {}, SIM0 = {}, DOCDONE = new Set(); window.__docDone = DOCDONE; window.__docsMode = 'asSteps';
+    /* the documents a service asks for, the first few of its list ("add tweak Doc number 1 2 3 4"), shared with the Timeline */
+    const DPOOL = { dexa: [['sign', 'Scan Consent', 'Review'], ['sign', 'Medical Imaging Consent', 'Review'], ['form', 'Pre-Scan Health & Medical History', 'Complete'], ['form', 'Health Questionnaire', 'Complete']],
+      x: [['form', 'Health Questionnaire', 'Complete'], ['sign', 'Service Consent', 'Review'], ['sign', 'Privacy Consent', 'Review'], ['form', 'Medical History', 'Complete']] };
+    window.__docsN = 4; window.__docList = svc => (DPOOL[svc] || DPOOL.x).slice(0, window.__docsN);
     // the two groups' services, each in the state the simulated flow has it at, a locked one unlocked once all before it are done
     const JDEF = { dexa: 'ci', diag: 'ci', checkin: 'ci', gutq: 'gut', gut: 'gut', gutrep: 'gut', gutrev: 'gut' };
     const jBase = g => { const items = (g === 'ci' ? [{ svc: 'dexa', state: 'book', t: 'DEXA Scan' }, { svc: 'diag', state: 'locked', need: 'DEXA Scan' }, { svc: 'checkin', state: 'locked', need: 'Diagnostics Review' }]
@@ -23373,13 +23396,19 @@
       const about = '<div class="svAbout"><h3>About the service</h3><p>' + escS(d.about) + '</p><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
       const PASV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;   // a step that isn't the member's: its bar grey, as on the Timeline
       const DI = { sign: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 3.5H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9.5"/><path d="m9 12 .6-2.4 6-6a1.2 1.2 0 0 1 1.8 1.8l-6 6Z"/></svg>', form: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3" width="11" height="14" rx="2"/><path d="M7.5 7h5M7.5 10h5M7.5 13h3"/></svg>' };
-      const dl = key === 'dexa' ? [['sign', 'Scan Consent', 'Review'], ['sign', 'Medical Imaging Consent', 'Review'], ['form', 'Pre-Scan Health & Medical History', 'Complete'], ['form', 'Health Questionnaire', 'Complete']] : [['form', 'Health Questionnaire', 'Complete']];
+      const dl = window.__docList(key);
       const docsOn = state !== 'done' && state !== 'locked' && state !== 'later' && at < n;
       const docs = (k) => !docsOn ? '' : '<div class="svDocs ' + k + '">' + dl.filter(([, t]) => k !== 'inPend' || !DOCDONE.has(t)).map(([ic, t, b]) => '<div class="svDoc' + (DOCDONE.has(t) ? ' done' : '') + '" data-doc="' + escS(t) + '"><span class="svDocIc">' + DI[ic] + '</span><b>' + escS(t) + '</b>' + (DOCDONE.has(t) ? '<span class="svDocOk">' + CHKS + 'Done</span>' : '<button class="svDocBtn" type="button">' + b + '</button>') + '</div>').join('') + '</div>';   // the documents as micro steps ("doc micro steps")
       // documents still to do block the status: it says so, and the documents are its only actions ("if docs block the state block, the title should reflect that; then no primary CTA at the right")
       if (DOCS === 'status' && docsOn && at <= Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))) && dl.some(([, t]) => !DOCDONE.has(t))){ const bk = at >= 0 && at < n && /^book/i.test(d.steps[at][0]);
         x.tag = 'Pending action'; x.tone = ''; x.h = bk ? 'Before you book, please complete the required documents below.' : 'Before your appointment, please complete the required documents below.'; x.p = ''; x.noBtn = true; x.btns = null; }
       // the documents done leave the status block for the body, under Consents and Questionnaires ("questionnaire and consent can be part of the body content once completed, outside the state block")
+      /* reports collected along the way, any step can add one ("on ANY step it's possible to collect some report during the way"), listed below the status block */
+      const RPI = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 2.5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Z"/><path d="M11.5 2.5V7H16"/><path d="M7.5 14v-2M10 14v-4M12.5 14v-3"/></svg>';
+      const bIx = d.steps.findIndex(st => /^book/i.test(st[0])), pos = state === 'done' ? n : Math.max(0, at);
+      const RL = (key === 'dexa' ? [['Referral letter', 0, 'From your Everlab doctor'], ['Booking confirmation', bIx + 1, 'Quantum Therapy Sydney'], ['Scan summary', n - 1, 'Shared by the imaging clinic'], ['Body composition report', n, 'Reviewed by your doctor'], ['Bone density report', n, 'Reviewed by your doctor']]
+        : [['Referral letter', 0, 'From your Everlab doctor'], ['Booking confirmation', bIx < 0 ? -1 : bIx + 1, 'Your provider'], ['Preliminary report', n > 1 ? n - 1 : -1, 'Shared by your provider'], ['Final report', n, 'Reviewed by your doctor']]).filter(([, f]) => f >= 0 && pos >= f);
+      const repBody = /^(locked|later|suggested|purchase)/.test(state) || !RL.length ? '' : '<h2 class="svH2">Reports</h2><div class="svDocB svRepB">' + RL.map(([t, , w]) => '<div class="svDoc svRep"><span class="svDocIc">' + RPI + '</span><span class="svRepT"><b>' + escS(t) + '</b><small>' + escS(w) + '</small></span><button class="svDocView" type="button">View</button></div>').join('') + '</div>';
       const docBody = DOCS === 'status' && docsOn ? [['sign', 'Consents'], ['form', 'Questionnaires']].map(([ic, h]) => { const ds = dl.filter(([i, t]) => i === ic && DOCDONE.has(t)); return !ds.length ? '' : '<h2 class="svH2">' + h + '</h2><div class="svDocB">' + ds.map(([i, t]) => '<div class="svDoc done"><span class="svDocIc">' + DI[i] + '</span><b>' + escS(t) + '</b><span class="svDocOk">' + CHKS + 'Completed</span><button class="svDocView" type="button">View</button></div>').join('') + '</div>'; }).join('') : '';
       // documents as steps come before the step in hand ("put the consent and questionnaire before the book state"): the first one still to do is the step in hand, its own button in the status block
       const DLINE = b => b === 'Review' ? 'Review and sign before your appointment' : 'Complete before your appointment';
@@ -23395,12 +23424,12 @@
         PH = document.body.dataset.bp === 'xs';
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
         if (m && document.body.dataset.bp === 'xs'){   /* XS: the phone's page ("XS view like this") */
-          m.innerHTML = '<div class="svmHero svXsHero" style="--svmImg:url(' + img + ')">' + heroH + '</div><div class="svmBody svXsBody">' + (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + ref(true) + jr(true) : pend(true) + ref(true) + jr(false)) + docBody + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about + '</div>';
+          m.innerHTML = '<div class="svmHero svXsHero" style="--svmImg:url(' + img + ')">' + heroH + '</div><div class="svmBody svXsBody">' + (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + repBody + ref(true) + jr(true) : pend(true) + repBody + ref(true) + jr(false)) + (J && JR === 'card' ? repBody : '') + docBody + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about + '</div>';
           if (a) a.innerHTML = '';
           const fit = () => { const hh = m.querySelector('.svXsHero'); if (!hh) return; hh.style.marginTop = '0px'; const off = hh.getBoundingClientRect().top - desk.getBoundingClientRect().top + desk.scrollTop; hh.style.marginTop = -off + 'px'; hh.style.top = -(parseFloat(getComputedStyle(desk).paddingTop) || 0) + 'px';   /* sticky counts from inside the card's 24 of padding: pinned there it left a band above the picture ("make the img cover the full header") */ const tb = desk.querySelector('.svTop'); hh.style.paddingTop = ((tb ? tb.getBoundingClientRect().bottom - desk.getBoundingClientRect().top : off) + 56) + 'px'; }; requestAnimationFrame(fit); setTimeout(fit, 400);   // up under the bar to the card's top, the title 56 below the bar, as the phone's
         } else
         if (m) m.innerHTML = '<div class="svHead"><img src="' + img + '" alt="" width="312" height="312"><div class="svHeadTx"><h1>' + escS(title) + '</h1><div class="svStart">' + escS(start) + '</div></div><button class="svMore" type="button" aria-label="More">' + IC.more + '</button></div>' +
-          (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(false) + jr(true) : pend(false)) + docBody + (toBook ? '' : sec) + ref(false) + instr;   // the status block out of the journey, above it ("externalise the status block above the section")
+          (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(false) + jr(true) : pend(false)) + repBody + docBody + (toBook ? '' : sec) + ref(false) + instr;   // the status block out of the journey, above it ("externalise the status block above the section")
         if (a && document.body.dataset.bp !== 'xs') a.innerHTML = (JP ? '' : '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>') + (JP || (J && JR === 'right') ? jr(false) : '') + about;   /* merged into the journey card, the progress panel goes */
       }
       if (mob){
@@ -23408,7 +23437,7 @@
         const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
         mob.style.setProperty('--svmImg', 'url(' + img + ')');
         if (h) h.innerHTML = heroH;
-        if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + ref(true) + jr(true) : pend(true) + ref(true) + jr(false)) + docBody + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about;
+        if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + repBody + ref(true) + jr(true) : pend(true) + repBody + ref(true) + jr(false)) + (J && JR === 'card' ? repBody : '') + docBody + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about;
       }
       cur = { key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS !== 'off' ? dl.map(([, t]) => t) : [], stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n };   // what the steps sheet shows
     };
@@ -23508,6 +23537,7 @@
       if (li.closest('#svcMob, .svcMob')) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); });
     { const t = document.getElementById('stJr'); if (t) t.addEventListener('change', () => { JR = t.value; JP = JR === 'rightm'; paint(cur.key, cur.state, cur.o); }); }
     { const t = document.getElementById('stJrHz'); if (t) t.addEventListener('change', () => { HZ = t.value === 'h'; paint(cur.key, cur.state, cur.o); }); }
+    { const all = [...document.querySelectorAll('.stDocsN')]; all.forEach(t => t.addEventListener('change', () => { window.__docsN = +t.value || 4; all.forEach(u => { if (u !== t) u.value = t.value; }); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); })); }
     { const all = [...document.querySelectorAll('.stDocsSel')]; all.forEach(t => t.addEventListener('change', () => { DOCS = t.value; window.__docsMode = DOCS; all.forEach(u => { if (u !== t) u.value = t.value; }); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); })); }   // one setting, in both groups
     { const t = document.getElementById('stLayout'); if (t) t.addEventListener('change', () => { LAY = t.value;   // switch the page in view to the other layout
         const dk = document.body.classList.contains('svcOn'), mb = ph && ph.classList.contains('svcOn'), ad = document.body.classList.contains('aptOn'), am = ph && ph.classList.contains('aptOn');
@@ -23668,7 +23698,7 @@
     const PASSIVE = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/, pas = st => !!st && PASSIVE.test(st[0]);
     const curB = st => '<span class="tlChip tlCurB' + (pas(st) ? ' n' : ' o') + '">' + esc(st[0]) + '</span>';
     // the service's documents (the Documents tweak, shared with the service page): steps of their own after the step in hand, or rows with their buttons under the list
-    const DOCL = svc => svc === 'dexa' ? [['Scan Consent', 'Review'], ['Medical Imaging Consent', 'Review'], ['Pre-Scan Health & Medical History', 'Complete'], ['Health Questionnaire', 'Complete']] : [['Health Questionnaire', 'Complete']];
+    const DOCL = svc => (window.__docList ? window.__docList(svc) : []).map(([, t, b]) => [t, b]);
     const docsFor = p => { const m = window.__docsMode; return m && m !== 'off' && p && p.svc && p.at >= 0 && p.at < p.steps.length ? m : ''; };
     const DOCDN = () => window.__docDone || new Set();
     const docRows = p => '<div class="svDocs inStep tlDocs">' + DOCL(p.svc).map(([t, b]) => { const dn = DOCDN().has(t); return '<div class="svDoc' + (dn ? ' done' : '') + '" data-doc="' + esc(t) + '"><span class="svDocIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3" width="11" height="14" rx="2"/><path d="M7.5 7h5M7.5 10h5M7.5 13h3"/></svg></span><b>' + esc(t) + '</b>' + (dn ? '<span class="svDocOk">Done</span>' : '<button class="svDocBtn" type="button">' + b + '</button>') + '</div>'; }).join('') + '</div>';
@@ -26277,7 +26307,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'off', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
