@@ -12123,3 +12123,4 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - Questionnaire: four tap-to-answer questions with a "N questions left" count, then "Submit".
 - Submitting completes the document and the next one comes up in hand. This applies to the status block CTA and to the document rows. The demo skipper still ticks documents off directly.
 The status block title is now an action ("Sign your Scan Consent", "Complete your Health Questionnaire"); the step on the right keeps the plain name.
+5.649 — Document layout "Part of status block": a document stays in the status block, whatever the step, until its form is submitted; only then does it move to the body list (Consents / Questionnaires). The demo skipper no longer ticks documents off in this layout, it only moves the steps. The title follows the step: "Before you book…" at Book, "Before your appointment…" at Go to your appointment, "Please complete the required documents below." after it.
