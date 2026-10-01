@@ -7674,6 +7674,11 @@
   body.light .ovcard.ovExp h4{color:#2e1f1a;} body.light .ovcard.ovExp h4 b{color:#000;}
   body.light .ovIll rect[fill="#2a2a29"]{fill:#efe6dc;} body.light .ovIll rect[fill="#1f1f1e"]{fill:#e2d6c8;}
   .ovcard.hid{display:none;}
+  /* the phone's Insights at half the size: two cards across and 32 of the third ("reduce the insights card by 50%, 2 cards visible, a 3rd one visible 32px") */
+  #phone2 .ovcar{scroll-padding:0 13px;} #phone2 .ovcard{flex:0 0 calc((100% - 43px) / 2);scroll-snap-align:start;padding:12px;gap:6px;border-radius:16px;}
+  #phone2 .ovcard .oclab span{font-size:11px;gap:5px;} #phone2 .ovcard .oclab span i{width:5px;height:5px;} #phone2 .ovcard .oclab .ocx{width:20px;height:20px;font-size:8px;}
+  #phone2 .ovcard h4{padding-right:0;font-size:12.5px;line-height:1.32;} #phone2 .ovcard .ocBy{gap:6px;margin-top:0;font-size:11px;} #phone2 .ovcard .ocBy span:first-child{overflow:hidden;text-overflow:ellipsis;}
+  #phone2 .ovcard .ovIllWrap{height:72px;margin:auto 0 -6px;padding-top:6px;}   /* the drawing and the button sit at the foot, level across cards whatever the title's lines */ #phone2 .ovcard .ovbtn{margin-top:12px;padding:8px 0;font-size:12px;}
   body.insN1 #phone2 .ovcard{flex:0 0 100%;}   /* one insight: the card at the column's width */
   body.insN1 .ovcdots, body.insN1 #dOver .dvSec .nav, body.insN2 #dOver .ovcdots, body.insN2 #dOver .dvSec .nav{display:none;}   /* nothing to page through */
   .ovcdots{display:flex;gap:6px;justify-content:center;align-items:center;padding:0;margin-top:24px;}
@@ -24063,7 +24068,7 @@
       if (!c) return 0;
       const hr = car.getBoundingClientRect(), cr = c.getBoundingClientRect();
       const left = cr.left - hr.left + car.scrollLeft;
-      const pos = opts.align === 'start' ? left : left - (car.clientWidth - cr.width) / 2;
+      const pos = opts.align === 'start' ? left - (parseFloat(getComputedStyle(car).paddingLeft) || 0) : left - (car.clientWidth - cr.width) / 2;   /* start: the card at the row's own inset */
       return Math.max(0, Math.min(car.scrollWidth - car.clientWidth, pos));
     };
     const idxAt = x => { const cs = cardsOf(); let best = 0, bd = Infinity; cs.forEach((c, i) => { const d = Math.abs(snapAt(i) - x); if (d < bd){ bd = d; best = i; } }); return best; };
@@ -24133,7 +24138,7 @@
     // the Insights tweak's count: 1, 2, or all ("0 / 1 / 2 / 3+"; 0 hides the section)
     car._ovExp = { setCount(n){ [].slice.call(car.querySelectorAll('.ovcard')).forEach((c, i) => c.classList.toggle('hid', i >= n)); car.scrollLeft = 0; drawDots(); sync(); } };
   }
-  buildOvExplore(document.querySelector('#phone2 .ovcar'), document.querySelector('#phone2 .ovcdots'), { align: 'center' });
+  buildOvExplore(document.querySelector('#phone2 .ovcar'), document.querySelector('#phone2 .ovcdots'), { align: 'start' });   /* two cards and a peek of the third, so they line up from the left */
   { const over = document.getElementById('dOver');
     if (over){ const secs = [].slice.call(over.querySelectorAll('.dvSec')), sec = secs.find(s => s.querySelector('.nav'));
       buildOvExplore(over.querySelector('.ovcar'), over.querySelector('.ovcdots'), { align: 'start', nav: sec && sec.querySelector('.nav') }); } }

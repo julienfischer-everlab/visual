@@ -12129,3 +12129,7 @@ The status block title is now an action ("Sign your Scan Consent", "Complete you
 5.652 — A completed document opens again: View in My documents opens its form read only. A consent shows the box ticked and the name it was signed with. A questionnaire shows the chosen answers, with the others dimmed. A photo shows the uploaded file. The footer reads "Signed today", "Completed today" or "Uploaded today", with a Close button. A document ticked off by the demo skipper never had a form filled in, so it shows default answers ("Signed electronically", the first option for each question).
 5.653 — Timeline: with Document layout "Part of status block", the Timeline card shows no documents at all, only the service's own steps; the document rows under the steps are gone. With "Part of step timeline", documents still show as steps.
 5.654 — "Your referrals" card always comes right after the status block, on desktop too, ahead of Reports, My documents, Your appointment and Instructions. On phone it now also comes before Reports.
+5.655 — Overview, phone: the Insights cards are at half width. Two cards fit across with 32px of the third showing, so the row now lines up from the left (start snap at the row's 13px inset) instead of centring.
+- The contents are scaled down to match: 12px padding, a smaller label and close button, a 12.5px title, an 11px byline, a 72px illustration and a smaller See insights button.
+- The illustration and button sit at the foot of the card, so they line up across cards.
+- The desktop rail and XS desktop are unchanged.
