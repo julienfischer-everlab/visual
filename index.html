@@ -1890,6 +1890,14 @@
     top:auto;bottom:0;height:2px;border-radius:2px;background:#ececec;
   }
   body.light.v2Tab .dash .dTabsV2 .v2Thumb{background:#2e1f1a;}
+  /* the phone's tabs as the desk's: at the left, each as wide as its label, the pill's ground under them only, Upload at the right ("add upload record on mobile too, put tab left side and hug as desktop") */
+  .mTabsV2 .mTabUp{display:none;}
+  body.v2Tab #phone #mTabsV2{width:auto;margin-left:13px;margin-right:13px;align-items:center;min-height:44px;padding:0 4px;background:none;box-sizing:border-box;}
+  body.v2Tab #phone #mTabsV2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--trackW,0px);border-radius:999px;background:rgba(255,255,255,.06);pointer-events:none;}
+  body.light.v2Tab #phone #mTabsV2::before{background:rgba(46,31,26,.07);} body.light.v2Tab #phone #mTabsV2{background:none;}
+  body.v2Tab #phone #mTabsV2 .v2Tab{flex:0 0 auto;height:36px;padding:0 16px;display:flex;align-items:center;justify-content:center;} body.v2Tab:not(.v4Tab) #phone #mTabsV2 .v2Tab.v4Only{display:none;}
+  body.v2Tab #phone #mTabsV2 .mTabUp{display:inline-flex;margin:0 0 0 auto;position:relative;z-index:1;height:44px;padding:0 16px;gap:7px;align-items:center;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.09);text-decoration:none;font-size:13.5px;}
+  body.light.v2Tab #phone #mTabsV2 .mTabUp{box-shadow:inset 0 0 0 1.5px rgba(46,31,26,.1);}
   /* Upload records at the right end of the tabs' row */
   .dTabsV2 .dTabUp{display:none;} body.v2Tab .dash .dTabsV2 .dTabUp{display:inline-flex;margin-left:auto;align-self:center;margin-bottom:13px;position:relative;z-index:1;}
   html.dTabSeg body.v2Tab .dash .dTabsV2 .dTabUp{margin-bottom:0;}
@@ -10476,6 +10484,7 @@
       <!-- V4 only: a third thing the page can be a list of. Not readings and
            not documents -- what the readings mean, one card per finding. -->
       <button class="v2Tab v4Only" type="button" role="tab" aria-selected="false" data-tab="ins">Insights</button>
+      <button class="docLink rcUpBtn mTabUp" type="button">Upload<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11V3M4.5 6.5 8 3l3.5 3.5"/><path d="M3 11.5v1a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg></button>
     </div>
     <!-- V4 only: the organ card moves in here, out of the bento and out of any
          card, so it reads as the header itself rather than as a thing on it -->
@@ -26469,8 +26478,10 @@
       document.addEventListener('click', e => { if (e.target.closest('.tkBtn, .tkTrig, [aria-label*="weak"]')) setTimeout(draw, 50); }, true);   /* hidden marks follow the other tweaks when the panel opens */
     }
   }
-  { const t = document.getElementById('stDTabs'), bar = document.getElementById('dTabsV2');
-    const track = () => { if (!bar) return; const ts = [...bar.querySelectorAll('.v2Tab')].filter(x => x.offsetWidth); const l = ts[ts.length - 1]; if (l) bar.style.setProperty('--trackW', (l.offsetLeft + l.offsetWidth + 4) + 'px'); };
+  { const t = document.getElementById('stDTabs'), bar = document.getElementById('dTabsV2'), mbar = document.getElementById('mTabsV2');
+    const track1 = b => { if (!b) return; const ts = [...b.querySelectorAll('.v2Tab')].filter(x => x.offsetWidth); const l = ts[ts.length - 1]; if (l) b.style.setProperty('--trackW', (l.offsetLeft + l.offsetWidth + 4) + 'px'); };
+    const track = () => { track1(bar); track1(mbar); };
+    if (window.ResizeObserver && mbar) new ResizeObserver(track).observe(mbar);
     if (t){ const on = () => { document.documentElement.classList.toggle('dTabSeg', t.value === 'seg');   /* on <html>: the page's modes rewrite the body's classes */ window.dispatchEvent(new Event('resize')); requestAnimationFrame(track); };   /* the thumb re-measures its tab */
       t.addEventListener('change', on); on(); addEventListener('resize', track); if (window.ResizeObserver && bar) new ResizeObserver(track).observe(bar); } }
   // Save and Reset for the Timeline's and the service page's tweaks ("add save tweak in controller"):

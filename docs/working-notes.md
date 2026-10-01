@@ -12166,3 +12166,4 @@ Once the documents are done (from Book on), Instructions comes back.
 5.672 — The desk's Upload records beside the tabs is a tertiary CTA: outlined (1.5px ring), fully rounded, 40px tall, no underline, with a hover ring.
 5.673 — Insights desk: Segmented tabs 44px tall, Upload records CTA 44px (20px sides), its ring at half the opacity (.18 → .09, hover .2; light .1).
 5.674 — Insights desk Segmented tabs: the whole control is 44px (36px tabs in a 4px inset), matching the 44px Upload records CTA.
+5.675 — Insights phone: the tabs sit at the left, each as wide as its label, inside a 44px pill whose ground is drawn under the tabs only. An outlined "Upload" CTA (44px, fully rounded, half-opacity ring) sits at the right of the same row. The V4-only Insights tab stays hidden outside V4.
