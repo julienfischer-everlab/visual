@@ -12134,3 +12134,8 @@ The status block title is now an action ("Sign your Scan Consent", "Complete you
 - The illustration and button sit at the foot of the card, so they line up across cards.
 - The desktop rail and XS desktop are unchanged.
 5.656 — Overview, phone: Insights card padding 16px (+4), the dismiss button 28 × 28, and the phone's section titles at 26px (Insights and Your action plan, kept alike). The cards hold their width (min-width 0), so two still fit across with 32px of the third; a long doctor's name now ends in "…".
+5.657 — While a document is the thing to do (the document in hand as a step, or one still pending in the status block), "Instructions" is replaced by "Why we need this information", with three lines for the kind of document:
+- Consent: what consent confirms, that the scan cannot go ahead without it, and that it can be withdrawn.
+- Questionnaire: how the answers help prepare the visit and keep the scan safe, and that the doctor reads them.
+- Photo ID: matching the member to the referral, and that the photo is stored securely.
+Once the documents are done (from Book on), Instructions comes back.
