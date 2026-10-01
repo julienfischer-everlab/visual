@@ -12147,3 +12147,8 @@ Once the documents are done (from Book on), Instructions comes back.
 5.661 — At "Get your results" the body drops Your appointment and Instructions (the appointment is behind them), leaving My documents. They come back once the service is done.
 5.662 — Overview phone Insights cards, larger text: label 13px, title 15px, byline 12.5px. Because the larger text cut off the doctor's name, the name and date now sit on two lines (no separator).
 - The card copy reads "New insights from your …" instead of "We have some insights from your …" on every host.
+5.663 — Overview, phone: a "Health profile" section ("0 of 3 done") sits between Insights and Your action plan. It is one card with three rows, each an icon tile, a title, a grey line and a pill button:
+- Fill in your questionnaire, Start
+- Connect your wearables (Apple Health, Garmin, Oura or Whoop), Connect
+- Upload your medical records, Upload
+5.664 — Tweaks › Overview › Section order: a list of the phone's sections (Services, Shortcuts, Next step, Coverage & age, Insights, Health profile, Your action plan) that can be dragged into any order. Each section moves with all its parts (heading, cards, dots, the Timeline link). Sections another tweak hides are marked "hidden". Save keeps the order (stOvOrder) and Reset restores it. A card section dropped under another section keeps a 24px gap.
