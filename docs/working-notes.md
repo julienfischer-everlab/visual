@@ -12164,3 +12164,4 @@ Once the documents are done (from Book on), Instructions comes back.
 5.670 — Insights desktop: the Tabs tweak defaults to Segmented (the pill).
 5.671 — The Tabs tweak class sits on <html> (the page's modes rewrite the body's classes, which had dropped it), so Segmented holds as the default. Segmented tabs on desktop hug their labels (20px each side, no equal widths). The Medical records header's "Upload records" is gone on desktop; the one beside the tabs is the only one, and the info pop-up's link scrolls to it.
 5.672 — The desk's Upload records beside the tabs is a tertiary CTA: outlined (1.5px ring), fully rounded, 40px tall, no underline, with a hover ring.
+5.673 — Insights desk: Segmented tabs 44px tall, Upload records CTA 44px (20px sides), its ring at half the opacity (.18 → .09, hover .2; light .1).
