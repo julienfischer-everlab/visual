@@ -6781,6 +6781,7 @@
   .svDocs.inPend .svDoc{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.06);} .svDocs.inPend .svDocIc{width:40px;height:40px;} .svDocs.inPend .svDocIc svg{width:18px;height:18px;}
   .svDocs.inPend .svDoc b{font-size:15px;} .svDocs.inPend .svDocBtn{height:40px;padding:0 18px;border-radius:10px;background:#fff;color:#111;font-size:14px;}
   .svStepDoc .svDocBtn{position:absolute;right:0;top:50%;margin-top:-15px;height:30px;padding:0 12px;border-radius:8px;background:rgba(255,255,255,.1);color:#ececec;font-size:12.5px;} body.light .svStepDoc .svDocBtn{background:rgba(46,31,26,.08);color:#2e241c;}   /* a document as a step: its name and when, its button at the right */
+  .tlDocs{margin:10px 0 2px 32px;} .tlDocs .svDocOk{font-size:12px;}
   .svDocs.inStep{display:grid;gap:6px;margin:10px 0 2px;}
   .svDocs.inStep .svDoc{gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.05);} .svDocs.inStep .svDocIc{width:28px;height:28px;border-radius:8px;} .svDocs.inStep .svDocIc svg{width:14px;height:14px;} .svDocs.inStep .svDocIc::after{width:6px;height:6px;top:-2px;right:-2px;}
   .svDocs.inStep .svDoc b{font-size:13px;color:#e6e6e3;} .svDocs.inStep .svDocBtn{height:28px;padding:0 10px;border-radius:8px;background:rgba(255,255,255,.1);color:#ececec;font-size:12px;}
@@ -9543,6 +9544,15 @@
             <option value="none">None</option>
           </select>
         </div>
+        <!-- the documents on the Timeline too ("this should be in the Timeline view as well"), the same setting as the service page's -->
+        <div class="tkRow">
+          <span class="lbl">Documents</span>
+          <select id="stDocsT" class="stDocsSel" aria-label="Where the service's documents are shown">
+            <option value="off" selected>None</option>
+            <option value="asSteps">As steps</option>
+            <option value="status">In the status block</option>
+          </select>
+        </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
         <div class="tkRow">
           <span class="lbl">Locked pattern</span>
@@ -9589,7 +9599,7 @@
         <!-- the documents a service asks for (consents, questionnaires), to ideate where they live ("docs included in the timeline step" / "doc micro steps inside the hero card state") -->
         <div class="tkRow">
           <span class="lbl">Documents</span>
-          <select id="stDocs" aria-label="Where the service's documents are shown">
+          <select id="stSvDocs" class="stDocsSel" aria-label="Where the service's documents are shown">
             <option value="off" selected>None</option>
             <option value="asSteps">As steps</option>
             <option value="status">In the status block</option>
@@ -23283,7 +23293,7 @@
     };
     const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
     let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true, HZ = false, PH = false, DOCS = 'off', LAY = 'svc';
-    const SIM = {}, SIM0 = {}, DOCDONE = new Set();
+    const SIM = {}, SIM0 = {}, DOCDONE = new Set(); window.__docDone = DOCDONE; window.__docsMode = 'off';
     // the two groups' services, each in the state the simulated flow has it at, a locked one unlocked once all before it are done
     const JDEF = { dexa: 'ci', diag: 'ci', checkin: 'ci', gutq: 'gut', gut: 'gut', gutrep: 'gut', gutrev: 'gut' };
     const jBase = g => { const items = (g === 'ci' ? [{ svc: 'dexa', state: 'book', t: 'DEXA Scan' }, { svc: 'diag', state: 'locked', need: 'DEXA Scan' }, { svc: 'checkin', state: 'locked', need: 'Diagnostics Review' }]
@@ -23424,7 +23434,7 @@
     // a status block's own button: Book opens the booking; a document's button marks it done
     document.addEventListener('click', e => { const b = e.target.closest('.svPend .svBtn'); if (!b || b.dataset.j != null || b.dataset.need != null || b.classList.contains('sec')) return;
       if (!b.closest('#dSvc, #svcMob')) return; if (/^book/i.test(cur.stepName || '')) bkOpen(!!b.closest('#svcMob')); });
-    document.addEventListener('click', e => { const b = e.target.closest('.svDocBtn'); if (!b) return; const r = b.closest('.svDoc'); if (!r || !r.dataset.doc) return; DOCDONE.add(r.dataset.doc); paint(cur.key, cur.state, cur.o); });
+    document.addEventListener('click', e => { const b = e.target.closest('.svDocBtn'); if (!b) return; const r = b.closest('.svDoc'); if (!r || !r.dataset.doc) return; e.stopPropagation(); DOCDONE.add(r.dataset.doc); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); }, true);
     { const nx = document.getElementById('stSimNext'), rs = document.getElementById('stSimReset');
       if (nx) nx.addEventListener('click', () => simNext(!!(ph && ph.classList.contains('svcOn')) && !document.body.classList.contains('svcOn')));
       if (rs) rs.addEventListener('click', () => { const z = SIM0[cur.key]; Object.keys(SIM).forEach(k => delete SIM[k]); DOCDONE.clear(); if (z){ Object.keys(SIM0).forEach(k => delete SIM0[k]); paint(cur.key, z.state, z.o); } else paint(cur.key, cur.state, cur.o); }); }
@@ -23453,7 +23463,7 @@
       if (li.closest('#svcMob, .svcMob')) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); });
     { const t = document.getElementById('stJr'); if (t) t.addEventListener('change', () => { JR = t.value; JP = JR === 'rightm'; paint(cur.key, cur.state, cur.o); }); }
     { const t = document.getElementById('stJrHz'); if (t) t.addEventListener('change', () => { HZ = t.value === 'h'; paint(cur.key, cur.state, cur.o); }); }
-    { const t = document.getElementById('stDocs'); if (t) t.addEventListener('change', () => { DOCS = t.value; paint(cur.key, cur.state, cur.o); }); }
+    { const all = [...document.querySelectorAll('.stDocsSel')]; all.forEach(t => t.addEventListener('change', () => { DOCS = t.value; window.__docsMode = DOCS; all.forEach(u => { if (u !== t) u.value = t.value; }); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); })); }   // one setting, in both groups
     { const t = document.getElementById('stLayout'); if (t) t.addEventListener('change', () => { LAY = t.value;   // switch the page in view to the other layout
         const dk = document.body.classList.contains('svcOn'), mb = ph && ph.classList.contains('svcOn'), ad = document.body.classList.contains('aptOn'), am = ph && ph.classList.contains('aptOn');
         if (LAY === 'apt' && (dk || mb) && window._apt){ const bt = backTo; backTo = null; document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); (mb && !dk ? window._apt.openMob : window._apt.openDesk)({ from: bt === 'tl' ? 'tl' : null }); }
@@ -23583,7 +23593,7 @@
     const CHEV = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 3.8 2.5 2.5 2.5-2.5"/></svg>';
     const PL = (k, st) => window._svc && window._svc.plan ? window._svc.plan(k, st) : null;
     // a group's services, the one in hand first not done
-    const groupOf = r => { const g = r.group.map(x => { const p = PL(x.svc, x.state) || { t: '', steps: [], at: -1 }; return Object.assign({}, x, { p: { t: p.t, steps: x.steps || p.steps, at: x.at != null ? x.at : p.at } }); }); const a = g.findIndex(x => x.state !== 'done'); return { g, a }; };
+    const groupOf = r => { const g = r.group.map(x => { const p = PL(x.svc, x.state) || { t: '', steps: [], at: -1 }; return Object.assign({}, x, { p: { t: p.t, svc: x.svc, steps: x.steps || p.steps, at: x.at != null ? x.at : p.at } }); }); const a = g.findIndex(x => x.state !== 'done'); return { g, a }; };
     // the row's own service and state: a group's is its active service's
     const own = r => { if (!r.group) return r; const { g, a } = groupOf(r); if (r.focus != null) return g[r.focus]; const x = g[a < 0 ? g.length - 1 : a]; return x; };
     // the journey a group's service belongs to, for its page: the group's name, its services, and which one the page is ("list all services related in the journey")
@@ -23603,7 +23613,7 @@
       if (later.length) out.push({ h: 'Later', rows: later }); return out.concat(tail); };
     // the step in hand, when it is the member's to do (the orange badge): that object is a primary one, its button the primary CTA ("orange badge -> primary -> always CTA primary")
     const planOf = r => { if (r.group){ const { g, a } = groupOf(r); if (a < 0) return null; const x = r.focus != null ? g[r.focus] : g[a]; return x.state === 'locked' ? null : x.p; }
-      if (!r.svc || r.lockAge || r.state === 'locked' || r.state === 'suggested') return null; const p = PL(r.svc, r.state); return p ? { steps: r.steps || p.steps, at: r.at != null ? r.at : p.at } : null; };
+      if (!r.svc || r.lockAge || r.state === 'locked' || r.state === 'suggested') return null; const p = PL(r.svc, r.state); return p ? { svc: r.svc, steps: r.steps || p.steps, at: r.at != null ? r.at : p.at } : null; };
     const isCta = r => !!r.cta || (() => { const p = planOf(r); return !!p && p.at >= 0 && p.at < p.steps.length && !pas(p.steps[p.at]); })();
     const ordered = rows0 => { const rows = rows0.slice().sort((a, b) => (isCta(b) ? 1 : 0) - (isCta(a) ? 1 : 0)), out = [], rest = rows.slice();   // a primary action first in its month ("primary object always first")
       const place = x => { out.push(x); rest.filter(y => y.need === x.t).forEach(y => { rest.splice(rest.indexOf(y), 1); place(y); }); };
@@ -23612,7 +23622,15 @@
     // a step that isn't on the member (results on their way, a report being written): neutral, not orange ("if a step is passive, the badge neutral, no orange, and neutral progress")
     const PASSIVE = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/, pas = st => !!st && PASSIVE.test(st[0]);
     const curB = st => '<span class="tlChip tlCurB' + (pas(st) ? ' n' : ' o') + '">' + esc(st[0]) + '</span>';
-    const stepList = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : '', w = c === 'cur' && pas(st); return '<li class="' + c + (w ? ' pas' : '') + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? (w ? '<span class="tlChip n tlNext">' + (/result/i.test(st[0]) ? 'Waiting for results' : 'In progress') + '</span>' : '<span class="tlChip o tlNext">Your next step</span>') : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
+    // the service's documents (the Documents tweak, shared with the service page): steps of their own after the step in hand, or rows with their buttons under the list
+    const DOCL = svc => svc === 'dexa' ? [['Scan Consent', 'Review'], ['Medical Imaging Consent', 'Review'], ['Pre-Scan Health & Medical History', 'Complete'], ['Health Questionnaire', 'Complete']] : [['Health Questionnaire', 'Complete']];
+    const docsFor = p => { const m = window.__docsMode; return m && m !== 'off' && p && p.svc && p.at >= 0 && p.at < p.steps.length ? m : ''; };
+    const DOCDN = () => window.__docDone || new Set();
+    const docRows = p => '<div class="svDocs inStep tlDocs">' + DOCL(p.svc).map(([t, b]) => { const dn = DOCDN().has(t); return '<div class="svDoc' + (dn ? ' done' : '') + '" data-doc="' + esc(t) + '"><span class="svDocIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3" width="11" height="14" rx="2"/><path d="M7.5 7h5M7.5 10h5M7.5 13h3"/></svg></span><b>' + esc(t) + '</b>' + (dn ? '<span class="svDocOk">Done</span>' : '<button class="svDocBtn" type="button">' + b + '</button>') + '</div>'; }).join('') + '</div>';
+    const stepList = p => { const m = docsFor(p); if (!m) return stepList0(p); if (m === 'status') return stepList0(p) + docRows(p);
+      const ds = DOCL(p.svc).map(([t]) => '<li class="' + (DOCDN().has(t) ? 'on' : '') + '"><i class="tlMk">' + (DOCDN().has(t) ? CHK : '') + '</i><div class="tx"><b>' + esc(t) + '</b></div></li>').join('');
+      return stepList0(p).replace(/(<li class="cur[^"]*">[\s\S]*?<\/li>)/, '$1' + ds); };
+    const stepList0 = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at ? 'on' : i === p.at ? 'cur' : '', w = c === 'cur' && pas(st); return '<li class="' + c + (w ? ' pas' : '') + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? (w ? '<span class="tlChip n tlNext">' + (/result/i.test(st[0]) ? 'Waiting for results' : 'In progress') + '</span>' : '<span class="tlChip o tlNext">Your next step</span>') : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
     const prog = r => {
       if (tab === 'claim') return '';   // yours to claim: no steps, no step chip ("never display the steps, neither the badge step")
       if (r.group){
@@ -23698,6 +23716,7 @@
       list.classList.toggle('noRail', !any);
       navState();
     };
+    document.addEventListener('everlab:docs', () => { if (document.body.classList.contains('tlOn')) render(); });
     { const o = document.getElementById('stTlOpen'); if (o) o.addEventListener('change', () => { OPEN = o.value; render(); }); }   // the tweak redraws the list
     const render = () => {
       ROWS = []; list.innerHTML = layout(TL[tab]).map(sec).join('');
@@ -24249,7 +24268,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stDocs' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -26204,7 +26223,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stDocs: 'off', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'off', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };

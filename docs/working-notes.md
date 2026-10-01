@@ -12107,3 +12107,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.637 Documents never repeat the service's name: DEXA Scan Consent -> Scan Consent, DEXA Scan Health Questionnaire -> Health Questionnaire (service page and appointment page).
 - 5.638 Documents in the status block, any still to do: the block reads "Before you book (/ your appointment), please complete the required documents below." with no line and no primary button; once every document is done it shows the step and its button again.
 - 5.639 The top bar's Layout switch shows on the service and appointment pages only, not the Timeline.
+- 5.640 Documents tweak on the Timeline too (its own row in the Timeline group, kept in step with the service page's): As steps puts the documents in the step list after the step in hand (ticked once done); In the status block puts them as rows with their Review / Complete under the step list. A document done on either page is done on both.
+  Bug fixed on the way: the service page's Documents select had taken the id stDocs, already the Insights "My documents" tweak's, so that tweak had been reading the wrong select; it is stSvDocs now.
