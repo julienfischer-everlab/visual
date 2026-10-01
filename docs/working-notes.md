@@ -12169,3 +12169,5 @@ Once the documents are done (from Book on), Instructions comes back.
 5.675 — Insights phone: the tabs sit at the left, each as wide as its label, inside a 44px pill whose ground is drawn under the tabs only. An outlined "Upload" CTA (44px, fully rounded, half-opacity ring) sits at the right of the same row. The V4-only Insights tab stays hidden outside V4.
 5.676 — Insights phone: the two tabs fill the pill, sharing the width up to Upload equally (12px gap before Upload). The Reports count badge is orange, #f7641f with white text, on phone and desk.
 5.677 — The Reports count badge (phone and desk) takes the Overview "12" badge's style: a pill, #43220b ground, #fbe9d8 figure.
+5.678 — Insights phone: the tabs row sits at the same height as the Overview's ask bar (138 from the frame top, 8 higher than before).
+5.679 — Reports count badge: peach (#f3b98c) with a dark figure, as the reference. The gap between the label and the badge is 2px wider (8 on the phone, 10 on the desk).
