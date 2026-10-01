@@ -12105,3 +12105,5 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.635 Layout (Appointment | Service detail) moved out of Tweaks to the top bar, before Refresh, shown only on the Timeline, the service page and the appointment page (desk and phone). The desk's page cards hide their scrollbar outright (the stable gutter was not honoured in every browser), so the layout width never moves. The orange blocker card a bit more intense (#f78359 18%) with a hover (26%); light mode #fbe0d1 / #f8d2bd.
 - 5.636 Documents tweak: the "In a sub step" option removed (None / As steps / In the status block).
 - 5.637 Documents never repeat the service's name: DEXA Scan Consent -> Scan Consent, DEXA Scan Health Questionnaire -> Health Questionnaire (service page and appointment page).
+- 5.638 Documents in the status block, any still to do: the block reads "Before you book (/ your appointment), please complete the required documents below." with no line and no primary button; once every document is done it shows the step and its button again.
+- 5.639 The top bar's Layout switch shows on the service and appointment pages only, not the Timeline.

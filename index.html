@@ -6809,7 +6809,7 @@
   .svSimNav button svg{width:12px;height:12px;} .svSimNav button:hover{background:rgba(255,255,255,.14);} .svSimNav button:disabled{opacity:.3;cursor:default;}
   body.light .svSimNav button{background:rgba(46,31,26,.07);color:#2e241c;}
   select.tkSegSel{display:none;}
-  .tbLay{display:none;align-items:center;gap:8px;} .tbLay .lbl{font-size:13px;color:#71717a;} body:is(.tlOn, .svcOn, .aptOn) .tbLay, body:has(#phone2.svcOn) .tbLay, body:has(#phone2.aptOn) .tbLay{display:inline-flex;}
+  .tbLay{display:none;align-items:center;gap:8px;} .tbLay .lbl{font-size:13px;color:#71717a;} body:is(.svcOn, .aptOn) .tbLay, body:has(#phone2.svcOn) .tbLay, body:has(#phone2.aptOn) .tbLay{display:inline-flex;}
   .tkSegT{display:inline-flex;gap:2px;padding:3px;border-radius:10px;background:rgba(255,255,255,.06);}
   .tkSegT button{height:28px;padding:0 12px;border:0;border-radius:8px;background:none;color:#a1a1aa;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap;}
   .tkSegT button.on{background:rgba(255,255,255,.14);color:#fafafa;} .tkSegT button:not(.on):hover{color:#e4e4e7;}
@@ -23334,6 +23334,9 @@
       const dl = key === 'dexa' ? [['sign', 'Scan Consent', 'Review'], ['sign', 'Medical Imaging Consent', 'Review'], ['form', 'Pre-Scan Health & Medical History', 'Complete'], ['form', 'Health Questionnaire', 'Complete']] : [['form', 'Health Questionnaire', 'Complete']];
       const docsOn = state !== 'done' && state !== 'locked' && state !== 'later' && at < n;
       const docs = (k) => !docsOn ? '' : '<div class="svDocs ' + k + '">' + dl.map(([ic, t, b]) => '<div class="svDoc' + (DOCDONE.has(t) ? ' done' : '') + '" data-doc="' + escS(t) + '"><span class="svDocIc">' + DI[ic] + '</span><b>' + escS(t) + '</b>' + (DOCDONE.has(t) ? '<span class="svDocOk">' + CHKS + 'Done</span>' : '<button class="svDocBtn" type="button">' + b + '</button>') + '</div>').join('') + '</div>';   // the documents as micro steps ("doc micro steps")
+      // documents still to do block the status: it says so, and the documents are its only actions ("if docs block the state block, the title should reflect that; then no primary CTA at the right")
+      if (DOCS === 'status' && docsOn && dl.some(([, t]) => !DOCDONE.has(t))){ const bk = at >= 0 && at < n && /^book/i.test(d.steps[at][0]);
+        x.tag = 'Pending action'; x.tone = ''; x.h = bk ? 'Before you book, please complete the required documents below.' : 'Before your appointment, please complete the required documents below.'; x.p = ''; x.noBtn = true; x.btns = null; }
       const docSteps = dl.map(([ic, t, b]) => '<div class="svStep svStepDoc' + (DOCDONE.has(t) ? ' ok' : '') + '"><b>' + escS(t) + '</b><span>' + (b === 'Review' ? 'Review and sign before your appointment' : 'Complete before your appointment') + '</span></div>').join('');   /* steps still to come: no button ("inactive step never with CTA") */
       const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span>' + (DOCS === 'steps' && i === Math.max(0, at) ? docs('inStep') : '') + '</div>' + (DOCS === 'asSteps' && docsOn && i === Math.max(0, at) ? docSteps : '')).join('');   /* or the documents as steps of their own, after the step in hand ("another tweak where the doc becomes the step") */   // under the step in hand ("docs included in the timeline step")
       const toBook = state === 'book' || (at >= 0 && at < n && /^book/i.test(d.steps[at][0]));   // still to book: no appointment to describe ("if state is book appt, doesn't make sense to show Your appointment")
