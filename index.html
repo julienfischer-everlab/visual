@@ -6779,6 +6779,7 @@
   .svPend.hasDocs{flex-wrap:wrap;} .svDocs.inPend{flex:1 1 100%;display:grid;gap:8px;margin-top:4px;}
   .svDocs.inPend .svDoc{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.06);} .svDocs.inPend .svDocIc{width:40px;height:40px;} .svDocs.inPend .svDocIc svg{width:18px;height:18px;}
   .svDocs.inPend .svDoc b{font-size:15px;} .svDocs.inPend .svDocBtn{height:40px;padding:0 18px;border-radius:10px;background:#fff;color:#111;font-size:14px;}
+  .svStepDoc{padding-right:96px;} .svStepDoc .svDocBtn{position:absolute;right:0;top:50%;margin-top:-15px;height:30px;padding:0 12px;border-radius:8px;background:rgba(255,255,255,.1);color:#ececec;font-size:12.5px;} body.light .svStepDoc .svDocBtn{background:rgba(46,31,26,.08);color:#2e241c;}   /* a document as a step: its name and when, its button at the right */
   .svDocs.inStep{display:grid;gap:6px;margin:10px 0 2px;}
   .svDocs.inStep .svDoc{gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.05);} .svDocs.inStep .svDocIc{width:28px;height:28px;border-radius:8px;} .svDocs.inStep .svDocIc svg{width:14px;height:14px;} .svDocs.inStep .svDocIc::after{width:6px;height:6px;top:-2px;right:-2px;}
   .svDocs.inStep .svDoc b{font-size:13px;color:#e6e6e3;} .svDocs.inStep .svDocBtn{height:28px;padding:0 10px;border-radius:8px;background:rgba(255,255,255,.1);color:#ececec;font-size:12px;}
@@ -9562,7 +9563,8 @@
           <span class="lbl">Documents</span>
           <select id="stDocs" aria-label="Where the service's documents are shown">
             <option value="off" selected>None</option>
-            <option value="steps">In the steps</option>
+            <option value="steps">In a sub step</option>
+            <option value="asSteps">As steps</option>
             <option value="status">In the status block</option>
           </select>
         </div>
@@ -23289,7 +23291,8 @@
       const dl = key === 'dexa' ? [['sign', 'DEXA Scan Consent', 'Review'], ['sign', 'Medical Imaging Consent', 'Review'], ['form', 'Pre-Scan Health & Medical History', 'Complete'], ['form', 'DEXA Scan Health Questionnaire', 'Complete']] : [['form', 'Health Questionnaire', 'Complete']];
       const docsOn = state !== 'done' && state !== 'locked' && state !== 'later' && at < n;
       const docs = (k) => !docsOn ? '' : '<div class="svDocs ' + k + '">' + dl.map(([ic, t, b]) => '<div class="svDoc"><span class="svDocIc">' + DI[ic] + '</span><b>' + escS(t) + '</b><button class="svDocBtn" type="button">' + b + '</button></div>').join('') + '</div>';   // the documents as micro steps ("doc micro steps")
-      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span>' + (DOCS === 'steps' && i === Math.max(0, at) ? docs('inStep') : '') + '</div>').join('');   // under the step in hand ("docs included in the timeline step")
+      const docSteps = dl.map(([ic, t, b]) => '<div class="svStep svStepDoc"><b>' + escS(t) + '</b><span>' + (b === 'Review' ? 'Review and sign before your appointment' : 'Complete before your appointment') + '</span><button class="svDocBtn" type="button">' + b + '</button></div>').join('');
+      const steps = d.steps.map((st, i) => '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span>' + (DOCS === 'steps' && i === Math.max(0, at) ? docs('inStep') : '') + '</div>' + (DOCS === 'asSteps' && docsOn && i === Math.max(0, at) ? docSteps : '')).join('');   /* or the documents as steps of their own, after the step in hand ("another tweak where the doc becomes the step") */   // under the step in hand ("docs included in the timeline step")
       const toBook = state === 'book' || (at >= 0 && at < n && /^book/i.test(d.steps[at][0]));   // still to book: no appointment to describe ("if state is book appt, doesn't make sense to show Your appointment")
       const title = o && o.t || d.t, start = o && o.st || x.st;
       const heroH = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div>';   // no progress card in the phone's hero ("remove this on mobile"): the steps are listed in the sheet
