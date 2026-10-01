@@ -23442,12 +23442,12 @@
         PH = document.body.dataset.bp === 'xs';
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
         if (m && document.body.dataset.bp === 'xs'){   /* XS: the phone's page ("XS view like this") */
-          m.innerHTML = '<div class="svmHero svXsHero" style="--svmImg:url(' + img + ')">' + heroH + '</div><div class="svmBody svXsBody">' + (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + repBody + ref(true) + jr(true) : pend(true) + repBody + ref(true) + jr(false)) + (J && JR === 'card' ? repBody : '') + docBody + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about + '</div>';
+          m.innerHTML = '<div class="svmHero svXsHero" style="--svmImg:url(' + img + ')">' + heroH + '</div><div class="svmBody svXsBody">' + (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + ref(true) + repBody + jr(true) : pend(true) + ref(true) + repBody + jr(false)) + (J && JR === 'card' ? repBody : '') + docBody + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about + '</div>';
           if (a) a.innerHTML = '';
           const fit = () => { const hh = m.querySelector('.svXsHero'); if (!hh) return; hh.style.marginTop = '0px'; const off = hh.getBoundingClientRect().top - desk.getBoundingClientRect().top + desk.scrollTop; hh.style.marginTop = -off + 'px'; hh.style.top = -(parseFloat(getComputedStyle(desk).paddingTop) || 0) + 'px';   /* sticky counts from inside the card's 24 of padding: pinned there it left a band above the picture ("make the img cover the full header") */ const tb = desk.querySelector('.svTop'); hh.style.paddingTop = ((tb ? tb.getBoundingClientRect().bottom - desk.getBoundingClientRect().top : off) + 56) + 'px'; }; requestAnimationFrame(fit); setTimeout(fit, 400);   // up under the bar to the card's top, the title 56 below the bar, as the phone's
         } else
         if (m) m.innerHTML = '<div class="svHead"><img src="' + img + '" alt="" width="312" height="312"><div class="svHeadTx"><h1>' + escS(title) + '</h1><div class="svStart">' + escS(start) + '</div></div><button class="svMore" type="button" aria-label="More">' + IC.more + '</button></div>' +
-          (J && JR === 'card' ? jr(true, true) : J && JR === 'body' ? pend(false) + jr(true) : pend(false)) + repBody + docBody + (toBook ? '' : sec) + ref(false) + instr;   // the status block out of the journey, above it ("externalise the status block above the section")
+          (J && JR === 'card' ? jr(true, true) + ref(false) : J && JR === 'body' ? pend(false) + ref(false) + jr(true) : pend(false) + ref(false)) + repBody + docBody + (toBook ? '' : sec) + instr   /* the referrals right after the status block, always ("always after the status block") */;   // the status block out of the journey, above it ("externalise the status block above the section")
         if (a && document.body.dataset.bp !== 'xs') a.innerHTML = (JP ? '' : '<div class="svProg"><div class="svProgHead">Your progress <em>' + pct + '/' + n + '</em></div>' + steps + '</div>') + (JP || (J && JR === 'right') ? jr(false) : '') + about;   /* merged into the journey card, the progress panel goes */
       }
       if (mob){
@@ -23455,7 +23455,7 @@
         const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
         mob.style.setProperty('--svmImg', 'url(' + img + ')');
         if (h) h.innerHTML = heroH;
-        if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + repBody + ref(true) + jr(true) : pend(true) + repBody + ref(true) + jr(false)) + (J && JR === 'card' ? repBody : '') + docBody + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about;
+        if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + ref(true) + repBody + jr(true) : pend(true) + ref(true) + repBody + jr(false)) + (J && JR === 'card' ? repBody : '') + docBody + (toBook ? '' : sec) + instr + '<hr class="svRule">' + about;
       }
       cur = { key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' ? dl.map(([, t]) => t) : [],   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n };   // what the steps sheet shows
     };
