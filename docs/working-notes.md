@@ -12155,3 +12155,8 @@ Once the documents are done (from Book on), Instructions comes back.
 5.665 — Overview phone Insights cards: the title is 4px smaller (11px), in one colour (no white source), with 8px above it.
 5.666 — Insights desktop: a new "Tabs" tweak (segmented, in the Biomarkers tab group) switches the page tabs between Inline (the underlined line, the default) and Segmented. Segmented is the phone's pill: a tinted rounded ground, tabs at least 150px wide, and a lighter pill under the tab in hand that glides between tabs. The Reports count badge stays.
 5.667 — Health profile is a to-do list. Each row has a circle on the left, which turns into a green tick when done, and a done row's title is struck through and greyed, with its button gone. Tapping the circle toggles a row; tapping its button (Start / Connect / Upload) completes it. The heading counts "N of 3 done". The questionnaire starts done (1 of 3) to show the state. The icon tiles are gone.
+5.668 — Insights desktop (Latest report layout):
+- The Latest report card is 256px tall, and the Steps card beside it matches.
+- The "Got a record from your provider? Upload records" card is removed.
+- "Upload records" (link and upload icon) now sits at the right end of the page tabs' row, under the divider line in Inline and beside the pill in Segmented.
+- In Segmented, the pill's ground is drawn under the tabs only (--trackW, measured), so the row can run on to the link.

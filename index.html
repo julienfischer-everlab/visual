@@ -1890,11 +1890,15 @@
     top:auto;bottom:0;height:2px;border-radius:2px;background:#ececec;
   }
   body.light.v2Tab .dash .dTabsV2 .v2Thumb{background:#2e1f1a;}
+  /* Upload records at the right end of the tabs' row */
+  .dTabsV2 .dTabUp{display:none;} body.v2Tab .dash .dTabsV2 .dTabUp{display:inline-flex;margin-left:auto;align-self:center;margin-bottom:13px;position:relative;z-index:1;}
+  body.v2Tab.dTabSeg .dash .dTabsV2 .dTabUp{margin-bottom:6px;}
   /* the Tabs tweak, Segmented: the phone's pill on the desk -- a tinted, rounded ground, the tabs equal, the thumb a lighter pill under the one in hand */
-  body.v2Tab.dTabSeg .dash .dTabsV2{display:flex;width:max-content;gap:4px;padding:4px;margin:40px 0 28px;border-radius:999px;background:rgba(255,255,255,.06);box-shadow:none;}
+  body.v2Tab.dTabSeg .dash .dTabsV2{display:flex;gap:4px;padding:4px;margin:40px 0 28px;border-radius:0;background:none;box-shadow:none;}
+  body.v2Tab.dTabSeg .dash .dTabsV2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--trackW,0px);border-radius:999px;background:rgba(255,255,255,.06);pointer-events:none;}   /* the pill's ground under the tabs only, the row running on to Upload */
   body.v2Tab.dTabSeg .dash .dTabsV2 .v2Tab{flex:0 0 auto;min-width:150px;justify-content:center;height:40px;padding:0 18px;border-radius:999px;font-size:14px;font-weight:500;}
   body.v2Tab.dTabSeg .dash .dTabsV2 .v2Thumb{top:4px;bottom:4px;height:auto;border-radius:999px;background:rgba(255,255,255,.12);}
-  body.light.v2Tab.dTabSeg .dash .dTabsV2{background:rgba(46,31,26,.07);box-shadow:none;} body.light.v2Tab.dTabSeg .dash .dTabsV2 .v2Thumb{background:#fff;}
+  body.light.v2Tab.dTabSeg .dash .dTabsV2::before{background:rgba(46,31,26,.07);} body.light.v2Tab.dTabSeg .dash .dTabsV2 .v2Thumb{background:#fff;}
   /* The badge counts what is NEW, not what is there. A number beside every tab
      is a table of contents -- the reader can see the list is long by looking
      at it -- and a number that only appears where something arrived is the one
@@ -7947,8 +7951,9 @@
      activity card at the right running the height of both */
   body.b5.leftRep .dash .drow{grid-template-rows:auto auto;}
   body.b5.leftRep .dash .drow .hiRep{grid-column:1;grid-row:1;}
-  body.b5.leftRep .dash .drow .hiUp{display:flex;grid-column:1;grid-row:2;order:3;padding:22px;border-radius:20px;}
-  body.b5.leftRep .dash .drow .hiSteps{grid-column:2;grid-row:1 / span 2;height:auto;align-self:stretch;}
+  body.b5.leftRep .dash .drow .hiUp{display:none;}   /* the upload card gone, its link up beside the tabs ("remove this widget", "put Upload on the right side") */
+  body.b5.leftRep .dash .drow{grid-template-rows:256px;} body.b5.leftRep .dash .drow .hiRep{height:256px;box-sizing:border-box;}   /* 256 ("reduce height to 256px") */
+  body.b5.leftRep .dash .drow .hiSteps{grid-column:2;grid-row:1;height:auto;align-self:stretch;}
   .dash .hiUp{display:none;}   /* only in the layout above */
   /* the longest row -- muscle + bone health, with its figure -- sets this: at
      the b3 width it wrapped onto two lines and broke the column's rhythm */
@@ -10022,6 +10027,7 @@
       <!-- V4 only: a third thing the page can be a list of. Not readings and
            not documents -- what the readings mean, one card per finding. -->
       <button class="v2Tab v4Only" type="button" role="tab" aria-selected="false" data-tab="ins">Insights</button>
+      <button class="docLink rcUpBtn dTabUp" type="button">Upload records<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11V3M4.5 6.5 8 3l3.5 3.5"/><path d="M3 11.5v1a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-1"/></svg></button>
     </div>
     <div class="dgrid">
       <div class="dleft">
@@ -26458,8 +26464,10 @@
       document.addEventListener('click', e => { if (e.target.closest('.tkBtn, .tkTrig, [aria-label*="weak"]')) setTimeout(draw, 50); }, true);   /* hidden marks follow the other tweaks when the panel opens */
     }
   }
-  { const t = document.getElementById('stDTabs'); if (t){ const on = () => { document.body.classList.toggle('dTabSeg', t.value === 'seg'); window.dispatchEvent(new Event('resize')); };   /* the thumb re-measures its tab */
-      t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stDTabs'), bar = document.getElementById('dTabsV2');
+    const track = () => { if (!bar) return; const ts = [...bar.querySelectorAll('.v2Tab')].filter(x => x.offsetWidth); const l = ts[ts.length - 1]; if (l) bar.style.setProperty('--trackW', (l.offsetLeft + l.offsetWidth + 4) + 'px'); };
+    if (t){ const on = () => { document.body.classList.toggle('dTabSeg', t.value === 'seg'); window.dispatchEvent(new Event('resize')); requestAnimationFrame(track); };   /* the thumb re-measures its tab */
+      t.addEventListener('change', on); on(); addEventListener('resize', track); if (window.ResizeObserver && bar) new ResizeObserver(track).observe(bar); } }
   // Save and Reset for the Timeline's and the service page's tweaks ("add save tweak in controller"):
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
