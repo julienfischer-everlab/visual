@@ -6807,6 +6807,7 @@
   .dmUp.done{flex-direction:row;gap:14px;padding:12px;border-style:solid;cursor:default;} .dmThumb{flex:none;width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#6d7a86,#3a4048);}
   .svDocOkT{display:inline-flex;align-items:center;gap:5px;color:#9cc088 !important;} .svDocOkT svg{width:11px;height:11px;}
   body.light .dmUp{border-color:rgba(46,31,26,.2);color:#2e1f1a;}
+  .dmView .dmOpts .bkSlot:disabled{opacity:.35;text-decoration:none;cursor:default;} .dmView .dmOpts .bkSlot.on{cursor:default;} .dmView .dmChk{cursor:default;} .dmView .dmName{color:#c8c8c4;} .dmView .dmChk input{cursor:default;}
   .svDocM .dmGo{flex:none;height:48px;padding:0 28px;border-radius:999px;} .svDocM .dmGo:disabled{opacity:.35;cursor:default;}
   body.light .dmP{color:#6b5f58;} body.light .dmTx{background:rgba(46,31,26,.05);color:#4a3e37;} body.light .dmTx b, body.light .dmChk{color:#2e1f1a;} body.light .dmName{background:rgba(46,31,26,.06);color:#2e1f1a;}
   .bkLoc{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.05);} .bkLoc svg{flex:none;width:20px;height:20px;color:#8b8b86;}
@@ -23426,7 +23427,7 @@
       const repBody = state !== 'done' || !RL.length ? '' :   /* only once the service is completed, at the end of the steps ("that section should be there when the service is completed, not before") */ '<h2 class="svH2">Reports</h2><div class="svDocB svRepB">' + RL.map(([t, , w]) => '<div class="svDoc svRep"><span class="svDocIc">' + RPI + '</span><span class="svRepT"><b>' + escS(t) + '</b><small>' + escS(w) + '</small></span><button class="svDocView" type="button">View</button></div>').join('') + '</div>';
       /* every document done, signed or uploaded falls into My documents, in either layout; none done, no section ("everytime a doc is completed it falls into a section called My documents") */
       const DDONE = { sign: 'Signed', form: 'Completed', photo: 'Uploaded' }, dDone = DOCS !== 'off' && !/^(locked|later|suggested|purchase)/.test(state) ? dl.filter(([, t]) => DOCDONE.has(t)) : [];
-      const docBody = !dDone.length ? '' : '<h2 class="svH2">My documents</h2><div class="svDocB svMyDocs">' + dDone.map(([i, t]) => '<div class="svDoc svRep"><span class="svDocIc">' + DI[i] + '</span><span class="svRepT"><b>' + escS(t) + '</b><small class="svDocOkT">' + CHKS + DDONE[i] + '</small></span><button class="svDocView" type="button">View</button></div>').join('') + '</div>';
+      const docBody = !dDone.length ? '' : '<h2 class="svH2">My documents</h2><div class="svDocB svMyDocs">' + dDone.map(([i, t]) => '<div class="svDoc svRep"><span class="svDocIc">' + DI[i] + '</span><span class="svRepT"><b>' + escS(t) + '</b><small class="svDocOkT">' + CHKS + DDONE[i] + '</small></span><button class="svDocView" type="button" data-view="' + escS(t) + '">View</button></div>').join('') + '</div>';
       // documents as steps come before the step in hand ("put the consent and questionnaire before the book state"): the first one still to do is the step in hand, its own button in the status block
       const DLINE = b => b === 'Review' ? 'Review and sign before your appointment' : b === 'Upload' ? 'Upload before your appointment' : 'Complete before your appointment';
       const docPend = DOCS === 'asSteps' && docsOn ? dl.filter(([, t]) => !DOCDONE.has(t)) : [];
@@ -23531,29 +23532,34 @@
       host.appendChild(sh); const shut = () => { sh.classList.remove('on'); sh.setAttribute('aria-hidden', 'true'); };
       sh.querySelector('.tlShDim').addEventListener('click', shut); sh.querySelector('.tlShX').addEventListener('click', shut); sh.shut = shut; return sh; };
     const dmD = mkDoc(document.querySelector('.dash')), dmM = mkDoc(ph);
-    let dm = null;
+    let dm = null; const DOCANS = {};   /* what was filled in, to show again on View */
     const dmPaint = () => { const sh = dm.sh, b = sh.querySelector('.dmBody');
       if (dm.photo) b.innerHTML = '<p class="dmP">Upload a clear photo of your driver licence or passport. The clinic checks it on arrival.</p>' + (dm.up
-          ? '<div class="dmUp done"><span class="dmThumb" aria-hidden="true"></span><span class="svRepT"><b>IMG_2041.jpg</b><small>1.8 MB \u00b7 Ready to upload</small></span><button class="svDocView dmPick" type="button">Replace</button></div>'
+          ? '<div class="dmUp done"><span class="dmThumb" aria-hidden="true"></span><span class="svRepT"><b>IMG_2041.jpg</b><small>1.8 MB \u00b7 ' + (dm.view ? 'Uploaded' : 'Ready to upload') + '</small></span>' + (dm.view ? '' : '<button class="svDocView dmPick" type="button">Replace</button>') + '</div>'
           : '<button class="dmUp dmPick" type="button"><span class="svDocIc">' + DPHOTO + '</span><b>Take a photo or choose a file</b><small>JPG, PNG or PDF, up to 10 MB</small></button>');
       else if (dm.sign) b.innerHTML = '<p class="dmP">Please read the information below before your appointment. It explains what happens on the day, the risks involved and how your information is used.</p>' +
         '<div class="dmTx"><b>About the procedure</b><p>The scan uses a very low dose of X-ray to measure your body. You lie still on an open table for about ten minutes. Nothing goes inside your body and there is no injection.</p><b>Risks</b><p>The radiation dose is less than a day of normal background exposure. Tell the clinic if you are, or could be, pregnant.</p><b>Your information</b><p>Your images and results are shared with your Everlab doctor and stored securely. You can ask for a copy at any time.</p></div>' +
-        '<label class="dmChk"><input type="checkbox"' + (dm.ok ? ' checked' : '') + '><span>I have read and understood the information above and give my consent.</span></label>' +
-        '<h4 class="bkH">Your full name</h4><input class="dmName" type="text" autocomplete="off" placeholder="Type your name to sign" value="' + escS(dm.name) + '">';
-      else b.innerHTML = '<p class="dmP">A few quick questions so the clinic can prepare. It takes about a minute.</p>' + QS.map(([q, os], i) => '<h4 class="bkH">' + (i + 1) + '. ' + q + '</h4><div class="dmOpts">' + os.map(o => '<button class="bkSlot' + (dm.a[i] === o ? ' on' : '') + '" type="button" data-q="' + i + '" data-a="' + o + '">' + o + '</button>').join('') + '</div>').join('');
+        '<label class="dmChk"><input type="checkbox"' + (dm.ok ? ' checked' : '') + (dm.view ? ' disabled' : '') + '><span>I have read and understood the information above and give my consent.</span></label>' +
+        '<h4 class="bkH">Your full name</h4><input class="dmName" type="text" autocomplete="off" placeholder="Type your name to sign" value="' + escS(dm.name) + '"' + (dm.view ? ' disabled' : '') + '>';
+      else b.innerHTML = '<p class="dmP">A few quick questions so the clinic can prepare. It takes about a minute.</p>' + QS.map(([q, os], i) => '<h4 class="bkH">' + (i + 1) + '. ' + q + '</h4><div class="dmOpts">' + os.map(o => '<button class="bkSlot' + (dm.a[i] === o ? ' on' : '') + '" type="button" data-q="' + i + '" data-a="' + o + '"' + (dm.view && dm.a[i] !== o ? ' disabled' : '') + '>' + o + '</button>').join('') + '</div>').join('');
       dmFoot(); };
     const dmFoot = () => { const sh = dm.sh, ok = dm.photo ? dm.up : dm.sign ? dm.ok && dm.name.trim().length > 1 : QS.every((q, i) => dm.a[i]), left = dm.sign || dm.photo ? 0 : QS.filter((q, i) => !dm.a[i]).length;
+      if (dm.view){ sh.querySelector('.dmGo').disabled = false; sh.querySelector('.bkSum').innerHTML = '<span class="svDocOkT">' + CHKS + (dm.sign ? 'Signed' : dm.photo ? 'Uploaded' : 'Completed') + ' today</span>'; return; }
       sh.querySelector('.dmGo').disabled = !ok; sh.querySelector('.bkSum').textContent = dm.photo ? (ok ? '1 photo added' : 'Add a photo') : dm.sign ? (ok ? 'Ready to sign' : 'Tick the box and sign') : (ok ? 'All answered' : left + ' question' + (left > 1 ? 's' : '') + ' left'); };
-    const dmOpen = (t, mobile) => { const sh = mobile ? dmM : dmD; if (!sh){ docDone(t); return; } const d = (window.__docList(cur.key) || []).find(([, x]) => x === t), kind = d ? d[0] : /consent/i.test(t) ? 'sign' : 'form', sign = kind === 'sign';
-      dm = { sh, t, sign, photo: kind === 'photo', up: false, ok: false, name: '', a: {} }; sh.querySelector('.tlShPanel').setAttribute('aria-label', t); sh.querySelector('.tlShHead b').textContent = t; sh.querySelector('.dmGo').textContent = sign ? 'Sign and submit' : dm.photo ? 'Upload' : 'Submit';
+    const dmOpen = (t, mobile, view) => { const sh = mobile ? dmM : dmD; if (!sh){ if (!view) docDone(t); return; } const d = (window.__docList(cur.key) || []).find(([, x]) => x === t), kind = d ? d[0] : /consent/i.test(t) ? 'sign' : 'form', sign = kind === 'sign';
+      dm = { sh, t, sign, photo: kind === 'photo', up: false, ok: false, name: '', a: {} };
+      if (view){ const v = DOCANS[t] || {}; Object.assign(dm, { view: true, up: true, ok: true, name: v.name || 'Signed electronically', a: v.a || Object.fromEntries(QS.map(([, os], i) => [i, os[0]])) }); }   /* a completed one opens as it was filled in, read only ("completed doc should be able to open it") */
+      sh.querySelector('.tlShPanel').setAttribute('aria-label', t); sh.querySelector('.tlShHead b').textContent = t; sh.querySelector('.dmGo').textContent = view ? 'Close' : sign ? 'Sign and submit' : dm.photo ? 'Upload' : 'Submit'; sh.classList.toggle('dmView', !!view);
       dmPaint(); sh.querySelector('.dmBody').scrollTop = 0; sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); };
     [dmD, dmM].forEach(sh => sh && (sh.addEventListener('click', e => { if (!dm) return;
+      if (dm.view){ if (e.target.closest('.dmGo')) sh.shut(); return; }
       if (e.target.closest('.dmPick')){ dm.up = true; dmPaint(); return; }   /* a fake pick: a photo is there */
       const o = e.target.closest('.dmOpts .bkSlot'); if (o){ dm.a[o.dataset.q] = o.dataset.a; o.parentNode.querySelectorAll('.bkSlot').forEach(x => x.classList.toggle('on', x === o)); dmFoot(); return; }
-      if (e.target.closest('.dmGo') && !e.target.closest('.dmGo').disabled){ sh.shut(); docDone(dm.t); } }),
-      sh.addEventListener('input', e => { if (!dm) return; if (e.target.matches('.dmChk input')) dm.ok = e.target.checked; if (e.target.matches('.dmName')) dm.name = e.target.value; dmFoot(); }),
+      if (e.target.closest('.dmGo') && !e.target.closest('.dmGo').disabled){ DOCANS[dm.t] = { name: dm.name, a: Object.assign({}, dm.a) }; sh.shut(); docDone(dm.t); } }),
+      sh.addEventListener('input', e => { if (!dm || dm.view) return; if (e.target.matches('.dmChk input')) dm.ok = e.target.checked; if (e.target.matches('.dmName')) dm.name = e.target.value; dmFoot(); }),
       sh.addEventListener('change', e => { if (dm && e.target.matches('.dmChk input')){ dm.ok = e.target.checked; dmFoot(); } })));
     const isMob = el => !!el.closest('#svcMob, #phone2');
+    document.addEventListener('click', e => { const b = e.target.closest('.svDocView[data-view]'); if (!b || !b.closest('#dSvc, #svcMob, #phone2')) return; e.stopPropagation(); dmOpen(b.dataset.view, isMob(b), true); }, true);
     document.addEventListener('click', e => { const b = e.target.closest('.svPend .svBtn[data-doc]'); if (!b || !b.closest('#dSvc, #svcMob')) return; e.stopImmediatePropagation(); dmOpen(b.dataset.doc, isMob(b)); }, true);   // a document's own button in the status block: its form, then done and the next one in hand   // a document's own button in the status block: done, the next one in hand
     document.addEventListener('click', e => { const b = e.target.closest('.svPend .svBtn'); if (!b || b.dataset.doc != null || b.dataset.j != null || b.dataset.need != null || b.classList.contains('sec')) return;
       if (!b.closest('#dSvc, #svcMob')) return; if (/^book/i.test(cur.stepName || '')) bkOpen(!!b.closest('#svcMob')); });
