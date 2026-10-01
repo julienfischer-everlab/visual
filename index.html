@@ -6813,7 +6813,7 @@
   .svSimNav{display:inline-flex;gap:6px;margin-left:auto;} .svSimNav button{width:28px;height:28px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .svSimNav button svg{width:12px;height:12px;} .svSimNav button:hover{background:rgba(255,255,255,.14);} .svSimNav button:disabled{opacity:.3;cursor:default;}
   body.light .svSimNav button{background:rgba(46,31,26,.07);color:#2e241c;}
-  select.tkSegSel{display:none;}
+  select.tkSegSel{display:none;} .tkRow[hidden]{display:none !important;}
   .tbLay{display:none;align-items:center;gap:8px;} .tbLay .lbl{font-size:13px;color:#71717a;} body:is(.svcOn, .aptOn) .tbLay, body:has(#phone2.svcOn) .tbLay, body:has(#phone2.aptOn) .tbLay{display:inline-flex;}
   .tkSegT{display:inline-flex;gap:2px;padding:3px;border-radius:10px;background:rgba(255,255,255,.06);}
   .tkSegT button{height:28px;padding:0 12px;border:0;border-radius:8px;background:none;color:#a1a1aa;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap;}
@@ -9549,8 +9549,22 @@
           </select>
         </div>
         <!-- the documents on the Timeline too ("this should be in the Timeline view as well"), the same setting as the service page's -->
+        <!-- Documents on or off, and when on, where they go ("toggle on off; if on, display the document layout") -->
         <div class="tkRow">
           <span class="lbl">Documents</span>
+          <select id="stDocsOnT" class="stDocsOn" aria-label="Show the service's documents">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
+          </select>
+        </div>
+        <div class="tkRow stDocsLayRow" hidden>
+          <span class="lbl">Document layout</span>
+          <select id="stDocsLayT" class="stDocsLay" aria-label="Where the documents go">
+            <option value="asSteps" selected>Part of step timeline</option>
+            <option value="status">Part of status block</option>
+          </select>
+        </div>
+        <div class="tkRow" hidden>
           <select id="stDocsT" class="stDocsSel" aria-label="Where the service's documents are shown">
             <option value="off" selected>None</option>
             <option value="asSteps">As steps</option>
@@ -9601,8 +9615,22 @@
           </select>
         </div>
         <!-- the documents a service asks for (consents, questionnaires), to ideate where they live ("docs included in the timeline step" / "doc micro steps inside the hero card state") -->
+        <!-- Documents on or off, and when on, where they go ("toggle on off; if on, display the document layout") -->
         <div class="tkRow">
           <span class="lbl">Documents</span>
+          <select id="stDocsOnS" class="stDocsOn" aria-label="Show the service's documents">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
+          </select>
+        </div>
+        <div class="tkRow stDocsLayRow" hidden>
+          <span class="lbl">Document layout</span>
+          <select id="stDocsLayS" class="stDocsLay" aria-label="Where the documents go">
+            <option value="asSteps" selected>Part of step timeline</option>
+            <option value="status">Part of status block</option>
+          </select>
+        </div>
+        <div class="tkRow" hidden>
           <select id="stSvDocs" class="stDocsSel" aria-label="Where the service's documents are shown">
             <option value="off" selected>None</option>
             <option value="asSteps">As steps</option>
@@ -24274,7 +24302,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -26225,6 +26253,14 @@
     sel.addEventListener('change', sync); sync();
     new MutationObserver(sync).observe(sel, { attributes: true }); setInterval(() => { if (seg.dataset.v !== sel.value){ seg.dataset.v = sel.value; sync(); } }, 400);   // a value set by Save / Reset follows
   });
+  // Documents: a switch and, when on, the layout; both drive the hidden mode select the pages read (and follow it back when Save or Reset sets it)
+  { const ons = [...document.querySelectorAll('.stDocsOn')], lays = [...document.querySelectorAll('.stDocsLay')], modes = [...document.querySelectorAll('.stDocsSel')];
+    const show = (on, lay) => { ons.forEach(u => { u.value = on ? 'on' : 'off'; const g = u.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(on)); });
+      if (lay) lays.forEach(u => { u.value = lay; }); document.querySelectorAll('.stDocsLayRow').forEach(r => { r.hidden = !on; }); };
+    const push = () => { const on = ons[0] && ons[0].value === 'on', m = on ? (lays[0] ? lays[0].value : 'asSteps') : 'off'; const h = modes[0]; if (h && h.value !== m){ h.value = m; h.dispatchEvent(new Event('change', { bubbles: true })); } };
+    ons.forEach(t => t.addEventListener('change', () => { show(t.value === 'on'); push(); }));
+    lays.forEach(t => t.addEventListener('change', () => { show(true, t.value); push(); }));
+    modes.forEach(t => t.addEventListener('change', () => show(t.value !== 'off', t.value !== 'off' ? t.value : null))); }
   // Save and Reset for the Timeline's and the service page's tweaks ("add save tweak in controller"):
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
