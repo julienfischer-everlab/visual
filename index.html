@@ -6807,6 +6807,10 @@
   .svSimNav{display:inline-flex;gap:6px;margin-left:auto;} .svSimNav button{width:28px;height:28px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .svSimNav button svg{width:12px;height:12px;} .svSimNav button:hover{background:rgba(255,255,255,.14);} .svSimNav button:disabled{opacity:.3;cursor:default;}
   body.light .svSimNav button{background:rgba(46,31,26,.07);color:#2e241c;}
+  #tkMenu select.tkSegSel{display:none;}
+  .tkSegT{display:inline-flex;gap:2px;padding:3px;border-radius:10px;background:rgba(255,255,255,.06);}
+  .tkSegT button{height:28px;padding:0 12px;border:0;border-radius:8px;background:none;color:#a1a1aa;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap;}
+  .tkSegT button.on{background:rgba(255,255,255,.14);color:#fafafa;} .tkSegT button:not(.on):hover{color:#e4e4e7;}
   .svH2.svH2Apt{display:flex;align-items:center;gap:12px;} .svAptGo{margin-left:auto;height:32px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:13px;font-weight:500;cursor:pointer;} body.light .svAptGo{background:rgba(46,31,26,.07);color:#2e241c;}
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
   .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 64px));padding:calc(var(--stH,54px) + 120px) 16px 16px;   /* up under the sticky bar (its height), the title where it stood */background:linear-gradient(180deg,#151515,#111 70%,#0d0d0c);overflow:hidden;}   /* neutral: the warm brown read as an orange shade ("remove this weird orange shade") */
@@ -9593,9 +9597,9 @@
         <!-- which page a service opens on: the appointment page (the app's current one) or the service detail ("add a tweak Layout: Appointment (old), Service detail (new)") -->
         <div class="tkRow">
           <span class="lbl">Layout</span>
-          <select id="stLayout" aria-label="Which page a service opens on">
-            <option value="apt">Appointment (old)</option>
-            <option value="svc" selected>Service detail (new)</option>
+          <select id="stLayout" class="tkSegSel" aria-label="Which page a service opens on">
+            <option value="apt">Appointment</option>
+            <option value="svc" selected>Service detail</option>
           </select>
         </div>
         <!-- walk the service through its steps ("let's simulate the flow"): Book opens the booking, Next step moves it on, Reset puts it back -->
@@ -26177,6 +26181,16 @@
     document.addEventListener('everlab:mode', () => { document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn'); });
     window._apt = { openDesk, openMob, close };
   })();
+  // a segmented tab in place of a select ("put a segmented tab instead of a select"): the select stays, hidden, as the value and its change event
+  document.querySelectorAll('select.tkSegSel').forEach(sel => {
+    const seg = document.createElement('span'); seg.className = 'tkSegT'; seg.setAttribute('role', 'tablist');
+    seg.innerHTML = [...sel.options].map(o => '<button type="button" role="tab" data-v="' + o.value + '">' + o.textContent + '</button>').join('');
+    sel.after(seg);
+    const sync = () => seg.querySelectorAll('button').forEach(b => { const on = b.dataset.v === sel.value; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); });
+    seg.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.dataset.v === sel.value) return; sel.value = b.dataset.v; sel.dispatchEvent(new Event('change', { bubbles: true })); sync(); });
+    sel.addEventListener('change', sync); sync();
+    new MutationObserver(sync).observe(sel, { attributes: true }); setInterval(() => { if (seg.dataset.v !== sel.value){ seg.dataset.v = sel.value; sync(); } }, 400);   // a value set by Save / Reset follows
+  });
   // Save and Reset for the Timeline's and the service page's tweaks ("add save tweak in controller"):
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens

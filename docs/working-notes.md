@@ -12099,3 +12099,4 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - With the Documents tweak on, a document's Review / Complete marks it done (a green tick, Done), and as steps it turns green.
 - 5.630 Demo step skipper: a small previous / next pair at the right of Your progress (every mode, desk and phone): it moves the service a step back or on without the booking (a Book step forward goes straight to booked, a default date), back to Book, on to Completed; disabled at either end; not on locked, later, suggested, purchase or claim services.
 - 5.631 The status block reads the step in hand's title and its line (was the title alone), e.g. Meet your doctor / Go through your history and goals. The demo's step skipper no longer flashes the status block (the booking still does).
+- 5.632 Layout tweak as a segmented tab (Appointment | Service detail) in place of its select (the select stays hidden as the value; .tkSegSel builds the tab).
