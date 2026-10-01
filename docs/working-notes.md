@@ -12133,3 +12133,4 @@ The status block title is now an action ("Sign your Scan Consent", "Complete you
 - The contents are scaled down to match: 12px padding, a smaller label and close button, a 12.5px title, an 11px byline, a 72px illustration and a smaller See insights button.
 - The illustration and button sit at the foot of the card, so they line up across cards.
 - The desktop rail and XS desktop are unchanged.
+5.656 — Overview, phone: Insights card padding 16px (+4), the dismiss button 28 × 28, and the phone's section titles at 26px (Insights and Your action plan, kept alike). The cards hold their width (min-width 0), so two still fit across with 32px of the third; a long doctor's name now ends in "…".
