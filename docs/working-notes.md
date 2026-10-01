@@ -12161,3 +12161,6 @@ Once the documents are done (from Book on), Instructions comes back.
 - "Upload records" (link and upload icon) now sits at the right end of the page tabs' row, under the divider line in Inline and beside the pill in Segmented.
 - In Segmented, the pill's ground is drawn under the tabs only (--trackW, measured), so the row can run on to the link.
 5.669 — Overview phone Insights cards: title 16px. Health profile's count reads "1 of 3 done" without the flex gap after the number.
+5.670 — Insights desktop: the Tabs tweak defaults to Segmented (the pill).
+5.671 — The Tabs tweak class sits on <html> (the page's modes rewrite the body's classes, which had dropped it), so Segmented holds as the default. Segmented tabs on desktop hug their labels (20px each side, no equal widths). The Medical records header's "Upload records" is gone on desktop; the one beside the tabs is the only one, and the info pop-up's link scrolls to it.
+5.672 — The desk's Upload records beside the tabs is a tertiary CTA: outlined (1.5px ring), fully rounded, 40px tall, no underline, with a hover ring.
