@@ -6796,6 +6796,14 @@
   body:not([data-bp="xs"]) .dash > .svBook .tlShPanel{left:50%;right:auto;top:50%;bottom:auto;width:480px;max-height:86%;border-radius:24px;transform:translate(-50%,-46%);opacity:0;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
   body:not([data-bp="xs"]) .dash > .svBook.on .tlShPanel{transform:translate(-50%,-50%);opacity:1;} body:not([data-bp="xs"]) .dash > .svBook .tlShGrab{visibility:hidden;}
   .bkBody{padding-bottom:8px !important;}
+  /* the fake consent / questionnaire */
+  .dmP{margin:0;font-size:14px;line-height:1.5;color:#a8a8a3;} .dmTx{margin-top:16px;max-height:220px;overflow:auto;padding:16px;border-radius:14px;background:rgba(255,255,255,.05);font-size:13.5px;line-height:1.55;color:#c8c8c4;}
+  .dmTx b{display:block;font-size:14px;font-weight:500;color:#f4f4f4;} .dmTx p{margin:4px 0 14px;} .dmTx p:last-child{margin-bottom:0;}
+  .dmChk{display:flex;align-items:flex-start;gap:12px;margin-top:18px;font-size:14px;line-height:1.45;color:#e6e6e3;cursor:pointer;} .dmChk input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:#f7641f;cursor:pointer;}
+  .dmName{display:block;width:100%;box-sizing:border-box;height:48px;padding:0 14px;border:0;border-radius:12px;background:rgba(255,255,255,.06);color:#f4f4f4;font:inherit;font-size:15px;outline:none;} .dmName:focus{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);}
+  .dmOpts{display:flex;flex-wrap:wrap;gap:8px;} .dmOpts .bkSlot{flex:1 1 0;min-width:0;padding:0 12px;} .svDocM .bkH{line-height:1.4;}
+  .svDocM .dmGo{flex:none;height:48px;padding:0 28px;border-radius:999px;} .svDocM .dmGo:disabled{opacity:.35;cursor:default;}
+  body.light .dmP{color:#6b5f58;} body.light .dmTx{background:rgba(46,31,26,.05);color:#4a3e37;} body.light .dmTx b, body.light .dmChk{color:#2e1f1a;} body.light .dmName{background:rgba(46,31,26,.06);color:#2e1f1a;}
   .bkLoc{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.05);} .bkLoc svg{flex:none;width:20px;height:20px;color:#8b8b86;}
   .bkLoc b{display:block;font-size:15px;font-weight:500;color:#f4f4f4;} .bkLoc span{display:block;margin-top:2px;font-size:13px;color:#8b8b86;}
   .bkH{margin:22px 0 10px;font-size:14px;font-weight:500;color:#f4f4f4;}
@@ -23418,7 +23426,7 @@
       const bI = Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), a0 = bI, early = at <= bI, docAt = DOCS === 'asSteps' && docsOn && early ? dl.findIndex(([, t]) => !DOCDONE.has(t)) : -1;   // the documents sit before the Book step; once past it they read done
       const steps = d.steps.map((st, i) => (DOCS === 'asSteps' && docsOn && i === a0 ? dl.map(([ic, t, b], k) => '<div class="svStep svStepDoc' + (DOCDONE.has(t) || !early ? ' ok' : k === docAt ? ' on' : '') + '"><b>' + escS(t) + '</b><span>' + DLINE(b) + '</span></div>').join('') : '') +
         '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at && docAt < 0 ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
-      if (docAt >= 0){ const [, t, b] = dl[docAt]; x.tag = 'Pending action'; x.tone = ''; x.h = t; x.p = DLINE(b); x.btn = b; x.btns = null; x.noBtn = false; x.dis = false; x.goJ = null; x.goNeed = ''; x.doc = t; }   // the status block is that document's
+      if (docAt >= 0){ const [, t, b] = dl[docAt]; x.tag = 'Pending action'; x.tone = ''; x.h = (b === 'Review' ? 'Sign your ' : 'Complete your ') + t;   /* the status block says what to do, the step on the right keeps the name ("the title should be more action driven") */ x.p = DLINE(b); x.btn = b; x.btns = null; x.noBtn = false; x.dis = false; x.goJ = null; x.goNeed = ''; x.doc = t; }   // the status block is that document's
       const toBook = state === 'book' || (at >= 0 && at < n && /^book/i.test(d.steps[at][0]));   // still to book: no appointment to describe ("if state is book appt, doesn't make sense to show Your appointment")
       const title = o && o.t || d.t, start = o && o.st || x.st;
       const heroH = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div>';   // no progress card in the phone's hero ("remove this on mobile"): the steps are listed in the sheet
@@ -23507,10 +23515,37 @@
       if (at < 0 || cur.state === 'done') return;
       if (at >= n - 1) simGo(k, 'done', {}); else simGo(k, 'active', { at: at + 1, tag: cur.steps[at + 1][0] }); };
     // a status block's own button: Book opens the booking; a document's button marks it done
-    document.addEventListener('click', e => { const b = e.target.closest('.svPend .svBtn[data-doc]'); if (!b || !b.closest('#dSvc, #svcMob')) return; e.stopImmediatePropagation(); DOCDONE.add(b.dataset.doc); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); }, true);   // a document's own button in the status block: done, the next one in hand
+    /* a fake consent / questionnaire to fill in, for the demo ("just use a fake consent and questionnaire modal"): the same modal (desk) / sheet (phone) as the booking, submitting it completes the document */
+    const docDone = t => { DOCDONE.add(t); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); };
+    const QS = [['Do you have any metal implants, a pacemaker or other device?', ['No', 'Yes']], ['Could you be pregnant?', ['No', 'Yes', 'Not applicable']], ['Have you had a scan with contrast or barium in the last 2 weeks?', ['No', 'Yes']], ['How would you rate your general health?', ['Good', 'Fair', 'Poor']]];
+    const mkDoc = host => { if (!host) return null; const sh = document.createElement('div'); sh.className = 'tlSheet svBook svDocM'; sh.setAttribute('aria-hidden', 'true');
+      sh.innerHTML = '<div class="tlShDim"></div><div class="tlShPanel" role="dialog" aria-modal="true"><i class="tlShGrab" aria-hidden="true"></i><div class="tlShHead"><div><b></b></div><button class="tlShX" type="button" aria-label="Close">' + SX + '</button></div><div class="tlShBody bkBody dmBody"></div><div class="bkFoot"><div class="bkSum"></div><button class="svBtn dmGo" type="button" disabled></button></div></div>';
+      host.appendChild(sh); const shut = () => { sh.classList.remove('on'); sh.setAttribute('aria-hidden', 'true'); };
+      sh.querySelector('.tlShDim').addEventListener('click', shut); sh.querySelector('.tlShX').addEventListener('click', shut); sh.shut = shut; return sh; };
+    const dmD = mkDoc(document.querySelector('.dash')), dmM = mkDoc(ph);
+    let dm = null;
+    const dmPaint = () => { const sh = dm.sh, b = sh.querySelector('.dmBody');
+      if (dm.sign) b.innerHTML = '<p class="dmP">Please read the information below before your appointment. It explains what happens on the day, the risks involved and how your information is used.</p>' +
+        '<div class="dmTx"><b>About the procedure</b><p>The scan uses a very low dose of X-ray to measure your body. You lie still on an open table for about ten minutes. Nothing goes inside your body and there is no injection.</p><b>Risks</b><p>The radiation dose is less than a day of normal background exposure. Tell the clinic if you are, or could be, pregnant.</p><b>Your information</b><p>Your images and results are shared with your Everlab doctor and stored securely. You can ask for a copy at any time.</p></div>' +
+        '<label class="dmChk"><input type="checkbox"' + (dm.ok ? ' checked' : '') + '><span>I have read and understood the information above and give my consent.</span></label>' +
+        '<h4 class="bkH">Your full name</h4><input class="dmName" type="text" autocomplete="off" placeholder="Type your name to sign" value="' + escS(dm.name) + '">';
+      else b.innerHTML = '<p class="dmP">A few quick questions so the clinic can prepare. It takes about a minute.</p>' + QS.map(([q, os], i) => '<h4 class="bkH">' + (i + 1) + '. ' + q + '</h4><div class="dmOpts">' + os.map(o => '<button class="bkSlot' + (dm.a[i] === o ? ' on' : '') + '" type="button" data-q="' + i + '" data-a="' + o + '">' + o + '</button>').join('') + '</div>').join('');
+      dmFoot(); };
+    const dmFoot = () => { const sh = dm.sh, ok = dm.sign ? dm.ok && dm.name.trim().length > 1 : QS.every((q, i) => dm.a[i]), left = dm.sign ? 0 : QS.filter((q, i) => !dm.a[i]).length;
+      sh.querySelector('.dmGo').disabled = !ok; sh.querySelector('.bkSum').textContent = dm.sign ? (ok ? 'Ready to sign' : 'Tick the box and sign') : (ok ? 'All answered' : left + ' question' + (left > 1 ? 's' : '') + ' left'); };
+    const dmOpen = (t, mobile) => { const sh = mobile ? dmM : dmD; if (!sh){ docDone(t); return; } const d = (window.__docList(cur.key) || []).find(([, x]) => x === t), sign = d ? d[0] === 'sign' : /consent/i.test(t);
+      dm = { sh, t, sign, ok: false, name: '', a: {} }; sh.querySelector('.tlShPanel').setAttribute('aria-label', t); sh.querySelector('.tlShHead b').textContent = t; sh.querySelector('.dmGo').textContent = sign ? 'Sign and submit' : 'Submit';
+      dmPaint(); sh.querySelector('.dmBody').scrollTop = 0; sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); };
+    [dmD, dmM].forEach(sh => sh && (sh.addEventListener('click', e => { if (!dm) return;
+      const o = e.target.closest('.dmOpts .bkSlot'); if (o){ dm.a[o.dataset.q] = o.dataset.a; o.parentNode.querySelectorAll('.bkSlot').forEach(x => x.classList.toggle('on', x === o)); dmFoot(); return; }
+      if (e.target.closest('.dmGo') && !e.target.closest('.dmGo').disabled){ sh.shut(); docDone(dm.t); } }),
+      sh.addEventListener('input', e => { if (!dm) return; if (e.target.matches('.dmChk input')) dm.ok = e.target.checked; if (e.target.matches('.dmName')) dm.name = e.target.value; dmFoot(); }),
+      sh.addEventListener('change', e => { if (dm && e.target.matches('.dmChk input')){ dm.ok = e.target.checked; dmFoot(); } })));
+    const isMob = el => !!el.closest('#svcMob, #phone2');
+    document.addEventListener('click', e => { const b = e.target.closest('.svPend .svBtn[data-doc]'); if (!b || !b.closest('#dSvc, #svcMob')) return; e.stopImmediatePropagation(); dmOpen(b.dataset.doc, isMob(b)); }, true);   // a document's own button in the status block: its form, then done and the next one in hand   // a document's own button in the status block: done, the next one in hand
     document.addEventListener('click', e => { const b = e.target.closest('.svPend .svBtn'); if (!b || b.dataset.doc != null || b.dataset.j != null || b.dataset.need != null || b.classList.contains('sec')) return;
       if (!b.closest('#dSvc, #svcMob')) return; if (/^book/i.test(cur.stepName || '')) bkOpen(!!b.closest('#svcMob')); });
-    document.addEventListener('click', e => { const b = e.target.closest('.svDocBtn'); if (!b) return; const r = b.closest('.svDoc'); if (!r || !r.dataset.doc) return; e.stopPropagation(); DOCDONE.add(r.dataset.doc); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); }, true);
+    document.addEventListener('click', e => { const b = e.target.closest('.svDocBtn'); if (!b) return; const r = b.closest('.svDoc'); if (!r || !r.dataset.doc) return; e.stopPropagation(); dmOpen(r.dataset.doc, isMob(b)); }, true);
     { const nx = document.getElementById('stSimNext'), rs = document.getElementById('stSimReset');
       if (nx) nx.addEventListener('click', () => simNext(!!(ph && ph.classList.contains('svcOn')) && !document.body.classList.contains('svcOn')));
       if (rs) rs.addEventListener('click', () => { const z = SIM0[cur.key]; Object.keys(SIM).forEach(k => delete SIM[k]); DOCDONE.clear(); if (z){ Object.keys(SIM0).forEach(k => delete SIM0[k]); paint(cur.key, z.state, z.o); } else paint(cur.key, cur.state, cur.o); }); }
