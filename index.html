@@ -6802,6 +6802,11 @@
   body.light .bkLoc{background:rgba(46,31,26,.05);} body.light .bkLoc b, body.light .bkH{color:#2e1f1a;} body.light .bkDay, body.light .bkSlot{background:rgba(46,31,26,.06);color:#2e241c;} body.light .bkDay.on, body.light .bkSlot.on{background:#111;color:#fff;} body.light .bkFoot{border-top-color:rgba(46,31,26,.1);}
   .svDoc.done .svDocIc::after{display:none;} .svDoc.done b{color:#8b8b86;} .svDocOk{flex:none;display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#9cc088;} .svDocOk svg{width:12px;height:12px;}
   @keyframes svFlash{0%{box-shadow:0 0 0 0 rgba(247,131,89,.5);}100%{box-shadow:0 0 0 14px rgba(247,131,89,0);}} .svPend.svFlash{animation:svFlash .9s ease-out;}
+  /* the demo's step skipper at the right of Your progress */
+  .svProgHead, .svH2Sim{display:flex;align-items:center;justify-content:space-between;}
+  .svSimNav{display:inline-flex;gap:6px;margin-left:auto;} .svSimNav button{width:28px;height:28px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .svSimNav button svg{width:12px;height:12px;} .svSimNav button:hover{background:rgba(255,255,255,.14);} .svSimNav button:disabled{opacity:.3;cursor:default;}
+  body.light .svSimNav button{background:rgba(46,31,26,.07);color:#2e241c;}
   .svH2.svH2Apt{display:flex;align-items:center;gap:12px;} .svAptGo{margin-left:auto;height:32px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:13px;font-weight:500;cursor:pointer;} body.light .svAptGo{background:rgba(46,31,26,.07);color:#2e241c;}
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
   .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 64px));padding:calc(var(--stH,54px) + 120px) 16px 16px;   /* up under the sticky bar (its height), the title where it stood */background:linear-gradient(180deg,#151515,#111 70%,#0d0d0c);overflow:hidden;}   /* neutral: the warm brown read as an orange shade ("remove this weird orange shade") */
@@ -23297,7 +23302,10 @@
       const jNeed = J && state === 'locked' ? (J.items[J.i].need || d.need) : null, jB = !J || !jNeed ? -1 : jA;   // the blocker is the service the chain waits on now, the group's one in hand, not the locked one just before ("wrong, the DEXA is the blocker here")
       if (J && state === 'locked' && jA >= 0 && jA !== J.i){ const rt = J.items[jA].t || (SVC[J.items[jA].svc] || {}).t || jNeed; x.h = 'Complete your ' + rt + ' first.'; x.p = 'You need to complete your ' + escS(rt) + ' before you can book this appointment.'; x.btn = 'View'; x.dis = false; x.goJ = jA; }   /* its button opens the one to do now ("CTA should be View") */   // the one to do now, the chain's first, not the step just before ("no, complete your DEXA Scan first, sub adapt as well")
       const JJ = J || { items: [{ svc: key, t: o && o.t || d.short && d.t || d.t, state: state === 'done' ? 'done' : state }], i: 0 };   // a single service: a journey of one, so its progress has the same heading and card as a group's ("push the title outside the card, the exact same style as when we have multiple related products")
-      const jr = (inBody, inCard) => !JJ ? '' : '<div class="svJr' + (inBody ? ' body' : '') + '">' + (inBody ? '<h2 class="svH2">Your progress</h2>' : '<div class="svProgHead">Your progress</div>')   /* was Your journey ("Your progress") */ + '<ol class="svJrL">' + JJ.items.map((y, i) => {
+      // demo only: a small previous / next at the heading's right to skip through the steps ("for the sake of the demo, so we can skip the steps easily")
+      const CHL = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg>', CHR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg>';
+      const simNav = () => state === 'locked' || state === 'later' || state === 'suggested' || state === 'purchase' || state === 'claim' ? '' : '<span class="svSimNav"><button type="button" data-sim="-1" aria-label="Previous step"' + (at <= 0 && state !== 'done' ? ' disabled' : '') + '>' + CHL + '</button><button type="button" data-sim="1" aria-label="Next step"' + (state === 'done' || at >= n ? ' disabled' : '') + '>' + CHR + '</button></span>';
+      const jr = (inBody, inCard) => !JJ ? '' : '<div class="svJr' + (inBody ? ' body' : '') + '">' + (inBody ? '<h2 class="svH2 svH2Sim">Your progress' + simNav() + '</h2>' : '<div class="svProgHead">Your progress' + simNav() + '</div>')   /* was Your journey ("Your progress") */ + '<ol class="svJrL">' + JJ.items.map((y, i) => {
         const k = y.state === 'done' ? 'on' : !J && state === 'locked' ? 'lock' : i === (J ? jA : 0) ? 'cur' : 'lock', me = i === JJ.i, nm = y.t || (SVC[y.svc] || {}).t || '';
         const mk = k === 'on' ? '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>' : k === 'lock' ? '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' : '';
         const lk = me && state === 'locked', bl = !!J && i === jB;
@@ -23390,6 +23398,12 @@
     // the flow moves on: the service's new state kept (reopening it keeps it), the page repainted, its status block flashing
     const simGo = (k, state, extra) => { if (!SIM0[k]) SIM0[k] = { state: cur.state, o: cur.o }; SIM[k] = { state, o: Object.assign({}, SIM[k] && SIM[k].o, extra) };
       paint(k, state, Object.assign({}, cur.o, SIM[k].o)); requestAnimationFrame(() => document.querySelectorAll('#dSvc .svPend, #svcMob .svPend').forEach(x => { x.classList.remove('svFlash'); void x.offsetWidth; x.classList.add('svFlash'); })); };
+    const simStep = dir => { const k = cur.key, n = cur.n, st = cur.steps || [], bookFirst = st[0] && /^book/i.test(st[0][0]);
+      const from = cur.state === 'done' ? n : Math.max(0, cur.at), to = Math.max(0, Math.min(n, from + dir)); if (to === from) return;
+      if (to >= n) simGo(k, 'done', {}); else if (to === 0 && bookFirst) simGo(k, 'book', {});
+      else if (to === 1 && bookFirst) simGo(k, 'booked', { when: (SIM[k] && SIM[k].o && SIM[k].o.when) || cur.o && cur.o.when || 'Mon 6 Oct 2026, 9:30 am' });
+      else simGo(k, 'active', { at: to, tag: st[to][0] }); };
+    document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation(); simStep(+b.dataset.sim); }, true);
     const simNext = mobile => { const k = cur.key, n = cur.n, at = cur.at;
       if (/^book/i.test(cur.stepName || '')) { bkOpen(mobile); return; }
       if (at < 0 || cur.state === 'done') return;

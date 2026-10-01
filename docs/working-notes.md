@@ -12097,3 +12097,4 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - Book books it: the service goes to booked with that date (Confirmed / the next step lit, Your appointment showing it), the status block flashes. The state is kept per service, so leaving and reopening the page keeps it.
 - Tweak Service detail > Simulate: Next step (from a Book step it opens the booking; otherwise the next step, then Completed) and Reset (every service back as it was, documents undone).
 - With the Documents tweak on, a document's Review / Complete marks it done (a green tick, Done), and as steps it turns green.
+- 5.630 Demo step skipper: a small previous / next pair at the right of Your progress (every mode, desk and phone): it moves the service a step back or on without the booking (a Book step forward goes straight to booked, a default date), back to Book, on to Completed; disabled at either end; not on locked, later, suggested, purchase or claim services.
