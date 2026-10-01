@@ -12091,3 +12091,9 @@ These rows stay in their own sections (a `tail` section) rather than joining Lat
 - 5.626 Tweaks over the phone's service and appointment screens (#phone2.svcOn / .aptOn): the Service detail group only, no Overview group, as on the desk.
 - 5.627 Documents tweak: "In the steps" renamed "In a sub step"; a fourth option "As steps": each document becomes a step of its own after the step in hand (its name, "Review and sign / Complete before your appointment", a small button at the right).
 - 5.628 Documents as steps: no button on them (steps to come never carry a CTA); name and line only.
+
+5.629 The flow, simulated ("let's simulate the flow: I click Book, a modal with an example booking flow, its Book, then the next step")
+- Book in a service page's status block (when the step in hand is a Book step) opens the booking: a centred modal on the desk, a bottom sheet on the phone and at XS. The clinic and duration; Select a date (seven days from Mon 6 Oct, chips); Available times (six slots, a few full, struck through); a summary and Book, enabled once a time is picked.
+- Book books it: the service goes to booked with that date (Confirmed / the next step lit, Your appointment showing it), the status block flashes. The state is kept per service, so leaving and reopening the page keeps it.
+- Tweak Service detail > Simulate: Next step (from a Book step it opens the booking; otherwise the next step, then Completed) and Reset (every service back as it was, documents undone).
+- With the Documents tweak on, a document's Review / Complete marks it done (a green tick, Done), and as steps it turns green.
