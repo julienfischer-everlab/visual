@@ -23289,7 +23289,7 @@
       const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
       // the status block says the step in hand, the one lit on the right ("body status block needs to reflect the current step on the right side"): its name and its line, and neutral when it isn't the member's to do; a time to re-choose (request) keeps its own message
       if (state !== 'request' && at >= 0 && at < n){ const cs = d.steps[at], pv = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/.test(cs[0]);
-        x.tag = pv ? (/result/i.test(cs[0]) ? 'Waiting for results' : 'In progress') : 'Pending action'; x.h = cs[0]; x.p = ''; x.noBtn = pv && !(d.act && d.act[cs[0]]);   /* not the member's to do: no button, as the Timeline's secondary View */ if (d.act && d.act[cs[0]]) { const A = d.act[cs[0]]; x.h = A.h; x.p = A.p; x.btns = A.btns; } if (d.started && (state === 'book' || state === 'active')) x.st = d.started; /* the design's block: "Pending action", the step's name, no line, its button; no count here ("service detail remove Step X of X"): the progress beside says it */ x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
+        x.tag = pv ? (/result/i.test(cs[0]) ? 'Waiting for results' : 'In progress') : 'Pending action'; x.h = cs[0]; x.p = escS(cs[1] || '');   /* the step's own line under its title ("this title and sub should be reflected in the state block") */ x.noBtn = pv && !(d.act && d.act[cs[0]]);   /* not the member's to do: no button, as the Timeline's secondary View */ if (d.act && d.act[cs[0]]) { const A = d.act[cs[0]]; x.h = A.h; x.p = A.p; x.btns = A.btns; } if (d.started && (state === 'book' || state === 'active')) x.st = d.started; /* the design's block: "Pending action", the step's name, no line, its button; no count here ("service detail remove Step X of X"): the progress beside says it */ x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
       // the journey: every service of the group, the page's own marked and carrying its status (in the body, the status block itself)
       // ...passed by the Timeline, or, from anywhere else (Service detail, the Overview), the group the service belongs to, the page's own in its state ("where are the journey cards?")
       const JDEF = { dexa: 'ci', diag: 'ci', checkin: 'ci', gutq: 'gut', gut: 'gut', gutrep: 'gut', gutrev: 'gut' };
@@ -23396,13 +23396,13 @@
       const t = e.target.closest('.bkSlot'); if (t && !t.disabled){ bk.time = +t.dataset.time; bkPaint(); return; }
       if (e.target.closest('.bkGo') && bk.time != null){ const when = DAYS[bk.day][0] + ' ' + DAYS[bk.day][1] + ' Oct 2026, ' + TIMES[bk.time]; sh.shut(); simGo(cur.key, 'booked', { when }); } }));
     // the flow moves on: the service's new state kept (reopening it keeps it), the page repainted, its status block flashing
-    const simGo = (k, state, extra) => { if (!SIM0[k]) SIM0[k] = { state: cur.state, o: cur.o }; SIM[k] = { state, o: Object.assign({}, SIM[k] && SIM[k].o, extra) };
-      paint(k, state, Object.assign({}, cur.o, SIM[k].o)); requestAnimationFrame(() => document.querySelectorAll('#dSvc .svPend, #svcMob .svPend').forEach(x => { x.classList.remove('svFlash'); void x.offsetWidth; x.classList.add('svFlash'); })); };
+    const simGo = (k, state, extra, quiet) => { if (!SIM0[k]) SIM0[k] = { state: cur.state, o: cur.o }; SIM[k] = { state, o: Object.assign({}, SIM[k] && SIM[k].o, extra) };
+      paint(k, state, Object.assign({}, cur.o, SIM[k].o)); if (!quiet) requestAnimationFrame(() => document.querySelectorAll('#dSvc .svPend, #svcMob .svPend').forEach(x => { x.classList.remove('svFlash'); void x.offsetWidth; x.classList.add('svFlash'); })); };
     const simStep = dir => { const k = cur.key, n = cur.n, st = cur.steps || [], bookFirst = st[0] && /^book/i.test(st[0][0]);
       const from = cur.state === 'done' ? n : Math.max(0, cur.at), to = Math.max(0, Math.min(n, from + dir)); if (to === from) return;
-      if (to >= n) simGo(k, 'done', {}); else if (to === 0 && bookFirst) simGo(k, 'book', {});
-      else if (to === 1 && bookFirst) simGo(k, 'booked', { when: (SIM[k] && SIM[k].o && SIM[k].o.when) || cur.o && cur.o.when || 'Mon 6 Oct 2026, 9:30 am' });
-      else simGo(k, 'active', { at: to, tag: st[to][0] }); };
+      if (to >= n) simGo(k, 'done', {}, 1); else if (to === 0 && bookFirst) simGo(k, 'book', {}, 1);
+      else if (to === 1 && bookFirst) simGo(k, 'booked', { when: (SIM[k] && SIM[k].o && SIM[k].o.when) || cur.o && cur.o.when || 'Mon 6 Oct 2026, 9:30 am' }, 1);
+      else simGo(k, 'active', { at: to, tag: st[to][0] }, 1); };   // no flash when skipping ("remove the ripple effect when skipping the steps")
     document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation(); simStep(+b.dataset.sim); }, true);
     const simNext = mobile => { const k = cur.key, n = cur.n, at = cur.at;
       if (/^book/i.test(cur.stepName || '')) { bkOpen(mobile); return; }
