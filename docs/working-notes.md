@@ -12145,3 +12145,5 @@ Once the documents are done (from Book on), Instructions comes back.
 - Everlab report: one full-width card with an "EVERLAB REPORT" eyebrow, the report name and a New badge, the date and biomarker count, a See report button and the service picture on the right. Placeholder data: DEXA "Body composition & bone density", 1 Oct 2026, 18 biomarkers.
 - Medical records: the Insights page's records list. A group header (category dot, Imaging for DEXA or Pathology otherwise, the date, the provider, a download button) sits over one row per document, each with a file icon and View.
 5.661 — At "Get your results" the body drops Your appointment and Instructions (the appointment is behind them), leaving My documents. They come back once the service is done.
+5.662 — Overview phone Insights cards, larger text: label 13px, title 15px, byline 12.5px. Because the larger text cut off the doctor's name, the name and date now sit on two lines (no separator).
+- The card copy reads "New insights from your …" instead of "We have some insights from your …" on every host.
