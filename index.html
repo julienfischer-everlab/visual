@@ -23756,8 +23756,7 @@
     const DOCL = svc => (window.__docList ? window.__docList(svc) : []).map(([, t, b]) => [t, b]);
     const docsFor = p => { const m = window.__docsMode; return m && m !== 'off' && p && p.svc && p.at >= 0 && p.at < p.steps.length ? m : ''; };
     const DOCDN = () => window.__docDone || new Set();
-    const docRows = p => '<div class="svDocs inStep tlDocs">' + DOCL(p.svc).map(([t, b]) => { const dn = DOCDN().has(t); return '<div class="svDoc' + (dn ? ' done' : '') + '" data-doc="' + esc(t) + '"><span class="svDocIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3" width="11" height="14" rx="2"/><path d="M7.5 7h5M7.5 10h5M7.5 13h3"/></svg></span><b>' + esc(t) + '</b>' + (dn ? '<span class="svDocOk">Done</span>' : '<button class="svDocBtn" type="button">' + b + '</button>') + '</div>'; }).join('') + '</div>';
-    const stepList = p => { const m = docsFor(p); if (!m) return stepList0(p); if (m === 'status') return stepList0(p) + docRows(p);
+    const stepList = p => { const m = docsFor(p); if (!m) return stepList0(p); if (m === 'status') return stepList0(p);   /* part of the status block: no documents on the Timeline ("if part of the status block, just remove all docs in the timeline") */
       const dl = DOCL(p.svc), k = dl.findIndex(([t]) => !DOCDN().has(t)), bI = Math.max(0, p.steps.findIndex(st => /^book/i.test(st[0]))), at = Math.max(0, p.at);   // always just before Book, the first still to do in hand while Book is not done
       const steps = p.steps.slice(0, bI).concat(dl.map(([t]) => [t]), p.steps.slice(bI));
       return stepList0(Object.assign({}, p, { steps, at: at < bI ? at : at === bI && k >= 0 ? bI + k : p.at + dl.length })); };
