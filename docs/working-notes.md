@@ -12160,3 +12160,4 @@ Once the documents are done (from Book on), Instructions comes back.
 - The "Got a record from your provider? Upload records" card is removed.
 - "Upload records" (link and upload icon) now sits at the right end of the page tabs' row, under the divider line in Inline and beside the pill in Segmented.
 - In Segmented, the pill's ground is drawn under the tabs only (--trackW, measured), so the row can run on to the link.
+5.669 — Overview phone Insights cards: title 16px. Health profile's count reads "1 of 3 done" without the flex gap after the number.
