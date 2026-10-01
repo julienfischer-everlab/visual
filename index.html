@@ -23284,11 +23284,19 @@
     };
     const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
     let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true, HZ = false, PH = false, DOCS = 'off', LAY = 'svc';
-    const SIM = {}, SIM0 = {}, DOCDONE = new Set();   // the simulated flow ("let's simulate the flow"): each service's state as the member moves it on, and the documents done
+    const SIM = {}, SIM0 = {}, DOCDONE = new Set();
+    // the two groups' services, each in the state the simulated flow has it at, a locked one unlocked once all before it are done
+    const JDEF = { dexa: 'ci', diag: 'ci', checkin: 'ci', gutq: 'gut', gut: 'gut', gutrep: 'gut', gutrev: 'gut' };
+    const jBase = g => { const items = (g === 'ci' ? [{ svc: 'dexa', state: 'book', t: 'DEXA Scan' }, { svc: 'diag', state: 'locked', need: 'DEXA Scan' }, { svc: 'checkin', state: 'locked', need: 'Diagnostics Review' }]
+        : [{ svc: 'gutq', state: 'done' }, { svc: 'gut', state: 'active', at: 3, tag: 'Collect sample' }, { svc: 'gutrep', state: 'soon' }, { svc: 'gutrev', state: 'locked', need: 'Microbiome Report' }]).map(y => SIM[y.svc] ? Object.assign({}, y, SIM[y.svc].o, { state: SIM[y.svc].state }) : y);
+      items.forEach((y, i) => { if (y.state === 'locked' && items.slice(0, i).every(z => z.state === 'done')) items[i] = Object.assign({}, y, { state: 'book' }); }); return items; };   // the simulated flow ("let's simulate the flow"): each service's state as the member moves it on, and the documents done
     const CHKS = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 6.2 2.2 2.2 4.8-5"/></svg>';
     const simIn = (key, state, o) => { const k = key || 'dexa'; if (!SIM[k]) return [key, state, o]; return [k, SIM[k].state, Object.assign({}, o, SIM[k].o)]; };   // DOCS: where the documents show (the tweak); LAY: which page a service opens on   // PH: painting a phone layout (the horizontal card is the phone's only, "not horizontal on desktop")   // HZ: the own card's steps as one row of bars (the tweak)   // Right column merged by default ("use as default")   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
     const paint = (key, state, o) => {
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
+      // a locked page whose services before it are all done is in hand, not locked ("DEXA is done, so it shouldn't be orange, and we should see the steps")
+      if (state === 'locked'){ const its = o.journey ? o.journey.items.map(y => SIM[y.svc] ? Object.assign({}, y, { state: SIM[y.svc].state }) : y) : JDEF[key] ? jBase(JDEF[key]) : null, ii = o.journey ? o.journey.i : its ? its.findIndex(y => y.svc === key) : -1;
+        if (its && ii > 0 && its.slice(0, ii).every(y => y.state === 'done')){ state = 'book'; if (o.journey) o.journey = Object.assign({}, o.journey, { items: its }); } }
       const d = Object.assign({}, SVC[key] || SVC.dexa, o), x = (STATE[state] || STATE.request)(d);
       if (key === 'dexa' || !SVC[key]) d.steps = SVC.dexa.steps;   // a DEXA page always lists the DEXA's own steps, whatever opened it
       const img = SIMG[d.img] || SIMG.dexa, n = d.steps.length, at = Math.min(x.at, n), pct = at < 0 ? 0 : Math.min(at + 1, n);
@@ -23297,10 +23305,8 @@
         x.tag = pv ? (/result/i.test(cs[0]) ? 'Waiting for results' : 'In progress') : 'Pending action'; x.h = cs[0]; x.p = escS(cs[1] || '');   /* the step's own line under its title ("this title and sub should be reflected in the state block") */ x.noBtn = pv && !(d.act && d.act[cs[0]]);   /* not the member's to do: no button, as the Timeline's secondary View */ if (d.act && d.act[cs[0]]) { const A = d.act[cs[0]]; x.h = A.h; x.p = A.p; x.btns = A.btns; } if (d.started && (state === 'book' || state === 'active')) x.st = d.started; /* the design's block: "Pending action", the step's name, no line, its button; no count here ("service detail remove Step X of X"): the progress beside says it */ x.tone = pv ? 'info' : ''; }   // orange when it is the member's, like the Timeline's badge
       // the journey: every service of the group, the page's own marked and carrying its status (in the body, the status block itself)
       // ...passed by the Timeline, or, from anywhere else (Service detail, the Overview), the group the service belongs to, the page's own in its state ("where are the journey cards?")
-      const JDEF = { dexa: 'ci', diag: 'ci', checkin: 'ci', gutq: 'gut', gut: 'gut', gutrep: 'gut', gutrev: 'gut' };
       const jDef = () => { const g = JDEF[key]; if (!g) return null;
-        const items = g === 'ci' ? [{ svc: 'dexa', state: 'book', t: 'DEXA Scan' }, { svc: 'diag', state: 'locked', need: 'DEXA Scan' }, { svc: 'checkin', state: 'locked', need: 'Diagnostics Review' }]
-          : [{ svc: 'gutq', state: 'done' }, { svc: 'gut', state: 'active', at: 3, tag: 'Collect sample' }, { svc: 'gutrep', state: 'soon' }, { svc: 'gutrev', state: 'locked', need: 'Microbiome Report' }];
+        const items = jBase(g);
         const i = items.findIndex(y => y.svc === key); items[i] = Object.assign({}, items[i], { state: state, at: o && o.at != null ? o.at : items[i].at });
         return { name: g === 'ci' ? 'Member Check-In' : 'Microbiome & Gut Health Assessment', items, i }; };
       const J = (o && o.journey) || jDef(), jA = J ? J.items.findIndex(y => y.state !== 'done') : -1;
