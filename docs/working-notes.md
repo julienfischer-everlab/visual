@@ -12388,3 +12388,5 @@ The Simple variant uses the same fuller description.
 5.764 Locked modal, Complete first cards: 8px more under the name (2 → 10), and the status in #fff. The status of the one in hand reads "Next to complete" instead of "Ready to book" ("next to complete, not ready to book"); the locked ones still say "Not available yet".
 
 5.765 Complete first shows one card, the next service to complete, not every one before it ("no need to show all next services, just the next one"). The description still names them all.
+
+5.766 Steps tweak set to Horizontal: on the phone (and XS) the bars and the step in hand move into the hero, under the title and date, as lighter tracks on the picture ("replace that inside the hero header, below the title group"). Tapping them opens the steps sheet, as the card did. The page's own card in Your progress keeps its name and This service badge without the bars; a lone service's card is hidden.
