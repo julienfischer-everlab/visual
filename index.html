@@ -6702,6 +6702,7 @@
   .svProg{background:rgba(255,255,255,.04);border-radius:20px;padding:24px;}
   .svProgHead{display:flex;align-items:center;justify-content:space-between;font-size:18px;font-weight:500;color:#f4f4f4;margin-bottom:20px;}
   .svProgHead em{font-style:normal;font-size:14px;font-weight:400;color:#8b8b86;}
+  .svStep:not(.on):not(.ok) > *{opacity:.7;}   /* steps not reached, their words at 70% ("all inactive states, 70% opacity on the content") */
   .svStep{position:relative;padding:6px 0 6px 22px;margin-bottom:4px;}   /* 4 -> 6 top and bottom ("add 2px gap top bottom on content"); the bar grows with it */   /* 4 above and below ("padding top bottom 4px") */   /* 8 above and below its words, the bar with them ("in the content add 8px padding top bottom") */   /* 4 between the steps ("gap between stacked item 4px") */
   .svStep:last-child{margin-bottom:0;}
   .svStep::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;border-radius:2px;background:rgba(255,255,255,.12);}
@@ -7167,6 +7168,7 @@
   .tlStepL li.on:not(:last-child)::before{background:#9cc088;}
   .tlStepL .tx{min-width:0;display:flex;flex-wrap:wrap;align-items:center;column-gap:10px;row-gap:4px;} .tlStepL .tx .tlNext{display:inline-flex;align-items:center;margin:0;height:20px;padding:0 7px;border-radius:6px;font-size:11.5px;line-height:1;}   /* past the old subline rule for spans */ .tlStepL .tx em{display:inline-block;font-style:normal;font-size:12.5px;color:var(--tlSub);opacity:.8;} .tlStepL b{display:block;font-size:13.5px;font-weight:400;color:var(--tlTx);line-height:16px;} .tlStepL span{display:block;margin-top:2px;font-size:12.5px;color:var(--tlSub);}
   .tlStepL li:not(.on):not(.cur) b{color:var(--tlSub);}
+  .tlStepL li:not(.on):not(.cur) .tx, :is(#dTl, .tlShPanel) .tlStepL li:not(.on):not(.cur) .tx{opacity:.7;} .tlStepL li:not(.on):not(.cur) b, :is(#dTl, .tlShPanel) .tlStepL li:not(.on):not(.cur) b{color:var(--tlInk, #ececec) !important;}   /* steps not reached: the step's own ink at 70% ("all inactive states, 70% opacity") */
   .tlStepL li{padding-bottom:6px;} .tlStepL li::before{display:none !important;}   /* no trail between the rings ("no need trail") */
   /* the steps as a vertical progress bar ("no need trail, use vertical
      progress bar"): a 4px segment beside each step, 4 apart -- done green,
@@ -23698,7 +23700,13 @@
       else if (si === 1 && bookFirst) simGo(k, 'booked', { when: (SIM[k] && SIM[k].o && SIM[k].o.when) || cur.o && cur.o.when || 'Mon 6 Oct 2026, 9:30 am' }, 1);
       else simGo(k, 'active', { at: si, tag: st[si][0] }, 1);   // no flash when skipping ("remove the ripple effect when skipping the steps")
       if (L) document.dispatchEvent(new Event('everlab:docs')); };
-    document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation(); simStep(+b.dataset.sim); }, true);
+    /* a step change fades the progress out and back in ("a fade-in / fade-out effect on the progress when I jump between steps") */
+    const PROG = '#dSvc :is(.svJrL, .svPend), #svcMob :is(.svJrL, .svPend)';
+    let fading = false;
+    const fadeSwap = fn => { if (fading) return; const els = [...document.querySelectorAll(PROG)]; if (!els.length || !Element.prototype.animate){ fn(); return; } fading = true;
+      Promise.all(els.map(el => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: 'ease-in', fill: 'forwards' }).finished.catch(() => {}))).then(() => {
+        fn(); fading = false; document.querySelectorAll(PROG).forEach(el => el.animate([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.2,.8,.2,1)' })); }); };
+    document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation(); fadeSwap(() => simStep(+b.dataset.sim)); }, true);
     const simNext = mobile => { const k = cur.key, n = cur.n, at = cur.at;
       if (/^book/i.test(cur.stepName || '')) { bkOpen(mobile); return; }
       if (at < 0 || cur.state === 'done') return;
