@@ -12382,3 +12382,5 @@ The Complete first cards follow, as before.
 - 32px sits before Complete first ("more margin before Complete first").
 
 The Simple variant uses the same fuller description.
+
+5.763 Locked modal (Banner): 8px more between the title and the description (10 → 18), and the description is #fff ("increase gap between title and desc by 8px, desc #fff").
