@@ -12366,3 +12366,12 @@ The about, details, steps and footer are gone. It applies on the service page an
 - Do it later shows a toast: "DEXA Scan moved to later. We'll remind you in 30 days."
 
 5.759 The outlined Show / View buttons (referrals, My documents) are fully rounded, and their border is at half its opacity (.18 → .09; light .2 → .1) ("lighter border button opacity less by 50%", "full rounded").
+
+5.760 Locked modal header, Banner (the default): the picture runs edge to edge across the modal's top, and the title and close button sit over it on a dark fade ("the image as an edge-to-edge banner with the header overlapping the top"). A round 80px lock avatar straddles the banner's foot, 56px on the banner and 24px on the body ("avatar style overlapping the header and the body, 70% / 30%"), with the description below. The About this service modal uses the same banner, without the avatar.
+
+5.761 New tweak, Locked modal: Banner / Simple ("a tweak variation with this simple header"). Simple shows, centred:
+- The service picture (88px, rounded) with a round lock badge on its corner.
+- The title "{Service} not available yet", 22px.
+- The why line in grey.
+
+The Complete first cards follow, as before.

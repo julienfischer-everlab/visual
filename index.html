@@ -6889,7 +6889,22 @@
   .svAbM .abT{margin:0 0 8px;font-size:18px;font-weight:500;color:#f4f4f4;} .svAbM .abP{margin:0;} .svAbM .lkMeta{margin-top:16px;} .svAbM .abMore{margin-top:16px;}
   .svToast{position:absolute;left:50%;bottom:28px;z-index:45;max-width:calc(100% - 32px);padding:12px 18px;border-radius:14px;background:#2a2a28;color:#f4f4f4;font-size:14px;box-shadow:0 14px 34px -10px rgba(0,0,0,.7);opacity:0;transform:translate(-50%,8px);transition:opacity .2s ease,transform .2s ease;pointer-events:none;} .svToast.on{opacity:1;transform:translate(-50%,0);}
   body.light .svMenu{background:#fff;box-shadow:0 18px 44px -12px rgba(46,31,26,.25),inset 0 0 0 1px rgba(46,31,26,.08);} body.light .svMenu button{color:#2e1f1a;} body.light .svMenu button:hover{background:rgba(46,31,26,.06);} body.light .svAbM .abT{color:#2e1f1a;} body.light .svToast{background:#2e1f1a;color:#fff;}
-  .lkBan{height:160px;margin:0 0 18px;border-radius:16px;background:center 30% / cover no-repeat;} .svLkM .lkTop{display:block;} .svLkM .lkWhy{margin-top:10px;}
+  .lkHero .tlShPanel{overflow:hidden;}
+  .lkBanTop{flex:none;position:relative;z-index:2;height:216px;background-position:center 30%;background-size:cover;background-repeat:no-repeat;}
+  .lkHero .tlShHead{position:absolute;left:0;right:0;top:0;z-index:3;padding:20px 20px 0 24px;} .lkHero .tlShHead b{color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.35);}
+  .lkHero .tlShX{background:rgba(20,20,20,.42) !important;color:#fff !important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}
+  .lkHero .tlShGrab{position:absolute;left:50%;top:0;z-index:4;margin:8px 0 0 -18px;background:rgba(255,255,255,.55);} .lkHero .tlShHead{padding-top:22px;}
+  .lkAv{position:absolute;left:24px;bottom:-24px;width:80px;height:80px;box-sizing:border-box;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#2a2a28;border:4px solid #1c1c1b;color:#9a9893;}   /* 80: 56 on the banner, 24 on the body */
+  .lkAv svg{width:28px;height:28px;}
+  .lkHero .dmBody{padding-top:20px !important;} .lkHasAv .dmBody{padding-top:40px !important;}
+  body.light .lkAv{background:#efe9df;border-color:#fff;color:#7a6f68;}
+  .lkBan{display:none;}
+  .lkSim{display:flex;flex-direction:column;align-items:center;text-align:center;padding:8px 8px 4px;}
+  .lkSimPh{position:relative;width:88px;height:88px;border-radius:20px;background:center / cover no-repeat;}
+  .lkSimB{position:absolute;right:-10px;bottom:-10px;width:38px;height:38px;box-sizing:border-box;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#2a2a28;border:3px solid #1c1c1b;color:#c9c7c1;} .lkSimB svg{width:15px;height:15px;}
+  .lkSimT{margin:22px 0 0;font-size:22px;font-weight:500;line-height:1.25;letter-spacing:-.2px;color:#f4f4f4;} .lkSimP{margin:10px 0 0;max-width:360px;font-size:14.5px;line-height:1.5;color:#8b8b86;}
+  .lkSimple .tlShHead{padding-bottom:0;} .lkSimple .lkH{margin-top:28px;}
+  body.light .lkSimB{background:#eef2fb;border-color:#fff;color:#3b6ca8;} body.light .lkSimT{color:#111;} body.light .lkSimP{color:#7a6f68;} .svLkM .lkTop{display:block;} .svLkM .lkWhy{margin-top:10px;}
   .svLkM .lkBlk{padding:14px;gap:14px;} .svLkM .lkBPh{width:56px;height:56px;border-radius:12px;} .svLkM .lkBlk.blk .lkBTx span{color:#8b8b86;} body.light .svLkM .lkBlk.blk .lkBTx span{color:#7a6f68;}   /* +4 padding, a bigger picture, the status grey ("add 4px padding, remove orange text, increase image size") */
   .svLkM .bkFoot{display:none;} .svLkM .dmBody{padding-bottom:24px !important;} .svLkM .lkH{margin:24px 0 10px;}
   .lkBlks{display:grid;gap:6px;} .lkBlk{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 10px;border-radius:14px;background:rgba(255,255,255,.05);}
@@ -9883,6 +9898,14 @@
           <select id="stSvTabs" aria-label="How the service page lays out its sections">
             <option value="sec" selected>Sections</option>
             <option value="tabs">Under tabs</option>
+          </select>
+        </div>
+        <!-- the locked service's modal: the banner header, or a simple centred one ("a tweak variation with this simple header") -->
+        <div class="tkRow">
+          <span class="lbl">Locked modal</span>
+          <select id="stLkMod" aria-label="The locked service modal's header">
+            <option value="banner" selected>Banner</option>
+            <option value="simple">Simple</option>
           </select>
         </div>
         <!-- the documents a service asks for (consents, questionnaires), to ideate where they live ("docs included in the timeline step" / "doc micro steps inside the hero card state") -->
@@ -23802,6 +23825,7 @@
     };
     /* Content under tabs: each section below the status block is a tab of its own, one shown at a time ("try a tweak: content under tabs, where all sections are under tab") */
     let CTABS = false, CTAB = '';
+    let LKV = 'banner'; { const t = document.getElementById('stLkMod'); if (t){ LKV = t.value; t.addEventListener('change', () => { LKV = t.value; }); } }   // the locked modal's header: the banner, or the simple centred one
     const CTL = { 'Why we need this information': 'Why we need it', 'Your appointment': 'Appointment', 'My documents': 'Documents', 'About the service': 'About' };
     const tabify = C => { if (!C) return; const G = []; let g = null;
       [...C.children].forEach(el => {
@@ -23822,13 +23846,21 @@
       C.querySelectorAll(':scope > .svCTabs .svCTab').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', String(on)); });
       C.querySelectorAll(':scope > .svCPane').forEach(pn => { pn.hidden = pn.dataset.ct !== CTAB; if (!pn.hidden){ pn.classList.remove('svCIn'); void pn.offsetWidth; pn.classList.add('svCIn'); } }); });
     { const t = document.getElementById('stSvTabs'); if (t){ CTABS = t.value === 'tabs'; t.addEventListener('change', () => { CTABS = t.value === 'tabs'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
+    /* the modal's picture edge to edge, the title and the close over its top, and an avatar half on it (70%) and half on the body (30%) ("the image as an edge-to-edge banner, the header overlapping the top; an avatar overlapping the header and the body, 70 / 30, then the description") */
+    const lkHeroSet = (sh, img, av) => { const pn = sh.querySelector('.tlShPanel'); let bt = pn.querySelector(':scope > .lkBanTop');
+      if (!img){ sh.classList.remove('lkHero', 'lkHasAv'); if (bt) bt.remove(); return; }
+      if (!bt){ bt = document.createElement('div'); bt.className = 'lkBanTop'; pn.insertBefore(bt, pn.querySelector('.tlShHead')); }
+      bt.style.backgroundImage = 'linear-gradient(180deg, rgba(0,0,0,.55) 0, rgba(0,0,0,0) 46%), url(' + img + ')';
+      bt.innerHTML = av ? '<span class="lkAv" aria-hidden="true">' + av + '</span>' : '';
+      sh.classList.add('lkHero'); sh.classList.toggle('lkHasAv', !!av); };
     /* the … button: a small menu, Do it later and About this service ("About this service under the More CTA, dropdown: Do it later, About this service") */
     const MI = { later: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 16.5H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2V9"/><path d="M3 8h14M7 2v3M13 2v3"/><circle cx="14.5" cy="14.5" r="3.5"/><path d="M14.5 13v1.6l1 .9"/></svg>', about: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 9v5"/><circle cx="10" cy="6.3" r=".6" fill="currentColor"/></svg>' };
     let svMenu = null; const menuShut = () => { if (svMenu){ svMenu.remove(); svMenu = null; } };
     const AB = {};   // made on first use: mkDoc comes later in the script
     const aboutOpen = mobile => { const k = mobile ? 'm' : 'd'; if (!(k in AB)){ AB[k] = mkDoc(mobile ? ph : document.querySelector('.dash')); if (AB[k]) AB[k].classList.add('svLkM', 'svAbM'); } const sh = AB[k], d = SVC[cur.key] || {}; if (!sh) return;
       sh.querySelector('.tlShPanel').setAttribute('aria-label', 'About this service'); sh.querySelector('.tlShHead b').textContent = 'About this service';
-      sh.querySelector('.dmBody').innerHTML = (SIMG[d.img] ? '<div class="lkBan" style="background-image:url(' + SIMG[d.img] + ')"></div>' : '') + '<h3 class="abT">' + escS(cur.o && cur.o.t || d.t || '') + '</h3><p class="dmP abP">' + escS(d.about || '') + '</p>' +
+      lkHeroSet(sh, SIMG[d.img], '');
+      sh.querySelector('.dmBody').innerHTML = '<h3 class="abT">' + escS(cur.o && cur.o.t || d.t || '') + '</h3><p class="dmP abP">' + escS(d.about || '') + '</p>' +
         '<div class="lkMeta">' + (d.dur ? '<div class="svRow"><span class="k">' + IC.dur + 'Duration</span><span class="v">' + d.dur + '</span></div>' : '') + (d.loc ? '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + d.loc + '</span></div>' : '') + (d.clin ? '<div class="svRow"><span class="k">' + IC.clin + 'Provider</span><span class="v">' + d.clin + '</span></div>' : '') + '</div>' +
         '<button class="svLink abMore" type="button">Read more ' + IC.read + '</button>';
       sh.querySelector('.dmBody').scrollTop = 0; sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); };
@@ -23942,7 +23974,11 @@
       const ST = b => b.state === 'locked' || b.state === 'soon' ? 'Not available yet' : b.state === 'booked' ? 'Booked' : /^(book|request|purchase)/.test(b.state) && !(b.at > 0) ? 'Ready to book' : 'In progress';
       sh.lkBl = bl; sh.querySelector('.tlShPanel').setAttribute('aria-label', nm); sh.querySelector('.tlShHead b').textContent = nm;
       // why, in a line ("just explain briefly WHY this service is locked"), then the services it waits on, each a card to open ("display a card by the blocker services, CTA See detail")
-      sh.querySelector('.dmBody').innerHTML = (SIMG[d.img] ? '<div class="lkBan" style="background-image:url(' + SIMG[d.img] + ')"></div>' : '') + '<div class="lkTop"><span class="lkTag">' + LK + 'Not available yet</span><p class="lkWhy">' + (list ? escS(nm) + ' builds on your ' + escS(list) + ', so it becomes available once ' + (names.length > 1 ? 'they are' : 'it is') + ' complete.' : 'It becomes available once the services before it are complete.') + '</p></div>' +   /* a banner, not a square ("put a banner with imagery"); available, not unlock ("no Unlock term, more like available"; "Locked badge -> Not available yet") */
+      const why = list ? escS(nm) + ' builds on your ' + escS(list) + ', so it becomes available once ' + (names.length > 1 ? 'they are' : 'it is') + ' complete.' : 'It becomes available once the services before it are complete.';
+      sh.classList.toggle('lkSimple', LKV === 'simple'); lkHeroSet(sh, LKV === 'simple' ? '' : SIMG[d.img], LK);
+      if (LKV === 'simple') sh.querySelector('.tlShHead b').textContent = '';   // the simple header: the picture with its status badge, centred, and the title says it all ("a tweak variation with this simple header; the title 'Microbiome report not available yet', the description below")
+      sh.querySelector('.dmBody').innerHTML = (LKV === 'simple' ? '<div class="lkSim">' + (SIMG[d.img] ? '<span class="lkSimPh" style="background-image:url(' + SIMG[d.img] + ')"><i class="lkSimB">' + LK + '</i></span>' : '') + '<h3 class="lkSimT">' + escS(nm) + ' not available yet</h3><p class="lkSimP">' + why + '</p></div>'
+        : '<div class="lkTop"><span class="lkTag">' + LK + 'Not available yet</span><p class="lkWhy">' + why + '</p></div>') +   /* a banner, not a square ("put a banner with imagery"); available, not unlock ("no Unlock term, more like available"; "Locked badge -> Not available yet") */
         (bl.length ? '<h4 class="bkH lkH">Complete first</h4><div class="lkBlks">' + bl.map((b, i) => { const lk = b.state === 'locked' || b.state === 'soon', sd = SVC[b.svc] || {};
           return '<div class="lkBlk' + (i === 0 && !lk ? ' blk' : '') + '">' + (SIMG[sd.img] ? '<span class="lkBPh" style="background-image:url(' + SIMG[sd.img] + ')"></span>' : '') + '<span class="lkBTx"><b>' + escS(bn(b)) + '</b><span>' + (lk ? LK : '') + ST(b) + '</span></span><button class="svBtn sec lkSee" type="button" data-bi="' + i + '">See detail</button></div>'; }).join('') + '</div>' : '');
       sh.querySelector('.bkSum').textContent = '';
@@ -26863,7 +26899,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'list', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'list', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
