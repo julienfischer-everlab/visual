@@ -12179,3 +12179,8 @@ Once the documents are done (from Book on), Instructions comes back.
 5.683 — Phone bottom nav: inactive tabs 50% more opaque (.42 → .63 dark, .36 → .54 light; hover .85). The Dock tweak's inactive slider still scales it.
 5.684 — Overview phone condensed Insights cards: title line height 17px (was 1.35, about 19px).
 5.685 — Overview: new "Hero image" tweak (segmented): Cover (as before) / Top right — the hero card's picture as a 96px rounded tile at the top right (no dark run), the copy beside it, the Book button bottom left and Next availability bottom right (right-aligned). Kept by Save (stHeroImg).
+5.686 — Overview hero (Consult):
+- The new photo, assets/overview/hero-doctor.webp (800×1196, from the supplied portrait), replaces the office shot.
+- Cover: the portrait sits at the right (62% wide on phone, 46% on desk), face in the upper half, its left edge faded into the card by a mask. The DEXA and Report heroes keep their own pictures.
+- Top right: the face is centred in the tile.
+- The hero card's title is 2px larger: 18 on phone and XS, 21 on desk.
