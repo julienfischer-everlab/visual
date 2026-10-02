@@ -12327,3 +12327,5 @@ It works on the service page (as a modal on desktop, a sheet on phone) and in th
 5.747 The Health profile card in Insights: each to-do card's own padding is up 4px on every side, 8/8/8/12 → 12/12/12/16 ("card padding internal + 4px").
 
 5.748 Desk Insights header: the divider between "See all 12" and the arrows is gone ("no need divider").
+
+5.749 The desk rail's overlay arrows sit centred on the rail's edges, half of each 40px button outside the container ("arrow should be positioned 50% bleeding outside the container").
