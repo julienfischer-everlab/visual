@@ -12307,3 +12307,15 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 5.741 A group's locked services sit under an eyebrow, "Your services" ("an eyebrow group title above a group of locked services"). It goes above the first locked service other than the page's own, in the service page's progress list and in the Timeline's group list (13px, medium, grey).
 
 5.742 The eyebrow over a group's locked services now reads "Up next" instead of "Your services" ("Your services --> Up next"). This applies on the service page and in the Timeline.
+
+5.743 Locked services lose their Locked badge ("remove the Locked badge"), on the service page, the Timeline and the appointment page. The chevron moves to where the badge was, at the card's right ("chevron CTA instead on the right side").
+
+5.744 A locked service in Up next opens a modal over the page instead of switching to its page ("open just a modal vs switching the page"). The modal shows:
+- The service's picture with a Locked tag.
+- What unlocks it ("Unlocks once your DEXA Scan is complete.").
+- The service's About text.
+- Its duration and location.
+- Its steps, under "What happens".
+- "After your DEXA Scan" and a Got it button in the footer.
+
+It works on the service page (as a modal on desktop, a sheet on phone) and in the Timeline's group lists. The deferred card's Skin Check now uses its own picture.
