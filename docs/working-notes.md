@@ -12438,3 +12438,5 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.783 Locked modal, Banner: the badge is gone and the title says it, "{Service} not available yet." ("remove badge; title $name not available yet.").
 
 5.784 With the steps tweak set to Horizontal, the hero's progress is a card ("progress card header like this"). It is translucent and blurred, 22px round, and taps 2% smaller. A header row reads "Your progress" with the count at its right (1/4), then the bars and the step in hand in grey.
+
+5.785 The referrals row is an outlined card: a 1px border at 10%, 20px radius, 14px padding ("outlined card").
