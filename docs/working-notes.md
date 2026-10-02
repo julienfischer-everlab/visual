@@ -12329,3 +12329,22 @@ It works on the service page (as a modal on desktop, a sheet on phone) and in th
 5.748 Desk Insights header: the divider between "See all 12" and the arrows is gone ("no need divider").
 
 5.749 The desk rail's overlay arrows sit centred on the rail's edges, half of each 40px button outside the container ("arrow should be positioned 50% bleeding outside the container").
+
+5.750 Insights cards: the eyebrow to title gap is 4px larger, 2 → 6 on the desk and 4 → 8 on the phone ("add 4px gap between eyebrow and title").
+
+5.751 Desk Insights sticky fix: under B2 the filter block now sticks at -66px from the start, where before it only took that value once marked .stuck. It used to pin at -32 first, with 58px of bare ground above the select cutting the cards off, then jump up 34px when .stuck came on ("sticky bug here, clipping when become fixed"). It now scrolls straight to its pin and holds.
+
+5.752 Insights copy ("Your debriefs / Reports - Results"):
+- The Reports tab is now "Results", desk and phone, in every layout.
+- The "Everlab reports" heading is now "Your debriefs", along with its info sheet title and the All reports drawer heading.
+
+5.753 My documents: each status carries its time, grey, after a dot ("Signed · Today, 9:12 am"; older ones by date). The completed document's modal footer shows the same. The time is recorded when the document is done.
+
+5.754 Once a service is done, its documents stay in its steps, ticked. The list keeps the same length it had while in progress, 7 for the DEXA, where it used to drop to 3 ("completed steps has less steps than the previous steps, should be the same amount").
+
+5.755 The locked service modal is now short ("just explain briefly WHY this service is locked and display a card by the blocker services, CTA See detail"):
+- The picture with a Locked tag.
+- One line on why: "Member Check-In builds on your DEXA Scan and Diagnostics Review, so it unlocks once they are complete."
+- Under "Complete first", one card per service it waits on: picture, name, status and a See detail button that opens that service's page. The one in hand is orange, the others show their lock.
+
+The about, details, steps and footer are gone. It applies on the service page and in the Timeline.
