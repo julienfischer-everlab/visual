@@ -12171,3 +12171,5 @@ Once the documents are done (from Book on), Instructions comes back.
 5.677 — The Reports count badge (phone and desk) takes the Overview "12" badge's style: a pill, #43220b ground, #fbe9d8 figure.
 5.678 — Insights phone: the tabs row sits at the same height as the Overview's ask bar (138 from the frame top, 8 higher than before).
 5.679 — Reports count badge: peach (#f3b98c) with a dark figure, as the reference. The gap between the label and the badge is 2px wider (8 on the phone, 10 on the desk).
+5.680 — Overview phone Insights cards: title 14px (line-height 1.35).
+5.681 — Overview phone Insights cards: the dismiss is a ghost button (no fill, grey ×, a faint fill and white × on hover).
