@@ -12260,3 +12260,12 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - Reset clears both stores and puts every control back to its value as the page loaded.
 5.723 — Hero background tweak reduced to two options: Neutral (the earlier dark #161514) and Earth (#252522), with Earth the default. The grey and brown trials are removed.
 5.724 — Overview Insights: the Oura ring "syncing / Provide consent" card is now first in the row, on phone and desk.
+5.725 — Condensed Insights cards:
+- The title is 4px higher (4px under the date row).
+- The dismiss sits 4px further right.
+- The See insights / Provide consent button hugs its label and is centred, rather than running full width.
+5.725 — Condensed Insights cards:
+- The title is 4px higher (4px under the date row).
+- The dismiss sits 4px further right.
+- The button hugs its label and is centred.
+- The cards are 10px apart (−2), with the third card's peek kept.
