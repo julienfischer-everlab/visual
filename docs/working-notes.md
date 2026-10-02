@@ -12198,3 +12198,4 @@ Once the documents are done (from Book on), Instructions comes back.
 5.691 — Service page: once the service is done, Your appointment and Instructions are dropped too, as at Get your results. Results and My documents remain.
 5.692 — Overview phone, condensed Insights cards: the date sits above the title (label, date, title, picture, button).
 5.693 — Overview phone, Insight cards tweak: a third option "Mid", between Condensed and Non condensed. It shows one card wide with 72px of the next visible. The content is styled as Condensed (date above the title, no name) and the cards line up from the left.
+5.694 — Health profile in the Insights carousel: its header uses the Explore cards' label row (grey dot and "Health profile", count at the right), and the to-do list sits at the foot of the card.
