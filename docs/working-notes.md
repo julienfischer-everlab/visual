@@ -12238,6 +12238,11 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The blur reaches 130% of the group (at least the fade's end), full under the solid half and easing out below.
 - On the Timeline the group is the tabs bar plus the month heading pinned under it. The ground and blur are measured on both (--stkG / --stkExt set as the month pins), and the pinned month drops its own plate and fade so one ground runs under the pair.
 5.712 — Chevrons: the ghost circle sits 4px after the label or badge, on the Timeline group cards and now also on the service page's journey cards (the dependency services you can open with no View button, e.g. a locked Member Check-In). It fills on the card's hover.
-5.713 — Condensed Insights cards: the title sits at the foot, 16px above the button (the slack goes between the picture and the title). The title is 13px with 16px line height.
+5.713 — Condensed Insights cards: the order is date row, title (13/16px, 8px under the date row), the picture centred in the space left, then the button. The title is centre-aligned.
 5.714 — Overview hero card: the title is 1px smaller (17 on phone and XS, 20 on desk), with 4px more between the Next step chip and the title (6 → 10).
 5.715 — Hero image "Top right": the photo is a 112px circle (was a 96px rounded square), and the Book button uses the larger 44px size.
+5.716 — Overview phone, Your action plan rows:
+- The step in hand ("Go to your appointment") is the service's subtitle, one line in the normal grey. It is no longer an orange badge.
+- The "Step 2 of 3" chip and the step bars sit side by side on one line, under the subtitle beside the picture (the current bar stays orange).
+- The Protocol badges are removed.
+- 20px between the picture and the text (+4).
