@@ -12354,3 +12354,15 @@ The about, details, steps and footer are gone. It applies on the service page an
 - The tag reads "Not available yet" ("Locked badge -> Not available yet"). The line says it "becomes available once …", never "unlocks" ("no Unlock term, more like available").
 - The blocker cards gain 4px of padding (10 → 14) and a bigger picture (44 → 56). Their status is grey, no longer orange ("remove orange text"); the card in hand keeps its orange ground.
 - A later blocker that is itself locked also reads "Not available yet".
+
+5.757 New service page tweak, Content: Sections (default) / Under tabs ("try a tweak content under tabs, where all sections are under tab"):
+- Under tabs, every section below the status block becomes a tab in an underlined row: Referrals, Results, Appointment, Instructions or "Why we need it", Documents.
+- One section shows at a time, fading in. The selected tab is kept through repaints.
+- Your progress stays above the tabs.
+
+5.758 About the service has left the page, both the desk's right column and the phone's foot, and moved into the … button ("About this service under the More CTA, dropdown: Do it later, About this service"):
+- The … button opens a small menu with Do it later and About this service.
+- About opens a modal with the banner, the name, the about text, duration, location, provider and Read more.
+- Do it later shows a toast: "DEXA Scan moved to later. We'll remind you in 30 days."
+
+5.759 The outlined Show / View buttons (referrals, My documents) are fully rounded, and their border is at half its opacity (.18 → .09; light .2 → .1) ("lighter border button opacity less by 50%", "full rounded").
