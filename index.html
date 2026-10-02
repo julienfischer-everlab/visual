@@ -7797,6 +7797,19 @@
   html.dockGlass .mDock .lgGlass{box-shadow:0 18px 38px -14px rgba(0,0,0,.7),0 5px 14px -8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(255,255,255,.06),inset 0 0 0 1px rgba(255,255,255,.08) !important;}
   html.dockGlass .mDock .lgGlass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.03) 38%,rgba(255,255,255,0) 60%,rgba(255,255,255,.04) 100%);}
   html.dockGlass .mDock .lgGlass{position:relative;}
+  .ovProfIc, .ovProfT2{display:none;}
+  /* 3 columns: three tiles, each an icon, the short title and its button; a done one ticked at its corner, its title struck, its button gone */
+  html.profTiles:not(.profIns) #phone2 .ovProf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0;background:none;border-radius:0;}
+  html.profTiles:not(.profIns) #phone2 .ovProfRow{position:relative;flex-direction:column;align-items:flex-start;gap:0;padding:14px 12px 12px;border:0;border-radius:18px;background:rgba(255,255,255,.06);}
+  html.profTiles:not(.profIns) #phone2 .ovProfIc{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.08);color:#ececec;} html.profTiles:not(.profIns) #phone2 .ovProfIc svg{width:20px;height:20px;}
+  html.profTiles:not(.profIns) #phone2 .ovProfTx{flex:1 1 auto;margin:12px 0 14px;} html.profTiles:not(.profIns) #phone2 .ovProfTx b, html.profTiles:not(.profIns) #phone2 .ovProfTx > span{display:none;}
+  html.profTiles:not(.profIns) #phone2 .ovProfT2{display:block;font-style:normal;font-size:13.5px;line-height:1.3;color:#f4f4f4;}
+  html.profTiles:not(.profIns) #phone2 .ovProfBtn{align-self:stretch;height:34px;padding:0 8px;font-size:13px;}
+  html.profTiles:not(.profIns) #phone2 .ovProfCk{position:absolute;top:12px;right:12px;width:22px;height:22px;} html.profTiles:not(.profIns) #phone2 .ovProfCk svg{width:12px;height:12px;}
+  html.profTiles:not(.profIns) #phone2 .ovProfRow:not(.done) .ovProfCk{display:none;}
+  html.profTiles:not(.profIns) #phone2 .ovProfRow.done .ovProfT2{color:#8b8b86;text-decoration:line-through;text-decoration-color:rgba(139,139,134,.7);}
+  html.profTiles:not(.profIns) #phone2 .ovProfRow.done .ovProfBtn{display:flex;visibility:hidden;}
+  html.profTiles body.light #phone2 .ovProfRow{background:#fdfaf3;} html.profTiles body.light #phone2 .ovProfIc{background:rgba(46,31,26,.08);color:#2e1f1a;} html.profTiles body.light #phone2 .ovProfT2{color:#2e1f1a;}
   .ovProf{margin:0 13px;padding:4px 16px;border-radius:20px;background:rgba(255,255,255,.06);}
   .ovProfRow{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07);} .ovProfRow:last-child{border-bottom:0;}
   /* a to-do ("this should look more like a to do: circle left and strikethrough when the task is completed") */
@@ -9910,6 +9923,14 @@
             <option value="full">Non condensed</option>
           </select>
         </div>
+        <!-- Health profile as a list of to-dos, or three tiles side by side: an icon, a short title, the button ("a three-column variation, icon on top, title only, a CTA below") -->
+        <div class="tkRow">
+          <span class="lbl">Profile style</span>
+          <select id="stProfStyle" class="tkSegSel" aria-label="How Health profile is laid out">
+            <option value="list" selected>List</option>
+            <option value="tiles">3 columns</option>
+          </select>
+        </div>
         <!-- Health profile: its own section, or the first card of the Insights carousel at 70% ("a version where the health profile card is part of the insights") -->
         <div class="tkRow">
           <span class="lbl">Health profile</span>
@@ -10872,7 +10893,7 @@
       <div class="ovcdots"></div>
       <!-- what the member can add about themselves ("add a section Health profile with 3 items inside: fill questionnaire, connect wearables, ...") -->
       <div class="ovsec ovsecProf">Health profile <span class="see"><span><span class="ovProfN">1</span> of 3 done</span></span></div>
-      <div class="ovProf"><div class="ovProfRow done"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></button><span class="ovProfTx"><b>Fill in your questionnaire</b><span>Your history and lifestyle, about 10 min</span></span><button class="ovProfBtn" type="button">Start</button></div><div class="ovProfRow"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></button><span class="ovProfTx"><b>Connect your wearables</b><span>Apple Health, Garmin, Oura or Whoop</span></span><button class="ovProfBtn" type="button">Connect</button></div><div class="ovProfRow"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></button><span class="ovProfTx"><b>Upload your medical records</b><span>Past results from your GP or specialist</span></span><button class="ovProfBtn" type="button">Upload</button></div></div>
+      <div class="ovProf"><div class="ovProfRow done"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></button><span class="ovProfIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="3" width="11" height="14" rx="2"/><path d="M7.5 7h5M7.5 10h5M7.5 13h3"/></svg></span><span class="ovProfTx"><b>Fill in your questionnaire</b><em class="ovProfT2">Fill your questionnaire</em><span>Your history and lifestyle, about 10 min</span></span><button class="ovProfBtn" type="button">Start</button></div><div class="ovProfRow"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></button><span class="ovProfIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5" width="9" height="10" rx="2.5"/><path d="M7.5 5 8 2.5h4l.5 2.5M7.5 15l.5 2.5h4l.5-2.5M8 10h1.2l.8-1.6 1 3.2.8-1.6H12"/></svg></span><span class="ovProfTx"><b>Connect your wearables</b><em class="ovProfT2">Connect your accounts</em><span>Apple Health, Garmin, Oura or Whoop</span></span><button class="ovProfBtn" type="button">Connect</button></div><div class="ovProfRow"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg></button><span class="ovProfIc"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 2.5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Z"/><path d="M11.5 2.5V7H16"/><path d="M10 15v-5M7.8 12.2 10 10l2.2 2.2"/></svg></span><span class="ovProfTx"><b>Upload your medical records</b><em class="ovProfT2">Upload your medical record</em><span>Past results from your GP or specialist</span></span><button class="ovProfBtn" type="button">Upload</button></div></div>
       <div class="ovsec ovsecPlan">Your action plan</div>
       <div class="ovplan">
         <div class="ovact">
@@ -24619,7 +24640,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -26585,6 +26606,7 @@
   { const t = document.getElementById('stInsCond'); if (t){ const on = () => { document.documentElement.classList.toggle('insCond', t.value !== 'full'); const c = document.querySelector('#phone2 .ovcar'); if (c) c.scrollLeft = 0; };
       t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroImg'); if (t){ const on = () => document.documentElement.classList.toggle('heroThumb', t.value === 'thumb'); t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stProfStyle'); if (t){ const on = () => document.documentElement.classList.toggle('profTiles', t.value === 'tiles'); t.addEventListener('change', on); on(); } }
   // Health profile in the Insights carousel: the to-do list moves into a card of its own, first in the row, 70% of its width
   { const t = document.getElementById('stProfIn');
     if (t){ const on = () => { const inn = t.value === 'ins', car = document.querySelector('#phone2 .ovcar'), list = document.querySelector('#phone2 .ovProf'), head = document.querySelector('#phone2 .ovsecProf');
@@ -26636,7 +26658,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stProfStyle: 'list', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };

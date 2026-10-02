@@ -12246,3 +12246,7 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The "Step 2 of 3" chip and the step bars sit side by side on one line, under the subtitle beside the picture (the current bar stays orange).
 - The Protocol badges are removed.
 - 20px between the picture and the text (+4).
+5.717 — Overview phone, Health profile: new "Profile style" tweak, List (default) or 3 columns.
+- 3 columns shows three tiles side by side. Each has an icon on top, a short title (Fill your questionnaire / Connect your accounts / Upload your medical record) with no subtitle, and its button full width at the foot.
+- A done tile shows a green tick at its corner and its title struck through, and its button is hidden; it keeps its height.
+- It applies to the Health profile section only; the In Insights card keeps the list.
