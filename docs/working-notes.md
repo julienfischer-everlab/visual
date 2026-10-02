@@ -12419,3 +12419,5 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.775 Under tabs, the tabs are always the same four, in this order: Referrals, Appointment, Instructions, Documents ("tabs should always be there, even if empty"). One with nothing in it says so in a grey line ("No upcoming appointment.", "Documents you sign, fill in or upload show here."). The tab that is the primary section above is left out. Any other section joins after the four. The status block and the progress always stay above the tabs.
 
 5.776 Steps not yet reached show their words at 50%, down from 70% ("opacity 50% inactive item"). The step fade animates between the same computed values, so it follows.
+
+5.777 The service page body's section titles (h2) are smaller: 22 → 18 on the desk, 18 → 16 on the phone and XS ("main section title smaller, h2"). Your progress keeps its size.
