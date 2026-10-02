@@ -12275,3 +12275,14 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The whole card is tappable and opens the booking, as the Book button does.
 - It lightens on hover (Earth #252522 → #2d2d2a) and scales to 98% while pressed.
 - The Next step chip is 28px tall, with its ground at half the opacity (14% → 7%) and 2px more space below it.
+5.729 — Condensed Insights cards:
+- The label row always shows a date; the Oura syncing card gets 9 Apr 2026.
+- At least 8px above the picture.
+- 4px more under the button, whose sides are now 18px (−2).
+5.729 — Condensed Insights cards:
+- The label row always shows a date; the Oura syncing card gets 9 Apr 2026.
+- At least 8px above the picture.
+- 4px more under the button, whose sides are now 18px (−2).
+- Insight cards (phone and desk) lighten on hover (6% → 9%) and scale to 98% while pressed, as the hero card does.
+5.730 — Carousels: the pictures inside cards (Insights renders, service renders) are not draggable and ignore the pointer, so a swipe or mouse drag that starts on a picture moves the row like anywhere else on the card. Pressed cards scale to 98%.
+5.731 — Condensed Insights cards: each card is 4px wider, so the third card shows 24px (was 32).
