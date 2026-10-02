@@ -6722,7 +6722,7 @@
   .svProg{background:rgba(255,255,255,.04);border-radius:20px;padding:24px;}
   .svProgHead{display:flex;align-items:center;justify-content:space-between;font-size:18px;font-weight:500;color:#f4f4f4;margin-bottom:20px;}
   .svProgHead em{font-style:normal;font-size:14px;font-weight:400;color:#8b8b86;}
-  .svStep:not(.on):not(.ok) > *{opacity:.7;}   /* steps not reached, their words at 70% ("all inactive states, 70% opacity on the content") */
+  .svStep:not(.on):not(.ok) > *{opacity:.5;}   /* .7 -> .5 ("opacity 50% inactive item") */   /* steps not reached, their words at 70% ("all inactive states, 70% opacity on the content") */
   .svStep{position:relative;padding:6px 0 6px 22px;margin-bottom:4px;}   /* 4 -> 6 top and bottom ("add 2px gap top bottom on content"); the bar grows with it */   /* 4 above and below ("padding top bottom 4px") */   /* 8 above and below its words, the bar with them ("in the content add 8px padding top bottom") */   /* 4 between the steps ("gap between stacked item 4px") */
   .svStep:last-child{margin-bottom:0;}
   .svStep::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:2px;   /* 3 -> 4 ("increase thickness 1px") */background:rgba(255,255,255,.12);}
@@ -6845,6 +6845,7 @@
   :is(.svcMob, .svXsBody) .svCTabs.svCPill{gap:8px;margin:28px -16px 18px;padding:0 16px;} body.light .svCTabs.svCPill .svCTab{background:rgba(46,31,26,.08);color:#2e241c;} body.light .svCTabs.svCPill .svCTab.on{background:rgba(46,31,26,.12);box-shadow:inset 0 0 0 1.5px #2e241c;}
   .svCPane > .svH2:first-child{display:none;} .svCPane > .svH2Apt:first-child{display:flex;justify-content:flex-end;margin:0 0 12px;font-size:0;} .svCPane > .svH2Apt:first-child .svAptGo{font-size:14px;}
   .svCPane > .svAbout{margin-top:0;} .svCPane > .svAbout h3{display:none;} .svCHide{display:none !important;} .svCPane > .svRefRow{margin-top:0;}
+  .svCEmpty{margin:0;padding:22px 0;font-size:14.5px;color:#8b8b86;} body.light .svCEmpty{color:#7a6f68;}   /* an empty tab says so */
   .svCPane.svCIn{animation:svCIn .22s ease;} @keyframes svCIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
   :is(.svcMob, .svXsBody) .svCTabs{gap:22px;margin:28px 0 18px;} :is(.svcMob, .svXsBody) .svCTab{font-size:14.5px;}
   body.light .svCTabs{box-shadow:inset 0 -1px 0 rgba(46,31,26,.1);} body.light .svCTab{color:#7a6f68;} body.light .svCTab.on{color:#2e1f1a;} body.light .svCTab.on::after{background:#2e1f1a;}
@@ -23856,13 +23857,23 @@
         if (el.matches('hr.svRule')){ el.classList.add('svCHide'); g = null; return; }
         if (el.matches('.svPend, .svJr, .svHead, .svCTabs')){ g = null; return; }
         if (g) g.els.push(el); });
-      if (G.length < 2) return;
-      if (!G.some(x => x.t === CTAB)) CTAB = G[0].t;
-      const bar = document.createElement('div'); bar.className = 'svCTabs' + (CPILL ? ' svCPill' : ''); bar.setAttribute('role', 'tablist');
-      bar.innerHTML = G.map(x => '<button class="svCTab' + (x.t === CTAB ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (x.t === CTAB) + '" data-ct="' + escS(x.t) + '">' + escS(x.t) + '</button>').join('');
-      C.insertBefore(bar, G[0].els[0]);
-      [...C.children].filter(el => el.matches('.svJr') && (bar.compareDocumentPosition(el) & 4)).forEach(el => C.insertBefore(el, bar));   // the progress stays above the tabs, never in between
-      G.forEach(x => { const pn = document.createElement('div'); pn.className = 'svCPane'; pn.dataset.ct = x.t; pn.hidden = x.t !== CTAB; x.els[0].parentNode.insertBefore(pn, x.els[0]); x.els.forEach(e => pn.appendChild(e)); }); };
+      // the section that matters now stays a section above the tabs; the rest are secondary, under tabs ("tabs are secondary items, put the primary section above the tabs")
+      const PRI = ['Results', 'Why we need it', 'Appointment', 'Referrals', 'Instructions', 'Documents'], pi = G.findIndex(x => x.t === PRI.find(t => G.some(y => y.t === t)));
+      const P = pi >= 0 ? G.splice(pi, 1)[0] : null;
+      // the tabs are always the same four, empty or not ("tabs should always be there, even if empty"); any other section joins after them
+      const FIX = ['Referrals', 'Appointment', 'Instructions', 'Documents'], EMP = { Referrals: 'No referrals for this service.', Appointment: 'No upcoming appointment.', Instructions: 'No instructions for now. They show here once your appointment is booked.', Documents: 'Documents you sign, fill in or upload show here.' };
+      const T = FIX.filter(t => !P || P.t !== t).concat(G.map(x => x.t).filter(t => !FIX.includes(t)));
+      if (!T.includes(CTAB)) CTAB = T[0];
+      const bar = document.createElement('div'); bar.className = 'svCTabs' + (CPILL ? ' svCPill' : '') + (P ? ' afterPri' : ''); bar.setAttribute('role', 'tablist');
+      bar.innerHTML = T.map(t => '<button class="svCTab' + (t === CTAB ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (t === CTAB) + '" data-ct="' + escS(t) + '">' + escS(t) + '</button>').join('');
+      const anchor = G.length ? G[0].els[0] : P ? P.els[P.els.length - 1].nextSibling : null;
+      C.insertBefore(bar, anchor);
+      if (P) P.els.forEach(e => C.insertBefore(e, bar));
+      [...C.children].filter(el => el.matches('.svJr, .svPend') && (bar.compareDocumentPosition(el) & 4)).forEach(el => C.insertBefore(el, bar));   // the status and the progress stay above the tabs, never in between
+      let ref = bar;
+      T.forEach(t => { const x = G.find(y => y.t === t), pn = document.createElement('div'); pn.className = 'svCPane'; pn.dataset.ct = t; pn.hidden = t !== CTAB;
+        if (x) x.els.forEach(e => pn.appendChild(e)); else pn.innerHTML = '<p class="svCEmpty">' + escS(EMP[t] || 'Nothing here yet.') + '</p>';
+        C.insertBefore(pn, ref.nextSibling); ref = pn; }); };
     document.addEventListener('click', e => { const b = e.target.closest('.svCTab'); if (!b) return; const C = b.closest('.svCTabs').parentElement; CTAB = b.dataset.ct;
       C.querySelectorAll(':scope > .svCTabs .svCTab').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', String(on)); });
       C.querySelectorAll(':scope > .svCPane').forEach(pn => { pn.hidden = pn.dataset.ct !== CTAB; if (!pn.hidden){ pn.classList.remove('svCIn'); void pn.offsetWidth; pn.classList.add('svCIn'); } }); });

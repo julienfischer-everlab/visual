@@ -12411,3 +12411,11 @@ The Simple variant uses the same fuller description.
 5.772 On the service page's Results section, the first chip reads "Everlab results", no longer "Everlab report" ("Report → Results", confirmed as the chips).
 
 5.773 The page's own card in Your progress follows the page. It is ticked and struck through only when the service is done. A journey handed over from elsewhere could carry it as done while a step was still in hand (a tick over "Go to your appointment"). The page's state now overwrites that ("that's not possible, it's incomplete, change the check complete at the top"), and the group's next service is worked out again from it.
+
+5.774 Content under tabs: the section that matters now stays a full section, heading and all, above the tabs. The others are secondary, under the tabs ("tabs are secondary items, put the primary section above the tabs").
+
+The primary is the first present of: Results, Why we need it (a document pending), Appointment, Referrals, Instructions, Documents. If only one section would be left for the tabs, the page stays as plain sections.
+
+5.775 Under tabs, the tabs are always the same four, in this order: Referrals, Appointment, Instructions, Documents ("tabs should always be there, even if empty"). One with nothing in it says so in a grey line ("No upcoming appointment.", "Documents you sign, fill in or upload show here."). The tab that is the primary section above is left out. Any other section joins after the four. The status block and the progress always stay above the tabs.
+
+5.776 Steps not yet reached show their words at 50%, down from 70% ("opacity 50% inactive item"). The step fade animates between the same computed values, so it follows.
