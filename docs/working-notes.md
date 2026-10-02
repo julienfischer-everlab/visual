@@ -12294,3 +12294,4 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The photo is a circle at the top right: 112px on desk, 80px on phone.
 - 24px padding all round.
 5.735 — Tweaks: Hero action, Hero background and Hero image are grouped in a card of their own, "Hero task", after the Overview group.
+5.736 — Tweaks: an "Insights" group holds the count (relabelled "Amount": 0 / 1 / 2 / 3+) and Insight cards (Condensed / Non condensed), after Hero task.
