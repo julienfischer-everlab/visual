@@ -12254,3 +12254,7 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 5.719 — Overview: new "Hero background" tweak, Dark (default) / #777670. The grey ground carries the photo's edge run in the same grey; the lead text, the chip and the availability line are lightened to read on it. Kept by Save (stHeroBg).
 5.720 — Hero background tweak: a third option, Dark brown (#2b2019), with the photo's edge run in the same brown and a warm-tinted chip.
 5.721 — Sticky bars, smoother progressive blur: the ten bands each feather out over their last 28px (they had hard edges), and the blur climbs on a gentle curve (0.5 → 18px) instead of even steps, so the bands blend into one another. The span is unchanged: full under the solid half, easing out over the remaining half + 32px.
+5.722 — Save covers every tweak.
+- The Tweaks panel and the Dock › Style panel each end with a Save / Reset row that stays at the panel's foot.
+- Save (that one or any group's) stores the value of every control in both panels: selects, switches, segmented tabs, sliders, colours and the section order. They come back on load (localStorage everlab:tkAll, alongside the earlier everlab:tkPages).
+- Reset clears both stores and puts every control back to its value as the page loaded.

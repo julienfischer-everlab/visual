@@ -142,6 +142,7 @@
     width:44px;text-align:right;white-space:nowrap;
   }
   .topbar .tkRow.tkFoot{justify-content:flex-end;gap:8px;padding-top:4px;}
+  .topbar .tkRow.tkFootAll{position:sticky;bottom:0;z-index:2;margin-top:6px;padding:10px 0 4px;background:inherit;border-top:1px solid rgba(255,255,255,.08);}   /* the panel's own Save, always in reach */
   .topbar .tkRow.tkFoot:hover{background:none;}
   .topbar .seg{
     display:flex;gap:2px;border:1px solid #232326;background:#131316;
@@ -9598,6 +9599,10 @@
             <button class="tkBtn" id="dkSave" type="button">Save</button>
             <button class="tkBtn" id="dkReset" type="button">Reset</button>
           </div>
+          <div class="tkRow tkFoot tkFootAll">
+            <button class="tkBtn stTkSave" type="button">Save</button>
+            <button class="tkBtn stTkReset" type="button">Reset</button>
+          </div>
         </div>
       </details>
     </span>
@@ -10050,6 +10055,11 @@
         <div class="tkRow tkBuildRow">
           <span class="lbl">Build</span>
           <span class="tkBuild" id="tkBuild">dev</span>
+        </div>
+        <!-- one Save for every tweak in the panel ("all tweaks need a Save CTA that saves the changes") -->
+        <div class="tkRow tkFoot tkFootAll">
+          <button class="tkBtn stTkSave" type="button">Save</button>
+          <button class="tkBtn stTkReset" type="button">Reset</button>
         </div>
       </div>
     </details>
@@ -26678,14 +26688,22 @@
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
     let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e){}
     if (saved) Object.keys(DEF).forEach(id => put(id, saved[id]));
+    /* every control in the two tweak panels, saved and put back together ("all tweaks need a Save"): their values as the page loaded are the defaults Reset goes back to */
+    const KEY2 = 'everlab:tkAll', ctl = () => [...document.querySelectorAll('.topbar .tkPanel :is(select, input)[id]')].filter(el => el.id !== 'versionSel' && !el.classList.contains('inkHex'));
+    const valOf = el => el.type === 'checkbox' ? String(el.checked) : el.value;
+    const DEF2 = {}; ctl().forEach(el => { DEF2[el.id] = valOf(el); }); Object.assign(DEF2, DEF);
+    const put2 = (id, v) => { const el = document.getElementById(id); if (!el || v == null) return; if (el.type === 'checkbox'){ if (String(el.checked) === v) return; el.checked = v === 'true'; el.dispatchEvent(new Event('change', { bubbles: true })); return; } put(id, v); };
+    let saved2 = null; try { saved2 = JSON.parse(localStorage.getItem(KEY2) || 'null'); } catch (e){}
+    if (saved2) requestAnimationFrame(() => Object.keys(saved2).forEach(id => put2(id, saved2[id])));
     document.querySelectorAll('.stTkSave').forEach(b => b.addEventListener('click', () => {
       const v = {}; Object.keys(DEF).forEach(id => { const el = document.getElementById(id); if (el) v[id] = el.value; });
-      let ok = true; try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e){ ok = false; }
+      const all = {}; ctl().forEach(el => { all[el.id] = valOf(el); });
+      let ok = true; try { localStorage.setItem(KEY, JSON.stringify(v)); localStorage.setItem(KEY2, JSON.stringify(all)); } catch (e){ ok = false; }
       document.querySelectorAll('.stTkSave').forEach(x => { x.textContent = ok ? 'Saved' : 'Cannot save'; setTimeout(() => { x.textContent = 'Save'; }, ok ? 1400 : 2600); });
     }));
     document.querySelectorAll('.stTkReset').forEach(b => b.addEventListener('click', () => {
-      try { localStorage.removeItem(KEY); } catch (e){}
-      Object.keys(DEF).forEach(id => put(id, DEF[id]));
+      try { localStorage.removeItem(KEY); localStorage.removeItem(KEY2); } catch (e){}
+      Object.keys(DEF2).forEach(id => put2(id, DEF2[id]));
     }));
   }
   (function homeMosaic(){
