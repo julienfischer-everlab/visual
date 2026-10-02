@@ -12199,3 +12199,10 @@ Once the documents are done (from Book on), Instructions comes back.
 5.692 — Overview phone, condensed Insights cards: the date sits above the title (label, date, title, picture, button).
 5.693 — Overview phone, Insight cards tweak: a third option "Mid", between Condensed and Non condensed. It shows one card wide with 72px of the next visible. The content is styled as Condensed (date above the title, no name) and the cards line up from the left.
 5.694 — Health profile in the Insights carousel: its header uses the Explore cards' label row (grey dot and "Health profile", count at the right), and the to-do list sits at the foot of the card.
+5.695 — Overview phone, condensed and mid Insights cards: the order is label, picture (80px), date, title, then the button at the foot.
+5.696 — Condensed and mid Insights cards: the date replaces "Explore" in the label row, beside the dismiss, and the byline row goes. The order is now date row, picture, title, button.
+5.697 — Insight cards tweak:
+- The Mid option is removed, leaving Condensed and Non condensed.
+- Non condensed: the title is 16px in one weight (500) and one colour, with no lighter or bolder source.
+- Non condensed: the button sits at the card's foot, with 18px under it to match the top-left inset. Cards stretched by a taller neighbour had left 37px there.
+5.698 — The Insights "See all" count badge (phone and desk) is grey (#4a4a4a, white figure) as the reference, still 28px tall, with 2px more between "See all" and the badge (9 → 11 on the phone, 11 → 13 on the desk).
