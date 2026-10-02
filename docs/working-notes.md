@@ -12178,3 +12178,4 @@ Once the documents are done (from Book on), Instructions comes back.
 - The section titles (Insights, Health profile, Your action plan) are 20px.
 5.683 — Phone bottom nav: inactive tabs 50% more opaque (.42 → .63 dark, .36 → .54 light; hover .85). The Dock tweak's inactive slider still scales it.
 5.684 — Overview phone condensed Insights cards: title line height 17px (was 1.35, about 19px).
+5.685 — Overview: new "Hero image" tweak (segmented): Cover (as before) / Top right — the hero card's picture as a 96px rounded tile at the top right (no dark run), the copy beside it, the Book button bottom left and Next availability bottom right (right-aligned). Kept by Save (stHeroImg).

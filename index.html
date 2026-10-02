@@ -7518,6 +7518,12 @@
   #dOver .ovBookArt{background-position:65% center;}
   body.heroDexa #dOver .ovBookArt{background-position:72% 42%;}
   body.heroReport #dOver .ovBookArt{background-position:65% 40%;}
+  /* Hero image: Top right -- the picture a rounded tile at the card's top right, the copy beside it, the button bottom left and the availability bottom right */
+  html.heroThumb .ovBookArt{inset:auto;top:20px;right:20px;width:96px;height:96px;border-radius:16px;background-position:62% 30%;}
+  html.heroThumb .ovBookArt::after{display:none;}
+  html.heroThumb :is(#phone2, #dOver) .ovBook h3{max-width:calc(100% - 116px);}
+  html.heroThumb .ovBookFoot{flex-direction:row-reverse;align-items:center;}
+  html.heroThumb .ovBookWhen{text-align:right;align-items:flex-end;}
   .ovBookBy{display:flex;align-items:center;gap:10px;font-size:14px;color:#ececec;}
   .ovBookBy img{width:44px;height:44px;border-radius:50%;object-fit:cover;display:block;}
   .ovBookBy div{display:flex;flex-direction:column;gap:3px;}
@@ -9802,6 +9808,14 @@
             <option value="consult" selected>Consult</option>
             <option value="dexa">DEXA scan</option>
             <option value="report">Latest report</option>
+          </select>
+        </div>
+        <!-- the hero card's picture: across the card under a dark run, or a tile at its top right with the button bottom left ("try a variation where the image is top right of the card") -->
+        <div class="tkRow">
+          <span class="lbl">Hero image</span>
+          <select id="stHeroImg" class="tkSegSel" aria-label="Where the hero card's picture goes">
+            <option value="cover" selected>Cover</option>
+            <option value="thumb">Top right</option>
           </select>
         </div>
         <!-- the Insights section -- the heading, the Explore cards' rail, the
@@ -24497,7 +24511,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -26462,6 +26476,7 @@
     const n = box.querySelectorAll('.ovProfRow.done').length; document.querySelectorAll('.ovProfN').forEach(x => { x.textContent = n; }); });
   { const t = document.getElementById('stInsCond'); if (t){ const on = () => { document.documentElement.classList.toggle('insCond', t.value === 'cond'); const c = document.querySelector('#phone2 .ovcar'); if (c) c.scrollLeft = 0; };
       t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stHeroImg'); if (t){ const on = () => document.documentElement.classList.toggle('heroThumb', t.value === 'thumb'); t.addEventListener('change', on); on(); } }
   // the phone Overview's section order: a list in Tweaks, dragged by pointer; each section the run of elements it is made of
   {
     const SEC = { svc: ['Services', '.ovSvc'], hub: ['Shortcuts', '.ovHub'], hero: ['Next step', '.ovhero'], row2: ['Coverage & age', '.ovrow2'],
@@ -26498,7 +26513,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
