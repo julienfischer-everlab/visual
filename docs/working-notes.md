@@ -12252,3 +12252,4 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - It applies to the Health profile section only; the In Insights card keeps the list.
 5.718 — Condensed Insights cards: the title is left-aligned again, at 14/17px. The picture sits 12px above the button on every card (8, then +4) (it was 16–25px, centred in the space), and the free space now goes above the picture.
 5.719 — Overview: new "Hero background" tweak, Dark (default) / #777670. The grey ground carries the photo's edge run in the same grey; the lead text, the chip and the availability line are lightened to read on it. Kept by Save (stHeroBg).
+5.720 — Hero background tweak: a third option, Dark brown (#2b2019), with the photo's edge run in the same brown and a warm-tinted chip.
