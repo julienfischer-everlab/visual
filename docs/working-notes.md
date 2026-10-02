@@ -12228,5 +12228,8 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 5.706 — Timeline group cards: the services you can open that have no other control (done or locked) show a small ghost circle with a chevron at the right; it fills on the card's hover. The card in hand, with its steps, has none, and the cards that carry a View button keep it instead.
 5.707 — Timeline: the pinned month header ("September 2026") sits above the top bar's tint and blur (z 6 over the bar's 5). It is content, so it stays crisp, and the bar's bleed runs behind it rather than over it.
 5.708 — Service page: the details section that read "Your service" is headed with the service's own name ("DEXA Scan", or the service's title for the others).
-5.709 — Service page demo skipper: each prev/next fades the progress list and the status block out (140ms), swaps the step, and fades them back in (280ms, with a 4px rise).
+5.709 — Service page demo skipper: on each prev/next, only the step items whose state changed fade (out to nothing and back in their new state over 420ms). The rest of the list and the status block do not move.
 - Steps not yet reached show their content at 70% opacity, on the service page and in the Timeline's step lists, where they now take the step ink at 70% rather than a grey.
+5.710 — Overview desk, Insights rail: the prev/next arrows moved from the section header onto the rail. They are 40px glass discs at its two ends, at mid-height, 8px in.
+- Each shows only when there is somewhere to go: prev hides at the start, next hides at the end.
+- With no overflow (two or fewer cards) the pair is hidden altogether.

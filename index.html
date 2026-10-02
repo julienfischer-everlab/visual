@@ -6329,6 +6329,12 @@
     display:flex;align-items:center;justify-content:center;
   }
   .dvSec .nav button:hover{background:rgba(255,255,255,.12);color:#fff;}
+  .nav.railNav{position:absolute;z-index:3;display:flex;justify-content:space-between;align-items:center;height:0;margin:0;padding:0 8px;box-sizing:border-box;pointer-events:none;}
+  .nav.railNav.off{display:none;}
+  .nav.railNav button{pointer-events:auto;width:40px;height:40px;margin-top:-20px;border:0;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font:inherit;font-size:18px;color:#f4f4f4;
+    background:rgba(30,30,30,.72);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 6px 18px rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,255,255,.08);transition:opacity .2s ease,transform .2s ease,background .16s ease;}
+  .nav.railNav button:hover{background:rgba(50,50,50,.85);} .nav.railNav button.hid{opacity:0;transform:scale(.9);pointer-events:none;}
+  body.light .nav.railNav button{background:rgba(255,255,255,.85);color:#2e1f1a;box-shadow:0 6px 18px rgba(46,31,26,.15),inset 0 0 0 1px rgba(46,31,26,.08);}
   .dvSec .bar{width:1px;height:18px;background:rgba(255,255,255,.12);}
   /* top band: the plan on the left, two gauges and the task list on the right */
   .dvTop{display:grid;grid-template-columns:1fr 1.28fr;gap:20px;align-items:stretch;}
@@ -23701,11 +23707,13 @@
       else simGo(k, 'active', { at: si, tag: st[si][0] }, 1);   // no flash when skipping ("remove the ripple effect when skipping the steps")
       if (L) document.dispatchEvent(new Event('everlab:docs')); };
     /* a step change fades the progress out and back in ("a fade-in / fade-out effect on the progress when I jump between steps") */
-    const PROG = '#dSvc :is(.svJrL, .svPend), #svcMob :is(.svJrL, .svPend)';
+    /* only the step items that change fade, out with the old state and in with the new ("the fade on the item steps only, not the block") */
+    const STEPS = '#dSvc .svJrL .svStep, #svcMob .svJrL .svStep';
+    const stOf = el => el.className + '|' + (el.querySelector('b') || el).textContent;
     let fading = false;
-    const fadeSwap = fn => { if (fading) return; const els = [...document.querySelectorAll(PROG)]; if (!els.length || !Element.prototype.animate){ fn(); return; } fading = true;
-      Promise.all(els.map(el => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: 'ease-in', fill: 'forwards' }).finished.catch(() => {}))).then(() => {
-        fn(); fading = false; document.querySelectorAll(PROG).forEach(el => el.animate([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.2,.8,.2,1)' })); }); };
+    const fadeSwap = fn => { if (fading) return; const old = [...document.querySelectorAll(STEPS)].map(stOf); fn();
+      if (!Element.prototype.animate) return;
+      [...document.querySelectorAll(STEPS)].forEach((el, i) => { if (stOf(el) !== old[i]) el.animate([{ opacity: 0 }, { opacity: .2, offset: .25 }, { opacity: 1 }], { duration: 420, easing: 'ease-out' }); }); };   /* the step that changed blinks out and fades back in its new state; the rest stay put */
     document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation(); fadeSwap(() => simStep(+b.dataset.sim)); }, true);
     const simNext = mobile => { const k = cur.key, n = cur.n, at = cur.at;
       if (/^book/i.test(cur.stepName || '')) { bkOpen(mobile); return; }
@@ -24279,6 +24287,13 @@
     car.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
     if (dots) dots.addEventListener('click', e => { const i = e.target.closest('i'); if (i) car.scrollTo({ left: snapAt([].indexOf.call(dots.children, i)), behavior: 'smooth' }); });
     // the desk's arrows: a card back, a card on
+    /* the desk's arrows over the rail itself, at its two ends, middle height ("put the arrow overlapping the carousel when there is overflow, hide it when there is none") */
+    if (opts.nav && opts.overlay){ const nav = opts.nav, b2 = nav.querySelectorAll('button'), host = car.parentElement;
+      nav.classList.add('railNav'); host.insertBefore(nav, car.nextSibling);
+      const place = () => { const max = car.scrollWidth - car.clientWidth, over = max > 4; nav.classList.toggle('off', !over);
+        nav.style.top = (car.offsetTop + car.offsetHeight / 2) + 'px'; nav.style.left = car.offsetLeft + 'px'; nav.style.width = car.offsetWidth + 'px';
+        if (b2[0]) b2[0].classList.toggle('hid', !over || car.scrollLeft <= 4); if (b2[1]) b2[1].classList.toggle('hid', !over || car.scrollLeft >= max - 4); };
+      car.addEventListener('scroll', place, { passive: true }); addEventListener('resize', place); if ('ResizeObserver' in window) new ResizeObserver(place).observe(car); requestAnimationFrame(place); setTimeout(place, 400); }
     if (opts.nav){ const b = opts.nav.querySelectorAll('button'); if (b[0]) b[0].addEventListener('click', () => car.scrollTo({ left: snapAt(idxAt(car.scrollLeft) - 1), behavior: 'smooth' })); if (b[1]) b[1].addEventListener('click', () => car.scrollTo({ left: snapAt(idxAt(car.scrollLeft) + 1), behavior: 'smooth' })); }
     let drag = null, dragged = false, glide = 0;
     const move = e => {
@@ -24331,7 +24346,7 @@
   buildOvExplore(document.querySelector('#phone2 .ovcar'), document.querySelector('#phone2 .ovcdots'), { get align(){ return document.documentElement.classList.contains('insCond') ? 'start' : 'center'; } });   /* condensed lines up from the left, the wide card centres */   /* two cards and a peek of the third, so they line up from the left */
   { const over = document.getElementById('dOver');
     if (over){ const secs = [].slice.call(over.querySelectorAll('.dvSec')), sec = secs.find(s => s.querySelector('.nav'));
-      buildOvExplore(over.querySelector('.ovcar'), over.querySelector('.ovcdots'), { align: 'start', nav: sec && sec.querySelector('.nav') }); } }
+      buildOvExplore(over.querySelector('.ovcar'), over.querySelector('.ovcdots'), { align: 'start', nav: sec && sec.querySelector('.nav'), overlay: true }); } }
   // The Insights card of the hero bento (the Tasks tweak's other card) is a
   // carousel of insights inside the card ("a carousel inside the carousel,
   // all breakpoints; nav at the bottom; content left: eyebrow, title,
