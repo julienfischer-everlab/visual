@@ -12286,3 +12286,4 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - Insight cards (phone and desk) lighten on hover (6% → 9%) and scale to 98% while pressed, as the hero card does.
 5.730 — Carousels: the pictures inside cards (Insights renders, service renders) are not draggable and ignore the pointer, so a swipe or mouse drag that starts on a picture moves the row like anywhere else on the card. Pressed cards scale to 98%.
 5.731 — Condensed Insights cards: each card is 4px wider, so the third card shows 24px (was 32).
+5.732 — Overview desk, Your action plan: both the grid cards and the list rows follow the phone. The step in hand is the line under the name, the Step chip and the bars sit side by side under it, and there is no Protocol badge.

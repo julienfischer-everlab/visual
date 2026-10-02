@@ -6462,6 +6462,7 @@
     font-size:11.5px;border-radius:7px;padding:3px 9px;
   }
   .dvProt b{display:block;font-size:15px;font-weight:500;color:#ececec;}
+  .dvProt .badge{display:none !important;} .dvProt .ovStep{margin:12px 0 0 !important;} .dvProt p{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
   .dvProt p{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:#8b8b86;}
   /* the step chip and the step in hand's badge on the action plan cards, as on the Timeline */
   .ovStep{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0;} .ovact .ovStep{margin:14px 0 0 106px;}
@@ -23880,6 +23881,9 @@
         const seg = '<span class="ovSeg" aria-hidden="true">' + p.steps.map((x, i) => '<i class="' + (done || i < at ? 'on' : i === at ? 'cur' : '') + '"></i>').join('') + '</span>';
         const lab = done ? 'Completed' : at < 0 ? 'Not started' : 'Step ' + (at + 1) + ' of ' + n;
         const el = document.createElement('div'); el.className = 'ovStep' + (pv ? ' pas' : '');
+        if (c.classList.contains('dvProt')){   /* the desk's grid cards as the phone's rows: the step as the line under the name, chip and bars under it, no Protocol badge */
+          const sub = c.querySelector('p'); if (sub && (cs || done)) sub.textContent = done ? 'Completed' : cs[0];
+          el.innerHTML = '<span class="ovStepC">' + escS(lab) + '</span><span class="ovStepB n ovStepBars">' + seg + '</span>'; if (sub){ sub.after(el); return; } }
         if (c.classList.contains('ovact')){   /* the phone's plan rows: the step in hand is the service's subtitle, in the line's own grey; the step chip and the bars side by side on one line ("Go to your appointment should be the subtitle, normal colour; the timeline badge next to Step x of n") */
           const sub = c.querySelector('.tx > span:not(.pr)'); if (sub && (cs || done)) sub.textContent = done ? 'Completed' : cs[0];
           el.innerHTML = '<span class="ovStepC">' + escS(lab) + '</span><span class="ovStepB n ovStepBars">' + seg + '</span>'; const tx = c.querySelector('.tx'); if (tx){ tx.appendChild(el); return; } }   /* under the subtitle, beside the picture: the row as tall as its picture */
