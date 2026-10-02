@@ -12325,3 +12325,5 @@ It works on the service page (as a modal on desktop, a sheet on phone) and in th
 5.746 The hero card's round doctor picture is 4px smaller, 112 → 108px ("reduce by 4px"). The title's room beside it grows to match.
 
 5.747 The Health profile card in Insights: each to-do card's own padding is up 4px on every side, 8/8/8/12 → 12/12/12/16 ("card padding internal + 4px").
+
+5.748 Desk Insights header: the divider between "See all 12" and the arrows is gone ("no need divider").
