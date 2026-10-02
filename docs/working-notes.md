@@ -12296,3 +12296,8 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 5.735 — Tweaks: Hero action, Hero background and Hero image are grouped in a card of their own, "Hero task", after the Overview group.
 5.736 — Tweaks: an "Insights" group holds the count (relabelled "Amount": 0 / 1 / 2 / 3+) and Insight cards (Condensed / Non condensed), after Hero task.
 5.737 — Health profile card in the Insights carousel: each to-do is a card of its own. It is ghost at rest (no fill, no separator), takes a 6% ground on hover, and is pressed 2% smaller. The list sits at the card's foot, 4px from its sides and bottom, with 2px between rows.
+5.738 — Health profile check circles are 20px (tick 11px), in the section and in the Insights card. The hero title is a single colour (the grey lead now matches) and 1px smaller: 16 on phone and XS, 19 on desk.
+5.739 — Health profile card in Insights:
+- The item cards' corners are concentric with the card: its radius less the 4px inset, so 12px on a 16px card (22 → 18 in Non condensed).
+- The titles are 12.5px.
+- Each row's button is a ghost chevron, a 28px circle that fills on the row's hover.
