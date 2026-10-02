@@ -12184,3 +12184,8 @@ Once the documents are done (from Book on), Instructions comes back.
 - Cover: the portrait sits at the right (62% wide on phone, 46% on desk), face in the upper half, its left edge faded into the card by a mask. The DEXA and Report heroes keep their own pictures.
 - Top right: the face is centred in the tile.
 - The hero card's title is 2px larger: 18 on phone and XS, 21 on desk.
+5.687 — Overview phone, condensed Insights cards: the byline shows the date only (no doctor or device name). Non condensed keeps "name | date".
+5.688 — Overview phone, new tweaks:
+- "Health profile" (Section / In Insights). In Insights moves the to-do list into the first card of the Insights carousel. That card is 70% of the row, with "Health profile" and its count at the top and titles only, and the insight cards follow in whichever card style is set. The section heading is hidden, and the carousel dots count the card. Back to Section returns the list under its heading.
+- Dock › Material › "Glass effect" switch: a liquid-glass preset on the sliders (blur 22, saturation 190%, brightness 1.08, tint 25%, sheen 140%) plus a lit rim and a soft top sheen on the island and the AI button. Turning it off restores the previous slider values.
+5.689 — Overview hero card: 6px gap between the Next step chip and the title (was 22).
