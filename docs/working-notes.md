@@ -12206,3 +12206,4 @@ Once the documents are done (from Book on), Instructions comes back.
 - Non condensed: the title is 16px in one weight (500) and one colour, with no lighter or bolder source.
 - Non condensed: the button sits at the card's foot, with 18px under it to match the top-left inset. Cards stretched by a taller neighbour had left 37px there.
 5.698 — The Insights "See all" count badge (phone and desk) is grey (#4a4a4a, white figure) as the reference, still 28px tall, with 2px more between "See all" and the badge (9 → 11 on the phone, 11 → 13 on the desk).
+5.699 — Timeline: a new "Steps" tweak (Vertical / Horizontal, kept by Save). Horizontal draws an open service's steps the way the phone's service page does: a row of bars coloured by status (done green, in hand orange, waiting grey, others empty) with the step in hand's name under it, inside the same panel. Documents shown as steps count as bars.

@@ -6629,6 +6629,9 @@
   .svJrBars{display:flex;gap:4px;} .svJrBars i{flex:1 1 0;height:5px;border-radius:3px;background:rgba(255,255,255,.14);}
   .svJrBars i.on{background:#9cc088;} .svJrBars i.cur{background:#f78359;} .svJrBars i.cur.pas{background:rgba(255,255,255,.5);}
   .svJrHzT{margin-top:10px;font-size:14px;color:#8b8b86;}
+  .tlStepHz{margin:12px 0 4px;} .tlStepHz .svJrBars i{height:5px;}
+  .tlStepHzT{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:10px;} .tlStepHzT b{font-size:14px;font-weight:400;color:#ececec;} .tlStepHzT span{flex:none;font-size:13px;color:#8b8b86;}
+  body.light .tlStepHzT b{color:#2e1f1a;}
   body.light .svJrBars i{background:rgba(46,31,26,.12);} body.light .svJrBars i.cur.pas{background:rgba(46,31,26,.4);}
   .svJrL > li.one.hz > .svJrTx{display:block;}   /* a single service keeps its name in this layout: the bars need a title */
   .svJrL > li.one > .svJrMk, .svJrL > li.one > .svJrTx, .svJrL > li.one > .svJrB{display:none;} .svJrL > li.one > .svJrSteps{margin:4px 0;} .svJrL > li.one .svJrSteps .svStep{padding-left:22px;} .svJrL > li.one .svJrSteps .svStep::before{left:0;}   /* a service with no related ones: its steps alone in the card, no name, dot or badge ("if no other related service is attached to the parent, no need the title, dot and badge") */
@@ -9656,6 +9659,14 @@
             <option value="month" selected>Current month</option>
             <option value="all">All primary</option>
             <option value="none">None</option>
+          </select>
+        </div>
+        <!-- the open steps as the phone's service page draws them: a row of bars coloured by status and the step in hand under it ("a tweaked version of the steps timeline, more horizontal") -->
+        <div class="tkRow">
+          <span class="lbl">Steps</span>
+          <select id="stTlSteps" class="tkSegSel" aria-label="How the open steps are drawn">
+            <option value="v" selected>Vertical</option>
+            <option value="h">Horizontal</option>
           </select>
         </div>
         <!-- the documents on the Timeline too ("this should be in the Timeline view as well"), the same setting as the service page's -->
@@ -23906,7 +23917,11 @@
       const dl = DOCL(p.svc), k = dl.findIndex(([t]) => !DOCDN().has(t)), bI = Math.max(0, p.steps.findIndex(st => /^book/i.test(st[0]))), at = Math.max(0, p.at);   // always just before Book, the first still to do in hand while Book is not done
       const steps = p.steps.slice(0, bI).concat(dl.map(([t]) => [t]), p.steps.slice(bI));
       return stepList0(Object.assign({}, p, { steps, at: at < bI ? at : at === bI && k >= 0 ? bI + k : p.at + dl.length })); };
-    const stepList0 = p => '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at || (i === p.at && /^(done|completed?)$/i.test(st[0])) ? 'on' : i === p.at ? 'cur' : '', w = c === 'cur' && pas(st); return '<li class="' + c + (w ? ' pas' : '') + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? (w ? '<span class="tlChip n tlNext">' + (/result/i.test(st[0]) ? 'Waiting for results' : 'In progress') + '</span>' : '<span class="tlChip o tlNext">Your next step</span>') : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
+    let TLHZ = false;   /* the Steps tweak: bars and the step in hand */
+    const stepHz = p => { const n = p.steps.length, at = p.at, cur = at >= 0 && at < n ? p.steps[at] : null;
+      return '<div class="tlStepHz"><div class="svJrBars">' + p.steps.map((st, i) => '<i class="' + (at >= n || i < at ? 'on' : i === at ? 'cur' + (pas(st) ? ' pas' : '') : '') + '"></i>').join('') + '</div>' +
+        '<div class="tlStepHzT"><b>' + esc(cur ? cur[0] : at >= n ? 'All done' : 'Not started') + '</b></div></div>'; };   /* the chip above already says Step x of n */
+    const stepList0 = p => TLHZ ? stepHz(p) : '<ol class="tlStepL">' + p.steps.map((st, i) => { const c = p.at >= p.steps.length || i < p.at || (i === p.at && /^(done|completed?)$/i.test(st[0])) ? 'on' : i === p.at ? 'cur' : '', w = c === 'cur' && pas(st); return '<li class="' + c + (w ? ' pas' : '') + '"><i class="tlMk">' + (c === 'on' ? CHK : '') + '</i><div class="tx"><b>' + esc(st[0]) + '</b>' + (c === 'cur' ? (w ? '<span class="tlChip n tlNext">' + (/result/i.test(st[0]) ? 'Waiting for results' : 'In progress') + '</span>' : '<span class="tlChip o tlNext">Your next step</span>') : '') + (st[2] ? '<em>' + esc(st[2]) + '</em>' : '') + '</div></li>'; }).join('') + '</ol>';   // the step in hand says so ("add badge 'Your next step', orange")   // titles only ("keep the steps short, just title, not sub")
     const prog = r => {
       if (tab === 'claim') return '';   // yours to claim: no steps, no step chip ("never display the steps, neither the badge step")
       if (r.group){
@@ -23993,7 +24008,8 @@
       navState();
     };
     document.addEventListener('everlab:docs', () => { if (document.body.classList.contains('tlOn')) render(); });
-    { const o = document.getElementById('stTlOpen'); if (o) o.addEventListener('change', () => { OPEN = o.value; render(); }); }   // the tweak redraws the list
+    { const o = document.getElementById('stTlOpen'); if (o) o.addEventListener('change', () => { OPEN = o.value; render(); }); }
+    { const o = document.getElementById('stTlSteps'); if (o) o.addEventListener('change', () => { TLHZ = o.value === 'h'; render(); }); }   // the tweak redraws the list
     const render = () => {
       ROWS = []; list.innerHTML = layout(TL[tab]).map(sec).join('');
       list.querySelectorAll('.tlTgl .tlSeg').forEach(sg => { const is = [...sg.children], n = is.length || 1, k = is.filter(i => i.classList.contains('on') || i.classList.contains('cur')).length; sg.insertAdjacentHTML('beforebegin', '<i class="tlRing" aria-hidden="true" style="--p:' + (k / n).toFixed(3) + '"></i>'); });   // XS: a ring of the same count in place of the increments ("use circular progress instead of increments")
@@ -24545,7 +24561,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -26562,7 +26578,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
