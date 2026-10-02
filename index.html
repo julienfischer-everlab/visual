@@ -6899,6 +6899,10 @@
   .lkHero .dmBody{padding-top:20px !important;} .lkHasAv .dmBody{padding-top:40px !important;}
   body.light .lkAv{background:#efe9df;border-color:#fff;color:#7a6f68;}
   .lkBan{display:none;}
+  .lkTRow{display:flex;align-items:center;justify-content:space-between;gap:12px;} .lkT{margin:0;min-width:0;font-size:20px;font-weight:500;line-height:1.25;letter-spacing:-.2px;color:#f4f4f4;} .lkTRow .lkTag{flex:none;}
+  .svLkM:not(.lkSimple) .lkWhy{margin-top:10px;font-size:14.5px;font-weight:400;line-height:1.55;color:#b4b2ad;}   /* regular, a reading size ("regular size") */
+  .svLkM .lkH{margin-top:32px !important;}   /* more room before Complete first ("more margin bottom before Complete first") */
+  body.light .lkT{color:#111;} body.light .svLkM:not(.lkSimple) .lkWhy{color:#5a4c44;}
   .lkSim{display:flex;flex-direction:column;align-items:center;text-align:center;padding:8px 8px 4px;}
   .lkSimPh{position:relative;width:88px;height:88px;border-radius:20px;background:center / cover no-repeat;}
   .lkSimB{position:absolute;right:-10px;bottom:-10px;width:38px;height:38px;box-sizing:border-box;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#2a2a28;border:3px solid #1c1c1b;color:#c9c7c1;} .lkSimB svg{width:15px;height:15px;}
@@ -23975,10 +23979,16 @@
       sh.lkBl = bl; sh.querySelector('.tlShPanel').setAttribute('aria-label', nm); sh.querySelector('.tlShHead b').textContent = nm;
       // why, in a line ("just explain briefly WHY this service is locked"), then the services it waits on, each a card to open ("display a card by the blocker services, CTA See detail")
       const why = list ? escS(nm) + ' builds on your ' + escS(list) + ', so it becomes available once ' + (names.length > 1 ? 'they are' : 'it is') + ' complete.' : 'It becomes available once the services before it are complete.';
+      // a fuller reason, per service where we have one ("describe more")
+      const LKWHY = { diag: 'In this call your doctor goes through your DEXA results with you, alongside your latest blood work. It can only happen once your scan is done and the results are in, so it becomes available as soon as your DEXA Scan is complete.',
+        checkin: 'Your yearly check-in looks back over everything with your care team: your DEXA results, and what your doctor made of them in your Diagnostics Review. It becomes available once both are complete, so the conversation starts from your latest results.',
+        gutrep: 'Your Microbiome Report is written from the sample you send to the lab. It becomes available once your Microbiome & Gut Health Assessment is complete and the lab has your results.',
+        gutrev: 'In this call your doctor goes through your Microbiome Report with you. It becomes available once the report is ready.' };
+      const desc = LKWHY[key] || why + (d.about ? ' ' + escS(d.about) : '');
       sh.classList.toggle('lkSimple', LKV === 'simple'); lkHeroSet(sh, LKV === 'simple' ? '' : SIMG[d.img], LK);
-      if (LKV === 'simple') sh.querySelector('.tlShHead b').textContent = '';   // the simple header: the picture with its status badge, centred, and the title says it all ("a tweak variation with this simple header; the title 'Microbiome report not available yet', the description below")
-      sh.querySelector('.dmBody').innerHTML = (LKV === 'simple' ? '<div class="lkSim">' + (SIMG[d.img] ? '<span class="lkSimPh" style="background-image:url(' + SIMG[d.img] + ')"><i class="lkSimB">' + LK + '</i></span>' : '') + '<h3 class="lkSimT">' + escS(nm) + ' not available yet</h3><p class="lkSimP">' + why + '</p></div>'
-        : '<div class="lkTop"><span class="lkTag">' + LK + 'Not available yet</span><p class="lkWhy">' + why + '</p></div>') +   /* a banner, not a square ("put a banner with imagery"); available, not unlock ("no Unlock term, more like available"; "Locked badge -> Not available yet") */
+      sh.querySelector('.tlShHead b').textContent = '';   // the name in the body, not the header ("the title above the description, not in the header")   // the simple header: the picture with its status badge, centred, and the title says it all ("a tweak variation with this simple header; the title 'Microbiome report not available yet', the description below")
+      sh.querySelector('.dmBody').innerHTML = (LKV === 'simple' ? '<div class="lkSim">' + (SIMG[d.img] ? '<span class="lkSimPh" style="background-image:url(' + SIMG[d.img] + ')"><i class="lkSimB">' + LK + '</i></span>' : '') + '<h3 class="lkSimT">' + escS(nm) + ' not available yet</h3><p class="lkSimP">' + desc + '</p></div>'
+        : '<div class="lkTop"><div class="lkTRow"><h3 class="lkT">' + escS(nm) + '</h3><span class="lkTag">' + LK + 'Not available yet</span></div><p class="lkWhy">' + desc + '</p></div>') +   /* the badge at the title's right ("the badge on the right side of the title") */   /* a banner, not a square ("put a banner with imagery"); available, not unlock ("no Unlock term, more like available"; "Locked badge -> Not available yet") */
         (bl.length ? '<h4 class="bkH lkH">Complete first</h4><div class="lkBlks">' + bl.map((b, i) => { const lk = b.state === 'locked' || b.state === 'soon', sd = SVC[b.svc] || {};
           return '<div class="lkBlk' + (i === 0 && !lk ? ' blk' : '') + '">' + (SIMG[sd.img] ? '<span class="lkBPh" style="background-image:url(' + SIMG[sd.img] + ')"></span>' : '') + '<span class="lkBTx"><b>' + escS(bn(b)) + '</b><span>' + (lk ? LK : '') + ST(b) + '</span></span><button class="svBtn sec lkSee" type="button" data-bi="' + i + '">See detail</button></div>'; }).join('') + '</div>' : '');
       sh.querySelector('.bkSum').textContent = '';

@@ -12375,3 +12375,10 @@ The about, details, steps and footer are gone. It applies on the service page an
 - The why line in grey.
 
 The Complete first cards follow, as before.
+
+5.762 Locked modal text:
+- The service name moves out of the header and into the body, 20px, with the "Not available yet" badge at its right ("the badge on the right side, the title above the description, not in the header").
+- The description is regular weight at 14.5px ("regular size") and fuller: a per-service reason for Diagnostics Review, Member Check-In and the gut report and review; otherwise the why line plus the service's about ("describe more").
+- 32px sits before Complete first ("more margin before Complete first").
+
+The Simple variant uses the same fuller description.
