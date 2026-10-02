@@ -12402,3 +12402,8 @@ The Simple variant uses the same fuller description.
 5.769 The Simulate row (Next step / Reset) is gone from Tweaks ("remove that tweak"). The page's own previous / next arrows by Your progress still walk the steps, and the script's listeners skip the missing buttons.
 
 5.770 Service page step bars are 1px thicker, 3 → 4 ("increase thickness 1px"), still centred under the dot (8px in). The pill tabs use their own svCPill class: a global .pill rule had given their row a red ground.
+
+5.771 Locked modal, Banner:
+- The banner is 128px tall and shows the service's picture blurred 128px, a wash of its colours.
+- The avatar is now the picture itself, at 24px radius instead of a circle, still 70 / 30 over the banner's foot ("circle needs to be the image of the service, rounded 24px not fully circle; banner 128px height, bg blur 128px").
+- The Complete first card is neutral grey, no longer orange ("neutral, not warning").
