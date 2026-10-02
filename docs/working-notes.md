@@ -12250,4 +12250,5 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - 3 columns shows three tiles side by side. Each has an icon on top, a short title (Fill your questionnaire / Connect your accounts / Upload your medical record) with no subtitle, and its button full width at the foot.
 - A done tile shows a green tick at its corner and its title struck through, and its button is hidden; it keeps its height.
 - It applies to the Health profile section only; the In Insights card keeps the list.
-5.718 — Condensed Insights cards: the title is left-aligned again, at 14/17px. The picture sits 8px above the button on every card (it was 16–25px, centred in the space), and the free space now goes above the picture.
+5.718 — Condensed Insights cards: the title is left-aligned again, at 14/17px. The picture sits 12px above the button on every card (8, then +4) (it was 16–25px, centred in the space), and the free space now goes above the picture.
+5.719 — Overview: new "Hero background" tweak, Dark (default) / #777670. The grey ground carries the photo's edge run in the same grey; the lead text, the chip and the availability line are lightened to read on it. Kept by Save (stHeroBg).
