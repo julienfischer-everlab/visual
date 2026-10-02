@@ -12177,3 +12177,4 @@ Once the documents are done (from Book on), Instructions comes back.
 - New tweak "Insight cards", segmented: Condensed (default) is the two-across cards with the peek, left-aligned; Non condensed is the earlier single wide card (86%), centred. The condensed rules are keyed to html.insCond, and Save keeps the choice (stInsCond).
 - The section titles (Insights, Health profile, Your action plan) are 20px.
 5.683 — Phone bottom nav: inactive tabs 50% more opaque (.42 → .63 dark, .36 → .54 light; hover .85). The Dock tweak's inactive slider still scales it.
+5.684 — Overview phone condensed Insights cards: title line height 17px (was 1.35, about 19px).
