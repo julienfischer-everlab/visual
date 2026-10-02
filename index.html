@@ -7567,9 +7567,7 @@
   html.heroThumb .ovBookBtn{height:44px;padding:0 24px;font-size:15px;}   /* the larger Book ("the size-up variant of the CTA") */
   html.heroThumb .ovBookFoot{flex-direction:row-reverse;align-items:center;}
   html.heroThumb .ovBookWhen{text-align:right;align-items:flex-end;}
-  html.heroBrown .ovhero.ovBook{background:#2b2019;} html.heroBrown .ovBookArt::after{background:linear-gradient(90deg,rgba(43,32,25,.72) 0%,rgba(43,32,25,.38) 46%,rgba(43,32,25,0) 78%);} html.heroBrown .ovBook .tag{background:rgba(255,236,220,.12);}   /* a dark warm brown ("darker brown bg") */
-  html.heroGrey .ovhero.ovBook{background:#777670;} html.heroGrey .ovBookArt::after{background:linear-gradient(90deg,rgba(119,118,112,.72) 0%,rgba(119,118,112,.38) 46%,rgba(119,118,112,0) 78%);}
-  html.heroGrey .ovBook h3 span{color:rgba(255,255,255,.72);} html.heroGrey .ovBook .tag{background:rgba(0,0,0,.18);} html.heroGrey .ovBookWhen span{color:rgba(255,255,255,.75);}
+  html.heroEarth .ovhero.ovBook{background:#252522;} html.heroEarth .ovBookArt::after{background:linear-gradient(90deg,rgba(37,37,34,.72) 0%,rgba(37,37,34,.38) 46%,rgba(37,37,34,0) 78%);}
   .ovBookBy{display:flex;align-items:center;gap:10px;font-size:14px;color:#ececec;}
   .ovBookBy img{width:44px;height:44px;border-radius:50%;object-fit:cover;display:block;}
   .ovBookBy div{display:flex;flex-direction:column;gap:3px;}
@@ -9909,9 +9907,8 @@
         <div class="tkRow">
           <span class="lbl">Hero background</span>
           <select id="stHeroBg" class="tkSegSel" aria-label="The hero card's background">
-            <option value="dark" selected>Dark</option>
-            <option value="grey">#777670</option>
-            <option value="brown">Dark brown</option>
+            <option value="neutral">Neutral</option>
+            <option value="earth" selected>Earth</option>
           </select>
         </div>
         <!-- the hero card's picture: across the card under a dark run, or a tile at its top right with the button bottom left ("try a variation where the image is top right of the card") -->
@@ -26630,7 +26627,7 @@
       t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroImg'); if (t){ const on = () => document.documentElement.classList.toggle('heroThumb', t.value === 'thumb'); t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stProfStyle'); if (t){ const on = () => document.documentElement.classList.toggle('profTiles', t.value === 'tiles'); t.addEventListener('change', on); on(); } }
-  { const t = document.getElementById('stHeroBg'); if (t){ const on = () => { document.documentElement.classList.toggle('heroGrey', t.value === 'grey'); document.documentElement.classList.toggle('heroBrown', t.value === 'brown'); }; t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stHeroBg'); if (t){ const on = () => document.documentElement.classList.toggle('heroEarth', t.value !== 'neutral');   /* Earth, the default ("Neutral / Earth #252522, Earth the default") */ t.addEventListener('change', on); on(); } }
   // Health profile in the Insights carousel: the to-do list moves into a card of its own, first in the row, 70% of its width
   { const t = document.getElementById('stProfIn');
     if (t){ const on = () => { const inn = t.value === 'ins', car = document.querySelector('#phone2 .ovcar'), list = document.querySelector('#phone2 .ovProf'), head = document.querySelector('#phone2 .ovsecProf');
@@ -26682,7 +26679,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'dark', stProfStyle: 'list', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'list', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };

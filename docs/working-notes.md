@@ -12258,3 +12258,4 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The Tweaks panel and the Dock › Style panel each end with a Save / Reset row that stays at the panel's foot.
 - Save (that one or any group's) stores the value of every control in both panels: selects, switches, segmented tabs, sliders, colours and the section order. They come back on load (localStorage everlab:tkAll, alongside the earlier everlab:tkPages).
 - Reset clears both stores and puts every control back to its value as the page loaded.
+5.723 — Hero background tweak reduced to two options: Neutral (the earlier dark #161514) and Earth (#252522), with Earth the default. The grey and brown trials are removed.
