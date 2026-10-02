@@ -12301,3 +12301,7 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The item cards' corners are concentric with the card: its radius less the 4px inset, so 12px on a 16px card (22 → 18 in Non condensed).
 - The titles are 12.5px.
 - Each row's button is a ghost chevron, a 28px circle that fills on the row's hover.
+
+5.740 The action plan gets a card for the deferred steps ("on action plan add a card to show the deferred actions"). It sits under the plan, before See full timeline. It is a dashed card with a calendar-clock tile, "2 steps deferred", a one-line list of what was put off and when it returns (DEXA Scan, Sun 1 Nov; Skin Check, Mon 16 Nov), and a View button. View opens the list inside the card, one row per step, and each row opens that service's page. On the desk it spans the plan grid; at XS it follows the list. It moves with the action plan in Section order, and the new-user Overview hides it.
+
+5.741 A group's locked services sit under an eyebrow, "Your services" ("an eyebrow group title above a group of locked services"). It goes above the first locked service other than the page's own, in the service page's progress list and in the Timeline's group list (13px, medium, grey).
