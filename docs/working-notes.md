@@ -12390,3 +12390,15 @@ The Simple variant uses the same fuller description.
 5.765 Complete first shows one card, the next service to complete, not every one before it ("no need to show all next services, just the next one"). The description still names them all.
 
 5.766 Steps tweak set to Horizontal: on the phone (and XS) the bars and the step in hand move into the hero, under the title and date, as lighter tracks on the picture ("replace that inside the hero header, below the title group"). Tapping them opens the steps sheet, as the card did. The page's own card in Your progress keeps its name and This service badge without the bars; a lone service's card is hidden.
+
+5.767 New tweak, Docs in one step (Off / On) ("if multiple consents / docs inside one step, stack them as cards inside the status block"). On:
+- A service's documents are one step on the right, "Complete your documents · 4 forms before your appointment".
+- The status block reads "Complete these before your DEXA Scan", with the sub line "These need to be finished before your DEXA Scan can be scheduled."
+- The documents still to do are stacked inside the block as cards, each with an orange dot and its own button (Review / Complete / Upload).
+- Each one leaves the stack as it is done. When none are left, the step ticks and the page moves on to Book.
+
+5.768 The Content tweak gains "Under pill tabs": the same sections, with the tabs as pills in the look of the Results chips ("all sections of the body organised under a tab pill system"). On the phone the row scrolls edge to edge.
+
+5.769 The Simulate row (Next step / Reset) is gone from Tweaks ("remove that tweak"). The page's own previous / next arrows by Your progress still walk the steps, and the script's listeners skip the missing buttons.
+
+5.770 Service page step bars are 1px thicker, 3 → 4 ("increase thickness 1px"), still centred under the dot (8px in). The pill tabs use their own svCPill class: a global .pill rule had given their row a red ground.
