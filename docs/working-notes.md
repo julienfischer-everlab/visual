@@ -12321,3 +12321,7 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 It works on the service page (as a modal on desktop, a sheet on phone) and in the Timeline's group lists. The deferred card's Skin Check now uses its own picture.
 
 5.745 When the page's own service is locked, the Up next eyebrow now goes above it, so above Diagnostics Review when viewing it while the DEXA is still to do. It previously sat only above the services after it ("for this case the Up next should be before Diagnostics Review"). The same rule applies in the Timeline's group lists.
+
+5.746 The hero card's round doctor picture is 4px smaller, 112 → 108px ("reduce by 4px"). The title's room beside it grows to match.
+
+5.747 The Health profile card in Insights: each to-do card's own padding is up 4px on every side, 8/8/8/12 → 12/12/12/16 ("card padding internal + 4px").
