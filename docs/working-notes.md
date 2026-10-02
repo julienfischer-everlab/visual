@@ -12384,3 +12384,7 @@ The Complete first cards follow, as before.
 The Simple variant uses the same fuller description.
 
 5.763 Locked modal (Banner): 8px more between the title and the description (10 → 18), and the description is #fff ("increase gap between title and desc by 8px, desc #fff").
+
+5.764 Locked modal, Complete first cards: 8px more under the name (2 → 10), and the status in #fff. The status of the one in hand reads "Next to complete" instead of "Ready to book" ("next to complete, not ready to book"); the locked ones still say "Not available yet".
+
+5.765 Complete first shows one card, the next service to complete, not every one before it ("no need to show all next services, just the next one"). The description still names them all.
