@@ -12407,3 +12407,7 @@ The Simple variant uses the same fuller description.
 - The banner is 128px tall and shows the service's picture blurred 128px, a wash of its colours.
 - The avatar is now the picture itself, at 24px radius instead of a circle, still 70 / 30 over the banner's foot ("circle needs to be the image of the service, rounded 24px not fully circle; banner 128px height, bg blur 128px").
 - The Complete first card is neutral grey, no longer orange ("neutral, not warning").
+
+5.772 On the service page's Results section, the first chip reads "Everlab results", no longer "Everlab report" ("Report → Results", confirmed as the chips).
+
+5.773 The page's own card in Your progress follows the page. It is ticked and struck through only when the service is done. A journey handed over from elsewhere could carry it as done while a step was still in hand (a tick over "Go to your appointment"). The page's state now overwrites that ("that's not possible, it's incomplete, change the check complete at the top"), and the group's next service is worked out again from it.
