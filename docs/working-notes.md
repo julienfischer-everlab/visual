@@ -12270,3 +12270,4 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The button hugs its label and is centred.
 - The cards are 10px apart (−2), with the third card's peek kept.
 5.726 — Demo skipper, no blink: on prev/next each step's text eases from the opacity it had to the one its new state gives it (70% ↔ 100%, 320ms). Nothing drops to zero and nothing else animates.
+5.727 — Overview phone, Services tweak: new "Condensed" option (Tiles / Condensed / Large). Each card is one 64px line: the label at the left, and the render shrunk to 28px on a 40px grey disc at the right.
