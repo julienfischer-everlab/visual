@@ -12271,3 +12271,7 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The cards are 10px apart (−2), with the third card's peek kept.
 5.726 — Demo skipper, no blink: on prev/next each step's text eases from the opacity it had to the one its new state gives it (70% ↔ 100%, 320ms). Nothing drops to zero and nothing else animates.
 5.727 — Overview phone, Services tweak: new "Condensed" option (Tiles / Condensed / Large). Each card is one 64px line: the label at the left, and the render shrunk to 28px on a 40px grey disc at the right.
+5.728 — Overview hero card:
+- The whole card is tappable and opens the booking, as the Book button does.
+- It lightens on hover (Earth #252522 → #2d2d2a) and scales to 98% while pressed.
+- The Next step chip is 28px tall, with its ground at half the opacity (14% → 7%) and 2px more space below it.
