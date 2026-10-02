@@ -12208,3 +12208,9 @@ Once the documents are done (from Book on), Instructions comes back.
 5.698 — The Insights "See all" count badge (phone and desk) is grey (#4a4a4a, white figure) as the reference, still 28px tall, with 2px more between "See all" and the badge (9 → 11 on the phone, 11 → 13 on the desk).
 5.699 — Timeline: a new "Steps" tweak (Vertical / Horizontal, kept by Save). Horizontal draws an open service's steps the way the phone's service page does: a row of bars coloured by status (done green, in hand orange, waiting grey, others empty) with the step in hand's name under it, inside the same panel. Documents shown as steps count as bars.
 5.700 — Timeline, Horizontal steps: the bars are at most 240px wide (96px at the least), and the name of the step in hand sits to their right on the same line.
+5.701 — Every sticky top bar (Overview phone and desk, Service and Appointment pages desk and phone, Timeline) now uses one recipe:
+- A single, even 18px backdrop blur across the bar's whole height.
+- A black 62% tint (cream 72% in light mode) over the same area.
+- Both run 30px past the bar's bottom and fade out over those 30px.
+- This replaces the ten progressive bands that thinned toward the bottom and the earlier cut at the bar's edge.
+The Insights desk's pinned filter bars, which are opaque, are unchanged.
