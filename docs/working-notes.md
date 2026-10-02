@@ -12348,3 +12348,9 @@ It works on the service page (as a modal on desktop, a sheet on phone) and in th
 - Under "Complete first", one card per service it waits on: picture, name, status and a See detail button that opens that service's page. The one in hand is orange, the others show their lock.
 
 The about, details, steps and footer are gone. It applies on the service page and in the Timeline.
+
+5.756 Locked modal, round two:
+- A 160px banner of the service's imagery leads, in place of the square picture ("put a banner with imagery instead of square img").
+- The tag reads "Not available yet" ("Locked badge -> Not available yet"). The line says it "becomes available once …", never "unlocks" ("no Unlock term, more like available").
+- The blocker cards gain 4px of padding (10 → 14) and a bigger picture (44 → 56). Their status is grey, no longer orange ("remove orange text"); the card in hand keeps its orange ground.
+- A later blocker that is itself locked also reads "Not available yet".
