@@ -12189,3 +12189,10 @@ Once the documents are done (from Book on), Instructions comes back.
 - "Health profile" (Section / In Insights). In Insights moves the to-do list into the first card of the Insights carousel. That card is 70% of the row, with "Health profile" and its count at the top and titles only, and the insight cards follow in whichever card style is set. The section heading is hidden, and the carousel dots count the card. Back to Section returns the list under its heading.
 - Dock › Material › "Glass effect" switch: a liquid-glass preset on the sliders (blur 22, saturation 190%, brightness 1.08, tint 25%, sheen 140%) plus a lit rim and a soft top sheen on the island and the AI button. Turning it off restores the previous slider values.
 5.689 — Overview hero card: 6px gap between the Next step chip and the title (was 22).
+5.690 — Overview Insights cards use the new imagery set (assets/overview/card4-*.webp, from the supplied renders):
+- Dexa report: the pale report sheet
+- Health questionnaire: Dr Steven L.'s card
+- Advanced blood panel: the navy charts
+- Apple Watch: the watch photo with its chips
+- Oura ring (syncing): the run photo
+5.691 — Service page: once the service is done, Your appointment and Instructions are dropped too, as at Get your results. Results and My documents remain.

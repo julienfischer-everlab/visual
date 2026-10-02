@@ -23575,7 +23575,7 @@
             form: ['Your answers help the clinic prepare for your visit and keep the scan safe for you.', 'Some answers, like an implant or a recent contrast scan, can change how the scan is done.', 'Your doctor reads them alongside your results, so the advice fits you.'],
             photo: ['The clinic checks your ID on arrival to match you to your referral.', 'It keeps your results with the right person.', 'Your photo is stored securely and only used to confirm who you are.'] };
           instr = '<h2 class="svH2">Why we need this information</h2><div class="svBody"><ul class="svList">' + (WHY[dp[0]] || WHY.form).map(i => '<li>' + escS(i) + '</li>').join('') + '</ul></div>'; } }
-      const noApt = state !== 'done' && at >= 0 && at < n && /result/i.test(d.steps[at][0]);   /* waiting for results: the appointment and its instructions are behind ('on get your result remove') */
+      const noApt = state === 'done' || (at >= 0 && at < n && /result/i.test(d.steps[at][0]));   /* at the results and once done: no appointment, no instructions ("when it's the last step, the results, you don't need the instruction and the appointment") */   /* waiting for results: the appointment and its instructions are behind ('on get your result remove') */
       const toBook = state === 'book' || (at >= 0 && at < n && /^book/i.test(d.steps[at][0]));   // still to book: no appointment to describe ("if state is book appt, doesn't make sense to show Your appointment")
       const title = o && o.t || d.t, start = o && o.st || x.st;
       const heroH = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div>';   // no progress card in the phone's hero ("remove this on mobile"): the steps are listed in the sheet
@@ -24168,8 +24168,9 @@
     // own plate shows through; the report render serves the Dexa report and
     // the blood panel both, there being four renders for five cards
     const ILL_IMG = {
-      doc: 'assets/overview/card3-doc.webp', quiz: 'assets/overview/card3-quiz.webp', tube: 'assets/overview/card3-tube.webp',
-      watch: 'assets/overview/card3-watch.webp', sync: 'assets/overview/card3-sync.webp'
+      /* the new set ("use this imagery"): the Dexa sheet, Dr Steven's card, the navy charts for the blood panel, the watch, the run for the ring */
+      doc: 'assets/overview/card4-doc.webp', quiz: 'assets/overview/card4-quiz.webp', tube: 'assets/overview/card4-tube.webp',
+      watch: 'assets/overview/card4-watch.webp', sync: 'assets/overview/card4-sync.webp'
     };
     const CARDS = [
       // who it comes from and when ("add a small title with doctor and date"): the doctor for a document, the device for a device
