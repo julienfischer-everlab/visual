@@ -12269,3 +12269,4 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The dismiss sits 4px further right.
 - The button hugs its label and is centred.
 - The cards are 10px apart (−2), with the third card's peek kept.
+5.726 — Demo skipper, no blink: on prev/next each step's text eases from the opacity it had to the one its new state gives it (70% ↔ 100%, 320ms). Nothing drops to zero and nothing else animates.

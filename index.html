@@ -23759,9 +23759,13 @@
     const STEPS = '#dSvc .svJrL .svStep, #svcMob .svJrL .svStep';
     const stOf = el => el.className + '|' + (el.querySelector('b') || el).textContent;
     let fading = false;
-    const fadeSwap = fn => { if (fading) return; const old = [...document.querySelectorAll(STEPS)].map(stOf); fn();
+    /* no blink: each step's words glide from the opacity they had to the one the new state gives them (70% <-> 100%), nothing else moves ("the opacity should just go up and down on the item") */
+    const fadeSwap = fn => { const ops = el => [...el.children].map(c => +getComputedStyle(c).opacity);
+      const old = [...document.querySelectorAll(STEPS)].map(ops); fn();
       if (!Element.prototype.animate) return;
-      [...document.querySelectorAll(STEPS)].forEach((el, i) => { if (stOf(el) !== old[i]) el.animate([{ opacity: 0 }, { opacity: .2, offset: .25 }, { opacity: 1 }], { duration: 420, easing: 'ease-out' }); }); };   /* the step that changed blinks out and fades back in its new state; the rest stay put */
+      [...document.querySelectorAll(STEPS)].forEach((el, i) => { const was = old[i]; if (!was) return;
+        [...el.children].forEach((c, k) => { const to = +getComputedStyle(c).opacity, from = was[k]; if (from == null || Math.abs(from - to) < .01) return;
+          c.animate([{ opacity: from }, { opacity: to }], { duration: 320, easing: 'ease-out' }); }); }); };
     document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation(); fadeSwap(() => simStep(+b.dataset.sim)); }, true);
     const simNext = mobile => { const k = cur.key, n = cur.n, at = cur.at;
       if (/^book/i.test(cur.stepName || '')) { bkOpen(mobile); return; }
