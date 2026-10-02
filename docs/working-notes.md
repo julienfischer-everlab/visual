@@ -12214,3 +12214,9 @@ Once the documents are done (from Book on), Instructions comes back.
 - Both run 30px past the bar's bottom and fade out over those 30px.
 - This replaces the ten progressive bands that thinned toward the bottom and the earlier cut at the bar's edge.
 The Insights desk's pinned filter bars, which are opaque, are unchanged.
+5.702 — Sticky bars: some browsers ignored the mask on the single blurred layer, so the blur ended in a hard line. It is now ten stacked bands with no mask. Each is 3px shorter and blurrier than the last (1 → 18px), so the blur eases out over the 30px bleed and is full strength across the bar itself. The tint still fades smoothly over the same 30px.
+5.703 — The sticky-bar rule, the same for every sticky top bar (Overview phone/desk, Service and Appointment pages desk/phone, Timeline). Call the bar H tall:
+- The tint and the blur cover H + 32px.
+- The top half of H is solid black (cream in light).
+- From the bar's middle to 32px below it, the black fades out on an eased curve.
+- The blur is ten stacked bands, unmasked, whose bottoms step from mid-bar to the end of the bleed: full under the top half, easing out across the remaining half + 32.
