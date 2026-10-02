@@ -12196,3 +12196,5 @@ Once the documents are done (from Book on), Instructions comes back.
 - Apple Watch: the watch photo with its chips
 - Oura ring (syncing): the run photo
 5.691 — Service page: once the service is done, Your appointment and Instructions are dropped too, as at Get your results. Results and My documents remain.
+5.692 — Overview phone, condensed Insights cards: the date sits above the title (label, date, title, picture, button).
+5.693 — Overview phone, Insight cards tweak: a third option "Mid", between Condensed and Non condensed. It shows one card wide with 72px of the next visible. The content is styled as Condensed (date above the title, no name) and the cards line up from the left.
