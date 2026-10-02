@@ -12293,3 +12293,4 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The doctor (with avatar) and date sit above the title.
 - The photo is a circle at the top right: 112px on desk, 80px on phone.
 - 24px padding all round.
+5.735 — Tweaks: Hero action, Hero background and Hero image are grouped in a card of their own, "Hero task", after the Overview group.
