@@ -12220,3 +12220,7 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The top half of H is solid black (cream in light).
 - From the bar's middle to 32px below it, the black fades out on an eased curve.
 - The blur is ten stacked bands, unmasked, whose bottoms step from mid-bar to the end of the bleed: full under the top half, easing out across the remaining half + 32.
+5.704 — Service page, Results › Everlab report card: it carries the report's own welcome, as in the report modal reference:
+- the title "Your complete blood panel report is here." with the New badge
+- Dr. Steven Lu (his avatar, assets/overview/avatar-steven.webp) · 23 April 2026
+- the patient photo, cropped from the reference: assets/overview/report-debrief.webp
