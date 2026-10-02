@@ -12421,3 +12421,20 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.776 Steps not yet reached show their words at 50%, down from 70% ("opacity 50% inactive item"). The step fade animates between the same computed values, so it follows.
 
 5.777 The service page body's section titles (h2) are smaller: 22 → 18 on the desk, 18 → 16 on the phone and XS ("main section title smaller, h2"). Your progress keeps its size.
+
+5.778 Docs in one step is now a 1 / 2 / 3 select: how many documents make one step ("select 1 2 3").
+- 1 is every document its own step, as before.
+- 2 or 3 take them in steps of that size, each named for what it holds: "Sign your consents", "Fill in your questionnaires", or "Complete your documents" when mixed. The documents' names are the sub line, and a step left with one document keeps that document's name.
+- While a step of several is in hand, the status block reads "Sign these / Fill these in / Complete these before your DEXA Scan", with only that step's documents stacked as cards.
+
+5.779 The referrals have their own section title, "Referrals" ("add title for Referrals"). Under tabs it folds into the Referrals tab.
+
+5.780 Content under tabs is down to two tabs, Documents and About this service ("tab should only be Documents, About this service"). Every other section stays a plain section above them: Referrals, Your appointment, Instructions or Why we need it, and Results. About this service holds the about text, duration, location, provider and Read more. Documents shows My documents, or an empty line.
+
+5.781 Your appointment loses its View appointment button at the right ("remove right cta").
+
+5.782 Locked modal: the avatar has no ring ("no border"), and the banner's blur is 32px instead of 128 ("blur 32px"), so the picture still reads through.
+
+5.783 Locked modal, Banner: the badge is gone and the title says it, "{Service} not available yet." ("remove badge; title $name not available yet.").
+
+5.784 With the steps tweak set to Horizontal, the hero's progress is a card ("progress card header like this"). It is translucent and blurred, 22px round, and taps 2% smaller. A header row reads "Your progress" with the count at its right (1/4), then the bars and the step in hand in grey.
