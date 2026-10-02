@@ -12224,3 +12224,7 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - the title "Your complete blood panel report is here." with the New badge
 - Dr. Steven Lu (his avatar, assets/overview/avatar-steven.webp) · 23 April 2026
 - the patient photo, cropped from the reference: assets/overview/report-debrief.webp
+5.705 — Sticky bars: the tint is the page's own background rather than pure black: #0f0f0f on the desk cards, #0d0d0c in the phone, white or cream in light mode. It uses the same half-solid, eased-fade, +32px shape.
+5.706 — Timeline group cards: the services you can open that have no other control (done or locked) show a small ghost circle with a chevron at the right; it fills on the card's hover. The card in hand, with its steps, has none, and the cards that carry a View button keep it instead.
+5.707 — Timeline: the pinned month header ("September 2026") sits above the top bar's tint and blur (z 6 over the bar's 5). It is content, so it stays crisp, and the bar's bleed runs behind it rather than over it.
+5.708 — Service page: the details section that read "Your service" is headed with the service's own name ("DEXA Scan", or the service's title for the others).
