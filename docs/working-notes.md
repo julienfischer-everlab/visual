@@ -12238,7 +12238,7 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - The blur reaches 130% of the group (at least the fade's end), full under the solid half and easing out below.
 - On the Timeline the group is the tabs bar plus the month heading pinned under it. The ground and blur are measured on both (--stkG / --stkExt set as the month pins), and the pinned month drops its own plate and fade so one ground runs under the pair.
 5.712 — Chevrons: the ghost circle sits 4px after the label or badge, on the Timeline group cards and now also on the service page's journey cards (the dependency services you can open with no View button, e.g. a locked Member Check-In). It fills on the card's hover.
-5.713 — Condensed Insights cards: the order is date row, title (13/16px, 8px under the date row), the picture centred in the space left, then the button. The title is centre-aligned.
+5.713 — Condensed Insights cards: the order is date row, title (13/16px, 8px under the date row), the picture centred in the space left, then the button. The title is left-aligned, 14/17px.
 5.714 — Overview hero card: the title is 1px smaller (17 on phone and XS, 20 on desk), with 4px more between the Next step chip and the title (6 → 10).
 5.715 — Hero image "Top right": the photo is a 112px circle (was a 96px rounded square), and the Book button uses the larger 44px size.
 5.716 — Overview phone, Your action plan rows:
@@ -12250,3 +12250,4 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - 3 columns shows three tiles side by side. Each has an icon on top, a short title (Fill your questionnaire / Connect your accounts / Upload your medical record) with no subtitle, and its button full width at the foot.
 - A done tile shows a green tick at its corner and its title struck through, and its button is hidden; it keeps its height.
 - It applies to the Health profile section only; the In Insights card keeps the list.
+5.718 — Condensed Insights cards: the title is left-aligned again, at 14/17px. The picture sits 8px above the button on every card (it was 16–25px, centred in the space), and the free space now goes above the picture.
