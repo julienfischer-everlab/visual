@@ -12173,3 +12173,7 @@ Once the documents are done (from Book on), Instructions comes back.
 5.679 — Reports count badge: peach (#f3b98c) with a dark figure, as the reference. The gap between the label and the badge is 2px wider (8 on the phone, 10 on the desk).
 5.680 — Overview phone Insights cards: title 14px (line-height 1.35).
 5.681 — Overview phone Insights cards: the dismiss is a ghost button (no fill, grey ×, a faint fill and white × on hover).
+5.682 — Overview phone:
+- New tweak "Insight cards", segmented: Condensed (default) is the two-across cards with the peek, left-aligned; Non condensed is the earlier single wide card (86%), centred. The condensed rules are keyed to html.insCond, and Save keeps the choice (stInsCond).
+- The section titles (Insights, Health profile, Your action plan) are 20px.
+5.683 — Phone bottom nav: inactive tabs 50% more opaque (.42 → .63 dark, .36 → .54 light; hover .85). The Dock tweak's inactive slider still scales it.
