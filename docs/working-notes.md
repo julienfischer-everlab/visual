@@ -12319,3 +12319,5 @@ The Insights desk's pinned filter bars, which are opaque, are unchanged.
 - "After your DEXA Scan" and a Got it button in the footer.
 
 It works on the service page (as a modal on desktop, a sheet on phone) and in the Timeline's group lists. The deferred card's Skin Check now uses its own picture.
+
+5.745 When the page's own service is locked, the Up next eyebrow now goes above it, so above Diagnostics Review when viewing it while the DEXA is still to do. It previously sat only above the services after it ("for this case the Up next should be before Diagnostics Review"). The same rule applies in the Timeline's group lists.
