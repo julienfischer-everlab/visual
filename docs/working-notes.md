@@ -12446,3 +12446,5 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.787 At the results step and once done, the referrals leave their section and file under My documents, as "Your referrals · Used at your appointment" with a View button ("on get your results, this referral is irrelevant, put on doc"). My documents now shows when the referral is its only entry.
 
 5.788 The documents stacked in the status block sit 4px apart instead of 8 ("gap 4px"). Their buttons are full round and smaller: 34px tall, 15px padding, 13.5px text ("full rounded, smaller").
+
+5.789 Service page results renamed: the section title Results → "Debriefs", and its chips Everlab results → "Report" and Medical records → "Results" ("Results title → Debriefs; Everlab results → Report; Medical records → Results"). All under tabs keeps Debriefs above the tabs.
