@@ -12440,3 +12440,9 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.784 With the steps tweak set to Horizontal, the hero's progress is a card ("progress card header like this"). It is translucent and blurred, 22px round, and taps 2% smaller. A header row reads "Your progress" with the count at its right (1/4), then the bars and the step in hand in grey.
 
 5.785 The referrals row is an outlined card: a 1px border at 10%, 20px radius, 14px padding ("outlined card").
+
+5.786 Content gains "All under tabs" ("tweak this with the tab system"). As pills, every section becomes a tab: Referrals, Appointment, Instructions or Why we need it, then Documents and About this service. Results, when there are any, stays above.
+
+5.787 At the results step and once done, the referrals leave their section and file under My documents, as "Your referrals · Used at your appointment" with a View button ("on get your results, this referral is irrelevant, put on doc"). My documents now shows when the referral is its only entry.
+
+5.788 The documents stacked in the status block sit 4px apart instead of 8 ("gap 4px"). Their buttons are full round and smaller: 34px tall, 15px padding, 13.5px text ("full rounded, smaller").

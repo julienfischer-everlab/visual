@@ -6827,10 +6827,10 @@
   .svDocIc::after{content:"";position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:#f7641f;}
   .svDoc b{flex:1 1 auto;min-width:0;font-weight:400;color:#f4f4f4;}
   .svDocBtn{flex:none;border:0;font:inherit;font-weight:500;cursor:pointer;}
-  .svPend.hasDocs{flex-wrap:wrap;} .svDocs.inPend{flex:1 1 100%;display:grid;gap:8px;margin-top:4px;}
+  .svPend.hasDocs{flex-wrap:wrap;} .svDocs.inPend{flex:1 1 100%;display:grid;gap:4px;margin-top:4px;}   /* 8 -> 4 ("gap 4px") */
   .svDocs.inPend .svDoc{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.06);} .svDocs.inPend .svDocIc{width:40px;height:40px;} .svDocs.inPend .svDocIc svg{width:18px;height:18px;}
   .svDocs.inPend .svDoc:not(.done) .svDocIc{position:relative;} .svDocs.inPend .svDoc:not(.done) .svDocIc::after{content:"";position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#f78359;box-shadow:0 0 0 2px #2b201b;}   /* a dot on the ones still to do */ body.light .svDocs.inPend .svDoc:not(.done) .svDocIc::after{box-shadow:0 0 0 2px #fff;}
-  .svDocs.inPend .svDoc b{font-size:15px;} .svDocs.inPend .svDocBtn{height:40px;padding:0 18px;border-radius:10px;background:#fff;color:#111;font-size:14px;}
+  .svDocs.inPend .svDoc b{font-size:15px;} .svDocs.inPend .svDocBtn{height:34px;padding:0 15px;border-radius:999px;background:#fff;color:#111;font-size:13.5px;}   /* full round, smaller ("full rounded, smaller") */
   .svStepDoc .svDocBtn{position:absolute;right:0;top:50%;margin-top:-15px;height:30px;padding:0 12px;border-radius:8px;background:rgba(255,255,255,.1);color:#ececec;font-size:12.5px;} body.light .svStepDoc .svDocBtn{background:rgba(46,31,26,.08);color:#2e241c;}   /* a document as a step: its name and when, its button at the right */
   .tlDocs{margin:10px 0 2px 32px;} .tlDocs .svDocOk{font-size:12px;}
   .svDocB .svDoc{gap:18px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07);} .svDocB .svDoc:last-child{border-bottom:0;}
@@ -6846,7 +6846,7 @@
   .svCTabs.svCPill{gap:8px;box-shadow:none;margin:36px 0 22px;} .svCTabs.svCPill .svCTab{height:40px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.08);color:#ececec;font-size:14px;transition:background .18s ease,box-shadow .18s ease;}
   .svCTabs.svCPill .svCTab.on{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1.5px #fff;color:#fff;} .svCTabs.svCPill .svCTab.on::after{display:none;} .svCTabs.svCPill .svCTab:not(.on):hover{background:rgba(255,255,255,.12);}   /* the Results chips' look */
   :is(.svcMob, .svXsBody) .svCTabs.svCPill{gap:8px;margin:28px -16px 18px;padding:0 16px;} body.light .svCTabs.svCPill .svCTab{background:rgba(46,31,26,.08);color:#2e241c;} body.light .svCTabs.svCPill .svCTab.on{background:rgba(46,31,26,.12);box-shadow:inset 0 0 0 1.5px #2e241c;}
-  .svCPane > .svH2:first-child{display:none;} .svCPane > .svH2Apt:first-child{display:flex;justify-content:flex-end;margin:0 0 12px;font-size:0;} .svCPane > .svH2Apt:first-child .svAptGo{font-size:14px;}
+  .svCPane > .svH2:first-child{display:none;}
   .svCPane > .svAbout{margin-top:0;} .svCPane > .svAbout h3{display:none;} .svCHide{display:none !important;} .svCPane > .svRefRow{margin-top:0;}
   .svCAbout p{margin:0;font-size:15px;line-height:1.55;color:#c9c7c1;} .svCAbout .lkMeta{margin-top:16px;} .svCAbout .svLink{margin-top:16px;} body.light .svCAbout p{color:#4a3e37;}
   .svCEmpty{margin:0;padding:22px 0;font-size:14.5px;color:#8b8b86;} body.light .svCEmpty{color:#7a6f68;}   /* an empty tab says so */
@@ -9917,6 +9917,7 @@
             <option value="sec" selected>Sections</option>
             <option value="tabs">Under tabs</option>
             <option value="pills">Under pill tabs</option>
+            <option value="all">All under tabs</option>
           </select>
         </div>
         <!-- the locked service's modal: the banner header, or a simple centred one ("a tweak variation with this simple header") -->
@@ -23776,7 +23777,8 @@
         '<div class="svRow"><span class="k">' + IC.clin + 'Clinician</span><span class="v">' + escS(d.clin) + '</span></div>';
       if (x.sec === 'Your service') x.sec = key === 'dexa' ? 'DEXA Scan' : d.t;   /* the section named for the service itself, not "Your service" */
       const sec = (x.sec === 'Your appointment' ? '<h2 class="svH2 svH2Apt">' + escS(x.sec) + '</h2>' /* no CTA at its right ("remove right cta") */ : '<h2 class="svH2">' + escS(x.sec) + '</h2>')   /* the booking's own page ("add the appointment page") */ + (x.warn ? '<div class="svWarn">' + IC.warn + '<span>' + escS(x.warn) + '</span></div>' : '') + '<div class="svRows">' + rows + '</div>';
-      const ref = () => d.ref ? '<h2 class="svH2 svH2Ref">Referrals</h2><div class="svDocB svRefRow"><div class="svDoc svRep"><span class="svDocIc svRefDocIc">' + IC.ref + '</span><span class="svRepT"><b>Your referrals</b><small>Show them when you get to your appointment</small></span><button class="svDocView" type="button">Show</button></div></div>' : '';   /* a row like My documents' ("put this same style as My docs item") */
+      const lateR = state === 'done' || (at >= 0 && at < n && /result/i.test(d.steps[at][0]));   // at the results, the referral has done its job: it files under My documents ("on get your results, this referral is irrelevant, put on doc")
+      const ref = () => d.ref && !lateR ? '<h2 class="svH2 svH2Ref">Referrals</h2><div class="svDocB svRefRow"><div class="svDoc svRep"><span class="svDocIc svRefDocIc">' + IC.ref + '</span><span class="svRepT"><b>Your referrals</b><small>Show them when you get to your appointment</small></span><button class="svDocView" type="button">Show</button></div></div>' : '';   /* a row like My documents' ("put this same style as My docs item") */
       let instr = '<h2 class="svH2">Instructions</h2><div class="svBody"><ul class="svList">' + d.instr.map(i => '<li>' + escS(i) + '</li>').join('') + '</ul></div>';
       const about = '<div class="svAbout"><h3>About the service</h3><p>' + escS(d.about) + '</p><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
       const PASV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;   // a step that isn't the member's: its bar grey, as on the Timeline
@@ -23805,7 +23807,7 @@
             RL.map(([t]) => '<div class="mMedRow"><span class="nm">' + escS(t) + '</span>' + RDOC + '<i class="sep"></i><button class="view" type="button">View</button></div>').join('') + '</div></div>');
       /* every document done, signed or uploaded falls into My documents, in either layout; none done, no section ("everytime a doc is completed it falls into a section called My documents") */
       const DDONE = { sign: 'Signed', form: 'Completed', photo: 'Uploaded' }, dDone = DOCS !== 'off' && !/^(locked|later|suggested|purchase)/.test(state) ? dl.filter(([, t]) => DOCDONE.has(t)) : [];
-      const docBody = !dDone.length ? '' : '<h2 class="svH2">My documents</h2><div class="svDocB svMyDocs">' + dDone.map(([i, t]) => '<div class="svDoc svRep"><span class="svDocIc">' + DI[i] + '</span><span class="svRepT"><b>' + escS(t) + '</b><small class="svDocOkT">' + CHKS + DDONE[i] + '<span class="svDocAt">\u00b7 ' + docWhen(t) + '</span></small></span><button class="svDocView" type="button" data-view="' + escS(t) + '">View</button></div>').join('') + '</div>';
+      const docBody = !dDone.length && !(d.ref && lateR) ? '' : '<h2 class="svH2">My documents</h2><div class="svDocB svMyDocs">' + (d.ref && lateR ? '<div class="svDoc svRep"><span class="svDocIc svRefDocIc">' + IC.ref + '</span><span class="svRepT"><b>Your referrals</b><small>Used at your appointment</small></span><button class="svDocView" type="button">View</button></div>' : '') + dDone.map(([i, t]) => '<div class="svDoc svRep"><span class="svDocIc">' + DI[i] + '</span><span class="svRepT"><b>' + escS(t) + '</b><small class="svDocOkT">' + CHKS + DDONE[i] + '<span class="svDocAt">\u00b7 ' + docWhen(t) + '</span></small></span><button class="svDocView" type="button" data-view="' + escS(t) + '">View</button></div>').join('') + '</div>';
       // documents as steps come before the step in hand ("put the consent and questionnaire before the book state"): the first one still to do is the step in hand, its own button in the status block
       const DLINE = b => b === 'Review' ? 'Review and sign before your appointment' : b === 'Upload' ? 'Upload before your appointment' : 'Complete before your appointment';
       const docPend = DOCS === 'asSteps' && docsOn ? dl.filter(([, t]) => !DOCDONE.has(t)) : [];
@@ -23855,7 +23857,7 @@
       cur = { key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' ? dl.map(([, t]) => t) : [],   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n };   // what the steps sheet shows
     };
     /* Content under tabs: each section below the status block is a tab of its own, one shown at a time ("try a tweak: content under tabs, where all sections are under tab") */
-    let CTABS = false, CPILL = false, CTAB = '';   // CPILL: the tabs as pills ("all sections of the body organised under a tab pill system")
+    let CTABS = false, CPILL = false, CALL = false, CTAB = '';   // CALL: every section under the tabs, Results aside ("tweak this with the tab system")   // CPILL: the tabs as pills ("all sections of the body organised under a tab pill system")
     let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => Math.max(1, Math.min(3, parseInt(t.value, 10) || 1)); if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); /* documents per step, 1 to 3 ("select 1 2 3") */ if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
     let LKV = 'banner'; { const t = document.getElementById('stLkMod'); if (t){ LKV = t.value; t.addEventListener('change', () => { LKV = t.value; }); } }   // the locked modal's header: the banner, or the simple centred one
     const CTL = { 'Why we need this information': 'Why we need it', 'Your appointment': 'Appointment', 'My documents': 'Documents', 'About the service': 'About' };
@@ -23868,20 +23870,22 @@
         if (el.matches('.svPend, .svJr, .svHead, .svCTabs')){ g = null; return; }
         if (g) g.els.push(el); });
       // two tabs only, Documents and About this service; every other section stays a section above them ("tabs should only be Documents, About this service")
-      const sd = SVC[key] || {}, T = ['Documents', 'About this service'];
+      const MOV = CALL ? G.filter(x => x.t !== 'Results' && x.t !== 'Documents' && x.t !== 'About') : [];   // all under tabs: the page's sections too, each its own tab
+      const sd = SVC[key] || {}, T = MOV.map(x => x.t).concat(['Documents', 'About this service']);
       if (!T.includes(CTAB)) CTAB = T[0];
       const bar = document.createElement('div'); bar.className = 'svCTabs' + (CPILL ? ' svCPill' : ''); bar.setAttribute('role', 'tablist');
       bar.innerHTML = T.map(t => '<button class="svCTab' + (t === CTAB ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (t === CTAB) + '" data-ct="' + escS(t) + '">' + escS(t) + '</button>').join('');
       const hr = C.querySelector(':scope > hr.svRule'); C.insertBefore(bar, hr || null);
       let ref = bar;
       T.forEach(t => { const pn = document.createElement('div'); pn.className = 'svCPane'; pn.dataset.ct = t; pn.hidden = t !== CTAB;
-        if (t === 'Documents'){ const x = G.find(y => y.t === 'Documents'); if (x) x.els.forEach(e => pn.appendChild(e)); else pn.innerHTML = '<p class="svCEmpty">Documents you sign, fill in or upload show here.</p>'; }
+        const mv = MOV.find(y => y.t === t); if (mv){ mv.els.forEach(e => pn.appendChild(e)); }
+        else if (t === 'Documents'){ const x = G.find(y => y.t === 'Documents'); if (x) x.els.forEach(e => pn.appendChild(e)); else pn.innerHTML = '<p class="svCEmpty">Documents you sign, fill in or upload show here.</p>'; }
         else pn.innerHTML = '<div class="svCAbout"><p>' + escS(sd.about || '') + '</p><div class="lkMeta">' + (sd.dur ? '<div class="svRow"><span class="k">' + IC.dur + 'Duration</span><span class="v">' + sd.dur + '</span></div>' : '') + (sd.loc ? '<div class="svRow"><span class="k">' + IC.loc + 'Location</span><span class="v">' + sd.loc + '</span></div>' : '') + (sd.clin ? '<div class="svRow"><span class="k">' + IC.clin + 'Provider</span><span class="v">' + sd.clin + '</span></div>' : '') + '</div><button class="svLink" type="button">Read more ' + IC.read + '</button></div>';
         C.insertBefore(pn, ref.nextSibling); ref = pn; }); };
     document.addEventListener('click', e => { const b = e.target.closest('.svCTab'); if (!b) return; const C = b.closest('.svCTabs').parentElement; CTAB = b.dataset.ct;
       C.querySelectorAll(':scope > .svCTabs .svCTab').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', String(on)); });
       C.querySelectorAll(':scope > .svCPane').forEach(pn => { pn.hidden = pn.dataset.ct !== CTAB; if (!pn.hidden){ pn.classList.remove('svCIn'); void pn.offsetWidth; pn.classList.add('svCIn'); } }); });
-    { const t = document.getElementById('stSvTabs'); if (t){ CTABS = t.value !== 'sec'; CPILL = t.value === 'pills'; t.addEventListener('change', () => { CTABS = t.value !== 'sec'; CPILL = t.value === 'pills'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
+    { const t = document.getElementById('stSvTabs'); if (t){ CTABS = t.value !== 'sec'; CPILL = t.value !== 'tabs'; CALL = t.value === 'all'; t.addEventListener('change', () => { CTABS = t.value !== 'sec'; CPILL = t.value !== 'tabs'; CALL = t.value === 'all'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
     /* the modal's picture edge to edge, the title and the close over its top, and an avatar half on it (70%) and half on the body (30%) ("the image as an edge-to-edge banner, the header overlapping the top; an avatar overlapping the header and the body, 70 / 30, then the description") */
     const lkHeroSet = (sh, img, av) => { const pn = sh.querySelector('.tlShPanel'); let bt = pn.querySelector(':scope > .lkBanTop');
       if (!img){ sh.classList.remove('lkHero', 'lkHasAv'); if (bt) bt.remove(); return; }
