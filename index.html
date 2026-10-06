@@ -6702,8 +6702,9 @@
   .svPend.wait{background:#0c2241;} .svPend.wait .svPendTag{color:#bccfea;} .svPend.wait .svPendTag i{background:#bccfea;}   /* blue: fg #BCCFEA on #0C2241 */
   body.light .svPend.wait{background:#eef0fb;} body.light .svPend.wait .svPendTag{color:#5560b8;} body.light .svPend.wait .svPendTag i{background:#5560b8;}
   .svPendGrp{position:relative;} .svPendGrp > .svPend{position:relative;z-index:1;} .svPendGrp > .svPend:not(.wait):not(.ok):not(.info){background:#2d1f1a;}   /* opaque, so the card under it doesn't show through */
-  .kitStack{margin-top:-16px;padding:44px 24px 22px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(255,255,255,.04);} :is(.svcMob, .svXsBody) .kitStack{padding:42px 20px 20px;}   /* a light grey ground, 8 more on top ("light grey bg for sub steps + 8px top padding") */
-  .kitCard{flex:1 1 100%;} body.light .kitStack{border-color:rgba(46,31,26,.12);background:rgba(46,31,26,.03);} body.light .svPendGrp > .svPend:not(.wait):not(.ok):not(.info){background:#fbe9df;}
+  .kitStack{margin-top:-16px;padding:60px 24px 38px;border:1px solid transparent;border-radius:16px;background:rgba(255,255,255,.04);} :is(.svcMob, .svXsBody) .kitStack{padding:58px 20px 36px;}   /* +16 top and bottom ("footer padding top bottom + 16px") */
+  html.kitOutline .kitStack{background:none;border-color:rgba(255,255,255,.1);}   /* the Footer style tweak: Bordered (outlined, no ground) or Grey (#fff at 4%) */   /* a light grey ground, 8 more on top ("light grey bg for sub steps + 8px top padding") */
+  .kitCard{flex:1 1 100%;} body.light .kitStack{background:rgba(46,31,26,.03);} html.kitOutline body.light .kitStack{background:none;border-color:rgba(46,31,26,.12);} body.light .svPendGrp > .svPend:not(.wait):not(.ok):not(.info){background:#fbe9df;}
   .kitHd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;} .kitHd b{font-size:15px;font-weight:500;color:#f4f4f4;} .kitHd span{font-size:13.5px;color:#8b8b86;}
   .kitL{list-style:none;margin:0;padding:0;display:grid;gap:2px;} .kitL li{display:flex;align-items:center;gap:12px;min-height:40px;font-size:15px;color:#7d7c78;}
   .kitL .kitT{flex:1 1 auto;min-width:0;} .kitL em{font-style:normal;font-size:13px;color:#8b8b86;white-space:nowrap;} .kitL em.now{color:#ececec;}
@@ -10019,6 +10020,14 @@
             <option value="list" selected>To-do list</option>
             <option value="stepper">Stepper</option>
             <option value="bar">Linear bar</option>
+          </select>
+        </div>
+        <!-- the sub steps' card under the status block: outlined, or a grey ground ("tweak footer style: bordered, outlined no bg; bg grey #fff opacity 4%") -->
+        <div class="tkRow">
+          <span class="lbl">Footer style</span>
+          <select id="stKitFoot" class="tkSegSel" aria-label="The sub steps card's style">
+            <option value="grey" selected>Grey</option>
+            <option value="outline">Bordered</option>
           </select>
         </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
@@ -25004,7 +25013,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -26972,6 +26981,7 @@
   if (!document.getElementById('stInsCond')) document.documentElement.classList.add('insCond');   // the condensed cards, the tweak gone ("remove that")
   { const t = document.getElementById('stInsCond'); if (t){ const on = () => { document.documentElement.classList.toggle('insCond', t.value !== 'full'); const c = document.querySelector('#phone2 .ovcar'); if (c) c.scrollLeft = 0; };
       t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stKitFoot'); if (t){ const on = () => document.documentElement.classList.toggle('kitOutline', t.value === 'outline'); t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroImg'); if (t){ const on = () => document.documentElement.classList.toggle('heroThumb', t.value === 'thumb'); t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stProfStyle'); if (t){ const on = () => { document.documentElement.classList.toggle('profTiles', t.value === 'tiles'); document.documentElement.classList.toggle('profStack', t.value === 'stack'); }; t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroBg'); if (t){ const on = () => document.documentElement.classList.toggle('heroEarth', t.value !== 'neutral');   /* Earth, the default ("Neutral / Earth #252522, Earth the default") */ t.addEventListener('change', on); on(); } }
@@ -27026,7 +27036,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stSubSt: 'list', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stSubSt: 'list', stKitFoot: 'grey', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };

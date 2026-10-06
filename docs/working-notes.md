@@ -12539,3 +12539,7 @@ The select follows the page as it changes. The service page is now the only layo
 5.812 The sub steps card gets a light grey ground (4% white, keeping its outline) and 8px more padding on top, 36 → 44 on the desk and 34 → 42 on the phone ("light grey bg for sub steps + 8px top padding").
 
 5.813 The complete green is #42BE65 ("complete fg 42BE65"), across the microbiome system: the kit's ticks, the stepper's done dots and segments, the linear bar's fill, the right panel's done bars, and the Completed status block's tag and dot.
+
+5.814 The sub steps footer card has 16px more padding top and bottom: 60 / 38 on the desk, 58 / 36 on the phone ("footer padding top bottom + 16px"). New tweak, Footer style ("tweak footer style"):
+- Grey (the default) is #fff at 4% with no border.
+- Bordered is a 1px outline at 10% with no ground.
