@@ -12784,3 +12784,11 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.892 The phone hero's Up next card: background #fff 4% (was 2%).
 
 5.893 The progress panel's cards, on the desk's right column and in the phone's sheet: 16px inside, 20px round. That covers the service's own card with its steps, the other services' cards and the group's list. The dashed outline drawn on the other cards follows the 20px corner (rx 14 -> 20).
+
+5.894 The service page's own scroll stops at its foot (overscroll-behavior: contain). In XS, the Overview under it no longer scrolls on with it: the .dash is locked while a service is open, and reset to the top on opening ("fix this unnecessary scroll").
+
+5.895 6px between the progress bars (was 4px).
+
+5.896 The phone and XS hero title is 26px (was 22px).
+
+5.897 Under the title, a service that has begun always shows when it started: its own start date, else "Started on 20 February 2026". It no longer shows its state's line (Requested 11 days ago, a booking date, Report expected...). A service not begun (locked, later, suggested, to buy, to claim) keeps its own line.
