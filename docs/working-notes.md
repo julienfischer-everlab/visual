@@ -12657,3 +12657,12 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 - Once the hero title has half gone under the top bar, or under the sheet, it fades into the bar between back and more. It is one line, with an ellipsis (#phone2.svcTitled .svmNavT).
 
 5.848 Two MRI steps, "With the radiologist" and "Your doctor is reviewing", now show the sub step timeline above the status block, under "Whole Body MRI & CT Report". It is the same stepper as the microbiome kit, with four sub steps: Scan done, Radiologist report, Doctor review, and Report and video ready. The step in hand is blue, in the waiting colour. On the phone, only that step is named, with its timing.
+
+5.849 The status block now uses one layout through the whole journey (desktop):
+- The text always starts 24px from the top and left.
+- The buttons sit in a fixed 232px column at the right, centred on the text, so the text wraps at the same width on every step.
+- Every button is 44px high; the outlined secondary was 40px.
+- The long secondary label "Can't find a time? We'll book it for you" is now "Book it for me", to fit the column.
+- On the phone it was already consistent: 24px padding, 20px from text to buttons, 10px between stacked buttons.
+
+5.850 The Your progress timeline card has 24px padding left and right (was 20px).
