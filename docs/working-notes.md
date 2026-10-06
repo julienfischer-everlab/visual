@@ -12454,3 +12454,5 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.791 The services in the phone's ask sheet take the look of the Overview's services row ("keep same visual in bottom menu sheet for actions"): 64px cards in two columns, the name at the left and the render on a grey disc at the right. There are six: Concierge, Telehealth, Check Symptoms (its glyph on the disc, having no render), Med Certs, Treatments and Pathology.
 
 5.792 The services' visuals are 8px smaller, the grey disc 40 → 32px and the render inside it 28 → 22, in the Overview's condensed row and in the ask sheet's grid alike ("visuals 8px smaller").
+
+5.793 The Health profile placement tweak is renamed in the user's words: "Health profile card", with Dedicated section / Insights carousel ("health profile card tweak: in insight carousel, in dedicated section"). It sits next to Profile style in the Overview group, and its behaviour is unchanged.
