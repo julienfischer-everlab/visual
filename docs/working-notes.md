@@ -12942,3 +12942,5 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 5.957 Phone and XS: the status card's buttons are 56px tall, 16px text (were 44px).
 
 5.958 Progress bars (.svJrBars): 6px tall, 2px corners, 4px apart (were 5px, 3px, 6px).
+
+5.959 Fix: the microbiome questionnaire, done, fell back to the generic done state ("Your results are ready.", a blood panel debrief and its modal). A questionnaire has no results. Done, it reads Completed, "Your questionnaire is complete", "Your answers are with your clinician...", with My documents listing it and no debrief or modal (repBody excludes gutq).
