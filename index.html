@@ -10126,14 +10126,6 @@
             <option value="off" selected>Off</option>
           </select>
         </div>
-        <!-- the sub steps above the status card, or mini at its right as on the phone ("mini sub steps on desktop, right side of the status card") -->
-        <div class="tkRow">
-          <span class="lbl">Sub steps placement</span>
-          <select id="stKitPl" class="tkSegSel" aria-label="Where the sub steps sit">
-            <option value="top" selected>Header</option>
-            <option value="mini">Mini right</option>
-          </select>
-        </div>
         <!-- the sub steps' card under the status block: outlined, or a grey ground ("tweak footer style: bordered, outlined no bg; bg grey #fff opacity 4%") -->
         <div class="tkRow">
           <span class="lbl">Footer style</span>
@@ -10160,7 +10152,7 @@
         </div>
         <!-- the phone and XS body: a rounded card over the hero, or no card, one ground with the hero that darkens to #0f0f0f as the hero goes, as the Insights page ("tweak body style: body card that overlaps the hero; body no card, same hero header bg that becomes 0F0F0F on scroll progressively") -->
         <div class="tkRow">
-          <span class="lbl">Body style</span>
+          <span class="lbl">Mobile body style</span>
           <select id="stBodySty" class="tkSegSel" aria-label="The phone body's style">
             <option value="card" selected>Card</option>
             <option value="flat">No card</option>
@@ -24189,7 +24181,7 @@
     let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => t.value === 'on' ? 99 : 1; if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   /* on: every document in one first step, Required actions, their cards stacked in the status block ("replace by multiple actions step on / off") */
     let PPL = 'hero'; { const t = document.getElementById('stProgPl'); if (t){ PPL = t.value; t.addEventListener('change', () => { PPL = t.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // where the phone's main step block goes ("tweak progress placement: in hero header, in status block")
     let UPN = false; { const t = document.getElementById('stUpNext'); if (t){ UPN = t.value === 'on'; t.addEventListener('change', () => { UPN = t.value === 'on'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // the Up next footer under the phone's progress card, off by default
-    let KPL = 'top'; { const t = document.getElementById('stKitPl'); if (t){ KPL = t.value; t.addEventListener('change', () => { KPL = t.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // the sub steps above the status card as its header, or mini at its right ("create a tweak: mini sub steps, same as mobile, on desktop, on the right side of the status card")
+    const KPL = 'top';   // the Sub steps placement tweak is gone ("remove"): the one card, the timeline under the status   // the sub steps above the status card as its header, or mini at its right ("create a tweak: mini sub steps, same as mobile, on desktop, on the right side of the status card")
     let KITV = 'stepper';   // the stepper, as the design; the Sub steps tweak is gone ("remove stepper tweak, keep as the design")
     let LKV = 'banner'; { const t = document.getElementById('stLkMod'); if (t){ LKV = t.value; t.addEventListener('change', () => { LKV = t.value; }); } }   // the locked modal's header: the banner, or the simple centred one
     const CTL = { 'Why we need this information': 'Why we need it', 'Your appointment': 'Appointment', 'My documents': 'Documents', 'About the service': 'About' };
@@ -25275,7 +25267,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stKitPl' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stKitMono' || sel.id === 'stProgPl' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stKitMono' || sel.id === 'stProgPl' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -27301,7 +27293,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stKitPl: 'top', stBodySty: 'card', stUpNext: 'off', stWrapSty: 'outline', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stUpNext: 'off', stWrapSty: 'outline', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
