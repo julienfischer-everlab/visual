@@ -12498,3 +12498,8 @@ The member starts at Kit being prepared, on the page and in the Timeline. The ph
 5.801 With Docs in one step at 2 or 3, the status block always holds that many cards, one per document of the step in hand (a questionnaire, a consent, an ID…) ("this should contain X cards that relate to the X docs"). A document done stays in the stack as a ticked card, no longer leaving it, until the whole step is done. Before, the second half of a step showed a lone Privacy Consent once Photo ID was in.
 
 5.802 The Journey module tweak is gone ("remove this tweak"). The service page keeps Right column merged, its default (JR 'rightm' in the script), and the listener skips the missing select.
+
+5.803 Stepper:
+- The circles are 4px smaller (22 → 18px).
+- The track is cut into segments, one between each two circles and 4px clear of both. A segment is green once the step before it is done ("4px gap between circles and lines").
+- The step in hand ripples, blue or orange, every 1.8s ("ripple effect on the active one"), and holds a still ring when reduced motion is set.
