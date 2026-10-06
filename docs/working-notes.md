@@ -12872,3 +12872,7 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.932 No info icon on the desk's sub steps labels (every step is named there); the phone and XS keep it beside the centred step.
 
 5.933 Sub steps timeline: the line between two steps done is #fff (was #fff 55% in white & grey, green in coloured).
+
+5.934 A main step with sub steps (filled to them, .svStep.fill) has no loading light on its bar: the fill shows the progress, the sub steps' timeline keeps the loading line.
+
+5.935 Sub steps: the step in hand, when it's the member's to act, takes the status card's own peach #f5be8c for its dot and ripple (was #f78359).
