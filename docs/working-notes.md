@@ -12759,3 +12759,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 - Switching the tweak repaints the page (_svc.repaint), so XS's hero resets its top.
 
 5.882 Cards are 24px round (32 -> 24, "card radius 24px"): the service page's cards, its sheets, the body card's top and the Timeline's step card.
+
+5.883 The desk's Your progress card (the right panel's service card with its steps, and the group's list) has 20px padding. The phone keeps 24px.
