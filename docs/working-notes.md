@@ -12448,3 +12448,7 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.788 The documents stacked in the status block sit 4px apart instead of 8 ("gap 4px"). Their buttons are full round and smaller: 34px tall, 15px padding, 13.5px text ("full rounded, smaller").
 
 5.789 Service page results renamed: the section title Results → "Debriefs", and its chips Everlab results → "Report" and Medical records → "Results" ("Results title → Debriefs; Everlab results → Report; Medical records → Results"). All under tabs keeps Debriefs above the tabs.
+
+5.790 Health profile gains a third style, Stacked, now the default ("one section and stack 3 items inside"). The three to-dos sit in one card, one under the other, each with the 3 columns' icon tile at its left, its title and line, and its button. A done one gets a green tick on its tile's corner and a struck title.
+
+5.791 The services in the phone's ask sheet take the look of the Overview's services row ("keep same visual in bottom menu sheet for actions"): 64px cards in two columns, the name at the left and the render on a grey disc at the right. There are six: Concierge, Telehealth, Check Symptoms (its glyph on the disc, having no render), Med Certs, Treatments and Pathology.

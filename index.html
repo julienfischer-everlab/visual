@@ -2602,6 +2602,9 @@
     transition:background .16s ease;
   }
   .aiTile.wide{grid-column:span 3;}
+  .aiBento.aiSvcGrid{grid-template-columns:1fr 1fr;} .aiTile.aiSvc{grid-column:auto;min-height:0;height:64px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;padding:0 12px 0 16px;border-radius:18px;font-size:14px;}
+  .aiSvcT{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .aiSvcVis{flex:none;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);color:#ececec;} .aiSvcVis img{width:28px;height:28px;object-fit:contain;filter:saturate(.8);} .aiSvcVis svg{width:18px;height:18px;}
+  body.light .aiSvcVis{background:rgba(46,31,26,.08);color:#2e1f1a;}
   .aiTile:hover{background:rgba(255,255,255,.08);}
   .aiIc{display:flex;width:26px;height:26px;color:#ececec;}
   .aiIc svg{width:26px;height:26px;}
@@ -7923,6 +7926,13 @@
   html.profTiles:not(.profIns) #phone2 .ovProfRow.done .ovProfBtn{display:flex;visibility:hidden;}
   html.profTiles body.light #phone2 .ovProfRow{background:#fdfaf3;} html.profTiles body.light #phone2 .ovProfIc{background:rgba(46,31,26,.08);color:#2e1f1a;} html.profTiles body.light #phone2 .ovProfT2{color:#2e1f1a;}
   .ovProf{margin:0 13px;padding:4px 16px;border-radius:20px;background:rgba(255,255,255,.06);}
+  /* Stacked: the three in one card, one under the other, each with the 3 columns' icon tile; done, a tick on the tile's corner and the title struck ("one section and stack the 3 items inside") */
+  html.profStack:not(.profIns) #phone2 .ovProf{padding:6px 16px;border-radius:24px;background:rgba(255,255,255,.04);}
+  html.profStack:not(.profIns) #phone2 .ovProfRow{position:relative;gap:14px;padding:14px 0;}
+  html.profStack:not(.profIns) #phone2 .ovProfIc{display:flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.07);color:#ececec;} html.profStack:not(.profIns) #phone2 .ovProfIc svg{width:20px;height:20px;}
+  html.profStack:not(.profIns) #phone2 .ovProfCk{position:absolute;left:30px;top:8px;z-index:1;width:20px;height:20px;box-shadow:0 0 0 2px #1a1a19;} html.profStack:not(.profIns) #phone2 .ovProfCk svg{width:11px;height:11px;}
+  html.profStack:not(.profIns) #phone2 .ovProfRow:not(.done) .ovProfCk{display:none;}
+  html.profStack body.light #phone2 .ovProf{background:#fdfaf3;} html.profStack body.light #phone2 .ovProfIc{background:rgba(46,31,26,.07);color:#2e1f1a;} html.profStack body.light #phone2 .ovProfCk{box-shadow:0 0 0 2px #fdfaf3;}
   .ovProfRow{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07);} .ovProfRow:last-child{border-bottom:0;}
   /* a to-do ("this should look more like a to do: circle left and strikethrough when the task is completed") */
   .ovProfCk{flex:none;width:20px;height:20px;padding:0;border:0;border-radius:50%;background:none;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);color:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .18s ease,box-shadow .18s ease,color .18s ease;} .ovProfCk svg{width:11px;height:11px;}
@@ -10031,6 +10041,7 @@
           <select id="stProfStyle" class="tkSegSel" aria-label="How Health profile is laid out">
             <option value="list" selected>List</option>
             <option value="tiles">3 columns</option>
+            <option value="stack">Stacked</option>
           </select>
         </div>
         <!-- Health profile: its own section, or the first card of the Insights carousel at 70% ("a version where the health profile card is part of the insights") -->
@@ -18933,6 +18944,7 @@
       { l: 'Treatments', img: 'treat', d: 'Plans and prescriptions, managed' },
       { l: 'Pathology', img: 'path', d: 'Book tests at a clinic near you' }
     ];
+    const SHEET_SVC = [SVC_ROW[0], SVC_ROW[1], { l: 'Check Symptoms', ic: 'symp' }, SVC_ROW[2], SVC_ROW[3], SVC_ROW[4]];   // the sheet's six: the row's five and Check Symptoms, its glyph on the disc
     // one markup for both dresses: the visual (the render) and the text (the
     // title, and in Large a line of support); the Services tweak (body.svcLg)
     // lays them out
@@ -18981,8 +18993,9 @@
           // whatever the content needs to nothing
           '<div class="aiServices"><div class="aiServicesIn">' +
             '<div class="aiEyebrow">Services</div>' +
-            '<div class="aiBento">' + SERVICES.map(s =>
-              '<button class="aiTile' + (s.wide ? ' wide' : '') + '" type="button"><span class="aiIc">' + IC[s.ic] + '</span><span>' + s.l + '</span></button>').join('') + '</div>' +
+            // the same cards as the Overview's services row: the name at the left, the render on a grey disc at the right ("keep same visual in bottom menu sheet for actions")
+            '<div class="aiBento aiSvcGrid">' + SHEET_SVC.map(s =>
+              '<button class="aiTile aiSvc" type="button"><span class="aiSvcT">' + s.l + '</span><span class="aiSvcVis">' + (s.img ? '<img src="' + SVC_IMG[s.img] + '" alt="" width="360" height="360">' : IC[s.ic]) + '</span></button>').join('') + '</div>' +
             '<div class="shHome" aria-hidden="true"></div>' +
           '</div></div>' +
         '</div>' +
@@ -26892,7 +26905,7 @@
   { const t = document.getElementById('stInsCond'); if (t){ const on = () => { document.documentElement.classList.toggle('insCond', t.value !== 'full'); const c = document.querySelector('#phone2 .ovcar'); if (c) c.scrollLeft = 0; };
       t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroImg'); if (t){ const on = () => document.documentElement.classList.toggle('heroThumb', t.value === 'thumb'); t.addEventListener('change', on); on(); } }
-  { const t = document.getElementById('stProfStyle'); if (t){ const on = () => document.documentElement.classList.toggle('profTiles', t.value === 'tiles'); t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stProfStyle'); if (t){ const on = () => { document.documentElement.classList.toggle('profTiles', t.value === 'tiles'); document.documentElement.classList.toggle('profStack', t.value === 'stack'); }; t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroBg'); if (t){ const on = () => document.documentElement.classList.toggle('heroEarth', t.value !== 'neutral');   /* Earth, the default ("Neutral / Earth #252522, Earth the default") */ t.addEventListener('change', on); on(); } }
   // Health profile in the Insights carousel: the to-do list moves into a card of its own, first in the row, 70% of its width
   { const t = document.getElementById('stProfIn');
@@ -26945,7 +26958,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'list', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
