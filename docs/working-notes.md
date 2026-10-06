@@ -12728,3 +12728,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.868 Active step in the progress lists (the service's steps, and the group's services): title medium 16px #fff, its line regular 14px #fff. Light mode uses the dark ink.
 
 5.869 2px between the step bars, was 4px ("reduce bar gap by 2px").
+
+5.870 Closed sheets and modals are now hidden outright (visibility, after their slide-out of .34s), not only pushed below their host. When the host ended inside the device frame, an empty document sheet showed at the foot of the phone page ("fix that on mobile").
