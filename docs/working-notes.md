@@ -12880,3 +12880,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.936 The sub steps card's title sits 4px higher (12px over it, was 16px).
 
 5.937 Fix: the filled main step's track kept the waiting loading light, because .svStep.on.pas outranked .svStep.fill. The rule now names .svStep.fill.on.pas too, so the unfilled part is the next steps' #4d4d4d ("incomplete colour should be the same as the next step colour").
+
+5.938 The service page's tweaks sit in two cards ("one card per group"): General (everything else) and Sub steps (colour, footer style, card with sub steps). Both are data-svc, shown on the service page only.
