@@ -12972,3 +12972,6 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 - Arrow keys ← → step back and forth (same as the arrows; ignored while typing).
 - Report in status ON, results in: "Results" heading, no tabs, then the "Your report and video will appear here" card.
 - The kit's report ready stage is the end: the next arrow is disabled.
+
+5.968 Report in status ON, completed: "See report" sits under the text, and the report illustration (assets/overview/report-slot.svg) is at the card's right on the desk. The phone and XS keep the full-width button with no illustration. The SVG came in at 17.9 MB from two embedded photos; they're downscaled to the size they're drawn at (39 KB).
+Other services' cards in the progress list (e.g. Diagnostics Review) lose the dashed outline and get the same plain grey (#181818) as the page's own card. Locked cards keep their pattern.
