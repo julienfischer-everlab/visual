@@ -12960,3 +12960,5 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 5.964 Fix: the square-corner rule for document rows caught the Referrals card on the phone; it's now limited to My documents.
 
 5.965 In the timeline, a main step with sub steps reads only the sub step in hand ("Confirm your address"), without "· 1 of 5"; its bar fill and the sub steps show the count.
+
+5.966 Sub timeline "In status card": the timeline sits below all the card's content, full width under a divider. On the desk the text and a single button keep their row; two buttons stay stacked under the text; on the phone it's text, buttons, then timeline.
