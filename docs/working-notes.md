@@ -12886,3 +12886,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.939 The phone and XS hero bars, as the desk's list: the service in hand fills its bar as far as its sub steps (e.g. 40% at 2 of 5, 80% at 4 of 5), in its status colour. The rest is the next bars' #4d4d4d, with no loading light.
 
 5.940 The sub steps' ripple leaves the dot in the dot's own colour at full strength, then fades as it spreads to 10px (was 50% at the start, reading as a dark halo).
+
+5.941 The demo's step arrows cross services in a group. At a service's first step, previous opens the service before it (the kit's Confirm your address -> Gut Health Questionnaire, done). From a done or last step, next opens the one after it. The arrows only disable at the group's ends. A step from the phone's sheet closes the sheet first.
