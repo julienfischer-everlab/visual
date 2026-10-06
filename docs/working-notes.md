@@ -12674,3 +12674,8 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 5.853 The desktop service header (picture, title group, more button) is centred vertically.
 
 5.854 The phone service page's body ends 40px under its last section. It was the dock's height plus 40px, but this screen has no dock.
+
+5.855 On the phone, the hero's Your progress card opened a sheet listing the demo's raw stages: 15 for the MRI. The sheet now shows the same timeline as the desktop's right panel (jrX(false)):
+- the MRI and the microbiome: their services;
+- DEXA: its steps, then Up next.
+It sits right under the sheet's title.

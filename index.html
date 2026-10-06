@@ -6759,6 +6759,7 @@
   body.light .kitStep li::after, body.light .kitBar{background:rgba(46,31,26,.1);} body.light .kitDot{background:#e3ddd3;} body.light .kitBarT b, body.light .kitStep li.cur{color:#2e1f1a;}
   /* the group's services as the steps of the right panel: a bar coloured by who acts, the name, a line */
   .svGrp .svProgHead{display:flex;align-items:center;justify-content:space-between;} .svGrpN{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:400;color:rgba(255,255,255,.56);}
+  .tlShBody > .svJr{margin-top:0 !important;}   /* in the phone's sheet, right under its title */
   .svGrpL{list-style:none;margin:0;padding:18px 24px;border-radius:20px;background:rgba(255,255,255,.06);display:grid;gap:18px;}
   .svGrpL li{display:flex;gap:16px;min-height:22px;cursor:default;}   /* steps to read, not links ("we shouldn't be able to click on a step") */ .svGrpL li > div{min-width:0;}
   .svGrpBar{flex:none;position:relative;width:4px;border-radius:2px;background:#4d4d4d;overflow:hidden;} .svGrpL li.on .svGrpBar{background:#42be65;}
@@ -24057,7 +24058,7 @@
       { const fin = state === 'done' || at >= n; if (desk) desk.classList.toggle('svFin', fin); if (mob) mob.classList.toggle('svFin', fin); }   // every step done: nothing dimmed ("exception: when all steps are completed, all steps at 100%")
       if (CTABS){ if (desk) tabify(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain'), key); if (mob) tabify(mob.querySelector('.svmBody'), key); }
       { const pk = document.getElementById('stSvcPick'); if (pk && [...pk.options].some(op => op.value === key)) pk.value = key; }
-      cur = { key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' ? dl.map(([, t]) => t) : [],   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n };   // what the steps sheet shows
+      cur = { key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' ? dl.map(([, t]) => t) : [],   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n, shGrp: jrX(false) }   /* the MRI and the microbiome: the sheet shows their services, as the desktop's panel, not the demo's stages ("that should reflect the desktop timeline on the right side") */;   // what the steps sheet shows
     };
     /* Content under tabs: each section below the status block is a tab of its own, one shown at a time ("try a tweak: content under tabs, where all sections are under tab") */
     let CTABS = false, CPILL = false, CALL = false, CTAB = '';   // CALL: every section under the tabs, Results aside ("tweak this with the tab system")   // CPILL: the tabs as pills ("all sections of the body organised under a tab pill system")
@@ -24282,7 +24283,8 @@
     document.addEventListener('click', e => { const li = e.target.closest('.svJrL > li.main.hz, .svmHz'); if (!li || (e.target.closest('button') && !e.target.closest('.svmHz'))) return;
       const sh = li.closest('#svcMob') ? shM : shD; if (!sh) return; e.stopPropagation();
       sh.querySelector('.tlShHead b').textContent = cur.shT || ''; sh.querySelector('.tlShChip').textContent = cur.shChip || '';
-      sh.querySelector('.tlShBody').innerHTML = '<div class="svJrSteps svShSteps">' + (cur.shSteps || '') + '</div>'; sh.querySelector('.tlShBody').scrollTop = 0;
+      if (cur.shGrp){ const t = document.createElement('div'); t.innerHTML = cur.shGrp; const hd = t.querySelector('.svProgHead'), n = hd && hd.querySelector('.svGrpN'); sh.querySelector('.tlShChip').textContent = n ? n.firstChild.textContent : ''; if (hd) hd.remove(); sh.querySelector('.tlShBody').innerHTML = t.innerHTML; }
+      else sh.querySelector('.tlShBody').innerHTML = '<div class="svJrSteps svShSteps">' + (cur.shSteps || '') + '</div>'; sh.querySelector('.tlShBody').scrollTop = 0;
       sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); }, true);
     addEventListener('keydown', e => { if (e.key === 'Escape') shutAll(); });
     document.addEventListener('everlab:mode', shutAll);
