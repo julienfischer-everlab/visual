@@ -12748,3 +12748,12 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.877 The XS breakpoint is 393px wide, the reference phone (was 402): the forced frame and --bpW.
 
 5.878 The phone's Your progress card has 24px padding (was 18px), and the Up next card under it 24px on the sides and bottom.
+
+5.879 The step in hand always takes the status block's colour: Pending action orange, In progress blue, Confirmed/Completed green, info grey (tc(), from x.tone). It applies to the phone hero's bars, the desk's step list and the microbiome group's own row. It no longer guesses from the step's name (PASV).
+
+5.880 Cards are 32px round (was 12): every card on the service page and in its sheets, the body card's top, and the Timeline's step card with them.
+
+5.881 Body style No card:
+- 24px less above the title (phone 128px under the bar, XS 64px from fit()), 40px under the title group (was 24), and nothing under the progress card (was 16).
+- The screen sits on #0f0f0f throughout. The hero's grey ground and its gradient run into the same #0f0f0f, no longer a grey that darkens on scroll.
+- Switching the tweak repaints the page (_svc.repaint), so XS's hero resets its top.
