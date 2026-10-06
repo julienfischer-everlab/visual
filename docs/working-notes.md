@@ -12456,3 +12456,8 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.792 The services' visuals are 8px smaller, the grey disc 40 → 32px and the render inside it 28 → 22, in the Overview's condensed row and in the ask sheet's grid alike ("visuals 8px smaller").
 
 5.793 The Health profile placement tweak is renamed in the user's words: "Health profile card", with Dedicated section / Insights carousel ("health profile card tweak: in insight carousel, in dedicated section"). It sits next to Profile style in the Overview group, and its behaviour is unchanged.
+
+5.794 With the hero's progress card on, the hero gets a grey ground (#1c1c1b) under it ("the cover always sits on a grey background that takes 70% of the Your progress card, then fades into the hero img"):
+- The ground is solid from the hero's foot up to 70% of the card's height, measured on each paint.
+- It then fades over 150px into the picture.
+- The card itself is a flat 7% white on that ground.

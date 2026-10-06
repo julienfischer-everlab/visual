@@ -6651,7 +6651,10 @@
   .svJrHzT{margin-top:10px;font-size:14px;color:#8b8b86;}
   .svmHz{display:block;width:100%;box-sizing:border-box;margin:24px 0 0;padding:18px 18px 16px;border:0;border-radius:22px;background:rgba(40,40,38,.72);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);font:inherit;text-align:left;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .14s ease;} .svmHz:active{transform:scale(.98);}
   .svmHzH{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;} .svmHzH b{font-size:17px;font-weight:500;color:#fff;} .svmHzH span{font-size:14px;color:rgba(255,255,255,.55);}   /* the progress as a card in the hero, its title and count ("progress card header like this") */
-  .svmHz .svJrHzT{margin-top:12px;font-size:14px;} .svmHz .svJrBars i{background:rgba(255,255,255,.22);} .svmHz .svJrBars i.on{background:#9cc088;} .svmHz .svJrBars i.cur{background:#f78359;} .svmHz .svJrBars i.cur.pas{background:rgba(255,255,255,.7);}
+  .svmHz .svJrHzT{margin-top:12px;font-size:14px;}
+  .svmHero.hasHz::after{opacity:1;background:linear-gradient(0deg,#1c1c1b 0,#1c1c1b calc(48px + var(--hzH, 120px) * .7),rgba(28,28,27,0) calc(48px + var(--hzH, 120px) * .7 + 150px));}   /* the grey ground under the card, fading up into the picture */
+  .svmHero.hasHz .svmHz{background:rgba(255,255,255,.07);-webkit-backdrop-filter:none;backdrop-filter:none;}
+  body.light .svmHero.hasHz::after{background:linear-gradient(0deg,#efe9df 0,#efe9df calc(48px + var(--hzH, 120px) * .7),rgba(239,233,223,0) calc(48px + var(--hzH, 120px) * .7 + 150px));} .svmHz .svJrBars i{background:rgba(255,255,255,.22);} .svmHz .svJrBars i.on{background:#9cc088;} .svmHz .svJrBars i.cur{background:#f78359;} .svmHz .svJrBars i.cur.pas{background:rgba(255,255,255,.7);}
   .svmHz .svJrHzT{color:rgba(255,255,255,.75);}   /* the progress in the hero, on the picture: lighter tracks */
   .svJrL > li.one.hz{display:none;}   /* a single service: its bars are in the hero now */
   .tlStepHz{display:flex;align-items:center;gap:16px;margin:4px 0;} .tlStepHz .svJrBars{flex:0 1 240px;min-width:96px;} .tlStepHz .svJrBars i{height:5px;}   /* the bars at most 240, the step in hand to their right ("max width for the increment timeline, label on the right") */
@@ -23846,7 +23849,10 @@
       const title = o && o.t || d.t, start = o && o.st || x.st;
       const lkH = state === 'locked' || state === 'later' || state === 'suggested' || state === 'purchase' || state === 'claim';
       const heroHz = HZ && !lkH ? '<button class="svmHz" type="button" aria-label="Show the steps"><div class="svmHzH"><b>Your progress</b><span>' + (at >= n ? n : Math.max(0, at + 1)) + '/' + n + '</span></div><div class="svJrBars">' + d.steps.map((st, j) => '<i class="' + (at >= n || (at >= 0 && j < at) ? 'on' : j === at ? 'cur' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"></i>').join('') + '</div><div class="svJrHzT">' + escS(at < 0 ? 'Not started' : at >= n ? 'All done' : d.steps[at][0]) + '</div></button>' : '';   // the bars and the step in hand in the hero, under the title group ("replace that inside the hero header, below the title group")
-      const heroH = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div>' + heroHz;   // no progress card in the phone's hero ("remove this on mobile"): the steps are listed in the sheet
+      const heroH = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div>' + heroHz;
+      // the card on a grey ground: solid up to 70% of the card, then fading into the picture ("the cover always sits on a grey background that takes 70% of the Your progress card, then fades into the header hero img")
+      const hzGround = hh => { if (!hh) return; const c = hh.querySelector('.svmHz'); hh.classList.toggle('hasHz', !!c); if (c) requestAnimationFrame(() => hh.style.setProperty('--hzH', c.offsetHeight + 'px')); };
+      requestAnimationFrame(() => hzGround(desk && desk.querySelector('.svXsHero')));   // no progress card in the phone's hero ("remove this on mobile"): the steps are listed in the sheet
       if (desk){
         PH = document.body.dataset.bp === 'xs';
         const m = desk.querySelector('.svMain'), a = desk.querySelector('.svAside');
@@ -23863,7 +23869,7 @@
         PH = true;
         const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
         mob.style.setProperty('--svmImg', 'url(' + img + ')');
-        if (h) h.innerHTML = heroH;
+        if (h){ h.innerHTML = heroH; hzGround(h); }
         if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jr(true, true) : J && JR === 'body' ? pend(true) + ref(true) + repBody + jr(true) : pend(true) + ref(true) + repBody + jr(false)) + (J && JR === 'card' ? repBody : '') + (toBook || noApt ? '' : sec) + (noApt ? '' : instr) + docBody /* My documents always last ("my documents always at the end") */ + '';
       }
       if (CTABS){ if (desk) tabify(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain'), key); if (mob) tabify(mob.querySelector('.svmBody'), key); }
