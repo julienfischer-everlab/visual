@@ -6746,7 +6746,8 @@
   .svGrpBar{flex:none;position:relative;width:4px;border-radius:2px;background:#4d4d4d;overflow:hidden;} .svGrpL li.on .svGrpBar{background:#42be65;}
   .svGrpL li:is(.wait, .act) .svGrpBar::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(var(--gf, 1) * 100%);border-radius:2px;background:#bccfea;transition:height .3s ease;} .svGrpL li.act .svGrpBar::after{background:#f5be8c;}   /* filled top down to the sub step in hand, the rest of the track grey */
   .svGrpL b{display:block;font-size:15px;font-weight:400;line-height:1.35;color:#ececec;} .svGrpL span{display:block;margin-top:3px;font-size:13.5px;line-height:1.4;color:#8b8b86;}
-  .svGrpL li.wait b, .svGrpL li.act b{font-weight:500;color:#fff;} .svGrpL li.wait span, .svGrpL li.act span{color:#ececec;} .svGrpL li.later b{color:#8b8b86;} .svGrpL li.later span{color:#6d6c69;}
+  .svGrpL li.wait b, .svGrpL li.act b{font-weight:500;color:#fff;} .svGrpL li.wait span, .svGrpL li.act span{color:#ececec;}
+  .svGrpL li:is(.on, .later) > div{opacity:.5;} .svGrpL.allDone li > div{opacity:1;}   /* the same rule in the right panel: the content of done and later services at 50%, their bars at full */
   body.light .svGrpL{background:rgba(46,31,26,.05);} body.light .svGrpL b{color:#2e1f1a;} body.light .svGrpL li.wait b, body.light .svGrpL li.act b{color:#111;}
   .svPend.info{background:rgba(255,255,255,.05);} .svPend.info .svPendTag{color:#b5b3ae;} .svPend.info .svPendTag i{background:#b5b3ae;}
   body.light .svPend.ok{background:#eef3e9;} body.light .svPend.ok .svPendTag{color:#5d7f4c;} body.light .svPend.ok .svPendTag i{background:#5d7f4c;}
@@ -6781,7 +6782,7 @@
   .svProg{background:rgba(255,255,255,.04);border-radius:20px;padding:24px;}
   .svProgHead{display:flex;align-items:center;justify-content:space-between;font-size:18px;font-weight:500;color:#f4f4f4;margin-bottom:20px;}
   .svProgHead em{font-style:normal;font-size:14px;font-weight:400;color:#8b8b86;}
-  .svStep:not(.on):not(.ok) > *{opacity:.5;}   /* .7 -> .5 ("opacity 50% inactive item") */   /* steps not reached, their words at 70% ("all inactive states, 70% opacity on the content") */
+  .svStep:not(.on) > *{opacity:.5;} .svFin .svStep > *{opacity:1 !important;}   /* done and ahead both at 50%, the bar at full; all done, all at 100% ("completed steps and next steps: 50% opacity on the content only") */   /* .7 -> .5 ("opacity 50% inactive item") */   /* steps not reached, their words at 70% ("all inactive states, 70% opacity on the content") */
   .svStep{position:relative;padding:6px 0 6px 22px;margin-bottom:4px;}   /* 4 -> 6 top and bottom ("add 2px gap top bottom on content"); the bar grows with it */   /* 4 above and below ("padding top bottom 4px") */   /* 8 above and below its words, the bar with them ("in the content add 8px padding top bottom") */   /* 4 between the steps ("gap between stacked item 4px") */
   .svStep:last-child{margin-bottom:0;}
   .svStep::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:2px;   /* 3 -> 4 ("increase thickness 1px") */background:#4d4d4d;}
@@ -23920,7 +23921,7 @@
       }
       const grpProg = () => { if (!GP) return ''; const it = J.items, ai = it.findIndex(y => y.state !== 'done'), cnt = ai < 0 ? it.length : ai + 1;
         const LATER = { gutrep: 'Usually ready 3 business days after your results arrive' };
-        return '<div class="svJr svGrp"><div class="svProgHead">Your progress<span class="svGrpN">' + (ai < 0 ? 'All done' : 'Step ' + cnt + ' of ' + it.length) + simNav() + '</span></div><ol class="svGrpL">' + it.map((y, j) => {
+        return '<div class="svJr svGrp"><div class="svProgHead">Your progress<span class="svGrpN">' + (ai < 0 ? 'All done' : 'Step ' + cnt + ' of ' + it.length) + simNav() + '</span></div><ol class="svGrpL' + (ai < 0 ? ' allDone' : '') + '">' + it.map((y, j) => {
           const sd = SVC[y.svc] || {}, nm = y.t || sd.t || '', me = j === JJ.i;
           const yat = me ? at : y.at != null ? y.at : 0, ysteps = sd.steps || [], cur = j === ai, act = y.svc === 'gut' ? KITACT[Math.max(0, yat)] : !PASV.test((ysteps[yat] || [''])[0]) && y.state !== 'soon';
           const k = y.state === 'done' ? 'on' : cur ? (act ? 'act' : 'wait') : 'later';
@@ -23968,6 +23969,7 @@
         if (h){ h.innerHTML = heroH; hzGround(h); }
         if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jrX(true, true) : J && JR === 'body' ? pend(true) + ref(true) + repBody + jrX(true) : pend(true) + ref(true) + repBody + jrX(false)) + (J && JR === 'card' ? repBody : '') + (toBook || noApt ? '' : sec) + (noApt ? '' : instr) + docBody /* My documents always last ("my documents always at the end") */ + '';
       }
+      { const fin = state === 'done' || at >= n; if (desk) desk.classList.toggle('svFin', fin); if (mob) mob.classList.toggle('svFin', fin); }   // every step done: nothing dimmed ("exception: when all steps are completed, all steps at 100%")
       if (CTABS){ if (desk) tabify(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain'), key); if (mob) tabify(mob.querySelector('.svmBody'), key); }
       { const pk = document.getElementById('stSvcPick'); if (pk && [...pk.options].some(op => op.value === key)) pk.value = key; }
       cur = { key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' ? dl.map(([, t]) => t) : [],   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n };   // what the steps sheet shows

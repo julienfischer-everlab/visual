@@ -12587,3 +12587,5 @@ Tapping the block still opens the steps sheet.
 5.828 The status block's primary button is 8px narrower each side, 32 → 24px ("primary CTA less padding left right by 8px").
 
 5.829 The stepper's step in hand is a 2px ring with a 6px dot inside, in the status block label's colour: orange #F78359 when it's the member's turn, #BCCFEA while they wait. Its ripple is the same colour, in either Sub steps colour ("active circle, outlined 2px with a filled circle inside, same colour code as the label status above").
+
+5.830 Steps done and steps ahead both dim their content (name and line) to 50%, leaving the bar at full colour; the step in hand stays at 100% ("completed steps and next steps: opacity only on the content, 50%"). This applies to the service page's step list and the right panel's group of services. When every step is done, nothing is dimmed and everything shows at 100% ("exception: all steps completed, no opacity"); the page marks this with .svFin, the group list with .allDone. Later services keep their text colours, so the 50% alone does the dimming.
