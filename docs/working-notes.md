@@ -12792,3 +12792,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.896 The phone and XS hero title is 26px (was 22px).
 
 5.897 Under the title, a service that has begun always shows when it started: its own start date, else "Started on 20 February 2026". It no longer shows its state's line (Requested 11 days ago, a booking date, Report expected...). A service not begun (locked, later, suggested, to buy, to claim) keeps its own line.
+
+5.898 Body style No card: the centred title is 304px wide at most (was 256px).
