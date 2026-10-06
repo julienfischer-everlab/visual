@@ -12555,3 +12555,5 @@ The select follows the page as it changes. The service page is now the only layo
 Done bars are #42BE65. Tapping the block opens the steps sheet.
 
 5.818 The sub steps footer's Grey ground is #fff at 2%, down from 4% ("sub step footer bg 2% fff"), so it sits a step under the waiting status block's 4%.
+
+5.819 With the progress card in it, the phone hero is no longer pinned and pushed by script: it scrolls with the page, natively. The card, title and date move as one with no lag, so the card stops floating ("the progress card floats weirdly on scroll, keep same as the hero header content"). Only the picture inside keeps its slight drift.
