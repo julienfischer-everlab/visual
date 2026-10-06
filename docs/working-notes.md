@@ -12647,3 +12647,7 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 - The status block's warning now uses the DEXA pending design colours: background #3a1f0b, tag and dot #f5be8c. Light mode has its own fallback.
 
 5.844 On the phone (and XS), Your progress in the body shows only when the service has a service before or after it: a journey of more than one, the microbiome group or the MRI. A single service, such as pathology or a consult, keeps only the hero's progress card. The rule is in jrM.
+
+5.845 On the MRI's first step, the button opens the MRI safety questionnaire in the document modal. Submitting it moves to step 2, and My documents appears below with the questionnaire, which View reopens read-only.
+
+5.846 The About this service modal no longer repeats the service name: it shows only the description, under the "About this service" heading. Its padding is 24px on the left and right.
