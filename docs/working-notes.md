@@ -12527,3 +12527,7 @@ The kit's dates now run 3, 6, 9 and 13 Oct for the done steps, with Results by 2
 The select follows the page as it changes. The service page is now the only layout; the appointment page is no longer reachable from here.
 
 5.807 The stepper's segments sit 8px clear of each circle, up from 4 ("4px + gap between circle and line").
+
+5.808 The stepper's circles are 4px smaller again, 18 → 14px, tick 8px. The segments stay 8px clear and centred on them ("circle reduce by 4px").
+
+5.809 The kit card's header row, "Your kit · N of 5 done", is gone ("remove"). The to-do list and the stepper start straight under the rule.
