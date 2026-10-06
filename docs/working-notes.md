@@ -12798,3 +12798,9 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.899 The Version menu's Service detail has Desktop only. Mobile is gone, since XS on the desktop view is the phone. The menu is only marked with a page it lists.
 
 5.900 New tweak, Footer Up next (stUpNext, a switch, off by default): the Up next footer under the phone's progress card, when the next service waits on this one.
+
+5.901 The phone and XS hero's progress card carries the demo's previous / next arrows at its top right, beside the count (.svmHzWrap). They sit on a layer of their own, so a tap steps the demo and doesn't open the sheet; the card itself still opens it.
+
+5.902 Bug: with an info status (a step not the member's to act on, e.g. Get your results), the step in hand took the class "inf". The page already uses that for its info buttons, which are inline-block, so the step collapsed to a narrow column. The class is now svTinf.
+
+5.903 No blue: waiting / In progress is neutral #b8b8b8 (was #bccfea). That covers the status tag and dot, the step bars, the group's bar, the kit's nodes and ripple, and the phone's progress bars. Light mode's #5560b8 is a warm grey.
