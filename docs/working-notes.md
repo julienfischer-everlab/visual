@@ -12645,3 +12645,5 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 - Stages 11 to 13 show "Your debrief" (Report / Results chips) with a placeholder card. Stage 11 adds "What happens next".
 - Stage 13 opens a modal over the page: doctor avatar with a play button, Ready tag, note, Watch video, and "I'll watch later". It opens once each time the MRI reaches that stage, and Watch video reopens it.
 - The status block's warning now uses the DEXA pending design colours: background #3a1f0b, tag and dot #f5be8c. Light mode has its own fallback.
+
+5.844 On the phone (and XS), Your progress in the body shows only when the service has a service before or after it: a journey of more than one, the microbiome group or the MRI. A single service, such as pathology or a consult, keeps only the hero's progress card. The rule is in jrM.
