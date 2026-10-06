@@ -12940,3 +12940,5 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 5.956 The phone hero's progress card: 10px between its title row and the bars (was 14px).
 
 5.957 Phone and XS: the status card's buttons are 56px tall, 16px text (were 44px).
+
+5.958 Progress bars (.svJrBars): 6px tall, 2px corners, 4px apart (were 5px, 3px, 6px).
