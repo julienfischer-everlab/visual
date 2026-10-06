@@ -12720,3 +12720,11 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.864 Status block on the desk: its single button hugs its label again, no fixed 232px column ("CTA hug content"). The text still starts at the top left, 24px in.
 
 5.865 Your progress: every card but the page's own shows a chevron. The View buttons on the service in hand and the blocker are gone ("keep consistent: replace the View CTA by a chevron"). The whole card still opens that service.
+
+5.866 A locked service's page shows only its status card, then About this service (the service's about text). No appointment, instructions, documents or tabs.
+
+5.867 The desk header's more button sits at the top right; the picture and title group stay centred ("CTA right on top").
+
+5.868 Active step in the progress lists (the service's steps, and the group's services): title medium 16px #fff, its line regular 14px #fff. Light mode uses the dark ink.
+
+5.869 2px between the step bars, was 4px ("reduce bar gap by 2px").
