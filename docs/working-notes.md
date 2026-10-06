@@ -12543,3 +12543,5 @@ The select follows the page as it changes. The service page is now the only layo
 5.814 The sub steps footer card has 16px more padding top and bottom: 60 / 38 on the desk, 58 / 36 on the phone ("footer padding top bottom + 16px"). New tweak, Footer style ("tweak footer style"):
 - Grey (the default) is #fff at 4% with no border.
 - Bordered is a 1px outline at 10% with no ground.
+
+5.815 The sub steps footer card's padding is 8px less top and bottom: 52 / 30 on the desk, 50 / 28 on the phone ("decrease padding top bottom 8px").
