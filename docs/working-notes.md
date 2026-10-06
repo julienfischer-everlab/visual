@@ -12736,3 +12736,15 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 - **No card**: no sheet. The hero and the body share one ground that eases from the hero's grey (#1c1c1c) to #0f0f0f as the hero scrolls away (a smoothstep, as the Insights page's header). The hero has 16px under it. The top bar's ground follows the same colour (--svG, --stkRGB).
 
 5.872 Every step item in the progress lists (a service's steps, a group's services): title medium 14px, its line regular 12px. The one in hand stays white.
+
+5.873 Body style No card: the hero's title is centred at 256px wide at most, the start date centred under it, and 24px between the title group and the progress card.
+
+5.874 Every card on the service page and in its sheets has the Timeline step card's 12px corners: the status card, the sub steps card, the progress lists, the journey cards, the hero's progress and Up next cards, the referrals and debrief cards, and the debrief placeholder.
+
+5.875 24px inside the status card in every layout, and inside the step cards: the group's list and the service's own steps card.
+
+5.876 On the phone and XS, the status card's button sits 16px further below the text (36px in all). The completed status keeps its View report button, since the request for space above it followed the request to remove it.
+
+5.877 The XS breakpoint is 393px wide, the reference phone (was 402): the forced frame and --bpW.
+
+5.878 The phone's Your progress card has 24px padding (was 18px), and the Up next card under it 24px on the sides and bottom.
