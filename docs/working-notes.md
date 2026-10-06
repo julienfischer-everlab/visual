@@ -12655,3 +12655,5 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 5.847 Phone service page:
 - The hero has 32px more above the h1.
 - Once the hero title has half gone under the top bar, or under the sheet, it fades into the bar between back and more. It is one line, with an ellipsis (#phone2.svcTitled .svmNavT).
+
+5.848 Two MRI steps, "With the radiologist" and "Your doctor is reviewing", now show the sub step timeline above the status block, under "Whole Body MRI & CT Report". It is the same stepper as the microbiome kit, with four sub steps: Scan done, Radiologist report, Doctor review, and Report and video ready. The step in hand is blue, in the waiting colour. On the phone, only that step is named, with its timing.
