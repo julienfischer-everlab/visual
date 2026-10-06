@@ -12772,3 +12772,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.886 The phone's progress sheet (from the hero's Your progress card) opens almost full height: 64px clear at the top. It shows the desk's panel exactly: built with PH off, so the service's own card carries its steps, then Up next. The list starts right under the sheet's title.
 
 5.887 The Up next card under the phone's progress card: its words at #fff 32% (was 56%), 14px and all regular, and 4px less at its top and bottom (40/16).
+
+5.888 The phone hero's Your progress card has 4px less at its top (20px) and a #fff 4% background (was 7%). When stacked over the Up next card it stays opaque: 4% white over the ground under it (#1c1c1b, or #0f0f0f with No card).
