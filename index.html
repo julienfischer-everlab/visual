@@ -10133,6 +10133,14 @@
             <option value="flat">No card</option>
           </select>
         </div>
+        <!-- the next service, when it waits on this one, as a footer under the phone's progress card ("tweak footer Up next on off, off default") -->
+        <div class="tkRow">
+          <span class="lbl">Footer Up next</span>
+          <select id="stUpNext" aria-label="The Up next footer under the progress card">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
+          </select>
+        </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
         <div class="tkRow">
           <span class="lbl">Locked pattern</span>
@@ -15559,7 +15567,7 @@
     if (g === 'Overview page'){
       versionSel.appendChild(og);
       const sg = document.createElement('optgroup'); sg.label = 'Service detail';
-      [['svcD', 'Desktop'], ['svcM', 'Mobile']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
+      [['svcD', 'Desktop']].forEach(   /* no Mobile: XS on the desktop view is the phone ("remove mobile because we can manage XS on desktop view") */([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
       versionSel.appendChild(sg);
       const ag = document.createElement('optgroup'); ag.label = 'Appointment';   // "add the appointment page"
       [['aptD', 'Desktop'], ['aptM', 'Mobile']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; ag.appendChild(o); });
@@ -24095,7 +24103,7 @@
           const cAct = cy ? (cy.svc === 'gut' ? KITACT[Math.max(0, cy.svc === key ? at : cy.at || 0)] : !PASV.test(((SVC[cy.svc] || {}).steps || [['']])[cy.at || 0][0]) && cy.state !== 'soon') : false;
           const lab = ai < 0 ? 'All done' : cy.svc === 'gut' && key === 'gut' ? (d.steps[Math.max(0, at)] || [''])[0] + ' \u00b7 ' + (Math.max(0, at) + 1) + ' of ' + n : (cy.t || (SVC[cy.svc] || {}).t || '');   // the step name, short: the kit's step and its count
           return '<button class="svmHz" type="button" aria-label="Show the steps"><div class="svmHzH"><b>Your progress</b><span>' + (ai < 0 ? it.length : ai + 1) + '/' + it.length + '</span></div><div class="svJrBars">' + it.map((y, j) => '<i class="' + (y.state === 'done' ? 'on' : j === ai ? 'cur' + (cy && cy.svc === key ? tc() : cAct ? '' : ' pas') : '') + '"></i>').join('') + '</div><div class="svJrHzT">' + escS(lab) + '</div></button>'; }
-        const nx = J && JJ.items[JJ.i + 1], nxL = nx && (nx.state === 'locked' || nx.state === 'soon') ? '<div class="svmHzNext"><span>Up next</span><b><svg class="svmHzLk" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' + escS(nx.t || (SVC[nx.svc] || {}).t || '') + '</b></div>' : '';   // the next service, when it waits on this one: a card tucked under the progress ("if next services blocked, add the card below the main progress card")
+        const nx = UPN && J && JJ.items[JJ.i + 1], nxL = nx && (nx.state === 'locked' || nx.state === 'soon') ? '<div class="svmHzNext"><span>Up next</span><b><svg class="svmHzLk" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>' + escS(nx.t || (SVC[nx.svc] || {}).t || '') + '</b></div>' : '';   // the next service, when it waits on this one: a card tucked under the progress ("if next services blocked, add the card below the main progress card")
         const hzC = '<button class="svmHz" type="button" aria-label="Show the steps"><div class="svmHzH"><b>Your progress</b><span>' + (at >= n ? n : Math.max(0, at + 1)) + '/' + n + '</span></div><div class="svJrBars">' + d.steps.map((st, j) => '<i class="' + (at >= n || (at >= 0 && j < at) ? 'on' : j === at ? 'cur' + tc() : '') + '"></i>').join('') + '</div><div class="svJrHzT">' + escS(at < 0 ? 'Not started' : at >= n ? 'All done' : d.steps[at][0]) + '</div></button>';
         return nxL ? '<div class="svmHzStack">' + hzC + nxL + '</div>' : hzC; })();
       const heroH = '<h1>' + escS(title) + '</h1><div class="svmStart">' + escS(start) + '</div>' + (PPL === 'hero' ? heroHz : '');   // the main step block in the hero, or at the top of the status block (the Progress placement tweak)
@@ -24132,6 +24140,7 @@
     let CTABS = false, CPILL = false, CALL = false, CTAB = '';   // CALL: every section under the tabs, Results aside ("tweak this with the tab system")   // CPILL: the tabs as pills ("all sections of the body organised under a tab pill system")
     let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => t.value === 'on' ? 99 : 1; if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   /* on: every document in one first step, Required actions, their cards stacked in the status block ("replace by multiple actions step on / off") */
     let PPL = 'hero'; { const t = document.getElementById('stProgPl'); if (t){ PPL = t.value; t.addEventListener('change', () => { PPL = t.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // where the phone's main step block goes ("tweak progress placement: in hero header, in status block")
+    let UPN = false; { const t = document.getElementById('stUpNext'); if (t){ UPN = t.value === 'on'; t.addEventListener('change', () => { UPN = t.value === 'on'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // the Up next footer under the phone's progress card, off by default
     let KPL = 'top'; { const t = document.getElementById('stKitPl'); if (t){ KPL = t.value; t.addEventListener('change', () => { KPL = t.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // the sub steps above the status card as its header, or mini at its right ("create a tweak: mini sub steps, same as mobile, on desktop, on the right side of the status card")
     let KITV = 'stepper';   // the stepper, as the design; the Sub steps tweak is gone ("remove stepper tweak, keep as the design")
     let LKV = 'banner'; { const t = document.getElementById('stLkMod'); if (t){ LKV = t.value; t.addEventListener('change', () => { LKV = t.value; }); } }   // the locked modal's header: the banner, or the simple centred one
@@ -24197,7 +24206,7 @@
     const keyOf = el => { if (el.dataset && el.dataset.key) return el.dataset.key; const t = (el.textContent || '').toLowerCase();
       return /onboarding|consult/.test(t) ? 'consult' : /dexa/.test(t) ? 'dexa' : /mri/.test(t) ? 'mri' : /physical/.test(t) ? 'phys' : /nutrition/.test(t) ? 'nutri' : /patholog|blood/.test(t) ? 'path' : 'dexa'; };
     let backTo = null;   // where the back chevron returns: the Overview, or the Timeline the page was opened from
-    const sel = document.getElementById('versionSel'), mark = v => { if (sel) sel.value = v; };   // the menu names the page that is showing
+    const sel = document.getElementById('versionSel'), mark = v => { if (sel && [...sel.options].some(op => op.value === v)) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
     const openDesk = (key, state, o) => { [key, state, o] = simIn(key, state, o); if (LAY === 'apt' && window._apt){ window._apt.openDesk({ from: o && o.from === 'tl' ? 'tl' : null }); return; } backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); const dh = desk.closest('.dash'); if (dh) dh.scrollTop = 0; } mark('svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key || 'dexa', state || (key ? 'request' : 'book')])); } catch (e){} };   /* remembered through a reload, as the Timeline */
     // the hero holds while the sheet slides up over it, its words drifting up and fading, as the Insights phone's header ("remember the scroll parallax used for Insights mobile? do the same here; the body should overlap the hero")
@@ -27240,7 +27249,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stKitPl: 'top', stBodySty: 'card', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stKitPl: 'top', stBodySty: 'card', stUpNext: 'off', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
