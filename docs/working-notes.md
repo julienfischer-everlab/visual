@@ -12600,3 +12600,16 @@ Tapping the block still opens the steps sheet.
 - "Completed on 6 Oct 2026." and what it is.
 - "What you did", its steps all ticked and at full opacity.
 - A See full details button that opens its page.
+
+5.834 A new service, Whole Body MRI & CT Chest (key wbmri), built from the five screens ("create the MRI service"). It opens from the Service select ("Whole Body MRI"), and its five stages step by the arrows or its own buttons.
+
+Each stage sets the status block, the body and a right panel of six services (MRI Onboarding Questionnaire, Screening Briefing, MRI and CT Chest consent, the scan, the report, the Post-Scan Debrief):
+1. Questionnaire. "Complete your MRI safety questionnaire" with Start questionnaire, and "Why we need this information". Step 1 of 6, orange.
+2. Book the briefing. Book (opens the booking), "What to expect", My documents (the questionnaire, completed 3 Oct 2026). Step 2 of 6.
+3. Briefing booked. Green "Confirmed — Your briefing call is on Thu 8 Oct, 11:00 am", with Join call and an outlined Add to calendar stacked at the right. "Your briefing call" rows (date, online video call, 15 minutes, Dr Sarah Chen) and the reschedule note, then What to expect and My documents. The briefing's bar is green.
+4. The doctor's review. A grey "In progress" block with no button, the header reading "Ready to sign by Tue 13 Oct", and "Why we need your consent". Step 3 of 6, blue.
+5. More information needed. Orange, with Upload document and Message your care team; "What helps your doctor" then "Why we need your consent". Upload sends it back to the review.
+
+The phone shows the same, with the hero card's six bars. Two stacked buttons sit at the right in a new .svSide layout; the global .side class had pushed the block into the sidebar.
+
+5.835 The kit's sub steps card moves above the status card, as its header ("inverse footer and put it above as header"), and is headed by the main step's name, e.g. "Microbiome & Gut Health Assessment" ("add the title of the current main step above the timeline"). The status card overlaps its foot by 16px.
