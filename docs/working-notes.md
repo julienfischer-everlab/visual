@@ -12859,3 +12859,10 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.927 The desk's sub steps timeline names every step under its node (12px), with the info icon by the step in hand; the centred line is the phone's and XS's only.
 
 5.928 Sub steps: the step in hand is a filled dot in its status colour, rippling, with no ring ("active dot, filled circle, ripple effect, no outline"). It stays still with reduced motion.
+
+5.929 Tweaks panel:
+- The sub steps' tweaks (Sub steps colour, Footer style, Card with sub steps) sit together under a Sub step heading, at the end of Service detail.
+- Removed: Footer Up next (the footer stays off) and Progress placement (the progress card stays in the hero).
+- One Save / Reset for the whole panel: the sticky one at its foot. The per-group ones are gone.
+
+5.930 The phone hero's Your progress title is 16px (was 17px).
