@@ -12579,3 +12579,11 @@ Tapping the block still opens the steps sheet.
 5.824 The stepper's connecting lines are 2px thinner, 4 → 2px, still centred on the 14px circles ("reduce line by 2px").
 
 5.825 The top bar's Open ↗ button, which opened the page in a window at the chosen viewport, is gone ("remove"). Its listeners are guarded and skip it.
+
+5.826 The right panel's group steps (the microbiome's four) are no longer clickable: no pointer, no hover underline, and no click handler ("we shouldn't be able to click on a step"). They are for reading only.
+
+5.827 The step bars take the palette exactly ("keep these colours exactly"): done #42BE65, the member's turn #F5BE8C (the peach), waiting #BCCFEA, and solid #4D4D4D for steps ahead. This applies to the service page's step list, the bars (hero card, horizontal), and the right panel's group bars.
+
+5.828 The status block's primary button is 8px narrower each side, 32 → 24px ("primary CTA less padding left right by 8px").
+
+5.829 The stepper's step in hand is a 2px ring with a 6px dot inside, in the status block label's colour: orange #F78359 when it's the member's turn, #BCCFEA while they wait. Its ripple is the same colour, in either Sub steps colour ("active circle, outlined 2px with a filled circle inside, same colour code as the label status above").
