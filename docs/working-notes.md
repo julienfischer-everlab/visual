@@ -12666,3 +12666,11 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 - On the phone it was already consistent: 24px padding, 20px from text to buttons, 10px between stacked buttons.
 
 5.850 The Your progress timeline card has 24px padding left and right (was 20px).
+
+5.851 A status with two actions puts them below the text, side by side: the secondary on the left, the main one on the right. On the phone they stack full width. This matches the other services. The long label "Can't find a time? We'll book it for you" is back. A single outlined action stays at the right.
+
+5.852 Secondary text on the service page and its modals is now white at 56% opacity instead of solid greys (#8b8b86, #b5b3ae, #a8a8a3, #7d7c78), 44 declarations in all ("always use opacity vs solid grey colour"). Light mode keeps its own colours.
+
+5.853 The desktop service header (picture, title group, more button) is centred vertically.
+
+5.854 The phone service page's body ends 40px under its last section. It was the dock's height plus 40px, but this screen has no dock.
