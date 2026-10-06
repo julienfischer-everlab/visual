@@ -12878,3 +12878,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.935 Sub steps: the step in hand, when it's the member's to act, takes the status card's own peach #f5be8c for its dot and ripple (was #f78359).
 
 5.936 The sub steps card's title sits 4px higher (12px over it, was 16px).
+
+5.937 Fix: the filled main step's track kept the waiting loading light, because .svStep.on.pas outranked .svStep.fill. The rule now names .svStep.fill.on.pas too, so the unfilled part is the next steps' #4d4d4d ("incomplete colour should be the same as the next step colour").
