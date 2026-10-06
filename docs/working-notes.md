@@ -12535,3 +12535,5 @@ The select follows the page as it changes. The service page is now the only layo
 5.810 The blue "you wait" colour is now #BCCFEA on #0C2241 ("Blue → FG BCCFEA, Bg 0C2241"). The status block is #0C2241 with its tag and dot in #BCCFEA, and the to-do ring, stepper dot and ripple, linear bar end and right-panel bar all use #BCCFEA. The stepper's empty dots are #BCCFEA at 16% so they sit on the navy.
 
 5.811 The kit's sub steps leave the status block for a card of their own, stacked under it ("put the sub steps group inside a stacked card below the status card, outlined card, no bg"). The card is outlined in 1px at 10%, with no fill, and starts 16px up under the status card so the two read as a stack. The status card is opaque so the outline doesn't show through. All three Sub steps styles sit in it, with the stepper's empty dots now 12% white on the page's ground.
+
+5.812 The sub steps card gets a light grey ground (4% white, keeping its outline) and 8px more padding on top, 36 → 44 on the desk and 34 → 42 on the phone ("light grey bg for sub steps + 8px top padding").
