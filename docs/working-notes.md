@@ -12890,3 +12890,7 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.941 The demo's step arrows cross services in a group. At a service's first step, previous opens the service before it (the kit's Confirm your address -> Gut Health Questionnaire, done). From a done or last step, next opens the one after it. The arrows only disable at the group's ends. A step from the phone's sheet closes the sheet first.
 
 5.942 The MRI's Book your scan secondary reads "Can't find a time?". On the phone and XS, every button in the status card fills the card: a desk rule sizing the buttons to their label had caught XS's ghost button ("fill container").
+
+5.943 Step arrows: a service fully completed (done, or past its last step) has no next. It doesn't walk on into the next service; previous still crosses back from a first step.
+
+5.944 Phone and XS sub steps: no title under the nodes ("remove title on mobile"), just the line "Up next – {the next step}" with the info icon beside it (the last step shows its timing). The info icon still opens the sheet with every sub step.
