@@ -12884,3 +12884,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.938 The service page's tweaks sit in two cards ("one card per group"): General (everything else) and Sub steps (colour, footer style, card with sub steps). Both are data-svc, shown on the service page only.
 
 5.939 The phone and XS hero bars, as the desk's list: the service in hand fills its bar as far as its sub steps (e.g. 40% at 2 of 5, 80% at 4 of 5), in its status colour. The rest is the next bars' #4d4d4d, with no loading light.
+
+5.940 The sub steps' ripple leaves the dot in the dot's own colour at full strength, then fades as it spreads to 10px (was 50% at the start, reading as a dark halo).
