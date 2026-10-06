@@ -12470,3 +12470,20 @@ The primary is the first present of: Results, Why we need it (a document pending
 
 5.797 The Insight cards tweak (Condensed / Non condensed) is gone ("remove that"). The cards stay condensed.
 Stacked is also the page's own default now, not only Reset's.
+
+5.798 The microbiome example follows the attached design ("reduce the steps in the main right panel; orange the member acts, blue the member waits, green done; the sub steps inside the state block, in a card with a to-do list").
+
+Right panel: Your progress lists the group's four services as its steps, "Step 2 of 4", each with a 4px bar and a line.
+- Done ones are green, "Completed 3 Oct".
+- The one in hand is orange when the member acts and blue when they wait, its name bold, with the kit's step and count ("Kit being prepared · 2 of 5").
+- Later ones are grey with what to expect ("Usually ready 3 business days after your results arrive").
+- A row opens its service, or its locked modal.
+
+The assessment's steps are now the kit's five: Confirm your address (act), Kit being prepared (wait), Kit on its way (wait), Collect and post your sample (act), At the lab (wait).
+
+The status block follows the step in hand:
+- Blue "In progress" with no button while we work, e.g. "We're preparing your kit, it usually ships within 2 business days…".
+- Orange "Pending action" with its button when it's the member's turn (Confirm address, How to collect).
+- Below a rule sits a "Your kit · 1 of 5 done" to-do card: ticks with dates for the done steps, a blue or orange ring with its date for the one in hand ("Ships by 7 Oct"), empty circles after.
+
+The member starts at Kit being prepared, on the page and in the Timeline. The phone shows the same, with Your progress in the body.
