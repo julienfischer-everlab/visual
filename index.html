@@ -10389,10 +10389,17 @@
     <!-- which service the page shows ("remove [the Layout switch] and replace by a select: DEXA scan, Microbiome test, Pathology test") -->
     <span class="tbLay"><span class="lbl">Service</span>
       <select id="stSvcPick" aria-label="Which service the page shows">
-        <option value="dexa" selected>DEXA scan</option>
-        <option value="gut">Microbiome test</option>
-        <option value="path">Pathology test</option>
-        <option value="wbmri">Whole Body MRI</option>
+        <!-- in two groups: the services that stand alone, and the chain where each waits on the one before ("add group titles: without dependency, with dependencies") -->
+        <optgroup label="Without dependency">
+          <option value="gut">Microbiome test</option>
+          <option value="wbmri">Whole Body MRI</option>
+          <option value="path">Pathology test</option>
+        </optgroup>
+        <optgroup label="With dependencies">
+          <option value="dexa" selected>DEXA scan</option>
+          <option value="diag">Diagnostics Review</option>
+          <option value="checkin">Member Check-In</option>
+        </optgroup>
       </select>
     </span>
     <button class="tkBtn" id="tkReload" type="button"
@@ -24338,7 +24345,7 @@
     { const t = document.getElementById('stJrHz'); if (t) t.addEventListener('change', () => { HZ = t.value === 'h'; paint(cur.key, cur.state, cur.o); }); }
     { const all = [...document.querySelectorAll('.stDocsN')]; all.forEach(t => t.addEventListener('change', () => { window.__docsN = +t.value || 4; all.forEach(u => { if (u !== t) u.value = t.value; }); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); })); }
     { const all = [...document.querySelectorAll('.stDocsSel')]; all.forEach(t => t.addEventListener('change', () => { DOCS = t.value; window.__docsMode = DOCS; all.forEach(u => { if (u !== t) u.value = t.value; }); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); })); }   // one setting, in both groups
-    { const t = document.getElementById('stSvcPick'); if (t) t.addEventListener('change', () => { const k = t.value, O = { dexa: ['book'], gut: ['active', { at: 1, tag: 'Kit being prepared' }], path: ['book'], wbmri: ['active', { at: 0, tag: 'Complete your questionnaire' }] }[k] || ['book'];
+    { const t = document.getElementById('stSvcPick'); if (t) t.addEventListener('change', () => { const k = t.value, O = { dexa: ['book'], gut: ['active', { at: 1, tag: 'Kit being prepared' }], path: ['book'], wbmri: ['active', { at: 0, tag: 'Complete your questionnaire' }], diag: ['locked'], checkin: ['locked'] }[k] || ['book'];   // the two after the DEXA: locked, waiting on it
         const mb = ph && ph.classList.contains('svcOn') && !document.body.classList.contains('svcOn'); (mb ? openMob : openDesk)(k, O[0], Object.assign({ from: backTo }, O[1] || {})); }); }   // the service picker in the top bar: that service's page, in the place the page is showing
     { const t = document.getElementById('stLayout'); if (t) t.addEventListener('change', () => { LAY = t.value;   // switch the page in view to the other layout
         const dk = document.body.classList.contains('svcOn'), mb = ph && ph.classList.contains('svcOn'), ad = document.body.classList.contains('aptOn'), am = ph && ph.classList.contains('aptOn');

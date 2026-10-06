@@ -12711,3 +12711,8 @@ The phone and XS are unchanged. It applies to the microbiome kit and the MRI's r
 5.862b On a locked service's page, Your progress puts the service(s) it waits on under a "Complete first" title, as Up next does for the locked ones (Diagnostics Review: Complete first, DEXA Scan; Up next, Diagnostics Review, Member Check-In).
 
 5.862c The service page's section titles on the phone and XS (Referrals, My documents and the others) are 20px, as the report's on the phone (Medical records, .mMedsHead h3). The desk keeps 18px, as the report there.
+
+5.863 The top bar's Service select now has two groups:
+- **Without dependency:** Microbiome test, Whole Body MRI, Pathology test.
+- **With dependencies:** DEXA scan, Diagnostics Review, Member Check-In.
+The two after the DEXA are new picks. They open locked, waiting on the DEXA, under Complete first.
