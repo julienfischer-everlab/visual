@@ -12810,3 +12810,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.905 Phone and XS: the step in hand is named as a heading above the status card and its sub steps (.svStepT). It takes the main step for a kit or a report, the service for the MRI's group, the document in hand, or else the service's step. It moves out of the sub steps card, which on the phone no longer repeats it. There's no heading on a locked, later, suggested, to buy, to claim or done page.
 
 5.906 Phone and XS: the sub steps card comes after the status card, tucked under it as a footer, under the step's title ("sub steps below the status card"). The desk keeps them above as the card's header (or mini at its right, with the tweak).
+
+5.907 Sub step timeline: circles 10px (was 14px), the step in hand a 2px ring around a 4px dot. No tick on the steps done. The lines between them follow: centred on 5px, 8px clear of each circle.
