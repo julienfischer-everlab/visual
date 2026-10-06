@@ -12716,3 +12716,7 @@ The phone and XS are unchanged. It applies to the microbiome kit and the MRI's r
 - **Without dependency:** Microbiome test, Whole Body MRI, Pathology test.
 - **With dependencies:** DEXA scan, Diagnostics Review, Member Check-In.
 The two after the DEXA are new picks. They open locked, waiting on the DEXA, under Complete first.
+
+5.864 Status block on the desk: its single button hugs its label again, no fixed 232px column ("CTA hug content"). The text still starts at the top left, 24px in.
+
+5.865 Your progress: every card but the page's own shows a chevron. The View buttons on the service in hand and the blocker are gone ("keep consistent: replace the View CTA by a chevron"). The whole card still opens that service.
