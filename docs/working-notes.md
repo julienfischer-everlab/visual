@@ -12962,3 +12962,13 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 5.965 In the timeline, a main step with sub steps reads only the sub step in hand ("Confirm your address"), without "· 1 of 5"; its bar fill and the sub steps show the count.
 
 5.966 Sub timeline "In status card": the timeline sits below all the card's content, full width under a divider. On the desk the text and a single button keep their row; two buttons stay stacked under the text; on the phone it's text, buttons, then timeline.
+
+5.967 Microbiome kit and status card fixes:
+- Sub timeline line between dots is 4px; 8px gap above the timeline under the status card.
+- "Sunday, Monday or Tuesday" is plain text, no highlight, in the status copy and the "Before you post" list.
+- The phone's sub steps sheet is the dot timeline, vertical: titles only, the line between dots, the step in hand rippling.
+- Collect and post step: no Referrals, no service details section. From results in onwards: no Referrals.
+- Two status buttons: side by side on the desk at any width, stacked on the phone and XS.
+- Arrow keys ← → step back and forth (same as the arrows; ignored while typing).
+- Report in status ON, results in: "Results" heading, no tabs, then the "Your report and video will appear here" card.
+- The kit's report ready stage is the end: the next arrow is disabled.
