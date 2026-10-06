@@ -12958,3 +12958,5 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 - **In status card:** the timeline inside it, under the text, below a #fff 10% divider (.kitIn), before the buttons. The dots match the outside ones (white & grey or coloured).
 
 5.964 Fix: the square-corner rule for document rows caught the Referrals card on the phone; it's now limited to My documents.
+
+5.965 In the timeline, a main step with sub steps reads only the sub step in hand ("Confirm your address"), without "· 1 of 5"; its bar fill and the sub steps show the count.
