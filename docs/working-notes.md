@@ -12547,3 +12547,9 @@ The select follows the page as it changes. The service page is now the only layo
 5.815 The sub steps footer card's padding is 8px less top and bottom: 52 / 30 on the desk, 50 / 28 on the phone ("decrease padding top bottom 8px").
 
 5.816 The "you wait" status block (In progress) is #fff at 4% instead of navy, with the tag and dot still #BCCFEA ("In progress (user wait): bg #fff opacity 4%"). When it is stacked over the sub steps card it uses #1b1b1b, the same grey made opaque.
+
+5.817 The phone (and XS) service page always carries the main step block in its hero, under the title and date, whatever the Active card steps tweak says ("mobile: add main step block"). It reads "Your progress" with the count at the right, the bars, and the step in hand.
+- For the microbiome the bars are the group's four services (1/4, 2/4…), the current one orange when the member acts and blue (#BCCFEA) when they wait. Its line is the kit's step and count ("Kit being prepared · 2 of 5").
+- Elsewhere the bars are the service's own steps.
+
+Done bars are #42BE65. Tapping the block opens the steps sheet.
