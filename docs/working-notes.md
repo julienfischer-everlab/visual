@@ -12876,3 +12876,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.934 A main step with sub steps (filled to them, .svStep.fill) has no loading light on its bar: the fill shows the progress, the sub steps' timeline keeps the loading line.
 
 5.935 Sub steps: the step in hand, when it's the member's to act, takes the status card's own peach #f5be8c for its dot and ripple (was #f78359).
+
+5.936 The sub steps card's title sits 4px higher (12px over it, was 16px).
