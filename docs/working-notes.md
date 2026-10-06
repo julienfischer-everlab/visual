@@ -12702,3 +12702,8 @@ The phone and XS are unchanged. It applies to the microbiome kit and the MRI's r
 - The last service, Post-Scan Debrief, is green, as reached (MK 'conf'), in the panel and on the phone's bars.
 - The next arrow is disabled there: the journey ends at the debrief.
 - The Not going ahead screen (stage 14) is an exception, no longer reachable with the arrows. It opens with `_svc.openDesk('wbmri', 'active', { at: 14 })`.
+
+5.862 Phone and XS: with the progress card in the hero, the hero scrolls with the page again, not pinned. Pinned, its title and card drifted at a quarter of the scroll and the card seemed to float ("your progress card floating weird").
+- The title, card and body now move exactly with the finger.
+- The body stays a rounded card over the hero's foot: 28px overlap, its corners showing in XS too, since top:auto clears the inline -24px meant for sticky.
+- Only the picture is in parallax, lagging behind at 40%.
