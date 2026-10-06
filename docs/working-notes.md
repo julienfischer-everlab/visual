@@ -12577,3 +12577,5 @@ It covers the to-do list, stepper and linear bar. The status block and the right
 Tapping the block still opens the steps sheet.
 
 5.824 The stepper's connecting lines are 2px thinner, 4 → 2px, still centred on the 14px circles ("reduce line by 2px").
+
+5.825 The top bar's Open ↗ button, which opened the page in a window at the chosen viewport, is gone ("remove"). Its listeners are guarded and skip it.
