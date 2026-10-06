@@ -12843,3 +12843,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.919 The MRI's and the microbiome's step cards (asCard) have no title row with the service's name and dot: they stand alone, without dependencies, as a single service's card (li.one). DEXA, with Diagnostics Review and Member Check-In after it, keeps its name in the card.
 
 5.920 Body style No card: the hero's fade into #0f0f0f, and the picture's foot with it, start 32px higher.
+
+5.921 The phone's card holding a status with sub steps has 12px padding (was 8px). New tweak, Card with sub steps (stWrapSty): Outlined (default, the 1px #fff 12% outline) or Grey (#fff 4% ground, no outline).
