@@ -12518,3 +12518,10 @@ Numbers are in grey.
 3. Your report, video and recommendations land here, and we'll let you know.
 
 The kit's dates now run 3, 6, 9 and 13 Oct for the done steps, with Results by 27 Nov at the lab.
+
+5.806 The top bar's Layout switch (Appointment / Service detail) is replaced by a Service select: DEXA scan / Microbiome test / Pathology test ("remove and replace by a select"). It shows wherever the service page does. Choosing one opens that service's page in the same place, desk or phone, in its demo state:
+- DEXA scan opens at book.
+- Microbiome test opens on Kit being prepared.
+- Pathology test opens at book.
+
+The select follows the page as it changes. The service page is now the only layout; the appointment page is no longer reachable from here.

@@ -10309,11 +10309,13 @@
       <button class="tkBtn" id="tkBpOpen" type="button" title="Open the page in a window of this width" hidden>Open &nearr;</button>
     </span>
     <!-- which page a service opens on, up front on the pages it concerns: the Timeline, the service page, the appointment page ("this tweak should be for those pages; put it before the Refresh CTA") -->
-    <span class="tbLay"><span class="lbl">Layout</span>
-      <select id="stLayout" class="tkSegSel" aria-label="Which page a service opens on">
-            <option value="apt">Appointment</option>
-            <option value="svc" selected>Service detail</option>
-          </select>
+    <!-- which service the page shows ("remove [the Layout switch] and replace by a select: DEXA scan, Microbiome test, Pathology test") -->
+    <span class="tbLay"><span class="lbl">Service</span>
+      <select id="stSvcPick" aria-label="Which service the page shows">
+        <option value="dexa" selected>DEXA scan</option>
+        <option value="gut">Microbiome test</option>
+        <option value="path">Pathology test</option>
+      </select>
     </span>
     <button class="tkBtn" id="tkReload" type="button"
             aria-label="Reload the page on this version">Refresh</button>
@@ -23925,6 +23927,7 @@
         if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jrX(true, true) : J && JR === 'body' ? pend(true) + ref(true) + repBody + jrX(true) : pend(true) + ref(true) + repBody + jrX(false)) + (J && JR === 'card' ? repBody : '') + (toBook || noApt ? '' : sec) + (noApt ? '' : instr) + docBody /* My documents always last ("my documents always at the end") */ + '';
       }
       if (CTABS){ if (desk) tabify(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain'), key); if (mob) tabify(mob.querySelector('.svmBody'), key); }
+      { const pk = document.getElementById('stSvcPick'); if (pk && [...pk.options].some(op => op.value === key)) pk.value = key; }
       cur = { key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' ? dl.map(([, t]) => t) : [],   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n };   // what the steps sheet shows
     };
     /* Content under tabs: each section below the status block is a tab of its own, one shown at a time ("try a tweak: content under tabs, where all sections are under tab") */
@@ -24168,6 +24171,8 @@
     { const t = document.getElementById('stJrHz'); if (t) t.addEventListener('change', () => { HZ = t.value === 'h'; paint(cur.key, cur.state, cur.o); }); }
     { const all = [...document.querySelectorAll('.stDocsN')]; all.forEach(t => t.addEventListener('change', () => { window.__docsN = +t.value || 4; all.forEach(u => { if (u !== t) u.value = t.value; }); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); })); }
     { const all = [...document.querySelectorAll('.stDocsSel')]; all.forEach(t => t.addEventListener('change', () => { DOCS = t.value; window.__docsMode = DOCS; all.forEach(u => { if (u !== t) u.value = t.value; }); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); })); }   // one setting, in both groups
+    { const t = document.getElementById('stSvcPick'); if (t) t.addEventListener('change', () => { const k = t.value, O = { dexa: ['book'], gut: ['active', { at: 1, tag: 'Kit being prepared' }], path: ['book'] }[k] || ['book'];
+        const mb = ph && ph.classList.contains('svcOn') && !document.body.classList.contains('svcOn'); (mb ? openMob : openDesk)(k, O[0], Object.assign({ from: backTo }, O[1] || {})); }); }   // the service picker in the top bar: that service's page, in the place the page is showing
     { const t = document.getElementById('stLayout'); if (t) t.addEventListener('change', () => { LAY = t.value;   // switch the page in view to the other layout
         const dk = document.body.classList.contains('svcOn'), mb = ph && ph.classList.contains('svcOn'), ad = document.body.classList.contains('aptOn'), am = ph && ph.classList.contains('aptOn');
         if (LAY === 'apt' && (dk || mb) && window._apt){ const bt = backTo; backTo = null; document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); (mb && !dk ? window._apt.openMob : window._apt.openDesk)({ from: bt === 'tl' ? 'tl' : null }); }
