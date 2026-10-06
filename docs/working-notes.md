@@ -12569,3 +12569,9 @@ It covers the to-do list, stepper and linear bar. The status block and the right
 5.822 On the phone (and XS) the stepper names only the step in hand ("sub steps on mobile can't show all labels, only show the current one"). The five nodes stay on their line without names, and under them sits one line with the current step's name at the left and its when at the right ("Kit being prepared · Ships by 7 Oct"). The desk keeps a name under each node.
 
 5.822 On the phone (and XS) the stepper names only the step in hand ("sub steps on mobile can't show all labels, only show the current one"). The five nodes stay on their line without names, and under them sits one line with the current step's name at the left and its when at the right ("Kit being prepared · Ships by 7 Oct"). The desk keeps a name under each node.
+
+5.823 New tweak, Progress placement, for the phone's main step block ("tweak progress placement: in hero header, in status block"):
+- In hero header (the default) is the card under the title, as before.
+- In status block puts the same block (Your progress, the count, the bars, the step) at the top of the status block on a clear ground, with a rule under it before the tag and title. The hero is then just the title, date and picture.
+
+Tapping the block still opens the steps sheet.
