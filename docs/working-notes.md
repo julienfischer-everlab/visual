@@ -12679,3 +12679,8 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 - the MRI and the microbiome: their services;
 - DEXA: its steps, then Up next.
 It sits right under the sheet's title.
+
+5.856 New tweak, Sub steps placement (stKitPl):
+- **Header** (default): the timeline sits above the status card, as before.
+- **Mini right**: on desktop, the timeline moves inside the status card, in its right column (232px, the same width as the button column), as on the phone: nodes only, then the step in hand and its timing under them. A button, if any, sits under it.
+The phone and XS are unchanged. It applies to the microbiome kit and the MRI's radiologist and doctor review steps.
