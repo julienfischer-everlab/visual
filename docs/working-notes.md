@@ -12855,3 +12855,7 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.925 The Body style tweak is now named "Mobile body style".
 
 5.926 The progress step card (the desk's right column and the phone's progress sheet) is on #181818.
+
+5.927 The desk's sub steps timeline names every step under its node (12px), with the info icon by the step in hand; the centred line is the phone's and XS's only.
+
+5.928 Sub steps: the step in hand is a filled dot in its status colour, rippling, with no ring ("active dot, filled circle, ripple effect, no outline"). It stays still with reduced motion.
