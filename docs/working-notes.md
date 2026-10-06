@@ -12452,3 +12452,5 @@ The primary is the first present of: Results, Why we need it (a document pending
 5.790 Health profile gains a third style, Stacked, now the default ("one section and stack 3 items inside"). The three to-dos sit in one card, one under the other, each with the 3 columns' icon tile at its left, its title and line, and its button. A done one gets a green tick on its tile's corner and a struck title.
 
 5.791 The services in the phone's ask sheet take the look of the Overview's services row ("keep same visual in bottom menu sheet for actions"): 64px cards in two columns, the name at the left and the render on a grey disc at the right. There are six: Concierge, Telehealth, Check Symptoms (its glyph on the disc, having no render), Med Certs, Treatments and Pathology.
+
+5.792 The services' visuals are 8px smaller, the grey disc 40 → 32px and the render inside it 28 → 22, in the Overview's condensed row and in the ask sheet's grid alike ("visuals 8px smaller").
