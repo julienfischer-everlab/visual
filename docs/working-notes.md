@@ -12853,3 +12853,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.924 The Sub steps placement tweak is gone ("remove"): every status with sub steps uses the one card, with the timeline under the status (KPL fixed to 'top', no Mini right).
 
 5.925 The Body style tweak is now named "Mobile body style".
+
+5.926 The progress step card (the desk's right column and the phone's progress sheet) is on #181818.
