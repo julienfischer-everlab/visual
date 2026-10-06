@@ -12559,3 +12559,9 @@ Done bars are #42BE65. Tapping the block opens the steps sheet.
 5.819 With the progress card in it, the phone hero is no longer pinned and pushed by script: it scrolls with the page, natively. The card, title and date move as one with no lag, so the card stops floating ("the progress card floats weirdly on scroll, keep same as the hero header content"). Only the picture inside keeps its slight drift.
 
 5.820 With the progress card in the hero, the picture no longer runs behind the whole hero. It stops where the grey ground turns solid (70% up the card), and the ground's fade carries it into the grey ("the hero bg img should start when the progressive bottom bg starts, not in the whole hero header"). The card itself sits on plain grey.
+
+5.821 New tweak, Sub steps colour ("sub steps: avoid the coloured system, more like white and grey; create a tweak"):
+- White & grey, the default: done steps are a white tick or dot, done segments and the bar's fill are white at 55%, the step in hand is a solid white ring or dot with a white ripple, and the rest are grey.
+- Coloured: the green / orange / blue as before.
+
+It covers the to-do list, stepper and linear bar. The status block and the right panel keep their colours.
