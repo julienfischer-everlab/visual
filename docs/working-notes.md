@@ -12695,3 +12695,5 @@ The phone and XS are unchanged. It applies to the microbiome kit and the MRI's r
 - In XS the body sat 2px below the hero: the hero was relative, with the inline top of -24px meant for sticky, so its corners never showed.
 
 5.859 Phone and XS: when the next service in the journey is locked, an "Up next" card with its name sits tucked under the hero's progress card. The two are stacked, the progress card opaque on top (.svmHzStack, .svmHzNext). The grey ground under the hero measures the whole stack. The MRI and microbiome heroes, which already show their group, are unchanged.
+
+5.860 The MRI report's sub step timeline has two steps, Radiologist report and Doctor review ("only need 2 sub steps"). On the radiologist stage the first is in hand; on the doctor review stage the first is done and the second in hand.
