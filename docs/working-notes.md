@@ -12782,3 +12782,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.891 The phone's progress sheet keeps the desk panel's heading, Your progress with the step count and the demo's previous / next arrows ("arrows on mobile too"). A step from there repaints the page, and the sheet refills behind it (sh._fill).
 
 5.892 The phone hero's Up next card: background #fff 4% (was 2%).
+
+5.893 The progress panel's cards, on the desk's right column and in the phone's sheet: 16px inside, 20px round. That covers the service's own card with its steps, the other services' cards and the group's list. The dashed outline drawn on the other cards follows the 20px corner (rx 14 -> 20).
