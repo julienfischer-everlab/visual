@@ -12693,3 +12693,5 @@ The phone and XS are unchanged. It applies to the microbiome kit and the MRI's r
 - The hero's progress card no longer names the step under its bars.
 - The hero is sticky again, with its progress card in it. The body is a rounded card that slides up over it: 28px corners, 28px overlap, and a soft shadow. The hero's title, date and progress card drift up and fade as one, so the card no longer floats apart from the title.
 - In XS the body sat 2px below the hero: the hero was relative, with the inline top of -24px meant for sticky, so its corners never showed.
+
+5.859 Phone and XS: when the next service in the journey is locked, an "Up next" card with its name sits tucked under the hero's progress card. The two are stacked, the progress card opaque on top (.svmHzStack, .svmHzNext). The grey ground under the hero measures the whole stack. The MRI and microbiome heroes, which already show their group, are unchanged.
