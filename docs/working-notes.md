@@ -12553,3 +12553,5 @@ The select follows the page as it changes. The service page is now the only layo
 - Elsewhere the bars are the service's own steps.
 
 Done bars are #42BE65. Tapping the block opens the steps sheet.
+
+5.818 The sub steps footer's Grey ground is #fff at 2%, down from 4% ("sub step footer bg 2% fff"), so it sits a step under the waiting status block's 4%.
