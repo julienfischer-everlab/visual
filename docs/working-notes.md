@@ -12986,3 +12986,5 @@ Report in status ON: every completed results card uses the illustration layout: 
 5.972 Report in status ON, completed state: neutral grey card (#fff 5.5%), "View report" button 56px under the text, and on the right a 168×192 photo card of the doctor (hero-doctor.webp) with "Dr. Steven Lu" and "23 April 2026" at its foot over a dark gradient. The "Ready" cards (MRI debrief, microbiome report) keep the report illustration. Desktop only; the phone keeps the full-width button.
 Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); the line is 6px clear of each dot, not 8; the gap above it is 6px smaller (padding top 32 to 26).
 "4 to 6" in the microbiome step subtitle is plain text.
+
+5.973 Sub-step timeline line back to 2px (from 4). No more flash/ripple on the status card when a step lands (svFlash off); the only ripple left is the current dot in the sub-step timeline. Phone "Your progress" card: 4px more between the title row and the bars (10 to 14).
