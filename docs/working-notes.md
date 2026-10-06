@@ -12613,3 +12613,7 @@ Each stage sets the status block, the body and a right panel of six services (MR
 The phone shows the same, with the hero card's six bars. Two stacked buttons sit at the right in a new .svSide layout; the global .side class had pushed the block into the sidebar.
 
 5.835 The kit's sub steps card moves above the status card, as its header ("inverse footer and put it above as header"), and is headed by the main step's name, e.g. "Microbiome & Gut Health Assessment" ("add the title of the current main step above the timeline"). The status card overlaps its foot by 16px.
+
+5.836 One completed green everywhere: every #9CC088 becomes #42BE65 ("completed icon uses the same green as the rest"). That covers the done tick on the page's own card, the Timeline's done marks and segments, the Overview action plan's bars, documents' Signed and Done, and Health profile's ticks.
+
+5.837 The About this service modal is cut to its words ("remove properties rows, read more and cover"): the header "About this service" with its close, then the service's name and its description, with no banner, no duration / location / provider rows and no Read more.
