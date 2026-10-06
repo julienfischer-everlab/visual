@@ -12761,3 +12761,10 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.882 Cards are 24px round (32 -> 24, "card radius 24px"): the service page's cards, its sheets, the body card's top and the Timeline's step card.
 
 5.883 The desk's Your progress card (the right panel's service card with its steps, and the group's list) has 20px padding. The phone keeps 24px.
+
+5.884 The phone hero's Up next card:
+- It takes the locked cards' stripes (with the Locked pattern tweak) and a lock before the service's name.
+- 4px less at its top and bottom (44/20).
+- Its ground is #fff at 2%.
+
+5.885 XS service page: no 92px kept at the foot for a dock this page doesn't have. The body ends 40px under its last section ("remove this useless space at the bottom of mobile view").
