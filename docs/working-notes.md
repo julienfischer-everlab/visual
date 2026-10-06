@@ -12839,3 +12839,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.917 Phone and XS, a status with sub steps sits in one outlined card (.svWrap): 1px #fff 12% border, 32px corners, 8px inset. Inside, from the top: the main step's name (16 medium), the status card inset (24px corners), and the timeline under it with no ground ("like this"). The desk keeps the #fff 12% header strip on the status card.
 
 5.918 Sub steps: an info icon after the step in hand's name (.kitInfo). It opens a bottom sheet titled with the main step, listing every sub step down a timeline on the left, with the done, in hand and later colours and the waiting light. Each has its line: Completed date, its timing, or what it is. It covers the kit's five and the MRI report's two. The sheet (svSheet.subSh) is as tall as its list; the progress card's sheet stays almost full height.
+
+5.919 The MRI's and the microbiome's step cards (asCard) have no title row with the service's name and dot: they stand alone, without dependencies, as a single service's card (li.one). DEXA, with Diagnostics Review and Member Check-In after it, keeps its name in the card.
