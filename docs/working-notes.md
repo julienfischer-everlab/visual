@@ -12825,3 +12825,9 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 - the words 4px above and below and 20px from the bar's edge;
 - the line 3px under a 14/1.35 title, 12/1.4.
 Measured: each item 47px tall, on a 51px pitch, in both.
+
+5.912 With sub steps, the status card has a header strip across its top, edge to edge: #fff 12%, the main step's name (.svPendHd). It replaces the name inside the desk's sub steps card and the phone's title over the card. It works with Mini right too.
+
+5.913 The MRI's and the microbiome's progress lists are drawn as the DEXA's card (asCard): the service's name with its dot, then its services as steps in the same .svStep style. The tones map act -> on, wait -> on pas, conf -> on okc, closed -> grey, and later steps are struck through when closed. The old .svGrpL list is no longer used by them.
+
+5.914 The MRI's debrief, once ready, is the DEXA's report card: Dr Sarah Chen's avatar and date, the line, Watch video, and the picture. Watch video opens the debrief modal.
