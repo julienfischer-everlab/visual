@@ -12707,3 +12707,7 @@ The phone and XS are unchanged. It applies to the microbiome kit and the MRI's r
 - The title, card and body now move exactly with the finger.
 - The body stays a rounded card over the hero's foot: 28px overlap, its corners showing in XS too, since top:auto clears the inline -24px meant for sticky.
 - Only the picture is in parallax, lagging behind at 40%.
+
+5.862b On a locked service's page, Your progress puts the service(s) it waits on under a "Complete first" title, as Up next does for the locked ones (Diagnostics Review: Complete first, DEXA Scan; Up next, Diagnostics Review, Member Check-In).
+
+5.862c The service page's section titles on the phone and XS (Referrals, My documents and the others) are 20px, as the report's on the phone (Medical records, .mMedsHead h3). The desk keeps 18px, as the report there.
