@@ -12919,3 +12919,14 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 The status card then has no button; the primary is on the report card (See report, Watch video). dbShow takes its copy per service.
 
 5.950 Phone and XS: the "..." menu (Do it later, About this service) opens as a bottom sheet over a #000 72% dim. The desk keeps the dropdown.
+
+5.951 Fix: the microbiome kit opened directly past the lab (at 5 or 6) now sets the group to match (simIn), so the list reads Step 4 of 4 as through the arrows. The Book your Gut Health Review card is padded 20/24.
+
+5.952 Only a step with sub steps fills its bar partially (the kit); every other main step's bar is full. The questionnaire's own three steps no longer fill it to a third.
+
+5.953 New tweak, Report in status (stRepSt, a switch, off by default):
+- **On:** the report's CTA sits on the status block (DEXA See report; microbiome Read report + Watch video; MRI Watch video). The debrief section becomes "Results": no tabs, no report card, the results list directly (resL).
+- **Off:** as before, the report card holds the primary CTA.
+The modal comes first either way.
+
+5.954 Phone hero: the MRI's title breaks as "Whole Body MRI / & CT Chest".
