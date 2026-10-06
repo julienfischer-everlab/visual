@@ -12980,3 +12980,5 @@ Other services' cards in the progress list (e.g. Diagnostics Review) lose the da
 
 5.970 The status card's sub-step timeline: the dot in hand no longer ripples (the sub steps sheet keeps its ripple).
 Report in status ON: every completed results card uses the illustration layout: buttons under the text (two side by side, hugging their labels), illustration at the right. That covers results ready (pathology, DEXA, MRI, microbiome done), the MRI "debrief is ready" and the microbiome "report is ready".
+
+5.971 Removed from the service page tweaks panel, keeping their current values: Active card steps, Content, Locked modal, Documents, Doc number, Document layout, Multiple actions step, Locked pattern, Pattern opacity. The rows are hidden (.tkGone) so the code still reads their values.
