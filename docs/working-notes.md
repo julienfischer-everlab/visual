@@ -12770,3 +12770,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.885 XS service page: no 92px kept at the foot for a dock this page doesn't have. The body ends 40px under its last section ("remove this useless space at the bottom of mobile view").
 
 5.886 The phone's progress sheet (from the hero's Your progress card) opens almost full height: 64px clear at the top. It shows the desk's panel exactly: built with PH off, so the service's own card carries its steps, then Up next. The list starts right under the sheet's title.
+
+5.887 The Up next card under the phone's progress card: its words at #fff 32% (was 56%), 14px and all regular, and 4px less at its top and bottom (40/16).
