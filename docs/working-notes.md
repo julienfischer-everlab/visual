@@ -12948,3 +12948,7 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 5.960 My documents rows (and other document list rows) have no corner radius: they're rows divided by lines, not cards. The global 24px card corner had caught them. The Book your Gut Health Review card keeps its 24px.
 
 5.961 The bars' step-change transition is off ("remove bar step transition"): no fill, grow-in, glow, pop or fill sweep when the step moves. advMark and its CSS stay in the file, uncalled.
+
+5.962 Microbiome arrows:
+- Next on the questionnaire (to do) does what submitting does: the questionnaire done, the kit open at Confirm your address, Step 2 of 4. It no longer walks the questionnaire's own steps into "completed".
+- Previous from the kit's first step undoes it: the questionnaire still to do, Step 1 of 4, with previous disabled.
