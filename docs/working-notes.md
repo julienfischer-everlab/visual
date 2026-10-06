@@ -12888,3 +12888,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.940 The sub steps' ripple leaves the dot in the dot's own colour at full strength, then fades as it spreads to 10px (was 50% at the start, reading as a dark halo).
 
 5.941 The demo's step arrows cross services in a group. At a service's first step, previous opens the service before it (the kit's Confirm your address -> Gut Health Questionnaire, done). From a done or last step, next opens the one after it. The arrows only disable at the group's ends. A step from the phone's sheet closes the sheet first.
+
+5.942 The MRI's Book your scan secondary reads "Can't find a time?". On the phone and XS, every button in the status card fills the card: a desk rule sizing the buttons to their label had caught XS's ghost button ("fill container").
