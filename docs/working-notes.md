@@ -12841,3 +12841,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.918 Sub steps: an info icon after the step in hand's name (.kitInfo). It opens a bottom sheet titled with the main step, listing every sub step down a timeline on the left, with the done, in hand and later colours and the waiting light. Each has its line: Completed date, its timing, or what it is. It covers the kit's five and the MRI report's two. The sheet (svSheet.subSh) is as tall as its list; the progress card's sheet stays almost full height.
 
 5.919 The MRI's and the microbiome's step cards (asCard) have no title row with the service's name and dot: they stand alone, without dependencies, as a single service's card (li.one). DEXA, with Diagnostics Review and Member Check-In after it, keeps its name in the card.
+
+5.920 Body style No card: the hero's fade into #0f0f0f, and the picture's foot with it, start 32px higher.
