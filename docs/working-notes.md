@@ -12882,3 +12882,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.937 Fix: the filled main step's track kept the waiting loading light, because .svStep.on.pas outranked .svStep.fill. The rule now names .svStep.fill.on.pas too, so the unfilled part is the next steps' #4d4d4d ("incomplete colour should be the same as the next step colour").
 
 5.938 The service page's tweaks sit in two cards ("one card per group"): General (everything else) and Sub steps (colour, footer style, card with sub steps). Both are data-svc, shown on the service page only.
+
+5.939 The phone and XS hero bars, as the desk's list: the service in hand fills its bar as far as its sub steps (e.g. 40% at 2 of 5, 80% at 4 of 5), in its status colour. The rest is the next bars' #4d4d4d, with no loading light.
