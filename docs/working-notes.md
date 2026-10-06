@@ -12619,3 +12619,7 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 5.837 The About this service modal is cut to its words ("remove properties rows, read more and cover"): the header "About this service" with its close, then the service's name and its description, with no banner, no duration / location / provider rows and no Read more.
 
 5.838 The Sub steps tweak is gone; the kit's sub steps are the stepper, as in the design ("remove stepper tweak, keep as the design").
+
+5.839 Docs in one step (1 / 2 / 3) becomes Multiple actions step, On / Off ("replace by multiple actions step on / off; this step is the first of the timeline, to show what Required actions can look like"):
+- On, the documents are one first step, "Required actions · 1 of 4 done", and the status block stacks all their cards, each with its own button, ticked as they're done.
+- Off, each document is a step of its own, as before.

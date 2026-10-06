@@ -10022,11 +10022,10 @@
         </div>
         <!-- the documents of one step as one step, their cards stacked in the status block ("if multiple consents / docs inside one step, stack them as cards inside the status block; tweak multiple doc inside step on / off") -->
         <div class="tkRow">
-          <span class="lbl">Docs in one step</span>
-          <select id="stDocGrp" aria-label="How many documents make one step">
-            <option value="1" selected>1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+          <span class="lbl">Multiple actions step</span>
+          <select id="stDocGrp" aria-label="One Required actions step for all the documents">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
           </select>
         </div>
         <!-- the sub steps' card under the status block: outlined, or a grey ground ("tweak footer style: bordered, outlined no bg; bg grey #fff opacity 4%") -->
@@ -23898,10 +23897,10 @@
       const CH = []; for (let k = 0; k < dl.length; k += DGRP) CH.push(dl.slice(k, k + DGRP));   // the documents in steps of DGRP
       const chAt = docAt >= 0 ? Math.floor(docAt / DGRP) : -1, grpOn = DGRP > 1 && DOCS === 'asSteps' && chAt >= 0 && CH[chAt].length > 1;   // the step in hand holds several: their cards in the status block
       const PENDSET = grpOn ? new Set(CH[chAt].map(([, t]) => t)) : null;
-      const chName = c => c.every(([k]) => k === 'sign') ? 'Sign your consents' : c.every(([k]) => k === 'form') ? 'Fill in your questionnaires' : 'Complete your documents';
+      const chName = c => 'Required actions';
       const docsSt = docsOn || ((state === 'done' || at >= n) && !/^(locked|later|suggested|purchase|claim)/.test(state));   // the documents stay in the steps once it is done, ticked, so the list keeps its length ("completed should have the same amount of steps")
       const steps = d.steps.map((st, i) => (DOCS === 'asSteps' && docsSt && i === a0 && DGRP > 1 && dl.length ? CH.map((c, ci) => c.length === 1 ? '<div class="svStep svStepDoc' + (DOCDONE.has(c[0][1]) || !early ? ' ok' : ci === chAt ? ' on' : '') + '"><b>' + escS(c[0][1]) + '</b><span>' + DLINE(c[0][2]) + '</span></div>'
-          : '<div class="svStep svStepDoc' + (c.every(([, t]) => DOCDONE.has(t)) || !early ? ' ok' : ci === chAt ? ' on' : '') + '"><b>' + chName(c) + '</b><span>' + c.map(([, t]) => escS(t)).join(' \u00b7 ') + '</span></div>').join('') : DOCS === 'asSteps' && docsSt && i === a0 ? dl.map(([ic, t, b], k) => '<div class="svStep svStepDoc' + (DOCDONE.has(t) || !early ? ' ok' : k === docAt ? ' on' : '') + '"><b>' + escS(t) + '</b><span>' + DLINE(b) + '</span></div>').join('') : '') +
+          : '<div class="svStep svStepDoc' + (c.every(([, t]) => DOCDONE.has(t)) || !early ? ' ok' : ci === chAt ? ' on' : '') + '"><b>' + chName(c) + '</b><span>' + (c.filter(([, t]) => DOCDONE.has(t)).length) + ' of ' + c.length + ' done</span></div>').join('') : DOCS === 'asSteps' && docsSt && i === a0 ? dl.map(([ic, t, b], k) => '<div class="svStep svStepDoc' + (DOCDONE.has(t) || !early ? ' ok' : k === docAt ? ' on' : '') + '"><b>' + escS(t) + '</b><span>' + DLINE(b) + '</span></div>').join('') : '') +
         '<div class="svStep' + (at >= 0 && i < at ? ' ok' : at >= 0 && i === at && docAt < 0 ? ' on' + (PASV.test(st[0]) ? ' pas' : '') : '') + '"><b>' + escS(st[0]) + '</b><span>' + escS(st[1]) + '</span></div>').join('');
       if (grpOn){ const nmS = (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t; x.tag = 'Pending action'; x.tone = ''; x.h = (CH[chAt].every(([k]) => k === 'sign') ? 'Sign these before your ' : CH[chAt].every(([k]) => k === 'form') ? 'Fill these in before your ' : 'Complete these before your ') + nmS; x.p = 'These need to be finished before your ' + escS(nmS) + ' can be scheduled.'; x.noBtn = true; x.btns = null; x.doc = null; }   // the step's documents stacked as cards in the block, each its own button
       else if (docAt >= 0){ const [, t, b] = dl[docAt]; x.tag = 'Pending action'; x.tone = ''; x.h = (b === 'Review' ? 'Sign your ' : b === 'Upload' ? 'Upload your ' : 'Complete your ') + t;   /* the status block says what to do, the step on the right keeps the name ("the title should be more action driven") */ x.p = DLINE(b); x.btn = b; x.btns = null; x.noBtn = false; x.dis = false; x.goJ = null; x.goNeed = ''; x.doc = t; }   // the status block is that document's
@@ -24001,7 +24000,7 @@
     };
     /* Content under tabs: each section below the status block is a tab of its own, one shown at a time ("try a tweak: content under tabs, where all sections are under tab") */
     let CTABS = false, CPILL = false, CALL = false, CTAB = '';   // CALL: every section under the tabs, Results aside ("tweak this with the tab system")   // CPILL: the tabs as pills ("all sections of the body organised under a tab pill system")
-    let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => Math.max(1, Math.min(3, parseInt(t.value, 10) || 1)); if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); /* documents per step, 1 to 3 ("select 1 2 3") */ if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
+    let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => t.value === 'on' ? 99 : 1; if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   /* on: every document in one first step, Required actions, their cards stacked in the status block ("replace by multiple actions step on / off") */
     let PPL = 'hero'; { const t = document.getElementById('stProgPl'); if (t){ PPL = t.value; t.addEventListener('change', () => { PPL = t.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // where the phone's main step block goes ("tweak progress placement: in hero header, in status block")
     let KITV = 'stepper';   // the stepper, as the design; the Sub steps tweak is gone ("remove stepper tweak, keep as the design")
     let LKV = 'banner'; { const t = document.getElementById('stLkMod'); if (t){ LKV = t.value; t.addEventListener('change', () => { LKV = t.value; }); } }   // the locked modal's header: the banner, or the simple centred one
@@ -27105,7 +27104,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
