@@ -12589,3 +12589,7 @@ Tapping the block still opens the steps sheet.
 5.829 The stepper's step in hand is a 2px ring with a 6px dot inside, in the status block label's colour: orange #F78359 when it's the member's turn, #BCCFEA while they wait. Its ripple is the same colour, in either Sub steps colour ("active circle, outlined 2px with a filled circle inside, same colour code as the label status above").
 
 5.830 Steps done and steps ahead both dim their content (name and line) to 50%, leaving the bar at full colour; the step in hand stays at 100% ("completed steps and next steps: opacity only on the content, 50%"). This applies to the service page's step list and the right panel's group of services. When every step is done, nothing is dimmed and everything shows at 100% ("exception: all steps completed, no opacity"); the page marks this with .svFin, the group list with .allDone. Later services keep their text colours, so the 50% alone does the dimming.
+
+5.831 The kit's sub steps follow the same rule ("inactive opacity"). In the to-do list and the stepper, the words of steps done and steps ahead are #ECECEC at 50%, while the ticks, rings and circles stay at full. The step in hand is at 100%.
+
+5.832 The "This service" badge is gone from the page's own card in Your progress, and likewise in the appointment page's progress and the Timeline's group lists ("remove this"). The card is told apart by its place and its steps.
