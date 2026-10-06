@@ -12903,3 +12903,19 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 - Both start "Started on 2 Oct 2026"; the kit's My documents lists the questionnaire, completed 3 Oct 2026.
 
 5.947 The microbiome runs from its start. The Service select's Microbiome test opens the questionnaire, with the kit not begun. Start questionnaire opens its form; submitting it marks it done and opens the kit at Confirm your address. The kit's button walks its steps. The kit's arrows no longer step through hidden documents first.
+
+5.948 The microbiome, continued from the design (the kit's stages 3 to 6; the arrows run past the kit's own five):
+- **3, Collect and post your sample:** the line marks "Sunday, Monday or Tuesday". Buttons are I've posted my sample (primary) and How to collect.
+- **4, At the lab:** "Results are expected by Fri 27 Nov. We'll let you know as soon as they're in."
+- **5, Your results are in (wait):** "Your clinician is preparing your report and video walkthrough. Expected by Fri 13 Nov." The page shows Your debrief (Report / Results) with the placeholder. The list reads kit Results in 10 Nov, Report Expected by 13 Nov.
+- **6, Your microbiome report is ready (Ready):** "Watch your video walkthrough, then read your report." The report card is Emma Walsh · 13 Nov 2026, Your microbiome report, with Watch video (primary) and Read report. Below it, Book your Gut Health Review with Book. The list reads Report Ready 13 Nov, Review "Included 30 minute call with your dietitian".
+- The kit's bar fills only for its own steps; the report and the review take their colour from the stage.
+- Fix: the stage is read from x.at, since at is capped at the kit's last step.
+
+5.949 When a report is complete, the modal comes first, every time the page reaches that state:
+- the microbiome's (Emma Walsh's copy);
+- the DEXA's done (Dr Steven Lu, See report / I'll read it later);
+- the MRI's, as before.
+The status card then has no button; the primary is on the report card (See report, Watch video). dbShow takes its copy per service.
+
+5.950 Phone and XS: the "..." menu (Do it later, About this service) opens as a bottom sheet over a #000 72% dim. The desk keeps the dropdown.
