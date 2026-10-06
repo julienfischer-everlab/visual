@@ -12575,3 +12575,5 @@ It covers the to-do list, stepper and linear bar. The status block and the right
 - In status block puts the same block (Your progress, the count, the bars, the step) at the top of the status block on a clear ground, with a rule under it before the tag and title. The hero is then just the title, date and picture.
 
 Tapping the block still opens the steps sheet.
+
+5.824 The stepper's connecting lines are 2px thinner, 4 → 2px, still centred on the 14px circles ("reduce line by 2px").
