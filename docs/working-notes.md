@@ -12503,3 +12503,18 @@ The member starts at Kit being prepared, on the page and in the Timeline. The ph
 - The circles are 4px smaller (22 → 18px).
 - The track is cut into segments, one between each two circles and 4px clear of both. A segment is green once the step before it is done ("4px gap between circles and lines").
 - The step in hand ripples, blue or orange, every 1.8s ("ripple effect on the active one"), and holds a still ring when reduced motion is set.
+
+5.804 On the microbiome's Collect and post your sample step, Instructions becomes "Before you post", a numbered list as in the capture:
+1. Use every collection container in the kit.
+2. Pack the Microba ice pack in the return package. Don't swap it for another one.
+3. Activate the temperature gauge.
+4. Post on a Sunday, Monday or Tuesday only, with the days on a soft yellow mark.
+
+Numbers are in grey.
+
+5.805 On the microbiome's At the lab step, Instructions becomes "What happens next", as in the capture:
+1. Microba sequences your sample and sends us your results.
+2. Your clinician reviews them and records a video walkthrough for you.
+3. Your report, video and recommendations land here, and we'll let you know.
+
+The kit's dates now run 3, 6, 9 and 13 Oct for the done steps, with Results by 27 Nov at the lab.
