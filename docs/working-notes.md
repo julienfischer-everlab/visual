@@ -12634,3 +12634,14 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 5.841 A step not in hand (done or ahead) has its title in the sub line's grey #8B8B86, still at 50% ("inactive step: titles the same colour as the sub title"), both on the service page and in the group panel. All done, the titles are white again.
 
 5.842 A done service in Your progress is no longer struck through ("remove strikethrough"). The MRI's closed services keep theirs, as in the design.
+
+### 5.843 MRI: last 5 screens, debrief modal, warning colour
+- New MRI stages, inserted before "Not going ahead" (now stage 14):
+  - 9: Choose a new time (the clinic cancelled).
+  - 10: Booked, confirmed, with Your appointment rows.
+  - 11: With the radiologist.
+  - 12: Your doctor is reviewing.
+  - 13: Your debrief is ready.
+- Stages 11 to 13 show "Your debrief" (Report / Results chips) with a placeholder card. Stage 11 adds "What happens next".
+- Stage 13 opens a modal over the page: doctor avatar with a play button, Ready tag, note, Watch video, and "I'll watch later". It opens once each time the MRI reaches that stage, and Watch video reopens it.
+- The status block's warning now uses the DEXA pending design colours: background #3a1f0b, tag and dot #f5be8c. Light mode has its own fallback.
