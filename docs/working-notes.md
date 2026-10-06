@@ -12975,3 +12975,5 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 
 5.968 Report in status ON, completed: "See report" sits under the text, and the report illustration (assets/overview/report-slot.svg) is at the card's right on the desk. The phone and XS keep the full-width button with no illustration. The SVG came in at 17.9 MB from two embedded photos; they're downscaled to the size they're drawn at (39 KB).
 Other services' cards in the progress list (e.g. Diagnostics Review) lose the dashed outline and get the same plain grey (#181818) as the page's own card. Locked cards keep their pattern.
+
+5.969 The gap between the status card and the sub-step timeline under it is 24px larger (padding top 8 to 32).
