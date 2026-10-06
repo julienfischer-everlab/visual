@@ -12977,3 +12977,6 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 Other services' cards in the progress list (e.g. Diagnostics Review) lose the dashed outline and get the same plain grey (#181818) as the page's own card. Locked cards keep their pattern.
 
 5.969 The gap between the status card and the sub-step timeline under it is 24px larger (padding top 8 to 32).
+
+5.970 The status card's sub-step timeline: the dot in hand no longer ripples (the sub steps sheet keeps its ripple).
+Report in status ON: every completed results card uses the illustration layout: buttons under the text (two side by side, hugging their labels), illustration at the right. That covers results ready (pathology, DEXA, MRI, microbiome done), the MRI "debrief is ready" and the microbiome "report is ready".
