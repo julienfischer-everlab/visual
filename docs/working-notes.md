@@ -12525,3 +12525,5 @@ The kit's dates now run 3, 6, 9 and 13 Oct for the done steps, with Results by 2
 - Pathology test opens at book.
 
 The select follows the page as it changes. The service page is now the only layout; the appointment page is no longer reachable from here.
+
+5.807 The stepper's segments sit 8px clear of each circle, up from 4 ("4px + gap between circle and line").
