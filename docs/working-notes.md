@@ -12623,3 +12623,14 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 5.839 Docs in one step (1 / 2 / 3) becomes Multiple actions step, On / Off ("replace by multiple actions step on / off; this step is the first of the timeline, to show what Required actions can look like"):
 - On, the documents are one first step, "Required actions · 1 of 4 done", and the status block stacks all their cards, each with its own button, ticked as they're done.
 - Off, each document is a step of its own, as before.
+
+5.840 The MRI service gains the rest of its screens, stages 6 to 10 (the arrows walk them; "complete the rest of the steps content"):
+6. Sign your consent: Review and sign, "Why we need this information". The referral to Quantum Therapy Sydney (issued 9 Oct 2026) joins My documents. Step 3 of 6.
+7. Pay your balance to book your scan: "$2,800, after your $199 deposit", Pay $2,800, then a numbered "Before your scan" (six points, "{4 hours}" marked as an open value). The signed consent joins My documents. Step 4 of 6, the consent "Signed 10 Oct".
+8. Book your scan: Book scan above an outlined "Can't find a time? We'll book it for you", Before your scan. The panel reads "Book at a partner imaging clinic".
+9. We're booking your scan with Quantum Therapy Sydney: blue, "confirm within {2} business days", one outlined Update your availability, and the header "Booking confirmed by Wed 14 Oct".
+10. The exception, Not going ahead: grey, "A Whole Body MRI isn't the right fit for you right now", the doctor's words in a quote, Message your care team, the header "Closed on 9 Oct 2026". The panel reads "Closed", the consent is white "Not going ahead", and the services after it are struck through. My documents shows the questionnaire only.
+
+5.841 A step not in hand (done or ahead) has its title in the sub line's grey #8B8B86, still at 50% ("inactive step: titles the same colour as the sub title"), both on the service page and in the group panel. All done, the titles are white again.
+
+5.842 A done service in Your progress is no longer struck through ("remove strikethrough"). The MRI's closed services keep theirs, as in the design.
