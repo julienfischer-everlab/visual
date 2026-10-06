@@ -12845,3 +12845,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.920 Body style No card: the hero's fade into #0f0f0f, and the picture's foot with it, start 32px higher.
 
 5.921 The phone's card holding a status with sub steps has 12px padding (was 8px). New tweak, Card with sub steps (stWrapSty): Outlined (default, the 1px #fff 12% outline) or Grey (#fff 4% ground, no outline).
+
+5.922 The desk follows the phone for a status with sub steps ("follow mobile style"): one card (outlined or grey, with the tweak) holding the main step's name, the status card inset, and the timeline under it. The timeline shows the nodes only (520px wide at most), the step in hand centred under them with its info icon and "Next: ...". The #fff 12% header strip is kept only for Mini right.
