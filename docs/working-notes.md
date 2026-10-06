@@ -12697,3 +12697,8 @@ The phone and XS are unchanged. It applies to the microbiome kit and the MRI's r
 5.859 Phone and XS: when the next service in the journey is locked, an "Up next" card with its name sits tucked under the hero's progress card. The two are stacked, the progress card opaque on top (.svmHzStack, .svmHzNext). The grey ground under the hero measures the whole stack. The MRI and microbiome heroes, which already show their group, are unchanged.
 
 5.860 The MRI report's sub step timeline has two steps, Radiologist report and Doctor review ("only need 2 sub steps"). On the radiologist stage the first is in hand; on the doctor review stage the first is done and the second in hand.
+
+5.861 MRI debrief ready (stage 13):
+- The last service, Post-Scan Debrief, is green, as reached (MK 'conf'), in the panel and on the phone's bars.
+- The next arrow is disabled there: the journey ends at the debrief.
+- The Not going ahead screen (stage 14) is an exception, no longer reachable with the arrows. It opens with `_svc.openDesk('wbmri', 'active', { at: 14 })`.
