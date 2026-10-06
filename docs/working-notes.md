@@ -12833,3 +12833,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.914 The MRI's debrief, once ready, is the DEXA's report card: Dr Sarah Chen's avatar and date, the line, Watch video, and the picture. Watch video opens the debrief modal.
 
 5.915 Timeline step items: the words have 8px above and below (was 4px), and the line sits 1px under the title (was 3px).
+
+5.916 A waiting (neutral) step always shows it's moving. In the step lists (desk, sheet), a light runs down its bar, top to bottom (svLoadV). On the phone and XS hero bars, it runs left to right (svLoadH). Each takes 1.6s, and stops with reduced motion. The kit's sub steps already had it (5.904). The gradient and size are !important so later background shorthands can't wipe them; the position is left free to animate.
