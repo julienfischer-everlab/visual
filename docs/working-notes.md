@@ -12870,3 +12870,5 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.931 In the progress lists, the service in hand fills its bar as far as its sub steps (.svStep.fill, --gf): e.g. the kit at 2 of 5 fills 40%, at 4 of 5 80%. The fill is in its status colour and the rest is the grey track; a waiting one keeps the loading light on the track.
 
 5.932 No info icon on the desk's sub steps labels (every step is named there); the phone and XS keep it beside the centred step.
+
+5.933 Sub steps timeline: the line between two steps done is #fff (was #fff 55% in white & grey, green in coloured).
