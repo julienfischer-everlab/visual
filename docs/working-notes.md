@@ -12930,3 +12930,11 @@ The status card then has no button; the primary is on the report card (See repor
 The modal comes first either way.
 
 5.954 Phone hero: the MRI's title breaks as "Whole Body MRI / & CT Chest".
+
+5.955 Each step change shows on the timeline (advMark, after paint when the same service or group moves on):
+- the bar just done fills green from its top (lists) or left (phone bars, sub steps' line);
+- the new step's bar grows in after it, and its row glows briefly;
+- the sub steps' new dot pops, then ripples.
+When only a sub step moves, the main bar's fill grows from the old share to the new (@property --gf, from --gf0). None of it plays with reduced motion.
+
+5.956 The phone hero's progress card: 10px between its title row and the bars (was 14px).
