@@ -12565,3 +12565,7 @@ Done bars are #42BE65. Tapping the block opens the steps sheet.
 - Coloured: the green / orange / blue as before.
 
 It covers the to-do list, stepper and linear bar. The status block and the right panel keep their colours.
+
+5.822 On the phone (and XS) the stepper names only the step in hand ("sub steps on mobile can't show all labels, only show the current one"). The five nodes stay on their line without names, and under them sits one line with the current step's name at the left and its when at the right ("Kit being prepared · Ships by 7 Oct"). The desk keeps a name under each node.
+
+5.822 On the phone (and XS) the stepper names only the step in hand ("sub steps on mobile can't show all labels, only show the current one"). The five nodes stay on their line without names, and under them sits one line with the current step's name at the left and its when at the right ("Kit being prepared · Ships by 7 Oct"). The desk keeps a name under each node.
