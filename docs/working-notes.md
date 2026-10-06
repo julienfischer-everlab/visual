@@ -12545,3 +12545,5 @@ The select follows the page as it changes. The service page is now the only layo
 - Bordered is a 1px outline at 10% with no ground.
 
 5.815 The sub steps footer card's padding is 8px less top and bottom: 52 / 30 on the desk, 50 / 28 on the phone ("decrease padding top bottom 8px").
+
+5.816 The "you wait" status block (In progress) is #fff at 4% instead of navy, with the tag and dot still #BCCFEA ("In progress (user wait): bg #fff opacity 4%"). When it is stacked over the sub steps card it uses #1b1b1b, the same grey made opaque.
