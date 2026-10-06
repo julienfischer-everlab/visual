@@ -12806,3 +12806,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.903 No blue: waiting / In progress is neutral #b8b8b8 (was #bccfea). That covers the status tag and dot, the step bars, the group's bar, the kit's nodes and ripple, and the phone's progress bars. Light mode's #5560b8 is a warm grey.
 
 5.904 Sub step timeline: when the step in hand is waiting (neutral), the line on to the next step shows a loading light running left to right (kitLoad, 1.6s; still with reduced motion). The gradient is set as background-image, not the shorthand: an !important shorthand pins background-position, and the animation can't move it.
+
+5.905 Phone and XS: the step in hand is named as a heading above the status card and its sub steps (.svStepT). It takes the main step for a kit or a report, the service for the MRI's group, the document in hand, or else the service's step. It moves out of the sub steps card, which on the phone no longer repeats it. There's no heading on a locked, later, suggested, to buy, to claim or done page.
