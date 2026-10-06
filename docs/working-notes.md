@@ -12990,3 +12990,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.973 Sub-step timeline line back to 2px (from 4). No more flash/ripple on the status card when a step lands (svFlash off); the only ripple left is the current dot in the sub-step timeline. Phone "Your progress" card: 4px more between the title row and the bars (10 to 14).
 
 5.974 "Report in status" is renamed "Merge report in status card". When it's ON, a "Visual" row appears: Generic (the report illustration) or Doctor (default, the photo card). The "Ready" cards now use the doctor card too: Emma Walsh, 13 Nov 2026, for the microbiome and Dr Sarah Chen, 3 Nov 2026, for the MRI debrief, both from hero-consult.webp cropped on her. Phone status card: 4px less between the text and the button (margin top 16 to 12).
+
+5.975 Microbiome kit: no Referrals and no service details section on any of its sub steps (address to lab), not only Collect and post.
