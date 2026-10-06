@@ -12651,3 +12651,7 @@ The phone shows the same, with the hero card's six bars. Two stacked buttons sit
 5.845 On the MRI's first step, the button opens the MRI safety questionnaire in the document modal. Submitting it moves to step 2, and My documents appears below with the questionnaire, which View reopens read-only.
 
 5.846 The About this service modal no longer repeats the service name: it shows only the description, under the "About this service" heading. Its padding is 24px on the left and right.
+
+5.847 Phone service page:
+- The hero has 32px more above the h1.
+- Once the hero title has half gone under the top bar, or under the sheet, it fades into the bar between back and more. It is one line, with an ellipsis (#phone2.svcTitled .svmNavT).

@@ -7057,6 +7057,10 @@
   #phone2.svcScrolled .svmNav::before, #phone2.svcScrolled .svmNav .ovGround{opacity:1;}
   .svmBtn{width:44px;height:44px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.16);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
   .svmBtn svg{width:16px;height:16px;} .svmBtn.svBack{background:rgba(255,255,255,.16);}
+  #svcMob .svmHero, .svXsHero.svmHero{padding-top:calc(var(--stH,54px) + 152px);}   /* 32 more above the title ("add 32px padding top above h1") */
+  .svmNavT{position:absolute;left:72px;right:72px;bottom:12px;height:44px;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .25s ease,transform .25s ease;}
+  .svmNavT span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:16px;font-weight:500;color:#fff;}
+  #phone2.svcTitled .svmNavT{opacity:1;transform:none;}   /* the title in the bar once the hero's own has gone under it ("on scroll the h1 title should fade in inside the top header, with ellipsis") */
   .svmHero h1{margin:0;font-size:22px;font-weight:500;line-height:1.2;letter-spacing:-.3px;color:#fff;}
   .svmStart{margin-top:6px;font-size:15px;color:rgba(255,255,255,.6);}
   .svmProg{margin-top:20px;padding:20px 22px;border-radius:16px;background:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
@@ -24040,6 +24044,7 @@
         const h = mob.querySelector('.svmHero'), b = mob.querySelector('.svmBody');
         mob.style.setProperty('--svmImg', 'url(' + img + ')');
         if (h){ h.innerHTML = heroH; hzGround(h); }
+        { const nv = mob.querySelector('.svmNav'); let t = nv && nv.querySelector('.svmNavT'); if (nv && !t){ t = document.createElement('div'); t.className = 'svmNavT'; t.setAttribute('aria-hidden', 'true'); t.innerHTML = '<span></span>'; nv.appendChild(t); } if (t) t.firstChild.textContent = title; }
         if (b) b.innerHTML = (J && JR === 'card' ? ref(true) + jrM(true, true) : J && JR === 'body' ? pend(true) + ref(true) + repBody + jrM(true) : pend(true) + ref(true) + repBody + jrM(false)) + (J && JR === 'card' ? repBody : '') + (toBook || noApt ? '' : sec) + (noApt ? '' : instr) + docBody /* My documents always last ("my documents always at the end") */ + '';
       }
       { const fin = state === 'done' || at >= n; if (desk) desk.classList.toggle('svFin', fin); if (mob) mob.classList.toggle('svFin', fin); }   // every step done: nothing dimmed ("exception: when all steps are completed, all steps at 100%")
@@ -24124,8 +24129,9 @@
     let fxQ = 0; const fxOn = sc => () => { if (fxQ) return; fxQ = requestAnimationFrame(() => { fxQ = 0; heroFx(sc); }); };
     if (desk) desk.addEventListener('scroll', () => desk.classList.toggle('ovScrolled', desk.scrollTop > 6), { passive: true });
     if (desk) desk.addEventListener('scroll', fxOn(desk), { passive: true });   // the bar's ground, once the page moves under it
-    const openMob = (key, state, o) => { if (!ph) return; [key, state, o] = simIn(key, state, o); if (LAY === 'apt' && window._apt){ window._apt.openMob({ from: o && o.from === 'tl' ? 'tl' : null }); return; } paint(key || 'dexa', state || (key ? 'request' : 'book'), o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled'); mark('svcM'); };
-    if (mob && ph) mob.addEventListener('scroll', () => ph.classList.toggle('svcScrolled', mob.scrollTop > 6), { passive: true });
+    const openMob = (key, state, o) => { if (!ph) return; [key, state, o] = simIn(key, state, o); if (LAY === 'apt' && window._apt){ window._apt.openMob({ from: o && o.from === 'tl' ? 'tl' : null }); return; } paint(key || 'dexa', state || (key ? 'request' : 'book'), o); ph.classList.add('svcOn'); if (mob) mob.scrollTop = 0; ph.classList.remove('svcScrolled', 'svcTitled'); mark('svcM'); };
+    if (mob && ph) mob.addEventListener('scroll', () => { ph.classList.toggle('svcScrolled', mob.scrollTop > 6);
+      const h1 = mob.querySelector('.svmHero h1'), nv = mob.querySelector('.svmNav'); const sb = mob.querySelector('.svmBody'); ph.classList.toggle('svcTitled', !!(h1 && nv) && ((r => r.top + r.height / 2)(h1.getBoundingClientRect()) < nv.getBoundingClientRect().bottom || (!!sb && sb.getBoundingClientRect().top < h1.getBoundingClientRect().bottom))); }, { passive: true });   // once the hero's title has gone, under the bar or under the sheet
     if (mob) mob.addEventListener('scroll', fxOn(mob), { passive: true });   // past 6, as the Overview's bar
     // the steps sheet: a tap on the page's own card in the horizontal layout opens its steps listed, in the Timeline's bottom sheet ("on click on active step card open bottom sheet with vertical breakdown, same as the timeline view bottom sheet")
     const SX = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 3l6 6M9 3 3 9"/></svg>';
