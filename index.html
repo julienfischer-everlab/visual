@@ -6710,11 +6710,26 @@
   .kitL li.on{color:#a8a8a3;} .kitL li.cur{color:#f4f4f4;font-weight:500;} .kitL li.cur .kitRad{border-width:2px;} .kitL li.cur .kitRad::after{content:"";width:8px;height:8px;border-radius:50%;}
   .kitL li.cur.wait .kitRad{border-color:#a9b1f5;} .kitL li.cur.wait .kitRad::after{background:#a9b1f5;} .kitL li.cur.act .kitRad{border-color:#f78359;} .kitL li.cur.act .kitRad::after{background:#f78359;}
   body.light .kitCard{border-top-color:rgba(46,31,26,.1);} body.light .kitHd b, body.light .kitL li.cur, body.light .kitL em.now{color:#2e1f1a;} body.light .kitRad{border-color:rgba(46,31,26,.3);}
+  /* the stepper: nodes on a track, the track filled to the step in hand, a name under each */
+  .kitStep{list-style:none;position:relative;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(var(--kn),minmax(0,1fr));}
+  .kitStep::before, .kitStep::after{content:"";position:absolute;top:9px;left:calc(50% / var(--kn));height:4px;border-radius:2px;}
+  .kitStep::before{right:calc(50% / var(--kn));background:rgba(255,255,255,.1);} .kitStep::after{width:calc((100% - 100% / var(--kn)) * var(--kp));background:#9cc088;}
+  .kitStep li{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;font-size:12.5px;line-height:1.3;color:#7d7c78;padding:0 4px;}
+  .kitDot{display:flex;align-items:center;justify-content:center;width:22px;height:22px;box-sizing:border-box;border-radius:50%;background:#2c2c33;color:#10140e;} .kitDot svg{width:11px;height:11px;}
+  .kitStep li.on .kitDot{background:#9cc088;} .kitStep li.on{color:#a8a8a3;} .kitStep li.cur{color:#f4f4f4;font-weight:500;}
+  .kitStep li.cur .kitDot{box-shadow:0 0 0 4px rgba(169,177,245,.2);background:#a9b1f5;} .kitStep li.cur.act .kitDot{box-shadow:0 0 0 4px rgba(247,131,89,.2);background:#f78359;}
+  .svPend:not(.wait) .kitDot{background:#3a2c25;} .svPend:not(.wait) .kitStep li.on .kitDot{background:#9cc088;} .svPend:not(.wait) .kitStep::before{background:rgba(255,255,255,.1);}
+  /* the linear bar: one track, filled to halfway through the step in hand */
+  .kitBar{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;} .kitBar i{display:block;height:100%;width:calc(var(--kf) * 100%);border-radius:3px;background:linear-gradient(90deg,#9cc088 0,#9cc088 calc(100% - 40px),var(--kc) 100%);}
+  .kitBar.wait{--kc:#a9b1f5;} .kitBar.act{--kc:#f78359;}
+  .kitBarT{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:12px;} .kitBarT b{font-size:15px;font-weight:500;color:#f4f4f4;} .kitBarT span{font-size:13.5px;color:#8b8b86;white-space:nowrap;}
+  body.light .kitStep::before, body.light .kitBar{background:rgba(46,31,26,.1);} body.light .kitDot{background:#e3ddd3;} body.light .kitBarT b, body.light .kitStep li.cur{color:#2e1f1a;}
   /* the group's services as the steps of the right panel: a bar coloured by who acts, the name, a line */
   .svGrp .svProgHead{display:flex;align-items:center;justify-content:space-between;} .svGrpN{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:400;color:#8b8b86;}
   .svGrpL{list-style:none;margin:0;padding:18px 20px;border-radius:20px;background:rgba(255,255,255,.06);display:grid;gap:18px;}
   .svGrpL li{display:flex;gap:16px;min-height:22px;cursor:pointer;} .svGrpL li.me{cursor:default;} .svGrpL li > div{min-width:0;}
-  .svGrpBar{flex:none;width:4px;border-radius:2px;background:rgba(255,255,255,.14);} .svGrpL li.on .svGrpBar{background:#9cc088;} .svGrpL li.wait .svGrpBar{background:#a9b1f5;} .svGrpL li.act .svGrpBar{background:#f78359;}
+  .svGrpBar{flex:none;position:relative;width:4px;border-radius:2px;background:rgba(255,255,255,.14);overflow:hidden;} .svGrpL li.on .svGrpBar{background:#9cc088;}
+  .svGrpL li:is(.wait, .act) .svGrpBar::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(var(--gf, 1) * 100%);border-radius:2px;background:#a9b1f5;transition:height .3s ease;} .svGrpL li.act .svGrpBar::after{background:#f78359;}   /* filled top down to the sub step in hand, the rest of the track grey */
   .svGrpL b{display:block;font-size:15px;font-weight:400;line-height:1.35;color:#ececec;} .svGrpL span{display:block;margin-top:3px;font-size:13.5px;line-height:1.4;color:#8b8b86;}
   .svGrpL li.wait b, .svGrpL li.act b{font-weight:500;color:#fff;} .svGrpL li.wait span, .svGrpL li.act span{color:#ececec;} .svGrpL li.later b{color:#8b8b86;} .svGrpL li.later span{color:#6d6c69;}
   .svGrpL li:not(.me):hover b{text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,.3);}
@@ -10002,6 +10017,15 @@
             <option value="1" selected>1</option>
             <option value="2">2</option>
             <option value="3">3</option>
+          </select>
+        </div>
+        <!-- a step's sub steps in the status block, three ways ("tweak sub steps: to-do list vertical, horizontal stepper, horizontal linear bar") -->
+        <div class="tkRow">
+          <span class="lbl">Sub steps</span>
+          <select id="stSubSt" aria-label="How the sub steps show in the status block">
+            <option value="list" selected>To-do list</option>
+            <option value="stepper">Stepper</option>
+            <option value="bar">Linear bar</option>
           </select>
         </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
@@ -23858,7 +23882,10 @@
         const act = KITACT[at], RAD = '<i class="kitRad"></i>';
         x.tone = act ? '' : 'wait'; x.tag = act ? 'Pending action' : 'In progress'; x.h = KH[0]; x.p = KH[1]; x.btns = null; x.doc = null; x.goJ = null; x.goNeed = ''; x.dis = false;
         if (act){ x.btn = KH[2]; x.noBtn = false; } else x.noBtn = true;
-        x.extra = '<div class="kitCard"><div class="kitHd"><b>Your kit</b><span>' + at + ' of ' + n + ' done</span></div><ol class="kitL">' + d.steps.map((st, j) => '<li class="' + (j < at ? 'on' : j === at ? 'cur' + (KITACT[j] ? ' act' : ' wait') : '') + '">' + (j < at ? '<i class="kitRad ok">' + CHKS + '</i>' : RAD) + '<span class="kitT">' + escS(st[0]) + '</span>' + (j < at ? '<em>' + (j === 0 ? '3 Oct' : '4 Oct') + '</em>' : j === at && KITWHEN[j] && j > 0 ? '<em class="now">' + KITWHEN[j] + '</em>' : '') + '</li>').join('') + '</ol></div>';
+        const kc = j => j < at ? 'on' : j === at ? 'cur' + (KITACT[j] ? ' act' : ' wait') : '';
+        if (KITV === 'stepper') x.extra = '<div class="kitCard"><div class="kitHd"><b>Your kit</b><span>' + at + ' of ' + n + ' done</span></div><ol class="kitStep" style="--kn:' + n + ';--kp:' + (at / (n - 1)).toFixed(3) + '">' + d.steps.map((st, j) => '<li class="' + kc(j) + '"><i class="kitDot">' + (j < at ? CHKS : '') + '</i><span>' + escS(st[0]) + '</span></li>').join('') + '</ol></div>';   // nodes on a line, the line filled to the step in hand, a name under each (the parcel tracker)
+        else if (KITV === 'bar') x.extra = '<div class="kitCard"><div class="kitBar ' + (KITACT[at] ? 'act' : 'wait') + '" style="--kf:' + ((at + .5) / n).toFixed(3) + '"><i></i></div><div class="kitBarT"><b>' + escS(d.steps[at][0]) + '</b><span>' + (at > 0 && KITWHEN[at] ? KITWHEN[at] + ' \u00b7 ' : '') + 'Step ' + (at + 1) + ' of ' + n + '</span></div></div>';   // one bar, filled to halfway through the step in hand, its name and when under it
+        else x.extra = '<div class="kitCard"><div class="kitHd"><b>Your kit</b><span>' + at + ' of ' + n + ' done</span></div><ol class="kitL">' + d.steps.map((st, j) => '<li class="' + (j < at ? 'on' : j === at ? 'cur' + (KITACT[j] ? ' act' : ' wait') : '') + '">' + (j < at ? '<i class="kitRad ok">' + CHKS + '</i>' : RAD) + '<span class="kitT">' + escS(st[0]) + '</span>' + (j < at ? '<em>' + (j === 0 ? '3 Oct' : '4 Oct') + '</em>' : j === at && KITWHEN[j] && j > 0 ? '<em class="now">' + KITWHEN[j] + '</em>' : '') + '</li>').join('') + '</ol></div>';
       }
       const grpProg = () => { if (!GP) return ''; const it = J.items, ai = it.findIndex(y => y.state !== 'done'), cnt = ai < 0 ? it.length : ai + 1;
         const LATER = { gutrep: 'Usually ready 3 business days after your results arrive' };
@@ -23867,7 +23894,8 @@
           const yat = me ? at : y.at != null ? y.at : 0, ysteps = sd.steps || [], cur = j === ai, act = y.svc === 'gut' ? KITACT[Math.max(0, yat)] : !PASV.test((ysteps[yat] || [''])[0]) && y.state !== 'soon';
           const k = y.state === 'done' ? 'on' : cur ? (act ? 'act' : 'wait') : 'later';
           const sub = k === 'on' ? 'Completed 3 Oct' : cur ? (y.svc === 'gut' ? escS((ysteps[yat] || [''])[0]) + ' \u00b7 ' + (yat + 1) + ' of ' + ysteps.length : escS(y.tag || (ysteps[yat] || [''])[0])) : (LATER[y.svc] || '');
-          return '<li class="' + k + (me ? ' me' : '') + '" data-j="' + j + '"><i class="svGrpBar"></i><div><b>' + escS(nm) + '</b>' + (sub ? '<span>' + sub + '</span>' : '') + '</div></li>'; }).join('') + '</ol></div>'; };
+          const fill = cur && ysteps.length ? Math.min(1, (Math.max(0, yat) + 1) / ysteps.length) : 1;   // the bar of the one in hand filled as far as its sub steps ("the % on the filled bar needs to match the sub steps")
+          return '<li class="' + k + (me ? ' me' : '') + '" data-j="' + j + '" style="--gf:' + fill.toFixed(3) + '"><i class="svGrpBar"></i><div><b>' + escS(nm) + '</b>' + (sub ? '<span>' + sub + '</span>' : '') + '</div></li>'; }).join('') + '</ol></div>'; };
       const jrX = (p1, p2) => GP ? grpProg() : jr(p1, p2);   // the microbiome group: its four services as the steps, in place of the journey
       /* while a consent or a questionnaire is the thing to do, the page says why it is asked for instead of the day's instructions ("replace the instruction by something like Why we need this information") */
       { const dp = DOCS === 'asSteps' ? (docAt >= 0 ? dl[docAt] : null) : DOCS === 'status' && docsOn ? dl.find(([, t]) => !DOCDONE.has(t)) : null;
@@ -23909,6 +23937,7 @@
     /* Content under tabs: each section below the status block is a tab of its own, one shown at a time ("try a tweak: content under tabs, where all sections are under tab") */
     let CTABS = false, CPILL = false, CALL = false, CTAB = '';   // CALL: every section under the tabs, Results aside ("tweak this with the tab system")   // CPILL: the tabs as pills ("all sections of the body organised under a tab pill system")
     let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => Math.max(1, Math.min(3, parseInt(t.value, 10) || 1)); if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); /* documents per step, 1 to 3 ("select 1 2 3") */ if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
+    let KITV = 'list'; { const t = document.getElementById('stSubSt'); if (t){ KITV = t.value; t.addEventListener('change', () => { KITV = t.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
     let LKV = 'banner'; { const t = document.getElementById('stLkMod'); if (t){ LKV = t.value; t.addEventListener('change', () => { LKV = t.value; }); } }   // the locked modal's header: the banner, or the simple centred one
     const CTL = { 'Why we need this information': 'Why we need it', 'Your appointment': 'Appointment', 'My documents': 'Documents', 'About the service': 'About' };
     const tabify = (C, key) => { if (!C) return; const G = []; let g = null;
@@ -26997,7 +27026,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stSubSt: 'list', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };

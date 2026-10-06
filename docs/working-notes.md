@@ -12487,3 +12487,10 @@ The status block follows the step in hand:
 - Below a rule sits a "Your kit · 1 of 5 done" to-do card: ticks with dates for the done steps, a blue or orange ring with its date for the one in hand ("Ships by 7 Oct"), empty circles after.
 
 The member starts at Kit being prepared, on the page and in the Timeline. The phone shows the same, with Your progress in the body.
+
+5.799 New tweak, Sub steps: how the kit's five show in the status block ("tweak sub steps: to-do list vertical, horizontal stepper, horizontal linear bar").
+- To-do list (the default) is the vertical card as before.
+- Stepper follows the parcel tracker: five nodes on a 4px track, filled green up to the step in hand. Done nodes are green with a tick, the one in hand is blue or orange with a soft ring, the name sits under each, and "Your kit · 1 of 5 done" is above.
+- Linear bar is one 6px track filled to halfway through the step in hand, green fading to that step's blue or orange. The step's name sits under it, with when and "Step 2 of 5" at the right.
+
+5.800 In the right panel, the bar of the service in hand fills top down only as far as its sub steps: 1 of 5 is a fifth, 2 of 5 two fifths, and the rest of the track stays grey ("the % progress on the filled bar needs to match the sub steps"). Done services stay fully green.
