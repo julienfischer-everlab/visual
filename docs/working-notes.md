@@ -12537,3 +12537,5 @@ The select follows the page as it changes. The service page is now the only layo
 5.811 The kit's sub steps leave the status block for a card of their own, stacked under it ("put the sub steps group inside a stacked card below the status card, outlined card, no bg"). The card is outlined in 1px at 10%, with no fill, and starts 16px up under the status card so the two read as a stack. The status card is opaque so the outline doesn't show through. All three Sub steps styles sit in it, with the stepper's empty dots now 12% white on the page's ground.
 
 5.812 The sub steps card gets a light grey ground (4% white, keeping its outline) and 8px more padding on top, 36 → 44 on the desk and 34 → 42 on the phone ("light grey bg for sub steps + 8px top padding").
+
+5.813 The complete green is #42BE65 ("complete fg 42BE65"), across the microbiome system: the kit's ticks, the stepper's done dots and segments, the linear bar's fill, the right panel's done bars, and the Completed status block's tag and dot.
