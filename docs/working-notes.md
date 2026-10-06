@@ -12816,3 +12816,12 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.908 Phone and XS sub steps: the step in hand is centred under the nodes, with the next step under it ("Next: Kit on its way", "Next: Doctor review"). The last one keeps its timing. Desktop's Mini right shows the same.
 
 5.909 The step title over the status card shows only when there are sub steps. A page with none, such as the DEXA's Scan Consent, has none ("remove this title").
+
+5.910 The services list (.svGrpL): 4px between the bars (was 18px), each item's words 4px above and below, centred on their bar.
+
+5.911 Every timeline step card has the same metrics, the service's own steps (.svStep) as the services list ("exact same style, padding, behaviour"):
+- a 4px bar the item's full height;
+- 4px between items;
+- the words 4px above and below and 20px from the bar's edge;
+- the line 3px under a 14/1.35 title, 12/1.4.
+Measured: each item 47px tall, on a 51px pitch, in both.
