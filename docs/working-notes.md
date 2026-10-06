@@ -12496,3 +12496,5 @@ The member starts at Kit being prepared, on the page and in the Timeline. The ph
 5.800 In the right panel, the bar of the service in hand fills top down only as far as its sub steps: 1 of 5 is a fifth, 2 of 5 two fifths, and the rest of the track stays grey ("the % progress on the filled bar needs to match the sub steps"). Done services stay fully green.
 
 5.801 With Docs in one step at 2 or 3, the status block always holds that many cards, one per document of the step in hand (a questionnaire, a consent, an ID…) ("this should contain X cards that relate to the X docs"). A document done stays in the stack as a ticked card, no longer leaving it, until the whole step is done. Before, the second half of a step showed a lone Privacy Consent once Photo ID was in.
+
+5.802 The Journey module tweak is gone ("remove this tweak"). The service page keeps Right column merged, its default (JR 'rightm' in the script), and the listener skips the missing select.
