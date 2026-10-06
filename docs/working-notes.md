@@ -12593,3 +12593,10 @@ Tapping the block still opens the steps sheet.
 5.831 The kit's sub steps follow the same rule ("inactive opacity"). In the to-do list and the stepper, the words of steps done and steps ahead are #ECECEC at 50%, while the ticks, rings and circles stay at full. The step in hand is at 100%.
 
 5.832 The "This service" badge is gone from the page's own card in Your progress, and likewise in the appointment page's progress and the Timeline's group lists ("remove this"). The card is told apart by its place and its steps.
+
+5.833 A completed service in Your progress (e.g. the DEXA Scan, struck through, seen from the Diagnostics Review page) opens a modal over the page instead of switching to its page ("open modal vs the actual page"). The modal has:
+- The banner and the service's picture as its avatar.
+- The name with a green "Completed" tag.
+- "Completed on 6 Oct 2026." and what it is.
+- "What you did", its steps all ticked and at full opacity.
+- A See full details button that opens its page.
