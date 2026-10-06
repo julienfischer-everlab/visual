@@ -12684,3 +12684,7 @@ It sits right under the sheet's title.
 - **Header** (default): the timeline sits above the status card, as before.
 - **Mini right**: on desktop, the timeline moves inside the status card, in its right column (232px, the same width as the button column), as on the phone: nodes only, then the step in hand and its timing under them. A button, if any, sits under it.
 The phone and XS are unchanged. It applies to the microbiome kit and the MRI's radiologist and doctor review steps.
+
+5.857 XS service page (the desk's phone view):
+- The hero's title is now 88px under the bar, as on the phone (was 56). The padding is set inline by fit(), so the change is there, not in CSS.
+- On scroll, the title fades into the bar between back and more, with an ellipsis (#dSvc.svTitled .svTop .svmNavT). It uses the same rule as the phone: the hero title half under the bar, or under the sheet.
