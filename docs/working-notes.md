@@ -12757,3 +12757,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 - 24px less above the title (phone 128px under the bar, XS 64px from fit()), 40px under the title group (was 24), and nothing under the progress card (was 16).
 - The screen sits on #0f0f0f throughout. The hero's grey ground and its gradient run into the same #0f0f0f, no longer a grey that darkens on scroll.
 - Switching the tweak repaints the page (_svc.repaint), so XS's hero resets its top.
+
+5.882 Cards are 24px round (32 -> 24, "card radius 24px"): the service page's cards, its sheets, the body card's top and the Timeline's step card.
