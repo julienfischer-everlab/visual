@@ -12461,3 +12461,5 @@ The primary is the first present of: Results, Why we need it (a document pending
 - The ground is solid from the hero's foot up to 70% of the card's height, measured on each paint.
 - It then fades over 150px into the picture.
 - The card itself is a flat 7% white on that ground.
+
+5.795 The hero's progress card has no parallax ("remove parallax on the Your progress card hero, the card should follow the content"). The card, and the title and date above it, move one for one with the scroll, at full opacity: the title had drifted slower and slid under the card. The grey ground moves with them, and only the picture keeps its slight drift.
