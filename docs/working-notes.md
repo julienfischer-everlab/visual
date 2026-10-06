@@ -12531,3 +12531,5 @@ The select follows the page as it changes. The service page is now the only layo
 5.808 The stepper's circles are 4px smaller again, 18 → 14px, tick 8px. The segments stay 8px clear and centred on them ("circle reduce by 4px").
 
 5.809 The kit card's header row, "Your kit · N of 5 done", is gone ("remove"). The to-do list and the stepper start straight under the rule.
+
+5.810 The blue "you wait" colour is now #BCCFEA on #0C2241 ("Blue → FG BCCFEA, Bg 0C2241"). The status block is #0C2241 with its tag and dot in #BCCFEA, and the to-do ring, stepper dot and ripple, linear bar end and right-panel bar all use #BCCFEA. The stepper's empty dots are #BCCFEA at 16% so they sit on the navy.
