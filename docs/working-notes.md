@@ -12812,3 +12812,7 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.906 Phone and XS: the sub steps card comes after the status card, tucked under it as a footer, under the step's title ("sub steps below the status card"). The desk keeps them above as the card's header (or mini at its right, with the tweak).
 
 5.907 Sub step timeline: circles 10px (was 14px), the step in hand a 2px ring around a 4px dot. No tick on the steps done. The lines between them follow: centred on 5px, 8px clear of each circle.
+
+5.908 Phone and XS sub steps: the step in hand is centred under the nodes, with the next step under it ("Next: Kit on its way", "Next: Doctor review"). The last one keeps its timing. Desktop's Mini right shows the same.
+
+5.909 The step title over the status card shows only when there are sub steps. A page with none, such as the DEXA's Scan Consent, has none ("remove this title").
