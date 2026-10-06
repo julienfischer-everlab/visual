@@ -10029,15 +10029,6 @@
             <option value="3">3</option>
           </select>
         </div>
-        <!-- a step's sub steps in the status block, three ways ("tweak sub steps: to-do list vertical, horizontal stepper, horizontal linear bar") -->
-        <div class="tkRow">
-          <span class="lbl">Sub steps</span>
-          <select id="stSubSt" aria-label="How the sub steps show in the status block">
-            <option value="list" selected>To-do list</option>
-            <option value="stepper">Stepper</option>
-            <option value="bar">Linear bar</option>
-          </select>
-        </div>
         <!-- the sub steps' card under the status block: outlined, or a grey ground ("tweak footer style: bordered, outlined no bg; bg grey #fff opacity 4%") -->
         <div class="tkRow">
           <span class="lbl">Footer style</span>
@@ -24012,7 +24003,7 @@
     let CTABS = false, CPILL = false, CALL = false, CTAB = '';   // CALL: every section under the tabs, Results aside ("tweak this with the tab system")   // CPILL: the tabs as pills ("all sections of the body organised under a tab pill system")
     let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => Math.max(1, Math.min(3, parseInt(t.value, 10) || 1)); if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); /* documents per step, 1 to 3 ("select 1 2 3") */ if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
     let PPL = 'hero'; { const t = document.getElementById('stProgPl'); if (t){ PPL = t.value; t.addEventListener('change', () => { PPL = t.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // where the phone's main step block goes ("tweak progress placement: in hero header, in status block")
-    let KITV = 'list'; { const t = document.getElementById('stSubSt'); if (t){ KITV = t.value; t.addEventListener('change', () => { KITV = t.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
+    let KITV = 'stepper';   // the stepper, as the design; the Sub steps tweak is gone ("remove stepper tweak, keep as the design")
     let LKV = 'banner'; { const t = document.getElementById('stLkMod'); if (t){ LKV = t.value; t.addEventListener('change', () => { LKV = t.value; }); } }   // the locked modal's header: the banner, or the simple centred one
     const CTL = { 'Why we need this information': 'Why we need it', 'Your appointment': 'Appointment', 'My documents': 'Documents', 'About the service': 'About' };
     const tabify = (C, key) => { if (!C) return; const G = []; let g = null;
@@ -27114,7 +27105,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stSubSt: 'list', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: '1', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
