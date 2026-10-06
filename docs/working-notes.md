@@ -12952,3 +12952,9 @@ When only a sub step moves, the main bar's fill grows from the old share to the 
 5.962 Microbiome arrows:
 - Next on the questionnaire (to do) does what submitting does: the questionnaire done, the kit open at Confirm your address, Step 2 of 4. It no longer walks the questionnaire's own steps into "completed".
 - Previous from the kit's first step undoes it: the questionnaire still to do, Step 1 of 4, with previous disabled.
+
+5.963 New tweak in Sub steps, Sub timeline (stSubTl):
+- **Outside status card** (default): as before, the timeline under the status card.
+- **In status card:** the timeline inside it, under the text, below a #fff 10% divider (.kitIn), before the buttons. The dots match the outside ones (white & grey or coloured).
+
+5.964 Fix: the square-corner rule for document rows caught the Referrals card on the phone; it's now limited to My documents.
