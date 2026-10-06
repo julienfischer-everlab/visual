@@ -12894,3 +12894,12 @@ Measured: each item 47px tall, on a 51px pitch, in both.
 5.943 Step arrows: a service fully completed (done, or past its last step) has no next. It doesn't walk on into the next service; previous still crosses back from a first step.
 
 5.944 Phone and XS sub steps: no title under the nodes ("remove title on mobile"), just the line "Up next – {the next step}" with the info icon beside it (the last step shows its timing). The info icon still opens the sheet with every sub step.
+
+5.945 Phone and XS sub steps: no title under the nodes, only "Up next – {the next step}" with the info icon. Checked on the phone frame and on XS.
+
+5.946 The microbiome's copy, as the design:
+- The questionnaire is "Microbiome & Gut Health Questionnaire". To do: Pending action, "Complete your gut health questionnaire", the line, Start questionnaire, and Why we need this information (three points). In the list it reads "Read alongside your lab results", the kit after it "At-home stool test. Results in about {4 to 6} weeks from posting your sample".
+- The kit's address step has the new line; Kit on its way reads "It should arrive by Tue 13 Oct. Let us know when it does." with an It's arrived button (KITWHEN 13 Oct).
+- Both start "Started on 2 Oct 2026"; the kit's My documents lists the questionnaire, completed 3 Oct 2026.
+
+5.947 The microbiome runs from its start. The Service select's Microbiome test opens the questionnaire, with the kit not begun. Start questionnaire opens its form; submitting it marks it done and opens the kit at Confirm your address. The kit's button walks its steps. The kit's arrows no longer step through hidden documents first.
