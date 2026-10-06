@@ -6773,7 +6773,7 @@
   body.light .kitStep li::after, body.light .kitBar{background:rgba(46,31,26,.1);} body.light .kitDot{background:#e3ddd3;} body.light .kitBarT b, body.light .kitStep li.cur{color:#2e1f1a;}
   /* the group's services as the steps of the right panel: a bar coloured by who acts, the name, a line */
   .svGrp .svProgHead{display:flex;align-items:center;justify-content:space-between;} .svGrpN{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:400;color:rgba(255,255,255,.56);}
-  .tlShBody > .svJr{margin-top:0 !important;} .tlShBody > .svJr > .svJrL:first-child{margin-top:0;}
+  .tlShBody > .svJr{margin-top:0 !important;} .tlShBody > .svJr > .svProgHead{margin-top:0;} .tlShBody > .svJr > .svJrL:first-child{margin-top:0;}
   :is(#phone2, body[data-bp="xs"] .dash) > .svSheet .tlShPanel{height:calc(100% - 64px);max-height:none;}   /* almost the whole screen ("almost full modal") */
   :is(.svcMob, .svXsBody) .svPend > .svBtn, :is(.svcMob, .svXsBody) .svPend > .svPendBtns{margin-top:16px;}   /* 16 more above the phone's button ("add 16px margin top CTA") */
   :is(#dSvc, #svcMob, .tlSheet) .svJrL > li.main > .svPend{padding:24px;} :is(#dSvc, #svcMob, .tlSheet) .svGrpL{padding:24px;} :is(#dSvc, #svcMob, .tlSheet) .svJrL > li.main:has(.svJrSteps){padding:24px;}   /* 24 inside the status card and the steps' cards ("card status 24px padding, timeline steps 24px card padding") */
@@ -24266,7 +24266,7 @@
       [...document.querySelectorAll(STEPS)].forEach((el, i) => { const was = old[i]; if (!was) return;
         [...el.children].forEach((c, k) => { const to = +getComputedStyle(c).opacity, from = was[k]; if (from == null || Math.abs(from - to) < .01) return;
           c.animate([{ opacity: from }, { opacity: to }], { duration: 320, easing: 'ease-out' }); }); }); };
-    document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation(); fadeSwap(() => simStep(+b.dataset.sim)); }, true);
+    document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation(); fadeSwap(() => simStep(+b.dataset.sim)); const sh = b.closest('.svSheet'); if (sh && sh._fill) setTimeout(() => sh._fill(), 450); }, true);   // in the phone's sheet, the sheet follows
     const simNext = mobile => { const k = cur.key, n = cur.n, at = cur.at;
       if (/^book/i.test(cur.stepName || '')) { bkOpen(mobile); return; }
       if (at < 0 || cur.state === 'done') return;
@@ -24354,8 +24354,8 @@
     document.addEventListener('click', e => { const li = e.target.closest('.svJrL > li.main.hz, .svmHz'); if (!li || (e.target.closest('button') && !e.target.closest('.svmHz'))) return;
       const sh = li.closest('#svcMob') ? shM : shD; if (!sh) return; e.stopPropagation();
       sh.querySelector('.tlShHead b').textContent = cur.shT || ''; sh.querySelector('.tlShChip').textContent = cur.shChip || '';
-      if (cur.shGrp){ const t = document.createElement('div'); t.innerHTML = cur.shGrp; const hd = t.querySelector('.svProgHead'), n = hd && hd.querySelector('.svGrpN'); sh.querySelector('.tlShChip').textContent = n ? n.firstChild.textContent : ''; if (hd) hd.remove(); sh.querySelector('.tlShBody').innerHTML = t.innerHTML; }
-      else sh.querySelector('.tlShBody').innerHTML = '<div class="svJrSteps svShSteps">' + (cur.shSteps || '') + '</div>'; sh.querySelector('.tlShBody').scrollTop = 0;
+      sh._fill = () => { sh.querySelector('.tlShHead b').textContent = cur.shT || ''; if (cur.shGrp) sh.querySelector('.tlShBody').innerHTML = cur.shGrp; else sh.querySelector('.tlShBody').innerHTML = '<div class="svJrSteps svShSteps">' + (cur.shSteps || '') + '</div>'; };   // the desk's panel, its heading and step arrows with it ("arrows on mobile too")
+      sh._fill(); sh.querySelector('.tlShBody').scrollTop = 0;
       sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); }, true);
     addEventListener('keydown', e => { if (e.key === 'Escape') shutAll(); });
     document.addEventListener('everlab:mode', shutAll);

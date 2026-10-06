@@ -12778,3 +12778,5 @@ The two after the DEXA are new picks. They open locked, waiting on the DEXA, und
 5.889 Sheets' blanket (.tlShDim) at #000 72% (was 55%).
 
 5.890 The phone's progress sheet pads its cards as the desk's right column does (20px). The desk's right column cards and the sheet's are 20px round; the rest of the page's cards stay 24px.
+
+5.891 The phone's progress sheet keeps the desk panel's heading, Your progress with the step count and the demo's previous / next arrows ("arrows on mobile too"). A step from there repaints the page, and the sheet refills behind it (sh._fill).
