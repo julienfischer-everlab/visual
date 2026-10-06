@@ -6769,7 +6769,13 @@
   body.light .kitStep li::after, body.light .kitBar{background:rgba(46,31,26,.1);} body.light .kitDot{background:#e3ddd3;} body.light .kitBarT b, body.light .kitStep li.cur{color:#2e1f1a;}
   /* the group's services as the steps of the right panel: a bar coloured by who acts, the name, a line */
   .svGrp .svProgHead{display:flex;align-items:center;justify-content:space-between;} .svGrpN{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:400;color:rgba(255,255,255,.56);}
-  .tlShBody > .svJr{margin-top:0 !important;}   /* in the phone's sheet, right under its title */
+  .tlShBody > .svJr{margin-top:0 !important;}
+  /* Body style, No card: no sheet, the body on the hero's own ground, which darkens to #0f0f0f as the hero scrolls away */
+  html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmBody{margin-top:0;border-radius:0;box-shadow:none;background:rgb(var(--svG, 28 28 28));}
+  html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmHero{background:rgb(var(--svG, 28 28 28));padding-bottom:16px;}   /* no sheet's lip to clear */
+  html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmHero.hasHz::after{background:linear-gradient(0deg,rgb(var(--svG, 28 28 28)) 0,rgb(var(--svG, 28 28 28)) calc(48px + var(--hzH, 120px) * .7),rgb(var(--svG, 28 28 28) / 0) calc(48px + var(--hzH, 120px) * .7 + 150px));}
+  html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmHero:not(.hasHz)::after{background:linear-gradient(180deg,transparent 45%,rgb(var(--svG, 28 28 28)) 100%);opacity:1;}
+  html.svFlat #svcMob, html.svFlat body[data-bp="xs"] #dSvc{background:rgb(var(--svG, 28 28 28));--stkRGB:var(--svGc, 28,28,28);}   /* in the phone's sheet, right under its title */
   .svGrpL{list-style:none;margin:0;padding:18px 24px;border-radius:20px;background:rgba(255,255,255,.06);display:grid;gap:18px;}
   .svGrpL li{display:flex;gap:16px;min-height:22px;cursor:default;}   /* steps to read, not links ("we shouldn't be able to click on a step") */ .svGrpL li > div{min-width:0;}
   .svGrpBar{flex:none;position:relative;width:4px;border-radius:2px;background:#4d4d4d;overflow:hidden;} .svGrpL li.on .svGrpBar{background:#42be65;}
@@ -6825,8 +6831,9 @@
   .svStep.on::before{background:#f5be8c;} .svStep.ok::before{background:#42be65;} .svStep.on.pas::before{background:#bccfea;}   /* the step bars' palette, exactly: done #42BE65, the member's turn #F5BE8C, waiting #BCCFEA, ahead #4D4D4D ("keep these colours exactly") */   /* done green, the step in hand orange ("first bar progress needs to be green") */
   .svStep b{display:block;font-size:14px;font-weight:400;color:#f4f4f4;}   /* 2 smaller ("reduce title font size by 2px"), regular ("steps title, regular") */
   .svStep span{display:block;margin-top:2px;font-size:14px;color:rgba(255,255,255,.56);}
-  .svStep.on b{font-size:16px;font-weight:500;color:#fff;} .svStep.on span{font-size:14px;font-weight:400;color:#fff;}   /* the step in hand: title medium 16 white, its line regular 14 white ("active step") */
-  .svGrpL li:is(.wait, .act, .conf) b{font-size:16px;font-weight:500;color:#fff;} .svGrpL li:is(.wait, .act, .conf) span{font-size:14px;font-weight:400;color:#fff;}   /* the same in the group's list */
+  .svStep.on b{color:#fff;} .svStep.on span{color:#fff;}   /* the step in hand: title medium 16 white, its line regular 14 white ("active step") */
+  .svGrpL li:is(.wait, .act, .conf) b{color:#fff;} .svGrpL li:is(.wait, .act, .conf) span{color:#fff;}
+  .svStep b, .svGrpL b{font-size:14px !important;font-weight:500 !important;} .svStep span, .svGrpL span{font-size:12px !important;font-weight:400 !important;}   /* every step item: title medium 14, its line regular 12 ("all steps item style") */   /* the same in the group's list */
   body.light .svStep.on b, body.light .svStep.on span, body.light .svGrpL li:is(.wait, .act, .conf) b, body.light .svGrpL li:is(.wait, .act, .conf) span{color:#2e1f1a;}
   .svAbout{margin-top:44px;}
   .svAbout h3{margin:0 0 20px;font-size:20px;font-weight:500;letter-spacing:-.2px;color:#f4f4f4;}
@@ -10101,6 +10108,14 @@
           <select id="stProgPl" class="tkSegSel" aria-label="Where the phone's progress block goes">
             <option value="hero" selected>In hero header</option>
             <option value="status">In status block</option>
+          </select>
+        </div>
+        <!-- the phone and XS body: a rounded card over the hero, or no card, one ground with the hero that darkens to #0f0f0f as the hero goes, as the Insights page ("tweak body style: body card that overlaps the hero; body no card, same hero header bg that becomes 0F0F0F on scroll progressively") -->
+        <div class="tkRow">
+          <span class="lbl">Body style</span>
+          <select id="stBodySty" class="tkSegSel" aria-label="The phone body's style">
+            <option value="card" selected>Card</option>
+            <option value="flat">No card</option>
           </select>
         </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
@@ -24171,6 +24186,7 @@
     const openDesk = (key, state, o) => { [key, state, o] = simIn(key, state, o); if (LAY === 'apt' && window._apt){ window._apt.openDesk({ from: o && o.from === 'tl' ? 'tl' : null }); return; } backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); } mark('svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key || 'dexa', state || (key ? 'request' : 'book')])); } catch (e){} };   /* remembered through a reload, as the Timeline */
     // the hero holds while the sheet slides up over it, its words drifting up and fading, as the Insights phone's header ("remember the scroll parallax used for Insights mobile? do the same here; the body should overlap the hero")
     const heroFx = sc => { const h = sc && sc.querySelector('.svmHero'); if (!h) return; const y = sc.scrollTop, k = Math.min(1, Math.max(0, y / Math.max(1, h.offsetHeight - 40)));
+      { const e = k * k * (3 - 2 * k), g = Math.round(28 - 13 * e); sc.style.setProperty('--svG', g + ' ' + g + ' ' + g); sc.style.setProperty('--svGc', g + ',' + g + ',' + g); }   // No card: the one ground, the hero's grey (28) eased to #0f0f0f (15) as the hero goes, as the Insights page's header
       h.style.setProperty('--hy', (reduced ? 0 : -y * 0.25).toFixed(1) + 'px'); h.style.setProperty('--hk', (1 - k).toFixed(3)); h.style.setProperty('--hpy', (reduced ? 0 : -32 * k).toFixed(1) + 'px'); h.style.setProperty('--hzy', -y + 'px'); };   // the progress card and its ground move with the page, no parallax ("remove parallax on the Your progress card, it should follow the content")   // the picture itself 32 up over the hero's height ("add a 32px vertical parallax on scroll up")
     let fxQ = 0; const fxOn = sc => () => { if (fxQ) return; fxQ = requestAnimationFrame(() => { fxQ = 0; heroFx(sc); }); };
     if (desk) desk.addEventListener('scroll', () => { desk.classList.toggle('ovScrolled', desk.scrollTop > 6);
@@ -25183,7 +25199,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stKitPl' || sel.id === 'stKitMono' || sel.id === 'stProgPl' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stKitPl' || sel.id === 'stBodySty' || sel.id === 'stKitMono' || sel.id === 'stProgPl' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -27152,6 +27168,7 @@
   { const t = document.getElementById('stInsCond'); if (t){ const on = () => { document.documentElement.classList.toggle('insCond', t.value !== 'full'); const c = document.querySelector('#phone2 .ovcar'); if (c) c.scrollLeft = 0; };
       t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stKitMono'); if (t){ const on = () => document.documentElement.classList.toggle('kitMono', t.value === 'mono'); t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stBodySty'); if (t){ const on = () => document.documentElement.classList.toggle('svFlat', t.value === 'flat'); t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stKitFoot'); if (t){ const on = () => document.documentElement.classList.toggle('kitOutline', t.value === 'outline'); t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroImg'); if (t){ const on = () => document.documentElement.classList.toggle('heroThumb', t.value === 'thumb'); t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stProfStyle'); if (t){ const on = () => { document.documentElement.classList.toggle('profTiles', t.value === 'tiles'); document.documentElement.classList.toggle('profStack', t.value === 'stack'); }; t.addEventListener('change', on); on(); } }
@@ -27207,7 +27224,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stKitPl: 'top', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stKitPl: 'top', stBodySty: 'card', stKitFoot: 'grey', stKitMono: 'mono', stProgPl: 'hero', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
