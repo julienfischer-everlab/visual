@@ -13192,3 +13192,5 @@ With no report or video items to show, the done status card has a "See results" 
 - No doctor picture at the right. See results sits there instead, whatever the Status CTA tweak says.
 - The results modal opens on its own the first time the completed step is seen, never from the button. It reads "Your results are ready", "Dr Steven Lu has reviewed your DEXA results", with See results / I'll look later.
 - See results, in the modal or on the card, scrolls down to the Results section.
+
+6.049 General rule for the status card: a single button wider than 128px goes under the text, at the left, 24px down, even on the Side layout. Width is measured from the label plus padding, after each paint and on resize. Short buttons (e.g. See results, 110px) stay at the right. Examples: "Update your availability" (MRI booking) and "See first results" move under. The phone already stacks.
