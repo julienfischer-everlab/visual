@@ -13151,3 +13151,5 @@ A status with a single action (e.g. See first results) shows a plain button plac
 6.033 DEXA's results sub steps (Scan analysis, Doctor review) read "Waiting for results" on the status card, as the blood test's do (was In progress).
 
 6.034 MRI Debrief's two sub steps (radiologist report, doctor review) read "Waiting for results" on the status card, as DEXA's and the blood test's do.
+
+6.035 Up next covers every service after the page's own, open or locked. With the DEXA done, Diagnostics Review (now open) sits under Up next with Member Check-In. A blocked page keeps its "Complete first" group.
