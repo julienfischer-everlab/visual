@@ -13077,3 +13077,5 @@ Read more opens the About sheet. Locked pages keep their own About this service 
 6.006 MRI step 3 is "Eligibility & Consent" with sub steps: Doctor review, Send a document, Sign consent. It has a card header and a three-dot timeline, and its bar fills by thirds, like Scan.
 
 6.007 DEXA gets a "Documents" step before the Appointment: Scan Consent (Review, sign) and Pre-Scan Questionnaire (Complete). It is one step in the progress list ("Your consent and questionnaire, before your scan"); the status card says "Complete these before your DEXA scan" with both stacked as items, and the step ticks once both are done. Mixed document groups are named Documents; all-consent groups stay Consents.
+
+6.008 The DEXA group is DEXA scan, Diagnostics Review, Member Check-In again ("Up next": Diagnostics Review, then Member Check-In, both locked). Diagnostics Review and Member Check-In show their full names in the lists.
