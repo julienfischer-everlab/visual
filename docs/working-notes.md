@@ -13194,3 +13194,6 @@ With no report or video items to show, the done status card has a "See results" 
 - See results, in the modal or on the card, scrolls down to the Results section.
 
 6.049 General rule for the status card: a single button wider than 128px goes under the text, at the left, 24px down, even on the Side layout. Width is measured from the label plus padding, after each paint and on resize. Short buttons (e.g. See results, 110px) stay at the right. Examples: "Update your availability" (MRI booking) and "See first results" move under. The phone already stacks.
+
+6.050 MRI Debrief uses DEXA's pattern. A third sub step, Final results, is shown while waiting (Radiologist report, Doctor review, Final results). Once the debrief is ready it is a single step: no title, no timeline, just the report and video items.
+The report and video items (svMed) carry no dot; documents still have theirs (orange to do, green done).
