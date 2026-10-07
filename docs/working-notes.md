@@ -13126,3 +13126,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 6.021 MRI: Report and Debrief are one step, Debrief, so the MRI has five steps (Questionnaire, Briefing, Eligibility & Consent, Scan, Debrief), counted 1/5 to 5/5. The radiologist report and the doctor review are its sub steps, under the title Debrief. When the debrief is ready the step reads "Ready 3 Nov".
 
 6.022 While the report is on its way (MRI and microbiome), the section is just "Results", with no Report / Results tabs, whichever way the Merge report tweak is set. The waiting card has a solid outline instead of a dashed one.
+
+6.023 The "About the service" section is removed on every device: the desk's right column, M/S in the body, XS and the phone. It stays under the More (…) menu, "About this service".
