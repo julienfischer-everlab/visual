@@ -13255,3 +13255,4 @@ On the First results step the timeline reads "Get your results / First results 4
 The first results line reads "The rest are expected on 7 Oct", so the ETA badge reads "Expected on 7 Oct". The badge keeps "on" or "by" as written.
 Blood test done: Get your results reads "Received 7 Oct", and the report item reads "Dr Steven Lu · 7 Oct 2026".
 The blood test's observation quote is dated 7 Oct 2026.
+MRI doctor review (Eligibility & Consent): "Expected on 11 Oct", so the badge reads the same.
