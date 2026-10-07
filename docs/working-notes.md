@@ -13051,3 +13051,5 @@ Phone "…": the bottom sheet's two items (Do it later, About this service) are 
 - WBMRI: Read report + Watch video, then Results (no Observations).
 Observations are rows: what was measured, what it says, and an "In range" (green) or "To watch" (peach) tag. The copy is placeholder. "Ask a question" has no action yet.
 Desktop: the gap under the page header is 16px smaller (44 to 28).
+
+6.000 Observations is now a summary in the app's biomarker colours (rgOpt, rgSub, rgOut): a split bar (8px, 4px radius, 4px gaps), then three columns, each a count (24px) with its dot and the band under it (Optimal / Suboptimal / Out of range). Counts: Pathology 38/6/2, Microbiome 12/3/1, DEXA 7/2/0. A band at 0 has no segment.
