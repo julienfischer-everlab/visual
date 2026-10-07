@@ -13265,3 +13265,4 @@ Blood test dates moved:
 - First results 10 Oct: the item, the Results row, the timeline "First results 10 Oct", and At the lab "Completed 10 Oct".
 - The rest expected by 12 Oct.
 - Once done: Get your results "Received 12 Oct", the report "12 Oct 2026", the observation quote 12 Oct 2026.
+Timeline on the First results step: "Get your results / First results 10 Oct, Full results expected by 12 Oct".
