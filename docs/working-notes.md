@@ -13253,3 +13253,4 @@ The "Contact care team" link sits 2px further from "Want to discuss further?".
 At the lab reads "Completed 4 Oct" once done.
 On the First results step the timeline reads "Get your results / First results 4 Oct".
 The first results line reads "The rest are expected on 7 Oct", so the ETA badge reads "Expected on 7 Oct". The badge keeps "on" or "by" as written.
+Blood test done: Get your results reads "Received 7 Oct", and the report item reads "Dr Steven Lu · 7 Oct 2026".
