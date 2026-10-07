@@ -13056,3 +13056,5 @@ Desktop: the gap under the page header is 16px smaller (44 to 28).
 
 6.001 Report + video status cards (Microbiome report ready, MRI debrief ready) list two items inside the card, in the consents' item pattern, instead of two buttons and the doctor photo. "Your report" shows the service cover with a Read button; "Video walkthrough" shows the doctor with a play mark and a Watch button. Each item has the doctor and date (or length) under its title, and both open the debrief modal.
 A done item in the status card (e.g. a signed consent) shows "✓ Done" and a secondary "View" (36px, #fff 10%) that opens the document.
+
+6.002 Phone progress sheet: titled "Your progress" (no service name, no second heading). The current service card loses its own title row (e.g. DEXA Scan), which stays in the desktop timeline card, and its ground is #fff 4%.
