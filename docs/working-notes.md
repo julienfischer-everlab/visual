@@ -13136,3 +13136,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 6.026 Sub step dots: current and completed are always white (#2e1f1a in light), with a white ripple on the current one, whatever the status card's colour (to do, waiting or confirmed). Upcoming dots stay grey.
 
 6.027 Biomarker bar: 6px between the segments (was 4), 6px tall (was 8). DEXA's counts are 12 optimal, 4 suboptimal and 2 out of range, so its bar shows all three bands.
+
+6.028 The blood test's "Results in" has two sub steps: First results ("Your first results are in", See first results), then All results ("The rest of your results are on their way"). Then all results are in and the test is done. Both read as waiting (Waiting for results). The main step and its sub steps work as DEXA's "Get your results" does, through one map (RSMD) holding each service's first sub step, the main step's name and its line.
