@@ -13260,3 +13260,4 @@ MRI debrief waiting: the doctor review line reads "Expected by 27–30 Oct", whi
 Every date badge reads "Expected by …" ("Expected by 7 Oct", "Expected by 11 Oct"), whatever the line says.
 Status card titles never end with a full stop (e.g. "Your results are ready").
 Blood test, At the lab: the line and the timeline read "Expected by 10–17 Oct", which is also the badge.
+Undone: At the lab is back to "Most results are back within 1 to 2 weeks" (badge "Usually takes 1 to 2 weeks"), which fits the first results on 4 Oct.
