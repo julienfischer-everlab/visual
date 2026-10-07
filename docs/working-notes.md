@@ -13185,3 +13185,5 @@ DEXA done is a single step: no "Get your results" title, no sub timeline. Scan a
 With no report or video items to show, the done status card has a "See results" button that scrolls smoothly down to the Results section (desk and phone).
 
 6.046 Retired the "Card with sub steps" tweak. It stays Outlined.
+
+6.047 Documents in the status card: the dot on the icon has no dark ring. A done document keeps its dot, green, with no "✓ Done" label, then its View button.
