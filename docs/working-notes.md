@@ -13066,3 +13066,10 @@ A done item in the status card (e.g. a signed consent) shows "✓ Done" and a se
 - M and S: one column. The horizontal progress card (bars, count, Next) sits under the header; tapping it opens the Your progress sheet. The right column is gone. About the service closes the page under an 8px divider (#fff 4%).
 - XS and phone: as before, with About the service at the end under the divider.
 Read more opens the About sheet. Locked pages keep their own About this service and get no second one.
+
+6.005 Merged another session's published version (built from a commit not on this branch, 0d91c4d) into the source, keeping the zoning work (6.004):
+- Groups: Everlab Protocol = DEXA scan then Diagnostics Review (Member Check-In left the group). Advanced Bloods = blood test (path) then its Advanced Bloods Report (new abrep service).
+- Copy: DEXA, Advanced Blood Testing, Diagnostics Review and microbiome steps / instructions / about. DEXA, Diagnostics Review, path and abrep ask for no documents.
+- Short names in the lists: DEXA scan, Review, Blood test, Report. MRI: Scan, Debrief.
+- Completed states: blood test "All your results are in"; abrep "Your report is ready"; DEXA results go to the Diagnostics Review. Observations get "See all N results".
+- Service picker: Advanced Bloods blood test / report, DEXA scan (Protocol).
