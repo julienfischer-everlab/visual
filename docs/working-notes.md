@@ -13143,3 +13143,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 
 6.030 Advanced Blood Testing: on the blood test's page the Report is the last step of the blood test's own timeline, not a service under "Up next". It reads "Usually within 3 business days of your last results" and is current once the test is done. The phone's card counts it (3/4, "Next, Report").
 A status with a single action (e.g. See first results) shows a plain button placed by the Status CTA tweak: Side puts it at the right, Below puts it under the text. It no longer stretches full width.
+
+6.031 Blood test done: the status card has no button and no doctor picture. It lists the report as an inline item: its cover, "Your report", "Dr Steven Lu · Expected by 21 Oct", no button. In the timeline, the Report step turns green once the test is done ("Expected by 21 Oct").
