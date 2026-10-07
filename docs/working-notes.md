@@ -12998,3 +12998,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.977 In "Your progress", an open service that is not the page's own (e.g. Diagnostics Review) now opens a modal instead of its page, the same as done and locked ones. It has the hero, the title with an "Available" tag in peach, the description, a "Learn more" link to the service page, "What happens" (its steps, the first in hand), and a button named for the first step ("Book appointment") that also opens the page.
 
 5.978 The Referrals row loses its card and matches the My documents rows (no border, 12px 0 padding). Lists in general: a divider only between items, none above the first or under the last (.svRow, .mMedRow, .svDocB .svDoc).
+
+5.979 Microbiome group progress list: the services are named simply Questionnaire, Assessment, Report, Review (page titles unchanged).
