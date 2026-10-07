@@ -13223,3 +13223,9 @@ Biomarker counts sit 2px over their band name (was 6).
 6.059 ETA badge, more times caught. A date it should arrive, ship or be ready by: the kit on its way shows "Expected by Tue 13 Oct". A single duration: the clinician review shows "Usually takes 2 business days". The kit line now reads "Let us know when it arrives." so it stands without the date.
 
 6.060 Microbiome Report sub steps: Clinician review, Preparing report & video, Final results.
+
+6.061 Blood test, the DEXA pattern:
+- The results step is "Get your results", with sub steps First results ("Received 4 Oct" once done) and Full results ("Within 3 business days").
+- Next from Full results goes to the completed step ("All your results are in"): a single step with no title and no timeline, the report listed as an item. It no longer jumps to the report's page.
+- The Report step under the blood test's timeline is removed. The report stays out of Up next.
+- Copy: the rest follow "within 3 business days".
