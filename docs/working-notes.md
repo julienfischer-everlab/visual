@@ -13270,3 +13270,4 @@ The blood test's Results header is dated 2 Oct 2026 (was 1 Oct).
 Blood test done: Get your results reads "Ready 12 Oct".
 The video walkthrough item shows its date, not its length: "Dr Sarah Chen · 3 Nov 2026" on the MRI, "Emma Walsh · 13 Nov 2026" on the microbiome.
 Blood test, At the lab, again: "Expected by 10–17 Oct" in the line, the timeline and the badge. It fits now that the first results come on 10 Oct.
+On the First results step the timeline reads "Get your results / Full results expected by 12 Oct".
