@@ -13012,3 +13012,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.984 Buttons: the small row buttons (Review on stacked consents, Show / View on documents and referrals) are 44px tall at 14px on desktop and phone. The status card buttons on desktop are 44px at 14px too, including View report; the phone keeps its 56px status buttons.
 
 5.985 MRI progress list copy: Questionnaire, Briefing, Consent, Body MRI & CT Chest, Report, Post-scan Debrief (MRIS). Page titles and status headers keep the full names (MRIN).
+
+5.986 MRI progress list: "Body MRI & CT Chest" is now "Scan appointment".
