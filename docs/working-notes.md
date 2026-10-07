@@ -13221,3 +13221,5 @@ Biomarker counts sit 2px over their band name (was 6).
 6.058 Status card: the title group (tag, title, line) has 48px of padding on its right on the desk. Phone and XS unchanged.
 
 6.059 ETA badge, more times caught. A date it should arrive, ship or be ready by: the kit on its way shows "Expected by Tue 13 Oct". A single duration: the clinician review shows "Usually takes 2 business days". The kit line now reads "Let us know when it arrives." so it stands without the date.
+
+6.060 Microbiome Report sub steps: Clinician review, Preparing report & video, Final results.
