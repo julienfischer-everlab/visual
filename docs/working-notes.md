@@ -13122,3 +13122,5 @@ Service modals (available, blocked, done) sit 32px from the modal's edge on the 
 Debrief items (report and video in the status card): the picture is 72px (was 56).
 
 6.020 Observation quote: italic, line height 2px tighter (22.8px), and the quote card has 48px more on the right (72px).
+
+6.021 MRI: Report and Debrief are one step, Debrief, so the MRI has five steps (Questionnaire, Briefing, Eligibility & Consent, Scan, Debrief), counted 1/5 to 5/5. The radiologist report and the doctor review are its sub steps, under the title Debrief. When the debrief is ready the step reads "Ready 3 Nov".
