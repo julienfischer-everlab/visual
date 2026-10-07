@@ -13159,3 +13159,5 @@ A status with a single action (e.g. See first results) shows a plain button plac
 6.037 Microbiome Report sub steps renamed: Clinician review, then Final report & video ("Your clinician is finishing your report and video").
 
 6.038 The microbiome Report's two sub steps read "In progress" on the status card (was Waiting for results).
+
+6.039 MRI debrief modal note: "If anything had needed urgent attention, your doctor would already have called you." ("Your doctor has reviewed everything." removed.)
