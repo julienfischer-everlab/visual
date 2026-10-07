@@ -13145,3 +13145,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 A status with a single action (e.g. See first results) shows a plain button placed by the Status CTA tweak: Side puts it at the right, Below puts it under the text. It no longer stretches full width.
 
 6.031 Blood test done: the status card has no button and no doctor picture. It lists the report as an inline item: its cover, "Your report", "Dr Steven Lu · Expected by 21 Oct", no button. In the timeline, the Report step turns green once the test is done ("Expected by 21 Oct").
+
+6.032 Observation quote card: the doctor sits above the quote on one line (28px avatar, "Dr Steven Lu · 23 Oct 2026"), then the quote, then Contact care team.
