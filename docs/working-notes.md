@@ -13124,3 +13124,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 6.020 Observation quote: italic, line height 2px tighter (22.8px), and the quote card has 48px more on the right (72px).
 
 6.021 MRI: Report and Debrief are one step, Debrief, so the MRI has five steps (Questionnaire, Briefing, Eligibility & Consent, Scan, Debrief), counted 1/5 to 5/5. The radiologist report and the doctor review are its sub steps, under the title Debrief. When the debrief is ready the step reads "Ready 3 Nov".
+
+6.022 While the report is on its way (MRI and microbiome), the section is just "Results", with no Report / Results tabs, whichever way the Merge report tweak is set. The waiting card has a solid outline instead of a dashed one.
