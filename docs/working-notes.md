@@ -13272,3 +13272,4 @@ The video walkthrough item shows its date, not its length: "Dr Sarah Chen · 3 N
 Blood test, At the lab, again: "Expected by 10–17 Oct" in the line, the timeline and the badge. It fits now that the first results come on 10 Oct.
 On the First results step the timeline reads "Get your results / Full results expected by 12 Oct".
 Blood test, First results step only: an outlined note under the Results list, with a clock icon, reads "More results to come by 12 Oct. We'll add them here as soon as they're in." Once done, the full results replace it.
+DEXA scan analysis: "Expected by 5–6 Oct" in the line, the sub step and the badge.
