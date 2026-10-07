@@ -13020,3 +13020,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.988 MRI Scan appointment has sub steps: Pay your balance, Book your scan (including arranging, and choosing a new time if cancelled), Go to your scan. The status card has the "Scan appointment" header and a three-dot timeline; a confirmed sub step is green. In the progress list, Scan appointment fills by its sub steps (1/3, 2/3, full), and Report fills too (half, then full).
 
 5.989 The available-service modal (e.g. Diagnostics Review) is simpler: no cover, no Learn more, no What happens. It shows the title with the Available tag, the description, and a full-width "View detail" button (24px above) that opens the page.
+
+5.990 The 36px / 14px item buttons inside a status card now apply to every status card, not only the service page and phone (e.g. the Timeline detail).
