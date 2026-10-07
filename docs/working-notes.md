@@ -13161,3 +13161,5 @@ A status with a single action (e.g. See first results) shows a plain button plac
 6.038 The microbiome Report's two sub steps read "In progress" on the status card (was Waiting for results).
 
 6.039 MRI debrief modal note: "If anything had needed urgent attention, your doctor would already have called you." ("Your doctor has reviewed everything." removed.)
+
+6.040 DEXA "Get your results" has three sub steps: Scan analysis, Doctor review, Final results ("Your final results are on their way", in the app, expected 9 Oct). All three read Waiting for results. The results group takes any count now (RSN: 3 for DEXA, 2 for the blood test; RSM to RSE).
