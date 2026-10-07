@@ -13244,3 +13244,5 @@ The "Contact care team" link sits 2px further from "Want to discuss further?".
 6.067 Blood test: once the sample is with the lab (At the lab onwards), the Instructions section is gone. They stay for the collection centre step.
 
 6.068 Blood test details section: titled "Testing information", with Location and Provider (was Clinician). No Duration row.
+
+6.069 The blood test's first results item has no picture, just its name, source and date, with See results.
