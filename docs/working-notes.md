@@ -13089,3 +13089,5 @@ Read more opens the About sheet. Locked pages keep their own About this service 
 - Blocked: a lock on the picture, why it waits, and "View <service to finish first>".
 - Done: a tick on the picture, "Completed on …", and View detail.
 A grouped service's page keeps the group's name as its title on every step: Microbiome & Gut Health Assessment for the questionnaire, kit, report and review; Advanced Blood Testing for the blood test and its report.
+
+6.012 Status card button placement is a tweak (General → Status CTA). Below, the default, puts the button on its own row under the text, 24px down. Side keeps it at the right. Phones always stack. The report and video items in the status card read "See report" and "Watch video".
