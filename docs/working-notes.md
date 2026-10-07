@@ -13233,3 +13233,6 @@ Biomarker counts sit 2px over their band name (was 6).
 6.062 Blood test, First and Full results: the status card's button is replaced by an item, as the report and video: its cover, "Your first results", "Sonic Healthcare · 4 Oct 2026", See results (no action for now). The tag reads "Waiting for full results".
 
 6.063 The report is not a service. Advanced Blood Testing is the blood test alone: Visit a collection centre, At the lab, Get your results. Once done, all three are ticked (desk, phone card 3/3 Completed, sheet). The "Report" service page is no longer reachable: View report on the report item does nothing for now, like the other item buttons.
+
+6.064 Blood test, as DEXA: Get your results has one waiting sub step, First results. Full results is the next dot ("Within 3 business days"), reached when the test completes. Next from First results goes straight to the completed step, a single step. The main step's fill counts the shown dots.
+The "Contact care team" link sits 2px further from "Want to discuss further?".
