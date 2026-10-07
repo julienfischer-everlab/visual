@@ -13134,3 +13134,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 6.025 Blocked modal: no main button. Under the reason, each service it waits on is a card (its picture, name, and "Next to complete" or "Not available yet") with a View button on the right, the only action; View opens that service. Member Check-In lists both DEXA Scan and Diagnostics Review.
 
 6.026 Sub step dots: current and completed are always white (#2e1f1a in light), with a white ripple on the current one, whatever the status card's colour (to do, waiting or confirmed). Upcoming dots stay grey.
+
+6.027 Biomarker bar: 6px between the segments (was 4), 6px tall (was 8). DEXA's counts are 12 optimal, 4 suboptimal and 2 out of range, so its bar shows all three bands.
