@@ -13187,3 +13187,8 @@ With no report or video items to show, the done status card has a "See results" 
 6.046 Retired the "Card with sub steps" tweak. It stays Outlined.
 
 6.047 Documents in the status card: the dot on the icon has no dark ring. A done document keeps its dot, green, with no "✓ Done" label, then its View button.
+
+6.048 DEXA done:
+- No doctor picture at the right. See results sits there instead, whatever the Status CTA tweak says.
+- The results modal opens on its own the first time the completed step is seen, never from the button. It reads "Your results are ready", "Dr Steven Lu has reviewed your DEXA results", with See results / I'll look later.
+- See results, in the modal or on the card, scrolls down to the Results section.
