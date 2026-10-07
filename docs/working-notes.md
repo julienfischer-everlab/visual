@@ -13197,3 +13197,5 @@ With no report or video items to show, the done status card has a "See results" 
 
 6.050 MRI Debrief uses DEXA's pattern. A third sub step, Final results, is shown while waiting (Radiologist report, Doctor review, Final results). Once the debrief is ready it is a single step: no title, no timeline, just the report and video items.
 The report and video items (svMed) carry no dot; documents still have theirs (orange to do, green done).
+
+6.051 The status button rule's threshold is 160px (was 128). On the Side layout, a button up to 160px stays at the right (Add to calendar, See first results, Go to your scan). Wider ones (Update your availability) go under the text, at the left.
