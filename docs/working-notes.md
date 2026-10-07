@@ -13103,3 +13103,7 @@ New Sub steps tweak, Sub step card (Off by default). On wraps the phone's title,
 The desk's "Your progress" count reads 2/3, as on the phone (it was "Step 2 of 3").
 
 6.015 The phone's progress sheet shows the dot and the service's name again on the current card, as on the desk. The card is #fff at 4% in the sheet; the desk keeps #181818.
+
+6.016 DEXA's "Get your results" has two sub steps, as the Appointment: Scan analysis (the clinic reads and measures the scan, 1 to 2 business days), then Doctor review (checked before release, expected 9 Oct). Both are ours to do, so the status card reads In progress (grey) and the current dot is the waiting one.
+Observations always come first under the status block, before Results / Your debrief / My documents.
+Service modals (available, blocked, done) sit 32px from the modal's edge on the desk (was 64), with 24px more under the button.
