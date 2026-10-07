@@ -13140,3 +13140,6 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 6.028 The blood test's "Results in" has two sub steps: First results ("Your first results are in", See first results), then All results ("The rest of your results are on their way"). Then all results are in and the test is done. Both read as waiting (Waiting for results). The main step and its sub steps work as DEXA's "Get your results" does, through one map (RSMD) holding each service's first sub step, the main step's name and its line.
 
 6.029 Biomarker bar segments: 2px corner radius (was 4).
+
+6.030 Advanced Blood Testing: on the blood test's page the Report is the last step of the blood test's own timeline, not a service under "Up next". It reads "Usually within 3 business days of your last results" and is current once the test is done. The phone's card counts it (3/4, "Next, Report").
+A status with a single action (e.g. See first results) shows a plain button placed by the Status CTA tweak: Side puts it at the right, Below puts it under the text. It no longer stretches full width.
