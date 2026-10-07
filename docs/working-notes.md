@@ -13073,3 +13073,5 @@ Read more opens the About sheet. Locked pages keep their own About this service 
 - Short names in the lists: DEXA scan, Review, Blood test, Report. MRI: Scan, Debrief.
 - Completed states: blood test "All your results are in"; abrep "Your report is ready"; DEXA results go to the Diagnostics Review. Observations get "See all N results".
 - Service picker: Advanced Bloods blood test / report, DEXA scan (Protocol).
+
+6.006 MRI step 3 is "Eligibility & Consent" with sub steps: Doctor review, Send a document, Sign consent. It has a card header and a three-dot timeline, and its bar fills by thirds, like Scan.
