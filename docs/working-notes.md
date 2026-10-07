@@ -13170,3 +13170,8 @@ DEXA results sub steps generalised (6.040).
 6.042 Blood test: next from the last results sub step (All results) skips the "All your results are in" page and goes straight to the Report ("Your doctor is writing your report"), with the blood test marked done. Works on desk and phone.
 
 6.043 DEXA "Get your results": Final results is not a waiting step of its own. It is reached when the results are in, i.e. the done state. The sub timeline shows three dots (Scan analysis, Doctor review, Final results) while waiting. Next from Doctor review goes to the done state, which keeps the timeline with all three ticked under "Get your results", and the status reads "Your results are ready."
+
+6.044 New General tweak, ETA badge (Off by default).
+- Off: the time stays in the status line, as before.
+- On: the time sentence leaves the line and shows as a badge under it (clock icon, pill, #fff 8%), shortened to just the time: "Usually 1 to 2 business days", "Usually 7 to 10 business days", "Within 1 to 2 weeks", "Expected by Fri 27 Nov".
+Both versions are drawn; the tweak's class picks one. Status lines holding HTML are left alone.
