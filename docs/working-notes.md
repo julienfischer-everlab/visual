@@ -13014,3 +13014,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.985 MRI progress list copy: Questionnaire, Briefing, Consent, Body MRI & CT Chest, Report, Post-scan Debrief (MRIS). Page titles and status headers keep the full names (MRIN).
 
 5.986 MRI progress list: "Body MRI & CT Chest" is now "Scan appointment".
+
+5.987 Item actions inside the status card (e.g. Review on the stacked consents) are 36px tall at 14px. Rows outside it stay 44px.
