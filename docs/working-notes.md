@@ -13101,3 +13101,5 @@ By service: MRI shows a quote; DEXA shows biomarkers; Advanced Bloods and the mi
 6.014 Retired the Footer style and Sub steps colour tweaks. Their defaults stay: a grey footer and White & grey sub steps.
 New Sub steps tweak, Sub step card (Off by default). On wraps the phone's title, status card and sub step timeline in the outlined card, as on the desk; Off keeps them straight on the page.
 The desk's "Your progress" count reads 2/3, as on the phone (it was "Step 2 of 3").
+
+6.015 The phone's progress sheet shows the dot and the service's name again on the current card, as on the desk. The card is #fff at 4% in the sheet; the desk keeps #181818.
