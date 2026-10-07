@@ -7094,6 +7094,7 @@
   .lkHero .dmBody{padding-top:20px !important;} .lkHasAv .dmBody{padding-top:40px !important;}
   body.light .lkAv{background-color:#efe9df;}
   .lkBan{display:none;}
+  .cvMore{margin-top:12px;padding:0 !important;height:auto !important;min-height:0 !important;background:none !important;font-size:14px;} .cvTag{color:#f5be8c !important;background:rgba(245,190,140,.12) !important;} .cvTag i{width:6px;height:6px;border-radius:50%;background:#f5be8c;} .cvL li > .kitT{opacity:.56;} .cvL li.cur > .kitT{opacity:1;color:#f4f4f4;}   /* the open service's modal: Available in the status peach, its steps, the first in hand */
   .dnTag{color:#42be65 !important;background:rgba(66,190,101,.12) !important;} .dnTag svg{width:11px;height:11px;color:#42be65 !important;} .dnL{margin-bottom:20px;} .dnL li > :is(.kitT, em){opacity:1 !important;} .dnSee{width:100%;height:44px;border-radius:999px;}   /* the done modal: Completed in green, what was done ticked, the page one tap away */
   .lkTRow{display:flex;align-items:center;justify-content:space-between;gap:12px;} .lkT{margin:0;min-width:0;font-size:20px;font-weight:500;line-height:1.25;letter-spacing:-.2px;color:#f4f4f4;} .lkTRow .lkTag{flex:none;}
   .svLkM:not(.lkSimple) .lkWhy{margin-top:18px;font-size:14.5px;font-weight:400;line-height:1.55;color:#fff;}   /* +8 under the title, white ("increase gap between title and desc by 8px; desc #fff") */   /* regular, a reading size ("regular size") */
@@ -24440,6 +24441,14 @@
         '<h4 class="bkH lkH">What you did</h4><ol class="kitL dnL">' + (d.steps || []).filter(st => !/^done$/i.test(st[0])).map(st => '<li class="on"><i class="kitRad ok">' + CHKS + '</i><span class="kitT">' + escS(st[0]) + '</span></li>').join('') + '</ol>' +
         '<button class="svBtn sec lkSee dnSee" type="button" data-bi="0">See full details</button>';
       sh.querySelector('.bkSum').textContent = ''; sh.querySelector('.dmBody').scrollTop = 0; sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); };
+    /* a service of the group that's open, not the page's own: its summary in a modal, as the done and the locked ones, its page one tap away ("Diagnostics Review should open a modal, not going to the page") */
+    const cvOpen = (key, nm, mobile, go) => { const sh = mobile ? lkM : lkD, d = SVC[key] || {}; if (!sh) return; nm = nm || d.t || '';
+      sh.classList.remove('lkSimple'); lkHeroSet(sh, SIMG[d.img], ' '); sh.querySelector('.tlShHead b').textContent = ''; sh.querySelector('.tlShPanel').setAttribute('aria-label', nm);
+      sh.lkBl = [{ go }]; const st = (d.steps || []).filter(z => !/^done$/i.test(z[0]));
+      sh.querySelector('.dmBody').innerHTML = '<div class="lkTop"><div class="lkTRow"><h3 class="lkT">' + escS(nm) + '</h3><span class="lkTag cvTag"><i></i>Available</span></div><p class="lkWhy">' + escS(d.about || '') + '</p><button class="svLink lkSee cvMore" type="button" data-bi="0">Learn more</button></div>' +   /* to the service's page ("add link Learn more below description that goes to the service detail") */
+        (st.length ? '<h4 class="bkH lkH">What happens</h4><ol class="kitL dnL cvL">' + st.map((z, j) => '<li class="' + (j === 0 ? 'cur act' : '') + '"><i class="kitRad"></i><span class="kitT">' + escS(z[0]) + '</span></li>').join('') + '</ol>' : '') +
+        '<button class="svBtn lkSee dnSee cvSee" type="button" data-bi="0">' + escS(st.length ? st[0][0] : 'Get started') + '</button>';   /* the button says what comes first ("Book appointment") */
+      sh.querySelector('.bkSum').textContent = ''; sh.querySelector('.dmBody').scrollTop = 0; sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); };
     [lkD, lkM].forEach(sh => sh && sh.addEventListener('click', e => { const b = e.target.closest('.lkSee'); if (!b || !sh.lkBl) return; const x = sh.lkBl[+b.dataset.bi]; sh.shut(); if (x && x.go) x.go(); }));
     let dm = null; const DOCANS = {};   /* what was filled in, to show again on View */
     const dmPaint = () => { const sh = dm.sh, b = sh.querySelector('.dmBody');
@@ -24508,7 +24517,7 @@
       if (li.classList.contains('lock')){ const j = +li.dataset.j, mb = !!li.closest('#svcMob, .svcMob, #phone2');
         const bl = J.items.slice(0, j).map((z, k) => Object.assign({}, z, { go: () => { const o2 = { from: backTo, t: z.t, tag: z.tag, d: z.d, at: z.at, need: z.need, steps: z.steps, journey: Object.assign({}, J, { i: k }) }; if (mb) openMob(z.svc, z.state, o2); else openDesk(z.svc, z.state, o2); } }));
         lkOpen(y.svc, y.t || (SVC[y.svc] || {}).t || '', bl, mb); return; }   // a locked one: its modal, the page stays
-      if (li.closest('#svcMob, .svcMob')) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); });
+      { const mb = !!li.closest('#svcMob, .svcMob, #phone2'); cvOpen(y.svc, y.t || (SVC[y.svc] || {}).t || '', mb, () => { if (mb) openMob(y.svc, y.state, op); else openDesk(y.svc, y.state, op); }); } });   // an open one: its modal too, the page stays
     { const t = document.getElementById('stJr'); if (t) t.addEventListener('change', () => { JR = t.value; JP = JR === 'rightm'; paint(cur.key, cur.state, cur.o); }); }
     { const t = document.getElementById('stJrHz'); if (t) t.addEventListener('change', () => { HZ = t.value === 'h'; paint(cur.key, cur.state, cur.o); }); }
     { const all = [...document.querySelectorAll('.stDocsN')]; all.forEach(t => t.addEventListener('change', () => { window.__docsN = +t.value || 4; all.forEach(u => { if (u !== t) u.value = t.value; }); paint(cur.key, cur.state, cur.o); document.dispatchEvent(new Event('everlab:docs')); })); }

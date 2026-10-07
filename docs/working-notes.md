@@ -12994,3 +12994,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.975 Microbiome kit: no Referrals and no service details section on any of its sub steps (address to lab), not only Collect and post.
 
 5.976 Microbiome header visual: the new microbiome image (assets/overview/svc-microbiome.webp, 800px, 130 KB) is the header for the Questionnaire, Assessment and Microbiome Report pages. Gut Health Review keeps the nutrition image.
+
+5.977 In "Your progress", an open service that is not the page's own (e.g. Diagnostics Review) now opens a modal instead of its page, the same as done and locked ones. It has the hero, the title with an "Available" tag in peach, the description, a "Learn more" link to the service page, "What happens" (its steps, the first in hand), and a button named for the first step ("Book appointment") that also opens the page.
