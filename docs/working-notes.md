@@ -13060,3 +13060,9 @@ A done item in the status card (e.g. a signed consent) shows "✓ Done" and a se
 6.002 Phone progress sheet: titled "Your progress" (no service name, no second heading). The current service card loses its own title row (e.g. DEXA Scan), which stays in the desktop timeline card, and its ground is #fff 4%.
 
 6.003 Available-service modal: centred, with a 96px image (24px radius) above the title, no Available badge, and "View detail" hugging its label (44px, 14px).
+
+6.004 Service page zoning by breakpoint, from the references (layout only, UI unchanged):
+- L: two columns. The right column has Your progress, then About the service (description + Read more).
+- M and S: one column. The horizontal progress card (bars, count, Next) sits under the header; tapping it opens the Your progress sheet. The right column is gone. About the service closes the page under an 8px divider (#fff 4%).
+- XS and phone: as before, with About the service at the end under the divider.
+Read more opens the About sheet. Locked pages keep their own About this service and get no second one.
