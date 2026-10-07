@@ -13199,3 +13199,5 @@ With no report or video items to show, the done status card has a "See results" 
 The report and video items (svMed) carry no dot; documents still have theirs (orange to do, green done).
 
 6.051 The status button rule's threshold is 160px (was 128). On the Side layout, a button up to 160px stays at the right (Add to calendar, See first results, Go to your scan). Wider ones (Update your availability) go under the text, at the left.
+
+6.052 ETA badge: 24px under the status line (was 12).
