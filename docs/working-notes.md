@@ -13168,3 +13168,5 @@ A status with a single action (e.g. See first results) shows a plain button plac
 DEXA results sub steps generalised (6.040).
 
 6.042 Blood test: next from the last results sub step (All results) skips the "All your results are in" page and goes straight to the Report ("Your doctor is writing your report"), with the blood test marked done. Works on desk and phone.
+
+6.043 DEXA "Get your results": Final results is not a waiting step of its own. It is reached when the results are in, i.e. the done state. The sub timeline shows three dots (Scan analysis, Doctor review, Final results) while waiting. Next from Doctor review goes to the done state, which keeps the timeline with all three ticked under "Get your results", and the status reads "Your results are ready."
