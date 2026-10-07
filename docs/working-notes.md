@@ -13097,3 +13097,7 @@ Observations come in two types, each in an outlined card (1px line, 20px radius,
 - Quote: the doctor's words, with their photo, name and date.
 - Biomarkers: the split bar, the count in each band, and a "See breakdown" button (36px).
 By service: MRI shows a quote; DEXA shows biomarkers; Advanced Bloods and the microbiome show a quote, then biomarkers.
+
+6.014 Retired the Footer style and Sub steps colour tweaks. Their defaults stay: a grey footer and White & grey sub steps.
+New Sub steps tweak, Sub step card (Off by default). On wraps the phone's title, status card and sub step timeline in the outlined card, as on the desk; Off keeps them straight on the page.
+The desk's "Your progress" count reads 2/3, as on the phone (it was "Step 2 of 3").

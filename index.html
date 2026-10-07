@@ -6784,7 +6784,7 @@
   :is(.svcMob, .svXsBody, #dSvc .svMain) .svWrap > .svPend{border-radius:24px !important;}
   :is(.svcMob, .svXsBody, #dSvc .svMain) .svWrap > .kitStack{margin:0 !important;padding:26px 8px 12px !important;background:none !important;border:0 !important;}
   body.light :is(.svcMob, .svXsBody, #dSvc .svMain) .svWrap{border-color:rgba(46,31,26,.14);}
-  :is(.svcMob, .svXsBody, body[data-bp="xs"] #dSvc .svMain) .svWrap{padding:0 !important;border:0 !important;border-radius:0 !important;background:none !important;} :is(.svcMob, .svXsBody, body[data-bp="xs"] #dSvc .svMain) .svWrapT{padding:0 0 16px !important;} :is(.svcMob, .svXsBody, body[data-bp="xs"] #dSvc .svMain) .svWrap > .kitStack{padding-bottom:0 !important;}   /* the phone: no outer card, the title, the status and the timeline straight on the page ("on mobile remove the card style, border and padding") */ body.light :is(.svcMob, .svXsBody, #dSvc .svMain) .svWrapT{color:#2e1f1a;}
+  html:not(.svMobCard) :is(.svcMob, .svXsBody, body[data-bp="xs"] #dSvc .svMain) .svWrap{padding:0 !important;border:0 !important;border-radius:0 !important;background:none !important;} html:not(.svMobCard) :is(.svcMob, .svXsBody, body[data-bp="xs"] #dSvc .svMain) .svWrapT{padding:0 0 16px !important;} html:not(.svMobCard) :is(.svcMob, .svXsBody, body[data-bp="xs"] #dSvc .svMain) .svWrap > .kitStack{padding-bottom:0 !important;}   /* the phone: no outer card, the title, the status and the timeline straight on the page ("on mobile remove the card style, border and padding") */ body.light :is(.svcMob, .svXsBody, #dSvc .svMain) .svWrapT{color:#2e1f1a;}
   .kitInfo{display:inline-flex;vertical-align:-2px;margin-left:6px;width:18px;height:18px;padding:0;border:0;background:none;color:rgba(255,255,255,.56);cursor:pointer;} .kitInfo svg{width:16px;height:16px;} .kitInfo:hover{color:#fff;} body.light .kitInfo{color:rgba(46,31,26,.5);}
   :is(#phone2, .dash) > .svSheet.subSh .tlShPanel{height:auto;max-height:86%;}   /* the sub steps' sheet: as tall as its list */
   .svSubSh .svStep span{white-space:normal;}
@@ -10228,7 +10228,7 @@
         <div class="tkGroup" data-svc>
         <div class="tkSub">Sub steps</div>   <!-- the sub steps' tweaks together ("tweak group by Sub step") -->
         <!-- the sub steps in colour (green, orange, blue) or in white and grey ("avoid the coloured system, more like white and grey; create a tweak") -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">
           <span class="lbl">Sub steps colour</span>
           <select id="stKitMono" class="tkSegSel" aria-label="The sub steps' colours">
             <option value="mono" selected>White &amp; grey</option>
@@ -10236,7 +10236,7 @@
           </select>
         </div>
         <!-- the sub steps' card under the status block: outlined, or a grey ground ("tweak footer style: bordered, outlined no bg; bg grey #fff opacity 4%") -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">
           <span class="lbl">Footer style</span>
           <select id="stKitFoot" class="tkSegSel" aria-label="The sub steps card's style">
             <option value="grey" selected>Grey</option>
@@ -10251,6 +10251,8 @@
             <option value="grey">Grey</option>
           </select>
         </div>
+        <!-- the phone: the status and its sub steps wrapped in the card, as the desk, or straight on the page ("add tweak sub step card on/off: same style as desktop; no card wrap on mobile, current") -->
+        <div class="tkRow"><span class="lbl">Sub step card</span><select id="stSubCard" class="tkSegSel" aria-label="The phone's card around a status with sub steps"><option value="off" selected>Off</option><option value="on">On</option></select></div>
         <!-- where the sub steps' timeline sits: under the status card, or in it below a divider -->
         <div class="tkRow tkGone">
           <span class="lbl">Sub timeline</span>
@@ -24171,7 +24173,7 @@
       }
       const grpProg = () => { if (!GP) return ''; const it = J.items, ai = it.findIndex(y => y.state !== 'done'), cnt = ai < 0 ? it.length : ai + 1;
         const LATER = { gutrev: 'An included 30 minute call with your dietitian', gut: 'At-home stool test. Results in about 4 to 6 weeks from posting your sample', gutrep: 'Usually ready 3 business days after your results arrive' };
-        return '<div class="svJr svGrp"><div class="svProgHead">Your progress<span class="svGrpN">' + (ai < 0 ? 'All done' : 'Step ' + cnt + ' of ' + it.length) + simNav() + '</span></div>' + asCard(d.t, it.map((y, j) => {
+        return '<div class="svJr svGrp"><div class="svProgHead">Your progress<span class="svGrpN">' + (ai < 0 ? 'All done' : cnt + '/' + it.length /* a count, as the phone ("add 2/3 desktop") */) + simNav() + '</span></div>' + asCard(d.t, it.map((y, j) => {
           const sd = SVC[y.svc] || {}, nm = ({ gutq: 'Questionnaire', gut: 'Assessment', gutrep: 'Report', gutrev: 'Review', dexa: 'DEXA scan', diag: 'Diagnostics Review', checkin: 'Member Check-In', path: 'Blood test', abrep: 'Report' })[y.svc] || y.t || sd.t || '', me = j === JJ.i;   /* simply by what each is ("simply by Questionnaire, Assessment, Report, Review") */
           const yat = me ? at : y.at != null ? y.at : 0, ysteps = sd.steps || [], cur = j === ai, act = y.svc === 'gut' ? KITACT[Math.max(0, yat)] : !PASV.test((ysteps[yat] || [''])[0]) && y.state !== 'soon';
           const k = y.state === 'done' ? 'on' : cur && y.kk ? y.kk : cur ? (me ? (x.tone === 'wait' ? 'wait' : x.tone === 'ok' ? 'conf' : 'act') : act ? 'act' : 'wait') : 'later';   // the page's own: the status block's colour
@@ -24262,7 +24264,7 @@
           ['Completed 3 Oct', 'Completed 8 Oct', 'Signed 10 Oct', 'Completed 20 Oct', 'Expected by 3 Nov', 'Available once your report is ready'],
           ['Completed 3 Oct', 'Completed 8 Oct', 'Signed 10 Oct', 'Completed 20 Oct', 'Ready 3 Nov', 'Watch your video walkthrough'],
           ['Completed 3 Oct', 'Completed 8 Oct', 'Not going ahead']][at];
-        return '<div class="svJr svGrp"><div class="svProgHead">Your progress<span class="svGrpN">' + (K === 'clo' ? 'Closed' : 'Step ' + (SI + 1) + ' of 6') + simNav() + '</span></div>' + asCard(d.t, MRIS.map((nm, j) => ({ k: j < SI ? 'on' : j === SI ? K : 'later', x: j > SI && K === 'clo' ? 'struck' : '', nm, sub: SUB[j] || '', gf: j === SI && at >= 3 && at <= 5 ? (at - 3 + 1) / 3 : j === SI && at >= 6 && at <= 10 ? ((at === 6 ? 0 : at === 10 ? 2 : 1) + 1) / 3 : j === SI && (at === 11 || at === 12) ? (at - 10) / 2 : null })))   /* a step with sub steps fills as far as they go */ + '</div>'; };
+        return '<div class="svJr svGrp"><div class="svProgHead">Your progress<span class="svGrpN">' + (K === 'clo' ? 'Closed' : (SI + 1) + '/6') + simNav() + '</span></div>' + asCard(d.t, MRIS.map((nm, j) => ({ k: j < SI ? 'on' : j === SI ? K : 'later', x: j > SI && K === 'clo' ? 'struck' : '', nm, sub: SUB[j] || '', gf: j === SI && at >= 3 && at <= 5 ? (at - 3 + 1) / 3 : j === SI && at >= 6 && at <= 10 ? ((at === 6 ? 0 : at === 10 ? 2 : 1) + 1) / 3 : j === SI && (at === 11 || at === 12) ? (at - 10) / 2 : null })))   /* a step with sub steps fills as far as they go */ + '</div>'; };
       const title = ({ gut: 'Microbiome & Gut Health Assessment', ab: 'Advanced Blood Testing' })[JDEF[key]] || d.t || o && o.t, start =   /* the page keeps the service's name, whatever step of it is in hand ("service page title should stay the name always") */ /^(locked|later|suggested|purchase|claim)$/.test(state) ? (o && o.st || x.st) : (d.started || 'Started on 20 February 2026');   // under the title, when it began, always ("h1 sub: Started on 20 February 2026"); a service not begun keeps its own line
       const lkH = state === 'locked' || state === 'later' || state === 'suggested' || state === 'purchase' || state === 'claim';
       // the main step block in the phone's hero, always ("mobile: add main step block"): the service's own steps, or for the microbiome the group's four services, coloured by who acts
@@ -25433,7 +25435,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stSubCard' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -27401,10 +27403,11 @@
   if (!document.getElementById('stInsCond')) document.documentElement.classList.add('insCond');   // the condensed cards, the tweak gone ("remove that")
   { const t = document.getElementById('stInsCond'); if (t){ const on = () => { document.documentElement.classList.toggle('insCond', t.value !== 'full'); const c = document.querySelector('#phone2 .ovcar'); if (c) c.scrollLeft = 0; };
       t.addEventListener('change', on); on(); } }
-  { const t = document.getElementById('stKitMono'); if (t){ const on = () => document.documentElement.classList.toggle('kitMono', t.value === 'mono'); t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stKitMono'); if (t){ const on = () => document.documentElement.classList.toggle('kitMono', true);   /* retired: always White & grey ("remove") */ t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stSubCard'); if (t){ const on = () => document.documentElement.classList.toggle('svMobCard', t.value === 'on'); t.addEventListener('change', on); on(); } }   // the phone's sub step card: on, as the desk; off, no wrap
   { const t = document.getElementById('stWrapSty'); if (t){ const on = () => document.documentElement.classList.toggle('svWrapGrey', t.value === 'grey'); t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stBodySty'); if (t){ const on = () => document.documentElement.classList.toggle('svFlat', t.value === 'flat'); t.addEventListener('change', () => { on(); if (window._svc && window._svc.repaint) window._svc.repaint(); }); on(); } }   // repainted, so XS's hero sets its top again
-  { const t = document.getElementById('stKitFoot'); if (t){ const on = () => document.documentElement.classList.toggle('kitOutline', t.value === 'outline'); t.addEventListener('change', on); on(); } }
+  { const t = document.getElementById('stKitFoot'); if (t){ const on = () => document.documentElement.classList.toggle('kitOutline', false);   /* retired: always Grey ("remove") */ t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroImg'); if (t){ const on = () => document.documentElement.classList.toggle('heroThumb', t.value === 'thumb'); t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stProfStyle'); if (t){ const on = () => { document.documentElement.classList.toggle('profTiles', t.value === 'tiles'); document.documentElement.classList.toggle('profStack', t.value === 'stack'); }; t.addEventListener('change', on); on(); } }
   { const t = document.getElementById('stHeroBg'); if (t){ const on = () => document.documentElement.classList.toggle('heroEarth', t.value !== 'neutral');   /* Earth, the default ("Neutral / Earth #252522, Earth the default") */ t.addEventListener('change', on); on(); } }
@@ -27459,7 +27462,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stSubTl: 'out', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stSubCard: 'off', stSubTl: 'out', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
