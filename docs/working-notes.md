@@ -13240,3 +13240,5 @@ The "Contact care team" link sits 2px further from "Want to discuss further?".
 6.065 See breakdown (biomarker card) closes the service page and opens Insights on the Biomarkers tab, with the service's own record picked. The list scrolls so the filter (picked report, chips) is pinned at the top with the biomarkers under it, on desk and phone. Records: blood test → Advanced blood panel (r1), DEXA → Bone density scan (r10), microbiome → Gut microbiome test (r12).
 
 6.066 Blood test, First results: a Results section under the status block, with its one result so far: "First blood test results", Pathology, 4 Oct 2026, Sonic Healthcare Pathology. The first results item's See results scrolls down to it.
+
+6.067 Blood test: once the sample is with the lab (At the lab onwards), the Instructions section is gone. They stay for the collection centre step.
