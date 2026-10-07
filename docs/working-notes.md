@@ -13002,3 +13002,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.979 Microbiome group progress list: the services are named simply Questionnaire, Assessment, Report, Review (page titles unchanged).
 
 5.980 The kit card header in the status area reads just "Assessment".
+
+5.981 DEXA: the two consents (Scan Consent, Medical Imaging Consent) are one step, "Consents", in every progress list. While it is the current step, the status card says "Sign these before your DEXA Scan" with both consents stacked as cards (each with Review, then Done), and the step ticks once both are signed. The questionnaires stay separate steps. Rule: consecutive sign documents group; the hidden Multiple actions tweak still groups everything when on.
