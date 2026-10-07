@@ -13128,3 +13128,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 6.022 While the report is on its way (MRI and microbiome), the section is just "Results", with no Report / Results tabs, whichever way the Merge report tweak is set. The waiting card has a solid outline instead of a dashed one.
 
 6.023 The "About the service" section is removed on every device: the desk's right column, M/S in the body, XS and the phone. It stays under the More (…) menu, "About this service".
+
+6.024 Every observation card has a "Contact care team" button. The quote card has it under the doctor. The biomarker card has it beside See breakdown. It opens the Concierge chat with "I have a question about my results". The quote card's extra 48px on the right is now desk only; the phone keeps the width for the words.
