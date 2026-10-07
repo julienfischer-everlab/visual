@@ -13091,3 +13091,9 @@ Read more opens the About sheet. Locked pages keep their own About this service 
 A grouped service's page keeps the group's name as its title on every step: Microbiome & Gut Health Assessment for the questionnaire, kit, report and review; Advanced Blood Testing for the blood test and its report.
 
 6.012 Status card button placement is a tweak (General → Status CTA). Below, the default, puts the button on its own row under the text, 24px down. Side keeps it at the right. Phones always stack. The report and video items in the status card read "See report" and "Watch video".
+
+6.013 The Microbiome & Gut Health Assessment has three steps: Questionnaire, Assessment and Report. The Review step is gone, along with its "Book your Gut Health Review" row, and the overview card now says 3 services. The Report is the last step; when it lands as ready the report modal opens and the progress reads All done.
+Observations come in two types, each in an outlined card (1px line, 20px radius, 24px padding):
+- Quote: the doctor's words, with their photo, name and date.
+- Biomarkers: the split bar, the count in each band, and a "See breakdown" button (36px).
+By service: MRI shows a quote; DEXA shows biomarkers; Advanced Bloods and the microbiome show a quote, then biomarkers.
