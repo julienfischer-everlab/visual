@@ -13107,3 +13107,5 @@ The desk's "Your progress" count reads 2/3, as on the phone (it was "Step 2 of 3
 6.016 DEXA's "Get your results" has two sub steps, as the Appointment: Scan analysis (the clinic reads and measures the scan, 1 to 2 business days), then Doctor review (checked before release, expected 9 Oct). Both are ours to do, so the status card reads In progress (grey) and the current dot is the waiting one.
 Observations always come first under the status block, before Results / Your debrief / My documents.
 Service modals (available, blocked, done) sit 32px from the modal's edge on the desk (was 64), with 24px more under the button.
+
+6.017 Phone progress sheet: every item is on #fff at 4%, not only the current card. Blocked items keep their stripe pattern.
