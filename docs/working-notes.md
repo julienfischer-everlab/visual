@@ -13000,3 +13000,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.978 The Referrals row loses its card and matches the My documents rows (no border, 12px 0 padding). Lists in general: a divider only between items, none above the first or under the last (.svRow, .mMedRow, .svDocB .svDoc).
 
 5.979 Microbiome group progress list: the services are named simply Questionnaire, Assessment, Report, Review (page titles unchanged).
+
+5.980 The kit card header in the status area reads just "Assessment".
