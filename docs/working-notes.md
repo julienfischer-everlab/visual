@@ -13271,3 +13271,4 @@ Blood test done: Get your results reads "Ready 12 Oct".
 The video walkthrough item shows its date, not its length: "Dr Sarah Chen · 3 Nov 2026" on the MRI, "Emma Walsh · 13 Nov 2026" on the microbiome.
 Blood test, At the lab, again: "Expected by 10–17 Oct" in the line, the timeline and the badge. It fits now that the first results come on 10 Oct.
 On the First results step the timeline reads "Get your results / Full results expected by 12 Oct".
+Blood test, First results step only: an outlined note under the Results list, with a clock icon, reads "More results to come by 12 Oct. We'll add them here as soon as they're in." Once done, the full results replace it.
