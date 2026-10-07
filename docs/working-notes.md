@@ -13155,3 +13155,5 @@ A status with a single action (e.g. See first results) shows a plain button plac
 6.035 Up next covers every service after the page's own, open or locked. With the DEXA done, Diagnostics Review (now open) sits under Up next with Member Check-In. A blocked page keeps its "Complete first" group.
 
 6.036 The microbiome Report step has two sub steps, as the MRI debrief does: Clinician review ("Your clinician is writing your report"), then Video walkthrough ("Your clinician is recording your video walkthrough"). Both read "Waiting for results". The kit's page now runs to at 7: 5 and 6 are the sub steps, 7 is the report ready (the modal, the Read report / Watch video items). The arrows walk 4 → 7, using the page's own at since cur.at is capped at the kit's steps.
+
+6.037 Microbiome Report sub steps renamed: Clinician review, then Final report & video ("Your clinician is finishing your report and video").
