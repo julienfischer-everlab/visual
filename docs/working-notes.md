@@ -13031,3 +13031,5 @@ Phone / XS: the sub-step group loses its outer card (no border, no padding); tit
 Phone "…": the bottom sheet's two items (Do it later, About this service) are full 56px rows at 16px with 20px icons.
 
 5.992 Completed steps in the progress list say what was done, with a date, instead of their description: Signed (consents), Reviewed, Received (referral, results, report), Uploaded (photo ID) or Completed. Dates run in order from 2 Oct.
+
+5.993 DEXA completed: no report, so the status card has no visual and no button and reads "See your results below."; the debrief is its Results list only (with the merge tweak on or off), and no results-ready modal opens.
