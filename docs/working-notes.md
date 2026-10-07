@@ -13212,3 +13212,5 @@ The report and video items (svMed) carry no dot; documents still have theirs (or
 - Items inside the status card (documents, report, video) have an 18px radius (was 14).
 Observation cards: the Contact care team button is replaced by a line, "Want to discuss further? Contact care team", the last part a link (14px, secondary, upright). The biomarker card keeps See breakdown.
 "Message your care team" is now "Message care team" everywhere.
+
+6.056 Biomarker card: the counts are 20px (was 24) and sit 6px over their band name (was 8). The care line is gone from it; only the quote card keeps "Want to discuss further? Contact care team".
