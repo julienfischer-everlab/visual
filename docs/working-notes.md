@@ -13261,3 +13261,7 @@ Every date badge reads "Expected by …" ("Expected by 7 Oct", "Expected by 11 O
 Status card titles never end with a full stop (e.g. "Your results are ready").
 Blood test, At the lab: the line and the timeline read "Expected by 10–17 Oct", which is also the badge.
 Undone: At the lab is back to "Most results are back within 1 to 2 weeks" (badge "Usually takes 1 to 2 weeks"), which fits the first results on 4 Oct.
+Blood test dates moved:
+- First results 10 Oct: the item, the Results row, the timeline "First results 10 Oct", and At the lab "Completed 10 Oct".
+- The rest expected by 12 Oct.
+- Once done: Get your results "Received 12 Oct", the report "12 Oct 2026", the observation quote 12 Oct 2026.
