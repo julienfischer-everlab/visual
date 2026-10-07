@@ -13250,3 +13250,4 @@ The "Contact care team" link sits 2px further from "Want to discuss further?".
 6.070 The blood test's first results item and report item use the document icon tile (40px), as the document rows do, with no dot. No picture.
 
 6.071 Blood test done: the status tag reads "Ready" (was Completed). In the timeline, Get your results reads "Received 21 Oct".
+At the lab reads "Completed 4 Oct" once done.
