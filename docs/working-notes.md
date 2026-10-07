@@ -13111,3 +13111,12 @@ Service modals (available, blocked, done) sit 32px from the modal's edge on the 
 6.017 Phone progress sheet: every item is on #fff at 4%, not only the current card. Blocked items keep their stripe pattern.
 
 6.018 Referrals is the second section, not the first: after the first section under the status block (Why we need this information, the appointment details, or Instructions), on the desk and the phone. Observations, when present, still come first.
+
+6.019 Merged the other session's publish (v794 on the artifact), on top of 6.018:
+- Blood test copy and names: the last step is "Results in" (First results, then the rest within 5 business days); the report is the Blood Test Report; Advanced Blood Testing in the group and the picker; DEXA Scan capitalised in the protocol group.
+- Results rows read "Blood test results" and "Blood test report"; the abrep debrief heading reads "Your report"; "Your blood test report is here."
+- The blood test done: "See your results below…" with a Track your report button.
+- The report modal for a written report has no play button (noPlay).
+- ETAs: blood test 16 Oct, report 21 Oct.
+- The blocked Diagnostics Review: "It opens once your DEXA scan is complete, so your results are ready before you meet."
+Debrief items (report and video in the status card): the picture is 72px (was 56).
