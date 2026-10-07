@@ -13043,3 +13043,11 @@ Phone "…": the bottom sheet's two items (Do it later, About this service) are 
 5.997 DEXA "Get your results" subtitle: "Generally 5 to 7 days after your scan" (was "Track your result here").
 
 5.998 Blocked service on the phone: the progress card has no bars or count. It lists the group's services inside, under "Your progress": "Complete first" (e.g. DEXA Scan) and "Up next" (the locked ones, this page's own in white). Rows open as on desktop.
+
+5.999 Final step per service (merge report in status card ON):
+- Microbiome: Read report + Watch video, then Results, then a new "Observations" section, then Book your Gut Health Review.
+- Pathology: an async debrief, so the buttons are Ask a question + View report; then Results and Observations.
+- DEXA: no report; Results and Observations.
+- WBMRI: Read report + Watch video, then Results (no Observations).
+Observations are rows: what was measured, what it says, and an "In range" (green) or "To watch" (peach) tag. The copy is placeholder. "Ask a question" has no action yet.
+Desktop: the gap under the page header is 16px smaller (44 to 28).
