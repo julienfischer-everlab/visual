@@ -13075,3 +13075,5 @@ Read more opens the About sheet. Locked pages keep their own About this service 
 - Service picker: Advanced Bloods blood test / report, DEXA scan (Protocol).
 
 6.006 MRI step 3 is "Eligibility & Consent" with sub steps: Doctor review, Send a document, Sign consent. It has a card header and a three-dot timeline, and its bar fills by thirds, like Scan.
+
+6.007 DEXA gets a "Documents" step before the Appointment: Scan Consent (Review, sign) and Pre-Scan Questionnaire (Complete). It is one step in the progress list ("Your consent and questionnaire, before your scan"); the status card says "Complete these before your DEXA scan" with both stacked as items, and the step ticks once both are done. Mixed document groups are named Documents; all-consent groups stay Consents.
