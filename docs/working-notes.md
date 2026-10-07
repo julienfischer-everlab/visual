@@ -13039,3 +13039,5 @@ Phone "…": the bottom sheet's two items (Do it later, About this service) are 
 5.995 A blocked service on the phone (e.g. Member Check-In) gets a progress card too. Its bars are the group's services, with the one to finish first in hand ("Next, DEXA Scan"). Tapping it opens the group list sheet (Complete first / Up next).
 
 5.996 Phone progress card: the count is back at the top right (e.g. 2/5), and "Next, <step>" sits under the bars (14px, 56%). Single-service cards (DEXA) now count what the desktop lists: documents (Consents, Pre-Scan…, Health Questionnaire), then Appointment (Book and Go to as one), then Get your results. So the bars, the count and the next step match the desktop list; the last step shows the ETA.
+
+5.997 DEXA "Get your results" subtitle: "Generally 5 to 7 days after your scan" (was "Track your result here").
