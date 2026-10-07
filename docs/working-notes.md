@@ -13130,3 +13130,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 6.023 The "About the service" section is removed on every device: the desk's right column, M/S in the body, XS and the phone. It stays under the More (…) menu, "About this service".
 
 6.024 Every observation card has a "Contact care team" button. The quote card has it under the doctor. The biomarker card has it beside See breakdown. It opens the Concierge chat with "I have a question about my results". The quote card's extra 48px on the right is now desk only; the phone keeps the width for the words.
+
+6.025 Blocked modal: no main button. Under the reason, each service it waits on is a card (its picture, name, and "Next to complete" or "Not available yet") with a View button on the right, the only action; View opens that service. Member Check-In lists both DEXA Scan and Diagnostics Review.
