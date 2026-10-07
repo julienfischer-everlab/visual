@@ -13252,3 +13252,4 @@ The "Contact care team" link sits 2px further from "Want to discuss further?".
 6.071 Blood test done: the status tag reads "Ready" (was Completed). In the timeline, Get your results reads "Received 21 Oct".
 At the lab reads "Completed 4 Oct" once done.
 On the First results step the timeline reads "Get your results / First results 4 Oct".
+The first results line reads "The rest are expected on 7 Oct", so the ETA badge reads "Expected on 7 Oct". The badge keeps "on" or "by" as written.
