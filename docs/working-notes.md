@@ -13217,3 +13217,5 @@ Observation cards: the Contact care team button is replaced by a line, "Want to 
 
 6.057 The ETA badge reads "Usually takes 1 to 2 business days" ("Usually takes 7 to 10 business days", "Usually takes 1 to 2 weeks"). Dates keep "Expected by Fri 27 Nov".
 Biomarker counts sit 2px over their band name (was 6).
+
+6.058 Status card: the title group (tag, title, line) has 48px of padding on its right on the desk. Phone and XS unchanged.
