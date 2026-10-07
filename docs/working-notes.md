@@ -13258,3 +13258,4 @@ The blood test's observation quote is dated 7 Oct 2026.
 MRI doctor review (Eligibility & Consent): "Expected on 11 Oct", so the badge reads the same.
 MRI debrief waiting: the doctor review line reads "Expected by 27–30 Oct", which is also the badge. The timeline's Debrief reads "Expected by 27–30 Oct" on the radiologist and doctor review steps.
 Every date badge reads "Expected by …" ("Expected by 7 Oct", "Expected by 11 Oct"), whatever the line says.
+Status card titles never end with a full stop (e.g. "Your results are ready").
