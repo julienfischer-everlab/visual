@@ -13022,3 +13022,10 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.989 The available-service modal (e.g. Diagnostics Review) is simpler: no cover, no Learn more, no What happens. It shows the title with the Available tag, the description, and a full-width "View detail" button (24px above) that opens the page.
 
 5.990 The 36px / 14px item buttons inside a status card now apply to every status card, not only the service page and phone (e.g. the Timeline detail).
+
+5.991 Step arrows float instead of sitting in the progress cards. On the phone they're a vertical pill outside the frame (right of the phone, vertically centred); on desktop they're an island at the bottom right of the screen. The island mirrors the page's own arrows (same enable / disable), and the arrow keys drive it.
+Phone progress card: "1/3" replaced by an ETA ("ETA 3 Nov", "Completed" when done).
+A fully completed step list is at full strength (titles and lines #fff).
+The status card's Watch video / Read report / View report open the report modal (the MRI debrief, the microbiome report, or the results-ready one).
+Phone / XS: the sub-step group loses its outer card (no border, no padding); title, status and timeline sit on the page.
+Phone "…": the bottom sheet's two items (Do it later, About this service) are full 56px rows at 16px with 20px icons.
