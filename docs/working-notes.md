@@ -13203,3 +13203,5 @@ The report and video items (svMed) carry no dot; documents still have theirs (or
 6.052 ETA badge: 24px under the status line (was 12).
 
 6.053 The microbiome Report follows DEXA's and the MRI's pattern: a third sub step, Final results, shows while waiting (Clinician review, Final report & video, Final results). Once the report is ready it is a single step, with no title and no timeline.
+
+6.054 The status button rule's threshold is 144px (was 160), as a general rule. Over 144px goes to the next row, at the left: Confirm address (151), Go to your scan (147), See first results (144.x). See results (118) stays at the right on the Side layout.
