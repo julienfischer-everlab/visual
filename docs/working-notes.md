@@ -13175,3 +13175,11 @@ DEXA results sub steps generalised (6.040).
 - Off: the time stays in the status line, as before.
 - On: the time sentence leaves the line and shows as a badge under it (clock icon, pill, #fff 8%), shortened to just the time: "Usually 1 to 2 business days", "Usually 7 to 10 business days", "Within 1 to 2 weeks", "Expected by Fri 27 Nov".
 Both versions are drawn; the tweak's class picks one. Status lines holding HTML are left alone.
+
+6.045 Blocked modal changes:
+- An "Unavailable" badge sits under the title.
+- "Complete this first" (small, secondary) sits over the blocker cards.
+- 16px less at the bottom.
+- The description in all service modals is 14px in the secondary colour.
+DEXA done is a single step: no "Get your results" title, no sub timeline. Scan analysis and Doctor review keep both.
+With no report or video items to show, the done status card has a "See results" button that scrolls smoothly down to the Results section (desk and phone).
