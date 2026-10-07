@@ -13251,3 +13251,4 @@ The "Contact care team" link sits 2px further from "Want to discuss further?".
 
 6.071 Blood test done: the status tag reads "Ready" (was Completed). In the timeline, Get your results reads "Received 21 Oct".
 At the lab reads "Completed 4 Oct" once done.
+On the First results step the timeline reads "Get your results / First results 4 Oct".
