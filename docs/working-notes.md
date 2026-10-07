@@ -13035,3 +13035,5 @@ Phone "…": the bottom sheet's two items (Do it later, About this service) are 
 5.993 DEXA completed: no report, so the status card has no visual and no button and reads "See your results below."; the debrief is its Results list only (with the merge tweak on or off), and no results-ready modal opens.
 
 5.994 The phone progress card shows "Next, <next step>" instead of an ETA on single-service pages (e.g. DEXA: "Next, Book your appointment") and in the microbiome group ("Next, Report"). The last step shows the ETA; done shows "Completed". MRI keeps its ETA.
+
+5.995 A blocked service on the phone (e.g. Member Check-In) gets a progress card too. Its bars are the group's services, with the one to finish first in hand ("Next, DEXA Scan"). Tapping it opens the group list sheet (Complete first / Up next).
