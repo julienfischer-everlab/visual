@@ -13033,3 +13033,5 @@ Phone "…": the bottom sheet's two items (Do it later, About this service) are 
 5.992 Completed steps in the progress list say what was done, with a date, instead of their description: Signed (consents), Reviewed, Received (referral, results, report), Uploaded (photo ID) or Completed. Dates run in order from 2 Oct.
 
 5.993 DEXA completed: no report, so the status card has no visual and no button and reads "See your results below."; the debrief is its Results list only (with the merge tweak on or off), and no results-ready modal opens.
+
+5.994 The phone progress card shows "Next, <next step>" instead of an ETA on single-service pages (e.g. DEXA: "Next, Book your appointment") and in the microbiome group ("Next, Report"). The last step shows the ETA; done shows "Completed". MRI keeps its ETA.
