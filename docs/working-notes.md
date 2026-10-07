@@ -13083,3 +13083,9 @@ Read more opens the About sheet. Locked pages keep their own About this service 
 6.009 Advanced Bloods Report is a one-step timeline ("Your report"), the last step after the blood test. "Advanced Bloods: report" is gone from the service picker; the report is reached from the blood test.
 
 6.010 The report and video items in the status card have 56px pictures (was 40), 12px radius.
+
+6.011 Service modals share one format: centred, no cover, 64px from the modal edge on the desk, a 96px picture, the title, the description, and a hugging button.
+- Available (e.g. DEXA from Diagnostics Review): adds a "Why complete it before your <page>" box (written for Diagnostics Review and Member Check-In, generic otherwise), then View detail.
+- Blocked: a lock on the picture, why it waits, and "View <service to finish first>".
+- Done: a tick on the picture, "Completed on …", and View detail.
+A grouped service's page keeps the group's name as its title on every step: Microbiome & Gut Health Assessment for the questionnaire, kit, report and review; Advanced Blood Testing for the blood test and its report.
