@@ -6902,6 +6902,7 @@
   .svmHz .svJrBars i.cur.fill, .svmHz .svJrBars i.cur.fill.pas{--fc:#f5be8c;background:linear-gradient(90deg,var(--fc) 0,var(--fc) calc(var(--gf, 1) * 100%),#4d4d4d calc(var(--gf, 1) * 100%)) !important;background-size:100% 100% !important;animation:none !important;}   /* filled to its sub steps, the rest the next bars' grey */
   .svmHz .svJrBars i.cur.fill.pas{--fc:#b8b8b8;} .svmHz .svJrBars i.cur.fill.okc{--fc:#42be65;} .svmHz .svJrBars i.cur.fill.svTinf{--fc:rgba(255,255,255,.5);}
   /* the service in hand filled as far as its sub steps ("fill accordingly the progress % of the sub steps completed"): the colour down to --gf, the track under it */
+  .svStep.on.pas:not(.fill)::before{background-image:none !important;background-color:#b8b8b8 !important;animation:none !important;} .svJrBars i.cur.pas:not(.fill), .svmHz .svJrBars i.cur.pas:not(.fill){background-image:none !important;background-color:#b8b8b8 !important;animation:none !important;}   /* the main steps never move: a waiting step is plain neutral, the loading light only on the sub steps' line ("never move loading in the main step system") */
   .svStep.fill::before, .svStep.fill.on.pas::before{background-color:#4d4d4d !important;background-image:none !important;animation:none !important;}   /* a main step with sub steps: its fill shows the progress, no loading light ("no loading state style on main step block") */ .svStep.fill::after{content:"";position:absolute;left:8px;top:0;width:4px;height:calc(var(--gf, 1) * 100%);border-radius:2px;background:#f5be8c;pointer-events:none;}
   .svStep.fill.pas::after{background:#b8b8b8;} .svStep.fill.okc::after{background:#42be65;} .svStep.fill.svTinf::after{background:rgba(255,255,255,.5);}
   :is(#dSvc .svAside, #phone2 > .svSheet, .dash > .svSheet) :is(.svJrL > li.main, .svGrpL){background:#181818 !important;box-shadow:none;}   /* the progress step card on #181818 ("progress step card bg 181818") */
@@ -10224,7 +10225,7 @@
           </select>
         </div>
         <!-- where the sub steps' timeline sits: under the status card, or in it below a divider -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">
           <span class="lbl">Sub timeline</span>
           <select id="stSubTl" class="tkSegSel" aria-label="Where the sub steps' timeline sits">
             <option value="out" selected>Outside status card</option>
@@ -24250,7 +24251,7 @@
     let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => t.value === 'on' ? 99 : 1; if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   /* on: every document in one first step, Required actions, their cards stacked in the status block ("replace by multiple actions step on / off") */
     const PPL = 'hero';   // the progress card in the hero, its tweak gone ("remove")   // where the phone's main step block goes ("tweak progress placement: in hero header, in status block")
     const UPN = false;   // the Up next footer: off, its tweak gone ("remove")   // the Up next footer under the phone's progress card, off by default
-    let STI = false; { const t = document.getElementById('stSubTl'); if (t){ STI = t.value === 'in'; t.addEventListener('change', () => { STI = t.value === 'in'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   // the sub timeline in the status card under a divider, or outside it ("sub timeline: in status card with divider / outside status card")
+    const STI = false;   /* the Sub timeline tweak retired ("remove"): outside the status card */   // the sub timeline in the status card under a divider, or outside it ("sub timeline: in status card with divider / outside status card")
     let RIS = false, RVIS = 'doc'; { const t = document.getElementById('stRepSt'), v = document.getElementById('stRepVis'), row = document.getElementById('stRepVisRow'); const sync = () => { if (row) row.hidden = !RIS; }; if (t){ RIS = t.value === 'on'; sync(); t.addEventListener('change', () => { RIS = t.value === 'on'; sync(); if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } if (v){ RVIS = v.value; v.addEventListener('change', () => { RVIS = v.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   /* the visual: the generic illustration or the doctor ("select generic / doctor") */   // Report in status: the CTA on the status, the debrief just its results ("report in status on / off")
     const KPL = 'top';   // the Sub steps placement tweak is gone ("remove"): the one card, the timeline under the status   // the sub steps above the status card as its header, or mini at its right ("create a tweak: mini sub steps, same as mobile, on desktop, on the right side of the status card")
     let KITV = 'stepper';   // the stepper, as the design; the Sub steps tweak is gone ("remove stepper tweak, keep as the design")

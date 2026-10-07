@@ -13004,3 +13004,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.980 The kit card header in the status area reads just "Assessment".
 
 5.981 DEXA: the two consents (Scan Consent, Medical Imaging Consent) are one step, "Consents", in every progress list. While it is the current step, the status card says "Sign these before your DEXA Scan" with both consents stacked as cards (each with Review, then Done), and the step ticks once both are signed. The questionnaires stay separate steps. Rule: consecutive sign documents group; the hidden Multiple actions tweak still groups everything when on.
+
+5.982 Removed the Sub timeline tweak; the sub-step timeline always sits outside the status card (STI const false). The main step system never animates: a waiting main step (bar or vertical line) is plain neutral #b8b8b8 with no moving light; only the sub-step line keeps its loading light.
