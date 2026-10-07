@@ -13246,3 +13246,5 @@ The "Contact care team" link sits 2px further from "Want to discuss further?".
 6.068 Blood test details section: titled "Testing information", with Location and Provider (was Clinician). No Duration row.
 
 6.069 The blood test's first results item has no picture, just its name, source and date, with See results.
+
+6.070 The blood test's first results item and report item use the document icon tile (40px), as the document rows do, with no dot. No picture.
