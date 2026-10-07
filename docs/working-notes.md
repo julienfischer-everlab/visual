@@ -13132,3 +13132,5 @@ Debrief items (report and video in the status card): the picture is 72px (was 56
 6.024 Every observation card has a "Contact care team" button. The quote card has it under the doctor. The biomarker card has it beside See breakdown. It opens the Concierge chat with "I have a question about my results". The quote card's extra 48px on the right is now desk only; the phone keeps the width for the words.
 
 6.025 Blocked modal: no main button. Under the reason, each service it waits on is a card (its picture, name, and "Next to complete" or "Not available yet") with a View button on the right, the only action; View opens that service. Member Check-In lists both DEXA Scan and Diagnostics Review.
+
+6.026 Sub step dots: current and completed are always white (#2e1f1a in light), with a white ripple on the current one, whatever the status card's colour (to do, waiting or confirmed). Upcoming dots stay grey.
