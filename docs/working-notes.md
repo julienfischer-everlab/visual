@@ -13053,3 +13053,6 @@ Observations are rows: what was measured, what it says, and an "In range" (green
 Desktop: the gap under the page header is 16px smaller (44 to 28).
 
 6.000 Observations is now a summary in the app's biomarker colours (rgOpt, rgSub, rgOut): a split bar (8px, 4px radius, 4px gaps), then three columns, each a count (24px) with its dot and the band under it (Optimal / Suboptimal / Out of range). Counts: Pathology 38/6/2, Microbiome 12/3/1, DEXA 7/2/0. A band at 0 has no segment.
+
+6.001 Report + video status cards (Microbiome report ready, MRI debrief ready) list two items inside the card, in the consents' item pattern, instead of two buttons and the doctor photo. "Your report" shows the service cover with a Read button; "Video walkthrough" shows the doctor with a play mark and a Watch button. Each item has the doctor and date (or length) under its title, and both open the debrief modal.
+A done item in the status card (e.g. a signed consent) shows "✓ Done" and a secondary "View" (36px, #fff 10%) that opens the document.
