@@ -13018,3 +13018,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.987 Item actions inside the status card (e.g. Review on the stacked consents) are 36px tall at 14px. Rows outside it stay 44px.
 
 5.988 MRI Scan appointment has sub steps: Pay your balance, Book your scan (including arranging, and choosing a new time if cancelled), Go to your scan. The status card has the "Scan appointment" header and a three-dot timeline; a confirmed sub step is green. In the progress list, Scan appointment fills by its sub steps (1/3, 2/3, full), and Report fills too (half, then full).
+
+5.989 The available-service modal (e.g. Diagnostics Review) is simpler: no cover, no Learn more, no What happens. It shows the title with the Available tag, the description, and a full-width "View detail" button (24px above) that opens the page.
