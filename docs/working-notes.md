@@ -13029,3 +13029,5 @@ A fully completed step list is at full strength (titles and lines #fff).
 The status card's Watch video / Read report / View report open the report modal (the MRI debrief, the microbiome report, or the results-ready one).
 Phone / XS: the sub-step group loses its outer card (no border, no padding); title, status and timeline sit on the page.
 Phone "…": the bottom sheet's two items (Do it later, About this service) are full 56px rows at 16px with 20px icons.
+
+5.992 Completed steps in the progress list say what was done, with a date, instead of their description: Signed (consents), Reviewed, Received (referral, results, report), Uploaded (photo ID) or Completed. Dates run in order from 2 Oct.
