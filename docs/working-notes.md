@@ -13120,3 +13120,5 @@ Service modals (available, blocked, done) sit 32px from the modal's edge on the 
 - ETAs: blood test 16 Oct, report 21 Oct.
 - The blocked Diagnostics Review: "It opens once your DEXA scan is complete, so your results are ready before you meet."
 Debrief items (report and video in the status card): the picture is 72px (was 56).
+
+6.020 Observation quote: italic, line height 2px tighter (22.8px), and the quote card has 48px more on the right (72px).
