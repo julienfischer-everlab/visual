@@ -13236,3 +13236,5 @@ Biomarker counts sit 2px over their band name (was 6).
 
 6.064 Blood test, as DEXA: Get your results has one waiting sub step, First results. Full results is the next dot ("Within 3 business days"), reached when the test completes. Next from First results goes straight to the completed step, a single step. The main step's fill counts the shown dots.
 The "Contact care team" link sits 2px further from "Want to discuss further?".
+
+6.065 See breakdown (biomarker card) closes the service page and opens Insights on the Biomarkers tab, with the service's own record picked. The list scrolls so the filter (picked report, chips) is pinned at the top with the biomarkers under it, on desk and phone. Records: blood test → Advanced blood panel (r1), DEXA → Bone density scan (r10), microbiome → Gut microbiome test (r12).
