@@ -13183,3 +13183,5 @@ Both versions are drawn; the tweak's class picks one. Status lines holding HTML 
 - The description in all service modals is 14px in the secondary colour.
 DEXA done is a single step: no "Get your results" title, no sub timeline. Scan analysis and Doctor review keep both.
 With no report or video items to show, the done status card has a "See results" button that scrolls smoothly down to the Results section (desk and phone).
+
+6.046 Retired the "Card with sub steps" tweak. It stays Outlined.
