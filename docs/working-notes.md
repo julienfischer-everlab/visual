@@ -13058,3 +13058,5 @@ Desktop: the gap under the page header is 16px smaller (44 to 28).
 A done item in the status card (e.g. a signed consent) shows "✓ Done" and a secondary "View" (36px, #fff 10%) that opens the document.
 
 6.002 Phone progress sheet: titled "Your progress" (no service name, no second heading). The current service card loses its own title row (e.g. DEXA Scan), which stays in the desktop timeline card, and its ground is #fff 4%.
+
+6.003 Available-service modal: centred, with a 96px image (24px radius) above the title, no Available badge, and "View detail" hugging its label (44px, 14px).
