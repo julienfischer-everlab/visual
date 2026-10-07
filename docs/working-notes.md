@@ -13214,3 +13214,6 @@ Observation cards: the Contact care team button is replaced by a line, "Want to 
 "Message your care team" is now "Message care team" everywhere.
 
 6.056 Biomarker card: the counts are 20px (was 24) and sit 6px over their band name (was 8). The care line is gone from it; only the quote card keeps "Want to discuss further? Contact care team".
+
+6.057 The ETA badge reads "Usually takes 1 to 2 business days" ("Usually takes 7 to 10 business days", "Usually takes 1 to 2 weeks"). Dates keep "Expected by Fri 27 Nov".
+Biomarker counts sit 2px over their band name (was 6).
