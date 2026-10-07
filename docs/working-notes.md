@@ -13010,3 +13010,5 @@ Sub-step timeline: the current dot ripples again (the 5.970 removal is undone); 
 5.983 DEXA: "Book your appointment" and "Go to your appointment" are one main step, "Appointment", in the progress list. Its bar fills to half on Book and full on Go to, and its line reads the current sub step. The status card has the "Appointment" header and the two-dot sub-step timeline, with "Up next – Go to your appointment" and the info sheet on the phone.
 
 5.984 Buttons: the small row buttons (Review on stacked consents, Show / View on documents and referrals) are 44px tall at 14px on desktop and phone. The status card buttons on desktop are 44px at 14px too, including View report; the phone keeps its 56px status buttons.
+
+5.985 MRI progress list copy: Questionnaire, Briefing, Consent, Body MRI & CT Chest, Report, Post-scan Debrief (MRIS). Page titles and status headers keep the full names (MRIN).

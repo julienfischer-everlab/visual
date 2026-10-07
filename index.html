@@ -24138,6 +24138,7 @@
       let toBook = state === 'book' || (at >= 0 && at < n && /^book/i.test(d.steps[at][0]));   // still to book: no appointment to describe ("if state is book appt, doesn't make sense to show Your appointment")
       /* the MRI: one screen per stage -- the status block, the body's sections and the right panel's six services ("create the MRI service") */
       const MRI = key === 'wbmri' && state !== 'done' && at >= 0 && at < n;
+      const MRIS = ['Questionnaire', 'Briefing', 'Consent', 'Body MRI & CT Chest', 'Report', 'Post-scan Debrief'];   // the progress list, simply ("copy: Questionnaire, Briefing, Consent, Body MRI & CT Chest, Report, Post-scan Debrief")
       const MRIN = ['MRI Onboarding Questionnaire', 'Whole Body MRI Screening Briefing', 'Whole Body MRI and CT Chest consent', 'Whole Body MRI & CT Chest', 'Whole Body MRI & CT Report', 'Post-Scan Debrief: Whole Body MRI'];
       if (MRI){
         const UL = (h, li) => '<h2 class="svH2">' + h + '</h2><div class="svBody"><ul class="svList">' + li.map(t => '<li>' + t + '</li>').join('') + '</ul></div>';
@@ -24204,7 +24205,7 @@
           ['Completed 3 Oct', 'Completed 8 Oct', 'Signed 10 Oct', 'Completed 20 Oct', 'Expected by 3 Nov', 'Available once your report is ready'],
           ['Completed 3 Oct', 'Completed 8 Oct', 'Signed 10 Oct', 'Completed 20 Oct', 'Ready 3 Nov', 'Watch your video walkthrough'],
           ['Completed 3 Oct', 'Completed 8 Oct', 'Not going ahead']][at];
-        return '<div class="svJr svGrp"><div class="svProgHead">Your progress<span class="svGrpN">' + (K === 'clo' ? 'Closed' : 'Step ' + (SI + 1) + ' of 6') + simNav() + '</span></div>' + asCard(d.t, MRIN.map((nm, j) => ({ k: j < SI ? 'on' : j === SI ? K : 'later', x: j > SI && K === 'clo' ? 'struck' : '', nm, sub: SUB[j] || '' }))) + '</div>'; };
+        return '<div class="svJr svGrp"><div class="svProgHead">Your progress<span class="svGrpN">' + (K === 'clo' ? 'Closed' : 'Step ' + (SI + 1) + ' of 6') + simNav() + '</span></div>' + asCard(d.t, MRIS.map((nm, j) => ({ k: j < SI ? 'on' : j === SI ? K : 'later', x: j > SI && K === 'clo' ? 'struck' : '', nm, sub: SUB[j] || '' }))) + '</div>'; };
       const title = o && o.t || d.t, start = /^(locked|later|suggested|purchase|claim)$/.test(state) ? (o && o.st || x.st) : (d.started || 'Started on 20 February 2026');   // under the title, when it began, always ("h1 sub: Started on 20 February 2026"); a service not begun keeps its own line
       const lkH = state === 'locked' || state === 'later' || state === 'suggested' || state === 'purchase' || state === 'claim';
       // the main step block in the phone's hero, always ("mobile: add main step block"): the service's own steps, or for the microbiome the group's four services, coloured by who acts
