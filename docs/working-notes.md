@@ -13109,3 +13109,5 @@ Observations always come first under the status block, before Results / Your deb
 Service modals (available, blocked, done) sit 32px from the modal's edge on the desk (was 64), with 24px more under the button.
 
 6.017 Phone progress sheet: every item is on #fff at 4%, not only the current card. Blocked items keep their stripe pattern.
+
+6.018 Referrals is the second section, not the first: after the first section under the status block (Why we need this information, the appointment details, or Instructions), on the desk and the phone. Observations, when present, still come first.
