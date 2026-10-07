@@ -13081,3 +13081,5 @@ Read more opens the About sheet. Locked pages keep their own About this service 
 6.008 The DEXA group is DEXA scan, Diagnostics Review, Member Check-In again ("Up next": Diagnostics Review, then Member Check-In, both locked). Diagnostics Review and Member Check-In show their full names in the lists.
 
 6.009 Advanced Bloods Report is a one-step timeline ("Your report"), the last step after the blood test. "Advanced Bloods: report" is gone from the service picker; the report is reached from the blood test.
+
+6.010 The report and video items in the status card have 56px pictures (was 40), 12px radius.
