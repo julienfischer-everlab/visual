@@ -13266,3 +13266,4 @@ Blood test dates moved:
 - The rest expected by 12 Oct.
 - Once done: Get your results "Received 12 Oct", the report "12 Oct 2026", the observation quote 12 Oct 2026.
 Timeline on the First results step: "Get your results / First results 10 Oct, Full results expected by 12 Oct".
+The blood test's Results header is dated 2 Oct 2026 (was 1 Oct).
