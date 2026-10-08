@@ -13280,3 +13280,11 @@ Modals: no tick or lock icon over the picture.
 Results placeholder title: "Your results will appear here" (was "Your report and video will appear here"). Changed on the microbiome page and in both MRI waiting placeholders.
 DEXA Scan analysis and Doctor review: a Results section with the "Your results will appear here" placeholder replaces the DEXA Scan details. Instructions is removed. Referrals stays. Final results (done) already had no Instructions.
 Ported from the live artifact (another session): the gut questionnaire step reads "Tell us about your gut health and diet. We’ll send your kit once it’s done." with the button "Start", and its journey line reads "Needed before we send your kit".
+New tweak "Tab content" (Off by default), in the service page's General card under Sub step card.
+- Off: sections stack as before.
+- On: every section under the status block becomes a line tab, labelled with the section's title. My documents stays its own section at the end, when there are documents.
+- With a single section there's nothing to combine, so no tab bar shows.
+- A new page or step opens on its first tab.
+- With tabs on, "See results" (status button, first-results item, debrief modal) switches to the Results tab and scrolls to it.
+DEXA Go to your scan: in the MRI's copy format, with scheduled instead of booked. "You’re scheduled for Sat 3 Oct, 9:30 am" / "Quantum Therapy Sydney, Surry Hills. Tell reception you’re with Everlab." Button: Add to calendar. 3 Oct matches the Appointment's "Completed 3 Oct".
+Retired these tweaks, keeping the values in the user's screenshots: Merge report in status card (On), Status CTA (Side; buttons over 144px still drop under the text), Visual (Generic).

@@ -10115,7 +10115,7 @@
         <div class="tkGroup" data-svc>
         <div class="tkSub">General</div>
         <!-- the report's CTA on the status block, the debrief section only its results, no tabs, no report card ("report in status on / off") -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">
           <span class="lbl">Merge report in status card</span>
           <select id="stRepSt" aria-label="The report's CTA in the status block">
             <option value="on">On</option>
@@ -10123,7 +10123,7 @@
           </select>
         </div>
         <!-- the status card's button: on its own row under the text, or at the text's right ("always put the CTA on another row after the content; tweak option") -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">
           <span class="lbl">Status CTA</span>
           <select id="stCtaPos" class="tkSegSel" aria-label="Where the status card's button sits">
             <option value="below" selected>Below</option>
@@ -10133,7 +10133,7 @@
         <!-- the status card's time (e.g. "Usually 1 to 2 business days"): out of the line into a badge under it, or kept in the line ("ETA badge indicator on / off") -->
         <div class="tkRow"><span class="lbl">ETA badge</span><select id="stEtaB" class="tkSegSel" aria-label="The status card's time as a badge"><option value="off" selected>Off</option><option value="on">On</option></select></div>
         <!-- when merged, what the status card shows at its right: the report illustration, or the doctor who wrote it ("if on: generic / doctor") -->
-        <div class="tkRow" id="stRepVisRow" hidden>
+        <div class="tkRow tkGone" id="stRepVisRow" hidden>
           <span class="lbl">Visual</span>
           <select id="stRepVis" class="tkSegSel" aria-label="The visual at the right of the report's status card">
             <option value="gen">Generic</option>
@@ -10259,6 +10259,8 @@
         </div>
         <!-- the phone: the status and its sub steps wrapped in the card, as the desk, or straight on the page ("add tweak sub step card on/off: same style as desktop; no card wrap on mobile, current") -->
         <div class="tkRow"><span class="lbl">Sub step card</span><select id="stSubCard" class="tkSegSel" aria-label="The phone's card around a status with sub steps"><option value="off" selected>Off</option><option value="on">On</option></select></div>
+        <!-- the page's sections under line tabs, My documents still its own section at the end ("tab content: off, stack sections as it is; on, combine the sections under tabs, line tab, excluding My documents") -->
+        <div class="tkRow"><span class="lbl">Tab content</span><select id="stTabC" class="tkSegSel" aria-label="The page's sections under tabs"><option value="off" selected>Off</option><option value="on">On</option></select></div>
         <!-- where the sub steps' timeline sits: under the status card, or in it below a divider -->
         <div class="tkRow tkGone">
           <span class="lbl">Sub timeline</span>
@@ -23931,7 +23933,7 @@
     const SCAN = s => [['Book your appointment', 'Choose a time at a partner clinic'], ['Go to your appointment', 'Complete your ' + s], ['Get your results', 'Your doctor reviews them with you']];
     const SVC = {
       dexa: { t: 'DEXA Body Composition and Bone Mineral Density', short: 'DEXA scan', img: 'dexa', dur: '30min', loc: CLINIC, clin: 'Partner imaging clinic', ref: true, started: 'Started on 2 Oct 2026',
-        act: { 'Scan analysis': { h: 'Your scan is being analysed', p: 'The imaging clinic reads your scan and measures it. Expected by 5\u20136 Oct.', nb: 1 }, 'Doctor review': { h: 'Your doctor is reviewing your results', p: 'They check them before they\u2019re released to you, then go through them with you at your Diagnostics Review.', nb: 1 } },
+        act: { 'Go to your scan': { h: 'You\u2019re scheduled for Sat 3 Oct, 9:30 am', p: 'Quantum Therapy Sydney, Surry Hills. Tell reception you\u2019re with Everlab.', btns: ['Add to calendar'] } /* the MRI's format, scheduled not booked ('follow the copy format of the MRI; use Scheduled and not booked') */, 'Scan analysis': { h: 'Your scan is being analysed', p: 'The imaging clinic reads your scan and measures it. Expected by 5\u20136 Oct.', nb: 1 }, 'Doctor review': { h: 'Your doctor is reviewing your results', p: 'They check them before they\u2019re released to you, then go through them with you at your Diagnostics Review.', nb: 1 } },
         steps: [['Book your scan', 'At a partner imaging clinic near you'], ['Go to your scan', '30 minutes. Fast for 2 hours before'], ['Scan analysis', 'Expected by 5\u20136 Oct'], ['Doctor review', 'Usually 1 business day']],   /* Get your results: its two as sub steps, as the Appointment's ("need a sub step") */   // (merged from the other session's published version: the Everlab Protocol copy)
         instr: ['Fast for 2 hours before your scan. Water is fine.', 'Wear loose, thin clothing with no metal: no zips, buckles or underwire.', 'Tell the clinic before you go if you might be pregnant.'],
         about: 'A DEXA scan measures your bone mineral density, lean muscle and body fat, including where the fat sits. It is painless, with no needles, and takes about 30 minutes. Your doctor goes through your results with you at your Diagnostics Review.' },
@@ -24038,7 +24040,8 @@
     const DONE_ST = /^(done|completed?)$/i; let RTAB = 'rep';   /* the Results tab in hand */
     document.addEventListener('click', e => { const b = e.target.closest('.svResTabs button[data-rtab]'); if (!b || b.dataset.rtab === RTAB) return; RTAB = b.dataset.rtab; paint(cur.key, cur.state, cur.o); });
     document.addEventListener('click', e => { /* buttons never open the debrief modal: it shows once, the first time the step is reached ("general rule: CTA shouldn't trigger the modal") */ const bk = e.target.closest('.gutBook'); if (bk){ const mb = !!bk.closest('#svcMob, #phone2'); (mb ? openMob : openDesk)('gutrev', 'book', { from: backTo }); } });   // the MRI's report card: its video
-    document.addEventListener('click', e => { const b = e.target.closest('.svSeeRes'); if (!b) return; const root = b.closest('#dSvc, #svcMob'), h = root && [...root.querySelectorAll('.svH2')].find(el => /^Results/.test(el.textContent.trim()) && el.offsetParent); if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' }); });   // the first results item: down to its Results
+    function resTo(root){ if (!root) return null; const tb = [...root.querySelectorAll('.svCTab')].find(b => b.dataset.ct === 'Results' && b.offsetParent); if (tb){ if (!tb.classList.contains('on')) tb.click(); return tb.closest('.svCTabs'); }   /* under tabs: the Results tab, then down to the tabs */ return [...root.querySelectorAll('.svH2')].find(el => /^Results/.test(el.textContent.trim()) && el.offsetParent); }
+    document.addEventListener('click', e => { const b = e.target.closest('.svSeeRes'); if (!b) return; const h = resTo(b.closest('#dSvc, #svcMob')); if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' }); });   // the first results item: down to its Results
     document.addEventListener('click', e => { const b = e.target.closest('.svObGo:not(.svObCare)'); if (!b || !cur || !b.closest('#dSvc, #svcMob')) return; const desk = !b.closest('#svcMob, #phone2'), rid = ({ path: 'r1', abrep: 'r1', dexa: 'r10', gut: 'r12', gutrep: 'r12' })[cur.key] || 'all';   // See breakdown: Insights, the Biomarkers tab, the service's report picked, its list under the pinned filter ("go to Insights, the Pathology report selected and the biomarkers filtered")
       close(); document.dispatchEvent(new CustomEvent('everlab:showBio')); document.dispatchEvent(new CustomEvent('everlab:pickRec', { detail: rid })); setMode(desk ? 18 : 20); reachFilter(desk, 460); });
     document.addEventListener('click', e => { const b = e.target.closest('.abRepGo'); if (!b || !cur) return; const mb = !!b.closest('#svcMob, #phone2'); SIM.path = { state: 'done', o: {} };   /* the blood test done, so the report's page follows */ (mb ? openMob : openDesk)('abrep', 'done', { from: backTo }); });   /* the report received: its page, ready */   // the blood test's report item: the report's page
@@ -24049,7 +24052,7 @@
     const DSEEN = new Set(); let GUTSEEN = false; const GUTDB = { h: 'Your microbiome report is ready', p: 'Emma Walsh has reviewed your microbiome results and recorded a video walkthrough for you.', note: 'If anything in your results needs follow-up with a doctor, we\u2019ll contact you directly.' };
     const dbShow = c => { const mob = version === 6, host = mob ? ph : document.querySelector('.dash'); if (!host) return;
       let m = host.querySelector(':scope > .dbM'); if (!m){ m = document.createElement('div'); m.className = 'dbM'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Your debrief is ready'); host.appendChild(m);
-        m.addEventListener('click', e => { if (e.target === m || e.target.closest('.dbLater, .dbGo')) m.classList.remove('on'); const g = e.target.closest('.dbGo'); if (g && /^see results$/i.test(g.textContent.trim())){ const root = m.closest('#svcMob, #phone2') ? document.getElementById('svcMob') : document.getElementById('dSvc'), h = root && [...root.querySelectorAll('.svH2')].find(el => /^Results/.test(el.textContent.trim()) && el.offsetParent); if (h) setTimeout(() => h.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120); } }); }   // the modal's See results: down to the Results
+        m.addEventListener('click', e => { if (e.target === m || e.target.closest('.dbLater, .dbGo')) m.classList.remove('on'); const g = e.target.closest('.dbGo'); if (g && /^see results$/i.test(g.textContent.trim())){ const h = resTo(m.closest('#svcMob, #phone2') ? document.getElementById('svcMob') : document.getElementById('dSvc')); if (h) setTimeout(() => h.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120); } }); }   // the modal's See results: down to the Results
       m.innerHTML = '<div class="dbIn"><span class="dbAv" style="background-image:url(' + (c && c.av || 'assets/overview/avatar-dr.webp') + ')">' + (c && c.noPlay ? '' : '<i class="dbPlay" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M5.5 3.8v8.4L12 8z"/></svg></i>') /* (merged) a written report: no play */ + '</span><div class="dbTag"><i></i>Ready</div><h3>' + (c && c.h || 'Your debrief is ready') + '</h3><p>' + (c && c.p || 'Dr Sarah Chen has reviewed your Whole Body MRI and CT Chest and recorded a video walkthrough for you.') + '</p><div class="dbNote">' + (c && c.note || 'If anything had needed urgent attention, your doctor would already have called you.') + '</div><button class="svBtn dbGo" type="button">' + (c && c.go || 'Watch video') + '</button><button class="dbLater" type="button">' + (c && c.later || 'I\u2019ll watch later') + '</button></div>';
       requestAnimationFrame(() => m.classList.add('on')); };   /* the latest capture: the debrief ready as a modal over the page ("latest capture as modal overlapping the page") */
     // a step moved on: the timeline shows it, the one just done filling green, the new one growing in ("at each change of step, show the timeline step progressing")
@@ -24365,6 +24368,7 @@
       }
       { const fin = state === 'done' || (at >= n && key !== 'gut'); if (desk) desk.classList.toggle('svFin', fin); if (mob) mob.classList.toggle('svFin', fin); }   // every step done: nothing dimmed ("exception: when all steps are completed, all steps at 100%")
       if (CTABS && state !== 'locked'){ if (desk) tabify(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain'), key); if (mob) tabify(mob.querySelector('.svmBody'), key); }
+      else if (TABC){ if (CTK !== key + state + at){ CTK = key + state + at; CTAB = ''; } if (desk) tabLine(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain')); if (mob) tabLine(mob.querySelector('.svmBody')); }   // a new page or step opens on its first tab
       { const pk = document.getElementById('stSvcPick'); if (pk && [...pk.options].some(op => op.value === key)) pk.value = key; }
       cur = { subL: x.subL || '', subT: x.kitT || '', key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' && !/^gut/.test(key) ? dl.map(([, t]) => t) : [],   /* the microbiome's steps are its own, no documents among them */   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: steps, shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n, shGrp: (() => { const p0 = PH; PH = false; const h = jrX(false); PH = p0; return h; })() }   /* built as the desk's, the service's own card with its steps in it ("replicate the same desktop content") */   /* the MRI and the microbiome: the sheet shows their services, as the desktop's panel, not the demo's stages ("that should reflect the desktop timeline on the right side") */;   // what the steps sheet shows
       if (PREV && (PREV.key === key || (PREV.g && cur.J && PREV.g === cur.J.items.map(y => y.svc).join())) && (PREV.at !== cur.at || PREV.state !== state || PREV.key !== key)) void 0;   // the bars' step transition is off ("remove bar step transition"); advMark kept, unused   // the same service or group, a different step
@@ -24378,8 +24382,8 @@
     { const fit = () => document.querySelectorAll('#dSvc .svMain .svPend').forEach(pd => { const bs = pd.querySelectorAll(':scope > .svBtn, :scope.svSide > .svPendBtns > .svBtn'), b = bs.length === 1 ? bs[0] : null; if (!b) { pd.classList.remove('ctaWide'); return; } const rg = document.createRange(); rg.selectNodeContents(b); const w = rg.getBoundingClientRect().width + 48;   /* its label's own width and padding, not the stretched box */ if (w) pd.classList.toggle('ctaWide', w > 144);   /* the general rule: over 144px, the next row ("CTA > 144, next row") */ });   // the status button's width decides its place: over 128px, under the text
       let q = 0; const mo = new MutationObserver(() => { if (q) return; q = requestAnimationFrame(() => { q = 0; fit(); }); }); const ds = document.getElementById('dSvc'); if (ds) mo.observe(ds, { childList: true, subtree: true }); window.addEventListener('resize', fit); }
     { const t = document.getElementById('stEtaB'); const ap = () => document.documentElement.classList.toggle('svEtaOn', !!t && t.value === 'on'); ap(); if (t) t.addEventListener('change', ap); }   // the ETA badge tweak: both are drawn, the class picks one
-    { const t = document.getElementById('stCtaPos'); const ap = () => document.documentElement.classList.toggle('svCtaBelow', !t || t.value === 'below'); ap(); if (t) t.addEventListener('change', ap); }   // the status card's button below its text, or at its right
-    let RIS = false, RVIS = 'doc'; { const t = document.getElementById('stRepSt'), v = document.getElementById('stRepVis'), row = document.getElementById('stRepVisRow'); const sync = () => { if (row) row.hidden = !RIS; }; if (t){ RIS = t.value === 'on'; sync(); t.addEventListener('change', () => { RIS = t.value === 'on'; sync(); if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } if (v){ RVIS = v.value; v.addEventListener('change', () => { RVIS = v.value; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   /* the visual: the generic illustration or the doctor ("select generic / doctor") */   // Report in status: the CTA on the status, the debrief just its results ("report in status on / off")
+    document.documentElement.classList.toggle('svCtaBelow', false);   /* the Status CTA tweak retired ("remove"): at the side, as it was set; the over-144px rule still sends a wide one under the text */   // the status card's button below its text, or at its right
+    const RIS = true, RVIS = 'gen';   /* the Merge report in status card and Visual tweaks retired ("remove"), as they were set: merged, the generic visual */
     const KPL = 'top';   // the Sub steps placement tweak is gone ("remove"): the one card, the timeline under the status   // the sub steps above the status card as its header, or mini at its right ("create a tweak: mini sub steps, same as mobile, on desktop, on the right side of the status card")
     let KITV = 'stepper';   // the stepper, as the design; the Sub steps tweak is gone ("remove stepper tweak, keep as the design")
     let LKV = 'banner'; { const t = document.getElementById('stLkMod'); if (t){ LKV = t.value; t.addEventListener('change', () => { LKV = t.value; }); } }   // the locked modal's header: the banner, or the simple centred one
@@ -24408,6 +24412,22 @@
     document.addEventListener('click', e => { const b = e.target.closest('.svCTab'); if (!b) return; const C = b.closest('.svCTabs').parentElement; CTAB = b.dataset.ct;
       C.querySelectorAll(':scope > .svCTabs .svCTab').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', String(on)); });
       C.querySelectorAll(':scope > .svCPane').forEach(pn => { pn.hidden = pn.dataset.ct !== CTAB; if (!pn.hidden){ pn.classList.remove('svCIn'); void pn.offsetWidth; pn.classList.add('svCIn'); } }); });
+    /* Tab content: every section under the status block as a line tab, My documents left out, its own section at the end ("tab content on: combine the sections under tabs, line tab; exclude My documents") */
+    let TABC = false, CTK = '';
+    const tabLine = C => { if (!C) return; const G = []; let g = null;
+      [...C.children].forEach(el => {
+        if (el.matches('.svRefRow')){ if (g && g.t === 'Referrals') g.els.push(el); else G.push({ t: 'Referrals', els: [el] }); g = null; return; }
+        if (el.matches('h2.svH2:not(.svH2Sim)')){ const t = [...el.childNodes].filter(n => n.nodeType === 3).map(n => n.nodeValue).join('').trim(); g = { t: CTL[t] || t, els: [el] }; G.push(g); return; }
+        if (el.matches('.svPend, .svJr, .svHead, .svCTabs, .svMProg, .svXsHero, .svAbSec, .svAbInBody')){ g = null; return; }
+        if (g) g.els.push(el); });
+      const T = G.filter(x => x.t !== 'Documents' && x.t !== 'About');   // My documents stays a section of its own, after the tabs
+      if (T.length < 2) return;   // one section: nothing to combine
+      if (!T.some(x => x.t === CTAB)) CTAB = T[0].t;
+      const bar = document.createElement('div'); bar.className = 'svCTabs svCLine'; bar.setAttribute('role', 'tablist');
+      bar.innerHTML = T.map(x => '<button class="svCTab' + (x.t === CTAB ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (x.t === CTAB) + '" data-ct="' + escS(x.t) + '">' + escS(x.t) + '</button>').join('');
+      C.insertBefore(bar, T[0].els[0]);
+      let at = bar; T.forEach(x => { const pn = document.createElement('div'); pn.className = 'svCPane'; pn.dataset.ct = x.t; pn.hidden = x.t !== CTAB; x.els.forEach(e => pn.appendChild(e)); C.insertBefore(pn, at.nextSibling); at = pn; }); };
+    { const t = document.getElementById('stTabC'); if (t){ TABC = t.value === 'on'; t.addEventListener('change', () => { TABC = t.value === 'on'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
     { const t = document.getElementById('stSvTabs'); if (t){ CTABS = t.value !== 'sec'; CPILL = t.value !== 'tabs'; CALL = t.value === 'all'; t.addEventListener('change', () => { CTABS = t.value !== 'sec'; CPILL = t.value !== 'tabs'; CALL = t.value === 'all'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
     /* the modal's picture edge to edge, the title and the close over its top, and an avatar half on it (70%) and half on the body (30%) ("the image as an edge-to-edge banner, the header overlapping the top; an avatar overlapping the header and the body, 70 / 30, then the description") */
     const lkHeroSet = (sh, img, av) => { const pn = sh.querySelector('.tlShPanel'); let bt = pn.querySelector(':scope > .lkBanTop');
@@ -24613,7 +24633,7 @@
     document.addEventListener('click', e => { const b = e.target.closest('.svDocView[data-view]'); if (!b || !b.closest('#dSvc, #svcMob, #phone2')) return; e.stopPropagation(); dmOpen(b.dataset.view, isMob(b), true); }, true);
     document.addEventListener('click', e => { const b = e.target.closest('.svPend .svBtn[data-doc]'); if (!b || !b.closest('#dSvc, #svcMob')) return; e.stopImmediatePropagation(); dmOpen(b.dataset.doc, isMob(b)); }, true);   // a document's own button in the status block: its form, then done and the next one in hand   // a document's own button in the status block: done, the next one in hand
     document.addEventListener('click', e => { const b = e.target.closest('.svPend .svBtn'); if (!b || b.dataset.doc != null || b.dataset.j != null || b.dataset.need != null || b.classList.contains('sec')) return;
-      if (!b.closest('#dSvc, #svcMob')) return; if (/^see results$/i.test(b.textContent.trim())){ const root = b.closest('#dSvc, #svcMob'), h = [...root.querySelectorAll('.svH2')].find(el => /^Results/.test(el.textContent.trim()) && el.offsetParent); if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }   // down to the Results section
+      if (!b.closest('#dSvc, #svcMob')) return; if (/^see results$/i.test(b.textContent.trim())){ const h = resTo(b.closest('#dSvc, #svcMob')); if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }   // down to the Results section
       if (/^book/i.test(cur.stepName || '')){ bkOpen(!!b.closest('#svcMob')); return; } if (cur.key === 'gutq' && cur.state !== 'done'){ dmOpen('Microbiome & Gut Health Questionnaire', !!b.closest('#svcMob')); return; } if (cur.key === 'gut'){ if (cur.at >= 7) return; fadeSwap(() => cur.at >= 4 ? simGo('gut', 'active', { at: cur.at + 1, tag: '' }) : simStep(1)); return; } if (cur.key === 'wbmri'){ if (cur.at === 13) return; if (cur.at === 0){ dmOpen('MRI safety questionnaire', !!b.closest('#svcMob')); return; } fadeSwap(() => simStep(cur.at === 4 ? -1 : 1)); } });   // the MRI's buttons walk its stages, for the demo; an upload sends it back to the doctor's review
     document.addEventListener('click', e => { const b = e.target.closest('.svDocBtn'); if (!b) return; const r = b.closest('.svDoc'); if (!r || !r.dataset.doc) return; e.stopPropagation(); dmOpen(r.dataset.doc, isMob(b)); }, true);
     { const nx = document.getElementById('stSimNext'), rs = document.getElementById('stSimReset');
@@ -25486,7 +25506,7 @@
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stTabC' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -27513,7 +27533,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stSubTl: 'out', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stTabC: 'off', stSubTl: 'out', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
