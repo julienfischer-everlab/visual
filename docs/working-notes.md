@@ -13278,3 +13278,4 @@ Modals: the "why" box only shows when the service really blocks the page it was 
 Modals: the service's status sits under the title. Done reads "Completed on 6 Oct 2026", available reads its started line or "Not started yet", and blocked keeps the Unavailable badge.
 Modals: no tick or lock icon over the picture.
 Results placeholder title: "Your results will appear here" (was "Your report and video will appear here"). Changed on the microbiome page and in both MRI waiting placeholders.
+DEXA Scan analysis and Doctor review: a Results section with the "Your results will appear here" placeholder replaces the DEXA Scan details. Instructions is removed. Referrals stays. Final results (done) already had no Instructions.
