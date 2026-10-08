@@ -13401,3 +13401,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Sub step card tweak now drives the desk too: Off (default) drops the outlined card on phone and desk, the step's title sits on the page above the status card; On keeps the card.
 - The card around the sub steps: padding 8px (was 12).
 - No divider above the sub timeline inside the status card (same 24px gap).
+- Sub timeline inside the status card: 8px more space under it (margin-bottom 8, so 32 to the card's edge), phone and desk.
