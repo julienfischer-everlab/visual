@@ -13330,3 +13330,4 @@ Status card item buttons read "View": first results, debrief and report. Video s
 Tabs are always on: the Tab content tweak is retired, fixed On even if a saved setting says Off. A page with a single section keeps it as a plain section with its h2 title, no tab.
 The Observations tweak is labelled "Observations (Post MVP)".
 Phone and desk XS: two status buttons sit side by side, half the width each ("Set a reminder" | "Find a centre"). They were stacked.
+Phone and XS: if a label doesn't fit its half, the pair stacks again. Example: "I’ve posted my sample". This is re-checked on every repaint (the observer also watches #svcMob) and after fonts load.
