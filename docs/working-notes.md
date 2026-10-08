@@ -13327,3 +13327,6 @@ Blood test, Get your results step: Testing information stays, after Results (Res
 Blood test, first step (Visit a collection centre, book or active at 0): no Testing information until a centre is picked and the visit is set.
 XS and S (phone, desk XS, forced S): no title over the sub steps' card ("Get your results", "Appointment"), because the step already heads the progress card above. M and L keep it.
 Status card item buttons read "View": first results, debrief and report. Video stays "Watch video"; the referral stays "Show".
+Tabs are always on: the Tab content tweak is retired, fixed On even if a saved setting says Off. A page with a single section keeps it as a plain section with its h2 title, no tab.
+The Observations tweak is labelled "Observations (Post MVP)".
+Phone and desk XS: two status buttons sit side by side, half the width each ("Set a reminder" | "Find a centre"). They were stacked.
