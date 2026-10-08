@@ -13339,3 +13339,4 @@ Sub-steps sheet (info icon by the sub steps):
 - Dots sit level with their titles; the connector runs from under each dot to just above the next. The connector is 4px, as it already was.
 XS (phone, desk XS): report and video item pictures are 16px smaller (56). The video button reads "Watch" (was "Watch video"); the report button stays "View".
 Blood test: the "Testing information" section is now "Lab information", on every step where it shows (At the lab, Get your results).
+Phone and XS button pairs sit side by side only when both labels keep at least 24px of padding each side in their half; otherwise both stack. Labels are measured directly, because overflow checks miss centred text. On the phone, "Set a reminder | Find a centre" stays side by side; "Can’t find a time? | Book scan", "Add to calendar | Join call" and "View referral | Add to calendar" stack.
