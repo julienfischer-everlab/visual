@@ -13295,3 +13295,11 @@ Service page container: the content (header, main column and right column) is at
 - M, S and XS (forced) are unchanged: their panels are narrower than 1080.
 Blocked modal: "Complete this first" lists one item only, the next in the chain (the first one that reads "Next to complete", else the first blocker). Member Check-In from the DEXA page now shows only DEXA Scan. The description still names both. View still opens that item.
 Tab content On: all sections under tabs, My documents included as a "Documents" tab (the label the earlier tabs tweak used). A page with a single section now gets a single tab, e.g. Diagnostics Review shows just "Instructions".
+Status line under every service h1 now follows the member's progress, through one function, `stLn(key, state, at, o)`.
+- Blocked (locked, later, soon): "Not available yet".
+- Not started, or step 1 of the right timeline not done: "Not started yet". Suggested, purchase and claim also read this; they used to show "No records", "Recommended by…" and "Claim by…".
+- Step 1 done: "Started on D Mon 2026", with step 1's date from the timeline.
+- Fully done: "Completed on D Mon 2026", with the last step's date. Past instances use their own o.when.
+- Dates: generic services read the timeline's own date list (DDAY), one date per step in order. Fixed dates for dexa (2 Oct / 9 Oct; DEXA done's Get your results now reads "Ready 9 Oct"), path and abrep (2 Oct / 12 Oct), wbmri (3 Oct / 3 Nov; at 14 "Closed on 9 Oct 2026"), and the microbiome group (3 Oct / 13 Nov, the group's progress under the group title).
+- The same line shows under the title of the available and done modals (cvSt), and in the blocked modal's "Complete this first" card in place of its step name.
+Referral, from the user's artifact comment: no Referrals section any more. The referral is an item in the status card ("Your referrals", Show) on the steps before the appointment, except while the card is a documents step. From the step after the "Go to…" or "Visit…" step (or results, or done) it moves to My documents.
