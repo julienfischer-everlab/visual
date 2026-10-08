@@ -13290,3 +13290,6 @@ DEXA Go to your scan: in the MRI's copy format, with scheduled instead of booked
 Retired these tweaks, keeping the values in the user's screenshots: Merge report in status card (On), Status CTA (Side; buttons over 144px still drop under the text), Visual (Generic).
 DEXA Go to your scan: the Appointment step in the right timeline (and the phone's sheet) reads the slot, "Sat 3 Oct, 9:30 am", instead of "Go to your scan". It comes from the service's new `apt` field.
 General rule: a status title with a date breaks onto a new line before the date ("You’re scheduled for / Sat 3 Oct, 9:30 am"). It applies when the title has "for" or "on" followed by a weekday or a day and month. That covers DEXA scheduled, the MRI briefing ("Your briefing call is on / Thu 8 Oct, 11:00 am") and the MRI scan ("You’re booked in for / Tue 20 Oct, 9:30 am"), on desktop and phone.
+Service page container: the content (header, main column and right column) is at most 1080px wide and centred in the panel. The panel now spans the full width on wide screens (its 1360px cap is gone, the 8px gutters stay). The back button stays at the panel's left.
+- At 1440: main 716 + gap 44 + right 320.
+- M, S and XS (forced) are unchanged: their panels are narrower than 1080.
