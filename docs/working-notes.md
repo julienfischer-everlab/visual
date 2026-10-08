@@ -13397,3 +13397,4 @@ Modal type, general rule:
 Status card items (report, video, debrief, first results, referral): title medium (500), each line 2px more (title 20, sub line 18).
 New tweak "Biomarkers summary" (toggle, Off by default), under Observations (Post MVP). On shows the Biomarkers card at the top of Results; Off hides it (DEXA, blood test, microbiome).
 Tweak "Sub timeline placement" is back and visible: In status card (default; under a divider inside the card) or Outside status card (under the card, as it was). The saved default is now "in".
+- Modal V2: first-view modals show the service's picture as a banner cover (desk 280, phone 240, XS/S sheet 300) instead of the illustration; the header and close sit over it.
