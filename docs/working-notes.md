@@ -13414,3 +13414,8 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Status card documents (DEXA's consent and questionnaire): the status dot on the icon 8px (was 10), its centre where it was.
 - Progress card (bars and ring, phone, XS, M/S): a step with sub steps fills as far as they go, the one in hand counted, as the desk's timeline already did. DEXA Appointment half at Book; Get your results a third at Scan analysis; blood test half at First results; MRI's steps by their sub steps.
 - Sub timeline in the status card: 8px more under it again (margin-bottom 16, 40 to the card's edge).
+- Onboarding Consultation page (key `consult`, in the Service dropdown under Without dependency). Three main steps, built on DEXA's machinery:
+  1. Complete questionnaire: the "Onboarding Questionnaire" document (Start), its own four questions (conditions, medications, family history, goals) and "Why we need this information" copy.
+  2. Book your call: Book your call then Join your call as sub steps (the DEXA appointment group, now for consult too); scheduled "Tue 6 Oct, 10:30 am", a "Your call" section (date, Online video call, 40min, Dr Sarah Chen) and call instructions. Booking sheet says "With Dr Sarah Chen", not In person.
+  3. Get your plan: "Waiting for your plan", Expected by 9 Oct, a "Your plan will appear here" placeholder; done: "Your plan is ready" with a "Your health plan" item, the first-view modal (See your plan) and a Your plan section listing the tests in it, each opening its page.
+  Status line: Not started yet, Started on 2 Oct (questionnaire done), Completed on 9 Oct. Timeline rows renamed to Onboarding Consultation, as a video call.
