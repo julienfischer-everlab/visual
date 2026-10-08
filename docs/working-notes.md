@@ -13303,3 +13303,16 @@ Status line under every service h1 now follows the member's progress, through on
 - Dates: generic services read the timeline's own date list (DDAY), one date per step in order. Fixed dates for dexa (2 Oct / 9 Oct; DEXA done's Get your results now reads "Ready 9 Oct"), path and abrep (2 Oct / 12 Oct), wbmri (3 Oct / 3 Nov; at 14 "Closed on 9 Oct 2026"), and the microbiome group (3 Oct / 13 Nov, the group's progress under the group title).
 - The same line shows under the title of the available and done modals (cvSt), and in the blocked modal's "Complete this first" card in place of its step name.
 Referral, from the user's artifact comment: no Referrals section any more. The referral is an item in the status card ("Your referrals", Show) on the steps before the appointment, except while the card is a documents step. From the step after the "Go to…" or "Visit…" step (or results, or done) it moves to My documents.
+Referral: listed in My documents whenever the service has one and is in the plan (not blocked or not-yet-added).
+- Before the appointment: "Show them when you get to your appointment".
+- After it: "Used at your appointment".
+- Services with no appointment step (microbiome kit, genetic test): "From your Everlab doctor".
+- While the appointment is ahead it's also in the status card, and its Show button is the secondary style (svDocSec).
+Items inside status cards (consent, questionnaire, referral, report and video) have 4px more padding: 16px 18px.
+Tab content tabs: 16px text and 16px top and bottom padding. On XS and S (phone, forced XS/S, or auto under 992px):
+- tabs that fit spread across the width, evenly when the longest fits its share;
+- otherwise they keep their label width and swipe sideways.
+New Observations tweak (toggle, Off by default). Observations is now only the doctor's quote card, shown when On. The Biomarkers card moved into Results, first under its title, above the results list.
+Blood test done: the status card item reads "Your debrief · 12 Oct 2026" (was "Your report · Dr Steven Lu · …"). The line above reads "See your results below, and read your debrief." The button still reads "View report".
+Phone and M/S progress card: the title is the current step's name ("Completed" when all done, "Closed" for the MRI not going ahead). On its right is "Next: <next step>", or nothing on the last step. The line under the bars is gone. Long names wrap.
+"More results to come" (blood test first results): the info alert theme. Navy, an alert icon, the title "More results to come", then "Expected by 12 Oct. We’ll add them here as soon as they’re in." No dismiss, no CTA.
