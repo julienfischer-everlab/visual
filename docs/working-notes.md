@@ -13412,3 +13412,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Progress card, Ring 2: "Your progress" 16px (line 22), the step line under it 14px (line 20).
 - Progress card, Ring: the "Up next → step" line all in the line's grey; the arrow 6px from the text each side (was 8). Ring 2 unchanged (current white, arrow 8).
 - Status card documents (DEXA's consent and questionnaire): the status dot on the icon 8px (was 10), its centre where it was.
+- Progress card (bars and ring, phone, XS, M/S): a step with sub steps fills as far as they go, the one in hand counted, as the desk's timeline already did. DEXA Appointment half at Book; Get your results a third at Scan analysis; blood test half at First results; MRI's steps by their sub steps.
+- Sub timeline in the status card: 8px more under it again (margin-bottom 16, 40 to the card's edge).
