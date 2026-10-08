@@ -13408,3 +13408,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - New tweak "Progress card": Bars (default, as before) or Ring. Ring: the current step's name over "Next: …" at the left, a 52px ring at the right, one arc per step in the bars' colours (done green, in hand orange/grey, partial fill for sub steps), 3% gaps, from 12 o'clock. Phone, XS and M/S. Switching repaints so the hero ground fits the card.
 - Progress card, Ring: 2px more between the step's name and "Next: …" (gap 6).
 - Progress card, Ring: the subtitle reads "Up next → step name" (Up next grey, an arrow, the name brighter); the ring's arcs have round ends, about 4px apart. Bars keep "Next: name".
+- Progress card tweak, third option "Ring 2": title "Your progress", under it "current step → next step" (current white, arrow and next grey), ring at the right. With no next step, just the current one.
