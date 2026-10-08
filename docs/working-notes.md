@@ -13370,3 +13370,8 @@ First-view modals (DEXA, blood test, blood test report, MRI, microbiome), all th
 Service modals (available, done, blocked): 24px more under everything (48) and 24px more above View detail (44).
 Modal close button, every modal (first-view modals and service modals in V1): a 30px circle 24px in from the top and the right, icon 11px, grey fill. Service modals in V2 keep the larger translucent close over the hero.
 First-view modal illustration: 160px wide (was 192).
+First-view modal illustrations follow the primary button:
+- "See report" (the MRI, the blood test report) uses Report: a bars card, an empty card, and a card with two rows and toggles.
+- "See results" (DEXA, blood test) uses Results: a document with a warm-orange textured photo, lines, a pie and bars.
+- "Watch video" (microbiome) uses Debrief: the document with the wave and bars cards.
+- All three are inline SVGs on one shared frame (viewBox 60 46 414 390), so they show at the same scale at 160px. Their ids carry the dbq prefix and are made unique per use.
