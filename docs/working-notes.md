@@ -13375,3 +13375,9 @@ First-view modal illustrations follow the primary button:
 - "See results" (DEXA, blood test) uses Results: a document with a warm-orange textured photo, lines, a pie and bars.
 - "Watch video" (microbiome) uses Debrief: the document with the wave and bars cards.
 - All three are inline SVGs on one shared frame (viewBox 60 46 414 390), so they show at the same scale at 160px. Their ids carry the dbq prefix and are made unique per use.
+Modals on the service detail page, general rule:
+- 24px more padding left and right: first-view modals 60 desk / 44 phone; service modals' text inset 56.
+- Visuals 24px smaller: the illustration 136, the service picture 72.
+- 32px more above the visual.
+- 24px between two buttons side by side (the MRI's Watch video | See report).
+The first-view modal keeps its 520 width, so its text column is 48px narrower.
