@@ -13354,3 +13354,8 @@ New "Modal" tweak (V1 | V2, V1 by default) for the service modals (available, do
 - The template's hero controls (dots, arrows) and its Secondary/Primary footer buttons are not added, as asked.
 - Fix: the available modal never reads "Not available yet". A related service whose card still says locked, but which is open, reads as available.
 Status card: its title and line are 448px wide at most (was 320).
+DEXA first-view modal:
+- The top visual is a results illustration in place of the doctor photo: a report with a blurred photo and text lines, a wave card and a bars card. It is drawn as inline SVG (DBART), with ids made unique per use.
+- The note is merged into the line: "Dr Steven Lu has reviewed your DEXA results. Your doctor goes through them with you at your Diagnostics Review." No note box.
+- The title sits 24px further from the visual (38) and 8px closer to its line (6).
+- The blood test and MRI modals keep the doctor photo and note.
