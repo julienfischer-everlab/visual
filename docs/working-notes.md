@@ -13381,3 +13381,10 @@ Modals on the service detail page, general rule:
 - 32px more above the visual.
 - 24px between two buttons side by side (the MRI's Watch video | See report).
 The first-view modal keeps its 520 width, so its text column is 48px narrower.
+XS and S (phone, forced XS, forced S): every modal is a full bottom sheet, from 52px under the top to the foot, with rounded top corners and a grab handle.
+- Header: where it was opened from at the left (the service for first-view modals, e.g. "DEXA Scan"; the journey for service modals, e.g. "Everlab Protocol"), and a 44px close at the right.
+- Then the title (28) at the left, the line, then the visual or the blocker card.
+- Buttons full width at the foot, the primary first and the secondary outlined under it.
+- Fix: a stray position:relative on the service modals' panel kept the phone sheet short.
+First-view modals: no "I’ll look later" / "I’ll watch later" link, since the close does it. The buttons sit 16px closer to the text (30).
+Modal line text (first-view modals' line, service modals' description): 14px on an 18px line.
