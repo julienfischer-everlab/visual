@@ -13293,3 +13293,4 @@ General rule: a status title with a date breaks onto a new line before the date 
 Service page container: the content (header, main column and right column) is at most 1080px wide and centred in the panel. The panel now spans the full width on wide screens (its 1360px cap is gone, the 8px gutters stay). The back button stays at the panel's left.
 - At 1440: main 716 + gap 44 + right 320.
 - M, S and XS (forced) are unchanged: their panels are narrower than 1080.
+Blocked modal: "Complete this first" lists one item only, the next in the chain (the first one that reads "Next to complete", else the first blocker). Member Check-In from the DEXA page now shows only DEXA Scan. The description still names both. View still opens that item.
