@@ -10337,11 +10337,11 @@
         <div class="tkRow"><span class="lbl">Biomarkers summary</span><select id="stBioS" aria-label="The biomarkers summary card in Results"><option value="on">On</option><option value="off" selected>Off</option></select></div>
         <div class="tkRow tkGone"><span class="lbl">Tab content</span><select id="stTabC" class="tkSegSel" aria-label="The page's sections under tabs"><option value="off">Off</option><option value="on" selected>On</option></select></div>
         <!-- where the sub steps' timeline sits: under the status card, or in it below a divider -->
-        <div class="tkRow tkGone">
-          <span class="lbl">Sub timeline</span>
+        <div class="tkRow">
+          <span class="lbl">Sub timeline placement</span>
           <select id="stSubTl" class="tkSegSel" aria-label="Where the sub steps' timeline sits">
-            <option value="out" selected>Outside status card</option>
-            <option value="in">In status card</option>
+            <option value="in" selected>In status card</option>
+            <option value="out">Outside status card</option>
           </select>
         </div>
 
@@ -24487,7 +24487,7 @@
     let DGRP = 1; { const t = document.getElementById('stDocGrp'); const rd = () => t.value === 'on' ? 99 : 1; if (t){ DGRP = rd(); t.addEventListener('change', () => { DGRP = rd(); if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   /* on: every document in one first step, Required actions, their cards stacked in the status block ("replace by multiple actions step on / off") */
     const PPL = 'hero';   // the progress card in the hero, its tweak gone ("remove")   // where the phone's main step block goes ("tweak progress placement: in hero header, in status block")
     const UPN = false;   // the Up next footer: off, its tweak gone ("remove")   // the Up next footer under the phone's progress card, off by default
-    const STI = false;   /* the Sub timeline tweak retired ("remove"): outside the status card */   // the sub timeline in the status card under a divider, or outside it ("sub timeline: in status card with divider / outside status card")
+    let STI = true; { const t = document.getElementById('stSubTl'); if (t){ STI = t.value !== 'out'; t.addEventListener('change', () => { STI = t.value !== 'out'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }   /* the Sub timeline placement tweak back: in the status card under a divider (default), or outside it ("sub timeline placement: in status card / outside status card, in default") */
     { const fit = () => { btnFit(); fit1(); }, btnFit = () => document.querySelectorAll('#svcMob .svPend .svPendBtns, .svXsBody .svPend .svPendBtns').forEach(w => { w.classList.remove('svBtnsCol'); if ([...w.children].some(b => { const rg = document.createRange(); rg.selectNodeContents(b); return rg.getBoundingClientRect().width + 48 > b.getBoundingClientRect().width + .5; })) w.classList.add('svBtnsCol'); })   /* a label that can't keep 24 a side in its half: both stacked */, fit1 = () => document.querySelectorAll('#dSvc .svMain .svPend').forEach(pd => { const bs = pd.querySelectorAll(':scope > .svBtn, :scope.svSide > .svPendBtns > .svBtn'), b = bs.length === 1 ? bs[0] : null; if (!b) { pd.classList.remove('ctaWide'); return; } const rg = document.createRange(); rg.selectNodeContents(b); const w = rg.getBoundingClientRect().width + 48;   /* its label's own width and padding, not the stretched box */ if (w) pd.classList.toggle('ctaWide', w > 160);   /* the general rule: over 160px, the next row, otherwise at the right ("if > 160 go next row, otherwise on the right side") */ });   // the status button's width decides its place: over 128px, under the text
       let q = 0; const mo = new MutationObserver(() => { if (q) return; q = requestAnimationFrame(() => { q = 0; fit(); }); }); const ds = document.getElementById('dSvc'); if (ds) mo.observe(ds, { childList: true, subtree: true }); const ms = document.getElementById('svcMob'); if (ms) mo.observe(ms, { childList: true, subtree: true }); window.addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit); }   /* the phone's pair side by side, stacked when a label doesn't fit its half */
     { const t = document.getElementById('stEtaB'); const ap = () => document.documentElement.classList.toggle('svEtaOn', !!t && t.value === 'on'); ap(); if (t) t.addEventListener('change', ap); }   // the ETA badge tweak: both are drawn, the class picks one
@@ -27657,7 +27657,7 @@
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stTabC: 'on', stObs: 'off', stBioS: 'off', stMdl: 'v1', stSubTl: 'out', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stTabC: 'on', stObs: 'off', stBioS: 'off', stMdl: 'v1', stSubTl: 'in', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
