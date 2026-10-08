@@ -13389,3 +13389,9 @@ XS and S (phone, forced XS, forced S): every modal is a full bottom sheet, from 
 First-view modals: no "I’ll look later" / "I’ll watch later" link, since the close does it. The buttons sit 16px closer to the text (30).
 Modal line text (first-view modals' line, service modals' description): 14px on an 18px line.
 First-view modals: 38px above the button(s), 8px more ("+8px top margin above CTA").
+Modal type, general rule:
+- Titles' line 4px tighter: first-view 28 on 30; service modal 20 on 21.
+- Line or description 14 on 20.
+- Centred titles 24px in each side (not on the left-aligned XS/S sheets).
+- The illustration has 16px less above it (16).
+Status card items (report, video, debrief, first results, referral): title medium (500), each line 2px more (title 20, sub line 18).
