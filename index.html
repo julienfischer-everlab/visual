@@ -10259,7 +10259,7 @@
         </div>
         <!-- the phone: the status and its sub steps wrapped in the card, as the desk, or straight on the page ("add tweak sub step card on/off: same style as desktop; no card wrap on mobile, current") -->
         <div class="tkRow"><span class="lbl">Sub step card</span><select id="stSubCard" class="tkSegSel" aria-label="The phone's card around a status with sub steps"><option value="off" selected>Off</option><option value="on">On</option></select></div>
-        <!-- the page's sections under line tabs, My documents still its own section at the end ("tab content: off, stack sections as it is; on, combine the sections under tabs, line tab, excluding My documents") -->
+        <!-- the page's sections under line tabs, all of them, My documents too ("tab content: off, stack sections as it is; on, combine the sections under tabs, line tab"; "all sections under tabs") -->
         <div class="tkRow"><span class="lbl">Tab content</span><select id="stTabC" class="tkSegSel" aria-label="The page's sections under tabs"><option value="off" selected>Off</option><option value="on">On</option></select></div>
         <!-- where the sub steps' timeline sits: under the status card, or in it below a divider -->
         <div class="tkRow tkGone">
@@ -24412,7 +24412,7 @@
     document.addEventListener('click', e => { const b = e.target.closest('.svCTab'); if (!b) return; const C = b.closest('.svCTabs').parentElement; CTAB = b.dataset.ct;
       C.querySelectorAll(':scope > .svCTabs .svCTab').forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', String(on)); });
       C.querySelectorAll(':scope > .svCPane').forEach(pn => { pn.hidden = pn.dataset.ct !== CTAB; if (!pn.hidden){ pn.classList.remove('svCIn'); void pn.offsetWidth; pn.classList.add('svCIn'); } }); });
-    /* Tab content: every section under the status block as a line tab, My documents left out, its own section at the end ("tab content on: combine the sections under tabs, line tab; exclude My documents") */
+    /* Tab content: every section under the status block as a line tab, My documents included ("tab content on: combine the sections under tabs, line tab"; "include My documents also, all sections under tabs") */
     let TABC = false, CTK = '';
     const tabLine = C => { if (!C) return; const G = []; let g = null;
       [...C.children].forEach(el => {
@@ -24420,8 +24420,8 @@
         if (el.matches('h2.svH2:not(.svH2Sim)')){ const t = [...el.childNodes].filter(n => n.nodeType === 3).map(n => n.nodeValue).join('').trim(); g = { t: CTL[t] || t, els: [el] }; G.push(g); return; }
         if (el.matches('.svPend, .svJr, .svHead, .svCTabs, .svMProg, .svXsHero, .svAbSec, .svAbInBody')){ g = null; return; }
         if (g) g.els.push(el); });
-      const T = G.filter(x => x.t !== 'Documents' && x.t !== 'About');   // My documents stays a section of its own, after the tabs
-      if (T.length < 2) return;   // one section: nothing to combine
+      const T = G.filter(x => x.t !== 'About');   // every section, My documents too, as its Documents tab ("include My documents in the tabs; all sections under tabs")
+      if (!T.length) return;
       if (!T.some(x => x.t === CTAB)) CTAB = T[0].t;
       const bar = document.createElement('div'); bar.className = 'svCTabs svCLine'; bar.setAttribute('role', 'tablist');
       bar.innerHTML = T.map(x => '<button class="svCTab' + (x.t === CTAB ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (x.t === CTAB) + '" data-ct="' + escS(x.t) + '">' + escS(x.t) + '</button>').join('');

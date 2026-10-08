@@ -13294,3 +13294,4 @@ Service page container: the content (header, main column and right column) is at
 - At 1440: main 716 + gap 44 + right 320.
 - M, S and XS (forced) are unchanged: their panels are narrower than 1080.
 Blocked modal: "Complete this first" lists one item only, the next in the chain (the first one that reads "Next to complete", else the first blocker). Member Check-In from the DEXA page now shows only DEXA Scan. The description still names both. View still opens that item.
+Tab content On: all sections under tabs, My documents included as a "Documents" tab (the label the earlier tabs tweak used). A page with a single section now gets a single tab, e.g. Diagnostics Review shows just "Instructions".
