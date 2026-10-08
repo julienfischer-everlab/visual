@@ -13405,3 +13405,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - "Your results will appear here" (DEXA, MRI, microbiome; Results while waiting): still the outlined card, now centred, a files icon in a 48px round chip on top, text up to 360 wide.
 - Modal V2 first-view modals: the cover 64px shorter (desk 216, sheet 236), and no title over it (only the close).
 - First-view modals on phone, XS and S: the bottom sheet hugs its content (up to 52 under the top) instead of filling the screen; the buttons 32 under what comes before, 34 to the bottom. V1 and V2. The service modals' sheets stay full.
+- New tweak "Progress card": Bars (default, as before) or Ring. Ring: the current step's name over "Next: …" at the left, a 52px ring at the right, one arc per step in the bars' colours (done green, in hand orange/grey, partial fill for sub steps), 3% gaps, from 12 o'clock. Phone, XS and M/S. Switching repaints so the hero ground fits the card.
