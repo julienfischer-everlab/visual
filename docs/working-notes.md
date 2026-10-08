@@ -13407,3 +13407,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - First-view modals on phone, XS and S: the bottom sheet hugs its content (up to 52 under the top) instead of filling the screen; the buttons 32 under what comes before, 34 to the bottom. V1 and V2. The service modals' sheets stay full.
 - New tweak "Progress card": Bars (default, as before) or Ring. Ring: the current step's name over "Next: …" at the left, a 52px ring at the right, one arc per step in the bars' colours (done green, in hand orange/grey, partial fill for sub steps), 3% gaps, from 12 o'clock. Phone, XS and M/S. Switching repaints so the hero ground fits the card.
 - Progress card, Ring: 2px more between the step's name and "Next: …" (gap 6).
+- Progress card, Ring: the subtitle reads "Up next → step name" (Up next grey, an arrow, the name brighter); the ring's arcs have round ends, about 4px apart. Bars keep "Next: name".
