@@ -13419,3 +13419,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
   2. Book your call: Book your call then Join your call as sub steps (the DEXA appointment group, now for consult too); scheduled "Tue 6 Oct, 10:30 am", a "Your call" section (date, Online video call, 40min, Dr Sarah Chen) and call instructions. Booking sheet says "With Dr Sarah Chen", not In person.
   3. Get your plan: "Waiting for your plan", Expected by 9 Oct, a "Your plan will appear here" placeholder; done: "Your plan is ready" with a "Your health plan" item, the first-view modal (See your plan) and a Your plan section listing the tests in it, each opening its page.
   Status line: Not started yet, Started on 2 Oct (questionnaire done), Completed on 9 Oct. Timeline rows renamed to Onboarding Consultation, as a video call.
+- Progress card, Ring: a small "Step X/N" badge by the current step's name (12px, pill). Not on Completed; not in Bars or Ring 2.
