@@ -13425,3 +13425,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Onboarding Consultation: no sub steps or waiting state for the plan; after the call the arrows go straight to "Your plan is ready" (and back to the call). Get your plan reads "Your tests and what comes next, after your call" until it's Ready 9 Oct.
 - Every section is a tab, a lone one too (it no longer falls back to an h2). On XS/S and the phone a lone tab keeps its label's width, at the left; two or more still fill.
 - Progress card, Ring: "Step X/N" (the pill) on top, the current step's name under it; no "Up next →" line. Completed shows just "Completed".
+- Sub step timeline on the phone/XS: at the last sub step there's no "Up next" line and nothing in its place (DEXA and Onboarding booked, MRI consent and scan, gut kit, ...). Middle sub steps keep "Up next – name".
