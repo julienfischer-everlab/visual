@@ -13409,3 +13409,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Progress card, Ring: 2px more between the step's name and "Next: …" (gap 6).
 - Progress card, Ring: the subtitle reads "Up next → step name" (Up next grey, an arrow, the name brighter); the ring's arcs have round ends, about 4px apart. Bars keep "Next: name".
 - Progress card tweak, third option "Ring 2": title "Your progress", under it "current step → next step" (current white, arrow and next grey), ring at the right. With no next step, just the current one.
+- Progress card, Ring 2: "Your progress" 16px (line 22), the step line under it 14px (line 20).
