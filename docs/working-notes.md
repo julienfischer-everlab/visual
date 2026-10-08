@@ -13279,3 +13279,4 @@ Modals: the service's status sits under the title. Done reads "Completed on 6 Oc
 Modals: no tick or lock icon over the picture.
 Results placeholder title: "Your results will appear here" (was "Your report and video will appear here"). Changed on the microbiome page and in both MRI waiting placeholders.
 DEXA Scan analysis and Doctor review: a Results section with the "Your results will appear here" placeholder replaces the DEXA Scan details. Instructions is removed. Referrals stays. Final results (done) already had no Instructions.
+Ported from the live artifact (another session): the gut questionnaire step reads "Tell us about your gut health and diet. We’ll send your kit once it’s done." with the button "Start", and its journey line reads "Needed before we send your kit".
