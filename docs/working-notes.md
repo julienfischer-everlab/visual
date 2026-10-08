@@ -13398,3 +13398,6 @@ Status card items (report, video, debrief, first results, referral): title mediu
 New tweak "Biomarkers summary" (toggle, Off by default), under Observations (Post MVP). On shows the Biomarkers card at the top of Results; Off hides it (DEXA, blood test, microbiome).
 Tweak "Sub timeline placement" is back and visible: In status card (default; under a divider inside the card) or Outside status card (under the card, as it was). The saved default is now "in".
 - Modal V2: first-view modals show the service's picture as a banner cover (desk 280, phone 240, XS/S sheet 300) instead of the illustration; the header and close sit over it.
+- Sub step card tweak now drives the desk too: Off (default) drops the outlined card on phone and desk, the step's title sits on the page above the status card; On keeps the card.
+- The card around the sub steps: padding 8px (was 12).
+- No divider above the sub timeline inside the status card (same 24px gap).
