@@ -13344,3 +13344,8 @@ Blood test done: the first-view modal shows like DEXA's. "All your results are i
 Status titles: no line break before a date any more ("Your briefing call is on Thu 8 Oct, 11:00 am" flows on). This cancels the earlier rule.
 Status card: its title and line are 320px wide at most.
 Right timeline and phone steps sheet: the current step's line shows the status card's ETA, worded as the badge would ("Expected by 11 Oct", "Usually takes 2 business days"), whenever the status line has one. Otherwise the step keeps its own line. MRI Eligibility & Consent now reads "Expected by 11 Oct" (was "Your doctor is reviewing. Usually 1 to 3 business days"). Blood test Get your results reads "Expected by 12 Oct" (was "Full results expected by 12 Oct").
+MRI debrief modal:
+- Buttons sit side by side, each the width of its label: "Watch video" (secondary, left) and "See report" (primary, right).
+- A close button at the top right replaces the "I’ll watch later" link.
+- The other first-view modals (DEXA, blood test, microbiome) keep their single button and later link.
+- No "Ready" tag on any of these modals.
