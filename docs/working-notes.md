@@ -13395,3 +13395,4 @@ Modal type, general rule:
 - Centred titles 24px in each side (not on the left-aligned XS/S sheets).
 - The illustration has 16px less above it (16).
 Status card items (report, video, debrief, first results, referral): title medium (500), each line 2px more (title 20, sub line 18).
+New tweak "Biomarkers summary" (toggle, Off by default), under Observations (Post MVP). On shows the Biomarkers card at the top of Results; Off hides it (DEXA, blood test, microbiome).
