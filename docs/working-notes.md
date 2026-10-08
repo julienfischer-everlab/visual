@@ -13402,3 +13402,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The card around the sub steps: padding 8px (was 12).
 - No divider above the sub timeline inside the status card (same 24px gap).
 - Sub timeline inside the status card: 8px more space under it (margin-bottom 8, so 32 to the card's edge), phone and desk.
+- "Your results will appear here" (DEXA, MRI, microbiome; Results while waiting): still the outlined card, now centred, a files icon in a 48px round chip on top, text up to 360 wide.
+- Modal V2 first-view modals: the cover 64px shorter (desk 216, sheet 236), and no title over it (only the close).
