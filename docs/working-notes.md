@@ -13331,3 +13331,10 @@ Tabs are always on: the Tab content tweak is retired, fixed On even if a saved s
 The Observations tweak is labelled "Observations (Post MVP)".
 Phone and desk XS: two status buttons sit side by side, half the width each ("Set a reminder" | "Find a centre"). They were stacked.
 Phone and XS: if a label doesn't fit its half, the pair stacks again. Example: "I’ve posted my sample". This is re-checked on every repaint (the observer also watches #svcMob) and after fonts load.
+Sub-steps sheet (info icon by the sub steps):
+- Under each title, its date or ETA when there is one. Done steps show "Completed 3 Oct"; others show "Ships by 7 Oct", "Usually 1 business day", "Expected by 9 Oct" and similar.
+- Only the sentence that says when is kept, and a dated slot loses its place ("Tue 20 Oct, 9:30 am").
+- DEXA "Go to your scan" shows its slot (Sat 3 Oct, 9:30 am) once booked.
+- All labels are Regular weight (the current step was 500).
+- Dots sit level with their titles; the connector runs from under each dot to just above the next. The connector is 4px, as it already was.
+XS (phone, desk XS): report and video item pictures are 16px smaller (56). The video button reads "Watch" (was "Watch video"); the report button stays "View".
