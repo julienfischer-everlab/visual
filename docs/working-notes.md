@@ -13426,3 +13426,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Every section is a tab, a lone one too (it no longer falls back to an h2). On XS/S and the phone a lone tab keeps its label's width, at the left; two or more still fill.
 - Progress card, Ring: "Step X/N" (the pill) on top, the current step's name under it; no "Up next →" line. Completed shows just "Completed".
 - Sub step timeline on the phone/XS: at the last sub step there's no "Up next" line and nothing in its place (DEXA and Onboarding booked, MRI consent and scan, gut kit, ...). Middle sub steps keep "Up next – name".
+- Progress card, Ring: the Step X/N pill and the step's name side by side, 8px apart, left-aligned; the name 16px on a 16px line.
