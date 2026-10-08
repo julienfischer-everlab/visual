@@ -13353,3 +13353,4 @@ New "Modal" tweak (V1 | V2, V1 by default) for the service modals (available, do
 - V2: the service's picture is a full-width hero (360 desktop, 300 phone and XS). A floating header over it names the journey it was opened from ("Everlab Protocol"; falls back to the page's service) and has a round close button. The content sits under it, left-aligned: title 30px (26 phone), status line, description, why box, blocker card. View detail sits at the right on desktop and full width on the phone. The desktop panel is 600px wide.
 - The template's hero controls (dots, arrows) and its Secondary/Primary footer buttons are not added, as asked.
 - Fix: the available modal never reads "Not available yet". A related service whose card still says locked, but which is open, reads as available.
+Status card: its title and line are 448px wide at most (was 320).
