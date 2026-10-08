@@ -13420,3 +13420,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
   3. Get your plan: "Waiting for your plan", Expected by 9 Oct, a "Your plan will appear here" placeholder; done: "Your plan is ready" with a "Your health plan" item, the first-view modal (See your plan) and a Your plan section listing the tests in it, each opening its page.
   Status line: Not started yet, Started on 2 Oct (questionnaire done), Completed on 9 Oct. Timeline rows renamed to Onboarding Consultation, as a video call.
 - Progress card, Ring: a small "Step X/N" badge by the current step's name (12px, pill). Not on Completed; not in Bars or Ring 2.
+- Onboarding Consultation: Get your plan has sub steps, as DEXA's Get your results: Doctor review, Writing your plan, then Plan ready (the done state). "Waiting for your plan", Expected by 9 Oct on both; the progress card fills a third, two thirds.
+- No plan list on the page: the plan is its own page, reached from the "Your health plan" item in the status card. The "Your plan will appear here" placeholder is gone too; while it's written the page shows My documents only. The first-view modal still opens once when done.
