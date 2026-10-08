@@ -13359,3 +13359,12 @@ DEXA first-view modal:
 - The note is merged into the line: "Dr Steven Lu has reviewed your DEXA results. Your doctor goes through them with you at your Diagnostics Review." No note box.
 - The title sits 24px further from the visual (38) and 8px closer to its line (6).
 - The blood test and MRI modals keep the doctor photo and note.
+First-view modals (DEXA, blood test, blood test report, MRI, microbiome), all the same now:
+- The results illustration on top at 192px wide (ratio kept). No doctor photo, no play icon.
+- The note merged into the line; no note box.
+- Title 24px further from the illustration and 8px closer to its line.
+- No border; 24px more padding at the bottom (52 desk, 44 phone).
+- Buttons sized to their labels, the group 24px further from the text (46).
+- A close button at the top right on every one (the MRI's keeps its Watch video | See report pair).
+- Modal V2: they also get a top header, with the service named at the left ("DEXA Scan", "Blood test", "Whole Body MRI & CT Chest", "Microbiome report") and the close at the right. Content starts below it.
+Service modals (available, done, blocked): 24px more under everything (48) and 24px more above View detail (44).
