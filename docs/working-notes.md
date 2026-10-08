@@ -13368,3 +13368,5 @@ First-view modals (DEXA, blood test, blood test report, MRI, microbiome), all th
 - A close button at the top right on every one (the MRI's keeps its Watch video | See report pair).
 - Modal V2: they also get a top header, with the service named at the left ("DEXA Scan", "Blood test", "Whole Body MRI & CT Chest", "Microbiome report") and the close at the right. Content starts below it.
 Service modals (available, done, blocked): 24px more under everything (48) and 24px more above View detail (44).
+Modal close button, every modal (first-view modals and service modals in V1): a 30px circle 24px in from the top and the right, icon 11px, grey fill. Service modals in V2 keep the larger translucent close over the hero.
+First-view modal illustration: 160px wide (was 192).
