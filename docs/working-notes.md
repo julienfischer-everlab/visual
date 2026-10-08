@@ -13274,3 +13274,6 @@ On the First results step the timeline reads "Get your results / Full results ex
 Blood test, First results step only: an outlined note under the Results list, with a clock icon, reads "More results to come by 12 Oct. We'll add them here as soon as they're in." Once done, the full results replace it.
 DEXA scan analysis: "Expected by 5–6 Oct" in the line, the sub step and the badge.
 DEXA done: the status tag reads "Ready" (was Completed), as the blood test's.
+Modals: the "why" box only shows when the service really blocks the page it was opened from. With no blocker there's nothing to explain.
+Modals: the service's status sits under the title. Done reads "Completed on 6 Oct 2026", available reads its started line or "Not started yet", and blocked keeps the Unavailable badge.
+Modals: no tick or lock icon over the picture.
