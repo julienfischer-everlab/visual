@@ -13320,3 +13320,10 @@ Status CTA, general rule: a single button wider than 160px (label + 48) goes on 
 Static page placeholders read "Not started yet" (were "Started on 20 February 2026"); paint replaces them anyway.
 Tabs re-measure their fit after web fonts load (document.fonts) and whenever the tab bar is resized (ResizeObserver). A fit measured with a wider fallback font, or while the frame was narrow or hidden, had left them hugging their labels.
 Progress card header: the step name and "Next: …" are both 14px.
+XS (phone and forced XS): the referral item in the status card has no picture.
+Results: 24px between the Biomarkers card and the results list.
+DEXA done: no "See results" CTA in the status card (no report or video to open; the results are right under it). The first-view debrief modal keeps its own See results.
+Blood test, Get your results step: Testing information stays, after Results (Results, Testing information, My documents).
+Blood test, first step (Visit a collection centre, book or active at 0): no Testing information until a centre is picked and the visit is set.
+XS and S (phone, desk XS, forced S): no title over the sub steps' card ("Get your results", "Appointment"), because the step already heads the progress card above. M and L keep it.
+Status card item buttons read "View": first results, debrief and report. Video stays "Watch video"; the referral stays "Show".
