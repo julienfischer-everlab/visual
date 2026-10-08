@@ -6651,7 +6651,7 @@
   .svJrBars i.on{background:#42be65;} .svJrBars i.cur{background:#f5be8c;} .svJrBars i.cur.pas{background:#b8b8b8;} .svJrBars i.cur.okc{background:#42be65;} .svJrBars i.cur.svTinf{background:rgba(255,255,255,.5);}
   .svJrHzT{margin-top:10px;font-size:14px;color:rgba(255,255,255,.56);}
   .svmHz{display:block;width:100%;box-sizing:border-box;margin:24px 0 0;padding:20px 24px 24px;border:0;border-radius:22px;background:rgba(40,40,38,.72);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);font:inherit;text-align:left;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .14s ease;} .svmHz:active{transform:scale(.98);}
-  .svmHzH{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px;} .svmHzH b{min-width:0;} .svmHzH span{flex:none;white-space:nowrap;} .svmHzH span:empty{display:none;}   /* a long step name wraps beside the next one, never cut */   /* 10 -> 14 ("gap increase by 4px between 2 rows") */   /* 14 -> 10 ("reduce gap by 4px") */ .svmHzH b{font-size:16px;font-weight:500;color:#fff;} .svmHzH span{font-size:14px;color:rgba(255,255,255,.55);}   /* the progress as a card in the hero, its title and count ("progress card header like this") */
+  .svmHzH{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px;} .svmHzH b{min-width:0;font-size:14px !important;}   /* both 14 ("both 14px font size") */ .svmHzH span{flex:none;white-space:nowrap;} .svmHzH span:empty{display:none;}   /* a long step name wraps beside the next one, never cut */   /* 10 -> 14 ("gap increase by 4px between 2 rows") */   /* 14 -> 10 ("reduce gap by 4px") */ .svmHzH b{font-size:16px;font-weight:500;color:#fff;} .svmHzH span{font-size:14px;color:rgba(255,255,255,.55);}   /* the progress as a card in the hero, its title and count ("progress card header like this") */
   .svmHz .svJrHzT{margin-top:12px;font-size:14px;}
   .svmHero.hasHz::after{opacity:1;background:linear-gradient(0deg,#1c1c1b 0,#1c1c1b calc(48px + var(--hzH, 120px) * .7),rgba(28,28,27,0) calc(48px + var(--hzH, 120px) * .7 + 150px));}   /* the grey ground under the card, fading up into the picture */
   .svmHero.hasHz .svmHz{background:rgba(255,255,255,.04);-webkit-backdrop-filter:none;backdrop-filter:none;}
@@ -24462,14 +24462,17 @@
       bar.innerHTML = T.map(x => '<button class="svCTab' + (x.t === CTAB ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (x.t === CTAB) + '" data-ct="' + escS(x.t) + '">' + escS(x.t) + '</button>').join('');
       C.insertBefore(bar, T[0].els[0]);
       let at = bar; T.forEach(x => { const pn = document.createElement('div'); pn.className = 'svCPane'; pn.dataset.ct = x.t; pn.hidden = x.t !== CTAB; x.els.forEach(e => pn.appendChild(e)); C.insertBefore(pn, at.nextSibling); at = pn; });
-      requestAnimationFrame(() => tabFit(bar)); };
+      requestAnimationFrame(() => tabFit(bar)); if (TRO) TRO.observe(bar); };
     const tabFit = bar => { if (!bar || !bar.isConnected) return; bar.classList.remove('svCFill', 'svCFillA'); const bp = document.body.dataset.bp;
       if (!(bar.closest('#svcMob, .svcMob, #phone2') || bp === 'xs' || bp === 's' || (!bp && innerWidth < 992))) return;   // XS and S only
       const W = bar.clientWidth, T = [...bar.children]; if (!W || !T.length) return;
       const ws = T.map(t => t.getBoundingClientRect().width), gap = parseFloat(getComputedStyle(bar).columnGap) || 0;
       if (ws.reduce((a, b) => a + b, 0) + gap * (T.length - 1) > W) return;   // more than fit: hug, swipe
       bar.classList.add(Math.max(...ws) * T.length <= W ? 'svCFill' : 'svCFillA'); };   // evenly when the longest fits its share, else each grows from its label
-    addEventListener('resize', () => document.querySelectorAll('.svCTabs.svCLine').forEach(tabFit));
+    const tabFitAll = () => document.querySelectorAll('.svCTabs.svCLine').forEach(tabFit);
+    addEventListener('resize', tabFitAll);
+    const TRO = window.ResizeObserver ? new ResizeObserver(es => es.forEach(e => { if (!e.target.isConnected) TRO.unobserve(e.target); else tabFit(e.target); })) : null;   // shown, resized or moved into a wider frame: measured again
+    if (document.fonts){ document.fonts.ready.then(tabFitAll); document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', tabFitAll); }   /* the labels measured in the face they end up in: a fallback font's wider labels had them hug ("if tabs don't use the viewport width, fill the container") */
     { const t = document.getElementById('stTabC'); if (t){ TABC = t.value === 'on'; t.addEventListener('change', () => { TABC = t.value === 'on'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
     { const t = document.getElementById('stSvTabs'); if (t){ CTABS = t.value !== 'sec'; CPILL = t.value !== 'tabs'; CALL = t.value === 'all'; t.addEventListener('change', () => { CTABS = t.value !== 'sec'; CPILL = t.value !== 'tabs'; CALL = t.value === 'all'; if (cur && cur.key) paint(cur.key, cur.state, cur.o); }); } }
     /* the modal's picture edge to edge, the title and the close over its top, and an avatar half on it (70%) and half on the body (30%) ("the image as an edge-to-edge banner, the header overlapping the top; an avatar overlapping the header and the body, 70 / 30, then the description") */

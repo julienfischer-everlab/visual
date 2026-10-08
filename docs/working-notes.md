@@ -13318,3 +13318,5 @@ Phone and M/S progress card: the title is the current step's name ("Completed" w
 "More results to come" (blood test first results): the info alert theme. Navy, an alert icon, the title "More results to come", then "Expected by 12 Oct. We’ll add them here as soon as they’re in." No dismiss, no CTA.
 Status CTA, general rule: a single button wider than 160px (label + 48) goes on its own row under the text; otherwise it sits at the right. On desktop the text now shrinks beside a side button (flex-basis 0), so a long line no longer pushes it down. DEXA "Add to calendar" (146px) now sits at the right.
 Static page placeholders read "Not started yet" (were "Started on 20 February 2026"); paint replaces them anyway.
+Tabs re-measure their fit after web fonts load (document.fonts) and whenever the tab bar is resized (ResizeObserver). A fit measured with a wider fallback font, or while the frame was narrow or hidden, had left them hugging their labels.
+Progress card header: the step name and "Next: …" are both 14px.
