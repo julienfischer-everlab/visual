@@ -13437,3 +13437,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
   - Phone/XS/S sheets with the card: no cover (the card carries the picture), the V1 sheet header and close, so it fits without scrolling.
 - Modal V2 on the desk, microbiome report pop-up: no banner when the "What we highlighted" card is there (the card carries the picture); 72 above the title, the close in its plain style.
 - Microbiome report pop-up: 12px more between the title and the "What we highlighted" card (36, was 24).
+- The page title is "Everlab service pages" (was "Particle morph — organ concept demo", left from an old demo); it names the artifact.
