@@ -13439,3 +13439,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Microbiome report pop-up: 12px more between the title and the "What we highlighted" card (36, was 24).
 - The page title is "Everlab service pages" (was "Particle morph — organ concept demo", left from an old demo); it names the artifact.
 - Report visuals: the three Hairline drafts for the report pop-up's illustration (Stack, recommended; Folio; Tray) live in the main artifact as a page of their own, report-visuals.html, opened from the top bar's "Report visuals" link. Sources in visuals/: report-visuals.html, and report/<name>.js with its built hairline-<name>.html (published as visuals/hairline-<name>.html). Publish the main artifact with those files alongside dist/index.html.
+- The page menu's "Concept" group shows as "OrganAge concept" (and its row on Home); the group's key stays "Concept".

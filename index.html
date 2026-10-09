@@ -15757,7 +15757,7 @@
     inGroup.sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0));
     if (!inGroup.length) return;
     const og = document.createElement('optgroup');
-    og.label = g;
+    og.label = ({ Concept: 'OrganAge concept' })[g] || g;   // the group's shown name; the key stays ('title OrganAge concept')
     inGroup.forEach(([v, i]) => {
       const o = document.createElement('option');
       o.value = String(i);
@@ -27811,7 +27811,7 @@
     ];
     const cardOf = (p, i) => '<button class="hmCard' + (p.wide ? ' wide' : '') + (p.r ? ' r' : '') + '" type="button" data-i="' + i + '"><div class="hmShot" aria-hidden="true">' + SHOT[p.s]() + '</div><div class="hmMeta"><div><b>' + p.n + '</b></div>' + ARR + '</div></button>';
     grid.innerHTML = ROWS.map(([g, line]) => { const its = P.map((p, i) => [p, i]).filter(([p]) => p.g === g); if (!its.length) return '';
-      return '<section class="hmRow"><div class="hmRowHd"><h2>' + g + '</h2><p>' + line + '</p><span>' + its.length + (its.length > 1 ? ' entry points' : ' entry point') + '</span></div><div class="hmRowCards">' + its.map(([p, i]) => cardOf(p, i)).join('') + '</div></section>'; }).join('');
+      return '<section class="hmRow"><div class="hmRowHd"><h2>' + (({ Concept: 'OrganAge concept' })[g] || g) + '</h2><p>' + line + '</p><span>' + its.length + (its.length > 1 ? ' entry points' : ' entry point') + '</span></div><div class="hmRowCards">' + its.map(([p, i]) => cardOf(p, i)).join('') + '</div></section>'; }).join('');
     const show = () => { document.body.classList.add('homeOn'); if (versionSel) versionSel.value = 'home'; try { history.replaceState(null, '', '#home'); } catch (e){} const h = document.getElementById('home'); if (h) h.scrollTop = 0; };
     const hide = () => document.body.classList.remove('homeOn');
     grid.addEventListener('click', e => {
