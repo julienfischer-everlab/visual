@@ -6561,6 +6561,7 @@
   /* ---- The home mosaic ---- */
   .home{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;overflow-y:auto;background:#0b0b0b;color:#ececec;}
   body.homeOn .home{display:block;}
+  .hlPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0f0f0e;} body.hlOn .hlPage{display:block;} .hlPage iframe{display:block;width:100%;height:100%;border:0;} body.hlOn #tkMenu, body.hlOn #inkMenu, body.hlOn .svFloatNav, body.homeOn .svFloatNav{display:none !important;}   /* the Hairline page: under the bar like Home, no tweaks, and none of the service page's floating step arrows over it */
   .homeIn{max-width:1320px;margin:0 auto;padding:56px 40px 80px;}
   .homeHead{margin-bottom:40px;}
   .homeBrand{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8b8b86;}
@@ -9858,6 +9859,8 @@
      showing each page in a minimal version"): under the bar, one card per
      page -- a drawn miniature of the page, its group and its name -- the
      card opening the page. Built by homeMosaic() from HOME_PAGES. -->
+<!-- Hairline: every Hairline figure, a page of the prototype like Home -- under the bar, the illustrations page (hairline.html, published beside this one) filling the rest; its frame is made the first time it opens ("put them in an independent page inside this artifact"; "where is the hairline inside this artefact?") -->
+<div class="hlPage" id="hlPage" aria-label="Hairline illustrations"></div>
 <div class="home" id="home" aria-label="All pages">
   <div class="homeIn">
     <header class="homeHead"><div class="homeBrand">everlab</div><h1>Prototype</h1><p>Every page of the design in one place. Pick a card to open it.</p></header>
@@ -15748,6 +15751,7 @@
   // nothing anywhere to say so. The Organ Age landing page shipped that way and
   // read as never built, because the only way to reach it was to know to type
   // #m23. Adding a mode means adding its group here too.
+  { const o = document.createElement('option'); o.value = 'hl'; o.textContent = 'Hairline'; versionSel.appendChild(o); }   // the Hairline illustrations, a page of their own beside Home
   { const o = document.createElement('option'); o.value = 'home'; o.textContent = 'Home'; versionSel.appendChild(o); }   // the mosaic of every page
   const MODE_GROUPS = ['Concept', 'Insights', 'Overview page',
                        'Results received', 'Video', 'Landing page'];
@@ -15809,6 +15813,8 @@
     // archive select is already showing, so stepping out and back returns to
     // the one you were reading rather than to the top of the list.
     const v = versionSel.value;
+    if (v === 'hl'){ if (window._hl) window._hl.show(); return; }
+    if (window._hl) window._hl.hide();
     if (v === 'home'){ if (window._home) window._home.show(); return; }
     if (window._home) window._home.hide();
     if (v === 'tl'){ setMode(9); resize(); if (window._tl) window._tl.open(); return; }
@@ -27738,6 +27744,7 @@
     const side = () => B(0, 0, 17, 100, '', '0') + B(2.5, 7, 9, 3, 'hi') + [18, 25, 32, 39, 46].map(y => B(2.5, y, 11, 3)).join('');
     const phone = inner => B(34, 5, 32, 90, 'dev') + inner;
     const SHOT = {
+      hairline: () => B(5, 7, 26, 3, 'hi') + [5, 36, 67].map(x => B(x, 15, 28, 34, 'card', '6px') + B(x + 8, 24, 12, 9, 'lt', '2px') + B(x + 5, 36, 18, 2)).join('') + B(5, 56, 20, 3, 'hi') + [5, 36, 67].map(x => B(x, 64, 28, 30, 'card', '6px') + B(x + 9, 71, 10, 10, 'lt', '50%') + B(x + 5, 85, 18, 2)).join(''),
       ovDesk: () => side() + B(21, 7, 22, 5, 'hi') + B(62, 6, 20, 7, '', '99px') + B(84, 6, 5, 7, '', '50%') + B(91, 6, 5, 7, '', '50%') +
         B(21, 19, 36, 40, 'ph', '8px') + B(24, 24, 10, 4, 'hi', '99px') + B(24, 33, 18, 4, 'lt') + B(24, 50, 8, 5, 'lt', '99px') +
         B(59, 19, 18, 19, 'card', '8px') + B(79, 19, 18, 19, 'card', '8px') + B(59, 40, 18, 19, 'card', '8px') + B(79, 40, 18, 19, 'card', '8px') +
@@ -27797,7 +27804,8 @@
       { g: 'Concept', n: 'Pill Nav', m: 1, s: 'pillNav' },
       { g: 'Concept', n: 'Card flip', m: 3, s: 'cardFlip' },
       { g: 'Concept', n: 'Grid', m: 4, s: 'gridC' },
-      { g: 'Concept', n: 'Immersive experience', m: 8, s: 'immersive' }
+      { g: 'Concept', n: 'Immersive experience', m: 8, s: 'immersive' },
+      { g: 'Hairline', n: 'Illustrations', s: 'hairline', hl: true, wide: true }
     ];
     const ARR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"/></svg>';
     // the pages in the order they are worked on, each with its line
@@ -27809,16 +27817,18 @@
       ['Results received', 'The moment results land, over the Overview.'],
       ['Landing page', 'Organ Age, for people who are not members yet.'],
       ['Video', 'The social teaser.'],
-      ['Concept', 'The organ concepts the prototype grew from.']
+      ['Concept', 'The organ concepts the prototype grew from.'],
+      ['Hairline', 'Every Hairline figure: the report pop-up\u2019s three drafts and the six health checks.']
     ];
     const cardOf = (p, i) => '<button class="hmCard' + (p.wide ? ' wide' : '') + (p.r ? ' r' : '') + '" type="button" data-i="' + i + '"><div class="hmShot" aria-hidden="true">' + SHOT[p.s]() + '</div><div class="hmMeta"><div><b>' + p.n + '</b></div>' + ARR + '</div></button>';
     grid.innerHTML = ROWS.map(([g, line]) => { const its = P.map((p, i) => [p, i]).filter(([p]) => p.g === g); if (!its.length) return '';
       return '<section class="hmRow"><div class="hmRowHd"><h2>' + (({ Concept: 'OrganAge concept' })[g] || g) + '</h2><p>' + line + '</p><span>' + its.length + (its.length > 1 ? ' entry points' : ' entry point') + '</span></div><div class="hmRowCards">' + its.map(([p, i]) => cardOf(p, i)).join('') + '</div></section>'; }).join('');
-    const show = () => { document.body.classList.add('homeOn'); if (versionSel) versionSel.value = 'home'; try { history.replaceState(null, '', '#home'); } catch (e){} const h = document.getElementById('home'); if (h) h.scrollTop = 0; };
+    const show = () => { document.body.classList.remove('hlOn'); document.body.classList.add('homeOn'); if (versionSel) versionSel.value = 'home'; try { history.replaceState(null, '', '#home'); } catch (e){} const h = document.getElementById('home'); if (h) h.scrollTop = 0; };
     const hide = () => document.body.classList.remove('homeOn');
     grid.addEventListener('click', e => {
       const c = e.target.closest('.hmCard'); if (!c) return;
       const p = P[+c.dataset.i]; hide();
+      if (p.hl){ if (window._hl) window._hl.show(); return; }
       setMode(p.m); resize();
       if (p.svc && window._svc) (p.svc === 'desk' ? window._svc.openDesk : window._svc.openMob)();
       if (p.bp){ const bs = document.getElementById('stBp'); if (bs){ bs.value = p.bp; bs.dispatchEvent(new Event('change', { bubbles: true })); } }
@@ -27826,6 +27836,16 @@
       if (p.tl && window._tl) window._tl.open();
     });
     window._home = { show, hide };
+    {
+      const pg = document.getElementById('hlPage');
+      const hlShow = () => { if (!pg) return; hide(); if (!pg.firstChild){ const f = document.createElement('iframe'); f.id = 'hlFrame'; f.src = 'hairline.html'; f.title = 'Hairline illustrations'; pg.appendChild(f); } document.body.classList.add('hlOn'); if (versionSel) versionSel.value = 'hl'; try { history.replaceState(null, '', '#hairline'); } catch (e){} };
+      const hlHide = () => { if (!document.body.classList.contains('hlOn')) return; document.body.classList.remove('hlOn'); if (versionSel && versionSel.value === 'hl') versionSel.value = String(version); };   // left by a link to a page, the menu names that page again
+      window._hl = { show: hlShow, hide: hlHide };
+      // the top bar's button opens the page here rather than leaving the prototype
+      const tb = document.getElementById('tkVisuals'); if (tb) tb.addEventListener('click', e => { e.preventDefault(); hlShow(); });
+      if (location.hash === '#hairline') hlShow();
+      addEventListener('hashchange', () => { if (location.hash === '#hairline') hlShow(); else hlHide(); });
+    }
     // the first page: no hash, or #home, opens here; any page hash opens that page
     const want = () => location.hash === '#home';
     if (want()) show();
