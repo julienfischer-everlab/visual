@@ -5573,6 +5573,26 @@
   body.pastM #phone2 .mscroll{filter:saturate(.7) brightness(.5);}
   body.pastRes .dvWrap,body.pastRes .dash,body.pastM #phone2 .mscroll{pointer-events:none;}
   body.pastRes .prWrap{pointer-events:auto;}
+  /* ---- Async report: the Overview under the debrief's bottom sheet ----
+     the same dimming as Results received; the sheet itself is the ported
+     debrief (.arSheet), here only given its frame. The frame's classes are
+     aq-, not ar-: the Reports drawer already owns arWrap, arDesk, arSheet,
+     arRow, and the debrief uses arDim on its own buttons */
+  body.asyncRep .dvWrap, body.asyncRep .dash .side, body.asyncRep .dash #dOver{filter:saturate(.7) brightness(.5);}
+  body.asyncM #phone2 .mscroll{filter:saturate(.7) brightness(.5);}
+  body.asyncRep .dvWrap, body.asyncRep .dash, body.asyncM #phone2 .mscroll{pointer-events:none;}
+  .aqWrap{display:none;}
+  body.asyncD .aqWrap.aqDesk{display:block;position:fixed;left:0;right:0;top:var(--barH,45px);bottom:0;z-index:40;pointer-events:auto;}
+  body.asyncM #phone2 .aqWrap.aqPhone{display:block;position:absolute;inset:0;z-index:60;pointer-events:auto;border-radius:inherit;overflow:hidden;}
+  .aqDim{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .35s ease;}
+  .aqWrap.on .aqDim{opacity:1;}
+  .aqFrame{position:absolute;left:50%;bottom:0;width:min(100%, 480px);height:calc(100% - 24px);transform:translate(-50%, 104%);transition:transform .5s cubic-bezier(.2,.8,.2,1);border-radius:24px 24px 0 0;overflow:hidden;box-shadow:0 -20px 80px rgba(0,0,0,.45);}
+  .aqPhone .aqFrame{left:0;width:100%;height:calc(100% - 52px);transform:translateY(104%);}
+  .aqWrap.on .aqFrame{transform:translate(-50%, 0);} .aqPhone.on .aqFrame{transform:none;}
+  .aqWrap.shut .aqFrame{transform:translate(-50%, 104%);} .aqPhone.shut .aqFrame{transform:translateY(104%);} .aqWrap.shut .aqDim{opacity:0;pointer-events:none;}
+  .aqAgain{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:none;align-items:center;gap:8px;height:44px;padding:0 20px;border:0;border-radius:999px;background:#f4f4f2;color:#141413;font:inherit;font-size:15px;font-weight:500;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.35);}
+  .aqWrap.shut .aqAgain{display:inline-flex;}
+  @media (prefers-reduced-motion: reduce){ .aqFrame, .aqDim{transition:none;} }
   .prWrap{display:none;}
   body.pastD .prDesk{display:block;position:fixed;left:0;right:0;top:57px;bottom:0;z-index:40;}
   .prDim{position:absolute;inset:0;background:rgba(0,0,0,.5);}
@@ -10479,6 +10499,11 @@
           </select>
         </div>
         </div>
+        <div class="tkGroup" data-pages="ar">
+        <div class="tkSub">Async report</div>
+        <div class="tkRow"><span class="lbl">Theme</span><select id="stArTheme" class="tkSegSel" aria-label="The debrief's theme"><option value="light" selected>Light</option><option value="dark">Dark</option></select></div>
+        <div class="tkRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option></select></div>
+        </div>
         <div class="tkGroup" data-pages="lp">
         <div class="tkSub">Organ Age landing</div>
         <!-- the hero's visual: open on the page, or in a card ("try another
@@ -11895,6 +11920,1269 @@
 </div>
 <div class="nogl" id="nogl">WebGL unavailable in this browser</div>
 
+<!-- the Async report's debrief: the Bloods & Tests async debrief from the "Everlab async test debrief" export, ported from its React template to plain script and styles (every class "ar", every rule under .arSheet); window.AsyncReport.mount(host, opts) -->
+<style>
+/*
+ * Async report (Bloods & Tests debrief). Every selector is scoped under .arSheet and every
+ * class is prefixed "ar". Tokens are custom properties on .arSheet (light) and
+ * .arSheet.arDark (dark); values are the Genome UI tokens the source page used.
+ * Fonts are named, never loaded: Saans when the host provides it, otherwise system UI.
+ * The DS "regular" styles ask for weight 380, but the source's Saans faces are 400/500/600,
+ * so 380 always rendered as Saans Regular. They are written as 400 here: on the system
+ * fallback a 380 could pick a lighter face (Segoe UI Semilight 350, Roboto Light 300).
+ * Class names avoid the ones index.html styles globally (arRow, arTop, arList, arNew,
+ * arOpen, arWrap, arDesk); only the root keeps .arSheet, as the contract requires, and is
+ * hardened against the host's .arSheet rules below.
+ */
+
+/* ---------- tokens ---------- */
+.arSheet {
+  --ar-ink: 0% 0 0;                                   /* --ink (used as oklch(var(--ar-ink) / a)) */
+  --ar-paper: #fff;                                   /* --paper */
+  --ar-fg: oklch(0% 0 0);                             /* fg-neutral-primary-100 */
+  --ar-blue-bg2: oklch(96.36% .018 253.39);           /* bg-brand-blue-secondary-100 */
+  --ar-blue-fg: oklch(55.35% .135 257.48);            /* fg-brand-blue-primary-100 */
+  --ar-br3: oklch(0% 0 0 / .1);                       /* br-neutral-tertiary-100 */
+  --ar-opt-fg: oklch(52.53% .134 149.79);             /* fg-range-optimal-primary-100 */
+  --ar-opt-fg2: oklch(78.93% .181 151.31);            /* fg-range-optimal-secondary-100 */
+  --ar-opt-bg: oklch(64.9% .169 149.65);              /* bg-range-optimal-primary-100 */
+  --ar-opt-bg2: oklch(97.25% .023 157.81);            /* bg-range-optimal-secondary-100 */
+  --ar-sub-fg: oklch(52.36% .085 85.78);              /* fg-range-suboptimal-primary-100 */
+  --ar-sub-fg2: oklch(86.67% .148 85.34);             /* fg-range-suboptimal-secondary-100 */
+  --ar-sub-bg: oklch(86.67% .148 85.34);              /* bg-range-suboptimal-primary-200 */
+  --ar-sub-bg2: oklch(97.14% .034 88.79);             /* bg-range-suboptimal-secondary-100 */
+  --ar-out-fg: oklch(52.95% .216 28.17);              /* fg-range-out-of-range-primary-100 */
+  --ar-out-bg: oklch(64.91% .234 24.47);              /* bg-range-out-of-range-primary-300 */
+  --ar-out-bg2: oklch(94.54% .027 14.72);             /* bg-range-out-of-range-secondary-100 */
+  --ar-card-bg: oklch(0% 0 0 / .04);                  /* components-card-default-bg */
+  --ar-card-invert-bg: oklch(100% 0 263.28);          /* components-card-invert-bg */
+  --ar-badge-bg: oklch(0% 0 0 / .08);                 /* bg-neutral-secondary-100 */
+  --ar-btn-bg: oklch(0% 0 0);                         /* bg-neutral-primary-100 */
+  --ar-btn-bg-hover: oklch(0% 0 0 / .64);             /* bg-neutral-primary-200 */
+  --ar-btn-bg-active: oklch(0% 0 0 / .48);            /* bg-neutral-primary-300 */
+  --ar-btn-fg: oklch(100% 0 263.28);                  /* fg-neutral-primary-invert-100 */
+  --ar-radius-card: 12px;                             /* radius-components-card-default-radius-lg */
+  --ar-font: "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ar-font-mono: "Saans Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ar-ease: cubic-bezier(.2, .7, .2, 1);
+  /* layout knobs for the integrator */
+  --ar-head-top: 16px;       /* the source used 60px to clear an iOS status bar */
+  --ar-foot-bottom: 40px;    /* clears a home indicator, as in the source */
+  --ar-fade: 0px;
+}
+.arSheet.arDark {
+  --ar-ink: 100% 0 263.28;
+  --ar-paper: oklch(16.84% 0 263.28);
+  --ar-fg: oklch(100% 0 263.28);
+  --ar-blue-bg2: oklch(25.33% .065 257.47);
+  --ar-blue-fg: oklch(84.88% .043 257.15);
+  --ar-br3: oklch(100% 0 263.28 / .16);
+  --ar-opt-fg: oklch(89.2% .091 155.76);
+  --ar-opt-fg2: oklch(78.93% .181 151.31);
+  --ar-opt-bg: oklch(46.24% .116 150);
+  --ar-opt-bg2: oklch(22.53% .048 151.72);
+  --ar-sub-fg: oklch(92.15% .09 87.17);
+  --ar-sub-fg2: oklch(92.15% .09 87.17);
+  --ar-sub-bg: oklch(92.15% .09 87.17);
+  --ar-sub-bg2: oklch(28.58% .042 87.79);
+  --ar-out-fg: oklch(83.95% .089 15.62);
+  --ar-out-bg: oklch(57.76% .236 28.33);
+  --ar-out-bg2: oklch(22.67% .092 25.82);
+  --ar-card-bg: oklch(100% 0 263.28 / .06);
+  --ar-card-invert-bg: oklch(100% 0 263.28 / .06);
+  --ar-badge-bg: oklch(100% 0 263.28 / .24);
+  --ar-btn-bg: oklch(100% 0 263.28);
+  --ar-btn-bg-hover: oklch(100% 0 263.28 / .64);
+  --ar-btn-bg-active: oklch(100% 0 263.28 / .48);
+  --ar-btn-fg: oklch(0% 0 0);
+  color-scheme: dark;
+}
+
+/* ---------- root and shell ----------
+ * The root's selector is repeated on purpose (specificity 0,4,0). The integration host
+ * (index.html) already styles .arSheet, unscoped, for its own "Your debriefs" drawer:
+ * max-height 82%, max-width 480px with auto margins, a 26px top radius, a #1b1b1a or
+ * (body.light, 0,2,1) #f6ece6 background, and under .arDesk (up to .arDesk.on .arSheet, 0,3,0)
+ * a 12px inset, width min(420px, 92vw), a 24px radius, padding-bottom 0 and an off-screen
+ * translateX. The contract fixes the root's class name, so its box is restated here at a
+ * specificity none of those rules reach, whatever order the stylesheets load in.
+ */
+.arSheet.arSheet.arSheet.arSheet {
+  position: relative;
+  inset: auto;
+  float: none;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ar-paper);
+  color: oklch(var(--ar-ink));
+  font-family: var(--ar-font);
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.55;
+  letter-spacing: normal;
+  text-align: left;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+/* One box model for every element, so a host's universal rule (index.html has
+   `.dash *{box-sizing:border-box}` and `#phone *{...}`) cannot change any size here. */
+.arSheet *, .arSheet *::before, .arSheet *::after { box-sizing: border-box; }
+.arSheet [hidden] { display: none !important; }
+.arSheet svg { display: block; flex: none; }
+.arSheet img { display: block; border: 0; }
+.arSheet p, .arSheet h2 { margin: 0; }
+
+.arSheet .arHead {
+  position: relative;
+  left: 0; right: 0; top: 0;
+  z-index: 2;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: var(--ar-head-top) 20px 0;
+  box-sizing: border-box;
+}
+.arSheet.arIsWelcome .arHead { position: absolute; }
+.arSheet .arHeadRow { display: flex; align-items: center; gap: 10px; min-height: 40px; }
+.arSheet .arHeadLabel { flex: 1; font-size: 14px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink) / .64); }
+.arSheet .arIconBtn {
+  appearance: none; -webkit-appearance: none;
+  margin: 0; padding: 0; border: 0; box-shadow: none;
+  font: inherit; text-transform: none;
+  box-sizing: border-box;
+  width: 40px; height: 40px; min-width: 0; min-height: 0;
+  flex: none;
+  border-radius: 9999px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  background: oklch(var(--ar-ink) / .06);
+  color: oklch(var(--ar-ink) / .64);
+}
+.arSheet .arIconBtn:hover { opacity: .8; }
+.arSheet.arIsWelcome .arIconBtn { background: oklch(100% 0 0 / .64); color: oklch(0% 0 0); }
+.arSheet .arClose { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+
+.arSheet .arBody {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px 20px 24px;
+  box-sizing: border-box;
+}
+.arSheet.arIsWelcome .arBody { padding: 0; overflow: hidden; }
+
+.arSheet .arFoot {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px var(--ar-foot-bottom);
+  border-top: 1px solid transparent;
+  background: var(--ar-paper);
+  box-sizing: border-box;
+}
+
+/* Button: emphasis primary, size lg, full width */
+.arSheet .arBtn {
+  appearance: none; -webkit-appearance: none;
+  position: relative;
+  margin: 0;
+  box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+  border: 2px solid transparent;
+  box-shadow: none;
+  cursor: pointer;
+  font-family: var(--ar-font);
+  text-transform: none;
+  letter-spacing: 0;
+  font-variant-ligatures: no-contextual;
+  transition: background-color .3s cubic-bezier(.4, 0, .2, 1), color .3s cubic-bezier(.4, 0, .2, 1), border-color .3s cubic-bezier(.4, 0, .2, 1), opacity .3s cubic-bezier(.4, 0, .2, 1), box-shadow .3s cubic-bezier(.4, 0, .2, 1);
+}
+.arSheet .arBtnLg { width: 100%; height: 56px; min-width: 56px; padding: 0 32px; border-radius: 16px; font-size: 16px; line-height: 18px; font-weight: 570; }
+.arSheet .arBtnPrimary { background: var(--ar-btn-bg); color: var(--ar-btn-fg); }
+@media (hover: hover) {
+  .arSheet .arBtnPrimary:hover { background: var(--ar-btn-bg-hover); }
+}
+.arSheet .arBtnPrimary:active { background: var(--ar-btn-bg-active); }
+.arSheet .arBtnLabel { display: inline-flex; align-items: center; gap: 8px; }
+
+.arSheet .arIconBtn:focus-visible,
+.arSheet .arBtn:focus-visible,
+.arSheet .arCarBtn:focus-visible,
+.arSheet .arRowTap:focus-visible,
+.arSheet .arAccHead:focus-visible {
+  outline: 2px solid var(--ar-blue-fg);
+  outline-offset: 2px;
+}
+
+/* FlowStepIndicator */
+.arSheet .arSteps {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-template-rows: 3px;
+  column-gap: 4px;
+}
+.arSheet .arStepsBar { border-radius: 4px; background: oklch(var(--ar-ink)); }
+.arSheet .arStepsBase { opacity: .12; }
+.arSheet .arStepsFill {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-template-rows: 3px;
+  column-gap: 4px;
+  transition: clip-path .5s cubic-bezier(0, 0, .2, 1);
+}
+
+/* ---------- shared type ---------- */
+.arSheet .arH700 { font-family: var(--ar-font); font-size: 24px; line-height: 1.25; font-weight: 570; letter-spacing: 0; font-variant-ligatures: no-contextual; text-wrap: pretty; color: oklch(var(--ar-ink)); }
+.arSheet .arT600 { font-family: var(--ar-font); font-size: 18px; line-height: 22px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
+.arSheet .arT300m { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 570; letter-spacing: 0; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
+.arSheet .arT300r { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 400; letter-spacing: 0; font-variant-ligatures: no-contextual; }
+.arSheet .arT200m { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 570; letter-spacing: 0; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
+.arSheet .arT200r { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; letter-spacing: 0; font-variant-ligatures: no-contextual; }
+.arSheet .arMonoLabel { font-family: var(--ar-font-mono); font-size: 12px; line-height: 16px; font-weight: 570; letter-spacing: 1px; text-transform: uppercase; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink) / .5); }
+.arSheet .arPara { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 400; letter-spacing: 0; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink) / .72); text-wrap: pretty; margin: 0; }
+.arSheet .arLede { font-size: 16px; line-height: 24px; color: oklch(var(--ar-ink) / .64); text-wrap: pretty; }
+.arSheet .arPretty { text-wrap: pretty; }
+.arSheet .arInk { color: oklch(var(--ar-ink)); }
+.arSheet .arInk30 { color: oklch(var(--ar-ink) / .3); }
+.arSheet .arInk50 { color: oklch(var(--ar-ink) / .5); }
+.arSheet .arInk60 { color: oklch(var(--ar-ink) / .6); }
+.arSheet .arStack { display: flex; flex-direction: column; }
+.arSheet .arGap24 { gap: 24px; }
+.arSheet .arGap20 { gap: 20px; }
+.arSheet .arGap18 { gap: 18px; }
+.arSheet .arIntroBlock { display: flex; flex-direction: column; gap: 8px; }
+
+/* ---------- motion ---------- */
+@keyframes arRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes arFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes arHeroZoom { from { transform: scale(1.12); } to { transform: none; } }
+@keyframes arFade { from { opacity: 0; } to { opacity: 1; } }
+.arSheet .arAnimRise { animation: arRise .5s var(--ar-ease) both; }
+.arSheet .arAnimRise6 { animation: arRise .6s var(--ar-ease) both; }
+.arSheet .arAnimUp { animation: arFadeUp .5s var(--ar-ease) both; }
+.arSheet .arD10 { animation-delay: .1s; }
+.arSheet .arD12 { animation-delay: .12s; }
+.arSheet .arD15 { animation-delay: .15s; }
+.arSheet .arD20 { animation-delay: .2s; }
+.arSheet .arD24 { animation-delay: .24s; }
+.arSheet .arD32 { animation-delay: .32s; }
+.arSheet .arD35 { animation-delay: .35s; }
+.arSheet .arD50 { animation-delay: .5s; }
+
+/* ---------- Welcome ---------- */
+.arSheet .arWelcome { display: flex; flex-direction: column; height: 100%; }
+.arSheet .arHero { position: relative; height: 320px; flex: none; overflow: hidden; }
+.arSheet .arHeroZoom { position: absolute; inset: 0; transform-origin: center; animation: arHeroZoom .9s var(--ar-ease) both; }
+.arSheet .arHeroImg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; }
+.arSheet .arHeroTop { position: absolute; left: 0; right: 0; top: 0; height: 160px; background: linear-gradient(180deg, oklch(0% 0 0 / .5) 0%, oklch(0% 0 0 / 0) 100%); pointer-events: none; }
+.arSheet .arHeroBlur {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 60%;
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 55%); mask-image: linear-gradient(180deg, transparent 0%, #000 55%);
+  pointer-events: none;
+}
+.arSheet .arHeroShade { position: absolute; inset: 0; background: linear-gradient(180deg, oklch(0% 0 0 / 0) 25%, oklch(0% 0 0 / .6) 60%, oklch(0% 0 0 / .9) 100%); pointer-events: none; }
+.arSheet .arHeroText { position: absolute; left: 20px; right: 20px; bottom: 44px; display: flex; flex-direction: column; gap: 14px; pointer-events: none; }
+.arSheet .arHeroTitle { font-family: var(--ar-font); font-size: 28px; line-height: 34px; font-weight: 500; letter-spacing: -.02em; text-wrap: pretty; color: #fff; }
+.arSheet .arChips { display: flex; flex-wrap: wrap; gap: 8px; }
+.arSheet .arChip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  background: oklch(100% 0 0 / .16);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  font-size: 13px; line-height: 16px; font-weight: 500;
+  color: #fff;
+}
+.arSheet .arChipDoc { gap: 8px; padding: 4px 10px 4px 4px; }
+.arSheet .arChipAv { width: 22px; height: 22px; max-width: none; border-radius: 9999px; object-fit: cover; }
+.arSheet .arPanel {
+  flex: 1; min-height: 0;
+  margin-top: -20px;
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  background: var(--ar-paper);
+  border-radius: 24px 24px 0 0;
+}
+.arSheet .arPanelScroll {
+  flex: 1; min-height: 0;
+  overflow-x: hidden; overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px 20px 32px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--ar-fade), #000 calc(100% - 40px), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 var(--ar-fade), #000 calc(100% - 40px), transparent 100%);
+}
+.arSheet .arIntro { display: flex; flex-direction: column; gap: 8px; padding-bottom: 28px; }
+.arSheet .arIntroP { font-size: 18px; line-height: 24px; color: oklch(var(--ar-ink)); text-wrap: pretty; }
+.arSheet .arDebriefTitle { font-size: 20px; line-height: 26px; font-weight: 500; padding-bottom: 16px; }
+.arSheet .arDebriefList { display: flex; flex-direction: column; padding-top: 4px; }
+.arSheet .arDebriefRow { display: flex; align-items: flex-start; gap: 20px; padding: 18px 24px 18px 0; border-top: .5px solid var(--ar-br3); }
+.arSheet .arDebriefRow:first-child { padding-top: 0; border-top: 0; }
+.arSheet .arDebriefRow:last-child { padding-bottom: 0; }
+.arSheet .arDebriefIcon { width: 48px; height: 48px; border-radius: 9999px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--ar-blue-bg2); color: var(--ar-blue-fg); }
+.arSheet .arDebriefText { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.arSheet .arDebriefName { font-size: 16px; line-height: 22px; font-weight: 500; }
+.arSheet .arDebriefDesc { font-size: 14px; line-height: 19px; color: oklch(var(--ar-ink) / .64); text-wrap: pretty; }
+.arSheet .arIncludes { display: flex; flex-direction: column; gap: 20px; }
+.arSheet .arIncludesTitle { font-size: 17px; line-height: 22px; font-weight: 500; }
+.arSheet .arIncludesList { display: flex; flex-direction: column; }
+.arSheet .arIncludesRow { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: .5px solid var(--ar-br3); }
+.arSheet .arIncludesRow.arFirst { padding: 0 0 12px; border-top: 0; }
+.arSheet .arIncludesName { font-size: 16px; line-height: 22px; }
+
+/* ---------- Summary ---------- */
+.arSheet .arSumCard { display: flex; flex-direction: column; gap: 12px; padding: 4px; border-radius: 24px; background: oklch(var(--ar-ink) / .04); }
+.arSheet .arSumBio { display: flex; flex-direction: column; gap: 16px; padding: 14px 12px 12px; }
+.arSheet .arSumHead { display: flex; justify-content: space-between; align-items: baseline; }
+.arSheet .arSumHeadL { display: flex; align-items: center; gap: 8px; color: oklch(var(--ar-ink)); }
+.arSheet .arSumTitle { font-size: 17px; line-height: 22px; font-weight: 500; }
+.arSheet .arSegBar { display: flex; height: 10px; gap: 2px; }
+.arSheet .arSeg { border-radius: 3px; min-width: 0; }
+.arSheet .arSegOpt { background: var(--ar-opt-fg2); }
+.arSheet .arSegSub { background: var(--ar-sub-fg2); }
+.arSheet .arSegOut { background: var(--ar-out-bg); }
+.arSheet .arCounts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.arSheet .arCount { display: flex; flex-direction: column; gap: 4px; }
+.arSheet .arCountTop { display: flex; align-items: center; gap: 8px; }
+.arSheet .arCountNum { font-size: 18px; line-height: 22px; font-weight: 500; }
+.arSheet .arCountDot { width: 8px; height: 8px; border-radius: 9999px; flex: none; }
+.arSheet .arCountLabel { font-size: 13px; line-height: 18px; color: oklch(var(--ar-ink) / .56); }
+.arSheet .arAgeCard {
+  display: flex; flex-direction: column; gap: 28px;
+  padding: 18px 12px 14px;
+  border-radius: 20px;
+  background: var(--ar-card-invert-bg);
+  box-shadow: 0 0 0 .5px rgba(0, 0, 0, .06), 0 1px 2px 0 rgba(0, 0, 0, .04), 0 2px 4px 0 rgba(0, 0, 0, .04);
+}
+.arSheet .arAgeHead { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 0 4px; }
+.arSheet .arGauge { display: block; width: 100%; height: auto; overflow: visible; }
+.arSheet .arGT0 { stroke: oklch(var(--ar-ink) / .14); }
+.arSheet .arGT1 { stroke: var(--ar-opt-fg2); }
+.arSheet .arGT2 { stroke: oklch(var(--ar-ink)); }
+.arSheet .arGDot { fill: var(--ar-opt-fg2); }
+.arSheet .arGTxtMute { fill: oklch(var(--ar-ink) / .5); font-family: var(--ar-font); }
+.arSheet .arGTxtMain { fill: oklch(var(--ar-ink)); font-family: var(--ar-font); }
+
+/* ---------- Insight ---------- */
+.arSheet .arInsHead { display: flex; flex-direction: column; gap: 12px; }
+.arSheet .arBioCard {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 12px 0 4px;
+  border-radius: calc(var(--ar-radius-card) + 4px);
+  background: var(--ar-card-bg);
+}
+.arSheet .arBioHead { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 16px; }
+.arSheet .arBioHeadL { display: flex; align-items: center; gap: 8px; min-width: 0; }
+
+/* BadgeStatus: neutral, secondary, 2xs */
+.arSheet .arBadge {
+  display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  min-width: 0; max-width: 100%;
+  height: 20px;
+  padding: 0 8px;
+  gap: 4px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-family: var(--ar-font);
+  font-size: 12px; line-height: 14px; font-weight: 570;
+  font-variant-ligatures: no-contextual;
+}
+.arSheet .arBadgeNeutral { color: var(--ar-fg); background: var(--ar-badge-bg); }
+.arSheet .arBadgeText { overflow: hidden; text-overflow: ellipsis; }
+
+.arSheet .arCarNav { display: flex; align-items: center; gap: 6px; flex: none; }
+.arSheet .arCarBtn {
+  appearance: none; -webkit-appearance: none;
+  margin: 0; padding: 0; border: 0; box-shadow: none;
+  font: inherit;
+  box-sizing: border-box;
+  width: 28px; height: 28px; min-width: 0; min-height: 0;
+  border-radius: 9999px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  background: oklch(var(--ar-ink) / .06);
+  color: oklch(var(--ar-ink) / .7);
+}
+.arSheet .arCarBtn:hover { background: oklch(var(--ar-ink) / .1); }
+.arSheet .arCarBtn.arDim { opacity: .35; }
+.arSheet .arCar {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 4px;
+  overscroll-behavior-x: contain;
+  padding: 4px;
+  margin: -4px 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.arSheet .arCar::-webkit-scrollbar { display: none; }
+
+.arSheet .arTCard {
+  flex: 0 0 96%;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+  min-width: 0;
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 14px 14px 12px;
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-card-invert-bg);
+  box-shadow: 0 0 0 .5px rgba(0, 0, 0, .06), 0 1px 2px 0 rgba(0, 0, 0, .04), 0 2px 4px 0 rgba(0, 0, 0, .04);
+}
+.arSheet .arTCard.arSolo { flex-basis: 100%; }
+.arSheet .arTTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.arSheet .arTHead { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.arSheet .arTMeta { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.arSheet .arTValWrap { display: flex; align-items: baseline; gap: 5px; }
+.arSheet .arTVal { font-size: 18px; line-height: 22px; font-weight: 500; letter-spacing: -.01em; }
+.arSheet .arStatus { flex: none; display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border-radius: 9999px; font-size: 12px; line-height: 16px; font-weight: 500; white-space: nowrap; }
+.arSheet .arStOpt { background: var(--ar-opt-bg2); color: var(--ar-opt-fg); }
+.arSheet .arStSub { background: var(--ar-sub-bg2); color: var(--ar-sub-fg); }
+.arSheet .arStOut { background: var(--ar-out-bg2); color: var(--ar-out-fg); }
+.arSheet .arTGrid { display: grid; row-gap: 8px; padding-top: 4px; }
+.arSheet .arTAxis { position: relative; height: 120px; }
+.arSheet .arTTick { position: absolute; left: 0; transform: translateY(-50%); font-size: 11px; line-height: 14px; white-space: nowrap; color: oklch(var(--ar-ink) / .5); }
+.arSheet .arTPlot { position: relative; height: 120px; min-width: 0; }
+.arSheet .arTSvg { display: block; width: 100%; height: 120px; overflow: visible; }
+.arSheet .arTGridLine { stroke: oklch(var(--ar-ink) / .09); }
+.arSheet .arTDot {
+  position: absolute;
+  box-sizing: border-box;
+  width: 10px; height: 10px;
+  border-radius: 9999px;
+  border: 2px solid var(--ar-paper);
+  box-shadow: 0 0 0 .5px oklch(var(--ar-ink) / .08);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.arSheet .arTXAxis { position: relative; height: 14px; }
+.arSheet .arTXLabel { position: absolute; top: 0; transform: translateX(-50%); font-size: 11px; line-height: 14px; white-space: nowrap; color: oklch(var(--ar-ink) / .5); }
+.arSheet .arTXLabel.arTXLast { color: oklch(var(--ar-ink) / .8); }
+
+.arSheet .arMeans { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.arSheet .arMeansHead { display: flex; align-items: center; gap: 9px; }
+.arSheet .arBehind { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
+.arSheet .arGroups { display: flex; flex-direction: column; gap: 22px; }
+.arSheet .arGroup { display: flex; flex-direction: column; gap: 4px; }
+.arSheet .arRows, .arSheet .arRowWrap { display: flex; flex-direction: column; }
+.arSheet .arDivider { height: 1px; background: oklch(var(--ar-ink) / .06); }
+.arSheet .arBRow {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  padding: 14px 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  cursor: default;
+}
+.arSheet .arBRow.arRowCard { padding: 12px; border-radius: 16px; background: oklch(var(--ar-ink) / .04); align-items: center; }
+.arSheet .arBRow.arRowTap { cursor: pointer; }
+.arSheet .arRowL { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.arSheet .arFileTile { width: 40px; height: 40px; flex: none; border-radius: 12px; background: oklch(var(--ar-ink) / .06); display: inline-flex; align-items: center; justify-content: center; }
+.arSheet .arFileA { stroke: oklch(var(--ar-ink) / .7); }
+.arSheet .arFileB { stroke: oklch(var(--ar-ink) / .45); }
+.arSheet .arRowText { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.arSheet .arRowMeta { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.arSheet .arRowR { flex: none; display: flex; align-items: center; gap: 12px; }
+.arSheet .arChev { flex: none; color: oklch(var(--ar-ink) / .45); transition: transform .2s; }
+.arSheet .arChev.arChevOpen { transform: rotate(180deg); }
+.arSheet .arDetail { border-radius: 16px; background: oklch(var(--ar-ink) / .045); padding: 14px 16px; margin: 0 0 14px; }
+
+/* ---------- Everything else ---------- */
+.arSheet .arAccList { display: flex; flex-direction: column; }
+.arSheet .arAcc { display: flex; flex-direction: column; border-bottom: 1px solid oklch(var(--ar-ink) / .08); }
+.arSheet .arAccHead { display: flex; align-items: center; gap: 12px; padding: 16px 0; cursor: pointer; }
+.arSheet .arAccText { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.arSheet .arAccBody { display: flex; flex-direction: column; padding: 0 0 6px; }
+.arSheet .arMk { display: flex; flex-direction: column; }
+.arSheet .arMkRow { width: 100%; box-sizing: border-box; padding: 12px 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.arSheet .arMkL { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.arSheet .arMkR { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.arSheet .arRange { display: block; overflow: visible; }
+.arSheet .arRangePtr { fill: oklch(var(--ar-ink)); }
+.arSheet .arRangeLine { stroke: oklch(var(--ar-ink)); }
+.arSheet .arStateOpt { color: var(--ar-opt-fg); }
+.arSheet .arStateSub { color: var(--ar-sub-fg); }
+.arSheet .arStateOut { color: var(--ar-out-bg); }
+.arSheet .arNote { border-radius: 16px; background: oklch(var(--ar-ink) / .045); padding: 14px 16px; margin: 4px 0 10px; }
+
+/* ---------- Next steps ---------- */
+.arSheet .arHair { height: .5px; background: var(--ar-br3); margin: 20px 0; }
+.arSheet .arQBlock { display: flex; flex-direction: column; gap: 10px; }
+.arSheet .arQTitle { font-size: 17px; line-height: 22px; font-weight: 500; }
+.arSheet .arQList { display: flex; flex-direction: column; gap: 8px; }
+.arSheet .arQRow { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 16px; background: oklch(var(--ar-ink) / .04); cursor: pointer; }
+.arSheet .arEvaAv { width: 40px; height: 40px; border-radius: 9999px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(225deg, #A2C9FF 0%, #FFCBAB 34%, #E0905E 62%, #F27937 100%); }
+.arSheet .arQAv { width: 40px; height: 40px; max-width: none; border-radius: 9999px; object-fit: cover; flex-shrink: 0; }
+.arSheet .arQText { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.arSheet .arQName { font-size: 16px; line-height: 22px; font-weight: 500; }
+.arSheet .arQSub { font-size: 13px; line-height: 18px; color: oklch(var(--ar-ink) / .64); }
+.arSheet .arQChev { color: oklch(var(--ar-ink) / .32); }
+
+/* ---------- reduced motion: no hero zoom, entrances fade without moving ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .arSheet .arHeroZoom { animation: none; }
+  .arSheet .arAnimRise, .arSheet .arAnimRise6, .arSheet .arAnimUp { animation-name: arFade; animation-duration: .2s; }
+  .arSheet .arStepsFill, .arSheet .arChev { transition: none; }
+}
+
+</style>
+<script>
+/*
+ * Async report: the "Bloods & Tests with biomarkers" async debrief, ported from the
+ * prototype export (Async Debrief - Bloods & Tests with biomarkers.dc.html) to plain
+ * browser JS. No framework, no imports, no network, no dynamic code, no HTML-string parsing:
+ * every node is built with createElement / createElementNS and text goes in as textContent.
+ *
+ *   const ar = window.AsyncReport.mount(host, {
+ *     theme: 'light' | 'dark',         // default 'light' (the theme is only the .arDark class)
+ *     welcome: 'cards' | 'includes',   // default 'cards' (the source's welcomeContent prop)
+ *     hero: 'assets/async/hero.webp',
+ *     avatar: 'assets/async/avatar.webp',
+ *     onClose: function () {}          // Close (X) and the final "Done"
+ *   });
+ *   ar.el        the <div class="arSheet"> appended to host
+ *   ar.go(n)     jump to step n (0-11)
+ *   ar.reset()   step 0, scrolled to top, every accordion closed
+ *   ar.destroy() remove it
+ *
+ * Steps (12): 0 Welcome, 1 Summary, 2-9 Insight 1-8, 10 Everything else, 11 Next steps.
+ * Needs async-report.css. The root fills its host and scrolls internally.
+ */
+(function () {
+  'use strict';
+
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var mountSeq = 0;
+
+  // SVG paths, verbatim from the source template
+  var P = {
+    back: "M11 3.5 5.5 9l5.5 5.5",
+    close: "M3 3l10 10M13 3 3 13",
+    cal: "M2 7h12M5.5 1.5v3M10.5 1.5v3",
+    found1: "M3.5 3.5v17h17",
+    found2: "M7 15l4-4 3 3 5.5-6",
+    peace1: "M8.5 14c.8 1.2 2 1.8 3.5 1.8s2.7-.6 3.5-1.8",
+    peace2: "M9 9.5h.01M15 9.5h.01",
+    talk1: "M4 5h11v8H8l-4 3V5Z",
+    talk2: "M15 9h5v10l-3-2.5h-6V13",
+    incSummary: "M15 4H5V20H19V8H15V4ZM3 2.9918C3 2.44405 3.44749 2 3.9985 2H16L20.9997 7L21 20.9925C21 21.5489 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5447 3 21.0082V2.9918ZM12 8V12H16C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8Z",
+    incInsights: "M10.6144 17.7956 11.492 15.7854C12.2731 13.9966 13.6789 12.5726 15.4325 11.7942L17.8482 10.7219C18.6162 10.381 18.6162 9.26368 17.8482 8.92277L15.5079 7.88394C13.7092 7.08552 12.2782 5.60881 11.5105 3.75894L10.6215 1.61673C10.2916.821765 9.19319.821767 8.8633 1.61673L7.97427 3.75892C7.20657 5.60881 5.77553 7.08552 3.97685 7.88394L1.63658 8.92277C.868537 9.26368.868536 10.381 1.63658 10.7219L4.0523 11.7942C5.80589 12.5726 7.21171 13.9966 7.99275 15.7854L8.8704 17.7956C9.20776 18.5682 10.277 18.5682 10.6144 17.7956ZM19.4014 22.6899 19.6482 22.1242C20.0882 21.1156 20.8807 20.3125 21.8695 19.8732L22.6299 19.5353C23.0412 19.3526 23.0412 18.7549 22.6299 18.5722L21.9121 18.2532C20.8978 17.8026 20.0911 16.9698 19.6586 15.9269L19.4052 15.3156C19.2285 14.8896 18.6395 14.8896 18.4628 15.3156L18.2094 15.9269C17.777 16.9698 16.9703 17.8026 15.956 18.2532L15.2381 18.5722C14.8269 18.7549 14.8269 19.3526 15.2381 19.5353L15.9985 19.8732C16.9874 20.3125 17.7798 21.1156 18.2198 22.1242L18.4667 22.6899C18.6473 23.104 19.2207 23.104 19.4014 22.6899Z",
+    incRest: "M10.9999 2.04938L11 5.07088C7.6077 5.55612 5 8.47352 5 12C5 15.866 8.13401 19 12 19C13.5723 19 15.0236 18.4816 16.1922 17.6064L18.3289 19.7428C16.605 21.1536 14.4014 22 12 22C6.47715 22 2 17.5228 2 12C2 6.81468 5.94662 2.55115 10.9999 2.04938ZM21.9506 13.0001C21.7509 15.0111 20.9555 16.8468 19.7433 18.3283L17.6064 16.1922C18.2926 15.2759 18.7595 14.1859 18.9291 13L21.9506 13.0001ZM13.0011 2.04948C17.725 2.51902 21.4815 6.27589 21.9506 10.9999L18.9291 10.9998C18.4905 7.93452 16.0661 5.50992 13.001 5.07103L13.0011 2.04948Z",
+    incRecs: "M17 2H20C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V3C3 2.44772 3.44772 2 4 2H7V0H9V2H15V0H17V2ZM7 8V10H17V8H7ZM7 12V14H17V12H7Z",
+    bio: "M15.1277 1.67229C15.99 1.69936 16.8111 1.96289 17.4234 2.57805L17.4226 2.57805C18.0363 3.19017 18.2997 4.01003 18.3268 4.87135C18.3536 5.7276 18.1516 6.67207 17.7872 7.63502C17.4988 8.39712 17.0988 9.19372 16.6015 9.99993C17.0987 10.8059 17.4989 11.6021 17.7872 12.364C18.1516 13.327 18.3536 14.2715 18.3268 15.1277C18.2997 15.9888 18.0359 16.8073 17.4226 17.4194L17.4234 17.4202C16.811 18.0356 15.9902 18.2997 15.1277 18.3268C14.2715 18.3536 13.3269 18.1516 12.364 17.7872C11.6021 17.4989 10.8059 17.0987 9.99994 16.6015C9.19376 17.0988 8.39709 17.4988 7.63503 17.7872C6.67212 18.1516 5.72757 18.3536 4.87135 18.3268C4.01007 18.2997 3.19016 18.0363 2.57806 17.4226L2.57806 17.4234C1.9629 16.8111 1.69937 15.99 1.6723 15.1277C1.64547 14.2715 1.84747 13.327 2.21185 12.364C2.50017 11.6021 2.90042 10.8059 3.39756 9.99993C2.90032 9.19381 2.5002 8.39703 2.21185 7.63503C1.84751 6.67214 1.64547 5.72755 1.67229 4.87135C1.6994 4.00905 1.96286 3.18796 2.57806 2.57561C3.19012 1.96215 4.01021 1.69938 4.87135 1.67229C5.72753 1.64547 6.67216 1.84752 7.63503 2.21184C8.39687 2.50014 9.19328 2.90042 9.99912 3.39755C10.8053 2.90024 11.6019 2.50024 12.364 2.21184C13.3269 1.84748 14.2715 1.64549 15.1277 1.67229ZM4.44248 11.5152C4.17014 12.0119 3.94433 12.4941 3.77028 12.954C3.45568 13.7855 3.32029 14.5053 3.33815 15.0756C3.35366 15.5692 3.4808 15.9136 3.66937 16.1482L3.754 16.2418L3.75644 16.2451C3.98981 16.4796 4.35929 16.6431 4.92344 16.6609C5.4938 16.6788 6.21353 16.5434 7.04502 16.2288C7.50494 16.0547 7.98723 15.8289 8.48382 15.5566C7.75328 14.9997 7.02737 14.3697 6.32806 13.6734L6.32562 13.671C5.62931 12.9716 4.99943 12.2459 4.44248 11.5152ZM15.5566 11.5152C14.9996 12.2459 14.3698 12.9716 13.6734 13.671L13.671 13.6734C12.9715 14.3699 12.246 15.0004 11.5152 15.5574C12.0117 15.8297 12.4942 16.0547 12.954 16.2288C13.7854 16.5433 14.5053 16.6788 15.0756 16.6609C15.6397 16.6432 16.0084 16.4795 16.2418 16.2451L16.2451 16.2418C16.4795 16.0084 16.6432 15.6397 16.6609 15.0756C16.6788 14.5053 16.5434 13.7855 16.2288 12.954C16.0547 12.4941 15.8289 12.0119 15.5566 11.5152ZM9.99912 5.39544C9.1669 5.98519 8.3219 6.69216 7.504 7.50644C6.69073 8.3236 5.98461 9.16771 5.39544 9.99912C5.98467 10.8307 6.69053 11.6752 7.504 12.4926L7.84824 12.8271C8.55793 13.5021 9.28447 14.096 10.0008 14.6036C10.8328 14.0139 11.6773 13.3068 12.4951 12.4926C13.3085 11.6753 14.0144 10.8307 14.6036 9.99912C14.0145 9.16778 13.3082 8.32351 12.4951 7.50644L12.1508 7.17197C11.4412 6.49696 10.7153 5.90299 9.99912 5.39544ZM9.99994 8.33327C10.9203 8.33338 11.6666 9.07953 11.6666 9.99993C11.6665 10.9203 10.9203 11.6665 9.99994 11.6666C9.07953 11.6666 8.33338 10.9203 8.33327 9.99993C8.33327 9.07946 9.07946 8.33327 9.99994 8.33327ZM4.92344 3.33815C4.35928 3.35591 3.98981 3.51948 3.75644 3.754L3.754 3.75644C3.5195 3.98983 3.3559 4.35926 3.33815 4.92343C3.32026 5.49379 3.45569 6.21353 3.77028 7.04502C3.94423 7.50471 4.17036 7.98669 4.44248 8.48301C4.99934 7.75255 5.62947 7.02729 6.32562 6.32806L6.32806 6.32562C7.02756 5.6292 7.75308 4.99868 8.48382 4.44166C7.98744 4.16945 7.50479 3.94426 7.04502 3.77028C6.21356 3.4557 5.49378 3.32026 4.92344 3.33815ZM15.0756 3.33815C14.5053 3.3203 13.7855 3.4557 12.954 3.77027C12.4944 3.94422 12.0123 4.16956 11.5161 4.44166C12.1188 4.90124 12.7177 5.41122 13.3015 5.96673L13.671 6.32561L13.6734 6.32806C14.3695 7.02721 14.9998 7.75263 15.5566 8.48301C15.8288 7.98659 16.0548 7.50478 16.2288 7.04502C16.5434 6.21348 16.6788 5.49382 16.6609 4.92343C16.6432 4.35923 16.4796 3.98982 16.2451 3.75644L16.2418 3.754C16.0084 3.51964 15.6396 3.35587 15.0756 3.33815Z",
+    prev: "M10 3 5 8l5 5",
+    next: "m6 3 5 5-5 5",
+    spark1: "M9.62122 3.11719C9.62122 3.11719 9.98984 6.18466 11.9316 8.01852C13.8733 9.85238 17.1212 10.2005 17.1212 10.2005C17.1212 10.2005 13.8733 10.5487 11.9316 12.3825C9.98984 14.2164 9.62122 17.2839 9.62122 17.2839C9.62122 17.2839 9.25259 14.2164 7.31086 12.3825C5.36912 10.5487 2.12122 10.2005 2.12122 10.2005C2.12122 10.2005 5.36912 9.85238 7.31086 8.01852C9.25259 6.18466 9.62122 3.11719 9.62122 3.11719Z",
+    spark2: "M15.0379 0.453125C15.0379 0.453125 15.158 1.98435 15.7907 2.61702C16.4233 3.24969 17.9545 3.36979 17.9545 3.36979C17.9545 3.4899 16.4233 3.4899 15.7907 4.12257C15.158 4.75523 15.0379 6.28646 15.0379 6.28646C15.0379 6.28646 14.9178 4.75523 14.2851 4.12257C13.6524 3.4899 12.1212 3.36979 12.1212 3.36979C12.1212 3.36979 13.6524 3.24969 14.2851 2.61702C14.9178 1.98435 15.0379 0.453125 15.0379 0.453125Z",
+    file1: "M5 2.5h6.5L16 7v10.5H5z",
+    file2: "M11.5 2.5V7H16",
+    file3: "M7.5 11.5h5M7.5 14.5h3.5",
+    chev: "M4 6l4 4 4-4"
+  };
+
+  // Biological-age gauge ticks [x1, y1, x2, y2, kind]: 0 muted, 1 optimal arc, 2 chronological marker
+  var GAUGE = [[11.2,66.9,6,58.4,0],[18.2,62.8,13.2,54.1,0],[25.3,58.9,20.6,50.1,0],[32.5,55.3,28.1,46.3,0],[39.8,51.8,35.8,42.7,0],[47.3,48.6,43.5,39.4,0],[54.8,45.7,51.3,36.3,0],[62.5,43,59.3,33.5,0],[70.2,40.5,67.3,31,0],[79.2,43.2,75.4,28.7,1],[86.5,39.3,83.6,26.7,1],[94.3,37.6,91.8,24.9,1],[102.2,36.2,100.1,23.4,1],[110.1,35.1,108.4,22.2,1],[118,34.2,116.8,21.2,1],[126,33.5,125.2,20.5,1],[134,33.1,133.6,20.1,1],[142,33,142,16,2],[150.1,30.1,150.4,20.1,0],[158.2,30.5,158.8,20.5,0],[166.2,31.2,167.2,21.2,0],[174.3,32.1,175.6,22.2,0],[182.3,33.3,183.9,23.4,0],[190.3,34.7,192.2,24.9,0],[198.2,36.4,200.4,26.7,0],[206,38.3,208.6,28.7,0],[213.8,40.5,216.7,31,0],[221.5,43,224.7,33.5,0],[229.2,45.7,232.7,36.3,0],[236.7,48.6,240.5,39.4,0],[244.2,51.8,248.2,42.7,0],[251.5,55.3,255.9,46.3,0],[258.7,58.9,263.4,50.1,0],[265.8,62.8,270.8,54.1,0],[272.8,66.9,278,58.4,0]];
+
+  /* ---------- data (verbatim from the source's logic block) ---------- */
+
+  // Trend series per insight. The source labels this "placeholder history, replace with real longitudinal data".
+  var D = ['Oct 24', 'Mar 25', 'Sep 25', 'Apr 26'];
+  var SERIES = {
+    'ApoB': { unit: 'g/L', optimal: [0, 0.8], warn: [0.8, 1.0], axis: [0.5, 1.2], points: [[D[1], 0.88], [D[2], 0.92], [D[3], 0.96]] },
+    'LDL cholesterol': { unit: 'mmol/L', optimal: [0, 2.0], warn: [2.0, 2.6], axis: [1.5, 3.8], points: [[D[0], 2.9], [D[1], 3.1], [D[2], 3.0], [D[3], 3.3]] },
+    'Non-HDL cholesterol': { unit: 'mmol/L', optimal: [0, 2.6], warn: [2.6, 3.3], axis: [2.0, 4.6], points: [[D[0], 3.7], [D[1], 3.9], [D[2], 3.9], [D[3], 4.2]] },
+    'HDL cholesterol': { unit: 'mmol/L', optimal: [1.5, 3.0], warn: [1.3, 1.5], axis: [0.8, 2.0], points: [[D[1], 1.3], [D[2], 1.25], [D[3], 1.2]] },
+    'Triglycerides': { unit: 'mmol/L', optimal: [0, 1.0], warn: [1.0, 1.7], axis: [0.5, 2.4], points: [[D[0], 1.4], [D[1], 1.7], [D[2], 1.8], [D[3], 2.0]] },
+    'Lp(a)': { unit: 'g/L', optimal: [0, 0.3], warn: [0.3, 0.5], axis: [0, 0.6], points: [[D[3], 0.046]] },
+    'Fasting insulin': { unit: 'mU/L', optimal: [2, 6], warn: [6, 9], axis: [2, 14], points: [[D[1], 7.9], [D[2], 9.6], [D[3], 11.8]] },
+    'HOMA-IR': { unit: '', optimal: [0.5, 1.4], warn: [1.4, 2.0], axis: [0.5, 3.2], points: [[D[1], 1.8], [D[2], 2.2], [D[3], 2.83]] },
+    'Fasting glucose': { unit: 'mmol/L', optimal: [4.0, 5.4], warn: [5.4, 6.0], axis: [3.8, 6.2], points: [[D[1], 5.0], [D[2], 5.0], [D[3], 5.1]] },
+    'HbA1c': { unit: '%', optimal: [4.5, 5.5], warn: [5.5, 5.9], axis: [4.4, 6.2], points: [[D[1], 5.3], [D[2], 5.3], [D[3], 5.4]] },
+    'Transferrin saturation': { unit: '%', optimal: [20, 50], warn: [16, 20], axis: [10, 55], points: [[D[1], 26], [D[2], 22], [D[3], 17]] },
+    'Ferritin': { unit: '\u00b5g/L', optimal: [50, 200], warn: [30, 50], axis: [20, 220], points: [[D[1], 132], [D[2], 124], [D[3], 119]] },
+    'Iron': { unit: '\u00b5mol/L', optimal: [12, 28], warn: [9, 12], axis: [5, 30], points: [[D[1], 18], [D[2], 17], [D[3], 16]] },
+    'Haemoglobin': { unit: 'g/L', optimal: [135, 175], warn: [125, 135], axis: [120, 180], points: [[D[0], 150], [D[1], 153], [D[2], 151], [D[3], 152]] },
+    'MCV': { unit: 'fL', optimal: [82, 98], warn: [78, 82], axis: [75, 100], points: [[D[0], 90], [D[1], 89], [D[2], 90], [D[3], 89]] },
+    'Magnesium': { unit: 'mmol/L', optimal: [0.85, 1.05], warn: [0.75, 0.85], axis: [0.7, 1.1], points: [[D[1], 0.87], [D[2], 0.84], [D[3], 0.83]] },
+    'Calcium': { unit: 'mmol/L', optimal: [2.35, 2.55], warn: [2.2, 2.35], axis: [2.1, 2.7], points: [[D[2], 2.34], [D[3], 2.32]] },
+    'Vitamin D': { unit: 'nmol/L', optimal: [60, 150], warn: [50, 60], axis: [30, 160], points: [[D[1], 58], [D[2], 64], [D[3], 69]] },
+    'Homocysteine': { unit: '\u00b5mol/L', optimal: [5, 10], warn: [10, 15], axis: [4, 17], points: [[D[2], 10], [D[3], 13]] },
+    'Vitamin B12': { unit: 'pmol/L', optimal: [300, 700], warn: [200, 300], axis: [150, 750], points: [[D[1], 440], [D[2], 462], [D[3], 475]] },
+    'Creatinine': { unit: '\u00b5mol/L', optimal: [60, 100], warn: [100, 110], axis: [50, 120], points: [[D[0], 98], [D[1], 102], [D[2], 101], [D[3], 104]] },
+    'eGFR': { unit: 'mL/min', optimal: [90, 130], warn: [80, 90], axis: [70, 130], points: [[D[0], 96], [D[1], 94], [D[2], 95], [D[3], 92]] },
+    'Urea': { unit: 'mmol/L', optimal: [3, 7], warn: [7, 8.5], axis: [2, 9], points: [[D[1], 5.8], [D[2], 6.2], [D[3], 6.0]] },
+    'MCHC': { unit: 'g/L', optimal: [320, 360], warn: [300, 320], axis: [290, 370], points: [[D[0], 317], [D[1], 319], [D[2], 318], [D[3], 318]] },
+    'White cell count': { unit: '\u00d710\u2079/L', optimal: [4.0, 10.0], warn: [3.0, 4.0], axis: [2, 11], points: [[D[3], 3.3]] },
+    'Neutrophils': { unit: '\u00d710\u2079/L', optimal: [1.8, 7.0], warn: [1.5, 1.8], axis: [1, 8], points: [[D[3], 1.9]] },
+    'Lymphocytes': { unit: '\u00d710\u2079/L', optimal: [1.0, 4.0], warn: [0.8, 1.0], axis: [0.5, 4.5], points: [[D[3], 1.1]] }
+  };
+
+  // The eight insights. Only the fields the source template renders are kept:
+  // headline, signals (the carousel's markers), found, why, goals/family/medications and reportTitle.
+  var INSIGHTS = [
+    {
+      headline: 'Your ApoB, LDL, non-HDL and triglycerides all point the same way.',
+      signals: ['ApoB', 'LDL cholesterol', 'Non-HDL cholesterol', 'HDL cholesterol', 'Triglycerides', 'Lp(a)'],
+      found: 'High ApoB, LDL and non-HDL, low HDL and high triglycerides. Together they mean more plaque-forming particles in your blood than we want \u2014 and with your father\'s heart attack and your mother\'s coronary disease, that carries extra weight.',
+      why: 'Diet is the biggest lever: saturated fat pushes ApoB and LDL up, refined carbs and alcohol push triglycerides up. Your low HDL and high triglycerides also fit the insulin pattern in the next insight.',
+      family: [{ label: 'Father', detail: 'Myocardial infarction' }, { label: 'Mother', detail: 'Coronary atherosclerosis' }, { label: 'Brother', detail: 'Obstructive sleep apnoea \u00b7 MI 40' }],
+      medications: [{ label: 'Metamucil (psyllium)', detail: 'Daily \u00b7 soluble fibre' }],
+      reportTitle: 'Advanced lipid panel'
+    },
+    {
+      headline: 'Your insulin is up while your glucose still reads normal \u2014 early insulin resistance.',
+      signals: ['Fasting insulin', 'HOMA-IR', 'Triglycerides', 'HDL cholesterol', 'Fasting glucose', 'HbA1c'],
+      found: 'Your body is making extra insulin to keep blood sugar normal. Glucose and HbA1c look fine, but fasting insulin and HOMA-IR show the compensation is already underway.',
+      why: 'Refined carbohydrate, alcohol and less muscle activity are the usual drivers. Your high triglycerides and TG/HDL ratio point the same way.',
+      goals: [{ label: 'Run 5 km', plan: 'Pending your approval', detail: 'Good news for this one \u2014 the aerobic base you build training for it is the same thing that restores insulin sensitivity.' }],
+      family: [{ label: 'Father', detail: 'Myocardial infarction' }, { label: 'Mother', detail: 'Coronary atherosclerosis' }]
+    },
+    {
+      headline: 'Normal ferritin with low transferrin saturation \u2014 these usually move together.',
+      signals: ['Transferrin saturation', 'Ferritin', 'Iron', 'Haemoglobin', 'MCV'],
+      found: 'Transferrin saturation is 17%, newly out of range this cycle. Your haemoglobin and red cells are normal, so it has not affected oxygen carrying yet.',
+      why: 'Usually dietary iron intake or how well your gut absorbs it, rather than a problem with stores. Worth understanding before it becomes one.',
+      goals: [{ label: 'Run 5 km', plan: 'Pending your approval', detail: 'Iron is how oxygen gets to working muscle. Low saturation is worth fixing before it shows up as slower recovery on runs.' }],
+      reportTitle: 'Iron studies'
+    },
+    {
+      headline: 'Your magnesium is slightly low.',
+      signals: ['Magnesium', 'Calcium', 'Vitamin D'],
+      found: 'Magnesium is 0.83 mmol/L, just under optimal. Your vitamin D, zinc and B12 are all optimal, so this is the only nutrient gap.',
+      why: 'Almost always diet \u2014 it is easy to fall short if leafy greens, nuts, seeds and whole grains are not a daily thing.',
+      goals: [{ label: 'Run 5 km', plan: 'Pending your approval', detail: 'Magnesium is used in muscle contraction and recovery \u2014 a small deficit is felt sooner once training volume goes up.' }]
+    },
+    {
+      headline: 'Homocysteine is a little high \u2014 a B-vitamin signal, not a heart one yet.',
+      signals: ['Homocysteine', 'Vitamin B12'],
+      found: 'Homocysteine is 13 \u00b5mol/L, up from 10 last cycle. It rises when folate, B12 or B6 are not being used well. Your B12 is optimal, so folate or B6 is the more likely gap.',
+      why: 'Usually diet \u2014 leafy greens and legumes for folate \u2014 or a common MTHFR variant that slows folate processing. Elevated homocysteine over years adds to arterial risk, which matters with your family history.',
+      family: [{ label: 'Father', detail: 'Myocardial infarction' }]
+    },
+    {
+      headline: 'Creatinine runs high-normal \u2014 your protein intake, not your kidneys.',
+      signals: ['Creatinine', 'eGFR', 'Urea'],
+      found: 'Creatinine has been high-normal across three cycles. eGFR \u2014 the better measure of how well your kidneys filter \u2014 is optimal every time, and urea is normal.',
+      why: 'Creatinine is a by-product of muscle turnover. High protein intake and regular strength work push it up without meaning anything is wrong. We flag it so it does not surprise you elsewhere.',
+      medications: [{ label: 'Whey protein', detail: 'Daily \u00b7 ~40 g' }]
+    },
+    {
+      headline: 'MCHC has sat just under range for four cycles \u2014 most likely your normal.',
+      signals: ['MCHC', 'Haemoglobin', 'MCV'],
+      found: 'MCHC \u2014 how packed with haemoglobin each red cell is \u2014 reads 318 g/L, a fraction under the 320 cut-off. It has been almost exactly there every cycle since 2024.',
+      why: 'A stable, slightly-low MCHC with normal haemoglobin, MCV and iron stores is very likely your individual baseline rather than a developing problem. We keep watching it alongside the iron picture in insight 3.'
+    },
+    {
+      headline: 'White cell count is on the low side \u2014 one reading, so we wait for the next.',
+      signals: ['White cell count', 'Neutrophils', 'Lymphocytes'],
+      found: 'White cells are 3.3, just under the 4.0 lower bound. This is the first time we have measured it for you, so there is no trend to read yet.',
+      why: 'Mildly low white cells are common in healthy people, especially after a recent viral illness or with certain ancestries. All five sub-types are in proportion, which is reassuring.'
+    }
+  ];
+
+  var ok = function (name, value) { return { name: name, value: value, status: 'Optimal' }; };
+  var sub = function (name, value) { return { name: name, value: value, status: 'Suboptimal' }; };
+  var PANELS = [
+    { name: 'Advanced heart markers', markers: [ok('Lp(a)', '0.046 g/L'), ok('hs-CRP', '1 mg/L'), sub('Total cholesterol', '5.4 mmol/L')], note: 'Lp(a) is the genetic risk marker \u2014 yours is optimal. Total cholesterol is covered in insight 1.' },
+    { name: 'Inflammation', markers: [ok('hs-CRP', '1 mg/L'), ok('ESR', '2 mm/hr'), sub('Homocysteine', '13 \u00b5mol/L')], note: 'Homocysteine is a little high; your plan already has a micronutrient goal for it.' },
+    { name: 'Kidney & electrolytes', markers: [sub('Creatinine', 'High-normal'), ok('eGFR', '>90'), ok('Urea', '6 mmol/L'), ok('Sodium', '140 mmol/L'), ok('Potassium', '3.8 mmol/L')], note: 'Creatinine runs high on 40 g of protein a day. eGFR is optimal, so your kidneys are filtering well.' },
+    { name: 'Liver', markers: [ok('ALT', '20 IU/L'), ok('AST', '20 IU/L'), ok('Bilirubin', '7 \u00b5mol/L'), ok('GGT', 'Optimal'), ok('ALP', 'Optimal'), ok('Albumin', 'Optimal')] },
+    { name: 'Blood count', markers: [ok('Haemoglobin', '152 g/L'), ok('White cells', '3.3 \u00d710\u2079/L'), ok('Platelets', '236 \u00d710\u2079/L'), sub('MCHC', 'Slightly low')], note: 'MCHC has been slightly low for several cycles \u2014 most likely your normal baseline.' },
+    { name: 'Thyroid', markers: [ok('TSH', '2.11 mIU/L'), ok('Free T3', '5 pmol/L')] },
+    { name: 'Hormones', markers: [ok('Testosterone', '18.9 nmol/L'), ok('Free testosterone', '458 pmol/L'), ok('SHBG', '26 nmol/L'), ok('DHEA-S', '11.2 \u00b5mol/L'), ok('LH', '4.9 IU/L'), ok('FSH', '5.6 IU/L')] },
+    { name: 'Cancer markers', markers: [ok('PSA', '0.52 \u00b5g/L')], note: 'A useful baseline. Skin checks every 1\u20132 years and bowel screening from 45 round out the picture.' },
+    { name: 'Vitamins', markers: [ok('Vitamin D', '69 nmol/L'), ok('Vitamin B12', '475 pmol/L'), ok('Zinc', '10 \u00b5mol/L')] },
+    { name: 'Blood electrolytes', markers: [sub('Calcium', '2.32 mmol/L')], note: 'A fraction under optimal \u2014 nothing to act on.' },
+    { name: 'Harmful metals', markers: [ok('Lead', '2.3 \u00b5g/dL'), ok('Mercury', '<5 nmol/L')] },
+    { name: 'Environmental allergens', markers: [ok('Dust mite', '0.1 kU/L'), ok('Rye grass', '0 kU/L'), ok('Cat dander', '0 kU/L'), ok('Alternaria mould', '0 kU/L')], note: 'No sensitisation found. This panel does not cover food or drug allergies.' }
+  ];
+
+  var CLASS_SPEC = [['goals', 'Goals'], ['family', 'Family history'], ['symptoms', 'Symptoms'], ['conditions', 'Medical conditions'], ['medications', 'Medications & Supplements'], ['wearables', 'Wearables']];
+
+  var N_INS = INSIGHTS.length;              // 8
+  var STEP_COUNT = N_INS + 4;               // 12
+  var FIRST = 2, REST = N_INS + 2, NEXT = N_INS + 3;
+
+  // status -> colour tokens (see async-report.css)
+  var LINE = { 'Optimal': 'var(--ar-opt-bg)', 'Suboptimal': 'var(--ar-sub-bg)', 'Out of range': 'var(--ar-out-bg)' };
+  var STATUS_CLASS = { 'Optimal': 'arStOpt', 'Suboptimal': 'arStSub', 'Out of range': 'arStOut' };
+  var STATE_CLASS = { 'Optimal': 'arStateOpt', 'Suboptimal': 'arStateSub', 'Out of range': 'arStateOut' };
+  var POS = { 'Optimal': 20, 'Suboptimal': 55, 'Out of range': 86 };
+
+  /* ---------- DOM helpers ---------- */
+
+  function add(node, kids) {
+    for (var i = 0; i < kids.length; i++) {
+      var k = kids[i];
+      if (k == null || k === false) continue;
+      if (Array.isArray(k)) add(node, k);
+      else node.appendChild(typeof k === 'string' || typeof k === 'number' ? document.createTextNode(String(k)) : k);
+    }
+    return node;
+  }
+  function setProps(n, p) {
+    if (!p) return;
+    for (var k in p) {
+      var v = p[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') n.setAttribute('class', v);
+      else if (k === 'style') { for (var sk in v) n.style.setProperty(sk, v[sk]); }
+      else if (k === 'text') n.textContent = v;
+      else if (k === 'hidden') n.hidden = true;
+      else n.setAttribute(k, v === true ? '' : String(v));
+    }
+  }
+  function h(tag, p) {
+    var n = document.createElement(tag);
+    setProps(n, p);
+    return add(n, Array.prototype.slice.call(arguments, 2));
+  }
+  function s(tag, p) {
+    var n = document.createElementNS(SVGNS, tag);
+    setProps(n, p);
+    return add(n, Array.prototype.slice.call(arguments, 2));
+  }
+  function on(node, type, fn, opt) { node.addEventListener(type, fn, opt || false); return node; }
+  function reducedMotion() {
+    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; }
+  }
+
+  /* ---------- icons ---------- */
+
+  function strokeIcon(size, vb, sw, paths, cls) {
+    return s('svg', { class: 'arIco' + (cls ? ' ' + cls : ''), width: size, height: size, viewBox: '0 0 ' + vb + ' ' + vb, fill: 'none', stroke: 'currentColor', 'stroke-width': sw, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' },
+      paths.map(function (d) { return s('path', { d: d }); }));
+  }
+  function fillIcon(size, vb, d) {
+    return s('svg', { class: 'arIco', width: size, height: size, viewBox: vb, fill: 'currentColor', 'aria-hidden': 'true', focusable: 'false' }, s('path', { d: d }));
+  }
+  function chevIcon() {
+    return s('svg', { class: 'arIco arChevIco', width: 16, height: 16, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' }, s('path', { d: P.chev }));
+  }
+  function sparkIcon(fill, defs) {
+    return s('svg', { class: 'arIco', width: 20, height: 20, viewBox: '0 0 20 20', fill: 'none', 'aria-hidden': 'true', focusable: 'false' },
+      defs || null, s('path', { d: P.spark1, fill: fill }), s('path', { d: P.spark2, fill: fill }));
+  }
+  function sparkGradientIcon(id) {
+    var defs = s('defs', null, s('linearGradient', { id: id, x1: 0, y1: 1, x2: 1, y2: 0 },
+      s('stop', { offset: '0%', 'stop-color': '#F27937' }), s('stop', { offset: '38%', 'stop-color': '#E0905E' }),
+      s('stop', { offset: '66%', 'stop-color': '#FFCBAB' }), s('stop', { offset: '100%', 'stop-color': '#A2C9FF' })));
+    return sparkIcon('url(#' + id + ')', defs);
+  }
+  function fileIcon() {
+    return s('svg', { class: 'arIco', width: 18, height: 18, viewBox: '0 0 20 20', fill: 'none', 'aria-hidden': 'true', focusable: 'false' },
+      s('path', { class: 'arFileA', d: P.file1, fill: 'none', 'stroke-width': 1.4, 'stroke-linejoin': 'round' }),
+      s('path', { class: 'arFileA', d: P.file2, fill: 'none', 'stroke-width': 1.4, 'stroke-linejoin': 'round' }),
+      s('path', { class: 'arFileB', d: P.file3, 'stroke-width': 1.4, 'stroke-linecap': 'round' }));
+  }
+
+  /* ---------- design-system stand-ins ---------- */
+
+  // BadgeStatus, appearance neutral, emphasis secondary, size 2xs
+  function badge(text) {
+    return h('span', { class: 'arBadge arBadgeNeutral' }, h('span', { class: 'arBadgeText', text: text }));
+  }
+
+  // FlowStepIndicator (stepsCount n, activeStepIndex i, activeStepProgress 0)
+  function stepIndicator(n) {
+    var el = h('div', { class: 'arSteps', role: 'progressbar', 'aria-valuemin': 1, 'aria-valuemax': n });
+    var fill = h('div', { class: 'arStepsFill', 'aria-hidden': 'true' });
+    for (var i = 0; i < n; i++) {
+      el.appendChild(h('div', { class: 'arStepsBar arStepsBase' }));
+      fill.appendChild(h('div', { class: 'arStepsBar' }));
+    }
+    el.appendChild(fill);
+    return {
+      el: el,
+      set: function (i) {
+        el.setAttribute('aria-valuenow', String(i + 1));
+        el.setAttribute('aria-valuetext', 'Step ' + (i + 1) + ' of ' + n);
+        var px = i * 4 + (i < n - 1 ? 2 : 0);
+        fill.style.clipPath = 'inset(0 calc(100% - (' + i + ' * ((100% - ' + ((n - 1) * 4) + 'px) / ' + n + ') + ' + px + 'px)) 0 0)';
+      }
+    };
+  }
+
+  /* ---------- trend cards (port of buildCards) ---------- */
+
+  function statusOf(sr, v) {
+    return (v >= sr.optimal[0] && v <= sr.optimal[1]) ? 'Optimal' : (v >= sr.warn[0] && v <= sr.warn[1]) ? 'Suboptimal' : 'Out of range';
+  }
+
+  function buildCards(names) {
+    var list = names.map(function (n) { return SERIES[n] ? Object.assign({ name: n }, SERIES[n]) : null; }).filter(Boolean);
+    var INSET = 6;
+    var fmt = function (v) { return String(v); };
+    return list.map(function (sr) {
+      var lo = sr.axis[0], hi = sr.axis[1];
+      var y = function (v) { return ((hi - Math.min(Math.max(v, lo), hi)) / (hi - lo)) * 100; };
+      var n = sr.points.length, single = n === 1;
+      var x = function (i) { return single ? 100 - INSET : INSET + (i / (n - 1)) * (100 - 2 * INSET); };
+      var pts = sr.points.map(function (p, i) { return { d: p[0], v: p[1], x: x(i), y: y(p[1]), st: statusOf(sr, p[1]) }; });
+      var last = pts[n - 1];
+      var path = '';
+      if (n > 1) {
+        path = 'M' + pts[0].x.toFixed(2) + ' ' + pts[0].y.toFixed(2);
+        for (var i = 0; i < n - 1; i++) {
+          var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+          var c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6, c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+          path += ' C' + c1x.toFixed(2) + ' ' + c1y.toFixed(2) + ' ' + c2x.toFixed(2) + ' ' + c2y.toFixed(2) + ' ' + p2.x.toFixed(2) + ' ' + p2.y.toFixed(2);
+        }
+      }
+      // zones in value space: optimal, warn, everything else out of range
+      var seen = {};
+      var edges = [sr.optimal[0], sr.optimal[1], sr.warn[0], sr.warn[1]]
+        .filter(function (e) { if (seen[e]) return false; seen[e] = 1; return e > lo && e < hi; })
+        .sort(function (a, b) { return a - b; });
+      var bounds = [lo].concat(edges, [hi]);
+      var stops = [];
+      for (var b = bounds.length - 1; b > 0; b--) {
+        var from = bounds[b - 1], to = bounds[b], col = LINE[statusOf(sr, (from + to) / 2)];
+        stops.push({ offset: (y(to) / 100).toFixed(3), color: col }, { offset: (y(from) / 100).toFixed(3), color: col });
+      }
+      var ticks = edges.map(function (e) { return { y: y(e).toFixed(2), pct: y(e).toFixed(2) + '%', label: fmt(e) }; });
+      var axisW = Math.max.apply(null, [3].concat(ticks.map(function (t) { return t.label.length; }))) * 7 + 6 + 'px';
+      return {
+        name: sr.name, unit: sr.unit, value: fmt(last.v), date: last.d.replace(' ', ' 20'), status: last.st,
+        solo: list.length === 1, multi: !single, path: path, stops: stops, ticks: ticks, axisW: axisW,
+        cols: pts.map(function (p, i) { return { x: p.x.toFixed(2), pct: p.x.toFixed(2) + '%', label: p.d, last: i === n - 1 }; }),
+        dots: pts.map(function (p) { return { left: p.x.toFixed(2) + '%', top: p.y.toFixed(2) + '%', fill: LINE[p.st] }; })
+      };
+    });
+  }
+
+  function trendCard(c, gradId) {
+    var plot = s('svg', { class: 'arTSvg', viewBox: '0 0 100 100', preserveAspectRatio: 'none', width: '100%', height: 120, 'aria-hidden': 'true', focusable: 'false' },
+      s('defs', null, s('linearGradient', { id: gradId, gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 0, y2: 100 },
+        c.stops.map(function (st) { return s('stop', { offset: st.offset, style: { 'stop-color': st.color } }); }))),
+      c.ticks.map(function (t) { return s('line', { class: 'arTGridLine', x1: 0, x2: 100, y1: t.y, y2: t.y, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }); }),
+      c.cols.map(function (k) { return s('line', { class: 'arTGridLine', x1: k.x, x2: k.x, y1: 0, y2: 100, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }); }),
+      c.multi ? s('path', { d: c.path, fill: 'none', stroke: 'url(#' + gradId + ')', 'stroke-width': 2.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' }) : null);
+
+    return h('div', { class: 'arTCard' + (c.solo ? ' arSolo' : '') },
+      h('div', { class: 'arTTop' },
+        h('div', { class: 'arTHead' },
+          h('span', { class: 'arT200m arPretty', text: c.name }),
+          h('div', { class: 'arTMeta' },
+            h('div', { class: 'arTValWrap' }, h('span', { class: 'arTVal', text: c.value }), h('span', { class: 'arT200r arInk50', text: c.unit })),
+            h('span', { class: 'arT200r arInk30', text: '|' }),
+            h('span', { class: 'arT200r arInk50', text: c.date }))),
+        h('div', { class: 'arStatus ' + STATUS_CLASS[c.status], text: c.status })),
+      h('div', { class: 'arTGrid', style: { 'grid-template-columns': c.axisW + ' minmax(0,1fr)' } },
+        h('div', { class: 'arTAxis' }, c.ticks.map(function (t) { return h('div', { class: 'arTTick', style: { top: t.pct }, text: t.label }); })),
+        h('div', { class: 'arTPlot' }, plot,
+          c.dots.map(function (d) { return h('div', { class: 'arTDot', style: { left: d.left, top: d.top, background: d.fill } }); })),
+        h('div', null),
+        h('div', { class: 'arTXAxis' }, c.cols.map(function (k) { return h('div', { class: 'arTXLabel' + (k.last ? ' arTXLast' : ''), style: { left: k.pct }, text: k.label }); }))));
+  }
+
+  // The 0-150 range bar used by "Everything else" marker rows
+  function rangeBar(pos) {
+    var px = 8 + (pos / 100) * 138;
+    return s('svg', { class: 'arRange', width: 110, height: 22, viewBox: '0 0 150 22', 'aria-hidden': 'true', focusable: 'false' },
+      s('rect', { x: 8, y: 12, width: 58, height: 6, rx: 3, fill: '#5FCB84' }),
+      s('rect', { x: 70, y: 12, width: 36, height: 6, rx: 3, fill: '#F5D08A' }),
+      s('rect', { x: 110, y: 12, width: 36, height: 6, rx: 3, fill: '#F58080' }),
+      s('path', { class: 'arRangePtr', d: 'M' + (px - 4) + ' 2 L' + (px + 4) + ' 2 L' + px + ' 8 Z' }),
+      s('line', { class: 'arRangeLine', x1: px, y1: 9, x2: px, y2: 21, 'stroke-width': 2 }));
+  }
+
+  function gauge() {
+    var kids = GAUGE.map(function (l) {
+      return s('line', { class: 'arGT' + l[4], x1: l[0], y1: l[1], x2: l[2], y2: l[3], 'stroke-width': l[4] ? 2.5 : 1.75, 'stroke-linecap': 'round' });
+    });
+    kids.push(
+      s('circle', { class: 'arGDot', cx: 73.1, cy: 20.0, r: 3.75 }),
+      s('text', { class: 'arGTxtMute', x: 142, y: 9, 'text-anchor': 'middle', style: { 'font-size': '9px' }, text: '34' }),
+      s('text', { class: 'arGTxtMain', x: 142, y: 112, 'text-anchor': 'middle', style: { 'font-size': '44px', 'font-weight': '500', 'letter-spacing': '-0.02em' }, text: '28' }),
+      s('text', { class: 'arGTxtMute', x: 142, y: 136, 'text-anchor': 'middle', style: { 'font-size': '10px', 'letter-spacing': '0.12em' }, text: '6 YEARS YOUNGER' }));
+    return s('svg', { class: 'arGauge', viewBox: '4 6 276 136', width: '100%', preserveAspectRatio: 'xMidYMid meet' }, kids);
+  }
+
+  /* ---------- mount ---------- */
+
+  function mount(host, opts) {
+    if (!host || typeof host.appendChild !== 'function') throw new TypeError('AsyncReport.mount(host, opts): host must be an element');
+    opts = opts || {};
+    var o = {
+      theme: opts.theme === 'dark' ? 'dark' : 'light',
+      welcome: opts.welcome === 'includes' ? 'includes' : 'cards',
+      hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
+      avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : 'assets/async/avatar.webp',
+      onClose: typeof opts.onClose === 'function' ? opts.onClose : null
+    };
+    var uid = ++mountSeq;
+    var step = 0;
+    var alive = true;
+    var timers = [];
+
+    function later(fn, ms) {
+      var t = setTimeout(function () { var i = timers.indexOf(t); if (i >= 0) timers.splice(i, 1); if (alive) fn(); }, ms);
+      timers.push(t);
+      return t;
+    }
+    function cancel(t) { clearTimeout(t); var i = timers.indexOf(t); if (i >= 0) timers.splice(i, 1); }
+
+    /* chrome: header, step indicator, body, footer CTA */
+    var backBtn = h('button', { type: 'button', class: 'arIconBtn arBack', 'aria-label': 'Back' }, strokeIcon(18, 18, 1.8, [P.back]));
+    var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose', 'aria-label': 'Close' }, strokeIcon(16, 16, 1.8, [P.close]));
+    var steps = stepIndicator(STEP_COUNT);
+    var stepWrap = h('div', { class: 'arStepWrap' }, steps.el);
+    var head = h('div', { class: 'arHead' },
+      h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel' }), closeBtn),
+      stepWrap);
+    var body = h('div', { class: 'arBody' });
+    var ctaLabel = h('span', { class: 'arBtnLabel' });
+    var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, ctaLabel);
+    var foot = h('div', { class: 'arFoot' }, cta);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : ''), 'data-ar-mount': uid }, head, body, foot);
+
+    function close() { if (o.onClose) o.onClose(); else go(0); }
+    on(backBtn, 'click', function () { go(Math.max(0, step - 1)); });
+    on(closeBtn, 'click', close);
+    on(cta, 'click', function () { if (step === NEXT) close(); else go(step + 1); });
+
+    /* ----- step 0: Welcome ----- */
+    function buildWelcome() {
+      var content;
+      if (o.welcome === 'includes') {
+        var inc = function (d, label, first) {
+          return h('div', { class: 'arIncludesRow' + (first ? ' arFirst' : '') }, fillIcon(20, '0 0 24 24', d), h('div', { class: 'arIncludesName', text: label }));
+        };
+        content = h('div', { class: 'arIncludes arAnimRise6 arD15' },
+          h('div', { class: 'arIncludesTitle', text: 'Includes' }),
+          h('div', { class: 'arIncludesList' },
+            inc(P.incSummary, 'Summary', true), inc(P.incInsights, 'Insights'), inc(P.incRest, 'Everything else'), inc(P.incRecs, 'Recommendations')));
+      } else {
+        var talkIco = strokeIcon(20, 24, 1.6, [P.talk1, P.talk2]);
+        var peaceIco = s('svg', { class: 'arIco', width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' },
+          s('circle', { cx: 12, cy: 12, r: 9 }), s('path', { d: P.peace1 }), s('path', { d: P.peace2, 'stroke-width': 2.2 }));
+        var drow = function (ico, name, desc, delay) {
+          return h('div', { class: 'arDebriefRow arAnimUp ' + delay },
+            h('div', { class: 'arDebriefIcon' }, ico),
+            h('div', { class: 'arDebriefText' }, h('div', { class: 'arDebriefName', text: name }), h('div', { class: 'arDebriefDesc', text: desc })));
+        };
+        content = [
+          h('div', { class: 'arIntro arAnimUp arD10' },
+            h('div', { class: 'arIntroP', text: 'Dr Nazhan has reviewed your latest results and health history.' }),
+            h('div', { class: 'arIntroP', text: 'Here\u2019s what they want you to know, and what they recommend you do next.' })),
+          h('div', { class: 'arDebriefTitle arAnimUp arD15', text: 'In your debrief' }),
+          h('div', { class: 'arDebriefList' },
+            drow(strokeIcon(20, 24, 1.6, [P.found1, P.found2]), 'What we found', 'The most important findings from your results, explained in context.', 'arD20'),
+            drow(peaceIco, 'Peace of mind', 'Our clinical team reaches out immediately for anything critical. Read your report knowing there\'s nothing urgent to uncover.', 'arD35'),
+            drow(talkIco, 'Want to talk through your results?', 'You can book a consult to discuss your results any time through the Services tab in your account.', 'arD50'))
+        ];
+      }
+      var scroller = h('div', { class: 'arPanelScroll' }, content);
+      on(scroller, 'scroll', function () {
+        scroller.style.setProperty('--ar-fade', Math.min(40, Math.max(0, scroller.scrollTop)) + 'px');
+      }, { passive: true });
+
+      return h('div', { class: 'arWelcome' },
+        h('div', { class: 'arHero' },
+          h('div', { class: 'arHeroZoom' }, h('img', { class: 'arHeroImg', src: o.hero, alt: '', decoding: 'async', draggable: 'false' })),
+          h('div', { class: 'arHeroTop' }),
+          h('div', { class: 'arHeroBlur' }),
+          h('div', { class: 'arHeroShade' }),
+          h('div', { class: 'arHeroText' },
+            h('h2', { class: 'arHeroTitle', text: 'Your complete blood panel report is here.' }),
+            h('div', { class: 'arChips' },
+              h('div', { class: 'arChip arChipDoc' }, h('img', { class: 'arChipAv', src: o.avatar, alt: 'Dr Steven Lu', decoding: 'async' }), 'Dr. Steven Lu'),
+              h('div', { class: 'arChip' },
+                s('svg', { class: 'arIco', width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' },
+                  s('rect', { x: 2, y: 3, width: 12, height: 11, rx: 2 }), s('path', { d: P.cal })),
+                '23 April 2026')))),
+        h('div', { class: 'arPanel' }, scroller));
+    }
+
+    /* ----- step 1: Summary ----- */
+    function buildSummary() {
+      var count = function (num, dotCls, label) {
+        return h('div', { class: 'arCount' },
+          h('div', { class: 'arCountTop' }, h('div', { class: 'arCountNum', text: num }), h('div', { class: 'arCountDot ' + dotCls })),
+          h('div', { class: 'arCountLabel', text: label }));
+      };
+      return h('div', { class: 'arStack arGap24' },
+        h('div', { class: 'arIntroBlock arAnimRise' },
+          h('h2', { class: 'arH700', text: 'We tested 120 markers across 16 panels.' }),
+          h('div', { class: 'arLede', text: 'Most are where we want them. The ones that aren\'t fall into eight stories.' })),
+        h('div', { class: 'arSumCard arAnimRise arD12' },
+          h('div', { class: 'arSumBio' },
+            h('div', { class: 'arSumHead' },
+              h('div', { class: 'arSumHeadL' },
+                s('svg', { class: 'arIco', width: 20, height: 20, viewBox: '0 0 20 20', fill: 'none', 'aria-hidden': 'true', focusable: 'false' }, s('path', { d: P.bio, fill: 'currentColor' })),
+                h('div', { class: 'arSumTitle', text: 'Biomarkers' }))),
+            h('div', { class: 'arSegBar' },
+              h('div', { class: 'arSeg arSegOpt', style: { flex: '92' } }),
+              h('div', { class: 'arSeg arSegSub', style: { flex: '14' } }),
+              h('div', { class: 'arSeg arSegOut', style: { flex: '14' } })),
+            h('div', { class: 'arCounts' },
+              count('92', 'arSegOpt', 'Optimal'), count('14', 'arSegSub', 'Suboptimal'), count('14', 'arSegOut', 'Out of range'))),
+          h('div', { class: 'arAgeCard' },
+            h('div', { class: 'arAgeHead' }, h('span', { class: 'arT200m', text: 'Biological age' })),
+            gauge())));
+    }
+
+    /* ----- steps 2-9: Insight 1-8 ----- */
+    function buildInsight(k) {
+      var ins = INSIGHTS[k];
+      var cards = buildCards(ins.signals);
+
+      // biomarker carousel: scroll-snap, prev/next synced with scroll
+      var carIdx = 0, lockTo = -1, lockTimer = 0;
+      var prevBtn = h('button', { type: 'button', class: 'arCarBtn', 'aria-label': 'Previous marker' }, strokeIcon(14, 16, 1.8, [P.prev]));
+      var nextBtn = h('button', { type: 'button', class: 'arCarBtn', 'aria-label': 'Next marker' }, strokeIcon(14, 16, 1.8, [P.next]));
+      var car = h('div', { class: 'arCar', 'data-ar-car': '' }, cards.map(function (c, i) { return trendCard(c, 'arG' + uid + '-' + k + '-' + i); }));
+      var syncBtns = function () {
+        prevBtn.classList.toggle('arDim', carIdx === 0);
+        nextBtn.classList.toggle('arDim', carIdx >= cards.length - 1);
+        car.setAttribute('data-ar-index', String(carIdx));
+      };
+      var stride = function () { var f = car.firstElementChild; return f ? f.getBoundingClientRect().width + 4 : 0; };
+      var fromScroll = function () { var sw = stride(); return sw ? Math.max(0, Math.min(cards.length - 1, Math.round(car.scrollLeft / sw))) : carIdx; };
+      var carGo = function (i) {
+        var sw = stride(); if (!sw) return;
+        var j = Math.max(0, Math.min(cards.length - 1, i));
+        // hold the target while the smooth scroll passes the cards in between
+        lockTo = j; cancel(lockTimer);
+        lockTimer = later(function () { lockTo = -1; var f = fromScroll(); if (f !== carIdx) { carIdx = f; syncBtns(); } }, 700);
+        car.scrollTo({ left: j * sw, behavior: reducedMotion() ? 'auto' : 'smooth' });
+        carIdx = j; syncBtns();
+      };
+      on(prevBtn, 'click', function () { carGo(carIdx - 1); });
+      on(nextBtn, 'click', function () { carGo(carIdx + 1); });
+      on(car, 'scroll', function () {
+        var i = fromScroll();
+        if (lockTo >= 0) { if (i === lockTo) { lockTo = -1; cancel(lockTimer); } return; }
+        if (i !== carIdx) { carIdx = i; syncBtns(); }
+      }, { passive: true });
+      syncBtns();
+
+      // "Behind this insight" groups
+      var groups = [];
+      CLASS_SPEC.forEach(function (spec) {
+        var rows = ins[spec[0]] || [];
+        if (!rows.length) return;
+        groups.push({ key: spec[0], name: spec[1], rows: rows.map(function (r) {
+          return spec[0] === 'goals'
+            ? { title: r.label, value: 'From your Plan', meta: r.plan, detail: r.detail }
+            : { title: r.label, value: r.detail };
+        }) });
+      });
+      if (ins.reportTitle) groups.push({ key: 'r', name: 'Reports', rows: [{ title: ins.reportTitle, value: '23 Apr 2026', isFile: true, isCard: true }] });
+
+      var openKey = null, rowSet = {};
+      var row = function (r, key, idx) {
+        var has = !!r.detail;
+        var chev = has ? h('div', { class: 'arChev' }, chevIcon()) : null;
+        var detail = has ? h('div', { class: 'arDetail', hidden: true }, h('p', { class: 'arPara', text: r.detail })) : null;
+        var tap = h('div', {
+          class: 'arBRow' + (r.isCard ? ' arRowCard' : '') + (has ? ' arRowTap' : ''),
+          role: has ? 'button' : null, tabindex: has ? '0' : null, 'aria-expanded': has ? 'false' : null
+        },
+          h('div', { class: 'arRowL' },
+            r.isFile ? h('span', { class: 'arFileTile' }, fileIcon()) : null,
+            h('div', { class: 'arRowText' },
+              h('span', { class: 'arT300m arPretty', text: r.title }),
+              h('div', { class: 'arRowMeta' },
+                r.value ? h('span', { class: 'arT200r arInk60', text: r.value }) : null,
+                r.meta ? h('span', { class: 'arT200r arInk30', text: '|' }) : null,
+                r.meta ? h('span', { class: 'arT200r arInk50', text: r.meta }) : null))),
+          h('div', { class: 'arRowR' }, chev));
+        if (has) {
+          rowSet[key] = function (open) {
+            detail.hidden = !open;
+            chev.classList.toggle('arChevOpen', open);
+            tap.setAttribute('aria-expanded', String(open));
+          };
+          var toggle = function () {
+            var was = openKey === key;
+            if (openKey && rowSet[openKey]) rowSet[openKey](false);
+            openKey = was ? null : key;
+            if (!was) rowSet[key](true);
+          };
+          on(tap, 'click', toggle);
+          on(tap, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+        }
+        return h('div', { class: 'arRowWrap' }, idx > 0 ? h('div', { class: 'arDivider' }) : null, tap, detail);
+      };
+
+      return h('div', { class: 'arStack arGap24' },
+        h('div', { class: 'arInsHead arAnimRise' }, h('h2', { class: 'arH700', text: ins.headline })),
+        h('div', { class: 'arBioCard arAnimRise arD12' },
+          h('div', { class: 'arBioHead' },
+            h('div', { class: 'arBioHeadL' }, h('span', { class: 'arT300m', text: 'Biomarkers' }), badge(String(cards.length))),
+            cards.length > 1 ? h('div', { class: 'arCarNav' }, prevBtn, nextBtn) : null),
+          car),
+        h('div', { class: 'arMeans arAnimRise arD24' },
+          h('div', { class: 'arMeansHead' }, sparkGradientIcon('arSpark' + uid + '-' + k), h('span', { class: 'arT600', text: 'What this means for you' })),
+          h('p', { class: 'arPara', text: ins.found }),
+          h('p', { class: 'arPara', text: ins.why })),
+        h('div', { class: 'arBehind arAnimRise arD32' },
+          h('span', { class: 'arT600', text: 'Behind this insight' }),
+          h('div', { class: 'arGroups' }, groups.map(function (g) {
+            return h('div', { class: 'arGroup' },
+              h('span', { class: 'arMonoLabel', text: g.name }),
+              h('div', { class: 'arRows' }, g.rows.map(function (r, i) { return row(r, g.key + '-' + i, i); })));
+          }))));
+    }
+
+    /* ----- step 10: Everything else ----- */
+    function buildRest() {
+      var openIdx = -1, panelSet = [];
+      var panels = PANELS.map(function (p, i) {
+        var good = p.markers.filter(function (m) { return m.status === 'Optimal'; }).length;
+        var flagged = p.markers.filter(function (m) { return m.status !== 'Optimal'; });
+        var summary = p.markers.length + ' ' + (p.markers.length === 1 ? 'marker' : 'markers') + ' \u00b7 ' + (flagged.length ? good + ' optimal' : 'all optimal');
+        var chev = h('div', { class: 'arChev' }, chevIcon());
+        var bodyEl = h('div', { class: 'arAccBody', hidden: true },
+          p.markers.map(function (m, j) {
+            return h('div', { class: 'arMk' },
+              j > 0 ? h('div', { class: 'arDivider' }) : null,
+              h('div', { class: 'arMkRow' },
+                h('div', { class: 'arMkL' },
+                  h('span', { class: 'arT300m arPretty', text: m.name }),
+                  h('div', { class: 'arRowMeta' },
+                    h('span', { class: 'arT200r arInk60', text: m.value }),
+                    h('span', { class: 'arT200r arInk30', text: '|' }),
+                    h('span', { class: 'arT200r arInk50', text: '23 Apr 2026' }))),
+                h('div', { class: 'arMkR' },
+                  rangeBar(POS[m.status]),
+                  h('span', { class: 'arT200m ' + STATE_CLASS[m.status], text: m.status }))));
+          }),
+          p.note ? h('div', { class: 'arNote' }, h('p', { class: 'arPara', text: p.note })) : null);
+        var headEl = h('div', { class: 'arAccHead', role: 'button', tabindex: '0', 'aria-expanded': 'false' },
+          h('div', { class: 'arAccText' }, h('div', { class: 'arT300m arInk', text: p.name }), h('div', { class: 'arT200r arInk50', text: summary })),
+          chev);
+        panelSet[i] = function (open) {
+          bodyEl.hidden = !open;
+          chev.classList.toggle('arChevOpen', open);
+          headEl.setAttribute('aria-expanded', String(open));
+        };
+        var toggle = function () {
+          var was = openIdx === i;
+          if (openIdx >= 0) panelSet[openIdx](false);
+          openIdx = was ? -1 : i;
+          if (!was) panelSet[i](true);
+        };
+        on(headEl, 'click', toggle);
+        on(headEl, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+        return h('div', { class: 'arAcc' }, headEl, bodyEl);
+      });
+      return h('div', { class: 'arStack arGap18' },
+        h('div', { class: 'arIntroBlock arAnimRise' },
+          h('h2', { class: 'arH700', text: 'Everything else we checked.' }),
+          h('div', { class: 'arLede', text: '98 more markers across 16 panels. All optimal or a fraction outside \u2014 none need action.' })),
+        h('div', { class: 'arAccList arAnimRise arD20' }, panels));
+    }
+
+    /* ----- step 11: Next steps ----- */
+    function buildNext() {
+      var q = function (avatar, name, desc) {
+        return h('div', { class: 'arQRow' }, avatar,
+          h('div', { class: 'arQText' }, h('div', { class: 'arQName', text: name }), h('div', { class: 'arQSub', text: desc })),
+          h('div', { class: 'arQChev', 'aria-hidden': 'true', text: '\u203a' }));
+      };
+      return h('div', { class: 'arStack arGap20' },
+        h('div', { class: 'arIntroBlock arAnimRise' },
+          h('h2', { class: 'arH700', text: 'That\'s your debrief.' }),
+          h('div', { class: 'arLede', text: 'You can come back to this report and insights any time from the Reports tab.' })),
+        h('div', { class: 'arHair' }),
+        h('div', { class: 'arQBlock arAnimRise arD24' },
+          h('div', { class: 'arQTitle', text: 'Have questions?' }),
+          h('div', { class: 'arQList' },
+            q(h('div', { class: 'arEvaAv' }, sparkIcon('currentColor')), 'Ask Eva', 'Get instant answers about this report.'),
+            q(h('img', { class: 'arQAv', src: o.avatar, alt: 'Dr Steven Lu', decoding: 'async' }), 'Talk to your care team', 'Book a call and ask about your concerns.'))));
+    }
+
+    function build(st) {
+      if (st === 0) return buildWelcome();
+      if (st === 1) return buildSummary();
+      if (st >= FIRST && st < REST) return buildInsight(st - FIRST);
+      if (st === REST) return buildRest();
+      return buildNext();
+    }
+
+    function render() {
+      while (timers.length) clearTimeout(timers.pop());
+      var welcome = step === 0;
+      root.classList.toggle('arIsWelcome', welcome);
+      root.setAttribute('data-ar-step', String(step));
+      backBtn.hidden = step === 0;
+      stepWrap.hidden = welcome;
+      steps.set(step);
+      ctaLabel.textContent = welcome ? 'Start' : step === 1 ? 'See insights' : step === NEXT ? 'Done' : 'Next';
+      body.textContent = '';
+      body.appendChild(build(step));
+      body.scrollTop = 0;
+    }
+
+    function go(n) {
+      if (!alive) return;
+      n = Math.round(Number(n));
+      if (!isFinite(n)) n = 0;
+      step = Math.max(0, Math.min(STEP_COUNT - 1, n));
+      render();
+    }
+
+    render();
+    host.appendChild(root);
+
+    return {
+      el: root,
+      go: go,
+      reset: function () { go(0); },
+      destroy: function () {
+        if (!alive) return;
+        while (timers.length) clearTimeout(timers.pop());
+        alive = false;
+        body.textContent = '';
+        if (root.parentNode) root.parentNode.removeChild(root);
+      }
+    };
+  }
+
+  window.AsyncReport = { mount: mount };
+})();
+
+</script>
 <!-- the Hairline engine (@lucasmarkes/hairline's core, as the hairline-create skill ships it), for the Stack figure in the V4 modal; kept in a scope of its own, reached as window.HLK -->
 <script>
 window.HLK = (() => {
@@ -12801,6 +14089,12 @@ return HL;
     // below it, not the header above it.
     { name: 'Desktop', dur: 850, ease: 0, group: 'Results received', sort: 1 },
     { name: 'Mobile',  dur: 850, ease: 0, group: 'Results received', sort: 2 },
+    // The async report: the Overview again, with the Bloods & Tests debrief
+    // over it as a bottom sheet -- the debrief arriving while you are on your
+    // Overview ("import this bottom sheet experience in a new page 'Async
+    // report'; duplicate the Overview page and overlap this experience on it")
+    { name: 'Desktop', dur: 850, ease: 0, group: 'Async report', sort: 1 },
+    { name: 'Mobile',  dur: 850, ease: 0, group: 'Async report', sort: 2 },
   ];
   let version = 0;
   // B2 is the same dashboard with the right column split, so it wears m2's
@@ -16474,7 +17768,7 @@ return HL;
   { const o = document.createElement('option'); o.value = 'hl'; o.textContent = 'Hairline'; versionSel.appendChild(o); }   // the Hairline illustrations, a page of their own beside Home
   { const o = document.createElement('option'); o.value = 'home'; o.textContent = 'Home'; versionSel.appendChild(o); }   // the mosaic of every page
   const MODE_GROUPS = ['Concept', 'Insights', 'Overview page',
-                       'Results received', 'Video', 'Landing page'];
+                       'Results received', 'Async report', 'Video', 'Landing page'];
   MODE_GROUPS.forEach(g => {
     const inGroup = MODES.map((v, i) => [v, i])
       .filter(([v, i]) => v.group === g && !isArchived(i));
@@ -16695,7 +17989,7 @@ return HL;
     // Insights -- the Layout, the Biomarkers tab and the Reports; the
     // Overview (and results received, which opens over it) -- the Overview;
     // the landing -- its own; a page with none hides the menu
-    { const g = MODES[m] && MODES[m].group, key = g === 'Insights' ? 'ins' : (g === 'Overview page' || g === 'Results received') ? 'ov' : g === 'Landing page' ? 'lp' : '';
+    { const g = MODES[m] && MODES[m].group, key = g === 'Insights' ? 'ins' : (g === 'Overview page' || g === 'Results received') ? 'ov' : g === 'Landing page' ? 'lp' : g === 'Async report' ? 'ar' : '';
       const tk = document.getElementById('tkMenu');
       if (tk){ tk.querySelectorAll('[data-pages]').forEach(el => { el.hidden = !key || el.dataset.pages.split(' ').indexOf(key) < 0; }); tk.hidden = !key; if (!key) tk.open = false; } }
     { const ink = document.getElementById('inkMenu'); if (ink){ const concept = MODES[m] && MODES[m].group === 'Concept'; ink.hidden = !concept; if (!concept) ink.open = false; } }   // the Organs menu (density, inks) only on the Concept pages ("tweak organ ONLY concern Concept pages")
@@ -16710,6 +18004,9 @@ return HL;
       // m6's phone, each with a marker saying which dress the message wears.
       (m === 24 ? ' m9 pastRes pastD' : '') +
       (m === 25 ? ' m6 pastRes pastM' : '') +
+      // the async report is the Overview with the debrief over it, the same way
+      (m === 26 ? ' m9 asyncRep asyncD' : '') +
+      (m === 27 ? ' m6 asyncRep asyncM' : '') +
       (m === 15 ? ' m5 v2 v3 v4' : '') +
       (m === 11 ? ' m5 v2' : '') +
       (m === 12 ? ' m5 v2 v3' : '') +
@@ -23563,6 +24860,33 @@ return HL;
     raise();
     return { reset: () => { wrap.style.display = ''; raise(); } };
   }
+  // The async report: the ported debrief in a bottom sheet over the Overview,
+  // on the desk under the bar and in the Overview phone. Closing it (its X, or
+  // Done on the last step) lowers it and leaves a button to bring it back; a
+  // fresh visit to the page is a fresh debrief, from its first step.
+  function asyncReport(host, desk){
+    if (!host || !window.AsyncReport) return null;
+    const wrap = document.createElement('div');
+    wrap.className = 'aqWrap ' + (desk ? 'aqDesk' : 'aqPhone');
+    wrap.innerHTML = '<div class="aqDim"></div><div class="aqFrame"></div><button class="aqAgain" type="button">Open your debrief</button>';
+    host.appendChild(wrap);
+    const frame = wrap.querySelector('.aqFrame');
+    let inst = null;
+    const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    const shut = () => wrap.classList.add('shut');
+    const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
+      inst = window.AsyncReport.mount(frame, { theme: opt('stArTheme') === 'dark' ? 'dark' : 'light', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', onClose: shut }); };
+    const raise = () => { wrap.classList.remove('on', 'shut'); requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on'))); };
+    wrap.querySelector('.aqAgain').addEventListener('click', () => { if (inst) inst.reset(); raise(); });
+    wrap.querySelector('.aqDim').addEventListener('click', shut);
+    mount(); raise();
+    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(); raise(); } };
+  }
+  {
+    const arD = asyncReport(document.body, true), arM = asyncReport(document.getElementById('phone2'), false);
+    document.addEventListener('everlab:mode', () => { if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
+    ['stArTheme', 'stArWel'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+  }
   {
     const prD = pastResults(document.body, true);
     // the phone's copy belongs to the Overview phone, which is the screen the
@@ -26476,7 +27800,7 @@ return HL;
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
@@ -28533,6 +29857,8 @@ return HL;
     const side = () => B(0, 0, 17, 100, '', '0') + B(2.5, 7, 9, 3, 'hi') + [18, 25, 32, 39, 46].map(y => B(2.5, y, 11, 3)).join('');
     const phone = inner => B(34, 5, 32, 90, 'dev') + inner;
     const SHOT = {
+      aqDesk: () => side() + B(21, 8, 30, 5, 'hi') + B(21, 20, 36, 40, 'ph', '8px') + B(59, 20, 38, 40, 'card', '8px') + B(0, 0, 100, 100, 'dim') + B(32, 14, 40, 86, 'card', '10px') + B(32, 14, 40, 30, 'ac', '10px') + B(36, 50, 26, 4, 'hi') + B(36, 58, 32, 2.5) + B(36, 64, 28, 2.5) + B(36, 88, 32, 7, 'lt', '5px'),
+      arMob: () => phone(B(34, 5, 32, 90, 'dim', '10px') + B(34, 20, 32, 75, 'card', '8px') + B(34, 20, 32, 24, 'ac', '8px') + B(37, 49, 22, 4, 'hi') + B(37, 56, 26, 2.5) + B(37, 61, 22, 2.5) + B(37, 84, 26, 6, 'lt', '5px')),
       hairline: () => B(5, 7, 26, 3, 'hi') + [5, 36, 67].map(x => B(x, 15, 28, 34, 'card', '6px') + B(x + 8, 24, 12, 9, 'lt', '2px') + B(x + 5, 36, 18, 2)).join('') + B(5, 56, 20, 3, 'hi') + [5, 36, 67].map(x => B(x, 64, 28, 30, 'card', '6px') + B(x + 9, 71, 10, 10, 'lt', '50%') + B(x + 5, 85, 18, 2)).join(''),
       ovDesk: () => side() + B(21, 7, 22, 5, 'hi') + B(62, 6, 20, 7, '', '99px') + B(84, 6, 5, 7, '', '50%') + B(91, 6, 5, 7, '', '50%') +
         B(21, 19, 36, 40, 'ph', '8px') + B(24, 24, 10, 4, 'hi', '99px') + B(24, 33, 18, 4, 'lt') + B(24, 50, 8, 5, 'lt', '99px') +
@@ -28584,6 +29910,8 @@ return HL;
       { g: 'Insights', n: 'Desktop', m: 18, s: 'insDesk', wide: true, r: true },
       { g: 'Insights', n: 'Mobile', m: 20, s: 'insMob' },
       { g: 'Results received', n: 'Mobile', m: 25, s: 'resMob' },
+      { g: 'Async report', n: 'Desktop', m: 26, s: 'aqDesk' },
+      { g: 'Async report', n: 'Mobile', m: 27, s: 'arMob' },
       { g: 'Timeline', n: 'Desktop', m: 9, s: 'tlDesk', tl: true },
       { g: 'Timeline', n: 'Mobile', m: 9, s: 'tlMob', tl: true, bp: 'xs' },   // the same page at the forced XS, in the phone frame
       { g: 'Concept', n: 'Organ library', m: 7, s: 'library' },
@@ -28604,6 +29932,7 @@ return HL;
       ['Service detail', 'One service end to end: its state, what to do, and the steps.'],
       ['Timeline', 'The health journey: what is due, month by month, and what is yours to claim.'],
       ['Results received', 'The moment results land, over the Overview.'],
+      ['Async report', 'The Bloods & Tests debrief, a bottom sheet over the Overview.'],
       ['Landing page', 'Organ Age, for people who are not members yet.'],
       ['Video', 'The social teaser.'],
       ['Concept', 'The organ concepts the prototype grew from.'],
