@@ -13435,3 +13435,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Microbiome report pop-up, new order: title (balanced over two lines, "Your microbiome / report is ready"; every modal title now balances), the "What we highlighted" card, then Emma Walsh's line, then the buttons.
   - The card: 8px more padding (24/28), a "13 Nov 2026" date pill above its title, and the microbiome picture down its right quarter (25%). Desk V3 leaves the card's picture out (its left half is the picture).
   - Phone/XS/S sheets with the card: no cover (the card carries the picture), the V1 sheet header and close, so it fits without scrolling.
+- Modal V2 on the desk, microbiome report pop-up: no banner when the "What we highlighted" card is there (the card carries the picture); 72 above the title, the close in its plain style.
