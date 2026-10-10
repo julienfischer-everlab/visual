@@ -10401,7 +10401,7 @@
         <!-- the doctor's quote as an Observations section, or not ("add boolean tweak Observation, off default"); the biomarkers card lives in Results either way -->
         <!-- the service modals: v1 centred with a small picture, v2 the picture as a hero, a floating header over it, the content left ("modal tweak v2, this format") -->
         <div class="tkRow"><span class="lbl">Modal</span><select id="stMdl" class="tkSegSel" aria-label="The service modals' format"><option value="v1" selected>V1</option><option value="v2">V2</option><option value="v3">V3</option><option value="v4">V4</option><option value="v5">V5</option><option value="v6">V6</option><option value="v7">V7</option></select></div>
-        <div class="tkRow" id="stIllRow"><span class="lbl">Illustration</span><select id="stIll" aria-label="The Hairline figure in the modal"><option value="stack" selected>Stack</option><option value="folio">Folio</option><option value="tray">Tray</option><option value="record">Record</option></select></div>
+        <div class="tkRow" id="stIllRow"><span class="lbl">Illustration</span><select id="stIll" aria-label="The Hairline figure in the modal"><option value="stack" selected>Stack</option><option value="folio">Folio</option><option value="tray">Tray</option><option value="record">Record</option><option value="fan">Fan</option><option value="concertina">Concertina</option><option value="rotary">Rotary</option><option value="loupe">Loupe</option></select></div>
         <div class="tkRow"><span class="lbl">Observations (Post MVP)</span><select id="stObs" aria-label="The doctor's observations section"><option value="on">On</option><option value="off" selected>Off</option></select></div>
         <!-- the Biomarkers card at the top of Results, or not ("add a tweak Biomarkers summary on / off, off default") -->
         <div class="tkRow"><span class="lbl">Biomarkers summary</span><select id="stBioS" aria-label="The biomarkers summary card in Results"><option value="on">On</option><option value="off" selected>Off</option></select></div>
@@ -14352,6 +14352,786 @@ hairline({
   means: "Your check-ups as a stack of reports, one a year: the year under the pointer slides out, and the years beside it follow.",
   rules: [1, 2, 5, 6],
   range: [0, 40, 90],
+  mount,
+});
+
+  })(window.HLK, reg);
+
+  // fan
+  (function (HL, hairline) {
+/**
+ * Fan: a microbiome report as a swatch fan deck. Six long blades lie on the
+ * desk, riveted together at one rounded end and fanned unevenly over 55°, the
+ * cover board on top and the Akkermansia blade standing a little apart. The
+ * pointer's angle round the rivet picks a blade: the blades above it swing one
+ * way and the ones below it the other, staggered outwards from it, so its whole
+ * face shows, a heading rule and a row of five level dots, the lit ones
+ * bright. Each blade's tab sits in its own place across its tip. Nothing lifts,
+ * so paint order is stack order at any angle. The slider is the swing, in °.
+ *
+ * mount may be given { cover }: a picture printed on the cover board's outer
+ * end, laid on by the projection's own matrix, so it swings with the board.
+ */
+const {
+  Cam, facing, fillet, fit, flatDot, hull, open, poly, prism, proj, rad, ringAt, rrect, run, seg, unproj,
+  tdone, tset, tval, tween, disposer, mk, place, pointer, put, register, solid,
+} = HL;
+
+const N = 6, L = 120, R0 = 9, HW = 15, TH = 4.5, TW = 6;  // a blade: rivet to tip, half-width at the rivet and at the tip, its tab
+const NAMES = ["butyrate", "Akkermansia", "Firmicutes", "Bacteroidetes", "diversity", "cover"]; // bottom to top, the report's own markers
+const ANG = [-129, -114, -100, -92, -83, -74];   // rest angles round the rivet: uneven, Akkermansia apart
+const TK = [1.1, 1.1, 1.1, 1.1, 1.1, 2.4];       // thin strips, and the cover board on top
+const LIT = [4, 1, 3, 2, 4, 0];                  // dots lit, of five: butyrate high, Akkermansia low, F/B 1.8, diversity good
+const TAB = [-9, -6.6, -4.2, -1.8, 0.6, 3];      // where each tab starts across the tip, stepping with the stack
+const AKK = 1, STEP = 45, SWMAX = 22;            // the rest mark (the low marker); stagger in ms; widest swing
+const ZB = TK.map((_, i) => TK.slice(0, i).reduce((a, b) => a + b, 0)), TOP = ZB[N - 1] + TK[N - 1];
+const hw = (u) => R0 + ((HW - R0) * (u + R0)) / (L + R0);
+const CU0 = 47, CU1 = 114, CV = hw(CU0) - 2.5;    // the cover picture: along the board's outer end, inset from its edges
+
+/**
+ * A blade's outline in its own plane (u out from the rivet, v across): a round end, a taper, a rounded tip with its tab.
+ * FN steps round each corner, so the round end is the first and the last FN + 1 points.
+ */
+const FN = 6;
+const outline = (t0) => fillet(
+  [[-R0, -R0], [L, -HW], [L, t0], [L + TH, t0], [L + TH, t0 + TW], [L, t0 + TW], [L, HW], [-R0, R0]],
+  [R0, 3, 1.2, 1.8, 1.8, 1.2, 3, R0], FN,
+);
+
+function mount({ stage, svg, read, cover }, value) {
+  const bag = disposer();
+  let sw = value, act = -1;
+
+  // Fitted to the fan opened as wide as the slider allows, both ways.
+  const C = Cam(45, 0.5, 2.12), box = [];
+  const at = (th, u, v) => { const c = Math.cos(rad(th)), s = Math.sin(rad(th)); return [u * c - v * s, u * s + v * c]; };
+  ANG.forEach((a, i) => [a - SWMAX, a + SWMAX].forEach((th) => outline(TAB[i]).forEach(([u, v]) => box.push([...at(th, u, v), 0], [...at(th, u, v), TOP]))));
+  fit(C, box, 200, 166);
+  const P = proj(C), front = facing(C);
+
+  // Painted from the bottom blade up: each its base outline, its face, its rule and its dots; the cover's rules and picture with it.
+  const g = mk("g", {}, svg);
+  const bl = ANG.map((_, i) => {
+    const grp = mk("g", {}, g), b = { shape: outline(TAB[i]), tw: tween(0), drawn: NaN };
+    b.back = mk("path", { class: "lo" }, grp);
+    // the face is ground only; its outline is the edge that lights, and, under the cover, the round end apart,
+    // which only ever shows as one line of the stack's side and so never lights
+    b.face = mk("path", { class: "fo" }, grp);
+    b.end = i < N - 1 ? mk("path", { class: "nf sil" }, grp) : null;
+    b.edge = mk("path", { class: "nf sil" }, grp);
+    b.rule = mk("path", { class: "nf" }, grp);
+    b.dots = i < N - 1 ? [0, 1, 2, 3, 4].map(() => flatDot(grp, C, 1.5, "dot off")) : [];
+    if (i === N - 1) {
+      b.sub = mk("path", { class: "nf lo" }, grp);
+      if (cover) {
+        b.cg = mk("g", {}, grp);
+        mk("image", { href: cover, x: CU0, y: -CV, width: CU1 - CU0, height: 2 * CV, preserveAspectRatio: "xMidYMid slice", "clip-path": "inset(0 round 2.5px)" }, b.cg);
+        b.frame = mk("path", { class: "nf lo" }, grp);
+      }
+    }
+    return b;
+  });
+  const FR = rrect(CU0, -CV, CU1, CV, 2.5, 4);
+
+  // The rivet: a washer on the cover board, and a round head on it, standing through every blade.
+  const disc = (r) => rrect(-r, -r, r, r, r, 12);
+  put(solid(g), prism(P, front, disc(8), disc(6.9), TOP, TOP + 0.8));
+  const foot = disc(5.2), crown = disc(3.4), ci = disc(2.5);
+  put(solid(g), {
+    sil: poly(hull(ringAt(P, foot, TOP + 0.8).concat(ringAt(P, crown, TOP + 3)))),
+    crease: open(ringAt(P, run(ci, front), TOP + 3)),
+  });
+
+  function draw(b, i, th) {
+    if (th === b.drawn) return;
+    b.drawn = th;
+    const z0 = ZB[i], z1 = z0 + TK[i], w = (u, v, z = z1) => P(...at(th, u, v), z);
+    b.back.setAttribute("d", poly(b.shape.map(([u, v]) => w(u, v, z0))));
+    const pts = b.shape.map(([u, v]) => w(u, v));
+    b.face.setAttribute("d", poly(pts));
+    b.edge.setAttribute("d", b.end ? open(pts.slice(FN, -FN)) : poly(pts));
+    if (b.end) b.end.setAttribute("d", open(pts.slice(-FN - 1).concat(pts.slice(0, FN + 1))));
+    if (b.sub) {
+      b.rule.setAttribute("d", seg(w(16, -4), w(44, -4)));
+      b.sub.setAttribute("d", seg(w(16, 1), w(34, 1)));
+    } else {
+      b.rule.setAttribute("d", seg(w(L - 46, 4 - hw(L - 46)), w(L - 12, 4 - hw(L - 12))));
+      b.dots.forEach((d, k) => { const u = L - 46 + k * 7; place(d, w(u, 9 - hw(u))); });
+    }
+    if (b.cg) {
+      const o = w(0, 0), ax = w(1, 0), ay = w(0, 1);
+      b.cg.setAttribute("transform", `matrix(${[ax[0] - o[0], ax[1] - o[1], ay[0] - o[0], ay[1] - o[1], o[0], o[1]].map((n) => n.toFixed(4)).join(" ")})`);
+      b.frame.setAttribute("d", poly(FR.map((q) => w(q.u, q.v))));
+    }
+  }
+
+  const B = register(stage, (_dt, now) => {
+    let moving = false;
+    bl.forEach((b, i) => { draw(b, i, ANG[i] + tval(b.tw, now)); if (!tdone(b.tw, now)) moving = true; });
+    return moving;
+  });
+  bag.add(B.unregister);
+
+  /**
+   * Each blade owns the band of angles round the rivet halfway to its neighbours' REST angles, read on its own
+   * top plane, since the blades stand at different heights. From the top blade down, the first whose band holds
+   * the pointer; -1 off the fan: inside the rivet, past the tips, or past the outer blades' edges.
+   */
+  function hit([x, y]) {
+    for (let i = N - 1; i >= 0; i--) {
+      const [wx, wy] = unproj(C, x, y, ZB[i] + TK[i]), r = Math.hypot(wx, wy), f = Math.atan2(wy, wx) / rad(1);
+      if (r < R0 || r > L + TH + 8) continue;
+      const m = Math.atan2(hw(r) + 4, r) / rad(1);
+      if (f >= (i ? (ANG[i - 1] + ANG[i]) / 2 : ANG[0] - m) && f <= (i < N - 1 ? (ANG[i] + ANG[i + 1]) / 2 : ANG[i] + m)) return i;
+    }
+    return -1;
+  }
+
+  /** Picks blade a (-1 lets go): above it swing on, below it swing back, staggered out from it; it takes the bright edge. */
+  function setActive(a, force) {
+    if (a === act && !force) return;
+    const now = performance.now(), from = a >= 0 ? a : act;
+    act = a;
+    bl.forEach((b, i) => {
+      tset(b.tw, a < 0 || i === a ? 0 : i > a ? sw : -sw, now, from < 0 ? 0 : Math.abs(i - from) * STEP);
+      b.edge.classList.toggle("hi", i === (a < 0 ? AKK : a));
+      b.dots.forEach((d, k) => d.setAttribute("class", k >= LIT[i] ? "dot off" : i === a ? "dot" : "dot m"));
+    });
+    read.textContent = a < 0 ? "rest" : NAMES[a];
+    B.wake();
+  }
+  setActive(-1, true);
+  bl.forEach((b, i) => draw(b, i, ANG[i]));   // drawn at rest now, so the cover's picture never shows before its first frame
+
+  bag.add(pointer(stage, { move: (p) => setActive(hit(p)), leave: () => setActive(-1) }));
+  bag.add(() => svg.replaceChildren());
+
+  return {
+    set: (v) => { sw = v; if (act >= 0) setActive(act, true); },
+    destroy: bag.dispose,
+  };
+}
+
+hairline({
+  name: "fan",
+  means: "A report as six riveted blades fanned on the desk: the pointer's angle picks one, and the rest swing apart to show its face.",
+  rules: [1, 2, 6, 10],
+  range: [8, 14, 22],
+  tour: [[180, 138], [250, 149], [288, 172], null],
+  mount,
+});
+
+  })(window.HLK, reg);
+
+  // concertina
+  (function (HL, hairline) {
+/**
+ * Concertina: a report printed on one long fanfold strip of six panels. The
+ * cover lies flat at the head, a window for its picture and a title rule on
+ * it; the next four stand in two pleats, a small range of peaks; the last one
+ * springs up at the tail. Every crease carries a dashed perforation, and every
+ * panel a heading rule with its number in result dots and a band of short
+ * reads, printed on one side only, so a panel shows them only while that side
+ * faces the viewer. The pointer unfolds the strip up to the panel it reads:
+ * the pleats behind open nearly flat, the one ahead eases, the rest stay
+ * folded, staggered out from the panel on the 700ms lift curve, and that panel
+ * takes the bright edge. The slider is how flat an opened crease lies, in degrees.
+ *
+ * The pattern: a front along one axis. The hit test reads each panel in the pose
+ * its own choice asks for, then at rest, never the pose on screen, so the paper cannot
+ * move out from under the choice; panels are painted head to tail, which is back to front
+ * for a zigzag that never folds back in x. Given a cover, its picture is printed
+ * in the cover's window by the camera's own matrix and moves with the cover.
+ */
+const {
+  Cam, clamp, fillet, fit, lerp, open, poly, proj, rad, seg,
+  tdone, tset, tval, tween, disposer, mk, place, pointer, register,
+} = HL;
+
+const L = 40, W = 60, H = W / 2, T = 1, N = 6, R = 4; // a panel's length along the strip and width across; paper; panels; the free ends' corners
+const FOLD = 30, EASED = 0.35, TAIL = 30, STEP = 45; // a folded crease, in degrees; how eased the first pleat is at rest; the tail's lift; the stagger
+const NAMES = ["cover", "overall", "diversity", "key findings", "attention", "next steps"];
+/** For the panel being read: how open the first pleat, the second and the tail are; and the crease each one turns on. */
+const AIMS = [[EASED, 0, 0], [0.85, 0, 0], [1, 0.2, 0], [1, 0.85, 0], [1, 1, 0.4], [1, 1, 1]];
+const AT = [2, 4, 5];
+
+/** The strip's side profile for openings a, b (the pleats) and t (the tail), opened creases at g degrees: each panel's start [x, z] and slope,
+ *  centred on x = 0, and a, b: how far its upper surface's two ends move per unit of thickness, so the paper's two surfaces meet at each fold. */
+function pose([a, b, t], g) {
+  const e = (o) => rad((180 - lerp(FOLD, g, clamp(o, 0, 1))) / 2), mitre = (h0, h1) => Math.tan((h1 - h0) / 2);
+  const th = [0, e(a), -e(a), e(b), -e(b), lerp(rad(TAIL), e(1), clamp(t, 0, 1))];
+  let x = 0, z = 0;
+  const out = th.map((h, k) => {
+    const p = { x, z, c: Math.cos(h), s: Math.sin(h), a: k ? mitre(th[k - 1], h) : 0, b: k < N - 1 ? mitre(h, th[k + 1]) : 0 };
+    x += L * p.c; z += L * p.s;
+    return p;
+  });
+  return out.map((p) => ({ ...p, x: p.x - x / 2 }));
+}
+
+/** Panel k's outline in its own plane (u along the strip, v across), and its runs of cut edge: the creases are left to the perforations. */
+function shape(k) {
+  const end = k === 0 || k === N - 1, q = k ? [[0, -H], [L, -H], [L, H], [0, H]] : [[L, H], [0, H], [0, -H], [L, -H]];
+  const pts = end ? fillet(q, [0, R, R, 0]) : q;
+  return { pts, runs: end ? [pts] : [[q[0], q[1]], [q[2], q[3]]] };
+}
+
+/** Panel k's band of reads, [u, v0, v1]: four rows of short dashes, staggered like a pile-up, the same on every load. */
+function reads(k) {
+  let sd = k * 97 + 13;
+  const rnd = () => (sd = (sd * 9301 + 49297) % 233280) / 233280, out = [];
+  for (let r = 0; r < 4; r++) for (let v = -H + 5 + rnd() * 8; v < H - 10; v += 2.5 + rnd() * 4) {
+    const l = 4 + rnd() * 8;
+    out.push([14 + r * 3.6, v, Math.min(H - 5, v + l)]);
+    v += l;
+  }
+  return out;
+}
+
+/** Whether [x, y] is inside the convex outline h, or within m of it. */
+function inside(h, [x, y], m) {
+  let pos = 0, neg = 0, near = false;
+  h.forEach((a, j) => {
+    const b = h[(j + 1) % h.length], ex = b[0] - a[0], ey = b[1] - a[1];
+    (ex * (y - a[1]) - ey * (x - a[0]) > 0) ? pos++ : neg++;
+    const t = clamp(((x - a[0]) * ex + (y - a[1]) * ey) / (ex * ex + ey * ey || 1), 0, 1);
+    if (Math.hypot(x - a[0] - t * ex, y - a[1] - t * ey) < m) near = true;
+  });
+  return !pos || !neg || near;
+}
+
+function mount({ stage, svg, read, cover }, value) {
+  const bag = disposer();
+  let g = value, act = -1, key = "", hits = [];
+
+  // Fitted to the strip at rest and opened to its full length, at both ends of the slider.
+  const C = Cam(45, 0.5, 1.7), box = [];
+  for (const [o, gg] of [[AIMS[0], 140], [AIMS[5], 140], [AIMS[0], 176], [AIMS[5], 176]]) {
+    pose(o, gg).forEach((p) => { for (const u of [0, L]) for (const v of [-H, H]) box.push([p.x + u * p.c, v, p.z + u * p.s]); });
+  }
+  fit(C, box, 200, 166);
+  const P = proj(C);
+  // the direction toward the viewer, from P: a panel's printed side is seen when its normal leans that way
+  const p0 = P(0, 0, 0), ax = [P(1, 0, 0), P(0, 1, 0), P(0, 0, 1)].map((p) => [p[0] - p0[0], p[1] - p0[1]]);
+  let d = [ax[1][0] * ax[2][1] - ax[2][0] * ax[1][1], ax[2][0] * ax[0][1] - ax[0][0] * ax[2][1], ax[0][0] * ax[1][1] - ax[1][0] * ax[0][1]];
+  if (d[2] < 0) d = d.map((x) => -x);
+
+  // Head to tail, so appending is painting back to front; each crease's perforation goes with the panel after it.
+  const root = mk("g", {}, svg);
+  const panels = Array.from({ length: N }, (_, k) => {
+    const grp = mk("g", {}, root), q = { k, ...shape(k) };
+    q.back = mk("path", { class: "nf lo" }, grp);
+    q.face = mk("path", { class: "fo" }, grp);
+    if (!k) {
+      // the cover's window, and the picture printed in it when there is one, carried by the cover's own matrix
+      q.win = fillet([[4, -H + 6], [L - 15, -H + 6], [L - 15, H - 6], [4, H - 6]], [2.5, 2.5, 2.5, 2.5]);
+      q.print = mk("g", {}, grp);
+      if (cover) {
+        mk("image", {
+          href: cover, x: 4, y: -H + 6, width: L - 19, height: W - 12,
+          preserveAspectRatio: "xMidYMid slice", "clip-path": "inset(0px round 2.5px)",
+        }, q.print);
+      }
+      q.frame = mk("path", { class: "nf lo" }, grp);
+      q.head = mk("path", { class: "nf" }, grp);
+    } else {
+      q.reads = reads(k);
+      q.head = mk("path", { class: "nf" }, grp);
+      q.rd = mk("path", { class: "nf lo" }, grp);
+      q.dots = Array.from({ length: k }, () => mk("circle", { r: 1.1, class: "dot m" }, grp));
+      q.perf = mk("path", { class: "nf dash" }, grp);
+    }
+    q.edge = mk("path", { class: "nf sil" }, grp);
+    return q;
+  });
+
+  function drawPanel(q, p) {
+    const up = p.c * d[2] - p.s * d[0] > 0, fo = up ? T : 0;
+    // a point o off the paper's lower surface; on the outline (m), a fold's end moves to where the two surfaces meet
+    const w = (u, v, o, m) => (m && (u === 0 || u === L) ? w(u ? L - o * p.b : o * p.a, v, o) : P(p.x + u * p.c - o * p.s, v, p.z + u * p.s + o * p.c));
+    const at = ([u, v]) => w(u, v, fo), rim = ([u, v]) => w(u, v, fo, 1);
+    q.back.setAttribute("d", q.runs.map((r) => open(r.map(([u, v]) => w(u, v, T - fo, 1)))).join(""));
+    q.face.setAttribute("d", poly(q.pts.map(rim)));
+    q.edge.setAttribute("d", q.runs.map((r) => open(r.map(rim))).join(""));
+    if (!q.k) {
+      const o = at([0, 0]), x = at([1, 0]), y = at([0, 1]);
+      q.print.setAttribute("transform", `matrix(${[x[0] - o[0], x[1] - o[1], y[0] - o[0], y[1] - o[1], o[0], o[1]].map((n) => n.toFixed(4)).join(" ")})`);
+      q.frame.setAttribute("d", poly(q.win.map(at)));
+      q.head.setAttribute("d", seg(at([L - 9, -H + 6]), at([L - 9, 4])));
+      return;
+    }
+    q.perf.setAttribute("d", seg(rim([0, -H]), rim([0, H])));
+    // printed on one side: its marks show only while that side faces the viewer
+    q.head.setAttribute("d", up ? seg(at([7, -H + 6]), at([7, 2])) : "");
+    q.rd.setAttribute("d", up ? q.reads.map(([u, v0, v1]) => seg(at([u, v0]), at([u, v1]))).join("") : "");
+    q.dots.forEach((el, j) => { el.setAttribute("r", up ? 1.1 : 0); place(el, at([7, H - 7 - j * 3.6])); });
+  }
+
+  const tws = AIMS[0].map((v) => tween(v));
+  function draw(o) {
+    const k = o.concat(g).join();
+    if (k === key) return;
+    key = k;
+    const ps = pose(o, g);
+    panels.forEach((q, i) => drawPanel(q, ps[i]));
+  }
+
+  /** Hit areas, which never move with the paper and which nothing draws: each panel's outline in the pose that reading it asks for;
+   *  then, where none of those reaches (the tops of the standing pleats), each panel's outline at rest. */
+  function measure() {
+    const ring = (p) => [[0, -H], [L, -H], [L, H], [0, H]].map(([u, v]) => P(p.x + u * p.c, v, p.z + u * p.s));
+    hits = [panels.map((q, k) => ring(pose(AIMS[k], g)[k])), pose(AIMS[0], g).map(ring)];
+  }
+  /** The panel being read: the last one, head to tail, whose hit area holds the point; -1 off the strip. */
+  const hit = (p) => { for (const hs of hits) for (let k = N - 1; k >= 0; k--) if (inside(hs[k], p, 3)) return k; return -1; };
+
+  const B = register(stage, (_dt, now) => {
+    draw(tws.map((tw) => tval(tw, now)));
+    return tws.some((tw) => !tdone(tw, now));
+  });
+  bag.add(B.unregister);
+
+  /** Reads panel k (-1 lays the strip back to rest). The pleats move in turn, out from the panel read, or the one let go. */
+  function setActive(k, again) {
+    if (k === act && !again) return;
+    const now = performance.now(), from = (k >= 0 ? k : Math.max(0, act)) + 0.5, to = AIMS[Math.max(0, k)];
+    act = k;
+    tws.forEach((tw, i) => tset(tw, to[i], now, Math.abs(AT[i] - from) * STEP));
+    panels.forEach((q, i) => {
+      q.edge.classList.toggle("hi", i === Math.max(0, k));
+      if (q.dots) q.dots.forEach((el) => el.setAttribute("class", i === k ? "dot" : "dot m"));
+    });
+    read.textContent = k < 0 ? "rest" : NAMES[k];
+    B.wake();
+  }
+
+  measure();
+  setActive(-1, true);
+  draw(AIMS[0]);
+  bag.add(pointer(stage, { move: (p) => setActive(hit(p)), leave: () => setActive(-1) }));
+  bag.add(() => svg.replaceChildren());
+
+  return {
+    set: (v) => { g = v; measure(); B.wake(); },
+    destroy: bag.dispose,
+  };
+}
+
+hairline({
+  name: "concertina",
+  means: "A report on one fanfold strip: the pointer unfolds it up to the panel it reads, pleat after pleat, and that panel takes the bright edge.",
+  rules: [1, 2, 5, 6],
+  range: [140, 160, 176],
+  tour: [[168, 141], [228, 171], [319, 221], null],
+  mount,
+});
+
+  })(window.HLK, reg);
+
+  // rotary
+  (function (HL, hairline) {
+/**
+ * Rotary: a rotary card file. A drum turns on an axle between two knurled
+ * knobs, held by two arched feet on a sled base; fourteen species cards
+ * radiate from it, each clipped to the drum's rails by two slots at its foot,
+ * with a heading rule and abundance dots. One card is presented at the top,
+ * a gap either side that a hand widens. A hand moving across the wheel pushes
+ * it, friction bleeds the spin, and a detent spring catches the card the push
+ * aimed at, which has the bright edge and names its genus from the push on.
+ * Paint order is each card's angle from the line of sight. The slider is the
+ * coast, in ms. mount may take { cover }: a picture printed on card 0's face. */
+const { Cam, circ, fillet, fit, hull, facing, open, poly, prism, proj, rad, rings, rrect, seg,
+  spring, stepS, tween, tset, tval, tdone, disposer, mk, place, pointer, put, reflect, register, solid, reducedMotion } = HL;
+
+const NAMES = ["Akkermansia", "Bacteroides", "Faecalibacterium", "Bifidobacterium", "Prevotella", "Roseburia", "Lactobacillus",
+  "Ruminococcus", "Blautia", "Alistipes", "Eubacterium", "Coprococcus", "Parabacteroides", "Oscillibacter"];
+const N = 14, STEP = 360 / N, ABU = [4, 5, 3, 2, 4, 1, 2, 3, 5, 2, 3, 1, 4, 2];
+const JIT = [0, 2.5, 2.5, -3, -2.5, 1, -3, 2, -1, 3, 2.5, -2, -3, 2];  // the wheel's unevenness, in degrees: no card edge-on at rest or open
+const W = 78, H = 36, R0 = 9, T = 0.9, ZB = 3, ZA = R0 + H + 8;       // a card along the axle and out from it; the drum; base top; axle
+const RAIL = [16, 62], SW = 3.2, SD = 3.6;                            // the rails, as u on a card; the slots that clip onto them
+const TOP = 118, GAP = 17, OPEN = 26, SIG = 7;                        // where a card is presented; the gap either side of it, wider under a hand
+const XS = W / 2 + 3, TS = 3, KR = 12, XK = XS + TS + 8, YB = 31;      // the feet's inner face and thickness; the knobs; the base
+const MAXW = 720, CATCH = 30, GRIP = R0 + H;                           // fastest spin and the detent's hold, deg/s; the tip the hand pushes
+const PIC = [37, 4.5, W - 6, H - 4.5];                                 // the cover picture's corners on card 0's face, (u, v)
+
+const wrap = (a) => ((((a + 180) % 360) + 360) % 360) - 180;
+/** A card's angle for its place on the drum: the gap opens round the top, the rest close up a little to make room. */
+const warp = (d, gp) => d + gp * Math.tanh(d / SIG) - (gp * d) / 180;
+const idx = (a) => ((Math.round(a / STEP) % N) + N) % N;
+const cs = (t) => [Math.cos(rad(t)), Math.sin(rad(t))];
+
+/** A card in its own plane, u along the axle, v out from the drum: two slots at its foot, rounded at the tip. */
+const SHAPE = fillet(
+  [[0, 0], ...RAIL.flatMap((a) => [[a - SW / 2, 0], [a - SW / 2, SD], [a + SW / 2, SD], [a + SW / 2, 0]]), [W, 0], [W, H], [0, H]],
+  [1, 0.6, 1.5, 1.5, 0.6, 0.6, 1.5, 1.5, 0.6, 1, 3.2, 3.2],
+);
+
+/** A foot, in (y, z): two toes under an arch, tapering up to a round boss at the axle. */
+const FOOT = (() => {
+  const pts = [[-28, ZB], [-17, ZB]];
+  for (let t = 160; t >= 20; t -= 35) pts.push([17 * cs(t)[0], ZB + 13 * cs(t)[1]]);
+  pts.push([17, ZB], [28, ZB]);
+  for (let t = -20; t <= 200; t += 20) pts.push([8 * cs(t)[0], ZA + 8 * cs(t)[1]]);
+  return fillet(pts, pts.map((_, k) => (k < 2 || (k > 6 && k < 9) ? 1.5 : 1)));
+})();
+
+function mount({ stage, svg, read, cover }, value) {
+  const bag = disposer(), det = spring(0);
+  let coast = value, psi = 0, om = 0, aim = 0, mode = "home", home = tween(0), inside = false, last = null, key = "", shown = "", gap = tween(GAP);
+  // where the coast will end: friction gives up (ω − catch)·τ more degrees, and the detent takes the card nearest that, never the one passing now
+  const land = () => { aim = Math.round((psi + ((om - Math.sign(om) * CATCH) * coast) / 1000) / STEP) * STEP; };
+
+  // Fitted to the whole wheel, the knobs and the base: a turn never changes the box.
+  const C = Cam(45, 0.5, 1.72), box = [];
+  for (let t = 0; t < 360; t += 10) {
+    const [c, s] = cs(t);
+    for (const x of [-1, 1]) box.push([(x * W) / 2, (R0 + H) * c, ZA + (R0 + H) * s], [x * XK, KR * c, ZA + KR * s], [x * XK, x * YB, 0], [-x * XK, x * YB, 0]);
+  }
+  fit(C, box, 200, 166);
+  const P = proj(C), front = facing(C);
+
+  // the direction toward the viewer, and its angle in the plane across the axle (from +y toward +z)
+  const p0 = P(0, 0, 0), [a, b, e] = [P(1, 0, 0), P(0, 1, 0), P(0, 0, 1)].map((p) => [p[0] - p0[0], p[1] - p0[1]]);
+  const dy = e[0] * a[1] - a[0] * e[1], dz = a[0] * b[1] - b[0] * a[1], PHI = Math.atan2(dz * Math.sign(dz), dy * Math.sign(dz)) / rad(1);
+  // the top card's tip at rest, on screen, per degree it turns: a hand's step along that fixed line is the turn it gives (the same in any direction)
+  const sv = P(0, -cs(TOP)[1], cs(TOP)[0]), tv = [sv[0] - p0[0], sv[1] - p0[1]], TV = tv.map((v) => v / (tv[0] ** 2 + tv[1] ** 2) / GRIP / rad(1));
+
+  const g = mk("g", {}, svg);
+  const [bR, bI] = rings(-XK, -YB, XK, YB, 8, 1.6);
+  reflect(svg, g, P, front, bR, 0, 14);
+  put(solid(g), prism(P, front, bR, bI, 0, ZB));
+
+  /** A round along the axle from x0 to x1: its silhouette, the crease of the end that faces us, and knurling on a knob. */
+  const on = (r, x) => circ(r, 32).map((q) => P(x, q.u, ZA + q.v)), rim = (x, r, t) => P(x, r * cs(t)[0], ZA + r * cs(t)[1]);
+  function round(x0, x1, r, knurl, parent = g) {
+    const sd = solid(parent);
+    put(sd, { sil: poly(hull(on(r, x0).concat(on(r, x1)))), crease: poly(on(r - 1.2, x1)) });
+    const lines = knurl ? [-63, -42, -21, 0, 21, 42, 63].map((j) => seg(rim(x0 + 1.4, r, PHI + j), rim(x1 - 1.4, r, PHI + j))) : [];
+    if (knurl) mk("path", { d: lines.join(""), class: "nf lo" }, sd.g);
+    return sd;
+  }
+  /** A foot: a thin plate standing across the axle, its far face dim and its near face the silhouette. */
+  const foot = (xb, xf) => [[xb, "lo"], [xf, "sil"]].forEach(([x, cls]) => mk("path", { d: poly(FOOT.map(([y, z]) => P(x, y, z))), class: cls }, g));
+
+  // Back to front along the axle: the far knob and foot, the drum and its cards sorted by angle, the near foot and knob.
+  round(-XK, -XS - TS, KR, true);
+  foot(-XS - TS, -XS);
+  const layer = mk("g", {}, g), hub = round(-W / 2 - 1, W / 2 + 1, R0, false, layer);
+  // the wheel's envelope on screen: every card is inside it at any turn, so it never moves; only a hand over it pushes
+  const env = hull(on(R0 + H, -W / 2).concat(on(R0 + H, W / 2)));
+  const over = ([x, y]) => [1, -1].some((sg) => env.every((q, k) => { const r = env[(k + 1) % env.length]; return sg * ((r[0] - q[0]) * (y - q[1]) - (r[1] - q[1]) * (x - q[0])) >= 0; }));
+  const arc = (x) => open(Array.from({ length: 23 }, (_, k) => rim(x, R0 + 1.4, PHI - 88 + k * 8)));
+  mk("path", { d: RAIL.map((u) => arc(u - W / 2)).join(""), class: "nf" }, hub.g);
+
+  const cards = NAMES.map((_, i) => {
+    const grp = mk("g", {}, layer);
+    const cd = { g: grp, th: NaN, back: mk("path", { class: "lo" }, grp), face: mk("path", { class: "sil" }, grp) };
+    const marks = (cd.marks = mk("g", {}, grp));
+    cd.head = mk("path", { class: "nf" }, marks);
+    cd.dots = Array.from({ length: ABU[i] }, () => mk("circle", { r: 1.05, class: "dot off" }, marks));
+    if (i || !cover) return cd;
+    // the picture, printed on the face: sized in the card's own units, carried there by the face's matrix
+    const [u0, v0, u1, v1] = PIC;
+    mk("image",{ href: cover, x: u0, y: H - v1, width: u1 - u0, height: v1 - v0, preserveAspectRatio: "xMidYMid slice", "clip-path": "inset(0 round 2px)" }, (cd.pic = mk("g", {}, marks)));
+    cd.frame = mk("path", { class: "nf lo" }, marks);
+    return cd;
+  });
+  const all = cards.concat([{ g: hub.g, th: PHI + 90 }]);
+  foot(XS, XS + TS);
+  round(XS + TS, XK, KR, true);
+
+  /** Card i at th degrees round the axle: its two faces, and its marks on the front face while that face is seen. */
+  function draw(i, th) {
+    const cd = cards[i];
+    if (th === cd.th) return;
+    cd.th = th;
+    const [c, s] = cs(th), up = Math.sin(rad(th - PHI)) > 0, fo = up ? T / 2 : -T / 2;
+    const w = (u, v, o) => P(u - W / 2, (R0 + v) * c + o * s, ZA + (R0 + v) * s - o * c), at = (u, v) => w(u, v, fo);
+    cd.back.setAttribute("d", poly(SHAPE.map(([u, v]) => w(u, v, -fo))));
+    cd.face.setAttribute("d", poly(SHAPE.map(([u, v]) => at(u, v))));
+    cd.marks.setAttribute("visibility", up ? "visible" : "hidden");
+    cd.head.setAttribute("d", seg(at(6, H - 7), at(31, H - 7)));
+    cd.dots.forEach((el, k) => place(el, at(8 + k * 4.6, H - 13.5)));
+    if (!cd.pic) return;
+    const o = at(0, H), ex = at(1, H), ey = at(0, H - 1);
+    cd.pic.setAttribute("transform", `matrix(${ex[0] - o[0]} ${ex[1] - o[1]} ${ey[0] - o[0]} ${ey[1] - o[1]} ${o[0]} ${o[1]})`);
+    cd.frame.setAttribute("d", poly(rrect(...PIC, 2, 4).map((q) => at(q.u, q.v))));
+  }
+
+  /** The card presented: the one the push will stop on top (a target, never the drum as it passes), card 0 going home. */
+  function show() {
+    const p = mode === "home" ? 0 : idx(aim), nk = inside + ":" + p;
+    if (nk === shown) return;
+    shown = nk;
+    cards.forEach((cd, i) => {
+      const lit = inside && i === p;
+      cd.face.classList.toggle("hi", lit);
+      cd.head.classList.toggle("hi", lit || (!inside && !i));
+      cd.dots.forEach((el) => el.setAttribute("class", lit ? "dot" : i === p ? "dot m" : "dot off"));
+    });
+    read.textContent = inside ? NAMES[p] : "rest";
+  }
+
+  /** Every card at its angle, then paint order: furthest in angle from the line of sight first, the drum at 90°; groups move only when it changes. */
+  function pose(now) {
+    const gp = tval(gap, now);
+    cards.forEach((_, i) => { const dl = wrap(psi - i * STEP); draw(i, TOP + warp(dl, gp) + JIT[i] * Math.min(1, Math.abs(dl) / STEP)); });
+    const far = (k) => Math.abs(wrap(all[k].th - PHI)), ord = all.map((_, k) => k).sort((x, y) => far(y) - far(x)), nk = ord.join();
+    if (nk !== key) { key = nk; ord.forEach((k) => layer.append(all[k].g)); }
+    show();
+  }
+  pose(performance.now());
+
+  const B = register(stage, (dt, now) => {
+    let moving = true;
+    if (mode === "home") { psi = tval(home, now); moving = !tdone(home, now); }
+    else if (mode === "coast") {
+      if (reducedMotion()) { psi += (om * coast) / 1000; om = 0; }
+      else { psi += om * dt; om *= Math.exp((-dt * 1000) / coast); }
+      // slow enough: the detent spring takes the drum, with the speed it still has, to the card it was aimed at
+      if (Math.abs(om) < CATCH) { Object.assign(det, { x: psi, v: om, t: aim }); mode = "catch"; }
+    }
+    if (mode === "catch") { moving = stepS(det, dt); psi = det.x; }
+    pose(now);
+    return moving || !tdone(gap, now);
+  });
+  bag.add(B.unregister);
+
+  bag.add(pointer(stage, {
+    move: (p) => {
+      // the push: the hand's speed, as the turn that keeps the top card's tip under it; a slow hand does not beat the detent
+      const now = performance.now(), dt = last ? (now - last.t) / 1000 : 0;
+      if (!inside) { tset(gap, OPEN, now, 0); B.wake(); }
+      inside = true;
+      if (last && dt < 0.012) return show();   // events closer than a frame carry no speed yet: measure over the next
+      const lam = last && dt < 0.15 && over(p) ? ((p[0] - last.p[0]) * TV[0] + (p[1] - last.p[1]) * TV[1]) / dt : 0;
+      const w = Math.max(-MAXW, Math.min(MAXW, lam));
+      if (Math.abs(w) >= CATCH && (mode !== "coast" || Math.sign(w) !== Math.sign(om) || Math.abs(w) > Math.abs(om))) { om = w; mode = "coast"; land(); B.wake(); }
+      last = { p: [p[0], p[1]], t: now };
+      show();
+    },
+    leave: () => {
+      // let go: the drum turns back to card 0 on the long ease-out, the shortest way round
+      inside = false; last = null; om = 0; mode = "home"; home = tween(psi);
+      tset(home, Math.round(psi / 360) * 360, performance.now(), 0); tset(gap, GAP, performance.now(), 0);
+      show(); B.wake();
+    },
+  }));
+  bag.add(() => svg.replaceChildren());
+
+  return { set: (v) => { coast = v; if (mode === "coast") land(); }, destroy: bag.dispose };
+}
+
+hairline({
+  name: "rotary",
+  means: "A rotary file of species cards: the pointer pushes the drum round, friction slows it and a detent stops one card on top.",
+  rules: [1, 5, 6, 8],
+  range: [90, 180, 450],
+  tour: [[92, 150], [272, 150], [205, 200], null],
+  mount,
+});
+
+  })(window.HLK, reg);
+
+  // loupe
+  (function (HL, hairline) {
+/**
+ * Loupe: a report's results page on a clipboard, a spring clip with its lever
+ * across the top and a hanging hole above it. The page is printed with a
+ * diversity spread, five clusters of colonies, four phyla and Akkermansia, each
+ * its own size and density, and a pen ring round the small one. A folding linen tester
+ * stands on it: a square base frame with a reticle on the paper, a hinged leg,
+ * and the lens frame held above. The loupe follows the pointer on a spring;
+ * the colonies under its window are drawn again in the lens, magnified about
+ * the window's centre, only those that land inside it. Over a cluster the lens
+ * takes the bright edge and the ring gives it up. The slider is the
+ * magnification. mount may take { cover }: a picture printed in the page's
+ * header, carried by the page's own matrix.
+ *
+ * The pattern: a field read through a window. Two springs for where, a hit
+ * test on the page plane against the loupe's target (off the page, rest), and
+ * paint order fixed: the page and everything printed on it, the clip, the loupe.
+ */
+const {
+  Cam, circ, clamp, facing, fit, flatDot, hull, open, place, poly, prism, proj, rings, rrect, run, seg, unproj,
+  spring, stepS, disposer, mk, pointer, put, register, solid,
+} = HL;
+
+const BX = -6, BL = 150, BW = 112, BT = 3, PZ = 0.5;         // the board (x down the page, y across it), the page's plane
+const PG = [19, 8, 144, 104], HB = [34, 16, 57, 96];          // the page; its header block, under the clip
+const CL = [13, 28, 31, 84], CH = 3.4, HR = 2.2;              // the clip's body, its height, its rolled hinge
+const BH = 15, WH = 11, FT = 1.3, LZ = 30, LT = 1.8, LW = 9;  // base half-width, window half-width, frame thickness; lens height; leg half-width
+const TR = [79, 20, 131, 92], TICK = 3;                       // where the window's centre may go; the reticle's step
+// name, centre, spread, colonies, seed: each its own size and density
+const CLU = [
+  ["Bacteroidetes", 94, 80, 12, 64, 1], ["Firmicutes", 99, 38, 14, 124, 2], ["Actinobacteria", 124, 62, 8, 20, 3],
+  ["Akkermansia", 129, 92, 4.4, 16, 4], ["Proteobacteria", 128, 21, 7, 10, 5],
+];
+const PARK = [101, 40], RING = 3, RR = 8;                     // the loupe at rest; the cluster the pen ring marks, its radius
+
+const hash = (k, s) => { const x = Math.sin(k * 12.9898 + s * 78.233) * 43758.5453; return x - Math.floor(x); };
+/** The colonies: a sunflower spiral per cluster, jittered, three sizes. */
+const DOTS = CLU.flatMap(([, x, y, R, n, s]) => Array.from({ length: n }, (_, k) => {
+  const a = k * 2.39996 + hash(k, s) * 0.9, d = R * Math.sqrt((k + 0.5) / n) * (0.82 + 0.36 * hash(k, s + 9));
+  return { x: x + d * Math.cos(a), y: y + d * Math.sin(a), r: [0.42, 0.56, 0.74][Math.floor(hash(k, s + 17) * 3)] };
+}));
+/** A rounded square of half-width h at the origin, and its crease ring. */
+const sq = (h, r, b) => rings(-h, -h, h, h, r, b);
+const at0 = (ring, cx, cy) => ring.map((q) => ({ u: q.u + cx, v: q.v + cy, nu: q.nu, nv: q.nv }));
+const area = (pts) => pts.reduce((a, p, i) => { const q = pts[(i + 1) % pts.length]; return a + p[0] * q[1] - q[0] * p[1]; }, 0);
+
+function mount({ stage, svg, read, cover }, value) {
+  const bag = disposer();
+  let M = value, lit = -1, drawn = "", last = null;
+
+  const C = Cam(45, 0.5, 1.56);
+  const box = [[BX, 0, -BT], [BL, 0, -BT], [BX, BW, -BT], [BL, BW, -BT], [BX, 0, 0], [5, 56, 17]];
+  for (const [x, y] of [[TR[0], TR[1]], [TR[2], TR[1]], [TR[0], TR[3]], [TR[2], TR[3]]]) for (const [a, b] of [[-BH, -BH], [BH, -BH], [-BH, BH], [BH, BH]]) box.push([x + a, y + b, LZ + LT]);
+  fit(C, box, 200, 166);
+  const P = proj(C), front = facing(C), w = (x, y, z = PZ) => P(x, y, z), ringAt0 = (ring, cx, cy, z) => ring.map((q) => P(q.u + cx, q.v + cy, z));
+
+  const g = mk("g", {}, svg);
+  // the board, its hanging hole, and the page lying on it
+  put(solid(g), prism(P, front, ...rings(BX, 0, BL, BW, 7, 2), -BT, 0));
+  const hole = rrect(-2.2, 47, 2.6, 65, 2.4, 4);
+  mk("path", { d: poly(hole.map((q) => P(q.u, q.v, 0))), class: "nf" }, g);
+  mk("path", { d: open(run(hole, (q) => q.nu < 0 || q.nv < 0).map((q) => P(q.u, q.v, -BT + 0.6))), class: "nf lo" }, g);
+  mk("path", { d: poly(rrect(...PG, 2, 4).map((q) => w(q.u, q.v))) }, g);
+
+  // The header, in the page's reading frame (u from its left margin, v down from the clip), so the picture is printed
+  // upright and unmirrored: laid on the page by that frame's own matrix, the title and its rules under it.
+  const pg = (u, v) => w(v, HB[1] + HB[3] - u), head = mk("g", {}, g);
+  const pic = cover ? mk("g", {}, head) : null, frame = cover ? mk("path", { class: "nf lo" }, head) : null;
+  if (pic) mk("image", { href: cover, x: HB[1], y: HB[0], width: HB[3] - HB[1], height: HB[2] - HB[0], preserveAspectRatio: "xMidYMid slice", "clip-path": "inset(0 round 2.5px)" }, pic);
+  const T0 = cover ? HB[2] + 5 : HB[0] + 6, RULES = cover ? [[T0 + 4, 50]] : [[T0 + 6, 72], [T0 + 10.5, 60], [T0 + 15, 40]];
+  mk("path", { d: seg(pg(HB[1], T0), pg(66, T0)), class: "nf" }, head);
+  mk("path", { d: RULES.map(([v, u1]) => seg(pg(HB[1], v), pg(u1, v))).join(""), class: "nf lo" }, head);
+  // the page never moves, so its picture is laid once, at mount, before the first frame can paint
+  if (pic) {
+    const o = pg(0, 0), ax = pg(1, 0), ay = pg(0, 1);
+    pic.setAttribute("transform", `matrix(${[ax[0] - o[0], ax[1] - o[1], ay[0] - o[0], ay[1] - o[1], o[0], o[1]].map((n) => n.toFixed(4)).join(" ")})`);
+    frame.setAttribute("d", poly(rrect(HB[1], HB[0], HB[3], HB[2], 2.5, 4).map((q) => pg(q.u, q.v))));
+  }
+
+  // the colonies, the pen ring round one cluster: the page's rest mark
+  const dg = mk("g", {}, g);
+  DOTS.forEach((d) => place(flatDot(dg, C, d.r, "dot m"), w(d.x, d.y)));
+  const ringPts = circ(RR, 40).map((q) => [CLU[RING][1] + q.u, CLU[RING][2] + q.v]);
+  const ring = mk("path", { d: poly(ringPts.map(([x, y]) => w(x, y))), class: "nf hi" }, g);
+
+  // The clip: its lever, a wire loop leaning back from the hinge over the hole, then the body and the rolled hinge over it.
+  const AX = CL[0] + 2.8, AZ = PZ + CH + 0.4, lev = (u, s) => P(AX - s * 0.62, u, AZ + s * 0.78);
+  mk("path", { d: open(run(rrect(38, -2, 74, 15, 4, 5), (q) => q.v > -0.5).map((q) => lev(q.u, q.v))), class: "nf sil" }, g);
+  put(solid(g), prism(P, front, ...rings(...CL, 3, 1.2), PZ, PZ + CH));
+  const roll = (y, r) => circ(r, 18).map((q) => P(AX + q.u, y, AZ + q.v));
+  put(solid(g), { sil: poly(hull(roll(CL[1] + 2, HR).concat(roll(CL[3] - 2, HR)))), crease: poly(roll(CL[3] - 2, HR - 0.9)) });
+  for (const y of [CL[1] + 7, CL[3] - 7]) place(flatDot(g, C, 0.7, "dot off"), P(CL[2] - 5, y, PZ + CH));
+
+  // The loupe, back to front: base frame, its window and reticle, the leg, the lens frame and what the lens shows.
+  const lg = mk("g", {}, g);
+  const [bo, bi] = sq(BH, 2.6, 1), [bw] = sq(WH, 1.4, 0.5), legR = rrect(-LW, 0, LW, LZ - PZ - FT, 1, 3);
+  const baseFill = mk("path", { class: "fo" }, lg), baseSil = mk("path", { class: "nf sil" }, lg);
+  const baseCr = mk("path", { class: "nf lo" }, lg), baseWin = mk("path", { class: "nf" }, lg), ret = mk("path", { class: "nf lo" }, lg);
+  const legBack = mk("path", { class: "lo" }, lg), legFace = mk("path", { class: "sil" }, lg);
+  // the ring seen in the lens is bright only as part of the lit lens, when the page's own ring has given the bright up
+  const lens = solid(lg), lensRet = mk("path", { class: "nf lo" }, lg), lensRing = mk("path", { class: "nf lo" }, lg);
+  const tg = mk("g", {}, lg), lensWin = mk("path", { class: "nf" }, lg);
+  let twins = [];
+  function makeTwins() {
+    twins.forEach((t) => t.el.remove());
+    twins = DOTS.map((d) => ({ d, el: flatDot(tg, C, d.r * M, lit >= 0 ? "dot" : "dot m"), on: true }));
+    drawn = "";
+  }
+  makeTwins();
+
+  /** The reticle about (cx, cy) at height z, scaled m times, cut to the window: a cross with ticks. */
+  function reticle(cx, cy, z, m) {
+    let d = seg(P(cx - WH, cy, z), P(cx + WH, cy, z)) + seg(P(cx, cy - WH, z), P(cx, cy + WH, z));
+    for (let k = -3; k <= 3; k++) {
+      const t = k * TICK * m, l = k % 2 ? 0.6 : 1.1;
+      if (!k || Math.abs(t) > WH - 0.4) continue;
+      d += seg(P(cx + t, cy - l, z), P(cx + t, cy + l, z)) + seg(P(cx - l, cy + t, z), P(cx + l, cy + t, z));
+    }
+    return d;
+  }
+
+  function drawLoupe(cx, cy) {
+    const z1 = PZ + FT, zt = LZ + LT, pb = prism(P, front, at0(bo, cx, cy), at0(bi, cx, cy), PZ, z1);
+    let win = ringAt0(bw, cx, cy, z1);
+    baseWin.setAttribute("d", poly(win));
+    if (area(win) * area(hull(win)) > 0) win = win.slice().reverse();
+    baseFill.setAttribute("d", pb.sil + poly(win));
+    baseSil.setAttribute("d", pb.sil);
+    baseCr.setAttribute("d", pb.crease);
+    ret.setAttribute("d", reticle(cx, cy, z1, 1));
+    legBack.setAttribute("d", poly(legR.map((q) => P(cx - BH, cy + q.u, z1 + q.v))));
+    legFace.setAttribute("d", poly(legR.map((q) => P(cx - BH + FT, cy + q.u, z1 + q.v))));
+    put(lens, prism(P, front, at0(bo, cx, cy), at0(bi, cx, cy), LZ, zt));
+    lensWin.setAttribute("d", poly(ringAt0(bw, cx, cy, zt)));
+    lensRet.setAttribute("d", reticle(cx, cy, zt, M));
+    // what the lens shows: each colony at M times its offset from the window's centre, if it lands inside the lens
+    for (const t of twins) {
+      const lx = M * (t.d.x - cx), ly = M * (t.d.y - cy), lim = WH - t.d.r * M, on = Math.abs(lx) <= lim && Math.abs(ly) <= lim;
+      if (on !== t.on) { t.on = on; t.el.setAttribute("display", on ? "inline" : "none"); }
+      if (on) place(t.el, P(cx + lx, cy + ly, zt));
+    }
+    // and the pen ring, where it crosses the lens
+    const runs = [];
+    let cur = [];
+    for (const [x, y] of ringPts.concat([ringPts[0]])) {
+      const lx = M * (x - cx), ly = M * (y - cy);
+      if (Math.abs(lx) <= WH && Math.abs(ly) <= WH) cur.push(P(cx + lx, cy + ly, zt));
+      else if (cur.length) { runs.push(cur); cur = []; }
+    }
+    if (cur.length) runs.push(cur);
+    lensRing.setAttribute("d", runs.filter((r) => r.length > 1).map(open).join(""));
+  }
+
+  const sx = spring(PARK[0]), sy = spring(PARK[1]);
+  const redraw = () => { const key = sx.x.toFixed(3) + "," + sy.x.toFixed(3); if (key !== drawn) { drawn = key; drawLoupe(sx.x, sy.x); } };
+  const B = register(stage, (dt) => { const m = stepS(sx, dt) | stepS(sy, dt); redraw(); return !!m; });
+  bag.add(B.unregister);
+
+  /** The cluster under the window's centre, read from the loupe's target, never from where it is now. A window that
+   *  would show any of the pen ring picks the ringed cluster, so the ring is never bright on the page and in the lens. */
+  const pick = (x, y) => {
+    const i = CLU.findIndex(([, cx, cy, R]) => Math.hypot(x - cx, y - cy) <= R + 3);
+    return i >= 0 || !ringPts.some(([px, py]) => Math.max(Math.abs(px - x), Math.abs(py - y)) * M <= WH) ? i : RING;
+  };
+  function show(over) {
+    last = over;
+    const t = over ? [clamp(over[0], TR[0], TR[2]), clamp(over[1], TR[1], TR[3])] : PARK;
+    sx.t = t[0]; sy.t = t[1];
+    const a = over ? pick(t[0], t[1]) : -1;
+    if (a !== lit) {
+      lit = a;
+      lens.sil.classList.toggle("hi", a >= 0);
+      ring.setAttribute("class", a >= 0 ? "nf lo" : "nf hi");
+      lensRing.setAttribute("class", a === RING ? "nf hi" : "nf lo");
+      twins.forEach((tw) => tw.el.classList.toggle("m", a < 0));
+    }
+    read.textContent = !over ? "rest" : a < 0 ? "page" : CLU[a][0];
+    B.wake();
+  }
+  show(null); redraw(); // drawn at mount, so no frame ever shows the page without its loupe
+  // off the page nothing is under the pointer: the loupe goes back to rest, never clamped onto a cluster it is not over
+  const onPage = (q) => q[0] >= PG[0] && q[0] <= PG[2] && q[1] >= PG[1] && q[1] <= PG[3];
+  bag.add(pointer(stage, { move: (p) => { const q = unproj(C, p[0], p[1], PZ); show(onPage(q) ? q : null); }, leave: () => show(null) }));
+  bag.add(() => svg.replaceChildren());
+
+  return {
+    // the pick depends on the magnification (what the lens can see), so it is read again for the pointer held where it is
+    set: (v) => { M = v; makeTwins(); show(last); redraw(); },
+    destroy: bag.dispose,
+  };
+}
+
+hairline({
+  name: "loupe",
+  means: "A results page on a clipboard: a linen tester follows the pointer and its lens magnifies the colonies under it.",
+  rules: [1, 3, 4, 6],
+  range: [1.6, 2.2, 3],
+  tour: [[198, 189], [250, 169], [223, 215], null],
   mount,
 });
 
