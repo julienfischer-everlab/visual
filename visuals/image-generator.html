@@ -461,7 +461,7 @@ function engineMain(port, local) {
       ig: 1 / s.gamma, th, thInv: 1 / (1 - th), fade: s.fade / 100, invert: !!s.invert,
       edge: s.edge / 100, detail: s.detail / 100, noise: s.noise / 100,
       minS: s.minSize / 100, maxS: s.maxSize / 100, dens: s.density / 100, rand: s.randomness / 100,
-      clusters: s.clusters / 100, big: (s.big || 0) / 100, spread: (s.spread || 0) / 100, fixed: fixed === undefined ? -1 : fixed,
+      clusters: s.clusters / 100, big: (s.big || 0) / 100, full: !!s.fullGrid, spread: (s.spread || 0) / 100, fixed: fixed === undefined ? -1 : fixed,
       wD: s.pDot, wX: s.pCross, wM: s.pDiamond, wS: s.pSquare,
       fg: s.fg, bg: s.bg, fg2: s.fg2, transparent: !!s.transparent,
       duo: !!s.duotone, duoMode: s.duoMode, split: s.duoSplit / 100, offset: s.offset / 100, overprint: !!s.overprint,
@@ -671,7 +671,7 @@ function engineMain(port, local) {
             }
           }
         } else {
-          const pB = t >= T_FM ? 1 : Math.pow(t / T_FM, 0.8);
+          const pB = t >= T_FM || P.full ? 1 : Math.pow(t / T_FM, 0.8);   // keep every cell: light tones only shrink (an AM print screen)
           // a few breathing holes in the mid tones, following the fine noise field
           const hole = nz * 0.24 * Math.max(0, fA) * (1 - ss(0.5, 0.88, t));
           if (rKeep >= pB * dens * (1 - hole)) continue;
@@ -903,36 +903,37 @@ function engineMain(port, local) {
       { id: 'brightness', label: 'Brightness', min: -100, max: 100, step: 1, def: 0 },
       { id: 'contrast', label: 'Contrast', min: -100, max: 100, step: 1, def: 20 },
       { id: 'gamma', label: 'Gamma', min: 0.2, max: 3, step: 0.01, def: 1, fmt: v => v.toFixed(2) },
-      { id: 'threshold', label: 'Threshold', min: 0, max: 100, step: 1, def: 10, hint: 'Tones lighter than this drop out.' },
+      { id: 'threshold', label: 'Threshold', min: 0, max: 100, step: 1, def: 4, hint: 'Tones lighter than this drop out.' },
       { id: 'invert', label: 'Invert', type: 'check', def: false }
     ] },
     { id: 'pattern', title: 'Pattern', items: [
-      { id: 'spacing', label: 'Grid spacing', min: 3, max: 40, step: 0.5, def: 9, fmt: v => v.toFixed(1), hintId: 'gridHint' },
-      { id: 'minSize', label: 'Min mark size', min: 0, max: 100, step: 1, def: 5, fmt: pct },
-      { id: 'maxSize', label: 'Max mark size', min: 10, max: 220, step: 1, def: 108, fmt: pct, hint: 'Sizes are a share of one grid cell.' },
+      { id: 'spacing', label: 'Grid spacing', min: 3, max: 40, step: 0.5, def: 6.5, fmt: v => v.toFixed(1), hintId: 'gridHint' },
+      { id: 'minSize', label: 'Min mark size', min: 0, max: 100, step: 1, def: 8, fmt: pct },
+      { id: 'maxSize', label: 'Max mark size', min: 10, max: 220, step: 1, def: 73, fmt: pct, hint: 'Sizes are a share of one grid cell.' },
       { id: 'density', label: 'Density', min: 0, max: 200, step: 1, def: 100, fmt: pct },
-      { id: 'randomness', label: 'Randomness', min: 0, max: 100, step: 1, def: 50 },
-      { id: 'noise', label: 'Noise amount', min: 0, max: 100, step: 1, def: 40 },
+      { id: 'fullGrid', label: 'Keep every cell', type: 'check', def: true, hint: 'Light tones shrink to fine dots instead of thinning out, like a print screen.' },
+      { id: 'randomness', label: 'Randomness', min: 0, max: 100, step: 1, def: 0 },
+      { id: 'noise', label: 'Noise amount', min: 0, max: 100, step: 1, def: 0 },
       { id: 'seed', label: 'Seed', type: 'seed', def: 1207 }
     ] },
     { id: 'shapes', title: 'Shape Mix', items: [
-      { id: 'mode', label: 'Mode', type: 'mode', def: 'mixed' },
+      { id: 'mode', label: 'Mode', type: 'mode', def: 'circle' },
       { id: 'pDot', label: 'Dot', icon: 'dot', min: 0, max: 100, step: 1, def: 55, share: true },
       { id: 'pCross', label: 'X / cross', icon: 'cross', min: 0, max: 100, step: 1, def: 30, share: true },
       { id: 'pDiamond', label: 'Diamond', icon: 'diamond', min: 0, max: 100, step: 1, def: 8, share: true },
       { id: 'pSquare', label: 'Square', icon: 'square', min: 0, max: 100, step: 1, def: 7, share: true, hint: 'Shares of all marks. Light tones take dots, then diamonds, then X marks; squares take the deepest tones.' },
-      { id: 'clusters', label: 'Tiny-dot clusters', min: 0, max: 100, step: 1, def: 55, hint: 'Light tones break into small huddles of tiny marks.' },
-      { id: 'big', label: 'Large marks', min: 0, max: 100, step: 1, def: 35, hint: 'Flat, strong areas merge into marks two cells wide.' }
+      { id: 'clusters', label: 'Tiny-dot clusters', min: 0, max: 100, step: 1, def: 0, hint: 'Light tones break into small huddles of tiny marks.' },
+      { id: 'big', label: 'Large marks', min: 0, max: 100, step: 1, def: 0, hint: 'Flat, strong areas merge into marks two cells wide.' }
     ] },
     { id: 'effect', title: 'Effect', items: [
       { id: 'edge', label: 'Edge emphasis', min: 0, max: 100, step: 1, def: 30 },
-      { id: 'detail', label: 'Detail preservation', min: 0, max: 100, step: 1, def: 60 },
-      { id: 'spread', label: 'Ink spread', min: 0, max: 100, step: 1, def: 15, hint: 'Grows every mark and rounds its corners, like ink soaking into paper.' },
+      { id: 'detail', label: 'Detail preservation', min: 0, max: 100, step: 1, def: 0 },
+      { id: 'spread', label: 'Ink spread', min: 0, max: 100, step: 1, def: 0, hint: 'Grows every mark and rounds its corners, like ink soaking into paper.' },
       { id: 'fade', label: 'Threshold strength', min: 0, max: 100, step: 1, def: 0, hint: '0 fades softly past the threshold, 100 cuts a hard bitmap edge.' }
     ] },
     { id: 'colour', title: 'Colour', items: [
-      { id: 'fg', label: 'Foreground', type: 'color', def: '#141414', sw: INKS },
-      { id: 'bg', label: 'Background', type: 'color', def: '#f2f0eb', sw: PAPERS },
+      { id: 'fg', label: 'Foreground', type: 'color', def: '#7f8983', sw: INKS },
+      { id: 'bg', label: 'Background', type: 'color', def: '#dde5de', sw: PAPERS },
       { id: 'transparent', label: 'Transparent background', type: 'check', def: false },
       { id: 'duotone', label: 'Duotone', type: 'check', def: false },
       { id: 'fg2', label: 'Second colour', type: 'color', def: '#0078bf', sw: INKS, dep: 'duotone' },
@@ -946,13 +947,17 @@ function engineMain(port, local) {
   GROUPS.forEach(g => g.items.forEach(it => { it.type = it.type || 'range'; ITEMS[it.id] = it; DEFAULTS[it.id] = it.def; }));
   const MODES = [['mixed', 'Mixed'], ['circle', 'Circle'], ['square', 'Square'], ['cross', 'X / cross'], ['diamond', 'Diamond']];
   const MODE_ICON = { mixed: 'mixed', circle: 'dot', square: 'square', cross: 'cross', diamond: 'diamond' };
-  // Built-in looks. Each one starts from the defaults and keeps the current seed. The default is "Editorial X".
+  // Built-in looks. Each one starts from the defaults and keeps the current seed. The default is "Dot screen":
+  // round dots on a square grid, sized by tone, sage-grey ink on pale sage paper.
+  // The other looks were made on Editorial X's settings, so each one starts from them (ED) and stays as it was.
+  const ED = { fullGrid: false, threshold: 10, spacing: 9, minSize: 5, maxSize: 108, randomness: 50, noise: 40, mode: 'mixed', clusters: 55, big: 35, detail: 60, spread: 15, fg: '#141414', bg: '#f2f0eb' };
   const BUILTIN = [
-    { name: 'Editorial X', settings: {} },
-    { name: 'Riso duotone', settings: { fg: '#ff48b0', fg2: '#3255a4', bg: '#f5f0e6', duotone: true, duoMode: 'shadows', duoSplit: 55, offset: 45, overprint: true, spread: 22 } },
-    { name: 'Bitmap', settings: { mode: 'square', spacing: 6.5, minSize: 0, maxSize: 100, randomness: 0, noise: 20, clusters: 0, big: 45, contrast: 35, detail: 70, spread: 0, bg: '#ffffff', fg: '#111111' } },
-    { name: 'Fine grain', settings: { spacing: 4.5, maxSize: 100, randomness: 75, noise: 55, pDot: 85, pCross: 8, pDiamond: 7, pSquare: 0, clusters: 85, big: 0, spread: 10, fg: '#3d5588' } },
-    { name: 'Poster X', settings: { mode: 'cross', spacing: 12, maxSize: 105, contrast: 28, threshold: 12, randomness: 30, clusters: 30, big: 55, spread: 25, bg: '#cdb48f', fg: '#141414' } }
+    { name: 'Dot screen', settings: {} },
+    { name: 'Editorial X', settings: ED },
+    { name: 'Riso duotone', settings: { ...ED, fg: '#ff48b0', fg2: '#3255a4', bg: '#f5f0e6', duotone: true, duoMode: 'shadows', duoSplit: 55, offset: 45, overprint: true, spread: 22 } },
+    { name: 'Bitmap', settings: { ...ED, mode: 'square', spacing: 6.5, minSize: 0, maxSize: 100, randomness: 0, noise: 20, clusters: 0, big: 45, contrast: 35, detail: 70, spread: 0, bg: '#ffffff', fg: '#111111' } },
+    { name: 'Fine grain', settings: { ...ED, spacing: 4.5, maxSize: 100, randomness: 75, noise: 55, pDot: 85, pCross: 8, pDiamond: 7, pSquare: 0, clusters: 85, big: 0, spread: 10, fg: '#3d5588' } },
+    { name: 'Poster X', settings: { ...ED, mode: 'cross', spacing: 12, maxSize: 105, contrast: 28, threshold: 12, randomness: 30, clusters: 30, big: 55, spread: 25, bg: '#cdb48f', fg: '#141414' } }
   ];
 
 
@@ -1140,6 +1145,7 @@ function engineMain(port, local) {
       else if (it.type === 'select') out[id] = it.options.some(o => o[0] === v) ? v : d;
       else if (it.type === 'color') out[id] = (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v)) ? v.toLowerCase() : d;
     }
+    if (src && typeof src === 'object' && !('fullGrid' in src)) out.fullGrid = false;   // saved before the switch: light tones thinned out then
     if (out.minSize > out.maxSize) out.minSize = out.maxSize;
     return out;
   }
