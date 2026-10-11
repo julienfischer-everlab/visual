@@ -19,6 +19,7 @@
  *          and lights the points it passes; with plane, a hairline plane rides with it
  *   cloud  [hx, hy, hz, cz]  the cloud's half-sizes and centre height (defaults from the form)
  *   loose  share of the points that stay loose (default .35)
+ *   looseAcc  share of the loose points drawn in mint (default 0: mint is the signal, not dust)
  * HL2.mount(canvas, name) plays it; HL2.draw(canvas, name, phase) draws one moment.
  */
 (function () {
@@ -67,7 +68,8 @@
         ph: rnd() * TAU, ph2: rnd() * TAU, f: 1 + (rnd() * 2 | 0), amp: .03 + rnd() * .05, b0: .22 + rnd() * .3, loose: false,
         dv: [(rnd() - .5) * .5, (rnd() - .5) * .5, (rnd() - .3) * .35] });
     }
-    for (i = 0; i < nL; i++) P.push({ c: inCloud(), t: null, w: .4, acc: rnd() < .05, dot: rnd() < .22, lift: null, win: null, a: 0, r: 0,
+    var lAcc = m.looseAcc == null ? 0 : m.looseAcc;   // mint means the revealed signal, so the loose cloud carries none unless a figure asks
+    for (i = 0; i < nL; i++) P.push({ c: inCloud(), t: null, w: .4, acc: rnd() < lAcc, dot: rnd() < .22, lift: null, win: null, a: 0, r: 0,
       ph: rnd() * TAU, ph2: rnd() * TAU, f: 1 + (rnd() * 2 | 0), amp: .04 + rnd() * .06, b0: .18 + rnd() * .3, loose: true, dv: null });
     // the frame: the formed object fits about two thirds of the stage, the cloud the rest
     var box = [1e9, 1e9, -1e9, -1e9], add = function (p) { var s = HL2.proj(p[0], p[1], p[2]); box[0] = Math.min(box[0], s[0]); box[1] = Math.min(box[1], s[1]); box[2] = Math.max(box[2], s[0]); box[3] = Math.max(box[3], s[1]); };
@@ -87,7 +89,7 @@
     var bw = M.box[2] - M.box[0], bh = M.box[3] - M.box[1], S = Math.min(W * .64 / bw, H * .66 / bh);
     var ox = W / 2 - (M.box[0] + bw / 2) * S, oy = H / 2 - (M.box[1] + bh / 2) * S;
     var pr = function (x, y, z) { var s = HL2.proj(x, y, z); return [ox + s[0] * S, oy + s[1] * S]; };
-    var px = dpr * Math.max(1.15, Math.min(2.1, W / dpr / 210));    // a point's side: about 1.6px at 340px wide
+    var px = dpr * Math.max(1.15, Math.min(2.1, Math.min(W, H * 1.3) / dpr / 210));    // a point's side: about 1.6px at 340 x 260, in step with the fitted figure in a tall or a short box
     var hold = sstep(T.a1 + T.aDur - .04, T.h0, ph) * (1 - sstep(T.h1, T.r1, ph));   // 0..1, the form at its fullest
     var hp = clamp((ph - T.h0 + .06) / (T.h1 - T.h0 + .1), 0, 1);                   // the hold's own progress
     var env = Math.sin(Math.PI * hp);                                               // a breath over the hold
