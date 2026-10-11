@@ -12269,7 +12269,7 @@
   function bacillus(N, rnd) {
     var o = mk(N);
     var L = 0.34, r = 0.205;
-    var B = alloc([0.28, 0.11, 0.075, 0.14, 0.33, 0.065], N);
+    var B = alloc([0.28, 0.11, 0.075, 0, 0.33, 0], N);
     var C = fromArr([-L, 0, -L / 2, 0, 0, 0, L / 2, 0, L, 0]);
     var body = tube(C, r, 40);
     strokes(o, rnd, [{ pts: body, b: function (u, x, y) { return 0.86 + 0.12 * (-(y / r) * 0.6 - (x / (L + r)) * 0.3); }, j: 0.0035 }], B[0]);
@@ -12346,7 +12346,7 @@
     function ring(cx, cy, r) {
       return function (u) { return [cx + r * Math.cos(u * TAU), cy + r * Math.sin(u * TAU)]; };
     }
-    var B = alloc([0.37, 0.09, 0.38, 0.05, 0.11], N);
+    var B = alloc([0.37, 0.09, 0, 0.05, 0], N);
     var outl = [], inner = [], halo = [];
     for (i = 0; i < n; i++) {
       (function (i) {
@@ -12426,7 +12426,7 @@
     }, M);
     var body = tube(C, r, 16);
     var zf = function (x) { return Math.cos(w * x + ph); };
-    var B = alloc([0.34, 0.1, 0.16, 0.3, 0.1], N);
+    var B = alloc([0.34, 0.1, 0, 0.3, 0], N);
     strokes(o, rnd, [{ pts: body, b: function (u, x) { return 0.8 + 0.18 * zf(x); }, j: 0.003 }], B[0]);
     strokes(o, rnd, [{ pts: body, io: 0.02, b: function (u, x) { return 0.45 + 0.15 * zf(x); }, j: 0.003 }], B[1]);
     strokes(o, rnd, [{ pts: C, ou: r - 0.03, b: function (u, x) { return 0.27 + 0.1 * zf(x); }, j: 0.004 }], B[2]);
@@ -12463,7 +12463,7 @@
     var o = mk(N);
     var nC = 7, rx = 0.15, ry = 0.132;
     // pairs sit closer (fresh division) than the joins between pairs
-    var gaps = [0.243, 0.272, 0.243, 0.272, 0.243, 0.272];
+    var gaps = [0.268, 0.292, 0.268, 0.292, 0.268, 0.292];
     var k, cells = [];
     // walk a wavy, bending path: starts heading right along the top, bends down
     var x = 0, y = 0, h = -0.32, ds = 0.004, sTot = 0, gi = 0;
@@ -12508,7 +12508,7 @@
         return (k > 0 && inEll(cells[k - 1], x, y, rx + m, ry + m)) || (k < nC - 1 && inEll(cells[k + 1], x, y, rx + m, ry + m));
       };
     }
-    var Bd = alloc([0.38, 0.09, 0.05, 0.36, 0.12], N);
+    var Bd = alloc([0.6, 0, 0.16, 0, 0], N);
     var outl = [], inner = [], sep = [], halo = [];
     for (k = 0; k < nC; k++) {
       (function (k) {
@@ -12672,7 +12672,7 @@
       if (type === 'spiral') spirals++;
       items.push(it);
     }
-    var B = alloc([0.66, 0.15, 0.03, 0.16], N);
+    var B = alloc([0.66, 0.15, 0.03, 0.04], N);
     var OL = [], IN = [], SP = [];
     items.forEach(function (it) {
       var dim = it.dim;
@@ -13235,41 +13235,66 @@
     return Math.abs(s) / 2;
   }
   // region = { polys:[...], holes:[...], box:[x0,y0,x1,y1], area }
-  function region(polys, holes) {
-    var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, area = 0;
-    for (var k = 0; k < polys.length; k++) {
-      var q = polys[k];
-      area += polyArea(q);
-      for (var i = 0; i < q.length; i += 2) {
-        if (q[i] < x0) x0 = q[i];
-        if (q[i] > x1) x1 = q[i];
-        if (q[i + 1] < y0) y0 = q[i + 1];
-        if (q[i + 1] > y1) y1 = q[i + 1];
-      }
+  function bb(q) {
+    var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    for (var i = 0; i < q.length; i += 2) {
+      if (q[i] < x0) x0 = q[i];
+      if (q[i] > x1) x1 = q[i];
+      if (q[i + 1] < y0) y0 = q[i + 1];
+      if (q[i + 1] > y1) y1 = q[i + 1];
     }
+    return [x0, y0, x1, y1];
+  }
+  // region = union of polys minus holes, with per-polygon bounding boxes for fast rejection
+  function region(polys, holes) {
     holes = holes || [];
-    for (k = 0; k < holes.length; k++) area -= polyArea(holes[k]);
-    return { polys: polys, holes: holes, box: [x0, y0, x1, y1], area: Math.max(area, 1e-9) };
+    var area = 0, pb = [], hb = [], k, box = [1e9, 1e9, -1e9, -1e9];
+    for (k = 0; k < polys.length; k++) {
+      area += polyArea(polys[k]);
+      var q = bb(polys[k]);
+      pb.push(q);
+      box = [Math.min(box[0], q[0]), Math.min(box[1], q[1]), Math.max(box[2], q[2]), Math.max(box[3], q[3])];
+    }
+    for (k = 0; k < holes.length; k++) { area -= polyArea(holes[k]); hb.push(bb(holes[k])); }
+    return {
+      polys: polys.map(function (q) { return Float64Array.from(q); }),
+      holes: holes.map(function (q) { return Float64Array.from(q); }),
+      pb: pb, hb: hb, box: box, area: Math.max(area, 1e-9)
+    };
   }
   function inRegion(rg, x, y) {
-    var inside = false, k;
-    for (k = 0; k < rg.polys.length && !inside; k++) inside = inPoly(rg.polys[k], x, y);
+    var inside = false, k, q;
+    for (k = 0; k < rg.polys.length && !inside; k++) {
+      q = rg.pb[k];
+      if (x >= q[0] && x <= q[2] && y >= q[1] && y <= q[3]) inside = inPoly(rg.polys[k], x, y);
+    }
     if (!inside) return false;
-    for (k = 0; k < rg.holes.length; k++) if (inPoly(rg.holes[k], x, y)) return false;
+    for (k = 0; k < rg.holes.length; k++) {
+      q = rg.hb[k];
+      if (x >= q[0] && x <= q[2] && y >= q[1] && y <= q[3] && inPoly(rg.holes[k], x, y)) return false;
+    }
     return true;
   }
   // jittered-grid stipple inside a region (even, engraving-like); dens(x,y) in 0..1 optional
-  function inRegionFill(o, rg, n, rnd, a0, a1, dens) {
+  // dm: rough mean of dens over the region (sizes the grid so one pass usually suffices)
+  function inRegionFill(o, rg, n, rnd, a0, a1, dens, dm) {
     if (n <= 0) return;
-    var b = rg.box, h = Math.sqrt(rg.area / (n * 1.5)), cand = [];
-    for (var y = b[1]; y < b[3]; y += h) {
-      for (var x = b[0]; x < b[2]; x += h) {
-        var px = x + rnd() * h, py = y + rnd() * h;
-        if (dens && rnd() > dens(px, py)) continue;
-        if (inRegion(rg, px, py)) cand.push(px, py);
+    var b = rg.box, h = Math.sqrt((rg.area * (dens ? dm || 0.5 : 1)) / (n * 1.4)), cand, m;
+    for (var pass = 0; pass < 3; pass++) {
+      cand = [];
+      for (var y = b[1]; y < b[3]; y += h) {
+        for (var x = b[0]; x < b[2]; x += h) {
+          var px = x + rnd() * h, py = y + rnd() * h;
+          if (dens && rnd() > dens(px, py)) continue;
+          if (inRegion(rg, px, py)) cand.push(px, py);
+        }
       }
+      m = cand.length / 2;
+      if (m >= n) break;
+      h *= Math.sqrt(Math.max(m, 1) / (n * 1.3));
+      if (h < 1e-6) break;
     }
-    var m = cand.length / 2, P = o.p, A = o.a, j, k;
+    var P = o.p, A = o.a, j, k;
     for (j = 0; j < n; j++) {
       var cx, cy;
       if (j < m) {
@@ -13323,6 +13348,11 @@
     return { T: [sc * c, -sc * s, cx - sc * mx, sc * s, sc * c, cy - sc * my], sc: sc };
   }
 
+  // 0 at N<=200 .. 1 at N>=800: small N spends its dots on outlines first
+  function lowK(N) {
+    return Math.max(0, Math.min(1, (N - 200) / 600));
+  }
+
   function out(N) {
     return { p: new Float32Array(2 * N), a: new Float32Array(N), i: 0, N: N };
   }
@@ -13371,7 +13401,7 @@
     // mirror so the head (medial) sits on +x, then tilt: head points up, condyles down-right
     var all = [outline, coarse, canalL, canalR, interTroch, headInner, fovea, notch, epiph, compress, tens];
     for (var q = 0; q < all.length; q++) for (var i = 0; i < all[q].length; i += 2) all[q][i] = -all[q][i];
-    var ang = (-46) * d2r;
+    var ang = -46 * d2r;
     var F = fitT([outline], ang, 0.92, -0.04, -0.02);
     FEM = {
       outline: group([outline]),
@@ -13385,14 +13415,15 @@
   }
   function femur(N, rnd) {
     var G = femurGeom(), o = out(N), u = 1 / G.sc; // u: one box unit in local units
-    var c = alloc([44, 13, 5, 30, 8], N);
+    var k = lowK(N), f = 0.35 + 0.65 * k;
+    var c = alloc([44, 13 * (0.6 + 0.4 * k), 5 * k, 30 * f, 8 * k], N);
     onGroup(o, G.outline, c[0], rnd, 0.006 * u, 0.85, 1.0);
     onGroup(o, G.inner, c[1], rnd, 0.005 * u, 0.42, 0.62);
     onGroup(o, G.faint, c[2], rnd, 0.008 * u, 0.25, 0.4);
     // cancellous ends denser than the shaft
     inRegionFill(o, G.body, c[3], rnd, 0.22, 0.45, function (x, y) {
       return y < 3.0 || y > 8.3 ? 1 : 0.28;
-    });
+    }, 0.6);
     onGroup(o, G.outline, c[4], rnd, 0.035 * u, 0.1, 0.2);
     return finish(o, G.T);
   }
@@ -13430,7 +13461,7 @@
     var facetTP = ellipse(4.85, 0.95, 0.42, 0.3, 0, Math.PI * 2, 12); // transverse process root, end-on
     var vOut = spline(outlineCtl, true, 4), vOutC = spline(outlineCtl, true, 2), vBody = spline(bodyCtl, true, 2);
 
-    var LV = 4, pitch = 3.72, a = 0.32, yc = 1.5 * pitch + 1.35, hh = 1.6 * pitch;
+    var LV = 4, pitch = 3.92, a = 0.5, yc = 1.5 * pitch + 1.35, hh = 1.6 * pitch;
     var Ts = [];
     for (var i = 0; i < LV; i++) {
       var cy = i * pitch + 1.35, cx = -a * (1 - ((cy - yc) / hh) * ((cy - yc) / hh));
@@ -13460,8 +13491,8 @@
       var fu = tf(Ts[i]), fl = tf(Ts[i + 1]);
       var ua = fu(0.2, 2.74), um1 = fu(1.0, 2.7), um2 = fu(2.5, 2.7), up = fu(3.3, 2.74);
       var la = fl(0.2, -0.04), lm1 = fl(1.0, -0.02), lm2 = fl(2.5, -0.02), lp = fl(3.3, -0.04);
-      var ab = [(ua[0] + la[0]) / 2 - 0.32, (ua[1] + la[1]) / 2];
-      var pb = [(up[0] + lp[0]) / 2 + 0.16, (up[1] + lp[1]) / 2];
+      var ab = [(ua[0] + la[0]) / 2 - 0.42, (ua[1] + la[1]) / 2];
+      var pb = [(up[0] + lp[0]) / 2 + 0.2, (up[1] + lp[1]) / 2];
       var ctl = [ua[0], ua[1], um1[0], um1[1], um2[0], um2[1], up[0], up[1], pb[0], pb[1], lp[0], lp[1], lm2[0], lm2[1], lm1[0], lm1[1], la[0], la[1], ab[0], ab[1]];
       var dpoly = spline(ctl, true, 4);
       discsP.push(dpoly);
@@ -13490,7 +13521,8 @@
   }
   function vertebrae(N, rnd) {
     var G = vertGeom(), o = out(N), u = 1 / G.sc;
-    var c = alloc([42, 6, 3, 7, 19, 8, 8, 7], N);
+    var k = lowK(N), f = 0.3 + 0.7 * k;
+    var c = alloc([42, 6 * (0.5 + 0.5 * k), 3 * k, 7, 19 * f, 8 * f, 8 * f, 7 * k], N);
     onGroup(o, G.outline, c[0], rnd, 0.005 * u, 0.85, 1.0);
     onGroup(o, G.inner, c[1], rnd, 0.005 * u, 0.4, 0.6);
     onGroup(o, G.tps, c[2], rnd, 0.005 * u, 0.3, 0.45);
@@ -13505,43 +13537,50 @@
   }
 
   /* ---------------- 3. body with skeleton (front view) ---------------- */
-  // Built directly in box-like units (y down), right half mirrored.
+  // Built directly in box units (y down); right half designed, left half mirrored.
   var BODY = null;
   function bodyGeom() {
     if (BODY) return BODY;
     var d2r = Math.PI / 180;
-    var headPts = ellipse(0, -0.83, 0.075, 0.1, -90 * d2r, 66 * d2r, 9);
-    var half = headPts.concat([
-      // neck, trapezius, shoulder
-      0.036, -0.712, 0.038, -0.675, 0.05, -0.652, 0.11, -0.632, 0.175, -0.608, 0.218, -0.582, 0.245, -0.545,
-      // outer arm (slightly abducted)
-      0.258, -0.49, 0.268, -0.4, 0.28, -0.3, 0.296, -0.19, 0.318, -0.08, 0.337, 0.03,
-      // hand
-      0.356, 0.08, 0.364, 0.15, 0.352, 0.205, 0.328, 0.214, 0.31, 0.17, 0.302, 0.1,
-      // inner arm
-      0.292, 0.03, 0.272, -0.07, 0.248, -0.18, 0.226, -0.29, 0.208, -0.39, 0.196, -0.44,
-      // armpit, flank, waist, hip
-      0.178, -0.452, 0.168, -0.38, 0.152, -0.26, 0.146, -0.15, 0.158, -0.06, 0.176, 0.02, 0.182, 0.09,
-      // outer leg
-      0.176, 0.18, 0.162, 0.3, 0.138, 0.41, 0.128, 0.48, 0.136, 0.58, 0.124, 0.7, 0.1, 0.83,
-      // foot
-      0.112, 0.885, 0.13, 0.925, 0.118, 0.95, 0.07, 0.952, 0.048, 0.93,
-      // inner leg
-      0.052, 0.85, 0.045, 0.72, 0.05, 0.6, 0.042, 0.48, 0.034, 0.36, 0.024, 0.22, 0.012, 0.15
-    ]);
-    // full closed outline: right half then mirrored left half reversed
+    // arm: centre line + half widths -> outer/inner edges
+    var armC = [[0.224, -0.47, 0.04], [0.247, -0.35, 0.033], [0.28, -0.2, 0.026], [0.3, -0.11, 0.029], [0.338, 0.05, 0.019], [0.352, 0.125, 0.025]];
+    var outer = [], inner = [];
+    for (var a = 0; a < armC.length; a++) {
+      var p0 = armC[Math.max(a - 1, 0)], p1 = armC[Math.min(a + 1, armC.length - 1)];
+      var dx = p1[0] - p0[0], dy = p1[1] - p0[1], l = Math.hypot(dx, dy), nx = dy / l, ny = -dx / l; // normal to the outside
+      outer.push(armC[a][0] + nx * armC[a][2], armC[a][1] + ny * armC[a][2]);
+      inner.push(armC[a][0] - nx * armC[a][2], armC[a][1] - ny * armC[a][2]);
+    }
+    var innerRev = [];
+    for (a = inner.length - 2; a >= 0; a -= 2) innerRev.push(inner[a], inner[a + 1]);
+    var headPts = ellipse(0, -0.83, 0.074, 0.1, -90 * d2r, 66 * d2r, 9);
+    var half = headPts.concat(
+      [0.036, -0.712, 0.038, -0.675, 0.05, -0.652, 0.11, -0.632, 0.175, -0.608, 0.215, -0.585, 0.243, -0.54],
+      outer,
+      [0.365, 0.175, 0.356, 0.208, 0.336, 0.212, 0.322, 0.175],
+      innerRev,
+      [0.18, -0.452, 0.168, -0.38, 0.152, -0.26, 0.146, -0.15, 0.156, -0.06, 0.174, 0.02, 0.18, 0.09,
+        0.175, 0.18, 0.161, 0.3, 0.138, 0.41, 0.128, 0.48, 0.136, 0.58, 0.124, 0.7, 0.1, 0.83,
+        0.112, 0.885, 0.13, 0.925, 0.118, 0.95, 0.07, 0.952, 0.048, 0.93,
+        0.052, 0.85, 0.045, 0.72, 0.05, 0.6, 0.042, 0.48, 0.034, 0.36, 0.024, 0.22, 0.01, 0.142]
+    );
     var left = mirrorX(half), ctrl = half.slice();
     for (var i = left.length - 2; i >= 2; i -= 2) ctrl.push(left[i], left[i + 1]);
     var silhouette = spline(ctrl, true, 4);
-    var silC = spline(ctrl, true, 2);
+    var silC = spline(ctrl, true, 1);
 
     function both(list) {
       var o = [];
       for (var k = 0; k < list.length; k++) { o.push(list[k]); o.push(mirrorX(list[k])); }
       return o;
     }
+    function shift(pts, dy) {
+      var o = pts.slice();
+      for (var k = 1; k < o.length; k += 2) o[k] += dy;
+      return o;
+    }
 
-    // spine: chain of small vertebral blocks
+    // spine: chain of small vertebral blocks, cervical -> lumbar
     var spineBlocks = [], y = -0.7;
     for (var v = 0; v < 24; v++) {
       var lum = v >= 19, th = v >= 7 && v < 19;
@@ -13549,79 +13588,76 @@
       spineBlocks.push([-w, y, w, y, w, y + hgt, -w, y + hgt, -w, y]);
       y += hgt + 0.006;
     }
-    var spineTop = -0.7, spineBot = y;
-    // sacrum (inverted shield)
-    var sacrum = spline([-0.045, spineBot, 0.045, spineBot, 0.035, spineBot + 0.05, 0.012, spineBot + 0.1, -0.012, spineBot + 0.1, -0.035, spineBot + 0.05], true, 4);
-    var sb = spineBot;
-    // ilium + pubis + ischium, right side
-    var hip = spline([
-      0.046, sb - 0.01, 0.06, sb - 0.06, 0.1, sb - 0.085, 0.138, sb - 0.068, 0.156, sb - 0.03,
-      0.146, sb + 0.012, 0.13, sb + 0.04, 0.128, sb + 0.088, 0.112, sb + 0.122, 0.09, sb + 0.142,
-      0.062, sb + 0.136, 0.03, sb + 0.128, 0.008, sb + 0.122, 0.008, sb + 0.098, 0.035, sb + 0.088,
-      0.062, sb + 0.066, 0.07, sb + 0.035, 0.062, sb + 0.008
-    ], true, 4);
-    var obtur = ellipse(0.06, sb + 0.105, 0.019, 0.014, 0, Math.PI * 2, 10, 0.4);
-    var acet = ellipse(0.106, sb + 0.064, 0.024, 0.024, -100 * d2r, 110 * d2r, 8);
-    // femur, right side
-    var fh = [0.103, sb + 0.064];
-    var femCtl = ellipse(fh[0], fh[1], 0.02, 0.02, 40 * d2r, 270 * d2r, 7).concat([
-      0.125, sb + 0.052, 0.145, sb + 0.056, 0.16, sb + 0.072, 0.162, sb + 0.1, 0.152, sb + 0.13,
-      0.138, 0.24, 0.124, 0.36, 0.124, 0.405, 0.13, 0.435, 0.118, 0.452, 0.096, 0.448, 0.086, 0.438,
-      0.074, 0.452, 0.056, 0.448, 0.05, 0.425, 0.062, 0.4, 0.092, 0.33, 0.112, 0.21, 0.118, sb + 0.14,
-      0.112, sb + 0.118, 0.106, sb + 0.096
+    var sb = y; // top of sacrum
+    var sacrum = spline([-0.046, sb, 0.046, sb, 0.036, sb + 0.05, 0.012, sb + 0.1, -0.012, sb + 0.1, -0.036, sb + 0.05], true, 4);
+    // ilium + pubis + ischium (right), relative to sb
+    var hip = spline(shift([
+      0.042, -0.012, 0.058, -0.07, 0.098, -0.094, 0.134, -0.078, 0.148, -0.038,
+      0.138, -0.004, 0.134, 0.022, 0.13, 0.062, 0.124, 0.094, 0.108, 0.124, 0.088, 0.142,
+      0.062, 0.136, 0.03, 0.128, 0.008, 0.122, 0.008, 0.098, 0.036, 0.088,
+      0.062, 0.066, 0.07, 0.035, 0.062, 0.006
+    ], sb), true, 4);
+    var obtur = ellipse(0.062, sb + 0.106, 0.018, 0.013, 0, Math.PI * 2, 10, 0.4);
+    // femur (right): ball, neck, trochanter, slim shaft, condyles
+    var fh = [0.102, sb + 0.062];
+    var femCtl = ellipse(fh[0], fh[1], 0.019, 0.019, 40 * d2r, 270 * d2r, 7).concat([
+      0.124, sb + 0.05, 0.143, sb + 0.054, 0.156, sb + 0.07, 0.156, sb + 0.1, 0.146, sb + 0.13,
+      0.132, 0.24, 0.12, 0.36, 0.12, 0.405, 0.127, 0.433, 0.116, 0.45, 0.096, 0.447, 0.087, 0.437,
+      0.076, 0.45, 0.058, 0.447, 0.052, 0.425, 0.064, 0.402, 0.098, 0.33, 0.112, 0.21, 0.118, sb + 0.14,
+      0.112, sb + 0.118, 0.106, sb + 0.094
     ]);
     var femur = spline(femCtl, true, 4);
-    // tibia + fibula
-    var tibia = spline([0.056, 0.468, 0.08, 0.462, 0.118, 0.47, 0.11, 0.51, 0.1, 0.6, 0.096, 0.75, 0.1, 0.83, 0.088, 0.845, 0.072, 0.84, 0.074, 0.75, 0.07, 0.6, 0.062, 0.51], true, 4);
-    var fibula = spline([0.122, 0.49, 0.118, 0.6, 0.11, 0.75, 0.112, 0.84], false, 4);
-    // ribs, clavicles, humerus, forearm
+    // lower leg
+    var tibia = spline([0.058, 0.466, 0.082, 0.46, 0.116, 0.468, 0.106, 0.505, 0.096, 0.6, 0.093, 0.75, 0.097, 0.83, 0.087, 0.844, 0.074, 0.84, 0.076, 0.75, 0.072, 0.6, 0.064, 0.505], true, 4);
+    var fibula = spline([0.122, 0.49, 0.117, 0.6, 0.11, 0.75, 0.111, 0.84], false, 4);
+    // thorax and upper limb (faint)
     var ribs = [];
-    for (var r = 0; r < 9; r++) {
-      var y0 = -0.585 + r * 0.03, wd = 0.075 + 0.05 * Math.sin(Math.min(1, (r + 2) / 7) * Math.PI / 2) - (r > 6 ? (r - 6) * 0.012 : 0);
-      ribs.push(spline([0.018, y0, wd * 0.6, y0 - 0.012, wd, y0 + 0.012, wd * 0.98, y0 + 0.05, wd * 0.82, y0 + 0.075], false, 4));
+    for (var r = 0; r < 7; r++) {
+      var y0 = -0.582 + r * 0.04, wd = [0.085, 0.112, 0.124, 0.128, 0.126, 0.118, 0.104][r];
+      ribs.push(spline([0.018, y0, wd * 0.55, y0 - 0.012, wd * 0.92, y0 + 0.01, wd, y0 + 0.045, wd * 0.9, y0 + 0.075], false, 4));
     }
-    var clav = spline([0.012, -0.618, 0.07, -0.622, 0.13, -0.608, 0.19, -0.6], false, 5);
-    var humerus = spline([0.205, -0.545, 0.226, -0.52, 0.244, -0.4, 0.262, -0.25, 0.27, -0.19], false, 5);
-    var humHead = ellipse(0.218, -0.535, 0.018, 0.018, 0, Math.PI * 2, 10);
-    var radius = spline([0.272, -0.175, 0.29, -0.08, 0.31, 0.03], false, 4);
-    var ulna = spline([0.262, -0.18, 0.28, -0.08, 0.3, 0.035], false, 4);
-    var handB = spline([0.31, 0.06, 0.325, 0.11, 0.33, 0.16], false, 4);
-    var skull = ellipse(0, -0.835, 0.062, 0.086, 0, Math.PI * 2, 24);
+    var clav = spline([0.012, -0.618, 0.07, -0.622, 0.13, -0.608, 0.19, -0.598], false, 5);
+    var humHead = ellipse(0.214, -0.532, 0.017, 0.017, 0, Math.PI * 2, 10);
+    var humerus = spline([0.228, -0.515, 0.24, -0.42, 0.258, -0.3, 0.278, -0.2], false, 5);
+    var radius = spline([0.289, -0.185, 0.308, -0.08, 0.333, 0.035], false, 4);
+    var ulna = spline([0.274, -0.19, 0.292, -0.08, 0.318, 0.04], false, 4);
+    var handB = spline([0.336, 0.065, 0.348, 0.115, 0.354, 0.16], false, 4);
+    var skull = ellipse(0, -0.835, 0.061, 0.086, 0, Math.PI * 2, 24);
 
     BODY = {
       silhouette: group([silhouette]),
       silR: region([silC]),
-      head: region([ellipse(0, -0.835, 0.06, 0.084, 0, Math.PI * 2, 18)]),
-      spine: region(spineBlocks.concat([sacrum])),
-      spineLine: group(spineBlocks),
-      pelvisLine: group(both([hip, obtur, acet]).concat([sacrum])),
+      head: region([ellipse(0, -0.835, 0.058, 0.082, 0, Math.PI * 2, 18)]),
+      spine: region(spineBlocks),
+      pelvisLine: group(both([hip, obtur]).concat([sacrum])),
       pelvisR: region(both([hip]), both([obtur])),
       femurLine: group(both([femur])),
       femurR: region(both([femur])),
       shin: group(both([tibia, fibula])),
-      upper: group(both([clav, humerus, humHead, radius, ulna, handB])),
+      upper: group(both([clav, humHead, humerus, radius, ulna, handB])),
       ribs: group(both(ribs)),
       skull: group([skull]),
-      T: [1, 0, -0.05, 0, 1, 0.0],
+      T: [1, 0, -0.08, 0, 1, 0.0],
       sc: 1
     };
     return BODY;
   }
   function body(N, rnd) {
     var G = bodyGeom(), o = out(N);
-    var c = alloc([30, 9, 8, 7, 5, 8, 4, 4, 5, 5, 3, 9, 3], N);
-    onGroup(o, G.silhouette, c[0], rnd, 0.004, 0.82, 1.0);
-    inRegionFill(o, G.spine, c[1], rnd, 0.7, 0.95);
-    onGroup(o, G.pelvisLine, c[2], rnd, 0.0035, 0.7, 0.95);
-    onGroup(o, G.femurLine, c[3], rnd, 0.0035, 0.7, 0.95);
-    inRegionFill(o, G.pelvisR, c[4], rnd, 0.45, 0.7);
-    inRegionFill(o, G.femurR, c[5], rnd, 0.5, 0.75);
-    onGroup(o, G.shin, c[6], rnd, 0.003, 0.4, 0.6);
-    onGroup(o, G.upper, c[7], rnd, 0.003, 0.35, 0.55);
-    onGroup(o, G.ribs, c[8], rnd, 0.003, 0.3, 0.48);
+    var k = lowK(N), f = 0.3 + 0.7 * k, s = 0.5 + 0.5 * k;
+    var c = alloc([31, 9, 8, 8, 2 * f, 3 * f, 4 * s, 4 * s, 7 * s, 5 * s, 3 * f, 6 * f, 3 * k], N);
+    onGroup(o, G.silhouette, c[0], rnd, 0.0035, 0.8, 0.98);
+    inRegionFill(o, G.spine, c[1], rnd, 0.72, 0.98);
+    onGroup(o, G.pelvisLine, c[2], rnd, 0.003, 0.72, 0.98);
+    onGroup(o, G.femurLine, c[3], rnd, 0.003, 0.72, 0.98);
+    inRegionFill(o, G.pelvisR, c[4], rnd, 0.4, 0.6);
+    inRegionFill(o, G.femurR, c[5], rnd, 0.5, 0.7);
+    onGroup(o, G.shin, c[6], rnd, 0.003, 0.42, 0.62);
+    onGroup(o, G.upper, c[7], rnd, 0.003, 0.36, 0.56);
+    onGroup(o, G.ribs, c[8], rnd, 0.003, 0.36, 0.56);
     onGroup(o, G.skull, c[9], rnd, 0.004, 0.45, 0.65);
-    inRegionFill(o, G.head, c[10], rnd, 0.3, 0.45);
-    inRegionFill(o, G.silR, c[11], rnd, 0.14, 0.28);
+    inRegionFill(o, G.head, c[10], rnd, 0.28, 0.42);
+    inRegionFill(o, G.silR, c[11], rnd, 0.13, 0.26);
     onGroup(o, G.silhouette, c[12], rnd, 0.02, 0.1, 0.18);
     return finish(o, G.T);
   }
@@ -13704,6 +13740,17 @@
   }
 
   function inPoly(pts, x, y) {
+    let bb = pts._bb;
+    if (!bb) {
+      bb = pts._bb = [9, 9, -9, -9];
+      for (let i = 0; i < pts.length; i += 2) {
+        if (pts[i] < bb[0]) bb[0] = pts[i];
+        if (pts[i] > bb[2]) bb[2] = pts[i];
+        if (pts[i + 1] < bb[1]) bb[1] = pts[i + 1];
+        if (pts[i + 1] > bb[3]) bb[3] = pts[i + 1];
+      }
+    }
+    if (x < bb[0] || x > bb[2] || y < bb[1] || y > bb[3]) return false;
     let c = false;
     const m = pts.length / 2;
     for (let i = 0, j = m - 1; i < m; j = i++) {
@@ -13721,6 +13768,10 @@
   }
   Pen.prototype.put = function (x, y, a) {
     if (this.i >= this.N) return;
+    if (this.xf) {
+      x = x * this.xf[0] + this.xf[1];
+      y = y * this.xf[0] + this.xf[2];
+    }
     if (!(x === x)) x = 0;
     if (!(y === y)) y = 0;
     this.p[2 * this.i] = x < -1 ? -1 : x > 1 ? 1 : x;
@@ -13740,11 +13791,12 @@
     const P = pl(pts);
     return {
       w: P.L * dens,
+      sec: opt.a < 0.5,
       fn: function (pen, n, rnd) {
         const pp = P.pts, cum = P.cum, L = P.L;
         let j = 0;
         const a0 = opt.a, av = opt.av || 0, jt = opt.j || 0, band = opt.band || 0;
-        const wa = opt.wa || 0, wk = opt.wk || 0, fade = opt.fade || 0, hide = opt.hide;
+        const wa = opt.wa || 0, wk = opt.wk || 0, fade = opt.fade || 0, tail = opt.tail || 0, hide = opt.hide;
         for (let k = 0; k < n; k++) {
           let tries = 0;
           for (;;) {
@@ -13776,6 +13828,10 @@
               const e = Math.min(s, L - s) / (L * 0.5);
               a *= 1 - fade * (1 - Math.min(1, e * 2.2));
             }
+            if (tail) {
+              const e = (L - s) / (L * tail);
+              if (e < 1) a *= 0.2 + 0.8 * e;
+            }
             pen.put(x, y, a);
             break;
           }
@@ -13796,6 +13852,7 @@
     }
     return {
       w: w,
+      sec: true,
       fn: function (pen, n, rnd) {
         const a0 = opt.a, av = opt.av || 0, ok = opt.ok;
         let lx = (mnx + mxx) / 2, ly = (mny + mxy) / 2;
@@ -13818,15 +13875,21 @@
   }
 
   // Allocate N dots across parts by weight (largest remainder), then draw.
-  function compose(N, rnd, parts) {
+  function compose(N, rnd, parts, xf) {
     const pen = new Pen(N);
+    if (xf) pen.xf = xf;
+    // at low dot counts give the outlines priority over texture and faint detail
+    const sec = Math.max(0.3, Math.min(1, N / 1100));
+    const wt = function (q) {
+      return q.sec ? q.w * sec : q.w;
+    };
     let W = 0;
-    for (let i = 0; i < parts.length; i++) W += parts[i].w;
+    for (let i = 0; i < parts.length; i++) W += wt(parts[i]);
     const cnt = new Array(parts.length);
     const rem = [];
     let used = 0;
     for (let i = 0; i < parts.length; i++) {
-      const e = (parts[i].w / W) * N;
+      const e = (wt(parts[i]) / W) * N;
       cnt[i] = Math.floor(e);
       used += cnt[i];
       rem.push([e - cnt[i], i]);
@@ -13837,6 +13900,7 @@
     for (let r = 0; used < N; r++, used++) cnt[rem[r % rem.length][1]]++;
     for (let i = 0; i < parts.length; i++) if (cnt[i] > 0) parts[i].fn(pen, cnt[i], rnd);
     // safety: never leave a dot unplaced
+    pen.xf = null;
     while (pen.i < N) {
       const s = pen.i > 0 ? Math.floor(rnd() * pen.i) : 0;
       pen.put(pen.p[2 * s] + gauss(rnd) * 0.01, pen.p[2 * s + 1] + gauss(rnd) * 0.01, pen.a[s] || 0.3);
@@ -13847,7 +13911,7 @@
   // ------------------------------------------------------------------
   // 1. Head in profile: sagittal MRI slice
   // ------------------------------------------------------------------
-  function head(N, rnd) {
+  function buildHead() {
     const S = 12;
     const skin = spline([
       0.40, 0.98, 0.38, 0.72, 0.43, 0.48, 0.58, 0.30, 0.71, 0.04, 0.74, -0.27, 0.65, -0.55,
@@ -13916,10 +13980,10 @@
       line(skull, 26, { a: 0.42, av: 0.12, j: 0.006, band: 0.012 }),
       line(brain, 66, { a: 0.92, av: 0.1, j: 0.005, wa: 0.012, wk: 7 }),
       line(cc, 95, { a: 0.88, av: 0.12, j: 0.004, band: 0.022 }),
-      line(cing, 34, { a: 0.62, av: 0.15, j: 0.005, wa: 0.008, wk: 5, fade: 0.6 }),
+      line(cing, 38, { a: 0.7, av: 0.14, j: 0.005, wa: 0.008, wk: 5, fade: 0.5 }),
       line(cereb, 58, { a: 0.88, av: 0.1, j: 0.005 }),
-      line(stemF, 38, { a: 0.72, av: 0.12, j: 0.005 }),
-      line(stemB, 34, { a: 0.62, av: 0.12, j: 0.005 }),
+      line(stemF, 36, { a: 0.72, av: 0.12, j: 0.005, tail: 0.45 }),
+      line(stemB, 32, { a: 0.62, av: 0.12, j: 0.005, tail: 0.45 }),
       line(palate, 22, { a: 0.42, av: 0.12, j: 0.005, fade: 0.5 }),
       line(tongue, 20, { a: 0.36, av: 0.12, j: 0.006, fade: 0.6 }),
       area(brainPoly, 140, { a: 0.3, av: 0.14 }),
@@ -13934,44 +13998,56 @@
       line(skin, 10, { a: 0.14, av: 0.06, j: 0.035 }),
     ];
     for (let i = 0; i < sulci.length; i++)
-      parts.push(line(spline(sulci[i], false, S), 34, { a: 0.62, av: 0.15, j: 0.004, fade: 0.7 }));
+      parts.push(line(spline(sulci[i], false, S), 40, { a: 0.72, av: 0.14, j: 0.004, fade: 0.6 }));
+    // cervical vertebral bodies in front of the cord (faint)
+    for (let v = 0; v < 4; v++) {
+      const y0 = 0.5 + v * 0.115, y1 = y0 + 0.08, xr = 0.115 + v * 0.016, xl = xr - 0.12;
+      parts.push(line([xl, y0, xr, y0, xr + 0.008, y0 + 0.04, xr, y1, xl, y1, xl - 0.006, y0 + 0.04, xl, y0], 26, { a: 0.36, av: 0.1, j: 0.004 }));
+    }
     for (let i = 0; i < folia.length; i++)
       parts.push(line(spline(folia[i], false, S), 34, { a: 0.55, av: 0.15, j: 0.004, fade: 0.5 }));
-    return compose(N, rnd, parts);
+    return parts;
+  }
+  let headParts = null;
+  function head(N, rnd) {
+    if (!headParts) headParts = buildHead();
+    return compose(N, rnd, headParts, [1, -0.03, -0.01]);
   }
 
   // ------------------------------------------------------------------
   // 2. Chest from the front: sternum, ribs, clavicles, two lungs (CT chest)
   // ------------------------------------------------------------------
-  function chest(N, rnd) {
+  function buildChest() {
     const S = 12;
     const parts = [];
     const W = [0.34, 0.5, 0.61, 0.69, 0.75, 0.78, 0.79, 0.78, 0.75, 0.7];
-    const BK = [];
-    for (let k = 0; k < 10; k++) BK.push(-0.7 + 0.1 * k);
-    const margin = spline([0.075, 0.12, 0.2, 0.22, 0.36, 0.31, 0.52, 0.4, 0.66, 0.46], false, S);
+    const margin = spline([0.066, 0.1, 0.2, 0.22, 0.36, 0.31, 0.52, 0.4, 0.66, 0.46], false, S);
     const marginEnd = [[0.3, 0.27], [0.47, 0.37], [0.62, 0.445]];
     for (let side = -1; side <= 1; side += 2) {
       for (let k = 0; k < 10; k++) {
-        const w = W[k], b = BK[k], l = b + 0.14 + 0.01 * k;
-        let fx, fy;
-        if (k < 7) {
-          fx = k === 0 ? 0.1 : 0.072;
-          fy = -0.58 + 0.105 * k;
-        } else {
-          fx = marginEnd[k - 7][0];
-          fy = marginEnd[k - 7][1];
-        }
+        const w = W[k], b = -0.74 + 0.088 * k, l = b + 0.12;
         // posterior arc: spine -> lateral (faint, seen through)
-        let post = bez([0.05, b, 0.3 * w, b - 0.035, w, l - 0.55 * (l - b) - 0.02, w, l], 24);
-        // anterior arc: lateral -> sternum / costal margin (bright)
-        let ant = bez([w, l, w, l + 0.55 * (fy - l) + 0.05, fx + 0.45 * (w - fx), fy + 0.01, fx, fy], 24);
+        let post = bez([0.05, b, 0.32 * w, b - 0.04, w, l - 0.6 * (l - b) - 0.02, w, l], 24);
+        let ant, cart = null;
+        if (k < 7) {
+          const fx = k === 0 ? 0.1 : 0.072, fy = b + 0.18 + 0.025 * k;
+          const low = fy + 0.012 + 0.012 * k, xl = fx + (0.42 - 0.02 * k) * (w - fx);
+          // bony anterior rib: lateral -> costochondral junction (lowest point)
+          ant = bez([w, l, w, l + 0.55 * (low - l), xl + 0.4 * (w - xl), low, xl, low], 26);
+          // costal cartilage rising to the sternum
+          cart = bez([xl, low, xl - 0.45 * (xl - fx), low, fx + 0.25 * (xl - fx), fy + 0.3 * (low - fy), fx, fy], 14);
+        } else {
+          const me = marginEnd[k - 7];
+          ant = bez([w, l, w, l + 0.6 * (me[1] - l), me[0] + 0.4 * (w - me[0]), me[1] + 0.01, me[0], me[1]], 26);
+        }
         if (side < 0) {
           post = mirrorX(post);
           ant = mirrorX(ant);
+          if (cart) cart = mirrorX(cart);
         }
-        parts.push(line(post, 15, { a: 0.36, av: 0.12, j: 0.006, fade: 0.4 }));
-        parts.push(line(ant, 44, { a: 0.9, av: 0.1, j: 0.006, band: 0.008 }));
+        parts.push(line(post, 14, { a: 0.32, av: 0.12, j: 0.006, fade: 0.4 }));
+        parts.push(line(ant, 40, { a: 0.82, av: 0.12, j: 0.005, band: 0.006 }));
+        if (cart) parts.push(line(cart, 30, { a: 0.55, av: 0.12, j: 0.004 }));
       }
       const mg = side < 0 ? mirrorX(margin) : margin;
       parts.push(line(mg, 40, { a: 0.72, av: 0.12, j: 0.005 }));
@@ -13988,39 +14064,855 @@
     ];
     parts.push(line(stern, 70, { a: 0.95, av: 0.08, j: 0.004 }));
     parts.push(area(stern, 18, { a: 0.4, av: 0.15 }));
-    // lungs
+    // lungs: set inside the cage so their outline reads on its own
     const lungR = spline([
-      -0.29, -0.75, -0.42, -0.66, -0.56, -0.48, -0.67, -0.22, -0.72, 0.05, -0.74, 0.28, -0.73, 0.42,
-      -0.6, 0.31, -0.44, 0.25, -0.27, 0.27, -0.16, 0.31, -0.12, 0.1, -0.13, -0.12, -0.11, -0.36,
-      -0.13, -0.58, -0.2, -0.72,
+      -0.3, -0.77, -0.44, -0.65, -0.55, -0.46, -0.62, -0.21, -0.66, 0.05, -0.68, 0.27, -0.67, 0.39,
+      -0.55, 0.28, -0.4, 0.22, -0.28, 0.24, -0.19, 0.28, -0.17, 0.08, -0.18, -0.12, -0.16, -0.35,
+      -0.16, -0.58, -0.21, -0.73,
     ], true, S);
     const lungL = spline([
-      0.29, -0.75, 0.42, -0.66, 0.56, -0.48, 0.67, -0.22, 0.72, 0.05, 0.74, 0.3, 0.73, 0.45,
-      0.6, 0.35, 0.46, 0.31, 0.34, 0.36, 0.27, 0.28, 0.27, 0.1, 0.19, -0.05, 0.12, -0.32,
-      0.13, -0.58, 0.2, -0.72,
+      0.3, -0.77, 0.44, -0.65, 0.55, -0.46, 0.62, -0.21, 0.66, 0.05, 0.68, 0.3, 0.67, 0.43,
+      0.56, 0.33, 0.44, 0.28, 0.35, 0.32, 0.29, 0.25, 0.27, 0.08, 0.21, -0.06, 0.17, -0.3,
+      0.16, -0.58, 0.21, -0.73,
     ], true, S);
-    parts.push(line(lungR, 52, { a: 0.8, av: 0.12, j: 0.006 }));
-    parts.push(line(lungL, 52, { a: 0.8, av: 0.12, j: 0.006 }));
-    parts.push(area(lungR, 95, { a: 0.24, av: 0.12 }));
-    parts.push(area(lungL, 90, { a: 0.24, av: 0.12 }));
-    // spine below the sternum (faint)
-    for (let s = -1; s <= 1; s += 2) {
-      parts.push(line([s * 0.05, 0.28, s * 0.055, 0.6, s * 0.06, 0.95], 22, { a: 0.3, av: 0.1, j: 0.005, wa: 0.008, wk: 9 }));
+    parts.push(line(lungR, 60, { a: 0.9, av: 0.1, j: 0.005 }));
+    parts.push(line(lungL, 60, { a: 0.9, av: 0.1, j: 0.005 }));
+    parts.push(area(lungR, 90, { a: 0.27, av: 0.12 }));
+    parts.push(area(lungL, 86, { a: 0.27, av: 0.12 }));
+    // a few bronchial branches from each hilum (faint)
+    const br = [
+      [-0.15, -0.3, -0.24, -0.42, -0.33, -0.56],
+      [-0.15, -0.3, -0.3, -0.26, -0.45, -0.18],
+      [-0.16, -0.28, -0.25, -0.1, -0.36, 0.08],
+      [-0.25, -0.1, -0.44, 0.0],
+    ];
+    for (let i = 0; i < br.length; i++) {
+      parts.push(line(spline(br[i], false, 8), 26, { a: 0.42, av: 0.12, j: 0.004, fade: 0.7 }));
+      const m = mirrorX(br[i]);
+      for (let q = 0; q < m.length; q += 2) m[q] = m[q] < 0.2 ? m[q] + 0.0 : m[q] + 0.03;
+      parts.push(line(spline(m, false, 8), 26, { a: 0.42, av: 0.12, j: 0.004, fade: 0.7 }));
     }
-    return compose(N, rnd, parts);
+    // lumbar-ish vertebrae below the sternum (faint)
+    for (let j = 0; j < 4; j++) {
+      const y0 = 0.31 + j * 0.088, y1 = y0 + 0.066, hw = 0.05 + 0.004 * j;
+      parts.push(line([-hw, y0, hw, y0, hw + 0.006, y0 + 0.033, hw, y1, -hw, y1, -hw - 0.006, y0 + 0.033, -hw, y0], 30, { a: 0.34, av: 0.1, j: 0.004 }));
+    }
+    return parts;
+  }
+  let chestParts = null;
+  function chest(N, rnd) {
+    if (!chestParts) chestParts = buildChest();
+    return compose(N, rnd, chestParts, [1.1, 0, -0.01]);
   }
 
   // ------------------------------------------------------------------
   // 3. MRI scanner: ring (bore) at an angle, patient table sliding in
   // ------------------------------------------------------------------
+  // split a polyline into the runs whose vertices pass vis(x,y)
+  function runs(pts, vis) {
+    const out = [];
+    let cur = null;
+    for (let i = 0; i < pts.length; i += 2) {
+      if (vis(pts[i], pts[i + 1])) {
+        if (!cur) cur = [];
+        cur.push(pts[i], pts[i + 1]);
+      } else if (cur) {
+        if (cur.length >= 4) out.push(cur);
+        cur = null;
+      }
+    }
+    if (cur && cur.length >= 4) out.push(cur);
+    return out;
+  }
+
+  function hull(pts) {
+    const P = [];
+    for (let i = 0; i < pts.length; i += 2) P.push([pts[i], pts[i + 1]]);
+    P.sort(function (a, b) {
+      return a[0] - b[0] || a[1] - b[1];
+    });
+    const cr = function (o, a, b) {
+      return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    };
+    const lo = [], up = [];
+    for (let i = 0; i < P.length; i++) {
+      while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], P[i]) <= 0) lo.pop();
+      lo.push(P[i]);
+    }
+    for (let i = P.length - 1; i >= 0; i--) {
+      while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], P[i]) <= 0) up.pop();
+      up.push(P[i]);
+    }
+    lo.pop();
+    up.pop();
+    const h = lo.concat(up), o = [];
+    for (let i = 0; i < h.length; i++) o.push(h[i][0], h[i][1]);
+    return o;
+  }
+
+  function buildScanner() {
+    const th = -0.6, ph = 0.4;
+    const st = Math.sin(th), ct = Math.cos(th), sp = Math.sin(ph), cp = Math.cos(ph);
+    const C = [st * cp, sp, ct * cp], Rv = [ct, 0, -st], U = [-st * sp, cp, -ct * sp];
+    const Ro = 1, Ri = 0.6, D = 0.95, yT = -0.3, Tw = 0.3, Th = 0.07, zb = -0.8, zf = 1.95;
+    const pw = 0.19, pz0 = 0.6, pz1 = 1.5, yF = -1.0;
+    // fit: projected key points -> unit box
+    let mnx = 9, mny = 9, mxx = -9, mxy = -9;
+    const key = function (x, y, z) {
+      const sx = x * Rv[0] + z * Rv[2], sy = -(x * U[0] + y * U[1] + z * U[2]);
+      mnx = Math.min(mnx, sx); mxx = Math.max(mxx, sx); mny = Math.min(mny, sy); mxy = Math.max(mxy, sy);
+    };
+    for (let i = 0; i < 48; i++) {
+      const t = (i / 48) * 6.2831853;
+      key(Ro * Math.cos(t), Ro * Math.sin(t), 0);
+      key(Ro * Math.cos(t), Ro * Math.sin(t), -D);
+    }
+    key(-Tw, yT, zf); key(Tw, yT, zf); key(-Tw, yT - Th, zf); key(Tw, yT - Th, zf);
+    key(-pw, yF, pz1); key(pw, yF, pz1);
+    const k = Math.min(1.86 / (mxx - mnx), 1.8 / (mxy - mny));
+    const ox = -k * (mnx + mxx) / 2 - 0.02, oy = -k * (mny + mxy) / 2 - 0.01;
+    const sx3 = function (x, y, z) {
+      return k * (x * Rv[0] + z * Rv[2]) + ox;
+    };
+    const sy3 = function (x, y, z) {
+      return -k * (x * U[0] + y * U[1] + z * U[2]) + oy;
+    };
+    const P = function (x, y, z, out) {
+      out.push(sx3(x, y, z), sy3(x, y, z));
+    };
+    // screen -> world point on plane z = z0 (orthographic ray)
+    const onZ = function (sx, sy, z0) {
+      const rx = (sx - ox) / k, ry = -(sy - oy) / k;
+      const d = (z0 - rx * Rv[2] - ry * U[2]) / C[2];
+      return [rx * Rv[0] + ry * U[0] + d * C[0], rx * Rv[1] + ry * U[1] + d * C[1]];
+    };
+    const inBore = function (sx, sy) {
+      const q = onZ(sx, sy, 0);
+      return q[0] * q[0] + q[1] * q[1] < Ri * Ri * 0.99;
+    };
+    const box = function (x0, x1, y0, y1, z0, z1) {
+      const o = [];
+      P(x0, y0, z0, o); P(x1, y0, z0, o); P(x0, y1, z0, o); P(x1, y1, z0, o);
+      P(x0, y0, z1, o); P(x1, y0, z1, o); P(x0, y1, z1, o); P(x1, y1, z1, o);
+      return hull(o);
+    };
+    const slabFront = box(-Tw, Tw, yT - Th, yT, 0, zf);
+    const slabAll = box(-Tw, Tw, yT - Th, yT, zb, zf);
+    const ped = box(-pw, pw, yF, yT - Th, pz0, pz1);
+
+    // patient under a sheet: width / height profiles along the table (z)
+    const BZ = [-0.66, -0.6, -0.48, -0.36, -0.29, -0.2, 0.05, 0.4, 0.6, 0.8, 1.1, 1.35, 1.47, 1.54, 1.6];
+    const BW = [0.04, 0.09, 0.105, 0.09, 0.07, 0.23, 0.245, 0.21, 0.23, 0.19, 0.155, 0.125, 0.115, 0.12, 0.05];
+    const BH = [0.07, 0.16, 0.2, 0.18, 0.1, 0.17, 0.24, 0.2, 0.18, 0.15, 0.13, 0.1, 0.1, 0.22, 0.08];
+    const prof = function (z, arr) {
+      if (z <= BZ[0]) return arr[0];
+      for (let i = 1; i < BZ.length; i++)
+        if (z <= BZ[i]) {
+          const t = (z - BZ[i - 1]) / (BZ[i] - BZ[i - 1]), s = t * t * (3 - 2 * t);
+          return arr[i - 1] + (arr[i] - arr[i - 1]) * s;
+        }
+      return arr[arr.length - 1];
+    };
+    const zH = BZ[0], zFt = BZ[BZ.length - 1];
+    // silhouette angle on the far side (where the sheet turns away from the camera)
+    const silA = function (w, h) {
+      return Math.atan2(-C[0] * h, C[1] * w);
+    };
+    const bodyPt = function (z, al) {
+      const w = prof(z, BW), h = prof(z, BH);
+      return [w * Math.cos(al), yT + h * Math.sin(al), z];
+    };
+    const bodyPoly = function (z0, z1) {
+      const o = [];
+      const n = 40;
+      for (let i = 0; i <= n; i++) {
+        const z = z0 + (z1 - z0) * (i / n), w = prof(z, BW), h = prof(z, BH);
+        const q = bodyPt(z, silA(w, h));
+        P(q[0], q[1], q[2], o);
+      }
+      for (let i = n; i >= 0; i--) {
+        const z = z0 + (z1 - z0) * (i / n);
+        const q = bodyPt(z, Math.PI);
+        P(q[0], q[1], q[2], o);
+      }
+      return o;
+    };
+    const bodyFront = bodyPoly(0, zFt);
+    const bodyAll = bodyPoly(zH, zFt);
+
+    const occFront = function (x, y) {
+      return inPoly(slabFront, x, y) || inPoly(ped, x, y) || inPoly(bodyFront, x, y);
+    };
+    // visibility by 3D position + screen position
+    const VIS = {
+      face: function (x, y, z, sx, sy) {
+        return !occFront(sx, sy);
+      },
+      bore: function (x, y, z, sx, sy) {
+        return inBore(sx, sy) && !inPoly(slabAll, sx, sy) && !inPoly(bodyAll, sx, sy);
+      },
+      table: function (x, y, z, sx, sy) {
+        return z >= 0 || inBore(sx, sy);
+      },
+      tableFar: function (x, y, z, sx, sy) {
+        return (z >= 0 || inBore(sx, sy)) && !inPoly(bodyAll, sx, sy);
+      },
+      body: function (x, y, z, sx, sy) {
+        return z >= 0 || inBore(sx, sy);
+      },
+    };
+    const parts = [];
+    // 3D path -> visible screen runs -> stipple lines
+    const path = function (fn, sub, vis, dens, opt) {
+      let cur = null;
+      const flush = function () {
+        if (cur && cur.length >= 4) parts.push(line(cur, dens, opt));
+        cur = null;
+      };
+      for (let s = 0; s <= sub; s++) {
+        const q = fn(s / sub);
+        const X = sx3(q[0], q[1], q[2]), Y = sy3(q[0], q[1], q[2]);
+        if (!vis || vis(q[0], q[1], q[2], X, Y)) {
+          if (!cur) cur = [];
+          cur.push(X, Y);
+        } else flush();
+      }
+      flush();
+    };
+    const seg = function (a, b) {
+      return function (t) {
+        return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+      };
+    };
+    const circ = function (r, z, a0, a1) {
+      return function (t) {
+        const u = a0 + (a1 - a0) * t;
+        return [r * Math.cos(u), r * Math.sin(u), z];
+      };
+    };
+    const TAU = 6.2831853, H = Math.PI / 2;
+    const tc = Math.atan2(C[1], C[0]);
+
+    // gantry front face: outer rim, bore rim, bevel
+    path(circ(Ro, 0, 0, TAU), 200, VIS.face, 54, { a: 0.92, av: 0.1, j: 0.005 });
+    path(circ(Ri, 0, 0, TAU), 160, VIS.face, 62, { a: 0.95, av: 0.08, j: 0.004 });
+    path(circ(Ri + 0.09, 0, 0, TAU), 160, VIS.face, 20, { a: 0.42, av: 0.12, j: 0.004 });
+    // housing depth: back rim (visible half) and silhouette generators
+    path(circ(Ro, -D, tc - H, tc + H), 120, VIS.face, 32, { a: 0.6, av: 0.12, j: 0.005 });
+    for (let s = -1; s <= 1; s += 2) {
+      const t = tc + s * H, c = Math.cos(t), si = Math.sin(t);
+      path(seg([Ro * c, Ro * si, 0], [Ro * c, Ro * si, -D]), 30, VIS.face, 40, { a: 0.7, av: 0.12, j: 0.005 });
+      path(seg([Ri * c, Ri * si, 0], [Ri * c, Ri * si, -D]), 40, VIS.bore, 16, { a: 0.3, av: 0.1, j: 0.004, fade: 0.6 });
+    }
+    // far end of the bore, seen through the opening
+    path(circ(Ri, -D, tc + H, tc + 3 * H), 120, VIS.bore, 46, { a: 0.7, av: 0.12, j: 0.004 });
+
+    // patient table
+    path(seg([-Tw, yT, zb], [-Tw, yT, zf]), 160, VIS.table, 46, { a: 0.9, av: 0.1, j: 0.004 });
+    path(seg([Tw, yT, zb], [Tw, yT, zf]), 160, VIS.tableFar, 36, { a: 0.7, av: 0.1, j: 0.004 });
+    path(seg([-Tw, yT, zb], [Tw, yT, zb]), 30, VIS.tableFar, 30, { a: 0.55, av: 0.1, j: 0.004 });
+    path(seg([-Tw, yT, zf], [Tw, yT, zf]), 40, null, 50, { a: 0.92, av: 0.08, j: 0.004 });
+    path(seg([-Tw, yT - Th, 0], [-Tw, yT - Th, zf]), 120, null, 28, { a: 0.55, av: 0.12, j: 0.004 });
+    path(seg([-Tw, yT - Th, zf], [Tw, yT - Th, zf]), 40, null, 28, { a: 0.6, av: 0.12, j: 0.004 });
+    path(seg([-Tw, yT, zf], [-Tw, yT - Th, zf]), 8, null, 40, { a: 0.7, av: 0.1, j: 0.003 });
+    path(seg([Tw, yT, zf], [Tw, yT - Th, zf]), 8, null, 40, { a: 0.6, av: 0.1, j: 0.003 });
+    // pedestal
+    path(seg([-pw, yT - Th, pz1], [-pw, yF, pz1]), 40, null, 30, { a: 0.55, av: 0.12, j: 0.004 });
+    path(seg([pw, yT - Th, pz1], [pw, yF, pz1]), 40, null, 26, { a: 0.45, av: 0.12, j: 0.004 });
+    path(seg([-pw, yF, pz1], [pw, yF, pz1]), 30, null, 26, { a: 0.45, av: 0.12, j: 0.004 });
+    path(seg([-pw, yF, pz0], [-pw, yF, pz1]), 40, null, 26, { a: 0.45, av: 0.12, j: 0.004 });
+    path(seg([-pw, yT - Th, pz0], [-pw, yF, pz0]), 40, null, 20, { a: 0.35, av: 0.12, j: 0.004 });
+
+    // patient: far silhouette (bright), near contact line, a few cross-contours
+    path(function (t) {
+      const z = zH + (zFt - zH) * t;
+      return bodyPt(z, silA(prof(z, BW), prof(z, BH)));
+    }, 160, VIS.body, 56, { a: 0.9, av: 0.08, j: 0.004 });
+    const CZ = [-0.48, -0.16, 0.1, 0.38, 0.62, 0.9, 1.2];
+    for (let i = 0; i < CZ.length; i++) {
+      const z = CZ[i], a0 = silA(prof(z, BW), prof(z, BH));
+      path(function (t) {
+        return bodyPt(z, a0 + (Math.PI - a0) * t);
+      }, 20, VIS.body, 28, { a: 0.45, av: 0.1, j: 0.004, fade: 0.4 });
+    }
+
+    // textures
+    const surf = function (w, sample, vis, a, av) {
+      parts.push({
+        w: w,
+        sec: true,
+        fn: function (pen, n, rnd) {
+          let lx = 0, ly = 0;
+          for (let i = 0; i < n; i++) {
+            let x = lx, y = ly;
+            for (let t = 0; t < 30; t++) {
+              const q = sample(rnd);
+              const X = sx3(q[0], q[1], q[2]), Y = sy3(q[0], q[1], q[2]);
+              if (!vis || vis(q[0], q[1], q[2], X, Y)) {
+                x = X; y = Y; lx = x; ly = y;
+                break;
+              }
+            }
+            pen.put(x, y, a + (rnd() - 0.5) * av);
+          }
+        },
+      });
+    };
+    // front face annulus
+    surf(150, function (rnd) {
+      const t = rnd() * TAU, r = Math.sqrt(Ri * Ri + (Ro * Ro - Ri * Ri) * rnd());
+      return [r * Math.cos(t), r * Math.sin(t), 0];
+    }, VIS.face, 0.26, 0.12);
+    // outer housing side (visible half)
+    surf(70, function (rnd) {
+      const t = tc + (rnd() * 2 - 1) * H;
+      return [Ro * Math.cos(t), Ro * Math.sin(t), -D * rnd()];
+    }, VIS.face, 0.2, 0.1);
+    // inner bore wall
+    surf(50, function (rnd) {
+      const t = tc + H + rnd() * 2 * H;
+      return [Ri * Math.cos(t), Ri * Math.sin(t), -D * rnd()];
+    }, VIS.bore, 0.22, 0.1);
+    // table top
+    surf(40, function (rnd) {
+      return [(rnd() * 2 - 1) * Tw, yT, zb + (zf - zb) * rnd()];
+    }, function (x, y, z, X, Y) {
+      return VIS.table(x, y, z, X, Y) && !inPoly(bodyAll, X, Y);
+    }, 0.24, 0.1);
+    // sheet over the patient
+    surf(70, function (rnd) {
+      const z = zH + (zFt - zH) * rnd(), w = prof(z, BW), h = prof(z, BH), a0 = silA(w, h);
+      return bodyPt(z, a0 + (Math.PI - a0) * rnd());
+    }, VIS.body, 0.28, 0.12);
+    // floor shadow
+    surf(36, function (rnd) {
+      return [gauss(rnd) * 0.4, yF, -0.45 + rnd() * 2.0];
+    }, null, 0.13, 0.06);
+    return parts;
+  }
+
+  let scannerParts = null;
   function scanner(N, rnd) {
-    return chest(N, rnd);
+    if (!scannerParts) scannerParts = buildScanner();
+    return compose(N, rnd, scannerParts);
   }
 
   R['wbmri'] = [
     { name: 'mri-head', f: head },
     { name: 'ct-chest', f: chest },
     { name: 'mri-scanner', f: scanner },
+  ];
+})();
+/* ---- consult ---- */
+(function () {
+  const R = (window.DBSHAPES = window.DBSHAPES || {});
+
+  /* ------------------------------------------------------------------ *
+   *  Geometry helpers. All curves are flat arrays [x0,y0,x1,y1,...].   *
+   *  Unit box: x,y in [-1,1], y pointing down.                         *
+   * ------------------------------------------------------------------ */
+
+  // Catmull-Rom spline through control points P ([[x,y],...]).
+  function spline(P, closed, k) {
+    const n = P.length, out = [];
+    const spans = closed ? n : n - 1;
+    k = k || 8;
+    for (let i = 0; i < spans; i++) {
+      const p0 = P[closed ? (i - 1 + n) % n : Math.max(i - 1, 0)];
+      const p1 = P[i];
+      const p2 = P[(i + 1) % n];
+      const p3 = P[closed ? (i + 2) % n : Math.min(i + 2, n - 1)];
+      for (let s = 0; s < k; s++) {
+        const t = s / k, t2 = t * t, t3 = t2 * t;
+        out.push(
+          0.5 * (2 * p1[0] + (p2[0] - p0[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (3 * p1[0] - p0[0] - 3 * p2[0] + p3[0]) * t3),
+          0.5 * (2 * p1[1] + (p2[1] - p0[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (3 * p1[1] - p0[1] - 3 * p2[1] + p3[1]) * t3)
+        );
+      }
+    }
+    if (!closed) out.push(P[n - 1][0], P[n - 1][1]);
+    return out;
+  }
+
+  function ellipse(cx, cy, rx, ry, rot, n) {
+    n = n || 48;
+    const c = Math.cos(rot || 0), s = Math.sin(rot || 0), out = [];
+    for (let i = 0; i < n; i++) {
+      const t = (i / n) * Math.PI * 2, ex = Math.cos(t) * rx, ey = Math.sin(t) * ry;
+      out.push(cx + ex * c - ey * s, cy + ex * s + ey * c);
+    }
+    return out;
+  }
+
+  function roundRect(x0, y0, x1, y1, r, k) {
+    k = k || 6;
+    const out = [];
+    const cs = [[x1 - r, y0 + r, -Math.PI / 2], [x1 - r, y1 - r, 0], [x0 + r, y1 - r, Math.PI / 2], [x0 + r, y0 + r, Math.PI]];
+    for (let c = 0; c < 4; c++) {
+      for (let i = 0; i <= k; i++) {
+        const t = cs[c][2] + (i / k) * (Math.PI / 2);
+        out.push(cs[c][0] + Math.cos(t) * r, cs[c][1] + Math.sin(t) * r);
+      }
+    }
+    return out;
+  }
+
+  function line(x0, y0, x1, y1) { return [x0, y0, x1, y1]; }
+
+  // Offset a dense open centreline by +-w/2 (w may be a function of t in [0,1]).
+  // Returns { l, r, poly, a: [x,y,nx,ny,w] at start, b: same at end }.
+  function tube(C, w) {
+    const n = C.length / 2, L = [], Rr = [];
+    const wf = typeof w === 'function' ? w : function () { return w; };
+    let ends = [];
+    for (let i = 0; i < n; i++) {
+      const i0 = Math.max(i - 1, 0), i1 = Math.min(i + 1, n - 1);
+      let tx = C[2 * i1] - C[2 * i0], ty = C[2 * i1 + 1] - C[2 * i0 + 1];
+      const tl = Math.hypot(tx, ty) || 1;
+      tx /= tl; ty /= tl;
+      const nx = -ty, ny = tx, hw = wf(i / (n - 1)) / 2;
+      const x = C[2 * i], y = C[2 * i + 1];
+      L.push(x + nx * hw, y + ny * hw);
+      Rr.push(x - nx * hw, y - ny * hw);
+      if (i === 0) ends[0] = [x, y, tx, ty, hw];
+      if (i === n - 1) ends[1] = [x, y, tx, ty, hw];
+    }
+    const poly = L.slice();
+    for (let i = n - 1; i >= 0; i--) poly.push(Rr[2 * i], Rr[2 * i + 1]);
+    return { l: L, r: Rr, poly: poly, a: ends[0], b: ends[1] };
+  }
+
+  // Elliptical cut-end of a tube (vessel opening / tube cap).
+  function capOf(e, depth) {
+    const x = e[0], y = e[1], tx = e[2], ty = e[3], hw = e[4];
+    return ellipse(x, y, hw * (depth || 0.32), hw, Math.atan2(ty, tx), 28);
+  }
+
+  /* ------------------------------ polygons ---------------------------- */
+
+  function poly() {
+    const rings = Array.prototype.slice.call(arguments);
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9, area = 0;
+    for (const r of rings) {
+      let a = 0;
+      for (let i = 0, n = r.length / 2; i < n; i++) {
+        const j = (i + 1) % n;
+        a += r[2 * i] * r[2 * j + 1] - r[2 * j] * r[2 * i + 1];
+        if (r[2 * i] < x0) x0 = r[2 * i];
+        if (r[2 * i] > x1) x1 = r[2 * i];
+        if (r[2 * i + 1] < y0) y0 = r[2 * i + 1];
+        if (r[2 * i + 1] > y1) y1 = r[2 * i + 1];
+      }
+      area += Math.abs(a / 2);
+    }
+    return { r: rings, x0: x0, y0: y0, x1: x1, y1: y1 };
+  }
+
+  function inside(P, x, y) {
+    if (x < P.x0 || x > P.x1 || y < P.y0 || y > P.y1) return false;
+    let c = false;
+    for (const r of P.r) {
+      const n = r.length / 2;
+      for (let i = 0, j = n - 1; i < n; j = i++) {
+        const yi = r[2 * i + 1], yj = r[2 * j + 1];
+        if ((yi > y) !== (yj > y)) {
+          const xi = r[2 * i], xj = r[2 * j];
+          if (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c;
+        }
+      }
+    }
+    return c;
+  }
+
+  // Sorted x-crossings of a horizontal line with all rings of a polygon.
+  function crossings(P, y) {
+    const xs = [];
+    if (y < P.y0 || y > P.y1) return xs;
+    for (const r of P.r) {
+      const n = r.length / 2;
+      for (let i = 0, j = n - 1; i < n; j = i++) {
+        const yi = r[2 * i + 1], yj = r[2 * j + 1];
+        if ((yi > y) !== (yj > y)) xs.push(((r[2 * j] - r[2 * i]) * (y - yi)) / (yj - yi) + r[2 * i]);
+      }
+    }
+    return xs.sort(function (a, b) { return a - b; });
+  }
+
+  function parity(xs, x) {
+    let c = 0;
+    while (c < xs.length && xs[c] < x) c++;
+    return (c & 1) === 1;
+  }
+
+  function hidden(list, x, y) {
+    if (!list) return false;
+    for (let i = 0; i < list.length; i++) if (inside(list[i], x, y)) return true;
+    return false;
+  }
+
+  /* ------------------------------ renderer ---------------------------- *
+   *  parts:                                                              *
+   *   {s: flatPts, c: closed, w: dots per unit length, a:[lo,hi],        *
+   *    j: jitter sigma, h: [polys hiding it]}                            *
+   *   {f: poly, w: dots per unit area, a:[lo,hi], h, sh: shade(x,y)}     *
+   *  prepare() does all geometry work that does not depend on N or rnd   *
+   *  (visibility, areas, coverage rasters, fit). It runs once per shape. *
+   * -------------------------------------------------------------------- */
+
+  function prepare(parts, fit) {
+    const STEP = 0.02, G = 32;
+    let bx0 = 1e9, by0 = 1e9, bx1 = -1e9, by1 = -1e9;
+    for (const q of parts) {
+      if (q.s) {
+        const P = q.s, n = P.length / 2, m = q.c ? n : n - 1;
+        const xs = [], ys = [], dx = [], dy = [], nx = [], ny = [], cum = [];
+        let Lt = 0;
+        for (let i = 0; i < m; i++) {
+          const j = (i + 1) % n;
+          const x0 = P[2 * i], y0 = P[2 * i + 1];
+          const ex = P[2 * j] - x0, ey = P[2 * j + 1] - y0;
+          const len = Math.hypot(ex, ey);
+          if (len < 1e-9) continue;
+          const k = Math.max(1, Math.ceil(len / STEP));
+          const sx = ex / k, sy = ey / k, sl = len / k;
+          for (let s = 0; s < k; s++) {
+            const ax = x0 + sx * s, ay = y0 + sy * s;
+            if (q.h && hidden(q.h, ax + sx * 0.5, ay + sy * 0.5)) continue;
+            xs.push(ax); ys.push(ay); dx.push(sx); dy.push(sy);
+            nx.push(-ey / len); ny.push(ex / len);
+            Lt += sl; cum.push(Lt);
+            if (q.a[0] >= 0.2) {
+              if (ax < bx0) bx0 = ax; if (ax > bx1) bx1 = ax;
+              if (ay < by0) by0 = ay; if (ay > by1) by1 = ay;
+            }
+          }
+        }
+        q._ = { xs: xs, ys: ys, dx: dx, dy: dy, nx: nx, ny: ny, cum: cum, L: Lt, sl: [] };
+        for (let i = 0; i < xs.length; i++) q._.sl.push(Math.hypot(dx[i], dy[i]));
+        q.m = Lt * q.w;
+      } else {
+        // Coverage raster: 0 = out/hidden, 1 = fully visible, 2 = edge (exact test).
+        const P = q.f, gw = (P.x1 - P.x0) / G, gh = (P.y1 - P.y0) / G;
+        const cov = new Uint8Array(G * G);
+        const vis = function (x, y) { return inside(P, x, y) && !hidden(q.h, x, y); };
+        // Scanline visibility: one crossing list per row, then parity per x.
+        const rowVis = function (y, x0, step, n, outArr, off) {
+          const own = crossings(P, y), hs = [];
+          if (q.h) for (const H of q.h) if (y >= H.y0 && y <= H.y1) hs.push(crossings(H, y));
+          for (let i = 0; i < n; i++) {
+            const x = x0 + i * step;
+            let v = parity(own, x);
+            for (let h = 0; v && h < hs.length; h++) if (parity(hs[h], x)) v = false;
+            outArr[off + i] = v ? 1 : 0;
+          }
+        };
+        const cg = new Uint8Array((G + 1) * (G + 1)), cc = new Uint8Array(G * G);
+        for (let gy = 0; gy <= G; gy++) rowVis(P.y0 + gy * gh, P.x0, gw, G + 1, cg, gy * (G + 1));
+        for (let gy = 0; gy < G; gy++) rowVis(P.y0 + (gy + 0.5) * gh, P.x0 + 0.5 * gw, gw, G, cc, gy * G);
+        let area = 0;
+        for (let gy = 0; gy < G; gy++) {
+          for (let gx = 0; gx < G; gx++) {
+            const cx = P.x0 + (gx + 0.5) * gw, cy = P.y0 + (gy + 0.5) * gh;
+            const s = cg[gy * (G + 1) + gx] + cg[gy * (G + 1) + gx + 1] + cg[(gy + 1) * (G + 1) + gx] + cg[(gy + 1) * (G + 1) + gx + 1] + cc[gy * G + gx];
+            cov[gy * G + gx] = s === 5 ? 1 : s === 0 ? 0 : 2;
+            area += (s / 5) * gw * gh * (q.sh ? q.sh(cx, cy) : 1);
+          }
+        }
+        q._ = { area: area, cov: cov, G: G, gw: gw, gh: gh, vis: vis };
+        q.m = area * q.w;
+      }
+    }
+    const pad = 0.008;
+    bx0 -= pad; by0 -= pad; bx1 += pad; by1 += pad;
+    return { parts: parts, sc: (2 * (fit || 0.9)) / Math.max(bx1 - bx0, by1 - by0), cx: (bx0 + bx1) / 2, cy: (by0 + by1) / 2 };
+  }
+
+  function sample(N, rnd, S) {
+    const parts = S.parts;
+    const out = { p: new Float32Array(2 * N), a: new Float32Array(N) };
+    const gauss = function () { return (rnd() + rnd() + rnd() + rnd() - 2) * 1.732; };
+    let total = 0;
+    for (const q of parts) total += q.m;
+
+    // Largest-remainder allocation so the counts add up to exactly N.
+    const counts = [], rem = [];
+    let used = 0;
+    for (let i = 0; i < parts.length; i++) {
+      const ex = total > 0 ? (parts[i].m / total) * N : 0;
+      counts.push(Math.floor(ex)); rem.push([ex - Math.floor(ex), i]);
+      used += counts[i];
+    }
+    rem.sort(function (u, v) { return v[0] - u[0] || u[1] - v[1]; });
+    for (let i = 0; used < N; i = (i + 1) % rem.length) { counts[rem[i][1]]++; used++; }
+
+    const sc = S.sc, ox = S.cx, oy = S.cy;
+    let o = 0;
+    const put = function (x, y, a) {
+      x = (x - ox) * sc; y = (y - oy) * sc;
+      out.p[2 * o] = x < -0.995 ? -0.995 : x > 0.995 ? 0.995 : x;
+      out.p[2 * o + 1] = y < -0.995 ? -0.995 : y > 0.995 ? 0.995 : y;
+      out.a[o] = a; o++;
+    };
+
+    for (let pi = 0; pi < parts.length; pi++) {
+      const q = parts[pi], c = counts[pi], lo = q.a[0], hi = q.a[1];
+      if (!c) continue;
+      if (q.s) {
+        const d = q._;
+        if (!d.cum.length) { for (let i = 0; i < c; i++) put(q.s[0], q.s[1], lo); continue; }
+        let k = 0;
+        const last = d.cum.length - 1, jit = q.j || 0;
+        for (let i = 0; i < c; i++) {
+          const s = ((i + rnd()) / c) * d.L;
+          while (k < last && d.cum[k] < s) k++;
+          let f = 1 - (d.cum[k] - s) / d.sl[k];
+          f = f < 0 ? 0 : f > 1 ? 1 : f;
+          const g = gauss() * jit;
+          put(d.xs[k] + d.dx[k] * f + d.nx[k] * g, d.ys[k] + d.dy[k] * f + d.ny[k] * g, lo + (hi - lo) * rnd());
+        }
+      } else {
+        const P = q.f, d = q._, G = d.G;
+        const ok = function (x, y) {
+          const gx = Math.floor((x - P.x0) / d.gw), gy = Math.floor((y - P.y0) / d.gh);
+          if (gx < 0 || gy < 0 || gx >= G || gy >= G) return false;
+          const v = d.cov[gy * G + gx];
+          return v === 1 || (v === 2 && d.vis(x, y));
+        };
+        // Jittered lattice for an even stipple, trimmed / topped up to c.
+        const cell = Math.sqrt(Math.max(d.area, 1e-6) / c);
+        const pts = [];
+        if (d.area > 1e-6) {
+          for (let y = P.y0 + cell * 0.5 * rnd(); y < P.y1; y += cell) {
+            for (let x = P.x0 + cell * 0.5 * rnd(); x < P.x1; x += cell) {
+              const px = x + (rnd() - 0.5) * cell * 0.9, py = y + (rnd() - 0.5) * cell * 0.9;
+              if (!ok(px, py)) continue;
+              if (q.sh && rnd() > q.sh(px, py)) continue;
+              pts.push(px, py);
+            }
+          }
+        }
+        const have = pts.length / 2;
+        let lastX = (P.x0 + P.x1) / 2, lastY = (P.y0 + P.y1) / 2;
+        if (have) { lastX = pts[0]; lastY = pts[1]; }
+        for (let i = 0; i < c; i++) {
+          if (i < have) {
+            const r = i + Math.floor(rnd() * (have - i)); // partial Fisher-Yates pick
+            const tx = pts[2 * i], ty = pts[2 * i + 1];
+            pts[2 * i] = pts[2 * r]; pts[2 * i + 1] = pts[2 * r + 1];
+            pts[2 * r] = tx; pts[2 * r + 1] = ty;
+            put(pts[2 * i], pts[2 * i + 1], lo + (hi - lo) * rnd());
+          } else {
+            let px = lastX, py = lastY;
+            for (let t = 0; t < 40; t++) {
+              const x = P.x0 + rnd() * (P.x1 - P.x0), y = P.y0 + rnd() * (P.y1 - P.y0);
+              if (ok(x, y)) { px = x; py = y; break; }
+            }
+            put(px, py, lo + (hi - lo) * rnd());
+          }
+        }
+      }
+    }
+    return out;
+  }
+
+  // Wrap a geometry builder: build + prepare once, then sample per call.
+  function shape(build, fit) {
+    let S = null;
+    return function (N, rnd) {
+      if (!S) S = prepare(build(), fit);
+      return sample(Math.max(0, N | 0), rnd, S);
+    };
+  }
+
+  const OUT = [0.86, 1.0];     // outline / membrane
+  const MID = [0.55, 0.78];    // secondary structure lines
+  const TEX = [0.25, 0.48];    // interior texture
+  const HALO = [0.1, 0.17];    // faint halo
+
+  /* =============================== HEART =============================== */
+  const heart = shape(function () {
+    const bodyC = spline([
+      [-0.38, -0.20], [-0.56, -0.14], [-0.68, 0.02], [-0.70, 0.24], [-0.62, 0.44],
+      [-0.44, 0.60], [-0.20, 0.75], [0.04, 0.86], [0.22, 0.93], [0.35, 0.87],
+      [0.47, 0.70], [0.57, 0.46], [0.62, 0.22], [0.59, 0.02], [0.47, -0.10],
+      [0.28, -0.14], [0.04, -0.12], [-0.18, -0.17]
+    ], true, 8);
+    const body = poly(bodyC);
+
+    // Pulmonary trunk: rises from the right ventricle, swings right under the arch.
+    const paC = spline([[0.12, 0.02], [0.16, -0.20], [0.25, -0.36], [0.42, -0.45], [0.60, -0.45], [0.72, -0.40]], false, 10);
+    const pa = tube(paC, function (t) { return 0.19 - 0.06 * t; });
+    const paP = poly(pa.poly);
+
+    // Left auricle peeking between trunk and ventricle.
+    const aurC = spline([[0.36, -0.15], [0.45, -0.22], [0.56, -0.24], [0.64, -0.18], [0.67, -0.08], [0.62, 0.00], [0.565, -0.035], [0.51, 0.005], [0.46, -0.05], [0.41, -0.07]], true, 6);
+    const aur = poly(aurC);
+
+    // Aorta: ascending, arch, start of the descending limb (goes behind the trunk).
+    const aoC = spline([[-0.10, 0.00], [-0.16, -0.32], [-0.15, -0.58], [-0.04, -0.76], [0.15, -0.83], [0.33, -0.77], [0.44, -0.62], [0.48, -0.44]], false, 10);
+    const ao = tube(aoC, 0.22);
+    const aoP = poly(ao.poly);
+
+    // Great vessels from the arch.
+    const brs = [
+      tube(spline([[-0.06, -0.70], [-0.10, -0.84], [-0.14, -0.97]], false, 8), 0.085),
+      tube(spline([[0.10, -0.76], [0.10, -0.88], [0.10, -0.99]], false, 8), 0.065),
+      tube(spline([[0.25, -0.72], [0.29, -0.86], [0.34, -0.96]], false, 8), 0.075)
+    ];
+
+    // Superior vena cava on the viewer's left.
+    const svcC = spline([[-0.42, -0.08], [-0.43, -0.38], [-0.42, -0.68]], false, 8);
+    const svc = tube(svcC, 0.15);
+    const svcP = poly(svc.poly);
+
+    const hBody = [paP, aur];
+    const hAo = [paP, aur, body];
+    const hBr = [aoP];
+    const hSvc = [body, aoP];
+
+    const light = function (x, y) { return Math.max(0.18, Math.min(1, 0.55 - 0.75 * (x * 0.55 + (y - 0.3) * 0.6))); };
+
+    const parts = [
+      // silhouettes
+      { s: bodyC, c: true, w: 1, a: OUT, j: 0.005, h: hBody },
+      { s: pa.l, w: 1, a: OUT, j: 0.004 }, { s: pa.r, w: 1, a: OUT, j: 0.004, h: [body] },
+      { s: capOf(pa.b), c: true, w: 0.9, a: OUT, j: 0.003 },
+      { s: aurC, c: true, w: 1, a: OUT, j: 0.004, h: [paP] },
+      { s: ao.l, w: 1, a: OUT, j: 0.004, h: hAo }, { s: ao.r, w: 1, a: OUT, j: 0.004, h: hAo },
+      { s: svc.l, w: 1, a: OUT, j: 0.004, h: hSvc }, { s: svc.r, w: 1, a: OUT, j: 0.004, h: hSvc },
+      { s: capOf(svc.b), c: true, w: 0.9, a: OUT, j: 0.003 },
+      // grooves: anterior interventricular and right coronary
+      { s: spline([[0.30, -0.06], [0.27, 0.18], [0.22, 0.44], [0.21, 0.68], [0.25, 0.90]], false, 8), w: 0.75, a: MID, j: 0.007, h: hBody },
+      { s: spline([[-0.30, -0.14], [-0.38, 0.06], [-0.43, 0.30], [-0.52, 0.52]], false, 8), w: 0.75, a: MID, j: 0.007, h: hBody },
+      // a few fine coronary branches
+      { s: spline([[0.255, 0.22], [0.33, 0.30], [0.42, 0.36], [0.50, 0.46]], false, 6), w: 0.5, a: [0.4, 0.6], j: 0.005 },
+      { s: spline([[0.215, 0.50], [0.29, 0.58], [0.36, 0.70]], false, 6), w: 0.5, a: [0.4, 0.6], j: 0.005 },
+      { s: spline([[-0.44, 0.34], [-0.36, 0.44], [-0.24, 0.52], [-0.14, 0.64]], false, 6), w: 0.5, a: [0.4, 0.6], j: 0.005 },
+      // interiors
+      { f: body, w: 4.4, a: TEX, h: hBody, sh: light },
+      { f: paP, w: 2.4, a: TEX, h: [body] },
+      { f: aur, w: 3.0, a: TEX, h: [paP] },
+      { f: aoP, w: 2.2, a: TEX, h: hAo },
+      { f: svcP, w: 2.0, a: TEX, h: hSvc },
+      // halo
+      { s: bodyC, c: true, w: 0.08, a: HALO, j: 0.05 }
+    ];
+    for (const b of brs) {
+      parts.push({ s: b.l, w: 1, a: OUT, j: 0.003, h: hBr }, { s: b.r, w: 1, a: OUT, j: 0.003, h: hBr },
+        { s: capOf(b.b, 0.4), c: true, w: 0.9, a: OUT, j: 0.002 });
+    }
+    return parts;
+  }, 0.92);
+
+  /* ============================ STETHOSCOPE ============================ */
+  const stethoscope = shape(function () {
+    const mir = function (P) { return P.map(function (p) { return [-0.82 - p[0], p[1]]; }); };
+    const binL = [[-0.62, -0.87], [-0.70, -0.80], [-0.74, -0.64], [-0.72, -0.44], [-0.62, -0.24], [-0.50, -0.10], [-0.43, -0.02]];
+    const bL = tube(spline(binL, false, 8), 0.038);
+    const bR = tube(spline(mir(binL), false, 8), 0.038);
+
+    const earL = ellipse(-0.575, -0.895, 0.07, 0.045, -0.35, 36);
+    const earR = ellipse(-0.245, -0.895, 0.07, 0.045, 0.35, 36);
+    const earLP = poly(earL), earRP = poly(earR);
+
+    // Y-fitting where the binaurals meet the tubing.
+    const yfit = roundRect(-0.455, -0.06, -0.365, 0.08, 0.03, 4);
+    const yfitP = poly(yfit);
+
+    const tubeC = spline([[-0.41, 0.08], [-0.42, 0.30], [-0.37, 0.53], [-0.22, 0.71], [0.00, 0.80], [0.22, 0.77], [0.38, 0.66], [0.45, 0.53]], false, 10);
+    const tb = tube(tubeC, 0.075);
+    const tbP = poly(tb.poly);
+
+    // Chest piece.
+    const cx = 0.46, cy = 0.17, rr = 0.27;
+    const disc = ellipse(cx, cy, rr, rr, 0, 72);
+    const rim = ellipse(cx, cy, rr * 0.8, rr * 0.8, 0, 64);
+    const hub = ellipse(cx, cy, rr * 0.16, rr * 0.16, 0, 20);
+    const discP = poly(disc), rimP = poly(rim);
+    const stem = roundRect(cx - 0.035, cy + rr - 0.02, cx + 0.035, 0.56, 0.015, 3);
+    const stemP = poly(stem);
+    const collar = roundRect(cx - 0.05, 0.50, cx + 0.05, 0.56, 0.02, 3);
+
+    const hBin = [yfitP, earLP, earRP];
+    const discLight = function (x, y) { return Math.max(0.3, Math.min(1, 0.65 - 1.4 * ((x - cx) * 0.6 + (y - cy) * 0.8))); };
+
+    const parts = [
+      { s: bL.l, w: 1, a: OUT, j: 0.003, h: hBin }, { s: bL.r, w: 1, a: OUT, j: 0.003, h: hBin },
+      { s: bR.l, w: 1, a: OUT, j: 0.003, h: hBin }, { s: bR.r, w: 1, a: OUT, j: 0.003, h: hBin },
+      { s: earL, c: true, w: 1.1, a: OUT, j: 0.003 }, { s: earR, c: true, w: 1.1, a: OUT, j: 0.003 },
+      { f: earLP, w: 6, a: [0.4, 0.62] }, { f: earRP, w: 6, a: [0.4, 0.62] },
+      { s: yfit, c: true, w: 1, a: OUT, j: 0.003 }, { f: yfitP, w: 5, a: [0.4, 0.6] },
+      { s: tb.l, w: 1, a: OUT, j: 0.004, h: [yfitP, stemP] }, { s: tb.r, w: 1, a: OUT, j: 0.004, h: [yfitP, stemP] },
+      { f: tbP, w: 3.0, a: TEX, h: [yfitP, stemP] },
+      { s: stem, c: true, w: 1, a: OUT, j: 0.002, h: [discP] },
+      { s: collar, c: true, w: 0.9, a: OUT, j: 0.002 },
+      { s: disc, c: true, w: 1.25, a: OUT, j: 0.004 },
+      { s: rim, c: true, w: 0.9, a: MID, j: 0.004 },
+      { s: hub, c: true, w: 0.7, a: MID, j: 0.002 },
+      { f: poly(disc, rim), w: 4.5, a: [0.35, 0.6], sh: discLight },
+      { f: rimP, w: 2.2, a: TEX, sh: discLight },
+      { s: disc, c: true, w: 0.1, a: HALO, j: 0.05 },
+      { s: tubeC, w: 0.06, a: HALO, j: 0.06 }
+    ];
+    return parts;
+  }, 0.92);
+
+  /* ============================= CLIPBOARD ============================= */
+  const clipboard = shape(function () {
+    const bx0 = -0.66, by0 = -0.80, bx1 = 0.62, by1 = 0.96;
+    const board = roundRect(bx0, by0, bx1, by1, 0.08, 6);
+    const px0 = -0.56, py0 = -0.66, px1 = 0.52, py1 = 0.86;
+    const paper = [px0, py0, px1, py0, px1, py1, px0, py1];
+    const boardP = poly(board), paperP = poly(paper);
+
+    // Clip: base plate + handle with a hanging hole.
+    const ccx = -0.02;
+    const plate = roundRect(ccx - 0.28, -0.87, ccx + 0.28, -0.61, 0.05, 4);
+    const handle = spline([[ccx - 0.17, -0.86], [ccx - 0.15, -0.93], [ccx - 0.08, -0.975], [ccx, -0.985], [ccx + 0.08, -0.975], [ccx + 0.15, -0.93], [ccx + 0.17, -0.86]], false, 6);
+    const handleRing = handle.concat([ccx + 0.17, -0.86, ccx - 0.17, -0.86]);
+    const hole = ellipse(ccx, -0.915, 0.055, 0.028, 0, 24);
+    const plateP = poly(plate), handleP = poly(handleRing), holeP = poly(hole);
+    const clipH = [plateP, handleP];
+
+    const parts = [
+      { s: board, c: true, w: 1.05, a: OUT, j: 0.004, h: clipH },
+      { s: paper, c: true, w: 0.85, a: [0.66, 0.86], j: 0.003, h: clipH },
+      { f: poly(board, paper), w: 4.2, a: [0.3, 0.52], h: clipH },
+      { f: paperP, w: 0.55, a: [0.18, 0.3], h: clipH },
+      { s: plate, c: true, w: 1, a: OUT, j: 0.003 },
+      { s: handle, w: 1, a: OUT, j: 0.003 },
+      { s: hole, c: true, w: 0.9, a: OUT, j: 0.002 },
+      { f: plateP, w: 6, a: [0.4, 0.62] },
+      { f: poly(handleRing, hole), w: 6, a: [0.4, 0.62], h: [plateP] },
+      { s: board, c: true, w: 0.07, a: HALO, j: 0.05 }
+    ];
+
+    // Heading.
+    parts.push({ s: line(-0.44, -0.48, 0.12, -0.48), w: 1, a: [0.78, 0.95], j: 0.002 });
+    parts.push({ s: line(-0.44, -0.455, 0.12, -0.455), w: 1, a: [0.78, 0.95], j: 0.002 });
+
+    // Checklist rows.
+    const rows = [-0.24, 0.02, 0.28, 0.54];
+    const lens = [0.38, 0.28, 0.40, 0.22];
+    const sub = [0.18, 0.08, 0.22, 0.04];
+    const ticked = [true, true, true, false];
+    const bs = 0.15, bxa = -0.45;
+    for (let i = 0; i < rows.length; i++) {
+      const y = rows[i];
+      parts.push({ s: [bxa, y - bs / 2, bxa + bs, y - bs / 2, bxa + bs, y + bs / 2, bxa, y + bs / 2], c: true, w: 1, a: OUT, j: 0.003 });
+      parts.push({ s: line(-0.20, y - 0.025, lens[i], y - 0.025), w: 0.8, a: MID, j: 0.003 });
+      parts.push({ s: line(-0.20, y + 0.045, sub[i], y + 0.045), w: 0.55, a: [0.35, 0.55], j: 0.003 });
+      if (ticked[i]) {
+        parts.push({ s: spline([[bxa + 0.025, y - 0.005], [bxa + 0.065, y + 0.045], [bxa + 0.12, y - 0.06], [bxa + 0.2, y - 0.14]], false, 6), w: 1.4, a: [0.92, 1], j: 0.003 });
+      }
+    }
+    return parts;
+  }, 0.92);
+
+  R['consult'] = [
+    { name: 'heart', f: heart },
+    { name: 'stethoscope', f: stethoscope },
+    { name: 'clipboard', f: clipboard }
   ];
 })();
 </script>
@@ -29824,15 +30716,16 @@ hairline({
       return (SWC[key] = set.map(sh => { let sd = 20261113, r; const rnd = () => { sd = sd + 0x6D2B79F5 | 0; let q = Math.imul(sd ^ sd >>> 15, 1 | sd); q = q + Math.imul(q ^ q >>> 7, 61 | q) ^ q; return ((q ^ q >>> 14) >>> 0) / 4294967296; };   // mulberry32: the same shape every time
         try { r = sh.f(NP, rnd); } catch (e) { return null; } if (!r || !r.p) return null;
         const A = new Float32Array(G * G), C = new Uint16Array(G * G), out = new Uint8Array(G * G), st = [];
-        for (let i = 0; i < NP; i++){ const x = Math.floor((r.p[2 * i] + 1) / 2 * G), y = Math.floor((r.p[2 * i + 1] + 1) / 2 * G); if (!(x >= 0 && y >= 0 && x < G && y < G)) continue; const k = y * G + x; C[k]++; A[k] = Math.max(A[k], r.a ? r.a[i] : 1); }
+        for (let i = 0; i < NP; i++){ const x = Math.floor((r.p[2 * i] + 1) / 2 * G), y = Math.floor((r.p[2 * i + 1] + 1) / 2 * G); if (!(x >= 0 && y >= 0 && x < G && y < G)) continue; const k = y * G + x; A[k] += r.a ? r.a[i] : 1; }
+        for (let k = 0; k < G * G; k++) C[k] = A[k] >= 0.3 ? 1 : 0;   // a cell lights by the sum of its points' brightness: a lone faint point (halo, stipple) doesn't light it
         for (let i = 0; i < G; i++) st.push(i, (G - 1) * G + i, i * G, i * G + G - 1);
         while (st.length){ const k = st.pop(); if (out[k] || C[k]) continue; out[k] = 1; const x = k % G, y = (k / G) | 0; if (x) st.push(k - 1); if (x < G - 1) st.push(k + 1); if (y) st.push(k - G); if (y < G - 1) st.push(k + G); }   // what the outside reaches is outside
-        const cells = []; for (let k = 0; k < G * G; k++){ if (!C[k] && out[k]) continue; const x = k % G, y = (k / G) | 0; cells.push({ u: (x + .5) / G * 2 - 1, v: (y + .5) / G * 2 - 1, b: C[k] ? 0.4 + 0.6 * Math.min(1, A[k]) * Math.min(1, 0.6 + 0.2 * C[k]) : 0.17 }); }   // membranes and strands bright, insides a dim fill, so the cells of a cluster stay apart
+        const cells = []; for (let k = 0; k < G * G; k++){ if (!C[k] && out[k]) continue; const x = k % G, y = (k / G) | 0; cells.push({ u: (x + .5) / G * 2 - 1, v: (y + .5) / G * 2 - 1, b: C[k] ? 0.32 + 0.68 * Math.min(1, A[k] / 1.6) : 0.17 }); }   // membranes and strands bright, insides a dim fill, so the cells of a cluster stay apart
         return cells.length ? { name: sh.name, cells } : null; }).filter(Boolean)); };
     const dbSwarm = (cv, key, card) => { const sets = swCells(SWK(key)); if (!sets.length) return null;
       const ctx = cv.getContext('2d'), still = matchMedia('(prefers-reduced-motion: reduce)').matches, HOLD = 4.6, MORPH = 1.8, LV = 7;
       let raf = 0, gone = false, W = 0, H = 0, dpr = 1, si = 0, T0 = 0, t = 0, prev = 0, ink = '255,255,255', drawn = '';
-      const N = Math.min(1500, Math.max.apply(null, sets.map(z => z.cells.length)));
+      const N = Math.min(1700, Math.max.apply(null, sets.map(z => z.cells.length)));
       const P = Array.from({ length: N }, () => ({ x: (Math.random() * 2 - 1) * 1.3, y: (Math.random() * 2 - 1) * 1.3, b: 0, fx: 0, fy: 0, fb: 0, tu: 0, tv: 0, tb: 0, dl: 0, ph: Math.random() * 6.283, r: Math.random(), sw: Math.random() - .5 }));
       const ord = (u, v) => u * 0.62 + v * 0.78;   // points and places both read along the same diagonal, so the sheet sweeps across rather than tangling
       const aim = n => { const cs = sets[n].cells, m = cs.length, slots = [];
