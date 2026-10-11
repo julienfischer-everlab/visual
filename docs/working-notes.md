@@ -13472,3 +13472,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Tweaks → Modal: V2 removed from the choice ("remove v2"); V1, V3–V7 keep their names. V3 still builds on V2's styles underneath (it wears mdV2 with mdV3), so those stay in the page.
 - Tweaks → Modal: V5 removed from the choice ("remove v5"); V1, V3, V4, V6, V7 remain. Its styles and the grain canvas stay in the page, unused.
 - Modal V6: no frame — the Front figure sits down the card's right side (46% on the desk, 44% on the phone), bigger, running past the card's right edge and its foot and cut there by the card's own edge; the card stays outlined, filled white at 4%.
+- The outlined card around a status with sub steps is gone for good ("remove outlined card"): the Sub step card tweak is retired, so nothing — not even a saved "On" — wraps the sub-step card, phone or desk.
