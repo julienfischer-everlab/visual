@@ -13474,3 +13474,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Modal V6: no frame — the Front figure sits down the card's right side (46% on the desk, 44% on the phone), bigger, running past the card's right edge and its foot and cut there by the card's own edge; the card stays outlined, filled white at 4%.
 - The outlined card around a status with sub steps is gone for good ("remove outlined card"): the Sub step card tweak is retired, so nothing — not even a saved "On" — wraps the sub-step card, phone or desk.
 - Modal V4 on the desk: 16 more between the title and the card (the card's margin 84), 16 more between the card and the words under it (40), and those words 32 in from each side.
+- Modal V6: the card's outline and the date tab's at 4% white (the tab's curve moved onto the card's fill so it reads the same as the rest); spaced as V4 on the desk (title to card 16 more, card to the words 16 more, those words 32 in each side).
+- The Modal tweak now redraws a pop-up that is open: before, it only swapped the html classes, so V4 picked over an open V1 kept V1's photo (the card's markup is built per version).
