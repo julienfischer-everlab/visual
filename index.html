@@ -5598,7 +5598,32 @@
   .aqWrap.aqDesk.aqFull .aqFrame{left:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:translateY(104%);}
   .aqWrap.aqDesk.aqFull.on .aqFrame{transform:none;} .aqWrap.aqDesk.aqFull.shut .aqFrame{transform:translateY(104%);}
   .aqWrap.aqFull .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:560px;margin:0 auto;}
-  .aqWrap.aqFull .arSheet .arH700{text-align:center;font-size:28px;line-height:1.2;text-wrap:balance;} .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;}
+  .aqWrap.aqFull .arSheet .arH700{text-align:center;font-size:28px;line-height:1.2;text-wrap:balance;}
+  /* the viewport's breakpoint (the Full modal board: XS, S, M, L). A forced breakpoint frames the report as it frames the page: centred at its floor's width, and at XS and S in the device, under its status bar */
+  body[data-bp] .aqWrap.aqDesk{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);}
+  body[data-bp="xs"] .aqWrap.aqDesk, body[data-bp="s"] .aqWrap.aqDesk{top:calc(var(--barH,57px) + 48px);bottom:48px;overflow:hidden;}
+  body[data-bp="xs"] .aqWrap.aqDesk{border-radius:56px;} body[data-bp="s"] .aqWrap.aqDesk{border-radius:28px;}
+  .aqStat{display:none;}
+  .aqWrap.aqDev .aqStat{display:flex;position:absolute;left:0;right:0;top:0;z-index:3;align-items:center;justify-content:space-between;padding:18px 34px 4px;color:#fff;pointer-events:none;transition:color .3s ease;}
+  .aqWrap.aqDev.aqBpS .aqStat{padding:12px 28px 4px;}
+  .aqStat .tm{font-size:15px;font-weight:600;letter-spacing:.02em;}
+  .aqStat .isl{position:absolute;left:50%;transform:translateX(-50%);top:13px;width:96px;height:27px;background:#000;border-radius:16px;}
+  .aqWrap.aqBpS .aqStat .isl{display:none;}
+  .aqStat svg{fill:currentColor;} .aqStat svg rect[fill="none"]{fill:none;stroke:currentColor;}
+  .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:not(:has(.arIsWelcome)) .aqStat{color:#141413;}   /* dark on the light paper; white over the welcome's picture and over the dim */
+  /* the phone and the full modal: edge to edge */
+  .aqWrap.aqPhone .aqFrame{left:0;top:0;width:100%;height:100%;border-radius:0;box-shadow:none;}
+  .aqWrap.aqDev:is(.aqFull, .aqPhone) .arSheet{--ar-head-top:58px;}
+  .aqWrap.aqDev.aqBpS.aqFull .arSheet{--ar-head-top:44px;}
+  /* XS and S: the content full width, 16 in, the title at the left; S's button narrower, centred */
+  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:none;}
+  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arHead, .arBody, .arFoot){padding-left:16px;padding-right:16px;}
+  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arH700, .arLede){text-align:left;}
+  .aqWrap.aqFull.aqBpS .arSheet .arFoot{align-items:center;} .aqWrap.aqFull.aqBpS .arSheet .arFoot > *{width:100%;max-width:478px;}
+  /* M and L: a centred column, the title centred (above); 496 wide at M, 528 at L, the back and close at its edges */
+  .aqWrap.aqFull.aqBpM .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:536px;}
+  .aqWrap.aqFull.aqBpL .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:568px;}
+  .aqWrap .arSheet .arClose{cursor:default;} .aqWrap .arSheet .arClose:hover{opacity:1;} .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;}
   .prWrap{display:none;}
   body.pastD .prDesk{display:block;position:fixed;left:0;right:0;top:57px;bottom:0;z-index:40;}
   .prDim{position:absolute;inset:0;background:rgba(0,0,0,.5);}
@@ -26266,19 +26291,26 @@ hairline({
     if (!host || !window.AsyncReport) return null;
     const wrap = document.createElement('div');
     wrap.className = 'aqWrap ' + (desk ? 'aqDesk' : 'aqPhone');
-    wrap.innerHTML = '<div class="aqDim"></div><div class="aqFrame"></div><button class="aqAgain" type="button">Open your debrief</button>';
+    wrap.innerHTML = '<div class="aqDim"></div><div class="aqFrame"></div><div class="aqStat" aria-hidden="true"></div><button class="aqAgain" type="button">Open your debrief</button>';
     host.appendChild(wrap);
     const frame = wrap.querySelector('.aqFrame');
+    { const st = document.querySelector('#bpFrame .bpStatus'); if (st) wrap.querySelector('.aqStat').innerHTML = st.innerHTML; }   // a device's status bar, drawn on the report's own paper (XS and S in a frame, and the phone)
+    // the viewport's breakpoint, as the page reads it: the one forced in the Layout tweak, or the window's width (XS < 600 <= S < 992 <= M < 1440 <= L); the phone is XS ("async report should follow these breakpoints, related to the viewport breakpoint")
+    const bpNow = () => { if (!desk) return 'xs'; const f = document.body.dataset.bp, w = innerWidth; return f || (w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'); };
+    const fit = () => { const b = bpNow(); ['xs', 's', 'm', 'l'].forEach(k => wrap.classList.toggle('aqBp' + k.toUpperCase(), k === b)); wrap.classList.toggle('aqDev', !desk || /^(xs|s)$/.test(document.body.dataset.bp || '')); };
+    fit(); addEventListener('resize', fit);
+    // no closing it ("no need to make the close action possible"): the close does nothing, the dim neither, and the last step's button starts it over
+    frame.addEventListener('click', e => { if (e.target.closest && e.target.closest('.arClose')){ e.stopPropagation(); e.preventDefault(); } }, true);
     let inst = null;
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('stArTheme') === 'dark' ? 'dark' : 'light', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', onClose: shut });
+      inst = window.AsyncReport.mount(frame, { theme: opt('stArTheme') === 'dark' ? 'dark' : 'light', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', onClose: () => { if (inst) inst.reset(); } });
+      wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
-    const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); };
+    const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
     const raise = () => { wrap.classList.remove('on', 'shut'); requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on'))); };
     wrap.querySelector('.aqAgain').addEventListener('click', () => { if (inst) inst.reset(); raise(); });
-    wrap.querySelector('.aqDim').addEventListener('click', shut);
     vary(); mount(); raise();
     return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(); raise(); }, vary: () => { vary(); raise(); } };
   }
