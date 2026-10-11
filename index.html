@@ -5593,6 +5593,11 @@
   .aqAgain{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:none;align-items:center;gap:8px;height:44px;padding:0 20px;border:0;border-radius:999px;background:#f4f4f2;color:#141413;font:inherit;font-size:15px;font-weight:500;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.35);}
   .aqWrap.shut .aqAgain{display:inline-flex;}
   @media (prefers-reduced-motion: reduce){ .aqFrame, .aqDim{transition:none;} }
+  /* Full screen (Tweaks -> Async report -> Variation, the desktop): the debrief takes the whole page under the bar, square, rising the same way, its column 760 wide in the middle of its own paper ("async debrief, desktop tweak variation: full screen, modal (current one)") */
+  #stArVarRow[hidden]{display:none !important;}
+  .aqWrap.aqDesk.aqFull .aqFrame{left:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:translateY(104%);}
+  .aqWrap.aqDesk.aqFull.on .aqFrame{transform:none;} .aqWrap.aqDesk.aqFull.shut .aqFrame{transform:translateY(104%);}
+  .aqWrap.aqFull .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:760px;margin:0 auto;}
   .prWrap{display:none;}
   body.pastD .prDesk{display:block;position:fixed;left:0;right:0;top:57px;bottom:0;z-index:40;}
   .prDim{position:absolute;inset:0;background:rgba(0,0,0,.5);}
@@ -10518,6 +10523,7 @@
         </div>
         <div class="tkGroup" data-pages="ar">
         <div class="tkSub">Async report</div>
+        <div class="tkRow" id="stArVarRow"><span class="lbl">Variation</span><select id="stArVar" class="tkSegSel" aria-label="The desktop debrief's format"><option value="modal" selected>Modal</option><option value="full">Full screen</option></select></div>
         <div class="tkRow"><span class="lbl">Theme</span><select id="stArTheme" class="tkSegSel" aria-label="The debrief's theme"><option value="light" selected>Light</option><option value="dark">Dark</option></select></div>
         <div class="tkRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option></select></div>
         </div>
@@ -26110,16 +26116,20 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('stArTheme') === 'dark' ? 'dark' : 'light', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', onClose: shut }); };
+      inst = window.AsyncReport.mount(frame, { theme: opt('stArTheme') === 'dark' ? 'dark' : 'light', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', onClose: shut });
+      if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
+    const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); };
     const raise = () => { wrap.classList.remove('on', 'shut'); requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on'))); };
     wrap.querySelector('.aqAgain').addEventListener('click', () => { if (inst) inst.reset(); raise(); });
     wrap.querySelector('.aqDim').addEventListener('click', shut);
-    mount(); raise();
-    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(); raise(); } };
+    vary(); mount(); raise();
+    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(); raise(); }, vary: () => { vary(); raise(); } };
   }
   {
     const arD = asyncReport(document.body, true), arM = asyncReport(document.getElementById('phone2'), false);
-    document.addEventListener('everlab:mode', () => { if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
+    const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
+    vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
+    { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
     ['stArTheme', 'stArWel'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
@@ -29053,7 +29063,7 @@ hairline({
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
