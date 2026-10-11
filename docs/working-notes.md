@@ -13464,3 +13464,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Modal V1: the card's picture is plain again, no mosaic ("remove visual effect on V1"); V2 and V3 keep it.
 - Modal V2: the title 16 lower under the banner (48 from it, was 32).
 - Async report, desktop: the Variation is now "Full modal" (the default) or "Modal". Full modal follows the design system's Full modal (type Full, edge to edge, content only): the surface edge to edge under the bar in the debrief's own paper, the content in a 560 column in its middle, the back and close at the column's corners, the step titles centred (28/1.2) with the line under them, the button the column's width at its foot.
+- Modal V7's ground replaced by the blue-to-peach grained sky sent for it (blue top with periwinkle wisps, greyish lavender middle, peach foot, light and dark grain), drawn in CSS a little deeper than sent so the white type holds.
+- Modal V6's card filled with white at 4% (#252525 over the modal's #1b1b1b), outlined white as before; the tab, its foot's curve and the figure's ground the same.
