@@ -45,6 +45,10 @@
   .head p { margin: 0; color: var(--muted); font-size: 13px; text-wrap: pretty; }
   .head .tour { font: 11px/1.5 var(--mono); letter-spacing: 0.02em; color: var(--muted); }
   iframe { display: block; width: 100%; max-width: 100%; height: 540px; border: 0; border-radius: 10px; background: var(--bg); }
+  /* the particle stages: the report pop-up's own charcoal in either theme, as the figures are drawn for it */
+  .stage { position: relative; height: 300px; border-radius: 10px; background: #1b1b1b; overflow: hidden; }
+  .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; color: #fff; }
+  .shapes { font: 11px/1.5 var(--mono); letter-spacing: 0.02em; color: var(--muted); }
   @media (max-width: 480px) { .wrap { padding-inline: 16px; } }
 </style>
 </head>
@@ -53,10 +57,11 @@
   <header>
     <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>Everlab service pages</a>
     <h1>Hairline illustrations</h1>
-    <p>Every Hairline figure drawn for Everlab, in one place. Each is a live isometric line drawing that answers the pointer: move over a figure to see it answer, and use its slider to change how strongly it does.</p>
+    <p>Every Hairline figure drawn for Everlab, in one place. The line figures are live isometric drawings that answer the pointer: move over one to see it answer, and use its slider to change how strongly it does. The particle sets play on their own.</p>
     <nav class="jump" aria-label="Groups">
       <a href="#report">Report pop-up · 8</a>
       <a href="#health">Health checks · 6</a>
+      <a href="#particles">Particles · 5</a>
     </nav>
   </header>
 
@@ -191,10 +196,64 @@
       </article>
     </div>
   </section>
+
+  <section id="particles" aria-labelledby="g-particles">
+    <div class="sh">
+      <span class="count">03 · 5 sets</span>
+      <h2 id="g-particles">Particles</h2>
+      <p>Each page's subject in square points: a grid of points fills each shape, a slow wave runs through it and a band of scatter crosses it, then the points fly to the next shape. Drawn for the report pop-up and moved here.</p>
+    </div>
+    <div class="grid">
+      <article aria-labelledby="t-p-gut">
+        <div class="head">
+          <div class="row"><h3 id="t-p-gut">Microbiome</h3></div>
+          <p>The gut report: the microbes, one form after another, ending on a mixed community.</p>
+          <span class="shapes">bacillus → cluster → spirillum → chain → community</span>
+        </div>
+        <div class="stage"><canvas data-swarm="gut" role="img" aria-label="Microbiome: bacillus → cluster → spirillum → chain → community in particles"></canvas></div>
+      </article>
+      <article aria-labelledby="t-p-path">
+        <div class="head">
+          <div class="row"><h3 id="t-p-path">Blood test</h3></div>
+          <p>The blood panel: a drop, the red cells, the tube.</p>
+          <span class="shapes">drop → red cells → tube</span>
+        </div>
+        <div class="stage"><canvas data-swarm="path" role="img" aria-label="Blood test: drop → red cells → tube in particles"></canvas></div>
+      </article>
+      <article aria-labelledby="t-p-dexa">
+        <div class="head">
+          <div class="row"><h3 id="t-p-dexa">DEXA</h3></div>
+          <p>Bone density and body composition: the femur, the lumbar spine, the body.</p>
+          <span class="shapes">femur → lumbar spine → body</span>
+        </div>
+        <div class="stage"><canvas data-swarm="dexa" role="img" aria-label="DEXA: femur → lumbar spine → body in particles"></canvas></div>
+      </article>
+      <article aria-labelledby="t-p-wbmri">
+        <div class="head">
+          <div class="row"><h3 id="t-p-wbmri">Whole Body MRI & CT</h3></div>
+          <p>The scans: a head in section, the chest, the scanner.</p>
+          <span class="shapes">head → chest CT → scanner</span>
+        </div>
+        <div class="stage"><canvas data-swarm="wbmri" role="img" aria-label="Whole Body MRI & CT: head → chest CT → scanner in particles"></canvas></div>
+      </article>
+      <article aria-labelledby="t-p-consult">
+        <div class="head">
+          <div class="row"><h3 id="t-p-consult">Consultation</h3></div>
+          <p>The plan from your call: the heart, the stethoscope, the plan.</p>
+          <span class="shapes">heart → stethoscope → plan</span>
+        </div>
+        <div class="stage"><canvas data-swarm="consult" role="img" aria-label="Consultation: heart → stethoscope → plan in particles"></canvas></div>
+      </article>
+    </div>
+  </section>
 </div>
+<script src="visuals/hairline2/shapes.js"></script>
+<script src="visuals/hairline2/swarm.js"></script>
 <script>
   /* Opened as a page of the prototype, the prototype's own bar is above it: no link back. */
   try { if (window.frameElement && window.frameElement.id === "hlFrame") document.querySelector(".back").hidden = true; } catch (e) {}
+  /* the particle sets play while they are on screen */
+  if (window.HLSwarm) document.querySelectorAll("canvas[data-swarm]").forEach(function (c) { window.HLSwarm.mount(c, c.dataset.swarm); });
 </script>
 </body>
 </html>
