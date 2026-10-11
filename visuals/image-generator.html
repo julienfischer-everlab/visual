@@ -1,0 +1,1615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Image generator</title>
+<link rel="icon" href="data:,">
+<style>
+  /* Layout: one-screen designer tool. Live halftone preview fills the left; a scrolling inspector sits on the right with a fixed export footer. Below 900px the inspector stacks under the preview. Deliberately dark-only (requested). */
+  :root {
+    --ground: #0e0f10;
+    --stage: #121314;
+    --panel: #18191b;
+    --raised: #212226;
+    --hover: #2a2b30;
+    --line: #2a2c31;
+    --line-strong: #3a3d44;
+    --text: #e8e9eb;
+    --label: #a9adb4;
+    --muted: #80858d;
+    --faint: #5c6068;
+    --accent: #3d9be4;
+    --accent-soft: rgba(61, 155, 228, 0.16);
+    --primary: #ecedef;
+    --primary-ink: #111214;
+    --warn: #f0b45a;
+    --check-a: #1c1d20;
+    --check-b: #26272b;
+    --veil: rgba(10, 11, 12, 0.78);
+    --shadow: rgba(0, 0, 0, 0.5);
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--ground); }
+  body { margin: 0; background: var(--ground); color: var(--text); font: 12.5px/1.45 var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
+  [hidden] { display: none !important; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 1.5px solid var(--accent); outline-offset: 2px; }
+
+  .app { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 344px; overflow: hidden; }
+
+  /* ---------- stage ---------- */
+  .stage { position: relative; min-width: 0; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--stage); }
+  .tb { display: flex; align-items: center; gap: 12px; padding: 9px 16px; border-bottom: 1px solid var(--line); min-width: 0; }
+  .file { display: flex; align-items: baseline; gap: 10px; min-width: 0; flex: 1 1 auto; }
+  .fname { font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .dims { font: 11px/1 var(--mono); color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .view { position: relative; min-height: 0; min-width: 0; display: grid; place-items: center; padding: 22px; overflow: hidden;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.045) 1px, transparent 1.3px); background-size: 16px 16px; }
+  .frame { position: relative; box-shadow: 0 0 0 1px var(--line), 0 20px 50px var(--shadow); touch-action: none; }
+  .frame.checker { background-color: var(--check-a); background-image: linear-gradient(45deg, var(--check-b) 25%, transparent 25%, transparent 75%, var(--check-b) 75%), linear-gradient(45deg, var(--check-b) 25%, transparent 25%, transparent 75%, var(--check-b) 75%); background-size: 16px 16px; background-position: 0 0, 8px 8px; }
+  .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .frame[data-view="after"] #before { visibility: hidden; }
+  .frame[data-view="before"] #result { visibility: hidden; }
+  .frame[data-view="split"] { cursor: ew-resize; }
+  .split { position: absolute; top: 0; bottom: 0; width: 0; left: 50%; display: none; }
+  .frame[data-view="split"] .split { display: block; }
+  .split::before { content: ""; position: absolute; top: 0; bottom: 0; left: -0.5px; width: 1px; background: var(--primary); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35); }
+  .split .knob { position: absolute; top: 50%; left: 0; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: var(--primary); color: var(--primary-ink); display: grid; place-items: center; box-shadow: 0 2px 10px var(--shadow); }
+  .split .knob svg { width: 14px; height: 14px; }
+  .split:focus-visible { outline: none; }
+  .split:focus-visible .knob { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tag { position: absolute; top: 10px; font: 10px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 7px; border-radius: 4px; background: var(--veil); color: var(--text); display: none; pointer-events: none; }
+  .tag-l { left: 10px; } .tag-r { right: 10px; }
+  .frame[data-view="split"] .tag { display: block; }
+
+  .empty { position: absolute; inset: 22px; display: grid; place-items: center; text-align: center; border: 1px dashed var(--line-strong); border-radius: 12px; padding: 24px; }
+  .empty-in { display: grid; gap: 10px; justify-items: center; max-width: 34ch; }
+  .empty h2 { margin: 0; font-size: 16px; font-weight: 550; }
+  .empty p { margin: 0; color: var(--muted); }
+  .empty .glyph { width: 56px; height: 56px; color: var(--label); }
+  .drop { position: absolute; inset: 10px; border: 1.5px dashed var(--accent); border-radius: 12px; background: var(--veil); display: grid; place-items: center; font-size: 15px; font-weight: 550; z-index: 5; pointer-events: none; }
+  .busy { position: absolute; top: 14px; right: 16px; display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: var(--veil); font-size: 11.5px; color: var(--label); z-index: 4; }
+  .spin { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--line-strong); border-top-color: var(--text); animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sb { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 7px 16px; border-top: 1px solid var(--line); font: 11px/1.3 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; min-width: 0; }
+  .sb span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .sb kbd { font: inherit; border: 1px solid var(--line-strong); border-radius: 3px; padding: 0 4px; color: var(--label); }
+  .toast { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); max-width: min(520px, calc(100% - 32px)); padding: 9px 14px; border-radius: 8px; background: var(--raised); border: 1px solid var(--line-strong); box-shadow: 0 10px 30px var(--shadow); font-size: 12.5px; z-index: 6; }
+
+  /* ---------- buttons & segmented ---------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--raised); cursor: pointer; white-space: nowrap; font-size: 12px; }
+  .btn:hover { background: var(--hover); border-color: var(--line-strong); }
+  .btn svg { width: 14px; height: 14px; flex: none; }
+  .btn.icon { width: 28px; padding: 0; }
+  .btn.ghost { background: transparent; border-color: transparent; color: var(--label); }
+  .btn.ghost:hover { background: var(--raised); color: var(--text); }
+  .btn.primary { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); font-weight: 600; height: 34px; }
+  .btn.primary:hover { background: #ffffff; }
+  .btn:disabled { opacity: 0.55; cursor: default; }
+  .seg { display: inline-flex; padding: 2px; gap: 2px; border-radius: 7px; background: var(--ground); border: 1px solid var(--line); }
+  .seg label { position: relative; display: block; cursor: pointer; }
+  .seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .seg span { display: flex; align-items: center; justify-content: center; gap: 5px; height: 22px; min-width: 30px; padding: 0 9px; border-radius: 5px; color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+  .seg span svg { width: 12px; height: 12px; }
+  .seg label:hover span { color: var(--text); }
+  .seg input:checked + span { background: var(--raised); color: var(--text); box-shadow: 0 0 0 1px var(--line-strong); }
+  .seg input:focus-visible + span { outline: 1.5px solid var(--accent); outline-offset: 1px; }
+  .seg.full { display: flex; width: 100%; }
+  .seg.full label { flex: 1 1 0; }
+  .seg.full span { padding: 0 4px; }
+
+  /* ---------- panel ---------- */
+  .panel { min-height: 0; min-width: 0; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; border-left: 1px solid var(--line); background: var(--panel); }
+  .ph { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px 10px 16px; border-bottom: 1px solid var(--line); }
+  .ttl { display: grid; line-height: 1.2; min-width: 0; }
+  .ttl strong { font-size: 13px; font-weight: 600; }
+  .ttl span { font-size: 11px; color: var(--muted); }
+  .ph { grid-row: 1; } .savebar { grid-row: 2; } .scroll { grid-row: 3; } .exp { grid-row: 4; }
+  .acts { display: flex; gap: 4px; }
+  .savebar { display: flex; gap: 6px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--raised); }
+  .savebar input { flex: 1 1 auto; min-width: 0; }
+  .scroll { overflow-y: auto; overscroll-behavior: contain; min-height: 0; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+
+  details.grp { border-bottom: 1px solid var(--line); }
+  details.grp > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; cursor: pointer; user-select: none; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
+  details.grp > summary::-webkit-details-marker { display: none; }
+  details.grp > summary:hover { color: var(--text); }
+  details.grp > summary .chev { width: 12px; height: 12px; transition: transform 0.15s; color: var(--faint); }
+  details.grp[open] > summary .chev { transform: rotate(90deg); }
+  details.grp > summary .sum-note { margin-left: auto; font: 10.5px var(--mono); letter-spacing: 0; text-transform: none; color: var(--muted); font-weight: 400; }
+  .gb { display: grid; gap: 4px; padding: 0 16px 14px; }
+
+  .row { display: grid; grid-template-columns: 128px minmax(0, 1fr) 40px; align-items: center; gap: 10px; min-height: 28px; }
+  .row > label { color: var(--label); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default; display: flex; align-items: center; gap: 7px; }
+  .row > label svg { width: 11px; height: 11px; flex: none; color: var(--muted); }
+  .row output { font: 11px/1 var(--mono); text-align: right; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .row.off > label, .row.off output { color: var(--faint); }
+  .hint { color: var(--muted); font-size: 11px; line-height: 1.4; margin: -2px 0 4px; }
+  .hint.mono { font-family: var(--mono); font-size: 10.5px; font-variant-numeric: tabular-nums; }
+  .sub { font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin: 8px 0 2px; }
+
+  input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 20px; margin: 0; background: transparent; cursor: pointer; --p: 50%; }
+  input[type="range"]::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; background: linear-gradient(to right, var(--accent) 0 var(--p), var(--line-strong) var(--p) 100%); }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; margin-top: -4.5px; border-radius: 50%; border: 0; background: var(--text); box-shadow: 0 0 0 3px var(--panel); }
+  input[type="range"]::-moz-range-track { height: 3px; border-radius: 2px; background: var(--line-strong); }
+  input[type="range"]::-moz-range-progress { height: 3px; border-radius: 2px; background: var(--accent); }
+  input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; border: 0; background: var(--text); box-shadow: 0 0 0 3px var(--panel); }
+  input[type="range"]:focus-visible { outline: none; }
+  input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--panel), 0 0 0 5px var(--accent); }
+  input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--panel), 0 0 0 5px var(--accent); }
+  input[type="range"]:disabled { cursor: default; }
+  input[type="range"]:disabled::-webkit-slider-runnable-track { background: var(--line); }
+  input[type="range"]:disabled::-webkit-slider-thumb { background: var(--faint); }
+  input[type="range"]:disabled::-moz-range-progress { background: var(--line); }
+
+  .field, select { height: 28px; border-radius: 6px; border: 1px solid var(--line); background: var(--ground); padding: 0 8px; color: var(--text); min-width: 0; }
+  .field:hover, select:hover { border-color: var(--line-strong); }
+  .field:focus-visible, select:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .field.mono { font: 11.5px var(--mono); font-variant-numeric: tabular-nums; }
+  select { width: 100%; cursor: pointer; }
+  .row.wide { grid-template-columns: 128px minmax(0, 1fr); }
+  .seedbox { display: flex; gap: 6px; min-width: 0; }
+  .seedbox .field { flex: 1 1 auto; width: 100%; -moz-appearance: textfield; appearance: textfield; }
+  .seedbox .field::-webkit-outer-spin-button, .seedbox .field::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .sw { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; color: var(--label); cursor: pointer; }
+  .sw input { -webkit-appearance: none; appearance: none; flex: none; width: 28px; height: 16px; margin: 0; border-radius: 9px; background: var(--line-strong); position: relative; cursor: pointer; transition: background 0.15s; }
+  .sw input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--text); transition: transform 0.15s; }
+  .sw input:checked { background: var(--accent); }
+  .sw input:checked::after { transform: translateX(12px); }
+
+  .cpick { display: flex; gap: 6px; min-width: 0; grid-column: 2 / -1; }
+  .cpick input[type="color"] { -webkit-appearance: none; appearance: none; flex: none; width: 28px; height: 28px; padding: 0; border: 1px solid var(--line-strong); border-radius: 6px; background: none; cursor: pointer; }
+  .cpick input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+  .cpick input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 4px; }
+  .cpick input[type="color"]::-moz-color-swatch { border: 0; border-radius: 4px; }
+  .cpick .field { flex: 1 1 auto; width: 100%; text-transform: uppercase; }
+  .row.crow { grid-template-columns: 128px minmax(0, 1fr); }
+  .swatches { display: flex; flex-wrap: wrap; gap: 5px; margin: 0 0 6px 138px; }
+  .swatches button { width: 16px; height: 16px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.14); padding: 0; cursor: pointer; }
+  .swatches button:hover { transform: scale(1.15); }
+
+  .mixbar { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--line); margin: 6px 0 4px; gap: 1px; }
+  .mixbar i { display: block; height: 100%; transition: flex-grow 0.15s; }
+
+  .presets { display: grid; gap: 8px; }
+  .looks { padding: 10px 16px 14px; border-bottom: 1px solid var(--line); }
+  .looks .sub { margin: 0 0 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line); background: transparent; cursor: pointer; font-size: 11.5px; color: var(--label); }
+  .chip:hover { border-color: var(--line-strong); color: var(--text); background: var(--raised); }
+  .chip[aria-pressed="true"] { border-color: var(--accent); color: var(--text); background: var(--accent-soft); }
+  .plist { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+  .plist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; padding: 3px 4px 3px 8px; border-radius: 6px; }
+  .plist li:hover { background: var(--raised); }
+  .plist .pn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .plist .pa { display: flex; gap: 2px; }
+  .plist .btn { height: 24px; padding: 0 7px; font-size: 11px; }
+  .pempty { color: var(--muted); font-size: 11.5px; }
+
+  .exp { border-top: 1px solid var(--line); padding: 12px 16px 14px; display: grid; gap: 8px; background: var(--panel); }
+  .exp-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .exp-h strong { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--label); }
+  .exp-h span { font: 10.5px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+  .exp-r { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+  .exp .sw { min-height: 24px; }
+  .exp .note { font-size: 11px; color: var(--warn); }
+
+  /* ---------- export sheet ---------- */
+  dialog.sheet { width: min(760px, calc(100vw - 32px)); max-height: calc(100% - 32px); padding: 0; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel); color: var(--text); box-shadow: 0 30px 80px var(--shadow); }
+  dialog.sheet::backdrop { background: rgba(5, 6, 7, 0.66); }
+  .sh-in { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; max-height: calc(100vh - 34px); }
+  .sh-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .sh-h h2 { margin: 0; font-size: 14px; font-weight: 600; }
+  .sh-h p { margin: 3px 0 0; color: var(--muted); font-size: 12px; max-width: 60ch; }
+  .sh-b { overflow: auto; padding: 16px; display: grid; gap: 12px; min-height: 0; }
+  .sh-prev { display: grid; place-items: center; background-color: var(--check-a); background-image: linear-gradient(45deg, var(--check-b) 25%, transparent 25%, transparent 75%, var(--check-b) 75%), linear-gradient(45deg, var(--check-b) 25%, transparent 25%, transparent 75%, var(--check-b) 75%); background-size: 16px 16px; background-position: 0 0, 8px 8px; border-radius: 8px; padding: 12px; min-height: 120px; }
+  .sh-prev img { display: block; max-width: 100%; max-height: 46vh; width: auto; height: auto; object-fit: contain; }
+  .sh-meta { font: 11px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .sh-b textarea { width: 100%; min-height: 150px; resize: vertical; border-radius: 8px; border: 1px solid var(--line); background: var(--ground); color: var(--label); font: 11px/1.45 var(--mono); padding: 10px; }
+  .sh-f { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(260px, 54%) minmax(0, 1fr); }
+    .panel { display: block; overflow-y: auto; border-left: 0; border-top: 1px solid var(--line); }
+    .scroll { overflow: visible; }
+    .view { padding: 16px; }
+    .tb { padding: 8px 16px; gap: 8px; }
+    .tb .up-label { display: none; }
+    .sb .hint-k, .sb .eng { display: none; }
+  }
+  @media (max-width: 480px) {
+    .dims { display: none; }
+    .row { grid-template-columns: 116px minmax(0, 1fr) 38px; gap: 8px; }
+    .row.wide, .row.crow { grid-template-columns: 116px minmax(0, 1fr); }
+    .swatches { margin-left: 124px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <main class="stage" aria-label="Preview">
+    <header class="tb">
+      <div class="file"><span class="fname" id="fname">Loading sample…</span><span class="dims" id="dims"></span></div>
+      <div class="seg" role="radiogroup" aria-label="Preview mode" id="viewSeg">
+        <label><input type="radio" name="view" value="before" id="v-before"><span>Before</span></label>
+        <label><input type="radio" name="view" value="split" id="v-split"><span>Split</span></label>
+        <label><input type="radio" name="view" value="after" id="v-after" checked><span>After</span></label>
+      </div>
+      <button class="btn" id="uploadBtn" type="button" title="Upload a JPEG, PNG or WebP">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.5V2.5M4.8 5.6 8 2.4l3.2 3.2M2.5 10v2.2c0 .7.6 1.3 1.3 1.3h8.4c.7 0 1.3-.6 1.3-1.3V10"/></svg>
+        <span class="up-label">Upload image</span>
+      </button>
+      <input type="file" id="fileIn" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden>
+    </header>
+    <div class="view" id="view">
+      <div class="frame" id="frame" data-view="after" hidden>
+        <canvas id="result" aria-label="Halftone result" role="img"></canvas>
+        <canvas id="before" aria-label="Source image" role="img"></canvas>
+        <div class="split" id="split" role="slider" tabindex="0" aria-label="Before and after split" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+          <span class="knob"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4 2 8l4 4M10 4l4 4-4 4"/></svg></span>
+        </div>
+        <span class="tag tag-l">Before</span><span class="tag tag-r">After</span>
+      </div>
+      <div class="empty" id="empty" hidden>
+        <div class="empty-in">
+          <svg class="glyph" viewBox="0 0 56 56" aria-hidden="true" fill="currentColor"><circle cx="10" cy="10" r="1.6"/><circle cx="20" cy="10" r="2.4"/><circle cx="30" cy="10" r="1.2"/><path d="M37 6.5l2.5 2.5 2.5-2.5 1 1-2.5 2.5 2.5 2.5-1 1-2.5-2.5-2.5 2.5-1-1 2.5-2.5-2.5-2.5z"/><circle cx="10" cy="20" r="3"/><path d="M20 15.5l4.5 4.5-4.5 4.5-4.5-4.5z"/><circle cx="30" cy="20" r="2.6"/><circle cx="40" cy="20" r="1.4"/><circle cx="10" cy="30" r="4"/><path d="M16.5 25.5l3.5 3.5 3.5-3.5 1.5 1.5-3.5 3.5 3.5 3.5-1.5 1.5-3.5-3.5-3.5 3.5-1.5-1.5 3.5-3.5-3.5-3.5z"/><circle cx="30" cy="30" r="3.4"/><circle cx="40" cy="30" r="2"/><rect x="5.5" y="35.5" width="9" height="9"/><circle cx="20" cy="40" r="4.4"/><circle cx="30" cy="40" r="3.8"/><circle cx="40" cy="40" r="2.6"/><circle cx="47" cy="46" r="1"/><circle cx="44" cy="49" r="0.8"/></svg>
+          <h2>Drop an image to halftone it</h2>
+          <p>JPEG, PNG or WebP. Large photos are fine: the effect is built from a sampled grid, never from every pixel.</p>
+          <button class="btn" type="button" id="emptyUpload">Choose an image</button>
+        </div>
+      </div>
+      <div class="drop" id="drop" hidden>Drop to halftone</div>
+      <div class="busy" id="busy" hidden><span class="spin"></span><span id="busyText">Reading image…</span></div>
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    </div>
+    <footer class="sb">
+      <span id="statL">No image loaded</span>
+      <span id="statR"><span id="statMs"></span><span class="hint-k"><kbd>B</kbd> before/after</span></span>
+    </footer>
+  </main>
+
+  <aside class="panel" aria-label="Settings">
+    <div class="ph">
+      <div class="ttl"><strong>Halftone</strong><span>Image generator</span></div>
+      <div class="acts">
+        <button class="btn icon ghost" type="button" id="randHead" title="Randomise seed" aria-label="Randomise seed">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2.2"/><circle cx="5.6" cy="5.6" r=".9" fill="currentColor" stroke="none"/><circle cx="10.4" cy="10.4" r=".9" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="10.4" cy="5.6" r=".9" fill="currentColor" stroke="none"/><circle cx="5.6" cy="10.4" r=".9" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button class="btn ghost" type="button" id="saveHead">Save preset</button>
+        <button class="btn ghost" type="button" id="resetBtn" title="Reset every setting to its default">Reset</button>
+      </div>
+    </div>
+    <form class="savebar" id="saveBar" hidden>
+      <input class="field" id="presetName" type="text" maxlength="40" placeholder="Preset name" aria-label="Preset name" autocomplete="off">
+      <button class="btn" type="submit">Save</button>
+      <button class="btn ghost" type="button" id="saveCancel">Cancel</button>
+    </form>
+    <div class="scroll" id="groups"></div>
+    <section class="exp" aria-label="Export">
+      <div class="exp-h"><strong>Export</strong><span id="expInfo">–</span></div>
+      <div class="exp-r">
+        <div class="seg full" role="radiogroup" aria-label="Export format">
+          <label><input type="radio" name="fmt" value="png" id="f-png" checked><span>PNG</span></label>
+          <label><input type="radio" name="fmt" value="svg" id="f-svg"><span>SVG</span></label>
+        </div>
+        <div class="seg full" role="radiogroup" aria-label="Export scale">
+          <label><input type="radio" name="scale" value="1" id="s-1" checked><span>1x</span></label>
+          <label><input type="radio" name="scale" value="2" id="s-2"><span>2x</span></label>
+          <label><input type="radio" name="scale" value="4" id="s-4"><span>4x</span></label>
+        </div>
+      </div>
+      <label class="sw"><span>Transparent background</span><input type="checkbox" id="x-transparent"></label>
+      <div class="note" id="expNote" hidden></div>
+      <button class="btn primary" type="button" id="exportBtn">Export PNG</button>
+    </section>
+  </aside>
+</div>
+
+<dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
+  <div class="sh-in">
+    <div class="sh-h">
+      <div><h2 id="sheetTitle">Save your export</h2><p id="sheetLead"></p></div>
+      <button class="btn icon ghost" type="button" id="sheetX" aria-label="Close">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="sh-b" id="sheetBody"></div>
+    <div class="sh-f" id="sheetFoot"></div>
+  </div>
+</dialog>
+
+<script>
+/* =====================================================================
+   ENGINE — runs in a Worker with an OffscreenCanvas when the browser
+   allows it, otherwise on the main thread through a MessageChannel.
+   It must not reference anything outside this function.
+   ===================================================================== */
+function engineMain(port, local) {
+  'use strict';
+  const TAU = Math.PI * 2;
+  const HAS_OFF = typeof OffscreenCanvas !== 'undefined';
+  const PER = [Math.PI, 3.52, 4.72, 2.93];          // outline length per unit size, by mark type (circle, square, cross, diamond)
+  let canvas = null, ctx = null;
+  let base = null, natW = 0, natH = 0, NW = 1000, NH = 1000, imgVer = 0;
+  let G = null, NZ = null, P = null;
+  let cap = 0, n = 0, MX, MY, MS, MR, MA, MT, MC;
+  let perim = 0, perimA = 0, cnt = [0, 0, 0, 0], rot0 = 0;
+  let rs = 0;
+  const Q = new Float64Array(24);
+
+  function mix(x) { x |= 0; x ^= x >>> 16; x = Math.imul(x, 0x7feb352d); x ^= x >>> 15; x = Math.imul(x, 0x846ca68b); x ^= x >>> 16; return x >>> 0; }
+  function rnd() { rs = (rs + 0x6D2B79F5) | 0; let t = Math.imul(rs ^ (rs >>> 15), 1 | rs); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function ss(a, b, x) { const t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); }
+  function mkCanvas(w, h) {
+    if (HAS_OFF) return new OffscreenCanvas(w, h);
+    const c = local.doc.createElement('canvas'); c.width = w; c.height = h; return c;
+  }
+  function post(msg, transfer) { port.postMessage(msg, transfer || []); }
+
+  /* ---------- analysis: image -> luminance grid ---------- */
+  function boxBlur(src, w, h, r) {
+    const tmp = new Float32Array(w * h), out = new Float32Array(w * h), inv = 1 / (2 * r + 1);
+    for (let y = 0; y < h; y++) {
+      const o = y * w; let acc = 0;
+      for (let k = -r; k <= r; k++) acc += src[o + Math.min(w - 1, Math.max(0, k))];
+      for (let x = 0; x < w; x++) { tmp[o + x] = acc * inv; acc += src[o + Math.min(w - 1, x + r + 1)] - src[o + Math.max(0, x - r)]; }
+    }
+    for (let x = 0; x < w; x++) {
+      let acc = 0;
+      for (let k = -r; k <= r; k++) acc += tmp[Math.min(h - 1, Math.max(0, k)) * w + x];
+      for (let y = 0; y < h; y++) { out[y * w + x] = acc * inv; acc += tmp[Math.min(h - 1, y + r + 1) * w + x] - tmp[Math.max(0, y - r) * w + x]; }
+    }
+    return out;
+  }
+  function gridDims(spacing) {
+    let cols = Math.max(8, Math.round(NW / spacing)), rows = Math.max(8, Math.round(NH / spacing));
+    const L = Math.max(cols, rows);
+    if (L > 600) { const f = 600 / L; cols = Math.max(8, Math.round(cols * f)); rows = Math.max(8, Math.round(rows * f)); }
+    return [cols, rows];
+  }
+  function ensureGrid(spacing) {
+    const [cols, rows] = gridDims(spacing);
+    const key = imgVer + ':' + cols + 'x' + rows;
+    if (G && G.key === key) return false;
+    const F = Math.max(cols, rows) * 3 <= 1800 ? 3 : 2;
+    const fw = cols * F, fh = rows * F;
+    const c = mkCanvas(fw, fh), x = c.getContext('2d', { willReadFrequently: true });
+    x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+    x.drawImage(base, 0, 0, fw, fh);
+    const d = x.getImageData(0, 0, fw, fh).data;
+    const fine = new Float32Array(fw * fh), fineA = new Float32Array(fw * fh);
+    for (let p = 0, q = 0; p < fine.length; p++, q += 4) {
+      const a = d[q + 3] / 255;
+      const l = (0.299 * d[q] + 0.587 * d[q + 1] + 0.114 * d[q + 2]) / 255;
+      fine[p] = l * a + (1 - a); fineA[p] = a;
+    }
+    const N = cols * rows, lum = new Float32Array(N), alpha = new Float32Array(N), invF = 1 / (F * F);
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      let sl = 0, sa = 0;
+      for (let v = 0; v < F; v++) { const o = (j * F + v) * fw + i * F; for (let u = 0; u < F; u++) { sl += fine[o + u]; sa += fineA[o + u]; } }
+      lum[j * cols + i] = sl * invF; alpha[j * cols + i] = sa * invF;
+    }
+    // auto levels from the opaque cells (1st / 99th percentile), kept gentle
+    const hist = new Uint32Array(256); let tot = 0;
+    for (let k = 0; k < N; k++) if (alpha[k] > 0.5) { hist[Math.min(255, (lum[k] * 255) | 0)]++; tot++; }
+    let lo = 0, hi = 1;
+    if (tot > 16) {
+      let acc = 0, a = -1, b = -1;
+      for (let k = 0; k < 256; k++) { acc += hist[k]; if (a < 0 && acc >= tot * 0.01) a = k; if (b < 0 && acc >= tot * 0.99) { b = k; break; } }
+      lo = Math.min(a / 255, 0.3); hi = Math.max((b + 1) / 255, 0.7);
+    }
+    const b1 = boxBlur(lum, cols, rows, 1), b3 = boxBlur(lum, cols, rows, 3);
+    const hp = new Float32Array(N), edge = new Float32Array(N);
+    for (let k = 0; k < N; k++) hp[k] = lum[k] - b3[k];
+    for (let j = 0; j < rows; j++) {
+      const jm = Math.max(0, j - 1) * cols, jc = j * cols, jp = Math.min(rows - 1, j + 1) * cols;
+      for (let i = 0; i < cols; i++) {
+        const im = Math.max(0, i - 1), ip = Math.min(cols - 1, i + 1);
+        const tl = b1[jm + im], tc = b1[jm + i], tr = b1[jm + ip], ml = b1[jc + im], mr = b1[jc + ip], bl = b1[jp + im], bc = b1[jp + i], br = b1[jp + ip];
+        const gx = (tr + 2 * mr + br) - (tl + 2 * ml + bl), gy = (bl + 2 * bc + br) - (tl + 2 * tc + tr);
+        edge[jc + i] = Math.min(1, Math.sqrt(gx * gx + gy * gy) * 1.5);
+      }
+    }
+    G = { key, cols, rows, F, fw, fh, fine, lum, alpha, hp, edge, lo, inv: 1 / (hi - lo), cw: NW / cols, ch: NH / rows };
+    NZ = null;
+    return true;
+  }
+
+  /* ---------- organic noise field (seeded value noise, 3 octaves) ---------- */
+  function lattice(ix, iy, s) { return mix(Math.imul(ix, 0x27d4eb2d) ^ Math.imul(iy, 0x165667b1) ^ s) / 4294967296; }
+  function vnoise(x, y, s) {
+    const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy;
+    const u = fx * fx * fx * (fx * (fx * 6 - 15) + 10), v = fy * fy * fy * (fy * (fy * 6 - 15) + 10);
+    const a = lattice(ix, iy, s), b = lattice(ix + 1, iy, s), c = lattice(ix, iy + 1, s), d = lattice(ix + 1, iy + 1, s);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  }
+  function fbm(x, y, s) {
+    const v = vnoise(x, y, s) * 0.57 + vnoise(x * 2.07 + 17.3, y * 2.07 + 9.1, s ^ 0x1234567) * 0.29 + vnoise(x * 4.31 + 3.7, y * 4.31 + 41.2, s ^ 0x7654321) * 0.14;
+    return Math.max(-1, Math.min(1, (v - 0.5) * 3.2));
+  }
+  function ensureNoise(seed) {
+    const key = G.key + ':' + seed;
+    if (NZ && NZ.key === key) return;
+    const N = G.cols * G.rows, a = new Float32Array(N), b = new Float32Array(N), c = new Float32Array(N);
+    const sa = mix(seed ^ 0xA511E9B3), sb = mix(seed ^ 0x63D83595), sc = mix(seed ^ 0x2C1B3C6D);
+    for (let j = 0; j < G.rows; j++) for (let i = 0; i < G.cols; i++) {
+      const x = (i + 0.5) * G.cw, y = (j + 0.5) * G.ch, k = j * G.cols + i;
+      a[k] = fbm(x / 62, y / 62, sa);
+      b[k] = fbm(x / 118 + 50, y / 118 + 50, sb);
+      c[k] = fbm(x / 30 + 20, y / 30 + 70, sc);      // small patches: neighbouring cells tend to pick the same shape
+    }
+    NZ = { key, a, b, c };
+  }
+
+  /* ---------- settings -> engine params ---------- */
+  function params(s) {
+    const th = s.threshold / 100 * 0.9;
+    const fixed = { mixed: -1, circle: 0, square: 1, cross: 2, diamond: 3 }[s.mode];
+    return {
+      bright: s.brightness / 100 * 0.6,
+      cf: s.contrast >= 0 ? 1 + s.contrast / 100 * 2.5 : 1 + s.contrast / 100 * 0.92,
+      ig: 1 / s.gamma, th, thInv: 1 / (1 - th), fade: s.fade / 100, invert: !!s.invert,
+      edge: s.edge / 100, detail: s.detail / 100, noise: s.noise / 100,
+      minS: s.minSize / 100, maxS: s.maxSize / 100, dens: s.density / 100, rand: s.randomness / 100,
+      clusters: s.clusters / 100, big: (s.big || 0) / 100, spread: (s.spread || 0) / 100, fixed: fixed === undefined ? -1 : fixed,
+      wD: s.pDot, wX: s.pCross, wM: s.pDiamond, wS: s.pSquare,
+      fg: s.fg, bg: s.bg, fg2: s.fg2, transparent: !!s.transparent,
+      duo: !!s.duotone, duoMode: s.duoMode, split: s.duoSplit / 100, offset: s.offset / 100, overprint: !!s.overprint,
+      seed: s.seed >>> 0
+    };
+  }
+
+  function toneOf(L, h, e, nz, a) {
+    L = (L - G.lo) * G.inv + P.detail * 1.6 * h * G.inv + P.bright;
+    L = (L - 0.5) * P.cf + 0.5;
+    L = L < 0 ? 0 : L > 1 ? 1 : L;
+    if (P.ig !== 1) L = Math.pow(L, P.ig);
+    let d = P.invert ? L : 1 - L;
+    d -= 0.38 * d * (1 - d);   // dot-gain compensation: mid tones print lighter, the ends stay put
+    // edges: the ink side of a contour gets heavier and the paper side opens up, so outlines stay crisp without darkening busy texture
+    const w = ss(-0.012, 0.012, P.invert ? h : -h);
+    const t = d + P.edge * e * (1.05 * w - 0.4 * (1 - w)) + nz;
+    let v = (t - P.th) * P.thInv;
+    v = v < 0 ? 0 : v > 1 ? 1 : v;
+    if (P.fade > 0) { const hd = ss(P.th - 0.025, P.th + 0.025, t); v += (hd - v) * P.fade; }
+    return v * a;
+  }
+  function sampleFine(u, v) {
+    const fw = G.fw, fh = G.fh, f = G.fine;
+    u = u < 0 ? 0 : u > fw - 1 ? fw - 1 : u; v = v < 0 ? 0 : v > fh - 1 ? fh - 1 : v;
+    const x0 = u | 0, y0 = v | 0, x1 = Math.min(fw - 1, x0 + 1), y1 = Math.min(fh - 1, y0 + 1), fx = u - x0, fy = v - y0;
+    const a = f[y0 * fw + x0] + (f[y0 * fw + x1] - f[y0 * fw + x0]) * fx;
+    const b = f[y1 * fw + x0] + (f[y1 * fw + x1] - f[y1 * fw + x0]) * fx;
+    return a + (b - a) * fy;
+  }
+  function duoC(t, tp, r) {
+    if (!P.duo) return 0;
+    switch (P.duoMode) {
+      case 'shadows': return t + (r - 0.5) * 0.14 > P.split ? 1 : 0;
+      case 'lights': return t + (r - 0.5) * 0.14 < P.split ? 1 : 0;
+      case 'shapes': return (tp === 2 || tp === 3) ? 1 : 0;
+      default: return r < P.split ? 1 : 0;
+    }
+  }
+
+  /* ---------- marks ---------- */
+  function grow() {
+    const nc = cap ? cap * 2 : 65536;
+    const g = (A, T) => { const B = new T(nc); if (A) B.set(A); return B; };
+    MX = g(MX, Float32Array); MY = g(MY, Float32Array); MS = g(MS, Float32Array); MR = g(MR, Float32Array); MA = g(MA, Float32Array);
+    MT = g(MT, Uint8Array); MC = g(MC, Uint8Array); cap = nc;
+  }
+  // geometry first; the shape (type, rotation, cross arm) is settled per cell in finalize()
+  function push(x, y, s, c) {
+    if (n >= cap) grow();
+    MX[n] = x; MY[n] = y; MS[n] = s; MR[n] = 0; MA[n] = 0; MT[n] = 0; MC[n] = c; n++;
+  }
+  // one record per cell that produced marks: its shape draws, tone and the tone-driven shape preferences
+  let ccap = 0, cn = 0, CS, CV, CO, CT, CK, C0, CN;
+  function cgrow() {
+    const nc = ccap ? ccap * 2 : 32768;
+    const g = (A, T, k) => { const B = new T(nc * (k || 1)); if (A) B.set(A); return B; };
+    CS = g(CS, Float32Array); CV = g(CV, Float32Array); CO = g(CO, Float32Array); CT = g(CT, Float32Array);
+    CK = g(CK, Uint8Array); C0 = g(C0, Uint32Array); CN = g(CN, Uint8Array); ccap = nc;
+  }
+  const ORDER = [0, 2, 3, 1];   // slider order dot, cross, diamond, square -> mark type
+  // ink area per unit size, by mark type (a cross depends on its arm); used to keep tone steady whatever shape a cell gets
+  const AREA = [Math.PI / 4, 0.7744, 0.504, 0];
+  const crossArea = arm => 2.36 * arm - arm * arm;
+  // Mixed mode: shapes follow tone. Cells are ranked by a shape key (their tone, nudged by the noise fields, by edges and
+  // by a patchy random value), then each shape takes one run of that ranking: lightest marks become dots, then diamonds,
+  // then X marks, and the deepest become squares. The run lengths are the slider shares, counted in marks, so the mix
+  // always matches the sliders while every shape stays in its own tone.
+  const BAND = [0, 2, 1, 3];    // slider index (dot, cross, diamond, square) in tone order: dot, diamond, cross, square
+  let SK = null, TPc = null;
+  function assignShapes(W) {
+    const sumW = W[0] + W[1] + W[2] + W[3];
+    if (!TPc || TPc.length < cn) TPc = new Uint8Array(Math.max(cn, 4096) * 1.5 | 0);
+    if (sumW <= 0) { TPc.fill(0, 0, cn); return; }
+    if (!SK || SK.length < cn) SK = new Float64Array(Math.max(cn, 4096) * 1.5 | 0);
+    let total = 0, bigM = 0;
+    for (let c = 0; c < cn; c++) { total += CN[c]; if (CK[c] === 2) bigM++; }
+    // large marks are the strong, flat areas: they all become large X marks whenever the X share can hold them
+    const bigX = W[1] > 0 && bigM <= W[1] / sumW * total;
+    const tgt = BAND.map(k => W[k] / sumW * total);
+    if (bigX) tgt[2] -= bigM;
+    let z0 = 0;
+    for (let c = 0; c < cn; c++) {
+      if (bigX && CK[c] === 2) { TPc[c] = 2; continue; }
+      let q = Math.floor((CS[c] + 1) * 268435456);       // key range -1..3 onto 2^30 steps, cell index in the low 20 bits
+      q = q < 0 ? 0 : q > 1073741823 ? 1073741823 : q;
+      SK[z0++] = q * 1048576 + c;
+    }
+    const v = SK.subarray(0, z0); v.sort();
+    let b = 0, acc = 0, lim = tgt[0];
+    for (let z = 0; z < z0; z++) {
+      const c = v[z] % 1048576, m = CN[c];
+      while (b < 3 && acc + m * 0.5 > lim) { b++; lim += tgt[b]; }
+      TPc[c] = ORDER[BAND[b]]; acc += m;
+    }
+  }
+  function finalize() {
+    const fixed = P.fixed, rand = P.rand, X45 = Math.PI / 4;
+    if (fixed < 0) assignShapes([P.wD, P.wX, P.wM, P.wS]);
+    const shapeDuo = P.duo && P.duoMode === 'shapes';
+    cnt = [0, 0, 0, 0]; perim = 0; perimA = 0; rot0 = 0;
+    for (let c = 0; c < cn; c++) {
+      const tp = fixed < 0 ? TPc[c] : fixed;
+      const q0 = C0[c], q1 = q0 + CN[c], cluster = CK[c] === 1, t = CT[c], rRot = CO[c];
+      // hand-set look: X marks sit at 45 degrees with a slight wobble, a few turn into plus signs; squares and diamonds wobble a little
+      let rot = 0, arm = 0.32;
+      if (tp === 2) {
+        arm = cluster ? 0.34 : 0.21 + 0.16 * t;
+        rot = (!cluster && CK[c] !== 2 && CV[c] < 0.09 * rand ? 0 : X45) + (rRot - 0.5) * rand * (CK[c] === 2 ? 0.16 : 0.3);
+      } else if (tp === 1) rot = (rRot - 0.5) * rand * 0.32;
+      else if (tp === 3) rot = (rRot - 0.5) * rand * 0.26;
+      // same ink whatever the shape: thinner shapes are drawn larger
+      const comp = Math.min(1.42, Math.sqrt(AREA[0] / (tp === 2 ? crossArea(arm) : AREA[tp])));
+      const per = PER[tp];
+      for (let q = q0; q < q1; q++) {
+        MT[q] = tp; MR[q] = rot; MA[q] = arm; MS[q] *= comp;
+        if (shapeDuo) MC[q] = (tp === 2 || tp === 3) ? 1 : 0;
+        if (tp === 1 && rot === 0) perimA += MS[q] * per; else perim += MS[q] * per;
+      }
+      cnt[tp] += q1 - q0;
+      if (tp === 1 && rot !== 0) rot0 += q1 - q0;
+    }
+  }
+
+  let TT = null, BK = null;
+  function generate() {
+    n = 0; cn = 0;
+    const g = G, cols = g.cols, rows = g.rows, cw = g.cw, ch = g.ch, cell = (cw + ch) / 2, F = g.F;
+    const lum = g.lum, alpha = g.alpha, hp = g.hp, edge = g.edge, A = NZ.a, B = NZ.b, C = NZ.c;
+    const fixed = P.fixed, rand = P.rand, dens = P.dens, nz = P.noise, clu = P.clusters, big = P.big;
+    const minS = Math.min(P.minS, P.maxS), dS = Math.max(0, P.maxS - P.minS);
+    const seedMix = mix(P.seed ^ 0x5bd1e995);
+    // Print model. t is the ink a cell should carry (0..1).
+    //  - highlights thin out (fewer marks) as well as shrink, and break into huddles of tiny dots
+    //  - mid tones are single marks whose area follows t
+    //  - strong tones hold the grid and turn into X marks and blocks (shape choice in finalize);
+    //    where they are flat, groups of four cells merge into one mark two cells wide
+    const T_FM = 0.3;                                   // below this tone, marks drop out as well as shrink
+    const tinyD = (0.21 + 0.3 * minS) * cell;           // tiny-dot diameter inside a huddle
+    const tinyA = AREA[0] * (tinyD / cell) * (tinyD / cell);
+    const dk = 0.4 + P.detail * 1.1;                    // how much a tiny dot follows the image right under it
+    const GOLD = 2.399963, fine = g.fine, fw = g.fw, inv = P.invert, cen = 1.2 * P.detail;
+    const jitU = 0.85 - 0.6 * nz;                       // how freely each cell picks its shape, against its neighbours
+    const mixK = 0.05 + 0.5 * rand;                     // how far shapes wander out of their tone band
+    const N = cols * rows;
+    if (!TT || TT.length < N) { TT = new Float32Array(N); BK = new Uint8Array(N); }
+    // pass 1: tone per cell (each cell owns a fixed random stream: same draws in the same order whatever the settings are)
+    for (let j = 0; j < rows; j++) {
+      const hj = Math.imul(j + 1, 0xC2B2AE3D);
+      for (let i = 0; i < cols; i++) {
+        const idx = j * cols + i, a = alpha[idx];
+        BK[idx] = 0;
+        if (a < 0.02) { TT[idx] = -1; continue; }
+        rs = mix(mix(seedMix ^ Math.imul(i + 1, 0x85EBCA77)) ^ hj) | 0;
+        for (let k = 0; k < 9; k++) rnd();
+        const rGrain = rnd();
+        // tone noise stays small so faces survive; the noise mostly moves texture around
+        TT[idx] = toneOf(lum[idx], hp[idx], edge[idx], nz * (0.2 * A[idx] + 0.08 * (rGrain * 2 - 1)), a);
+      }
+    }
+    // pass 2: flat, strong 2 x 2 blocks become one large mark (detail preservation keeps busy blocks as single cells)
+    if (big > 0) {
+      const lim = 0.045 + 0.2 * (1 - P.detail);
+      for (let bj = 0; bj + 1 < rows; bj += 2) for (let bi = 0; bi + 1 < cols; bi += 2) {
+        const i0 = bj * cols + bi, t0 = TT[i0], t1 = TT[i0 + 1], t2 = TT[i0 + cols], t3 = TT[i0 + cols + 1];
+        if (Math.min(t0, t1, t2, t3) < 0.3) continue;
+        const tm = (t0 + t1 + t2 + t3) * 0.25, dev = Math.max(Math.abs(t0 - tm), Math.abs(t1 - tm), Math.abs(t2 - tm), Math.abs(t3 - tm));
+        if (dev > lim) continue;
+        const hb = mix(seedMix ^ Math.imul(bi + 7, 0x9E3779B1) ^ Math.imul(bj + 3, 0x27D4EB2F)) / 4294967296;
+        if (hb < big * ss(0.48, 0.74, tm) * (1 + 1.1 * nz * B[i0])) { BK[i0] = 1; BK[i0 + 1] = BK[i0 + cols] = BK[i0 + cols + 1] = 2; TT[i0] = tm; }
+      }
+    }
+    // pass 3: marks
+    for (let j = 0; j < rows; j++) {
+      const hj = Math.imul(j + 1, 0xC2B2AE3D);
+      for (let i = 0; i < cols; i++) {
+        const idx = j * cols + i, t = TT[idx], bk = BK[idx];
+        if (bk === 2 || t < 0.008) continue;
+        rs = mix(mix(seedMix ^ Math.imul(i + 1, 0x85EBCA77)) ^ hj) | 0;
+        const rKeep = rnd(), rShape = rnd(), rJx = rnd(), rJy = rnd(), rSize = rnd(), rClu = rnd(), rK = rnd(), rRot = rnd(), rDuo = rnd(), rGrain = rnd(), rVar = rnd();
+        const a = alpha[idx], e = edge[idx], fA = A[idx], reg = B[idx];
+        const start = n;
+        // the edge between dusty and solid areas wanders with the coarse noise field, in organic patches
+        const tr = t + nz * 0.16 * reg;
+        const cluster = bk === 0 && clu > 0 && rClu < clu * (1 - ss(0.04, 0.44, tr)) * (1 + 0.7 * nz * reg);
+        if (bk === 1) {
+          const s = 2 * (minS + dS * Math.sqrt(t)) * cell * (1 + (rSize - 0.5) * rand * 0.3), jit = rand * 0.22;
+          push((i + 1) * cw + (rJx - 0.5) * jit * cw, (j + 1) * ch + (rJy - 0.5) * jit * ch, s, duoC(t, -1, rDuo));
+        } else if (cluster) {
+          // a huddle of tiny dots laid on a sunflower spiral: compact, evenly spaced, never a grid
+          const lam = t * dens / tinyA;
+          let m, grow = 1;
+          if (lam < 2) m = rK < lam * 0.5 ? 2 : 0;
+          else { m = Math.min(7, Math.floor(lam + rK)); if (lam > 7) grow = Math.min(1.35, Math.sqrt(lam / 7)); }
+          if (m) {
+            const cx = (i + 0.5) * cw + (rJx - 0.5) * rand * 0.8 * cw, cy = (j + 0.5) * ch + (rJy - 0.5) * rand * 0.8 * ch;
+            const th0 = rRot * TAU, step = tinyD * grow * (0.6 + 0.25 * rand), L0 = lum[idx], nzv = nz * (0.2 * fA + 0.08 * (rGrain * 2 - 1));
+            for (let k = 0; k < m; k++) {
+              const b1 = rnd(), b2 = rnd(), b3 = rnd();
+              const r = step * Math.sqrt(k + 0.5) * (1 + (b2 - 0.5) * rand * 0.5), ang = th0 + k * GOLD + (b1 - 0.5) * rand * 0.8;
+              const px = cx + Math.cos(ang) * r, py = cy + Math.sin(ang) * r;
+              const fl = sampleFine(px / cw * F - 0.5, py / ch * F - 0.5);
+              const st = toneOf(L0 + (fl - L0) * dk, hp[idx], e, nzv, a);
+              if (st < 0.25 * t) continue;
+              const d = tinyD * grow * Math.min(1.45, Math.max(0.65, Math.sqrt(st / t))) * (1 + (b3 - 0.5) * rand * 0.45);
+              push(px, py, d, duoC(st, -1, rDuo));
+            }
+          }
+        } else {
+          const pB = t >= T_FM ? 1 : Math.pow(t / T_FM, 0.8);
+          // a few breathing holes in the mid tones, following the fine noise field
+          const hole = nz * 0.24 * Math.max(0, fA) * (1 - ss(0.5, 0.88, t));
+          if (rKeep >= pB * dens * (1 - hole)) continue;
+          const s = (minS + dS * Math.sqrt(Math.min(1.2, t / pB))) * cell * (1 + (rSize - 0.5) * rand * 0.5);
+          if (s < 0.05) continue;
+          // light marks scatter, strong marks keep to the grid
+          const jit = rand * (0.2 + 0.85 * (1 - ss(0.12, 0.72, t)));
+          // detail: a mark on an edge slides toward the inked part of its cell, so contours and small features stay sharp
+          let ox = 0, oy = 0;
+          if (cen > 0) {
+            let lo = 2, sw = 0, sx = 0, sy = 0;
+            const o0 = j * F * fw + i * F;
+            for (let v = 0; v < F; v++) for (let u = 0; u < F; u++) { const d = inv ? fine[o0 + v * fw + u] : 1 - fine[o0 + v * fw + u]; if (d < lo) lo = d; }
+            for (let v = 0; v < F; v++) for (let u = 0; u < F; u++) { const w = (inv ? fine[o0 + v * fw + u] : 1 - fine[o0 + v * fw + u]) - lo; sw += w; sx += w * (u + 0.5 - F * 0.5); sy += w * (v + 0.5 - F * 0.5); }
+            if (sw > 0.02) { ox = sx / sw / F * cw * cen; oy = sy / sw / F * ch * cen; }
+          }
+          push((i + 0.5) * cw + (rJx - 0.5) * jit * cw + ox, (j + 0.5) * ch + (rJy - 0.5) * jit * ch + oy, s, duoC(t, -1, rDuo));
+        }
+        if (n === start) continue;
+        if (cn >= ccap) cgrow();
+        // shape key: tone read through the noise fields, pushed darker on edges and for large marks, plus a patchy random
+        // value (a small noise field and this cell's own draw), so neighbouring shapes meet in organic, speckled borders
+        let u = 3 * C[idx] + rShape * jitU; u -= Math.floor(u);
+        const key = t + nz * (0.2 * reg + 0.08 * fA) + (u - 0.5) * mixK + 0.16 * e * (1 - ss(0.55, 0.85, t)) + (bk === 1 ? 0.1 : 0);
+        CS[cn] = key; CV[cn] = rVar; CO[cn] = rRot; CT[cn] = t; CK[cn] = cluster ? 1 : bk === 1 ? 2 : 0; C0[cn] = start; CN[cn] = n - start;
+        cn++;
+      }
+    }
+    finalize();
+  }
+
+  /* ---------- geometry (shared by canvas and SVG) ---------- */
+  // fills Q with the mark's local outline (clockwise on screen) and returns the vertex count; 0 means circle
+  function outline(tp, s, arm) {
+    if (tp === 1) { const h = s * 0.44; Q[0] = -h; Q[1] = -h; Q[2] = h; Q[3] = -h; Q[4] = h; Q[5] = h; Q[6] = -h; Q[7] = h; return 4; }
+    if (tp === 3) { const w = s * 0.42, h = s * 0.6; Q[0] = 0; Q[1] = -h; Q[2] = w; Q[3] = 0; Q[4] = 0; Q[5] = h; Q[6] = -w; Q[7] = 0; return 4; }
+    const h = s * 0.59, w = s * arm * 0.5;
+    Q[0] = -w; Q[1] = -h; Q[2] = w; Q[3] = -h; Q[4] = w; Q[5] = -w; Q[6] = h; Q[7] = -w; Q[8] = h; Q[9] = w; Q[10] = w; Q[11] = w;
+    Q[12] = w; Q[13] = h; Q[14] = -w; Q[15] = h; Q[16] = -w; Q[17] = w; Q[18] = -h; Q[19] = w; Q[20] = -h; Q[21] = -w; Q[22] = -w; Q[23] = -w;
+    return 12;
+  }
+  // ink spread: every mark is also stroked with round joins, which grows it and softens its corners like ink gain
+  function spreadW() { return P.spread > 0 && G ? P.spread * 0.34 * (G.cw + G.ch) / 2 : 0; }
+  let layer = null;
+  function drawMarks(c, kx, ky) {
+    const W = c.canvas.width, H = c.canvas.height;
+    // the overprinting ink goes on its own layer first, so where its marks overlap (or meet their own spread) it does not darken itself
+    const useLayer = P.duo && P.overprint && W * H <= 72e6;
+    for (let col = 0; col < 2; col++) {
+      if (col === 1 && !P.duo) break;
+      let t = c;
+      if (col === 1 && useLayer) {
+        if (!layer || layer.width !== W || layer.height !== H) { if (layer) { layer.width = layer.height = 1; } layer = mkCanvas(W, H); }
+        t = layer.getContext('2d'); t.setTransform(1, 0, 0, 1, 0, 0); t.clearRect(0, 0, W, H);
+      }
+      t.globalCompositeOperation = (col === 1 && P.overprint && !useLayer) ? 'multiply' : 'source-over';
+      drawInk(t, kx, ky, col);
+      if (t !== c) { c.globalCompositeOperation = 'multiply'; c.drawImage(layer, 0, 0); }
+      if (W * H > 16e6 && t !== c) { layer.width = layer.height = 1; layer = null; }
+    }
+    c.globalCompositeOperation = 'source-over';
+  }
+  function drawInk(c, kx, ky, col) {
+    const k = (kx + ky) / 2, off = P.offset * 7, sw = spreadW() * k;
+    {
+      c.fillStyle = col ? P.fg2 : P.fg;
+      if (sw > 0.05) { c.strokeStyle = c.fillStyle; c.lineWidth = sw; c.lineJoin = 'round'; }
+      const dx = col ? off : 0, dy = col ? off * 0.7 : 0;
+      c.beginPath(); let m = 0;
+      for (let q = 0; q < n; q++) {
+        if (MC[q] !== col) continue;
+        const x = (MX[q] + dx) * kx, y = (MY[q] + dy) * ky, s = MS[q] * k, tp = MT[q], rot = MR[q];
+        if (tp === 0) {
+          const r = s * 0.5;
+          // sub-pixel dots become squares of the same area (much cheaper than arcs, same ink)
+          if (r < 0.7) { const h = r * 0.8862; c.rect(x - h, y - h, h * 2, h * 2); } else { c.moveTo(x + r, y); c.arc(x, y, r, 0, TAU); }
+        } else if (tp === 1 && (rot === 0 || s < 2.6)) {
+          const h = s * 0.44; c.rect(x - h, y - h, h * 2, h * 2);
+        } else {
+          const v = outline(tp, s, MA[q]), co = Math.cos(rot), si = Math.sin(rot);
+          c.moveTo(x + Q[0] * co - Q[1] * si, y + Q[0] * si + Q[1] * co);
+          for (let z = 2; z < v * 2; z += 2) c.lineTo(x + Q[z] * co - Q[z + 1] * si, y + Q[z] * si + Q[z + 1] * co);
+          c.closePath();
+        }
+        // Skia slows down sharply on long multi-contour paths; short batches keep fills linear
+        if (++m === 48) { c.fill(); if (sw > 0.05) c.stroke(); c.beginPath(); m = 0; }
+      }
+      if (m) { c.fill(); if (sw > 0.05) c.stroke(); }
+    }
+  }
+  function buildSVG(scale) {
+    const k = natW / NW, W = natW, H = natH, off = P.offset * 7;
+    const f = v => Math.round(v * 100) / 100;
+    const out = [`<svg xmlns="http://www.w3.org/2000/svg" width="${W * scale}" height="${H * scale}" viewBox="0 0 ${W} ${H}">`];
+    if (!P.transparent) out.push(`<rect width="${W}" height="${H}" fill="${P.bg}"/>`);
+    for (let col = 0; col < 2; col++) {
+      if (col === 1 && !P.duo) break;
+      const dx = col ? off : 0, dy = col ? off * 0.7 : 0, d = [];
+      for (let q = 0; q < n; q++) {
+        if (MC[q] !== col) continue;
+        const x = (MX[q] + dx) * k, y = (MY[q] + dy) * k, s = MS[q] * k, tp = MT[q], rot = MR[q];
+        if (tp === 0) {
+          const r = f(s * 0.5);
+          if (r <= 0) continue;
+          d.push(`M${f(x - r)} ${f(y)}a${r} ${r} 0 1 1 ${f(2 * r)} 0a${r} ${r} 0 1 1 ${f(-2 * r)} 0z`);
+        } else if (tp === 1 && rot === 0) {
+          const h = s * 0.44, e = f(2 * h);
+          d.push(`M${f(x - h)} ${f(y - h)}h${e}v${e}h${-e}z`);
+        } else {
+          const v = outline(tp, s, MA[q]), co = Math.cos(rot), si = Math.sin(rot);
+          let p = 'M';
+          for (let z = 0; z < v * 2; z += 2) p += (z ? ' ' : '') + f(x + Q[z] * co - Q[z + 1] * si) + ' ' + f(y + Q[z] * si + Q[z + 1] * co);
+          d.push(p + 'z');
+        }
+      }
+      const ink = col ? P.fg2 : P.fg, sw = spreadW() * k;
+      if (d.length) out.push(`<path fill="${ink}"${sw > 0.01 ? ` stroke="${ink}" stroke-width="${f(sw)}" stroke-linejoin="round"` : ''}${col && P.overprint ? ' style="mix-blend-mode:multiply"' : ''} d="${d.join('')}"/>`);
+    }
+    out.push('</svg>');
+    return out.join('\n');
+  }
+
+  /* ---------- frame ---------- */
+  function drawPreview() {
+    if (!ctx) return;
+    const w = canvas.width, h = canvas.height;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    if (!P || !G) return;
+    if (!P.transparent) { ctx.fillStyle = P.bg; ctx.fillRect(0, 0, w, h); }
+    drawMarks(ctx, w / NW, h / NH);
+  }
+  function prepare(s) {
+    P = params(s);
+    const t0 = performance.now();
+    const analysed = ensureGrid(s.spacing);
+    ensureNoise(P.seed);
+    const t1 = performance.now();
+    generate();
+    return { analysed, analyseMs: t1 - t0 };
+  }
+  function stats(extra) {
+    return Object.assign({ cols: G.cols, rows: G.rows, marks: n, counts: cnt.slice(), perim, perimA, spreadW: spreadW(), duo: !!P.duo, rotSquares: rot0, natW, natH, NW, NH }, extra);
+  }
+  function capSize(W, H) {
+    const MAX_SIDE = 16384, MAX_AREA = 100e6;
+    const f = Math.min(1, MAX_SIDE / W, MAX_SIDE / H, Math.sqrt(MAX_AREA / (W * H)));
+    return f < 1 ? [Math.floor(W * f), Math.floor(H * f), true] : [W, H, false];
+  }
+
+  // messages run strictly one after another, even across the awaits below
+  let chain = Promise.resolve();
+  port.onmessage = (ev) => { const m = ev.data; chain = chain.then(() => handle(m), () => handle(m)); };
+  // on the main thread, give the page a turn between heavy steps so input and painting keep up
+  const breathe = () => new Promise(r => setTimeout(r, 0));
+  async function handle(m) {
+    try {
+      if (m.type === 'ping') post({ type: 'pong' });
+      else if (m.type === 'init') { canvas = m.canvas || local.canvas; ctx = canvas.getContext('2d'); post({ type: 'ready' }); }
+      else if (m.type === 'image') {
+        if (base && base.close) base.close();
+        base = m.bitmap; natW = m.w; natH = m.h; imgVer++;
+        if (natW >= natH) { NW = 1000; NH = 1000 * natH / natW; } else { NH = 1000; NW = 1000 * natW / natH; }
+        G = null; NZ = null; n = 0;
+      }
+      else if (m.type === 'resize') { canvas.width = m.w; canvas.height = m.h; drawPreview(); post({ type: 'resized', id: m.id }); }
+      else if (m.type === 'render') {
+        if (!base) { post({ type: 'rendered', id: m.id, stats: null }); return; }
+        let t = performance.now();
+        P = params(m.settings);
+        const analysed = ensureGrid(m.settings.spacing);
+        ensureNoise(P.seed);
+        const analyseMs = performance.now() - t;
+        if (local && analyseMs > 16) await breathe();
+        t = performance.now(); generate(); const genMs = performance.now() - t;
+        if (local && genMs > 16) await breathe();
+        t = performance.now(); drawPreview(); const drawMs = performance.now() - t;
+        post({ type: 'rendered', id: m.id, stats: stats({ ms: analyseMs + genMs + drawMs, genMs, drawMs, analyseMs, analysed }) });
+      }
+      else if (m.type === 'export') {
+        prepare(m.settings);
+        if (m.format === 'svg') {
+          const text = buildSVG(m.scale);
+          post({ type: 'exported', id: m.id, text, w: natW * m.scale, h: natH * m.scale });
+        } else {
+          const [W, H, capped] = capSize(Math.round(natW * m.scale), Math.round(natH * m.scale));
+          const c = mkCanvas(W, H), x = c.getContext('2d');
+          if (!P.transparent) { x.fillStyle = P.bg; x.fillRect(0, 0, W, H); }
+          drawMarks(x, W / NW, H / NH);
+          const blob = c.convertToBlob ? await c.convertToBlob({ type: 'image/png' }) : await new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('PNG encoding failed')), 'image/png'));
+          c.width = c.height = 1;
+          post({ type: 'exported', id: m.id, blob, w: W, h: H, capped });
+        }
+      }
+      else if (m.type === 'hash') {
+        const d = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let h = 0x811c9dc5;
+        for (let i = 0; i < d.length; i++) { h ^= d[i]; h = Math.imul(h, 16777619); }
+        post({ type: 'hash', id: m.id, hash: (h >>> 0).toString(16), w: canvas.width, h: canvas.height });
+      }
+    } catch (err) {
+      post({ type: 'error', id: m.id, op: m.type, message: String(err && err.message || err) });
+    }
+  }
+}
+
+/* =====================================================================
+   APP
+   ===================================================================== */
+(() => {
+  'use strict';
+  const $ = (s) => document.querySelector(s);
+  const ICON = {
+    dot: '<svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4" fill="currentColor"/></svg>',
+    square: '<svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.2" y="2.2" width="7.6" height="7.6" fill="currentColor"/></svg>',
+    cross: '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.6 1.2 6 4.6l3.4-3.4 1.4 1.4L7.4 6l3.4 3.4-1.4 1.4L6 7.4l-3.4 3.4-1.4-1.4L4.6 6 1.2 2.6z" fill="currentColor"/></svg>',
+    diamond: '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 .8 9.6 6 6 11.2 2.4 6z" fill="currentColor"/></svg>',
+    mixed: '<svg viewBox="0 0 12 12" aria-hidden="true" fill="currentColor"><circle cx="3.2" cy="3.2" r="2"/><path d="M6.9 7.4l1 1 1-1 .7.7-1 1 1 1-.7.7-1-1-1 1-.7-.7 1-1-1-1z"/><path d="M8.8 .9l2 2.3-2 2.3-2-2.3z"/><rect x="1.4" y="7.4" width="3.6" height="3.6"/></svg>',
+    chev: '<svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg>',
+    dice: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2.2"/><circle cx="5.6" cy="5.6" r=".9" fill="currentColor" stroke="none"/><circle cx="10.4" cy="10.4" r=".9" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="10.4" cy="5.6" r=".9" fill="currentColor" stroke="none"/><circle cx="5.6" cy="10.4" r=".9" fill="currentColor" stroke="none"/></svg>'
+  };
+  // Risograph drum inks and stock papers, for quick picks
+  const INKS = [['Black', '#141414'], ['Blue', '#0078bf'], ['Medium Blue', '#3255a4'], ['Federal Blue', '#3d5588'], ['Teal', '#00838a'], ['Green', '#00a95c'], ['Yellow', '#ffe800'], ['Orange', '#ff6c2f'], ['Bright Red', '#f15060'], ['Fluorescent Pink', '#ff48b0'], ['Purple', '#765ba7'], ['Burgundy', '#914e72']];
+  const PAPERS = [['White', '#ffffff'], ['Natural', '#f2f0eb'], ['Cream', '#efe6d2'], ['Kraft', '#cdb48f'], ['Grey', '#d9d9d6'], ['Black', '#121212']];
+
+  const pct = v => Math.round(v) + '%';
+  const GROUPS = [
+    { id: 'image', title: 'Image', items: [
+      { id: 'brightness', label: 'Brightness', min: -100, max: 100, step: 1, def: 0 },
+      { id: 'contrast', label: 'Contrast', min: -100, max: 100, step: 1, def: 20 },
+      { id: 'gamma', label: 'Gamma', min: 0.2, max: 3, step: 0.01, def: 1, fmt: v => v.toFixed(2) },
+      { id: 'threshold', label: 'Threshold', min: 0, max: 100, step: 1, def: 10, hint: 'Tones lighter than this drop out.' },
+      { id: 'invert', label: 'Invert', type: 'check', def: false }
+    ] },
+    { id: 'pattern', title: 'Pattern', items: [
+      { id: 'spacing', label: 'Grid spacing', min: 3, max: 40, step: 0.5, def: 9, fmt: v => v.toFixed(1), hintId: 'gridHint' },
+      { id: 'minSize', label: 'Min mark size', min: 0, max: 100, step: 1, def: 5, fmt: pct },
+      { id: 'maxSize', label: 'Max mark size', min: 10, max: 220, step: 1, def: 108, fmt: pct, hint: 'Sizes are a share of one grid cell.' },
+      { id: 'density', label: 'Density', min: 0, max: 200, step: 1, def: 100, fmt: pct },
+      { id: 'randomness', label: 'Randomness', min: 0, max: 100, step: 1, def: 50 },
+      { id: 'noise', label: 'Noise amount', min: 0, max: 100, step: 1, def: 40 },
+      { id: 'seed', label: 'Seed', type: 'seed', def: 1207 }
+    ] },
+    { id: 'shapes', title: 'Shape Mix', items: [
+      { id: 'mode', label: 'Mode', type: 'mode', def: 'mixed' },
+      { id: 'pDot', label: 'Dot', icon: 'dot', min: 0, max: 100, step: 1, def: 55, share: true },
+      { id: 'pCross', label: 'X / cross', icon: 'cross', min: 0, max: 100, step: 1, def: 30, share: true },
+      { id: 'pDiamond', label: 'Diamond', icon: 'diamond', min: 0, max: 100, step: 1, def: 8, share: true },
+      { id: 'pSquare', label: 'Square', icon: 'square', min: 0, max: 100, step: 1, def: 7, share: true, hint: 'Shares of all marks. Light tones take dots, then diamonds, then X marks; squares take the deepest tones.' },
+      { id: 'clusters', label: 'Tiny-dot clusters', min: 0, max: 100, step: 1, def: 55, hint: 'Light tones break into small huddles of tiny marks.' },
+      { id: 'big', label: 'Large marks', min: 0, max: 100, step: 1, def: 35, hint: 'Flat, strong areas merge into marks two cells wide.' }
+    ] },
+    { id: 'effect', title: 'Effect', items: [
+      { id: 'edge', label: 'Edge emphasis', min: 0, max: 100, step: 1, def: 30 },
+      { id: 'detail', label: 'Detail preservation', min: 0, max: 100, step: 1, def: 60 },
+      { id: 'spread', label: 'Ink spread', min: 0, max: 100, step: 1, def: 15, hint: 'Grows every mark and rounds its corners, like ink soaking into paper.' },
+      { id: 'fade', label: 'Threshold strength', min: 0, max: 100, step: 1, def: 0, hint: '0 fades softly past the threshold, 100 cuts a hard bitmap edge.' }
+    ] },
+    { id: 'colour', title: 'Colour', items: [
+      { id: 'fg', label: 'Foreground', type: 'color', def: '#141414', sw: INKS },
+      { id: 'bg', label: 'Background', type: 'color', def: '#f2f0eb', sw: PAPERS },
+      { id: 'transparent', label: 'Transparent background', type: 'check', def: false },
+      { id: 'duotone', label: 'Duotone', type: 'check', def: false },
+      { id: 'fg2', label: 'Second colour', type: 'color', def: '#0078bf', sw: INKS, dep: 'duotone' },
+      { id: 'duoMode', label: 'Split by', type: 'select', def: 'shadows', dep: 'duotone', options: [['shadows', 'Shadows'], ['lights', 'Light tones'], ['shapes', 'Shapes (X and diamond)'], ['scatter', 'Scatter']] },
+      { id: 'duoSplit', label: 'Split point', min: 0, max: 100, step: 1, def: 68, dep: 'duotone' },
+      { id: 'offset', label: 'Misregistration', min: 0, max: 100, step: 1, def: 0, dep: 'duotone' },
+      { id: 'overprint', label: 'Overprint (multiply)', type: 'check', def: true, dep: 'duotone' }
+    ] }
+  ];
+  const ITEMS = {}; const DEFAULTS = {};
+  GROUPS.forEach(g => g.items.forEach(it => { it.type = it.type || 'range'; ITEMS[it.id] = it; DEFAULTS[it.id] = it.def; }));
+  const MODES = [['mixed', 'Mixed'], ['circle', 'Circle'], ['square', 'Square'], ['cross', 'X / cross'], ['diamond', 'Diamond']];
+  const MODE_ICON = { mixed: 'mixed', circle: 'dot', square: 'square', cross: 'cross', diamond: 'diamond' };
+  // Built-in looks. Each one starts from the defaults and keeps the current seed. The default is "Editorial X".
+  const BUILTIN = [
+    { name: 'Editorial X', settings: {} },
+    { name: 'Riso duotone', settings: { fg: '#ff48b0', fg2: '#3255a4', bg: '#f5f0e6', duotone: true, duoMode: 'shadows', duoSplit: 55, offset: 45, overprint: true, spread: 22 } },
+    { name: 'Bitmap', settings: { mode: 'square', spacing: 6.5, minSize: 0, maxSize: 100, randomness: 0, noise: 20, clusters: 0, big: 45, contrast: 35, detail: 70, spread: 0, bg: '#ffffff', fg: '#111111' } },
+    { name: 'Fine grain', settings: { spacing: 4.5, maxSize: 100, randomness: 75, noise: 55, pDot: 85, pCross: 8, pDiamond: 7, pSquare: 0, clusters: 85, big: 0, spread: 10, fg: '#3d5588' } },
+    { name: 'Poster X', settings: { mode: 'cross', spacing: 12, maxSize: 105, contrast: 28, threshold: 12, randomness: 30, clusters: 30, big: 55, spread: 25, bg: '#cdb48f', fg: '#141414' } }
+  ];
+
+
+  let S = Object.assign({}, DEFAULTS);
+  const X = { format: 'png', scale: 1 };
+
+  /* ---------- tiny helpers ---------- */
+  function el(tag, attrs, html) {
+    const e = document.createElement(tag);
+    if (attrs) for (const k in attrs) { if (attrs[k] === false || attrs[k] == null) continue; e.setAttribute(k, attrs[k] === true ? '' : attrs[k]); }
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmtInt = v => Math.round(v).toLocaleString('en-US');
+  function fmtBytes(b) { if (b < 1024) return b + ' B'; if (b < 1048576) return (b / 1024).toFixed(b < 10240 ? 1 : 0) + ' KB'; return (b / 1048576).toFixed(1) + ' MB'; }
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  };
+  let toastT = 0;
+  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 4200); }
+  function setBusy(text) { $('#busy').hidden = !text; if (text) $('#busyText').textContent = text; }
+
+  /* ---------- build the panel ---------- */
+  const openState = store.get('ig-open', {});
+  function buildPanel() {
+    const host = $('#groups');
+    // built-in looks sit first: one click from any image to a finished treatment
+    host.appendChild(el('div', { class: 'looks' }, '<div class="sub">Looks</div><div class="chips" id="builtins" role="group" aria-label="Built-in looks"></div>'));
+    GROUPS.forEach(g => {
+      const d = el('details', { class: 'grp', id: 'g-' + g.id, open: openState[g.id] !== false });
+      d.appendChild(el('summary', null, `<span>${g.title}</span>${g.id === 'shapes' ? '<span class="sum-note" id="mixNote"></span>' : ''}${ICON.chev}`));
+      const body = el('div', { class: 'gb' });
+      g.items.forEach(it => body.appendChild(buildItem(it)));
+      if (g.id === 'shapes') {
+        const bar = el('div', { class: 'mixbar', id: 'mixbar', 'aria-hidden': 'true' }, '<i data-k="pDot"></i><i data-k="pCross"></i><i data-k="pDiamond"></i><i data-k="pSquare"></i>');
+        body.insertBefore(bar, body.children[1]);
+      }
+      d.appendChild(body);
+      d.addEventListener('toggle', () => { openState[g.id] = d.open; store.set('ig-open', openState); });
+      host.appendChild(d);
+    });
+    // presets group
+    const d = el('details', { class: 'grp', id: 'g-presets', open: openState.presets !== false });
+    d.appendChild(el('summary', null, `<span>Presets</span>${ICON.chev}`));
+    const body = el('div', { class: 'gb presets' });
+    body.innerHTML = `<div class="sub">Saved</div><ul class="plist" id="plist"></ul>
+      <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" type="button" id="saveInline">Save current…</button><button class="btn ghost" type="button" id="importBtn">Import .json</button></div>
+      <input type="file" id="importIn" accept="application/json,.json" hidden>
+      <div class="hint" id="storeNote" hidden>This browser isn't keeping presets between visits. Export a preset as .json to keep it.</div>`;
+    d.appendChild(body);
+    d.addEventListener('toggle', () => { openState.presets = d.open; store.set('ig-open', openState); });
+    host.appendChild(d);
+    const bi = $('#builtins');
+    BUILTIN.forEach((p, i) => { const b = el('button', { class: 'chip', type: 'button', 'data-i': i }, esc(p.name)); bi.appendChild(b); });
+    bi.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const p = BUILTIN[+b.dataset.i]; applySettings(Object.assign({}, DEFAULTS, p.settings), true); toast(`Applied “${p.name}”`); });
+  }
+
+  function buildItem(it) {
+    const wrap = document.createDocumentFragment();
+    let row;
+    if (it.type === 'range') {
+      row = el('div', { class: 'row', 'data-id': it.id });
+      row.innerHTML = `<label for="c-${it.id}" title="Double-click to reset">${it.icon ? ICON[it.icon] : ''}<span>${esc(it.label)}</span></label>
+        <input type="range" id="c-${it.id}" min="${it.min}" max="${it.max}" step="${it.step}" value="${it.def}">
+        <output id="o-${it.id}" for="c-${it.id}"></output>`;
+      const input = row.querySelector('input');
+      input.addEventListener('input', () => { set(it.id, parseFloat(input.value)); });
+      row.querySelector('label').addEventListener('dblclick', () => { set(it.id, it.def); syncControl(it.id); });
+    } else if (it.type === 'check') {
+      row = el('label', { class: 'sw', 'data-id': it.id }, `<span>${esc(it.label)}</span><input type="checkbox" id="c-${it.id}">`);
+      const input = row.querySelector('input');
+      input.addEventListener('change', () => set(it.id, input.checked));
+    } else if (it.type === 'seed') {
+      row = el('div', { class: 'row wide', 'data-id': it.id });
+      row.innerHTML = `<label for="c-seed">Seed</label><div class="seedbox"><input class="field mono" type="number" id="c-seed" min="0" max="999999" step="1" inputmode="numeric"><button class="btn" type="button" id="randSeed" title="Randomise seed">${ICON.dice}<span>Randomise</span></button></div>`;
+      const input = row.querySelector('input');
+      input.addEventListener('input', () => { const v = parseInt(input.value, 10); if (Number.isFinite(v)) set('seed', Math.max(0, Math.min(999999, v))); });
+      row.querySelector('#randSeed').addEventListener('click', randomiseSeed);
+    } else if (it.type === 'mode') {
+      row = el('div', { class: 'seg full', role: 'radiogroup', 'aria-label': 'Mark type', 'data-id': 'mode' });
+      row.style.margin = '2px 0 4px';
+      row.innerHTML = MODES.map(([v, l]) => `<label title="${l}"><input type="radio" name="mode" value="${v}" id="m-${v}" aria-label="${l}"><span>${ICON[MODE_ICON[v]]}${v === 'mixed' ? 'Mixed' : ''}</span></label>`).join('');
+      row.addEventListener('change', e => set('mode', e.target.value));
+    } else if (it.type === 'select') {
+      row = el('div', { class: 'row wide', 'data-id': it.id });
+      row.innerHTML = `<label for="c-${it.id}">${esc(it.label)}</label><select id="c-${it.id}">${it.options.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join('')}</select>`;
+      const sel = row.querySelector('select');
+      sel.addEventListener('change', () => set(it.id, sel.value));
+    } else if (it.type === 'color') {
+      row = el('div', { class: 'row crow', 'data-id': it.id });
+      row.innerHTML = `<label for="c-${it.id}">${esc(it.label)}</label><div class="cpick"><input type="color" id="c-${it.id}" aria-label="${esc(it.label)} colour"><input class="field mono" type="text" id="t-${it.id}" maxlength="7" spellcheck="false" autocomplete="off" aria-label="${esc(it.label)} hex value"></div>`;
+      const ci = row.querySelector('input[type=color]'), ti = row.querySelector('input[type=text]');
+      ci.addEventListener('input', () => { ti.value = ci.value; set(it.id, ci.value.toLowerCase()); });
+      ti.addEventListener('input', () => { let v = ti.value.trim(); if (v[0] !== '#') v = '#' + v; if (/^#[0-9a-f]{6}$/i.test(v)) { ci.value = v.toLowerCase(); set(it.id, v.toLowerCase()); } });
+      ti.addEventListener('blur', () => { ti.value = S[it.id]; });
+    }
+    wrap.appendChild(row);
+    if (it.type === 'color' && it.sw) {
+      const sw = el('div', { class: 'swatches', 'data-for': it.id, 'data-dep': it.dep || null, role: 'group', 'aria-label': `${it.label} quick picks` });
+      sw.innerHTML = it.sw.map(([n, c]) => `<button type="button" style="background:${c}" data-c="${c}" title="${n} ${c}" aria-label="${n}"></button>`).join('');
+      sw.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; set(it.id, b.dataset.c); syncControl(it.id); });
+      wrap.appendChild(sw);
+    }
+    if (it.hint) wrap.appendChild(el('div', { class: 'hint', 'data-hint-for': it.id }, esc(it.hint)));
+    if (it.hintId) wrap.appendChild(el('div', { class: 'hint mono', id: it.hintId }, ''));
+    if (it.dep) row.dataset.dep = it.dep;
+    return wrap;
+  }
+
+  function syncControl(id) {
+    const it = ITEMS[id], v = S[id];
+    if (!it) return;
+    if (it.type === 'range') {
+      const input = $('#c-' + id); input.value = v;
+      input.style.setProperty('--p', ((v - it.min) / (it.max - it.min) * 100) + '%');
+      if (!it.share) $('#o-' + id).textContent = it.fmt ? it.fmt(v) : String(Math.round(v));
+    } else if (it.type === 'check') $('#c-' + id).checked = !!v;
+    else if (it.type === 'seed') { if (document.activeElement !== $('#c-seed')) $('#c-seed').value = v; }
+    else if (it.type === 'mode') { const r = $('#m-' + v); if (r) r.checked = true; }
+    else if (it.type === 'select') $('#c-' + id).value = v;
+    else if (it.type === 'color') { $('#c-' + id).value = v; if (document.activeElement !== $('#t-' + id)) $('#t-' + id).value = v; }
+  }
+  function syncDerived() {
+    // shape shares
+    const keys = ['pDot', 'pCross', 'pDiamond', 'pSquare'];
+    const sum = keys.reduce((a, k) => a + S[k], 0);
+    const mixed = S.mode === 'mixed';
+    const shades = { pDot: '#e8e9eb', pCross: '#3d9be4', pDiamond: '#9aa0a8', pSquare: '#5c6068' };
+    keys.forEach(k => {
+      const share = sum > 0 ? S[k] / sum * 100 : 0;
+      $('#o-' + k).textContent = sum > 0 ? Math.round(share) + '%' : '–';
+      $('#c-' + k).disabled = !mixed;
+      $('#c-' + k).closest('.row').classList.toggle('off', !mixed);
+      const bar = document.querySelector(`#mixbar i[data-k="${k}"]`);
+      bar.style.flexGrow = mixed ? (sum > 0 ? share : 0) : 0;
+      bar.style.background = shades[k];
+    });
+    document.querySelectorAll('#mixbar i').forEach(i => i.parentNode.style.opacity = mixed ? 1 : 0.35);
+    $('#mixNote').textContent = mixed ? '' : (MODES.find(m => m[0] === S.mode) || ['', ''])[1] + ' only';
+    document.querySelector('[data-hint-for="pSquare"]').hidden = !mixed;
+    // dependants
+    document.querySelectorAll('[data-dep]').forEach(n => { n.hidden = !S[n.dataset.dep]; });
+    const splitRow = document.querySelector('.row[data-id="duoSplit"]');
+    if (S.duotone) splitRow.hidden = S.duoMode === 'shapes';
+    if (splitRow) splitRow.querySelector('label span').textContent = S.duoMode === 'scatter' ? 'Share' : 'Split point';
+    // highlight the built-in look the current settings match (the seed doesn't count)
+    document.querySelectorAll('#builtins .chip').forEach(b => {
+      const p = BUILTIN[+b.dataset.i].settings;
+      b.setAttribute('aria-pressed', String(Object.keys(DEFAULTS).every(k => k === 'seed' || S[k] === (k in p ? p[k] : DEFAULTS[k]))));
+    });
+    $('#x-transparent').checked = !!S.transparent;
+    $('#frame').classList.toggle('checker', !!S.transparent);
+    // paper colour under the canvas, so the frame never flashes dark before the first marks arrive
+    $('#frame').style.backgroundColor = S.transparent ? '' : S.bg;
+    updateGridHint();
+    updateExportInfo();
+  }
+  function syncAll() { Object.keys(ITEMS).forEach(syncControl); syncDerived(); }
+
+  function set(id, v) {
+    if (S[id] === v) return;
+    S[id] = v;
+    syncControl(id);
+    // the size range stays a range: dragging one end past the other carries it along
+    if (id === 'minSize' && S.maxSize < v) { S.maxSize = v; syncControl('maxSize'); }
+    if (id === 'maxSize' && S.minSize > v) { S.minSize = v; syncControl('minSize'); }
+    syncDerived();
+    requestRender();
+  }
+  function applySettings(next, keepSeed) {
+    const clean = sanitize(next);
+    if (keepSeed && next.seed === undefined) clean.seed = S.seed;
+    S = clean; syncAll(); requestRender();
+  }
+  function sanitize(src) {
+    const out = {};
+    for (const id in DEFAULTS) {
+      const it = ITEMS[id], v = src ? src[id] : undefined, d = DEFAULTS[id];
+      if (it.type === 'range') out[id] = (typeof v === 'number' && isFinite(v)) ? Math.min(it.max, Math.max(it.min, v)) : d;
+      else if (it.type === 'check') out[id] = typeof v === 'boolean' ? v : d;
+      else if (it.type === 'seed') out[id] = Number.isInteger(v) ? Math.min(999999, Math.max(0, v)) : d;
+      else if (it.type === 'mode') out[id] = MODES.some(m => m[0] === v) ? v : d;
+      else if (it.type === 'select') out[id] = it.options.some(o => o[0] === v) ? v : d;
+      else if (it.type === 'color') out[id] = (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v)) ? v.toLowerCase() : d;
+    }
+    if (out.minSize > out.maxSize) out.minSize = out.maxSize;
+    return out;
+  }
+  function randomiseSeed() {
+    let v; do { v = Math.floor(Math.random() * 999999); } while (v === S.seed);
+    set('seed', v); syncControl('seed');
+  }
+
+  /* ---------- engine bootstrap ---------- */
+  let engine = null, engineReady = false, engineMode = 'none';
+  const waiters = new Map();
+  let reqSeq = 0;
+  function request(msg, transfer) { const id = ++reqSeq; msg.id = id; return new Promise((res, rej) => { waiters.set(id, { res, rej }); engine.post(msg, transfer); }); }
+
+  function onEngine(e) {
+    const m = e.data;
+    if (m.type === 'pong' || m.type === 'ready') return;
+    if (m.type === 'rendered') { onRendered(m); return; }
+    const w = waiters.get(m.id);
+    if (m.type === 'error') {
+      if (w) { waiters.delete(m.id); w.rej(new Error(m.message)); }
+      else if (m.op === 'render') { busy = false; toast(`The preview couldn't render (${m.message}). Try a larger grid spacing.`); }
+      return;
+    }
+    if (w) { waiters.delete(m.id); w.res(m); }
+  }
+  function startLocal(canvas) {
+    const ch = new MessageChannel();
+    engineMain(ch.port2, { canvas, doc: document });
+    ch.port1.onmessage = onEngine;
+    engine = { post: (m, t) => ch.port1.postMessage(m, t || []) };
+    engineMode = 'main thread';
+    engine.post({ type: 'init' });
+  }
+  async function startEngine() {
+    const canvas = $('#result');
+    const canWorker = typeof Worker !== 'undefined' && typeof OffscreenCanvas !== 'undefined' && typeof canvas.transferControlToOffscreen === 'function';
+    if (canWorker) {
+      try {
+        const url = URL.createObjectURL(new Blob(['(' + engineMain.toString() + ')(self, null);'], { type: 'text/javascript' }));
+        const w = new Worker(url);
+        const ok = await new Promise(res => {
+          const t = setTimeout(() => res(false), 2000);
+          w.onmessage = ev => { if (ev.data && ev.data.type === 'pong') { clearTimeout(t); res(true); } };
+          w.onerror = () => { clearTimeout(t); res(false); };
+          w.postMessage({ type: 'ping' });
+        });
+        if (ok) {
+          const off = canvas.transferControlToOffscreen();
+          w.onmessage = onEngine;
+          w.onerror = ev => { ev.preventDefault && ev.preventDefault(); recoverFromWorker(); };
+          w.postMessage({ type: 'init', canvas: off }, [off]);
+          engine = { post: (m, t) => w.postMessage(m, t || []), worker: w };
+          engineMode = 'worker';
+          engineReady = true;
+          return;
+        }
+        w.terminate();
+      } catch (err) { /* fall back below */ }
+    }
+    startLocal(canvas);
+    engineReady = true;
+  }
+  function recoverFromWorker() {
+    // the worker died: swap in a fresh canvas and continue on the main thread
+    if (engine && engine.worker) engine.worker.terminate();
+    const old = $('#result'), fresh = el('canvas', { id: 'result', 'aria-label': 'Halftone result', role: 'img' });
+    old.replaceWith(fresh);
+    waiters.forEach(w => w.rej(new Error('engine restarted'))); waiters.clear();
+    busy = false;
+    startLocal(fresh);
+    if (img) sendImage().then(() => { layout(true); requestRender(); });
+  }
+
+  /* ---------- image loading ---------- */
+  let img = null;   // { name, w, h, base: ImageBitmap }
+  function loadElement(src) {
+    return new Promise((res, rej) => { const i = new Image(); i.decoding = 'async'; i.onload = () => res(i); i.onerror = () => rej(new Error('decode')); i.src = src; });
+  }
+  async function downscale(src, sw, sh, w, h) {
+    if (sw === w && sh === h) return createImageBitmap(src);
+    try { const b = await createImageBitmap(src, { resizeWidth: w, resizeHeight: h, resizeQuality: 'high' }); if (b.width === w && b.height === h) return b; b.close(); } catch (e) { /* fall back */ }
+    let cur = src, cw = sw, chh = sh;
+    while (cw / 2 >= w * 1.2) {
+      const nw = Math.round(cw / 2), nh = Math.round(chh / 2), c = el('canvas'); c.width = nw; c.height = nh;
+      const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(cur, 0, 0, nw, nh); cur = c; cw = nw; chh = nh;
+    }
+    const c = el('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(cur, 0, 0, w, h);
+    return createImageBitmap(c);
+  }
+  async function setImage(src, name) {
+    const w = src.naturalWidth || src.width, h = src.naturalHeight || src.height;
+    if (!w || !h) throw new Error('empty image');
+    const f = Math.min(1, 2048 / Math.max(w, h));
+    const base = await downscale(src, w, h, Math.max(1, Math.round(w * f)), Math.max(1, Math.round(h * f)));
+    if (src.close) src.close();
+    if (img && img.base && img.base.close) img.base.close();
+    img = { name, w, h, base };
+    await sendImage();
+    $('#fname').textContent = name;
+    $('#fname').title = name;
+    $('#dims').textContent = `${fmtInt(w)} × ${fmtInt(h)} px`;
+    $('#frame').hidden = false; $('#empty').hidden = true;
+    layout(true);
+    requestRender();
+  }
+  async function sendImage() {
+    const copy = await createImageBitmap(img.base);
+    engine.post({ type: 'image', bitmap: copy, w: img.w, h: img.h }, [copy]);
+  }
+  const OK_TYPES = /^image\/(jpeg|png|webp)$/;
+  async function loadFile(file) {
+    if (!file) return;
+    if (file.type === 'application/json' || /\.json$/i.test(file.name)) { importPresetFile(file); return; }
+    if (!OK_TYPES.test(file.type) && !/\.(jpe?g|png|webp)$/i.test(file.name)) {
+      toast(`“${file.name}” isn't a JPEG, PNG or WebP image. Choose one of those to halftone.`);
+      return;
+    }
+    setBusy('Reading image…');
+    try {
+      let src;
+      try { src = await createImageBitmap(file); } catch (e) { const u = URL.createObjectURL(file); try { src = await loadElement(u); } finally { setTimeout(() => URL.revokeObjectURL(u), 1000); } }
+      await setImage(src, file.name);
+    } catch (err) {
+      toast(`Couldn't read “${file.name}”. The file may be damaged; try saving it again as JPEG or PNG.`);
+    } finally { setBusy(null); }
+  }
+
+  /* ---------- layout & preview ---------- */
+  let fit = { w: 0, h: 0 }, dprUsed = 1;
+  function layout(force) {
+    if (!img) return;
+    const view = $('#view'), cs = getComputedStyle(view);
+    const aw = view.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const ah = view.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    if (aw <= 0 || ah <= 0) return;
+    const ar = img.w / img.h;
+    let w = aw, h = aw / ar;
+    if (h > ah) { h = ah; w = ah * ar; }
+    w = Math.floor(w); h = Math.floor(h);
+    let dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (Math.max(w, h) * dpr > 3000) dpr = 3000 / Math.max(w, h);
+    if (!force && w === fit.w && h === fit.h && dpr === dprUsed) return;
+    fit = { w, h }; dprUsed = dpr;
+    const frame = $('#frame'); frame.style.width = w + 'px'; frame.style.height = h + 'px';
+    const bw = Math.max(1, Math.round(w * dpr)), bh = Math.max(1, Math.round(h * dpr));
+    engine.post({ type: 'resize', w: bw, h: bh });
+    const b = $('#before'); b.width = bw; b.height = bh;
+    const x = b.getContext('2d'); x.imageSmoothingQuality = 'high'; x.clearRect(0, 0, bw, bh); x.drawImage(img.base, 0, 0, bw, bh);
+  }
+
+  let busy = false, dirty = false, raf = 0, renderSeq = 0, sentAt = 0, lastStats = null, renders = 0;
+  const renderWaiters = [];
+  function requestRender() { dirty = true; if (!raf) raf = requestAnimationFrame(pump); }
+  function pump() {
+    raf = 0;
+    if (!dirty || busy || !engineReady || !img) return;
+    dirty = false; busy = true; sentAt = performance.now();
+    engine.post({ type: 'render', id: ++renderSeq, settings: Object.assign({}, S) });
+  }
+  function onRendered(m) {
+    busy = false; renders++;
+    const st = m.stats;
+    if (st) {
+      st.latency = performance.now() - sentAt;
+      lastStats = st;
+      $('#statL').textContent = `Grid ${st.cols} × ${st.rows} · ${fmtInt(st.marks)} marks`;
+      $('#statMs').innerHTML = `${Math.max(1, Math.round(st.latency))} ms${engineMode === 'worker' ? '<span class="eng"> · off main thread</span>' : ''}<span class="hint-k"> · </span>`;
+      updateExportInfo();
+    }
+    if (dirty) { if (!raf) raf = requestAnimationFrame(pump); }
+    else while (renderWaiters.length) renderWaiters.shift()(st);
+  }
+  function whenRendered() { return new Promise(r => { if (!dirty && !busy) r(lastStats); else renderWaiters.push(r); }); }
+  function updateGridHint() {
+    const h = $('#gridHint'); if (!h) return;
+    if (!img) { h.textContent = ''; return; }
+    const NW = img.w >= img.h ? 1000 : 1000 * img.w / img.h, NH = img.h > img.w ? 1000 : 1000 * img.h / img.w;
+    let c = Math.max(8, Math.round(NW / S.spacing)), r = Math.max(8, Math.round(NH / S.spacing));
+    h.textContent = `${c} × ${r} cells · ${(Math.max(img.w, img.h) / 1000 * S.spacing).toFixed(1)} px each on the original`;
+  }
+
+  /* ---------- view: before / split / after ---------- */
+  let view = 'after', splitP = 0.5;
+  function setView(v) {
+    view = v; $('#frame').dataset.view = v; $('#v-' + v).checked = true;
+    applySplit();
+  }
+  function applySplit() {
+    const b = $('#before');
+    b.style.clipPath = view === 'split' ? `inset(0 ${((1 - splitP) * 100).toFixed(2)}% 0 0)` : '';
+    $('#split').style.left = (splitP * 100) + '%';
+    $('#split').setAttribute('aria-valuenow', Math.round(splitP * 100));
+  }
+  function bindView() {
+    $('#viewSeg').addEventListener('change', e => setView(e.target.value));
+    const frame = $('#frame');
+    let drag = false;
+    const move = e => { const r = frame.getBoundingClientRect(); splitP = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); applySplit(); };
+    frame.addEventListener('pointerdown', e => { if (view !== 'split') return; drag = true; frame.setPointerCapture(e.pointerId); move(e); });
+    frame.addEventListener('pointermove', e => { if (drag) move(e); });
+    frame.addEventListener('pointerup', () => { drag = false; });
+    frame.addEventListener('pointercancel', () => { drag = false; });
+    $('#split').addEventListener('keydown', e => {
+      const step = e.shiftKey ? 0.1 : 0.02;
+      if (e.key === 'ArrowLeft') splitP = Math.max(0, splitP - step); else if (e.key === 'ArrowRight') splitP = Math.min(1, splitP + step); else if (e.key === 'Home') splitP = 0; else if (e.key === 'End') splitP = 1; else return;
+      e.preventDefault(); applySplit();
+    });
+    window.addEventListener('keydown', e => {
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target; if (t && (t.tagName === 'INPUT' && !/range|radio|checkbox/.test(t.type) || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return;
+      if (e.key === 'b' || e.key === 'B') { setView(view === 'before' ? 'after' : 'before'); }
+    });
+  }
+
+  /* ---------- drag & drop, upload, paste ---------- */
+  function bindInput() {
+    const fileIn = $('#fileIn');
+    $('#uploadBtn').addEventListener('click', () => fileIn.click());
+    $('#emptyUpload').addEventListener('click', () => fileIn.click());
+    fileIn.addEventListener('change', () => { loadFile(fileIn.files[0]); fileIn.value = ''; });
+    let depth = 0;
+    const hasFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+    window.addEventListener('dragenter', e => { if (!hasFiles(e)) return; e.preventDefault(); depth++; $('#drop').hidden = false; });
+    window.addEventListener('dragover', e => { if (!hasFiles(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+    window.addEventListener('dragleave', e => { if (!hasFiles(e)) return; depth = Math.max(0, depth - 1); if (!depth) $('#drop').hidden = true; });
+    window.addEventListener('drop', e => { if (!hasFiles(e)) return; e.preventDefault(); depth = 0; $('#drop').hidden = true; loadFile(e.dataTransfer.files[0]); });
+    window.addEventListener('paste', e => {
+      const items = e.clipboardData ? Array.from(e.clipboardData.items) : [];
+      const it = items.find(i => i.kind === 'file' && /^image\//.test(i.type));
+      if (it) { const f = it.getAsFile(); if (f) { e.preventDefault(); loadFile(new File([f], f.name && f.name !== 'image.png' ? f.name : 'pasted-image.png', { type: f.type })); } }
+    });
+  }
+
+  /* ---------- presets ---------- */
+  const PKEY = 'ig-presets-v1';
+  let presets = store.get(PKEY, []);
+  if (!Array.isArray(presets)) presets = [];
+  function renderPresets() {
+    const ul = $('#plist'); ul.innerHTML = '';
+    if (!presets.length) { ul.appendChild(el('li', { class: 'pempty' }, 'Nothing saved yet. Use “Save preset” to keep the current settings.')); return; }
+    presets.forEach((p, i) => {
+      const li = el('li');
+      li.innerHTML = `<span class="pn" title="${esc(p.name)}">${esc(p.name)}</span><span class="pa"><button class="btn ghost" type="button" data-a="apply" data-i="${i}">Apply</button><button class="btn ghost" type="button" data-a="json" data-i="${i}" title="Export as .json">.json</button><button class="btn ghost" type="button" data-a="del" data-i="${i}" aria-label="Delete ${esc(p.name)}">Delete</button></span>`;
+      ul.appendChild(li);
+    });
+  }
+  function persist() { if (!store.set(PKEY, presets)) $('#storeNote').hidden = false; }
+  function openSave() {
+    const bar = $('#saveBar'); bar.hidden = false;
+    const inp = $('#presetName'); inp.value = `Preset ${presets.length + 1}`; inp.focus(); inp.select();
+  }
+  function bindPresets() {
+    $('#saveHead').addEventListener('click', openSave);
+    $('#saveInline').addEventListener('click', openSave);
+    $('#saveCancel').addEventListener('click', () => { $('#saveBar').hidden = true; });
+    $('#saveBar').addEventListener('keydown', e => { if (e.key === 'Escape') $('#saveBar').hidden = true; });
+    $('#saveBar').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = $('#presetName').value.trim() || `Preset ${presets.length + 1}`;
+      const existing = presets.findIndex(p => p.name === name);
+      const entry = { name, settings: Object.assign({}, S), saved: Date.now() };
+      if (existing >= 0) presets[existing] = entry; else presets.unshift(entry);
+      persist(); renderPresets(); $('#saveBar').hidden = true;
+      $('#g-presets').open = true;
+      toast(existing >= 0 ? `Updated preset “${name}”` : `Saved preset “${name}”`);
+    });
+    $('#plist').addEventListener('click', e => {
+      const b = e.target.closest('button[data-a]'); if (!b) return;
+      const i = +b.dataset.i, p = presets[i]; if (!p) return;
+      if (b.dataset.a === 'apply') { applySettings(p.settings); toast(`Applied “${p.name}”`); }
+      else if (b.dataset.a === 'del') { presets.splice(i, 1); persist(); renderPresets(); toast(`Deleted “${p.name}”`); }
+      else if (b.dataset.a === 'json') exportPreset(p);
+    });
+    $('#importBtn').addEventListener('click', () => $('#importIn').click());
+    $('#importIn').addEventListener('change', () => { importPresetFile($('#importIn').files[0]); $('#importIn').value = ''; });
+    renderPresets();
+  }
+  async function importPresetFile(file) {
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      const src = data && data.settings ? data.settings : data;
+      if (!src || typeof src !== 'object') throw new Error('shape');
+      const name = (data.name && String(data.name).slice(0, 40)) || file.name.replace(/\.json$/i, '');
+      const settings = sanitize(src);
+      presets.unshift({ name, settings, saved: Date.now() }); persist(); renderPresets();
+      applySettings(settings); toast(`Imported and applied “${name}”`);
+    } catch (e) { toast(`“${file.name}” isn't a preset file from this tool.`); }
+  }
+  function slug(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'preset'; }
+  async function exportPreset(p) {
+    const text = JSON.stringify({ app: 'image-generator', version: 1, name: p.name, settings: p.settings }, null, 2);
+    const filename = slug(p.name) + '.json';
+    const r = await saveFile(filename, text);
+    if (r === 'fallback') openSheet({ kind: 'text', title: 'Save your preset', lead: 'Saving files directly isn’t available here. Copy the JSON and keep it in a .json file; import it later with “Import .json”.', text, filename, copyLabel: 'Copy JSON' });
+  }
+
+  /* ---------- downloads capability ---------- */
+  let dlValue, dlPromise;
+  function initDownloads() {
+    dlPromise = (async () => {
+      let host = null;
+      try { host = (window.claude && window.claude.use) ? window.claude : (window.parent !== window && window.parent.claude && window.parent.claude.use ? window.parent.claude : null); } catch (e) { host = null; }
+      if (!host) return null;
+      try { return (await host.use('downloads')) || null; } catch (e) { return null; }
+    })();
+    dlPromise.then(v => { dlValue = v; }, () => { dlValue = null; });
+  }
+  async function getDownloads(ms) {
+    if (dlValue !== undefined) return dlValue;
+    return Promise.race([dlPromise, new Promise(r => setTimeout(() => r(null), ms))]);
+  }
+  // returns 'saved' | 'declined' | 'too_large' | 'rate_limited' | 'fallback'
+  async function saveFile(filename, data) {
+    const size = typeof data === 'string' ? new Blob([data]).size : data.size;
+    const dl = await getDownloads(1500);
+    if (!dl || typeof dl.save !== 'function') return 'fallback';
+    if (size > 16 * 1048576) { toast(`${filename} is ${fmtBytes(size)}, over the 16 MB save limit. Showing it here so you can save it by hand; a smaller scale or SVG may fit.`); return 'fallback'; }
+    try { await dl.save({ filename, data }); toast(`Saved ${filename}`); return 'saved'; }
+    catch (err) {
+      const code = err && err.code;
+      if (code === 'declined') return 'declined';
+      if (code === 'too_large') { toast('That file is over the 16 MB save limit. Try 1x or 2x, or SVG.'); return 'too_large'; }
+      if (code === 'rate_limited') { toast('Too many saves in a row. Wait a few seconds, then export again.'); return 'rate_limited'; }
+      return 'fallback';
+    }
+  }
+
+  /* ---------- export ---------- */
+  function exportDims() {
+    if (!img) return null;
+    let W = Math.round(img.w * X.scale), H = Math.round(img.h * X.scale), capped = false;
+    if (X.format === 'png') {
+      const f = Math.min(1, 16384 / W, 16384 / H, Math.sqrt(100e6 / (W * H)));
+      if (f < 1) { W = Math.floor(W * f); H = Math.floor(H * f); capped = true; }
+    }
+    return { W, H, capped };
+  }
+  function estimate() {
+    const st = lastStats, d = exportDims();
+    if (!st || !d) return null;
+    if (X.format === 'svg') {
+      const nd = String(Math.round(Math.max(img.w, img.h))).length + 4;
+      const c = st.counts, sqUnrot = Math.max(0, c[1] - st.rotSquares);
+      return 220 + c[0] * (2 * nd + 42) + sqUnrot * (2 * nd + 22) + st.rotSquares * (8 * nd + 4) + c[3] * (8 * nd + 4) + c[2] * (24 * nd + 4);
+    }
+    // fitted against 108 real exports (portrait, landscape, texture and silhouette; all five looks plus extremes; 1x to 4x):
+    // usually within 15%, worst cases about 0.7x to 1.4x. Axis-aligned square edges compress far better than slanted or round ones.
+    const edgePx = Math.max(1, (st.perim + 0.3 * st.perimA + 6 * st.marks * st.spreadW) * d.W / st.NW);
+    return Math.round(0.5865 * Math.pow(d.W * d.H, 0.082) * Math.pow(edgePx, 1.0638) * (st.duo ? 1.196 : 1));
+  }
+  function updateExportInfo() {
+    const d = exportDims(), info = $('#expInfo'), note = $('#expNote'), btn = $('#exportBtn');
+    btn.textContent = exporting ? 'Rendering…' : `Export ${X.format.toUpperCase()}`;
+    btn.disabled = exporting || !img;
+    if (!d) { info.textContent = '–'; note.hidden = true; return; }
+    const est = estimate();
+    info.textContent = `${fmtInt(d.W)} × ${fmtInt(d.H)} px${est ? ' · ≈ ' + fmtBytes(est) : ''}`;
+    if (d.capped) { note.hidden = false; note.textContent = `${X.scale}x would be ${fmtInt(img.w * X.scale)} × ${fmtInt(img.h * X.scale)} px, past the browser's canvas limit, so the PNG is capped at ${fmtInt(d.W)} × ${fmtInt(d.H)}.`; }
+    else if (est && est > 16 * 1048576) { note.hidden = false; note.textContent = 'Likely over the 16 MB save limit. Try a smaller scale or SVG.'; }
+    else note.hidden = true;
+  }
+  let exporting = false;
+  async function doExport() {
+    if (!img || exporting) return;
+    exporting = true; const btn = $('#exportBtn'); btn.disabled = true; updateExportInfo();
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+    const base = img.name.replace(/\.[a-z0-9]+$/i, '') || 'image';
+    const suffix = X.scale > 1 ? `-${X.scale}x` : '';
+    try {
+      const res = await request({ type: 'export', format: X.format, scale: X.scale, settings: Object.assign({}, S) });
+      if (X.format === 'svg') {
+        const filename = `${slug(base)}-halftone${suffix}.svg`;
+        const r = await saveFile(filename, res.text);
+        if (r === 'fallback') openSheet({ kind: 'svg', title: 'Save your SVG', lead: 'Saving files directly isn’t available here. Copy the SVG markup into a .svg file, or right-click the preview and choose Save image as….', text: res.text, filename, w: res.w, h: res.h, copyLabel: 'Copy SVG' });
+      } else {
+        const filename = `${slug(base)}-halftone${suffix}${S.transparent ? '-transparent' : ''}.png`;
+        const r = await saveFile(filename, res.blob);
+        if (r === 'fallback') openSheet({ kind: 'png', title: 'Save your PNG', lead: 'Saving files directly isn’t available here. Right-click the image → Save image as….', blob: res.blob, filename, w: res.w, h: res.h, capped: res.capped });
+      }
+    } catch (err) {
+      toast(`Export failed: ${err.message}. Try a smaller scale.`);
+    } finally {
+      exporting = false; btn.disabled = false; updateExportInfo();
+    }
+  }
+
+  /* ---------- fallback sheet ---------- */
+  let sheetUrls = [];
+  function openSheet(o) {
+    const dlg = $('#sheet'), body = $('#sheetBody'), foot = $('#sheetFoot');
+    sheetUrls.forEach(u => URL.revokeObjectURL(u)); sheetUrls = [];
+    $('#sheetTitle').textContent = o.title; $('#sheetLead').textContent = o.lead;
+    body.innerHTML = ''; foot.innerHTML = '';
+    if (o.kind === 'png' || o.kind === 'svg') {
+      const blob = o.blob || new Blob([o.text], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob); sheetUrls.push(url);
+      const prev = el('div', { class: 'sh-prev' });
+      const im = el('img', { id: 'sheetImg', alt: `${o.filename}, ${o.w} × ${o.h} pixels`, src: url, 'data-filename': o.filename });
+      prev.appendChild(im); body.appendChild(prev);
+      body.appendChild(el('div', { class: 'sh-meta', id: 'sheetMeta' }, `${esc(o.filename)} · ${fmtInt(o.w)} × ${fmtInt(o.h)} px · ${fmtBytes(blob.size)}${o.capped ? ' · capped to the browser canvas limit' : ''}`));
+    }
+    if (o.kind === 'svg' || o.kind === 'text') {
+      const ta = el('textarea', { id: 'sheetText', readonly: true, spellcheck: 'false', 'aria-label': o.kind === 'svg' ? 'SVG markup' : 'Preset JSON', rows: o.kind === 'svg' ? 8 : 14 });
+      ta.value = o.text; body.appendChild(ta);
+      if (o.kind === 'text') body.appendChild(el('div', { class: 'sh-meta' }, `${esc(o.filename)} · ${fmtBytes(new Blob([o.text]).size)}`));
+      const copy = el('button', { class: 'btn', type: 'button', id: 'sheetCopy' }, o.copyLabel);
+      copy.addEventListener('click', () => {
+        const done = () => { copy.textContent = 'Copied'; setTimeout(() => { copy.textContent = o.copyLabel; }, 1600); };
+        const fallback = () => { ta.focus(); ta.select(); copy.textContent = 'Selected: press Ctrl/⌘ + C'; };
+        try { navigator.clipboard.writeText(o.text).then(done, fallback); } catch (e) { fallback(); }
+      });
+      foot.appendChild(copy);
+    }
+    const close = el('button', { class: 'btn primary', type: 'button', style: 'height:28px' }, 'Done');
+    close.addEventListener('click', () => dlg.close());
+    foot.appendChild(close);
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+  function bindSheet() {
+    const dlg = $('#sheet');
+    $('#sheetX').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => { setTimeout(() => { sheetUrls.forEach(u => URL.revokeObjectURL(u)); sheetUrls = []; $('#sheetBody').innerHTML = ''; }, 0); });
+  }
+
+  /* ---------- wire up ---------- */
+  function bindExport() {
+    document.querySelectorAll('input[name=fmt]').forEach(r => r.addEventListener('change', () => { X.format = r.value; updateExportInfo(); }));
+    document.querySelectorAll('input[name=scale]').forEach(r => r.addEventListener('change', () => { X.scale = +r.value; updateExportInfo(); }));
+    $('#x-transparent').addEventListener('change', e => set('transparent', e.target.checked));
+    $('#exportBtn').addEventListener('click', doExport);
+  }
+  function bindHeader() {
+    $('#randHead').addEventListener('click', randomiseSeed);
+    $('#resetBtn').addEventListener('click', () => { applySettings(Object.assign({}, DEFAULTS)); toast('Settings reset to defaults'); });
+  }
+
+  async function boot() {
+    buildPanel(); syncAll();
+    bindView(); bindInput(); bindPresets(); bindSheet(); bindExport(); bindHeader();
+    initDownloads();
+    await startEngine();
+    new ResizeObserver(() => layout(false)).observe($('#view'));
+    window.addEventListener('resize', () => layout(false));
+    setBusy('Loading sample…');
+    try {
+      const sample = await loadElement('visuals/ig-sample.webp');
+      if (!img) await setImage(sample, 'ig-sample.webp');
+    } catch (e) {
+      if (!img) { $('#empty').hidden = false; $('#fname').textContent = 'No image'; $('#dims').textContent = ''; }
+    } finally { setBusy(null); }
+  }
+
+  // small hook for automated checks
+  window.IG = {
+    get settings() { return Object.assign({}, S); },
+    set(id, v) { set(id, v); syncControl(id); return whenRendered(); },
+    apply(o) { applySettings(Object.assign({}, S, o)); return whenRendered(); },
+    rendered: whenRendered,
+    stats: () => lastStats,
+    renders: () => renders,
+    engine: () => engineMode,
+    hash: () => request({ type: 'hash' }),
+    hasImage: () => !!img
+  };
+
+  boot();
+})();
+</script>
+</body>
+</html>
