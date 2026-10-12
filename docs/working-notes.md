@@ -13592,3 +13592,6 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - April check-in banner re-cropped lower (top .265): sleeve, bicep and the blurred hand, no face.
 - Dither size gets "Ultra fine" (1px), before Fine/Medium/Coarse; saved values accept |1.
 - Foreground White/Black now drives the whole card on V2/V3: Black turns the title, highlights and date tab dark and inverts the buttons (dark primary, dark-tint secondary); White keeps them white.
+- Outline 1.5px ("outline -.5px"): Chrome floors a 1.5px border to 1px, so the frame's outline is now an inset shadow on .frame::before (and two inset shadows on .hlIn for its L); the frame has no border, so the tab, the 45° line and the content block sit at 0 and clipFrame needs no offset. --ow on .icard holds the width.
+- Report titles 4px tighter: line-height calc(1.08em - 4px), the two-line lock calc(2.16em - 8px).
+- Consent banner: the user's red film photo (task-cover-c.webp, 1600x615) with a square of its edge for the Timeline (task-thumb-c.webp). Ad hoc call banner: the user's portrait of the doctor (task-cover-a.webp), and her face as the Timeline square (task-thumb-a.webp). Both pulled from the session transcript, since the chat images were not saved as files.
