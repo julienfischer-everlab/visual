@@ -65,7 +65,7 @@
   .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 520 / 660; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; min-height: 0; }
   .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(180deg, rgb(0 0 0 / .5) 0%, rgb(0 0 0 / .42) 24%, rgb(0 0 0 / 0) 44%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
   .icard h2 { margin: 0; max-width: 16ch; font-size: clamp(24px, 6.4cqw, 34px); line-height: 1.08; font-weight: 500;   /* medium ("title medium font") */ letter-spacing: -0.025em; text-wrap: balance; }
-  .frame { position: relative; margin: auto 0; width: 100%; min-height: 0; aspect-ratio: 437 / 296;   /* 24/18 less 32px of height on the 520px card */ border: 1px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); }   /* --frame: the foreground, when one is picked (Background V2) */
+  .frame { position: relative; margin: auto 0; width: 100%; min-height: 0; aspect-ratio: 437 / 296;   /* 24/18 less 32px of height on the 520px card */ border: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); }   /* --frame: the foreground, when one is picked (Background V2) */
   .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .frame canvas.dith { image-rendering: pixelated; }   /* the picture inside the frame, dithered (when chosen), under the report's dots */
   .frame canvas.dith[hidden] { display: none; }
@@ -73,13 +73,14 @@
   .icard .btn.sec { background: rgb(255 255 255 / .12); color: #fff; }   /* the second: a 12% white veil */
   .icard:not([data-bgmode="1"])::before { display: none; }   /* Backgrounds V2 and V3, a flat colour: no shade */
   .icard[data-outline="0"] .frame { border-color: transparent; }   /* the outline off: the frame keeps its place */
+  .icard:not([data-bgmode="3"]) canvas[data-flat] { visibility: hidden; }   /* the report's illustration on Background V3 only; V1 and V2 show the picture alone */
   .icard[data-lightbg="1"] { color: #141413; --frame-def: rgb(20 20 19 / .7); }   /* a light colour: dark words, frame and buttons */
   .icard[data-lightbg="1"] .btn { background: #141413; color: #fff; }
   .icard[data-lightbg="1"] .btn.sec { background: rgb(0 0 0 / .12); color: #141413; }
   @media (max-width: 480px) { .cw .icard { padding: 9cqw 7cqw 7cqw; } .ictas { flex-wrap: nowrap; gap: 8px; } .ictas .btn { flex: 1 1 0; min-width: 0; height: clamp(40px, 13cqw, 52px); padding: 0 10px; font-size: clamp(13px, 4.6cqw, 16px); white-space: nowrap; } .ctl select[data-dither] { flex: 1 1 0; min-width: 0; } }   /* the buttons side by side, so every card keeps its shape */
   .icard.drop { outline: 2px dashed #fff; outline-offset: -10px; }
   /* the controls under each card: Background V1 or V2, its colour, the picture, the dither, the foreground */
-  .ctl { display: grid; gap: 8px; padding-inline: 2px; }
+  .ctl { display: grid; align-content: start; gap: 8px; padding-inline: 2px; }
   .ctl .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
   .ctl .row[hidden] { display: none; }
   .ctl .row > .lab:first-child { flex: none; width: 11ch; }
@@ -111,7 +112,7 @@
   <header>
     <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>Everlab service pages</a>
     <h1>Report visuals</h1>
-    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, three backgrounds: V1, a picture, with the frame showing it dithered; V2, a flat colour, with a picture of its own in the frame, dithered in a foreground you pick; V3, a flat colour with only the illustration in the frame, in the foreground. The frame's outline can be on or off. Your choices stay in this browser.</p>
+    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, three backgrounds: V1, a picture, with the frame showing it dithered; V2, a flat colour, with a picture of its own in the frame, dithered in a foreground you pick; V3, a flat colour with only the report's illustration in the frame, in the foreground (the illustration shows on V3 only). The frame's outline can be on or off. Your choices stay in this browser.</p>
     <p id="lead-v1" hidden>V1: each report's reveal, as the pop-up it opens in: the title, the report's card, the doctor's words, then the button or buttons. The card is the same for every report, an isometric report with one sheet under it; only its panel changes, a grid of square particles.</p>
     <div class="bar">
       <div class="key" id="key-v2" aria-label="Key"><span><i class="dt"></i>data point</span><span><i class="dt big"></i>what the report reveals</span></div>

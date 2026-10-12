@@ -13525,3 +13525,8 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Outline On/Off for every mode (rv-outline-<card>); Off keeps the 1px border transparent so nothing moves.
 - Secondary button: 12% white (12% black on a light colour).
 - A picture dropped on a V3 card is declined with a note.
+
+## Report visuals V2 — 2px outline, illustration on V3 only
+- Frame outline 2px.
+- The report's illustration (canvas[data-flat]) shows on Background V3 only (`visibility: hidden` elsewhere, so the dither still measures it); V1 and V2 frames hold the dithered picture alone.
+- `.ctl` rows packed to the top (align-content: start) so a short set of controls doesn't spread out beside a taller one.
