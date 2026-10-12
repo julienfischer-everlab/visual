@@ -13561,3 +13561,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 
 ## Report visuals — presets as a control
 - The Presets row (name field, Save preset, chips) is replaced by a Preset control at the top of each card's controls: a select (Custom / No presets yet, then the saved ones; picking one applies it, and it shows the one the card matches), Save (adds "Preset N", or says it's already saved), Delete (the one picked), Undo after a delete. Same rv-presets-<card> storage.
+- Questionnaire banner: the user's photo (man drinking water, yoga mat), cropped to the head, bottle and shoulders (rows 9%–69%), 1600×640 webp, as assets/overview/task-cover-q.webp. The … on the cover is dark glass so it reads on a light sky.
