@@ -31,6 +31,8 @@
   .key span { display: inline-flex; align-items: center; gap: 6px; }
   .key i { width: 7px; height: 7px; background: var(--fg); opacity: .8; }
   .key i.acc { background: var(--acc); opacity: 1; }
+  .key i.dt { width: 5px; height: 5px; border-radius: 50%; opacity: .6; } .key i.dt.big { width: 8px; height: 8px; opacity: 1; }
+  .key[hidden] { display: none; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 540px), 1fr)); gap: 20px; }
   figure { margin: 0; min-width: 0; display: grid; grid-template-rows: 1fr auto; gap: 10px; }   /* the backdrops in a row are as tall as each other */
   /* the backdrop: the page behind the pop-up, dimmed */
@@ -50,6 +52,34 @@
   figcaption b { font-size: 15px; font-weight: 500; }
   figcaption span { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
   @media (max-width: 480px) { .wrap { padding-inline: 16px; } .bd { padding: 20px 12px; } .modal { padding: 68px 20px 28px; } .modal h2 { font-size: 24px; } }
+  /* the view switch: V2, the image cards, or V1, the pop-ups */
+  .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
+  .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
+  .seg button { appearance: none; border: 0; background: none; color: var(--muted); font: 12px/28px var(--mono); letter-spacing: .02em; padding: 0 12px; border-radius: 999px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
+  .seg button:focus-visible, .ctl button:focus-visible, .ctl label:focus-within { outline: 1.5px solid var(--fg); outline-offset: 2px; }
+  .grid[hidden] { display: none; }
+  /* V2: a card on its own picture: the title at the left, the visual in a thin outlined frame, flat, the button(s) at the foot */
+  .grid.v2 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 268px), 1fr)); }
+  .grid.v2 figure { container-type: inline-size; }   /* the card's sizes follow its own width */
+  .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 4 / 5.4; max-width: 100%; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; overflow: hidden; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; }
+  .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(0 0 0 / .28) 0%, rgb(0 0 0 / 0) 34%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
+  .icard h2 { margin: 0; max-width: 13ch; font-size: clamp(19px, 9cqw, 34px); line-height: 1.08; font-weight: 500; letter-spacing: -0.025em; text-wrap: balance; }
+  .frame { position: relative; margin: auto 0; width: 100%; aspect-ratio: 24 / 18; border: 1px solid rgb(255 255 255 / .78); }
+  .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .ictas { display: flex; flex-wrap: wrap; gap: 2.2cqw; }
+  .ib { display: inline-flex; align-items: center; height: clamp(36px, 13cqw, 48px); padding: 0 clamp(12px, 4.6cqw, 22px); border-radius: 999px; background: #fff; color: #141413; font-size: clamp(12.5px, 4.4cqw, 16px); font-weight: 600; white-space: nowrap; }
+  .ib.glass { background: rgb(255 255 255 / .18); color: #fff; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .28); }
+  .icard.drop { outline: 2px dashed #fff; outline-offset: -10px; }
+  /* the background control under each card: the presets, your own picture, back to the default */
+  .ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-inline: 2px; }
+  .ctl .lab { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; margin-right: 2px; }
+  .sw { appearance: none; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 7px; background: #444 center / cover no-repeat; cursor: pointer; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .12); }
+  .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
+  .ctl .tbtn, .ctl label.tbtn { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
+  .ctl input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .ctl .note { flex-basis: 100%; font-size: 12px; color: var(--muted); }
+  .ctl .note:empty { display: none; }
 </style>
 </head>
 <body>
@@ -57,11 +87,81 @@
   <header>
     <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>Everlab service pages</a>
     <h1>Report visuals</h1>
-    <p>Each report's reveal, as the pop-up it opens in: the title, the report's card, the doctor's words, then the button or buttons. The card is the same for every report, an isometric report with one sheet under it; only its panel changes, a grid of square particles. Shown still; the motion follows once the shapes are agreed.</p>
-    <div class="key" aria-label="Key"><span><i></i>particle</span><span><i class="acc"></i>accent: what the report reveals</span></div>
+    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, change its picture: a preset, or one of your own (it stays in this browser).</p>
+    <p id="lead-v1" hidden>V1: each report's reveal, as the pop-up it opens in: the title, the report's card, the doctor's words, then the button or buttons. The card is the same for every report, an isometric report with one sheet under it; only its panel changes, a grid of square particles.</p>
+    <div class="bar">
+      <div class="key" id="key-v2" aria-label="Key"><span><i class="dt"></i>data point</span><span><i class="dt big"></i>what the report reveals</span></div>
+      <div class="key" id="key-v1" aria-label="Key" hidden><span><i></i>particle</span><span><i class="acc"></i>accent: what the report reveals</span></div>
+      <div class="seg" role="group" aria-label="Version">
+        <button type="button" data-view="2" aria-pressed="true">V2 · Image card</button>
+        <button type="button" data-view="1" aria-pressed="false">V1 · Pop-up</button>
+      </div>
+    </div>
   </header>
 
-  <div class="grid">
+  <div class="grid v2" data-view="2">
+    <figure aria-labelledby="c-mri">
+      <div class="icard" data-card="mri" data-default="deep">
+        <h2 id="c-mri">Your Whole Body MRI debrief is ready</h2>
+        <div class="frame"><canvas data-flat="body-scan" role="img" aria-label="Whole Body MRI and CT Chest: the report's visual"></canvas></div>
+        <div class="ictas"><span class="ib glass">Watch video</span><span class="ib">See report</span></div>
+      </div>
+      <figcaption><b>Whole Body MRI &amp; CT Chest</b><span>wbmri</span></figcaption>
+      <div class="ctl" data-for="mri" role="group" aria-label="Whole Body MRI and CT Chest: background">
+        <span class="lab">Background</span>
+        <span class="sws"></span>
+        <label class="tbtn">Upload<input type="file" accept="image/*"></label>
+        <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="note" aria-live="polite"></span>
+      </div>
+    </figure>
+    <figure aria-labelledby="c-gut">
+      <div class="icard" data-card="gut" data-default="meadow">
+        <h2 id="c-gut">Your microbiome report is ready</h2>
+        <div class="frame"><canvas data-flat="gut-map" role="img" aria-label="Microbiome and Gut Health: the report's visual"></canvas></div>
+        <div class="ictas"><span class="ib glass">Watch video</span><span class="ib">See report</span></div>
+      </div>
+      <figcaption><b>Microbiome &amp; Gut Health</b><span>gut</span></figcaption>
+      <div class="ctl" data-for="gut" role="group" aria-label="Microbiome and Gut Health: background">
+        <span class="lab">Background</span>
+        <span class="sws"></span>
+        <label class="tbtn">Upload<input type="file" accept="image/*"></label>
+        <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="note" aria-live="polite"></span>
+      </div>
+    </figure>
+    <figure aria-labelledby="c-blood">
+      <div class="icard" data-card="blood" data-default="ember">
+        <h2 id="c-blood">Your blood results are in</h2>
+        <div class="frame"><canvas data-flat="assay" role="img" aria-label="Advanced Blood Testing: the report's visual"></canvas></div>
+        <div class="ictas"><span class="ib">See results</span></div>
+      </div>
+      <figcaption><b>Advanced Blood Testing</b><span>path</span></figcaption>
+      <div class="ctl" data-for="blood" role="group" aria-label="Advanced Blood Testing: background">
+        <span class="lab">Background</span>
+        <span class="sws"></span>
+        <label class="tbtn">Upload<input type="file" accept="image/*"></label>
+        <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="note" aria-live="polite"></span>
+      </div>
+    </figure>
+    <figure aria-labelledby="c-dexa">
+      <div class="icard" data-card="dexa" data-default="dusk">
+        <h2 id="c-dexa">Your DEXA results are ready</h2>
+        <div class="frame"><canvas data-flat="strata" role="img" aria-label="DEXA Body Composition: the report's visual"></canvas></div>
+        <div class="ictas"><span class="ib">See results</span></div>
+      </div>
+      <figcaption><b>DEXA Body Composition</b><span>dexa</span></figcaption>
+      <div class="ctl" data-for="dexa" role="group" aria-label="DEXA Body Composition: background">
+        <span class="lab">Background</span>
+        <span class="sws"></span>
+        <label class="tbtn">Upload<input type="file" accept="image/*"></label>
+        <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="note" aria-live="polite"></span>
+      </div>
+    </figure>
+  </div>
+  <div class="grid v1" data-view="1" hidden>
     <figure aria-labelledby="m-mri">
       <div class="bd">
         <div class="modal" role="group" aria-label="Whole Body MRI and CT Chest report pop-up">
@@ -120,8 +220,89 @@
 <script>
   /* Opened as a page of the prototype, the prototype's own bar is above it: no link back. */
   try { if (window.frameElement && window.frameElement.id === "rvFrame") document.querySelector(".back").hidden = true; } catch (e) {}
-  /* each card drawn at its stage's size, and again when the size changes */
+  /* V1: each card drawn at its stage's size, and again when the size changes */
   if (window.HL2) document.querySelectorAll("canvas[data-fig]").forEach(function (c) { window.HL2.mount(c, c.dataset.fig); });
+
+  var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }, del: function (k) { try { localStorage.removeItem(k); } catch (e) {} } };
+
+  /* the view switch, remembered */
+  function view(v) {
+    document.querySelectorAll(".grid[data-view]").forEach(function (g) { g.hidden = g.dataset.view !== v; });
+    document.querySelectorAll(".seg [data-view]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.view === v)); });
+    ["lead", "key"].forEach(function (n) { document.getElementById(n + "-v2").hidden = v !== "2"; document.getElementById(n + "-v1").hidden = v !== "1"; });
+    store.set("rv-view", v);
+  }
+  document.querySelector(".seg").addEventListener("click", function (e) { var b = e.target.closest("[data-view]"); if (b) view(b.dataset.view); });
+  view(store.get("rv-view") === "1" ? "1" : "2");
+
+  /* V2's visual, flat: the report's grid of cells as dots over a faint full grid, its lines as hairlines */
+  function flat(cv, name) {
+    var f = window.HL2 && HL2.figs[name]; if (!f) return;
+    var m = f.build(HL2.rng(20261012)), C = HL2.COLS, R = HL2.ROWS;
+    function draw() {
+      var r = cv.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1), W = Math.round(r.width * d), H = Math.round(r.height * d); if (!W || !H) return;
+      if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+      var x = cv.getContext("2d"), px = W * .07, py = H * .09, cw = (W - 2 * px) / C, ch = (H - 2 * py) / R;
+      var at = function (i, j) { return [px + i * cw, py + j * ch]; }, dot = function (i, j, rad, a) { var p = at(i + .5, j + .5); x.globalAlpha = a; x.beginPath(); x.arc(p[0], p[1], rad, 0, 6.2832); x.fill(); };
+      x.clearRect(0, 0, W, H); x.fillStyle = "#fff"; x.strokeStyle = "#fff"; x.lineWidth = Math.max(1, d * .9); x.lineCap = "round"; x.lineJoin = "round";
+      var u = Math.min(cw, ch);
+      for (var i = 0; i < C; i += 2) for (var j = 0; j < R; j += 2) dot(i, j, u * .09, .32);   // the field: a faint regular grid of dots
+      var line = function (pl, a) { x.globalAlpha = a; x.beginPath(); pl.forEach(function (q, k) { var p = at(q[0], q[1]); if (k) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); x.stroke(); };
+      (m.lines || []).forEach(function (pl) { line(pl, .38); }); (m.bright || []).forEach(function (pl) { line(pl, .8); }); (m.accLines || []).forEach(function (pl) { line(pl, .9); });
+      (m.cells || []).forEach(function (c) { var b = c.b == null ? .85 : c.b; if (c.acc) dot(c.i, c.j, u * .24, 1); else dot(c.i, c.j, u * .17 * (c.s || 1), c.grey ? .45 : .35 + .55 * b); });   // the report's shape; what it reveals, larger and full white
+      x.globalAlpha = 1;
+    }
+    draw(); if (window.ResizeObserver) new ResizeObserver(draw).observe(cv);
+  }
+  document.querySelectorAll("canvas[data-flat]").forEach(function (c) { flat(c, c.dataset.flat); });
+
+  /* V2's backgrounds: two pictures, four grain gradients made here, or your own */
+  function grain(stops, streak) {   // soft blobs on a base, an optional diagonal smear, then film grain
+    var c = document.createElement("canvas"); c.width = 540; c.height = 730; var x = c.getContext("2d");
+    x.fillStyle = stops[0]; x.fillRect(0, 0, c.width, c.height);
+    try { x.filter = "blur(60px)"; } catch (e) {}
+    stops.slice(1).forEach(function (s) { x.fillStyle = s[0]; x.beginPath(); x.ellipse(s[1] * c.width, s[2] * c.height, s[3] * c.width, s[4] * c.height, s[5] || 0, 0, 6.2832); x.fill(); });
+    x.filter = "none";
+    if (streak) { x.globalAlpha = .16; for (var k = 1; k <= 8; k++) x.drawImage(c, k * 9, -k * 7); x.globalAlpha = 1; }
+    var im = x.getImageData(0, 0, c.width, c.height), d = im.data;
+    for (var i = 0; i < d.length; i += 4) { var n = (Math.random() - .5) * 26; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+    x.putImageData(im, 0, 0);
+    return c.toDataURL("image/jpeg", .86);
+  }
+  var PRESETS = [
+    { id: "deep", name: "Deep", src: "visuals/rv/bg-deep.webp" },
+    { id: "ember", name: "Ember", src: "visuals/rv/bg-ember.webp" },
+    { id: "meadow", name: "Meadow", make: function () { return grain(["#3c6136", ["#a9c6dc", .15, .1, .55, .32, -.5], ["#7da35a", .55, .55, .45, .3, -.6], ["#1d351c", .85, .9, .5, .35, -.5], ["#c7c47e", .3, .62, .22, .14, -.6]], true); } },
+    { id: "rose", name: "Rose", make: function () { return grain(["#b16376", ["#f2c1bd", .2, .2, .5, .3], ["#7a2c48", .75, .7, .45, .35], ["#e8908f", .45, .45, .3, .25]]); } },
+    { id: "dusk", name: "Dusk", make: function () { return grain(["#26214a", ["#8d7fcb", .2, .25, .45, .3], ["#120f26", .8, .85, .5, .4], ["#c58fb3", .7, .2, .3, .2]]); } },
+    { id: "sand", name: "Sand", make: function () { return grain(["#b49674", ["#f0e3c9", .2, .2, .5, .3], ["#765639", .8, .85, .45, .35], ["#dbb68a", .5, .55, .3, .25]]); } }
+  ];
+  var made = {};
+  function srcOf(id) { var p = PRESETS.filter(function (q) { return q.id === id; })[0]; if (!p) return ""; if (p.src) return p.src; return made[id] || (made[id] = p.make()); }
+  function paint(card, v) {   // v: a preset's id, or a picture's data URL
+    var url = /^data:image\//.test(v) ? v : srcOf(v);
+    card.style.backgroundImage = url ? "url(" + JSON.stringify(url) + ")" : "";
+    var ctl = document.querySelector('.ctl[data-for="' + card.dataset.card + '"]');
+    ctl.querySelectorAll(".sw").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === v)); });
+  }
+  function shrink(file, done) {   // your picture, down to 1200px on its long side, as a JPEG small enough to keep
+    var r = new FileReader();
+    r.onload = function () { var im = new Image(); im.onload = function () { var k = Math.min(1, 1200 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); done(c.toDataURL("image/jpeg", .82)); }; im.onerror = function () { done(null); }; im.src = r.result; };
+    r.onerror = function () { done(null); }; r.readAsDataURL(file);
+  }
+  document.querySelectorAll(".icard").forEach(function (card) {
+    var k = card.dataset.card, key = "rv-bg-" + k, ctl = document.querySelector('.ctl[data-for="' + k + '"]'), note = ctl.querySelector(".note"), sws = ctl.querySelector(".sws");
+    PRESETS.forEach(function (p) { var b = document.createElement("button"); b.type = "button"; b.className = "sw"; b.dataset.bg = p.id; b.title = p.name; b.setAttribute("aria-label", "Background: " + p.name); b.setAttribute("aria-pressed", "false"); b.style.backgroundImage = "url(" + JSON.stringify(srcOf(p.id)) + ")"; sws.appendChild(b); });
+    var use = function (v, keep) { paint(card, v); note.textContent = ""; if (keep && !store.set(key, v)) note.textContent = "Shown here, but this browser could not keep it for next time."; };
+    use(store.get(key) || card.dataset.default, false);
+    sws.addEventListener("click", function (e) { var b = e.target.closest(".sw"); if (b) use(b.dataset.bg, true); });
+    ctl.querySelector("[data-reset]").addEventListener("click", function () { store.del(key); use(card.dataset.default, false); });
+    var take = function (file) { if (!file || !/^image\//.test(file.type)) { note.textContent = "That file isn't a picture."; return; } note.textContent = "Reading…"; shrink(file, function (url) { if (!url) { note.textContent = "That picture couldn't be read."; return; } use(url, true); }); };
+    ctl.querySelector("input[type=file]").addEventListener("change", function (e) { take(e.target.files && e.target.files[0]); e.target.value = ""; });
+    card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("drop"); });
+    card.addEventListener("dragleave", function () { card.classList.remove("drop"); });
+    card.addEventListener("drop", function (e) { e.preventDefault(); card.classList.remove("drop"); take(e.dataTransfer.files && e.dataTransfer.files[0]); });
+  });
 </script>
 </body>
 </html>
