@@ -13574,3 +13574,7 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Picker group "Tasks": Appointment (ad hoc), Questionnaire (weekly), Consent (weekly).
 - No Task details tab on any task. 36px from the square to the title. No square at XS (S keeps it).
 - General rule: line tabs that fill the width keep 8px between them (was 0).
+
+## Report visuals — Save presets action; Outline fix
+- "Save presets" in the prototype's top bar (#tkRvSave, shown only with body.rvOn) and on the page itself when opened on its own (#saveAll, hidden inside the prototype): every card's settings saved at once under one shared name, the first "Preset N" free on every card; a card already matching a preset is left as it is. A toast says what happened. Exposed as window.RV.saveAll(); each card registers a saver (SAVERS).
+- Fixed: Outline Off had stopped working since the Content change (v963): `card.dataset.outline = S.outline` had ended up behind a `//` comment.

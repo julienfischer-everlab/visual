@@ -55,6 +55,11 @@
   @media (max-width: 480px) { .wrap { padding-inline: 16px; } .bd { padding: 20px 12px; } .modal { padding: 68px 20px 28px; } .modal h2 { font-size: 24px; } }
   /* the view switch: V2, the image cards, or V1, the pop-ups */
   .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
+  .bar .key { margin-right: auto; }
+  .hbtn { appearance: none; height: 34px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 13px/1 var(--sans); cursor: pointer; }
+  .hbtn:focus-visible { outline: 1.5px solid var(--fg); outline-offset: 2px; } .hbtn[hidden] { display: none; }
+  .toast { position: fixed; left: 50%; bottom: 24px; z-index: 40; max-width: calc(100% - 32px); padding: 10px 16px; border-radius: 999px; background: var(--fg); color: var(--bg); font-size: 13px; opacity: 0; transform: translate(-50%, 8px); transition: opacity .2s, transform .2s; pointer-events: none; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
   .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
   .seg button { appearance: none; border: 0; background: none; color: color-mix(in srgb, var(--fg) 72%, var(--bg)); font: 12px/28px var(--mono); letter-spacing: .02em; padding: 0 12px; border-radius: 999px; cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
@@ -128,6 +133,7 @@
     <div class="bar">
       <div class="key" id="key-v2" aria-label="Key"><span><i class="dt"></i>data point</span><span><i class="dt big"></i>what the report reveals</span></div>
       <div class="key" id="key-v1" aria-label="Key" hidden><span><i></i>particle</span><span><i class="acc"></i>accent: what the report reveals</span></div>
+      <button type="button" class="hbtn" id="saveAll">Save presets</button>
       <div class="seg" role="group" aria-label="Version">
         <button type="button" data-view="2" aria-pressed="true">V2 · Image card</button>
         <button type="button" data-view="1" aria-pressed="false">V1 · Pop-up</button>
@@ -387,6 +393,7 @@
   var IGOPTS = '<optgroup label="Image generator"><option value="ig:Dot screen">Dot screen</option><option value="ig:Editorial X">Editorial X</option><option value="ig:Riso duotone">Riso duotone</option><option value="ig:Bitmap">Bitmap</option><option value="ig:Fine grain">Fine grain</option><option value="ig:Poster X">Poster X</option></optgroup><option value="off">Off</option>';
   var DOPTS1 = '<option value="bayer-img">Ordered · picture colours</option><option value="bayer-mono">Ordered · black &amp; white</option><option value="atk-img">Diffusion · picture colours</option><option value="atk-mono">Diffusion · black &amp; white</option>' + IGOPTS;
   var DOPTS2 = '<option value="bayer-mono">Ordered</option><option value="atk-mono">Diffusion</option>' + IGOPTS;
+  var SAVERS = [];   // each card's save, for Save presets
   var WHITE = "#ffffff", BLACK = "#141414", FIELDS = ["mode", "outline", "pic", "flat", "fpic", "ink", "dith1", "dith2", "hl", "hlp"];   // a card's settings
   /* what each report highlights (the microbiome's as the debrief's own; the others in its shape) */
   var HL = { mri: ["Your brain, spine and organs", "Your heart and lungs, from the CT chest", "What may need attention", "Personalised recommendations and next steps"],
@@ -414,7 +421,7 @@
     ctl.querySelectorAll("[data-only]").forEach(function (r) { r.hidden = r.dataset.only.split(" ").indexOf(S.mode) < 0; });
     ctl.querySelectorAll("[data-outline]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.outline === S.outline)); });
     ctl.querySelectorAll("[data-hl]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.hl === S.hl)); }); ctl.querySelectorAll("[data-hlp]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.hlp === S.hlp)); });
-    ctl.querySelector("[data-hlpos]").hidden = S.hl !== "1"; card.dataset.hl = v2 && S.hl === "1" ? S.hlp : ""; card.style.setProperty("--cardBg", S.flat);   // the content: V2 only card.dataset.outline = S.outline;
+    ctl.querySelector("[data-hlpos]").hidden = S.hl !== "1"; card.dataset.hl = v2 && S.hl === "1" ? S.hlp : ""; card.style.setProperty("--cardBg", S.flat); card.dataset.outline = S.outline;   // the content: V2 only; the outline on or off
     ctl.querySelector("[data-pic-lab]").textContent = v2 ? "Frame" : "Picture";
     var cur = v2 ? S.fpic : S.pic;
     ctl.querySelectorAll(".pics .sw[data-bg]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === cur)); });
@@ -501,11 +508,27 @@
       if (keepP(a)) { note.textContent = "“" + lastDel.p.name + "” is back."; lastDel = null; } else note.textContent = "This browser is out of room, so “" + lastDel.p.name + "” couldn't come back.";
       drawP(); prs.focus(); });
     drawP();
+    SAVERS.push({ names: function () { return presets().map(function (p) { return p.name; }); }, save: function (nm) {   // for Save presets: this card, under the name shared by all
+      var a = presets(), dup = onP(a); if (dup >= 0) { note.textContent = "Already saved as \u201c" + a[dup].name + "\u201d."; return "same"; }
+      var s0 = {}; FIELDS.forEach(function (f) { s0[f] = S[f]; }); a.push({ name: nm, s: s0 });
+      if (!keepP(a)) { note.textContent = "This browser is out of room, so it couldn't keep that preset."; return "full"; }
+      lastDel = null; note.textContent = "Saved \u201c" + nm + "\u201d."; drawP(); return "saved"; } });
     if (window.ResizeObserver) { var rt = 0; new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { dither(card); }, 80); }).observe(card.querySelector(".frame")); }
     card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("drop"); });
     card.addEventListener("dragleave", function () { card.classList.remove("drop"); });
     card.addEventListener("drop", function (e) { e.preventDefault(); card.classList.remove("drop"); take(e.dataTransfer.files && e.dataTransfer.files[0]); });
   });
+  /* Save presets: every card's settings at once, under one name ("add Save presets action"), from the prototype's bar or this page's own button */
+  function saveAll() {
+    var n = 1; while (SAVERS.some(function (c) { return c.names().indexOf("Preset " + n) >= 0; })) n++;
+    var nm = "Preset " + n, r = SAVERS.map(function (c) { return c.save(nm); }), sv = r.filter(function (x) { return x === "saved"; }).length, same = r.filter(function (x) { return x === "same"; }).length, full = r.filter(function (x) { return x === "full"; }).length;
+    toast(full ? "This browser is out of room: " + (sv ? sv + " saved as \u201c" + nm + "\u201d, " : "") + full + " not saved." : sv ? "Saved \u201c" + nm + "\u201d on " + sv + (sv > 1 ? " cards" : " card") + (same ? "; " + same + " already saved." : ".") : "Every card is already saved as a preset.");
+    return { name: nm, saved: sv, same: same, full: full };
+  }
+  var tst = null, tstT = 0;
+  function toast(t) { if (!tst) { tst = document.createElement("div"); tst.className = "toast"; tst.setAttribute("role", "status"); document.body.appendChild(tst); } tst.textContent = t; tst.classList.add("on"); clearTimeout(tstT); tstT = setTimeout(function () { tst.classList.remove("on"); }, 3200); }
+  window.RV = { saveAll: saveAll };
+  { var sb = document.getElementById("saveAll"); if (sb) { sb.addEventListener("click", saveAll); try { if (window.frameElement && window.frameElement.id === "rvFrame") sb.hidden = true; } catch (e) {} } }   // in the prototype, its bar has the button
   /* zoom, or a screen with another pixel density: the same size on the page, so redraw the canvases sharp */
   (function watchDpr() {
     if (!window.matchMedia) return;
