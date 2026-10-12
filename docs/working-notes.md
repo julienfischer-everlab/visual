@@ -13519,3 +13519,9 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - A light flat colour (lum > .6) switches the words, frame default and buttons dark.
 - State per card in `card._s`, stored as rv-mode / rv-bg / rv-flat / rv-fpic / rv-ink / rv-dither (-<card>); unknown values fall back to defaults; an old `color:` background moves to rv-flat.
 - V2 grid figures: rows auto auto 1fr so cards in a row stay level whatever controls are open.
+
+## Report visuals V2 — Background V3, outline switch, 12% secondary
+- Background V3 · Illustration: V2's flat colour, nothing but the report's illustration in the frame; the Foreground colours the frame's outline and the illustration (Auto: white, or dark on a light colour). Rows per mode via `data-only="…"` (Picture and Dither: 1 2; Colour and Foreground: 2 3).
+- Outline On/Off for every mode (rv-outline-<card>); Off keeps the 1px border transparent so nothing moves.
+- Secondary button: 12% white (12% black on a light colour).
+- A picture dropped on a V3 card is declined with a note.
