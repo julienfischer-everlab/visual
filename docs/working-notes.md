@@ -13547,3 +13547,13 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - "Card as PNG" removed (the ask was presets). Each card's controls end with Presets: a name field (optional; Enter saves) and Save preset; saved presets show as chips under it, the one matching the card ringed; click applies it, × deletes it (with Undo).
 - A preset is the card's settings (FIELDS: mode, outline, pic, flat, fpic, ink, dith1, dith2), kept in localStorage rv-presets-<card>; same name = update. Applying checks each field with the same VAL/DEF the page loads with, so a bad or old preset falls back to defaults field by field.
 - Review fixes (presets): an unnamed save takes the first unused "Preset N" (only a typed name updates); Undo survives a failed write and says so, and ends on any other change; Apply reports a failed write and checks fields are strings; focus stays on the chip in hand after apply / delete / undo. The Background switch wraps whole options under 360px. Image generator looks on V2 drop Riso's second ink (`opts.fg` turns duotone off).
+
+## Task detail / Desktop
+- A new page in the Version menu ("Task detail · Desktop", value tskD) and in the gallery (taskDesk, after Service detail). It is the Service detail page itself (#dSvc, paint) for two weekly tasks, SVC.wkq (General Questionnaire, task:'form') and SVC.wkc (General Everlab consent, task:'sign'), with `TASK` set from `d.task`:
+  - no right panel (aside emptied, `#dSvc.svTask .svGrid{grid-template-columns:minmax(0,716px)}`), no progress card at M/S/XS; the step arrows kept through a hidden simNav;
+  - header: a 104px icon tile (form / sign) in place of the picture; XS hero with the tile, no picture;
+  - line under the title: "Weekly · Due by Sun 18 Oct", then "Completed / Signed on 12 Oct 2026";
+  - status card: Pending action, "Complete your weekly questionnaire" / "Review and sign your consent", Start / Review and sign → the existing questionnaire / consent modal (own 6 weekly questions, own consent text); submitting completes the task (simGo done): Completed card, "Your next one opens on Mon 19 Oct", the document under My documents with View;
+  - tabs: Why we need it, Before you start / What you're agreeing to, Task details (Frequency, Duration, Location, From), Documents once done; More menu says "About this task".
+- Top bar picker gains a "Weekly tasks" group; its label reads Task on a task. Services isn't lit in the sidebar on a task. DPOOL has wkq/wkc empty (no placeholder documents).
+- Fixed in passing: the line under the title was white on white in light mode (service pages too).
