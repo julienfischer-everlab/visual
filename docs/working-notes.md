@@ -13510,3 +13510,12 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Background: a colour picker after the presets (rainbow until used; then shows the colour, ringed when chosen). Stored as `color:#rrggbb`; drawn flat with the presets' film grain so dithers still have a picture to work from.
 - Colour row per card: one picker for the frame's outline and the dither's foreground (`--frame` on the card, `data-fg`). Ordered/Diffusion: the colour replaces whichever tone it's nearer to in lightness. Image generator looks: `IGAPI.render(…, {fg})` sets the look's Foreground. "Default" clears it (white frame at .78). Stored as `rv-ink-<card>`.
 - Frame 32px shorter on the 520px card (aspect 437/296, scales with the card). The flat visual now draws square cells, centred, with the faint field filling the frame, so the figures aren't squashed.
+
+## Report visuals V2 — Background V1 / V2, centred buttons
+- Buttons centred; the secondary one is a 4% white veil (4% black on a light colour).
+- Each card's controls are built by the script (CTL template) as rows: Background (V1 · Picture / V2 · Colour), Colour (V2), Picture/Frame, Dither, Foreground (V2).
+- Background V1: the card's picture (presets or upload); the frame shows the part behind it, dithered automatically (default Ordered · picture colours, Medium; Off leaves the picture plain).
+- Background V2: a flat colour (6 swatches + picker; no shade); the frame gets its own picture (presets or upload, cover-fit), dithered automatically; the Foreground picker colours the frame's outline and the dither ("two colours" = card colour + foreground; picture colours: the foreground replaces the nearer tone; Image generator looks: fg + the card colour as paper via `IGAPI.render(…, {fg, bg})`). Off shows the frame picture plain.
+- A light flat colour (lum > .6) switches the words, frame default and buttons dark.
+- State per card in `card._s`, stored as rv-mode / rv-bg / rv-flat / rv-fpic / rv-ink / rv-dither (-<card>); unknown values fall back to defaults; an old `color:` background moves to rv-flat.
+- V2 grid figures: rows auto auto 1fr so cards in a row stay level whatever controls are open.
