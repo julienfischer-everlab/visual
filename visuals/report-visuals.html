@@ -66,6 +66,8 @@
   .icard h2 { margin: 0; max-width: 13ch; font-size: clamp(20px, 6.4cqw, 34px); line-height: 1.08; font-weight: 500;   /* medium ("title medium font") */ letter-spacing: -0.025em; text-wrap: balance; }
   .frame { position: relative; margin: auto 0; width: 100%; aspect-ratio: 24 / 18; border: 1px solid rgb(255 255 255 / .78); }
   .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .frame canvas.dith { image-rendering: pixelated; }   /* the picture inside the frame, dithered (when chosen), under the report's dots */
+  .frame canvas.dith[hidden] { display: none; }
   .ictas { display: flex; flex-wrap: wrap; gap: 12px; }   /* the buttons: the pop-up's own (V1's), white for the main one, solid dark beside it */
   @media (max-width: 480px) { .cw .icard { padding: 9cqw 7cqw 7cqw; } .ictas .btn { flex: 1 1 100%; } }
   .icard.drop { outline: 2px dashed #fff; outline-offset: -10px; }
@@ -76,6 +78,8 @@
   .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
   .ctl .tbtn, .ctl label.tbtn { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
   .ctl input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .ctl select { height: 26px; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--fg); font: 12px/1 var(--sans); }
+  .ctl .brk { flex-basis: 100%; height: 0; }
   .ctl .note { flex-basis: 100%; font-size: 12px; color: var(--muted); }
   .ctl .note:empty { display: none; }
 </style>
@@ -102,7 +106,7 @@
       <div class="bd"><div class="cw">
       <div class="icard" data-card="mri" data-default="deep">
         <h2 id="c-mri">Your Whole Body MRI debrief is ready</h2>
-        <div class="frame"><canvas data-flat="body-scan" role="img" aria-label="Whole Body MRI and CT Chest: the report's visual"></canvas></div>
+        <div class="frame"><canvas class="dith" hidden aria-hidden="true"></canvas><canvas data-flat="body-scan" role="img" aria-label="Whole Body MRI and CT Chest: the report's visual"></canvas></div>
         <div class="ictas"><span class="btn sec">Watch video</span><span class="btn">See report</span></div>
       </div>
       </div></div>
@@ -112,6 +116,28 @@
         <span class="sws"></span>
         <label class="tbtn">Upload<input type="file" accept="image/*"></label>
         <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="brk"></span>
+        <span class="lab">Dither</span>
+        <select data-dither aria-label="Treat the picture inside the frame: a dither, or a look from the Image generator">
+          <option value="off">Off</option>
+          <option value="bayer-img">Ordered · picture colours</option>
+          <option value="bayer-mono">Ordered · black &amp; white</option>
+          <option value="atk-img">Diffusion · picture colours</option>
+          <option value="atk-mono">Diffusion · black &amp; white</option>
+          <optgroup label="Image generator">
+            <option value="ig:Dot screen">Dot screen</option>
+            <option value="ig:Editorial X">Editorial X</option>
+            <option value="ig:Riso duotone">Riso duotone</option>
+            <option value="ig:Bitmap">Bitmap</option>
+            <option value="ig:Fine grain">Fine grain</option>
+            <option value="ig:Poster X">Poster X</option>
+          </optgroup>
+        </select>
+        <select data-px aria-label="Dither pixel size">
+          <option value="2">Fine</option>
+          <option value="3" selected>Medium</option>
+          <option value="5">Coarse</option>
+        </select>
         <span class="note" aria-live="polite"></span>
       </div>
     </figure>
@@ -119,7 +145,7 @@
       <div class="bd"><div class="cw">
       <div class="icard" data-card="gut" data-default="meadow">
         <h2 id="c-gut">Your microbiome report is ready</h2>
-        <div class="frame"><canvas data-flat="gut-map" role="img" aria-label="Microbiome and Gut Health: the report's visual"></canvas></div>
+        <div class="frame"><canvas class="dith" hidden aria-hidden="true"></canvas><canvas data-flat="gut-map" role="img" aria-label="Microbiome and Gut Health: the report's visual"></canvas></div>
         <div class="ictas"><span class="btn sec">Watch video</span><span class="btn">See report</span></div>
       </div>
       </div></div>
@@ -129,6 +155,28 @@
         <span class="sws"></span>
         <label class="tbtn">Upload<input type="file" accept="image/*"></label>
         <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="brk"></span>
+        <span class="lab">Dither</span>
+        <select data-dither aria-label="Treat the picture inside the frame: a dither, or a look from the Image generator">
+          <option value="off">Off</option>
+          <option value="bayer-img">Ordered · picture colours</option>
+          <option value="bayer-mono">Ordered · black &amp; white</option>
+          <option value="atk-img">Diffusion · picture colours</option>
+          <option value="atk-mono">Diffusion · black &amp; white</option>
+          <optgroup label="Image generator">
+            <option value="ig:Dot screen">Dot screen</option>
+            <option value="ig:Editorial X">Editorial X</option>
+            <option value="ig:Riso duotone">Riso duotone</option>
+            <option value="ig:Bitmap">Bitmap</option>
+            <option value="ig:Fine grain">Fine grain</option>
+            <option value="ig:Poster X">Poster X</option>
+          </optgroup>
+        </select>
+        <select data-px aria-label="Dither pixel size">
+          <option value="2">Fine</option>
+          <option value="3" selected>Medium</option>
+          <option value="5">Coarse</option>
+        </select>
         <span class="note" aria-live="polite"></span>
       </div>
     </figure>
@@ -136,7 +184,7 @@
       <div class="bd"><div class="cw">
       <div class="icard" data-card="blood" data-default="ember">
         <h2 id="c-blood">Your blood results are in</h2>
-        <div class="frame"><canvas data-flat="assay" role="img" aria-label="Advanced Blood Testing: the report's visual"></canvas></div>
+        <div class="frame"><canvas class="dith" hidden aria-hidden="true"></canvas><canvas data-flat="assay" role="img" aria-label="Advanced Blood Testing: the report's visual"></canvas></div>
         <div class="ictas"><span class="btn">See results</span></div>
       </div>
       </div></div>
@@ -146,6 +194,28 @@
         <span class="sws"></span>
         <label class="tbtn">Upload<input type="file" accept="image/*"></label>
         <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="brk"></span>
+        <span class="lab">Dither</span>
+        <select data-dither aria-label="Treat the picture inside the frame: a dither, or a look from the Image generator">
+          <option value="off">Off</option>
+          <option value="bayer-img">Ordered · picture colours</option>
+          <option value="bayer-mono">Ordered · black &amp; white</option>
+          <option value="atk-img">Diffusion · picture colours</option>
+          <option value="atk-mono">Diffusion · black &amp; white</option>
+          <optgroup label="Image generator">
+            <option value="ig:Dot screen">Dot screen</option>
+            <option value="ig:Editorial X">Editorial X</option>
+            <option value="ig:Riso duotone">Riso duotone</option>
+            <option value="ig:Bitmap">Bitmap</option>
+            <option value="ig:Fine grain">Fine grain</option>
+            <option value="ig:Poster X">Poster X</option>
+          </optgroup>
+        </select>
+        <select data-px aria-label="Dither pixel size">
+          <option value="2">Fine</option>
+          <option value="3" selected>Medium</option>
+          <option value="5">Coarse</option>
+        </select>
         <span class="note" aria-live="polite"></span>
       </div>
     </figure>
@@ -153,7 +223,7 @@
       <div class="bd"><div class="cw">
       <div class="icard" data-card="dexa" data-default="dusk">
         <h2 id="c-dexa">Your DEXA results are ready</h2>
-        <div class="frame"><canvas data-flat="strata" role="img" aria-label="DEXA Body Composition: the report's visual"></canvas></div>
+        <div class="frame"><canvas class="dith" hidden aria-hidden="true"></canvas><canvas data-flat="strata" role="img" aria-label="DEXA Body Composition: the report's visual"></canvas></div>
         <div class="ictas"><span class="btn">See results</span></div>
       </div>
       </div></div>
@@ -163,6 +233,28 @@
         <span class="sws"></span>
         <label class="tbtn">Upload<input type="file" accept="image/*"></label>
         <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="brk"></span>
+        <span class="lab">Dither</span>
+        <select data-dither aria-label="Treat the picture inside the frame: a dither, or a look from the Image generator">
+          <option value="off">Off</option>
+          <option value="bayer-img">Ordered · picture colours</option>
+          <option value="bayer-mono">Ordered · black &amp; white</option>
+          <option value="atk-img">Diffusion · picture colours</option>
+          <option value="atk-mono">Diffusion · black &amp; white</option>
+          <optgroup label="Image generator">
+            <option value="ig:Dot screen">Dot screen</option>
+            <option value="ig:Editorial X">Editorial X</option>
+            <option value="ig:Riso duotone">Riso duotone</option>
+            <option value="ig:Bitmap">Bitmap</option>
+            <option value="ig:Fine grain">Fine grain</option>
+            <option value="ig:Poster X">Poster X</option>
+          </optgroup>
+        </select>
+        <select data-px aria-label="Dither pixel size">
+          <option value="2">Fine</option>
+          <option value="3" selected>Medium</option>
+          <option value="5">Coarse</option>
+        </select>
         <span class="note" aria-live="polite"></span>
       </div>
     </figure>
@@ -250,7 +342,8 @@
       if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
       var x = cv.getContext("2d"), px = W * .07, py = H * .09, cw = (W - 2 * px) / C, ch = (H - 2 * py) / R;
       var at = function (i, j) { return [px + i * cw, py + j * ch]; }, dot = function (i, j, rad, a) { var p = at(i + .5, j + .5); x.globalAlpha = a; x.beginPath(); x.arc(p[0], p[1], rad, 0, 6.2832); x.fill(); };
-      x.clearRect(0, 0, W, H); x.fillStyle = "#fff"; x.strokeStyle = "#fff"; x.lineWidth = Math.max(1, d * .9); x.lineCap = "round"; x.lineJoin = "round";
+      var ink = cv.closest(".icard") && cv.closest(".icard").dataset.ink === "dark" ? "#141414" : "#fff";   // white, or dark over a light treatment
+      x.clearRect(0, 0, W, H); x.fillStyle = ink; x.strokeStyle = ink; x.lineWidth = Math.max(1, d * .9); x.lineCap = "round"; x.lineJoin = "round";
       var u = Math.min(cw, ch);
       for (var i = 0; i < C; i += 2) for (var j = 0; j < R; j += 2) dot(i, j, u * .09, .32);   // the field: a faint regular grid of dots
       var line = function (pl, a) { x.globalAlpha = a; x.beginPath(); pl.forEach(function (q, k) { var p = at(q[0], q[1]); if (k) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); x.stroke(); };
@@ -258,7 +351,7 @@
       (m.cells || []).forEach(function (c) { var b = c.b == null ? .85 : c.b; if (c.acc) dot(c.i, c.j, u * .24, 1); else dot(c.i, c.j, u * .17 * (c.s || 1), c.grey ? .45 : .35 + .55 * b); });   // the report's shape; what it reveals, larger and full white
       x.globalAlpha = 1;
     }
-    draw(); if (window.ResizeObserver) new ResizeObserver(draw).observe(cv);
+    cv._redraw = draw; draw(); if (window.ResizeObserver) new ResizeObserver(draw).observe(cv);
   }
   document.querySelectorAll("canvas[data-flat]").forEach(function (c) { flat(c, c.dataset.flat); });
 
@@ -288,6 +381,7 @@
   function paint(card, v) {   // v: a preset's id, or a picture's data URL
     var url = /^data:image\//.test(v) ? v : srcOf(v);
     card.style.backgroundImage = url ? "url(" + JSON.stringify(url) + ")" : "";
+    card.dataset.bgUrl = url || ""; dither(card);
     var ctl = document.querySelector('.ctl[data-for="' + card.dataset.card + '"]');
     ctl.querySelectorAll(".sw").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === v)); });
   }
@@ -296,6 +390,69 @@
     r.onload = function () { var im = new Image(); im.onload = function () { var k = Math.min(1, 1200 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); done(c.toDataURL("image/jpeg", .82)); }; im.onerror = function () { done(null); }; im.src = r.result; };
     r.onerror = function () { done(null); }; r.readAsDataURL(file);
   }
+  /* the dither: the part of the card's picture behind the frame, redrawn in two tones, ordered (Bayer 8x8) or diffused (Atkinson) */
+  var BAYER = (function () { var m = [[0, 32, 8, 40, 2, 34, 10, 42], [48, 16, 56, 24, 50, 18, 58, 26], [12, 44, 4, 36, 14, 46, 6, 38], [60, 28, 52, 20, 62, 30, 54, 22], [3, 35, 11, 43, 1, 33, 9, 41], [51, 19, 59, 27, 49, 17, 57, 25], [15, 47, 7, 39, 13, 45, 5, 37], [63, 31, 55, 23, 61, 29, 53, 21]]; return m.map(function (r) { return r.map(function (v) { return (v + .5) / 64; }); }); })();
+  var imgs = {};
+  function imageOf(url, done) { if (imgs[url] && imgs[url].complete) return done(imgs[url]); var im = imgs[url] || (imgs[url] = new Image()); im.addEventListener("load", function () { done(im); }, { once: true }); if (!im.src) im.src = url; }
+  var igp = null;
+  function ig() {   // the Image generator, loaded once out of sight (#api: its engine only), for its looks
+    if (igp) return igp;
+    return (igp = new Promise(function (res, rej) {
+      var f = document.createElement("iframe"); f.src = "image-generator.html#api"; f.title = "Image generator engine"; f.setAttribute("aria-hidden", "true"); f.tabIndex = -1;
+      f.style.cssText = "position:absolute;width:1px;height:1px;border:0;opacity:0;pointer-events:none;left:-9999px";
+      var t = setTimeout(function () { rej(new Error("timeout")); }, 15000);
+      f.addEventListener("load", function () { var k = 0; (function wait() { var api = f.contentWindow && f.contentWindow.IGAPI; if (api) { clearTimeout(t); res(api); } else if (++k < 100) setTimeout(wait, 50); })(); });
+      document.body.appendChild(f);
+    }));
+  }
+  function inkFor(card, lightBg) {   // the report's dots: dark on a light treatment, white otherwise
+    var v = lightBg ? "dark" : "light"; if (card.dataset.ink === v) return; card.dataset.ink = v;
+    var f = card.querySelector("canvas[data-flat]"); if (f && f._redraw) f._redraw();
+  }
+  function lightness(cv) { var t = document.createElement("canvas"); t.width = 16; t.height = 12; var x = t.getContext("2d"); x.drawImage(cv, 0, 0, 16, 12); var d = x.getImageData(0, 0, 16, 12).data, s = 0; for (var i = 0; i < d.length; i += 4) s += .2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2]; return s / (d.length / 4) / 255; }
+  function dither(card) {
+    var cv = card.querySelector("canvas.dith"), mode = card.dataset.dither || "off", url = card.dataset.bgUrl, tok = card._dtok = (card._dtok || 0) + 1;
+    if (mode === "off" || !url) { cv.hidden = true; inkFor(card, false); return; }
+    imageOf(url, function (im) {
+      var fr = cv.parentNode.getBoundingClientRect(), cr = card.getBoundingClientRect(); if (!fr.width || !cr.width) return;
+      var px = +(card.dataset.px || 3), w = Math.max(8, Math.round(fr.width / px)), h = Math.max(8, Math.round(fr.height / px));
+      // where the frame falls on the picture, as background-size: cover, centred, draws it
+      var sc = Math.max(cr.width / im.naturalWidth, cr.height / im.naturalHeight), ox = (cr.width - im.naturalWidth * sc) / 2, oy = (cr.height - im.naturalHeight * sc) / 2;
+      var sx = (fr.left - cr.left - ox) / sc, sy = (fr.top - cr.top - oy) / sc, sw = fr.width / sc, sh = fr.height / sc;
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      if (/^ig:/.test(mode)) {   // a look from the Image generator: the frame's part of the picture, through its engine
+        var note = document.querySelector('.ctl[data-for="' + card.dataset.card + '"] .note');
+        var cw0 = Math.round(Math.min(1000, Math.max(200, sw))), ch0 = Math.round(cw0 * sh / sw), src = document.createElement("canvas"); src.width = cw0; src.height = ch0;
+        src.getContext("2d").drawImage(im, sx, sy, sw, sh, 0, 0, cw0, ch0);
+        note.textContent = "Rendering with the Image generator…";
+        ig().then(function (api) { return api.render(src, mode.slice(3), Math.round(fr.width * dpr), { spacing: px / 3 }); })
+          .then(function (blob) { return createImageBitmap(blob); })
+          .then(function (bmp) { if (tok !== card._dtok) return; cv.width = Math.round(fr.width * dpr); cv.height = Math.round(fr.height * dpr); var g = cv.getContext("2d"); g.imageSmoothingEnabled = true; g.clearRect(0, 0, cv.width, cv.height); g.drawImage(bmp, 0, 0, cv.width, cv.height); cv.hidden = false; note.textContent = ""; inkFor(card, lightness(cv) > .56); })
+          .catch(function () { if (tok !== card._dtok) return; note.textContent = "The Image generator couldn't render this picture here."; });
+        return;
+      }
+      var o = document.createElement("canvas"); o.width = w; o.height = h; var x = o.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(im, sx, sy, sw, sh, 0, 0, w, h);
+      var id = x.getImageData(0, 0, w, h), d = id.data, n = w * h, L = new Float32Array(n), i, k;
+      for (i = 0; i < n; i++) L[i] = (.2126 * d[i * 4] + .7152 * d[i * 4 + 1] + .0722 * d[i * 4 + 2]) / 255;
+      // stretch the tones between the 3rd and 97th percentiles, so a soft gradient still dithers with bite
+      var srt = Array.prototype.slice.call(L).sort(function (a, b) { return a - b; }), lo = srt[Math.floor(n * .03)], hi = srt[Math.floor(n * .97)], sp = Math.max(.04, hi - lo);
+      for (i = 0; i < n; i++) L[i] = Math.min(1, Math.max(0, (L[i] - lo) / sp));
+      // the two tones: the picture's own darks and lights (averaged), or black and white
+      var dark = [0, 0, 0], light = [255, 255, 255];
+      if (/-img$/.test(mode)) { var a = [0, 0, 0, 0], b = [0, 0, 0, 0]; for (i = 0; i < n; i++) { var t = L[i] < .25 ? a : L[i] > .75 ? b : null; if (t) { t[0] += d[i * 4]; t[1] += d[i * 4 + 1]; t[2] += d[i * 4 + 2]; t[3]++; } }
+        if (a[3]) dark = [a[0] / a[3] * .55, a[1] / a[3] * .55, a[2] / a[3] * .55]; if (b[3]) light = [Math.min(255, b[0] / b[3] * 1.12), Math.min(255, b[1] / b[3] * 1.12), Math.min(255, b[2] / b[3] * 1.12)]; }
+      var on = new Uint8Array(n);
+      if (/^bayer/.test(mode)) { for (var yy = 0; yy < h; yy++) for (var xx = 0; xx < w; xx++) { k = yy * w + xx; on[k] = L[k] > BAYER[yy & 7][xx & 7] ? 1 : 0; } }
+      else { var E = Float32Array.from(L); for (var y2 = 0; y2 < h; y2++) for (var x2 = 0; x2 < w; x2++) { k = y2 * w + x2; var v = E[k], q = v > .5 ? 1 : 0, err = (v - q) / 8; on[k] = q;
+        [[1, 0], [2, 0], [-1, 1], [0, 1], [1, 1], [0, 2]].forEach(function (e) { var X = x2 + e[0], Y = y2 + e[1]; if (X >= 0 && X < w && Y < h) E[Y * w + X] += err; }); } }
+      for (i = 0; i < n; i++) { var c = on[i] ? light : dark; d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = 255; }
+      x.putImageData(id, 0, 0);
+      if (tok !== card._dtok) return;
+      cv.width = Math.round(fr.width * dpr); cv.height = Math.round(fr.height * dpr);
+      var g = cv.getContext("2d"); g.imageSmoothingEnabled = false; g.drawImage(o, 0, 0, cv.width, cv.height); cv.hidden = false; inkFor(card, lightness(cv) > .56);
+    });
+  }
+
   document.querySelectorAll(".icard").forEach(function (card) {
     var k = card.dataset.card, key = "rv-bg-" + k, ctl = document.querySelector('.ctl[data-for="' + k + '"]'), note = ctl.querySelector(".note"), sws = ctl.querySelector(".sws");
     PRESETS.forEach(function (p) { var b = document.createElement("button"); b.type = "button"; b.className = "sw"; b.dataset.bg = p.id; b.title = p.name; b.setAttribute("aria-label", "Background: " + p.name); b.setAttribute("aria-pressed", "false"); b.style.backgroundImage = "url(" + JSON.stringify(srcOf(p.id)) + ")"; sws.appendChild(b); });
@@ -305,6 +462,11 @@
     ctl.querySelector("[data-reset]").addEventListener("click", function () { store.del(key); use(card.dataset.default, false); });
     var take = function (file) { if (!file || !/^image\//.test(file.type)) { note.textContent = "That file isn't a picture."; return; } note.textContent = "Reading…"; shrink(file, function (url) { if (!url) { note.textContent = "That picture couldn't be read."; return; } use(url, true); }); };
     ctl.querySelector("input[type=file]").addEventListener("change", function (e) { take(e.target.files && e.target.files[0]); e.target.value = ""; });
+    var dsel = ctl.querySelector("[data-dither]"), psel = ctl.querySelector("[data-px]"), dkey = "rv-dither-" + k;
+    var dset = function () { card.dataset.dither = dsel.value; card.dataset.px = psel.value; psel.disabled = dsel.value === "off"; store.set(dkey, dsel.value + "|" + psel.value); dither(card); };
+    (function () { var sv = (store.get(dkey) || "off|3").split("|"); if (dsel.querySelector('option[value="' + sv[0] + '"]')) dsel.value = sv[0]; if (psel.querySelector('option[value="' + sv[1] + '"]')) psel.value = sv[1]; card.dataset.dither = dsel.value; card.dataset.px = psel.value; psel.disabled = dsel.value === "off"; })();
+    dsel.addEventListener("change", dset); psel.addEventListener("change", dset);
+    if (window.ResizeObserver) { var rt = 0; new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { dither(card); }, 80); }).observe(card.querySelector(".frame")); }
     card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("drop"); });
     card.addEventListener("dragleave", function () { card.classList.remove("drop"); });
     card.addEventListener("drop", function (e) { e.preventDefault(); card.classList.remove("drop"); take(e.dataTransfer.files && e.dataTransfer.files[0]); });

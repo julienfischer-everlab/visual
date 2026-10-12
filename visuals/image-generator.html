@@ -1614,7 +1614,41 @@ function engineMain(port, local) {
     hasImage: () => !!img
   };
 
-  boot();
+  // a way in for the prototype's other pages (Report visuals): a private engine, apart from the tool's own, that turns a picture into one of the looks as a PNG.
+  // Calls run one after another, so one picture's export never meets another's. Opened as image-generator.html#api, the tool itself does not start.
+  let apiEng = null, apiQ = Promise.resolve();
+  function apiEngine() {
+    if (apiEng) return apiEng;
+    const waiters = new Map(); let seq = 0;
+    const onMsg = e => { const m = e.data, w = m && waiters.get(m.id); if (!w) return; waiters.delete(m.id); if (m.type === 'error') w.rej(new Error(m.message)); else w.res(m); };
+    const mk = post => ({ post, request: (msg, tr) => new Promise((res, rej) => { const id = ++seq; msg.id = id; waiters.set(id, { res, rej }); post(msg, tr); }) });
+    try {
+      if (typeof Worker !== 'undefined' && typeof OffscreenCanvas !== 'undefined') {
+        const w = new Worker(URL.createObjectURL(new Blob(['(' + engineMain.toString() + ')(self, null);'], { type: 'text/javascript' })));
+        w.onmessage = onMsg; return (apiEng = mk((m, t) => w.postMessage(m, t || [])));
+      }
+    } catch (e) { /* the main thread below */ }
+    const ch = new MessageChannel(); engineMain(ch.port2, { canvas: document.createElement('canvas'), doc: document }); ch.port1.onmessage = onMsg;
+    return (apiEng = mk((m, t) => ch.port1.postMessage(m, t || [])));
+  }
+  window.IGAPI = {
+    looks: BUILTIN.map(b => b.name),
+    // src: an image, canvas or bitmap; look: a look's name; outW: the PNG's width; opts.spacing scales the look's grid (1 as it is)
+    render(src, look, outW, opts) {
+      const job = apiQ.then(async () => {
+        const eng = apiEngine(), bmp = await createImageBitmap(src), w = bmp.width, h = bmp.height;
+        eng.post({ type: 'image', bitmap: bmp, w, h }, [bmp]);
+        const p = BUILTIN.find(b => b.name === look) || BUILTIN[0], st = sanitize(Object.assign({}, DEFAULTS, p.settings));
+        if (opts && opts.spacing) st.spacing = Math.min(40, Math.max(3, st.spacing * opts.spacing));
+        const r = await eng.request({ type: 'export', format: 'png', scale: Math.max(.05, outW / w), settings: st });
+        return r.blob;
+      });
+      apiQ = job.catch(() => {});
+      return job;
+    }
+  };
+
+  if (location.hash !== '#api') boot();
 })();
 </script>
 </body>
