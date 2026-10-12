@@ -13564,3 +13564,9 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Questionnaire banner: the user's photo (man drinking water, yoga mat), cropped to the head, bottle and shoulders (rows 9%–69%), 1600×640 webp, as assets/overview/task-cover-q.webp. The … on the cover is dark glass so it reads on a light sky.
 - Task done cards: no report picture at the right (STATE.done's "See report" turned x.art on before the task's card; the task sets art:false).
 - The consent's to-do card holds the consent as an item (`.svDocs.inPend .svDoc` with its own Review, which opens the sign form), not a side button; `x.hasDocs` lets the card wrap it underneath, as DEXA's documents. Signed: the card says so and the consent files under My documents. The questionnaire keeps its Start button.
+- Task header: the square now sits 80px over the cover and 24px below it ("the icon bleeds 24px after the banner"); the title 20px under it.
+
+## Report visuals V2 — Content
+- A Content row on Background V2: Off / On, and when On, In frame / Outside frame (rv-hl-, rv-hlp-<card>; in presets; an older preset without them reads them as their defaults, so it still matches).
+- The content is "What we highlighted" and four points per report (the microbiome's from the debrief; MRI, blood and DEXA in its shape), every word capitalised as the draft.
+- In frame: a block at the frame's foot, 70% wide, in the card's colour (--cardBg), over the frame's own left and bottom edges with its top and right edges drawn in the outline colour, so the frame reads as an L round it (no edges with the outline off). Outside frame: the same block after the frame; the frame gives way so the card keeps its shape.

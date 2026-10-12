@@ -73,6 +73,14 @@
   .icard .btn.sec { background: rgb(255 255 255 / .12); color: #fff; }   /* the second: a 12% white veil */
   .icard:not([data-bgmode="1"])::before { display: none; }   /* Backgrounds V2 and V3, a flat colour: no shade */
   .icard[data-outline="0"] .frame { border-color: transparent; }   /* the outline off: the frame keeps its place */
+  /* V2's content: what the report highlights, in the frame's foot (the frame then an L, its outline round the notch) or after the frame ("content on/off: in frame, outside frame") */
+  .icard .hl { display: none; text-transform: capitalize; }   /* as the draft: every word capitalised */
+  .icard .hl b { display: block; margin-bottom: 1.4cqw; font-size: clamp(11px, 2.9cqw, 15px); font-weight: 500; line-height: 1.25; }   /* the draft's sizes, to the card */
+  .icard .hl ul { margin: 0; padding-left: 1.2em; font-size: clamp(10.5px, 2.6cqw, 13.5px); line-height: 1.3; }
+  .icard[data-hl="in"] .hlIn, .icard[data-hl="out"] .hlOut { display: block; }
+  .frame .hlIn { position: absolute; left: -2px; bottom: -2px; z-index: 2; width: 70%; padding: 3.2cqw 3.6cqw 3.4cqw; background: var(--cardBg, #222);
+    border-top: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); border-right: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); }   /* over the frame's own left and bottom: the outline turns round it */
+  .icard[data-outline="0"] .frame .hlIn { border-color: transparent; }
   .icard:not([data-bgmode="3"]) canvas[data-flat] { visibility: hidden; }   /* the report's illustration on Background V3 only; V1 and V2 show the picture alone */
   .icard[data-lightbg="1"] { color: #141413; --frame-def: rgb(20 20 19 / .7); }   /* a light colour: dark words, frame and buttons */
   .icard[data-lightbg="1"] .btn { background: #141413; color: #fff; }
@@ -100,6 +108,7 @@
   .ctl .hint { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; min-width: 7ch; }
   .ctl .tbtn:disabled { opacity: .45; cursor: default; }
   .ctl .tbtn[hidden] { display: none; }
+  .ctl .seg[hidden] { display: none; }
   .ctl .swc:has(input:focus-visible), .ctl .swi:has(input:focus-visible) { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413; }
   .ctl .swc.on:has(input:focus-visible) { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413, 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
   .ctl .tbtn, .ctl label.tbtn { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
@@ -378,7 +387,12 @@
   var IGOPTS = '<optgroup label="Image generator"><option value="ig:Dot screen">Dot screen</option><option value="ig:Editorial X">Editorial X</option><option value="ig:Riso duotone">Riso duotone</option><option value="ig:Bitmap">Bitmap</option><option value="ig:Fine grain">Fine grain</option><option value="ig:Poster X">Poster X</option></optgroup><option value="off">Off</option>';
   var DOPTS1 = '<option value="bayer-img">Ordered · picture colours</option><option value="bayer-mono">Ordered · black &amp; white</option><option value="atk-img">Diffusion · picture colours</option><option value="atk-mono">Diffusion · black &amp; white</option>' + IGOPTS;
   var DOPTS2 = '<option value="bayer-mono">Ordered</option><option value="atk-mono">Diffusion</option>' + IGOPTS;
-  var WHITE = "#ffffff", BLACK = "#141414", FIELDS = ["mode", "outline", "pic", "flat", "fpic", "ink", "dith1", "dith2"];   // a card's settings
+  var WHITE = "#ffffff", BLACK = "#141414", FIELDS = ["mode", "outline", "pic", "flat", "fpic", "ink", "dith1", "dith2", "hl", "hlp"];   // a card's settings
+  /* what each report highlights (the microbiome's as the debrief's own; the others in its shape) */
+  var HL = { mri: ["Your brain, spine and organs", "Your heart and lungs, from the CT chest", "What may need attention", "Personalised recommendations and next steps"],
+    gut: ["Your overall microbiome health", "Your key findings", "What may need attention", "Personalised recommendations and next steps"],
+    blood: ["Your heart and metabolic health", "Your hormones and inflammation", "What may need attention", "Personalised recommendations and next steps"],
+    dexa: ["Your body composition", "Your bone density", "What may need attention", "Personalised recommendations and next steps"] };
   function fgOf(S) { return S.ink || (lum(rgbOf(S.flat)) > .6 ? BLACK : WHITE); }   // the foreground: black or white, chosen, or by the colour behind it
   var CTL = '<div class="row"><span class="lab">Preset</span><select data-preset aria-label="Preset: pick one to apply it"></select><button type="button" class="tbtn" data-psave>Save</button><button type="button" class="tbtn" data-pdel>Delete</button><button type="button" class="tbtn" data-pundo hidden>Undo</button></div>' +
     '<div class="row"><span class="lab">Background</span><span class="seg mini" role="group" aria-label="Background version"><button type="button" data-mode="1">V1 · Picture</button><button type="button" data-mode="2">V2 · Colour</button><button type="button" data-mode="3">V3 · Illustration</button></span></div>' +
@@ -386,6 +400,7 @@
     '<div class="row" data-only="1 2"><span class="lab" data-pic-lab>Picture</span><span class="sws pics"></span><span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span></div>' +
     '<div class="row" data-only="1 2"><span class="lab">Dither</span><select data-dither aria-label="Dither the picture in the frame"></select><select data-px aria-label="Dither size"><option value="2">Fine</option><option value="3">Medium</option><option value="5">Coarse</option></select></div>' +
     '<div class="row"><span class="lab">Outline</span><span class="seg mini" role="group" aria-label="Frame outline"><button type="button" data-outline="1">On</button><button type="button" data-outline="0">Off</button></span></div>' +
+    '<div class="row" data-only="2"><span class="lab">Content</span><span class="seg mini" role="group" aria-label="Content: what the report highlights"><button type="button" data-hl="0">Off</button><button type="button" data-hl="1">On</button></span><span class="seg mini" role="group" aria-label="Where the content goes" data-hlpos><button type="button" data-hlp="in">In frame</button><button type="button" data-hlp="out">Outside frame</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Foreground</span><span class="seg mini" role="group" aria-label="Foreground: the squares, the illustration and the outline"><button type="button" data-fg="#ffffff">White</button><button type="button" data-fg="#141414">Black</button></span></div>' +
     '<span class="note" aria-live="polite"></span>';
 
@@ -397,7 +412,9 @@
     if (flatBg) card.style.setProperty("--frame", fgOf(S) === WHITE ? "rgb(255 255 255 / .78)" : "rgb(20 20 19 / .7)"); else card.style.removeProperty("--frame");   // the outline in the foreground
     ctl.querySelectorAll("[data-mode]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.mode === S.mode)); });
     ctl.querySelectorAll("[data-only]").forEach(function (r) { r.hidden = r.dataset.only.split(" ").indexOf(S.mode) < 0; });
-    ctl.querySelectorAll("[data-outline]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.outline === S.outline)); }); card.dataset.outline = S.outline;
+    ctl.querySelectorAll("[data-outline]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.outline === S.outline)); });
+    ctl.querySelectorAll("[data-hl]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.hl === S.hl)); }); ctl.querySelectorAll("[data-hlp]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.hlp === S.hlp)); });
+    ctl.querySelector("[data-hlpos]").hidden = S.hl !== "1"; card.dataset.hl = v2 && S.hl === "1" ? S.hlp : ""; card.style.setProperty("--cardBg", S.flat);   // the content: V2 only card.dataset.outline = S.outline;
     ctl.querySelector("[data-pic-lab]").textContent = v2 ? "Frame" : "Picture";
     var cur = v2 ? S.fpic : S.pic;
     ctl.querySelectorAll(".pics .sw[data-bg]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === cur)); });
@@ -415,25 +432,29 @@
 
   document.querySelectorAll(".icard").forEach(function (card) {
     var k = card.dataset.card, ctl = document.querySelector('.ctl[data-for="' + k + '"]'), def = card.dataset.default;
+    { var hlh = '<b>What we highlighted</b><ul>' + (HL[k] || []).map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>', hi = document.createElement("div"), ho = document.createElement("div");
+      hi.className = "hl hlIn"; hi.innerHTML = hlh; card.querySelector(".frame").appendChild(hi); ho.className = "hl hlOut"; ho.innerHTML = hlh; card.querySelector(".frame").after(ho); }   // the content, in the frame and after it
     ctl.innerHTML = CTL;
     var note = ctl.querySelector(".note"), pics = ctl.querySelector(".pics"), fls = ctl.querySelector(".fls");
     PRESETS.forEach(function (p) { var b = document.createElement("button"); b.type = "button"; b.className = "sw"; b.dataset.bg = p.id; b.title = p.name; b.setAttribute("aria-label", "Picture: " + p.name); b.setAttribute("aria-pressed", "false"); b.style.backgroundImage = "url(" + JSON.stringify(srcOf(p.id)) + ")"; pics.appendChild(b); });
     FLATS.forEach(function (f) { var b = document.createElement("button"); b.type = "button"; b.className = "sw"; b.dataset.c = f.c; b.title = f.name; b.setAttribute("aria-label", "Colour: " + f.name); b.setAttribute("aria-pressed", "false"); b.style.background = f.c; fls.appendChild(b); });
     var pick = document.createElement("label"); pick.className = "sw swc"; pick.title = "Pick a colour"; pick.innerHTML = '<input type="color" aria-label="Colour: pick one">'; fls.appendChild(pick);
     /* the state, from this browser, anything unknown back to the default */
-    var K = { mode: "rv-mode-" + k, outline: "rv-outline-" + k, pic: "rv-bg-" + k, flat: "rv-flat-" + k, fpic: "rv-fpic-" + k, ink: "rv-ink-" + k, dith1: "rv-dither-" + k, dith2: "rv-dither2-" + k };
+    var K = { mode: "rv-mode-" + k, outline: "rv-outline-" + k, hl: "rv-hl-" + k, hlp: "rv-hlp-" + k, pic: "rv-bg-" + k, flat: "rv-flat-" + k, fpic: "rv-fpic-" + k, ink: "rv-ink-" + k, dith1: "rv-dither-" + k, dith2: "rv-dither2-" + k };
     var g = function (n, ok, d) { var v = store.get(K[n]); if (v != null && !ok(v)) { store.del(K[n]); v = null; } return v == null ? d : v; };
     var oldc = store.get(K.pic); if (/^color:#[0-9a-f]{6}$/i.test(oldc || "")) { if (!store.get(K.flat)) store.set(K.flat, oldc.slice(6)); store.del(K.pic); }   // a colour picked as the background before V2 had its own
     var IGRE = "ig:(Dot screen|Editorial X|Riso duotone|Bitmap|Fine grain|Poster X)";
     var ik = store.get(K.ink); if (ik && HEXRE.test(ik) && ik !== WHITE && ik !== BLACK) store.set(K.ink, lum(rgbOf(ik)) >= .5 ? WHITE : BLACK);   // a colour picked as the foreground before: the nearer of black and white
-    var VAL = { mode: function (v) { return /^[123]$/.test(v); }, outline: function (v) { return v === "1" || v === "0"; }, pic: isPic, flat: function (v) { return HEXRE.test(v); }, fpic: isPic, ink: function (v) { return v === WHITE || v === BLACK; },
+    var VAL = { mode: function (v) { return /^[123]$/.test(v); }, outline: function (v) { return v === "1" || v === "0"; }, hl: function (v) { return v === "1" || v === "0"; }, hlp: function (v) { return v === "in" || v === "out"; }, pic: isPic, flat: function (v) { return HEXRE.test(v); }, fpic: isPic, ink: function (v) { return v === WHITE || v === BLACK; },
       dith1: function (v) { return new RegExp("^(off|bayer-img|bayer-mono|atk-img|atk-mono|" + IGRE + ")\\|(2|3|5)$").test(v); }, dith2: function (v) { return new RegExp("^(off|bayer-mono|atk-mono|" + IGRE + ")\\|(2|3|5)$").test(v); } };
-    var DEF = { mode: "1", outline: "1", pic: def, flat: FLAT_OF[def] || "#10222e", fpic: def, ink: null, dith1: "bayer-img|3", dith2: "bayer-mono|3" };
+    var DEF = { mode: "1", outline: "1", hl: "0", hlp: "in", pic: def, flat: FLAT_OF[def] || "#10222e", fpic: def, ink: null, dith1: "bayer-img|3", dith2: "bayer-mono|3" };
     var S = card._s = {}; FIELDS.forEach(function (f) { S[f] = g(f, VAL[f], DEF[f]); });
     var seq = 0;   // the latest choice; an upload that finishes after a later one is dropped
     var set = function (n, v, keep) { seq++; lastDel = null; S[n] = v; note.textContent = ""; if (keep) { if (v == null) store.del(K[n]); else if (!store.set(K[n], v)) note.textContent = "Shown here, but this browser could not keep it for next time."; } sync(card); };
     var picKey = function () { return S.mode === "2" ? "fpic" : "pic"; };
     ctl.querySelector(".seg.mini").addEventListener("click", function (e) { var b = e.target.closest("[data-mode]"); if (b) set("mode", b.dataset.mode, true); });
+    ctl.querySelector("[data-hl]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-hl]"); if (b) set("hl", b.dataset.hl, true); });
+    ctl.querySelector("[data-hlp]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-hlp]"); if (b) set("hlp", b.dataset.hlp, true); });
     ctl.querySelector("[data-outline]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-outline]"); if (b) set("outline", b.dataset.outline, true); });
     pics.addEventListener("click", function (e) { var b = e.target.closest(".sw[data-bg]"); if (b) set(picKey(), b.dataset.bg, true); });
     fls.addEventListener("click", function (e) { var b = e.target.closest(".sw[data-c]"); if (b) set("flat", b.dataset.c, true); });
@@ -452,7 +473,7 @@
     var PK = "rv-presets-" + k, prs = ctl.querySelector("[data-preset]"), pdel = ctl.querySelector("[data-pdel]"), pundo = ctl.querySelector("[data-pundo]"), lastDel = null;
     var presets = function () { try { var a = JSON.parse(store.get(PK) || "[]"); return Array.isArray(a) ? a.filter(function (p) { return p && typeof p.name === "string" && p.s && typeof p.s === "object"; }) : []; } catch (e) { return []; } };
     var keepP = function (a) { return store.set(PK, JSON.stringify(a)); };
-    var same = function (s) { return FIELDS.every(function (f) { return (s[f] == null ? null : s[f]) === (S[f] == null ? null : S[f]); }); };
+    var same = function (s) { return FIELDS.every(function (f) { var a = s[f] == null ? DEF[f] : s[f]; return (a == null ? null : a) === (S[f] == null ? null : S[f]); }); };
     var onP = function (a) { var on = -1; a.forEach(function (p, i) { if (on < 0 && same(p.s)) on = i; }); return on; };   // the preset the card is showing, if any
     var drawP = card._drawP = function () {
       var a = presets(), on = onP(a); prs.textContent = "";
