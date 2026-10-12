@@ -58,7 +58,7 @@
   .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
   .seg button { appearance: none; border: 0; background: none; color: color-mix(in srgb, var(--fg) 72%, var(--bg)); font: 12px/28px var(--mono); letter-spacing: .02em; padding: 0 12px; border-radius: 999px; cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
-  .seg button:focus-visible, .ctl button:focus-visible, .ctl .pname:focus-visible, .ctl label:has(input:focus-visible) { outline: 1.5px solid var(--fg); outline-offset: 2px; }
+  .seg button:focus-visible, .ctl button:focus-visible, .ctl label:has(input:focus-visible) { outline: 1.5px solid var(--fg); outline-offset: 2px; }
   .grid[hidden] { display: none; }
   /* V2: a card on its own picture: the title at the left, the visual in a thin outlined frame, flat, the button(s) at the foot */
   .cw { width: 100%; max-width: 520px; container-type: inline-size; }   /* the card at the pop-up's width, its sizes following its own width */
@@ -77,7 +77,7 @@
   .icard[data-lightbg="1"] { color: #141413; --frame-def: rgb(20 20 19 / .7); }   /* a light colour: dark words, frame and buttons */
   .icard[data-lightbg="1"] .btn { background: #141413; color: #fff; }
   .icard[data-lightbg="1"] .btn.sec { background: rgb(0 0 0 / .12); color: #141413; }
-  @media (max-width: 480px) { .cw .icard { padding: 9cqw 7cqw 7cqw; } .ictas { flex-wrap: nowrap; gap: 8px; } .ictas .btn { flex: 1 1 0; min-width: 0; height: clamp(40px, 13cqw, 52px); padding: 0 10px; font-size: clamp(13px, 4.6cqw, 16px); white-space: nowrap; } .ctl select[data-dither] { flex: 1 1 0; min-width: 0; } }   /* the buttons side by side, so every card keeps its shape */
+  @media (max-width: 480px) { .cw .icard { padding: 9cqw 7cqw 7cqw; } .ictas { flex-wrap: nowrap; gap: 8px; } .ictas .btn { flex: 1 1 0; min-width: 0; height: clamp(40px, 13cqw, 52px); padding: 0 10px; font-size: clamp(13px, 4.6cqw, 16px); white-space: nowrap; } .ctl :is(select[data-dither], select[data-preset]) { flex: 1 1 0; min-width: 0; } }   /* the buttons side by side, so every card keeps its shape */
   .icard.drop { outline: 2px dashed #fff; outline-offset: -10px; }
   /* the controls under each card: Background V1 or V2, its colour, the picture, the dither, the foreground */
   .ctl { display: grid; align-content: start; gap: 8px; padding-inline: 2px; }
@@ -99,6 +99,7 @@
   .ctl .swc input, .ctl .swi input { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; opacity: 0; cursor: pointer; }
   .ctl .hint { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; min-width: 7ch; }
   .ctl .tbtn:disabled { opacity: .45; cursor: default; }
+  .ctl .tbtn[hidden] { display: none; }
   .ctl .swc:has(input:focus-visible), .ctl .swi:has(input:focus-visible) { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413; }
   .ctl .swc.on:has(input:focus-visible) { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413, 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
   .ctl .tbtn, .ctl label.tbtn { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
@@ -106,14 +107,6 @@
   .ctl select { height: 26px; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--fg); font: 12px/1 var(--sans); }
   .ctl .note { font-size: 12px; color: var(--muted); }
   .ctl .note:empty { display: none; }
-  /* presets: a name, Save preset, then each saved one as a chip (apply it, or × to delete it) */
-  .ctl .pname { height: 26px; width: 15ch; min-width: 0; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--fg); font: 12px/1 var(--sans); }
-  .ctl .pchip { display: inline-flex; align-items: center; height: 26px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
-  .ctl .pchip button { appearance: none; height: 100%; border: 0; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
-  .ctl .pchip .pa { max-width: 22ch; padding: 0 4px 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ctl .pchip .px { padding: 0 9px 0 4px; color: var(--muted); font-size: 14px; }
-  .ctl .pchip.on { border-color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }   /* the card is showing this preset */
-  .ctl .pchip button:focus-visible { outline-offset: -3px; }
 </style>
 </head>
 <body>
@@ -121,7 +114,7 @@
   <header>
     <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>Everlab service pages</a>
     <h1>Report visuals</h1>
-    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, three backgrounds: V1, a picture, with the frame showing it dithered; V2, a flat colour, also behind the frame's own picture, dithered in black or white squares on it; V3, a flat colour with only the report's illustration in the frame, in black or white (the illustration shows on V3 only). The frame's outline can be on or off. Save a card's settings as a preset to come back to them; your choices and presets stay in this browser.</p>
+    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, three backgrounds: V1, a picture, with the frame showing it dithered; V2, a flat colour, also behind the frame's own picture, dithered in black or white squares on it; V3, a flat colour with only the report's illustration in the frame, in black or white (the illustration shows on V3 only). The frame's outline can be on or off. Save a card's settings as a preset (the first control) to come back to them; your choices and presets stay in this browser.</p>
     <p id="lead-v1" hidden>V1: each report's reveal, as the pop-up it opens in: the title, the report's card, the doctor's words, then the button or buttons. The card is the same for every report, an isometric report with one sheet under it; only its panel changes, a grid of square particles.</p>
     <div class="bar">
       <div class="key" id="key-v2" aria-label="Key"><span><i class="dt"></i>data point</span><span><i class="dt big"></i>what the report reveals</span></div>
@@ -387,14 +380,13 @@
   var DOPTS2 = '<option value="bayer-mono">Ordered</option><option value="atk-mono">Diffusion</option>' + IGOPTS;
   var WHITE = "#ffffff", BLACK = "#141414", FIELDS = ["mode", "outline", "pic", "flat", "fpic", "ink", "dith1", "dith2"];   // a card's settings
   function fgOf(S) { return S.ink || (lum(rgbOf(S.flat)) > .6 ? BLACK : WHITE); }   // the foreground: black or white, chosen, or by the colour behind it
-  var CTL = '<div class="row"><span class="lab">Background</span><span class="seg mini" role="group" aria-label="Background version"><button type="button" data-mode="1">V1 · Picture</button><button type="button" data-mode="2">V2 · Colour</button><button type="button" data-mode="3">V3 · Illustration</button></span></div>' +
+  var CTL = '<div class="row"><span class="lab">Preset</span><select data-preset aria-label="Preset: pick one to apply it"></select><button type="button" class="tbtn" data-psave>Save</button><button type="button" class="tbtn" data-pdel>Delete</button><button type="button" class="tbtn" data-pundo hidden>Undo</button></div>' +
+    '<div class="row"><span class="lab">Background</span><span class="seg mini" role="group" aria-label="Background version"><button type="button" data-mode="1">V1 · Picture</button><button type="button" data-mode="2">V2 · Colour</button><button type="button" data-mode="3">V3 · Illustration</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Colour</span><span class="sws fls"></span><span class="hint" data-flat-hex></span></div>' +
     '<div class="row" data-only="1 2"><span class="lab" data-pic-lab>Picture</span><span class="sws pics"></span><span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span></div>' +
     '<div class="row" data-only="1 2"><span class="lab">Dither</span><select data-dither aria-label="Dither the picture in the frame"></select><select data-px aria-label="Dither size"><option value="2">Fine</option><option value="3">Medium</option><option value="5">Coarse</option></select></div>' +
     '<div class="row"><span class="lab">Outline</span><span class="seg mini" role="group" aria-label="Frame outline"><button type="button" data-outline="1">On</button><button type="button" data-outline="0">Off</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Foreground</span><span class="seg mini" role="group" aria-label="Foreground: the squares, the illustration and the outline"><button type="button" data-fg="#ffffff">White</button><button type="button" data-fg="#141414">Black</button></span></div>' +
-    '<div class="row"><span class="lab">Presets</span><input type="text" class="pname" maxlength="40" placeholder="Name" aria-label="Preset name"><button type="button" class="tbtn" data-psave>Save preset</button></div>' +
-    '<div class="row" data-plist hidden></div>' +
     '<span class="note" aria-live="polite"></span>';
 
   function sync(card) {   // the card and its controls, from its state
@@ -456,35 +448,37 @@
     var dset = function () { set(S.mode === "2" ? "dith2" : "dith1", dsel.value + "|" + psel.value, true); };
     dsel.addEventListener("change", dset); psel.addEventListener("change", dset);
     sync(card);
-    /* presets: this card's settings, named and kept in this browser, to come back to */
-    var PK = "rv-presets-" + k, plist = ctl.querySelector("[data-plist]"), pname = ctl.querySelector(".pname"), lastDel = null;
+    /* presets: a control like the others, at the top ("put the Save preset into the controllers, not as an independent save action"): pick one to apply it, Save the card as it is, Delete the one picked */
+    var PK = "rv-presets-" + k, prs = ctl.querySelector("[data-preset]"), pdel = ctl.querySelector("[data-pdel]"), pundo = ctl.querySelector("[data-pundo]"), lastDel = null;
     var presets = function () { try { var a = JSON.parse(store.get(PK) || "[]"); return Array.isArray(a) ? a.filter(function (p) { return p && typeof p.name === "string" && p.s && typeof p.s === "object"; }) : []; } catch (e) { return []; } };
     var keepP = function (a) { return store.set(PK, JSON.stringify(a)); };
     var same = function (s) { return FIELDS.every(function (f) { return (s[f] == null ? null : s[f]) === (S[f] == null ? null : S[f]); }); };
+    var onP = function (a) { var on = -1; a.forEach(function (p, i) { if (on < 0 && same(p.s)) on = i; }); return on; };   // the preset the card is showing, if any
     var drawP = card._drawP = function () {
-      var a = presets(); plist.hidden = !a.length && !lastDel; plist.innerHTML = '<span class="lab"></span>';
-      a.forEach(function (p, i) { var on = same(p.s), c = document.createElement("span"); c.className = "pchip" + (on ? " on" : ""); c.innerHTML = '<button type="button" class="pa"></button><button type="button" class="px">×</button>';
-        c.firstChild.textContent = p.name; c.firstChild.title = "Apply " + p.name; c.firstChild.setAttribute("aria-pressed", String(on)); c.firstChild.dataset.i = i; c.lastChild.dataset.del = i; c.lastChild.setAttribute("aria-label", "Delete the preset " + p.name); plist.appendChild(c); });
-      if (lastDel) { var u = document.createElement("button"); u.type = "button"; u.className = "tbtn"; u.dataset.undo = "1"; u.textContent = "Undo"; plist.appendChild(u); }
+      var a = presets(), on = onP(a); prs.textContent = "";
+      prs.add(new Option(a.length ? "Custom" : "No presets yet", ""));   // the card as it is, saved or not
+      a.forEach(function (p, i) { prs.add(new Option(p.name, String(i))); });
+      prs.value = on < 0 ? "" : String(on); pdel.disabled = on < 0; pundo.hidden = !lastDel;
     };
-    var saveP = function () {
-      var a = presets(), typed = pname.value.trim().slice(0, 40), pn = a.length + 1; if (!typed) while (a.some(function (p) { return p.name === "Preset " + pn; })) pn++;   // an unnamed one never lands on another's name
-      var nm = typed || "Preset " + pn, s = {}, i = -1; FIELDS.forEach(function (f) { s[f] = S[f]; });
-      a.forEach(function (p, j) { if (p.name === nm) i = j; }); if (i >= 0) a[i] = { name: nm, s: s }; else a.push({ name: nm, s: s });
-      if (keepP(a)) { lastDel = null; note.textContent = (i >= 0 ? "Updated" : "Saved") + " “" + nm + "”."; pname.value = ""; } else note.textContent = "This browser is out of room, so it couldn't keep that preset. Uploaded pictures take the most room.";
-      drawP();
-    };
-    ctl.querySelector("[data-psave]").addEventListener("click", saveP);
-    pname.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); saveP(); } });
-    plist.addEventListener("click", function (e) {
-      var b = e.target.closest("button"); if (!b) return; var a = presets();
-      var refocus = function (i) { var r = plist.querySelector('.pa[data-i="' + i + '"]') || plist.querySelector(".pa, [data-undo]"); if (r) r.focus(); };   // the chip in hand keeps the focus through the redraw
-      if (b.dataset.undo) { if (lastDel) { var ui = Math.min(lastDel.i, a.length); a.splice(ui, 0, lastDel.p); if (keepP(a)) { note.textContent = "“" + lastDel.p.name + "” is back."; lastDel = null; drawP(); refocus(ui); return; } note.textContent = "This browser is out of room, so “" + lastDel.p.name + "” couldn't come back."; } drawP(); refocus(0); return; }
-      if (b.dataset.del != null) { var d = +b.dataset.del, p = a[d]; if (!p) return; a.splice(d, 1); keepP(a); lastDel = { p: p, i: d }; note.textContent = "Deleted “" + p.name + "”."; drawP(); refocus(Math.min(d, a.length - 1)); return; }
-      var qi = +b.dataset.i, q = a[qi]; if (!q) return; seq++; lastDel = null; var ok = true;
+    ctl.querySelector("[data-psave]").addEventListener("click", function () {
+      var a = presets(), dup = onP(a); if (dup >= 0) { note.textContent = "Already saved as “" + a[dup].name + "”."; return; }
+      var pn = a.length + 1; while (a.some(function (p) { return p.name === "Preset " + pn; })) pn++;   // the first free number
+      var nm = "Preset " + pn, s = {}; FIELDS.forEach(function (f) { s[f] = S[f]; }); a.push({ name: nm, s: s });
+      if (keepP(a)) { lastDel = null; note.textContent = "Saved “" + nm + "”."; } else note.textContent = "This browser is out of room, so it couldn't keep that preset. Uploaded pictures take the most room.";
+      drawP(); });
+    prs.addEventListener("change", function () {
+      if (prs.value === "") { drawP(); return; }
+      var a = presets(), q = a[+prs.value]; if (!q) { drawP(); return; } seq++; lastDel = null; var ok = true;
       FIELDS.forEach(function (f) { var v = q.s[f]; if (v == null || typeof v !== "string" || !VAL[f](v)) v = DEF[f]; S[f] = v; if (v == null) store.del(K[f]); else ok = store.set(K[f], v) && ok; });
-      sync(card); note.textContent = ok ? "Applied “" + q.name + "”." : "Applied “" + q.name + "” here, but this browser could not keep it for next time."; refocus(qi);
-    });
+      sync(card); note.textContent = ok ? "Applied “" + q.name + "”." : "Applied “" + q.name + "” here, but this browser could not keep it for next time."; });
+    pdel.addEventListener("click", function () {
+      var a = presets(), d = onP(a); if (d < 0) return; var p = a[d]; a.splice(d, 1);
+      if (!keepP(a)) { note.textContent = "This browser couldn't delete it just now."; return; }
+      lastDel = { p: p, i: d }; note.textContent = "Deleted “" + p.name + "”."; drawP(); pundo.focus(); });
+    pundo.addEventListener("click", function () {
+      if (!lastDel) return; var a = presets(), ui = Math.min(lastDel.i, a.length); a.splice(ui, 0, lastDel.p);
+      if (keepP(a)) { note.textContent = "“" + lastDel.p.name + "” is back."; lastDel = null; } else note.textContent = "This browser is out of room, so “" + lastDel.p.name + "” couldn't come back.";
+      drawP(); prs.focus(); });
     drawP();
     if (window.ResizeObserver) { var rt = 0; new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { dither(card); }, 80); }).observe(card.querySelector(".frame")); }
     card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("drop"); });

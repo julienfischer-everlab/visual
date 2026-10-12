@@ -13557,3 +13557,7 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
   - tabs: Why we need it, Before you start / What you're agreeing to, Task details (Frequency, Duration, Location, From), Documents once done; More menu says "About this task".
 - Top bar picker gains a "Weekly tasks" group; its label reads Task on a task. Services isn't lit in the sidebar on a task. DPOOL has wkq/wkc empty (no placeholder documents).
 - Fixed in passing: the line under the title was white on white in light mode (service pages too).
+- Task header: a 200px cover across the column (assets/overview/task-cover-q.webp / -c.webp, the Report visuals teal and ember pictures), the 104px square tile over its foot by 32px (24px in from the left, opaque, ringed in the page's #0f0f0f), the title and the line under it below; the … on the cover's top right. XS: the cover behind the hero. The column is centred (justify-content:center): no ghost of the right panel.
+
+## Report visuals — presets as a control
+- The Presets row (name field, Save preset, chips) is replaced by a Preset control at the top of each card's controls: a select (Custom / No presets yet, then the saved ones; picking one applies it, and it shows the one the card matches), Save (adds "Preset N", or says it's already saved), Delete (the one picked), Undo after a delete. Same rv-presets-<card> storage.
