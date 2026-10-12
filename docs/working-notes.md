@@ -13530,3 +13530,8 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Frame outline 2px.
 - The report's illustration (canvas[data-flat]) shows on Background V3 only (`visibility: hidden` elsewhere, so the dither still measures it); V1 and V2 frames hold the dithered picture alone.
 - `.ctl` rows packed to the top (align-content: start) so a short set of controls doesn't spread out beside a taller one.
+
+## Report visuals V2 — V2's colour behind the dither; foreground black or white
+- V2: the Colour is the card's and also the background inside the frame; the dither's squares are the Foreground, black or white (white on the picture's lights, black on its darks). V2's Dither list has no "picture colours" (Ordered, Diffusion, the Image generator looks with fg + the colour as paper, Off).
+- Foreground is a White / Black switch on V2 and V3 (Auto until chosen: black on a light colour, else white); it also sets the outline (white .78 / black .7) and, on V3, the illustration. Old picked colours migrate to the nearer of the two.
+- Each background keeps its own dither: rv-dither-<card> (V1), rv-dither2-<card> (V2).
