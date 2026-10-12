@@ -13538,3 +13538,7 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 
 ## Progress card, Ring: Step badge at the right
 - Ring style (not Ring 2): the "Step X/N" pill moves from beside the step's name to the right end, 16px before the ring (`.svmStepB{margin-left:auto}`), so the row reads name … badge · ring.
+
+## Report visuals V2 — Save each card as a PNG
+- A Save row on every card ("Card as PNG"). `cardPng(card)` redraws the card on a canvas at 2x from what's on the page: the background (picture cover or flat colour), V1's shade, the frame's dither canvas and illustration canvas, the outline, the title line by line where the browser wrapped it (Range rects), and the buttons. Rounded corners are transparent.
+- Saves through the viewer's downloads capability (this page's `claude` or the prototype's around it, as the Image generator does); named everlab-report-card-<card>-background-v<1|2|3>.png. Declined → "Not saved."; no capability or another failure → a sheet showing the PNG to save by hand (Esc / Close).
