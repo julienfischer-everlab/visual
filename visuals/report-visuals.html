@@ -417,7 +417,7 @@
     '<div class="row"><span class="lab">Background</span><span class="seg mini" role="group" aria-label="Background version"><button type="button" data-mode="1">V1 · Picture</button><button type="button" data-mode="2">V2 · Colour</button><button type="button" data-mode="3">V3 · Illustration</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Colour</span><span class="sws fls"></span><span class="hint" data-flat-hex></span></div>' +
     '<div class="row" data-only="1 2"><span class="lab" data-pic-lab>Picture</span><span class="sws pics"></span><span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span></div>' +
-    '<div class="row" data-only="1 2"><span class="lab">Dither</span><select data-dither aria-label="Dither the picture in the frame"></select><select data-px aria-label="Dither size"><option value="2">Fine</option><option value="3">Medium</option><option value="5">Coarse</option></select></div>' +
+    '<div class="row" data-only="1 2"><span class="lab">Dither</span><select data-dither aria-label="Dither the picture in the frame"></select><select data-px aria-label="Dither size"><option value="1">Ultra fine</option><option value="2">Fine</option><option value="3">Medium</option><option value="5">Coarse</option></select></div>' +
     '<div class="row"><span class="lab">Outline</span><span class="seg mini" role="group" aria-label="Frame outline"><button type="button" data-outline="1">On</button><button type="button" data-outline="0">Off</button></span></div>' +
     '<div class="row"><span class="lab">Content</span><span class="seg mini" role="group" aria-label="Content: what the report highlights"><button type="button" data-hl="0">Off</button><button type="button" data-hl="1">On</button></span><span class="seg mini" role="group" aria-label="Where the content goes" data-hlpos><button type="button" data-hlp="in">In frame</button><button type="button" data-hlp="out">Outside frame</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Foreground</span><span class="seg mini" role="group" aria-label="Foreground: the squares, the illustration and the outline"><button type="button" data-fg="#ffffff">White</button><button type="button" data-fg="#141414">Black</button></span></div>' +
@@ -440,7 +440,7 @@
   function sync(card) {   // the card and its controls, from its state
     var S = card._s, v2 = S.mode === "2", flatBg = S.mode !== "1", ctl = document.querySelector('.ctl[data-for="' + card.dataset.card + '"]');
     card.dataset.bgmode = S.mode;
-    if (flatBg) { card.style.backgroundImage = "none"; card.style.backgroundColor = S.flat; card.dataset.lightbg = lum(rgbOf(S.flat)) > .6 ? "1" : ""; }
+    if (flatBg) { card.style.backgroundImage = "none"; card.style.backgroundColor = S.flat; card.dataset.lightbg = fgOf(S) === BLACK ? "1" : "";   /* the foreground sets the words, the outline and the buttons too: black -> dark words, inverse buttons ("that should impact title and body content as well; CTA inverse colours") */ }
     else { var u = urlOf(S.pic); card.style.backgroundImage = u ? "url(" + JSON.stringify(u) + ")" : ""; card.style.backgroundColor = ""; card.dataset.lightbg = ""; }
     if (flatBg) card.style.setProperty("--frame", fgOf(S) === WHITE ? "rgb(255 255 255 / .78)" : "rgb(20 20 19 / .7)"); else card.style.removeProperty("--frame");   // the outline in the foreground
     { var tw = !flatBg || fgOf(S) === WHITE; card.style.setProperty("--tab", tw ? "#fff" : "#141414"); card.dataset.tabink = tw ? "dark" : "light"; }   // the outline and its tab: solid white, or black
@@ -482,7 +482,7 @@
     var IGRE = "ig:(Dot screen|Editorial X|Riso duotone|Bitmap|Fine grain|Poster X)";
     var ik = store.get(K.ink); if (ik && HEXRE.test(ik) && ik !== WHITE && ik !== BLACK) store.set(K.ink, lum(rgbOf(ik)) >= .5 ? WHITE : BLACK);   // a colour picked as the foreground before: the nearer of black and white
     var VAL = { mode: function (v) { return /^[123]$/.test(v); }, outline: function (v) { return v === "1" || v === "0"; }, hl: function (v) { return v === "1" || v === "0"; }, hlp: function (v) { return v === "in" || v === "out"; }, pic: isPic, flat: function (v) { return HEXRE.test(v); }, fpic: isPic, ink: function (v) { return v === WHITE || v === BLACK; },
-      dith1: function (v) { return new RegExp("^(off|bayer-img|bayer-mono|atk-img|atk-mono|" + IGRE + ")\\|(2|3|5)$").test(v); }, dith2: function (v) { return new RegExp("^(off|bayer-mono|atk-mono|" + IGRE + ")\\|(2|3|5)$").test(v); } };
+      dith1: function (v) { return new RegExp("^(off|bayer-img|bayer-mono|atk-img|atk-mono|" + IGRE + ")\\|(1|2|3|5)$").test(v); }, dith2: function (v) { return new RegExp("^(off|bayer-mono|atk-mono|" + IGRE + ")\\|(1|2|3|5)$").test(v); } };
     var DEF = { mode: "1", outline: "1", hl: "0", hlp: "in", pic: def, flat: FLAT_OF[def] || "#10222e", fpic: def, ink: null, dith1: "bayer-img|3", dith2: "bayer-mono|3" };
     var S = card._s = {}; FIELDS.forEach(function (f) { S[f] = g(f, VAL[f], DEF[f]); });
     var seq = 0;   // the latest choice; an upload that finishes after a later one is dropped

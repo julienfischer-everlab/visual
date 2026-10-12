@@ -13589,3 +13589,6 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - An 8px square in the tab's colour at the header's top right, level with the title.
 - The frame's bottom-right corner is cut at 45° (4cqw): clip-path on the frame (reaching 8cqw above it, for the tab) and a ::after drawing the outline along the cut; with the outline off, the cut stays and the line goes.
 - April check-in banner: the user's runner photo (warm, black tee), cropped to the beard and shoulder as assets/overview/task-cover-p.webp; its Timeline thumbnail task-thumb-p.webp is a square of the arm.
+- April check-in banner re-cropped lower (top .265): sleeve, bicep and the blurred hand, no face.
+- Dither size gets "Ultra fine" (1px), before Fine/Medium/Coarse; saved values accept |1.
+- Foreground White/Black now drives the whole card on V2/V3: Black turns the title, highlights and date tab dark and inverts the buttons (dark primary, dark-tint secondary); White keeps them white.
