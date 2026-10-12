@@ -1,182 +1,149 @@
-/* Hairline V2: the report reveal.
+/* Hairline V2: the report card.
  *
- * A cloud of data points drifts in a compact volume; most of them are drawn to
- * the report's form, hold it for a moment, and let it go again:
- *   raw data -> attract -> organise -> reveal -> release -> raw data.
- * Everything on screen is a pure function of the loop's phase (0..1), so the
- * loop is seamless by construction and any moment can be drawn on its own.
+ * Every figure is the same object: an isometric report card lying flat, one sheet offset
+ * underneath, crisp off-white edges, a visual panel and three short hairlines of report text.
+ * What changes is the panel: a figure lights cells of a regular grid inside it, and the cells
+ * become square particles with deliberate places (a body, a pathway, data rows...).
  *
- * A figure is registered with HL2.def({ name, title, build(rnd) }); build
- * returns, in world units (x down-right, y down-left, z up, the Hairline 2:1
- * camera):
- *   pts    [{ p: [x, y, z], w: 0..1 brightness, acc: mint, dot: round, lift: [dx, dy, dz], win: [h0, h1] }]
- *          lift: a small move during the hold (a layer parting, a cluster breathing)
- *          win:  the point shows only during this part of the hold (0..1), then fades
- *   edges  [[[x, y, z], ...], ...]  sparse hairlines that fade in once the points have formed
- *   acc    [[[x, y, z], ...], ...]  hairlines in mint (sparingly)
- *   scan   { path: [[x, y, z], ...], metric: 'z' | 'xyz', radius, plane: [hx, hy] }
- *          the scan pointer: one small white square that travels the path during the hold
- *          and lights the points it passes; with plane, a hairline plane rides with it
- *   cloud  [hx, hy, hz, cz]  the cloud's half-sizes and centre height (defaults from the form)
- *   loose  share of the points that stay loose (default .35)
- *   looseAcc  share of the loose points drawn in mint (default 0: mint is the signal, not dust)
- * HL2.mount(canvas, name) plays it; HL2.draw(canvas, name, phase) draws one moment.
+ * HL2.def({ name, title, build(rnd) }) where build returns, in panel grid units
+ * (i across, 0..COLS; j down, 0..ROWS; a cell's centre is i + .5, j + .5):
+ *   cells   [{ i, j, b: 0..1 brightness, acc: muted accent, s: size factor (default 1), grey: dim grey }]
+ *   lines   [[[i, j], ...], ...]   hairlines inside the panel (darker grey)
+ *   bright  [[[i, j], ...], ...]   hairlines inside the panel in off-white (sparingly)
+ *   accLines[[[i, j], ...], ...]   hairlines in the accent (very sparingly)
+ * HL2.draw(canvas, name) draws the assembled report; HL2.mount(canvas, name) keeps it drawn
+ * at the canvas's size. The static, assembled state comes first; motion is added on top of it.
  */
 (function () {
   'use strict';
   var HL2 = window.HL2 = window.HL2 || {};
   HL2.figs = HL2.figs || {};
   HL2.def = function (f) { HL2.figs[f.name] = f; };
-  HL2.MINT = '170,238,194';          // Everlab's mint: the app's "optimal" green (#aaeec2)
-  HL2.INK = '236,239,241';           // the points and the lines: soft white
-  HL2.LOOP = 7.2;                    // seconds
-
-  // the Hairline camera: azimuth 45deg, k = sin(elevation) = .5 (the 2:1 view)
-  var CA = Math.cos(Math.PI / 4), SA = Math.sin(Math.PI / 4), K = 0.5, KZ = Math.sqrt(1 - K * K);
-  HL2.proj = function (x, y, z) { return [x * CA - y * SA, (x * SA + y * CA) * K - z * KZ]; };
+  HL2.COLS = 24; HL2.ROWS = 20;
   HL2.rng = function (seed) { var s = seed | 0; return function () { s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; };
 
-  var TAU = Math.PI * 2;
-  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
-  function sstep(a, b, x) { var t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
-  function easeBack(t) { var c = 1.25, u = t - 1; return t <= 0 ? 0 : t >= 1 ? 1 : 1 + (c + 1) * u * u * u + c * u * u; }   // a small overshoot, then settling
-  function easeInOut(t) { return t <= 0 ? 0 : t >= 1 ? 1 : t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  // the palette: off-white edges, darker grey details, one muted accent
+  var EDGE = '238,240,236', SHEET = '238,240,236', GREY = '128,134,138', INK = '236,238,234', ACC = '140,200,166', GROUND = '#1b1b1b';
+  HL2.palette = { EDGE: EDGE, GREY: GREY, INK: INK, ACC: ACC, GROUND: GROUND };
 
-  // the timeline, as shares of the loop
-  var T = { a0: .10, a1: .30, aDur: .20, eIn: [.34, .48], eOut: [.70, .80], h0: .50, h1: .70, s0: .40, s1: .74, r0: .68, r1: .78, rDur: .20 };   // the last point is home at .98: the loop closes on the cloud
-  HL2.T = T;
+  // the camera (azimuth, elevation in degrees) and how the page sits in the world: lying on the
+  // ground (page across = x, down = y, up out of the page = z) or standing (across = x, down = -z, out = y)
+  var VIEW = { az: 26, el: 54, stand: false };   // looked at from higher and more frontally than the 2:1 view, so the panel reads at 250px
+  var CA, SA, K, KZ;
+  function setView(v) { for (var k in v) VIEW[k] = v[k]; CA = Math.cos(VIEW.az * Math.PI / 180); SA = Math.sin(VIEW.az * Math.PI / 180); K = Math.sin(VIEW.el * Math.PI / 180); KZ = Math.cos(VIEW.el * Math.PI / 180); cache = {}; }
+  function proj0(x, y, z) { return [x * CA - y * SA, (x * SA + y * CA) * K - z * KZ]; }
+  // page coordinates (x across, y down the page, z out of it) to the world, then to the screen
+  function proj(x, y, z) { return VIEW.stand ? proj0(x, -z * 1 + 0, -y) : proj0(x, y, z); }
+  HL2.proj = proj; HL2.view = function (v) { setView(v); };
+
+  // the card: page across along x, down along y (its top edge at the back, upper right)
+  var CARD = { x0: -.6, x1: .6, y0: -.8, y1: .8, z0: .0, z1: .035, r: .05 };
+  var SH = { dx: .075, dy: -.07, z1: -.006, z0: -.04 };                     // the sheet under it, peeking out at the right
+  var PAN = { x0: -.48, x1: .48, y0: -.68, y1: .12, r: .03 };               // the visual panel: 24 x 20 cells of .04
+  var TXT = [[.30, .62], [.42, .5], [.54, .34]];                            // three lines of report text: [y, length as a share of the panel's width]
+  HL2.CARD = CARD; HL2.PAN = PAN;
+
+  function rrect(x0, y0, x1, y1, r, n) {
+    var o = [], c = [[x1 - r, y0 + r, -Math.PI / 2], [x1 - r, y1 - r, 0], [x0 + r, y1 - r, Math.PI / 2], [x0 + r, y0 + r, Math.PI]];
+    c.forEach(function (q) { for (var k = 0; k <= n; k++) { var a = q[2] + k / n * Math.PI / 2; o.push([q[0] + Math.cos(a) * r, q[1] + Math.sin(a) * r]); } });
+    return o;
+  }
+  function hull(P) {
+    P = P.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+    var cr = function (o, a, b) { return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); }, lo = [], up = [], i;
+    for (i = 0; i < P.length; i++) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], P[i]) <= 0) lo.pop(); lo.push(P[i]); }
+    for (i = P.length - 1; i >= 0; i--) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], P[i]) <= 0) up.pop(); up.push(P[i]); }
+    return lo.slice(0, -1).concat(up.slice(0, -1));
+  }
+  // panel grid units to world
+  function pw(i, j) { return [PAN.x0 + i / HL2.COLS * (PAN.x1 - PAN.x0), PAN.y0 + j / HL2.ROWS * (PAN.y1 - PAN.y0), CARD.z1]; }
+  HL2.pw = pw;
 
   var cache = {};
-  function prepare(name) {
+  setView({});
+  function model(name) {
     if (cache[name]) return cache[name];
     var f = HL2.figs[name]; if (!f) return null;
-    var rnd = HL2.rng(20261011), m = f.build(HL2.rng(7)), pts = m.pts, i;
-    // the cloud: a rounded box round the form, a little larger than it
-    var lo = [1e9, 1e9, 1e9], hi = [-1e9, -1e9, -1e9];
-    for (i = 0; i < pts.length; i++) for (var k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], pts[i].p[k]); hi[k] = Math.max(hi[k], pts[i].p[k]); }
-    var c = m.cloud || [(hi[0] - lo[0]) * .62 + .2, (hi[1] - lo[1]) * .62 + .2, (hi[2] - lo[2]) * .56 + .2, (hi[2] + lo[2]) / 2];
-    var cx = (hi[0] + lo[0]) / 2, cy = (hi[1] + lo[1]) / 2;
-    var inCloud = function () { var u, v, w; do { u = rnd() * 2 - 1; v = rnd() * 2 - 1; w = rnd() * 2 - 1; } while (u * u * u * u + v * v * v * v + w * w * w * w > 1); return [cx + u * c[0], cy + v * c[1], c[3] + w * c[2]]; };
-    var loose = m.loose == null ? .35 : m.loose, nL = Math.round(pts.length * loose / (1 - loose)), P = [];
-    var order = pts.map(function (q, j) { return j; });
-    // attraction runs across the form along its height and a little at random, so it gathers rather than lands at once
-    var span = (hi[2] - lo[2]) || 1;
-    for (i = 0; i < pts.length; i++) {
-      var q = pts[i], h = (hi[2] - q.p[2]) / span, s = inCloud();
-      P.push({ c: s, t: q.p, w: q.w == null ? .8 : q.w, acc: !!q.acc, dot: !!q.dot, lift: q.lift || null, win: q.win || null,
-        a: T.a0 + (T.a1 - T.a0) * clamp(.55 * h + .45 * rnd(), 0, 1), r: T.r0 + (T.r1 - T.r0) * rnd(),
-        ph: rnd() * TAU, ph2: rnd() * TAU, f: 1 + (rnd() * 2 | 0), amp: .03 + rnd() * .05, b0: .22 + rnd() * .3, loose: false,
-        dv: [(rnd() - .5) * .5, (rnd() - .5) * .5, (rnd() - .3) * .35] });
-    }
-    var lAcc = m.looseAcc == null ? 0 : m.looseAcc;   // mint means the revealed signal, so the loose cloud carries none unless a figure asks
-    for (i = 0; i < nL; i++) P.push({ c: inCloud(), t: null, w: .4, acc: rnd() < lAcc, dot: rnd() < .22, lift: null, win: null, a: 0, r: 0,
-      ph: rnd() * TAU, ph2: rnd() * TAU, f: 1 + (rnd() * 2 | 0), amp: .04 + rnd() * .06, b0: .18 + rnd() * .3, loose: true, dv: null });
-    // the frame: the formed object fits about two thirds of the stage, the cloud the rest
-    var box = [1e9, 1e9, -1e9, -1e9], add = function (p) { var s = HL2.proj(p[0], p[1], p[2]); box[0] = Math.min(box[0], s[0]); box[1] = Math.min(box[1], s[1]); box[2] = Math.max(box[2], s[0]); box[3] = Math.max(box[3], s[1]); };
-    pts.forEach(function (q) { add(q.p); }); (m.edges || []).forEach(function (e) { e.forEach(add); });
-    var cbox = [1e9, 1e9, -1e9, -1e9]; P.forEach(function (q) { var s = HL2.proj(q.c[0], q.c[1], q.c[2]); cbox[0] = Math.min(cbox[0], s[0]); cbox[1] = Math.min(cbox[1], s[1]); cbox[2] = Math.max(cbox[2], s[0]); cbox[3] = Math.max(cbox[3], s[1]); });
-    var M = { f: f, m: m, P: P, box: box, cbox: cbox, cc: [cx, cy, c[3]] };
-    // the scan path, measured
-    if (m.scan && m.scan.path && m.scan.path.length > 1) { var L = [0], sp = m.scan.path; for (i = 1; i < sp.length; i++) L.push(L[i - 1] + Math.hypot(sp[i][0] - sp[i - 1][0], sp[i][1] - sp[i - 1][1], sp[i][2] - sp[i - 1][2])); M.scanLen = L; }
-    return (cache[name] = M);
+    var m = f.build(HL2.rng(20261012));
+    return (cache[name] = { f: f, m: m });
   }
-  function along(path, L, u) { var d = u * L[L.length - 1], i = 1; while (i < L.length - 1 && L[i] < d) i++; var t = (d - L[i - 1]) / ((L[i] - L[i - 1]) || 1), a = path[i - 1], b = path[i]; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
 
-  var BW = 6, BA = 3;   // brightness bins: soft white and mint
-  function draw(ctx, W, H, dpr, M, ph) {
-    var m = M.m, P = M.P, i;
-    // fit: the form into ~64% of the stage's smaller side, centred; the cloud may run wider
-    var bw = M.box[2] - M.box[0], bh = M.box[3] - M.box[1], S = Math.min(W * .64 / bw, H * .66 / bh);
-    var ox = W / 2 - (M.box[0] + bw / 2) * S, oy = H / 2 - (M.box[1] + bh / 2) * S;
-    var pr = function (x, y, z) { var s = HL2.proj(x, y, z); return [ox + s[0] * S, oy + s[1] * S]; };
-    var px = dpr * Math.max(1.15, Math.min(2.1, Math.min(W, H * 1.3) / dpr / 210));    // a point's side: about 1.6px at 340 x 260, in step with the fitted figure in a tall or a short box
-    var hold = sstep(T.a1 + T.aDur - .04, T.h0, ph) * (1 - sstep(T.h1, T.r1, ph));   // 0..1, the form at its fullest
-    var hp = clamp((ph - T.h0 + .06) / (T.h1 - T.h0 + .1), 0, 1);                   // the hold's own progress
-    var env = Math.sin(Math.PI * hp);                                               // a breath over the hold
-    // the scan pointer
-    var sc = m.scan, spos = null, su = 0;
-    if (sc && M.scanLen) { su = clamp((ph - T.s0) / (T.s1 - T.s0), 0, 1); if (ph > T.s0 && ph < T.s1) spos = along(sc.path, M.scanLen, easeInOut(su)); }
-    var bins = [], k; for (k = 0; k < BW + BA; k++) bins.push([]);
-    var dots = [];
-    for (i = 0; i < P.length; i++) {
-      var q = P[i], cp = q.c, w1 = TAU * ph;
-      // drift: slow, periodic in the loop, so the cloud is where it started when the loop closes
-      var x = cp[0] + q.amp * Math.sin(q.f * w1 + q.ph), y = cp[1] + q.amp * Math.cos(q.f * w1 + q.ph2), z = cp[2] + q.amp * .7 * Math.sin(w1 + q.ph2);
-      var b = q.b0, formed = 0;
-      if (q.t) {
-        var a = easeBack(clamp((ph - q.a) / T.aDur, 0, 1)), r = easeInOut(clamp((ph - q.r) / T.rDur, 0, 1)), lin = clamp((ph - q.a) / T.aDur, 0, 1);
-        formed = Math.min(a, 1) * (1 - r);
-        var tx = q.t[0], ty = q.t[1], tz = q.t[2];
-        // micro-movement while held, and the figure's own small move
-        tx += .006 * Math.sin(TAU * 3 * ph + q.ph); ty += .006 * Math.cos(TAU * 3 * ph + q.ph2); tz += .004 * Math.sin(TAU * 2 * ph + q.ph);
-        if (q.lift) { tx += q.lift[0] * env; ty += q.lift[1] * env; tz += q.lift[2] * env; }
-        // on the way in, a little turbulence across the path
-        var tb = Math.sin(Math.PI * lin) * .08;
-        var gx = x + (tx - x) * a + tb * Math.sin(q.ph * 3 + ph * 9), gy = y + (ty - y) * a + tb * Math.cos(q.ph2 * 3 + ph * 7), gz = z + (tz - z) * a;
-        // on the way out, it drifts off as it lets go
-        var dr = Math.sin(Math.PI * r) * .35;
-        x = gx + (x - gx) * r + q.dv[0] * dr; y = gy + (y - gy) * r + q.dv[1] * dr; z = gz + (z - gz) * r + q.dv[2] * dr;
-        b = q.b0 + (q.w - q.b0) * formed;
-        if (q.win) { var wv = sstep(q.win[0], q.win[0] + .12, hp) * (1 - sstep(q.win[1] - .12, q.win[1], hp)); formed *= wv; b *= wv; if (wv < .02) continue; }
-      } else {
-        // loose points close in a little round the form while it holds
-        var cc = 1 - .1 * hold; x = M.cc[0] + (x - M.cc[0]) * cc; y = M.cc[1] + (y - M.cc[1]) * cc; z = M.cc[2] + (z - M.cc[2]) * cc;
-      }
-      // the scan lights what it passes
-      if (spos) { var d = sc.metric === 'z' ? Math.abs(z - spos[2]) : Math.hypot(x - spos[0], y - spos[1], z - spos[2]); var lit = Math.exp(-(d * d) / (sc.radius * sc.radius)) * formed; b = b + (1 - b) * lit; }
-      var s = pr(x, y, z);
-      if (q.dot) { dots.push(s[0], s[1], b, q.acc && formed > .5); continue; }
-      var bin = q.acc && (formed > .45 || q.loose) ? BW + Math.min(BA - 1, (b * BA) | 0) : Math.min(BW - 1, (b * BW) | 0);
-      bins[bin].push(s[0], s[1]);
-    }
-    ctx.clearRect(0, 0, W, H);
-    // the hairlines: in once the points have formed, out as they let go
-    var ea = sstep(T.eIn[0], T.eIn[1], ph) * (1 - sstep(T.eOut[0], T.eOut[1], ph));
-    ctx.lineWidth = Math.max(1, dpr * .75); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-    var path = function (pl) { ctx.beginPath(); pl.forEach(function (p, j) { var s = pr(p[0], p[1], p[2] + (p[3] ? p[3] * env : 0)); if (j) ctx.lineTo(s[0], s[1]); else ctx.moveTo(s[0], s[1]); }); ctx.stroke(); };
-    if (ea > .01) {
-      ctx.strokeStyle = 'rgba(' + HL2.INK + ',' + (.42 * ea).toFixed(3) + ')'; (m.edges || []).forEach(path);
-      ctx.strokeStyle = 'rgba(' + HL2.MINT + ',' + (.6 * ea).toFixed(3) + ')'; (m.acc || []).forEach(path);
-    }
-    if (spos && sc.plane) {   // the scan plane: a hairline rhombus riding with the pointer
-      var hx = sc.plane[0], hy = sc.plane[1], cz = spos[2], cxp = spos[0], cyp = spos[1], pa = Math.sin(Math.PI * su) * .5;
-      ctx.strokeStyle = 'rgba(' + HL2.INK + ',' + pa.toFixed(3) + ')';
-      path([[cxp - hx, cyp - hy, cz], [cxp + hx, cyp - hy, cz], [cxp + hx, cyp + hy, cz], [cxp - hx, cyp + hy, cz], [cxp - hx, cyp - hy, cz]]);
-    }
-    for (k = 0; k < BW + BA; k++) {
-      var B = bins[k]; if (!B.length) continue;
-      var mint = k >= BW, lv = mint ? (k - BW + 1) / BA : (k + 1) / BW;
-      ctx.fillStyle = 'rgba(' + (mint ? HL2.MINT : HL2.INK) + ',' + (mint ? .45 + .55 * lv : .12 + .88 * lv).toFixed(3) + ')';
-      ctx.beginPath(); for (var j = 0; j < B.length; j += 2) ctx.rect(Math.round(B[j] - px / 2), Math.round(B[j + 1] - px / 2), px, px); ctx.fill();
-    }
-    for (i = 0; i < dots.length; i += 4) { ctx.fillStyle = 'rgba(' + (dots[i + 3] ? HL2.MINT : HL2.INK) + ',' + (.12 + .8 * dots[i + 2]).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(dots[i], dots[i + 1], px * .42, 0, TAU); ctx.fill(); }
-    if (spos) {   // the pointer: one small white square, a short trail behind it
-      for (k = 3; k >= 0; k--) {
-        var pu = easeInOut(clamp(su - k * .012, 0, 1)), pp = along(sc.path, M.scanLen, pu), ps = pr(pp[0], pp[1], pp[2]), sz = px * (k ? 1.1 : 1.9);
-        ctx.fillStyle = 'rgba(255,255,255,' + (k ? .5 - k * .12 : 1) * Math.sin(Math.PI * su) + ')'; ctx.fillRect(Math.round(ps[0] - sz / 2), Math.round(ps[1] - sz / 2), sz, sz);
-      }
-    }
+  // the frame: the card and its sheet take about two thirds of the stage
+  function fit(W, H) {
+    var pts = [];
+    [[CARD, 0, 0], [{ x0: CARD.x0 + SH.dx, x1: CARD.x1 + SH.dx, y0: CARD.y0 + SH.dy, y1: CARD.y1 + SH.dy, z0: SH.z0, z1: SH.z1 }, 0, 0]].forEach(function (q) {
+      var c = q[0]; [[c.x0, c.y0], [c.x1, c.y0], [c.x1, c.y1], [c.x0, c.y1]].forEach(function (p) { pts.push(proj(p[0], p[1], c.z0)); pts.push(proj(p[0], p[1], c.z1)); });
+    });
+    var b = [1e9, 1e9, -1e9, -1e9]; pts.forEach(function (s) { b[0] = Math.min(b[0], s[0]); b[1] = Math.min(b[1], s[1]); b[2] = Math.max(b[2], s[0]); b[3] = Math.max(b[3], s[1]); });
+    var S = Math.min(W * .66 / (b[2] - b[0]), H * .7 / (b[3] - b[1]));
+    return { S: S, ox: W / 2 - (b[0] + b[2]) / 2 * S, oy: H / 2 - (b[1] + b[3]) / 2 * S };
+  }
+
+  // the assembled report. `pose(k, cell)` may move a cell (the motion, later): it returns [dx, dy, dz, alpha] in world units
+  function draw(ctx, W, H, dpr, M, pose) {
+    var F = fit(W, H), S = F.S;
+    var P = function (x, y, z) { var s = proj(x, y, z); return [F.ox + s[0] * S, F.oy + s[1] * S]; };
+    var lw = Math.max(1, dpr);
+    ctx.clearRect(0, 0, W, H); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    var path = function (pl, close) { ctx.beginPath(); pl.forEach(function (p, k) { if (k) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); }); if (close) ctx.closePath(); };
+    // a slab: its silhouette filled with the ground and stroked, its top face's outline as the crease
+    var slab = function (x0, y0, x1, y1, z0, z1, a, face) {
+      var ring = rrect(x0, y0, x1, y1, CARD.r, 6), top = ring.map(function (p) { return P(p[0], p[1], z1); }), bot = ring.map(function (p) { return P(p[0], p[1], z0); });
+      path(hull(top.concat(bot)), true); ctx.fillStyle = face || GROUND; ctx.fill(); ctx.strokeStyle = 'rgba(' + EDGE + ',' + a + ')'; ctx.lineWidth = lw; ctx.stroke();
+      path(top, true); ctx.strokeStyle = 'rgba(' + EDGE + ',' + (a * .62).toFixed(3) + ')'; ctx.stroke();
+    };
+    slab(CARD.x0 + SH.dx, CARD.y0 + SH.dy, CARD.x1 + SH.dx, CARD.y1 + SH.dy, SH.z0, SH.z1, .5, '#1d1d1d');   // the sheet underneath
+    slab(CARD.x0, CARD.y0, CARD.x1, CARD.y1, CARD.z0, CARD.z1, .92, '#222222');                               // the report, its face a touch lighter than the ground so it reads as an object
+    var z = CARD.z1;
+    // the panel and the report's lines: darker grey
+    ctx.strokeStyle = 'rgba(' + GREY + ',.85)'; ctx.lineWidth = lw;
+    path(rrect(PAN.x0, PAN.y0, PAN.x1, PAN.y1, PAN.r, 4).map(function (p) { return P(p[0], p[1], z); }), true); ctx.stroke();
+    TXT.forEach(function (t) { var a = P(PAN.x0, t[0], z), b = P(PAN.x0 + (PAN.x1 - PAN.x0) * t[1], t[0], z); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); });
+    // the panel's own hairlines
+    var m = M.m, gl = function (list, col, a) { (list || []).forEach(function (pl) { ctx.strokeStyle = 'rgba(' + col + ',' + a + ')'; path(pl.map(function (q) { var w = pw(q[0], q[1]); return P(w[0], w[1], z); }), false); ctx.stroke(); }); };
+    gl(m.lines, GREY, .8); gl(m.bright, EDGE, .85); gl(m.accLines, ACC, .9);
+    // the cells: squares, binned by colour and brightness
+    var pitch = Math.hypot.apply(null, (function () { var a = P(0, 0, 0), b = P((PAN.x1 - PAN.x0) / HL2.COLS, 0, 0); return [b[0] - a[0], b[1] - a[1]]; })());
+    var base = Math.max(1.3 * dpr, Math.min(3 * dpr, pitch * .5)), bins = {};   // a particle: half the grid's pitch
+    (m.cells || []).forEach(function (c, k) {
+      var w = pw(c.i + .5, c.j + .5), al = 1;
+      if (pose) { var d = pose(k, c); if (d) { w = [w[0] + d[0], w[1] + d[1], w[2] + d[2]]; al = d[3]; } }
+      if (al <= .01) return;
+      var s = P(w[0], w[1], w[2]), col = c.acc ? ACC : c.grey ? GREY : INK, lv = Math.max(1, Math.min(6, Math.round((c.b == null ? .85 : c.b) * al * 6)));
+      var key = col + '|' + lv + '|' + (c.s || 1); (bins[key] = bins[key] || []).push(s[0], s[1]);
+    });
+    Object.keys(bins).forEach(function (key) {
+      var q = key.split('|'), B = bins[key], sz = Math.max(1, Math.round(base * +q[2]));
+      ctx.fillStyle = 'rgba(' + q[0] + ',' + (.25 + .75 * (+q[1]) / 6).toFixed(3) + ')';
+      ctx.beginPath(); for (var k = 0; k < B.length; k += 2) ctx.rect(Math.round(B[k] - sz / 2), Math.round(B[k + 1] - sz / 2), sz, sz); ctx.fill();
+    });
   }
 
   function sizer(cv) { var R = cv.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1), w = Math.round(R.width * d), h = Math.round(R.height * d); if (!w || !h) return null; if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } return [w, h, d]; }
-  HL2.draw = function (cv, name, ph) { var M = prepare(name), z = sizer(cv); if (!M || !z) return false; draw(cv.getContext('2d'), z[0], z[1], z[2], M, ((ph % 1) + 1) % 1); return true; };
-  HL2.mount = function (cv, name, opt) {
-    opt = opt || {}; var M = prepare(name); if (!M) return null;
-    var still = opt.still != null ? opt.still : !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-    var gone = false, raf = 0, seen = true, t0 = 0, off = (opt.phase || 0) * HL2.LOOP * 1000, io = null, last = '';
-    if (window.IntersectionObserver) { io = new IntersectionObserver(function (es) { seen = es[es.length - 1].isIntersecting; if (seen && !raf && !gone) raf = requestAnimationFrame(tick); }); io.observe(cv); }
-    function tick(now) {
-      raf = 0; if (gone) return; if (!cv.isConnected) { stop(); return; }
-      if (!seen || document.hidden) return;   // offscreen: sleep until seen again
-      if (still) { var z = sizer(cv); if (z && last !== z.join()) { last = z.join(); draw(cv.getContext('2d'), z[0], z[1], z[2], M, .6); } raf = requestAnimationFrame(tick); return; }
-      if (!t0) t0 = now - off;
-      var z2 = sizer(cv); if (z2) draw(cv.getContext('2d'), z2[0], z2[1], z2[2], M, ((now - t0) / 1000 / HL2.LOOP) % 1);
-      raf = requestAnimationFrame(tick);
-    }
-    function wake() { if (!document.hidden && !raf && !gone) raf = requestAnimationFrame(tick); }
-    function stop() { gone = true; if (raf) cancelAnimationFrame(raf); raf = 0; if (io) io.disconnect(); document.removeEventListener('visibilitychange', wake); }
-    document.addEventListener('visibilitychange', wake);
-    raf = requestAnimationFrame(tick);
-    return { destroy: stop };
+  HL2.draw = function (cv, name, pose) { var M = model(name), z = sizer(cv); if (!M || !z) return false; draw(cv.getContext('2d'), z[0], z[1], z[2], M, pose); return true; };
+  HL2.mount = function (cv, name) {
+    var M = model(name); if (!M) return null;
+    var last = '', ro = window.ResizeObserver ? new ResizeObserver(function () { var z = sizer(cv); if (z && z.join() !== last) { last = z.join(); draw(cv.getContext('2d'), z[0], z[1], z[2], M); } }) : null;
+    if (ro) ro.observe(cv); else HL2.draw(cv, name);
+    return { destroy: function () { if (ro) ro.disconnect(); } };
+  };
+
+  // shared drawing helpers for the panels, in grid units
+  HL2.inside = function (sdf, i, j) { return sdf(i + .5, j + .5) <= 0; };
+  HL2.capsule = function (ax, ay, bx, by, r) { return function (x, y) { var dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1))); return Math.hypot(x - ax - dx * t, y - ay - dy * t) - r; }; };
+  HL2.union = function () { var f = [].slice.call(arguments); return function (x, y) { var d = 1e9; for (var k = 0; k < f.length; k++) d = Math.min(d, f[k](x, y)); return d; }; };
+  // a simple standing body, front view, centred on column cx, from row top to row top + h
+  HL2.body = function (cx, top, h, spread) {
+    var u = h / 17, sp = spread || 0;
+    return HL2.union(
+      function (x, y) { return Math.hypot(x - cx, y - (top + 1.7 * u)) - 1.55 * u; },                       // head
+      HL2.capsule(cx, top + 3.2 * u, cx, top + 4.2 * u, .6 * u),                                          // neck
+      HL2.capsule(cx - 1.55 * u, top + 5.2 * u, cx - 1.2 * u, top + 10.4 * u, 1.35 * u),                   // torso, as two columns
+      HL2.capsule(cx + 1.55 * u, top + 5.2 * u, cx + 1.2 * u, top + 10.4 * u, 1.35 * u),
+      HL2.capsule(cx - 3.1 * u, top + 5.3 * u, cx - (3.6 + sp) * u, top + 10.8 * u, .62 * u),             // arms
+      HL2.capsule(cx + 3.1 * u, top + 5.3 * u, cx + (3.6 + sp) * u, top + 10.8 * u, .62 * u),
+      HL2.capsule(cx - 1.05 * u, top + 10.6 * u, cx - 1.15 * u, top + 16.4 * u, .85 * u),                 // legs
+      HL2.capsule(cx + 1.05 * u, top + 10.6 * u, cx + 1.15 * u, top + 16.4 * u, .85 * u)
+    );
   };
 })();
