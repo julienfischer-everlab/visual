@@ -1640,7 +1640,7 @@ function engineMain(port, local) {
         eng.post({ type: 'image', bitmap: bmp, w, h }, [bmp]);
         const p = BUILTIN.find(b => b.name === look) || BUILTIN[0], st = sanitize(Object.assign({}, DEFAULTS, p.settings));
         if (opts && opts.spacing) st.spacing = Math.min(40, Math.max(3, st.spacing * opts.spacing));
-        if (opts && /^#[0-9a-f]{6}$/i.test(opts.fg || '')) st.fg = opts.fg;   // opts.fg / opts.bg: the look's foreground and paper in other colours
+        if (opts && /^#[0-9a-f]{6}$/i.test(opts.fg || '')) { st.fg = opts.fg; st.duotone = false; }   // opts.fg / opts.bg: the look's foreground and paper in other colours (one ink: no duotone's second)
         if (opts && /^#[0-9a-f]{6}$/i.test(opts.bg || '')) { st.bg = opts.bg; st.transparent = false; }
         const r = await eng.request({ type: 'export', format: 'png', scale: Math.max(.05, outW / w), settings: st });
         return r.blob;

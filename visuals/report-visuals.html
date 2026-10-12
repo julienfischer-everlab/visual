@@ -84,7 +84,8 @@
   .ctl .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
   .ctl .row[hidden] { display: none; }
   .ctl .row > .lab:first-child { flex: none; width: 11ch; }
-  .seg.mini { padding: 2px; } .seg.mini button { font-size: 11px; line-height: 24px; padding: 0 10px; }
+  .seg.mini { padding: 2px; } .seg.mini button { font-size: 11px; line-height: 24px; padding: 0 10px; white-space: nowrap; }
+  @media (max-width: 360px) { .ctl .seg.mini { flex-wrap: wrap; border-radius: 14px; } }   /* narrow: whole options wrap, a label never breaks */
   .ctl .lab { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
   .sw { appearance: none; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 7px; background: #444 center / cover no-repeat; cursor: pointer; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .12); }
   .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
@@ -438,14 +439,14 @@
     var DEF = { mode: "1", outline: "1", pic: def, flat: FLAT_OF[def] || "#10222e", fpic: def, ink: null, dith1: "bayer-img|3", dith2: "bayer-mono|3" };
     var S = card._s = {}; FIELDS.forEach(function (f) { S[f] = g(f, VAL[f], DEF[f]); });
     var seq = 0;   // the latest choice; an upload that finishes after a later one is dropped
-    var set = function (n, v, keep) { seq++; S[n] = v; note.textContent = ""; if (keep) { if (v == null) store.del(K[n]); else if (!store.set(K[n], v)) note.textContent = "Shown here, but this browser could not keep it for next time."; } sync(card); };
+    var set = function (n, v, keep) { seq++; lastDel = null; S[n] = v; note.textContent = ""; if (keep) { if (v == null) store.del(K[n]); else if (!store.set(K[n], v)) note.textContent = "Shown here, but this browser could not keep it for next time."; } sync(card); };
     var picKey = function () { return S.mode === "2" ? "fpic" : "pic"; };
     ctl.querySelector(".seg.mini").addEventListener("click", function (e) { var b = e.target.closest("[data-mode]"); if (b) set("mode", b.dataset.mode, true); });
     ctl.querySelector("[data-outline]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-outline]"); if (b) set("outline", b.dataset.outline, true); });
     pics.addEventListener("click", function (e) { var b = e.target.closest(".sw[data-bg]"); if (b) set(picKey(), b.dataset.bg, true); });
     fls.addEventListener("click", function (e) { var b = e.target.closest(".sw[data-c]"); if (b) set("flat", b.dataset.c, true); });
     ctl.querySelector("[data-reset]").addEventListener("click", function () { set(picKey(), def, false); store.del(K[picKey()]); });
-    var take = function (file) { if (S.mode === "3") { note.textContent = "Background V3 has no picture: switch to V1 or V2 to use one."; return; } if (!file || !/^image\//.test(file.type)) { note.textContent = "That file isn't a picture."; return; } var my = ++seq, n = picKey(); note.textContent = "Reading…"; shrink(file, function (url) { if (my !== seq) return; if (!url) { note.textContent = "That picture couldn't be read."; return; } set(n, url, true); if (!note.textContent) note.textContent = n === "fpic" ? "Your picture is in the frame." : "Your picture is on the card."; }); };
+    var take = function (file) { if (S.mode === "3") { note.textContent = "Background V3 has no picture: switch to V1 or V2 to use one."; return; } if (!file || !/^image\//.test(file.type)) { note.textContent = "That file isn't a picture."; return; } var my = ++seq, n = picKey(); lastDel = null; note.textContent = "Reading…"; shrink(file, function (url) { if (my !== seq) return; if (!url) { note.textContent = "That picture couldn't be read."; return; } set(n, url, true); if (!note.textContent) note.textContent = n === "fpic" ? "Your picture is in the frame." : "Your picture is on the card."; }); };
     ctl.querySelector("input[type=file]").addEventListener("change", function (e) { take(e.target.files && e.target.files[0]); e.target.value = ""; });
     // the pickers: live while you pick (a moment apart, as a look from the Image generator takes a moment), kept when you close them
     var live = function (inp, n) { var t = 0; inp.addEventListener("input", function () { clearTimeout(t); t = setTimeout(function () { set(n, inp.value, false); }, 120); }); inp.addEventListener("change", function () { clearTimeout(t); set(n, inp.value, true); }); };
@@ -467,21 +468,22 @@
       if (lastDel) { var u = document.createElement("button"); u.type = "button"; u.className = "tbtn"; u.dataset.undo = "1"; u.textContent = "Undo"; plist.appendChild(u); }
     };
     var saveP = function () {
-      var a = presets(), nm = pname.value.trim().slice(0, 40) || "Preset " + (a.length + 1), s = {}, i = -1; FIELDS.forEach(function (f) { s[f] = S[f]; });
+      var a = presets(), typed = pname.value.trim().slice(0, 40), pn = a.length + 1; if (!typed) while (a.some(function (p) { return p.name === "Preset " + pn; })) pn++;   // an unnamed one never lands on another's name
+      var nm = typed || "Preset " + pn, s = {}, i = -1; FIELDS.forEach(function (f) { s[f] = S[f]; });
       a.forEach(function (p, j) { if (p.name === nm) i = j; }); if (i >= 0) a[i] = { name: nm, s: s }; else a.push({ name: nm, s: s });
-      lastDel = null;
-      if (keepP(a)) { note.textContent = (i >= 0 ? "Updated" : "Saved") + " “" + nm + "”."; pname.value = ""; } else note.textContent = "This browser couldn't keep that preset: an uploaded picture takes a lot of room, try a preset picture.";
+      if (keepP(a)) { lastDel = null; note.textContent = (i >= 0 ? "Updated" : "Saved") + " “" + nm + "”."; pname.value = ""; } else note.textContent = "This browser is out of room, so it couldn't keep that preset. Uploaded pictures take the most room.";
       drawP();
     };
     ctl.querySelector("[data-psave]").addEventListener("click", saveP);
     pname.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); saveP(); } });
     plist.addEventListener("click", function (e) {
       var b = e.target.closest("button"); if (!b) return; var a = presets();
-      if (b.dataset.undo) { if (lastDel) { a.splice(Math.min(lastDel.i, a.length), 0, lastDel.p); keepP(a); note.textContent = "“" + lastDel.p.name + "” is back."; lastDel = null; } drawP(); return; }
-      if (b.dataset.del != null) { var d = +b.dataset.del, p = a[d]; if (!p) return; a.splice(d, 1); keepP(a); lastDel = { p: p, i: d }; note.textContent = "Deleted “" + p.name + "”."; drawP(); var nx = plist.querySelector(".pa, [data-undo]"); if (nx) nx.focus(); return; }
-      var q = a[+b.dataset.i]; if (!q) return; seq++; lastDel = null;
-      FIELDS.forEach(function (f) { var v = q.s[f]; if (v == null || !VAL[f](v)) v = DEF[f]; S[f] = v; if (v == null) store.del(K[f]); else store.set(K[f], v); });
-      sync(card); note.textContent = "Applied “" + q.name + "”.";
+      var refocus = function (i) { var r = plist.querySelector('.pa[data-i="' + i + '"]') || plist.querySelector(".pa, [data-undo]"); if (r) r.focus(); };   // the chip in hand keeps the focus through the redraw
+      if (b.dataset.undo) { if (lastDel) { var ui = Math.min(lastDel.i, a.length); a.splice(ui, 0, lastDel.p); if (keepP(a)) { note.textContent = "“" + lastDel.p.name + "” is back."; lastDel = null; drawP(); refocus(ui); return; } note.textContent = "This browser is out of room, so “" + lastDel.p.name + "” couldn't come back."; } drawP(); refocus(0); return; }
+      if (b.dataset.del != null) { var d = +b.dataset.del, p = a[d]; if (!p) return; a.splice(d, 1); keepP(a); lastDel = { p: p, i: d }; note.textContent = "Deleted “" + p.name + "”."; drawP(); refocus(Math.min(d, a.length - 1)); return; }
+      var qi = +b.dataset.i, q = a[qi]; if (!q) return; seq++; lastDel = null; var ok = true;
+      FIELDS.forEach(function (f) { var v = q.s[f]; if (v == null || typeof v !== "string" || !VAL[f](v)) v = DEF[f]; S[f] = v; if (v == null) store.del(K[f]); else ok = store.set(K[f], v) && ok; });
+      sync(card); note.textContent = ok ? "Applied “" + q.name + "”." : "Applied “" + q.name + "” here, but this browser could not keep it for next time."; refocus(qi);
     });
     drawP();
     if (window.ResizeObserver) { var rt = 0; new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { dither(card); }, 80); }).observe(card.querySelector(".frame")); }
