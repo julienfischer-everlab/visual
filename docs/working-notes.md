@@ -13535,3 +13535,6 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - V2: the Colour is the card's and also the background inside the frame; the dither's squares are the Foreground, black or white (white on the picture's lights, black on its darks). V2's Dither list has no "picture colours" (Ordered, Diffusion, the Image generator looks with fg + the colour as paper, Off).
 - Foreground is a White / Black switch on V2 and V3 (Auto until chosen: black on a light colour, else white); it also sets the outline (white .78 / black .7) and, on V3, the illustration. Old picked colours migrate to the nearer of the two.
 - Each background keeps its own dither: rv-dither-<card> (V1), rv-dither2-<card> (V2).
+
+## Progress card, Ring: Step badge at the right
+- Ring style (not Ring 2): the "Step X/N" pill moves from beside the step's name to the right end, 16px before the ring (`.svmStepB{margin-left:auto}`), so the row reads name … badge · ring.
