@@ -41,7 +41,7 @@
   .modal { position: relative; width: 100%; max-width: 520px; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 44px 32px 36px; border-radius: 32px; background: var(--modal); color: var(--m-fg); }
   .x { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 999px; background: var(--m-x); color: var(--m-fg); }
   .x svg { width: 12px; height: 12px; }
-  .modal h2 { margin: 8px 0 0; max-width: 18ch; font-size: 28px; line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; }
+  .modal h2 { margin: 8px 0 0; max-width: 18ch; font-size: 28px; line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; text-wrap: balance; }
   .vis { width: 100%; max-width: 360px; margin: 14px 0 10px; }
   .vis canvas { display: block; width: 100%; height: auto; aspect-ratio: 340 / 232; }   /* a little shorter than the card's own box, so the words sit close under it */
   .modal p { margin: 0; max-width: 42ch; color: var(--m-muted); font-size: 15px; line-height: 1.45; text-wrap: pretty; }
@@ -60,16 +60,14 @@
   .seg button:focus-visible, .ctl button:focus-visible, .ctl label:focus-within { outline: 1.5px solid var(--fg); outline-offset: 2px; }
   .grid[hidden] { display: none; }
   /* V2: a card on its own picture: the title at the left, the visual in a thin outlined frame, flat, the button(s) at the foot */
-  .grid.v2 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 268px), 1fr)); }
-  .grid.v2 figure { container-type: inline-size; }   /* the card's sizes follow its own width */
-  .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 4 / 5.4; max-width: 100%; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; overflow: hidden; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; }
-  .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(0 0 0 / .28) 0%, rgb(0 0 0 / 0) 34%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
-  .icard h2 { margin: 0; max-width: 13ch; font-size: clamp(19px, 9cqw, 34px); line-height: 1.08; font-weight: 500; letter-spacing: -0.025em; text-wrap: balance; }
+  .cw { width: 100%; max-width: 520px; container-type: inline-size; }   /* the card at the pop-up's width, its sizes following its own width */
+  .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 520 / 660; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; }
+  .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(180deg, rgb(0 0 0 / .28) 0%, rgb(0 0 0 / 0) 34%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
+  .icard h2 { margin: 0; max-width: 13ch; font-size: clamp(20px, 6.4cqw, 34px); line-height: 1.08; font-weight: 500;   /* medium ("title medium font") */ letter-spacing: -0.025em; text-wrap: balance; }
   .frame { position: relative; margin: auto 0; width: 100%; aspect-ratio: 24 / 18; border: 1px solid rgb(255 255 255 / .78); }
   .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .ictas { display: flex; flex-wrap: wrap; gap: 2.2cqw; }
-  .ib { display: inline-flex; align-items: center; height: clamp(36px, 13cqw, 48px); padding: 0 clamp(12px, 4.6cqw, 22px); border-radius: 999px; background: #fff; color: #141413; font-size: clamp(12.5px, 4.4cqw, 16px); font-weight: 600; white-space: nowrap; }
-  .ib.glass { background: rgb(255 255 255 / .18); color: #fff; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .28); }
+  .ictas { display: flex; flex-wrap: wrap; gap: 12px; }   /* the buttons: the pop-up's own (V1's), white for the main one, solid dark beside it */
+  @media (max-width: 480px) { .cw .icard { padding: 9cqw 7cqw 7cqw; } .ictas .btn { flex: 1 1 100%; } }
   .icard.drop { outline: 2px dashed #fff; outline-offset: -10px; }
   /* the background control under each card: the presets, your own picture, back to the default */
   .ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-inline: 2px; }
@@ -101,11 +99,13 @@
 
   <div class="grid v2" data-view="2">
     <figure aria-labelledby="c-mri">
+      <div class="bd"><div class="cw">
       <div class="icard" data-card="mri" data-default="deep">
         <h2 id="c-mri">Your Whole Body MRI debrief is ready</h2>
         <div class="frame"><canvas data-flat="body-scan" role="img" aria-label="Whole Body MRI and CT Chest: the report's visual"></canvas></div>
-        <div class="ictas"><span class="ib glass">Watch video</span><span class="ib">See report</span></div>
+        <div class="ictas"><span class="btn sec">Watch video</span><span class="btn">See report</span></div>
       </div>
+      </div></div>
       <figcaption><b>Whole Body MRI &amp; CT Chest</b><span>wbmri</span></figcaption>
       <div class="ctl" data-for="mri" role="group" aria-label="Whole Body MRI and CT Chest: background">
         <span class="lab">Background</span>
@@ -116,11 +116,13 @@
       </div>
     </figure>
     <figure aria-labelledby="c-gut">
+      <div class="bd"><div class="cw">
       <div class="icard" data-card="gut" data-default="meadow">
         <h2 id="c-gut">Your microbiome report is ready</h2>
         <div class="frame"><canvas data-flat="gut-map" role="img" aria-label="Microbiome and Gut Health: the report's visual"></canvas></div>
-        <div class="ictas"><span class="ib glass">Watch video</span><span class="ib">See report</span></div>
+        <div class="ictas"><span class="btn sec">Watch video</span><span class="btn">See report</span></div>
       </div>
+      </div></div>
       <figcaption><b>Microbiome &amp; Gut Health</b><span>gut</span></figcaption>
       <div class="ctl" data-for="gut" role="group" aria-label="Microbiome and Gut Health: background">
         <span class="lab">Background</span>
@@ -131,11 +133,13 @@
       </div>
     </figure>
     <figure aria-labelledby="c-blood">
+      <div class="bd"><div class="cw">
       <div class="icard" data-card="blood" data-default="ember">
         <h2 id="c-blood">Your blood results are in</h2>
         <div class="frame"><canvas data-flat="assay" role="img" aria-label="Advanced Blood Testing: the report's visual"></canvas></div>
-        <div class="ictas"><span class="ib">See results</span></div>
+        <div class="ictas"><span class="btn">See results</span></div>
       </div>
+      </div></div>
       <figcaption><b>Advanced Blood Testing</b><span>path</span></figcaption>
       <div class="ctl" data-for="blood" role="group" aria-label="Advanced Blood Testing: background">
         <span class="lab">Background</span>
@@ -146,11 +150,13 @@
       </div>
     </figure>
     <figure aria-labelledby="c-dexa">
+      <div class="bd"><div class="cw">
       <div class="icard" data-card="dexa" data-default="dusk">
         <h2 id="c-dexa">Your DEXA results are ready</h2>
         <div class="frame"><canvas data-flat="strata" role="img" aria-label="DEXA Body Composition: the report's visual"></canvas></div>
-        <div class="ictas"><span class="ib">See results</span></div>
+        <div class="ictas"><span class="btn">See results</span></div>
       </div>
+      </div></div>
       <figcaption><b>DEXA Body Composition</b><span>dexa</span></figcaption>
       <div class="ctl" data-for="dexa" role="group" aria-label="DEXA Body Composition: background">
         <span class="lab">Background</span>
