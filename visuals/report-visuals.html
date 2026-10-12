@@ -55,27 +55,31 @@
   /* the view switch: V2, the image cards, or V1, the pop-ups */
   .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
   .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
-  .seg button { appearance: none; border: 0; background: none; color: var(--muted); font: 12px/28px var(--mono); letter-spacing: .02em; padding: 0 12px; border-radius: 999px; cursor: pointer; }
+  .seg button { appearance: none; border: 0; background: none; color: color-mix(in srgb, var(--fg) 72%, var(--bg)); font: 12px/28px var(--mono); letter-spacing: .02em; padding: 0 12px; border-radius: 999px; cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
-  .seg button:focus-visible, .ctl button:focus-visible, .ctl label:focus-within { outline: 1.5px solid var(--fg); outline-offset: 2px; }
+  .seg button:focus-visible, .ctl button:focus-visible, .ctl label:has(input:focus-visible) { outline: 1.5px solid var(--fg); outline-offset: 2px; }
   .grid[hidden] { display: none; }
   /* V2: a card on its own picture: the title at the left, the visual in a thin outlined frame, flat, the button(s) at the foot */
   .cw { width: 100%; max-width: 520px; container-type: inline-size; }   /* the card at the pop-up's width, its sizes following its own width */
-  .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 520 / 660; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; }
-  .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(180deg, rgb(0 0 0 / .28) 0%, rgb(0 0 0 / 0) 34%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
-  .icard h2 { margin: 0; max-width: 13ch; font-size: clamp(20px, 6.4cqw, 34px); line-height: 1.08; font-weight: 500;   /* medium ("title medium font") */ letter-spacing: -0.025em; text-wrap: balance; }
-  .frame { position: relative; margin: auto 0; width: 100%; aspect-ratio: 24 / 18; border: 1px solid rgb(255 255 255 / .78); }
+  .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 520 / 660; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; min-height: 0; }
+  .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(180deg, rgb(0 0 0 / .5) 0%, rgb(0 0 0 / .42) 24%, rgb(0 0 0 / 0) 44%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
+  .icard h2 { margin: 0; max-width: 16ch; font-size: clamp(24px, 6.4cqw, 34px); line-height: 1.08; font-weight: 500;   /* medium ("title medium font") */ letter-spacing: -0.025em; text-wrap: balance; }
+  .frame { position: relative; margin: auto 0; width: 100%; min-height: 0; aspect-ratio: 24 / 18; border: 1px solid rgb(255 255 255 / .78); }
   .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .frame canvas.dith { image-rendering: pixelated; }   /* the picture inside the frame, dithered (when chosen), under the report's dots */
   .frame canvas.dith[hidden] { display: none; }
   .ictas { display: flex; flex-wrap: wrap; gap: 12px; }   /* the buttons: the pop-up's own (V1's), white for the main one, solid dark beside it */
-  @media (max-width: 480px) { .cw .icard { padding: 9cqw 7cqw 7cqw; } .ictas .btn { flex: 1 1 100%; } }
+  @media (max-width: 480px) { .cw .icard { padding: 9cqw 7cqw 7cqw; } .ictas { flex-wrap: nowrap; gap: 8px; } .ictas .btn { flex: 1 1 0; min-width: 0; height: clamp(40px, 13cqw, 52px); padding: 0 10px; font-size: clamp(13px, 4.6cqw, 16px); white-space: nowrap; } .ctl select[data-dither] { flex: 1 1 0; min-width: 0; } }   /* the buttons side by side, so every card keeps its shape */
   .icard.drop { outline: 2px dashed #fff; outline-offset: -10px; }
   /* the background control under each card: the presets, your own picture, back to the default */
   .ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-inline: 2px; }
-  .ctl .lab { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; margin-right: 2px; }
+  .ctl .lab { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
   .sw { appearance: none; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 7px; background: #444 center / cover no-repeat; cursor: pointer; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .12); }
   .sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
+  .ctl .sws { display: inline-flex; gap: 6px; padding: 4px; }   /* room for the chosen ring between swatches */
+  .ctl .sw:focus-visible { outline: none; box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413; }   /* focus inside the swatch, chosen around it */
+  .ctl .sw[aria-pressed="true"]:focus-visible { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413, 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
+  .ctl .acts { display: inline-flex; gap: 6px; }
   .ctl .tbtn, .ctl label.tbtn { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
   .ctl input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
   .ctl select { height: 26px; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--fg); font: 12px/1 var(--sans); }
@@ -114,8 +118,7 @@
       <div class="ctl" data-for="mri" role="group" aria-label="Whole Body MRI and CT Chest: background">
         <span class="lab">Background</span>
         <span class="sws"></span>
-        <label class="tbtn">Upload<input type="file" accept="image/*"></label>
-        <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span>
         <span class="brk"></span>
         <span class="lab">Dither</span>
         <select data-dither aria-label="Treat the picture inside the frame: a dither, or a look from the Image generator">
@@ -153,8 +156,7 @@
       <div class="ctl" data-for="gut" role="group" aria-label="Microbiome and Gut Health: background">
         <span class="lab">Background</span>
         <span class="sws"></span>
-        <label class="tbtn">Upload<input type="file" accept="image/*"></label>
-        <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span>
         <span class="brk"></span>
         <span class="lab">Dither</span>
         <select data-dither aria-label="Treat the picture inside the frame: a dither, or a look from the Image generator">
@@ -192,8 +194,7 @@
       <div class="ctl" data-for="blood" role="group" aria-label="Advanced Blood Testing: background">
         <span class="lab">Background</span>
         <span class="sws"></span>
-        <label class="tbtn">Upload<input type="file" accept="image/*"></label>
-        <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span>
         <span class="brk"></span>
         <span class="lab">Dither</span>
         <select data-dither aria-label="Treat the picture inside the frame: a dither, or a look from the Image generator">
@@ -231,8 +232,7 @@
       <div class="ctl" data-for="dexa" role="group" aria-label="DEXA Body Composition: background">
         <span class="lab">Background</span>
         <span class="sws"></span>
-        <label class="tbtn">Upload<input type="file" accept="image/*"></label>
-        <button type="button" class="tbtn" data-reset>Reset</button>
+        <span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span>
         <span class="brk"></span>
         <span class="lab">Dither</span>
         <select data-dither aria-label="Treat the picture inside the frame: a dither, or a look from the Image generator">
@@ -371,10 +371,10 @@
   var PRESETS = [
     { id: "deep", name: "Deep", src: "visuals/rv/bg-deep.webp" },
     { id: "ember", name: "Ember", src: "visuals/rv/bg-ember.webp" },
-    { id: "meadow", name: "Meadow", make: function () { return grain(["#3c6136", ["#a9c6dc", .15, .1, .55, .32, -.5], ["#7da35a", .55, .55, .45, .3, -.6], ["#1d351c", .85, .9, .5, .35, -.5], ["#c7c47e", .3, .62, .22, .14, -.6]], true); } },
-    { id: "rose", name: "Rose", make: function () { return grain(["#b16376", ["#f2c1bd", .2, .2, .5, .3], ["#7a2c48", .75, .7, .45, .35], ["#e8908f", .45, .45, .3, .25]]); } },
+    { id: "meadow", name: "Meadow", make: function () { return grain(["#3c6136", ["#7f9db3", .15, .1, .55, .32, -.5], ["#6a8f4b", .55, .55, .45, .3, -.6], ["#1d351c", .85, .9, .5, .35, -.5], ["#a19f62", .3, .62, .22, .14, -.6]], true); } },
+    { id: "rose", name: "Rose", make: function () { return grain(["#8e4c5e", ["#c48c8c", .2, .2, .5, .3], ["#5e1f37", .75, .7, .45, .35], ["#b86a70", .45, .45, .3, .25]]); } },
     { id: "dusk", name: "Dusk", make: function () { return grain(["#26214a", ["#8d7fcb", .2, .25, .45, .3], ["#120f26", .8, .85, .5, .4], ["#c58fb3", .7, .2, .3, .2]]); } },
-    { id: "sand", name: "Sand", make: function () { return grain(["#b49674", ["#f0e3c9", .2, .2, .5, .3], ["#765639", .8, .85, .45, .35], ["#dbb68a", .5, .55, .3, .25]]); } }
+    { id: "sand", name: "Sand", make: function () { return grain(["#806a52", ["#a8987c", .2, .2, .5, .3], ["#4e3826", .8, .85, .45, .35], ["#9a7c5a", .5, .55, .3, .25]]); } }
   ];
   var made = {};
   function srcOf(id) { var p = PRESETS.filter(function (q) { return q.id === id; })[0]; if (!p) return ""; if (p.src) return p.src; return made[id] || (made[id] = p.make()); }
@@ -387,7 +387,7 @@
   }
   function shrink(file, done) {   // your picture, down to 1200px on its long side, as a JPEG small enough to keep
     var r = new FileReader();
-    r.onload = function () { var im = new Image(); im.onload = function () { var k = Math.min(1, 1200 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); done(c.toDataURL("image/jpeg", .82)); }; im.onerror = function () { done(null); }; im.src = r.result; };
+    r.onload = function () { var im = new Image(); im.onload = function () { var long = Math.max(im.width, im.height), k = file.type === "image/svg+xml" ? 1200 / long : Math.min(1, 1200 / long), c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); done(c.toDataURL("image/jpeg", .82)); }; im.onerror = function () { done(null); }; im.src = r.result; };
     r.onerror = function () { done(null); }; r.readAsDataURL(file);
   }
   /* the dither: the part of the card's picture behind the frame, redrawn in two tones, ordered (Bayer 8x8) or diffused (Atkinson) */
@@ -412,9 +412,11 @@
   function lightness(cv) { var t = document.createElement("canvas"); t.width = 16; t.height = 12; var x = t.getContext("2d"); x.drawImage(cv, 0, 0, 16, 12); var d = x.getImageData(0, 0, 16, 12).data, s = 0; for (var i = 0; i < d.length; i += 4) s += .2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2]; return s / (d.length / 4) / 255; }
   function dither(card) {
     var cv = card.querySelector("canvas.dith"), mode = card.dataset.dither || "off", url = card.dataset.bgUrl, tok = card._dtok = (card._dtok || 0) + 1;
+    var nt = document.querySelector('.ctl[data-for="' + card.dataset.card + '"] .note');
+    if (!/^ig:/.test(mode) && /Image generator/.test(nt.textContent)) nt.textContent = "";   // a look still rendering when another was chosen
     if (mode === "off" || !url) { cv.hidden = true; inkFor(card, false); return; }
     imageOf(url, function (im) {
-      var fr = cv.parentNode.getBoundingClientRect(), cr = card.getBoundingClientRect(); if (!fr.width || !cr.width) return;
+      var fr = card.querySelector("canvas[data-flat]").getBoundingClientRect(), cr = card.getBoundingClientRect(); if (!fr.width || !cr.width) return;
       var px = +(card.dataset.px || 3), w = Math.max(8, Math.round(fr.width / px)), h = Math.max(8, Math.round(fr.height / px));
       // where the frame falls on the picture, as background-size: cover, centred, draws it
       var sc = Math.max(cr.width / im.naturalWidth, cr.height / im.naturalHeight), ox = (cr.width - im.naturalWidth * sc) / 2, oy = (cr.height - im.naturalHeight * sc) / 2;
@@ -456,11 +458,13 @@
   document.querySelectorAll(".icard").forEach(function (card) {
     var k = card.dataset.card, key = "rv-bg-" + k, ctl = document.querySelector('.ctl[data-for="' + k + '"]'), note = ctl.querySelector(".note"), sws = ctl.querySelector(".sws");
     PRESETS.forEach(function (p) { var b = document.createElement("button"); b.type = "button"; b.className = "sw"; b.dataset.bg = p.id; b.title = p.name; b.setAttribute("aria-label", "Background: " + p.name); b.setAttribute("aria-pressed", "false"); b.style.backgroundImage = "url(" + JSON.stringify(srcOf(p.id)) + ")"; sws.appendChild(b); });
-    var use = function (v, keep) { paint(card, v); note.textContent = ""; if (keep && !store.set(key, v)) note.textContent = "Shown here, but this browser could not keep it for next time."; };
-    use(store.get(key) || card.dataset.default, false);
+    var seq = 0;   // the latest choice; an upload that finishes after a later one is dropped
+    var use = function (v, keep) { seq++; paint(card, v); note.textContent = ""; if (keep && !store.set(key, v)) note.textContent = "Shown here, but this browser could not keep it for next time."; };
+    var sv = store.get(key); if (!sv || !(/^data:image\//.test(sv) || PRESETS.some(function (p) { return p.id === sv; }))) { store.del(key); sv = card.dataset.default; }   // a value this version doesn't know: back to the default
+    use(sv, false);
     sws.addEventListener("click", function (e) { var b = e.target.closest(".sw"); if (b) use(b.dataset.bg, true); });
     ctl.querySelector("[data-reset]").addEventListener("click", function () { store.del(key); use(card.dataset.default, false); });
-    var take = function (file) { if (!file || !/^image\//.test(file.type)) { note.textContent = "That file isn't a picture."; return; } note.textContent = "Reading…"; shrink(file, function (url) { if (!url) { note.textContent = "That picture couldn't be read."; return; } use(url, true); }); };
+    var take = function (file) { if (!file || !/^image\//.test(file.type)) { note.textContent = "That file isn't a picture."; return; } var my = ++seq; note.textContent = "Reading…"; shrink(file, function (url) { if (my !== seq) return; if (!url) { note.textContent = "That picture couldn't be read."; return; } use(url, true); if (!note.textContent) note.textContent = "Your picture is on the card."; }); };
     ctl.querySelector("input[type=file]").addEventListener("change", function (e) { take(e.target.files && e.target.files[0]); e.target.value = ""; });
     var dsel = ctl.querySelector("[data-dither]"), psel = ctl.querySelector("[data-px]"), dkey = "rv-dither-" + k;
     var dset = function () { card.dataset.dither = dsel.value; card.dataset.px = psel.value; psel.disabled = dsel.value === "off"; store.set(dkey, dsel.value + "|" + psel.value); dither(card); };
@@ -471,6 +475,13 @@
     card.addEventListener("dragleave", function () { card.classList.remove("drop"); });
     card.addEventListener("drop", function (e) { e.preventDefault(); card.classList.remove("drop"); take(e.dataTransfer.files && e.dataTransfer.files[0]); });
   });
+  /* zoom, or a screen with another pixel density: the same size on the page, so redraw the canvases sharp */
+  (function watchDpr() {
+    if (!window.matchMedia) return;
+    var mq = matchMedia("(resolution: " + (window.devicePixelRatio || 1) + "dppx)");
+    var on = function () { document.querySelectorAll("canvas[data-flat]").forEach(function (c) { if (c._redraw) c._redraw(); }); if (window.HL2) document.querySelectorAll("canvas[data-fig]").forEach(function (c) { if (c.getBoundingClientRect().width) HL2.draw(c, c.dataset.fig); }); document.querySelectorAll(".icard").forEach(dither); watchDpr(); };
+    if (mq.addEventListener) mq.addEventListener("change", on, { once: true }); else mq.addListener(on);
+  })();
 </script>
 </body>
 </html>
