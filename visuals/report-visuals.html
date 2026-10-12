@@ -83,7 +83,7 @@
   .icard .hl b { display: block; margin-bottom: 1.4cqw; font-size: clamp(11px, 2.9cqw, 15px); font-weight: 500; line-height: 1.25; }   /* the draft's sizes, to the card */
   .icard .hl ul { margin: 0; padding-left: 1.2em; font-size: clamp(10.5px, 2.6cqw, 13.5px); line-height: 1.3; }
   .icard[data-hl="in"] .hlIn, .icard[data-hl="out"] .hlOut { display: block; }
-  .frame .hlIn { position: absolute; left: -2px; bottom: -2px; z-index: 2; width: 70%; padding: 3.2cqw 3.6cqw 3.4cqw; background: var(--cardBg, #222);
+  .frame .hlIn { position: absolute; left: -2px; bottom: -2px; z-index: 2; width: 70%; padding: 3.2cqw 3.6cqw 3.4cqw;   /* no ground of its own: the frame's picture is cut away under it (clipFrame), so the card's own background shows */
     border-top: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); border-right: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); }   /* over the frame's own left and bottom: the outline turns round it */
   .icard[data-outline="0"] .frame .hlIn { border-color: transparent; }
   .icard:not([data-bgmode="3"]) canvas[data-flat] { visibility: hidden; }   /* the report's illustration on Background V3 only; V1 and V2 show the picture alone */
@@ -407,10 +407,15 @@
     '<div class="row" data-only="1 2"><span class="lab" data-pic-lab>Picture</span><span class="sws pics"></span><span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span></div>' +
     '<div class="row" data-only="1 2"><span class="lab">Dither</span><select data-dither aria-label="Dither the picture in the frame"></select><select data-px aria-label="Dither size"><option value="2">Fine</option><option value="3">Medium</option><option value="5">Coarse</option></select></div>' +
     '<div class="row"><span class="lab">Outline</span><span class="seg mini" role="group" aria-label="Frame outline"><button type="button" data-outline="1">On</button><button type="button" data-outline="0">Off</button></span></div>' +
-    '<div class="row" data-only="2"><span class="lab">Content</span><span class="seg mini" role="group" aria-label="Content: what the report highlights"><button type="button" data-hl="0">Off</button><button type="button" data-hl="1">On</button></span><span class="seg mini" role="group" aria-label="Where the content goes" data-hlpos><button type="button" data-hlp="in">In frame</button><button type="button" data-hlp="out">Outside frame</button></span></div>' +
+    '<div class="row"><span class="lab">Content</span><span class="seg mini" role="group" aria-label="Content: what the report highlights"><button type="button" data-hl="0">Off</button><button type="button" data-hl="1">On</button></span><span class="seg mini" role="group" aria-label="Where the content goes" data-hlpos><button type="button" data-hlp="in">In frame</button><button type="button" data-hlp="out">Outside frame</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Foreground</span><span class="seg mini" role="group" aria-label="Foreground: the squares, the illustration and the outline"><button type="button" data-fg="#ffffff">White</button><button type="button" data-fg="#141414">Black</button></span></div>' +
     '<span class="note" aria-live="polite"></span>';
 
+  function clipFrame(card) {   // content in the frame: its picture and illustration cut to an L round the block, the card's own ground under the words
+    var b = card.querySelector(".hlIn"), cp = "";
+    if (card.dataset.hl === "in" && b && b.offsetWidth) { var w = Math.max(0, b.offsetWidth - 2), h = Math.max(0, b.offsetHeight - 2); cp = "polygon(0 0, 100% 0, 100% 100%, " + w + "px 100%, " + w + "px calc(100% - " + h + "px), 0 calc(100% - " + h + "px))"; }
+    card.querySelectorAll(".frame canvas").forEach(function (c) { c.style.clipPath = cp; });
+  }
   function sync(card) {   // the card and its controls, from its state
     var S = card._s, v2 = S.mode === "2", flatBg = S.mode !== "1", ctl = document.querySelector('.ctl[data-for="' + card.dataset.card + '"]');
     card.dataset.bgmode = S.mode;
@@ -421,7 +426,7 @@
     ctl.querySelectorAll("[data-only]").forEach(function (r) { r.hidden = r.dataset.only.split(" ").indexOf(S.mode) < 0; });
     ctl.querySelectorAll("[data-outline]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.outline === S.outline)); });
     ctl.querySelectorAll("[data-hl]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.hl === S.hl)); }); ctl.querySelectorAll("[data-hlp]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.hlp === S.hlp)); });
-    ctl.querySelector("[data-hlpos]").hidden = S.hl !== "1"; card.dataset.hl = v2 && S.hl === "1" ? S.hlp : ""; card.style.setProperty("--cardBg", S.flat); card.dataset.outline = S.outline;   // the content: V2 only; the outline on or off
+    ctl.querySelector("[data-hlpos]").hidden = S.hl !== "1"; card.dataset.hl = S.hl === "1" ? S.hlp : ""; card.dataset.outline = S.outline;   // the content, on every background ("for all"); the outline on or off
     ctl.querySelector("[data-pic-lab]").textContent = v2 ? "Frame" : "Picture";
     var cur = v2 ? S.fpic : S.pic;
     ctl.querySelectorAll(".pics .sw[data-bg]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === cur)); });
@@ -434,6 +439,7 @@
     dsel.value = dd[0]; psel.value = dd[1]; psel.disabled = dd[0] === "off";
     dither(card);
     var fc = card.querySelector("canvas[data-flat]"); if (fc && fc._redraw) fc._redraw();   // the illustration, in its ink for this background
+    clipFrame(card);
     if (card._drawP) card._drawP();   // the preset it now matches, marked
   }
 
@@ -513,7 +519,7 @@
       var s0 = {}; FIELDS.forEach(function (f) { s0[f] = S[f]; }); a.push({ name: nm, s: s0 });
       if (!keepP(a)) { note.textContent = "This browser is out of room, so it couldn't keep that preset."; return "full"; }
       lastDel = null; note.textContent = "Saved \u201c" + nm + "\u201d."; drawP(); return "saved"; } });
-    if (window.ResizeObserver) { var rt = 0; new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { dither(card); }, 80); }).observe(card.querySelector(".frame")); }
+    if (window.ResizeObserver) { var rt = 0; new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { dither(card); clipFrame(card); }, 80); }).observe(card.querySelector(".frame")); }
     card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("drop"); });
     card.addEventListener("dragleave", function () { card.classList.remove("drop"); });
     card.addEventListener("drop", function (e) { e.preventDefault(); card.classList.remove("drop"); take(e.dataTransfer.files && e.dataTransfer.files[0]); });
