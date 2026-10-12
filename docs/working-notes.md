@@ -13587,3 +13587,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The frame has a tab at its top left ("notch"): the report's date (TABD) in a solid tab of the outline's colour, joined to the outline by a concave curve; the outline is now solid (--tab: #fff, or #141414 when the foreground is black). 5.4cqw above the frame for it.
 - Cards hug their content (no aspect ratio): highlights 32 under the frame, buttons 42 under what's above them (on the 520 card). level() now levels the backdrops (.bd) per row, the cards at their top, so the captions and controls line up.
 - An 8px square in the tab's colour at the header's top right, level with the title.
+- The frame's bottom-right corner is cut at 45° (4cqw): clip-path on the frame (reaching 8cqw above it, for the tab) and a ::after drawing the outline along the cut; with the outline off, the cut stays and the line goes.
