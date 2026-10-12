@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Report visuals</title>
 <style>
-  /* Layout: the report reveal's card for each Everlab report, side by side on one review sheet: a short header with a size switch, then a grid of the cards on the pop-up's charcoal. */
+  /* Layout: each report's reveal as the pop-up it opens in, one per report, on a review sheet: a short header, then a grid of the pop-ups, each over a dim backdrop as it is over the page. Inside each: the title, the report card, the words, the button(s). */
   :root {
-    --bg: #f6f6f4; --panel: #ffffff; --fg: #1d1d1b; --muted: #6b6b66; --line: #e2e2dc; --seg: #ecece8; --seg-on: #ffffff;
-    --stage: #1b1b1b; --acc: #8cc8a6;
+    --bg: #f6f6f4; --fg: #1d1d1b; --muted: #6b6b66; --line: #e2e2dc;
+    --dim: #0c0c0c; --modal: #1b1b1b; --m-fg: #f4f4f2; --m-muted: #a3a3a0; --m-sec: #2c2c2b; --m-x: #2a2a29; --acc: #8cc8a6;
     --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --bg: #0f0f0e; --panel: #161615; --fg: #ececea; --muted: #9a9a94; --line: #2a2a28; --seg: #1d1d1c; --seg-on: #2b2b29; color-scheme: dark; }
+    :root:not([data-theme="light"]) { --bg: #0f0f0e; --fg: #ececea; --muted: #9a9a94; --line: #2a2a28; color-scheme: dark; }
   }
-  :root[data-theme="dark"] { --bg: #0f0f0e; --panel: #161615; --fg: #ececea; --muted: #9a9a94; --line: #2a2a28; --seg: #1d1d1c; --seg-on: #2b2b29; color-scheme: dark; }
+  :root[data-theme="dark"] { --bg: #0f0f0e; --fg: #ececea; --muted: #9a9a94; --line: #2a2a28; color-scheme: dark; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
   .wrap { max-width: 1240px; margin: 0 auto; padding-inline: 24px; padding-block: 28px 56px; display: grid; gap: 28px; }
@@ -27,25 +27,29 @@
   .back[hidden] { display: none; }
   h1 { margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -0.3px; line-height: 1.2; text-wrap: balance; }
   header p { margin: 0; max-width: 68ch; color: var(--muted); text-wrap: pretty; }
-  .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
-  .key { display: flex; flex-wrap: wrap; gap: 14px; font: 12px/1.4 var(--mono); color: var(--muted); letter-spacing: .02em; }
+  .key { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; font: 12px/1.4 var(--mono); color: var(--muted); letter-spacing: .02em; }
   .key span { display: inline-flex; align-items: center; gap: 6px; }
   .key i { width: 7px; height: 7px; background: var(--fg); opacity: .8; }
   .key i.acc { background: var(--acc); opacity: 1; }
-  .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: var(--seg); }
-  .seg button { appearance: none; border: 0; background: none; color: var(--muted); font: 12px/28px var(--mono); letter-spacing: .02em; padding: 0 12px; border-radius: 999px; cursor: pointer; }
-  .seg button[aria-pressed="true"] { background: var(--seg-on); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
-  .seg button:focus-visible { outline: 1.5px solid var(--fg); outline-offset: 2px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 20px; }
-  article { min-width: 0; display: grid; gap: 12px; padding: 14px 14px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; }
-  .stage { position: relative; display: grid; place-items: center; aspect-ratio: 340 / 260; max-width: 100%; border-radius: 10px; background: var(--stage); overflow: hidden; }
-  .stage canvas { display: block; width: var(--rvW, 100%); height: auto; aspect-ratio: 340 / 260; max-width: 100%; }
-  .meta { display: grid; gap: 4px; padding-inline: 4px; }
-  .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-  h2 { margin: 0; font-size: 17px; font-weight: 500; }
-  .tag { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
-  .meta p { margin: 0; color: var(--muted); font-size: 13px; text-wrap: pretty; }
-  @media (max-width: 480px) { .wrap { padding-inline: 16px; } }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 540px), 1fr)); gap: 20px; }
+  figure { margin: 0; min-width: 0; display: grid; grid-template-rows: 1fr auto; gap: 10px; }   /* the backdrops in a row are as tall as each other */
+  /* the backdrop: the page behind the pop-up, dimmed */
+  .bd { display: grid; place-items: center; padding: 36px 28px; border-radius: 18px; background: var(--dim); }
+  /* the pop-up, as the report's own: charcoal, round, the close at the top right; title, card, words, buttons */
+  .modal { position: relative; width: 100%; max-width: 520px; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 44px 32px 36px; border-radius: 32px; background: var(--modal); color: var(--m-fg); }
+  .x { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 999px; background: var(--m-x); color: var(--m-fg); }
+  .x svg { width: 12px; height: 12px; }
+  .modal h2 { margin: 8px 0 0; max-width: 18ch; font-size: 28px; line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; }
+  .vis { width: 100%; max-width: 360px; margin: 14px 0 10px; }
+  .vis canvas { display: block; width: 100%; height: auto; aspect-ratio: 340 / 232; }   /* a little shorter than the card's own box, so the words sit close under it */
+  .modal p { margin: 0; max-width: 42ch; color: var(--m-muted); font-size: 15px; line-height: 1.45; text-wrap: pretty; }
+  .ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: 52px; padding: 0 28px; border-radius: 999px; background: #fff; color: #141413; font-size: 16px; font-weight: 600; }
+  .btn.sec { background: var(--m-sec); color: var(--m-fg); }
+  figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-inline: 4px; }
+  figcaption b { font-size: 15px; font-weight: 500; }
+  figcaption span { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+  @media (max-width: 480px) { .wrap { padding-inline: 16px; } .bd { padding: 20px 12px; } .modal { padding: 68px 20px 28px; } .modal h2 { font-size: 24px; } }
 </style>
 </head>
 <body>
@@ -53,38 +57,59 @@
   <header>
     <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>Everlab service pages</a>
     <h1>Report visuals</h1>
-    <p>The card each report reveals, one per report: the same isometric report card with one sheet offset under it, a visual panel and three short lines of report text. Only the panel changes, its picture a grid of square particles, each in a deliberate place. Shown assembled and still; the motion follows once the shapes are agreed.</p>
-    <div class="bar">
-      <div class="key" aria-label="Key"><span><i></i>particle</span><span><i class="acc"></i>accent: what the report reveals</span></div>
-      <div class="seg" role="group" aria-label="Card size">
-        <button type="button" data-w="" aria-pressed="true">Large</button>
-        <button type="button" data-w="340px" aria-pressed="false">Modal · 340</button>
-        <button type="button" data-w="250px" aria-pressed="false">Small · 250</button>
-      </div>
-    </div>
+    <p>Each report's reveal, as the pop-up it opens in: the title, the report's card, the doctor's words, then the button or buttons. The card is the same for every report, an isometric report with one sheet under it; only its panel changes, a grid of square particles. Shown still; the motion follows once the shapes are agreed.</p>
+    <div class="key" aria-label="Key"><span><i></i>particle</span><span><i class="acc"></i>accent: what the report reveals</span></div>
   </header>
 
   <div class="grid">
-    <article aria-labelledby="r-mri">
-      <div class="stage"><canvas data-fig="body-scan" role="img" aria-label="Whole Body MRI and CT Chest report card: a body-scan silhouette"></canvas></div>
-      <div class="meta"><div class="row"><h2 id="r-mri">Whole Body MRI &amp; CT Chest</h2><span class="tag">wbmri</span></div>
-        <p>A standing body of cells, a bright rim and a sparse inside, crossed by four scan slices; the chest in the accent.</p></div>
-    </article>
-    <article aria-labelledby="r-gut">
-      <div class="stage"><canvas data-fig="gut-map" role="img" aria-label="Microbiome and Gut Health report card: a folded pathway with four communities"></canvas></div>
-      <div class="meta"><div class="row"><h2 id="r-gut">Microbiome &amp; Gut Health</h2><span class="tag">gut</span></div>
-        <p>A short pathway folding back and forth, with four organised communities: sparse, medium, dense (in the accent) and very fine.</p></div>
-    </article>
-    <article aria-labelledby="r-blood">
-      <div class="stage"><canvas data-fig="assay" role="img" aria-label="Advanced Blood Testing report card: four data rows with markers"></canvas></div>
-      <div class="meta"><div class="row"><h2 id="r-blood">Advanced Blood Testing</h2><span class="tag">path</span></div>
-        <p>Four compact data rows: a label, a track, the range as dim cells and the result as a small square marker; one result in the accent.</p></div>
-    </article>
-    <article aria-labelledby="r-dexa">
-      <div class="stage"><canvas data-fig="strata" role="img" aria-label="DEXA report card: a body in two particle densities"></canvas></div>
-      <div class="meta"><div class="row"><h2 id="r-dexa">DEXA Body Composition</h2><span class="tag">dexa</span></div>
-        <p>A body silhouette in two densities: every cell on one side, one in four on the other; a few cells at the hip in the accent.</p></div>
-    </article>
+    <figure aria-labelledby="m-mri">
+      <div class="bd">
+        <div class="modal" role="group" aria-label="Whole Body MRI and CT Chest report pop-up">
+          <span class="x" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 3l6 6M9 3 3 9"/></svg></span>
+          <h2 id="m-mri">Your debrief is ready</h2>
+          <div class="vis"><canvas data-fig="body-scan" role="img" aria-label="The Whole Body MRI and CT Chest report card"></canvas></div>
+          <p>Dr Sarah Chen has reviewed your Whole Body MRI and CT Chest and recorded a video walkthrough for you. If anything had needed urgent attention, your doctor would already have called you.</p>
+          <div class="ctas"><span class="btn sec">Watch video</span><span class="btn">See report</span></div>
+        </div>
+      </div>
+      <figcaption><b>Whole Body MRI &amp; CT Chest</b><span>wbmri</span></figcaption>
+    </figure>
+    <figure aria-labelledby="m-gut">
+      <div class="bd">
+        <div class="modal" role="group" aria-label="Microbiome and Gut Health report pop-up">
+          <span class="x" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 3l6 6M9 3 3 9"/></svg></span>
+          <h2 id="m-gut">Your microbiome report is ready</h2>
+          <div class="vis"><canvas data-fig="gut-map" role="img" aria-label="The Microbiome and Gut Health report card"></canvas></div>
+          <p>Emma Walsh has reviewed your microbiome results and recorded a video walkthrough for you. If anything in your results needs follow-up with a doctor, we’ll contact you directly.</p>
+          <div class="ctas"><span class="btn sec">Watch video</span><span class="btn">See report</span></div>
+        </div>
+      </div>
+      <figcaption><b>Microbiome &amp; Gut Health</b><span>gut</span></figcaption>
+    </figure>
+    <figure aria-labelledby="m-blood">
+      <div class="bd">
+        <div class="modal" role="group" aria-label="Advanced Blood Testing report pop-up">
+          <span class="x" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 3l6 6M9 3 3 9"/></svg></span>
+          <h2 id="m-blood">All your results are in</h2>
+          <div class="vis"><canvas data-fig="assay" role="img" aria-label="The Advanced Blood Testing report card"></canvas></div>
+          <p>Dr Steven Lu has reviewed your blood test results and written your debrief. If anything had needed urgent attention, your doctor would already have called you.</p>
+          <div class="ctas"><span class="btn">See results</span></div>
+        </div>
+      </div>
+      <figcaption><b>Advanced Blood Testing</b><span>path</span></figcaption>
+    </figure>
+    <figure aria-labelledby="m-dexa">
+      <div class="bd">
+        <div class="modal" role="group" aria-label="DEXA Body Composition report pop-up">
+          <span class="x" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 3l6 6M9 3 3 9"/></svg></span>
+          <h2 id="m-dexa">Your results are ready</h2>
+          <div class="vis"><canvas data-fig="strata" role="img" aria-label="The DEXA Body Composition report card"></canvas></div>
+          <p>Dr Steven Lu has reviewed your DEXA results. Your doctor goes through them with you at your Diagnostics Review.</p>
+          <div class="ctas"><span class="btn">See results</span></div>
+        </div>
+      </div>
+      <figcaption><b>DEXA Body Composition</b><span>dexa</span></figcaption>
+    </figure>
   </div>
 </div>
 <script src="visuals/hairline2/hl2.js"></script>
@@ -97,13 +122,6 @@
   try { if (window.frameElement && window.frameElement.id === "rvFrame") document.querySelector(".back").hidden = true; } catch (e) {}
   /* each card drawn at its stage's size, and again when the size changes */
   if (window.HL2) document.querySelectorAll("canvas[data-fig]").forEach(function (c) { window.HL2.mount(c, c.dataset.fig); });
-  /* the size switch: the cards at the stage's width, at the pop-up's 340, or at 250 */
-  var seg = document.querySelector(".seg");
-  seg.addEventListener("click", function (e) {
-    var b = e.target.closest("button"); if (!b) return;
-    seg.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
-    if (b.dataset.w) document.documentElement.style.setProperty("--rvW", b.dataset.w); else document.documentElement.style.removeProperty("--rvW");
-  });
 </script>
 </body>
 </html>
