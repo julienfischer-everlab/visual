@@ -13542,3 +13542,7 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 ## Report visuals V2 — Save each card as a PNG
 - A Save row on every card ("Card as PNG"). `cardPng(card)` redraws the card on a canvas at 2x from what's on the page: the background (picture cover or flat colour), V1's shade, the frame's dither canvas and illustration canvas, the outline, the title line by line where the browser wrapped it (Range rects), and the buttons. Rounded corners are transparent.
 - Saves through the viewer's downloads capability (this page's `claude` or the prototype's around it, as the Image generator does); named everlab-report-card-<card>-background-v<1|2|3>.png. Declined → "Not saved."; no capability or another failure → a sheet showing the PNG to save by hand (Esc / Close).
+
+## Report visuals V2 — presets per card (replaces the PNG save)
+- "Card as PNG" removed (the ask was presets). Each card's controls end with Presets: a name field (optional; Enter saves) and Save preset; saved presets show as chips under it, the one matching the card ringed; click applies it, × deletes it (with Undo).
+- A preset is the card's settings (FIELDS: mode, outline, pic, flat, fpic, ink, dith1, dith2), kept in localStorage rv-presets-<card>; same name = update. Applying checks each field with the same VAL/DEF the page loads with, so a bad or old preset falls back to defaults field by field.

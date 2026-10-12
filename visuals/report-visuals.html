@@ -58,7 +58,7 @@
   .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
   .seg button { appearance: none; border: 0; background: none; color: color-mix(in srgb, var(--fg) 72%, var(--bg)); font: 12px/28px var(--mono); letter-spacing: .02em; padding: 0 12px; border-radius: 999px; cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
-  .seg button:focus-visible, .ctl button:focus-visible, .pngBox button:focus-visible, .ctl label:has(input:focus-visible) { outline: 1.5px solid var(--fg); outline-offset: 2px; }
+  .seg button:focus-visible, .ctl button:focus-visible, .ctl .pname:focus-visible, .ctl label:has(input:focus-visible) { outline: 1.5px solid var(--fg); outline-offset: 2px; }
   .grid[hidden] { display: none; }
   /* V2: a card on its own picture: the title at the left, the visual in a thin outlined frame, flat, the button(s) at the foot */
   .cw { width: 100%; max-width: 520px; container-type: inline-size; }   /* the card at the pop-up's width, its sizes following its own width */
@@ -100,16 +100,19 @@
   .ctl .tbtn:disabled { opacity: .45; cursor: default; }
   .ctl .swc:has(input:focus-visible), .ctl .swi:has(input:focus-visible) { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413; }
   .ctl .swc.on:has(input:focus-visible) { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413, 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
-  .ctl .tbtn, .ctl label.tbtn, .pngBox .tbtn { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
+  .ctl .tbtn, .ctl label.tbtn { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
   .ctl input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
   .ctl select { height: 26px; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--fg); font: 12px/1 var(--sans); }
   .ctl .note { font-size: 12px; color: var(--muted); }
   .ctl .note:empty { display: none; }
-  /* where the viewer can't save a file: the card's PNG, to save by hand */
-  .pngSheet { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / .6); }
-  .pngBox { display: grid; gap: 12px; justify-items: center; max-width: min(560px, 100%); max-height: 100%; overflow: auto; padding: 16px; border-radius: 16px; background: var(--bg); color: var(--fg); }
-  .pngBox img { display: block; max-width: 100%; max-height: 70vh; border-radius: 12px; }
-  .pngBox p { margin: 0; font-size: 13px; color: var(--muted); text-align: center; text-wrap: pretty; }
+  /* presets: a name, Save preset, then each saved one as a chip (apply it, or × to delete it) */
+  .ctl .pname { height: 26px; width: 15ch; min-width: 0; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--fg); font: 12px/1 var(--sans); }
+  .ctl .pchip { display: inline-flex; align-items: center; height: 26px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .ctl .pchip button { appearance: none; height: 100%; border: 0; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
+  .ctl .pchip .pa { max-width: 22ch; padding: 0 4px 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ctl .pchip .px { padding: 0 9px 0 4px; color: var(--muted); font-size: 14px; }
+  .ctl .pchip.on { border-color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }   /* the card is showing this preset */
+  .ctl .pchip button:focus-visible { outline-offset: -3px; }
 </style>
 </head>
 <body>
@@ -117,7 +120,7 @@
   <header>
     <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>Everlab service pages</a>
     <h1>Report visuals</h1>
-    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, three backgrounds: V1, a picture, with the frame showing it dithered; V2, a flat colour, also behind the frame's own picture, dithered in black or white squares on it; V3, a flat colour with only the report's illustration in the frame, in black or white (the illustration shows on V3 only). The frame's outline can be on or off. Your choices stay in this browser.</p>
+    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, three backgrounds: V1, a picture, with the frame showing it dithered; V2, a flat colour, also behind the frame's own picture, dithered in black or white squares on it; V3, a flat colour with only the report's illustration in the frame, in black or white (the illustration shows on V3 only). The frame's outline can be on or off. Save a card's settings as a preset to come back to them; your choices and presets stay in this browser.</p>
     <p id="lead-v1" hidden>V1: each report's reveal, as the pop-up it opens in: the title, the report's card, the doctor's words, then the button or buttons. The card is the same for every report, an isometric report with one sheet under it; only its panel changes, a grid of square particles.</p>
     <div class="bar">
       <div class="key" id="key-v2" aria-label="Key"><span><i class="dt"></i>data point</span><span><i class="dt big"></i>what the report reveals</span></div>
@@ -381,7 +384,7 @@
   var IGOPTS = '<optgroup label="Image generator"><option value="ig:Dot screen">Dot screen</option><option value="ig:Editorial X">Editorial X</option><option value="ig:Riso duotone">Riso duotone</option><option value="ig:Bitmap">Bitmap</option><option value="ig:Fine grain">Fine grain</option><option value="ig:Poster X">Poster X</option></optgroup><option value="off">Off</option>';
   var DOPTS1 = '<option value="bayer-img">Ordered · picture colours</option><option value="bayer-mono">Ordered · black &amp; white</option><option value="atk-img">Diffusion · picture colours</option><option value="atk-mono">Diffusion · black &amp; white</option>' + IGOPTS;
   var DOPTS2 = '<option value="bayer-mono">Ordered</option><option value="atk-mono">Diffusion</option>' + IGOPTS;
-  var WHITE = "#ffffff", BLACK = "#141414";
+  var WHITE = "#ffffff", BLACK = "#141414", FIELDS = ["mode", "outline", "pic", "flat", "fpic", "ink", "dith1", "dith2"];   // a card's settings
   function fgOf(S) { return S.ink || (lum(rgbOf(S.flat)) > .6 ? BLACK : WHITE); }   // the foreground: black or white, chosen, or by the colour behind it
   var CTL = '<div class="row"><span class="lab">Background</span><span class="seg mini" role="group" aria-label="Background version"><button type="button" data-mode="1">V1 · Picture</button><button type="button" data-mode="2">V2 · Colour</button><button type="button" data-mode="3">V3 · Illustration</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Colour</span><span class="sws fls"></span><span class="hint" data-flat-hex></span></div>' +
@@ -389,7 +392,8 @@
     '<div class="row" data-only="1 2"><span class="lab">Dither</span><select data-dither aria-label="Dither the picture in the frame"></select><select data-px aria-label="Dither size"><option value="2">Fine</option><option value="3">Medium</option><option value="5">Coarse</option></select></div>' +
     '<div class="row"><span class="lab">Outline</span><span class="seg mini" role="group" aria-label="Frame outline"><button type="button" data-outline="1">On</button><button type="button" data-outline="0">Off</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Foreground</span><span class="seg mini" role="group" aria-label="Foreground: the squares, the illustration and the outline"><button type="button" data-fg="#ffffff">White</button><button type="button" data-fg="#141414">Black</button></span></div>' +
-    '<div class="row"><span class="lab">Save</span><button type="button" class="tbtn" data-save>Card as PNG</button></div>' +
+    '<div class="row"><span class="lab">Presets</span><input type="text" class="pname" maxlength="40" placeholder="Name" aria-label="Preset name"><button type="button" class="tbtn" data-psave>Save preset</button></div>' +
+    '<div class="row" data-plist hidden></div>' +
     '<span class="note" aria-live="polite"></span>';
 
   function sync(card) {   // the card and its controls, from its state
@@ -413,6 +417,7 @@
     dsel.value = dd[0]; psel.value = dd[1]; psel.disabled = dd[0] === "off";
     dither(card);
     var fc = card.querySelector("canvas[data-flat]"); if (fc && fc._redraw) fc._redraw();   // the illustration, in its ink for this background
+    if (card._drawP) card._drawP();   // the preset it now matches, marked
   }
 
   document.querySelectorAll(".icard").forEach(function (card) {
@@ -428,9 +433,10 @@
     var oldc = store.get(K.pic); if (/^color:#[0-9a-f]{6}$/i.test(oldc || "")) { if (!store.get(K.flat)) store.set(K.flat, oldc.slice(6)); store.del(K.pic); }   // a colour picked as the background before V2 had its own
     var IGRE = "ig:(Dot screen|Editorial X|Riso duotone|Bitmap|Fine grain|Poster X)";
     var ik = store.get(K.ink); if (ik && HEXRE.test(ik) && ik !== WHITE && ik !== BLACK) store.set(K.ink, lum(rgbOf(ik)) >= .5 ? WHITE : BLACK);   // a colour picked as the foreground before: the nearer of black and white
-    var S = card._s = { mode: g("mode", function (v) { return /^[123]$/.test(v); }, "1"), outline: g("outline", function (v) { return v === "1" || v === "0"; }, "1"), pic: g("pic", isPic, def), flat: g("flat", function (v) { return HEXRE.test(v); }, FLAT_OF[def] || "#10222e"), fpic: g("fpic", isPic, def), ink: g("ink", function (v) { return v === WHITE || v === BLACK; }, null),
-      dith1: g("dith1", function (v) { return new RegExp("^(off|bayer-img|bayer-mono|atk-img|atk-mono|" + IGRE + ")\\|(2|3|5)$").test(v); }, "bayer-img|3"),
-      dith2: g("dith2", function (v) { return new RegExp("^(off|bayer-mono|atk-mono|" + IGRE + ")\\|(2|3|5)$").test(v); }, "bayer-mono|3") };
+    var VAL = { mode: function (v) { return /^[123]$/.test(v); }, outline: function (v) { return v === "1" || v === "0"; }, pic: isPic, flat: function (v) { return HEXRE.test(v); }, fpic: isPic, ink: function (v) { return v === WHITE || v === BLACK; },
+      dith1: function (v) { return new RegExp("^(off|bayer-img|bayer-mono|atk-img|atk-mono|" + IGRE + ")\\|(2|3|5)$").test(v); }, dith2: function (v) { return new RegExp("^(off|bayer-mono|atk-mono|" + IGRE + ")\\|(2|3|5)$").test(v); } };
+    var DEF = { mode: "1", outline: "1", pic: def, flat: FLAT_OF[def] || "#10222e", fpic: def, ink: null, dith1: "bayer-img|3", dith2: "bayer-mono|3" };
+    var S = card._s = {}; FIELDS.forEach(function (f) { S[f] = g(f, VAL[f], DEF[f]); });
     var seq = 0;   // the latest choice; an upload that finishes after a later one is dropped
     var set = function (n, v, keep) { seq++; S[n] = v; note.textContent = ""; if (keep) { if (v == null) store.del(K[n]); else if (!store.set(K[n], v)) note.textContent = "Shown here, but this browser could not keep it for next time."; } sync(card); };
     var picKey = function () { return S.mode === "2" ? "fpic" : "pic"; };
@@ -444,80 +450,45 @@
     // the pickers: live while you pick (a moment apart, as a look from the Image generator takes a moment), kept when you close them
     var live = function (inp, n) { var t = 0; inp.addEventListener("input", function () { clearTimeout(t); t = setTimeout(function () { set(n, inp.value, false); }, 120); }); inp.addEventListener("change", function () { clearTimeout(t); set(n, inp.value, true); }); };
     live(pick.firstChild, "flat");
-    var sb = ctl.querySelector("[data-save]"); sb.addEventListener("click", function () { saveCard(card, note, sb); });
     ctl.querySelector("[data-fg]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-fg]"); if (b) set("ink", b.dataset.fg, true); });
     var dsel = ctl.querySelector("[data-dither]"), psel = ctl.querySelector("[data-px]");
     var dset = function () { set(S.mode === "2" ? "dith2" : "dith1", dsel.value + "|" + psel.value, true); };
     dsel.addEventListener("change", dset); psel.addEventListener("change", dset);
     sync(card);
+    /* presets: this card's settings, named and kept in this browser, to come back to */
+    var PK = "rv-presets-" + k, plist = ctl.querySelector("[data-plist]"), pname = ctl.querySelector(".pname"), lastDel = null;
+    var presets = function () { try { var a = JSON.parse(store.get(PK) || "[]"); return Array.isArray(a) ? a.filter(function (p) { return p && typeof p.name === "string" && p.s && typeof p.s === "object"; }) : []; } catch (e) { return []; } };
+    var keepP = function (a) { return store.set(PK, JSON.stringify(a)); };
+    var same = function (s) { return FIELDS.every(function (f) { return (s[f] == null ? null : s[f]) === (S[f] == null ? null : S[f]); }); };
+    var drawP = card._drawP = function () {
+      var a = presets(); plist.hidden = !a.length && !lastDel; plist.innerHTML = '<span class="lab"></span>';
+      a.forEach(function (p, i) { var on = same(p.s), c = document.createElement("span"); c.className = "pchip" + (on ? " on" : ""); c.innerHTML = '<button type="button" class="pa"></button><button type="button" class="px">×</button>';
+        c.firstChild.textContent = p.name; c.firstChild.title = "Apply " + p.name; c.firstChild.setAttribute("aria-pressed", String(on)); c.firstChild.dataset.i = i; c.lastChild.dataset.del = i; c.lastChild.setAttribute("aria-label", "Delete the preset " + p.name); plist.appendChild(c); });
+      if (lastDel) { var u = document.createElement("button"); u.type = "button"; u.className = "tbtn"; u.dataset.undo = "1"; u.textContent = "Undo"; plist.appendChild(u); }
+    };
+    var saveP = function () {
+      var a = presets(), nm = pname.value.trim().slice(0, 40) || "Preset " + (a.length + 1), s = {}, i = -1; FIELDS.forEach(function (f) { s[f] = S[f]; });
+      a.forEach(function (p, j) { if (p.name === nm) i = j; }); if (i >= 0) a[i] = { name: nm, s: s }; else a.push({ name: nm, s: s });
+      lastDel = null;
+      if (keepP(a)) { note.textContent = (i >= 0 ? "Updated" : "Saved") + " “" + nm + "”."; pname.value = ""; } else note.textContent = "This browser couldn't keep that preset: an uploaded picture takes a lot of room, try a preset picture.";
+      drawP();
+    };
+    ctl.querySelector("[data-psave]").addEventListener("click", saveP);
+    pname.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); saveP(); } });
+    plist.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return; var a = presets();
+      if (b.dataset.undo) { if (lastDel) { a.splice(Math.min(lastDel.i, a.length), 0, lastDel.p); keepP(a); note.textContent = "“" + lastDel.p.name + "” is back."; lastDel = null; } drawP(); return; }
+      if (b.dataset.del != null) { var d = +b.dataset.del, p = a[d]; if (!p) return; a.splice(d, 1); keepP(a); lastDel = { p: p, i: d }; note.textContent = "Deleted “" + p.name + "”."; drawP(); var nx = plist.querySelector(".pa, [data-undo]"); if (nx) nx.focus(); return; }
+      var q = a[+b.dataset.i]; if (!q) return; seq++; lastDel = null;
+      FIELDS.forEach(function (f) { var v = q.s[f]; if (v == null || !VAL[f](v)) v = DEF[f]; S[f] = v; if (v == null) store.del(K[f]); else store.set(K[f], v); });
+      sync(card); note.textContent = "Applied “" + q.name + "”.";
+    });
+    drawP();
     if (window.ResizeObserver) { var rt = 0; new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { dither(card); }, 80); }).observe(card.querySelector(".frame")); }
     card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("drop"); });
     card.addEventListener("dragleave", function () { card.classList.remove("drop"); });
     card.addEventListener("drop", function (e) { e.preventDefault(); card.classList.remove("drop"); take(e.dataTransfer.files && e.dataTransfer.files[0]); });
   });
-  /* Save: each card as a PNG, drawn from what is on the page (its background, title, frame and buttons), at twice its size */
-  function rrect(x, X, Y, W, H, r) { r = Math.min(r, W / 2, H / 2); x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + W, Y, X + W, Y + H, r); x.arcTo(X + W, Y + H, X, Y + H, r); x.arcTo(X, Y + H, X, Y, r); x.arcTo(X, Y, X + W, Y, r); x.closePath(); }
-  function alphaOf(c) { var m = /rgba?\(([^)]+)\)/.exec(c || ""); if (!m) return 1; var p = m[1].split(/[\s,\/]+/).filter(Boolean); return p.length > 3 ? parseFloat(p[3]) : 1; }
-  function textLines(el) {   // the lines the browser wrapped the text into: each line's words and where it starts
-    var out = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, rg = document.createRange();
-    while ((n = w.nextNode())) { var re = /\S+/g, m; while ((m = re.exec(n.data))) { rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); var r = rg.getClientRects()[0]; if (!r) continue; var l = out[out.length - 1]; if (l && Math.abs(l.top - r.top) < r.height / 2) l.words.push(m[0]); else out.push({ top: r.top, left: r.left, h: r.height, words: [m[0]] }); } }
-    return out;
-  }
-  function cardPng(card) {
-    return new Promise(function (res) {
-      var S = card._s, url = S.mode === "1" ? urlOf(S.pic) : "", done = false;
-      var go = function (im) {
-        if (done) return; done = true;
-        var cr = card.getBoundingClientRect(), k = 2, cv = document.createElement("canvas"); cv.width = Math.round(cr.width * k); cv.height = Math.round(cr.height * k);
-        var x = cv.getContext("2d"), cs = getComputedStyle(card), rad = parseFloat(cs.borderTopLeftRadius) || 0, at = function (r) { return [(r.left - cr.left) * k, (r.top - cr.top) * k, r.width * k, r.height * k]; };
-        rrect(x, 0, 0, cv.width, cv.height, rad * k); x.clip();
-        x.fillStyle = S.mode === "1" ? "#222" : S.flat; x.fillRect(0, 0, cv.width, cv.height);
-        if (im) { var sc = Math.max(cv.width / im.naturalWidth, cv.height / im.naturalHeight), iw = im.naturalWidth * sc, ih = im.naturalHeight * sc; x.drawImage(im, (cv.width - iw) / 2, (cv.height - ih) / 2, iw, ih); }
-        if (S.mode === "1") { var g = x.createLinearGradient(0, 0, 0, cv.height); [[0, .5], [.24, .42], [.44, 0], [.62, 0], [1, .34]].forEach(function (s) { g.addColorStop(s[0], "rgba(0,0,0," + s[1] + ")"); }); x.fillStyle = g; x.fillRect(0, 0, cv.width, cv.height); }   // the shade, as ::before draws it
-        // the frame: the picture (dithered), the illustration, the outline
-        var fr = card.querySelector(".frame"), inner = card.querySelector("canvas[data-flat]"), dc = card.querySelector("canvas.dith"), fb = at(inner.getBoundingClientRect());
-        if (!dc.hidden && dc.width) { x.imageSmoothingEnabled = !/^(bayer|atk)/.test((S.mode === "2" ? S.dith2 : S.dith1).split("|")[0]); x.drawImage(dc, fb[0], fb[1], fb[2], fb[3]); x.imageSmoothingEnabled = true; }
-        if (getComputedStyle(inner).visibility !== "hidden" && inner.width) x.drawImage(inner, fb[0], fb[1], fb[2], fb[3]);
-        var fs = getComputedStyle(fr), bw = parseFloat(fs.borderTopWidth) || 0;
-        if (bw && alphaOf(fs.borderTopColor) > 0) { var ob = at(fr.getBoundingClientRect()); x.strokeStyle = fs.borderTopColor; x.lineWidth = bw * k; x.strokeRect(ob[0] + bw * k / 2, ob[1] + bw * k / 2, ob[2] - bw * k, ob[3] - bw * k); }
-        // the title, line by line where the browser wrapped it
-        var h2 = card.querySelector("h2"), hs = getComputedStyle(h2), font = function (st, px) { return st.fontStyle + " " + st.fontWeight + " " + px + "px " + st.fontFamily; };
-        x.font = font(hs, parseFloat(hs.fontSize) * k); x.fillStyle = hs.color; x.textBaseline = "alphabetic"; x.textAlign = "left"; if ("letterSpacing" in x) x.letterSpacing = (parseFloat(hs.letterSpacing) || 0) * k + "px";
-        var asc = x.measureText("Hg").fontBoundingBoxAscent;
-        textLines(h2).forEach(function (l) { x.fillText(l.words.join(" "), (l.left - cr.left) * k, (l.top - cr.top) * k + (asc || l.h * k * .8)); });
-        if ("letterSpacing" in x) x.letterSpacing = "0px";
-        // the buttons
-        card.querySelectorAll(".ictas .btn").forEach(function (b) { var bs = getComputedStyle(b), r = at(b.getBoundingClientRect()); rrect(x, r[0], r[1], r[2], r[3], r[3] / 2); x.fillStyle = bs.backgroundColor; x.fill(); x.fillStyle = bs.color; x.font = font(bs, parseFloat(bs.fontSize) * k); x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(b.textContent.trim(), r[0] + r[2] / 2, r[1] + r[3] / 2); });
-        cv.toBlob(function (b) { res(b); }, "image/png");
-      };
-      if (url) { imageOf(url, go); setTimeout(function () { go(null); }, 4000); } else go(null);
-    });
-  }
-  var dlp = null;
-  function downloads() {   // the viewer's Save, from this page or the prototype around it; null where there is none
-    if (dlp) return dlp;
-    var host = null; try { host = window.claude && window.claude.use ? window.claude : window.parent !== window && window.parent.claude && window.parent.claude.use ? window.parent.claude : null; } catch (e) { host = null; }
-    return (dlp = host ? Promise.race([Promise.resolve(host.use("downloads")).catch(function () { return null; }), new Promise(function (r) { setTimeout(function () { r(null); }, 1500); })]) : Promise.resolve(null));
-  }
-  function showPng(blob, name) {   // where the page can't hand over a file: the picture, to save by hand
-    var u = URL.createObjectURL(blob), o = document.createElement("div"); o.className = "pngSheet"; o.setAttribute("role", "dialog"); o.setAttribute("aria-label", "Save " + name);
-    o.innerHTML = '<div class="pngBox"><img alt=""><p>Saving files isn\'t available here: right-click the picture (or press and hold) and save it as <b></b>.</p><button type="button" class="tbtn">Close</button></div>';
-    o.querySelector("img").src = u; o.querySelector("b").textContent = name;
-    var close = function () { o.remove(); URL.revokeObjectURL(u); document.removeEventListener("keydown", esc); }, esc = function (e) { if (e.key === "Escape") close(); };
-    o.addEventListener("click", function (e) { if (e.target === o || e.target.closest("button")) close(); }); document.addEventListener("keydown", esc);
-    document.body.appendChild(o); o.querySelector("button").focus();
-  }
-  function saveCard(card, note, btn) {
-    var S = card._s, name = "everlab-report-card-" + card.dataset.card + "-background-v" + S.mode + ".png";
-    btn.disabled = true; note.textContent = "Saving…";
-    Promise.all([cardPng(card), downloads()]).then(function (r) {
-      var blob = r[0], dl = r[1];
-      if (!blob) throw new Error("render");
-      if (!dl || typeof dl.save !== "function") { note.textContent = ""; showPng(blob, name); return; }
-      return dl.save({ filename: name, data: blob }).then(function () { note.textContent = "Saved " + name + "."; }, function (e) { var c = e && e.code; if (c === "declined") note.textContent = "Not saved."; else if (c === "rate_limited") note.textContent = "Too many saves in a row: wait a few seconds, then try again."; else { note.textContent = ""; showPng(blob, name); } });
-    }).catch(function () { note.textContent = "This card couldn't be saved here."; }).then(function () { btn.disabled = false; });
-  }
-
   /* zoom, or a screen with another pixel density: the same size on the page, so redraw the canvases sharp */
   (function watchDpr() {
     if (!window.matchMedia) return;
