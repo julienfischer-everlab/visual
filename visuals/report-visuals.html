@@ -64,7 +64,7 @@
   .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 520 / 660; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; min-height: 0; }
   .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(180deg, rgb(0 0 0 / .5) 0%, rgb(0 0 0 / .42) 24%, rgb(0 0 0 / 0) 44%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
   .icard h2 { margin: 0; max-width: 16ch; font-size: clamp(24px, 6.4cqw, 34px); line-height: 1.08; font-weight: 500;   /* medium ("title medium font") */ letter-spacing: -0.025em; text-wrap: balance; }
-  .frame { position: relative; margin: auto 0; width: 100%; min-height: 0; aspect-ratio: 24 / 18; border: 1px solid rgb(255 255 255 / .78); }
+  .frame { position: relative; margin: auto 0; width: 100%; min-height: 0; aspect-ratio: 437 / 296;   /* 24/18 less 32px of height on the 520px card */ border: 1px solid var(--frame, rgb(255 255 255 / .78)); }   /* --frame: the card's own colour, when one is picked */
   .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .frame canvas.dith { image-rendering: pixelated; }   /* the picture inside the frame, dithered (when chosen), under the report's dots */
   .frame canvas.dith[hidden] { display: none; }
@@ -80,6 +80,14 @@
   .ctl .sw:focus-visible { outline: none; box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413; }   /* focus inside the swatch, chosen around it */
   .ctl .sw[aria-pressed="true"]:focus-visible { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413, 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
   .ctl .acts { display: inline-flex; gap: 6px; }
+  .ctl .swc { position: relative; display: inline-block; background: conic-gradient(from 200deg, #e0574f, #e8b04a, #8fbf5a, #4fa3c7, #6b5bd1, #c45aa6, #e0574f); }   /* your own colour: a rainbow until one is chosen */
+  .ctl .swc.on { background: var(--c); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
+  .ctl .swi { position: relative; display: inline-block; background: var(--c, #fff); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .2); }   /* the frame and dither colour */
+  .ctl .swc input, .ctl .swi input { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; opacity: 0; cursor: pointer; }
+  .ctl .hint { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; min-width: 7ch; }
+  .ctl .tbtn:disabled { opacity: .45; cursor: default; }
+  .ctl .swc:has(input:focus-visible), .ctl .swi:has(input:focus-visible) { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413; }
+  .ctl .swc.on:has(input:focus-visible) { box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3.5px #141413, 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
   .ctl .tbtn, .ctl label.tbtn { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--fg); font: 12px/1 var(--sans); cursor: pointer; }
   .ctl input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
   .ctl select { height: 26px; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--fg); font: 12px/1 var(--sans); }
@@ -93,7 +101,7 @@
   <header>
     <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>Everlab service pages</a>
     <h1>Report visuals</h1>
-    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, change its picture: a preset, or one of your own (it stays in this browser).</p>
+    <p id="lead-v2">V2: each report as a card on its own picture: the title at the left, the report's visual flat in a thin outlined frame, then its button(s). Under each card, change its picture (a preset, a colour, or one of your own), dither it, and pick the colour of the frame and the dither. Your choices stay in this browser.</p>
     <p id="lead-v1" hidden>V1: each report's reveal, as the pop-up it opens in: the title, the report's card, the doctor's words, then the button or buttons. The card is the same for every report, an isometric report with one sheet under it; only its panel changes, a grid of square particles.</p>
     <div class="bar">
       <div class="key" id="key-v2" aria-label="Key"><span><i class="dt"></i>data point</span><span><i class="dt big"></i>what the report reveals</span></div>
@@ -115,7 +123,7 @@
       </div>
       </div></div>
       <figcaption><b>Whole Body MRI &amp; CT Chest</b><span>wbmri</span></figcaption>
-      <div class="ctl" data-for="mri" role="group" aria-label="Whole Body MRI and CT Chest: background">
+      <div class="ctl" data-for="mri" role="group" aria-label="Whole Body MRI and CT Chest: picture and colours">
         <span class="lab">Background</span>
         <span class="sws"></span>
         <span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span>
@@ -141,6 +149,11 @@
           <option value="3" selected>Medium</option>
           <option value="5">Coarse</option>
         </select>
+        <span class="brk"></span>
+        <span class="lab">Colour</span>
+        <label class="sw swi" title="Frame outline and dither colour"><input type="color" value="#ffffff" data-ink aria-label="Frame outline and dither colour"></label>
+        <span class="hint">Frame + dither</span>
+        <button type="button" class="tbtn" data-ink-reset disabled>Default</button>
         <span class="note" aria-live="polite"></span>
       </div>
     </figure>
@@ -153,7 +166,7 @@
       </div>
       </div></div>
       <figcaption><b>Microbiome &amp; Gut Health</b><span>gut</span></figcaption>
-      <div class="ctl" data-for="gut" role="group" aria-label="Microbiome and Gut Health: background">
+      <div class="ctl" data-for="gut" role="group" aria-label="Microbiome and Gut Health: picture and colours">
         <span class="lab">Background</span>
         <span class="sws"></span>
         <span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span>
@@ -179,6 +192,11 @@
           <option value="3" selected>Medium</option>
           <option value="5">Coarse</option>
         </select>
+        <span class="brk"></span>
+        <span class="lab">Colour</span>
+        <label class="sw swi" title="Frame outline and dither colour"><input type="color" value="#ffffff" data-ink aria-label="Frame outline and dither colour"></label>
+        <span class="hint">Frame + dither</span>
+        <button type="button" class="tbtn" data-ink-reset disabled>Default</button>
         <span class="note" aria-live="polite"></span>
       </div>
     </figure>
@@ -191,7 +209,7 @@
       </div>
       </div></div>
       <figcaption><b>Advanced Blood Testing</b><span>path</span></figcaption>
-      <div class="ctl" data-for="blood" role="group" aria-label="Advanced Blood Testing: background">
+      <div class="ctl" data-for="blood" role="group" aria-label="Advanced Blood Testing: picture and colours">
         <span class="lab">Background</span>
         <span class="sws"></span>
         <span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span>
@@ -217,6 +235,11 @@
           <option value="3" selected>Medium</option>
           <option value="5">Coarse</option>
         </select>
+        <span class="brk"></span>
+        <span class="lab">Colour</span>
+        <label class="sw swi" title="Frame outline and dither colour"><input type="color" value="#ffffff" data-ink aria-label="Frame outline and dither colour"></label>
+        <span class="hint">Frame + dither</span>
+        <button type="button" class="tbtn" data-ink-reset disabled>Default</button>
         <span class="note" aria-live="polite"></span>
       </div>
     </figure>
@@ -229,7 +252,7 @@
       </div>
       </div></div>
       <figcaption><b>DEXA Body Composition</b><span>dexa</span></figcaption>
-      <div class="ctl" data-for="dexa" role="group" aria-label="DEXA Body Composition: background">
+      <div class="ctl" data-for="dexa" role="group" aria-label="DEXA Body Composition: picture and colours">
         <span class="lab">Background</span>
         <span class="sws"></span>
         <span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span>
@@ -255,6 +278,11 @@
           <option value="3" selected>Medium</option>
           <option value="5">Coarse</option>
         </select>
+        <span class="brk"></span>
+        <span class="lab">Colour</span>
+        <label class="sw swi" title="Frame outline and dither colour"><input type="color" value="#ffffff" data-ink aria-label="Frame outline and dither colour"></label>
+        <span class="hint">Frame + dither</span>
+        <button type="button" class="tbtn" data-ink-reset disabled>Default</button>
         <span class="note" aria-live="polite"></span>
       </div>
     </figure>
@@ -340,12 +368,11 @@
     function draw() {
       var r = cv.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1), W = Math.round(r.width * d), H = Math.round(r.height * d); if (!W || !H) return;
       if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
-      var x = cv.getContext("2d"), px = W * .07, py = H * .09, cw = (W - 2 * px) / C, ch = (H - 2 * py) / R;
-      var at = function (i, j) { return [px + i * cw, py + j * ch]; }, dot = function (i, j, rad, a) { var p = at(i + .5, j + .5); x.globalAlpha = a; x.beginPath(); x.arc(p[0], p[1], rad, 0, 6.2832); x.fill(); };
+      var x = cv.getContext("2d"), px = W * .07, py = H * .09, u = Math.min((W - 2 * px) / C, (H - 2 * py) / R), ox = (W - C * u) / 2, oy = (H - R * u) / 2;   // square cells, the shape centred: never stretched
+      var at = function (i, j) { return [ox + i * u, oy + j * u]; }, dot = function (i, j, rad, a) { var p = at(i + .5, j + .5); x.globalAlpha = a; x.beginPath(); x.arc(p[0], p[1], rad, 0, 6.2832); x.fill(); };
       var ink = cv.closest(".icard") && cv.closest(".icard").dataset.ink === "dark" ? "#141414" : "#fff";   // white, or dark over a light treatment
       x.clearRect(0, 0, W, H); x.fillStyle = ink; x.strokeStyle = ink; x.lineWidth = Math.max(1, d * .9); x.lineCap = "round"; x.lineJoin = "round";
-      var u = Math.min(cw, ch);
-      for (var i = 0; i < C; i += 2) for (var j = 0; j < R; j += 2) dot(i, j, u * .09, .32);   // the field: a faint regular grid of dots
+      for (var i = -2 * Math.ceil(ox / u / 2); i < C + ox / u; i += 2) for (var j = -2 * Math.ceil(oy / u / 2); j < R + oy / u; j += 2) { var q = at(i + .5, j + .5); if (q[0] > px * .6 && q[0] < W - px * .6 && q[1] > py * .6 && q[1] < H - py * .6) dot(i, j, u * .09, .32); }   // the field: a faint regular grid of dots, across the frame
       var line = function (pl, a) { x.globalAlpha = a; x.beginPath(); pl.forEach(function (q, k) { var p = at(q[0], q[1]); if (k) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); x.stroke(); };
       (m.lines || []).forEach(function (pl) { line(pl, .38); }); (m.bright || []).forEach(function (pl) { line(pl, .8); }); (m.accLines || []).forEach(function (pl) { line(pl, .9); });
       (m.cells || []).forEach(function (c) { var b = c.b == null ? .85 : c.b; if (c.acc) dot(c.i, c.j, u * .24, 1); else dot(c.i, c.j, u * .17 * (c.s || 1), c.grey ? .45 : .35 + .55 * b); });   // the report's shape; what it reveals, larger and full white
@@ -378,12 +405,15 @@
   ];
   var made = {};
   function srcOf(id) { var p = PRESETS.filter(function (q) { return q.id === id; })[0]; if (!p) return ""; if (p.src) return p.src; return made[id] || (made[id] = p.make()); }
-  function paint(card, v) {   // v: a preset's id, or a picture's data URL
-    var url = /^data:image\//.test(v) ? v : srcOf(v);
+  var HEX = /^color:#[0-9a-f]{6}$/i;
+  function solid(v) { return made[v] || (made[v] = grain([v.slice(6)])); }   // your colour, flat, with the presets' film grain
+  function paint(card, v) {   // v: a preset's id, "color:#rrggbb", or a picture's data URL
+    var url = /^data:image\//.test(v) ? v : HEX.test(v) ? solid(v) : srcOf(v);
     card.style.backgroundImage = url ? "url(" + JSON.stringify(url) + ")" : "";
     card.dataset.bgUrl = url || ""; dither(card);
     var ctl = document.querySelector('.ctl[data-for="' + card.dataset.card + '"]');
-    ctl.querySelectorAll(".sw").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === v)); });
+    ctl.querySelectorAll(".sw[data-bg]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.bg === v)); });
+    var pk = ctl.querySelector(".swc"); if (pk) { pk.classList.toggle("on", HEX.test(v)); if (HEX.test(v)) { pk.style.setProperty("--c", v.slice(6)); pk.firstChild.value = v.slice(6).toLowerCase(); } }
   }
   function shrink(file, done) {   // your picture, down to 1200px on its long side, as a JPEG small enough to keep
     var r = new FileReader();
@@ -427,7 +457,7 @@
         var cw0 = Math.round(Math.min(1000, Math.max(200, sw))), ch0 = Math.round(cw0 * sh / sw), src = document.createElement("canvas"); src.width = cw0; src.height = ch0;
         src.getContext("2d").drawImage(im, sx, sy, sw, sh, 0, 0, cw0, ch0);
         note.textContent = "Rendering with the Image generator…";
-        ig().then(function (api) { return api.render(src, mode.slice(3), Math.round(fr.width * dpr), { spacing: px / 3 }); })
+        ig().then(function (api) { return api.render(src, mode.slice(3), Math.round(fr.width * dpr), { spacing: px / 3, fg: card.dataset.fg }); })
           .then(function (blob) { return createImageBitmap(blob); })
           .then(function (bmp) { if (tok !== card._dtok) return; cv.width = Math.round(fr.width * dpr); cv.height = Math.round(fr.height * dpr); var g = cv.getContext("2d"); g.imageSmoothingEnabled = true; g.clearRect(0, 0, cv.width, cv.height); g.drawImage(bmp, 0, 0, cv.width, cv.height); cv.hidden = false; note.textContent = ""; inkFor(card, lightness(cv) > .56); })
           .catch(function () { if (tok !== card._dtok) return; note.textContent = "The Image generator couldn't render this picture here."; });
@@ -443,6 +473,8 @@
       var dark = [0, 0, 0], light = [255, 255, 255];
       if (/-img$/.test(mode)) { var a = [0, 0, 0, 0], b = [0, 0, 0, 0]; for (i = 0; i < n; i++) { var t = L[i] < .25 ? a : L[i] > .75 ? b : null; if (t) { t[0] += d[i * 4]; t[1] += d[i * 4 + 1]; t[2] += d[i * 4 + 2]; t[3]++; } }
         if (a[3]) dark = [a[0] / a[3] * .55, a[1] / a[3] * .55, a[2] / a[3] * .55]; if (b[3]) light = [Math.min(255, b[0] / b[3] * 1.12), Math.min(255, b[1] / b[3] * 1.12), Math.min(255, b[2] / b[3] * 1.12)]; }
+      var fg = card.dataset.fg;   // the card's colour: the dither's foreground, in place of the tone it is nearer to
+      if (fg) { var fc = [1, 3, 5].map(function (o) { return parseInt(fg.slice(o, o + 2), 16); }); if ((.2126 * fc[0] + .7152 * fc[1] + .0722 * fc[2]) / 255 >= .5) light = fc; else dark = fc; }
       var on = new Uint8Array(n);
       if (/^bayer/.test(mode)) { for (var yy = 0; yy < h; yy++) for (var xx = 0; xx < w; xx++) { k = yy * w + xx; on[k] = L[k] > BAYER[yy & 7][xx & 7] ? 1 : 0; } }
       else { var E = Float32Array.from(L); for (var y2 = 0; y2 < h; y2++) for (var x2 = 0; x2 < w; x2++) { k = y2 * w + x2; var v = E[k], q = v > .5 ? 1 : 0, err = (v - q) / 8; on[k] = q;
@@ -458,11 +490,15 @@
   document.querySelectorAll(".icard").forEach(function (card) {
     var k = card.dataset.card, key = "rv-bg-" + k, ctl = document.querySelector('.ctl[data-for="' + k + '"]'), note = ctl.querySelector(".note"), sws = ctl.querySelector(".sws");
     PRESETS.forEach(function (p) { var b = document.createElement("button"); b.type = "button"; b.className = "sw"; b.dataset.bg = p.id; b.title = p.name; b.setAttribute("aria-label", "Background: " + p.name); b.setAttribute("aria-pressed", "false"); b.style.backgroundImage = "url(" + JSON.stringify(srcOf(p.id)) + ")"; sws.appendChild(b); });
+    var pick = document.createElement("label"); pick.className = "sw swc"; pick.title = "Your colour"; pick.innerHTML = '<input type="color" value="#2f4a5c" aria-label="Background: pick a colour">'; sws.appendChild(pick);
     var seq = 0;   // the latest choice; an upload that finishes after a later one is dropped
     var use = function (v, keep) { seq++; paint(card, v); note.textContent = ""; if (keep && !store.set(key, v)) note.textContent = "Shown here, but this browser could not keep it for next time."; };
-    var sv = store.get(key); if (!sv || !(/^data:image\//.test(sv) || PRESETS.some(function (p) { return p.id === sv; }))) { store.del(key); sv = card.dataset.default; }   // a value this version doesn't know: back to the default
+    var sv = store.get(key); if (!sv || !(/^data:image\//.test(sv) || HEX.test(sv) || PRESETS.some(function (p) { return p.id === sv; }))) { store.del(key); sv = card.dataset.default; }   // a value this version doesn't know: back to the default
     use(sv, false);
-    sws.addEventListener("click", function (e) { var b = e.target.closest(".sw"); if (b) use(b.dataset.bg, true); });
+    sws.addEventListener("click", function (e) { var b = e.target.closest(".sw[data-bg]"); if (b) use(b.dataset.bg, true); });
+    var cin = pick.firstChild, craf = 0;   // the colour, live while you pick it, kept when you close the picker
+    cin.addEventListener("input", function () { clearTimeout(craf); craf = setTimeout(function () { use("color:" + cin.value, false); }, 120); });
+    cin.addEventListener("change", function () { clearTimeout(craf); use("color:" + cin.value, true); });
     ctl.querySelector("[data-reset]").addEventListener("click", function () { store.del(key); use(card.dataset.default, false); });
     var take = function (file) { if (!file || !/^image\//.test(file.type)) { note.textContent = "That file isn't a picture."; return; } var my = ++seq; note.textContent = "Reading…"; shrink(file, function (url) { if (my !== seq) return; if (!url) { note.textContent = "That picture couldn't be read."; return; } use(url, true); if (!note.textContent) note.textContent = "Your picture is on the card."; }); };
     ctl.querySelector("input[type=file]").addEventListener("change", function (e) { take(e.target.files && e.target.files[0]); e.target.value = ""; });
@@ -470,6 +506,20 @@
     var dset = function () { card.dataset.dither = dsel.value; card.dataset.px = psel.value; psel.disabled = dsel.value === "off"; store.set(dkey, dsel.value + "|" + psel.value); dither(card); };
     (function () { var sv = (store.get(dkey) || "off|3").split("|"); if (dsel.querySelector('option[value="' + sv[0] + '"]')) dsel.value = sv[0]; if (psel.querySelector('option[value="' + sv[1] + '"]')) psel.value = sv[1]; card.dataset.dither = dsel.value; card.dataset.px = psel.value; psel.disabled = dsel.value === "off"; })();
     dsel.addEventListener("change", dset); psel.addEventListener("change", dset);
+    /* the card's colour: its frame's outline and the dither's foreground, one colour */
+    var iin = ctl.querySelector("[data-ink]"), ihint = ctl.querySelector(".hint"), ireset = ctl.querySelector("[data-ink-reset]"), ikey = "rv-ink-" + k, it = 0;
+    var ink = function (hex, keep, quiet) {
+      var on = /^#[0-9a-f]{6}$/i.test(hex || "");
+      if (on) { card.style.setProperty("--frame", hex); card.dataset.fg = hex; } else { card.style.removeProperty("--frame"); delete card.dataset.fg; }
+      iin.value = on ? hex.toLowerCase() : "#ffffff"; iin.parentNode.style.setProperty("--c", iin.value);
+      ihint.textContent = on ? hex.toUpperCase() : "Frame + dither"; ireset.disabled = !on;
+      if (keep) { if (on) store.set(ikey, hex); else store.del(ikey); }
+      if (!quiet) dither(card);
+    };
+    ink(store.get(ikey), false, true);
+    iin.addEventListener("input", function () { clearTimeout(it); it = setTimeout(function () { ink(iin.value, false); }, 120); });
+    iin.addEventListener("change", function () { clearTimeout(it); ink(iin.value, true); });
+    ireset.addEventListener("click", function () { clearTimeout(it); ink(null, true); });
     if (window.ResizeObserver) { var rt = 0; new ResizeObserver(function () { clearTimeout(rt); rt = setTimeout(function () { dither(card); }, 80); }).observe(card.querySelector(".frame")); }
     card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("drop"); });
     card.addEventListener("dragleave", function () { card.classList.remove("drop"); });

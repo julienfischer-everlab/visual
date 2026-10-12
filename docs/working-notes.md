@@ -13505,3 +13505,8 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - DEXA (strata.js, also V1 and the Hairline page): the open half keeps the body's outline, so it reads as one body in two densities.
 - Controls: swatch focus drawn inside the swatch (chosen ring stays outside), 6px gap between swatches, Upload and Reset kept together, the upload ring only on keyboard focus; a late upload no longer overrides a later choice; "Your picture is on the card." after an upload; an unknown stored background falls back to the default; vector uploads rasterised at full size; a stale "Rendering…" note cleared.
 - Dither canvas sized from the box it's shown in (no seams); canvases redraw on zoom / a new pixel density; V2/V1 switch's unselected label darker in light theme.
+
+## Report visuals V2 — colours, shorter frame
+- Background: a colour picker after the presets (rainbow until used; then shows the colour, ringed when chosen). Stored as `color:#rrggbb`; drawn flat with the presets' film grain so dithers still have a picture to work from.
+- Colour row per card: one picker for the frame's outline and the dither's foreground (`--frame` on the card, `data-fg`). Ordered/Diffusion: the colour replaces whichever tone it's nearer to in lightness. Image generator looks: `IGAPI.render(…, {fg})` sets the look's Foreground. "Default" clears it (white frame at .78). Stored as `rv-ink-<card>`.
+- Frame 32px shorter on the 520px card (aspect 437/296, scales with the card). The flat visual now draws square cells, centred, with the faint field filling the frame, so the figures aren't squashed.

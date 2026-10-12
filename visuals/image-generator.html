@@ -1633,13 +1633,14 @@ function engineMain(port, local) {
   }
   window.IGAPI = {
     looks: BUILTIN.map(b => b.name),
-    // src: an image, canvas or bitmap; look: a look's name; outW: the PNG's width; opts.spacing scales the look's grid (1 as it is)
+    // src: an image, canvas or bitmap; look: a look's name; outW: the PNG's width; opts.spacing scales the look's grid (1 as it is), opts.fg recolours its foreground
     render(src, look, outW, opts) {
       const job = apiQ.then(async () => {
         const eng = apiEngine(), bmp = await createImageBitmap(src), w = bmp.width, h = bmp.height;
         eng.post({ type: 'image', bitmap: bmp, w, h }, [bmp]);
         const p = BUILTIN.find(b => b.name === look) || BUILTIN[0], st = sanitize(Object.assign({}, DEFAULTS, p.settings));
         if (opts && opts.spacing) st.spacing = Math.min(40, Math.max(3, st.spacing * opts.spacing));
+        if (opts && /^#[0-9a-f]{6}$/i.test(opts.fg || '')) st.fg = opts.fg;   // opts.fg: the look's foreground in another colour
         const r = await eng.request({ type: 'export', format: 'png', scale: Math.max(.05, outW / w), settings: st });
         return r.blob;
       });
