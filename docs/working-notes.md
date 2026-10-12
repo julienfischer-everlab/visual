@@ -13588,3 +13588,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Cards hug their content (no aspect ratio): highlights 32 under the frame, buttons 42 under what's above them (on the 520 card). level() now levels the backdrops (.bd) per row, the cards at their top, so the captions and controls line up.
 - An 8px square in the tab's colour at the header's top right, level with the title.
 - The frame's bottom-right corner is cut at 45° (4cqw): clip-path on the frame (reaching 8cqw above it, for the tab) and a ::after drawing the outline along the cut; with the outline off, the cut stays and the line goes.
+- April check-in banner: the user's runner photo (warm, black tee), cropped to the beard and shoulder as assets/overview/task-cover-p.webp; its Timeline thumbnail task-thumb-p.webp is a square of the arm.
