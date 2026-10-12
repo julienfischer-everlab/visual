@@ -67,22 +67,23 @@
   .grid[hidden] { display: none; }
   /* V2: a card on its own picture: the title at the left, the visual in a thin outlined frame, flat, the button(s) at the foot */
   .cw { width: 100%; max-width: 520px; container-type: inline-size; }   /* the card at the pop-up's width, its sizes following its own width */
-  .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 520 / 660; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; min-height: 0; }
+  .icard { position: relative; display: flex; flex-direction: column; aspect-ratio: 520 / 660; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; color: #fff; background: #222 center / cover no-repeat; isolation: isolate; }   /* the shape a minimum: it grows only when content under the frame can't fit */
   .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(180deg, rgb(0 0 0 / .5) 0%, rgb(0 0 0 / .42) 24%, rgb(0 0 0 / 0) 44%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
   .icard h2 { margin: 0; max-width: 16ch; min-height: 2.16em;   /* always two lines tall, a one-line title too ("lock the height of the title to 2 lines") */ font-size: clamp(24px, 6.4cqw, 34px); line-height: 1.08; font-weight: 500;   /* medium ("title medium font") */ letter-spacing: -0.025em; text-wrap: balance; }
-  .frame { position: relative; margin: auto 0; width: 100%; min-height: 0; aspect-ratio: 437 / 296;   /* 24/18 less 32px of height on the 520px card */ border: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); }   /* --frame: the foreground, when one is picked (Background V2) */
+  .frame { position: relative; flex: none; margin: 0; width: 100%; aspect-ratio: 437 / 296;   /* under the title, never shrunk: every card's visual at the same place and size ("all visuals at the same height") */   /* 24/18 less 32px of height on the 520px card */ border: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); }   /* --frame: the foreground, when one is picked (Background V2) */
   .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .frame canvas.dith { image-rendering: pixelated; }   /* the picture inside the frame, dithered (when chosen), under the report's dots */
   .frame canvas.dith[hidden] { display: none; }
-  .ictas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }   /* the buttons, centred: the pop-up's own (V1's), white for the main one */
+  .ictas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: auto; }   /* the buttons at the foot */   /* the buttons, centred: the pop-up's own (V1's), white for the main one */
   .icard .btn.sec { background: rgb(255 255 255 / .12); color: #fff; }   /* the second: a 12% white veil */
   .icard:not([data-bgmode="1"])::before { display: none; }   /* Backgrounds V2 and V3, a flat colour: no shade */
   .icard[data-outline="0"] .frame { border-color: transparent; }   /* the outline off: the frame keeps its place */
   /* V2's content: what the report highlights, in the frame's foot (the frame then an L, its outline round the notch) or after the frame ("content on/off: in frame, outside frame") */
   .icard .hl { display: none; text-transform: capitalize; }   /* as the draft: every word capitalised */
   .icard .hl b { display: block; margin-bottom: 1.4cqw; font-size: clamp(11px, 2.9cqw, 15px); font-weight: 500; line-height: 1.25; }   /* the draft's sizes, to the card */
-  .icard .hl ul { margin: 0; padding-left: 1.2em; font-size: clamp(10.5px, 2.6cqw, 13.5px); line-height: 1.3; }
+  .icard .hl ul { margin: 0; padding-left: 1.2em; font-size: 14px; line-height: 1.3; }   /* 14 ("font size 14px") */
   .icard[data-hl="in"] .hlIn, .icard[data-hl="out"] .hlOut { display: block; }
+  .icard .hlOut { margin: -2.9cqw 0 -2.6cqw; }   /* closer to the frame above (16) and the buttons below (18) */
   .frame .hlIn { position: absolute; left: -2px; bottom: -2px; z-index: 2; width: 70%; padding: 3.2cqw 3.6cqw 3.4cqw;   /* no ground of its own: the frame's picture is cut away under it (clipFrame), so the card's own background shows */
     border-top: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); border-right: 2px solid var(--frame, var(--frame-def, rgb(255 255 255 / .78))); }   /* over the frame's own left and bottom: the outline turns round it */
   .icard[data-outline="0"] .frame .hlIn { border-color: transparent; }
@@ -252,7 +253,7 @@
   var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }, del: function (k) { try { localStorage.removeItem(k); } catch (e) {} } };
 
   /* the view switch, remembered */
-  function view(v) {
+  function view(v) { if (v === "2") setTimeout(function () { if (typeof level === "function") level(); }, 0);
     document.querySelectorAll(".grid[data-view]").forEach(function (g) { g.hidden = g.dataset.view !== v; });
     document.querySelectorAll(".seg [data-view]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.view === v)); });
     ["lead", "key"].forEach(function (n) { document.getElementById(n + "-v2").hidden = v !== "2"; document.getElementById(n + "-v1").hidden = v !== "1"; });
@@ -411,6 +412,15 @@
     '<div class="row" data-only="2 3"><span class="lab">Foreground</span><span class="seg mini" role="group" aria-label="Foreground: the squares, the illustration and the outline"><button type="button" data-fg="#ffffff">White</button><button type="button" data-fg="#141414">Black</button></span></div>' +
     '<span class="note" aria-live="polite"></span>';
 
+  /* cards side by side are as tall as the tallest, so their frames and buttons line up ("all visuals at the same height") */
+  var lvlQ = 0;
+  function level() { cancelAnimationFrame(lvlQ); lvlQ = requestAnimationFrame(function () {
+    var cs = [].slice.call(document.querySelectorAll(".grid.v2 .icard")), rows = {};
+    cs.forEach(function (c) { c.style.minHeight = ""; });
+    cs.forEach(function (c) { if (!c.offsetParent) return; var t = Math.round(c.closest("figure").getBoundingClientRect().top + scrollY); (rows[t] = rows[t] || []).push(c); });
+    Object.keys(rows).forEach(function (t) { var r = rows[t]; if (r.length < 2) return; var h = Math.max.apply(null, r.map(function (c) { return c.getBoundingClientRect().height; }));
+      r.forEach(function (c) { if (c.getBoundingClientRect().height < h - .5) c.style.minHeight = h + "px"; }); }); }); }
+  addEventListener("resize", level);
   function clipFrame(card) {   // content in the frame: its picture and illustration cut to an L round the block, the card's own ground under the words
     var b = card.querySelector(".hlIn"), cp = "";
     if (card.dataset.hl === "in" && b && b.offsetWidth) { var w = Math.max(0, b.offsetWidth - 2), h = Math.max(0, b.offsetHeight - 2); cp = "polygon(0 0, 100% 0, 100% 100%, " + w + "px 100%, " + w + "px calc(100% - " + h + "px), 0 calc(100% - " + h + "px))"; }
@@ -439,7 +449,7 @@
     dsel.value = dd[0]; psel.value = dd[1]; psel.disabled = dd[0] === "off";
     dither(card);
     var fc = card.querySelector("canvas[data-flat]"); if (fc && fc._redraw) fc._redraw();   // the illustration, in its ink for this background
-    clipFrame(card);
+    clipFrame(card); level();
     if (card._drawP) card._drawP();   // the preset it now matches, marked
   }
 
