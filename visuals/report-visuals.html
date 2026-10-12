@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Report visuals</title>
+<style>
+  /* Layout: the report reveal's card for each Everlab report, side by side on one review sheet: a short header with a size switch, then a grid of the cards on the pop-up's charcoal. */
+  :root {
+    --bg: #f6f6f4; --panel: #ffffff; --fg: #1d1d1b; --muted: #6b6b66; --line: #e2e2dc; --seg: #ecece8; --seg-on: #ffffff;
+    --stage: #1b1b1b; --acc: #8cc8a6;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #0f0f0e; --panel: #161615; --fg: #ececea; --muted: #9a9a94; --line: #2a2a28; --seg: #1d1d1c; --seg-on: #2b2b29; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #0f0f0e; --panel: #161615; --fg: #ececea; --muted: #9a9a94; --line: #2a2a28; --seg: #1d1d1c; --seg-on: #2b2b29; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding-inline: 24px; padding-block: 28px 56px; display: grid; gap: 28px; }
+  header { display: grid; gap: 10px; }
+  .back { display: inline-flex; align-items: center; gap: 6px; width: fit-content; color: var(--muted); text-decoration: none; font-size: 13px; }
+  .back:hover, .back:focus-visible { color: var(--fg); }
+  .back svg { width: 14px; height: 14px; }
+  .back[hidden] { display: none; }
+  h1 { margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -0.3px; line-height: 1.2; text-wrap: balance; }
+  header p { margin: 0; max-width: 68ch; color: var(--muted); text-wrap: pretty; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
+  .key { display: flex; flex-wrap: wrap; gap: 14px; font: 12px/1.4 var(--mono); color: var(--muted); letter-spacing: .02em; }
+  .key span { display: inline-flex; align-items: center; gap: 6px; }
+  .key i { width: 7px; height: 7px; background: var(--fg); opacity: .8; }
+  .key i.acc { background: var(--acc); opacity: 1; }
+  .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: var(--seg); }
+  .seg button { appearance: none; border: 0; background: none; color: var(--muted); font: 12px/28px var(--mono); letter-spacing: .02em; padding: 0 12px; border-radius: 999px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--seg-on); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
+  .seg button:focus-visible { outline: 1.5px solid var(--fg); outline-offset: 2px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+  article { min-width: 0; display: grid; gap: 12px; padding: 14px 14px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; }
+  .stage { position: relative; display: grid; place-items: center; aspect-ratio: 340 / 260; max-width: 100%; border-radius: 10px; background: var(--stage); overflow: hidden; }
+  .stage canvas { display: block; width: var(--rvW, 100%); height: auto; aspect-ratio: 340 / 260; max-width: 100%; }
+  .meta { display: grid; gap: 4px; padding-inline: 4px; }
+  .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  h2 { margin: 0; font-size: 17px; font-weight: 500; }
+  .tag { font: 11px/1 var(--mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+  .meta p { margin: 0; color: var(--muted); font-size: 13px; text-wrap: pretty; }
+  @media (max-width: 480px) { .wrap { padding-inline: 16px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./" onclick="if (history.length > 1) { history.back(); return false; }"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>Everlab service pages</a>
+    <h1>Report visuals</h1>
+    <p>The card each report reveals, one per report: the same isometric report card with one sheet offset under it, a visual panel and three short lines of report text. Only the panel changes, its picture a grid of square particles, each in a deliberate place. Shown assembled and still; the motion follows once the shapes are agreed.</p>
+    <div class="bar">
+      <div class="key" aria-label="Key"><span><i></i>particle</span><span><i class="acc"></i>accent: what the report reveals</span></div>
+      <div class="seg" role="group" aria-label="Card size">
+        <button type="button" data-w="" aria-pressed="true">Large</button>
+        <button type="button" data-w="340px" aria-pressed="false">Modal · 340</button>
+        <button type="button" data-w="250px" aria-pressed="false">Small · 250</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <article aria-labelledby="r-mri">
+      <div class="stage"><canvas data-fig="body-scan" role="img" aria-label="Whole Body MRI and CT Chest report card: a body-scan silhouette"></canvas></div>
+      <div class="meta"><div class="row"><h2 id="r-mri">Whole Body MRI &amp; CT Chest</h2><span class="tag">wbmri</span></div>
+        <p>A standing body of cells, a bright rim and a sparse inside, crossed by four scan slices; the chest in the accent.</p></div>
+    </article>
+    <article aria-labelledby="r-gut">
+      <div class="stage"><canvas data-fig="gut-map" role="img" aria-label="Microbiome and Gut Health report card: a folded pathway with four communities"></canvas></div>
+      <div class="meta"><div class="row"><h2 id="r-gut">Microbiome &amp; Gut Health</h2><span class="tag">gut</span></div>
+        <p>A short pathway folding back and forth, with four organised communities: sparse, medium, dense (in the accent) and very fine.</p></div>
+    </article>
+    <article aria-labelledby="r-blood">
+      <div class="stage"><canvas data-fig="assay" role="img" aria-label="Advanced Blood Testing report card: four data rows with markers"></canvas></div>
+      <div class="meta"><div class="row"><h2 id="r-blood">Advanced Blood Testing</h2><span class="tag">path</span></div>
+        <p>Four compact data rows: a label, a track, the range as dim cells and the result as a small square marker; one result in the accent.</p></div>
+    </article>
+    <article aria-labelledby="r-dexa">
+      <div class="stage"><canvas data-fig="strata" role="img" aria-label="DEXA report card: a body in two particle densities"></canvas></div>
+      <div class="meta"><div class="row"><h2 id="r-dexa">DEXA Body Composition</h2><span class="tag">dexa</span></div>
+        <p>A body silhouette in two densities: every cell on one side, one in four on the other; a few cells at the hip in the accent.</p></div>
+    </article>
+  </div>
+</div>
+<script src="visuals/hairline2/hl2.js"></script>
+<script src="visuals/hairline2/body-scan.js"></script>
+<script src="visuals/hairline2/gut-map.js"></script>
+<script src="visuals/hairline2/assay.js"></script>
+<script src="visuals/hairline2/strata.js"></script>
+<script>
+  /* Opened as a page of the prototype, the prototype's own bar is above it: no link back. */
+  try { if (window.frameElement && window.frameElement.id === "rvFrame") document.querySelector(".back").hidden = true; } catch (e) {}
+  /* each card drawn at its stage's size, and again when the size changes */
+  if (window.HL2) document.querySelectorAll("canvas[data-fig]").forEach(function (c) { window.HL2.mount(c, c.dataset.fig); });
+  /* the size switch: the cards at the stage's width, at the pop-up's 340, or at 250 */
+  var seg = document.querySelector(".seg");
+  seg.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    seg.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    if (b.dataset.w) document.documentElement.style.setProperty("--rvW", b.dataset.w); else document.documentElement.style.removeProperty("--rvW");
+  });
+</script>
+</body>
+</html>
