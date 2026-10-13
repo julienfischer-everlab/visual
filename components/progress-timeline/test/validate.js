@@ -67,7 +67,10 @@ function checkGeometry(m, where, cfg) {
   const free = cfg.c === -99, c = free ? S.currentIndex : cfg.c;   // -99: after manual browsing, so no resting-place rules
   const E = Math.min(128, W / 2);                       // 128px edge areas (they meet below 256px)
   const narrow = W - 2 * E < 2 * min;                    // fewer than two minimum increments between them
-  ok(Math.abs(S.edge - E) < 0.01, where, 'edge ' + S.edge + ' expected ' + E);
+  const fitsWide0 = N >= 2 && (N - 1) * min <= W - 2 * E + 1e-6, fitsNarrow0 = N >= 2 && !fitsWide0 && narrow && N * Math.min(min, 256) <= W + 1e-6;
+  // narrow and scrolling: the fades give way so a centred label fits between them
+  const Ee = narrow && N >= 2 && !fitsWide0 && !fitsNarrow0 ? Math.min(E, Math.max(0, (W - Math.min(min, 256)) / 2)) : E;
+  ok(Math.abs(S.edge - Ee) < 0.01, where, 'edge ' + S.edge + ' expected ' + Ee);
   ok(S.narrow === narrow, where, 'narrow ' + S.narrow + ' expected ' + narrow);
   ok(m.radius === '24px 24px 24px 24px', where, 'radius ' + m.radius);
   ok(m.overflow === 'hidden', where, 'card overflow ' + m.overflow);
@@ -95,7 +98,7 @@ function checkGeometry(m, where, cfg) {
   // the timeline under an arrow's centre: its line, dots or label columns (not bare track past the ends)
   const colW = Math.min(seg, 256);
   const under = cx => N >= 2 && cx >= m.dots[0].x - colW / 2 - 0.5 && cx <= m.dots[N - 1].x + colW / 2 + 0.5;
-  const e = E;
+  const e = Ee;
   ok(Math.abs(m.fs.w - e) < 0.6 && Math.abs(m.fe.w - e) < 0.6, where, 'fade width ' + m.fs.w + '/' + m.fe.w + ' expected ' + e);
   for (const [b, on, cx, nm] of [[m.bs, fl, e / 2, 'start'], [m.be, fr, W - e / 2, 'end']]) {
     ok(Math.abs(b.w - 28) < 0.6 && Math.abs(b.h - 28) < 0.6, where, nm + ' button size');
@@ -384,6 +387,142 @@ function checkGeometry(m, where, cfg) {
       ok(Math.abs(m.W - w) < 0.6, where, 'width ' + m.W + ' expected ' + w);
       checkGeometry(m, where + ' ' + w, { W: w, N: 10, c: 4, min: 128 });
     }
+  }
+
+  // ---- regressions from the adversarial review ----
+  {
+    // parents that size to content: a 1fr grid cell, a flex:1 child, a table cell
+    const where = 'parents';
+    for (const kind of ['grid', 'flex', 'table']) {
+      const w = await p.evaluate(kind => {
+        if (window.tl) window.tl.destroy();
+        const host = document.getElementById('host'); host.style.width = '900px'; host.innerHTML = '';
+        const wrap = document.createElement('div'), cell = document.createElement('div'), side = document.createElement('div');
+        side.style.width = '200px';
+        if (kind === 'grid') { wrap.style.cssText = 'display:grid;grid-template-columns:1fr 200px;width:900px'; }
+        if (kind === 'flex') { wrap.style.cssText = 'display:flex;width:900px'; cell.style.flex = '1'; side.style.flex = 'none'; }
+        if (kind === 'table') { wrap.style.cssText = 'display:table;width:900px;table-layout:auto'; cell.style.display = 'table-cell'; side.style.display = 'table-cell'; }
+        wrap.append(cell, side); host.append(wrap);
+        window.tl = new ProgressTimeline(cell, { steps: Array.from({ length: 30 }, (_, i) => ({ id: 's' + i, label: 'Step ' + (i + 1) })), current: 's4' });
+        return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r([document.querySelector('.pt').getBoundingClientRect().width, tl.getState().maxOffset, document.documentElement.scrollWidth - document.documentElement.clientWidth]))));
+      }, kind);
+      ok(Math.abs(w[0] - 700) < 1.5 && w[1] > 0 && w[2] <= 0, where, kind + ': card ' + w[0] + ' (expected 700), max ' + w[1] + ', page overflow ' + w[2]);
+    }
+    await p.evaluate(() => { document.getElementById('host').innerHTML = ''; });
+  }
+  {
+    // a transformed ancestor (a modal scaling in) doesn't skew the measured width
+    const where = 'transform';
+    const st = await p.evaluate(() => {
+      if (window.tl) window.tl.destroy();
+      const host = document.getElementById('host'); host.style.width = '900px'; host.style.transform = 'scale(.9)'; host.style.transformOrigin = '0 0';
+      window.tl = new ProgressTimeline(host, { steps: Array.from({ length: 6 }, (_, i) => ({ id: 's' + i, label: 'Step ' + (i + 1) })), current: 's0' });
+      return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => { host.style.transform = ''; requestAnimationFrame(() => requestAnimationFrame(() => r(tl.getState()))); })));
+    });
+    ok(Math.abs(st.width - 900) < 0.6 && st.fit, where, 'width ' + st.width + ' fit ' + st.fit);
+  }
+  {
+    // edge: undefined from a wrapper keeps 128; small custom edges keep the end dots on their lines
+    const where = 'edge';
+    let m = await mount({ W: 1000, N: 12, c: 0, min: 128, long: false });
+    await p.evaluate(() => tl.update({ edge: undefined, minSegment: undefined }));
+    await p.evaluate(frames);
+    m = await p.evaluate(MEASURE);
+    ok(m.state.edge === 128 && Math.abs(m.dots[0].x - 128) < 0.6, where, 'undefined edge gave ' + m.state.edge);
+    for (const [ed, W, N, c] of [[64, 1023, 3, 0], [96, 1400, 5, 5], [80, 1200, 4, 4], [96, 900, 12, 12]]) {
+      await p.evaluate(([ed, W, N, c]) => { T.mount({ steps: Array.from({ length: N }, (_, i) => ({ id: 's' + i, label: 'Step ' + (i + 1) })), current: c < N ? 's' + c : null, complete: c >= N, edge: ed, minSegment: ed === 96 && N === 12 ? 200 : 128 }, W); }, [ed, W, N, c]);
+      await p.evaluate(frames);
+      m = await p.evaluate(MEASURE);
+      const n = m.dots.length, endpoint = c <= 0 ? m.dots[0].x - ed : m.dots[n - 1].x - (W - ed);
+      ok(Math.abs(endpoint) < 0.6, where, 'edge ' + ed + ' W' + W + ' N' + N + ': endpoint off by ' + endpoint.toFixed(1));
+      ok(m.scrollMax <= m.state.maxOffset + 1, where, 'edge ' + ed + ': extra scroll range ' + m.scrollMax + ' vs ' + m.state.maxOffset);
+    }
+  }
+  {
+    // a press that leaves the track before moving doesn't stay armed
+    const where = 'ghost drag';
+    let m = await mount({ W: 900, N: 16, c: 5, min: 128, long: false });
+    const box = await p.evaluate(() => { const q = document.querySelector('.pt-scroller').getBoundingClientRect(); return { x: q.left, y: q.top, h: q.height }; });
+    const s0 = m.scrollLeft;
+    await p.mouse.move(box.x + 400, box.y + 30); await p.mouse.down();
+    await p.mouse.move(box.x + 401, box.y + box.h + 60); await p.mouse.up();   // out the bottom, released outside
+    await p.mouse.move(box.x + 300, box.y + 30); await p.mouse.move(box.x + 150, box.y + 30);   // hover, no button
+    await p.evaluate(frames);
+    m = await p.evaluate(MEASURE);
+    ok(Math.abs(m.scrollLeft - s0) < 1, where, 'hover scrolled by ' + (m.scrollLeft - s0));
+  }
+  {
+    // a tap during the automatic scroll doesn't freeze it or count as browsing
+    const where = 'tap during auto';
+    await mount({ W: 900, N: 16, c: 2, min: 128, long: false });
+    const box = await p.evaluate(() => { const q = document.querySelector('.pt-scroller').getBoundingClientRect(); return { x: q.left, y: q.top }; });
+    await p.evaluate(() => tl.setCurrent('s12'));
+    await p.waitForTimeout(90);
+    await p.mouse.click(box.x + 450, box.y + 30);
+    await p.waitForTimeout(1000);
+    await p.evaluate(() => tl.update({ label: 'Progress' }));
+    await p.evaluate(frames);
+    const m = await p.evaluate(MEASURE);
+    const want = await p.evaluate(() => ProgressTimeline.targetOffset(tl.layout, 12));
+    ok(!m.state.browsed && Math.abs(m.scrollLeft - want) < 1.5, where, 'browsed ' + m.state.browsed + ', at ' + m.scrollLeft + ' expected ' + want);
+  }
+  {
+    // an ordinary re-render mid arrow scroll doesn't cut it short; keys add up
+    const where = 'render mid scroll';
+    let m = await mount({ W: 900, N: 16, c: 3, min: 128, long: false });
+    const r = await p.evaluate(() => { const q = document.querySelector('.pt').getBoundingClientRect(); return [q.left, q.top]; });
+    const s0 = m.scrollLeft;
+    await p.mouse.click(r[0] + m.be.cx, r[1] + m.be.cy);
+    await p.waitForTimeout(60);
+    await p.evaluate(() => tl.update({ steps: tl.opts.steps.map(s => Object.assign({}, s)) }));
+    await p.waitForTimeout(800);
+    m = await p.evaluate(MEASURE);
+    ok(Math.abs(m.scrollLeft - (s0 + 128)) < 1.5, where, 'arrow scroll ended at +' + (m.scrollLeft - s0));
+    await p.evaluate(() => document.querySelector('.pt-scroller').focus());
+    const k0 = m.scrollLeft;
+    for (let i = 0; i < 3; i++) { await p.keyboard.press('ArrowRight'); await p.waitForTimeout(40); }
+    await p.waitForTimeout(900);
+    m = await p.evaluate(MEASURE);
+    ok(Math.abs(m.scrollLeft - Math.min(k0 + 384, m.state.maxOffset)) < 1.5, 'keys', 'three quick ArrowRight moved ' + (m.scrollLeft - k0));
+    // Enter twice on the focused arrow: two segments, focus stays on it
+    const e0 = m.scrollLeft;
+    await p.evaluate(() => document.querySelector('.pt-nav--end').focus());
+    await p.keyboard.press('Enter'); await p.waitForTimeout(80); await p.keyboard.press('Enter');
+    await p.waitForTimeout(900);
+    m = await p.evaluate(MEASURE);
+    const af = await p.evaluate(() => document.activeElement.className);
+    ok(Math.abs(m.scrollLeft - Math.min(e0 + 256, m.state.maxOffset)) < 1.5, 'enter', 'Enter twice moved ' + (m.scrollLeft - e0));
+    ok(/pt-nav--end/.test(af) || !m.be.vis, 'enter', 'focus left the arrow: ' + af);
+  }
+  {
+    // focus never falls to <body> when the track stops scrolling
+    const where = 'focus';
+    await mount({ W: 700, N: 6, c: 2, min: 128, long: false });
+    await p.evaluate(() => document.querySelector('.pt-scroller').focus());
+    await p.evaluate(() => T.resize(1400));
+    await p.evaluate(frames); await p.evaluate(frames);
+    const a = await p.evaluate(() => [document.activeElement === document.body, !!document.activeElement.closest('.pt'), tl.getState().fit]);
+    ok(!a[0] && a[1] && a[2], where, 'after fitting: body ' + a[0] + ', in card ' + a[1] + ', fit ' + a[2]);
+    await p.evaluate(() => T.resize(900));
+  }
+  {
+    // forced colours: a visible focus outline, dots that still show
+    const where = 'forced colours';
+    await mount({ W: 900, N: 16, c: 5, min: 128, long: false });
+    await p.emulateMedia({ forcedColors: 'active' });
+    await p.evaluate(() => document.querySelector('.pt-scroller').focus());
+    await p.keyboard.press('ArrowRight'); await p.keyboard.press('ArrowLeft');
+    const fc = await p.evaluate(() => { const a = getComputedStyle(document.querySelector('.pt'), '::after'); const d = getComputedStyle(document.querySelector('.pt-step.is-upcoming .pt-dot')); return [a.outlineStyle, a.outlineWidth, d.boxShadow]; });
+    ok(fc[0] === 'solid' && fc[1] === '2px' && fc[2] !== 'none', where, JSON.stringify(fc));
+    await p.emulateMedia({ forcedColors: 'none' });
+  }
+  {
+    // the arrows' accessible names can be set by the host
+    const where = 'arrow labels';
+    await p.evaluate(() => T.mount({ steps: Array.from({ length: 16 }, (_, i) => ({ id: 's' + i, label: 'Step ' + (i + 1) })), current: 's5', arrowLabels: { end: 'Next steps' } }, 900));
+    await p.evaluate(() => tl.update({ current: 's6' }));
+    const n = await p.evaluate(() => [document.querySelector('.pt-nav--start').getAttribute('aria-label'), document.querySelector('.pt-nav--end').getAttribute('aria-label')]);
+    ok(n[0] === 'Scroll to earlier steps' && n[1] === 'Next steps', where, JSON.stringify(n));
   }
 
   ok(errors.length === 0, 'page', 'errors: ' + errors.join(' | '));

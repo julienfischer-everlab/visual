@@ -30,6 +30,8 @@
   border-radius: var(--pt-radius);
   overflow: hidden;                      /* fades, buttons and track all end at the rounded corners */
   isolation: isolate;
+  contain: inline-size;                  /* its width comes from the parent, never from the track inside it (1fr cells, flex:1 children, table cells) */
+  outline: none;
   background: var(--pt-bg);
   color: var(--pt-fg);
   font-size: 14px;
@@ -52,11 +54,13 @@
 .pt-track {
   display: flex;
   margin: 0;
-  padding: 0 0 0 calc(var(--pt-pad) - var(--pt-col) / 2);
+  padding: 0 0 0 max(0px, calc(var(--pt-pad) - var(--pt-col) / 2));
+  overflow-x: clip;                      /* an end column wider than its padding doesn't add scroll range */
   gap: calc(var(--pt-seg) - var(--pt-col));
   list-style: none;
   box-sizing: border-box;
 }
+.pt-step:first-child { margin-left: min(0px, calc(var(--pt-pad) - var(--pt-col) / 2)); }   /* a small edge: the first column starts left of the track's box */
 .pt-step {
   position: relative;
   flex: 0 0 var(--pt-col);
@@ -189,7 +193,7 @@
   border-radius: inherit;
   pointer-events: none;
 }
-.pt:has(> .pt-scroller:focus-visible)::after { box-shadow: inset 0 0 0 2px var(--pt-focus); }
+.pt:has(> .pt-scroller:focus-visible)::after, .pt:focus-visible::after { box-shadow: inset 0 0 0 2px var(--pt-focus); }
 
 .pt-sr {
   position: absolute;
@@ -206,4 +210,20 @@
 @media (prefers-reduced-motion: reduce) {
   .pt-step.is-current .pt-dot { animation: none; box-shadow: 0 0 0 4px rgba(var(--pt-current-rgb), .28); }   /* a still ring */
   .pt-nav, .pt-nav.is-visible { transform: none; }
+}
+
+/* Windows high contrast: system colours, an outline for focus */
+@media (forced-colors: active) {
+  .pt { border: 1px solid CanvasText; }
+  .pt-dot, .pt-step::after { forced-color-adjust: none; }
+  .pt-dot { background: Canvas; box-shadow: inset 0 0 0 2px GrayText; }
+  .pt-step.is-complete .pt-dot { background: CanvasText; box-shadow: none; }
+  .pt-step.is-complete .pt-dot::after { background: Canvas; }
+  .pt-step.is-current .pt-dot { background: Highlight; box-shadow: 0 0 0 3px Canvas, 0 0 0 5px Highlight; animation: none; }
+  .pt-step::after { background: GrayText; }
+  .pt-step.is-link-done::after { background: CanvasText; }
+  .pt-step.is-current .pt-label { text-decoration: underline; }
+  .pt-fade { display: none; }
+  .pt-nav { border: 1px solid ButtonText; }
+  .pt:has(> .pt-scroller:focus-visible)::after, .pt:focus-visible::after { box-shadow: none; outline: 2px solid Highlight; outline-offset: -4px; }
 }

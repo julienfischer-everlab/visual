@@ -40,8 +40,11 @@
     minSegment: 128,
     edge: 128,
     label: 'Progress',
+    arrowLabels: { start: 'Scroll to earlier steps', end: 'Scroll to later steps' },
     onArrow: null,          // optional: told after an arrow click scrolls the track
   };
+  // Options with undefined values (a pass-through wrapper's) don't override the defaults.
+  const defined = o => { const r = {}; if (o) for (const k of Object.keys(o)) if (o[k] !== undefined) r[k] = o[k]; return r; };
 
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -50,11 +53,12 @@
   // x of dot i on screen = pad + i * seg - offset, offset = the scroller's
   // scrollLeft, from 0 (beginning) to max (end).
   function computeLayout(width, count, opts) {
-    const o = Object.assign({}, DEFAULTS, opts);
-    const W = Math.max(0, width);
+    const o = Object.assign({}, DEFAULTS, defined(opts));
+    const W = Math.max(0, +width || 0);
     const N = Math.max(0, count | 0);
     const m = Math.max(MIN_SEGMENT_FLOOR, +o.minSegment || DEFAULTS.minSegment);
-    const E = Math.min(Math.max(0, +o.edge || 0), W / 2);       // 128 each side (they meet below 256px)
+    const E0 = Number.isFinite(+o.edge) ? Math.max(0, +o.edge) : DEFAULTS.edge;
+    const E = Math.min(E0, W / 2);                               // 128 each side (they meet below 256px)
     const usable = W - 2 * E;                                    // between the two edge areas
     const narrow = usable < 2 * m;                               // fewer than two minimum increments fit
     const col = seg => Math.min(seg, LABEL_MAX + 2 * GUTTER);
@@ -76,7 +80,11 @@
     // step's column starts flush at the card's left (the last ends flush right).
     const pad = narrow ? col(m) / 2 : E;
     const content = 2 * pad + (N - 1) * m;
-    return { fit: false, narrow, W, N, seg: m, pad, edge: E, col: col(m), content, max: Math.max(0, content - W), usable, minSegment: m };
+    // Narrow cards too tight for both 128px fades and a label between them: the
+    // fades (and the arrows centred in them) give way just enough that the
+    // centred current step stays readable.
+    const fe = narrow ? Math.min(E, Math.max(0, (W - col(m)) / 2)) : E;
+    return { fit: false, narrow, W, N, seg: m, pad, edge: fe, col: col(m), content, max: Math.max(0, content - W), usable, minSegment: m };
   }
 
   const labelHalf = L => Math.max(0, L.col / 2 - GUTTER);
@@ -129,31 +137,41 @@
     constructor(parent, options) {
       if (!parent || !parent.appendChild) throw new TypeError('ProgressTimeline: a parent element is required');
       this.parent = parent;
-      this.opts = Object.assign({}, DEFAULTS, options);
+      this.opts = Object.assign({}, DEFAULTS, defined(options));
       this.id = 'pt' + (++uid);
       this._off = 0;              // the offset we last applied or saw
       this._browsed = false;      // the user moved the track since the last progress change
       this._pos = 0;              // their position, in segments, so it survives a resize
-      this._userActive = false;
+      this._prog = null;          // a scroll we started for automatic positioning: { to, until }
+      this._navTo = null;         // where an arrow or key scroll is heading (quick presses add up)
       this._build();
       this._render(true);
-      this._ro = typeof ResizeObserver === 'function' ? new ResizeObserver(() => this._relayout()) : null;
-      if (this._ro) this._ro.observe(this.root); else addEventListener('resize', this._onWinResize = () => this._relayout());
+      if (typeof ResizeObserver === 'function') {
+        // Width from the observer's layout box (not the transformed on-screen size);
+        // relaid out on the next frame so label re-wrapping can't loop the observer.
+        this._ro = new ResizeObserver(es => {
+          const w = es[0] && es[0].contentRect ? es[0].contentRect.width : this._measure();
+          if (this.layout && Math.abs(w - this.layout.W) < 0.5) return;
+          cancelAnimationFrame(this._roRaf);
+          this._roRaf = requestAnimationFrame(() => this._relayout('resize'));
+        });
+        this._ro.observe(this.root);
+      } else addEventListener('resize', this._onWinResize = () => this._relayout('resize'));
     }
 
     // Props in, view out. Same current: the user's browsing position is kept.
     update(options) {
       const prevKey = this._progressKey();
-      Object.assign(this.opts, options);
+      Object.assign(this.opts, defined(options));
       const changed = this._progressKey() !== prevKey;
-      if (changed) { this._browsed = false; this._userActive = false; clearTimeout(this._userT); }
+      if (changed) { this._browsed = false; this._navTo = null; }
       this._render(false, changed);
     }
 
     setCurrent(id) { this.update({ current: id, complete: false }); }
 
     // Back to the resting position for the current state.
-    scrollToCurrent(smooth) { this._browsed = false; this._applyOffset(targetOffset(this.layout, this._currentIndex()), smooth); }
+    scrollToCurrent(smooth) { this._browsed = false; this._navTo = null; this._applyOffset(targetOffset(this.layout, this._currentIndex()), smooth); }
 
     getState() {
       const L = this.layout, off = this.scroller.scrollLeft, s = edgeState(L, off);
@@ -164,9 +182,10 @@
 
     destroy() {
       if (this._ro) this._ro.disconnect(); else removeEventListener('resize', this._onWinResize);
-      clearTimeout(this._userT);
-      clearTimeout(this._arrowT);
+      clearTimeout(this._navT);
       cancelAnimationFrame(this._raf);
+      cancelAnimationFrame(this._roRaf);
+      this._endDrag();
       this.root.remove();
     }
 
@@ -181,9 +200,16 @@
       return i;   // -1 for an unknown id: treated as not started
     }
 
+    // The card's layout width: unaffected by transforms (a modal's scale-in) or zoom on an ancestor.
+    _measure() {
+      const w = parseFloat(getComputedStyle(this.root).width);
+      return Number.isFinite(w) ? w : this.root.clientWidth || 0;
+    }
+
     _build() {
       const r = this.root = document.createElement('div');
       r.className = 'pt';
+      r.tabIndex = -1;            // somewhere for focus to land if what had it goes away
       r.innerHTML =
         '<div class="pt-scroller"><ol class="pt-track"></ol></div>' +
         '<div class="pt-fade pt-fade--start" aria-hidden="true"></div>' +
@@ -200,31 +226,22 @@
 
       const sc = this.scroller;
       sc.addEventListener('scroll', () => this._onScroll(), { passive: true });
-      // Anything the user does to move the track counts as browsing.
-      const touch = () => this._markUser();
-      const own = () => { this._arrowTo = null; };   // the user takes over from an arrow's scroll
-      sc.addEventListener('touchstart', () => { own(); touch(); }, { passive: true });
-      sc.addEventListener('wheel', e => { if (e.deltaX || e.shiftKey) { own(); this._markUser(); } }, { passive: true });
+      // The user taking over: whatever we were animating to no longer applies.
+      const takeOver = () => { this._prog = null; this._navTo = null; };
+      sc.addEventListener('touchmove', takeOver, { passive: true });
+      sc.addEventListener('wheel', e => { if (e.deltaX || e.shiftKey) takeOver(); }, { passive: true });
       sc.addEventListener('keydown', e => this._onKey(e));
       sc.addEventListener('pointerdown', e => this._onDown(e));
       sc.addEventListener('pointermove', e => this._onMove(e));
-      sc.addEventListener('pointerup', e => this._onUp(e));
-      sc.addEventListener('pointercancel', e => this._onUp(e));
       sc.addEventListener('dragstart', e => e.preventDefault());
       sc.addEventListener('click', e => { if (this._swallow) { this._swallow = false; e.preventDefault(); e.stopPropagation(); } }, true);
+      this._winUp = e => this._onUp(e);
       // Arrows: one actual segment each click, smooth (instant with reduced
       // motion), clamped at the ends. Quick clicks add up rather than restart.
       const arrow = dir => {
         const L = this.layout, b = dir < 0 ? this.btnStart : this.btnEnd;
         if (!b.classList.contains('is-visible') || L.max <= EPS) return;
-        const from = this._arrowTo != null ? this._arrowTo : this.scroller.scrollLeft;
-        const to = clamp(from + dir * L.seg, 0, L.max);
-        this._arrowTo = to;
-        clearTimeout(this._arrowT);
-        this._arrowT = setTimeout(() => { this._arrowTo = null; this._sync(); }, 1200);   // a fallback; it clears on arrival
-        this._markUser();
-        this.scroller.scrollTo({ left: to, behavior: reducedMotion() ? 'auto' : 'smooth' });
-        this._sync();
+        const to = this._nav((this._navTo != null ? this._navTo : sc.scrollLeft) + dir * L.seg);
         const detail = { direction: dir < 0 ? 'start' : 'end', offset: to, currentIndex: this._currentIndex() };
         if (typeof this.opts.onArrow === 'function') this.opts.onArrow(detail);
         r.dispatchEvent(new CustomEvent('progress-timeline:arrow', { bubbles: true, detail }));
@@ -246,8 +263,9 @@
       if (html !== this._html) { this.track.innerHTML = html; this._html = html; }
       const t = c >= N ? 'All ' + N + ' steps completed' : c >= 0 ? 'Step ' + (c + 1) + ' of ' + N + ': ' + (st[c].label || '') : N + ' steps, not started';
       const lbl = (this.opts.label ? this.opts.label + ', ' : '') + t;
-      this.btnStart.setAttribute('aria-label', 'Scroll to earlier steps');
-      this.btnEnd.setAttribute('aria-label', 'Scroll to later steps');
+      const al = Object.assign({}, DEFAULTS.arrowLabels, defined(this.opts.arrowLabels));
+      this.btnStart.setAttribute('aria-label', al.start);
+      this.btnEnd.setAttribute('aria-label', al.end);
       if (!initial && progressChanged) this.live.textContent = t;
       this._lbl = lbl;
       this._relayout(initial ? 'initial' : progressChanged ? 'progress' : 'render');
@@ -256,9 +274,10 @@
     // Measure, lay out, place the track. why: 'initial' | 'progress' | 'render' | 'resize'
     _relayout(why) {
       why = why || 'resize';
-      const W = this.root.getBoundingClientRect().width;
-      const L = this.layout = computeLayout(W, this.opts.steps.length, this.opts);
-      const r = this.root, sc = this.scroller;
+      const prev = this.layout, r = this.root, sc = this.scroller;
+      const L = this.layout = computeLayout(this._measure(), this.opts.steps.length, this.opts);
+      const same = prev && ['W', 'N', 'seg', 'pad', 'col', 'edge', 'content'].every(k => Math.abs(prev[k] - L[k]) < 0.01);
+      const focused = r.contains(document.activeElement) ? document.activeElement : null;
       r.dataset.layout = L.fit ? 'fit' : L.narrow ? 'narrow' : 'scroll';
       r.style.setProperty('--pt-seg', L.seg + 'px');
       r.style.setProperty('--pt-pad', L.pad + 'px');
@@ -271,52 +290,73 @@
       if (L.max > EPS) { sc.tabIndex = 0; sc.setAttribute('role', 'group'); sc.setAttribute('aria-label', this._lbl + '. Use the arrow keys to browse.'); this.track.removeAttribute('aria-label'); }
       else { sc.removeAttribute('tabindex'); sc.removeAttribute('role'); sc.removeAttribute('aria-label'); this.track.setAttribute('aria-label', this._lbl); }
 
-      let off;
-      if (this._browsed && why !== 'progress') off = clamp(this._pos * L.seg, 0, L.max);   // keep where they were, clamped
-      else off = targetOffset(L, this._currentIndex());
-      this._applyOffset(off, why === 'progress');
+      if (why === 'render' && same) this._sync();   // an ordinary re-render: the track, and any scroll in flight, left alone
+      else {
+        let off;
+        if (this._browsed && why !== 'progress') off = clamp(this._navTo != null ? this._navTo : this._pos * L.seg, 0, L.max);   // keep where they were, clamped
+        else { this._navTo = null; off = targetOffset(L, this._currentIndex()); }
+        if (this._navTo != null && Math.abs(off - this._navTo) > EPS) this._navTo = null;
+        this._applyOffset(off, why === 'progress');
+      }
+      // focus never drops to <body>: the track if it can take it, else the card
+      if (focused && !(focused.offsetParent && focused.tabIndex >= 0 && focused.getAttribute('aria-hidden') !== 'true')) this._refocus();
     }
 
+    _refocus() {
+      const t = this.scroller.tabIndex === 0 ? this.scroller : [this.btnStart, this.btnEnd].find(b => b.classList.contains('is-visible')) || this.root;
+      t.focus({ preventScroll: true });
+    }
+
+    // Automatic positioning: a scroll of ours, so it isn't taken for browsing.
     _applyOffset(off, smooth) {
-      const sc = this.scroller;
+      const sc = this.scroller, anim = smooth && !reducedMotion() && typeof sc.scrollTo === 'function';
       this._off = off;
-      this._lastProg = performance.now();
-      if (smooth && !reducedMotion() && typeof sc.scrollTo === 'function') sc.scrollTo({ left: off, behavior: 'smooth' });
+      this._prog = Math.abs(sc.scrollLeft - off) < 1 ? null : { to: off, until: performance.now() + (anim ? 1500 : 150) };
+      if (anim) sc.scrollTo({ left: off, behavior: 'smooth' });
       else sc.scrollLeft = off;
       this._sync();
     }
 
-    _markUser() {
-      this._userActive = true;
-      this._lastInput = performance.now();
-      clearTimeout(this._userT);
-      this._userT = setTimeout(() => { this._userActive = false; }, 1000);
+    // Browsing by arrow or key: smooth (instant with reduced motion), clamped, and
+    // quick presses add up. It's the user's own position from the start.
+    _nav(to) {
+      const L = this.layout, sc = this.scroller;
+      to = clamp(to, 0, L.max);
+      this._prog = null;
+      this._navTo = to;
+      this._browsed = true;
+      if (L.seg > 0) this._pos = to / L.seg;
+      clearTimeout(this._navT);
+      this._navT = setTimeout(() => { this._navTo = null; this._sync(); }, 1500);   // a fallback; it clears on arrival
+      sc.scrollTo({ left: to, behavior: reducedMotion() ? 'auto' : 'smooth' });
+      this._sync();
+      return to;
     }
 
     _onScroll() {
       const off = this.scroller.scrollLeft;
-      // the user's own scrolling: input since the last scroll we started
-      if (this._drag || (this._userActive && (this._lastInput || 0) >= (this._lastProg || 0))) {
+      if (this._prog && (Math.abs(off - this._prog.to) < 1 || performance.now() > this._prog.until)) this._prog = null;
+      if (this._navTo != null && Math.abs(off - this._navTo) < 1) this._navTo = null;
+      // Anything we didn't start is the user browsing: touch, trackpad, drag,
+      // keys and arrows, but also assistive tech, focus and scrollIntoView.
+      if (!this._prog) {
         if (Math.abs(off - this._off) > EPS) this._browsed = true;
         this._off = off;
-        if (this.layout.seg > 0) this._pos = off / this.layout.seg;
-        clearTimeout(this._userT);
-        this._userT = setTimeout(() => { this._userActive = false; }, 250);   // momentum keeps it alive
+        if (this.layout.seg > 0) this._pos = (this._navTo != null ? this._navTo : off) / this.layout.seg;
       }
       cancelAnimationFrame(this._raf);
       this._raf = requestAnimationFrame(() => this._sync());
     }
 
-    // Fades and buttons from where the track actually is.
+    // Fades from where the track actually is; arrows from where it will rest.
     _sync() {
       const sl = this.scroller.scrollLeft, s = edgeState(this.layout, sl), r = this.root;
       r.classList.toggle('is-overflow-start', s.overflowStart);
       r.classList.toggle('is-overflow-end', s.overflowEnd);
-      if (this._arrowTo != null && Math.abs(sl - this._arrowTo) < 1) this._arrowTo = null;   // arrived
-      // While an arrow's own smooth scroll runs, the arrows go by where the track
-      // will rest, so a dot passing under one mid-flight doesn't blink it out
-      // (and swallow the next click). Swipes and drags are judged frame by frame.
-      const a = this._arrowTo != null ? edgeState(this.layout, this._arrowTo) : s;
+      if (this._navTo != null && Math.abs(sl - this._navTo) < 1) this._navTo = null;
+      // While an arrow's or key's smooth scroll runs, the arrows go by where the
+      // track will rest, so they don't blink mid-flight (and swallow the next click).
+      const a = this._navTo != null ? edgeState(this.layout, this._navTo) : s;
       this._button(this.btnStart, a.startButton);
       this._button(this.btnEnd, a.endButton);
     }
@@ -327,51 +367,60 @@
       b.classList.toggle('is-visible', on);
       b.tabIndex = on ? 0 : -1;
       if (on) b.removeAttribute('aria-hidden'); else b.setAttribute('aria-hidden', 'true');
-      if (hadFocus && !on) (this.scroller.tabIndex === 0 ? this.scroller : (this.btnStart.classList.contains('is-visible') ? this.btnStart : this.btnEnd)).focus({ preventScroll: true });
+      if (hadFocus && !on) this._refocus();
     }
 
     _onKey(e) {
       const L = this.layout;
       if (L.max <= EPS || e.altKey || e.ctrlKey || e.metaKey) return;
-      const sc = this.scroller, step = L.seg, page = Math.max(step, L.W - 2 * L.edge);
+      const base = this._navTo != null ? this._navTo : this.scroller.scrollLeft, step = L.seg, page = Math.max(step, L.W - 2 * L.edge);
       let to = null;
-      if (e.key === 'ArrowRight') to = sc.scrollLeft + step;
-      else if (e.key === 'ArrowLeft') to = sc.scrollLeft - step;
-      else if (e.key === 'PageDown') to = sc.scrollLeft + page;
-      else if (e.key === 'PageUp') to = sc.scrollLeft - page;
+      if (e.key === 'ArrowRight') to = base + step;
+      else if (e.key === 'ArrowLeft') to = base - step;
+      else if (e.key === 'PageDown') to = base + page;
+      else if (e.key === 'PageUp') to = base - page;
       else if (e.key === 'Home') to = 0;
       else if (e.key === 'End') to = L.max;
       if (to == null) return;
       e.preventDefault();
-      this._markUser();
-      sc.scrollTo({ left: clamp(to, 0, L.max), behavior: reducedMotion() ? 'auto' : 'smooth' });
+      this._nav(to);
     }
 
-    // Mouse drag; touch and trackpads scroll natively.
+    // Mouse drag; touch and trackpads scroll natively. The release is heard on
+    // the window, so a press that leaves the track can't stay armed.
     _onDown(e) {
       if (e.pointerType !== 'mouse' || e.button !== 0 || this.layout.max <= EPS) return;
-      this._arrowTo = null;
+      this._endDrag();
       this._drag = { x: e.clientX, off: this.scroller.scrollLeft, id: e.pointerId, moved: false };
+      addEventListener('pointerup', this._winUp, true);
+      addEventListener('pointercancel', this._winUp, true);
     }
     _onMove(e) {
       const d = this._drag;
       if (!d || e.pointerId !== d.id) return;
+      if (!(e.buttons & 1)) { this._endDrag(); return; }   // released somewhere we didn't hear
       const dx = e.clientX - d.x;
       if (!d.moved) {
         if (Math.abs(dx) < 4) return;
         d.moved = true;
+        this._prog = null; this._navTo = null;
         try { this.scroller.setPointerCapture(d.id); } catch (_) { /* already released */ }
         this.root.classList.add('is-dragging');
-        this._markUser();
       }
-      this._markUser();
       this.scroller.scrollLeft = d.off - dx;
       e.preventDefault();
     }
     _onUp(e) {
       const d = this._drag;
-      if (!d || e.pointerId !== d.id) return;
+      if (!d || (e && e.pointerId !== d.id)) return;
       if (d.moved) { this._swallow = true; setTimeout(() => { this._swallow = false; }, 0); }   // the click this release makes, if any, is part of the drag
+      this._endDrag();
+    }
+    _endDrag() {
+      const d = this._drag;
+      removeEventListener('pointerup', this._winUp, true);
+      removeEventListener('pointercancel', this._winUp, true);
+      if (!d) return;
       this.root.classList.remove('is-dragging');
       try { this.scroller.releasePointerCapture(d.id); } catch (_) { /* not captured */ }
       this._drag = null;
