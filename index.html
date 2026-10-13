@@ -7576,6 +7576,8 @@
   .tlProg{grid-area:prog;display:flex;align-items:center;gap:8px;margin-top:20px;min-width:0;font-size:12.5px;color:var(--tlSub);}
   .tlSeg{display:flex;gap:3px;flex:none;}
   .tlRing{display:none;flex:none;width:20px;height:20px;border-radius:50%;--rc:#f78359;background:conic-gradient(var(--rc) calc(var(--p, 0) * 1turn), var(--tlDotRing) 0);-webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));}
+  .tlStepC{flex:0 1 auto;display:inline-flex;align-items:center;gap:8px;min-width:0;height:28px;padding:0 12px 0 8px;border-radius:8px;background:var(--tlGhost);color:var(--tlTx);font-size:12.5px;font-weight:500;white-space:nowrap;}   /* the Chip steps: a ring and the step in hand's name */
+  .tlStepC b{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:500;} .tlStepC .tlRing{display:block;width:16px;height:16px;} .tlStepC.tlBlk{padding-left:10px;color:var(--tlSub);}
   .tlProg.done .tlRing{--rc:#42be65;} .tlProg.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlBlk .tlRing{--rc:var(--tlSub);}
   .tlSeg i{width:16px;height:4px;border-radius:2px;background:var(--tlDotRing);}
   .tlSeg i.on{background:#f78359;} .tlSeg i.cur{background:linear-gradient(90deg,#f78359 50%,rgba(247,131,89,.3) 50%);}
@@ -7759,6 +7761,8 @@
     .tlMeta span{max-width:100%;} .tlMeta span > em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .tlAct{margin-top:16px;padding:0;margin-left:-8px;} .tlProg{margin-top:16px;} .tlProg .lb{flex:1 1 auto;} .tlSeg i{width:14px;}
     /* the chip and the button side by side, one height ("next to each other, same height 56px"); a row with no chip gives the button the line */
+    .tlProg .tlStepC{height:44px;padding:0 14px 0 12px;border-radius:12px;gap:10px;} .tlStepC .tlRing{width:20px;height:20px;}   /* the Chip as tall as the button beside it */
+    .tlRow:has(.tlProgC){grid-template-columns:66px minmax(0,1fr) auto;}   /* a long step name gives way to the button, cut short, never under it */
     .tlProg .tlTgl{height:44px;padding:0 12px 0 12px;border-radius:12px !important;gap:10px;} .tlProg .tlCurB{display:none;} .tlProg .tlTgl .tlSeg{display:none !important;} .tlProg .tlTgl .tlRing{display:block;}   /* 44 ("44px badge"), a ring for the increments */   /* no room for the badge beside the chip and the button: the chip keeps the increments */
     .tlAct{min-width:0;} .tlAct .tlBtn{min-width:0;padding:0 12px;overflow:hidden;text-overflow:ellipsis;} .tlAct .tlMore{flex:none;width:44px;}   /* a long label gives way, never the screen */
     .tlAct .tlBtn, .tlAct .tlMore{height:44px;}   /* 44 ("44px height CTA") */ .tlAct .tlBtn{border-radius:12px;} .tlAct.split .tlBtn{border-radius:12px 0 0 12px;} .tlAct.split .tlMore{border-radius:0 12px 12px 0;}
@@ -10267,6 +10271,7 @@
           <select id="stTlSteps" class="tkSegSel" aria-label="How the open steps are drawn">
             <option value="v" selected>Vertical</option>
             <option value="h">Horizontal</option>
+            <option value="c">Chip</option>
           </select>
         </div>
         <!-- the documents on the Timeline too ("this should be in the Timeline view as well"), the same setting as the service page's -->
@@ -10287,7 +10292,7 @@
             <option value="4" selected>4</option>
           </select>
         </div>
-        <div class="tkRow stDocsLayRow">
+        <div class="tkRow stDocsLayRow tkGone">   <!-- retired: Part of step timeline kept ("remove this tweak") -->
           <span class="lbl">Document layout</span>
           <select id="stDocsLayT" class="stDocsLay" aria-label="Where the documents go">
             <option value="asSteps" selected>Part of step timeline</option>
@@ -10302,7 +10307,7 @@
           </select>
         </div>
         <!-- a disabled pattern on every locked service card, super light ("add tweak for all locked service cards with a disabled pattern on bg") -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">   <!-- retired, On kept ("remove the locked pattern and pattern opacity") -->
           <span class="lbl">Locked pattern</span>
           <select id="stLockPatT" class="stLockPat" aria-label="Diagonal pattern on locked service cards">
             <option value="on" selected>On</option>
@@ -10310,7 +10315,7 @@
           </select>
         </div>
         <!-- how strong the stripes are ("locked pattern opacity adjust tweak") -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">
           <span class="lbl">Pattern opacity</span>
           <span class="tkSlide">
             <input type="range" id="stLockOpT" class="stLockOp" min="2" max="30" step="1" value="8" aria-label="Locked pattern stripe opacity">
@@ -27840,6 +27845,7 @@ hairline({
       const sub = prev && prev.key === cur.key && cur.key === 'gut' && prev.at >= 0 && prev.at < 5 && cur.at < 5;   // only a sub step moved: the main bar's fill grows from where it was, the sub steps' line shows the step
       if (sub) root.querySelectorAll('.svStep.fill, .svJrBars i.fill').forEach(n => { n.style.setProperty('--gf0', ((prev.at + 1) / 5).toFixed(3)); n.classList.remove('jg'); void n.offsetWidth; n.classList.add('jg'); });
       root.querySelectorAll(sub ? '.kitStep li.cur' : '.svStep.on, .svJrBars i.cur, .kitStep li.cur').forEach(n => { n.classList.remove('jn'); void n.offsetWidth; n.classList.add('jn'); const p = n.previousElementSibling; if (p && p.matches('.svStep.ok, .svJrBars i.on, .kitStep li.on')){ p.classList.remove('jd'); void p.offsetWidth; p.classList.add('jd'); } }); });
+    let PROBE = false;   // paint asked only for its status block (the Timeline's subtitles): no modal, no flag, nothing drawn
     const paint = (key, state, o) => { const PREV = cur && cur.key ? { key: cur.key, at: cur.at, state: cur.state, g: cur.J && cur.J.items ? cur.J.items.map(y => y.svc).join() : '' } : null;
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
       // a locked page whose services before it are all done is in hand, not locked ("DEXA is done, so it shouldn't be orange, and we should see the steps")
@@ -28079,7 +28085,7 @@ hairline({
       if (key === 'gutq' && !/^(done|locked)$/.test(state)){   // the microbiome's first: the questionnaire, as the design
         Object.assign(x, { tone: '', tag: 'Pending action', h: 'Complete your gut health questionnaire', p: 'Tell us about your gut health and diet. We\u2019ll send your kit once it\u2019s done.', btn: 'Start', btns: null, noBtn: false, side: false, ghost: false, doc: null, goJ: null, goNeed: '', dis: false, extra: '', kitT: '' });
         instr = '<h2 class="svH2">Why we need this information</h2><div class="svBody"><ul class="svList"><li>Your diet, digestion and symptoms help your clinician read your lab results in context.</li><li>Some answers, like recent antibiotics or probiotics, change what your results mean.</li><li>Your answers shape the diet and lifestyle advice in your report.</li></ul></div>'; sec = ''; noApt = false; toBook = true; docBody = ''; }
-      { const rIn = state === 'done' && (!!repBody || key === 'consult'); if (rIn && !DSEEN.has(key)){ DSEEN.add(key); setTimeout(() => dbShow(key === 'consult' ? { h: 'Your plan is ready', p: 'Dr Sarah Chen has built your plan from your call: the tests that make sense for you now, and what comes next.', note: '', go: 'See your plan' } /* the onboarding's end, the first time it is seen */ : key === 'path' ? { av: RDOC_AV, noPlay: true, h: 'All your results are in', p: 'Dr Steven Lu has reviewed your blood test results and written your debrief.', note: 'If anything had needed urgent attention, your doctor would already have called you.', go: 'See results', later: 'I\u2019ll look later' } /* the blood test too, the first time its final step is seen ("we also need the modal when the user sees this final step the first time") */ : key === 'dexa' ? { art: 'doc', noPlay: true, h: 'Your results are ready', p: 'Dr Steven Lu has reviewed your DEXA results. Your doctor goes through them with you at your Diagnostics Review.', note: '', go: 'See results', later: 'I\u2019ll look later' } /* the illustration on top, the note merged into the line ("replace top visual; merge this to sub title") */ /* DEXA: the modal the first time its completed step is seen, not from the button ("the modal is triggered the first time we see the completed step") */ : { av: RDOC_AV, noPlay: key === 'abrep', h: key === 'abrep' ? 'Your report is ready' : 'Your results are ready', p: 'Dr Steven Lu has reviewed your results and written your report.', note: 'If anything had needed urgent attention, your doctor would already have called you.', go: 'See report', later: 'I\u2019ll read it later' }), 350); } else if (!rIn) DSEEN.delete(key); }   // a report in: the modal first, always ("when a report is completed, always prompt the modal first")
+      if (!PROBE) { const rIn = state === 'done' && (!!repBody || key === 'consult'); if (rIn && !DSEEN.has(key)){ DSEEN.add(key); setTimeout(() => dbShow(key === 'consult' ? { h: 'Your plan is ready', p: 'Dr Sarah Chen has built your plan from your call: the tests that make sense for you now, and what comes next.', note: '', go: 'See your plan' } /* the onboarding's end, the first time it is seen */ : key === 'path' ? { av: RDOC_AV, noPlay: true, h: 'All your results are in', p: 'Dr Steven Lu has reviewed your blood test results and written your debrief.', note: 'If anything had needed urgent attention, your doctor would already have called you.', go: 'See results', later: 'I\u2019ll look later' } /* the blood test too, the first time its final step is seen ("we also need the modal when the user sees this final step the first time") */ : key === 'dexa' ? { art: 'doc', noPlay: true, h: 'Your results are ready', p: 'Dr Steven Lu has reviewed your DEXA results. Your doctor goes through them with you at your Diagnostics Review.', note: '', go: 'See results', later: 'I\u2019ll look later' } /* the illustration on top, the note merged into the line ("replace top visual; merge this to sub title") */ /* DEXA: the modal the first time its completed step is seen, not from the button ("the modal is triggered the first time we see the completed step") */ : { av: RDOC_AV, noPlay: key === 'abrep', h: key === 'abrep' ? 'Your report is ready' : 'Your results are ready', p: 'Dr Steven Lu has reviewed your results and written your report.', note: 'If anything had needed urgent attention, your doctor would already have called you.', go: 'See report', later: 'I\u2019ll read it later' }), 350); } else if (!rIn) DSEEN.delete(key); }   // a report in: the modal first, always ("when a report is completed, always prompt the modal first")
       const GX = key === 'gut' && state === 'active' && x.at >= 5 ? x.at : 0;   /* x.at, not at: at is capped at the kit's last step */   // the kit's page past the lab: 5 and 6 the report's two sub steps, 7 the report ready
       if (GX) x.noRef = true;   /* past the sample, the referral is done with ("remove referral for completed state") */
       if (GX === 5 || GX === 6){ const ci = GX - 5, SS = ['Clinician review', 'Preparing report & video', 'Final results'], SSU = ['Your clinician reads your results with your questionnaire and writes your report. Usually 2 business days', 'Your final report and a video walkthrough of it. Expected by Fri 13 Nov', 'Your report and video, ready in the app'],   /* a third, Final results, reached when the report is ready: then a single step, as DEXA and the MRI ("same as DEXA framework") */ IINF = '<button class="kitInfo" type="button" aria-label="See all the steps"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.3"/><path d="M8 7.2v3.6" stroke-linecap="round"/><circle cx="8" cy="5.1" r=".55" fill="currentColor" stroke="none"/></svg></button>';   // the report's own two sub steps, as the MRI debrief's ("need sub step")
@@ -28089,12 +28095,12 @@ hairline({
         instr = '<h2 class="svH2">Results</h2>' /* waiting: just Results, no tabs, either way ("just need Results") */ + '<div class="mriPh"><i class="mriPhIc" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-3a2 2 0 0 1-2-2V2"/><path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z"/><path d="M3 7.6v12.8A1.6 1.6 0 0 0 4.6 22h9.8"/></svg></i><b>Your results will appear here</b><span>Expected by Fri 13 Nov. Your clinician writes your report and records a video walkthrough of your results.</span></div>'; sec = ''; noApt = false; toBook = true; }
       if (GX === 7){ Object.assign(x, { tone: 'ok', tag: 'Ready', h: 'Your microbiome report is ready', p: 'Watch your video walkthrough, then read your report.', btn: '', btns: RIS ? ['Read report', 'Watch video'] : null, noBtn: !RIS, side: false, ghost: false, doc: null, goJ: null, goNeed: '', dis: false, extra: '', kitT: '' });
         instr = RIS ? obsH('gut') + withBio(resL(['Gut microbiome sequencing', 'Diversity and balance', 'Digestion and inflammation markers'], ['Microbiome', '#9cc088'], '10 Nov 2026', 'Microba Life Sciences'), 'gut') : obsH('gut') + '<h2 class="svH2">Your debrief</h2><div class="svResTabs" role="tablist"><button type="button" class="on">Report</button><button type="button">Results</button></div><div class="svResCard"><div class="svResTx"><div class="svResM svResBy"><img src="assets/overview/avatar-dr.webp" alt="">Emma Walsh \u00b7 13 Nov 2026</div><div class="svResT">Your microbiome report</div><div class="svResCtas"><button class="svResCta pri gutWatch" type="button">Watch video</button><button class="svResCta" type="button">Read report</button></div></div><div class="svResImg svResPlay" style="background-image:url(assets/overview/avatar-dr.webp)"><i class="dbPlay" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M5.5 3.8v8.4L12 8z"/></svg></i></div></div>'; sec = ''; noApt = false; toBook = true;
-        if (!GUTSEEN){ GUTSEEN = true; setTimeout(() => dbShow(GUTDB), 350); } } else if (key === 'gut') GUTSEEN = false;
+        if (!PROBE && !GUTSEEN){ GUTSEEN = true; setTimeout(() => dbShow(GUTDB), 350); } } else if (key === 'gut' && !PROBE) GUTSEEN = false;
       if (key === 'gutq' && state === 'done'){ Object.assign(x, { tone: 'ok', tag: 'Completed', h: 'Your questionnaire is complete', p: 'Your answers are with your clinician. They\u2019ll read them alongside your lab results, so your report fits you.', btn: '', btns: null, noBtn: true, side: false, ghost: false, doc: null, goJ: null, goNeed: '', dis: false, extra: '', kitT: '', st: 'Completed 3 Oct' });   // done: not results, just the answers in ("results are not ready at step 2")
         instr = ''; sec = ''; noApt = false; toBook = true; docBody = '<h2 class="svH2">My documents</h2><div class="svDocB svMyDocs"><div class="svDoc svRep"><span class="svDocIc">' + DI.form + '</span><span class="svRepT"><b>Microbiome &amp; Gut Health Questionnaire</b><small>Completed 3 Oct 2026</small></span><button class="svDocView" type="button" data-view="Microbiome &amp; Gut Health Questionnaire">View</button></div></div>'; }
       if (key === 'gut' && state !== 'locked') docBody = '<h2 class="svH2">My documents</h2><div class="svDocB svMyDocs">' + (refD ? refRow : '') + '<div class="svDoc svRep"><span class="svDocIc">' + DI.form + '</span><span class="svRepT"><b>Microbiome &amp; Gut Health Questionnaire</b><small>Completed 3 Oct 2026</small></span><button class="svDocView" type="button" data-view="Microbiome &amp; Gut Health Questionnaire">View</button></div></div>';   // the questionnaire, done, under My documents
       const MSI = [0, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 2], MK = ['act', 'act', 'conf', 'wait', 'act', 'act', 'act', 'act', 'wait', 'act', 'conf', 'wait', 'wait', 'conf', 'clo'];   // the debrief ready: green, the last step reached ("the latest step should be green")
-      if (MRI && at === 13){ if (!DBSEEN){ DBSEEN = true; setTimeout(() => dbShow(), 350); } } else if (key === 'wbmri') DBSEEN = false;
+      if (MRI && at === 13){ if (!PROBE && !DBSEEN){ DBSEEN = true; setTimeout(() => dbShow(), 350); } } else if (key === 'wbmri' && !PROBE) DBSEEN = false;
       // the group's services drawn as the DEXA's card: the name with its dot, the steps under it, one step style for every list ("align MRI step style to DEXA style step card")
       const KS = { on: 'ok', act: 'on', wait: 'on pas', conf: 'on okc', clo: 'on svTinf', later: '' };
       const asCard = (nm, its, done) => '<ol class="svJrL"><li class="' + (done ? 'on' : 'cur') + ' main one"><i class="svJrMk">' + (done ? '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>' : '') + '</i><div class="svJrTx"><b>' + escS(nm) + '</b></div><div class="svJrSteps">' + its.map(y => '<div class="svStep' + (KS[y.k] ? ' ' + KS[y.k] : '') + (y.x ? ' ' + y.x : '') + (y.gf != null && y.gf < 1 ? ' fill' : '') + '"' + (y.gf != null && y.gf < 1 ? ' style="--gf:' + y.gf.toFixed(3) + '"' : '') + (y.j != null ? ' data-j="' + y.j + '"' : '') + '><b>' + escS(y.nm) + '</b>' + (y.sub ? '<span>' + y.sub + '</span>' : '') + '</div>').join('') + '</div></li></ol>';
@@ -28153,6 +28159,7 @@ hairline({
       if (d.ref && !lateR && !x.noRef && at >= 0 && at < n && docAt < 0 && !grpOn && !/^(locked|later|soon|suggested|purchase|claim|done)$/.test(state))   // the referral in the status card, as the report and video items, till the appointment is past
         x.media = (x.media || '') + '<div class="svDocs inPend svMed svRefIn"><div class="svDoc done"><span class="svDocIc">' + IC.ref + '</span><span class="svMedT"><b>Your referrals</b><small>Show them when you get to your appointment</small></span><button class="svDocBtn svMedGo svDocSec" type="button">Show</button></div></div>';   /* its Show a secondary CTA ("secondary CTA") */
       if (x.art){ x.dr = x.tag === 'Ready' ? (key === 'gut' ? ['Emma Walsh', '13 Nov 2026'] : ['Dr Sarah Chen', '3 Nov 2026']).concat('assets/overview/hero-consult.webp') : ['Dr. Steven Lu', '23 April 2026', 'assets/overview/hero-doctor.webp']; x.art = RVIS === 'gen' ? 'gen' : 'doc'; if (x.btn === 'See report') x.btn = 'View report'; }   /* the Ready ones as the completed: the doctor who recorded it, their name and the date ("keep same format as DEXA") */   /* the completed one: the doctor who wrote the report at the right, their name and the date under the photo ("completed state design like this") */   /* every results card done, the same: the buttons under the text, the illustration at the right ("all results completed cards same format") */
+      if (PROBE) return x;   // the status block as it stands: its title is the Timeline's subtitle
       const hzRing = h => h.replace(/<button class="svmHz"[\s\S]*?<\/button>/g, bt => { const cs = [...bt.matchAll(/<i class="([^"]*)"(?: style="[^"]*")?><\/i>/g)].map(r => r[1]), ci = cs.findIndex(c => /\bcur\b/.test(c));   /* Ring: the step in hand's number by its name, a small badge ("next to the current step, add a small badge: Step X/5") */
         return ci < 0 ? bt : bt.replace(/(<div class="svmHzH"><b>[\s\S]*?<\/b>)/, '$1<i class="svmStepB">Step ' + (ci + 1) + '/' + cs.length + '</i>'); })   /* after the step's name ("step name and then the step") */.replace(/<div class="svJrBars">((?:<i[^>]*><\/i>)+)<\/div>/g, (m, is) => { const bs = [...is.matchAll(/<i class="([^"]*)"(?: style="--gf:([\d.]+)")?><\/i>/g)], N = bs.length, G = N > 1 ? 6.6 : 0, L = 100 / N - G;   /* a ring at the card's right, an arc a step with round ends, about 4px between once the caps are in, from 12 o'clock ("use rounded increment") */
         const arc = (j, len, c) => '<circle class="' + c + '" cx="26" cy="26" r="22" pathLength="100" stroke-dasharray="' + len.toFixed(2) + ' ' + (100 - len).toFixed(2) + '" transform="rotate(' + (-90 + j * 360 / N + G * 1.8).toFixed(2) + ' 26 26)"/>';
@@ -28533,7 +28540,8 @@ hairline({
         all.forEach(u => { if (u !== t && u.value !== t.value){ u.value = t.value; const g = u.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(on)); } }); }));
       const keep = () => requestAnimationFrame(() => document.body.classList.toggle('svLockPat', !!all[0] && all[0].value === 'on')); keep(); /* on by default ("locked pattern by default ON") */ document.addEventListener('everlab:mode', keep); if (sel) sel.addEventListener('change', keep); }   // a change of page rewrites the body's classes: the setting comes back with it
     { const bpS = document.getElementById('stBp'); if (bpS) bpS.addEventListener('change', () => setTimeout(() => { shutAll(); if (document.body.classList.contains('svcOn') && cur) paint(cur.key, cur.state, cur.o); }, 0)); }   // XS and back: the page redrawn for its width
-    window._svc = { openDesk, openMob, close, plan, lock: lkOpen, repaint: () => { if (cur && cur.key) paint(cur.key, cur.state, cur.o); } };
+    const head = (key, state, o) => { PROBE = true; try { const x = paint(key, state, o), t = document.createElement('div'); t.innerHTML = x && x.h ? String(x.h) : ''; return t.textContent.trim().replace(/\.$/, ''); } catch (e){ return ''; } finally { PROBE = false; } };   // a service's status block title, as its page would show it (no full stop, as there)
+    window._svc = { openDesk, openMob, close, plan, head, lock: lkOpen, repaint: () => { if (cur && cur.key) paint(cur.key, cur.state, cur.o); } };
     // the Overview's action plan cards carry the Timeline's step chip and the step in hand's badge ("add the badge step + badge status on the Overview action plan items"): the state is the one the card opens its page in (Book: to book; View: booked), so the card and its page agree
     { const PV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;
       document.querySelectorAll('.dvProt, .ovact').forEach(c => {
@@ -28650,7 +28658,7 @@ hairline({
       ],
       past: [
         { h: 'July 2026', dot: 'now', rows: [
-          { t: 'Advanced blood panel', d: '44 biomarkers across heart, metabolic, liver and kidney health.', img: 'path', meta: [['check', 'Completed 13 Jul 2026'], ['rec', 'Report ready']], act: 'View report', svc: 'path', state: 'done', when: 'Completed 13 Jul 2026', title: 'Advanced blood panel' },
+          { t: 'Advanced blood panel', d: '44 biomarkers across heart, metabolic, liver and kidney health.', img: 'path', meta: [['check', 'Completed 13 Jul 2026'], ['rec', 'Report ready']], act: 'View report', svc: 'path', state: 'done', when: 'Completed 13 Jul 2026', title: 'Advanced blood panel', fresh: 1 },   // fresh: done, not yet seen -- in Upcoming till opened
           { t: 'Onboarding Consultation', d: 'Your first call with your Everlab doctor, and your plan from it.', img: 'consult', meta: [['check', 'Completed 2 Jul 2026'], ['dr', 'With Dr Sarah Chen']], act: 'View', svc: 'consult', state: 'done', when: 'Completed 2 Jul 2026' }
         ] },
         { h: 'February 2026', rows: [
@@ -28679,6 +28687,14 @@ hairline({
     const rowPlan = x => { if (x.state === 'locked') { const q = PL(x.svc, x.state); return q ? Object.assign({}, q, { steps: x.steps || q.steps, at: -1 }) : null; } let q = PL(x.svc, x.state); if (q && x.steps) q = Object.assign({}, q, { steps: x.steps }); return q; };
     // a row waiting on another stands under it ("the object needs to be below the blocker"), however the data lists them
     // every locked object goes to "Later", after everything ("all locked objects under a group 'Later' at the end of the list")
+    /* a completed service stays in Upcoming, first in the current month, until it has been seen -- opened once -- and only then is Past ("we're not sure the user saw it; while the user hasn't seen the completed state, it remains Upcoming, at the top of the current month"); in memory, so a reload shows it again */
+    const SEEN = new Set(), seenK = r => r.svc + '|' + r.t, unseen = r => !!r.fresh && !SEEN.has(seenK(r));
+    const tabRows = S => tab === 'up' ? S.map(sc => sc.dot === 'now' ? Object.assign({}, sc, { rows: TL.past.flatMap(x => x.rows.filter(unseen)).map(r => Object.assign({}, r, { cta: 1 })).concat(sc.rows) }) : sc)
+      : tab === 'past' ? S.map(sc => Object.assign({}, sc, { rows: sc.rows.filter(r => !unseen(r)) })) : S;
+    let DIRTY = false;   // a row has moved tab since the list was drawn: drawn afresh on the way back
+    const openO = (d, w) => d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line };   // what the row tells its page
+    /* the row's subtitle: its status block's title, as its page shows it ("the title the service or the task; the subtitle the status block title"); its own line where it has none */
+    const subOf = r => { const w = own(r); if (!w || !w.svc || !window._svc || !window._svc.head) return r.d; return window._svc.head(w.svc, w.state, openO(r, w)) || r.d; };
     const layout = S => { const later = [];
       const all = S.map(x => Object.assign({}, x, { rows: x.rows.filter(r => { if (r.lock){ later.push(r); return false; } return true; }) })).filter(x => x.rows.length || (x.sug && x.sug.length));
       const out = all.filter(x => !x.tail), tail = all.filter(x => x.tail);   // the ages come after Later ("after Later")
@@ -28687,7 +28703,7 @@ hairline({
     const planOf = r => { if (r.group){ const { g, a } = groupOf(r); if (a < 0) return null; const x = r.focus != null ? g[r.focus] : g[a]; return x.state === 'locked' ? null : x.p; }
       if (!r.svc || r.lockAge || r.state === 'locked' || r.state === 'suggested') return null; const p = PL(r.svc, r.state); return p ? { svc: r.svc, steps: r.steps || p.steps, at: r.at != null ? r.at : p.at } : null; };
     const isCta = r => !!r.cta || (() => { const p = planOf(r); return !!p && p.at >= 0 && p.at < p.steps.length && !pas(p.steps[p.at]); })();
-    const ordered = rows0 => { const rows = rows0.slice().sort((a, b) => (isCta(b) ? 1 : 0) - (isCta(a) ? 1 : 0)), out = [], rest = rows.slice();   // a primary action first in its month ("primary object always first")
+    const ordered = rows0 => { const rk = r => unseen(r) ? 2 : isCta(r) ? 1 : 0, rows = rows0.slice().sort((a, b) => rk(b) - rk(a)), out = [], rest = rows.slice();   // a primary action first in its month ("primary object always first"); a completion not yet seen before it
       const place = x => { out.push(x); rest.filter(y => y.need === x.t).forEach(y => { rest.splice(rest.indexOf(y), 1); place(y); }); };
       rows.forEach(x => { if (rest.indexOf(x) < 0) return; if (x.need && rows.some(y => y !== x && y.t === x.need)) return; rest.splice(rest.indexOf(x), 1); place(x); });
       return out.concat(rest); };
@@ -28702,7 +28718,11 @@ hairline({
       const dl = DOCL(p.svc), k = dl.findIndex(([t]) => !DOCDN().has(t)), bI = Math.max(0, p.steps.findIndex(st => /^book/i.test(st[0]))), at = Math.max(0, p.at);   // always just before Book, the first still to do in hand while Book is not done
       const steps = p.steps.slice(0, bI).concat(dl.map(([t]) => [t]), p.steps.slice(bI));
       return stepList0(Object.assign({}, p, { steps, at: at < bI ? at : at === bI && k >= 0 ? bI + k : p.at + dl.length })); };
-    let TLHZ = false;   /* the Steps tweak: bars and the step in hand */
+    let TLHZ = false, TLSTEP = 'v';   /* the Steps tweak: bars and the step in hand; or a chip alone */
+    /* Chip: the step in hand's name and a ring of how far along, no Step x of n and nothing to open ("control over the steps: horizontal, vertical, or just a chip with the step name + circular progress") */
+    const stepChip = (p, done) => { const n = p.steps.length || 1, at = p.at, st = done ? null : p.steps[Math.max(0, at)], k = done ? n : at < 0 ? 0 : Math.min(n, at + .5), w = !done && pas(st);   // the ring: the steps done, and half the one in hand (a last step under way is not a full ring)
+      return '<div class="tlProg tlProgC' + (done ? ' done' : '') + (w ? ' pas' : '') + '"><span class="tlStepC"><i class="tlRing" aria-hidden="true" style="--p:' + (k / n).toFixed(3) + '"></i><b>' + esc(done ? 'Completed' : st ? st[0] : '') + '</b></span></div>'; };
+    const lockChip = t => '<div class="tlProg tlProgC"><span class="tlStepC tlBlk">' + LOCK + '<b>' + esc(t) + '</b></span></div>';   // waiting: the lock and why, nothing to open
     const stepHz = p => { const n = p.steps.length, at = p.at, cur = at >= 0 && at < n ? p.steps[at] : null;
       return '<div class="tlStepHz"><div class="svJrBars">' + p.steps.map((st, i) => '<i class="' + (at >= n || i < at ? 'on' : i === at ? 'cur' + (pas(st) ? ' pas' : '') : '') + '"></i>').join('') + '</div>' +
         '<div class="tlStepHzT"><b>' + esc(cur ? cur[0] : at >= n ? 'All done' : 'Not started') + '</b></div></div>'; };   /* the chip above already says Step x of n */
@@ -28728,21 +28748,25 @@ hairline({
         const lk1 = g.findIndex((x, i) => /^(lock|soon)$/.test(kind(x, i)) && !(i === a && g[mi] && g[mi].state === 'locked'));   // the locked ones under an eyebrow ("Your services"), as on the service page
         const stack = '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetGrp"><ol class="tlGrp">' + g.map((x, i) => (i === lk1 ? '<div class="svJrEy tlGrpEy">Up next</div>' : '') + item(x, i)).join('') + '</ol></div></div></div>';
         if (r.state === 'locked' && r.need){   // a member of the group still waiting: the Waiting on chip, over the same list of the group's services
+          if (TLSTEP === 'c') return lockChip('Waiting on ' + r.need);
           const bk = blockerOf(r), bp = bk ? rowPlan(bk) : null;
           const segs = bp ? bp.steps.map((st, j) => '<i class="' + (bp.at >= bp.steps.length || j < bp.at ? 'on' : j === bp.at ? 'cur' : '') + '"></i>').join('') : '';
           return '<div class="tlProg"><button class="tlTgl tlBlk" type="button" aria-expanded="false" aria-label="Waiting on ' + esc(r.need) + ', show details">' + LOCK + (segs ? '<span class="tlSeg" aria-hidden="true">' + segs + '</span>' : '') + 'Waiting on ' + esc(r.need) + CHEV + '</button></div>' + stack;
         }
         // the chip counts the object's own service's steps, never the group's services ("always step, not service")
         const op = g[mi].p, on = op.steps.length, dn = g[mi].state === 'done' || op.at >= on, lb = dn ? 'Completed' : op.at < 0 ? 'Not started' : 'Step ' + (op.at + 1) + ' of ' + on;
+        if (TLSTEP === 'c') return stepChip(op, dn);
         return '<div class="tlProg' + (dn ? ' done' : '') + (!dn && pas(op.steps[op.at]) ? ' pas' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lb + ', show details"><span class="tlSeg" aria-hidden="true">' + op.steps.map((st, j) => '<i class="' + (dn || j < op.at ? 'on' : j === op.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lb + CHEV + '</button>' + (!dn && op.at >= 0 && op.steps[op.at] ? curB(op.steps[op.at]) : '') + '</div>' + stack;
       }
       if (r.lockAge){   // locked by age ("also should be locked"): nothing to do until then
+        if (TLSTEP === 'c') return lockChip('Unlocks at ' + r.lockAge);
         const own = rowPlan(Object.assign({}, r, { state: 'locked' }));
         const list = '<ol class="tlStepL"><li><i class="tlMk"></i><div class="tx"><b>Available when you turn ' + r.lockAge + '</b></div></li>' + (own ? own.steps.map(st => '<li><i class="tlMk"></i><div class="tx"><b>' + esc(st[0]) + '</b></div></li>').join('') : '') + '</ol>';
         return '<div class="tlProg"><button class="tlTgl tlBlk" type="button" aria-expanded="false" aria-label="Unlocks at ' + r.lockAge + ', show steps">' + LOCK + 'Unlocks at ' + r.lockAge + CHEV + '</button></div>' +
           '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox">' + list + '</div></div></div>';
       }
       if (r.state === 'locked' && r.need){   // waiting on another: its chip says which, with the blocker's own progress
+        if (TLSTEP === 'c') return lockChip('Waiting on ' + r.need);
         const bk = blockerOf(r), bp = bk ? rowPlan(bk) : null;
         const segs = bp ? bp.steps.map((st, j) => '<i class="' + (bp.at >= bp.steps.length || j < bp.at ? 'on' : j === bp.at ? 'cur' : '') + '"></i>').join('') : '';
         const own = rowPlan(r), bl = bp ? (bp.at >= bp.steps.length ? 'Completed' : bp.at < 0 ? 'Not started' : 'Step ' + (bp.at + 1) + ' of ' + bp.steps.length) : '';
@@ -28755,6 +28779,7 @@ hairline({
       if (!r.svc || r.state === 'locked' || r.state === 'suggested') return '';   // every object shows its steps, not started ones included -- but not a suggestion ("suggested item no need step chip")
       let p = PL(r.svc, r.state); if (!p) return ''; if (r.steps) p = Object.assign({}, p, { steps: r.steps }); if (r.at != null) p = Object.assign({}, p, { at: r.at });
       const n = p.steps.length, done = p.at >= n;
+      if (TLSTEP === 'c') return stepChip(p, done);
       const lab = done ? 'Completed' : p.at < 0 ? 'Not started' : 'Step ' + (p.at + 1) + ' of ' + n;
       return '<div class="tlProg' + (done ? ' done' : '') + (!done && pas(p.steps[p.at]) ? ' pas' : '') + '"><button class="tlTgl" type="button" aria-expanded="false" aria-label="' + lab + ', show steps"><span class="tlSeg" aria-hidden="true">' + p.steps.map((st, i) => '<i class="' + (done || i < p.at ? 'on' : i === p.at ? 'cur' : '') + '"></i>').join('') + '</span>' + lab + CHEV + '</button>' + (!done && p.at >= 0 && p.steps[p.at] ? curB(p.steps[p.at]) : '') + '</div>' +
         '<div class="tlDet"><div class="tlDetIn"><div class="tlDetBox tlDetAct">' + stepList(p) + (r.then ? '<ol class="tlStepL tlRel">' + r.then.map((x, i) => '<li class="rel" data-rel="' + i + '"><i class="tlMk"></i><div class="tx"><div class="tlRelH"><b>' + esc(x.t) + '</b>' + (x.tag ? '<span class="tlChip">' + esc(x.tag) + '</span>' : '') + '</div><p>You need to complete your ' + esc(x.need) + ' before you can book this appointment.</p></div></li>').join('') + '</ol>' : '') + '</div></div></div>';
@@ -28763,10 +28788,10 @@ hairline({
     // already open ("when it's a primary action, show the card inside
     // upfront"): what is asked of you now is the first thing read
     let OPEN = 'month', SEC = null;   // which objects open their steps (the Timeline tweak), and the section being drawn
-    const row = r => { let pg = prog(r); const cta = isCta(r), up = !!(cta && pg) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
+    const row = r => { let pg = prog(r); const cta = isCta(r), up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
       return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">' +
-      '<div class="tlTx"><div class="tlTl"><b>' + esc(r.t) + '</b></div><p>' + esc(r.d) + '</p></div>' +
+      '<div class="tlTx"><div class="tlTl"><b>' + esc(r.t) + '</b></div><p>' + esc(subOf(r)) + '</p></div>' +
       '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +
       (r.act ? '<div class="tlAct' + (r.more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(r.act) + '</button>' +
       (r.more ? '<button class="tlMore" type="button" aria-label="More options">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
@@ -28795,9 +28820,9 @@ hairline({
     };
     document.addEventListener('everlab:docs', () => { if (document.body.classList.contains('tlOn')) render(); });
     { const o = document.getElementById('stTlOpen'); if (o) o.addEventListener('change', () => { OPEN = o.value; render(); }); }
-    { const o = document.getElementById('stTlSteps'); if (o) o.addEventListener('change', () => { TLHZ = o.value === 'h'; render(); }); }   // the tweak redraws the list
+    { const o = document.getElementById('stTlSteps'); if (o) o.addEventListener('change', () => { TLSTEP = o.value; TLHZ = TLSTEP === 'h'; render(); }); }   // the tweak redraws the list
     const render = () => {
-      ROWS = []; list.innerHTML = layout(TL[tab]).map(sec).join('');
+      ROWS = []; list.innerHTML = layout(tabRows(TL[tab])).map(sec).join('');
       list.querySelectorAll('.tlTgl .tlSeg').forEach(sg => { const is = [...sg.children], n = is.length || 1, k = is.filter(i => i.classList.contains('on') || i.classList.contains('cur')).length; sg.insertAdjacentHTML('beforebegin', '<i class="tlRing" aria-hidden="true" style="--p:' + (k / n).toFixed(3) + '"></i>'); });   // XS: a ring of the same count in place of the increments ("use circular progress instead of increments")
       // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")
       list.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp'));
@@ -28884,8 +28909,9 @@ hairline({
       if (rl && d.then){ const x = d.then[+rl.dataset.rel]; lastTop = main.scrollTop; window._svc.openDesk(x.svc, 'locked', { from: 'tl', t: x.t, need: x.need }); return; }
       if (e.target.closest('.tlDetBox')) return;   // reading the steps is not a click through
       const w = own(d); if (!w.svc) return;
+      if (unseen(d)){ SEEN.add(seenK(d)); DIRTY = true; }   // opened: seen, so Past from now on
       lastTop = main.scrollTop;
-      window._svc.openDesk(w.svc, w.state, d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line });
+      window._svc.openDesk(w.svc, w.state, openO(d, w));
     });
     list.addEventListener('click', e => {
       const b = e.target.closest('.tlSugNav button'); if (!b) return;
@@ -28908,6 +28934,7 @@ hairline({
     let lastTop = 0;
     const open = keep => {
       if (window._svc && document.body.classList.contains('svcOn')) window._svc.close();
+      if (DIRTY){ DIRTY = false; render(); }   // a completion seen: it has gone to Past
       document.body.classList.add('tlOn'); main.scrollTop = keep ? lastTop : 0; main.classList.toggle('ovScrolled', !!keep && lastTop > 6);
       if (sel) sel.value = 'tl'; lightDock(2);   // the dock's Timeline lit
       try { sessionStorage.setItem('everlab:tl', '1'); } catch (e){}   // remembered through a reload ("refresh button doesn't work": it came back on the Overview)
