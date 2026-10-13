@@ -13618,3 +13618,6 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Saved for later items: View details the primary button (it opens the page), the ⋯ only Move back to my plan (toast "… is back in your plan."). The Later tab's own items keep Claim / View, with View details alone in their ⋯.
 - Timeline's Open steps tweak retired (tkGone, Current month kept): the section now Steps, Priority, Documents.
 - Timeline task chips without their frequency ("remove Ad hoc and Weekly"): Book by Wed 14 Oct, Due by Sun 18 Oct (x2), and the April check-in's Due by Fri 30 Apr likewise. The task pages' own status line keeps Ad hoc / Weekly.
+- Timeline CTA position tweak (stTlCta, phone only, saved): Right -- the button beside the status (Vertical/Horizontal's toggle; the Chip's line of chips, which wraps beside it); Bottom -- a line of its own at the card's foot, full width (body.tlCtaB).
+- Just completed's items on a light green tray (rgba(66,190,101,.1); .12 in light), the suggestions tray's shape, the rows on the others' line; on XS no rail mark. The suggestions lose their inner card (the tray alone).
+- Timeline pictures 88px on desktop (+8), the column 94; XS stays 60.
