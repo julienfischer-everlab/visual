@@ -7546,6 +7546,9 @@
   .tlMeta svg{flex:none;width:14px;height:14px;}
   .tlMeta a{color:var(--tlInk);font-weight:500;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--tlRing);cursor:pointer;}
   .tlMeta img{flex:none;width:18px;height:18px;border-radius:50%;object-fit:cover;object-position:50% 20%;}
+  /* Chip steps: the properties as chips, in one line after the status chip */
+  .tlMeta.tlMetaC{gap:8px;margin-top:14px;} .tlMeta.tlMetaC .tlProg{display:contents;}
+  .tlMeta.tlMetaC > span{flex:0 1 auto;gap:8px;height:28px;padding:0 12px 0 10px;border-radius:8px;background:var(--tlGhost);color:var(--tlTx);font-size:12.5px;font-weight:400;white-space:nowrap;} .tlMeta.tlMetaC > span svg{color:var(--tlSub);}
   .tlAct{grid-area:act;display:flex;gap:8px;padding-top:2px;}
   .tlBtn{height:36px;padding:0 15px;border:0;border-radius:10px;background:var(--tlPill);color:var(--tlTx);font:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .16s ease;}
   .tlBtn:hover{background:var(--tlPillH);}
@@ -7767,6 +7770,7 @@
     /* the chip and the button side by side, one height ("next to each other, same height 56px"); a row with no chip gives the button the line */
     .tlProg .tlStepC{height:44px;padding:0 14px 0 12px;border-radius:12px;gap:10px;} .tlStepC .tlRing, .tlProg .tlStepDot{width:20px;height:20px;} .tlProg .tlTgl .tlStepDot{display:grid;}   /* the Chip as tall as the button beside it */
     .tlRow:has(.tlProgC){grid-template-columns:66px minmax(0,1fr) auto;}   /* a long step name gives way to the button, cut short, never under it */
+    .tlMeta.tlMetaC{flex-direction:row;flex-wrap:wrap;gap:8px;font-size:12.5px;} .tlMeta.tlMetaC > span{max-width:100%;} .tlMeta.tlMetaC .tlStepC{height:28px;padding:0 12px 0 8px;border-radius:8px;gap:8px;} .tlMeta.tlMetaC .tlStepC .tlRing, .tlMeta.tlMetaC .tlStepDot{width:16px;height:16px;}   /* the line of chips wraps; the status chip their size here */
     .tlProg .tlTgl{height:44px;padding:0 12px 0 12px;border-radius:12px !important;gap:10px;} .tlProg .tlCurB{display:none;} .tlProg .tlTgl .tlSeg{display:none !important;} .tlProg .tlTgl .tlRing{display:block;}   /* 44 ("44px badge"), a ring for the increments */   /* no room for the badge beside the chip and the button: the chip keeps the increments */
     .tlAct{min-width:0;} .tlAct .tlBtn{min-width:0;padding:0 12px;overflow:hidden;text-overflow:ellipsis;} .tlAct .tlMore{flex:none;width:44px;}   /* a long label gives way, never the screen */
     .tlAct .tlBtn, .tlAct .tlMore{height:44px;}   /* 44 ("44px height CTA") */ .tlAct .tlBtn{border-radius:12px;} .tlAct.split .tlBtn{border-radius:12px 0 0 12px;} .tlAct.split .tlMore{border-radius:0 12px 12px 0;}
@@ -28807,10 +28811,10 @@ hairline({
     let OPEN = 'month', SEC = null;   // which objects open their steps (the Timeline tweak), and the section being drawn
     const finOf = r => r.state === 'done' || (!!r.group && groupOf(r).a < 0);   // its final, complete state
     const row = r => { let pg = prog(r); const cta = isCta(r), fin = finOf(r), act = fin ? 'View' : r.act, more = fin ? 0 : r.more,   /* complete: View, nothing else ("when it's a final complete state, just view") */ up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
-      return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
+      return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg && TLSTEP !== 'c' ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">' +
       (sub => '<div class="tlTx"><div class="tlTl"><b>' + esc(TLPRI === 'act' ? sub : r.t) + '</b></div><p>' + esc(TLPRI === 'act' ? r.t : sub) + '</p></div>')(subOf(r)) +   /* Action name: the action first, the service or task under it */
-      '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +
+      (TLSTEP === 'c' ? '<div class="tlMeta tlMetaC">' + pg + r.meta.map(meta).join('') + '</div>' : '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg) +   /* Chip: one line of chips, the status first, then the item's properties as chips too ("all these properties the same style as the chip; inline, starting by the status") */
       (act ? '<div class="tlAct' + (more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(act) + '</button>' +
       (more ? '<button class="tlMore" type="button" aria-label="More options" aria-haspopup="menu">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
     const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : x.dot === 'done' ? CHK : '') + '</i>' + esc(x.h) + '</h2>' +
