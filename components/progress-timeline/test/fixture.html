@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProgressTimeline fixture</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../progress-timeline.css">
+<style>
+  html, body { margin: 0; background: #0e0e0e; color: #f4f4f4; font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #host { box-sizing: border-box; padding: 0; }
+</style>
+</head>
+<body>
+<!-- the component only: tests size #host and drive the instance through window.T -->
+<div id="host"></div>
+<script src="../progress-timeline.js"></script>
+<script>
+  window.T = {
+    events: [],
+    mount(opts, width) {
+      if (window.tl) window.tl.destroy();
+      const host = document.getElementById('host');
+      host.style.width = width + 'px';
+      T.events = [];
+      window.tl = new ProgressTimeline(host, Object.assign({ onShowAll: d => T.events.push(d) }, opts));
+      return window.tl.getState();
+    },
+    resize(width) { document.getElementById('host').style.width = width + 'px'; },
+  };
+</script>
+</body>
+</html>

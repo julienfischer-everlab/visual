@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Progress Timeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="progress-timeline.css">
+<style>
+  /* The demo page only. Nothing here styles the component. */
+  :root {
+    --bg: #0d0d0d; --panel: #151515; --line: #262626; --fg: #ededed; --muted: #9a9a9a; --accent: #f5be8c;
+    color-scheme: dark;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
+  body { padding-inline: 16px; padding-block: 40px 64px; font-size: 14px; line-height: 1.5; }
+  main { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  main > * { min-width: 0; }
+  header h1 { margin: 0 0 6px; font-size: 26px; font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 68ch; }
+  h2 { margin: 0 0 14px; font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  code, .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12.5px; }
+
+  .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px 20px; padding: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; }
+  .ctl { display: grid; gap: 6px; min-width: 0; }
+  .ctl > span { font-size: 12px; color: var(--muted); }
+  .ctl select, .ctl input[type=number] { width: 100%; box-sizing: border-box; height: 34px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--line); background: #0f0f0f; color: var(--fg); font: inherit; }
+  .ctl input[type=range] { width: 100%; accent-color: var(--accent); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { height: 34px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--line); background: #1d1d1d; color: var(--fg); font: inherit; cursor: pointer; }
+  .btn:hover { background: #262626; }
+  .val { color: var(--fg); font-variant-numeric: tabular-nums; }
+
+  /* The stage: a parent whose width the component follows. Drag its corner or use the slider. */
+  .stage { position: relative; padding: 28px 0; border-radius: 20px; background:
+      repeating-linear-gradient(90deg, transparent 0 127px, rgba(255,255,255,.035) 127px 128px), #101010; border: 1px solid var(--line); overflow: hidden; }
+  .parent { position: relative; margin: 0 auto; max-width: calc(100% - 32px); resize: horizontal; overflow: hidden; padding: 0 0 12px; }
+  .parent::after { content: ""; position: absolute; right: 2px; bottom: 2px; width: 10px; height: 10px; border-right: 2px solid #555; border-bottom: 2px solid #555; pointer-events: none; }
+  .guides { position: absolute; inset: 0 0 12px; pointer-events: none; z-index: 5; display: none; }
+  .guides.on { display: block; }
+  .guides i { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px dashed rgba(245,190,140,.55); }
+  .readout { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; color: var(--muted); font-size: 12.5px; }
+  .readout b { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  .log { margin-top: 10px; min-height: 22px; color: var(--accent); font-size: 12.5px; }
+  .gallery { display: grid; gap: 22px; }
+  .gallery figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+  .gallery figcaption { color: var(--muted); font-size: 12.5px; }
+  .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .notes section { padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; }
+  .notes h3 { margin: 0 0 8px; font-size: 15px; font-weight: 500; }
+  .notes p { margin: 0 0 8px; color: #c8c8c8; }
+  .notes p:last-child { margin: 0; }
+  label.chk { display: inline-flex; gap: 8px; align-items: center; color: var(--fg); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Progress timeline</h1>
+    <p>A reusable step timeline that sizes itself to its parent. The controls below are demo-only: they set the parent's width and the props the host passes in. Drag the stage's bottom-right corner, swipe or drag the track, or use the arrow keys on it.</p>
+  </header>
+
+  <section aria-labelledby="pg">
+    <h2 id="pg">Playground</h2>
+    <form class="controls" id="controls" onsubmit="return false">
+      <label class="ctl"><span>Parent width <b class="val" id="wv"></b></span><input type="range" id="w" min="240" max="1120" step="1" value="900"></label>
+      <label class="ctl"><span>Steps</span><input type="number" id="n" min="1" max="40" value="10"></label>
+      <label class="ctl"><span>Labels</span>
+        <select id="labels"><option value="short">Short</option><option value="real" selected>Realistic</option><option value="long">Long</option><option value="mixed">Mixed, with an unbroken word</option></select></label>
+      <label class="ctl"><span>Min segment (px)</span><input type="number" id="min" min="48" max="320" step="8" value="128"></label>
+      <label class="ctl"><span>Progress</span><select id="cur"></select></label>
+      <div class="ctl"><span>Step through</span><div class="row"><button class="btn" type="button" id="prev">Previous</button><button class="btn" type="button" id="next">Next</button></div></div>
+      <div class="ctl"><span>Overlay</span><label class="chk"><input type="checkbox" id="g"> 128px safe areas</label></div>
+    </form>
+    <div class="stage" style="margin-top:16px">
+      <div class="parent" id="parent">
+        <div class="guides" id="guides" aria-hidden="true"><i id="gl"></i><i id="gr"></i></div>
+      </div>
+    </div>
+    <div class="readout" id="readout" aria-live="off"></div>
+    <div class="log" id="log" role="status"></div>
+  </section>
+
+  <section aria-labelledby="gal">
+    <h2 id="gal">Same data, different parents</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section aria-labelledby="how">
+    <h2 id="how">How it decides</h2>
+    <div class="notes">
+      <section><h3>Sizing</h3><p>Width is measured from the parent with a ResizeObserver. 128px stays reserved at each edge; the space between is where dots rest.</p><p>All steps fit at the minimum segment? They spread evenly, first dot on the left safe line, last on the right. Otherwise the segment is exactly the minimum and the track scrolls.</p></section>
+      <section><h3>Positioning</h3><p>First step or not started: first dot on the left safe line. Last step or complete: last dot on the right safe line, its label free to use the safe area.</p><p>In between: current and next are kept clear of any fade; the previous step stays clear when there's room for three, and all spare room goes to what's coming.</p></section>
+      <section><h3>Overflow</h3><p>A 128px fade appears only on a side the track runs past. A 28px button sits in the middle of that edge area, shown only when a connector (not a dot or empty track) is beneath its centre; it asks the host to open the full timeline.</p></section>
+      <section><h3>Compact</h3><p>Below 2 × 128 + 2 × min segment (512px by default) the edge areas and two readable steps can't both fit, so it switches to two columns, current and next, with 44px edges.</p></section>
+    </div>
+  </section>
+</main>
+
+<script src="progress-timeline.js"></script>
+<script>
+  // ---- Demo controls (not part of the component) ----
+  const $ = id => document.getElementById(id);
+  const SETS = {
+    short: ['Details', 'Clinic', 'Slot', 'Deposit', 'Survey', 'Fast', 'Visit', 'Lab', 'Review', 'Results'],
+    real: ['Confirm your details', 'Pick a clinic', 'Choose a slot', 'Pay the deposit', 'Pre-visit questionnaire', 'Fasting window', 'Attend your visit', 'Sample processing', 'Specialist review', 'Results ready'],
+    long: ['Confirm your personal details and Medicare number', 'Pick a partner clinic close to home or work', 'Choose a time slot that suits your week', 'Pay the refundable deposit to hold your slot', 'Complete the pre-visit questionnaire, about ten minutes', 'Start the eight hour fasting window', 'Attend your visit at the clinic', 'Your samples are processed at the lab', 'A specialist reviews your results', 'Your results are ready in the app'],
+    mixed: ['Details', 'Pick a partner clinic close to home or work', 'Slot', 'Pseudopseudohypoparathyroidismscreening', 'Questionnaire', 'Fast', 'Attend your visit at the clinic', 'Lab', 'Specialist review', 'Results'],
+  };
+  const makeSteps = () => { const n = Math.max(1, Math.min(40, +$('n').value || 1)), set = SETS[$('labels').value];
+    return Array.from({ length: n }, (_, i) => ({ id: 'step-' + (i + 1), label: set[i % set.length] + (i >= set.length ? ' (' + (i + 1) + ')' : '') })); };
+  let steps = makeSteps(), progress = 4;   // -1 not started, steps.length complete
+  const props = () => ({ steps, current: progress >= 0 && progress < steps.length ? steps[progress].id : null, complete: progress >= steps.length, minSegment: +$('min').value || 128 });
+  const say = t => { $('log').textContent = t; };
+  const onShowAll = d => say('onShowAll("' + d.direction + '") at step ' + (d.complete ? 'complete' : d.currentIndex + 1) + ' of ' + d.steps.length + ': the host would open its full timeline here.');
+
+  const main = new ProgressTimeline($('parent'), Object.assign(props(), { label: 'Deep assessment', onShowAll }));
+  const gallery = [320, 480, 640, 960].map(w => {
+    const f = document.createElement('figure'); f.innerHTML = '<figcaption>Parent ' + w + 'px</figcaption><div style="width:' + w + 'px;max-width:100%"></div>';
+    $('gallery').appendChild(f);
+    return new ProgressTimeline(f.lastChild, Object.assign(props(), { label: 'Deep assessment', onShowAll }));
+  });
+  const all = () => [main].concat(gallery);
+
+  const fillCur = () => { $('cur').innerHTML = '<option value="-1">Not started</option>' + steps.map((s, i) => '<option value="' + i + '">' + (i + 1) + '. ' + s.label.replace(/</g, '&lt;') + '</option>').join('') + '<option value="' + steps.length + '">All complete</option>'; $('cur').value = String(progress); };
+  const push = () => { all().forEach(t => t.update(props())); fillCur(); readout(); };
+  const readout = () => { const s = main.getState(), f = v => Math.round(v);
+    $('readout').innerHTML = ['mode <b>' + s.mode + (s.fit ? ', fits' : '') + '</b>', 'width <b>' + f(s.width) + '</b>', 'segment <b>' + f(s.segment) + '</b>', 'offset <b>' + f(s.offset) + ' / ' + f(s.maxOffset) + '</b>',
+      'fades <b>' + (s.overflowStart ? 'start' : '–') + ' ' + (s.overflowEnd ? 'end' : '–') + '</b>', 'buttons <b>' + (s.startButton ? '‹' : '–') + ' ' + (s.endButton ? '›' : '–') + '</b>', 'compact below <b>' + f(s.compactBelow) + '</b>', 'browsing <b>' + (s.browsed ? 'yes' : 'no') + '</b>'].join('');
+    const p = $('parent').getBoundingClientRect().width; $('wv').textContent = Math.round(p) + 'px';
+    $('gl').style.left = (s.mode === 'regular' ? s.edge : s.edge) + 'px'; $('gr').style.left = (p - s.edge) + 'px'; };
+
+  $('w').addEventListener('input', () => { $('parent').style.width = $('w').value + 'px'; });
+  $('n').addEventListener('change', () => { steps = makeSteps(); progress = Math.min(progress, steps.length); push(); });
+  $('labels').addEventListener('change', () => { steps = makeSteps(); push(); });
+  $('min').addEventListener('change', push);
+  $('cur').addEventListener('change', () => { progress = +$('cur').value; push(); });
+  $('prev').addEventListener('click', () => { progress = Math.max(-1, progress - 1); push(); });
+  $('next').addEventListener('click', () => { progress = Math.min(steps.length, progress + 1); push(); });
+  $('g').addEventListener('change', () => $('guides').classList.toggle('on', $('g').checked));
+  $('parent').style.width = $('w').value + 'px';
+  new ResizeObserver(() => { const p = Math.round($('parent').getBoundingClientRect().width); if (+$('w').value !== p && document.activeElement !== $('w')) $('w').value = p; readout(); }).observe($('parent'));
+  $('parent').addEventListener('scroll', readout, true);
+  setInterval(readout, 400);
+  fillCur(); readout();
+</script>
+</body>
+</html>
