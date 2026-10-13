@@ -61,7 +61,7 @@
 <main>
   <header>
     <h1>Progress timeline</h1>
-    <p>A reusable step timeline that sizes itself to its parent. The controls below are demo-only: they set the parent's width and the props the host passes in. Drag the stage's bottom-right corner, swipe or drag the track, or use the arrow keys on it.</p>
+    <p>A reusable step timeline that sizes itself to its parent and keeps the full flow at every width. The controls below are demo-only: they set the parent's width and the props the host passes in. Drag the stage's bottom-right corner, swipe or drag the track, click the arrows, or use the arrow keys on it.</p>
   </header>
 
   <section aria-labelledby="pg">
@@ -94,9 +94,9 @@
     <h2 id="how">How it decides</h2>
     <div class="notes">
       <section><h3>Sizing</h3><p>Width is measured from the parent with a ResizeObserver. 128px stays reserved at each edge; the space between is where dots rest.</p><p>All steps fit at the minimum segment? They spread evenly, first dot on the left safe line, last on the right. Otherwise the segment is exactly the minimum and the track scrolls.</p></section>
-      <section><h3>Positioning</h3><p>First step or not started: first dot on the left safe line. Last step or complete: last dot on the right safe line, its label free to use the safe area.</p><p>In between: current and next are kept clear of any fade; the previous step stays clear when there's room for three, and all spare room goes to what's coming.</p></section>
-      <section><h3>Overflow</h3><p>A 128px fade appears only on a side the track runs past. A 28px button sits in the middle of that edge area, shown only when a connector (not a dot or empty track) is beneath its centre; it asks the host to open the full timeline.</p></section>
-      <section><h3>Compact</h3><p>Below 2 × 128 + 2 × min segment (512px by default) the edge areas and two readable steps can't both fit, so it switches to two columns, current and next, with 44px edges.</p></section>
+      <section><h3>Positioning</h3><p>First step: its dot 128px from the left. Final step: 128px from the right. In between: the current dot at 40% of the width, slid on if needed so the next step shows whole, never so far that the current label goes under a fade. Always clamped to the track's limits.</p></section>
+      <section><h3>Narrow</h3><p>When the usable width (width − 2 × 128) holds fewer than two minimum segments, 512px by default, the current step centres at 50% in every state, the first and last included, on a track padded by half the width at each end. The full timeline stays, scrollable.</p></section>
+      <section><h3>Overflow</h3><p>A 128px fade appears only on a side the track runs past. A 28px arrow sits 64px from that edge, shown only when a connector (not a dot or bare track) is beneath its centre; each click scrolls one segment.</p></section>
     </div>
   </section>
 </main>
@@ -116,23 +116,23 @@
   let steps = makeSteps(), progress = 4;   // -1 not started, steps.length complete
   const props = () => ({ steps, current: progress >= 0 && progress < steps.length ? steps[progress].id : null, complete: progress >= steps.length, minSegment: +$('min').value || 128 });
   const say = t => { $('log').textContent = t; };
-  const onShowAll = d => say('onShowAll("' + d.direction + '") at step ' + (d.complete ? 'complete' : d.currentIndex + 1) + ' of ' + d.steps.length + ': the host would open its full timeline here.');
+  const onArrow = d => say('onArrow("' + d.direction + '"): scrolled to ' + Math.round(d.offset) + 'px. Progress is unchanged.');
 
-  const main = new ProgressTimeline($('parent'), Object.assign(props(), { label: 'Deep assessment', onShowAll }));
+  const main = new ProgressTimeline($('parent'), Object.assign(props(), { label: 'Deep assessment', onArrow }));
   const gallery = [320, 480, 640, 960].map(w => {
     const f = document.createElement('figure'); f.innerHTML = '<figcaption>Parent ' + w + 'px</figcaption><div style="width:' + w + 'px;max-width:100%"></div>';
     $('gallery').appendChild(f);
-    return new ProgressTimeline(f.lastChild, Object.assign(props(), { label: 'Deep assessment', onShowAll }));
+    return new ProgressTimeline(f.lastChild, Object.assign(props(), { label: 'Deep assessment', onArrow }));
   });
   const all = () => [main].concat(gallery);
 
   const fillCur = () => { $('cur').innerHTML = '<option value="-1">Not started</option>' + steps.map((s, i) => '<option value="' + i + '">' + (i + 1) + '. ' + s.label.replace(/</g, '&lt;') + '</option>').join('') + '<option value="' + steps.length + '">All complete</option>'; $('cur').value = String(progress); };
   const push = () => { all().forEach(t => t.update(props())); fillCur(); readout(); };
   const readout = () => { const s = main.getState(), f = v => Math.round(v);
-    $('readout').innerHTML = ['mode <b>' + s.mode + (s.fit ? ', fits' : '') + '</b>', 'width <b>' + f(s.width) + '</b>', 'segment <b>' + f(s.segment) + '</b>', 'offset <b>' + f(s.offset) + ' / ' + f(s.maxOffset) + '</b>',
-      'fades <b>' + (s.overflowStart ? 'start' : '–') + ' ' + (s.overflowEnd ? 'end' : '–') + '</b>', 'buttons <b>' + (s.startButton ? '‹' : '–') + ' ' + (s.endButton ? '›' : '–') + '</b>', 'compact below <b>' + f(s.compactBelow) + '</b>', 'browsing <b>' + (s.browsed ? 'yes' : 'no') + '</b>'].join('');
+    $('readout').innerHTML = ['layout <b>' + (s.fit ? 'fits' : s.narrow ? 'narrow, centred' : 'wide') + '</b>', 'width <b>' + f(s.width) + '</b>', 'segment <b>' + f(s.segment) + '</b>', 'offset <b>' + f(s.offset) + ' / ' + f(s.maxOffset) + '</b>',
+      'fades <b>' + (s.overflowStart ? 'start' : '–') + ' ' + (s.overflowEnd ? 'end' : '–') + '</b>', 'arrows <b>' + (s.startButton ? '‹' : '–') + ' ' + (s.endButton ? '›' : '–') + '</b>', 'browsing <b>' + (s.browsed ? 'yes' : 'no') + '</b>'].join('');
     const p = $('parent').getBoundingClientRect().width; $('wv').textContent = Math.round(p) + 'px';
-    $('gl').style.left = (s.mode === 'regular' ? s.edge : s.edge) + 'px'; $('gr').style.left = (p - s.edge) + 'px'; };
+    $('gl').style.left = s.edge + 'px'; $('gr').style.left = (p - s.edge) + 'px'; };
 
   $('w').addEventListener('input', () => { $('parent').style.width = $('w').value + 'px'; });
   $('n').addEventListener('change', () => { steps = makeSteps(); progress = Math.min(progress, steps.length); push(); });

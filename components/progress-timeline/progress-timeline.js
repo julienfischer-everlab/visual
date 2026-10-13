@@ -6,7 +6,7 @@
  *     current: 'clinic',          // id of the step in progress; null = not started
  *     complete: false,            // true = every step done
  *     minSegment: 128,            // px between neighbouring dots, never less
- *     onShowAll: detail => {...}  // the edge buttons: open the full timeline (host's job)
+ *     onArrow: detail => {...}    // optional: an arrow scrolled the track one segment
  *   });
  *   tl.update({ current: 'slot' });
  *   tl.destroy();
@@ -29,7 +29,7 @@
   const BTN = 28;                     // the edge buttons
   const GUTTER = 8;                   // each side of a label, inside its column
   const LABEL_MAX = 240;              // widest a label grows when there's room to spare
-  const COMPACT_EDGE = BTN + 2 * 8;   // the edge areas in the compact layout
+  const ANCHOR = 0.4;                 // where the current dot rests in a middle step, as a share of the width
   const MIN_SEGMENT_FLOOR = 2 * DOT_ZONE + 16;   // a connector of at least 16px
   const EPS = 0.5;
 
@@ -40,7 +40,7 @@
     minSegment: 128,
     edge: 128,
     label: 'Progress',
-    onShowAll: null,
+    onArrow: null,          // optional: told after an arrow click scrolls the track
   };
 
   const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -54,31 +54,23 @@
     const W = Math.max(0, width);
     const N = Math.max(0, count | 0);
     const m = Math.max(MIN_SEGMENT_FLOOR, +o.minSegment || DEFAULTS.minSegment);
-    const E = Math.max(0, +o.edge || 0);
-
-    // Compact when the two edge areas and two readable steps don't fit.
-    const compactBelow = 2 * E + 2 * m;
-    if (W < compactBelow) {
-      const e = Math.min(COMPACT_EDGE, W / 4);
-      const seg = Math.max(0, (W - 2 * e) / 2);     // two columns fill the middle
-      const pad = N > 1 ? e + seg / 2 : W / 2;      // the first two dots at the columns' centres
-      const content = N > 1 ? 2 * pad + (N - 1) * seg : W;
-      return { mode: 'compact', fit: N <= 2, W, N, seg, pad, edge: e, col: seg,
-        content, max: Math.max(0, content - W), compactBelow, minSegment: m };
-    }
-
-    const A = W - 2 * E;                            // between the two safe areas
+    const E = Math.min(Math.max(0, +o.edge || 0), W / 2);       // 128 each side (they meet below 256px)
+    const usable = W - 2 * E;                                    // between the two edge areas
+    const narrow = usable < 2 * m;                               // fewer than two minimum increments fit
+    const col = seg => Math.min(seg, LABEL_MAX + 2 * GUTTER);
     if (N <= 1) {
-      return { mode: 'regular', fit: true, W, N, seg: 0, pad: W / 2, edge: E,
-        col: Math.min(LABEL_MAX + 2 * GUTTER, W), content: W, max: 0, compactBelow, minSegment: m };
+      return { fit: true, narrow, W, N, seg: 0, pad: W / 2, edge: E, col: Math.min(LABEL_MAX + 2 * GUTTER, W),
+        content: W, max: 0, usable, minSegment: m };
     }
-    const spread = A / (N - 1);
-    const fit = spread >= m - 1e-6;                 // all of them at the minimum or wider
-    const seg = fit ? spread : m;                   // never below the minimum
-    const content = fit ? W : 2 * E + (N - 1) * seg;
-    return { mode: 'regular', fit, W, N, seg, pad: E, edge: E,
-      col: Math.min(seg, LABEL_MAX + 2 * GUTTER), content, max: Math.max(0, content - W),
-      compactBelow, minSegment: m };
+    const spread = usable / (N - 1);
+    if (spread >= m - 1e-6) {                                    // all fit: stretch across the usable width
+      return { fit: true, narrow, W, N, seg: spread, pad: E, edge: E, col: col(spread), content: W, max: 0, usable, minSegment: m };
+    }
+    // Scrolls, at exactly the minimum. Narrow: half the width of track before
+    // the first dot and after the last, so any dot, an end one too, can centre.
+    const pad = narrow ? W / 2 : E;
+    const content = 2 * pad + (N - 1) * m;
+    return { fit: false, narrow, W, N, seg: m, pad, edge: E, col: col(m), content, max: Math.max(0, content - W), usable, minSegment: m };
   }
 
   const labelHalf = L => Math.max(0, L.col / 2 - GUTTER);
@@ -105,70 +97,22 @@
     };
   }
 
-  // current & next clear of any fade that's showing at this offset
-  function keepsInView(L, off, c) {
-    const hl = labelHalf(L), s = edgeState(L, off);
-    if (s.overflowStart && c >= 0 && c < L.N && dotX(L, c, off) - hl < L.edge - EPS) return false;
-    const n = c + 1;
-    if (s.overflowEnd && n < L.N && dotX(L, n, off) + hl > L.W - L.edge + EPS) return false;
-    return true;
-  }
-
   // Where the track rests for a progress state. c: index of the step in
   // progress, -1 before the first, N once all are done.
   function targetOffset(L, c) {
     const M = L.max, N = L.N;
-    if (M <= EPS) return 0;
-    if (c <= 0) return 0;                           // beginning: first dot on the left safe line
-    if (c >= N - 1) return M;                       // end: last dot on the right safe line
-    if (L.mode === 'compact') return clamp(c * L.seg, 0, M);   // current | next, a column each
-
-    const s = L.seg, hl = labelHalf(L);
-    const hi = L.pad + c * s - hl - L.edge;          // any further and the current label meets the left fade
-    const lo = L.pad + (c + 1) * s + hl - (L.W - L.edge);   // any less and the next label meets the right fade
-    if (lo >= M - EPS) return M;                     // the next is the last: the end shows it, fade-free
-    // The previous step clear too if it fits, else all the room to what's coming.
-    let off = hi - s >= lo ? hi - s : hi;
-    off = clamp(off, 0, M);
-    // Under a label's width short of the end: show the end rather than a sliver.
-    if (M - off <= hl && M <= hi) off = M;
-    return clearButtons(L, off, c);
-  }
-
-  // Nudge the resting offset a few px so no dot sits under an edge button:
-  // first so each overflowing side's button can show (a connector under its
-  // centre), then so no dot peeks out half-covered at its rim. Never at the
-  // cost of the current/next rule.
-  function clearButtons(L, off, c) {
-    const RIM = BTN / 2 + DOT / 2 + GAP;   // a dot this far from a button's centre is clear of it, gap and all
-    const cost = o => {
-      const s = edgeState(L, o);
-      let hidden = 0, peek = 0;
-      for (const [on, shown, cx] of [[s.overflowStart, s.startButton, s.startX], [s.overflowEnd, s.endButton, s.endX]]) {
-        if (!on) continue;
-        if (!shown) { hidden++; continue; }
-        for (let i = 0; i < L.N; i++) if (Math.abs(dotX(L, i, o) - cx) < RIM) peek++;
-      }
-      return hidden * 1e6 + peek * 1e3;
-    };
-    const base = cost(off);
-    if (!base) return off;
-    const cand = [];
-    const s0 = edgeState(L, off);
-    for (const cx of [s0.startX, s0.endX]) {
-      for (let i = 0; i < L.N; i++) {
-        const x = dotX(L, i, off);
-        if (Math.abs(x - cx) >= RIM + L.seg) continue;
-        for (const z of [RIM + 0.5, DOT_ZONE + 1]) cand.push(off + (x - (cx - z)), off - ((cx + z) - x));
-      }
-    }
-    let best = off, bestScore = base;
-    for (const o of cand) {
-      if (o < 0 || o > L.max || !keepsInView(L, o, c)) continue;
-      const score = cost(o) + Math.abs(o - off);
-      if (score < bestScore) { best = o; bestScore = score; }
-    }
-    return best;
+    if (M <= EPS) return 0;                          // everything fits: nothing to place
+    if (L.narrow) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow: the current dot at 50%, every state
+    if (c <= 0) return 0;                            // first step: its dot on the left safe line
+    if (c >= N - 1) return M;                        // final step: its dot on the right safe line
+    const s = L.seg, hl = labelHalf(L), E = L.edge, W = L.W;
+    const x0 = L.pad + c * s;                        // the current dot's x at offset 0
+    let off = x0 - ANCHOR * W;                       // current dot at 40% of the width
+    const nextClear = x0 + s + hl - (W - E);         // below this the next label runs under the right fade
+    off = Math.max(off, nextClear);                  // reveal the next step fully: slide on if needed
+    const curFrom = x0 + hl - (W - E), curTo = x0 - hl - E;   // ...but keep the current label clear of both fades
+    if (curFrom <= curTo) off = clamp(off, curFrom, curTo);
+    return clamp(off, 0, M);                         // the track's own limits: never blank space
   }
 
   // ---- DOM ----------------------------------------------------------------
@@ -211,14 +155,15 @@
 
     getState() {
       const L = this.layout, off = this.scroller.scrollLeft, s = edgeState(L, off);
-      return { mode: L.mode, fit: L.fit, width: L.W, segment: L.seg, edge: L.edge, offset: off, maxOffset: L.max,
-        compactBelow: L.compactBelow, currentIndex: this._currentIndex(), browsed: this._browsed,
+      return { fit: L.fit, narrow: L.narrow, width: L.W, segment: L.seg, edge: L.edge, offset: off, maxOffset: L.max,
+        currentIndex: this._currentIndex(), browsed: this._browsed,
         overflowStart: s.overflowStart, overflowEnd: s.overflowEnd, startButton: s.startButton, endButton: s.endButton };
     }
 
     destroy() {
       if (this._ro) this._ro.disconnect(); else removeEventListener('resize', this._onWinResize);
       clearTimeout(this._userT);
+      clearTimeout(this._arrowT);
       cancelAnimationFrame(this._raf);
       this.root.remove();
     }
@@ -264,13 +209,24 @@
       sc.addEventListener('pointercancel', e => this._onUp(e));
       sc.addEventListener('dragstart', e => e.preventDefault());
       sc.addEventListener('click', e => { if (this._swallow) { this._swallow = false; e.preventDefault(); e.stopPropagation(); } }, true);
-      const show = direction => {
-        const detail = { direction, currentIndex: this._currentIndex(), current: this.opts.current, complete: !!this.opts.complete, steps: this.opts.steps.slice(), mode: this.layout.mode };
-        if (typeof this.opts.onShowAll === 'function') this.opts.onShowAll(detail);
-        r.dispatchEvent(new CustomEvent('progress-timeline:show-all', { bubbles: true, detail }));
+      // Arrows: one actual segment each click, smooth (instant with reduced
+      // motion), clamped at the ends. Quick clicks add up rather than restart.
+      const arrow = dir => {
+        const L = this.layout, b = dir < 0 ? this.btnStart : this.btnEnd;
+        if (!b.classList.contains('is-visible') || L.max <= EPS) return;
+        const from = this._arrowTo != null ? this._arrowTo : this.scroller.scrollLeft;
+        const to = clamp(from + dir * L.seg, 0, L.max);
+        this._arrowTo = to;
+        clearTimeout(this._arrowT);
+        this._arrowT = setTimeout(() => { this._arrowTo = null; }, 600);
+        this._markUser();
+        this.scroller.scrollTo({ left: to, behavior: reducedMotion() ? 'auto' : 'smooth' });
+        const detail = { direction: dir < 0 ? 'start' : 'end', offset: to, currentIndex: this._currentIndex() };
+        if (typeof this.opts.onArrow === 'function') this.opts.onArrow(detail);
+        r.dispatchEvent(new CustomEvent('progress-timeline:arrow', { bubbles: true, detail }));
       };
-      this.btnStart.addEventListener('click', () => { if (this.btnStart.classList.contains('is-visible')) show('start'); });
-      this.btnEnd.addEventListener('click', () => { if (this.btnEnd.classList.contains('is-visible')) show('end'); });
+      this.btnStart.addEventListener('click', () => arrow(-1));
+      this.btnEnd.addEventListener('click', () => arrow(1));
     }
 
     _render(initial, progressChanged) {
@@ -286,8 +242,8 @@
       if (html !== this._html) { this.track.innerHTML = html; this._html = html; }
       const t = c >= N ? 'All ' + N + ' steps completed' : c >= 0 ? 'Step ' + (c + 1) + ' of ' + N + ': ' + (st[c].label || '') : N + ' steps, not started';
       const lbl = (this.opts.label ? this.opts.label + ', ' : '') + t;
-      this.btnStart.setAttribute('aria-label', 'Show all ' + N + ' steps, including earlier ones');
-      this.btnEnd.setAttribute('aria-label', 'Show all ' + N + ' steps, including later ones');
+      this.btnStart.setAttribute('aria-label', 'Scroll to earlier steps');
+      this.btnEnd.setAttribute('aria-label', 'Scroll to later steps');
       if (!initial && progressChanged) this.live.textContent = t;
       this._lbl = lbl;
       this._relayout(initial ? 'initial' : progressChanged ? 'progress' : 'render');
@@ -299,7 +255,7 @@
       const W = this.root.getBoundingClientRect().width;
       const L = this.layout = computeLayout(W, this.opts.steps.length, this.opts);
       const r = this.root, sc = this.scroller;
-      r.dataset.mode = L.mode;
+      r.dataset.layout = L.fit ? 'fit' : L.narrow ? 'narrow' : 'scroll';
       r.style.setProperty('--pt-seg', L.seg + 'px');
       r.style.setProperty('--pt-pad', L.pad + 'px');
       r.style.setProperty('--pt-col', L.col + 'px');
@@ -415,6 +371,6 @@
   ProgressTimeline.computeLayout = computeLayout;
   ProgressTimeline.targetOffset = targetOffset;
   ProgressTimeline.edgeState = edgeState;
-  ProgressTimeline.constants = { DOT, GAP, DOT_ZONE, BTN, GUTTER, LABEL_MAX, COMPACT_EDGE, MIN_SEGMENT_FLOOR };
+  ProgressTimeline.constants = { DOT, GAP, DOT_ZONE, BTN, GUTTER, LABEL_MAX, ANCHOR, MIN_SEGMENT_FLOOR };
   return ProgressTimeline;
 }));
