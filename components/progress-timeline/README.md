@@ -100,11 +100,12 @@ changes, and on a resize the user hasn't overridden by browsing.
 - **Clamping.** The result is always clamped to `0 … max`, the track's real
   limits, so no blank space ever shows.
 
-**Narrow** (`pad = W / 2`):
-- The current step centres at 50% in every state, first and last included.
-  The first step before starting, the last when complete.
-- Half the width of padding before the first dot and after the last is what
-  lets the end steps centre.
+**Narrow** (`pad = column / 2`):
+- The current step centres at 50%, as far as the track allows. The first step
+  before starting, the last when complete.
+- No blank space is ever added. At the beginning the first step's column
+  starts flush at the card's left; at the end the last one finishes flush
+  right.
 - Neighbouring steps stay on the same overflowing, scrollable track.
 
 **Browsing.** Swiping, trackpad scrolling, mouse dragging, the arrows and the
@@ -126,9 +127,9 @@ keyboard all move the track without touching progress, and nothing snaps back.
 - **Arrows.**
   - They are 28px circles with small chevrons, centred 64px from their edges
     and on the line.
-  - An arrow shows only when its edge overflows and a connector passes
-    beneath its centre. A dot, the 4px gaps around it, or bare track past the
-    last dot don't count.
+  - An arrow shows only when its edge overflows and the timeline is beneath
+    its centre: its line, a dot or a step's label column. Never over blank
+    track past an end.
   - They appear and disappear with a 180ms fade and a slight scale.
   - Each click smoothly scrolls one actual segment, clamped at the ends.
     Clicks made in quick succession add up.

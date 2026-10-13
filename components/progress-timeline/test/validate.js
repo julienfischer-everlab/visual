@@ -92,8 +92,9 @@ function checkGeometry(m, where, cfg) {
   ok(m.classes.includes('is-overflow-start') === fl, where, 'start fade ' + m.classes.includes('is-overflow-start') + ' vs overflow ' + fl);
   ok(m.classes.includes('is-overflow-end') === fr, where, 'end fade ' + m.classes.includes('is-overflow-end') + ' vs overflow ' + fr);
 
-  // a connector under a button centre (not a dot, not a gap, not bare track)
-  const under = cx => m.conns.some(k => cx >= k.a - 0.5 && cx <= k.b + 0.5);
+  // the timeline under an arrow's centre: its line, dots or label columns (not bare track past the ends)
+  const colW = Math.min(seg, 256);
+  const under = cx => N >= 2 && cx >= m.dots[0].x - colW / 2 - 0.5 && cx <= m.dots[N - 1].x + colW / 2 + 0.5;
   const e = E;
   ok(Math.abs(m.fs.w - e) < 0.6 && Math.abs(m.fe.w - e) < 0.6, where, 'fade width ' + m.fs.w + '/' + m.fe.w + ' expected ' + e);
   for (const [b, on, cx, nm] of [[m.bs, fl, e / 2, 'start'], [m.be, fr, W - e / 2, 'end']]) {
@@ -108,17 +109,29 @@ function checkGeometry(m, where, cfg) {
 
   {
     if (N >= 2) ok(seg >= min - 0.5, where, 'segment ' + seg.toFixed(1) + ' below min ' + min);
-    const fits = N >= 2 && (N - 1) * min <= W - 2 * E + 1e-6;
-    if (N >= 2 && fits) {
+    const fitsWide = N >= 2 && (N - 1) * min <= W - 2 * E + 1e-6;
+    const fitsNarrow = N >= 2 && !fitsWide && narrow && N * Math.min(min, 256) <= W + 1e-6;   // narrow: every column fits, so they stretch across the card
+    const fits = fitsWide || fitsNarrow;
+    if (fitsWide) {
       ok(!overflow, where, 'fits but overflows');
       ok(Math.abs(m.dots[0].x - E) < 0.6 && Math.abs(m.dots[N - 1].x - (W - E)) < 0.6, where, 'fit: not spread edge to edge ' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1));
     }
+    if (fitsNarrow) {
+      ok(!overflow, where, 'narrow fit but overflows');
+      ok(Math.abs(m.dots[0].x - W / N / 2) < 0.6 && Math.abs(m.dots[N - 1].x - (W - W / N / 2)) < 0.6, where, 'narrow fit: columns not filling the card ' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1));
+    }
     if (N >= 2 && !fits) ok(Math.abs(seg - min) < 0.6, where, 'overflowing at ' + seg.toFixed(1) + ' instead of the minimum');
+    if (N >= 2 && fitsNarrow) ok(seg >= min - 0.5, where, 'narrow fit below the minimum');
     if (N === 1) ok(Math.abs(m.dots[0].x - W / 2) < 0.6, where, 'single step not centred');
     if (N >= 2 && !fits && narrow) {
       // narrow: whichever step is current (the first before starting, the last when done) at 50%
-      ok(m.dots[0].x <= W / 2 + 0.6 && m.dots[N - 1].x >= W / 2 - 0.6, where, 'narrow: track ends inside the middle');
-      if (!free) { const k = Math.max(0, Math.min(N - 1, c)); ok(Math.abs(m.dots[k].x - W / 2) < 0.6, where, 'narrow: step ' + k + ' at ' + m.dots[k].x.toFixed(1) + ', expected the centre ' + W / 2); }
+      const half = Math.min(min, 256) / 2;   // no blank lead-in: the end columns flush with the card's edges
+      ok(m.dots[0].x <= half + 0.6 && m.dots[N - 1].x >= W - half - 0.6, where, 'narrow: blank space past an end (' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1) + ')');
+      if (!free) {
+        const k = Math.max(0, Math.min(N - 1, c)), x = m.dots[k].x;
+        const atStart = Math.abs(m.dots[0].x - half) < 0.6, atEnd = Math.abs(m.dots[N - 1].x - (W - half)) < 0.6;
+        ok(Math.abs(x - W / 2) < 0.6 || (atStart && x < W / 2) || (atEnd && x > W / 2), where, 'narrow: step ' + k + ' at ' + x.toFixed(1) + ', expected the centre ' + W / 2 + ' unless clamped at an end');
+      }
     }
     if (N >= 2 && !fits && !narrow) {
       ok(m.dots[0].x <= E + 0.6, where, 'empty space before the first dot');

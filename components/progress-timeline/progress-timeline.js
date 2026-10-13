@@ -66,9 +66,15 @@
     if (spread >= m - 1e-6) {                                    // all fit: stretch across the usable width
       return { fit: true, narrow, W, N, seg: spread, pad: E, edge: E, col: col(spread), content: W, max: 0, usable, minSegment: m };
     }
-    // Scrolls, at exactly the minimum. Narrow: half the width of track before
-    // the first dot and after the last, so any dot, an end one too, can centre.
-    const pad = narrow ? W / 2 : E;
+    // Narrow and every column fits at the minimum: stretch the columns across
+    // the card, no scrolling and no blank space.
+    if (narrow && N * col(m) <= W + 1e-6) {
+      const sg = W / N;
+      return { fit: true, narrow, W, N, seg: sg, pad: sg / 2, edge: E, col: col(sg), content: W, max: 0, usable, minSegment: m };
+    }
+    // Scrolls, at exactly the minimum. Narrow: no blank lead-in, the first
+    // step's column starts flush at the card's left (the last ends flush right).
+    const pad = narrow ? col(m) / 2 : E;
     const content = 2 * pad + (N - 1) * m;
     return { fit: false, narrow, W, N, seg: m, pad, edge: E, col: col(m), content, max: Math.max(0, content - W), usable, minSegment: m };
   }
@@ -76,18 +82,14 @@
   const labelHalf = L => Math.max(0, L.col / 2 - GUTTER);
   const dotX = (L, i, off) => L.pad + i * L.seg - off;
 
-  // Which edges overflow at an offset, and whether a connector (not a dot,
-  // not the 4px gaps, not empty track) passes under each button's centre.
+  // Which edges overflow at an offset, and whether the timeline itself (its
+  // line, a dot or a step's label column: from the first column's left edge to
+  // the last one's right edge) is under each arrow's centre. Never over blank
+  // track past the ends.
   function edgeState(L, off) {
     const overflowStart = L.max > EPS && off > EPS;
     const overflowEnd = L.max > EPS && off < L.max - EPS;
-    const under = cx => {
-      if (L.N < 2 || L.seg <= 0) return false;
-      const i = Math.floor((cx + off - L.pad) / L.seg);
-      if (i < 0 || i >= L.N - 1) return false;
-      const a = dotX(L, i, off), b = dotX(L, i + 1, off);
-      return cx - a >= DOT_ZONE && b - cx >= DOT_ZONE;
-    };
+    const under = cx => L.N >= 2 && L.seg > 0 && cx >= dotX(L, 0, off) - L.col / 2 - EPS && cx <= dotX(L, L.N - 1, off) + L.col / 2 + EPS;
     const startX = L.edge / 2, endX = L.W - L.edge / 2;
     return {
       overflowStart, overflowEnd,
@@ -102,7 +104,7 @@
   function targetOffset(L, c) {
     const M = L.max, N = L.N;
     if (M <= EPS) return 0;                          // everything fits: nothing to place
-    if (L.narrow) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow: the current dot at 50%, every state
+    if (L.narrow) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow: the current dot at 50% as far as the track allows
     if (c <= 0) return 0;                            // first step: its dot on the left safe line
     if (c >= N - 1) return M;                        // final step: its dot on the right safe line
     const s = L.seg, hl = labelHalf(L), E = L.edge, W = L.W;
@@ -200,8 +202,9 @@
       sc.addEventListener('scroll', () => this._onScroll(), { passive: true });
       // Anything the user does to move the track counts as browsing.
       const touch = () => this._markUser();
-      sc.addEventListener('touchstart', touch, { passive: true });
-      sc.addEventListener('wheel', e => { if (e.deltaX || e.shiftKey) this._markUser(); }, { passive: true });
+      const own = () => { this._arrowTo = null; };   // the user takes over from an arrow's scroll
+      sc.addEventListener('touchstart', () => { own(); touch(); }, { passive: true });
+      sc.addEventListener('wheel', e => { if (e.deltaX || e.shiftKey) { own(); this._markUser(); } }, { passive: true });
       sc.addEventListener('keydown', e => this._onKey(e));
       sc.addEventListener('pointerdown', e => this._onDown(e));
       sc.addEventListener('pointermove', e => this._onMove(e));
@@ -218,9 +221,10 @@
         const to = clamp(from + dir * L.seg, 0, L.max);
         this._arrowTo = to;
         clearTimeout(this._arrowT);
-        this._arrowT = setTimeout(() => { this._arrowTo = null; }, 600);
+        this._arrowT = setTimeout(() => { this._arrowTo = null; this._sync(); }, 1200);   // a fallback; it clears on arrival
         this._markUser();
         this.scroller.scrollTo({ left: to, behavior: reducedMotion() ? 'auto' : 'smooth' });
+        this._sync();
         const detail = { direction: dir < 0 ? 'start' : 'end', offset: to, currentIndex: this._currentIndex() };
         if (typeof this.opts.onArrow === 'function') this.opts.onArrow(detail);
         r.dispatchEvent(new CustomEvent('progress-timeline:arrow', { bubbles: true, detail }));
@@ -305,11 +309,16 @@
 
     // Fades and buttons from where the track actually is.
     _sync() {
-      const s = edgeState(this.layout, this.scroller.scrollLeft), r = this.root;
+      const sl = this.scroller.scrollLeft, s = edgeState(this.layout, sl), r = this.root;
       r.classList.toggle('is-overflow-start', s.overflowStart);
       r.classList.toggle('is-overflow-end', s.overflowEnd);
-      this._button(this.btnStart, s.startButton);
-      this._button(this.btnEnd, s.endButton);
+      if (this._arrowTo != null && Math.abs(sl - this._arrowTo) < 1) this._arrowTo = null;   // arrived
+      // While an arrow's own smooth scroll runs, the arrows go by where the track
+      // will rest, so a dot passing under one mid-flight doesn't blink it out
+      // (and swallow the next click). Swipes and drags are judged frame by frame.
+      const a = this._arrowTo != null ? edgeState(this.layout, this._arrowTo) : s;
+      this._button(this.btnStart, a.startButton);
+      this._button(this.btnEnd, a.endButton);
     }
 
     _button(b, on) {
@@ -341,6 +350,7 @@
     // Mouse drag; touch and trackpads scroll natively.
     _onDown(e) {
       if (e.pointerType !== 'mouse' || e.button !== 0 || this.layout.max <= EPS) return;
+      this._arrowTo = null;
       this._drag = { x: e.clientX, off: this.scroller.scrollLeft, id: e.pointerId, moved: false };
     }
     _onMove(e) {
