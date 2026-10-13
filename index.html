@@ -10765,12 +10765,12 @@
         <!-- in two groups: the services that stand alone, and the chain where each waits on the one before ("add group titles: without dependency, with dependencies") -->
         <optgroup label="Without dependency">
           <option value="consult">Onboarding Consultation</option>
-          <option value="gut">Microbiome test</option>
+          <option value="gut" selected>Microbiome test</option>
           <option value="wbmri">Whole Body MRI</option>
           <option value="path">Advanced Blood Testing: blood test</option>
         </optgroup>
         <optgroup label="With dependencies">
-          <option value="dexa" selected>DEXA scan (Protocol)</option>
+          <option value="dexa">DEXA scan (Protocol)</option>
           <option value="diag">Diagnostics Review</option>
           <option value="checkin">Member Check-In</option>
         </optgroup>
@@ -28190,7 +28190,7 @@ hairline({
       { const fin = state === 'done' || (at >= n && key !== 'gut'); if (desk) desk.classList.toggle('svFin', fin); if (mob) mob.classList.toggle('svFin', fin); }   // every step done: nothing dimmed ("exception: when all steps are completed, all steps at 100%")
       if (CTABS && state !== 'locked'){ if (desk) tabify(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain'), key); if (mob) tabify(mob.querySelector('.svmBody'), key); }
       else if (TABC){ if (CTK !== key + state + at){ CTK = key + state + at; CTAB = ''; } if (desk) tabLine(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain')); if (mob) tabLine(mob.querySelector('.svmBody')); }   // a new page or step opens on its first tab
-      pickMode(!!TASK); { const pk = document.getElementById('stSvcPick'); if (pk && [...pk.options].some(op => op.value === key)) pk.value = key; }
+      pickMode(!!TASK); { const pk = document.getElementById('stSvcPick'), pv = key === 'gutq' ? 'gut' : key; if (pk && [...pk.options].some(op => op.value === pv)) pk.value = pv; }   // the microbiome's questionnaire is its first step: Microbiome test
       cur = { subL: x.subL || '', subT: x.kitT || '', key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' && !/^gut/.test(key) ? dl.map(([, t]) => t) : [],   /* the microbiome's steps are its own, no documents among them */   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: stepEta(steps), shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n, shGrp: (() => { const p0 = PH; PH = false; const h = jrX(false); PH = p0; return stepEta(h); })() }   /* built as the desk's, the service's own card with its steps in it ("replicate the same desktop content") */   /* the MRI and the microbiome: the sheet shows their services, as the desktop's panel, not the demo's stages ("that should reflect the desktop timeline on the right side") */;   // what the steps sheet shows
       if (PREV && (PREV.key === key || (PREV.g && cur.J && PREV.g === cur.J.items.map(y => y.svc).join())) && (PREV.at !== cur.at || PREV.state !== state || PREV.key !== key)) void 0;   // the bars' step transition is off ("remove bar step transition"); advMark kept, unused   // the same service or group, a different step
     };
@@ -28304,7 +28304,7 @@ hairline({
     let backTo = null;   // where the back chevron returns: the Overview, or the Timeline the page was opened from
     const sel = document.getElementById('versionSel'), mark = v => { if (sel && [...sel.options].some(op => op.value === v)) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
-    const openDesk = (key, state, o) => { [key, state, o] = simIn(key, state, o); if (LAY === 'apt' && window._apt){ window._apt.openDesk({ from: o && o.from === 'tl' ? 'tl' : null }); return; } backTo = o && o.from || null; paint(key || 'dexa', state || (key ? 'request' : 'book'), o);   /* Service detail's own door: the DEXA to book, as the design */ if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); const dh = desk.closest('.dash'); if (dh) dh.scrollTop = 0; } mark(SVC[key || 'dexa'] && SVC[key || 'dexa'].task ? 'tskD' : 'svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key || 'dexa', state || (key ? 'request' : 'book')])); } catch (e){} };   /* remembered through a reload, as the Timeline */
+    const openDesk = (key, state, o) => { if (!key){ key = 'gutq'; state = state || 'request'; }   /* Service detail's own door: the Microbiome test, from its questionnaire ("service desktop should be microbiome test by default") */ [key, state, o] = simIn(key, state, o); if (LAY === 'apt' && window._apt){ window._apt.openDesk({ from: o && o.from === 'tl' ? 'tl' : null }); return; } backTo = o && o.from || null; paint(key, state || 'request', o); if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); const dh = desk.closest('.dash'); if (dh) dh.scrollTop = 0; } mark(SVC[key] && SVC[key].task ? 'tskD' : 'svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key, state || 'request'])); } catch (e){} };   /* remembered through a reload, as the Timeline */
     // the hero holds while the sheet slides up over it, its words drifting up and fading, as the Insights phone's header ("remember the scroll parallax used for Insights mobile? do the same here; the body should overlap the hero")
     const heroFx = sc => { const h = sc && sc.querySelector('.svmHero'); if (!h) return; const y = sc.scrollTop, k = Math.min(1, Math.max(0, y / Math.max(1, h.offsetHeight - 40)));
       { const e = k * k * (3 - 2 * k), g = Math.round(28 - 13 * e); sc.style.setProperty('--svG', g + ' ' + g + ' ' + g); sc.style.setProperty('--svGc', g + ',' + g + ',' + g); }   // No card: the one ground, the hero's grey (28) eased to #0f0f0f (15) as the hero goes, as the Insights page's header
