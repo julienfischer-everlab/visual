@@ -13608,3 +13608,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Timeline tasks (a task, not a service: plan() now says task) have a dot, not a ring: the Chip's indicator, and the XS step badge's; 8px in a 16 (20 on XS) slot, orange / neutral / green as the ring.
 - The ⋯ beside a Timeline item's button: Do it later (into Later, first, toast with the service page's line; Do it now from there, back in its month) and View details (its page, as the row). The service page's .svMenu styles: a menu under the button on desktop, a bottom sheet on XS (the dock hidden under it, as for the steps sheet); the service page's menu handler now skips [data-tl] menus. In memory, as Seen.
 - A completed item (done, or a group all done) has View alone: no ⋯, its button View ("when it's a final complete state, just view").
+- Timeline tab Yours to claim renamed Later ("just Later"); the claim status card's own line unchanged.
+- Completed, not yet seen: a section of their own, Just completed, above the months in Upcoming (no longer first in the current month); gone once they are all seen.

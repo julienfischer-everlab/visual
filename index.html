@@ -11969,7 +11969,7 @@
     <div class="tlBar"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tlCol tlBarIn">
       <div class="tlTabs" role="tablist" aria-label="Timeline"><i class="tlThumb" aria-hidden="true"></i>
         <button class="tlTab on" type="button" role="tab" aria-selected="true" data-t="up">Upcoming</button>
-        <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="claim">Yours to claim</button>
+        <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="claim">Later</button>   <!-- was Yours to claim ("just Later") -->
         <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="past">Past</button>
       </div>
     </div></div>
@@ -28698,9 +28698,9 @@ hairline({
     const rowPlan = x => { if (x.state === 'locked') { const q = PL(x.svc, x.state); return q ? Object.assign({}, q, { steps: x.steps || q.steps, at: -1 }) : null; } let q = PL(x.svc, x.state); if (q && x.steps) q = Object.assign({}, q, { steps: x.steps }); return q; };
     // a row waiting on another stands under it ("the object needs to be below the blocker"), however the data lists them
     // every locked object goes to "Later", after everything ("all locked objects under a group 'Later' at the end of the list")
-    /* a completed service stays in Upcoming, first in the current month, until it has been seen -- opened once -- and only then is Past ("we're not sure the user saw it; while the user hasn't seen the completed state, it remains Upcoming, at the top of the current month"); in memory, so a reload shows it again */
+    /* a completed service stays in Upcoming, under Just completed at the top, until it has been seen -- opened once -- and only then is Past ("we're not sure the user saw it; while the user hasn't seen the completed state, it remains Upcoming, at the top of the current month"); in memory, so a reload shows it again */
     const SEEN = new Set(), seenK = r => r.svc + '|' + r.t, unseen = r => !!r.fresh && !SEEN.has(seenK(r));
-    const tabRows = S => tab === 'up' ? S.map(sc => sc.dot === 'now' ? Object.assign({}, sc, { rows: TL.past.flatMap(x => x.rows.filter(unseen)).map(r => Object.assign({}, r, { cta: 1 })).concat(sc.rows) }) : sc)
+    const tabRows = S => tab === 'up' ? (j => j.length ? [{ h: 'Just completed', rows: j }] : [])(TL.past.flatMap(x => x.rows.filter(unseen)).map(r => Object.assign({}, r, { cta: 1 }))).concat(S)   /* above the months, a section of their own ("instead of in the month, a new section above called Just completed, all the items there") */
       : tab === 'past' ? S.map(sc => Object.assign({}, sc, { rows: sc.rows.filter(r => !unseen(r)) })) : S;
     let DIRTY = false;
     const openRow = d => { const w = own(d); if (!w.svc) return; if (unseen(d)){ SEEN.add(seenK(d)); DIRTY = true; }   // opened: seen, so Past from now on
