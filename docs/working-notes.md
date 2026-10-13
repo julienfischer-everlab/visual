@@ -13617,3 +13617,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Chip steps: the item's properties are chips too, in one line with the status chip first (.tlMetaC: the .tlProg inside it display:contents; 28px, ghost ground, regular weight, icons grey). On XS the line wraps and the button has its own line (noProg). Vertical and Horizontal keep their properties as plain text.
 - Saved for later items: View details the primary button (it opens the page), the ⋯ only Move back to my plan (toast "… is back in your plan."). The Later tab's own items keep Claim / View, with View details alone in their ⋯.
 - Timeline's Open steps tweak retired (tkGone, Current month kept): the section now Steps, Priority, Documents.
+- Timeline task chips without their frequency ("remove Ad hoc and Weekly"): Book by Wed 14 Oct, Due by Sun 18 Oct (x2), and the April check-in's Due by Fri 30 Apr likewise. The task pages' own status line keeps Ad hoc / Weekly.
