@@ -7513,6 +7513,7 @@
   .tlH.stuck::after{opacity:1;}
   .tlDot{position:absolute;left:0;top:50%;width:17px;height:17px;margin-top:-8.5px;border-radius:50%;box-sizing:border-box;background:var(--pageBg);box-shadow:inset 0 0 0 1.5px var(--tlDotRing);}
   .tlSec.now .tlDot{background:var(--tlInk);box-shadow:none;} .tlSec.now .tlDot::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--pageBg);}
+  .tlSec.done .tlDot{background:#42be65;box-shadow:none;color:#0f0f0f;display:flex;align-items:center;justify-content:center;} .tlSec.done .tlDot svg{width:10px;height:10px;}   /* Just completed: a filled green check ("put a green check, filled") */
   .tlSec.care .tlDot{box-shadow:none;color:var(--tlSub);display:flex;align-items:center;justify-content:center;} .tlSec.care .tlDot svg{width:15px;height:15px;}
   /* a row: the picture, the title and the line, what and where under them,
      the actions at the right */
@@ -7576,8 +7577,8 @@
   .tlProg{grid-area:prog;display:flex;align-items:center;gap:8px;margin-top:20px;min-width:0;font-size:12.5px;color:var(--tlSub);}
   .tlSeg{display:flex;gap:3px;flex:none;}
   .tlRing{display:none;flex:none;width:20px;height:20px;border-radius:50%;--rc:#f78359;background:conic-gradient(var(--rc) calc(var(--p, 0) * 1turn), var(--tlDotRing) 0);-webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));}
-  .tlStepC{flex:0 1 auto;display:inline-flex;align-items:center;gap:8px;min-width:0;height:28px;padding:0 12px 0 8px;border-radius:8px;background:var(--tlGhost);color:var(--tlTx);font-size:12.5px;font-weight:500;white-space:nowrap;}   /* the Chip steps: a ring and the step in hand's name */
-  .tlStepC b{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:500;} .tlStepC .tlRing{display:block;width:16px;height:16px;} .tlStepC.tlBlk{padding-left:10px;color:var(--tlSub);}
+  .tlStepC{flex:0 1 auto;display:inline-flex;align-items:center;gap:8px;min-width:0;height:28px;padding:0 12px 0 8px;border-radius:8px;background:var(--tlGhost);color:var(--tlTx);font-size:12.5px;font-weight:400;white-space:nowrap;}   /* the Chip steps: a ring and the step in hand's name */
+  .tlStepC b{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:400;}   /* regular ("use regular font weight") */ .tlStepC .tlRing{display:block;width:16px;height:16px;} .tlStepC.tlBlk{padding-left:10px;color:var(--tlSub);}
   .tlStepDot{flex:none;display:grid;place-items:center;width:16px;height:16px;} .tlStepDot::after{content:"";width:8px;height:8px;border-radius:50%;background:#f78359;}   /* a task's dot, in the ring's place and colours */
   .tlProg.done .tlStepDot::after{background:#42be65;} .tlProg.pas .tlStepDot::after{background:var(--tlPas, rgba(255,255,255,.72));} .tlTgl .tlStepDot{display:none;}
   .tlProg.done .tlRing{--rc:#42be65;} .tlProg.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlBlk .tlRing{--rc:var(--tlSub);}
@@ -28699,7 +28700,7 @@ hairline({
     // every locked object goes to "Later", after everything ("all locked objects under a group 'Later' at the end of the list")
     /* a completed service stays in Upcoming, under Just completed at the top, until it has been seen -- opened once -- and only then is Past ("we're not sure the user saw it; while the user hasn't seen the completed state, it remains Upcoming, at the top of the current month"); in memory, so a reload shows it again */
     const SEEN = new Set(), seenK = r => r.svc + '|' + r.t, unseen = r => !!r.fresh && !SEEN.has(seenK(r));
-    const tabRows = S => tab === 'up' ? (j => j.length ? [{ h: 'Just completed', rows: j }] : [])(TL.past.flatMap(x => x.rows.filter(unseen)).map(r => Object.assign({}, r, { cta: 1 }))).concat(S.map(sc => Object.assign({}, sc, { rows: sc.rows.filter(r => !SNZ.has(r)) })))
+    const tabRows = S => tab === 'up' ? (j => j.length ? [{ h: 'Just completed', dot: 'done', rows: j }] : [])(TL.past.flatMap(x => x.rows.filter(unseen)).map(r => Object.assign({}, r, { cta: 1 }))).concat(S.map(sc => Object.assign({}, sc, { rows: sc.rows.filter(r => !SNZ.has(r)) })))
       : tab === 'claim' ? (z => z.length ? [{ h: 'Saved for later', rows: z }] : [])([...SNZ]).concat(S)   /* what was put off from Upcoming, at the top of the Later tab ("the one pushed to Do it later from Upcoming") */   /* above the months, a section of their own ("instead of in the month, a new section above called Just completed, all the items there") */
       : tab === 'past' ? S.map(sc => Object.assign({}, sc, { rows: sc.rows.filter(r => !unseen(r)) })) : S;
     let DIRTY = false;
@@ -28812,7 +28813,7 @@ hairline({
       '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg +
       (act ? '<div class="tlAct' + (more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(act) + '</button>' +
       (more ? '<button class="tlMore" type="button" aria-label="More options" aria-haspopup="menu">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
-    const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : '') + '</i>' + esc(x.h) + '</h2>' +
+    const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : x.dot === 'done' ? CHK : '') + '</i>' + esc(x.h) + '</h2>' +
       '<div class="tlItems">' + ordered(x.rows).map(row).join('') + '</div>' +
       (x.sug ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + x.sug.map(row).join('') + '</div></div>' : '') +
       '</section>';
@@ -29423,7 +29424,7 @@ hairline({
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stTlPri' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
