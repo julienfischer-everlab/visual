@@ -6902,6 +6902,13 @@
   body.light .kitHd b, body.light .kitL li.cur, body.light .kitL em.now{color:#2e1f1a;} body.light .kitRad{border-color:rgba(46,31,26,.3);}
   /* the stepper: nodes on a track, the track filled to the step in hand, a name under each */
   .kitStep{list-style:none;position:relative;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(var(--kn),minmax(0,1fr));}
+  .kitIn, .kitCard{min-width:0;} .kitSx{position:relative;min-width:0;max-width:100%;} .kitSx .kitStep{grid-template-columns:repeat(var(--kn),minmax(128px,1fr));}   /* 128 a step at least */
+  .kitSxIn{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding:10px 0 4px;margin:-10px 0 -4px;} .kitSxIn::-webkit-scrollbar{display:none;}   /* room round the ripple */
+  .kitSx.ovR .kitSxIn{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 128px),transparent calc(100% - 20px));mask-image:linear-gradient(90deg,#000 calc(100% - 128px),transparent calc(100% - 20px));}
+  .kitSx.ovL .kitSxIn{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 72px);mask-image:linear-gradient(90deg,transparent 0,#000 72px);}
+  .kitSx.ovL.ovR .kitSxIn{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 72px,#000 calc(100% - 128px),transparent calc(100% - 20px));mask-image:linear-gradient(90deg,transparent 0,#000 72px,#000 calc(100% - 128px),transparent calc(100% - 20px));}
+  .kitSx > .kitMoreB{display:none;position:absolute;right:0;top:-5px;z-index:2;width:32px;height:32px;margin:0;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#f4f4f4;align-items:center;justify-content:center;cursor:pointer;vertical-align:0;} .kitSx > .kitMoreB svg{width:14px;height:14px;}
+  .kitSx.over > .kitMoreB{display:flex;} .kitSx > .kitMoreB:hover{background:rgba(255,255,255,.18);} body.light .kitSx > .kitMoreB{background:rgba(46,31,26,.08);color:#2e1f1a;}   /* over the fade, on the dots' line */
   .kitStep li::after{content:"";position:absolute;top:4px;left:calc(50% + 13px);width:calc(100% - 26px);   /* 8 clear of each circle ("4px + gap") */height:2px;border-radius:1px;   /* 4 -> 2 ("reduce line by 2px") */background:rgba(255,255,255,.1);} .kitStep li:last-child::after{display:none;} .kitStep li.on::after{background:#42be65;}   /* a segment between each two circles, 4px clear of both ("4px gap between circles and lines") */
   .kitStep li{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;font-size:12.5px;line-height:1.3;color:rgba(255,255,255,.56);padding:0 4px;}
   .kitDot{display:flex;align-items:center;justify-content:center;width:14px;height:14px;box-sizing:border-box;border-radius:50%;background:rgba(184,184,184,.16);color:#10140e;} .kitDot svg{width:8px;height:8px;}   /* 22 -> 18 -> 14 ("circle reduce by 4px", twice) */
@@ -7280,6 +7287,10 @@
   /* the booking modal (desk) / sheet (phone) */
   body:not([data-bp="xs"]) .dash > .svBook .tlShPanel{left:50%;right:auto;top:50%;bottom:auto;width:480px;max-height:86%;border-radius:24px;transform:translate(-50%,-46%);opacity:0;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
   body:not([data-bp="xs"]) .dash > .svBook.on .tlShPanel{transform:translate(-50%,-50%);opacity:1;} body:not([data-bp="xs"]) .dash > .svBook .tlShGrab{visibility:hidden;}
+  /* the sub steps' breakdown on the desk (the stepper's chevron): a modal, as the booking's; the phone keeps its bottom sheet */
+  body:not([data-bp="xs"]).svcOn .dash > .svSheet.subSh{display:block !important;}
+  body:not([data-bp="xs"]) .dash > .svSheet.subSh .tlShPanel{left:50%;right:auto;top:50%;bottom:auto;width:480px;max-width:calc(100% - 48px);height:auto;max-height:86%;border-radius:24px;transform:translate(-50%,-46%);opacity:0;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s ease;}
+  body:not([data-bp="xs"]) .dash > .svSheet.subSh.on .tlShPanel{transform:translate(-50%,-50%);opacity:1;} body:not([data-bp="xs"]) .dash > .svSheet.subSh .tlShGrab{visibility:hidden;}
   .bkBody{padding-bottom:8px !important;}
   /* the fake consent / questionnaire */
   .dmP{margin:0;font-size:14px;line-height:1.5;color:rgba(255,255,255,.56);} .dmTx{margin-top:16px;max-height:220px;overflow:auto;padding:16px;border-radius:14px;background:rgba(255,255,255,.05);font-size:13.5px;line-height:1.55;color:#c8c8c4;}
@@ -27888,6 +27899,17 @@ hairline({
       const sub = prev && prev.key === cur.key && cur.key === 'gut' && prev.at >= 0 && prev.at < 5 && cur.at < 5;   // only a sub step moved: the main bar's fill grows from where it was, the sub steps' line shows the step
       if (sub) root.querySelectorAll('.svStep.fill, .svJrBars i.fill').forEach(n => { n.style.setProperty('--gf0', ((prev.at + 1) / 5).toFixed(3)); n.classList.remove('jg'); void n.offsetWidth; n.classList.add('jg'); });
       root.querySelectorAll(sub ? '.kitStep li.cur' : '.svStep.on, .svJrBars i.cur, .kitStep li.cur').forEach(n => { n.classList.remove('jn'); void n.offsetWidth; n.classList.add('jn'); const p = n.previousElementSibling; if (p && p.matches('.svStep.ok, .svJrBars i.on, .kitStep li.on')){ p.classList.remove('jd'); void p.offsetWidth; p.classList.add('jd'); } }); });
+    /* a long sub step timeline: each step at least 128 wide; past the card it scrolls, the cut edge fading out, and a chevron over the fade opens every step, as the phone's sheet ("min width 128 for the increments; a fade where it bleeds out; a button over the fade that opens the breakdown, as the XS bottom sheet") */
+    const KCHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>';
+    const kitEdge = sx => { const inr = sx.firstElementChild, over = inr.scrollWidth > inr.clientWidth + 1; sx.classList.toggle('over', over); sx.classList.toggle('ovR', over && inr.scrollLeft + inr.clientWidth < inr.scrollWidth - 2); sx.classList.toggle('ovL', over && inr.scrollLeft > 2); };
+    const kitFit = root => { if (!root || document.body.dataset.bp === 'xs') return;
+      root.querySelectorAll('.kitCard > ol.kitStep').forEach(ol => { if (ol.closest('.kitMini, .svcMob, .svXsBody')) return;
+        const sx = document.createElement('div'), inr = document.createElement('div'); sx.className = 'kitSx'; inr.className = 'kitSxIn'; ol.before(sx); sx.appendChild(inr); inr.appendChild(ol);
+        sx.insertAdjacentHTML('beforeend', '<button class="kitInfo kitMoreB" type="button" aria-label="See all the steps">' + KCHEV + '</button>');   // .kitInfo: the info icon's own sheet
+        inr.addEventListener('scroll', () => kitEdge(sx), { passive: true });
+        const c = ol.querySelector('li.cur'); if (c && inr.scrollWidth > inr.clientWidth) inr.scrollLeft = Math.max(0, c.offsetLeft + c.offsetWidth / 2 - inr.clientWidth / 2);   // the step in hand in view
+        kitEdge(sx); }); };
+    addEventListener('resize', () => document.querySelectorAll('.kitSx').forEach(kitEdge));
     let PROBE = false;   // paint asked only for its status block (the Timeline's subtitles): no modal, no flag, nothing drawn
     const paint = (key, state, o) => { const PREV = cur && cur.key ? { key: cur.key, at: cur.at, state: cur.state, g: cur.J && cur.J.items ? cur.J.items.map(y => y.svc).join() : '' } : null;
       const oo = {}; if (o) Object.keys(o).forEach(k => { if (o[k] != null) oo[k] = o[k]; }); o = oo;   // an override left undefined never blanks the service's own
@@ -28241,6 +28263,7 @@ hairline({
       if (CTABS && state !== 'locked'){ if (desk) tabify(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain'), key); if (mob) tabify(mob.querySelector('.svmBody'), key); }
       else if (TABC){ if (CTK !== key + state + at){ CTK = key + state + at; CTAB = ''; } if (desk) tabLine(desk.querySelector(document.body.dataset.bp === 'xs' ? '.svXsBody' : '.svMain')); if (mob) tabLine(mob.querySelector('.svmBody')); }   // a new page or step opens on its first tab
       { const pk = document.getElementById('stSvcPick'), pv = key === 'gutq' ? 'gut' : key; if (pk && [...pk.options].some(op => op.value === pv)) pk.value = pv; }   // the microbiome's questionnaire is its first step: Microbiome test
+      requestAnimationFrame(() => kitFit(desk));   // the sub steps' timeline: 128 a step, scrolling under a fade when it runs past the card
       cur = { subL: x.subL || '', subT: x.kitT || '', key, state, o, J, at, n, bI: Math.max(0, d.steps.findIndex(st => /^book/i.test(st[0]))), docs: DOCS === 'asSteps' && !/^gut/.test(key) ? dl.map(([, t]) => t) : [],   /* the microbiome's steps are its own, no documents among them */   /* the skipper ticks documents off only when they are steps; in the status block they wait for their form */ stepName: at >= 0 && at < n ? d.steps[at][0] : '', steps: d.steps, svcT: d.t, loc: d.loc, dur: d.dur, shT: (JJ.items[JJ.i] && JJ.items[JJ.i].t) || d.t, shSteps: stepEta(steps), shChip: at < 0 ? 'Not started' : at >= n ? 'Completed' : 'Step ' + (at + 1) + ' of ' + n, shGrp: (() => { const p0 = PH; PH = false; const h = jrX(false); PH = p0; return stepEta(h); })() }   /* built as the desk's, the service's own card with its steps in it ("replicate the same desktop content") */   /* the MRI and the microbiome: the sheet shows their services, as the desktop's panel, not the demo's stages ("that should reflect the desktop timeline on the right side") */;   // what the steps sheet shows
       if (PREV && (PREV.key === key || (PREV.g && cur.J && PREV.g === cur.J.items.map(y => y.svc).join())) && (PREV.at !== cur.at || PREV.state !== state || PREV.key !== key)) void 0;   // the bars' step transition is off ("remove bar step transition"); advMark kept, unused   // the same service or group, a different step
     };
