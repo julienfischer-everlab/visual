@@ -81,12 +81,13 @@
   .frame::before { content: ""; position: absolute; inset: 0; z-index: 2; box-shadow: inset 0 0 0 var(--ow) var(--tab, #fff); pointer-events: none; }   /* the outline, a shadow over the picture's edge: a 1.5px border is floored to 1px in Chrome */
   .icard[data-outline="0"] .frame::before { display: none; }   /* the outline off: the frame keeps its place */
   /* the report's date: a badge in the outline's colour inside the visual's top left (the notch above it gone) */
-  .frame .ftab { position: absolute; top: 16px; left: 16px; z-index: 3; display: flex; align-items: center; padding: 6px 12px; border-radius: 999px; background: var(--tab, #fff); color: #141414; font-size: clamp(11px, 2.6cqw, 14px); font-weight: 500; line-height: 1.2; white-space: nowrap; }   /* the date, a badge inside the visual, 16px from its corner ("remove the notch style; put a badge inside, 16px from the edge") */
-  .icard[data-tabink="light"] .frame .ftab { color: #fff; }
+  .frame .ftab { position: absolute; top: 16px; left: 16px; z-index: 3; display: flex; align-items: center; padding: 6px 12px; border-radius: 0; background: var(--cardBg, #141414); color: inherit; border: .5px solid currentColor;   /* sharp, the card's own ground and the title's colour, a hairline in it ("sharp, not rounded; the background the card's, the foreground the title's; a 0.5px border") */ font-size: clamp(11px, 2.6cqw, 14px); font-weight: 500; line-height: 1.2; white-space: nowrap; }   /* the date, a badge inside the visual, 16px from its corner ("remove the notch style; put a badge inside, 16px from the edge") */
   /* the frame's bottom right cut at 45 degrees, the outline along the cut ("corner 45% incline") */
   .frame { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%); }
   .frame::after { content: ""; position: absolute; right: 0; bottom: 0; z-index: 2; width: var(--cut); height: var(--cut); background: linear-gradient(to bottom right, transparent calc(50% - var(--ow)), var(--tab, #fff) calc(50% - var(--ow)), var(--tab, #fff) 50%, transparent 50%); pointer-events: none; }
   .icard[data-outline="0"] .frame::after { display: none; }
+  .frame .marks { position: absolute; inset: 0; z-index: 2; pointer-events: none; }   /* the Markers: orange 8 by 8, ringed 3px in the card's ground */
+  .frame .marks i { position: absolute; box-sizing: content-box; width: 8px; height: 8px; margin: -7px 0 0 -7px; background: #f78359; border: 3px solid var(--cardBg, #141414); }
   /* V2's content: what the report highlights, in the frame's foot (the frame then an L, its outline round the notch) or after the frame ("content on/off: in frame, outside frame") */
   .icard .hl { display: none; text-transform: capitalize; }   /* as the draft: every word capitalised */
   .icard .hl b { display: block; margin-bottom: 1.4cqw; font-size: clamp(11px, 2.9cqw, 15px); font-weight: 500; line-height: 1.25; }   /* the draft's sizes, to the card */
@@ -349,8 +350,51 @@
     var f = card.querySelector("canvas[data-flat]"); if (f && f._redraw) f._redraw();
   }
   function lightness(cv) { var t = document.createElement("canvas"); t.width = 16; t.height = 12; var x = t.getContext("2d"); x.drawImage(cv, 0, 0, 16, 12); var d = x.getImageData(0, 0, 16, 12).data, s = 0; for (var i = 0; i < d.length; i += 4) s += .2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2]; return s / (d.length / 4) / 255; }
+  /* Markers: 3 to 5 orange squares, 8 by 8 in a 3px ring of the card's ground, at seeded places in the visual -- clear of the date, the cut corner and the content ("a tweak marker yes/no: 3 to 5 random orange squares inside the visual") */
+  function rngOf(s) { return function () { s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; }; }
+  function marks(card) {
+    var S = card._s, f = card.querySelector(".frame"), box = f.querySelector(".marks");
+    if (S.mark === "0") { if (box) box.remove(); return; }
+    if (!box) { box = document.createElement("div"); box.className = "marks"; box.setAttribute("aria-hidden", "true"); f.appendChild(box); }
+    var key = S.mark + "|" + card.dataset.hl; if (box.dataset.k === key) return; box.dataset.k = key;
+    var r = rngOf(+S.mark), n = 3 + Math.floor(r() * 3), pts = [], tries = 0;
+    while (pts.length < n && tries++ < 500) { var x = .06 + r() * .88, y = .1 + r() * .8;
+      if ((x < .42 && y < .3) || (x > .84 && y > .76) || (card.dataset.hl === "in" && x < .76 && y > .36)) continue;
+      if (pts.some(function (q) { return Math.hypot((q[0] - x) * 1.6, q[1] - y) < .17; })) continue;
+      pts.push([x, y]); }
+    box.innerHTML = pts.map(function (q) { return '<i style="left:' + (q[0] * 100).toFixed(1) + '%;top:' + (q[1] * 100).toFixed(1) + '%"></i>'; }).join("");
+  }
+  /* Motion: the frame's picture, sampled once, read through a window that drifts and zooms (Drift) or through a slow liquid warp (Flow), dithered afresh each frame; both loop seamlessly every 24s ("animate it, a free-moving loop, with an image") */
+  var ANIMS = [], animQ = 0, animLast = 0, RM = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches), LOOP = 24000;
+  function stopAnim(card) { if (card._anim) { ANIMS.splice(ANIMS.indexOf(card._anim), 1); card._anim = null; } }
+  function animFrame(A, now) {
+    var tt = (now % LOOP) / LOOP * 6.2832, w = A.w, h = A.h, W2 = A.W2, H2 = A.H2, SL = A.SL, L = A.L, on = A.on, flow = A.mot === "flow", z, cx, cy, m;
+    if (flow) { z = 1.22; m = (1 - 1 / z) / 2 * .45; cx = .5 + m * Math.sin(tt); cy = .5 + m * Math.cos(tt); }
+    else { z = 1.16 + .05 * Math.sin(tt); m = (1 - 1 / 1.11) / 2 * .95; cx = .5 + m * Math.sin(tt); cy = .5 + m * Math.sin(2 * tt + .7); }
+    var inv = 1 / z, a = .016, x, y, k;
+    for (y = 0; y < h; y++) { var vy = (y + .5) / h - .5;
+      for (x = 0; x < w; x++) { var u = cx + ((x + .5) / w - .5) * inv, v = cy + vy * inv;
+        if (flow) { var u0 = u; u += a * Math.sin(6.2832 * v * 1.6 + 2 * tt) + a * .6 * Math.sin(6.2832 * (u * 2.3 + v * .7) - 3 * tt); v += a * Math.cos(6.2832 * u0 * 1.3 + 2 * tt) + a * .6 * Math.cos(6.2832 * (v * 2.1 - u0 * .5) + tt); }
+        var fx = u * W2 - .5, fy = v * H2 - .5; fx = fx < 0 ? 0 : fx > W2 - 1.001 ? W2 - 1.001 : fx; fy = fy < 0 ? 0 : fy > H2 - 1.001 ? H2 - 1.001 : fy;
+        var ix = fx | 0, iy = fy | 0, ax = fx - ix, ay = fy - iy, i0 = iy * W2 + ix;
+        var sv = (SL[i0] * (1 - ax) + SL[i0 + 1] * ax) * (1 - ay) + (SL[i0 + W2] * (1 - ax) + SL[i0 + W2 + 1] * ax) * ay, q = (sv - A.lo) / A.sp;
+        L[y * w + x] = q < 0 ? 0 : q > 1 ? 1 : q; } }
+    if (A.bayer) { for (y = 0; y < h; y++) for (x = 0; x < w; x++) { k = y * w + x; on[k] = L[k] > BAYER[y & 7][x & 7] ? 1 : 0; } }
+    else { var E = A.E; E.set(L); for (y = 0; y < h; y++) for (x = 0; x < w; x++) { k = y * w + x; var e = E[k], o1 = e > .5 ? 1 : 0, er = (e - o1) / 8; on[k] = o1;
+      if (x + 1 < w) E[k + 1] += er; if (x + 2 < w) E[k + 2] += er; if (y + 1 < h) { if (x > 0) E[k + w - 1] += er; E[k + w] += er; if (x + 1 < w) E[k + w + 1] += er; } if (y + 2 < h) E[k + 2 * w] += er; } }
+    var d = A.id.data, dk = A.dark, lt = A.light;
+    for (k = 0; k < w * h; k++) { var c = on[k] ? lt : dk, j = k * 4; d[j] = c[0]; d[j + 1] = c[1]; d[j + 2] = c[2]; d[j + 3] = 255; }
+    A.x.putImageData(A.id, 0, 0); A.g.imageSmoothingEnabled = false; A.g.drawImage(A.o, 0, 0, A.cv.width, A.cv.height);
+  }
+  function animTick(now) {
+    animQ = 0; if (!ANIMS.length) return;
+    if (now - animLast >= 41 && !document.hidden) { animLast = now;   // about 24 a second: a dithered picture reads as film
+      ANIMS.forEach(function (A) { var r = A.cv.getBoundingClientRect(); if (r.bottom > 0 && r.top < innerHeight && !A.cv.hidden) animFrame(A, now); }); }
+    animQ = requestAnimationFrame(animTick);
+  }
   function dither(card) {
     var S = card._s; if (!S) return;
+    stopAnim(card);
     var v2 = S.mode === "2", cv = card.querySelector("canvas.dith"), dd = (v2 ? S.dith2 : S.dith1).split("|"), mode = dd[0], url = urlOf(v2 ? S.fpic : S.pic), tok = card._dtok = (card._dtok || 0) + 1;
     var nt = document.querySelector('.ctl[data-for="' + card.dataset.card + '"] .note');
     if ((S.mode === "3" || !/^ig:/.test(mode)) && /Image generator/.test(nt.textContent)) nt.textContent = "";   // a look still rendering when another was chosen
@@ -365,7 +409,7 @@
       var dpr = Math.min(2, window.devicePixelRatio || 1), fg = v2 ? fgOf(S) : null;
       var show = function (src, smooth) { cv.width = Math.round(fr.width * dpr); cv.height = Math.round(fr.height * dpr); var g = cv.getContext("2d"); g.imageSmoothingEnabled = smooth; g.clearRect(0, 0, cv.width, cv.height); g.drawImage(src, 0, 0, cv.width, cv.height); cv.hidden = false; inkFor(card, lightness(cv) > .56); };
       if (mode === "off") {   // V2, no dither: the picture as it is
-        var p0 = document.createElement("canvas"); p0.width = Math.round(fr.width * dpr); p0.height = Math.round(fr.height * dpr); p0.getContext("2d").drawImage(im, sx, sy, sw, sh, 0, 0, p0.width, p0.height); show(p0, true); return;
+        var p0 = document.createElement("canvas"); p0.width = Math.round(fr.width * dpr); p0.height = Math.round(fr.height * dpr); p0.getContext("2d").drawImage(im, sx, sy, sw, sh, 0, 0, p0.width, p0.height); show(p0, true); if (S.mot && S.mot !== "off") nt.textContent = "Motion works with the Ordered and Diffusion dithers."; return;
       }
       if (/^ig:/.test(mode)) {   // a look from the Image generator: the picture, through its engine; on V2 in the foreground and the card's colour
         var cw0 = Math.round(Math.min(1000, Math.max(200, sw))), ch0 = Math.round(cw0 * sh / sw), src = document.createElement("canvas"); src.width = cw0; src.height = ch0;
@@ -373,7 +417,7 @@
         nt.textContent = "Rendering with the Image generator…";
         ig().then(function (api) { return api.render(src, mode.slice(3), Math.round(fr.width * dpr), v2 ? { spacing: px / 3, fg: fg, bg: S.flat } : { spacing: px / 3 }); })
           .then(function (blob) { return createImageBitmap(blob); })
-          .then(function (bmp) { if (tok !== card._dtok) return; show(bmp, true); nt.textContent = ""; })
+          .then(function (bmp) { if (tok !== card._dtok) return; show(bmp, true); nt.textContent = S.mot && S.mot !== "off" ? "Motion works with the Ordered and Diffusion dithers." : ""; })
           .catch(function () { if (tok !== card._dtok) return; nt.textContent = "The Image generator couldn't render this picture here."; });
         return;
       }
@@ -396,6 +440,14 @@
       for (i = 0; i < n; i++) { var c = on[i] ? light : dark; d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = 255; }
       x.putImageData(id, 0, 0);
       show(o, false);
+      if (S.mot !== "off" && S.mot) {
+        if (RM) { nt.textContent = "Motion is still here: this device asks for reduced motion."; return; }
+        var W2 = Math.max(16, Math.min(1400, Math.round(w * 1.6))), H2 = Math.max(16, Math.round(W2 * h / w)), sc2 = document.createElement("canvas"); sc2.width = W2; sc2.height = H2;
+        var sx2 = sc2.getContext("2d"); sx2.imageSmoothingQuality = "high"; sx2.drawImage(im, sx, sy, sw, sh, 0, 0, W2, H2);
+        var sd = sx2.getImageData(0, 0, W2, H2).data, SL = new Float32Array(W2 * H2); for (i = 0; i < SL.length; i++) SL[i] = (.2126 * sd[i * 4] + .7152 * sd[i * 4 + 1] + .0722 * sd[i * 4 + 2]) / 255;
+        var A = { card: card, cv: cv, g: cv.getContext("2d"), o: o, x: x, id: id, w: w, h: h, W2: W2, H2: H2, SL: SL, L: new Float32Array(n), E: new Float32Array(n), on: new Uint8Array(n), lo: lo, sp: sp, dark: dark, light: light, bayer: /^bayer/.test(mode), mot: S.mot };
+        card._anim = A; ANIMS.push(A); if (!animQ) animQ = requestAnimationFrame(animTick);
+      }
     });
   }
 
@@ -404,7 +456,7 @@
   var DOPTS1 = '<option value="bayer-img">Ordered · picture colours</option><option value="bayer-mono">Ordered · black &amp; white</option><option value="atk-img">Diffusion · picture colours</option><option value="atk-mono">Diffusion · black &amp; white</option>' + IGOPTS;
   var DOPTS2 = '<option value="bayer-mono">Ordered</option><option value="atk-mono">Diffusion</option>' + IGOPTS;
   var SAVERS = [];   // each card's save, for Save presets
-  var WHITE = "#ffffff", BLACK = "#141414", FIELDS = ["mode", "outline", "pic", "flat", "fpic", "ink", "dith1", "dith2", "hl", "hlp"];   // a card's settings
+  var WHITE = "#ffffff", BLACK = "#141414", FIELDS = ["mode", "outline", "pic", "flat", "fpic", "ink", "dith1", "dith2", "hl", "hlp", "mot", "mark"];   // a card's settings
   /* what each report highlights (the microbiome's as the debrief's own; the others in its shape) */
   var TABD = { mri: "3 Nov 2026", gut: "13 Nov 2026", blood: "12 Oct 2026", dexa: "9 Oct 2026" };   // the frame's tab: when each report came
   var HL = { mri: ["Your brain, spine and organs", "Your heart and lungs, from the CT chest", "What may need attention", "Personalised recommendations and next steps"],
@@ -417,6 +469,8 @@
     '<div class="row" data-only="2 3"><span class="lab">Colour</span><span class="sws fls"></span><span class="hint" data-flat-hex></span></div>' +
     '<div class="row" data-only="1 2"><span class="lab" data-pic-lab>Picture</span><span class="sws pics"></span><span class="acts"><label class="tbtn">Upload<input type="file" accept="image/*"></label><button type="button" class="tbtn" data-reset>Reset</button></span></div>' +
     '<div class="row" data-only="1 2"><span class="lab">Dither</span><select data-dither aria-label="Dither the picture in the frame"></select><select data-px aria-label="Dither size"><option value="1">Ultra fine</option><option value="2">Fine</option><option value="3">Medium</option><option value="5">Coarse</option></select></div>' +
+    '<div class="row" data-only="1 2"><span class="lab">Motion</span><span class="seg mini" role="group" aria-label="Motion: the picture in the frame, in a loop"><button type="button" data-mot="off">Off</button><button type="button" data-mot="drift">Drift</button><button type="button" data-mot="flow">Flow</button></span></div>' +
+    '<div class="row"><span class="lab">Markers</span><span class="seg mini" role="group" aria-label="Markers: orange squares in the visual"><button type="button" data-mark="0">No</button><button type="button" data-mark="1" title="Again: new places">Yes</button></span></div>' +
     '<div class="row"><span class="lab">Outline</span><span class="seg mini" role="group" aria-label="Frame outline"><button type="button" data-outline="1">On</button><button type="button" data-outline="0">Off</button></span></div>' +
     '<div class="row"><span class="lab">Content</span><span class="seg mini" role="group" aria-label="Content: what the report highlights"><button type="button" data-hl="0">Off</button><button type="button" data-hl="1">On</button></span><span class="seg mini" role="group" aria-label="Where the content goes" data-hlpos><button type="button" data-hlp="in">In frame</button><button type="button" data-hlp="out">Outside frame</button></span></div>' +
     '<div class="row" data-only="2 3"><span class="lab">Foreground</span><span class="seg mini" role="group" aria-label="Foreground: the squares, the illustration and the outline"><button type="button" data-fg="#ffffff">White</button><button type="button" data-fg="#141414">Black</button></span></div>' +
@@ -441,6 +495,7 @@
     card.dataset.bgmode = S.mode;
     if (flatBg) { card.style.backgroundImage = "none"; card.style.backgroundColor = S.flat; card.dataset.lightbg = fgOf(S) === BLACK ? "1" : "";   /* the foreground sets the words, the outline and the buttons too: black -> dark words, inverse buttons ("that should impact title and body content as well; CTA inverse colours") */ }
     else { var u = urlOf(S.pic); card.style.backgroundImage = u ? "url(" + JSON.stringify(u) + ")" : ""; card.style.backgroundColor = ""; card.dataset.lightbg = ""; }
+    card.style.setProperty("--cardBg", flatBg ? S.flat : (FLAT_OF[S.pic] || "#141414"));   // the card's ground, for the date badge (a picture: its matching flat)
     if (flatBg) card.style.setProperty("--frame", fgOf(S) === WHITE ? "rgb(255 255 255 / .78)" : "rgb(20 20 19 / .7)"); else card.style.removeProperty("--frame");   // the outline in the foreground
     { var tw = !flatBg || fgOf(S) === WHITE; card.style.setProperty("--tab", tw ? "#fff" : "#141414"); card.dataset.tabink = tw ? "dark" : "light"; }   // the outline and its tab: solid white, or black
     ctl.querySelectorAll("[data-mode]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.mode === S.mode)); });
@@ -458,7 +513,9 @@
     var dd = (v2 ? S.dith2 : S.dith1).split("|"), dsel = ctl.querySelector("[data-dither]"), psel = ctl.querySelector("[data-px]"), lm = v2 ? "2" : "1";
     if (dsel.dataset.m !== lm) { dsel.innerHTML = v2 ? DOPTS2 : DOPTS1; dsel.dataset.m = lm; }   // V2's list: no picture colours, the squares are black or white
     dsel.value = dd[0]; psel.value = dd[1]; psel.disabled = dd[0] === "off";
-    dither(card);
+    ctl.querySelectorAll("[data-mot]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.mot === S.mot)); });
+    ctl.querySelectorAll("[data-mark]").forEach(function (b) { b.setAttribute("aria-pressed", String((b.dataset.mark === "1") === (S.mark !== "0"))); });
+    dither(card); marks(card);
     var fc = card.querySelector("canvas[data-flat]"); if (fc && fc._redraw) fc._redraw();   // the illustration, in its ink for this background
     clipFrame(card); level();
     if (card._drawP) card._drawP();   // the preset it now matches, marked
@@ -475,14 +532,14 @@
     FLATS.forEach(function (f) { var b = document.createElement("button"); b.type = "button"; b.className = "sw"; b.dataset.c = f.c; b.title = f.name; b.setAttribute("aria-label", "Colour: " + f.name); b.setAttribute("aria-pressed", "false"); b.style.background = f.c; fls.appendChild(b); });
     var pick = document.createElement("label"); pick.className = "sw swc"; pick.title = "Pick a colour"; pick.innerHTML = '<input type="color" aria-label="Colour: pick one">'; fls.appendChild(pick);
     /* the state, from this browser, anything unknown back to the default */
-    var K = { mode: "rv-mode-" + k, outline: "rv-outline-" + k, hl: "rv-hl-" + k, hlp: "rv-hlp-" + k, pic: "rv-bg-" + k, flat: "rv-flat-" + k, fpic: "rv-fpic-" + k, ink: "rv-ink-" + k, dith1: "rv-dither-" + k, dith2: "rv-dither2-" + k };
+    var K = { mode: "rv-mode-" + k, outline: "rv-outline-" + k, hl: "rv-hl-" + k, hlp: "rv-hlp-" + k, pic: "rv-bg-" + k, flat: "rv-flat-" + k, fpic: "rv-fpic-" + k, ink: "rv-ink-" + k, dith1: "rv-dither-" + k, dith2: "rv-dither2-" + k, mot: "rv-mot-" + k, mark: "rv-mark-" + k };
     var g = function (n, ok, d) { var v = store.get(K[n]); if (v != null && !ok(v)) { store.del(K[n]); v = null; } return v == null ? d : v; };
     var oldc = store.get(K.pic); if (/^color:#[0-9a-f]{6}$/i.test(oldc || "")) { if (!store.get(K.flat)) store.set(K.flat, oldc.slice(6)); store.del(K.pic); }   // a colour picked as the background before V2 had its own
     var IGRE = "ig:(Dot screen|Editorial X|Riso duotone|Bitmap|Fine grain|Poster X)";
     var ik = store.get(K.ink); if (ik && HEXRE.test(ik) && ik !== WHITE && ik !== BLACK) store.set(K.ink, lum(rgbOf(ik)) >= .5 ? WHITE : BLACK);   // a colour picked as the foreground before: the nearer of black and white
     var VAL = { mode: function (v) { return /^[123]$/.test(v); }, outline: function (v) { return v === "1" || v === "0"; }, hl: function (v) { return v === "1" || v === "0"; }, hlp: function (v) { return v === "in" || v === "out"; }, pic: isPic, flat: function (v) { return HEXRE.test(v); }, fpic: isPic, ink: function (v) { return v === WHITE || v === BLACK; },
-      dith1: function (v) { return new RegExp("^(off|bayer-img|bayer-mono|atk-img|atk-mono|" + IGRE + ")\\|(1|2|3|5)$").test(v); }, dith2: function (v) { return new RegExp("^(off|bayer-mono|atk-mono|" + IGRE + ")\\|(1|2|3|5)$").test(v); } };
-    var DEF = { mode: "1", outline: "1", hl: "0", hlp: "in", pic: def, flat: FLAT_OF[def] || "#10222e", fpic: def, ink: null, dith1: "bayer-img|3", dith2: "bayer-mono|3" };
+      dith1: function (v) { return new RegExp("^(off|bayer-img|bayer-mono|atk-img|atk-mono|" + IGRE + ")\\|(1|2|3|5)$").test(v); }, dith2: function (v) { return new RegExp("^(off|bayer-mono|atk-mono|" + IGRE + ")\\|(1|2|3|5)$").test(v); }, mot: function (v) { return /^(off|drift|flow)$/.test(v); }, mark: function (v) { return /^(0|[1-9]\d{0,9})$/.test(v); } };
+    var DEF = { mode: "1", outline: "1", hl: "0", hlp: "in", pic: def, flat: FLAT_OF[def] || "#10222e", fpic: def, ink: null, dith1: "bayer-img|3", dith2: "bayer-mono|3", mot: "off", mark: "0" };
     var S = card._s = {}; FIELDS.forEach(function (f) { S[f] = g(f, VAL[f], DEF[f]); });
     var seq = 0;   // the latest choice; an upload that finishes after a later one is dropped
     var set = function (n, v, keep) { seq++; lastDel = null; S[n] = v; note.textContent = ""; if (keep) { if (v == null) store.del(K[n]); else if (!store.set(K[n], v)) note.textContent = "Shown here, but this browser could not keep it for next time."; } sync(card); };
@@ -491,6 +548,8 @@
     ctl.querySelector("[data-hl]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-hl]"); if (b) set("hl", b.dataset.hl, true); });
     ctl.querySelector("[data-hlp]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-hlp]"); if (b) set("hlp", b.dataset.hlp, true); });
     ctl.querySelector("[data-outline]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-outline]"); if (b) set("outline", b.dataset.outline, true); });
+    ctl.querySelector("[data-mot]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-mot]"); if (b) set("mot", b.dataset.mot, true); });
+    ctl.querySelector("[data-mark]").parentNode.addEventListener("click", function (e) { var b = e.target.closest("[data-mark]"); if (b) set("mark", b.dataset.mark === "0" ? "0" : String(1 + Math.floor(Math.random() * 4e9)), true); });   // Yes again: new places
     pics.addEventListener("click", function (e) { var b = e.target.closest(".sw[data-bg]"); if (b) set(picKey(), b.dataset.bg, true); });
     fls.addEventListener("click", function (e) { var b = e.target.closest(".sw[data-c]"); if (b) set("flat", b.dataset.c, true); });
     ctl.querySelector("[data-reset]").addEventListener("click", function () { set(picKey(), def, false); store.del(K[picKey()]); });
