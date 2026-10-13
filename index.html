@@ -28810,7 +28810,7 @@ hairline({
     // upfront"): what is asked of you now is the first thing read
     let OPEN = 'month', SEC = null;   // which objects open their steps (the Timeline tweak), and the section being drawn
     const finOf = r => r.state === 'done' || (!!r.group && groupOf(r).a < 0);   // its final, complete state
-    const row = r => { let pg = prog(r); const cta = isCta(r), fin = finOf(r), act = fin ? 'View' : r.act, more = fin ? 0 : r.more,   /* complete: View, nothing else ("when it's a final complete state, just view") */ up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
+    const row = r => { let pg = prog(r); const svd = tab === 'claim' && SNZ.has(r), cta = svd || isCta(r), fin = finOf(r), act = fin ? 'View' : svd ? 'View details' : r.act, more = fin ? 0 : svd ? 1 : r.more,   /* saved for later: View details its primary, Move back to my plan its only ⋯ ("primary View details; the only option in the dots Move back to my plan") */   /* complete: View, nothing else ("when it's a final complete state, just view") */ up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
       return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg && TLSTEP !== 'c' ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">' +
       (sub => '<div class="tlTx"><div class="tlTl"><b>' + esc(TLPRI === 'act' ? sub : r.t) + '</b></div><p>' + esc(TLPRI === 'act' ? r.t : sub) + '</p></div>')(subOf(r)) +   /* Action name: the action first, the service or task under it */
@@ -28981,14 +28981,14 @@ hairline({
       const rw = mb.closest('.tlRow'), d = rw && ROWS[+rw.dataset.r], host = list.closest('.dash') || document.body; if (!d) return;
       const r = mb.getBoundingClientRect(), hr = host.getBoundingClientRect();
       tlMenu = document.createElement('div'); tlMenu.className = 'svMenu'; tlMenu.dataset.tl = '1'; tlMenu.setAttribute('role', 'menu'); tlMenu._d = d;
-      tlMenu.innerHTML = (SNZ.has(d) ? '<button type="button" role="menuitem" data-tm="later">' + TLMI.back + 'Move to Upcoming</button>' : tab === 'claim' ? '' : '<button type="button" role="menuitem" data-tm="later">' + TLMI.later + 'Do it later</button>') + '<button type="button" role="menuitem" data-tm="view">' + TLMI.view + 'View details</button>';   /* in the Later tab: no Do it later; what was put off goes back to Upcoming ("in Later we cannot have Do it later; the one pushed from Upcoming, set back to Upcoming") */
+      tlMenu.innerHTML = SNZ.has(d) ? '<button type="button" role="menuitem" data-tm="later">' + TLMI.back + 'Move back to my plan</button>' : (tab === 'claim' ? '' : '<button type="button" role="menuitem" data-tm="later">' + TLMI.later + 'Do it later</button>') + '<button type="button" role="menuitem" data-tm="view">' + TLMI.view + 'View details</button>';   /* in the Later tab: no Do it later; what was put off goes back to Upcoming ("in Later we cannot have Do it later; the one pushed from Upcoming, set back to Upcoming") */
       if (document.body.dataset.bp === 'xs'){ tlMenu.classList.add('svMenuSh'); tlMenu.insertAdjacentHTML('afterbegin', '<i class="tlShGrab" aria-hidden="true"></i>'); const dim = document.createElement('div'); dim.className = 'svMenuDim'; tlMenu._dim = dim; host.appendChild(dim); requestAnimationFrame(() => dim.classList.add('on')); }
       else { tlMenu.style.top = (r.bottom - hr.top + 8) + 'px'; tlMenu.style.right = (hr.right - r.right) + 'px'; }
       host.appendChild(tlMenu); requestAnimationFrame(() => tlMenu && tlMenu.classList.add('on')); });
     document.addEventListener('click', e => { if (!tlMenu) return; const it = e.target.closest('.svMenu[data-tl] button'); if (!it){ if (!e.target.closest('.svMenu[data-tl]')) tlMenuShut(); return; }
       const d = tlMenu._d, host = tlMenu.parentElement; tlMenuShut();
       if (it.dataset.tm === 'view'){ openRow(d); return; }
-      if (SNZ.has(d)){ SNZ.delete(d); tlToast(host, d.t + ' is back in Upcoming.'); } else { SNZ.add(d); tlToast(host, d.t + ' moved to later. We’ll remind you in 30 days.'); }
+      if (SNZ.has(d)){ SNZ.delete(d); tlToast(host, d.t + ' is back in your plan.'); } else { SNZ.add(d); tlToast(host, d.t + ' moved to later. We’ll remind you in 30 days.'); }
       render(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') tlMenuShut(); });
     main.addEventListener('scroll', tlMenuShut, { passive: true });
