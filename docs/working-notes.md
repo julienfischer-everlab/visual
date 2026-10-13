@@ -13610,3 +13610,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - A completed item (done, or a group all done) has View alone: no ⋯, its button View ("when it's a final complete state, just view").
 - Timeline tab Yours to claim renamed Later ("just Later"); the claim status card's own line unchanged.
 - Completed, not yet seen: a section of their own, Just completed, above the months in Upcoming (no longer first in the current month); gone once they are all seen.
+- Task detail is no longer a version of its own: the tasks are a group of Service detail / Desktop's picker, Standalone tasks, after the two service groups, always shown (pickMode gone); a task opens on Service detail (mark svcD). The Home gallery's Task detail card and line removed; the old tskD value still opens the weekly questionnaire if it comes in.
