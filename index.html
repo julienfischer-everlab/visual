@@ -7508,6 +7508,8 @@
   .tlSec{position:relative;}
   .tlH{position:sticky;top:var(--tlHTop,26px);z-index:6;display:flex;align-items:center;margin:16px -14px 0 -40px;padding:10px 14px 8px 40px;background:var(--pageBg);font-size:16px;font-weight:500;letter-spacing:-.1px;color:var(--tlInk);}   /* sticky in its month under the tabs, pushed out by the next month's ("stacked sticky on scroll, as Contacts") */
   .tlSec:first-child .tlH{margin-top:4px;}
+  .tlHn{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;margin-left:6px;padding:0 6px;box-sizing:border-box;border-radius:6px;background:rgba(255,255,255,.16);color:#fff;font-size:12px;font-weight:500;letter-spacing:0;font-variant-numeric:tabular-nums;}   /* the count: light grey, white, rounded, 6 after the name */
+  body.light .tlHn{background:#b8b2ac;color:#fff;}
   /* stuck under the bar, the title carries the stack's fade at its foot ("the sticky gradient should be at the end of the vertical") */
   .tlH::after{content:"";position:absolute;left:0;right:0;top:100%;height:28px;pointer-events:none;opacity:0;transition:opacity .2s ease;background:linear-gradient(180deg,var(--pageBg) 0%,var(--pageBg0) 100%);}
   .tlH.stuck::after{opacity:1;}
@@ -10317,7 +10319,7 @@
         </div>
         <!-- the documents on the Timeline too ("this should be in the Timeline view as well"), the same setting as the service page's -->
         <!-- Documents on or off, and when on, where they go ("toggle on off; if on, display the document layout") -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">   <!-- retired, On kept ("remove that") -->
           <span class="lbl">Documents</span>
           <select id="stDocsOnT" class="stDocsOn" aria-label="Show the service's documents">
             <option value="on" selected>On</option>
@@ -28842,7 +28844,7 @@ hairline({
       (TLSTEP === 'c' ? '<div class="tlMeta tlMetaC">' + pg + r.meta.map(meta).join('') + '</div>' : '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg) +   /* Chip: one line of chips, the status first, then the item's properties as chips too ("all these properties the same style as the chip; inline, starting by the status") */
       (act ? '<div class="tlAct' + (more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(act) + '</button>' +
       (more ? '<button class="tlMore" type="button" aria-label="More options" aria-haspopup="menu">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
-    const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : x.dot === 'done' ? CHK : '') + '</i>' + esc(x.h) + '</h2>' +
+    const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : x.dot === 'done' ? CHK : '') + '</i>' + esc(x.h) + (x.rows.length ? '<span class="tlHn" aria-label="' + x.rows.length + (x.rows.length === 1 ? ' item' : ' items') + '">' + x.rows.length + '</span>' : '') + '</h2>' +   /* how many items under it ("a badge with the number next to the months") */
       '<div class="tlItems">' + ordered(x.rows).map(row).join('') + '</div>' +
       (x.sug ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + x.sug.map(row).join('') + '</div></div>' : '') +
       '</section>';

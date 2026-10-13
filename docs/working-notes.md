@@ -13622,3 +13622,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Just completed's items on a light green tray (rgba(66,190,101,.1); .12 in light), the suggestions tray's shape, the rows on the others' line; on XS no rail mark. The suggestions lose their inner card (the tray alone).
 - Timeline pictures 88px on desktop (+8), the column 94; XS stays 60.
 - Timeline Prominent status tweak (stTlStat, on/off, saved, default off): on, the Chip's status chip on its state's light colour -- orange (yours to do), green (done); waiting on us and locked stay grey; light mode the badge's #fdece2 / #d4602f and a green pair. Off: the grey chip.
+- Timeline section headings carry their item count: a badge 6px after the name (light grey, white, radius 6; light mode #b8b2ac).
+- Timeline's Documents tweak retired (tkGone, On kept): the section is Steps, Priority, CTA position, Prominent status.
