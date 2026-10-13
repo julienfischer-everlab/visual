@@ -70,7 +70,7 @@
   .icard { position: relative; display: flex; flex-direction: column; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; --ow: 1.5px;   /* the outline's width ("outline -.5px") */ color: #fff; background: #222 center / cover no-repeat; isolation: isolate; }   /* its height hugs its content ("height card hug") */
   .icard::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(180deg, rgb(0 0 0 / .5) 0%, rgb(0 0 0 / .42) 24%, rgb(0 0 0 / 0) 44%, rgb(0 0 0 / 0) 62%, rgb(0 0 0 / .34) 100%); }   /* a little shade at the top and the foot, so white words read on any picture */
   .icard h2 { margin: 0; max-width: 16ch; min-height: calc(2.16em - 8px);   /* always two lines tall, a one-line title too ("lock the height of the title to 2 lines") */ font-size: clamp(24px, 6.4cqw, 34px); line-height: calc(1.08em - 4px);   /* 4px tighter ("line height -4px") */ font-weight: 500;   /* medium ("title medium font") */ letter-spacing: -0.025em; text-wrap: balance; }
-  .frame { position: relative; flex: none; margin: 5.4cqw 0 0; width: 100%; aspect-ratio: 437 / 296;   /* 5.4cqw above for its tab */   /* under the title, never shrunk: every card's visual at the same place and size ("all visuals at the same height") */   /* 24/18 less 32px of height on the 520px card */ }   /* --frame: the foreground, when one is picked (Background V2) */
+  .frame { position: relative; flex: none; margin: 0; width: 100%; aspect-ratio: 437 / 264;   /* 32px less on the 520 card ("reduce the height of the visual by 32px"); no room above it now its date is inside */   --cut: calc(4cqw + 16px);   /* the 45-degree corner, 16px deeper ("increase the incline by 16px") */   /* under the title, never shrunk: every card's visual at the same place and size ("all visuals at the same height") */   /* 24/18 less 32px of height on the 520px card */ }   /* --frame: the foreground, when one is picked (Background V2) */
   .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .frame canvas.dith { image-rendering: pixelated; }   /* the picture inside the frame, dithered (when chosen), under the report's dots */
   .frame canvas.dith[hidden] { display: none; }
@@ -80,14 +80,12 @@
   .icard:not([data-bgmode="1"])::before { display: none; }   /* Backgrounds V2 and V3, a flat colour: no shade */
   .frame::before { content: ""; position: absolute; inset: 0; z-index: 2; box-shadow: inset 0 0 0 var(--ow) var(--tab, #fff); pointer-events: none; }   /* the outline, a shadow over the picture's edge: a 1.5px border is floored to 1px in Chrome */
   .icard[data-outline="0"] .frame::before { display: none; }   /* the outline off: the frame keeps its place */
-  /* the frame's tab: a notch at its top left in the outline's colour, the report's date in it, joined to the outline by a curve ("add a top left notch; white bg above the visual") */
-  .frame .ftab { position: absolute; left: 0; bottom: 100%; z-index: 3; display: flex; align-items: center; height: 5.4cqw; padding: 0 3cqw; border-radius: 2.2cqw 2.2cqw 0 0; background: var(--tab, #fff); color: #141414; font-size: clamp(11px, 2.6cqw, 14px); font-weight: 500; white-space: nowrap; }
-  .frame .ftab::after { content: ""; position: absolute; left: 100%; bottom: 0; width: 2.2cqw; height: 2.2cqw; background: radial-gradient(circle at 100% 0, transparent calc(2.2cqw - .5px), var(--tab, #fff) 2.2cqw); }
+  /* the report's date: a badge in the outline's colour inside the visual's top left (the notch above it gone) */
+  .frame .ftab { position: absolute; top: 16px; left: 16px; z-index: 3; display: flex; align-items: center; padding: 6px 12px; border-radius: 999px; background: var(--tab, #fff); color: #141414; font-size: clamp(11px, 2.6cqw, 14px); font-weight: 500; line-height: 1.2; white-space: nowrap; }   /* the date, a badge inside the visual, 16px from its corner ("remove the notch style; put a badge inside, 16px from the edge") */
   .icard[data-tabink="light"] .frame .ftab { color: #fff; }
-  .icard[data-outline="0"] .frame .ftab::after { display: none; }
-  /* the frame's bottom right cut at 45 degrees, the outline along the cut ("corner 45% incline"); the clip reaches above the frame for its tab */
-  .frame { clip-path: polygon(0 -8cqw, 100% -8cqw, 100% calc(100% - 4cqw), calc(100% - 4cqw) 100%, 0 100%); }
-  .frame::after { content: ""; position: absolute; right: 0; bottom: 0; z-index: 2; width: 4cqw; height: 4cqw; background: linear-gradient(to bottom right, transparent calc(50% - var(--ow)), var(--tab, #fff) calc(50% - var(--ow)), var(--tab, #fff) 50%, transparent 50%); pointer-events: none; }
+  /* the frame's bottom right cut at 45 degrees, the outline along the cut ("corner 45% incline") */
+  .frame { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%); }
+  .frame::after { content: ""; position: absolute; right: 0; bottom: 0; z-index: 2; width: var(--cut); height: var(--cut); background: linear-gradient(to bottom right, transparent calc(50% - var(--ow)), var(--tab, #fff) calc(50% - var(--ow)), var(--tab, #fff) 50%, transparent 50%); pointer-events: none; }
   .icard[data-outline="0"] .frame::after { display: none; }
   /* V2's content: what the report highlights, in the frame's foot (the frame then an L, its outline round the notch) or after the frame ("content on/off: in frame, outside frame") */
   .icard .hl { display: none; text-transform: capitalize; }   /* as the draft: every word capitalised */
