@@ -7583,7 +7583,11 @@
   .tlSeg{display:flex;gap:3px;flex:none;}
   .tlRing{display:none;flex:none;width:20px;height:20px;border-radius:50%;--rc:#f78359;background:conic-gradient(var(--rc) calc(var(--p, 0) * 1turn), var(--tlDotRing) 0);-webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));mask:radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));}
   .tlStepC{flex:0 1 auto;display:inline-flex;align-items:center;gap:8px;min-width:0;height:28px;padding:0 12px 0 8px;border-radius:8px;background:var(--tlGhost);color:var(--tlTx);font-size:12.5px;font-weight:400;white-space:nowrap;}   /* the Chip steps: a ring and the step in hand's name */
-  .tlStepC b{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:400;}   /* regular ("use regular font weight") */ .tlStepC .tlRing{display:block;width:16px;height:16px;} .tlStepC.tlBlk{padding-left:10px;color:var(--tlSub);}
+  .tlStepC b{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:400;}
+  /* Prominent status (the tweak): the chip on its state's light colour -- orange yours to do, green done; waiting on us and locked stay grey */
+  body.tlStatOn .tlProgC .tlStepC{background:rgba(247,131,89,.14);color:#f78359;} body.light.tlStatOn .tlProgC .tlStepC{background:#fdece2;color:#d4602f;}
+  body.tlStatOn .tlProgC.done .tlStepC{background:rgba(66,190,101,.14);color:#42be65;} body.light.tlStatOn .tlProgC.done .tlStepC{background:#e3f4e7;color:#25843f;}
+  body.tlStatOn .tlProgC.pas .tlStepC, body.tlStatOn .tlProgC .tlStepC.tlBlk{background:var(--tlGhost);color:var(--tlTx);} body.tlStatOn .tlProgC .tlStepC.tlBlk{color:var(--tlSub);}   /* regular ("use regular font weight") */ .tlStepC .tlRing{display:block;width:16px;height:16px;} .tlStepC.tlBlk{padding-left:10px;color:var(--tlSub);}
   .tlStepDot{flex:none;display:grid;place-items:center;width:16px;height:16px;} .tlStepDot::after{content:"";width:8px;height:8px;border-radius:50%;background:#f78359;}   /* a task's dot, in the ring's place and colours */
   .tlProg.done .tlStepDot::after{background:#42be65;} .tlProg.pas .tlStepDot::after{background:var(--tlPas, rgba(255,255,255,.72));} .tlTgl .tlStepDot{display:none;}
   .tlProg.done .tlRing{--rc:#42be65;} .tlProg.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlBlk .tlRing{--rc:var(--tlSub);}
@@ -10301,6 +10305,14 @@
           <select id="stTlCta" class="tkSegSel" aria-label="Where a Timeline item's button sits on mobile">
             <option value="right" selected>Right</option>
             <option value="bottom">Bottom</option>
+          </select>
+        </div>
+        <!-- the status chip in its state's colour: orange for yours to do, green done; off, the grey chip ("tweak status more prominent, on off: a state colour light on the background, like Book your call light orange") -->
+        <div class="tkRow">
+          <span class="lbl">Prominent status</span>
+          <select id="stTlStat" aria-label="The status chip in its state's colour">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
           </select>
         </div>
         <!-- the documents on the Timeline too ("this should be in the Timeline view as well"), the same setting as the service page's -->
@@ -28858,6 +28870,7 @@ hairline({
     { const o = document.getElementById('stTlSteps'); if (o) o.addEventListener('change', () => { TLSTEP = o.value; TLHZ = TLSTEP === 'h'; render(); }); }   // the tweak redraws the list
     { const o = document.getElementById('stTlPri'); if (o) o.addEventListener('change', () => { TLPRI = o.value; render(); }); }   // Priority: the titles swap
     { const o = document.getElementById('stTlCta'); if (o){ const on = () => document.body.classList.toggle('tlCtaB', o.value === 'bottom'); on(); o.addEventListener('change', on); } }   // CTA position: the phone's grid (CSS)
+    { const o = document.getElementById('stTlStat'); if (o){ const on = () => document.body.classList.toggle('tlStatOn', o.value === 'on'); on(); o.addEventListener('change', on); } }   // Prominent status: the chip's colours (CSS)
     const render = () => {
       ROWS = []; list.innerHTML = layout(tabRows(TL[tab])).map(sec).join('');
       list.querySelectorAll('.tlTgl .tlSeg').forEach(sg => { const is = [...sg.children], n = is.length || 1, k = is.filter(i => i.classList.contains('on') || i.classList.contains('cur')).length, rw = sg.closest('.tlRow'), r = rw && ROWS[+rw.dataset.r]; sg.insertAdjacentHTML('beforebegin', r && taskRow(r) ? DOTS : '<i class="tlRing" aria-hidden="true" style="--p:' + (k / n).toFixed(3) + '"></i>'); });   // a task: its dot   // XS: a ring of the same count in place of the increments ("use circular progress instead of increments")
@@ -31469,7 +31482,7 @@ hairline({
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stTlPri: 'svc', stTlCta: 'right', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stProgSty: 'bars', stTabC: 'on', stObs: 'off', stBioS: 'off', stMdl: 'v1', stSubTl: 'in', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'v', stTlPri: 'svc', stTlCta: 'right', stTlStat: 'off', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stProgSty: 'bars', stTabC: 'on', stObs: 'off', stBioS: 'off', stMdl: 'v1', stSubTl: 'in', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };

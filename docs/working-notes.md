@@ -13621,3 +13621,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Timeline CTA position tweak (stTlCta, phone only, saved): Right -- the button beside the status (Vertical/Horizontal's toggle; the Chip's line of chips, which wraps beside it); Bottom -- a line of its own at the card's foot, full width (body.tlCtaB).
 - Just completed's items on a light green tray (rgba(66,190,101,.1); .12 in light), the suggestions tray's shape, the rows on the others' line; on XS no rail mark. The suggestions lose their inner card (the tray alone).
 - Timeline pictures 88px on desktop (+8), the column 94; XS stays 60.
+- Timeline Prominent status tweak (stTlStat, on/off, saved, default off): on, the Chip's status chip on its state's light colour -- orange (yours to do), green (done); waiting on us and locked stay grey; light mode the badge's #fdece2 / #d4602f and a green pair. Off: the grey chip.
