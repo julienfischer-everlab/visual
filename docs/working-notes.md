@@ -13641,3 +13641,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Service page sheets (the sub steps' bottom sheet on the phone and XS, its modal on the desk, the progress sheet): 20 at the sides, head and body. The sub steps' vertical line 2 wide (from 4), centred on the dot.
 - The sub step timeline's ghost card no longer bleeds 12 past the status card's content: its ground sits level with the text and the button above (margin -12px 0, the 12 of padding inside).
 - Sub step timeline's cut edges: the fade 32 longer (right 64 -> 96, left 48 -> 80) and the progressive blur bands gone ("remove blur, look bad"); the mask alone does it.
+- Sub step card: 20 of padding (from 12), as much off above and below (margin -20px 0) so the steps keep their place; its sides still level with the status card's content. The sub steps' labels 2 tighter in line height (12px type: 16.2 -> 14.2; the base 12.5px: 16.25 -> 14.25).
