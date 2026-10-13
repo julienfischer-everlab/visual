@@ -13611,3 +13611,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Timeline tab Yours to claim renamed Later ("just Later"); the claim status card's own line unchanged.
 - Completed, not yet seen: a section of their own, Just completed, above the months in Upcoming (no longer first in the current month); gone once they are all seen.
 - Task detail is no longer a version of its own: the tasks are a group of Service detail / Desktop's picker, Standalone tasks, after the two service groups, always shown (pickMode gone); a task opens on Service detail (mark svcD). The Home gallery's Task detail card and line removed; the old tskD value still opens the weekly questionnaire if it comes in.
+- Do it later now moves the item out of Upcoming into the Later tab, a section Saved for later at its top; its ⋯ there says Move to Upcoming (back to its month). The Later tab's own items have no Do it later: View details alone.
+- Timeline's Doc number tweak retired (tkGone, its value kept); the Timeline section shows Open steps, Steps, Priority, Documents.

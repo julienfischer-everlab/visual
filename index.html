@@ -10294,7 +10294,7 @@
             <option value="off">Off</option>
           </select>
         </div>
-        <div class="tkRow stDocsLayRow">
+        <div class="tkRow stDocsLayRow tkGone">   <!-- retired, its value kept ("remove the doc number tweak") -->
           <span class="lbl">Doc number</span>
           <select id="stDocsNT" class="stDocsN tkSegSel" aria-label="How many documents the service asks for">
             <option value="1">1</option>
@@ -28699,7 +28699,8 @@ hairline({
     // every locked object goes to "Later", after everything ("all locked objects under a group 'Later' at the end of the list")
     /* a completed service stays in Upcoming, under Just completed at the top, until it has been seen -- opened once -- and only then is Past ("we're not sure the user saw it; while the user hasn't seen the completed state, it remains Upcoming, at the top of the current month"); in memory, so a reload shows it again */
     const SEEN = new Set(), seenK = r => r.svc + '|' + r.t, unseen = r => !!r.fresh && !SEEN.has(seenK(r));
-    const tabRows = S => tab === 'up' ? (j => j.length ? [{ h: 'Just completed', rows: j }] : [])(TL.past.flatMap(x => x.rows.filter(unseen)).map(r => Object.assign({}, r, { cta: 1 }))).concat(S)   /* above the months, a section of their own ("instead of in the month, a new section above called Just completed, all the items there") */
+    const tabRows = S => tab === 'up' ? (j => j.length ? [{ h: 'Just completed', rows: j }] : [])(TL.past.flatMap(x => x.rows.filter(unseen)).map(r => Object.assign({}, r, { cta: 1 }))).concat(S.map(sc => Object.assign({}, sc, { rows: sc.rows.filter(r => !SNZ.has(r)) })))
+      : tab === 'claim' ? (z => z.length ? [{ h: 'Saved for later', rows: z }] : [])([...SNZ]).concat(S)   /* what was put off from Upcoming, at the top of the Later tab ("the one pushed to Do it later from Upcoming") */   /* above the months, a section of their own ("instead of in the month, a new section above called Just completed, all the items there") */
       : tab === 'past' ? S.map(sc => Object.assign({}, sc, { rows: sc.rows.filter(r => !unseen(r)) })) : S;
     let DIRTY = false;
     const openRow = d => { const w = own(d); if (!w.svc) return; if (unseen(d)){ SEEN.add(seenK(d)); DIRTY = true; }   // opened: seen, so Past from now on
@@ -28707,11 +28708,11 @@ hairline({
     const openO = (d, w) => d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line };   // what the row tells its page
     /* the row's subtitle: its status block's title, as its page shows it ("the title the service or the task; the subtitle the status block title"); its own line where it has none */
     const subOf = r => { const w = own(r); if (!w || !w.svc || !window._svc || !window._svc.head) return r.d; return window._svc.head(w.svc, w.state, openO(r, w)) || r.d; };
-    const SNZ = new Set();   // put off with Do it later: in Later, first, till Do it now
-    const layout = S => { const later = [], snz = [];
-      const all = S.map(x => Object.assign({}, x, { rows: x.rows.filter(r => { if (SNZ.has(r)){ snz.push(r); return false; } if (r.lock){ later.push(r); return false; } return true; }) })).filter(x => x.rows.length || (x.sug && x.sug.length));
+    const SNZ = new Set();   // put off with Do it later: out of Upcoming, into the Later tab, first, till Move to Upcoming
+    const layout = S => { const later = [];
+      const all = S.map(x => Object.assign({}, x, { rows: x.rows.filter(r => { if (r.lock){ later.push(r); return false; } return true; }) })).filter(x => x.rows.length || (x.sug && x.sug.length));
       const out = all.filter(x => !x.tail), tail = all.filter(x => x.tail);   // the ages come after Later ("after Later")
-      if (snz.length || later.length) out.push({ h: 'Later', rows: snz.concat(later) }); return out.concat(tail); };
+      if (later.length) out.push({ h: 'Later', rows: later }); return out.concat(tail); };
     // the step in hand, when it is the member's to do (the orange badge): that object is a primary one, its button the primary CTA ("orange badge -> primary -> always CTA primary")
     const planOf = r => { if (r.group){ const { g, a } = groupOf(r); if (a < 0) return null; const x = r.focus != null ? g[r.focus] : g[a]; return x.state === 'locked' ? null : x.p; }
       if (!r.svc || r.lockAge || r.state === 'locked' || r.state === 'suggested') return null; const p = PL(r.svc, r.state); return p ? { svc: r.svc, steps: r.steps || p.steps, at: r.at != null ? r.at : p.at } : null; };
@@ -28966,6 +28967,7 @@ hairline({
     addEventListener('resize', navState);
     /* the ⋯ beside an item's button: Do it later -- the item into Later, first, with the service page's line; Do it now from there -- and View details, its page ("the three dots should be the do it later, and detail"); a menu at the button, a bottom sheet on the phone, as the service page's */
     const TLMI = { later: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 16.5H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2V9"/><path d="M3 8h14M7 2v3M13 2v3"/><circle cx="14.5" cy="14.5" r="3.5"/><path d="M14.5 13v1.6l1 .9"/></svg>',
+      back: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5 4.5 9 8 12.5"/><path d="M4.5 9H12a3.5 3.5 0 0 1 0 7h-1.5"/></svg>',
       view: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 2.5h6l4 4v10a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1z"/><path d="M11.5 2.5v4h4M7.5 11h5M7.5 14h3.5"/></svg>' };
     let tlMenu = null; const tlMenuShut = () => { if (tlMenu){ if (tlMenu._dim) tlMenu._dim.remove(); tlMenu.remove(); tlMenu = null; } };
     const tlToast = (host, t) => { let el = host.querySelector(':scope > .svToast'); if (!el){ el = document.createElement('div'); el.className = 'svToast'; el.setAttribute('role', 'status'); host.appendChild(el); }
@@ -28974,14 +28976,14 @@ hairline({
       const rw = mb.closest('.tlRow'), d = rw && ROWS[+rw.dataset.r], host = list.closest('.dash') || document.body; if (!d) return;
       const r = mb.getBoundingClientRect(), hr = host.getBoundingClientRect();
       tlMenu = document.createElement('div'); tlMenu.className = 'svMenu'; tlMenu.dataset.tl = '1'; tlMenu.setAttribute('role', 'menu'); tlMenu._d = d;
-      tlMenu.innerHTML = '<button type="button" role="menuitem" data-tm="later">' + TLMI.later + (SNZ.has(d) ? 'Do it now' : 'Do it later') + '</button><button type="button" role="menuitem" data-tm="view">' + TLMI.view + 'View details</button>';
+      tlMenu.innerHTML = (SNZ.has(d) ? '<button type="button" role="menuitem" data-tm="later">' + TLMI.back + 'Move to Upcoming</button>' : tab === 'claim' ? '' : '<button type="button" role="menuitem" data-tm="later">' + TLMI.later + 'Do it later</button>') + '<button type="button" role="menuitem" data-tm="view">' + TLMI.view + 'View details</button>';   /* in the Later tab: no Do it later; what was put off goes back to Upcoming ("in Later we cannot have Do it later; the one pushed from Upcoming, set back to Upcoming") */
       if (document.body.dataset.bp === 'xs'){ tlMenu.classList.add('svMenuSh'); tlMenu.insertAdjacentHTML('afterbegin', '<i class="tlShGrab" aria-hidden="true"></i>'); const dim = document.createElement('div'); dim.className = 'svMenuDim'; tlMenu._dim = dim; host.appendChild(dim); requestAnimationFrame(() => dim.classList.add('on')); }
       else { tlMenu.style.top = (r.bottom - hr.top + 8) + 'px'; tlMenu.style.right = (hr.right - r.right) + 'px'; }
       host.appendChild(tlMenu); requestAnimationFrame(() => tlMenu && tlMenu.classList.add('on')); });
     document.addEventListener('click', e => { if (!tlMenu) return; const it = e.target.closest('.svMenu[data-tl] button'); if (!it){ if (!e.target.closest('.svMenu[data-tl]')) tlMenuShut(); return; }
       const d = tlMenu._d, host = tlMenu.parentElement; tlMenuShut();
       if (it.dataset.tm === 'view'){ openRow(d); return; }
-      if (SNZ.has(d)){ SNZ.delete(d); tlToast(host, d.t + ' is back in your plan.'); } else { SNZ.add(d); tlToast(host, d.t + ' moved to later. We’ll remind you in 30 days.'); }
+      if (SNZ.has(d)){ SNZ.delete(d); tlToast(host, d.t + ' is back in Upcoming.'); } else { SNZ.add(d); tlToast(host, d.t + ' moved to later. We’ll remind you in 30 days.'); }
       render(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') tlMenuShut(); });
     main.addEventListener('scroll', tlMenuShut, { passive: true });
