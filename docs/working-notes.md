@@ -13983,3 +13983,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Left: 32px between the visual and the words ("+16 px gap"), on the phone, XS and desk.
 - Centered (phone and XS): padding 32px 24px 48px ("-16px top"), 22px between visual, words and button ("+8px gap visual / content").
 - Centered gets a "See detail" button under the words: the service status blocks' primary (white, #111 on light), full round, 44px, 16px/500. The whole card is already the link to the Timeline's Later tab, so it is a drawn `span.ovDefCta` (aria-hidden), not a nested control. Hidden on Left and on desk.
+
+## Img stacked air, XS head order
+- Later card, Img stacked + Centered (phone and XS): 44px above the pictures (+12) and 34px between them and the words (+12, a margin under the stack); the words-to-button gap stays 22 ("+12px gap, +12px padding top"). The Hairline variant keeps 32 / 22, its drawing carrying its own air.
+- Timeline XS head: Past first, then the search at the row's end, 8 apart ("inverse order"), by `order` on `.tlHead`'s children. Tapped, the field takes the whole row (left 0, right 0) over the title and Past, Past hidden while it is open; pinning on scroll unchanged. Desk and S keep the search field then Past.
