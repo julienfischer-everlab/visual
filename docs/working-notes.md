@@ -13929,3 +13929,11 @@ Change and Cancel keep their regular weight (400 at 14px, checked on the desk, X
   - whole-body MRI and CT (Jan 2025)
   - DEXA (Oct 2024)
   - blood panel and physical assessment (Jun 2024)
+
+## Past activity: the service page's sub-page bar
+
+"Sub page is handled in a diff way, check service detail as ref". Past activity now uses the service detail's sticky top bar (`.svTop` with `.svBack`, the same one the appointment page reuses) in place of a back button in the title row.
+- The bar sits above the title, its back at the column's left: 28px on the desk, the 44px frosted disc at XS. It pins at the top with its blurred ground once scrolled, over the months as they slide out (z 7).
+- Under it, the title row is "Past activity" with the search at its right. At XS the open field runs to the row's end.
+- The months pin under the bar: 64px on the desk, 62 at XS, and under the pinned field when typing.
+- The bar's back returns to the tab Past was opened from.
