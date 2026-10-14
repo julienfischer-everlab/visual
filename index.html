@@ -7577,6 +7577,8 @@
   body[data-bp="xs"] #dTl .tlSubTop .tlSearch.open{position:absolute;left:56px;right:0;top:0;margin-top:0;width:auto;height:44px;padding:0 10px 0 16px;border-radius:22px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1.5px var(--msEdge, transparent);color:#ececec;} body[data-bp="xs"] #dTl .tlSubTop .tlSearch.open:focus-within{--msEdge:#fff;}
   body.light[data-bp="xs"] #dTl .tlSubTop .tlSearch{background:rgba(46,31,26,.08);color:#2e1f1a;} body.light[data-bp="xs"] #dTl .tlSubTop .tlSearch.open:focus-within{--msEdge:#2e241c;}
   body[data-bp="xs"] #dTl.tlPastOn.tlQPin .tlHead{position:relative;top:auto;} body[data-bp="xs"] #dTl.tlPastOn.tlQPin .tlHead::before{display:none;}
+  body[data-bp="xs"] #dTl .tlSubTop .tlH1{flex:1 1 auto;min-width:0;margin:0 0 0 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} body[data-bp="xs"] #dTl .tlSubTop:has(.tlSearch.open) .tlH1{visibility:hidden;}   /* the title beside the back, under the field when it opens */
+  body[data-bp="xs"] #dTl.tlPastOn .tlHead{display:none;}   /* its title and search in the bar, the head row has nothing left */
   body.tlOn:is([data-bp="xs"], [data-bp="s"]):has(#dTl.tlPastOn) #bpFrame > .mTabs{display:none;}
   .tlPastBtn:hover{color:var(--tlTx);} .tlPastBtn.on{background:#ececec;box-shadow:none;color:#111;} body.light .tlPastBtn.on{background:#2e1f1a;color:#fff;}
   /* the months: a rail down the left, a dot at each heading -- the care
@@ -8471,6 +8473,8 @@
   .ovDefRow{display:flex;align-items:center;gap:16px;padding:24px;cursor:pointer;}   /* 12 more all round ("+12px padding") */
   .ovDefStk{flex:none;display:flex;align-items:center;} .ovDefStk .ph{width:48px;height:48px;border-radius:14px;box-shadow:0 0 0 3px var(--defBg);} .ovDefStk .ph + .ph{margin-left:-28px;}   /* three pictures stacked, each over the last, a cut of the card between ("add stacked visuals left side"; "use these 3 stacked images"; "stacked more -12px") */
   .ovDefIc{flex:none;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:#c9c7c1;} .ovDefIc svg{width:22px;height:22px;}
+  .ovDefHl{display:none;--hairline-plate:var(--defBg);}   /* the figure's paper the card's own ground */ .ovDefRow.ovDefHlOn .ovDefStk{display:none;} .ovDefRow.ovDefHlOn .ovDefHl{display:block;flex:none;width:120px;aspect-ratio:5 / 4;} .ovDefHl svg{display:block;width:100%;height:100%;}   /* a Hairline figure in the pictures' place (Tweaks -> Services visual) */
+  :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn .ovDefHl{width:200px;margin:-16px 0 -8px;}   /* stacked: the drawing over the words, its own air trimmed */
   :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow{flex-direction:column;align-items:center;gap:14px;padding:48px 24px;text-align:center;}   /* +24 above and below ("+24px padding") */ :is(#phone2, body[data-bp="xs"] #dOver) .ovDefTx{flex:none;}   /* the phone and XS: the pictures over the words, centred ("stack content, centered") */
   .ovDefTx{flex:1 1 auto;min-width:0;} .ovDefTx b{display:block;font-size:15px;font-weight:500;line-height:1.3;color:#f4f4f4;}
   .ovDefTx span{display:block;margin-top:2px;font-size:13px;line-height:1.35;color:#8b8b86;}   /* the services named in full, over two lines if need be */
@@ -10784,6 +10788,17 @@
           </select>
         </div>
         <!-- the hero card's picture: across the card under a dark run, or a tile at its top right with the button bottom left ("try a variation where the image is top right of the card") -->
+        <!-- the services card's visual: the three stacked pictures, or one of the Hairline page's Services figures drawn live in their place ("tweak, visual hairline OR these imgs") -->
+        <div class="tkRow">
+          <span class="lbl">Services visual</span>
+          <select id="stDefVis" aria-label="The services card's visual">
+            <option value="img" selected>Pictures</option>
+            <option value="folder">Folder</option>
+            <option value="plates">Plates</option>
+            <option value="keys">Keys</option>
+            <option value="planner">Planner</option>
+          </select>
+        </div>
         <div class="tkRow">
           <span class="lbl">Hero image</span>
           <select id="stHeroImg" class="tkSegSel" aria-label="Where the hero card's picture goes">
@@ -11819,7 +11834,7 @@
       <!-- under the plan, one card: the services that can be added to it, their pictures stacked, a chevron listing them ("more services to explore"; it was the steps put off) -->
       <div class="ovtl">See full timeline <span aria-hidden="true">&nearr;</span></div>
       <div class="ovsec ovsecAvail">Available for you</div>   <!-- under See full timeline, its own section ("in order: list of items, See full timeline CTA, title Available for you, 12 services card") -->
-      <div class="ovDef"><div class="ovDefRow" role="link" tabindex="0" aria-label="12 services, ready when you are: see them in Later, in your Timeline"><span class="ovDefStk" aria-hidden="true"><span class="ph" style="background:url(assets/overview/svc-stack-1.webp) center / cover"></span><span class="ph" style="background:url(assets/overview/svc-stack-2.webp) center / cover"></span><span class="ph" style="background:url(assets/overview/svc-stack-3.webp) center / cover"></span></span><span class="ovDefTx"><b>12 services, ready when you are</b><span>Add them to your action plan and book ahead.</span></span></div><div class="ovDefL"><button class="ovDefIt" type="button" data-key="nutri" data-st="suggested"><span class="ph" style="background:url(assets/overview/plan-nutrition.webp) center / cover"></span><span class="ovDefItTx"><b>Dietician consult</b><span>Available to add to your plan</span></span><span class="tlGoChev"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span></button><button class="ovDefIt" type="button" data-key="skin" data-st="suggested"><span class="ph" style="background:url(assets/overview/tl-skin.webp) center / cover"></span><span class="ovDefItTx"><b>Skin check referral</b><span>Available to add to your plan</span></span><span class="tlGoChev"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span></button></div></div>
+      <div class="ovDef"><div class="ovDefRow" role="link" tabindex="0" aria-label="12 services on hold, available for you: see them in Later, in your Timeline"><span class="ovDefStk" aria-hidden="true"><span class="ph" style="background:url(assets/overview/svc-stack-1.webp) center / cover"></span><span class="ph" style="background:url(assets/overview/svc-stack-2.webp) center / cover"></span><span class="ph" style="background:url(assets/overview/svc-stack-3.webp) center / cover"></span></span><span class="ovDefTx"><b>12 services on hold</b><span>Available for you, action when ready.</span></span></div><div class="ovDefL"><button class="ovDefIt" type="button" data-key="nutri" data-st="suggested"><span class="ph" style="background:url(assets/overview/plan-nutrition.webp) center / cover"></span><span class="ovDefItTx"><b>Dietician consult</b><span>Available to add to your plan</span></span><span class="tlGoChev"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span></button><button class="ovDefIt" type="button" data-key="skin" data-st="suggested"><span class="ph" style="background:url(assets/overview/tl-skin.webp) center / cover"></span><span class="ovDefItTx"><b>Skin check referral</b><span>Available to add to your plan</span></span><span class="tlGoChev"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span></button></div></div>
     </div>
     <!-- the service detail as a screen over the Overview (#phone2.svcOn), the
          design's phone: the hero with back and more over the particles, the
@@ -12132,7 +12147,7 @@
       </div>
       <div class="ovtl dvPlanTl">See full timeline <span aria-hidden="true">&nearr;</span></div>
     <div class="dvSec dvSecAvail">Available for you</div>
-    <div class="ovDef dvDef"><div class="ovDefRow" role="link" tabindex="0" aria-label="12 services, ready when you are: see them in Later, in your Timeline"><span class="ovDefStk" aria-hidden="true"><span class="ph" style="background:url(assets/overview/svc-stack-1.webp) center / cover"></span><span class="ph" style="background:url(assets/overview/svc-stack-2.webp) center / cover"></span><span class="ph" style="background:url(assets/overview/svc-stack-3.webp) center / cover"></span></span><span class="ovDefTx"><b>12 services, ready when you are</b><span>Add them to your action plan and book ahead.</span></span></div><div class="ovDefL"><button class="ovDefIt" type="button" data-key="nutri" data-st="suggested"><span class="ph" style="background:url(assets/overview/plan-nutrition.webp) center / cover"></span><span class="ovDefItTx"><b>Dietician consult</b><span>Available to add to your plan</span></span><span class="tlGoChev"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span></button><button class="ovDefIt" type="button" data-key="skin" data-st="suggested"><span class="ph" style="background:url(assets/overview/tl-skin.webp) center / cover"></span><span class="ovDefItTx"><b>Skin check referral</b><span>Available to add to your plan</span></span><span class="tlGoChev"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span></button></div></div>
+    <div class="ovDef dvDef"><div class="ovDefRow" role="link" tabindex="0" aria-label="12 services on hold, available for you: see them in Later, in your Timeline"><span class="ovDefStk" aria-hidden="true"><span class="ph" style="background:url(assets/overview/svc-stack-1.webp) center / cover"></span><span class="ph" style="background:url(assets/overview/svc-stack-2.webp) center / cover"></span><span class="ph" style="background:url(assets/overview/svc-stack-3.webp) center / cover"></span></span><span class="ovDefTx"><b>12 services on hold</b><span>Available for you, action when ready.</span></span></div><div class="ovDefL"><button class="ovDefIt" type="button" data-key="nutri" data-st="suggested"><span class="ph" style="background:url(assets/overview/plan-nutrition.webp) center / cover"></span><span class="ovDefItTx"><b>Dietician consult</b><span>Available to add to your plan</span></span><span class="tlGoChev"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span></button><button class="ovDefIt" type="button" data-key="skin" data-st="suggested"><span class="ph" style="background:url(assets/overview/tl-skin.webp) center / cover"></span><span class="ovDefItTx"><b>Skin check referral</b><span>Available to add to your plan</span></span><span class="tlGoChev"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span></button></div></div>
   </main>
   <!-- ---- The service detail page ("create a service detail page following
        the same layout as the Insights and Overview page"): the shell's main,
@@ -15594,6 +15609,634 @@ hairline({
   mount,
 });
 
+  })(window.HLK, reg);
+
+  // plates (the Hairline page's Services section; also the Overview services card's visual, Tweaks -> Services visual)
+  (function (HL, hairline) {
+/**
+ * Plates: six services as thin rounded-square plates standing in a row, one
+ * behind the other, leaning back a little and spaced unevenly, the front one
+ * bright. The pointer picks a plate by its resting outline: the row opens
+ * round it, the plates in front sliding forward and those behind sliding back,
+ * staggered out from it on the 700ms lift curve, and the chosen one rises a
+ * little and takes the bright rim. Each plate has a tab on its top edge, set
+ * at its own place, and its number in dots at its foot. The slider is the gap
+ * the row opens by, in world units.
+ *
+ * The pattern: discrete items on one axis. Tweens, a stagger by distance, and
+ * a hit test on each plate's rest pose, front to back, so a plate sliding out
+ * from under the pointer cannot flip the choice; the plate chosen also keeps
+ * what shows of it in its target pose, so the face the row opened is reachable.
+ */
+const {
+  Cam, fillet, fit, poly, proj, rad,
+  tdone, tset, tval, tween, disposer, mk, place, pointer, register,
+} = HL;
+
+const N = 6, W = 44, H = 44, R = 7, TK = 1.5, TW = 10, TH = 5, LIFT = 7, STEP = 40, GMAX = 22;
+// The gaps at rest, back to front: uneven, and wide enough that no two plates touch in any switch at GMAX.
+const GAPS = [13, 16, 14, 18, 15];
+const LEAN = [-10, -6.5, -8, -4, -6, -2.5];   // how far each plate leans back at rest, in degrees
+const TABS = [24, 13, 21, 10, 18, 15];        // where each plate's tab starts: 10 in from either end, so no corner is cut
+const Y = GAPS.reduce((ys, g) => ys.concat(ys[ys.length - 1] + g), [0]);
+/** The dot code at a plate's foot, by its right edge: up to six places, filled in pairs from the floor up. */
+const DOTS = [[W - 5, 5], [W - 8.6, 5], [W - 5, 8.6], [W - 8.6, 8.6], [W - 5, 12.2], [W - 8.6, 12.2]];
+
+/** Plate i's outline in its own plane (u along it, v up it): a rounded square with its tab. */
+function outline(i) {
+  const t = TABS[i];
+  return fillet(
+    [[0, 0], [W, 0], [W, H], [t + TW, H], [t + TW, H + TH], [t, H + TH], [t, H], [0, H]],
+    [R, R, R, 1.6, 2.2, 2.2, 1.6, R], 6,
+  );
+}
+
+function mount({ stage, svg, read }, value) {
+  const bag = disposer();
+  let gap = value, act = -1;
+
+  /** Plate i slid dy along the row and lifted by z: the world point at (u, v) on its face, o behind it. */
+  const world = (i, dy, z) => {
+    const s = Math.sin(rad(LEAN[i])), c = Math.cos(rad(LEAN[i]));
+    return (u, v, o = 0) => [u, Y[i] + dy + v * s - o * c, v * c + o * s + z];
+  };
+
+  // Fitted to the row opened as far as the slider allows, with any plate lifted.
+  const C = Cam(45, 0.5, 2.35), box = [];
+  for (const [i, dy] of [[0, -GMAX], [N - 1, GMAX]]) {
+    for (const z of [0, LIFT]) for (const [u, v] of [[0, 0], [W, 0], [0, H + TH], [W, H + TH]]) box.push(world(i, dy, z)(u, v, TK));
+  }
+  fit(C, box, 200, 166);
+  const P = proj(C);
+
+  const g = mk("g", {}, svg);
+  // Painted back to front: each plate's back edge, its face over it, then its dot code.
+  const plates = [];
+  for (let i = 0; i < N; i++) {
+    const n = N - i, grp = mk("g", {}, g);
+    const back = mk("path", { class: "lo" }, grp), face = mk("path", { class: "sil" }, grp);
+    const dots = DOTS.slice(0, n).map(() => mk("circle", { r: 1.15, class: "dot m" }, grp));
+    plates.push({ shape: outline(i), back, face, dots, y: tween(0), z: tween(0), dy: NaN, dz: NaN });
+  }
+
+  function draw(i, dy, z) {
+    const p = plates[i];
+    if (dy === p.dy && z === p.dz) return;
+    p.dy = dy; p.dz = z;
+    const w0 = world(i, dy, z), w = (u, v, o) => P(...w0(u, v, o));
+    p.back.setAttribute("d", poly(p.shape.map(([u, v]) => w(u, v, TK))));
+    p.face.setAttribute("d", poly(p.shape.map(([u, v]) => w(u, v))));
+    p.dots.forEach((el, k) => place(el, w(DOTS[k][0], DOTS[k][1])));
+  }
+
+  const B = register(stage, (_dt, now) => {
+    let moving = false;
+    plates.forEach((p, i) => {
+      draw(i, tval(p.y, now), tval(p.z, now));
+      if (!tdone(p.y, now) || !tdone(p.z, now)) moving = true;
+    });
+    return moving;
+  });
+  bag.add(B.unregister);
+
+  // Hit areas: each plate's outline solved in its own plane, slid dy and lifted z, never as drawn this frame.
+  const o = P(0, 0, 0), e = (x, y, z) => { const q = P(x, y, z); return [q[0] - o[0], q[1] - o[1]]; };
+  const ex = e(1, 0, 0);
+  function onPlate(i, [x, y], dy, z) {
+    const s = Math.sin(rad(LEAN[i])), c = Math.cos(rad(LEAN[i]));
+    const ev = e(0, s, c), b = e(0, Y[i] + dy, z), qx = x - o[0] - b[0], qy = y - o[1] - b[1];
+    const det = ex[0] * ev[1] - ex[1] * ev[0];
+    const u = (qx * ev[1] - qy * ev[0]) / det, v = (ex[0] * qy - ex[1] * qx) / det;
+    if (u < -2 || u > W + 2 || v < -2) return false;
+    return v <= H + 2 || (u >= TABS[i] - 2 && u <= TABS[i] + TW + 2 && v <= H + TH + 2);
+  }
+  /**
+   * The plate chosen keeps the pointer while it is on what shows of that plate in its TARGET pose, so the face
+   * the row opened can be reached; anything else is read on the REST pose, nearest plate first. Either answer
+   * is fixed for a still pointer, so the choice settles in one step and cannot loop.
+   */
+  function hit(p) {
+    if (act >= 0 && onPlate(act, p, 0, LIFT)) {
+      let i = N - 1;
+      while (i > act && !onPlate(i, p, gap, 0)) i--;
+      if (i === act) return act;
+    }
+    for (let i = N - 1; i >= 0; i--) if (onPlate(i, p, 0, 0)) return i;
+    return -1;
+  }
+
+  /** Opens the row round plate a (-1 closes it). The stagger spreads out from the plate chosen, or the one let go. */
+  function setActive(a, again) {
+    if (a === act && !again) return;
+    const now = performance.now(), from = a >= 0 ? a : act;
+    act = a;
+    plates.forEach((p, i) => {
+      const delay = Math.abs(i - from) * STEP;
+      tset(p.y, a < 0 || i === a ? 0 : i > a ? gap : -gap, now, delay);
+      tset(p.z, i === a ? LIFT : 0, now, delay);
+      const lit = i === (a < 0 ? N - 1 : a);
+      p.face.classList.toggle("hi", lit);
+      p.dots.forEach((el) => el.classList.toggle("m", !lit));
+    });
+    read.textContent = a < 0 ? "rest" : "plate " + (N - a);
+    B.wake();
+  }
+  plates[N - 1].face.classList.add("hi");
+  plates[N - 1].dots.forEach((el) => el.classList.remove("m"));
+  read.textContent = "rest";
+
+  bag.add(pointer(stage, { move: (p) => setActive(hit(p)), leave: () => setActive(-1) }));
+  bag.add(() => svg.replaceChildren());
+
+  return {
+    set: (v) => { gap = v; if (act >= 0) setActive(act, true); },
+    destroy: bag.dispose,
+  };
+}
+
+hairline({
+  name: "plates",
+  means: "Six services as plates in a row: the row opens round the one under the pointer, and it rises to be added.",
+  rules: [1, 2, 5, 10],
+  range: [6, 14, 22],
+  tour: [[132, 214], [194, 149], [279, 100], null],
+  mount,
+});
+  })(window.HLK, reg);
+
+  // keys (the Hairline page's Services section; also the Overview services card's visual, Tweaks -> Services visual)
+  (function (HL, hairline) {
+/**
+ * Keys: twelve services as keycaps in a shallow tray, four by three. A keycap
+ * is a tapered solid, its foot wider than its top, with a dished top; it rides
+ * a stem out of a socket in the tray's floor. At rest a few keys stand raised
+ * to different heights, the ones ready, and the tallest is bright. The pointer
+ * raises the keys near it on springs, the one under it highest, falling off
+ * with distance to a floor; that key takes the bright. Each key measures the
+ * pointer on the plane of its own rest top, so a raised key answers where it
+ * is seen, and a key rising never slips out from under the pointer; the
+ * falloff is measured from that one point. The slider is the reach of the
+ * falloff, in world units.
+ */
+const {
+  Cam, clamp, extremes, facing, fit, hull, open, poly, prism, proj, ringAt, rings, rrect, run, unproj,
+  spring, stepS, disposer, mk, pointer, put, register, solid,
+} = HL;
+
+const NI = 4, NJ = 3, PITCH = 21, KF = 17, TAPER = 2.8, DISH = 1.3, CAPH = 7, ST = 11;  // the grid, a key's foot, its top's inset, its height, its stem
+const T = 3, G = 1.5, L = 2 * (T + G) + NI * PITCH, W = 2 * (T + G) + NJ * PITCH;    // the tray: rim, gap, length, width
+const ZB = -6, FLOOR = -3, HMAX = 16;                                               // the tray's foot and floor; the highest a key rises
+// The rest, row by row: the ready ones stand up, uneven; the tallest is the mark.
+const REST = [
+  [0, 0, 0, 4],
+  [7, 0, 11, 0],
+  [0, 0, 0, 0],
+];
+const cx = (i) => T + G + (i + 0.5) * PITCH, cy = (j) => T + G + (j + 0.5) * PITCH;
+const sq = (x, y, h, r) => rrect(x - h, y - h, x + h, y + h, r, 4);
+
+/** The share of full height at u radii from the pointer: 1 → .5 at half the radius → .1 at the edge, and .1 beyond. */
+const falloff = (u) => (u <= 0.5 ? 1 - u : u <= 1 ? 0.5 - (u - 0.5) * 0.8 : 0.1);
+
+function mount({ stage, svg, read }, value) {
+  const bag = disposer();
+  const C = Cam(45, 0.5, 2.5), ZT = FLOOR + HMAX + CAPH, e = KF / 2 - TAPER;
+  // Fitted to the tray's foot and the far keys at full height.
+  fit(C, [[0, 0, ZB], [L, 0, ZB], [0, W, ZB], [L, W, ZB],
+    [cx(0) - e, cy(0) - e, ZT], [cx(NI - 1) + e, cy(0) - e, ZT], [cx(0) - e, cy(NJ - 1) + e, ZT]], 200, 166);
+  const P = proj(C), front = facing(C);
+  let R = value, over = null;
+
+  // The tray: its outline, the rim's inner edge as its crease, and where the far walls meet the floor.
+  const g = mk("g", {}, svg);
+  const outer = rrect(0, 0, L, W, 7, 6), hole = rrect(T, T, L - T, W - T, 7 - T, 6);
+  put(solid(g), { sil: prism(P, front, outer, outer, ZB, 0).sil, crease: poly(ringAt(P, hole, 0)) });
+  mk("path", { class: "lo nf", d: open(ringAt(P, run(hole, (s) => !front(s)), FLOOR)) }, g);
+
+  // The keys, diagonal by diagonal from the far corner: each one's socket on the floor, its stem, its cap.
+  const keys = [];
+  for (let s = 0; s <= NI + NJ - 2; s++) for (let i = 0; i < NI; i++) {
+    const j = s - i;
+    if (j < 0 || j >= NJ) continue;
+    const x = cx(i), y = cy(j), h0 = REST[j][i];
+    mk("path", { class: "lo nf", d: poly(ringAt(P, sq(x, y, KF / 2 + 0.6, 3.8), FLOOR)) }, g);
+    const [sr, si] = rings(x - ST / 2, y - ST / 2, x + ST / 2, y + ST / 2, 2, 0.8);
+    keys.push({
+      i, j, h0, sr, si, foot: sq(x, y, KF / 2, 3.6), top: sq(x, y, e, 2.6), dish: sq(x, y, e - DISH, 1.6),
+      stem: solid(g), cap: solid(g), sp: spring(h0, { eps: 0.04 }), drawn: NaN,
+    });
+  }
+  const mark = keys.reduce((a, b) => (b.h0 > a.h0 ? b : a));
+
+  // The near rim, painted over the keys' feet: a plate from the rim's inner edge down to the
+  // tray's foot, then its two lines; the short cuts across the side rims stay unstroked.
+  const lr = (pts) => (pts[0][0] > pts[pts.length - 1][0] ? pts.reverse() : pts);
+  const at = (q, z) => ringAt(P, [q], z)[0];
+  const [le, re] = extremes(P, outer);
+  const lipTop = lr(ringAt(P, run(hole, front), 0));
+  const lipFoot = [at(re, 0), at(re, ZB), ...lr(ringAt(P, run(outer, front), ZB)).reverse(), at(le, ZB), at(le, 0)];
+  mk("path", { class: "fo", d: poly(lipTop.concat(lipFoot)) }, g);
+  const lip = solid(g);
+  put(lip, { sil: open(lipFoot), crease: open(lipTop) });
+  lip.sil.classList.add("nf");
+
+  // A key whose spring hasn't moved keeps its paths. The cap is the hull of its foot and its
+  // smaller top (rule 09, a top smaller than its foot); its crease is the rim of the dish.
+  function drawKey(k) {
+    const h = clamp(k.sp.x, 0, HMAX);
+    if (h === k.drawn) return;
+    k.drawn = h;
+    const z0 = FLOOR + h, z1 = z0 + CAPH;
+    put(k.stem, prism(P, front, k.sr, k.si, FLOOR, Math.max(z0, FLOOR + 0.2)));
+    put(k.cap, { sil: poly(hull(ringAt(P, k.foot, z0).concat(ringAt(P, k.top, z1)))), crease: poly(ringAt(P, k.dish, z1)) });
+  }
+
+  const B = register(stage, (dt) => {
+    let m = false;
+    for (const k of keys) { if (stepS(k.sp, dt)) m = true; drawKey(k); }
+    return m;
+  });
+  bag.add(B.unregister);
+
+  // Which key: where the pointer falls on each key's REST top (planes that never move), nearest its middle.
+  // Where: that one point on the chosen key's top, the field's centre for every key, so a key raised at
+  // rest doesn't read the pointer on its own higher plane and stand taller than the keys beside the choice.
+  function measure([sx, sy]) {
+    const d = keys.map((k) => { const [wx, wy] = unproj(C, sx, sy, FLOOR + k.h0 + CAPH); return [wx - cx(k.i), wy - cy(k.j)]; });
+    const n = d.reduce((b, v, q) => (Math.hypot(...v) < Math.hypot(...d[b]) ? q : b), 0);
+    // off the tray: outside its outline on the rim's plane, and off the nearest key's own top (a raised one stands above the back rim)
+    const [tx, ty] = unproj(C, sx, sy, 0);
+    if ((tx < 0 || tx > L || ty < 0 || ty > W) && Math.max(...d[n].map(Math.abs)) > KF / 2) return null;
+    const k = keys[n], dn = Math.hypot(...d[n]), w = [cx(k.i) + d[n][0], cy(k.j) + d[n][1]];
+    return { k, d: keys.map((q) => Math.max(dn, Math.hypot(cx(q.i) - w[0], cy(q.j) - w[1]))) };
+  }
+
+  function retarget() {
+    keys.forEach((k, q) => { k.sp.t = over ? HMAX * falloff(over.d[q] / R) : k.h0; });
+    const on = over ? over.k : mark;
+    keys.forEach((k) => k.cap.sil.classList.toggle("hi", k === on));
+    read.textContent = over ? `key ${on.i + 1}·${on.j + 1}` : "rest";
+    B.wake();
+  }
+  retarget();
+
+  bag.add(pointer(stage, {
+    move: (p) => { over = measure(p); retarget(); },
+    leave: () => { over = null; retarget(); },
+  }));
+  bag.add(() => svg.replaceChildren());
+
+  return {
+    set: (v) => { R = v; if (over) retarget(); },
+    destroy: bag.dispose,
+  };
+}
+
+hairline({
+  name: "keys",
+  means: "Twelve services as keycaps in a tray: a few stand ready, and the pointer raises the keys near it, the one under it highest.",
+  rules: [1, 3, 5, 9],
+  range: [24, 38, 56],
+  tour: [[107, 155], [219, 136], [256, 192], null],
+  mount,
+});
+  })(window.HLK, reg);
+
+  // planner (the Hairline page's Services section; also the Overview services card's visual, Tweaks -> Services visual)
+  (function (HL, hairline) {
+/**
+ * Planner: a desk planner as three thin calendar sheets standing one behind
+ * another, fanned back a little from the foot with uneven gaps. The front
+ * sheet is a month: a week grid of seven days by four weeks, a title rule in
+ * its header, and two binding rings looped over its top edge. A raised
+ * appointment token sits on one day, its rim the bright mark, and a hairline
+ * strung with beads hangs from it to the desk. The pointer picks the day
+ * under it, read on the front sheet's plane, which never moves; the token
+ * travels there on the 700ms lift curve and its line follows, bead by bead,
+ * staggered down from it. The slider is the gap between the sheets.
+ *
+ * The pattern: one of many, on a grid. A tween per coordinate for which day,
+ * a stagger by distance down the line, a spring for the gap.
+ */
+const {
+  Cam, clamp, fit, hull, open, poly, proj, rad, rings, rrect, seg,
+  spring, stepS, tdone, tset, tval, tween, disposer, flatDot, mk, place, pointer, put, register, solid,
+} = HL;
+
+const CW = 9.5, CH = 8.5, NC = 7, NR = 4, MX = 5.5, MB = 6, HB = 13;  // a day cell, the grid, the side and foot margins, the header band
+const W = 2 * MX + NC * CW, H = MB + NR * CH + HB, R = 5, TK = 1.1;  // a sheet: its size, its round, its thickness
+const LEAN = [-11, -6, -1.5];             // back to front: how far each sheet leans back, in degrees
+const SHARE = [1.6, 1, 0];                // how many gaps each sheet stands behind the front one: uneven
+const GMIN = 3, GMAX = 16;                // the gap, clamped
+const RINGS = [W * 0.26, W * 0.74], RR = 3.2, RC = 1.3;  // the binding: where its rings sit, their radius, their centre under the top edge
+const TU = 5.8, TV = 5.2, TT = 2.6, NK = 4, STEP = 45;      // the token's size and thickness; the points of its line, and the stagger down it
+const REST = [3, 1];                      // thursday of the second week
+const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+const OUT = rrect(0, 0, W, H, R, 6);
+const [TR, TI] = rings(-TU / 2, -TV / 2, TU / 2, TV / 2, 2, 0.9);
+
+/** Sheet i standing Y along the row: the world point at (u, v) on its face, o behind it. */
+const sheet = (i, Y) => {
+  const s = Math.sin(rad(LEAN[i])), c = Math.cos(rad(LEAN[i]));
+  return (u, v, o = 0) => [u, Y + v * s - o * c, v * c + o * s];
+};
+/** The middle of day cell (col, row) on the face; row 0 is the first week, at the top. */
+const cell = (col, row) => [MX + (col + 0.5) * CW, MB + (NR - row - 0.5) * CH];
+
+/** The camera, fitted to the sheets spread as far as the slider allows, token and rings included. */
+function frame() {
+  const C = Cam(45, 0.5, 2.9), box = [];
+  for (let i = 0; i < 3; i++) {
+    const w = sheet(i, -SHARE[i] * GMAX);
+    for (const u of [0, W]) for (const v of [0, H + RR - RC]) for (const o of [-TT, TK]) box.push(w(u, v, o));
+  }
+  fit(C, box, 200, 166);
+  return { C, P: proj(C) };
+}
+
+/** Sheet i at Y, as path strings: its back edge, its face, its marks (the week grid on the front one only), and its rings' halves. */
+function paths(P, i, Y) {
+  const w = sheet(i, Y), at = (u, v, o) => P(...w(u, v, o));
+  const marks = [seg(at(MX, H - HB / 2 - 0.8), at(MX + 2 * CW, H - HB / 2 - 0.8))];
+  for (let k = 0; k <= NR && i === 2; k++) marks.push(seg(at(MX, MB + k * CH), at(W - MX, MB + k * CH)));
+  for (let k = 0; k <= NC && i === 2; k++) marks.push(seg(at(MX + k * CW, MB), at(MX + k * CW, MB + NR * CH)));
+  // a ring is a loop in the plane across the sheet: through a hole under the top edge, over it, and back
+  const half = (side) => RINGS.map((u) => {
+    const pts = [];
+    for (let t = -90; t <= 90; t += 15) pts.push(at(u, H - RC + RR * Math.sin(rad(t)), side * RR * Math.cos(rad(t))));
+    return open(pts);
+  }).join("");
+  return {
+    ringB: half(1),
+    back: poly(OUT.map((q) => at(q.u, q.v, TK))),
+    face: poly(OUT.map((q) => at(q.u, q.v))),
+    marks: marks.join(""),
+    ringF: half(-1),
+  };
+}
+
+function mount({ stage, svg, read }, value) {
+  const bag = disposer();
+  const { C, P } = frame(), face = sheet(2, 0);
+
+  // Painted back to front: each sheet's rings behind it, its back edge, its face, its marks, its rings in front;
+  // then, on the front sheet, the token, and the line hanging in front of the face from its front edge.
+  const g = mk("g", {}, svg);
+  const els = LEAN.map(() => ({
+    ringB: mk("path", { class: "nf" }, g), back: mk("path", { class: "lo" }, g), face: mk("path", { class: "sil" }, g),
+    marks: mk("path", { class: "nf lo" }, g), ringF: mk("path", { class: "nf" }, g),
+  }));
+  const tok = solid(g);
+  tok.sil.classList.add("hi");
+  const line = mk("path", { class: "nf" }, g);
+  const foot = flatDot(g, C, 1.1, "dot m");
+  const beads = [1, 2].map(() => mk("circle", { r: 1.25, class: "dot m" }, g));
+
+  const drawn = [NaN, NaN, NaN];
+  function drawSheet(i, Y) {
+    if (Y === drawn[i]) return;
+    drawn[i] = Y;
+    const p = paths(P, i, Y);
+    for (const k in p) els[i][k].setAttribute("d", p[k]);
+  }
+
+  // The front sheet's face, which never moves, under a screen point: the hit test reads it, and the token's offset comes from it.
+  const o = P(0, 0, 0), e = (x, y, z) => { const q = P(x, y, z); return [q[0] - o[0], q[1] - o[1]]; };
+  const eu = e(...face(1, 0)), ev = e(...face(0, 1)), det = eu[0] * ev[1] - eu[1] * ev[0];
+  const onFace = ([x, y]) => { const qx = x - o[0], qy = y - o[1]; return [(qx * ev[1] - qy * ev[0]) / det, (eu[0] * qy - eu[1] * qx) / det]; };
+  // the token stands proud of the face, so it is set this far up and right of its day's middle, to stand over it on screen
+  const mid = P(...face(0, 0, -TT / 2)), [DX, DV] = onFace([2 * o[0] - mid[0], 2 * o[1] - mid[1]]);
+
+  // The token and each point of its line keep their own (u, v) on the face, so the line can trail the token.
+  const [u0, v0] = cell(...REST);
+  const tu = [], tv = [];
+  for (let k = 0; k < NK; k++) { tu.push(tween(u0)); tv.push(tween(v0)); }
+  let last = "";
+  function drawToken(now) {
+    const uv = tu.map((t, k) => [tval(t, now), tval(tv[k], now)]);
+    const key = uv.join();
+    if (key === last) return;
+    last = key;
+    const [u, v] = uv[0], at = (q, d) => P(...face(u + DX + q.u, v + DV + q.v, d));
+    put(tok, { sil: poly(hull(TR.map((q) => at(q, 0)).concat(TR.map((q) => at(q, -TT))))), crease: poly(TI.map((q) => at(q, -TT))) });
+    // the line hangs plumb from the middle of the token's front edge, clear of the face, down to the desk
+    const pts = uv.map(([pu, pv], k) => { const [x, y, z] = face(pu + DX, pv + DV - TV / 2, -TT); return P(x, y, z * (1 - k / (NK - 1))); });
+    line.setAttribute("d", open(pts));
+    beads.forEach((el, k) => place(el, pts[k + 1]));
+    place(foot, pts[NK - 1]);
+  }
+
+  const sp = spring(clamp(value, GMIN, GMAX));
+  drawSheet(2, 0);
+  const B = register(stage, (dt, now) => {
+    const m = stepS(sp, dt), gp = clamp(sp.x, GMIN, GMAX);
+    for (let i = 0; i < 2; i++) drawSheet(i, -SHARE[i] * gp);
+    drawToken(now);
+    return m || tu.some((t, k) => !tdone(t, now) || !tdone(tv[k], now));
+  });
+  bag.add(B.unregister);
+
+  // The day under the pointer, read on the front sheet's face, which never moves: the grid is the hit area.
+  function hit(p) {
+    const [u, v] = onFace(p);
+    if (u < -2 || u > W + 2 || v < -2 || v > H + 2) return null;
+    return [clamp(Math.floor((u - MX) / CW), 0, NC - 1), clamp(Math.floor((MB + NR * CH - v) / CH), 0, NR - 1)];
+  }
+
+  /** Sends the token to day a (null sends it home); the line's points follow, each STEP later than the one above. */
+  let act = "";
+  function choose(a) {
+    const key = a ? a.join() : "";
+    if (key === act) return;
+    act = key;
+    const [u, v] = cell(...(a || REST)), now = performance.now();
+    tu.forEach((t, k) => { tset(t, u, now, k * STEP); tset(tv[k], v, now, k * STEP); });
+    read.textContent = a ? `wk ${a[1] + 1} · ${DAYS[a[0]]}` : "rest";
+    B.wake();
+  }
+  read.textContent = "rest";
+
+  bag.add(pointer(stage, { move: (p) => choose(hit(p)), leave: () => choose(null) }));
+  bag.add(() => svg.replaceChildren());
+
+  return {
+    set: (v) => { sp.t = clamp(v, GMIN, GMAX); B.wake(); },
+    destroy: bag.dispose,
+  };
+}
+
+hairline({
+  name: "planner",
+  means: "A desk planner's month: the pointer picks a day and the appointment token travels there, its line following down to the desk.",
+  rules: [1, 2, 6, 8],
+  range: [4, 10, 16],
+  tour: [[127, 184], [166, 160], [204, 245], null],
+  mount,
+});
+  })(window.HLK, reg);
+
+  // folder (the Hairline page's Services section; also the Overview services card's visual, Tweaks -> Services visual)
+  (function (HL, hairline) {
+/**
+ * Folder: a file folder standing open, seen from its front corner, six files
+ * filed in it with their index tabs staggered left to right. One file is out
+ * a bit and carries the bright edge. The pointer runs along the tabs: the file
+ * whose tab is nearest slides up out of the folder and takes the bright, the
+ * one that was out slides back down, and the files beside it are dragged up a
+ * touch, staggered out from it. The slider is how far a file comes out.
+ *
+ * The folder is one sheet: a section, back panel, rounded fold and leaning
+ * front panel, swept along the folder's width and cut at its horizon. The back
+ * half is painted before the files, the front half after them. The hit test
+ * reads the tabs' resting centres along the screen's x, so a file rising
+ * cannot change the choice, and a file hidden behind the one out stays in reach.
+ */
+const {
+  Cam, clamp, fillet, fit, poly, proj, rad, seg,
+  tdone, tset, tval, tween, disposer, mk, pointer, register,
+} = HL;
+
+const W = 104, D = 20, T = 1, RB = 6, RF = 7, FL = rad(18), HB = 70, LF = 35; // the folder: width, depth, sheet, fold radii, lean, back and front
+const BT = [14, 46, 8];                                                           // the folder's own tab on the back panel: from, to, height
+const N = 6, FX0 = 5, FX1 = W - 5, ZT = 60, TW = 14, TH = 6.5, TF = 0.6, GAP = 2.6, LEAN = 2.8; // the files, and the fan they stand in
+const MAXOUT = 26, REST = 2, AT_REST = 0.75, DRAG = [1, 0.14, 0.05], STEP = 40;
+
+// The folder's section: s runs from the top of the back panel down, round the fold, and up the front panel; o is the offset inwards.
+const CY = D - (RF * (1 - Math.sin(FL))) / Math.cos(FL);
+const S1 = HB - RB, S2 = S1 + (RB * Math.PI) / 2, S3 = S2 + CY - RB, S4 = S3 + RF * (Math.PI / 2 - FL), SE = S4 + LF;
+function Q(o, s) {
+  if (s <= S1) return [o, HB - s];
+  if (s <= S2) { const a = Math.PI + (s - S1) / RB; return [RB + (RB - o) * Math.cos(a), RB + (RB - o) * Math.sin(a)]; }
+  if (s <= S3) return [RB + s - S2, o];
+  if (s <= S4) { const a = 1.5 * Math.PI + (s - S3) / RF; return [CY + (RF - o) * Math.cos(a), RF + (RF - o) * Math.sin(a)]; }
+  const e = s - S4;
+  return [CY + (RF - o) * Math.cos(FL) + e * Math.sin(FL), RF - (RF - o) * Math.sin(FL) + e * Math.cos(FL)];
+}
+/** The height of the folder's inner floor at depth y, where a file stands. */
+const floorAt = (y) => (y < RB ? RB - Math.sqrt((RB - T) ** 2 - (RB - y) ** 2) : y > CY ? RF - Math.sqrt((RF - T) ** 2 - (y - CY) ** 2) : T);
+
+/** File i, counted from the back: where it stands and leans, its tab, its outline in its own plane, and a map from that plane to the world. */
+function file(i) {
+  const k = N - 1 - i, yb = T + 2.2 + i * GAP, ph = rad(i * LEAN), fb = floorAt(yb) + 0.4;
+  const h = (ZT - fb) / Math.cos(ph), t = FX0 + (k * (FX1 - FX0 - TW)) / (N - 1);
+  // corners with their radii; the first and last tabs are cut flush with the file's edge, as the end tabs of a filing set are
+  const c = [[FX0, 0, 1], [FX1, 0, 1], [FX1, h, 2.6], [t + TW + 1.6, h, 1.4], [t + TW, h + TH, 2.2], [t, h + TH, 2.2], [t - 1.6, h, 1.4], [FX0, h, 2.6]]
+    .filter((_, j) => !(k === N - 1 && (j === 2 || j === 3)) && !(k === 0 && (j === 6 || j === 7)));
+  const pts = fillet(c.map((q) => [q[0], q[1]]), c.map((q) => q[2]));
+  // (u, v) in the file's plane, slid out along it by `lift`, `off` behind its face
+  const at = (u, v, lift, off = 0) => [u, yb + (v + lift) * Math.sin(ph) - off * Math.cos(ph), fb + (v + lift) * Math.cos(ph) + off * Math.sin(ph)];
+  return { h, t, pts, at };
+}
+
+/** The sheet's outline in (u, s): the back half from its top, tab and all, down to its horizon; the front half from its horizon up. */
+const backOut = (sh) => fillet([[0, sh], [0, 0], [BT[0], 0], [BT[0] + 2, -BT[2]], [BT[1] - 2, -BT[2]], [BT[1], 0], [W, 0], [W, sh]], [0.01, 5, 2, 3, 3, 2, 5, 0.01]);
+const frontOut = (sh) => fillet([[0, sh], [W, sh], [W, SE], [0, SE]], [0.01, 0.01, 5, 5]);
+
+function mount({ stage, svg, read }, value) {
+  const bag = disposer();
+  let out = value, act = -1;
+
+  const files = Array.from({ length: N }, (_, i) => file(i));
+
+  // Fitted to the folder with any file out as far as the slider goes.
+  const C = Cam(45, 0.5, 2.15), box = [[BT[0] + 2, ...Q(0, -BT[2])]];
+  for (const s of [0, S1, S2, S3, S4, SE]) box.push([0, ...Q(0, s)], [W, ...Q(0, s)]);
+  files.forEach((f) => box.push(f.at(FX0, f.h, MAXOUT), f.at(FX1, f.h, MAXOUT), f.at(f.t, f.h + TH, MAXOUT), f.at(f.t + TW, f.h + TH, MAXOUT)));
+  fit(C, box, 200, 166);
+  const P = proj(C);
+
+  // the sheet at offset o, its outline sampled along s wherever s changes, so the fold comes out round
+  function sheet(o, outline) {
+    const pts = [];
+    outline.forEach((a, j) => {
+      const b = outline[(j + 1) % outline.length], n = Math.max(1, Math.ceil(Math.abs(b[1] - a[1]) / 1.5));
+      for (let m = 0; m < n; m++) pts.push(P(a[0] + ((b[0] - a[0]) * m) / n, ...Q(o, a[1] + ((b[1] - a[1]) * m) / n)));
+    });
+    return poly(pts);
+  }
+  // the horizon: where the fold, swept along the width, is lowest across the sweep
+  const p0 = P(0, 0, 0), p1 = P(1, 0, 0), nx = p0[1] - p1[1], ny = p1[0] - p0[0];
+  function horizon(o) {
+    let b = S2, bv = -Infinity;
+    for (let s = S2; s < S4; s += 0.1) { const p = P(0, ...Q(o, s)), v = nx * p[0] + ny * p[1]; if (v > bv) { bv = v; b = s; } }
+    return b;
+  }
+  const hB = horizon(T), hF = horizon(0);
+
+  // Back to front: the back half (its outer face shows only at the rim), the files, then the front half and the score of its fold.
+  const g = mk("g", {}, svg);
+  mk("path", { d: sheet(0, backOut(hB)), class: "lo" }, g);
+  mk("path", { d: sheet(T, backOut(hB)), class: "sil" }, g);
+  files.forEach((f, i) => {
+    const grp = mk("g", {}, g);
+    f.back = mk("path", { class: "lo" }, grp);
+    f.face = mk("path", { class: "sil" }, grp);
+    f.tw = tween(i === REST ? out * AT_REST : 0);
+    f.drawn = NaN;
+  });
+  mk("path", { d: sheet(T, frontOut(hF)), class: "lo" }, g);
+  mk("path", { d: sheet(0, frontOut(hF)), class: "sil" }, g);
+  mk("path", { d: seg(P(3, ...Q(0, S4 + 1.5)), P(W - 3, ...Q(0, S4 + 1.5))), class: "nf lo" }, g);
+
+  /** A file whose lift has not changed keeps its paths. */
+  function draw(f, lift) {
+    if (lift === f.drawn) return;
+    f.drawn = lift;
+    f.back.setAttribute("d", poly(f.pts.map(([u, v]) => P(...f.at(u, v, lift, TF)))));
+    f.face.setAttribute("d", poly(f.pts.map(([u, v]) => P(...f.at(u, v, lift)))));
+  }
+
+  const B = register(stage, (_dt, now) => {
+    let moving = false;
+    files.forEach((f) => { draw(f, tval(f.tw, now)); if (!tdone(f.tw, now)) moving = true; });
+    return moving;
+  });
+  bag.add(B.unregister);
+
+  // Hit test: the tabs make one row across the screen, so the file is the one whose RESTING tab centre is nearest the pointer's x,
+  // inside the box the folder can fill. Nothing that moves is read, and a file hidden behind the one out is still reached by its tab.
+  const cx = files.map((f) => P(...f.at(f.t + TW / 2, f.h, 0))[0]);
+  const sb = box.map((q) => P(...q)), M = 6;
+  const [x0, x1, y0, y1] = [Math.min(...sb.map((p) => p[0])) - M, Math.max(...sb.map((p) => p[0])) + M, Math.min(...sb.map((p) => p[1])) - M, Math.max(...sb.map((p) => p[1])) + M];
+  function hit([x, y]) {
+    if (x < x0 || x > x1 || y < y0 || y > y1) return -1;
+    let b = 0;
+    cx.forEach((c, i) => { if (Math.abs(c - x) < Math.abs(cx[b] - x)) b = i; });
+    return b;
+  }
+
+  /** Pulls file a out (-1 leaves the one at rest out a little). The stagger spreads from the file pulled, or the one let go. */
+  function setActive(a, again) {
+    if (a === act && !again) return;
+    const now = performance.now(), from = a >= 0 ? a : act >= 0 ? act : REST, lit = a >= 0 ? a : REST;
+    act = a;
+    files.forEach((f, i) => {
+      const to = a < 0 ? (i === REST ? out * AT_REST : 0) : out * (DRAG[Math.abs(i - a)] || 0);
+      tset(f.tw, clamp(to, 0, MAXOUT), now, Math.abs(i - from) * STEP);
+      f.face.classList.toggle("hi", i === lit);
+    });
+    read.textContent = a < 0 ? "rest" : "file " + (N - a);
+    B.wake();
+  }
+  setActive(-1, true);
+
+  bag.add(pointer(stage, { move: (p) => setActive(hit(p)), leave: () => setActive(-1) }));
+  bag.add(() => svg.replaceChildren());
+
+  return {
+    set: (v) => { out = v; setActive(act, true); },
+    destroy: bag.dispose,
+  };
+}
+
+hairline({
+  name: "folder",
+  means: "A folder of six files, one out a bit: the file whose tab is nearest the pointer slides up out of it, and the one that was out goes back.",
+  rules: [1, 4, 5, 6],
+  range: [8, 16, 26],
+  tour: [[117, 113], [183, 129], [282, 152], null],
+  mount,
+});
   })(window.HLK, reg);
 })();
 </script>
@@ -28859,6 +29502,22 @@ hairline({
     document.addEventListener('click', e => { const r = e.target.closest('.ovDefRow'); if (!r || !window._tl) return; e.preventDefault();   // More services: the Timeline, on its Later tab ("go to timeline 'Later' tab")
       if (r.closest('#phone2')){ const bs = document.getElementById('stBp'); if (bs && document.body.dataset.bp !== 'xs'){ bs.value = 'xs'; bs.dispatchEvent(new Event('change', { bubbles: true })); } }   // a phone has no Timeline of its own: the desk's, in the XS device, as the dock's Timeline does
       if (sel){ sel.value = 'tl'; sel.dispatchEvent(new Event('change')); } window._tl.tab('claim'); });
+    // the services card's visual (Tweaks -> Services visual, "tweak, visual hairline OR these imgs"): the three stacked pictures, or one of the Hairline page's
+    // Services figures drawn live in their place -- mounted as the modals' Illustration mounts them, its tour walking it until a hand arrives -- on the phone and the desk alike
+    { const sel = document.getElementById('stDefVis'), figs = new Map();
+      const mountIn = (stk, name) => { const HL = window.HLK, F = (window.HLFIGS || {})[name]; if (!HL || !F) return null;
+        const stage = document.createElement('span'); stage.className = 'ovDefHl'; stk.after(stage); HL.inject(document);
+        stage.setAttribute('data-hairline', name); stage.setAttribute('data-hairline-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+        const svg = HL.mk('svg', { viewBox: '0 0 400 320', 'aria-hidden': 'true' }, stage), read = { textContent: '' };
+        const h = F.mount({ stage, svg, read }, F.range ? F.range[1] : undefined), tr = HL.tour ? HL.tour(stage, F.tour || HL.LAP) : null;
+        return { destroy: () => { if (tr) tr.stop(); if (h && h.destroy) h.destroy(); stage.remove(); } }; };
+      const apply = () => { const v = sel ? sel.value : 'img';
+        document.querySelectorAll('.ovDefStk').forEach(stk => { const k = figs.get(stk); if (k){ k.destroy(); figs.delete(stk); }
+          const on = v !== 'img' && !!(window.HLFIGS || {})[v], row = stk.closest('.ovDefRow'); if (row) row.classList.toggle('ovDefHlOn', on);
+          if (on){ const m = mountIn(stk, v); if (m) figs.set(stk, m); } }); };
+      if (sel){ sel.addEventListener('change', apply); requestAnimationFrame(apply); }
+      const th = document.getElementById('themeSel'); if (th) th.addEventListener('change', () => setTimeout(apply, 0));   // the figure's ink follows the theme
+    }
     document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.ovDefRow')){ e.preventDefault(); e.target.click(); } });   // the card itself is the link now its chevron has gone ("remove action arrow")   // the deferred card's View: the steps put off, in the card
     document.querySelectorAll('#dSvc .svBack, #svcMob .svBack').forEach(b => b.addEventListener('click', close));
     addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
@@ -29244,9 +29903,10 @@ hairline({
     const pastBtn = main.querySelector('.tlPastBtn'); let tabBeforePast = 'up';
     const tlH1 = main.querySelector('.tlH1');
     // where the search lives: the head's right, or, in Past at XS, the sub page's bar ("on XS search in top nav right")
-    const placeSearch = () => { const sbEl = main.querySelector('.tlSearch'), head = main.querySelector('.tlHead'), barCol = main.querySelector('.tlSubTop > .tlCol'); if (!sbEl || !head || !barCol) return;
-      const inBar = main.classList.contains('tlPastOn') && document.body.dataset.bp === 'xs';
-      if (inBar && sbEl.parentElement !== barCol) barCol.appendChild(sbEl); else if (!inBar && sbEl.parentElement !== head) head.insertBefore(sbEl, main.querySelector('.tlPastBtn')); };
+    const placeSearch = () => { const sbEl = main.querySelector('.tlSearch'), head = main.querySelector('.tlHead'), barCol = main.querySelector('.tlSubTop > .tlCol'); if (!sbEl || !head || !barCol || !tlH1) return;
+      const inBar = main.classList.contains('tlPastOn') && document.body.dataset.bp === 'xs';   // ...and the title beside the back ("put title next to left action")
+      if (inBar){ if (tlH1.parentElement !== barCol) barCol.appendChild(tlH1); if (sbEl.parentElement !== barCol) barCol.appendChild(sbEl); }
+      else { if (tlH1.parentElement !== head) head.insertBefore(tlH1, head.firstChild); if (sbEl.parentElement !== head) head.insertBefore(sbEl, main.querySelector('.tlPastBtn')); } };
     addEventListener('resize', placeSearch);
     const pastLit = on => { if (!pastBtn) return; const was = main.classList.contains('tlPastOn'); pastBtn.classList.toggle('on', on); pastBtn.setAttribute('aria-pressed', String(on)); main.classList.toggle('tlPastOn', on); placeSearch();
       if (was === on) return; if (tlH1) tlH1.textContent = on ? 'Past activity' : 'Your health journey'; main.scrollTop = 0;   // the sub page's title, from its top
@@ -31924,7 +32584,7 @@ hairline({
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'c', stTlPri: 'svc', stTlCta: 'right', stTlStat: 'off', stTlChipH: '36', stTaskHd: 'banner', stKitMin: '128', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stProgSty: 'bars', stTabC: 'on', stObs: 'off', stBioS: 'off', stMdl: 'v1', stSubTl: 'in', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stDefVis: 'img', stHeroBg: 'earth', stProfStyle: 'stack', stTlSteps: 'c', stTlPri: 'svc', stTlCta: 'right', stTlStat: 'off', stTlChipH: '36', stTaskHd: 'banner', stKitMin: '128', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stProgSty: 'bars', stTabC: 'on', stObs: 'off', stBioS: 'off', stMdl: 'v1', stSubTl: 'in', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };

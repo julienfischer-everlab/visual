@@ -13953,3 +13953,17 @@ At XS the closed search and the Past button are 44px boxes ("44"; were 56), with
 ## Timeline search and Past: ghost buttons, 8 apart
 
 At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44"): no edge and no ground, with a faint hover tint. They sit 8px apart ("button group 8px gap"); the Past button's −8 margin trims the head's 16 gap. Opened, the field keeps its edge and stops 8px short of the Past button.
+
+## Past title in the bar; services card copy and visual tweak; Hairline Folder
+
+- **Past activity at XS**: the title sits in the top nav, beside the back ("put title next to left action"). The h1 itself moves there with the search (`placeSearch`), hides under the field when it opens, and the empty head row goes. The desk keeps the service page's layout: back on its own row, the title under it.
+- **Services card copy** ("xx services on hold, …" and "Available for you, action when ready"): the title is "12 services on hold" and the line "Available for you, action when ready.", on the phone and the desk, with the aria-label to match.
+- **Services visual** (Tweaks, Overview; "tweak, visual hairline OR these imgs"): Pictures (the three stacked photos, the default), or one of the Hairline page's Services figures drawn live in their place: Folder, Plates, Keys or Planner.
+  - The four figures are registered with the modals' others in `window.HLFIGS`, wrapped exactly as theirs (`(function (HL, hairline) {...})(window.HLK, reg)`).
+  - They are mounted as the Illustration tweak mounts them, their tour walking them until a hand arrives, inked for the theme and on the card's own ground (`--hairline-plate: var(--defBg)`).
+  - The figure is 200 wide over the words when stacked (phone and XS) and 120 beside them on the desk.
+- **Hairline page**: a fourth Services figure, **Folder** (`folder.js`, 160 lines).
+  - Six files in a folder, one out a bit; the file whose tab is nearest the pointer slides up out of it, and the one that was out goes back.
+  - Rules 01, 04, 05, 06. Tour: file 1 → file 3 → file 6 → rest. The slider is how far a file comes out (8/16/26).
+  - It passed `look.mjs` and an independent re-check, which reworded only its `means`.
+  - Weak spots: the neighbours' pull is subtle, and the left end of the tab row is a little busy.
