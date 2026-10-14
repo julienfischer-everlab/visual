@@ -13726,3 +13726,9 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The item chips: 28 high everywhere, 8 at each side (from 10/12) ("badge 28px height; padding left right 8px").
 - The services card: "More services to explore" / "Add to your plan when you're ready."; its View a ghost chevron (36px, no fill, a light ground on hover), turning down while the list is open, its name Show/Hide the services; the line stays when open.
 - The services card's stack: the three photos supplied ("use these 3 stacked images"), cropped square to their subjects (the member, the consult room with the MRI on screen, the glass bubble), 192px webp: assets/overview/svc-stack-1..3.webp. The list's own pictures unchanged.
+
+## Thumbnails, phone item spacing, badge centring, MRI Briefing picture (2026-10-14)
+- Desk Timeline: pictures 96 (from 88; "increase img by 8px"), the chips 18 under the title group (from 14; "add 4px margin top above badges group").
+- Phone/XS item: pictures 68 (from 60), the line under the title 16px ("use 16 on sub"); the card 10 from the picture at the top as at the left ("reduce padding top to match left"), 10 from each rule above and below ("divider gap same as left padding card"); rows 20/26.
+- Status badge: centred 8 in from the picture's corner (rings 24 at -4, dots 20 at -2): with its ground the card's, only its bite out of the picture shows, and at -4/4 the dot sat at the bite's edge ("dot doesn't seem centered"); now in its middle.
+- MRI Briefing's item picture: the doctor's portrait supplied ("use this visual instead"), square-cropped to the face, assets/overview/brief-doctor.webp (the Timeline's IMG.brief; the service page's wide cover unchanged).
