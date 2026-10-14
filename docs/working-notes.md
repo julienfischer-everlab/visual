@@ -13721,3 +13721,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The status badge: 24px again ("increase the padding by 2px"), and under the pointer the item's card colour (`--tlThH`, 5.5% white over its ground, 4% in Suggestions; "match status bg on hover as well").
 - "Keep only the ETA badge on the left side": in the XS item footer (phone, XS, the Overview's desk cards) only the when chips stay: `data-k` clock or cal (Book by / Due by / Requested / the appointment's date). A waiting item's chip stays.
 - "Fix radius clip": the fade behind the XS frame's dock (`.mTabs::before`, a rectangle) poked past the device's rounded bottom corners (#bpFrame doesn't clip). It and .mTabs now inherit the frame's bottom radii.
+- Task badges (a dot) 20px, centred where the ring badges (24, unchanged) are ("circular steps keep as it is; task status reduce by 4px").
+- The XS item footer: the date chip and the button centred on each other ("vertically aligned"), as the desk cards already were.
