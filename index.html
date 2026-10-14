@@ -7639,6 +7639,11 @@
   body.tlStatOn .tlProgC.done .tlStepC{background:rgba(66,190,101,.14);color:#42be65;} body.light.tlStatOn .tlProgC.done .tlStepC{background:#e3f4e7;color:#25843f;}
   body.tlStatOn .tlProgC.pas .tlStepC, body.tlStatOn .tlProgC .tlStepC.tlBlk{background:var(--tlGhost);color:var(--tlTx);} body.tlStatOn .tlProgC .tlStepC.tlBlk{color:var(--tlSub);}   /* regular ("use regular font weight") */ .tlStepC .tlRing{display:block;width:14px;height:14px;} .tlStepC.tlBlk{padding-left:10px;color:var(--tlSub);}
   .tlStepDot{flex:none;display:grid;place-items:center;width:16px;height:16px;} .tlStepDot::after{content:"";width:8px;height:8px;border-radius:50%;background:#f78359;}   /* a task's dot, in the ring's place and colours */
+  .tlThW{grid-area:th;position:relative;align-self:start;display:block;width:max-content;} .tlThW > .tlTh{display:block;}
+  .tlThB{position:absolute;top:-6px;right:-6px;z-index:1;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--tlBadge, #232323);box-shadow:0 0 0 2px var(--pageBg, #0f0f0f);} body.light .tlThB{--tlBadge:#fff;}   /* the status's mark on the picture: a full circle, cut out of the page */
+  .tlThB .tlRing{display:block;width:14px;height:14px;} .tlThB .tlStepDot{width:14px;height:14px;}
+  .tlThB.done .tlRing{--rc:#42be65;} .tlThB.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlThB.done .tlStepDot::after{background:#42be65;} .tlThB.pas .tlStepDot::after{background:var(--tlPas, rgba(255,255,255,.72));}
+  .tlMeta.tlMetaC:empty{display:none;}
   .tlProg.done .tlStepDot::after{background:#42be65;} .tlProg.pas .tlStepDot::after{background:var(--tlPas, rgba(255,255,255,.72));} .tlTgl .tlStepDot{display:none;}
   .tlProg.done .tlRing{--rc:#42be65;} .tlProg.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlBlk .tlRing{--rc:var(--tlSub);}
   .tlSeg i{width:16px;height:4px;border-radius:2px;background:var(--tlDotRing);}
@@ -7817,7 +7822,7 @@
     .tlSearch.open{position:absolute;left:0;right:0;top:50%;margin-top:-22px;width:auto;justify-content:flex-start;padding:0 14px;border-radius:12px;background:#1b1b1b;} body.light .tlSearch.open{background:#fff;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line */
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:18px -16px 0;padding:12px 16px 8px;} .tlSec:first-child .tlH{margin-top:6px;}
-    .tlRow{grid-template-columns:66px auto minmax(0,1fr);grid-template-areas:"th tx tx" "meta meta meta" "prog prog act" "det det det";column-gap:16px;padding:30px 0 32px;}   /* 12 more round the divider (+8, "+8px top and bottom around divider") and 4 more inside the card ("card padding +4px") */
+    .tlRow{grid-template-columns:66px auto minmax(0,1fr);grid-template-areas:"th tx tx" "meta meta meta" "prog prog act" "det det det";column-gap:12px;padding:30px 0 32px;}   /* 12 more round the divider (+8, "+8px top and bottom around divider") and 4 more inside the card ("card padding +4px") */
     .tlTh{width:60px;height:60px;border-radius:12px;}   /* +16 ("increase visual +16px") */
     .tlTx{padding-top:0;} .tlTx p{white-space:normal;font-size:13.5px;}
     .tlMeta{flex-direction:column;flex-wrap:nowrap;gap:8px;margin-top:14px;font-size:13.5px;}
@@ -7825,7 +7830,7 @@
     .tlAct{margin-top:16px;padding:0;margin-left:-8px;} .tlProg{margin-top:16px;} .tlProg .lb{flex:1 1 auto;} .tlSeg i{width:14px;}
     /* the chip and the button side by side, one height ("next to each other, same height 56px"); a row with no chip gives the button the line */
     .tlProg .tlStepC{height:44px;padding:0 14px 0 12px;border-radius:12px;gap:10px;} .tlStepC .tlRing{width:18px;height:18px;} .tlProg .tlStepDot{width:20px;height:20px;} .tlProg .tlTgl .tlStepDot{display:grid;}   /* the Chip as tall as the button beside it */
-    .tlRow:has(.tlProgC){grid-template-columns:66px minmax(0,1fr) auto;}   /* a long step name gives way to the button, cut short, never under it */
+    .tlRow:has(.tlProgC), .tlRow:has(.tlThB){grid-template-columns:66px minmax(0,1fr) auto;}   /* a long step name gives way to the button, cut short, never under it */
     .tlMeta.tlMetaC{flex-direction:row;flex-wrap:wrap;gap:8px;font-size:12.5px;} .tlMeta.tlMetaC > span{max-width:100%;} .tlMeta.tlMetaC .tlStepC{height:28px;padding:0 12px 0 8px;border-radius:8px;gap:8px;} .tlMeta.tlMetaC .tlStepC .tlRing{width:14px;height:14px;} .tlMeta.tlMetaC .tlStepDot{width:16px;height:16px;}   /* the line of chips wraps; the status chip their size here */
     .tlProg .tlTgl{height:44px;padding:0 12px 0 12px;border-radius:12px !important;gap:10px;} .tlProg .tlCurB{display:none;} .tlProg .tlTgl .tlSeg{display:none !important;} .tlProg .tlTgl .tlRing{display:block;}   /* 44 ("44px badge"), a ring for the increments */   /* no room for the badge beside the chip and the button: the chip keeps the increments */
     .tlAct{min-width:0;} .tlAct .tlBtn{min-width:0;padding:0 12px;overflow:hidden;text-overflow:ellipsis;} .tlAct .tlMore{flex:none;width:44px;}   /* a long label gives way, never the screen */
@@ -29031,8 +29036,12 @@ hairline({
     let OPEN = 'month', SEC = null;   // which objects open their steps (the Timeline tweak), and the section being drawn
     const finOf = r => r.state === 'done' || (!!r.group && groupOf(r).a < 0);   // its final, complete state
     const row = r => { let pg = prog(r); const svd = tab === 'claim' && SNZ.has(r), cta = svd || isCta(r), fin = finOf(r), act = fin ? 'View' : svd ? 'View details' : r.act, more = fin ? 0 : svd ? 1 : r.more,   /* saved for later: View details its primary, Move back to my plan its only ⋯ ("primary View details; the only option in the dots Move back to my plan") */   /* complete: View, nothing else ("when it's a final complete state, just view") */ up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
+      /* Chip: the status's mark -- its ring, or a task's dot -- a round badge on the picture's top right, its words gone from sight ("put this overlapping the top right of the avatar; without the label; fully rounded"); a waiting item keeps its chip, the why */
+      const mk = TLSTEP === 'c' && pg && !/tlBlk/.test(pg) ? /<div class="tlProg tlProgC([^"]*)"><span class="tlStepC">(<i class="tl(?:Ring|StepDot)"[^>]*><\/i>)<b>([^<]*)<\/b><\/span><\/div>/.exec(pg) : null;
+      if (mk) pg = '';
+      const th = '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">';
       return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg && TLSTEP !== 'c' ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
-      '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">' +
+      (mk ? '<span class="tlThW">' + th + '<span class="tlThB' + mk[1] + '" role="img" aria-label="' + mk[3] + '">' + mk[2] + '</span></span>' : th) +
       (sub => '<div class="tlTx"><div class="tlTl"><b>' + esc(TLPRI === 'act' ? sub : r.t) + '</b></div><p>' + esc(TLPRI === 'act' ? r.t : sub) + '</p></div>')(subOf(r)) +   /* Action name: the action first, the service or task under it */
       (TLSTEP === 'c' ? '<div class="tlMeta tlMetaC">' + pg + r.meta.map(meta).join('') + '</div>' : '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg) +   /* Chip: one line of chips, the status first, then the item's properties as chips too ("all these properties the same style as the chip; inline, starting by the status") */
       (act ? '<div class="tlAct' + (more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(act) + '</button>' +

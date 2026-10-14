@@ -13704,3 +13704,7 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 ## Phone list item: card padding, title centred (2026-10-14)
 - "Padding top bottom missing; reduce left right padding" (the Overview's Action plan on the phone, its hover card): in the phone layout (`@container tl (max-width:540px)`) the item's card is now 16 above and below what's in it and 10 at the sides (from 18/20/14, and the Plan's first item's picture no longer pokes out above its card: `top:-8px` on that one).
 - "Title group should be vertically centered with the avatar": `.tlTx{align-self:center}` in the same layout, the Timeline's phone rows included.
+
+## Status mark on the picture; phone gap (2026-10-14)
+- "Put this overlapping the top right of the avatar img, without the label, fully rounded": with Steps = Chip, the status chip's mark (a service's ring, a task's dot) is a 24px round badge at the picture's top right (-6/-6, a 2px cut-out in the page's ground), the chip and its words gone from sight (the badge's aria-label keeps them). Waiting items keep their chip ("Waiting on …", "Unlocks at 50"): the why. Rows with the badge keep the button its own width on the phone (`:has(.tlThB)`).
+- "Reduce gap by 4px": the phone item's picture-to-title gap 16 → 12.
