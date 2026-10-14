@@ -13741,3 +13741,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - A task's dot in its badge 7 (from 8, "reduce dot by 1px"); the item chips 12 at the sides (from 8, "padding left right 12px").
 - The title group 24 clear of the item's right edge on the phone/XS item and the Overview cards ("+24px padding right on title group").
 - The item chips ghost, no fill, text 14 ("badge ghost, font size 14"); the 12 side padding kept, so a ghost chip's icon sits 12 in from the edge.
+- Services card: the pictures overlap 12 more (-28, "stacked more -12px"); no chevron ("remove action arrow"): the card itself is the link (role link, focusable, Enter/Space), still to the Timeline's Later tab; title weight 500 ("font weight medium").
