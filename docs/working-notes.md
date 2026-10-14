@@ -13967,3 +13967,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Rules 01, 04, 05, 06. Tour: file 1 → file 3 → file 6 → rest. The slider is how far a file comes out (8/16/26).
   - It passed `look.mjs` and an independent re-check, which reworded only its `means`.
   - Weak spots: the neighbours' pull is subtle, and the left end of the tab row is a little busy.
+
+## Timeline rail spacing, Later card tweaks, grey badges
+- Timeline (desk and S, the railed list): the item's hover card now sits 8px clear of the rail and the thumbnail 8px inside the card ("8px padding left container. 8px padding card left"). `.tlList` padding-left 40 → 25, `.tlH` margin/padding to match, `.tlRow::before` left −14 → −8, the row dividers' left −8, the Suggestions and Just completed trays 8 clear of the rail.
+- Tweaks → new group **Later card** (Overview): Visual type (Hairline = the Folder figure / Img stacked) and Alignment (Centered / Left), both segmented. The old Services visual row left Hero task. Left (`html.defL`, phone and XS where the card stacks) puts everything down the left edge with 16px less above and below (32px 24px); the drawing is shifted by its own rest bbox (`--hlX`) so its left edge meets the words'.
+- Row badges (`.tlMetaC` chips: "Book by Wed 14 Oct", "Online video call"…) now take the secondary grey (`--tlSub`) for their words, as their icons did.
