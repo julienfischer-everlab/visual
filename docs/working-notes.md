@@ -13723,3 +13723,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - "Fix radius clip": the fade behind the XS frame's dock (`.mTabs::before`, a rectangle) poked past the device's rounded bottom corners (#bpFrame doesn't clip). It and .mTabs now inherit the frame's bottom radii.
 - Task badges (a dot) 20px, centred where the ring badges (24, unchanged) are ("circular steps keep as it is; task status reduce by 4px").
 - The XS item footer: the date chip and the button centred on each other ("vertically aligned"), as the desk cards already were.
+- The item chips: 28 high everywhere, 8 at each side (from 10/12) ("badge 28px height; padding left right 8px").
