@@ -13770,3 +13770,23 @@ At XS:
 - The keys type into the field. The search key drops the keyboard.
 - A wheel or drag on the page drops the keyboard. A list changing height under it does not.
 - The field closes back to its icon when it is let go empty.
+
+## Auto on a narrow window is XS; the dock keeps the format; type tweaks
+
+- **Auto below 600px is XS** ("auto on a small viewport should reflect the XS styles"; "XS just add a frame iPhone for the sake of the test").
+  - Auto sets `data-bp="xs"` plus `html.bpAuto`. It lives on `<html>` because `setMode` rewrites `body.className`.
+  - `html.bpAuto` drops the device: no bezel, no 48px insets or 56px corners, no drawn status strip or keys, and `--bpW` is 100vw. The dock stays at the foot, and the strip's top clearance stays so the page matches the framed XS.
+  - The forced XS keeps its iPhone frame for testing.
+  - Crossing 600px on resize re-runs the select's change, so pages redraw.
+  - `resize()` adds the 48px only when a device is drawn.
+- **Window-size switching**: the Overview family left `RESP_FAMILIES`, so a narrow window keeps the desk Overview, Timeline and service pages at XS instead of the old Mobile page (v6). Insights has no XS desk, so it keeps its phone (v20). `responsiveSync` runs only in Auto.
+- **The docks keep the format** ("Auto → new page Auto, XS → new page XS").
+  - In XS (forced or Auto), Overview, Timeline and Services open the desk pages in the same breakpoint, from either dock.
+  - Insights opens its phone page: full screen in Auto's window, in its shell beside the forced frame.
+  - The breakpoint select is never changed by navigation.
+  - `#bpFrame` hides on phone pages (`m5`, `m6`) so no empty device sits over them.
+- **Type tweaks**
+  - The Overview's XS container is 16px at the sides ("container padding left right 16px"; was 13), with `.ovTop`, `.ovSvc` and `.ovcar` bleeding by 16px to match.
+  - The Next step title at XS is 18px ("increase font size by 2px").
+  - The timeline item's sub at XS is 14px ("sub 14").
+  - Ghost meta chips are 14px everywhere ("14px").
