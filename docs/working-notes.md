@@ -13977,3 +13977,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Timeline (railed list, desk and S): item 24px from the rail (`.tlList` padding-left 33, "+8px gap between timeline and item"); its hover card 16 either side of it (`.tlRow::before` left/right −16, "more padding left right"), so the card stays 8 clear of the rail. Dividers −16/−16; Suggestions and Just completed trays 8 clear of the rail (margin-left −16). XS and the Overview embeds have their own values and are unchanged.
 - Past activity sub page, desk and S: the back is a ghost arrow (no disc, 36 hit area, 18px chevron, hover tint), on the panel's left padding edge as the service page's is ("arrow top nav no container, need to be on the left"); the page column stays centred. XS keeps its 44 frosted disc.
 - Later card → Alignment Left: the visual on the left, the words beside it ("content on the left when left aligned"), 32px 24px on the phone and XS. The Hairline drawing is 144 wide with its own air trimmed from its rest bbox (`--hlL/R/T/B`), so its left sits on the padding edge and the words 16 after; the same trim applies on desk when Left is picked.
+
+## Later card: copy back, gaps, See detail
+- Copy in every variation: "12 services, ready when you are" / "Add them to your action plan and book ahead." (both card copies and their aria-labels).
+- Left: 32px between the visual and the words ("+16 px gap"), on the phone, XS and desk.
+- Centered (phone and XS): padding 32px 24px 48px ("-16px top"), 22px between visual, words and button ("+8px gap visual / content").
+- Centered gets a "See detail" button under the words: the service status blocks' primary (white, #111 on light), full round, 44px, 16px/500. The whole card is already the link to the Timeline's Later tab, so it is a drawn `span.ovDefCta` (aria-hidden), not a nested control. Hidden on Left and on desk.
