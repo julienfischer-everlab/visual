@@ -13855,3 +13855,21 @@ The stacked services card (phone and XS) has 48px above and below its content, 2
   - At XS the open field stops 52px short of the right edge, and the disc keeps the row's right end.
 - **"Just completed" has no count badge** ("remove badge"). The months keep theirs.
 - **The task's orange dot** in the avatar badge is 8px ("increase by 1px").
+
+## The rest of XS's strip clearances (audit), and the Timeline's search box
+
+A read-only audit (workflow: five surface auditors and a completeness critic, 55 findings, 29 of them design and left alone) listed what still cleared the drawn strip at XS. Applied, by quoted text:
+- **Desk chat at XS**: `.chBody` top padding 48 → 0. The head sits at the modal's top, as on the phone under its own strip.
+- **Timeline**:
+  - The tabs pin flush (`top:-17px` for the page's 17).
+  - Their ground no longer reaches 45 up behind a strip (the `top:-45px` rule is gone).
+  - `ovScrolled` at XS fires 15px before the tabs pin, or 89 with the pinned field.
+  - The 300px keyboard room is the frame's only.
+- **Phone structures the desk borrows at XS** (`#dApt .apNarrow`, `#dSvc .svXsHero`) read `--stH:0`, not the phone's 54px fallback.
+- **Full bottom sheets** (`.svBook.svLkM`, `.dbM .dbIn`, `.svSheet`) sit `--shTop` (5px) under the XS viewport's top. They stay 52 under `#phone2`'s strip and the tablet's.
+- **Async report**: it draws no status bar of its own at XS (`aqDev` is the phone's and S's only). In the frame it starts under the band (top +47, square top corners).
+- **Landing in the frame**: it starts under the band. The strip is drawn over it, and the app's dock is hidden there.
+- **Auto's dock**: no drawn home indicator, and full screen's lift.
+- Comments brought in line.
+
+**Timeline search, closed at XS** ("timeline search icon this style"): the Insights search's collapsed box, 56px with 14px corners, a 1.5px edge and no fill, with a 20px icon. The Past button is the same box beside it. The head row is 56, so the open field (56) sits on it exactly, stopping 64px short of the right; the pinned offsets follow (tabs at 57).

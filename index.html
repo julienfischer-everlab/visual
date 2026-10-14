@@ -1156,6 +1156,7 @@
     width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);
   }
   body.light:not(.fullscr) .mTabs .mHome{background:rgba(0,0,0,.24);}
+  html.bpAuto #bpFrame > .mTabs{--navLift:14px;} html.bpAuto #bpFrame > .mTabs .mHome{display:none;}   /* Auto's narrow window is a browser, not a drawn device: no home indicator, full screen's lift */
   /* an action: icon over a compact label, the whole of it a target. The
      active one takes a brighter layer of the same glass, not a solid fill. */
   .mTab{
@@ -2875,7 +2876,7 @@
   body:not([data-bp="xs"]):not([data-bp="s"]) .dash .chModal{left:50%;right:auto;top:50% !important;bottom:auto !important;width:min(640px, calc(100% - 48px));height:min(720px, calc(100% - 64px));transform:translate(-50%,-50%);border-radius:22px;box-shadow:0 30px 90px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06);}
   body:not([data-bp="xs"]):not([data-bp="s"]) .dash .chBody{padding-top:8px !important;}
   @media (max-width:991px){ body:not([data-bp]) .dash .chModal{left:0;right:0;top:0 !important;bottom:0 !important;width:auto;height:auto;transform:none;border-radius:0;} }
-  body[data-bp="xs"] .dash .chBody{padding-top:48px !important;}
+  body[data-bp="xs"] .dash .chBody{padding-top:0 !important;}   /* the head at the modal's top: no drawn strip over the page (was 48, the strip's; in the frame the strip is a band above, as a phone browser's) */
   /* a plain cut ("a full-screen modal over the page with the full chat, no
      fancy transition"): the modal is simply there, and simply gone. It used
      to grow out of the field on a half-second morph. */
@@ -5603,6 +5604,7 @@
   body[data-bp] .aqWrap.aqDesk{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);}
   body[data-bp="xs"] .aqWrap.aqDesk, body[data-bp="s"] .aqWrap.aqDesk{top:calc(var(--barH,57px) + 48px);bottom:48px;overflow:hidden;}
   body[data-bp="xs"] .aqWrap.aqDesk{border-radius:56px;} body[data-bp="s"] .aqWrap.aqDesk{border-radius:28px;}
+  html:not(.bpAuto) body[data-bp="xs"] .aqWrap.aqDesk{top:calc(var(--barH,57px) + 95px);border-radius:0 0 56px 56px;}   /* framed XS: under the strip's band, as the page (48 + 47) */
   .aqStat{display:none;}
   .aqWrap.aqDev .aqStat{display:flex;position:absolute;left:0;right:0;top:0;z-index:3;align-items:center;justify-content:space-between;padding:18px 34px 4px;color:#fff;pointer-events:none;transition:color .3s ease;}
   .aqWrap.aqDev.aqBpS .aqStat{padding:12px 28px 4px;}
@@ -6842,7 +6844,7 @@
   html:not(.mdV2) .svLkM .tlShX{position:absolute;top:24px;right:24px;width:30px !important;height:30px !important;border-radius:50%;background:rgba(255,255,255,.08) !important;color:#ececec !important;} html:not(.mdV2) .svLkM .tlShX svg{width:11px !important;height:11px !important;}   /* the close: 30 round, 24 in from the top and the right, on every modal ("add the dismiss CTA like this") */
   html:not(.mdV2) .svLkM .cvBox{padding-left:40px !important;padding-right:40px !important;} html:not(.mdV2) .svLkM .cvPh{width:72px !important;height:72px !important;border-radius:18px !important;margin-top:32px !important;}   /* the service modals the same rule: 24 more a side, the picture 24 smaller, 32 more above it ("add 24px padding left right, reduce visual by 24px, add 32px margin top above visual; general rule all modals on service detail") */
   /* XS and S: every modal a full bottom sheet ("modal XS S should follow a bottom sheet, full; see design system ref"): the grab, a header with where it was opened from and the close, the content to the left, the buttons full width at the foot, the primary first */
-  html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM .tlShPanel{left:0 !important;right:0 !important;top:52px !important;bottom:0 !important;width:auto !important;height:auto !important;max-height:none !important;border-radius:24px 24px 0 0 !important;opacity:1 !important;transform:translateY(102%) !important;transition:transform .34s cubic-bezier(.2,.8,.2,1) !important;}
+  html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM .tlShPanel{left:0 !important;right:0 !important;top:var(--shTop, 52px) !important;bottom:0 !important;width:auto !important;height:auto !important;max-height:none !important;border-radius:24px 24px 0 0 !important;opacity:1 !important;transform:translateY(102%) !important;transition:transform .34s cubic-bezier(.2,.8,.2,1) !important;}
   html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM.on .tlShPanel{transform:none !important;}
   html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM .tlShGrab{visibility:visible !important;position:static !important;transform:none !important;margin:10px auto 0 !important;background:rgba(255,255,255,.2) !important;}
   html:not(.mdV2) :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM .tlShHead{position:static !important;padding:14px 22px 0 !important;}
@@ -6858,7 +6860,7 @@
   html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM .cvBox .lkWhy + .cvSee, html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM .cvBox .cvWhy + .cvSee{margin-top:auto !important;}
   html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM .cvBox::after{content:"";flex:0 0 0;}
   html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM{padding:0 !important;align-items:flex-end !important;}
-  html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM .dbIn{position:absolute !important;left:0;right:0;top:auto;bottom:0;max-height:calc(100% - 52px);max-width:none !important;width:auto !important;border-radius:24px 24px 0 0 !important;padding:0 22px 34px !important;align-items:stretch !important;text-align:left !important;overflow-y:auto;transform:translateY(102%) !important;transition:transform .34s cubic-bezier(.2,.8,.2,1) !important;}
+  html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM .dbIn{position:absolute !important;left:0;right:0;top:auto;bottom:0;max-height:calc(100% - var(--shTop, 52px));max-width:none !important;width:auto !important;border-radius:24px 24px 0 0 !important;padding:0 22px 34px !important;align-items:stretch !important;text-align:left !important;overflow-y:auto;transform:translateY(102%) !important;transition:transform .34s cubic-bezier(.2,.8,.2,1) !important;}
   html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM.on .dbIn{transform:none !important;}
   html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM .dbIn::before{content:"";flex:none;align-self:center;width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);margin-top:10px;}
   html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM .dbHd{display:flex !important;position:static !important;order:0;align-items:center;height:44px;margin:14px 56px 0 0;} html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM .dbHd b{font-size:20px !important;font-weight:400 !important;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -6997,7 +6999,7 @@
   /* the group's services as the steps of the right panel: a bar coloured by who acts, the name, a line */
   .svGrp .svProgHead{display:flex;align-items:center;justify-content:space-between;} .svGrpN{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:400;color:rgba(255,255,255,.56);}
   .tlShBody > .svJr{margin-top:0 !important;} .tlShBody > .svJr > .svProgHead{margin-top:0;} .tlShBody > .svJr > .svJrL:first-child{margin-top:0;}
-  :is(#phone2, body[data-bp="xs"] .dash) > .svSheet .tlShPanel{height:calc(100% - 64px);max-height:none;}   /* almost the whole screen ("almost full modal") */
+  :is(#phone2, body[data-bp="xs"] .dash) > .svSheet .tlShPanel{height:calc(100% - var(--shTop, 52px) - 12px);max-height:none;}   /* 12 below the other sheets' top: 64 under #phone2's strip, 17 in XS's viewport */   /* almost the whole screen ("almost full modal") */
   :is(.svcMob, .svXsBody) .svPend > .svBtn, :is(.svcMob, .svXsBody) .svPend > .svPendBtns{margin-top:12px;}   /* 16 -> 12 ("reduce gap by 4px") */   /* 16 more above the phone's button ("add 16px margin top CTA") */
   :is(#dSvc, #svcMob, .tlSheet) .svJrL > li.main > .svPend{padding:24px;} :is(#dSvc, #svcMob, .tlSheet) .svGrpL{padding:24px;} :is(#dSvc, #svcMob, .tlSheet) .svJrL > li.main:has(.svJrSteps){padding:24px;}   /* 24 inside the status card and the steps' cards ("card status 24px padding, timeline steps 24px card padding") */
   body:not([data-bp="xs"]) #dSvc .svAside :is(.svGrpL, .svJrL > li), :is(#phone2, .dash) > .svSheet :is(.svGrpL, .svJrL > li){padding:16px !important;}   /* the progress panel's cards, desk and phone sheet: 16 inside, 20 round ("desktop + mobile breakdown: card radius 20px, padding 16px") */
@@ -7825,7 +7827,7 @@
   .tlShAct .tlAct{flex:1 1 auto;display:flex;margin:0;padding:0;} .tlShAct .tlBtn{flex:1 1 auto;height:44px;font-size:14px;} .tlShAct .tlMore{height:44px;width:48px;}
   body[data-bp="xs"] #bpFrame > .mKbd{display:block;border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;overflow:hidden;}   /* the phone's drawn keyboard, in the XS frame for the Timeline's search; its foot rounded with the screen */
   body[data-bp="xs"].tlKbd #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;}
-  body[data-bp="xs"].tlKbd #bpFrame > .mTabs{display:none;} body[data-bp="xs"].tlKbd #dTl{padding-bottom:300px;}   /* the keys up: the dock leaves, as on the Insights phone, and the list can rise above them */
+  body[data-bp="xs"].tlKbd #bpFrame > .mTabs{display:none;} html:not(.bpAuto) body[data-bp="xs"].tlKbd #dTl{padding-bottom:300px;}   /* room for the drawn keys: the frame's only */   /* the keys up: the dock leaves, as on the Insights phone, and the list can rise above them */
   body[data-bp="xs"]:has(.tlSheet.on) #bpFrame > .mTabs, body[data-bp="s"]:has(.tlSheet.on) #bpFrame > .mTabs{display:none;}   /* the sheet stands where the dock was */
   body[data-bp="xs"]:has(.svMenu[data-tl].svMenuSh) #bpFrame > .mTabs{display:none;}   /* the item's ⋯ sheet too */
   body[data-bp="s"] .tlShPanel{left:50%;right:auto;width:480px;transform:translate(-50%,102%);} body[data-bp="s"] .tlSheet.on .tlShPanel{transform:translate(-50%,0);}
@@ -7840,14 +7842,14 @@
     .tlTabs{box-shadow:inset 0 -1px 0 rgba(255,255,255,.06);} body.light .tlTabs{box-shadow:inset 0 -1px 0 rgba(46,31,26,.09);}
     .tlTabs{gap:0;align-self:stretch;} .tlTab{flex:1 1 0;padding:12px 0 13px;font-size:15px;}
     .tlHead{margin-bottom:10px;}
-    .tlSearch{flex:none;width:44px;height:44px;padding:0;justify-content:center;border-radius:50%;cursor:pointer;} .tlSearch input{display:none;font-size:15px;}   /* just its icon ("on XS just a search icon CTA") */
-    .tlSearch > svg{width:18px;height:18px;}
-    .tlPastBtn{width:44px;height:44px;margin-left:0;border-radius:50%;} .tlPastBtn svg{width:20px;height:20px;}   /* XS: a disc by the search's, the field opening to its left */
+    .tlSearch{flex:none;width:56px;height:56px;padding:0;justify-content:center;border-radius:14px;cursor:pointer;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);}   /* closed, the Insights search's collapsed box: 56, round 14, a 1.5 edge, no ground ("timeline search icon this style") */ body.light .tlSearch{--msEdge:#ddd3bf;color:#9b8a75;} .tlSearch input{display:none;font-size:15px;}   /* just its icon ("on XS just a search icon CTA") */
+    .tlSearch > svg{width:20px;height:20px;}
+    .tlPastBtn{width:56px;height:56px;margin-left:0;border-radius:14px;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);} .tlPastBtn svg{width:20px;height:20px;} body.light .tlPastBtn{--msEdge:#ddd3bf;color:#9b8a75;}   /* XS: the search's box beside it, the field opening to its left */
     .tlSearch.open + .tlPastBtn{margin-left:auto;}   /* the field out of the flow, the disc keeps the row's right end */
-    .tlSearch.open{position:absolute;left:0;right:52px;top:50%;margin-top:-28px;width:auto;height:56px;justify-content:flex-start;gap:9px;padding:0 14px 0 16px;border-radius:14px;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);transition:box-shadow .16s ease;cursor:text;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line -- the Insights search's field ("same search behaviour as the Biomarker insight search ... with keyboard / styles") */
+    .tlSearch.open{position:absolute;left:0;right:64px;top:50%;margin-top:-28px;width:auto;height:56px;justify-content:flex-start;gap:9px;padding:0 14px 0 16px;border-radius:14px;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);transition:box-shadow .16s ease;cursor:text;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line -- the Insights search's field ("same search behaviour as the Biomarker insight search ... with keyboard / styles") */
     .tlSearch.open:focus-within{--msEdge:#fff;} .tlSearch.open > svg{width:20px;height:20px;} .tlSearch.open input{font-size:15px;color:#ececec;} .tlSearch.open input::placeholder{color:#8b8b86;} .tlSearch:not(.open) .msClear{display:none !important;} .tlSearch .msClear{margin-right:0;}
     body.light .tlSearch.open{--msEdge:#ddd3bf;color:#9b8a75;} body.light .tlSearch.open:focus-within{--msEdge:#2e241c;} body.light .tlSearch.open input{color:#2e1f1a;} body.light .tlSearch.open input::placeholder{color:#9b8a75;}
-    .tlHead{min-height:44px;} .tlHead:has(.tlSearch.open) .tlH1{visibility:hidden;}   /* the row holds the icon's 44 when the field opens over it (no jump), and the title stays out of sight under the open field */
+    .tlHead{min-height:56px;} .tlHead:has(.tlSearch.open) .tlH1{visibility:hidden;}   /* the row holds the box's 56 when the field opens over it (no jump; the field the box's height), and the title stays out of sight under the open field */
     .tlSkel .tlTh.skb{border-radius:14px;}
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:18px -16px 0;padding:12px 16px 8px;} .tlSec:first-child .tlH{margin-top:6px;}
@@ -7881,13 +7883,12 @@
     body:not(.tlCtaB) .tlItems .tlRow .tlAct{justify-self:end;margin-left:0;} body:not(.tlCtaB) .tlItems .tlRow .tlAct .tlBtn{flex:0 0 auto;padding:0 20px;}   /* the button as wide as its word, at the right ("CTA hug content"); Bottom keeps its full line */   /* the footer's left side, the when alone ("keep only the ETA badge on the left side"); a waiting item's why stays */   /* 12 clear of the dividers, 18 of padding inside */
     .tlRow:not(.noProg) .tlAct{justify-self:end;} .tlRow:not(.noProg) .tlAct .tlBtn{flex:0 0 auto;padding:0 24px;}   /* the CTA hugs its label ("hug content not fill") */   /* the hover's ground 14 above the picture and below the buttons, not flush ("padding top bottom missing on hover"); radius 20 */ .tlItems .tlRow + .tlRow::after{left:0;right:0;}
   }
-  body[data-bp="xs"] #dTl{padding:17px 16px 110px;}   /* 64 less the strip's 47, now a band above the page: the tabs still stick 2 into their padding */
-  body[data-bp="xs"] #dTl .tlBar{top:-19px;margin:0 -16px;padding:0 16px;}
+  body[data-bp="xs"] #dTl{padding:17px 16px 110px;}   /* 17 of air above the title (was 64: the drawn strip's 47 and these 17) */
+  body[data-bp="xs"] #dTl .tlBar{top:-17px;margin:0 -16px;padding:0 16px;}   /* pinned flush at the viewport's top: minus the page's top padding, as the desk's -32 for 32 (was -19 with 64, under the drawn strip) */
   /* typed into, the field stays in sight with the tabs ("if a character has been entered in the field, the field should stay visible, sticky on scroll, with
      the rest of the sticky elements"): the head sticks 8 under the viewport's top on the page's ground, the tabs under it, the months under them */
-  body[data-bp="xs"] #dTl.tlQPin .tlHead{position:sticky;top:-9px;z-index:7;} body[data-bp="xs"] #dTl.tlQPin .tlBar{top:45px;}
+  body[data-bp="xs"] #dTl.tlQPin .tlHead{position:sticky;top:-9px;z-index:7;} body[data-bp="xs"] #dTl.tlQPin .tlBar{top:57px;}   /* the head 8 under the top, 56 tall, 10 to the tabs */
   body[data-bp="xs"] #dTl.tlQPin .tlHead::before{content:"";position:absolute;left:-16px;right:-16px;top:-8px;bottom:-10px;background:var(--pageBg);z-index:-1;}   /* stuck under the status strip, its ground reaching up behind it */
-  body[data-bp="xs"] #dTl .tlBar::before, body[data-bp="xs"] #dTl .tlBar .ovGround{top:-45px;}
   body[data-bp="s"] #dTl{padding:52px 24px 120px;}
   body[data-bp="s"] #dTl .tlBar{top:-24px;margin:0 -24px;padding:0 24px;}
   body[data-bp="s"] #dTl .tlBar::before, body[data-bp="s"] #dTl .tlBar .ovGround{top:-28px;}
@@ -7979,6 +7980,10 @@
   /* ...and the forced XS is that same viewport in a phone ("Auto is the source of truth; XS just adds a frame around an auto viewport, the size of a phone"):
      the drawn status strip is a band above the page, as a phone's browser starts under its status bar -- the pages' own tops no longer clear it */
   html:not(.bpAuto) body[data-bp="xs"] .dash{border-top:47px solid var(--pageBg);}
+  html:not(.bpAuto) body[data-bp="xs"] .lp{border-top:47px solid #000;} html:not(.bpAuto) body.m23[data-bp="xs"] #bpFrame{z-index:9;} body.m23 #bpFrame > :is(.mTabs, .mKbd){display:none !important;}   /* the landing too: its ground under the strip, the strip drawn over it, no dock of the app's */
+  /* what the phone mocks keep for their own drawn strip, the desk at XS does not: the phone's bar and hero it borrows (#dApt .apNarrow, #dSvc .svXsHero) read no strip (--stH),
+     and the full bottom sheets sit 5 under the viewport's top (--shTop; 52 under #phone2's strip and the tablet's) */
+  body[data-bp="xs"] .dash{--stH:0px;--shTop:5px;}
   html.bpAuto body[data-bp="xs"] .dash{left:0;right:0;width:auto;bottom:0;border-radius:0;box-shadow:none;}
   html.bpAuto body[data-bp="xs"] .lp{left:0;right:0;width:auto;--lpW:100vw;top:var(--barH,0px);bottom:0;border-radius:0;box-shadow:none;}
   html.bpAuto body[data-bp="xs"] .aqWrap.aqDesk{left:0;right:0;width:auto;top:var(--barH,57px);bottom:0;border-radius:0;}
@@ -7987,7 +7992,7 @@
   /* ---- XS is the phone's Overview, exactly ("XS should be the exact
      structure as overview mobile version"): the phone's numbers on the
      desk's card at the phone's width -- no card padding, the 13px column,
-     the bar with the profile at its left under the strip's 45, the 24px
+     the bar with the profile at its left, 8 under the viewport's top, the 24px
      greeting, the 44px field at 75%, the services in the phone's bento
      (two and a sliver, 112 tall), the booking card at the phone's height
      and radius, the two small cards side by side, the Insights card 8
@@ -26567,7 +26572,7 @@ hairline({
     { const st = document.querySelector('#bpFrame .bpStatus'); if (st) wrap.querySelector('.aqStat').innerHTML = st.innerHTML; }   // a device's status bar, drawn on the report's own paper (XS and S in a frame, and the phone)
     // the viewport's breakpoint, as the page reads it: the one forced in the Layout tweak, or the window's width (XS < 600 <= S < 992 <= M < 1440 <= L); the phone is XS ("async report should follow these breakpoints, related to the viewport breakpoint")
     const bpNow = () => { if (!desk) return 'xs'; const f = document.body.dataset.bp, w = innerWidth; return f || (w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'); };
-    const fit = () => { const b = bpNow(); ['xs', 's', 'm', 'l'].forEach(k => wrap.classList.toggle('aqBp' + k.toUpperCase(), k === b)); wrap.classList.toggle('aqDev', !desk || /^(xs|s)$/.test(document.body.dataset.bp || '')); };
+    const fit = () => { const b = bpNow(); ['xs', 's', 'm', 'l'].forEach(k => wrap.classList.toggle('aqBp' + k.toUpperCase(), k === b)); wrap.classList.toggle('aqDev', !desk || document.body.dataset.bp === 's');   /* a status bar drawn on the report: the phone's and the tablet frame's; XS has none (Auto's window, or the frame's strip as a band above it) */ };
     fit(); addEventListener('resize', fit);
     // no closing it ("no need to make the close action possible"): the close does nothing, the dim neither, and the last step's button starts it over
     frame.addEventListener('click', e => { if (e.target.closest && e.target.closest('.arClose')){ e.stopPropagation(); e.preventDefault(); } }, true);
@@ -29338,7 +29343,7 @@ hairline({
     const markStuck = () => { const bb = bar.getBoundingClientRect().bottom; let ext = 0; list.querySelectorAll('.tlH').forEach(h => { const on = Math.abs(h.getBoundingClientRect().top - bb) < 1.5 && main.scrollTop > 6; h.classList.toggle('stuck', on); if (on) ext = h.offsetHeight; });
       bar.style.setProperty('--stkExt', ext + 'px'); bar.style.setProperty('--stkG', (bar.offsetHeight + ext) + 'px'); };   /* the sticky group is the bar and the month pinned under it: the ground and the blur measure from both */
     main.addEventListener('scroll', markStuck, { passive: true });
-    main.addEventListener('scroll', () => main.classList.toggle('ovScrolled', bar.getBoundingClientRect().top - main.getBoundingClientRect().top < (main.classList.contains('tlQPin') ? 124 : 60) && main.scrollTop > 6), { passive: true });
+    main.addEventListener('scroll', () => main.classList.toggle('ovScrolled', bar.getBoundingClientRect().top - main.getBoundingClientRect().top < (document.body.dataset.bp === 'xs' ? (main.classList.contains('tlQPin') ? 89 : 15) : 60) && main.scrollTop > 6)   /* XS: 15 before the tabs pin (at 0, or 74 under the pinned field), as it was under the drawn strip */, { passive: true });
     const sel = document.getElementById('versionSel');
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
     let lastTop = 0;
