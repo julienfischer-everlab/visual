@@ -13949,3 +13949,7 @@ Change and Cancel keep their regular weight (400 at 14px, checked on the desk, X
 ## Timeline search and Past boxes at 44
 
 At XS the closed search and the Past button are 44px boxes ("44"; were 56), with 12px corners and the same 1.5px edge. The head row is 44, and the open field is 44 tall over it, stopping 52px short of the right for the Past box. The pinned field's tabs sit at 45 (62 from the top), and `ovScrolled` follows them.
+
+## Timeline search and Past: ghost buttons, 8 apart
+
+At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44"): no edge and no ground, with a faint hover tint. They sit 8px apart ("button group 8px gap"); the Past button's −8 margin trims the head's 16 gap. Opened, the field keeps its edge and stops 8px short of the Past button.
