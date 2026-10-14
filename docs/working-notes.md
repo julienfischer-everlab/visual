@@ -14029,3 +14029,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Card padding 12 on every side measured on the picture ("12px all side padding on card"): the badges' 36 boxes hung 3 under the picture, so `.tlMeta.tlMetaC{margin-bottom:-4px}` (desk only; XS and the Overview grid cards reset it to 0) lets the picture set the row's height.
 - Card to divider 12 above and below ("12px divider gap between card and divider"): `.tlRow` padding 24 (was 30), `.tlRow::before` top/bottom 12. Rows 144 tall (were 159).
 - Later card: 10 between the title and its line (was 2; "8px more gap between title and sub"), every variation.
+
+## Later card spec, See actions, modal versions, report modals
+- Later card: copy "12 actions are on hold." / "Add them to your action plan to get started."; title→sub 6px ("+8" then "-4px gap"); heading "Available to action" (was "Available for you").
+- Later card visual (desk, and Left on phone/XS): the Hairline drawing in a 128 square ("hairline visual square 128px"): the svg is scaled and shifted from its rest bbox, squared (`--sqW/--sqH/--sqL/--sqT` set at mount), so the 128 is drawing, not sheet. Card padding 32 every side ("card padding when left aligned 32px"), 32 visual→content. Centered (stacked) unchanged.
+- **See actions**: the secondary 44 full-round button (8% ground; light 7% warm), at the card's right on L/M/S (`.ovDefTx` a 2-column grid, the button spanning both rows), under the words 16 below at XS (both alignments). Replaces the white "See detail".
+- Overview container: already max 1280 and centred at every width (1600: 48/48; 1920: 208/208; 2560: 528/528); no change.
+- XS section headings in light mode were forced #ececec (white on white): now #2e1f1a.
+- Tweaks → Modal: V1, V4, V6, V9 only ("keep V1 V6 V4 V9, kill the rest"); a saved V3/V7/V8 falls back to V1. Their code paths remain but cannot be reached.
+- Report modals: buttons hug their words, 16 apart, every version ("CTA hug content, gap 16, gen rule for all report modal"): `.dbBtns` gap 16 (XS sheet: stacked full width, gap 16); the V9 card page (visuals/report-visuals.html) `.ctas`/`.ictas` gap 16 and no stretching under 480 (buttons hug; they wrap at ~360).
+- Value card ("What we highlighted", date tab, picture) on the Advanced Blood Testing (path) and MRI (wbmri) final modals too, points tailored: blood — biomarkers at a glance / heart and metabolic health / what may need attention / recommendations and when to retest (12 Oct 2026); MRI — whole body organ by organ / heart and lungs from the CT chest / incidental findings and what they mean / recommendations and next steps (3 Nov 2026).
+- Timeline Just completed: the Microbiome & Gut Health Assessment item (fresh) in place of the Advanced blood panel, which stays in Past (July 2026).
+- Status dot ring 2 thinner: badge 16 (dot 8, 4 round it), centre unchanged.
