@@ -13839,3 +13839,9 @@ On the phone and at XS, the "12 services" card stacks its content, centred ("sta
 ## Services card: more air
 
 The stacked services card (phone and XS) has 48px above and below its content, 24px more than before ("+24px padding"). Its sides stay at 24px, since the content is centred.
+
+## Overview action plan: the XS list until M
+
+"Use XS list item style until M".
+- At XS, S, and Auto up to 991px, the Overview shows the action plan as the list with its See full timeline button, not the grid of cards. M and L keep the grid.
+- The list's rows take XS's style at any width: the Timeline's XS container block now reads `@container tl (max-width:540px) or style(--tlXs: 1)`, and the Overview's list sets `--tlXs:1` at S and in Auto from 600 to 991px. Chromium was checked: a wide container flagged with `--tlXs` takes the XS rows; an unflagged wide one does not.
