@@ -13744,3 +13744,12 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Services card: the pictures overlap 12 more (-28, "stacked more -12px"); no chevron ("remove action arrow"): the card itself is the link (role link, focusable, Enter/Space), still to the Timeline's Later tab; title weight 500 ("font weight medium").
 - Phone task page: no sheet over the banner ("shouldn't have a bg on the body"): .svmBody transparent, no shadow, when a task is on; the banner's photo masked to nothing at its foot and its shade ending on the page's #0d0d0c, so no edge where the sheet used to cover it.
 - Phone item pictures 84 (from 68, "increase visual 16px"), their column 90.
+
+## Action plan CTAs hug, ghost chips 16px, consent photo, "Available for you"
+
+- The row's CTA group hugs its content, right-aligned ("CTA hug content"); the Bottom tweak still stretches it full width.
+- The ghost date chip is 16px with no side padding ("16px no padding"), so its icon lines up with the thumbnail.
+- "Review and sign your consent" uses the stretching-figure photo (`assets/overview/task-thumb-c.webp`, 360px square crop).
+- The Overview's action plan reads, in order: items, See full timeline, an "Available for you" section title, then the 12 services card.
+  - Phone: `.ovsec.ovsecAvail`, included in the Section order's Action plan group and hidden with the rest under the new-member state.
+  - Desk: `.dvSec.dvSecAvail`. The XS copy of the card (`.dvDefXs`) is gone: one card now follows the list and its See full timeline at XS, and the grid at S/M/L.
