@@ -2,7 +2,8 @@
  * ProgressTimeline styles. Geometry (14px dots, 4px dot-to-connector gaps,
  * 28px buttons, 8px label gutters) matches the constants in
  * progress-timeline.js; the script sets --pt-seg, --pt-pad, --pt-col and
- * --pt-edge from the measured width. Theme through the --pt-* colours.
+ * --pt-edge from the measured width, and .is-compact when the labels go.
+ * Theme through the --pt-* colours.
  */
 .pt {
   --pt-bg: #1c1c1c;                      /* the card, and the colour the fades melt into */
@@ -15,6 +16,7 @@
   --pt-label-done: rgba(244, 244, 244, .64);
   --pt-label-upcoming: rgba(244, 244, 244, .52);
   --pt-label-current: #fff;
+  --pt-caption: rgba(244, 244, 244, .64);  /* compact: "Up next – ..." under the dots */
   --pt-nav-bg: #2e2e2e;
   --pt-nav-bg-hover: #3a3a3a;
   --pt-focus: rgba(244, 244, 244, .9);
@@ -132,6 +134,49 @@
 }
 .pt-step.is-complete .pt-label { color: var(--pt-label-done); }
 .pt-step.is-current .pt-label { color: var(--pt-label-current); font-weight: 500; }
+
+/* Compact (fewer than three labelled steps fit): no labels, the dots and the
+   line alone, and one line under them naming the next step. The labels stay
+   for screen readers. */
+.pt.is-compact .pt-step { gap: 0; }
+.pt.is-compact .pt-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.pt-caption {
+  display: none;
+  margin: 0;
+  padding: 0 16px var(--pt-pad-y);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--pt-caption);
+}
+.pt.is-compact.has-caption .pt-scroller { padding-bottom: 14px; }
+.pt.is-compact.has-caption .pt-caption { display: block; }
+.pt-info {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin: 0 0 0 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  vertical-align: -4px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.pt-info:hover { color: var(--pt-fg); }
+.pt-info:focus-visible { outline: 2px solid var(--pt-focus); outline-offset: 1px; }
 
 /* Fades only where the track runs on past the edge. */
 .pt-fade {

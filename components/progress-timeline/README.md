@@ -3,7 +3,9 @@
 A reusable, responsive horizontal step timeline: a dark card with dots,
 connectors and labels that sizes itself to its parent and scrolls when the
 steps don't fit. It keeps the full timeline at every width and places the
-current step automatically. It has no dependencies and no framework.
+current step automatically. Where fewer than three labelled steps fit it turns
+compact: dots and line only, with the next step named underneath. It has no
+dependencies and no framework.
 
 ```
 progress-timeline.js    the component (classic script or CommonJS)
@@ -26,6 +28,7 @@ test/validate.js        the browser validation suite (Playwright)
     complete: false,      // true = every step done
     minSegment: 128,      // px between neighbouring dots, never less (default 128)
     label: 'Deep assessment',
+    onInfo: () => openAllSteps(),   // optional: an info button after the compact caption
   });
   tl.update({ current: 'slot' });   // new props; the same current keeps the user's scroll position
   tl.destroy();
@@ -39,11 +42,16 @@ test/validate.js        the browser validation suite (Playwright)
 | `complete` | `false` | every step done |
 | `minSegment` | `128` | minimum centre-to-centre distance between dots, in px |
 | `edge` | `128` | the edge safe area at each side, for the fades and arrows |
+| `compactEdge` | `64` | the safe area at each side when compact |
 | `label` | `'Progress'` | accessible name prefix |
+| `upNext` | `'Up next'` | the compact caption's prefix: "Up next – Final results" |
+| `infoLabel` | `'See all the steps'` | the info button's accessible name |
 | `onArrow` | `null` | optional: `({ direction: 'start' \| 'end', offset, currentIndex }) => void` after an arrow scrolls |
+| `onInfo` | `null` | optional: `({ currentIndex }) => void`. When set, the compact caption ends with an info button that calls it |
 
 **Events and methods.** The root also dispatches a bubbling
-`progress-timeline:arrow` event with the same `detail`. The methods are
+`progress-timeline:arrow` event with the same `detail`, and
+`progress-timeline:info` when the info button is pressed. The methods are
 `update(props)`, `setCurrent(id)`, `scrollToCurrent(smooth)`, `getState()` and
 `destroy()`.
 
@@ -72,8 +80,23 @@ Rules:
 - **Otherwise** the segment is exactly `m` and the track scrolls. Partial steps
   overflow at the edges, under the fades.
 - **Wide or narrow.** The width is wide when the usable width holds at least
-  two minimum increments (`usable ≥ 2m`, so `W ≥ 512` by default). Below that it
-  is narrow. The breakpoint comes from those numbers, not from a device width.
+  two minimum increments (`usable ≥ 2m`, so `W ≥ 512` by default): three
+  labelled steps fit between the edges. Below that it is narrow. The breakpoint
+  comes from those numbers, not from a device width.
+- **Narrow, all columns fit** when `N · m ≤ W`. The columns stretch across the
+  card with their labels, and nothing scrolls.
+- **Compact** is every other narrow case: fewer than three labelled steps fit.
+  - The labels go entirely; the dots and the line remain (the names are still
+    read out).
+  - The safe area is 64px each side (`compactEdge`, or `W / 4` below 256px),
+    and the fades and arrows sit in it.
+  - The segment puts three dots across the safe area (previous, current,
+    next): `(W − 2 · 64) / 2`, never more than `m` and never under 38px. If
+    all the steps fit at that, they spread across the safe area instead.
+  - One centred line under the dots names the next step: "Up next – Final
+    results", plus an info button when `onInfo` is set. Before starting it
+    names the first step; with the last step in hand (or all done) it is empty
+    and takes no space.
 
 Each step owns a column as wide as its segment (capped at 256px), centred on
 its dot. Its label is the column minus 8px on each side, at 14px, and wraps to
@@ -100,12 +123,12 @@ changes, and on a resize the user hasn't overridden by browsing.
 - **Clamping.** The result is always clamped to `0 … max`, the track's real
   limits, so no blank space ever shows.
 
-**Narrow** (`pad = column / 2`):
-- The current step centres at 50%, as far as the track allows. The first step
-  before starting, the last when complete.
-- No blank space is ever added. At the beginning the first step's column
-  starts flush at the card's left; at the end the last one finishes flush
-  right.
+**Compact** (`pad = 64`):
+- The current step centres at 50%, as far as the track allows, with the
+  previous and next dots on the safe lines. The first step before starting,
+  the last when complete.
+- No blank space is ever added. At the beginning the first dot sits on the
+  left safe line; at the end the last one sits on the right.
 - Neighbouring steps stay on the same overflowing, scrollable track.
 
 **Browsing.** Swiping, trackpad scrolling, mouse dragging, the arrows and the
@@ -122,11 +145,11 @@ keyboard all move the track without touching progress, and nothing snaps back.
   - The left fade shows only when earlier content overflows (`offset > 0`).
   - The right fade shows only when later content overflows
     (`offset < max`).
-  - Both are 128px gradients into the card's colour, updated on every scroll
-    frame.
+  - Both are 128px gradients into the card's colour (64px when compact),
+    updated on every scroll frame.
 - **Arrows.**
-  - They are 28px circles with small chevrons, centred 64px from their edges
-    and on the line.
+  - They are 28px circles with small chevrons, centred in the edge areas (64px
+    from the edges, 32px when compact) and on the line.
   - An arrow shows only when its edge overflows and the timeline is beneath
     its centre: its line, a dot or a step's label column. Never over blank
     track past an end.
@@ -149,7 +172,8 @@ keyboard all move the track without touching progress, and nothing snaps back.
 - **Connectors.** 2px, 4px clear of each dot. They're solid up to the current
   step and faint after it.
 - **Labels.** 14px. The current label is white at weight 500; the others are
-  regular and muted.
+  regular and muted. None when compact.
+- **Compact caption.** 14px, muted, centred under the dots.
 - **No step count.** There is no separate step count under the timeline.
 
 ## Accessibility
@@ -165,6 +189,9 @@ keyboard all move the track without touching progress, and nothing snaps back.
 - **Arrows.** They're real `<button>`s labelled "Scroll to earlier steps" and
   "Scroll to later steps".
 - **Announcements.** A polite live region announces progress changes.
+- **Compact.** The labels are hidden visually only, so each step still reads
+  in full. The info button is a real `<button>` named by `infoLabel`; if it
+  had focus when the caption empties, focus moves to the track.
 - **Reduced motion.** Scrolling becomes instant and the ripple becomes a
   static ring.
 
@@ -178,7 +205,7 @@ The suite mounts the component in `test/fixture.html`, measures the rendered
 geometry and asserts the rules above.
 
 **Matrix.** It covers:
-- Widths 240–1600, either side of the 512px wide/narrow line.
+- Widths 240–1600, either side of the 512px wide/compact line.
 - 1–25 steps.
 - Not started, first, second, middle, second-to-last, last and complete.
 - Short and long labels, including an unbroken word.
@@ -195,4 +222,7 @@ geometry and asserts the rules above.
 - Re-renders keeping position, and resizes clamping it.
 - Progress changes repositioning.
 - Reduced motion.
-- A parent resized live across the line.
+- A parent resized live across the line, including a browser scroll clamp
+  that mustn't count as browsing.
+- Compact: the caption follows progress, the info button and event, labels
+  back when wide again, and focus when the caption empties.

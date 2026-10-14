@@ -52,12 +52,16 @@ const MEASURE = () => {
   const fade = sel => { const f = r.querySelector(sel), q = f.getBoundingClientRect(); return { w: q.width, on: f.classList.contains('pt-fade') && getComputedStyle(f).opacity }; };
   const rcs = getComputedStyle(r);
   const cur = r.querySelector('.pt-step.is-current .pt-dot');
+  const cap = r.querySelector('.pt-caption'), capB = cap.getBoundingClientRect();
+  const lab0 = r.querySelector('.pt-label'), labB = lab0 ? lab0.getBoundingClientRect() : null;
   return { W: rr.width, H: rr.height, radius: rcs.borderTopLeftRadius + ' ' + rcs.borderTopRightRadius + ' ' + rcs.borderBottomRightRadius + ' ' + rcs.borderBottomLeftRadius, overflow: rcs.overflow,
     scrollLeft: sc.scrollLeft, scrollMax: sc.scrollWidth - sc.clientWidth, dots, labels, conns,
     bs: btn('.pt-nav--start'), be: btn('.pt-nav--end'), fs: fade('.pt-fade--start'), fe: fade('.pt-fade--end'),
     classes: r.className, mode: r.dataset.mode, state: window.tl.getState(),
     ariaCurrent: [...r.querySelectorAll('[aria-current="step"]')].map(li => lis.indexOf(li)),
-    curAnim: cur ? getComputedStyle(cur).animationName : null, curShadow: cur ? getComputedStyle(cur).boxShadow : null };
+    curAnim: cur ? getComputedStyle(cur).animationName : null, curShadow: cur ? getComputedStyle(cur).boxShadow : null,
+    caption: { shown: getComputedStyle(cap).display !== 'none' && capB.height > 0, text: cap.textContent, info: !!cap.querySelector('.pt-info'), top: capB.top - rr.top, bottom: capB.bottom - rr.top },
+    labelBox: labB ? { w: labB.width, h: labB.height } : null, labelText: lab0 ? lab0.textContent : '' };
 };
 
 const frames = 'new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))';
@@ -68,10 +72,22 @@ function checkGeometry(m, where, cfg) {
   const E = Math.min(128, W / 2);                       // 128px edge areas (they meet below 256px)
   const narrow = W - 2 * E < 2 * min;                    // fewer than two minimum increments between them
   const fitsWide0 = N >= 2 && (N - 1) * min <= W - 2 * E + 1e-6, fitsNarrow0 = N >= 2 && !fitsWide0 && narrow && N * Math.min(min, 256) <= W + 1e-6;
-  // narrow and scrolling: the fades give way so a centred label fits between them
-  const Ee = narrow && N >= 2 && !fitsWide0 && !fitsNarrow0 ? Math.min(E, Math.max(0, (W - Math.min(min, 256)) / 2)) : E;
+  // compact: narrow and three labelled steps don't fit, so no labels, a 64px safe area each side
+  const compact = narrow && N >= 2 && !fitsWide0 && !fitsNarrow0;
+  const CE = Math.min(64, W / 4), CU = W - 2 * CE, CM = Math.min(min, Math.max(38, CU / 2));
+  const Ee = compact ? CE : E;
   ok(Math.abs(S.edge - Ee) < 0.01, where, 'edge ' + S.edge + ' expected ' + Ee);
   ok(S.narrow === narrow, where, 'narrow ' + S.narrow + ' expected ' + narrow);
+  ok(S.compact === compact && m.classes.includes('is-compact') === compact, where, 'compact ' + S.compact + ' expected ' + compact);
+  // compact: the labels gone from sight (still read out), one caption naming the next step
+  if (compact) ok(m.labelBox && m.labelBox.w <= 1.01 && m.labelBox.h <= 1.01 && /^Step 1 of /.test(m.labelText), where, 'compact: label still showing ' + JSON.stringify(m.labelBox));
+  else if (N >= 1) ok(m.labelBox && m.labelBox.h >= 19, where, 'label hidden outside compact');
+  if (!free) {
+    const nx = c < 0 ? 0 : c < N - 1 ? c + 1 : -1;
+    const want = compact && nx >= 0 ? 'Up next \u2013 ' + cfg.labels[nx] : null;
+    ok(m.caption.shown === !!want && (!want || m.caption.text === want), where, 'caption ' + (m.caption.shown ? JSON.stringify(m.caption.text) : 'hidden') + ', expected ' + (want ? JSON.stringify(want) : 'hidden'));
+    if (want) ok(m.caption.top >= m.dots[0].y + 7 + 12 - 0.6 && m.caption.bottom <= m.H + 0.6, where, 'caption placement ' + m.caption.top.toFixed(1) + '..' + m.caption.bottom.toFixed(1));
+  }
   ok(m.radius === '24px 24px 24px 24px', where, 'radius ' + m.radius);
   ok(m.overflow === 'hidden', where, 'card overflow ' + m.overflow);
   ok(m.scrollLeft >= -0.5 && m.scrollLeft <= Math.max(0, m.scrollMax) + 0.5, where, 'scrollLeft out of range ' + m.scrollLeft + '/' + m.scrollMax);
@@ -96,7 +112,7 @@ function checkGeometry(m, where, cfg) {
   ok(m.classes.includes('is-overflow-end') === fr, where, 'end fade ' + m.classes.includes('is-overflow-end') + ' vs overflow ' + fr);
 
   // the timeline under an arrow's centre: its line, dots or label columns (not bare track past the ends)
-  const colW = Math.min(seg, 256);
+  const colW = compact ? 14 : Math.min(seg, 256);
   const under = cx => N >= 2 && cx >= m.dots[0].x - colW / 2 - 0.5 && cx <= m.dots[N - 1].x + colW / 2 + 0.5;
   const e = Ee;
   ok(Math.abs(m.fs.w - e) < 0.6 && Math.abs(m.fe.w - e) < 0.6, where, 'fade width ' + m.fs.w + '/' + m.fe.w + ' expected ' + e);
@@ -111,7 +127,25 @@ function checkGeometry(m, where, cfg) {
   if (N === 0) return;
 
   {
-    if (N >= 2) ok(seg >= min - 0.5, where, 'segment ' + seg.toFixed(1) + ' below min ' + min);
+    if (N >= 2 && !compact) ok(seg >= min - 0.5, where, 'segment ' + seg.toFixed(1) + ' below min ' + min);
+    if (compact) {
+      // three dots across the safe area (previous, current, next) as far as the minimum allows; fits: spread across it
+      const fitsC = (N - 1) * CM <= CU + 1e-6;
+      if (fitsC) {
+        ok(S.maxOffset <= 0.5, where, 'compact fit but overflows');
+        ok(Math.abs(m.dots[0].x - CE) < 0.6 && Math.abs(m.dots[N - 1].x - (W - CE)) < 0.6, where, 'compact fit: not across the safe area ' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1));
+      } else {
+        ok(Math.abs(seg - CM) < 0.6, where, 'compact segment ' + seg.toFixed(1) + ' expected ' + CM.toFixed(1));
+        ok(seg <= min + 0.5, where, 'compact segment above the minimum');
+        ok(m.dots[0].x <= CE + 0.6 && m.dots[N - 1].x >= W - CE - 0.6, where, 'compact: blank space past an end (' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1) + ')');
+        if (!free) {
+          const k = Math.max(0, Math.min(N - 1, c)), x = m.dots[k].x;
+          const atStart = Math.abs(m.dots[0].x - CE) < 0.6, atEnd = Math.abs(m.dots[N - 1].x - (W - CE)) < 0.6;
+          ok(Math.abs(x - W / 2) < 0.6 || (atStart && x < W / 2) || (atEnd && x > W / 2), where, 'compact: step ' + k + ' at ' + x.toFixed(1) + ', expected the centre ' + W / 2 + ' unless clamped at an end');
+          if (Math.abs(x - W / 2) < 0.6 && CM * 2 <= CU + 0.6 && k > 0 && k < N - 1) ok(m.dots[k - 1].x >= CE - 0.6 && m.dots[k + 1].x <= W - CE + 0.6, where, 'compact: a neighbour outside the safe area');
+        }
+      }
+    }
     const fitsWide = N >= 2 && (N - 1) * min <= W - 2 * E + 1e-6;
     const fitsNarrow = N >= 2 && !fitsWide && narrow && N * Math.min(min, 256) <= W + 1e-6;   // narrow: every column fits, so they stretch across the card
     const fits = fitsWide || fitsNarrow;
@@ -123,19 +157,9 @@ function checkGeometry(m, where, cfg) {
       ok(!overflow, where, 'narrow fit but overflows');
       ok(Math.abs(m.dots[0].x - W / N / 2) < 0.6 && Math.abs(m.dots[N - 1].x - (W - W / N / 2)) < 0.6, where, 'narrow fit: columns not filling the card ' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1));
     }
-    if (N >= 2 && !fits) ok(Math.abs(seg - min) < 0.6, where, 'overflowing at ' + seg.toFixed(1) + ' instead of the minimum');
+    if (N >= 2 && !fits && !compact) ok(Math.abs(seg - min) < 0.6, where, 'overflowing at ' + seg.toFixed(1) + ' instead of the minimum');
     if (N >= 2 && fitsNarrow) ok(seg >= min - 0.5, where, 'narrow fit below the minimum');
     if (N === 1) ok(Math.abs(m.dots[0].x - W / 2) < 0.6, where, 'single step not centred');
-    if (N >= 2 && !fits && narrow) {
-      // narrow: whichever step is current (the first before starting, the last when done) at 50%
-      const half = Math.min(min, 256) / 2;   // no blank lead-in: the end columns flush with the card's edges
-      ok(m.dots[0].x <= half + 0.6 && m.dots[N - 1].x >= W - half - 0.6, where, 'narrow: blank space past an end (' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1) + ')');
-      if (!free) {
-        const k = Math.max(0, Math.min(N - 1, c)), x = m.dots[k].x;
-        const atStart = Math.abs(m.dots[0].x - half) < 0.6, atEnd = Math.abs(m.dots[N - 1].x - (W - half)) < 0.6;
-        ok(Math.abs(x - W / 2) < 0.6 || (atStart && x < W / 2) || (atEnd && x > W / 2), where, 'narrow: step ' + k + ' at ' + x.toFixed(1) + ', expected the centre ' + W / 2 + ' unless clamped at an end');
-      }
-    }
     if (N >= 2 && !fits && !narrow) {
       ok(m.dots[0].x <= E + 0.6, where, 'empty space before the first dot');
       ok(m.dots[N - 1].x >= W - E - 0.6, where, 'empty space after the last dot');
@@ -180,7 +204,7 @@ function checkGeometry(m, where, cfg) {
         const states = [...new Set([-1, 0, 1, Math.floor(N / 2), N - 2, N - 1, N].filter(c => c >= -1 && c <= N))];
         for (const c of states) {
           for (const long of (min === 128 ? [false, true] : [true])) {
-            const cfg = { W, N, c, min, long };
+            const cfg = { W, N, c, min, long, labels: steps(N, long).map(s => s.label) };
             const m = await mount(cfg);
             mounts++;
             checkGeometry(m, `W${W} N${N} c${c} min${min}${long ? ' long' : ''}`, cfg);
@@ -240,7 +264,7 @@ function checkGeometry(m, where, cfg) {
     await p.waitForTimeout(900);   // the smooth scroll
     m = await p.evaluate(MEASURE);
     ok(!m.state.browsed, 'progress', 'still browsing after a progress change');
-    checkGeometry(m, 'progress -> 11', { W: 900, N: 16, c: 11, min: 128 });
+    checkGeometry(m, 'progress -> 11', { W: 900, N: 16, c: 11, min: 128, labels: steps(16, false).map(s => s.label + '.') });
     ok(/Step 12 of 16/.test(await p.evaluate(() => document.querySelector('.pt [aria-live]').textContent)), 'progress', 'not announced');
   }
   {
@@ -316,7 +340,7 @@ function checkGeometry(m, where, cfg) {
     await tp.evaluate(([o, w]) => T.mount(o, w), [{ steps: steps(10, false), current: 's0' }, 380]);
     await tp.evaluate(frames);
     let m = await tp.evaluate(MEASURE);
-    ok(m.state.narrow && m.state.segment === 128 && !m.state.fit, where, 'narrow: expected the full timeline at the minimum segment');
+    ok(m.state.compact && !m.state.fit && Math.abs(m.state.segment - 126) < 0.01, where, 'compact: expected the full timeline, three dots across the safe area (segment ' + m.state.segment + ')');
     const box = await tp.evaluate(() => { const q = document.querySelector('.pt-scroller').getBoundingClientRect(); return { x: q.left, y: q.top }; });
     const cdp = await tp.context().newCDPSession(tp);
     const X = Math.round(box.x + 300), Y = Math.round(box.y + 30);   // a finger swiping left
@@ -373,7 +397,7 @@ function checkGeometry(m, where, cfg) {
       await p.mouse.click(r2[0] + m.be.cx, r2[1] + m.be.cy);
       await p.waitForTimeout(700);
       m = await p.evaluate(MEASURE);
-      ok(Math.abs(m.scrollLeft - 128) < 1.5 && m.ariaCurrent[0] === 0, where, 'narrow arrow moved ' + m.scrollLeft);
+      ok(Math.abs(m.scrollLeft - m.state.segment) < 1.5 && m.ariaCurrent[0] === 0, where, 'narrow arrow moved ' + m.scrollLeft + ', segment ' + m.state.segment);
     }
   }
   {
@@ -385,7 +409,7 @@ function checkGeometry(m, where, cfg) {
       await p.evaluate(frames); await p.evaluate(frames);
       const m = await p.evaluate(MEASURE);
       ok(Math.abs(m.W - w) < 0.6, where, 'width ' + m.W + ' expected ' + w);
-      checkGeometry(m, where + ' ' + w, { W: w, N: 10, c: 4, min: 128 });
+      checkGeometry(m, where + ' ' + w, { W: w, N: 10, c: 4, min: 128, labels: Array.from({ length: 10 }, (_, i) => SHORT[i]) });
     }
   }
 
@@ -523,6 +547,43 @@ function checkGeometry(m, where, cfg) {
     await p.evaluate(() => tl.update({ current: 's6' }));
     const n = await p.evaluate(() => [document.querySelector('.pt-nav--start').getAttribute('aria-label'), document.querySelector('.pt-nav--end').getAttribute('aria-label')]);
     ok(n[0] === 'Scroll to earlier steps' && n[1] === 'Next steps', where, JSON.stringify(n));
+  }
+
+  {
+    // compact: the info button calls onInfo and fires the event; the caption follows progress; back to labels when wide
+    const where = 'compact';
+    await p.evaluate(() => { window._info = []; T.mount({ steps: Array.from({ length: 10 }, (_, i) => ({ id: 's' + i, label: 'Step ' + (i + 1) })), current: 's3', onInfo: d => window._info.push(d) }, 320);
+      document.querySelector('.pt').addEventListener('progress-timeline:info', e => window._info.push(Object.assign({ ev: true }, e.detail))); });
+    await p.evaluate(frames);
+    let m = await p.evaluate(MEASURE);
+    ok(m.state.compact && m.caption.shown && m.caption.text === 'Up next \u2013 Step 5' && m.caption.info, where, 'caption ' + JSON.stringify(m.caption));
+    ok(Math.abs(m.dots[3].x - 160) < 0.6 && Math.abs(m.dots[2].x - 64) < 0.6 && Math.abs(m.dots[4].x - 256) < 0.6, where, 'previous, current, next at ' + [2, 3, 4].map(i => m.dots[i].x.toFixed(1)));
+    ok(m.bs.vis && m.be.vis && Math.abs(m.bs.cx - 32) < 0.6 && Math.abs(m.be.cx - 288) < 0.6, where, 'arrows ' + JSON.stringify([m.bs.vis, m.be.vis, m.bs.cx, m.be.cx]));
+    await p.evaluate(() => document.querySelector('.pt-info').click());
+    const inf = await p.evaluate(() => window._info);
+    ok(inf.length === 2 && inf[0].currentIndex === 3 && inf[1].ev, where, 'info ' + JSON.stringify(inf));
+    const lbl = await p.evaluate(() => document.querySelector('.pt-info').getAttribute('aria-label'));
+    ok(lbl === 'See all the steps', where, 'info label ' + lbl);
+    await p.evaluate(() => tl.update({ current: 's9' }));
+    await p.waitForTimeout(700);
+    m = await p.evaluate(MEASURE);
+    ok(!m.caption.shown && Math.abs(m.dots[9].x - 256) < 0.6, where, 'last step: caption ' + m.caption.shown + ', last dot ' + m.dots[9].x);
+    await p.evaluate(() => tl.update({ current: 's1', onInfo: null }));
+    await p.waitForTimeout(700);
+    m = await p.evaluate(MEASURE);
+    ok(m.caption.shown && !m.caption.info && m.caption.text === 'Up next \u2013 Step 3', where, 'no onInfo: ' + JSON.stringify(m.caption));
+    await p.evaluate(() => T.resize(700));
+    await p.evaluate(frames); await p.evaluate(frames);
+    m = await p.evaluate(MEASURE);
+    ok(!m.state.compact && !m.caption.shown && m.labelBox.h >= 19, where, 'wide again: compact ' + m.state.compact + ', caption ' + m.caption.shown);
+    // a focused info button that goes away hands focus to the card, not <body>
+    await p.evaluate(() => { T.resize(320); });
+    await p.evaluate(frames); await p.evaluate(frames);
+    await p.evaluate(() => tl.update({ onInfo: () => {} }));
+    await p.evaluate(() => document.querySelector('.pt-info').focus());
+    await p.evaluate(() => tl.update({ current: 's9' }));
+    const fa = await p.evaluate(() => [document.activeElement === document.body, !!document.activeElement.closest('.pt')]);
+    ok(!fa[0] && fa[1], where, 'focus after the caption emptied: ' + JSON.stringify(fa));
   }
 
   ok(errors.length === 0, 'page', 'errors: ' + errors.join(' | '));

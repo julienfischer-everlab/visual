@@ -6,7 +6,8 @@
  *     current: 'clinic',          // id of the step in progress; null = not started
  *     complete: false,            // true = every step done
  *     minSegment: 128,            // px between neighbouring dots, never less
- *     onArrow: detail => {...}    // optional: an arrow scrolled the track one segment
+ *     onArrow: detail => {...},   // optional: an arrow scrolled the track one segment
+ *     onInfo: detail => {...}     // optional: adds an info button to the compact caption
  *   });
  *   tl.update({ current: 'slot' });
  *   tl.destroy();
@@ -32,6 +33,7 @@
   const ANCHOR = 0.4;                 // where the current dot rests in a middle step, as a share of the width
   const MIN_SEGMENT_FLOOR = 2 * DOT_ZONE + 16;   // a connector of at least 16px
   const EPS = 0.5;
+  const COMPACT_SPAN = 2;             // compact: segments across the safe area (previous, current and next dots)
 
   const DEFAULTS = {
     steps: [],
@@ -39,9 +41,13 @@
     complete: false,
     minSegment: 128,
     edge: 128,
+    compactEdge: 64,        // the safe area each side once the labels go (compact)
     label: 'Progress',
+    upNext: 'Up next',      // the compact caption: "Up next – <the next step>"
+    infoLabel: 'See all the steps',
     arrowLabels: { start: 'Scroll to earlier steps', end: 'Scroll to later steps' },
     onArrow: null,          // optional: told after an arrow click scrolls the track
+    onInfo: null,           // optional: an info button after the compact caption calls it
   };
   // Options with undefined values (a pass-through wrapper's) don't override the defaults.
   const defined = o => { const r = {}; if (o) for (const k of Object.keys(o)) if (o[k] !== undefined) r[k] = o[k]; return r; };
@@ -63,28 +69,35 @@
     const narrow = usable < 2 * m;                               // fewer than two minimum increments fit
     const col = seg => Math.min(seg, LABEL_MAX + 2 * GUTTER);
     if (N <= 1) {
-      return { fit: true, narrow, W, N, seg: 0, pad: W / 2, edge: E, col: Math.min(LABEL_MAX + 2 * GUTTER, W),
+      return { fit: true, narrow, compact: false, W, N, seg: 0, pad: W / 2, edge: E, col: Math.min(LABEL_MAX + 2 * GUTTER, W),
         content: W, max: 0, usable, minSegment: m };
     }
     const spread = usable / (N - 1);
     if (spread >= m - 1e-6) {                                    // all fit: stretch across the usable width
-      return { fit: true, narrow, W, N, seg: spread, pad: E, edge: E, col: col(spread), content: W, max: 0, usable, minSegment: m };
+      return { fit: true, narrow, compact: false, W, N, seg: spread, pad: E, edge: E, col: col(spread), content: W, max: 0, usable, minSegment: m };
     }
     // Narrow and every column fits at the minimum: stretch the columns across
     // the card, no scrolling and no blank space.
     if (narrow && N * col(m) <= W + 1e-6) {
       const sg = W / N;
-      return { fit: true, narrow, W, N, seg: sg, pad: sg / 2, edge: E, col: col(sg), content: W, max: 0, usable, minSegment: m };
+      return { fit: true, narrow, compact: false, W, N, seg: sg, pad: sg / 2, edge: E, col: col(sg), content: W, max: 0, usable, minSegment: m };
     }
-    // Scrolls, at exactly the minimum. Narrow: no blank lead-in, the first
-    // step's column starts flush at the card's left (the last ends flush right).
-    const pad = narrow ? col(m) / 2 : E;
-    const content = 2 * pad + (N - 1) * m;
-    // Narrow cards too tight for both 128px fades and a label between them: the
-    // fades (and the arrows centred in them) give way just enough that the
-    // centred current step stays readable.
-    const fe = narrow ? Math.min(E, Math.max(0, (W - col(m)) / 2)) : E;
-    return { fit: false, narrow, W, N, seg: m, pad, edge: fe, col: col(m), content, max: Math.max(0, content - W), usable, minSegment: m };
+    if (narrow) {
+      // Compact: fewer than three labelled steps fit, so the labels go entirely
+      // and the dots and line sit inside a 64px safe area each side. The
+      // segment is what puts three dots across it (previous, current, next),
+      // never more than the minimum; the track scrolls if the rest don't fit.
+      const CE0 = Number.isFinite(+o.compactEdge) ? Math.max(0, +o.compactEdge) : DEFAULTS.compactEdge;
+      const ce = Math.min(CE0, W / 4), cu = W - 2 * ce;
+      const mc = Math.min(m, Math.max(MIN_SEGMENT_FLOOR, cu / COMPACT_SPAN));
+      const cs = cu / (N - 1);
+      if (cs >= mc - 1e-6) return { fit: true, narrow, compact: true, W, N, seg: cs, pad: ce, edge: ce, col: DOT, content: W, max: 0, usable: cu, minSegment: mc };
+      const cc = 2 * ce + (N - 1) * mc;
+      return { fit: false, narrow, compact: true, W, N, seg: mc, pad: ce, edge: ce, col: DOT, content: cc, max: Math.max(0, cc - W), usable: cu, minSegment: mc };
+    }
+    // Wide and scrolling, at exactly the minimum.
+    const content = 2 * E + (N - 1) * m;
+    return { fit: false, narrow, compact: false, W, N, seg: m, pad: E, edge: E, col: col(m), content, max: Math.max(0, content - W), usable, minSegment: m };
   }
 
   const labelHalf = L => Math.max(0, L.col / 2 - GUTTER);
@@ -112,7 +125,7 @@
   function targetOffset(L, c) {
     const M = L.max, N = L.N;
     if (M <= EPS) return 0;                          // everything fits: nothing to place
-    if (L.narrow) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow: the current dot at 50% as far as the track allows
+    if (L.narrow) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow (compact): the current dot at 50% as far as the track allows
     if (c <= 0) return 0;                            // first step: its dot on the left safe line
     if (c >= N - 1) return M;                        // final step: its dot on the right safe line
     const s = L.seg, hl = labelHalf(L), E = L.edge, W = L.W;
@@ -129,6 +142,8 @@
   const CHEVRON = d => '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="' +
     (d === 'start' ? 'M10 3.5 5.5 8l4.5 4.5' : 'M6 3.5 10.5 8 6 12.5') +
     '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const INFO = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
+    '<path d="M8 7.2v3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5.1" r=".7" fill="currentColor"/></svg>';
   let uid = 0;
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
   const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -175,7 +190,7 @@
 
     getState() {
       const L = this.layout, off = this.scroller.scrollLeft, s = edgeState(L, off);
-      return { fit: L.fit, narrow: L.narrow, width: L.W, segment: L.seg, edge: L.edge, offset: off, maxOffset: L.max,
+      return { fit: L.fit, narrow: L.narrow, compact: L.compact, width: L.W, segment: L.seg, edge: L.edge, offset: off, maxOffset: L.max,
         currentIndex: this._currentIndex(), browsed: this._browsed,
         overflowStart: s.overflowStart, overflowEnd: s.overflowEnd, startButton: s.startButton, endButton: s.endButton };
     }
@@ -216,12 +231,14 @@
         '<div class="pt-fade pt-fade--end" aria-hidden="true"></div>' +
         '<button class="pt-nav pt-nav--start" type="button" tabindex="-1" aria-hidden="true">' + CHEVRON('start') + '</button>' +
         '<button class="pt-nav pt-nav--end" type="button" tabindex="-1" aria-hidden="true">' + CHEVRON('end') + '</button>' +
+        '<p class="pt-caption"></p>' +
         '<p class="pt-sr" aria-live="polite"></p>';
       this.scroller = r.querySelector('.pt-scroller');
       this.track = r.querySelector('.pt-track');
       this.btnStart = r.querySelector('.pt-nav--start');
       this.btnEnd = r.querySelector('.pt-nav--end');
       this.live = r.querySelector('.pt-sr[aria-live]');
+      this.caption = r.querySelector('.pt-caption');
       this.parent.appendChild(r);
 
       const sc = this.scroller;
@@ -248,6 +265,12 @@
       };
       this.btnStart.addEventListener('click', () => arrow(-1));
       this.btnEnd.addEventListener('click', () => arrow(1));
+      this.caption.addEventListener('click', e => {
+        if (!e.target.closest('.pt-info')) return;
+        const detail = { currentIndex: this._currentIndex() };
+        if (typeof this.opts.onInfo === 'function') this.opts.onInfo(detail);
+        r.dispatchEvent(new CustomEvent('progress-timeline:info', { bubbles: true, detail }));
+      });
     }
 
     _render(initial, progressChanged) {
@@ -267,6 +290,13 @@
       this.btnStart.setAttribute('aria-label', al.start);
       this.btnEnd.setAttribute('aria-label', al.end);
       if (!initial && progressChanged) this.live.textContent = t;
+      // The compact caption: the next step by name (the first before starting);
+      // nothing once the last step is in hand.
+      const nx = c < 0 ? st[0] : c < N - 1 ? st[c + 1] : null;
+      const cap = nx ? '<span class="pt-caption-text">' + esc(this.opts.upNext) + ' \u2013 ' + esc(nx.label) + '</span>' +
+        (typeof this.opts.onInfo === 'function' ? '<button class="pt-info" type="button" aria-label="' + esc(this.opts.infoLabel) + '">' + INFO + '</button>' : '') : '';
+      if (cap !== this._cap) { const hadFocus = this.caption.contains(document.activeElement); this.caption.innerHTML = cap; this._cap = cap; if (hadFocus) this._refocus(); }
+      this.root.classList.toggle('has-caption', !!cap);
       this._lbl = lbl;
       this._relayout(initial ? 'initial' : progressChanged ? 'progress' : 'render');
     }
@@ -276,9 +306,10 @@
       why = why || 'resize';
       const prev = this.layout, r = this.root, sc = this.scroller;
       const L = this.layout = computeLayout(this._measure(), this.opts.steps.length, this.opts);
-      const same = prev && ['W', 'N', 'seg', 'pad', 'col', 'edge', 'content'].every(k => Math.abs(prev[k] - L[k]) < 0.01);
+      const same = prev && prev.compact === L.compact && ['W', 'N', 'seg', 'pad', 'col', 'edge', 'content'].every(k => Math.abs(prev[k] - L[k]) < 0.01);
       const focused = r.contains(document.activeElement) ? document.activeElement : null;
-      r.dataset.layout = L.fit ? 'fit' : L.narrow ? 'narrow' : 'scroll';
+      r.dataset.layout = L.compact ? 'compact' : L.fit ? 'fit' : L.narrow ? 'narrow' : 'scroll';
+      r.classList.toggle('is-compact', L.compact);
       r.style.setProperty('--pt-seg', L.seg + 'px');
       r.style.setProperty('--pt-pad', L.pad + 'px');
       r.style.setProperty('--pt-col', L.col + 'px');
@@ -338,8 +369,11 @@
       if (this._prog && (Math.abs(off - this._prog.to) < 1 || performance.now() > this._prog.until)) this._prog = null;
       if (this._navTo != null && Math.abs(off - this._navTo) < 1) this._navTo = null;
       // Anything we didn't start is the user browsing: touch, trackpad, drag,
-      // keys and arrows, but also assistive tech, focus and scrollIntoView.
-      if (!this._prog) {
+      // keys and arrows, but also assistive tech, focus and scrollIntoView. Not
+      // the browser clamping the old track to a new width before the resize is
+      // laid out (a short compact track in a card that just grew).
+      if (!this._prog && Math.abs(this._measure() - this.layout.W) >= 0.5) { this._off = off; }
+      else if (!this._prog) {
         if (Math.abs(off - this._off) > EPS) this._browsed = true;
         this._off = off;
         if (this.layout.seg > 0) this._pos = (this._navTo != null ? this._navTo : off) / this.layout.seg;
@@ -430,6 +464,6 @@
   ProgressTimeline.computeLayout = computeLayout;
   ProgressTimeline.targetOffset = targetOffset;
   ProgressTimeline.edgeState = edgeState;
-  ProgressTimeline.constants = { DOT, GAP, DOT_ZONE, BTN, GUTTER, LABEL_MAX, ANCHOR, MIN_SEGMENT_FLOOR };
+  ProgressTimeline.constants = { DOT, GAP, DOT_ZONE, BTN, GUTTER, LABEL_MAX, ANCHOR, MIN_SEGMENT_FLOOR, COMPACT_SPAN };
   return ProgressTimeline;
 }));

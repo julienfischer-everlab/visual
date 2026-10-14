@@ -55,6 +55,15 @@
   .notes p { margin: 0 0 8px; color: #c8c8c8; }
   .notes p:last-child { margin: 0; }
   label.chk { display: inline-flex; gap: 8px; align-items: center; color: var(--fg); }
+  /* the host's own "all steps" sheet, opened by the compact caption's info button */
+  dialog.steps { width: min(420px, calc(100vw - 32px)); box-sizing: border-box; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: #1c1c1c; color: var(--fg); }
+  dialog.steps::backdrop { background: rgba(0,0,0,.6); }
+  dialog.steps h3 { margin: 0 0 12px; font-size: 16px; font-weight: 500; }
+  dialog.steps ol { margin: 0 0 16px; padding: 0; list-style: none; display: grid; gap: 10px; }
+  dialog.steps li { display: flex; gap: 12px; align-items: baseline; color: var(--muted); }
+  dialog.steps li.cur { color: var(--fg); font-weight: 500; }
+  dialog.steps li i { flex: none; width: 10px; height: 10px; border-radius: 50%; background: rgba(244,244,244,.2); transform: translateY(1px); }
+  dialog.steps li.done i, dialog.steps li.cur i { background: #f4f4f4; }
 </style>
 </head>
 <body>
@@ -74,7 +83,7 @@
       <label class="ctl"><span>Min segment (px)</span><input type="number" id="min" min="48" max="320" step="8" value="128"></label>
       <label class="ctl"><span>Progress</span><select id="cur"></select></label>
       <div class="ctl"><span>Step through</span><div class="row"><button class="btn" type="button" id="prev">Previous</button><button class="btn" type="button" id="next">Next</button></div></div>
-      <div class="ctl"><span>Overlay</span><label class="chk"><input type="checkbox" id="g"> 128px safe areas</label></div>
+      <div class="ctl"><span>Overlay</span><label class="chk"><input type="checkbox" id="g"> Safe areas</label></div>
     </form>
     <div class="stage" style="margin-top:16px">
       <div class="parent" id="parent">
@@ -83,6 +92,7 @@
     </div>
     <div class="readout" id="readout" aria-live="off"></div>
     <div class="log" id="log" role="status"></div>
+    <dialog class="steps" id="stepsDlg" aria-labelledby="stepsT"><h3 id="stepsT">All steps</h3><ol id="stepsList"></ol><form method="dialog"><button class="btn">Close</button></form></dialog>
   </section>
 
   <section aria-labelledby="gal">
@@ -95,8 +105,8 @@
     <div class="notes">
       <section><h3>Sizing</h3><p>Width is measured from the parent with a ResizeObserver. 128px stays reserved at each edge; the space between is where dots rest.</p><p>All steps fit at the minimum segment? They spread evenly, first dot on the left safe line, last on the right. Otherwise the segment is exactly the minimum and the track scrolls.</p></section>
       <section><h3>Positioning</h3><p>First step: its dot 128px from the left. Final step: 128px from the right. In between: the current dot at 40% of the width, slid on if needed so the next step shows whole, never so far that the current label goes under a fade. Always clamped to the track's limits.</p></section>
-      <section><h3>Narrow</h3><p>When the usable width (width − 2 × 128) holds fewer than two minimum segments, 512px by default, the current step centres at 50% as far as the track allows, with no blank space added: the first step starts flush left and the last ends flush right. The full timeline stays, scrollable.</p></section>
-      <section><h3>Overflow</h3><p>A 128px fade appears only on a side the track runs past. A 28px arrow sits 64px from that edge, shown only when the timeline (its line, a dot or a label) is beneath its centre, never blank track; each click scrolls one segment.</p></section>
+      <section><h3>Compact</h3><p>When fewer than three labelled steps fit (the usable width, width − 2 × 128, holds fewer than two minimum segments: under 512px by default), the labels go entirely. The dots and the line sit inside a 64px safe area each side, three across it (previous, current, next) as far as the minimum segment allows, and one line under them names the next step: “Up next – …”, with an optional info button. The current step centres as far as the track allows, with no blank space past the ends. The full timeline stays, scrollable.</p></section>
+      <section><h3>Overflow</h3><p>A fade (128px, 64px when compact) appears only on a side the track runs past. A 28px arrow sits centred in it, shown only when the timeline (its line, a dot or a label) is beneath its centre, never blank track; each click scrolls one segment.</p></section>
     </div>
   </section>
 </main>
@@ -117,19 +127,23 @@
   const props = () => ({ steps, current: progress >= 0 && progress < steps.length ? steps[progress].id : null, complete: progress >= steps.length, minSegment: +$('min').value || 128 });
   const say = t => { $('log').textContent = t; };
   const onArrow = d => say('onArrow("' + d.direction + '"): scrolled to ' + Math.round(d.offset) + 'px. Progress is unchanged.');
+  // the host decides what the compact caption's info button opens: here, every step by name
+  const onInfo = () => { const c = progress;
+    $('stepsList').innerHTML = steps.map((s, i) => '<li class="' + (i < c ? 'done' : i === c ? 'cur' : '') + '"><i></i><span>' + s.label.replace(/</g, '&lt;') + '</span></li>').join('');
+    $('stepsDlg').showModal(); };
 
-  const main = new ProgressTimeline($('parent'), Object.assign(props(), { label: 'Deep assessment', onArrow }));
+  const main = new ProgressTimeline($('parent'), Object.assign(props(), { label: 'Deep assessment', onArrow, onInfo }));
   const gallery = [320, 480, 640, 960].map(w => {
     const f = document.createElement('figure'); f.innerHTML = '<figcaption>Parent ' + w + 'px</figcaption><div style="width:' + w + 'px;max-width:100%"></div>';
     $('gallery').appendChild(f);
-    return new ProgressTimeline(f.lastChild, Object.assign(props(), { label: 'Deep assessment', onArrow }));
+    return new ProgressTimeline(f.lastChild, Object.assign(props(), { label: 'Deep assessment', onArrow, onInfo }));
   });
   const all = () => [main].concat(gallery);
 
   const fillCur = () => { $('cur').innerHTML = '<option value="-1">Not started</option>' + steps.map((s, i) => '<option value="' + i + '">' + (i + 1) + '. ' + s.label.replace(/</g, '&lt;') + '</option>').join('') + '<option value="' + steps.length + '">All complete</option>'; $('cur').value = String(progress); };
   const push = () => { all().forEach(t => t.update(props())); fillCur(); readout(); };
   const readout = () => { const s = main.getState(), f = v => Math.round(v);
-    $('readout').innerHTML = ['layout <b>' + (s.fit ? 'fits' : s.narrow ? 'narrow, centred' : 'wide') + '</b>', 'width <b>' + f(s.width) + '</b>', 'segment <b>' + f(s.segment) + '</b>', 'offset <b>' + f(s.offset) + ' / ' + f(s.maxOffset) + '</b>',
+    $('readout').innerHTML = ['layout <b>' + (s.compact ? 'compact, dots only' : s.fit ? 'fits' : 'wide') + '</b>', 'width <b>' + f(s.width) + '</b>', 'segment <b>' + f(s.segment) + '</b>', 'offset <b>' + f(s.offset) + ' / ' + f(s.maxOffset) + '</b>',
       'fades <b>' + (s.overflowStart ? 'start' : '–') + ' ' + (s.overflowEnd ? 'end' : '–') + '</b>', 'arrows <b>' + (s.startButton ? '‹' : '–') + ' ' + (s.endButton ? '›' : '–') + '</b>', 'browsing <b>' + (s.browsed ? 'yes' : 'no') + '</b>'].join('');
     const p = $('parent').getBoundingClientRect().width; $('wv').textContent = Math.round(p) + 'px';
     $('gl').style.left = s.edge + 'px'; $('gr').style.left = (p - s.edge) + 'px'; };

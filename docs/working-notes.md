@@ -13664,3 +13664,10 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The Plan cards were named container `tl`, so at 273–413px they fell into the Timeline's phone layout (`@container tl (max-width:540px)`): chips stacked and cut with an ellipsis, the button beside the chips. Earlier comments ("exact same list item than the timeline items", "chip inline, starting by the status", "regular font weight") were applied to the Timeline page only.
 - The cards are now container `tlc`, so they keep the desk's item: picture, title and line, the button top right level with the title, the chips on one wrapping line under it (status first, regular weight, never cut). The step badge wraps to its own line when it can't sit beside the toggle.
 - The grid is `repeat(auto-fill, minmax(min(100%,400px),1fr))`: three cards at 1920 (413 each), two at 1240–1440 (450–550), where three would be under 400.
+
+## ProgressTimeline: compact, dots only (2026-10-14)
+- "If the viewport can't show min 3 items, remove the label entirely, just keep dot and line, with safe padding of 64px left right", with the phone's "Up next – Final results ⓘ" capture as the look.
+- Compact = narrow (usable `W − 2·128 < 2m`, under 512px by default) where the labelled columns don't all fit. Labels hidden visually (still read out), `compactEdge` 64 each side (W/4 under 256), segment `(W − 128) / 2` capped at the minimum (floor 38) so previous, current and next sit across the safe area; current centred, clamped; fades 64, arrows at 32.
+- Caption under the dots: "Up next – <next>" (the first step before starting), empty at the last step / complete; `onInfo` adds an info button and the `progress-timeline:info` event. Options `upNext`, `infoLabel`.
+- Fix found by the suite: a card growing out of compact had its short track clamped by the browser before the ResizeObserver ran, and that scroll counted as browsing. A scroll while the measured width differs from the layout's no longer does.
+- validate.js: compact rules in the matrix, caption text and placement, the info button, focus when the caption empties. 179,495 checks, 0 failed.
