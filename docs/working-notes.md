@@ -13688,3 +13688,6 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 
 ## Documentation: Save (2026-10-14)
 - "Need a Save on documentation": a Save on the bar on the Documentation page (as Save presets on Report visuals), calling the playground's own save; the playground keeps parent width, steps, labels, both minimums, progress and the overlay in this browser (`pt-demo`) and restores them on load. Reset in the playground clears it. The playground's own Save hides inside the prototype's frame.
+
+## Report visuals: date badge in capitals (2026-10-14)
+- "Uppercase; reduce padding by 2px": `.frame .ftab` text-transform uppercase, padding 6/12 → 4/10. The V9 service modal hosts these cards, so it follows.
