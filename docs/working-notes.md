@@ -13691,3 +13691,6 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 
 ## Report visuals: date badge in capitals (2026-10-14)
 - "Uppercase; reduce padding by 2px": `.frame .ftab` text-transform uppercase, padding 6/12 → 4/10. The V9 service modal hosts these cards, so it follows.
+
+## Overview: "Action plan" (2026-10-14)
+- The Overview's Plan section title reads "Action plan" (desk and phone, and its name in the sections tweak). The sidebar's Plan item is unchanged.
