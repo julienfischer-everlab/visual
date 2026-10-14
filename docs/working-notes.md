@@ -13824,3 +13824,7 @@ The card now reads "12 services, ready when you are" / "Add them to your action 
   - A card whose button has no label renders no button.
 - **CTA gap** ("reduce gap by 24px above CTA"): `ctaTop()` lifted a right-hand button level with the title. When the button later wrapped to its own row (`ctaWide`, over 160px), the inline `margin-top` stayed, adding about 25px. `ctaTop()` now skips `ctaWide` cards, and setting `ctaWide` clears the lift, so the gap is the card's 24.
 - **Overview field at XS** ("search fill container until XS breakpoint"): under hdrV4 the field fills the row up to the inbox and bell discs at XS (Auto narrow or forced); the desk keeps 256px on the right.
+
+## Services card stacked
+
+On the phone and at XS, the "12 services" card stacks its content, centred ("stack content, centered"): the three pictures on top, then the title and the line, 14px apart. The desktop keeps its row.
