@@ -96,8 +96,9 @@ function mount({ stage, svg, read }, value) {
   function measure([sx, sy]) {
     const d = keys.map((k) => { const [wx, wy] = unproj(C, sx, sy, FLOOR + k.h0 + CAPH); return [wx - cx(k.i), wy - cy(k.j)]; });
     const n = d.reduce((b, v, q) => (Math.hypot(...v) < Math.hypot(...d[b]) ? q : b), 0);
-    // off the tray: further from the nearest key's middle than the rim
-    if (Math.max(...d[n].map(Math.abs)) > PITCH / 2 + G + T + 2) return null;
+    // off the tray: outside its outline on the rim's plane, and off the nearest key's own top (a raised one stands above the back rim)
+    const [tx, ty] = unproj(C, sx, sy, 0);
+    if ((tx < 0 || tx > L || ty < 0 || ty > W) && Math.max(...d[n].map(Math.abs)) > KF / 2) return null;
     const k = keys[n], dn = Math.hypot(...d[n]), w = [cx(k.i) + d[n][0], cy(k.j) + d[n][1]];
     return { k, d: keys.map((q) => Math.max(dn, Math.hypot(cx(q.i) - w[0], cy(q.j) - w[1]))) };
   }
