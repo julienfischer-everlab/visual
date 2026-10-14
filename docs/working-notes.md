@@ -13742,3 +13742,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The title group 24 clear of the item's right edge on the phone/XS item and the Overview cards ("+24px padding right on title group").
 - The item chips ghost, no fill, text 14 ("badge ghost, font size 14"); the 12 side padding kept, so a ghost chip's icon sits 12 in from the edge.
 - Services card: the pictures overlap 12 more (-28, "stacked more -12px"); no chevron ("remove action arrow"): the card itself is the link (role link, focusable, Enter/Space), still to the Timeline's Later tab; title weight 500 ("font weight medium").
+- Phone task page: no sheet over the banner ("shouldn't have a bg on the body"): .svmBody transparent, no shadow, when a task is on; the banner's photo masked to nothing at its foot and its shade ending on the page's #0d0d0c, so no edge where the sheet used to cover it.
+- Phone item pictures 84 (from 68, "increase visual 16px"), their column 90.
