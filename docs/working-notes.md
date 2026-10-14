@@ -13845,3 +13845,13 @@ The stacked services card (phone and XS) has 48px above and below its content, 2
 "Use XS list item style until M".
 - At XS, S, and Auto up to 991px, the Overview shows the action plan as the list with its See full timeline button, not the grid of cards. M and L keep the grid.
 - The list's rows take XS's style at any width: the Timeline's XS container block now reads `@container tl (max-width:540px) or style(--tlXs: 1)`, and the Overview's list sets `--tlXs:1` at S and in Auto from 600 to 991px. Chromium was checked: a wide container flagged with `--tlXs` takes the XS rows; an unflagged wide one does not.
+
+## Timeline: Past behind an icon; no count on Just completed; dot 8px
+
+- **Past is no longer a tab** ("remove past; put the Past item behind an action icon only CTA on the right side of the search field").
+  - A history icon button (`.tlPastBtn`) sits at the search's right: 40px rounded on the desk, a 44px disc at XS.
+  - Pressed, it puts the list on Past: no tab is lit, the tab underline goes to 0, and the button fills (light on dark, ink on paper). Pressed again, or any tab, returns to the tab it left.
+  - `_tl.tab('past')` presses it.
+  - At XS the open field stops 52px short of the right edge, and the disc keeps the row's right end.
+- **"Just completed" has no count badge** ("remove badge"). The months keep theirs.
+- **The task's orange dot** in the avatar badge is 8px ("increase by 1px").

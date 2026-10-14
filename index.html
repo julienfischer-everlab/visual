@@ -7558,6 +7558,9 @@
   .tlSearch input::placeholder{color:var(--tlSub);}
   .tlSearch input::-webkit-search-cancel-button{display:none;}
   .tlSearch:focus-within{box-shadow:inset 0 0 0 1px var(--tlSub);}
+  /* Past, out of the tabs: an icon-only button at the search's right ("remove past; put the Past item behind an action icon only CTA on the right side of the search field"); pressed, it holds the list on Past and lights */
+  .tlPastBtn{flex:none;display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;padding:0;border:0;border-radius:10px;background:var(--tlField);box-shadow:inset 0 0 0 1px var(--tlRing);color:var(--tlSub);cursor:pointer;transition:background .16s ease,color .16s ease;} .tlPastBtn svg{width:18px;height:18px;}
+  .tlPastBtn:hover{color:var(--tlTx);} .tlPastBtn.on{background:#ececec;box-shadow:none;color:#111;} body.light .tlPastBtn.on{background:#2e1f1a;color:#fff;}
   /* the months: a rail down the left, a dot at each heading -- the care
      team's spark, this month's filled, the ones ahead hollow */
   .tlList{position:relative;padding:12px 0 0 40px;}
@@ -7658,7 +7661,7 @@
   #phone2{--tlThBg:#0d0d0c;} body.light #phone2{--tlThBg:#f7f2e9;}   /* the phone's own ground */
   .tlSug{--tlThBg:color-mix(in srgb, #fff 5.5%, var(--pageBg, #0f0f0f));} body.light .tlSug{--tlThBg:color-mix(in srgb, #2e1f1a 5%, var(--pageBg, #fff));}   /* on the Suggestions' tray, its colour */
   .tlSec.done .tlItems{--tlThBg:color-mix(in srgb, #42be65 10%, var(--pageBg, #0f0f0f));} body.light .tlSec.done .tlItems{--tlThBg:color-mix(in srgb, #42be65 12%, var(--pageBg, #fff));}   /* on Just completed's, its green */
-  .tlThB .tlRing{display:block;width:14px;height:14px;} .tlThB .tlStepDot{width:14px;height:14px;} .tlThB .tlStepDot::after{width:7px;height:7px;}   /* a task's dot 1 smaller in its badge ("reduce dot by 1px") */
+  .tlThB .tlRing{display:block;width:14px;height:14px;} .tlThB .tlStepDot{width:14px;height:14px;} .tlThB .tlStepDot::after{width:8px;height:8px;}   /* 8 again ("orange dot increase by 1px") */   /* a task's dot 1 smaller in its badge ("reduce dot by 1px") */
   .tlThB.done .tlRing{--rc:#42be65;} .tlThB.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlThB.done .tlStepDot::after{background:#42be65;} .tlThB.pas .tlStepDot::after{background:var(--tlPas, rgba(255,255,255,.72));}
   .tlMeta.tlMetaC:empty{display:none;}
   .tlProg.done .tlStepDot::after{background:#42be65;} .tlProg.pas .tlStepDot::after{background:var(--tlPas, rgba(255,255,255,.72));} .tlTgl .tlStepDot{display:none;}
@@ -7839,7 +7842,9 @@
     .tlHead{margin-bottom:10px;}
     .tlSearch{flex:none;width:44px;height:44px;padding:0;justify-content:center;border-radius:50%;cursor:pointer;} .tlSearch input{display:none;font-size:15px;}   /* just its icon ("on XS just a search icon CTA") */
     .tlSearch > svg{width:18px;height:18px;}
-    .tlSearch.open{position:absolute;left:0;right:0;top:50%;margin-top:-28px;width:auto;height:56px;justify-content:flex-start;gap:9px;padding:0 14px 0 16px;border-radius:14px;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);transition:box-shadow .16s ease;cursor:text;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line -- the Insights search's field ("same search behaviour as the Biomarker insight search ... with keyboard / styles") */
+    .tlPastBtn{width:44px;height:44px;margin-left:0;border-radius:50%;} .tlPastBtn svg{width:20px;height:20px;}   /* XS: a disc by the search's, the field opening to its left */
+    .tlSearch.open + .tlPastBtn{margin-left:auto;}   /* the field out of the flow, the disc keeps the row's right end */
+    .tlSearch.open{position:absolute;left:0;right:52px;top:50%;margin-top:-28px;width:auto;height:56px;justify-content:flex-start;gap:9px;padding:0 14px 0 16px;border-radius:14px;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);transition:box-shadow .16s ease;cursor:text;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line -- the Insights search's field ("same search behaviour as the Biomarker insight search ... with keyboard / styles") */
     .tlSearch.open:focus-within{--msEdge:#fff;} .tlSearch.open > svg{width:20px;height:20px;} .tlSearch.open input{font-size:15px;color:#ececec;} .tlSearch.open input::placeholder{color:#8b8b86;} .tlSearch:not(.open) .msClear{display:none !important;} .tlSearch .msClear{margin-right:0;}
     body.light .tlSearch.open{--msEdge:#ddd3bf;color:#9b8a75;} body.light .tlSearch.open:focus-within{--msEdge:#2e241c;} body.light .tlSearch.open input{color:#2e1f1a;} body.light .tlSearch.open input::placeholder{color:#9b8a75;}
     .tlHead{min-height:44px;} .tlHead:has(.tlSearch.open) .tlH1{visibility:hidden;}   /* the row holds the icon's 44 when the field opens over it (no jump), and the title stays out of sight under the open field */
@@ -12146,12 +12151,11 @@
        Timeline"): its rows are written by timelinePage() from TL below -->
   <main class="dvMain" id="dTl" aria-label="Timeline">
     <div class="tlCol tlHead"><h1 class="tlH1">Your health journey</h1>
-  <label class="tlSearch"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.7"/><path d="m10.8 10.8 3 3"/></svg><input id="tlQ" type="search" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search your health journey"><button class="msClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></label></div>   <!-- the search on the title's line, right ("search at the level of the title, right side"); at XS just its icon -->
+  <label class="tlSearch"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.7"/><path d="m10.8 10.8 3 3"/></svg><input id="tlQ" type="search" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search your health journey"><button class="msClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></label><button class="tlPastBtn" type="button" aria-label="Past" aria-pressed="false" title="Past"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10a6.4 6.4 0 1 0 1.9-4.55"/><path d="M3.3 3.4v2.9h2.9"/><path d="M10 6.6V10l2.4 1.5"/></svg></button></div>   <!-- the search on the title's line, right ("search at the level of the title, right side"); at XS just its icon -->
     <div class="tlBar"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tlCol tlBarIn">
       <div class="tlTabs" role="tablist" aria-label="Timeline"><i class="tlThumb" aria-hidden="true"></i>
         <button class="tlTab on" type="button" role="tab" aria-selected="true" data-t="up">Upcoming</button>
         <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="claim">Later</button>   <!-- was Yours to claim ("just Later") -->
-        <button class="tlTab" type="button" role="tab" aria-selected="false" data-t="past">Past</button>
       </div>
     </div></div>
     <div class="tlCol"><div class="tlList" id="tlList"></div></div>
@@ -29127,7 +29131,7 @@ hairline({
       (TLSTEP === 'c' ? '<div class="tlMeta tlMetaC">' + pg + r.meta.map(meta).join('') + '</div>' : '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg) +   /* Chip: one line of chips, the status first, then the item's properties as chips too ("all these properties the same style as the chip; inline, starting by the status") */
       (act ? '<div class="tlAct' + (more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(act) + '</button>' +
       (more ? '<button class="tlMore" type="button" aria-label="More options" aria-haspopup="menu">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
-    const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : x.dot === 'done' ? CHK : '') + '</i>' + esc(x.h) + (x.rows.length ? '<span class="tlHn" aria-label="' + x.rows.length + (x.rows.length === 1 ? ' item' : ' items') + '">' + x.rows.length + '</span>' : '') + '</h2>' +   /* how many items under it ("a badge with the number next to the months") */
+    const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : x.dot === 'done' ? CHK : '') + '</i>' + esc(x.h) + (x.rows.length && x.dot !== 'done' ? '<span class="tlHn" aria-label="' + x.rows.length + (x.rows.length === 1 ? ' item' : ' items') + '">' + x.rows.length + '</span>' : '') + '</h2>' +   /* how many items under it ("a badge with the number next to the months") */
       '<div class="tlItems">' + ordered(x.rows).map(row).join('') + '</div>' +
       (x.sug ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + x.sug.map(row).join('') + '</div></div>' : '') +
       '</section>';
@@ -29187,14 +29191,22 @@ hairline({
     // the underline: measured off the pressed tab, placed without the slide
     // the first time the bar has a width (the page just came up)
     const tabsEl = main.querySelector('.tlTabs'), thumb = main.querySelector('.tlThumb');
-    const placeThumb = () => { const on = main.querySelector('.tlTab.on'); if (!thumb || !on || !tabsEl.offsetWidth) return;
+    const placeThumb = () => { const on = main.querySelector('.tlTab.on'); if (thumb && !on){ thumb.style.width = '0px'; return; } if (!thumb || !on || !tabsEl.offsetWidth) return;   // Past on: no tab lit
       if (!thumb.dataset.set){ tabsEl.classList.add('noAnim'); requestAnimationFrame(() => requestAnimationFrame(() => tabsEl.classList.remove('noAnim'))); thumb.dataset.set = '1'; }
       thumb.style.width = on.offsetWidth + 'px'; thumb.style.transform = 'translateX(' + on.offsetLeft + 'px)'; };
+    const pastBtn = main.querySelector('.tlPastBtn'); let tabBeforePast = 'up';
+    const pastLit = on => { if (!pastBtn) return; pastBtn.classList.toggle('on', on); pastBtn.setAttribute('aria-pressed', String(on)); main.classList.toggle('tlPastOn', on); };
     main.querySelectorAll('.tlTab').forEach(b => b.addEventListener('click', () => {
-      tab = b.dataset.t;
+      tab = b.dataset.t; pastLit(false);
       main.querySelectorAll('.tlTab').forEach(o => { o.classList.toggle('on', o === b); o.setAttribute('aria-selected', String(o === b)); });
       placeThumb(); render();
     }));
+    // Past, behind its icon: on, the list is Past and no tab is lit; off (or a tab), back to the tab it left
+    if (pastBtn) pastBtn.addEventListener('click', () => {
+      const on = tab !== 'past'; if (on) tabBeforePast = tab; tab = on ? 'past' : tabBeforePast || 'up';
+      main.querySelectorAll('.tlTab').forEach(o => { const lit = !on && o.dataset.t === tab; o.classList.toggle('on', lit); o.setAttribute('aria-selected', String(lit)); });
+      pastLit(on); placeThumb(); render();
+    });
     addEventListener('resize', placeThumb);
     if (window.ResizeObserver && tabsEl) new ResizeObserver(() => placeThumb()).observe(tabsEl);   // a breakpoint's new width re-measures it, with no slide from the old place
     { const sb = q && q.closest('.tlSearch'); if (sb){
@@ -29378,7 +29390,7 @@ hairline({
       if (on){ const up = TL.up.flatMap(sc => sc.rows).filter(x => !SNZ.has(x)), r = up.find(svcIs(key, st)) || up.find(svcIs(key)); if (!r) return false; SNZ.add(r); }
       else { const rs = [...SNZ].filter(svcIs(key)); if (!rs.length) return false; rs.forEach(x => SNZ.delete(x)); }
       render(); return true; };
-    const toTab = t => { const b = main.querySelector('.tlTab[data-t="' + t + '"]'); if (b) b.click(); };   // a tab picked from outside: the Overview's More services, to Later
+    const toTab = t => { if (t === 'past'){ const pb = main.querySelector('.tlPastBtn'); if (pb && !pb.classList.contains('on')) pb.click(); return; } const b = main.querySelector('.tlTab[data-t="' + t + '"]'); if (b) b.click(); };   // a tab picked from outside: the Overview's More services, to Later
     window._tl = { open, close, laterOf, setLater, tab: toTab };
     { let sv = null; try { sv = JSON.parse(sessionStorage.getItem('everlab:svc') || 'null'); } catch (e){}
       if (sv && location.hash) setTimeout(() => { if (document.body.classList.contains('m9') && !document.body.classList.contains('homeOn') && window._svc) window._svc.openDesk(sv[0], sv[1]); }, 0); }   // a reload on the service page comes back to it
