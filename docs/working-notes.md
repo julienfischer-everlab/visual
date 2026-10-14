@@ -13735,3 +13735,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Tweaks > Timeline > Chip height (28 / 32 / 36, default 36; "badge 36px height, tweak"): `--tlChipH` on the root, every item chip (the when chips, a waiting item's, the desk cards' with their padding from it).
 - Badge back 4 up and right ("move right -4px top -4px"): rings 24 at -8, dots 20 at -6.
 - Phone item card: 10 inside on every side, 10 to each rule ("right and bottom same as the left one"): rows 20/20.
+- Badge 2 further up and right ("-2px top and right"): rings 24 at -10, dots 20 at -8, both centred 2 in from the picture's corner.
