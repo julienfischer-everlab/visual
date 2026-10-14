@@ -7463,7 +7463,7 @@
   .tlEmb{--tlInk:#f4f4f4;--tlTx:#ececec;--tlSub:#8b8b86;--tlLine:rgba(255,255,255,.05);--tlHover:rgba(255,255,255,.055);--tlRing:rgba(255,255,255,.12);--tlRail:rgba(255,255,255,.095);--tlDotRing:rgba(255,255,255,.1);--tlField:rgba(255,255,255,.055);--tlPill:rgba(255,255,255,.08);--tlPillH:rgba(255,255,255,.12);--tlGhost:rgba(255,255,255,.055);--tlGhostH:rgba(255,255,255,.1);--tlCta:#fff;--tlCtaInk:#111;--tlSplit:rgba(0,0,0,.32);--tlSplitC:rgba(0,0,0,.14);--tlBox:rgba(255,255,255,.055);--tlCard:#2a2a2a;--tlCardRing:transparent;--tlMkCur:#fff;--tlMkFut:rgba(255,255,255,.16);--tlFutTx:rgba(255,255,255,.5);;color:var(--tlTx);}
   body.light .tlEmb{--tlInk:#111;--tlTx:#2e1f1a;--tlSub:#7a716a;--tlLine:rgba(46,31,26,.07);--tlHover:rgba(46,31,26,.045);--tlRing:rgba(46,31,26,.16);--tlRail:rgba(46,31,26,.16);--tlDotRing:rgba(46,31,26,.16);--tlField:transparent;--tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlGhost:rgba(46,31,26,.07);--tlGhostH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;--tlSplit:rgba(46,31,26,.14);--tlSplitC:rgba(255,255,255,.22);--tlBox:rgba(46,31,26,.05);--tlCard:#fff;--tlCardRing:rgba(46,31,26,.06);--tlMkCur:#2e1f1a;--tlMkFut:rgba(46,31,26,.16);--tlFutTx:rgba(46,31,26,.5);;}
   .tlEmb.tlEmbL{container:tl / inline-size;} .tlEmbL .tlItems > .tlRow:first-child{padding-top:8px;}
-  .tlEmb.tlEmbG{display:grid;gap:20px;} .tlEmbG .tlEmbC{container:tl / inline-size;min-width:0;padding:0 24px;border-radius:24px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);overflow:clip;} body.light .tlEmbG .tlEmbC{box-shadow:inset 0 0 0 1px rgba(46,31,26,.1);}
+  .tlEmb.tlEmbG{display:grid;gap:20px;} .tlEmbG .tlEmbC{container:tlc / inline-size;min-width:0;padding:0 24px;border-radius:24px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);overflow:clip;} body.light .tlEmbG .tlEmbC{box-shadow:inset 0 0 0 1px rgba(46,31,26,.1);}
   .tlEmbG .tlEmbC > .tlRow{padding:24px 0 26px;} .tlEmbG .tlEmbC > .tlRow::before{inset:0 -24px;border-radius:0;}   /* the card is the item: its hover the whole card */
   .ovsec .see.tlSee, .dvSec .see.tlSee{cursor:pointer;} .see.tlSee:hover{color:var(--tlTx, #ececec);}
   /* ---- The Timeline page (desk #dTl) -----------------------------------------
@@ -7986,6 +7986,17 @@
     body:not([data-bp]) #dOver .ovrow2, body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:1fr;}
   }
   #dOver .dvPlanGrid{gap:20px;}   /* "grid gap 20px" for the action plan */
+  /* the Plan's cards: the Timeline's own item, as on the desk -- the picture, the title and its line, the button at the top right level with the
+     title, the chips on one wrapping line under it, the status first ("the exact same list item than the timeline items"; "put the chip inline,
+     starting by the status"); never cut short. A card under 400 can't hold that, so the grid takes as many 400s as fit, two where three won't */
+  html body #dOver .dvPlanGrid.tlEmbG{grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));}
+  .tlEmbG .tlEmbC > .tlRow{grid-template-columns:60px minmax(0,1fr) auto;grid-template-areas:"th tx act" "th meta meta" "th prog prog" "th det det";column-gap:16px;}
+  .tlEmbG .tlEmbC > .tlRow .tlTh{width:60px;height:60px;border-radius:12px;}
+  .tlEmbG .tlEmbC > .tlRow .tlTx b{font-size:16px;} .tlEmbG .tlEmbC > .tlRow .tlTx p{white-space:normal;}
+  .tlEmbG .tlEmbC > .tlRow .tlAct{padding-top:0;}
+  .tlEmbG .tlProg{flex-wrap:wrap;row-gap:8px;} .tlEmbG .tlProg .tlCurB{max-width:100%;min-width:0;box-sizing:border-box;}   /* the step's badge to a line of its own when it won't fit beside the toggle */
+  .tlEmbG .tlMeta > span{max-width:100%;} .tlEmbG .tlMeta > span > em{white-space:normal;overflow:visible;text-overflow:clip;}
+  .tlEmbG .tlMeta.tlMetaC > span{height:auto;min-height:28px;padding-top:5px;padding-bottom:5px;box-sizing:border-box;white-space:normal;line-height:18px;}
   #dOver .dvTop{gap:12px;grid-template-columns:1fr 1fr;}   /* 12, 24, 16, then "grid 12px gap" */   /* "2 col 50 50" */   /* "bento gap 20px grid", then "grid gap 12px": the hero bento on the page's 12, not the container's gap */
   #dOver .ovTop{position:sticky;top:calc(-1 * var(--ctPadY));z-index:5;display:flex;align-items:center;gap:10px;margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ctPadX)) 0;padding:24px var(--ctPadX) 12px;}   /* the card's own padding cancelled, whatever the breakpoint sets it to */
   #dOver .ovTop::before{
