@@ -896,11 +896,12 @@ const {
 
 const CW = 9.5, CH = 8.5, NC = 7, NR = 4, MX = 5.5, MB = 6, HB = 13;  // a day cell, the grid, the side and foot margins, the header band
 const W = 2 * MX + NC * CW, H = MB + NR * CH + HB, R = 5, TK = 1.1;  // a sheet: its size, its round, its thickness
-const LEAN = [-11, -6, -2.5];             // back to front: how far each sheet leans back, in degrees
+const LEAN = [-11, -6, -1.5];             // back to front: how far each sheet leans back, in degrees
 const SHARE = [1.6, 1, 0];                // how many gaps each sheet stands behind the front one: uneven
 const GMIN = 3, GMAX = 16;                // the gap, clamped
 const RINGS = [W * 0.26, W * 0.74], RR = 3.2, RC = 1.3;  // the binding: where its rings sit, their radius, their centre under the top edge
-const TU = 8, TV = 7, TT = 3.5, NK = 4, STEP = 45;         // the token's size and thickness; the points of its line, and the stagger down it
+const TU = 7, TV = 6.6, TT = 3.5, NK = 4, STEP = 45;       // the token's size and thickness; the points of its line, and the stagger down it
+const DX = TT / 2;                        // the token sits this far right of its cell's middle, so that it looks centred on it
 const REST = [3, 1];                      // thursday of the second week
 const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 const OUT = rrect(0, 0, W, H, R, 6);
@@ -951,17 +952,17 @@ function mount({ stage, svg, read }, value) {
   const { C, P } = frame(), face = sheet(2, 0);
 
   // Painted back to front: each sheet's rings behind it, its back edge, its face, its marks, its rings in front;
-  // then, on the front sheet, the line, its beads and its foot, and the token over the line's top.
+  // then, on the front sheet, the token, and the line hanging in front of the face from its front edge.
   const g = mk("g", {}, svg);
   const els = LEAN.map(() => ({
     ringB: mk("path", { class: "nf" }, g), back: mk("path", { class: "lo" }, g), face: mk("path", { class: "sil" }, g),
     marks: mk("path", { class: "nf lo" }, g), ringF: mk("path", { class: "nf" }, g),
   }));
-  const line = mk("path", { class: "nf" }, g);
-  const foot = flatDot(g, C, 1, "dot m");
-  const beads = [1, 2].map(() => mk("circle", { r: 1.25, class: "dot m" }, g));
   const tok = solid(g);
   tok.sil.classList.add("hi");
+  const line = mk("path", { class: "nf" }, g);
+  const foot = flatDot(g, C, 1.1, "dot m");
+  const beads = [1, 2].map(() => mk("circle", { r: 1.25, class: "dot m" }, g));
 
   const drawn = [NaN, NaN, NaN];
   function drawSheet(i, Y) {
@@ -981,10 +982,10 @@ function mount({ stage, svg, read }, value) {
     const key = uv.join();
     if (key === last) return;
     last = key;
-    const [u, v] = uv[0], at = (q, o) => P(...face(u + q.u, v + q.v, o));
+    const [u, v] = uv[0], at = (q, o) => P(...face(u + DX + q.u, v + q.v, o));
     put(tok, { sil: poly(hull(TR.map((q) => at(q, 0)).concat(TR.map((q) => at(q, -TT))))), crease: poly(TI.map((q) => at(q, -TT))) });
-    // the line hangs plumb from the middle of the token's underside, clear of the face, down to the desk
-    const pts = uv.map(([pu, pv], k) => { const [x, y, z] = face(pu, pv - TV / 2, -TT / 2); return P(x, y, z * (1 - k / (NK - 1))); });
+    // the line hangs plumb from the middle of the token's front edge, clear of the face, down to the desk
+    const pts = uv.map(([pu, pv], k) => { const [x, y, z] = face(pu + DX, pv - TV / 2, -TT); return P(x, y, z * (1 - k / (NK - 1))); });
     line.setAttribute("d", open(pts));
     beads.forEach((el, k) => place(el, pts[k + 1]));
     place(foot, pts[NK - 1]);
@@ -1037,7 +1038,7 @@ hairline({
   means: "A desk planner's month: the pointer picks a day and the appointment token travels there, its line following down to the desk.",
   rules: [1, 2, 6, 8],
   range: [4, 10, 16],
-  tour: [[133, 182], [171, 159], [206, 240], null],
+  tour: [[131, 183], [169, 160], [205, 240], null],
   mount,
 });
 </script>

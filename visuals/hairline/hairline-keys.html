@@ -883,8 +883,9 @@ var HL = (() => {
  * raises the keys near it on springs, the one under it highest, falling off
  * with distance to a floor; that key takes the bright. Each key measures the
  * pointer on the plane of its own rest top, so a raised key answers where it
- * is seen, and a key rising never slips out from under the pointer. The
- * slider is the reach of the falloff, in world units.
+ * is seen, and a key rising never slips out from under the pointer; the
+ * falloff is measured from that one point. The slider is the reach of the
+ * falloff, in world units.
  */
 const {
   Cam, clamp, extremes, facing, fit, hull, open, poly, prism, proj, ringAt, rings, rrect, run, unproj,
@@ -966,12 +967,16 @@ function mount({ stage, svg, read }, value) {
   });
   bag.add(B.unregister);
 
-  // Where the pointer falls on each key's REST top: the plane never moves, so neither does the answer.
+  // Which key: where the pointer falls on each key's REST top (planes that never move), nearest its middle.
+  // Where: that one point on the chosen key's top, the field's centre for every key, so a key raised at
+  // rest doesn't read the pointer on its own higher plane and stand taller than the keys beside the choice.
   function measure([sx, sy]) {
     const d = keys.map((k) => { const [wx, wy] = unproj(C, sx, sy, FLOOR + k.h0 + CAPH); return [wx - cx(k.i), wy - cy(k.j)]; });
     const n = d.reduce((b, v, q) => (Math.hypot(...v) < Math.hypot(...d[b]) ? q : b), 0);
     // off the tray: further from the nearest key's middle than the rim
-    return Math.max(...d[n].map(Math.abs)) > PITCH / 2 + G + T + 2 ? null : { k: keys[n], d: d.map((v) => Math.hypot(...v)) };
+    if (Math.max(...d[n].map(Math.abs)) > PITCH / 2 + G + T + 2) return null;
+    const k = keys[n], dn = Math.hypot(...d[n]), w = [cx(k.i) + d[n][0], cy(k.j) + d[n][1]];
+    return { k, d: keys.map((q) => Math.max(dn, Math.hypot(cx(q.i) - w[0], cy(q.j) - w[1]))) };
   }
 
   function retarget() {
