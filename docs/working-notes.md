@@ -13937,3 +13937,11 @@ Change and Cancel keep their regular weight (400 at 14px, checked on the desk, X
 - Under it, the title row is "Past activity" with the search at its right. At XS the open field runs to the row's end.
 - The months pin under the bar: 64px on the desk, 62 at XS, and under the pinned field when typing.
 - The bar's back returns to the tab Past was opened from.
+
+## Past activity at XS: the search in the top nav
+
+"On XS search in top nav right". In Past at XS, the search moves into the sub page's bar, at its right.
+- Closed, it is the back's 44px frosted disc (ink on paper in light).
+- Opened, it is a 44px field across the bar beside the back, with a 1.5px white edge when focused and the clear cross. It filters as before, with the beat, the drawn keyboard and the scroll-to-drop.
+- The bar pins it, so the head never sticks for it.
+- The element moves between the head and the bar (`placeSearch`, on entering or leaving Past and on resize). The desk and S keep it at the title's right.

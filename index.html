@@ -7571,7 +7571,12 @@
   body[data-bp="xs"] #dTl .tlSubTop .svBack{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);} body.light[data-bp="xs"] #dTl .tlSubTop .svBack{background:rgba(46,31,26,.08);color:#2e1f1a;}   /* XS: the service page's 44 disc */
   #dTl.tlPastOn .tlBar, #dTl.tlPastOn .tlPastBtn, #dTl.tlPastOn .tlThB{display:none;} #dTl.tlPastOn .tlHead{margin-top:8px;}
   #dTl.tlPastOn{--tlHTop:32px;} body[data-bp="s"] #dTl.tlPastOn{--tlHTop:12px;} body[data-bp="xs"] #dTl.tlPastOn{--tlHTop:45px;}   /* the months pinned under the bar (64 tall; 62 at XS) */
-  body[data-bp="xs"] #dTl.tlPastOn.tlQPin .tlHead{top:45px;} body[data-bp="xs"] #dTl.tlPastOn.tlQPin{--tlHTop:111px;}   /* typed into: the field under the bar, the months under the field */
+  /* XS: the search in the bar, at its right, the back's disc ("on XS search in top nav right"); opened, a field across the bar beside the back -- the bar pins it, so the head never does */
+  body[data-bp="xs"] #dTl .tlSubTop > .tlCol{position:relative;justify-content:space-between;}
+  body[data-bp="xs"] #dTl .tlSubTop .tlSearch{width:44px;height:44px;margin-left:auto;border-radius:50%;background:rgba(255,255,255,.16);box-shadow:none;color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);} body[data-bp="xs"] #dTl .tlSubTop .tlSearch > svg{width:18px;height:18px;}
+  body[data-bp="xs"] #dTl .tlSubTop .tlSearch.open{position:absolute;left:56px;right:0;top:0;margin-top:0;width:auto;height:44px;padding:0 10px 0 16px;border-radius:22px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1.5px var(--msEdge, transparent);color:#ececec;} body[data-bp="xs"] #dTl .tlSubTop .tlSearch.open:focus-within{--msEdge:#fff;}
+  body.light[data-bp="xs"] #dTl .tlSubTop .tlSearch{background:rgba(46,31,26,.08);color:#2e1f1a;} body.light[data-bp="xs"] #dTl .tlSubTop .tlSearch.open:focus-within{--msEdge:#2e241c;}
+  body[data-bp="xs"] #dTl.tlPastOn.tlQPin .tlHead{position:relative;top:auto;} body[data-bp="xs"] #dTl.tlPastOn.tlQPin .tlHead::before{display:none;}
   body.tlOn:is([data-bp="xs"], [data-bp="s"]):has(#dTl.tlPastOn) #bpFrame > .mTabs{display:none;}
   .tlPastBtn:hover{color:var(--tlTx);} .tlPastBtn.on{background:#ececec;box-shadow:none;color:#111;} body.light .tlPastBtn.on{background:#2e1f1a;color:#fff;}
   /* the months: a rail down the left, a dot at each heading -- the care
@@ -29238,7 +29243,12 @@ hairline({
       thumb.style.width = on.offsetWidth + 'px'; thumb.style.transform = 'translateX(' + on.offsetLeft + 'px)'; };
     const pastBtn = main.querySelector('.tlPastBtn'); let tabBeforePast = 'up';
     const tlH1 = main.querySelector('.tlH1');
-    const pastLit = on => { if (!pastBtn) return; const was = main.classList.contains('tlPastOn'); pastBtn.classList.toggle('on', on); pastBtn.setAttribute('aria-pressed', String(on)); main.classList.toggle('tlPastOn', on);
+    // where the search lives: the head's right, or, in Past at XS, the sub page's bar ("on XS search in top nav right")
+    const placeSearch = () => { const sbEl = main.querySelector('.tlSearch'), head = main.querySelector('.tlHead'), barCol = main.querySelector('.tlSubTop > .tlCol'); if (!sbEl || !head || !barCol) return;
+      const inBar = main.classList.contains('tlPastOn') && document.body.dataset.bp === 'xs';
+      if (inBar && sbEl.parentElement !== barCol) barCol.appendChild(sbEl); else if (!inBar && sbEl.parentElement !== head) head.insertBefore(sbEl, main.querySelector('.tlPastBtn')); };
+    addEventListener('resize', placeSearch);
+    const pastLit = on => { if (!pastBtn) return; const was = main.classList.contains('tlPastOn'); pastBtn.classList.toggle('on', on); pastBtn.setAttribute('aria-pressed', String(on)); main.classList.toggle('tlPastOn', on); placeSearch();
       if (was === on) return; if (tlH1) tlH1.textContent = on ? 'Past activity' : 'Your health journey'; main.scrollTop = 0;   // the sub page's title, from its top
       if (on) main.style.removeProperty('--tlHTop'); else requestAnimationFrame(() => setHTop()); };   // its months pin at the top (CSS); back on the tabs, under them again
     { const bk = main.querySelector('.tlSubTop .svBack'); if (bk) bk.addEventListener('click', () => { if (tab === 'past' && pastBtn) pastBtn.click(); }); }   // back: the tab it left
