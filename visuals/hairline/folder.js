@@ -40,7 +40,7 @@ const floorAt = (y) => (y < RB ? RB - Math.sqrt((RB - T) ** 2 - (RB - y) ** 2) :
 function file(i) {
   const k = N - 1 - i, yb = T + 2.2 + i * GAP, ph = rad(i * LEAN), fb = floorAt(yb) + 0.4;
   const h = (ZT - fb) / Math.cos(ph), t = FX0 + (k * (FX1 - FX0 - TW)) / (N - 1);
-  // corners with their radii; the first and last tabs are cut flush with the file's edge, as a set of five-cut tabs is
+  // corners with their radii; the first and last tabs are cut flush with the file's edge, as the end tabs of a filing set are
   const c = [[FX0, 0, 1], [FX1, 0, 1], [FX1, h, 2.6], [t + TW + 1.6, h, 1.4], [t + TW, h + TH, 2.2], [t, h + TH, 2.2], [t - 1.6, h, 1.4], [FX0, h, 2.6]]
     .filter((_, j) => !(k === N - 1 && (j === 2 || j === 3)) && !(k === 0 && (j === 6 || j === 7)));
   const pts = fillet(c.map((q) => [q[0], q[1]]), c.map((q) => q[2]));
@@ -60,7 +60,7 @@ function mount({ stage, svg, read }, value) {
   const files = Array.from({ length: N }, (_, i) => file(i));
 
   // Fitted to the folder with any file out as far as the slider goes.
-  const C = Cam(45, 0.5, 2.0), box = [[BT[0] + 2, ...Q(0, -BT[2])]];
+  const C = Cam(45, 0.5, 2.15), box = [[BT[0] + 2, ...Q(0, -BT[2])]];
   for (const s of [0, S1, S2, S3, S4, SE]) box.push([0, ...Q(0, s)], [W, ...Q(0, s)]);
   files.forEach((f) => box.push(f.at(FX0, f.h, MAXOUT), f.at(FX1, f.h, MAXOUT), f.at(f.t, f.h + TH, MAXOUT), f.at(f.t + TW, f.h + TH, MAXOUT)));
   fit(C, box, 200, 166);
@@ -155,6 +155,6 @@ hairline({
   means: "A folder of six files with one out a bit: the file whose tab is nearest the pointer slides up out of it, and the other goes back.",
   rules: [1, 4, 5, 6],
   range: [8, 16, 26],
-  tour: [[123, 117], [184, 131], [276, 153], null],
+  tour: [[117, 113], [183, 129], [282, 152], null],
   mount,
 });
