@@ -13994,3 +13994,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Later card title: "12 services are on hold, they’re ready when you are" (sub unchanged). Desk: Centered and Left the same ("on desktop centered and left aligned should be the same"): Left's trimmed 144 drawing and 32 gap are the desk default.
 - Timeline rail: 8 from the rail to the item's card and 8 inside it on the left again ("8px container - 8px card, left padding check"): `.tlList` padding-left 25, `.tlRow::before` left −8 (right stays −16), dividers left −8, trays margin −8.
 - Desk/S search field and Past button: no outline ("no border"); light theme's `--tlField` from transparent to rgba(46,31,26,.05) so the field keeps its shape; the field's edge only while typing.
+
+## Top nav master: 80 tall, 24 sides, sub page title
+- Per the Figma frame ("top nav 80px height. 24px container padding left right", "1400 Fill × 80"): the master `.svTop` fills the panel (bleeds over the host's padding as before), 80 tall, 24 at its sides, back (28 disc) then the sub page's title `.svTopT` 16 after it (15px/500, #ececec; #2e1f1a light). The 1280-container padding from the last round is gone: the nav fills, the page's content keeps its own container under it.
+- The title slot on every host: Past "Past activity" (markup), service detail the service's name (set where the XS scroll title is set), the appointment its heading (`JI[AI].h`). XS unchanged (44 frosted discs, 8 of air; title hidden, the page's own below / the service's on scroll).
+- Past's months pin under the taller bar: --tlHTop 48 (desk), 28 (S).
+- Month dot to label: measured 8.0px already ("DOT Month 8px gap"); no change.
