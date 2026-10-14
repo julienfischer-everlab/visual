@@ -13737,3 +13737,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Phone item card: 10 inside on every side, 10 to each rule ("right and bottom same as the left one"): rows 20/20.
 - Badge 2 further up and right ("-2px top and right"): rings 24 at -10, dots 20 at -8, both centred 2 in from the picture's corner.
 - More services card: the row and its chevron go to the Timeline's Later tab ("go to timeline 'Later' tab") instead of opening the list in the card: the Version menu's Timeline, then `_tl.tab('claim')` (new on window._tl); from the phone, first the XS device, as the phone dock's Timeline does. The list stays in the markup, unopened.
+- More services card copy: "12 services ready when you are" / "Add them to your action plan to schedule ahead".
