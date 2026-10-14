@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Report visuals</title>
+<script>
+  /* Solo: one report's card on its own, for the prototype's V9 modal to host ("add v9 with the modal report visual"): report-visuals.html#solo-mri, -gut, -blood or -dexa */
+  (function () { var m = /^#solo-(mri|gut|blood|dexa)$/.exec(location.hash); if (m) { document.documentElement.classList.add("solo"); document.documentElement.setAttribute("data-solo", m[1]); } })();
+</script>
 <style>
   /* Layout: each report's reveal as the pop-up it opens in, one per report, on a review sheet: a short header, then a grid of the pop-ups, each over a dim backdrop as it is over the page. Inside each: the title, the report card, the words, the button(s). */
   :root {
@@ -65,6 +69,16 @@
   .seg button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
   .seg button:focus-visible, .ctl button:focus-visible, .ctl label:has(input:focus-visible) { outline: 1.5px solid var(--fg); outline-offset: 2px; }
   .grid[hidden] { display: none; }
+  /* Solo: the card alone, edge to edge, on nothing (the host's modal is its backdrop); the host's close takes the square's place */
+  html.solo, html.solo body { background: transparent !important; color-scheme: normal; }
+  html.solo .wrap { max-width: none; padding: 0; gap: 0; }
+  html.solo .wrap > header, html.solo .ctl, html.solo figcaption, html.solo .grid[data-view="1"] { display: none !important; }
+  html.solo .grid { display: block; }
+  html.solo .grid figure { display: none; } html.solo .grid figure.solo-on { display: block; }
+  html.solo .bd { display: block; padding: 0; border-radius: 0; background: none; }
+  html.solo .cw { max-width: none; }
+  html.solo .icard::after { visibility: hidden; }   /* laid out (so its place can be read) but not drawn: the host's close stands in for it */
+  html.solo .ictas .btn { cursor: pointer; } html.solo .ictas .btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
   /* V2: a card on its own picture: the title at the left, the visual in a thin outlined frame, flat, the button(s) at the foot */
   .cw { width: 100%; max-width: 520px; container-type: inline-size; }   /* the card at the pop-up's width, its sizes following its own width */
   .icard { position: relative; display: flex; flex-direction: column; max-width: 100%; gap: 6cqw; padding: 9cqw 8cqw 8cqw; border-radius: 9cqw; --ow: 1.5px;   /* the outline's width ("outline -.5px") */ color: #fff; background: #222 center / cover no-repeat; isolation: isolate; }   /* its height hugs its content ("height card hug") */
@@ -267,10 +281,10 @@
     document.querySelectorAll(".grid[data-view]").forEach(function (g) { g.hidden = g.dataset.view !== v; });
     document.querySelectorAll(".seg [data-view]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.view === v)); });
     ["lead", "key"].forEach(function (n) { document.getElementById(n + "-v2").hidden = v !== "2"; document.getElementById(n + "-v1").hidden = v !== "1"; });
-    store.set("rv-view", v);
+    if (!document.documentElement.classList.contains("solo")) store.set("rv-view", v);   // solo shows the image card without touching the review sheet's choice
   }
   document.querySelector(".seg").addEventListener("click", function (e) { var b = e.target.closest("[data-view]"); if (b) view(b.dataset.view); });
-  view(store.get("rv-view") === "1" ? "1" : "2");
+  view(document.documentElement.classList.contains("solo") || store.get("rv-view") !== "1" ? "2" : "1");
 
   /* V2's visual, flat: the report's grid of cells as dots over a faint full grid, its lines as hairlines */
   function flat(cv, name) {
@@ -622,6 +636,25 @@
     var mq = matchMedia("(resolution: " + (window.devicePixelRatio || 1) + "dppx)");
     var on = function () { document.querySelectorAll("canvas[data-flat]").forEach(function (c) { if (c._redraw) c._redraw(); }); if (window.HL2) document.querySelectorAll("canvas[data-fig]").forEach(function (c) { if (c.getBoundingClientRect().width) HL2.draw(c, c.dataset.fig); }); document.querySelectorAll(".icard").forEach(dither); watchDpr(); };
     if (mq.addEventListener) mq.addEventListener("change", on, { once: true }); else mq.addListener(on);
+  })();
+
+  /* Solo: show the one card, tell the host its height, and hand its buttons to the host (which runs its own actions) */
+  (function () {
+    var root = document.documentElement, k = root.getAttribute("data-solo");
+    if (!k || window.parent === window) return;
+    var card = document.querySelector('.icard[data-card="' + k + '"]'); if (!card) return;
+    var fig = card.closest("figure"); if (fig) fig.classList.add("solo-on");
+    var say = function (m) { try { window.parent.postMessage(Object.assign({ rv: 1, card: k }, m), "*"); } catch (e) {} };
+    card.querySelectorAll(".ictas .btn").forEach(function (b) {
+      b.setAttribute("role", "button"); b.tabIndex = 0;
+      var go = function () { say({ type: "cta", text: b.textContent.trim() }); };
+      b.addEventListener("click", go);
+      b.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") say({ type: "close" }); });
+    var size = function () { var r = card.getBoundingClientRect(), a = getComputedStyle(card, "::after"); say({ type: "size", h: Math.ceil(r.height), sq: a.backgroundColor, sqT: parseFloat(a.top) || 0, sqR: parseFloat(a.right) || 0 }); };   // the square the host's close stands in for: its colour and place
+    if (window.ResizeObserver) new ResizeObserver(size).observe(card);
+    addEventListener("load", size); size();
   })();
 </script>
 </body>
