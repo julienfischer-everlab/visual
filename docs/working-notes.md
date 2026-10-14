@@ -13882,3 +13882,14 @@ The async report's cover is now the red, blurred photograph supplied in chat ("a
 
 - At M (forced, or Auto from 992 to 1439px), the Overview's plan cards are a two-column grid ("M should use 2 col grid for list items"). Before, the 400px floor left one column at M's width. L keeps its auto-fill.
 - The async report's cover banner comes first ("banner first"): `.arHeroZoom` is `order:0` with 24px under it, so the title and chips follow it, at every breakpoint and on the phone.
+
+## Async report: the hero header again
+
+"Use hero header style as previously, with h1 overlapping the hero; body with a top rounded corner starting by badges and intro".
+- The Full modal and the phone take the original hero again:
+  - The picture is full bleed, 320 tall, with its top gradient, blur and shade.
+  - The title is white on it, at the side gutter (centred at M and L).
+  - The body is the paper panel with 24px rounded top corners, 20px over the hero's foot.
+- The badges (doctor, date) left the hero for the panel's top (`.arChipsP`, in ink), ahead of the intro. This is a script change, so it applies to every variant.
+- At XS, S and on the phone, the close rides on the picture (absolute head, translucent white disc). At M and L the hero is the column's, top corners rounded, under the page's nav.
+- The drawn status bar (S, phone) is white over the welcome's picture.

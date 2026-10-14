@@ -5612,7 +5612,8 @@
   .aqStat .isl{position:absolute;left:50%;transform:translateX(-50%);top:13px;width:96px;height:27px;background:#000;border-radius:16px;}
   .aqWrap.aqBpS .aqStat .isl{display:none;}
   .aqStat svg{fill:currentColor;} .aqStat svg rect[fill="none"]{fill:none;stroke:currentColor;}
-  .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on .aqStat{color:#141413;}   /* dark on the light paper (the welcome is on paper too now); white over the dim */
+  .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on .aqStat{color:#141413;}   /* dark on the light paper; white over the dim */
+  .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome) .aqStat{color:#fff;}   /* white on the welcome's picture (the hero again) */
   /* the phone and the full modal: edge to edge */
   .aqWrap.aqPhone .aqFrame{left:0;top:0;width:100%;height:100%;border-radius:0;box-shadow:none;}
   .aqWrap.aqDev:is(.aqFull, .aqPhone) .arSheet{--ar-head-top:58px;}
@@ -5630,16 +5631,16 @@
   .aqWrap:is(.aqBpXS, .aqBpS){--aqSide:16px;}
   .aqWrap:is(.aqFull, .aqPhone) .arSheet.arIsWelcome .arHead{position:relative;}
   .aqWrap:is(.aqFull, .aqPhone) .arSheet.arIsWelcome .arIconBtn{background:oklch(var(--ar-ink) / .06);color:oklch(var(--ar-ink) / .64);}
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet.arIsWelcome .arBody{padding:24px var(--aqSide, 20px);overflow-x:hidden;overflow-y:auto;}
+  .aqWrap:is(.aqFull, .aqPhone) .arSheet.arIsWelcome .arBody{padding:0;overflow-x:hidden;overflow-y:auto;}   /* the hero to the body's edges (was 24 round the banner) */
   .aqWrap:is(.aqFull, .aqPhone) .arSheet .arWelcome{height:auto;}
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arHero{display:flex;flex-direction:column;height:auto;overflow:visible;}
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arHeroText{position:static;order:1;}
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arHeroTitle{color:oklch(var(--ar-ink));}
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arChip{background:oklch(var(--ar-ink) / .06);color:oklch(var(--ar-ink) / .78);-webkit-backdrop-filter:none;backdrop-filter:none;}
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arHeroZoom{position:relative;inset:auto;order:0;height:200px;margin:0 0 24px;border-radius:16px;overflow:hidden;animation:none;}   /* the banner first, the title and chips under it ("banner first"; was after them, 24 above) */
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet :is(.arHeroTop, .arHeroBlur, .arHeroShade){display:none;}
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arPanel{flex:none;margin-top:0;border-radius:0;background:none;}
-  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arPanelScroll{overflow:visible;padding:28px 0 8px;-webkit-mask-image:none;mask-image:none;}
+  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arHeroText{left:var(--aqSide, 20px);right:var(--aqSide, 20px);}
+  /* the hero header again ("use hero header style as previously, with h1 overlapping the hero"): the picture full bleed, its shade, the title on it; the body a paper panel
+     with rounded top corners over the hero's foot, the badges and the intro first. At XS, S and on the phone the close rides on the picture; at M and L the hero is the column's, rounded */
+  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arPanel{flex:none;}
+  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arPanelScroll{overflow:visible;padding:24px var(--aqSide, 20px) 8px;-webkit-mask-image:none;mask-image:none;}
+  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet.arIsWelcome .arHead, .aqWrap.aqPhone .arSheet.arIsWelcome .arHead{position:absolute;left:0;right:0;top:0;z-index:3;}   /* the close on the picture */
+  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet.arIsWelcome .arIconBtn, .aqWrap.aqPhone .arSheet.arIsWelcome .arIconBtn{background:oklch(100% 0 0 / .16);color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
+  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHero{border-radius:20px 20px 0 0;}   /* M and L: the column's picture, under the page's nav, its foot under the panel's curve */
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeroTitle{text-align:center;text-wrap:balance;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arChips{justify-content:center;}
   /* M and L: the top nav runs the modal's width, 32 in from its edges (24 at M), wider than the column ("top nav top right increase max width"); the frame is the size container, so a forced breakpoint's frame counts, not the window */
@@ -12530,6 +12531,8 @@
 }
 .arSheet .arChipDoc { gap: 8px; padding: 4px 10px 4px 4px; }
 .arSheet .arChipAv { width: 22px; height: 22px; max-width: none; border-radius: 9999px; object-fit: cover; }
+.arSheet .arChipsP { padding-bottom: 20px; }
+.arSheet .arChipsP .arChip { background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .78); -webkit-backdrop-filter: none; backdrop-filter: none; }
 .arSheet .arPanel {
   flex: 1; min-height: 0;
   margin-top: -20px;
@@ -13214,7 +13217,14 @@
             drow(talkIco, 'Want to talk through your results?', 'You can book a consult to discuss your results any time through the Services tab in your account.', 'arD50'))
         ];
       }
-      var scroller = h('div', { class: 'arPanelScroll' }, content);
+      // the badges open the body, before the intro, the title alone on the picture ("body with a top rounded corner starting by badges and intro")
+      var chips = h('div', { class: 'arChips arChipsP arAnimUp' },
+              h('div', { class: 'arChip arChipDoc' }, h('img', { class: 'arChipAv', src: o.avatar, alt: 'Dr Steven Lu', decoding: 'async' }), 'Dr. Steven Lu'),
+              h('div', { class: 'arChip' },
+                s('svg', { class: 'arIco', width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' },
+                  s('rect', { x: 2, y: 3, width: 12, height: 11, rx: 2 }), s('path', { d: P.cal })),
+                '23 April 2026'));
+      var scroller = h('div', { class: 'arPanelScroll' }, [chips].concat(content));
       on(scroller, 'scroll', function () {
         scroller.style.setProperty('--ar-fade', Math.min(40, Math.max(0, scroller.scrollTop)) + 'px');
       }, { passive: true });
@@ -13226,13 +13236,7 @@
           h('div', { class: 'arHeroBlur' }),
           h('div', { class: 'arHeroShade' }),
           h('div', { class: 'arHeroText' },
-            h('h2', { class: 'arHeroTitle', text: 'Your complete blood panel report is here.' }),
-            h('div', { class: 'arChips' },
-              h('div', { class: 'arChip arChipDoc' }, h('img', { class: 'arChipAv', src: o.avatar, alt: 'Dr Steven Lu', decoding: 'async' }), 'Dr. Steven Lu'),
-              h('div', { class: 'arChip' },
-                s('svg', { class: 'arIco', width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' },
-                  s('rect', { x: 2, y: 3, width: 12, height: 11, rx: 2 }), s('path', { d: P.cal })),
-                '23 April 2026')))),
+            h('h2', { class: 'arHeroTitle', text: 'Your complete blood panel report is here.' }))),
         h('div', { class: 'arPanel' }, scroller));
     }
 
