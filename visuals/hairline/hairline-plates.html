@@ -887,17 +887,19 @@ var HL = (() => {
  *
  * The pattern: discrete items on one axis. Tweens, a stagger by distance, and
  * a hit test on each plate's rest pose, front to back, so a plate sliding out
- * from under the pointer cannot flip the choice.
+ * from under the pointer cannot flip the choice; the plate chosen also keeps
+ * what shows of it in its target pose, so the face the row opened is reachable.
  */
 const {
   Cam, fillet, fit, poly, proj, rad,
   tdone, tset, tval, tween, disposer, mk, place, pointer, register,
 } = HL;
 
-const N = 6, W = 44, H = 44, R = 7, TK = 1.5, TW = 10, TH = 5, LIFT = 7, STEP = 45, GMAX = 22;
-const GAPS = [12, 16, 11.5, 18, 13];         // the gaps at rest, back to front: uneven
+const N = 6, W = 44, H = 44, R = 7, TK = 1.5, TW = 10, TH = 5, LIFT = 7, STEP = 40, GMAX = 22;
+// The gaps at rest, back to front: uneven, and wide enough that no two plates touch in any switch at GMAX.
+const GAPS = [13, 16, 14, 18, 15];
 const LEAN = [-10, -6.5, -8, -4, -6, -2.5];   // how far each plate leans back at rest, in degrees
-const TABS = [27, 9, 22, 14, 29, 8];          // where each plate's tab starts along its top edge
+const TABS = [24, 13, 21, 10, 18, 15];        // where each plate's tab starts: 10 in from either end, so no corner is cut
 const Y = GAPS.reduce((ys, g) => ys.concat(ys[ys.length - 1] + g), [0]);
 /** The dot code at a plate's foot, by its right edge: up to six places, filled in pairs from the floor up. */
 const DOTS = [[W - 5, 5], [W - 8.6, 5], [W - 5, 8.6], [W - 8.6, 8.6], [W - 5, 12.2], [W - 8.6, 12.2]];
@@ -959,19 +961,29 @@ function mount({ stage, svg, read }, value) {
   });
   bag.add(B.unregister);
 
-  // Hit areas: each plate's RESTING outline, solved in its own plane, nearest plate first. They never move.
+  // Hit areas: each plate's outline solved in its own plane, slid dy and lifted z, never as drawn this frame.
   const o = P(0, 0, 0), e = (x, y, z) => { const q = P(x, y, z); return [q[0] - o[0], q[1] - o[1]]; };
   const ex = e(1, 0, 0);
-  function onPlate(i, [x, y]) {
+  function onPlate(i, [x, y], dy, z) {
     const s = Math.sin(rad(LEAN[i])), c = Math.cos(rad(LEAN[i]));
-    const ev = e(0, s, c), b = e(0, Y[i], 0), qx = x - o[0] - b[0], qy = y - o[1] - b[1];
+    const ev = e(0, s, c), b = e(0, Y[i] + dy, z), qx = x - o[0] - b[0], qy = y - o[1] - b[1];
     const det = ex[0] * ev[1] - ex[1] * ev[0];
     const u = (qx * ev[1] - qy * ev[0]) / det, v = (ex[0] * qy - ex[1] * qx) / det;
     if (u < -2 || u > W + 2 || v < -2) return false;
     return v <= H + 2 || (u >= TABS[i] - 2 && u <= TABS[i] + TW + 2 && v <= H + TH + 2);
   }
+  /**
+   * The plate chosen keeps the pointer while it is on what shows of that plate in its TARGET pose, so the face
+   * the row opened can be reached; anything else is read on the REST pose, nearest plate first. Either answer
+   * is fixed for a still pointer, so the choice settles in one step and cannot loop.
+   */
   function hit(p) {
-    for (let i = N - 1; i >= 0; i--) if (onPlate(i, p)) return i;
+    if (act >= 0 && onPlate(act, p, 0, LIFT)) {
+      let i = N - 1;
+      while (i > act && !onPlate(i, p, gap, 0)) i--;
+      if (i === act) return act;
+    }
+    for (let i = N - 1; i >= 0; i--) if (onPlate(i, p, 0, 0)) return i;
     return -1;
   }
 
@@ -1009,7 +1021,7 @@ hairline({
   means: "Six services as plates in a row: the row opens round the one under the pointer, and it rises to be added.",
   rules: [1, 2, 5, 10],
   range: [6, 14, 22],
-  tour: [[134, 206], [195, 148], [282, 106], null],
+  tour: [[132, 214], [194, 149], [279, 100], null],
   mount,
 });
 </script>
