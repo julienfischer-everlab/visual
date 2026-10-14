@@ -13873,3 +13873,7 @@ A read-only audit (workflow: five surface auditors and a completeness critic, 55
 - Comments brought in line.
 
 **Timeline search, closed at XS** ("timeline search icon this style"): the Insights search's collapsed box, 56px with 14px corners, a 1.5px edge and no fill, with a 20px icon. The Past button is the same box beside it. The head row is 56, so the open field (56) sits on it exactly, stopping 64px short of the right; the pinned offsets follow (tabs at 57).
+
+## Async report cover
+
+The async report's cover is now the red, blurred photograph supplied in chat ("async cover all breakpoint"), saved over `assets/async/hero.webp` (1600×1067, WebP q80). That file is the report's only hero, so every breakpoint shows it: desk, S, XS (framed or Auto) and the phone (Mobile). The cover box crops it with object-fit: cover.
