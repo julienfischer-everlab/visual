@@ -6,7 +6,7 @@
  *     current: 'clinic',          // id of the step in progress; null = not started
  *     complete: false,            // true = every step done
  *     minSegment: 128,            // px between neighbouring dots, never less
- *     minSegmentSmall: 64,        // optional: the minimum in parents under smallBelow (600px)
+ *     minSegmentSmall: 64,        // optional: the minimum in parents under smallBelow (600px), where it's dots only
  *     onArrow: detail => {...},   // optional: an arrow scrolled the track one segment
  *     onInfo: detail => {...}     // optional: adds an info button to the compact caption
  *   });
@@ -42,7 +42,7 @@
     complete: false,
     minSegment: 128,
     minSegmentSmall: null,  // optional: the minimum segment when the card is narrower than smallBelow
-    smallBelow: 600,
+    smallBelow: 600,        // under this width: compact (dots and line, no labels) and no arrows
     edge: 128,
     compactEdge: 64,        // the safe area each side once the labels go (compact)
     label: 'Progress',
@@ -72,43 +72,52 @@
     const usable = W - 2 * E;                                    // between the two edge areas
     const narrow = usable < 2 * m;                               // fewer than two minimum increments fit
     const col = seg => Math.min(seg, LABEL_MAX + 2 * GUTTER);
+    const CE0 = Number.isFinite(+o.compactEdge) ? Math.max(0, +o.compactEdge) : DEFAULTS.compactEdge;
+    const ce = Math.min(CE0, W / 4), cu = W - 2 * ce;
+    // Compact: no labels at all, the dots and line inside a 64px safe area each
+    // side. The segment is the minimum, or less if that's what puts three dots
+    // across the safe area (previous, current, next); if every step fits at
+    // that, they spread across it instead, otherwise the track scrolls.
+    const compact = arrows => {
+      if (N <= 1) return { fit: true, narrow, compact: true, arrows, W, N, seg: 0, pad: W / 2, edge: ce, col: DOT, content: W, max: 0, usable: cu, minSegment: m };
+      const mc = Math.min(m, Math.max(MIN_SEGMENT_FLOOR, cu / (MIN_ITEMS - 1)));
+      const cs = cu / (N - 1);
+      if (cs >= mc - 1e-6) return { fit: true, narrow, compact: true, arrows, W, N, seg: cs, pad: ce, edge: ce, col: DOT, content: W, max: 0, usable: cu, minSegment: m };
+      const cc = 2 * ce + (N - 1) * mc;
+      return { fit: false, narrow, compact: true, arrows, W, N, seg: mc, pad: ce, edge: ce, col: DOT, content: cc, max: Math.max(0, cc - W), usable: cu, minSegment: m };
+    };
+    // Small parents (under smallBelow, 600px): always compact, and no arrows:
+    // swiping, dragging and the keys browse ("<600, don't show label"; "no arrow
+    // left right needed on <600").
+    if (W < sb && N >= 1) return compact(false);
     if (N <= 1) {
-      return { fit: true, narrow, compact: false, W, N, seg: 0, pad: W / 2, edge: E, col: Math.min(LABEL_MAX + 2 * GUTTER, W),
+      return { fit: true, narrow, compact: false, arrows: true, W, N, seg: 0, pad: W / 2, edge: E, col: Math.min(LABEL_MAX + 2 * GUTTER, W),
         content: W, max: 0, usable, minSegment: m };
     }
     const spread = usable / (N - 1);
     if (spread >= m - 1e-6) {                                    // all fit: stretch across the usable width
-      return { fit: true, narrow, compact: false, W, N, seg: spread, pad: E, edge: E, col: col(spread), content: W, max: 0, usable, minSegment: m };
+      return { fit: true, narrow, compact: false, arrows: true, W, N, seg: spread, pad: E, edge: E, col: col(spread), content: W, max: 0, usable, minSegment: m };
     }
     // Narrow and every column fits at the minimum: stretch the columns across
     // the card, no scrolling and no blank space.
     if (narrow && N * col(m) <= W + 1e-6) {
       const sg = W / N;
-      return { fit: true, narrow, compact: false, W, N, seg: sg, pad: sg / 2, edge: E, col: col(sg), content: W, max: 0, usable, minSegment: m };
+      return { fit: true, narrow, compact: false, arrows: true, W, N, seg: sg, pad: sg / 2, edge: E, col: col(sg), content: W, max: 0, usable, minSegment: m };
     }
     if (narrow) {
-      const CE0 = Number.isFinite(+o.compactEdge) ? Math.max(0, +o.compactEdge) : DEFAULTS.compactEdge;
-      const ce = Math.min(CE0, W / 4), cu = W - 2 * ce;
       // Three labelled steps fit across the 64px safe areas at the minimum
       // segment (a small minimum: five 64s in 320px): labels kept, the current
       // step centred with its neighbours either side, the track scrolling.
       if (MIN_ITEMS * col(m) <= cu + 1e-6) {
         const nc = 2 * ce + (N - 1) * m;
-        return { fit: false, narrow, compact: false, W, N, seg: m, pad: ce, edge: ce, col: col(m), content: nc, max: Math.max(0, nc - W), usable: cu, minSegment: m };
+        return { fit: false, narrow, compact: false, arrows: true, W, N, seg: m, pad: ce, edge: ce, col: col(m), content: nc, max: Math.max(0, nc - W), usable: cu, minSegment: m };
       }
-      // Compact: fewer than three labelled steps fit, so the labels go entirely
-      // and the dots and line sit inside the safe areas. The segment is what
-      // puts three dots across them (previous, current, next), never more than
-      // the minimum; the track scrolls if the rest don't fit.
-      const mc = Math.min(m, Math.max(MIN_SEGMENT_FLOOR, cu / (MIN_ITEMS - 1)));
-      const cs = cu / (N - 1);
-      if (cs >= mc - 1e-6) return { fit: true, narrow, compact: true, W, N, seg: cs, pad: ce, edge: ce, col: DOT, content: W, max: 0, usable: cu, minSegment: m };
-      const cc = 2 * ce + (N - 1) * mc;
-      return { fit: false, narrow, compact: true, W, N, seg: mc, pad: ce, edge: ce, col: DOT, content: cc, max: Math.max(0, cc - W), usable: cu, minSegment: m };
+      // Fewer than three labelled steps fit: compact.
+      return compact(true);
     }
     // Wide and scrolling, at exactly the minimum.
     const content = 2 * E + (N - 1) * m;
-    return { fit: false, narrow, compact: false, W, N, seg: m, pad: E, edge: E, col: col(m), content, max: Math.max(0, content - W), usable, minSegment: m };
+    return { fit: false, narrow, compact: false, arrows: true, W, N, seg: m, pad: E, edge: E, col: col(m), content, max: Math.max(0, content - W), usable, minSegment: m };
   }
 
   const labelHalf = L => Math.max(0, L.col / 2 - GUTTER);
@@ -125,8 +134,8 @@
     const startX = L.edge / 2, endX = L.W - L.edge / 2;
     return {
       overflowStart, overflowEnd,
-      startButton: overflowStart && under(startX),
-      endButton: overflowEnd && under(endX),
+      startButton: L.arrows !== false && overflowStart && under(startX),
+      endButton: L.arrows !== false && overflowEnd && under(endX),
       startX, endX,
     };
   }
@@ -136,7 +145,7 @@
   function targetOffset(L, c) {
     const M = L.max, N = L.N;
     if (M <= EPS) return 0;                          // everything fits: nothing to place
-    if (L.narrow) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow, labelled or compact: the current dot at 50% as far as the track allows
+    if (L.narrow || L.compact) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow, labelled or compact: the current dot at 50% as far as the track allows
     if (c <= 0) return 0;                            // first step: its dot on the left safe line
     if (c >= N - 1) return M;                        // final step: its dot on the right safe line
     const s = L.seg, hl = labelHalf(L), E = L.edge, W = L.W;
@@ -317,7 +326,7 @@
       why = why || 'resize';
       const prev = this.layout, r = this.root, sc = this.scroller;
       const L = this.layout = computeLayout(this._measure(), this.opts.steps.length, this.opts);
-      const same = prev && prev.compact === L.compact && ['W', 'N', 'seg', 'pad', 'col', 'edge', 'content'].every(k => Math.abs(prev[k] - L[k]) < 0.01);
+      const same = prev && prev.compact === L.compact && prev.arrows === L.arrows && ['W', 'N', 'seg', 'pad', 'col', 'edge', 'content'].every(k => Math.abs(prev[k] - L[k]) < 0.01);
       const focused = r.contains(document.activeElement) ? document.activeElement : null;
       r.dataset.layout = L.compact ? 'compact' : L.fit ? 'fit' : L.narrow ? 'narrow' : 'scroll';
       r.classList.toggle('is-compact', L.compact);

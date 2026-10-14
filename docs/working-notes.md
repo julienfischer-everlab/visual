@@ -13679,3 +13679,9 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Documentation: a page of the prototype like Report visuals (`#documentation`, Version > Documentation, a Home row) hosting components/progress-timeline/demo.html in a frame; published at that path with its css and js.
 - Sub steps sheet list (.kitV): 8px each side, titles 14px, 1px lower.
 - Timeline, Just completed: the tray padded as the Suggestions (22/24), the item's hover card 14 inside it, radius 14; the phone keeps its own.
+
+## ProgressTimeline: under 600px dots only, no arrows; 12px labels (2026-10-14)
+- "<600, don't show label"; "no arrow left right needed on <600": under `smallBelow` (600) the timeline is always compact (dots and line, 64px safe areas, "Up next – <next step>") with no arrows; swipe, drag and keys browse. The segment there is `minSegmentSmall` (demo 64), less only if needed for three dots across the safe area; all fitting spreads across it.
+- From 600px up, compact still applies where three labelled steps don't fit (a large minimum), with arrows.
+- "Label 12px regular line height 14": every label 12/14 regular; the current one white, not bolder.
+- validate.js: the under-600 rule in the matrix (and `smallBelow: 0` runs for the labelled narrow layout), arrows off under 600, label 12/14/400 and the current by colour. 357,451 checks, 0 failed.

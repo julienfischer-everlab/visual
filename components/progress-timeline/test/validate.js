@@ -44,7 +44,7 @@ const MEASURE = () => {
   const lis = [...r.querySelectorAll('.pt-step')];
   const dots = lis.map(li => { const d = li.querySelector('.pt-dot').getBoundingClientRect(); return { x: d.left + d.width / 2 - rr.left, y: d.top + d.height / 2 - rr.top, w: d.width, h: d.height }; });
   const labels = lis.map(li => { const l = li.querySelector('.pt-label'), b = l.getBoundingClientRect(), cs = getComputedStyle(l);
-    return { l: b.left - rr.left + parseFloat(cs.paddingLeft), r: b.right - rr.left - parseFloat(cs.paddingRight), fs: cs.fontSize, fw: cs.fontWeight }; });
+    return { l: b.left - rr.left + parseFloat(cs.paddingLeft), r: b.right - rr.left - parseFloat(cs.paddingRight), fs: cs.fontSize, fw: cs.fontWeight, lh: cs.lineHeight, color: cs.color }; });
   const conns = lis.slice(0, -1).map(li => { const cs = getComputedStyle(li, '::after'), b = li.getBoundingClientRect();
     return { a: b.left - rr.left + parseFloat(cs.left), b: b.left - rr.left + parseFloat(cs.left) + parseFloat(cs.width), y: b.top - rr.top + parseFloat(cs.top) + parseFloat(cs.height) / 2, disp: cs.display }; });
   const btn = sel => { const b = r.querySelector(sel), q = b.getBoundingClientRect(), cs = getComputedStyle(b);
@@ -75,15 +75,17 @@ function checkGeometry(m, where, cfg) {
   // narrow and scrolling, inside a 64px safe area each side: labelled while three minimum
   // columns fit across it (five 64s in 320px), compact (no labels) below that
   const CE = Math.min(64, W / 4), CU = W - 2 * CE, CM = Math.min(min, Math.max(38, CU / 2)), colM = Math.min(min, 256);
-  const narrowScroll = narrow && N >= 2 && !fitsWide0 && !fitsNarrow0;
-  const compact = narrowScroll && 3 * colM > CU + 1e-6, narrowL = narrowScroll && !compact;
-  const Ee = narrowScroll ? CE : E;
+  // small parents (under smallBelow, 600px by default): always compact, and no arrows
+  const small = W < (cfg.sb == null ? 600 : cfg.sb) && N >= 1;
+  const narrowScroll = !small && narrow && N >= 2 && !fitsWide0 && !fitsNarrow0;
+  const compact = small || (narrowScroll && 3 * colM > CU + 1e-6), narrowL = narrowScroll && !compact;
+  const Ee = compact || narrowL ? CE : E;
   ok(Math.abs(S.edge - Ee) < 0.01, where, 'edge ' + S.edge + ' expected ' + Ee);
   ok(S.narrow === narrow, where, 'narrow ' + S.narrow + ' expected ' + narrow);
   ok(S.compact === compact && m.classes.includes('is-compact') === compact, where, 'compact ' + S.compact + ' expected ' + compact);
   // compact: the labels gone from sight (still read out), one caption naming the next step
   if (compact) ok(m.labelBox && m.labelBox.w <= 1.01 && m.labelBox.h <= 1.01 && /^Step 1 of /.test(m.labelText), where, 'compact: label still showing ' + JSON.stringify(m.labelBox));
-  else if (N >= 1) ok(m.labelBox && m.labelBox.h >= 19, where, 'label hidden outside compact');
+  else if (N >= 1) ok(m.labelBox && m.labelBox.h >= 13.5, where, 'label hidden outside compact');
   if (!free) {
     const nx = c < 0 ? 0 : c < N - 1 ? c + 1 : -1;
     const want = compact && nx >= 0 ? 'Up next \u2013 ' + cfg.labels[nx] : null;
@@ -95,11 +97,9 @@ function checkGeometry(m, where, cfg) {
   ok(m.scrollLeft >= -0.5 && m.scrollLeft <= Math.max(0, m.scrollMax) + 0.5, where, 'scrollLeft out of range ' + m.scrollLeft + '/' + m.scrollMax);
   if (!free) ok(m.ariaCurrent.length === (c >= 0 && c < N ? 1 : 0) && (c < 0 || c >= N || m.ariaCurrent[0] === c), where, 'aria-current ' + JSON.stringify(m.ariaCurrent));
   m.dots.forEach((d, i) => ok(Math.abs(d.w - 14) < 0.01 && Math.abs(d.h - 14) < 0.01, where, 'dot ' + i + ' is ' + d.w + 'x' + d.h));
-  m.labels.forEach((l, i) => ok(l.fs === '14px', where, 'label ' + i + ' font ' + l.fs));
-  if (c >= 0 && c < N) {
-    ok(+m.labels[c].fw >= 500, where, 'current label weight ' + m.labels[c].fw);
-    m.labels.forEach((l, i) => { if (i !== c) ok(+l.fw < +m.labels[c].fw, where, 'label ' + i + ' as heavy as the current'); });
-  }
+  // labels: 12px regular on a 14px line, the current one told apart by its colour
+  m.labels.forEach((l, i) => ok(l.fs === '12px' && l.lh === '14px' && +l.fw === 400, where, 'label ' + i + ' ' + l.fs + '/' + l.lh + ' ' + l.fw));
+  if (c >= 0 && c < N) m.labels.forEach((l, i) => { if (i !== c) ok(l.color !== m.labels[c].color, where, 'label ' + i + ' the current one\'s colour'); });
   // connectors: 4px clear of each dot, on the dots' line
   m.conns.forEach((k, i) => {
     ok(Math.abs(k.a - (m.dots[i].x + 7) - 4) < 0.6, where, 'gap after dot ' + i + ' = ' + (k.a - m.dots[i].x - 7).toFixed(2));
@@ -122,7 +122,7 @@ function checkGeometry(m, where, cfg) {
     ok(Math.abs(b.w - 28) < 0.6 && Math.abs(b.h - 28) < 0.6, where, nm + ' button size');
     ok(Math.abs(b.cx - cx) < 0.6, where, nm + ' button centre x ' + b.cx.toFixed(1) + ' expected ' + cx);
     if (N > 0) ok(Math.abs(b.cy - m.dots[0].y) < 0.6, where, nm + ' button off the line');
-    const want = on && under(cx);
+    const want = on && under(cx) && !small;
     ok(b.vis === want, where, nm + ' button visible=' + b.vis + ' expected ' + want + ' (overflow ' + on + ', connector ' + under(cx) + ')');
     if (!b.vis) ok(b.tab === -1 && b.pe === 'none', where, nm + ' hidden button still focusable/clickable (tab ' + b.tab + ', pe ' + b.pe + ')');
   }
@@ -130,7 +130,7 @@ function checkGeometry(m, where, cfg) {
 
   {
     if (N >= 2 && !compact) ok(seg >= min - 0.5, where, 'segment ' + seg.toFixed(1) + ' below min ' + min);
-    if (compact) {
+    if (compact && N >= 2) {
       // three dots across the safe area (previous, current, next) as far as the minimum allows; fits: spread across it
       const fitsC = (N - 1) * CM <= CU + 1e-6;
       if (fitsC) {
@@ -151,11 +151,11 @@ function checkGeometry(m, where, cfg) {
     const fitsWide = N >= 2 && (N - 1) * min <= W - 2 * E + 1e-6;
     const fitsNarrow = N >= 2 && !fitsWide && narrow && N * Math.min(min, 256) <= W + 1e-6;   // narrow: every column fits, so they stretch across the card
     const fits = fitsWide || fitsNarrow;
-    if (fitsWide) {
+    if (fitsWide && !compact) {
       ok(!overflow, where, 'fits but overflows');
       ok(Math.abs(m.dots[0].x - E) < 0.6 && Math.abs(m.dots[N - 1].x - (W - E)) < 0.6, where, 'fit: not spread edge to edge ' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1));
     }
-    if (fitsNarrow) {
+    if (fitsNarrow && !compact) {
       ok(!overflow, where, 'narrow fit but overflows');
       ok(Math.abs(m.dots[0].x - W / N / 2) < 0.6 && Math.abs(m.dots[N - 1].x - (W - W / N / 2)) < 0.6, where, 'narrow fit: columns not filling the card ' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1));
     }
@@ -173,9 +173,9 @@ function checkGeometry(m, where, cfg) {
         ok((!fl || m.labels[k].l >= CE - 0.6) && (!fr || m.labels[k].r <= W - CE + 0.6), where, 'narrow: the current label under a fade');
       }
     }
-    if (N >= 2 && fitsNarrow) ok(seg >= min - 0.5, where, 'narrow fit below the minimum');
+    if (N >= 2 && fitsNarrow && !compact) ok(seg >= min - 0.5, where, 'narrow fit below the minimum');
     if (N === 1) ok(Math.abs(m.dots[0].x - W / 2) < 0.6, where, 'single step not centred');
-    if (N >= 2 && !fits && !narrow) {
+    if (N >= 2 && !fits && !narrow && !compact) {
       ok(m.dots[0].x <= E + 0.6, where, 'empty space before the first dot');
       ok(m.dots[N - 1].x >= W - E - 0.6, where, 'empty space after the last dot');
       if (!free && c <= 0) ok(Math.abs(m.dots[0].x - E) < 0.6, where, 'start: first dot at ' + m.dots[0].x.toFixed(1));
@@ -204,7 +204,7 @@ function checkGeometry(m, where, cfg) {
   const p = await newPage();
   const mount = async (cfg) => {
     const cur = cfg.c < 0 ? null : cfg.c >= cfg.N ? null : 's' + cfg.c;
-    await p.evaluate(([o, w]) => T.mount(o, w), [{ steps: steps(cfg.N, cfg.long), current: cur, complete: cfg.c >= cfg.N, minSegment: cfg.min }, cfg.W]);
+    await p.evaluate(([o, w]) => T.mount(o, w), [Object.assign({ steps: steps(cfg.N, cfg.long), current: cur, complete: cfg.c >= cfg.N, minSegment: cfg.min }, cfg.sb == null ? {} : { smallBelow: cfg.sb }), cfg.W]);
     await p.evaluate(frames);
     return p.evaluate(MEASURE);
   };
@@ -213,16 +213,16 @@ function checkGeometry(m, where, cfg) {
   const WIDTHS = [240, 320, 375, 448, 480, 511, 512, 560, 640, 700, 768, 900, 1024, 1280, 1600];
   const COUNTS = [1, 2, 3, 4, 5, 7, 10, 16, 25];
   let mounts = 0;
-  for (const min of [128, 96, 160, 64]) {
-    for (const W of (min === 128 ? WIDTHS : min === 64 ? [240, 300, 319, 320, 352, 383, 384, 448, 640] : min === 96 ? [320, 410, 416, 440, 448, 520, 640, 1024] : [320, 448, 520, 640, 1024])) {
+  for (const [min, sb] of [[128], [96], [160], [64], [64, 0], [96, 0], [128, 0], [200]]) {
+    for (const W of (min === 128 && sb == null ? WIDTHS : min === 64 ? [240, 300, 319, 320, 352, 383, 384, 448, 640] : min === 96 ? [320, 410, 416, 440, 448, 520, 640, 1024] : min === 200 ? [600, 640, 655, 656, 700, 1024] : [320, 448, 520, 640, 1024])) {
       for (const N of COUNTS) {
         const states = [...new Set([-1, 0, 1, Math.floor(N / 2), N - 2, N - 1, N].filter(c => c >= -1 && c <= N))];
         for (const c of states) {
-          for (const long of (min === 128 ? [false, true] : [true])) {
-            const cfg = { W, N, c, min, long, labels: steps(N, long).map(s => s.label) };
+          for (const long of (min === 128 && sb == null ? [false, true] : [true])) {
+            const cfg = { W, N, c, min, sb, long, labels: steps(N, long).map(s => s.label) };
             const m = await mount(cfg);
             mounts++;
-            checkGeometry(m, `W${W} N${N} c${c} min${min}${long ? ' long' : ''}`, cfg);
+            checkGeometry(m, `W${W} N${N} c${c} min${min}${sb != null ? ' sb' + sb : ''}${long ? ' long' : ''}`, cfg);
           }
         }
       }
@@ -405,10 +405,10 @@ function checkGeometry(m, where, cfg) {
     await p.waitForTimeout(30);
     ok(Math.abs(await p.evaluate(() => document.querySelector('.pt-scroller').scrollLeft) - Math.max(0, b0 - 128)) < 1.5, where, 'reduced motion: arrow not instant');
     await p.emulateMedia({ reducedMotion: 'no-preference' });
-    // narrow: arrows still a segment, current state untouched
-    m = await mount({ W: 340, N: 8, c: 0, min: 128, long: false });
+    // compact from 600 up (a large minimum): arrows still a segment, current state untouched
+    m = await mount({ W: 640, N: 8, c: 0, min: 200, long: false });
     const r2 = await p.evaluate(() => { const q = document.querySelector('.pt').getBoundingClientRect(); return [q.left, q.top]; });
-    if (ok(m.be.vis, where, 'narrow: end arrow hidden at the first step')) {
+    if (ok(m.state.compact && m.be.vis, where, 'compact 640: end arrow hidden at the first step')) {
       await p.mouse.click(r2[0] + m.be.cx, r2[1] + m.be.cy);
       await p.waitForTimeout(700);
       m = await p.evaluate(MEASURE);
@@ -589,10 +589,12 @@ function checkGeometry(m, where, cfg) {
     // a small minimum: 320px holds five 64px steps, so it keeps its labels (and goes compact once three don't fit)
     const where = 'min 64';
     let m = await mount({ W: 320, N: 10, c: 4, min: 64, long: false });
-    ok(!m.state.compact && m.state.narrow && m.labelBox.h >= 19 && !m.caption.shown, where, 'labels at 320: compact ' + m.state.compact + ', caption ' + m.caption.shown);
+    ok(m.state.compact && m.caption.shown && !m.bs.vis && !m.be.vis, where, '320: expected dots only with no arrows (under 600)');
+    m = await mount({ W: 320, N: 10, c: 4, min: 64, sb: 0, long: false });
+    ok(!m.state.compact && m.state.narrow && m.labelBox.h >= 13.5 && !m.caption.shown, where, 'labels at 320 with smallBelow 0: compact ' + m.state.compact + ', caption ' + m.caption.shown);
     ok(Math.abs(m.dots[4].x - 160) < 0.6 && Math.abs(m.state.segment - 64) < 0.01 && Math.abs(m.state.edge - 64) < 0.01, where, 'current at ' + m.dots[4].x + ', segment ' + m.state.segment + ', edge ' + m.state.edge);
-    m = await mount({ W: 300, N: 10, c: 4, min: 64, long: false });
-    ok(m.state.compact && m.caption.shown, where, '300: expected compact, three 64s don\'t fit across 172');
+    m = await mount({ W: 300, N: 10, c: 4, min: 64, sb: 0, long: false });
+    ok(m.state.compact && m.caption.shown && m.be.vis, where, '300 with smallBelow 0: expected compact with arrows, three 64s don\'t fit across 172');
     await p.evaluate(() => T.resize(320));
     await p.evaluate(frames); await p.evaluate(frames);
     m = await p.evaluate(MEASURE);
@@ -607,7 +609,7 @@ function checkGeometry(m, where, cfg) {
     let m = await p.evaluate(MEASURE);
     ok(m.state.compact && m.caption.shown && m.caption.text === 'Up next \u2013 Step 5' && m.caption.info, where, 'caption ' + JSON.stringify(m.caption));
     ok(Math.abs(m.dots[3].x - 160) < 0.6 && Math.abs(m.dots[2].x - 64) < 0.6 && Math.abs(m.dots[4].x - 256) < 0.6, where, 'previous, current, next at ' + [2, 3, 4].map(i => m.dots[i].x.toFixed(1)));
-    ok(m.bs.vis && m.be.vis && Math.abs(m.bs.cx - 32) < 0.6 && Math.abs(m.be.cx - 288) < 0.6, where, 'arrows ' + JSON.stringify([m.bs.vis, m.be.vis, m.bs.cx, m.be.cx]));
+    ok(!m.bs.vis && !m.be.vis && m.classes.includes('is-overflow-start') && m.classes.includes('is-overflow-end'), where, 'under 600: fades but no arrows ' + JSON.stringify([m.bs.vis, m.be.vis]));
     await p.evaluate(() => document.querySelector('.pt-info').click());
     const inf = await p.evaluate(() => window._info);
     ok(inf.length === 2 && inf[0].currentIndex === 3 && inf[1].ev, where, 'info ' + JSON.stringify(inf));
@@ -624,7 +626,7 @@ function checkGeometry(m, where, cfg) {
     await p.evaluate(() => T.resize(700));
     await p.evaluate(frames); await p.evaluate(frames);
     m = await p.evaluate(MEASURE);
-    ok(!m.state.compact && !m.caption.shown && m.labelBox.h >= 19, where, 'wide again: compact ' + m.state.compact + ', caption ' + m.caption.shown);
+    ok(!m.state.compact && !m.caption.shown && m.labelBox.h >= 13.5, where, 'wide again: compact ' + m.state.compact + ', caption ' + m.caption.shown);
     // a focused info button that goes away hands focus to the card, not <body>
     await p.evaluate(() => { T.resize(320); });
     await p.evaluate(frames); await p.evaluate(frames);

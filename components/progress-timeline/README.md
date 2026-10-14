@@ -3,9 +3,9 @@
 A reusable, responsive horizontal step timeline: a dark card with dots,
 connectors and labels that sizes itself to its parent and scrolls when the
 steps don't fit. It keeps the full timeline at every width and places the
-current step automatically. Where fewer than three labelled steps fit it turns
-compact: dots and line only, with the next step named underneath. It has no
-dependencies and no framework.
+current step automatically. Under 600px (or wherever fewer than three labelled
+steps fit) it turns compact: dots and line only, with the next step named
+underneath. It has no dependencies and no framework.
 
 ```
 progress-timeline.js    the component (classic script or CommonJS)
@@ -42,6 +42,8 @@ test/validate.js        the browser validation suite (Playwright)
 | `complete` | `false` | every step done |
 | `minSegment` | `128` | minimum centre-to-centre distance between dots, in px |
 | `edge` | `128` | the edge safe area at each side, for the fades and arrows |
+| `minSegmentSmall` | `null` | the minimum segment in parents narrower than `smallBelow` (the demo uses 64) |
+| `smallBelow` | `600` | under this width: compact (no labels) and no arrows |
 | `compactEdge` | `64` | the safe area at each side when compact |
 | `label` | `'Progress'` | accessible name prefix |
 | `upNext` | `'Up next'` | the compact caption's prefix: "Up next – Final results" |
@@ -85,6 +87,11 @@ Rules:
   comes from those numbers, not from a device width.
 - **Narrow, all columns fit** when `N · m ≤ W`. The columns stretch across the
   card with their labels, and nothing scrolls.
+- **Under 600px** (`smallBelow`) it is always compact, with no arrows, and the
+  minimum segment is `minSegmentSmall` when set.
+- **Narrow, labelled** (only with a smaller `smallBelow`): while three minimum
+  columns fit across the 64px safe areas, the labels stay, the segment is `m`
+  and the current step centres.
 - **Compact** is every other narrow case: fewer than three labelled steps fit.
   - The labels go entirely; the dots and the line remain (the names are still
     read out).
@@ -149,7 +156,8 @@ keyboard all move the track without touching progress, and nothing snaps back.
     updated on every scroll frame.
 - **Arrows.**
   - They are 28px circles with small chevrons, centred in the edge areas (64px
-    from the edges, 32px when compact) and on the line.
+    from the edges, 32px when compact) and on the line. None under 600px:
+    swipe, drag and the keys browse there.
   - An arrow shows only when its edge overflows and the timeline is beneath
     its centre: its line, a dot or a step's label column. Never over blank
     track past an end.
@@ -171,8 +179,8 @@ keyboard all move the track without touching progress, and nothing snaps back.
   - Upcoming: dim.
 - **Connectors.** 2px, 4px clear of each dot. They're solid up to the current
   step and faint after it.
-- **Labels.** 14px. The current label is white at weight 500; the others are
-  regular and muted. None when compact.
+- **Labels.** 12px regular on a 14px line, up to three lines. The current
+  label is white; the others are muted. None when compact.
 - **Compact caption.** 14px, muted, centred under the dots.
 - **No step count.** There is no separate step count under the timeline.
 
@@ -226,3 +234,5 @@ geometry and asserts the rules above.
   that mustn't count as browsing.
 - Compact: the caption follows progress, the info button and event, labels
   back when wide again, and focus when the caption empties.
+- Under 600px: dots only and no arrows, `minSegmentSmall` across the line,
+  and the labelled narrow layout with `smallBelow: 0`.
