@@ -14025,3 +14025,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Status dot: placed in whole pixels, 6 inside its 20 badge (`position:absolute; left/top:6px`, 8 square) instead of centred through two nested grids ("center the dot!"). In Chromium both the old and new measure centred within 0.05 device px; the user's crop showed ~1px off, likely their engine's rounding of the nested centring — not verifiable here (no Safari).
 - Row dividers on the content's edges, not the card's: `left:0; right:0` ("divider vertically aligned with the content inside the card item").
 - Month dot to its label 16 ("+8px gap"; was 8): `.tlH` padding-left 33.
+- Rail to card 12 ("gap between line vertical and card 12px"): `.tlList` padding-left 33, the item 24 from the line; the month label stays 16 after its dot (now on the items' line).
+- Card padding 12 on every side measured on the picture ("12px all side padding on card"): the badges' 36 boxes hung 3 under the picture, so `.tlMeta.tlMetaC{margin-bottom:-4px}` (desk only; XS and the Overview grid cards reset it to 0) lets the picture set the row's height.
+- Card to divider 12 above and below ("12px divider gap between card and divider"): `.tlRow` padding 24 (was 30), `.tlRow::before` top/bottom 12. Rows 144 tall (were 159).
