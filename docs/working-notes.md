@@ -13694,3 +13694,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 
 ## Overview: "Action plan" (2026-10-14)
 - The Overview's Plan section title reads "Action plan" (desk and phone, and its name in the sections tweak). The sidebar's Plan item is unchanged.
+- Timeline section headings: the count badge 10px from the heading, from 6 ("gap +4px").
