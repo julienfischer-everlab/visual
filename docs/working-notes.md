@@ -13733,3 +13733,5 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Status badge: centred 8 in from the picture's corner (rings 24 at -4, dots 20 at -2): with its ground the card's, only its bite out of the picture shows, and at -4/4 the dot sat at the bite's edge ("dot doesn't seem centered"); now in its middle.
 - MRI Briefing's item picture: the doctor's portrait supplied ("use this visual instead"), square-cropped to the face, assets/overview/brief-doctor.webp (the Timeline's IMG.brief; the service page's wide cover unchanged).
 - Tweaks > Timeline > Chip height (28 / 32 / 36, default 36; "badge 36px height, tweak"): `--tlChipH` on the root, every item chip (the when chips, a waiting item's, the desk cards' with their padding from it).
+- Badge back 4 up and right ("move right -4px top -4px"): rings 24 at -8, dots 20 at -6.
+- Phone item card: 10 inside on every side, 10 to each rule ("right and bottom same as the left one"): rows 20/20.
