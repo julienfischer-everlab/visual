@@ -13700,3 +13700,7 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 ## Detail page ⋯: Move back to my plan (2026-10-14)
 - "If this service or task is under Later, on the detail page the option: Move back to my plan". The page's menu now asks the Timeline (`_tl.laterOf(key, state)`): put off with Do it later → "Move back to my plan" (the Timeline's back icon); in Later by schedule (the Later tab's own rows, matched by state, so the claimable DEXA isn't the booked one) → no Do it later, as the Timeline's menu; otherwise Do it later.
 - The page's Do it later now really moves the item (`_tl.setLater`), into the Later tab's Saved for later, off the Overview's Action plan; Move back returns it. Toasts as before / "… is back in your plan."
+
+## Phone list item: card padding, title centred (2026-10-14)
+- "Padding top bottom missing; reduce left right padding" (the Overview's Action plan on the phone, its hover card): in the phone layout (`@container tl (max-width:540px)`) the item's card is now 16 above and below what's in it and 10 at the sides (from 18/20/14, and the Plan's first item's picture no longer pokes out above its card: `top:-8px` on that one).
+- "Title group should be vertically centered with the avatar": `.tlTx{align-self:center}` in the same layout, the Timeline's phone rows included.
