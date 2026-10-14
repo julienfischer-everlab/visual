@@ -13696,3 +13696,7 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The Overview's Plan section title reads "Action plan" (desk and phone, and its name in the sections tweak). The sidebar's Plan item is unchanged.
 - Timeline section headings: the count badge 10px from the heading, from 6 ("gap +4px").
 - The progress ring (.tlRing) in the status chips: 2px thick, not 3, and 2px smaller everywhere (14 in the desk's and the phone's chip lines, 18 in the phone's step chip); the task dot keeps its size.
+
+## Detail page ⋯: Move back to my plan (2026-10-14)
+- "If this service or task is under Later, on the detail page the option: Move back to my plan". The page's menu now asks the Timeline (`_tl.laterOf(key, state)`): put off with Do it later → "Move back to my plan" (the Timeline's back icon); in Later by schedule (the Later tab's own rows, matched by state, so the claimable DEXA isn't the booked one) → no Do it later, as the Timeline's menu; otherwise Do it later.
+- The page's Do it later now really moves the item (`_tl.setLater`), into the Later tab's Saved for later, off the Overview's Action plan; Move back returns it. Toasts as before / "… is back in your plan."

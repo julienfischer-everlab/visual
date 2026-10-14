@@ -28507,7 +28507,8 @@ hairline({
       bt.innerHTML = '<i class="lkBanBg" aria-hidden="true"></i>' + (av ? '<span class="lkAv" aria-hidden="true"></span>' : '');   // the banner the picture blurred 128px, the picture itself in the avatar, 24 round ("circle needs to be the image of the service, rounded 24px; banner 128px, bg blur 128px")
       sh.classList.add('lkHero'); sh.classList.toggle('lkHasAv', !!av); };
     /* the … button: a small menu, Do it later and About this service ("About this service under the More CTA, dropdown: Do it later, About this service") */
-    const MI = { later: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 16.5H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2V9"/><path d="M3 8h14M7 2v3M13 2v3"/><circle cx="14.5" cy="14.5" r="3.5"/><path d="M14.5 13v1.6l1 .9"/></svg>', about: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 9v5"/><circle cx="10" cy="6.3" r=".6" fill="currentColor"/></svg>' };
+    const MI = { later: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 16.5H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2V9"/><path d="M3 8h14M7 2v3M13 2v3"/><circle cx="14.5" cy="14.5" r="3.5"/><path d="M14.5 13v1.6l1 .9"/></svg>', about: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 9v5"/><circle cx="10" cy="6.3" r=".6" fill="currentColor"/></svg>',
+      back: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5 4.5 9 8 12.5"/><path d="M4.5 9H12a3.5 3.5 0 0 1 0 7h-1.5"/></svg>' };
     let svMenu = null; const menuShut = () => { if (svMenu){ if (svMenu._dim) svMenu._dim.remove(); svMenu.remove(); svMenu = null; } };
     const AB = {};   // made on first use: mkDoc comes later in the script
     const aboutOpen = mobile => { const k = mobile ? 'm' : 'd'; if (!(k in AB)){ AB[k] = mkDoc(mobile ? ph : document.querySelector('.dash')); if (AB[k]) AB[k].classList.add('svLkM', 'svAbM'); } const sh = AB[k], d = SVC[cur.key] || {}; if (!sh) return;
@@ -28520,14 +28521,19 @@ hairline({
     document.addEventListener('click', e => {
       const it = e.target.closest('.svMenu:not([data-tl]) button');   // the Timeline's own menu has its own handler
       if (it){ const mobile = svMenu && svMenu.dataset.mob === '1', host = svMenu && svMenu.parentElement; menuShut();
-        if (it.dataset.m === 'about') aboutOpen(mobile); else svToast(host, (cur.shT || 'This service') + ' moved to later. We\u2019ll remind you in 30 days.'); return; }
+        const TLA = window._tl && window._tl.setLater ? window._tl : null;   // the Timeline's Later, so the page and the Timeline agree
+        if (it.dataset.m === 'about') aboutOpen(mobile);
+        else if (it.dataset.m === 'back'){ if (TLA) TLA.setLater(cur.key, false, cur.state); svToast(host, (cur.shT || 'This service') + ' is back in your plan.'); }
+        else { if (TLA) TLA.setLater(cur.key, true, cur.state); svToast(host, (cur.shT || 'This service') + ' moved to later. We\u2019ll remind you in 30 days.'); }
+        return; }
       const mb = e.target.closest('#dSvc .svMore, #svcMob .svmNav [aria-label="More"]');
       if (!mb){ if (svMenu && !e.target.closest('.svMenu')) menuShut(); return; }
       e.stopPropagation(); if (svMenu){ menuShut(); return; }
       const mobile = !!mb.closest('#svcMob'), host = mobile ? ph : document.querySelector('.dash'); if (!host) return;
       const r = mb.getBoundingClientRect(), hr = host.getBoundingClientRect();
       svMenu = document.createElement('div'); svMenu.className = 'svMenu'; svMenu.dataset.mob = mobile ? '1' : '0'; svMenu.setAttribute('role', 'menu');
-      svMenu.innerHTML = '<button type="button" role="menuitem" data-m="later">' + MI.later + 'Do it later</button><button type="button" role="menuitem" data-m="about">' + MI.about + (SVC[cur.key] && SVC[cur.key].task ? 'About this task' : 'About this service') + '</button>';
+      const lt = window._tl && window._tl.laterOf ? window._tl.laterOf(cur.key, cur.state) : null;   /* in Later: put off by Do it later, the way back to the plan; there by schedule, no Do it later ("if this service or task is under Later, on the detail page the option: Move back to my plan") */
+      svMenu.innerHTML = (lt === 'moved' ? '<button type="button" role="menuitem" data-m="back">' + MI.back + 'Move back to my plan</button>' : lt === 'later' ? '' : '<button type="button" role="menuitem" data-m="later">' + MI.later + 'Do it later</button>') + '<button type="button" role="menuitem" data-m="about">' + MI.about + (SVC[cur.key] && SVC[cur.key].task ? 'About this task' : 'About this service') + '</button>';
       if (mobile || document.body.dataset.bp === 'xs'){ svMenu.classList.add('svMenuSh'); svMenu.insertAdjacentHTML('afterbegin', '<i class="tlShGrab" aria-hidden="true"></i>'); const dim = document.createElement('div'); dim.className = 'svMenuDim'; svMenu._dim = dim; host.appendChild(dim); requestAnimationFrame(() => dim.classList.add('on')); }   // on the phone, a bottom sheet ("more actions: do it later, about this service; bottom sheet")
       else { svMenu.style.top = (r.bottom - hr.top + 8) + 'px'; svMenu.style.right = (hr.right - r.right) + 'px'; }
       host.appendChild(svMenu); requestAnimationFrame(() => svMenu && svMenu.classList.add('on')); }, true);
@@ -29225,7 +29231,14 @@ hairline({
     document.addEventListener('keydown', e => { if (e.key === 'Escape') tlMenuShut(); });
     main.addEventListener('scroll', tlMenuShut, { passive: true });
     fillPlan();   // the Overview's Plan from the start
-    window._tl = { open, close };
+    /* the service page asks where its item stands: put off with Do it later ('moved', so it offers Move back to my plan), in Later by schedule ('later': no Do it later), or neither; and moves it the same way the Timeline's own menu does */
+    const svcIs = (key, st) => r => { const w = own(r) || {}; return (r.svc === key || w.svc === key) && (!st || (w.state || r.state) === st); };   // the page's service, in the page's state when given (the DEXA claimed in Later isn't the DEXA booked in Upcoming)
+    const laterOf = (key, st) => { if ([...SNZ].some(svcIs(key, st)) || [...SNZ].some(svcIs(key))) return 'moved'; if (TL.claim.some(sc => sc.rows.some(svcIs(key, st)))) return 'later'; return null; };
+    const setLater = (key, on, st) => {
+      if (on){ const up = TL.up.flatMap(sc => sc.rows).filter(x => !SNZ.has(x)), r = up.find(svcIs(key, st)) || up.find(svcIs(key)); if (!r) return false; SNZ.add(r); }
+      else { const rs = [...SNZ].filter(svcIs(key)); if (!rs.length) return false; rs.forEach(x => SNZ.delete(x)); }
+      render(); return true; };
+    window._tl = { open, close, laterOf, setLater };
     { let sv = null; try { sv = JSON.parse(sessionStorage.getItem('everlab:svc') || 'null'); } catch (e){}
       if (sv && location.hash) setTimeout(() => { if (document.body.classList.contains('m9') && !document.body.classList.contains('homeOn') && window._svc) window._svc.openDesk(sv[0], sv[1]); }, 0); }   // a reload on the service page comes back to it
     // a reload while the Timeline was showing comes back to it (the Overview's hash, #m9, is the page under it)
