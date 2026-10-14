@@ -19,7 +19,7 @@ const {
 
 const W = 104, D = 20, T = 1, RB = 6, RF = 7, FL = rad(18), HB = 70, LF = 35; // the folder: width, depth, sheet, fold radii, lean, back and front
 const BT = [14, 46, 8];                                                           // the folder's own tab on the back panel: from, to, height
-const N = 6, FX0 = 5, FX1 = W - 5, ZT = 60, TW = 14, TH = 6.5, TF = 0.7, GAP = 2.6, LEAN = 2.8; // the files, and the fan they stand in
+const N = 6, FX0 = 5, FX1 = W - 5, ZT = 60, TW = 14, TH = 6.5, TF = 0.6, GAP = 2.6, LEAN = 2.8; // the files, and the fan they stand in
 const MAXOUT = 26, REST = 2, AT_REST = 0.75, DRAG = [1, 0.14, 0.05], STEP = 40;
 
 // The folder's section: s runs from the top of the back panel down, round the fold, and up the front panel; o is the offset inwards.
@@ -155,6 +155,6 @@ hairline({
   means: "A folder of six files with one out a bit: the file whose tab is nearest the pointer slides up out of it, and the other goes back.",
   rules: [1, 4, 5, 6],
   range: [8, 16, 26],
-  tour: [[150, 120], [200, 110], [270, 100], null],
+  tour: [[123, 117], [184, 131], [276, 153], null],
   mount,
 });
