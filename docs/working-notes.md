@@ -13790,3 +13790,7 @@ At XS:
   - The Next step title at XS is 18px ("increase font size by 2px").
   - The timeline item's sub at XS is 14px ("sub 14").
   - Ghost meta chips are 14px everywhere ("14px").
+
+## Services card copy
+
+The card now reads "12 services, ready when you are" / "Add them to your action plan and book ahead." on the phone and the desk (all breakpoints), with its aria-label to match.
