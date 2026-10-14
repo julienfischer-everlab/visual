@@ -13739,3 +13739,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - More services card: the row and its chevron go to the Timeline's Later tab ("go to timeline 'Later' tab") instead of opening the list in the card: the Version menu's Timeline, then `_tl.tab('claim')` (new on window._tl); from the phone, first the XS device, as the phone dock's Timeline does. The list stays in the markup, unopened.
 - More services card copy: "12 services ready when you are" / "Add them to your action plan to schedule ahead".
 - A task's dot in its badge 7 (from 8, "reduce dot by 1px"); the item chips 12 at the sides (from 8, "padding left right 12px").
+- The title group 24 clear of the item's right edge on the phone/XS item and the Overview cards ("+24px padding right on title group").
