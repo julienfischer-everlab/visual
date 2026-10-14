@@ -13828,3 +13828,10 @@ The card now reads "12 services, ready when you are" / "Add them to your action 
 ## Services card stacked
 
 On the phone and at XS, the "12 services" card stacks its content, centred ("stack content, centered"): the three pictures on top, then the title and the line, 14px apart. The desktop keeps its row.
+
+## Booked card: Add to calendar back as primary, links under the sub
+
+"Keep add to calendar primary, and 2 links below the sub, regular font".
+- Every booked card has Add to calendar back as its primary button. The briefing keeps it beside Join call.
+- Change and Cancel are back under the status line, now in regular weight (`.svPendLks .svLink`, 14px, 400). They show for the booked state, a Confirmed tag, or a "You're booked in / scheduled for…" title.
+- The links left the appointment's Date row (no duplicates). The Date row stays on booked and scheduled pages.
