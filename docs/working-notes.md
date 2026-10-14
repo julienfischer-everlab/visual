@@ -13725,3 +13725,4 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The XS item footer: the date chip and the button centred on each other ("vertically aligned"), as the desk cards already were.
 - The item chips: 28 high everywhere, 8 at each side (from 10/12) ("badge 28px height; padding left right 8px").
 - The services card: "More services to explore" / "Add to your plan when you're ready."; its View a ghost chevron (36px, no fill, a light ground on hover), turning down while the list is open, its name Show/Hide the services; the line stays when open.
+- The services card's stack: the three photos supplied ("use these 3 stacked images"), cropped square to their subjects (the member, the consult room with the MRI on screen, the glass bubble), 192px webp: assets/overview/svc-stack-1..3.webp. The list's own pictures unchanged.
