@@ -13814,3 +13814,13 @@ The card now reads "12 services, ready when you are" / "Add them to your action 
 - **Booked services**
   - The scan's booked-in card no longer has a View referral button. Its referral is the Pathology-style card item ("Your referrals · Show"), set by a `refIn` flag on the step and carried through the MRI's status copy.
   - Every booked card shows two tertiary links under its line, Change and Cancel (`.svPendLks` with `.svLink`, 14px). This applies to a Confirmed tag or a "You're booked in / scheduled for…" title, so the scan, the briefing, the consult and the DEXA all get them.
+
+## Booking links in the appointment rows; CTA gap; Overview field at XS
+
+- **Add to calendar, Change and Cancel move to the appointment's Date row** ("below the date right col … instead of add to calendar"; "remove link here, put them in the Appointment section").
+  - They are three tertiary links (`SV_APLK`: `.svApLks` with `.svLink`, 14px) under the date in the right column.
+  - The booked status cards lose their Add to calendar button and their Change/Cancel links. The briefing keeps Join call as its only button.
+  - The Date row now shows on any booked or scheduled page (consult and DEXA "You're scheduled for…" included), dated from `d.when`, else the service's slot with its year, so DEXA reads Sat 3 Oct like its heading.
+  - A card whose button has no label renders no button.
+- **CTA gap** ("reduce gap by 24px above CTA"): `ctaTop()` lifted a right-hand button level with the title. When the button later wrapped to its own row (`ctaWide`, over 160px), the inline `margin-top` stayed, adding about 25px. `ctaTop()` now skips `ctaWide` cards, and setting `ctaWide` clears the lift, so the gap is the card's 24.
+- **Overview field at XS** ("search fill container until XS breakpoint"): under hdrV4 the field fills the row up to the inbox and bell discs at XS (Auto narrow or forced); the desk keeps 256px on the right.
