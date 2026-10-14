@@ -13945,3 +13945,7 @@ Change and Cancel keep their regular weight (400 at 14px, checked on the desk, X
 - Opened, it is a 44px field across the bar beside the back, with a 1.5px white edge when focused and the clear cross. It filters as before, with the beat, the drawn keyboard and the scroll-to-drop.
 - The bar pins it, so the head never sticks for it.
 - The element moves between the head and the bar (`placeSearch`, on entering or leaving Past and on resize). The desk and S keep it at the title's right.
+
+## Timeline search and Past boxes at 44
+
+At XS the closed search and the Past button are 44px boxes ("44"; were 56), with 12px corners and the same 1.5px edge. The head row is 44, and the open field is 44 tall over it, stopping 52px short of the right for the Past box. The pinned field's tabs sit at 45 (62 from the top), and `ovScrolled` follows them.
