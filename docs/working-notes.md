@@ -13877,3 +13877,8 @@ A read-only audit (workflow: five surface auditors and a completeness critic, 55
 ## Async report cover
 
 The async report's cover is now the red, blurred photograph supplied in chat ("async cover all breakpoint"), saved over `assets/async/hero.webp` (1600×1067, WebP q80). That file is the report's only hero, so every breakpoint shows it: desk, S, XS (framed or Auto) and the phone (Mobile). The cover box crops it with object-fit: cover.
+
+## Overview plan at M: two columns; async report banner first
+
+- At M (forced, or Auto from 992 to 1439px), the Overview's plan cards are a two-column grid ("M should use 2 col grid for list items"). Before, the 400px floor left one column at M's width. L keeps its auto-fill.
+- The async report's cover banner comes first ("banner first"): `.arHeroZoom` is `order:0` with 24px under it, so the title and chips follow it, at every breakpoint and on the phone.
