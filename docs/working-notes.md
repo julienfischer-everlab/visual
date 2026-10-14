@@ -13911,3 +13911,21 @@ No person has judged the tours yet. The look PNGs stay out of the repo.
 ## Booked card links: divider
 
 Change and Cancel keep their regular weight (400 at 14px, checked on the desk, XS and the phone). They now sit 8px apart with a vertical divider between them ("divider vertical between, gap 8px, fff 4%"): `.svPendDiv`, 1px by 16px, white at 4% (ink at 8% on paper).
+
+## Timeline: Past activity, a sub page
+
+"Past activity h1, search right side; this is a sub page; put some through the years for the sake of the demo"; "no need status for past item".
+- **Entering**: the Past icon opens a sub page of the Timeline.
+  - The head has a back button (a 40px rounded box on the desk, the 56px search box at XS), the title "Past activity" and the search at its right.
+  - The tabs and the Past button are hidden, and past items carry no status badge on their picture.
+  - Month headings pin at the top (`--tlHTop` in CSS while Past is on, under the pinned field at XS when typing).
+  - At XS and S the dock leaves, as on the other sub pages.
+- **Leaving**: back returns to the tab it left. A fresh open of the Timeline (not a return from a service page) lands on the tabs, and it opens from the top.
+- **Search** works inside Past: "blood" narrows it to the two blood panels.
+- **Demo data**: Past now runs through the years, from July 2026 back to June 2024:
+  - skin check (Nov 2025)
+  - blood panel (Aug 2025)
+  - nutrition review (May 2025)
+  - whole-body MRI and CT (Jan 2025)
+  - DEXA (Oct 2024)
+  - blood panel and physical assessment (Jun 2024)
