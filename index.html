@@ -6695,7 +6695,8 @@
   .svTop .ovGround{bottom:0;}   /* the blur ends at the bar's edge: its tail was blurring the content in view below it ("blur bug"); the tint alone fades on */
   .ovScrolled .svTop::before, .ovScrolled .svTop .ovGround{opacity:1;}   /* its tint and blur once its page has scrolled, on any host */
   body.light .svTop::before{background:linear-gradient(180deg,rgba(247,242,233,.55) 0%,rgba(247,242,233,.5) 18%,rgba(247,242,233,.43) 36%,rgba(247,242,233,.33) 54%,rgba(247,242,233,.21) 72%,rgba(247,242,233,.1) 88%,rgba(247,242,233,0) 100%);}
-  body[data-bp="xs"] .svTop{height:auto;gap:0;padding:8px var(--navPX, 13px) 10px;justify-content:space-between;} body[data-bp="xs"] .svTopT{display:none;}   /* XS: 8 of air (was 45, the drawn strip's), the back and the bar's end apart; the title below the bar, as the page's own (the service's comes into the bar on scroll) */
+  body:is([data-bp="xs"], [data-bp="s"]) .svTop{height:72px;} @media (max-width:991px){ body:not([data-bp]) .svTop{height:72px;} }   /* 72 at XS and S, 80 at M and L ("XS S - top nav 72px height; M L - top nav 80px height") */
+  body[data-bp="xs"] .svTop{gap:0;padding:0 var(--navPX, 13px);justify-content:space-between;} body[data-bp="xs"] .svTopT{display:none;}   /* XS: 8 of air (was 45, the drawn strip's), the back and the bar's end apart; the title below the bar, as the page's own (the service's comes into the bar on scroll) */
   body[data-bp="xs"] #dSvc{--navPT:24px;--navPX:13px;} body[data-bp="s"] #dTl{--navPT:52px;--navPX:24px;} body[data-bp="xs"] #dTl{--navPT:17px;--navPX:16px;}   /* the hosts' own padding, all the master reads */
   .svBack{width:28px;height:28px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .svBack svg{width:14px;height:14px;}
@@ -7156,7 +7157,9 @@
      sheet into it; the back and more discs on its bar, the hero up under the bar, full bleed */
   #dSvc .svXsMore{display:none;}
   body.svcOn:is([data-bp="xs"], [data-bp="s"]) #mTabs3{display:none;}   /* a sub page: no main nav at XS and S ("no main nav on service detail XS S"), as the phone's */
-  body[data-bp="xs"] .svTop .svBack{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}   /* the master's back at XS: a 44 frosted disc (desk: the 28 disc, .svBack) */ body.light[data-bp="xs"] .svTop.svTopPlain .svBack{background:rgba(46,31,26,.08);color:#2e1f1a;}   /* over the page's own ground, no picture under it: the light page's tint */
+  /* the master's actions at XS and on the phone: 44, a 4% ground over a 256 blur ("44px action blur 256px bg opacity 4%"), a 16 icon; the desk keeps its 28 disc (.svBack) */
+  body[data-bp="xs"] .svTop :is(.svBack, .svmBtn), body .svmNav .svmBtn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.04);color:#fff;-webkit-backdrop-filter:blur(256px);backdrop-filter:blur(256px);} body[data-bp="xs"] .svTop .svBack svg{width:16px;height:16px;}
+  body.light[data-bp="xs"] .svTop.svTopPlain .svBack{background:rgba(46,31,26,.04);color:#2e1f1a;}   /* over the page's own ground, no picture under it: the light page's tint */
   body[data-bp="xs"] #dSvc .svXsMore{display:flex;}
   body[data-bp="xs"] #dSvc .svGrid{display:block;} body[data-bp="xs"] #dSvc .svAside:empty{display:none;}
   #dSvc .svXsHero{margin-left:-13px;margin-right:-13px;padding-left:16px;padding-right:16px;}
@@ -7430,18 +7433,18 @@
      the home page's top bar, on scroll"): sticky at the screen's top, the
      hero running up under it, and once the page has scrolled the same black
      tint and ten blur bands fading in behind them */
-  .svmNav{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:calc(var(--stH,54px) + 8px) 16px 12px;isolation:isolate;}
+  .svmNav{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:calc(var(--stH,54px) + 14px) 16px 14px;isolation:isolate;}   /* the master's XS bar under the drawn status strip: 72 tall, its 44 actions centred in it */
   .svmNav::before{content:"";position:absolute;left:0;right:0;top:0;bottom:-38px;z-index:-1;pointer-events:none;opacity:0;transition:opacity .28s ease;
     background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.5) 18%,rgba(0,0,0,.43) 36%,rgba(0,0,0,.33) 54%,rgba(0,0,0,.21) 72%,rgba(0,0,0,.1) 88%,rgba(0,0,0,0) 100%);}
   .svmNav .ovGround{bottom:0;}
   #phone2.svcScrolled .svmNav::before, #phone2.svcScrolled .svmNav .ovGround{opacity:1;}
-  .svmBtn{width:44px;height:44px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.16);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
-  .svmBtn svg{width:16px;height:16px;} .svmBtn.svBack{background:rgba(255,255,255,.16);}
+  .svmBtn{border:0;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer;}   /* the phone's bar: the master's XS actions (size, ground, blur: with the XS back above) */
+  .svmBtn svg{width:16px;height:16px;}
   #svcMob .svmHero, .svXsHero.svmHero{padding-top:calc(var(--stH,54px) + 152px);}   /* 32 more above the title ("add 32px padding top above h1") */
-  .svmNavT{position:absolute;left:72px;right:72px;bottom:12px;height:44px;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .25s ease,transform .25s ease;}
+  .svmNavT{position:absolute;left:72px;right:72px;bottom:14px;height:44px;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .25s ease,transform .25s ease;}
   .svmNavT span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:16px;font-weight:500;color:#fff;}
   #phone2.svcTitled .svmNavT, body[data-bp="xs"] #dSvc.svTitled .svTop .svmNavT{opacity:1;transform:none;}
-  .svTop .svmNavT{bottom:10px;left:68px;right:68px;} body:not([data-bp="xs"]) .svTop .svmNavT{display:none;}
+  .svTop .svmNavT{bottom:14px;left:68px;right:68px;} body:not([data-bp="xs"]) .svTop .svmNavT{display:none;}
    /* the title in the bar once the hero's own has gone under it ("on scroll the h1 title should fade in inside the top header, with ellipsis") */
   .svmHero h1{margin:0;font-size:26px;font-weight:500;line-height:1.2;letter-spacing:-.3px;color:#fff;}
   .svmStart{margin-top:6px;font-size:15px;color:rgba(255,255,255,.6);}
@@ -7570,12 +7573,12 @@
      no status on its items ("no need status for past item"); the months pinned at the top; at XS and S no dock, as the other sub pages */
   #dTl .tlSubTop{display:none;} #dTl.tlPastOn .tlSubTop{display:flex;z-index:7;}   /* over the months as they slide out under it (theirs is 6) */ #dTl .tlSubTop > .tlCol{flex:1 1 auto;display:flex;align-items:center;min-width:0;}   /* the master bar; its column holds the title and the search at XS */
   #dTl.tlPastOn .tlBar, #dTl.tlPastOn .tlPastBtn, #dTl.tlPastOn .tlThB{display:none;} #dTl.tlPastOn .tlHead{margin-top:8px;}
-  #dTl.tlPastOn{--tlHTop:48px;} body[data-bp="s"] #dTl.tlPastOn{--tlHTop:28px;} body[data-bp="xs"] #dTl.tlPastOn{--tlHTop:45px;}   /* the months pinned under the bar (80 tall; 62 at XS) */
+  #dTl.tlPastOn{--tlHTop:48px;} body[data-bp="s"] #dTl.tlPastOn{--tlHTop:20px;} body[data-bp="xs"] #dTl.tlPastOn{--tlHTop:55px;} @media (max-width:991px){ body:not([data-bp]) #dTl.tlPastOn{--tlHTop:40px;} }   /* the months pinned under the bar (80 tall at M and L, 72 at S and XS) */
   /* XS: the search in the bar, at its right, the back's disc ("on XS search in top nav right"); opened, a field across the bar beside the back -- the bar pins it, so the head never does */
   body[data-bp="xs"] #dTl .tlSubTop > .tlCol{position:relative;align-self:stretch;justify-content:space-between;}   /* the bar's full 44: the field opens level with the back */
-  body[data-bp="xs"] #dTl .tlSubTop .tlSearch{width:44px;height:44px;margin-left:auto;border-radius:50%;background:rgba(255,255,255,.16);box-shadow:none;color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);} body[data-bp="xs"] #dTl .tlSubTop .tlSearch > svg{width:18px;height:18px;}
+  body[data-bp="xs"] #dTl .tlSubTop .tlSearch{width:44px;height:44px;margin-left:auto;border-radius:50%;background:rgba(255,255,255,.04);box-shadow:none;color:#fff;-webkit-backdrop-filter:blur(256px);backdrop-filter:blur(256px);} body[data-bp="xs"] #dTl .tlSubTop .tlSearch > svg{width:16px;height:16px;}   /* the bar's action: the master's (44, 4%, 256 blur, 16 icon) */
   body[data-bp="xs"] #dTl .tlSubTop .tlSearch.open{position:absolute;left:12px;right:0;top:0;margin-top:0;width:auto;height:44px;padding:0 10px 0 16px;border-radius:22px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1.5px var(--msEdge, transparent);color:#ececec;} body[data-bp="xs"] #dTl .tlSubTop .tlSearch.open:focus-within{--msEdge:#fff;}
-  body.light[data-bp="xs"] #dTl .tlSubTop .tlSearch{background:rgba(46,31,26,.08);color:#2e1f1a;} body.light[data-bp="xs"] #dTl .tlSubTop .tlSearch.open:focus-within{--msEdge:#2e241c;}
+  body.light[data-bp="xs"] #dTl .tlSubTop .tlSearch{background:rgba(46,31,26,.04);color:#2e1f1a;} body.light[data-bp="xs"] #dTl .tlSubTop .tlSearch.open:focus-within{--msEdge:#2e241c;}
   body[data-bp="xs"] #dTl.tlPastOn.tlQPin .tlHead{position:relative;top:auto;} body[data-bp="xs"] #dTl.tlPastOn.tlQPin .tlHead::before{display:none;}
   body.tlOn:is([data-bp="xs"], [data-bp="s"]):has(#dTl.tlPastOn) #bpFrame > .mTabs{display:none;}
   .tlPastBtn:hover{color:var(--tlTx);} .tlPastBtn.on{background:#ececec;box-shadow:none;color:#111;} body.light .tlPastBtn.on{background:#2e1f1a;color:#fff;}
