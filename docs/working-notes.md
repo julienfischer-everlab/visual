@@ -13893,3 +13893,17 @@ The async report's cover is now the red, blurred photograph supplied in chat ("a
 - The badges (doctor, date) left the hero for the panel's top (`.arChipsP`, in ink), ahead of the intro. This is a script change, so it applies to every variant.
 - At XS, S and on the phone, the close rides on the picture (absolute head, translucent white disc). At M and L the hero is the column's, top corners rounded, under the page's nav.
 - The drawn status bar (S, phone) is white over the welcome's picture.
+
+## Hairline: three Services figures
+
+Drafts for the Overview's "12 services, ready when you are" card, built with the hairline-create skill by a workflow. Each figure was built, then checked by `look.mjs` (exit 0) and re-checked independently. All three are now on the Hairline page in a new "Services" section (05), and the jump nav has a "Services · 3" link.
+- **Plates** (`plates.js`, 149 lines). Six services as plates in a row; the row opens round the one under the pointer, and it rises to be added. Rules 01, 02, 05, 10. Tour: plate 1 → plate 3 → plate 6 → rest. The slider is the opening gap (6/14/22).
+- **Keys** (`keys.js`, 134 lines). Twelve keycaps in a tray, a few standing ready; the pointer raises the keys near it. Rules 01, 03, 05, 09. Tour: key 1·3 → key 2·1 → key 4·2 → rest. The slider is the lift's reach (24/38/56). The re-check fixed a rule-01 hole: two "rest" spots in the tray's middle.
+- **Planner** (`planner.js`, 169 lines). A desk planner's month three sheets deep; the pointer picks a day and the appointment token travels there. Rules 01, 02, 06, 08. Tour: tue wk 3 → thu wk 1 → sat wk 4 → rest. The slider is the gap between the sheets (4/10/16).
+
+Known weak spots (no rule broken):
+- The plates' rest fan is only slightly uneven.
+- Raised keys can read as posts.
+- The planner's answer moves only about 12% of the ink at 240px.
+
+No person has judged the tours yet. The look PNGs stay out of the repo.
