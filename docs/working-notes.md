@@ -14028,3 +14028,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Rail to card 12 ("gap between line vertical and card 12px"): `.tlList` padding-left 33, the item 24 from the line; the month label stays 16 after its dot (now on the items' line).
 - Card padding 12 on every side measured on the picture ("12px all side padding on card"): the badges' 36 boxes hung 3 under the picture, so `.tlMeta.tlMetaC{margin-bottom:-4px}` (desk only; XS and the Overview grid cards reset it to 0) lets the picture set the row's height.
 - Card to divider 12 above and below ("12px divider gap between card and divider"): `.tlRow` padding 24 (was 30), `.tlRow::before` top/bottom 12. Rows 144 tall (were 159).
+- Later card: 10 between the title and its line (was 2; "8px more gap between title and sub"), every variation.
