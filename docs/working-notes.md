@@ -13907,3 +13907,7 @@ Known weak spots (no rule broken):
 - The planner's answer moves only about 12% of the ink at 240px.
 
 No person has judged the tours yet. The look PNGs stay out of the repo.
+
+## Booked card links: divider
+
+Change and Cancel keep their regular weight (400 at 14px, checked on the desk, XS and the phone). They now sit 8px apart with a vertical divider between them ("divider vertical between, gap 8px, fff 4%"): `.svPendDiv`, 1px by 16px, white at 4% (ink at 8% on paper).
