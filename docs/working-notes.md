@@ -14024,3 +14024,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Just completed: no green tray ("remove green bg, treat as a normal card item on this timeline"): its tray rules, the green badge ground and the XS tray overrides are gone; its item is the Timeline's own card. The green stays in the heading's check and the item's done dot.
 - Status dot: placed in whole pixels, 6 inside its 20 badge (`position:absolute; left/top:6px`, 8 square) instead of centred through two nested grids ("center the dot!"). In Chromium both the old and new measure centred within 0.05 device px; the user's crop showed ~1px off, likely their engine's rounding of the nested centring — not verifiable here (no Safari).
 - Row dividers on the content's edges, not the card's: `left:0; right:0` ("divider vertically aligned with the content inside the card item").
+- Month dot to its label 16 ("+8px gap"; was 8): `.tlH` padding-left 33.
