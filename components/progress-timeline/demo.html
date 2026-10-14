@@ -85,6 +85,7 @@
       <label class="ctl"><span>Progress</span><select id="cur"></select></label>
       <div class="ctl"><span>Step through</span><div class="row"><button class="btn" type="button" id="prev">Previous</button><button class="btn" type="button" id="next">Next</button></div></div>
       <div class="ctl"><span>Overlay</span><label class="chk"><input type="checkbox" id="g"> Safe areas</label></div>
+      <div class="ctl"><span>Settings</span><div class="row"><button class="btn" type="button" id="save">Save</button><button class="btn" type="button" id="reset">Reset</button></div></div>
     </form>
     <div class="stage" style="margin-top:16px">
       <div class="parent" id="parent">
@@ -125,7 +126,15 @@
   };
   const makeSteps = () => { const n = Math.max(1, Math.min(40, +$('n').value || 1)), set = SETS[$('labels').value];
     return Array.from({ length: n }, (_, i) => ({ id: 'step-' + (i + 1), label: set[i % set.length] + (i >= set.length ? ' (' + (i + 1) + ')' : '') })); };
-  let steps = makeSteps(), progress = 4;   // -1 not started, steps.length complete
+  // Save: these settings kept in this browser and back on the next visit; Reset: the defaults again
+  const KEY = 'pt-demo', DEF = { w: 900, n: 10, labels: 'real', min: 128, min2: 64, progress: 4, g: false };
+  const store = { get: () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } },
+    set: v => { try { localStorage.setItem(KEY, JSON.stringify(v)); return true; } catch (e) { return false; } },
+    del: () => { try { localStorage.removeItem(KEY); } catch (e) {} } };
+  const fill = v => { $('w').value = v.w; $('n').value = v.n; if (SETS[v.labels]) $('labels').value = v.labels; $('min').value = v.min; $('min2').value = v.min2; $('g').checked = !!v.g; $('guides').classList.toggle('on', !!v.g); };
+  const saved = store.get(), start = Object.assign({}, DEF, saved && typeof saved === 'object' ? saved : {});
+  fill(start);
+  let steps = makeSteps(), progress = Math.max(-1, Math.min(steps.length, +start.progress | 0));   // -1 not started, steps.length complete
   const props = () => ({ steps, current: progress >= 0 && progress < steps.length ? steps[progress].id : null, complete: progress >= steps.length, minSegment: +$('min').value || 128, minSegmentSmall: +$('min2').value || 64 });
   const say = t => { $('log').textContent = t; };
   const onArrow = d => say('onArrow("' + d.direction + '"): scrolled to ' + Math.round(d.offset) + 'px. Progress is unchanged.');
@@ -159,6 +168,13 @@
   $('prev').addEventListener('click', () => { progress = Math.max(-1, progress - 1); push(); });
   $('next').addEventListener('click', () => { progress = Math.min(steps.length, progress + 1); push(); });
   $('g').addEventListener('change', () => $('guides').classList.toggle('on', $('g').checked));
+  const save = () => { const ok = store.set({ w: Math.round($('parent').getBoundingClientRect().width), n: steps.length, labels: $('labels').value, min: +$('min').value || 128, min2: +$('min2').value || 64, progress, g: $('g').checked });
+    say(ok ? 'Saved. These settings come back next time you open this page in this browser.' : 'This browser could not keep the settings.'); return ok; };
+  const reset = () => { store.del(); fill(DEF); $('parent').style.width = DEF.w + 'px'; steps = makeSteps(); progress = DEF.progress; push(); say('Back to the defaults.'); };
+  $('save').addEventListener('click', save);
+  $('reset').addEventListener('click', reset);
+  window.PTDemo = { save, reset };   // the prototype's bar calls Save from its Documentation page
+  try { if (window.frameElement && window.frameElement.id === 'docFrame') $('save').hidden = true; } catch (e) {}   // there, the bar has the button
   $('parent').style.width = $('w').value + 'px';
   new ResizeObserver(() => { const p = Math.round($('parent').getBoundingClientRect().width); if (+$('w').value !== p && document.activeElement !== $('w')) $('w').value = p; readout(); }).observe($('parent'));
   $('parent').addEventListener('scroll', readout, true);

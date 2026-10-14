@@ -13685,3 +13685,6 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - From 600px up, compact still applies where three labelled steps don't fit (a large minimum), with arrows.
 - "Label 12px regular line height 14": every label 12/14 regular; the current one white, not bolder.
 - validate.js: the under-600 rule in the matrix (and `smallBelow: 0` runs for the labelled narrow layout), arrows off under 600, label 12/14/400 and the current by colour. 357,451 checks, 0 failed.
+
+## Documentation: Save (2026-10-14)
+- "Need a Save on documentation": a Save on the bar on the Documentation page (as Save presets on Report visuals), calling the playground's own save; the playground keeps parent width, steps, labels, both minimums, progress and the overlay in this browser (`pt-demo`) and restores them on load. Reset in the playground clears it. The playground's own Save hides inside the prototype's frame.
