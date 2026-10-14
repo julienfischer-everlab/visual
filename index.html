@@ -7545,7 +7545,14 @@
   body.light .tlThumb{background:#2e1f1a;}
   .tlTabs.noAnim .tlThumb{transition:none;}
   .tlSearch{margin-left:auto;display:flex;align-items:center;gap:8px;width:200px;height:40px;padding:0 14px;border-radius:10px;background:var(--tlField);box-shadow:inset 0 0 0 1px var(--tlRing);color:var(--tlSub);box-sizing:border-box;}
-  .tlSearch svg{flex:none;width:16px;height:16px;}
+  .tlSearch > svg{flex:none;width:16px;height:16px;}
+  .tlSearch .msClear{margin-right:-6px;} .tlSearch.hasText .msClear{display:flex;}   /* the cross once something is typed, as the Insights search ("same search behaviour as the Biomarker insight search, with clear cross when typed") */
+  /* the loading beat's stand-in, while a keystroke "fetches" the list again (the Insights search's 380ms): the rows' own shape, every block a shimmering bar */
+  #dTl .tlSkel:not(.on), #tlList.tlBeat{display:none !important;}
+  .tlSkel .skb{display:block;border-radius:6px;background:linear-gradient(90deg,#1c1c1b 0%,#2a2a28 40%,#1c1c1b 80%);background-size:220% 100%;animation:msShimmer 1.1s linear infinite;}
+  .tlSkel .tlTh.skb{border-radius:16px;} .tlSkel .skH{width:128px;height:14px;margin:3px 0;} .tlSkel .skT{width:62%;height:16px;margin:3px 0 10px;} .tlSkel .skS{width:40%;height:13px;margin:2px 0;}
+  .tlSkel .tlMeta .skb{width:150px;height:14px;margin:11px 0;} .tlSkel .tlAct .skb{width:108px;height:44px;border-radius:12px;} .tlSkel .tlRow{pointer-events:none;}
+  body.light .tlSkel .skb{background:linear-gradient(90deg,#ece4d4 0%,#f5efe4 40%,#ece4d4 80%);background-size:220% 100%;}
   .tlSearch input{flex:1 1 auto;min-width:0;border:0;background:none;outline:0;font:inherit;font-size:14px;color:var(--tlTx);padding:0;}
   .tlSearch input::placeholder{color:var(--tlSub);}
   .tlSearch input::-webkit-search-cancel-button{display:none;}
@@ -7812,6 +7819,9 @@
   .tlShAct{flex:none;display:flex;padding:12px 16px 32px;border-top:1px solid var(--tlLine);}
   .tlShAct:empty{display:none;}
   .tlShAct .tlAct{flex:1 1 auto;display:flex;margin:0;padding:0;} .tlShAct .tlBtn{flex:1 1 auto;height:44px;font-size:14px;} .tlShAct .tlMore{height:44px;width:48px;}
+  body[data-bp="xs"] #bpFrame > .mKbd{display:block;border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;overflow:hidden;}   /* the phone's drawn keyboard, in the XS frame for the Timeline's search; its foot rounded with the screen */
+  body[data-bp="xs"].tlKbd #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;}
+  body[data-bp="xs"].tlKbd #bpFrame > .mTabs{display:none;} body[data-bp="xs"].tlKbd #dTl{padding-bottom:300px;}   /* the keys up: the dock leaves, as on the Insights phone, and the list can rise above them */
   body[data-bp="xs"]:has(.tlSheet.on) #bpFrame > .mTabs, body[data-bp="s"]:has(.tlSheet.on) #bpFrame > .mTabs{display:none;}   /* the sheet stands where the dock was */
   body[data-bp="xs"]:has(.svMenu[data-tl].svMenuSh) #bpFrame > .mTabs{display:none;}   /* the item's ⋯ sheet too */
   body[data-bp="s"] .tlShPanel{left:50%;right:auto;width:480px;transform:translate(-50%,102%);} body[data-bp="s"] .tlSheet.on .tlShPanel{transform:translate(-50%,0);}
@@ -7827,8 +7837,12 @@
     .tlTabs{gap:0;align-self:stretch;} .tlTab{flex:1 1 0;padding:12px 0 13px;font-size:15px;}
     .tlHead{margin-bottom:10px;}
     .tlSearch{flex:none;width:44px;height:44px;padding:0;justify-content:center;border-radius:50%;cursor:pointer;} .tlSearch input{display:none;font-size:15px;}   /* just its icon ("on XS just a search icon CTA") */
-    .tlSearch svg{width:18px;height:18px;}
-    .tlSearch.open{position:absolute;left:0;right:0;top:50%;margin-top:-22px;width:auto;justify-content:flex-start;padding:0 14px;border-radius:12px;background:#1b1b1b;} body.light .tlSearch.open{background:#fff;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line */
+    .tlSearch > svg{width:18px;height:18px;}
+    .tlSearch.open{position:absolute;left:0;right:0;top:50%;margin-top:-28px;width:auto;height:56px;justify-content:flex-start;gap:9px;padding:0 14px 0 16px;border-radius:14px;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);transition:box-shadow .16s ease;cursor:text;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line -- the Insights search's field ("same search behaviour as the Biomarker insight search ... with keyboard / styles") */
+    .tlSearch.open:focus-within{--msEdge:#fff;} .tlSearch.open > svg{width:20px;height:20px;} .tlSearch.open input{font-size:15px;color:#ececec;} .tlSearch.open input::placeholder{color:#8b8b86;} .tlSearch:not(.open) .msClear{display:none !important;} .tlSearch .msClear{margin-right:0;}
+    body.light .tlSearch.open{--msEdge:#ddd3bf;color:#9b8a75;} body.light .tlSearch.open:focus-within{--msEdge:#2e241c;} body.light .tlSearch.open input{color:#2e1f1a;} body.light .tlSearch.open input::placeholder{color:#9b8a75;}
+    .tlHead{min-height:44px;} .tlHead:has(.tlSearch.open) .tlH1{visibility:hidden;}   /* the row holds the icon's 44 when the field opens over it (no jump), and the title stays out of sight under the open field */
+    .tlSkel .tlTh.skb{border-radius:14px;}
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     .tlH{font-size:18px;margin:18px -16px 0;padding:12px 16px 8px;} .tlSec:first-child .tlH{margin-top:6px;}
     .tlRow{grid-template-columns:90px auto minmax(0,1fr);grid-template-areas:"th tx tx" "meta meta meta" "prog prog act" "det det det";column-gap:12px;padding:20px 0;}   /* 20 above and below: 10 to the card, 10 inside it, as at its sides ("reduce padding top to match left"; "divider gap same as left padding card"; "right and bottom same as the left one") */   /* 12 more round the divider (+8, "+8px top and bottom around divider") and 4 more inside the card ("card padding +4px") */
@@ -12115,7 +12129,7 @@
        Timeline"): its rows are written by timelinePage() from TL below -->
   <main class="dvMain" id="dTl" aria-label="Timeline">
     <div class="tlCol tlHead"><h1 class="tlH1">Your health journey</h1>
-  <label class="tlSearch"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.7"/><path d="m10.8 10.8 3 3"/></svg><input id="tlQ" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search your health journey"></label></div>   <!-- the search on the title's line, right ("search at the level of the title, right side"); at XS just its icon -->
+  <label class="tlSearch"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7.2" cy="7.2" r="4.7"/><path d="m10.8 10.8 3 3"/></svg><input id="tlQ" type="search" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search your health journey"><button class="msClear" type="button" aria-label="Clear search"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></label></div>   <!-- the search on the title's line, right ("search at the level of the title, right side"); at XS just its icon -->
     <div class="tlBar"><div class="ovGround" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tlCol tlBarIn">
       <div class="tlTabs" role="tablist" aria-label="Timeline"><i class="tlThumb" aria-hidden="true"></i>
         <button class="tlTab on" type="button" role="tab" aria-selected="true" data-t="up">Upcoming</button>
@@ -29149,10 +29163,57 @@ hairline({
     }));
     addEventListener('resize', placeThumb);
     if (window.ResizeObserver && tabsEl) new ResizeObserver(() => placeThumb()).observe(tabsEl);   // a breakpoint's new width re-measures it, with no slide from the old place
-    if (q) q.addEventListener('input', filter);
-    { const sb = q && q.closest('.tlSearch'); if (sb){   // XS: the icon opens the field over the title; it closes again when left empty
-      sb.addEventListener('click', () => { if (!sb.classList.contains('open') && getComputedStyle(q).display === 'none'){ sb.classList.add('open'); q.focus(); } });
-      q.addEventListener('blur', () => { if (!q.value) sb.classList.remove('open'); }); } }
+    { const sb = q && q.closest('.tlSearch'); if (sb){
+      // The Insights search's behaviour ("same search behaviour as the Biomarker insight search, with clear cross when typed ... with keyboard /
+      // styles / etc"): a keystroke runs the list through the same 380ms beat, a skeleton of the rows standing in; the cross clears the text and
+      // nothing else; Enter (the keys' search) drops the keyboard, Escape clears and drops it. At XS the field opens over the title from its icon,
+      // stays open while used or while it holds a result, and raises the frame's drawn keyboard (the dock leaves); a scroll by the reader drops it.
+      const clear = sb.querySelector('.msClear'), isXs = () => document.body.dataset.bp === 'xs';
+      const skel = document.createElement('div'); skel.className = 'tlList tlSkel'; skel.setAttribute('aria-hidden', 'true');
+      const skRow = '<article class="tlRow noProg"><i class="tlTh skb"></i><div class="tlTx"><div class="tlTl"><i class="skb skT"></i></div><p><i class="skb skS"></i></p></div><div class="tlMeta tlMetaC"><i class="skb"></i></div><div class="tlAct"><i class="skb"></i></div></article>';
+      const skSec = n => '<section class="tlSec"><h2 class="tlH"><i class="tlDot" aria-hidden="true"></i><i class="skb skH"></i></h2><div class="tlItems">' + skRow.repeat(n) + '</div></section>';
+      skel.innerHTML = skSec(3) + skSec(2); list.after(skel);
+      let beatT = 0;
+      const land = () => { clearTimeout(beatT); beatT = 0; skel.classList.remove('on'); list.classList.remove('tlBeat'); filter(); };
+      const typed = () => {
+        sb.classList.toggle('hasText', q.value.length > 0);
+        if (!q.value.trim()){ land(); return; }   // nothing to fetch: the whole list at once
+        clearTimeout(beatT); list.classList.add('tlBeat'); skel.classList.add('on');
+        beatT = setTimeout(land, 380);
+      };
+      document.addEventListener('everlab:mode', () => { if (beatT) land(); });   // a page change mid-beat lands it at once
+      // the frame's keyboard: a copy of the Insights phone's keys in the XS frame, typing into the focused field
+      const keys = () => {
+        const fr = document.getElementById('bpFrame'); if (!fr) return null;
+        let k = fr.querySelector(':scope > .mKbd'); if (k) return k;
+        const src = document.getElementById('mKbd'); if (!src) return null;
+        k = src.cloneNode(true); k.removeAttribute('id'); k.classList.remove('shift'); fr.appendChild(k);
+        k.addEventListener('pointerdown', e => {
+          e.preventDefault();
+          const key = e.target.closest('.k'); if (!key) return;
+          const v = key.dataset.k, a = document.activeElement, f = (a && a.tagName === 'INPUT' && a.closest('.dash')) ? a : q;
+          if (v === 'shift'){ k.classList.toggle('shift'); return; }
+          if (v === 'num') return;
+          if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
+          if (v === 'del') f.value = f.value.slice(0, -1);
+          else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
+          f.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        return k;
+      };
+      sb.addEventListener('pointerdown', () => { if (isXs()) keys(); });   // built before the focus, so the keys rise rather than appear
+      sb.addEventListener('click', e => { if (e.target.closest('.msClear')) return; if (!sb.classList.contains('open') && getComputedStyle(q).display === 'none'){ sb.classList.add('open'); q.focus(); } });
+      q.addEventListener('focus', () => { if (!isXs()) return; const k = keys(); if (k) void k.offsetWidth; document.body.classList.add('tlKbd'); });
+      q.addEventListener('blur', () => { document.body.classList.remove('tlKbd'); if (!q.value) sb.classList.remove('open'); });   // empty and let go: back to its icon
+      q.addEventListener('input', typed);
+      q.addEventListener('keydown', e => { if (e.key === 'Enter') q.blur(); if (e.key === 'Escape'){ e.stopPropagation(); q.value = ''; typed(); q.blur(); } });
+      // the cross: no focus taken or given -- pointerdown is held so a focused field keeps it and a let-go one is not handed it
+      if (clear){ clear.addEventListener('pointerdown', e => e.preventDefault());
+        clear.addEventListener('click', e => { e.preventDefault(); q.value = ''; typed(); if (document.activeElement !== q) sb.classList.remove('open'); }); }
+      // a scroll by the reader drops the keyboard (a wheel or a drag on the page, never the list changing height under it)
+      const dash = main.closest('.dash'), drop = () => { if (isXs() && document.activeElement === q) q.blur(); };
+      if (dash){ dash.addEventListener('wheel', drop, { passive: true }); dash.addEventListener('touchmove', drop, { passive: true }); }
+    } }
     // the bottom sheet (XS and S): the row's title, its chip, the same detail the accordion holds, and its buttons
     const isSheet = () => { const bp = document.body.dataset.bp; return bp === 'xs' || bp === 's' || (!bp && innerWidth < 992); };
     const syncMode = () => document.body.classList.toggle('tlSheetMode', isSheet());

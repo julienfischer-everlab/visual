@@ -13753,3 +13753,20 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - The Overview's action plan reads, in order: items, See full timeline, an "Available for you" section title, then the 12 services card.
   - Phone: `.ovsec.ovsecAvail`, included in the Section order's Action plan group and hidden with the rest under the new-member state.
   - Desk: `.dvSec.dvSecAvail`. The XS copy of the card (`.dvDefXs`) is gone: one card now follows the list and its See full timeline at XS, and the grid at S/M/L.
+
+## Timeline search behaves like the Insights search
+
+"Same search behaviour as the Biomarker insight search, (with clear cross when typed) … with keyboard / styles / etc".
+
+At every breakpoint:
+- A grey-disc clear cross appears once something is typed. It clears the text without taking or giving focus.
+- A keystroke runs the list through the Insights search's 380ms beat, with a skeleton built from the timeline's own row classes (`#dTl .tlSkel`, so it takes each breakpoint's layout). An empty query lands at once, and a page change mid-beat lands it immediately.
+- Enter drops focus. Escape clears the field and drops focus, without reaching the page's own Escape handlers.
+
+At XS:
+- The open field is the Insights field: 56 tall, 14 radius, a 1.5 edge (white when focused, ink on paper), no fill, a 20px icon and 15px text. The title under it is hidden.
+- The head row keeps the icon's 44px, so opening the field no longer shifts the page by 14px.
+- The phone's drawn keyboard is cloned into `#bpFrame` and rises on focus (`body.tlKbd`). The dock leaves while it is up, and the list gets 300px of foot room.
+- The keys type into the field. The search key drops the keyboard.
+- A wheel or drag on the page drops the keyboard. A list changing height under it does not.
+- The field closes back to its icon when it is let go empty.
