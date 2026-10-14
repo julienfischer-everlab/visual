@@ -7640,7 +7640,10 @@
   body.tlStatOn .tlProgC.pas .tlStepC, body.tlStatOn .tlProgC .tlStepC.tlBlk{background:var(--tlGhost);color:var(--tlTx);} body.tlStatOn .tlProgC .tlStepC.tlBlk{color:var(--tlSub);}   /* regular ("use regular font weight") */ .tlStepC .tlRing{display:block;width:14px;height:14px;} .tlStepC.tlBlk{padding-left:10px;color:var(--tlSub);}
   .tlStepDot{flex:none;display:grid;place-items:center;width:16px;height:16px;} .tlStepDot::after{content:"";width:8px;height:8px;border-radius:50%;background:#f78359;}   /* a task's dot, in the ring's place and colours */
   .tlThW{grid-area:th;position:relative;align-self:start;display:block;width:max-content;} .tlThW > .tlTh{display:block;}
-  .tlThB{position:absolute;top:-6px;right:-6px;z-index:1;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--tlBadge, #232323);box-shadow:0 0 0 2px var(--pageBg, #0f0f0f);} body.light .tlThB{--tlBadge:#fff;}   /* the status's mark on the picture: a full circle, cut out of the page */
+  .tlThB{position:absolute;top:-8px;right:-8px;z-index:1;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--tlThBg, var(--pageBg, #0f0f0f));}   /* the status's mark on the picture: a full circle in the ground it sits on, so it reads as cut out of the picture ("bg should match the card bg; reduce padding by 2px; bleed more outside the avatar") */
+  #phone2{--tlThBg:#0d0d0c;} body.light #phone2{--tlThBg:#f7f2e9;}   /* the phone's own ground */
+  .tlSug{--tlThBg:color-mix(in srgb, #fff 5.5%, var(--pageBg, #0f0f0f));} body.light .tlSug{--tlThBg:color-mix(in srgb, #2e1f1a 5%, var(--pageBg, #fff));}   /* on the Suggestions' tray, its colour */
+  .tlSec.done .tlItems{--tlThBg:color-mix(in srgb, #42be65 10%, var(--pageBg, #0f0f0f));} body.light .tlSec.done .tlItems{--tlThBg:color-mix(in srgb, #42be65 12%, var(--pageBg, #fff));}   /* on Just completed's, its green */
   .tlThB .tlRing{display:block;width:14px;height:14px;} .tlThB .tlStepDot{width:14px;height:14px;}
   .tlThB.done .tlRing{--rc:#42be65;} .tlThB.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlThB.done .tlStepDot::after{background:#42be65;} .tlThB.pas .tlStepDot::after{background:var(--tlPas, rgba(255,255,255,.72));}
   .tlMeta.tlMetaC:empty{display:none;}
@@ -7994,12 +7997,18 @@
     body:not([data-bp]) #dOver .ovrow2, body:not([data-bp]) #dOver .dvPlanGrid{grid-template-columns:1fr;}
   }
   #dOver .dvPlanGrid{gap:20px;}   /* "grid gap 20px" for the action plan */
-  /* the Plan's cards: the Timeline's own item, as on the desk -- the picture, the title and its line, the button at the top right level with the
-     title, the chips on one wrapping line under it, the status first ("the exact same list item than the timeline items"; "put the chip inline,
-     starting by the status"); never cut short. A card under 400 can't hold that, so the grid takes as many 400s as fit, two where three won't */
+  /* the Plan's cards: the Timeline's item as on XS ("overview action plan items the same as the timeline item on XS") -- the picture and the
+     title, centred on it ("align title group vertically"), then a footer at the card's foot: the chips wrapping on the left, the button on the
+     right ("badge in another row, as the footer of the card, with the CTA right side"); with the Steps tweak's bars, the button beside them.
+     Never cut short. The grid takes as many 400s as fit, two where three won't */
   html body #dOver .dvPlanGrid.tlEmbG{grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));}
-  .tlEmbG .tlEmbC > .tlRow{grid-template-columns:60px minmax(0,1fr) auto;grid-template-areas:"th tx act" "th meta meta" "th prog prog" "th det det";column-gap:16px;}
-  .tlEmbG .tlEmbC > .tlRow .tlTh{width:60px;height:60px;border-radius:12px;}
+  .tlEmbG .tlEmbC{display:flex;flex-direction:column;} .tlEmbG .tlEmbC > .tlRow{flex:1 1 auto;}
+  .tlEmbG .tlEmbC > .tlRow{grid-template-columns:76px minmax(0,1fr) auto;grid-template-rows:auto 1fr auto auto auto;grid-template-areas:"th tx tx" "sp sp sp" "meta meta meta" "prog prog act" "det det det";column-gap:16px;}
+  .tlEmbG .tlEmbC > .tlRow.noProg{grid-template-rows:auto 1fr auto auto;grid-template-areas:"th tx tx" "sp sp sp" "meta meta act" "det det det";}
+  .tlEmbG .tlEmbC > .tlRow .tlTx{align-self:center;padding-top:0;}
+  .tlEmbG .tlEmbC > .tlRow .tlMeta{margin-top:16px;} .tlEmbG .tlEmbC > .tlRow .tlProg{margin-top:12px;}
+  .tlEmbG .tlEmbC > .tlRow .tlAct{align-self:end;margin-left:12px;} .tlEmbG .tlEmbC > .tlRow.noProg .tlMeta, .tlEmbG .tlEmbC > .tlRow.noProg .tlAct{align-self:center;margin-top:16px;}   /* the chips and the button centred on each other, or the button level with the bars */
+  .tlEmbG .tlEmbC > .tlRow .tlTh{width:76px;height:76px;border-radius:14px;}   /* 16 bigger ("avatar +16px width height") */
   .tlEmbG .tlEmbC > .tlRow .tlTx b{font-size:16px;} .tlEmbG .tlEmbC > .tlRow .tlTx p{white-space:normal;}
   .tlEmbG .tlEmbC > .tlRow .tlAct{padding-top:0;}
   .tlEmbG .tlProg{flex-wrap:wrap;row-gap:8px;} .tlEmbG .tlProg .tlCurB{max-width:100%;min-width:0;box-sizing:border-box;}   /* the step's badge to a line of its own when it won't fit beside the toggle */
