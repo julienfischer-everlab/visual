@@ -13794,3 +13794,23 @@ At XS:
 ## Services card copy
 
 The card now reads "12 services, ready when you are" / "Add them to your action plan and book ahead." on the phone and the desk (all breakpoints), with its aria-label to match.
+
+## XS is a frame around Auto; sticky search; retired tweaks; booked cards
+
+- **XS is a frame around Auto** ("Auto is the source of truth; XS just adds a frame around an auto viewport the size of a phone").
+  - In the forced XS, the drawn status strip is a 47px band above the page: `html:not(.bpAuto) body[data-bp="xs"] .dash{border-top:47px solid var(--pageBg)}`. The pages (absolute scrollers inside `.dash`) start under it, as a phone browser starts under its status bar.
+  - The pages' own strip clearances came out, so Auto on a narrow window has no fake gap:
+    - `#dOver .ovTop` top padding 45 → 8.
+    - `#dSvc .svTop` top padding 45 → 8.
+    - `#dTl` top padding 64 → 17. Sticky tops count from the scroller's padding, so the tabs still stick 2px into their own padding.
+  - A read-only audit (workflow) is sweeping the remaining surfaces (chat, sheets, landing, async report, JS).
+- **Timeline search stays pinned** ("if a character has been entered in the field, the field should stay visible, sticky on scroll, with the rest of the sticky elements").
+  - At XS, `#dTl.tlQPin` (set while the field holds text) makes the head stick 8px under the top, on the page's ground. The tabs stick at 45 under it, and the months re-measure (`tl:pin` → `setHTop`) to sit under those.
+  - The `ovScrolled` threshold allows for the pinned head.
+- **Timeline tweaks retired, values kept**, in the usual `tkGone` way, each select keeping only its kept option so a stored choice cannot stick:
+  - Prominent status (Off).
+  - Chip height (36).
+  - Steps (Chip). `TLSTEP` now starts as `'c'`, and the defaults map says Chip.
+- **Booked services**
+  - The scan's booked-in card no longer has a View referral button. Its referral is the Pathology-style card item ("Your referrals · Show"), set by a `refIn` flag on the step and carried through the MRI's status copy.
+  - Every booked card shows two tertiary links under its line, Change and Cancel (`.svPendLks` with `.svLink`, 14px). This applies to a Confirmed tag or a "You're booked in / scheduled for…" title, so the scan, the briefing, the consult and the DEXA all get them.
