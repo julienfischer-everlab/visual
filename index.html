@@ -29618,7 +29618,7 @@ hairline({
     const main = document.getElementById('dTl'), list = document.getElementById('tlList'), q = document.getElementById('tlQ');
     if (!main || !list) return;
     const IMG = { dexa: 'assets/overview/plan-dexa.webp', consult: 'assets/overview/plan-consult.webp', mri: 'assets/overview/plan-mri.webp',
-      nutri: 'assets/overview/plan-nutrition.webp', micro: 'assets/overview/svc-microbiome.webp', brief: 'assets/overview/brief-doctor.webp' /* the doctor's portrait ("use this visual instead") */, dr: 'assets/overview/avatar-dr.webp', move: 'assets/overview/plan-physical.webp', path: 'assets/overview/tl-path.webp', skin: 'assets/overview/tl-skin.webp', colon: 'assets/overview/tl-colon.webp',
+      nutri: 'assets/overview/plan-nutrition.webp', micro: 'assets/overview/svc-microbiome.webp', microc: 'assets/overview/svc-microbiome-cover.webp' /* the service page's own picture */, brief: 'assets/overview/brief-doctor.webp' /* the doctor's portrait ("use this visual instead") */, dr: 'assets/overview/avatar-dr.webp', move: 'assets/overview/plan-physical.webp', path: 'assets/overview/tl-path.webp', skin: 'assets/overview/tl-skin.webp', colon: 'assets/overview/tl-colon.webp',
       taskq: 'assets/overview/task-cover-q.webp', taskc: 'assets/overview/task-thumb-c.webp', taska: 'assets/overview/task-thumb-a.webp', taskp: 'assets/overview/task-thumb-p.webp' };   // the tasks' own covers, square crops of their banners (the call: the doctor's face)
     const I = {
       clock: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2 1.3"/></svg>',
@@ -29705,7 +29705,7 @@ hairline({
       ],
       past: [
         { h: 'July 2026', dot: 'now', rows: [
-          { t: 'Microbiome & Gut Health Assessment', d: 'Your gut microbiome, sequenced and reviewed by your Everlab dietitian.', img: 'micro', meta: [['check', 'Completed 13 Jul 2026'], ['rec', 'Report ready']], act: 'View report', svc: 'gut', state: 'done', when: 'Completed 13 Jul 2026', title: 'Microbiome & Gut Health Assessment', fresh: 1 },   // fresh: done, not yet seen -- in Upcoming till opened ("replace by the Microbiome item here")
+          { t: 'Microbiome & Gut Health Assessment', d: 'Your gut microbiome, sequenced and reviewed by your Everlab dietitian.', img: 'microc' /* the service page's picture ("use the same img into the timeline item") */, meta: [['check', 'Completed 13 Jul 2026'], ['rec', 'Report ready']], act: 'View report', svc: 'gut', state: 'done', openState: 'active', openAt: 7 /* opens on its final status card, the report and the video, its modal up the first time ("should land on the final status card, with modal opened") */, when: 'Completed 13 Jul 2026', title: 'Microbiome & Gut Health Assessment', fresh: 1 },   // fresh: done, not yet seen -- in Upcoming till opened ("replace by the Microbiome item here")
           { t: 'Advanced blood panel', d: '44 biomarkers across heart, metabolic, liver and kidney health.', img: 'path', meta: [['check', 'Completed 13 Jul 2026'], ['rec', 'Report ready']], act: 'View report', svc: 'path', state: 'done', when: 'Completed 13 Jul 2026', title: 'Advanced blood panel' },
           { t: 'Onboarding Consultation', d: 'Your first call with your Everlab doctor, and your plan from it.', img: 'consult', meta: [['check', 'Completed 2 Jul 2026'], ['dr', 'With Dr Sarah Chen']], act: 'View', svc: 'consult', state: 'done', when: 'Completed 2 Jul 2026' }
         ] },
@@ -29762,8 +29762,8 @@ hairline({
       : tab === 'past' ? S.map(sc => Object.assign({}, sc, { rows: sc.rows.filter(r => !unseen(r)) })) : S;
     let DIRTY = false;
     const openRow = d => { const w = own(d); if (!w.svc) return; if (unseen(d)){ SEEN.add(seenK(d)); DIRTY = true; }   // opened: seen, so Past from now on
-      lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.state, openO(d, w)); };   // a row has moved tab since the list was drawn: drawn afresh on the way back
-    const openO = (d, w) => d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line };   // what the row tells its page
+      lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.openState || w.state, openO(d, w)); };   /* a row may name the state its page opens on (openState, openAt) */   // a row has moved tab since the list was drawn: drawn afresh on the way back
+    const openO = (d, w) => d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.openAt != null ? d.openAt : d.at, tag: d.ask || d.tag, d: d.line };   // what the row tells its page
     /* the row's subtitle: its status block's title, as its page shows it ("the title the service or the task; the subtitle the status block title"); its own line where it has none */
     const subOf = r => { const w = own(r); if (!w || !w.svc || !window._svc || !window._svc.head) return r.d; return window._svc.head(w.svc, w.state, openO(r, w)) || r.d; };
     const SNZ = new Set();   // put off with Do it later: out of Upcoming, into the Later tab, first, till Move to Upcoming
@@ -30048,7 +30048,7 @@ hairline({
       if (gi && d.group && gi.matches('.lock, .soon') && window._svc.lock){ const j = +gi.dataset.g, x = d.group[j];
         window._svc.lock(x.svc, x.t || '', d.group.slice(0, j).map((z, k) => Object.assign({}, z, { go: () => { closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(z.svc, z.state, Object.assign(svcOpts(z), { journey: jOf(d, k) })); } })), false); return; }   // a locked one: its modal, the Timeline stays ("open just a modal")
       if (gi && d.group){ const x = d.group[+gi.dataset.g]; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(x.svc, x.state, Object.assign(svcOpts(x), { journey: jOf(d, +gi.dataset.g) })); return; }
-      if (e.target.closest('.tlBtn')){ const w = own(d); if (!w.svc) return; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.state, d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.at, tag: d.ask || d.tag, d: d.line }); }
+      if (e.target.closest('.tlBtn')){ const w = own(d); if (!w.svc) return; closeSheet(); lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.openState || w.state, d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.openAt != null ? d.openAt : d.at, tag: d.ask || d.tag, d: d.line }); }
     });
     document.addEventListener('everlab:mode', closeSheet);
     addEventListener('resize', syncMode);
