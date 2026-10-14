@@ -7569,6 +7569,9 @@
   #dTl .tlSubTop{display:none;} #dTl.tlPastOn .tlSubTop{display:flex;z-index:7;}   /* over the months as they slide out under it (theirs is 6) */ #dTl .tlSubTop > .tlCol{flex:1 1 auto;display:flex;align-items:center;} #dTl.tlPastOn.ovScrolled .svTop::before, #dTl.tlPastOn.ovScrolled .svTop .ovGround{opacity:1;}   /* the service page's sticky bar, its back at the column's left */
   body[data-bp="s"] #dTl .tlSubTop{top:-52px;margin:-52px -24px 0;padding:24px 24px 12px;} body[data-bp="xs"] #dTl .tlSubTop{top:-17px;margin:-17px -16px 0;padding:8px 16px 10px;}   /* as the page's padding at S and XS */
   body[data-bp="xs"] #dTl .tlSubTop .svBack{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);} body.light[data-bp="xs"] #dTl .tlSubTop .svBack{background:rgba(46,31,26,.08);color:#2e1f1a;}   /* XS: the service page's 44 disc */
+  body:not([data-bp="xs"]) #dTl .tlSubTop > .tlCol{max-width:none;margin:0;}   /* desk and S: the back at the panel's left, as the service page keeps its own, the page's column centred under it ("arrow top nav ... need to be on the left") */
+  body:not([data-bp="xs"]) #dTl .tlSubTop .svBack{width:36px;height:36px;margin:-4px 0 -4px -14px;border-radius:10px;background:none;color:var(--tlInk);transition:background .16s ease;} body:not([data-bp="xs"]) #dTl .tlSubTop .svBack svg{width:18px;height:18px;}   /* a ghost, the arrow alone ("no container"), its stroke on the padding's edge; 36 to hit, the bar no taller */
+  body:not([data-bp="xs"]) #dTl .tlSubTop .svBack:hover{background:rgba(255,255,255,.08);} body.light:not([data-bp="xs"]) #dTl .tlSubTop .svBack:hover{background:rgba(46,31,26,.06);}
   #dTl.tlPastOn .tlBar, #dTl.tlPastOn .tlPastBtn, #dTl.tlPastOn .tlThB{display:none;} #dTl.tlPastOn .tlHead{margin-top:8px;}
   #dTl.tlPastOn{--tlHTop:32px;} body[data-bp="s"] #dTl.tlPastOn{--tlHTop:12px;} body[data-bp="xs"] #dTl.tlPastOn{--tlHTop:45px;}   /* the months pinned under the bar (64 tall; 62 at XS) */
   /* XS: the search in the bar, at its right, the back's disc ("on XS search in top nav right"); opened, a field across the bar beside the back -- the bar pins it, so the head never does */
@@ -7583,10 +7586,10 @@
   .tlPastBtn:hover{color:var(--tlTx);} .tlPastBtn.on{background:#ececec;box-shadow:none;color:#111;} body.light .tlPastBtn.on{background:#2e1f1a;color:#fff;}
   /* the months: a rail down the left, a dot at each heading -- the care
      team's spark, this month's filled, the ones ahead hollow */
-  .tlList{position:relative;padding:12px 0 0 25px;}   /* the rail at 8, the item's card 8 clear of it, the item 8 inside its card ("8px padding left container. 8px padding card left") */
+  .tlList{position:relative;padding:12px 0 0 33px;}   /* the rail at 8, the item's card 8 clear of it, the item 16 inside its card: 24 from the rail ("+8px gap between timeline and item"; "more padding left right"; was "8px padding left container. 8px padding card left") */
   .tlList::before{content:"";position:absolute;left:8px;top:32px;bottom:0;width:1px;background:var(--tlRail);}
   .tlSec{position:relative;}
-  .tlH{position:sticky;top:var(--tlHTop,26px);z-index:6;display:flex;align-items:center;margin:16px -14px 0 -25px;padding:10px 14px 8px 25px;background:var(--pageBg);font-size:16px;font-weight:500;letter-spacing:-.1px;color:var(--tlInk);}   /* sticky in its month under the tabs, pushed out by the next month's ("stacked sticky on scroll, as Contacts") */
+  .tlH{position:sticky;top:var(--tlHTop,26px);z-index:6;display:flex;align-items:center;margin:16px -14px 0 -33px;padding:10px 14px 8px 33px;background:var(--pageBg);font-size:16px;font-weight:500;letter-spacing:-.1px;color:var(--tlInk);}   /* sticky in its month under the tabs, pushed out by the next month's ("stacked sticky on scroll, as Contacts") */
   .tlSec:first-child .tlH{margin-top:4px;}
   .tlHn{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;margin-left:10px;padding:0 6px;box-sizing:border-box;border-radius:6px;background:rgba(255,255,255,.16);color:#fff;font-size:12px;font-weight:500;letter-spacing:0;font-variant-numeric:tabular-nums;}   /* the count: light grey, white, rounded, 6 after the name */
   body.light .tlHn{background:#b8b2ac;color:#fff;}   /* the count 10 from its heading, not 6 ("gap +4px") */
@@ -7604,8 +7607,8 @@
      picture and the buttons ("add hover state"); the rule between rows is
      as wide as the tile ("also need small divider") and steps aside for it */
   .tlRow{position:relative;isolation:isolate;}
-  .tlRow::before{content:"";position:absolute;top:16px;bottom:16px;left:-8px;right:-14px;   /* 12 clear of the dividers ("+4px top bottom on divider") */   /* 14 on every side ("reduce padding by 4px"), and 8 clear of the dividers above and below ("the item divider should be outside the object, 8px margin top and bottom") */z-index:-1;border-radius:20px;background:var(--tlHover);opacity:0;transition:opacity .18s ease;pointer-events:none;}
-  .tlItems .tlRow + .tlRow::after, .tlSugTrack .tlRow + .tlRow::after{content:"";position:absolute;top:0;left:-8px;right:-14px;height:1px;background:var(--tlLine);transition:opacity .18s ease;}
+  .tlRow::before{content:"";position:absolute;top:16px;bottom:16px;left:-16px;right:-16px;   /* 12 clear of the dividers ("+4px top bottom on divider") */   /* 14 on every side ("reduce padding by 4px"), and 8 clear of the dividers above and below ("the item divider should be outside the object, 8px margin top and bottom") */z-index:-1;border-radius:20px;background:var(--tlHover);opacity:0;transition:opacity .18s ease;pointer-events:none;}
+  .tlItems .tlRow + .tlRow::after, .tlSugTrack .tlRow + .tlRow::after{content:"";position:absolute;top:0;left:-16px;right:-16px;height:1px;background:var(--tlLine);transition:opacity .18s ease;}
   .tlSugTrack .tlRow::before{left:-8px;right:-10px;border-radius:14px;background:rgba(255,255,255,.04);} .tlSugTrack .tlRow + .tlRow::after{left:0;right:0;}
   @media (hover:hover){
     .tlRow:hover::before{opacity:1;}
@@ -7646,7 +7649,7 @@
   .tlAct.split .tlMore:hover{background:var(--tlPillH);}
   .tlAct.split.cta .tlMore{background:var(--tlCta);color:var(--tlCtaInk);box-shadow:inset 1px 0 0 var(--tlSplitC);} .tlAct.split.cta .tlMore:hover{background:var(--tlCta);opacity:.9;}
   /* suggestions: a tray of their own, a card of rows inside it */
-  .tlSug{margin:10px 0 6px -8px;padding:0 8px 8px;border-radius:20px;background:var(--tlBox);}   /* 8 round the card ("add 4px padding inside"), the tray 4 further out so the pictures stay on the rows' line */
+  .tlSug{margin:10px 0 6px -16px;padding:0 8px 8px;border-radius:20px;background:var(--tlBox);}   /* 8 round the card ("add 4px padding inside"), the tray 4 further out so the pictures stay on the rows' line */
   .tlSugHead{display:flex;align-items:center;gap:7px;padding:12px 10px 10px;font-size:12.5px;color:var(--tlSub);}
   .tlSugHead svg{width:14px;height:14px;}
   .tlSugNav{margin-left:auto;display:none;gap:6px;}
@@ -7654,7 +7657,7 @@
   .tlSugNav button:disabled{opacity:.35;cursor:default;} .tlSugNav svg{width:12px;height:12px;}
   .tlSugTrack{background:none;border-radius:14px;padding:0 16px 0 14px;box-shadow:none;}   /* no card round the suggestions, the tray alone ("remove the card around the two items, not necessary") */
   /* Just completed: its items on a light green tray, the suggestions' shape ("a light green background, the same suggestion card wrapping the items") */
-  .tlSec.done .tlItems{margin:10px 0 6px -8px;padding:0 14px;border-radius:20px;background:rgba(66,190,101,.1);} body.light .tlSec.done .tlItems{background:rgba(66,190,101,.12);}
+  .tlSec.done .tlItems{margin:10px 0 6px -16px;padding:0 14px;border-radius:20px;background:rgba(66,190,101,.1);} body.light .tlSec.done .tlItems{background:rgba(66,190,101,.12);}
   .tlSec.done .tlItems{padding:0 24px 0 22px;} .tlSec.done .tlRow::before{left:-8px;right:-10px;border-radius:14px;} .tlSec.done .tlItems .tlRow + .tlRow::after{left:0;right:0;}   /* Just completed as the Suggestions: the item's card 14 inside the tray each side, the item 8 inside its card ("missing left right padding; same behaviour as suggestions") */
   /* progress in the row ("a sense of progress through the steps via a mini
      increment visual"): a segment per step -- or per service, for a group --
@@ -8476,7 +8479,8 @@
   .ovDefHl{display:none;--hairline-plate:var(--defBg);}   /* the figure's paper the card's own ground */ .ovDefRow.ovDefHlOn .ovDefStk{display:none;} .ovDefRow.ovDefHlOn .ovDefHl{display:block;flex:none;width:120px;aspect-ratio:5 / 4;} .ovDefHl svg{display:block;width:100%;height:100%;}   /* a Hairline figure in the pictures' place (Tweaks -> Services visual) */
   :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn .ovDefHl{width:200px;margin:-16px 0 -8px;}   /* stacked: the drawing over the words, its own air trimmed */
   :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow{flex-direction:column;align-items:center;gap:14px;padding:48px 24px;text-align:center;}   /* +24 above and below ("+24px padding") */ :is(#phone2, body[data-bp="xs"] #dOver) .ovDefTx{flex:none;}   /* the phone and XS: the pictures over the words, centred ("stack content, centered") */
-  html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow{align-items:flex-start;padding:32px 24px;text-align:left;}   /* Later card -> Alignment Left: down the left edge, 16 less above and below ("when left align reduce padding by 16px") */ html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn .ovDefHl{margin-left:var(--hlX, 0px);}   /* the drawing's own left edge on the words' line, not its box's */
+  html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow{flex-direction:row;align-items:center;gap:16px;padding:32px 24px;text-align:left;}   /* Later card -> Alignment Left: the visual on the left, the words beside it ("content on the left when left aligned"), 16 less above and below ("when left align reduce padding by 16px") */ html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefTx{flex:1 1 auto;}
+  html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn .ovDefHl, html.defL .ovDefRow.ovDefHlOn .ovDefHl{width:144px;margin:calc(var(--hlT, 0) * -115.2px) calc(var(--hlR, 0) * -144px) calc(var(--hlB, 0) * -115.2px) calc(var(--hlL, 0) * -144px);}   /* the drawing 80 tall, its own air trimmed all round: its left on the padding's edge, the words 16 after it */
   .ovDefTx{flex:1 1 auto;min-width:0;} .ovDefTx b{display:block;font-size:15px;font-weight:500;line-height:1.3;color:#f4f4f4;}
   .ovDefTx span{display:block;margin-top:2px;font-size:13px;line-height:1.35;color:#8b8b86;}   /* the services named in full, over two lines if need be */
   .ovDefBtn{flex:none;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:12px;background:none;color:#f4f4f4;font:inherit;cursor:pointer;transition:background .16s ease,transform .14s ease;} .ovDefBtn svg{width:18px;height:18px;transition:transform .2s ease;}   /* a ghost, a chevron alone ("just a CTA chevron right, ghost"); it goes to the Timeline's Later tab */
@@ -29520,7 +29524,7 @@ hairline({
         stage.setAttribute('data-hairline', name); stage.setAttribute('data-hairline-theme', document.body.classList.contains('light') ? 'light' : 'dark');
         const svg = HL.mk('svg', { viewBox: '0 0 400 320', 'aria-hidden': 'true' }, stage), read = { textContent: '' };
         const h = F.mount({ stage, svg, read }, F.range ? F.range[1] : undefined), tr = HL.tour ? HL.tour(stage, F.tour || HL.LAP) : null;
-        requestAnimationFrame(() => { try { const bb = svg.getBBox(); if (bb.width) stage.style.setProperty('--hlX', -Math.round(bb.x * 200 / 400) + 'px'); } catch (e){} });   /* the drawing's left at rest, at the stacked 200 wide: Left alignment lines it up with the words */
+        requestAnimationFrame(() => { try { const bb = svg.getBBox(); if (bb.width){ const st = stage.style; st.setProperty('--hlL', (bb.x / 400).toFixed(4)); st.setProperty('--hlR', ((400 - bb.x - bb.width) / 400).toFixed(4)); st.setProperty('--hlT', (bb.y / 320).toFixed(4)); st.setProperty('--hlB', ((320 - bb.y - bb.height) / 320).toFixed(4)); } } catch (e){} });   /* the drawing's own edges at rest, as shares of its box: Left alignment trims the air round it */
         return { destroy: () => { if (tr) tr.stop(); if (h && h.destroy) h.destroy(); stage.remove(); } }; };
       const apply = () => { if (sel && !sel.value) sel.value = 'img';   /* a figure saved before the Later card's two choices: the pictures */ const v = sel ? sel.value : 'img';
         document.querySelectorAll('.ovDefStk').forEach(stk => { const k = figs.get(stk); if (k){ k.destroy(); figs.delete(stk); }
