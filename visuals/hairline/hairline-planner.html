@@ -900,12 +900,11 @@ const LEAN = [-11, -6, -1.5];             // back to front: how far each sheet l
 const SHARE = [1.6, 1, 0];                // how many gaps each sheet stands behind the front one: uneven
 const GMIN = 3, GMAX = 16;                // the gap, clamped
 const RINGS = [W * 0.26, W * 0.74], RR = 3.2, RC = 1.3;  // the binding: where its rings sit, their radius, their centre under the top edge
-const TU = 7, TV = 6.6, TT = 3.5, NK = 4, STEP = 45;       // the token's size and thickness; the points of its line, and the stagger down it
-const DX = TT / 2;                        // the token sits this far right of its cell's middle, so that it looks centred on it
+const TU = 5.8, TV = 5.2, TT = 2.6, NK = 4, STEP = 45;      // the token's size and thickness; the points of its line, and the stagger down it
 const REST = [3, 1];                      // thursday of the second week
 const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 const OUT = rrect(0, 0, W, H, R, 6);
-const [TR, TI] = rings(-TU / 2, -TV / 2, TU / 2, TV / 2, 2.4, 1);
+const [TR, TI] = rings(-TU / 2, -TV / 2, TU / 2, TV / 2, 2, 0.9);
 
 /** Sheet i standing Y along the row: the world point at (u, v) on its face, o behind it. */
 const sheet = (i, Y) => {
@@ -917,7 +916,7 @@ const cell = (col, row) => [MX + (col + 0.5) * CW, MB + (NR - row - 0.5) * CH];
 
 /** The camera, fitted to the sheets spread as far as the slider allows, token and rings included. */
 function frame() {
-  const C = Cam(45, 0.5, 2.75), box = [];
+  const C = Cam(45, 0.5, 2.9), box = [];
   for (let i = 0; i < 3; i++) {
     const w = sheet(i, -SHARE[i] * GMAX);
     for (const u of [0, W]) for (const v of [0, H + RR - RC]) for (const o of [-TT, TK]) box.push(w(u, v, o));
@@ -972,6 +971,13 @@ function mount({ stage, svg, read }, value) {
     for (const k in p) els[i][k].setAttribute("d", p[k]);
   }
 
+  // The front sheet's face, which never moves, under a screen point: the hit test reads it, and the token's offset comes from it.
+  const o = P(0, 0, 0), e = (x, y, z) => { const q = P(x, y, z); return [q[0] - o[0], q[1] - o[1]]; };
+  const eu = e(...face(1, 0)), ev = e(...face(0, 1)), det = eu[0] * ev[1] - eu[1] * ev[0];
+  const onFace = ([x, y]) => { const qx = x - o[0], qy = y - o[1]; return [(qx * ev[1] - qy * ev[0]) / det, (eu[0] * qy - eu[1] * qx) / det]; };
+  // the token stands proud of the face, so it is set this far up and right of its day's middle, to stand over it on screen
+  const mid = P(...face(0, 0, -TT / 2)), [DX, DV] = onFace([2 * o[0] - mid[0], 2 * o[1] - mid[1]]);
+
   // The token and each point of its line keep their own (u, v) on the face, so the line can trail the token.
   const [u0, v0] = cell(...REST);
   const tu = [], tv = [];
@@ -982,10 +988,10 @@ function mount({ stage, svg, read }, value) {
     const key = uv.join();
     if (key === last) return;
     last = key;
-    const [u, v] = uv[0], at = (q, o) => P(...face(u + DX + q.u, v + q.v, o));
+    const [u, v] = uv[0], at = (q, d) => P(...face(u + DX + q.u, v + DV + q.v, d));
     put(tok, { sil: poly(hull(TR.map((q) => at(q, 0)).concat(TR.map((q) => at(q, -TT))))), crease: poly(TI.map((q) => at(q, -TT))) });
     // the line hangs plumb from the middle of the token's front edge, clear of the face, down to the desk
-    const pts = uv.map(([pu, pv], k) => { const [x, y, z] = face(pu + DX, pv - TV / 2, -TT); return P(x, y, z * (1 - k / (NK - 1))); });
+    const pts = uv.map(([pu, pv], k) => { const [x, y, z] = face(pu + DX, pv + DV - TV / 2, -TT); return P(x, y, z * (1 - k / (NK - 1))); });
     line.setAttribute("d", open(pts));
     beads.forEach((el, k) => place(el, pts[k + 1]));
     place(foot, pts[NK - 1]);
@@ -1001,12 +1007,9 @@ function mount({ stage, svg, read }, value) {
   });
   bag.add(B.unregister);
 
-  // The day under the pointer, solved on the front sheet's face, which never moves: the grid is the hit area.
-  const o = P(0, 0, 0), e = (x, y, z) => { const q = P(x, y, z); return [q[0] - o[0], q[1] - o[1]]; };
-  const eu = e(...face(1, 0)), ev = e(...face(0, 1)), det = eu[0] * ev[1] - eu[1] * ev[0];
-  function hit([x, y]) {
-    const qx = x - o[0], qy = y - o[1];
-    const u = (qx * ev[1] - qy * ev[0]) / det, v = (eu[0] * qy - eu[1] * qx) / det;
+  // The day under the pointer, read on the front sheet's face, which never moves: the grid is the hit area.
+  function hit(p) {
+    const [u, v] = onFace(p);
     if (u < -2 || u > W + 2 || v < -2 || v > H + 2) return null;
     return [clamp(Math.floor((u - MX) / CW), 0, NC - 1), clamp(Math.floor((MB + NR * CH - v) / CH), 0, NR - 1)];
   }
@@ -1038,7 +1041,7 @@ hairline({
   means: "A desk planner's month: the pointer picks a day and the appointment token travels there, its line following down to the desk.",
   rules: [1, 2, 6, 8],
   range: [4, 10, 16],
-  tour: [[131, 183], [169, 160], [205, 240], null],
+  tour: [[127, 184], [166, 160], [204, 245], null],
   mount,
 });
 </script>
