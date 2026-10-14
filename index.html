@@ -7640,7 +7640,10 @@
   body.tlStatOn .tlProgC.pas .tlStepC, body.tlStatOn .tlProgC .tlStepC.tlBlk{background:var(--tlGhost);color:var(--tlTx);} body.tlStatOn .tlProgC .tlStepC.tlBlk{color:var(--tlSub);}   /* regular ("use regular font weight") */ .tlStepC .tlRing{display:block;width:14px;height:14px;} .tlStepC.tlBlk{padding-left:10px;color:var(--tlSub);}
   .tlStepDot{flex:none;display:grid;place-items:center;width:16px;height:16px;} .tlStepDot::after{content:"";width:8px;height:8px;border-radius:50%;background:#f78359;}   /* a task's dot, in the ring's place and colours */
   .tlThW{grid-area:th;position:relative;align-self:start;display:block;width:max-content;} .tlThW > .tlTh{display:block;}
-  .tlThB{position:absolute;top:-8px;right:-8px;z-index:1;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--tlThBg, var(--pageBg, #0f0f0f));}   /* the status's mark on the picture: a full circle in the ground it sits on, so it reads as cut out of the picture ("bg should match the card bg; reduce padding by 2px; bleed more outside the avatar") */
+  .tlThB{position:absolute;top:-8px;right:-8px;z-index:1;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--tlThBg, var(--pageBg, #0f0f0f));transition:background-color .18s ease;--tlThH:color-mix(in srgb, #fff 5.5%, var(--tlThBg, var(--pageBg, #0f0f0f)));}   /* 2 more round the mark ("increase the padding by 2px") */
+  @media (hover:hover){ .tlRow:hover .tlThB{background:var(--tlThH);} }   /* under the pointer, the item's card's colour ("match status bg on hover as well") */
+  body.light .tlThB{--tlThH:color-mix(in srgb, #2e1f1a 4.5%, var(--tlThBg, var(--pageBg, #fff)));} .tlSugTrack .tlThB{--tlThH:color-mix(in srgb, #fff 4%, var(--tlThBg, var(--pageBg, #0f0f0f)));}   /* the status's mark on the picture: a full circle in the ground it sits on, so it reads as cut out of the picture ("bg should match the card bg; reduce padding by 2px; bleed more outside the avatar") */
+  #bpFrame > .mTabs, #bpFrame > .mTabs::before{border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;}   /* the fade behind the dock rounded with the device's screen, not a square past its corners ("fix radius clip") */
   #phone2{--tlThBg:#0d0d0c;} body.light #phone2{--tlThBg:#f7f2e9;}   /* the phone's own ground */
   .tlSug{--tlThBg:color-mix(in srgb, #fff 5.5%, var(--pageBg, #0f0f0f));} body.light .tlSug{--tlThBg:color-mix(in srgb, #2e1f1a 5%, var(--pageBg, #fff));}   /* on the Suggestions' tray, its colour */
   .tlSec.done .tlItems{--tlThBg:color-mix(in srgb, #42be65 10%, var(--pageBg, #0f0f0f));} body.light .tlSec.done .tlItems{--tlThBg:color-mix(in srgb, #42be65 12%, var(--pageBg, #fff));}   /* on Just completed's, its green */
@@ -7850,7 +7853,8 @@
     .tlSugTrack .tlRow{flex:0 0 86%;scroll-snap-align:start;box-sizing:border-box;padding:16px;border-radius:18px;background:var(--tlCard);box-shadow:0 0 0 1px var(--tlCardRing);}
     .tlSugTrack .tlRow + .tlRow::after{display:none;} .tlSugTrack .tlRow::before{display:none;}
     .tlRow::before{left:-10px;right:-10px;top:14px;bottom:16px;border-radius:20px;}   /* the item's card 16 above and below what's in it, 10 at the sides ("padding top bottom missing; reduce left right padding") */ .tlEmbL .tlItems > .tlRow:first-child::before{top:-8px;}   /* the Plan's first, 8 from its top: the card reaches above it */
-    .tlTx{align-self:center;}   /* the title and its line centred on the picture ("title group vertically centered with the avatar") */   /* 12 clear of the dividers, 18 of padding inside */
+    .tlTx{align-self:center;}   /* the title and its line centred on the picture ("title group vertically centered with the avatar") */
+    .tlMeta.tlMetaC > span[data-k]:not([data-k="clock"]):not([data-k="cal"]){display:none;}   /* the footer's left side, the when alone ("keep only the ETA badge on the left side"); a waiting item's why stays */   /* 12 clear of the dividers, 18 of padding inside */
     .tlRow:not(.noProg) .tlAct{justify-self:end;} .tlRow:not(.noProg) .tlAct .tlBtn{flex:0 0 auto;padding:0 24px;}   /* the CTA hugs its label ("hug content not fill") */   /* the hover's ground 14 above the picture and below the buttons, not flush ("padding top bottom missing on hover"); radius 20 */ .tlItems .tlRow + .tlRow::after{left:0;right:0;}
   }
   body[data-bp="xs"] #dTl{padding:64px 16px 110px;}
@@ -8006,6 +8010,7 @@
   .tlEmbG .tlEmbC > .tlRow{grid-template-columns:76px minmax(0,1fr) auto;grid-template-rows:auto 1fr auto auto auto;grid-template-areas:"th tx tx" "sp sp sp" "meta meta meta" "prog prog act" "det det det";column-gap:16px;}
   .tlEmbG .tlEmbC > .tlRow.noProg{grid-template-rows:auto 1fr auto auto;grid-template-areas:"th tx tx" "sp sp sp" "meta meta act" "det det det";}
   .tlEmbG .tlEmbC > .tlRow .tlTx{align-self:center;padding-top:0;}
+  .tlEmbG .tlMeta.tlMetaC > span[data-k]:not([data-k="clock"]):not([data-k="cal"]){display:none;}   /* as on XS: the when alone in the footer */
   .tlEmbG .tlEmbC > .tlRow .tlMeta{margin-top:16px;} .tlEmbG .tlEmbC > .tlRow .tlProg{margin-top:12px;}
   .tlEmbG .tlEmbC > .tlRow .tlAct{align-self:end;margin-left:12px;} .tlEmbG .tlEmbC > .tlRow.noProg .tlMeta, .tlEmbG .tlEmbC > .tlRow.noProg .tlAct{align-self:center;margin-top:16px;}   /* the chips and the button centred on each other, or the button level with the bars */
   .tlEmbG .tlEmbC > .tlRow .tlTh{width:76px;height:76px;border-radius:14px;}   /* 16 bigger ("avatar +16px width height") */
@@ -28918,7 +28923,7 @@ hairline({
       ]
     };
     const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-    const meta = m => '<span>' + (m[0] === 'dr' ? '<img src="' + IMG.dr + '" alt="">' : I[m[0]]) + (m[2] === 'link' ? '<a>' + esc(m[1]) + '</a>' : '<em>' + esc(m[1]) + '</em>') + '</span>';
+    const meta = m => '<span data-k="' + m[0] + '">' + (m[0] === 'dr' ? '<img src="' + IMG.dr + '" alt="">' : I[m[0]]) + (m[2] === 'link' ? '<a>' + esc(m[1]) + '</a>' : '<em>' + esc(m[1]) + '</em>') + '</span>';
     let ROWS = [];
     const CHK = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.2 5.2 1.8 1.8 3.8-4"/></svg>';
     const CHEV = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 3.8 2.5 2.5 2.5-2.5"/></svg>';

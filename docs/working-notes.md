@@ -13716,3 +13716,8 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 ## Under the plan: "Services available to add to your plan" (2026-10-14)
 - The deferred-steps card becomes "Services available to add to your plan" / "Dietician consult, Skin check referral" (phone, desk, XS): filled light ground (6% white over the ground it sits on, no dashes), 24px padding (+12), the two services' pictures stacked on the left (48px, -16 overlap, a 3px cut in the card's colour); View lists them (Dietician consult → Nutrition review, Skin check referral → Skin Check, both "suggested"). The line wraps rather than cutting short.
 - The desk's copy had vanished: it sat inside .dvPlanGrid, whose inside fillPlan redraws. Moved to just after the grid.
+
+## Badge hover, padding; date chip only; XS frame corners (2026-10-14)
+- The status badge: 24px again ("increase the padding by 2px"), and under the pointer the item's card colour (`--tlThH`, 5.5% white over its ground, 4% in Suggestions; "match status bg on hover as well").
+- "Keep only the ETA badge on the left side": in the XS item footer (phone, XS, the Overview's desk cards) only the when chips stay: `data-k` clock or cal (Book by / Due by / Requested / the appointment's date). A waiting item's chip stays.
+- "Fix radius clip": the fade behind the XS frame's dock (`.mTabs::before`, a rectangle) poked past the device's rounded bottom corners (#bpFrame doesn't clip). It and .mTabs now inherit the frame's bottom radii.
