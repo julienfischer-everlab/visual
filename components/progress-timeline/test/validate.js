@@ -72,10 +72,12 @@ function checkGeometry(m, where, cfg) {
   const E = Math.min(128, W / 2);                       // 128px edge areas (they meet below 256px)
   const narrow = W - 2 * E < 2 * min;                    // fewer than two minimum increments between them
   const fitsWide0 = N >= 2 && (N - 1) * min <= W - 2 * E + 1e-6, fitsNarrow0 = N >= 2 && !fitsWide0 && narrow && N * Math.min(min, 256) <= W + 1e-6;
-  // compact: narrow and three labelled steps don't fit, so no labels, a 64px safe area each side
-  const compact = narrow && N >= 2 && !fitsWide0 && !fitsNarrow0;
-  const CE = Math.min(64, W / 4), CU = W - 2 * CE, CM = Math.min(min, Math.max(38, CU / 2));
-  const Ee = compact ? CE : E;
+  // narrow and scrolling, inside a 64px safe area each side: labelled while three minimum
+  // columns fit across it (five 64s in 320px), compact (no labels) below that
+  const CE = Math.min(64, W / 4), CU = W - 2 * CE, CM = Math.min(min, Math.max(38, CU / 2)), colM = Math.min(min, 256);
+  const narrowScroll = narrow && N >= 2 && !fitsWide0 && !fitsNarrow0;
+  const compact = narrowScroll && 3 * colM > CU + 1e-6, narrowL = narrowScroll && !compact;
+  const Ee = narrowScroll ? CE : E;
   ok(Math.abs(S.edge - Ee) < 0.01, where, 'edge ' + S.edge + ' expected ' + Ee);
   ok(S.narrow === narrow, where, 'narrow ' + S.narrow + ' expected ' + narrow);
   ok(S.compact === compact && m.classes.includes('is-compact') === compact, where, 'compact ' + S.compact + ' expected ' + compact);
@@ -158,6 +160,19 @@ function checkGeometry(m, where, cfg) {
       ok(Math.abs(m.dots[0].x - W / N / 2) < 0.6 && Math.abs(m.dots[N - 1].x - (W - W / N / 2)) < 0.6, where, 'narrow fit: columns not filling the card ' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1));
     }
     if (N >= 2 && !fits && !compact) ok(Math.abs(seg - min) < 0.6, where, 'overflowing at ' + seg.toFixed(1) + ' instead of the minimum');
+    if (narrowL) {
+      // labelled narrow: the current step at 50% as far as the track allows, previous and next clear of the fades
+      ok(S.maxOffset > 0.5, where, 'labelled narrow but nothing to scroll');
+      ok(m.dots[0].x <= CE + 0.6 && m.dots[N - 1].x >= W - CE - 0.6, where, 'narrow: blank space past an end (' + m.dots[0].x.toFixed(1) + '..' + m.dots[N - 1].x.toFixed(1) + ')');
+      if (!free) {
+        const k = Math.max(0, Math.min(N - 1, c)), x = m.dots[k].x;
+        const atStart = Math.abs(m.dots[0].x - CE) < 0.6, atEnd = Math.abs(m.dots[N - 1].x - (W - CE)) < 0.6;
+        ok(Math.abs(x - W / 2) < 0.6 || (atStart && x < W / 2) || (atEnd && x > W / 2), where, 'narrow: step ' + k + ' at ' + x.toFixed(1) + ', expected the centre ' + W / 2 + ' unless clamped at an end');
+        const lo = Math.max(0, k - 1), hi = Math.min(N - 1, k + 1);
+        if (Math.abs(x - W / 2) < 0.6) ok((!fl || m.labels[lo].l >= CE - 0.6) && (!fr || m.labels[hi].r <= W - CE + 0.6), where, 'narrow: a neighbour\'s label under a fade (' + m.labels[lo].l.toFixed(1) + '..' + m.labels[hi].r.toFixed(1) + ')');
+        ok((!fl || m.labels[k].l >= CE - 0.6) && (!fr || m.labels[k].r <= W - CE + 0.6), where, 'narrow: the current label under a fade');
+      }
+    }
     if (N >= 2 && fitsNarrow) ok(seg >= min - 0.5, where, 'narrow fit below the minimum');
     if (N === 1) ok(Math.abs(m.dots[0].x - W / 2) < 0.6, where, 'single step not centred');
     if (N >= 2 && !fits && !narrow) {
@@ -198,8 +213,8 @@ function checkGeometry(m, where, cfg) {
   const WIDTHS = [240, 320, 375, 448, 480, 511, 512, 560, 640, 700, 768, 900, 1024, 1280, 1600];
   const COUNTS = [1, 2, 3, 4, 5, 7, 10, 16, 25];
   let mounts = 0;
-  for (const min of [128, 96, 160]) {
-    for (const W of (min === 128 ? WIDTHS : [320, 448, 520, 640, 1024])) {
+  for (const min of [128, 96, 160, 64]) {
+    for (const W of (min === 128 ? WIDTHS : min === 64 ? [240, 300, 319, 320, 352, 383, 384, 448, 640] : min === 96 ? [320, 410, 416, 440, 448, 520, 640, 1024] : [320, 448, 520, 640, 1024])) {
       for (const N of COUNTS) {
         const states = [...new Set([-1, 0, 1, Math.floor(N / 2), N - 2, N - 1, N].filter(c => c >= -1 && c <= N))];
         for (const c of states) {
@@ -550,6 +565,40 @@ function checkGeometry(m, where, cfg) {
   }
 
   {
+    // minSegmentSmall: its own minimum under smallBelow (600px), the main one from there up; resizing across the line repositions
+    const where = 'small min';
+    for (const W of [320, 300, 480, 599, 600, 900]) {
+      for (const c of [0, 4, 9]) {
+        await p.evaluate(([W, c]) => T.mount({ steps: Array.from({ length: 10 }, (_, i) => ({ id: 's' + i, label: ['Details', 'Clinic', 'Slot', 'Deposit', 'Questionnaire', 'Fasting', 'Visit', 'Processing', 'Review', 'Results'][i] })), current: 's' + c, minSegment: 128, minSegmentSmall: 64 }, W), [W, c]);
+        await p.evaluate(frames);
+        const m = await p.evaluate(MEASURE);
+        const min = W < 600 ? 64 : 128;
+        ok(m.state.minSegment === min, where, 'W' + W + ': minimum ' + m.state.minSegment + ' expected ' + min);
+        checkGeometry(m, where + ' W' + W + ' c' + c, { W, N: 10, c, min, labels: ['Details', 'Clinic', 'Slot', 'Deposit', 'Questionnaire', 'Fasting', 'Visit', 'Processing', 'Review', 'Results'] });
+      }
+    }
+    for (const w of [700, 590, 610, 320]) {
+      await p.evaluate(w => T.resize(w), w);
+      await p.evaluate(frames); await p.evaluate(frames);
+      const m = await p.evaluate(MEASURE);
+      ok(!m.state.browsed, where, 'resize to ' + w + ' counted as browsing');
+      checkGeometry(m, where + ' resized ' + w, { W: w, N: 10, c: 9, min: w < 600 ? 64 : 128, labels: ['Details', 'Clinic', 'Slot', 'Deposit', 'Questionnaire', 'Fasting', 'Visit', 'Processing', 'Review', 'Results'] });
+    }
+  }
+  {
+    // a small minimum: 320px holds five 64px steps, so it keeps its labels (and goes compact once three don't fit)
+    const where = 'min 64';
+    let m = await mount({ W: 320, N: 10, c: 4, min: 64, long: false });
+    ok(!m.state.compact && m.state.narrow && m.labelBox.h >= 19 && !m.caption.shown, where, 'labels at 320: compact ' + m.state.compact + ', caption ' + m.caption.shown);
+    ok(Math.abs(m.dots[4].x - 160) < 0.6 && Math.abs(m.state.segment - 64) < 0.01 && Math.abs(m.state.edge - 64) < 0.01, where, 'current at ' + m.dots[4].x + ', segment ' + m.state.segment + ', edge ' + m.state.edge);
+    m = await mount({ W: 300, N: 10, c: 4, min: 64, long: false });
+    ok(m.state.compact && m.caption.shown, where, '300: expected compact, three 64s don\'t fit across 172');
+    await p.evaluate(() => T.resize(320));
+    await p.evaluate(frames); await p.evaluate(frames);
+    m = await p.evaluate(MEASURE);
+    ok(!m.state.compact && !m.state.browsed && Math.abs(m.dots[4].x - 160) < 0.6, where, 'grown to 320: compact ' + m.state.compact + ', browsed ' + m.state.browsed + ', current at ' + m.dots[4].x);
+  }
+  {
     // compact: the info button calls onInfo and fires the event; the caption follows progress; back to labels when wide
     const where = 'compact';
     await p.evaluate(() => { window._info = []; T.mount({ steps: Array.from({ length: 10 }, (_, i) => ({ id: 's' + i, label: 'Step ' + (i + 1) })), current: 's3', onInfo: d => window._info.push(d) }, 320);
@@ -594,6 +643,7 @@ function checkGeometry(m, where, cfg) {
     const seen = new Map();
     for (const f of failures) { const k = f.replace(/^[^:]+: /, '').replace(/[\d.-]+/g, '#'); seen.set(k, (seen.get(k) || []).concat(f)); }
     for (const [, list] of seen) console.log('  ' + list[0] + (list.length > 1 ? '  (+' + (list.length - 1) + ' similar)' : ''));
+    if (process.env.ALL) failures.forEach(f => console.log('    ' + f));
     process.exit(1);
   }
 })().catch(e => { console.error(e); server.close(); process.exit(1); });

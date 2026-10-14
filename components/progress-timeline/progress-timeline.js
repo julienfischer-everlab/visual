@@ -6,6 +6,7 @@
  *     current: 'clinic',          // id of the step in progress; null = not started
  *     complete: false,            // true = every step done
  *     minSegment: 128,            // px between neighbouring dots, never less
+ *     minSegmentSmall: 64,        // optional: the minimum in parents under smallBelow (600px)
  *     onArrow: detail => {...},   // optional: an arrow scrolled the track one segment
  *     onInfo: detail => {...}     // optional: adds an info button to the compact caption
  *   });
@@ -33,13 +34,15 @@
   const ANCHOR = 0.4;                 // where the current dot rests in a middle step, as a share of the width
   const MIN_SEGMENT_FLOOR = 2 * DOT_ZONE + 16;   // a connector of at least 16px
   const EPS = 0.5;
-  const COMPACT_SPAN = 2;             // compact: segments across the safe area (previous, current and next dots)
+  const MIN_ITEMS = 3;                // labelled steps the safe area must hold (previous, current, next), or it turns compact
 
   const DEFAULTS = {
     steps: [],
     current: null,
     complete: false,
     minSegment: 128,
+    minSegmentSmall: null,  // optional: the minimum segment when the card is narrower than smallBelow
+    smallBelow: 600,
     edge: 128,
     compactEdge: 64,        // the safe area each side once the labels go (compact)
     label: 'Progress',
@@ -62,7 +65,8 @@
     const o = Object.assign({}, DEFAULTS, defined(opts));
     const W = Math.max(0, +width || 0);
     const N = Math.max(0, count | 0);
-    const m = Math.max(MIN_SEGMENT_FLOOR, +o.minSegment || DEFAULTS.minSegment);
+    const sm = +o.minSegmentSmall, sb = Number.isFinite(+o.smallBelow) ? +o.smallBelow : DEFAULTS.smallBelow;
+    const m = Math.max(MIN_SEGMENT_FLOOR, (sm > 0 && W < sb ? sm : +o.minSegment) || DEFAULTS.minSegment);   // a smaller minimum in small parents, when set
     const E0 = Number.isFinite(+o.edge) ? Math.max(0, +o.edge) : DEFAULTS.edge;
     const E = Math.min(E0, W / 2);                               // 128 each side (they meet below 256px)
     const usable = W - 2 * E;                                    // between the two edge areas
@@ -83,17 +87,24 @@
       return { fit: true, narrow, compact: false, W, N, seg: sg, pad: sg / 2, edge: E, col: col(sg), content: W, max: 0, usable, minSegment: m };
     }
     if (narrow) {
-      // Compact: fewer than three labelled steps fit, so the labels go entirely
-      // and the dots and line sit inside a 64px safe area each side. The
-      // segment is what puts three dots across it (previous, current, next),
-      // never more than the minimum; the track scrolls if the rest don't fit.
       const CE0 = Number.isFinite(+o.compactEdge) ? Math.max(0, +o.compactEdge) : DEFAULTS.compactEdge;
       const ce = Math.min(CE0, W / 4), cu = W - 2 * ce;
-      const mc = Math.min(m, Math.max(MIN_SEGMENT_FLOOR, cu / COMPACT_SPAN));
+      // Three labelled steps fit across the 64px safe areas at the minimum
+      // segment (a small minimum: five 64s in 320px): labels kept, the current
+      // step centred with its neighbours either side, the track scrolling.
+      if (MIN_ITEMS * col(m) <= cu + 1e-6) {
+        const nc = 2 * ce + (N - 1) * m;
+        return { fit: false, narrow, compact: false, W, N, seg: m, pad: ce, edge: ce, col: col(m), content: nc, max: Math.max(0, nc - W), usable: cu, minSegment: m };
+      }
+      // Compact: fewer than three labelled steps fit, so the labels go entirely
+      // and the dots and line sit inside the safe areas. The segment is what
+      // puts three dots across them (previous, current, next), never more than
+      // the minimum; the track scrolls if the rest don't fit.
+      const mc = Math.min(m, Math.max(MIN_SEGMENT_FLOOR, cu / (MIN_ITEMS - 1)));
       const cs = cu / (N - 1);
-      if (cs >= mc - 1e-6) return { fit: true, narrow, compact: true, W, N, seg: cs, pad: ce, edge: ce, col: DOT, content: W, max: 0, usable: cu, minSegment: mc };
+      if (cs >= mc - 1e-6) return { fit: true, narrow, compact: true, W, N, seg: cs, pad: ce, edge: ce, col: DOT, content: W, max: 0, usable: cu, minSegment: m };
       const cc = 2 * ce + (N - 1) * mc;
-      return { fit: false, narrow, compact: true, W, N, seg: mc, pad: ce, edge: ce, col: DOT, content: cc, max: Math.max(0, cc - W), usable: cu, minSegment: mc };
+      return { fit: false, narrow, compact: true, W, N, seg: mc, pad: ce, edge: ce, col: DOT, content: cc, max: Math.max(0, cc - W), usable: cu, minSegment: m };
     }
     // Wide and scrolling, at exactly the minimum.
     const content = 2 * E + (N - 1) * m;
@@ -125,7 +136,7 @@
   function targetOffset(L, c) {
     const M = L.max, N = L.N;
     if (M <= EPS) return 0;                          // everything fits: nothing to place
-    if (L.narrow) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow (compact): the current dot at 50% as far as the track allows
+    if (L.narrow) return clamp(clamp(c, 0, N - 1) * L.seg + L.pad - L.W / 2, 0, M);   // narrow, labelled or compact: the current dot at 50% as far as the track allows
     if (c <= 0) return 0;                            // first step: its dot on the left safe line
     if (c >= N - 1) return M;                        // final step: its dot on the right safe line
     const s = L.seg, hl = labelHalf(L), E = L.edge, W = L.W;
@@ -190,7 +201,7 @@
 
     getState() {
       const L = this.layout, off = this.scroller.scrollLeft, s = edgeState(L, off);
-      return { fit: L.fit, narrow: L.narrow, compact: L.compact, width: L.W, segment: L.seg, edge: L.edge, offset: off, maxOffset: L.max,
+      return { fit: L.fit, narrow: L.narrow, compact: L.compact, width: L.W, minSegment: L.minSegment, segment: L.seg, edge: L.edge, offset: off, maxOffset: L.max,
         currentIndex: this._currentIndex(), browsed: this._browsed,
         overflowStart: s.overflowStart, overflowEnd: s.overflowEnd, startButton: s.startButton, endButton: s.endButton };
     }
@@ -464,6 +475,6 @@
   ProgressTimeline.computeLayout = computeLayout;
   ProgressTimeline.targetOffset = targetOffset;
   ProgressTimeline.edgeState = edgeState;
-  ProgressTimeline.constants = { DOT, GAP, DOT_ZONE, BTN, GUTTER, LABEL_MAX, ANCHOR, MIN_SEGMENT_FLOOR, COMPACT_SPAN };
+  ProgressTimeline.constants = { DOT, GAP, DOT_ZONE, BTN, GUTTER, LABEL_MAX, ANCHOR, MIN_SEGMENT_FLOOR, MIN_ITEMS };
   return ProgressTimeline;
 }));

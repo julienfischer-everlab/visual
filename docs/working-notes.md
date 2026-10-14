@@ -13671,3 +13671,11 @@ Tweak "Sub timeline placement" is back and visible: In status card (default; und
 - Caption under the dots: "Up next – <next>" (the first step before starting), empty at the last step / complete; `onInfo` adds an info button and the `progress-timeline:info` event. Options `upNext`, `infoLabel`.
 - Fix found by the suite: a card growing out of compact had its short track clamped by the browser before the ResizeObserver ran, and that scroll counted as browsing. A scroll while the measured width differs from the layout's no longer does.
 - validate.js: compact rules in the matrix, caption text and placement, the info button, focus when the caption empties. 179,495 checks, 0 failed.
+
+## ProgressTimeline: small-parent minimum, labelled narrow; Documentation page (2026-10-14)
+- "Parent 320px don't show the label, min width increment is 64px": compact now turns on only when three minimum columns don't fit across the 64px safe areas (`3·m > W − 128`): 512px at 128, 320px at 64. Between that and wide, a labelled narrow layout: 64px edges, segment = m, current centred and clamped, neighbours clear of the fades.
+- "Min segment (px) > 600px parent (current); < 600px parent (add controller)": `minSegmentSmall` (+ `smallBelow`, 600) in the component, the demo's second control (default 64). getState reports `minSegment`.
+- validate.js: min 64 and 96 widths in the matrix, the labelled narrow rules, a small-min block across 600 with resizes, the 320px regression. 235,060 checks, 0 failed.
+- Documentation: a page of the prototype like Report visuals (`#documentation`, Version > Documentation, a Home row) hosting components/progress-timeline/demo.html in a frame; published at that path with its css and js.
+- Sub steps sheet list (.kitV): 8px each side, titles 14px, 1px lower.
+- Timeline, Just completed: the tray padded as the Suggestions (22/24), the item's hover card 14 inside it, radius 14; the phone keeps its own.
