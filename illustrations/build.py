@@ -117,6 +117,7 @@ class Scene:
     def __init__(self, slug, title, desc, seed):
         self.slug, self.title, self.desc = slug, title, desc
         self.rnd = random.Random(seed)
+        self.w, self.h = W, H
         self.defs = []
         self.body = []
         self.n = 0
@@ -151,7 +152,7 @@ class Scene:
             cid = f"{self.slug}-{name}-{i}"
             self.defs.append(
                 f'<clipPath id="{cid}"><path clip-rule="evenodd" '
-                f'd="M-20,-20H{W + 20}V{H + 20}H-20Z{occ}"/></clipPath>')
+                f'd="M-20,-20H{self.w + 20}V{self.h + 20}H-20Z{occ}"/></clipPath>')
             out = f'<g clip-path="url(#{cid})">{out}</g>'
         return out
 
