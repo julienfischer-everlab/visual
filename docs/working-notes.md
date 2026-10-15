@@ -14150,3 +14150,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Booked date square: the day 22 → 18px ("4px font size decrease"); the month stays 11.
 - Mobile 2 Columns: 24 above both actions ("24px margin top"): dots → Get directions, Next step title → Book (1 object, no dots: 24 under the slide). Cards stay level.
 - Mobile 2 Columns: the carousel dots move to the top right, on the APPOINTMENTS label's line ("top right"); the slide keeps 24 at least above the action.
+
+## Plan ahead copy; 2 Columns titles 15
+- Overview Later section (desk/XS and phone): heading "Available to action" → "Plan ahead"; card "Take your health plan further" / "12 more actions to help you plan ahead. Get started when you’re ready." (aria-label to match).
+- Mobile 2 Columns: both titles 17 → 15px (line-height 1.2).
+- Noted, not changed: the Later card's default "img" visual (photo stack) sits flush against the text on the desk (row gap 0); the folder visual has its own gap.
