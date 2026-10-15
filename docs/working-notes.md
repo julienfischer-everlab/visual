@@ -14104,3 +14104,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks -> Timeline -> Status -> **Placement** (`stTlStPl`, shown only for Bars): Subtitle (default) / Overlap visual. Overlap: the bars sit in a notch (`.tlThN`) cut into the picture's bottom-right corner. It is filled with the ground (`--tlThBg`/`--pageBg`, the hover colour on hover), inner corner radius 10, the two joins curved by radial-gradient fillets; 40px increments inside, no border; box 56×15.
 - Desk month/group title: padding +8 top and bottom (10/8 to 18/16, height 50); the dot stays centred and the rail start moves 32 to 40 to keep meeting the first dot.
 - Tweaks (Timeline pages) -> **Later** -> **Explainer** (`stTlLaterAl`, default On): Off hides the Later tab alert (`html.tlNoAlert`).
+- Tweak rule: a section card switched off (`.tkGroup.secOff`) hides its options; only the header stays. Status off already hides Format/Placement.
