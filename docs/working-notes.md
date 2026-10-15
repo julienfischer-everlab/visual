@@ -14057,3 +14057,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Later card Hairline: the drawing 152 in its 160 square, 4 from the canvas edges (was 16) ("less padding around the visual, close to the edge of the canvas").
 
 - Microbiome "Your report" thumbnail (Ready status card, svDoc row) = user's marbled image, `assets/overview/report-microbiome.webp` (480 square centre crop, 28KB). MRI keeps its scan (`SIMG[d.img]`).
+- Completed appointment's Details: no card (`.svProps` no bg/radius/padding, dividers kept); rows Date / Type / Clinician / Duration, Booked row removed. Task and consent Details lists keep their labels.
+- Bar: the "Hairline" button (`#tkVisuals`) removed; the Hairline page stays reachable from the Version menu.
