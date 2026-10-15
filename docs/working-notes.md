@@ -14111,3 +14111,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview Insights section title → "Recent insights" (desk/XS `.dvSecIns`, phone `.ovsecIns`).
 - Desk with Booked object on: the booked list becomes a titled card ("Booked" + count, `.ovBk.inCol`) in the right column under the services, which drop to one row of four; the card fills the column to the Next step card's height. If Services is off, or on XS, the list sits under the Next step card; it hides with Next step. Re-placed after section moves and switches (`window._bkPlace`).
 - Overview layout: the body panel (`#dOver`) fills the room (no max-width). Its content is a centred 1080 container: side padding `max(--ctPadX, (100% - --sideW - 1080px) / 2)`, because the padding % is the whole dash's. Checked at 1100/1440/1920, the retracted side bar and forced L/M/S.
+- Persona tweak retired: Member (Julien) only; a saved "New user" falls back to Member.
