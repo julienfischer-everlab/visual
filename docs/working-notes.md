@@ -14130,3 +14130,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 ## Timeline notch (status Overlap visual)
 - Notch corners 10 → 9 (its own corner and both inverted corners); padding above the indicator 2 → 6 ("+4px"). Applies to bars and the task dot alike.
+- Booked rows 8 apart ("+4px gap rows"); card bottom padding 20 → 12 ("-8px"), so the last row's content sits 20 from the edge.
