@@ -14133,3 +14133,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Booked rows 8 apart ("+4px gap rows"); card bottom padding 20 → 12 ("-8px"), so the last row's content sits 20 from the edge.
 - Booked rows: padding 10 top/bottom ("object padding +2px").
 - Overview top grid 12 → 16 ("grid +4px"): hero ↔ column, between service chips, services ↔ Upcoming appointments.
+
+## Labels regular, Overview body inset, desk visuals, mobile 2 Columns
+- "Next step" and "Upcoming appointments" labels: regular (400).
+- Overview body (#dOver) now sits like the other desk pages: 8px off the side bar and the window edge, max 1360 (`min(1360px, bpW - sideW - 16px)`), content still a centred 1080. Verified at 1280/1440/1920 against Timeline and Insights (Service detail has no 1360 cap — pre-existing, differs above ~1600px).
+- Desk service visuals 40 → 32 ("reduce by 8px").
+- New tweak (Next step, shown while Booked object is on): "Next step / Booked (mobile)" — Stacked (default) / 2 Columns (`stBkLay` → `html.bk2c`). XS only: the booked card and Next step side by side (8 gap, 22 radius, equal height), each in the Insights card framework — 10px uppercase label, 17 title, 12.5 line, 32px pill at the foot. Booked becomes a one-at-a-time carousel (swipe/drag with snap, flick, dot nav; 1 object → no dots). Next step hides its picture; its title runs as one paragraph (a space now follows each hero title break so hiding it keeps words apart).
