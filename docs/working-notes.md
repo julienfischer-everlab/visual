@@ -14077,3 +14077,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks -> Timeline -> **Status** is now a switch (`stTlSt` on/off). On shows the **Format** row (`stTlStVis`, Dot/Bars, a segmented control; excluded from the auto-switch, which had added a stray toggle). Off: `TLVIS='none'`, no dot and no bars; the lock badges (Waiting on / Unlocks at) stay.
 - Bars case: 56px wide, 8px padding (box 56×19); centring calcs updated. XS title keeps 68px clear on its right.
 - Month group title on XS and Auto ≤991: padding-bottom 8 to 12 (+4), height 44. The pinned solid band follows via `--stkExt`. Desk is unchanged (10/8).
+- Bars case outline: a 1px border (white .12; light ink .2), radius 4. A .5px inset shadow isn't pixel-snapped and lost its top edge at fractional positions. Box is now 56×21; desk margin calc uses 21; XS top 1px.
+- Status Format gains **Circular** (`ring`): the old `.tlRing` conic ring (`--p` = steps done + half the one in hand, over n) in the picture-corner badge, taking the dot's place via the `mk` lift. Done is green, waiting grey, yours orange.
