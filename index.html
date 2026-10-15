@@ -6533,6 +6533,7 @@
   .dvDots i.on{width:24px;background:#ececec;}
   /* action plan */
   .dvPlanGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  #dOver .dvTop:has(> .ovOff){grid-template-columns:1fr !important;} #dOver .dvTop.svcFirst:not(:has(> .ovOff)) > .ovBk{grid-column:2;}   /* one of the two switched off: the other the whole row; Services first: the booked list under Next step, at the right */
   .ovBk{order:1;grid-column:1;display:flex;flex-direction:column;border-radius:24px;background:rgba(255,255,255,.04);overflow:hidden;} body[data-bp="xs"] #dOver .ovBk{margin-top:12px;} .ovhero.ovOff ~ .ovBk{display:none;}
   .ovBkR{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .16s ease;} .ovBkR + .ovBkR{box-shadow:inset 0 1px 0 rgba(255,255,255,.06);} .ovBkR:hover{background:rgba(255,255,255,.03);}
   .ovBkR img{flex:none;width:40px;height:40px;border-radius:10px;object-fit:cover;} .ovBkT{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px;} .ovBkT b{font-size:15px;font-weight:500;color:#ececec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .ovBkT span{font-size:13px;color:#8b8b86;} .ovBkR.soon .ovBkT span{color:#f78359;} .ovBkR > svg{flex:none;width:16px;height:16px;color:#8b8b86;}
@@ -31341,6 +31342,7 @@ hairline({
     // ...and the greeting into the bar's left for V4 on the desk ("title on left side"), back under it otherwise
     const h1 = over.querySelector('.dvH1'), bar = over.querySelector('.ovTop');
     if (h1 && bar){ if (inCol && h1.parentNode !== bar) bar.prepend(h1); else if (!inCol && h1.parentNode === bar) bar.after(h1); }
+    if (window._ovOrder) window._ovOrder();   // the sections back in the Tweaks' order
   };
   placeSvcV4();   // at load, for the default
   if (stHdrSel) stHdrSel.addEventListener('change', () => {
@@ -32686,16 +32688,24 @@ hairline({
       ins: ['Insights', '.ovInsCard, .ovsecIns, .ovcar, .ovcdots'], prof: ['Health profile', '.ovsecProf, .ovProf'], plan: ['Action plan', '.ovsecPlan, .ovplan, .ovDef, .ovtl, .ovsecAvail'] };
     const host = () => { const c = document.querySelector('#phone2 .ovcar'); return c && c.parentElement; };
     const inp = document.getElementById('stOvOrder'), list = document.getElementById('tkOvOrd'), offI = document.getElementById('stOvOff');
-    const DSEC = { svc: '.ovSvc', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl, .dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
+    const DSEC = { svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl, .dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
     const offs = () => new Set((offI && offI.value || '').split(',').filter(Boolean));
+    // the order on the Overview itself ("changing the order must change also on the screen"): its sections moved as units in the list's order; on the desk Services and Next step share one row (.dvTop), placed where the first of the two stands, Next step left and Services right as ever
+    const applyD = () => { const pl = document.querySelector('#dOver .dvSecPlan'); if (!pl) return; const m = pl.parentElement, top = m.querySelector(':scope > .dvTop'), inCol = !!(top && top.querySelector('.ovSvc')), q = sl => [...m.querySelectorAll(':scope > :is(' + sl + ')')];
+      const U = { svc: inCol ? [top] : q('.ovSvc'), hero: top ? [top] : [], ins: q('.dvSecIns, .dvRail, .railNav, .dvDots'), plan: q('.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl, .dvSecAvail, .dvDef') }, o = order(), seen = new Set(), seq = [];
+      o.forEach(k => (U[k] || []).forEach(el => { if (el && !seen.has(el)){ seen.add(el); seq.push(el); } }));
+      const first = [...m.children].find(el => seen.has(el)); if (first){ const mk = document.createComment('ord'); m.insertBefore(mk, first); seq.forEach(el => m.insertBefore(el, mk)); mk.remove(); }
+      if (top){ const hero = top.querySelector(':scope > .ovhero'); top.classList.remove('svcFirst'); if (hero) top.prepend(hero); } };   /* on the desk the pair keeps its arrangement, Next step at the left, Services at the right: the row moves as one */
+    window._ovOrder = () => { applyD(); hideOff(); };   // after the Services row moves between the row and the flow (a breakpoint, the header's version)
+    const dvVis = k => { const over = document.getElementById('dOver'); if (!over || !DSEC[k]) return false; return [...over.querySelectorAll(DSEC[k])].some(el => !el.classList.contains('ovOff') && getComputedStyle(el).display !== 'none'); };   // shown on the Overview itself
     const hideOff = () => { const o = offs(); document.querySelectorAll('.ovOff').forEach(el => el.classList.remove('ovOff')); o.forEach(k => { const h = host(); if (h && SEC[k]) h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => el.classList.add('ovOff')); if (DSEC[k]) document.querySelectorAll('#dOver :is(' + DSEC[k] + ')').forEach(el => el.classList.add('ovOff')); }); };   // a section switched off: gone, on the phone and on the Overview
     const GR = '<svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg>';
     const order = () => { const o = (inp.value || '').split(',').filter(k => SEC[k]); Object.keys(SEC).forEach(k => { if (!o.includes(k)) o.push(k); }); return o; };
     const apply = () => { const h = host(); if (!h) return; order().forEach(k => h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => h.appendChild(el))); };
-    const draw = () => { const h = host(), o = offs(); list.innerHTML = order().map(k => { const els = h ? [...h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')')] : [], on = !o.has(k), vis = !on || els.some(el => el.offsetHeight > 0 || getComputedStyle(el).display !== 'none');
+    const draw = () => { const h = host(), o = offs(); list.innerHTML = order().map(k => { const els = h ? [...h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')')] : [], on = !o.has(k), vis = !on || (document.getElementById('dOver') ? dvVis(k) : els.some(el => el.offsetHeight > 0 || getComputedStyle(el).display !== 'none'));
       return '<li data-k="' + k + '" class="' + (on ? '' : 'sw0') + (vis ? '' : ' off') + '">' + GR + '<span class="nm">' + SEC[k][0] + '</span>' + (vis ? '' : '<span class="hid">hidden</span>') + '<button type="button" class="tgl" role="switch" aria-checked="' + on + '" aria-label="Show ' + SEC[k][0] + '"><i></i></button></li>'; }).join(''); };   /* each a switch: on, shown; off, gone ("put a toggle on off for all items") */
     if (inp && list){
-      inp.addEventListener('change', () => { apply(); hideOff(); draw(); });
+      inp.addEventListener('change', () => { apply(); applyD(); hideOff(); draw(); });
       if (offI) offI.addEventListener('change', () => { hideOff(); draw(); });
       list.addEventListener('click', e => { const sw = e.target.closest('.tgl'); if (!sw || !offI) return; const k = sw.closest('li').dataset.k, o = offs(); if (o.has(k)) o.delete(k); else o.add(k); offI.value = [...o].join(','); offI.dispatchEvent(new Event('change', { bubbles: true })); });
       let drag = null;
@@ -32705,11 +32715,11 @@ hairline({
         else if (dy < -drag.h / 2 && li.previousElementSibling){ li.previousElementSibling.before(li); drag.y0 -= drag.h; dy += drag.h; }
         li.style.transform = 'translateY(' + dy + 'px)'; });
       const end = () => { if (!drag) return; drag.li.classList.remove('drag'); drag.li.style.transform = ''; drag = null;
-        const v = [...list.children].map(x => x.dataset.k).join(','); if (v !== inp.value){ inp.value = v; apply(); } };
+        const v = [...list.children].map(x => x.dataset.k).join(','); if (v !== inp.value){ inp.value = v; apply(); applyD(); hideOff(); } };
       list.addEventListener('pointerup', end); list.addEventListener('pointercancel', end);
-      apply(); hideOff(); draw();
+      apply(); applyD(); hideOff(); draw();
       document.addEventListener('click', e => { if (e.target.closest('.tkBtn, .tkTrig, [aria-label*="weak"]')) setTimeout(draw, 50); }, true);
-      { const vs = document.getElementById('versionSel'); if (vs) vs.addEventListener('change', () => setTimeout(hideOff, 60)); }   // a page drawn anew keeps them off   /* hidden marks follow the other tweaks when the panel opens */
+      { const vs = document.getElementById('versionSel'), bp = document.getElementById('stBp'); [vs, bp].forEach(x => x && x.addEventListener('change', () => setTimeout(() => { applyD(); hideOff(); }, 80))); }   // a page drawn anew keeps them off   /* hidden marks follow the other tweaks when the panel opens */
     }
   }
   { const t = document.getElementById('stDTabs'), bar = document.getElementById('dTabsV2'), mbar = document.getElementById('mTabsV2');
