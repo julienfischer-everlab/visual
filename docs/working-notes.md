@@ -14055,3 +14055,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Later card in a narrow card (the desk's sidebar beside a small window, ~640 Auto): the words wrapped a word per line beside the button. `.ovDef` is a size container; under 560 the button goes under the words (20 below), as XS.
 - Version menu: Overview page → "Overview" (was Desktop); its Mobile entry removed ("Desktop --> Overview, Mobile --> kill"; the phone mode stays, Appointment › Mobile still opens it). Service detail's entry renamed "Service detail" (was Desktop), by the same rule ("rename Service detail").
 - Later card Hairline: the drawing 152 in its 160 square, 4 from the canvas edges (was 16) ("less padding around the visual, close to the edge of the canvas").
+
+- Microbiome "Your report" thumbnail (Ready status card, svDoc row) = user's marbled image, `assets/overview/report-microbiome.webp` (480 square centre crop, 28KB). MRI keeps its scan (`SIMG[d.img]`).
