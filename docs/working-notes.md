@@ -14091,3 +14091,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Result modal on the phone sheet (XS/S): the top bar title is hidden (the close alone; the row is kept as its spacer), the h3 is centred, and the two CTAs sit side by side (`.dbBtns` row, gap 16, each flex 1), Watch video then See report as on desk. A single CTA stays full width.
 - Demo appointments: an MRI Scan booked today (August, `soon:1`, "Today, 10:30 - 11:10 am", CTA "Get directions", Quantum Therapy Sydney) and the Onboarding Consultation (15 Sep 2026, 11:00 - 11:30 am, View; row `sub` overrides the subtitle). The September MRI Scan (active) row is removed; Nutrition review is now to book (Book) so it moves to Tasks. `subOf` honours `r.sub`.
 - Later card Hairline visual: outlined frame (1px white 8%, light ink 10%, radius 16) in every layout.
+- Later card Hairline: padding 12 top/left/bottom, 24 right (desk card 120 tall), gap 32.
