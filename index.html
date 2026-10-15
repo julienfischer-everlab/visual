@@ -20145,7 +20145,7 @@ hairline({
                        'Results received', 'Async report', 'Video', 'Landing page'];
   MODE_GROUPS.forEach(g => {
     const inGroup = MODES.map((v, i) => [v, i])
-      .filter(([v, i]) => v.group === g && !isArchived(i));
+      .filter(([v, i]) => v.group === g && !isArchived(i) && !(g === 'Overview page' && v.name === 'Mobile'));   /* no Overview > Mobile in the menu ("Mobile --> kill"); the phone mode stays, the appointment's Mobile opens it */
     inGroup.sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0));
     if (!inGroup.length) return;
     const og = document.createElement('optgroup');
@@ -20153,7 +20153,7 @@ hairline({
     inGroup.forEach(([v, i]) => {
       const o = document.createElement('option');
       o.value = String(i);
-      o.textContent = v.name;
+      o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : v.name;   /* the page's name, not the shell's ("Desktop --> Overview") */
       og.appendChild(o);
     });
     // Mobile (viewport): the mobile design filling the browser's viewport with
@@ -20174,7 +20174,7 @@ hairline({
     if (g === 'Overview page'){
       versionSel.appendChild(og);
       const sg = document.createElement('optgroup'); sg.label = 'Service detail';
-      [['svcD', 'Desktop']].forEach(   /* no Mobile: XS on the desktop view is the phone ("remove mobile because we can manage XS on desktop view") */([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
+      [['svcD', 'Service detail']].forEach(   /* the page's name, as the Overview's ("rename Service detail") */   /* no Mobile: XS on the desktop view is the phone ("remove mobile because we can manage XS on desktop view") */([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
       versionSel.appendChild(sg);
       /* no Task detail of its own: the tasks are in Service detail's picker, a group, Standalone tasks ("merge that into the dropdown of services inside the service detail desktop") */
       const ag = document.createElement('optgroup'); ag.label = 'Appointment';   // "add the appointment page"
