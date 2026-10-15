@@ -14147,3 +14147,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Mobile 2 Columns, appointments card: MY APPOINTMENTS fixed, only the name + when swipe; dots above one full-width 40px CTA at the foot whose label/target follow the slide in view (`.ovBkCGo`, data-i synced in bkCar). No See more arrow in the half card. Title 10 below the label in both cards (+4); Next step's Book also full width / 40 so the two actions sit level.
 - Mobile 2 Columns: label "APPOINTMENTS" (no "My"); dots 16 above the action (+4); titles 14 below the labels in both cards (+4); Next step hides Next availability / its time.
 - Booked rows: the approaching one's line reads "Today · 10:30 am" (orange), as its 2 Columns slide.
+- Booked date square: the day 22 → 18px ("4px font size decrease"); the month stays 11.
