@@ -14119,3 +14119,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Row and CTA open the item's page (`ovOpen`); rows are keyboard buttons (Enter/Space).
 - New tweak under Booked object, shown only while it's on: Booked items — 2 objects (default) / 1 object (`stBkN`, segmented).
 - Desk inCol: the services row of 4 chips are 112 tall so the column sits beside the hero.
+
+## Booked rows ghost, Next step label plain, XS order, XS service chips
+- Booked rows: no fill at rest, content aligned with the title (rows bleed 12px each side, the fill shows on hover/focus), 4px apart; name 14 / sub 14; the sub is the hour (orange when soon), place and right-hand hour removed. Title +8px below (20 to the first row).
+- Next step label: no pill — plain 14/500 #ececec on a 20px line, like "Upcoming appointments".
+- Hero image Top right: availability bottom left, Book bottom right.
+- XS: the Upcoming appointments card sits above the Next step card (12 below it); hidden with the hero via `.ovBk.ovOff`.
+- XS service chips: visual 32×32 + title on one line, 12 gap, 16 padding (64 tall).
