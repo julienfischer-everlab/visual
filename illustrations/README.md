@@ -26,8 +26,13 @@ clumps, rocky ground, and orange glass lit from inside.
 
 These use a 960 × 640 view box; the PNGs are 1920 × 1280.
 
+## Colours
+
+Both sets use the same two inks:
+
 - Ink: `#111111`
-- Orange: `#FF5A1F` (sun, sun glints, umbrella stripes, tail lights, oranges)
+- Orange: `#FF5A1F` (suns, glints, umbrella stripes, tail lights, oranges,
+  glowing glass, the campfire)
 
 They work on light backgrounds. The black ink won't show on dark ones.
 
