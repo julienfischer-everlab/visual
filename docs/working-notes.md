@@ -14172,3 +14172,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Plan ahead: Hairline has no outline anywhere; XS Left gap 8. "Hairline orange" no longer paints the square: only the active file (the `g` holding `path.hi`) is solid orange #f78359 with no stroke, its back #c95a33; drawing fit back to 88.
 - Tab variation: Next step card #252522 always (its tab and notches with it), whatever Hero background, on the light page too.
 - Tab: Coming up's card #252522 too (`--fUp`), the folder one colour with both tabs; on the light page the folder stays dark and the list takes the dark page's ink (date squares, names, hours, CTAs, hover).
+
+## Booked rows hug; Plan ahead gap 20; task hero edge fixed
+- Booked rows hug their words: 10 above and below the name/hour (`.ovBkT` padding), a two-line name grows the row (72 vs 58); the date square stays a square flush with the row — its width set to the row's height by a ResizeObserver (`bkSqRO`), since a stretched flex item takes no width from aspect-ratio.
+- Plan ahead, Left + Hairline on XS: 20 between the drawing and the words ("+12px gap", horizontal).
+- Task page hero (phone + XS): the picture's mask now reaches transparent at the hero's own foot (`transparent calc(100% - 32px)`) — the ::before runs 32 past the hero and is clipped, so the old 50%→100% fade was only ~80% gone at the edge; a bright picture (General Questionnaire) showed a hard band under the hero that read as a body background.
