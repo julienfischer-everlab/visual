@@ -7347,7 +7347,7 @@
   .dmView .dmOpts .bkSlot:disabled{opacity:.35;text-decoration:none;cursor:default;} .dmView .dmOpts .bkSlot.on{cursor:default;} .dmView .dmChk{cursor:default;} .dmView .dmName{color:#c8c8c4;} .dmView .dmChk input{cursor:default;}
   .svDocM .dmGo{flex:none;height:48px;padding:0 28px;border-radius:999px;} .svDocM .dmGo:disabled{opacity:.35;cursor:default;}
   /* a locked service's modal: its picture, the lock and what unlocks it, what it is, and its steps */
-  body.tlOn .dash > .svBook.svLkM{display:block;}   /* over the Timeline too */
+  body.tlOn .dash > .svBook:is(.svLkM, .svDemo){display:block;}   /* over the Timeline too */
   .lkTop{display:flex;align-items:center;gap:16px;} .lkPh{flex:none;width:72px;height:72px;border-radius:16px;background:center / cover no-repeat;filter:grayscale(.35);}
   .lkTag{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:8px;background:rgba(255,255,255,.07);font-size:12.5px;font-weight:500;color:#c9c7c1;} .lkTag svg{width:13px;height:13px;color:rgba(255,255,255,.56);}
   .lkWhy{margin:8px 0 0;font-size:15px;font-weight:500;line-height:1.4;color:#f4f4f4;}
@@ -29359,6 +29359,7 @@ hairline({
     // ---- the booking flow, simulated: Book opens a modal (a sheet on the phone) to pick a day and a time, its Book books it and the page moves to the next step
     const DAYS = [['Mon', 6], ['Tue', 7], ['Wed', 8], ['Thu', 9], ['Fri', 10], ['Mon', 13], ['Tue', 14]], TIMES = ['8:00 am', '9:30 am', '11:00 am', '1:30 pm', '3:00 pm', '4:30 pm'], FULL = { 0: [0, 3], 1: [1], 3: [2, 4], 5: [0] };
     const PIN = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 17s5.5-4.8 5.5-9a5.5 5.5 0 1 0-11 0c0 4.2 5.5 9 5.5 9Z"/><circle cx="10" cy="8" r="2"/></svg>';
+    const CAM = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="10.5" height="9" rx="2"/><path d="m13 9 4.5-2.5v7L13 11"/></svg>';
     const mkBook = host => { if (!host) return null; const sh = document.createElement('div'); sh.className = 'tlSheet svBook'; sh.setAttribute('aria-hidden', 'true');
       sh.innerHTML = '<div class="tlShDim"></div><div class="tlShPanel" role="dialog" aria-modal="true" aria-label="Book your appointment"><i class="tlShGrab" aria-hidden="true"></i><div class="tlShHead"><div><b></b></div><button class="tlShX" type="button" aria-label="Close">' + SX + '</button></div><div class="tlShBody bkBody"></div><div class="bkFoot"><div class="bkSum"></div><button class="svBtn bkGo" type="button" disabled>Book</button></div></div>';
       host.appendChild(sh); const shut = () => { sh.classList.remove('on'); sh.setAttribute('aria-hidden', 'true'); };
@@ -29366,7 +29367,8 @@ hairline({
     const bkD = mkBook(document.querySelector('.dash')), bkM = mkBook(ph);
     let bk = null;
     const bkPaint = () => { const sh = bk.sh, b = sh.querySelector('.bkBody'), full = FULL[bk.day] || [];
-      b.innerHTML = '<div class="bkLoc">' + PIN + '<div><b>' + escS(bk.loc || 'Clinic ABC') + '</b><span>' + escS(bk.dur || '30min') + (cur.key === 'consult' ? ' \u00b7 With Dr Sarah Chen' : ' \u00b7 In person') + '</span></div></div>' +
+      const onl = /online|video|phone/i.test(bk.loc || '');   /* a call: a camera, and who it's with, not "In person" */
+      b.innerHTML = '<div class="bkLoc">' + (onl ? CAM : PIN) + '<div><b>' + escS(bk.loc || 'Clinic ABC') + '</b><span>' + escS(bk.dur || '30min') + (cur.key === 'consult' ? ' \u00b7 With Dr Sarah Chen' : onl ? ' \u00b7 With ' + escS(String((SVC[cur.key] || {}).clin || 'your care team').split(',')[0]) : ' \u00b7 In person') + '</span></div></div>' +
         '<h4 class="bkH">Select a date</h4><div class="bkDays">' + DAYS.map(([w, dd], i) => '<button class="bkDay' + (i === bk.day ? ' on' : '') + '" type="button" data-day="' + i + '"><span>' + w + '</span><b>' + dd + '</b><span>Oct</span></button>').join('') + '</div>' +
         '<h4 class="bkH">Available times</h4><div class="bkSlots">' + TIMES.map((t, i) => '<button class="bkSlot' + (i === bk.time ? ' on' : '') + '" type="button" data-time="' + i + '"' + (full.includes(i) ? ' disabled' : '') + '>' + t + '</button>').join('') + '</div>';
       const ok = bk.time != null && !full.includes(bk.time); sh.querySelector('.bkGo').disabled = !ok;
@@ -29380,7 +29382,7 @@ hairline({
       if (e.target.closest('.bkGo') && bk.time != null){ const when = DAYS[bk.day][0] + ' ' + DAYS[bk.day][1] + ' Oct 2026, ' + TIMES[bk.time]; sh.shut(); simGo(cur.key, 'booked', { when }); } }));
     // the flow moves on: the service's new state kept (reopening it keeps it), the page repainted, its status block flashing
     const simGo = (k, state, extra, quiet) => { if (!SIM0[k]) SIM0[k] = { state: cur.state, o: cur.o }; SIM[k] = { state, o: Object.assign({}, SIM[k] && SIM[k].o, extra) };
-      paint(k, state, Object.assign({}, cur.o, SIM[k].o)); if (!quiet) requestAnimationFrame(() => document.querySelectorAll('#dSvc .svPend, #svcMob .svPend').forEach(x => { x.classList.remove('svFlash'); void x.offsetWidth; x.classList.add('svFlash'); })); };
+      paint(k, state, Object.assign({}, cur.o, SIM[k].o)); document.dispatchEvent(new Event('everlab:sim'));   /* the Timeline's row follows (booked, done) */ if (!quiet) requestAnimationFrame(() => document.querySelectorAll('#dSvc .svPend, #svcMob .svPend').forEach(x => { x.classList.remove('svFlash'); void x.offsetWidth; x.classList.add('svFlash'); })); };
     // the skipper walks one sequence: the steps before Book, the documents (when the Documents tweak is on), then Book and the rest ("when I click next I go to the next step")
     const simStep = dir => { const k = cur.key, st = cur.steps || [], n = cur.n - (st.length && DONE_ST.test(st[st.length - 1][0]) ? 1 : 0), bookFirst = st[0] && /^book/i.test(st[0][0]), bI = cur.bI || 0, dn = cur.docs || [], L = dn.length;
       let from; if (cur.state === 'done') from = n + L; else { const a = Math.max(0, cur.at); if (L && a <= bI){ const fp = dn.findIndex(t => !DOCDONE.has(t)); from = fp < 0 ? bI + L : bI + fp; } else from = a < bI ? a : a + L; }
@@ -29515,7 +29517,7 @@ hairline({
     document.addEventListener('click', e => { const b = e.target.closest('.svDocBtn'); if (!b) return; const r = b.closest('.svDoc'); if (!r || !r.dataset.doc) return; e.stopPropagation(); dmOpen(r.dataset.doc, isMob(b)); }, true);
     { const nx = document.getElementById('stSimNext'), rs = document.getElementById('stSimReset');
       if (nx) nx.addEventListener('click', () => simNext(!!(ph && ph.classList.contains('svcOn')) && !document.body.classList.contains('svcOn')));
-      if (rs) rs.addEventListener('click', () => { const z = SIM0[cur.key]; Object.keys(SIM).forEach(k => delete SIM[k]); DOCDONE.clear(); if (z){ Object.keys(SIM0).forEach(k => delete SIM0[k]); paint(cur.key, z.state, z.o); } else paint(cur.key, cur.state, cur.o); }); }
+      if (rs) rs.addEventListener('click', () => { const z = SIM0[cur.key]; Object.keys(SIM).forEach(k => delete SIM[k]); DOCDONE.clear(); document.dispatchEvent(new Event('everlab:sim')); if (z){ Object.keys(SIM0).forEach(k => delete SIM0[k]); paint(cur.key, z.state, z.o); } else paint(cur.key, cur.state, cur.o); }); }
     document.addEventListener('click', e => { if (e.target.closest('.kitMoreB')) return; const b = e.target.closest('.kitInfo, #dSvc .kitCard, #svcMob .kitCard');   /* the arrows scroll, they don't open the sheet */ if (!b || !cur.subL) return; { const sx0 = e.target.closest('.kitSx'); if (sx0 && sx0._drag && performance.now() - sx0._drag < 400) return; }   /* the timeline itself too, a ghost card ("tap on the timeline and the subtext: the bottom sheet; on desktop a rounded card on hover") */ e.stopPropagation(); const sh = b.closest('#svcMob, #phone2, [data-mb]') ? shM : shD; if (!sh) return;   // the sub steps, all of them, down the left as a timeline ("info icon next to the title; on click a bottom sheet with the sub steps vertically, the timeline on the left")
       sh._fill = null; sh.querySelector('.tlShHead b').textContent = cur.subT; const c = sh.querySelector('.tlShChip'); if (c) c.textContent = ''; const tmp = document.createElement('div'); tmp.innerHTML = cur.subL; sh.querySelector('.tlShBody').innerHTML = '<ol class="kitV">' + [...tmp.querySelectorAll('.svStep')].map(n => '<li class="' + (n.classList.contains('ok') ? 'on' : n.classList.contains('on') ? 'cur ' + (n.classList.contains('pas') ? 'wait' : 'act') : '') + '"><i class="kitDot"></i><span>' + n.querySelector('b').innerHTML + ((t => t ? '<small class="kitVEta">' + escS(t) + '</small>' : '')(kvEta(((n.querySelector('span') || {}).textContent || '').trim()))) + '</span></li>').join('') + '</ol>';   /* the dots of the status card, vertical; under each, its date or ETA when there is one ("add ETA when relevant on each sub step as sub title") */ sh.querySelector('.tlShBody').scrollTop = 0; sh.classList.add('subSh'); sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => sh.classList.add('on')); }, true);
     document.addEventListener('click', e => { const li = e.target.closest('.svJrL > li.main.hz, .svmHz'); if (li) [shD, shM].forEach(sh => sh && sh.classList.remove('subSh')); }, true);
@@ -29590,7 +29592,12 @@ hairline({
       const keep = () => requestAnimationFrame(() => document.body.classList.toggle('svLockPat', !!all[0] && all[0].value === 'on')); keep(); /* on by default ("locked pattern by default ON") */ document.addEventListener('everlab:mode', keep); if (sel) sel.addEventListener('change', keep); }   // a change of page rewrites the body's classes: the setting comes back with it
     { const bpS = document.getElementById('stBp'); if (bpS) bpS.addEventListener('change', () => setTimeout(() => { shutAll(); if (document.body.classList.contains('svcOn') && cur) paint(cur.key, cur.state, cur.o); }, 0)); }   // XS and back: the page redrawn for its width
     const head = (key, state, o) => { PROBE = true; try { const x = paint(key, state, o), t = document.createElement('div'); t.innerHTML = x && x.h ? String(x.h) : ''; return t.textContent.trim().replace(/\.$/, ''); } catch (e){ return ''; } finally { PROBE = false; } };   // a service's status block title, as its page would show it (no full stop, as there)
-    window._svc = { openDesk, openMob, close, plan, head, lock: lkOpen, repaint: () => { if (cur && cur.key) paint(cur.key, cur.state, cur.o); } };
+    // a Timeline row's own action as a demo, over the Timeline: Book its booking, Review its consent, Start its questionnaire ("the right CTA should trigger a modal demo with the context"); the page drawn unseen behind, so the modal reads its service and what is booked or signed lands on it
+    const demo = (key, state, o, act, mobile) => { [key, state, o] = simIn(key, state, o); const T = SVC[key]; if (!T || /^(booked|done)$/.test(state || '')) return false;
+      paint(key, state || 'request', o); [bkD, bkM, dmD, dmM].forEach(x => x && x.classList.remove('svDemo'));
+      const bk = /^book/i.test(act), sh = bk ? (mobile ? bkM : bkD) : (mobile ? dmM : dmD); if (sh) sh.classList.add('svDemo');
+      if (bk) bkOpen(mobile); else dmOpen(T.t, mobile); return true; };
+    window._svc = { openDesk, openMob, close, plan, head, lock: lkOpen, demo, sim: k => SIM[k] || null, repaint: () => { if (cur && cur.key) paint(cur.key, cur.state, cur.o); } };
     // the Overview's action plan cards carry the Timeline's step chip and the step in hand's badge ("add the badge step + badge status on the Overview action plan items"): the state is the one the card opens its page in (Book: to book; View: booked), so the card and its page agree
     { const PV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;
       document.querySelectorAll('.dvProt, .ovact').forEach(c => {
@@ -29749,7 +29756,7 @@ hairline({
     // the journey a group's service belongs to, for its page: the group's name, its services, and which one the page is ("list all services related in the journey")
     const jOf = (d, i) => ({ name: ((d.meta.find(m => m[0] === 'sug' && /\u00b7/.test(m[1])) || [0, d.t])[1]).split(' \u00b7 ')[0], items: d.group, i });
     const ownI = d => d.focus != null ? d.focus : (a => a < 0 ? d.group.length - 1 : a)(groupOf(d).a);
-    const svcOpts = x => ({ from: 'tl', t: x.t, tag: x.tag, d: x.d, at: x.at, need: x.need, steps: x.steps });   // what a group's service tells its page
+    const svcOpts = x => ({ from: 'tl', t: x.t, tag: x.tag, d: x.d, at: x.at, need: x.need, steps: x.steps, when: x.when });   // what a group's service tells its page
     const LOCKF = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 8.5V6.5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><rect x="4" y="8.5" width="12" height="9" rx="2.2" fill="currentColor"/></svg>';   // a locked service's mark, filled ("replace circle by a filled lock icon, same grey")
     const LOCK = '<svg class="tlLk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>';
     // the row another waits on, in the tab showing; and where a row stands in its own steps
@@ -29865,7 +29872,15 @@ hairline({
     // upfront"): what is asked of you now is the first thing read
     let OPEN = 'month', SEC = null;   // which objects open their steps (the Timeline tweak), and the section being drawn
     const finOf = r => r.state === 'done' || (!!r.group && groupOf(r).a < 0);   // its final, complete state
-    const row = r => { let pg = prog(r); const svd = tab === 'claim' && SNZ.has(r), cta = svd || isCta(r), fin = finOf(r), act = fin ? 'View' : svd ? 'View details' : r.act, more = fin ? 0 : svd ? 1 : r.more,   /* saved for later: View details its primary, Move back to my plan its only ⋯ ("primary View details; the only option in the dots Move back to my plan") */   /* complete: View, nothing else ("when it's a final complete state, just view") */ up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
+    // a row as the demo left it: booked, its slot in place of its deadline and View its action; done, View
+    const simRow = r => { const S0 = window._svc && window._svc.sim; if (!S0) return r; const S = k => { const s = S0(k); return s && /^(booked|done)$/.test(s.state) ? s : null; }, todo = x => !/^(done|claim|purchase|suggested|booked)$/.test(x.state || '');   /* only what is still to do moves, and only to booked or done: a past row stays as it was */
+      const mv = (x, s) => Object.assign({}, x, { state: s.state, at: s.o && s.o.at != null ? s.o.at : undefined, tag: undefined, openState: undefined, openAt: undefined, when: s.o && s.o.when || x.when });
+      if (r.group){ const g = r.group.map(x => { const s = todo(x) && S(x.svc); return s ? mv(x, s) : x; }); if (g.every((x, i) => x === r.group[i])) return r;
+        const n = Object.assign({}, r, { group: g }), f = g[r.focus != null ? r.focus : 0]; if (f && f.state === 'booked'){ n.act = 'View'; n.cta = 0; n.meta = r.meta.map(m => m[0] === 'clock' ? ['cal', String(f.when || '').replace(/ 2026/, '')] : m); } return n; }
+      const s = r.svc && todo(r) && S(r.svc); if (!s) return r; const n = mv(r, s);
+      if (s.state === 'booked'){ n.act = 'View'; n.cta = 0; n.meta = r.meta.map(m => m[0] === 'clock' ? ['cal', String(n.when || '').replace(/ 2026/, '')] : m); }
+      else { n.cta = 0; n.meta = r.meta.map(m => m[0] === 'clock' ? ['check', /consent/i.test(r.t) ? 'Signed' : 'Completed'] : m); }   /* done: its deadline gone, what was done in its place */ return n; };
+    const row = r0 => { const r = simRow(r0); let pg = prog(r); const svd = tab === 'claim' && SNZ.has(r), cta = svd || isCta(r), fin = finOf(r), act = fin ? 'View' : svd ? 'View details' : r.act, more = fin ? 0 : svd ? 1 : r.more,   /* saved for later: View details its primary, Move back to my plan its only ⋯ ("primary View details; the only option in the dots Move back to my plan") */   /* complete: View, nothing else ("when it's a final complete state, just view") */ up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
       /* Chip: the status's mark -- its ring, or a task's dot -- a round badge on the picture's top right, its words gone from sight ("put this overlapping the top right of the avatar; without the label; fully rounded"); a waiting item keeps its chip, the why */
       const mk = TLSTEP === 'c' && pg && !/tlBlk/.test(pg) ? /<div class="tlProg tlProgC([^"]*)"><span class="tlStepC">(<i class="tl(?:Ring|StepDot)"[^>]*><\/i>)<b>([^<]*)<\/b><\/span><\/div>/.exec(pg) : null;
       if (mk) pg = '';
@@ -29900,6 +29915,8 @@ hairline({
       navState();
     };
     document.addEventListener('everlab:docs', () => { if (document.body.classList.contains('tlOn')) render(); });
+    let DEMO = null; document.addEventListener('everlab:sim', () => { if (!document.body.classList.contains('tlOn')) return; render(); const t = DEMO; DEMO = null; if (!t) return;
+      const to = [...list.querySelectorAll('.tlRow')].find(x => ROWS[+x.dataset.r] && ROWS[+x.dataset.r].t === t); if (to){ to.classList.remove('flash'); void to.offsetWidth; to.classList.add('flash'); setTimeout(() => to.classList.remove('flash'), 1600); } });   /* the row the demo changed, flashed where it stands */
     { const o = document.getElementById('stTlOpen'); if (o) o.addEventListener('change', () => { OPEN = o.value; render(); }); }
     { const o = document.getElementById('stTlSteps'); if (o) o.addEventListener('change', () => { TLSTEP = o.value; TLHZ = TLSTEP === 'h'; render(); }); }   // the tweak redraws the list
     { const o = document.getElementById('stTlPri'); if (o) o.addEventListener('change', () => { TLPRI = o.value; render(); }); }   // Priority: the titles swap
@@ -30076,6 +30093,7 @@ hairline({
       const rl = e.target.closest('.tlRel li.rel');
       if (rl && d.then){ const x = d.then[+rl.dataset.rel]; lastTop = main.scrollTop; window._svc.openDesk(x.svc, 'locked', { from: 'tl', t: x.t, need: x.need }); return; }
       if (e.target.closest('.tlDetBox')) return;   // reading the steps is not a click through
+      { const cb = e.target.closest('.tlBtn'), a = cb && cb.textContent.trim(); if (a && /^(Book|Start|Review)$/.test(a) && window._svc.demo){ const w = own(d); if (w && w.svc && window._svc.demo(w.svc, w.openState || w.state, openO(d, w), a, !!r.closest('#phone2'))){ DEMO = d.t; return; } } }   /* its action, in a modal over the Timeline: Book the booking, Review the consent, Start the questionnaire */
       openRow(d);
     });
     list.addEventListener('click', e => {
