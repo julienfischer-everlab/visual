@@ -14155,3 +14155,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview Later section (desk/XS and phone): heading "Available to action" → "Plan ahead"; card "Take your health plan further" / "12 more actions to help you plan ahead. Get started when you’re ready." (aria-label to match).
 - Mobile 2 Columns: both titles 17 → 15px (line-height 1.2).
 - Noted, not changed: the Later card's default "img" visual (photo stack) sits flush against the text on the desk (row gap 0); the folder visual has its own gap.
+
+## Next step / Booked (mobile) → Tab
+- Third option "Tab" (`html.bkTab`; XS only): one folder card. Tabs "Coming up" (the booked list) and "Next step" (the hero) on top; the open tab in its card's own ground (`--fUp` rgba .04 / `--fNext` #161514, Earth #252522, light page: booked ink .04, hero stays #161514) with rounded inverted notches where it meets the card's top edge (both sides when it isn't the first). Both cards share one grid cell (inactive `visibility:hidden`) so the folder keeps the taller one's height. The tab names each card: the list's title and the hero's Next step label are hidden. `html.bkTN` = Next step open; tabs are built in bkList beside the list on XS and removed elsewhere.
+- Gotcha: `body.hdrV4 #dOver .dvTop > div{display:flex;flex-direction:column}` — the tab bar needs `display:none !important` / `flex !important` + `flex-direction:row`.
+- Pre-existing (not changed): on the light page the hero's h3 is dark ink on the dark photo card (stacked too).
