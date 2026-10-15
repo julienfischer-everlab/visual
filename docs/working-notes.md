@@ -14106,3 +14106,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks (Timeline pages) -> **Later** -> **Explainer** (`stTlLaterAl`, default On): Off hides the Later tab alert (`html.tlNoAlert`).
 - Tweak rule: a section card switched off (`.tkGroup.secOff`) hides its options; only the header stays. Status off already hides Format/Placement.
 - Status notch: top padding 6 to 2 (notch 56×11).
+- Status Bars / notch for a task (`p.task`): a single 8px dot in its state colour (orange yours, grey waiting, green done) instead of the run of bars; no case. Centred on the subtitle line (desk) or the title line (XS, right column); in the notch, a small notch round the dot.
