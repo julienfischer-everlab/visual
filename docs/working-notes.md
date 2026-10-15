@@ -14074,3 +14074,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Timeline status badge (Waiting on / Unlocks at) 28px tall in #dTl, the Overview plan and sheets.
 - Timeline group titles (month / Just completed) are 14px at every breakpoint; the narrow layout (XS and Auto ≤991) was 18.
 - Final modal value card: the top-left date notch is always shown, carrying the results' date. `RDATE` (path 2 Oct 2026, others 1 Oct 2026) is shared by the page's Results list and the path/DEXA/generic modals. Gut keeps 13 Nov and MRI & CT 3 Nov (their report dates). The generic modal (MRI Scan, Skin Check…) used to have none.
+- Tweaks -> Timeline -> **Status** is now a switch (`stTlSt` on/off). On shows the **Format** row (`stTlStVis`, Dot/Bars, a segmented control; excluded from the auto-switch, which had added a stray toggle). Off: `TLVIS='none'`, no dot and no bars; the lock badges (Waiting on / Unlocks at) stay.
+- Bars case: 56px wide, 8px padding (box 56×19); centring calcs updated. XS title keeps 68px clear on its right.
