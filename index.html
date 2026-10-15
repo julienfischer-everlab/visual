@@ -7689,7 +7689,7 @@
   .tlMeta.tlMetaC:empty{display:none;}
   .tlProg.done .tlStepDot::after{background:#42be65;} .tlProg.pas .tlStepDot::after{background:var(--tlPas, rgba(255,255,255,.72));} .tlTgl .tlStepDot{display:none;}
   .tlProg.done .tlRing{--rc:#42be65;} .tlProg.pas .tlRing{--rc:var(--tlPas, rgba(255,255,255,.72));} .tlBlk .tlRing{--rc:var(--tlSub);} .tlBlk .tlStepDot::after{background:var(--tlSub);}
-  .tlSeg i{width:16px;height:4px;border-radius:2px;background:var(--tlDotRing);}
+  .tlSeg i{width:16px;height:4px;border-radius:2px;background:var(--tlDotRing);} .tlBars{flex:none;display:flex;gap:2px;width:96px;} .tlBars i{flex:1 1 0;height:3px;border-radius:2px;background:rgba(255,255,255,.16);} .tlBars i.on, .tlBars.done i{background:#42be65;} .tlBars i.cur{background:#f78359;} .tlBars i.cur.pas{background:var(--tlPas, rgba(255,255,255,.72));} body.light .tlBars i{background:rgba(46,31,26,.12);} body.light .tlBars i.on, body.light .tlBars.done i{background:#42be65;} body.light .tlBars i.cur{background:#f78359;} body.light .tlBars i.cur.pas{background:var(--tlPas, rgba(46,31,26,.6));}   /* Status -> Bars: 96 wide, 3px segments, one per step, beside the title ("Bars: 96 width 3px height segment, place next to the title"); done green, the step in hand orange (yours) or grey (waiting), the rest to come */ .tlTl:has(> .tlBars){column-gap:12px;} body[data-bp="xs"] .tlTl:has(> .tlBars){flex-direction:column;align-items:flex-start;row-gap:8px;} body[data-bp="xs"] .tlTl > .tlBars{margin-bottom:4px;}   /* XS: no room beside a title, so always under it, the same on every item, 8 above and below */
   .tlSeg i.on{background:#f78359;} .tlSeg i.cur{background:linear-gradient(90deg,#f78359 50%,rgba(247,131,89,.3) 50%);}
   .tlProg .lb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .tlProg .lb b{font-weight:500;color:var(--tlTx);}
   .tlProg.done .tlSeg i{background:#42be65;} .tlProg.done .lb b{color:#42be65;}
@@ -10478,6 +10478,14 @@
           <select id="stTlPri" class="tkSegSel" aria-label="What a Timeline item's title is">
             <option value="svc" selected>Service name</option>
             <option value="act">Action name</option>
+          </select>
+        </div>
+        <!-- an item's status: the dot on its picture's corner, or a run of bars beside its title, one per step ("tweak the status visuals: Dot (current); Bars, 96 width, 3px height segments, next to the title") -->
+        <div class="tkRow">
+          <span class="lbl">Status</span>
+          <select id="stTlStVis" class="tkSegSel" aria-label="How a Timeline item's status is drawn">
+            <option value="dot" selected>Dot</option>
+            <option value="bars">Bars</option>
           </select>
         </div>
         <!-- the item's button on the phone: beside the status, or a line of its own at the foot ("on mobile, add the CTA position: right or bottom") -->
@@ -29799,9 +29807,11 @@ hairline({
       const dl = DOCL(p.svc), k = dl.findIndex(([t]) => !DOCDN().has(t)), bI = Math.max(0, p.steps.findIndex(st => /^book/i.test(st[0]))), at = Math.max(0, p.at);   // always just before Book, the first still to do in hand while Book is not done
       const steps = p.steps.slice(0, bI).concat(dl.map(([t]) => [t]), p.steps.slice(bI));
       return stepList0(Object.assign({}, p, { steps, at: at < bI ? at : at === bI && k >= 0 ? bI + k : p.at + dl.length })); };
+    let TLVIS = 'dot';   // the Status tweak: the dot on the picture, or bars beside the title
     let TLHZ = false, TLSTEP = 'c', TLPRI = 'svc';   // Chip: the Steps tweak retired with it kept   // TLPRI: the Priority tweak, the title the service's name or the status card's action   /* the Steps tweak: bars and the step in hand; or a chip alone */
     /* Chip: the step in hand's name and a ring of how far along, no Step x of n and nothing to open ("control over the steps: horizontal, vertical, or just a chip with the step name + circular progress") */
     const stepChip = (p, done) => { const n = p.steps.length || 1, at = p.at, st = done ? null : p.steps[Math.max(0, at)], k = done ? n : at < 0 ? 0 : Math.min(n, at + .5), w = !done && pas(st);   // the ring: the steps done, and half the one in hand (a last step under way is not a full ring)
+      if (TLVIS === 'bars') return '<div class="tlProg tlProgC"><span class="tlBars' + (done ? ' done' : '') + '" role="img" aria-label="' + esc(done ? 'Completed' : (st ? st[0] + ', ' : '') + 'step ' + (Math.max(0, at) + 1) + ' of ' + n) + '">' + Array.from({ length: n }, (_, i) => '<i class="' + (done || i < at ? 'on' : i === at ? 'cur' + (w ? ' pas' : '') : '') + '"></i>').join('') + '</span></div>';   /* Bars: one per step, done green, the one in hand in its state's colour, the rest to come; lifted out beside the title by row() */
       return '<div class="tlProg tlProgC' + (done ? ' done' : '') + (w ? ' pas' : '') + '"><span class="tlStepC">' + DOTS /* a dot for every status, service or task: no circular progress ("abandon the idea of circular, keep Dot for all status indicator on timeline items") */ + '<b>' + esc(done ? 'Completed' : st ? st[0] : '') + '</b></span></div>'; };
     const DOTS = '<i class="tlStepDot" aria-hidden="true"></i>';   // a task: a dot, no ring -- it has no run of steps around it, as a service has ("a single task: just a dot, not a circular indicator")
     const taskRow = r => { const w = own(r), q = w && w.svc ? PL(w.svc, w.state) : null; return !!(q && q.task); };
@@ -29884,10 +29894,11 @@ hairline({
       /* Chip: the status's mark -- its ring, or a task's dot -- a round badge on the picture's top right, its words gone from sight ("put this overlapping the top right of the avatar; without the label; fully rounded"); a waiting item keeps its chip, the why */
       const mk = TLSTEP === 'c' && pg && !/tlBlk/.test(pg) ? /<div class="tlProg tlProgC([^"]*)"><span class="tlStepC">(<i class="tl(?:Ring|StepDot)"[^>]*><\/i>)<b>([^<]*)<\/b><\/span><\/div>/.exec(pg) : null;
       if (mk) pg = '';
+      const bars = !mk && TLVIS === 'bars' && pg ? /<span class="tlBars[\s\S]*?<\/span>/.exec(pg) : null; if (bars) pg = '';   // Bars: beside the title, out of the chips
       const th = '<img class="tlTh" src="' + IMG[r.img] + '" alt="" width="80" height="80">';
       return '<article class="tlRow' + (up ? ' open' : '') + (r.lock || r.lockAge ? ' lock' : '') + (pg && TLSTEP !== 'c' ? '' : ' noProg') + '" data-r="' + (ROWS.push(r) - 1) + '" data-s="' + esc((r.t + ' ' + r.d + ' ' + r.meta.map(m => m[1]).join(' ') + (r.group ? ' ' + r.group.map(x => x.t || (PL(x.svc, x.state) || {}).t || '').join(' ') : '')).toLowerCase()) + '">' +
       (mk ? '<span class="tlThW">' + th + '<span class="tlThB' + mk[1] + '" role="img" aria-label="' + mk[3] + '">' + mk[2] + '</span></span>' : th) +
-      (sub => '<div class="tlTx"><div class="tlTl"><b>' + esc(TLPRI === 'act' ? sub : r.t) + '</b></div><p>' + esc(TLPRI === 'act' ? r.t : sub) + '</p></div>')(subOf(r)) +   /* Action name: the action first, the service or task under it */
+      (sub => '<div class="tlTx"><div class="tlTl"><b>' + esc(TLPRI === 'act' ? sub : r.t) + '</b>' + (bars ? bars[0] : '') + '</div><p>' + esc(TLPRI === 'act' ? r.t : sub) + '</p></div>')(subOf(r)) +   /* Action name: the action first, the service or task under it */
       (TLSTEP === 'c' ? '<div class="tlMeta tlMetaC">' + pg + r.meta.map(meta).join('') + '</div>' : '<div class="tlMeta">' + r.meta.map(meta).join('') + '</div>' + pg) +   /* Chip: one line of chips, the status first, then the item's properties as chips too ("all these properties the same style as the chip; inline, starting by the status") */
       (act ? '<div class="tlAct' + (more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button">' + esc(act) + '</button>' +
       (more ? '<button class="tlMore" type="button" aria-label="More options" aria-haspopup="menu">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
@@ -29920,7 +29931,8 @@ hairline({
       const to = [...list.querySelectorAll('.tlRow')].find(x => ROWS[+x.dataset.r] && ROWS[+x.dataset.r].t === t); if (to){ to.classList.remove('flash'); void to.offsetWidth; to.classList.add('flash'); setTimeout(() => to.classList.remove('flash'), 1600); } });   /* the row the demo changed, flashed where it stands */
     { const o = document.getElementById('stTlOpen'); if (o) o.addEventListener('change', () => { OPEN = o.value; render(); }); }
     { const o = document.getElementById('stTlSteps'); if (o) o.addEventListener('change', () => { TLSTEP = o.value; TLHZ = TLSTEP === 'h'; render(); }); }   // the tweak redraws the list
-    { const o = document.getElementById('stTlPri'); if (o) o.addEventListener('change', () => { TLPRI = o.value; render(); }); }   // Priority: the titles swap
+    { const o = document.getElementById('stTlPri'); if (o) o.addEventListener('change', () => { TLPRI = o.value; render(); }); }
+    { const o = document.getElementById('stTlStVis'); if (o){ const ap = () => { TLVIS = o.value === 'bars' ? 'bars' : 'dot'; }; ap(); o.addEventListener('change', () => { ap(); render(); }); } }   // Status: dot or bars, the list redrawn   // Priority: the titles swap
     { const o = document.getElementById('stTlCta'); if (o){ const on = () => document.body.classList.toggle('tlCtaB', o.value === 'bottom'); on(); o.addEventListener('change', on); } }   // CTA position: the phone's grid (CSS)
     { const o = document.getElementById('stTlStat'); if (o){ const on = () => document.body.classList.toggle('tlStatOn', o.value === 'on'); on(); o.addEventListener('change', on); } }   // Prominent status: the chip's colours (CSS)
     { const o = document.getElementById('stTlChipH'); if (o){ const on = () => document.documentElement.style.setProperty('--tlChipH', (+o.value || 36) + 'px'); on(); o.addEventListener('change', on); } }   // Chip height: every item chip's (CSS)
