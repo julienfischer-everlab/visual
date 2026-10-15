@@ -6536,6 +6536,8 @@
   .dvPlanGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   #dOver .dvTop:has(> .ovOff){grid-template-columns:1fr !important;} #dOver .dvTop.svcFirst:not(:has(> .ovOff)) > .ovBk{grid-column:2;}   /* one of the two switched off: the other the whole row; Services first: the booked list under Next step, at the right */
   .ovBk{order:1;grid-column:1;display:flex;flex-direction:column;border-radius:24px;background:rgba(255,255,255,.04);overflow:hidden;} body[data-bp="xs"] #dOver .ovBk{margin-top:12px;} .ovhero.ovOff ~ .ovBk{display:none;}
+  .ovBkH{display:none;} #dOver .ovBk.inCol{order:0;grid-column:auto;flex:1 1 auto;margin:12px 0 0;} #dOver .ovBk.inCol .ovBkH{display:flex;align-items:center;gap:8px;padding:16px 16px 6px;font-size:14px;color:#ececec;} .ovBkH b{font-weight:500;} .ovBkH span{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;box-sizing:border-box;border-radius:6px;background:rgba(255,255,255,.08);font-size:12px;} body.light #dOver .ovBk.inCol .ovBkH{color:#2e1f1a;} body.light .ovBkH span{background:rgba(46,31,26,.08);}
+  body.hdrV4 #dOver .dvTop .ovSvc:has(+ .ovBk.inCol){grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:auto;flex:none;}   /* the desk with the booked card: the services one row of four, the card under them, titled, filling the column */
   .ovBkR{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .16s ease;} .ovBkR + .ovBkR{box-shadow:inset 0 1px 0 rgba(255,255,255,.06);} .ovBkR:hover{background:rgba(255,255,255,.03);}
   .ovBkR img{flex:none;width:40px;height:40px;border-radius:10px;object-fit:cover;} .ovBkT{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px;} .ovBkT b{font-size:15px;font-weight:500;color:#ececec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .ovBkT span{font-size:13px;color:#8b8b86;} .ovBkR.soon .ovBkT span{color:#f78359;} .ovBkR > svg{flex:none;width:16px;height:16px;color:#8b8b86;}
   body.light .ovBk{background:rgba(46,31,26,.04);} body.light .ovBkR + .ovBkR{box-shadow:inset 0 1px 0 rgba(46,31,26,.08);} body.light .ovBkR:hover{background:rgba(46,31,26,.03);} body.light .ovBkT b{color:#2e1f1a;} body.light .ovBkT span{color:#7d6f66;} body.light .ovBkR.soon .ovBkT span{color:#d9653b;}   /* the booked ones under the Next step card, small: picture, name, when (today's in orange), a chevron to its page */
@@ -30010,12 +30012,16 @@ hairline({
       c.hidden = !PLSPLIT; c.innerHTML = [['task', 'Tasks'], ['apt', 'Appointments']].map(([k, l]) => '<button type="button" role="tab" data-pc="' + k + '" class="' + (PLTAB === k ? 'on' : '') + '" aria-selected="' + (PLTAB === k) + '">' + l + '</button>').join(''); });
     let BKON = false;   // Tweaks -> Next step -> Booked object
     const CHVR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>';
-    const bkList = () => document.querySelectorAll('#dOver .ovhero').forEach(hero => { let el = hero.parentElement.querySelector(':scope > .ovBk');
+    const bkList = () => document.querySelectorAll('#dOver .ovhero').forEach(hero => { const top = hero.parentElement; let el = document.querySelector('#dOver .ovBk');
       if (!BKON){ if (el) el.remove(); return; }
       const t0 = tab, R0 = ROWS, S0 = SEC; let rs = []; tab = 'up'; SEC = null; ROWS = []; try { rs = planRows().filter(isApt).map(simRow); } finally { tab = t0; ROWS = R0; SEC = S0; }
       if (!rs.length){ if (el) el.remove(); return; }
-      if (!el){ el = document.createElement('div'); el.className = 'ovBk'; el.setAttribute('aria-label', 'Your booked appointments'); hero.after(el); }
-      el._rows = rs; el.innerHTML = rs.map((x, i) => '<button type="button" class="ovBkR' + (x.soon ? ' soon' : '') + '" data-i="' + i + '"><img src="' + IMG[x.img] + '" alt=""><span class="ovBkT"><b>' + esc(x.t) + '</b><span>' + esc(((x.meta || []).find(m => m[0] === 'cal') || [])[1] || x.when || '') + '</span></span>' + CHVR + '</button>').join(''); });   // the booked ones, under the Next step card
+      if (!el){ el = document.createElement('div'); el.className = 'ovBk'; el.setAttribute('aria-label', 'Your booked appointments'); }
+      const col = [...top.children].find(c => c !== hero && c !== el && c.querySelector(':scope > .ovSvc')), svc = col && col.querySelector(':scope > .ovSvc'), inCol = !!svc && !svc.classList.contains('ovOff') && document.body.dataset.bp !== 'xs';
+      if (inCol){ if (svc.nextElementSibling !== el) svc.after(el); } else if (hero.nextElementSibling !== el) hero.after(el);   /* the desk: the right column, under the services in one row; else under the Next step card */
+      el.classList.toggle('inCol', inCol); el.classList.toggle('ovOff', hero.classList.contains('ovOff'));   /* part of the Next step section: off with it */
+      el._rows = rs; el.innerHTML = '<div class="ovBkH"><b>Booked</b><span>' + rs.length + '</span></div>' + rs.map((x, i) => '<button type="button" class="ovBkR' + (x.soon ? ' soon' : '') + '" data-i="' + i + '"><img src="' + IMG[x.img] + '" alt=""><span class="ovBkT"><b>' + esc(x.t) + '</b><span>' + esc(((x.meta || []).find(m => m[0] === 'cal') || [])[1] || x.when || '') + '</span></span>' + CHVR + '</button>').join(''); });   // the booked ones: under the Next step card, or on the desk a card of their own under the services ("desktop, booked object on: services one row of 4, the booked card with the 2 items")
+    window._bkPlace = bkList;   // put back where it belongs after the sections move or switch
     const fillPlan = () => { planChips(); bkList(); document.querySelectorAll('#phone2 .ovplan, #dOver .dvPlanList, #dOver .dvPlanGrid').forEach(el => {
       const grid = el.classList.contains('dvPlanGrid'), arr = [], t0 = tab, R0 = ROWS, S0 = SEC; let h = [];
       tab = 'up'; SEC = null; ROWS = arr; try { let rs = planRows(); if (PLSPLIT) rs = rs.filter(r => isApt(r) === (PLTAB === 'apt')); h = rs.slice(0, grid ? 6 : 4).map(row); } finally { tab = t0; ROWS = R0; SEC = S0; }   // its own rows, the Timeline's untouched; split, the chip's kind only
@@ -32719,7 +32725,7 @@ hairline({
       o.forEach(k => (U[k] || []).forEach(el => { if (el && !seen.has(el)){ seen.add(el); seq.push(el); } }));
       const first = [...m.children].find(el => seen.has(el)); if (first){ const mk = document.createComment('ord'); m.insertBefore(mk, first); seq.forEach(el => m.insertBefore(el, mk)); mk.remove(); }
       if (top){ const hero = top.querySelector(':scope > .ovhero'); top.classList.remove('svcFirst'); if (hero) top.prepend(hero); } };   /* on the desk the pair keeps its arrangement, Next step at the left, Services at the right: the row moves as one */
-    window._ovOrder = () => { applyD(); hideOff(); };
+    window._ovOrder = () => { applyD(); hideOff(); if (window._bkPlace) window._bkPlace(); };
     // the section cards in Tweaks: in the page's order, each its handle, its name and its switch; dragged by the title, the page follows
     const secG = () => [...document.querySelectorAll('.tkGroup[data-sec]')];
     const secHead = () => secG().forEach(g => { const h = g.querySelector(':scope > .tkSub'); if (!h) return; if (!h.classList.contains('tkSecH')){ const t = h.textContent.trim(); h.classList.add('tkSecH'); h.innerHTML = GR + '<span class="nm">' + t + '</span><button type="button" class="tgl" role="switch" aria-label="Show ' + t + '"><i></i></button>'; } const on = !offs().has(g.dataset.sec); h.querySelector('.tgl').setAttribute('aria-checked', String(on)); g.classList.toggle('secOff', !on); });
@@ -32733,8 +32739,8 @@ hairline({
     const draw = () => { const h = host(), o = offs(); list.innerHTML = order().map(k => { const els = h ? [...h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')')] : [], on = !o.has(k), vis = !on || (document.getElementById('dOver') ? dvVis(k) : els.some(el => el.offsetHeight > 0 || getComputedStyle(el).display !== 'none'));
       return '<li data-k="' + k + '" class="' + (on ? '' : 'sw0') + (vis ? '' : ' off') + '">' + GR + '<span class="nm">' + SEC[k][0] + '</span>' + (vis ? '' : '<span class="hid">hidden</span>') + '<button type="button" class="tgl" role="switch" aria-checked="' + on + '" aria-label="Show ' + SEC[k][0] + '"><i></i></button></li>'; }).join(''); };   /* each a switch: on, shown; off, gone ("put a toggle on off for all items") */
     if (inp && list){
-      inp.addEventListener('change', () => { apply(); applyD(); hideOff(); draw(); arrangeG(); secHead(); });
-      if (offI) offI.addEventListener('change', () => { hideOff(); draw(); secHead(); });
+      inp.addEventListener('change', () => { apply(); applyD(); hideOff(); draw(); arrangeG(); secHead(); if (window._bkPlace) window._bkPlace(); });
+      if (offI) offI.addEventListener('change', () => { hideOff(); draw(); secHead(); if (window._bkPlace) window._bkPlace(); });
       document.addEventListener('click', e => { const sw = e.target.closest('.tkSecH .tgl'); if (!sw || !offI) return; e.preventDefault(); const k = sw.closest('.tkGroup').dataset.sec, o = offs(); if (o.has(k)) o.delete(k); else o.add(k); offI.value = [...o].join(','); offI.dispatchEvent(new Event('change', { bubbles: true })); });   // a card's switch: its section on or off
       let gd = null;
       document.addEventListener('pointerdown', e => { const h = e.target.closest('.tkSecH'); if (!h || e.target.closest('.tgl')) return; const g = h.closest('.tkGroup'); e.preventDefault(); try { h.setPointerCapture(e.pointerId); } catch (x){} gd = { g, y0: e.clientY }; g.classList.add('tkDrag'); });
@@ -32756,7 +32762,7 @@ hairline({
       list.addEventListener('pointerup', end); list.addEventListener('pointercancel', end);
       apply(); applyD(); hideOff(); draw(); arrangeG(); secHead();
       document.addEventListener('click', e => { if (e.target.closest('.tkBtn, .tkTrig, [aria-label*="weak"]')) setTimeout(draw, 50); }, true);
-      { const vs = document.getElementById('versionSel'), bp = document.getElementById('stBp'); [vs, bp].forEach(x => x && x.addEventListener('change', () => setTimeout(() => { applyD(); hideOff(); }, 80))); }   // a page drawn anew keeps them off   /* hidden marks follow the other tweaks when the panel opens */
+      { const vs = document.getElementById('versionSel'), bp = document.getElementById('stBp'); [vs, bp].forEach(x => x && x.addEventListener('change', () => setTimeout(() => { applyD(); hideOff(); if (window._bkPlace) window._bkPlace(); }, 80))); }   // a page drawn anew keeps them off   /* hidden marks follow the other tweaks when the panel opens */
     }
   }
   { const t = document.getElementById('stDTabs'), bar = document.getElementById('dTabsV2'), mbar = document.getElementById('mTabsV2');
