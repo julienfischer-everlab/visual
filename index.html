@@ -121,6 +121,7 @@
      regular and smaller") */
   .topbar .tkGroup .tkRow{padding:5px 10px;}
   .topbar .tkGroup .tkSub{padding:7px 10px 3px;font-size:9.5px;font-weight:400;letter-spacing:.08em;color:#8b8b90;}
+  .topbar .tkGroup > .tkSub.tkSecH{display:flex;align-items:center;gap:8px;padding:8px 10px 4px;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;} .tkSecH .gr{flex:none;width:12px;height:12px;color:#8b8b86;} .tkSecH .nm{flex:1 1 auto;min-width:0;} .tkSecH .tgl{flex:none;cursor:pointer;} .tkGroup.secOff > .tkSecH .nm{opacity:.5;} .tkGroup.tkDrag{position:relative;z-index:3;box-shadow:0 10px 28px rgba(0,0,0,.45);} .tkGroup.tkDrag > .tkSecH{cursor:grabbing;}   /* a section card: its handle, its name, its switch; dragged, it lifts */
   .topbar .tkPanel > .tkSub:first-child{padding-top:4px;}
   .topbar .tkRow{
     display:flex;align-items:center;justify-content:space-between;gap:28px;
@@ -10783,16 +10784,6 @@
             <option value="new">New user</option>
           </select>
         </div>
-        <!-- the service cards under the greeting: tiles (glyph, label) or
-             large (title, a line of support, the visual at the right) -->
-        <div class="tkRow">
-          <span class="lbl">Services</span>
-          <select id="stSvc" aria-label="The Overview's service cards">
-            <option value="tiles" selected>Tiles</option>
-            <option value="cond">Condensed</option>
-            <option value="large">Large</option>
-          </select>
-        </div>
         <!-- Health profile as a list of to-dos, or three tiles side by side: an icon, a short title, the button ("a three-column variation, icon on top, title only, a CTA below") -->
         <div class="tkRow tkGone">   <!-- retired, 3 columns kept: its only option ("remove") -->
           <span class="lbl">Profile style</span>
@@ -10809,26 +10800,29 @@
           </select>
         </div>
         <!-- the phone's sections in the order they are dragged to ("add a drag section system so I can manage the order of sections in mobile") -->
-        <div class="tkRow tkOrdRow">
+        <div class="tkRow tkOrdRow tkGone">   <!-- retired: the section cards below are the order now, each its switch ("make these sections adjustable for the order, then you can remove this") -->
           <span class="lbl">Section order</span>
           <ol class="tkOrd" id="tkOvOrd" aria-label="Drag to reorder the Overview's sections"></ol>
           <input type="hidden" id="stOvOrder" value="svc,hub,hero,row2,ins,prof,plan">
           <input type="hidden" id="stOvOff" value="">   <!-- the sections switched off ("put a toggle on/off for all items") -->
         </div>
         </div>
-        <!-- the Next step card: alone, or with the booked appointments in a small list under it ("add tweak Booked object: on, a small list below this bloc; off") -->
-        <div class="tkGroup" data-pages="ov">
-        <div class="tkSub">Next step</div>
+        <!-- the Overview's sections, one card each: dragged by its title, the order on the page; its switch at the right, the section shown or not ("make these sections adjustable for the order") -->
+        <div class="tkGroup" data-pages="ov" data-sec="svc">
+        <div class="tkSub">Services</div>
+        <!-- the service cards under the greeting: tiles (glyph, label) or
+             large (title, a line of support, the visual at the right) -->
         <div class="tkRow">
-          <span class="lbl">Booked object</span>
-          <select id="stBkObj" aria-label="The booked appointments under the Next step card">
-            <option value="on">On</option>
-            <option value="off" selected>Off</option>
+          <span class="lbl">Cards</span>
+          <select id="stSvc" aria-label="The Overview's service cards">
+            <option value="tiles" selected>Tiles</option>
+            <option value="cond">Condensed</option>
+            <option value="large">Large</option>
           </select>
         </div>
         </div>
         <!-- the Overview's Action plan: one list, or split by kind under two chips, Tasks and Appointments ("tweak: split actions per group; off: current; on: new with tab chips") -->
-        <div class="tkGroup" data-pages="ov">
+        <div class="tkGroup" data-pages="ov" data-sec="plan">
         <div class="tkSub">Action plan</div>
         <div class="tkRow">
           <span class="lbl">Split actions per group</span>
@@ -10839,7 +10833,7 @@
         </div>
         </div>
         <!-- the services-on-hold card's own tweaks, grouped ("create a group Later card: Visual type, Hairline or Img stacked; Alignment, Centered or Left") -->
-        <div class="tkGroup" data-pages="ov">
+        <div class="tkGroup" data-pages="ov" data-sec="later">
         <div class="tkSub">Later card</div>
         <!-- its visual: the Hairline page's Folder drawn live, or the three stacked pictures ("tweak, visual hairline OR these imgs") -->
         <div class="tkRow">
@@ -10859,8 +10853,15 @@
         </div>
         </div>
         <!-- the hero card's own tweaks, grouped ("this into a group: Hero task") -->
-        <div class="tkGroup" data-pages="ov">
-        <div class="tkSub">Hero task</div>
+        <div class="tkGroup" data-pages="ov" data-sec="hero">
+        <div class="tkSub">Next step</div>   <!-- the hero card and the booked list under it, one section ("Hero task" and "Next step" merged) -->
+        <div class="tkRow">
+          <span class="lbl">Booked object</span>
+          <select id="stBkObj" aria-label="The booked appointments under the Next step card">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
+          </select>
+        </div>
         <!-- the block under the two small cards: the task list, or one
              insight card with a chart -->
         <div class="tkRow">
@@ -10889,15 +10890,14 @@
         </div>
         </div>
         <!-- the Insights section's own tweaks ("put this in a group Insights; the label, Amount") -->
-        <div class="tkGroup" data-pages="ov">
+        <div class="tkGroup" data-pages="ov" data-sec="ins">
         <div class="tkSub">Insights</div>
         <!-- the Insights section -- the heading, the Explore cards' rail, the
              dots -- shown or not ("inside full section on / off toggle") -->
-        <div class="tkRow">
+        <div class="tkRow tkGone">   <!-- retired: the card's own switch shows or hides the section -->
           <span class="lbl">Insights</span>
           <select id="stInsSec" aria-label="Show the Insights carousel">
             <option value="3" selected>On</option>
-            <option value="0">Off</option>
           </select>
         </div>
         </div>
@@ -31402,6 +31402,7 @@ hairline({
   }
   const stInsSecSel = document.getElementById('stInsSec');
   if (stInsSecSel) stInsSecSel.addEventListener('change', () => {
+    if (stInsSecSel.value !== '3') stInsSecSel.value = '3';   /* retired: always on, the section card's switch hides it */
     CARD_STATE.insN = +stInsSecSel.value;
     CARD_STATE.insSec = CARD_STATE.insN > 0;
     document.body.classList.toggle('noInsSec', !CARD_STATE.insSec);
@@ -32685,18 +32686,23 @@ hairline({
   // the phone Overview's section order: a list in Tweaks, dragged by pointer; each section the run of elements it is made of
   {
     const SEC = { svc: ['Services', '.ovSvc'], hub: ['Shortcuts', '.ovHub'], hero: ['Next step', '.ovhero'], row2: ['Coverage & age', '.ovrow2'],
-      ins: ['Insights', '.ovInsCard, .ovsecIns, .ovcar, .ovcdots'], prof: ['Health profile', '.ovsecProf, .ovProf'], plan: ['Action plan', '.ovsecPlan, .ovplan, .ovDef, .ovtl, .ovsecAvail'] };
+      ins: ['Insights', '.ovInsCard, .ovsecIns, .ovcar, .ovcdots'], prof: ['Health profile', '.ovsecProf, .ovProf'], plan: ['Action plan', '.ovsecPlan, .ovplan, .ovtl'], later: ['Later card', '.ovsecAvail, .ovDef'] };
     const host = () => { const c = document.querySelector('#phone2 .ovcar'); return c && c.parentElement; };
     const inp = document.getElementById('stOvOrder'), list = document.getElementById('tkOvOrd'), offI = document.getElementById('stOvOff');
-    const DSEC = { svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl, .dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
+    const DSEC = { svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
     const offs = () => new Set((offI && offI.value || '').split(',').filter(Boolean));
     // the order on the Overview itself ("changing the order must change also on the screen"): its sections moved as units in the list's order; on the desk Services and Next step share one row (.dvTop), placed where the first of the two stands, Next step left and Services right as ever
     const applyD = () => { const pl = document.querySelector('#dOver .dvSecPlan'); if (!pl) return; const m = pl.parentElement, top = m.querySelector(':scope > .dvTop'), inCol = !!(top && top.querySelector('.ovSvc')), q = sl => [...m.querySelectorAll(':scope > :is(' + sl + ')')];
-      const U = { svc: inCol ? [top] : q('.ovSvc'), hero: top ? [top] : [], ins: q('.dvSecIns, .dvRail, .railNav, .dvDots'), plan: q('.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl, .dvSecAvail, .dvDef') }, o = order(), seen = new Set(), seq = [];
+      const U = { svc: inCol ? [top] : q('.ovSvc'), hero: top ? [top] : [], ins: q('.dvSecIns, .dvRail, .railNav, .dvDots'), plan: q('.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl'), later: q('.dvSecAvail, .dvDef') }, o = order(), seen = new Set(), seq = [];
       o.forEach(k => (U[k] || []).forEach(el => { if (el && !seen.has(el)){ seen.add(el); seq.push(el); } }));
       const first = [...m.children].find(el => seen.has(el)); if (first){ const mk = document.createComment('ord'); m.insertBefore(mk, first); seq.forEach(el => m.insertBefore(el, mk)); mk.remove(); }
       if (top){ const hero = top.querySelector(':scope > .ovhero'); top.classList.remove('svcFirst'); if (hero) top.prepend(hero); } };   /* on the desk the pair keeps its arrangement, Next step at the left, Services at the right: the row moves as one */
-    window._ovOrder = () => { applyD(); hideOff(); };   // after the Services row moves between the row and the flow (a breakpoint, the header's version)
+    window._ovOrder = () => { applyD(); hideOff(); };
+    // the section cards in Tweaks: in the page's order, each its handle, its name and its switch; dragged by the title, the page follows
+    const secG = () => [...document.querySelectorAll('.tkGroup[data-sec]')];
+    const secHead = () => secG().forEach(g => { const h = g.querySelector(':scope > .tkSub'); if (!h) return; if (!h.classList.contains('tkSecH')){ const t = h.textContent.trim(); h.classList.add('tkSecH'); h.innerHTML = GR + '<span class="nm">' + t + '</span><button type="button" class="tgl" role="switch" aria-label="Show ' + t + '"><i></i></button>'; } const on = !offs().has(g.dataset.sec); h.querySelector('.tgl').setAttribute('aria-checked', String(on)); g.classList.toggle('secOff', !on); });
+    const arrangeG = () => { const gs = secG(); if (!gs.length) return; const mk = document.createComment('sec'); gs[0].before(mk); order().map(k => gs.find(g => g.dataset.sec === k)).filter(Boolean).forEach(g => mk.parentNode.insertBefore(g, mk)); mk.remove(); };
+   // after the Services row moves between the row and the flow (a breakpoint, the header's version)
     const dvVis = k => { const over = document.getElementById('dOver'); if (!over || !DSEC[k]) return false; return [...over.querySelectorAll(DSEC[k])].some(el => !el.classList.contains('ovOff') && getComputedStyle(el).display !== 'none'); };   // shown on the Overview itself
     const hideOff = () => { const o = offs(); document.querySelectorAll('.ovOff').forEach(el => el.classList.remove('ovOff')); o.forEach(k => { const h = host(); if (h && SEC[k]) h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => el.classList.add('ovOff')); if (DSEC[k]) document.querySelectorAll('#dOver :is(' + DSEC[k] + ')').forEach(el => el.classList.add('ovOff')); }); };   // a section switched off: gone, on the phone and on the Overview
     const GR = '<svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg>';
@@ -32705,8 +32711,17 @@ hairline({
     const draw = () => { const h = host(), o = offs(); list.innerHTML = order().map(k => { const els = h ? [...h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')')] : [], on = !o.has(k), vis = !on || (document.getElementById('dOver') ? dvVis(k) : els.some(el => el.offsetHeight > 0 || getComputedStyle(el).display !== 'none'));
       return '<li data-k="' + k + '" class="' + (on ? '' : 'sw0') + (vis ? '' : ' off') + '">' + GR + '<span class="nm">' + SEC[k][0] + '</span>' + (vis ? '' : '<span class="hid">hidden</span>') + '<button type="button" class="tgl" role="switch" aria-checked="' + on + '" aria-label="Show ' + SEC[k][0] + '"><i></i></button></li>'; }).join(''); };   /* each a switch: on, shown; off, gone ("put a toggle on off for all items") */
     if (inp && list){
-      inp.addEventListener('change', () => { apply(); applyD(); hideOff(); draw(); });
-      if (offI) offI.addEventListener('change', () => { hideOff(); draw(); });
+      inp.addEventListener('change', () => { apply(); applyD(); hideOff(); draw(); arrangeG(); secHead(); });
+      if (offI) offI.addEventListener('change', () => { hideOff(); draw(); secHead(); });
+      document.addEventListener('click', e => { const sw = e.target.closest('.tkSecH .tgl'); if (!sw || !offI) return; e.preventDefault(); const k = sw.closest('.tkGroup').dataset.sec, o = offs(); if (o.has(k)) o.delete(k); else o.add(k); offI.value = [...o].join(','); offI.dispatchEvent(new Event('change', { bubbles: true })); });   // a card's switch: its section on or off
+      let gd = null;
+      document.addEventListener('pointerdown', e => { const h = e.target.closest('.tkSecH'); if (!h || e.target.closest('.tgl')) return; const g = h.closest('.tkGroup'); e.preventDefault(); try { h.setPointerCapture(e.pointerId); } catch (x){} gd = { g, y0: e.clientY }; g.classList.add('tkDrag'); });
+      document.addEventListener('pointermove', e => { if (!gd) return; const g = gd.g, nx = g.nextElementSibling, pv = g.previousElementSibling; let dy = e.clientY - gd.y0;
+        const mv = f => { g.style.transform = ''; const t0 = g.getBoundingClientRect().top; f(); gd.y0 += g.getBoundingClientRect().top - t0; dy = e.clientY - gd.y0; };
+        if (nx && nx.dataset && nx.dataset.sec && dy > nx.offsetHeight / 2) mv(() => nx.after(g)); else if (pv && pv.dataset && pv.dataset.sec && dy < -pv.offsetHeight / 2) mv(() => pv.before(g));
+        g.style.transform = 'translateY(' + dy + 'px)'; });
+      const gEnd = () => { if (!gd) return; gd.g.classList.remove('tkDrag'); gd.g.style.transform = ''; gd = null; const ks = secG().map(g => g.dataset.sec), v = ks.concat(order().filter(k => !ks.includes(k))).join(','); if (v !== inp.value){ inp.value = v; inp.dispatchEvent(new Event('change', { bubbles: true })); } };
+      document.addEventListener('pointerup', gEnd); document.addEventListener('pointercancel', gEnd);   // a card dropped: the order it now stands in, the page with it
       list.addEventListener('click', e => { const sw = e.target.closest('.tgl'); if (!sw || !offI) return; const k = sw.closest('li').dataset.k, o = offs(); if (o.has(k)) o.delete(k); else o.add(k); offI.value = [...o].join(','); offI.dispatchEvent(new Event('change', { bubbles: true })); });
       let drag = null;
       list.addEventListener('pointerdown', e => { const li = e.target.closest('li'); if (!li || e.target.closest('.tgl')) return; e.preventDefault(); li.setPointerCapture(e.pointerId); drag = { li, y0: e.clientY, h: li.offsetHeight + 4 }; li.classList.add('drag'); });
@@ -32717,7 +32732,7 @@ hairline({
       const end = () => { if (!drag) return; drag.li.classList.remove('drag'); drag.li.style.transform = ''; drag = null;
         const v = [...list.children].map(x => x.dataset.k).join(','); if (v !== inp.value){ inp.value = v; apply(); applyD(); hideOff(); } };
       list.addEventListener('pointerup', end); list.addEventListener('pointercancel', end);
-      apply(); applyD(); hideOff(); draw();
+      apply(); applyD(); hideOff(); draw(); arrangeG(); secHead();
       document.addEventListener('click', e => { if (e.target.closest('.tkBtn, .tkTrig, [aria-label*="weak"]')) setTimeout(draw, 50); }, true);
       { const vs = document.getElementById('versionSel'), bp = document.getElementById('stBp'); [vs, bp].forEach(x => x && x.addEventListener('change', () => setTimeout(() => { applyD(); hideOff(); }, 80))); }   // a page drawn anew keeps them off   /* hidden marks follow the other tweaks when the panel opens */
     }
