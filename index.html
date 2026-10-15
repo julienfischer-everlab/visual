@@ -6533,6 +6533,7 @@
   .dvDots i.on{width:24px;background:#ececec;}
   /* action plan */
   .dvPlanGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .dvPlanChips{margin:0 0 20px;} .dvPlanChips[hidden]{display:none !important;} .dvPlanEmpty{padding:24px 0;font-size:14px;color:var(--tlSub, rgba(255,255,255,.56));}   /* the Action plan split: two chips under its title, Tasks and Appointments, the Report/Results chips' style ("create a chips tab below: Tasks, Appointments") */
   .dvProt, .ovact{cursor:pointer;}
   .dvProt{transition:box-shadow .16s ease,background .16s ease;} .dvProt:hover{background:rgba(255,255,255,.025);}
   .dvProt{
@@ -10809,6 +10810,17 @@
           <span class="lbl">Section order</span>
           <ol class="tkOrd" id="tkOvOrd" aria-label="Drag to reorder the Overview's sections"></ol>
           <input type="hidden" id="stOvOrder" value="svc,hub,hero,row2,ins,prof,plan">
+        </div>
+        </div>
+        <!-- the Overview's Action plan: one list, or split by kind under two chips, Tasks and Appointments ("tweak: split actions per group; off: current; on: new with tab chips") -->
+        <div class="tkGroup" data-pages="ov">
+        <div class="tkSub">Action plan</div>
+        <div class="tkRow">
+          <span class="lbl">Split actions per group</span>
+          <select id="stPlanSplit" aria-label="Split the Action plan into Tasks and Appointments">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
+          </select>
         </div>
         </div>
         <!-- the services-on-hold card's own tweaks, grouped ("create a group Later card: Visual type, Hairline or Img stacked; Alignment, Centered or Left") -->
@@ -29952,12 +29964,20 @@ hairline({
     const ringify = (root, rows) => root.querySelectorAll('.tlTgl .tlSeg').forEach(sg => { const is = [...sg.children], n = is.length || 1, k = is.filter(i => i.classList.contains('on') || i.classList.contains('cur')).length, rw = sg.closest('.tlRow'), r = rw && rows[+rw.dataset.r]; sg.insertAdjacentHTML('beforebegin', DOTS);   /* the dot, as every status now */ });   // XS: a ring of the same count in place of the increments; a task, its dot
     /* the Overview's Plan: the Timeline's own items, drawn by its row() -- the same tweaks (Steps, Priority, Prominent status, CTA position) -- in a list on the phone and XS, a grid of cards on the desk ("the Overview action plan the exact same items as the Timeline"); what is to do now, in the Timeline's order */
     const planRows = () => { const out = []; layout(tabRows(TL.up)).forEach(sc => ordered(sc.rows).forEach(r => out.push(r))); return out.filter(r => !r.lock && !r.lockAge && r.state !== 'suggested' && r.state !== 'locked' && !finOf(r) && !unseen(r)); };
-    const fillPlan = () => document.querySelectorAll('#phone2 .ovplan, #dOver .dvPlanList, #dOver .dvPlanGrid').forEach(el => {
+    // the Overview plan split by kind (Tweaks -> Action plan -> Split actions per group): Tasks, everything still to do but a booked appointment; Appointments, the booked ones to come
+    let PLSPLIT = false, PLTAB = 'task';
+    const isApt = r => { const w = own(simRow(r)); return !!w && w.state === 'booked'; };
+    const planChips = () => document.querySelectorAll('#dOver .dvSecPlan, #phone2 .ovsecPlan').forEach(hd => { let c = hd.nextElementSibling;
+      if (!c || !c.classList.contains('dvPlanChips')){ c = document.createElement('div'); c.className = 'dvPlanChips svResTabs'; c.setAttribute('role', 'tablist'); c.setAttribute('aria-label', 'Action plan'); hd.after(c); }
+      c.hidden = !PLSPLIT; c.innerHTML = [['task', 'Tasks'], ['apt', 'Appointments']].map(([k, l]) => '<button type="button" role="tab" data-pc="' + k + '" class="' + (PLTAB === k ? 'on' : '') + '" aria-selected="' + (PLTAB === k) + '">' + l + '</button>').join(''); });
+    const fillPlan = () => { planChips(); document.querySelectorAll('#phone2 .ovplan, #dOver .dvPlanList, #dOver .dvPlanGrid').forEach(el => {
       const grid = el.classList.contains('dvPlanGrid'), arr = [], t0 = tab, R0 = ROWS, S0 = SEC; let h = [];
-      tab = 'up'; SEC = null; ROWS = arr; try { h = planRows().slice(0, grid ? 6 : 4).map(row); } finally { tab = t0; ROWS = R0; SEC = S0; }   // its own rows, the Timeline's untouched
+      tab = 'up'; SEC = null; ROWS = arr; try { let rs = planRows(); if (PLSPLIT) rs = rs.filter(r => isApt(r) === (PLTAB === 'apt')); h = rs.slice(0, grid ? 6 : 4).map(row); } finally { tab = t0; ROWS = R0; SEC = S0; }   // its own rows, the Timeline's untouched; split, the chip's kind only
       el._rows = arr; el.classList.add('tlEmb', grid ? 'tlEmbG' : 'tlEmbL');
-      el.innerHTML = grid ? h.map(x => '<div class="tlEmbC">' + x + '</div>').join('') : '<div class="tlItems">' + h.join('') + '</div>';
-      ringify(el, arr); el.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp')); el.querySelectorAll('.tlProg').forEach(pr => { const bd = pr.querySelector('.tlCurB'), sg = pr.querySelector('.tlTgl .tlSeg'); if (bd && sg) bd.insertBefore(sg.cloneNode(true), bd.firstChild); }); });
+      el.innerHTML = PLSPLIT && !h.length ? '<div class="dvPlanEmpty">' + (PLTAB === 'apt' ? 'No upcoming appointments.' : 'Nothing to do right now.') + '</div>' : grid ? h.map(x => '<div class="tlEmbC">' + x + '</div>').join('') : '<div class="tlItems">' + h.join('') + '</div>';
+      ringify(el, arr); el.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp')); el.querySelectorAll('.tlProg').forEach(pr => { const bd = pr.querySelector('.tlCurB'), sg = pr.querySelector('.tlTgl .tlSeg'); if (bd && sg) bd.insertBefore(sg.cloneNode(true), bd.firstChild); }); }); };
+    document.addEventListener('click', e => { const b = e.target.closest('.dvPlanChips [data-pc]'); if (!b) return; PLTAB = b.dataset.pc; fillPlan(); });   // a chip: its kind
+    { const o = document.getElementById('stPlanSplit'); if (o){ const ap = () => { PLSPLIT = o.value === 'on'; }; ap(); o.addEventListener('change', () => { ap(); fillPlan(); }); } }   // the tweak: split or not
     const ovOpen = (d, host) => { const w = own(d); if (!w || !w.svc || !window._svc) return; const o = Object.assign(openO(d, w), { from: null });   // back to the Overview, not the Timeline
       (host.closest('#phone2') ? window._svc.openMob : window._svc.openDesk)(w.svc, w.state, o); };
     document.addEventListener('click', e => { const host = e.target.closest('.tlEmb'); if (!host || !host._rows) return; const rw = e.target.closest('.tlRow'); if (!rw) return; const d = host._rows[+rw.dataset.r]; if (!d) return;
