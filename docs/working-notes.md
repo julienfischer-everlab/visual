@@ -14094,3 +14094,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Later card Hairline: padding 12 top/left/bottom, 24 right (desk card 120 tall), gap 32.
 - "Do it later" is not offered for a completed item: the service page ⋯ menu hides it when state is done or the status card is final (`.svPend.fin`: Completed/Ready), and the Timeline menu hides it when `finOf(simRow(d))`. Note: the XS service page ⋯ (`.svXsMore`) has no menu wired (pre-existing).
 - Task/service object pictures: radius −2 (desk 16→14, narrow 14→12, Overview grid 14→12, skeletons alike).
+- Later card CTA "See actions" is now a simple link (14px regular, #ececec, 1px underline at 40%, full on hover; light: ink) in every layout. Where it stacks under the text (XS, narrow container) the gap drops 20 to 12.
