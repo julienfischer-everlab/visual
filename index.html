@@ -7266,7 +7266,7 @@
   .svCTabs.svCLine .svCTab{font-size:16px !important;padding:16px 0;}   /* ("tab font size 16px, padding top bottom 16px") */
   .svCTabs.svCLine{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y;} .svCTabs.svCLine:is(.svCFill, .svCFillA){gap:8px;}   /* never touching: 8 between tabs that fill the width ("general rule add 8px gap between tabs") */ .svCTabs.svCLine.svCFill .svCTab{flex:1 1 0;text-align:center;} .svCTabs.svCLine.svCFillA .svCTab{flex:1 1 auto;text-align:center;}   /* XS and S: tabs that leave room fill the width, evenly where they can; more than fit hug their labels and swipe ("fill container if they don't fill the width, otherwise hug; swipeable if overflow") */
   .svResMore.svAlert{display:block;margin-top:16px;padding:20px 24px;border-radius:16px;background:#13223f;box-shadow:none;color:rgba(255,255,255,.88);} .svAlert .svAlH{display:flex;align-items:center;gap:10px;} .svAlert .svAlH svg{width:20px;height:20px;flex:none;margin:0;opacity:1;color:#c5d0f3;} .svAlert .svAlH b{font-size:16px;font-weight:500;line-height:22px;color:#fff;} .svAlert p{margin:8px 0 0;font-size:14px;line-height:20px;color:rgba(255,255,255,.86);}
-  body.light .svResMore.svAlert{background:#e3e9f8;box-shadow:none;color:#22304f;} body.light .svAlert .svAlH svg{color:#3a4f86;} body.light .svAlert .svAlH b{color:#13223f;} body.light .svAlert p{color:#2a3758;}   /* the info alert: navy, an icon and a title, its line under */
+  body.light .svResMore.svAlert{background:#e3e9f8;box-shadow:none;color:#22304f;} .tlAlert{margin:24px 0 12px;padding:20px 24px;border-radius:16px;background:#13223f;color:rgba(255,255,255,.88);} body.light .tlAlert{background:#e3e9f8;color:#22304f;} body[data-bp="xs"] .tlAlert{margin:16px 0 8px;padding:16px 20px;} .tlAlert.gone{display:none;} .tlAlert .svAlH{align-items:flex-start;} .tlAlert .svAlH svg{margin-top:1px;} .tlAlert .svAlH b{text-wrap:balance;}   /* a title on two lines: balanced, the icon on its first */   /* the Later tab's alert: what these actions are, and that nothing is asked yet ("add an alert explaining what are these later actions; reassure user"), the info alert's own theme */ body.light .svAlert .svAlH svg{color:#3a4f86;} body.light .svAlert .svAlH b{color:#13223f;} body.light .svAlert p{color:#2a3758;}   /* the info alert: navy, an icon and a title, its line under */
   body:not([data-bp="xs"]) #dSvc .svMain .svPend:not(.ctaWide):not(.stack) > .svPendTx{flex:1 1 0;min-width:0;}   /* a button at the side keeps its place: the text gives way beside it and wraps, so a long line doesn't push it down ("if > 160 go next row, otherwise on the right side") */
   :is(#svcMob, .svcMob, .svXsBody) .svRefIn .svDocIc, body[data-bp="xs"] #dSvc .svRefIn .svDocIc{display:none;} @media (max-width:599px){ body:not([data-bp]) #dSvc .svRefIn .svDocIc{display:none;} }   /* XS: the referral item without its picture, more room for its line ("remove visual left on XS for referral card") */
   .svObInRes{margin-bottom:24px;}   /* the biomarkers card, then 24 to the results list ("24px gap between 2 sections") */
@@ -29902,6 +29902,7 @@ hairline({
     });
     const filter = () => {
       const v = (q && q.value || '').trim().toLowerCase(); let any = false;
+      { const al = main.querySelector('.tlAlert'); if (al) al.classList.toggle('gone', !!v); }   // a search: the results only
       list.querySelectorAll('.tlSec').forEach(sc => {
         let n = 0;
         sc.querySelectorAll('.tlRow').forEach(r => { const hit = !v || r.dataset.s.indexOf(v) >= 0; r.classList.toggle('gone', !hit); if (hit) n++; });
@@ -29942,6 +29943,10 @@ hairline({
     document.addEventListener('click', e => { if (!e.target.closest('.tlSee')) return; const sv = document.getElementById('versionSel'); if (sv){ sv.value = 'tl'; sv.dispatchEvent(new Event('change')); } });   // Plan's See timeline
     const render = () => {
       ROWS = []; list.innerHTML = layout(tabRows(TL[tab])).map(sec).join('');
+      { let al = main.querySelector('.tlAlert'); if (!al){ al = document.createElement('div'); al.className = 'tlAlert svAlert'; al.setAttribute('role', 'note');
+          al.innerHTML = '<div class="svAlH"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 6.4v4.4"/><circle cx="10" cy="13.6" r=".6" fill="currentColor" stroke="none"/></svg><b>Personalised for you, ready when you are</b></div><p>These actions are tailored to your current health needs and saved here for later. They\u2019re not part of your active plan yet\u2014add them to your action plan when you\u2019re ready to get started.</p>';
+          list.parentNode.insertBefore(al, list); }
+        al.hidden = tab !== 'claim'; }   // Later: what these are, above them, out of the rail's way
       ringify(list, ROWS);   // XS: a ring of the same count in place of the increments ("use circular progress instead of increments")
       // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")
       list.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp'));
