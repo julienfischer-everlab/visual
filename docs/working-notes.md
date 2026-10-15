@@ -14108,3 +14108,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Status notch: top padding 6 to 2 (notch 56×11).
 - Status Bars / notch for a task (`p.task`): a single 8px dot in its state colour (orange yours, grey waiting, green done) instead of the run of bars; no case. Centred on the subtitle line (desk) or the title line (XS, right column); in the notch, a small notch round the dot.
 - XS services strip: `scroll-padding:0 16px`. Snap no longer pulls the first tile 16px past the container edge (the strip is edge to edge with 16 padding). When Services follows Next step (section order), 16 above it.
+- Overview Insights section title → "Recent insights" (desk/XS `.dvSecIns`, phone `.ovsecIns`).
