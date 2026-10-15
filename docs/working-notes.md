@@ -14047,3 +14047,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Later card with the Hairline (desk and Left): the card's left, top and bottom padding 0, right 32 ("when visual hairline, left top bottom padding 0"): the 160 square flush to the card, the drawing 16 inside it, the card 160 tall; the outline removed ("remove outline visual"). Img stacked keeps its 32 all round; Centered on the phone unchanged.
 - Later card with the Hairline: 12 above and below ("top bottom +12px padding"): padding 12px 32px 12px 0, the card 184 tall; still flush left.
 - Later card: See actions 20 under the words at XS ("cta margin top -4px").
+
+## Panel corners, panel scroll, month heads, narrow Later card
+- Content panel (#dOver, #dTl, #dSvc, #dApt, #dMain): radius 12 12 0 0 ("top left rounded corner for body content 12px", "no radius at the bottom left"; was 24 24 0 24). Top-right taken to 12 with the top-left so the two top corners match.
+- "unnecessary spacing at the bottom of overview": the app panel (`.dash`, overflow-y auto for the older versions) could scroll in the Desktop version once anything sat below it, sliding the whole page up past its end. Every Desktop-version page scrolls itself (Overview #dOver, Insights/Plan #dMain, Timeline #dTl, service #dSvc), so `body.m9 .dash{overflow-y:hidden}`. Not reproduced from a fresh load; fixed at the cause.
+- Timeline month headings 14px (desk, S; XS keeps its 18) ("font size 14px"); the plain month dot filled, the ring's tone solid over the page ("circle filled").
+- Later card in a narrow card (the desk's sidebar beside a small window, ~640 Auto): the words wrapped a word per line beside the button. `.ovDef` is a size container; under 560 the button goes under the words (20 below), as XS.
