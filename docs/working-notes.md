@@ -14161,3 +14161,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Gotcha: `body.hdrV4 #dOver .dvTop > div{display:flex;flex-direction:column}` — the tab bar needs `display:none !important` / `flex !important` + `flex-direction:row`.
 - Pre-existing (not changed): on the light page the hero's h3 is dark ink on the dark photo card (stacked too).
 - Tab: an orange dot (6px, the soon orange) after "Coming up" while today's appointment is in the list (aria-label says so); the folder is as tall as the open card (inactive card display:none). Hero image Top right inside the folder: 76×76 (−32), radius 24; h3 keeps 96 clear. Stacked/desk thumb unchanged (108 circle).
+
+## XS cards 20 inside; Plan ahead Hairline orange
+- Overview XS: every card 20px padding on all sides — service chips (16 → 20, now 72 tall), Next step hero (22/20/20), Explore cards (18), Plan ahead row in every variant (centred img 44 top / 48 bottom, Hairline 12-24-12-12 → 20, `!important` past its own variants), 2 Columns cards (18 → 20, carousel track/slides follow). Booked card already 20.
+- Plan ahead, Left + Hairline: 16 between the square and the words (32 − 16).
+- Visual type gains "Hairline orange" (`folderO`): the folder figure on a solid #f78359 square, no outline, white ink (`--hairline-plate/hi/edge/mid/lo`), the active sheet the whitest; on its square the drawing is fitted to 64 (16 in) instead of 88 so its animation stays on the orange.
