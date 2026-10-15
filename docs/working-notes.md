@@ -14105,3 +14105,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Desk month/group title: padding +8 top and bottom (10/8 to 18/16, height 50); the dot stays centred and the rail start moves 32 to 40 to keep meeting the first dot.
 - Tweaks (Timeline pages) -> **Later** -> **Explainer** (`stTlLaterAl`, default On): Off hides the Later tab alert (`html.tlNoAlert`).
 - Tweak rule: a section card switched off (`.tkGroup.secOff`) hides its options; only the header stays. Status off already hides Format/Placement.
+- Status notch: top padding 6 to 2 (notch 56×11).
