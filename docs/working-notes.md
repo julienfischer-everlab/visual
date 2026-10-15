@@ -14126,3 +14126,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Hero image Top right: availability bottom left, Book bottom right.
 - XS: the Upcoming appointments card sits above the Next step card (12 below it); hidden with the hero via `.ovBk.ovOff`.
 - XS service chips: visual 32×32 + title on one line, 12 gap, 16 padding (64 tall).
+- Upcoming appointments card: padding 20 all round (top was 22) — "left padding -> top padding".
