@@ -14092,3 +14092,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Demo appointments: an MRI Scan booked today (August, `soon:1`, "Today, 10:30 - 11:10 am", CTA "Get directions", Quantum Therapy Sydney) and the Onboarding Consultation (15 Sep 2026, 11:00 - 11:30 am, View; row `sub` overrides the subtitle). The September MRI Scan (active) row is removed; Nutrition review is now to book (Book) so it moves to Tasks. `subOf` honours `r.sub`.
 - Later card Hairline visual: outlined frame (1px white 8%, light ink 10%, radius 16) in every layout.
 - Later card Hairline: padding 12 top/left/bottom, 24 right (desk card 120 tall), gap 32.
+- "Do it later" is not offered for a completed item: the service page ⋯ menu hides it when state is done or the status card is final (`.svPend.fin`: Completed/Ready), and the Timeline menu hides it when `finOf(simRow(d))`. Note: the XS service page ⋯ (`.svXsMore`) has no menu wired (pre-existing).
