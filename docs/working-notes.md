@@ -14166,3 +14166,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview XS: every card 20px padding on all sides — service chips (16 → 20, now 72 tall), Next step hero (22/20/20), Explore cards (18), Plan ahead row in every variant (centred img 44 top / 48 bottom, Hairline 12-24-12-12 → 20, `!important` past its own variants), 2 Columns cards (18 → 20, carousel track/slides follow). Booked card already 20.
 - Plan ahead, Left + Hairline: 16 between the square and the words (32 − 16).
 - Visual type gains "Hairline orange" (`folderO`): the folder figure on a solid #f78359 square, no outline, white ink (`--hairline-plate/hi/edge/mid/lo`), the active sheet the whitest; on its square the drawing is fitted to 64 (16 in) instead of 88 so its animation stays on the orange.
+
+## Task page fade; Hairline orange = active file; Tab Next step #252522
+- Task pages (phone + XS service page): the body has no ground (no bg/shadow, past svFlat), the hero has no grey of its own and fades out whole with the scroll (`opacity: var(--hk)`); heroFx spreads a task page's fade over what actually scrolls (min 60, max the hero − 40) so a short page still ends on the page's own ground. XS hero picture masked to melt (as the phone), no ::after.
+- Plan ahead: Hairline has no outline anywhere; XS Left gap 8. "Hairline orange" no longer paints the square: only the active file (the `g` holding `path.hi`) is solid orange #f78359 with no stroke, its back #c95a33; drawing fit back to 88.
+- Tab variation: Next step card #252522 always (its tab and notches with it), whatever Hero background, on the light page too.
