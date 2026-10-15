@@ -14112,3 +14112,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Desk with Booked object on: the booked list becomes a titled card ("Booked" + count, `.ovBk.inCol`) in the right column under the services, which drop to one row of four; the card fills the column to the Next step card's height. If Services is off, or on XS, the list sits under the Next step card; it hides with Next step. Re-placed after section moves and switches (`window._bkPlace`).
 - Overview layout: the body panel (`#dOver`) fills the room (no max-width). Its content is a centred 1080 container: side padding `max(--ctPadX, (100% - --sideW - 1080px) / 2)`, because the padding % is the whole dash's. Checked at 1100/1440/1920, the retracted side bar and forced L/M/S.
 - Persona tweak retired: Member (Julien) only; a saved "New user" falls back to Member.
+
+## Booked card restyle + item count (Overview, Booked object on)
+- `.ovBk` takes the Next step card's padding (22/20/20, radius 20); title "Upcoming appointments" + count, always shown.
+- Each booking is a ghost card (no dividers): large day + small month in place of the visual, name + place (soon: "Today ·"), the hour (orange when soon) then the CTA at the right — MRI "Get directions", Onboarding "Prepare". Rows carry `bk: [day, month, hour, action]`; other bookings read theirs off the cal slot (action "View"). XS: the hour moves to the sub line.
+- Row and CTA open the item's page (`ovOpen`); rows are keyboard buttons (Enter/Space).
+- New tweak under Booked object, shown only while it's on: Booked items — 2 objects (default) / 1 object (`stBkN`, segmented).
+- Desk inCol: the services row of 4 chips are 112 tall so the column sits beside the hero.
