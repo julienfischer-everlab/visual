@@ -6533,6 +6533,10 @@
   .dvDots i.on{width:24px;background:#ececec;}
   /* action plan */
   .dvPlanGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .ovBk{order:1;grid-column:1;display:flex;flex-direction:column;border-radius:24px;background:rgba(255,255,255,.04);overflow:hidden;} body[data-bp="xs"] #dOver .ovBk{margin-top:12px;} .ovhero.ovOff ~ .ovBk{display:none;}
+  .ovBkR{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .16s ease;} .ovBkR + .ovBkR{box-shadow:inset 0 1px 0 rgba(255,255,255,.06);} .ovBkR:hover{background:rgba(255,255,255,.03);}
+  .ovBkR img{flex:none;width:40px;height:40px;border-radius:10px;object-fit:cover;} .ovBkT{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px;} .ovBkT b{font-size:15px;font-weight:500;color:#ececec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .ovBkT span{font-size:13px;color:#8b8b86;} .ovBkR.soon .ovBkT span{color:#f78359;} .ovBkR > svg{flex:none;width:16px;height:16px;color:#8b8b86;}
+  body.light .ovBk{background:rgba(46,31,26,.04);} body.light .ovBkR + .ovBkR{box-shadow:inset 0 1px 0 rgba(46,31,26,.08);} body.light .ovBkR:hover{background:rgba(46,31,26,.03);} body.light .ovBkT b{color:#2e1f1a;} body.light .ovBkT span{color:#7d6f66;} body.light .ovBkR.soon .ovBkT span{color:#d9653b;}   /* the booked ones under the Next step card, small: picture, name, when (today's in orange), a chevron to its page */
   .dvPlanChips{margin:0 0 20px;} .dvPlanChips[hidden]{display:none !important;} .dvPlanEmpty{padding:24px 0;font-size:14px;color:var(--tlSub, rgba(255,255,255,.56));}   /* the Action plan split: two chips under its title, Tasks and Appointments, the Report/Results chips' style ("create a chips tab below: Tasks, Appointments") */
   .dvProt, .ovact{cursor:pointer;}
   .dvProt{transition:box-shadow .16s ease,background .16s ease;} .dvProt:hover{background:rgba(255,255,255,.025);}
@@ -10809,6 +10813,17 @@
           <ol class="tkOrd" id="tkOvOrd" aria-label="Drag to reorder the Overview's sections"></ol>
           <input type="hidden" id="stOvOrder" value="svc,hub,hero,row2,ins,prof,plan">
           <input type="hidden" id="stOvOff" value="">   <!-- the sections switched off ("put a toggle on/off for all items") -->
+        </div>
+        </div>
+        <!-- the Next step card: alone, or with the booked appointments in a small list under it ("add tweak Booked object: on, a small list below this bloc; off") -->
+        <div class="tkGroup" data-pages="ov">
+        <div class="tkSub">Next step</div>
+        <div class="tkRow">
+          <span class="lbl">Booked object</span>
+          <select id="stBkObj" aria-label="The booked appointments under the Next step card">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
+          </select>
         </div>
         </div>
         <!-- the Overview's Action plan: one list, or split by kind under two chips, Tasks and Appointments ("tweak: split actions per group; off: current; on: new with tab chips") -->
@@ -29970,13 +29985,23 @@ hairline({
     const planChips = () => document.querySelectorAll('#dOver .dvSecPlan, #phone2 .ovsecPlan').forEach(hd => { let c = hd.nextElementSibling;
       if (!c || !c.classList.contains('dvPlanChips')){ c = document.createElement('div'); c.className = 'dvPlanChips svResTabs'; c.setAttribute('role', 'tablist'); c.setAttribute('aria-label', 'Action plan'); hd.after(c); }
       c.hidden = !PLSPLIT; c.innerHTML = [['task', 'Tasks'], ['apt', 'Appointments']].map(([k, l]) => '<button type="button" role="tab" data-pc="' + k + '" class="' + (PLTAB === k ? 'on' : '') + '" aria-selected="' + (PLTAB === k) + '">' + l + '</button>').join(''); });
-    const fillPlan = () => { planChips(); document.querySelectorAll('#phone2 .ovplan, #dOver .dvPlanList, #dOver .dvPlanGrid').forEach(el => {
+    let BKON = false;   // Tweaks -> Next step -> Booked object
+    const CHVR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>';
+    const bkList = () => document.querySelectorAll('#dOver .ovhero').forEach(hero => { let el = hero.parentElement.querySelector(':scope > .ovBk');
+      if (!BKON){ if (el) el.remove(); return; }
+      const t0 = tab, R0 = ROWS, S0 = SEC; let rs = []; tab = 'up'; SEC = null; ROWS = []; try { rs = planRows().filter(isApt).map(simRow); } finally { tab = t0; ROWS = R0; SEC = S0; }
+      if (!rs.length){ if (el) el.remove(); return; }
+      if (!el){ el = document.createElement('div'); el.className = 'ovBk'; el.setAttribute('aria-label', 'Your booked appointments'); hero.after(el); }
+      el._rows = rs; el.innerHTML = rs.map((x, i) => '<button type="button" class="ovBkR' + (x.soon ? ' soon' : '') + '" data-i="' + i + '"><img src="' + IMG[x.img] + '" alt=""><span class="ovBkT"><b>' + esc(x.t) + '</b><span>' + esc(((x.meta || []).find(m => m[0] === 'cal') || [])[1] || x.when || '') + '</span></span>' + CHVR + '</button>').join(''); });   // the booked ones, under the Next step card
+    const fillPlan = () => { planChips(); bkList(); document.querySelectorAll('#phone2 .ovplan, #dOver .dvPlanList, #dOver .dvPlanGrid').forEach(el => {
       const grid = el.classList.contains('dvPlanGrid'), arr = [], t0 = tab, R0 = ROWS, S0 = SEC; let h = [];
       tab = 'up'; SEC = null; ROWS = arr; try { let rs = planRows(); if (PLSPLIT) rs = rs.filter(r => isApt(r) === (PLTAB === 'apt')); h = rs.slice(0, grid ? 6 : 4).map(row); } finally { tab = t0; ROWS = R0; SEC = S0; }   // its own rows, the Timeline's untouched; split, the chip's kind only
       el._rows = arr; el.classList.add('tlEmb', grid ? 'tlEmbG' : 'tlEmbL');
       el.innerHTML = PLSPLIT && !h.length ? '<div class="dvPlanEmpty">' + (PLTAB === 'apt' ? 'No upcoming appointments.' : 'Nothing to do right now.') + '</div>' : grid ? h.map(x => '<div class="tlEmbC">' + x + '</div>').join('') : '<div class="tlItems">' + h.join('') + '</div>';
       ringify(el, arr); el.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp')); el.querySelectorAll('.tlProg').forEach(pr => { const bd = pr.querySelector('.tlCurB'), sg = pr.querySelector('.tlTgl .tlSeg'); if (bd && sg) bd.insertBefore(sg.cloneNode(true), bd.firstChild); }); }); };
     document.addEventListener('click', e => { const b = e.target.closest('.dvPlanChips [data-pc]'); if (!b) return; PLTAB = b.dataset.pc; fillPlan(); });   // a chip: its kind
+    { const o = document.getElementById('stBkObj'); if (o){ const ap = () => { BKON = o.value === 'on'; }; ap(); o.addEventListener('change', () => { ap(); bkList(); }); } }   // the tweak: the list or not
+    document.addEventListener('click', e => { const b = e.target.closest('.ovBkR'); if (!b) return; const host = b.closest('.ovBk'), d = host && host._rows && host._rows[+b.dataset.i]; if (d) ovOpen(d, host); });   // a row: its page
     { const o = document.getElementById('stPlanSplit'); if (o){ const ap = () => { PLSPLIT = o.value === 'on'; }; ap(); o.addEventListener('change', () => { ap(); fillPlan(); }); } }   // the tweak: split or not
     const ovOpen = (d, host) => { const w = own(d); if (!w || !w.svc || !window._svc) return; const o = Object.assign(openO(d, w), { from: null });   // back to the Overview, not the Timeline
       (host.closest('#phone2') ? window._svc.openMob : window._svc.openDesk)(w.svc, w.state, o); };
