@@ -14085,3 +14085,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Bars line: +4 between the title and the subtitle row (`p.tlSubB` margin-top 7). Case padding 6 (box 64×17); centring calcs use 17.
 - XS / Auto ≤991: the first group sits 8px closer to the tabs (`.tlSec:first-child .tlH` margin-top 6 to −2; tab line to text 28 to 20).
 - Timeline z-index: months are now z 4 under the bar (z 5), each with its own solid `--pageBg`; the bar's ground no longer extends over the stuck month (`bottom:0`). A pinned month sits just under the tabs; one pushed up by the next slides behind the tabs instead of over them.
+- Status Bars on XS: two columns in `.tlTx` (a grid, `minmax(0,1fr) auto`, column gap 24). The title and the subtitle (`p.tlSubB` display:contents; `.tlSubT` in col 1 row 2, margin-top 7) sit left, the case right in col 2 row 1, centred on the title's first line. Nothing passes under the status. The text column's own 24px right padding is zeroed for these rows, so the case meets the right edge.
+- Bars case: padding back to 8 (box 64×21), outline white 6% (light ink 10%).
