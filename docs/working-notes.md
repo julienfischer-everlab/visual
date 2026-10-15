@@ -14148,3 +14148,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Mobile 2 Columns: label "APPOINTMENTS" (no "My"); dots 16 above the action (+4); titles 14 below the labels in both cards (+4); Next step hides Next availability / its time.
 - Booked rows: the approaching one's line reads "Today · 10:30 am" (orange), as its 2 Columns slide.
 - Booked date square: the day 22 → 18px ("4px font size decrease"); the month stays 11.
+- Mobile 2 Columns: 24 above both actions ("24px margin top"): dots → Get directions, Next step title → Book (1 object, no dots: 24 under the slide). Cards stay level.
