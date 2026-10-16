@@ -14271,3 +14271,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Action plan V2, Content tweak (shown with V2): Side by side (as before) / Stacked ("add tweak for stacked content"): the next milestone's header across the card (its line to 62ch), the filled actions card under it, 8 in at the sides and foot; a class on `<html>` (planStack), no redraw.
 - Eyebrows back to 14, still no tracking ("14px font size": asked, the eyebrows), 18 leading.
 - My journey Layout V2: no rail and no indent ("no indentation, use to-do circle style"): each row leads with V1's to-do circle (a ring of how far along, orange to do, the waiting tone when scheduled, dashed when locked, a green tick once done), the cards the hero's width; the cards filled (the panel's ground), no border ("card no border"); the hero's words 32 in ("hero 32px padding").
+
+## My journey Layout V2: the given visual, two-column groups, Next up as an item
+- Hero: the cabin line drawing is out; the user's visual (bands of light on black, `assets/overview/jv-hero.webp`) fills the right of the hero, `mix-blend-mode:screen` so its black gives way to the card. On the light page the hero stays dark (#161514) so the visual holds. Hidden under 600px, as the drawing was.
+- Next up, Ready for you, Scheduled: two columns as the Overview's Action plan card — the eyebrow and a line ("Start here", "4 actions whenever you're ready", "2 appointments booked") at the left (31%), the items at the right (69%). In the right column the when goes under the name, no chevron. Under 600px they stack (label above, the line hidden).
+- Next up is an item like the rest, in its own card: no big title, no filled button, no art ("no need to highlight"). JV_KIT, JV_LAND and jvArtOf are gone.
