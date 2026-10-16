@@ -8333,7 +8333,7 @@
   .ovBookWhen{display:flex;flex-direction:column;gap:3px;font-size:14px;color:#ececec;}
   .ovBookWhen b{font-weight:500;}
   .ovBookWhen span{color:#8b8b86;}
-  .ovBookBtn{flex:none;height:32px;padding:0 18px;border:0;border-radius:999px;   /* 44 and 15, then "reduce CTA 32px height", "full rounded" */background:#fff;color:#111;font:inherit;font-size:15px;font-weight:500;cursor:pointer;transition:transform .16s ease;}   /* "reduce CTA Book, 44px height" (from 52) */
+  .ovBookBtn{flex:none;height:44px;padding:0 24px;border:0;border-radius:999px;   /* 44 and 15, then "reduce CTA 32px height", "full rounded" */background:#fff;color:#111;font:inherit;font-size:15px;font-weight:500;cursor:pointer;transition:transform .16s ease;}   /* "reduce CTA Book, 44px height" (from 52) */   /* 44 again, the size-up's 24 sides ("44 height") */
   .ovBookBtn:active{transform:scale(.97);}
   body.light .ovhero.ovBook{background:#161514;}   /* the photo card stays dark on the light page: it is a picture, not a plate */
   .ovbtn{
@@ -8410,7 +8410,8 @@
   .ovInsDots i.on{width:14px;background:#ececec;}
   body.light .ovInsCard{background:rgba(46,31,26,.055);} body.light .ovInsTx b{color:#2e1f1a;} body.light .ovInsSub{color:#7d6b58;}
   body.light .ovInsChart g{stroke:rgba(46,31,26,.1);} body.light .ovInsChip{background:#2e1f1a;color:#fff;}
-  body.light .ovInsCta{background:rgba(46,31,26,.09);color:#2e1f1a;} body.light .ovInsDots i{background:rgba(46,31,26,.25);} body.light .ovInsDots i.on{background:#2e241c;}
+  .ovInsCta.ovInsLink{display:inline-flex;align-items:center;gap:6px;height:auto;padding:0;border-radius:0;background:none;color:#ececec;font-size:14px;line-height:20px;} .ovInsCta.ovInsLink:hover{background:none;} .ovInsLink svg{flex:none;width:14px;height:14px;transition:transform .16s ease;} .ovInsLink:hover svg{transform:translateX(2px);}   /* the hero card's: See insight, a link with an arrow at its right, no pill ("See insight link, arrow right") */
+  body.light .ovInsCta{background:rgba(46,31,26,.09);color:#2e1f1a;} body.light .ovInsCta.ovInsLink{background:none;} body.light .ovInsDots i{background:rgba(46,31,26,.25);} body.light .ovInsDots i.on{background:#2e241c;}
   /* the desk's: in the right column under the two small cards, at the column's width, with the section's 34px above it */
   #dOver .ovInsCard{margin:12px 0 0;border-radius:20px;}   /* the bento's 12 */
   /* ---- V4 ("create a v4 Overview"): the Concierge tile, the two small
@@ -30533,14 +30534,17 @@ hairline({
       if (vw){ render(); return; }   // the Overview's own menu: in place
       const to = back ? 'up' : 'claim'; if (tab !== to) toTab(to); else render(); tlReveal(d); });   // the Timeline: to the tab it went to, where it opens in, the items under it pushed down ("when I move to do it later, move the view to Later, and make the item appearing that will push the other items down; and inverse when push back to my plan")
     // an item arriving in the list: in view, then opening from nothing (its height, padding and ink), the rows under it going down with it, then its flash
+    // the view first, then the item: the tab switched and the list at its place with the item still shut, a beat, then it opens and pushes the rows under it down ("moving an item to Later or back to plan should have a delay: move to the view first, then the item appears and pushes the content down")
     const tlReveal = d => { const rw = [...list.querySelectorAll('.tlRow')].find(x => { const q = ROWS[+x.dataset.r]; return q && x.offsetParent && (q === d || (q.t === d.t && q.svc === d.svc)); }); if (!rw) return;
-      const mr = main.getBoundingClientRect(), top = rw.getBoundingClientRect().top - mr.top + main.scrollTop - Math.max(80, (main.clientHeight - rw.offsetHeight) / 3);
-      main.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
       const flash = () => { rw.classList.remove('flash'); void rw.offsetWidth; rw.classList.add('flash'); setTimeout(() => rw.classList.remove('flash'), 1600); };
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches || !rw.animate){ flash(); return; }
-      const cs = getComputedStyle(rw); rw.style.overflow = 'hidden';
-      const a = rw.animate([{ height: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 }, { height: cs.height, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 }], { duration: 480, easing: 'cubic-bezier(.2,.8,.2,1)' });
-      a.onfinish = a.oncancel = () => { rw.style.overflow = ''; flash(); }; };
+      const rm = matchMedia('(prefers-reduced-motion: reduce)').matches || !rw.animate, h0 = rw.offsetHeight;
+      const cs = getComputedStyle(rw), full = { height: cs.height, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 };
+      let a = null; if (!rm){ rw.style.overflow = 'hidden'; a = rw.animate([{ height: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 }, full], { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' }); a.pause(); a.currentTime = 0;   /* shut while the view arrives */
+        a.onfinish = a.oncancel = () => { rw.style.overflow = ''; flash(); }; }
+      const mr = main.getBoundingClientRect(), top = Math.max(0, rw.getBoundingClientRect().top - mr.top + main.scrollTop - Math.max(80, (main.clientHeight - h0) / 3)), far = Math.abs(top - main.scrollTop) > 4;
+      let went = false; const go = () => { if (went) return; went = true; if (a) a.play(); else flash(); };
+      if (far){ main.scrollTo({ top, behavior: rm ? 'auto' : 'smooth' }); const end = () => { main.removeEventListener('scrollend', end); setTimeout(go, 220); }; main.addEventListener('scrollend', end); setTimeout(go, 1100); }   /* back in Upcoming, its month further down: the list glides there first */
+      else setTimeout(go, rm ? 0 : 420); };   /* Later's first section: the tab in view, then the item */
     document.addEventListener('keydown', e => { if (e.key === 'Escape') tlMenuShut(); });
     main.addEventListener('scroll', tlMenuShut, { passive: true });
     fillPlan();   // the Overview's Plan from the start
@@ -30757,7 +30761,7 @@ hairline({
     const vis = d => '<div class="ovInsChart ovInsVis" aria-hidden="true"><img class="ovIllImg" src="' + d.img + '" alt="" draggable="false"></div>';   // a Recent insights card's own render, as the rail shows it
     card.innerHTML = '<div class="ovInsTrack">' + INS.map(d =>
       '<div class="ovInsSl"><div class="ovInsTx"><span class="lbl">Insights</span><b>' + d.t + '</b><span class="ovInsSub">' + d.s + '</span>' +
-      '<button class="ovInsCta" type="button">' + (d.cta || 'View results') + '</button></div>' + (d.img ? vis(d) : chart(d)) + '</div>').join('') +
+      (d.link ? '<button class="ovInsCta ovInsLink" type="button">' + d.link + '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>' /* a link with its arrow ("See insight, link, arrow right") */ : '<button class="ovInsCta" type="button">' + (d.cta || 'View results') + '</button>') + '</div>' + (d.img ? vis(d) : chart(d)) + '</div>').join('') +
       '</div><div class="ovInsDots">' + INS.map(() => '<i></i>').join('') + '</div>';
     const track = card.querySelector('.ovInsTrack'), dots = [].slice.call(card.querySelectorAll('.ovInsDots i'));
     const n = INS.length, w = () => track.clientWidth;
@@ -30805,7 +30809,7 @@ hairline({
       // the same insights as the Recent insights carousel, and the same visuals ("use the same visual as the carousel on insight section"): read off the rail's cards, so one list feeds both and no render ships twice
       const tx = v => String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
       const exp = [...over.querySelectorAll('.ovcar .ovcard.ovExp')].map(c => { const im = c.querySelector('.ovIllImg'), h = c.querySelector('h4'), by = [...c.querySelectorAll('.ocBy > span')].map(x => x.textContent.trim()).filter(Boolean), bt = c.querySelector('.ovbtn');
-        return { t: h ? h.innerHTML : '', s: tx(by.join(' \u00b7 ') || (c.querySelector('.ocDate') || {}).textContent), cta: tx(bt ? bt.textContent.trim() : 'See insights'), img: im ? im.getAttribute('src') : '' }; }).filter(x => x.img && x.t);
+        return { t: h ? h.innerHTML : '', s: tx(by.join(' \u00b7 ') || (c.querySelector('.ocDate') || {}).textContent), cta: tx(bt ? bt.textContent.trim() : 'See insights'), link: 'See insight', img: im ? im.getAttribute('src') : '' }; }).filter(x => x.img && x.t);
       buildOvInsights(ic, exp.length ? exp : null);
       const keep = () => { const r = over.querySelector('.ovSvc'); if (r && ic.nextElementSibling !== r) r.before(ic); };
       new MutationObserver(keep).observe(over, { childList: true, subtree: true });
