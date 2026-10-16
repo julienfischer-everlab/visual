@@ -14185,3 +14185,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview Explore cards: title and sub line 14px (desk was 13.5 / 12.5).
 - Async report welcome (phone + desktop Full modal): the hero pinned (`position:sticky` in `.arBody`, the scroller) and the paper panel scrolling up over it; the module sets `--ar-hero-y` / `--ar-hero-k` on the root from the body's scroll (welcome only, reset per step); the picture drifts up at .2×, the title at .35× and fades ("on scroll up the body should overlap the hero header, with parallax, same as previously").
 - Timeline notch: 7 above the indicator (+1).
+
+## Timeline: Format select, Bars chips, journey increments; Do it later moves the view; MRI renamed
+- Timeline Status "Format" is a select: Dot / Bars visual (notch) / Bars content (subtitle) / Circular / Bars chips. Bars chips: the bars in a chip of their status's light ground (orange act, green done, grey waiting), 4 radius, 4 padding, first in the properties line. The old Placement row is retired (`stTlStPlRow` tkGone); the title group's padding-top 6.
+- Increments follow the service page's own journey: `window._svc.bars(key, state, o)` paints the page unseen (PROBE) and returns its Your progress bars — the MRI's five stages, a group's services (gut, stress), or the documents then the steps (Book + Go to as one). The one in hand carries its partial fill (`.tlBars i.cur.fill`, `--gf`), the ring reads the same share. Pages with no phone card (to buy, for later) fall back to the desk's list. The desk's Your progress no longer lists a last step that only says "Done" (Diagnostics Review: 2, as the phone card and the bars).
+- Do it later / Move back to my plan from the Timeline switch to the tab the item went to, scroll it into view, and open it from 0 height (pushing the others down) with a flash; from the Overview's menu it stays in place.
+- Lock modal: "Complete this first" 24 from the modal's edges on desk (as the content above).
+- The `mri` service is "Whole Body MRI & CT Chest" (short "MRI & CT"): Timeline row, page title, booked card, static cards.
+- Not booked (or put off with Do it later): no location (pin) and no date (cal) in a row's properties; booked and completed keep them.
