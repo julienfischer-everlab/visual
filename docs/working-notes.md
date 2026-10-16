@@ -14236,3 +14236,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Bars chips: at the row's top right (the title line's end — left of the button on the desk, the row's corner at XS; out of the properties line and of the subtitle-bars grid); their ground the status's lighter tint (.26: green done, orange to do; grey .10 waiting).
 - Insights card: 20 at least between its line and the button (28, then -8).
 - Bars chips moved to Bars content's place ("same position as the bar content"): inside the subtitle-bars line (`p.tlSubB`) in place of the bare bars — first on the subtitle's line on the desk, the top right beside the title at XS (its grid). The title-line placement removed.
+- Timeline: task rows (adhoc, the weekly questionnaire, the consent…) carry no status indicator in any format (stepChip returns '' for a task).
+- Bars chips: one neutral ground, white 6% (light: brown 6%), whatever the status — the bars carry it.
+- Service detail, Hide completed services: with Your progress hidden (`#dSvc.svNoAside`), the grid is one column and the body fills its width.
