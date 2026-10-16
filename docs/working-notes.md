@@ -14276,3 +14276,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Hero: the cabin line drawing is out; the user's visual (bands of light on black, `assets/overview/jv-hero.webp`) fills the right of the hero, `mix-blend-mode:screen` so its black gives way to the card. On the light page the hero stays dark (#161514) so the visual holds. Hidden under 600px, as the drawing was.
 - Next up, Ready for you, Scheduled: two columns as the Overview's Action plan card — the eyebrow and a line ("Start here", "4 actions whenever you're ready", "2 appointments booked") at the left (31%), the items at the right (69%). In the right column the when goes under the name, no chevron. Under 600px they stack (label above, the line hidden).
 - Next up is an item like the rest, in its own card: no big title, no filled button, no art ("no need to highlight"). JV_KIT, JV_LAND and jvArtOf are gone.
+
+## My journey: a 12-month timeline in place of the tabs; pill buttons; card padding; smaller hero title
+- Top tweak (My journey only): Timeline (default) or Tabs. Timeline replaces Upcoming / Later with the year: three phases, 0–3 months Baseline, 4–9 months Action plan, 9–12 months Re-test, each over a bar of its own (3 / 6 / 3 months wide), the twelve months under them from the persona's start (member Aug 2026, Steven Oct 2026), and an orange head.
+- On scroll the head rides the year: each milestone spans months (`mo: [from, to]` on MS / MS_SOLO: member base 0–2, rev 2–3, prog 3–9, scr 9–12; Steven base 0–1, rev 1–3, scr 3–12), and the page's scroll is shared among the milestones by their heights, so the head moves evenly through each and reaches Jul at the page's foot. The phase it's in lit (orange eyebrow, ink name), the bars behind it filled, its month label lit. A phase clicked scrolls to where it begins. The bar stays sticky, so the year stays in view.
+- With the year on, the list is Upcoming (Later is reachable with Tabs).
+- Row buttons in Layout V2: fully rounded, secondary fill, no border.
+- Journey cards +4px padding all round (22/28/10, two-column 26/28/12, XS 20/20/8).
+- Hero title 8px smaller: 24px (18px under 600px).
+- The rows' line and date are 14px regular; the name 16px medium (answered, unchanged).
