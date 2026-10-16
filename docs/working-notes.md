@@ -14242,3 +14242,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - …that one column is the task page's container: 716 wide, centred (same left and width as a task page's).
 - Overview Action plan cards (desk grid, `.tlEmbG`): the bars / bars chip at the card's top right beside the title, as the phone's rows (the subtitle under the title), right edge on the button's.
 - Booked date squares: the day 22 (+4), 4 between it and the month (+2), the month white 40% (light: brown 40%; the dark folder on the light page white 40%).
+- Timeline: "Follow-up call with your doctor" and "General Everlab consent" moved from August to the top of September ("push this into September"); the Overview's Action plan, drawn in the Timeline's order, now opens on General Questionnaire, Pathology Test, the MRI & CT, Onboarding, MRI Briefing, Microbiome.
