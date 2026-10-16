@@ -14290,3 +14290,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Hero card background #534C46 in both themes (was the panel grey; dark #161514 on the light page). Its text light on it: title and count #f6f4f2, line and weeks left white at 70%, track segments white at 16%, the eyebrow and done segments #f78359. The visual still blends with screen, its black giving way to the warm grey.
 - A row's hover tile 4px larger all round (top/bottom 0, sides −16px, radius 16).
 - The date line under the name (clock + when) 12px, its icon 14px, gap 6.
+
+## My journey Layout V2: hero #252522, +16 padding, badge, +24 above the count; grey eyebrows
+- Hero background #252522 (was #534C46 briefly), both themes; inner padding 48px (+16; narrow unchanged at 24/20/22).
+- The hero's eyebrow is a grey badge (V1's Next milestone badge: 24px pill, white 8%, #c9c9c6, 12px 500), sentence case, no orange square; on both pages the dark-hero colours.
+- "1 of 8 complete" and its bar 24px lower (padding-top 22 → 46).
+- The cards' eyebrows (Next up, Ready for you, Scheduled, Results ready) as the Overview's: 14px regular uppercase, no tracking, grey #8b8b86 (light #9b8a75), not orange.
+- v1158 was published from the unbuilt source by mistake (assets not inlined); v1159 replaced it with the build within a minute.
