@@ -6548,7 +6548,10 @@
   .ovBkTab{position:relative;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border:0;border-radius:16px 16px 0 0;background:none;color:#8b8b86;font:inherit;font-size:14px;font-weight:400;cursor:pointer;transition:color .16s ease;} .ovBkTab:hover{color:#ececec;} .ovBkTab.on{background:var(--fold);color:#ececec;cursor:default;}
   .ovBkTab.on::after{content:"";position:absolute;right:-14px;bottom:0;width:14px;height:14px;background:radial-gradient(circle at 100% 0, transparent 13.5px, var(--fold) 14px);pointer-events:none;} .ovBkTab.on:not(:first-child)::before{content:"";position:absolute;left:-14px;bottom:0;width:14px;height:14px;background:radial-gradient(circle at 0 0, transparent 13.5px, var(--fold) 14px);pointer-events:none;}   /* the rounded notch: the card's edge curving up into the tab */
   .ovBkTabDot{flex:none;width:6px;height:6px;border-radius:50%;background:#f78359;}   /* the soon orange */ body.light .ovBkTabDot{background:#d9653b;} body.light .ovBkTab{color:#7d6b58;} body.light .ovBkTab:hover, body.light .ovBkTab.on{color:#2e1f1a;} body.light .ovBkTab.on{color:#ececec;}   /* the folder dark on the light page, both tabs */
-  #stBkLayRow[hidden]{display:none !important;} .ovBkC{display:none;}
+  #stBkLayRow[hidden], #stBkUrgRow[hidden]{display:none !important;} .ovBkC{display:none;}
+  /* Urgency theme (appointment): the approaching one on a light orange, its date square a shade deeper; the hover a little more orange (past the rows' own grounds, the folder's too) */
+  html.bkUrg .ovBkR.soon{background:rgba(247,131,89,.12) !important;} html.bkUrg .ovBkR.soon:hover, html.bkUrg .ovBkR.soon:focus-visible{background:rgba(247,131,89,.18) !important;} html.bkUrg .ovBkR.soon .ovBkD{background:rgba(247,131,89,.14) !important;} html.bkUrg .ovBkR.soon:hover .ovBkD{background:transparent !important;}
+  html.bkUrg .ovBkSl.soon .ovBkCs{color:#f78359;}
   /* Next step / Booked (mobile) -> 2 Columns: the two side by side, the Health coverage / Biological age pair's way (8 apart, 22 corners); each read as the Insights card -- the small capitals, a 17 title, a 12.5 line, the pill at the foot */
   html.bk2c body[data-bp="xs"] #dOver .dvTop:has(> .ovBk:not(.ovOff)){grid-template-columns:repeat(2,minmax(0,1fr)) !important;column-gap:8px;} html.bk2c body[data-bp="xs"] #dOver .dvTop:has(> .ovBk:not(.ovOff)) > *{grid-column:1 / -1;}
   html.bk2c body[data-bp="xs"] #dOver .dvTop:has(> .ovBk:not(.ovOff)) > .ovBk{grid-column:1;grid-row:1;margin:0;padding:0;gap:0;border-radius:22px;position:relative;overflow:hidden;} html.bk2c body[data-bp="xs"] #dOver .dvTop:has(> .ovBk:not(.ovOff)) > .ovBk > .ovBkH, html.bk2c body[data-bp="xs"] #dOver .dvTop:has(> .ovBk:not(.ovOff)) > .ovBk > .ovBkL{display:none;} html.bk2c body[data-bp="xs"] #dOver .dvTop:has(> .ovBk:not(.ovOff)) > .ovBk > .ovBkC{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;padding:20px;}
@@ -8190,7 +8193,7 @@
   #dOver .ovcar.fadeL{--fadeL:96px;}
   #dOver .ovcar.fadeR{--fadeR:96px;}   /* the container's gap, then "insights desktop item gap 24px" */
   #dOver .ovcard{flex:0 0 302px;scroll-snap-align:start;min-height:0;border-radius:20px;padding:18px;opacity:1;}   /* 352, then "hug content" */
-  #dOver .ovcard h4{font-size:13.5px;line-height:1.38;}   /* 15.5, then -2 */
+  #dOver .ovcard h4{font-size:14px;line-height:1.38;}   /* 15.5, then -2, then 14 ("font size 14px title and sub") */
   #dOver .ovbtn{border-radius:11px;font-size:13.5px;padding:12px 0;background:rgba(255,255,255,.09);color:#ececec;cursor:pointer;transition:background .16s ease;}
   #dOver .ovbtn:hover{background:rgba(255,255,255,.16);}
   body.light #dOver .ovbtn{background:rgba(46,31,26,.09);color:#2e1f1a;}
@@ -8458,7 +8461,7 @@
   /* the source under the title: the doctor (or device) and the date, grey, a short rule between */
   .ocBy{display:flex;align-items:center;gap:8px;margin-top:-2px;font-size:13px;color:#8b8b86;white-space:nowrap;overflow:hidden;}
   .ocBy i{flex:none;width:1px;height:11px;background:rgba(236,236,236,.22);}
-  #dOver .ocBy{font-size:12.5px;}
+  #dOver .ocBy{font-size:14px;}   /* 14, as the title ("font size 14px title and sub") */
   body.light .ocBy{color:#7d6b58;} body.light .ocBy i{background:rgba(46,31,26,.2);}   /* 24 above the card's footer ("add 24px padding top on insight card footer"); was auto, the slack, before the card hugged its content */
   .ovOrgan{flex:1;min-height:150px;position:relative;}
   .ovOrgan canvas{position:absolute;inset:0;display:block;}
@@ -10927,6 +10930,13 @@
             <option value="stack" selected>Stacked</option>
             <option value="2col">2 Columns</option>
             <option value="tab">Tab</option>   <!-- one card, a folder's tabs on top: Coming up, Next step ("tweak another version: Tab") -->
+          </select>
+        </div>
+        <div class="tkRow" id="stBkUrgRow" hidden>   <!-- the approaching appointment on a light orange ("if approaching, create tweak urgency theme appointment: bg light orange") -->
+          <span class="lbl">Urgency theme (appointment)</span>
+          <select id="stBkUrg" aria-label="An approaching appointment on a light orange ground">
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
           </select>
         </div>
         <!-- the block under the two small cards: the task list, or one
@@ -30196,7 +30206,7 @@ hairline({
       el.innerHTML = PLSPLIT && !h.length ? '<div class="dvPlanEmpty">' + (PLTAB === 'apt' ? 'No upcoming appointments.' : 'Nothing to do right now.') + '</div>' : grid ? h.map(x => '<div class="tlEmbC">' + x + '</div>').join('') : '<div class="tlItems">' + h.join('') + '</div>';
       ringify(el, arr); el.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp')); el.querySelectorAll('.tlProg').forEach(pr => { const bd = pr.querySelector('.tlCurB'), sg = pr.querySelector('.tlTgl .tlSeg'); if (bd && sg) bd.insertBefore(sg.cloneNode(true), bd.firstChild); }); }); };
     document.addEventListener('click', e => { const b = e.target.closest('.dvPlanChips [data-pc]'); if (!b) return; PLTAB = b.dataset.pc; fillPlan(); });   // a chip: its kind
-    { const o = document.getElementById('stBkObj'), n = document.getElementById('stBkN'), nr = document.getElementById('stBkNRow'), ly = document.getElementById('stBkLay'), lr = document.getElementById('stBkLayRow'); if (o){ const ap = () => { BKON = o.value === 'on'; BKMORE = !!n && n.value === 'more'; BKN = n ? (BKMORE ? 2 : +n.value || 2) : 2; if (nr) nr.hidden = !BKON; if (lr) lr.hidden = !BKON; document.documentElement.classList.toggle('bk2c', !!ly && ly.value === '2col'); document.documentElement.classList.toggle('bkTab', !!ly && ly.value === 'tab'); }; ap(); o.addEventListener('change', () => { ap(); bkList(); }); if (n) n.addEventListener('change', () => { ap(); bkList(); }); if (ly) ly.addEventListener('change', () => { ap(); bkList(); }); } }   // the tweak: the list or not, its count (the next one alone, or two), and on mobile the two cards stacked or side by side (on the root, so a change of page keeps it)
+    { const o = document.getElementById('stBkObj'), n = document.getElementById('stBkN'), nr = document.getElementById('stBkNRow'), ly = document.getElementById('stBkLay'), lr = document.getElementById('stBkLayRow'), ug = document.getElementById('stBkUrg'), ugr = document.getElementById('stBkUrgRow'); if (o){ const ap = () => { BKON = o.value === 'on'; BKMORE = !!n && n.value === 'more'; BKN = n ? (BKMORE ? 2 : +n.value || 2) : 2; if (nr) nr.hidden = !BKON; if (lr) lr.hidden = !BKON; document.documentElement.classList.toggle('bk2c', !!ly && ly.value === '2col'); document.documentElement.classList.toggle('bkTab', !!ly && ly.value === 'tab'); if (ugr) ugr.hidden = !BKON; document.documentElement.classList.toggle('bkUrg', !!ug && ug.value === 'on'); }; ap(); o.addEventListener('change', () => { ap(); bkList(); }); if (n) n.addEventListener('change', () => { ap(); bkList(); }); if (ly) ly.addEventListener('change', () => { ap(); bkList(); }); if (ug) ug.addEventListener('change', ap); } }   // the tweak: the list or not, its count (the next one alone, or two), and on mobile the two cards stacked or side by side (on the root, so a change of page keeps it)
     document.addEventListener('keydown', e => { if (e.key !== 'Enter' && e.key !== ' ') return; const b = e.target.closest && e.target.closest('.ovBkR, .ovBkSl'); if (!b || e.target !== b) return; e.preventDefault(); b.click(); });   // a row (or a slide) is a button to the keyboard too
     document.addEventListener('click', e => { if (e.target.closest('.ovBk .ovBkMore')){ const sv = document.getElementById('versionSel'); if (sv){ sv.value = 'tl'; sv.dispatchEvent(new Event('change')); } return; }   // See more: every appointment, on the Timeline
       const b = e.target.closest('.ovBkR, .ovBkSl, .ovBkCGo'); if (!b) return; const host = b.closest('.ovBk'), d = host && host._rows && host._rows[+b.dataset.i]; if (d) ovOpen(d, host); });   // a row: its page
