@@ -14297,3 +14297,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "1 of 8 complete" and its bar 24px lower (padding-top 22 → 46).
 - The cards' eyebrows (Next up, Ready for you, Scheduled, Results ready) as the Overview's: 14px regular uppercase, no tracking, grey #8b8b86 (light #9b8a75), not orange.
 - v1158 was published from the unbuilt source by mistake (assets not inlined); v1159 replaced it with the build within a minute.
+
+## My journey Layout V2 rows: bars chip in place of the ring; Visual tweak; label column −48; hero padding 36
+- No progress ring at a row's left. Timeline v1's Bars chip instead, first on the line under the name ("BAR – Subtitle"): the row's own status drawn by v1's prog() with Bars forced (`chipOf`), so the same bars as v1 (the service page's journey steps; done green, the step in hand orange or grey when waiting), in v1's chip (white 6%, rounded 4, 8px padding). Tasks (the questionnaire) and locked rows have none, as in v1. The words sit beside the chip while 160px fit, else under it (the phone).
+- Visual tweak (Layout V2 only): Icon (default) or Imagery, the service's picture in the 44px rounded square.
+- Two-column cards: the label column 48px narrower (31% − 48px, never under 140px).
+- Hero inner padding 36px (48 − 12).
