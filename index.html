@@ -6664,7 +6664,7 @@
   html body #dOver .ovBkR .ovBkGo.ovBkIc{display:grid;place-items:center;width:44px;height:44px;padding:0;border-radius:50%;} .ovBkIc svg{width:18px;height:18px;}   /* the booked rows' action: 44 round, its icon only (its name for the screen reader and the pointer's title) */
   /* ---- Persona: Standalone (html.psSolo): its own block in place of the member's sections, both hosts ---- */
   .ovSolo{display:none;} html.psSolo .ovSolo{display:block;}
-  html.psSolo #dOver > :not(.ovTop):not(.ovSolo), html.psSolo #phone2 .mscroll > :not(.ovTop):not(.mtitle):not(.ovSolo){display:none !important;}
+  html.psSolo #dOver > :not(.ovTop):not(.dvH1):not(.ovSolo), html.psSolo #phone2 .mscroll > :not(.ovTop):not(.mtitle):not(.ovSolo){display:none !important;}
   #dOver .ovSolo{margin-top:24px;padding-bottom:48px;} #phone2 .ovSolo{padding:4px 13px 40px;}
   .soBento{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;} .soDr{grid-row:span 2;}
   .soCard{display:flex;flex-direction:column;min-width:0;padding:24px;border-radius:24px;background:rgba(255,255,255,.04);color:#ececec;}
@@ -29027,7 +29027,7 @@ hairline({
       book: d => ({ tone: '', tag: 'Next step', h: 'Book your ' + d.short + '.', p: 'Choose a time that suits you.', btn: 'Book', sec: 'Your appointment', at: 0, st: d.started || 'Added to your plan' }),
       booked: d => ({ tone: 'ok', tag: 'Confirmed', h: 'You’re booked in for ' + (d.when || '1 Sep 2026, 10:30 am') + '.', p: 'We’ll send you a reminder the day before.', btn: 'Add to calendar', sec: 'Your appointment', at: 1, st: d.when || '1 Sep 2026, 10:30 - 11:10 am' }),
       suggested: d => ({ tone: 'info', tag: 'Suggested for you', h: (d.every || 'Recommended every 5 years from age 25') + '.', p: 'You have no records of this yet. Add it to your plan to book it.', btn: 'Add to plan', sec: 'What to expect', at: -1, st: 'No records' }),
-      purchase: d => ({ tone: 'info', tag: 'Recommended by Dr Sarah Chen', h: 'Not included in your membership.', p: 'Your doctor suggests it from your results. You can add it to your plan as a one-off.', btn: 'Purchase', sec: 'What to expect', at: -1, st: 'Recommended by Dr Sarah Chen' }),
+      purchase: d => ({ tone: 'info', tag: 'Recommended by Dr Sarah Chen', h: SOLO_P ? 'Add it to your tests as a one-off.' : 'Not included in your membership.',   /* Steven has no membership to be outside of */ p: 'Your doctor suggests it from your results. You can add it to your plan as a one-off.', btn: 'Purchase', sec: 'What to expect', at: -1, st: 'Recommended by Dr Sarah Chen' }),
       claim: d => ({ tone: 'ok', tag: 'Included in your membership', h: 'Yours to claim, at no extra cost.', p: 'Claim it and book a time that suits you.', btn: 'Claim', sec: 'What to expect', at: -1, st: 'Claim by 31 Dec 2026' }),
       later: d => ({ tone: 'info', tag: 'Coming up', h: 'Due when you turn ' + (d.age || 50) + '.', p: 'We’ll remind you when it’s time to book.', btn: 'Remind me', sec: 'What to expect', at: -1, st: 'Due at ' + (d.age || 50) }),
       active: d => ({ tone: '', tag: 'In progress', h: (d.tag || 'Next step') + '.', p: d.d || '', btn: d.tag || 'Continue', sec: 'Your service', at: d.at || 0, st: 'In progress' }),
@@ -29037,7 +29037,7 @@ hairline({
     };
     const escS = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
     let cur = { key: 'dexa', state: 'request' }, JR = 'rightm', JP = true, HZ = false, PH = false, DOCS = 'asSteps', LAY = 'svc', HDN = true;   // HDN: Hide completed services (the tweak)
-    const SIM = {}, SIM0 = {}, DOCDONE = new Set(); window.__docDone = DOCDONE;
+    const SIM = {}, SIM0 = {}, DOCDONE = new Set(); window.__docDone = DOCDONE; let SOLO_P = false;   // SOLO_P: the standalone persona
     /* when each document was done, to show beside its status ("add timestamp next to status") */
     const DOCAT = {}; { const add = DOCDONE.add.bind(DOCDONE); DOCDONE.add = t => { if (!DOCAT[t]) DOCAT[t] = Date.now(); return add(t); }; const del = DOCDONE.delete.bind(DOCDONE); DOCDONE.delete = t => { delete DOCAT[t]; return del(t); }; }
     const docWhen = t => { const d = new Date(DOCAT[t] || Date.now()), n = new Date(), hm = d.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' }).replace(/\s/g, '\u2009').toLowerCase();
@@ -30023,7 +30023,7 @@ hairline({
       paint(key, state || 'request', o); [bkD, bkM, dmD, dmM].forEach(x => x && x.classList.remove('svDemo'));
       const bk = /^book/i.test(act), sh = bk ? (mobile ? bkM : bkD) : (mobile ? dmM : dmD); if (sh) sh.classList.add('svDemo');
       if (bk) bkOpen(mobile); else dmOpen(T.t, mobile); return true; };
-    window._svc = { openDesk, openMob, close, plan, head, bars: jBars, lock: lkOpen, demo, sim: k => SIM[k] || null, repaint: () => { if (cur && cur.key) paint(cur.key, cur.state, cur.o); } };
+    window._svc = { openDesk, openMob, close, plan, head, bars: jBars, lock: lkOpen, demo, sim: k => SIM[k] || null, reset: () => { Object.keys(SIM).forEach(k => delete SIM[k]); Object.keys(SIM0).forEach(k => delete SIM0[k]); DOCDONE.clear(); }, persona: on => { SOLO_P = !!on; }, repaint: () => { if (cur && cur.key) paint(cur.key, cur.state, cur.o); } };
     // the Overview's action plan cards carry the Timeline's step chip and the step in hand's badge ("add the badge step + badge status on the Overview action plan items"): the state is the one the card opens its page in (Book: to book; View: booked), so the card and its page agree
     { const PV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;
       document.querySelectorAll('.dvProt, .ovact').forEach(c => {
@@ -30172,6 +30172,41 @@ hairline({
         ] }
       ]
     };
+    /* Steven, standalone (the Persona tweak): his own Timeline -- the three tests he bought (the blood test just completed, the microbiome kit to post, the skin check booked), the call his doctor asks for and the review the microbiome leads to; in Later his doctor's suggestions to buy; in Past an earlier skin check. Swapped into TL in place by setPersona */
+    const SUG_SOLO = [SUG[1]];   // the colonoscopy: his skin check is already booked
+    const TL_SOLO = {
+      up: [
+        { h: 'October 2026', dot: 'now', rows: [
+          { t: 'Microbiome & Gut Health Assessment', d: 'An at-home stool test of your gut microbiome, with a report.', img: 'microc', meta: [['sug', '3 services'], ['clock', 'Post it back Sun, Mon or Tue']], act: 'Collect sample', cta: 1, more: 1,
+            group: [{ svc: 'gutq', state: 'done' }, { svc: 'gut', state: 'active', tag: 'Collect and post', d: 'Post it on a Sunday, Monday or Tuesday so it doesn’t sit in the post over the weekend.', at: 3 }, { svc: 'gutrep', state: 'soon' }] },
+          { t: 'Follow-up call with your doctor', d: 'Dr Sarah Chen would like a short video call about your blood results.', img: 'taska', meta: [['video', 'Online video call'], ['clock', 'Book by Wed 14 Oct']], act: 'Book', cta: 1, more: 1, svc: 'adhoc', state: 'active', at: 0 },
+          { t: 'Skin Check', d: 'A full-body skin check with a dermatologist.', img: 'skin', meta: [['pin', 'Quantum Therapy Sydney'], ['cal', '22 Oct 2026, 10:30 - 11:00 am']], act: 'View', more: 1, svc: 'skin', state: 'booked', when: 'Thu 22 Oct, 10:30 am', sub: 'You’re booked in for Thu 22 Oct, 10:30 am', bk: ['22', 'Oct', '10:30 am', 'Get directions'] }
+        ], sug: SUG_SOLO },
+        { h: 'November 2026', rows: [
+          { t: 'Gut Health Review', d: 'A call with your doctor on your Microbiome Report.', img: 'nutri', meta: [['video', 'Online video call']], svc: 'gutrev', state: 'locked', need: 'Microbiome Report' }
+        ] }
+      ],
+      claim: [
+        { h: 'Recommended by Dr Sarah Chen', dot: 'now', rows: [
+          { t: 'DEXA Scan', d: 'Body composition and bone density, measured.', img: 'dexa', meta: [DR], act: 'View', more: 1, svc: 'dexa', state: 'purchase' },
+          { t: 'Nutrition review', d: 'A 30 minute call with a dietitian on your results.', img: 'nutri', meta: [DR, ['video', 'Online video call']], act: 'View', more: 1, svc: 'nutri', state: 'purchase' },
+          { t: 'Whole Body MRI & CT Chest', d: 'A head-to-pelvis MRI and a low-dose chest CT.', img: 'mri', meta: [DR], act: 'View', more: 1, svc: 'mri', state: 'purchase' }
+        ] }
+      ],
+      past: [
+        { h: 'October 2026', dot: 'now', rows: [
+          { t: 'Advanced Blood Testing', d: '44 biomarkers across heart, metabolic, liver and kidney health.', img: 'path', meta: [['check', 'Completed 12 Oct 2026'], ['rec', 'Results ready']], act: 'View results', svc: 'path', state: 'done', when: 'Completed 12 Oct 2026', title: 'Advanced Blood Testing', fresh: 1 }
+        ] },
+        { h: 'November 2025', rows: [
+          { t: 'Skin Check', d: 'A full-body skin check with a dermatologist.', img: 'skin', meta: [['check', 'Completed 18 Nov 2025'], CLINIC], act: 'View', svc: 'skin', state: 'done', when: 'Completed 18 Nov 2025' }
+        ] }
+      ]
+    };
+    const MS_SOLO = [   // his milestones in My journey (the keys the member's use, so what is open and what is further on hold)
+      { k: 'base', ey: 'Now · October', h: 'Finish your tests', d: 'Your blood results are in. Post your microbiome sample, then your skin check on Thursday 22 October.', from: ['Just completed', 'October 2026'] },
+      { k: 'rev', ey: 'November', h: 'Get your microbiome report', d: 'Usually 4 to 6 weeks after your sample reaches the lab. Dr Sarah Chen writes it up for you.', from: ['November 2026', 'Later'] },
+      { k: 'scr', ey: 'Suggested for you', h: 'Preventive screening', d: '', from: [], sug: 1 }
+    ];
     const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
     const meta = m => '<span data-k="' + m[0] + '">' + (m[0] === 'dr' ? '<img src="' + IMG.dr + '" alt="">' : I[m[0]]) + (m[2] === 'link' ? '<a>' + esc(m[1]) + '</a>' : '<em>' + esc(m[1]) + '</em>') + '</span>';
     let ROWS = [];
@@ -30737,7 +30772,16 @@ hairline({
       else { const rs = [...SNZ].filter(svcIs(key)); if (!rs.length) return false; rs.forEach(x => SNZ.delete(x)); }
       render(); return true; };
     const toTab = t => { if (t === 'past'){ const pb = main.querySelector('.tlPastBtn'); if (pb && !pb.classList.contains('on')) pb.click(); return; } const b = main.querySelector('.tlTab[data-t="' + t + '"]'); if (b) b.click(); };   // a tab picked from outside: the Overview's More services, to Later
-    window._tl = { open, close, laterOf, setLater, tab: toTab };
+    // the persona: the member's Timeline or Steven's, swapped into TL and MS in place (both const), Do it later kept apart per persona, the demo's progress cleared, the page open closed, the list and the Overview's plan drawn again
+    const TLP = { member: { up: TL.up, claim: TL.claim, past: TL.past, ms: MS.slice() }, solo: Object.assign({ ms: MS_SOLO }, TL_SOLO) };
+    const SNZP = { member: new Set(), solo: new Set() }; let PER = 'member';
+    const setPersona = k => { if (!TLP[k] || k === PER) return;
+      SNZP[PER] = new Set(SNZ); SNZ.clear(); SNZP[k].forEach(x => SNZ.add(x));
+      PER = k; const P = TLP[k]; TL.up = P.up; TL.claim = P.claim; TL.past = P.past; MS.splice(0, MS.length, ...P.ms);
+      closeSheet(); tlMenuShut(); if (window._svc){ if (document.body.classList.contains('svcOn') && window._svc.close) window._svc.close(); if (window._svc.reset) window._svc.reset(); if (window._svc.persona) window._svc.persona(k === 'solo'); }
+      render(); };   // render() ends in filter() and fillPlan() (the booked card with it)
+    addEventListener('everlab:persona', e => setPersona(e.detail === 'steven' ? 'solo' : 'member'));
+    window._tl = { open, close, laterOf, setLater, tab: toTab, persona: setPersona };
     { let sv = null; try { sv = JSON.parse(sessionStorage.getItem('everlab:svc') || 'null'); } catch (e){}
       if (sv && location.hash) setTimeout(() => { if (document.body.classList.contains('m9') && !document.body.classList.contains('homeOn') && window._svc) window._svc.openDesk(sv[0], sv[1]); }, 0); }   // a reload on the service page comes back to it
     // a reload while the Timeline was showing comes back to it (the Overview's hash, #m9, is the page under it)
@@ -32005,7 +32049,7 @@ hairline({
     '<div class="soSug">' + SOLO.sug.map((x, i) => '<button class="soSugC" type="button" data-sg="' + i + '"><span class="soSugPh" style="background-image:url(' + x.img + ')"></span><span class="soSugTx"><b>' + x.t + '</b><small>' + x.d + '</small></span><span class="soSugBy"><img src="assets/overview/avatar-dr.webp" alt="" width="20" height="20">Recommended by Dr Sarah Chen</span></button>').join('') +
       '<div class="soSugC soMem"><span class="soLbl">Everlab membership</span><b>Your doctor, your tests and your plan in one place</b><small>A yearly DEXA, blood panels, nutrition reviews and Dr Sarah Chen, for one price.</small><span class="soBtn soP">Explore membership</span></div></div>'; };
   const buildSolo = () => {
-    [['dOver', '.ovTop', false], ['phone2', '.mscroll > .mtitle', true]].forEach(([id, after, phone]) => { const host = document.getElementById(id); if (!host || host.querySelector('.ovSolo')) return; const at = host.querySelector(after); if (!at) return;
+    [['dOver', ':scope > .dvH1, :scope > .ovTop', false], ['phone2', '.mscroll > .mtitle', true]].forEach(([id, after, phone]) => { const host = document.getElementById(id); if (!host || host.querySelector('.ovSolo')) return; const ats = host.querySelectorAll(after), at = ats[ats.length - 1]; if (!at) return;   /* after the greeting where it is its own line, else after the bar */
       const el = document.createElement('div'); el.className = 'ovSolo'; el.innerHTML = soHtml(phone); at.after(el);
       el.addEventListener('click', e => { const r = e.target.closest('.soRow'), g = e.target.closest('.soSugC[data-sg]'); if (!window._svc || (!r && !g)) return; e.preventDefault(); e.stopPropagation();
         const open = phone ? window._svc.openMob : window._svc.openDesk;
