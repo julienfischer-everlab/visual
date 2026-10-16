@@ -7693,6 +7693,11 @@
   .msW{grid-area:w;justify-self:end;max-width:132px;font-size:12.5px;line-height:17px;color:var(--tlSub);text-align:right;} .msW.hot{color:var(--msAcc);}
   .msA{grid-area:a;justify-self:end;}
   #dTl .tlList.tlV2 .msB{height:34px;min-width:72px;max-width:124px;padding:0 12px;overflow:hidden;text-overflow:ellipsis;border-radius:10px;background:transparent;color:var(--tlInk);box-shadow:inset 0 0 0 1px var(--msBtnEdge);font-size:13px;} #dTl .tlList.tlV2 .msB:hover{background:var(--tlHover);}
+  /* Header position: Top -- the header across the card (its line wider, the count and the chevron at the far right), a rule under it, the actions below two to a row where the card has the room (one at XS), each with its when under its title */
+  #dTl .tlList.tlV2.msTop > .msCard{display:block;} #dTl .tlList.tlV2.msTop > .msCard:not(.shut) .msL{padding-bottom:20px;border-bottom:1px solid var(--tlLine);}
+  .tlV2.msTop .msD{max-width:62ch;} .tlV2.msTop .msCard.shut .msH{white-space:normal;} .tlV2.msTop .msRt{margin-top:20px;container:msrt / inline-size;}
+  #dTl .tlList.tlV2.msTop .tlRow.msRow{grid-template-columns:20px minmax(0,1fr) auto;grid-template-areas:"c t a" "c w a";align-content:start;row-gap:0;}   /* as tall as its neighbour in the row, its content from the top (no gap opening under the title) */ .tlV2.msTop .msC{align-self:start;margin-top:1px;} .tlV2.msTop .msW{justify-self:start;max-width:none;margin-top:4px;text-align:left;}
+  @container msrt (min-width:600px){ .tlV2.msTop .msG .tlItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:36px;} .tlV2.msTop .msG .tlItems > .msRow:nth-child(2)::after{display:none;} }
   #dTl .tlList.tlV2 .msB.msP{background:var(--tlInk);color:var(--pageBg, #0f0f0f);box-shadow:none;} #dTl .tlList.tlV2 .msB.msP:hover{opacity:.88;}
   /* a row: the picture, the title and the line, what and where under them,
      the actions at the right */
@@ -10587,12 +10592,20 @@
         </div>
         <div class="tkGroup" data-tl>
         <div class="tkSub">Timeline</div>
-        <!-- v2, My journey: Upcoming as milestones, not months, from the reference ("Timeline: create a v2 on tweak; forget about month grouping"; "that's the timeline v2; call it My journey in the menu"): the menu, the page's title and its tabs (Milestones, Unclaimed) follow -->
+        <!-- v2, My journey: Upcoming as milestones, not months, from the reference ("Timeline: create a v2 on tweak; forget about month grouping"; "that's the timeline v2; call it My journey in the menu"): the menu and the page's title follow; the tabs stay Upcoming / Later -->
         <div class="tkRow">
           <span class="lbl">Version</span>
           <select id="stTlVer" class="tkSegSel" aria-label="How Upcoming is grouped: by month or by journey">
             <option value="v1">v1 Months</option>
             <option value="v2" selected>v2 My journey</option>
+          </select>
+        </div>
+        <!-- My journey: a milestone's header at its left (its actions beside it), or on top, its actions under it two to a row ("tweak Header position: Left (current), Top (new), list below, 2 items per row") -->
+        <div class="tkRow" id="stMsHdRow">
+          <span class="lbl">Header position</span>
+          <select id="stMsHd" class="tkSegSel" aria-label="Where a milestone's header sits">
+            <option value="left" selected>Left</option>
+            <option value="top">Top</option>
           </select>
         </div>
         <!-- the Just completed section, shown or not ("tweak 'Just completed items' boolean") -->
@@ -30562,13 +30575,15 @@ hairline({
       t.scrollBy({ left: +b.dataset.d * (card ? card.offsetWidth + 8 : t.clientWidth), behavior: 'smooth' });
     });
     // Version: v1 the months, v2 My journey -- the menu's name, the page's title and its tabs with it ("call it My journey in the menu"; the reference's Milestones and Unclaimed)
-    { const v = document.getElementById('stTlVer');
+    { const v = document.getElementById('stTlVer'), hd = document.getElementById('stMsHd'), hdRow = document.getElementById('stMsHdRow');
+      const lay = () => { list.classList.toggle('msTop', !!hd && hd.value === 'top'); if (hdRow) hdRow.hidden = TLVER !== 'v2'; };   // Header position: Left, Top (a class on the list, kept through its redraws)
+      if (hd) hd.addEventListener('change', lay);
       const name = () => { const two = TLVER === 'v2', nm = two ? 'My journey' : 'Timeline';
         document.querySelectorAll('.dash .side .nv.nvTl').forEach(nv => { const t = nv.querySelector('span'); if (t) t.textContent = nm; nv.title = nm; });
         document.querySelectorAll('.mTab i').forEach(t => { if (/^(Timeline|My journey)$/.test(t.textContent)) t.textContent = nm; });
         main.setAttribute('aria-label', nm); if (tlH1 && !main.classList.contains('tlPastOn')) tlH1.textContent = two ? 'My journey' : 'Your health journey';
-        const tu = main.querySelector('.tlTab[data-t="up"]'), tc = main.querySelector('.tlTab[data-t="claim"]'); if (tu) tu.textContent = two ? 'Milestones' : 'Upcoming'; if (tc) tc.textContent = two ? 'Unclaimed' : 'Later'; placeThumb(); };
-      const ap = () => { TLVER = v ? v.value : 'v1'; name(); };
+        const tu = main.querySelector('.tlTab[data-t="up"]'), tc = main.querySelector('.tlTab[data-t="claim"]'); if (tu) tu.textContent = 'Upcoming'; if (tc) tc.textContent = 'Later'; placeThumb(); };   /* the tabs Upcoming / Later in both ("upcoming / later", not the reference's Milestones / Unclaimed) */
+      const ap = () => { TLVER = v ? v.value : 'v1'; name(); lay(); };
       ap(); if (v) v.addEventListener('change', () => { ap(); render(); }); }
     { const qi = document.getElementById('tlQ'); if (qi) qi.addEventListener('input', () => list.classList.toggle('msQ', !!qi.value.trim())); }   // searching My journey: the shut milestones open on their matches
     // a milestone opened or shut: its chevron, or anywhere on a shut one's left
@@ -31103,7 +31118,7 @@ hairline({
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'stInsPos' /* two places, Section and Hero: a select, not a switch ("the position here should be a select") */ || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stDefVis' || sel.id === 'stDefAl' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stTlPri' || sel.id === 'stTlVer' || sel.id === 'stTlStVis' || sel.id === 'stTlStPl' || sel.id === 'stBkN' || sel.id === 'stBkLay' || sel.id === 'stTlCta' || sel.id === 'stTaskHd' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stDefVis' || sel.id === 'stDefAl' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stTlPri' || sel.id === 'stTlVer' || sel.id === 'stMsHd' || sel.id === 'stTlStVis' || sel.id === 'stTlStPl' || sel.id === 'stBkN' || sel.id === 'stBkLay' || sel.id === 'stTlCta' || sel.id === 'stTaskHd' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
