@@ -14193,3 +14193,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Lock modal: "Complete this first" 24 from the modal's edges on desk (as the content above).
 - The `mri` service is "Whole Body MRI & CT Chest" (short "MRI & CT"): Timeline row, page title, booked card, static cards.
 - Not booked (or put off with Do it later): no location (pin) and no date (cal) in a row's properties; booked and completed keep them.
+
+## Booked: 2 Cards and Persistent; See actions below; async hero, insight cards
+- Next step / Booked (mobile) gains "2 Cards": Coming up (the booked card, so titled) then Next step, two cards of one make — a label, then a row: visual at the left (Next step's picture a rounded square as tall as its words, as the booked rows' date via `bkSqRO`), the words (headline + its line, 14px, three lines at most), the action as the rows' 32px pill. Light page handled.
+- Booked object gains "Persistent": On (default) keeps the card with "You don’t have any booked appointment yet." when nothing is booked (Stacked, 2 Columns under its label, Tab, 2 Cards); "On, preview empty" shows that state with the demo's bookings; Off hides the card when empty, as before.
+- Plan ahead: "See actions" under the words at every size (was at the card's right on L, M, S).
+- Async report, welcome (phone, XS, S): the service page's hero parallax — the picture runs 32 past the hero's foot and rises those 32 while it fades out (to black on phone/XS/S), the title rises at .25× and fades; k over the hero's height less 40, or what scrolls if shorter. The blur band removed. The head (status bar + close) takes a black ground over the last 40% of the fade. On the desk at XS the report starts at the device's top with its own transparent status bar (was under the device's dark strip).
+- Async report, desktop M/L: the hero a card rounded all round, scrolling with the page, no parallax; the body no rounded sheet, straight under it.
+- Async lifestyle insight: "Behind this insight" a card of cards (heading on the grey, Your biomarkers and Your answers each a white card inside, 4 apart); "Was this useful?" an outlined card.
