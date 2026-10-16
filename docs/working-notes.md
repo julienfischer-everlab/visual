@@ -14241,3 +14241,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Service detail, Hide completed services: with Your progress hidden (`#dSvc.svNoAside`), the grid is one column and the body fills its width.
 - …that one column is the task page's container: 716 wide, centred (same left and width as a task page's).
 - Overview Action plan cards (desk grid, `.tlEmbG`): the bars / bars chip at the card's top right beside the title, as the phone's rows (the subtitle under the title), right edge on the button's.
+- Booked date squares: the day 22 (+4), 4 between it and the month (+2), the month white 40% (light: brown 40%; the dark folder on the light page white 40%).
