@@ -28934,6 +28934,7 @@ hairline({
       return s1 || at >= 1 ? go() : 'Not started yet'; };
     const CHKS = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 6.2 2.2 2.2 4.8-5"/></svg>';
     const simIn = (key, state, o) => { if (key === 'gutq' && (SIM.gutq ? SIM.gutq.state : state) === 'done'){ const g = SIM.gut || { state: 'active', o: { at: 1, tag: 'Kit being prepared' } }; key = 'gut'; state = g.state; o = Object.assign({}, o, g.o); delete o.journey; }   /* the questionnaire done isn't a page of its own: the microbiome opens on the step in hand ("this step doesn't exist") */
+      if (o && o.past) return [key, state, o];   /* a completed row's record (the July microbiome's report): its own step, never the demo's memory, nor written to it -- the August kit stays on its step */
       const k = key || 'dexa'; if (k === 'gut' && state === 'active' && o && o.at >= 5) SIM.gut = { state: 'active', o: { at: o.at, tag: '' } };   /* the kit past the lab, opened directly: the group follows */ if (!SIM[k]) return [key, state, o]; return [k, SIM[k].state, Object.assign({}, o, SIM[k].o)]; };   // DOCS: where the documents show (the tweak); LAY: which page a service opens on   // PH: painting a phone layout (the horizontal card is the phone's only, "not horizontal on desktop")   // HZ: the own card's steps as one row of bars (the tweak)   // Right column merged by default ("use as default")   // JP: the progress inside the journey's own card (the tweak)   // where a journey's block goes (the tweak): under the progress, or in the body in place of the status block
     const KVETA = /\b\d{1,2}(\u2013\d{1,2})? (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b|\bbusiness days?\b|\bwithin\b|\bweeks?\b/i;   // a sub step's line that says when: a date, or how long
     const kvEta = t => t.split(/(?<=\.)\s+|\s+\u00b7\s+/).filter(x => KVETA.test(x)).join(' ').replace(/\.$/, '');   // just the sentence that says when ("In the app. Expected by 9 Oct" -> "Expected by 9 Oct"), a slot without its place
@@ -29943,6 +29944,11 @@ hairline({
           { t: 'Whole Body MRI & CT Chest', d: VISIT, img: 'mri', meta: [['pin', 'Quantum Therapy Sydney'], ['cal', 'Today, 10:30 - 11:10 am']], act: 'Get directions', cta: 1, more: 1, svc: 'mri', state: 'booked', when: 'today, 10:30 am', soon: 1, bk: ['15', 'Oct', '10:30 am', 'Get directions'] },   // the demo's approaching appointment, under 8 hours away: today, its way there the CTA ("MRI item on appointment with approaching booking: today 10:30 - 11:10am, CTA Get direction")
           { t: 'Onboarding Consultation', d: 'A video call with your Everlab doctor about your health, your history and your goals.', img: 'consult', meta: [['video', 'Online video call'], ['cal', '23 Sep 2026, 11:00 - 11:30 am']], act: 'View', svc: 'consult', state: 'booked', when: 'Wed 23 Sep, 11:00 am', sub: 'You\u2019re scheduled for Wed 23 Sep, 11:00 am', bk: ['23', 'Sep', '11:00 am', 'Prepare'] },   // the one not approaching ("keep onboarding consultation: X Sep 2026, 11:00 - 11:30am, View"; "Onboarding 23 Sep")
           { t: 'MRI Briefing', d: VISIT, img: 'brief', meta: [['video', 'Online video call']], act: 'Book', cta: 1, more: 1, svc: 'brief', state: 'book' },
+          // the Microbiome in the current month, on its kit's fourth step: the questionnaire done, the sample to collect and post, the report to come -- moved from September, where it sat a step earlier ("add the microbiome test on the timeline in August, and set up the object on this step")
+          { t: 'Microbiome & Gut Health Assessment', d: 'An at-home stool test of your gut microbiome, with a report.', img: 'microc', meta: [['sug', '3 services'], ['clock', 'Post it back Sun, Mon or Tue']], act: 'Collect sample', cta: 1, more: 1,
+            group: [{ svc: 'gutq', state: 'done' },
+              { svc: 'gut', state: 'active', tag: 'Collect and post', d: 'Post it on a Sunday, Monday or Tuesday so it doesn\u2019t sit in the post over the weekend.', at: 3 },
+              { svc: 'gutrep', state: 'soon' }] },
           // each service of the Member Check-In group is its own object, placed by its own state -- DEXA here, the two waiting on it in Later -- and each shows the group's list of service cards, its own outlined ("locked because DEXA isn't done, so for Later"; "the same list of services inside the DEXA")
           { t: 'DEXA Scan', d: 'Book your DEXA scan to measure body composition and bone density', img: 'dexa', meta: [['sug', 'Member Check-In \u00b7 1 of 3'], ['clock', 'Due by 30 Sep 2026']], act: 'Book', cta: 1, more: 1,
             svc: 'dexa', state: 'book', steps: DEXA_ST, group: CHECKIN, focus: 0 },
@@ -29959,11 +29965,7 @@ hairline({
           { t: 'Nutrition review', d: VISIT, img: 'nutri', meta: [['dr', 'Online video call with Dr Sarah Chen']], act: 'Book', cta: 1, more: 1, svc: 'nutri', state: 'book' },   /* to book, so the Appointments are the two of the demo */
           // a single service, not a group: its steps are the row's own, level one ("if the service is not a service group, treat the steps as level one, with the circle indicator")
           { t: 'Preventative Health Genetic Test', d: 'A saliva test for the inherited risks worth knowing about early.', img: 'path', meta: [['clock', 'Your kit is on its way \u2014 usually 3 to 7 business days']], act: 'Confirm delivery', cta: 1, more: 1,
-            svc: 'gene', state: 'active', at: 2, ask: 'Confirm delivery', line: 'Your kit is on its way \u2014 usually 3 to 7 business days' },
-          { t: 'Microbiome & Gut Health Assessment', d: 'An at-home stool test of your gut microbiome, with a report.', img: 'nutri', meta: [['sug', '3 services'], ['clock', 'Post it back Mon or Tue']], act: 'Collect sample', cta: 1, more: 1,
-            group: [{ svc: 'gutq', state: 'done' },
-              { svc: 'gut', state: 'active', tag: 'Kit being prepared', d: 'It usually ships within 2 business days', at: 1 },
-              { svc: 'gutrep', state: 'soon' }] }
+            svc: 'gene', state: 'active', at: 2, ask: 'Confirm delivery', line: 'Your kit is on its way \u2014 usually 3 to 7 business days' }
         ] },
         { h: 'October 2026', rows: [
           { t: 'Pathology Test', d: VISIT, img: 'path', meta: [DR], act: 'View', more: 1, svc: 'path', state: 'book', st: 'Recommended by Dr Sarah Chen' },
@@ -30045,7 +30047,7 @@ hairline({
     let DIRTY = false;
     const openRow = d => { const w = own(d); if (!w.svc) return; if (unseen(d)){ SEEN.add(seenK(d)); DIRTY = true; }   // opened: seen, so Past from now on
       lastTop = main.scrollTop; window._svc.openDesk(w.svc, w.openState || w.state, openO(d, w)); };   /* a row may name the state its page opens on (openState, openAt) */   // a row has moved tab since the list was drawn: drawn afresh on the way back
-    const openO = (d, w) => d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.openAt != null ? d.openAt : d.at, tag: d.ask || d.tag, d: d.line };   // what the row tells its page
+    const openO = (d, w) => d.group ? Object.assign(svcOpts(w), { journey: jOf(d, ownI(d)) }) : { from: 'tl', past: d.state === 'done' && d.openState ? 1 : 0 /* a completed one opening its record (the July microbiome's report): kept apart from the demo's memory of the service in hand */, when: d.when, age: d.age, t: d.title || d.t, steps: d.steps, need: d.need, at: d.openAt != null ? d.openAt : d.at, tag: d.ask || d.tag, d: d.line };   // what the row tells its page
     /* the row's subtitle: its status block's title, as its page shows it ("the title the service or the task; the subtitle the status block title"); its own line where it has none */
     const subOf = r => { if (r.sub) return r.sub; const w = own(r); if (!w || !w.svc || !window._svc || !window._svc.head) return r.d; return window._svc.head(w.svc, w.state, openO(r, w)) || r.d; };
     const SNZ = new Set();   // put off with Do it later: out of Upcoming, into the Later tab, first, till Move to Upcoming
