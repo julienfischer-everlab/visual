@@ -14210,3 +14210,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Bars chips: 8 padding (was 4).
 - Bars chips sit on the picture's top-right corner now (chosen over the row's top right): a badge 8 above and 10 past the corner, its status tint over the page ground, a 3 ring of that ground cutting it from the picture (hover follows the row's ground); out of the properties line. Hidden on Past, as the other marks.
 - Bars chips back in the properties line, first, beside them ("need to be next to the property"); the picture-corner badge removed. 8 padding kept.
+- Insights → Position is a select (kept out of the two-option switch conversion): Section (the Recent insights section, as it is) / Hero (the whole section gone; the insights one card above the appointment card, in the services' place — beside Next step on the desk, under the greeting at XS, 12 above Coming up).
+- Section order back to Services first (`svc,hub,hero,…`): "push down" had been read as a reorder; a save holding the interim Next-step-first order takes the default again.
