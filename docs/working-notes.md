@@ -14303,3 +14303,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Visual tweak (Layout V2 only): Icon (default) or Imagery, the service's picture in the 44px rounded square.
 - Two-column cards: the label column 48px narrower (31% − 48px, never under 140px).
 - Hero inner padding 36px (48 − 12).
+
+## My journey Layout V2 rows: +8 between items, 36px buttons, visual +4 right
+- Rows' vertical padding +4 each side (two-column cards 12 → 16, single-column 14 → 18): 8px more between items; the hover tile set 4px in so it keeps its size.
+- Row buttons 36px high (were 40).
+- The visual's column 4px wider than the visual (48 / 44 under 600px), so 4px more between it and the words (a margin on the fixed-width visual in its fixed track would not have moved anything).
