@@ -14285,3 +14285,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Journey cards +4px padding all round (22/28/10, two-column 26/28/12, XS 20/20/8).
 - Hero title 8px smaller: 24px (18px under 600px).
 - The rows' line and date are 14px regular; the name 16px medium (answered, unchanged).
+
+## My journey Layout V2: hero #534C46, row hover +4, date 12px
+- Hero card background #534C46 in both themes (was the panel grey; dark #161514 on the light page). Its text light on it: title and count #f6f4f2, line and weeks left white at 70%, track segments white at 16%, the eyebrow and done segments #f78359. The visual still blends with screen, its black giving way to the warm grey.
+- A row's hover tile 4px larger all round (top/bottom 0, sides −16px, radius 16).
+- The date line under the name (clock + when) 12px, its icon 14px, gap 6.
