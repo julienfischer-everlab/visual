@@ -8423,10 +8423,10 @@
   #phone2 .ovInsChart svg{top:24px;height:calc(100% - 24px);}
   #phone2 .ovInsChip{top:18px;}
   #dOver .ovInsSl{padding:20px 22px 34px 24px;gap:24px;}
-  /* Services -> Content -> Insights: the service cards out, the Insights card in their place -- on the desk the column beside Next step, its height; at XS full width where the row was */
-  .ovInsCard.ovSvcIns{display:none;} html.svcIns #dOver .ovInsCard.ovSvcIns{display:flex;} html.svcIns #dOver .ovSvc{display:none !important;} html.svcIns #dOver .ovInsCard.ovSvcIns:has(+ .ovSvc.ovOff){display:none;} #stSvcRow[hidden]{display:none !important;}
-  html.svcIns body:not([data-bp="xs"]) #dOver .dvTop .ovInsCard.ovSvcIns{flex:1 1 auto;height:auto;min-height:200px;margin:0;}
-  html.svcIns body[data-bp="xs"] #dOver .ovInsCard.ovSvcIns{margin:0 0 12px;}
+  /* Insights -> Position -> Hero: the insights one card in the services' place (the service cards out, the full section too) -- on the desk the column beside Next step, its height; at XS full width where the row is; off with the Insights section's own switch */
+  .ovInsCard.ovInsHero{display:none;} html.insHero #dOver .ovInsCard.ovInsHero{display:flex;} html.insHero #dOver .ovSvc, html.insHero #dOver > :is(.dvSecIns, .dvRail, .railNav, .dvDots){display:none !important;} html.insHero #dOver:has(.dvSecIns.ovOff) .ovInsCard.ovInsHero{display:none;}
+  html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovInsCard.ovInsHero{flex:1 1 auto;height:auto;min-height:200px;margin:0;}
+  html.insHero body[data-bp="xs"] #dOver .ovInsCard.ovInsHero{margin:0 0 12px;}
 
   .ovtasks{margin:0 13px;background:rgba(255,255,255,.04);border-radius:22px;padding:4px 16px;}
   .ovtask{
@@ -10881,7 +10881,7 @@
         <div class="tkRow tkOrdRow tkGone">   <!-- retired: the section cards below are the order now, each its switch ("make these sections adjustable for the order, then you can remove this") -->
           <span class="lbl">Section order</span>
           <ol class="tkOrd" id="tkOvOrd" aria-label="Drag to reorder the Overview's sections"></ol>
-          <input type="hidden" id="stOvOrder" value="svc,hub,hero,row2,ins,prof,plan">
+          <input type="hidden" id="stOvOrder" value="hero,svc,hub,row2,ins,prof,plan">   <!-- Next step first: on XS and the phone the Coming up / Next step block on top, Services (or the insights card) under it ("push down Insight / Service"); the desk row keeps Next step left, Services right -->
           <input type="hidden" id="stOvOff" value="">   <!-- the sections switched off ("put a toggle on/off for all items") -->
         </div>
         </div>
@@ -10890,14 +10890,7 @@
         <div class="tkSub">Services</div>
         <!-- the service cards under the greeting: tiles (glyph, label) or
              large (title, a line of support, the visual at the right) -->
-        <div class="tkRow">   <!-- what the section holds: the service cards, or the Insights card -- words left, the visual right, dots under ("tweak Service section: Content: Services, Insights") -->
-          <span class="lbl">Content</span>
-          <select id="stSvcCon" aria-label="What the services section shows">
-            <option value="svc" selected>Services</option>
-            <option value="ins">Insights</option>
-          </select>
-        </div>
-        <div class="tkRow" id="stSvcRow">
+        <div class="tkRow">
           <span class="lbl">Cards</span>
           <select id="stSvc" aria-label="The Overview's service cards">
             <option value="tiles" selected>Tiles</option>
@@ -11016,6 +11009,13 @@
           <span class="lbl">Insights</span>
           <select id="stInsSec" aria-label="Show the Insights carousel">
             <option value="3" selected>On</option>
+          </select>
+        </div>
+        <div class="tkRow">   <!-- where the insights sit: their own full section, or one card up top in the services' place -- words left, the visual right, dots under ("remove Content and replace this tweak in Insights: Position: Full section, Hero (above Coming up instead of service)") -->
+          <span class="lbl">Position</span>
+          <select id="stInsPos" aria-label="Where the insights sit on the Overview">
+            <option value="full" selected>Full section</option>
+            <option value="hero">Hero</option>
           </select>
         </div>
         </div>
@@ -30756,14 +30756,14 @@ hairline({
     card._ovIns = { at: () => idxAt(track.scrollLeft), go: i => settle(Math.max(0, Math.min(n - 1, i)) * w()), n };
   }
   document.querySelectorAll('.ovInsCard').forEach(buildOvInsights);
-  // Services -> Content -> Insights: the Insights card in the services' place, on the desk beside Next step, at XS where the row is; kept just before the row wherever the page moves it
+  // Insights -> Position -> Hero: the insights as one card in the services' place, on the desk beside Next step, at XS where the row is; kept just before the row wherever the page moves it
   { const over = document.getElementById('dOver'), row0 = over && over.querySelector('.ovSvc');
-    if (row0){ const ic = document.createElement('div'); ic.className = 'ovInsCard ovSvcIns'; row0.before(ic); buildOvInsights(ic);
+    if (row0){ const ic = document.createElement('div'); ic.className = 'ovInsCard ovInsHero'; row0.before(ic); buildOvInsights(ic);
       const keep = () => { const r = over.querySelector('.ovSvc'); if (r && ic.nextElementSibling !== r) r.before(ic); };
       new MutationObserver(keep).observe(over, { childList: true, subtree: true });
-      const con = document.getElementById('stSvcCon'), cr = document.getElementById('stSvcRow');
-      const ap = () => { const on = !!con && con.value === 'ins'; document.documentElement.classList.toggle('svcIns', on); if (cr) cr.hidden = on; if (on && ic._ovIns) requestAnimationFrame(() => ic._ovIns.go(ic._ovIns.at())); };   /* the Cards row belongs to the services: gone with them */
-      if (con){ ap(); con.addEventListener('change', ap); } } }
+      const pos = document.getElementById('stInsPos');
+      const ap = () => { const on = !!pos && pos.value === 'hero'; document.documentElement.classList.toggle('insHero', on); if (on && ic._ovIns) requestAnimationFrame(() => ic._ovIns.go(ic._ovIns.at())); };
+      if (pos){ ap(); pos.addEventListener('change', ap); } } }
   // hover: cell and its organ fade together, .5 resting -> 1 hovered
   const gHov = new Array(PILL.length).fill(0);
   const gA = new Array(PILL.length).fill(0.32);
@@ -33024,11 +33024,13 @@ hairline({
   // the open steps, the journey module, the locked pattern and its opacity, kept in localStorage and
   // put back on load, before the first page opens
   {
-    const KEY = 'everlab:tkPages', DEF = { stDefVis: 'img', stDefAl: 'c', stHeroBg: 'earth', stProfStyle: 'tiles', stTlSteps: 'c', stTlPri: 'svc', stTlCta: 'right', stTlStat: 'off', stTlChipH: '36', stTaskHd: 'banner', stKitMin: '128', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'svc,hub,hero,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stProgSty: 'bars', stTabC: 'on', stObs: 'off', stBioS: 'off', stMdl: 'v1', stSubTl: 'in', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
+    const KEY = 'everlab:tkPages', DEF = { stDefVis: 'img', stDefAl: 'c', stHeroBg: 'earth', stProfStyle: 'tiles', stTlSteps: 'c', stTlPri: 'svc', stTlCta: 'right', stTlStat: 'off', stTlChipH: '36', stTaskHd: 'banner', stKitMin: '128', stProfIn: 'sec', stHeroImg: 'cover', stInsCond: 'cond', stOvOrder: 'hero,svc,hub,row2,ins,prof,plan', stTlOpen: 'month', stJr: 'rightm', stJrHz: 'v', stSvTabs: 'sec', stLkMod: 'banner', stDocGrp: 'off', stBodySty: 'card', stWrapSty: 'outline', stRepSt: 'off', stRepVis: 'doc', stCtaPos: 'below', stEtaB: 'off', stSubCard: 'off', stProgSty: 'bars', stTabC: 'on', stObs: 'off', stBioS: 'off', stMdl: 'v1', stSubTl: 'in', stKitFoot: 'grey', stKitMono: 'mono', stSvDocs: 'asSteps', stDocsNS: '4', stLayout: 'svc', stLockPatS: 'on', stLockOpS: '8' };
     const put = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v)) return; el.value = String(v);
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
     let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e){}
+    const OLDORD = 'svc,hub,hero,row2,ins,prof,plan';   // a save made before Next step went first, its order untouched: the new default instead
+    if (saved && saved.stOvOrder === OLDORD) saved.stOvOrder = DEF.stOvOrder;
     if (saved) Object.keys(DEF).forEach(id => put(id, saved[id]));
     /* every control in the two tweak panels, saved and put back together ("all tweaks need a Save"): their values as the page loaded are the defaults Reset goes back to */
     const KEY2 = 'everlab:tkAll', ctl = () => [...document.querySelectorAll('.topbar .tkPanel :is(select, input)[id]')].filter(el => el.id !== 'versionSel' && !el.classList.contains('inkHex'));
@@ -33036,6 +33038,7 @@ hairline({
     const DEF2 = {}; ctl().forEach(el => { DEF2[el.id] = valOf(el); }); Object.assign(DEF2, DEF);
     const put2 = (id, v) => { const el = document.getElementById(id); if (!el || v == null) return; if (el.type === 'checkbox'){ if (String(el.checked) === v) return; el.checked = v === 'true'; el.dispatchEvent(new Event('change', { bubbles: true })); return; } put(id, v); };
     let saved2 = null; try { saved2 = JSON.parse(localStorage.getItem(KEY2) || 'null'); } catch (e){}
+    if (saved2 && saved2.stOvOrder === OLDORD) saved2.stOvOrder = DEF.stOvOrder;
     if (saved2) requestAnimationFrame(() => Object.keys(saved2).forEach(id => put2(id, saved2[id])));
     document.querySelectorAll('.stTkSave').forEach(b => b.addEventListener('click', () => {
       const v = {}; Object.keys(DEF).forEach(id => { const el = document.getElementById(id); if (el) v[id] = el.value; });
