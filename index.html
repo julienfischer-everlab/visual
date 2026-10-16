@@ -8423,6 +8423,11 @@
   #phone2 .ovInsChart svg{top:24px;height:calc(100% - 24px);}
   #phone2 .ovInsChip{top:18px;}
   #dOver .ovInsSl{padding:20px 22px 34px 24px;gap:24px;}
+  /* Services -> Content -> Insights: the service cards out, the Insights card in their place -- on the desk the column beside Next step, its height; at XS full width where the row was */
+  .ovInsCard.ovSvcIns{display:none;} html.svcIns #dOver .ovInsCard.ovSvcIns{display:flex;} html.svcIns #dOver .ovSvc{display:none !important;} html.svcIns #dOver .ovInsCard.ovSvcIns:has(+ .ovSvc.ovOff){display:none;} #stSvcRow[hidden]{display:none !important;}
+  html.svcIns body:not([data-bp="xs"]) #dOver .dvTop .ovInsCard.ovSvcIns{flex:1 1 auto;height:auto;min-height:200px;margin:0;}
+  html.svcIns body[data-bp="xs"] #dOver .ovInsCard.ovSvcIns{margin:0 0 12px;}
+
   .ovtasks{margin:0 13px;background:rgba(255,255,255,.04);border-radius:22px;padding:4px 16px;}
   .ovtask{
     display:flex;align-items:center;gap:12px;padding:13px 0;
@@ -10885,7 +10890,14 @@
         <div class="tkSub">Services</div>
         <!-- the service cards under the greeting: tiles (glyph, label) or
              large (title, a line of support, the visual at the right) -->
-        <div class="tkRow">
+        <div class="tkRow">   <!-- what the section holds: the service cards, or the Insights card -- words left, the visual right, dots under ("tweak Service section: Content: Services, Insights") -->
+          <span class="lbl">Content</span>
+          <select id="stSvcCon" aria-label="What the services section shows">
+            <option value="svc" selected>Services</option>
+            <option value="ins">Insights</option>
+          </select>
+        </div>
+        <div class="tkRow" id="stSvcRow">
           <span class="lbl">Cards</span>
           <select id="stSvc" aria-label="The Overview's service cards">
             <option value="tiles" selected>Tiles</option>
@@ -30744,6 +30756,14 @@ hairline({
     card._ovIns = { at: () => idxAt(track.scrollLeft), go: i => settle(Math.max(0, Math.min(n - 1, i)) * w()), n };
   }
   document.querySelectorAll('.ovInsCard').forEach(buildOvInsights);
+  // Services -> Content -> Insights: the Insights card in the services' place, on the desk beside Next step, at XS where the row is; kept just before the row wherever the page moves it
+  { const over = document.getElementById('dOver'), row0 = over && over.querySelector('.ovSvc');
+    if (row0){ const ic = document.createElement('div'); ic.className = 'ovInsCard ovSvcIns'; row0.before(ic); buildOvInsights(ic);
+      const keep = () => { const r = over.querySelector('.ovSvc'); if (r && ic.nextElementSibling !== r) r.before(ic); };
+      new MutationObserver(keep).observe(over, { childList: true, subtree: true });
+      const con = document.getElementById('stSvcCon'), cr = document.getElementById('stSvcRow');
+      const ap = () => { const on = !!con && con.value === 'ins'; document.documentElement.classList.toggle('svcIns', on); if (cr) cr.hidden = on; if (on && ic._ovIns) requestAnimationFrame(() => ic._ovIns.go(ic._ovIns.at())); };   /* the Cards row belongs to the services: gone with them */
+      if (con){ ap(); con.addEventListener('change', ap); } } }
   // hover: cell and its organ fade together, .5 resting -> 1 hovered
   const gHov = new Array(PILL.length).fill(0);
   const gA = new Array(PILL.length).fill(0.32);
