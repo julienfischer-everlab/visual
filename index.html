@@ -5639,6 +5639,10 @@
   /* the hero header again ("use hero header style as previously, with h1 overlapping the hero"): the picture full bleed, its shade, the title on it; the body a paper panel
      with rounded top corners over the hero's foot, the badges and the intro first. At XS, S and on the phone the close rides on the picture; at M and L the hero is the column's, rounded */
   .aqWrap:is(.aqFull, .aqPhone) .arSheet .arPanel{flex:none;}
+  /* on scroll the body comes up over the hero, the hero pinned under it with a parallax: the picture drifting up at a fifth of the scroll, the title a third and fading ("on scroll up the body should overlap the hero header, with parallax, same as previously") */
+  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arHero{position:sticky;top:0;z-index:0;} .aqWrap:is(.aqFull, .aqPhone) .arSheet .arPanel{z-index:1;}
+  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arHeroImg{transform:translateY(calc(var(--ar-hero-y, 0px) * -.2)) scale(1.04);will-change:transform;}
+  .aqWrap:is(.aqFull, .aqPhone) .arSheet .arHeroText{transform:translateY(calc(var(--ar-hero-y, 0px) * -.35));opacity:calc(1 - var(--ar-hero-k, 0));}
   .aqWrap:is(.aqFull, .aqPhone) .arSheet .arPanelScroll{overflow:visible;padding:24px var(--aqSide, 20px) 8px;-webkit-mask-image:none;mask-image:none;}
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet.arIsWelcome .arHead, .aqWrap.aqPhone .arSheet.arIsWelcome .arHead{position:absolute;left:0;right:0;top:0;z-index:3;}   /* the close on the picture */
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet.arIsWelcome .arIconBtn, .aqWrap.aqPhone .arSheet.arIsWelcome .arIconBtn{background:oklch(100% 0 0 / .16);color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}
@@ -13407,6 +13411,8 @@
     var foot = h('div', { class: 'arFoot' }, cta);
     var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : ''), 'data-ar-mount': uid }, head, body, foot);
 
+    // the welcome's scroll for the host's parallax: --ar-hero-y (px scrolled) and --ar-hero-k (0..1 over the first 220)
+    on(body, 'scroll', function () { var y = step === 0 ? Math.max(0, body.scrollTop) : 0; root.style.setProperty('--ar-hero-y', y.toFixed(1) + 'px'); root.style.setProperty('--ar-hero-k', Math.min(1, y / 220).toFixed(3)); }, { passive: true });
     function close() { if (o.onClose) o.onClose(); else go(0); }
     on(backBtn, 'click', function () { go(Math.max(0, step - 1)); });
     on(closeBtn, 'click', close);
@@ -13746,6 +13752,7 @@
       body.textContent = '';
       body.appendChild(build(step));
       body.scrollTop = 0;
+      root.style.setProperty('--ar-hero-y', '0px'); root.style.setProperty('--ar-hero-k', '0');
     }
 
     function go(n) {
