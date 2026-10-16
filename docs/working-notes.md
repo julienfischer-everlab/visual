@@ -14208,3 +14208,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - At XS (and the phone mock) 12 between Next step and the Services row / the insights card now that they sit under it.
 - Past activity (XS): the opened search is Upcoming's field — round 12, no ground, a 1.5 edge (#2a2a28; white in focus; light #ddd3bf / #2e241c).
 - Bars chips: 8 padding (was 4).
+- Bars chips sit on the picture's top-right corner now (chosen over the row's top right): a badge 8 above and 10 past the corner, its status tint over the page ground, a 3 ring of that ground cutting it from the picture (hover follows the row's ground); out of the properties line. Hidden on Past, as the other marks.
