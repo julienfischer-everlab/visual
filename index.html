@@ -5601,7 +5601,7 @@
   .aqWrap.aqDesk.aqFull .aqFrame{left:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:translateY(104%);}
   .aqWrap.aqDesk.aqFull.on .aqFrame{transform:none;} .aqWrap.aqDesk.aqFull.shut .aqFrame{transform:translateY(104%);}
   .aqWrap.aqFull .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:560px;margin:0 auto;}
-  .aqWrap.aqFull .arSheet .arH700{text-align:center;font-size:28px;line-height:1.2;text-wrap:balance;}
+  .aqWrap.aqFull .arSheet .arH700{text-align:center;font-size:28px;line-height:1.2;text-wrap:balance;} .aqWrap.aqFull .arSheet .arLfHead{align-items:center;text-align:center;}   /* the lifestyle insight's date under its centred title */
   /* the viewport's breakpoint (the Full modal board: XS, S, M, L). A forced breakpoint frames the report as it frames the page: centred at its floor's width, and at XS and S in the device, under its status bar */
   body[data-bp] .aqWrap.aqDesk{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);}
   body[data-bp="xs"] .aqWrap.aqDesk, body[data-bp="s"] .aqWrap.aqDesk{top:calc(var(--barH,57px) + 48px);bottom:48px;overflow:hidden;}
@@ -12923,6 +12923,34 @@
 .arSheet .arRangeLine { stroke: oklch(var(--ar-ink)); }
 .arSheet .arStateOpt { color: var(--ar-opt-fg); }
 .arSheet .arStateSub { color: var(--ar-sub-fg); }
+/* the lifestyle insight (step 10): its card, the biomarker with its range and status, the answer, the was-this-useful */
+.arSheet .arLfStack { gap: 32px; }
+.arSheet .arLfHead { display: flex; flex-direction: column; gap: 6px; } .arSheet .arLfHead .arH700 { margin: 0; }
+.arSheet .arLfCard { display: flex; flex-direction: column; gap: 22px; padding: 20px 20px 22px; border-radius: calc(var(--ar-radius-card) + 4px); background: var(--ar-card-bg); }
+.arSheet .arLfIntro { display: flex; flex-direction: column; gap: 6px; }
+.arSheet .arLfSrc { margin: 0; font-family: var(--ar-font); font-size: 15px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink) / .6); text-wrap: pretty; }
+.arSheet .arLfGroup { display: flex; flex-direction: column; gap: 10px; }
+.arSheet .arLfMk { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.arSheet .arLfMkL { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.arSheet .arLfName { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink)); }
+.arSheet .arLfMkR { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+.arSheet .arLfBar { display: block; overflow: visible; }
+.arSheet .arLfBarLine { stroke: oklch(var(--ar-ink)); }
+.arSheet .arLfPill { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 400; white-space: nowrap; }
+.arSheet .arLfSub { background: var(--ar-sub-bg2); color: var(--ar-sub-fg); }
+.arSheet .arLfOpt { background: var(--ar-opt-bg2); color: var(--ar-opt-fg); }
+.arSheet .arLfOut { background: var(--ar-out-bg2); color: var(--ar-out-fg); }
+.arSheet .arLfQA { display: flex; flex-direction: column; gap: 4px; }
+.arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
+.arSheet .arLfA { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink)); }
+.arSheet .arLfSec { display: flex; flex-direction: column; gap: 10px; }
+.arSheet .arLfSec .arPara + .arPara { margin-top: 10px; }
+.arSheet .arLfH { font-family: var(--ar-font); font-size: 20px; line-height: 24px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
+.arSheet .arLfUse { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.arSheet .arLfThumbs { display: flex; gap: 4px; margin-right: -8px; }
+.arSheet .arLfThumb { appearance: none; -webkit-appearance: none; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: none; color: oklch(var(--ar-ink)); cursor: pointer; transition: background .16s ease; }
+.arSheet .arLfThumb:hover { background: oklch(var(--ar-ink) / .06); }
+.arSheet .arLfThumb[aria-pressed="true"] svg { fill: oklch(var(--ar-ink) / .9); }
 .arSheet .arStateOut { color: var(--ar-out-bg); }
 .arSheet .arNote { border-radius: 16px; background: oklch(var(--ar-ink) / .045); padding: 14px 16px; margin: 4px 0 10px; }
 
@@ -12962,11 +12990,11 @@
  *     onClose: function () {}          // Close (X) and the final "Done"
  *   });
  *   ar.el        the <div class="arSheet"> appended to host
- *   ar.go(n)     jump to step n (0-11)
+ *   ar.go(n)     jump to step n (0-12)
  *   ar.reset()   step 0, scrolled to top, every accordion closed
  *   ar.destroy() remove it
  *
- * Steps (12): 0 Welcome, 1 Summary, 2-9 Insight 1-8, 10 Everything else, 11 Next steps.
+ * Steps (13): 0 Welcome, 1 Summary, 2-9 Insight 1-8, 10 Lifestyle insight (TSH), 11 Everything else, 12 Next steps.
  * Needs async-report.css. The root fills its host and scrolls internally.
  */
 (function () {
@@ -13101,6 +13129,17 @@
     }
   ];
 
+  // The lifestyle insight: a questionnaire answer read alongside a biomarker, after the eight blood insights ("on the Async, add this step")
+  var LIFE = {
+    headline: 'Thyroid stimulating hormone is slightly above range',
+    date: '15 Oct 2026',
+    source: 'From your Lifestyle Profiling questionnaire and your October 2026 blood test.',
+    markers: [{ name: 'TSH', value: '4.8 mIU/L', date: '15 Oct 2026', status: 'Suboptimal', pos: 0.72 }],
+    answers: [{ q: 'How often do you feel cold when others are comfortable?', a: 'Most days' }],
+    noticed: ['A raised TSH means your thyroid is being pushed harder to keep output normal.'],
+    means: ['You raised low energy and feeling cold, which is why this was included.', 'Worth repeating with free T4 at your review.']
+  };
+
   var ok = function (name, value) { return { name: name, value: value, status: 'Optimal' }; };
   var sub = function (name, value) { return { name: name, value: value, status: 'Suboptimal' }; };
   var PANELS = [
@@ -13121,8 +13160,8 @@
   var CLASS_SPEC = [['goals', 'Goals'], ['family', 'Family history'], ['symptoms', 'Symptoms'], ['conditions', 'Medical conditions'], ['medications', 'Medications & Supplements'], ['wearables', 'Wearables']];
 
   var N_INS = INSIGHTS.length;              // 8
-  var STEP_COUNT = N_INS + 4;               // 12
-  var FIRST = 2, REST = N_INS + 2, NEXT = N_INS + 3;
+  var STEP_COUNT = N_INS + 5;               // 13
+  var FIRST = 2, LIFE_ST = N_INS + 2, REST = N_INS + 3, NEXT = N_INS + 4;   // the lifestyle insight after the eight
 
   // status -> colour tokens (see async-report.css)
   var LINE = { 'Optimal': 'var(--ar-opt-bg)', 'Suboptimal': 'var(--ar-sub-bg)', 'Out of range': 'var(--ar-out-bg)' };
@@ -13427,7 +13466,7 @@
       return h('div', { class: 'arStack arGap24' },
         h('div', { class: 'arIntroBlock arAnimRise' },
           h('h2', { class: 'arH700', text: 'We tested 120 markers across 16 panels.' }),
-          h('div', { class: 'arLede', text: 'Most are where we want them. The ones that aren\'t fall into eight stories.' })),
+          h('div', { class: 'arLede', text: 'Most are where we want them. The ones that aren\'t fall into nine stories.' })),
         h('div', { class: 'arSumCard arAnimRise arD12' },
           h('div', { class: 'arSumBio' },
             h('div', { class: 'arSumHead' },
@@ -13549,7 +13588,66 @@
           }))));
     }
 
-    /* ----- step 10: Everything else ----- */
+    /* ----- step 10: the lifestyle insight ----- */
+    // a biomarker and a questionnaire answer side by side, what we noticed, what it means, and a was-this-useful: the source's later insight layout
+    function lifeBar(pos) {
+      var px = 1 + pos * 82;
+      return s('svg', { class: 'arLfBar', width: 84, height: 18, viewBox: '0 0 84 18', 'aria-hidden': 'true', focusable: 'false' },
+        s('rect', { x: 0, y: 9, width: 26, height: 4, rx: 2, style: { fill: 'var(--ar-sub-bg)' } }),
+        s('rect', { x: 29, y: 9, width: 26, height: 4, rx: 2, style: { fill: 'var(--ar-opt-bg)' } }),
+        s('rect', { x: 58, y: 9, width: 26, height: 4, rx: 2, style: { fill: 'var(--ar-sub-bg)' } }),
+        s('path', { class: 'arRangePtr', d: 'M' + (px - 4) + ' 0 L' + (px + 4) + ' 0 L' + px + ' 6 Z' }),
+        s('line', { class: 'arLfBarLine', x1: px, y1: 6, x2: px, y2: 18, 'stroke-width': 1.5, 'stroke-dasharray': '2 2' }));
+    }
+    function thumbIcon(up) {
+      return strokeIcon(20, 24, 1.6, up
+        ? ['M7 10v12', 'M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z']
+        : ['M17 14V2', 'M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z']);
+    }
+    function buildLife() {
+      var L = LIFE;
+      var up = h('button', { type: 'button', class: 'arLfThumb', 'aria-label': 'Useful', 'aria-pressed': 'false' }, thumbIcon(true));
+      var down = h('button', { type: 'button', class: 'arLfThumb', 'aria-label': 'Not useful', 'aria-pressed': 'false' }, thumbIcon(false));
+      var vote = function (b, other) { var was = b.getAttribute('aria-pressed') === 'true'; b.setAttribute('aria-pressed', String(!was)); other.setAttribute('aria-pressed', 'false'); };
+      on(up, 'click', function () { vote(up, down); });
+      on(down, 'click', function () { vote(down, up); });
+      return h('div', { class: 'arStack arLfStack' },
+        h('div', { class: 'arLfHead arAnimRise' },
+          h('h2', { class: 'arH700', text: L.headline }),
+          h('span', { class: 'arT200r arInk50', text: L.date })),
+        h('div', { class: 'arLfCard arAnimRise arD12' },
+          h('div', { class: 'arLfIntro' },
+            h('span', { class: 'arT600', text: 'Behind this insight' }),
+            h('p', { class: 'arLfSrc', text: L.source })),
+          h('div', { class: 'arLfGroup' },
+            h('span', { class: 'arT300m', text: 'Your biomarkers' }),
+            L.markers.map(function (m) {
+              return h('div', { class: 'arLfMk' },
+                h('div', { class: 'arLfMkL' },
+                  h('span', { class: 'arLfName', text: m.name }),
+                  h('div', { class: 'arRowMeta' },
+                    h('span', { class: 'arT200r arInk60', text: m.value }),
+                    h('span', { class: 'arT200r arInk30', text: '|' }),
+                    h('span', { class: 'arT200r arInk60', text: m.date }))),
+                h('div', { class: 'arLfMkR' }, lifeBar(m.pos), h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
+            })),
+          h('div', { class: 'arLfGroup' },
+            h('span', { class: 'arT300m', text: 'Your answers' }),
+            L.answers.map(function (x) {
+              return h('div', { class: 'arLfQA' }, h('span', { class: 'arLfQ', text: x.q }), h('span', { class: 'arLfA', text: x.a }));
+            }))),
+        h('div', { class: 'arLfSec arAnimRise arD24' },
+          h('span', { class: 'arLfH', text: 'What we noticed' }),
+          L.noticed.map(function (t) { return h('p', { class: 'arPara', text: t }); })),
+        h('div', { class: 'arLfSec arAnimRise arD32' },
+          h('span', { class: 'arLfH', text: 'What this means for you' }),
+          L.means.map(function (t) { return h('p', { class: 'arPara', text: t }); })),
+        h('div', { class: 'arLfUse arAnimRise arD32' },
+          h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }),
+          h('div', { class: 'arLfThumbs' }, up, down)));
+    }
+
+    /* ----- step 11: Everything else ----- */
     function buildRest() {
       var openIdx = -1, panelSet = [];
       var panels = PANELS.map(function (p, i) {
@@ -13598,7 +13696,7 @@
         h('div', { class: 'arAccList arAnimRise arD20' }, panels));
     }
 
-    /* ----- step 11: Next steps ----- */
+    /* ----- step 12: Next steps ----- */
     function buildNext() {
       var q = function (avatar, name, desc) {
         return h('div', { class: 'arQRow' }, avatar,
@@ -13620,7 +13718,8 @@
     function build(st) {
       if (st === 0) return buildWelcome();
       if (st === 1) return buildSummary();
-      if (st >= FIRST && st < REST) return buildInsight(st - FIRST);
+      if (st >= FIRST && st < LIFE_ST) return buildInsight(st - FIRST);
+      if (st === LIFE_ST) return buildLife();
       if (st === REST) return buildRest();
       return buildNext();
     }
@@ -29998,7 +30097,7 @@ hairline({
       const s = r.svc && todo(r) && S(r.svc); if (!s) return r; const n = mv(r, s);
       if (s.state === 'booked'){ n.act = 'View'; n.cta = 0; n.meta = r.meta.map(m => m[0] === 'clock' ? ['cal', String(n.when || '').replace(/ 2026/, '')] : m); }
       else { n.cta = 0; n.meta = r.meta.map(m => m[0] === 'clock' ? ['check', /consent/i.test(r.t) ? 'Signed' : 'Completed'] : m); }   /* done: its deadline gone, what was done in its place */ return n; };
-    const row = r0 => { const r = simRow(r0); let pg = prog(r); const svd = tab === 'claim' && SNZ.has(r), cta = svd || isCta(r), fin = finOf(r), act = fin ? 'View' : svd ? 'View details' : r.act, more = fin ? 0 : svd ? 1 : r.more,   /* saved for later: View details its primary, Move back to my plan its only ⋯ ("primary View details; the only option in the dots Move back to my plan") */   /* complete: View, nothing else ("when it's a final complete state, just view") */ up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
+    const row = r0 => { const r = simRow(r0); let pg = prog(r); const svd = tab === 'claim' && SNZ.has(r), cta = svd || isCta(r), fin = finOf(r), act = fin ? 'View' : svd ? 'View details' : r.act || (r.lock || r.lockAge ? 'View' : ''), more = fin ? 0 : svd ? 1 : r.more,   /* a locked one (waiting on a step, or an age): View, secondary, to its page ("still need the View CTA secondary on later one") */   /* saved for later: View details its primary, Move back to my plan its only ⋯ ("primary View details; the only option in the dots Move back to my plan") */   /* complete: View, nothing else ("when it's a final complete state, just view") */ up = !!(cta && pg) && TLSTEP !== 'c' && !unseen(r) && (OPEN === 'all' || (OPEN === 'month' && !!SEC && SEC.dot === 'now'));   // the current month: its section with the "now" dot if (up) pg = pg.replace('aria-expanded="false"', 'aria-expanded="true"');
       /* Chip: the status's mark -- its ring, or a task's dot -- a round badge on the picture's top right, its words gone from sight ("put this overlapping the top right of the avatar; without the label; fully rounded"); a waiting item keeps its chip, the why */
       const mk = TLSTEP === 'c' && pg && !/tlBlk/.test(pg) ? /<div class="tlProg tlProgC([^"]*)"><span class="tlStepC">(<i class="tl(?:Ring|StepDot)"[^>]*><\/i>)<b>([^<]*)<\/b><\/span><\/div>/.exec(pg) : null;
       if (mk) pg = '';
