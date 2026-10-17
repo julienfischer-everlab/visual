@@ -14389,3 +14389,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The card's foot is gone (the answers, Ask a question, the next step) and so is the line under the headline ("remove CTA on the bottom; remove sub text"). What it offers is the video and the attached documents, each opening the service's page.
 - Consultation: "Thanks for taking the time to speak with Dr Sarah Chen. Here is the report and summary of your discussion." (the user's words; "Dr Steven" read as the card's doctor, Dr Sarah Chen), with the call recording and Consultation report (PDF · 3 pages), Summary of your discussion (PDF · 1 page).
 - The other options the same shape, one sentence naming what's attached: "Your gut report is in, Julien. Here is Dr Sarah Chen's walkthrough and the full report." / "Your scan results are back — nothing urgent. Here is Dr Sarah Chen's video and the radiologist's summary." / "All 44 of your blood results are in. Here is the full lab report and Dr Sarah Chen's notes."
+
+## Service group card Outline: unfilled, the card inside white 4%; hover card +4; Recent activity 24 regular
+- Outline (Service group card): the group card unfilled with a 1px hairline (white 10%; light ink 12%) — "no border" was tried on the filled card a moment before, then "outline unfilled" — and the services on a card inside of white 4% (light page: black 2.7%), radius 14, 24px in at the sides.
+- A row's hover card 4px larger all round again (top/bottom 0, sides −20, radius 18) — "card 4% padding +4px".
+- Recent activity's sentence 24px/31px regular (phone 20).
