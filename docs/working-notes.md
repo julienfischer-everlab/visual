@@ -14394,3 +14394,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Outline (Service group card): the group card unfilled with a 1px hairline (white 10%; light ink 12%) — "no border" was tried on the filled card a moment before, then "outline unfilled" — and the services on a card inside of white 4% (light page: black 2.7%), radius 14, 24px in at the sides.
 - A row's hover card 4px larger all round again (top/bottom 0, sides −20, radius 18) — "card 4% padding +4px".
 - Recent activity's sentence 24px/31px regular (phone 20).
+
+## Items Grid: thumbnail top left, bars chip top right, words under it, the button full width at the foot
+- The grid card ("thumbnail top left, CTA full width bottom, bar chips top right, content below thumbnail"): the visual a square at the top left in both Visual modes (Imagery's full-bleed banner and the glass button over it gone), the bars chip lifted to the card's top right (16 in; 12 on the phone), the title, line and when under the visual (16 below it), and the button the card's width pinned to the foot (cards in a row end level).
