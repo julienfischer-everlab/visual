@@ -14354,3 +14354,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## My journey bento: the Insights card's fill, 65 / 35
 - The bento's cards take the Insights bento card's ground (.dcard): white 6% (light page: black 2.7%), radius 20 — was the journey panel grey.
 - Columns 65% / 35% (13fr / 7fr), was 70 / 30.
+
+## My journey: the phase card at the top (the scroll-linked year removed)
+- Timeline top: Off / Timeline / Tabs, default Timeline — now the phase card, in the list above the bento (no sticky bar, no scroll link; the old .jvTime bar, its CSS and jt* code removed).
+- The card ("YOUR FIRST YEAR", "Month 3 of 12"): three phases, 0–3 months Baseline (Aug–Oct), 4–9 months Action plan (Nov–Apr), 9–12 months Re-test (May–Jul), widths 3:6:3; each its name, range and months, and a 3px hairline of its time gone (orange in the phase we're in, marked "• Now"; today fixed at 17 Oct 2026). The picked phase lit (white 8%).
+- Picking a phase redraws the journey under the Action plan heading: that phase's milestones (by `mo`), its first the hero (V2) / lead card (V1), the rest under it; other phases' milestones are drawn but hidden (`.phOff`), so a search still finds them. The sections rise in (420ms); the heading is scrolled into view if it's off screen (the phone). A future phase's locked items read "Coming up". A phase with nothing in it shows a hero saying so (Steven's Action plan).
+- New data: the member's July 2027 "Re-test and compare" milestone (`ret`, 9–12): Advanced Blood Testing, DEXA Scan, Annual review (later). Descriptions for Check your progress and Preventive screening. Steven's screening moved to 9–12.
+- A persona switch starts at its own phase. "Action plan" heading now follows whatever heads the list (bento and/or phase card).
