@@ -7796,6 +7796,16 @@
   .jvH2{margin:40px 0 16px;font-size:22px;line-height:28px;font-weight:500;letter-spacing:-.01em;color:var(--tlInk);}
   #dTl .tlList.tlV2.msQ :is(.jvBento, .jvH2){display:none;}   /* searching: the matches alone */
   @container msl (max-width:600px){ .jvBento{grid-template-columns:minmax(0,1fr);gap:12px;} .jbCard{padding:20px;} .jbH{font-size:18px;line-height:24px;} .jbFoot{flex-direction:column;align-items:stretch;} .jbFoot > .jvB{width:100%;} .jvH2{margin-top:32px;font-size:20px;line-height:26px;} }
+  /* Items: Grid -- the items as cards, two to a row: the visual at the top, the button at the top right, the words at the card's foot; one alone takes the row ("a variation of this list as a grid: cards inside, two per row, the title on the bottom of the card") */
+  #dTl .tlList.tlV2.jvGrid .jvCard .tlItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 0;}
+  #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-height:212px;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);} body.light #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow{background:rgba(46,31,26,.04);}
+  #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow:only-child{grid-column:1 / -1;min-height:176px;}
+  #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow::after{display:none;} #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow::before{inset:0;border-radius:16px;}
+  #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvT{align-self:stretch;margin-top:auto;padding-top:20px;} #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvW{margin-top:8px;} #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvCh{display:none;}
+  #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvA{position:absolute;top:16px;right:16px;z-index:1;}
+  #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvIc.jvImg{align-self:stretch;width:auto;height:120px;margin:-16px -16px 0;border-radius:16px 16px 0 0;}   /* Imagery: the picture across the card's top */
+  #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow:has(> .jvImg) .msB.jvB:not(.msP){background:rgba(18,18,16,.55);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}   /* a secondary over a picture: dark glass */
+  @container msl (max-width:600px){ #dTl .tlList.tlV2.jvGrid .jvCard .tlItems{gap:8px;padding:12px 0 8px;} #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow{min-height:0;padding:12px;} #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvT{padding-top:14px;} #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvA{position:static;align-self:stretch;margin-top:12px;} #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvA > .jvB{width:100%;} #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow > .jvIc.jvImg{height:96px;margin:-12px -12px 0;border-radius:16px 16px 0 0;} }   /* the phone: two still, the button under the words, full width */
   /* the suggestion under the hero: the doctor, what and when, Do it later and Add to plan; 8 under the hero, of its group */
   .jvAsk{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;column-gap:18px;margin-top:8px;padding:20px 28px;border-radius:20px;background:var(--msPanel);}
   .jvAskDr{width:44px;height:44px;border-radius:50%;object-fit:cover;}
@@ -10766,6 +10776,14 @@
           <select id="stJvVis" class="tkSegSel" aria-label="What a row of My journey shows at its left">
             <option value="icon" selected>Icon</option>
             <option value="img">Imagery</option>
+          </select>
+        </div>
+        <!-- My journey V2's items: the list, or a grid of cards two to a row, the title at a card's foot ("a variation of this list as a grid: cards inside, two per row, the title on the bottom of the card") -->
+        <div class="tkRow" id="stJvItRow">
+          <span class="lbl">Items</span>
+          <select id="stJvIt" class="tkSegSel" aria-label="How My journey's items are laid out">
+            <option value="list" selected>List</option>
+            <option value="grid">Grid</option>
           </select>
         </div>
         <div class="tkRow" id="stMsHdRow">
@@ -30950,6 +30968,9 @@ hairline({
       if (el && el.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches){ const cs = getComputedStyle(el); el.style.overflow = 'hidden'; el.style.pointerEvents = 'none';
         el.animate([{ height: el.offsetHeight + 'px', marginTop: cs.marginTop, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 }, { height: '0px', marginTop: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 }], { duration: 320, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }).onfinish = fin; }   // the banner shuts, the cards rising into its place, then the list follows
       else fin(); });
+    { const it = document.getElementById('stJvIt'), ir = document.getElementById('stJvItRow'), ap = () => list.classList.toggle('jvGrid', !!it && it.value === 'grid');   // Items: a class on the list, kept through its redraws
+      if (it) it.addEventListener('change', ap); ap();
+      const sh = () => { if (ir) ir.hidden = TLVER !== 'v2' || MSLAY !== 'v2'; }; ['stTlVer', 'stMsLay'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', sh); }); sh(); }
     { const vs = document.getElementById('stJvVis'), vr = document.getElementById('stJvVisRow'), sh = () => { if (vr) vr.hidden = TLVER !== 'v2' || MSLAY !== 'v2'; };
       if (vs) vs.addEventListener('change', () => { JVVIS = vs.value; render(); });
       ['stTlVer', 'stMsLay'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', sh); }); sh(); }
@@ -31483,7 +31504,7 @@ hairline({
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.id === 'versionSel' || sel.id === 'stInsPos' /* two places, Section and Hero: a select, not a switch ("the position here should be a select") */ || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stDefVis' || sel.id === 'stDefAl' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stTlPri' || sel.id === 'stTlVer' || sel.id === 'stMsLay' || sel.id === 'stJvTop' || sel.id === 'stJvVis' || sel.id === 'stPlanV' || sel.id === 'stPlanStack' || sel.id === 'stPersona' || sel.id === 'stMsHd' || sel.id === 'stTlStVis' || sel.id === 'stTlStPl' || sel.id === 'stBkN' || sel.id === 'stBkLay' || sel.id === 'stTlCta' || sel.id === 'stTaskHd' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stDefVis' || sel.id === 'stDefAl' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stTlPri' || sel.id === 'stTlVer' || sel.id === 'stMsLay' || sel.id === 'stJvTop' || sel.id === 'stJvVis' || sel.id === 'stJvIt' || sel.id === 'stPlanV' || sel.id === 'stPlanStack' || sel.id === 'stPersona' || sel.id === 'stMsHd' || sel.id === 'stTlStVis' || sel.id === 'stTlStPl' || sel.id === 'stBkN' || sel.id === 'stBkLay' || sel.id === 'stTlCta' || sel.id === 'stTaskHd' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';

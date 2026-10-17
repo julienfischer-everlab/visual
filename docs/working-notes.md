@@ -14338,3 +14338,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The year's head jumped to the year's end when the list had nothing to scroll (a tall window) and didn't move after a search: jtAt returns the first milestone's start when the scroll is 0-long; filter() redraws the head (JTU).
 - Add to plan left the colonoscopy among Timeline v1's section suggestions (shown twice): v1's sec() now drops answered suggestions too (`askGone()`, shared with the milestones').
 - The bento kept "In your plan" after the added colonoscopy was put off from its page: the added row is kept (`a.added`); put off, its gap opens again as "Saved for later" and the count goes back up.
+
+## My journey Layout V2: Items tweak, List or Grid
+- Items (Layout V2 only): List (default) or Grid. Grid: in every card (Next up, Ready for you, Scheduled, Results ready) the items become cards two to a row (12px gap): white 4% (light: ink 4%), radius 16, 16 padding, at least 212 high. The visual at the top left, the button at the top right, the words (title, bars chip and line, when) at the card's foot. One item alone takes the row (Next up).
+- With Visual = Imagery the picture runs across the card's top (120 high, full bleed), a secondary button over it in dark glass.
+- Hover lights the whole card; no dividers; tapping a card opens its page as a row does.
+- Phone: still two to a row, 8 gap, 12 padding, the picture 96 high, the button under the words full width.
+- A class on the list (`jvGrid`), kept through redraws; the markup is the rows' own.
