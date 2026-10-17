@@ -14324,3 +14324,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Do it later: the banner shuts, the suggestion goes to Later with the rest put off (SNZ, "Saved for later"); toast. Moved back to the plan from Later, the banner asks again.
 - Answered either way, it leaves the Preventive screening milestone's suggestions. Hidden while searching. Phone: the buttons under the words, side by side, full width.
 - Primary pills centre their label (justify-content).
+
+## My journey: a bento on top (the timeline off the top), then an Action plan heading over the hero
+- Top tweak: Bento (default), Timeline, Tabs. Bento hides the bar (tabs) and draws, at the top of the list (both layouts, Upcoming only, hidden while searching):
+  - Left, 70%: the check-in. Dr Sarah Chen's avatar, "YOUR FIRST CONSULTATION", "Hey Julien, how was your first consultation with Dr Sarah Chen?", "Any questions about your results or your plan? Let us know — your care team replies within a day." Three answers (Great / Good / Could be better → "Thanks — we've passed it on to Dr Sarah Chen") and Ask a question (primary) → a box to write it, Cancel / Send (empty Send keeps the box; sent → toast "Sent to Dr Sarah Chen. Your care team replies within a day.").
+  - Right, 30%: Health profile. "3 gaps to fill", "We found a few things missing from your health picture.", the gaps with an orange ring: Colonoscopy (due in 2 months), Skin check (no record yet), Family history (not filled in yet). A service's gap opens its page; once the colonoscopy is added from the suggestion it ticks green ("In your plan") and the count drops.
+  - Steven: "Hey Steven, how are you finding your blood results?"; gaps Colonoscopy, Whole body MRI, Family history.
+- Then "Action plan" (22px, 40px above) and the milestones: the hero, the suggestion, the cards.
+- Phone: the two cards stacked, the answers wrap, Ask a question full width.
