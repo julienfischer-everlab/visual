@@ -14384,3 +14384,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Pathology (12 Oct): 38 Optimal / 4 Suboptimal / 2 Out of range (the Insights colours); Full lab report, Lipid profile, Vitamin D; Ask a question, See your results.
 - The video, a document or the next step opens the service's page (its completed row first). Ask a question opens the box as before. Steven: the same, his name.
 - Phone: documents one per line, the buttons stacked.
+
+## Recent activity: no buttons, no line under the headline; the consultation's text
+- The card's foot is gone (the answers, Ask a question, the next step) and so is the line under the headline ("remove CTA on the bottom; remove sub text"). What it offers is the video and the attached documents, each opening the service's page.
+- Consultation: "Thanks for taking the time to speak with Dr Sarah Chen. Here is the report and summary of your discussion." (the user's words; "Dr Steven" read as the card's doctor, Dr Sarah Chen), with the call recording and Consultation report (PDF · 3 pages), Summary of your discussion (PDF · 1 page).
+- The other options the same shape, one sentence naming what's attached: "Your gut report is in, Julien. Here is Dr Sarah Chen's walkthrough and the full report." / "Your scan results are back — nothing urgent. Here is Dr Sarah Chen's video and the radiologist's summary." / "All 44 of your blood results are in. Here is the full lab report and Dr Sarah Chen's notes."
