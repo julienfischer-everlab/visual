@@ -29199,7 +29199,7 @@ hairline({
       suggested: d => ({ tone: 'info', tag: 'Suggested for you', h: (d.every || 'Recommended every 5 years from age 25') + '.', p: 'You have no records of this yet. Add it to your plan to book it.', btn: 'Add to plan', sec: 'What to expect', at: -1, st: 'No records' }),
       purchase: d => ({ tone: 'info', tag: 'Recommended by Dr Sarah Chen', h: SOLO_P ? 'Add it to your tests as a one-off.' : 'Not included in your membership.',   /* Steven has no membership to be outside of */ p: 'Your doctor suggests it from your results. You can add it to your plan as a one-off.', btn: 'Purchase', sec: 'What to expect', at: -1, st: 'Recommended by Dr Sarah Chen' }),
       claim: d => ({ tone: 'ok', tag: 'Included in your membership', h: 'Yours to claim, at no extra cost.', p: 'Claim it and book a time that suits you.', btn: 'Claim', sec: 'What to expect', at: -1, st: 'Claim by 31 Dec 2026' }),
-      later: d => ({ tone: 'info', tag: 'Coming up', h: 'Due when you turn ' + (d.age || 50) + '.', p: 'We’ll remind you when it’s time to book.', btn: 'Remind me', sec: 'What to expect', at: -1, st: 'Due at ' + (d.age || 50) }),
+      later: d => ({ tone: 'info', tag: 'Coming up', h: d.when && !d.age ? 'Due ' + d.when + '.' : 'Due when you turn ' + (d.age || 50) + '.', p: 'We’ll remind you when it’s time to book.', btn: 'Remind me', sec: 'What to expect', at: -1, st: d.when && !d.age ? 'Due ' + d.when : 'Due at ' + (d.age || 50) }),   /* a dated one (the year's re-tests): its date, not an age */
       active: d => ({ tone: '', tag: 'In progress', h: (d.tag || 'Next step') + '.', p: d.d || '', btn: d.tag || 'Continue', sec: 'Your service', at: d.at || 0, st: 'In progress' }),
       locked: d => ({ tone: 'info', tag: 'Not yet available', h: 'Complete your ' + (d.need || 'previous service') + ' first.', p: 'You need to complete your ' + (d.need || 'previous service') + ' before you can book this appointment.', btn: 'View', goNeed: d.need || '', sec: 'What to expect', at: -1, st: 'After your ' + (d.need || 'previous service') }),
       soon: d => ({ tone: 'info', tag: 'Coming up', h: 'Your report comes once your results are in.', p: 'We\u2019ll let you know when it\u2019s ready to read.', btn: 'Notify me', sec: 'What to expect', at: -1, st: 'After your results' }),
@@ -30312,9 +30312,9 @@ hairline({
           { t: 'April Check-in Questionnaire', d: 'How you feel, and how your plan, exercise and nutrition are going.', img: 'taskp', meta: [['clock', 'Due by Fri 30 Apr']], act: 'Start', cta: 1, more: 1, svc: 'apq', state: 'active', at: 0 }   // the check-in, in its month
         ] },
         { h: 'July 2027', rows: [   // a year on: the same tests again, then the review (the phase card's Re-test)
-          { t: 'Advanced Blood Testing', d: 'Your yearly blood panel, to compare with your baseline.', img: 'path', meta: [['clock', 'From 1 Jul 2027']], svc: 'path', state: 'later' },
-          { t: 'DEXA Scan', d: 'Body composition and bone density, a year on.', img: 'dexa', meta: [['clock', 'From 1 Jul 2027']], svc: 'dexa', state: 'later' },
-          { t: 'Annual review', d: 'Dr Sarah Chen walks you through your year: what changed, and what comes next.', img: 'consult', meta: [['clock', 'After your re-tests']], svc: 'consult', state: 'later' }
+          { t: 'Advanced Blood Testing', d: 'Your yearly blood panel, to compare with your baseline.', sub: 'Your yearly re-test', img: 'path', meta: [['clock', 'From 1 Jul 2027']], svc: 'path', state: 'later', when: 'from July 2027', yr: 1 },
+          { t: 'DEXA Scan', d: 'Body composition and bone density, a year on.', sub: 'Your yearly re-scan', img: 'dexa', meta: [['clock', 'From 1 Jul 2027']], svc: 'dexa', state: 'later', when: 'from July 2027', yr: 1 },
+          { t: 'Annual review', d: 'Dr Sarah Chen walks you through your year: what changed, and what comes next.', sub: 'Your year in review', img: 'consult', meta: [['clock', 'After your re-tests']], svc: 'consult', state: 'later', when: 'after your re-tests', yr: 1 }   /* yr: a year on -- never the demo's booked or done baseline instance, never in the Overview's plan */
         ] },
         { h: '50 years old', tail: 1, rows: [{ t: 'Dexa Scan', d: 'Available when you turn 50.', img: 'dexa', meta: [['pin', 'In person']], svc: 'dexa', state: 'later', age: 50, lockAge: 50 }] },
         { h: '60 years old', tail: 1, rows: [{ t: 'Dexa Scan', d: 'Available when you turn 60.', img: 'dexa', meta: [['pin', 'In person']], svc: 'dexa', state: 'later', age: 60, lockAge: 60 }] }
@@ -30636,7 +30636,7 @@ hairline({
     let OPEN = 'month', SEC = null;   // which objects open their steps (the Timeline tweak), and the section being drawn
     const finOf = r => r.state === 'done' || (!!r.group && groupOf(r).a < 0);   // its final, complete state
     // a row as the demo left it: booked, its slot in place of its deadline and View its action; done, View
-    const simRow = r => { const S0 = window._svc && window._svc.sim; if (!S0) return r; const S = k => { const s = S0(k); return s && /^(booked|done)$/.test(s.state) ? s : null; }, todo = x => !/^(done|claim|purchase|suggested|booked)$/.test(x.state || '');   /* only what is still to do moves, and only to booked or done: a past row stays as it was */
+    const simRow = r => { const S0 = window._svc && window._svc.sim; if (!S0 || r.yr) return r;   /* a year-on re-test is never the instance the demo moved */ const S = k => { const s = S0(k); return s && /^(booked|done)$/.test(s.state) ? s : null; }, todo = x => !/^(done|claim|purchase|suggested|booked)$/.test(x.state || '');   /* only what is still to do moves, and only to booked or done: a past row stays as it was */
       const mv = (x, s) => Object.assign({}, x, { state: s.state, at: s.o && s.o.at != null ? s.o.at : undefined, tag: undefined, openState: undefined, openAt: undefined, when: s.o && s.o.when || x.when });
       if (r.group){ const g = r.group.map(x => { const s = todo(x) && S(x.svc); return s ? mv(x, s) : x; }); if (g.every((x, i) => x === r.group[i])) return r;
         const n = Object.assign({}, r, { group: g }), f = g[r.focus != null ? r.focus : 0]; if (f && f.state === 'booked'){ n.act = 'View'; n.cta = 0; n.meta = r.meta.map(m => m[0] === 'clock' ? ['cal', String(f.when || '').replace(/ 2026/, '')] : m); } return n; }
@@ -30694,7 +30694,7 @@ hairline({
     { const o = document.getElementById('stTlChipH'); if (o){ const on = () => document.documentElement.style.setProperty('--tlChipH', (+o.value || 36) + 'px'); on(); o.addEventListener('change', on); } }   // Chip height: every item chip's (CSS)
     const ringify = (root, rows) => root.querySelectorAll('.tlTgl .tlSeg').forEach(sg => { const is = [...sg.children], n = is.length || 1, k = is.filter(i => i.classList.contains('on') || i.classList.contains('cur')).length, rw = sg.closest('.tlRow'), r = rw && rows[+rw.dataset.r]; sg.insertAdjacentHTML('beforebegin', DOTS);   /* the dot, as every status now */ });   // XS: a ring of the same count in place of the increments; a task, its dot
     /* the Overview's Plan: the Timeline's own items, drawn by its row() -- the same tweaks (Steps, Priority, Prominent status, CTA position) -- in a list on the phone and XS, a grid of cards on the desk ("the Overview action plan the exact same items as the Timeline"); what is to do now, in the Timeline's order */
-    const planRows = () => { const out = []; layout(tabRows(TL.up)).forEach(sc => ordered(sc.rows).forEach(r => out.push(r))); return out.filter(r => !r.lock && !r.lockAge && r.state !== 'suggested' && r.state !== 'locked' && !finOf(r) && !unseen(r)); };
+    const planRows = () => { const out = []; layout(tabRows(TL.up)).forEach(sc => ordered(sc.rows).forEach(r => out.push(r))); return out.filter(r => !r.yr && !r.lock && !r.lockAge && r.state !== 'suggested' && r.state !== 'locked' && !finOf(r) && !unseen(r)); };   // not the year-on re-tests
     // the Overview plan split by kind (Tweaks -> Action plan -> Split actions per group): Tasks, everything still to do but a booked appointment; Appointments, the booked ones to come
     let PLSPLIT = false, PLTAB = 'task';
     const isApt = r => { const w = own(simRow(r)); return !!w && w.state === 'booked'; };
@@ -30775,7 +30775,8 @@ hairline({
       const tg = e.target.closest('.tlTgl'); if (tg){ const op = rw.classList.toggle('open'); tg.setAttribute('aria-expanded', String(op)); return; }   // the steps open in place
       if (e.target.closest('.tlDetBox')) return;
       ovOpen(d, host); });
-    document.addEventListener('click', e => { if (!e.target.closest('.tlSee')) return; const sv = document.getElementById('versionSel'); if (sv){ sv.value = 'tl'; sv.dispatchEvent(new Event('change')); } });   // Plan's See timeline
+    document.addEventListener('click', e => { const t = e.target.closest('.tlSee'); if (!t) return; const k = (t.closest('[data-ms]') || {}).dataset ? (t.closest('[data-ms]') || { dataset: {} }).dataset.ms : null, m = k && MS.find(y => y.k === k), was = JPH; JPH = m ? phOf(m) : null; if (was !== JPH) render();   /* a milestone named: its phase; else the one we're in -- drawn afresh, the page shows what it last drew */
+      const sv = document.getElementById('versionSel'); if (sv){ sv.value = 'tl'; sv.dispatchEvent(new Event('change')); } });   // Plan's See timeline
     const render = () => {
       ROWS = []; const V2 = TLVER === 'v2' && tab === 'up'; list.classList.toggle('tlV2', V2); main.classList.toggle('tlClaim', tab === 'claim');   // Later showing: the tabs back over the bento's or the year's place (a way back to Upcoming)
       list.innerHTML = V2 ? msHtml(layout(tabRows(TL.up))) : layout(tabRows(TL[tab])).map(sec).join('');   // v2: Upcoming as milestones; Unclaimed (Later) and Past as they were
@@ -31056,7 +31057,9 @@ hairline({
       const to = back ? 'up' : 'claim'; if (tab !== to) toTab(to); else render(); tlReveal(d); });   // the Timeline: to the tab it went to, where it opens in, the items under it pushed down ("when I move to do it later, move the view to Later, and make the item appearing that will push the other items down; and inverse when push back to my plan")
     // an item arriving in the list: in view, then opening from nothing (its height, padding and ink), the rows under it going down with it, then its flash
     // the view first, then the item: the tab switched and the list at its place with the item still shut, a beat, then it opens and pushes the rows under it down ("moving an item to Later or back to plan should have a delay: move to the view first, then the item appears and pushes the content down")
-    const tlReveal = d => { const hit = x => { const q = ROWS[+x.dataset.r]; return q && (q === d || (q.t === d.t && q.svc === d.svc)); }; let rw = [...list.querySelectorAll('.tlRow')].find(x => x.offsetParent && hit(x));
+    const tlReveal = d => { const hit = x => { const q = ROWS[+x.dataset.r]; return q && (q === d || (q.t === d.t && q.svc === d.svc)); }, same = x => ROWS[+x.dataset.r] === d;
+      { const all = [...list.querySelectorAll('.tlRow')], ex = all.find(same) || all.find(hit), sec = ex && ex.closest('.phOff[data-ms]'), m = sec && MS.find(y => y.k === sec.dataset.ms); if (m && phOf(m) !== phSel()){ JPH = phOf(m); render(); } }   /* in another phase: the card moves to it first */
+      let rw = [...list.querySelectorAll('.tlRow')].find(x => x.offsetParent && same(x)) || [...list.querySelectorAll('.tlRow')].find(x => x.offsetParent && hit(x));
       if (!rw){ rw = [...list.querySelectorAll('.msCard.shut .tlRow')].find(hit); const c = rw && rw.closest('.msCard'); if (c){ c.classList.remove('shut'); (MSLAY === 'v2' ? MSOPEN2 : MSOPEN).add(c.dataset.ms); const b = c.querySelector('.msTg'); if (b){ b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-label', 'Hide the actions'); } } }   /* My journey: landing in a shut milestone, it opens */
       if (!rw) return;
       const flash = () => { rw.classList.remove('flash'); void rw.offsetWidth; rw.classList.add('flash'); setTimeout(() => rw.classList.remove('flash'), 1600); };
