@@ -14317,3 +14317,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The cards' eyebrows (Next up, Ready for you, Scheduled, Results ready) 12px/16px, the page's ink (white on dark, near-black on the light page); `.jvLbl` taken out of the shared 14px eyebrow rule, whose id-level :is() would have kept it at 14.
 - Row titles 14px/19px, medium (500).
 - The bars chip 16px high (was 19: 8px padding round 3px bars): height 16, padding 0 8, bars centred; 1.5px down so its middle meets the middle of the words' first line (measured equal).
+
+## My journey Layout V2: a suggestion under the hero (Add to plan / Do it later)
+- Under the hero, 8px below it: Dr Sarah Chen's avatar, "SUGGESTED BY DR SARAH CHEN", "Your colonoscopy is due in 2 months", why (every 5 years from age 45), then Do it later (secondary) and Add to plan (primary). The words open the colonoscopy's page. Both personas (`ask: ASK_COLON()` on each base milestone, its own object so the answer stays with the persona).
+- Add to plan: the banner shuts (320ms), a Colonoscopy row (Book, due in 2 months) joins the milestone's month and opens in Ready for you pushing the rows down (tlReveal); the hero's count follows (1 of 9); toast "Colonoscopy added to your plan."
+- Do it later: the banner shuts, the suggestion goes to Later with the rest put off (SNZ, "Saved for later"); toast. Moved back to the plan from Later, the banner asks again.
+- Answered either way, it leaves the Preventive screening milestone's suggestions. Hidden while searching. Phone: the buttons under the words, side by side, full width.
+- Primary pills centre their label (justify-content).
