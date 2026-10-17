@@ -7774,7 +7774,7 @@
   .jvHero{background:#252522;} .jvHero h2, .jvHero .jvPr{color:#f6f4f2;} .jvHero p, .jvHero .jvPr small{color:rgba(255,255,255,.7);} .jvHero .jvBar i{background:rgba(255,255,255,.16);} .jvHero .jvBar i.on{background:#f78359;} .jvHero .jvEy{color:#f78359;}   /* the hero's own dark warm grey, both themes ("534C46 hero card bg", then "252522 bg"): its text light; the visual's black gives way to it (screen) */
   .jvList{position:relative;margin-top:16px;}
   /* My journey's top, the bento: the check-in at 70%, the health profile at 30%; then the Action plan heading over the milestones */
-  #dTl.jbOn:not(.tlClaim) .tlBar{display:none;} #dTl.jbOn:not(.tlClaim) .tlHead{margin-bottom:24px;}
+  #dTl.jtOff:not(.tlClaim) .tlBar{display:none;} #dTl.jtOff:not(.tlClaim) .tlHead{margin-bottom:24px;}   /* Timeline top Off: no bar (Later, reached from elsewhere, still brings the tabs) */
   .jvBento{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,3fr);gap:16px;}
   .jbCard{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:24px 28px;border-radius:20px;background:var(--msPanel);}
   .jbHd{display:flex;align-items:center;gap:12px;} .jbDr{width:40px;height:40px;border-radius:50%;object-fit:cover;}
@@ -10762,10 +10762,19 @@
           </select>
         </div>
         <!-- My journey's top: a year across the page in place of the tabs, the head riding it on scroll ("a hero timeline, horizontal, that replaces the tab: 12 months, phases 0-3, 4-9, 9-12 months") -->
+        <!-- the bento at the top of the list, on or off ("bento should be on / off") -->
+        <div class="tkRow" id="stJvBentoRow">
+          <span class="lbl">Bento</span>
+          <select id="stJvBento" aria-label="Show the bento at the top of My journey">
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+        <!-- what heads the page, in the tabs' place: nothing, the year, or the tabs ("Top -> rename Timeline top") -->
         <div class="tkRow" id="stJvTopRow">
-          <span class="lbl">Top</span>
-          <select id="stJvTop" class="tkSegSel" aria-label="What heads My journey: the bento, the year or the tabs">
-            <option value="bento" selected>Bento</option>
+          <span class="lbl">Timeline top</span>
+          <select id="stJvTop" class="tkSegSel" aria-label="What heads My journey: nothing, the year or the tabs">
+            <option value="off" selected>Off</option>
             <option value="time">Timeline</option>
             <option value="tabs">Tabs</option>
           </select>
@@ -30464,7 +30473,7 @@ hairline({
         '<h2 class="jvH2">Action plan</h2>'; };   // the bento, then the heading over the milestones
     const msHtml = (S, sum) => { const by = {}; S.forEach(x => { by[x.h] = x; });   // sum: the Overview's Action plan V2 -- the next milestone's To action items, the others small
       const sug = [].concat(...S.map(x => x.sug || []));
-      return (!sum && JTOP === 'bento' && tab === 'up' ? jbHtml() : '') + MS.map((m, mi) => { const groups = [];
+      return (!sum && JBENTO && tab === 'up' ? jbHtml() : '') + MS.map((m, mi) => { const groups = [];
         let rows = [].concat(...m.from.map(h => by[h] ? ordered(by[h].rows) : []));   // v1's items, all of them, in v1's order
         if (m.sug && sug.length){ const gone = askGone(); rows = rows.concat(sug.filter(x => !gone.has(x.svc))); }   // a suggestion answered under the hero: not suggested again here
         const GL = [['act', 'To action'], ['pend', 'Pending'], ['lock', 'Locked'], ['done', 'Completed']];
@@ -30500,7 +30509,7 @@ hairline({
     const askOff = a => a.done === 'add' || (a.done === 'later' && SNZ.has(a.sug));   // the hero's suggestion answered: added, or put off and still in Later
     const askGone = () => new Set(MS.filter(x => x.ask && askOff(x.ask)).map(x => x.ask.svc));   // the services so answered: no longer suggested anywhere
     let JVVIS = 'icon';   // Layout V2's rows: an icon, or the service's picture (the Visual tweak)
-    let JTOP = 'bento';   // My journey's top: the bento (with the Action plan heading), the year, or the tabs (the Top tweak)
+    let JTOP = 'off', JBENTO = true;   // My journey's top (the Timeline top tweak): nothing, the year, or the tabs; and the bento under it, with the Action plan heading (the Bento tweak)
     let JTU = null;   // the year at My journey's top, set again after each drawing (below)
     let MSLAY = 'v1';   // My journey's Layout: V1 the milestone cards, V2 the hero and the rail
     let TLVER = 'v2';   // the Timeline's Version: v1 by month, v2 My journey (milestones)
@@ -30947,8 +30956,11 @@ hairline({
     if (jtEl) jtEl.addEventListener('click', e => { const p = e.target.closest('.jtPh'); if (!p) return; const [a, b] = JT_PH[+p.dataset.i], A = jtAnch();
       const x = A.find(z => a >= z.a && a < z.b) || A.find(z => z.a >= a) || A[A.length - 1]; if (x) main.scrollTo({ top: Math.ceil(x.s + (x.e - x.s) * Math.max(0, Math.min(1, (a - x.a) / ((x.b - x.a) || 1)))) + 1, behavior: 'smooth' }); });   // the scroll where the phase begins
     // Top: the year (My journey only), or the tabs; with the year, Upcoming is the list
-    const jtAp = () => { const v = jtSel ? jtSel.value : 'bento', on = TLVER === 'v2' && v === 'time', bo = TLVER === 'v2' && v === 'bento'; if (jtRow) jtRow.hidden = TLVER !== 'v2'; main.classList.toggle('jtOn', on); main.classList.toggle('jbOn', bo);
-      const was = JTOP; JTOP = v; if ((on || bo) && tab === 'claim'){ const u = main.querySelector('.tlTab[data-t="up"]'); if (u) u.click(); } else if (was !== v) render(); jtUpd(); requestAnimationFrame(() => { setHTop(); jtUpd(); }); };
+    const jtAp = () => { const v = jtSel ? jtSel.value : 'off', on = TLVER === 'v2' && v === 'time', no = TLVER === 'v2' && v === 'off'; if (jtRow) jtRow.hidden = TLVER !== 'v2'; main.classList.toggle('jtOn', on); main.classList.toggle('jtOff', no);
+      JTOP = v; if ((on || no) && tab === 'claim'){ const u = main.querySelector('.tlTab[data-t="up"]'); if (u) u.click(); } jtUpd(); requestAnimationFrame(() => { setHTop(); jtUpd(); }); };
+    { const bs = document.getElementById('stJvBento'), br = document.getElementById('stJvBentoRow');   // Bento: on or off, My journey only
+      if (bs) bs.addEventListener('change', () => { JBENTO = bs.value !== 'off'; render(); }); JBENTO = !bs || bs.value !== 'off';
+      const sh = () => { if (br) br.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     if (jtSel) jtSel.addEventListener('change', jtAp);
     { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', jtAp); }
     jtAp();

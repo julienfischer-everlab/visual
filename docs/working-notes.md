@@ -14345,3 +14345,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Hover lights the whole card; no dividers; tapping a card opens its page as a row does.
 - Phone: still two to a row, 8 gap, 12 padding, the picture 96 high, the button under the words full width.
 - A class on the list (`jvGrid`), kept through redraws; the markup is the rows' own.
+
+## My journey tweaks: Bento a switch; Top renamed Timeline top
+- Bento: its own On/Off switch (default On) — the bento and the Action plan heading at the top of the list (Upcoming only), whatever heads the page.
+- Timeline top (was Top): Off (default; no bar, as the bento-only page was), Timeline (the year in the tabs' place), Tabs (Upcoming / Later). Now independent of the bento: Timeline + bento, Tabs + bento, etc. Off and Timeline still bring the tabs back while Later shows (reached from elsewhere).
+- `#dTl.jbOn` became `#dTl.jtOff` (the bar hidden for Off); JTOP 'off' | 'time' | 'tabs', JBENTO a boolean.
