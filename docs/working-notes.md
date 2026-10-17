@@ -14350,3 +14350,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Bento: its own On/Off switch (default On) — the bento and the Action plan heading at the top of the list (Upcoming only), whatever heads the page.
 - Timeline top (was Top): Off (default; no bar, as the bento-only page was), Timeline (the year in the tabs' place), Tabs (Upcoming / Later). Now independent of the bento: Timeline + bento, Tabs + bento, etc. Off and Timeline still bring the tabs back while Later shows (reached from elsewhere).
 - `#dTl.jbOn` became `#dTl.jtOff` (the bar hidden for Off); JTOP 'off' | 'time' | 'tabs', JBENTO a boolean.
+
+## My journey bento: the Insights card's fill, 65 / 35
+- The bento's cards take the Insights bento card's ground (.dcard): white 6% (light page: black 2.7%), radius 20 — was the journey panel grey.
+- Columns 65% / 35% (13fr / 7fr), was 70 / 30.
