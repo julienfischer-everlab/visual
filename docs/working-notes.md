@@ -14308,3 +14308,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Rows' vertical padding +4 each side (two-column cards 12 → 16, single-column 14 → 18): 8px more between items; the hover tile set 4px in so it keeps its size.
 - Row buttons 36px high (were 40).
 - The visual's column 4px wider than the visual (48 / 44 under 600px), so 4px more between it and the words (a margin on the fixed-width visual in its fixed track would not have moved anything).
+
+## My journey Layout V2: Next up's button primary; cards' top padding −16
+- Next up's button is the primary (filled ink, pill): `item(r, 'nx')` adds msP; the primary's radius made 999 to match the pills.
+- Two-column cards' top padding 26 → 10: the first row's own 16 now sits above it, as the last row's 16 sits below (top 26 to the content, bottom 28). Narrow (stacked) cards unchanged.
