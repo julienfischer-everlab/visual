@@ -14312,3 +14312,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## My journey Layout V2: Next up's button primary; cards' top padding −16
 - Next up's button is the primary (filled ink, pill): `item(r, 'nx')` adds msP; the primary's radius made 999 to match the pills.
 - Two-column cards' top padding 26 → 10: the first row's own 16 now sits above it, as the last row's 16 sits below (top 26 to the content, bottom 28). Narrow (stacked) cards unchanged.
+
+## My journey Layout V2: eyebrows 12px ink; row titles 14px medium; bars chip 16px high
+- The cards' eyebrows (Next up, Ready for you, Scheduled, Results ready) 12px/16px, the page's ink (white on dark, near-black on the light page); `.jvLbl` taken out of the shared 14px eyebrow rule, whose id-level :is() would have kept it at 14.
+- Row titles 14px/19px, medium (500).
+- The bars chip 16px high (was 19: 8px padding round 3px bars): height 16, padding 0 8, bars centred; 1.5px down so its middle meets the middle of the words' first line (measured equal).
