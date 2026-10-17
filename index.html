@@ -7777,6 +7777,19 @@
   @keyframes jpIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
   @media (prefers-reduced-motion: reduce){ .tlList.jpSwap > *{animation:none !important;} }
   @container msl (max-width:600px){ .jvPh{padding:16px 16px 18px;} .jpRow{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;} .jpP{padding:10px 10px 12px;} .jpT{gap:6px;} .jpT em{font-size:0;gap:0;} .jpM{display:none;} }   /* the phone: three equal, Now a dot, the months out */
+  /* the bento's Recent activity: the service and its last step under the eyebrow, a video to watch, the numbers, the documents attached */
+  .jbHt{display:flex;flex-direction:column;gap:2px;min-width:0;} .jbTag{max-width:100%;font-size:12px;line-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tlSub);}
+  .jbVid{display:flex;align-items:center;gap:14px;align-self:stretch;margin:18px 0 0;padding:8px 14px 8px 8px;border:0;border-radius:16px;background:rgba(255,255,255,.05);font:inherit;text-align:left;color:inherit;cursor:pointer;transition:background .16s ease;} .jbVid:hover{background:rgba(255,255,255,.08);}
+  body.light .jbVid{background:rgba(0,0,0,.04);} body.light .jbVid:hover{background:rgba(0,0,0,.07);}
+  .jbVt{position:relative;flex:none;width:112px;height:64px;border-radius:10px;overflow:hidden;background:#111;} .jbVt img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;}
+  .jbVt i{position:absolute;left:50%;top:50%;display:grid;place-items:center;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(255,255,255,.92);color:#111;box-shadow:0 4px 14px rgba(0,0,0,.3);} .jbVt svg{width:12px;height:12px;margin-left:2px;}
+  .jbVx{display:flex;flex-direction:column;gap:2px;min-width:0;} .jbVx b{font-size:14px;line-height:19px;font-weight:500;color:var(--tlInk);} .jbVx em{font-style:normal;font-size:12px;line-height:16px;color:var(--tlSub);}
+  .jbStats{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:20px;} .jbSt b{display:block;font-size:26px;line-height:30px;font-weight:500;color:var(--tlInk);font-variant-numeric:tabular-nums;} .jbSt em{display:flex;align-items:center;gap:6px;margin-top:2px;font-style:normal;font-size:12px;line-height:16px;color:var(--tlSub);} .jbSt i{flex:none;width:7px;height:7px;border-radius:50%;}
+  .jbDocs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;} .jbStats + .jbDocs{margin-top:20px;}
+  .jbDoc{display:inline-flex;align-items:center;gap:10px;max-width:100%;padding:8px 14px 8px 10px;border:0;border-radius:12px;background:rgba(255,255,255,.05);font:inherit;text-align:left;color:inherit;cursor:pointer;transition:background .16s ease;} .jbDoc:hover{background:rgba(255,255,255,.08);}
+  body.light .jbDoc{background:rgba(0,0,0,.04);} body.light .jbDoc:hover{background:rgba(0,0,0,.07);}
+  .jbDoc > svg{flex:none;width:18px;height:18px;color:var(--tlSub);} .jbDoc span{display:flex;flex-direction:column;min-width:0;} .jbDoc b{font-size:13px;line-height:17px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tlInk);} .jbDoc em{font-style:normal;font-size:11px;line-height:14px;color:var(--tlSub);}
+  @container msl (max-width:600px){ .jbVt{width:96px;height:56px;} .jbDoc{flex:1 1 100%;} .jbFoot > .jvB + .jvB{margin-top:-4px;} }
   /* My journey's top, the bento: the check-in at 70%, the health profile at 30%; then the Action plan heading over the milestones */
   #dTl.jtOff:not(.tlClaim) .tlBar{display:none;} #dTl.jtOff:not(.tlClaim) .tlHead{margin-bottom:24px;}   /* Timeline top Off: no bar (Later, reached from elsewhere, still brings the tabs) */
   .jvBento{display:grid;grid-template-columns:minmax(0,13fr) minmax(0,7fr);gap:16px;}   /* 65 / 35 ("use 65% - 35%") */
@@ -10779,6 +10792,16 @@
           <select id="stJvBento" aria-label="Show the bento at the top of My journey">
             <option value="on" selected>On</option>
             <option value="off">Off</option>
+          </select>
+        </div>
+        <!-- the bento's Recent activity: which intervention it surfaces ("a tweak with multiple options, the content from the service, its last step: consultation, MRI, microbiome, pathology") -->
+        <div class="tkRow" id="stJvActRow">
+          <span class="lbl">Recent activity</span>
+          <select id="stJvAct" aria-label="What the bento's Recent activity shows">
+            <option value="consult" selected>Consultation</option>
+            <option value="micro">Microbiome</option>
+            <option value="mri">MRI</option>
+            <option value="path">Pathology</option>
           </select>
         </div>
         <!-- what heads the page: nothing, the phase card (the year in three phases, a phase picked swapping the hero and the journey under it), or the tabs ("Top -> rename Timeline top"; "a card at the top that indicates the time by phase") -->
@@ -30259,10 +30282,28 @@ hairline({
        -- 70% of the width; on the right a health profile: 'you have some gaps in your health, we found you need to do this, this, this'; below, a title Action plan,
        then the Complete your baseline banner"): the check-in (how it went, three answers; Ask a question opens a box to write it), the profile's gaps (a service's
        opens its page; one added to the plan from the suggestion ticks), then the heading. */
-    const JB_MEMBER = () => ({ ey: 'Your first consultation', dr: 'Dr Sarah Chen', q: 'Hey Julien, how was your first consultation with Dr Sarah Chen?', d: 'Any questions about your results or your plan? Let us know \u2014 your care team replies within a day.',
+    const JB_MEMBER = () => ({ act: JB_ACT('Julien'), ey: 'Your first consultation', dr: 'Dr Sarah Chen', q: 'Hey Julien, how was your first consultation with Dr Sarah Chen?', d: 'Any questions about your results or your plan? Let us know \u2014 your care team replies within a day.',
       hp: 'We found a few things missing from your health picture.', gaps: [{ t: 'Colonoscopy', w: 'Due in 2 months', svc: 'colon', sug: SUG[1] }, { t: 'Skin check', w: 'No record yet', svc: 'skin', sug: SUG[0] }, { t: 'Family history', w: 'Not filled in yet' }] });
-    const JB_SOLO = () => ({ ey: 'Your blood results', dr: 'Dr Sarah Chen', q: 'Hey Steven, how are you finding your blood results?', d: 'Any questions for Dr Sarah Chen about what they mean? Let us know \u2014 your care team replies within a day.',
+    const JB_SOLO = () => ({ act: JB_ACT('Steven'), ey: 'Your blood results', dr: 'Dr Sarah Chen', q: 'Hey Steven, how are you finding your blood results?', d: 'Any questions for Dr Sarah Chen about what they mean? Let us know \u2014 your care team replies within a day.',
       hp: 'We found a few things missing from your health picture.', gaps: [{ t: 'Colonoscopy', w: 'Due in 2 months', svc: 'colon', sug: SUG[1] }, { t: 'Whole body MRI', w: 'Never done' }, { t: 'Family history', w: 'Not filled in yet' }] });
+    /* the bento's left card, Recent activity ("a blog where we surface the recent interventions: a consultation call done, a report like the microbiome test
+       completed -- show the report we generated, maybe a video; a tweak with multiple options taking the content from the service, the last step: MRI,
+       microbiome, pathology; super conversational, mentioning the doc attached"): what happened and when, the service and its last step (from its plan),
+       a few lines in the care team's voice, a video or the numbers, the documents attached (the service's own, or its record's), and what to do next. */
+    const JB_ACT = nm => ({
+      consult: { svc: 'consult', row: 'consult', st: 'Get your plan', when: 'Tue 6 Oct', h: 'Hey ' + nm + ', how was your first chat with Dr Sarah Chen?',
+        p: 'Your 40-minute call is saved below if you want to re-watch any of it, and Sarah\u2019s turning her notes into your plan \u2014 it lands here by 9 Oct. Your onboarding questionnaire is attached too, in case you want to check what you told us.',
+        vid: { t: 'Your call with Dr Sarah Chen', m: 'Recording \u00b7 40 min', img: 'consult' }, docs: 'consult', more: [['doc', 'Call notes', 'PDF \u00b7 2 pages']], rate: 1 },
+      micro: { svc: 'gutrep', row: 'gut', st: 'Report ready', when: '13 Nov', h: 'Your gut report is in, ' + nm + ' \u2014 and it\u2019s mostly good news',
+        p: 'Microba finished sequencing your sample and Dr Sarah Chen wrote it up for you. Short version: your diversity is great, and there are two easy food swaps worth trying. Her 4-minute walkthrough is the quickest way in; the full report and your dietary recommendations are attached.',
+        vid: { t: 'Dr Sarah Chen on your gut report', m: 'Video \u00b7 4 min', img: 'microc' }, more: [['doc', 'Microbiome report', 'PDF \u00b7 12 pages'], ['doc', 'Gut microbiome profile', 'PDF \u00b7 4 pages'], ['doc', 'Dietary recommendations', 'PDF \u00b7 2 pages']], go: 'Read your report' },
+      mri: { svc: 'mri', row: 'mri', st: 'Get your results', when: '8 Oct', h: 'Your scan results are back, ' + nm + ' \u2014 nothing urgent',
+        p: 'Radiology Victoria sent through your full-body MRI and chest CT, and Dr Sarah Chen has been through every image. She recorded a short video on the two small things she\u2019d like to keep an eye on. The radiologist\u2019s summary is attached if you want the technical version.',
+        vid: { t: 'What Dr Chen saw on your scan', m: 'Video \u00b7 6 min', img: 'mri' }, more: [['doc', 'Radiologist summary', 'PDF \u00b7 3 pages'], ['img', 'MRI & CT images', '1,240 images']], go: 'Watch the video' },
+      path: { svc: 'path', row: 'path', st: 'Results ready', when: '12 Oct', h: 'All 44 of your blood results are in',
+        p: 'Most are right where we want them. Dr Sarah Chen flagged two to talk through \u2014 your ApoB and vitamin D \u2014 and left a note on each. The full lab report from Sonic Healthcare is attached.',
+        stats: [['38', 'Optimal', '#7fd6a0'], ['4', 'Suboptimal', '#f3cf72'], ['2', 'Out of range', '#f06a6a']], more: [['doc', 'Full lab report', 'PDF \u00b7 14 pages'], ['doc', 'Lipid profile', 'PDF \u00b7 2 pages'], ['doc', 'Vitamin D', 'PDF \u00b7 1 page']], go: 'See your results' }
+    });
     const ASK_COLON = () => ({ svc: 'colon', by: 'Dr Sarah Chen', h: 'Your colonoscopy is due in 2 months', d: 'Recommended every 5 years from age 45. Add it to your plan and we\u2019ll help you book a time.', sug: SUG[1],
       row: { t: 'Colonoscopy', d: 'Recommended every 5 years from age 45', img: 'colon', meta: [['clock', 'Due in 2 months']], act: 'Book', more: 1, svc: 'colon', state: 'book' } });
     // each tab: its sections, each a heading (and its dot), its rows, and the
@@ -30486,12 +30527,25 @@ hairline({
         '<div class="jvAskA"><button class="tlBtn msB jvB" type="button" data-ask="later">Do it later</button><button class="tlBtn msB jvB msP" type="button" data-ask="add">Add to plan</button></div></div>' : '';   // the suggestion under the hero
       return '<section class="tlSec jvWrap" data-ms="' + m.k + '">' + hero + ask + '<div class="jvList">' + card2('Next up', 'Start here', nx ? [nx] : [], () => 'nx')   /* its button the primary ("next up CTA primary") */ + card2('Ready for you', rest.length + (rest.length === 1 ? ' action' : ' actions') + ' whenever you\u2019re ready', rest, () => 'todo') + card2('Scheduled', pend.length + (pend.length === 1 ? ' appointment' : ' appointments') + ' booked', pend, () => 'todo') +   /* Next up an item as the rest ("no need to highlight") */ card(ahead ? 'Coming up' : 'Locked', lock, () => 'lk', true) + card('Results ready', ready, () => 'ok') + '</div></section>'; };
     const MSARR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+    const JB_PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L13 8z" fill="currentColor"/></svg>';
+    const JB_DOC = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 2.5h6l4 4v10a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1z"/><path d="M11.5 2.5v4h4M7.5 11h5M7.5 14h3.5"/></svg>';
+    const JB_IMG = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><circle cx="7.5" cy="8" r="1.5"/><path d="m3 15 4.5-4.5 3 3 2-2L17 15"/></svg>';
+    const jbRow = k => { for (const sc of [...TL.past, ...TL.up]) for (const r of sc.rows) if (r.svc === k || (r.group || []).some(g => g.svc === k)) return r; return null; };   // the row whose page a Recent activity opens (a completed one first)
+    const jbAct = b => { const A = (b.act || {})[JBACT] || (b.act || {}).consult; if (!A) return '';
+      const pl = PL(A.svc, 'done'), tag = (pl && pl.t ? pl.t + ' \u00b7 ' : '') + (A.st || (pl && pl.steps && pl.steps.length ? pl.steps[pl.steps.length - 1][0] : ''));   // the service (its plan's name) and where it ended (its last step; the blood test's plan stops at First results, so its own)
+      const docs = (A.docs && window.__docList ? window.__docList(A.docs).map(([ic, t]) => [ic === 'form' ? 'doc' : ic, t, 'Completed']) : []).concat(A.more || []);   // the service's own documents, then its record's
+      const ask = '<button class="tlBtn msB jvB' + (A.rate ? ' msP' : '') + '" type="button" data-jb="ask">Ask a question</button>';
+      return '<div class="jbCard jbFb" data-act="' + JBACT + '"><div class="jbHd"><img class="jbDr" src="' + IMG.dr + '" alt="" width="40" height="40"><div class="jbHt"><span class="jbEy">Recent activity \u00b7 ' + esc(A.when) + '</span><span class="jbTag">' + esc(tag) + '</span></div></div>' +
+        '<h3 class="jbH">' + esc(A.h) + '</h3><p class="jbP">' + esc(A.p) + '</p>' +
+        (A.vid ? '<button class="jbVid" type="button" data-jb="open" data-svc="' + A.row + '"><span class="jbVt"><img src="' + IMG[A.vid.img] + '" alt=""><i>' + JB_PLAY + '</i></span><span class="jbVx"><b>' + esc(A.vid.t) + '</b><em>' + esc(A.vid.m) + '</em></span></button>' : '') +
+        (A.stats ? '<div class="jbStats">' + A.stats.map(([n, l, c]) => '<span class="jbSt"><b>' + n + '</b><em><i style="background:' + c + '"></i>' + l + '</em></span>').join('') + '</div>' : '') +
+        (docs.length ? '<div class="jbDocs">' + docs.map(([ic, t, mt]) => '<button class="jbDoc" type="button" data-jb="open" data-svc="' + A.row + '">' + (ic === 'img' ? JB_IMG : JB_DOC) + '<span><b>' + esc(t) + '</b><em>' + esc(mt) + '</em></span></button>').join('') + '</div>' : '') +
+        (b.asking ? '<div class="jbAsk"><textarea rows="2" placeholder="Your question for ' + esc(b.dr) + '" aria-label="Your question for ' + esc(b.dr) + '"></textarea><div class="jbAskA"><button class="tlBtn msB jvB" type="button" data-jb="cancel">Cancel</button><button class="tlBtn msB jvB msP" type="button" data-jb="send">Send</button></div></div>'
+          : '<div class="jbFoot">' + (A.rate ? (b.rated ? '<span class="jbThx"><i aria-hidden="true">' + CHK + '</i>Thanks \u2014 we\u2019ve passed it on to ' + esc(b.dr) + '</span>' : '<div class="jbRate" role="group" aria-label="How did it go">' + ['Great', 'Good', 'Could be better'].map(x => '<button class="jbChip" type="button" data-jb="rate" data-v="' + x + '">' + x + '</button>').join('') + '</div>') + ask
+            : ask + '<button class="tlBtn msB jvB msP" type="button" data-jb="open" data-svc="' + A.row + '">' + esc(A.go) + '</button>') + '</div>') + '</div>'; };
     const jbHtml = () => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
       return '<div class="jvBento">' +
-        '<div class="jbCard jbFb"><div class="jbHd"><img class="jbDr" src="' + IMG.dr + '" alt="" width="40" height="40"><span class="jbEy">' + esc(b.ey) + '</span></div><h3 class="jbH">' + esc(b.q) + '</h3><p class="jbP">' + esc(b.d) + '</p>' +
-          (b.asking ? '<div class="jbAsk"><textarea rows="2" placeholder="Your question for ' + esc(b.dr) + '" aria-label="Your question for ' + esc(b.dr) + '"></textarea><div class="jbAskA"><button class="tlBtn msB jvB" type="button" data-jb="cancel">Cancel</button><button class="tlBtn msB jvB msP" type="button" data-jb="send">Send</button></div></div>'
-            : '<div class="jbFoot">' + (b.rated ? '<span class="jbThx"><i aria-hidden="true">' + CHK + '</i>Thanks \u2014 we\u2019ve passed it on to ' + esc(b.dr) + '</span>' : '<div class="jbRate" role="group" aria-label="How did it go">' + ['Great', 'Good', 'Could be better'].map(x => '<button class="jbChip" type="button" data-jb="rate" data-v="' + x + '">' + x + '</button>').join('') + '</div>') +
-              '<button class="tlBtn msB jvB msP" type="button" data-jb="ask">Ask a question</button></div>') + '</div>' +
+        jbAct(b) +
         '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' gap' : ' gaps') + ' to fill' : 'No gaps for now') + '</h3><p class="jbP">' + esc(b.hp) + '</p><ul class="jbGaps">' +
           gs.map((g, i) => '<li' + (g.ok ? ' class="ok"' : '') + '>' + (g.sug ? '<button type="button" data-jb="gap" data-i="' + i + '">' : '<span class="jbG">') + '<i aria-hidden="true">' + (g.ok ? CHK : '') + '</i><span><b>' + esc(g.t) + '</b><em>' + esc(g.ok ? 'In your plan' : g.w) + '</em></span>' + (g.sug ? '</button>' : '</span>') + '</li>').join('') + '</ul></div></div>' +
         ''; };   // the bento (the Action plan heading follows whatever heads the list)
@@ -30537,7 +30591,7 @@ hairline({
     const askOff = a => a.done === 'add' || (a.done === 'later' && SNZ.has(a.sug));   // the hero's suggestion answered: added, or put off and still in Later
     const askGone = () => new Set(MS.filter(x => x.ask && askOff(x.ask)).map(x => x.ask.svc));   // the services so answered: no longer suggested anywhere
     let JVVIS = 'icon';   // Layout V2's rows: an icon, or the service's picture (the Visual tweak)
-    let JTOP = 'time', JBENTO = true;   // My journey's top (the Timeline top tweak): nothing, the phase card, or the tabs; and the bento under it (the Bento tweak); either brings the Action plan heading
+    let JTOP = 'time', JBENTO = true, JBACT = 'consult';   // JBACT: what the bento's Recent activity shows (the Recent activity tweak)   // My journey's top (the Timeline top tweak): nothing, the phase card, or the tabs; and the bento under it (the Bento tweak); either brings the Action plan heading
     /* the phase card ("a card at the top that indicates the time by phase, minimal and stylish; clicking a phase changes the hero card and shows a totally
        different journey"): the year in three -- 0-3, 4-9, 9-12 months -- each its months, a hairline of its time gone (orange in the one we're in, marked
        Now); the one picked lit. The milestones are the phases' by their months (mo): the picked phase's first is the hero, its others under it; the other
@@ -30979,6 +31033,9 @@ hairline({
       const h = list.querySelector('.jvPh'), mr = main.getBoundingClientRect(); if (h){ const r = h.getBoundingClientRect(); if (r.bottom > mr.bottom - 160 || r.top < mr.top) main.scrollTo({ top: main.scrollTop + r.top - mr.top - 16, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }   // the card and the hero under it in view
       const nb = list.querySelector('.jvPh [data-ph="' + i + '"]'); if (nb) nb.focus({ preventScroll: true }); });
     addEventListener('everlab:persona', () => { JPH = null; });   // another persona: its own phase
+    { const as = document.getElementById('stJvAct'), ar = document.getElementById('stJvActRow');   // Recent activity: which intervention the bento surfaces
+      if (as) as.addEventListener('change', () => { JBACT = as.value; const d = MS[0] && MS[0].bento; if (d) d.asking = false; render(); }); JBACT = as ? as.value : 'consult';
+      const sh = () => { if (ar) ar.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const bs = document.getElementById('stJvBento'), br = document.getElementById('stJvBentoRow');   // Bento: on or off, My journey only
       if (bs) bs.addEventListener('change', () => { JBENTO = bs.value !== 'off'; render(); }); JBENTO = !bs || bs.value !== 'off';
       const sh = () => { if (br) br.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
@@ -30991,6 +31048,7 @@ hairline({
       if (how === 'ask'){ d.asking = true; render(); const t = list.querySelector('.jbAsk textarea'); if (t) t.focus({ preventScroll: true }); return; }
       if (how === 'cancel'){ d.asking = false; render(); return; }
       if (how === 'send'){ const t = list.querySelector('.jbAsk textarea'); if (t && !t.value.trim()){ t.focus(); return; } d.asking = false; render(); tlToast(host, 'Sent to ' + d.dr + '. Your care team replies within a day.'); return; }
+      if (how === 'open'){ const r = jbRow(b.dataset.svc); if (r) openRow(r); return; }   // the video, a document, the next step: the service's page
       if (how === 'gap'){ const g = d.gaps[+b.dataset.i]; if (g && g.sug) openRow(g.sug); } });
     // the suggestion under the hero: its words open the service's page; Add to plan, or Do it later
     list.addEventListener('click', e => { const b = e.target.closest('.jvAsk [data-ask]'); if (!b) return; e.stopPropagation(); const m = MS.find(x => x.ask && !askOff(x.ask)); if (!m) return; const a = m.ask, how = b.dataset.ask, host = list.closest('.dash') || document.body;

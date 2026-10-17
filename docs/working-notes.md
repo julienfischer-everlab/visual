@@ -14375,3 +14375,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The July 2027 re-test rows read "Due when you turn 50" (state 'later' fell to the age lock's copy) on the row and on the service page: they have their own line (`sub`: Your yearly re-test / re-scan / Your year in review) and date (`when`), and STATE.later says "Due from July 2027." for a dated row without an age.
 - They shared their services with live baseline items, so the demo's booking/completing (DEXA booked, consultation done) moved them too and the Overview's plan listed them: `yr: 1` rows are never the demo's instance (simRow returns them as they are) and stay out of planRows.
 - Landing in a hidden phase: Move back to my plan (tlReveal) now moves the phase card to the item's phase first, and matches the exact row before a namesake (August's DEXA, not July's). The Overview's Action plan V2 links (a milestone's mini, "See N more in My journey") open My journey on that milestone's phase (plain See timeline: the phase we're in), redrawn so the page doesn't show its last drawing.
+
+## My journey bento: Recent activity (Consultation / Microbiome / MRI / Pathology)
+- The bento's left card is Recent activity, its intervention picked by the Recent activity tweak (default Consultation). Each: Dr Sarah Chen's avatar, "RECENT ACTIVITY · <date>", the service and where it ended (the name from the service's plan, `PL(svc, 'done').t`; its last step — Get your plan, Report ready, Get your results; the blood test "Results ready", as its plan stops at First results), a conversational headline and a few lines in the care team's voice naming what's attached, then:
+  - Consultation (Tue 6 Oct): the call's recording (40 min), the service's own document (DPOOL: Onboarding Questionnaire, Completed) and Call notes; the three answers and Ask a question.
+  - Microbiome (13 Nov): Dr Chen's 4-minute walkthrough of the report; Microbiome report, Gut microbiome profile, Dietary recommendations (the record's documents); Ask a question, Read your report.
+  - MRI (8 Oct): her 6-minute video on the scan; Radiologist summary, MRI & CT images; Ask a question, Watch the video.
+  - Pathology (12 Oct): 38 Optimal / 4 Suboptimal / 2 Out of range (the Insights colours); Full lab report, Lipid profile, Vitamin D; Ask a question, See your results.
+- The video, a document or the next step opens the service's page (its completed row first). Ask a question opens the box as before. Steven: the same, his name.
+- Phone: documents one per line, the buttons stacked.
