@@ -14397,3 +14397,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 ## Items Grid: thumbnail top left, bars chip top right, words under it, the button full width at the foot
 - The grid card ("thumbnail top left, CTA full width bottom, bar chips top right, content below thumbnail"): the visual a square at the top left in both Visual modes (Imagery's full-bleed banner and the glass button over it gone), the bars chip lifted to the card's top right (16 in; 12 on the phone), the title, line and when under the visual (16 below it), and the button the card's width pinned to the foot (cards in a row end level).
+
+## My journey: the plans to upgrade to (under the phase card); Suggested on/off
+- Plan upgrade tweak (On by default): under the phase card ("below the plan hero card") — "YOUR PLAN · BASELINE / You're on Baseline. Go further with a plan built around what your baseline found." then three dark cards (the hero's ground on both pages), each with its phase's light in the corner:
+  - Protocol — "Recommended by Dr Sarah Chen", orange hairline, primary button: check-ins all year and re-tests (DEXA and Diagnostics Review, quarterly check-ins, bloods re-tested at 6 and 12 months). $1,490 a year, or $129 a month.
+  - Diagnostics — whole-body imaging and advanced screening (Whole Body MRI & CT Chest, cardiac CT and calcium score, 120+ marker panel). $3,290 a year, or $279 a month.
+  - Complete — "Best value", both plus the doctor a message away; save $290 a year. $4,490 a year, or $379 a month.
+  Prices and contents are the prototype's own, not Everlab's. Upgrade → toast "Thanks — your care team will call you about <plan>. Nothing changes until you confirm." Steven (no plan): "Your tests / You're buying tests one at a time…", buttons "Choose plan". Under 600px a row to swipe. Hidden while searching.
+- Suggested tweak (On/Off): shows or hides the suggestion under the hero (the colonoscopy).
