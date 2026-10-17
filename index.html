@@ -7647,7 +7647,7 @@
   #dTl.ovScrolled .tlBar::before, #dTl.ovScrolled .tlBar .ovGround{opacity:1;}
   /* My journey's top: the year across the page in place of the tabs -- three phases over a bar each, the months under them, the head riding it */
   .jvTime{display:none;}
-  #dTl.jtOn .tlTabs{display:none;} #dTl.jtOn .jvTime{display:block;flex:1 1 auto;min-width:0;padding:8px 0 22px;} #dTl.jtOn .tlBarIn{box-shadow:none !important;}
+  #dTl.jtOn:not(.tlClaim) .tlTabs{display:none;} #dTl.jtOn:not(.tlClaim) .jvTime{display:block;flex:1 1 auto;min-width:0;padding:8px 0 22px;} #dTl.jtOn:not(.tlClaim) .tlBarIn{box-shadow:none !important;}   /* Later showing (reached from elsewhere): the tabs instead, a way back */
   .jtPhs{position:relative;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,6fr) minmax(0,3fr);column-gap:6px;}
   .jtPh{position:static;display:flex;flex-direction:column;align-items:flex-start;min-width:0;margin:0;padding:0;border:0;background:none;font:inherit;text-align:left;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
   .jtE{max-width:100%;font-size:14px;line-height:18px;letter-spacing:0;text-transform:uppercase;white-space:nowrap;color:var(--tlSub);transition:color .3s ease;}
@@ -7774,7 +7774,7 @@
   .jvHero{background:#252522;} .jvHero h2, .jvHero .jvPr{color:#f6f4f2;} .jvHero p, .jvHero .jvPr small{color:rgba(255,255,255,.7);} .jvHero .jvBar i{background:rgba(255,255,255,.16);} .jvHero .jvBar i.on{background:#f78359;} .jvHero .jvEy{color:#f78359;}   /* the hero's own dark warm grey, both themes ("534C46 hero card bg", then "252522 bg"): its text light; the visual's black gives way to it (screen) */
   .jvList{position:relative;margin-top:16px;}
   /* My journey's top, the bento: the check-in at 70%, the health profile at 30%; then the Action plan heading over the milestones */
-  #dTl.jbOn .tlBar{display:none;} #dTl.jbOn .tlHead{margin-bottom:24px;}
+  #dTl.jbOn:not(.tlClaim) .tlBar{display:none;} #dTl.jbOn:not(.tlClaim) .tlHead{margin-bottom:24px;}
   .jvBento{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,3fr);gap:16px;}
   .jbCard{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:24px 28px;border-radius:20px;background:var(--msPanel);}
   .jbHd{display:flex;align-items:center;gap:12px;} .jbDr{width:40px;height:40px;border-radius:50%;object-fit:cover;}
@@ -30435,7 +30435,7 @@ hairline({
         '<div class="jvAskA"><button class="tlBtn msB jvB" type="button" data-ask="later">Do it later</button><button class="tlBtn msB jvB msP" type="button" data-ask="add">Add to plan</button></div></div>' : '';   // the suggestion under the hero
       return '<section class="tlSec jvWrap" data-ms="' + m.k + '">' + hero + ask + '<div class="jvList">' + card2('Next up', 'Start here', nx ? [nx] : [], () => 'nx')   /* its button the primary ("next up CTA primary") */ + card2('Ready for you', rest.length + (rest.length === 1 ? ' action' : ' actions') + ' whenever you\u2019re ready', rest, () => 'todo') + card2('Scheduled', pend.length + (pend.length === 1 ? ' appointment' : ' appointments') + ' booked', pend, () => 'todo') +   /* Next up an item as the rest ("no need to highlight") */ card('Locked', lock, () => 'lk', true) + card('Results ready', ready, () => 'ok') + '</div></section>'; };
     const MSARR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
-    const jbHtml = () => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => Object.assign({}, g, { ok: !!(a && g.svc === a.svc && a.done === 'add') })), n = gs.filter(g => !g.ok).length;
+    const jbHtml = () => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
       return '<div class="jvBento">' +
         '<div class="jbCard jbFb"><div class="jbHd"><img class="jbDr" src="' + IMG.dr + '" alt="" width="40" height="40"><span class="jbEy">' + esc(b.ey) + '</span></div><h3 class="jbH">' + esc(b.q) + '</h3><p class="jbP">' + esc(b.d) + '</p>' +
           (b.asking ? '<div class="jbAsk"><textarea rows="2" placeholder="Your question for ' + esc(b.dr) + '" aria-label="Your question for ' + esc(b.dr) + '"></textarea><div class="jbAskA"><button class="tlBtn msB jvB" type="button" data-jb="cancel">Cancel</button><button class="tlBtn msB jvB msP" type="button" data-jb="send">Send</button></div></div>'
@@ -30448,7 +30448,7 @@ hairline({
       const sug = [].concat(...S.map(x => x.sug || []));
       return (!sum && JTOP === 'bento' && tab === 'up' ? jbHtml() : '') + MS.map((m, mi) => { const groups = [];
         let rows = [].concat(...m.from.map(h => by[h] ? ordered(by[h].rows) : []));   // v1's items, all of them, in v1's order
-        if (m.sug && sug.length){ const gone = new Set(MS.filter(x => x.ask && askOff(x.ask)).map(x => x.ask.svc)); rows = rows.concat(sug.filter(x => !gone.has(x.svc))); }   // a suggestion answered under the hero: not suggested again here
+        if (m.sug && sug.length){ const gone = askGone(); rows = rows.concat(sug.filter(x => !gone.has(x.svc))); }   // a suggestion answered under the hero: not suggested again here
         const GL = [['act', 'To action'], ['pend', 'Pending'], ['lock', 'Locked'], ['done', 'Completed']];
         GL.forEach(([k, l]) => { const rs = rows.filter(r => msGrp(r) === k); if (rs.length) groups.push([l, rs]); });
         const all = [].concat(...groups.map(g => g[1])); if (!all.length) return '';
@@ -30480,6 +30480,7 @@ hairline({
       const steps = p.steps.slice(0, bI).concat(dl.map(([t]) => [t]), p.steps.slice(bI));
       return stepList0(Object.assign({}, p, { steps, at: at < bI ? at : at === bI && k >= 0 ? bI + k : p.at + dl.length })); };
     const askOff = a => a.done === 'add' || (a.done === 'later' && SNZ.has(a.sug));   // the hero's suggestion answered: added, or put off and still in Later
+    const askGone = () => new Set(MS.filter(x => x.ask && askOff(x.ask)).map(x => x.ask.svc));   // the services so answered: no longer suggested anywhere
     let JVVIS = 'icon';   // Layout V2's rows: an icon, or the service's picture (the Visual tweak)
     let JTOP = 'bento';   // My journey's top: the bento (with the Action plan heading), the year, or the tabs (the Top tweak)
     let JTU = null;   // the year at My journey's top, set again after each drawing (below)
@@ -30587,7 +30588,7 @@ hairline({
       (more ? '<button class="tlMore" type="button" aria-label="More options" aria-haspopup="menu">' + I.dots + '</button>' : '') + '</div>' : '') + '</article>'; };
     const sec = x => (SEC = x, '') + '<section class="tlSec' + (x.dot ? ' ' + x.dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true">' + (x.dot === 'care' ? I.spark : x.dot === 'done' ? CHK : '') + '</i>' + esc(x.h) + (x.rows.length && x.dot !== 'done' ? '<span class="tlHn" aria-label="' + x.rows.length + (x.rows.length === 1 ? ' item' : ' items') + '">' + x.rows.length + '</span>' : '') + '</h2>' +   /* how many items under it ("a badge with the number next to the months") */
       '<div class="tlItems">' + ordered(x.rows).map(row).join('') + '</div>' +
-      (x.sug ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + x.sug.map(row).join('') + '</div></div>' : '') +
+      (sg => sg.length ? '<div class="tlSug"><div class="tlSugHead">' + I.sug + 'Suggestions<span class="tlSugNav"><button type="button" data-d="-1" aria-label="Previous">' + I.prev + '</button><button type="button" data-d="1" aria-label="Next">' + I.next + '</button></span></div><div class="tlSugTrack">' + sg.map(row).join('') + '</div></div>' : '')((x.sug || []).filter((g => r => !g.has(r.svc))(askGone()))) +   /* a suggestion answered under My journey's hero: not suggested here again */
       '</section>';
     let tab = 'up';
     const navState = () => list.querySelectorAll('.tlSug').forEach(g => {
@@ -30607,7 +30608,7 @@ hairline({
       if (!any){ if (!e){ e = document.createElement('div'); e.className = 'tlEmpty'; list.appendChild(e); } e.textContent = 'Nothing matches “' + q.value.trim() + '”'; }
       else if (e) e.remove();
       list.classList.toggle('noRail', !any);
-      navState();
+      navState(); if (JTU) JTU();   // the year's head, the list's height changed
     };
     document.addEventListener('everlab:docs', () => { if (document.body.classList.contains('tlOn')) render(); });
     let DEMO = null; document.addEventListener('everlab:sim', () => { if (!document.body.classList.contains('tlOn')) return; render(); const t = DEMO; DEMO = null; if (!t) return;
@@ -30706,7 +30707,7 @@ hairline({
       ovOpen(d, host); });
     document.addEventListener('click', e => { if (!e.target.closest('.tlSee')) return; const sv = document.getElementById('versionSel'); if (sv){ sv.value = 'tl'; sv.dispatchEvent(new Event('change')); } });   // Plan's See timeline
     const render = () => {
-      ROWS = []; const V2 = TLVER === 'v2' && tab === 'up'; list.classList.toggle('tlV2', V2);
+      ROWS = []; const V2 = TLVER === 'v2' && tab === 'up'; list.classList.toggle('tlV2', V2); main.classList.toggle('tlClaim', tab === 'claim');   // Later showing: the tabs back over the bento's or the year's place (a way back to Upcoming)
       list.innerHTML = V2 ? msHtml(layout(tabRows(TL.up))) : layout(tabRows(TL[tab])).map(sec).join('');   // v2: Upcoming as milestones; Unclaimed (Later) and Past as they were
       { let al = main.querySelector('.tlAlert'); if (!al){ al = document.createElement('div'); al.className = 'tlAlert svAlert'; al.setAttribute('role', 'note');
           al.innerHTML = '<div class="svAlH"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 6.4v4.4"/><circle cx="10" cy="13.6" r=".6" fill="currentColor" stroke="none"/></svg><b>Personalised for you, ready when you are</b></div><p>These actions are tailored to your current health needs and saved here for later. They\u2019re not part of your active plan yet\u2014add them to your action plan when you\u2019re ready to get started.</p>';
@@ -30915,7 +30916,7 @@ hairline({
     const jtAnch = () => { const secs = [...list.querySelectorAll('section[data-ms]')].filter(x => x.offsetHeight), max = Math.max(0, main.scrollHeight - main.clientHeight);
       const A = secs.map(x => { const m = MS.find(y => y.k === x.dataset.ms); return m && m.mo ? { h: x.offsetHeight + 16, a: m.mo[0], b: m.mo[1] } : null; }).filter(Boolean);
       const tot = A.reduce((n, x) => n + x.h, 0) || 1; let y = 0; A.forEach(x => { x.s = y * max / tot; y += x.h; x.e = y * max / tot; }); return A; };
-    const jtAt = () => { const A = jtAnch(), st = main.scrollTop; if (!A.length) return 0; for (const x of A) if (st < x.e) return x.a + (x.b - x.a) * (x.e > x.s ? Math.max(0, st - x.s) / (x.e - x.s) : 0); return A[A.length - 1].b; };
+    const jtAt = () => { const A = jtAnch(), st = main.scrollTop; if (!A.length) return 0; if (A[A.length - 1].e <= 0) return A[0].a; for (const x of A) if (st < x.e) return x.a + (x.b - x.a) * (x.e > x.s ? Math.max(0, st - x.s) / (x.e - x.s) : 0); return A[A.length - 1].b; };
     const jtSet = t => { if (!jtEl || !jtEl.firstChild) return; t = Math.max(0, Math.min(12, t)); if (Math.abs(t - jtT) < .0005) return; jtT = t;
       const on = t >= 9 ? 2 : t >= 3 ? 1 : 0, ph = [...jtEl.querySelectorAll('.jtPh')], phs = jtEl.querySelector('.jtPhs'), hd = jtEl.querySelector('.jtHd');
       ph.forEach((p, i) => { const [a, b] = JT_PH[i]; p.classList.toggle('on', i === on); p.classList.toggle('past', i < on); p.style.setProperty('--f', Math.max(0, Math.min(1, (t - a) / (b - a))).toFixed(4)); if (i === on) p.setAttribute('aria-current', 'step'); else p.removeAttribute('aria-current'); });
@@ -30944,7 +30945,7 @@ hairline({
     list.addEventListener('click', e => { const b = e.target.closest('.jvAsk [data-ask]'); if (!b) return; e.stopPropagation(); const m = MS.find(x => x.ask && !askOff(x.ask)); if (!m) return; const a = m.ask, how = b.dataset.ask, host = list.closest('.dash') || document.body;
       if (how === 'see'){ openRow(a.sug); return; }
       const el = b.closest('.jvAsk');
-      const fin = () => { if (how === 'add'){ const sec = TL.up.find(x => m.from.includes(x.h)), row = Object.assign({}, a.row, { meta: a.row.meta.map(x => x.slice()) }); if (sec) sec.rows.push(row); a.done = 'add'; render(); tlReveal(row); tlToast(host, a.row.t + ' added to your plan.'); }
+      const fin = () => { if (how === 'add'){ const sec = TL.up.find(x => m.from.includes(x.h)), row = Object.assign({}, a.row, { meta: a.row.meta.map(x => x.slice()) }); if (sec) sec.rows.push(row); a.done = 'add'; a.added = row; render(); tlReveal(row); tlToast(host, a.row.t + ' added to your plan.'); }
         else { a.done = 'later'; SNZ.add(a.sug); render(); tlToast(host, a.row.t + ' saved for later. We’ll remind you in 30 days.'); } };
       if (el && el.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches){ const cs = getComputedStyle(el); el.style.overflow = 'hidden'; el.style.pointerEvents = 'none';
         el.animate([{ height: el.offsetHeight + 'px', marginTop: cs.marginTop, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 }, { height: '0px', marginTop: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 }], { duration: 320, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }).onfinish = fin; }   // the banner shuts, the cards rising into its place, then the list follows

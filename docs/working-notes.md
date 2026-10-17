@@ -14332,3 +14332,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Steven: "Hey Steven, how are you finding your blood results?"; gaps Colonoscopy, Whole body MRI, Family history.
 - Then "Action plan" (22px, 40px above) and the milestones: the hero, the suggestion, the cards.
 - Phone: the two cards stacked, the answers wrap, Ask a question full width.
+
+## Review fixes (workflow review of the My journey V2 changes; 4 confirmed)
+- Later reached from elsewhere (the Overview's More services → `_tl.tab('claim')`) while the bento or the year hides the tabs left no way back to Upcoming. render() now marks `#dTl.tlClaim` while Later shows, and the bento/year only hide the bar/tabs `:not(.tlClaim)`, so the tabs come back over Later; Upcoming brings the bento back.
+- The year's head jumped to the year's end when the list had nothing to scroll (a tall window) and didn't move after a search: jtAt returns the first milestone's start when the scroll is 0-long; filter() redraws the head (JTU).
+- Add to plan left the colonoscopy among Timeline v1's section suggestions (shown twice): v1's sec() now drops answered suggestions too (`askGone()`, shared with the milestones').
+- The bento kept "In your plan" after the added colonoscopy was put off from its page: the added row is kept (`a.added`); put off, its gap opens again as "Saved for later" and the count goes back up.
