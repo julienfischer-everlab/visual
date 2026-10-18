@@ -14415,3 +14415,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Use a dot instead of a vertical. In the timeline, use a tweak": the phase card's strip now marks each item as a glowing dot on a faint line, which is coloured yellow to red across the year. The current intervention is the largest dot, ringed and brightest. Done items are faint, and phases other than the picked one are dimmed, the same rules as the bands. The dots sit 18px in from the strip's ends (14px on a phone), so the ringed dot is never clipped. The strip is 44px high (40px on a phone). The new **Timeline style** tweak (Dots / Vertical, shown with Timeline v2) switches between dots and the earlier vertical bands, by toggling a class with no re-render. Dots are the default.
 - "18px": the Recent activity card's sentence ("Thanks for taking the time to speak with Dr Sarah Chen…") is now 18px regular, line height 26px (25px on a phone).
+
+## My journey: Timeline tweak, on or off
+
+- "Tweak the timeline ON OFF": a new **Timeline** tweak (On / Off, shown with Timeline v2) sits just above Timeline style. Off removes the phase card's strip of light, leaving the phase buttons and the plan's small card. The phase card itself stays; Timeline top: Off is what removes the whole card. While the Timeline is off, the Timeline style row is hidden, since it has nothing to style. Picking a phase still works with the strip off.

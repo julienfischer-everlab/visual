@@ -10851,6 +10851,14 @@
           </select>
         </div>
         <!-- the phase card's strip of light: each item a dot on a line, or a vertical band ("use a dot instead of a vertical; in the timeline, use a tweak") -->
+        <!-- the phase card's timeline, the strip of light, on or off ("tweak the timeline on / off") -->
+        <div class="tkRow" id="stJvLineRow">
+          <span class="lbl">Timeline</span>
+          <select id="stJvLine" aria-label="Show the timeline on the phase card">
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
         <div class="tkRow" id="stJvDotRow">
           <span class="lbl">Timeline style</span>
           <select id="stJvDot" class="tkSegSel" aria-label="How the phase card marks each item over the year: dots or vertical bands">
@@ -30648,7 +30656,7 @@ hairline({
       { k: 'diag', n: 'Diagnostics', d: 'The deepest look we offer: whole-body imaging and advanced screening, read by specialists.', inc: ['Whole Body MRI & CT Chest', 'Cardiac CT and calcium score', 'Advanced blood panel, 120+ markers'], p: '$3,290', alt: 'or $279 a month', art: 2 },
       { k: 'complete', n: 'Complete', tag: 'Best value', d: 'Protocol and Diagnostics together, with your doctor a message away between visits.', inc: ['Everything in Protocol and Diagnostics', 'Message your doctor any time', 'Save $290 a year'], p: '$4,490', alt: 'or $379 a month', art: 0 }
     ];
-    let JUP = true, JASK = true, JDOT = true;   // the Plan upgrade tweak; the Suggested tweak (the suggestion under the hero); the Timeline style tweak (dots or vertical bands)
+    let JUP = true, JASK = true, JDOT = true, JLINE = true;   // the Plan upgrade tweak; the Suggested tweak (the suggestion under the hero); the Timeline style tweak (dots or vertical bands); the Timeline tweak (the strip on or off)
     const JB_CHK = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.6 6.3 2.2 2.2 4.6-4.9"/></svg>';
     let JUPOPEN = false;   // the small card's list open (Discover more)
     const upHtml = () => { const m = MS[0], mem = !!(m && m.plan);   // the member on a plan; Steven buying tests one by one
@@ -30671,7 +30679,7 @@ hairline({
     const phHtml = (B) => { const t0 = phT0(), now = phNow(), cur = phCur(), sel = phSel(), mon = i => PH_MON[(t0[1] + i) % 12];
       return '<div class="jvPh" role="tablist" aria-label="Your first year"><div class="jpHd"><span class="jpEy">Your first year</span><span class="jpNow">Month ' + Math.min(12, Math.floor(now) + 1) + ' of 12</span></div><div class="jpRow">' +
         PH.map((p, i) => '<button class="jpP' + (i === sel ? ' on' : '') + (i === cur ? ' now' : '') + '" type="button" role="tab" aria-selected="' + (i === sel) + '" data-ph="' + i + '" style="--f:' + Math.max(0, Math.min(1, (now - p.a) / (p.b - p.a))).toFixed(3) + '">' +
-          '<span class="jpT"><b>' + p.n + '</b>' + (i === cur ? '<em>Now</em>' : '') + '</span><span class="jpR">' + p.r + '<span class="jpM"> \u00b7 ' + mon(p.a) + '\u2013' + mon(p.b - 1) + '</span></span></button>').join('') + '</div>' + (B && B.length ? phStrip(B, cur, sel) : '') + (JUP ? upHtml() : '') + '</div>'; };   // the plan's small card at the card's foot
+          '<span class="jpT"><b>' + p.n + '</b>' + (i === cur ? '<em>Now</em>' : '') + '</span><span class="jpR">' + p.r + '<span class="jpM"> \u00b7 ' + mon(p.a) + '\u2013' + mon(p.b - 1) + '</span></span></button>').join('') + '</div>' + (JLINE && B && B.length ? phStrip(B, cur, sel) : '') + (JUP ? upHtml() : '') + '</div>'; };   // the plan's small card at the card's foot
     const phEmpty = i => '<section class="jvWrap jvEmpty"><div class="jvHero"><div class="jvHx"><span class="msBadge jvBadge">' + PH[i].r + '</span><h2>' + PH[i].n + '</h2><p>Nothing planned for this phase yet. As your results come in, ' + esc((MS[0] && MS[0].bento && MS[0].bento.dr) || 'your doctor') + ' will add what comes next.</p></div><div class="jvArtH" aria-hidden="true"><img src="' + JV_ART[i] + '" alt="" draggable="false"></div></div></section>';   // a phase with nothing in it yet
     let MSLAY = 'v1';   // My journey's Layout: V1 the milestone cards, V2 the hero and the rail
     let TLVER = 'v2';   // the Timeline's Version: v1 by month, v2 My journey (milestones)
@@ -31098,7 +31106,8 @@ hairline({
     { const qs = document.getElementById('stJvAsk'), qr = document.getElementById('stJvAskRow'); if (qs) qs.addEventListener('change', () => { JASK = qs.value !== 'off'; render(); }); JASK = !qs || qs.value !== 'off';   // Suggested: the suggestion under the hero on or off
       const sh = () => { if (qr) qr.hidden = TLVER !== 'v2' || MSLAY !== 'v2'; }; ['stTlVer', 'stMsLay'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', sh); }); sh(); }
     { const ds = document.getElementById('stJvDot'), dr = document.getElementById('stJvDotRow'); if (ds) ds.addEventListener('change', () => { JDOT = ds.value !== 'bar'; list.querySelectorAll('.jpStrip').forEach(x => x.classList.toggle('dot', JDOT)); }); JDOT = !ds || ds.value !== 'bar';   // Timeline style: dots or vertical bands
-      const sh = () => { if (dr) dr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
+      const ls = document.getElementById('stJvLine'), lr = document.getElementById('stJvLineRow'); if (ls) ls.addEventListener('change', () => { JLINE = ls.value !== 'off'; sh(); render(); }); JLINE = !ls || ls.value !== 'off';   // Timeline: the strip on or off
+      const sh = () => { if (lr) lr.hidden = TLVER !== 'v2'; if (dr) dr.hidden = TLVER !== 'v2' || !JLINE; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const us = document.getElementById('stJvUp'), ur = document.getElementById('stJvUpRow'); if (us) us.addEventListener('change', () => { JUP = us.value !== 'off'; render(); }); JUP = !us || us.value !== 'off';
       const sh = () => { if (ur) ur.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     // the phase card: a phase picked -- the hero and the journey under it that phase's, rising in; brought into view if the heading is out of it
