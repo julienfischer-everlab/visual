@@ -14671,3 +14671,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Your first year: Journey / Recent update** (Hero Bento, after Summary content): Recent update fills the year card's slot with the summary card's own content (its title, text and button, following Summary content and the Real journey's step) under a "Recent update" eyebrow; the button works as the hero's (Get Baseline, View results, Get membership). Bento order names the item "Recent update" while it's picked. On the phone the Health profile and the recent update each take the full width.
 - **Container:** 1080px for My journey (was 1280).
 - **Loop trail, reversed:** the filling segment runs white at its start (ink in light mode), orange through its middle, and fades to orange at 0% at its leading end.
+- **Empty group card:** 16px more under its button (46 below, 40 on the phone).
+- **Summary content** row hides with the Summary card Off, unless Your first year is on Recent update (which still shows that content).
+- **Recent update card:** the summary card's own light on its right (46% of the card, fading in from the words; the words kept to the left 56%). Dark: screen-blended as the hero's. Light: the light's brightness masks an orange ground (mask-mode luminance), so the shapes come through orange with no dark edges. Hidden on the phone, as the hero's.
+- **Status cards:** the first 60%, the second 40%, whichever the Bento order puts first (desktop; the phone as before).
