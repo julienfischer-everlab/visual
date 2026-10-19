@@ -14578,3 +14578,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - v1211 — Phases position concerns the phases' tabs only ("phase position concerns these: Top like this; Left, a column at the Action plan's left"): on Left the year's card stays on top without its tabs, the rail holds the three phases alone (its own header gone, the card says where in the year), each as its tab says it ("0–3 months · Aug–Oct", one line); the rail 204 wide, 28 to the list.
 
 - v1211 (published) — empty Health profile: Start is now "Find my gaps", over the square cloud, centred on it ("overlap the visual centered"), with a soft shadow to lift it off the squares; the cloud keeps the card's foot. (The note above labelled v1211 went out as published version 1210.)
+
+- v1212 — My journey:
+  - The phase card is the tabs alone ("remove the content, just keep the tabs: Baseline, Action plan, Re-test") — the head, the phase's name, its line and the light gone; the card close round the tabs (8px). The Action plan timeline tweak's Hero is labelled Tabs; Card keeps the old card. On Phases position Left the tabs-only card goes (the tabs are the rail's).
+  - A dot at the group icon's top right: orange on Ready for you, grey on In progress ("orange dot / grey dot top right visual").
