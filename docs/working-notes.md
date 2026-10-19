@@ -14572,3 +14572,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - v1209 — My journey:
   - Health profile tweak (Timeline group; Data provided (default), Empty): Empty draws the square cloud (the pattern's mini squares), "Find your health gaps", "Based on your history, we can detect what screenings are due." and a primary Start at the card's foot (across the card on the phone, its line kept there). Start finds them here: Data provided, with a toast of how many.
   - One of each service in a milestone ("put only one microbiome"): a report or a completion is not drawn beside the same service still to do — the July microbiome's report goes, the one to collect and post stays (Results ready empties; the year's count reads 0 of 14).
+
+- v1210 — My journey: 16px under the dashed "other services" card to its card's foot ("gap 16px"; the gap between the group cards was 16 already) — its margin 4 and the card's 12 (the phone's 8 and 8). The empty Health profile's square cloud in orange (the accent, dark and light), each square its own opacity, 10% to full ("use orange square with diff opacity").
