@@ -14588,3 +14588,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - A tab scrolls: Baseline to the list's first section, a later phase to the transition that opens it (data-pi on the transition into a new phase), landing 16 under the tabs; the tab of the phase in view lit as the page scrolls (a spy on #dTl's scroll, the last phase once the foot is reached).
   - The tabs-only card held at the top on scroll (.jpStick: sticky in a band of the page's ground, past #dTl's padding — 32 desktop, 52 S, 17 XS — so nothing shows above it). The rail (Left) the same way, 24 from the edge; and drawn on Left whatever Timeline top / Action plan timeline say ("can't see Phases left": it needed both on before).
   - The phone's Upgrade on a locked phase the word alone (the price hidden there, so it isn't cut).
+
+- v1214 (notes' count) —
+  - Bento order drawn as meant ("present this in a nicer way, more simple"): an unclosed comment (after the step-through arrows' rules) had swallowed the order lists' own look, so they showed as a bare numbered list with huge grips; closed. The rows compact (32 high), the status cards' list under a small heading, indented.
+  - Bento top retired ("remove"): the milestone (the welcome) heads the bento.
+  - No switch beside a segmented control: every two-option tkSegSel had both (Bento top, Phases position, Health profile); the segments alone now.
+  - The empty Health profile's cloud edge to edge ("visual edge to edge of the card"): to the card's sides and foot (the card clips its corners), 140 high (96 on the phone); the squares fill the frame to its edges.
