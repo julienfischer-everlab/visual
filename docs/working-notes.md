@@ -14629,3 +14629,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - v1225 (notes' count) — Summary content tweak (Hero Bento group; Welcome (default), New results) ("add a tweak: Content — New results"): New results makes the bento's head the news — a "New results" badge with an orange dot, "Your blood test results are in", "Dr Sarah Chen has reviewed your Foundational blood testing. See what stands out, and what to do next.", and a primary View results (the blood test's page); the same card, its light at the right.
 
 - v1226 (notes' count) — the middle phase renamed Tests & Diagnostics ("replace Action plan: Tests & Diagnostics"): its tab, the rail, the year card's names, its section; the Re-test's transition "Tests & Diagnostics complete" ("Your tests and diagnostics end here."); the not-bought notes reworded to match. On the phone its tab name on two lines, not cut. (The list's own heading, Action plan, unchanged.)
+
+## Real journey (My journey V2)
+
+- New tweak **Real journey** (Additional group, on by default). The bottom-right arrows step through four stages, with a "n / 4" counter between them:
+  1. **Nothing paid** — hero "Get Baseline · $299"; the Baseline card locked (General Questionnaire, Blood testing, Onboarding Consultation).
+  2. **Baseline paid** — Ready for you: General Questionnaire, Blood testing, Onboarding Consultation, in that order.
+  3. **Ready** — Foundational blood testing.
+  4. **Summary** — hero "Baseline complete · Thanks for your time · Continue your health journey" with Get membership; Ready for you: Get your membership.
+- Stage 1 sets Purchased to Nothing, stages 2–4 to Baseline. Either Get Baseline button (hero or locked card) moves to stage 2.
+- While on: no "N other services available" card, no Dr Sarah Chen suggestion, no hard-coded blood test appointment. Off restores the full list.
