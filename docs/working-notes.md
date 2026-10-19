@@ -14689,3 +14689,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Recent update card:** no eyebrow; its button 44px.
 - **Phase tabs:** filled (the cards' fill), no outline; the active tab on the page's own ground.
 - **Tweaks:** "Action plan hero card" group renamed **Phases**; Action plan timeline retired (always the tabs, whatever was saved).
+
+## Phase cards, Plate visual, the ⋯ menu, phone bento
+
+- **Phase cards:** each phase is one card. The left column says what the phase is (its media or visual, its name, one line: Baseline "A snapshot of where your health stands today, and the starting point for your plan."; Act & Improve "Your personalised plan in action: the tests and changes your baseline points to."; Re-test & Refine "The same tests a year on, to measure your progress and adjust your plan."), with its Get/Upgrade button when it isn't bought. The right column groups the services by status: To action, then In progress, then Results ready, then Coming up/Locked, each under its name. Locked previews (later phases, a phase not bought) list theirs under Locked. Searching hides a status left empty. The Later tab keeps its own cards.
+- **Group visual:** the Hairline page's Plate (the 96-well sample plate being read) in place of Draw, with no ground of its own; 120px across its drawing in the 128 box; the status dot hidden (no shape to sit on).
+- **⋯ on every item with a button** (not locked, not done): v1's menu — Do it later (to Saved for later, the Later tab) and View details. A postponed Real journey row leaves the journey's list too.
+- **Phase tabs:** back to outlined, the active one a filled card, the others ghost.
+- **Phone bento:** the cards 24px in; the summary card and the Recent update keep their light on the right (46% / 44%, fading in from the words), the words in the left ~70%; the status cards are a horizontal carousel (32px of the next card showing, snapping, swiped by touch, and by a mouse drag in the desk's phone preview).
+- **Health profile:** hovering (or focusing) a gap shows its screening's name in a tooltip with an arrow (white on the dark page, ink on the light), in place of the browser's title.
