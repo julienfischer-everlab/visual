@@ -14704,3 +14704,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Step 4 hero (Real journey, Baseline complete. OC done):** "Thanks for your time with Dr Steven Lu", then the doctor's recommendation to upgrade to Protocol and the step-by-step line, and a **Start Protocol** CTA. It sets Purchased to Protocol (the plan tag reads Protocol plan, a toast confirms) and hides once Protocol is the plan.
 - **Recent update card** now carries every paragraph of the hero, not only the first.
 - **Journey select:** step 4 is named "Baseline complete. OC done".
+
+## Phase card: name as a badge
+
+- **Phase name** (the left column's "Baseline", "Act & Improve", …): a full-round badge on the secondary fill (`--tlPill`, white 8% on dark, ink 7% on light), 24 high, the same 10px uppercase lettering; 8px below it (4 more than before). With Group title on Top it sits beside the tile, 4px above its line; on a phone it stays in a row with the tile, centred on it.
