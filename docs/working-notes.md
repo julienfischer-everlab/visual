@@ -14519,3 +14519,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## My journey: a real 4px gap between the list rows
 
 - "+4px gap!!!! list items row": the earlier "+4px" requests only padded each row, so the hover tile still ran from divider to divider. The cards' lists are now flex columns with `gap:4px`, and the divider sits in the middle of that gap (`top:-2.5px`). A hovered row's tile now stops 2px short of the lines above and below it instead of touching them. Measured 4px between consecutive rows at L and XS. Grid keeps its own 12px gap.
+
+## My journey: each group its icon; Next up inside Ready for you
+
+- "Add an icon for each group: Ready for you, layers; Scheduled, calendar": each group card now has an icon (`JG`). In the two-column cards it's a 40px tile above the label: Ready for you a stack of layers, Scheduled a calendar. In the one-column cards it's a 28px tile beside the label: Locked a padlock, Coming up a clock, Results ready a tick in a circle. On a phone it sits beside the label in every card.
+- "Put the Next up item inside Ready for you": the Next up card is gone. Its item opens Ready for you's list, keeping the primary button. The count now includes it ("5 actions whenever you're ready"). The step-through still completes that first item, and Ready for you's count goes down as it does.
