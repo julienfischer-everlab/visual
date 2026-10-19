@@ -14666,3 +14666,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Real journey, last step:** with the Baseline done and Get your membership offered, the later phases show every service they include, locked (each with View), under their Upgrade button, instead of "Shaped by your baseline". Steps 1–3 keep the empty card.
 - **Locked previews:** each service once per phase (DEXA Scan / Dexa Scan, the two Diagnostics Reviews).
 - **Loop trail:** the filling segment is a gradient from Everlab orange at its tail to solid #fff at its head (dark ink in light mode); past segments stay white.
+- **Container:** My journey (V2) runs in a 1280px column (#dTl.tlVer2 .tlCol): the heading, bento and Action plan fill it, 1120 at a 1440 window. V1's list keeps its 760.
