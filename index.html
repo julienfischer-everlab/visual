@@ -7812,6 +7812,7 @@
   @container msl (max-width:600px){ .jvGiD{top:-1px;right:-1px;width:6px;height:6px;} }
   #dTl .tlList.tlV2 .tlRow.jvRow.lock .jvIc{opacity:.6;} #dTl .tlList.tlV2 .tlRow.jvRow.lock .jvImg img{filter:grayscale(1);}   /* a locked one's picture grey, at 60% */
   .jvSide > .jvPurB{margin-top:18px;}
+  .jvBadgeN{display:inline-flex;align-items:center;gap:8px;} .jvBadgeN > i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--msAcc);} .jvResA{margin-top:20px;}   /* the summary card on new results: its badge's orange dot, its way in */
   .jvPhE{padding:22px 0 24px;max-width:52ch;} .jvPhE b{display:block;font-size:15px;line-height:21px;font-weight:500;color:var(--tlInk);} .jvPhE p{margin:6px 0 0;font-size:14px;line-height:21px;color:var(--tlSub);text-wrap:pretty;}   /* a phase not bought: what shapes it, no services */
   @container msl (max-width:600px){ .jvPhE{padding:8px 0 14px;} .jvPhE b{font-size:14px;line-height:19px;} .jvPhE p{font-size:13px;line-height:19px;} }   /* a phase not bought: its Upgrade under the plan that brings it */
   @container msl (max-width:600px){ .jv2c .jvSide > .jvPurB{flex:none;margin:0 0 0 auto;} .jvPurP{display:none;} }   /* the phone: the word alone, whole */
@@ -11136,6 +11137,14 @@
           </select>
         </div>
         <!-- the bento's order, dragged up and down (or moved with the arrow keys): its rows, then the status cards in theirs -->
+        <!-- what the summary card (the bento's head) says ("add a tweak: Content -- New results") -->
+        <div class="tkRow" id="stJbSumRow">
+          <span class="lbl">Summary content</span>
+          <select id="stJbSum" class="tkSegSel" aria-label="What the summary card says">
+            <option value="wel" selected>Welcome</option>
+            <option value="res">New results</option>
+          </select>
+        </div>
         <div class="tkRow tkOrdRow" id="stJbOrdRow">
           <span class="lbl">Bento order</span>
           <ol class="tkOrd" id="stJbOrd" aria-label="The bento's rows: drag, or use the arrow keys, to reorder">
@@ -30903,6 +30912,8 @@ hairline({
     const jvHero = (m, all, dn, welcome) => { const b = MS[0] && MS[0].bento, wl = welcome && phOf(m) === 0, wk = /^(\d+ weeks?)/.exec(m.rem || '');
       const ey = wl ? 'Welcome to Everlab' : m.ey, h = wl ? 'Hi ' + ((b && b.nm) || 'there') + ', let\u2019s start your journey' : m.h,
         d = wl && JPUR === 'none' ? 'Choose a plan to begin: Baseline for $299, Diagnostics for $1,199, or the whole year with Protocol for $2,999.' : wl ? ({ diag: 'First, your baseline and diagnostics: ', prot: 'Your year starts with your baseline: ' }[JPUR] || 'First, your baseline: ') + all.length + ' actions' + (wk ? ' over the next ' + (/^1 /.test(wk[1]) ? 'week' : wk[1]) : '') + ' give ' + ((b && b.dr) || 'your doctor') + ' the full picture of your health today.' : m.d;
+      if (wl && JSUM === 'res') return '<div class="jvHero jvWel jvRes"><div class="jvHx"><span class="msBadge jvBadge jvBadgeN"><i aria-hidden="true"></i>New results</span><h2>Your blood test results are in</h2><p>' + esc((b && b.dr) || 'Your doctor') + ' has reviewed your Foundational blood testing. See what stands out, and what to do next.</p>' +
+        '<div class="jvResA"><button class="tlBtn msB jvB msP" type="button" data-jb="open" data-svc="path">View results</button></div></div><div class="jvArtH" aria-hidden="true"><img src="' + JV_ART[0] + '" alt="" draggable="false"></div></div>';   // the summary card on new results (the Summary content tweak)
       return '<div class="jvHero' + (wl ? ' jvWel' : '') + '"><div class="jvHx"><span class="msBadge jvBadge">' + esc(ey) + '</span><h2>' + esc(h) + '</h2>' + (d ? '<p>' + esc(d) + '</p>' : '') + (wl ? '' : '<div class="jvPr"><span>' + dn + ' of ' + all.length + ' complete</span>' + (m.rem ? '<small>' + esc(m.rem) + '</small>' : '') + '</div><div class="jvBar" aria-hidden="true">' + all.map((r, i) => '<i' + (i < dn ? ' class="on"' : '') + '></i>').join('') + '</div>') + '</div><div class="jvArtH" aria-hidden="true"><img src="' + JV_ART[phOf(m)] + '" alt="" draggable="false"></div></div>'; };   // the milestone's card: where you are, how far, the phase's light; the bento's, a welcome (no progress, no button: "remove, and no CTA")
     const jvHtml = (m, all, dn, ahead, noHero, later) => {   /* later: a milestone after the first -- its card alone, every item locked */   /* noHero: its card heads the bento instead */ /* ahead: a phase still to come, its locked items Coming up */ const fresh = r => unseen(r) || msGrp(r) === 'done';
       const ready = all.filter(fresh), act = all.filter(r => !fresh(r) && msGrp(r) === 'act'), pend = all.filter(r => !fresh(r) && msGrp(r) === 'pend'), lock = all.filter(r => !fresh(r) && msGrp(r) === 'lock');
@@ -30980,7 +30991,7 @@ hairline({
       return '<div class="jbGridP"><div class="jbGrid" role="group" aria-label="' + rec + ' of ' + JB_HP_N + ' recorded, ' + n + (n === 1 ? ' gap' : ' gaps') + '">' + Array.from({ length: JB_HP_N }, (_, k) => { const x = at[k]; if (!x) return '<span class="jbCell"><i></i></span>';
         const [g, i] = x, l = esc(g.t + ', ' + (g.ok ? 'in your plan' : g.w)); return g.sug ? '<button class="jbCell gap' + (g.ok ? ' ok' : '') + '" type="button" data-jb="gap" data-i="' + i + '" title="' + l + '" aria-label="' + l + '">' + (g.ok ? '<i></i>' : '') + '</button>' : '<span class="jbCell gap" role="img" title="' + l + '" aria-label="' + l + '"></span>'; }).join('') + '</div></div>' + cap; };
     /* the Health profile empty (the Health profile tweak's Empty): the square cloud, what it will find, Find my gaps over the cloud -- which, here, finds them (Data provided) */
-    let JHPST = 'data';
+    let JHPST = 'data', JSUM = 'wel';   // JSUM: the summary card's content (welcome, new results)
     const JB_HPNX = '<button class="jbHpNx" type="button" data-jb="hpnx" aria-label="See your health gaps"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></button>';   // the Health profile's way in: the first gap's service
     const JB_HPE = '<div class="jbCard jbHp jbHpE"><span class="jbEy">Health profile</span><h3 class="jbH">Find your health gaps</h3><p class="jbP">Based on your history, we can detect what screenings are due.</p><div class="jbHpV"><div class="jbPatW" aria-hidden="true"><canvas class="jbPat" data-f="0.55" data-v="1"></canvas></div><button class="tlBtn msB jvB msP jbHpGo" type="button" data-jb="hpgo">Find my gaps</button></div></div>';
     function jbDraw(c){ const w = c.clientWidth, h = c.clientHeight; if (!w || !h) return; const dpr = Math.min(2, window.devicePixelRatio || 1), f = +c.dataset.f || 0;   // the pattern: 3px squares a pixel apart, denser down the field
@@ -31612,6 +31623,9 @@ hairline({
     { const ts = document.getElementById('stJbTop'), tr = document.getElementById('stJbTopRow');   // Bento top: the milestone or the Recent activity
       if (ts) ts.addEventListener('change', () => { JBTOP = ts.value === 'act' ? 'act' : 'ms'; shA(); render(); }); JBTOP = 'ms'; if (ts) ts.value = 'ms';   // retired: the milestone, whatever was kept
       const sh = () => { if (tr) tr.hidden = TLVER !== 'v2' || MSLAY !== 'v2'; shA(); }; ['stTlVer', 'stMsLay'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', sh); }); sh(); }
+    { const ss = document.getElementById('stJbSum'), sr = document.getElementById('stJbSumRow');   // Summary content: the welcome, or new results
+      if (ss) ss.addEventListener('change', () => { JSUM = ss.value === 'res' ? 'res' : 'wel'; render(); }); JSUM = ss && ss.value === 'res' ? 'res' : 'wel';
+      const sh = () => { if (sr) sr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const es = document.getElementById('stJbHpSt'), er = document.getElementById('stJbHpStRow');   // Health profile: what was found, or empty
       if (es) es.addEventListener('change', () => { JHPST = es.value === 'empty' ? 'empty' : 'data'; render(); }); JHPST = es && es.value === 'empty' ? 'empty' : 'data';
       const sh = () => { if (er) er.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }

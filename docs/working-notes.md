@@ -14625,3 +14625,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - v1223 (notes' count) — Your first year: no line under "Month N of 12" ("remove sub"); the bar 22 under the title.
 
 - v1224 (notes' count) — Ready for you's tile the service page's dark orange (#3a1f0b, its pending card's) with a white icon ("use dark orange as service detail"); the Health profile with data: no line under its count ("remove sub"; the empty state keeps its line).
+
+- v1225 (notes' count) — Summary content tweak (Hero Bento group; Welcome (default), New results) ("add a tweak: Content — New results"): New results makes the bento's head the news — a "New results" badge with an orange dot, "Your blood test results are in", "Dr Sarah Chen has reviewed your Foundational blood testing. See what stands out, and what to do next.", and a primary View results (the blood test's page); the same card, its light at the right.
