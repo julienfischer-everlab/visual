@@ -14441,3 +14441,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Async report: the answers card's chevron as a ghost button
 
 - "ghost": the chevron button on the Your answers card no longer has a fill at rest, so only the icon shows. Hovering the card gives it the faint 6% ink circle. Its size (40px), position (centred on the card) and click target (the whole card) are unchanged.
+
+## Version menu: Appointment (OLD)
+
+- "Appointment → Appointment (OLD); Desktop → Appointment; remove Mobile": the group is now labelled **Appointment (OLD)** and holds one entry, **Appointment** (the desktop appointment page, which is responsive, so XS shows the phone). Mobile is out of the menu. The phone's own appointment still opens from its Overview, and it no longer sets the menu to the missing entry, so the menu keeps whatever it already shows.

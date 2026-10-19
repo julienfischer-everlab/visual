@@ -20922,8 +20922,8 @@ hairline({
       [['svcD', 'Service detail']].forEach(   /* the page's name, as the Overview's ("rename Service detail") */   /* no Mobile: XS on the desktop view is the phone ("remove mobile because we can manage XS on desktop view") */([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
       versionSel.appendChild(sg);
       /* no Task detail of its own: the tasks are in Service detail's picker, a group, Standalone tasks ("merge that into the dropdown of services inside the service detail desktop") */
-      const ag = document.createElement('optgroup'); ag.label = 'Appointment';   // "add the appointment page"
-      [['aptD', 'Desktop'], ['aptM', 'Mobile']].forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; ag.appendChild(o); });
+      const ag = document.createElement('optgroup'); ag.label = 'Appointment (OLD)';   // "add the appointment page"; then "Appointment --> Appointment (OLD)"
+      [['aptD', 'Appointment']].forEach(   /* "Desktop --> Appointment", "remove Mobile": XS on the desktop is the phone; the phone's own appointment still opens from its Overview */([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; ag.appendChild(o); });
       versionSel.appendChild(ag);
       const tg = document.createElement('optgroup'); tg.label = 'Timeline';   // "a new page ... called Timeline"
       const to = document.createElement('option'); to.value = 'tl'; to.textContent = 'Timeline'; tg.appendChild(to);
@@ -33757,7 +33757,7 @@ hairline({
       const rd = matchMedia('(prefers-reduced-motion: reduce)').matches; h.style.setProperty('--hy', (rd ? 0 : -y * 0.25).toFixed(1) + 'px'); h.style.setProperty('--hk', (1 - k).toFixed(3)); h.style.setProperty('--hpy', (rd ? 0 : -32 * k).toFixed(1) + 'px'); };   // the service page's hero: words drift and fade, the picture 32 up
     [desk, mob].forEach(sc => { let q = 0; sc.addEventListener('scroll', () => { if (q) return; q = requestAnimationFrame(() => { q = 0; fx(sc); }); }, { passive: true }); });
     const openDesk = o => { if (AI){ AI = 0; paintA(); } from = o && o.from || null; if (!from){ if (window._tl) window._tl.close(true); } document.body.classList.add('aptOn'); desk.scrollTop = 0; fx(desk); if (sel) sel.value = 'aptD'; requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };   // resize: the shell's corner block measured off this card
-    const openMob = o => { if (!ph) return; if (AI){ AI = 0; paintA(); } from = o && o.from || null; ph.classList.add('aptOn'); mob.scrollTop = 0; fx(mob); if (sel) sel.value = 'aptM'; };
+    const openMob = o => { if (!ph) return; if (AI){ AI = 0; paintA(); } from = o && o.from || null; ph.classList.add('aptOn'); mob.scrollTop = 0; fx(mob); if (sel && sel.querySelector('option[value="aptM"]')) sel.value = 'aptM'; };
     const close = quiet => { const d = document.body.classList.contains('aptOn'), m = ph && ph.classList.contains('aptOn'); if (!d && !m) return; const wasTl = from === 'tl';
       document.body.classList.remove('aptOn'); if (ph) ph.classList.remove('aptOn'); if (d) requestAnimationFrame(() => { if (typeof resize === 'function') resize(); });
       if (sel) sel.value = from === 'svc' ? (d ? 'svcD' : 'svcM') : (d ? '9' : '6'); from = null; if (wasTl && !quiet && window._tl) window._tl.open(true); };   // opened from the Timeline: back to it
