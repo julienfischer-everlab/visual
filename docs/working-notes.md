@@ -14494,3 +14494,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Tested: three completions in a row (General Questionnaire, then Pathology Test, MRI Briefing), the arrow keys, undo back to the start, hidden on the Overview.
 - "This is a status hero card; need to welcome the user to start their journey": in the first phase, the bento's head now reads "Welcome to Everlab" / "Hi Julien, let's start your journey" / "First, your baseline: 8 actions over the next 3 weeks give Dr Sarah Chen the full picture of your health today." (Steven: "4 actions over the next week"). Its progress stays, and a light primary button, "Continue your journey" ("Start your journey" when nothing is done yet), opens the Next up action's page. Members' first names are in the bento data (`nm`). The Action plan's own milestone cards (other phases) keep their milestone copy.
 - "Add a link to see the other available items": Ready for you's side column gets "See 4 more available →" (the Later tab's count: saved for later plus Later's own). It switches to Later and brings its heading into view; it shows on the phone too.
+
+## My journey: rows without a second line centred; rows 4 further apart
+
+- "If the content doesn't fill the vertical height, center the content vertically": a row with no when (an empty `.jvW`, e.g. MRI Briefing) drops its second grid row (`"ic t a"`, the empty `.jvW` hidden) and centres its words on the visual. This applies in the two-column cards at every width, and in all cards on the phone. Rows with a when keep their top alignment.
+- "+4px gap": the list rows are 2px taller above and below again (20px in the two-column cards, 22px elsewhere).
