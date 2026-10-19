@@ -14564,3 +14564,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Your first year: the phases not bought faint with a lock on their names; nothing bought, "No plan yet · choose one to begin".
   - The welcome copy follows the plan (nothing bought, it lists the three with their prices).
   - The upgrade card (Plan upgrade tweak) offers only the plans above the one bought, at these prices; Complete dropped.
+
+- v1208 — My journey:
+  - Phases position tweak (Action plan hero card group; Top (default), Left): Left puts the phases in a rail at the Action plan's left, held in view as the page scrolls ("fixed, stacked on scroll") — Your first year, Month N of 12, then the three phases one above the other on a line (the one we're in its orange dot and Now, a passed one filled, the picked one lit, one not bought faint with a lock), each its months and how much is done; picking one works as the card's (its first section brought into view). The groups' names sit above their lists in that position ("Ready for you above the list of services"), the icon, name and line in a row, an Upgrade at its right. Wide only (L, M): XS and S keep the card on top. The list a grid then: the rail in the first column spanning the rows, the sections in the second.
+  - Plan upgrade tweak retired ("remove"); the upgrade is offered on the locked phases now.
