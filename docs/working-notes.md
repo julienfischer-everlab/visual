@@ -14719,3 +14719,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Status sections:** "Results ready" is now "Completed"; the titles are uppercase, as the page's eyebrows (10px, 2px apart).
 - **Phone phase tabs:** each tab's words centred.
 - **Fixes from the verification run:** a locked row's lock is whole on Imagery pictures (it was clipped to the picture); the group Visual is fitted when it appears after being hidden (phone, Group title Top), not left oversized at the corner.
+
+## Phase card notch, tabs, Foundation blood testing
+
+- **Phase name tweak (Phases group): Notch (default) / Badge.** Notch: the phase's name in a folder tab rising from the card's top left (32 high, the same 10px uppercase lettering, aligned with the card's content), its right side easing down into the card's top edge with a concave foot; the card's top-left corner square under it. No icon tile, just text. The tab's fill is the card's own made opaque (#191919 dark, #f7f6f6 light: the card's 4% panel over the page), so tab and card meet without a seam; with Group cards Outline, the tab is outlined too and the card's top line stops under it. Group title Top: the line alone, its button at the right. Phone: the head row (tile and badge) gone, unless a button is in it. Badge keeps the previous look (tile and pill).
+- **Phase tabs:** 8px more padding in each tab (20 / 22 / 22; the phone 8 more above and below only, its tabs narrow), 2px less round them (6). The period alone ("0–3 months"), its line gone.
+- **Journey row:** "Blood testing" is now "Foundation blood testing".
