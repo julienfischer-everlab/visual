@@ -14540,3 +14540,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Gap items +4px": the items are 4px apart.
 - "CTA X to my plan": the button reads "Add 2 to my plan" ("Add to my plan" with nothing picked).
 - The "Collect sample" screenshot came from an older build: no "Collect sample" button renders anywhere now (checked for both members, both layouts, and the Overview).
+
+- v1202 — My journey, the dashed "N other services available" card: the dashes now drawn (an SVG rect, 6 on and 6 off, 1.5px) so their gaps sit 2px wider than CSS's dashed ("increase gap dash +2px"), in dark, light and hover; the card's content at 76% opacity, full on hover ("reduce foreground opacity by 24%"). Padding takes the 1.5px the old border did (desktop, phone, Grid tile). The "Scheduled" group is now "In progress" ("In progress, not scheduled").
