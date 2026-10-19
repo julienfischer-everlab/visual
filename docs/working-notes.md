@@ -14659,3 +14659,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Loop dots:** 6px, all solid in the line's colour (white; ink in light mode). The phase a transition opens is 100% once the line reaches it; the other dots 24%. The way still to go (every segment not yet filled) is dashed, 3 on / 2 off (2 less between the dashes); the track at 24%.
 - **Phase tabs (segmented):** the container outlined (1px, 10% white / 12% ink) on the sticky band's page ground; the active phase a filled card (the group cards' fill); the others ghost, a faint fill on hover. Light mode uses the page's ink inside it.
 - **Phase header, from review:** first in its section (over the hero too when the bento is off), 16 above / 12 below, and the transitions' size (17px, 16 on the phone). It shows whenever no phase tabs are drawn: Timeline top Off, Timeline top Tabs, or Action plan timeline Off.
+- **Loop, refined:** past and active dots solid #fff at 100% (ink in light mode); dots still to come 24%. The dashed track at half its opacity (12%).
+- **Empty group card, simplified:** no phase eyebrow (the transition above names the phase) and nothing under the button; the title 2px larger (17px, 16 on the phone).
+- **Phase tabs:** three equal columns filling the container, 4px apart (2 on the phone).
+- **Real journey:** on step 1, any Get button (the hero's Get Baseline, or a later phase's Get Protocol) moves to step 2 with the plan it named; stepping back to step 1 resets it to Non-member.
