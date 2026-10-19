@@ -14606,3 +14606,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - v1216 (notes' count) — phase transitions: the dashed line fades out as it reaches the cards above and below ("dashed line fade out when it arrives to the card"; a mask on each segment); the circle with no outline, light blue (#cfe1f6, its flag #16324f), 12 larger — 52 (48 on the phone), the flag 20 ("circle no outline; light blue bg; increase the circle by 12px").
 
 - v1217 (notes' count) — the transition's circle dark blue (#1d3a5f), its flag white ("dark blue, white icon"); Ready for you's icon tile dark orange (#9c4320), its icon white ("frame dark orange, white icon"), its orange dot kept on the corner.
+
+- v1218 (notes' count) — a locked item (the milestones further on): no progress chip, no line under its name ("locked → remove indicator progress; sub → remove"), a secondary View (its page) ("locked still need a View secondary CTA"); a locked item's picture grey at 60% ("img → grayscale, opacity 60%"; the icon at 60% too).
