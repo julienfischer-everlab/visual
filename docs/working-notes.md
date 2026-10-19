@@ -14576,3 +14576,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - v1210 — My journey: 16px under the dashed "other services" card to its card's foot ("gap 16px"; the gap between the group cards was 16 already) — its margin 4 and the card's 12 (the phone's 8 and 8). The empty Health profile's square cloud in orange (the accent, dark and light), each square its own opacity, 10% to full ("use orange square with diff opacity").
 
 - v1211 — Phases position concerns the phases' tabs only ("phase position concerns these: Top like this; Left, a column at the Action plan's left"): on Left the year's card stays on top without its tabs, the rail holds the three phases alone (its own header gone, the card says where in the year), each as its tab says it ("0–3 months · Aug–Oct", one line); the rail 204 wide, 28 to the list.
+
+- v1211 (published) — empty Health profile: Start is now "Find my gaps", over the square cloud, centred on it ("overlap the visual centered"), with a soft shadow to lift it off the squares; the cloud keeps the card's foot. (The note above labelled v1211 went out as published version 1210.)
