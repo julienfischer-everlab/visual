@@ -14582,3 +14582,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - v1212 — My journey:
   - The phase card is the tabs alone ("remove the content, just keep the tabs: Baseline, Action plan, Re-test") — the head, the phase's name, its line and the light gone; the card close round the tabs (8px). The Action plan timeline tweak's Hero is labelled Tabs; Card keeps the old card. On Phases position Left the tabs-only card goes (the tabs are the rail's).
   - A dot at the group icon's top right: orange on Ready for you, grey on In progress ("orange dot / grey dot top right visual").
+
+- v1213 (notes' count) — the phase tabs a way through the year, not a filter ("the tabs shouldn't change the list content, simply scroll down to the position; Action plan click → its phase gap section"; "tabs phases must be fixed on scroll"):
+  - The list shows the whole year (no phase hidden): Baseline, Testing complete, Review your results, Action plan underway (new, opening the Action plan phase), Check your progress, Action plan complete (the Re-test's, rewritten), Re-test and compare, Preventive screening.
+  - A tab scrolls: Baseline to the list's first section, a later phase to the transition that opens it (data-pi on the transition into a new phase), landing 16 under the tabs; the tab of the phase in view lit as the page scrolls (a spy on #dTl's scroll, the last phase once the foot is reached).
+  - The tabs-only card held at the top on scroll (.jpStick: sticky in a band of the page's ground, past #dTl's padding — 32 desktop, 52 S, 17 XS — so nothing shows above it). The rail (Left) the same way, 24 from the edge; and drawn on Left whatever Timeline top / Action plan timeline say ("can't see Phases left": it needed both on before).
+  - The phone's Upgrade on a locked phase the word alone (the price hidden there, so it isn't cut).
