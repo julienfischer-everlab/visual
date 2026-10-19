@@ -7525,6 +7525,7 @@
   .tkOrdRow{flex-direction:column;align-items:stretch !important;gap:8px;} .tkOrd{list-style:none;margin:0;padding:0;display:grid;gap:4px;}
   .tkOrd li{display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:9px;background:rgba(255,255,255,.06);color:#ececec;font-size:13px;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;transition:background .15s ease;}
   .tkOrd li .gr{flex:none;width:12px;height:12px;color:#8b8b86;} .tkOrd li.off{color:#6d6d69;} .tkOrd li .nm{flex:1 1 auto;min-width:0;} .tkOrd li .hid{font-size:11.5px;color:#6d6d69;} .tkOrd li .tgl{flex:none;margin-left:4px;} .tkOrd li.sw0 .nm{color:#6d6d69;} .ovOff{display:none !important;}   /* each section's switch at its right; off, its name dimmed and the section gone */
+  .topbar .tkRow.tkOrdRow{gap:6px;} .tkOrdH{margin:8px 0 0;font-size:11.5px;color:#8b8b86;} .tkOrd li:focus-visible{outline:2px solid #8ab4ff;outline-offset:1px;}   /* the bento's order: its status cards' own list, under a small heading */
   .tkOrd li.drag{background:rgba(255,255,255,.14);cursor:grabbing;position:relative;z-index:2;box-shadow:0 6px 18px rgba(0,0,0,.35);}
   select.tkSegSel{display:none;} .tkRow[hidden]{display:none !important;}
   .tbLay{display:none;align-items:center;gap:8px;} .tbLay .lbl{font-size:13px;color:#71717a;} body:is(.svcOn, .aptOn) .tbLay, body:has(#phone2.svcOn) .tbLay, body:has(#phone2.aptOn) .tbLay{display:inline-flex;}
@@ -10860,6 +10861,19 @@
             <option value="ms" selected>Milestone</option>
             <option value="act">Recent activity</option>
           </select>
+        </div>
+        <!-- the bento's order, dragged up and down (or moved with the arrow keys): its rows, then the status cards in theirs -->
+        <div class="tkRow tkOrdRow" id="stJbOrdRow">
+          <span class="lbl">Bento order</span>
+          <ol class="tkOrd" id="stJbOrd" aria-label="The bento's rows: drag, or use the arrow keys, to reorder">
+            <li data-k="top" tabindex="0"><svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg><span class="nm">Summary card</span></li>
+            <li data-k="row" tabindex="0"><svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg><span class="nm">Status cards</span></li>
+          </ol>
+          <span class="tkOrdH">Status cards</span>
+          <ol class="tkOrd" id="stJbRow" aria-label="The status cards: drag, or use the arrow keys, to reorder">
+            <li data-k="hp" tabindex="0"><svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg><span class="nm">Health profile</span></li>
+            <li data-k="tl" tabindex="0"><svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg><span class="nm">Your first year</span></li>
+          </ol>
         </div>
         <!-- the bento's Recent activity: which intervention it surfaces ("a tweak with multiple options, the content from the service, its last step: consultation, MRI, microbiome, pathology") -->
         <div class="tkRow" id="stJvActRow">
@@ -30746,10 +30760,8 @@ hairline({
         for (let k = 0; k < cols; k++){ const u = rnd(); if (u > dn * .92 + .02) continue; x.globalAlpha = .18 + .62 * dn * (.6 + .4 * rnd()); x.fillRect(k * S, r * S, 3, 3); } }
       x.globalAlpha = 1; if (!c._ro && window.ResizeObserver){ c._ro = new ResizeObserver(() => jbDraw(c)); c._ro.observe(c); } }
     const jbHtml = (B, top) => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
-      return '<div class="jvBento">' +
-        (top || jbAct(b)) +
-        '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' gap' : ' gaps') + ' to fill' : 'No gaps for now') + '</h3><p class="jbP">' + esc(b.hp) + '</p>' + jbHpVis(gs) + '</div>' +
-        jbTl(B) + '</div>'; };   // the bento (the Action plan heading follows whatever heads the list)
+      const P = { top: top || jbAct(b), hp: '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' gap' : ' gaps') + ' to fill' : 'No gaps for now') + '</h3><p class="jbP">' + esc(b.hp) + '</p>' + jbHpVis(gs) + '</div>', tl: jbTl(B) };
+      return '<div class="jvBento">' + JBORD.map(k => k === 'row' ? JBROW.map(r => P[r]).join('') : P[k]).join('') + '</div>'; };   // in the Bento order tweak's order   // the bento (the Action plan heading follows whatever heads the list)
     const msHtml = (S, sum) => { const by = {}; S.forEach(x => { by[x.h] = x; });   // sum: the Overview's Action plan V2 -- the next milestone's To action items, the others small
       const sug = [].concat(...S.map(x => x.sug || []));
       const useP = !sum && JTOP === 'time' && tab === 'up', sel = useP ? phSel() : -1, cur = phCur(); let seen = 0;   // the phase card: the picked phase's milestones
@@ -30801,7 +30813,7 @@ hairline({
     const askOff = a => a.done === 'add' || (a.done === 'later' && SNZ.has(a.sug));   // the hero's suggestion answered: added, or put off and still in Later
     const askGone = () => new Set(MS.filter(x => x.ask && askOff(x.ask)).map(x => x.ask.svc));   // the services so answered: no longer suggested anywhere
     let JVVIS = 'icon';   // Layout V2's rows: an icon, or the service's picture (the Visual tweak)
-    let JTOP = 'time', JBENTO = true, JBACT = 'consult', JBTOP = 'ms', JHPV = 'grid';   // JHPV: the Health profile visual tweak (grid, pattern, list)   // JBTOP: what heads the bento, the milestone or the Recent activity (the Bento top tweak)   // JBACT: what the bento's Recent activity shows (the Recent activity tweak)   // My journey's top (the Timeline top tweak): nothing, the phase card, or the tabs; and the bento under it (the Bento tweak); either brings the Action plan heading
+    let JTOP = 'time', JBENTO = true, JBACT = 'consult', JBTOP = 'ms', JHPV = 'grid', JBORD = ['top', 'row'], JBROW = ['hp', 'tl'];   // JBORD, JBROW: the bento's order (the Bento order tweak)   // JHPV: the Health profile visual tweak (grid, pattern, list)   // JBTOP: what heads the bento, the milestone or the Recent activity (the Bento top tweak)   // JBACT: what the bento's Recent activity shows (the Recent activity tweak)   // My journey's top (the Timeline top tweak): nothing, the phase card, or the tabs; and the bento under it (the Bento tweak); either brings the Action plan heading
     /* the phase card ("a card at the top that indicates the time by phase, minimal and stylish; clicking a phase changes the hero card and shows a totally
        different journey"): the year in three -- 0-3, 4-9, 9-12 months -- each its months, a hairline of its time gone (orange in the one we're in, marked
        Now); the one picked lit. The milestones are the phases' by their months (mo): the picked phase's first is the hero, its others under it; the other
@@ -31285,6 +31297,21 @@ hairline({
     { const hs = document.getElementById('stJbHp'), hr = document.getElementById('stJbHpRow');   // Health profile visual: grid, pattern or list
       if (hs) hs.addEventListener('change', () => { JHPV = hs.value; render(); }); JHPV = hs ? hs.value : 'grid';
       const sh = () => { if (hr) hr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
+    { const sortable = (ol, set) => { if (!ol) return; const save = () => set([...ol.children].map(x => x.dataset.k));
+        let d = null;
+        ol.addEventListener('pointerdown', e => { const li = e.target.closest('li'); if (!li || li.parentElement !== ol) return; e.preventDefault(); try { li.setPointerCapture(e.pointerId); } catch (x){} d = { li, y0: e.clientY, h: li.offsetHeight + 4, moved: false }; li.classList.add('drag'); li.focus({ preventScroll: true }); });
+        ol.addEventListener('pointermove', e => { if (!d) return; let dy = e.clientY - d.y0; const li = d.li;
+          if (dy > d.h / 2 && li.nextElementSibling){ li.nextElementSibling.after(li); d.y0 += d.h; dy -= d.h; d.moved = true; }
+          else if (dy < -d.h / 2 && li.previousElementSibling){ li.previousElementSibling.before(li); d.y0 -= d.h; dy += d.h; d.moved = true; }
+          li.style.transform = 'translateY(' + dy + 'px)'; });
+        const end = () => { if (!d) return; d.li.classList.remove('drag'); d.li.style.transform = ''; const mv = d.moved; d = null; if (mv) save(); };
+        ol.addEventListener('pointerup', end); ol.addEventListener('pointercancel', end);
+        ol.addEventListener('keydown', e => { const li = e.target.closest('li'); if (!li || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return; e.preventDefault();
+          if (e.key === 'ArrowUp' && li.previousElementSibling) li.previousElementSibling.before(li); else if (e.key === 'ArrowDown' && li.nextElementSibling) li.nextElementSibling.after(li); else return;
+          li.focus(); save(); }); };
+      sortable(document.getElementById('stJbOrd'), k => { JBORD = k; render(); });   // Bento order: the summary card and the status cards' row
+      sortable(document.getElementById('stJbRow'), k => { JBROW = k; render(); });   // ...and the status cards among themselves
+      const orw = document.getElementById('stJbOrdRow'), sh = () => { if (orw) orw.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     function shA(){ const ar = document.getElementById('stJvActRow'); if (ar) ar.hidden = TLVER !== 'v2' || (JBTOP === 'ms' && MSLAY === 'v2'); }   // Recent activity's tweak: only while it shows
     { const as = document.getElementById('stJvAct'), ar = document.getElementById('stJvActRow');   // Recent activity: which intervention the bento surfaces
       if (as) as.addEventListener('change', () => { JBACT = as.value; const d = MS[0] && MS[0].bento; if (d) d.asking = false; render(); }); JBACT = as ? as.value : 'consult';

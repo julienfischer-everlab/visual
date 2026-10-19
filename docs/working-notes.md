@@ -14465,3 +14465,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Fill container; remove pattern strips": the Health profile grid now runs the card's full width: 8 columns of square cells (about 40px at L and XS), ruled with outer lines. The diagonal hatching behind it is gone.
 - "Eyebrow secondary like the Overview; eyebrow +2px letter spacing": My journey's eyebrows (the bento's "Health profile", "Your first year" and "Recent activity", the phase card's "Your first year", the cards' "Next up" and "Results ready", "Suggested by …") are now the page's secondary grey (`--tlSub`, #8b8b86 dark, #7a716a light) with 2px letter spacing, at 12px.
+
+## My journey: Bento order tweak, dragged
+
+- "Bento tweak: change order by drag up / down: the summary card (Complete your baseline), the status cards row (gaps and timeline), able to change order as well": a new **Bento order** row in Tweaks (shown with Timeline v2) with two short lists. One orders the rows (Summary card, Status cards); the one under the "Status cards" heading orders Health profile and Your first year.
+- Items are dragged up and down by pointer or finger (pointer capture; an item swaps once it's dragged half a row) and lift while dragged. A focused item also moves with the up and down arrow keys. Each move redraws the bento in the new order (`JBORD`, `JBROW`). The summary card always takes the full width and the status cards a column each, whichever comes first.
+- The lists reuse the retired Overview order list's style (`.tkOrd`). That row's 28px gap, which overrode its own 8px, is now 6px.
+- The eyebrows stay 12px (they already were); the "12px" question went unanswered.
