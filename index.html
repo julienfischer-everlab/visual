@@ -7905,8 +7905,8 @@
   @container msl (max-width:600px){ #dTl .jpOnly .jpT b{white-space:normal;text-wrap:balance;} }   /* the phone: a long phase name (Tests & Diagnostics) on two lines, not cut */
   @container msl (max-width:600px){ #dTl .jpOnly .jpP{align-items:center;text-align:center;} #dTl .jpOnly .jpT{justify-content:center;} }   /* the phone: each tab's words centred ("XS center tab content") */
   #dTl .jvPh.jpOnly{padding:6px;border-radius:20px;} #dTl .jpOnly .jpP{padding:20px 22px 22px;} @container msl (max-width:600px){ #dTl .jpOnly .jpP{padding:18px 10px 20px;} } #dTl .jpOnly .jpM{display:none;}   /* the period alone, its line gone ("Just keep the Period") */   /* 2 less round the tabs, 8 more in each ("Tab +8px padding / -2px padding on the main segmented card"); the phone's narrow tabs: the 8 above and below */ #dTl .jpOnly .jpRow{margin-top:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;} @container msl (max-width:600px){ #dTl .jpOnly .jpRow{gap:2px;} }   /* 2 less between them ("-2px gap") */   /* the tabs alone: the card close round them; three equal, the row filled ("equal width, fill container, all tabs") */
-  #dTl .jvPh.jpHero.jpOnly{background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);}   /* a segmented tab ("outlined; the active a filled card, the others ghost"), on the band's page ground */
-  body.light #dTl .jvPh.jpHero.jpOnly{--tlInk:#111;--tlSub:#7a716a;color:#111;box-shadow:inset 0 0 0 1px rgba(46,31,26,.12);}   /* light: the page's ink, the hero's dark gone */
+  #dTl .jvPh.jpHero.jpOnly{background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);}   /* its outline 6% ("outlined fff6%") */   /* a segmented tab ("outlined; the active a filled card, the others ghost"), on the band's page ground */
+  body.light #dTl .jvPh.jpHero.jpOnly{--tlInk:#111;--tlSub:#7a716a;color:#111;box-shadow:inset 0 0 0 1px rgba(46,31,26,.07);}   /* light: the page's ink, the hero's dark gone */
   #dTl .jpOnly .jpP{background:none;} #dTl .jpOnly .jpP.on{background:var(--msPanel);} #dTl .jpOnly .jpP:not(.on):hover{background:rgba(255,255,255,.03);} body.light #dTl .jpOnly .jpP:not(.on):hover{background:rgba(46,31,26,.03);}
   #dTl .tlList.tlV2 > .jpStick{position:sticky;top:0;z-index:6;margin:20px 0 4px;padding:12px 0;background:var(--pageBg, #0f0f0f);} #dTl .tlList.tlV2 > .jpStick > .jvPh{margin:0;}   /* held at the top as the list scrolls ("tabs phases must be fixed on scroll"), on a band of the page's ground; 32 under Upcoming / Later ("+16px gap") */
   #dTl .tlList.tlV2.msQ > .jpStick{display:none;}
@@ -11307,12 +11307,12 @@
             <option value="top">Top</option>
           </select>
         </div>
-        <!-- the phase card's name: a folder tab on the card's top left, or a badge in its left column ("Add a Notch style / Folder top left with the name of the phase") -->
+        <!-- the phase card's name: a folder tab on the card's top left, or a badge in its left column ("Add a Notch style / Folder top left with the name of the phase"; "Service group notch ON OFF") -->
         <div class="tkRow" id="stJvPnRow">
-          <span class="lbl">Phase name</span>
-          <select id="stJvPn" class="tkSegSel" aria-label="The phase card's name: a folder tab on its top left, or a badge">
-            <option value="notch" selected>Notch</option>
-            <option value="badge">Badge</option>
+          <span class="lbl">Service group notch</span>
+          <select id="stJvPn" class="tkSegSel" aria-label="The service group's name in a folder tab on its top left (on), or a badge in its left column (off)">
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
           </select>
         </div>
         <!-- the group cards' left column ("a tweak for the visual on the left column: Media (as it is), Visual -- a circle 128 x 128, the Hairline pathology test one") -->
@@ -32051,8 +32051,8 @@ hairline({
       const sh = () => { if (pr) pr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const gv = document.getElementById('stJvGv'), gvr = document.getElementById('stJvGvRow');   // Group visual: the media tile, or the visual
       if (gv) gv.addEventListener('change', () => { JVGV = gv.value === 'visual' ? 'visual' : 'media'; render(); }); JVGV = gv && gv.value === 'visual' ? 'visual' : 'media';
-      { const pn = document.getElementById('stJvPn'), pnr = document.getElementById('stJvPnRow');   // Phase name: the folder tab, or the badge
-        if (pn) pn.addEventListener('change', () => { JVPN = pn.value === 'badge' ? 'badge' : 'notch'; render(); }); JVPN = pn && pn.value === 'badge' ? 'badge' : 'notch';
+      { const pn = document.getElementById('stJvPn'), pnr = document.getElementById('stJvPnRow');   // Service group notch: on, the folder tab; off, the badge
+        if (pn) pn.addEventListener('change', () => { JVPN = pn.value === 'off' ? 'badge' : 'notch'; render(); }); JVPN = pn && pn.value === 'off' ? 'badge' : 'notch';
         const sh = () => { if (pnr) pnr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
       { const th = document.getElementById('themeSel'); if (th) th.addEventListener('change', () => requestAnimationFrame(() => list.querySelectorAll('.jvGvS').forEach(st => st.setAttribute('data-hairline-theme', document.body.classList.contains('light') ? 'light' : 'dark')))); }
       const sh = () => { if (gvr) gvr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
