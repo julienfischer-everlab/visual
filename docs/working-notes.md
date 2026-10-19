@@ -14602,3 +14602,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The coachmarks over the page as it is ("overlap absolute, don't disturb the layout"): no room opened; narrower, the notes sit above each section over what's there.
   - Tweaks: Coachmarks in a group of their own, Additional, above Timeline; Bento, Bento order, Recent activity, Health profile, Health profile visual in a group, Hero Bento ("put this into a group").
   - The group icon's dot on the tile's rounded corner, 8 (6 on the phone) ("dot overlap rounded shape, not the icon"); 8 between the group cards ("gap card hero 8px").
+
+- v1216 (notes' count) — phase transitions: the dashed line fades out as it reaches the cards above and below ("dashed line fade out when it arrives to the card"; a mask on each segment); the circle with no outline, light blue (#cfe1f6, its flag #16324f), 12 larger — 52 (48 on the phone), the flag 20 ("circle no outline; light blue bg; increase the circle by 12px").
