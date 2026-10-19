@@ -14708,3 +14708,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Phase card: name as a badge
 
 - **Phase name** (the left column's "Baseline", "Act & Improve", …): a full-round badge on the secondary fill (`--tlPill`, white 8% on dark, ink 7% on light), 24 high, the same 10px uppercase lettering; 8px below it (4 more than before). With Group title on Top it sits beside the tile, 4px above its line; on a phone it stays in a row with the tile, centred on it.
+
+## Locked card copy, status titles, bento order, phone tabs
+
+- **Locked phase card (Act & Improve):** a title, "Your baseline will reveal where to focus." (17px, 16 on a phone), then its line, "From there, your care team will build a personalised plan around your results and specialist recommendations." Re-test & Refine follows the same shape: "A year on, you take the same tests again." / "Your results are compared with your baseline, to measure your progress and adjust your plan."
+- **Its three reason cards:** the description 14px (was 13), 32px in at the sides (was 16). The phone's list rows are unchanged.
+- **Group visual (Visual):** under the words now, the badge and the line first ("Content then visual").
+- **Upcoming / Later to the phase tabs:** 32px (was 16).
+- **Bento:** the status cards default to Your first year / Recent update, then Health profile, so the Health profile is on the right (40%). The Bento order tweak lists them in that order.
+- **Status sections:** "Results ready" is now "Completed"; the titles are uppercase, as the page's eyebrows (10px, 2px apart).
+- **Phone phase tabs:** each tab's words centred.
+- **Fixes from the verification run:** a locked row's lock is whole on Imagery pictures (it was clipped to the picture); the group Visual is fitted when it appears after being hidden (phone, Group title Top), not left oversized at the corner.
