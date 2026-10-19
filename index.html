@@ -7824,7 +7824,7 @@
   @container msl (max-width:600px){ .jbVt{width:96px;height:56px;} .jbDoc{flex:1 1 100%;} .jbFoot > .jvB + .jvB{margin-top:-4px;} }
   /* My journey's top, the bento: the check-in at 70%, the health profile at 30%; then the Action plan heading over the milestones */
   #dTl.jtOff:not(.tlClaim) .tlBar{display:none;} #dTl.jtOff:not(.tlClaim) .tlHead{margin-bottom:24px;}   /* Timeline top Off: no bar (Later, reached from elsewhere, still brings the tabs) */
-  .jvBento{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;} .jvBento > .jbFb{grid-column:1 / -1;}   /* two rows: the latest update the whole first, Health profile and the mini timeline halves of the second ("manage 2 rows as hero bento") */
+  .jvBento{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;} .jvBento > :is(.jbFb, .jvHero){grid-column:1 / -1;}   /* two rows: the latest update the whole first, Health profile and the mini timeline halves of the second ("manage 2 rows as hero bento") */
   .jbMed{display:flex;flex-direction:column;align-items:flex-start;align-self:stretch;min-width:0;}
   @container msl (min-width:720px){ .jvBento > .jbFb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 1fr;grid-template-areas:"hd med" "h med";column-gap:40px;align-items:start;} .jbFb > .jbHd{grid-area:hd;} .jbFb > .jbH{grid-area:h;} .jbFb > .jbMed{grid-area:med;} .jbFb > .jbMed > :first-child{margin-top:0;} }   /* wide: the words at the left, what came with them at the right */
   /* the mini timeline: the year a bar in three (3, 6 and 3 months), filled to today with the year's light, a glow at today; names and months under; the next thing at the foot */
@@ -7850,6 +7850,16 @@
   .jbAsk{align-self:stretch;margin-top:auto;padding-top:18px;} .jbAsk textarea{box-sizing:border-box;display:block;width:100%;min-height:72px;padding:12px 14px;border:0;border-radius:14px;background:rgba(255,255,255,.06);color:var(--tlInk);font:inherit;font-size:14px;line-height:20px;resize:vertical;outline:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);} .jbAsk textarea:focus{box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);}
   body.light .jbAsk textarea{background:rgba(46,31,26,.04);box-shadow:inset 0 0 0 1px rgba(46,31,26,.1);} body.light .jbAsk textarea:focus{box-shadow:inset 0 0 0 1px rgba(46,31,26,.3);}
   .jbAskA{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;}
+  /* the Health profile's visuals: a grid of cells (inner lines only), a dot in each recorded, the gaps empty -- a gap you can add a button, faintly warm; the pattern a canvas */
+  .jbGridP{--g:rgba(255,255,255,.34);display:flex;align-items:center;align-self:stretch;margin-top:20px;padding:20px;border-radius:14px;background:repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 1px, transparent 1px 6px);}   /* the reference: a ruled grid on fine hatching */
+  body.light .jbGridP{--g:rgba(46,31,26,.32);background:repeating-linear-gradient(135deg, rgba(46,31,26,.06) 0 1px, transparent 1px 6px);}
+  .jbGrid{display:grid;grid-template-columns:repeat(8,28px);border-top:1px solid var(--g);border-left:1px solid var(--g);}
+  .jbCell{display:grid;place-items:center;width:28px;height:28px;margin:0;padding:0;border:0;border-right:1px solid var(--g);border-bottom:1px solid var(--g);background:none;font:inherit;color:inherit;}
+  .jbCell > i{width:4px;height:4px;border-radius:50%;background:var(--tlInk);} .jbCell.gap.ok > i{width:5px;height:5px;background:var(--msOk);}
+  button.jbCell{cursor:pointer;transition:background .16s ease;} button.jbCell:hover{background:rgba(247,131,89,.12);} button.jbCell:focus-visible{outline:2px solid var(--msAcc);outline-offset:-2px;}
+  .jbPatW{position:relative;align-self:stretch;height:120px;margin-top:20px;} .jbPat{position:absolute;inset:0;display:block;width:100%;height:100%;color:#e8e6e3;}   /* the frame sizes the canvas; the canvas never sizes the frame */ body.light .jbPat{color:#2e1f1a;}
+  .jbHpCap{display:flex;flex-wrap:wrap;gap:6px 18px;margin:auto 0 0;padding-top:16px;font-size:12px;line-height:16px;color:var(--tlSub);} .jbHpCap span{display:inline-flex;align-items:center;gap:7px;}
+  .jbHpCap i{width:6px;height:6px;border-radius:50%;} .jbHpCap i.d{background:var(--tlInk);} .jbHpCap i.g{border-radius:1px;box-shadow:inset 0 0 0 1px var(--tlSub);}   /* a dot recorded, an empty square a gap */
   .jbGaps{align-self:stretch;margin:16px 0 0;padding:0;list-style:none;} .jbGaps li + li{border-top:1px solid var(--msEdge, rgba(255,255,255,.06));}
   .jbGaps :is(button, .jbG){display:flex;align-items:flex-start;gap:12px;width:100%;margin:0;padding:10px 0;border:0;background:none;font:inherit;text-align:left;color:inherit;} .jbGaps button{cursor:pointer;} .jbGaps button:hover b{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--tlSub);}
   .jbGaps i{flex:none;display:grid;place-items:center;width:18px;height:18px;margin-top:1px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--msAcc);color:#fff;} .jbGaps li.ok i{background:var(--msOk);box-shadow:none;} .jbGaps svg{width:9px;height:9px;}
@@ -10504,6 +10514,8 @@
   .emCta:hover{background:rgba(255,255,255,.2);}
   body.light .emCta{background:rgba(0,0,0,.06);color:#2e241c;}
   body.light .emCta:hover{background:rgba(0,0,0,.11);}
+  /* every eyebrow 12 ("12 eyebrow everywhere"): the product's small uppercase labels, whatever size their own rules (and their breakpoints') gave them */
+  :is(.ovhero .tag, .ovBk .ovBkH > b, .ovBkC .lbl, #phone .lbl, #phone2 .lbl, #dOver .lbl, .dash .lbl, .dash .hiCard .lbl, .slbl, .isSec .lbl, .msEy, .msGl, .jvEy, .tlDetH, .tlGtx small, .ovrow2 .mono, .soLbl, .rcEyebrow, .rcKind, .tcEyebrow, .tcLbl){font-size:12px !important;}
 </style>
 
 <canvas id="field"></canvas>
@@ -10842,6 +10854,14 @@
             <option value="off">Off</option>
           </select>
         </div>
+        <!-- what heads the bento: the milestone you're on (its card moved up from the Action plan), or the Recent activity ("put this card instead of") -->
+        <div class="tkRow" id="stJbTopRow">
+          <span class="lbl">Bento top</span>
+          <select id="stJbTop" class="tkSegSel" aria-label="What heads the bento: the milestone or the Recent activity">
+            <option value="ms" selected>Milestone</option>
+            <option value="act">Recent activity</option>
+          </select>
+        </div>
         <!-- the bento's Recent activity: which intervention it surfaces ("a tweak with multiple options, the content from the service, its last step: consultation, MRI, microbiome, pathology") -->
         <div class="tkRow" id="stJvActRow">
           <span class="lbl">Recent activity</span>
@@ -10850,6 +10870,15 @@
             <option value="micro">Microbiome</option>
             <option value="mri">MRI</option>
             <option value="path">Pathology</option>
+          </select>
+        </div>
+        <!-- the bento's Health profile: a grid of cells (a dot in each recorded, the gaps empty), a pattern of mini squares in a gradient, or the gaps listed -->
+        <div class="tkRow" id="stJbHpRow">
+          <span class="lbl">Health profile visual</span>
+          <select id="stJbHp" class="tkSegSel" aria-label="How the bento's Health profile is drawn">
+            <option value="grid" selected>Grid</option>
+            <option value="pat">Pattern</option>
+            <option value="list">List</option>
           </select>
         </div>
         <!-- the suggestion under the hero, on or off ("Suggested: on / off") -->
@@ -30659,7 +30688,8 @@ hairline({
     const JV_CLK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8V8l2.2 1.4"/></svg>', JV_CAL = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="11" height="10" rx="2"/><path d="M2.5 6.8h11M5.5 2v2.6M10.5 2v2.6"/></svg>';
     const JV_CHEV = '<svg class="jvCh" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>';
     const JV_ORG = '#f4511e';
-    const jvHtml = (m, all, dn, ahead) => { /* ahead: a phase still to come, its locked items Coming up */ const fresh = r => unseen(r) || msGrp(r) === 'done';
+    const jvHero = (m, all, dn) => '<div class="jvHero"><div class="jvHx"><span class="msBadge jvBadge">' + esc(m.ey) + '</span><h2>' + esc(m.h) + '</h2>' + (m.d ? '<p>' + esc(m.d) + '</p>' : '') + '<div class="jvPr"><span>' + dn + ' of ' + all.length + ' complete</span>' + (m.rem ? '<small>' + esc(m.rem) + '</small>' : '') + '</div><div class="jvBar" aria-hidden="true">' + all.map((r, i) => '<i' + (i < dn ? ' class="on"' : '') + '></i>').join('') + '</div></div><div class="jvArtH" aria-hidden="true"><img src="' + JV_ART[phOf(m)] + '" alt="" draggable="false"></div></div>';   // the milestone's card: where you are, how far, the phase's light
+    const jvHtml = (m, all, dn, ahead, noHero) => {   /* noHero: its card heads the bento instead */ /* ahead: a phase still to come, its locked items Coming up */ const fresh = r => unseen(r) || msGrp(r) === 'done';
       const ready = all.filter(fresh), act = all.filter(r => !fresh(r) && msGrp(r) === 'act'), pend = all.filter(r => !fresh(r) && msGrp(r) === 'pend'), lock = all.filter(r => !fresh(r) && msGrp(r) === 'lock');
       const nx = act[0], rest = act.slice(1); let n = 0;
       /* no ring at the left: Timeline v1's bars chip instead, first on the line under the name ("remove indicator, use bar chip instead") -- its own status drawn with
@@ -30673,7 +30703,7 @@ hairline({
           '<span class="jvW' + (unseen(r) ? ' hot' : '') + '">' + (wh ? (cal ? JV_CAL : JV_CLK) + '<em>' + esc(wh) + '</em>' : '') + '</span><div class="jvA">' + (!noBtn && z.act ? '<button class="tlBtn msB jvB' + (k === 'nx' ? ' msP' : '') + '" type="button">' + esc(z.act) + '</button>' : '') + '</div>' + JV_CHEV + '</article>'; };
       const card2 = (lbl, sub, rs, kOf) => rs.length ? '<div class="jvCard jv2c"><div class="jvSide"><div class="jvLbl">' + lbl + '</div><p class="jvSideP">' + sub + '</p></div><div class="jvBody tlItems">' + rs.map((r, i) => item(r, kOf(r, i))).join('') + '</div></div>' : '';   // two columns ("add 2 col on Next up, Ready for you, Scheduled, similar to overview")
       const card = (lbl, rs, kOf, noBtn) => rs.length ? '<div class="jvCard"><div class="jvLbl">' + lbl + '</div><div class="tlItems">' + rs.map((r, i) => item(r, kOf(r, i), noBtn)).join('') + '</div></div>' : '';
-      const hero = '<div class="jvHero"><div class="jvHx"><span class="msBadge jvBadge">' + esc(m.ey) + '</span><h2>' + esc(m.h) + '</h2>' + (m.d ? '<p>' + esc(m.d) + '</p>' : '') + '<div class="jvPr"><span>' + dn + ' of ' + all.length + ' complete</span>' + (m.rem ? '<small>' + esc(m.rem) + '</small>' : '') + '</div><div class="jvBar" aria-hidden="true">' + all.map((r, i) => '<i' + (i < dn ? ' class="on"' : '') + '></i>').join('') + '</div></div><div class="jvArtH" aria-hidden="true"><img src="' + JV_ART[phOf(m)] + '" alt="" draggable="false"></div></div>';   /* the given visual: light in vertical bands, on black ("put this visual instead") */
+      const hero = noHero ? '' : jvHero(m, all, dn);
       const ask = JASK && m.ask && !askOff(m.ask) ? '<div class="jvAsk" role="group" aria-label="Suggested for you"><img class="jvAskDr" src="' + IMG.dr + '" alt="" width="44" height="44"><button class="jvAskT" type="button" data-ask="see"><span class="jvAskBy">Suggested by ' + esc(m.ask.by) + '</span><b>' + esc(m.ask.h) + '</b><span class="jvAskD">' + esc(m.ask.d) + '</span></button>' +
         '<div class="jvAskA"><button class="tlBtn msB jvB" type="button" data-ask="later">Do it later</button><button class="tlBtn msB jvB msP" type="button" data-ask="add">Add to plan</button></div></div>' : '';   // the suggestion under the hero
       return '<section class="tlSec jvWrap" data-ms="' + m.k + '">' + hero + ask + '<div class="jvList">' + card2('Next up', 'Start here', nx ? [nx] : [], () => 'nx')   /* its button the primary ("next up CTA primary") */ + card2('Ready for you', rest.length + (rest.length === 1 ? ' action' : ' actions') + ' whenever you\u2019re ready', rest, () => 'todo') + card2('Scheduled', pend.length + (pend.length === 1 ? ' appointment' : ' appointments') + ' booked', pend, () => 'todo') +   /* Next up an item as the rest ("no need to highlight") */ card(ahead ? 'Coming up' : 'Locked', lock, () => 'lk', true) + card('Results ready', ready, () => 'ok') + '</div></section>'; };
@@ -30699,11 +30729,27 @@ hairline({
         '<div class="jbTlBar" role="img" aria-label="Month ' + mo + ' of 12, in ' + PH[cur].n + '">' + PH.map((p, i) => '<span class="jbTlSeg' + (i === cur ? ' now' : '') + '" style="flex:' + (p.b - p.a) + ' 1 0;--f:' + Math.max(0, Math.min(1, (now - p.a) / (p.b - p.a))).toFixed(3) + '"><i></i></span>').join('') + '</div>' +
         '<div class="jbTlLbl" aria-hidden="true">' + PH.map((p, i) => '<span' + (i === cur ? ' class="now"' : '') + ' style="flex:' + (p.b - p.a) + ' 1 0"><b>' + p.n + '</b><em>' + mon(p.a) + '\u2013' + mon(p.b - 1) + '</em></span>').join('') + '</div>' +
         (nx ? '<div class="jbTlNx"><i aria-hidden="true"></i><span><em>Up next</em><b>' + esc(nx.t) + '</b></span></div>' : '') + '</div>'; };
-    const jbHtml = B => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
+    /* the Health profile, drawn: 24 cells for the profile's records -- a dot where it's recorded, empty where it's a gap (a gap you can add, a button:
+       the same as its row in the list); or a field of mini squares, sparse at the top and filling to the foot as the profile fills; the count under either */
+    const JB_HP_N = 24, JB_GAP_AT = [5, 10, 19, 14, 22, 2];
+    const jbHpVis = gs => { const n = gs.filter(g => !g.ok).length, rec = JB_HP_N - n;
+      if (JHPV === 'list') return '<ul class="jbGaps">' + gs.map((g, i) => '<li' + (g.ok ? ' class="ok"' : '') + '>' + (g.sug ? '<button type="button" data-jb="gap" data-i="' + i + '">' : '<span class="jbG">') + '<i aria-hidden="true">' + (g.ok ? CHK : '') + '</i><span><b>' + esc(g.t) + '</b><em>' + esc(g.ok ? 'In your plan' : g.w) + '</em></span>' + (g.sug ? '</button>' : '</span>') + '</li>').join('') + '</ul>';
+      const cap = '<p class="jbHpCap"><span><i class="d"></i>' + rec + ' recorded</span><span><i class="g"></i>' + n + (n === 1 ? ' gap' : ' gaps') + '</span></p>';
+      if (JHPV === 'pat') return '<div class="jbPatW" aria-hidden="true"><canvas class="jbPat" data-f="' + (rec / JB_HP_N).toFixed(3) + '"></canvas></div>' + cap;
+      const at = {}; gs.forEach((g, i) => { at[JB_GAP_AT[i % JB_GAP_AT.length]] = [g, i]; });
+      return '<div class="jbGridP"><div class="jbGrid" role="group" aria-label="' + rec + ' of ' + JB_HP_N + ' recorded, ' + n + (n === 1 ? ' gap' : ' gaps') + '">' + Array.from({ length: JB_HP_N }, (_, k) => { const x = at[k]; if (!x) return '<span class="jbCell"><i></i></span>';
+        const [g, i] = x, l = esc(g.t + ', ' + (g.ok ? 'in your plan' : g.w)); return g.sug ? '<button class="jbCell gap' + (g.ok ? ' ok' : '') + '" type="button" data-jb="gap" data-i="' + i + '" title="' + l + '" aria-label="' + l + '">' + (g.ok ? '<i></i>' : '') + '</button>' : '<span class="jbCell gap" role="img" title="' + l + '" aria-label="' + l + '"></span>'; }).join('') + '</div></div>' + cap; };
+    function jbDraw(c){ const w = c.clientWidth, h = c.clientHeight; if (!w || !h) return; const dpr = Math.min(2, window.devicePixelRatio || 1), f = +c.dataset.f || 0;   // the pattern: 3px squares a pixel apart, denser down the field
+      c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h); x.fillStyle = getComputedStyle(c).color;
+      let sd = 7; const rnd = () => { sd = (sd + 0x6D2B79F5) | 0; let t = Math.imul(sd ^ (sd >>> 15), 1 | sd); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+      const S = 4, cols = Math.floor(w / S), rows = Math.floor(h / S), top = 1 - f;   // the field's fill: the profile's share recorded
+      for (let r = 0; r < rows; r++){ const t = (r + .5) / rows, d = Math.max(0, Math.min(1, (t - top * .55) / (1 - top * .55))), dn = Math.pow(d, 1.8);
+        for (let k = 0; k < cols; k++){ const u = rnd(); if (u > dn * .92 + .02) continue; x.globalAlpha = .18 + .62 * dn * (.6 + .4 * rnd()); x.fillRect(k * S, r * S, 3, 3); } }
+      x.globalAlpha = 1; if (!c._ro && window.ResizeObserver){ c._ro = new ResizeObserver(() => jbDraw(c)); c._ro.observe(c); } }
+    const jbHtml = (B, top) => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
       return '<div class="jvBento">' +
-        jbAct(b) +
-        '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' gap' : ' gaps') + ' to fill' : 'No gaps for now') + '</h3><p class="jbP">' + esc(b.hp) + '</p><ul class="jbGaps">' +
-          gs.map((g, i) => '<li' + (g.ok ? ' class="ok"' : '') + '>' + (g.sug ? '<button type="button" data-jb="gap" data-i="' + i + '">' : '<span class="jbG">') + '<i aria-hidden="true">' + (g.ok ? CHK : '') + '</i><span><b>' + esc(g.t) + '</b><em>' + esc(g.ok ? 'In your plan' : g.w) + '</em></span>' + (g.sug ? '</button>' : '</span>') + '</li>').join('') + '</ul></div>' +
+        (top || jbAct(b)) +
+        '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' gap' : ' gaps') + ' to fill' : 'No gaps for now') + '</h3><p class="jbP">' + esc(b.hp) + '</p>' + jbHpVis(gs) + '</div>' +
         jbTl(B) + '</div>'; };   // the bento (the Action plan heading follows whatever heads the list)
     const msHtml = (S, sum) => { const by = {}; S.forEach(x => { by[x.h] = x; });   // sum: the Overview's Action plan V2 -- the next milestone's To action items, the others small
       const sug = [].concat(...S.map(x => x.sug || []));
@@ -30714,7 +30760,7 @@ hairline({
         per.forEach((L, ph) => { const p = PH[ph]; L.map((x, i) => [x, i]).sort((u, v) => rk(u[0]) - rk(v[0]) || u[1] - v[1]).forEach(([x], i, A) => out.push(Object.assign(x, { m: p.a + (p.b - p.a) * (i + .5) / A.length }))); });
         return out; };   // each phase's items across its months, in the order they go: done, then what's to do now (the current first), then booked, then still to come
       const B = useP || (!sum && tab === 'up' && JBENTO) ? bands() : null;   // the year's items, for the phase card's strip and the bento's mini timeline
-      const pre = !sum && tab === 'up' && JBENTO ? jbHtml(B) : '', card = useP ? phHtml(B) : '';   // the bento, then the heading, then the phase card over the hero ("timeline below the conversation / health profile blocks")
+      const heroUp = !sum && tab === 'up' && JBENTO && JBTOP === 'ms' && MSLAY === 'v2'; let topHero = '', curDone = false;   // the bento's head: the milestone we're on   // the bento, then the heading, then the phase card over the hero ("timeline below the conversation / health profile blocks")
       const out = MS.map((m, mi) => { const groups = [];
         let rows = [].concat(...m.from.map(h => by[h] ? ordered(by[h].rows) : []));   // v1's items, all of them, in v1's order
         if (m.sug && sug.length){ const gone = askGone(); rows = rows.concat(sug.filter(x => !gone.has(x.svc))); }   // a suggestion answered under the hero: not suggested again here
@@ -30725,12 +30771,14 @@ hairline({
         const left = sum ? all.length - Math.min(4, ((groups.find(g => g[0] === 'To action') || [0, []])[1]).length) : 0; if (sum) groups.splice(0, groups.length, ...groups.filter(g => g[0] === 'To action').map(([l, rs]) => [l, rs.slice(0, 4)]));   // the next: its To action items, four at most
         const off = useP && phOf(m) !== sel, first = useP ? !off && !seen++ : mi === 0, nxt = first && (!useP || sel === cur), wrap = h => off ? h.replace('<section class="tlSec', '<section class="tlSec phOff') : h;   // first: the hero (V2) or the lead card; nxt: and the next milestone; off: another phase's, put away
         const open = sum || (MSLAY === 'v2' ? MSOPEN2 : MSOPEN).has(m.k), dn = all.filter(msFin).length, fut = m.k === 'prog' || m.k === 'scr' || m.k === 'ret';
-        if (!sum && first && MSLAY === 'v2') return jvHtml(m, all, dn, useP && sel > cur);   // Layout V2: the next milestone (or the picked phase's first) as the hero and the rail
+        const isCur = heroUp && !curDone && (!useP || phOf(m) === cur); if (isCur){ curDone = true; topHero = jvHero(m, all, dn); }   // the milestone we're on: its card to the bento
+        if (!sum && first && MSLAY === 'v2') return jvHtml(m, all, dn, useP && sel > cur, isCur);   // Layout V2: the next milestone (or the picked phase's first) as the hero and the rail
         let hot = !fut; const body = groups.map(([l, rs]) => '<div class="msG"><div class="msGl">' + esc(l) + '</div><div class="tlItems">' + rs.map(r => { const h1 = hot && msGrp(r) === 'act' && !!simRow(r).act; if (h1) hot = false; return msRow(r, h1); }).join('') + '</div></div>').join('');   // the milestone's first action: its button the primary one, its when in orange
         return wrap('<section class="tlSec msCard' + (nxt ? ' nx' : '') + (open ? '' : ' shut') + '" data-ms="' + m.k + '"><div class="msL">' + (nxt ? '<span class="msBadge">Next milestone</span>' /* the next one: a grey badge, not the orange eyebrow ("replace by a badge, grey: Next milestone") */ : '<div class="msEy"><i></i>' + esc(m.ey) + '</div>') + '<h2 class="msH">' + esc(m.h) + '</h2>' + (m.d ? '<p class="msD">' + esc(m.d) + '</p>' : '') +
           '<div class="msPr"><span class="msN1">' + dn + ' of ' + all.length + ' complete</span><span class="msN2">' + all.length + (all.length === 1 ? ' action' : ' actions') + '</span><button class="msTg" type="button" aria-expanded="' + open + '" aria-label="' + (open ? 'Hide' : 'Show') + ' the actions">' + MSCHEV + '</button></div>' +
           '<div class="msBar" aria-hidden="true"><i style="width:' + Math.round(100 * dn / all.length) + '%"></i></div></div><div class="msRt">' + body + (sum ? '<button class="msAll tlSee" type="button">' + (left > 0 ? 'See ' + left + ' more in My journey' : 'See it in My journey') + MSARR + '</button>' : '') + '</div></section>'); }).join('');
       const up = !sum && tab === 'up' && JUP && !useP ? '<div class="jpUpSolo">' + upHtml() + '</div>' : '';   // the plan's small card: in the phase card; without one, alone under the heading
+      const pre = !sum && tab === 'up' && JBENTO ? jbHtml(B, topHero) : '', card = useP ? phHtml(B) : '';   // the bento (its head the milestone's card, found above), then the heading, then the phase card
       return pre + (pre || card || up ? '<div class="jvH2Row"><h2 class="jvH2">Action plan</h2></div>' : '') + card + up + (useP && !seen ? phEmpty(sel) : '') + out; };
     // the step in hand, when it is the member's to do (the orange badge): that object is a primary one, its button the primary CTA ("orange badge -> primary -> always CTA primary")
     const planOf = r => { if (r.group){ const { g, a } = groupOf(r); if (a < 0) return null; const x = r.focus != null ? g[r.focus] : g[a]; return x.state === 'locked' ? null : x.p; }
@@ -30754,7 +30802,7 @@ hairline({
     const askOff = a => a.done === 'add' || (a.done === 'later' && SNZ.has(a.sug));   // the hero's suggestion answered: added, or put off and still in Later
     const askGone = () => new Set(MS.filter(x => x.ask && askOff(x.ask)).map(x => x.ask.svc));   // the services so answered: no longer suggested anywhere
     let JVVIS = 'icon';   // Layout V2's rows: an icon, or the service's picture (the Visual tweak)
-    let JTOP = 'time', JBENTO = true, JBACT = 'consult';   // JBACT: what the bento's Recent activity shows (the Recent activity tweak)   // My journey's top (the Timeline top tweak): nothing, the phase card, or the tabs; and the bento under it (the Bento tweak); either brings the Action plan heading
+    let JTOP = 'time', JBENTO = true, JBACT = 'consult', JBTOP = 'ms', JHPV = 'grid';   // JHPV: the Health profile visual tweak (grid, pattern, list)   // JBTOP: what heads the bento, the milestone or the Recent activity (the Bento top tweak)   // JBACT: what the bento's Recent activity shows (the Recent activity tweak)   // My journey's top (the Timeline top tweak): nothing, the phase card, or the tabs; and the bento under it (the Bento tweak); either brings the Action plan heading
     /* the phase card ("a card at the top that indicates the time by phase, minimal and stylish; clicking a phase changes the hero card and shows a totally
        different journey"): the year in three -- 0-3, 4-9, 9-12 months -- each its months, a hairline of its time gone (orange in the one we're in, marked
        Now); the one picked lit. The milestones are the phases' by their months (mo): the picked phase's first is the hero, its others under it; the other
@@ -31024,6 +31072,7 @@ hairline({
           list.parentNode.insertBefore(al, list); }
         al.hidden = tab !== 'claim'; }   // Later: what these are, above them, out of the rail's way
       placeS();   // the search beside the Action plan heading, when the list has one
+      list.querySelectorAll('canvas.jbPat').forEach(jbDraw);   // the Health profile's pattern
       ringify(list, ROWS);   // XS: a ring of the same count in place of the increments ("use circular progress instead of increments")
       // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")
       list.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp'));
@@ -31231,9 +31280,16 @@ hairline({
       const h = list.querySelector('.jvPh'), mr = main.getBoundingClientRect(); if (h){ const r = h.getBoundingClientRect(); if (r.bottom > mr.bottom - 160 || r.top < mr.top) main.scrollTo({ top: main.scrollTop + r.top - mr.top - 16, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }   // the card and the hero under it in view
       const nb = list.querySelector('.jvPh [data-ph="' + i + '"]'); if (nb) nb.focus({ preventScroll: true }); });
     addEventListener('everlab:persona', () => { JPH = null; });   // another persona: its own phase
+    { const ts = document.getElementById('stJbTop'), tr = document.getElementById('stJbTopRow');   // Bento top: the milestone or the Recent activity
+      if (ts) ts.addEventListener('change', () => { JBTOP = ts.value === 'act' ? 'act' : 'ms'; shA(); render(); }); JBTOP = ts && ts.value === 'act' ? 'act' : 'ms';
+      const sh = () => { if (tr) tr.hidden = TLVER !== 'v2' || MSLAY !== 'v2'; shA(); }; ['stTlVer', 'stMsLay'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', sh); }); sh(); }
+    { const hs = document.getElementById('stJbHp'), hr = document.getElementById('stJbHpRow');   // Health profile visual: grid, pattern or list
+      if (hs) hs.addEventListener('change', () => { JHPV = hs.value; render(); }); JHPV = hs ? hs.value : 'grid';
+      const sh = () => { if (hr) hr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
+    function shA(){ const ar = document.getElementById('stJvActRow'); if (ar) ar.hidden = TLVER !== 'v2' || (JBTOP === 'ms' && MSLAY === 'v2'); }   // Recent activity's tweak: only while it shows
     { const as = document.getElementById('stJvAct'), ar = document.getElementById('stJvActRow');   // Recent activity: which intervention the bento surfaces
       if (as) as.addEventListener('change', () => { JBACT = as.value; const d = MS[0] && MS[0].bento; if (d) d.asking = false; render(); }); JBACT = as ? as.value : 'consult';
-      const sh = () => { if (ar) ar.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
+      const sh = () => shA(); ['stTlVer', 'stMsLay'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', sh); }); sh(); }
     { const bs = document.getElementById('stJvBento'), br = document.getElementById('stJvBentoRow');   // Bento: on or off, My journey only
       if (bs) bs.addEventListener('change', () => { JBENTO = bs.value !== 'off'; render(); }); JBENTO = !bs || bs.value !== 'off';
       const sh = () => { if (br) br.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
