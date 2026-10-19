@@ -14678,3 +14678,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Journey demo select** at the foot of the left nav (desktop): "Journey demo" with the four steps (1 · Not a member, 2 · Baseline paid, 3 · Blood testing, 4 · Baseline complete); picking one jumps straight to it (Purchased follows). Shown on My journey with Real journey on; hidden when the rail is retracted. Kept in step with the bottom-right arrows, which keep their "n / 4" counter.
 - **Health profile chevron:** at the card's top right, a ghost (no fill; a faint one on hover); the title kept clear of it.
 - **Service group cards:** the group's icon tile 16 bigger (56px, its glyph 24); 32px more between the two columns (56), the side column's width unchanged. The phone and the header-row layouts keep their own sizes.
+
+## Locked phases with reasons, group visual, timeline terms
+
+- **Timeline terms:** the phases are **Baseline** (0–3 months · Understand your health), **Act & Improve** (4–9 months · Follow your personalised plan) and **Re-test & Refine** (9–12 months · Measure progress and adjust). The descriptors replace the months on the tabs, the rail, the phase header and the card variant; the year card keeps its month labels (its columns are narrow). The transitions read "Act & Improve" and "Re-test & Refine".
+- **Locked phase card:** no "Shaped by your baseline". It says why the phase comes next (a lead line and three reasons, each a small card: Act & Improve — made for your results, deeper tests as needed, guided by your doctor; Re-test & Refine — see what changed, adjust your plan, your next year). On the phone the reasons are a list of their names. Its Upgrade button appears only once the onboarding consultation is done (the Real journey's last step, or the consult's demo state done); until then "Available after your onboarding consultation".
+- **Locked items:** no "Locked" label; a lock badge on the picture's top right (the picture still grey at 60%, the badge whole), the name level with the picture.
+- **Group visual** tweak (Phases group): Media (the tile) or Visual — a 128px circle with the Hairline page's Draw figure (the blood test: a syringe, at rest, answering the pointer), fitted to 96px across its drawing and clipped to the circle; the group's dot on the circle's edge. Draw is now registered in the page's figure bundle (from visuals/hairline/hairline-draw.html). Phone and Group title Top keep the tile.
+- **Summary card (journey step 1):** "Start your health journey with your baseline" / "Understanding where your health stands today is the most effective way to guide your preventive health journey." / Start your baseline.
+- **Recent update card:** no eyebrow; its button 44px.
+- **Phase tabs:** filled (the cards' fill), no outline; the active tab on the page's own ground.
+- **Tweaks:** "Action plan hero card" group renamed **Phases**; Action plan timeline retired (always the tabs, whatever was saved).
