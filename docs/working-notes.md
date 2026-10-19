@@ -14550,3 +14550,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - XS: no hover tile on the rows ("remove group card on XS"); a just-added row still flashes.
 
 - v1204 — Health profile grid: the outline at 16% ("outlined reduce colour to 16% fff"); the gaps now windows onto one field of light behind the whole grid ("a full bg gradient on the entire grid, the empty cells act as a mask"): the hero's bands, diffused, yellow at the grid's left to red at its right, a gentle fade top and foot -- each gap cell shows its own part of the field (its column and row as --cx/--cy, the field sized 800% x 300% and positioned by them), filling the cell. Bands every 16px, 10 on the phone.
+
+- v1205 — My journey:
+  - Coachmarks tweak (Timeline group, Off by default): the app's screen under a 70% black blanket (the phone's dock too), four sections cut out of it with a hairline round each and a white note on each, all at once — the bento's head "Latest updates", Health profile "What we found", Your first year "What's next", the Action plan from its heading to its first card "What to action". Wide (room in the margins), the notes beside the sections with a line across; narrower, above them, the page opening room for them (--cmR on #dTl). The blanket scrolls the page; Got it (or Esc) turns the tweak off. Turning it on scrolls to the top.
+  - Phase transition centred on its line, 48px more above and below ("gap vertical centered, +48px padding top bottom").
+  - Layout V2: the milestones after the first drawn as a card like Ready for you ("visually the same as the card above, but the items Locked inside") — lock tile, the milestone's name, its months and count; every item locked (no button, a lock and "Locked").
+  - The Re-test milestone shown under the phase we're in too (vert), after its own transition "Action plan underway" ("add the Re-test phase with also a gap transition on the vertical").
