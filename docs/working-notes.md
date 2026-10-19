@@ -14726,3 +14726,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Phase tabs:** 8px more padding in each tab (20 / 22 / 22; the phone 8 more above and below only, its tabs narrow), 2px less round them (6). The period alone ("0–3 months"), its line gone.
 - **Journey row:** "Blood testing" is now "Foundation blood testing".
 - **Phase tabs' segmented card:** its outline white 6% (was 10%; light 7%, was 12%).
+
+## Visual in the active tab, Media tweak, locked top light, loop, Later badges
+
+- **Hairline Plate in the active phase tab:** at the tab's right, contained in a box 128 wide (40% of the tab at most) and the tab's height less 4 above and below, centred; it fades in on the tab that becomes active (scroll or click). Its solids the active tab's colour (#191919 / #f7f6f6). Only when the tabs have room (each about 290 wide or more): not at M, not on a phone. Fitted again whenever its box changes (ResizeObserver).
+- **Group visual tweak retired; Media On / Off (Off by default):** the service groups' media tile, for both the phase cards (Notch or badge) and the Later tab's group cards. The left-column Visual and its CSS are gone.
+- **Retired tweaks:** Timeline top (pinned to Timeline), Timeline, Timeline style (they no longer drew anything with the tabs).
+- **Service group notch** moved into the Service item group.
+- **Top visual (Service item, On by default):** the locked service group card gets a subtle warm radial light falling from its top edge, a bowl down to the line under its title (orange 17% at the top to 0); light theme a softer peach; the phone a wider, shallower bowl.
+- **Loop transition:** the dot of the phase it opens is orange (#f78359, 24% until the line reaches it, then 100%); the dashed track hidden under the filling line (a stroke of the page's ground under it, filled with it), dashed only where the line has yet to come.
+- **Later tab group cards** (Included in your membership, Partner offers, Saved for later): the name as the same badge as the service groups; a long name in a narrow column wraps inside the badge.
