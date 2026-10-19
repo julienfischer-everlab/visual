@@ -14524,3 +14524,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Add an icon for each group: Ready for you, layers; Scheduled, calendar": each group card now has an icon (`JG`). In the two-column cards it's a 40px tile above the label: Ready for you a stack of layers, Scheduled a calendar. In the one-column cards it's a 28px tile beside the label: Locked a padlock, Coming up a clock, Results ready a tick in a circle. On a phone it sits beside the label in every card.
 - "Put the Next up item inside Ready for you": the Next up card is gone. Its item opens Ready for you's list, keeping the primary button. The count now includes it ("5 actions whenever you're ready"). The step-through still completes that first item, and Ready for you's count goes down as it does.
+
+## My journey: add other services from a multi-select modal; rows 8 apart; Collect sample → View; status title +4
+
+- "Open a modal with the list of items that I can multi-select and submit, so they will be added into this group": the dashed "4 other services available" card opens **Add to your plan**. It reuses the booking modal's shell: a centred 480px modal on desktop, a bottom sheet on the phone. It's allowed on My journey alongside the service page's own sheets. It lists what's in Later: "Saved for later" (what was put off) and the Later tab's sections ("Included in your membership", "Partner offers"). Each item has its picture, name and line, and a square check at its right (the whole row is the label; the ticked row lit). The footer counts the selection and its button reads "Add 2 to plan".
+  - Submitting moves the ticked items into that milestone's Ready for you (`JADD`, by milestone key; something saved for later is simply moved back), takes them out of Later, and drops the dashed card's count. A toast confirms it ("2 services added to your plan.") and each added row flashes where it lands.
+  - Escape, the dim and the X close it; focus starts on the first checkbox and returns to the dashed card.
+- "+4px gap between items": the rows are now 8px apart, with the divider in the middle of the gap.
+- "View" (on "Collect sample"): the Microbiome row's button reads View, for both members.
+- "+4px" (the status cards): the title sits 4px under its eyebrow.
