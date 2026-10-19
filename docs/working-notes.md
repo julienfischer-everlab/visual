@@ -14510,3 +14510,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Put this into a group: Action plan hero card": Action plan timeline, Plan upgrade, Timeline top, Timeline and Timeline style now sit in a card of their own, headed **Action plan hero card**.
 - "Group: Service item", then "add these as well into this group": Visual, Items, Service group card, Priority, Status, Format and CTA position now sit in a card headed **Service item**.
 - Both follow the Timeline card (also `data-tl`, so they show on the Timeline page). The Timeline card keeps Version, Layout, the bento's tweaks, Suggested, Complete services, Just completed items and the retired (hidden) rows. The rows moved with their comments and ids, so their wiring is unchanged.
+
+## My journey: status cards 40 / 60; the other services as a dashed card
+
+- "40% 60%": the bento's status cards share their row 2fr / 3fr (Health profile 40%, the mini timeline 60%). The head card still spans both. On a phone they stay half and half.
+- "Instead of the left link: an outlined dashed card, 4 other services available, with a plus icon": Ready for you's side link is gone. At the foot of its list sits a dashed outlined card (1.5px dashed, 18px radius) with a plus in a 44px disc where the rows' visuals are, "4 other services available" and "Add them to your plan whenever you like". It still opens the Later tab and brings it into view. In Grid it's a tile among the tiles; on a phone it's a size down; it hides while searching.
