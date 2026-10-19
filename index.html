@@ -11309,6 +11309,14 @@
             <option value="top">Top</option>
           </select>
         </div>
+        <!-- the Hairline Plate in the active phase tab, on or off ("ON OFF tweak visual inside tab") -->
+        <div class="tkRow" id="stJpGvRow">
+          <span class="lbl">Tab visual</span>
+          <select id="stJpGv" class="tkSegSel" aria-label="The Hairline visual inside the active phase tab: on, or off">
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
         <!-- the phase cards' media tile, on or off ("Kill the tweak Media / Visual. Just keep media (ON OFF)"); the Visual now in the active phase tab -->
         <div class="tkRow" id="stJvMdRow">
           <span class="lbl">Media</span>
@@ -31292,7 +31300,7 @@ hairline({
       return '<div class="jbGridP"><div class="jbGrid" role="group" aria-label="' + rec + ' of ' + JB_HP_N + ' recorded, ' + n + (n === 1 ? ' gap' : ' gaps') + '">' + Array.from({ length: JB_HP_N }, (_, k) => { const x = at[k]; if (!x) return '<span class="jbCell"><i></i></span>';
         const [g, i] = x, l = esc(g.t + ', ' + (g.ok ? 'in your plan' : g.w)); const tip = '<span class="jbTip" aria-hidden="true">' + esc(g.t) + '</span>'; return g.sug ? '<button class="jbCell gap' + (g.ok ? ' ok' : jbSoon(g) ? ' soon' : '') + '" type="button" data-jb="gap" data-i="' + i + '" aria-label="' + l + '">' + (g.ok ? '<i></i>' : '') + tip + '</button>' : '<span class="jbCell gap' + (jbSoon(g) ? ' soon' : '') + '" role="img" tabindex="0" aria-label="' + l + '">' + tip + '</span>'; }).join('') + '</div></div>' + cap; };
     /* the Health profile empty (the Health profile tweak's Empty): the square cloud, what it will find, Find my gaps over the cloud -- which, here, finds them (Data provided) */
-    let JHPST = 'data', JSUM = 'wel', JSUMON = true, JTLV = 'tl', JVMD = false, JVPN = 'notch', JVTV = true, GVF = [];   // JVTV: the locked service group's top visual, a warm light behind its words (the Top visual tweak)   // JVPN: the phase card's name, a folder tab on its top left (notch) or a badge in its left column   // JVMD: the phase cards' media tile, on or off (the Media tweak; off: "Remove icon, just text")   // GVF: the active phase tab's figures, mounted   // JSUMON: the summary card on; JTLV: the year card the journey (tl) or the recent update (upd)
+    let JHPST = 'data', JSUM = 'wel', JSUMON = true, JTLV = 'tl', JVMD = false, JVPN = 'notch', JVTV = true, JPGV = true, GVF = [];   // JPGV: the Plate in the active phase tab, on or off (the Tab visual tweak)   // JVTV: the locked service group's top visual, a warm light behind its words (the Top visual tweak)   // JVPN: the phase card's name, a folder tab on its top left (notch) or a badge in its left column   // JVMD: the phase cards' media tile, on or off (the Media tweak; off: "Remove icon, just text")   // GVF: the active phase tab's figures, mounted   // JSUMON: the summary card on; JTLV: the year card the journey (tl) or the recent update (upd)
     /* the real journey (the Real journey tweak): four steps, walked with the arrows at the bottom right -- 0 nothing paid for; 1 the Baseline paid: the
        questionnaire, the blood test to book, the onboarding call; 2 the Foundation blood testing to do; 3 done: thanks, and the membership to get. The Baseline's
        items those alone (no other services offered), the phases after it their notes */
@@ -31443,7 +31451,7 @@ hairline({
       const hx = hero ? '<div class="jpHx"><h3 class="jpHt">' + sp.n + (sel === cur ? '<em>Now</em>' : '') + '</h3><p class="jpHs">' + sp.r + ' \u00b7 ' + sp.t + (inS.length ? ' \u00b7 ' + dnS + ' of ' + inS.length + ' done' : '') + '</p></div>' : '';
       const strip = JLINE && B && B.length ? phStrip(B, cur, sel) : '';
       const tab = (p, i) => '<button class="jpP' + (i === sel ? ' on' : '') + (i === cur ? ' now' : '') + '" type="button" role="tab" aria-selected="' + (i === sel) + '" data-ph="' + i + '" style="--f:' + Math.max(0, Math.min(1, (now - p.a) / (p.b - p.a))).toFixed(3) + '">' +
-          '<span class="jpT"><b>' + p.n + '</b>' + (i === cur ? '<em>Now</em>' : '') + '</span><span class="jpR">' + p.r + '<span class="jpM"> \u00b7 ' + p.t + '</span></span>' + (hero ? '<span class="jpGv" aria-hidden="true"><span class="jvGvS"></span></span>' : '') + '</button>';   // the Plate, shown in the active one
+          '<span class="jpT"><b>' + p.n + '</b>' + (i === cur ? '<em>Now</em>' : '') + '</span><span class="jpR">' + p.r + '<span class="jpM"> \u00b7 ' + p.t + '</span></span>' + (hero && JPGV ? '<span class="jpGv" aria-hidden="true"><span class="jvGvS"></span></span>' : '') + '</button>';   // the Plate, shown in the active one
       if (hero) return '<div class="jpStick"><div class="jvPh jpHero jpOnly" role="tablist" aria-label="Your first year"><div class="jpRow">' + PH.map(tab).join('') + '</div></div></div>';   // the tabs alone ("remove the content, just keep the tabs")
       return '<div class="jvPh' + (hero ? ' jpHero' : '') + '" role="tablist" aria-label="Your first year"><div class="jpHd"><span class="jpEy">Your first year</span><span class="jpNow">Month ' + Math.min(12, Math.floor(now) + 1) + ' of 12</span></div>' + hx + (hero ? strip : '') + '<div class="jpRow">' +
         PH.map(tab).join('') + '</div>' + (hero ? '' : strip) + (JUP ? upHtml() : '') + '</div>'; };   // the plan's small card at the card's foot
@@ -32060,6 +32068,9 @@ hairline({
       const sh = () => { if (pr) pr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const gv = document.getElementById('stJvMd'), gvr = document.getElementById('stJvMdRow');   // Media: the phase cards' tile, on or off
       if (gv) gv.addEventListener('change', () => { JVMD = gv.value === 'on'; render(); }); JVMD = !!gv && gv.value === 'on';
+      { const tg = document.getElementById('stJpGv'), tgr = document.getElementById('stJpGvRow');   // Tab visual: the Plate in the active phase tab
+        if (tg) tg.addEventListener('change', () => { JPGV = tg.value !== 'off'; render(); }); JPGV = !tg || tg.value !== 'off';
+        const sh = () => { if (tgr) tgr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
       { const pn = document.getElementById('stJvPn'), pnr = document.getElementById('stJvPnRow');   // Service group notch: on, the folder tab; off, the badge
         if (pn) pn.addEventListener('change', () => { JVPN = pn.value === 'off' ? 'badge' : 'notch'; render(); }); JVPN = pn && pn.value === 'off' ? 'badge' : 'notch';
         const tv = document.getElementById('stJvTv'), tvr = document.getElementById('stJvTvRow'); if (tv) tv.addEventListener('change', () => { JVTV = tv.value !== 'off'; render(); }); JVTV = !tv || tv.value !== 'off';   // Top visual: the locked group's warm light
