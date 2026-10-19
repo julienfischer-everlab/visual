@@ -14515,3 +14515,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "40% 60%": the bento's status cards share their row 2fr / 3fr (Health profile 40%, the mini timeline 60%). The head card still spans both. On a phone they stay half and half.
 - "Instead of the left link: an outlined dashed card, 4 other services available, with a plus icon": Ready for you's side link is gone. At the foot of its list sits a dashed outlined card (1.5px dashed, 18px radius) with a plus in a 44px disc where the rows' visuals are, "4 other services available" and "Add them to your plan whenever you like". It still opens the Later tab and brings it into view. In Grid it's a tile among the tiles; on a phone it's a size down; it hides while searching.
+
+## My journey: a real 4px gap between the list rows
+
+- "+4px gap!!!! list items row": the earlier "+4px" requests only padded each row, so the hover tile still ran from divider to divider. The cards' lists are now flex columns with `gap:4px`, and the divider sits in the middle of that gap (`top:-2.5px`). A hovered row's tile now stops 2px short of the lines above and below it instead of touching them. Measured 4px between consecutive rows at L and XS. Grid keeps its own 12px gap.
