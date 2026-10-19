@@ -20882,7 +20882,7 @@ hairline({
                        'Results received', 'Async report', 'Video', 'Landing page'];
   MODE_GROUPS.forEach(g => {
     const inGroup = MODES.map((v, i) => [v, i])
-      .filter(([v, i]) => v.group === g && !isArchived(i) && !(g === 'Overview page' && v.name === 'Mobile'));   /* no Overview > Mobile in the menu ("Mobile --> kill"); the phone mode stays, the appointment's Mobile opens it */
+      .filter(([v, i]) => v.group === g && !isArchived(i) && !((g === 'Overview page' || g === 'Async report') && v.name === 'Mobile'));   /* no Overview > Mobile in the menu ("Mobile --> kill"); the phone mode stays, the appointment's Mobile opens it. No Async report > Mobile either ("remove Mobile"): XS on the desktop is the phone; #m27 still opens it */
     inGroup.sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0));
     if (!inGroup.length) return;
     const og = document.createElement('optgroup');
@@ -20890,7 +20890,7 @@ hairline({
     inGroup.forEach(([v, i]) => {
       const o = document.createElement('option');
       o.value = String(i);
-      o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : v.name;   /* the page's name, not the shell's ("Desktop --> Overview") */
+      o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : g === 'Async report' && v.name === 'Desktop' ? 'Async report' : v.name;   /* the page's name, not the shell's ("Desktop --> Overview"; "rename Desktop by Async report") */
       og.appendChild(o);
     });
     // Mobile (viewport): the mobile design filling the browser's viewport with
