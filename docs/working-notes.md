@@ -14594,3 +14594,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Bento top retired ("remove"): the milestone (the welcome) heads the bento.
   - No switch beside a segmented control: every two-option tkSegSel had both (Bento top, Phases position, Health profile); the segments alone now.
   - The empty Health profile's cloud edge to edge ("visual edge to edge of the card"): to the card's sides and foot (the card clips its corners), 140 high (96 on the phone); the squares fill the frame to its edges.
+
+- v1215 (notes' count) — My journey:
+  - Baseline its three ("Baseline: show these items — General questionnaire, Onboarding consultation, Pathology test renamed Foundational blood testing"): the base milestone keeps them (keep), plus what was added to it; every other service pushed on (moveTo) into Review your results, now the Action plan phase's first (mo 3–4, November 2026; still Baseline's to buy: need 'base'), so the Action plan tab lands on Testing complete. The bento's appointment by the new name; the welcome counts 3; the year's card 0 of 3.
+  - The Health profile grid's outline at 6% (8% dark ink in light) ("outline fff 6%").
+  - The Health profile card's foot: an icon-only chevron at the right ("add CTA icon only bottom right, chevron right"), on the count's line — the first gap's service; in the list visual too.
+  - The coachmarks over the page as it is ("overlap absolute, don't disturb the layout"): no room opened; narrower, the notes sit above each section over what's there.
+  - Tweaks: Coachmarks in a group of their own, Additional, above Timeline; Bento, Bento order, Recent activity, Health profile, Health profile visual in a group, Hero Bento ("put this into a group").
+  - The group icon's dot on the tile's rounded corner, 8 (6 on the phone) ("dot overlap rounded shape, not the icon"); 8 between the group cards ("gap card hero 8px").
