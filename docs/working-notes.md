@@ -14556,3 +14556,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Phase transition centred on its line, 48px more above and below ("gap vertical centered, +48px padding top bottom").
   - Layout V2: the milestones after the first drawn as a card like Ready for you ("visually the same as the card above, but the items Locked inside") — lock tile, the milestone's name, its months and count; every item locked (no button, a lock and "Locked").
   - The Re-test milestone shown under the phase we're in too (vert), after its own transition "Action plan underway" ("add the Re-test phase with also a gap transition on the vertical").
+
+- v1206 — Health profile gaps: an orange dot, the gradient field gone ("remove gradient cell, just use orange dot"); the legend's gap an orange dot too. My journey's head: Past at the row's right end on every size ("Past right side").
