@@ -5659,6 +5659,15 @@
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame{container-type:inline-size;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet{overflow:visible;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arQa{left:calc((100% - 100cqw) / 2);right:auto;width:100cqw;}   /* the questionnaire's sheet over the whole frame, its panel the column's width */
+  /* the phone (XS, S, the device frame): the questionnaire's sheet the full height less the status bar, as iOS's large sheet ("should cover almost the full screen") */
+  .aqWrap.aqDev .arSheet{--ar-qa-top:50px;} .aqWrap.aqDev.aqBpS .arSheet{--ar-qa-top:44px;}
+  /* desktop (M, L): the questionnaire a modal centred in the page, not a bottom sheet ("desktop should be a modal centred in the page"): rounded all round, no grabber, rising in a touch and fading */
+  .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arQa{justify-content:center;padding:48px 24px;}
+  .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arQa .arQaPanel{height:auto;max-height:min(720px, 100%);padding:24px 0;border-radius:24px;box-shadow:0 24px 64px oklch(0% 0 0 / .24);opacity:0;transform:translateY(16px) scale(.98);transition:transform .35s var(--ar-ease), opacity .2s ease;}
+  .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arQa.arOn .arQaPanel{opacity:1;transform:none;}
+  .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arQaGrab{display:none;}
+  .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet :is(.arQaHead, .arQaList){padding-left:24px;padding-right:24px;}
+  @media (prefers-reduced-motion: reduce){ .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arQa .arQaPanel{transition:none;} }
   .aqWrap.aqFull.aqBpM{--aqNavX:24px;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeadRow{margin-inline:calc((100% - 100cqw) / 2 + var(--aqNavX, 32px));}
   /* desktop (M, L): the step bars ride in the top nav, between back and close, at the column's width ("replace inside top nav on top, desktop") */
@@ -13391,8 +13400,8 @@
 .arSheet .arLfOpt { background: var(--ar-opt-bg2); color: var(--ar-opt-fg); }
 .arSheet .arLfOut { background: var(--ar-out-bg2); color: var(--ar-out-fg); }
 /* Your answers: the questionnaire and its count, a secondary icon button (chevron down) at the right; the whole card a button */
-.arSheet .arLfAns { appearance: none; -webkit-appearance: none; width: 100%; margin: 0; border: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
-.arSheet .arLfAnsRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.arSheet .arLfAns { appearance: none; -webkit-appearance: none; width: 100%; margin: 0; border: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }   /* the button centred on the whole card ("CTA vertically aligned") */
+.arSheet .arLfAnsTx { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .arSheet .arLfAnsL { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .arSheet .arLfAnsBtn { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9999px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .72); transition: background .15s ease; }
 .arSheet .arLfAns:hover .arLfAnsBtn { background: oklch(var(--ar-ink) / .1); }
@@ -13400,7 +13409,7 @@
 .arSheet .arQa { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end; }
 .arSheet .arQaDim { position: absolute; inset: 0; background: oklch(0% 0 0 / .4); opacity: 0; transition: opacity .3s ease; }
 .arSheet .arQa.arOn .arQaDim { opacity: 1; }
-.arSheet .arQaPanel { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; max-height: calc(100% - 56px); margin: 0 auto; padding: 8px 0 32px; border-radius: 24px 24px 0 0; background: var(--ar-paper); box-shadow: 0 -12px 40px oklch(0% 0 0 / .16); transform: translateY(100%); transition: transform .4s var(--ar-ease); }
+.arSheet .arQaPanel { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; height: calc(100% - var(--ar-qa-top, 16px)); margin: 0 auto; padding: 8px 0 32px; border-radius: 24px 24px 0 0; background: var(--ar-paper); box-shadow: 0 -12px 40px oklch(0% 0 0 / .16); transform: translateY(100%); transition: transform .4s var(--ar-ease); }
 .arSheet.arDark .arQaPanel { background: oklch(21% 0 263.28); }
 .arSheet .arQa.arOn .arQaPanel { transform: none; }
 .arSheet .arQaGrab { flex: none; width: 36px; height: 5px; margin: 0 auto 12px; border-radius: 3px; background: oklch(var(--ar-ink) / .16); }
@@ -13410,7 +13419,6 @@
 .arSheet .arQaList { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px; outline-offset: -2px; }
 .arSheet .arQaRow { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 0; border-top: 1px solid oklch(var(--ar-ink) / .06); }
 .arSheet .arQaRow:first-child { border-top: 0; }
-.arSheet .arQaTag { display: inline-flex; align-items: center; height: 22px; margin-top: 4px; padding: 0 8px; border-radius: 6px; font-family: var(--ar-font); font-size: 12px; line-height: 16px; font-weight: 500; white-space: nowrap; background: var(--ar-blue-bg2); color: var(--ar-blue-fg); }
 @media (prefers-reduced-motion: reduce) { .arSheet .arQaDim, .arSheet .arQaPanel { transition: none; } }
 .arSheet .arLfQA { display: flex; flex-direction: column; gap: 4px; }
 .arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
@@ -13610,8 +13618,8 @@
     // the questionnaire behind it: a card that opens its answers in a bottom sheet ("on Your answers: a chevron down, icon only, secondary, on the right; Health questionnaire, 6 answers; on click a bottom sheet with the questions and answers")
     qn: { name: 'Health questionnaire', src: 'Lifestyle Profiling', date: '12 Oct 2026' },
     answers: [
-      { q: 'How often do you feel cold when others are comfortable?', a: 'Most days', key: true },
-      { q: 'How would you rate your energy through the day?', a: 'Low most afternoons', key: true },
+      { q: 'How often do you feel cold when others are comfortable?', a: 'Most days' },
+      { q: 'How would you rate your energy through the day?', a: 'Low most afternoons' },
       { q: 'How many hours do you usually sleep a night?', a: '6 to 7 hours' },
       { q: 'Has your weight changed over the past year?', a: 'Gained 3 to 4 kg' },
       { q: 'How often do you exercise for 30 minutes or more?', a: '2 to 3 times a week' },
@@ -13885,7 +13893,7 @@
     on(closeBtn, 'click', close);
     on(cta, 'click', function () { if (step === NEXT) close(); else go(step + 1); });
 
-    /* the questionnaire's bottom sheet: the questions and answers, the ones this insight reads tagged */
+    /* the questionnaire's bottom sheet: the questions and answers, every one used in this insight */
     var qa = null, qaFrom = null, qaT = 0;
     function qaClose(now) {
       if (!qa || qa.el.hidden) return;
@@ -13913,10 +13921,10 @@
         root.appendChild(qa.el);
       }
       qa.title.textContent = L.qn.name;
-      qa.sub.textContent = L.qn.src + ' \u00b7 ' + L.answers.length + ' answers \u00b7 ' + L.qn.date;
+      qa.sub.textContent = L.answers.length + (L.answers.length === 1 ? ' answer' : ' answers') + ' used in this insight';
       qa.list.textContent = '';
       add(qa.list, L.answers.map(function (r) {
-        return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: r.q }), h('span', { class: 'arLfA', text: r.a }), r.key ? h('span', { class: 'arQaTag', text: 'Used in this insight' }) : null);
+        return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: r.q }), h('span', { class: 'arLfA', text: r.a }));
       }));
       qa.list.scrollTop = 0;
       cancel(qaT); qa.el.hidden = false; void qa.el.offsetWidth; qa.el.classList.add('arOn');
@@ -14135,10 +14143,10 @@
       on(down, 'click', function () { vote(down, up); });
       var n = L.answers.length;
       var ans = h('button', { type: 'button', class: 'arLfGroup arLfAns', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' },
-        h('span', { class: 'arT300m', text: 'Your answers' }),
-        h('span', { class: 'arLfAnsRow' },
-          h('span', { class: 'arLfAnsL' }, h('span', { class: 'arLfName', text: L.qn.name }), h('span', { class: 'arT200r arInk60', text: n + (n === 1 ? ' answer' : ' answers') })),
-          h('span', { class: 'arLfAnsBtn', 'aria-hidden': 'true' }, chevIcon())));
+        h('span', { class: 'arLfAnsTx' },
+          h('span', { class: 'arT300m', text: 'Your answers' }),
+          h('span', { class: 'arLfAnsL' }, h('span', { class: 'arLfName', text: L.qn.name }), h('span', { class: 'arT200r arInk60', text: n + (n === 1 ? ' question answered' : ' questions answered') }))),
+        h('span', { class: 'arLfAnsBtn', 'aria-hidden': 'true' }, chevIcon()));
       on(ans, 'click', function () { qaOpen(L, ans); });
       return h('div', { class: 'arStack arLfStack' },
         h('div', { class: 'arLfHead arAnimRise' },

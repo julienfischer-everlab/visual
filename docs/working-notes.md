@@ -14429,3 +14429,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Version menu: Async report is one entry
 
 - "Remove Mobile, rename Desktop by Async report": the Async report group in the version menu now holds one entry, **Async report** (mode 26, the desktop, which is responsive; XS shows it in the phone frame). Mobile (mode 27) is out of the menu, as the Overview's Mobile is, but still routes from its hash, #m27.
+
+## Async report: the questionnaire sheet, refined
+
+- "CTA vertically aligned": the Your answers card is now a row. The heading and the questionnaire stack on the left, and the chevron button is centred on the whole card's height, 16px from its right edge.
+- "6 questions answered": the card's count reads "6 questions answered" (singular: "1 question answered").
+- "Desktop should be a modal centred in the page": at M and L (both the Full modal and the Modal variation), the questionnaire opens as a modal centred in the frame. It is 560 wide, rounded all round with a 24px radius, at most 720px tall, has no grabber and 24px side padding, and rises 16px and fades in. Escape, the scrim and the X still close it.
+- "Should cover almost the full screen": on the phone (XS, S, the device frame) the sheet is the full height less the status bar, like iOS's large sheet: 50px from the top at XS (status bar 41px) and 44px at S (35px). The list scrolls inside it.
+- "6 answers used in this insight" / "remove the badge because all are used in this insight": the sheet's line under the title reads "6 answers used in this insight", and the per-row "Used in this insight" tags are gone, along with their data flags and CSS.
