@@ -14533,3 +14533,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "+4px gap between items": the rows are now 8px apart, with the divider in the middle of the gap.
 - "View" (on "Collect sample"): the Microbiome row's button reads View, for both members.
 - "+4px" (the status cards): the title sits 4px under its eyebrow.
+
+## Add to your plan modal: chip tabs, 4px between items, "Add N to my plan"
+
+- "Use chips, fully rounded, tab style instead of 'Included in your membership' / 'Partner offers', for grouping": the modal's headings are replaced by a row of fully rounded chips acting as tabs (All, Included in your membership, Partner offers, and Saved for later when there is any). It sticks at the top of the list and scrolls sideways on a phone. A chip shows only its kind (All shows every one). What's ticked stays ticked across chips, and the footer counts every pick.
+- "Gap items +4px": the items are 4px apart.
+- "CTA X to my plan": the button reads "Add 2 to my plan" ("Add to my plan" with nothing picked).
+- The "Collect sample" screenshot came from an older build: no "Collect sample" button renders anywhere now (checked for both members, both layouts, and the Overview).

@@ -7772,7 +7772,11 @@
   /* the other services' modal: a heading per kind, each item its picture, name, line and a square check at its right */
   body.light .jvAddSh .bkSum{color:#7a716a;} body.light .jvAddSh .bkFoot{border-top-color:rgba(46,31,26,.1);}   /* the count readable on the light sheet */
   .jvAddS{display:block;margin-top:4px;font-size:13px;line-height:18px;font-weight:400;color:var(--tlSub);}
-  .jvAddSh .jvAddB{padding:0 24px 8px;} .jvAddH{margin:18px 0 4px;font-size:10px;line-height:14px;letter-spacing:2px;text-transform:uppercase;color:var(--tlSub);} .jvAddH:first-child{margin-top:6px;}
+  .jvAddSh .jvAddB{padding:0 24px 8px;}
+  .jvAddC{position:sticky;top:0;z-index:1;display:flex;gap:8px;margin:0 -24px;padding:6px 24px 14px;overflow-x:auto;scrollbar-width:none;background:#1c1c1b;} .jvAddC::-webkit-scrollbar{display:none;} body.light .jvAddC{background:#fff;}   /* the kinds as chips, as tabs ("chips, fully rounded, tab style, for grouping") */
+  .jvAddChip{flex:none;height:34px;padding:0 14px;border:0;border-radius:999px;background:rgba(255,255,255,.07);font:inherit;font-size:13px;color:var(--tlTx);white-space:nowrap;cursor:pointer;transition:background .16s ease,color .16s ease;} .jvAddChip:hover{background:rgba(255,255,255,.12);}
+  .jvAddChip.on{background:#f6f4f2;color:#141413;} body.light .jvAddChip{background:rgba(46,31,26,.07);} body.light .jvAddChip:hover{background:rgba(46,31,26,.11);} body.light .jvAddChip.on{background:#141413;color:#fff;}
+  .jvAddL{display:flex;flex-direction:column;gap:4px;} .jvAddI[hidden]{display:none;}   /* the items 4 apart ("gap items +4px") */
   .jvAddI{position:relative;display:flex;align-items:center;gap:14px;margin:0 -12px;padding:12px;border-radius:14px;cursor:pointer;transition:background .16s ease;} .jvAddI:hover{background:rgba(255,255,255,.04);} body.light .jvAddI:hover{background:rgba(46,31,26,.04);}
   .jvAddI input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
   .jvAddV{flex:none;display:grid;place-items:center;width:48px;height:48px;overflow:hidden;border-radius:12px;background:rgba(255,255,255,.06);color:var(--tlInk);} .jvAddV img{width:100%;height:100%;object-fit:cover;} .jvAddV svg{width:20px;height:20px;} body.light .jvAddV{background:rgba(46,31,26,.06);}
@@ -31379,19 +31383,23 @@ hairline({
     // Ready for you's link: the other available items, the Later tab's, brought into view
     { const X = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 3l6 6M9 3 3 9"/></svg>';
       const sh = document.createElement('div'); sh.className = 'tlSheet svBook jvAddSh'; sh.setAttribute('aria-hidden', 'true');
-      sh.innerHTML = '<div class="tlShDim"></div><div class="tlShPanel" role="dialog" aria-modal="true" aria-labelledby="jvAddT"><i class="tlShGrab" aria-hidden="true"></i><div class="tlShHead"><div><b id="jvAddT">Add to your plan</b><span class="jvAddS">Pick the services you want, we\u2019ll add them to Ready for you.</span></div><button class="tlShX" type="button" aria-label="Close">' + X + '</button></div><div class="tlShBody jvAddB"></div><div class="bkFoot"><div class="bkSum"></div><button class="svBtn bkGo" type="button" disabled>Add to plan</button></div></div>';
+      sh.innerHTML = '<div class="tlShDim"></div><div class="tlShPanel" role="dialog" aria-modal="true" aria-labelledby="jvAddT"><i class="tlShGrab" aria-hidden="true"></i><div class="tlShHead"><div><b id="jvAddT">Add to your plan</b><span class="jvAddS">Pick the services you want, we\u2019ll add them to Ready for you.</span></div><button class="tlShX" type="button" aria-label="Close">' + X + '</button></div><div class="tlShBody jvAddB"></div><div class="bkFoot"><div class="bkSum"></div><button class="svBtn bkGo" type="button" disabled>Add to my plan</button></div></div>';
       (document.querySelector('.dash') || document.body).appendChild(sh);
       let items = [], msK = null, from = null;
       const body = sh.querySelector('.jvAddB'), sum = sh.querySelector('.bkSum'), go = sh.querySelector('.bkGo');
       const vis = r => IMG[r.img] ? '<img src="' + IMG[r.img] + '" alt="">' : jvIcon(r);
-      const sync = () => { const n = body.querySelectorAll('input:checked').length; sum.textContent = n ? n + ' selected' : 'Nothing selected yet'; go.disabled = !n; go.textContent = n ? 'Add ' + n + ' to plan' : 'Add to plan'; };
+      const sync = () => { const n = body.querySelectorAll('input:checked').length; sum.textContent = n ? n + ' selected' : 'Nothing selected yet'; go.disabled = !n; go.textContent = n ? 'Add ' + n + ' to my plan' : 'Add to my plan'; };
       const shut = () => { sh.classList.remove('on'); sh.setAttribute('aria-hidden', 'true'); if (from && from.isConnected) from.focus({ preventScroll: true }); };
       const open = (k, btn) => { msK = k; from = btn; items = [];
         const secs = [].concat([...SNZ].length ? [{ h: 'Saved for later', rows: [...SNZ], snz: 1 }] : [], TL.claim.map(sc => ({ h: sc.h, rows: sc.rows.filter(r => !JADD.has(r)) })).filter(sc => sc.rows.length));
-        body.innerHTML = secs.map(sc => '<div class="jvAddH">' + esc(sc.h) + '</div>' + sc.rows.map(r => { const i = items.push({ r, snz: !!sc.snz }) - 1;
-          return '<label class="jvAddI"><input type="checkbox" data-i="' + i + '"><span class="jvAddV">' + vis(r) + '</span><span class="jvAddT"><b>' + esc(r.t) + '</b><em>' + esc(r.d || '') + '</em></span><span class="jvAddCk" aria-hidden="true"></span></label>'; }).join('')).join('');
+        body.innerHTML = (secs.length > 1 ? '<div class="jvAddC" role="tablist" aria-label="Kinds of service">' + ['All'].concat(secs.map(sc => sc.h)).map((h, g) => '<button class="jvAddChip' + (g ? '' : ' on') + '" type="button" role="tab" aria-selected="' + !g + '" data-g="' + (g - 1) + '">' + esc(h) + '</button>').join('') + '</div>' : '') +
+          '<div class="jvAddL">' + secs.map((sc, g) => sc.rows.map(r => { const i = items.push({ r, snz: !!sc.snz }) - 1;
+          return '<label class="jvAddI" data-g="' + g + '"><input type="checkbox" data-i="' + i + '"><span class="jvAddV">' + vis(r) + '</span><span class="jvAddT"><b>' + esc(r.t) + '</b><em>' + esc(r.d || '') + '</em></span><span class="jvAddCk" aria-hidden="true"></span></label>'; }).join('')).join('') + '</div>';
         sync(); body.scrollTop = 0; sh.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => { sh.classList.add('on'); const f = body.querySelector('input'); if (f) f.focus({ preventScroll: true }); }); };
       body.addEventListener('change', sync);
+      body.addEventListener('click', e => { const c = e.target.closest('.jvAddChip'); if (!c) return; const g = +c.dataset.g;   // a chip: its kind alone (All: every one); what's ticked stays ticked
+        body.querySelectorAll('.jvAddChip').forEach(x => { x.classList.toggle('on', x === c); x.setAttribute('aria-selected', String(x === c)); });
+        body.querySelectorAll('.jvAddI').forEach(x => { x.hidden = g >= 0 && +x.dataset.g !== g; }); });
       sh.querySelector('.tlShDim').addEventListener('click', shut); sh.querySelector('.tlShX').addEventListener('click', shut);
       sh.addEventListener('keydown', e => { if (e.key === 'Escape'){ e.stopPropagation(); shut(); } });
       go.addEventListener('click', () => { const pick = [...body.querySelectorAll('input:checked')].map(x => items[+x.dataset.i]); if (!pick.length) return;
