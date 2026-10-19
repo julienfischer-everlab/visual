@@ -7675,6 +7675,7 @@
   .tlSearch .msClear{margin-right:-6px;} .tlSearch.hasText .msClear{display:flex;}   /* the cross once something is typed, as the Insights search ("same search behaviour as the Biomarker insight search, with clear cross when typed") */
   /* the loading beat's stand-in, while a keystroke "fetches" the list again (the Insights search's 380ms): the rows' own shape, every block a shimmering bar */
   #dTl .tlSkel:not(.on), #tlList.tlBeat{display:none !important;}
+  #tlList.tlBeat:has(> .jvH2Row > .tlSearch){display:block !important;} #tlList.tlBeat:has(> .jvH2Row > .tlSearch) > :not(.jvH2Row){display:none !important;}   /* the field at the heading: the heading stays through the beat, the rest gives way to the skeleton */
   .tlSkel .skb{display:block;border-radius:6px;background:linear-gradient(90deg,#1c1c1b 0%,#2a2a28 40%,#1c1c1b 80%);background-size:220% 100%;animation:msShimmer 1.1s linear infinite;}
   .tlSkel .tlTh.skb{border-radius:14px;} .tlSkel .skH{width:128px;height:14px;margin:3px 0;} .tlSkel .skT{width:62%;height:16px;margin:3px 0 10px;} .tlSkel .skS{width:40%;height:13px;margin:2px 0;}
   .tlSkel .tlMeta .skb{width:150px;height:14px;margin:11px 0;} .tlSkel .tlAct .skb{width:108px;height:44px;border-radius:12px;} .tlSkel .tlRow{pointer-events:none;}
@@ -7823,7 +7824,19 @@
   @container msl (max-width:600px){ .jbVt{width:96px;height:56px;} .jbDoc{flex:1 1 100%;} .jbFoot > .jvB + .jvB{margin-top:-4px;} }
   /* My journey's top, the bento: the check-in at 70%, the health profile at 30%; then the Action plan heading over the milestones */
   #dTl.jtOff:not(.tlClaim) .tlBar{display:none;} #dTl.jtOff:not(.tlClaim) .tlHead{margin-bottom:24px;}   /* Timeline top Off: no bar (Later, reached from elsewhere, still brings the tabs) */
-  .jvBento{display:grid;grid-template-columns:minmax(0,13fr) minmax(0,7fr);gap:16px;}   /* 65 / 35 ("use 65% - 35%") */
+  .jvBento{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;} .jvBento > .jbFb{grid-column:1 / -1;}   /* two rows: the latest update the whole first, Health profile and the mini timeline halves of the second ("manage 2 rows as hero bento") */
+  .jbMed{display:flex;flex-direction:column;align-items:flex-start;align-self:stretch;min-width:0;}
+  @container msl (min-width:720px){ .jvBento > .jbFb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 1fr;grid-template-areas:"hd med" "h med";column-gap:40px;align-items:start;} .jbFb > .jbHd{grid-area:hd;} .jbFb > .jbH{grid-area:h;} .jbFb > .jbMed{grid-area:med;} .jbFb > .jbMed > :first-child{margin-top:0;} }   /* wide: the words at the left, what came with them at the right */
+  /* the mini timeline: the year a bar in three (3, 6 and 3 months), filled to today with the year's light, a glow at today; names and months under; the next thing at the foot */
+  .jbTlBar{display:flex;gap:4px;align-self:stretch;margin-top:22px;}
+  .jbTlSeg{position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.1);} body.light .jbTlSeg{background:rgba(46,31,26,.1);}
+  .jbTlSeg > i{position:absolute;left:0;top:0;bottom:0;width:calc(var(--f) * 100%);border-radius:inherit;background:linear-gradient(90deg, #ffd66e, #f78359);}
+  .jbTlSeg.now > i::after{content:"";position:absolute;right:-5px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#fff3c4;box-shadow:0 0 0 3px rgba(255,214,110,.18), 0 0 12px 2px rgba(250,160,74,.75);}   /* today */
+  .jbTlLbl{display:flex;gap:4px;align-self:stretch;margin-top:10px;} .jbTlLbl > span{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .jbTlLbl b{font-size:13px;line-height:17px;font-weight:500;color:var(--tlSub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .jbTlLbl .now b{color:var(--tlInk);}
+  .jbTlLbl em{font-style:normal;font-size:12px;line-height:16px;color:var(--tlSub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .jbTlNx{display:flex;align-items:flex-start;gap:12px;align-self:stretch;margin-top:auto;padding-top:22px;} .jbTlNx > i{flex:none;width:8px;height:8px;margin-top:5px;border-radius:50%;background:var(--msAcc);box-shadow:0 0 0 4px rgba(247,131,89,.16);}
+  .jbTlNx em{display:block;font-style:normal;font-size:12px;line-height:16px;color:var(--tlSub);} .jbTlNx b{display:block;margin-top:2px;font-size:14px;line-height:19px;font-weight:500;color:var(--tlInk);}
   .jbCard{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:24px 28px;border-radius:20px;background:rgba(255,255,255,.06);} body.light .jbCard{background:rgba(0,0,0,.027);}   /* the Insights bento's card (.dcard): white 6%, black 2.7% on the light page ("use same bg as the insight bento card") */
   .jbHd{display:flex;align-items:center;gap:12px;} .jbDr{width:40px;height:40px;border-radius:50%;object-fit:cover;}
   .jbEy{font-size:12px;line-height:16px;text-transform:uppercase;letter-spacing:0;color:var(--tlInk);}
@@ -7842,8 +7855,10 @@
   .jbGaps i{flex:none;display:grid;place-items:center;width:18px;height:18px;margin-top:1px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--msAcc);color:#fff;} .jbGaps li.ok i{background:var(--msOk);box-shadow:none;} .jbGaps svg{width:9px;height:9px;}
   .jbGaps b{display:block;font-size:14px;line-height:19px;font-weight:500;color:var(--tlInk);} .jbGaps em{display:block;margin-top:2px;font-style:normal;font-size:12px;line-height:16px;color:var(--tlSub);} .jbGaps li.ok em{color:var(--msOk);}
   .jvH2{margin:40px 0 16px;font-size:22px;line-height:28px;font-weight:500;letter-spacing:-.01em;color:var(--tlInk);}
-  #dTl .tlList.tlV2.msQ :is(.jvBento, .jvH2){display:none;}   /* searching: the matches alone */
-  @container msl (max-width:600px){ .jvBento{grid-template-columns:minmax(0,1fr);gap:12px;} .jbCard{padding:20px;} .jbH{font-size:18px;line-height:24px;} .jbFb .jbH{font-size:18px;line-height:25px;} .jbFoot{flex-direction:column;align-items:stretch;} .jbFoot > .jvB{width:100%;} .jvH2{margin-top:32px;font-size:20px;line-height:26px;} }
+  .jvH2Row{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:40px;margin:40px 0 16px;} .jvH2Row > .jvH2{margin:0;}   /* the heading, the search at its right ("search CTA should be here, right side of title") */
+  .jvH2Row > .tlSearch{margin-left:auto;}
+  #dTl .tlList.tlV2.msQ .jvBento{display:none;}   /* searching: the matches alone, under the heading and its search */
+  @container msl (max-width:600px){ .jvBento{grid-template-columns:minmax(0,1fr);gap:12px;} .jbCard{padding:20px;} .jbH{font-size:18px;line-height:24px;} .jbFb .jbH{font-size:18px;line-height:25px;} .jbFoot{flex-direction:column;align-items:stretch;} .jbFoot > .jvB{width:100%;} .jvH2{margin-top:32px;font-size:20px;line-height:26px;} .jvH2Row{margin-top:32px;} }
   /* Items: Grid -- the items as cards, two to a row: the visual at the top, the button at the top right, the words at the card's foot; one alone takes the row ("a variation of this list as a grid: cards inside, two per row, the title on the bottom of the card") */
   #dTl .tlList.tlV2.jvGrid .jvCard .tlItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 0;}
   #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-height:212px;padding:16px;border-radius:16px;background:rgba(255,255,255,.04);} body.light #dTl .tlList.tlV2.jvGrid .jvCard .tlItems > .tlRow.jvRow{background:rgba(46,31,26,.04);}
@@ -8183,7 +8198,8 @@
     .tlSearch.open{position:absolute;left:0;right:52px;top:50%;margin-top:-22px;width:auto;height:44px;justify-content:flex-start;gap:9px;padding:0 10px 0 14px;border-radius:12px;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);transition:box-shadow .16s ease;cursor:text;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line -- the Insights search's field ("same search behaviour as the Biomarker insight search ... with keyboard / styles") */
     .tlSearch.open:focus-within{--msEdge:#fff;} .tlSearch.open > svg{width:20px;height:20px;} .tlSearch.open input{font-size:15px;color:#ececec;} .tlSearch.open input::placeholder{color:#8b8b86;} .tlSearch:not(.open) .msClear{display:none !important;} .tlSearch .msClear{margin-right:0;}
     body.light .tlSearch.open{--msEdge:#ddd3bf;color:#9b8a75;} body.light .tlSearch.open:focus-within{--msEdge:#2e241c;} body.light .tlSearch.open input{color:#2e1f1a;} body.light .tlSearch.open input::placeholder{color:#9b8a75;}
-    .tlHead{min-height:44px;} .tlHead:has(.tlSearch.open) .tlH1{visibility:hidden;}   /* the row holds the box's 56 when the field opens over it (no jump; the field the box's height), and the title stays out of sight under the open field */
+    .tlHead{min-height:44px;} .tlHead:has(.tlSearch.open) .tlH1{visibility:hidden;}
+    .jvH2Row{min-height:44px;} .jvH2Row > .tlSearch.open{right:0;} .jvH2Row:has(> .tlSearch.open) > .jvH2{visibility:hidden;}   /* at the heading: opened, the field over the heading's row */   /* the row holds the box's 56 when the field opens over it (no jump; the field the box's height), and the title stays out of sight under the open field */
     .tlSkel .tlTh.skb{border-radius:12px;}
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
     #dTl .tlList.tlV2 > .msCard{display:block;margin-top:12px;padding:22px 18px 14px;border-radius:20px;} #dTl .msCard:not(.shut) .msRt{border-radius:12px;} #dTl .tlList.tlV2 > .msCard.shut{padding-bottom:20px;} .msCard:not(.shut) .msL{padding-bottom:6px;} .msRt{margin-top:14px;} .msH{font-size:22px;}   /* My journey at XS: the milestone over its actions, 18 in */
@@ -8223,8 +8239,9 @@
   body[data-bp="xs"] #dTl .tlBar{top:-17px;margin:0 -16px;padding:0 16px;}   /* pinned flush at the viewport's top: minus the page's top padding, as the desk's -32 for 32 (was -19 with 64, under the drawn strip) */
   /* typed into, the field stays in sight with the tabs ("if a character has been entered in the field, the field should stay visible, sticky on scroll, with
      the rest of the sticky elements"): the head sticks 8 under the viewport's top on the page's ground, the tabs under it, the months under them */
-  body[data-bp="xs"] #dTl.tlQPin .tlHead{position:sticky;top:-9px;z-index:7;} body[data-bp="xs"] #dTl.tlQPin .tlBar{top:45px;}   /* the head 8 under the top, 44 tall, 10 to the tabs */
-  body[data-bp="xs"] #dTl.tlQPin .tlHead::before{content:"";position:absolute;left:-16px;right:-16px;top:-8px;bottom:-10px;background:var(--pageBg);z-index:-1;}   /* stuck under the status strip, its ground reaching up behind it */
+  body[data-bp="xs"] #dTl.tlQPin:has(.tlHead > .tlSearch) .tlHead{position:sticky;top:-9px;z-index:7;} body[data-bp="xs"] #dTl.tlQPin:has(.tlHead > .tlSearch) .tlBar{top:45px;}   /* the head 8 under the top, 44 tall, 10 to the tabs */
+  body[data-bp="xs"] #dTl.tlQPin:has(.tlHead > .tlSearch) .tlHead::before{content:"";position:absolute;left:-16px;right:-16px;top:-8px;bottom:-10px;background:var(--pageBg);z-index:-1;}   /* stuck under the status strip, its ground reaching up behind it */
+  body[data-bp="xs"] #dTl.tlQPin .jvH2Row:has(> .tlSearch){position:sticky;top:-9px;z-index:7;} body[data-bp="xs"] #dTl.tlQPin .jvH2Row:has(> .tlSearch)::before{content:"";position:absolute;left:-16px;right:-16px;top:-8px;bottom:-10px;background:var(--pageBg);z-index:-1;}   /* the field at the Action plan heading: typed into, that row sticks in the head's place */
   body[data-bp="s"] #dTl{padding:52px 24px 120px;}
   body[data-bp="s"] #dTl .tlBar{top:-24px;margin:0 -24px;padding:0 24px;}
   body[data-bp="s"] #dTl .tlBar::before, body[data-bp="s"] #dTl .tlBar .ovGround{top:-28px;}
@@ -30669,17 +30686,25 @@ hairline({
       const pl = PL(A.svc, 'done'), tag = (pl && pl.t ? pl.t + ' \u00b7 ' : '') + (A.st || (pl && pl.steps && pl.steps.length ? pl.steps[pl.steps.length - 1][0] : ''));   // the service (its plan's name) and where it ended (its last step; the blood test's plan stops at First results, so its own)
       const docs = (A.docs && window.__docList ? window.__docList(A.docs).map(([ic, t]) => [ic === 'form' ? 'doc' : ic, t, 'Completed']) : []).concat(A.more || []);   // the service's own documents, then its record's
       return '<div class="jbCard jbFb" data-act="' + JBACT + '"><div class="jbHd"><img class="jbDr" src="' + IMG.dr + '" alt="" width="40" height="40"><div class="jbHt"><span class="jbEy">Recent activity \u00b7 ' + esc(A.when) + '</span><span class="jbTag">' + esc(tag) + '</span></div></div>' +
-        '<h3 class="jbH">' + esc(A.h) + '</h3>' +
+        '<h3 class="jbH">' + esc(A.h) + '</h3><div class="jbMed">' +   // what came with it: the recording, the numbers, the documents (beside the words when the row is wide)
         (A.vid ? '<button class="jbVid" type="button" data-jb="open" data-svc="' + A.row + '"><span class="jbVt"><img src="' + IMG[A.vid.img] + '" alt=""><i>' + JB_PLAY + '</i></span><span class="jbVx"><b>' + esc(A.vid.t) + '</b><em>' + esc(A.vid.m) + '</em></span></button>' : '') +
         (A.stats ? '<div class="jbStats">' + A.stats.map(([n, l, c]) => '<span class="jbSt"><b>' + n + '</b><em><i style="background:' + c + '"></i>' + l + '</em></span>').join('') + '</div>' : '') +
         (docs.length ? '<div class="jbDocs">' + docs.map(([ic, t, mt]) => '<button class="jbDoc" type="button" data-jb="open" data-svc="' + A.row + '">' + (ic === 'img' ? JB_IMG : JB_DOC) + '<span><b>' + esc(t) + '</b><em>' + esc(mt) + '</em></span></button>').join('') + '</div>' : '') +
-        '</div>'; };
-    const jbHtml = () => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
+        '</div></div>'; };
+    /* the mini timeline: the year as a progress bar in its three phases (each as long as its months), filled to today, a light at today's end;
+       the phase's names and months under it; where you are and what's done in it; the next thing to do at the card's foot */
+    const jbTl = B => { const now = phNow(), cur = phCur(), t0 = phT0(), mon = i => PH_MON[(t0[1] + i) % 12], mo = Math.min(12, Math.floor(now) + 1);
+      const inP = (B || []).filter(x => x.ph === cur), dn = inP.filter(x => x.fin).length, nx = inP.find(x => x.g === 'act' && !x.fin) || inP.find(x => !x.fin);
+      return '<div class="jbCard jbTl"><span class="jbEy">Your first year</span><h3 class="jbH">Month ' + mo + ' of 12</h3><p class="jbP">You\u2019re in ' + PH[cur].n + (inP.length ? ' \u00b7 ' + dn + ' of ' + inP.length + ' done' : '') + '</p>' +
+        '<div class="jbTlBar" role="img" aria-label="Month ' + mo + ' of 12, in ' + PH[cur].n + '">' + PH.map((p, i) => '<span class="jbTlSeg' + (i === cur ? ' now' : '') + '" style="flex:' + (p.b - p.a) + ' 1 0;--f:' + Math.max(0, Math.min(1, (now - p.a) / (p.b - p.a))).toFixed(3) + '"><i></i></span>').join('') + '</div>' +
+        '<div class="jbTlLbl" aria-hidden="true">' + PH.map((p, i) => '<span' + (i === cur ? ' class="now"' : '') + ' style="flex:' + (p.b - p.a) + ' 1 0"><b>' + p.n + '</b><em>' + mon(p.a) + '\u2013' + mon(p.b - 1) + '</em></span>').join('') + '</div>' +
+        (nx ? '<div class="jbTlNx"><i aria-hidden="true"></i><span><em>Up next</em><b>' + esc(nx.t) + '</b></span></div>' : '') + '</div>'; };
+    const jbHtml = B => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
       return '<div class="jvBento">' +
         jbAct(b) +
         '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' gap' : ' gaps') + ' to fill' : 'No gaps for now') + '</h3><p class="jbP">' + esc(b.hp) + '</p><ul class="jbGaps">' +
-          gs.map((g, i) => '<li' + (g.ok ? ' class="ok"' : '') + '>' + (g.sug ? '<button type="button" data-jb="gap" data-i="' + i + '">' : '<span class="jbG">') + '<i aria-hidden="true">' + (g.ok ? CHK : '') + '</i><span><b>' + esc(g.t) + '</b><em>' + esc(g.ok ? 'In your plan' : g.w) + '</em></span>' + (g.sug ? '</button>' : '</span>') + '</li>').join('') + '</ul></div></div>' +
-        ''; };   // the bento (the Action plan heading follows whatever heads the list)
+          gs.map((g, i) => '<li' + (g.ok ? ' class="ok"' : '') + '>' + (g.sug ? '<button type="button" data-jb="gap" data-i="' + i + '">' : '<span class="jbG">') + '<i aria-hidden="true">' + (g.ok ? CHK : '') + '</i><span><b>' + esc(g.t) + '</b><em>' + esc(g.ok ? 'In your plan' : g.w) + '</em></span>' + (g.sug ? '</button>' : '</span>') + '</li>').join('') + '</ul></div>' +
+        jbTl(B) + '</div>'; };   // the bento (the Action plan heading follows whatever heads the list)
     const msHtml = (S, sum) => { const by = {}; S.forEach(x => { by[x.h] = x; });   // sum: the Overview's Action plan V2 -- the next milestone's To action items, the others small
       const sug = [].concat(...S.map(x => x.sug || []));
       const useP = !sum && JTOP === 'time' && tab === 'up', sel = useP ? phSel() : -1, cur = phCur(); let seen = 0;   // the phase card: the picked phase's milestones
@@ -30688,7 +30713,8 @@ hairline({
         const rk = x => x.fin ? 0 : x.g === 'act' ? 1 : x.g === 'pend' ? 2 : 3, out = [];
         per.forEach((L, ph) => { const p = PH[ph]; L.map((x, i) => [x, i]).sort((u, v) => rk(u[0]) - rk(v[0]) || u[1] - v[1]).forEach(([x], i, A) => out.push(Object.assign(x, { m: p.a + (p.b - p.a) * (i + .5) / A.length }))); });
         return out; };   // each phase's items across its months, in the order they go: done, then what's to do now (the current first), then booked, then still to come
-      const pre = !sum && tab === 'up' && JBENTO ? jbHtml() : '', card = useP ? phHtml(bands()) : '';   // the bento, then the heading, then the phase card over the hero ("timeline below the conversation / health profile blocks")
+      const B = useP || (!sum && tab === 'up' && JBENTO) ? bands() : null;   // the year's items, for the phase card's strip and the bento's mini timeline
+      const pre = !sum && tab === 'up' && JBENTO ? jbHtml(B) : '', card = useP ? phHtml(B) : '';   // the bento, then the heading, then the phase card over the hero ("timeline below the conversation / health profile blocks")
       const out = MS.map((m, mi) => { const groups = [];
         let rows = [].concat(...m.from.map(h => by[h] ? ordered(by[h].rows) : []));   // v1's items, all of them, in v1's order
         if (m.sug && sug.length){ const gone = askGone(); rows = rows.concat(sug.filter(x => !gone.has(x.svc))); }   // a suggestion answered under the hero: not suggested again here
@@ -30705,7 +30731,7 @@ hairline({
           '<div class="msPr"><span class="msN1">' + dn + ' of ' + all.length + ' complete</span><span class="msN2">' + all.length + (all.length === 1 ? ' action' : ' actions') + '</span><button class="msTg" type="button" aria-expanded="' + open + '" aria-label="' + (open ? 'Hide' : 'Show') + ' the actions">' + MSCHEV + '</button></div>' +
           '<div class="msBar" aria-hidden="true"><i style="width:' + Math.round(100 * dn / all.length) + '%"></i></div></div><div class="msRt">' + body + (sum ? '<button class="msAll tlSee" type="button">' + (left > 0 ? 'See ' + left + ' more in My journey' : 'See it in My journey') + MSARR + '</button>' : '') + '</div></section>'); }).join('');
       const up = !sum && tab === 'up' && JUP && !useP ? '<div class="jpUpSolo">' + upHtml() + '</div>' : '';   // the plan's small card: in the phase card; without one, alone under the heading
-      return pre + (pre || card || up ? '<h2 class="jvH2">Action plan</h2>' : '') + card + up + (useP && !seen ? phEmpty(sel) : '') + out; };
+      return pre + (pre || card || up ? '<div class="jvH2Row"><h2 class="jvH2">Action plan</h2></div>' : '') + card + up + (useP && !seen ? phEmpty(sel) : '') + out; };
     // the step in hand, when it is the member's to do (the orange badge): that object is a primary one, its button the primary CTA ("orange badge -> primary -> always CTA primary")
     const planOf = r => { if (r.group){ const { g, a } = groupOf(r); if (a < 0) return null; const x = r.focus != null ? g[r.focus] : g[a]; return x.state === 'locked' ? null : x.p; }
       if (!r.svc || r.lockAge || r.state === 'locked' || r.state === 'suggested') return null; const p = PL(r.svc, r.state); return p ? { svc: r.svc, steps: r.steps || p.steps, at: r.at != null ? r.at : p.at } : null; };
@@ -30989,6 +31015,7 @@ hairline({
       ovOpen(d, host); });
     document.addEventListener('click', e => { const t = e.target.closest('.tlSee'); if (!t) return; const k = (t.closest('[data-ms]') || {}).dataset ? (t.closest('[data-ms]') || { dataset: {} }).dataset.ms : null, m = k && MS.find(y => y.k === k), was = JPH; JPH = m ? phOf(m) : null; if (was !== JPH) render();   /* a milestone named: its phase; else the one we're in -- drawn afresh, the page shows what it last drew */
       const sv = document.getElementById('versionSel'); if (sv){ sv.value = 'tl'; sv.dispatchEvent(new Event('change')); } });   // Plan's See timeline
+    let placeS = () => {};   // the search's place, once it is set up below
     const render = () => {
       ROWS = []; const V2 = TLVER === 'v2' && tab === 'up'; list.classList.toggle('tlV2', V2); main.classList.toggle('tlClaim', tab === 'claim');   // Later showing: the tabs back over the bento's or the year's place (a way back to Upcoming)
       list.innerHTML = V2 ? msHtml(layout(tabRows(TL.up))) : layout(tabRows(TL[tab])).map(sec).join('');   // v2: Upcoming as milestones; Unclaimed (Later) and Past as they were
@@ -30996,6 +31023,7 @@ hairline({
           al.innerHTML = '<div class="svAlH"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7.25"/><path d="M10 6.4v4.4"/><circle cx="10" cy="13.6" r=".6" fill="currentColor" stroke="none"/></svg><b>Personalised for you, ready when you are</b></div><p>These actions are tailored to your current health needs and saved here for later. They\u2019re not part of your active plan yet\u2014add them to your action plan when you\u2019re ready to get started.</p>';
           list.parentNode.insertBefore(al, list); }
         al.hidden = tab !== 'claim'; }   // Later: what these are, above them, out of the rail's way
+      placeS();   // the search beside the Action plan heading, when the list has one
       ringify(list, ROWS);   // XS: a ring of the same count in place of the increments ("use circular progress instead of increments")
       // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")
       list.querySelectorAll('.tlSeg').forEach(sg => sg.classList.add('grp'));
@@ -31013,11 +31041,13 @@ hairline({
     const pastBtn = main.querySelector('.tlPastBtn'); let tabBeforePast = 'up';
     const tlH1 = main.querySelector('.tlH1');
     // where the search lives: the head's right, or, in Past at XS, the sub page's bar ("on XS search in top nav right")
-    const placeSearch = () => { const sbEl = main.querySelector('.tlSearch'), head = main.querySelector('.tlHead'), barCol = main.querySelector('.tlSubTop > .tlCol'); if (!sbEl || !head || !barCol || !tlH1) return;
+    const SB = main.querySelector('.tlSearch');   // held: in the list it leaves the page with each redraw, and comes back to the new heading
+    const placeSearch = () => { const sbEl = SB, head = main.querySelector('.tlHead'), barCol = main.querySelector('.tlSubTop > .tlCol'), row = list.querySelector('.jvH2Row'); if (!sbEl || !head || !barCol || !tlH1) return;
       const inBar = main.classList.contains('tlPastOn') && document.body.dataset.bp === 'xs';   // the title stays below the bar, on its own row, as the service page's ("past activity below row"; was beside the back)
       if (inBar){ if (tlH1.parentElement !== head) head.insertBefore(tlH1, head.firstChild); if (sbEl.parentElement !== barCol) barCol.appendChild(sbEl); }
+      else if (row && !main.classList.contains('tlPastOn')){ if (sbEl.parentElement !== row) row.appendChild(sbEl); }   // My journey: at the Action plan heading's right
       else { if (tlH1.parentElement !== head) head.insertBefore(tlH1, head.firstChild); if (sbEl.parentElement !== head) head.insertBefore(sbEl, main.querySelector('.tlPastBtn')); } };
-    addEventListener('resize', placeSearch);
+    addEventListener('resize', placeSearch); placeS = placeSearch; placeSearch();
     const pastLit = on => { if (!pastBtn) return; const was = main.classList.contains('tlPastOn'); pastBtn.classList.toggle('on', on); pastBtn.setAttribute('aria-pressed', String(on)); main.classList.toggle('tlPastOn', on); placeSearch();
       if (was === on) return; if (tlH1) tlH1.textContent = on ? 'Past activity' : TLVER === 'v2' ? 'My journey' : 'Your health journey'; main.scrollTop = 0;   // the sub page's title, from its top
       if (on) main.style.removeProperty('--tlHTop'); else requestAnimationFrame(() => setHTop()); };   // its months pin at the top (CSS); back on the tabs, under them again
