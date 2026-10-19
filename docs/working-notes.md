@@ -14542,3 +14542,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The "Collect sample" screenshot came from an older build: no "Collect sample" button renders anywhere now (checked for both members, both layouts, and the Overview).
 
 - v1202 — My journey, the dashed "N other services available" card: the dashes now drawn (an SVG rect, 6 on and 6 off, 1.5px) so their gaps sit 2px wider than CSS's dashed ("increase gap dash +2px"), in dark, light and hover; the card's content at 76% opacity, full on hover ("reduce foreground opacity by 24%"). Padding takes the 1.5px the old border did (desktop, phone, Grid tile). The "Scheduled" group is now "In progress" ("In progress, not scheduled").
+
+- v1203 — My journey:
+  - Phase transition ("turn the large gap into a phase transition moment"): between the testing milestone and Review your results, "Testing complete" — "Your testing phase ends here." and the care team line — on a dashed hairline that runs from the card above to the card below, a flag on it (a tick once everything before it is done). Comes from `pre` on the milestone; only after a milestone drawn, hidden with another phase picked, while searching and in the Overview's plan.
+  - Your first year's foot: two cards, Up next (the phase's next item, General Questionnaire) and Appointments (Pathology, Scheduled tomorrow, 10:30 am — the prototype's own copy); stacked on the phone.
+  - Health profile: "3 screening gaps to fill"; the gap cells filled with the hero's bands of light, diffused (yellow to red, soft bands, fading top and foot), brighter on hover; the legend's gap square warm too.
+  - XS: no hover tile on the rows ("remove group card on XS"); a just-added row still flashes.
