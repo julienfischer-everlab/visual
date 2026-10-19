@@ -14616,3 +14616,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The appointments as the Overview's booked rows ("use same overview style of items"): the date a 58 square (day 22, month 11), the name, the hour; today's row orange-tinted with "Today · <hour>" in orange, tomorrow's "Tomorrow · <hour>"; the soonest first, one gone by last. On the phone the date above the words (40 square).
 
 - v1221 (notes' count) — an appointment's date square 6 from its name ("reduce gap -8px"; the gap unnamed, the date-to-name one taken: 14 → 6).
+
+- v1222 (notes' count) — My journey:
+  - A later phase not bought shows no services ("when Baseline only, the next phases can't display any services, as all depend on the baseline outcome"): its card, under its name with "Included in <plan>" and the Upgrade, says what shapes it instead — "Shaped by your baseline" and a line (the action plan built from the results; the re-tests chosen from what the baseline finds). The search's empty-section pass leaves these notes (hidden only while searching). Appointments only from the phases bought; nothing bought, no Appointments at all.
+  - Phases position Left by the page's own width (@container tl, 720 and up), not the forced viewport: with the viewport on Auto there is no data-bp, so Left never took ("I can't see any left position").
+  - Every Health profile gap cell on the orange ground (12%), 20% under the pointer ("use this bg for all empty cells, not only on hover").
