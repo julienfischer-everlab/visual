@@ -5658,6 +5658,7 @@
   /* M and L: the top nav runs the modal's width, 32 in from its edges (24 at M), wider than the column ("top nav top right increase max width"); the frame is the size container, so a forced breakpoint's frame counts, not the window */
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame{container-type:inline-size;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet{overflow:visible;}
+  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arQa{left:calc((100% - 100cqw) / 2);right:auto;width:100cqw;}   /* the questionnaire's sheet over the whole frame, its panel the column's width */
   .aqWrap.aqFull.aqBpM{--aqNavX:24px;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeadRow{margin-inline:calc((100% - 100cqw) / 2 + var(--aqNavX, 32px));}
   /* desktop (M, L): the step bars ride in the top nav, between back and close, at the column's width ("replace inside top nav on top, desktop") */
@@ -13063,6 +13064,8 @@
 .arSheet .arBtn:focus-visible,
 .arSheet .arCarBtn:focus-visible,
 .arSheet .arRowTap:focus-visible,
+.arSheet .arLfAns:focus-visible,
+.arSheet .arQaList:focus-visible,
 .arSheet .arAccHead:focus-visible {
   outline: 2px solid var(--ar-blue-fg);
   outline-offset: 2px;
@@ -13387,6 +13390,28 @@
 .arSheet .arLfSub { background: var(--ar-sub-bg2); color: var(--ar-sub-fg); }
 .arSheet .arLfOpt { background: var(--ar-opt-bg2); color: var(--ar-opt-fg); }
 .arSheet .arLfOut { background: var(--ar-out-bg2); color: var(--ar-out-fg); }
+/* Your answers: the questionnaire and its count, a secondary icon button (chevron down) at the right; the whole card a button */
+.arSheet .arLfAns { appearance: none; -webkit-appearance: none; width: 100%; margin: 0; border: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.arSheet .arLfAnsRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.arSheet .arLfAnsL { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.arSheet .arLfAnsBtn { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9999px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .72); transition: background .15s ease; }
+.arSheet .arLfAns:hover .arLfAnsBtn { background: oklch(var(--ar-ink) / .1); }
+/* its bottom sheet, over the whole report: a scrim, the panel rising from the foot, 32 of safe space under the list */
+.arSheet .arQa { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end; }
+.arSheet .arQaDim { position: absolute; inset: 0; background: oklch(0% 0 0 / .4); opacity: 0; transition: opacity .3s ease; }
+.arSheet .arQa.arOn .arQaDim { opacity: 1; }
+.arSheet .arQaPanel { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; max-height: calc(100% - 56px); margin: 0 auto; padding: 8px 0 32px; border-radius: 24px 24px 0 0; background: var(--ar-paper); box-shadow: 0 -12px 40px oklch(0% 0 0 / .16); transform: translateY(100%); transition: transform .4s var(--ar-ease); }
+.arSheet.arDark .arQaPanel { background: oklch(21% 0 263.28); }
+.arSheet .arQa.arOn .arQaPanel { transform: none; }
+.arSheet .arQaGrab { flex: none; width: 36px; height: 5px; margin: 0 auto 12px; border-radius: 3px; background: oklch(var(--ar-ink) / .16); }
+.arSheet .arQaHead { flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 0 20px 8px; }
+.arSheet .arQaHd { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding-top: 2px; }
+.arSheet .arQaT { font-family: var(--ar-font); font-size: 20px; line-height: 24px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
+.arSheet .arQaList { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px; outline-offset: -2px; }
+.arSheet .arQaRow { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 0; border-top: 1px solid oklch(var(--ar-ink) / .06); }
+.arSheet .arQaRow:first-child { border-top: 0; }
+.arSheet .arQaTag { display: inline-flex; align-items: center; height: 22px; margin-top: 4px; padding: 0 8px; border-radius: 6px; font-family: var(--ar-font); font-size: 12px; line-height: 16px; font-weight: 500; white-space: nowrap; background: var(--ar-blue-bg2); color: var(--ar-blue-fg); }
+@media (prefers-reduced-motion: reduce) { .arSheet .arQaDim, .arSheet .arQaPanel { transition: none; } }
 .arSheet .arLfQA { display: flex; flex-direction: column; gap: 4px; }
 .arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
 .arSheet .arLfA { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink)); }
@@ -13582,7 +13607,16 @@
     date: '15 Oct 2026',
     source: 'From your Lifestyle Profiling questionnaire and your October 2026 blood test.',
     markers: [{ name: 'TSH', value: '4.8 mIU/L', date: '15 Oct 2026', status: 'Suboptimal', pos: 0.72 }],
-    answers: [{ q: 'How often do you feel cold when others are comfortable?', a: 'Most days' }],
+    // the questionnaire behind it: a card that opens its answers in a bottom sheet ("on Your answers: a chevron down, icon only, secondary, on the right; Health questionnaire, 6 answers; on click a bottom sheet with the questions and answers")
+    qn: { name: 'Health questionnaire', src: 'Lifestyle Profiling', date: '12 Oct 2026' },
+    answers: [
+      { q: 'How often do you feel cold when others are comfortable?', a: 'Most days', key: true },
+      { q: 'How would you rate your energy through the day?', a: 'Low most afternoons', key: true },
+      { q: 'How many hours do you usually sleep a night?', a: '6 to 7 hours' },
+      { q: 'Has your weight changed over the past year?', a: 'Gained 3 to 4 kg' },
+      { q: 'How often do you exercise for 30 minutes or more?', a: '2 to 3 times a week' },
+      { q: 'Does anyone in your family have a thyroid condition?', a: 'Yes, my mother' }
+    ],
     noticed: ['A raised TSH means your thyroid is being pushed harder to keep output normal.'],
     means: ['You raised low energy and feeling cold, which is why this was included.', 'Worth repeating with free T4 at your review.']
   };
@@ -13851,6 +13885,45 @@
     on(closeBtn, 'click', close);
     on(cta, 'click', function () { if (step === NEXT) close(); else go(step + 1); });
 
+    /* the questionnaire's bottom sheet: the questions and answers, the ones this insight reads tagged */
+    var qa = null, qaFrom = null, qaT = 0;
+    function qaClose(now) {
+      if (!qa || qa.el.hidden) return;
+      qa.el.classList.remove('arOn'); cancel(qaT);
+      if (qaFrom) { qaFrom.setAttribute('aria-expanded', 'false'); if (!now && qaFrom.isConnected) qaFrom.focus({ preventScroll: true }); }
+      qaFrom = null;
+      if (now || reducedMotion()) qa.el.hidden = true; else qaT = later(function () { qa.el.hidden = true; }, 400);
+    }
+    function qaOpen(L, from) {
+      if (!qa) {
+        var x = h('button', { type: 'button', class: 'arIconBtn arQaX', 'aria-label': 'Close' }, strokeIcon(16, 16, 1.8, [P.close]));
+        var title = h('h2', { class: 'arQaT', id: 'arQaT' + uid }), sub = h('span', { class: 'arT200r arInk60' }), list = h('div', { class: 'arQaList', tabindex: '0', 'aria-label': 'Questions and answers' });
+        var panel = h('div', { class: 'arQaPanel', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'arQaT' + uid },
+          h('div', { class: 'arQaGrab', 'aria-hidden': 'true' }),
+          h('div', { class: 'arQaHead' }, h('div', { class: 'arQaHd' }, title, sub), x),
+          list);
+        var dim = h('div', { class: 'arQaDim' });
+        qa = { el: h('div', { class: 'arQa', hidden: true }, dim, panel), title: title, sub: sub, list: list, x: x };
+        on(x, 'click', function () { qaClose(); });
+        on(dim, 'click', function () { qaClose(); });
+        on(panel, 'keydown', function (e) {
+          if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); qaClose(); return; }
+          if (e.key === 'Tab') { var f = [x, list]; var i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); }   // focus stays in the sheet
+        });
+        root.appendChild(qa.el);
+      }
+      qa.title.textContent = L.qn.name;
+      qa.sub.textContent = L.qn.src + ' \u00b7 ' + L.answers.length + ' answers \u00b7 ' + L.qn.date;
+      qa.list.textContent = '';
+      add(qa.list, L.answers.map(function (r) {
+        return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: r.q }), h('span', { class: 'arLfA', text: r.a }), r.key ? h('span', { class: 'arQaTag', text: 'Used in this insight' }) : null);
+      }));
+      qa.list.scrollTop = 0;
+      cancel(qaT); qa.el.hidden = false; void qa.el.offsetWidth; qa.el.classList.add('arOn');
+      qaFrom = from || null; if (qaFrom) qaFrom.setAttribute('aria-expanded', 'true');
+      qa.x.focus({ preventScroll: true });
+    }
+
     /* ----- step 0: Welcome ----- */
     function buildWelcome() {
       var content;
@@ -14060,6 +14133,13 @@
       var vote = function (b, other) { var was = b.getAttribute('aria-pressed') === 'true'; b.setAttribute('aria-pressed', String(!was)); other.setAttribute('aria-pressed', 'false'); };
       on(up, 'click', function () { vote(up, down); });
       on(down, 'click', function () { vote(down, up); });
+      var n = L.answers.length;
+      var ans = h('button', { type: 'button', class: 'arLfGroup arLfAns', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' },
+        h('span', { class: 'arT300m', text: 'Your answers' }),
+        h('span', { class: 'arLfAnsRow' },
+          h('span', { class: 'arLfAnsL' }, h('span', { class: 'arLfName', text: L.qn.name }), h('span', { class: 'arT200r arInk60', text: n + (n === 1 ? ' answer' : ' answers') })),
+          h('span', { class: 'arLfAnsBtn', 'aria-hidden': 'true' }, chevIcon())));
+      on(ans, 'click', function () { qaOpen(L, ans); });
       return h('div', { class: 'arStack arLfStack' },
         h('div', { class: 'arLfHead arAnimRise' },
           h('h2', { class: 'arH700', text: L.headline }),
@@ -14080,11 +14160,7 @@
                     h('span', { class: 'arT200r arInk60', text: m.date }))),
                 h('div', { class: 'arLfMkR' }, lifeBar(m.pos), h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
             })),
-          h('div', { class: 'arLfGroup' },
-            h('span', { class: 'arT300m', text: 'Your answers' }),
-            L.answers.map(function (x) {
-              return h('div', { class: 'arLfQA' }, h('span', { class: 'arLfQ', text: x.q }), h('span', { class: 'arLfA', text: x.a }));
-            }))),
+          ans),
         h('div', { class: 'arLfSec arAnimRise arD24' },
           h('span', { class: 'arLfH', text: 'What we noticed' }),
           L.noticed.map(function (t) { return h('p', { class: 'arPara', text: t }); })),
@@ -14175,6 +14251,7 @@
 
     function render() {
       while (timers.length) clearTimeout(timers.pop());
+      qaClose(true);   // a step change closes the questionnaire's sheet
       var welcome = step === 0;
       root.classList.toggle('arIsWelcome', welcome);
       root.setAttribute('data-ar-step', String(step));
