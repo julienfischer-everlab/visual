@@ -14437,3 +14437,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Desktop should be a modal centred in the page": at M and L (both the Full modal and the Modal variation), the questionnaire opens as a modal centred in the frame. It is 560 wide, rounded all round with a 24px radius, at most 720px tall, has no grabber and 24px side padding, and rises 16px and fades in. Escape, the scrim and the X still close it.
 - "Should cover almost the full screen": on the phone (XS, S, the device frame) the sheet is the full height less the status bar, like iOS's large sheet: 50px from the top at XS (status bar 41px) and 44px at S (35px). The list scrolls inside it.
 - "6 answers used in this insight" / "remove the badge because all are used in this insight": the sheet's line under the title reads "6 answers used in this insight", and the per-row "Used in this insight" tags are gone, along with their data flags and CSS.
+
+## Async report: the answers card's chevron as a ghost button
+
+- "ghost": the chevron button on the Your answers card no longer has a fill at rest, so only the icon shows. Hovering the card gives it the faint 6% ink circle. Its size (40px), position (centred on the card) and click target (the whole card) are unchanged.
