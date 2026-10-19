@@ -14472,3 +14472,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Items are dragged up and down by pointer or finger (pointer capture; an item swaps once it's dragged half a row) and lift while dragged. A focused item also moves with the up and down arrow keys. Each move redraws the bento in the new order (`JBORD`, `JBROW`). The summary card always takes the full width and the status cards a column each, whichever comes first.
 - The lists reuse the retired Overview order list's style (`.tkOrd`). That row's 28px gap, which overrode its own 8px, is now 6px.
 - The eyebrows stay 12px (they already were); the "12px" question went unanswered.
+
+## My journey: Action plan timeline as a hero; tabs under Action plan; plan card off; eyebrows 10; mobile status cards in a row; list rows 4 apart
+
+- "Tweak action plan timeline: Hero": a new **Action plan timeline** tweak (Card / Hero, default Hero, shown with Timeline v2). The hero version of the phase card is:
+  - the milestone card's dark ground (#252522 on both pages, with the dark page's ink set inside it);
+  - the picked phase's name at 32px with "Now", and a line with its months and how many items in it are done ("0–3 months · Aug–Oct · 1 of 15 done");
+  - the year's light taller and open on the ground (dots 8px, today's 16px), with the phase buttons under it.
+  The light-page rules that would have lightened it (the card fill, the strip, the buttons) are overridden inside it. On a phone the name is 24px and the light shorter.
+- "This below Action plan": the Upcoming / Later tabs are moved, not copied, so their listeners and sliding underline go with them. In Upcoming they sit in a slot under the Action plan heading in the list. In Later, a persistent head with the same heading, the tabs and the search sits just above the list, so its rows keep their rail. The top bar hides while the tabs are out of it, and in Past they go back to it. Re-placed on every redraw (`placeT`).
+- "Remove" (the "You're on Baseline · Discover more" card): the Plan upgrade tweak now defaults to Off.
+- "10px eyebrow; reduce gap between eyebrow and title by 16px": My journey's eyebrows (bento, phase card, list cards, Suggested by) are 10px / 14px. In the status cards the title now sits right under its eyebrow (its 16px margin removed).
+- "Mobile: in one row, 2x cards, condensed": on a phone, Health profile and the mini timeline share a row. Each has 16px padding and a 16px title. Health profile's line is hidden, and so are the timeline's phase names (its line says where you are). The grid's dots are 3px, and the counts and Up next are a size down. List and Pattern fit too.
+- "Add 4px gap between list items": the list rows are 2px taller above and below (18px in the two-column cards, 20px elsewhere).
