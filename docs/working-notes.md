@@ -14646,3 +14646,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Phases position **Top**: Left (the group's name in the card's left column, as before) or Top (the name as a header row above the list).
   - Phases position **Left**: Top only. The Left segment is hidden, and the earlier choice comes back when the phases return to Top.
 - The transitions now name the phase they open: "Testing complete" → **Tests & Diagnostics**, "Tests & Diagnostics complete" → **Re-test & Improve**. The last phase is renamed **Re-test & Improve** everywhere (tabs, rail, year card).
+
+## Phase header, loop transitions, centred empty card, Later in V2, plan tag, due-soon gaps
+
+- **Phase header** (Timeline top Off, or any time the phase tabs card isn't drawn): the first phase's section opens with its name, "Now" when it's the current phase, and its months (e.g. "Baseline · Now / 0–3 months · Aug–Oct"), above the suggestion and the group cards. Later phases don't get one: their transition already names them. Hidden while searching (the results come from every phase) and at wide widths when Phases position Left draws the rail.
+- **Transitions:** the blue flag circle is now a loop: a ring with a dot per phase (Baseline orange at the top, Tests & Diagnostics lilac, Re-test & Improve warm yellow, clockwise) and a dashed way back to Baseline. The line from the previous phase to the one the transition opens fills as it scrolls in (empty with the ring's middle at 90% of the view, full at 45%); the dot lights when it's full. Phases not yet reached are rings, reached ones solid. Reduced motion: shown full. Title only, no description.
+- **Empty group card** (a phase not bought): one centred column: lock, phase name, "Shaped by your baseline", the text, the Get/Upgrade button (price shown on the phone too), "Included in …" under it.
+- **Later in V2:** the same page as Upcoming: the bento on top, the Action plan heading with the Upcoming / Later tabs, the "Personalised for you" note, then one group card per section (Saved for later, Included in your membership, Partner offers), items as in Ready for you. Layout V1 keeps the old list.
+- **Hero plan tag:** the bento hero's badge is gone; a white outlined, square-cornered mono tag (10px, 3px tracking) at its top right names the plan from Purchased: Non-member, Baseline plan, Diagnostics plan, Protocol plan.
+- **Hero sub-line:** 14px in the secondary grey (#8b8b86); 8px more above the button (28).
+- **Health profile gaps:** a gap whose due date is approaching ("Due in …") is a yellow dot on a light yellow ground; a gap already due stays orange. The legend reads "21 recorded · 2 due · 1 due soon".
