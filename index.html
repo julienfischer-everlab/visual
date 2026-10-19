@@ -7938,6 +7938,7 @@
   .jbCell > i{width:4px;height:4px;border-radius:50%;background:var(--tlInk);} .jbCell.gap.ok > i{width:5px;height:5px;background:var(--msOk);}
   button.jbCell{cursor:pointer;transition:background .16s ease;} button.jbCell:hover{background:rgba(247,131,89,.12);} button.jbCell:focus-visible{outline:2px solid var(--msAcc);outline-offset:-2px;}
   .jbCell.gap:not(.ok)::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--msAcc);}   /* a gap: an orange dot ("remove gradient cell, just use orange dot") */
+  .jbHpGo{align-self:stretch;margin-top:auto;padding-top:20px;}   /* empty: Start at the card's foot */ .jbHpE > .jbPatW{margin-top:20px;}
   .jbPatW{position:relative;align-self:stretch;height:120px;margin-top:20px;} .jbPat{position:absolute;inset:0;display:block;width:100%;height:100%;color:#e8e6e3;}   /* the frame sizes the canvas; the canvas never sizes the frame */ body.light .jbPat{color:#2e1f1a;}
   .jbHpCap{display:flex;flex-wrap:wrap;gap:6px 18px;margin:auto 0 0;padding-top:16px;font-size:12px;line-height:16px;color:var(--tlSub);} .jbHpCap span{display:inline-flex;align-items:center;gap:7px;}
   .jbHpCap i{width:6px;height:6px;border-radius:50%;} .jbHpCap i.d{background:var(--tlInk);} .jbHpCap i.g{background:var(--msAcc);}   /* a white dot recorded, an orange one a gap */
@@ -7956,7 +7957,7 @@
   /* the phone: Health profile and the mini timeline a row of two, condensed -- 16 padding, the titles 16, Health profile's line gone, the timeline's names under the bar gone
      (its line says where you are), the grid's dots 3, the counts and Up next a size down */
   @container msl (max-width:600px){ .jvBento > :is(.jbHp, .jbTl){padding:16px;border-radius:18px;} :is(.jbHp, .jbTl) > .jbH{font-size:16px;line-height:21px;letter-spacing:-.005em;}
-    .jbHp > .jbP, .jbTlLbl{display:none;} .jbTl > .jbP{margin-top:4px;font-size:13px;line-height:18px;} .jbTlBar{margin-top:14px;}
+    .jbHp > .jbP, .jbTlLbl{display:none;} .jvBento .jbHpE > .jbP{display:block;margin-top:4px;font-size:13px;line-height:18px;} .jbHpGo{padding-top:14px;} .jbHpGo .jvB{width:100%;}   /* empty: its line kept, Start across the card */ .jbTl > .jbP{margin-top:4px;font-size:13px;line-height:18px;} .jbTlBar{margin-top:14px;}
     .jbGridP, .jbPatW{margin-top:12px;} .jbPatW{height:80px;} .jbCell > i{width:3px;height:3px;} .jbCell.gap.ok > i{width:4px;height:4px;} .jbCell.gap:not(.ok)::before{width:4px;height:4px;}
     .jbHpCap{gap:2px 10px;padding-top:12px;font-size:11px;line-height:14px;} .jbHpCap span{gap:5px;}
     .jbTlFt{grid-template-columns:minmax(0,1fr);gap:6px;padding-top:14px;} .jbTlC{padding:10px 12px 11px;border-radius:12px;} .jbTlC em{gap:6px;font-size:11px;line-height:14px;} .jbTlC em > i{width:6px;height:6px;margin:0 2px;box-shadow:0 0 0 3px rgba(247,131,89,.16);} .jbTlC em > svg{width:12px;height:12px;} .jbTlC b{margin-top:6px;font-size:13px;line-height:17px;} .jbTlC span{font-size:11px;line-height:14px;}   /* the two cards stacked */
@@ -10985,6 +10986,14 @@
           </select>
         </div>
         <!-- the bento's Health profile: a grid of cells (a dot in each recorded, the gaps empty), a pattern of mini squares in a gradient, or the gaps listed -->
+        <!-- the bento's Health profile: what was found, or empty -- the square cloud, Find your health gaps, Start ("Health profile tweak: Data provided; Empty") -->
+        <div class="tkRow" id="stJbHpStRow">
+          <span class="lbl">Health profile</span>
+          <select id="stJbHpSt" class="tkSegSel" aria-label="The Health profile: with what was found, or empty">
+            <option value="data" selected>Data provided</option>
+            <option value="empty">Empty</option>
+          </select>
+        </div>
         <div class="tkRow" id="stJbHpRow">
           <span class="lbl">Health profile visual</span>
           <select id="stJbHp" class="tkSegSel" aria-label="How the bento's Health profile is drawn">
@@ -30915,6 +30924,9 @@ hairline({
       const at = {}; gs.forEach((g, i) => { at[JB_GAP_AT[i % JB_GAP_AT.length]] = [g, i]; });
       return '<div class="jbGridP"><div class="jbGrid" role="group" aria-label="' + rec + ' of ' + JB_HP_N + ' recorded, ' + n + (n === 1 ? ' gap' : ' gaps') + '">' + Array.from({ length: JB_HP_N }, (_, k) => { const x = at[k]; if (!x) return '<span class="jbCell"><i></i></span>';
         const [g, i] = x, l = esc(g.t + ', ' + (g.ok ? 'in your plan' : g.w)); return g.sug ? '<button class="jbCell gap' + (g.ok ? ' ok' : '') + '" type="button" data-jb="gap" data-i="' + i + '" title="' + l + '" aria-label="' + l + '">' + (g.ok ? '<i></i>' : '') + '</button>' : '<span class="jbCell gap" role="img" title="' + l + '" aria-label="' + l + '"></span>'; }).join('') + '</div></div>' + cap; };
+    /* the Health profile empty (the Health profile tweak's Empty): the square cloud, what it will find, Start -- which, here, finds them (Data provided) */
+    let JHPST = 'data';
+    const JB_HPE = '<div class="jbCard jbHp jbHpE"><span class="jbEy">Health profile</span><h3 class="jbH">Find your health gaps</h3><p class="jbP">Based on your history, we can detect what screenings are due.</p><div class="jbPatW" aria-hidden="true"><canvas class="jbPat" data-f="0.55"></canvas></div><div class="jbHpGo"><button class="tlBtn msB jvB msP" type="button" data-jb="hpgo">Start</button></div></div>';
     function jbDraw(c){ const w = c.clientWidth, h = c.clientHeight; if (!w || !h) return; const dpr = Math.min(2, window.devicePixelRatio || 1), f = +c.dataset.f || 0;   // the pattern: 3px squares a pixel apart, denser down the field
       c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h); x.fillStyle = getComputedStyle(c).color;
       let sd = 7; const rnd = () => { sd = (sd + 0x6D2B79F5) | 0; let t = Math.imul(sd ^ (sd >>> 15), 1 | sd); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
@@ -30923,7 +30935,7 @@ hairline({
         for (let k = 0; k < cols; k++){ const u = rnd(); if (u > dn * .92 + .02) continue; x.globalAlpha = .18 + .62 * dn * (.6 + .4 * rnd()); x.fillRect(k * S, r * S, 3, 3); } }
       x.globalAlpha = 1; if (!c._ro && window.ResizeObserver){ c._ro = new ResizeObserver(() => jbDraw(c)); c._ro.observe(c); } }
     const jbHtml = (B, top) => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
-      const P = { top: top || jbAct(b), hp: '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' screening gap' : ' screening gaps') + ' to fill' : 'No gaps for now') + '</h3><p class="jbP">' + esc(b.hp) + '</p>' + jbHpVis(gs) + '</div>', tl: jbTl(B) };
+      const P = { top: top || jbAct(b), hp: JHPST === 'empty' ? JB_HPE : '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' screening gap' : ' screening gaps') + ' to fill' : 'No gaps for now') + '</h3><p class="jbP">' + esc(b.hp) + '</p>' + jbHpVis(gs) + '</div>', tl: jbTl(B) };
       return '<div class="jvBento">' + JBORD.map(k => k === 'row' ? JBROW.map(r => P[r]).join('') : P[k]).join('') + '</div>'; };   // in the Bento order tweak's order   // the bento (the Action plan heading follows whatever heads the list)
     /* the phase transition ("turn the large gap into a phase transition moment, so it explains why there's a pause before the next phase"): before a milestone
        that opens a new phase (pre), a joint in the line -- a dashed hairline from the card above to the card below, a flag on it (a tick once all before it is
@@ -30932,9 +30944,10 @@ hairline({
     const phX = (x, fin) => '<div class="jvPhX' + (fin ? ' fin' : '') + '" role="note"><span class="jvPhXIc" aria-hidden="true">' + (fin ? JB_CHK : JV_FLAG) + '</span><div class="jvPhXT"><b>' + esc(x.h) + '</b>' + x.d.map(t => '<p>' + esc(t) + '</p>').join('') + '</div></div>';
     const msHtml = (S, sum) => { if (!sum) JNX = null; const by = {}; S.forEach(x => { by[x.h] = x; });   // sum: the Overview's Action plan V2 -- the next milestone's To action items, the others small
       const sug = [].concat(...S.map(x => x.sug || []));
+      const one = rs => rs.filter(r => !(unseen(r) || msFin(r)) || !rs.some(y => y !== r && y.t === r.t && !(unseen(y) || msFin(y))));   // one of each service ("put only one microbiome"): a report or a completion not drawn beside the same service still to do
       const useP = !sum && JTOP === 'time' && tab === 'up' && JPHV !== 'off', sel = useP ? phSel() : -1, cur = phCur(); let seen = 0;   // the phase card: the picked phase's milestones
       const bands = () => { const per = [[], [], []]; MS.forEach(m => { let rows = [].concat(...m.from.map(h => by[h] ? ordered(by[h].rows) : [])); if (m.sug && sug.length){ const gone = askGone(); rows = rows.concat(sug.filter(x => !gone.has(x.svc))); }
-          rows = rows.concat(addOf(m)); if (!m.mo || !rows.length) return; const ph = phOf(m); rows.forEach(r => per[ph].push({ t: r.t, g: msGrp(r), fin: msFin(r), ph })); });
+          rows = one(rows.concat(addOf(m))); if (!m.mo || !rows.length) return; const ph = phOf(m); rows.forEach(r => per[ph].push({ t: r.t, g: msGrp(r), fin: msFin(r), ph })); });
         const rk = x => x.fin ? 0 : x.g === 'act' ? 1 : x.g === 'pend' ? 2 : 3, out = [];
         per.forEach((L, ph) => { const p = PH[ph]; L.map((x, i) => [x, i]).sort((u, v) => rk(u[0]) - rk(v[0]) || u[1] - v[1]).forEach(([x], i, A) => out.push(Object.assign(x, { m: p.a + (p.b - p.a) * (i + .5) / A.length }))); });
         return out; };   // each phase's items across its months, in the order they go: done, then what's to do now (the current first), then booked, then still to come
@@ -30943,7 +30956,7 @@ hairline({
       const out = MS.map((m, mi) => { const groups = [];
         let rows = [].concat(...m.from.map(h => by[h] ? ordered(by[h].rows) : []));   // v1's items, all of them, in v1's order
         if (m.sug && sug.length){ const gone = askGone(); rows = rows.concat(sug.filter(x => !gone.has(x.svc))); }   // a suggestion answered under the hero: not suggested again here
-        rows = rows.concat(addOf(m));   // what was added from the other services' modal
+        rows = one(rows.concat(addOf(m)));   // what was added from the other services' modal
         const GL = [['act', 'To action'], ['pend', 'Pending'], ['lock', 'Locked'], ['done', 'Completed']];
         GL.forEach(([k, l]) => { const rs = rows.filter(r => msGrp(r) === k); if (rs.length) groups.push([l, rs]); });
         const all = [].concat(...groups.map(g => g[1])); if (!all.length) return '';
@@ -31522,6 +31535,9 @@ hairline({
     { const ts = document.getElementById('stJbTop'), tr = document.getElementById('stJbTopRow');   // Bento top: the milestone or the Recent activity
       if (ts) ts.addEventListener('change', () => { JBTOP = ts.value === 'act' ? 'act' : 'ms'; shA(); render(); }); JBTOP = ts && ts.value === 'act' ? 'act' : 'ms';
       const sh = () => { if (tr) tr.hidden = TLVER !== 'v2' || MSLAY !== 'v2'; shA(); }; ['stTlVer', 'stMsLay'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', sh); }); sh(); }
+    { const es = document.getElementById('stJbHpSt'), er = document.getElementById('stJbHpStRow');   // Health profile: what was found, or empty
+      if (es) es.addEventListener('change', () => { JHPST = es.value === 'empty' ? 'empty' : 'data'; render(); }); JHPST = es && es.value === 'empty' ? 'empty' : 'data';
+      const sh = () => { if (er) er.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const hs = document.getElementById('stJbHp'), hr = document.getElementById('stJbHpRow');   // Health profile visual: grid, pattern or list
       if (hs) hs.addEventListener('change', () => { JHPV = hs.value; render(); }); JHPV = hs ? hs.value : 'grid';
       const sh = () => { if (hr) hr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
@@ -31630,7 +31646,9 @@ hairline({
       if (how === 'cancel'){ d.asking = false; render(); return; }
       if (how === 'send'){ const t = list.querySelector('.jbAsk textarea'); if (t && !t.value.trim()){ t.focus(); return; } d.asking = false; render(); tlToast(host, 'Sent to ' + d.dr + '. Your care team replies within a day.'); return; }
       if (how === 'open'){ const r = jbRow(b.dataset.svc); if (r) openRow(r); return; }   // the video, a document, the next step: the service's page
-      if (how === 'gap'){ const g = d.gaps[+b.dataset.i]; if (g && g.sug) openRow(g.sug); } });
+      if (how === 'gap'){ const g = d.gaps[+b.dataset.i]; if (g && g.sug) openRow(g.sug); }
+      if (how === 'hpgo'){ const hs = document.getElementById('stJbHpSt'), n = (d.gaps || []).filter(g => !g.ok).length; if (hs){ hs.value = 'data'; hs.dispatchEvent(new Event('change', { bubbles: true })); } else { JHPST = 'data'; render(); }   // Start: the gaps found
+        tlToast(host, n ? 'We found ' + n + ' screening ' + (n === 1 ? 'gap' : 'gaps') + ' in your history.' : 'No screening gaps for now.'); } });
     // the suggestion under the hero: its words open the service's page; Add to plan, or Do it later
     list.addEventListener('click', e => { const b = e.target.closest('.jvAsk [data-ask]'); if (!b) return; e.stopPropagation(); const m = MS.find(x => x.ask && !askOff(x.ask)); if (!m) return; const a = m.ask, how = b.dataset.ask, host = list.closest('.dash') || document.body;
       if (how === 'see'){ openRow(a.sug); return; }
