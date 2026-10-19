@@ -14663,3 +14663,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Empty group card, simplified:** no phase eyebrow (the transition above names the phase) and nothing under the button; the title 2px larger (17px, 16 on the phone).
 - **Phase tabs:** three equal columns filling the container, 4px apart (2 on the phone).
 - **Real journey:** on step 1, any Get button (the hero's Get Baseline, or a later phase's Get Protocol) moves to step 2 with the plan it named; stepping back to step 1 resets it to Non-member.
+- **Real journey, last step:** with the Baseline done and Get your membership offered, the later phases show every service they include, locked (each with View), under their Upgrade button, instead of "Shaped by your baseline". Steps 1–3 keep the empty card.
+- **Locked previews:** each service once per phase (DEXA Scan / Dexa Scan, the two Diagnostics Reviews).
+- **Loop trail:** the filling segment is a gradient from Everlab orange at its tail to solid #fff at its head (dark ink in light mode); past segments stay white.
