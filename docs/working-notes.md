@@ -14639,3 +14639,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   4. **Summary** — hero "Baseline complete · Thanks for your time · Continue your health journey" with Get membership; Ready for you: Get your membership.
 - Stage 1 sets Purchased to Nothing, stages 2–4 to Baseline. Either Get Baseline button (hero or locked card) moves to stage 2.
 - While on: no "N other services available" card, no Dr Sarah Chen suggestion, no hard-coded blood test appointment. Off restores the full list.
+
+## Group title tweak; transitions name the phase they open
+
+- New tweak **Group title** (under Phases position), for desktop widths:
+  - Phases position **Top**: Left (the group's name in the card's left column, as before) or Top (the name as a header row above the list).
+  - Phases position **Left**: Top only. The Left segment is hidden, and the earlier choice comes back when the phases return to Top.
+- The transitions now name the phase they open: "Testing complete" → **Tests & Diagnostics**, "Tests & Diagnostics complete" → **Re-test & Improve**. The last phase is renamed **Re-test & Improve** everywhere (tabs, rail, year card).

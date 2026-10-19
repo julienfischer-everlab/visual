@@ -7825,9 +7825,9 @@
     #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail){display:grid;grid-template-columns:204px minmax(0,1fr);column-gap:28px;align-items:start;}
     #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) > *{grid-column:1 / -1;} #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) > :is(.tlSec, .jvPhX, .jvEmpty){grid-column:2;} #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) > .jvPh .jpRow, #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) > .jpStick{display:none;}   /* the tabs the rail's now: the card (the tabs alone) gone, the card's head and light kept */
     #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) > .jvRail{display:flex;flex-direction:column;grid-column:1;grid-row:auto / span 60;position:sticky;top:-8px;margin-top:4px;}   /* 24 from the scroll's edge (past the page's 32 of padding) */
-    #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) .jvCard.jv2c{display:block;padding:6px 28px 12px;}
-    #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) .jv2c .jvSide{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"ic lb bt" "ic sb bt";column-gap:14px;align-items:center;padding:18px 0 4px;}
-    #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) .jv2c .jvSide > .jvGi{grid-area:ic;width:36px;height:36px;margin:0;border-radius:11px;} #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) .jv2c .jvSide > .jvLbl{grid-area:lb;align-self:end;margin:0;padding:0;} #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) .jv2c .jvSide > .jvSideP{grid-area:sb;align-self:start;margin:3px 0 0;font-size:13px;line-height:18px;} #dTl .tlList.tlV2.jvPhLeft:has(> .jvRail) .jv2c .jvSide > .jvPurB{grid-area:bt;margin:0;}
+    #dTl .tlList.tlV2.jvGrTop .jvCard.jv2c{display:block;padding:6px 28px 12px;}
+    #dTl .tlList.tlV2.jvGrTop .jv2c .jvSide{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"ic lb bt" "ic sb bt";column-gap:14px;align-items:center;padding:18px 0 4px;}
+    #dTl .tlList.tlV2.jvGrTop .jv2c .jvSide > .jvGi{grid-area:ic;width:36px;height:36px;margin:0;border-radius:11px;} #dTl .tlList.tlV2.jvGrTop .jv2c .jvSide > .jvLbl{grid-area:lb;align-self:end;margin:0;padding:0;} #dTl .tlList.tlV2.jvGrTop .jv2c .jvSide > .jvSideP{grid-area:sb;align-self:start;margin:3px 0 0;font-size:13px;line-height:18px;} #dTl .tlList.tlV2.jvGrTop .jv2c .jvSide > .jvPurB{grid-area:bt;margin:0;}
   }
   .jvRailHd{display:flex;flex-direction:column;gap:4px;padding:0 14px 14px;} .jvRailEy{font-size:10px;line-height:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--tlSub);} .jvRailHd b{font-size:15px;line-height:20px;font-weight:500;color:var(--tlInk);}
   .jvRailL{display:flex;flex-direction:column;gap:2px;}
@@ -11214,6 +11214,14 @@
           <select id="stJpPos" class="tkSegSel" aria-label="Where the phases sit: on top, or at the left">
             <option value="top" selected>Top</option>
             <option value="left">Left</option>
+          </select>
+        </div>
+        <!-- where each group's title sits ("Card grouping -- Phase position Left: Group title Top; Phase position Top: Group title Left or Top") -->
+        <div class="tkRow" id="stJvGtRow">
+          <span class="lbl">Group title</span>
+          <select id="stJvGt" class="tkSegSel" aria-label="Where each group's title sits: at the card's left, or on top">
+            <option value="left" selected>Left</option>
+            <option value="top">Top</option>
           </select>
         </div>
         <div class="tkRow tkGone" id="stJvUpRow">   <!-- retired ("remove"): the upgrade offered on the locked phases now (Purchased) -->
@@ -30886,9 +30894,9 @@ hairline({
     /* Timeline v2, My journey: Upcoming as milestones (the reference): the months folded into four -- the baseline (what was just completed and this month), reviewing the results (September and October), checking the progress (the April check-in, and what waits on the steps before it), the screenings (with age, and the suggested ones) -- each its actions under time labels. Each service once: its first moment kept (the September review stands for the chain; October's blood test is August's). Built from the same row objects, so their clicks, the demo's modals and search hold */
     const MS = [
       { k: 'base', mo: [0, 2], t0: [2026, 7], plan: 'Baseline', keep: ['General Questionnaire', 'Onboarding Consultation', 'Foundational blood testing'], moveTo: 'rev' /* keep: its items alone; moveTo: the rest's milestone */, ask: ASK_COLON(), bento: JB_MEMBER(), rem: '3 weeks remaining', ey: 'Next\u00a0milestone\u00a0\u00b7\u00a0August', h: 'Complete your baseline', d: 'Complete these actions over the next 3 weeks so we can establish your baseline.', from: ['Just completed', 'August 2026'] },
-      { k: 'rev', mo: [3, 4], ey: 'November 2026', need: 'base', h: 'Review your results',   /* the Action plan phase's first (its transition the Baseline's end), still Baseline's to buy */ d: 'Once your results land, your longevity doctor walks you through what they mean.', from: ['September 2026', 'October 2026'], pre: { h: 'Testing complete', d: ['Your testing phase ends here.', 'Your care team will review your results and schedule your debriefs to walk you through the findings and agree on your next steps.'] } },   // pre: the phase transition before it
+      { k: 'rev', mo: [3, 4], ey: 'November 2026', need: 'base', h: 'Review your results',   /* the Action plan phase's first (its transition the Baseline's end), still Baseline's to buy */ d: 'Once your results land, your longevity doctor walks you through what they mean.', from: ['September 2026', 'October 2026'], pre: { h: 'Tests & Diagnostics', d: ['Your testing phase ends here.', 'Your care team will review your results and schedule your debriefs to walk you through the findings and agree on your next steps.'] } },   // pre: the phase transition before it
       { k: 'prog', mo: [3, 9], ey: 'April 2027', h: 'Check your progress', d: 'Six months in, Dr Sarah Chen checks how your plan is working and adjusts it with you.', pre: { h: 'Action plan underway', d: ['Your baseline is done and your plan is set.', 'From November to April, you put it into action, with your care team checking in along the way.'] }, from: ['April 2027', 'Later'] },
-      { k: 'ret', mo: [9, 12], ey: 'July 2027', h: 'Re-test and compare', d: 'A year on, the same tests again \u2014 so you and Dr Sarah Chen can see what changed.', from: ['July 2027'], pre: { h: 'Tests & Diagnostics complete', d: ['Your tests and diagnostics end here.', 'A year on, you take the same tests again, so you and Dr Sarah Chen can see what has changed.'] } },   // vert: in the vertical under the phase we're in too, the year's end in sight
+      { k: 'ret', mo: [9, 12], ey: 'July 2027', h: 'Re-test and compare', d: 'A year on, the same tests again \u2014 so you and Dr Sarah Chen can see what changed.', from: ['July 2027'], pre: { h: 'Re-test & Improve', d: ['Your tests and diagnostics end here.', 'A year on, you take the same tests again, so you and Dr Sarah Chen can see what has changed.'] } },   // vert: in the vertical under the phase we're in too, the year's end in sight
       { k: 'scr', mo: [9, 12], ey: 'From age 50', h: 'Preventive screening', d: 'Screenings recommended for your age and history, whenever you\u2019re ready.', from: ['50 years old', '60 years old'], sug: 1 }
     ];
     const MSOPEN = new Set(['base', 'rev']), MSOPEN2 = new Set();   // MSOPEN2: Layout V2's, the milestones after the hero all shut at first   // the two in reach open; the rest shut till opened
@@ -31123,7 +31131,7 @@ hairline({
       return '<div class="jpUp' + (JUPOPEN ? ' open' : '') + '"><div class="jpUpRow"><img class="jpUpArt" src="' + JV_ART[1] + '" alt="" aria-hidden="true"><div class="jpUpT"><b>' + (mem ? 'You\u2019re on ' + esc(PUR[JPUR].n) : 'You haven\u2019t chosen a plan yet') + '</b><span>' + (mem ? 'Go further with ' + up.map(x => x.n).join(' or ') + '.' : 'A plan brings your tests together, with a doctor who knows your results.') + '</span></div>' +
         '<button class="tlBtn msB jvB" type="button" data-up="more" aria-expanded="' + JUPOPEN + '">' + (JUPOPEN ? 'Show less' : 'Discover more') + '</button></div>' +
         (JUPOPEN ? '<ul class="jpUpL">' + up.map(x => '<li><div class="jpUpN"><b>' + esc(x.n) + '</b>' + (x.tag ? '<em' + (x.k === 'prot' ? ' class="rec"' : '') + '>' + esc(x.tag) + '</em>' : '') + '<span>' + esc(x.d) + '</span></div><span class="jpUpP">' + x.p + '</span><button class="tlBtn msB jvB' + (x.k === 'prot' ? ' msP' : '') + '" type="button" data-up="' + x.k + '" aria-label="' + (mem ? 'Upgrade to ' : 'Choose ') + esc(x.n) + '">' + (mem ? 'Upgrade' : 'Choose') + '</button></li>').join('') + '</ul>' : '') + '</div>'; };
-    const PH = [{ a: 0, b: 3, r: '0\u20133 months', n: 'Baseline' }, { a: 3, b: 9, r: '4\u20139 months', n: 'Tests & Diagnostics' }, { a: 9, b: 12, r: '9\u201312 months', n: 'Re-test' }];
+    const PH = [{ a: 0, b: 3, r: '0\u20133 months', n: 'Baseline' }, { a: 3, b: 9, r: '4\u20139 months', n: 'Tests & Diagnostics' }, { a: 9, b: 12, r: '9\u201312 months', n: 'Re-test & Improve' }];
     const PH_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], PH_TODAY = [2026, 9, 17];   // the prototype's today: 17 October 2026
     const phT0 = () => (MS[0] && MS[0].t0) || [2026, 7];
     const phNow = () => { const t0 = phT0(); return (PH_TODAY[0] - t0[0]) * 12 + PH_TODAY[1] - t0[1] + (PH_TODAY[2] - 1) / 31; };   // months since the year began
@@ -31743,9 +31751,13 @@ hairline({
       list.addEventListener('click', e => { const b = e.target.closest('[data-pur]'); if (!b || !PUR[b.dataset.pur]) return; e.stopPropagation(); const k = b.dataset.pur;   // Upgrade: bought, as the tweak would
         if (ps){ ps.value = k; ps.dispatchEvent(new Event('change', { bubbles: true })); } else { JPUR = k; render(); } tlToast(list.closest('.dash') || document.body, PUR[k].n + ' is now your plan.'); });
       const sh = () => { if (pr) pr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
-    { const ps = document.getElementById('stJpPos'), pr = document.getElementById('stJpPosRow'), ap = () => { JPPOS = ps && ps.value === 'left' ? 'left' : 'top'; list.classList.toggle('jvPhLeft', JPPOS === 'left'); };   // Phases position: on top, or a rail at the left
-      if (ps) ps.addEventListener('change', () => { ap(); render(); }); ap();
-      const sh = () => { if (pr) pr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
+    { const ps = document.getElementById('stJpPos'), pr = document.getElementById('stJpPosRow'), gs = document.getElementById('stJvGt'), gr = document.getElementById('stJvGtRow');
+      const ap = () => { JPPOS = ps && ps.value === 'left' ? 'left' : 'top'; list.classList.toggle('jvPhLeft', JPPOS === 'left'); const lf = JPPOS === 'left';   // Phases position: on top, or a rail at the left
+        if (gs){ if (lf && gs.value !== 'top'){ gs.dataset.was = gs.value; gs.value = 'top'; } else if (!lf && gs.dataset.was){ gs.value = gs.dataset.was; delete gs.dataset.was; }   /* Left: the titles on top, alone; Top again: the choice back */
+          gs.parentElement.querySelectorAll('.tkSegT button').forEach(b => { const on = b.dataset.v === gs.value; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); if (b.dataset.v === 'left') b.hidden = lf; }); }
+        list.classList.toggle('jvGrTop', lf || !!(gs && gs.value === 'top')); };   // Group title: at the card's left, or on top of its list
+      if (ps) ps.addEventListener('change', () => { ap(); render(); }); if (gs) gs.addEventListener('change', () => { if (gs.value !== 'top') delete gs.dataset.was; ap(); }); ap(); setTimeout(ap, 0);   // once more when the segments are drawn
+      const sh = () => { if (pr) pr.hidden = TLVER !== 'v2'; if (gr) gr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     function jrGo(n){ JST = Math.max(0, Math.min(3, n)); const ps = document.getElementById('stJvPur'), v = JST === 0 ? 'none' : 'base';   // a step: what is paid for (the Purchased tweak follows), the page from its top
       if (ps && ps.value !== v){ ps.value = v; ps.dispatchEvent(new Event('change', { bubbles: true })); } else { JPUR = v; render(); } main.scrollTop = 0; }
     { const js = document.getElementById('stJvJr'), jr = document.getElementById('stJvJrRow');   // Real journey: on, the steps; off, the plan as it was
