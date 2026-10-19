@@ -14499,3 +14499,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "If the content doesn't fill the vertical height, center the content vertically": a row with no when (an empty `.jvW`, e.g. MRI Briefing) drops its second grid row (`"ic t a"`, the empty `.jvW` hidden) and centres its words on the visual. This applies in the two-column cards at every width, and in all cards on the phone. Rows with a when keep their top alignment.
 - "+4px gap": the list rows are 2px taller above and below again (20px in the two-column cards, 22px elsewhere).
+
+## My journey: the welcome without progress or button; Action plan timeline can be turned off
+
+- "Remove, and no CTA": the welcome status hero keeps only its badge, greeting and line, centred on the card's height. It no longer shows "4 of 8 complete" / "3 weeks remaining", the bar, or the "Continue your journey" button (whose handler and CSS are removed). The Action plan's own milestone cards keep their progress.
+- "Toggle on / off: Action plan timeline": the tweak is now **Off / Card / Hero** (Hero default). Off removes the year card and its phase filtering, so the list shows every milestone again. The tabs stay under the Action plan heading.

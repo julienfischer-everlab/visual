@@ -7770,7 +7770,7 @@
   .jvBar{display:flex;gap:4px;margin-top:10px;} .jvBar i{flex:1 1 0;height:5px;border-radius:3px;background:var(--msTrack);} .jvBar i.on{background:var(--msAcc);}
   .jvMore{display:inline-flex;align-items:center;gap:6px;margin:14px 0 0;padding:0;border:0;background:none;font:inherit;font-size:14px;line-height:20px;font-weight:500;text-align:left;color:var(--tlInk);cursor:pointer;} .jvMore svg{flex:none;width:14px;height:14px;transition:transform .2s ease;} .jvMore:hover{text-decoration:underline;text-underline-offset:3px;} .jvMore:hover svg{transform:translateX(2px);}   /* Ready for you's link to the rest ("a link to see the other available items") */
   @container msl (max-width:600px){ .jvMore{margin:6px 0 6px;font-size:13px;} }
-  #dTl .tlList.tlV2 .jvWel .jvGo{align-self:flex-start;margin-top:24px;} body.light #dTl .tlList.tlV2 .jvWel .jvGo{background:#f6f4f2;color:#141413;}   /* the welcome's button, light on the dark hero on both pages */
+  .jvWel .jvHx{justify-content:center;}   /* the welcome: its words centred on the card's height, no progress under them */
   .jvArtH{position:relative;overflow:hidden;} .jvArtH img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:left center;mix-blend-mode:screen;pointer-events:none;}   /* its black gives way to the card (screen): only the bands of light show */
   .jvBadge{align-self:flex-start;} .jvHero .jvBadge, body.light .jvHero .jvBadge{background:rgba(255,255,255,.08);color:#c9c9c6;}   /* the eyebrow a grey badge, as V1's Next milestone ("badge"); the hero dark on both pages, so its dark colours on both */
   .jvHero{background:#252522;} .jvHero h2, .jvHero .jvPr{color:#f6f4f2;} .jvHero p, .jvHero .jvPr small{color:rgba(255,255,255,.7);} .jvHero .jvBar i{background:rgba(255,255,255,.16);} .jvHero .jvBar i.on{background:#f78359;} .jvHero .jvEy{color:#f78359;}   /* the hero's own dark warm grey, both themes ("534C46 hero card bg", then "252522 bg"): its text light; the visual's black gives way to it (screen) */
@@ -10976,7 +10976,8 @@
         <!-- the Action plan's timeline: the card, or a hero -- the dark ground of the milestone's card, the picked phase's name large, the year's light under it ("tweak action plan timeline: hero") -->
         <div class="tkRow" id="stJpVRow">
           <span class="lbl">Action plan timeline</span>
-          <select id="stJpV" class="tkSegSel" aria-label="How the Action plan's timeline is drawn: a card or a hero">
+          <select id="stJpV" class="tkSegSel" aria-label="The Action plan's timeline: off, a card or a hero">
+            <option value="off">Off</option>
             <option value="card">Card</option>
             <option value="hero" selected>Hero</option>
           </select>
@@ -30750,8 +30751,7 @@ hairline({
     const jvHero = (m, all, dn, welcome) => { const b = MS[0] && MS[0].bento, wl = welcome && phOf(m) === 0, wk = /^(\d+ weeks?)/.exec(m.rem || '');
       const ey = wl ? 'Welcome to Everlab' : m.ey, h = wl ? 'Hi ' + ((b && b.nm) || 'there') + ', let\u2019s start your journey' : m.h,
         d = wl ? 'First, your baseline: ' + all.length + ' actions' + (wk ? ' over the next ' + (/^1 /.test(wk[1]) ? 'week' : wk[1]) : '') + ' give ' + ((b && b.dr) || 'your doctor') + ' the full picture of your health today.' : m.d;
-      return '<div class="jvHero' + (wl ? ' jvWel' : '') + '"><div class="jvHx"><span class="msBadge jvBadge">' + esc(ey) + '</span><h2>' + esc(h) + '</h2>' + (d ? '<p>' + esc(d) + '</p>' : '') + '<div class="jvPr"><span>' + dn + ' of ' + all.length + ' complete</span>' + (m.rem ? '<small>' + esc(m.rem) + '</small>' : '') + '</div><div class="jvBar" aria-hidden="true">' + all.map((r, i) => '<i' + (i < dn ? ' class="on"' : '') + '></i>').join('') + '</div>' +
-        (wl && dn < all.length ? '<button class="tlBtn msB jvB msP jvGo" type="button">' + (dn ? 'Continue your journey' : 'Start your journey') + '</button>' : '') + '</div><div class="jvArtH" aria-hidden="true"><img src="' + JV_ART[phOf(m)] + '" alt="" draggable="false"></div></div>'; };   // the milestone's card: where you are, how far, the phase's light; the bento's, a welcome, its button the next action
+      return '<div class="jvHero' + (wl ? ' jvWel' : '') + '"><div class="jvHx"><span class="msBadge jvBadge">' + esc(ey) + '</span><h2>' + esc(h) + '</h2>' + (d ? '<p>' + esc(d) + '</p>' : '') + (wl ? '' : '<div class="jvPr"><span>' + dn + ' of ' + all.length + ' complete</span>' + (m.rem ? '<small>' + esc(m.rem) + '</small>' : '') + '</div><div class="jvBar" aria-hidden="true">' + all.map((r, i) => '<i' + (i < dn ? ' class="on"' : '') + '></i>').join('') + '</div>') + '</div><div class="jvArtH" aria-hidden="true"><img src="' + JV_ART[phOf(m)] + '" alt="" draggable="false"></div></div>'; };   // the milestone's card: where you are, how far, the phase's light; the bento's, a welcome (no progress, no button: "remove, and no CTA")
     const jvHtml = (m, all, dn, ahead, noHero) => {   /* noHero: its card heads the bento instead */ /* ahead: a phase still to come, its locked items Coming up */ const fresh = r => unseen(r) || msGrp(r) === 'done';
       const ready = all.filter(fresh), act = all.filter(r => !fresh(r) && msGrp(r) === 'act'), pend = all.filter(r => !fresh(r) && msGrp(r) === 'pend'), lock = all.filter(r => !fresh(r) && msGrp(r) === 'lock');
       const nx = act[0], rest = act.slice(1); let n = 0; if (!JNX) JNX = nx || null;   // the Next up row, for the step-through
@@ -30814,7 +30814,7 @@ hairline({
       return '<div class="jvBento">' + JBORD.map(k => k === 'row' ? JBROW.map(r => P[r]).join('') : P[k]).join('') + '</div>'; };   // in the Bento order tweak's order   // the bento (the Action plan heading follows whatever heads the list)
     const msHtml = (S, sum) => { if (!sum) JNX = null; const by = {}; S.forEach(x => { by[x.h] = x; });   // sum: the Overview's Action plan V2 -- the next milestone's To action items, the others small
       const sug = [].concat(...S.map(x => x.sug || []));
-      const useP = !sum && JTOP === 'time' && tab === 'up', sel = useP ? phSel() : -1, cur = phCur(); let seen = 0;   // the phase card: the picked phase's milestones
+      const useP = !sum && JTOP === 'time' && tab === 'up' && JPHV !== 'off', sel = useP ? phSel() : -1, cur = phCur(); let seen = 0;   // the phase card: the picked phase's milestones
       const bands = () => { const per = [[], [], []]; MS.forEach(m => { let rows = [].concat(...m.from.map(h => by[h] ? ordered(by[h].rows) : [])); if (m.sug && sug.length){ const gone = askGone(); rows = rows.concat(sug.filter(x => !gone.has(x.svc))); }
           if (!m.mo || !rows.length) return; const ph = phOf(m); rows.forEach(r => per[ph].push({ t: r.t, g: msGrp(r), fin: msFin(r), ph })); });
         const rk = x => x.fin ? 0 : x.g === 'act' ? 1 : x.g === 'pend' ? 2 : 3, out = [];
@@ -31341,15 +31341,13 @@ hairline({
     // Ready for you's link: the other available items, the Later tab's, brought into view
     list.addEventListener('click', e => { if (!e.target.closest('.jvMore')) return; e.stopPropagation(); const t = main.querySelector('.tlTab[data-t="claim"]'); if (!t) return; t.click();
       requestAnimationFrame(() => { const h = main.querySelector('.jvApHead:not([hidden])'); if (h) h.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }); });
-    // the welcome's button: the Next up action, opened as its row would be
-    list.addEventListener('click', e => { if (!e.target.closest('.jvWel .jvGo')) return; e.stopPropagation(); if (JNX) openRow(simRow(JNX)); });
     // the plans: an upgrade asked for -- the care team calls; nothing changes till confirmed
     list.addEventListener('click', e => { const b = e.target.closest('.jpUp [data-up]'); if (!b) return; e.stopPropagation(); if (b.dataset.up === 'more'){ JUPOPEN = !JUPOPEN; render(); const nb = list.querySelector('.jpUp [data-up="more"]'); if (nb) nb.focus({ preventScroll: true }); return; } const x = PLANS.find(y => y.k === b.dataset.up); if (!x) return;
       tlToast(list.closest('.dash') || document.body, 'Thanks \u2014 your care team will call you about ' + x.n + '. Nothing changes until you confirm.'); });
     { const qs = document.getElementById('stJvAsk'), qr = document.getElementById('stJvAskRow'); if (qs) qs.addEventListener('change', () => { JASK = qs.value !== 'off'; render(); }); JASK = !qs || qs.value !== 'off';   // Suggested: the suggestion under the hero on or off
       const sh = () => { if (qr) qr.hidden = TLVER !== 'v2' || MSLAY !== 'v2'; }; ['stTlVer', 'stMsLay'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', sh); }); sh(); }
     { const vs = document.getElementById('stJpV'), vr = document.getElementById('stJpVRow');   // Action plan timeline: the card or the hero
-      if (vs) vs.addEventListener('change', () => { JPHV = vs.value === 'card' ? 'card' : 'hero'; render(); }); JPHV = vs && vs.value === 'card' ? 'card' : 'hero';
+      const rd = () => vs && (vs.value === 'card' || vs.value === 'off') ? vs.value : 'hero'; if (vs) vs.addEventListener('change', () => { JPHV = rd(); render(); }); JPHV = rd();   // off: no card, every milestone in the list again
       const sh = () => { if (vr) vr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const ds = document.getElementById('stJvDot'), dr = document.getElementById('stJvDotRow'); if (ds) ds.addEventListener('change', () => { JDOT = ds.value !== 'bar'; list.querySelectorAll('.jpStrip').forEach(x => x.classList.toggle('dot', JDOT)); }); JDOT = !ds || ds.value !== 'bar';   // Timeline style: dots or vertical bands
       const ls = document.getElementById('stJvLine'), lr = document.getElementById('stJvLineRow'); if (ls) ls.addEventListener('change', () => { JLINE = ls.value !== 'off'; sh(); render(); }); JLINE = !ls || ls.value !== 'off';   // Timeline: the strip on or off
