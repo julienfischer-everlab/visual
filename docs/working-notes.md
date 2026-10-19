@@ -14558,3 +14558,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Re-test milestone shown under the phase we're in too (vert), after its own transition "Action plan underway" ("add the Re-test phase with also a gap transition on the vertical").
 
 - v1206 — Health profile gaps: an orange dot, the gradient field gone ("remove gradient cell, just use orange dot"); the legend's gap an orange dot too. My journey's head: Past at the row's right end on every size ("Past right side").
+
+- v1207 — Purchased tweak (Timeline group; Nothing, Baseline $299 (default), Diagnostics $1,199, Protocol $2,999): what the member bought. Baseline brings the year's first phase (testing, then the review), Diagnostics the same with the deeper imaging, Protocol the whole year (action plan, re-test).
+  - A phase not bought: its milestones locked as cards, "Included in <plan>" and "Upgrade · <price>" (nothing bought: "Get <plan> · <price>"); the Upgrade buys it (sets the tweak) with a toast.
+  - Your first year: the phases not bought faint with a lock on their names; nothing bought, "No plan yet · choose one to begin".
+  - The welcome copy follows the plan (nothing bought, it lists the three with their prices).
+  - The upgrade card (Plan upgrade tweak) offers only the plans above the one bought, at these prices; Complete dropped.
