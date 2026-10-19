@@ -14460,3 +14460,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Grid: 24 cells ruled in a fine grid with outer lines, on a panel of diagonal hatching (the reference), with a 4px dot in each recorded cell. A gap is an empty cell. A gap that can be added is a button doing what its list row did (opens the suggestion), with its name and status as its label and title. Once added, it gets a green dot.
   - Pattern: a canvas of 3px squares a pixel apart, sparse at the top and filling to the foot as the profile fills. It is seeded, so it draws the same each time, and redraws on resize. Its frame sizes it, which avoids a feedback loop where the canvas grew its own card.
   - Both show "21 recorded · 3 gaps" at the card's foot. List is the earlier rows.
+
+## My journey: the grid fills its card; eyebrows secondary, 2px apart
+
+- "Fill container; remove pattern strips": the Health profile grid now runs the card's full width: 8 columns of square cells (about 40px at L and XS), ruled with outer lines. The diagonal hatching behind it is gone.
+- "Eyebrow secondary like the Overview; eyebrow +2px letter spacing": My journey's eyebrows (the bento's "Health profile", "Your first year" and "Recent activity", the phase card's "Your first year", the cards' "Next up" and "Results ready", "Suggested by …") are now the page's secondary grey (`--tlSub`, #8b8b86 dark, #7a716a light) with 2px letter spacing, at 12px.
