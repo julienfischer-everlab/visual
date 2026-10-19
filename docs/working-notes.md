@@ -14656,3 +14656,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Hero plan tag:** the bento hero's badge is gone; a white outlined, square-cornered mono tag (10px, 3px tracking) at its top right names the plan from Purchased: Non-member, Baseline plan, Diagnostics plan, Protocol plan.
 - **Hero sub-line:** 14px in the secondary grey (#8b8b86); 8px more above the button (28).
 - **Health profile gaps:** a gap whose due date is approaching ("Due in …") is a yellow dot on a light yellow ground; a gap already due stays orange. The legend reads "21 recorded · 2 due · 1 due soon".
+- **Loop dots:** 6px, all solid in the line's colour (white; ink in light mode). The phase a transition opens is 100% once the line reaches it; the other dots 24%. The way still to go (every segment not yet filled) is dashed, 3 on / 2 off (2 less between the dashes); the track at 24%.
+- **Phase tabs (segmented):** the container outlined (1px, 10% white / 12% ink) on the sticky band's page ground; the active phase a filled card (the group cards' fill); the others ghost, a faint fill on hover. Light mode uses the page's ink inside it.
