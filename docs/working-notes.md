@@ -14667,3 +14667,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Locked previews:** each service once per phase (DEXA Scan / Dexa Scan, the two Diagnostics Reviews).
 - **Loop trail:** the filling segment is a gradient from Everlab orange at its tail to solid #fff at its head (dark ink in light mode); past segments stay white.
 - **Container:** My journey (V2) runs in a 1280px column (#dTl.tlVer2 .tlCol): the heading, bento and Action plan fill it, 1120 at a 1440 window. V1's list keeps its 760.
+- **Summary card On/Off** (Hero Bento, above Summary content): Off drops the hero from the bento.
+- **Your first year: Journey / Recent update** (Hero Bento, after Summary content): Recent update fills the year card's slot with the summary card's own content (its title, text and button, following Summary content and the Real journey's step) under a "Recent update" eyebrow; the button works as the hero's (Get Baseline, View results, Get membership). Bento order names the item "Recent update" while it's picked. On the phone the Health profile and the recent update each take the full width.
+- **Container:** 1080px for My journey (was 1280).

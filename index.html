@@ -7647,7 +7647,7 @@
   #phone2 .ovTop::before, #dOver .ovTop::before, .svTop::before, .svmNav::before, .tlBar::before{bottom:-32px !important;background:linear-gradient(180deg,rgba(var(--stkRGB),1) 0,rgba(var(--stkRGB),1) calc(50% - 16px),rgba(var(--stkRGB),0.93) calc(50% - 16px + 0.15 * (50% + 16px)),rgba(var(--stkRGB),0.8) calc(50% - 16px + 0.3 * (50% + 16px)),rgba(var(--stkRGB),0.62) calc(50% - 16px + 0.45 * (50% + 16px)),rgba(var(--stkRGB),0.43) calc(50% - 16px + 0.6 * (50% + 16px)),rgba(var(--stkRGB),0.25) calc(50% - 16px + 0.75 * (50% + 16px)),rgba(var(--stkRGB),0.09) calc(50% - 16px + 0.9 * (50% + 16px)),rgba(var(--stkRGB),0) calc(50% - 16px + 1 * (50% + 16px))) !important;}
   #dTl .tlBar::before, .tlShPanel .tlBar::before{bottom:calc(-32px - var(--stkExt, 0px)) !important;}
   #dTl .tlBar .ovGround{display:none !important;} #dTl .tlBar::before{bottom:0 !important;background:var(--pageBg) !important;} #dTl .tlH{z-index:4 !important;background:var(--pageBg) !important;box-shadow:0 -2px 0 var(--pageBg);}   /* each month its own solid ground, under the bar: pinned, it sits just below the tabs; pushed up by the next, it slides behind them ("z index issue, month should go behind the tabs on top") */ #dTl .tlSubTop .ovGround{display:none !important;} #dTl .tlSubTop::before{bottom:0 !important;background:var(--pageBg) !important;}   /* the Timeline's pinned bar (and the month stuck under it): a solid ground, its edge a clean cut, no blur and no fade at all ("solid bg on timeline scroll fixed, no blur at all") */   /* the Timeline's group: the tabs and the month pinned under them */
-  .tlCol{max-width:760px;margin:0 auto;} #dTl.tlVer2 .tlCol{max-width:1280px;}   /* My journey: a 1280 container ("container 1280"); v1's list as it was */
+  .tlCol{max-width:760px;margin:0 auto;} #dTl.tlVer2 .tlCol{max-width:1080px;}   /* My journey: a 1080 container ("1080 container"); v1's list as it was */
   .tlH1{margin:0 0 14px;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:var(--tlInk);}
   /* the tabs and the search ride a bar like every top bar: sticky at the
      card's top once the title has gone under, the tint and the ten blur
@@ -7965,6 +7965,8 @@
   .jbHd{display:flex;align-items:center;gap:12px;} .jbDr{width:40px;height:40px;border-radius:50%;object-fit:cover;}
   .jbEy{font-size:10px;line-height:14px;text-transform:uppercase;letter-spacing:2px;color:var(--tlSub);}   /* secondary, as the Overview's, 2px apart ("eyebrow secondary like the overview"; "+2px letter spacing"); 10 ("10px eyebrow") */
   .jbEy + .jbH{margin-top:4px;}   /* the status cards' title 16 closer to its eyebrow ("reduce gap between eyebrow and title by 16px": was 16), then 4 ("+4px") */
+  .jbUpdA{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:24px;}   /* the recent update's button, at the card's foot */
+  @container msl (max-width:600px){ .jvBento:has(> .jbUpd) > :is(.jbUpd, .jbHp){grid-column:1 / -1;} .jbUpdA{padding-top:20px;} }   /* the phone: the recent update and the Health profile full width, the button whole */
   .jbH{margin:16px 0 0;font-size:20px;line-height:26px;font-weight:500;letter-spacing:-.01em;color:var(--tlInk);text-wrap:balance;} .jbP{margin:8px 0 0;max-width:52ch;font-size:14px;line-height:20px;color:var(--tlSub);}
   .jbFb .jbHd + .jbH{margin-top:18px;} .jbFb .jbH{font-size:18px;line-height:26px;font-weight:400;letter-spacing:-.005em;}   /* the Recent activity's sentence 18, regular ("font size 24 regular", then "18px") */
   .jbFoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;align-self:stretch;margin-top:auto;padding-top:22px;}
@@ -11165,12 +11167,28 @@
           </select>
         </div>
         <!-- the bento's order, dragged up and down (or moved with the arrow keys): its rows, then the status cards in theirs -->
+        <!-- the summary card on or off ("add an on/off on the summary card") -->
+        <div class="tkRow" id="stJbSumOnRow">
+          <span class="lbl">Summary card</span>
+          <select id="stJbSumOn" aria-label="Show the summary card at the head of the bento">
+            <option value="on" selected>On</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
         <!-- what the summary card (the bento's head) says ("add a tweak: Content -- New results") -->
         <div class="tkRow" id="stJbSumRow">
           <span class="lbl">Summary content</span>
           <select id="stJbSum" class="tkSegSel" aria-label="What the summary card says">
             <option value="wel" selected>Welcome</option>
             <option value="res">New results</option>
+          </select>
+        </div>
+        <!-- the year card's variation ("Your first year: Journey (current), or Recent update -- the summary card's content") -->
+        <div class="tkRow" id="stJbTlVRow">
+          <span class="lbl">Your first year</span>
+          <select id="stJbTlV" class="tkSegSel" aria-label="What the year card shows: the journey, or the recent update">
+            <option value="tl" selected>Journey</option>
+            <option value="upd">Recent update</option>
           </select>
         </div>
         <div class="tkRow tkOrdRow" id="stJbOrdRow">
@@ -31037,7 +31055,7 @@ hairline({
       return '<div class="jbGridP"><div class="jbGrid" role="group" aria-label="' + rec + ' of ' + JB_HP_N + ' recorded, ' + n + (n === 1 ? ' gap' : ' gaps') + '">' + Array.from({ length: JB_HP_N }, (_, k) => { const x = at[k]; if (!x) return '<span class="jbCell"><i></i></span>';
         const [g, i] = x, l = esc(g.t + ', ' + (g.ok ? 'in your plan' : g.w)); return g.sug ? '<button class="jbCell gap' + (g.ok ? ' ok' : jbSoon(g) ? ' soon' : '') + '" type="button" data-jb="gap" data-i="' + i + '" title="' + l + '" aria-label="' + l + '">' + (g.ok ? '<i></i>' : '') + '</button>' : '<span class="jbCell gap' + (jbSoon(g) ? ' soon' : '') + '" role="img" title="' + l + '" aria-label="' + l + '"></span>'; }).join('') + '</div></div>' + cap; };
     /* the Health profile empty (the Health profile tweak's Empty): the square cloud, what it will find, Find my gaps over the cloud -- which, here, finds them (Data provided) */
-    let JHPST = 'data', JSUM = 'wel';
+    let JHPST = 'data', JSUM = 'wel', JSUMON = true, JTLV = 'tl';   // JSUMON: the summary card on; JTLV: the year card the journey (tl) or the recent update (upd)
     /* the real journey (the Real journey tweak): four steps, walked with the arrows at the bottom right -- 0 nothing paid for; 1 the Baseline paid: the
        questionnaire, the blood test to book, the onboarding call; 2 the Foundational blood testing to do; 3 done: thanks, and the membership to get. The Baseline's
        items those alone (no other services offered), the phases after it their notes */
@@ -31060,8 +31078,10 @@ hairline({
       for (let r = 0; r < rows; r++){ const t = (r + .5) / rows, d = Math.max(0, Math.min(1, (t - top * .55) / (1 - top * .55))), dn = Math.pow(d, 1.8);
         for (let k = 0; k < cols; k++){ const u = rnd(); if (u > dn * .92 + .02) continue; x.globalAlpha = c.dataset.v ? .1 + .9 * (.25 + .75 * dn) * rnd() : .18 + .62 * dn * (.6 + .4 * rnd()); x.fillRect(k * S, r * S, 3, 3); } }   // v: each square its own opacity, 10% to full
       x.globalAlpha = 1; if (!c._ro && window.ResizeObserver){ c._ro = new ResizeObserver(() => jbDraw(c)); c._ro.observe(c); } }
+    const jbUpd = h => { const t = /<h2>([\s\S]*?)<\/h2>/.exec(h || ''), p = /<\/h2><p>([\s\S]*?)<\/p>/.exec(h || ''), a = /<div class="jvResA">([\s\S]*?)<\/div>/.exec(h || '');   // the summary card's content in a status card ("Recent update: the summary card content")
+      return '<div class="jbCard jbUpd"><span class="jbEy">Recent update</span><h3 class="jbH">' + (t ? t[1] : 'Nothing new yet') + '</h3>' + (p ? '<p class="jbP">' + p[1] + '</p>' : '') + (a ? '<div class="jbUpdA">' + a[1] + '</div>' : '') + '</div>'; };
     const jbHtml = (B, top) => { const m = MS[0], b = m && m.bento; if (!b) return ''; const a = m.ask, gs = b.gaps.map(g => { const mine = !!(a && g.svc === a.svc && a.done === 'add'), off = mine && !!a.added && SNZ.has(a.added); return Object.assign({}, g, { ok: mine && !off, w: off ? 'Saved for later' : g.w }); }), n = gs.filter(g => !g.ok).length;   // added: ticked; added then put off: a gap again
-      const P = { top: top || jbAct(b), hp: JHPST === 'empty' ? JB_HPE : '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' screening gap' : ' screening gaps') + ' to fill' : 'No gaps for now') + '</h3>' + jbHpVis(gs) + '</div>', tl: jbTl(B) };
+      const hd = top || jbAct(b), P = { top: JSUMON ? hd : '', hp: JHPST === 'empty' ? JB_HPE : '<div class="jbCard jbHp"><span class="jbEy">Health profile</span><h3 class="jbH">' + (n ? n + (n === 1 ? ' screening gap' : ' screening gaps') + ' to fill' : 'No gaps for now') + '</h3>' + jbHpVis(gs) + '</div>', tl: JTLV === 'upd' ? jbUpd(hd) : jbTl(B) };
       return '<div class="jvBento">' + JBORD.map(k => k === 'row' ? JBROW.map(r => P[r]).join('') : P[k]).join('') + '</div>'; };   // in the Bento order tweak's order   // the bento (the Action plan heading follows whatever heads the list)
     /* the phase transition ("turn the large gap into a phase transition moment, so it explains why there's a pause before the next phase"): before a milestone
        that opens a new phase (pre), a joint in the line -- a dashed hairline from the card above to the card below, a flag on it (a tick once all before it is
@@ -31697,6 +31717,11 @@ hairline({
     { const ss = document.getElementById('stJbSum'), sr = document.getElementById('stJbSumRow');   // Summary content: the welcome, or new results
       if (ss) ss.addEventListener('change', () => { JSUM = ss.value === 'res' ? 'res' : 'wel'; render(); }); JSUM = ss && ss.value === 'res' ? 'res' : 'wel';
       const sh = () => { if (sr) sr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
+    { const so = document.getElementById('stJbSumOn'), tv = document.getElementById('stJbTlV'), rows = ['stJbSumOnRow', 'stJbTlVRow'].map(id => document.getElementById(id));   // the summary card on or off; the year card the journey or the recent update
+      const nm = () => { const li = document.querySelector('#stJbRow li[data-k="tl"] .nm'); if (li) li.textContent = JTLV === 'upd' ? 'Recent update' : 'Your first year'; };   // Bento order names it as drawn
+      if (so) so.addEventListener('change', () => { JSUMON = so.value !== 'off'; render(); }); JSUMON = !so || so.value !== 'off';
+      if (tv) tv.addEventListener('change', () => { JTLV = tv.value === 'upd' ? 'upd' : 'tl'; nm(); render(); }); JTLV = tv && tv.value === 'upd' ? 'upd' : 'tl'; nm();
+      const sh = () => rows.forEach(r => { if (r) r.hidden = TLVER !== 'v2'; }); { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const es = document.getElementById('stJbHpSt'), er = document.getElementById('stJbHpStRow');   // Health profile: what was found, or empty
       if (es) es.addEventListener('change', () => { JHPST = es.value === 'empty' ? 'empty' : 'data'; render(); }); JHPST = es && es.value === 'empty' ? 'empty' : 'data';
       const sh = () => { if (er) er.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
