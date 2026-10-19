@@ -14504,3 +14504,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Remove, and no CTA": the welcome status hero keeps only its badge, greeting and line, centred on the card's height. It no longer shows "4 of 8 complete" / "3 weeks remaining", the bar, or the "Continue your journey" button (whose handler and CSS are removed). The Action plan's own milestone cards keep their progress.
 - "Toggle on / off: Action plan timeline": the tweak is now **Off / Card / Hero** (Hero default). Off removes the year card and its phase filtering, so the list shows every milestone again. The tabs stay under the Action plan heading.
+
+## Tweaks: My journey's settings in two new groups
+
+- "Put this into a group: Action plan hero card": Action plan timeline, Plan upgrade, Timeline top, Timeline and Timeline style now sit in a card of their own, headed **Action plan hero card**.
+- "Group: Service item", then "add these as well into this group": Visual, Items, Service group card, Priority, Status, Format and CTA position now sit in a card headed **Service item**.
+- Both follow the Timeline card (also `data-tl`, so they show on the Timeline page). The Timeline card keeps Version, Layout, the bento's tweaks, Suggested, Complete services, Just completed items and the retired (hidden) rows. The rows moved with their comments and ids, so their wiring is unchanged.
