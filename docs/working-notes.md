@@ -14614,3 +14614,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - v1220 (notes' count) — My journey:
   - One section a phase ("too many sections; only as many as the phases on the nav"): after the Baseline, each phase one card under its name (Action plan, Nov–Apr; Re-test, May–Jul) gathering its milestones' items (Review your results + Check your progress; Re-test and compare + Preventive screening), opened by its first milestone's transition (Testing complete; Action plan complete). "Action plan underway" goes with the merge. A phase not bought: "Included in <plan>" and its Upgrade.
   - The appointments as the Overview's booked rows ("use same overview style of items"): the date a 58 square (day 22, month 11), the name, the hour; today's row orange-tinted with "Today · <hour>" in orange, tomorrow's "Tomorrow · <hour>"; the soonest first, one gone by last. On the phone the date above the words (40 square).
+
+- v1221 (notes' count) — an appointment's date square 6 from its name ("reduce gap -8px"; the gap unnamed, the date-to-name one taken: 14 → 6).
