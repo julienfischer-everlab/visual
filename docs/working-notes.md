@@ -14698,3 +14698,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Phase tabs:** back to outlined, the active one a filled card, the others ghost.
 - **Phone bento:** the cards 24px in; the summary card and the Recent update keep their light on the right (46% / 44%, fading in from the words), the words in the left ~70%; the status cards are a horizontal carousel (32px of the next card showing, snapping, swiped by touch, and by a mouse drag in the desk's phone preview).
 - **Health profile:** hovering (or focusing) a gap shows its screening's name in a tooltip with an arrow (white on the dark page, ink on the light), in place of the browser's title.
+
+## My journey: step 4 recommends Protocol
+
+- **Step 4 hero (Real journey, Baseline complete. OC done):** "Thanks for your time with Dr Steven Lu", then the doctor's recommendation to upgrade to Protocol and the step-by-step line, and a **Start Protocol** CTA. It sets Purchased to Protocol (the plan tag reads Protocol plan, a toast confirms) and hides once Protocol is the plan.
+- **Recent update card** now carries every paragraph of the hero, not only the first.
+- **Journey select:** step 4 is named "Baseline complete. OC done".
