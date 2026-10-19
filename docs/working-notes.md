@@ -14623,3 +14623,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Every Health profile gap cell on the orange ground (12%), 20% under the pointer ("use this bg for all empty cells, not only on hover").
 
 - v1223 (notes' count) — Your first year: no line under "Month N of 12" ("remove sub"); the bar 22 under the title.
+
+- v1224 (notes' count) — Ready for you's tile the service page's dark orange (#3a1f0b, its pending card's) with a white icon ("use dark orange as service detail"); the Health profile with data: no line under its count ("remove sub"; the empty state keeps its line).
