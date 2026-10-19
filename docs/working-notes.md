@@ -14621,3 +14621,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - A later phase not bought shows no services ("when Baseline only, the next phases can't display any services, as all depend on the baseline outcome"): its card, under its name with "Included in <plan>" and the Upgrade, says what shapes it instead — "Shaped by your baseline" and a line (the action plan built from the results; the re-tests chosen from what the baseline finds). The search's empty-section pass leaves these notes (hidden only while searching). Appointments only from the phases bought; nothing bought, no Appointments at all.
   - Phases position Left by the page's own width (@container tl, 720 and up), not the forced viewport: with the viewport on Auto there is no data-bp, so Left never took ("I can't see any left position").
   - Every Health profile gap cell on the orange ground (12%), 20% under the pointer ("use this bg for all empty cells, not only on hover").
+
+- v1223 (notes' count) — Your first year: no line under "Month N of 12" ("remove sub"); the bar 22 under the title.
