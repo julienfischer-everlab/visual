@@ -14548,3 +14548,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Your first year's foot: two cards, Up next (the phase's next item, General Questionnaire) and Appointments (Pathology, Scheduled tomorrow, 10:30 am — the prototype's own copy); stacked on the phone.
   - Health profile: "3 screening gaps to fill"; the gap cells filled with the hero's bands of light, diffused (yellow to red, soft bands, fading top and foot), brighter on hover; the legend's gap square warm too.
   - XS: no hover tile on the rows ("remove group card on XS"); a just-added row still flashes.
+
+- v1204 — Health profile grid: the outline at 16% ("outlined reduce colour to 16% fff"); the gaps now windows onto one field of light behind the whole grid ("a full bg gradient on the entire grid, the empty cells act as a mask"): the hero's bands, diffused, yellow at the grid's left to red at its right, a gentle fade top and foot -- each gap cell shows its own part of the field (its column and row as --cx/--cy, the field sized 800% x 300% and positioned by them), filling the cell. Bands every 16px, 10 on the phone.

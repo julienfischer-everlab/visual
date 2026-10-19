@@ -7902,16 +7902,16 @@
   body.light .jbAsk textarea{background:rgba(46,31,26,.04);box-shadow:inset 0 0 0 1px rgba(46,31,26,.1);} body.light .jbAsk textarea:focus{box-shadow:inset 0 0 0 1px rgba(46,31,26,.3);}
   .jbAskA{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;}
   /* the Health profile's visuals: a grid of cells (inner lines only), a dot in each recorded, the gaps empty -- a gap you can add a button, faintly warm; the pattern a canvas */
-  .jbGridP{--g:rgba(255,255,255,.3);align-self:stretch;margin-top:20px;} body.light .jbGridP{--g:rgba(46,31,26,.28);}   /* the ruled grid, the card's width ("fill container"; the hatching gone: "remove pattern strips") */
+  .jbGridP{--g:rgba(255,255,255,.16);--jbBp:16px;align-self:stretch;margin-top:20px;} body.light .jbGridP{--g:rgba(46,31,26,.16);}   /* the ruled grid, the card's width ("fill container"; the hatching gone: "remove pattern strips") */
   .jbGrid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border-top:1px solid var(--g);border-left:1px solid var(--g);}
   .jbCell{display:grid;place-items:center;aspect-ratio:1;margin:0;padding:0;border:0;border-right:1px solid var(--g);border-bottom:1px solid var(--g);background:none;font:inherit;color:inherit;}
   .jbCell > i{width:4px;height:4px;border-radius:50%;background:var(--tlInk);} .jbCell.gap.ok > i{width:5px;height:5px;background:var(--msOk);}
   button.jbCell{cursor:pointer;transition:background .16s ease;} button.jbCell:hover{background:rgba(247,131,89,.12);} button.jbCell:focus-visible{outline:2px solid var(--msAcc);outline-offset:-2px;}
-  .jbCell.gap:not(.ok){position:relative;isolation:isolate;}   /* a gap: the hero's bands of light, diffused ("warm gradient, same style as the orange visual but more diffuse") */
-  .jbCell.gap:not(.ok)::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg, #ffd36e, #f9a04a 38%, #ee6a3b 70%, #c9352b);opacity:.7;transition:opacity .16s ease;
-    -webkit-mask-image:repeating-linear-gradient(90deg, rgba(0,0,0,.3) 0, #000 5px, rgba(0,0,0,.3) 10px), linear-gradient(to bottom, rgba(0,0,0,.12), #000 34%, #000 66%, rgba(0,0,0,.12)); -webkit-mask-composite:source-in;
-    mask-image:repeating-linear-gradient(90deg, rgba(0,0,0,.3) 0, #000 5px, rgba(0,0,0,.3) 10px), linear-gradient(to bottom, rgba(0,0,0,.12), #000 34%, #000 66%, rgba(0,0,0,.12)); mask-composite:intersect;}
-  button.jbCell.gap:not(.ok):hover{background:none;} button.jbCell.gap:not(.ok):hover::before{opacity:.9;} body.light .jbCell.gap:not(.ok)::before{opacity:.7;}
+  .jbCell.gap:not(.ok){position:relative;isolation:isolate;}   /* a gap: a window onto one field of light behind the whole grid ("a full bg gradient on the entire grid, the empty cells act as a mask") -- the hero's bands, diffused, yellow to red across it; each gap its own part of the field (its column and row: --cx, --cy), filling the cell */
+  .jbCell.gap:not(.ok)::before{--bx:calc(var(--cx, 0) * 100% / 7);--by:calc(var(--cy, 0) * 100% / 2);content:"";position:absolute;inset:0;z-index:-1;opacity:.85;transition:opacity .16s ease;
+    background:linear-gradient(90deg, #ffd36e, #f9a04a 38%, #ee6a3b 70%, #c9352b) var(--bx) var(--by) / 800% 300% no-repeat;
+    -webkit-mask:repeating-linear-gradient(90deg, rgba(0,0,0,.45) 0, #000 calc(var(--jbBp) / 2), rgba(0,0,0,.45) var(--jbBp)) var(--bx) var(--by) / 800% 300%, linear-gradient(to bottom, rgba(0,0,0,.62), #000 40%, #000 60%, rgba(0,0,0,.62)) var(--bx) var(--by) / 800% 300%; -webkit-mask-composite:source-in; mask:repeating-linear-gradient(90deg, rgba(0,0,0,.45) 0, #000 calc(var(--jbBp) / 2), rgba(0,0,0,.45) var(--jbBp)) var(--bx) var(--by) / 800% 300%, linear-gradient(to bottom, rgba(0,0,0,.62), #000 40%, #000 60%, rgba(0,0,0,.62)) var(--bx) var(--by) / 800% 300%; mask-composite:intersect;}
+  button.jbCell.gap:not(.ok):hover{background:none;} button.jbCell.gap:not(.ok):hover::before{opacity:1;}
   .jbPatW{position:relative;align-self:stretch;height:120px;margin-top:20px;} .jbPat{position:absolute;inset:0;display:block;width:100%;height:100%;color:#e8e6e3;}   /* the frame sizes the canvas; the canvas never sizes the frame */ body.light .jbPat{color:#2e1f1a;}
   .jbHpCap{display:flex;flex-wrap:wrap;gap:6px 18px;margin:auto 0 0;padding-top:16px;font-size:12px;line-height:16px;color:var(--tlSub);} .jbHpCap span{display:inline-flex;align-items:center;gap:7px;}
   .jbHpCap i{width:6px;height:6px;border-radius:50%;} .jbHpCap i.d{background:var(--tlInk);} .jbHpCap i.g{border-radius:1px;background:linear-gradient(90deg, #ffd36e, #ee6a3b);opacity:.8;}   /* a dot recorded, a warm square a gap */
@@ -7931,7 +7931,7 @@
      (its line says where you are), the grid's dots 3, the counts and Up next a size down */
   @container msl (max-width:600px){ .jvBento > :is(.jbHp, .jbTl){padding:16px;border-radius:18px;} :is(.jbHp, .jbTl) > .jbH{font-size:16px;line-height:21px;letter-spacing:-.005em;}
     .jbHp > .jbP, .jbTlLbl{display:none;} .jbTl > .jbP{margin-top:4px;font-size:13px;line-height:18px;} .jbTlBar{margin-top:14px;}
-    .jbGridP, .jbPatW{margin-top:12px;} .jbPatW{height:80px;} .jbCell > i{width:3px;height:3px;} .jbCell.gap.ok > i{width:4px;height:4px;}
+    .jbGridP, .jbPatW{margin-top:12px;} .jbGridP{--jbBp:10px;} .jbPatW{height:80px;} .jbCell > i{width:3px;height:3px;} .jbCell.gap.ok > i{width:4px;height:4px;}
     .jbHpCap{gap:2px 10px;padding-top:12px;font-size:11px;line-height:14px;} .jbHpCap span{gap:5px;}
     .jbTlFt{grid-template-columns:minmax(0,1fr);gap:6px;padding-top:14px;} .jbTlC{padding:10px 12px 11px;border-radius:12px;} .jbTlC em{gap:6px;font-size:11px;line-height:14px;} .jbTlC em > i{width:6px;height:6px;margin:0 2px;box-shadow:0 0 0 3px rgba(247,131,89,.16);} .jbTlC em > svg{width:12px;height:12px;} .jbTlC b{margin-top:6px;font-size:13px;line-height:17px;} .jbTlC span{font-size:11px;line-height:14px;}   /* the two cards stacked */
     .jbHp .jbGaps b{font-size:13px;line-height:17px;} .jbHp .jbGaps em{font-size:11px;} }
@@ -30858,7 +30858,7 @@ hairline({
       if (JHPV === 'pat') return '<div class="jbPatW" aria-hidden="true"><canvas class="jbPat" data-f="' + (rec / JB_HP_N).toFixed(3) + '"></canvas></div>' + cap;
       const at = {}; gs.forEach((g, i) => { at[JB_GAP_AT[i % JB_GAP_AT.length]] = [g, i]; });
       return '<div class="jbGridP"><div class="jbGrid" role="group" aria-label="' + rec + ' of ' + JB_HP_N + ' recorded, ' + n + (n === 1 ? ' gap' : ' gaps') + '">' + Array.from({ length: JB_HP_N }, (_, k) => { const x = at[k]; if (!x) return '<span class="jbCell"><i></i></span>';
-        const [g, i] = x, l = esc(g.t + ', ' + (g.ok ? 'in your plan' : g.w)); return g.sug ? '<button class="jbCell gap' + (g.ok ? ' ok' : '') + '" type="button" data-jb="gap" data-i="' + i + '" title="' + l + '" aria-label="' + l + '">' + (g.ok ? '<i></i>' : '') + '</button>' : '<span class="jbCell gap" role="img" title="' + l + '" aria-label="' + l + '"></span>'; }).join('') + '</div></div>' + cap; };
+        const [g, i] = x, l = esc(g.t + ', ' + (g.ok ? 'in your plan' : g.w)); const at2 = ' style="--cx:' + k % 8 + ';--cy:' + Math.floor(k / 8) + '"'; return g.sug ? '<button class="jbCell gap' + (g.ok ? ' ok' : '') + '" type="button" data-jb="gap" data-i="' + i + '" title="' + l + '" aria-label="' + l + '"' + at2 + '>' + (g.ok ? '<i></i>' : '') + '</button>' : '<span class="jbCell gap" role="img" title="' + l + '" aria-label="' + l + '"' + at2 + '></span>'; }).join('') + '</div></div>' + cap; };
     function jbDraw(c){ const w = c.clientWidth, h = c.clientHeight; if (!w || !h) return; const dpr = Math.min(2, window.devicePixelRatio || 1), f = +c.dataset.f || 0;   // the pattern: 3px squares a pixel apart, denser down the field
       c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h); x.fillStyle = getComputedStyle(c).color;
       let sd = 7; const rnd = () => { sd = (sd + 0x6D2B79F5) | 0; let t = Math.imul(sd ^ (sd >>> 15), 1 | sd); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
