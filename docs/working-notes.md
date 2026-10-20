@@ -14813,3 +14813,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Questionnaire card, the status block's item card:** its padding is the DEXA items' 16 / 18 (radius 18, white 6%), on the desk and the phone; the larger paddings it had been given (28 / 30, 20 / 22) are gone ("same padding inside the card as the dexa item; the card used all the time inside the status block").
 - **Questionnaire card line:** "A few quick questions to help us give you a more accurate outcome" (was "Optional · about a minute, it helps your doctor prepare", and its after-the-call variant), at every step.
 - **Questionnaire card title:** a title over the questionnaire's card again, "Help us understand you better" (14px, 70% white, 8 above the card), at every step it shows.
+- **Item name and line 4 apart more:** in the status block's item cards (the questionnaire, the report and video items), the line under the name sits 6px below it (was 2) ("add a 4px gap").
