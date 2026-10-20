@@ -14888,3 +14888,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Category eyebrows 8 lower:** 20 above a category's name now (was 12) ("+8 margin top").
 - **Groups 24 closer:** 16 between one group's last item and the next group (was 40), the eyebrow's own 20 above its name kept ("-24px gap between groups").
 - **Chips 12 further from their items:** 12 more under the phase card's chip row ("add 12px below tab chip filter").
+- **Category eyebrows quieter:** white at 24% (light page: its ink at 36%) ("reduce eyebrow opacity fff 24%").
