@@ -14746,3 +14746,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Status cards tweak group** (new): Status card (Journey / Recent update), Health profile (Minimal / Arc), Health profile data (Data provided / Empty), Health profile visual (Grid / Pattern / List: Minimal only, hidden with Arc).
 - **Bento order tweak retired:** the summary card on top, then the status card at 60% and the Health profile at 40% (a carousel on the phone).
 - **Left nav:** My journey second, after Overview (the items are wired by label, so only the order changed). The phone's bottom dock is unchanged.
+- **Phone service rows:** the visual 16 up (48 to 64, column 68); the button and its ⋯ under the words, at their left, 14 below ("mobile: increase visual by 16px; display CTA below content"). The Items Grid layout and the desk unchanged.
