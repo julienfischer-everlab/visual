@@ -14814,3 +14814,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Questionnaire card line:** "A few quick questions to help us give you a more accurate outcome" (was "Optional · about a minute, it helps your doctor prepare", and its after-the-call variant), at every step.
 - **Questionnaire card title:** a title over the questionnaire's card again, "Help us understand you better" (14px, 70% white, 8 above the card), at every step it shows.
 - **Item name and line 4 apart more:** in the status block's item cards (the questionnaire, the report and video items), the line under the name sits 6px below it (was 2) ("add a 4px gap").
+- **Onboarding standalone, five states:** "Onboarding consultation (Questionnaire optional)" walks five states in order, each its own status title and button:
+  1. Unbooked (as before): Pending action / Book your call / Book.
+  2. Booked, more than 3 days away (as before): Confirmed / You're booked in for Tue 6 Oct, 10:30 - 11:10 am / Add to calendar; Change and Cancel under the line.
+  3. Unconfirmed, under 3 days (patient_unconfirmed): Pending action / "Confirm you'll be there" / "Your call with Dr Sarah Chen is on … Let us know you'll attend, or change the time." / I'll attend this call; Change and Cancel. Pressing it: Confirmed / "You're confirmed for …" / Add to calendar.
+  4. Approaching, under 24 hours (booking_approaching): Starting soon / "Your call starts soon" / "… with Dr Sarah Chen. Join from here when it's time." / Join call, green with a phone; Cancel alone. Pressing it: "Joining your call with Dr Sarah Chen…".
+  5. Completed (as before): Your call is complete.
+  The questionnaire's card stays under it throughout while not done. The demo's arrows step through the five, and a select between them jumps straight to one (1 · Unbooked, 2 · Booked (>3d), 3 · Unconfirmed (<3d), 4 · Approaching (<24h), 5 · Completed). States 3 and 4 are the booked state with a phase (ph), so the Timeline's row stays booked.
