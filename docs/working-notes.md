@@ -14854,3 +14854,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Why it matters held on scroll:** on the desk, a phase card's left column (Why it matters, its points, its ETA) stays in view while the phase's items scroll past, its eyebrow 32 under the pinned phases (or 24 under the top when they aren't pinned), till the card's foot takes it up; the phone unchanged ("keep fixed on scroll").
 - **Held column 32 under the phases:** the held Why it matters' eyebrow letters sit 32 under the pinned phases' card (its box 28) ("fixed position should be 32px").
 - **Groups 16 more to their items:** a locked phase's group name is 16 further from its items (heading to the first card 32 in Grid items; to the first row 16, its picture 36, in the list) ("+16px gap").
+- **Locked items at 70%:** a locked item is at 70% opacity as a whole (its picture, words and button); its picture is no longer dimmed on its own ("locked item 70% opacity").
