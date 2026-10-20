@@ -8077,6 +8077,7 @@
   #dTl .tlList.tlV2 .jvList > .jvCard.jvPhEc{display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 28px 46px;}   /* an empty group: one column, centred */
   #dTl .tlList.tlV2 .jvList > .jvCard.jvPhEc.jvTv{background-image:radial-gradient(ellipse 46% 44% at 50% 0%, rgba(255,128,64,.17) 0%, rgba(255,112,48,.08) 42%, rgba(255,104,40,.025) 72%, rgba(255,104,40,0) 100%);background-repeat:no-repeat;}   /* Top visual: a warm light falling from the top edge, a bowl down to the line under the title ("subtle warm gradient imagery, radial, behind the content") */
   body.light #dTl .tlList.tlV2 .jvList > .jvCard.jvPhEc.jvTv{background-image:radial-gradient(ellipse 46% 44% at 50% 0%, rgba(255,140,80,.16) 0%, rgba(255,140,80,.07) 42%, rgba(255,140,80,.02) 72%, rgba(255,140,80,0) 100%);}
+  .jvPhStr{position:absolute;inset:0;z-index:0;width:100%;height:100%;border-radius:inherit;pointer-events:none;} .jvPhEc.jvTv > :not(.jvPhStr){position:relative;z-index:1;}   /* Top visual's streams: under the lock, the words and the reasons */
   @container msl (max-width:600px){ #dTl .tlList.tlV2 .jvList > .jvCard.jvPhEc.jvTv{background-size:100% 100%;background-image:radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255,128,64,.17) 0%, rgba(255,112,48,.08) 42%, rgba(255,104,40,.025) 72%, rgba(255,104,40,0) 100%);} body.light #dTl .tlList.tlV2 .jvList > .jvCard.jvPhEc.jvTv{background-image:radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255,140,80,.16) 0%, rgba(255,140,80,.07) 42%, rgba(255,140,80,.02) 72%, rgba(255,140,80,0) 100%);} }   /* the phone: the card tall and narrow, the light wider across it, shallower */
   #dTl .tlList.tlV2 .jvList > .jvCard.jvPhEc > .jvGi{margin:0 0 14px;} #dTl .tlList.tlV2 .jvList > .jvCard.jvPhEc > .jvLbl{margin:0;padding:0;} .jvPhEc > .jvPhE{max-width:50ch;margin-top:2px;padding:0;} .jvPhEc > .jvPhE b{font-size:17px;line-height:23px;} .jvPhEc > .jvPhE p{margin:6px 0 0;font-size:15px;line-height:22px;color:var(--tlSub);}   /* why the phase comes next: a title, then its line ("Title: Your baseline will reveal where to focus. / Sub: From there, ...") */
   .jvPhEv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%;max-width:720px;margin:24px 0 0;padding:0;list-style:none;} .jvPhEv li{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;padding:20px 32px 18px;border-radius:16px;background:rgba(255,255,255,.035);} body.light .jvPhEv li{background:rgba(46,31,26,.035);}
@@ -31300,7 +31301,7 @@ hairline({
       return '<div class="jbGridP"><div class="jbGrid" role="group" aria-label="' + rec + ' of ' + JB_HP_N + ' recorded, ' + n + (n === 1 ? ' gap' : ' gaps') + '">' + Array.from({ length: JB_HP_N }, (_, k) => { const x = at[k]; if (!x) return '<span class="jbCell"><i></i></span>';
         const [g, i] = x, l = esc(g.t + ', ' + (g.ok ? 'in your plan' : g.w)); const tip = '<span class="jbTip" aria-hidden="true">' + esc(g.t) + '</span>'; return g.sug ? '<button class="jbCell gap' + (g.ok ? ' ok' : jbSoon(g) ? ' soon' : '') + '" type="button" data-jb="gap" data-i="' + i + '" aria-label="' + l + '">' + (g.ok ? '<i></i>' : '') + tip + '</button>' : '<span class="jbCell gap' + (jbSoon(g) ? ' soon' : '') + '" role="img" tabindex="0" aria-label="' + l + '">' + tip + '</span>'; }).join('') + '</div></div>' + cap; };
     /* the Health profile empty (the Health profile tweak's Empty): the square cloud, what it will find, Find my gaps over the cloud -- which, here, finds them (Data provided) */
-    let JHPST = 'data', JSUM = 'wel', JSUMON = true, JTLV = 'tl', JVMD = false, JVPN = 'notch', JVTV = true, JPGV = true, GVF = [];   // JPGV: the Plate in the active phase tab, on or off (the Tab visual tweak)   // JVTV: the locked service group's top visual, a warm light behind its words (the Top visual tweak)   // JVPN: the phase card's name, a folder tab on its top left (notch) or a badge in its left column   // JVMD: the phase cards' media tile, on or off (the Media tweak; off: "Remove icon, just text")   // GVF: the active phase tab's figures, mounted   // JSUMON: the summary card on; JTLV: the year card the journey (tl) or the recent update (upd)
+    let JHPST = 'data', JSUM = 'wel', JSUMON = true, JTLV = 'tl', JVMD = false, JVPN = 'notch', JVTV = true, JPGV = true, GVF = [], JVSTR = [];   // JVSTR: the locked groups' streams, each its stop (declared here: the first render mounts them)   // JPGV: the Plate in the active phase tab, on or off (the Tab visual tweak)   // JVTV: the locked service group's top visual, a warm light behind its words (the Top visual tweak)   // JVPN: the phase card's name, a folder tab on its top left (notch) or a badge in its left column   // JVMD: the phase cards' media tile, on or off (the Media tweak; off: "Remove icon, just text")   // GVF: the active phase tab's figures, mounted   // JSUMON: the summary card on; JTLV: the year card the journey (tl) or the recent update (upd)
     /* the real journey (the Real journey tweak): four steps, walked with the arrows at the bottom right -- 0 nothing paid for; 1 the Baseline paid: the
        questionnaire, the blood test to book, the onboarding call; 2 the Foundation blood testing to do; 3 done: thanks, and the membership to get. The Baseline's
        items those alone (no other services offered), the phases after it their notes */
@@ -31700,7 +31701,8 @@ hairline({
       list.querySelectorAll('.jbApT:not(.one)').forEach(t => { jbApSync(t); t.addEventListener('scroll', () => jbApSync(t), { passive: true }); });   // the appointments' carousel
       list.querySelectorAll('canvas.jbPat').forEach(jbDraw);   // the Health profile's pattern
       list.querySelectorAll('.jbRowS').forEach(jbSwipe);   // the phone's status cards: swiped
-      gvMount();   // the group cards' visuals (Tweaks -> Group visual)
+      gvMount();   // the active phase tab's Plate (Tweaks -> Tab visual)
+      jvStrMount();   // the locked groups' streams (Tweaks -> Top visual)
       if (list._spy) requestAnimationFrame(list._spy);   // the phase in view lit (the tabs' spy, set below)
       ringify(list, ROWS);   // XS: a ring of the same count in place of the increments ("use circular progress instead of increments")
       // increments everywhere, one per step of the service (one per service in a group) ("show increments, related to the number of steps inside the service")
@@ -32098,6 +32100,35 @@ hairline({
         el.scrollTo({ left: i * w, behavior: 'smooth' }); setTimeout(() => el.classList.remove('drag'), 360); };
       el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
       el.addEventListener('click', e => { if (moved){ moved = false; e.preventDefault(); e.stopPropagation(); } }, true); }   // the status cards' carousel, swiped by touch natively, by a mouse here
+    /* the locked service group's streams ("add some particles coming from the edges left and right to the title group, centred; looping; from the organ particles that float around them"): the landing's organ streams (lpStreams), its matter and its inks, born just off the card's left and right edges, each on its own curve to the rim of the lock and title, brightening as it comes and fading into it, reborn at an edge; drawn under the words, only while the card is in view (and once, still, for reduced motion) */
+    function jvStrMount(){ JVSTR.forEach(f => f()); JVSTR = [];
+      list.querySelectorAll('.jvPhEc.jvTv').forEach(card => {
+        const cvs = document.createElement('canvas'); cvs.className = 'jvPhStr'; cvs.setAttribute('aria-hidden', 'true'); card.prepend(cvs);
+        const ctx = cvs.getContext('2d'), N = 110, P = [], still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const born = (q, fresh) => { q.side = Math.random() < .5 ? 0 : 1;
+          q.sx = q.side ? 1 + Math.random() * .04 : -Math.random() * .04; q.sy = .04 + Math.random() * .5;   // just off the edge, across the card's upper half
+          q.cx = q.side ? .6 + Math.random() * .32 : .08 + Math.random() * .32; q.cy = .02 + Math.random() * .5;   // the curve's pull
+          q.ang = (Math.random() - .5) * 1.5;   // where on the group's rim it lands: its own side, above or below the middle
+          q.t = fresh ? Math.random() : 0; q.v = (.0022 + Math.random() * .0034) / 3;
+          q.r = .4 + Math.random() * .7; q.k = Math.random() < .55 ? 0 : Math.random() < .7 ? 1 : 2; q.a = .35 + Math.random() * .45; };
+        for (let i = 0; i < N; i++){ const q = {}; born(q, true); P.push(q); }
+        const draw = () => { const cr = cvs.getBoundingClientRect(); if (!cr.width || !cr.height) return;
+          const dp = Math.min(2, devicePixelRatio || 1), W = Math.round(cr.width * dp), H = Math.round(cr.height * dp); if (cvs.width !== W || cvs.height !== H){ cvs.width = W; cvs.height = H; }
+          const gi = card.querySelector(':scope > .jvGi'), tx0 = card.querySelector(':scope > .jvPhE'); if (!tx0) return;
+          const rg = document.createRange(); rg.selectNodeContents(tx0); const a = rg.getBoundingClientRect(), b = gi ? gi.getBoundingClientRect() : a;   // the words' own extent, and the lock above them
+          const L = Math.min(a.left, b.left), R = Math.max(a.right, b.right), T = Math.min(a.top, b.top), B = Math.max(a.bottom, b.bottom);
+          const tx = ((L + R) / 2 - cr.left) * dp, ty = ((T + B) / 2 - cr.top) * dp, rx = ((R - L) / 2 + 18) * dp, ry = ((B - T) / 2 + 8) * dp;
+          const INK = document.body.classList.contains('light') ? ['163,84,66', '190,118,92', '214,150,120'] : ['163,84,66', '208,164,150', '242,235,231'];
+          ctx.clearRect(0, 0, W, H);
+          for (const q of P){ const t = q.t, u = 1 - t, ang = (q.side ? 0 : Math.PI) + (q.side ? q.ang : -q.ang);
+            const ex = tx + Math.cos(ang) * rx, ey = ty + Math.sin(ang) * ry;
+            const x = u * u * q.sx * W + 2 * u * t * q.cx * W + t * t * ex, y = u * u * q.sy * H + 2 * u * t * q.cy * H + t * t * ey;
+            const al = q.a * Math.min(1, t / .12) * (1 - Math.max(0, (t - .82) / .18)) * (.55 + .45 * t);
+            ctx.fillStyle = 'rgba(' + INK[q.k] + ',' + al.toFixed(3) + ')'; ctx.beginPath(); ctx.arc(x, y, q.r * dp * (.7 + .5 * t), 0, 6.2832); ctx.fill(); } };
+        let on = false, raf = 0, dead = false;
+        const frame = () => { raf = 0; if (dead || !on) return; if (!document.hidden){ for (const q of P){ q.t += q.v; if (q.t >= 1) born(q, false); } draw(); } raf = requestAnimationFrame(frame); };
+        const io = new IntersectionObserver(es => { on = es[es.length - 1].isIntersecting; if (still){ if (on) draw(); return; } if (on && !raf) raf = requestAnimationFrame(frame); }); io.observe(card);
+        JVSTR.push(() => { dead = true; io.disconnect(); if (raf) cancelAnimationFrame(raf); cvs.remove(); }); }); }
     function gvMount(){ GVF.forEach(h => { try { if (h && h.destroy) h.destroy(); } catch (e) {} }); GVF = []; const HL = window.HLK, F = (window.HLFIGS || {}).plate; if (!HL || !F) return; HL.inject(document);
       list.querySelectorAll('.jvGvS').forEach(stage => { stage.setAttribute('data-hairline', 'plate'); stage.setAttribute('data-hairline-theme', document.body.classList.contains('light') ? 'light' : 'dark');
         const svg = HL.mk('svg', { viewBox: '0 0 400 320', 'aria-hidden': 'true' }, stage), h = F.mount({ stage, svg, read: { textContent: '' } }, F.range ? F.range[1] : undefined); GVF.push(h);
