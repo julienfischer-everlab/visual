@@ -14887,3 +14887,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Category names as eyebrows:** a category's name over its services (Nutrition & gut health, ...) is an eyebrow: 12px, uppercase, letter-spaced 2, grey; 12 more above it ("eyebrow grey for title and 12px; +12 margin top").
 - **Category eyebrows 8 lower:** 20 above a category's name now (was 12) ("+8 margin top").
 - **Groups 24 closer:** 16 between one group's last item and the next group (was 40), the eyebrow's own 20 above its name kept ("-24px gap between groups").
+- **Chips 12 further from their items:** 12 more under the phase card's chip row ("add 12px below tab chip filter").
