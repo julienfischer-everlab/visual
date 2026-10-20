@@ -11502,6 +11502,14 @@
           </select>
         </div>
         <!-- the Hairline Plate in the active phase tab, on or off ("ON OFF tweak visual inside tab") -->
+        <!-- the phase tabs: the phases, or the membership as a title then its two steps ("add tab nav variation: 1 this one; 2 first tab as title: Baseline membership, Get assessment, Get tested and guided") -->
+        <div class="tkRow" id="stJpNvRow">
+          <span class="lbl">Tab nav</span>
+          <select id="stJpNv" class="tkSegSel" aria-label="The phase tabs: the three phases, or the membership as a title then two tabs">
+            <option value="phases" selected>Phases</option>
+            <option value="title">Title</option>
+          </select>
+        </div>
         <div class="tkRow" id="stJpGvRow">
           <span class="lbl">Tab visual</span>
           <select id="stJpGv" class="tkSegSel" aria-label="The Hairline visual inside the active phase tab: on, or off">
@@ -31798,6 +31806,7 @@ hairline({
     const jrHide = arr => { if (!jrPaid()) return arr.join(''); let cut = false; return arr.map((h, i) => { if (MS[i] && phOf(MS[i]) === 0){ if (h) cut = true; return ''; } if (cut && h){ cut = false; return h.replace(/^<div class="jvPhX[^"]*"[^>]*><span class="jvPhXIc[^"]*" aria-hidden="true">[\s\S]*?<\/span><div class="jvPhXT"><b>[\s\S]*?<\/b><\/div><\/div>/, ''); } return h; }).join(''); };
     const phNow = () => { const t0 = phT0(); return (PH_TODAY[0] - t0[0]) * 12 + PH_TODAY[1] - t0[1] + (PH_TODAY[2] - 1) / 31; };   // months since the year began
     const phIx = t => t < 3 ? 0 : t < 9 ? 1 : 2, phOf = m => m.mo ? phIx(m.mo[0]) : 2, phCur = () => jrPaid() ? 1 : phIx(phNow());
+    let JTABV = 'phases';   // the Tab nav tweak
     let JPH = null; const phSel = () => JPH == null || (jrPaid() && JPH === 0) ? phCur() : JPH;   // the phase picked; till then the one we're in
     /* the year as a strip of light (the hero's bands): every item a band at its moment -- a milestone's items spread over its months -- yellow at the year's
        start to red at its end; the current intervention (the next to do in the phase we're in) the brightest, done ones faint, the picked phase's lit */
@@ -31810,9 +31819,11 @@ hairline({
       const hero = JPHV === 'hero', sp = PH[sel], inS = (B || []).filter(x => x.ph === sel), dnS = inS.filter(x => x.fin).length;   // the hero: the picked phase's name large, where it stands, then the light, then the phases
       const hx = hero ? '<div class="jpHx"><h3 class="jpHt">' + sp.n + (sel === cur ? '<em>Now</em>' : '') + '</h3><p class="jpHs">' + sp.r + ' \u00b7 ' + sp.t + (inS.length ? ' \u00b7 ' + dnS + ' of ' + inS.length + ' done' : '') + '</p></div>' : '';
       const strip = JLINE && B && B.length ? phStrip(B, cur, sel) : '';
-      const tab = (p, i) => '<button class="jpP' + (i === sel ? ' on' : '') + (i === cur ? ' now' : '') + '" type="button" role="tab" aria-selected="' + (i === sel) + '" data-ph="' + i + '" style="--f:' + Math.max(0, Math.min(1, (now - p.a) / (p.b - p.a))).toFixed(3) + '">' +
-          '<span class="jpT"><b>' + p.n + '</b>' + (i === cur ? '<em>Your focus</em>' : '') /* ("orange text 'your focus' in the current tab") */ + '</span><span class="jpR">' + p.r + '<span class="jpM"> \u00b7 ' + p.t + '</span></span>' + (hero && JPGV ? '<span class="jpGv" aria-hidden="true"><span class="jvGvS"></span></span>' : '') + '</button>';   // the Plate, shown in the active one
-      if (hero) return '<div class="jpStick"><div class="jvPh jpHero jpOnly" role="tablist" aria-label="Your first year"><div class="jpRow">' + PH.map((p, i) => jrPaid() && i === 0 ? '<div class="jpP jpTitle" role="presentation"><span class="jpT"><b>Diagnostic membership</b></span></div>' /* paid: the baseline's place the membership's title, not a tab ("keep the first tab as title: Diagnostic membership") */ : tab(p, i)).join('') + '</div></div></div>';   // the tabs alone ("remove the content, just keep the tabs")
+      const tab = (p, i, sl = sel, cu = cur) => '<button class="jpP' + (i === sl ? ' on' : '') + (i === cu ? ' now' : '') + '" type="button" role="tab" aria-selected="' + (i === sel) + '" data-ph="' + i + '" style="--f:' + Math.max(0, Math.min(1, (now - p.a) / (p.b - p.a))).toFixed(3) + '">' +
+          '<span class="jpT"><b>' + p.n + '</b>' + (i === cu ? '<em>Your focus</em>' : '') /* ("orange text 'your focus' in the current tab") */ + '</span><span class="jpR">' + p.r + '<span class="jpM"> \u00b7 ' + p.t + '</span></span>' + (hero && JPGV ? '<span class="jpGv" aria-hidden="true"><span class="jvGvS"></span></span>' : '') + '</button>';   // the Plate, shown in the active one
+      if (hero) return '<div class="jpStick"><div class="jvPh jpHero jpOnly" role="tablist" aria-label="Your first year"><div class="jpRow">' + (jrPaid() ? PH.map((p, i) => i === 0 ? '<div class="jpP jpTitle" role="presentation"><span class="jpT"><b>Diagnostic membership</b></span></div>' /* paid: the baseline's place the membership's title, not a tab ("keep the first tab as title: Diagnostic membership") */ : tab(p, i)).join('')
+        : JTABV === 'title' ? '<div class="jpP jpTitle" role="presentation"><span class="jpT"><b>Baseline membership</b></span></div>' + tab(Object.assign({}, PH[0], { n: 'Get assessment' }), 0) + tab(Object.assign({}, PH[1], { n: 'Get tested and guided', b: PH[2].b, r: PH[1].r.split('\u2013')[0] + '\u2013' + PH[2].r.split('\u2013')[1] }), 1, Math.min(sel, 1), Math.min(cur, 1))   /* Tab nav: Title -- the membership a title, then its two steps: the assessment (the baseline, Your focus till it's done) and the testing and guidance (Act & Improve and Re-test, 4-12 months) */
+        : PH.map((p, i) => tab(p, i)).join('')) + '</div></div></div>';   // the tabs alone ("remove the content, just keep the tabs")
       return '<div class="jvPh' + (hero ? ' jpHero' : '') + '" role="tablist" aria-label="Your first year"><div class="jpHd"><span class="jpEy">Your first year</span><span class="jpNow">Month ' + Math.min(12, Math.floor(now) + 1) + ' of 12</span></div>' + hx + (hero ? strip : '') + '<div class="jpRow">' +
         PH.map(tab).join('') + '</div>' + (hero ? '' : strip) + (JUP ? upHtml() : '') + '</div>'; };   // the plan's small card at the card's foot
     /* the phases as a rail (Phases position Left: "fixed, stacked on scroll"): the year's three, one above the other on a line, each its months and how far;
@@ -32320,6 +32331,7 @@ hairline({
       if (performance.now() < jpLock) return; const tabs = list.querySelectorAll('.jvPh [data-ph], .jvRail [data-ph]'); if (!tabs.length) return; const line = phTop() + 48; let at = jrPaid() ? 1 : 0;   /* paid: no baseline tab, Act & Improve the first */
       for (let i = 0; i < PH.length; i++){ const a = phAt(i); if (a && a.getBoundingClientRect().top <= line) at = i; }
       if (main.scrollTop + main.clientHeight >= main.scrollHeight - 4){ for (let i = PH.length - 1; i > 0; i--) if (phAt(i)){ at = Math.max(at, i); break; } }   // the foot reached: the last phase
+      { const hs = [...tabs].map(t => +t.dataset.ph); if (!hs.includes(at)){ const lo = hs.filter(x => x <= at); at = lo.length ? Math.max(...lo) : hs[0]; } }   // a phase with no tab of its own (Tab nav: Title): the tab holding it
       tabs.forEach(t => { const on = +t.dataset.ph === at; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); }); jpCar(true); };   /* the carousel follows the phase in view ("active card should position to the phase section") */
     { let jpT = 0; list.addEventListener('scroll', e => { const row = e.target; if (!row.classList || !row.classList.contains('jpRow') || getComputedStyle(row).overflowX !== 'auto') return; clearTimeout(jpT);   /* swiped to a phase: once it settles, the page to that phase, as a tap */
       jpT = setTimeout(() => { if (row.classList.contains('drag')) return; const rr = row.getBoundingClientRect(), mid = rr.left + rr.width / 2; let best = null, bd = 1e9; row.querySelectorAll('.jpP').forEach(c => { const r = c.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid); if (d < bd){ bd = d; best = c; } });
@@ -32442,6 +32454,9 @@ hairline({
       const sh = () => { if (pr) pr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
     { const gv = document.getElementById('stJvMd'), gvr = document.getElementById('stJvMdRow');   // Media: the phase cards' tile, on or off
       if (gv) gv.addEventListener('change', () => { JVMD = gv.value === 'on'; render(); }); JVMD = !!gv && gv.value === 'on';
+      { const nv = document.getElementById('stJpNv'), nvr = document.getElementById('stJpNvRow');   // Tab nav: the phases, or the membership's title then its two steps
+        if (nv) nv.addEventListener('change', () => { JTABV = nv.value; render(); });
+        const sh = () => { if (nvr) nvr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
       { const tg = document.getElementById('stJpGv'), tgr = document.getElementById('stJpGvRow');   // Tab visual: the Plate in the active phase tab
         if (tg) tg.addEventListener('change', () => { JPGV = tg.value !== 'off'; render(); }); JPGV = !tg || tg.value !== 'off';
         const sh = () => { if (tgr) tgr.hidden = TLVER !== 'v2'; }; { const v = document.getElementById('stTlVer'); if (v) v.addEventListener('change', sh); } sh(); }
