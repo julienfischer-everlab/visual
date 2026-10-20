@@ -8111,7 +8111,7 @@
   .jbEy + .jbH{margin-top:4px;}   /* the status cards' title 16 closer to its eyebrow ("reduce gap between eyebrow and title by 16px": was 16), then 4 ("+4px") */
   .jbUpdA{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:24px;}   /* the recent update's button, at the card's foot */
   .jbUpd > .jbH:first-child{margin-top:0;} #dTl .tlList.tlV2 .jbUpdA .msB.jvB{height:44px;max-width:none;padding:0 20px;}   /* no eyebrow; its button 44 */
-  .jbUpd{position:relative;overflow:hidden;} .jbUpd > :not(.jvArtH):not(.jbUpdPh){position:relative;z-index:1;} .jbUpd > .jbUpdPh{position:absolute;inset:0;background-size:cover;background-position:var(--php, center);pointer-events:none;}   /* the photo over the whole card, no fade ("remove fade in img, img cover the full card") */ .jbUpd > .jbUpdPh[data-ph="consult"]{--php:28% 30%;} .jbUpd > .jbUpdPh[data-ph="dexa"]{--php:34% 55%;} .jbUpd > .jbUpdPh[data-ph="mri"]{--php:78% 50%;}   /* the photo at the right, fading in from the words; each framed on its subject */ .jbUpd > :is(.jbH, .jbP){max-width:56%;}   /* its words on the left, the light on the right */
+  .jbUpd{position:relative;overflow:hidden;} .jbUpd > :not(.jvArtH):not(.jbUpdPh){position:relative;z-index:1;} .jbUpd > .jbUpdPh{position:absolute;inset:0;background-size:cover;background-position:var(--php, center);pointer-events:none;} .jbUpd > .jbUpdPh::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg, rgba(28,18,12,.94) 0%, rgba(28,18,12,.78) 30%, rgba(28,18,12,.35) 58%, rgba(28,18,12,0) 82%);} body.light .jbUpd > .jbUpdPh::after{background:linear-gradient(135deg, rgba(250,243,236,.95) 0%, rgba(250,243,236,.8) 30%, rgba(250,243,236,.35) 58%, rgba(250,243,236,0) 82%);}   /* a dark brown from the top left, gone by the bottom right: the words on it read ("put a dark brown gradient top left to bottom right, so the content is visible"); the light page, a warm cream */   /* the photo over the whole card, no fade ("remove fade in img, img cover the full card") */ .jbUpd > .jbUpdPh[data-ph="consult"]{--php:28% 30%;} .jbUpd > .jbUpdPh[data-ph="dexa"]{--php:34% 55%;} .jbUpd > .jbUpdPh[data-ph="mri"]{--php:78% 50%;}   /* the photo at the right, fading in from the words; each framed on its subject */ .jbUpd > :is(.jbH, .jbP){max-width:56%;}   /* its words on the left, the light on the right */
   .jbUpd > .jvArtH{position:absolute;top:0;right:0;bottom:0;width:46%;mix-blend-mode:screen;-webkit-mask-image:linear-gradient(to right, transparent, #000 40%);mask-image:linear-gradient(to right, transparent, #000 40%);} .jbUpd > .jvArtH img{mix-blend-mode:normal;}   /* the summary card's light, fading in from the words; blended as a whole (the mask isolates what's inside it): its black gone */
   body.light .jbUpd > .jvArtH{mix-blend-mode:normal;background:linear-gradient(160deg,#f9a07c,#f78359 45%,#e0612f);-webkit-mask-image:linear-gradient(to right, transparent, #000 40%), var(--art);mask-image:linear-gradient(to right, transparent, #000 40%), var(--art);mask-size:100% 100%, cover;mask-position:0 0, left center;mask-repeat:no-repeat;mask-mode:alpha, luminance;mask-composite:intersect;} body.light .jbUpd > .jvArtH img{visibility:hidden;}   /* the light card: the light's brightness masks an orange ground -- its black gone, the shapes orange, no dark edges */
   @container msl (max-width:600px){ .jvBento:has(> .jbUpd) > :is(.jbUpd, .jbHp){grid-column:1 / -1;} .jbUpdA{padding-top:20px;} .jbUpd > :is(.jbH, .jbP){max-width:72%;} .jbUpd > .jvArtH{display:block;width:44%;} .jbUpd > .jbUpdPh{display:block;} }   /* the phone: its light kept, its words clear of most of it */
@@ -32464,24 +32464,25 @@ hairline({
     function jvStrMount(){ JVSTR.forEach(f => f()); JVSTR = [];
       list.querySelectorAll('.jvPhEc.jvTv').forEach(card => {
         const cvs = document.createElement('canvas'); cvs.className = 'jvPhStr'; cvs.setAttribute('aria-hidden', 'true'); card.prepend(cvs);
-        const ctx = cvs.getContext('2d'), N = 110, P = [], still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const ctx = cvs.getContext('2d'), N = 160, P = [], still = matchMedia('(prefers-reduced-motion: reduce)').matches;
         const born = (q, fresh) => { q.side = Math.random() < .5 ? 0 : 1;
           q.sx = q.side ? 1 + Math.random() * .04 : -Math.random() * .04; q.sy = .04 + Math.random() * .5;   // just off the edge, across the card's upper half
           q.cx = q.side ? .6 + Math.random() * .32 : .08 + Math.random() * .32; q.cy = .02 + Math.random() * .5;   // the curve's pull
-          q.ang = (Math.random() - .5) * 1.5;   // where on the group's rim it lands: its own side, above or below the middle
+          q.vis = Math.random() < .65; q.ang = (Math.random() - .5) * (q.vis ? 2.6 : 1.5);   // where on the rim it lands: most round the figure on top, all about it ("particles more around the visual on top"), the rest the words' group, its own side
           q.t = fresh ? Math.random() : 0; q.v = (.0022 + Math.random() * .0034) / 3;
           q.r = .4 + Math.random() * .7; q.k = Math.random() < .55 ? 0 : Math.random() < .7 ? 1 : 2; q.a = .35 + Math.random() * .45; };
         for (let i = 0; i < N; i++){ const q = {}; born(q, true); P.push(q); }
         const draw = () => { const cr = cvs.getBoundingClientRect(); if (!cr.width || !cr.height) return;
           const dp = Math.min(2, devicePixelRatio || 1), W = Math.round(cr.width * dp), H = Math.round(cr.height * dp); if (cvs.width !== W || cvs.height !== H){ cvs.width = W; cvs.height = H; }
-          const gi = card.querySelector(':scope > .jvGi'), tx0 = card.querySelector(':scope > .jvPhE'); if (!tx0) return;
+          const gi = card.querySelector(':scope > .jvPhIl, :scope > .jvGi'), tx0 = card.querySelector(':scope > .jvPhE'); if (!tx0) return;   // the figure (once the lock)
           const rg = document.createRange(); rg.selectNodeContents(tx0); const a = rg.getBoundingClientRect(), b = gi ? gi.getBoundingClientRect() : a;   // the words' own extent, and the lock above them
           const L = Math.min(a.left, b.left), R = Math.max(a.right, b.right), T = Math.min(a.top, b.top), B = Math.max(a.bottom, b.bottom);
           const tx = ((L + R) / 2 - cr.left) * dp, ty = ((T + B) / 2 - cr.top) * dp, rx = ((R - L) / 2 + 18) * dp, ry = ((B - T) / 2 + 8) * dp;
+          const vx = ((b.left + b.right) / 2 - cr.left) * dp, vy = ((b.top + b.bottom) / 2 - cr.top) * dp, vrx = ((b.right - b.left) / 2 + 26) * dp, vry = ((b.bottom - b.top) / 2 + 4) * dp;   // the figure's own rim
           const INK = document.body.classList.contains('light') ? ['163,84,66', '190,118,92', '214,150,120'] : ['163,84,66', '208,164,150', '242,235,231'];
           ctx.clearRect(0, 0, W, H);
           for (const q of P){ const t = q.t, u = 1 - t, ang = (q.side ? 0 : Math.PI) + (q.side ? q.ang : -q.ang);
-            const ex = tx + Math.cos(ang) * rx, ey = ty + Math.sin(ang) * ry;
+            const ex = q.vis && gi ? vx + Math.cos(ang) * vrx : tx + Math.cos(ang) * rx, ey = q.vis && gi ? vy + Math.sin(ang) * vry : ty + Math.sin(ang) * ry;
             const x = u * u * q.sx * W + 2 * u * t * q.cx * W + t * t * ex, y = u * u * q.sy * H + 2 * u * t * q.cy * H + t * t * ey;
             const al = q.a * Math.min(1, t / .12) * (1 - Math.max(0, (t - .82) / .18)) * (.55 + .45 * t);
             ctx.fillStyle = 'rgba(' + INK[q.k] + ',' + al.toFixed(3) + ')'; ctx.beginPath(); ctx.arc(x, y, q.r * dp * (.7 + .5 * t), 0, 6.2832); ctx.fill(); } };
