@@ -7626,6 +7626,15 @@
   .svmHzWrap{position:relative;margin-top:24px;} .svmHzWrap > :is(.svmHz, .svmHzStack){margin-top:0 !important;} .svmHzWrap > .svSimNav{position:absolute;top:15px;right:18px;z-index:2;} .svmHzWrap .svmHzH > span{margin-right:72px;}   /* the count, then the arrows */
   html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmHzWrap{margin-top:0;}
   .svSimNav{display:inline-flex;gap:6px;margin-left:auto;} .svSimNav:not(.svFloatNav){display:none !important;} .svmHzWrap .svmHzH > span{margin-right:0 !important;}   /* the arrows live in the floating island now */
+  /* the almost full sheets stacked over their screen (see the script at the foot): the scrim black, the screen behind its card's top edge over the sheet; the drawn status strip black and its words white while one is up */
+  .iosStk :is(.tlShDim, .shDim){background:#000 !important;}
+  .iosStk :is(.tlShDim, .shDim)::before{content:"";position:absolute;left:4%;right:4%;top:var(--stkTop, 40px);bottom:0;border-radius:12px 12px 0 0;background:color-mix(in srgb, var(--stkCard, #161616) 72%, #000);}
+  html :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .svBook.svLkM .tlShPanel{top:calc(var(--shTop, 52px) + 12px) !important;}   /* 12 under the card's edge, as the other sheets */
+  #phone .sheet.shModal{top:62px;}   /* under the status bar and the card's edge */
+  body[data-bp="xs"] .dash{transition:border-top-color .25s ease;} html:not(.bpAuto) body.iosStkOn.iosStkOn[data-bp="xs"] .dash{border-top-color:#000;}
+  body.iosStkOn.iosStkOn[data-bp="xs"] #bpFrame .bpStatus, body.iosStkOn.iosStkOn[data-bp="s"] #bpFrame .bpStatus{color:#fff;} body.iosStkOn.iosStkOn[data-bp="xs"] #bpFrame .bpStatus svg, body.iosStkOn.iosStkOn[data-bp="s"] #bpFrame .bpStatus svg{filter:none;}
+  .iosStk :is(.tlShGrab, .shHandle){display:none !important;}   /* no handle on an almost full sheet ("no notch at the top") */
+  body.iosStkOn :is(#phone, #phone2) > .mstatus{position:relative;z-index:61;} body.iosStkOn :is(#phone, #phone2) > .mstatus .tm{color:#fff !important;} body.iosStkOn :is(#phone, #phone2) > .mstatus svg{fill:#fff !important;} body.iosStkOn :is(#phone, #phone2) > .mstatus svg [stroke]{stroke:#fff !important;}
   body:not(.tlOn) .svFloatNav.jvSimNav, body.asyncRep .svFloatNav{display:none !important;}   /* My journey's step nav only on My journey, never over the report: it stayed on after leaving the page ("remove this right arrow nav") */
   .svFloatNav{position:fixed;z-index:9000;display:none;gap:8px;margin:0;padding:6px;border-radius:999px;background:rgba(30,30,30,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 12px 32px rgba(0,0,0,.45);} .svFloatNav.on{display:inline-flex;} .svFloatNav.mob{flex-direction:column;} .svFloatNav button{width:44px !important;height:44px !important;} .svFloatNav button svg{width:14px !important;height:14px !important;} body.light .svFloatNav{background:rgba(255,255,255,.92);box-shadow:inset 0 0 0 1px rgba(46,31,26,.12),0 12px 32px rgba(46,31,26,.18);} .svSimNav button{width:28px;height:28px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#ececec;display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .svSimNav .svSimSel{flex:none;height:36px;max-width:250px;margin:0;padding:0 30px 0 14px;border:0;border-radius:999px;background:rgba(255,255,255,.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23cfcfcf' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E") no-repeat right 12px center / 10px 10px;color:#ececec;font:inherit;font-size:13px;line-height:36px;-webkit-appearance:none;appearance:none;cursor:pointer;} .svSimNav .svSimSel option{color:#111;background:#fff;} .svSimNav .svSimSel:hover{background-color:rgba(255,255,255,.14);} body.light .svSimNav .svSimSel{background-color:rgba(46,31,26,.07);color:#2e241c;}   /* the state picker between the arrows */
@@ -37502,5 +37511,31 @@ hairline({
     setStuck();
   })();
   requestAnimationFrame(frame);
+})();
+</script>
+<script>
+/* Every almost full sheet stacks over its screen, as iOS ("modal like this (almost full) should always overlap the previous screen"; "all bottom sheets almost full should stack the screen behind"):
+   the service, timeline and journey sheets (.tlSheet) and the Insights phone's sheets (.shWrap), wherever one opens in a phone's screen (the XS frame, the phones) and starts in its top 14%.
+   Its scrim goes black and draws the screen behind as a card: its top edge 12 above the sheet, inset 4% each side, rounded, the screen's own ground under 28% black; the status bar white over it.
+   (The report's sheets and the biomarker detail push their page back for real; these pages are too many and too different to move, and under an almost full sheet only that edge shows.) */
+(function () {
+  var KINDS = [['.tlSheet.on', '.tlShPanel', '.tlShDim'], ['.shWrap.on', '.sheet', '.shDim']], was = null;
+  function tick() {
+    var any = false;
+    KINDS.forEach(function (k) {
+      document.querySelectorAll(k[0]).forEach(function (w) {
+        var p = w.querySelector(k[1]), d = w.querySelector(k[2]); if (!p || !d) return;
+        var wr = w.getBoundingClientRect(), pr = p.getBoundingClientRect(), off = pr.top - wr.top;
+        var near = wr.height > 0 && wr.width < 640 && off <= wr.height * .14 && pr.width >= wr.width - 2;   // a phone's screen, the sheet its full width from near its top
+        if (!near) { w.classList.remove('iosStk'); return; }
+        any = true;
+        var top = Math.max(0, Math.round(off - 12)) + 'px'; if (w.style.getPropertyValue('--stkTop') !== top) w.style.setProperty('--stkTop', top);
+        if (!w.classList.contains('iosStk')) { var host = w.parentElement, hs = host ? getComputedStyle(host) : null, pg = hs ? hs.getPropertyValue('--pageBg').trim() : '', bg = pg || (hs ? hs.backgroundColor : ''); w.style.setProperty('--stkCard', bg && bg !== 'rgba(0, 0, 0, 0)' ? bg : (document.body.classList.contains('light') ? '#f4f4f4' : '#161616')); w.classList.add('iosStk'); }   // the card the screen's own ground
+      });
+    });
+    document.querySelectorAll('.iosStk').forEach(function (w) { if (!w.matches('.tlSheet.on, .shWrap.on')) w.classList.remove('iosStk'); });
+    if (any !== was) { document.body.classList.toggle('iosStkOn', any); was = any; }
+  }
+  setInterval(tick, 150);
 })();
 </script>
