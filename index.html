@@ -14129,7 +14129,7 @@
 .arSheet .arLfEv .arLfCard { background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); }   /* the group's card outlined, not filled; its list's card inside it filled ("main card outlined not filled") */
 .arSheet.arCardsFill .arLfEv .arLfCard { background: oklch(0% 0 0 / .04); box-shadow: none; } .arSheet.arDark.arCardsFill .arLfEv .arLfCard { background: oklch(100% 0 0 / .04); }   /* Evidence cards: Filled, #000 4% on the light page, #fff 4% on the dark ("Filled fff 4%") */
 .arSheet .arLfEv .arLfCard { padding: 20px; } .arSheet .arLfEv .arLfCardH { padding: 0 0 8px; }   /* 20 inside the card, all round ("card padding 24px", then 4 less) */
-.arSheet .arLfEv .arLfCard > .arLfGroup { background: transparent; box-shadow: none; padding: 0; } .arSheet .arLfEv .arMbList > .arMb:last-child { margin-bottom: -10px; }   /* the last row's tile as far from the card's foot as the tiles from its sides, 14 ("bottom padding same as left right") */   /* no card inside: the list straight on the outlined card ("remove card style") */ .arSheet .arLfEv .arLfCard > .arLfAns1 { padding-top: 2px; }   /* the one answer */ .arSheet .arLfEv .arLfCardRow { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; } .arSheet .arLfEv .arLfCardRow > .arLfCardH { padding: 0; min-width: 0; }   /* Your answers, its name and See detail on one line */
+.arSheet .arLfEv .arLfCard > .arLfGroup, .arSheet .arLfEv .arEvPane > .arLfGroup { background: transparent; box-shadow: none; padding: 0; } .arSheet .arLfEv .arMbList > .arMb:last-child { margin-bottom: -10px; }   /* the last row's tile as far from the card's foot as the tiles from its sides, 14 ("bottom padding same as left right") */   /* no card inside: the list straight on the outlined card ("remove card style") */ .arSheet .arLfEv .arLfCard > .arLfAns1 { padding-top: 2px; }   /* the one answer */ .arSheet .arLfEv .arLfCardRow { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; } .arSheet .arLfEv .arLfCardRow > .arLfCardH { padding: 0; min-width: 0; }   /* Your answers, its name and See detail on one line */
 .arSheet .arLfDetail { flex: none; width: 36px; height: 36px; padding: 0; border-radius: 50%; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); }   /* the secondary circle, the chevron centred */
 @media (hover: hover) { .arSheet .arLfDetail:hover { background: oklch(var(--ar-ink) / .1); } } .arSheet .arLfDetail:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }   /* See X answered questions, alone under its name */
 .arSheet .arLfStack > .arLfHead { margin-bottom: -16px; }   /* 16 less under the headline ("margin bottom less by 16px") */
@@ -14217,6 +14217,19 @@
 .arSheet .arMbMore { position: relative; z-index: 1; width: 100%; height: 44px; margin: -12px 0 0; padding: 0 20px; border-radius: 12px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); font-size: 14px; line-height: 18px; font-weight: 500; }   /* See N more, over the faded row's foot */
 @media (hover: hover) { .arSheet .arMbMore:hover { background: oklch(var(--ar-ink) / .1); } }
 .arSheet .arMbMore:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; } .arSheet .arMbMore .arBtnLabel { gap: 6px; }
+/* Async report V2: Behind this insight in one card, a pill each for Biomarkers and Questionnaire at its top (the insight's own pills' look), its list under it, its sources under the list as square bullets past a rule */
+.arSheet .arEvTabs { display: flex; gap: 8px; margin-bottom: 8px; }
+.arSheet .arEvTab { flex: none; appearance: none; -webkit-appearance: none; margin: 0; height: 36px; padding: 0 16px; border: 1.5px solid transparent; border-radius: 9999px; background: var(--ar-card-bg); font-family: var(--ar-font); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; color: oklch(var(--ar-ink) / .72); cursor: pointer; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+@media (hover: hover) { .arSheet .arEvTab:hover { color: oklch(var(--ar-ink)); } }
+.arSheet .arEvTab[aria-selected="true"] { background: transparent; border-color: oklch(var(--ar-ink)); color: oklch(var(--ar-ink)); } .arSheet .arEvTab:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
+.arSheet .arEvPane { display: flex; flex-direction: column; animation: arEvIn .24s ease both; } .arSheet .arEvPane[hidden] { display: none; }   /* the pill's list in, as it is picked */
+@keyframes arEvIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.arSheet .arLfEv .arEvPane > .arMbList:has(+ .arEvSrc) > .arMb:last-child { margin-bottom: 0; }   /* the sources under it: the last row's own foot */
+.arSheet .arEvSrc { margin-top: 16px; padding-top: 16px; border-top: 1px solid oklch(var(--ar-ink) / .08); }
+.arSheet .arLfEv .arEvPane > .arEvAns { gap: 12px; padding-top: 12px; }   /* the questions as the biomarkers' rows sit: 12 under the pills, a rule between */
+.arSheet .arEvAns .arEvMore { margin-top: 4px; }
+.arSheet .arEvAns > .arLfAnsL, .arSheet .arEvSrc > .arSrcRow { margin-left: 4px; margin-right: 4px; }   /* their words on the biomarkers' line, 4 in as the rows' (the rules still the card's width) */
+@media (prefers-reduced-motion: reduce) { .arSheet .arEvPane { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .arSheet .arQaDim, .arSheet .arQaPanel { transition: none; } }
 .arSheet .arLfQA { display: flex; flex-direction: column; gap: 4px; }
 .arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
@@ -14331,6 +14344,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *     cards: 'fill' | 'outline',       // default 'fill': Behind this insight's cards filled #fff 4% (light #000 4%), or outlined
  *     mb: 3 | 2,                       // default 3: the biomarkers Behind this insight shows before See N more, the next one partly shown
  *     srcVis: 'hairline' | 'image',    // default 'hairline': From your data's visual, the Hairline report file or the Overview's report render
+ *     ev: 'v1' | 'v2',                 // default 'v1': Behind this insight as From your data's card, then a card each; 'v2' (Async report V2) one card, a pill each for Biomarkers and Questionnaire, its sources under its list
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
  *     onClose: function () {}          // Close (X) and the final "Done"
@@ -14611,11 +14625,12 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       cards: opts.cards === 'outline' ? 'outline' : 'fill',   // Behind this insight's cards filled (default, "Filled should be the default style") or outlined
       mb: opts.mb === 2 ? 2 : 3,   // the biomarkers shown before See N more (default 3), the next one partly shown
       srcVis: opts.srcVis === 'image' ? 'image' : 'hairline',   // From your data's visual: the Hairline report file (default) or the Overview's report render
+      ev: opts.ev === 'v2' ? 'v2' : 'v1',   // Behind this insight: From your data's card and a card each (V1), or one card grouped by pill (Async report V2)
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
     };
-    var uid = ++mountSeq;
+    var uid = ++mountSeq, evSeq = 0;
     var step = 0;
     var alive = true;
     var timers = [], figs = [];   // figs: the Hairline figures drawn on the step, let go with it
@@ -14886,7 +14901,34 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         more = h('button', { type: 'button', class: 'arBtn arMbMore', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' }, h('span', { class: 'arBtnLabel' }, h('span', { text: 'See ' + rest + ' more' }), strokeIcon(16, 16, 1.6, [P.chev])));   // its words and a chevron down ("chevron down")
         on(more, 'click', function () { mbOpen(L, more); });
       }
-      var card = h('div', { class: 'arLfEv arAnimRise arD12' },
+      /* Async report V2: Biomarkers and Questionnaire in one card, a pill each ("biomarkers and questions will live in one card, grouped by pill"); each its list, then its sources as the square bullets under it,
+         From your data's card gone ("remove From your data and put the bullet points inside the corresponding card, below the biomarkers or the questionnaire content"), and the answered questions' own card with it */
+      var evV2 = function () {
+        var qn = function (x) { return x[0] === 'qn'; }, src = L.sources || [];
+        var srcs = function (list) { return list.length ? h('ul', { class: 'arSrc arEvSrc', 'aria-label': 'Sources' }, list.map(function (x) { return h('li', { class: 'arSrcRow', text: x[1] }); })) : null; };
+        var groups = [];
+        if (L.markers.length) groups.push(['Biomarkers', h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more), src.filter(function (x) { return !n || !qn(x); })]);   // the blood and test results; the questionnaire's too when there is no Questionnaire pill
+        if (n) {   // every question with its answer, as many as the biomarkers before See N more, which opens them all in the sheet
+          var qMore = null, left = n - o.mb;
+          if (left > 0) { qMore = h('button', { type: 'button', class: 'arBtn arMbMore arEvMore', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' }, h('span', { class: 'arBtnLabel' }, h('span', { text: 'See ' + left + ' more' }), strokeIcon(16, 16, 1.6, [P.chev]))); on(qMore, 'click', function () { qaOpen(L, qMore); }); }
+          groups.push(['Questionnaire', h('div', { class: 'arLfGroup arEvAns' }, L.answers.slice(0, o.mb).map(function (x) { return h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: x.q }), h('span', { class: 'arLfName', text: x.a })); }), qMore), src.filter(qn)]);
+        }
+        var tabs = [], panes = [];
+        groups.forEach(function (g, i) {
+          var id = 'arEv' + uid + '-' + (++evSeq);
+          tabs.push(h('button', { type: 'button', class: 'arEvTab', role: 'tab', id: id + 't', 'aria-controls': id, 'aria-selected': i ? 'false' : 'true', tabindex: i ? '-1' : '0', text: g[0] }));
+          panes.push(h('div', { class: 'arEvPane', role: 'tabpanel', id: id, 'aria-labelledby': id + 't', hidden: i > 0 }, g[1], srcs(g[2])));
+        });
+        var pick = function (k, focus) { tabs.forEach(function (t, i) { t.setAttribute('aria-selected', String(i === k)); t.tabIndex = i === k ? 0 : -1; panes[i].hidden = i !== k; }); if (focus) tabs[k].focus(); };
+        tabs.forEach(function (t, i) {
+          on(t, 'click', function () { pick(i); });
+          on(t, 'keydown', function (e) { var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; e.preventDefault(); pick((i + d + tabs.length) % tabs.length, true); });   // the arrows from pill to pill
+        });
+        return h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
+          h('div', { class: 'arLfSec arSrcSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }),
+            h('div', { class: 'arLfCard arEvCard' }, h('div', { class: 'arEvTabs', role: 'tablist', 'aria-label': 'Behind this insight' }, tabs), panes)));
+      };
+      var card = o.ev === 'v2' ? evV2() : h('div', { class: 'arLfEv arAnimRise arD12' },
           /* its sources on a folder card, the debrief's highlight card ("this style without imagery right side, keep hairline"): From your data on the tab, Behind this insight inside, a square bullet a source; the Hairline report file at its foot, right, running past it and cut there */
           h('div', { class: 'arLfSec arSrcSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }),   // the heading outside the card ("Behind this insight outside the notch card")
             h('div', { class: 'arSrcCard' },
@@ -22010,6 +22052,7 @@ hairline({
       versionSel.appendChild(tg);
       return;
     }
+    if (g === 'Async report'){ const o = document.createElement('option'); o.value = 'ar2'; o.textContent = 'Async report V2'; og.appendChild(o); }   // the same report, Behind this insight in one card grouped by pill ("create a V2 Async")
     if (g === ARC_GROUP && ARCHIVED.length){
       const o = document.createElement('option');
       o.value = ARCHIVE_VAL;
@@ -22027,6 +22070,8 @@ hairline({
     // archive select is already showing, so stepping out and back returns to
     // the one you were reading rather than to the top of the list.
     const v = versionSel.value;
+    { const v2 = v === 'ar2'; if (v2 !== !!window._arV2){ window._arV2 = v2; document.dispatchEvent(new Event('everlab:arv')); } }   // Async report V2: the report remounted in its dress
+    if (v === 'ar2'){ if (window._doc) window._doc.hide(); if (window._hl) window._hl.hide(); if (window._ig) window._ig.hide(); if (window._rv) window._rv.hide(); if (window._home) window._home.hide(); CARD_STATE.fullscr = false; CARD_STATE.showBar = false; setMode(26); resize(); versionSel.value = 'ar2'; try { history.replaceState(null, '', '#ar2'); } catch (e){} return; }   // Async report's page, the entry named in the menu and the link
     if (v === 'doc'){ if (window._doc) window._doc.show(); return; }
     if (window._doc) window._doc.hide();
     if (v === 'hl'){ if (window._ig) window._ig.hide(); if (window._hl) window._hl.show(); return; }
@@ -29154,7 +29199,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: window._arV2 ? 'v2' : 'v1', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
@@ -29168,6 +29213,7 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
+    document.addEventListener('everlab:arv', () => { if (arD) arD.remount(); if (arM) arM.remount(); });   // Async report V2 picked, or left
     ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
@@ -35907,6 +35953,7 @@ hairline({
     else if (!location.hash && versionSel){   // no hash: the Async report is the first page, in Dark mode, in the XS phone, its welcome the Cards ("Async default setup"; before, the Service detail page); #home still opens the gallery, a page's hash that page
       const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
       put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', '26'); }
+    else if (location.hash === '#ar2' && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } }; put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', 'ar2'); }   // Async report V2's own link, in the report's default setup
     addEventListener('hashchange', () => { if (want()) show(); else hide(); });
   })();
 
