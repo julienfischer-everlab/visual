@@ -14124,15 +14124,12 @@
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }
 .arSheet .arKey { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; padding: 16px 16px 18px 20px; border-radius: calc(var(--ar-radius-card) + 4px); background: #e8eef8; color: #0c2241; }   /* the Key takeaway: the section's last words on the navy, 16 more above it ("bg 0C2241, margin top card +16px"); on the light page a pale blue, the navy its ink */
 .arSheet.arDark .arKey { background: #0c2241; color: #fff; } .arSheet .arLfH + .arKey { margin-top: 0; }   /* first under the heading: no extra room */
-.arSheet .arKeyHd { display: flex; align-items: center; gap: 8px; } .arSheet .arKeyHd .arIco { flex: none; }
+.arSheet .arKeyHd { display: flex; align-items: center; gap: 8px; min-height: 28px; } .arSheet .arKeyHd .arIco { flex: none; }
 .arSheet .arKeyT { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; font-variant-ligatures: no-contextual; }   /* Key takeaway, 16 medium */
 .arSheet .arKeyD { margin: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; color: inherit; opacity: .82; text-wrap: pretty; } .arSheet .arKeyD .arParaB { color: inherit; }
-.arSheet .arAsk { display: flex; flex-direction: column; gap: 8px; padding: 16px 16px 18px 20px; border-radius: calc(var(--ar-radius-card) + 4px); background: var(--ar-card-bg); }   /* a sentence for the doctor: a secondary filled card */
-.arSheet .arAskHd { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; }
-.arSheet .arAskT { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
-.arSheet .arAskCopy { appearance: none; -webkit-appearance: none; flex: none; display: inline-flex; align-items: center; gap: 6px; height: 28px; margin: 0 -4px 0 0; padding: 0 10px; border: 0; border-radius: 9999px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 500; cursor: pointer; transition: background .15s ease; }   /* Copy, at its top right */
-@media (hover: hover) { .arSheet .arAskCopy:hover { background: oklch(var(--ar-ink) / .1); } } .arSheet .arAskCopy:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
-.arSheet .arAskD { margin: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; color: oklch(var(--ar-ink)); text-wrap: pretty; }   /* the doctor's stress, in ink */
+.arSheet .arAskCopy { appearance: none; -webkit-appearance: none; flex: none; display: inline-flex; align-items: center; gap: 6px; height: 28px; margin: 0 -4px 0 auto; padding: 0 10px; border: 0; border-radius: 9999px; background: rgba(12, 34, 65, .08); color: inherit; font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 500; cursor: pointer; transition: background .15s ease; }   /* Copy, at the card's top right */
+.arSheet.arDark .arAskCopy { background: rgba(255, 255, 255, .1); }
+@media (hover: hover) { .arSheet .arAskCopy:hover { background: rgba(12, 34, 65, .14); } .arSheet.arDark .arAskCopy:hover { background: rgba(255, 255, 255, .16); } } .arSheet .arAskCopy:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
 /* Tab style: a row after the headline, pinned once reached, each an anchor into the flow. Pills: fully rounded, the others grey, the one in view the paper with an ink border. Segmented: a grey track the row's width, the three equal, the one in view white */
 .arSheet .arLfChips { position: sticky; top: -24px; z-index: 2; margin: 0 0 -8px; padding: 4px 0 12px; background: var(--ar-paper); }   /* 8 less above ("reduce padding top on tab -8px"): pinned, 16 under the progress; in the flow, where it stood */   /* after the headline, pinned once the scroll reaches it, flush under the bar (the body's 24 of padding above it); 12 above and below ("tab padding top 12, bottom 12"; "fixed once the scroll hits the tab section") */
 .arSheet.arBarGrad .arLfChips { background: transparent; }   /* Gradient: pinned, the anchors ride the bar's ground, which runs on under them to 32 past them */
@@ -14701,7 +14698,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     }
     // a paragraph's words, a phrase in bold where the doctor stresses it: a string, or a list of strings and { b: '...' }
     function rich(t) { return (Array.isArray(t) ? t : [t]).map(function (x) { return typeof x === 'string' ? x : h('b', { class: 'arParaB', text: x.b }); }); }
-    /* a section's paragraphs, each sentence for the doctor ({ ask }) taken out into its own card where it stood: Ask your doctor, Copy at its top right, the sentence under ("for all sentences ask your doctor: a secondary filled card, a title, copy top right, the description and a CTA to copy it") */
+    /* a section's paragraphs; its last, with every sentence for the doctor ({ ask }), in one card at its end, the Key takeaway: a bulb, its name, Copy at its top right, the words under in the order they came ("merge both descriptions all in one blue card with Copy CTA top right: Key takeaway"; before, an Ask your doctor card and a Key takeaway card) */
     function paras(list) {
       var items = [];
       list.forEach(function (t) {
@@ -14710,23 +14707,21 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         (Array.isArray(t) ? t : [t]).forEach(function (x) { if (x && x.ask) { flush(); items.push({ ask: x.ask }); } else run.push(x); });
         flush();
       });
-      var last = -1; items.forEach(function (x, i) { if (x.run) last = i; });   // the last paragraph: the Key takeaway card, where it stands ("last content card: bulb icon + Key takeaway, the description")
-      return items.map(function (x, i) {
-        if (x.ask) return askCard(x.ask);
-        if (i === last) return h('div', { class: 'arKey' }, h('div', { class: 'arKeyHd' }, strokeIcon(18, 24, 1.8, [P.bulb1, P.bulb2, P.bulb3]), h('span', { class: 'arKeyT', text: 'Key takeaway' })), h('p', { class: 'arKeyD' }, rich(x.run)));
-        return h('p', { class: 'arPara' }, rich(x.run));
-      });
+      var last = -1; items.forEach(function (x, i) { if (x.run) last = i; });
+      var key = items.filter(function (x, i) { return x.ask || i === last; });
+      return items.filter(function (x, i) { return !(x.ask || i === last); }).map(function (x) { return h('p', { class: 'arPara' }, rich(x.run)); }).concat(key.length ? [keyCard(key)] : []);
     }
-    function askCard(text) {
-      var lab = h('span', { text: 'Copy' }), ico = strokeIcon(14, 16, 1.5, [P.copy1, P.copy2]);
-      var btn = h('button', { type: 'button', class: 'arAskCopy', 'aria-label': 'Copy: ' + text }, ico, lab), t0 = 0;
-      var done = function () { lab.textContent = 'Copied'; btn.classList.add('arOn'); cancel(t0); t0 = later(function () { lab.textContent = 'Copy'; btn.classList.remove('arOn'); }, 1600); };
-      var desc = h('p', { class: 'arAskD', text: text });
+    function keyCard(parts) {
+      var desc = h('p', { class: 'arKeyD' }, parts.map(function (x, i) { return [i ? ' ' : '', x.ask ? x.ask : rich(x.run)]; }));
+      var lab = h('span', { text: 'Copy' }), t0 = 0;
+      var btn = h('button', { type: 'button', class: 'arAskCopy', 'aria-label': 'Copy the key takeaway' }, strokeIcon(14, 16, 1.5, [P.copy1, P.copy2]), lab);
+      var done = function () { lab.textContent = 'Copied'; cancel(t0); t0 = later(function () { lab.textContent = 'Copy'; }, 1600); };
       on(btn, 'click', function () {
+        var text = desc.textContent;
         var pick = function () { try { var r = document.createRange(); r.selectNodeContents(desc); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); } catch (e) {} };   // no clipboard: the words selected, to copy by hand
         try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, pick); else pick(); } catch (e) { pick(); }
       });
-      return h('div', { class: 'arAsk' }, h('div', { class: 'arAskHd' }, h('span', { class: 'arAskT', text: 'Ask your doctor' }), btn), desc);
+      return h('div', { class: 'arKey' }, h('div', { class: 'arKeyHd' }, strokeIcon(18, 24, 1.8, [P.bulb1, P.bulb2, P.bulb3]), h('span', { class: 'arKeyT', text: 'Key takeaway' }), btn), desc);
     }
     function thumbIcon(up) {
       return strokeIcon(20, 24, 1.6, up
