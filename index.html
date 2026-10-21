@@ -5658,8 +5658,8 @@
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHero{position:relative;top:auto;border-radius:20px;}   /* M and L: the picture a card, rounded all round, scrolling with the page; no header pinned under a sheet ("async desktop header should be a card, the visual, not a header; header visual rounded all edges") */
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arPanel{margin-top:0;border-radius:0;}   /* the body no card: straight under the picture, 24 below it ("no body card rounded") */
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeroImg, .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeroText{transform:none;opacity:1;}   /* a card holds still: no parallax, no fade */
-  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeroTitle{text-align:center;text-wrap:balance;}
-  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arChips{justify-content:center;}
+  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeroTitle{text-align:left;text-wrap:balance;}
+  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arChips{justify-content:flex-start;}   /* the desk: the banner's words and the chips under it at the left ("desktop align left text banner and chips below") */
   /* M and L: the top nav runs the modal's width, 32 in from its edges (24 at M), wider than the column ("top nav top right increase max width"); the frame is the size container, so a forced breakpoint's frame counts, not the window */
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame{container-type:inline-size;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet{overflow:visible;}
@@ -5676,7 +5676,7 @@
   .aqWrap.aqFull.aqBpM{--aqNavX:24px;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeadRow{margin-inline:calc((100% - 100cqw) / 2 + var(--aqNavX, 32px));}
   /* desktop (M, L): the step bars ride in the top nav, between back and close, at the column's width ("replace inside top nav on top, desktop") */
-  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHead{gap:16px;}   /* the progress under the report's name, the column's width (the name in the row's middle: "replace 20 Oct 2026 in top nav centered") */ .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;}
+  /* the progress under the report's name at every width, the column's width (the name in the row's middle: "replace 20 Oct 2026 in top nav centered") */ .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;}
   .prWrap{display:none;}
   body.pastD .prDesk{display:block;position:fixed;left:0;right:0;top:57px;bottom:0;z-index:40;}
   .prDim{position:absolute;inset:0;background:rgba(0,0,0,.5);}
@@ -13644,6 +13644,7 @@
 }
 .arSheet.arIsWelcome .arHead { position: absolute; }
 .arSheet .arHeadRow { display: flex; align-items: center; gap: 10px; min-height: 40px; }
+.arSheet .arHead { gap: 0; } .arSheet .arStepWrap { padding: 12px 0; }   /* the progress 12 above and below ("progress padding top 12, bottom 12") */
 .arSheet .arHeadLabel { flex: 1; font-size: 14px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink) / .64); }
 .arSheet .arNavT { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; text-align: center; } .arSheet.arIsWelcome .arNavT { visibility: hidden; }   /* the report, centred between back and close, past the welcome */
 .arSheet .arNavTt { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink)); }
@@ -14040,8 +14041,9 @@
 .arSheet .arLfMkL { flex: 1 1 auto; }
 .arSheet .arLfSpk { flex: 0 1 120px; min-width: 56px; display: flex; align-items: center; } .arSheet .arLfSpk svg { display: block; width: 100%; height: 20px; overflow: visible; }   /* a marker's trend, between its name and its range */
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }   /* the doctor's stress, in ink */
-/* Tab style: a row under the headline, pinned as the page scrolls, each an anchor into the flow. Pills: fully rounded, the others grey, the one in view the paper with an ink border. Segmented: a grey track the row's width, the three equal, the one in view white */
-.arSheet .arLfChips { position: sticky; top: -24px; z-index: 2; margin: -8px 0 -8px; padding: 12px 0; background: var(--ar-paper); }   /* pinned flush to the body's top (its 24 of padding above), nothing showing over it */
+/* Tab style: a row fixed in the head, under the progress, each an anchor into the flow under it. Pills: fully rounded, the others grey, the one in view the paper with an ink border. Segmented: a grey track the row's width, the three equal, the one in view white */
+.arSheet .arLfChips { padding: 12px 0; }   /* in the head, fixed: 12 above and below ("tab padding top 12, bottom 12") */
+.arSheet .arTabSlot:empty { display: none; } .arSheet.arHasTabs .arBody { padding-top: 12px; }   /* the headline 24 under the anchors */
 .arSheet .arLfTrack { display: flex; gap: 8px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; } .arSheet .arLfTrack::-webkit-scrollbar { display: none; }
 .arSheet .arLfTrack.arLfOver { padding-right: 32px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }   /* too many for the width: the pills run off the right, fading, and scroll */
 .arSheet .arLfChip { flex: none; appearance: none; -webkit-appearance: none; margin: 0; height: 36px; padding: 0 16px; border: 1.5px solid transparent; border-radius: 9999px; background: var(--ar-card-bg); font-family: var(--ar-font); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; color: oklch(var(--ar-ink) / .72); cursor: pointer; transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease; }
@@ -14421,9 +14423,10 @@
     var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose', 'aria-label': 'Close' }, strokeIcon(16, 16, 1.8, [P.close]));
     var steps = stepIndicator(STEP_COUNT - 1);   // a bar for each step after the welcome (7)
     var stepWrap = h('div', { class: 'arStepWrap' }, steps.el);
+    var tabSlot = h('div', { class: 'arTabSlot' });   // an insight's anchors, fixed in the head under the progress ("tab fixed")
     var head = h('div', { class: 'arHead' },
       h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel arNavT' }, h('span', { class: 'arNavTt', text: REPORT.name }), h('span', { class: 'arNavTs', text: REPORT.date })), closeBtn),
-      stepWrap);
+      stepWrap, tabSlot);
     var body = h('div', { class: 'arBody' });
     var ctaLabel = h('span', { class: 'arBtnLabel' });
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, ctaLabel);
@@ -14602,19 +14605,20 @@
         return h('button', { type: 'button', class: 'arLfChip', 'aria-current': i ? 'false' : 'true', text: x[0] });
       });
       var track = h('div', { class: 'arLfTrack' }, chips), bar = h('nav', { class: 'arLfChips' + (o.tabs === 'seg' ? ' arLfSeg' : '') + ' arAnimRise arD12', 'aria-label': 'Jump to a section' }, track); if (chipRO) chipRO.observe(track);   // pills, or a segmented control (the three the track's width, the one in view white)
+      tabSlot.appendChild(bar); root.classList.add('arHasTabs');   // fixed in the head, under the progress; the flow scrolls under it
       var cur = 0, lock = 0;
       var mark = function (k) { if (k === cur) return; cur = k; chips.forEach(function (c, i) { c.setAttribute('aria-current', String(i === k)); });
         var c = chips[k]; track.scrollLeft = Math.max(0, c.offsetLeft - track.offsetLeft - (track.clientWidth - c.offsetWidth) / 2); };   // its chip into the row's view (the row alone, never the page)
       var topOf = function (el) { return el.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop; };
-      spy = function () { if (lock) return; var line = body.scrollTop + bar.offsetHeight + 40, k = 0;   // the last section whose top has passed under the chips; the last one once the page is at its foot
+      spy = function () { if (lock) return; var line = body.scrollTop + 40, k = 0;   // the last section whose top has passed under the chips; the last one once the page is at its foot
         secs.forEach(function (x, i) { if (topOf(x[1]) <= line) k = i; });
         if (body.scrollTop + body.clientHeight >= body.scrollHeight - 2) k = secs.length - 1;
         mark(k); };
       chips.forEach(function (c, i) {
         on(c, 'click', function () { mark(i); cancel(lock); lock = later(function () { lock = 0; }, 700);
-          body.scrollTo({ top: Math.max(0, topOf(secs[i][1]) - bar.offsetHeight - 16), behavior: reducedMotion() ? 'auto' : 'smooth' }); });   // to its section, just under the pinned chips
+          body.scrollTo({ top: Math.max(0, topOf(secs[i][1]) - 16), behavior: reducedMotion() ? 'auto' : 'smooth' }); });   // to its section, 16 under the head
       });
-      return h('div', { class: 'arStack arLfStack arLfChipped' }, head, bar, secs.map(function (x) { return x[1]; }), use);
+      return h('div', { class: 'arStack arLfStack arLfChipped' }, head, secs.map(function (x) { return x[1]; }), use);
     }
 
     /* ----- step 6: Everything else ----- */
@@ -14687,7 +14691,7 @@
     function render() {
       while (timers.length) clearTimeout(timers.pop());
       qaClose(true);   // a step change closes the questionnaire's sheet
-      spy = null; if (chipRO) chipRO.disconnect();
+      spy = null; if (chipRO) chipRO.disconnect(); tabSlot.textContent = ''; root.classList.remove('arHasTabs');
       var welcome = step === 0;
       root.classList.toggle('arIsWelcome', welcome);
       root.setAttribute('data-ar-step', String(step));
