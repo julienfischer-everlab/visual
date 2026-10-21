@@ -5676,7 +5676,7 @@
   .aqWrap.aqFull.aqBpM{--aqNavX:24px;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeadRow{margin-inline:calc((100% - 100cqw) / 2 + var(--aqNavX, 32px));}
   /* desktop (M, L): the step bars ride in the top nav, between back and close, at the column's width ("replace inside top nav on top, desktop") */
-  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arStepWrap{position:absolute;left:20px;right:20px;top:calc(var(--ar-head-top) + 20px);transform:translateY(-50%);} .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;}
+  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHead{gap:16px;}   /* the progress under the report's name, the column's width (the name in the row's middle: "replace 20 Oct 2026 in top nav centered") */ .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;}
   .prWrap{display:none;}
   body.pastD .prDesk{display:block;position:fixed;left:0;right:0;top:57px;bottom:0;z-index:40;}
   .prDim{position:absolute;inset:0;background:rgba(0,0,0,.5);}
@@ -13645,6 +13645,9 @@
 .arSheet.arIsWelcome .arHead { position: absolute; }
 .arSheet .arHeadRow { display: flex; align-items: center; gap: 10px; min-height: 40px; }
 .arSheet .arHeadLabel { flex: 1; font-size: 14px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink) / .64); }
+.arSheet .arNavT { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; text-align: center; } .arSheet.arIsWelcome .arNavT { visibility: hidden; }   /* the report, centred between back and close, past the welcome */
+.arSheet .arNavTt { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink)); }
+.arSheet .arNavTs { font-family: var(--ar-font); font-size: 12px; line-height: 16px; font-weight: 400; color: oklch(var(--ar-ink) / .5); }
 .arSheet .arIconBtn {
   appearance: none; -webkit-appearance: none;
   margin: 0; padding: 0; border: 0; box-shadow: none;
@@ -14037,14 +14040,13 @@
 .arSheet .arLfMkL { flex: 1 1 auto; }
 .arSheet .arLfSpk { flex: 0 1 120px; min-width: 56px; display: flex; align-items: center; } .arSheet .arLfSpk svg { display: block; width: 100%; height: 20px; overflow: visible; }   /* a marker's trend, between its name and its range */
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }   /* the doctor's stress, in ink */
-/* Tab sections: the insight's three sections as tabs under its headline, pinned to the top as the section scrolls; the tab names it, so the section's own heading goes */
-.arSheet .arLfTabs { position: sticky; top: -24px; z-index: 2; display: flex; gap: 24px; margin: -8px 0 -8px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; background: var(--ar-paper); box-shadow: inset 0 -1px 0 oklch(var(--ar-ink) / .08); }
-.arSheet .arLfTabs::-webkit-scrollbar { display: none; }   /* pinned flush to the body's top (its 24 of padding above), nothing showing over it */
-.aqWrap:is(.aqBpXS, .aqBpS, .aqPhone) .arSheet .arLfTabs { padding-right: 32px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }   /* the phone: the tabs run off the right, fading, and scroll */
-.arSheet .arLfTab { flex: none; appearance: none; -webkit-appearance: none; margin: 0; padding: 12px 0 13px; border: 0; background: none; font-family: var(--ar-font); font-size: 15px; line-height: 20px; font-weight: 500; white-space: nowrap; color: oklch(var(--ar-ink) / .5); cursor: pointer; box-shadow: inset 0 -2px 0 transparent; transition: color .15s ease, box-shadow .15s ease; }
-.arSheet .arLfTab:hover { color: oklch(var(--ar-ink) / .8); } .arSheet .arLfTab[aria-selected="true"] { color: oklch(var(--ar-ink)); box-shadow: inset 0 -2px 0 oklch(var(--ar-ink)); }
-.arSheet .arLfTab:focus-visible { outline: 2px solid oklch(var(--ar-ink) / .6); outline-offset: -2px; border-radius: 4px; }
-.arSheet .arLfTabbed .arLfSec > .arLfH, .arSheet .arLfTabbed .arLfIntro > .arT600 { display: none; }
+/* Tab sections: a row of chips under the headline, pinned as the page scrolls, each an anchor into the flow; fully rounded, the others grey, the one in view white with an ink border */
+.arSheet .arLfChips { position: sticky; top: -24px; z-index: 2; display: flex; gap: 8px; margin: -8px 0 -8px; padding: 12px 0; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; background: var(--ar-paper); }
+.arSheet .arLfChips::-webkit-scrollbar { display: none; }   /* pinned flush to the body's top (its 24 of padding above), nothing showing over it */
+.arSheet .arLfChips.arLfOver { padding-right: 32px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }   /* too many for the width (the phone, the modal): the chips run off the right, fading, and scroll */
+.arSheet .arLfChip { flex: none; appearance: none; -webkit-appearance: none; margin: 0; height: 36px; padding: 0 16px; border: 1px solid transparent; border-radius: 9999px; background: var(--ar-card-bg); font-family: var(--ar-font); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; color: oklch(var(--ar-ink) / .72); cursor: pointer; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+.arSheet .arLfChip:hover { color: oklch(var(--ar-ink)); } .arSheet .arLfChip[aria-current="true"] { background: var(--ar-paper); border-color: oklch(var(--ar-ink)); color: oklch(var(--ar-ink)); }
+.arSheet .arLfChip:focus-visible { outline: 2px solid oklch(var(--ar-ink) / .6); outline-offset: 2px; }
 /* Everything else: a panel's name, then its counts as dots (optimal, suboptimal, out of range) */
 .arSheet .arRsName { flex: 1 1 auto; min-width: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink)); text-wrap: pretty; }
 .arSheet .arRsDots { flex: none; display: flex; align-items: center; gap: 14px; }
@@ -14083,7 +14085,7 @@
 .arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
 .arSheet .arLfA { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink)); }
 .arSheet .arLfSec { display: flex; flex-direction: column; gap: 10px; }
-.arSheet .arLfSec .arPara + .arPara { margin-top: 10px; }
+.arSheet .arLfSec .arPara + .arPara { margin-top: 2px; }   /* 12 between paragraphs ("paragraph margin -8px") */
 .arSheet .arLfH { font-family: var(--ar-font); font-size: 20px; line-height: 24px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
 .arSheet .arLfUse { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 16px; border: 1px solid var(--ar-br3); border-radius: var(--ar-radius-card); }   /* an outlined card ("use outlined card for that") */
 .arSheet .arLfThumbs { display: flex; gap: 4px; }
@@ -14171,6 +14173,9 @@
 
   /* ---------- data (verbatim from the source's logic block) ---------- */
 
+  // The report in the top nav, past the welcome: its name over its date ("replace 20 Oct 2026 in top nav centered: Advanced blood test, 20 Oct 2026")
+  var REPORT = { name: 'Advanced blood test', date: '20 Oct 2026' };
+
   // The welcome's words: the report, its doctor, its date and what the debrief holds ("use these content, step 1 and 2 for now")
   var WEL = {
     title: 'Results from your Advanced bloods pathology are here.',
@@ -14184,7 +14189,6 @@
   // Step 2, the first insight, in the lifestyle insight's layout: its biomarkers (a trend where there is one; bar 'hi' when higher is worse, 'lo' when lower is, 'mid' both ways), the answer behind it, what we noticed and what it means, a phrase in bold where the doctor stresses it
   var CHOL = {
     headline: 'Years of high cholesterol may be raising your heart attack and stroke risk',
-    date: '20 Oct 2026',
     source: 'From your October 2026 blood test, your August 2026 test results and your Lifestyle Profiling questionnaire.',
     markers: [
       { name: 'LDL cholesterol', value: '4.6 mmol/L', date: '14 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.98, trend: { pts: [3.9, 4.3, 4.1, 4.6], from: 'Out of range', to: 'Out of range' } },
@@ -14210,7 +14214,6 @@
   // Step 3, the second insight ("step 3"): bar 'both' when out of range either way, in five
   var CORT = {
     headline: 'Your body may be making too little of its main stress hormone',
-    date: '20 Oct 2026',
     source: 'From your October 2026 blood test.',
     markers: [
       { name: 'Morning Serum Cortisol', value: '211 nmol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'both', pos: 0.23 },
@@ -14233,7 +14236,6 @@
   // Step 4 ("step 4"): an answer read as a marker (Protein, its words for its value, a status, no range)
   var B12 = {
     headline: 'Your B12 may be running low again between injections',
-    date: '20 Oct 2026',
     source: 'From your October 2026 blood test and your August 2026 test results.',
     markers: [
       { name: 'Active vitamin B12 (holotranscobalamin)', value: '72 pmol/L', date: '14 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.42, trend: { pts: [92, 90, 96, 94], from: 'Optimal', to: 'Optimal' } },
@@ -14258,7 +14260,6 @@
   // Step 5 ("step 5")
   var VITD = {
     headline: 'Low vitamin D may be speeding up the bone thinning you already have',
-    date: '20 Oct 2026',
     source: 'From your October 2026 blood test, your August 2026 test results and your Lifestyle Profiling questionnaire.',
     markers: [
       { name: 'Vitamin D', value: '49 nmol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'xsox', pos: 0.38, trend: { pts: [62, 61, 55, 49], from: 'Optimal', to: 'Suboptimal' } },
@@ -14282,7 +14283,6 @@
   // Step 6 ("step 6")
   var VASC = {
     headline: 'Two signs of strain on your blood vessels have eased',
-    date: '20 Oct 2026',
     source: 'From your October 2026 blood test.',
     markers: [
       { name: 'High-sensitivity CRP (hs-CRP)', value: '0.7 mg/L', date: '14 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.15, trend: { pts: [3.0, 3.0, 2.9, 1.8], from: 'Suboptimal', to: 'Suboptimal' } },
@@ -14418,7 +14418,7 @@
     var steps = stepIndicator(STEP_COUNT - 1);   // a bar for each step after the welcome (7)
     var stepWrap = h('div', { class: 'arStepWrap' }, steps.el);
     var head = h('div', { class: 'arHead' },
-      h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel' }), closeBtn),
+      h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel arNavT' }, h('span', { class: 'arNavTt', text: REPORT.name }), h('span', { class: 'arNavTs', text: REPORT.date })), closeBtn),
       stepWrap);
     var body = h('div', { class: 'arBody' });
     var ctaLabel = h('span', { class: 'arBtnLabel' });
@@ -14427,6 +14427,9 @@
     var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : ''), 'data-ar-mount': uid }, head, body, foot);
 
     // the welcome's scroll for the host's parallax: --ar-hero-y (px scrolled) and --ar-hero-k (0..1 over the hero's height less 40, as the service page's)
+    var spy = null;   // the insight's chips following the scroll (set by its step, cleared by the next)
+    var chipRO = window.ResizeObserver ? new ResizeObserver(function (es) { es.forEach(function (e) { var b = e.target; b.classList.toggle('arLfOver', b.scrollWidth > b.clientWidth + 1); }); }) : null;   // a chip row too wide for its width: fading at its right, scrolling
+    on(body, 'scroll', function () { if (spy) spy(); }, { passive: true });
     on(body, 'scroll', function () { var y = step === 0 ? Math.max(0, body.scrollTop) : 0, he = body.querySelector('.arHero'), sp = Math.max(60, Math.min((he ? he.offsetHeight : 260) - 40, body.scrollHeight - body.clientHeight));   /* a short welcome: gone by the end of what scrolls, as a task page's */ if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) y = Math.min(y, 0); root.style.setProperty('--ar-hero-y', y.toFixed(1) + 'px'); root.style.setProperty('--ar-hero-k', (step === 0 ? Math.min(1, Math.max(0, body.scrollTop) / sp) : 0).toFixed(3)); }, { passive: true });
     function close() { if (o.onClose) o.onClose(); else go(0); }
     on(backBtn, 'click', function () { go(Math.max(0, step - 1)); });
@@ -14587,28 +14590,27 @@
       var secs = [['Behind this insight', card],
         ['What we noticed', h('div', { class: 'arLfSec arAnimRise arD24' }, h('span', { class: 'arLfH', text: 'What we noticed' }), L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))],
         ['What this means for you', h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'What this means for you' }), L.means.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))]];
-      var head = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }), h('span', { class: 'arT200r arInk50', text: L.date }));
+      var head = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }));   // its date in the top nav
       var use = h('div', { class: 'arLfUse arAnimRise arD32' }, h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }), h('div', { class: 'arLfThumbs' }, up, down));
       if (!o.tabs) return h('div', { class: 'arStack arLfStack' }, head, secs.map(function (x) { return x[1]; }), use);   // Tab sections off: the three one under the other
-      /* Tab sections on: the three as tabs under the headline, one shown at a time, the tab naming it ("create a tab system: Behind this insight, What we noticed, What this means for you") */
-      var tabs = secs.map(function (x, i) {
-        var id = 'arLfT' + uid + '_' + step + '_' + i;
-        x[1].setAttribute('role', 'tabpanel'); x[1].id = id + 'p'; x[1].setAttribute('aria-labelledby', id); x[1].hidden = i > 0;
-        return h('button', { type: 'button', class: 'arLfTab', role: 'tab', id: id, 'aria-controls': id + 'p', 'aria-selected': String(i === 0), tabindex: i ? '-1' : '0', text: x[0] });
+      /* Tab sections on: a row of chips under the headline, each an anchor into the one vertical flow, every section shown; the chip of the section in view the active one ("chips just an anchor to a vertical flow; all content visible in the vertical flow") */
+      var chips = secs.map(function (x, i) {
+        return h('button', { type: 'button', class: 'arLfChip', 'aria-current': i ? 'false' : 'true', text: x[0] });
       });
-      var bar = h('div', { class: 'arLfTabs arAnimRise arD12', role: 'tablist', 'aria-label': 'This insight' }, tabs);
-      var pick = function (k, focus) {
-        tabs.forEach(function (t, i) { var on_ = i === k; t.setAttribute('aria-selected', String(on_)); t.tabIndex = on_ ? 0 : -1; secs[i][1].hidden = !on_; });
-        if (focus) tabs[k].focus();
-        var t = tabs[k]; bar.scrollLeft = Math.max(0, t.offsetLeft - bar.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2);   // the picked tab into the row's view (the row alone, never the page)
-        var want = secs[k][1].getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop - bar.offsetHeight - 24;   // the picked one from its top, just under the pinned tabs
-        if (body.scrollTop > want) body.scrollTop = Math.max(0, want);
-      };
-      tabs.forEach(function (t, i) {
-        on(t, 'click', function () { pick(i); });
-        on(t, 'keydown', function (e) { var k = e.key === 'ArrowRight' ? (i + 1) % tabs.length : e.key === 'ArrowLeft' ? (i + tabs.length - 1) % tabs.length : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -1; if (k >= 0){ e.preventDefault(); pick(k, true); } });
+      var bar = h('nav', { class: 'arLfChips arAnimRise arD12', 'aria-label': 'Jump to a section' }, chips); if (chipRO) chipRO.observe(bar);
+      var cur = 0, lock = 0;
+      var mark = function (k) { if (k === cur) return; cur = k; chips.forEach(function (c, i) { c.setAttribute('aria-current', String(i === k)); });
+        var c = chips[k]; bar.scrollLeft = Math.max(0, c.offsetLeft - bar.offsetLeft - (bar.clientWidth - c.offsetWidth) / 2); };   // its chip into the row's view (the row alone, never the page)
+      var topOf = function (el) { return el.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop; };
+      spy = function () { if (lock) return; var line = body.scrollTop + bar.offsetHeight + 40, k = 0;   // the last section whose top has passed under the chips; the last one once the page is at its foot
+        secs.forEach(function (x, i) { if (topOf(x[1]) <= line) k = i; });
+        if (body.scrollTop + body.clientHeight >= body.scrollHeight - 2) k = secs.length - 1;
+        mark(k); };
+      chips.forEach(function (c, i) {
+        on(c, 'click', function () { mark(i); cancel(lock); lock = later(function () { lock = 0; }, 700);
+          body.scrollTo({ top: Math.max(0, topOf(secs[i][1]) - bar.offsetHeight - 16), behavior: reducedMotion() ? 'auto' : 'smooth' }); });   // to its section, just under the pinned chips
       });
-      return h('div', { class: 'arStack arLfStack arLfTabbed' }, head, bar, secs.map(function (x) { return x[1]; }), use);
+      return h('div', { class: 'arStack arLfStack arLfChipped' }, head, bar, secs.map(function (x) { return x[1]; }), use);
     }
 
     /* ----- step 6: Everything else ----- */
@@ -14681,6 +14683,7 @@
     function render() {
       while (timers.length) clearTimeout(timers.pop());
       qaClose(true);   // a step change closes the questionnaire's sheet
+      spy = null; if (chipRO) chipRO.disconnect();
       var welcome = step === 0;
       root.classList.toggle('arIsWelcome', welcome);
       root.setAttribute('data-ar-step', String(step));
