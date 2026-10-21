@@ -14917,3 +14917,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async report: no card inside the outlined card:** the biomarker list (and the answers) sit straight on the outlined card ("remove card style").
 - **Biomarker rows, Insights and Async:** 4 less between the name and the value ("reduce gap by 4px").
 - **Async report: the first three biomarkers:** more than three, the fourth fades out under them with See N more, which opens the almost full sheet: "X Biomarkers", Behind this insight, every one.
+- **Async report, Behind this insight as a summary:** answers: one shown as it is (question over answer); more, See X answered questions, which opens the sheet "X answered questions" with every one. Biomarkers: three, the fourth fading, See N more (unchanged).
+- **Async report, anchor jumps:** with the Gradient bar the section's title lands 48 under the anchors, past the fade (40) and its blur, so it reads clearly; 16 under the solid bar. The spy's line follows, so the jumped-to chip stays active.
+- **Every modal's dismiss button 36:** the image viewer, Ask Eva, chat, sheets, price/inbox panels, the doctor's review (its square-corner cross re-centred), service sheets, the report and its sheet ("Dismiss ALL MODAL! 36px"); the report's back matches its close.
+- **Async biomarker rows, ghost cards 2 apart:** the group's 10 of gap moved inside the rows (19 of padding), the tile the whole row less 1, so hovered tiles sit 2 from the next; text spacing unchanged.
