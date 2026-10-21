@@ -14070,7 +14070,10 @@
 /* the lifestyle insight (step 10): its card, the biomarker with its range and status, the answer, the was-this-useful */
 .arSheet .arLfStack { gap: 32px; }
 .arSheet .arLfHead { display: flex; flex-direction: column; gap: 6px; } .arSheet .arLfHead .arH700 { margin: 0; }
-.arSheet .arLfEv { display: flex; flex-direction: column; gap: 12px; } .arSheet .arLfEv > .arLfSec { gap: 6px; margin-bottom: 16px; }   /* Behind this insight and its source on the page, 6 apart ("less gap 4px"), 28 over the grey cards ("more margin bottom 8px"); the cards 12 apart */
+.arSheet .arLfEv { display: flex; flex-direction: column; gap: 12px; } .arSheet .arLfEv > .arLfSec { gap: 6px; margin-bottom: 16px; }
+.arSheet .arSrc { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 0; padding: 0; list-style: none; }   /* the sources, one under the other */
+.arSheet .arSrcRow { display: flex; align-items: center; gap: 12px; min-width: 0; font-family: var(--ar-font); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .8); }
+.arSheet .arSrcIc { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .14); color: oklch(var(--ar-ink) / .8); }   /* outlined, mono: a ring, the mark in the ink */   /* Behind this insight and its source on the page, 6 apart ("less gap 4px"), 28 over the grey cards ("more margin bottom 8px"); the cards 12 apart */
 .arSheet .arLfCardH { padding: 0 16px 8px; }   /* a grey card's name, on the grey */
 /* the Insights phone's biomarker row (.mbrow): the name and its range bar, then the value | the date and the status; a hairline between rows */
 .arSheet { --mbO: #6fcb7c; --mbS: #f2c550; --mbX: #e5514f; } .arSheet.arDark { --mbO: #aaeec2; --mbS: #ffe29f; --mbX: #fe8087; }   /* the Insights' range colours, light and dark */
@@ -14149,7 +14152,7 @@
 .arSheet .arQaRow { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 0; border-top: 1px solid oklch(var(--ar-ink) / .06); }
 .arSheet .arQaRow:first-child { border-top: 0; }
 .arSheet .arQaList.arQaMb { padding-top: 0; padding-bottom: 0; }   /* the biomarkers, the report's rows, in the sheet */
-.arSheet .arMb.arMbFade { pointer-events: none; -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .55) 40%, transparent 92%); mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .55) 40%, transparent 92%); }   /* the fourth, fading out ("progressive gradient on the 4th one") */
+.arSheet .arMb.arMbFade { pointer-events: none; opacity: .4; filter: blur(4px); }   /* the one partly shown, at 40% and blurred 4 ("opacity 40% on the 3rd one + blur 4px"; it was a fading mask) */
 .arSheet .arMbMore { position: relative; z-index: 1; width: 100%; height: 44px; margin: -12px 0 0; padding: 0 20px; border-radius: 12px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); font-size: 14px; line-height: 18px; font-weight: 500; }   /* See N more, over the faded row's foot */
 @media (hover: hover) { .arSheet .arMbMore:hover { background: oklch(var(--ar-ink) / .1); } }
 .arSheet .arMbMore:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
@@ -14229,6 +14232,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 
   // SVG paths, verbatim from the source template
   var P = {
+    srcBlood: "M12 21.5a6.5 6.5 0 0 0 6.5-6.5c0-1.9-.95-3.7-2.85-5.2S12.45 6 12 2.5c-.45 3.5-1.75 5.8-3.65 7.3S5.5 13.1 5.5 15a6.5 6.5 0 0 0 6.5 6.5Z",   // the sources' outlined marks, 24 square: a drop, a flask, a clipboard
+    srcTests: "M9.5 2.5v7l-5 9.4a1.4 1.4 0 0 0 1.24 2.1h12.52a1.4 1.4 0 0 0 1.24-2.1l-5-9.4v-7M8 2.5h8M7 15.5h10",
+    srcQn: "M9 3.5h6v3H9zM15 5h2.5A1.5 1.5 0 0 1 19 6.5v13a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-13A1.5 1.5 0 0 1 6.5 5H9M9 11.5h6M9 15.5h6",
     back: "M11 3.5 5.5 9l5.5 5.5",
     close: "M3 3l10 10M13 3 3 13",
     cal: "M2 7h12M5.5 1.5v3M10.5 1.5v3",
@@ -14271,7 +14277,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   // Step 2, the first insight, in the lifestyle insight's layout: its biomarkers (a trend where there is one; bar 'hi' when higher is worse, 'lo' when lower is, 'mid' both ways), the answer behind it, what we noticed and what it means, a phrase in bold where the doctor stresses it
   var CHOL = {
     headline: 'Years of high cholesterol may be raising your heart attack and stroke risk',
-    source: 'From your October 2026 blood test, your August 2026 test results and your Lifestyle Profiling questionnaire.',
+    sources: [['blood', 'October 2026 blood test'], ['tests', 'August 2026 test results'], ['qn', 'Lifestyle Profiling questionnaire']],   // what it is drawn from, one row each
     markers: [
       { name: 'LDL cholesterol', value: '4.6 mmol/L', date: '14 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.98, trend: { pts: [3.9, 4.3, 4.1, 4.6], from: 'Out of range', to: 'Out of range' } },
       { name: 'Apolipoprotein B', value: '1.11 g/L', date: '14 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.72 },
@@ -14296,7 +14302,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   // Step 3, the second insight ("step 3"): bar 'both' when out of range either way, in five
   var CORT = {
     headline: 'Your body may be making too little of its main stress hormone',
-    source: 'From your October 2026 blood test.',
+    sources: [['blood', 'October 2026 blood test']],
     markers: [
       { name: 'Morning Serum Cortisol', value: '211 nmol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'both', pos: 0.23 },
       { name: 'DHEA-S', value: '6.9 \u00b5mol/L', date: '14 Oct 2026', status: 'Out of range', bar: 'both', pos: 0.86 },
@@ -14318,7 +14324,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   // Step 4 ("step 4"): an answer read as a marker (Protein, its words for its value, a status, no range)
   var B12 = {
     headline: 'Your B12 may be running low again between injections',
-    source: 'From your October 2026 blood test and your August 2026 test results.',
+    sources: [['blood', 'October 2026 blood test'], ['tests', 'August 2026 test results']],
     markers: [
       { name: 'Active vitamin B12 (holotranscobalamin)', value: '72 pmol/L', date: '14 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.42, trend: { pts: [92, 90, 96, 94], from: 'Optimal', to: 'Optimal' } },
       { name: 'Homocysteine', value: '9.6 \u00b5mol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'sosx', pos: 0.55, trend: { pts: [9.7, 9.6, 9.6, 9.6], from: 'Suboptimal', to: 'Suboptimal' } },
@@ -14342,7 +14348,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   // Step 5 ("step 5")
   var VITD = {
     headline: 'Low vitamin D may be speeding up the bone thinning you already have',
-    source: 'From your October 2026 blood test, your August 2026 test results and your Lifestyle Profiling questionnaire.',
+    sources: [['blood', 'October 2026 blood test'], ['tests', 'August 2026 test results'], ['qn', 'Lifestyle Profiling questionnaire']],   // what it is drawn from, one row each
     markers: [
       { name: 'Vitamin D', value: '49 nmol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'xsox', pos: 0.38, trend: { pts: [62, 61, 55, 49], from: 'Optimal', to: 'Suboptimal' } },
       { name: 'Omega 3', value: 'No mention of Omega-3 foods found.', date: '14 Aug 2026', status: 'Out of range' }
@@ -14365,7 +14371,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   // Step 6 ("step 6")
   var VASC = {
     headline: 'Two signs of strain on your blood vessels have eased',
-    source: 'From your October 2026 blood test.',
+    sources: [['blood', 'October 2026 blood test']],
     markers: [
       { name: 'High-sensitivity CRP (hs-CRP)', value: '0.7 mg/L', date: '14 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.15, trend: { pts: [3.0, 3.0, 2.9, 1.8], from: 'Suboptimal', to: 'Suboptimal' } },
       { name: 'Homocysteine', value: '9.6 \u00b5mol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'sosx', pos: 0.55, trend: { pts: [9.7, 9.6, 9.6, 9.6], from: 'Suboptimal', to: 'Suboptimal' } },
@@ -14702,7 +14708,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         on(more, 'click', function () { mbOpen(L, more); });
       }
       var card = h('div', { class: 'arLfEv arAnimRise arD12' },
-          h('div', { class: 'arLfSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }), h('p', { class: 'arPara', text: L.source })),
+          h('div', { class: 'arLfSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }),   // its sources stacked, a row each, an outlined mono mark at the left, not one sentence ("use a row stacked style listing, outlined mono, vs this sentence")
+            h('ul', { class: 'arSrc', 'aria-label': 'Sources' }, (L.sources || []).map(function (x) {
+              return h('li', { class: 'arSrcRow' }, h('span', { class: 'arSrcIc' }, strokeIcon(16, 24, 1.6, [P[{ blood: 'srcBlood', tests: 'srcTests', qn: 'srcQn' }[x[0]]]])), h('span', { class: 'arSrcT', text: x[1] }));
+            }))),
           grey(nMb(L.markers.length), h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more)),
           ans ? grey(nAns(n), ans) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore) : null);
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"; then "Evidence, Findings, Meaning"); the sections keep their own headings

@@ -14934,3 +14934,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async Evidence cards' names, with their counts:** "X biomarkers" and "X answered questions" (1 biomarker, 1 answered question), the sheets' titles the same.
 - **Async Behind this insight:** its source 6 under the heading ("less gap 4px"), the cards 28 under the source ("more margin bottom 8px").
 - **Async report, Max biomarkers tweak:** 3 (default) or 2 biomarkers before See N more, the next one partly shown under them ("tweak max biomarkers counter").
+- **Async Behind this insight, its sources stacked:** a row each (October 2026 blood test, August 2026 test results, Lifestyle Profiling questionnaire), an outlined mono mark at the left (a drop, a flask, a clipboard in a ring), not one sentence. The data: `sources: [[kind, label], ...]`.
+- **Async, the biomarker partly shown:** 40% and blurred 4 ("opacity 40% + blur 4px"), not the fading mask.
