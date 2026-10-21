@@ -14960,3 +14960,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Insights phone: every row of #mRecs opens it in its own sheet over #phone (Escape, the scrim or the close shut it; focus back on the row).
 - **Async gradients, no blur:** the Gradient blur tweak is gone and the gradients carry no blur ("remove any blur effect when it's gradient").
 - **Async welcome scrolls with the Gradient footer:** the welcome's padding:0 took away the room the Gradient footer gives the flow, so the last debrief row sat under the button with nothing to scroll ("scroll viewport doesn't work"); the welcome's body (and its own scroller, standalone) keep the footer's height + 8 at their foot.
+- **Async welcome, less parallax:** the picture rises at half the scroll, the title at nine tenths, so the body card no longer catches the title ("reduce parallax effect, title should go up more on scroll").
