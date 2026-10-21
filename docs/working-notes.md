@@ -14926,3 +14926,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async biomarker rows, the divider outside the cards:** card, 4, the rule, 4, card; the hover tile the whole row; the text as far apart as before.
 - **Async Evidence cards:** 24 of padding all round ("card padding 24px"); See N more and See X answered questions sit 24 from the card's foot.
 - **Async sheets:** the title alone, no sub ("remove sub"), on the close's centre line.
+- **Async Evidence cards, the last row:** its hover tile 14 from the card's foot, as from its sides ("bottom padding same as left right").
