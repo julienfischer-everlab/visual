@@ -14031,6 +14031,9 @@
 .arSheet .arLfMkL { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .arSheet .arLfName { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink)); }
 .arSheet .arLfMkR { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+.arSheet .arLfMkL { flex: 1 1 auto; }
+.arSheet .arLfSpk { flex: 0 1 120px; min-width: 56px; display: flex; align-items: center; } .arSheet .arLfSpk svg { display: block; width: 100%; height: 20px; overflow: visible; }   /* a marker's trend, between its name and its range */
+.arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }   /* the doctor's stress, in ink */
 .arSheet .arLfBar { display: block; overflow: visible; }
 .arSheet .arLfBarLine { stroke: oklch(var(--ar-ink)); }
 .arSheet .arLfPill { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 400; white-space: nowrap; }
@@ -14104,22 +14107,22 @@
  *     theme: 'light' | 'dark',         // default 'light' (the theme is only the .arDark class)
  *     welcome: 'cards' | 'includes',   // default 'cards' (the source's welcomeContent prop)
  *     hero: 'assets/async/hero.webp',
- *     avatar: 'assets/async/avatar.webp',
+ *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
  *     onClose: function () {}          // Close (X) and the final "Done"
  *   });
  *   ar.el        the <div class="arSheet"> appended to host
- *   ar.go(n)     jump to step n (0-12)
+ *   ar.go(n)     jump to step n (0-13)
  *   ar.reset()   step 0, scrolled to top, every accordion closed
  *   ar.destroy() remove it
  *
- * Steps (13): 0 Welcome, 1 Summary, 2-9 Insight 1-8, 10 Lifestyle insight (TSH), 11 Everything else, 12 Next steps.
+ * Steps (14): 0 Welcome, 1 Cholesterol insight, 2 Summary, 3-10 Insight 1-8, 11 Lifestyle insight (TSH), 12 Everything else, 13 Next steps.
  * Needs async-report.css. The root fills its host and scrolls internally.
  */
 (function () {
   'use strict';
 
   var SVGNS = 'http://www.w3.org/2000/svg';
-  var mountSeq = 0;
+  var mountSeq = 0, sparkSeq = 0;
 
   // SVG paths, verbatim from the source template
   var P = {
@@ -14247,6 +14250,42 @@
     }
   ];
 
+  // The welcome's words: the report, its doctor, its date and what the debrief holds ("use these content, step 1 and 2 for now")
+  var WEL = {
+    title: 'Results from your Advanced bloods pathology are here.',
+    dr: 'Dr Maylyn Goh', av: 'assets/overview/avatar-dr.webp', date: '20 October 2026',
+    intro: ['Dr Maylyn Goh has reviewed your latest results and health history.'],
+    found: 'The most important findings from your results, explained in context.',
+    peace: 'Our clinical team checks every result and would have contacted you already if anything was critical. Rest assured, red or yellow markers here aren\u2019t urgent.',
+    talk: 'You can message your clinical team or book a consult at the end.'
+  };
+
+  // Step 2, the first insight, in the lifestyle insight's layout: its biomarkers (a trend where there is one; bar 'hi' when higher is worse, 'lo' when lower is, 'mid' both ways), the answer behind it, what we noticed and what it means, a phrase in bold where the doctor stresses it
+  var CHOL = {
+    headline: 'Years of high cholesterol may be raising your heart attack and stroke risk',
+    date: '20 Oct 2026',
+    source: 'From your October 2026 blood test, your August 2026 test results and your Lifestyle Profiling questionnaire.',
+    markers: [
+      { name: 'LDL cholesterol', value: '4.6 mmol/L', date: '14 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.98, trend: { pts: [3.9, 4.3, 4.1, 4.6], from: 'Out of range', to: 'Out of range' } },
+      { name: 'Apolipoprotein B', value: '1.11 g/L', date: '14 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.72 },
+      { name: 'HDL cholesterol', value: '1.3 mmol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'lo', pos: 0.5, trend: { pts: [1.6, 1.5, 1.45, 1.3], from: 'Optimal', to: 'Suboptimal' } },
+      { name: 'Lipoprotein (a)', value: '0.153 g/L', date: '14 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.15 },
+      { name: 'Thyroid-stimulating hormone', value: '1.82 mIU/L', date: '14 Oct 2026', status: 'Optimal', pos: 0.45 }
+    ],
+    answers: [{ q: 'Takeout', a: 'Once a day or more' }],
+    noticed: [
+      'Your arteries carry blood to your heart and brain. Cholesterol travels through them in tiny particles, and the more particles there are, the more settle into artery walls as plaque, much as silt settles in a slow pipe.',
+      ['On 14th October ', { b: 'LDL cholesterol was high for the fourth draw since 2019' }, ', its highest yet. Apolipoprotein B, a count of those particles, was well above range, and protective HDL cholesterol fell below range for the first time.'],
+      'After menopause the liver clears these particles more slowly, and saturated fat from daily takeout, steak and chocolate prompts it to make more.',
+      'A normal lipoprotein(a) makes an inherited particle problem less likely, and normal thyroid results make a slow thyroid an unlikely driver.',
+      ['Alongside the high blood pressure you told your doctor about in September and your mother\'s strokes, ', { b: 'years of high cholesterol raise heart attack and stroke risk' }, ', and every year spent at lower levels means less plaque laid down.']
+    ],
+    means: [
+      ['Particles that carry cholesterol into artery walls are high in your blood, ', { b: 'raising the chance of plaque in your heart arteries' }, '.'],
+      [{ b: 'Discuss with your doctor about a CT coronary angiogram, a scan that shows plaque in your heart arteries, as discussed in September.' }, ' Everlab\'s doctors usually recommend it at your age with long-standing high cholesterol, and the result shapes whether a statin is advised. Meanwhile, swap some daily takeout for home meals cooked in olive oil.']
+    ]
+  };
+
   // The lifestyle insight: a questionnaire answer read alongside a biomarker, after the eight blood insights ("on the Async, add this step")
   var LIFE = {
     headline: 'Thyroid stimulating hormone is slightly above range',
@@ -14287,8 +14326,8 @@
   var CLASS_SPEC = [['goals', 'Goals'], ['family', 'Family history'], ['symptoms', 'Symptoms'], ['conditions', 'Medical conditions'], ['medications', 'Medications & Supplements'], ['wearables', 'Wearables']];
 
   var N_INS = INSIGHTS.length;              // 8
-  var STEP_COUNT = N_INS + 5;               // 13
-  var FIRST = 2, LIFE_ST = N_INS + 2, REST = N_INS + 3, NEXT = N_INS + 4;   // the lifestyle insight after the eight
+  var STEP_COUNT = N_INS + 6;               // 14
+  var CHOL_ST = 1, SUM_ST = 2, FIRST = 3, LIFE_ST = N_INS + 3, REST = N_INS + 4, NEXT = N_INS + 5;   // the cholesterol insight straight after the welcome; the lifestyle insight after the eight
 
   // status -> colour tokens (see async-report.css)
   var LINE = { 'Optimal': 'var(--ar-opt-bg)', 'Suboptimal': 'var(--ar-sub-bg)', 'Out of range': 'var(--ar-out-bg)' };
@@ -14495,7 +14534,7 @@
       theme: opts.theme === 'dark' ? 'dark' : 'light',
       welcome: opts.welcome === 'includes' ? 'includes' : 'cards',
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
-      avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : 'assets/async/avatar.webp',
+      avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
     };
     var uid = ++mountSeq;
@@ -14592,22 +14631,21 @@
         };
         content = [
           h('div', { class: 'arIntro arAnimUp arD10' },
-            h('div', { class: 'arIntroP', text: 'Dr Nazhan has reviewed your latest results and health history.' }),
-            h('div', { class: 'arIntroP', text: 'Here\u2019s what they want you to know, and what they recommend you do next.' })),
+            WEL.intro.map(function (t) { return h('div', { class: 'arIntroP', text: t }); })),
           h('div', { class: 'arDebriefTitle arAnimUp arD15', text: 'In your debrief' }),
           h('div', { class: 'arDebriefList' },
-            drow(strokeIcon(20, 24, 1.6, [P.found1, P.found2]), 'What we found', 'The most important findings from your results, explained in context.', 'arD20'),
-            drow(peaceIco, 'Peace of mind', 'Our clinical team reaches out immediately for anything critical. Read your report knowing there\'s nothing urgent to uncover.', 'arD35'),
-            drow(talkIco, 'Want to talk through your results?', 'You can book a consult to discuss your results any time through the Services tab in your account.', 'arD50'))
+            drow(strokeIcon(20, 24, 1.6, [P.found1, P.found2]), 'What we found', WEL.found, 'arD20'),
+            drow(peaceIco, 'Peace of mind', WEL.peace, 'arD35'),
+            drow(talkIco, 'Want to talk through your results?', WEL.talk, 'arD50'))
         ];
       }
       // the badges open the body, before the intro, the title alone on the picture ("body with a top rounded corner starting by badges and intro")
       var chips = h('div', { class: 'arChips arChipsP arAnimUp' },
-              h('div', { class: 'arChip arChipDoc' }, h('img', { class: 'arChipAv', src: o.avatar, alt: 'Dr Steven Lu', decoding: 'async' }), 'Dr. Steven Lu'),
+              h('div', { class: 'arChip arChipDoc' }, h('img', { class: 'arChipAv', src: o.avatar, alt: '', decoding: 'async' }), WEL.dr),
               h('div', { class: 'arChip' },
                 s('svg', { class: 'arIco', width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' },
                   s('rect', { x: 2, y: 3, width: 12, height: 11, rx: 2 }), s('path', { d: P.cal })),
-                '23 April 2026'));
+                WEL.date));
       var scroller = h('div', { class: 'arPanelScroll' }, [chips].concat(content));
       on(scroller, 'scroll', function () {
         scroller.style.setProperty('--ar-fade', Math.min(40, Math.max(0, scroller.scrollTop)) + 'px');
@@ -14620,7 +14658,7 @@
           h('div', { class: 'arHeroBlur' }),
           h('div', { class: 'arHeroShade' }),
           h('div', { class: 'arHeroText' },
-            h('h2', { class: 'arHeroTitle', text: 'Your complete blood panel report is here.' }))),
+            h('h2', { class: 'arHeroTitle', text: WEL.title }))),
         h('div', { class: 'arPanel' }, scroller));
     }
 
@@ -14758,34 +14796,47 @@
 
     /* ----- step 10: the lifestyle insight ----- */
     // a biomarker and a questionnaire answer side by side, what we noticed, what it means, and a was-this-useful: the source's later insight layout
-    function lifeBar(pos) {
-      var px = 1 + pos * 82;
+    function lifeBar(pos, kind) {   // kind: 'mid' (default) out of range both ways, 'hi' higher is worse, 'lo' lower is worse
+      var px = 1 + pos * 82, C = { o: 'var(--ar-opt-bg)', s: 'var(--ar-sub-bg)', x: 'var(--ar-out-bg)' }, seg = kind === 'hi' ? 'osx' : kind === 'lo' ? 'xso' : 'sos';
       return s('svg', { class: 'arLfBar', width: 84, height: 18, viewBox: '0 0 84 18', 'aria-hidden': 'true', focusable: 'false' },
-        s('rect', { x: 0, y: 9, width: 26, height: 4, rx: 2, style: { fill: 'var(--ar-sub-bg)' } }),
-        s('rect', { x: 29, y: 9, width: 26, height: 4, rx: 2, style: { fill: 'var(--ar-opt-bg)' } }),
-        s('rect', { x: 58, y: 9, width: 26, height: 4, rx: 2, style: { fill: 'var(--ar-sub-bg)' } }),
+        s('rect', { x: 0, y: 9, width: 26, height: 4, rx: 2, style: { fill: C[seg[0]] } }),
+        s('rect', { x: 29, y: 9, width: 26, height: 4, rx: 2, style: { fill: C[seg[1]] } }),
+        s('rect', { x: 58, y: 9, width: 26, height: 4, rx: 2, style: { fill: C[seg[2]] } }),
         s('path', { class: 'arRangePtr', d: 'M' + (px - 4) + ' 0 L' + (px + 4) + ' 0 L' + px + ' 6 Z' }),
         s('line', { class: 'arLfBarLine', x1: px, y1: 6, x2: px, y2: 18, 'stroke-width': 1.5, 'stroke-dasharray': '2 2' }));
     }
+    // a marker's trend, small, beside it: its readings as a line, coloured from its first status to its last
+    function lifeSpark(t) {
+      var lo = Math.min.apply(null, t.pts), hi = Math.max.apply(null, t.pts), n = t.pts.length, id = 'arSpk' + (++sparkSeq);
+      var pts = t.pts.map(function (v, i) { return [2 + i * 116 / (n - 1), hi === lo ? 10 : 17 - (v - lo) / (hi - lo) * 14]; });
+      var d = pts.map(function (p, i) { if (!i) return 'M' + p[0].toFixed(1) + ' ' + p[1].toFixed(1); var q = pts[i - 1], mx = ((q[0] + p[0]) / 2).toFixed(1); return 'C' + mx + ' ' + q[1].toFixed(1) + ' ' + mx + ' ' + p[1].toFixed(1) + ' ' + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+      return h('span', { class: 'arLfSpk', 'aria-hidden': 'true' },
+        s('svg', { width: 120, height: 20, viewBox: '0 0 120 20', fill: 'none', focusable: 'false' },
+          s('defs', null, s('linearGradient', { id: id, x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: '0%', style: { 'stop-color': LINE[t.from] } }), s('stop', { offset: '100%', style: { 'stop-color': LINE[t.to] } }))),
+          s('path', { d: d, stroke: 'url(#' + id + ')', 'stroke-width': 2, 'stroke-linecap': 'round' })));
+    }
+    // a paragraph's words, a phrase in bold where the doctor stresses it: a string, or a list of strings and { b: '...' }
+    function rich(t) { return (Array.isArray(t) ? t : [t]).map(function (x) { return typeof x === 'string' ? x : h('b', { class: 'arParaB', text: x.b }); }); }
     function thumbIcon(up) {
       return strokeIcon(20, 24, 1.6, up
         ? ['M7 10v12', 'M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z']
         : ['M17 14V2', 'M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z']);
     }
-    function buildLife() {
-      var L = LIFE;
+    function buildLife(L) {
       var up = h('button', { type: 'button', class: 'arLfThumb', 'aria-label': 'Useful', 'aria-pressed': 'false' }, thumbIcon(true));
       var down = h('button', { type: 'button', class: 'arLfThumb', 'aria-label': 'Not useful', 'aria-pressed': 'false' }, thumbIcon(false));
       var vote = function (b, other) { var was = b.getAttribute('aria-pressed') === 'true'; b.setAttribute('aria-pressed', String(!was)); other.setAttribute('aria-pressed', 'false'); };
       on(up, 'click', function () { vote(up, down); });
       on(down, 'click', function () { vote(down, up); });
-      var n = L.answers.length;
-      var ans = h('button', { type: 'button', class: 'arLfGroup arLfAns', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' },
+      var n = L.answers.length, ans;
+      if (L.qn){ ans = h('button', { type: 'button', class: 'arLfGroup arLfAns', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' },   // a questionnaire behind it: its card opens its answers
         h('span', { class: 'arLfAnsTx' },
           h('span', { class: 'arT300m', text: 'Your answers' }),
           h('span', { class: 'arLfAnsL' }, h('span', { class: 'arLfName', text: L.qn.name }), h('span', { class: 'arT200r arInk60', text: n + (n === 1 ? ' question answered' : ' questions answered') }))),
         h('span', { class: 'arLfAnsBtn', 'aria-hidden': 'true' }, chevIcon()));
-      on(ans, 'click', function () { qaOpen(L, ans); });
+        on(ans, 'click', function () { qaOpen(L, ans); }); }
+      else ans = h('div', { class: 'arLfGroup' }, h('span', { class: 'arT300m', text: 'Your answers' }),   // a few answers: each shown, its question over it
+        L.answers.map(function (r) { return h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: r.q }), h('span', { class: 'arLfName', text: r.a })); }));
       return h('div', { class: 'arStack arLfStack' },
         h('div', { class: 'arLfHead arAnimRise' },
           h('h2', { class: 'arH700', text: L.headline }),
@@ -14804,15 +14855,16 @@
                     h('span', { class: 'arT200r arInk60', text: m.value }),
                     h('span', { class: 'arT200r arInk30', text: '|' }),
                     h('span', { class: 'arT200r arInk60', text: m.date }))),
-                h('div', { class: 'arLfMkR' }, lifeBar(m.pos), h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
+                m.trend ? lifeSpark(m.trend) : null,
+                h('div', { class: 'arLfMkR' }, lifeBar(m.pos, m.bar), h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
             })),
           ans),
         h('div', { class: 'arLfSec arAnimRise arD24' },
           h('span', { class: 'arLfH', text: 'What we noticed' }),
-          L.noticed.map(function (t) { return h('p', { class: 'arPara', text: t }); })),
+          L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); })),
         h('div', { class: 'arLfSec arAnimRise arD32' },
           h('span', { class: 'arLfH', text: 'What this means for you' }),
-          L.means.map(function (t) { return h('p', { class: 'arPara', text: t }); })),
+          L.means.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); })),
         h('div', { class: 'arLfUse arAnimRise arD32' },
           h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }),
           h('div', { class: 'arLfThumbs' }, up, down)));
@@ -14883,14 +14935,15 @@
           h('div', { class: 'arQTitle', text: 'Have questions?' }),
           h('div', { class: 'arQList' },
             q(h('div', { class: 'arEvaAv' }, sparkIcon('currentColor')), 'Ask Eva', 'Get instant answers about this report.'),
-            q(h('img', { class: 'arQAv', src: o.avatar, alt: 'Dr Steven Lu', decoding: 'async' }), 'Talk to your care team', 'Book a call and ask about your concerns.'))));
+            q(h('img', { class: 'arQAv', src: o.avatar, alt: WEL.dr, decoding: 'async' }), 'Talk to your care team', 'Book a call and ask about your concerns.'))));
     }
 
     function build(st) {
       if (st === 0) return buildWelcome();
-      if (st === 1) return buildSummary();
+      if (st === CHOL_ST) return buildLife(CHOL);
+      if (st === SUM_ST) return buildSummary();
       if (st >= FIRST && st < LIFE_ST) return buildInsight(st - FIRST);
-      if (st === LIFE_ST) return buildLife();
+      if (st === LIFE_ST) return buildLife(LIFE);
       if (st === REST) return buildRest();
       return buildNext();
     }
@@ -14904,7 +14957,7 @@
       backBtn.hidden = step === 0;
       stepWrap.hidden = welcome;
       steps.set(step);
-      ctaLabel.textContent = welcome ? 'Start' : step === 1 ? 'See insights' : step === NEXT ? 'Done' : 'Next';
+      ctaLabel.textContent = welcome ? 'Start' : step === SUM_ST ? 'See insights' : step === NEXT ? 'Done' : 'Next';
       body.textContent = '';
       body.appendChild(build(step));
       body.scrollTop = 0;
