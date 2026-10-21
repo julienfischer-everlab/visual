@@ -8190,7 +8190,7 @@
   .jvH2Row > .tlSearch{margin-left:auto;}
   .jvTabsS{margin:-4px 0 16px;box-shadow:inset 0 -1px 0 rgba(255,255,255,.06);} body.light .jvTabsS{box-shadow:inset 0 -1px 0 rgba(46,31,26,.09);}   /* the tabs under the Action plan heading, on the bar's hairline ("this below Action plan") */
   .jvApHead > .jvH2Row{margin-top:8px;} .jvApHead > .jvTabsS{margin-bottom:8px;}   /* Later's: above its list */
-  #dTl.tlTabsIn .tlBar{display:none !important;} #dTl.tlTabsIn .tlHead{margin-bottom:24px;}   /* the tabs out of their bar: the bar goes 
+  #dTl.tlTabsIn .tlBar{display:none !important;} #dTl.tlTabsIn .tlHead{margin-bottom:24px;}   /* the tabs out of their bar: the bar goes */
   #dTl .tlList.tlV2.msQ .jvBento{display:none;}   /* searching: the matches alone, under the heading and its search */
   @container msl (max-width:600px){ .jvBento{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 20px;}   /* rows 8 further apart ("row gap +8px") */ .jbCard{padding:20px;} .jbH{font-size:18px;line-height:24px;} .jbFb .jbH{font-size:18px;line-height:25px;} .jbFoot{flex-direction:column;align-items:stretch;} .jbFoot > .jvB{width:100%;} .jvH2{margin-top:32px;font-size:20px;line-height:26px;} .jvH2Row{margin-top:32px;} }
   /* the phone: Health profile and the mini timeline a row of two, condensed -- 16 padding, the titles 16, Health profile's line gone, the timeline's names under the bar gone
@@ -12060,7 +12060,11 @@
         <div class="tkGroup" data-pages="ar">
         <div class="tkSub">Async report</div>
         <div class="tkRow" id="stArVarRow"><span class="lbl">Variation</span><select id="stArVar" class="tkSegSel" aria-label="The desktop debrief's format"><option value="full" selected>Full modal</option><option value="modal">Modal</option></select></div>
-        <div class="tkRow"><span class="lbl">Theme</span><select id="stArTheme" class="tkSegSel" aria-label="The debrief's theme"><option value="light" selected>Light</option><option value="dark">Dark</option></select></div>
+        <!-- the report's theme is the bar's Mode (Dark mode: dark; Light and Colour: light), not a tweak here ("theme shouldn't be handled here but on the mode controller") -->
+        <!-- its fixed bar: a solid ground, or the Insights' sticky gradient and blur over the scrolling content ("tweak Fixed bar bg: Solid, Gradient") -->
+        <div class="tkRow"><span class="lbl">Fixed bar</span><select id="stArBar" class="tkSegSel" aria-label="The debrief's fixed bar background"><option value="solid" selected>Solid</option><option value="grad">Gradient</option></select></div>
+        <!-- its footer, under the button: a solid ground, or a progressive gradient and blur, the flow running under it ("tweak footer bg fixed: Solid, Gradient progressive") -->
+        <div class="tkRow"><span class="lbl">Footer</span><select id="stArFoot" class="tkSegSel" aria-label="The debrief's footer background"><option value="solid" selected>Solid</option><option value="grad">Gradient</option></select></div>
         <div class="tkRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option></select></div>
         <!-- an insight's three sections, Behind this insight, What we noticed, What this means for you: stacked with no tabs, anchored by pills, or by a segmented control ("tweak Tab section: ON use tab system, OFF stack section as it is"; "tweak a segmented tab style: no tab, tab pills, tab segmented") -->
         <div class="tkRow"><span class="lbl">Tab style</span><select id="stArTab" class="tkSegSel" aria-label="How an insight's sections are anchored"><option value="off">No tab</option><option value="pills" selected>Pills</option><option value="seg">Segmented</option></select></div>
@@ -13645,6 +13649,24 @@
 .arSheet.arIsWelcome .arHead { position: absolute; }
 .arSheet .arHeadRow { display: flex; align-items: center; gap: 10px; min-height: 40px; }
 .arSheet .arHead { gap: 0; } .arSheet .arStepWrap { padding: 12px 0; }   /* the progress 12 above and below ("progress padding top 12, bottom 12") */
+/* Fixed bar Gradient (the Insights' sticky): past the welcome the body runs up under the head (its height, --ar-head-h, measured), the flow scrolling beneath; once it has, the paper fades down from .55 at the head's top to nothing 32 under it, over ten bands of blur, the softest the tallest */
+.arSheet.arBarGrad:not(.arIsWelcome) .arBody { margin-top: calc(-1 * var(--ar-head-h, 0px)); padding-top: calc(var(--ar-head-h, 0px) + 24px); scroll-padding-top: var(--ar-head-h, 0px); }
+.arSheet.arFootGrad .arFoot { position: relative; z-index: 2; background: transparent; } .arSheet.arFootGrad .arBody { margin-bottom: calc(-1 * var(--ar-foot-h, 0px)); padding-bottom: calc(var(--ar-foot-h, 0px) + 24px); }   /* Footer Gradient: the flow runs on under the button */
+.arSheet .arFootGround { position: absolute; left: 0; right: 0; bottom: 0; top: -32px; z-index: -1; pointer-events: none; background: linear-gradient(0deg, var(--ar-paper) 0%, var(--ar-paper) 30%, color-mix(in srgb, var(--ar-paper) 85%, transparent) 50%, color-mix(in srgb, var(--ar-paper) 55%, transparent) 70%, color-mix(in srgb, var(--ar-paper) 22%, transparent) 88%, transparent 100%); }   /* progressive: the paper solid round the button, easing to nothing 32 above it */
+.arSheet .arFootGround i { position: absolute; left: 0; right: 0; bottom: 0; display: block; -webkit-mask-image: linear-gradient(0deg, #000 82%, transparent); mask-image: linear-gradient(0deg, #000 82%, transparent); }
+.arSheet .arFootGround i:nth-child(1) { height: 100%; -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); } .arSheet .arFootGround i:nth-child(2) { height: 92%; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.arSheet .arFootGround i:nth-child(3) { height: 84%; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); } .arSheet .arFootGround i:nth-child(4) { height: 76%; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.arSheet .arFootGround i:nth-child(5) { height: 68%; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); } .arSheet .arFootGround i:nth-child(6) { height: 60%; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.arSheet .arFootGround i:nth-child(7) { height: 52%; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); } .arSheet .arFootGround i:nth-child(8) { height: 44%; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.arSheet .arFootGround i:nth-child(9) { height: 36%; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); } .arSheet .arFootGround i:nth-child(10) { height: 28%; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.arSheet .arGround { position: absolute; left: 0; right: 0; top: 0; bottom: -32px; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .28s ease; background: linear-gradient(180deg, color-mix(in srgb, var(--ar-paper) 55%, transparent) 0%, color-mix(in srgb, var(--ar-paper) 50%, transparent) 18%, color-mix(in srgb, var(--ar-paper) 43%, transparent) 36%, color-mix(in srgb, var(--ar-paper) 33%, transparent) 54%, color-mix(in srgb, var(--ar-paper) 21%, transparent) 72%, color-mix(in srgb, var(--ar-paper) 10%, transparent) 88%, transparent 100%); }
+.arSheet.arBarGrad.arScrolled:not(.arIsWelcome) .arGround { opacity: 1; } .arSheet.arIsWelcome .arGround { display: none; }
+.arSheet .arGround i { position: absolute; left: 0; right: 0; top: 0; display: block; -webkit-mask-image: linear-gradient(#000 82%, transparent); mask-image: linear-gradient(#000 82%, transparent); }
+.arSheet .arGround i:nth-child(1) { height: 100%; -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); } .arSheet .arGround i:nth-child(2) { height: 92%; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.arSheet .arGround i:nth-child(3) { height: 84%; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); } .arSheet .arGround i:nth-child(4) { height: 76%; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.arSheet .arGround i:nth-child(5) { height: 68%; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); } .arSheet .arGround i:nth-child(6) { height: 60%; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.arSheet .arGround i:nth-child(7) { height: 52%; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); } .arSheet .arGround i:nth-child(8) { height: 44%; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.arSheet .arGround i:nth-child(9) { height: 36%; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); } .arSheet .arGround i:nth-child(10) { height: 28%; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 .arSheet .arHeadLabel { flex: 1; font-size: 14px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink) / .64); }
 .arSheet .arNavT { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; text-align: center; } .arSheet.arIsWelcome .arNavT { visibility: hidden; }   /* the report, centred between back and close, past the welcome */
 .arSheet .arNavTt { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink)); }
@@ -14030,9 +14052,9 @@
 /* the lifestyle insight (step 10): its card, the biomarker with its range and status, the answer, the was-this-useful */
 .arSheet .arLfStack { gap: 32px; }
 .arSheet .arLfHead { display: flex; flex-direction: column; gap: 6px; } .arSheet .arLfHead .arH700 { margin: 0; }
+.arSheet .arLfEv { display: flex; flex-direction: column; gap: 12px; } .arSheet .arLfEv > .arLfSec { margin-bottom: 8px; }   /* Behind this insight and its source on the page, then the grey cards, 12 apart */
+.arSheet .arLfCardH { padding: 0 16px 8px; }   /* a grey card's name, on the grey */
 .arSheet .arLfCard { display: flex; flex-direction: column; gap: 4px; padding: 16px 4px 4px; border-radius: calc(var(--ar-radius-card) + 4px); background: var(--ar-card-bg); }   /* a card of cards, as Biomarkers: the heading on the grey, each group a white card inside, 4 apart ("use a card inside a card") */
-.arSheet .arLfIntro { display: flex; flex-direction: column; gap: 6px; padding: 0 16px 8px; }
-.arSheet .arLfSrc { margin: 0; font-family: var(--ar-font); font-size: 15px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink) / .6); text-wrap: pretty; }
 .arSheet .arLfGroup { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: var(--ar-radius-card); background: var(--ar-card-invert-bg); box-shadow: 0 0 0 .5px rgba(0, 0, 0, .06), 0 1px 2px 0 rgba(0, 0, 0, .04), 0 2px 4px 0 rgba(0, 0, 0, .04); }
 .arSheet .arLfMk { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .arSheet .arLfMkL { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -14041,13 +14063,13 @@
 .arSheet .arLfMkL { flex: 1 1 auto; }
 .arSheet .arLfSpk { flex: 0 1 120px; min-width: 56px; display: flex; align-items: center; } .arSheet .arLfSpk svg { display: block; width: 100%; height: 20px; overflow: visible; }   /* a marker's trend, between its name and its range */
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }   /* the doctor's stress, in ink */
-/* Tab style: a row fixed in the head, under the progress, each an anchor into the flow under it. Pills: fully rounded, the others grey, the one in view the paper with an ink border. Segmented: a grey track the row's width, the three equal, the one in view white */
-.arSheet .arLfChips { padding: 12px 0; }   /* in the head, fixed: 12 above and below ("tab padding top 12, bottom 12") */
-.arSheet .arTabSlot:empty { display: none; } .arSheet.arHasTabs .arBody { padding-top: 12px; }   /* the headline 24 under the anchors */
+/* Tab style: a row after the headline, pinned once reached, each an anchor into the flow. Pills: fully rounded, the others grey, the one in view the paper with an ink border. Segmented: a grey track the row's width, the three equal, the one in view white */
+.arSheet .arLfChips { position: sticky; top: -24px; z-index: 2; margin: -8px 0 -8px; padding: 12px 0; background: var(--ar-paper); }   /* after the headline, pinned once the scroll reaches it, flush under the bar (the body's 24 of padding above it); 12 above and below ("tab padding top 12, bottom 12"; "fixed once the scroll hits the tab section") */
+.arSheet.arBarGrad .arLfChips { background: transparent; } .arSheet.arBarGrad.arChipsStuck .arGround { bottom: calc(-32px - var(--ar-chips-h, 60px)); }   /* Gradient: pinned, the anchors ride the bar's ground, which runs on under them */
 .arSheet .arLfTrack { display: flex; gap: 8px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; } .arSheet .arLfTrack::-webkit-scrollbar { display: none; }
 .arSheet .arLfTrack.arLfOver { padding-right: 32px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }   /* too many for the width: the pills run off the right, fading, and scroll */
 .arSheet .arLfChip { flex: none; appearance: none; -webkit-appearance: none; margin: 0; height: 36px; padding: 0 16px; border: 1.5px solid transparent; border-radius: 9999px; background: var(--ar-card-bg); font-family: var(--ar-font); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; color: oklch(var(--ar-ink) / .72); cursor: pointer; transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease; }
-.arSheet .arLfChip:hover { color: oklch(var(--ar-ink)); } .arSheet .arLfChip[aria-current="true"] { background: var(--ar-paper); border-color: oklch(var(--ar-ink)); color: oklch(var(--ar-ink)); }   /* its border 1.5 ("pill active border 1.5px"), the others' the same, clear: no shift
+.arSheet .arLfChip:hover { color: oklch(var(--ar-ink)); } .arSheet .arLfChip[aria-current="true"] { background: var(--ar-paper); border-color: oklch(var(--ar-ink)); color: oklch(var(--ar-ink)); }   /* its border 1.5 ("pill active border 1.5px"), the others' the same, clear: no shift */
 .arSheet .arLfChip:focus-visible { outline: 2px solid oklch(var(--ar-ink) / .6); outline-offset: 2px; }
 .arSheet .arLfSeg .arLfTrack { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; padding: 4px; border-radius: 14px; background: var(--ar-card-bg); overflow: visible; -webkit-mask-image: none; mask-image: none; }
 .arSheet .arLfSeg .arLfChip { min-width: 0; padding: 0 8px; border: 0; border-radius: 10px; background: transparent; color: oklch(var(--ar-ink) / .55); overflow: hidden; text-overflow: ellipsis; }
@@ -14132,6 +14154,8 @@
  *   const ar = window.AsyncReport.mount(host, {
  *     theme: 'light' | 'dark',         // default 'light' (the theme is only the .arDark class)
  *     welcome: 'cards' | 'includes',   // default 'cards' (the source's welcomeContent prop)
+ *     bar: 'solid' | 'grad',           // default 'solid': the fixed bar's ground, or a gradient and blur over the flow
+ *     foot: 'solid' | 'grad',          // default 'solid': the footer's ground, or a progressive gradient and blur over the flow
  *     tabs: 'pills' | 'seg' | 'off',   // default 'pills': an insight's sections anchored by pills, a segmented control, or none
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
@@ -14401,6 +14425,8 @@
     var o = {
       theme: opts.theme === 'dark' ? 'dark' : 'light',
       welcome: opts.welcome === 'includes' ? 'includes' : 'cards',
+      bar: opts.bar === 'grad' ? 'grad' : 'solid',
+      foot: opts.foot === 'grad' ? 'grad' : 'solid',   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
       tabs: opts.tabs === false || opts.tabs === 'off' ? 'off' : opts.tabs === 'seg' ? 'seg' : 'pills',   // an insight's three sections anchored by pills (default) or a segmented control, or stacked with no tabs
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
@@ -14423,15 +14449,23 @@
     var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose', 'aria-label': 'Close' }, strokeIcon(16, 16, 1.8, [P.close]));
     var steps = stepIndicator(STEP_COUNT - 1);   // a bar for each step after the welcome (7)
     var stepWrap = h('div', { class: 'arStepWrap' }, steps.el);
-    var tabSlot = h('div', { class: 'arTabSlot' });   // an insight's anchors, fixed in the head under the progress ("tab fixed")
     var head = h('div', { class: 'arHead' },
       h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel arNavT' }, h('span', { class: 'arNavTt', text: REPORT.name }), h('span', { class: 'arNavTs', text: REPORT.date })), closeBtn),
-      stepWrap, tabSlot);
+      stepWrap);
     var body = h('div', { class: 'arBody' });
     var ctaLabel = h('span', { class: 'arBtnLabel' });
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, ctaLabel);
     var foot = h('div', { class: 'arFoot' }, cta);
-    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : ''), 'data-ar-mount': uid }, head, body, foot);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : ''), 'data-ar-mount': uid }, head, body, foot);
+    if (o.foot === 'grad'){   // the footer over the flow: the paper rising from its foot to nothing 32 above it, over ten bands of blur
+      foot.insertBefore(h('span', { class: 'arFootGround', 'aria-hidden': 'true' }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); })), foot.firstChild);
+      var footH = function () { root.style.setProperty('--ar-foot-h', foot.offsetHeight + 'px'); };
+      if (window.ResizeObserver) new ResizeObserver(footH).observe(foot); later(footH, 0); }
+    if (o.bar === 'grad'){   // the Insights' fixed bar: the flow scrolls under the head; once it has, the page's ground fades down from the head's top to 32 under it, over a blur in ten bands
+      head.insertBefore(h('span', { class: 'arGround', 'aria-hidden': 'true' }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); })), head.firstChild);
+      var headH = function () { root.style.setProperty('--ar-head-h', head.offsetHeight + 'px'); };
+      if (window.ResizeObserver) new ResizeObserver(headH).observe(head); later(headH, 0);
+      on(body, 'scroll', function () { root.classList.toggle('arScrolled', body.scrollTop > 2); }, { passive: true }); }
 
     // the welcome's scroll for the host's parallax: --ar-hero-y (px scrolled) and --ar-hero-k (0..1 over the hero's height less 40, as the service page's)
     var spy = null;   // the insight's chips following the scroll (set by its step, cleared by the next)
@@ -14570,18 +14604,16 @@
       var n = (L.answers || []).length, ans = null;   // no answers behind it: no Your answers
       if (n && L.qn){ ans = h('button', { type: 'button', class: 'arLfGroup arLfAns', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' },   // a questionnaire behind it: its card opens its answers
         h('span', { class: 'arLfAnsTx' },
-          h('span', { class: 'arT300m', text: 'Your answers' }),
           h('span', { class: 'arLfAnsL' }, h('span', { class: 'arLfName', text: L.qn.name }), h('span', { class: 'arT200r arInk60', text: n + (n === 1 ? ' question answered' : ' questions answered') }))),
         h('span', { class: 'arLfAnsBtn', 'aria-hidden': 'true' }, chevIcon()));
         on(ans, 'click', function () { qaOpen(L, ans); }); }
-      else if (n) ans = h('div', { class: 'arLfGroup' }, h('span', { class: 'arT300m', text: 'Your answers' }),   // a few answers: each shown, its question over it
+      else if (n) ans = h('div', { class: 'arLfGroup' },   // a few answers: each shown, its question over it
         L.answers.map(function (r) { return h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: r.q }), h('span', { class: 'arLfName', text: r.a })); }));
-      var card = h('div', { class: 'arLfCard arAnimRise arD12' },
-          h('div', { class: 'arLfIntro' },
-            h('span', { class: 'arT600', text: 'Behind this insight' }),
-            h('p', { class: 'arLfSrc', text: L.source })),
-          h('div', { class: 'arLfGroup' },
-            h('span', { class: 'arT300m', text: 'Your biomarkers' }),
+      /* Behind this insight on the page, its source under it; then a grey card a group, its name on the grey, its list in a white card inside: Your biomarkers, Your answers */
+      var grey = function (name, inner) { return h('div', { class: 'arLfCard' }, h('span', { class: 'arT600 arLfCardH', text: name }), inner); };
+      var card = h('div', { class: 'arLfEv arAnimRise arD12' },
+          h('div', { class: 'arLfSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }), h('p', { class: 'arPara', text: L.source })),
+          grey('Your biomarkers', h('div', { class: 'arLfGroup' },
             L.markers.map(function (m) {
               return h('div', { class: 'arLfMk' },
                 h('div', { class: 'arLfMkL' },
@@ -14592,33 +14624,35 @@
                     h('span', { class: 'arT200r arInk60', text: m.date }))),
                 m.trend ? lifeSpark(m.trend) : null,
                 h('div', { class: 'arLfMkR' }, m.pos != null ? lifeBar(m.pos, m.bar) : null, h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
-            })),
-          ans);
+            }))),
+          ans ? grey('Your answers', ans) : null);
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"); the sections keep their own headings
         ['Findings', h('div', { class: 'arLfSec arAnimRise arD24' }, h('span', { class: 'arLfH', text: 'What we noticed' }), L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))],
         ['What it means', h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'What this means for you' }), L.means.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))]];
-      var head = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }));   // its date in the top nav
+      var hl = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }));   // its date in the top nav
       var use = h('div', { class: 'arLfUse arAnimRise arD32' }, h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }), h('div', { class: 'arLfThumbs' }, up, down));
-      if (o.tabs === 'off') return h('div', { class: 'arStack arLfStack' }, head, secs.map(function (x) { return x[1]; }), use);   // No tab: the three one under the other
+      if (o.tabs === 'off') return h('div', { class: 'arStack arLfStack' }, hl, secs.map(function (x) { return x[1]; }), use);   // No tab: the three one under the other
       /* Tab sections on: a row of chips under the headline, each an anchor into the one vertical flow, every section shown; the chip of the section in view the active one ("chips just an anchor to a vertical flow; all content visible in the vertical flow") */
       var chips = secs.map(function (x, i) {
         return h('button', { type: 'button', class: 'arLfChip', 'aria-current': i ? 'false' : 'true', text: x[0] });
       });
       var track = h('div', { class: 'arLfTrack' }, chips), bar = h('nav', { class: 'arLfChips' + (o.tabs === 'seg' ? ' arLfSeg' : '') + ' arAnimRise arD12', 'aria-label': 'Jump to a section' }, track); if (chipRO) chipRO.observe(track);   // pills, or a segmented control (the three the track's width, the one in view white)
-      tabSlot.appendChild(bar); root.classList.add('arHasTabs');   // fixed in the head, under the progress; the flow scrolls under it
       var cur = 0, lock = 0;
       var mark = function (k) { if (k === cur) return; cur = k; chips.forEach(function (c, i) { c.setAttribute('aria-current', String(i === k)); });
         var c = chips[k]; track.scrollLeft = Math.max(0, c.offsetLeft - track.offsetLeft - (track.clientWidth - c.offsetWidth) / 2); };   // its chip into the row's view (the row alone, never the page)
       var topOf = function (el) { return el.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop; };
-      spy = function () { if (lock) return; var line = body.scrollTop + 40, k = 0;   // the last section whose top has passed under the chips; the last one once the page is at its foot
+      var over = function () { return (o.bar === 'grad' ? head.offsetHeight : 0) + bar.offsetHeight; };   // what covers the flow's top once the anchors are pinned: the head too, with the flow under it (Fixed bar: Gradient)
+      spy = function () { var stuck = bar.getBoundingClientRect().top - body.getBoundingClientRect().top - (o.bar === 'grad' ? head.offsetHeight : 0) <= 1;   // the anchors pinned: the Gradient bar's ground runs under them too
+        root.classList.toggle('arChipsStuck', stuck); root.style.setProperty('--ar-chips-h', bar.offsetHeight + 'px');
+        if (lock) return; var line = body.scrollTop + over() + 40, k = 0;   // the last section whose top has passed under the chips; the last one once the page is at its foot
         secs.forEach(function (x, i) { if (topOf(x[1]) <= line) k = i; });
         if (body.scrollTop + body.clientHeight >= body.scrollHeight - 2) k = secs.length - 1;
         mark(k); };
       chips.forEach(function (c, i) {
         on(c, 'click', function () { mark(i); cancel(lock); lock = later(function () { lock = 0; }, 700);
-          body.scrollTo({ top: Math.max(0, topOf(secs[i][1]) - 16), behavior: reducedMotion() ? 'auto' : 'smooth' }); });   // to its section, 16 under the head
+          body.scrollTo({ top: Math.max(0, topOf(secs[i][1]) - over() - 16), behavior: reducedMotion() ? 'auto' : 'smooth' }); });   // to its section, 16 under the pinned anchors
       });
-      return h('div', { class: 'arStack arLfStack arLfChipped' }, head, secs.map(function (x) { return x[1]; }), use);
+      return h('div', { class: 'arStack arLfStack arLfChipped' }, hl, bar, secs.map(function (x) { return x[1]; }), use);   // the anchors after the headline ("tab should be after the h1")
     }
 
     /* ----- step 6: Everything else ----- */
@@ -14691,7 +14725,7 @@
     function render() {
       while (timers.length) clearTimeout(timers.pop());
       qaClose(true);   // a step change closes the questionnaire's sheet
-      spy = null; if (chipRO) chipRO.disconnect(); tabSlot.textContent = ''; root.classList.remove('arHasTabs');
+      spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled');
       var welcome = step === 0;
       root.classList.toggle('arIsWelcome', welcome);
       root.setAttribute('data-ar-step', String(step));
@@ -28604,7 +28638,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('stArTheme') === 'dark' ? 'dark' : 'light', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
@@ -28618,7 +28652,7 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
-    ['stArTheme', 'stArWel', 'stArTab'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
@@ -32943,7 +32977,7 @@ hairline({
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
       if (opts.length !== 2 || sel.classList.contains('tkSegSel') /* drawn as segments already: no switch beside them */ || sel.id === 'versionSel' || sel.id === 'stInsPos' /* two places, Section and Hero: a select, not a switch ("the position here should be a select") */ || sel.id === 'densSel' || sel.id === 'stPal' ||
-          sel.id === 'stHeroBg' || sel.id === 'stDefVis' || sel.id === 'stDefAl' || sel.id === 'stArTheme' || sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stTlPri' || sel.id === 'stTlVer' || sel.id === 'stMsLay' || sel.id === 'stJvTop' || sel.id === 'stJvVis' || sel.id === 'stJvIt' || sel.id === 'stJvGrp' || sel.id === 'stPlanV' || sel.id === 'stPlanStack' || sel.id === 'stPersona' || sel.id === 'stMsHd' || sel.id === 'stTlStVis' || sel.id === 'stTlStPl' || sel.id === 'stBkN' || sel.id === 'stBkLay' || sel.id === 'stTlCta' || sel.id === 'stTaskHd' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
+          sel.id === 'stHeroBg' || sel.id === 'stDefVis' || sel.id === 'stDefAl' ||  sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stTlPri' || sel.id === 'stTlVer' || sel.id === 'stMsLay' || sel.id === 'stJvTop' || sel.id === 'stJvVis' || sel.id === 'stJvIt' || sel.id === 'stJvGrp' || sel.id === 'stPlanV' || sel.id === 'stPlanStack' || sel.id === 'stPersona' || sel.id === 'stMsHd' || sel.id === 'stTlStVis' || sel.id === 'stTlStPl' || sel.id === 'stBkN' || sel.id === 'stBkLay' || sel.id === 'stTlCta' || sel.id === 'stTaskHd' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
       seg.type = 'button'; seg.className = 'tgl';
