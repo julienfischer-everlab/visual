@@ -14929,3 +14929,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async Evidence cards, the last row:** its hover tile 14 from the card's foot, as from its sides ("bottom padding same as left right").
 - **Async biomarker rows:** title 16 (line 20), sub 14 (line 18), 4 above the title ("title 16, sub 14, title margin top 4px"); the Insights phone's rows stay 14 / 12.
 - **Async Evidence cards:** padding 24 to 20 ("reduce card padding by 4px"); each biomarker row 4 in at both sides, so its words sit 14 inside the hover tile and stay where they were; tiles 10 from the card's sides and foot.
+- **Default setup:** with no page in the link, the prototype opens on the Async report, Dark mode, the XS phone, the Cards welcome ("Async default setup"; it was the Service detail page). #home and a page's hash still open that page.
+- **Async, Your answers with more than one:** the card's name at the left and See detail at its right, a 28 pill, fully rounded, on the name's centre line; it opens the sheet of the answers.

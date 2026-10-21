@@ -14087,7 +14087,9 @@
 .arSheet .arLfEv .arLfCard { background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); }   /* the group's card outlined, not filled; its list's card inside it filled ("main card outlined not filled") */
 .arSheet.arCardsFill .arLfEv .arLfCard { background: oklch(0% 0 0 / .04); box-shadow: none; } .arSheet.arDark.arCardsFill .arLfEv .arLfCard { background: oklch(100% 0 0 / .04); }   /* Evidence cards: Filled, #000 4% on the light page, #fff 4% on the dark ("Filled fff 4%") */
 .arSheet .arLfEv .arLfCard { padding: 20px; } .arSheet .arLfEv .arLfCardH { padding: 0 0 8px; }   /* 20 inside the card, all round ("card padding 24px", then 4 less) */
-.arSheet .arLfEv .arLfCard > .arLfGroup { background: transparent; box-shadow: none; padding: 0; } .arSheet .arLfEv .arMbList > .arMb:last-child { margin-bottom: -10px; }   /* the last row's tile as far from the card's foot as the tiles from its sides, 14 ("bottom padding same as left right") */   /* no card inside: the list straight on the outlined card ("remove card style") */ .arSheet .arLfEv .arLfCard > .arLfAns1 { padding-top: 2px; }   /* the one answer */ .arSheet .arLfAnsN > .arMbMore { margin: 4px 0 0; }   /* See X answered questions, alone under its name */
+.arSheet .arLfEv .arLfCard > .arLfGroup { background: transparent; box-shadow: none; padding: 0; } .arSheet .arLfEv .arMbList > .arMb:last-child { margin-bottom: -10px; }   /* the last row's tile as far from the card's foot as the tiles from its sides, 14 ("bottom padding same as left right") */   /* no card inside: the list straight on the outlined card ("remove card style") */ .arSheet .arLfEv .arLfCard > .arLfAns1 { padding-top: 2px; }   /* the one answer */ .arSheet .arLfEv .arLfCardRow { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; } .arSheet .arLfEv .arLfCardRow > .arLfCardH { padding: 0; min-width: 0; }   /* Your answers, its name and See detail on one line */
+.arSheet .arLfDetail { flex: none; height: 28px; padding: 0 12px; border-radius: 9999px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); font-size: 13px; line-height: 16px; font-weight: 500; }
+@media (hover: hover) { .arSheet .arLfDetail:hover { background: oklch(var(--ar-ink) / .1); } } .arSheet .arLfDetail:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }   /* See X answered questions, alone under its name */
 .arSheet .arLfStack > .arLfHead { margin-bottom: -16px; }   /* 16 less under the headline ("margin bottom less by 16px") */
 .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arLfStack > .arLfHead { margin-bottom: 0; }   /* the desk: the 16 back ("+16 gap on desktop") */
 .arSheet .arLfCard { display: flex; flex-direction: column; gap: 4px; padding: 16px 4px 4px; border-radius: calc(var(--ar-radius-card) + 4px); background: var(--ar-card-bg); }   /* a card of cards, as Biomarkers: the heading on the grey, each group a white card inside, 4 apart ("use a card inside a card") */
@@ -14679,12 +14681,11 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       on(up, 'click', function () { vote(up, down); });
       on(down, 'click', function () { vote(down, up); });
       /* a summary, not the full data ("present that as a summary vs a full list of data"): one answer shown, its question over it; more, See X answered questions, which opens them all in the sheet; none, no Your answers */
-      var n = (L.answers || []).length, ans = null;
+      var n = (L.answers || []).length, ans = null, ansMore = null;
       if (n === 1) ans = h('div', { class: 'arLfGroup arLfAns1' }, h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: L.answers[0].q }), h('span', { class: 'arLfName', text: L.answers[0].a })));
-      else if (n > 1) {
-        var ansMore = h('button', { type: 'button', class: 'arBtn arMbMore', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', text: 'See ' + n + ' answered questions' });
+      else if (n > 1) {   // more: the card's name, and at its right See detail, a small pill (28, fully rounded), on the name's centre line ("use 28 cta full rounded right side centered vertically: See detail")
+        ansMore = h('button', { type: 'button', class: 'arBtn arLfDetail', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', 'aria-label': 'See detail: ' + n + ' answered questions', text: 'See detail' });
         on(ansMore, 'click', function () { qaOpen(L, ansMore); });
-        ans = h('div', { class: 'arLfGroup arLfAnsN' }, ansMore);
       }
       /* Behind this insight on the page, its source under it; then a grey card a group, its name on the grey, its list in a white card inside: Your biomarkers, Your answers */
       var grey = function (name, inner) { return h('div', { class: 'arLfCard' }, h('span', { class: 'arT600 arLfCardH', text: name }), inner); };
@@ -14698,7 +14699,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var card = h('div', { class: 'arLfEv arAnimRise arD12' },
           h('div', { class: 'arLfSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }), h('p', { class: 'arPara', text: L.source })),
           grey('Your biomarkers', h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, MB_SHOWN).map(mbRow), fade, more)),
-          ans ? grey('Your answers', ans) : null);
+          ans ? grey('Your answers', ans) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: 'Your answers' }), ansMore) : null);
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"; then "Evidence, Findings, Meaning"); the sections keep their own headings
         ['Findings', h('div', { class: 'arLfSec arAnimRise arD24' }, h('span', { class: 'arLfH', text: 'What we noticed' }), L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))],
         ['Meaning', h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'What this means for you' }), L.means.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))]];
@@ -35508,7 +35509,9 @@ hairline({
     // the first page: no hash, or #home, opens here; any page hash opens that page
     const want = () => location.hash === '#home';
     if (want()) show();
-    else if (!location.hash && versionSel && window._svc){ versionSel.value = 'svcD'; versionSel.dispatchEvent(new Event('change')); }   // no hash: the Service detail page, desktop, is the first page ("the detail page should be the default one"); #home still opens the gallery
+    else if (!location.hash && versionSel){   // no hash: the Async report is the first page, in Dark mode, in the XS phone, its welcome the Cards ("Async default setup"; before, the Service detail page); #home still opens the gallery, a page's hash that page
+      const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
+      put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', '26'); }
     addEventListener('hashchange', () => { if (want()) show(); else hide(); });
   })();
 
