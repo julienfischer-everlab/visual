@@ -12076,8 +12076,7 @@
         <div class="tkRow"><span class="lbl">Fixed bar</span><select id="stArBar" class="tkSegSel" aria-label="The debrief's fixed bar background"><option value="solid" selected>Solid</option><option value="grad">Gradient</option></select></div>
         <!-- its footer, under the button: a solid ground, or a progressive gradient and blur, the flow running under it ("tweak footer bg fixed: Solid, Gradient progressive") -->
         <div class="tkRow"><span class="lbl">Footer</span><select id="stArFoot" class="tkSegSel" aria-label="The debrief's footer background"><option value="solid" selected>Solid</option><option value="grad">Gradient</option></select></div>
-        <!-- a blur under the gradients, the bar's and the footer's ("add a tweak also to have blur effect with the gradient"); shown while either is a gradient -->
-        <div class="tkRow" id="stArBlurRow"><span class="lbl">Gradient blur</span><select id="stArBlur" aria-label="Blur under the gradients"><option value="on" selected>On</option><option value="off">Off</option></select></div>
+        <!-- no blur under the gradients ("remove any blur effect when it's gradient"; it was the Gradient blur tweak) -->
         <div class="tkRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option></select></div>
         <!-- an insight's three sections, Behind this insight, What we noticed, What this means for you: stacked with no tabs, anchored by pills, or by a segmented control ("tweak Tab section: ON use tab system, OFF stack section as it is"; "tweak a segmented tab style: no tab, tab pills, tab segmented") -->
         <div class="tkRow"><span class="lbl">Tab style</span><select id="stArTab" class="tkSegSel" aria-label="How an insight's sections are anchored"><option value="off">No tab</option><option value="pills" selected>Pills</option><option value="seg">Segmented</option></select></div>
@@ -14217,6 +14216,55 @@
   .arSheet .arAnimRise, .arSheet .arAnimRise6, .arSheet .arAnimUp { animation-name: arFade; animation-duration: .2s; }
   .arSheet .arStepsFill, .arSheet .arChev { transition: none; }
 }
+/* ---- Biomarker detail: what a biomarker row opens, in the Async report's sheet and on the Insights phone ("create the bottom sheet biomarker detail; use it also for the insight page"): what it is, the latest result on its range, the history on a chart. Its own tokens, light and dark (.bmdDark) ---- */
+.bmd { --bmd-ink: #111111; --bmd-ink2: rgba(17, 17, 17, .56); --bmd-line: rgba(17, 17, 17, .1); --bmd-fill: rgba(0, 0, 0, .035); --bmd-tile: rgba(0, 0, 0, .06); --bmd-bub: #222222; --bmd-bubFg: #ffffff; --bmd-tip: #222222; --z-o: #3ed27a; --z-s: #fbc94e; --z-x: #f25a5a;
+  --p-o: #dcf7e6; --p-oFg: #146c3a; --p-s: #fdf3cf; --p-sFg: #6b5200; --p-x: #fde2e2; --p-xFg: #b42318;
+  display: flex; flex-direction: column; padding: 4px 0 32px; color: var(--bmd-ink); font-family: inherit; -webkit-font-smoothing: antialiased; }
+.bmd.bmdDark, .bmdDark .bmd { --bmd-ink: #ffffff; --bmd-ink2: rgba(255, 255, 255, .56); --bmd-line: rgba(255, 255, 255, .1); --bmd-fill: transparent; --bmd-tile: rgba(255, 255, 255, .08); --bmd-bub: #e6e6e6; --bmd-bubFg: #111111; --bmd-tip: #2a2a2a; --z-o: #8ee5aa; --z-s: #f7e08d; --z-x: #f98b8e;
+  --p-o: #0f2e1b; --p-oFg: #8ee5aa; --p-s: #3a2e08; --p-sFg: #f5d55c; --p-x: #3d0c0c; --p-xFg: #fda4a4; }   /* dark: the range on the sheet itself, no card under it */
+.bmdDesc { margin: 0; font-size: 16px; line-height: 20px; color: var(--bmd-ink2); text-wrap: pretty; }
+.bmdRow { display: flex; align-items: center; gap: 8px; min-height: 32px; margin-top: 32px; }
+.bmdH { margin: 0 4px 0 0; font-size: 18px; line-height: 22px; font-weight: 500; color: var(--bmd-ink); white-space: nowrap; }
+.bmdPill { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 8px; font-size: 14px; line-height: 18px; font-weight: 500; white-space: nowrap; }
+.bmdPill.bmd-o { background: var(--p-o); color: var(--p-oFg); } .bmdPill.bmd-s { background: var(--p-s); color: var(--p-sFg); } .bmdPill.bmd-x { background: var(--p-x); color: var(--p-xFg); } .bmdPill.bmd-n { background: var(--bmd-tile); color: var(--bmd-ink2); }
+.bmdDl { appearance: none; -webkit-appearance: none; flex: none; margin: 0 0 0 auto; height: 32px; padding: 0 10px; border: 1px solid var(--bmd-line); border-radius: 8px; background: transparent; color: var(--bmd-ink); font: inherit; font-size: 14px; line-height: 18px; font-weight: 500; cursor: pointer; }   /* Download, at the row's right */
+@media (hover: hover) { .bmdDl:hover { background: var(--bmd-tile); } }
+.bmdDl:focus-visible, .bmdChart:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
+.bmdCard { margin-top: 16px; padding: 16px 16px 20px; border-radius: 16px; background: var(--bmd-fill); }   /* the latest result on its range */
+.bmdBar { position: relative; margin: 0 8px; padding-top: 40px; }
+.bmdBub { position: absolute; top: 0; left: clamp(36px, calc(var(--p) * 100%), calc(100% - 36px)); transform: translateX(-50%); height: 28px; padding: 0 9px; border-radius: 8px; background: var(--bmd-bub); color: var(--bmd-bubFg); font-size: 14px; line-height: 28px; white-space: nowrap; }   /* the reading over its place */
+.bmdBubA { position: absolute; top: 27px; left: calc(var(--p) * 100%); width: 10px; height: 6px; margin-left: -5px; background: var(--bmd-bub); clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.bmdSegs { display: flex; gap: 3px; } .bmdSegs i { flex: 1 1 0; height: 12px; border-radius: 3px; } .bmdSegs i:first-child { border-radius: 6px 3px 3px 6px; } .bmdSegs i:last-child { border-radius: 3px 6px 6px 3px; }
+.bmd-zo { background: var(--z-o); } .bmd-zs { background: var(--z-s); } .bmd-zx { background: var(--z-x); }
+.bmdCuts { position: relative; height: 38px; }
+.bmdCut { position: absolute; top: 0; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; font-size: 14px; line-height: 18px; color: var(--bmd-ink2); font-variant-numeric: tabular-nums; } .bmdCut::before { content: ""; width: 1px; height: 14px; margin-bottom: 4px; background: var(--bmd-line); }   /* each edge of the range, its value under a tick */
+.bmdMeta { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px 12px; margin: 16px -8px 0; }   /* the two on one line on the phone, as the mock */
+.bmdMi { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; line-height: 18px; white-space: nowrap; } .bmdMi .bmdIc { margin-right: 2px; } .bmdMi b { font-weight: 500; color: var(--bmd-ink); } .bmdMi span { color: var(--bmd-ink2); }
+.bmdIc { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--bmd-tile); color: var(--bmd-ink); }
+.bmdN { display: inline-grid; place-items: center; min-width: 32px; height: 32px; padding: 0 8px; box-sizing: border-box; border: 1px solid var(--bmd-line); border-radius: 10px; font-size: 16px; line-height: 20px; font-weight: 500; font-variant-numeric: tabular-nums; }   /* how many readings */
+.bmdChart { position: relative; margin-top: 16px; height: 240px; border: 1px solid var(--bmd-line); border-radius: 16px; overflow: hidden; touch-action: pan-y; cursor: crosshair; }
+.bmdChart svg { position: absolute; inset: 0; display: block; }
+.bmdYrs { position: relative; height: 32px; margin-top: 4px; } .bmdYrs span { position: absolute; top: 8px; transform: translateX(-50%); font-size: 16px; line-height: 20px; color: var(--bmd-ink2); font-variant-numeric: tabular-nums; }
+.bmdTip { position: absolute; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 148px; padding: 12px 14px 14px; border-radius: 12px; background: var(--bmd-tip); color: #fff; pointer-events: none; transition: left .18s ease, top .18s ease; }
+.bmdTip::after { content: ""; position: absolute; top: var(--ay, 50%); width: 8px; height: 12px; margin-top: -6px; background: inherit; } .bmdTip.bmdR::after { left: 100%; clip-path: polygon(0 0, 100% 50%, 0 100%); } .bmdTip.bmdL::after { right: 100%; clip-path: polygon(100% 0, 0 50%, 100% 100%); }   /* its notch toward the reading */
+.bmdTip .bmdPill.bmd-o { background: #0f2e1b; color: #8ee5aa; } .bmdTip .bmdPill.bmd-s { background: #3a2e08; color: #f5d55c; } .bmdTip .bmdPill.bmd-x { background: #3d0c0c; color: #fda4a4; } .bmdTip .bmdPill.bmd-n { background: rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .7); }
+.bmdTipN { font-size: 15px; line-height: 19px; } .bmdTipV { font-size: 15px; line-height: 19px; font-variant-numeric: tabular-nums; } .bmdTipV i { font-style: normal; color: rgba(255, 255, 255, .56); } .bmdTipD { font-size: 13px; line-height: 16px; color: rgba(255, 255, 255, .56); }
+.bmdAns { margin-top: 16px; padding: 16px; border-radius: 16px; background: var(--bmd-tile); font-size: 16px; line-height: 20px; } .bmdAns span { display: block; margin-top: 8px; font-size: 14px; line-height: 18px; color: var(--bmd-ink2); }   /* a questionnaire's answer: its words, its date */
+@media (prefers-reduced-motion: reduce) { .bmdTip { transition: none; } }
+/* the sheet it comes in on the Insights phone: a scrim, the panel up from the foot to under the status bar, its handle, the name and the close, the detail scrolling */
+.bmdOv { position: absolute; inset: 0; z-index: 60; display: flex; flex-direction: column; justify-content: flex-end; }
+.bmdOvDim { position: absolute; inset: 0; background: rgba(0, 0, 0, .4); opacity: 0; transition: opacity .3s ease; }
+.bmdOvP { position: relative; display: flex; flex-direction: column; height: calc(100% - 52px); border-radius: 24px 24px 0 0; background: #fff; color: #111; box-shadow: 0 -12px 40px rgba(0, 0, 0, .16); transform: translateY(100%); transition: transform .4s cubic-bezier(.2, .8, .2, 1); }
+.bmdOv.bmdDark .bmdOvP { background: #1b1b1b; color: #fff; }
+.bmdOv.bmdOn .bmdOvDim { opacity: 1; } .bmdOv.bmdOn .bmdOvP { transform: none; }
+.bmdOvG { flex: none; width: 36px; height: 5px; margin: 8px auto 12px; border-radius: 3px; background: rgba(127, 127, 127, .35); }
+.bmdOvH { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 16px; }
+.bmdOvT { margin: 0; font-size: 20px; line-height: 24px; font-weight: 500; }
+.bmdOvX { appearance: none; -webkit-appearance: none; flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .06); color: inherit; cursor: pointer; } .bmdOv.bmdDark .bmdOvX { background: rgba(255, 255, 255, .1); } .bmdOvX:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
+.bmdOvB { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 16px; scrollbar-width: none; } .bmdOvB::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: reduce) { .bmdOvDim, .bmdOvP { transition: none; } }
+#phone #mRecs .mbrow { cursor: pointer; } #phone #mRecs .mbrow:focus-visible { outline: 2px solid #4b7bec; outline-offset: -2px; border-radius: 8px; }   /* a row opens its detail */
+.arSheet .arQaList.arQaBio { padding: 0 16px; }   /* the report's sheet: the detail at the mock's 16 */
 /* every modal's dismiss button 36 ("Dismiss ALL MODAL! 36px"): the image viewer's, Ask Eva's, the chat's, the sheets', the price and inbox panels', the doctor's review, the service sheets', the report's and its sheet's; the two ids only so this wins over each surface's own size, whatever it was (30 to 44) */
 html:not(#_m):not(#_d) :is(.imClose, .aiX, .chX, .shClose, .prX, .ibX, .dbX, .tlShX, .arSheet .arClose, .arSheet .arQaX) { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; flex: none; }
 html:not(#_m):not(#_d) .aiX { top: -52px; }   /* still 16 above Ask Eva's card */
@@ -14515,7 +14563,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       welcome: opts.welcome === 'includes' ? 'includes' : 'cards',
       bar: opts.bar === 'grad' ? 'grad' : 'solid',
       foot: opts.foot === 'grad' ? 'grad' : 'solid',
-      blur: opts.blur !== false,   // the gradients' blur, under them (default on)   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
+      blur: opts.blur === true,   // the gradients' blur, under them: off ("remove any blur effect when it's gradient"); on only when asked   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
       tabs: opts.tabs === false || opts.tabs === 'off' ? 'off' : opts.tabs === 'seg' ? 'seg' : 'pills',   // an insight's three sections anchored by pills (default) or a segmented control, or stacked with no tabs
       cards: opts.cards === 'outline' ? 'outline' : 'fill',   // Behind this insight's cards filled (default, "Filled should be the default style") or outlined
       mb: opts.mb === 2 ? 2 : 3,   // the biomarkers shown before See N more (default 3), the next one partly shown
@@ -14552,7 +14600,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
        --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
-    var bands = function () { return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); }); }, fitG = null;
+    var bands = function () { return o.blur ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); }) : []; }, fitG = null;   // the blur's bands only when a blur is asked for
     if (o.foot === 'grad'){   // the flow runs on under the button
       foot.insertBefore(h('span', { class: 'arFootGround', 'aria-hidden': 'true' }, bands()), foot.firstChild);
       var fitF = function () { var f = foot.getBoundingClientRect(), b = cta.getBoundingClientRect(); root.style.setProperty('--ar-foot-h', foot.offsetHeight + 'px');
@@ -14607,7 +14655,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         on(dim, 'click', function () { qaClose(); });
         on(panel, 'keydown', function (e) {
           if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); qaClose(); return; }
-          if (e.key === 'Tab') { var f = [x, list].concat([].slice.call(list.querySelectorAll('[tabindex="0"]'))); var i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); }   // focus stays in the sheet
+          if (e.key === 'Tab') { var f = [x, list].concat([].slice.call(list.querySelectorAll('button, [tabindex="0"]'))); var i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); }   // focus stays in the sheet
         });
         root.appendChild(qa.el);
       }
@@ -14735,12 +14783,16 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     function nAns(k) { return k + (k === 1 ? ' answered question' : ' answered questions'); }
     function mbRow(m) {
       var stc = m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub';
-      return h('div', { class: 'arMb', tabindex: '0' },
+      var row = h('div', { class: 'arMb', tabindex: '0', role: 'button', 'aria-haspopup': 'dialog' },
         h('span', { class: 'arMbN', text: m.name }),
         m.pos != null ? mbBar(m.pos, m.bar) : h('span'),
         h('span', { class: 'arMbG' }, h('span', { text: m.value }), h('span', { class: 'arMbSep', 'aria-hidden': 'true', text: '|' }), h('span', { text: m.date })),
         h('span', { class: 'arLfPill arMbSt ' + stc, text: m.status }));
+      on(row, 'click', function () { bioOpen(m, row); });   // its detail in the sheet ("bottom sheet biomarker detail, click on biomarker item")
+      on(row, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); bioOpen(m, row); } });
+      return row;
     }
+    function bioOpen(m, from) { if (window.BioDetail) sheetOpen(m.name, '', m.name, ' arQaBio', [window.BioDetail.body(m, { dark: o.theme === 'dark' })], from); }
     // the Hairline report file ("front"), at rest, for the sources card; the page's engine and figure, when they are there
     function hlDoc() {
       var HL = window.HLK, F = (window.HLFIGS || {}).front; if (!HL || !F) return null;
@@ -14937,6 +14989,191 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 })();
 
 </script>
+<script>
+/* ---- Biomarker detail ("create the bottom sheet biomarker detail (click on biomarker item); use it also for the insight page"):
+ *   BioDetail.body(m, { dark })              the detail itself, for a sheet that already has a frame (the Async report's)
+ *   BioDetail.sheet(host, m, { dark, from })  the detail in its own bottom sheet over host (the Insights phone)
+ * m: { name, value: '38.5 g/L', date: '15 Mar 2026', status: 'Optimal' | 'Suboptimal' | 'Out of range' | '', bar: 'hi' | 'lo' | 'both' | 'xsosx'..., pos: 0..1, trend: { pts } }
+ * The range's edges are drawn from where the reading sits on its bar, the history from the reading back (its last readings when the row has them), steady on every open: a prototype's numbers, not a lab's. */
+window.BioDetail = (function () {
+  'use strict';
+  var NS = 'http://www.w3.org/2000/svg', seq = 0;
+  function el(tag, a, kids) {
+    var n = document.createElement(tag);
+    if (a) Object.keys(a).forEach(function (k) { if (a[k] == null) return; if (k === 'text') n.textContent = a[k]; else if (k === 'style') n.style.cssText = a[k]; else n.setAttribute(k, a[k]); });
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function sv(tag, a, kids) { var n = document.createElementNS(NS, tag); Object.keys(a || {}).forEach(function (k) { n.setAttribute(k, a[k]); }); (kids || []).forEach(function (c) { n.appendChild(c); }); return n; }
+  function icon(paths) { return sv('svg', { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' }, paths.map(function (d) { return sv('path', { d: d }); })); }
+  var IC = {
+    tube: ['M14.5 2v17.5a2.5 2.5 0 0 1-5 0V2', 'M8.5 2h7', 'M14.5 16h-5'],
+    cal: ['M8 2v4', 'M16 2v4', 'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z', 'M3 10h18', 'M8 14h4', 'M8 17.5h7'],
+    x: ['M6 6l12 12', 'M18 6 6 18']
+  };
+  // what each marker is, in a sentence or two; any other, a plain line
+  var DESC = {
+    'serum albumin': 'Serum albumin is a protein made in your liver that acts as a carrier in your blood. It helps transport hormones, vitamins, and other important substances throughout your body.',
+    'ldl cholesterol': 'LDL cholesterol is the cholesterol carried by particles that can settle in artery walls. Over the years, more of it means more plaque in the arteries of your heart and brain.',
+    'apolipoprotein b': 'Apolipoprotein B counts the particles that carry cholesterol into artery walls, one to each particle. It reads plaque risk more directly than LDL cholesterol alone.',
+    'hdl cholesterol': 'HDL cholesterol is carried by particles that take cholesterol away from your artery walls and back to your liver.',
+    'lipoprotein (a)': 'Lipoprotein (a) is a cholesterol-carrying particle whose level is set mostly by your genes. A high level adds to plaque risk for life, so it is usually measured once.',
+    'thyroid-stimulating hormone': 'Thyroid-stimulating hormone is the signal from your brain that tells your thyroid how hard to work. It rises when the thyroid is slow and falls when it is overactive.',
+    'morning serum cortisol': 'Cortisol is your body’s main stress hormone, made by the adrenal glands above your kidneys. It peaks in the morning, so it is measured before 9am.',
+    'dhea-s': 'DHEA-S is a hormone made by your adrenal glands, a building block for sex hormones. It is read with cortisol to see how the adrenal glands are working.',
+    'serum sodium': 'Sodium is the main salt in your blood. It keeps the balance of water in and around your cells and helps your nerves and muscles work.',
+    'serum potassium': 'Potassium is a salt your nerves and muscles, your heart among them, need to work. Your kidneys hold it within a narrow range.',
+    'active vitamin b12 (holotranscobalamin)': 'Active B12 is the part of your vitamin B12 your cells can use. It keeps nerves healthy and helps make red blood cells.',
+    'homocysteine': 'Homocysteine is an amino acid your body clears with B vitamins. A high level can strain blood vessel walls and often points to low B12 or folate.',
+    'mean corpuscular volume (mcv)': 'Mean corpuscular volume is the average size of your red blood cells. Cells grow larger when B12 or folate run low and smaller when iron does.',
+    'serum folate (vitamin b9)': 'Folate is a B vitamin your body needs to make new cells, red blood cells among them. It works with B12 to keep homocysteine low.',
+    'vitamin d': 'Vitamin D helps your bones take up calcium and supports your muscles and immune system. Most of it is made in your skin in sunlight.',
+    'high-sensitivity crp (hs-crp)': 'High-sensitivity CRP is a protein your liver makes when there is inflammation in your body. Low-grade inflammation, over years, adds strain to artery walls.',
+    'crp : albumin ratio (car)': 'The CRP to albumin ratio sets inflammation against your nutrition and liver health. A falling ratio means less strain on your body.',
+    'protein': 'How much protein you eat helps keep your muscles strong as you age and steadies your blood sugar.',
+    'omega 3': 'Omega-3 fats, from oily fish, nuts and seeds, help keep inflammation low and support your heart and brain.'
+  };
+  var MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 }, MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var ST = { 'Optimal': 'o', 'Suboptimal': 's', 'Out of range': 'x' }, WORD = { o: 'Optimal', s: 'Suboptimal', x: 'Out of range', n: 'Unclassified' };
+  function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function rng(seed) { return function () { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; }; }
+  function yearOf(d) { var m = /(?:(\d{1,2})\s+)?([A-Za-z]{3})[a-z]*\s+(\d{4})/.exec(d || ''); if (!m) return 2026.8; return +m[3] + (MON[m[2].toLowerCase()] || 0) / 12 + ((+m[1] || 15) - 1) / 365; }
+  function dateOf(t) { var y = Math.floor(t), mo = Math.min(11, Math.floor((t - y) * 12)); return MN[mo] + ' ' + y; }
+  function fmt(v, dec) { return (Math.round(v * Math.pow(10, dec)) / Math.pow(10, dec)).toFixed(dec).replace(/\.?0+$/, function (z) { return dec ? z.replace(/0+$/, '').replace(/\.$/, '') : z; }); }
+  // the marker read into what the sheet draws
+  function model(m) {
+    var r = rng(hash(m.name || '')), st = ST[m.status] || 'n';
+    var mv = /^\s*(-?\d+(?:\.\d+)?)\s*(.*)$/.exec(String(m.value || ''));
+    var d = { name: m.name || '', value: String(m.value || ''), date: m.date || '', st: st, desc: DESC[(m.name || '').toLowerCase()] || ((m.name || 'This marker') + ' is one of the markers in your results. Your doctor reads it with your other results and your history; the range below shows where your latest reading sits.') };
+    if (!mv || mv[2].length > 12 || /\s\S+\s/.test(mv[2])) { d.text = true; return d; }   // a questionnaire's answer ("2 serves per day from eggs..."): its words, no range, no chart
+    d.num = +mv[1]; d.numStr = mv[1]; d.unit = mv[2].trim();
+    var seg = { hi: 'osx', lo: 'xso', both: 'xsosx' }[m.bar] || (/^[osx]{2,6}$/.test(m.bar || '') ? m.bar : st === 'n' ? '' : 'sos');
+    d.zones = seg;
+    var n = seg.length, p = m.pos;
+    if (p == null) { var at = []; for (var i = 0; i < n; i++) if (seg[i] === st) at.push(i); var z = at.length ? at[Math.floor(at.length / 2)] : Math.floor(n / 2); p = (z + .25 + r() * .5) / Math.max(n, 1); }
+    d.p = Math.max(.02, Math.min(.98, p));
+    var S = Math.abs(d.num) * .9 || 1, lo = d.num - d.p * S, dec = S >= 30 ? 0 : S >= 3 ? 1 : S >= .3 ? 2 : 3;
+    d.dec = dec; d.S = S; d.lo = lo;
+    d.cuts = []; for (var k = 1; k < n; k++) d.cuts.push(+fmt(lo + k * S / n, dec));
+    // the history: a reading a year or so back to as many as twelve, the row's own last readings where it has them
+    var cnt = 8 + hash(d.name + '#') % 5, t1 = yearOf(d.date), vals = [d.num];
+    var tr = m.trend && m.trend.pts && Math.abs(m.trend.pts[m.trend.pts.length - 1] - d.num) <= Math.abs(d.num) * .05 + 1e-9 ? m.trend.pts.slice(0, -1).reverse() : [];
+    for (var j = 1; j < cnt; j++) {
+      if (j - 1 < tr.length) { vals.unshift(tr[j - 1]); continue; }
+      var prev = vals[0], mid = lo + S / 2, nx = prev + (r() - .5) * S * .32 + (mid - prev) * .12;
+      nx = Math.max(lo - S * .2, Math.min(lo + S * 1.2, nx)); if (d.num >= 0) nx = Math.max(nx, Math.abs(d.num) * .05);
+      vals.unshift(+fmt(nx, dec + 1));
+    }
+    d.hist = vals.map(function (v, i) { var back = cnt - 1 - i; return { t: i === cnt - 1 ? t1 : t1 - back + (r() - .5) * .3, v: v }; });
+    return d;
+  }
+  function zoneOf(d, v) { if (!d.zones) return 'n'; var k = 0; while (k < d.cuts.length && v >= d.cuts[k]) k++; return d.zones[k]; }
+  function pill(st) { return el('span', { class: 'bmdPill bmd-' + st, text: WORD[st] }); }
+  // the chart, drawn to its box's width: the line coloured by the range it runs through, a dot a reading, the one picked told in a card
+  function chart(d) {
+    var box = el('div', { class: 'bmdChart', tabindex: '0', role: 'group', 'aria-label': 'Historical results, ' + d.hist.length + ' readings. Use the arrow keys to read them.' });
+    var yrs = el('div', { class: 'bmdYrs', 'aria-hidden': 'true' }), tip = el('div', { class: 'bmdTip', 'aria-live': 'polite' });
+    var sel = d.hist.length - 1, pts = [], W = 0, H = 240, id = 'bmdG' + (++seq);
+    function draw() {
+      W = box.clientWidth; if (!W) return;
+      var labs = (d.cuts || []).map(function (c) { return fmt(c, d.dec) + (d.unit ? ' ' + d.unit : ''); }), padL = Math.max(64, Math.round(24 + Math.max.apply(null, labs.map(function (l) { return l.length; }).concat([0])) * 7.4)), padR = 22, padT = 30, padB = 26, T0 = Math.floor(d.hist[0].t), T1 = d.hist[d.hist.length - 1].t + .15;
+      var vs = d.hist.map(function (h) { return h.v; }), vmin = Math.min.apply(null, vs), vmax = Math.max.apply(null, vs), pad = (vmax - vmin) * .22 || Math.abs(vmax) * .1 || 1; vmin -= pad; vmax += pad;
+      var tx = function (t) { return padL + (t - T0) / (T1 - T0) * (W - padL - padR); }, ty = function (v) { return padT + (vmax - v) / (vmax - vmin) * (H - padT - padB); };
+      pts = d.hist.map(function (h) { return [tx(h.t), ty(h.v)]; });
+      var svg = sv('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, 'aria-hidden': 'true', focusable: 'false' });
+      var step = T1 - T0 > 9 ? 4 : 2; yrs.textContent = '';
+      for (var y = T0; y <= T1; y += step) { svg.appendChild(sv('line', { x1: tx(y), x2: tx(y), y1: 0, y2: H, stroke: 'var(--bmd-line)', 'stroke-width': 1 })); yrs.appendChild(el('span', { text: String(y), style: 'left:' + tx(y).toFixed(1) + 'px' })); }
+      (d.cuts || []).filter(function (c) { return c > vmin && c < vmax; }).slice(-3).forEach(function (c) {
+        svg.appendChild(sv('line', { x1: padL - 6, x2: W, y1: ty(c), y2: ty(c), stroke: 'var(--bmd-line)', 'stroke-width': 1 }));
+        var t = sv('text', { x: 14, y: ty(c) + 5, fill: 'var(--bmd-ink2)', 'font-size': 14 }); t.textContent = fmt(c, d.dec) + (d.unit ? ' ' + d.unit : ''); svg.appendChild(t);
+      });
+      // the line's colour by height: hard stops at the range's edges, the colour of the band above and below each
+      var g = sv('linearGradient', { id: id, gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 0, y2: H });
+      var col = function (z) { return z === 'n' ? 'var(--bmd-ink)' : 'var(--z-' + z + ')'; }, stop = function (o, z) { var s = sv('stop', { offset: Math.max(0, Math.min(1, o)).toFixed(4) }); s.setAttribute('style', 'stop-color:' + col(z)); g.appendChild(s); };
+      if (d.zones) { var n = d.zones.length; stop(0, d.zones[n - 1]); for (var k = d.cuts.length - 1; k >= 0; k--) { var o = ty(d.cuts[k]) / H; stop(o, d.zones[k + 1]); stop(o, d.zones[k]); } stop(1, d.zones[0]); } else { stop(0, 'n'); stop(1, 'n'); }
+      svg.appendChild(sv('defs', {}, [g]));
+      var p = pts.map(function (q, i) { if (!i) return 'M' + q[0].toFixed(1) + ' ' + q[1].toFixed(1); var a = pts[i - 1], mx = ((a[0] + q[0]) / 2).toFixed(1); return 'C' + mx + ' ' + a[1].toFixed(1) + ' ' + mx + ' ' + q[1].toFixed(1) + ' ' + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join(' ');
+      svg.appendChild(sv('path', { d: p, fill: 'none', stroke: 'url(#' + id + ')', 'stroke-width': 2.5, 'stroke-linecap': 'round' }));
+      pts.forEach(function (q, i) { var z = zoneOf(d, d.hist[i].v), c = sv('circle', { cx: q[0].toFixed(1), cy: q[1].toFixed(1), r: i === sel ? 7.5 : 6 }); c.setAttribute('style', 'fill:' + col(z)); svg.appendChild(c); });
+      var old = box.querySelector('svg'); if (old) box.replaceChild(svg, old); else box.insertBefore(svg, box.firstChild);
+      place();
+    }
+    function place() {
+      var h = d.hist[sel], q = pts[sel]; if (!q) return; var z = zoneOf(d, h.v);
+      tip.textContent = ''; tip.appendChild(pill(z)); tip.appendChild(el('span', { class: 'bmdTipN', text: d.name }));
+      tip.appendChild(el('span', { class: 'bmdTipV' }, [(sel === d.hist.length - 1 ? d.numStr : fmt(h.v, d.dec + 1)) + ' ', el('i', { text: d.unit })]));   // the latest as it was reported tip.appendChild(el('span', { class: 'bmdTipD', text: sel === d.hist.length - 1 && d.date ? d.date : dateOf(h.t) }));
+      var right = q[0] > W / 2; tip.className = 'bmdTip ' + (right ? 'bmdR' : 'bmdL');
+      var tw = tip.offsetWidth || 160, th = tip.offsetHeight || 110, top = Math.max(8, Math.min(H - th - 8, q[1] - th / 2));
+      tip.style.left = (right ? q[0] - 16 - tw : q[0] + 16).toFixed(1) + 'px'; tip.style.top = top.toFixed(1) + 'px'; tip.style.setProperty('--ay', (q[1] - top).toFixed(1) + 'px');
+    }
+    function pick(x) { var b = 0, bd = 1e9; pts.forEach(function (q, i) { var dd = Math.abs(q[0] - x); if (dd < bd) { bd = dd; b = i; } }); if (b !== sel) { sel = b; draw(); } }
+    box.appendChild(tip);
+    box.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse') pick(e.clientX - box.getBoundingClientRect().left); });
+    box.addEventListener('pointerdown', function (e) { pick(e.clientX - box.getBoundingClientRect().left); });
+    box.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); sel = Math.max(0, Math.min(d.hist.length - 1, sel + (e.key === 'ArrowLeft' ? -1 : 1))); draw(); } });
+    if (window.ResizeObserver) new ResizeObserver(function () { draw(); }).observe(box); else requestAnimationFrame(draw);
+    return [box, yrs];
+  }
+  function body(m, opts) {
+    var d = model(m), dark = opts && opts.dark;
+    var root = el('div', { class: 'bmd' + (dark ? ' bmdDark' : '') }, [el('p', { class: 'bmdDesc', text: d.desc })]);
+    if (d.text) {   // an answer: the latest answer and its status, the words in a tile
+      root.appendChild(el('div', { class: 'bmdRow' }, [el('h3', { class: 'bmdH', text: 'Your latest answer' }), d.st !== 'n' ? pill(d.st) : null]));
+      root.appendChild(el('div', { class: 'bmdAns' }, [d.value, el('span', { text: d.date })]));
+      return root;
+    }
+    var dl = el('button', { type: 'button', class: 'bmdDl', text: 'Download' });
+    dl.addEventListener('click', function () { dl.textContent = 'Downloaded'; setTimeout(function () { dl.textContent = 'Download'; }, 1600); });   // a prototype's: nothing is saved
+    root.appendChild(el('div', { class: 'bmdRow' }, [el('h3', { class: 'bmdH', text: 'Your latest result' }), d.st !== 'n' ? pill(d.st) : null, dl]));
+    var card = el('div', { class: 'bmdCard' });
+    if (d.zones) {
+      var n = d.zones.length;
+      card.appendChild(el('div', { class: 'bmdBar', style: '--p:' + d.p.toFixed(3), 'aria-label': d.value + ', ' + WORD[d.st] + '. Range edges ' + d.cuts.map(function (c) { return fmt(c, d.dec); }).join(', ') + '.', role: 'img' }, [
+        el('span', { class: 'bmdBub', text: d.value }), el('i', { class: 'bmdBubA' }),
+        el('div', { class: 'bmdSegs' }, d.zones.split('').map(function (z) { return el('i', { class: 'bmd-z' + z }); })),
+        el('div', { class: 'bmdCuts' }, d.cuts.map(function (c, k) { return el('span', { class: 'bmdCut', style: 'left:' + ((k + 1) / n * 100).toFixed(3) + '%', text: fmt(c, d.dec) }); }))]));
+    }
+    card.appendChild(el('div', { class: 'bmdMeta' }, [
+      el('span', { class: 'bmdMi' }, [el('span', { class: 'bmdIc' }, [icon(IC.tube)]), el('b', { text: 'Measure' }), el('span', { text: d.value })]),
+      el('span', { class: 'bmdMi' }, [el('span', { class: 'bmdIc' }, [icon(IC.cal)]), el('b', { text: 'Date' }), el('span', { text: d.date })])]));
+    root.appendChild(card);
+    root.appendChild(el('div', { class: 'bmdRow' }, [el('h3', { class: 'bmdH', text: 'Historical results' }), el('span', { class: 'bmdN', text: String(d.hist.length) })]));
+    chart(d).forEach(function (x) { root.appendChild(x); });
+    return root;
+  }
+  // its own sheet, where the page has none (the Insights phone)
+  function sheet(host, m, opts) {
+    opts = opts || {};
+    var x = el('button', { type: 'button', class: 'bmdOvX', 'aria-label': 'Close' }, [icon(IC.x)]);
+    var panel = el('div', { class: 'bmdOvP', role: 'dialog', 'aria-modal': 'true', 'aria-label': m.name }, [el('div', { class: 'bmdOvG', 'aria-hidden': 'true' }), el('div', { class: 'bmdOvH' }, [el('h2', { class: 'bmdOvT', text: m.name }), x]), el('div', { class: 'bmdOvB' }, [body(m, opts)])]);
+    var dim = el('div', { class: 'bmdOvDim' }), ov = el('div', { class: 'bmdOv' + (opts.dark ? ' bmdDark' : '') }, [dim, panel]);
+    var shut = false, close = function () { if (shut) return; shut = true; ov.classList.remove('bmdOn'); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400); if (opts.from && opts.from.isConnected) opts.from.focus({ preventScroll: true }); };
+    x.addEventListener('click', close); dim.addEventListener('click', close);
+    panel.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); return; } if (e.key === 'Tab') { var f = [].slice.call(panel.querySelectorAll('button, [tabindex="0"]')), i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); } });
+    host.appendChild(ov); void ov.offsetWidth; ov.classList.add('bmdOn'); x.focus({ preventScroll: true });
+    return { close: close, el: ov };
+  }
+  return { body: body, sheet: sheet };
+})();
+
+/* the Insights phone's biomarker rows open their detail: the row's name, reading, date, status, and where its marker sits on its three-band bar (optimal, suboptimal, out of range) */
+(function () {
+  var host = document.getElementById('mRecs'), phone = document.getElementById('phone');
+  if (!host || !phone || !window.BioDetail) return;
+  var ST = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range' };
+  document.addEventListener('DOMContentLoaded', function () { host.querySelectorAll('.mbrow').forEach(function (r) { r.tabIndex = 0; r.setAttribute('role', 'button'); }); });   // the rows are drawn by a later script
+  var open = function (row) {
+    var st = row.querySelector('.st'), g = row.querySelector('.g'), mk = row.querySelector('.rng .mk'), rng = row.querySelector('.rng');
+    var key = st ? (['ok', 'sub', 'out'].filter(function (k) { return st.classList.contains(k); })[0] || '') : '';
+    var when = g ? (g.textContent.split('|')[1] || '').trim() : '';
+    var pos = mk && rng && rng.offsetWidth ? (parseFloat(mk.style.left) + 3) / rng.offsetWidth : null;
+    window.BioDetail.sheet(phone, { name: (row.firstElementChild || row).textContent.trim(), value: g ? g.dataset.v : '', date: when, status: ST[key] || '', bar: key ? 'osx' : '', pos: pos }, { dark: !document.body.classList.contains('light'), from: row });
+  };
+  host.addEventListener('click', function (e) { var row = e.target.closest('.mbrow'); if (row && host.contains(row)) open(row); });
+  host.addEventListener('keydown', function (e) { if (e.key !== 'Enter' && e.key !== ' ') return; var row = e.target.closest && e.target.closest('.mbrow'); if (row) { e.preventDefault(); open(row); } });
+})();
+</script>
+
 <!-- the Hairline engine (@lucasmarkes/hairline's core, as the hairline-create skill ships it), for the Stack figure in the V4 modal; kept in a scope of its own, reached as window.HLK -->
 <script>
 window.HLK = (() => {
@@ -28856,7 +29093,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', blur: opt('stArBlur') !== 'off', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
@@ -28870,9 +29107,7 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
-    { const br = document.getElementById('stArBlurRow'), sh = () => { if (br) br.hidden = opt0('stArBar') !== 'grad' && opt0('stArFoot') !== 'grad'; }, opt0 = id => { const el = document.getElementById(id); return el ? el.value : ''; };   // Gradient blur: while there is a gradient
-      ['stArBar', 'stArFoot'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', sh); }); sh(); }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArBlur', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
