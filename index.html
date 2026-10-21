@@ -14070,10 +14070,19 @@
 /* the lifestyle insight (step 10): its card, the biomarker with its range and status, the answer, the was-this-useful */
 .arSheet .arLfStack { gap: 32px; }
 .arSheet .arLfHead { display: flex; flex-direction: column; gap: 6px; } .arSheet .arLfHead .arH700 { margin: 0; }
-.arSheet .arLfEv { display: flex; flex-direction: column; gap: 12px; } .arSheet .arLfEv > .arLfSec { gap: 6px; margin-bottom: 16px; }
-.arSheet .arSrc { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 0; padding: 0; list-style: none; }   /* the sources, one under the other */
-.arSheet .arSrcRow { display: flex; align-items: center; gap: 12px; min-width: 0; font-family: var(--ar-font); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .8); }
-.arSheet .arSrcIc { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .14); color: oklch(var(--ar-ink) / .8); }   /* outlined, mono: a ring, the mark in the ink */   /* Behind this insight and its source on the page, 6 apart ("less gap 4px"), 28 over the grey cards ("more margin bottom 8px"); the cards 12 apart */
+.arSheet .arLfEv { display: flex; flex-direction: column; gap: 12px; } .arSheet .arLfEv > .arSrcCard { margin-bottom: 16px; }
+.arSheet .arSrcCard { --src-bg: var(--ar-paper); position: relative; margin-top: 36px; padding: 20px calc(30% + 12px) 22px 20px; border: 1px solid oklch(var(--ar-ink) / .1); border-radius: 0 calc(var(--ar-radius-card) + 4px) calc(var(--ar-radius-card) + 4px) calc(var(--ar-radius-card) + 4px); background: var(--src-bg); }   /* the folder card: square at its top left, where the tab stands */
+.arSheet.arCardsFill .arSrcCard { --src-bg: color-mix(in srgb, var(--ar-paper), #000 4%); border-color: transparent; } .arSheet.arDark.arCardsFill .arSrcCard { --src-bg: color-mix(in srgb, var(--ar-paper), #fff 4%); }   /* Evidence cards Filled: filled with them */
+.arSheet .arSrcTab { position: absolute; left: -1px; bottom: 100%; height: 36px; padding: 4px 16px 0; border: 1px solid oklch(var(--ar-ink) / .1); border-bottom: 0; border-radius: 12px 12px 0 0; background: var(--src-bg); font-family: var(--ar-font); font-size: 13px; line-height: 30px; white-space: nowrap; color: oklch(var(--ar-ink) / .72); }   /* the tab, outlined as the card, From your data in it */
+.arSheet .arSrcTab::before, .arSheet .arSrcTab::after { content: ""; position: absolute; left: 100%; bottom: 0; width: 16px; height: 16px; }
+.arSheet .arSrcTab::before { background: radial-gradient(circle at 100% 0, var(--ar-paper) 14.5px, var(--src-bg) 15px); } .arSheet .arSrcTab::after { border-left: 1px solid oklch(var(--ar-ink) / .1); border-bottom: 1px solid oklch(var(--ar-ink) / .1); border-bottom-left-radius: 16px; }   /* its foot curving into the card's top edge */
+.arSheet.arCardsFill .arSrcTab, .arSheet.arCardsFill .arSrcTab::after { border-color: transparent; }
+.arSheet .arSrcClip { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }   /* the figure cut at the card's edges */
+.arSheet .arSrcFig { position: absolute; right: -52px; bottom: -92px; width: 236px; --hairline-plate: var(--src-bg); }   /* the report file at the foot, right, past the card */
+.arSheet .arSrcH { position: relative; margin: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
+.arSheet .arSrc { position: relative; margin: 10px 0 0; padding: 0; list-style: none; }
+.arSheet .arSrcRow { position: relative; padding-left: 18px; font-family: var(--ar-font); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .64); } .arSheet .arSrcRow + .arSrcRow { margin-top: 6px; }
+.arSheet .arSrcRow::before { content: ""; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; border-radius: 1px; background: oklch(var(--ar-ink) / .64); }   /* a square bullet, on the first line's middle */   /* Behind this insight and its source on the page, 6 apart ("less gap 4px"), 28 over the grey cards ("more margin bottom 8px"); the cards 12 apart */
 .arSheet .arLfCardH { padding: 0 16px 8px; }   /* a grey card's name, on the grey */
 /* the Insights phone's biomarker row (.mbrow): the name and its range bar, then the value | the date and the status; a hairline between rows */
 .arSheet { --mbO: #6fcb7c; --mbS: #f2c550; --mbX: #e5514f; } .arSheet.arDark { --mbO: #aaeec2; --mbS: #ffe29f; --mbX: #fe8087; }   /* the Insights' range colours, light and dark */
@@ -14152,10 +14161,11 @@
 .arSheet .arQaRow { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 0; border-top: 1px solid oklch(var(--ar-ink) / .06); }
 .arSheet .arQaRow:first-child { border-top: 0; }
 .arSheet .arQaList.arQaMb { padding-top: 0; padding-bottom: 0; }   /* the biomarkers, the report's rows, in the sheet */
-.arSheet .arMb.arMbFade { pointer-events: none; opacity: .4; filter: blur(4px); }   /* the one partly shown, at 40% and blurred 4 ("opacity 40% on the 3rd one + blur 4px"; it was a fading mask) */
+.arSheet .arMb.arMbFade { pointer-events: none; box-sizing: border-box; max-height: 64px; overflow: hidden; opacity: .4; -webkit-mask-image: linear-gradient(180deg, #000 0, transparent 100%); mask-image: linear-gradient(180deg, #000 0, transparent 100%); }   /* the one partly shown: 64 of it at most, from 40% fading out ("hidden biomarker only max height 64px; fade out") */
+.arSheet .arMb.arMbFade::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 100%); mask-image: linear-gradient(180deg, transparent 0, #000 100%); }   /* and blurred progressively, sharp at its top, 2 at its foot ("blur progressive", "blur 2px") */
 .arSheet .arMbMore { position: relative; z-index: 1; width: 100%; height: 44px; margin: -12px 0 0; padding: 0 20px; border-radius: 12px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); font-size: 14px; line-height: 18px; font-weight: 500; }   /* See N more, over the faded row's foot */
 @media (hover: hover) { .arSheet .arMbMore:hover { background: oklch(var(--ar-ink) / .1); } }
-.arSheet .arMbMore:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
+.arSheet .arMbMore:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; } .arSheet .arMbMore .arBtnLabel { gap: 6px; }
 @media (prefers-reduced-motion: reduce) { .arSheet .arQaDim, .arSheet .arQaPanel { transition: none; } }
 .arSheet .arLfQA { display: flex; flex-direction: column; gap: 4px; }
 .arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
@@ -14232,9 +14242,6 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 
   // SVG paths, verbatim from the source template
   var P = {
-    srcBlood: "M12 21.5a6.5 6.5 0 0 0 6.5-6.5c0-1.9-.95-3.7-2.85-5.2S12.45 6 12 2.5c-.45 3.5-1.75 5.8-3.65 7.3S5.5 13.1 5.5 15a6.5 6.5 0 0 0 6.5 6.5Z",   // the sources' outlined marks, 24 square: a drop, a flask, a clipboard
-    srcTests: "M9.5 2.5v7l-5 9.4a1.4 1.4 0 0 0 1.24 2.1h12.52a1.4 1.4 0 0 0 1.24-2.1l-5-9.4v-7M8 2.5h8M7 15.5h10",
-    srcQn: "M9 3.5h6v3H9zM15 5h2.5A1.5 1.5 0 0 1 19 6.5v13a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-13A1.5 1.5 0 0 1 6.5 5H9M9 11.5h6M9 15.5h6",
     back: "M11 3.5 5.5 9l5.5 5.5",
     close: "M3 3l10 10M13 3 3 13",
     cal: "M2 7h12M5.5 1.5v3M10.5 1.5v3",
@@ -14496,7 +14503,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var uid = ++mountSeq;
     var step = 0;
     var alive = true;
-    var timers = [];
+    var timers = [], figs = [];   // figs: the Hairline figures drawn on the step, let go with it
 
     function later(fn, ms) {
       var t = setTimeout(function () { var i = timers.indexOf(t); if (i >= 0) timers.splice(i, 1); if (alive) fn(); }, ms);
@@ -14685,6 +14692,17 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         h('span', { class: 'arMbG' }, h('span', { text: m.value }), h('span', { class: 'arMbSep', 'aria-hidden': 'true', text: '|' }), h('span', { text: m.date })),
         h('span', { class: 'arLfPill arMbSt ' + stc, text: m.status }));
     }
+    // the Hairline report file ("front"), at rest, for the sources card; the page's engine and figure, when they are there
+    function hlDoc() {
+      var HL = window.HLK, F = (window.HLFIGS || {}).front; if (!HL || !F) return null;
+      try {
+        HL.inject(document);
+        var stage = h('span', { class: 'arSrcFig', 'data-hairline': 'front', 'data-hairline-theme': o.theme === 'dark' ? 'dark' : 'light' });
+        var svg = HL.mk('svg', { viewBox: '0 0 400 320', 'aria-hidden': 'true', focusable: 'false' }, stage);
+        figs.push(F.mount({ stage: stage, svg: svg, read: { textContent: '' } }, F.range ? F.range[1] : undefined));
+        return stage;
+      } catch (e) { return null; }
+    }
     function buildLife(L) {
       var up = h('button', { type: 'button', class: 'arLfThumb', 'aria-label': 'Useful', 'aria-pressed': 'false' }, thumbIcon(true));
       var down = h('button', { type: 'button', class: 'arLfThumb', 'aria-label': 'Not useful', 'aria-pressed': 'false' }, thumbIcon(false));
@@ -14694,8 +14712,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       /* a summary, not the full data ("present that as a summary vs a full list of data"): one answer shown, its question over it; more, See X answered questions, which opens them all in the sheet; none, no Your answers */
       var n = (L.answers || []).length, ans = null, ansMore = null;
       if (n === 1) ans = h('div', { class: 'arLfGroup arLfAns1' }, h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: L.answers[0].q }), h('span', { class: 'arLfName', text: L.answers[0].a })));
-      else if (n > 1) {   // more: the card's name, and at its right a chevron alone in a 36 circle, secondary, on the name's centre line ("just chevron right, 36 circle cta secondary"; it was a See detail pill)
-        ansMore = h('button', { type: 'button', class: 'arBtn arLfDetail', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', 'aria-label': 'See detail: ' + n + ' answered questions' }, strokeIcon(16, 16, 1.6, ['M6 3.5 10.5 8 6 12.5']));
+      else if (n > 1) {   // more: the card's name, and at its right a chevron alone in a 36 circle, secondary, on the name's centre line ("just chevron, 36 circle cta secondary"; then "chevron down"; it was a See detail pill)
+        ansMore = h('button', { type: 'button', class: 'arBtn arLfDetail', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', 'aria-label': 'See detail: ' + n + ' answered questions' }, strokeIcon(16, 16, 1.6, [P.chev]));
         on(ansMore, 'click', function () { qaOpen(L, ansMore); });
       }
       /* Behind this insight on the page, its source under it; then a grey card a group, its name on the grey, its list in a white card inside: Your biomarkers, Your answers */
@@ -14704,14 +14722,16 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var rest = L.markers.length - o.mb, fade = null, more = null;   // Max biomarkers: 3 (default) or 2
       if (rest > 0) {
         fade = mbRow(L.markers[o.mb]); fade.className += ' arMbFade'; fade.removeAttribute('tabindex'); fade.setAttribute('aria-hidden', 'true');
-        more = h('button', { type: 'button', class: 'arBtn arMbMore', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', text: 'See ' + rest + ' more' });
+        more = h('button', { type: 'button', class: 'arBtn arMbMore', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' }, h('span', { class: 'arBtnLabel' }, h('span', { text: 'See ' + rest + ' more' }), strokeIcon(16, 16, 1.6, [P.chev])));   // its words and a chevron down ("chevron down")
         on(more, 'click', function () { mbOpen(L, more); });
       }
       var card = h('div', { class: 'arLfEv arAnimRise arD12' },
-          h('div', { class: 'arLfSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }),   // its sources stacked, a row each, an outlined mono mark at the left, not one sentence ("use a row stacked style listing, outlined mono, vs this sentence")
-            h('ul', { class: 'arSrc', 'aria-label': 'Sources' }, (L.sources || []).map(function (x) {
-              return h('li', { class: 'arSrcRow' }, h('span', { class: 'arSrcIc' }, strokeIcon(16, 24, 1.6, [P[{ blood: 'srcBlood', tests: 'srcTests', qn: 'srcQn' }[x[0]]]])), h('span', { class: 'arSrcT', text: x[1] }));
-            }))),
+          /* its sources on a folder card, the debrief's highlight card ("this style without imagery right side, keep hairline"): From your data on the tab, Behind this insight inside, a square bullet a source; the Hairline report file at its foot, right, running past it and cut there */
+          h('div', { class: 'arSrcCard' },
+            h('span', { class: 'arSrcTab', text: 'From your data' }),
+            h('span', { class: 'arSrcClip', 'aria-hidden': 'true' }, hlDoc()),
+            h('h3', { class: 'arSrcH', text: 'Behind this insight' }),
+            h('ul', { class: 'arSrc', 'aria-label': 'Sources' }, (L.sources || []).map(function (x) { return h('li', { class: 'arSrcRow', text: x[1] }); }))),
           grey(nMb(L.markers.length), h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more)),
           ans ? grey(nAns(n), ans) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore) : null);
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"; then "Evidence, Findings, Meaning"); the sections keep their own headings
@@ -14811,8 +14831,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       return buildNext();
     }
 
+    function dropFigs() { while (figs.length) { var f = figs.pop(); try { if (f && f.destroy) f.destroy(); } catch (e) {} } }
     function render() {
       while (timers.length) clearTimeout(timers.pop());
+      dropFigs();
       qaClose(true);   // a step change closes the questionnaire's sheet
       spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled'); if (fitG) later(fitG, 0);
       var welcome = step === 0;
@@ -14846,6 +14868,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       destroy: function () {
         if (!alive) return;
         while (timers.length) clearTimeout(timers.pop());
+        dropFigs();
         alive = false;
         body.textContent = '';
         if (root.parentNode) root.parentNode.removeChild(root);
