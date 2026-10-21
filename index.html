@@ -14138,10 +14138,12 @@
 .arSheet .arLfChip { flex: none; appearance: none; -webkit-appearance: none; margin: 0; height: 36px; padding: 0 16px; border: 1.5px solid transparent; border-radius: 9999px; background: var(--ar-card-bg); font-family: var(--ar-font); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; color: oklch(var(--ar-ink) / .72); cursor: pointer; transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease; }
 .arSheet .arLfChip:hover { color: oklch(var(--ar-ink)); } .arSheet .arLfChip[aria-current="true"] { background: var(--ar-paper); border-color: oklch(var(--ar-ink)); color: oklch(var(--ar-ink)); }   /* its border 1.5 ("pill active border 1.5px"), the others' the same, clear: no shift */
 .arSheet .arLfChip:focus-visible { outline: 2px solid oklch(var(--ar-ink) / .6); outline-offset: 2px; }
-.arSheet .arLfSeg .arLfTrack { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; padding: 4px; border-radius: 14px; background: var(--ar-card-bg); overflow: visible; -webkit-mask-image: none; mask-image: none; }
+.arSheet .arLfSeg .arLfTrack { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; padding: 4px; border-radius: 14px; background: var(--ar-card-bg); overflow: visible; -webkit-mask-image: none; mask-image: none; }
 .arSheet .arLfSeg .arLfChip { min-width: 0; padding: 0 8px; border: 0; border-radius: 10px; background: transparent; color: oklch(var(--ar-ink) / .55); overflow: hidden; text-overflow: ellipsis; }
-.arSheet .arLfSeg .arLfChip[aria-current="true"] { background: var(--ar-paper); color: oklch(var(--ar-ink)); box-shadow: 0 0 0 .5px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .06), 0 2px 6px rgba(0, 0, 0, .04); }
-.arSheet.arDark .arLfSeg .arLfChip[aria-current="true"] { background: oklch(100% 0 0 / .14); box-shadow: none; }   /* dark: the one in view a lighter tile on the track */
+.arSheet .arLfSeg .arLfChip { position: relative; z-index: 1; transition: color .25s ease; } .arSheet .arLfSeg .arLfChip[aria-current="true"] { background: transparent; color: oklch(var(--ar-ink)); box-shadow: none; }   /* the words over the sliding tile */
+.arSheet .arLfInd { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / var(--n, 3)); border-radius: 10px; background: var(--ar-paper); box-shadow: 0 0 0 .5px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .06), 0 2px 6px rgba(0, 0, 0, .04); transform: translateX(calc(var(--k, 0) * 100%)); transition: transform .32s cubic-bezier(.3, .7, .2, 1); pointer-events: none; }   /* the one in view's tile, sliding to it */
+.arSheet.arDark .arLfInd { background: oklch(100% 0 0 / .14); box-shadow: none; }   /* dark: a lighter tile on the track */
+@media (prefers-reduced-motion: reduce) { .arSheet .arLfInd { transition: none; } }
 /* Everything else: a panel's name, then its counts as dots (optimal, suboptimal, out of range) */
 .arSheet .arRsName { flex: 1 1 auto; min-width: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink)); text-wrap: pretty; }
 .arSheet .arRsDots { flex: none; display: flex; align-items: center; gap: 14px; }
@@ -14800,7 +14802,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       });
       var track = h('div', { class: 'arLfTrack' }, chips), bar = h('nav', { class: 'arLfChips' + (o.tabs === 'seg' ? ' arLfSeg' : '') + ' arAnimRise arD12', 'aria-label': 'Jump to a section' }, track); if (chipRO) chipRO.observe(track);   // pills, or a segmented control (the three the track's width, the one in view white)
       var cur = 0, lock = 0;
-      var mark = function (k) { if (k === cur) return; cur = k; chips.forEach(function (c, i) { c.setAttribute('aria-current', String(i === k)); });
+      if (o.tabs === 'seg') { track.insertBefore(h('i', { class: 'arLfInd', 'aria-hidden': 'true' }), track.firstChild); track.style.setProperty('--n', String(chips.length)); track.style.setProperty('--k', '0'); }   // Segmented: one tile under the chips, sliding to the one in view ("bg tab segmented should slide left right based on where it's active")
+      var mark = function (k) { if (k === cur) return; cur = k; track.style.setProperty('--k', String(k)); chips.forEach(function (c, i) { c.setAttribute('aria-current', String(i === k)); });
         var c = chips[k]; track.scrollLeft = Math.max(0, c.offsetLeft - track.offsetLeft - (track.clientWidth - c.offsetWidth) / 2); };   // its chip into the row's view (the row alone, never the page)
       var topOf = function (el) { return el.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop; };
       var over = function () { return (o.bar === 'grad' ? head.offsetHeight : 0) + bar.offsetHeight; };   // what covers the flow's top once the anchors are pinned: the head too, with the flow under it (Fixed bar: Gradient)
