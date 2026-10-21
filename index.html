@@ -9117,8 +9117,9 @@
   #phone2 .ovInsChip{top:18px;}
   #dOver .ovInsSl{padding:20px 22px 34px 24px;gap:24px;}
   /* Insights -> Position -> Hero: the insights one card in the services' place (the service cards out, the full section too) -- on the desk the column beside Next step, its height; at XS full width where the row is; off with the Insights section's own switch */
-  .ovInsCard.ovInsHero{display:none;} html.insHero #dOver .ovInsCard.ovInsHero{display:flex;} html.insHero #dOver .ovSvc, html.insHero #dOver > :is(.dvSecIns, .dvRail, .railNav, .dvDots){display:none !important;} html.insHero #dOver:has(.dvSecIns.ovOff) .ovInsCard.ovInsHero{display:none;}
+  .ovInsCard.ovInsHero{display:none;} html.insHero #dOver .ovInsCard.ovInsHero{display:flex;} html.insHero #dOver > :is(.dvSecIns, .dvRail, .railNav, .dvDots){display:none !important;}   /* the Services tiles stay: their own section, not the insights' ("this is not related to Insights; treat services separately") */ html.insHero #dOver:has(.dvSecIns.ovOff) .ovInsCard.ovInsHero{display:none;}
   html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovInsCard.ovInsHero{flex:1 1 auto;height:auto;min-height:200px;margin:0;}
+  html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovSvc + .ovInsCard.ovInsHero{margin-top:24px;min-height:176px;}   /* under the Services tiles, the grid's own 24 between */
   html.insHero body[data-bp="xs"] #dOver .ovInsCard.ovInsHero{margin:0 0 12px;}
   body[data-bp="xs"] #dOver .dvTop + .ovSvc, #phone2 .ovhero + .ovSvc{padding-top:12px;} html.insHero body[data-bp="xs"] #dOver .dvTop + .ovInsCard.ovInsHero{margin-top:12px;}   /* under Next step now (Next step first): 12 between, the cards' own gap */
   /* the render at the right, its drawing as large as the column lets it: the renders are mostly clear (the drawing ~56% of their width, ~76% of their height, centred), so the image is sized off the column (container units) and its clear sides run past it, unseen */
@@ -32781,7 +32782,7 @@ hairline({
       const exp = [...over.querySelectorAll('.ovcar .ovcard.ovExp')].map(c => { const im = c.querySelector('.ovIllImg'), h = c.querySelector('h4'), by = [...c.querySelectorAll('.ocBy > span')].map(x => x.textContent.trim()).filter(Boolean), bt = c.querySelector('.ovbtn');
         return { t: h ? h.innerHTML : '', s: tx(by.join(' \u00b7 ') || (c.querySelector('.ocDate') || {}).textContent), cta: tx(bt ? bt.textContent.trim() : 'See insights'), link: 'See insight', img: im ? im.getAttribute('src') : '' }; }).filter(x => x.img && x.t);
       buildOvInsights(ic, exp.length ? exp : null);
-      const keep = () => { const r = over.querySelector('.ovSvc'); if (r && ic.nextElementSibling !== r) r.before(ic); };
+      const keep = () => { const r = over.querySelector('.ovSvc'); if (r && r.nextElementSibling !== ic) r.after(ic); };   // after the Services tiles: they keep their place at the top
       new MutationObserver(keep).observe(over, { childList: true, subtree: true });
       const pos = document.getElementById('stInsPos');
       const ap = () => { const on = !!pos && pos.value === 'hero'; document.documentElement.classList.toggle('insHero', on); if (on && ic._ovIns) requestAnimationFrame(() => ic._ovIns.go(ic._ovIns.at())); };
