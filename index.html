@@ -14067,9 +14067,13 @@
 .arSheet .arLfCardH { padding: 0 16px 8px; }   /* a grey card's name, on the grey */
 /* the Insights phone's biomarker row (.mbrow): the name and its range bar, then the value | the date and the status; a hairline between rows */
 .arSheet { --mbO: #6fcb7c; --mbS: #f2c550; --mbX: #e5514f; } .arSheet.arDark { --mbO: #aaeec2; --mbS: #ffe29f; --mbX: #fe8087; }   /* the Insights' range colours, light and dark */
-.arSheet .arMbList { gap: 0; padding-top: 4px; padding-bottom: 4px; }
-.arSheet .arMb { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid oklch(var(--ar-ink) / .08); }
-.arSheet .arMb:first-child { padding-top: 8px; } .arSheet .arMb:last-child { padding-bottom: 8px; border-bottom: 0; }
+.arSheet .arMbList { gap: 0; padding-top: 2px; padding-bottom: 2px; }
+.arSheet .arMb { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid oklch(var(--ar-ink) / .08); cursor: pointer; }
+.arSheet .arMb:last-child { border-bottom: 0; }
+.arSheet .arMb > * { position: relative; z-index: 1; }
+.arSheet .arMb::before { content: ""; position: absolute; inset: 3px -10px; border-radius: 12px; background: transparent; transition: background-color .15s ease; pointer-events: none; }   /* a ghost card: its tile shows on hover ("need a hover state as it's a ghost card") */
+.arSheet .arMb:hover::before, .arSheet .arMb:focus-visible::before { background: oklch(var(--ar-ink) / .05); } .arSheet .arMb:focus-visible { outline: none; }
+.arSheet .arMbList:has(.arMb:hover) .arMb:is(:hover, :has(+ .arMb:hover)) { border-bottom-color: transparent; }   /* the rules either side of the hovered tile step away */
 .arSheet .arMbN { min-width: 0; font-family: var(--ar-font); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink)); text-wrap: pretty; }
 .arSheet .arMbG { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; min-width: 0; font-family: var(--ar-font); font-size: 12.5px; line-height: 16px; color: oklch(var(--ar-ink) / .55); } .arSheet .arMbSep { color: oklch(var(--ar-ink) / .3); }
 .arSheet .arMbSt { justify-self: end; height: auto; padding: 5px 11px; border-radius: 8px; font-size: 12px; line-height: 15px; }
@@ -14654,7 +14658,7 @@
           grey('Your biomarkers', h('div', { class: 'arLfGroup arMbList' },
             L.markers.map(function (m) {   /* the Insights phone's biomarker row ("keep the component from the Insights mobile page"): the name, its range bar at the right; under, the value | the date, the status at the right; a rule between */
               var stc = m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub';
-              return h('div', { class: 'arMb' },
+              return h('div', { class: 'arMb', tabindex: '0' },
                 h('span', { class: 'arMbN', text: m.name }),
                 m.pos != null ? mbBar(m.pos, m.bar) : h('span'),
                 h('span', { class: 'arMbG' }, h('span', { text: m.value }), h('span', { class: 'arMbSep', 'aria-hidden': 'true', text: '|' }), h('span', { text: m.date })),
