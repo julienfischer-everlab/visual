@@ -12082,6 +12082,8 @@
         <!-- an insight's three sections, Behind this insight, What we noticed, What this means for you: stacked with no tabs, anchored by pills, or by a segmented control ("tweak Tab section: ON use tab system, OFF stack section as it is"; "tweak a segmented tab style: no tab, tab pills, tab segmented") -->
         <div class="tkRow"><span class="lbl">Tab style</span><select id="stArTab" class="tkSegSel" aria-label="How an insight's sections are anchored"><option value="off">No tab</option><option value="pills" selected>Pills</option><option value="seg">Segmented</option></select></div>
         <!-- Behind this insight's cards, Your biomarkers and Your answers: outlined, or filled #fff 4% (light: #000 4%) ("tweak Behind this insight cards: Outlined, Filled fff 4%") -->
+        <!-- how many biomarkers Behind this insight shows before See N more, the next one partly shown under them ("tweak max biomarkers counter: 3 default (1 partially shown), 2") -->
+        <div class="tkRow"><span class="lbl">Max biomarkers</span><select id="stArMb" class="tkSegSel" aria-label="Biomarkers shown before See more"><option value="3" selected>3</option><option value="2">2</option></select></div>
         <div class="tkRow"><span class="lbl">Evidence cards</span><select id="stArCard" class="tkSegSel" aria-label="Behind this insight's cards"><option value="outline" selected>Outlined</option><option value="fill">Filled</option></select></div>
         </div>
         <div class="tkGroup" data-pages="lp">
@@ -14206,6 +14208,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *     blur: true | false,              // default true: a blur under the gradients
  *     tabs: 'pills' | 'seg' | 'off',   // default 'pills': an insight's sections anchored by pills, a segmented control, or none
  *     cards: 'outline' | 'fill',       // default 'outline': Behind this insight's cards outlined, or filled #fff 4% (light #000 4%)
+ *     mb: 3 | 2,                       // default 3: the biomarkers Behind this insight shows before See N more, the next one partly shown
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
  *     onClose: function () {}          // Close (X) and the final "Done"
@@ -14479,6 +14482,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       blur: opts.blur !== false,   // the gradients' blur, under them (default on)   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
       tabs: opts.tabs === false || opts.tabs === 'off' ? 'off' : opts.tabs === 'seg' ? 'seg' : 'pills',   // an insight's three sections anchored by pills (default) or a segmented control, or stacked with no tabs
       cards: opts.cards === 'fill' ? 'fill' : 'outline',   // Behind this insight's cards outlined (default) or filled
+      mb: opts.mb === 2 ? 2 : 3,   // the biomarkers shown before See N more (default 3), the next one partly shown
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
@@ -14549,7 +14553,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: r.q }), h('span', { class: 'arLfA', text: r.a }));
       }), from);
     }
-    function mbOpen(L, from) {   // Title: X Biomarkers; the list of all the biomarkers behind this insight
+    function mbOpen(L, from) {   // Title: X biomarkers; the list of all the biomarkers behind this insight
       sheetOpen(nMb(L.markers.length), '', 'Biomarkers', ' arMbList arQaMb', L.markers.map(mbRow), from);   // the title alone, no sub ("remove sub")
     }
     function sheetOpen(t, st, label, cls, rows, from) {
@@ -14665,7 +14669,6 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         : ['M17 14V2', 'M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z']);
     }
     // the Insights phone's biomarker row ("keep the component from the Insights mobile page"): the name, its range bar at the right; under, the value | the date, the status at the right; a rule between
-    var MB_SHOWN = 3;
     function nMb(k) { return k + (k === 1 ? ' biomarker' : ' biomarkers'); }   // the cards' and the sheets' names, with their counts ("X biomarkers, X answered questions")
     function nAns(k) { return k + (k === 1 ? ' answered question' : ' answered questions'); }
     function mbRow(m) {
@@ -14692,15 +14695,15 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       /* Behind this insight on the page, its source under it; then a grey card a group, its name on the grey, its list in a white card inside: Your biomarkers, Your answers */
       var grey = function (name, inner) { return h('div', { class: 'arLfCard' }, h('span', { class: 'arT600 arLfCardH', text: name }), inner); };
       /* the first three biomarkers; more than that, the fourth fading out under them and See N more, which opens them all in the sheet ("only show the 3 first biomarkers; if more, a progressive gradient on the 4th and below a CTA") */
-      var rest = L.markers.length - MB_SHOWN, fade = null, more = null;
+      var rest = L.markers.length - o.mb, fade = null, more = null;   // Max biomarkers: 3 (default) or 2
       if (rest > 0) {
-        fade = mbRow(L.markers[MB_SHOWN]); fade.className += ' arMbFade'; fade.removeAttribute('tabindex'); fade.setAttribute('aria-hidden', 'true');
+        fade = mbRow(L.markers[o.mb]); fade.className += ' arMbFade'; fade.removeAttribute('tabindex'); fade.setAttribute('aria-hidden', 'true');
         more = h('button', { type: 'button', class: 'arBtn arMbMore', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', text: 'See ' + rest + ' more' });
         on(more, 'click', function () { mbOpen(L, more); });
       }
       var card = h('div', { class: 'arLfEv arAnimRise arD12' },
           h('div', { class: 'arLfSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }), h('p', { class: 'arPara', text: L.source })),
-          grey(nMb(L.markers.length), h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, MB_SHOWN).map(mbRow), fade, more)),
+          grey(nMb(L.markers.length), h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more)),
           ans ? grey(nAns(n), ans) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore) : null);
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"; then "Evidence, Findings, Meaning"); the sections keep their own headings
         ['Findings', h('div', { class: 'arLfSec arAnimRise arD24' }, h('span', { class: 'arLfH', text: 'What we noticed' }), L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))],
@@ -28759,7 +28762,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', blur: opt('stArBlur') !== 'off', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'fill' ? 'fill' : 'outline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', blur: opt('stArBlur') !== 'off', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'fill' ? 'fill' : 'outline', mb: opt('stArMb') === '2' ? 2 : 3, onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
@@ -28775,7 +28778,7 @@ hairline({
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
     { const br = document.getElementById('stArBlurRow'), sh = () => { if (br) br.hidden = opt0('stArBar') !== 'grad' && opt0('stArFoot') !== 'grad'; }, opt0 = id => { const el = document.getElementById(id); return el ? el.value : ''; };   // Gradient blur: while there is a gradient
       ['stArBar', 'stArFoot'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', sh); }); sh(); }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArBlur', 'stArWel', 'stArTab', 'stArCard'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArBlur', 'stArWel', 'stArTab', 'stArCard', 'stArMb'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);

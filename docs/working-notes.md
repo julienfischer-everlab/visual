@@ -14933,3 +14933,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async, Your answers with more than one:** the card's name at the left and See detail at its right, a 28 pill, fully rounded, on the name's centre line; it opens the sheet of the answers.
 - **Async Evidence cards' names, with their counts:** "X biomarkers" and "X answered questions" (1 biomarker, 1 answered question), the sheets' titles the same.
 - **Async Behind this insight:** its source 6 under the heading ("less gap 4px"), the cards 28 under the source ("more margin bottom 8px").
+- **Async report, Max biomarkers tweak:** 3 (default) or 2 biomarkers before See N more, the next one partly shown under them ("tweak max biomarkers counter").
