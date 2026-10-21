@@ -8778,7 +8778,8 @@
   #dOver .ovDimD{display:none;} body[data-bp="xs"] #dOver .ovDimD{display:block;position:fixed;left:calc(50vw - var(--bpW) / 2);width:var(--bpW);top:calc(var(--barH,57px) + 48px);bottom:48px;z-index:4;border-radius:56px;background:rgba(0,0,0,.57);opacity:0;pointer-events:none;transition:opacity .28s ease;}
   html.bpAuto body[data-bp="xs"] #dOver .ovDimD{left:0;width:auto;right:0;top:var(--barH,57px);bottom:0;border-radius:0;}
   body[data-bp="xs"].ovKbd #dOver .ovDimD{opacity:1;pointer-events:auto;}
-  body[data-bp="xs"].ovKbd #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
+  body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
+  #bpFrame > .aiWrap{pointer-events:auto;border-radius:inherit;overflow:hidden;} body:not([data-bp="xs"]):not([data-bp="s"]) #bpFrame > .aiWrap{display:none;}   /* the assistant's sheet in the XS frame, over the desk's Overview, its corners the screen's */
   body.hdrV3[data-bp="xs"] #dOver .ovAvatar{display:block;}
   body[data-bp="xs"] #dOver .ovInbox, body[data-bp="xs"] #dOver .ovBell{width:44px;height:44px;}
   body.hdrV3[data-bp="xs"] #dOver .dvH1{margin:16px 0 0;font-size:24px;letter-spacing:-.4px;}
@@ -9127,7 +9128,7 @@
   html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovInsCard.ovInsHero{flex:1 1 auto;height:auto;min-height:200px;margin:0;}
   html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovSvc + .ovInsCard.ovInsHero{margin-top:24px;min-height:176px;}   /* under the Services tiles, the grid's own 24 between */
   html.insHero body[data-bp="xs"] #dOver .ovInsCard.ovInsHero{margin:0 0 12px;}
-  body[data-bp="xs"] #dOver .dvTop + .ovSvc, #phone2 .ovhero + .ovSvc{padding-top:12px;} html.insHero body[data-bp="xs"] #dOver .dvTop + .ovInsCard.ovInsHero{margin-top:12px;}   /* under Next step now (Next step first): 12 between, the cards' own gap */
+  body[data-bp="xs"] #dOver .dvTop + .ovSvc, #phone2 .ovhero + .ovSvc{padding-top:12px;} body[data-bp="xs"] #dOver .dvTop + .ovSvc{margin-top:0;}   /* 12 under Next step, the cards' own gap (was 28: "reduce padding by 16px") */ html.insHero body[data-bp="xs"] #dOver .dvTop + .ovInsCard.ovInsHero{margin-top:12px;}   /* under Next step now (Next step first): 12 between, the cards' own gap */
   /* the render at the right, its drawing as large as the column lets it: the renders are mostly clear (the drawing ~56% of their width, ~76% of their height, centred), so the image is sized off the column (container units) and its clear sides run past it, unseen */
   /* the uppercase label (the cards' .lbl: 10, .12em, grey) for Next step and the booked card's title too, as Insights wears it ("this uppercase mono is cool: add a 4px bottom margin, and use the same style for Next step and Coming up") */
   body #dOver .ovInsCard.ovInsHero .ovInsTx .lbl{margin-bottom:4px;}
@@ -12072,6 +12073,8 @@
         <div class="tkRow"><span class="lbl">Fixed bar</span><select id="stArBar" class="tkSegSel" aria-label="The debrief's fixed bar background"><option value="solid" selected>Solid</option><option value="grad">Gradient</option></select></div>
         <!-- its footer, under the button: a solid ground, or a progressive gradient and blur, the flow running under it ("tweak footer bg fixed: Solid, Gradient progressive") -->
         <div class="tkRow"><span class="lbl">Footer</span><select id="stArFoot" class="tkSegSel" aria-label="The debrief's footer background"><option value="solid" selected>Solid</option><option value="grad">Gradient</option></select></div>
+        <!-- a blur under the gradients, the bar's and the footer's ("add a tweak also to have blur effect with the gradient"); shown while either is a gradient -->
+        <div class="tkRow" id="stArBlurRow"><span class="lbl">Gradient blur</span><select id="stArBlur" aria-label="Blur under the gradients"><option value="on" selected>On</option><option value="off">Off</option></select></div>
         <div class="tkRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option></select></div>
         <!-- an insight's three sections, Behind this insight, What we noticed, What this means for you: stacked with no tabs, anchored by pills, or by a segmented control ("tweak Tab section: ON use tab system, OFF stack section as it is"; "tweak a segmented tab style: no tab, tab pills, tab segmented") -->
         <div class="tkRow"><span class="lbl">Tab style</span><select id="stArTab" class="tkSegSel" aria-label="How an insight's sections are anchored"><option value="off">No tab</option><option value="pills" selected>Pills</option><option value="seg">Segmented</option></select></div>
@@ -13659,14 +13662,15 @@
 /* Fixed bar Gradient (the Insights' sticky): past the welcome the body runs up under the head (its height, --ar-head-h, measured), the flow scrolling beneath; once it has, the paper fades down from .55 at the head's top to nothing 32 under it, over ten bands of blur, the softest the tallest */
 .arSheet.arBarGrad:not(.arIsWelcome) .arBody { margin-top: calc(-1 * var(--ar-head-h, 0px)); padding-top: calc(var(--ar-head-h, 0px) + 24px); scroll-padding-top: var(--ar-head-h, 0px); }
 .arSheet.arFootGrad .arFoot { position: relative; z-index: 2; background: transparent; } .arSheet.arFootGrad .arBody { margin-bottom: calc(-1 * var(--ar-foot-h, 0px)); padding-bottom: calc(var(--ar-foot-h, 0px) + 24px); }   /* Footer Gradient: the flow runs on under the button */
-.arSheet .arFootGround { position: absolute; left: 0; right: 0; bottom: 0; top: -32px; z-index: -1; pointer-events: none; background: linear-gradient(0deg, var(--ar-paper) 0%, var(--ar-paper) 30%, color-mix(in srgb, var(--ar-paper) 85%, transparent) 50%, color-mix(in srgb, var(--ar-paper) 55%, transparent) 70%, color-mix(in srgb, var(--ar-paper) 22%, transparent) 88%, transparent 100%); }   /* progressive: the paper solid round the button, easing to nothing 32 above it */
+.arSheet .arFootGround { position: absolute; left: 0; right: 0; bottom: 0; height: var(--ar-fe, calc(100% + 32px)); z-index: -1; pointer-events: none; background: linear-gradient(0deg, var(--ar-paper) 0, var(--ar-paper) var(--ar-fs, 50%), color-mix(in srgb, var(--ar-paper) 88%, transparent) calc(var(--ar-fs, 50%) + (var(--ar-fe, 100%) - var(--ar-fs, 50%)) * .2), color-mix(in srgb, var(--ar-paper) 62%, transparent) calc(var(--ar-fs, 50%) + (var(--ar-fe, 100%) - var(--ar-fs, 50%)) * .45), color-mix(in srgb, var(--ar-paper) 30%, transparent) calc(var(--ar-fs, 50%) + (var(--ar-fe, 100%) - var(--ar-fs, 50%)) * .7), color-mix(in srgb, var(--ar-paper) 9%, transparent) calc(var(--ar-fs, 50%) + (var(--ar-fe, 100%) - var(--ar-fs, 50%)) * .9), transparent var(--ar-fe, 100%)); }   /* the sticky rule, upward: the paper solid to the button's middle, then eased out to nothing 32 above the footer */
 .arSheet .arFootGround i { position: absolute; left: 0; right: 0; bottom: 0; display: block; -webkit-mask-image: linear-gradient(0deg, #000 82%, transparent); mask-image: linear-gradient(0deg, #000 82%, transparent); }
 .arSheet .arFootGround i:nth-child(1) { height: 100%; -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); } .arSheet .arFootGround i:nth-child(2) { height: 92%; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
 .arSheet .arFootGround i:nth-child(3) { height: 84%; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); } .arSheet .arFootGround i:nth-child(4) { height: 76%; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
 .arSheet .arFootGround i:nth-child(5) { height: 68%; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); } .arSheet .arFootGround i:nth-child(6) { height: 60%; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .arSheet .arFootGround i:nth-child(7) { height: 52%; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); } .arSheet .arFootGround i:nth-child(8) { height: 44%; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .arSheet .arFootGround i:nth-child(9) { height: 36%; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); } .arSheet .arFootGround i:nth-child(10) { height: 28%; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
-.arSheet .arGround { position: absolute; left: 0; right: 0; top: 0; bottom: -32px; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .28s ease; background: linear-gradient(180deg, color-mix(in srgb, var(--ar-paper) 55%, transparent) 0%, color-mix(in srgb, var(--ar-paper) 50%, transparent) 18%, color-mix(in srgb, var(--ar-paper) 43%, transparent) 36%, color-mix(in srgb, var(--ar-paper) 33%, transparent) 54%, color-mix(in srgb, var(--ar-paper) 21%, transparent) 72%, color-mix(in srgb, var(--ar-paper) 10%, transparent) 88%, transparent 100%); }
+.arSheet .arGround { position: absolute; left: 0; right: 0; top: 0; height: var(--ar-ge, calc(100% + 32px)); z-index: -1; pointer-events: none; opacity: 0; transition: opacity .28s ease; background: linear-gradient(180deg, var(--ar-paper) 0, var(--ar-paper) var(--ar-gs, 50%), color-mix(in srgb, var(--ar-paper) 88%, transparent) calc(var(--ar-gs, 50%) + (var(--ar-ge, 100%) - var(--ar-gs, 50%)) * .2), color-mix(in srgb, var(--ar-paper) 62%, transparent) calc(var(--ar-gs, 50%) + (var(--ar-ge, 100%) - var(--ar-gs, 50%)) * .45), color-mix(in srgb, var(--ar-paper) 30%, transparent) calc(var(--ar-gs, 50%) + (var(--ar-ge, 100%) - var(--ar-gs, 50%)) * .7), color-mix(in srgb, var(--ar-paper) 9%, transparent) calc(var(--ar-gs, 50%) + (var(--ar-ge, 100%) - var(--ar-gs, 50%)) * .9), transparent var(--ar-ge, 100%)); }   /* the sticky rule: the paper solid to the middle of the last section (the pinned anchors, else the progress), then eased out to nothing 32 under it */
+.arSheet.arNoBlur :is(.arGround, .arFootGround) i { display: none; }   /* Blur off: the gradient alone */
 .arSheet.arBarGrad.arScrolled:not(.arIsWelcome) .arGround { opacity: 1; } .arSheet.arIsWelcome .arGround { display: none; }
 .arSheet .arGround i { position: absolute; left: 0; right: 0; top: 0; display: block; -webkit-mask-image: linear-gradient(#000 82%, transparent); mask-image: linear-gradient(#000 82%, transparent); }
 .arSheet .arGround i:nth-child(1) { height: 100%; -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); } .arSheet .arGround i:nth-child(2) { height: 92%; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
@@ -13675,9 +13679,9 @@
 .arSheet .arGround i:nth-child(7) { height: 52%; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); } .arSheet .arGround i:nth-child(8) { height: 44%; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .arSheet .arGround i:nth-child(9) { height: 36%; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); } .arSheet .arGround i:nth-child(10) { height: 28%; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
 .arSheet .arHeadLabel { flex: 1; font-size: 14px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink) / .64); }
-.arSheet .arNavT { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; text-align: center; } .arSheet.arIsWelcome .arNavT { visibility: hidden; }   /* the report, centred between back and close, past the welcome */
+.arSheet .arNavT { display: flex; flex-direction: column; align-items: center; gap: 0; min-width: 0; text-align: center; } .arSheet.arIsWelcome .arNavT { visibility: hidden; }   /* the report, centred between back and close, past the welcome */
 .arSheet .arNavTt { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink)); }
-.arSheet .arNavTs { font-family: var(--ar-font); font-size: 12px; line-height: 16px; font-weight: 400; color: oklch(var(--ar-ink) / .5); }
+.arSheet .arNavTs { margin-top: -2px; font-family: var(--ar-font); font-size: 12px; line-height: 16px; font-weight: 400; color: oklch(var(--ar-ink) / .5); }
 .arSheet .arIconBtn {
   appearance: none; -webkit-appearance: none;
   margin: 0; padding: 0; border: 0; box-shadow: none;
@@ -14072,7 +14076,7 @@
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }   /* the doctor's stress, in ink */
 /* Tab style: a row after the headline, pinned once reached, each an anchor into the flow. Pills: fully rounded, the others grey, the one in view the paper with an ink border. Segmented: a grey track the row's width, the three equal, the one in view white */
 .arSheet .arLfChips { position: sticky; top: -24px; z-index: 2; margin: 0 0 -8px; padding: 4px 0 12px; background: var(--ar-paper); }   /* 8 less above ("reduce padding top on tab -8px"): pinned, 16 under the progress; in the flow, where it stood */   /* after the headline, pinned once the scroll reaches it, flush under the bar (the body's 24 of padding above it); 12 above and below ("tab padding top 12, bottom 12"; "fixed once the scroll hits the tab section") */
-.arSheet.arBarGrad .arLfChips { background: transparent; } .arSheet.arBarGrad.arChipsStuck .arGround { bottom: calc(-32px - var(--ar-chips-h, 60px)); }   /* Gradient: pinned, the anchors ride the bar's ground, which runs on under them */
+.arSheet.arBarGrad .arLfChips { background: transparent; }   /* Gradient: pinned, the anchors ride the bar's ground, which runs on under them to 32 past them */
 .arSheet .arLfTrack { display: flex; gap: 8px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; } .arSheet .arLfTrack::-webkit-scrollbar { display: none; }
 .arSheet .arLfTrack.arLfOver { padding-right: 32px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }   /* too many for the width: the pills run off the right, fading, and scroll */
 .arSheet .arLfChip { flex: none; appearance: none; -webkit-appearance: none; margin: 0; height: 36px; padding: 0 16px; border: 1.5px solid transparent; border-radius: 9999px; background: var(--ar-card-bg); font-family: var(--ar-font); font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; color: oklch(var(--ar-ink) / .72); cursor: pointer; transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease; }
@@ -14163,6 +14167,7 @@
  *     welcome: 'cards' | 'includes',   // default 'cards' (the source's welcomeContent prop)
  *     bar: 'solid' | 'grad',           // default 'solid': the fixed bar's ground, or a gradient and blur over the flow
  *     foot: 'solid' | 'grad',          // default 'solid': the footer's ground, or a progressive gradient and blur over the flow
+ *     blur: true | false,              // default true: a blur under the gradients
  *     tabs: 'pills' | 'seg' | 'off',   // default 'pills': an insight's sections anchored by pills, a segmented control, or none
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
@@ -14433,7 +14438,8 @@
       theme: opts.theme === 'dark' ? 'dark' : 'light',
       welcome: opts.welcome === 'includes' ? 'includes' : 'cards',
       bar: opts.bar === 'grad' ? 'grad' : 'solid',
-      foot: opts.foot === 'grad' ? 'grad' : 'solid',   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
+      foot: opts.foot === 'grad' ? 'grad' : 'solid',
+      blur: opts.blur !== false,   // the gradients' blur, under them (default on)   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
       tabs: opts.tabs === false || opts.tabs === 'off' ? 'off' : opts.tabs === 'seg' ? 'seg' : 'pills',   // an insight's three sections anchored by pills (default) or a segmented control, or stacked with no tabs
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
@@ -14463,21 +14469,28 @@
     var ctaLabel = h('span', { class: 'arBtnLabel' });
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, ctaLabel);
     var foot = h('div', { class: 'arFoot' }, cta);
-    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : ''), 'data-ar-mount': uid }, head, body, foot);
-    if (o.foot === 'grad'){   // the footer over the flow: the paper rising from its foot to nothing 32 above it, over ten bands of blur
-      foot.insertBefore(h('span', { class: 'arFootGround', 'aria-hidden': 'true' }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); })), foot.firstChild);
-      var footH = function () { root.style.setProperty('--ar-foot-h', foot.offsetHeight + 'px'); };
-      if (window.ResizeObserver) new ResizeObserver(footH).observe(foot); later(footH, 0); }
-    if (o.bar === 'grad'){   // the Insights' fixed bar: the flow scrolls under the head; once it has, the page's ground fades down from the head's top to 32 under it, over a blur in ten bands
-      head.insertBefore(h('span', { class: 'arGround', 'aria-hidden': 'true' }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); })), head.firstChild);
-      var headH = function () { root.style.setProperty('--ar-head-h', head.offsetHeight + 'px'); };
-      if (window.ResizeObserver) new ResizeObserver(headH).observe(head); later(headH, 0);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur'), 'data-ar-mount': uid }, head, body, foot);
+    /* The sticky gradient, one rule for both fixed groups ("solid bg until 50% of the last section; after that a gradient, ending 32px bleeding past the last section"):
+       the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
+       --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
+    var bands = function () { return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); }); }, fitG = null;
+    if (o.foot === 'grad'){   // the flow runs on under the button
+      foot.insertBefore(h('span', { class: 'arFootGround', 'aria-hidden': 'true' }, bands()), foot.firstChild);
+      var fitF = function () { var f = foot.getBoundingClientRect(), b = cta.getBoundingClientRect(); root.style.setProperty('--ar-foot-h', foot.offsetHeight + 'px');
+        root.style.setProperty('--ar-fs', Math.round(f.bottom - (b.top + b.height / 2)) + 'px'); root.style.setProperty('--ar-fe', Math.round(f.height + 32) + 'px'); };
+      if (window.ResizeObserver) new ResizeObserver(fitF).observe(foot); later(fitF, 0); }
+    if (o.bar === 'grad'){   // the flow scrolls under the head; once it has, the ground comes in
+      head.insertBefore(h('span', { class: 'arGround', 'aria-hidden': 'true' }, bands()), head.firstChild);
+      fitG = function () { var hd = head.getBoundingClientRect(), ch = root.classList.contains('arChipsStuck') ? body.querySelector('.arLfChips') : null, last = (ch || stepWrap).getBoundingClientRect();
+        root.style.setProperty('--ar-head-h', head.offsetHeight + 'px');
+        root.style.setProperty('--ar-gs', Math.round(last.top + last.height / 2 - hd.top) + 'px'); root.style.setProperty('--ar-ge', Math.round(last.bottom - hd.top + 32) + 'px'); };
+      if (window.ResizeObserver) new ResizeObserver(fitG).observe(head); later(fitG, 0);
       on(body, 'scroll', function () { root.classList.toggle('arScrolled', body.scrollTop > 2); }, { passive: true }); }
 
     // the welcome's scroll for the host's parallax: --ar-hero-y (px scrolled) and --ar-hero-k (0..1 over the hero's height less 40, as the service page's)
     var spy = null;   // the insight's chips following the scroll (set by its step, cleared by the next)
     var chipRO = window.ResizeObserver ? new ResizeObserver(function (es) { es.forEach(function (e) { var b = e.target; b.classList.toggle('arLfOver', b.scrollWidth > b.clientWidth + 1); }); }) : null;   // a chip row too wide for its width: fading at its right, scrolling
-    on(body, 'scroll', function () { if (spy) spy(); }, { passive: true });
+    on(body, 'scroll', function () { if (spy) spy(); if (fitG) fitG(); }, { passive: true });   // the anchors pinned or not, then the bar's ground fitted to its last section
     on(body, 'scroll', function () { var y = step === 0 ? Math.max(0, body.scrollTop) : 0, he = body.querySelector('.arHero'), sp = Math.max(60, Math.min((he ? he.offsetHeight : 260) - 40, body.scrollHeight - body.clientHeight));   /* a short welcome: gone by the end of what scrolls, as a task page's */ if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) y = Math.min(y, 0); root.style.setProperty('--ar-hero-y', y.toFixed(1) + 'px'); root.style.setProperty('--ar-hero-k', (step === 0 ? Math.min(1, Math.max(0, body.scrollTop) / sp) : 0).toFixed(3)); }, { passive: true });
     function close() { if (o.onClose) o.onClose(); else go(0); }
     on(backBtn, 'click', function () { go(Math.max(0, step - 1)); });
@@ -14650,7 +14663,7 @@
       var topOf = function (el) { return el.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop; };
       var over = function () { return (o.bar === 'grad' ? head.offsetHeight : 0) + bar.offsetHeight; };   // what covers the flow's top once the anchors are pinned: the head too, with the flow under it (Fixed bar: Gradient)
       spy = function () { var stuck = bar.getBoundingClientRect().top - body.getBoundingClientRect().top - (o.bar === 'grad' ? head.offsetHeight : 0) <= 1;   // the anchors pinned: the Gradient bar's ground runs under them too
-        root.classList.toggle('arChipsStuck', stuck); root.style.setProperty('--ar-chips-h', bar.offsetHeight + 'px');
+        root.classList.toggle('arChipsStuck', stuck);
         if (lock) return; var line = body.scrollTop + over() + 40, k = 0;   // the last section whose top has passed under the chips; the last one once the page is at its foot
         secs.forEach(function (x, i) { if (topOf(x[1]) <= line) k = i; });
         if (body.scrollTop + body.clientHeight >= body.scrollHeight - 2) k = secs.length - 1;
@@ -14732,7 +14745,7 @@
     function render() {
       while (timers.length) clearTimeout(timers.pop());
       qaClose(true);   // a step change closes the questionnaire's sheet
-      spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled');
+      spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled'); if (fitG) later(fitG, 0);
       var welcome = step === 0;
       root.classList.toggle('arIsWelcome', welcome);
       root.setAttribute('data-ar-step', String(step));
@@ -25118,8 +25131,28 @@ hairline({
     // ...and on the desk, under its own greeting ("adapt the desktop based on
     // the recent update on mobile"): the five in one row, no scroll
     { const h1 = document.querySelector('#dOver .dvH1'); if (h1 && !document.querySelector('#dOver .ovSvc')) h1.after(svcRow()); }
-    ['phone', 'phone2'].forEach(id => {
+    // the XS frame's drawn keyboard, one for every field in it (the Overview's ask field, the Timeline's search, the assistant's sheet): it types into the focused field, else the frame's last target
+    window._frameKeys = () => {
+      const fr = document.getElementById('bpFrame'); if (!fr) return null;
+      let k = fr.querySelector(':scope > .mKbd'); if (k) return k;
+      const src = document.getElementById('mKbd'); if (!src) return null;
+      k = src.cloneNode(true); k.removeAttribute('id'); k.classList.remove('shift'); fr.appendChild(k);
+      k.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        const key = e.target.closest('.k'), a = document.activeElement, f = a && a.tagName === 'INPUT' && a.closest('.dash, #bpFrame') ? a : fr._kbdTarget; if (!key || !f) return;
+        const v = key.dataset.k;
+        if (v === 'shift'){ k.classList.toggle('shift'); return; }
+        if (v === 'num') return;
+        if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
+        if (v === 'del') f.value = f.value.slice(0, -1);
+        else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
+        f.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      return k;
+    };
+    ['phone', 'phone2', 'bpFrame'].forEach(id => {   // bpFrame: the XS frame's dock has the spark too, the same sheet over the desk's Overview ("where is this bottom sheet? add it back")
       const ph = document.getElementById(id); if (!ph) return;
+      const inFrame = id === 'bpFrame', chatOf = () => inFrame ? document.querySelector('.dash') : ph;   // the frame's question goes to the desk's chat, which fills the frame at XS
       const title = id === 'phone2' && ph.querySelector('.mtitle');
       if (title && !ph.querySelector('.ovSvc')) title.after(svcRow());
       const btn = ph.querySelector('.mChat'); if (!btn) return;
@@ -25148,7 +25181,7 @@ hairline({
           // folded while the services show, unfolding as they fold. A chip
           // asks its question straight away.
           '<div class="aiChips"><div class="aiChipsIn">' +
-            '<div class="aiChipsRow">' + (id === 'phone2' ? CHIPS_OVERVIEW : CHIPS_INSIGHTS).map(c => '<button class="aiChip" type="button">' + c + '</button>').join('') + '</div>' +
+            '<div class="aiChipsRow">' + (id !== 'phone' ? CHIPS_OVERVIEW : CHIPS_INSIGHTS).map(c => '<button class="aiChip" type="button">' + c + '</button>').join('') + '</div>' +
           '</div></div>' +
           // the services (and the home bar under them) in a block that folds:
           // a grid row going from 1fr to 0fr, so its height animates from
@@ -25170,6 +25203,7 @@ hairline({
       // the frame's keyboard types into the focused field; the phone that has
       // none (the Overview) gets a copy of the Insights phone's, wired the same
       const keyboard = () => {
+        if (inFrame) return window._frameKeys();   // the frame's own, shared
         let k = ph.querySelector('.mKbd');
         if (k) return k;
         const src = document.getElementById('mKbd'); if (!src) return null;
@@ -25196,10 +25230,10 @@ hairline({
       // under the fade (`handoff`: the blur that follows changes nothing) and
       // is removed, without any animation, once the chat is opaque.
       const submit = () => {
-        const q = inp.value.trim();
-        if (!ph._chat) return;
+        const q = inp.value.trim(), ch = chatOf();
+        if (!ch || !ch._chat) return;
         wrap.classList.add('handoff');   // before the open: the chat takes the focus at once, and that blur must change nothing
-        ph._chat.open(card, q);
+        ch._chat.open(card, q);
         inp.value = '';
         setTimeout(() => {
           ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show', 'handoff'); card.style.transform = ''; card.style.bottom = '';
@@ -25225,11 +25259,12 @@ hairline({
       inp.addEventListener('focus', () => {
         const k = keyboard();
         wrap.classList.add('typing');
+        if (k) void k.offsetWidth;
         card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // on the keys, keeping its 12px float
-        document.body.classList.add('mSearchOn');
+        document.body.classList.add(inFrame ? 'frKbd' : 'mSearchOn');
       });
       inp.addEventListener('blur', () => {
-        document.body.classList.remove('mSearchOn');
+        document.body.classList.remove(inFrame ? 'frKbd' : 'mSearchOn');
         if (wrap.classList.contains('handoff')) return;   // the chat is fading in over us: nothing moves
         wrap.classList.remove('typing');
         card.style.bottom = '';
@@ -25274,6 +25309,7 @@ hairline({
       wrap.querySelector('.aiX').addEventListener('click', e => { e.preventDefault(); close(); });
       addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
       document.addEventListener('everlab:mode', close);
+      if (inFrame){ const bs = document.getElementById('stBp'); if (bs) bs.addEventListener('change', close); }   // the frame gone: the sheet with it
     });
   })();
   // ---- the chat thread -----------------------------------------------------
@@ -25514,24 +25550,7 @@ hairline({
   (function ovAskXs(){
     const over = document.getElementById('dOver'); if (!over) return;
     const xs = () => document.body.dataset.bp === 'xs';
-    const keys = () => {
-      const fr = document.getElementById('bpFrame'); if (!fr) return null;
-      let k = fr.querySelector(':scope > .mKbd'); if (k) return k;
-      const src = document.getElementById('mKbd'); if (!src) return null;
-      k = src.cloneNode(true); k.removeAttribute('id'); k.classList.remove('shift'); fr.appendChild(k);
-      k.addEventListener('pointerdown', e => {
-        e.preventDefault();
-        const key = e.target.closest('.k'), a = document.activeElement, f = a && a.tagName === 'INPUT' && a.closest('.dash') ? a : null; if (!key || !f) return;
-        const v = key.dataset.k;
-        if (v === 'shift'){ k.classList.toggle('shift'); return; }
-        if (v === 'num') return;
-        if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
-        if (v === 'del') f.value = f.value.slice(0, -1);
-        else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
-        f.dispatchEvent(new Event('input', { bubbles: true }));
-      });
-      return k;
-    };
+    const keys = () => window._frameKeys ? window._frameKeys() : null;   // the frame's keyboard, shared
     const dim = document.createElement('div'); dim.className = 'ovDimD'; dim.setAttribute('aria-hidden', 'true'); over.appendChild(dim);
     over.querySelectorAll('.ovTop .ovChatBox input').forEach(inp => {
       const box = inp.closest('.ovChatBox');
@@ -28681,7 +28700,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', blur: opt('stArBlur') !== 'off', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
@@ -28695,7 +28714,9 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    { const br = document.getElementById('stArBlurRow'), sh = () => { if (br) br.hidden = opt0('stArBar') !== 'grad' && opt0('stArFoot') !== 'grad'; }, opt0 = id => { const el = document.getElementById(id); return el ? el.value : ''; };   // Gradient blur: while there is a gradient
+      ['stArBar', 'stArFoot'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', sh); }); sh(); }
+    ['themeSel', 'stArBar', 'stArFoot', 'stArBlur', 'stArWel', 'stArTab'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
@@ -32044,24 +32065,7 @@ hairline({
       };
       document.addEventListener('everlab:mode', () => { if (beatT) land(); });   // a page change mid-beat lands it at once
       // the frame's keyboard: a copy of the Insights phone's keys in the XS frame, typing into the focused field
-      const keys = () => {
-        const fr = document.getElementById('bpFrame'); if (!fr) return null;
-        let k = fr.querySelector(':scope > .mKbd'); if (k) return k;
-        const src = document.getElementById('mKbd'); if (!src) return null;
-        k = src.cloneNode(true); k.removeAttribute('id'); k.classList.remove('shift'); fr.appendChild(k);
-        k.addEventListener('pointerdown', e => {
-          e.preventDefault();
-          const key = e.target.closest('.k'); if (!key) return;
-          const v = key.dataset.k, a = document.activeElement, f = (a && a.tagName === 'INPUT' && a.closest('.dash')) ? a : q;
-          if (v === 'shift'){ k.classList.toggle('shift'); return; }
-          if (v === 'num') return;
-          if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
-          if (v === 'del') f.value = f.value.slice(0, -1);
-          else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
-          f.dispatchEvent(new Event('input', { bubbles: true }));
-        });
-        return k;
-      };
+      const keys = () => { const fr = document.getElementById('bpFrame'); if (fr) fr._kbdTarget = q; return window._frameKeys ? window._frameKeys() : null; };   // the frame's keyboard, shared; nothing focused, it types here
       sb.addEventListener('pointerdown', () => { if (isXs()) keys(); });   // built before the focus, so the keys rise rather than appear
       sb.addEventListener('click', e => { if (e.target.closest('.msClear')) return; if (!sb.classList.contains('open') && getComputedStyle(q).display === 'none'){ sb.classList.add('open'); q.focus(); } });
       q.addEventListener('focus', () => { if (!isXs()) return; const k = keys(); if (k) void k.offsetWidth; document.body.classList.add('tlKbd'); });
