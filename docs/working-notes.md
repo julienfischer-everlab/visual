@@ -14959,3 +14959,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Async report: every biomarker row (the card's and the X biomarkers sheet's) opens it in the report's sheet (Enter or Space too).
   - The Insights phone: every row of #mRecs opens it in its own sheet over #phone (Escape, the scrim or the close shut it; focus back on the row).
 - **Async gradients, no blur:** the Gradient blur tweak is gone and the gradients carry no blur ("remove any blur effect when it's gradient").
+- **Async welcome scrolls with the Gradient footer:** the welcome's padding:0 took away the room the Gradient footer gives the flow, so the last debrief row sat under the button with nothing to scroll ("scroll viewport doesn't work"); the welcome's body (and its own scroller, standalone) keep the footer's height + 8 at their foot.
