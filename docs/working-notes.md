@@ -14951,3 +14951,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async, one Key takeaway card:** the Ask your doctor card and the Key takeaway merged ("merge both descriptions all in one blue card with Copy CTA top right"): each insight's last paragraph and its sentences for the doctor, in the order they came, in one card at the section's end; a bulb, Key takeaway, Copy at the top right (copies the card's words); the Ask your doctor card gone.
 - **Async Key takeaway, paragraphs:** the doctor's sentence and the takeaway each a paragraph, 12 apart as the page's ("consider paragraph margin"); Copy keeps the break.
 - **Async, Segmented tabs:** one tile under the three, sliding left and right to the one in view (.32 s; none with reduced motion), not a tile jumping from chip to chip.
+- **Async Key takeaway:** 16 between its header and its words ("+8px gap header / desc").
