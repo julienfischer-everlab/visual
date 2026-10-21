@@ -14928,3 +14928,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async sheets:** the title alone, no sub ("remove sub"), on the close's centre line.
 - **Async Evidence cards, the last row:** its hover tile 14 from the card's foot, as from its sides ("bottom padding same as left right").
 - **Async biomarker rows:** title 16 (line 20), sub 14 (line 18), 4 above the title ("title 16, sub 14, title margin top 4px"); the Insights phone's rows stay 14 / 12.
+- **Async Evidence cards:** padding 24 to 20 ("reduce card padding by 4px"); each biomarker row 4 in at both sides, so its words sit 14 inside the hover tile and stay where they were; tiles 10 from the card's sides and foot.
