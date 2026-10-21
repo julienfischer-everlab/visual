@@ -14065,6 +14065,17 @@
 .arSheet .arLfHead { display: flex; flex-direction: column; gap: 6px; } .arSheet .arLfHead .arH700 { margin: 0; }
 .arSheet .arLfEv { display: flex; flex-direction: column; gap: 12px; } .arSheet .arLfEv > .arLfSec { margin-bottom: 8px; }   /* Behind this insight and its source on the page, then the grey cards, 12 apart */
 .arSheet .arLfCardH { padding: 0 16px 8px; }   /* a grey card's name, on the grey */
+/* the Insights phone's biomarker row (.mbrow): the name and its range bar, then the value | the date and the status; a hairline between rows */
+.arSheet { --mbO: #6fcb7c; --mbS: #f2c550; --mbX: #e5514f; } .arSheet.arDark { --mbO: #aaeec2; --mbS: #ffe29f; --mbX: #fe8087; }   /* the Insights' range colours, light and dark */
+.arSheet .arMbList { gap: 0; padding-top: 4px; padding-bottom: 4px; }
+.arSheet .arMb { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid oklch(var(--ar-ink) / .08); }
+.arSheet .arMb:first-child { padding-top: 8px; } .arSheet .arMb:last-child { padding-bottom: 8px; border-bottom: 0; }
+.arSheet .arMbN { min-width: 0; font-family: var(--ar-font); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink)); text-wrap: pretty; }
+.arSheet .arMbG { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; min-width: 0; font-family: var(--ar-font); font-size: 12.5px; line-height: 16px; color: oklch(var(--ar-ink) / .55); } .arSheet .arMbSep { color: oklch(var(--ar-ink) / .3); }
+.arSheet .arMbSt { justify-self: end; height: auto; padding: 5px 11px; border-radius: 8px; font-size: 12px; line-height: 15px; }
+.arSheet .arMbR { position: relative; display: flex; gap: 4px; align-items: center; width: 94px; padding-top: 9px; justify-self: end; }
+.arSheet .arMbR > i:not(.arMbMk) { flex: 1 1 0; height: 4px; border-radius: 2px; } .arSheet .arMbO { background: var(--mbO); } .arSheet .arMbS { background: var(--mbS); } .arSheet .arMbX { background: var(--mbX); }
+.arSheet .arMbMk { position: absolute; top: -2px; left: calc(var(--at) - 4px); width: 0; height: 0; border: 4px solid transparent; border-top: 6px solid oklch(var(--ar-ink) / .9); }   /* the reading's place */
 .arSheet .arLfEv .arLfCard { background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); }   /* the group's card outlined, not filled; its list's card inside it filled ("main card outlined not filled") */
 .arSheet .arLfStack > .arLfHead { margin-bottom: -16px; }   /* 16 less under the headline ("margin bottom less by 16px") */
 .arSheet .arLfCard { display: flex; flex-direction: column; gap: 4px; padding: 16px 4px 4px; border-radius: calc(var(--ar-radius-card) + 4px); background: var(--ar-card-bg); }   /* a card of cards, as Biomarkers: the heading on the grey, each group a white card inside, 4 apart ("use a card inside a card") */
@@ -14599,6 +14610,11 @@
         s('path', { class: 'arRangePtr', d: 'M' + (px - 4) + ' 0 L' + (px + 4) + ' 0 L' + px + ' 6 Z' }),
         s('line', { class: 'arLfBarLine', x1: px, y1: 6, x2: px, y2: 18, 'stroke-width': 1.5, 'stroke-dasharray': '2 2' }));
     }
+    // the Insights phone's range bar: its segments 4 high and 4 apart, the reading's place a small ink triangle over them (kind as lifeBar's)
+    function mbBar(pos, kind) {
+      var seg = { hi: 'osx', lo: 'xso', both: 'xsosx' }[kind] || (/^[osx]{2,6}$/.test(kind || '') ? kind : 'sos'), C = { o: 'arMbO', s: 'arMbS', x: 'arMbX' };
+      return h('span', { class: 'arMbR', 'aria-hidden': 'true', style: { '--at': (pos * 100).toFixed(1) + '%' } }, h('i', { class: 'arMbMk' }), seg.split('').map(function (k) { return h('i', { class: C[k] }); }));
+    }
     // a marker's trend, small, beside it: its readings as a line, coloured from its first status to its last
     function lifeSpark(t) {
       var lo = Math.min.apply(null, t.pts), hi = Math.max.apply(null, t.pts), n = t.pts.length, id = 'arSpk' + (++sparkSeq);
@@ -14635,17 +14651,14 @@
       var grey = function (name, inner) { return h('div', { class: 'arLfCard' }, h('span', { class: 'arT600 arLfCardH', text: name }), inner); };
       var card = h('div', { class: 'arLfEv arAnimRise arD12' },
           h('div', { class: 'arLfSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }), h('p', { class: 'arPara', text: L.source })),
-          grey('Your biomarkers', h('div', { class: 'arLfGroup' },
-            L.markers.map(function (m) {
-              return h('div', { class: 'arLfMk' },
-                h('div', { class: 'arLfMkL' },
-                  h('span', { class: 'arLfName', text: m.name }),
-                  h('div', { class: 'arRowMeta' },
-                    h('span', { class: 'arT200r arInk60', text: m.value }),
-                    h('span', { class: 'arT200r arInk30', text: '|' }),
-                    h('span', { class: 'arT200r arInk60', text: m.date }))),
-                m.trend ? lifeSpark(m.trend) : null,
-                h('div', { class: 'arLfMkR' }, m.pos != null ? lifeBar(m.pos, m.bar) : null, h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
+          grey('Your biomarkers', h('div', { class: 'arLfGroup arMbList' },
+            L.markers.map(function (m) {   /* the Insights phone's biomarker row ("keep the component from the Insights mobile page"): the name, its range bar at the right; under, the value | the date, the status at the right; a rule between */
+              var stc = m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub';
+              return h('div', { class: 'arMb' },
+                h('span', { class: 'arMbN', text: m.name }),
+                m.pos != null ? mbBar(m.pos, m.bar) : h('span'),
+                h('span', { class: 'arMbG' }, h('span', { text: m.value }), h('span', { class: 'arMbSep', 'aria-hidden': 'true', text: '|' }), h('span', { text: m.date })),
+                h('span', { class: 'arLfPill arMbSt ' + stc, text: m.status }));
             }))),
           ans ? grey('Your answers', ans) : null);
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"); the sections keep their own headings
