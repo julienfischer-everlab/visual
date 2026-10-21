@@ -14943,3 +14943,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async sources card, refined:** Behind this insight back outside the card, as the section's heading; the Hairline file 40 further right and 24 higher; 120 kept clear at the card's right (the drawing's 88 and 32 more) so the words never run under it; the square bullets in the ink (white on dark), the words secondary; the card 12 over the biomarkers, as between the other cards.
 - **Async sources card, specks of data:** nine small dots drift from the words' side into the report file, fading in, then out as they reach it; none with reduced motion.
 - **Async sources card:** the Hairline file hung from the card's top, its drawing 24 under it whatever the card's height (62 to 128); the specks finer (1.2 to 2) and slower (5 to 8 s).
+- **Async sources card, specks:** lighter (at most 55%) and a bit slower (6.5 to 10 s).
