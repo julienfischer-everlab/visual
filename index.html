@@ -12084,6 +12084,8 @@
         <!-- Behind this insight's cards, Your biomarkers and Your answers: outlined, or filled #fff 4% (light: #000 4%) ("tweak Behind this insight cards: Outlined, Filled fff 4%") -->
         <!-- how many biomarkers Behind this insight shows before See N more, the next one partly shown under them ("tweak max biomarkers counter: 3 default (1 partially shown), 2") -->
         <div class="tkRow"><span class="lbl">Max biomarkers</span><select id="stArMb" class="tkSegSel" aria-label="Biomarkers shown before See more"><option value="3" selected>3</option><option value="2">2</option></select></div>
+        <!-- From your data's visual: the Hairline report file, or the Overview's report render (its insight card's) ("From your data: visual tweak, Hairline, this attached visual from overview") -->
+        <div class="tkRow"><span class="lbl">Data visual</span><select id="stArSrcVis" class="tkSegSel" aria-label="From your data's visual"><option value="hairline" selected>Hairline</option><option value="image">Image</option></select></div>
         <div class="tkRow"><span class="lbl">Evidence cards</span><select id="stArCard" class="tkSegSel" aria-label="Behind this insight's cards"><option value="outline" selected>Outlined</option><option value="fill">Filled</option></select></div>
         </div>
         <div class="tkGroup" data-pages="lp">
@@ -14078,6 +14080,8 @@
 .arSheet .arSrcTab::before { background: radial-gradient(circle at 100% 0, var(--ar-paper) 14.5px, var(--src-bg) 15px); } .arSheet .arSrcTab::after { border-left: 1px solid oklch(var(--ar-ink) / .1); border-bottom: 1px solid oklch(var(--ar-ink) / .1); border-bottom-left-radius: 16px; }   /* its foot curving into the card's top edge */
 .arSheet.arCardsFill .arSrcTab, .arSheet.arCardsFill .arSrcTab::after { border-color: transparent; }
 .arSheet .arSrcClip { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }   /* the figure cut at the card's edges */
+.arSheet .arSrcImg { position: absolute; right: -130px; top: -5px; width: 320px; max-width: none; height: auto; }   /* the Overview's report render, its card where the Hairline file stands, 24 from the top, 88 in from the right, running past the card's right and foot and cut there */
+.arSheet:not(.arDark) .arSrcImg { filter: invert(1) hue-rotate(180deg); }   /* the render is white on clear, for a dark plate: on the light page its lights go dark, its colours kept */
 .arSheet .arSrcP { position: absolute; right: var(--x); top: var(--y); width: var(--s); height: var(--s); border-radius: 50%; background: oklch(var(--ar-ink) / .7); opacity: 0; animation: arSrcP var(--d) linear var(--dl) infinite; }   /* a speck, from the words' side into the report file */
 @keyframes arSrcP { 0% { opacity: 0; transform: translate(0, 0); } 18% { opacity: .55; } 70% { opacity: .4; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)); } }   /* lighter: at most 55% ("particle lighter") */
 @media (prefers-reduced-motion: reduce) { .arSheet .arSrcP { display: none; } }
@@ -14225,6 +14229,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *     tabs: 'pills' | 'seg' | 'off',   // default 'pills': an insight's sections anchored by pills, a segmented control, or none
  *     cards: 'outline' | 'fill',       // default 'outline': Behind this insight's cards outlined, or filled #fff 4% (light #000 4%)
  *     mb: 3 | 2,                       // default 3: the biomarkers Behind this insight shows before See N more, the next one partly shown
+ *     srcVis: 'hairline' | 'image',    // default 'hairline': From your data's visual, the Hairline report file or the Overview's report render
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
  *     onClose: function () {}          // Close (X) and the final "Done"
@@ -14499,6 +14504,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       tabs: opts.tabs === false || opts.tabs === 'off' ? 'off' : opts.tabs === 'seg' ? 'seg' : 'pills',   // an insight's three sections anchored by pills (default) or a segmented control, or stacked with no tabs
       cards: opts.cards === 'fill' ? 'fill' : 'outline',   // Behind this insight's cards outlined (default) or filled
       mb: opts.mb === 2 ? 2 : 3,   // the biomarkers shown before See N more (default 3), the next one partly shown
+      srcVis: opts.srcVis === 'image' ? 'image' : 'hairline',   // From your data's visual: the Hairline report file (default) or the Overview's report render
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
@@ -14740,7 +14746,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           h('div', { class: 'arLfSec arSrcSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }),   // the heading outside the card ("Behind this insight outside the notch card")
             h('div', { class: 'arSrcCard' },
               h('span', { class: 'arSrcTab', text: 'From your data' }),
-              h('span', { class: 'arSrcClip', 'aria-hidden': 'true' }, hlDoc(), srcDust()),
+              h('span', { class: 'arSrcClip', 'aria-hidden': 'true' }, o.srcVis === 'image' ? h('img', { class: 'arSrcImg', src: 'assets/overview/card4-doc.webp', alt: '', decoding: 'async', draggable: 'false' }) : hlDoc(), srcDust()),   // Data visual: the Hairline file, or the Overview's render
               h('ul', { class: 'arSrc', 'aria-label': 'Sources' }, (L.sources || []).map(function (x) { return h('li', { class: 'arSrcRow', text: x[1] }); })))),
           grey(nMb(L.markers.length), h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more)),
           ans ? grey(nAns(n), ans) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore) : null);
@@ -28804,7 +28810,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', blur: opt('stArBlur') !== 'off', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'fill' ? 'fill' : 'outline', mb: opt('stArMb') === '2' ? 2 : 3, onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', blur: opt('stArBlur') !== 'off', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'fill' ? 'fill' : 'outline', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
@@ -28820,7 +28826,7 @@ hairline({
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
     { const br = document.getElementById('stArBlurRow'), sh = () => { if (br) br.hidden = opt0('stArBar') !== 'grad' && opt0('stArFoot') !== 'grad'; }, opt0 = id => { const el = document.getElementById(id); return el ? el.value : ''; };   // Gradient blur: while there is a gradient
       ['stArBar', 'stArFoot'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', sh); }); sh(); }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArBlur', 'stArWel', 'stArTab', 'stArCard', 'stArMb'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArBlur', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);

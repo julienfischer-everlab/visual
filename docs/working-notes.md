@@ -14944,3 +14944,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async sources card, specks of data:** nine small dots drift from the words' side into the report file, fading in, then out as they reach it; none with reduced motion.
 - **Async sources card:** the Hairline file hung from the card's top, its drawing 24 under it whatever the card's height (62 to 128); the specks finer (1.2 to 2) and slower (5 to 8 s).
 - **Async sources card, specks:** lighter (at most 55%) and a bit slower (6.5 to 10 s).
+- **Async, Data visual tweak:** From your data's visual, the Hairline report file (default) or Image, the Overview insight card's report render (card4-doc), its card where the file stands (24 from the top, 88 in), running past the card's right and foot; on the light page its lights inverted, its colours kept.
