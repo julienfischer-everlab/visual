@@ -14126,7 +14126,7 @@
 .arSheet.arDark .arKey { background: #0c2241; color: #fff; } .arSheet .arLfH + .arKey { margin-top: 0; }   /* first under the heading: no extra room */
 .arSheet .arKeyHd { display: flex; align-items: center; gap: 8px; min-height: 28px; } .arSheet .arKeyHd .arIco { flex: none; }
 .arSheet .arKeyT { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; font-variant-ligatures: no-contextual; }   /* Key takeaway, 16 medium */
-.arSheet .arKeyD { margin: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; color: inherit; opacity: .82; text-wrap: pretty; } .arSheet .arKeyD .arParaB { color: inherit; }
+.arSheet .arKeyD { display: flex; flex-direction: column; gap: 12px; font-family: var(--ar-font); font-size: 16px; line-height: 20px; color: inherit; opacity: .82; } .arSheet .arKeyP { margin: 0; text-wrap: pretty; } .arSheet .arKeyD .arParaB { color: inherit; }   /* its paragraphs 12 apart, as the page's */
 .arSheet .arAskCopy { appearance: none; -webkit-appearance: none; flex: none; display: inline-flex; align-items: center; gap: 6px; height: 28px; margin: 0 -4px 0 auto; padding: 0 10px; border: 0; border-radius: 9999px; background: rgba(12, 34, 65, .08); color: inherit; font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 500; cursor: pointer; transition: background .15s ease; }   /* Copy, at the card's top right */
 .arSheet.arDark .arAskCopy { background: rgba(255, 255, 255, .1); }
 @media (hover: hover) { .arSheet .arAskCopy:hover { background: rgba(12, 34, 65, .14); } .arSheet.arDark .arAskCopy:hover { background: rgba(255, 255, 255, .16); } } .arSheet .arAskCopy:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
@@ -14712,12 +14712,12 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       return items.filter(function (x, i) { return !(x.ask || i === last); }).map(function (x) { return h('p', { class: 'arPara' }, rich(x.run)); }).concat(key.length ? [keyCard(key)] : []);
     }
     function keyCard(parts) {
-      var desc = h('p', { class: 'arKeyD' }, parts.map(function (x, i) { return [i ? ' ' : '', x.ask ? x.ask : rich(x.run)]; }));
+      var ps = parts.map(function (x) { return h('p', { class: 'arKeyP' }, x.ask ? x.ask : rich(x.run)); }), desc = h('div', { class: 'arKeyD' }, ps);   // a paragraph each, 12 apart as the page's ("consider paragraph margin")
       var lab = h('span', { text: 'Copy' }), t0 = 0;
       var btn = h('button', { type: 'button', class: 'arAskCopy', 'aria-label': 'Copy the key takeaway' }, strokeIcon(14, 16, 1.5, [P.copy1, P.copy2]), lab);
       var done = function () { lab.textContent = 'Copied'; cancel(t0); t0 = later(function () { lab.textContent = 'Copy'; }, 1600); };
       on(btn, 'click', function () {
-        var text = desc.textContent;
+        var text = ps.map(function (p) { return p.textContent; }).join('\n\n');
         var pick = function () { try { var r = document.createRange(); r.selectNodeContents(desc); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); } catch (e) {} };   // no clipboard: the words selected, to copy by hand
         try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, pick); else pick(); } catch (e) { pick(); }
       });
