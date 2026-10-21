@@ -8773,6 +8773,12 @@
   body[data-bp="xs"] #dOver{padding:0 16px 92px;max-width:none;}   /* 16 at the sides ("container padding left right 16px"; was 13), the bleeding rows below with it */
   body[data-bp="xs"] #dOver .ovTop{top:0;margin:0 -16px 0;padding:8px 16px 10px;}   /* 8 of air at the viewport's top (was 45: the drawn strip, now a band above the page in the frame) */
   body.hdrV3[data-bp="xs"] #dOver .ovTop{justify-content:space-between;}
+  /* XS: the ask field as the phone's -- no send arrow at its right; a tap raises the drawn keyboard and a blanket over the page under the bar, a tap on it lets go ("on click should trigger the keyboard and overlay blanket the screen; no arrow CTA icon on the right side") */
+  body[data-bp="xs"] #dOver .ovTop .ovChatGo{display:none;} body[data-bp="xs"] #dOver .ovTop .ovChatBox{padding-right:16px;}
+  #dOver .ovDimD{display:none;} body[data-bp="xs"] #dOver .ovDimD{display:block;position:fixed;left:calc(50vw - var(--bpW) / 2);width:var(--bpW);top:calc(var(--barH,57px) + 48px);bottom:48px;z-index:4;border-radius:56px;background:rgba(0,0,0,.57);opacity:0;pointer-events:none;transition:opacity .28s ease;}
+  html.bpAuto body[data-bp="xs"] #dOver .ovDimD{left:0;width:auto;right:0;top:var(--barH,57px);bottom:0;border-radius:0;}
+  body[data-bp="xs"].ovKbd #dOver .ovDimD{opacity:1;pointer-events:auto;}
+  body[data-bp="xs"].ovKbd #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
   body.hdrV3[data-bp="xs"] #dOver .ovAvatar{display:block;}
   body[data-bp="xs"] #dOver .ovInbox, body[data-bp="xs"] #dOver .ovBell{width:44px;height:44px;}
   body.hdrV3[data-bp="xs"] #dOver .dvH1{margin:16px 0 0;font-size:24px;letter-spacing:-.4px;}
@@ -14065,7 +14071,7 @@
 .arSheet .arLfSpk { flex: 0 1 120px; min-width: 56px; display: flex; align-items: center; } .arSheet .arLfSpk svg { display: block; width: 100%; height: 20px; overflow: visible; }   /* a marker's trend, between its name and its range */
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }   /* the doctor's stress, in ink */
 /* Tab style: a row after the headline, pinned once reached, each an anchor into the flow. Pills: fully rounded, the others grey, the one in view the paper with an ink border. Segmented: a grey track the row's width, the three equal, the one in view white */
-.arSheet .arLfChips { position: sticky; top: -24px; z-index: 2; margin: -8px 0 -8px; padding: 12px 0; background: var(--ar-paper); }   /* after the headline, pinned once the scroll reaches it, flush under the bar (the body's 24 of padding above it); 12 above and below ("tab padding top 12, bottom 12"; "fixed once the scroll hits the tab section") */
+.arSheet .arLfChips { position: sticky; top: -24px; z-index: 2; margin: 0 0 -8px; padding: 4px 0 12px; background: var(--ar-paper); }   /* 8 less above ("reduce padding top on tab -8px"): pinned, 16 under the progress; in the flow, where it stood */   /* after the headline, pinned once the scroll reaches it, flush under the bar (the body's 24 of padding above it); 12 above and below ("tab padding top 12, bottom 12"; "fixed once the scroll hits the tab section") */
 .arSheet.arBarGrad .arLfChips { background: transparent; } .arSheet.arBarGrad.arChipsStuck .arGround { bottom: calc(-32px - var(--ar-chips-h, 60px)); }   /* Gradient: pinned, the anchors ride the bar's ground, which runs on under them */
 .arSheet .arLfTrack { display: flex; gap: 8px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; } .arSheet .arLfTrack::-webkit-scrollbar { display: none; }
 .arSheet .arLfTrack.arLfOver { padding-right: 32px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }   /* too many for the width: the pills run off the right, fading, and scroll */
@@ -25500,6 +25506,42 @@ hairline({
       document.addEventListener('visibilitychange', () => { if (document.hidden){ clearInterval(timer); timer = 0; } else start(); });
       host._ovPh = { lines: LINES, at: () => i, next };
     });
+  })();
+
+  // The desk's Overview at XS, in the phone's frame: its ask field behaves as the phone's -- a tap raises the frame's drawn
+  // keyboard (the Timeline search's, built here if it is not yet) and a blanket over the page under the bar; a tap on the
+  // blanket, or the keyboard's go, lets it go (go hands the words to the chat, as Enter does)
+  (function ovAskXs(){
+    const over = document.getElementById('dOver'); if (!over) return;
+    const xs = () => document.body.dataset.bp === 'xs';
+    const keys = () => {
+      const fr = document.getElementById('bpFrame'); if (!fr) return null;
+      let k = fr.querySelector(':scope > .mKbd'); if (k) return k;
+      const src = document.getElementById('mKbd'); if (!src) return null;
+      k = src.cloneNode(true); k.removeAttribute('id'); k.classList.remove('shift'); fr.appendChild(k);
+      k.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        const key = e.target.closest('.k'), a = document.activeElement, f = a && a.tagName === 'INPUT' && a.closest('.dash') ? a : null; if (!key || !f) return;
+        const v = key.dataset.k;
+        if (v === 'shift'){ k.classList.toggle('shift'); return; }
+        if (v === 'num') return;
+        if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
+        if (v === 'del') f.value = f.value.slice(0, -1);
+        else { f.value += k.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; k.classList.remove('shift'); }
+        f.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      return k;
+    };
+    const dim = document.createElement('div'); dim.className = 'ovDimD'; dim.setAttribute('aria-hidden', 'true'); over.appendChild(dim);
+    over.querySelectorAll('.ovTop .ovChatBox input').forEach(inp => {
+      const box = inp.closest('.ovChatBox');
+      box.addEventListener('pointerdown', () => { if (xs()) keys(); });   // built before the focus, so the keys rise rather than appear
+      inp.addEventListener('focus', () => { if (!xs()) return; const k = keys(); if (k) void k.offsetWidth; document.body.classList.add('ovKbd'); });
+      inp.addEventListener('blur', () => document.body.classList.remove('ovKbd'));
+      inp.addEventListener('everlab:go', () => inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));   // the keys' go: as Enter, the words to the chat
+      dim.addEventListener('pointerdown', e => { e.preventDefault(); inp.blur(); });
+    });
+    document.addEventListener('everlab:mode', () => document.body.classList.remove('ovKbd'));
   })();
 
   // ---- Teaser video: the storyboard page ----
