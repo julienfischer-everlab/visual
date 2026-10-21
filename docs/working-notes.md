@@ -14946,3 +14946,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async sources card, specks:** lighter (at most 55%) and a bit slower (6.5 to 10 s).
 - **Async, Data visual tweak:** From your data's visual, the Hairline report file (default) or Image, the Overview insight card's report render (card4-doc), its card where the file stands (24 from the top, 88 in), running past the card's right and foot; on the light page its lights inverted, its colours kept.
 - **Async, Ask your doctor cards:** every sentence for the doctor (cholesterol's CT angiogram, cortisol's repeat test, B12's plan, vitamin D's supplement) taken out of its paragraph into a secondary filled card where it stood: Ask your doctor, Copy at its top right (Copied for 1.6 s; with no clipboard the words are selected), the sentence under. The data marks them `{ ask: '...' }`.
+- **Async, Was this useful?:** its outlined card 16 round, as the page's other cards (12 before).
