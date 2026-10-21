@@ -14173,12 +14173,12 @@
 .arSheet .arLfAns:hover .arLfAnsBtn { background: oklch(var(--ar-ink) / .06); }
 /* its bottom sheet, over the whole report: a scrim, the panel rising from the foot, 32 of safe space under the list */
 .arSheet .arQa { position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: flex-end; }
-.arSheet .arQaDim { position: absolute; inset: 0; background: oklch(0% 0 0 / .4); opacity: 0; transition: opacity .3s ease; }
+.arSheet .arQaDim { position: absolute; inset: 0; background: oklch(0% 0 0 / .3); opacity: 0; transition: opacity .3s ease; }
 .arSheet .arQa.arOn .arQaDim { opacity: 1; }
 .arSheet .arQaPanel { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; height: calc(100% - var(--ar-qa-top, 16px)); margin: 0 auto; padding: 8px 0 32px; border-radius: 24px 24px 0 0; background: var(--ar-paper); box-shadow: 0 -12px 40px oklch(0% 0 0 / .16); transform: translateY(100%); transition: transform .4s var(--ar-ease); }
 .arSheet.arDark .arQaPanel { background: oklch(21% 0 263.28); }
 .arSheet .arQa.arOn .arQaPanel { transform: none; }
-.arSheet .arQaGrab { flex: none; width: 36px; height: 5px; margin: 0 auto 12px; border-radius: 3px; background: oklch(var(--ar-ink) / .16); }
+.arSheet .arQaGrab { display: none; } .arSheet .arQaPanel { padding-top: 20px; }   /* no handle at the top ("almost full modal, no notch at the top") */
 .arSheet .arQaHead { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 8px; }   /* the title on the close's centre line */
 .arSheet .arQaHd { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .arSheet .arQaT { font-family: var(--ar-font); font-size: 20px; line-height: 24px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
@@ -14188,11 +14188,12 @@
 /* the stacking, as iOS: under a sheet the page draws back (8% smaller, rounded, on black, its top just under the status bar); under a stacked sheet the first sheet draws back too, and the page further */
 .arSheet .arStage { position: relative; display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; width: 100%; background: var(--ar-paper); transform-origin: 50% 0; transition: transform .4s var(--ar-ease), border-radius .4s var(--ar-ease); }
 .arSheet.arSheet.arSheet.arSheet.arStk1 { background: #000; }
-.arSheet.arStk1 .arStage { transform: translateY(calc(var(--ar-qa-top, 16px) - 10px)) scale(.92); border-radius: 14px; overflow: hidden; }
-.arSheet.arStk2 .arStage { transform: translateY(calc(var(--ar-qa-top, 16px) - 16px)) scale(.88); }
+.arSheet .arQa:not(.arQb) .arQaPanel { height: calc(100% - var(--ar-qa-top, 16px) - 12px); }   /* the sheet 12 under the page behind, so the page always shows over it, a card ("should always overlap, see the prev screen behind a card") */
+.arSheet.arStk1 .arStage { transform: translateY(var(--ar-qa-top, 16px)) scale(.92); border-radius: 14px; overflow: hidden; }
+.arSheet.arStk2 .arStage { transform: translateY(calc(var(--ar-qa-top, 16px) - 6px)) scale(.88); }
 .arSheet .arQa .arQaPanel { transform-origin: 50% 0; }
-.arSheet.arStk2 .arQa.arOn:not(.arQb) .arQaPanel { transform: translateY(-8px) scale(.94); }   /* the first sheet, drawn back under the second */
-.arSheet .arQa.arQb { z-index: 21; } .arSheet .arQb .arQaPanel { height: calc(100% - var(--ar-qa-top, 16px) - 10px); } .arSheet .arQb .arQaDim { background: oklch(0% 0 0 / .24); }   /* the second: 10 lower, the first's top showing over it */
+.arSheet.arStk2 .arQa.arOn:not(.arQb) .arQaPanel { transform: translateY(-10px) scale(.94); }   /* the first sheet, drawn back under the second */
+.arSheet .arQa.arQb { z-index: 21; } .arSheet .arQb .arQaPanel { height: calc(100% - var(--ar-qa-top, 16px) - 24px); } .arSheet .arQb .arQaDim { background: oklch(0% 0 0 / .24); }   /* the second: 10 lower, the first's top showing over it */
 @media (prefers-reduced-motion: reduce) { .arSheet .arStage { transition: none; } }
 .arSheet .arQaList.arQaMb { padding-top: 0; padding-bottom: 0; }   /* the biomarkers, the report's rows, in the sheet */
 .arSheet .arMb.arMbFade { pointer-events: none; box-sizing: border-box; max-height: 64px; overflow: hidden; opacity: .4; -webkit-mask-image: linear-gradient(180deg, #000 0, transparent 100%); mask-image: linear-gradient(180deg, #000 0, transparent 100%); }   /* the one partly shown: 64 of it at most, from 40% fading out ("hidden biomarker only max height 64px; fade out") */
@@ -14271,11 +14272,11 @@
 @media (prefers-reduced-motion: reduce) { .bmdTip { transition: none; } }
 /* the sheet it comes in on the Insights phone: a scrim, the panel up from the foot to under the status bar, its handle, the name and the close, the detail scrolling */
 .bmdOv { position: absolute; inset: 0; z-index: 60; display: flex; flex-direction: column; justify-content: flex-end; }
-.bmdOvDim { position: absolute; inset: 0; background: rgba(0, 0, 0, .4); opacity: 0; transition: opacity .3s ease; }
-.bmdOvP { position: relative; display: flex; flex-direction: column; height: calc(100% - 52px); border-radius: 24px 24px 0 0; background: #fff; color: #111; box-shadow: 0 -12px 40px rgba(0, 0, 0, .16); transform: translateY(100%); transition: transform .4s cubic-bezier(.2, .8, .2, 1); }
+.bmdOvDim { position: absolute; inset: 0; background: rgba(0, 0, 0, .3); opacity: 0; transition: opacity .3s ease; }
+.bmdOvP { position: relative; display: flex; flex-direction: column; height: calc(100% - 64px); padding-top: 20px; border-radius: 24px 24px 0 0; background: #fff; color: #111; box-shadow: 0 -12px 40px rgba(0, 0, 0, .16); transform: translateY(100%); transition: transform .4s cubic-bezier(.2, .8, .2, 1); }
 .bmdOv.bmdDark .bmdOvP { background: #1b1b1b; color: #fff; }
 .bmdOv.bmdOn .bmdOvDim { opacity: 1; } .bmdOv.bmdOn .bmdOvP { transform: none; }
-.bmdOvG { flex: none; width: 36px; height: 5px; margin: 8px auto 12px; border-radius: 3px; background: rgba(127, 127, 127, .35); }
+.bmdOvG { display: none; flex: none; width: 36px; height: 5px; margin: 8px auto 12px; border-radius: 3px; background: rgba(127, 127, 127, .35); }
 .bmdOvH { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 16px; }
 .bmdOvT { margin: 0; font-size: 20px; line-height: 24px; font-weight: 500; }
 .bmdOvX { appearance: none; -webkit-appearance: none; flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .06); color: inherit; cursor: pointer; } .bmdOv.bmdDark .bmdOvX { background: rgba(255, 255, 255, .1); } .bmdOvX:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
@@ -15185,7 +15186,7 @@ window.BioDetail = (function () {
     var back = opts.back || [], keep = opts.keep || [], bg = getComputedStyle(host).backgroundColor;
     var push = function (on) {
       host.classList.toggle('bmdStkHost', on);
-      if (on) { host.style.setProperty('--bmd-bg', bg && bg !== 'rgba(0, 0, 0, 0)' ? bg : '#111'); var top0 = back[0] ? back[0].offsetTop : 0; host.style.setProperty('--bmd-ty', (42 - top0 * .92).toFixed(1) + 'px'); }   // the screen's content top lands 42 down, 10 above the sheet, so a sliver of it shows
+      if (on) { host.style.setProperty('--bmd-bg', bg && bg !== 'rgba(0, 0, 0, 0)' ? bg : '#111'); var top0 = back[0] ? back[0].offsetTop : 0; host.style.setProperty('--bmd-ty', (52 - top0 * .92).toFixed(1) + 'px'); }   // the screen's content top lands 52 down, under the status bar, 12 above the sheet: the screen behind always shows, a card
       back.forEach(function (b) { if (!b) return; if (on) { b.style.transformOrigin = '50% ' + (-b.offsetTop) + 'px'; b.classList.add('bmdBack'); } b.classList.toggle('bmdBackOn', on); });
       keep.forEach(function (k) { if (k) k.classList.toggle('bmdKeep', on); });
     };
