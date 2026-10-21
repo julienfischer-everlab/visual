@@ -5590,6 +5590,7 @@
   body.asyncRep .dvWrap, body.asyncRep .dash, body.asyncM #phone2 .mscroll{pointer-events:none;}
   .aqWrap{display:none;}
   body.asyncD .aqWrap.aqDesk{display:block;position:fixed;left:0;right:0;top:var(--barH,45px);bottom:0;z-index:40;pointer-events:auto;}
+  body:is(.asyncD, .asyncM) .topbar{z-index:61;}   /* the bar, and its Tweaks panel, over the report, the desk's (40) and the phone's (60) ("tweak should go above screen") */
   body.asyncM #phone2 .aqWrap.aqPhone{display:block;position:absolute;inset:0;z-index:60;pointer-events:auto;border-radius:inherit;overflow:hidden;}
   .aqDim{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .35s ease;}
   .aqWrap.on .aqDim{opacity:1;}
@@ -12061,6 +12062,8 @@
         <div class="tkRow" id="stArVarRow"><span class="lbl">Variation</span><select id="stArVar" class="tkSegSel" aria-label="The desktop debrief's format"><option value="full" selected>Full modal</option><option value="modal">Modal</option></select></div>
         <div class="tkRow"><span class="lbl">Theme</span><select id="stArTheme" class="tkSegSel" aria-label="The debrief's theme"><option value="light" selected>Light</option><option value="dark">Dark</option></select></div>
         <div class="tkRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option></select></div>
+        <!-- an insight's three sections, Behind this insight, What we noticed, What this means for you: as tabs, or stacked as they were ("tweak Tab section: ON use tab system, OFF stack section as it is") -->
+        <div class="tkRow"><span class="lbl">Tab sections</span><select id="stArTab" aria-label="Show an insight's sections as tabs"><option value="on" selected>On</option><option value="off">Off</option></select></div>
         </div>
         <div class="tkGroup" data-pages="lp">
         <div class="tkSub">Organ Age landing</div>
@@ -13531,7 +13534,7 @@
   --ar-out-fg: oklch(52.95% .216 28.17);              /* fg-range-out-of-range-primary-100 */
   --ar-out-bg: oklch(64.91% .234 24.47);              /* bg-range-out-of-range-primary-300 */
   --ar-out-bg2: oklch(94.54% .027 14.72);             /* bg-range-out-of-range-secondary-100 */
-  --ar-card-bg: oklch(0% 0 0 / .04);                  /* components-card-default-bg */
+  --ar-card-bg: oklch(0% 0 0 / .04);                  /* components-card-default-bg: every grey card, #000 4% (dark: #fff 6%) ("all grey cards 000000 4% light, fff 6% dark") */
   --ar-card-invert-bg: oklch(100% 0 263.28);          /* components-card-invert-bg */
   --ar-badge-bg: oklch(0% 0 0 / .08);                 /* bg-neutral-secondary-100 */
   --ar-btn-bg: oklch(0% 0 0);                         /* bg-neutral-primary-100 */
@@ -13842,7 +13845,7 @@
 .arSheet .arIncludesName { font-size: 16px; line-height: 22px; }
 
 /* ---------- Summary ---------- */
-.arSheet .arSumCard { display: flex; flex-direction: column; gap: 12px; padding: 4px; border-radius: 24px; background: oklch(var(--ar-ink) / .04); }
+.arSheet .arSumCard { display: flex; flex-direction: column; gap: 12px; padding: 4px; border-radius: 24px; background: var(--ar-card-bg); }
 .arSheet .arSumBio { display: flex; flex-direction: column; gap: 16px; padding: 14px 12px 12px; }
 .arSheet .arSumHead { display: flex; justify-content: space-between; align-items: baseline; }
 .arSheet .arSumHeadL { display: flex; align-items: center; gap: 8px; color: oklch(var(--ar-ink)); }
@@ -13992,7 +13995,7 @@
   text-align: left;
   cursor: default;
 }
-.arSheet .arBRow.arRowCard { padding: 12px; border-radius: 16px; background: oklch(var(--ar-ink) / .04); align-items: center; }
+.arSheet .arBRow.arRowCard { padding: 12px; border-radius: 16px; background: var(--ar-card-bg); align-items: center; }
 .arSheet .arBRow.arRowTap { cursor: pointer; }
 .arSheet .arRowL { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .arSheet .arFileTile { width: 40px; height: 40px; flex: none; border-radius: 12px; background: oklch(var(--ar-ink) / .06); display: inline-flex; align-items: center; justify-content: center; }
@@ -14003,7 +14006,7 @@
 .arSheet .arRowR { flex: none; display: flex; align-items: center; gap: 12px; }
 .arSheet .arChev { flex: none; color: oklch(var(--ar-ink) / .45); transition: transform .2s; }
 .arSheet .arChev.arChevOpen { transform: rotate(180deg); }
-.arSheet .arDetail { border-radius: 16px; background: oklch(var(--ar-ink) / .045); padding: 14px 16px; margin: 0 0 14px; }
+.arSheet .arDetail { border-radius: 16px; background: var(--ar-card-bg); padding: 14px 16px; margin: 0 0 14px; }
 
 /* ---------- Everything else ---------- */
 .arSheet .arAccList { display: flex; flex-direction: column; }
@@ -14034,6 +14037,14 @@
 .arSheet .arLfMkL { flex: 1 1 auto; }
 .arSheet .arLfSpk { flex: 0 1 120px; min-width: 56px; display: flex; align-items: center; } .arSheet .arLfSpk svg { display: block; width: 100%; height: 20px; overflow: visible; }   /* a marker's trend, between its name and its range */
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }   /* the doctor's stress, in ink */
+/* Tab sections: the insight's three sections as tabs under its headline, pinned to the top as the section scrolls; the tab names it, so the section's own heading goes */
+.arSheet .arLfTabs { position: sticky; top: -24px; z-index: 2; display: flex; gap: 24px; margin: -8px 0 -8px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; background: var(--ar-paper); box-shadow: inset 0 -1px 0 oklch(var(--ar-ink) / .08); }
+.arSheet .arLfTabs::-webkit-scrollbar { display: none; }   /* pinned flush to the body's top (its 24 of padding above), nothing showing over it */
+.aqWrap:is(.aqBpXS, .aqBpS, .aqPhone) .arSheet .arLfTabs { padding-right: 32px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }   /* the phone: the tabs run off the right, fading, and scroll */
+.arSheet .arLfTab { flex: none; appearance: none; -webkit-appearance: none; margin: 0; padding: 12px 0 13px; border: 0; background: none; font-family: var(--ar-font); font-size: 15px; line-height: 20px; font-weight: 500; white-space: nowrap; color: oklch(var(--ar-ink) / .5); cursor: pointer; box-shadow: inset 0 -2px 0 transparent; transition: color .15s ease, box-shadow .15s ease; }
+.arSheet .arLfTab:hover { color: oklch(var(--ar-ink) / .8); } .arSheet .arLfTab[aria-selected="true"] { color: oklch(var(--ar-ink)); box-shadow: inset 0 -2px 0 oklch(var(--ar-ink)); }
+.arSheet .arLfTab:focus-visible { outline: 2px solid oklch(var(--ar-ink) / .6); outline-offset: -2px; border-radius: 4px; }
+.arSheet .arLfTabbed .arLfSec > .arLfH, .arSheet .arLfTabbed .arLfIntro > .arT600 { display: none; }
 /* Everything else: a panel's name, then its counts as dots (optimal, suboptimal, out of range) */
 .arSheet .arRsName { flex: 1 1 auto; min-width: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink)); text-wrap: pretty; }
 .arSheet .arRsDots { flex: none; display: flex; align-items: center; gap: 14px; }
@@ -14080,14 +14091,14 @@
 .arSheet .arLfThumb:hover { background: oklch(var(--ar-ink) / .06); }
 .arSheet .arLfThumb[aria-pressed="true"] svg { fill: oklch(var(--ar-ink) / .9); }
 .arSheet .arStateOut { color: var(--ar-out-bg); }
-.arSheet .arNote { border-radius: 16px; background: oklch(var(--ar-ink) / .045); padding: 14px 16px; margin: 4px 0 10px; }
+.arSheet .arNote { border-radius: 16px; background: var(--ar-card-bg); padding: 14px 16px; margin: 4px 0 10px; }
 
 /* ---------- Next steps ---------- */
 .arSheet .arHair { height: .5px; background: var(--ar-br3); margin: 20px 0; }
 .arSheet .arQBlock { display: flex; flex-direction: column; gap: 10px; }
 .arSheet .arQTitle { font-size: 17px; line-height: 22px; font-weight: 500; }
 .arSheet .arQList { display: flex; flex-direction: column; gap: 8px; }
-.arSheet .arQRow { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 16px; background: oklch(var(--ar-ink) / .04); cursor: pointer; }
+.arSheet .arQRow { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 16px; background: var(--ar-card-bg); cursor: pointer; }
 .arSheet .arEvaAv { width: 40px; height: 40px; border-radius: 9999px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(225deg, #A2C9FF 0%, #FFCBAB 34%, #E0905E 62%, #F27937 100%); }
 .arSheet .arQAv { width: 40px; height: 40px; max-width: none; border-radius: 9999px; object-fit: cover; flex-shrink: 0; }
 .arSheet .arQText { flex: 1; display: flex; flex-direction: column; min-width: 0; }
@@ -14113,6 +14124,7 @@
  *   const ar = window.AsyncReport.mount(host, {
  *     theme: 'light' | 'dark',         // default 'light' (the theme is only the .arDark class)
  *     welcome: 'cards' | 'includes',   // default 'cards' (the source's welcomeContent prop)
+ *     tabs: true | false,              // default true: an insight's three sections as tabs; false, stacked
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
  *     onClose: function () {}          // Close (X) and the final "Done"
@@ -14383,6 +14395,7 @@
     var o = {
       theme: opts.theme === 'dark' ? 'dark' : 'light',
       welcome: opts.welcome === 'includes' ? 'includes' : 'cards',
+      tabs: opts.tabs !== false,   // an insight's three sections as tabs (default), or stacked
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
@@ -14553,11 +14566,7 @@
         on(ans, 'click', function () { qaOpen(L, ans); }); }
       else if (n) ans = h('div', { class: 'arLfGroup' }, h('span', { class: 'arT300m', text: 'Your answers' }),   // a few answers: each shown, its question over it
         L.answers.map(function (r) { return h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: r.q }), h('span', { class: 'arLfName', text: r.a })); }));
-      return h('div', { class: 'arStack arLfStack' },
-        h('div', { class: 'arLfHead arAnimRise' },
-          h('h2', { class: 'arH700', text: L.headline }),
-          h('span', { class: 'arT200r arInk50', text: L.date })),
-        h('div', { class: 'arLfCard arAnimRise arD12' },
+      var card = h('div', { class: 'arLfCard arAnimRise arD12' },
           h('div', { class: 'arLfIntro' },
             h('span', { class: 'arT600', text: 'Behind this insight' }),
             h('p', { class: 'arLfSrc', text: L.source })),
@@ -14574,16 +14583,32 @@
                 m.trend ? lifeSpark(m.trend) : null,
                 h('div', { class: 'arLfMkR' }, m.pos != null ? lifeBar(m.pos, m.bar) : null, h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
             })),
-          ans),
-        h('div', { class: 'arLfSec arAnimRise arD24' },
-          h('span', { class: 'arLfH', text: 'What we noticed' }),
-          L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); })),
-        h('div', { class: 'arLfSec arAnimRise arD32' },
-          h('span', { class: 'arLfH', text: 'What this means for you' }),
-          L.means.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); })),
-        h('div', { class: 'arLfUse arAnimRise arD32' },
-          h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }),
-          h('div', { class: 'arLfThumbs' }, up, down)));
+          ans);
+      var secs = [['Behind this insight', card],
+        ['What we noticed', h('div', { class: 'arLfSec arAnimRise arD24' }, h('span', { class: 'arLfH', text: 'What we noticed' }), L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))],
+        ['What this means for you', h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'What this means for you' }), L.means.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))]];
+      var head = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }), h('span', { class: 'arT200r arInk50', text: L.date }));
+      var use = h('div', { class: 'arLfUse arAnimRise arD32' }, h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }), h('div', { class: 'arLfThumbs' }, up, down));
+      if (!o.tabs) return h('div', { class: 'arStack arLfStack' }, head, secs.map(function (x) { return x[1]; }), use);   // Tab sections off: the three one under the other
+      /* Tab sections on: the three as tabs under the headline, one shown at a time, the tab naming it ("create a tab system: Behind this insight, What we noticed, What this means for you") */
+      var tabs = secs.map(function (x, i) {
+        var id = 'arLfT' + uid + '_' + step + '_' + i;
+        x[1].setAttribute('role', 'tabpanel'); x[1].id = id + 'p'; x[1].setAttribute('aria-labelledby', id); x[1].hidden = i > 0;
+        return h('button', { type: 'button', class: 'arLfTab', role: 'tab', id: id, 'aria-controls': id + 'p', 'aria-selected': String(i === 0), tabindex: i ? '-1' : '0', text: x[0] });
+      });
+      var bar = h('div', { class: 'arLfTabs arAnimRise arD12', role: 'tablist', 'aria-label': 'This insight' }, tabs);
+      var pick = function (k, focus) {
+        tabs.forEach(function (t, i) { var on_ = i === k; t.setAttribute('aria-selected', String(on_)); t.tabIndex = on_ ? 0 : -1; secs[i][1].hidden = !on_; });
+        if (focus) tabs[k].focus();
+        var t = tabs[k]; bar.scrollLeft = Math.max(0, t.offsetLeft - bar.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2);   // the picked tab into the row's view (the row alone, never the page)
+        var want = secs[k][1].getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop - bar.offsetHeight - 24;   // the picked one from its top, just under the pinned tabs
+        if (body.scrollTop > want) body.scrollTop = Math.max(0, want);
+      };
+      tabs.forEach(function (t, i) {
+        on(t, 'click', function () { pick(i); });
+        on(t, 'keydown', function (e) { var k = e.key === 'ArrowRight' ? (i + 1) % tabs.length : e.key === 'ArrowLeft' ? (i + tabs.length - 1) % tabs.length : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -1; if (k >= 0){ e.preventDefault(); pick(k, true); } });
+      });
+      return h('div', { class: 'arStack arLfStack arLfTabbed' }, head, bar, secs.map(function (x) { return x[1]; }), use);
     }
 
     /* ----- step 6: Everything else ----- */
@@ -28568,7 +28593,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('stArTheme') === 'dark' ? 'dark' : 'light', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { theme: opt('stArTheme') === 'dark' ? 'dark' : 'light', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') !== 'off', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
@@ -28582,7 +28607,7 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
-    ['stArTheme', 'stArWel'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['stArTheme', 'stArWel', 'stArTab'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
