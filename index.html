@@ -14093,7 +14093,7 @@
 .arSheet.arCardsFill .arLfEv .arLfCard { background: oklch(0% 0 0 / .04); box-shadow: none; } .arSheet.arDark.arCardsFill .arLfEv .arLfCard { background: oklch(100% 0 0 / .04); }   /* Evidence cards: Filled, #000 4% on the light page, #fff 4% on the dark ("Filled fff 4%") */
 .arSheet .arLfEv .arLfCard { padding: 20px; } .arSheet .arLfEv .arLfCardH { padding: 0 0 8px; }   /* 20 inside the card, all round ("card padding 24px", then 4 less) */
 .arSheet .arLfEv .arLfCard > .arLfGroup { background: transparent; box-shadow: none; padding: 0; } .arSheet .arLfEv .arMbList > .arMb:last-child { margin-bottom: -10px; }   /* the last row's tile as far from the card's foot as the tiles from its sides, 14 ("bottom padding same as left right") */   /* no card inside: the list straight on the outlined card ("remove card style") */ .arSheet .arLfEv .arLfCard > .arLfAns1 { padding-top: 2px; }   /* the one answer */ .arSheet .arLfEv .arLfCardRow { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; } .arSheet .arLfEv .arLfCardRow > .arLfCardH { padding: 0; min-width: 0; }   /* Your answers, its name and See detail on one line */
-.arSheet .arLfDetail { flex: none; height: 28px; padding: 0 12px; border-radius: 9999px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); font-size: 13px; line-height: 16px; font-weight: 500; }
+.arSheet .arLfDetail { flex: none; width: 36px; height: 36px; padding: 0; border-radius: 50%; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); }   /* the secondary circle, the chevron centred */
 @media (hover: hover) { .arSheet .arLfDetail:hover { background: oklch(var(--ar-ink) / .1); } } .arSheet .arLfDetail:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }   /* See X answered questions, alone under its name */
 .arSheet .arLfStack > .arLfHead { margin-bottom: -16px; }   /* 16 less under the headline ("margin bottom less by 16px") */
 .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arLfStack > .arLfHead { margin-bottom: 0; }   /* the desk: the 16 back ("+16 gap on desktop") */
@@ -14694,8 +14694,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       /* a summary, not the full data ("present that as a summary vs a full list of data"): one answer shown, its question over it; more, See X answered questions, which opens them all in the sheet; none, no Your answers */
       var n = (L.answers || []).length, ans = null, ansMore = null;
       if (n === 1) ans = h('div', { class: 'arLfGroup arLfAns1' }, h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: L.answers[0].q }), h('span', { class: 'arLfName', text: L.answers[0].a })));
-      else if (n > 1) {   // more: the card's name, and at its right See detail, a small pill (28, fully rounded), on the name's centre line ("use 28 cta full rounded right side centered vertically: See detail")
-        ansMore = h('button', { type: 'button', class: 'arBtn arLfDetail', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', 'aria-label': 'See detail: ' + n + ' answered questions', text: 'See detail' });
+      else if (n > 1) {   // more: the card's name, and at its right a chevron alone in a 36 circle, secondary, on the name's centre line ("just chevron right, 36 circle cta secondary"; it was a See detail pill)
+        ansMore = h('button', { type: 'button', class: 'arBtn arLfDetail', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', 'aria-label': 'See detail: ' + n + ' answered questions' }, strokeIcon(16, 16, 1.6, ['M6 3.5 10.5 8 6 12.5']));
         on(ansMore, 'click', function () { qaOpen(L, ansMore); });
       }
       /* Behind this insight on the page, its source under it; then a grey card a group, its name on the grey, its list in a white card inside: Your biomarkers, Your answers */

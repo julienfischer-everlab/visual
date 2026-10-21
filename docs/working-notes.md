@@ -14936,3 +14936,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async report, Max biomarkers tweak:** 3 (default) or 2 biomarkers before See N more, the next one partly shown under them ("tweak max biomarkers counter").
 - **Async Behind this insight, its sources stacked:** a row each (October 2026 blood test, August 2026 test results, Lifestyle Profiling questionnaire), an outlined mono mark at the left (a drop, a flask, a clipboard in a ring), not one sentence. The data: `sources: [[kind, label], ...]`.
 - **Async, the biomarker partly shown:** 40% and blurred 4 ("opacity 40% + blur 4px"), not the fading mask.
+- **Async, X answered questions with its CTA:** the See detail pill is now a chevron right alone in a 36 circle, secondary (ink 6%), on the name's centre line; its label for a screen reader still "See detail: X answered questions".
