@@ -14122,6 +14122,11 @@
 .arSheet .arLfMkL { flex: 1 1 auto; }
 .arSheet .arLfSpk { flex: 0 1 120px; min-width: 56px; display: flex; align-items: center; } .arSheet .arLfSpk svg { display: block; width: 100%; height: 20px; overflow: visible; }   /* a marker's trend, between its name and its range */
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }
+.arSheet .arKey { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; padding: 16px 16px 18px 20px; border-radius: calc(var(--ar-radius-card) + 4px); background: #e8eef8; color: #0c2241; }   /* the Key takeaway: the section's last words on the navy, 16 more above it ("bg 0C2241, margin top card +16px"); on the light page a pale blue, the navy its ink */
+.arSheet.arDark .arKey { background: #0c2241; color: #fff; } .arSheet .arLfH + .arKey { margin-top: 0; }   /* first under the heading: no extra room */
+.arSheet .arKeyHd { display: flex; align-items: center; gap: 8px; } .arSheet .arKeyHd .arIco { flex: none; }
+.arSheet .arKeyT { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; font-variant-ligatures: no-contextual; }   /* Key takeaway, 16 medium */
+.arSheet .arKeyD { margin: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; color: inherit; opacity: .82; text-wrap: pretty; } .arSheet .arKeyD .arParaB { color: inherit; }
 .arSheet .arAsk { display: flex; flex-direction: column; gap: 8px; padding: 16px 16px 18px 20px; border-radius: calc(var(--ar-radius-card) + 4px); background: var(--ar-card-bg); }   /* a sentence for the doctor: a secondary filled card */
 .arSheet .arAskHd { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 28px; }
 .arSheet .arAskT { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
@@ -14256,6 +14261,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 
   // SVG paths, verbatim from the source template
   var P = {
+    bulb1: "M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5",   // a bulb, 24 square
+    bulb2: "M9 18h6",
+    bulb3: "M10 22h4",
     copy1: "M5.5 5.5V3.75A1.25 1.25 0 0 1 6.75 2.5h5.5a1.25 1.25 0 0 1 1.25 1.25v5.5a1.25 1.25 0 0 1-1.25 1.25H10.5",   // two sheets, 16 square: the copy mark
     copy2: "M3.75 5.5h5.5a1.25 1.25 0 0 1 1.25 1.25v5.5a1.25 1.25 0 0 1-1.25 1.25h-5.5A1.25 1.25 0 0 1 2.5 12.25v-5.5A1.25 1.25 0 0 1 3.75 5.5Z",
     back: "M11 3.5 5.5 9l5.5 5.5",
@@ -14695,14 +14703,19 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     function rich(t) { return (Array.isArray(t) ? t : [t]).map(function (x) { return typeof x === 'string' ? x : h('b', { class: 'arParaB', text: x.b }); }); }
     /* a section's paragraphs, each sentence for the doctor ({ ask }) taken out into its own card where it stood: Ask your doctor, Copy at its top right, the sentence under ("for all sentences ask your doctor: a secondary filled card, a title, copy top right, the description and a CTA to copy it") */
     function paras(list) {
-      var out = [];
+      var items = [];
       list.forEach(function (t) {
         var run = [];
-        var flush = function () { if (run.length) { if (typeof run[0] === 'string') run[0] = run[0].replace(/^\s+/, ''); out.push(h('p', { class: 'arPara' }, rich(run))); } run = []; };
-        (Array.isArray(t) ? t : [t]).forEach(function (x) { if (x && x.ask) { flush(); out.push(askCard(x.ask)); } else run.push(x); });
+        var flush = function () { if (run.length) { if (typeof run[0] === 'string') run[0] = run[0].replace(/^\s+/, ''); items.push({ run: run }); } run = []; };
+        (Array.isArray(t) ? t : [t]).forEach(function (x) { if (x && x.ask) { flush(); items.push({ ask: x.ask }); } else run.push(x); });
         flush();
       });
-      return out;
+      var last = -1; items.forEach(function (x, i) { if (x.run) last = i; });   // the last paragraph: the Key takeaway card, where it stands ("last content card: bulb icon + Key takeaway, the description")
+      return items.map(function (x, i) {
+        if (x.ask) return askCard(x.ask);
+        if (i === last) return h('div', { class: 'arKey' }, h('div', { class: 'arKeyHd' }, strokeIcon(18, 24, 1.8, [P.bulb1, P.bulb2, P.bulb3]), h('span', { class: 'arKeyT', text: 'Key takeaway' })), h('p', { class: 'arKeyD' }, rich(x.run)));
+        return h('p', { class: 'arPara' }, rich(x.run));
+      });
     }
     function askCard(text) {
       var lab = h('span', { text: 'Copy' }), ico = strokeIcon(14, 16, 1.5, [P.copy1, P.copy2]);
