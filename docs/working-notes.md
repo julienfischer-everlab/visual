@@ -14952,3 +14952,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async Key takeaway, paragraphs:** the doctor's sentence and the takeaway each a paragraph, 12 apart as the page's ("consider paragraph margin"); Copy keeps the break.
 - **Async, Segmented tabs:** one tile under the three, sliding left and right to the one in view (.32 s; none with reduced motion), not a tile jumping from chip to chip.
 - **Async Key takeaway:** 16 between its header and its words ("+8px gap header / desc").
+- **Async Evidence cards: Filled by default** ("Filled should be the default style"); Outlined the other choice.
+- **Tweak renamed:** Evidence cards is now Cards style ("cards style, change name").
