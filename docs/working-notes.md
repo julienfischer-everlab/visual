@@ -14889,3 +14889,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Groups 24 closer:** 16 between one group's last item and the next group (was 40), the eyebrow's own 20 above its name kept ("-24px gap between groups").
 - **Chips 12 further from their items:** 12 more under the phase card's chip row ("add 12px below tab chip filter").
 - **Category eyebrows quieter:** white at 24% (light page: its ink at 36%) ("reduce eyebrow opacity fff 24%").
+- **Layout V1 without phase tabs:** in Layout V1 the phase tabs and the transition rings are gone; every phase's card is stacked under the Upcoming / Later tabs, 24 apart, each with its phase's name and months as an eyebrow ("ACT & IMPROVE · 4–9 MONTHS") and its phase's light at the foot of its left side (bands, cells, ripples; 88 tall once stacked). Layout V2 keeps its tabs ("In layout V1, just remove the concept of a tab for the phases ... stack every phase below the upcoming later tab").
