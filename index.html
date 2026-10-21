@@ -14034,6 +14034,13 @@
 .arSheet .arLfMkL { flex: 1 1 auto; }
 .arSheet .arLfSpk { flex: 0 1 120px; min-width: 56px; display: flex; align-items: center; } .arSheet .arLfSpk svg { display: block; width: 100%; height: 20px; overflow: visible; }   /* a marker's trend, between its name and its range */
 .arSheet .arParaB { font-weight: 500; color: oklch(var(--ar-ink)); }   /* the doctor's stress, in ink */
+/* Everything else: a panel's name, then its counts as dots (optimal, suboptimal, out of range) */
+.arSheet .arRsName { flex: 1 1 auto; min-width: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink)); text-wrap: pretty; }
+.arSheet .arRsDots { flex: none; display: flex; align-items: center; gap: 14px; }
+.arSheet .arRsDot { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ar-font); font-size: 16px; line-height: 20px; color: oklch(var(--ar-ink) / .45); font-variant-numeric: tabular-nums; }
+.arSheet .arRsDot i { width: 10px; height: 10px; border-radius: 50%; } .arSheet .arRsO { background: var(--ar-opt-bg); } .arSheet .arRsS { background: var(--ar-sub-bg); } .arSheet .arRsX { background: var(--ar-out-bg); }
+.arSheet .arRsRow .arAccHead { cursor: default; }
+.arSheet .arRsList { display: flex; flex-direction: column; gap: 12px; } .arSheet .arRsList > .arAcc { border: 0; border-radius: 16px; padding: 0 20px; background: var(--ar-card-bg); } .arSheet .arRsList .arAccHead { gap: 16px; padding: 22px 0; } .arSheet .arRsList .arAccBody { padding-bottom: 12px; }   /* each panel a grey card, 12 apart */
 .arSheet .arLfBar { display: block; overflow: visible; }
 .arSheet .arLfBarLine { stroke: oklch(var(--ar-ink)); }
 .arSheet .arLfPill { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 400; white-space: nowrap; }
@@ -14043,7 +14050,7 @@
 /* Your answers: the questionnaire and its count, a secondary icon button (chevron down) at the right; the whole card a button */
 .arSheet .arLfAns { appearance: none; -webkit-appearance: none; width: 100%; margin: 0; border: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }   /* the button centred on the whole card ("CTA vertically aligned") */
 .arSheet .arLfAnsTx { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.arSheet .arLfAnsL { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.arSheet .arLfAnsL { display: flex; flex-direction: column; gap: 4px; min-width: 0; } .arSheet .arLfAnsL + .arLfAnsL { padding-top: 12px; border-top: 1px solid oklch(var(--ar-ink) / .08); }   /* answers one under the other, a rule between */
 .arSheet .arLfAnsBtn { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 9999px; background: transparent; color: oklch(var(--ar-ink) / .72); transition: background .15s ease; }   /* a ghost button ("ghost") */
 .arSheet .arLfAns:hover .arLfAnsBtn { background: oklch(var(--ar-ink) / .06); }
 /* its bottom sheet, over the whole report: a scrim, the panel rising from the foot, 32 of safe space under the list */
@@ -14111,11 +14118,11 @@
  *     onClose: function () {}          // Close (X) and the final "Done"
  *   });
  *   ar.el        the <div class="arSheet"> appended to host
- *   ar.go(n)     jump to step n (0-13)
+ *   ar.go(n)     jump to step n (0-7)
  *   ar.reset()   step 0, scrolled to top, every accordion closed
  *   ar.destroy() remove it
  *
- * Steps (14): 0 Welcome, 1 Cholesterol insight, 2 Summary, 3-10 Insight 1-8, 11 Lifestyle insight (TSH), 12 Everything else, 13 Next steps.
+ * Steps (8): 0 Welcome, 1-5 Insights (cholesterol, cortisol, B12, vitamin D, blood vessels), 6 Everything else, 7 That's your debrief.
  * Needs async-report.css. The root fills its host and scrolls internally.
  */
 (function () {
@@ -14150,105 +14157,7 @@
     chev: "M4 6l4 4 4-4"
   };
 
-  // Biological-age gauge ticks [x1, y1, x2, y2, kind]: 0 muted, 1 optimal arc, 2 chronological marker
-  var GAUGE = [[11.2,66.9,6,58.4,0],[18.2,62.8,13.2,54.1,0],[25.3,58.9,20.6,50.1,0],[32.5,55.3,28.1,46.3,0],[39.8,51.8,35.8,42.7,0],[47.3,48.6,43.5,39.4,0],[54.8,45.7,51.3,36.3,0],[62.5,43,59.3,33.5,0],[70.2,40.5,67.3,31,0],[79.2,43.2,75.4,28.7,1],[86.5,39.3,83.6,26.7,1],[94.3,37.6,91.8,24.9,1],[102.2,36.2,100.1,23.4,1],[110.1,35.1,108.4,22.2,1],[118,34.2,116.8,21.2,1],[126,33.5,125.2,20.5,1],[134,33.1,133.6,20.1,1],[142,33,142,16,2],[150.1,30.1,150.4,20.1,0],[158.2,30.5,158.8,20.5,0],[166.2,31.2,167.2,21.2,0],[174.3,32.1,175.6,22.2,0],[182.3,33.3,183.9,23.4,0],[190.3,34.7,192.2,24.9,0],[198.2,36.4,200.4,26.7,0],[206,38.3,208.6,28.7,0],[213.8,40.5,216.7,31,0],[221.5,43,224.7,33.5,0],[229.2,45.7,232.7,36.3,0],[236.7,48.6,240.5,39.4,0],[244.2,51.8,248.2,42.7,0],[251.5,55.3,255.9,46.3,0],[258.7,58.9,263.4,50.1,0],[265.8,62.8,270.8,54.1,0],[272.8,66.9,278,58.4,0]];
-
   /* ---------- data (verbatim from the source's logic block) ---------- */
-
-  // Trend series per insight. The source labels this "placeholder history, replace with real longitudinal data".
-  var D = ['Oct 24', 'Mar 25', 'Sep 25', 'Apr 26'];
-  var SERIES = {
-    'ApoB': { unit: 'g/L', optimal: [0, 0.8], warn: [0.8, 1.0], axis: [0.5, 1.2], points: [[D[1], 0.88], [D[2], 0.92], [D[3], 0.96]] },
-    'LDL cholesterol': { unit: 'mmol/L', optimal: [0, 2.0], warn: [2.0, 2.6], axis: [1.5, 3.8], points: [[D[0], 2.9], [D[1], 3.1], [D[2], 3.0], [D[3], 3.3]] },
-    'Non-HDL cholesterol': { unit: 'mmol/L', optimal: [0, 2.6], warn: [2.6, 3.3], axis: [2.0, 4.6], points: [[D[0], 3.7], [D[1], 3.9], [D[2], 3.9], [D[3], 4.2]] },
-    'HDL cholesterol': { unit: 'mmol/L', optimal: [1.5, 3.0], warn: [1.3, 1.5], axis: [0.8, 2.0], points: [[D[1], 1.3], [D[2], 1.25], [D[3], 1.2]] },
-    'Triglycerides': { unit: 'mmol/L', optimal: [0, 1.0], warn: [1.0, 1.7], axis: [0.5, 2.4], points: [[D[0], 1.4], [D[1], 1.7], [D[2], 1.8], [D[3], 2.0]] },
-    'Lp(a)': { unit: 'g/L', optimal: [0, 0.3], warn: [0.3, 0.5], axis: [0, 0.6], points: [[D[3], 0.046]] },
-    'Fasting insulin': { unit: 'mU/L', optimal: [2, 6], warn: [6, 9], axis: [2, 14], points: [[D[1], 7.9], [D[2], 9.6], [D[3], 11.8]] },
-    'HOMA-IR': { unit: '', optimal: [0.5, 1.4], warn: [1.4, 2.0], axis: [0.5, 3.2], points: [[D[1], 1.8], [D[2], 2.2], [D[3], 2.83]] },
-    'Fasting glucose': { unit: 'mmol/L', optimal: [4.0, 5.4], warn: [5.4, 6.0], axis: [3.8, 6.2], points: [[D[1], 5.0], [D[2], 5.0], [D[3], 5.1]] },
-    'HbA1c': { unit: '%', optimal: [4.5, 5.5], warn: [5.5, 5.9], axis: [4.4, 6.2], points: [[D[1], 5.3], [D[2], 5.3], [D[3], 5.4]] },
-    'Transferrin saturation': { unit: '%', optimal: [20, 50], warn: [16, 20], axis: [10, 55], points: [[D[1], 26], [D[2], 22], [D[3], 17]] },
-    'Ferritin': { unit: '\u00b5g/L', optimal: [50, 200], warn: [30, 50], axis: [20, 220], points: [[D[1], 132], [D[2], 124], [D[3], 119]] },
-    'Iron': { unit: '\u00b5mol/L', optimal: [12, 28], warn: [9, 12], axis: [5, 30], points: [[D[1], 18], [D[2], 17], [D[3], 16]] },
-    'Haemoglobin': { unit: 'g/L', optimal: [135, 175], warn: [125, 135], axis: [120, 180], points: [[D[0], 150], [D[1], 153], [D[2], 151], [D[3], 152]] },
-    'MCV': { unit: 'fL', optimal: [82, 98], warn: [78, 82], axis: [75, 100], points: [[D[0], 90], [D[1], 89], [D[2], 90], [D[3], 89]] },
-    'Magnesium': { unit: 'mmol/L', optimal: [0.85, 1.05], warn: [0.75, 0.85], axis: [0.7, 1.1], points: [[D[1], 0.87], [D[2], 0.84], [D[3], 0.83]] },
-    'Calcium': { unit: 'mmol/L', optimal: [2.35, 2.55], warn: [2.2, 2.35], axis: [2.1, 2.7], points: [[D[2], 2.34], [D[3], 2.32]] },
-    'Vitamin D': { unit: 'nmol/L', optimal: [60, 150], warn: [50, 60], axis: [30, 160], points: [[D[1], 58], [D[2], 64], [D[3], 69]] },
-    'Homocysteine': { unit: '\u00b5mol/L', optimal: [5, 10], warn: [10, 15], axis: [4, 17], points: [[D[2], 10], [D[3], 13]] },
-    'Vitamin B12': { unit: 'pmol/L', optimal: [300, 700], warn: [200, 300], axis: [150, 750], points: [[D[1], 440], [D[2], 462], [D[3], 475]] },
-    'Creatinine': { unit: '\u00b5mol/L', optimal: [60, 100], warn: [100, 110], axis: [50, 120], points: [[D[0], 98], [D[1], 102], [D[2], 101], [D[3], 104]] },
-    'eGFR': { unit: 'mL/min', optimal: [90, 130], warn: [80, 90], axis: [70, 130], points: [[D[0], 96], [D[1], 94], [D[2], 95], [D[3], 92]] },
-    'Urea': { unit: 'mmol/L', optimal: [3, 7], warn: [7, 8.5], axis: [2, 9], points: [[D[1], 5.8], [D[2], 6.2], [D[3], 6.0]] },
-    'MCHC': { unit: 'g/L', optimal: [320, 360], warn: [300, 320], axis: [290, 370], points: [[D[0], 317], [D[1], 319], [D[2], 318], [D[3], 318]] },
-    'White cell count': { unit: '\u00d710\u2079/L', optimal: [4.0, 10.0], warn: [3.0, 4.0], axis: [2, 11], points: [[D[3], 3.3]] },
-    'Neutrophils': { unit: '\u00d710\u2079/L', optimal: [1.8, 7.0], warn: [1.5, 1.8], axis: [1, 8], points: [[D[3], 1.9]] },
-    'Lymphocytes': { unit: '\u00d710\u2079/L', optimal: [1.0, 4.0], warn: [0.8, 1.0], axis: [0.5, 4.5], points: [[D[3], 1.1]] }
-  };
-
-  // The eight insights. Only the fields the source template renders are kept:
-  // headline, signals (the carousel's markers), found, why, goals/family/medications and reportTitle.
-  var INSIGHTS = [
-    {
-      headline: 'Your ApoB, LDL, non-HDL and triglycerides all point the same way.',
-      signals: ['ApoB', 'LDL cholesterol', 'Non-HDL cholesterol', 'HDL cholesterol', 'Triglycerides', 'Lp(a)'],
-      found: 'High ApoB, LDL and non-HDL, low HDL and high triglycerides. Together they mean more plaque-forming particles in your blood than we want \u2014 and with your father\'s heart attack and your mother\'s coronary disease, that carries extra weight.',
-      why: 'Diet is the biggest lever: saturated fat pushes ApoB and LDL up, refined carbs and alcohol push triglycerides up. Your low HDL and high triglycerides also fit the insulin pattern in the next insight.',
-      family: [{ label: 'Father', detail: 'Myocardial infarction' }, { label: 'Mother', detail: 'Coronary atherosclerosis' }, { label: 'Brother', detail: 'Obstructive sleep apnoea \u00b7 MI 40' }],
-      medications: [{ label: 'Metamucil (psyllium)', detail: 'Daily \u00b7 soluble fibre' }],
-      reportTitle: 'Advanced lipid panel'
-    },
-    {
-      headline: 'Your insulin is up while your glucose still reads normal \u2014 early insulin resistance.',
-      signals: ['Fasting insulin', 'HOMA-IR', 'Triglycerides', 'HDL cholesterol', 'Fasting glucose', 'HbA1c'],
-      found: 'Your body is making extra insulin to keep blood sugar normal. Glucose and HbA1c look fine, but fasting insulin and HOMA-IR show the compensation is already underway.',
-      why: 'Refined carbohydrate, alcohol and less muscle activity are the usual drivers. Your high triglycerides and TG/HDL ratio point the same way.',
-      goals: [{ label: 'Run 5 km', plan: 'Pending your approval', detail: 'Good news for this one \u2014 the aerobic base you build training for it is the same thing that restores insulin sensitivity.' }],
-      family: [{ label: 'Father', detail: 'Myocardial infarction' }, { label: 'Mother', detail: 'Coronary atherosclerosis' }]
-    },
-    {
-      headline: 'Normal ferritin with low transferrin saturation \u2014 these usually move together.',
-      signals: ['Transferrin saturation', 'Ferritin', 'Iron', 'Haemoglobin', 'MCV'],
-      found: 'Transferrin saturation is 17%, newly out of range this cycle. Your haemoglobin and red cells are normal, so it has not affected oxygen carrying yet.',
-      why: 'Usually dietary iron intake or how well your gut absorbs it, rather than a problem with stores. Worth understanding before it becomes one.',
-      goals: [{ label: 'Run 5 km', plan: 'Pending your approval', detail: 'Iron is how oxygen gets to working muscle. Low saturation is worth fixing before it shows up as slower recovery on runs.' }],
-      reportTitle: 'Iron studies'
-    },
-    {
-      headline: 'Your magnesium is slightly low.',
-      signals: ['Magnesium', 'Calcium', 'Vitamin D'],
-      found: 'Magnesium is 0.83 mmol/L, just under optimal. Your vitamin D, zinc and B12 are all optimal, so this is the only nutrient gap.',
-      why: 'Almost always diet \u2014 it is easy to fall short if leafy greens, nuts, seeds and whole grains are not a daily thing.',
-      goals: [{ label: 'Run 5 km', plan: 'Pending your approval', detail: 'Magnesium is used in muscle contraction and recovery \u2014 a small deficit is felt sooner once training volume goes up.' }]
-    },
-    {
-      headline: 'Homocysteine is a little high \u2014 a B-vitamin signal, not a heart one yet.',
-      signals: ['Homocysteine', 'Vitamin B12'],
-      found: 'Homocysteine is 13 \u00b5mol/L, up from 10 last cycle. It rises when folate, B12 or B6 are not being used well. Your B12 is optimal, so folate or B6 is the more likely gap.',
-      why: 'Usually diet \u2014 leafy greens and legumes for folate \u2014 or a common MTHFR variant that slows folate processing. Elevated homocysteine over years adds to arterial risk, which matters with your family history.',
-      family: [{ label: 'Father', detail: 'Myocardial infarction' }]
-    },
-    {
-      headline: 'Creatinine runs high-normal \u2014 your protein intake, not your kidneys.',
-      signals: ['Creatinine', 'eGFR', 'Urea'],
-      found: 'Creatinine has been high-normal across three cycles. eGFR \u2014 the better measure of how well your kidneys filter \u2014 is optimal every time, and urea is normal.',
-      why: 'Creatinine is a by-product of muscle turnover. High protein intake and regular strength work push it up without meaning anything is wrong. We flag it so it does not surprise you elsewhere.',
-      medications: [{ label: 'Whey protein', detail: 'Daily \u00b7 ~40 g' }]
-    },
-    {
-      headline: 'MCHC has sat just under range for four cycles \u2014 most likely your normal.',
-      signals: ['MCHC', 'Haemoglobin', 'MCV'],
-      found: 'MCHC \u2014 how packed with haemoglobin each red cell is \u2014 reads 318 g/L, a fraction under the 320 cut-off. It has been almost exactly there every cycle since 2024.',
-      why: 'A stable, slightly-low MCHC with normal haemoglobin, MCV and iron stores is very likely your individual baseline rather than a developing problem. We keep watching it alongside the iron picture in insight 3.'
-    },
-    {
-      headline: 'White cell count is on the low side \u2014 one reading, so we wait for the next.',
-      signals: ['White cell count', 'Neutrophils', 'Lymphocytes'],
-      found: 'White cells are 3.3, just under the 4.0 lower bound. This is the first time we have measured it for you, so there is no trend to read yet.',
-      why: 'Mildly low white cells are common in healthy people, especially after a recent viral illness or with certain ancestries. All five sub-types are in proportion, which is reassuring.'
-    }
-  ];
 
   // The welcome's words: the report, its doctor, its date and what the debrief holds ("use these content, step 1 and 2 for now")
   var WEL = {
@@ -14286,54 +14195,113 @@
     ]
   };
 
-  // The lifestyle insight: a questionnaire answer read alongside a biomarker, after the eight blood insights ("on the Async, add this step")
-  var LIFE = {
-    headline: 'Thyroid stimulating hormone is slightly above range',
-    date: '15 Oct 2026',
-    source: 'From your Lifestyle Profiling questionnaire and your October 2026 blood test.',
-    markers: [{ name: 'TSH', value: '4.8 mIU/L', date: '15 Oct 2026', status: 'Suboptimal', pos: 0.72 }],
-    // the questionnaire behind it: a card that opens its answers in a bottom sheet ("on Your answers: a chevron down, icon only, secondary, on the right; Health questionnaire, 6 answers; on click a bottom sheet with the questions and answers")
-    qn: { name: 'Health questionnaire', src: 'Lifestyle Profiling', date: '12 Oct 2026' },
-    answers: [
-      { q: 'How often do you feel cold when others are comfortable?', a: 'Most days' },
-      { q: 'How would you rate your energy through the day?', a: 'Low most afternoons' },
-      { q: 'How many hours do you usually sleep a night?', a: '6 to 7 hours' },
-      { q: 'Has your weight changed over the past year?', a: 'Gained 3 to 4 kg' },
-      { q: 'How often do you exercise for 30 minutes or more?', a: '2 to 3 times a week' },
-      { q: 'Does anyone in your family have a thyroid condition?', a: 'Yes, my mother' }
+  // Step 3, the second insight ("step 3"): bar 'both' when out of range either way, in five
+  var CORT = {
+    headline: 'Your body may be making too little of its main stress hormone',
+    date: '20 Oct 2026',
+    source: 'From your October 2026 blood test.',
+    markers: [
+      { name: 'Morning Serum Cortisol', value: '211 nmol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'both', pos: 0.23 },
+      { name: 'DHEA-S', value: '6.9 \u00b5mol/L', date: '14 Oct 2026', status: 'Out of range', bar: 'both', pos: 0.86 },
+      { name: 'Serum sodium', value: '138 mmol/L', date: '14 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.45, trend: { pts: [138, 139, 138, 138], from: 'Optimal', to: 'Optimal' } },
+      { name: 'Serum potassium', value: '4 mmol/L', date: '14 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.34, trend: { pts: [4.3, 4.2, 4.0, 4.0], from: 'Optimal', to: 'Optimal' } }
     ],
-    noticed: ['A raised TSH means your thyroid is being pushed harder to keep output normal.'],
-    means: ['You raised low energy and feeling cold, which is why this was included.', 'Worth repeating with free T4 at your review.']
+    noticed: [
+      'Two small glands above your kidneys make cortisol, which keeps blood pressure and energy steady through illness and stress, and DHEA-S, a raw material for sex hormones.',
+      ['On 14th October ', { b: 'morning cortisol was low' }, ' and DHEA-S well above range, each from one draw. Cortisol peaks soon after waking and falls fast, so a sample taken an hour or two late reads lower.'],
+      'Nothing in your record explains the high DHEA-S, so its cause stays open.',
+      ['A low cortisol raises ', { b: 'adrenal insufficiency, where the adrenal glands make too little cortisol' }, ', which a stimulation test checks. Your high DHEA-S and normal sodium and potassium point away from it, since failing glands usually disturb all three.'],
+      'If cortisol is truly low, a serious infection or injury could leave you short of it when your body needs it most.'
+    ],
+    means: [
+      ['The small glands above your kidneys gave mixed results, one suggesting they ', { b: 'may make too little of the body\'s main stress hormone' }, '.'],
+      [{ b: 'Ask your doctor to repeat your morning cortisol blood test, drawn before 9am, along with ACTH (the brain signal that drives cortisol) and DHEA-S.' }, ' If cortisol is low again, your doctor may arrange a stimulation test to check how your adrenal glands respond.']
+    ]
+  };
+  // Step 4 ("step 4"): an answer read as a marker (Protein, its words for its value, a status, no range)
+  var B12 = {
+    headline: 'Your B12 may be running low again between injections',
+    date: '20 Oct 2026',
+    source: 'From your October 2026 blood test and your August 2026 test results.',
+    markers: [
+      { name: 'Active vitamin B12 (holotranscobalamin)', value: '72 pmol/L', date: '14 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.42, trend: { pts: [92, 90, 96, 94], from: 'Optimal', to: 'Optimal' } },
+      { name: 'Homocysteine', value: '9.6 \u00b5mol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'sosx', pos: 0.55, trend: { pts: [9.7, 9.6, 9.6, 9.6], from: 'Suboptimal', to: 'Suboptimal' } },
+      { name: 'Mean corpuscular volume (MCV)', value: '88 fL', date: '14 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.38, trend: { pts: [88, 88.2, 88, 88], from: 'Optimal', to: 'Optimal' } },
+      { name: 'Protein', value: '2 serves per day from eggs, steak. Moderate protein intake with poached eggs at lunch and steak at dinner.', date: '14 Aug 2026', status: 'Suboptimal' },
+      { name: 'Serum Folate (Vitamin B9)', value: '23.1 nmol/L', date: '14 Oct 2026', status: 'Optimal', bar: 'xsox', pos: 0.55, trend: { pts: [24, 23.6, 23.2, 23.1], from: 'Optimal', to: 'Optimal' } }
+    ],
+    answers: [{ q: 'Protein', a: '2 serves per day from eggs, steak. Moderate protein intake with poached eggs at lunch and steak at dinner.' }],
+    noticed: [
+      'Vitamin B12 keeps your nerves working, helps make red blood cells and clears homocysteine, a protein by-product that harms blood vessel walls in excess.',
+      ['Your active B12, the share your body can use, has halved since 2023 to just above the bottom of its range. Red cell size is normal, so your blood is not yet affected, while ', { b: 'homocysteine remains slightly above its range' }, '.'],
+      'B12 from your eggs and steak makes a diet shortfall less likely, and normal folate and kidney filtration make those unlikely drivers of homocysteine, which fell this year even as B12 dropped.',
+      'Low B12 harms nerves slowly, and numbness that sets in does not always reverse.'
+    ],
+    means: [
+      ['Your supply of ', { b: 'usable B12 may be running low between injections' }, ', leaving nerves and blood less protected.'],
+      [{ b: 'Ask the doctor who prescribes your B12 injections to set a regular plan, then recheck active B12 and homocysteine in 3 months.' }]
+    ]
   };
 
-  var ok = function (name, value) { return { name: name, value: value, status: 'Optimal' }; };
-  var sub = function (name, value) { return { name: name, value: value, status: 'Suboptimal' }; };
+  // Step 5 ("step 5")
+  var VITD = {
+    headline: 'Low vitamin D may be speeding up the bone thinning you already have',
+    date: '20 Oct 2026',
+    source: 'From your October 2026 blood test, your August 2026 test results and your Lifestyle Profiling questionnaire.',
+    markers: [
+      { name: 'Vitamin D', value: '49 nmol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'xsox', pos: 0.38, trend: { pts: [62, 61, 55, 49], from: 'Optimal', to: 'Suboptimal' } },
+      { name: 'Omega 3', value: 'No mention of Omega-3 foods found.', date: '14 Aug 2026', status: 'Out of range' }
+    ],
+    answers: [
+      { q: 'How many minutes of direct sunlight do you typically get per day?', a: '30 mins or less' },
+      { q: 'Omega 3', a: 'No mention of Omega-3 foods found.' }
+    ],
+    noticed: [
+      'Vitamin D lets your gut absorb calcium from food so your skeleton can keep renewing itself. Most of it is made in your skin when sunlight reaches it.',
+      ['On 14th October ', { b: 'vitamin D was below its range' }, ', after sitting inside it in 2019 and 2023.'],
+      'You told us you get 30 minutes or less of direct sun a day, and this draw came at the tail of winter, when skin has made the least for months. The meals you described also include no oily fish, one of the few foods that supply it.',
+      ['With the osteopenia, or thinner-than-ideal bones, you told your doctor about in September, ', { b: 'low vitamin D can speed bone loss and raise fracture risk' }, ', working against the strength training you already do.']
+    ],
+    means: [
+      ['Your vitamin D, which helps bones take up calcium, has slipped low, ', { b: 'adding strain to bones already thinner than ideal' }, '.'],
+      [{ b: 'Get 15 minutes of morning sun on your arms most days and swap two steak dinners a week for salmon or sardines.' }, ' Ask your doctor whether you need a vitamin D supplement and recheck vitamin D in 3 months.']
+    ]
+  };
+  // Step 6 ("step 6")
+  var VASC = {
+    headline: 'Two signs of strain on your blood vessels have eased',
+    date: '20 Oct 2026',
+    source: 'From your October 2026 blood test.',
+    markers: [
+      { name: 'High-sensitivity CRP (hs-CRP)', value: '0.7 mg/L', date: '14 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.15, trend: { pts: [3.0, 3.0, 2.9, 1.8], from: 'Suboptimal', to: 'Suboptimal' } },
+      { name: 'Homocysteine', value: '9.6 \u00b5mol/L', date: '14 Oct 2026', status: 'Suboptimal', bar: 'sosx', pos: 0.55, trend: { pts: [9.7, 9.6, 9.6, 9.6], from: 'Suboptimal', to: 'Suboptimal' } },
+      { name: 'CRP : Albumin ratio (CAR)', value: '0.017', date: '14 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.28, trend: { pts: [0.03, 0.027, 0.022, 0.017], from: 'Suboptimal', to: 'Suboptimal' } }
+    ],
+    noticed: [
+      'Your immune system raises a low alarm when tissue is irritated, and an alarm that runs for years wears on blood vessel walls. Homocysteine, a protein by-product, does similar harm when it builds up.',
+      [{ b: 'Background inflammation is back within range' }, ' after high readings in 2019, 2023 and 2025, shown by high-sensitivity CRP. ', { b: 'Homocysteine has fallen most of the way' }, ' back toward its range since August 2025, though it still sits slightly above.'],
+      'Holding both down keeps two quiet sources of artery wear low while your cholesterol stays high.'
+    ],
+    means: [
+      ['Two signs of wear on your blood vessels have eased since August 2025, meaning ', { b: 'less ongoing strain on artery walls' }, '.'],
+      [{ b: 'Keep up your strength training and walking, and recheck high-sensitivity CRP (an inflammation blood test) and homocysteine at the repeat testing your doctor planned for around six months after your September consult.' }, ' Cutting daily takeout back to a few nights a week helps keep inflammation low.']
+    ]
+  };
+  var NEWI = [CHOL, CORT, B12, VITD, VASC];   // the insights, straight after the welcome, in order (steps 2 to 6)
+
+  // Everything else ("step 7"): each panel its counts, optimal / suboptimal / out of range; its markers, where given, open under it
   var PANELS = [
-    { name: 'Advanced heart markers', markers: [ok('Lp(a)', '0.046 g/L'), ok('hs-CRP', '1 mg/L'), sub('Total cholesterol', '5.4 mmol/L')], note: 'Lp(a) is the genetic risk marker \u2014 yours is optimal. Total cholesterol is covered in insight 1.' },
-    { name: 'Inflammation', markers: [ok('hs-CRP', '1 mg/L'), ok('ESR', '2 mm/hr'), sub('Homocysteine', '13 \u00b5mol/L')], note: 'Homocysteine is a little high; your plan already has a micronutrient goal for it.' },
-    { name: 'Kidney & electrolytes', markers: [sub('Creatinine', 'High-normal'), ok('eGFR', '>90'), ok('Urea', '6 mmol/L'), ok('Sodium', '140 mmol/L'), ok('Potassium', '3.8 mmol/L')], note: 'Creatinine runs high on 40 g of protein a day. eGFR is optimal, so your kidneys are filtering well.' },
-    { name: 'Liver', markers: [ok('ALT', '20 IU/L'), ok('AST', '20 IU/L'), ok('Bilirubin', '7 \u00b5mol/L'), ok('GGT', 'Optimal'), ok('ALP', 'Optimal'), ok('Albumin', 'Optimal')] },
-    { name: 'Blood count', markers: [ok('Haemoglobin', '152 g/L'), ok('White cells', '3.3 \u00d710\u2079/L'), ok('Platelets', '236 \u00d710\u2079/L'), sub('MCHC', 'Slightly low')], note: 'MCHC has been slightly low for several cycles \u2014 most likely your normal baseline.' },
-    { name: 'Thyroid', markers: [ok('TSH', '2.11 mIU/L'), ok('Free T3', '5 pmol/L')] },
-    { name: 'Hormones', markers: [ok('Testosterone', '18.9 nmol/L'), ok('Free testosterone', '458 pmol/L'), ok('SHBG', '26 nmol/L'), ok('DHEA-S', '11.2 \u00b5mol/L'), ok('LH', '4.9 IU/L'), ok('FSH', '5.6 IU/L')] },
-    { name: 'Cancer markers', markers: [ok('PSA', '0.52 \u00b5g/L')], note: 'A useful baseline. Skin checks every 1\u20132 years and bowel screening from 45 round out the picture.' },
-    { name: 'Vitamins', markers: [ok('Vitamin D', '69 nmol/L'), ok('Vitamin B12', '475 pmol/L'), ok('Zinc', '10 \u00b5mol/L')] },
-    { name: 'Blood electrolytes', markers: [sub('Calcium', '2.32 mmol/L')], note: 'A fraction under optimal \u2014 nothing to act on.' },
-    { name: 'Harmful metals', markers: [ok('Lead', '2.3 \u00b5g/dL'), ok('Mercury', '<5 nmol/L')] },
-    { name: 'Environmental allergens', markers: [ok('Dust mite', '0.1 kU/L'), ok('Rye grass', '0 kU/L'), ok('Cat dander', '0 kU/L'), ok('Alternaria mould', '0 kU/L')], note: 'No sensitisation found. This panel does not cover food or drug allergies.' }
+    { name: 'Advanced Heart Markers', n: [1, 0, 0] }, { name: 'Heart Health', n: [2, 2, 3] }, { name: 'Metabolic Health', n: [6, 2, 0] }, { name: 'Liver Health', n: [8, 3, 0] },
+    { name: 'Hormonal Function', n: [5, 1, 1] }, { name: 'Tumour Markers', n: [1, 0, 0] }, { name: 'White Blood Cells', n: [9, 0, 0] }, { name: 'Environmental Allergens', n: [2, 1, 1] },
+    { name: 'Blood Clotting', n: [1, 0, 0] }, { name: 'Blood Electrolytes', n: [5, 1, 0] }, { name: 'Kidney Function', n: [4, 0, 0] }, { name: 'Vitamins and Micronutrients', n: [0, 1, 0] },
+    { name: 'Harmful Metals', n: [1, 0, 0] }
   ];
+  var REST_H = ['Everything else we checked', '77 markers across 15 panels.'];
 
-  var CLASS_SPEC = [['goals', 'Goals'], ['family', 'Family history'], ['symptoms', 'Symptoms'], ['conditions', 'Medical conditions'], ['medications', 'Medications & Supplements'], ['wearables', 'Wearables']];
-
-  var N_INS = INSIGHTS.length;              // 8
-  var STEP_COUNT = N_INS + 6;               // 14
-  var CHOL_ST = 1, SUM_ST = 2, FIRST = 3, LIFE_ST = N_INS + 3, REST = N_INS + 4, NEXT = N_INS + 5;   // the cholesterol insight straight after the welcome; the lifestyle insight after the eight
+  var REST = NEWI.length + 1, NEXT = REST + 1, STEP_COUNT = NEXT + 1;   // 8: the welcome, the five insights, everything else, that's your debrief
 
   // status -> colour tokens (see async-report.css)
   var LINE = { 'Optimal': 'var(--ar-opt-bg)', 'Suboptimal': 'var(--ar-sub-bg)', 'Out of range': 'var(--ar-out-bg)' };
-  var STATUS_CLASS = { 'Optimal': 'arStOpt', 'Suboptimal': 'arStSub', 'Out of range': 'arStOut' };
-  var STATE_CLASS = { 'Optimal': 'arStateOpt', 'Suboptimal': 'arStateSub', 'Out of range': 'arStateOut' };
-  var POS = { 'Optimal': 20, 'Suboptimal': 55, 'Out of range': 86 };
 
   /* ---------- DOM helpers ---------- */
 
@@ -14389,27 +14357,6 @@
     return s('svg', { class: 'arIco', width: 20, height: 20, viewBox: '0 0 20 20', fill: 'none', 'aria-hidden': 'true', focusable: 'false' },
       defs || null, s('path', { d: P.spark1, fill: fill }), s('path', { d: P.spark2, fill: fill }));
   }
-  function sparkGradientIcon(id) {
-    var defs = s('defs', null, s('linearGradient', { id: id, x1: 0, y1: 1, x2: 1, y2: 0 },
-      s('stop', { offset: '0%', 'stop-color': '#F27937' }), s('stop', { offset: '38%', 'stop-color': '#E0905E' }),
-      s('stop', { offset: '66%', 'stop-color': '#FFCBAB' }), s('stop', { offset: '100%', 'stop-color': '#A2C9FF' })));
-    return sparkIcon('url(#' + id + ')', defs);
-  }
-  function fileIcon() {
-    return s('svg', { class: 'arIco', width: 18, height: 18, viewBox: '0 0 20 20', fill: 'none', 'aria-hidden': 'true', focusable: 'false' },
-      s('path', { class: 'arFileA', d: P.file1, fill: 'none', 'stroke-width': 1.4, 'stroke-linejoin': 'round' }),
-      s('path', { class: 'arFileA', d: P.file2, fill: 'none', 'stroke-width': 1.4, 'stroke-linejoin': 'round' }),
-      s('path', { class: 'arFileB', d: P.file3, 'stroke-width': 1.4, 'stroke-linecap': 'round' }));
-  }
-
-  /* ---------- design-system stand-ins ---------- */
-
-  // BadgeStatus, appearance neutral, emphasis secondary, size 2xs
-  function badge(text) {
-    return h('span', { class: 'arBadge arBadgeNeutral' }, h('span', { class: 'arBadgeText', text: text }));
-  }
-
-  // FlowStepIndicator (stepsCount n, activeStepIndex i, activeStepProgress 0)
   function stepIndicator(n) {
     var el = h('div', { class: 'arSteps', role: 'progressbar', 'aria-valuemin': 1, 'aria-valuemax': n });
     var fill = h('div', { class: 'arStepsFill', 'aria-hidden': 'true' });
@@ -14420,112 +14367,15 @@
     el.appendChild(fill);
     return {
       el: el,
-      set: function (i) {
-        el.setAttribute('aria-valuenow', String(i + 1));
-        el.setAttribute('aria-valuetext', 'Step ' + (i + 1) + ' of ' + n);
+      set: function (i) {   // i: the step after the welcome, 1 to n, its bar and those before it filled
+        el.setAttribute('aria-valuenow', String(i));
+        el.setAttribute('aria-valuetext', 'Step ' + i + ' of ' + n);
         var px = i * 4 + (i < n - 1 ? 2 : 0);
         fill.style.clipPath = 'inset(0 calc(100% - (' + i + ' * ((100% - ' + ((n - 1) * 4) + 'px) / ' + n + ') + ' + px + 'px)) 0 0)';
       }
     };
   }
 
-  /* ---------- trend cards (port of buildCards) ---------- */
-
-  function statusOf(sr, v) {
-    return (v >= sr.optimal[0] && v <= sr.optimal[1]) ? 'Optimal' : (v >= sr.warn[0] && v <= sr.warn[1]) ? 'Suboptimal' : 'Out of range';
-  }
-
-  function buildCards(names) {
-    var list = names.map(function (n) { return SERIES[n] ? Object.assign({ name: n }, SERIES[n]) : null; }).filter(Boolean);
-    var INSET = 6;
-    var fmt = function (v) { return String(v); };
-    return list.map(function (sr) {
-      var lo = sr.axis[0], hi = sr.axis[1];
-      var y = function (v) { return ((hi - Math.min(Math.max(v, lo), hi)) / (hi - lo)) * 100; };
-      var n = sr.points.length, single = n === 1;
-      var x = function (i) { return single ? 100 - INSET : INSET + (i / (n - 1)) * (100 - 2 * INSET); };
-      var pts = sr.points.map(function (p, i) { return { d: p[0], v: p[1], x: x(i), y: y(p[1]), st: statusOf(sr, p[1]) }; });
-      var last = pts[n - 1];
-      var path = '';
-      if (n > 1) {
-        path = 'M' + pts[0].x.toFixed(2) + ' ' + pts[0].y.toFixed(2);
-        for (var i = 0; i < n - 1; i++) {
-          var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
-          var c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6, c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
-          path += ' C' + c1x.toFixed(2) + ' ' + c1y.toFixed(2) + ' ' + c2x.toFixed(2) + ' ' + c2y.toFixed(2) + ' ' + p2.x.toFixed(2) + ' ' + p2.y.toFixed(2);
-        }
-      }
-      // zones in value space: optimal, warn, everything else out of range
-      var seen = {};
-      var edges = [sr.optimal[0], sr.optimal[1], sr.warn[0], sr.warn[1]]
-        .filter(function (e) { if (seen[e]) return false; seen[e] = 1; return e > lo && e < hi; })
-        .sort(function (a, b) { return a - b; });
-      var bounds = [lo].concat(edges, [hi]);
-      var stops = [];
-      for (var b = bounds.length - 1; b > 0; b--) {
-        var from = bounds[b - 1], to = bounds[b], col = LINE[statusOf(sr, (from + to) / 2)];
-        stops.push({ offset: (y(to) / 100).toFixed(3), color: col }, { offset: (y(from) / 100).toFixed(3), color: col });
-      }
-      var ticks = edges.map(function (e) { return { y: y(e).toFixed(2), pct: y(e).toFixed(2) + '%', label: fmt(e) }; });
-      var axisW = Math.max.apply(null, [3].concat(ticks.map(function (t) { return t.label.length; }))) * 7 + 6 + 'px';
-      return {
-        name: sr.name, unit: sr.unit, value: fmt(last.v), date: last.d.replace(' ', ' 20'), status: last.st,
-        solo: list.length === 1, multi: !single, path: path, stops: stops, ticks: ticks, axisW: axisW,
-        cols: pts.map(function (p, i) { return { x: p.x.toFixed(2), pct: p.x.toFixed(2) + '%', label: p.d, last: i === n - 1 }; }),
-        dots: pts.map(function (p) { return { left: p.x.toFixed(2) + '%', top: p.y.toFixed(2) + '%', fill: LINE[p.st] }; })
-      };
-    });
-  }
-
-  function trendCard(c, gradId) {
-    var plot = s('svg', { class: 'arTSvg', viewBox: '0 0 100 100', preserveAspectRatio: 'none', width: '100%', height: 120, 'aria-hidden': 'true', focusable: 'false' },
-      s('defs', null, s('linearGradient', { id: gradId, gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 0, y2: 100 },
-        c.stops.map(function (st) { return s('stop', { offset: st.offset, style: { 'stop-color': st.color } }); }))),
-      c.ticks.map(function (t) { return s('line', { class: 'arTGridLine', x1: 0, x2: 100, y1: t.y, y2: t.y, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }); }),
-      c.cols.map(function (k) { return s('line', { class: 'arTGridLine', x1: k.x, x2: k.x, y1: 0, y2: 100, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }); }),
-      c.multi ? s('path', { d: c.path, fill: 'none', stroke: 'url(#' + gradId + ')', 'stroke-width': 2.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke' }) : null);
-
-    return h('div', { class: 'arTCard' + (c.solo ? ' arSolo' : '') },
-      h('div', { class: 'arTTop' },
-        h('div', { class: 'arTHead' },
-          h('span', { class: 'arT200m arPretty', text: c.name }),
-          h('div', { class: 'arTMeta' },
-            h('div', { class: 'arTValWrap' }, h('span', { class: 'arTVal', text: c.value }), h('span', { class: 'arT200r arInk50', text: c.unit })),
-            h('span', { class: 'arT200r arInk30', text: '|' }),
-            h('span', { class: 'arT200r arInk50', text: c.date }))),
-        h('div', { class: 'arStatus ' + STATUS_CLASS[c.status], text: c.status })),
-      h('div', { class: 'arTGrid', style: { 'grid-template-columns': c.axisW + ' minmax(0,1fr)' } },
-        h('div', { class: 'arTAxis' }, c.ticks.map(function (t) { return h('div', { class: 'arTTick', style: { top: t.pct }, text: t.label }); })),
-        h('div', { class: 'arTPlot' }, plot,
-          c.dots.map(function (d) { return h('div', { class: 'arTDot', style: { left: d.left, top: d.top, background: d.fill } }); })),
-        h('div', null),
-        h('div', { class: 'arTXAxis' }, c.cols.map(function (k) { return h('div', { class: 'arTXLabel' + (k.last ? ' arTXLast' : ''), style: { left: k.pct }, text: k.label }); }))));
-  }
-
-  // The 0-150 range bar used by "Everything else" marker rows
-  function rangeBar(pos) {
-    var px = 8 + (pos / 100) * 138;
-    return s('svg', { class: 'arRange', width: 110, height: 22, viewBox: '0 0 150 22', 'aria-hidden': 'true', focusable: 'false' },
-      s('rect', { x: 8, y: 12, width: 58, height: 6, rx: 3, fill: '#5FCB84' }),
-      s('rect', { x: 70, y: 12, width: 36, height: 6, rx: 3, fill: '#F5D08A' }),
-      s('rect', { x: 110, y: 12, width: 36, height: 6, rx: 3, fill: '#F58080' }),
-      s('path', { class: 'arRangePtr', d: 'M' + (px - 4) + ' 2 L' + (px + 4) + ' 2 L' + px + ' 8 Z' }),
-      s('line', { class: 'arRangeLine', x1: px, y1: 9, x2: px, y2: 21, 'stroke-width': 2 }));
-  }
-
-  function gauge() {
-    var kids = GAUGE.map(function (l) {
-      return s('line', { class: 'arGT' + l[4], x1: l[0], y1: l[1], x2: l[2], y2: l[3], 'stroke-width': l[4] ? 2.5 : 1.75, 'stroke-linecap': 'round' });
-    });
-    kids.push(
-      s('circle', { class: 'arGDot', cx: 73.1, cy: 20.0, r: 3.75 }),
-      s('text', { class: 'arGTxtMute', x: 142, y: 9, 'text-anchor': 'middle', style: { 'font-size': '9px' }, text: '34' }),
-      s('text', { class: 'arGTxtMain', x: 142, y: 112, 'text-anchor': 'middle', style: { 'font-size': '44px', 'font-weight': '500', 'letter-spacing': '-0.02em' }, text: '28' }),
-      s('text', { class: 'arGTxtMute', x: 142, y: 136, 'text-anchor': 'middle', style: { 'font-size': '10px', 'letter-spacing': '0.12em' }, text: '6 YEARS YOUNGER' }));
-    return s('svg', { class: 'arGauge', viewBox: '4 6 276 136', width: '100%', preserveAspectRatio: 'xMidYMid meet' }, kids);
-  }
-
-  /* ---------- mount ---------- */
 
   function mount(host, opts) {
     if (!host || typeof host.appendChild !== 'function') throw new TypeError('AsyncReport.mount(host, opts): host must be an element');
@@ -14552,7 +14402,7 @@
     /* chrome: header, step indicator, body, footer CTA */
     var backBtn = h('button', { type: 'button', class: 'arIconBtn arBack', 'aria-label': 'Back' }, strokeIcon(18, 18, 1.8, [P.back]));
     var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose', 'aria-label': 'Close' }, strokeIcon(16, 16, 1.8, [P.close]));
-    var steps = stepIndicator(STEP_COUNT);
+    var steps = stepIndicator(STEP_COUNT - 1);   // a bar for each step after the welcome (7)
     var stepWrap = h('div', { class: 'arStepWrap' }, steps.el);
     var head = h('div', { class: 'arHead' },
       h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel' }), closeBtn),
@@ -14662,157 +14512,23 @@
         h('div', { class: 'arPanel' }, scroller));
     }
 
-    /* ----- step 1: Summary ----- */
-    function buildSummary() {
-      var count = function (num, dotCls, label) {
-        return h('div', { class: 'arCount' },
-          h('div', { class: 'arCountTop' }, h('div', { class: 'arCountNum', text: num }), h('div', { class: 'arCountDot ' + dotCls })),
-          h('div', { class: 'arCountLabel', text: label }));
-      };
-      return h('div', { class: 'arStack arGap24' },
-        h('div', { class: 'arIntroBlock arAnimRise' },
-          h('h2', { class: 'arH700', text: 'We tested 120 markers across 16 panels.' }),
-          h('div', { class: 'arLede', text: 'Most are where we want them. The ones that aren\'t fall into nine stories.' })),
-        h('div', { class: 'arSumCard arAnimRise arD12' },
-          h('div', { class: 'arSumBio' },
-            h('div', { class: 'arSumHead' },
-              h('div', { class: 'arSumHeadL' },
-                s('svg', { class: 'arIco', width: 20, height: 20, viewBox: '0 0 20 20', fill: 'none', 'aria-hidden': 'true', focusable: 'false' }, s('path', { d: P.bio, fill: 'currentColor' })),
-                h('div', { class: 'arSumTitle', text: 'Biomarkers' }))),
-            h('div', { class: 'arSegBar' },
-              h('div', { class: 'arSeg arSegOpt', style: { flex: '92' } }),
-              h('div', { class: 'arSeg arSegSub', style: { flex: '14' } }),
-              h('div', { class: 'arSeg arSegOut', style: { flex: '14' } })),
-            h('div', { class: 'arCounts' },
-              count('92', 'arSegOpt', 'Optimal'), count('14', 'arSegSub', 'Suboptimal'), count('14', 'arSegOut', 'Out of range'))),
-          h('div', { class: 'arAgeCard' },
-            h('div', { class: 'arAgeHead' }, h('span', { class: 'arT200m', text: 'Biological age' })),
-            gauge())));
-    }
-
-    /* ----- steps 2-9: Insight 1-8 ----- */
-    function buildInsight(k) {
-      var ins = INSIGHTS[k];
-      var cards = buildCards(ins.signals);
-
-      // biomarker carousel: scroll-snap, prev/next synced with scroll
-      var carIdx = 0, lockTo = -1, lockTimer = 0;
-      var prevBtn = h('button', { type: 'button', class: 'arCarBtn', 'aria-label': 'Previous marker' }, strokeIcon(14, 16, 1.8, [P.prev]));
-      var nextBtn = h('button', { type: 'button', class: 'arCarBtn', 'aria-label': 'Next marker' }, strokeIcon(14, 16, 1.8, [P.next]));
-      var car = h('div', { class: 'arCar', 'data-ar-car': '' }, cards.map(function (c, i) { return trendCard(c, 'arG' + uid + '-' + k + '-' + i); }));
-      var syncBtns = function () {
-        prevBtn.classList.toggle('arDim', carIdx === 0);
-        nextBtn.classList.toggle('arDim', carIdx >= cards.length - 1);
-        car.setAttribute('data-ar-index', String(carIdx));
-      };
-      var stride = function () { var f = car.firstElementChild; return f ? f.getBoundingClientRect().width + 4 : 0; };
-      var fromScroll = function () { var sw = stride(); return sw ? Math.max(0, Math.min(cards.length - 1, Math.round(car.scrollLeft / sw))) : carIdx; };
-      var carGo = function (i) {
-        var sw = stride(); if (!sw) return;
-        var j = Math.max(0, Math.min(cards.length - 1, i));
-        // hold the target while the smooth scroll passes the cards in between
-        lockTo = j; cancel(lockTimer);
-        lockTimer = later(function () { lockTo = -1; var f = fromScroll(); if (f !== carIdx) { carIdx = f; syncBtns(); } }, 700);
-        car.scrollTo({ left: j * sw, behavior: reducedMotion() ? 'auto' : 'smooth' });
-        carIdx = j; syncBtns();
-      };
-      on(prevBtn, 'click', function () { carGo(carIdx - 1); });
-      on(nextBtn, 'click', function () { carGo(carIdx + 1); });
-      on(car, 'scroll', function () {
-        var i = fromScroll();
-        if (lockTo >= 0) { if (i === lockTo) { lockTo = -1; cancel(lockTimer); } return; }
-        if (i !== carIdx) { carIdx = i; syncBtns(); }
-      }, { passive: true });
-      syncBtns();
-
-      // "Behind this insight" groups
-      var groups = [];
-      CLASS_SPEC.forEach(function (spec) {
-        var rows = ins[spec[0]] || [];
-        if (!rows.length) return;
-        groups.push({ key: spec[0], name: spec[1], rows: rows.map(function (r) {
-          return spec[0] === 'goals'
-            ? { title: r.label, value: 'From your Plan', meta: r.plan, detail: r.detail }
-            : { title: r.label, value: r.detail };
-        }) });
-      });
-      if (ins.reportTitle) groups.push({ key: 'r', name: 'Reports', rows: [{ title: ins.reportTitle, value: '23 Apr 2026', isFile: true, isCard: true }] });
-
-      var openKey = null, rowSet = {};
-      var row = function (r, key, idx) {
-        var has = !!r.detail;
-        var chev = has ? h('div', { class: 'arChev' }, chevIcon()) : null;
-        var detail = has ? h('div', { class: 'arDetail', hidden: true }, h('p', { class: 'arPara', text: r.detail })) : null;
-        var tap = h('div', {
-          class: 'arBRow' + (r.isCard ? ' arRowCard' : '') + (has ? ' arRowTap' : ''),
-          role: has ? 'button' : null, tabindex: has ? '0' : null, 'aria-expanded': has ? 'false' : null
-        },
-          h('div', { class: 'arRowL' },
-            r.isFile ? h('span', { class: 'arFileTile' }, fileIcon()) : null,
-            h('div', { class: 'arRowText' },
-              h('span', { class: 'arT300m arPretty', text: r.title }),
-              h('div', { class: 'arRowMeta' },
-                r.value ? h('span', { class: 'arT200r arInk60', text: r.value }) : null,
-                r.meta ? h('span', { class: 'arT200r arInk30', text: '|' }) : null,
-                r.meta ? h('span', { class: 'arT200r arInk50', text: r.meta }) : null))),
-          h('div', { class: 'arRowR' }, chev));
-        if (has) {
-          rowSet[key] = function (open) {
-            detail.hidden = !open;
-            chev.classList.toggle('arChevOpen', open);
-            tap.setAttribute('aria-expanded', String(open));
-          };
-          var toggle = function () {
-            var was = openKey === key;
-            if (openKey && rowSet[openKey]) rowSet[openKey](false);
-            openKey = was ? null : key;
-            if (!was) rowSet[key](true);
-          };
-          on(tap, 'click', toggle);
-          on(tap, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
-        }
-        return h('div', { class: 'arRowWrap' }, idx > 0 ? h('div', { class: 'arDivider' }) : null, tap, detail);
-      };
-
-      return h('div', { class: 'arStack arGap24' },
-        h('div', { class: 'arInsHead arAnimRise' }, h('h2', { class: 'arH700', text: ins.headline })),
-        h('div', { class: 'arBioCard arAnimRise arD12' },
-          h('div', { class: 'arBioHead' },
-            h('div', { class: 'arBioHeadL' }, h('span', { class: 'arT300m', text: 'Biomarkers' }), badge(String(cards.length))),
-            cards.length > 1 ? h('div', { class: 'arCarNav' }, prevBtn, nextBtn) : null),
-          car),
-        h('div', { class: 'arMeans arAnimRise arD24' },
-          h('div', { class: 'arMeansHead' }, sparkGradientIcon('arSpark' + uid + '-' + k), h('span', { class: 'arT600', text: 'What this means for you' })),
-          h('p', { class: 'arPara', text: ins.found }),
-          h('p', { class: 'arPara', text: ins.why })),
-        h('div', { class: 'arBehind arAnimRise arD32' },
-          h('span', { class: 'arT600', text: 'Behind this insight' }),
-          h('div', { class: 'arGroups' }, groups.map(function (g) {
-            return h('div', { class: 'arGroup' },
-              h('span', { class: 'arMonoLabel', text: g.name }),
-              h('div', { class: 'arRows' }, g.rows.map(function (r, i) { return row(r, g.key + '-' + i, i); })));
-          }))));
-    }
-
-    /* ----- step 10: the lifestyle insight ----- */
-    // a biomarker and a questionnaire answer side by side, what we noticed, what it means, and a was-this-useful: the source's later insight layout
-    function lifeBar(pos, kind) {   // kind: 'mid' (default) out of range both ways, 'hi' higher is worse, 'lo' lower is worse
-      var px = 1 + pos * 82, C = { o: 'var(--ar-opt-bg)', s: 'var(--ar-sub-bg)', x: 'var(--ar-out-bg)' }, seg = kind === 'hi' ? 'osx' : kind === 'lo' ? 'xso' : 'sos';
+    /* ----- steps 1-5: the insights ----- */
+    function lifeBar(pos, kind) {   // kind: 'mid' (default) suboptimal both ways, 'hi' higher is worse, 'lo' lower is worse, 'both' out of range either way, in five; or its segments spelt out, o optimal, s suboptimal, x out of range ('sosx')
+      var px = 1 + pos * 82, C = { o: 'var(--ar-opt-bg)', s: 'var(--ar-sub-bg)', x: 'var(--ar-out-bg)' }, seg = { hi: 'osx', lo: 'xso', both: 'xsosx' }[kind] || (/^[osx]{2,6}$/.test(kind || '') ? kind : 'sos'), w = (84 - 3 * (seg.length - 1)) / seg.length;
       return s('svg', { class: 'arLfBar', width: 84, height: 18, viewBox: '0 0 84 18', 'aria-hidden': 'true', focusable: 'false' },
-        s('rect', { x: 0, y: 9, width: 26, height: 4, rx: 2, style: { fill: C[seg[0]] } }),
-        s('rect', { x: 29, y: 9, width: 26, height: 4, rx: 2, style: { fill: C[seg[1]] } }),
-        s('rect', { x: 58, y: 9, width: 26, height: 4, rx: 2, style: { fill: C[seg[2]] } }),
+        seg.split('').map(function (k, i) { return s('rect', { x: (i * (w + 3)).toFixed(2), y: 9, width: w.toFixed(2), height: 4, rx: 2, style: { fill: C[k] } }); }),
         s('path', { class: 'arRangePtr', d: 'M' + (px - 4) + ' 0 L' + (px + 4) + ' 0 L' + px + ' 6 Z' }),
         s('line', { class: 'arLfBarLine', x1: px, y1: 6, x2: px, y2: 18, 'stroke-width': 1.5, 'stroke-dasharray': '2 2' }));
     }
     // a marker's trend, small, beside it: its readings as a line, coloured from its first status to its last
     function lifeSpark(t) {
       var lo = Math.min.apply(null, t.pts), hi = Math.max.apply(null, t.pts), n = t.pts.length, id = 'arSpk' + (++sparkSeq);
-      var pts = t.pts.map(function (v, i) { return [2 + i * 116 / (n - 1), hi === lo ? 10 : 17 - (v - lo) / (hi - lo) * 14]; });
+      var span = Math.max(hi - lo, Math.abs(lo + hi) / 2 * .3), mid = (lo + hi) / 2;   // a small change stays small: the height a 30% swing at least
+      var pts = t.pts.map(function (v, i) { return [2 + i * 116 / (n - 1), 10 - (v - mid) / span * 14]; });
       var d = pts.map(function (p, i) { if (!i) return 'M' + p[0].toFixed(1) + ' ' + p[1].toFixed(1); var q = pts[i - 1], mx = ((q[0] + p[0]) / 2).toFixed(1); return 'C' + mx + ' ' + q[1].toFixed(1) + ' ' + mx + ' ' + p[1].toFixed(1) + ' ' + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
       return h('span', { class: 'arLfSpk', 'aria-hidden': 'true' },
         s('svg', { width: 120, height: 20, viewBox: '0 0 120 20', fill: 'none', focusable: 'false' },
-          s('defs', null, s('linearGradient', { id: id, x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: '0%', style: { 'stop-color': LINE[t.from] } }), s('stop', { offset: '100%', style: { 'stop-color': LINE[t.to] } }))),
+          s('defs', null, s('linearGradient', { id: id, gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 120, y2: 0 }, s('stop', { offset: '0%', style: { 'stop-color': LINE[t.from] } }), s('stop', { offset: '100%', style: { 'stop-color': LINE[t.to] } }))),
           s('path', { d: d, stroke: 'url(#' + id + ')', 'stroke-width': 2, 'stroke-linecap': 'round' })));
     }
     // a paragraph's words, a phrase in bold where the doctor stresses it: a string, or a list of strings and { b: '...' }
@@ -14828,14 +14544,14 @@
       var vote = function (b, other) { var was = b.getAttribute('aria-pressed') === 'true'; b.setAttribute('aria-pressed', String(!was)); other.setAttribute('aria-pressed', 'false'); };
       on(up, 'click', function () { vote(up, down); });
       on(down, 'click', function () { vote(down, up); });
-      var n = L.answers.length, ans;
-      if (L.qn){ ans = h('button', { type: 'button', class: 'arLfGroup arLfAns', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' },   // a questionnaire behind it: its card opens its answers
+      var n = (L.answers || []).length, ans = null;   // no answers behind it: no Your answers
+      if (n && L.qn){ ans = h('button', { type: 'button', class: 'arLfGroup arLfAns', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' },   // a questionnaire behind it: its card opens its answers
         h('span', { class: 'arLfAnsTx' },
           h('span', { class: 'arT300m', text: 'Your answers' }),
           h('span', { class: 'arLfAnsL' }, h('span', { class: 'arLfName', text: L.qn.name }), h('span', { class: 'arT200r arInk60', text: n + (n === 1 ? ' question answered' : ' questions answered') }))),
         h('span', { class: 'arLfAnsBtn', 'aria-hidden': 'true' }, chevIcon()));
         on(ans, 'click', function () { qaOpen(L, ans); }); }
-      else ans = h('div', { class: 'arLfGroup' }, h('span', { class: 'arT300m', text: 'Your answers' }),   // a few answers: each shown, its question over it
+      else if (n) ans = h('div', { class: 'arLfGroup' }, h('span', { class: 'arT300m', text: 'Your answers' }),   // a few answers: each shown, its question over it
         L.answers.map(function (r) { return h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: r.q }), h('span', { class: 'arLfName', text: r.a })); }));
       return h('div', { class: 'arStack arLfStack' },
         h('div', { class: 'arLfHead arAnimRise' },
@@ -14856,7 +14572,7 @@
                     h('span', { class: 'arT200r arInk30', text: '|' }),
                     h('span', { class: 'arT200r arInk60', text: m.date }))),
                 m.trend ? lifeSpark(m.trend) : null,
-                h('div', { class: 'arLfMkR' }, lifeBar(m.pos, m.bar), h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
+                h('div', { class: 'arLfMkR' }, m.pos != null ? lifeBar(m.pos, m.bar) : null, h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status })));
             })),
           ans),
         h('div', { class: 'arLfSec arAnimRise arD24' },
@@ -14870,33 +14586,26 @@
           h('div', { class: 'arLfThumbs' }, up, down)));
     }
 
-    /* ----- step 11: Everything else ----- */
+    /* ----- step 6: Everything else ----- */
+    // each panel its counts as dots, optimal / suboptimal / out of range; with its markers given, it opens to them
     function buildRest() {
       var openIdx = -1, panelSet = [];
+      var dots = function (n) { return h('div', { class: 'arRsDots', 'aria-label': n[0] + ' optimal, ' + n[1] + ' suboptimal, ' + n[2] + ' out of range' },
+        ['arRsO', 'arRsS', 'arRsX'].map(function (c, i) { return h('span', { class: 'arRsDot', 'aria-hidden': 'true' }, h('i', { class: c }), h('span', { text: String(n[i]) })); })); };
       var panels = PANELS.map(function (p, i) {
-        var good = p.markers.filter(function (m) { return m.status === 'Optimal'; }).length;
-        var flagged = p.markers.filter(function (m) { return m.status !== 'Optimal'; });
-        var summary = p.markers.length + ' ' + (p.markers.length === 1 ? 'marker' : 'markers') + ' \u00b7 ' + (flagged.length ? good + ' optimal' : 'all optimal');
+        var n = p.markers ? ['Optimal', 'Suboptimal', 'Out of range'].map(function (st) { return p.markers.filter(function (m) { return m.status === st; }).length; }) : p.n;
+        if (!p.markers) return h('div', { class: 'arAcc arRsRow' }, h('div', { class: 'arAccHead' }, h('div', { class: 'arRsName', text: p.name }), dots(n)));
         var chev = h('div', { class: 'arChev' }, chevIcon());
         var bodyEl = h('div', { class: 'arAccBody', hidden: true },
           p.markers.map(function (m, j) {
             return h('div', { class: 'arMk' },
               j > 0 ? h('div', { class: 'arDivider' }) : null,
-              h('div', { class: 'arMkRow' },
-                h('div', { class: 'arMkL' },
-                  h('span', { class: 'arT300m arPretty', text: m.name }),
-                  h('div', { class: 'arRowMeta' },
-                    h('span', { class: 'arT200r arInk60', text: m.value }),
-                    h('span', { class: 'arT200r arInk30', text: '|' }),
-                    h('span', { class: 'arT200r arInk50', text: '23 Apr 2026' }))),
-                h('div', { class: 'arMkR' },
-                  rangeBar(POS[m.status]),
-                  h('span', { class: 'arT200m ' + STATE_CLASS[m.status], text: m.status }))));
-          }),
-          p.note ? h('div', { class: 'arNote' }, h('p', { class: 'arPara', text: p.note })) : null);
-        var headEl = h('div', { class: 'arAccHead', role: 'button', tabindex: '0', 'aria-expanded': 'false' },
-          h('div', { class: 'arAccText' }, h('div', { class: 'arT300m arInk', text: p.name }), h('div', { class: 'arT200r arInk50', text: summary })),
-          chev);
+              h('div', { class: 'arLfMk' },
+                h('div', { class: 'arLfMkL' }, h('span', { class: 'arLfName', text: m.name }),
+                  h('div', { class: 'arRowMeta' }, h('span', { class: 'arT200r arInk60', text: m.value }), h('span', { class: 'arT200r arInk30', text: '|' }), h('span', { class: 'arT200r arInk60', text: m.date }))),
+                h('div', { class: 'arLfMkR' }, m.pos != null ? lifeBar(m.pos, m.bar) : null, h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status }))));
+          }));
+        var headEl = h('div', { class: 'arAccHead', role: 'button', tabindex: '0', 'aria-expanded': 'false' }, h('div', { class: 'arRsName', text: p.name }), dots(n), chev);
         panelSet[i] = function (open) {
           bodyEl.hidden = !open;
           chev.classList.toggle('arChevOpen', open);
@@ -14914,12 +14623,12 @@
       });
       return h('div', { class: 'arStack arGap18' },
         h('div', { class: 'arIntroBlock arAnimRise' },
-          h('h2', { class: 'arH700', text: 'Everything else we checked.' }),
-          h('div', { class: 'arLede', text: '98 more markers across 16 panels. All optimal or a fraction outside \u2014 none need action.' })),
-        h('div', { class: 'arAccList arAnimRise arD20' }, panels));
+          h('h2', { class: 'arH700', text: REST_H[0] }),
+          h('div', { class: 'arLede', text: REST_H[1] })),
+        h('div', { class: 'arAccList arRsList arAnimRise arD20' }, panels));
     }
 
-    /* ----- step 12: Next steps ----- */
+    /* ----- step 7: That's your debrief ----- */
     function buildNext() {
       var q = function (avatar, name, desc) {
         return h('div', { class: 'arQRow' }, avatar,
@@ -14928,22 +14637,18 @@
       };
       return h('div', { class: 'arStack arGap20' },
         h('div', { class: 'arIntroBlock arAnimRise' },
-          h('h2', { class: 'arH700', text: 'That\'s your debrief.' }),
-          h('div', { class: 'arLede', text: 'You can come back to this report and insights any time from the Reports tab.' })),
+          h('h2', { class: 'arH700', text: 'That\'s your debrief.' })),
         h('div', { class: 'arHair' }),
         h('div', { class: 'arQBlock arAnimRise arD24' },
           h('div', { class: 'arQTitle', text: 'Have questions?' }),
           h('div', { class: 'arQList' },
-            q(h('div', { class: 'arEvaAv' }, sparkIcon('currentColor')), 'Ask Eva', 'Get instant answers about this report.'),
-            q(h('img', { class: 'arQAv', src: o.avatar, alt: WEL.dr, decoding: 'async' }), 'Talk to your care team', 'Book a call and ask about your concerns.'))));
+            q(h('div', { class: 'arEvaAv' }, sparkIcon('currentColor')), 'Ask Eva', 'Get instant answers about this report and submit questions or requests to our clinical team.'),
+            q(h('img', { class: 'arQAv', src: 'assets/async/avatar.webp', alt: '', decoding: 'async' }), 'Book a doctor consult', 'Pick a time to talk through your results.'))));
     }
 
     function build(st) {
       if (st === 0) return buildWelcome();
-      if (st === CHOL_ST) return buildLife(CHOL);
-      if (st === SUM_ST) return buildSummary();
-      if (st >= FIRST && st < LIFE_ST) return buildInsight(st - FIRST);
-      if (st === LIFE_ST) return buildLife(LIFE);
+      if (st >= 1 && st <= NEWI.length) return buildLife(NEWI[st - 1]);
       if (st === REST) return buildRest();
       return buildNext();
     }
@@ -14957,7 +14662,7 @@
       backBtn.hidden = step === 0;
       stepWrap.hidden = welcome;
       steps.set(step);
-      ctaLabel.textContent = welcome ? 'Start' : step === SUM_ST ? 'See insights' : step === NEXT ? 'Done' : 'Next';
+      ctaLabel.textContent = welcome ? 'Start' : step === NEXT ? 'Done' : 'Next';
       body.textContent = '';
       body.appendChild(build(step));
       body.scrollTop = 0;
