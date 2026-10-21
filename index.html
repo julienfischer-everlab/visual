@@ -1370,7 +1370,7 @@
     display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;   /* 6 -> 2 between the name and the value ("reduce gap by 4px") */
     padding:16px 0;border-bottom:1px solid #1c1c1b;font-size:14px;color:#e4e4e0;   /* 14 -> 16: "add padding on the row" */
   }
-  .mbrow .g{color:#8b8b86;font-size:12.5px;}
+  .mbrow .g{color:#8b8b86;font-size:12px;}   /* the sub 12 under the 14 title ("14px title, 12px sub") */
   /* rows in a group: the last carries no rule (it used to be an inline style
      on the last row, which a filter that hides rows could not follow) */
   .mgrp .mbrow:last-child{border-bottom:none;}
@@ -12081,6 +12081,8 @@
         <div class="tkRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option></select></div>
         <!-- an insight's three sections, Behind this insight, What we noticed, What this means for you: stacked with no tabs, anchored by pills, or by a segmented control ("tweak Tab section: ON use tab system, OFF stack section as it is"; "tweak a segmented tab style: no tab, tab pills, tab segmented") -->
         <div class="tkRow"><span class="lbl">Tab style</span><select id="stArTab" class="tkSegSel" aria-label="How an insight's sections are anchored"><option value="off">No tab</option><option value="pills" selected>Pills</option><option value="seg">Segmented</option></select></div>
+        <!-- Behind this insight's cards, Your biomarkers and Your answers: outlined, or filled #fff 4% (light: #000 4%) ("tweak Behind this insight cards: Outlined, Filled fff 4%") -->
+        <div class="tkRow"><span class="lbl">Evidence cards</span><select id="stArCard" class="tkSegSel" aria-label="Behind this insight's cards"><option value="outline" selected>Outlined</option><option value="fill">Filled</option></select></div>
         </div>
         <div class="tkGroup" data-pages="lp">
         <div class="tkSub">Organ Age landing</div>
@@ -14070,21 +14072,22 @@
 .arSheet .arLfCardH { padding: 0 16px 8px; }   /* a grey card's name, on the grey */
 /* the Insights phone's biomarker row (.mbrow): the name and its range bar, then the value | the date and the status; a hairline between rows */
 .arSheet { --mbO: #6fcb7c; --mbS: #f2c550; --mbX: #e5514f; } .arSheet.arDark { --mbO: #aaeec2; --mbS: #ffe29f; --mbX: #fe8087; }   /* the Insights' range colours, light and dark */
-.arSheet .arMbList, .arSheet .arLfGroup.arMbList { gap: 0; padding-top: 2px; padding-bottom: 2px; }   /* rows edge to edge, the 10 of the group's gap inside them, so their tiles sit 2 apart */
-.arSheet .arMb { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 19px 0; border-bottom: 1px solid oklch(var(--ar-ink) / .08); cursor: pointer; }
-.arSheet .arMb:last-child { border-bottom: 0; }
+.arSheet .arMbList, .arSheet .arLfGroup.arMbList { gap: 0; padding-top: 2px; padding-bottom: 2px; }   /* the rows' own spacing, not the group's 10 */
+.arSheet .arMb { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 15px 0; cursor: pointer; }
+.arSheet .arMb + .arMb { margin-top: 9px; } .arSheet .arMb:has(+ .arMb)::after { content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 1px; background: oklch(var(--ar-ink) / .08); pointer-events: none; }   /* the rule outside the cards: card, 4, the rule, 4, card ("divider should be outside the card"); the text as far apart as before */
 .arSheet .arMb > * { position: relative; z-index: 1; }
-.arSheet .arMb::before { content: ""; position: absolute; inset: 0 -10px 1px; border-radius: 12px; background: transparent; transition: background-color .15s ease; pointer-events: none; }   /* a ghost card: its tile shows on hover ("need a hover state as it's a ghost card"), the whole row less 1 at its foot: with the rule, 2 from the next ("gap between item card 2px") */
+.arSheet .arMb::before { content: ""; position: absolute; inset: 0 -10px; border-radius: 12px; background: transparent; transition: background-color .15s ease; pointer-events: none; }   /* a ghost card: its tile shows on hover ("need a hover state as it's a ghost card"), the whole row */
 .arSheet .arMb:hover::before, .arSheet .arMb:focus-visible::before { background: oklch(var(--ar-ink) / .05); } .arSheet .arMb:focus-visible { outline: none; }
-.arSheet .arMbList:has(.arMb:hover) .arMb:is(:hover, :has(+ .arMb:hover)) { border-bottom-color: transparent; }   /* the rules either side of the hovered tile step away */
 .arSheet .arMbN { min-width: 0; font-family: var(--ar-font); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink)); text-wrap: pretty; }
-.arSheet .arMbG { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; min-width: 0; font-family: var(--ar-font); font-size: 12.5px; line-height: 16px; color: oklch(var(--ar-ink) / .55); } .arSheet .arMbSep { color: oklch(var(--ar-ink) / .3); }
+.arSheet .arMbG { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; min-width: 0; font-family: var(--ar-font); font-size: 12px; line-height: 16px; color: oklch(var(--ar-ink) / .55); } .arSheet .arMbSep { color: oklch(var(--ar-ink) / .3); }
 .arSheet .arMbSt { justify-self: end; height: auto; padding: 5px 11px; border-radius: 8px; font-size: 12px; line-height: 15px; }
 .arSheet .arMbR { position: relative; display: flex; gap: 4px; align-items: center; width: 94px; padding-top: 9px; justify-self: end; }
 .arSheet .arMbR > i:not(.arMbMk) { flex: 1 1 0; height: 4px; border-radius: 2px; } .arSheet .arMbO { background: var(--mbO); } .arSheet .arMbS { background: var(--mbS); } .arSheet .arMbX { background: var(--mbX); }
 .arSheet .arMbMk { position: absolute; top: -2px; left: calc(var(--at) - 4px); width: 0; height: 0; border: 4px solid transparent; border-top: 6px solid oklch(var(--ar-ink) / .9); }   /* the reading's place */
 .arSheet .arLfEv .arLfCard { background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); }   /* the group's card outlined, not filled; its list's card inside it filled ("main card outlined not filled") */
-.arSheet .arLfEv .arLfCard > .arLfGroup { background: transparent; box-shadow: none; padding-top: 0; padding-bottom: 0; }   /* no card inside: the list straight on the outlined card ("remove card style") */ .arSheet .arLfEv .arLfCard > .arLfAns1 { padding-top: 2px; padding-bottom: 14px; }   /* the one answer, as far from the card's foot as a biomarker row */ .arSheet .arLfAnsN > .arMbMore { margin: 4px 0 12px; }   /* See X answered questions, alone under its name */
+.arSheet.arCardsFill .arLfEv .arLfCard { background: oklch(0% 0 0 / .04); box-shadow: none; } .arSheet.arDark.arCardsFill .arLfEv .arLfCard { background: oklch(100% 0 0 / .04); }   /* Evidence cards: Filled, #000 4% on the light page, #fff 4% on the dark ("Filled fff 4%") */
+.arSheet .arLfEv .arLfCard { padding: 24px; } .arSheet .arLfEv .arLfCardH { padding: 0 0 8px; }   /* 24 inside the card, all round ("card padding 24px") */
+.arSheet .arLfEv .arLfCard > .arLfGroup { background: transparent; box-shadow: none; padding: 0; }   /* no card inside: the list straight on the outlined card ("remove card style") */ .arSheet .arLfEv .arLfCard > .arLfAns1 { padding-top: 2px; }   /* the one answer */ .arSheet .arLfAnsN > .arMbMore { margin: 4px 0 0; }   /* See X answered questions, alone under its name */
 .arSheet .arLfStack > .arLfHead { margin-bottom: -16px; }   /* 16 less under the headline ("margin bottom less by 16px") */
 .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arLfStack > .arLfHead { margin-bottom: 0; }   /* the desk: the 16 back ("+16 gap on desktop") */
 .arSheet .arLfCard { display: flex; flex-direction: column; gap: 4px; padding: 16px 4px 4px; border-radius: calc(var(--ar-radius-card) + 4px); background: var(--ar-card-bg); }   /* a card of cards, as Biomarkers: the heading on the grey, each group a white card inside, 4 apart ("use a card inside a card") */
@@ -14135,15 +14138,15 @@
 .arSheet.arDark .arQaPanel { background: oklch(21% 0 263.28); }
 .arSheet .arQa.arOn .arQaPanel { transform: none; }
 .arSheet .arQaGrab { flex: none; width: 36px; height: 5px; margin: 0 auto 12px; border-radius: 3px; background: oklch(var(--ar-ink) / .16); }
-.arSheet .arQaHead { flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 0 20px 8px; }
-.arSheet .arQaHd { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding-top: 2px; }
+.arSheet .arQaHead { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 8px; }   /* the title on the close's centre line */
+.arSheet .arQaHd { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .arSheet .arQaT { font-family: var(--ar-font); font-size: 20px; line-height: 24px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
 .arSheet .arQaList { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px; outline-offset: -2px; }
 .arSheet .arQaRow { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 0; border-top: 1px solid oklch(var(--ar-ink) / .06); }
 .arSheet .arQaRow:first-child { border-top: 0; }
 .arSheet .arQaList.arQaMb { padding-top: 0; padding-bottom: 0; }   /* the biomarkers, the report's rows, in the sheet */
-.arSheet .arMb.arMbFade { pointer-events: none; border-bottom-color: transparent; -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .55) 40%, transparent 92%); mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .55) 40%, transparent 92%); }   /* the fourth, fading out ("progressive gradient on the 4th one") */
-.arSheet .arMbMore { position: relative; z-index: 1; width: 100%; height: 44px; margin: -20px 0 12px; padding: 0 20px; border-radius: 12px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); font-size: 14px; line-height: 18px; font-weight: 500; }   /* See N more, over the faded row's foot */
+.arSheet .arMb.arMbFade { pointer-events: none; -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .55) 40%, transparent 92%); mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, .55) 40%, transparent 92%); }   /* the fourth, fading out ("progressive gradient on the 4th one") */
+.arSheet .arMbMore { position: relative; z-index: 1; width: 100%; height: 44px; margin: -12px 0 0; padding: 0 20px; border-radius: 12px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); font-size: 14px; line-height: 18px; font-weight: 500; }   /* See N more, over the faded row's foot */
 @media (hover: hover) { .arSheet .arMbMore:hover { background: oklch(var(--ar-ink) / .1); } }
 .arSheet .arMbMore:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .arSheet .arQaDim, .arSheet .arQaPanel { transition: none; } }
@@ -14200,6 +14203,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *     foot: 'solid' | 'grad',          // default 'solid': the footer's ground, or a progressive gradient and blur over the flow
  *     blur: true | false,              // default true: a blur under the gradients
  *     tabs: 'pills' | 'seg' | 'off',   // default 'pills': an insight's sections anchored by pills, a segmented control, or none
+ *     cards: 'outline' | 'fill',       // default 'outline': Behind this insight's cards outlined, or filled #fff 4% (light #000 4%)
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
  *     onClose: function () {}          // Close (X) and the final "Done"
@@ -14472,6 +14476,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       foot: opts.foot === 'grad' ? 'grad' : 'solid',
       blur: opts.blur !== false,   // the gradients' blur, under them (default on)   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
       tabs: opts.tabs === false || opts.tabs === 'off' ? 'off' : opts.tabs === 'seg' ? 'seg' : 'pills',   // an insight's three sections anchored by pills (default) or a segmented control, or stacked with no tabs
+      cards: opts.cards === 'fill' ? 'fill' : 'outline',   // Behind this insight's cards outlined (default) or filled
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
@@ -14500,7 +14505,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var ctaLabel = h('span', { class: 'arBtnLabel' });
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, ctaLabel);
     var foot = h('div', { class: 'arFoot' }, cta);
-    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur'), 'data-ar-mount': uid }, head, body, foot);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : ''), 'data-ar-mount': uid }, head, body, foot);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
        --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
@@ -14538,12 +14543,12 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       if (now || reducedMotion()) qa.el.hidden = true; else qaT = later(function () { qa.el.hidden = true; }, 400);
     }
     function qaOpen(L, from) {   // Title: X answered questions; every question with its answer
-      sheetOpen(L.answers.length + ' answered questions', L.qn ? L.qn.name : 'Behind this insight', 'Questions and answers', '', L.answers.map(function (r) {
+      sheetOpen(L.answers.length + ' answered questions', '', 'Questions and answers', '', L.answers.map(function (r) {
         return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: r.q }), h('span', { class: 'arLfA', text: r.a }));
       }), from);
     }
     function mbOpen(L, from) {   // Title: X Biomarkers; the list of all the biomarkers behind this insight
-      sheetOpen(L.markers.length + ' Biomarkers', 'Behind this insight', 'Biomarkers', ' arMbList arQaMb', L.markers.map(mbRow), from);
+      sheetOpen(L.markers.length + ' Biomarkers', '', 'Biomarkers', ' arMbList arQaMb', L.markers.map(mbRow), from);   // the title alone, no sub ("remove sub")
     }
     function sheetOpen(t, st, label, cls, rows, from) {
       if (!qa) {
@@ -14563,7 +14568,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         });
         root.appendChild(qa.el);
       }
-      qa.title.textContent = t; qa.sub.textContent = st;
+      qa.title.textContent = t; qa.sub.textContent = st; qa.sub.hidden = !st;
       qa.list.className = 'arQaList' + cls; qa.list.setAttribute('aria-label', label);
       qa.list.textContent = '';
       add(qa.list, rows);
@@ -28751,7 +28756,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', blur: opt('stArBlur') !== 'off', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', blur: opt('stArBlur') !== 'off', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'fill' ? 'fill' : 'outline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
@@ -28767,7 +28772,7 @@ hairline({
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
     { const br = document.getElementById('stArBlurRow'), sh = () => { if (br) br.hidden = opt0('stArBar') !== 'grad' && opt0('stArFoot') !== 'grad'; }, opt0 = id => { const el = document.getElementById(id); return el ? el.value : ''; };   // Gradient blur: while there is a gradient
       ['stArBar', 'stArFoot'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', sh); }); sh(); }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArBlur', 'stArWel', 'stArTab'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArBlur', 'stArWel', 'stArTab', 'stArCard'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);

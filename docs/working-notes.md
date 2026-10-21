@@ -14921,3 +14921,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async report, anchor jumps:** with the Gradient bar the section's title lands 48 under the anchors, past the fade (40) and its blur, so it reads clearly; 16 under the solid bar. The spy's line follows, so the jumped-to chip stays active.
 - **Every modal's dismiss button 36:** the image viewer, Ask Eva, chat, sheets, price/inbox panels, the doctor's review (its square-corner cross re-centred), service sheets, the report and its sheet ("Dismiss ALL MODAL! 36px"); the report's back matches its close.
 - **Async biomarker rows, ghost cards 2 apart:** the group's 10 of gap moved inside the rows (19 of padding), the tile the whole row less 1, so hovered tiles sit 2 from the next; text spacing unchanged.
+- **Async report, Evidence cards tweak:** Outlined (default) or Filled, #fff 4% on dark, #000 4% on light ("tweak Behind this insight cards"), for Your biomarkers and Your answers.
+- **Biomarker rows, Insights and Async:** the sub (value | date) 12 under the 14 title.
+- **Async biomarker rows, the divider outside the cards:** card, 4, the rule, 4, card; the hover tile the whole row; the text as far apart as before.
+- **Async Evidence cards:** 24 of padding all round ("card padding 24px"); See N more and See X answered questions sit 24 from the card's foot.
+- **Async sheets:** the title alone, no sub ("remove sub"), on the close's centre line.
