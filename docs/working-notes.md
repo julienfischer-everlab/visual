@@ -14954,3 +14954,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async Key takeaway:** 16 between its header and its words ("+8px gap header / desc").
 - **Async Evidence cards: Filled by default** ("Filled should be the default style"); Outlined the other choice.
 - **Tweak renamed:** Evidence cards is now Cards style ("cards style, change name").
+- **XS device 853 tall, every page:** resize() hangs the XS frame (and every surface framed in it: .dash, .lp, the report's wrap, the Overview's dim) from --bpTop / --bpBot, 853 tall, centred under the bar, smaller only when the window is; the S tablet keeps its 48 above and below. The mobile shells (#phoneShell, #phoneShell2) take a 393 x 853 screen too (865 with the rim, width 0.4682 of it).
