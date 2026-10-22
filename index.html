@@ -5621,7 +5621,7 @@
   .aqWrap.aqBpS .aqStat .isl{display:none;}
   .aqStat svg{fill:currentColor;} .aqStat svg rect[fill="none"]{fill:none;stroke:currentColor;}
   .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on .aqStat{color:#141413;}   /* dark on the light paper; white over the dim */
-  .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome) .aqStat, .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsIntro) .aqStat{color:#fff;} .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome.arHtOn) .aqStat{color:#141413;}   /* the Halftone welcome on the paper: dark again */ .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arStk1) .aqStat{color:#fff;}   /* a sheet up: the page drawn back on black, the status bar white */   /* white on the welcome's picture (the hero again) */
+  .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome) .aqStat, .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsIntro) .aqStat{color:#fff;} .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome.arHtOn) .aqStat, .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome.arIsSphere) .aqStat{color:#141413;}   /* the Halftone welcome on the paper: dark again */ .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arStk1) .aqStat{color:#fff;}   /* a sheet up: the page drawn back on black, the status bar white */   /* white on the welcome's picture (the hero again) */
   /* the phone and the full modal: edge to edge */
   .aqWrap.aqPhone .aqFrame{left:0;top:0;width:100%;height:100%;border-radius:0;box-shadow:none;}
   .aqWrap.aqDev:is(.aqFull, .aqPhone) .arSheet{--ar-head-top:58px;}
@@ -12126,7 +12126,7 @@
         <!-- the welcome's header: the picture with the title on it, or Halftone, the title over a one-bit dithered visual with a mono date tag ("try a tweak on the top header intro with this style of visual", the MRI debrief's) -->
         <div class="tkRow" id="stArWelVisRow"><span class="lbl">Header visual</span><select id="stArWelVis" class="tkSegSel" aria-label="The welcome's header visual"><option value="photo" selected>Photo</option><option value="halftone">Halftone</option></select></div>
         <!-- the screen introducing the insights: none, the list after the welcome ("create a 2nd screen that intros all slides in card list items"), or Full bg, which is the welcome itself: the title word by word over the picture, then the card of what is covered ("the full bg should replace the intro, not an additional screen after that intro"); the Welcome and Header visual rows away while it is on -->
-        <div class="tkRow"><span class="lbl">Intro screen</span><select id="stArList" class="tkSegSel" aria-label="The screen introducing the insights"><option value="off">Off</option><option value="on" selected>List</option><option value="reveal">Full bg</option></select></div>
+        <div class="tkRow"><span class="lbl">Intro screen</span><select id="stArList" class="tkSegSel" aria-label="The screen introducing the insights"><option value="off">Off</option><option value="on" selected>List</option><option value="reveal">Full bg</option><option value="sphere">Sphere</option></select></div>
         </div>
         <div class="tkGroup" data-pages="lp">
         <div class="tkSub">Organ Age landing</div>
@@ -14279,6 +14279,14 @@
 .arSheet .arBmcDot { appearance: none; -webkit-appearance: none; width: 5px; height: 5px; margin: 0; padding: 0; border: 0; border-radius: 3px; background: oklch(var(--ar-ink) / .25); cursor: pointer; transition: width .2s ease, background-color .2s ease; } .arSheet .arBmcDot.arOn { width: 14px; background: oklch(var(--ar-ink)); }
 .arSheet .arBmcDot::before { content: ""; display: block; margin: -8px -3px; height: 21px; }   /* a larger target than the dot */
 .arSheet .arEvPane > .arBmc:not(:last-child) + .arEvSrc { margin-top: 0; }
+/* the Sphere welcome: black in the dark, white in the light, the head and the foot clear on it; the ball's canvas under the page; the card a quiet wash of the ink, the close on the ground's own ink */
+.arSheet { --ar-sph-bg: #fff; } .arSheet.arDark { --ar-sph-bg: #000; }
+.arSheet .arSphBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .44s ease; background: var(--ar-sph-bg); } .arSheet.arIsSphere .arSphBg { opacity: 1; }
+.arSheet .arSphBg canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.arSheet.arSheet.arIsSphere :is(.arHead, .arBody, .arFoot) { background: transparent; } .arSheet.arIsSphere :is(.arGround, .arFootGround) { display: none; }
+.arSheet.arSheet.arSheet.arSheet.arIsSphere.arIsWelcome .arIconBtn { background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink) / .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.arSheet.arIsSphere .arRvCard { background: oklch(var(--ar-ink) / .05); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+.arSheet.arIsSphere .arRvH { color: oklch(var(--ar-ink) / .56); }
 /* the push between the flow's pages: the leaving page in a layer where the body stood, clipped, under the head; the coming one over it going forward, under it going back; the foot over both */
 .arSheet .arPushOut { position: absolute; box-sizing: border-box; overflow: hidden; pointer-events: none; will-change: transform, opacity; }
 .arSheet .arPushIn { position: relative; z-index: 2; will-change: transform; }
@@ -14294,7 +14302,7 @@
 .arSheet.arSheet.arSheet.arSheet.arHtOn.arIsWelcome .arIconBtn { background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .78); -webkit-backdrop-filter: none; backdrop-filter: none; }   /* the close on the paper, not on a picture */
 @media (prefers-reduced-motion: reduce) { .arSheet .arHtImg { animation: none; } }
 /* Your insights, Full bg: the picture over the whole screen, the head and the foot clear over it, white in either theme (the dark tokens); the title centred, word by word, rising out of a blur; the card opening under it */
-.arSheet .arRvBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .5s ease; background: #1a0d0b; }
+.arSheet .arRvBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .44s ease; background: #1a0d0b; }
 .arSheet .arRvBg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 18% 50%; display: block; }   /* its red side in the frame, the dark falling away to the foot */
 .arSheet .arRvBg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, oklch(0% 0 0 / .32) 0, oklch(0% 0 0 / .12) 34%, oklch(0% 0 0 / .28) 62%, oklch(0% 0 0 / .62) 100%); }   /* the head's words and the card read on it */
 .arSheet.arIsIntro .arRvBg { opacity: 1; } .arSheet.arIsIntro .arRvBg img { animation: arRvZoom 10s cubic-bezier(.2, .6, .2, 1) both; }   /* the picture settling as the words come */
@@ -14308,7 +14316,7 @@
 .arSheet .arRvOpen { display: grid; grid-template-rows: 0fr; width: 100%; animation: arRvOpen .8s var(--ar-ease) both; }   /* the card's room opening under the title, which rises as the pair stays centred */
 @keyframes arRvOpen { from { grid-template-rows: 0fr; } to { grid-template-rows: 1fr; } }
 .arSheet .arRvIn { min-height: 0; overflow: hidden; margin: 0 -8px; padding: 0 8px; }
-.arSheet .arRvCard { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; margin-bottom: 4px; padding: 44px 44px 46px; border-radius: calc(var(--ar-radius-card) + 8px); background: oklch(100% 0 0 / .1); box-shadow: none; -webkit-backdrop-filter: blur(24px) saturate(1.2); backdrop-filter: blur(24px) saturate(1.2); text-align: left; animation: arRvCard .8s var(--ar-ease) both; }
+.arSheet .arRvCard { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; margin-bottom: 4px; padding: 20px 20px 22px; border-radius: calc(var(--ar-radius-card) + 8px); background: oklch(100% 0 0 / .1); box-shadow: none; -webkit-backdrop-filter: blur(24px) saturate(1.2); backdrop-filter: blur(24px) saturate(1.2); text-align: left; animation: arRvCard .8s var(--ar-ease) both; }
 @keyframes arRvCard { from { opacity: 0; filter: blur(8px); transform: translateY(24px); } to { opacity: 1; filter: blur(0); transform: none; } }
 .arSheet .arRvH { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink) / .64); }
 .arSheet .arRvList { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }   /* rows closer ("reduce bullet point row gap") */
@@ -14323,9 +14331,9 @@
 @media (prefers-reduced-motion: reduce) { .arSheet .arRvW, .arSheet .arRvCard, .arSheet .arRvLi, .arSheet.arIsIntro .arRvBg img { animation: none; } .arSheet .arRvOpen { animation: none; grid-template-rows: 1fr; } }
 /* the welcome as the reveal: the screen's height, its own scroller clear of the close and of a Gradient footer's button; who reviewed it at the card's foot, past a rule */
 .arSheet.arSheet.arSheet .arWelcome.arRvWel { height: 100%; }
-.arSheet .arRvScroll { box-sizing: border-box; height: 100%; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: calc(var(--ar-head-top, 16px) + 56px) var(--aqSide, 20px) 24px; } .arSheet .arRvScroll::-webkit-scrollbar { display: none; }
+.arSheet .arRvScroll { box-sizing: border-box; height: 100%; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: calc(var(--ar-head-top, 16px) + 56px) calc(var(--aqSide, 20px) + 24px) 24px; }   /* 24 more at the sides, the card 20 inside ("container +24px padding, card -24px padding") */ .arSheet .arRvScroll::-webkit-scrollbar { display: none; }
 .arSheet.arFootGrad .arRvScroll { padding-bottom: calc(var(--ar-cta-b, var(--ar-foot-h, 0px)) + 24px); }
-.arSheet .arRvBy { display: flex; align-items: center; gap: 8px; margin-top: 4px; padding: 14px 0 0; border-top: 1px solid oklch(100% 0 0 / .12); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .72); } .arSheet .arRvBy::before { display: none; } .arSheet .arRvBy .arRvDate { margin-left: auto; color: oklch(var(--ar-ink) / .56); white-space: nowrap; } .arSheet .arRvByTx { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .arSheet .arRvBy .arRvByTx .arRvDate { margin-left: 0; font-size: 13px; line-height: 16px; }   /* the name, the date under it */
+.arSheet .arRvBy { display: flex; align-items: center; gap: 8px; margin-top: 4px; padding: 14px 0 0; border-top: 1px solid oklch(var(--ar-ink) / .12); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .72); } .arSheet .arRvBy::before { display: none; } .arSheet .arRvBy .arRvDate { margin-left: auto; color: oklch(var(--ar-ink) / .56); white-space: nowrap; } .arSheet .arRvByTx { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .arSheet .arRvBy .arRvByTx .arRvDate { margin-left: 0; font-size: 13px; line-height: 16px; }   /* the name, the date under it */
 /* Your insights, the 2nd screen: a row each, its number in a ring, its name, its counts at its right in the biomarker rows' pills; filled or outlined with the Cards style; nothing to press */
 .arSheet .arIl { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .arSheet .arIlItem { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 14px 16px; border-radius: calc(var(--ar-radius-card) + 4px); background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); color: oklch(var(--ar-ink)); }
@@ -14439,7 +14447,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *
  *   const ar = window.AsyncReport.mount(host, {
  *     theme: 'light' | 'dark',         // default 'light' (the theme is only the .arDark class)
- *     welcome: 'cards' | 'includes' | 'reveal',   // default 'cards' (the source's welcomeContent prop); 'reveal' the welcome as the full-bg reveal
+ *     welcome: 'cards' | 'includes' | 'reveal' | 'sphere',   // default 'cards' (the source's welcomeContent prop); 'reveal' the welcome as the full-bg reveal
  *     bar: 'solid' | 'grad',           // default 'solid': the fixed bar's ground, or a gradient and blur over the flow
  *     foot: 'solid' | 'grad',          // default 'solid': the footer's ground, or a progressive gradient and blur over the flow
  *     blur: true | false,              // default true: a blur under the gradients
@@ -14511,7 +14519,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 
   // The welcome's words: the report, its doctor, its date and what the debrief holds ("use these content, step 1 and 2 for now")
   var WEL = {
-    title: 'Results from your Advanced bloods pathology are here.',
+    title: 'Your Advanced bloods pathology results are here',   // ("Results from your Advanced bloods pathology are here." --> this)
     dr: 'Dr Maylyn Goh', av: 'assets/overview/avatar-dr.webp', date: '20 October 2026',
     intro: ['Dr Maylyn Goh has reviewed your latest results and health history.'],
     found: 'The most important findings from your results, explained in context.',
@@ -14849,7 +14857,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var REPORT = D.report, WEL = D.wel, NEWI = D.newi, PANELS = D.panels, REST_H = D.restH;
     var o = {
       theme: opts.theme === 'dark' ? 'dark' : 'light',
-      welcome: opts.welcome === 'includes' ? 'includes' : opts.welcome === 'reveal' ? 'reveal' : 'cards',   // Full bg ('reveal'): the welcome itself as the reveal, the title word by word over the picture, then the card of what is covered
+      welcome: ['includes', 'reveal', 'sphere'].indexOf(opts.welcome) >= 0 ? opts.welcome : 'cards',   // 'sphere': the reveal on black (white in light) over a particle sphere turning at the foot   // Full bg ('reveal'): the welcome itself as the reveal, the title word by word over the picture, then the card of what is covered
       bar: opts.bar === 'grad' ? 'grad' : 'solid',
       foot: opts.foot === 'grad' ? 'grad' : 'solid',
       blur: opts.blur === true,   // the gradients' blur, under them: off ("remove any blur effect when it's gradient"); on only when asked   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
@@ -14894,8 +14902,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var foot = h('div', { class: 'arFoot' }, cta);
     var stage = h('div', { class: 'arStage' }, head, body, foot);   // the page, pushed back under a sheet
     var REVEAL = LIST && o.intro === 'reveal', RVW = o.welcome === 'reveal';   // the reveal as the 2nd screen, or as the welcome
+    var sphL = o.welcome === 'sphere' ? sphereLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball
     if (REVEAL || RVW) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the full-bg intro's picture, under the head, the flow and the foot
-    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && o.welcome !== 'reveal' ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
        --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
@@ -14977,6 +14986,51 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       qa.x.focus({ preventScroll: true });
     }
 
+    /* the Sphere welcome's ball ("add another tweak Sphere using black / white bg; with sphere particles sitting at the bottom of the screen rotating slowly; get that sphere from particle"):
+       the particle engine's Sphere rebuilt here in 3D so it can turn: nine in twenty points on its shell, the rest through its body, its weather the darker patches drifting with it, a few strays above;
+       the engine's three inks (brick-orange most, a cool grey, an off-white), each dot nearer brighter. Drawn on a canvas under the page, its top two fifths up from the foot, a turn every 90 s.
+       Every 3 s an orange 6 px square lands on a point facing us, rides the turn, blinks and goes ("randomly some orange square 6px should appear pointing the sphere, 1 every 3 s, blinking then disappear"). Still with reduced motion */
+    function sphereLayer() {
+      var cv = h('canvas', {}), el = h('div', { class: 'arSphBg', 'aria-hidden': 'true' }, cv), x = cv.getContext('2d');
+      var N = 9000, M = 220, P = new Float32Array((N + M) * 3), A = new Float32Array(N + M), K = new Uint8Array(N + M), rnd = Math.random, i, j;
+      var blobs = []; for (j = 0; j < 6; j++) { var bt = rnd() * 6.2832, bp = Math.acos(rnd() * 2 - 1); blobs.push([Math.sin(bp) * Math.cos(bt), Math.sin(bp) * Math.sin(bt), Math.cos(bp), .28 + rnd() * .3]); }
+      for (i = 0; i < N + M; i++) {
+        var amb = i >= N, u = rnd(), r = amb ? 1.04 + rnd() * .42 : (i % 20) < 9 ? .93 + .07 * u : Math.cbrt(u) * .93;
+        var th = rnd() * 6.2832, ph = Math.acos(rnd() * 2 - 1), px = Math.sin(ph) * Math.cos(th), py = Math.sin(ph) * Math.sin(th), pz = Math.cos(ph);
+        P[i * 3] = px * r; P[i * 3 + 1] = py * r; P[i * 3 + 2] = pz * r;
+        var dim = 0; if (!amb) blobs.forEach(function (b) { var d = Math.acos(Math.max(-1, Math.min(1, px * b[0] + py * b[1] + pz * b[2]))); dim = Math.max(dim, Math.exp(-d * d / (2 * b[3] * b[3]))); });   // the weather
+        A[i] = amb ? .12 + rnd() * .25 : (.35 + .65 * rnd()) * (1 - .82 * dim) * (.55 + .45 * Math.pow(r, 3));
+        var k = rnd(); K[i] = k < .58 ? 0 : k < .82 ? 1 : 2;
+      }
+      var INK = { d: ['214,112,58', '150,160,204', '238,232,226'], l: ['196,92,40', '92,104,156', '46,40,36'] };
+      var raf = 0, t0 = 0, marks = [], lastMark = 0, dark = function () { return root.classList.contains('arDark'); };
+      var draw = function (now) {
+        var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return;
+        var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
+        x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
+        var R = Math.min(Math.max(w * .62, hh * .32), hh * .42), cx = w / 2, cy = hh - R * .1, a = (now - t0) / 90000 * 6.2832, ca = Math.cos(a), sa = Math.sin(a), tl = .38, ct = Math.cos(tl), st = Math.sin(tl);
+        var ink = dark() ? INK.d : INK.l, lift = dark() ? 1.9 : 2.2, sx, sy, zz;   // brought up to the engine's own presence: the ball reads as a body, not a dusting
+        var proj = function (q) { var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st; zz = Y * st + z1 * ct; sx = cx + x1 * R; sy = cy - y1 * R; };
+        for (var c = 0; c < 3; c++) {
+          x.fillStyle = 'rgb(' + ink[c] + ')';
+          for (var q = 0; q < N + M; q++) {
+            if (K[q] !== c) continue; proj(q); if (sy < -4 || sy > hh + 4 || sx < -4 || sx > w + 4) continue;
+            var dp = (zz + 1) / 2, al = Math.min(1, A[q] * (.22 + .78 * dp) * lift); if (al < .02) continue;
+            var sz = 1.3 + .9 * dp; x.globalAlpha = al; x.fillRect(sx - sz / 2, sy - sz / 2, sz, sz);
+          }
+        }
+        x.globalAlpha = 1;
+        if (!reducedMotion()) {   // the marks: one every 3 s, on a shell point facing us and on the screen, blinking for 1.2 s, then out over .4 s
+          if (now - lastMark > 3000) { lastMark = now; for (var tries = 0; tries < 40; tries++) { var pk = Math.floor(rnd() * N); if (pk % 20 >= 9) continue; proj(pk); if (zz > .35 && sy > 12 && sy < hh - 12 && sx > 12 && sx < w - 12) { marks.push({ k: pk, t: now }); break; } } }
+          marks = marks.filter(function (m) { return now - m.t < 1600; });
+          marks.forEach(function (m) { var e = now - m.t, on = e < 1200 ? (e % 400) < 260 : true, al = e < 1200 ? 1 : 1 - (e - 1200) / 400; if (!on) return; proj(m.k); x.globalAlpha = al; x.fillStyle = '#ff7a1a'; x.fillRect(Math.round(sx - 3), Math.round(sy - 3), 6, 6); });
+          x.globalAlpha = 1;
+        }
+      };
+      var loop = function (now) { raf = 0; if (!alive || !root.classList.contains('arIsSphere') || el.offsetParent === null) return; draw(now); if (!reducedMotion()) raf = requestAnimationFrame(loop); };
+      return { el: el, run: function () { if (raf) return; if (!t0) t0 = performance.now(); lastMark = performance.now() - 1500; raf = requestAnimationFrame(loop); } };
+    }
+
     /* the picture as one-bit dots, ink on cream, as the printed visuals of the MRI debrief: drawn small, its light pushed apart, Atkinson dithered (a sixth of the error kept back, so the darks hold), shown pixelated */
     var HT_SRC = 'assets/overview/svc-microbiome.webp';   // cells under the microscope, the blood test's own matter
     function halftone(src, done) {
@@ -15002,7 +15056,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 
     /* ----- step 0: Welcome ----- */
     function buildWelcome() {
-      if (o.welcome === 'reveal') return buildWelReveal();
+      if (o.welcome === 'reveal' || o.welcome === 'sphere') return buildWelReveal();
       var content;
       if (o.welcome === 'includes') {
         var inc = function (d, label, first) {
@@ -15448,21 +15502,22 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var old = body.firstChild, d = pushDir; pushDir = 0;
       if (!old || !d || reducedMotion() || !old.animate) return null;
       var sc = [].slice.call(old.querySelectorAll('*')).filter(function (e) { return e.scrollTop > 0; }).map(function (e) { return [e, e.scrollTop]; });
-      return { el: old, d: d, t: body.offsetTop, l: body.offsetLeft, w: body.offsetWidth, h: body.offsetHeight, pad: getComputedStyle(body).padding, y: body.scrollTop, sc: sc, pic: root.classList.contains('arIsIntro') };
+      return { el: old, d: d, t: body.offsetTop, l: body.offsetLeft, w: body.offsetWidth, h: body.offsetHeight, pad: getComputedStyle(body).padding, y: body.scrollTop, sc: sc, pic: root.classList.contains('arIsIntro'), sph: root.classList.contains('arIsSphere') };
     }
     function pushTo(g) {
       if (!g) return;
       var ghost = h('div', { class: 'arPushOut', 'aria-hidden': 'true', inert: '', style: { top: g.t + 'px', left: g.l + 'px', width: g.w + 'px', height: g.h + 'px', padding: g.pad, 'z-index': g.d > 0 ? '1' : '3' } });
       ghost.appendChild(g.el); stage.appendChild(ghost); ghost.scrollTop = g.y; g.sc.forEach(function (x) { x[0].scrollTop = x[1]; });
-      var bg = g.pic && stage.querySelector(':scope > .arRvBg');   // a full-bg page leaves with its picture; any other on its paper
-      if (bg) { var cp = bg.cloneNode(true); cp.style.cssText = 'opacity:1;inset:auto;top:' + (-g.t) + 'px;left:' + (-g.l) + 'px;width:' + stage.clientWidth + 'px;height:' + stage.clientHeight + 'px'; ghost.insertBefore(cp, ghost.firstChild); }
-      else ghost.style.background = 'var(--ar-paper)';
-      var nw = body.firstChild, pic = root.classList.contains('arIsIntro');
+      /* to or from a full-bg page (the picture, the sphere), the grounds do not travel: both pages slide clear, the old one fading, while the picture fades into the next page's colour under them, so no edge of a ground crosses the screen
+         ("when transitioning between this intro and the screen, the bg image should fade out to the colour of the next screen; we don't see any bg cut while the 2nd screen comes in from the right"); between paper pages, each slides on its paper */
+      var pic = root.classList.contains('arIsIntro') || root.classList.contains('arIsSphere'), clear = pic || g.pic || g.sph;
+      if (!clear) ghost.style.background = 'var(--ar-paper)';
+      var nw = body.firstChild;
       try { nw.getAnimations({ subtree: true }).forEach(function (a) { if (/^ar(Rise|FadeUp|Fade)$/.test(a.animationName || '')) a.finish(); }); } catch (e) {}   // its own rises at once: the push is the motion
-      body.classList.add('arPushIn'); if (!pic) body.style.background = 'var(--ar-paper)';   // the coming page whole, on its paper; a full-bg one clear, over its picture
+      body.classList.add('arPushIn'); if (!clear) body.style.background = 'var(--ar-paper)';
       var f = g.d > 0;
       body.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], PUSH);
-      var out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: f ? (pic ? 0 : .5) : 1 }], PUSH);
+      var out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: clear ? 0 : f ? .5 : 1 }], PUSH);
       var done = function () { body.classList.remove('arPushIn'); body.style.background = ''; if (ghost.parentNode) ghost.parentNode.removeChild(ghost); };
       out.onfinish = done; out.oncancel = done;
     }
@@ -15473,12 +15528,13 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       qaClose(true);   // a step change closes the questionnaire's sheet
       spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled'); if (fitG) later(fitG, 0);
       var welcome = step === 0;
-      root.classList.toggle('arIsWelcome', welcome); root.classList.toggle('arIsIntro', (REVEAL && step === 1) || (RVW && welcome));
+      root.classList.toggle('arIsWelcome', welcome); root.classList.toggle('arIsIntro', (REVEAL && step === 1) || (RVW && welcome)); root.classList.toggle('arIsSphere', !!sphL && welcome);
       root.setAttribute('data-ar-step', String(step));
       backBtn.hidden = step === 0;
       stepWrap.hidden = welcome;
       steps.set(step);
-      ctaLabel.textContent = welcome ? 'Start' : step === NEXT ? 'Done' : 'Next';
+      ctaLabel.textContent = welcome ? 'See results' : step === NEXT ? 'Done' : 'Next';   // the welcome's ("Start --> See results")
+      if (sphL && welcome) sphL.run();
       if (gone && gone.el.parentNode === body) body.removeChild(gone.el);
       body.textContent = '';
       body.appendChild(build(step));
@@ -29660,7 +29716,7 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', list: opt('stArList') === 'on', wvis: opt('stArWelVis') === 'halftone' ? 'halftone' : 'photo', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', list: opt('stArList') === 'on', wvis: opt('stArWelVis') === 'halftone' ? 'halftone' : 'photo', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
@@ -29676,7 +29732,7 @@ hairline({
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
     { const l = document.getElementById('stArList'), rows = ['stArWelRow', 'stArWelVisRow'].map(id => document.getElementById(id)).filter(Boolean);   // Full bg is the welcome: its own rows away while it is on
-      const hide = () => rows.forEach(r => { r.hidden = !!l && l.value === 'reveal'; }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
+      const hide = () => rows.forEach(r => { r.hidden = !!l && (l.value === 'reveal' || l.value === 'sphere'); }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
     /* the presets, V1 and V2 ("V1 and V2 should be presets that I can save"): each every design tweak of the report; V1's own the page's defaults, V2's the same with one card for the evidence. Picking one sets its tweaks (one remount); Save keeps the current tweaks in it, Reset its own back; the one picked and what was saved kept in this browser. Save marked while the tweaks differ from the preset */
     { const KEYS = ['stArVar', 'stArEv', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
       const el = id => document.getElementById(id), pre = el('stArPre'), sv = el('stArPreSave'), rs = el('stArPreReset');
