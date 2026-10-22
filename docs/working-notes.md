@@ -15118,3 +15118,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The Sphere's foot gradient now runs from the button's middle down (solid under the note) and fades 98px up from there, so the taller foot does not swallow the ball.
 - "remove" (Labels: One by one / All): gone, with the All mode; one label at a time only.
 - "Move up visual by 48px and content by 32px" (Sphere hero): its content starts 32 higher (32 under the head, was 64); its ball sits 48 higher on the screen (32 with the title, 16 of its own).
+- "+12px margin bottom" (See my results): the pill intros' foot (Sphere, Sphere hero, Halftone) 12 deeper at its foot, so the pill, and the note under it, sit 12 higher.
+- "footer bg gradient opacity 50%": the Sphere's foot gradient at half.
+- "more rounded" (Sphere hero): the ball 1.1x the base (was 1.4x, about twice the screen's width, so only a flat cap showed), its top where it was: its curve reads as a ball.
