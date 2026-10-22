@@ -14376,6 +14376,7 @@
 @keyframes arRvBlink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .arSheet .arRvCur { animation: none; } }
 .arSheet .arRvWel .arRv.arOrb { min-height: 100%; }
+.arSheet.arSheet.arOrbit.arIsWelcome .arFoot { align-items: center; } .arSheet.arSheet.arOrbit.arIsWelcome .arFoot > .arBtnLg { width: auto; max-width: none; padding: 0 36px; border-radius: 9999px; }   /* Sphere hero: See my results, fully rounded, hugging its words, centred ("See my results; full rounded hug") */
 .arSheet .arOrbChips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; padding-bottom: 0; animation: arRvWord .8s var(--ar-ease) both; }   /* the doctor and the date, centred under the title */   /* Sphere hero: the page's height, its reassurance at the foot */
 .arSheet .arOrbLab { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; will-change: transform, opacity; } .arSheet:not(.arIsWelcome) .arOrbLab { display: none; }   /* Sphere hero: a label at its point of the ball, following it */
 .arSheet .arOrbBox { opacity: 0; transition: opacity .35s ease; } .arSheet .arOrbBox.arOrbOn { opacity: 1; } .arSheet .arOrbBox.arOrbGone { opacity: 0; filter: blur(3px); transition: opacity .42s ease, filter .42s ease; }
@@ -14975,7 +14976,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var REVEAL = LIST && o.intro === 'reveal', RVW = o.welcome === 'reveal';   // the reveal as the 2nd screen, or as the welcome
     var sphL = o.welcome === 'sphere' || o.welcome === 'orbit' ? sphereLayer(o.welcome === 'orbit') : o.welcome === 'halftone' ? ditherLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball; the Halftone's creme and its dithered picture
     if (REVEAL || RVW || !sphL) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the picture also for the last page, unless the Sphere or Halftone ground is its own   // the full-bg intro's picture, under the head, the flow and the foot
-    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
        --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
@@ -15707,7 +15708,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var old = body.firstChild, d = pushDir; pushDir = 0;
       if (!old || !d || reducedMotion() || !old.animate) return null;
       var sc = [].slice.call(old.querySelectorAll('*')).filter(function (e) { return e.scrollTop > 0; }).map(function (e) { return [e, e.scrollTop]; });
-      return { el: old, d: d, t: body.offsetTop, l: body.offsetLeft, w: body.offsetWidth, h: body.offsetHeight, pad: getComputedStyle(body).padding, y: body.scrollTop, sc: sc, pic: root.classList.contains('arIsIntro'), sph: root.classList.contains('arIsSphere') };
+      var cg = null;   // the Sphere hero's pill (See my results): a copy where it stood, to leave with its page
+      if (root.classList.contains('arOrbit') && root.classList.contains('arIsWelcome')) { var cr = cta.getBoundingClientRect(), sr = stage.getBoundingClientRect(); cg = cta.cloneNode(true); cg.removeAttribute('id'); cg.setAttribute('aria-hidden', 'true'); cg.tabIndex = -1;
+        cg.style.cssText = 'position:absolute;margin:0;left:' + (cr.left - sr.left) + 'px;top:' + (cr.top - sr.top) + 'px;width:' + cr.width + 'px;height:' + cr.height + 'px;border-radius:9999px;padding:0 36px;z-index:4;pointer-events:none;'; }
+      return { el: old, d: d, t: body.offsetTop, l: body.offsetLeft, w: body.offsetWidth, h: body.offsetHeight, pad: getComputedStyle(body).padding, y: body.scrollTop, sc: sc, pic: root.classList.contains('arIsIntro'), sph: root.classList.contains('arIsSphere'), cg: cg };
     }
     function pushTo(g) {
       if (!g) return;
@@ -15728,6 +15732,12 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(' + (up ? -48 : 48) + 'px)', opacity: 0, offset: .7 }, { transform: 'translateY(' + (up ? -72 : 72) + 'px)', opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' });
         body.animate([{ transform: 'translateY(' + (up ? rise : -rise) + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], IN);
         [backBtn, head.querySelector('.arNavT'), stepWrap].forEach(function (el) { if (el && !el.hidden && el.animate) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, delay: IN.delay + IN.duration - 120, easing: 'ease', fill: 'backwards' }); });   // the nav once the page is in
+        if (g.cg) {   /* the Sphere hero's pill goes with its page ("going away with the content when transitioning"), the page's own button coming up with the new one */
+          stage.appendChild(g.cg);
+          var cgo = g.cg.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(' + (up ? -48 : 48) + 'px)', opacity: 0, offset: .7 }, { transform: 'translateY(' + (up ? -72 : 72) + 'px)', opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' });
+          var cgDone = function () { if (g.cg.parentNode) g.cg.parentNode.removeChild(g.cg); }; cgo.onfinish = cgDone; cgo.oncancel = cgDone;
+          cta.animate([{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: IN.delay + 120, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' });
+        }
       } else {   // between paper pages, a push: the new over the old, which drifts a third left and dims; back, the other way
         body.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], PUSH);
         out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: f ? .5 : 1 }], PUSH);
@@ -15747,7 +15757,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       backBtn.hidden = step === 0;
       stepWrap.hidden = welcome || end;
       steps.set(step);
-      ctaLabel.textContent = welcome ? 'See results' : step === NEXT ? 'Done' : 'Next';   // the welcome's ("Start --> See results")
+      ctaLabel.textContent = welcome ? (o.welcome === 'orbit' ? 'See my results' : 'See results') : step === NEXT ? 'Done' : 'Next';   // the welcome's ("Start --> See results")
       if (sphL && (welcome || end)) sphL.run();
       if (gone && gone.el.parentNode === body) body.removeChild(gone.el);
       body.textContent = '';
