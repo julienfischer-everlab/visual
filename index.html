@@ -12100,6 +12100,8 @@
         <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
         <!-- Behind this insight: From your data's card and a card each (V1's), or one card, a pill each for Biomarkers and Questionnaire (V2's) ("create a V2 Async"); the preset V1 or V2 sets it -->
         <div class="tkRow"><span class="lbl">Evidence</span><select id="stArEv" class="tkSegSel" aria-label="Behind this insight's layout"><option value="v1" selected>Cards</option><option value="v2">One card</option></select></div>
+        <!-- Behind this insight's biomarkers: the list, or a carousel, a slide each as the Overview's insight card ("biomarker section tweak: static, carousel") -->
+        <div class="tkRow"><span class="lbl">Biomarkers</span><select id="stArBm" class="tkSegSel" aria-label="How the biomarkers show"><option value="static" selected>Static</option><option value="carousel">Carousel</option></select></div>
         <!-- See N more: the bottom sheet with them all, or the rest opened in place ("tweak See more by collapsing vs bottom sheet") -->
         <div class="tkRow"><span class="lbl">See more</span><select id="stArMore" class="tkSegSel" aria-label="What See more does"><option value="sheet" selected>Bottom sheet</option><option value="fold">Collapse</option></select></div>
         <!-- the report's theme is the bar's Mode (Dark mode: dark; Light and Colour: light), not a tweak here ("theme shouldn't be handled here but on the mode controller") -->
@@ -14259,6 +14261,24 @@
 .arSheet .arLfAnsHd { display: flex; align-items: center; justify-content: space-between; gap: 12px; } .arSheet .arLfEv .arLfAnsHd > .arLfCardH { padding: 0; min-width: 0; }
 .arSheet .arLfAnsFold { gap: 12px; } .arSheet .arLfAnsFold > .arLfAnsL:first-child { margin-top: 16px; }
 @media (prefers-reduced-motion: reduce) { .arSheet .arFold, .arSheet .arMb.arMbFade, .arSheet .arMbMore .arIco, .arSheet .arLfDetail .arIco { transition: none; } }
+/* Biomarkers, Carousel: the card's width, edge to edge inside it, a slide each (the Overview's insight card): status, name, value and date, See detail; the sparkline at the right in the range colours, its value in a chip; the dots under */
+.arSheet .arBmc { margin: 4px -20px 0; border-radius: 0 0 calc(var(--ar-radius-card) + 4px) calc(var(--ar-radius-card) + 4px); overflow: hidden; } .arSheet .arBmc:last-child { margin-bottom: -20px; }
+.arSheet .arBmcTrack { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; cursor: grab; } .arSheet .arBmcTrack::-webkit-scrollbar { display: none; }
+.arSheet .arBmcTrack.arBmcDrag { scroll-snap-type: none; cursor: grabbing; user-select: none; -webkit-user-select: none; }
+.arSheet .arBmcSl { flex: 0 0 100%; min-width: 0; box-sizing: border-box; scroll-snap-align: start; display: grid; grid-template-columns: minmax(0, 1fr) 42%; gap: 16px; padding: 8px 20px 0; }
+.arSheet .arBmcTx { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.arSheet .arBmcEb { font-family: var(--ar-font); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: oklch(var(--ar-ink) / .56); }
+.arSheet .arBmc-o { color: var(--ar-opt-fg); } .arSheet .arBmc-s { color: var(--ar-sub-fg); } .arSheet .arBmc-x { color: var(--ar-out-fg); }
+.arSheet .arBmcT { font-family: var(--ar-font); font-size: 17px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink)); text-wrap: pretty; }
+.arSheet .arBmcSub { font-family: var(--ar-font); font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.arSheet .arBmcCta { appearance: none; -webkit-appearance: none; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin: 10px 0 0; padding: 4px 0; border: 0; background: none; font: inherit; font-family: var(--ar-font); font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink)); cursor: pointer; } .arSheet .arBmcCta:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; border-radius: 4px; }
+.arSheet .arBmcVis { position: relative; align-self: stretch; min-height: 118px; } .arSheet .arBmcVis svg { position: absolute; left: 0; right: 0; top: 18px; bottom: 0; width: 100%; height: calc(100% - 18px); overflow: visible; }
+.arSheet .arBmcChip { position: absolute; top: 0; right: 0; padding: 3px 8px; border-radius: 8px; background: oklch(var(--ar-ink) / .1); font-family: var(--ar-font); font-size: 12px; line-height: 16px; color: oklch(var(--ar-ink)); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.arSheet .arBmcQ { display: grid; place-items: center; } .arSheet .arBmcQ .arBmcChip { position: static; }
+.arSheet .arBmcDots { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 14px 0 18px; }
+.arSheet .arBmcDot { appearance: none; -webkit-appearance: none; width: 5px; height: 5px; margin: 0; padding: 0; border: 0; border-radius: 3px; background: oklch(var(--ar-ink) / .25); cursor: pointer; transition: width .2s ease, background-color .2s ease; } .arSheet .arBmcDot.arOn { width: 14px; background: oklch(var(--ar-ink)); }
+.arSheet .arBmcDot::before { content: ""; display: block; margin: -8px -3px; height: 21px; }   /* a larger target than the dot */
+.arSheet .arEvPane > .arBmc:not(:last-child) + .arEvSrc { margin-top: 0; }
 /* the push between the flow's pages: the leaving page in a layer where the body stood, clipped, under the head; the coming one over it going forward, under it going back; the foot over both */
 .arSheet .arPushOut { position: absolute; box-sizing: border-box; overflow: hidden; pointer-events: none; will-change: transform, opacity; }
 .arSheet .arPushIn { position: relative; z-index: 2; will-change: transform; }
@@ -14425,6 +14445,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *     ev: 'v1' | 'v2',                 // default 'v1': Behind this insight as From your data's card, then a card each; 'v2' (Async report V2) one card, a pill each for Biomarkers and Questionnaire, its sources under its list
  *     persona: 'p1' | 'p2',            // default 'p1': whose report, Persona #1 or Persona #2 (each its welcome, insights and everything else)
  *     more: 'sheet' | 'fold',          // default 'sheet': See N more opens the bottom sheet, or the rest in place (Collapse)
+ *     bm: 'static' | 'carousel',       // default 'static': the biomarkers as a list, or a carousel of slides (the Overview's insight card, a sparkline each)
  *     list: true | false,              // default true: the 2nd screen, every insight as a card
  *     wvis: 'photo' | 'halftone',      // default 'photo': the welcome's header, the picture with its title on it, or the title over a one-bit dithered visual and a mono date tag
  *     intro: 'list' | 'reveal',        // default 'list': that screen as the list, or the full-bg reveal (title word by word, then a card of bullets)
@@ -14833,6 +14854,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       srcVis: opts.srcVis === 'image' ? 'image' : 'hairline',   // From your data's visual: the Hairline report file (default) or the Overview's report render
       ev: opts.ev === 'v2' ? 'v2' : 'v1',   // Behind this insight: From your data's card and a card each (V1), or one card grouped by pill (Async report V2)
       more: opts.more === 'fold' ? 'fold' : 'sheet',   // See N more: the bottom sheet with them all (default), or the rest opened in place
+      bm: opts.bm === 'carousel' ? 'carousel' : 'static',   // Behind this insight's biomarkers: the list (default), or a carousel, a slide each, the Overview's insight card
       list: opts.list !== false,   // the 2nd screen: every insight as a card, before the first (default on)
       intro: opts.intro === 'reveal' ? 'reveal' : 'list',
       wvis: opts.wvis === 'halftone' ? 'halftone' : 'photo',   // the welcome's header: the picture with the title on it (default), or Halftone, the title over a one-bit dithered visual with its date tag (the MRI debrief's style)   // that screen as the list (default), or the full-bg reveal: its title word by word over the picture, then a card of what is covered
@@ -15125,6 +15147,52 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         return h('i', { class: 'arSrcP', style: { '--x': (128 + r(1) * 44).toFixed(0) + 'px', '--y': (14 + r(2) * 72).toFixed(0) + '%', '--dx': (62 + r(3) * 36).toFixed(0) + 'px', '--dy': ((r(4) - .5) * 22).toFixed(0) + 'px', '--s': (1.2 + r(5) * .8).toFixed(1) + 'px', '--d': (6.5 + r(6) * 3.5).toFixed(2) + 's', '--dl': (-r(7) * 10).toFixed(2) + 's' } });   // finer and slower ("particle thinner and slower"; then "lighter and a bit slower")
       });
     }
+    /* the biomarkers as a carousel ("biomarker section tweak: static, carousel; refer to the overview card insight but with biomarker inside"): a slide each, as the Overview's insight card, its status over its name, its value and date, See detail;
+       at its right its last readings as a line coloured by the range each falls in, its value in a chip; the dots under, the one in view long. Swiped, dragged with a mouse, or a dot pressed */
+    function bmCarousel(ms) {
+      var BD = window.BioDetail, ST = { 'Optimal': 'o', 'Suboptimal': 's', 'Out of range': 'x' }, COL = { o: 'var(--mbO)', s: 'var(--mbS)', x: 'var(--mbX)', n: 'oklch(var(--ar-ink) / .4)' }, moved = false;
+      var spark = function (m) {
+        var d = null; try { d = BD && BD.model ? BD.model(m) : null; } catch (e) { d = null; }
+        if (!d || d.text || !d.hist || d.hist.length < 2) return h('div', { class: 'arBmcVis arBmcQ', 'aria-hidden': 'true' }, h('span', { class: 'arBmcChip', text: 'Your answer' }));   // an answer, not a reading
+        var hs = d.hist.slice(-6), vs = hs.map(function (x) { return x.v; }), lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs), pad = (hi - lo) * .3 || Math.abs(hi) * .1 || 1; lo -= pad; hi += pad;
+        var X = function (i) { return 12 + i * 216 / (hs.length - 1); }, Y = function (v) { return 88 - (v - lo) / (hi - lo) * 70; }, ln = function (a, b, c) { return s('path', { d: a, fill: 'none', 'stroke-width': b, 'stroke-linecap': 'round', 'vector-effect': 'non-scaling-stroke', style: { stroke: c } }); };
+        var segs = [], k = hs.length - 1;
+        for (var i = 1; i <= k; i++) segs.push(ln('M' + X(i - 1).toFixed(1) + ' ' + Y(vs[i - 1]).toFixed(1) + 'L' + X(i).toFixed(1) + ' ' + Y(vs[i]).toFixed(1), 2.5, COL[BD.zoneOf(d, vs[i])] || COL.n));
+        [0, Math.floor(k / 2), k].forEach(function (i) { segs.push(ln('M' + X(i).toFixed(1) + ' ' + Y(vs[i]).toFixed(1) + 'h0.01', i === k ? 9 : 7, COL[BD.zoneOf(d, vs[i])] || COL.n)); });
+        return h('div', { class: 'arBmcVis', 'aria-hidden': 'true' },
+          s('svg', { viewBox: '0 0 240 100', preserveAspectRatio: 'none' }, ln('M0 22h240M0 55h240M0 88h240', 1, 'oklch(var(--ar-ink) / .08)'), segs),
+          h('span', { class: 'arBmcChip', text: m.value }));
+      };
+      var slides = ms.map(function (m, i) {
+        var st = ST[m.status] || 'n', d = null; try { d = BD && BD.model ? BD.model(m) : null; } catch (e) {}
+        var cta = h('button', { type: 'button', class: 'arBmcCta', 'aria-haspopup': 'dialog' }, h('span', { text: 'See detail' }), strokeIcon(16, 16, 1.6, ['M3 8h10', 'M9 4l4 4-4 4']));
+        on(cta, 'click', function () { if (!moved) bioOpen(m, cta); });
+        return h('div', { class: 'arBmcSl', role: 'group', 'aria-roledescription': 'slide', 'aria-label': (i + 1) + ' of ' + ms.length + ': ' + m.name },
+          h('div', { class: 'arBmcTx' },
+            h('span', { class: 'arBmcEb arBmc-' + st, text: m.status || 'Answer' }),
+            h('b', { class: 'arBmcT', text: m.name }),
+            h('span', { class: 'arBmcSub', text: m.value + ' · ' + m.date }),
+            cta),
+          spark(m));
+      });
+      var track = h('div', { class: 'arBmcTrack' }, slides);
+      var dots = ms.map(function (m, i) { var b = h('button', { type: 'button', class: 'arBmcDot', 'aria-label': 'Show ' + m.name }); on(b, 'click', function () { track.scrollTo({ left: i * track.clientWidth, behavior: reducedMotion() ? 'auto' : 'smooth' }); }); return b; });
+      var cur = -1, sync = function () { var k = Math.max(0, Math.min(ms.length - 1, Math.round(track.scrollLeft / Math.max(1, track.clientWidth)))); if (k === cur) return; cur = k; dots.forEach(function (b, i) { b.classList.toggle('arOn', i === k); b.setAttribute('aria-current', String(i === k)); }); };
+      on(track, 'scroll', function () { requestAnimationFrame(sync); }, { passive: true }); sync();
+      // a mouse drags it, as a finger swipes it: the track follows, then settles on the slide it was let go nearest, or the next one when flicked
+      on(track, 'pointerdown', function (e) {
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        var x0 = e.clientX, l0 = track.scrollLeft, w = track.clientWidth, lx = x0, lt = performance.now(), vx = 0, drag = false;
+        var mv = function (ev) { var dx = ev.clientX - x0; if (!drag && Math.abs(dx) < 4) return; if (!drag) { drag = true; moved = true; track.classList.add('arBmcDrag'); }
+          track.scrollLeft = l0 - dx; var t = performance.now(); vx = (ev.clientX - lx) / Math.max(1, t - lt); lx = ev.clientX; lt = t; ev.preventDefault(); };
+        var up = function () { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+          if (!drag) return; var near = track.scrollLeft / w, k = Math.abs(vx) > .35 ? (vx < 0 ? Math.ceil(near) : Math.floor(near)) : Math.round(near); k = Math.max(0, Math.min(ms.length - 1, k));
+          track.classList.remove('arBmcDrag'); track.scrollTo({ left: k * w, behavior: reducedMotion() ? 'auto' : 'smooth' }); setTimeout(function () { moved = false; }, 0); };
+        addEventListener('pointermove', mv); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+      });
+      return h('div', { class: 'arBmc', role: 'region', 'aria-roledescription': 'carousel', 'aria-label': 'Biomarkers' }, track, h('div', { class: 'arBmcDots' }, dots));
+    }
+
     function buildLife(L) {
       var up = h('button', { type: 'button', class: 'arLfThumb', 'aria-label': 'Useful', 'aria-pressed': 'false' }, thumbIcon(true));
       var down = h('button', { type: 'button', class: 'arLfThumb', 'aria-label': 'Not useful', 'aria-pressed': 'false' }, thumbIcon(false));
@@ -15164,13 +15232,14 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         fade = mbRow(L.markers[o.mb]); fade.className += ' arMbFade'; fade.removeAttribute('tabindex'); fade.setAttribute('aria-hidden', 'true');
         more = moreBtn(rest, function (b) { mbOpen(L, b); }, function () { return L.markers.slice(o.mb + 1).map(mbRow); }, '');   // Collapse: the faded one clears, the rest under it
       }
+      var bmc = o.bm === 'carousel' && L.markers.length ? bmCarousel(L.markers) : null;   // Biomarkers: Carousel
       /* Async report V2: Biomarkers and Questionnaire in one card, a pill each ("biomarkers and questions will live in one card, grouped by pill"); each its list, then its sources as the square bullets under it,
          From your data's card gone ("remove From your data and put the bullet points inside the corresponding card, below the biomarkers or the questionnaire content"), and the answered questions' own card with it */
       var evV2 = function () {
         var qn = function (x) { return x[0] === 'qn'; }, src = L.sources || [];
         var srcs = function (list) { return list.length ? h('ul', { class: 'arSrc arEvSrc', 'aria-label': 'Sources' }, list.map(function (x) { return h('li', { class: 'arSrcRow', text: x[1] }); })) : null; };
         var groups = [];
-        if (L.markers.length) groups.push(['Biomarkers', h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more), src.filter(function (x) { return !n || !qn(x); })]);   // the blood and test results; the questionnaire's too when there is no Questionnaire pill
+        if (L.markers.length) groups.push(['Biomarkers', bmc || h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more), src.filter(function (x) { return !n || !qn(x); })]);   // the blood and test results; the questionnaire's too when there is no Questionnaire pill
         if (n) {   // every question with its answer, as many as the biomarkers before See N more, which opens them all in the sheet
           var qMore = null, left = n - o.mb;
           if (left > 0) qMore = moreBtn(left, function (b) { qaOpen(L, b); }, function () { return L.answers.slice(o.mb).map(ansRow); }, 'arEvMore');
@@ -15198,7 +15267,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
               h('span', { class: 'arSrcTab', text: 'From your data' }),
               h('span', { class: 'arSrcClip', 'aria-hidden': 'true' }, o.srcVis === 'image' ? h('img', { class: 'arSrcImg', src: 'assets/overview/card4-doc.webp', alt: '', decoding: 'async', draggable: 'false' }) : hlDoc(), srcDust()),   // Data visual: the Hairline file, or the Overview's render
               h('ul', { class: 'arSrc', 'aria-label': 'Sources' }, (L.sources || []).map(function (x) { return h('li', { class: 'arSrcRow', text: x[1] }); })))),
-          grey(nMb(L.markers.length), h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more)),
+          grey(nMb(L.markers.length), bmc || h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more)),
           ans ? grey(nAns(n), ans) : ansFold ? h('div', { class: 'arLfCard arLfAnsCard' }, h('div', { class: 'arLfAnsHd' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore), ansFold) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore) : null);
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"; then "Evidence, Findings, Meaning"); the sections keep their own headings
         ['Findings', h('div', { class: 'arLfSec arAnimRise arD24' }, h('span', { class: 'arLfH', text: 'What we noticed' }), L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))],
@@ -15626,7 +15695,7 @@ window.BioDetail = (function () {
     host.appendChild(ov); push(true); void ov.offsetWidth; ov.classList.add('bmdOn'); x.focus({ preventScroll: true });
     return { close: close, el: ov };
   }
-  return { body: body, sheet: sheet };
+  return { body: body, sheet: sheet, model: model, zoneOf: zoneOf };   // model / zoneOf: a marker's readings and their ranges, for the report's biomarker carousel
 })();
 
 /* the Insights phone's biomarker rows open their detail: the row's name, reading, date, status, and where its marker sits on its three-band bar (optimal, suboptimal, out of range) */
@@ -29568,7 +29637,7 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', list: opt('stArList') === 'on', wvis: opt('stArWelVis') === 'halftone' ? 'halftone' : 'photo', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', list: opt('stArList') === 'on', wvis: opt('stArWelVis') === 'halftone' ? 'halftone' : 'photo', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
@@ -29586,7 +29655,7 @@ hairline({
     { const l = document.getElementById('stArList'), rows = ['stArWelRow', 'stArWelVisRow'].map(id => document.getElementById(id)).filter(Boolean);   // Full bg is the welcome: its own rows away while it is on
       const hide = () => rows.forEach(r => { r.hidden = !!l && l.value === 'reveal'; }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
     /* the presets, V1 and V2 ("V1 and V2 should be presets that I can save"): each every design tweak of the report; V1's own the page's defaults, V2's the same with one card for the evidence. Picking one sets its tweaks (one remount); Save keeps the current tweaks in it, Reset its own back; the one picked and what was saved kept in this browser. Save marked while the tweaks differ from the preset */
-    { const KEYS = ['stArVar', 'stArEv', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
+    { const KEYS = ['stArVar', 'stArEv', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
       const el = id => document.getElementById(id), pre = el('stArPre'), sv = el('stArPreSave'), rs = el('stArPreReset');
       const now = () => { const o = {}; KEYS.forEach(k => { if (el(k)) o[k] = el(k).value; }); return o; };
       if (pre && sv && rs){
@@ -29605,7 +29674,7 @@ hairline({
         if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
         apply(pre.value); }   // the one last picked, with what was saved in it
     }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArList', 'stArMore', 'stArWelVis'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
