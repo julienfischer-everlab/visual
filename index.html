@@ -15546,11 +15546,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       body.classList.add('arPushIn'); if (!clear) body.style.background = 'var(--ar-paper)';
       var f = g.d > 0;
       var out;
-      if (clear) {   // to or from a full-bg page, the travel is up ("transition to next page: move up content and bg parallax"): the old page rises and fades, the new one rises in from below, and the ground drifts up at a third of the pace as it fades into the next page's colour; back, all of it the other way
-        var V = { duration: 640, easing: 'cubic-bezier(.32, .72, 0, 1)' }, up = f ? 1 : -1;
-        body.animate([{ transform: 'translateY(' + (up * 100) + '%)' }, { transform: 'none' }], V);
-        out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(' + (-up * 60) + '%)', opacity: 0 }], V);
-        [].forEach.call(stage.querySelectorAll(':scope > .arRvBg, :scope > .arSphBg'), function (gl) { gl.animate(f ? [{ transform: 'none' }, { transform: 'translateY(-30%)' }] : [{ transform: 'translateY(-30%)' }, { transform: 'none' }], V); });
+      if (clear) {   // to or from a full-bg page, a fade ("transition: fade out, content should go down; next screen content should fade in, go up"): the old page sinks 40 as it fades, the ground fading with it into the next page's colour; the new page, a beat after, rises 40 into place as it fades in; the same either way
+        out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(40px)', opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.4, 0, 1, 1)', fill: 'forwards' });
+        body.animate([{ transform: 'translateY(40px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 560, delay: 180, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'backwards' });
       } else {   // between paper pages, a push: the new over the old, which drifts a third left and dims; back, the other way
         body.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], PUSH);
         out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: f ? .5 : 1 }], PUSH);
