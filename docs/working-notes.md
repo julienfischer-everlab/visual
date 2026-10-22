@@ -15162,3 +15162,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "active always above everything": the open label sits over every other label's square (z-index 3 while open, dropped once it has folded back).
 - "remove blinking square once the label is fully written": the block cursor leaves with the last letter; the badge closes up to the words.
 - "it's too rounded at the top" (Sphere hero): the ball 1.22x the base (between the flat cap of 1.4x and the dome of 1.045x), its top where it was.
+
+### Blood stream surges, zone, hand-over; rows; end screen; transitions; progress
+- Blood stream: "particles 2x finer": half the size (about 1.2px near the camera's side, .6 far), under a device pixel drawn as its share of one. "When a new orange marker becomes active, the whole flow briefly accelerates towards it ... smoothly speeds up, reveals it, slows back down; no jumps": the flow runs on its own clock (real time plus surges); each new label is brought into view by a surge, the least run ahead (4 to 16 flow-seconds, over 3.2s, smootherstep, front-loaded: quick to gather, long to settle) that lands an orange point not yet in view inside the zone; the camera and the flow both run on it, so it reads as travelling forward.
+- "Make sure the active marker is always in this red zone": both visuals now predict where a square will be as its label opens and still when its words are read, the sphere with its spin, tilt and roll as they will be then, the stream with the surge's own progress; with none in reach the sphere moves the next label to a clump's point that will land there. Probed over 25s each: 0 samples out of the zone.
+- "When another becomes active, keep the inactive badge visible during the rotation, then it disappears": the last label rides the turn (or the surge) whole, then folds as the new one opens where it has landed.
+- Sphere: "does the sphere rotate on multiple axes?": yes, now plainly: tilt rocking 13 degrees either way (about 38s a cycle), roll 9 (about 50s), over the left-to-right spin. "too rounded": the hero's ball 1.34x the base.
+- Carousel sparkline: "dot border 1.5px".
+- Everything else: each area's sheet now lists the biomarker rows (name, range bar, value | date, status pill; out of range first), each opening its detail, in the full bottom sheet. Each marker given a reading fitting its status (a table by name).
+- The end: Done a pill hugging its word, centred; the content from the top, 64 under the nav; the two ways on as two secondary cards (ink 6%, blurred, 8 apart).
+- "Insight pages should transition left right, with fade in/out; the bg stays": between paper pages the old content drifts 40px the way it goes and fades (.26s), the new comes 40px from the other side as it fades in (.44s after .15s); the ground does not move.
+- "Current step should fill the next step": the progress fills the next bar whole (no 2px start of it); the last page shown fills them all.
+- "move up chart by 24px" (carousel sparkline): 24 higher in its slide, the same height.
+- The end's title 64 under the nav (measured); the stream's open label always whole, not faded with its point's depth.
