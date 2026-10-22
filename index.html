@@ -14244,6 +14244,8 @@
 .arSheet .arQaHd { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .arSheet .arQaT { font-family: var(--ar-font); font-size: 20px; line-height: 24px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
 .arSheet .arQaList { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px; outline-offset: -2px; }
+.arSheet .arQa.arQaFit:not(.arQb) .arQaPanel { height: auto; max-height: calc(100% - var(--ar-qa-top, 16px) - 16px); padding-bottom: calc(var(--ar-foot-bottom, 40px) - 8px); }   /* fit: as tall as its content, up to the full sheet's height, then it scrolls */
+.arSheet .arQa.arQaFit .arQaList { flex: 0 1 auto; }
 .arSheet .arQaRow { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 0; border-top: 1px solid oklch(var(--ar-ink) / .06); }
 .arSheet .arQaRow:first-child { border-top: 0; }
 /* the stacking, as iOS: under a sheet the page draws back (8% smaller, rounded, on black, its top just under the status bar); under a stacked sheet the first sheet draws back too, and the page further */
@@ -15010,7 +15012,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       return (layers[k] = L);
     }
     function sheetUp(k) { return !!(layers[k] && !layers[k].el.hidden && layers[k].el.classList.contains('arOn')); }
-    function stacked() { root.classList.toggle('arStk1', sheetUp(0)); root.classList.toggle('arStk2', sheetUp(1)); }
+    function stacked() { root.classList.toggle('arStk1', sheetUp(0) && !layers[0].el.classList.contains('arQaFit')); root.classList.toggle('arStk2', sheetUp(1)); }   // a content-height sheet draws nothing back
     function sheetClose(k, now) {
       var L = layers[k]; if (!L || L.el.hidden) return;
       if (!k) sheetClose(1, true);   // the one on it goes with it
@@ -15020,22 +15022,23 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       if (now || reducedMotion()) L.el.hidden = true; else L.t = later(function () { L.el.hidden = true; }, 400);
     }
     function qaClose(now) { sheetClose(0, now); }
-    function qaOpen(L, from) {   // Title: X answered questions; every question with its answer
+    function qaOpen(L, from, fit) {   // Title: X answered questions; every question with its answer (fit: as tall as its content)
       sheetOpen(nAns(L.answers.length), '', 'Questions and answers', '', L.answers.map(function (r) {
         return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: r.q }), h('span', { class: 'arLfA', text: r.a }));
-      }), from);
+      }), from, false, fit);
     }
     var REC_K = { blood: 'Blood test', tests: 'Test results', scan: 'Scan' };
-    function recOpen(list, from) {   // Title: X records; each report behind the insight, its kind over its name
+    function recOpen(list, from, fit) {   // Title: X records; each report behind the insight, its kind over its name
       sheetOpen(list.length + (list.length === 1 ? ' record' : ' records'), '', 'Records', '', list.map(function (r) {
         return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: REC_K[r[0]] || 'Record' }), h('span', { class: 'arLfA', text: r[1] }));
-      }), from);
+      }), from, false, fit);
     }
     function mbOpen(L, from) {   // Title: X biomarkers; the list of all the biomarkers behind this insight
       sheetOpen(nMb(L.markers.length), '', 'Biomarkers', ' arMbList arQaMb', L.markers.map(mbRow), from);   // the title alone, no sub ("remove sub")
     }
-    function sheetOpen(t, st, label, cls, rows, from, stack) {
+    function sheetOpen(t, st, label, cls, rows, from, stack, fit) {
       var qa = sheetLayer(stack && sheetUp(0) ? 1 : 0);   // stacked on the open sheet when asked
+      qa.el.classList.toggle('arQaFit', !!fit);   // fit: as tall as its content, the page behind left in place (iOS's partial sheet), only dimmed
       qa.title.textContent = t; qa.sub.textContent = st; qa.sub.hidden = !st;
       qa.list.className = 'arQaList' + cls; qa.list.setAttribute('aria-label', label);
       qa.list.textContent = '';
@@ -15337,14 +15340,27 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var cur = -1, sync = function () { var k = Math.max(0, Math.min(ms.length - 1, Math.round(track.scrollLeft / Math.max(1, track.clientWidth)))); if (k === cur) return; cur = k; dots.forEach(function (b, i) { b.classList.toggle('arOn', i === k); b.setAttribute('aria-current', String(i === k)); }); };
       on(track, 'scroll', function () { requestAnimationFrame(sync); }, { passive: true }); sync();
       // a mouse drags it, as a finger swipes it: the track follows, then settles on the slide it was let go nearest, or the next one when flicked
+      /* the release ("carousel needs to be smooth when released; the magnet isn't working"): the track glides to its slide under the hand's own easing, snapping held off until it is there
+         (lifting the drag's class first let the browser's mandatory snap jump the track before the glide began) */
+      var glideRaf = 0;
+      var glide = function (to) {
+        cancelAnimationFrame(glideRaf);
+        var from = track.scrollLeft, d = to - from, t0 = performance.now(), dur = Math.max(260, Math.min(520, 220 + Math.abs(d) * .7));
+        if (reducedMotion() || Math.abs(d) < 1) { track.scrollLeft = to; track.classList.remove('arBmcDrag'); return; }
+        var step = function (now) { var k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); track.scrollLeft = from + d * e;
+          if (k < 1) glideRaf = requestAnimationFrame(step); else { track.scrollLeft = to; glideRaf = 0; track.classList.remove('arBmcDrag'); } };
+        glideRaf = requestAnimationFrame(step);
+      };
       on(track, 'pointerdown', function (e) {
         if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        if (glideRaf) { cancelAnimationFrame(glideRaf); glideRaf = 0; }   // caught mid-glide: held where it is
         var x0 = e.clientX, l0 = track.scrollLeft, w = track.clientWidth, lx = x0, lt = performance.now(), vx = 0, drag = false;
         var mv = function (ev) { var dx = ev.clientX - x0; if (!drag && Math.abs(dx) < 4) return; if (!drag) { drag = true; moved = true; track.classList.add('arBmcDrag'); }
           track.scrollLeft = l0 - dx; var t = performance.now(); vx = (ev.clientX - lx) / Math.max(1, t - lt); lx = ev.clientX; lt = t; ev.preventDefault(); };
         var up = function () { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
-          if (!drag) return; var near = track.scrollLeft / w, k = Math.abs(vx) > .35 ? (vx < 0 ? Math.ceil(near) : Math.floor(near)) : Math.round(near); k = Math.max(0, Math.min(ms.length - 1, k));
-          track.classList.remove('arBmcDrag'); track.scrollTo({ left: k * w, behavior: reducedMotion() ? 'auto' : 'smooth' }); setTimeout(function () { moved = false; }, 0); };
+          if (!drag) return;   // the magnet: one slide a swipe, on to the next when flicked (a pause before letting go is no flick) or drawn past 18% of the slide, else back to its own
+          var start = Math.round(l0 / w), dx = track.scrollLeft - l0, fresh = performance.now() - lt < 90, dir = fresh && Math.abs(vx) > .3 ? (vx < 0 ? 1 : -1) : Math.abs(dx) > w * .18 ? (dx > 0 ? 1 : -1) : 0, k = Math.max(0, Math.min(ms.length - 1, start + dir));
+          glide(k * w); setTimeout(function () { moved = false; }, 0); };   // the drag's class lifted once the glide lands
         addEventListener('pointermove', mv); addEventListener('pointerup', up); addEventListener('pointercancel', up);
       });
       return h('div', { class: 'arBmc', role: 'region', 'aria-roledescription': 'carousel', 'aria-label': 'Biomarkers' }, track, h('div', { class: 'arBmcDots' }, dots));
@@ -15408,8 +15424,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         if (out) {   /* Sources: Outside card: over the card, Behind this insight at the left and its buttons at the right, Records (the reports behind it) and Questionnaire (its answers), each its sheet, only those it has ("Behind this insight, CTA Records, Questionnaire; CTA group right side; CTA hug content, outlined") */
           var bRec = recs.length ? h('button', { type: 'button', class: 'arSrcBtn', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', text: 'Records' }) : null;
           var bQn = n ? h('button', { type: 'button', class: 'arSrcBtn', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', text: 'Questionnaire' }) : null;
-          if (bRec) on(bRec, 'click', function () { recOpen(recs, bRec); });
-          if (bQn) on(bQn, 'click', function () { qaOpen(L, bQn); });
+          if (bRec) on(bRec, 'click', function () { recOpen(recs, bRec, true); });   // a bottom sheet as tall as its content ("open bottom sheet, not full, height based on content")
+          if (bQn) on(bQn, 'click', function () { qaOpen(L, bQn, true); });
           if (bRec || bQn) btns = h('div', { class: 'arSrcBtns' }, bRec, bQn);
         }
         return h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
