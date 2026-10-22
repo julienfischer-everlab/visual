@@ -30850,7 +30850,7 @@ hairline({
         const of = p => Object.assign({}, OWN[p] || OWN.v1, store[p] || {});
         const mark = () => { const v = of(pre.value), c = now(); sv.toggleAttribute('data-dirty', KEYS.some(k => k in c && c[k] !== v[k])); };
         const apply = p => { const v = of(p); let any = false, va = false;
-          KEYS.forEach(k => { const e = el(k); if (!e || v[k] == null || e.value === v[k] || ![...e.options].some(o => o.value === v[k])) return; e.value = v[k]; any = true; if (k === 'stArVar') va = true; });
+          KEYS.forEach(k => { const e = el(k); if (!e || v[k] == null || e.value === v[k] || (e.options ? ![...e.options].some(o => o.value === v[k]) : isNaN(+v[k]))) return;   /* a slider (Condense, Amount) has no options: any number it holds (else it threw and the Async report never mounted) */ e.value = v[k]; any = true; if (k === 'stArVar') va = true; });
           if (va && arD) arD.vary(); if (any){ if (arD) arD.remount(); if (arM) arM.remount(); } mark(); };
         pre.addEventListener('change', () => { store.cur = pre.value; keep(); apply(pre.value); });
         sv.addEventListener('click', () => { store[pre.value] = now(); keep(); mark(); sv.textContent = 'Saved'; setTimeout(() => { sv.textContent = 'Save'; }, 1200); });
@@ -37659,11 +37659,11 @@ hairline({
     const want = () => location.hash === '#home';
     if (want()) show();
     else if (!location.hash && versionSel){   // no hash: the Async report is the first page, in Dark mode, in the XS phone, its welcome the Cards ("Async default setup"; before, the Service detail page); #home still opens the gallery, a page's hash that page
-      const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
+      const put = (id, v) => { const el = document.getElementById(id); if (el && (el.options ? [...el.options].some(o => o.value === v) : !isNaN(+v)) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
       put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', '26'); }
-    else if ((location.hash === '#ar2' || location.hash === '#arp2') && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } }; put('themeSel', 'dark'); put('stBp', 'xs');
+    else if ((location.hash === '#ar2' || location.hash === '#arp2') && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && (el.options ? [...el.options].some(o => o.value === v) : !isNaN(+v)) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } }; put('themeSel', 'dark'); put('stBp', 'xs');
       if (location.hash === '#ar2') put('stArPre', 'v2'); else put('stArPer', 'p2'); put('versionSel', '26'); }
-    else if (location.hash === '#health-profile' && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
+    else if (location.hash === '#health-profile' && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && (el.options ? [...el.options].some(o => o.value === v) : !isNaN(+v)) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
       put('themeSel', 'dark'); put('stBp', 'xs'); versionSel.value = 'hp'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); }   // the Health profile over the Overview, in the Async report's default dress (Dark, the XS phone)
     // the viewport saved from the bar: the prototype opens on it, over any page's own default (the XS of the first page); Save keeps the one showing, a dot on it while they differ
     { const bs = document.getElementById('stBp'), sb = document.getElementById('tkBpSave'), KEY = 'everlab.bp'; let kept = null; try { kept = localStorage.getItem(KEY); } catch (e){}

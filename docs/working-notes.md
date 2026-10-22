@@ -15175,3 +15175,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Current step should fill the next step": the progress fills the next bar whole (no 2px start of it); the last page shown fills them all.
 - "move up chart by 24px" (carousel sparkline): 24 higher in its slide, the same height.
 - The end's title 64 under the nav (measured); the stream's open label always whole, not faded with its point's depth.
+- Fix: "can't access Async anymore": with a preset or the remembered tweaks holding a Condense or Amount value (sliders, no options), the preset code checked the value against the control's options and threw ("o.options is not iterable"), so the Async report never mounted. Sliders now take any number they hold; the same guard in the hash-route helpers. Reproduced with a saved preset (no page) and fixed (page mounts, the saved value kept).
