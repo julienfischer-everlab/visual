@@ -5609,7 +5609,7 @@
   .aqWrap.shut .aqAgain{display:inline-flex;}
   @media (prefers-reduced-motion: reduce){ .aqFrame, .aqDim{transition:none;} }
   /* Full modal (Tweaks -> Async report -> Variation, the desktop; the default), after the design system's Full modal, "Type: Full (edge to edge modal), content only": the surface edge to edge under the bar, square, rising the same way, in the debrief's own paper; the content in a column 560 wide in its middle -- the back and close at the column's corners, the step titles centred, the button the column's width at its foot ("async desktop full modal following this system") */
-  #stArVarRow[hidden], #stArSrcRow[hidden], #stArAssRow[hidden], #stArLbgRow[hidden], #stArCdnRow[hidden], #stArSvisRow[hidden]{display:none !important;}
+  #stArVarRow[hidden], #stArSrcRow[hidden], #stArAssRow[hidden], #stArLbgRow[hidden], #stArCdnRow[hidden], #stArSvisRow[hidden], #stArAmtRow[hidden]{display:none !important;}
   .aqWrap.aqDesk.aqFull .aqFrame{left:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:translateY(104%);}
   .aqWrap.aqDesk.aqFull.on .aqFrame{transform:none;} .aqWrap.aqDesk.aqFull.shut .aqFrame{transform:translateY(104%);}
   .aqWrap.aqFull .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:560px;margin:0 auto;}
@@ -12153,6 +12153,8 @@
         <div class="tkRow" id="stArLbgRow"><span class="lbl">Label badge</span><select id="stArLbg" class="tkSegSel" aria-label="The Sphere hero's labels on a badge"><option value="off" selected>No</option><option value="on">Yes</option></select></div>
         <!-- the Sphere hero's particles: how much they gather into streaks and clumps, 0 (diffuse) to 100 ("condense less; can I have a controller with a level to adjust?") -->
         <div class="tkRow" id="stArCdnRow"><span class="lbl">Condense</span><span class="tkSlide"><input type="range" id="stArCdn" min="0" max="100" step="5" value="40" aria-label="How condensed the Sphere hero's particles are"><i class="tkVal" id="stArCdnV">40</i></span></div>
+        <!-- the particles' amount, 0 to 100, 50 by default (a quarter to 1.75 times the points) ("create also a tweak: amount of particles, 0 to 100, in addition to condense") -->
+        <div class="tkRow" id="stArAmtRow"><span class="lbl">Amount</span><span class="tkSlide"><input type="range" id="stArAmt" min="0" max="100" step="5" value="50" aria-label="How many particles"><i class="tkVal" id="stArAmtV">50</i></span></div>
         </div>
         <div class="tkGroup" data-pages="lp">
         <div class="tkSub">Organ Age landing</div>
@@ -15040,7 +15042,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var foot = h('div', { class: 'arFoot' }, cta, (o.welcome === 'sphere' || o.welcome === 'orbit') && o.assure ? h('p', { class: 'arFootNote', text: WEL.assureS || WEL.assure }) : null);   // the Sphere's and Sphere hero's reassurance, short, under the button, on the welcome
     var stage = h('div', { class: 'arStage' }, head, body, foot);   // the page, pushed back under a sheet
     var REVEAL = LIST && o.intro === 'reveal', RVW = o.welcome === 'reveal';   // the reveal as the 2nd screen, or as the welcome
-    var sphL = o.welcome === 'sphere' || o.welcome === 'orbit' ? sphereLayer(o.welcome === 'orbit') : o.welcome === 'halftone' ? ditherLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball; the Halftone's creme and its dithered picture
+    var sphL = o.welcome === 'sphere' || o.welcome === 'orbit' ? (opts.svis === 'stream' ? streamLayer : sphereLayer)(o.welcome === 'orbit') : o.welcome === 'halftone' ? ditherLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball; the Halftone's creme and its dithered picture
     if (REVEAL || RVW || !sphL) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the picture also for the last page, unless the Sphere or Halftone ground is its own   // the full-bg intro's picture, under the head, the flow and the foot
     var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' + (o.lbg ? ' arOrbBdg' : '') : '') + (o.welcome === 'orbit' || o.welcome === 'sphere' || o.welcome === 'halftone' ? ' arPill' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
@@ -15171,9 +15173,87 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         paintInto: function (c) { frames.push(c); if (!fimg) { fimg = new Image(); fimg.onload = function () { if (alive) draw(); }; fimg.decoding = 'async'; fimg.src = HT_SRC; }   // its picture loaded once the welcome asks (HT_SRC is set by then)
            if (window.ResizeObserver) new ResizeObserver(function () { if (alive && c.isConnected) paint(c, c.clientWidth, c.clientHeight, true); }).observe(c); } };   // a canvas of the page's own (the welcome's frame), painted when it has a size, again on a new one
     }
+    /* Blood stream (the Visual tweak; "much more three-dimensional, spacious and fluid: a large invisible curved vessel travelling through 3D space, seen only through its particles; depth, perspective,
+       scale variation and negative space; the orange particles fixed in the vessel, flowing with it, most of them outside the view, entering as it brings them; slow, continuous 3D motion; lighter"):
+       a vessel 14 units long around a camera that travels beside it (the view a window on a much larger world), its middle line curving in height and depth; inside it seven strands twisting along it
+       and a sparse fill (how much in the strands and how tight: Condense; how many points: Amount); every point flows along it a little faster than the camera travels, so the stream drifts left to right
+       past the view and wraps out of sight at either end; true perspective: nearer is larger, brighter until very near, farther smaller and fainter. The camera's height and depth drift and it rolls a little.
+       The hero's labels sit on 26 orange points fixed in the vessel, flowing with it, most of them out of view at any moment */
+    function streamLayer(big) {
+      var cv = h('canvas', {}), el = h('div', { class: 'arSphBg', 'aria-hidden': 'true' }, cv), x = cv.getContext('2d'), rnd = Math.random, i;
+      var CD = Math.max(0, Math.min(1, opts.cdn != null ? opts.cdn : .4)), AM = Math.max(0, Math.min(1, opts.amt != null ? opts.amt : .5));
+      var N = Math.round((big ? 30000 : 16000) * (.25 + 1.5 * AM)), UMIN = -6, LW = 14, RV = .95, VF = .26, VC = .13, NSTR = 7, DU = .05, NT = Math.ceil(LW / DU) + 2;
+      var U0 = new Float32Array(N), TH = new Float32Array(N), RHO = new Float32Array(N), TW = new Float32Array(N), A = new Float32Array(N), K = new Uint8Array(N);
+      var STR = []; for (i = 0; i < NSTR; i++) STR.push([RV * (.15 + .75 * rnd()), rnd() * 6.2832, (rnd() < .5 ? -1 : 1) * (.25 + .5 * rnd()), (.1 + .2 * rnd()) * (1.4 - .8 * CD)]);   // each strand: how far from the middle, where round it, how fast it twists, how wide
+      var share = .45 + .4 * CD;
+      for (i = 0; i < N; i++) { U0[i] = rnd() * LW; var kk = rnd(); K[i] = kk < .6 ? 0 : kk < .82 ? 1 : 2;
+        if (rnd() < share) { var sj = STR[i % NSTR]; RHO[i] = Math.abs(sj[0] + (rnd() + rnd() + rnd() - 1.5) * 1.6 * sj[3]); TH[i] = sj[1] + (rnd() - .5) * .6; TW[i] = sj[2]; A[i] = .35 + .45 * rnd(); }
+        else { RHO[i] = RV * 1.15 * Math.sqrt(rnd()); TH[i] = rnd() * 6.2832; TW[i] = (rnd() - .5) * .3; A[i] = .1 + .24 * rnd(); } }   // the fill sparse and faint: the strands carry the shape
+      var MKN = big ? 26 : 0, MU = new Float32Array(MKN), MT = new Float32Array(MKN), MR = new Float32Array(MKN);
+      for (i = 0; i < MKN; i++) { MU[i] = (i + .15 + rnd() * .7) / MKN * LW; MT[i] = rnd() * 6.2832; MR[i] = RV * (.15 + .65 * rnd()); }   // the orange points, spread along the whole vessel
+      var cl = function (u, o, j) {   // the vessel's middle at u and two directions square to it, into o from j: [x, y, z, n.., b..]
+        var y = 1.3 * Math.sin(.21 * u) + .55 * Math.sin(.53 * u + 1.1), z = 2 * Math.sin(.13 * u + .4) + .6 * Math.sin(.41 * u + 2), dy = .273 * Math.cos(.21 * u) + .2915 * Math.cos(.53 * u + 1.1), dz = .26 * Math.cos(.13 * u + .4) + .246 * Math.cos(.41 * u + 2);   // sweeping in height and in depth
+        var tl = Math.sqrt(1 + dy * dy + dz * dz), tx = 1 / tl, ty = dy / tl, tz = dz / tl, nl = Math.hypot(tz, tx) || 1, nx = -tz / nl, nz = tx / nl;
+        o[j] = u; o[j + 1] = y; o[j + 2] = z; o[j + 3] = nx; o[j + 4] = 0; o[j + 5] = nz; o[j + 6] = -nz * ty; o[j + 7] = nz * tx - nx * tz; o[j + 8] = nx * ty; };
+      var cam = function (T, c) {   // the camera at T s: beside the vessel and a little above it, looking a little ahead, its height and depth drifting, rolling a few degrees
+        var cu = VC * T, u1 = cu + 1.4, y0 = 1.3 * Math.sin(.21 * cu) + .55 * Math.sin(.53 * cu + 1.1), z0 = 2 * Math.sin(.13 * cu + .4) + .6 * Math.sin(.41 * cu + 2), y1 = 1.3 * Math.sin(.21 * u1) + .55 * Math.sin(.53 * u1 + 1.1), z1 = 2 * Math.sin(.13 * u1 + .4) + .6 * Math.sin(.41 * u1 + 2);
+        var px = cu - .8, py = y0 * .5 + 1 + .35 * Math.sin(T / 17), pz = z0 * .4 + 7.4 + .6 * Math.sin(T / 23 + 1),   /* following it loosely, so the vessel wanders through the frame and nears and recedes */ fx = u1 - px, fy = y1 * .8 - py, fz = z1 * .8 - .3 - pz, fl = Math.hypot(fx, fy, fz); fx /= fl; fy /= fl; fz /= fl;
+        var rl = .07 * Math.sin(T / 21 + .5), ux = Math.sin(rl), uy = Math.cos(rl), rx = -fz * uy, ry = fz * ux, rz = fx * uy - fy * ux, rn = Math.hypot(rx, ry, rz) || 1; rx /= rn; ry /= rn; rz /= rn;
+        c.cu = cu; c.px = px; c.py = py; c.pz = pz; c.rx = rx; c.ry = ry; c.rz = rz; c.vx = ry * fz - rz * fy; c.vy = rz * fx - rx * fz; c.vz = rx * fy - ry * fx; c.fx = fx; c.fy = fy; c.fz = fz; return c; };
+      var TMP = new Float32Array(9), mpos = function (m, T, c) { var v = UMIN + (((MU[m] + (VF - VC) * T) % LW) + LW) % LW, u = c.cu + v; cl(u, TMP, 0); var th = MT[m] + .3 * u, cs = Math.cos(th) * MR[m], sn = Math.sin(th) * MR[m]; return [u + cs * TMP[3] + sn * TMP[6], TMP[1] + cs * TMP[4] + sn * TMP[7], TMP[2] + cs * TMP[5] + sn * TMP[8]]; };
+      var see = function (p, c, G) {   // a point in the view: [x, y, how much it shows]
+        var dx = p[0] - c.px, dy = p[1] - c.py, dz = p[2] - c.pz, zc = dx * c.fx + dy * c.fy + dz * c.fz; if (zc < .5) return [0, 0, 0];
+        var sx = G.cx + G.F * (dx * c.rx + dy * c.ry + dz * c.rz) / zc, sy = G.cy - G.F * (dx * c.vx + dy * c.vy + dz * c.vz) / zc, off = sx < 10 || sx > G.w - 10 || sy < 10 || sy > G.hh - 10;
+        return [sx, sy, off ? 0 : Math.max(0, Math.min(1, (zc - 1.2) / 1.2)) * Math.max(0, Math.min(1, 1.45 - zc / 11))]; };
+      var INK = { d: ['214,112,58', '150,160,204', '238,232,226'], l: ['196,92,40', '92,104,156', '46,40,36'] }, TB = new Float32Array(NT * 9), CAM = {};
+      var raf = 0, t0 = 0, lastDraw = 0, anchor = null, anc = null, lastF = null, trk = [], pimg = null, fly = null, dark = function () { return root.classList.contains('arDark'); };
+      var geo = function (now) {   // where the view's middle sits: the hero's between its chips and its button (as it last stood, while leaving), the Sphere's low; moved with its page in a transition
+        var w = cv.clientWidth, hh = cv.clientHeight, cy = big ? hh * .58 : hh * .8, top = null;
+        if (big && anchor && anchor.isConnected && root.classList.contains('arIsWelcome') && !(fly && fly.d > 0)) { var ab = anchor.getBoundingClientRect(), cb = cv.getBoundingClientRect(), abd = anchor.closest('.arBody'), aty = 0;
+          if (abd) { var atf = getComputedStyle(abd).transform; if (atf && atf !== 'none') try { aty = new DOMMatrixReadOnly(atf).m42; } catch (e) { aty = 0; } }
+          if (ab.height) { top = ab.bottom - aty - cb.top + 112; cy = top + (hh - 170 - top) * .5; anc = { cy: cy, top: top }; } }
+        else if (big && anc) { cy = anc.cy; top = anc.top; }
+        if (fly) { var fk = Math.min(1, Math.max(0, (now - fly.t0) / fly.dur)), fe = fly.d > 0 ? Math.pow(fk, 1.8) : 1 - Math.pow(1 - fk, 4), fv = fly.d > 0 ? fe : 1 - fe; cy -= fly.dist * fv; if (fly.d < 0 && fk >= 1) fly = null; }
+        return { w: w, hh: hh, cx: w / 2, cy: cy, F: hh * 1.05, top: top }; };
+      var draw = function (now) {
+        var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return;
+        var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
+        var T = (now - t0) / 1000, G = geo(now), c = cam(T, CAM); G.T = T; lastF = G;
+        for (var j = 0; j < NT; j++) cl(c.cu + UMIN + j * DU, TB, j * 9);   // the vessel's middle along the window, once a frame
+        var PW = cv.width, PH = cv.height; if (!pimg || pimg.width !== PW || pimg.height !== PH) pimg = x.createImageData(PW, PH); var px8 = pimg.data; px8.fill(0);
+        var cols = (dark() ? INK.d : INK.l).map(function (s0) { return s0.split(',').map(Number); }), lift = dark() ? 2.2 : 2.5, dv = (VF - VC) * T;
+        for (var q = 0; q < N; q++) {
+          var v = (U0[q] + dv) % LW; if (v < 0) v += LW; var jj = (v / DU) | 0, b = jj * 9, u = c.cu + UMIN + v, th = TH[q] + TW[q] * u, cs = Math.cos(th) * RHO[q], sn = Math.sin(th) * RHO[q];
+          var X = u + cs * TB[b + 3] + sn * TB[b + 6], Y = TB[b + 1] + cs * TB[b + 4] + sn * TB[b + 7], Z = TB[b + 2] + cs * TB[b + 5] + sn * TB[b + 8];
+          var dx = X - c.px, dy = Y - c.py, dz = Z - c.pz, zc = dx * c.fx + dy * c.fy + dz * c.fz; if (zc < .5) continue;
+          var sx = G.cx + G.F * (dx * c.rx + dy * c.ry + dz * c.rz) / zc, sy = G.cy - G.F * (dx * c.vx + dy * c.vy + dz * c.vz) / zc; if (sx < -4 || sx > w + 4 || sy < -4 || sy > hh + 4) continue;
+          var al = A[q] * lift * Math.min(1, (zc - .5) / 1.6) * Math.max(.08, Math.min(1, 1.3 - zc / 12)); if (al > 1) al = 1; if (al < .02) continue;   // fading in very near, out far off
+          var sz = G.F * .0125 / zc; sz = sz < .6 ? .6 : sz > 4.2 ? 4.2 : sz;   // nearer larger: about 2.5px near the camera's side of the vessel, 1.2 at its far side
+          var s2 = Math.max(1, Math.round(sz * dpr)), X0 = (sx * dpr - s2 / 2 + .5) | 0, Y0 = (sy * dpr - s2 / 2 + .5) | 0, col = cols[K[q]];
+          for (var yy = 0; yy < s2; yy++) { var Yp = Y0 + yy; if (Yp < 0 || Yp >= PH) continue;
+            for (var xx = 0; xx < s2; xx++) { var Xp = X0 + xx; if (Xp < 0 || Xp >= PW) continue;
+              var o = (Yp * PW + Xp) * 4, da = px8[o + 3] / 255, ra = da * (1 - al), oa = al + ra;
+              px8[o] = (col[0] * al + px8[o] * ra) / oa; px8[o + 1] = (col[1] * al + px8[o + 1] * ra) / oa; px8[o + 2] = (col[2] * al + px8[o + 2] * ra) / oa; px8[o + 3] = oa * 255; } }
+        }
+        x.setTransform(1, 0, 0, 1, 0, 0); x.putImageData(pimg, 0, 0);
+        for (var ti = 0; ti < trk.length; ti++) { var Tk = trk[ti]; if (Tk && Tk.cb) { var sp = see(mpos(Tk.k, T, c), c, G); Tk.cb(sp[0], sp[1], sp[2]); } }   // the labels on their orange points
+      };
+      var loop = function (now) { raf = 0; if (!alive || (!root.classList.contains('arIsSphere') && !(fly && fly.d > 0 && now - fly.t0 < fly.dur)) || el.offsetParent === null) return; if (now - lastDraw > 30 || !lastDraw) { draw(now); lastDraw = now; } if (!reducedMotion()) raf = requestAnimationFrame(loop); };   // 30 a second: its motion is slow
+      return { el: el, stream: true,
+        run: function () { if (fly && fly.d > 0) fly = null; if (raf) return; if (!t0) t0 = performance.now(); raf = requestAnimationFrame(loop); },
+        anchor: function (e) { anchor = e || null; },
+        fly: function (d, c) { c = c || {}; var D = c.dur || 380, L = c.delay || 0; fly = { d: d, t0: performance.now() + L, dur: D, dist: c.dist || 72 };
+          if (el.animate) el.animate(d > 0 ? [{ opacity: 1 }, { opacity: 0, offset: .7 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 1 }], { duration: D, delay: L, easing: d > 0 ? 'cubic-bezier(.4, 0, .9, .6)' : 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' });
+          if (d > 0 && !raf) raf = requestAnimationFrame(loop); },
+        track: function (k, cb, slot) { var i2 = slot | 0; if (k === -1 && slot == null){ trk = []; return; } trk[i2] = k >= 0 && cb ? { k: k, cb: cb } : null; },
+        marks: function () { var out = []; for (var m = 0; m < MKN; m++) out.push(m); return out; },
+        projIn: function (k, dt) { if (!lastF) return null; var T = lastF.T + dt / 1000, c = cam(T, {}); return see(mpos(k, T, c), c, lastF); },   // an orange point where it will be in dt ms: [x, y, how much it shows]
+        frame: function () { return lastF; },
+        turn: function () {} };
+    }
     function sphereLayer(big) {   // big: the Sphere hero's ball, 1.4x, with as many more points as keep its rim as dense (its area 1.36x the Sphere's)
       var cv = h('canvas', {}), el = h('div', { class: 'arSphBg', 'aria-hidden': 'true' }, cv), x = cv.getContext('2d');
-      var CD = Math.max(0, Math.min(1, opts.cdn != null ? opts.cdn : .4)), N = big ? 64000 : 18000, M = big ? 900 : 360, NS = big ? Math.round(64000 * (.15 + .225 * CD)) : 7000, SH = big ? 13 : 9,   /* the hero by its Condense level (CD, "condense less; a controller with a level"): 0 diffuse, 1 as it was (24,000 on the currents) */   /* the hero: 24,000 on its currents (was 16,000), held tighter and brighter, and clumps on its shell, so some areas condense ("condense more on certain areas"); the Sphere's kept diffuse */   /* the hero's ball far denser ("need more dot particles, to look more like a sphere"): 64,000 points, 13 in 20 of its body's on the shell (9 on the Sphere), so its outline and face read as a ball */ P = new Float32Array((N + M) * 3), A = new Float32Array(N + M), K = new Uint8Array(N + M), rnd = Math.random, i, j;
+      var CD = Math.max(0, Math.min(1, opts.cdn != null ? opts.cdn : .4)), FA = .25 + 1.5 * Math.max(0, Math.min(1, opts.amt != null ? opts.amt : .5)), N = Math.round((big ? 64000 : 18000) * FA), M = Math.round((big ? 900 : 360) * FA), NS = big ? Math.round(N * (.15 + .225 * CD)) : Math.round(7000 * FA), SH = big ? 13 : 9,   /* Amount ("amount of particles, 0 to 100"): .25x to 1.75x the points, 50 as it was */   /* the hero by its Condense level (CD, "condense less; a controller with a level"): 0 diffuse, 1 as it was (24,000 on the currents) */   /* the hero: 24,000 on its currents (was 16,000), held tighter and brighter, and clumps on its shell, so some areas condense ("condense more on certain areas"); the Sphere's kept diffuse */   /* the hero's ball far denser ("need more dot particles, to look more like a sphere"): 64,000 points, 13 in 20 of its body's on the shell (9 on the Sphere), so its outline and face read as a ball */ P = new Float32Array((N + M) * 3), A = new Float32Array(N + M), K = new Uint8Array(N + M), rnd = Math.random, i, j;
       /* fluid ("the sphere should have some more condensed areas, like a fluid style"): half the points ride five currents wound round the ball, each a loop that swings above and below its plane,
          its points spread a little either side and moving along it at its own slow pace, so the dense streaks drift, cross and part as the ball turns; the rest are its body, sparser, under the weather */
       var unit = function () { var t = rnd() * 6.2832, p = Math.acos(rnd() * 2 - 1); return [Math.sin(p) * Math.cos(t), Math.sin(p) * Math.sin(t), Math.cos(p)]; };
@@ -15193,23 +15273,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var dim = 0; if (!amb) blobs.forEach(function (b) { var d = Math.acos(Math.max(-1, Math.min(1, px * b[0] + py * b[1] + pz * b[2]))); dim = Math.max(dim, Math.exp(-d * d / (2 * b[3] * b[3]))); });   // the weather
         A[i] = amb ? .12 + rnd() * .25 : clump ? .3 + .45 * rnd() : (.16 + .42 * rnd()) * (1 - (big ? .82 + .1 * CD : .82) * dim) * (.55 + .45 * Math.pow(r, 3));   // the clumps brighter; the hero's weather a little deeper, so the dense and the sparse part
       }
-      /* Blood stream (the Visual tweak: "tweak the sphere / blood stream visual"): the same points as blood running through a vessel that crosses the screen in a slow S, seen a little from above;
-         each rides it at its own pace, faster at the core than at the walls (as blood flows), turning slowly round it, the core denser by the Condense level; a dust about it.
-         The hero's squares sit on still points along its middle, chosen in the labels' box (markers) */
-      var STREAM = opts.svis === 'stream', SL = big ? .45 : .75, NMK = 8, CLT = [0, 0, 0, 0, 0, 0, 0, 0, 0], SS = null, STH = null, SRR = null, SSP = null, SW = null;
-      var cl = function (s0, out) {   // the vessel's middle at s0 (0 to 1, left to right) and two directions square to it: [x, y, z, n.., b..]
-        var p1 = 6.2832 * (.9 * s0 + .1), p2 = 6.2832 * (.4 * s0 + .3), tx = 3, ty = 1.6 + .2 * 6.2832 * .9 * Math.cos(p1), tz = .45 * 6.2832 * .4 * Math.cos(p2), tn = Math.hypot(tx, ty, tz); tx /= tn; ty /= tn; tz /= tn;   /* rising from the lower left to the upper right in a slow S */
-        var nx = -tz, nz = tx, nn = Math.hypot(nx, nz) || 1; nx /= nn; nz /= nn;
-        out[0] = -1.5 + 3 * s0; out[1] = SL - .8 + 1.6 * s0 + .2 * Math.sin(p1); out[2] = .45 * Math.sin(p2); out[3] = nx; out[4] = 0; out[5] = nz; out[6] = -nz * ty; out[7] = nz * tx - nx * tz; out[8] = nx * ty; };
-      if (STREAM) {
-        var TR = .26 - .12 * CD; SS = new Float32Array(N); STH = new Float32Array(N); SRR = new Float32Array(N); SSP = new Float32Array(N); SW = new Float32Array(N);
-        for (i = 0; i < N; i++) { var wall = rnd() < .12, gg = wall ? 1.05 + .12 * rnd() : Math.min(1.7, Math.sqrt(-2 * Math.log(1 - rnd() * .999)) * .5), r0 = gg * TR, wl = Math.min(1, gg);   /* one in eight on its wall, so it reads as a vessel */ SS[i] = rnd(); STH[i] = rnd() * 6.2832; SRR[i] = r0; SSP[i] = (.012 + .01 * rnd()) * (1.35 - .7 * wl); SW[i] = (rnd() - .5) * .5; A[i] = wall ? .14 + .2 * rnd() : (.25 + .45 * rnd()) * (1.1 - .35 * wl); }
-        for (i = 0; i < NMK; i++) { SSP[i] = 0; SW[i] = 0; SRR[i] = 0; A[i] = 0; }   // the squares' still points
-        for (i = N; i < N + M; i++) { P[i * 3] = (rnd() * 2 - 1) * 1.8; P[i * 3 + 1] = SL + (rnd() * 2 - 1) * .9; P[i * 3 + 2] = (rnd() * 2 - 1) * .7; }
-      }
-      var stream = function (sec) { for (var q = NMK; q < N; q++) { var s0 = SS[q] + SSP[q] * sec; s0 -= Math.floor(s0); cl(s0, CLT); var th0 = STH[q] + SW[q] * sec, c0 = Math.cos(th0) * SRR[q], s1 = Math.sin(th0) * SRR[q];
-        P[q * 3] = CLT[0] + c0 * CLT[3] + s1 * CLT[6]; P[q * 3 + 1] = CLT[1] + c0 * CLT[4] + s1 * CLT[7]; P[q * 3 + 2] = CLT[2] + c0 * CLT[5] + s1 * CLT[8]; } };
-      for (i = 0; i < N + M; i++) { var kk = rnd(); K[i] = STREAM ? (kk < .72 ? 0 : kk < .86 ? 1 : 2) : kk < .58 ? 0 : kk < .82 ? 1 : 2; }   // the stream redder
+      for (i = 0; i < N + M; i++) { var kk = rnd(); K[i] = kk < .58 ? 0 : kk < .82 ? 1 : 2; }
       var IDX = [[], [], []]; for (i = 0; i < N + M; i++) IDX[K[i]].push(i); IDX = IDX.map(function (a) { return Uint32Array.from(a); });   // each ink's points, listed once: a pass each over its own, not three over all
       var flow = function (sec) {   // the currents' points where their currents have carried them
         for (var q = 0; q < NS; q++) {
@@ -15228,8 +15292,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return;
         var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
         x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
-        if (STREAM) stream((now - t0) / 1000); else flow((now - t0) / 1000);
-        var R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * .96, cx = w / 2, cy = hh - R * .1 + 48,   /* 24 higher ("sphere up by 24px"), then 32 lower ("push down visual by 32px") */   /* .8 of the 1.2x and 40 lower ("push down the sphere by 40px; reduce sphere by .8x"), then 32 back up twice ("push up sphere by 32px", "push up visual by 32px") */ a = STREAM ? Math.sin((now - t0) / 9000) * .16 : (now - t0) / 360000 * 6.2832 + nudAt(now),   /* the stream sways a little, never turns */   /* a turn every 360 s (was 180, "2x slower") */   /* the ball 1.2x ("scale up 1.2x, should cover more of the bottom of the screen") */ ca = Math.cos(a), sa = Math.sin(a), tl = STREAM ? .38 : .38 + .14 * Math.sin((now - t0) / 9500), ct = Math.cos(tl), st = Math.sin(tl), rz = STREAM ? 0 : .12 * Math.sin((now - t0) / 13500 + 1.3), cr = Math.cos(rz), sr = Math.sin(rz);   /* more than one axis ("rotate in multiple axes, always left to right"): the spin left to right as before, its tilt rocking 8 degrees either way (about a minute) and the whole rolling 7 degrees (about a minute and a half) */
+        flow((now - t0) / 1000);
+        var R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * .96, cx = w / 2, cy = hh - R * .1 + 48,   /* 24 higher ("sphere up by 24px"), then 32 lower ("push down visual by 32px") */   /* .8 of the 1.2x and 40 lower ("push down the sphere by 40px; reduce sphere by .8x"), then 32 back up twice ("push up sphere by 32px", "push up visual by 32px") */ a = (now - t0) / 360000 * 6.2832 + nudAt(now),   /* a turn every 360 s (was 180, "2x slower") */   /* the ball 1.2x ("scale up 1.2x, should cover more of the bottom of the screen") */ ca = Math.cos(a), sa = Math.sin(a), tl = .38 + .14 * Math.sin((now - t0) / 9500), ct = Math.cos(tl), st = Math.sin(tl), rz = .12 * Math.sin((now - t0) / 13500 + 1.3), cr = Math.cos(rz), sr = Math.sin(rz);   /* more than one axis ("rotate in multiple axes, always left to right"): the spin left to right as before, its tilt rocking 8 degrees either way (about a minute) and the whole rolling 7 degrees (about a minute and a half) */
         if (anchor && anchor.isConnected && root.classList.contains('arIsWelcome') && !(fly && fly.d > 0)) { var ab = anchor.getBoundingClientRect(), cb = cv.getBoundingClientRect(), abd = anchor.closest('.arBody'), aty = 0;   /* the title where it sits, not where its page is sliding (coming back, the page comes in from above) */
           if (abd) { var atf = getComputedStyle(abd).transform; if (atf && atf !== 'none') try { aty = new DOMMatrixReadOnly(atf).m42; } catch (e) { aty = 0; } }
           if (ab.height) { R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * 1.045; cy = ab.bottom - aty - cb.top + 48 + 64 + 16 + R * .95; anc = { R: R, cy: cy }; } }
@@ -15282,15 +15346,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           for (var i = 0; i < 8000; i++) { var q = NS + Math.floor(rnd() * (N - NS)); if (q % 20 >= SH || (big && !CLP[q])) continue; var p1 = projAt(q, A, lastF); if (p1[2] < .4 || p1[0] < b.l || p1[0] > b.r || p1[1] < b.t || p1[1] > b.b) continue;
             if (avoid.some(function (a) { return Math.hypot(a.x - p1[0], a.y - p1[1]) < minD; })) continue; return { k: q, x: p1[0], y: p1[1] }; }
           return null; },
-        projAfter: function (k, d) { return lastF ? projAt(k, lastF.a + (STREAM ? 0 : d), lastF) : null; },
-        markers: function (box) {   // the points the labels' squares sit on: the band's clumps' hearts; on the stream, still points along its middle inside box, spread along it, a little off its line
-          if (!STREAM) return CLK.slice(0, BAND).filter(function (k) { return k != null; });
-          if (!lastF) return []; var cand = [];
-          for (var s0 = .02; s0 < .98; s0 += .004) { cl(s0, CLT); P[0] = CLT[0]; P[1] = CLT[1]; P[2] = CLT[2]; var pq = projAt(0, lastF.a, lastF); if (!box || (pq[0] >= box.l && pq[0] <= box.r && pq[1] >= box.t - 40 && pq[1] <= box.b + 20)) cand.push(s0); }   // a little above and below the box too: the vessel crosses it on a slant
-          if (!cand.length) for (s0 = .3; s0 < .7; s0 += .05) cand.push(s0);
-          var out = []; for (var j = 0; j < NMK; j++) { var sj = cand[Math.min(cand.length - 1, Math.floor((j + .5) * cand.length / NMK))], th0 = (j % 2 ? 1 : -1) * (1.2 + .7 * rnd()), r0 = (.35 + .45 * rnd()) * (.26 - .12 * CD); cl(sj, CLT);   // either side of its middle in turn
-            P[j * 3] = CLT[0] + Math.cos(th0) * r0 * CLT[3] + Math.sin(th0) * r0 * CLT[6]; P[j * 3 + 1] = CLT[1] + Math.cos(th0) * r0 * CLT[4] + Math.sin(th0) * r0 * CLT[7]; P[j * 3 + 2] = CLT[2] + Math.cos(th0) * r0 * CLT[5] + Math.sin(th0) * r0 * CLT[8]; out.push(j); }
-          return out; },   // the points at the heart of the band's clumps, for the labels' squares   // where a point will be after the turn d: [x, y, facing]
+        projAfter: function (k, d) { return lastF ? projAt(k, lastF.a + d, lastF) : null; },
+        markers: function () { return CLK.slice(0, BAND).filter(function (k) { return k != null; }); },   // the points at the heart of the band's clumps, for the labels' squares
         frame: function () { return lastF; },
         turn: function (d, dur) { var now = performance.now(), cur = nudAt(now); nud = { from: cur, to: cur + d, t0: now, dur: dur || 1500 }; } };   // a few degrees more, eased (a message coming round from its hidden side)
     }
@@ -15792,28 +15849,49 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         later(next, RM ? 0 : labs.length * 110 + 400);
       };
       var refill = function () { bag = labs.map(function (l, i) { return i; }).filter(function (i) { return i !== act; }); for (var i = bag.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = bag[i]; bag[i] = bag[j]; bag[j] = t; } };   // a shuffled bag: every one before any again, never the same twice running
+      var openLab = function (L, txt, wait, done) {   // a label opened: its words measured as they will end, its badge from round its square, then written out after wait; done(hold) once written
+        L.tx.textContent = '';
+        L.tx.style.maxWidth = ''; L.tx.appendChild(document.createTextNode(txt)); L.tx.appendChild(h('span', { class: 'arRvCur', 'aria-hidden': 'true' }));   /* its lines measured as they will end, cursor and all, and the box held to the longest: the badge hugs its words, and the words break as they will from the first letter */
+        var mr = document.createRange(); mr.selectNodeContents(L.tx); var ml = 1e9, mx = -1e9; [].forEach.call(mr.getClientRects(), function (r) { if (r.width) { ml = Math.min(ml, r.left); mx = Math.max(mx, r.right); } }); var mk = L.tx.offsetWidth ? L.tx.getBoundingClientRect().width / L.tx.offsetWidth : 1; L.tx.textContent = ''; if (mx > ml && mk > 0) L.tx.style.maxWidth = Math.ceil((mx - ml) / mk + 1) + 'px';   // as wide at most as it will end: it grows with its words and breaks where it will
+        L.gd.style.transition = 'none'; fitGd(L); void L.box.offsetWidth; L.gd.style.transition = '';   // its badge from round its square
+        L.box.classList.remove('arOrbDot');
+        later(function () {
+          if (RM) { L.tx.textContent = txt; fitGd(L); done(4200); return; }
+          var cr = h('span', { class: 'arRvCur', 'aria-hidden': 'true' }), tn = document.createTextNode(''), k = 0; L.tx.appendChild(tn); L.tx.appendChild(cr);
+          var tick = function () { tn.nodeValue = txt.slice(0, ++k); fitGd(L); if (k < txt.length) later(tick, TY); else done(Math.max(2600, txt.length * 70)); };   // held long enough to read
+          tick();
+        }, RM ? 0 : wait);
+      };
+      var closeLab = function (L) { L.box.classList.add('arOrbDot'); later(function () { if (L.box.classList.contains('arOrbDot')) { L.tx.textContent = ''; L.tx.style.maxWidth = ''; } }, 360); };   // back to its square, its words and badge fading
+      /* on the Blood stream: a label on each orange point of the vessel, its square riding it in and out of view; each time, one of those in the box (and staying in it while it is read) opens with the next words */
+      var sl = [], sAct = -1, ib = [], lastI = -1;
+      var nextItem = function () { if (!ib.length) { ib = items.map(function (x, i) { return i; }); for (var i = ib.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = ib[i]; ib[i] = ib[j]; ib[j] = t; } if (ib[0] === lastI && ib.length > 1) ib.push(ib.shift()); } return (lastI = ib.shift()); };
+      var sStart = function () {
+        if (!sphL || !sphL.marks || !sphL.frame()) { later(sStart, 300); return; }
+        sl = sphL.marks().map(function () { return mkLab(); }); sphL.labs = (sphL.labs || []).concat(sl);
+        sl.forEach(function (L, i) { sphL.el.appendChild(L.el); L.box.className = 'arOrbBox arOrbR arOrbDot arOrbOn'; sphL.track(i, function (x, y, v) { L.el.style.transform = 'translate(' + x.toFixed(1) + 'px, ' + y.toFixed(1) + 'px)'; L.el.style.opacity = v.toFixed(3); }, i); });
+        later(sNext, RM ? 0 : 900);
+      };
+      var sNext = function () {
+        var B = bounds(), ins = function (p) { return p && p[2] > .7 && p[0] >= B.l && p[0] <= B.r && p[1] >= B.t && p[1] <= B.b; }, cand = [];
+        sl.forEach(function (L, i) { if (i !== sAct && ins(sphL.projIn(i, 0)) && ins(sphL.projIn(i, 5600))) cand.push(i); });
+        if (!cand.length) { later(sNext, 400); return; }   // none in the box for long enough yet: the vessel will bring one
+        if (sAct >= 0) closeLab(sl[sAct]);
+        sAct = cand[Math.floor(Math.random() * cand.length)];
+        openLab(sl[sAct], items[nextItem()], 300, function (hold) { later(sNext, hold); });
+      };
       var next = function () {
         if (!sphL || !sphL.projAfter) return;
         var B = bounds(), d = 0, ok = function (i, dd) { var q = sphL.projAfter(labs[i].k, dd); return q && q[2] > .45 && q[0] >= B.l && q[0] <= B.r && q[1] >= B.t && q[1] <= B.b; };
         if (!bag.filter(function (i) { return i !== act; }).length) refill();
         var ni = -1; for (var dd = (RM ? 0 : 20); dd <= 360 && ni < 0; dd += 5) for (var j = 0; j < bag.length; j++) if (bag[j] !== act && ok(bag[j], dd * Math.PI / 180)) { ni = bag.splice(j, 1)[0]; d = dd * Math.PI / 180; break; }   /* the least turn (20 degrees at least) that brings one still to come into the box */
         if (ni < 0) { for (j = 0; j < bag.length; j++) if (bag[j] !== act) { ni = bag.splice(j, 1)[0]; break; } d = TURN; }
-        if (act >= 0) { var P0 = labs[act]; P0.box.classList.add('arOrbDot'); later(function () { if (P0.box.classList.contains('arOrbDot')) { P0.tx.textContent = ''; P0.tx.style.maxWidth = ''; } }, 360); }   // the last back to its square, its words and badge fading
+        if (act >= 0) closeLab(labs[act]);
         act = ni; var L = labs[act], txt = items[act];
-        L.tx.textContent = '';
-        L.tx.style.maxWidth = ''; L.tx.appendChild(document.createTextNode(txt)); L.tx.appendChild(h('span', { class: 'arRvCur', 'aria-hidden': 'true' }));   /* its lines measured as they will end, cursor and all, and the box held to the longest: the badge hugs its words, and the words break as they will from the first letter */
-        var mr = document.createRange(); mr.selectNodeContents(L.tx); var ml = 1e9, mx = -1e9; [].forEach.call(mr.getClientRects(), function (r) { if (r.width) { ml = Math.min(ml, r.left); mx = Math.max(mx, r.right); } }); var mk = L.tx.offsetWidth ? L.tx.getBoundingClientRect().width / L.tx.offsetWidth : 1; L.tx.textContent = ''; if (mx > ml && mk > 0) L.tx.style.maxWidth = Math.ceil((mx - ml) / mk + 1) + 'px';   // as wide at most as it will end: it grows with its words and breaks where it will
-        L.gd.style.transition = 'none'; fitGd(L); void L.box.offsetWidth; L.gd.style.transition = '';   // its badge from round its square
-        L.box.classList.remove('arOrbDot');
         var tdur = TDUR * Math.min(1.8, Math.max(1, d / TURN)); if (!RM && d) sphL.turn(d, tdur);   // a longer way round, a little longer
-        later(function () {
-          if (RM) { L.tx.textContent = txt; fitGd(L); later(next, 4200); return; }
-          var cr = h('span', { class: 'arRvCur', 'aria-hidden': 'true' }), tn = document.createTextNode(''), k = 0; L.tx.appendChild(tn); L.tx.appendChild(cr);
-          var tick = function () { tn.nodeValue = txt.slice(0, ++k); fitGd(L); if (k < txt.length) later(tick, TY); else later(next, Math.max(2600, txt.length * 70)); };   // held long enough to read, then straight into the next turn
-          tick();
-        }, RM ? 0 : Math.max(TEXT_AT, Math.round(tdur * .55)));   // the words once its square has mostly come round (the turn eased, .55 of it is most of the way), not typing as it slides in from the edge
+        openLab(L, txt, Math.max(TEXT_AT, Math.round(tdur * .55)), function (hold) { later(next, hold); });   // the words once its square has mostly come round (the turn eased, .55 of it is most of the way)
       };
-      later(start, Math.round(tIn * 1000));
+      later(sphL && sphL.stream ? sStart : start, Math.round(tIn * 1000));
       return h('div', { class: 'arWelcome arRvWel arOrbWel' }, h('div', { class: 'arRvScroll' }, h('div', { class: 'arRv arOrb' },
         WEL.count ? h('span', { class: 'arRvBadge', style: { 'animation-delay': '.1s' }, text: WEL.count }) : null, title,
         h('div', { class: 'arOrbChips arChipsP', style: { 'animation-delay': (tIn - .15).toFixed(2) + 's' } },   /* who reviewed it and when, under the title ("add doctor and date chips below h1"), the welcome's own chips */
@@ -30693,7 +30771,7 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArSvis') === 'stream' ? 'stream' : 'sphere', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArSvis') === 'stream' ? 'stream' : 'sphere', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
@@ -30708,13 +30786,13 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
-    { const l = document.getElementById('stArList'), r = document.getElementById('stArLbgRow'), r2 = document.getElementById('stArCdnRow'), cv = document.getElementById('stArCdn'), cvv = document.getElementById('stArCdnV'); const sh = () => { if (r && l) r.hidden = l.value !== 'orbit'; if (r2 && l) r2.hidden = l.value !== 'orbit'; const r3 = document.getElementById('stArSvisRow'); if (r3 && l) r3.hidden = ['sphere', 'orbit'].indexOf(l.value) < 0; }; if (cv && cvv) cv.addEventListener('input', () => { cvv.textContent = cv.value; }); if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Label badge: the Sphere hero's alone
+    { const l = document.getElementById('stArList'), r = document.getElementById('stArLbgRow'), r2 = document.getElementById('stArCdnRow'), cv = document.getElementById('stArCdn'), cvv = document.getElementById('stArCdnV'); const sh = () => { if (r && l) r.hidden = l.value !== 'orbit'; const two = l && ['sphere', 'orbit'].indexOf(l.value) >= 0; if (r2) r2.hidden = !two; ['stArSvisRow', 'stArAmtRow'].forEach(id => { const rr = document.getElementById(id); if (rr) rr.hidden = !two; }); }; if (cv && cvv) cv.addEventListener('input', () => { cvv.textContent = cv.value; }); { const av = document.getElementById('stArAmt'), avv = document.getElementById('stArAmtV'); if (av && avv) av.addEventListener('input', () => { avv.textContent = av.value; }); } if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Label badge: the Sphere hero's alone
     { const l = document.getElementById('stArList'), r = document.getElementById('stArAssRow'); const sh = () => { if (r && l) r.hidden = ['reveal', 'sphere', 'ht', 'orbit'].indexOf(l.value) < 0; }; if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Rest assured is the reveal intros' (Full bg, Sphere, Halftone)
     { const e = document.getElementById('stArEv'), r = document.getElementById('stArSrcRow'); const sh = () => { if (r && e) r.hidden = e.value !== 'v2'; }; if (e){ e.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Sources is One card's (V2)
     { const l = document.getElementById('stArList'), rows = ['stArWelRow', 'stArWelVisRow'].map(id => document.getElementById(id)).filter(Boolean);   // Full bg is the welcome: its own rows away while it is on
       const hide = () => rows.forEach(r => { r.hidden = !!l && (l.value === 'reveal' || l.value === 'sphere'); }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
     /* the presets, V1 and V2 ("V1 and V2 should be presets that I can save"): each every design tweak of the report; V1's own the page's defaults, V2's the same with one card for the evidence. Picking one sets its tweaks (one remount); Save keeps the current tweaks in it, Reset its own back; the one picked and what was saved kept in this browser. Save marked while the tweaks differ from the preset */
-    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArSvis', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
+    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArAmt', 'stArSvis', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
       const el = id => document.getElementById(id), pre = el('stArPre'), sv = el('stArPreSave'), rs = el('stArPreReset');
       const now = () => { const o = {}; KEYS.forEach(k => { if (el(k)) o[k] = el(k).value; }); return o; };
       if (pre && sv && rs){
@@ -30733,7 +30811,7 @@ hairline({
         if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
         apply(pre.value); }   // the one last picked, with what was saved in it
     }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArSvis', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArAmt', 'stArSvis', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
