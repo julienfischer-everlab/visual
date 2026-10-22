@@ -14285,6 +14285,7 @@
 .arSheet .arBmcPill { align-self: flex-start; margin-bottom: 2px; } .arSheet .arBmc-o { color: var(--ar-opt-fg); } .arSheet .arBmc-s { color: var(--ar-sub-fg); } .arSheet .arBmc-x { color: var(--ar-out-fg); }
 .arSheet .arBmcT { font-family: var(--ar-font); font-size: 17px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink)); text-wrap: pretty; }
 .arSheet .arBmcSub { font-family: var(--ar-font); font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.arSheet .arBmcTap { cursor: pointer; } .arSheet .arBmcTap:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: -2px; border-radius: 12px; }
 .arSheet .arBmcCta { appearance: none; -webkit-appearance: none; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin: 10px 0 0; padding: 4px 0; border: 0; background: none; font: inherit; font-family: var(--ar-font); font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink)); cursor: pointer; } .arSheet .arBmcCta:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; border-radius: 4px; }
 .arSheet .arBmcVis { position: relative; align-self: stretch; min-height: 118px; } .arSheet .arBmcVis svg { position: absolute; left: 0; right: 0; top: 18px; bottom: 0; width: 100%; height: calc(100% - 18px); overflow: visible; }
 .arSheet .arBmcChip { position: absolute; top: 0; right: 0; padding: 3px 8px; border-radius: 8px; background: oklch(var(--ar-ink) / .1); font-family: var(--ar-font); font-size: 12px; line-height: 16px; color: oklch(var(--ar-ink)); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
@@ -15255,15 +15256,16 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       };
       var slides = ms.map(function (m, i) {
         var st = ST[m.status] || 'n', d = null; try { d = BD && BD.model ? BD.model(m) : null; } catch (e) {}
-        var cta = h('button', { type: 'button', class: 'arBmcCta', 'aria-haspopup': 'dialog' }, h('span', { text: 'See detail' }), strokeIcon(16, 16, 1.6, ['M3 8h10', 'M9 4l4 4-4 4']));
-        on(cta, 'click', function () { if (!moved) bioOpen(m, cta); });
-        return h('div', { class: 'arBmcSl', role: 'group', 'aria-roledescription': 'slide', 'aria-label': (i + 1) + ' of ' + ms.length + ': ' + m.name },
+        /* no See detail link ("remove"): the slide itself opens the biomarker, by a tap or Enter */
+        var sl = h('div', { class: 'arBmcSl arBmcTap', role: 'group', 'aria-roledescription': 'slide', 'aria-haspopup': 'dialog', tabindex: '0', 'aria-label': (i + 1) + ' of ' + ms.length + ': ' + m.name + ', open its detail' },
           h('div', { class: 'arBmcTx' },
             h('span', { class: 'arLfPill arBmcPill ' + ({ o: 'arLfOpt', s: 'arLfSub', x: 'arLfOut' }[st] || 'arLfSub'), text: m.status || 'Answer' }),   // the status as the rows' badge ("use badge")
             h('b', { class: 'arBmcT', text: m.name }),
-            h('span', { class: 'arBmcSub', text: m.value + ' · ' + m.date }),
-            cta),
+            h('span', { class: 'arBmcSub', text: m.value + ' · ' + m.date })),
           spark(m));
+        on(sl, 'click', function () { if (!moved) bioOpen(m, sl); });
+        on(sl, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); bioOpen(m, sl); } });
+        return sl;
       });
       var track = h('div', { class: 'arBmcTrack' }, slides);
       var dots = ms.map(function (m, i) { var b = h('button', { type: 'button', class: 'arBmcDot', 'aria-label': 'Show ' + m.name }); on(b, 'click', function () { track.scrollTo({ left: i * track.clientWidth, behavior: reducedMotion() ? 'auto' : 'smooth' }); }); return b; });

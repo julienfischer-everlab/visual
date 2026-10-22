@@ -15026,3 +15026,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Async report V2: an insight's plain-words meaning (the first paragraph of What this means for you) now sits under the headline, above the section pills and the biomarkers, 16/22 in the secondary ink with its bold phrase in the primary. The Meaning section keeps the Key takeaway. V1 unchanged.
 
 - Async report V2: no "Behind this insight" heading over the evidence card (pills or carousel); the lede under the headline is one weight and one colour (the secondary ink), its phrase no longer medium and white.
+
+- Async report, Biomarkers Carousel: no "See detail" link on the slides ("remove"); the slide itself opens the biomarker's detail (tap, or Enter when focused), as the link did.
