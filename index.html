@@ -14293,7 +14293,7 @@
 .arSheet .arEvPane > .arBmc:not(:last-child) + .arEvSrc { margin-top: 0; }
 /* the Sphere welcome: black in the dark, white in the light, the head and the foot clear on it; the ball's canvas under the page; the card a quiet wash of the ink, the close on the ground's own ink */
 .arSheet { --ar-sph-bg: #fff; } .arSheet.arDark { --ar-sph-bg: #000; }
-.arSheet .arSphBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .44s ease; background: var(--ar-sph-bg); } .arSheet.arIsSphere .arSphBg { opacity: 1; }
+.arSheet .arSphBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .64s ease; background: var(--ar-sph-bg); } .arSheet.arIsSphere .arSphBg { opacity: 1; }
 .arSheet .arSphBg canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .arSheet.arSheet.arIsSphere :is(.arHead, .arBody, .arFoot) { background: transparent; } .arSheet.arIsSphere :is(.arGround, .arFootGround) { display: none; }
 .arSheet.arSheet.arSheet.arSheet.arIsSphere.arIsWelcome .arIconBtn { background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink) / .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
@@ -14314,7 +14314,7 @@
 .arSheet.arSheet.arSheet.arSheet.arHtOn.arIsWelcome .arIconBtn { background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .78); -webkit-backdrop-filter: none; backdrop-filter: none; }   /* the close on the paper, not on a picture */
 @media (prefers-reduced-motion: reduce) { .arSheet .arHtImg { animation: none; } }
 /* Your insights, Full bg: the picture over the whole screen, the head and the foot clear over it, white in either theme (the dark tokens); the title centred, word by word, rising out of a blur; the card opening under it */
-.arSheet .arRvBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .44s ease; background: #1a0d0b; }
+.arSheet .arRvBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .64s ease; background: #1a0d0b; }
 .arSheet .arRvBg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 18% 50%; display: block; }   /* its red side in the frame, the dark falling away to the foot */
 .arSheet .arRvBg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, oklch(0% 0 0 / .32) 0, oklch(0% 0 0 / .12) 34%, oklch(0% 0 0 / .28) 62%, oklch(0% 0 0 / .62) 100%); }   /* the head's words and the card read on it */
 .arSheet.arIsIntro .arRvBg { opacity: 1; } .arSheet.arIsIntro .arRvBg img { animation: arRvZoom 10s cubic-bezier(.2, .6, .2, 1) both; }   /* the picture settling as the words come */
@@ -15544,9 +15544,16 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       try { nw.getAnimations({ subtree: true }).forEach(function (a) { if (/^ar(Rise|FadeUp|Fade)$/.test(a.animationName || '')) a.finish(); }); } catch (e) {}   // its own rises at once: the push is the motion
       body.classList.add('arPushIn'); if (!clear) body.style.background = 'var(--ar-paper)';
       var f = g.d > 0;
-      // on clear grounds the two pages travel side by side, the old one out the whole way to the left ("content should transition on the left when going to the next screen"), back the whole way to the right; on paper, the old drifts a third under the new
-      body.animate([{ transform: 'translateX(' + (f ? '100%' : clear ? '-100%' : '-30%') + ')' }, { transform: 'none' }], PUSH);
-      var out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? (clear ? '-100%' : '-30%') : '100%') + ')', opacity: clear ? 1 : f ? .5 : 1 }], PUSH);
+      var out;
+      if (clear) {   // to or from a full-bg page, the travel is up ("transition to next page: move up content and bg parallax"): the old page rises and fades, the new one rises in from below, and the ground drifts up at a third of the pace as it fades into the next page's colour; back, all of it the other way
+        var V = { duration: 640, easing: 'cubic-bezier(.32, .72, 0, 1)' }, up = f ? 1 : -1;
+        body.animate([{ transform: 'translateY(' + (up * 100) + '%)' }, { transform: 'none' }], V);
+        out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(' + (-up * 60) + '%)', opacity: 0 }], V);
+        [].forEach.call(stage.querySelectorAll(':scope > .arRvBg, :scope > .arSphBg'), function (gl) { gl.animate(f ? [{ transform: 'none' }, { transform: 'translateY(-30%)' }] : [{ transform: 'translateY(-30%)' }, { transform: 'none' }], V); });
+      } else {   // between paper pages, a push: the new over the old, which drifts a third left and dims; back, the other way
+        body.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], PUSH);
+        out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: f ? .5 : 1 }], PUSH);
+      }
       var done = function () { body.classList.remove('arPushIn'); body.style.background = ''; if (ghost.parentNode) ghost.parentNode.removeChild(ghost); };
       out.onfinish = done; out.oncancel = done;
     }
