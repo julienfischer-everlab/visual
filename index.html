@@ -5567,6 +5567,12 @@
      tap having broken something. It stays in the layout at nothing, which is
      free where it is the only absolutely positioned thing on the surface. */
   .nrCard.done{opacity:0;transform:translateY(8px);pointer-events:none;}
+  .dash .nrCard.done{transform:translate(-50%, 8px);}
+  html:not(.bpAuto) body.newRep:is([data-bp="xs"], [data-bp="s"]) .dash .nrCard{left:50vw;width:calc(var(--bpW, 393px) - 32px);bottom:calc(var(--bpBot, 48px) + 100px);}   /* in the XS / S frame, over its dock, not out under the device */   /* centred as it goes, not jumping right by half its width */
+  /* From this page: a toast, so it arrives -- up from under the page and in, a beat after the page */
+  body.newRep #phone .nrCard:not(.done){animation:nrIn .5s cubic-bezier(.2,.8,.2,1) .3s both;} body.newRep .dash .nrCard:not(.done){animation:nrInD .5s cubic-bezier(.2,.8,.2,1) .3s both;}
+  @keyframes nrIn{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}} @keyframes nrInD{from{opacity:0;transform:translate(-50%, 18px);}to{opacity:1;transform:translate(-50%, 0);}}
+  @media (prefers-reduced-motion: reduce){ body.newRep .nrCard{animation:none !important;} }
 
   /* ---- Past results: one message, two dresses -------------------------
      A modal on the desk and a bottom sheet on the phone, each a page of its
@@ -11241,13 +11247,15 @@
             <option value="empty">Empty</option>
           </select>
         </div>
-        <!-- A notice under the record select: a report has landed, and this is
-             the way into it. -->
+        <!-- Results received, merged into Insights ("merge the Results received inside the Insights page; tweak Results received: from other page (modal), from this page (toast)"):
+             From other page, the message over the Overview (the modal on the desk, the sheet on the phone), its button landing here on the new records;
+             From this page, the toast floating over the list, its View results the way in. Off, neither. -->
         <div class="tkRow">
-          <span class="lbl">New results</span>
-          <select id="stNewRep" aria-label="New results notice under the record select">
-            <option value="on">On</option>
+          <span class="lbl">Results received</span>
+          <select id="stNewRep" aria-label="How the results received message comes">
             <option value="off" selected>Off</option>
+            <option value="modal">From other page (modal)</option>
+            <option value="on">From this page (toast)</option>
           </select>
         </div>
         </div>
@@ -22527,7 +22535,7 @@ hairline({
   { const o = document.createElement('option'); o.value = 'doc'; o.textContent = 'Documentation'; versionSel.appendChild(o); }   // the components, documented: the Progress timeline first   // the report cards, a page of their own   // the halftone tool, a page of its own   // the Hairline illustrations, a page of their own beside Home
   { const o = document.createElement('option'); o.value = 'home'; o.textContent = 'Home'; versionSel.appendChild(o); }   // the mosaic of every page
   const MODE_GROUPS = ['Concept', 'Insights', 'Overview page',
-                       'Results received', 'Async report', 'Video', 'Landing page'];
+                       'Async report', 'Video', 'Landing page'];   // Results received is in Insights now, its Results received tweak (#m24 / #m25 still open it)
   MODE_GROUPS.forEach(g => {
     const inGroup = MODES.map((v, i) => [v, i])
       .filter(([v, i]) => v.group === g && !isArchived(i) && !((g === 'Overview page' || g === 'Async report') && v.name === 'Mobile'));   /* no Overview > Mobile in the menu ("Mobile --> kill"); the phone mode stays, the appointment's Mobile opens it. No Async report > Mobile either ("remove Mobile"): XS on the desktop is the phone; #m27 still opens it */
@@ -22541,6 +22549,7 @@ hairline({
       o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : g === 'Async report' && v.name === 'Desktop' ? 'Async report' : v.name;   /* the page's name, not the shell's ("Desktop --> Overview"; "rename Desktop by Async report") */
       og.appendChild(o);
     });
+    if (g === 'Insights') [24, 25].forEach(i => { const o = document.createElement('option'); o.value = String(i); o.textContent = 'Results received'; o.hidden = true; og.appendChild(o); });   // its Results received pages, reached from its tweak: named in the select while showing, not offered in it
     // Mobile (viewport): the mobile design filling the browser's viewport with
     // no drawn phone around it, for testing on an actual phone. An entry, not
     // a mode -- it is Mobile (m20) wearing the `fullscr` flag the /phone path
@@ -34630,7 +34639,9 @@ hairline({
     }
     const sel = document.getElementById('stNewRep');
     if (sel) sel.addEventListener('change', () => {
-      CARD_STATE.newRep = sel.value === 'on';
+      // From other page: the message where it arrives, over the Overview (the desk's modal, the phone's sheet); its button brings the reader back here
+      if (sel.value === 'modal'){ CARD_STATE.newRep = false; document.body.classList.remove('newRep'); setMode(version === 20 ? 25 : 24); return; }
+      CARD_STATE.newRep = sel.value === 'on';   // From this page: the toast
       document.body.classList.toggle('newRep', CARD_STATE.newRep);
       // turning it back on is a fresh notice -- dot and badge included
       cards.forEach(x => x.classList.remove('done'));
@@ -36420,7 +36431,6 @@ hairline({
       ['Insights', 'Biomarkers, reports and insights, with the organ at the centre.'],
       ['Service detail', 'One service end to end: its state, what to do, and the steps. Its picker has the standalone tasks too.'],
       ['Timeline', 'The health journey: what is due, month by month, and what is yours to claim.'],
-      ['Results received', 'The moment results land, over the Overview.'],
       ['Async report', 'The Bloods & Tests debrief, a bottom sheet over the Overview.'],
       ['Landing page', 'Organ Age, for people who are not members yet.'],
       ['Video', 'The social teaser.'],
