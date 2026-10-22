@@ -15090,7 +15090,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     }
     function sphereLayer(big) {   // big: the Sphere hero's ball, 1.4x, with as many more points as keep its rim as dense (its area 1.36x the Sphere's)
       var cv = h('canvas', {}), el = h('div', { class: 'arSphBg', 'aria-hidden': 'true' }, cv), x = cv.getContext('2d');
-      var N = big ? 34000 : 18000, M = big ? 680 : 360, NS = big ? 13200 : 7000,   /* the hero's ball denser still ("sphere more dots") */ P = new Float32Array((N + M) * 3), A = new Float32Array(N + M), K = new Uint8Array(N + M), rnd = Math.random, i, j;
+      var N = big ? 64000 : 18000, M = big ? 900 : 360, NS = big ? 16000 : 7000, SH = big ? 13 : 9,   /* the hero's ball far denser ("need more dot particles, to look more like a sphere"): 64,000 points, 13 in 20 of its body's on the shell (9 on the Sphere), so its outline and face read as a ball */ P = new Float32Array((N + M) * 3), A = new Float32Array(N + M), K = new Uint8Array(N + M), rnd = Math.random, i, j;
       /* fluid ("the sphere should have some more condensed areas, like a fluid style"): half the points ride five currents wound round the ball, each a loop that swings above and below its plane,
          its points spread a little either side and moving along it at its own slow pace, so the dense streaks drift, cross and part as the ball turns; the rest are its body, sparser, under the weather */
       var unit = function () { var t = rnd() * 6.2832, p = Math.acos(rnd() * 2 - 1); return [Math.sin(p) * Math.cos(t), Math.sin(p) * Math.sin(t), Math.cos(p)]; };
@@ -15100,12 +15100,13 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       for (i = 0; i < NS; i++) { G[i] = i % 5; T0[i] = rnd() * 6.2832; RR[i] = .8 + .2 * Math.sqrt(rnd()); var g = (rnd() + rnd() + rnd() - 1.5) * .16, o = unit(); O[i * 3] = o[0] * g; O[i * 3 + 1] = o[1] * g; O[i * 3 + 2] = o[2] * g; A[i] = .3 + .4 * rnd(); }   /* diffused ("less condensed areas, diffuse more"): fewer on the currents (7000 of 18000, was 11000), spread three times as wide either side, deeper, and fainter */   // a current's point: where on its loop, how deep, how far off it
       var blobs = []; for (j = 0; j < 6; j++) { var b0 = unit(); blobs.push([b0[0], b0[1], b0[2], .28 + rnd() * .3]); }
       for (i = NS; i < N + M; i++) {
-        var amb = i >= N, uu = rnd(), r = amb ? 1.04 + rnd() * .42 : (i % 20) < 9 ? .93 + .07 * uu : Math.cbrt(uu) * .93, d0 = unit(), px = d0[0], py = d0[1], pz = d0[2];
+        var amb = i >= N, uu = rnd(), r = amb ? 1.04 + rnd() * .42 : (i % 20) < SH ? .93 + .07 * uu : Math.cbrt(uu) * .93, d0 = unit(), px = d0[0], py = d0[1], pz = d0[2];
         P[i * 3] = px * r; P[i * 3 + 1] = py * r; P[i * 3 + 2] = pz * r;
         var dim = 0; if (!amb) blobs.forEach(function (b) { var d = Math.acos(Math.max(-1, Math.min(1, px * b[0] + py * b[1] + pz * b[2]))); dim = Math.max(dim, Math.exp(-d * d / (2 * b[3] * b[3]))); });   // the weather
         A[i] = amb ? .12 + rnd() * .25 : (.16 + .42 * rnd()) * (1 - .82 * dim) * (.55 + .45 * Math.pow(r, 3));
       }
       for (i = 0; i < N + M; i++) { var kk = rnd(); K[i] = kk < .58 ? 0 : kk < .82 ? 1 : 2; }
+      var IDX = [[], [], []]; for (i = 0; i < N + M; i++) IDX[K[i]].push(i); IDX = IDX.map(function (a) { return Uint32Array.from(a); });   // each ink's points, listed once: a pass each over its own, not three over all
       var flow = function (sec) {   // the currents' points where their currents have carried them
         for (var q = 0; q < NS; q++) {
           var c = ST[G[q]], t = T0[q] + c.sp * sec, ct = Math.cos(t), st = Math.sin(t), sw = c.A * Math.sin(c.k * t + c.ph);
@@ -15114,7 +15115,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         }
       };
       var INK = { d: ['214,112,58', '150,160,204', '238,232,226'], l: ['196,92,40', '92,104,156', '46,40,36'] };
-      var anchor = null, nud = { from: 0, to: 0, t0: 0, dur: 1 }, lastF = null, trk = null;
+      var anchor = null, nud = { from: 0, to: 0, t0: 0, dur: 1 }, lastF = null, trk = null, pimg = null;
       var projAt = function (q, A, F) { var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], c = Math.cos(A), sn = Math.sin(A), x1 = X * c + Z * sn, z1 = -X * sn + Z * c, y1 = Y * F.ct - z1 * F.st; return [F.cx + x1 * F.R, F.cy - y1 * F.R, Y * F.st + z1 * F.ct]; };   // Sphere hero: the element it sits 48 under (the title), and the turn each message brings
       var nudAt = function (now) { var k = Math.min(1, Math.max(0, (now - nud.t0) / nud.dur)), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; return nud.from + (nud.to - nud.from) * e; };   // eased in and out, then still
       var raf = 0, t0 = 0, marks = [], lastMark = 0, dark = function () { return root.classList.contains('arDark'); };
@@ -15128,31 +15129,43 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var ink = dark() ? INK.d : INK.l, lift = dark() ? 2.4 : 2.7, sx, sy, zz;   // brought up to the engine's own presence: the ball reads as a body, not a dusting
         var proj = function (q) { var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st; zz = Y * st + z1 * ct; sx = cx + x1 * R; sy = cy - y1 * R; };
         lastF = { R: R, cx: cx, cy: cy, a: a, ct: ct, st: st, w: w, hh: hh, top: anchor && anchor.isConnected ? cy - R * .95 : null };   // this frame's ball, for a label's point to be chosen and followed
+        var PW = cv.width, PH = cv.height, px8 = null;
+        if (big) { if (!pimg || pimg.width !== PW || pimg.height !== PH) pimg = x.createImageData(PW, PH); px8 = pimg.data; px8.fill(0); }
         for (var c = 0; c < 3; c++) {
           x.fillStyle = 'rgb(' + ink[c] + ')';
-          for (var q = 0; q < N + M; q++) {
-            if (K[q] !== c) continue; proj(q); if (sy < -4 || sy > hh + 4 || sx < -4 || sx > w + 4) continue;
+          var ix = IDX[c], rgb = ink[c].split(',').map(Number), CR = rgb[0], CG = rgb[1], CB = rgb[2];
+          for (var n = 0; n < ix.length; n++) {
+            var q = ix[n]; proj(q); if (sy < -4 || sy > hh + 4 || sx < -4 || sx > w + 4) continue;
             var dp = (zz + 1) / 2, al = Math.min(1, A[q] * (.22 + .78 * dp) * lift); if (al < .02) continue;
-            var sz = .7 + .5 * dp; x.globalAlpha = al; x.fillRect(sx - sz / 2, sy - sz / 2, sz, sz);
+            var sz = .7 + .5 * dp;
+            if (!px8) { x.globalAlpha = al; x.fillRect(sx - sz / 2, sy - sz / 2, sz, sz); continue; }
+            /* the hero's: straight into the pixels, a 1 or 2 device-pixel square, laid over what is there (64,000 fillRects a frame were the cost) */
+            var s2 = sz * dpr >= 1.7 ? 2 : 1, X0 = (sx * dpr - s2 / 2 + .5) | 0, Y0 = (sy * dpr - s2 / 2 + .5) | 0;
+            for (var yy = 0; yy < s2; yy++) { var Y = Y0 + yy; if (Y < 0 || Y >= PH) continue;
+              for (var xx = 0; xx < s2; xx++) { var X = X0 + xx; if (X < 0 || X >= PW) continue;
+                var o = (Y * PW + X) * 4, da = px8[o + 3] / 255, ra = da * (1 - al), oa = al + ra;
+                px8[o] = (CR * al + px8[o] * ra) / oa; px8[o + 1] = (CG * al + px8[o + 1] * ra) / oa; px8[o + 2] = (CB * al + px8[o + 2] * ra) / oa; px8[o + 3] = oa * 255; } }
           }
         }
+        if (px8) x.putImageData(pimg, 0, 0);
         x.globalAlpha = 1;
         if (trk && trk.cb) { proj(trk.k); trk.cb(sx, sy, zz); }   // the Sphere hero's label, riding its point
         if (!big && !reducedMotion()) {   // the marks (not on the Sphere hero: "remove the random orange dots that have no label"): one every 3 s, on a shell point facing us and on the screen, blinking for 1.2 s, then out over .4 s
-          if (now - lastMark > 3000) { lastMark = now; for (var tries = 0; tries < 40; tries++) { var pk = Math.floor(rnd() * N); if (pk % 20 >= 9) continue; proj(pk); if (zz > .35 && sy > 12 && sy < hh - 12 && sx > 12 && sx < w - 12) { marks.push({ k: pk, t: now }); break; } } }
+          if (now - lastMark > 3000) { lastMark = now; for (var tries = 0; tries < 40; tries++) { var pk = Math.floor(rnd() * N); if (pk % 20 >= SH) continue; proj(pk); if (zz > .35 && sy > 12 && sy < hh - 12 && sx > 12 && sx < w - 12) { marks.push({ k: pk, t: now }); break; } } }
           marks = marks.filter(function (m) { return now - m.t < 1600; });
           marks.forEach(function (m) { var e = now - m.t, on = e < 1200 ? (e % 400) < 260 : true, al = e < 1200 ? 1 : 1 - (e - 1200) / 400; if (!on) return; proj(m.k); x.globalAlpha = al; x.fillStyle = '#ff7a1a'; x.fillRect(Math.round(sx - 3), Math.round(sy - 3), 6, 6); });
           x.globalAlpha = 1;
         }
       };
-      var loop = function (now) { raf = 0; if (!alive || !root.classList.contains('arIsSphere') || el.offsetParent === null) return; draw(now); if (!reducedMotion()) raf = requestAnimationFrame(loop); };
+      var lastDraw = 0;
+      var loop = function (now) { raf = 0; if (!alive || !root.classList.contains('arIsSphere') || el.offsetParent === null) return; if (!big || now - lastDraw > 30 || !lastDraw){ draw(now); lastDraw = now; } if (!reducedMotion()) raf = requestAnimationFrame(loop); };   // the hero's 64,000 points drawn at 30 a second: its motion is slow, the page keeps its 60
       return { el: el, run: function () { if (raf) return; if (!t0) t0 = performance.now(); lastMark = performance.now() - 1500; raf = requestAnimationFrame(loop); },
         anchor: function (e) { anchor = e || null; },
         /* a shell point for a label: one the coming turn (d) brings to the front and into the box b ({ l, r, t, b }, the canvas's px), from the side that was turned away: { k, x, y } where it will be, or -1 when none (no frame drawn yet) */
         pickAfter: function (d, b, away) {   // away: { x, y } the last label's place, the next kept 110 from it
           if (!lastF) return -1; var A = lastF.a + d, tx = 0, ty = 0, best = -1, bd = 1e9;
           for (var n = 0; n < 30; n++) { tx = b.l + rnd() * (b.r - b.l); ty = b.t + rnd() * (b.b - b.t); if (!away || Math.hypot(tx - away.x, ty - away.y) > 110) break; }   // a spot anywhere in the box ("bullets randomly placed"), not where the last one was
-          for (var i = 0; i < 2400; i++) { var q = NS + Math.floor(rnd() * (N - NS)); if (q % 20 >= 9) continue; var p1 = projAt(q, A, lastF); if (p1[2] < .4 || p1[0] < b.l || p1[0] > b.r || p1[1] < b.t || p1[1] > b.b) continue;
+          for (var i = 0; i < 2400; i++) { var q = NS + Math.floor(rnd() * (N - NS)); if (q % 20 >= SH) continue; var p1 = projAt(q, A, lastF); if (p1[2] < .4 || p1[0] < b.l || p1[0] > b.r || p1[1] < b.t || p1[1] > b.b) continue;
             var dd = Math.hypot(p1[0] - tx, p1[1] - ty); if (dd < bd){ bd = dd; best = { k: q, x: p1[0], y: p1[1] }; if (dd < 6) break; } }   // the shell point the turn brings nearest it (every point is carried round from the side turned away)
           return best; },
         track: function (k, cb) { trk = k >= 0 && cb ? { k: k, cb: cb } : null; },
