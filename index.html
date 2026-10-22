@@ -14324,11 +14324,11 @@
 .arSheet .arRvOpen { display: grid; grid-template-rows: 0fr; width: 100%; animation: arRvOpen .8s var(--ar-ease) both; }   /* the card's room opening under the title, which rises as the pair stays centred */
 @keyframes arRvOpen { from { grid-template-rows: 0fr; } to { grid-template-rows: 1fr; } }
 .arSheet .arRvIn { min-height: 0; overflow: hidden; margin: 0 -8px; padding: 0 8px; }
-.arSheet .arRvCard { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; margin-bottom: 4px; padding: 20px 20px 22px; border-radius: calc(var(--ar-radius-card) + 8px); background: oklch(100% 0 0 / .1); box-shadow: none; -webkit-backdrop-filter: blur(24px) saturate(1.2); backdrop-filter: blur(24px) saturate(1.2); text-align: left; animation: arRvCard .8s var(--ar-ease) both; }
+.arSheet .arRvCard { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; margin-bottom: 4px; padding: 28px 28px 30px; border-radius: calc(var(--ar-radius-card) + 8px); background: oklch(100% 0 0 / .1); box-shadow: none; -webkit-backdrop-filter: blur(24px) saturate(1.2); backdrop-filter: blur(24px) saturate(1.2); text-align: left; animation: arRvCard .8s var(--ar-ease) both; }
 @keyframes arRvCard { from { opacity: 0; filter: blur(8px); transform: translateY(24px); } to { opacity: 1; filter: blur(0); transform: none; } }
 .arSheet .arRvH { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink) / .64); }
 .arSheet .arRvList { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }   /* rows closer ("reduce bullet point row gap") */
-.arSheet .arRvLi.arRvTy { font-family: var(--ar-font-mono); font-size: 14px; line-height: 20px; letter-spacing: .06em; text-transform: uppercase; opacity: 0; animation: none; } .arSheet .arRvLi.arRvTy.arRvTyOn { opacity: 1; }   /* typed: its bullet with its first letter */
+.arSheet .arRvLi.arRvTy::before { top: 6px; } .arSheet .arRvLi.arRvTy { font-family: var(--ar-font-mono); font-size: 12px; line-height: 18px; letter-spacing: .06em; text-transform: uppercase; opacity: 0; animation: none; } .arSheet .arRvLi.arRvTy.arRvTyOn { opacity: 1; }   /* typed: its bullet with its first letter */
 .arSheet .arRvTyG { visibility: hidden; } .arSheet .arRvTyT { position: absolute; left: 20px; right: 0; top: 0; }   /* the words held unseen for the line's room; the typing over them */
 .arSheet .arRvCur { display: inline-block; width: .62em; height: 1.05em; margin-left: 2px; vertical-align: -.16em; background: oklch(var(--ar-ink) / .88); animation: arRvBlink 1.05s steps(1, end) infinite; }
 @keyframes arRvBlink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
@@ -14339,7 +14339,8 @@
 @media (prefers-reduced-motion: reduce) { .arSheet .arRvW, .arSheet .arRvCard, .arSheet .arRvLi, .arSheet.arIsIntro .arRvBg img { animation: none; } .arSheet .arRvOpen { animation: none; grid-template-rows: 1fr; } }
 /* the welcome as the reveal: the screen's height, its own scroller clear of the close and of a Gradient footer's button; who reviewed it at the card's foot, past a rule */
 .arSheet.arSheet.arSheet .arWelcome.arRvWel { height: 100%; }
-.arSheet .arRvScroll { box-sizing: border-box; height: 100%; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: calc(var(--ar-head-top, 16px) + 56px) calc(var(--aqSide, 20px) + 24px) 24px; }   /* 24 more at the sides, the card 20 inside ("container +24px padding, card -24px padding") */ .arSheet .arRvScroll::-webkit-scrollbar { display: none; }
+.arSheet .arRvScroll { box-sizing: border-box; height: 100%; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: calc(var(--ar-head-top, 16px) + 64px) calc(var(--aqSide, 20px) + 24px) 24px; }   /* 32 under the nav's row (its 40, and the reveal's own 8) */
+.arSheet .arRvWel .arRv { justify-content: flex-start; min-height: 0; }   /* the welcome's from the top, 32 under the nav, not centred ("push up content to 32px below the nav") */   /* 24 more at the sides, the card 20 inside ("container +24px padding, card -24px padding") */ .arSheet .arRvScroll::-webkit-scrollbar { display: none; }
 .arSheet.arFootGrad .arRvScroll { padding-bottom: calc(var(--ar-cta-b, var(--ar-foot-h, 0px)) + 24px); }
 .arSheet .arRvBy { display: flex; align-items: center; gap: 8px; margin-top: 4px; padding: 14px 0 0; border-top: 1px solid oklch(var(--ar-ink) / .12); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .72); } .arSheet .arRvBy::before { display: none; } .arSheet .arRvBy .arRvDate { margin-left: auto; color: oklch(var(--ar-ink) / .56); white-space: nowrap; } .arSheet .arRvByTx { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .arSheet .arRvBy .arRvByTx .arRvDate { margin-left: 0; font-size: 13px; line-height: 16px; }   /* the name, the date under it */
 /* Your insights, the 2nd screen: a row each, its number in a ring, its name, its counts at its right in the biomarker rows' pills; filled or outlined with the Cards style; nothing to press */
@@ -14996,35 +14997,50 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 
     /* the Sphere welcome's ball ("add another tweak Sphere using black / white bg; with sphere particles sitting at the bottom of the screen rotating slowly; get that sphere from particle"):
        the particle engine's Sphere rebuilt here in 3D so it can turn: nine in twenty points on its shell, the rest through its body, its weather the darker patches drifting with it, a few strays above;
-       the engine's three inks (brick-orange most, a cool grey, an off-white), each dot nearer brighter. Drawn on a canvas under the page, its top two fifths up from the foot, a turn every 90 s.
+       the engine's three inks (brick-orange most, a cool grey, an off-white), each dot nearer brighter. Drawn on a canvas under the page, its top two fifths up from the foot and 64 lower ("push down by 64px"), a turn every 180 s ("turn slower"),
+       18,000 points at half the dot ("particles should be fine, 2x"). 
        Every 3 s an orange 6 px square lands on a point facing us, rides the turn, blinks and goes ("randomly some orange square 6px should appear pointing the sphere, 1 every 3 s, blinking then disappear"). Still with reduced motion */
     function sphereLayer() {
       var cv = h('canvas', {}), el = h('div', { class: 'arSphBg', 'aria-hidden': 'true' }, cv), x = cv.getContext('2d');
-      var N = 9000, M = 220, P = new Float32Array((N + M) * 3), A = new Float32Array(N + M), K = new Uint8Array(N + M), rnd = Math.random, i, j;
-      var blobs = []; for (j = 0; j < 6; j++) { var bt = rnd() * 6.2832, bp = Math.acos(rnd() * 2 - 1); blobs.push([Math.sin(bp) * Math.cos(bt), Math.sin(bp) * Math.sin(bt), Math.cos(bp), .28 + rnd() * .3]); }
-      for (i = 0; i < N + M; i++) {
-        var amb = i >= N, u = rnd(), r = amb ? 1.04 + rnd() * .42 : (i % 20) < 9 ? .93 + .07 * u : Math.cbrt(u) * .93;
-        var th = rnd() * 6.2832, ph = Math.acos(rnd() * 2 - 1), px = Math.sin(ph) * Math.cos(th), py = Math.sin(ph) * Math.sin(th), pz = Math.cos(ph);
+      var N = 18000, M = 360, NS = 11000, P = new Float32Array((N + M) * 3), A = new Float32Array(N + M), K = new Uint8Array(N + M), rnd = Math.random, i, j;
+      /* fluid ("the sphere should have some more condensed areas, like a fluid style"): half the points ride five currents wound round the ball, each a loop that swings above and below its plane,
+         its points spread a little either side and moving along it at its own slow pace, so the dense streaks drift, cross and part as the ball turns; the rest are its body, sparser, under the weather */
+      var unit = function () { var t = rnd() * 6.2832, p = Math.acos(rnd() * 2 - 1); return [Math.sin(p) * Math.cos(t), Math.sin(p) * Math.sin(t), Math.cos(p)]; };
+      var cross = function (a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }, nrm = function (a) { var l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+      var ST = []; for (j = 0; j < 5; j++) { var w = unit(), u = nrm(cross(w, unit())), v = cross(w, u); ST.push({ u: u, v: v, w: w, A: .18 + rnd() * .32, k: 2 + Math.floor(rnd() * 3), ph: rnd() * 6.2832, sp: (rnd() < .5 ? -1 : 1) * (.025 + rnd() * .035) }); }
+      var T0 = new Float32Array(NS), G = new Uint8Array(NS), RR = new Float32Array(NS), O = new Float32Array(NS * 3);
+      for (i = 0; i < NS; i++) { G[i] = i % 5; T0[i] = rnd() * 6.2832; RR[i] = .88 + .12 * Math.sqrt(rnd()); var g = (rnd() + rnd() + rnd() - 1.5) * .05, o = unit(); O[i * 3] = o[0] * g; O[i * 3 + 1] = o[1] * g; O[i * 3 + 2] = o[2] * g; A[i] = .5 + .5 * rnd(); }   // a current's point: where on its loop, how deep, how far off it
+      var blobs = []; for (j = 0; j < 6; j++) { var b0 = unit(); blobs.push([b0[0], b0[1], b0[2], .28 + rnd() * .3]); }
+      for (i = NS; i < N + M; i++) {
+        var amb = i >= N, uu = rnd(), r = amb ? 1.04 + rnd() * .42 : (i % 20) < 9 ? .93 + .07 * uu : Math.cbrt(uu) * .93, d0 = unit(), px = d0[0], py = d0[1], pz = d0[2];
         P[i * 3] = px * r; P[i * 3 + 1] = py * r; P[i * 3 + 2] = pz * r;
         var dim = 0; if (!amb) blobs.forEach(function (b) { var d = Math.acos(Math.max(-1, Math.min(1, px * b[0] + py * b[1] + pz * b[2]))); dim = Math.max(dim, Math.exp(-d * d / (2 * b[3] * b[3]))); });   // the weather
-        A[i] = amb ? .12 + rnd() * .25 : (.35 + .65 * rnd()) * (1 - .82 * dim) * (.55 + .45 * Math.pow(r, 3));
-        var k = rnd(); K[i] = k < .58 ? 0 : k < .82 ? 1 : 2;
+        A[i] = amb ? .12 + rnd() * .25 : (.16 + .42 * rnd()) * (1 - .82 * dim) * (.55 + .45 * Math.pow(r, 3));
       }
+      for (i = 0; i < N + M; i++) { var kk = rnd(); K[i] = kk < .58 ? 0 : kk < .82 ? 1 : 2; }
+      var flow = function (sec) {   // the currents' points where their currents have carried them
+        for (var q = 0; q < NS; q++) {
+          var c = ST[G[q]], t = T0[q] + c.sp * sec, ct = Math.cos(t), st = Math.sin(t), sw = c.A * Math.sin(c.k * t + c.ph);
+          var x0 = ct * c.u[0] + st * c.v[0] + sw * c.w[0], y0 = ct * c.u[1] + st * c.v[1] + sw * c.w[1], z0 = ct * c.u[2] + st * c.v[2] + sw * c.w[2], l = RR[q] / (Math.hypot(x0, y0, z0) || 1);
+          P[q * 3] = x0 * l + O[q * 3]; P[q * 3 + 1] = y0 * l + O[q * 3 + 1]; P[q * 3 + 2] = z0 * l + O[q * 3 + 2];
+        }
+      };
       var INK = { d: ['214,112,58', '150,160,204', '238,232,226'], l: ['196,92,40', '92,104,156', '46,40,36'] };
       var raf = 0, t0 = 0, marks = [], lastMark = 0, dark = function () { return root.classList.contains('arDark'); };
       var draw = function (now) {
         var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return;
         var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
         x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
-        var R = Math.min(Math.max(w * .62, hh * .32), hh * .42), cx = w / 2, cy = hh - R * .1, a = (now - t0) / 90000 * 6.2832, ca = Math.cos(a), sa = Math.sin(a), tl = .38, ct = Math.cos(tl), st = Math.sin(tl);
-        var ink = dark() ? INK.d : INK.l, lift = dark() ? 1.9 : 2.2, sx, sy, zz;   // brought up to the engine's own presence: the ball reads as a body, not a dusting
+        flow((now - t0) / 1000);
+        var R = Math.min(Math.max(w * .62, hh * .32), hh * .42), cx = w / 2, cy = hh - R * .1 + 64, a = (now - t0) / 180000 * 6.2832, ca = Math.cos(a), sa = Math.sin(a), tl = .38, ct = Math.cos(tl), st = Math.sin(tl);
+        var ink = dark() ? INK.d : INK.l, lift = dark() ? 2.4 : 2.7, sx, sy, zz;   // brought up to the engine's own presence: the ball reads as a body, not a dusting
         var proj = function (q) { var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st; zz = Y * st + z1 * ct; sx = cx + x1 * R; sy = cy - y1 * R; };
         for (var c = 0; c < 3; c++) {
           x.fillStyle = 'rgb(' + ink[c] + ')';
           for (var q = 0; q < N + M; q++) {
             if (K[q] !== c) continue; proj(q); if (sy < -4 || sy > hh + 4 || sx < -4 || sx > w + 4) continue;
             var dp = (zz + 1) / 2, al = Math.min(1, A[q] * (.22 + .78 * dp) * lift); if (al < .02) continue;
-            var sz = 1.3 + .9 * dp; x.globalAlpha = al; x.fillRect(sx - sz / 2, sy - sz / 2, sz, sz);
+            var sz = .7 + .5 * dp; x.globalAlpha = al; x.fillRect(sx - sz / 2, sy - sz / 2, sz, sz);
           }
         }
         x.globalAlpha = 1;
@@ -15524,8 +15540,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       try { nw.getAnimations({ subtree: true }).forEach(function (a) { if (/^ar(Rise|FadeUp|Fade)$/.test(a.animationName || '')) a.finish(); }); } catch (e) {}   // its own rises at once: the push is the motion
       body.classList.add('arPushIn'); if (!clear) body.style.background = 'var(--ar-paper)';
       var f = g.d > 0;
-      body.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], PUSH);
-      var out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: clear ? 0 : f ? .5 : 1 }], PUSH);
+      // on clear grounds the two pages travel side by side, the old one out the whole way to the left ("content should transition on the left when going to the next screen"), back the whole way to the right; on paper, the old drifts a third under the new
+      body.animate([{ transform: 'translateX(' + (f ? '100%' : clear ? '-100%' : '-30%') + ')' }, { transform: 'none' }], PUSH);
+      var out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? (clear ? '-100%' : '-30%') : '100%') + ')', opacity: clear ? 1 : f ? .5 : 1 }], PUSH);
       var done = function () { body.classList.remove('arPushIn'); body.style.background = ''; if (ghost.parentNode) ghost.parentNode.removeChild(ghost); };
       out.onfinish = done; out.oncancel = done;
     }
@@ -22538,7 +22555,7 @@ hairline({
                        'Async report', 'Video', 'Landing page'];   // Results received is in Insights now, its Results received tweak (#m24 / #m25 still open it)
   MODE_GROUPS.forEach(g => {
     const inGroup = MODES.map((v, i) => [v, i])
-      .filter(([v, i]) => v.group === g && !isArchived(i) && !((g === 'Overview page' || g === 'Async report') && v.name === 'Mobile'));   /* no Overview > Mobile in the menu ("Mobile --> kill"); the phone mode stays, the appointment's Mobile opens it. No Async report > Mobile either ("remove Mobile"): XS on the desktop is the phone; #m27 still opens it */
+      .filter(([v, i]) => v.group === g && !isArchived(i) && !((g === 'Overview page' || g === 'Async report' || g === 'Insights') && v.name === 'Mobile'));   // Insights' phone too: the one page, responsive   /* no Overview > Mobile in the menu ("Mobile --> kill"); the phone mode stays, the appointment's Mobile opens it. No Async report > Mobile either ("remove Mobile"): XS on the desktop is the phone; #m27 still opens it */
     inGroup.sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0));
     if (!inGroup.length) return;
     const og = document.createElement('optgroup');
@@ -22546,10 +22563,10 @@ hairline({
     inGroup.forEach(([v, i]) => {
       const o = document.createElement('option');
       o.value = String(i);
-      o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : g === 'Async report' && v.name === 'Desktop' ? 'Async report' : v.name;   /* the page's name, not the shell's ("Desktop --> Overview"; "rename Desktop by Async report") */
+      o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : g === 'Async report' && v.name === 'Desktop' ? 'Async report' : g === 'Insights' && v.name === 'Desktop' ? 'Insights' : v.name;   /* "rename Desktop --> Insights" */   /* the page's name, not the shell's ("Desktop --> Overview"; "rename Desktop by Async report") */
       og.appendChild(o);
     });
-    if (g === 'Insights') [24, 25].forEach(i => { const o = document.createElement('option'); o.value = String(i); o.textContent = 'Results received'; o.hidden = true; og.appendChild(o); });   // its Results received pages, reached from its tweak: named in the select while showing, not offered in it
+    if (g === 'Insights') [[20, 'Insights'], [24, 'Results received'], [25, 'Results received']].forEach(([i, t]) => { const o = document.createElement('option'); o.value = String(i); o.textContent = t; o.hidden = true; og.appendChild(o); });   // its phone and its Results received pages: named in the select while showing, not offered in it   // its Results received pages, reached from its tweak: named in the select while showing, not offered in it
     // Mobile (viewport): the mobile design filling the browser's viewport with
     // no drawn phone around it, for testing on an actual phone. An entry, not
     // a mode -- it is Mobile (m20) wearing the `fullscr` flag the /phone path
@@ -22614,6 +22631,7 @@ hairline({
     CARD_STATE.showBar = v === VIEWPORT_VAL;
     setMode(v === ARCHIVE_VAL ? +arcSel.value : v === VIEWPORT_VAL ? VIEWPORT_MODE : +v);
     resize();
+    if (typeof responsiveSync === 'function') responsiveSync();   // Insights at a forced XS / S: its phone
   });
   arcSel.addEventListener('change', () => setMode(+arcSel.value));
   // A page can be linked to directly, so a phone can be pointed at one version
@@ -22703,19 +22721,22 @@ hairline({
     return w < 640 ? fam.mob : w < 1024 ? fam.tab : fam.desk;
   }
   function responsiveSync(){
-    { const bs = document.getElementById('stBp'); if (bs && bs.value !== 'auto') return; }   // a forced breakpoint is not the window's: its pages stay as they are
     const fam = respFamily(version);
     if (!fam) return;
-    const target = responsiveTarget(fam);
-    if (target === version) return;
-    const mob = target === fam.mob;
-    CARD_STATE.fullscr = mob;
-    CARD_STATE.showBar = mob;
+    // Insights is one page now ("merge the Mobile into Desktop so the screens are responsive; rename Desktop --> Insights"): a forced breakpoint picks its design too,
+    // XS and S the phone's (in its device; the desk's grid does not hold under M), M and L the desk's; Auto goes by the window as before
+    const bs = document.getElementById('stBp'), forced = bs && bs.value !== 'auto' ? bs.value : '';
+    const target = forced ? (forced === 'xs' || forced === 's' ? fam.mob : fam.desk) : responsiveTarget(fam);
+    const mob = target === fam.mob, fill = mob && !forced;   // the phone filling a narrow window; in its device when a breakpoint is forced
+    if (target === version && !!CARD_STATE.fullscr === fill) return;
+    CARD_STATE.fullscr = fill;
+    CARD_STATE.showBar = fill;
     setMode(target);
     versionSel.value = String(fam.desk);
     resize();
   }
   addEventListener('resize', responsiveSync);
+  { const bs = document.getElementById('stBp'); if (bs) bs.addEventListener('change', () => setTimeout(responsiveSync, 0)); }   // a breakpoint forced, or let go: Insights takes the design that goes with it
   // V4 rebuilds the phone out of the same parts rather than new ones: the
   // organ card leaves the bento for the header, and the four content cards
   // leave it for the white body in a new order. Nothing is duplicated — each
