@@ -15022,3 +15022,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Full bg / Sphere welcome: a fade, down out and up in** ("transition: fade out, content should go down; next screen content should fade in, go up"): leaving (or coming back to) a full-bg page, the old content sinks 40 as it fades (.38 s), the ground fading under it into the next page's colour; the next page, .18 s after, rises 40 into place as it fades in (.56 s). No parallax travel of the ground any more; between paper pages the sideways push stands.
 
 - Async report, Biomarkers Carousel: no Biomarkers / Questionnaire pills ("for carousel version remove tab"). With the carousel, Behind this insight's one card carries the carousel and its sources, then the answered questions under a rule with their count as the heading, and their source. Static keeps the pills.
+
+- Async report V2: an insight's plain-words meaning (the first paragraph of What this means for you) now sits under the headline, above the section pills and the biomarkers, 16/22 in the secondary ink with its bold phrase in the primary. The Meaning section keeps the Key takeaway. V1 unchanged.

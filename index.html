@@ -5635,7 +5635,7 @@
   /* XS and S: the content full width, 16 in, the title at the left; S's button narrower, centred */
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:none;}
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arHead, .arBody, .arFoot){padding-left:16px;padding-right:16px;}
-  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arH700, .arLede){text-align:left;}
+  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arH700, .arLede, .arLfLede){text-align:left;}
   .aqWrap.aqFull.aqBpS .arSheet .arFoot{align-items:center;} .aqWrap.aqFull.aqBpS .arSheet .arFoot > *{width:100%;max-width:478px;}
   /* M and L: a centred column, the title centred (above); 496 wide at M, 528 at L, the back and close at its edges */
   .aqWrap.aqFull.aqBpM .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:536px;}
@@ -14124,6 +14124,7 @@
 /* the lifestyle insight (step 10): its card, the biomarker with its range and status, the answer, the was-this-useful */
 .arSheet .arLfStack { gap: 32px; }
 .arSheet .arLfHead { display: flex; flex-direction: column; gap: 6px; } .arSheet .arLfHead .arH700 { margin: 0; }
+.arSheet .arLfHead > .arLfLede { margin-top: 10px; font-size: 16px; line-height: 22px; color: oklch(var(--ar-ink) / .64); } .arSheet .arLfHead > .arLfLede b, .arSheet .arLfHead > .arLfLede strong { color: oklch(var(--ar-ink)); }   /* V2: what it means, under the headline */
 .arSheet .arLfEv { display: flex; flex-direction: column; gap: 12px; } .arSheet .arLfEv > .arSrcSec { gap: 10px; }   /* the sources' card 12 over the next, as the cards between them ("keep same gap 12px between behind this insight cards") */
 .arSheet .arSrcCard { --src-bg: var(--ar-paper); position: relative; margin-top: 36px; padding: 20px 120px 22px 20px; border: 1px solid oklch(var(--ar-ink) / .1); border-radius: 0 calc(var(--ar-radius-card) + 4px) calc(var(--ar-radius-card) + 4px) calc(var(--ar-radius-card) + 4px); background: var(--src-bg); }   /* the folder card: square at its top left, where the tab stands; 120 kept clear at its right, the drawing's 88 and 32 more, so the words never run under it ("safe padding +32px") */
 .arSheet.arCardsFill .arSrcCard { --src-bg: color-mix(in srgb, var(--ar-paper), #000 4%); border-color: transparent; } .arSheet.arDark.arCardsFill .arSrcCard { --src-bg: color-mix(in srgb, var(--ar-paper), #fff 4%); }   /* Evidence cards Filled: filled with them */
@@ -15363,10 +15364,12 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
               h('ul', { class: 'arSrc', 'aria-label': 'Sources' }, (L.sources || []).map(function (x) { return h('li', { class: 'arSrcRow', text: x[1] }); })))),
           grey(nMb(L.markers.length), bmc || h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more)),
           ans ? grey(nAns(n), ans) : ansFold ? h('div', { class: 'arLfCard arLfAnsCard' }, h('div', { class: 'arLfAnsHd' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore), ansFold) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore) : null);
+      var mp = paras(L.means), lede = o.ev === 'v2' ? mp.filter(function (x) { return x.classList.contains('arPara'); }) : [];   /* V2: what it means, its plain words, under the headline, over the biomarkers ("replace What it means for you content to the copy below the h1, above the biomarkers"); the key takeaway stays in Meaning */
+      lede.forEach(function (x) { x.classList.add('arLfLede'); });
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"; then "Evidence, Findings, Meaning"); the sections keep their own headings
         ['Findings', h('div', { class: 'arLfSec arAnimRise arD24' }, h('span', { class: 'arLfH', text: 'What we noticed' }), L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))],
-        ['Meaning', h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'What this means for you' }), paras(L.means))]];
-      var hl = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }));   // its date in the top nav
+        ['Meaning', h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'What this means for you' }), mp.filter(function (x) { return lede.indexOf(x) < 0; }))]];
+      var hl = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }), lede);   // its date in the top nav
       var use = h('div', { class: 'arLfUse arAnimRise arD32' }, h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }), h('div', { class: 'arLfThumbs' }, up, down));
       if (o.tabs === 'off') return h('div', { class: 'arStack arLfStack' }, hl, secs.map(function (x) { return x[1]; }), use);   // No tab: the three one under the other
       /* Tab sections on: a row of chips under the headline, each an anchor into the one vertical flow, every section shown; the chip of the section in view the active one ("chips just an anchor to a vertical flow; all content visible in the vertical flow") */
