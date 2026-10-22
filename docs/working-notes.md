@@ -15160,3 +15160,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Tweak What this means for you: accent card, default text (not Key takeaway); keep Copy for both": Meaning (Accent card default / Default text). Default text: the takeaway's paragraphs as the section's own (no card, no bulb, no Key takeaway), Copy a pill at the section's top right, level with its heading; Copy copies the same words in both.
 - Rest of this round: the active label's area (Sphere hero, Blood stream) narrowed to the ball's middle.
 - "active always above everything": the open label sits over every other label's square (z-index 3 while open, dropped once it has folded back).
+- "remove blinking square once the label is fully written": the block cursor leaves with the last letter; the badge closes up to the words.
+- "it's too rounded at the top" (Sphere hero): the ball 1.22x the base (between the flat cap of 1.4x and the dome of 1.045x), its top where it was.
