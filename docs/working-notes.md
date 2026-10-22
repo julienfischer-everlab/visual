@@ -15077,3 +15077,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - After What this means for you, a section "Any question?" with "You'll be able to get assistance at the end of this Debrief." (not one of the section anchors).
   - Between the paper pages (insight to insight, the list, Everything else) the content fades out (220ms) and the next fades in (360ms, from 170ms), in place: no page slides and no ground moves ("steps transition should be fade out / fade in on the content, not a background movement"). The full-ground transitions (rise out, up from the bottom, the nav after) unchanged.
   - Biomarkers carousel: no value chip over the trend ("remove chip"); the value stays in the slide's line under the name.
+- Biomarkers carousel slide: 4 more between the status pill and the name ("+4px gap"), 12 (was 8).
