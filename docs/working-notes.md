@@ -15028,3 +15028,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Async report V2: no "Behind this insight" heading over the evidence card (pills or carousel); the lede under the headline is one weight and one colour (the secondary ink), its phrase no longer medium and white.
 
 - Async report, Biomarkers Carousel: no "See detail" link on the slides ("remove"); the slide itself opens the biomarker's detail (tap, or Enter when focused), as the link did.
+
+- Async report intro, a batch:
+  - Full bg and Sphere: a badge over the title, "64 biomarkers analysed" (Persona #2: 61), mono capitals, black on the orange (#ff7a1a), square corners, rising with the first word.
+  - Under their card, centred, 12/16 in the secondary ink: "Be assured that our clinical team reviews every result. If anything required urgent attention, we would have contacted you already. Red or yellow markers don't necessarily mean something is urgent." It comes in once the bullets are typed.
+  - Sphere more diffuse: 7000 of the 18000 points on the currents (was 11000), spread three times wider either side, deeper, fainter.
+  - Tweaks: the Welcome row (Cards / Includes) removed, Cards always; the Header visual row folded into Intro screen, whose options are now Halftone / Split bg (was List) / Full bg / Sphere. Halftone and Split bg are the welcome with its one-bit visual or its picture, each followed by the insights list; Off is gone.
