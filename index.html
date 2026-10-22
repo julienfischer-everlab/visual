@@ -14329,6 +14329,15 @@
 /* the Sphere welcome: black in the dark, white in the light, the head and the foot clear on it; the ball's canvas under the page; the card a quiet wash of the ink, the close on the ground's own ink */
 .arSheet { --ar-sph-bg: #fff; } .arSheet.arDark { --ar-sph-bg: #000; }
 .arSheet .arSphBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .64s ease; background: var(--ar-sph-bg); } .arSheet.arIsSphere .arSphBg { opacity: 1; }
+/* Halftone welcome: the Report visuals' image card, its sizes theirs */
+.arSheet .arHtCard { display: flex; flex-direction: column; gap: 24px; text-align: left; color: oklch(var(--ar-ink)); }
+.arSheet .arHtT { margin: 0; max-width: 16ch; font-size: 34px; line-height: calc(1.08em - 4px); font-weight: 500; letter-spacing: -.025em; text-wrap: balance; color: inherit; }
+.arSheet .arHtFrame { position: relative; width: 100%; aspect-ratio: 437 / 210; --cut: 30px; clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%); }
+.arSheet .arHtFrame canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.arSheet .arHtTab { position: absolute; top: 16px; left: 16px; z-index: 3; padding: 4px 10px; background: var(--ar-sph-bg); color: oklch(var(--ar-ink)); border: .5px solid currentColor; font-family: var(--ar-font-mono); font-size: 12px; font-weight: 500; line-height: 1.2; text-transform: uppercase; white-space: nowrap; }
+.arSheet .arHtHl { margin-top: 8px; text-transform: capitalize; } .arSheet .arHtHl b { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 500; line-height: 1.25; } .arSheet .arHtHl ul { margin: 0; padding-left: 1.2em; font-size: 14px; line-height: 1.3; }
+.arSheet .arHtNote { margin: 0; max-width: 340px; font-size: 12px; line-height: 16px; color: oklch(var(--ar-ink) / .64); text-wrap: pretty; }
+.arSheet.arHtw:not(.arIsEnd) .arHtwBg canvas { visibility: hidden; }   /* the dithered band at the foot on the end alone: the welcome has its picture in its frame */
 .arSheet .arSphFoot { position: absolute; left: 0; right: 0; bottom: 0; height: calc(100% + 96px); z-index: -1; pointer-events: none; opacity: 0; transition: opacity .64s ease;
   background: linear-gradient(0deg, var(--ar-sph-bg) 0, var(--ar-sph-bg) 34%, color-mix(in srgb, var(--ar-sph-bg) 86%, transparent) 50%, color-mix(in srgb, var(--ar-sph-bg) 58%, transparent) 68%, color-mix(in srgb, var(--ar-sph-bg) 24%, transparent) 85%, transparent); }
 .arSheet.arIsSphere .arSphFoot { opacity: 1; }   /* the Sphere's foot, by default: its ground (black in Dark) solid under the button and fading up 96 over the ball ("black gradient footer by default here") */
@@ -14994,7 +15003,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var REVEAL = LIST && o.intro === 'reveal', RVW = o.welcome === 'reveal';   // the reveal as the 2nd screen, or as the welcome
     var sphL = o.welcome === 'sphere' || o.welcome === 'orbit' ? sphereLayer(o.welcome === 'orbit') : o.welcome === 'halftone' ? ditherLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball; the Halftone's creme and its dithered picture
     if (REVEAL || RVW || !sphL) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the picture also for the last page, unless the Sphere or Halftone ground is its own   // the full-bg intro's picture, under the head, the flow and the foot
-    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' + (o.lbg ? ' arOrbBdg' : '') : '') + (o.welcome === 'orbit' || o.welcome === 'sphere' ? ' arPill' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' + (o.lbg ? ' arOrbBdg' : '') : '') + (o.welcome === 'orbit' || o.welcome === 'sphere' || o.welcome === 'halftone' ? ' arPill' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
        --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
@@ -15095,9 +15104,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     function ditherLayer() {
       var cv = h('canvas', {}), el = h('div', { class: 'arSphBg arHtwBg', 'aria-hidden': 'true' }, cv), img = new Image(), drawn = '', PX = 3, CREME = [233, 228, 218], INKC = [20, 20, 19];
       var rgbOf = function (c) { try { var k = document.createElement('canvas'); k.width = k.height = 1; var g = k.getContext('2d'); g.fillStyle = '#000'; g.fillStyle = c; g.fillRect(0, 0, 1, 1); var d = g.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2]]; } catch (e) { return null; } };   // the ground the squares sit on, as the page paints it (any CSS colour, oklch too, through a pixel)
-      var draw = function () {
-        var w = el.clientWidth, hh = el.clientHeight; if (!w || !hh || !img.naturalWidth) return;
-        var dk = root.classList.contains('arDark'), H = Math.round(hh * .28), cw = Math.ceil(w / PX), ch = Math.ceil(H / PX), key = cw + 'x' + ch + (dk ? 'd' : 'l'); if (key === drawn) return; drawn = key;
+      var paint = function (cv, w, H, fine) {   // the picture, dithered, into a canvas w by H (css px): the end's band (3px squares, at most 60% inked, so the page stays light), or the welcome's frame (fine: 2px squares, the whole range, as the Report visuals' card)
+        if (!w || !H || !img.naturalWidth) return;
+        var dk = root.classList.contains('arDark'), cs = fine ? 2 : PX, cw = Math.ceil(w / cs), ch = Math.ceil(H / cs), key = cw + 'x' + ch + (dk ? 'd' : 'l'); if (key === cv._k) return; cv._k = key;
         var GROUND = rgbOf(getComputedStyle(el).backgroundColor) || (dk ? [15, 15, 15] : CREME), SQ = dk ? CREME : INKC;   // Light: black squares on the creme; Dark: creme squares on the page's dark
         cv.width = cw; cv.height = ch; var x = cv.getContext('2d'); if (!x) return; x.imageSmoothingQuality = 'high';
         var iw = img.naturalWidth, ih = img.naturalHeight, k = Math.max(cw / iw, ch / ih), dw = iw * k, dh = ih * k; x.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
@@ -15105,12 +15114,14 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var d = id.data, n = cw * ch, L = new Float32Array(n), i;
         for (i = 0; i < n; i++) L[i] = (.2126 * d[i * 4] + .7152 * d[i * 4 + 1] + .0722 * d[i * 4 + 2]) / 255;
         var srt = Array.prototype.slice.call(L).sort(function (a, b) { return a - b; }), lo = srt[Math.floor(n * .03)], sp = Math.max(.04, srt[Math.floor(n * .97)] - lo);
-        for (var y = 0; y < ch; y++) for (var xx = 0; xx < cw; xx++) { i = y * cw + xx; var t = Math.min(1, Math.max(0, (L[i] - lo) / sp)), on = dk ? .6 * t > (BAYER8[y & 7][xx & 7] + .5) / 64 : .4 + .6 * t <= (BAYER8[y & 7][xx & 7] + .5) / 64, c = on ? SQ : GROUND;   /* Light: the darks as black squares (at most 60%); Dark: the lights as creme squares (at most 60%) */ d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = 255; }
+        for (var y = 0; y < ch; y++) for (var xx = 0; xx < cw; xx++) { i = y * cw + xx; var t = Math.min(1, Math.max(0, (L[i] - lo) / sp)), th = (BAYER8[y & 7][xx & 7] + .5) / 64, on = fine ? (dk ? t > th : t <= th) : dk ? .6 * t > th : .4 + .6 * t <= th, c = on ? SQ : GROUND;   /* Light: the darks as black squares (at most 60%); Dark: the lights as creme squares (at most 60%) */ d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2]; d[i * 4 + 3] = 255; }
         x.putImageData(id, 0, 0);
       };
+      var frames = [], draw = function () { if (el.clientWidth && el.clientHeight) paint(cv, el.clientWidth, Math.round(el.clientHeight * .28)); frames = frames.filter(function (c) { return c.isConnected; }); frames.forEach(function (c) { paint(c, c.clientWidth, c.clientHeight, true); }); };
       img.onload = function () { if (alive) draw(); }; img.decoding = 'async'; img.src = o.hero;
       if (window.ResizeObserver) new ResizeObserver(function () { if (alive) draw(); }).observe(el);
-      return { el: el, run: function () { draw(); } };
+      return { el: el, run: function () { draw(); },
+        paintInto: function (c) { frames.push(c); if (window.ResizeObserver) new ResizeObserver(function () { if (alive && c.isConnected) paint(c, c.clientWidth, c.clientHeight, true); }).observe(c); } };   // a canvas of the page's own (the welcome's frame), painted when it has a size, again on a new one
     }
     function sphereLayer(big) {   // big: the Sphere hero's ball, 1.4x, with as many more points as keep its rim as dense (its area 1.36x the Sphere's)
       var cv = h('canvas', {}), el = h('div', { class: 'arSphBg', 'aria-hidden': 'true' }, cv), x = cv.getContext('2d');
@@ -15228,7 +15239,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     /* ----- step 0: Welcome ----- */
     function buildWelcome() {
       if (o.welcome === 'orbit') return buildWelOrbit();
-      if (o.welcome === 'reveal' || o.welcome === 'sphere' || o.welcome === 'halftone') return buildWelReveal();
+      if (o.welcome === 'halftone') return buildWelHt();
+      if (o.welcome === 'reveal' || o.welcome === 'sphere') return buildWelReveal();
       var content;
       if (o.welcome === 'includes') {
         var inc = function (d, label, first) {
@@ -15737,6 +15749,18 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         h('ul', { class: 'arOrbSr', 'aria-label': 'What we’ll cover' }, items.map(function (x) { return h('li', { text: x }); })),
         note)));
     }
+    /* Halftone ("review the halftone style and keep the exact style of the report: title like this, the visual less high, the bullets below, then the CTA at the bottom"): the Report visuals' image card on the page's own ground (creme in Light, the dark in Dark):
+       the title at the left, medium, 4 tighter; the picture dithered as theirs in a frame cut at 45 degrees at its foot's right, shorter (437:210, theirs 437:264), the date a sharp mono tab 16 in; What we highlighted and its bullets, every word capitalised;
+       the reassurance small under them (Rest assured); the button at the foot, a pill hugging See my results */
+    function buildWelHt() {
+      var cvs = h('canvas', { 'aria-hidden': 'true' }), items = NEWI.map(function (L) { return L.short || L.headline; }).concat(['Everything else we checked']);
+      if (sphL && sphL.paintInto) sphL.paintInto(cvs);
+      return h('div', { class: 'arWelcome arRvWel arHtWel' }, h('div', { class: 'arRvScroll' }, h('div', { class: 'arHtCard' },
+        h('h2', { class: 'arHtT arAnimRise', text: WEL.title }),
+        h('div', { class: 'arHtFrame arAnimRise arD10', role: 'img', 'aria-label': 'Your results, ' + REPORT.date }, cvs, h('span', { class: 'arHtTab', 'aria-hidden': 'true', text: REPORT.date })),
+        h('div', { class: 'arHtHl arAnimRise arD20' }, h('b', { text: 'What we highlighted' }), h('ul', {}, items.map(function (x) { return h('li', { text: x }); }))),
+        o.assure ? h('p', { class: 'arHtNote arAnimRise arD32', text: WEL.assure }) : null)));
+    }
     /* the welcome as the reveal ("where is the different intro with title that appears", pointing at Welcome): the report's title word by word over the picture, then the card of what is covered, who reviewed it and when at its foot; its own scroller under the close */
     function buildWelReveal() {
       return h('div', { class: 'arWelcome arRvWel' }, h('div', { class: 'arRvScroll' }, revealOf(WEL.title, function (tc) {
@@ -15826,7 +15850,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       backBtn.hidden = step === 0;
       stepWrap.hidden = welcome || end;
       steps.set(step);
-      ctaLabel.textContent = welcome ? (o.welcome === 'orbit' || o.welcome === 'sphere' ? 'See my results' : 'See results') : step === NEXT ? 'Done' : 'Next';   // the welcome's ("Start --> See results")
+      ctaLabel.textContent = welcome ? (o.welcome === 'orbit' || o.welcome === 'sphere' || o.welcome === 'halftone' ? 'See my results' : 'See results') : step === NEXT ? 'Done' : 'Next';   // the welcome's ("Start --> See results")
       if (sphL && sphL.fly && gone) { var isSph = root.classList.contains('arIsSphere'); if (wasSph && !isSph && step === 1) sphL.fly(1); else if (!wasSph && isSph && welcome) sphL.fly(-1); }   // the ball up and out with the welcome, and back down with it
       if (sphL && (welcome || end)) sphL.run();
       if (gone && gone.el.parentNode === body) body.removeChild(gone.el);
