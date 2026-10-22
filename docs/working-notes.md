@@ -15016,3 +15016,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Full bg / Sphere: the sides 8 out again** ("+8px container padding"): the card 32 from the screen's edges on the phone.
 - **Insights' Layout: V2.5 named Final** ("Layout final"): the Layout tweak reads V1, V2, Final, V3, V4; Final (value v25, the default) is the layout V2.5 was.
 - **Insights' Layout: the others archived** ("push the other versions in a group: Layout (archives)"): Final first, then a group, Layout (archives), holding V1, V2, V3, V4.
+- **Viewport: Save** ("need Save to save preset here"): a Save beside the bar's viewport select keeps the breakpoint showing (Auto / XS / S / M / L) in this browser; the prototype opens on it from then on, over a page's own default (the first page's XS) and on any link. A dot on Save while the one showing is not the one kept (on a first visit, not the one it opened on).

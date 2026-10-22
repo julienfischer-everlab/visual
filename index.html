@@ -12298,6 +12298,8 @@
         <option value="m">M</option>
         <option value="l">L</option>
       </select>
+      <!-- the viewport kept as the one the prototype opens on ("need Save to save preset here"); a dot while the one showing is not the one kept -->
+      <button class="tkBtn tkPreBtn" id="tkBpSave" type="button" title="Open the prototype at this viewport">Save</button>
       <!-- a page cannot resize the window it runs in; it can open one. With a
            breakpoint forced, this opens the page in a new window exactly that
            wide, where the real media queries take over ("this is the viewport
@@ -36526,7 +36528,14 @@ hairline({
       const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
       put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', '26'); }
     else if ((location.hash === '#ar2' || location.hash === '#arp2') && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } }; put('themeSel', 'dark'); put('stBp', 'xs');
-      if (location.hash === '#ar2') put('stArPre', 'v2'); else put('stArPer', 'p2'); put('versionSel', '26'); }   // the report's own links, in its default setup: #ar2 V2 (the Version tweak), #arp2 Persona #2 (the Persona tweak); the menu has the one Async report
+      if (location.hash === '#ar2') put('stArPre', 'v2'); else put('stArPer', 'p2'); put('versionSel', '26'); }
+    // the viewport saved from the bar: the prototype opens on it, over any page's own default (the XS of the first page); Save keeps the one showing, a dot on it while they differ
+    { const bs = document.getElementById('stBp'), sb = document.getElementById('tkBpSave'), KEY = 'everlab.bp'; let kept = null; try { kept = localStorage.getItem(KEY); } catch (e){}
+      if (bs && kept && [...bs.options].some(o => o.value === kept) && bs.value !== kept){ bs.value = kept; bs.dispatchEvent(new Event('change', { bubbles: true })); }
+      const opened = bs ? bs.value : 'auto', mark = () => { if (sb && bs) sb.toggleAttribute('data-dirty', bs.value !== (kept || opened)); };   // nothing kept yet: measured against what it opened on, so a first visit shows no dot
+      if (bs) bs.addEventListener('change', mark);
+      if (sb && bs) sb.addEventListener('click', () => { kept = bs.value; try { localStorage.setItem(KEY, kept); } catch (e){} mark(); sb.textContent = 'Saved'; setTimeout(() => { sb.textContent = 'Save'; }, 1200); });
+      mark(); }   // the report's own links, in its default setup: #ar2 V2 (the Version tweak), #arp2 Persona #2 (the Persona tweak); the menu has the one Async report
     addEventListener('hashchange', () => { if (want()) show(); else hide(); });
   })();
 
