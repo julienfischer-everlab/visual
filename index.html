@@ -15368,8 +15368,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         for (var i = 1; i <= k; i++) segs.push(ln('M' + X(i - 1).toFixed(1) + ' ' + Y(vs[i - 1]).toFixed(1) + 'L' + X(i).toFixed(1) + ' ' + Y(vs[i]).toFixed(1), 2.5, COL[BD.zoneOf(d, vs[i])] || COL.n));
         [0, Math.floor(k / 2), k].forEach(function (i) { segs.push(ln('M' + X(i).toFixed(1) + ' ' + Y(vs[i]).toFixed(1) + 'h0.01', i === k ? 9 : 7, COL[BD.zoneOf(d, vs[i])] || COL.n)); });
         return h('div', { class: 'arBmcVis', 'aria-hidden': 'true' },
-          s('svg', { viewBox: '0 0 240 100', preserveAspectRatio: 'none' }, ln('M0 22h240M0 55h240M0 88h240', 1, 'oklch(var(--ar-ink) / .08)'), segs),
-          h('span', { class: 'arBmcChip', text: m.value }));
+          s('svg', { viewBox: '0 0 240 100', preserveAspectRatio: 'none' }, ln('M0 22h240M0 55h240M0 88h240', 1, 'oklch(var(--ar-ink) / .08)'), segs));   // no value chip over the trend ("remove chip"): the value is in the slide's own line
       };
       var slides = ms.map(function (m, i) {
         var st = ST[m.status] || 'n', d = null; try { d = BD && BD.model ? BD.model(m) : null; } catch (e) {}
@@ -15498,7 +15497,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         ['Meaning', h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'What this means for you' }), mp.filter(function (x) { return lede.indexOf(x) < 0; }))]];
       var hl = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }), lede);   // its date in the top nav
       var use = h('div', { class: 'arLfUse arAnimRise arD32' }, h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }), h('div', { class: 'arLfThumbs' }, up, down));
-      if (o.tabs === 'off') return h('div', { class: 'arStack arLfStack' }, hl, secs.map(function (x) { return x[1]; }), use);   // No tab: the three one under the other
+      var ask = h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'Any question?' }), h('p', { class: 'arPara', text: 'You\u2019ll be able to get assistance at the end of this Debrief.' }));   /* after What this means for you ("add a section at the end: Any question? You'll be able to get assistance at the end of this Debrief"); not one of the anchors */
+      if (o.tabs === 'off') return h('div', { class: 'arStack arLfStack' }, hl, secs.map(function (x) { return x[1]; }), ask, use);   // No tab: the three one under the other
       /* Tab sections on: a row of chips under the headline, each an anchor into the one vertical flow, every section shown; the chip of the section in view the active one ("chips just an anchor to a vertical flow; all content visible in the vertical flow") */
       var chips = secs.map(function (x, i) {
         return h('button', { type: 'button', class: 'arLfChip', 'aria-current': i ? 'false' : 'true', text: x[0] });
@@ -15521,7 +15521,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         on(c, 'click', function () { mark(i); cancel(lock); lock = later(function () { lock = 0; }, 700);
           body.scrollTo({ top: Math.max(0, topOf(secs[i][1]) - over() - clear()), behavior: reducedMotion() ? 'auto' : 'smooth' }); });   // to its section, its title clear of the pinned anchors
       });
-      return h('div', { class: 'arStack arLfStack arLfChipped' }, hl, bar, secs.map(function (x) { return x[1]; }), use);   // the anchors after the headline ("tab should be after the h1")
+      return h('div', { class: 'arStack arLfStack arLfChipped' }, hl, bar, secs.map(function (x) { return x[1]; }), ask, use);   // the anchors after the headline ("tab should be after the h1")
     }
 
     /* ----- step 6: Everything else ----- */
@@ -15723,10 +15723,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       /* to or from a full-bg page (the picture, the sphere), the grounds do not travel: both pages slide clear, the old one fading, while the picture fades into the next page's colour under them, so no edge of a ground crosses the screen
          ("when transitioning between this intro and the screen, the bg image should fade out to the colour of the next screen; we don't see any bg cut while the 2nd screen comes in from the right"); between paper pages, each slides on its paper */
       var pic = root.classList.contains('arIsIntro') || root.classList.contains('arIsSphere'), clear = pic || g.pic || g.sph;
-      if (!clear) ghost.style.background = 'var(--ar-paper)';
+      /* between paper pages, the content alone fades out and the next fades in ("steps transition: fade out, fade in on the content, not a background movement"): no ground moves */
       var nw = body.firstChild;
       try { nw.getAnimations({ subtree: true }).forEach(function (a) { if (/^ar(Rise|FadeUp|Fade)$/.test(a.animationName || '')) a.finish(); }); } catch (e) {}   // its own rises at once: the push is the motion
-      body.classList.add('arPushIn'); if (!clear) body.style.background = 'var(--ar-paper)';
+      body.classList.add('arPushIn');
       var f = g.d > 0;
       var out;
       if (clear) {   /* to or from a full-bg page ("content needs to translate to the top and the next screen content should come from the bottom; once the next screen content is displayed, the nav appears"):
@@ -15741,9 +15741,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           var cgDone = function () { if (g.cg.parentNode) g.cg.parentNode.removeChild(g.cg); }; cgo.onfinish = cgDone; cgo.oncancel = cgDone;
           cta.animate([{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: IN.delay + 120, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' });
         }
-      } else {   // between paper pages, a push: the new over the old, which drifts a third left and dims; back, the other way
-        body.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], PUSH);
-        out = ghost.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: f ? .5 : 1 }], PUSH);
+      } else {   // between paper pages: the old content out, then the new in, both in place
+        out = ghost.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'cubic-bezier(.4, 0, 1, 1)', fill: 'forwards' });
+        body.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 360, delay: 170, easing: 'cubic-bezier(0, 0, .2, 1)', fill: 'backwards' });
       }
       var done = function () { body.classList.remove('arPushIn'); body.style.background = ''; if (ghost.parentNode) ghost.parentNode.removeChild(ghost); };
       out.onfinish = done; out.oncancel = done;
