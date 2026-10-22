@@ -15112,3 +15112,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The lede counts them: "61 markers across 13 areas."
   - Under it every area, its marker count in a badge and a chevron; a tap opens a bottom sheet as tall as its list: the area, "N biomarkers", its markers out of range first, each with its status pill. Each area now carries its markers by status in the data (both personas, lists checked against the counts).
 - "When transitioning the visual should move up by 32px only": the Sphere's and Sphere hero's ball rises 32px as it fades with the welcome (was half the screen), and comes back down 32 on Back.
+
+### Rest assured under the button; Labels tweak removed; Sphere hero higher
+- "Rest assured: condense the copy and put it after the CTA": Sphere and Sphere hero: "Our clinical team reviews every result. Anything urgent, we'd have called you already." (12px, 56% ink, centred, balanced) under See my results, on the welcome only, fading in at .9s; it leaves with the pill on See my results (a copy where it stood, its type kept). Rest assured Off hides it. The long note stays on Full bg and Halftone.
+- The Sphere's foot gradient now runs from the button's middle down (solid under the note) and fades 98px up from there, so the taller foot does not swallow the ball.
+- "remove" (Labels: One by one / All): gone, with the All mode; one label at a time only.
+- "Move up visual by 48px and content by 32px" (Sphere hero): its content starts 32 higher (32 under the head, was 64); its ball sits 48 higher on the screen (32 with the title, 16 of its own).
