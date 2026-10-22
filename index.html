@@ -5685,7 +5685,7 @@
   .aqWrap.aqFull.aqBpM{--aqNavX:24px;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeadRow{margin-inline:calc((100% - 100cqw) / 2 + var(--aqNavX, 32px));}
   /* desktop (M, L): the step bars ride in the top nav, between back and close, at the column's width ("replace inside top nav on top, desktop") */
-  /* the progress under the report's name at every width, the column's width (the name in the row's middle: "replace 20 Oct 2026 in top nav centered") */ .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;}
+  /* the progress under the report's name at every width, the column's width (the name in the row's middle: "replace 20 Oct 2026 in top nav centered") */ .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;} .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet .arH700 + .arLede{text-align:left;}   /* on the phone, under its left-set title: the line above, as specific, had it centred under a title on the left (Everything else, Your insights) */
   .prWrap{display:none;}
   body.pastD .prDesk{display:block;position:fixed;left:0;right:0;top:57px;bottom:0;z-index:40;}
   .prDim{position:absolute;inset:0;background:rgba(0,0,0,.5);}
@@ -12093,6 +12093,14 @@
         <div class="tkGroup" data-pages="ar">
         <div class="tkSub">Async report</div>
         <div class="tkRow" id="stArVarRow"><span class="lbl">Variation</span><select id="stArVar" class="tkSegSel" aria-label="The desktop debrief's format"><option value="full" selected>Full modal</option><option value="modal">Modal</option></select></div>
+        <!-- whose report: Persona #1, or Persona #2, another member's results ("create a duplicate of the Async to create a different persona"); the menu's Persona #1 and #2 set it -->
+        <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
+        <!-- Behind this insight: V1, From your data's card and a card each; V2, one card, a pill each for Biomarkers and Questionnaire ("create a V2 Async"; then "where is the tweak version of this") -->
+        <div class="tkRow"><span class="lbl">Version</span><select id="stArVer" class="tkSegSel" aria-label="Behind this insight's layout"><option value="v1" selected>V1</option><option value="v2">V2</option></select></div>
+        <!-- the 2nd screen: every insight as a card, before the first ("create a 2nd screen that intros all slides in card list items") -->
+        <div class="tkRow"><span class="lbl">Insights list</span><select id="stArList" class="tkSegSel" aria-label="A screen listing the insights"><option value="on" selected>On</option><option value="off">Off</option></select></div>
+        <!-- See N more: the bottom sheet with them all, or the rest opened in place ("tweak See more by collapsing vs bottom sheet") -->
+        <div class="tkRow"><span class="lbl">See more</span><select id="stArMore" class="tkSegSel" aria-label="What See more does"><option value="sheet" selected>Bottom sheet</option><option value="fold">Collapse</option></select></div>
         <!-- the report's theme is the bar's Mode (Dark mode: dark; Light and Colour: light), not a tweak here ("theme shouldn't be handled here but on the mode controller") -->
         <!-- its fixed bar: a solid ground, or the Insights' sticky gradient and blur over the scrolling content ("tweak Fixed bar bg: Solid, Gradient") -->
         <div class="tkRow"><span class="lbl">Fixed bar</span><select id="stArBar" class="tkSegSel" aria-label="The debrief's fixed bar background"><option value="solid" selected>Solid</option><option value="grad">Gradient</option></select></div>
@@ -14230,6 +14238,30 @@
 .arSheet .arEvAns .arEvMore { margin-top: 4px; }
 .arSheet .arEvAns > .arLfAnsL, .arSheet .arEvSrc > .arSrcRow { margin-left: 4px; margin-right: 4px; }   /* their words on the biomarkers' line, 4 in as the rows' (the rules still the card's width) */
 @media (prefers-reduced-motion: reduce) { .arSheet .arEvPane { animation: none; } }
+/* See more, Collapse: the rest under it, opening in place; the faded row itself again; the chevron turned */
+.arSheet .arFold { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .32s var(--ar-ease); } .arSheet .arFoldOpen > .arFold { grid-template-rows: 1fr; }
+.arSheet .arFoldIn { display: flex; flex-direction: column; min-height: 0; overflow: hidden; margin: 0 -10px; padding: 0 10px; }   /* the rows' hover tiles, 10 past them, not cut */
+.arSheet .arMbList > .arFold > .arFoldIn:not(:empty)::before { content: ""; flex: none; height: 1px; margin-top: 4px; background: oklch(var(--ar-ink) / .08); } .arSheet .arMbList .arFoldIn > .arMb:first-child { margin-top: 4px; }   /* the rule between the faded row and the rest, as between the others */
+.arSheet .arMb.arMbFade { transition: max-height .32s var(--ar-ease), opacity .32s ease; }
+.arSheet .arFoldOpen > .arMb.arMbFade { max-height: 240px; opacity: 1; -webkit-mask-image: none; mask-image: none; pointer-events: auto; } .arSheet .arFoldOpen > .arMb.arMbFade::after { display: none; }
+.arSheet .arFoldOpen > .arMbMore { margin-top: 12px; }
+.arSheet .arMbMore .arIco, .arSheet .arLfDetail .arIco { transition: transform .32s var(--ar-ease); } .arSheet .arFoldOpen > .arMbMore .arIco, .arSheet .arFoldOpen .arLfAnsHd .arLfDetail .arIco { transform: rotate(180deg); }
+.arSheet .arEvAns > .arFold { margin-top: -12px; } .arSheet .arEvMoreIn { gap: 12px; } .arSheet .arEvMoreIn > .arLfAnsL { margin: 0 4px; padding-top: 12px; border-top: 1px solid oklch(var(--ar-ink) / .08); } .arSheet .arEvMoreIn > .arLfAnsL:first-child { margin-top: 12px; }
+.arSheet .arLfAnsHd { display: flex; align-items: center; justify-content: space-between; gap: 12px; } .arSheet .arLfEv .arLfAnsHd > .arLfCardH { padding: 0; min-width: 0; }
+.arSheet .arLfAnsFold { gap: 12px; } .arSheet .arLfAnsFold > .arLfAnsL:first-child { margin-top: 16px; }
+@media (prefers-reduced-motion: reduce) { .arSheet .arFold, .arSheet .arMb.arMbFade, .arSheet .arMbMore .arIco, .arSheet .arLfDetail .arIco { transition: none; } }
+/* Your insights, the 2nd screen: a card each, its number in a ring, its headline, its markers' standing in dots, a chevron in a circle; filled or outlined with the Cards style */
+.arSheet .arIl { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.arSheet .arIlItem { appearance: none; -webkit-appearance: none; display: grid; grid-template-columns: 32px minmax(0, 1fr) 36px; align-items: center; gap: 14px; width: 100%; margin: 0; padding: 16px 14px 16px 16px; border: 0; border-radius: calc(var(--ar-radius-card) + 4px); background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); font: inherit; text-align: left; color: oklch(var(--ar-ink)); cursor: pointer; transition: background-color .15s ease; }
+.arSheet.arCardsFill .arIlItem { background: oklch(0% 0 0 / .04); box-shadow: none; } .arSheet.arDark.arCardsFill .arIlItem { background: oklch(100% 0 0 / .04); }
+@media (hover: hover) { .arSheet .arIlItem:hover, .arSheet.arCardsFill .arIlItem:hover { background: oklch(var(--ar-ink) / .07); } }
+.arSheet .arIlItem:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
+.arSheet .arIlNum { align-self: start; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .16); font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: oklch(var(--ar-ink) / .72); }
+.arSheet .arIlTx { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.arSheet .arIlT { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; text-wrap: pretty; }
+.arSheet .arIlDots { display: flex; flex-wrap: wrap; gap: 4px 14px; } .arSheet .arIlDot { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ar-font); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .56); font-variant-numeric: tabular-nums; } .arSheet .arIlDot i { width: 8px; height: 8px; border-radius: 50%; }
+.arSheet .arIlSub { font-family: var(--ar-font); font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .56); }
+.arSheet .arIlGo { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); }
 @media (prefers-reduced-motion: reduce) { .arSheet .arQaDim, .arSheet .arQaPanel { transition: none; } }
 .arSheet .arLfQA { display: flex; flex-direction: column; gap: 4px; }
 .arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
@@ -14345,6 +14377,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *     mb: 3 | 2,                       // default 3: the biomarkers Behind this insight shows before See N more, the next one partly shown
  *     srcVis: 'hairline' | 'image',    // default 'hairline': From your data's visual, the Hairline report file or the Overview's report render
  *     ev: 'v1' | 'v2',                 // default 'v1': Behind this insight as From your data's card, then a card each; 'v2' (Async report V2) one card, a pill each for Biomarkers and Questionnaire, its sources under its list
+ *     persona: 'p1' | 'p2',            // default 'p1': whose report, Persona #1 or Persona #2 (each its welcome, insights and everything else)
+ *     more: 'sheet' | 'fold',          // default 'sheet': See N more opens the bottom sheet, or the rest in place (Collapse)
+ *     list: true | false,              // default true: the 2nd screen, every insight as a card
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
  *     onClose: function () {}          // Close (X) and the final "Done"
@@ -14352,9 +14387,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *   ar.el        the <div class="arSheet"> appended to host
  *   ar.go(n)     jump to step n (0-7)
  *   ar.reset()   step 0, scrolled to top, every accordion closed
+ *   ar.where() / ar.at(w, keepY)   the screen it is on, and back on it in a new mount (a tweak changed)
  *   ar.destroy() remove it
  *
- * Steps (8): 0 Welcome, 1-5 Insights (cholesterol, cortisol, B12, vitamin D, blood vessels), 6 Everything else, 7 That's your debrief.
+ * Steps (9): 0 Welcome, 1 Your insights (the list; none with list: false), 2-6 Insights (Persona #1: cholesterol, cortisol, B12, vitamin D, blood vessels), 7 Everything else, 8 That's your debrief.
  * Needs async-report.css. The root fills its host and scrolls internally.
  */
 (function () {
@@ -14533,7 +14569,127 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   ];
   var REST_H = ['Everything else we checked', '77 markers across 15 panels.'];
 
-  var REST = NEWI.length + 1, NEXT = REST + 1, STEP_COUNT = NEXT + 1;   // 8: the welcome, the five insights, everything else, that's your debrief
+  /* ---------- Persona #2 ("create a duplicate of the Async to create a different persona"): another member's report, the same steps.
+     A man in his forties, at a desk all week, his father's type 2 diabetes in his history: his blood sugar, his liver, his testosterone and sleep, his uric acid, and his cholesterol, the good news ---------- */
+  var REPORT2 = { name: 'Advanced blood test', date: '17 Oct 2026' };
+  var WEL2 = { title: WEL.title, dr: WEL.dr, av: WEL.av, date: '17 October 2026', intro: WEL.intro, found: WEL.found, peace: WEL.peace, talk: WEL.talk };
+  var GLUC = {
+    headline: 'Your blood sugar is drifting toward type 2 diabetes',
+    sources: [['blood', 'October 2026 blood test'], ['scan', 'September 2026 body composition scan'], ['qn', 'Lifestyle Profiling questionnaire']],
+    markers: [
+      { name: 'HbA1c (glycated haemoglobin)', value: '6.1%', date: '9 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.76, trend: { pts: [5.4, 5.6, 5.8, 6.1], from: 'Optimal', to: 'Out of range' } },
+      { name: 'Fasting insulin', value: '19 mIU/L', date: '9 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.82 },
+      { name: 'Fasting glucose', value: '5.8 mmol/L', date: '9 Oct 2026', status: 'Suboptimal', bar: 'hi', pos: 0.52, trend: { pts: [5.1, 5.3, 5.5, 5.8], from: 'Optimal', to: 'Suboptimal' } },
+      { name: 'Triglycerides', value: '2.3 mmol/L', date: '9 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.74, trend: { pts: [1.6, 1.9, 2.0, 2.3], from: 'Suboptimal', to: 'Out of range' } },
+      { name: 'Visceral fat (DEXA)', value: '1.4 kg', date: '22 Sep 2026', status: 'Out of range', bar: 'hi', pos: 0.78 }
+    ],
+    answers: [{ q: 'Family history', a: 'Father diagnosed with type 2 diabetes at 52' }, { q: 'Exercise', a: 'Less than an hour a week, mostly weekend walks' }],
+    noticed: [
+      'Insulin moves sugar out of your blood and into your muscles and liver. When they stop answering it well, your pancreas makes more to hold blood sugar steady, a stage called insulin resistance.',
+      ['On 9th October ', { b: 'your HbA1c, a three-month average of blood sugar, reached 6.1%' }, ', up from 5.4% in 2022 and into the range that comes before type 2 diabetes. Fasting insulin was nearly double its optimal level, so your pancreas is working hard to keep glucose where it is.'],
+      'Triglycerides, a fat your liver makes from surplus sugar and alcohol, were high too. Your September body composition scan found 1.4 kg of visceral fat, the fat packed around your organs that drives insulin resistance most.',
+      ['With your father diagnosed at 52 and less than an hour of exercise a week, ', { b: 'your chance of type 2 diabetes in the next ten years is raised' }, ', though at this stage it can often be turned around.']
+    ],
+    means: [
+      ['Your body needs more and more insulin to keep blood sugar steady, ', { b: 'the stage before type 2 diabetes, and the one where it is most often reversed' }, '.'],
+      [{ b: 'Build up to 150 minutes a week of brisk walking or cycling with two strength sessions, and walk for 10 minutes after dinner.' }, { ask: 'Ask your doctor whether a structured lifestyle program or medication suits you, and recheck HbA1c and fasting insulin in 3 months.' }]
+    ]
+  };
+  var LIVR = {
+    headline: 'Your liver is showing signs of storing fat',
+    sources: [['blood', 'October 2026 blood test'], ['qn', 'Lifestyle Profiling questionnaire']],
+    markers: [
+      { name: 'ALT (alanine aminotransferase)', value: '68 U/L', date: '9 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.84, trend: { pts: [29, 36, 47, 68], from: 'Optimal', to: 'Out of range' } },
+      { name: 'GGT (gamma-glutamyl transferase)', value: '74 U/L', date: '9 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.8, trend: { pts: [38, 45, 58, 74], from: 'Optimal', to: 'Out of range' } },
+      { name: 'AST (aspartate aminotransferase)', value: '38 U/L', date: '9 Oct 2026', status: 'Suboptimal', bar: 'hi', pos: 0.5 },
+      { name: 'Ferritin', value: '410 µg/L', date: '9 Oct 2026', status: 'Suboptimal', bar: 'xsosx', pos: 0.7 },
+      { name: 'Platelets', value: '245 ×10⁹/L', date: '9 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.48 }
+    ],
+    answers: [{ q: 'Alcohol', a: '12 to 14 standard drinks a week, mostly on weekends' }],
+    noticed: [
+      'Your liver clears alcohol and turns surplus sugar into fat. When it takes in more than it can send out, fat builds up inside its cells, and enzymes leak into your blood as those cells strain.',
+      ['On 9th October ', { b: 'ALT, the enzyme most specific to the liver, was above range for the second year running and at its highest yet' }, '. GGT, which rises with both alcohol and liver fat, was high as well, and ferritin, your iron stores, sat near the top of normal, as it often does when the liver is inflamed.'],
+      'Your rising blood sugar and the visceral fat on your scan point to fat in the liver as the main driver, with the 12 to 14 drinks a week you told us about adding to it.',
+      ['AST still below ALT and normal platelets make scarring unlikely for now, but ', { b: 'a fatty liver that stays inflamed for years can scar' }, ', and it travels with a higher risk of heart disease.']
+    ],
+    means: [
+      ['Your liver is under strain, ', { b: 'most likely from fat building up inside it' }, ', and at this stage it usually recovers as weight and alcohol come down.'],
+      [{ b: 'Keep to no more than 10 standard drinks a week and no more than 4 on any day, with several alcohol-free days.' }, { ask: 'Ask your doctor about a liver ultrasound or FibroScan to check for fat and stiffness, and recheck liver enzymes in 3 months.' }]
+    ]
+  };
+  var TEST = {
+    headline: 'Low testosterone may be tied to your short, broken sleep',
+    sources: [['blood', 'October 2026 blood test'], ['qn', 'Lifestyle Profiling questionnaire']],
+    markers: [
+      { name: 'Total testosterone', value: '9.1 nmol/L', date: '9 Oct 2026', status: 'Suboptimal', bar: 'lo', pos: 0.4, trend: { pts: [15.2, 13.8, 11.0, 9.1], from: 'Optimal', to: 'Suboptimal' } },
+      { name: 'Free testosterone (calculated)', value: '190 pmol/L', date: '9 Oct 2026', status: 'Suboptimal', bar: 'lo', pos: 0.45 },
+      { name: 'SHBG (sex hormone-binding globulin)', value: '17 nmol/L', date: '9 Oct 2026', status: 'Suboptimal', bar: 'xsosx', pos: 0.32 },
+      { name: 'Luteinising hormone (LH)', value: '3.4 IU/L', date: '9 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.46 },
+      { name: 'Prolactin', value: '190 mIU/L', date: '9 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.22 }
+    ],
+    answers: [{ q: 'How many hours do you usually sleep a night?', a: '5 to 6 hours, waking 2 or 3 times' }, { q: 'Do you snore?', a: 'Loudly, most nights, my partner says' }],
+    noticed: [
+      'Testosterone keeps your muscle, bone, energy and sex drive up. Much of it is released while you sleep, so short or broken sleep pulls it down.',
+      ['On 9th October ', { b: 'total testosterone was below its optimal range' }, ', down from 15.2 nmol/L in 2022. SHBG, the protein that carries it, was low too, which is common with insulin resistance and weight around the middle.'],
+      'A normal prolactin makes a growth on the pituitary gland unlikely, and LH, the brain signal that drives testosterone, is in range: a pattern that usually comes from sleep and weight rather than from the testes themselves.',
+      ['Loud snoring and waking through the night can mean ', { b: 'obstructive sleep apnoea, where the airway closes over and over during sleep' }, '. It lowers testosterone and raises blood pressure and blood sugar.']
+    ],
+    means: [
+      ['Your testosterone has drifted low, ', { b: 'most likely from short, broken sleep and weight around your middle' }, ', not from a problem with the glands that make it.'],
+      [{ ask: 'Ask your doctor about a sleep study to check for sleep apnoea, and to repeat a fasting morning testosterone, drawn before 10am, in 6 to 8 weeks.' }, ' Treating sleep apnoea and losing weight around the middle often bring testosterone back up on their own.']
+    ]
+  };
+  var URIC = {
+    headline: 'Your uric acid is high enough to raise your gout risk',
+    sources: [['blood', 'October 2026 blood test'], ['qn', 'Lifestyle Profiling questionnaire']],
+    markers: [
+      { name: 'Uric acid', value: '0.46 mmol/L', date: '9 Oct 2026', status: 'Out of range', bar: 'hi', pos: 0.8, trend: { pts: [0.36, 0.38, 0.41, 0.46], from: 'Suboptimal', to: 'Out of range' } },
+      { name: 'Creatinine', value: '88 µmol/L', date: '9 Oct 2026', status: 'Optimal', bar: 'both', pos: 0.48 },
+      { name: 'eGFR (kidney filtration)', value: '92 mL/min/1.73m²', date: '9 Oct 2026', status: 'Optimal', bar: 'lo', pos: 0.82 }
+    ],
+    answers: [{ q: 'Drinks', a: 'Beer on weekends and a soft drink most afternoons' }],
+    noticed: [
+      'Uric acid is a waste product of purines, found in your own cells and in beer, red meat, seafood and sugary drinks. Your kidneys clear most of it.',
+      ['On 9th October ', { b: 'uric acid was above range for the first time' }, ', after climbing slowly since 2022. Normal creatinine and kidney filtration show your kidneys are working well, so they are not why it is high.'],
+      'Beer and sugary drinks raise uric acid most, and insulin resistance makes the kidneys hold on to it.',
+      ['Uric acid that stays high can form crystals in the joints, ', { b: 'causing gout, often first in the big toe' }, ', and is linked to kidney stones and high blood pressure.']
+    ],
+    means: [
+      ['Your uric acid has crept above range, ', { b: 'raising your chance of gout and kidney stones' }, ', while your kidneys themselves are working well.'],
+      [{ b: 'Swap the afternoon soft drink for water or soda water, and make weekend beers fewer or lighter.' }, { ask: 'Ask your doctor to recheck uric acid in 3 months, and to see you sooner if a joint turns hot, red and swollen.' }]
+    ]
+  };
+  var LIPS = {
+    headline: 'Your cholesterol particles are in a healthy range',
+    sources: [['blood', 'October 2026 blood test']],
+    markers: [
+      { name: 'Apolipoprotein B', value: '0.82 g/L', date: '9 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.26, trend: { pts: [0.96, 0.92, 0.88, 0.82], from: 'Suboptimal', to: 'Optimal' } },
+      { name: 'LDL cholesterol', value: '2.6 mmol/L', date: '9 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.28 },
+      { name: 'Lipoprotein (a)', value: '0.05 g/L', date: '9 Oct 2026', status: 'Optimal', bar: 'hi', pos: 0.06 },
+      { name: 'HDL cholesterol', value: '0.98 mmol/L', date: '9 Oct 2026', status: 'Suboptimal', bar: 'lo', pos: 0.42, trend: { pts: [1.12, 1.05, 1.0, 0.98], from: 'Optimal', to: 'Suboptimal' } }
+    ],
+    noticed: [
+      'Plaque in your arteries builds from the cholesterol-carrying particles in your blood, and apolipoprotein B counts them, one to each particle.',
+      [{ b: 'Apolipoprotein B is in its optimal range' }, ' and has eased since 2022, and LDL cholesterol is optimal too. Your lipoprotein(a), a particle set by your genes, is low, so you do not carry that extra lifelong risk.'],
+      'HDL cholesterol sits slightly low and triglycerides are high, the mark insulin resistance leaves on cholesterol. Moving more and drinking less tend to improve both.'
+    ],
+    means: [
+      ['The particles that lay down plaque are ', { b: 'in a healthy range, and your inherited risk is low' }, '.'],
+      [{ b: 'The changes for your blood sugar and liver will also lift HDL and bring triglycerides down.' }, ' Recheck your cholesterol at your next full blood test in 12 months.']
+    ]
+  };
+  var PANELS2 = [
+    { name: 'Advanced Heart Markers', n: [2, 0, 0] }, { name: 'Heart Health', n: [4, 1, 1] }, { name: 'Metabolic Health', n: [3, 2, 3] }, { name: 'Liver Health', n: [6, 2, 2] },
+    { name: 'Hormonal Function', n: [4, 2, 0] }, { name: 'Tumour Markers', n: [1, 0, 0] }, { name: 'White Blood Cells', n: [9, 0, 0] }, { name: 'Iron Studies', n: [3, 1, 0] },
+    { name: 'Blood Clotting', n: [1, 0, 0] }, { name: 'Blood Electrolytes', n: [6, 0, 0] }, { name: 'Kidney Function', n: [4, 0, 1] }, { name: 'Vitamins and Micronutrients', n: [2, 0, 0] },
+    { name: 'Harmful Metals', n: [1, 0, 0] }
+  ];
+  // each persona: its report, welcome, insights in order, everything else
+  var PERSONA = {
+    p1: { report: REPORT, wel: WEL, newi: NEWI, panels: PANELS, restH: REST_H },
+    p2: { report: REPORT2, wel: WEL2, newi: [GLUC, LIVR, TEST, URIC, LIPS], panels: PANELS2, restH: ['Everything else we checked', '61 markers across 13 panels.'] }
+  };
+
 
   // status -> colour tokens (see async-report.css)
   var LINE = { 'Optimal': 'var(--ar-opt-bg)', 'Suboptimal': 'var(--ar-sub-bg)', 'Out of range': 'var(--ar-out-bg)' };
@@ -14615,6 +14771,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   function mount(host, opts) {
     if (!host || typeof host.appendChild !== 'function') throw new TypeError('AsyncReport.mount(host, opts): host must be an element');
     opts = opts || {};
+    var D = PERSONA[opts.persona] || PERSONA.p1;   // whose report: Persona #1 (the default) or Persona #2
+    var REPORT = D.report, WEL = D.wel, NEWI = D.newi, PANELS = D.panels, REST_H = D.restH;
     var o = {
       theme: opts.theme === 'dark' ? 'dark' : 'light',
       welcome: opts.welcome === 'includes' ? 'includes' : 'cards',
@@ -14626,11 +14784,14 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       mb: opts.mb === 2 ? 2 : 3,   // the biomarkers shown before See N more (default 3), the next one partly shown
       srcVis: opts.srcVis === 'image' ? 'image' : 'hairline',   // From your data's visual: the Hairline report file (default) or the Overview's report render
       ev: opts.ev === 'v2' ? 'v2' : 'v1',   // Behind this insight: From your data's card and a card each (V1), or one card grouped by pill (Async report V2)
+      more: opts.more === 'fold' ? 'fold' : 'sheet',   // See N more: the bottom sheet with them all (default), or the rest opened in place
+      list: opts.list !== false,   // the 2nd screen: every insight as a card, before the first (default on)
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
     };
     var uid = ++mountSeq, evSeq = 0;
+    var LIST = o.list ? 1 : 0, REST = NEWI.length + 1 + LIST, NEXT = REST + 1, STEP_COUNT = NEXT + 1;   // the welcome, the insights' list, the insights, everything else, that's your debrief (9; 8 with no list)
     var step = 0;
     var alive = true;
     var timers = [], figs = [];   // figs: the Hairline figures drawn on the step, let go with it
@@ -14645,7 +14806,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     /* chrome: header, step indicator, body, footer CTA */
     var backBtn = h('button', { type: 'button', class: 'arIconBtn arBack', 'aria-label': 'Back' }, strokeIcon(18, 18, 1.8, [P.back]));
     var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose', 'aria-label': 'Close' }, strokeIcon(16, 16, 1.8, [P.close]));
-    var steps = stepIndicator(STEP_COUNT - 1);   // a bar for each step after the welcome (7)
+    var steps = stepIndicator(STEP_COUNT - 1);   // a bar for each step after the welcome (8; 7 with no list)
     var stepWrap = h('div', { class: 'arStepWrap' }, steps.el);
     var head = h('div', { class: 'arHead' },
       h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel arNavT' }, h('span', { class: 'arNavTt', text: REPORT.name }), h('span', { class: 'arNavTs', text: REPORT.date })), closeBtn),
@@ -14885,12 +15046,30 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var vote = function (b, other) { var was = b.getAttribute('aria-pressed') === 'true'; b.setAttribute('aria-pressed', String(!was)); other.setAttribute('aria-pressed', 'false'); };
       on(up, 'click', function () { vote(up, down); });
       on(down, 'click', function () { vote(down, up); });
+      var ansRow = function (x) { return h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: x.q }), h('span', { class: 'arLfName', text: x.a })); };
+      /* Collapse ("tweak See more by collapsing vs bottom sheet"): what See more would open in the sheet, folded under it in place instead, opening and shutting again; its box marked open (.arFoldOpen) */
+      var foldOf = function (kids, btn, cls, flip) {
+        var id = 'arFold' + uid + '-' + (++evSeq), fold = h('div', { class: 'arFold', id: id, inert: '' }, h('div', { class: 'arFoldIn' + (cls ? ' ' + cls : '') }, kids));
+        btn.setAttribute('aria-controls', id); btn.setAttribute('aria-expanded', 'false');
+        on(btn, 'click', function () { var open = btn.getAttribute('aria-expanded') !== 'true', box = fold.parentNode;
+          btn.setAttribute('aria-expanded', String(open)); if (open) fold.removeAttribute('inert'); else fold.setAttribute('inert', '');
+          if (box) box.classList.toggle('arFoldOpen', open); if (flip) flip(open, box); });
+        return fold;
+      };
+      var moreBtn = function (k, sheet, rows, cls) {   // See k more: the sheet with them all (Bottom sheet), or the rest opened in place, then Show less (Collapse)
+        var lab = h('span', { text: 'See ' + k + ' more' }), b = h('button', { type: 'button', class: 'arBtn arMbMore' + (cls ? ' ' + cls : ''), 'aria-expanded': 'false' }, h('span', { class: 'arBtnLabel' }, lab, strokeIcon(16, 16, 1.6, [P.chev])));   // its words and a chevron down ("chevron down")
+        if (o.more !== 'fold') { b.setAttribute('aria-haspopup', 'dialog'); on(b, 'click', function () { sheet(b); }); return b; }
+        return [foldOf(rows(), b, cls ? cls + 'In' : '', function (open, box) { lab.textContent = open ? 'Show less' : 'See ' + k + ' more';
+          var f = box && box.querySelector(':scope > .arMbFade'); if (!f) return;   // the row shown fading: itself again, and a row like the others
+          if (open) { f.removeAttribute('aria-hidden'); f.tabIndex = 0; } else { f.setAttribute('aria-hidden', 'true'); f.removeAttribute('tabindex'); } }), b];
+      };
       /* a summary, not the full data ("present that as a summary vs a full list of data"): one answer shown, its question over it; more, See X answered questions, which opens them all in the sheet; none, no Your answers */
-      var n = (L.answers || []).length, ans = null, ansMore = null;
-      if (n === 1) ans = h('div', { class: 'arLfGroup arLfAns1' }, h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: L.answers[0].q }), h('span', { class: 'arLfName', text: L.answers[0].a })));
+      var n = (L.answers || []).length, ans = null, ansMore = null, ansFold = null;
+      if (n === 1) ans = h('div', { class: 'arLfGroup arLfAns1' }, ansRow(L.answers[0]));
       else if (n > 1) {   // more: the card's name, and at its right a chevron alone in a 36 circle, secondary, on the name's centre line ("just chevron, 36 circle cta secondary"; then "chevron down"; it was a See detail pill)
         ansMore = h('button', { type: 'button', class: 'arBtn arLfDetail', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', 'aria-label': 'See detail: ' + n + ' answered questions' }, strokeIcon(16, 16, 1.6, [P.chev]));
-        on(ansMore, 'click', function () { qaOpen(L, ansMore); });
+        if (o.more === 'fold') { ansMore.removeAttribute('aria-haspopup'); ansMore.setAttribute('aria-label', n + ' answered questions'); ansFold = foldOf(L.answers.map(ansRow), ansMore, 'arLfAnsFold'); }   // Collapse: the answers under the card's name, the chevron turning
+        else on(ansMore, 'click', function () { qaOpen(L, ansMore); });
       }
       /* Behind this insight on the page, its source under it; then a grey card a group, its name on the grey, its list in a white card inside: Your biomarkers, Your answers */
       var grey = function (name, inner) { return h('div', { class: 'arLfCard' }, h('span', { class: 'arT600 arLfCardH', text: name }), inner); };
@@ -14898,8 +15077,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var rest = L.markers.length - o.mb, fade = null, more = null;   // Max biomarkers: 3 (default) or 2
       if (rest > 0) {
         fade = mbRow(L.markers[o.mb]); fade.className += ' arMbFade'; fade.removeAttribute('tabindex'); fade.setAttribute('aria-hidden', 'true');
-        more = h('button', { type: 'button', class: 'arBtn arMbMore', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' }, h('span', { class: 'arBtnLabel' }, h('span', { text: 'See ' + rest + ' more' }), strokeIcon(16, 16, 1.6, [P.chev])));   // its words and a chevron down ("chevron down")
-        on(more, 'click', function () { mbOpen(L, more); });
+        more = moreBtn(rest, function (b) { mbOpen(L, b); }, function () { return L.markers.slice(o.mb + 1).map(mbRow); }, '');   // Collapse: the faded one clears, the rest under it
       }
       /* Async report V2: Biomarkers and Questionnaire in one card, a pill each ("biomarkers and questions will live in one card, grouped by pill"); each its list, then its sources as the square bullets under it,
          From your data's card gone ("remove From your data and put the bullet points inside the corresponding card, below the biomarkers or the questionnaire content"), and the answered questions' own card with it */
@@ -14910,8 +15088,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         if (L.markers.length) groups.push(['Biomarkers', h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more), src.filter(function (x) { return !n || !qn(x); })]);   // the blood and test results; the questionnaire's too when there is no Questionnaire pill
         if (n) {   // every question with its answer, as many as the biomarkers before See N more, which opens them all in the sheet
           var qMore = null, left = n - o.mb;
-          if (left > 0) { qMore = h('button', { type: 'button', class: 'arBtn arMbMore arEvMore', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' }, h('span', { class: 'arBtnLabel' }, h('span', { text: 'See ' + left + ' more' }), strokeIcon(16, 16, 1.6, [P.chev]))); on(qMore, 'click', function () { qaOpen(L, qMore); }); }
-          groups.push(['Questionnaire', h('div', { class: 'arLfGroup arEvAns' }, L.answers.slice(0, o.mb).map(function (x) { return h('div', { class: 'arLfAnsL' }, h('span', { class: 'arT200r arInk60', text: x.q }), h('span', { class: 'arLfName', text: x.a })); }), qMore), src.filter(qn)]);
+          if (left > 0) qMore = moreBtn(left, function (b) { qaOpen(L, b); }, function () { return L.answers.slice(o.mb).map(ansRow); }, 'arEvMore');
+          groups.push(['Questionnaire', h('div', { class: 'arLfGroup arEvAns' }, L.answers.slice(0, o.mb).map(ansRow), qMore), src.filter(qn)]);
         }
         var tabs = [], panes = [];
         groups.forEach(function (g, i) {
@@ -14936,7 +15114,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
               h('span', { class: 'arSrcClip', 'aria-hidden': 'true' }, o.srcVis === 'image' ? h('img', { class: 'arSrcImg', src: 'assets/overview/card4-doc.webp', alt: '', decoding: 'async', draggable: 'false' }) : hlDoc(), srcDust()),   // Data visual: the Hairline file, or the Overview's render
               h('ul', { class: 'arSrc', 'aria-label': 'Sources' }, (L.sources || []).map(function (x) { return h('li', { class: 'arSrcRow', text: x[1] }); })))),
           grey(nMb(L.markers.length), h('div', { class: 'arLfGroup arMbList' }, L.markers.slice(0, o.mb).map(mbRow), fade, more)),
-          ans ? grey(nAns(n), ans) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore) : null);
+          ans ? grey(nAns(n), ans) : ansFold ? h('div', { class: 'arLfCard arLfAnsCard' }, h('div', { class: 'arLfAnsHd' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore), ansFold) : ansMore ? h('div', { class: 'arLfCard arLfCardRow' }, h('span', { class: 'arT600 arLfCardH', text: nAns(n) }), ansMore) : null);
       var secs = [['Evidence', card],   // the chips' words, short so the three fit the phone ("concise words in the tabs"; then "Evidence, Findings, Meaning"); the sections keep their own headings
         ['Findings', h('div', { class: 'arLfSec arAnimRise arD24' }, h('span', { class: 'arLfH', text: 'What we noticed' }), L.noticed.map(function (t) { return h('p', { class: 'arPara' }, rich(t)); }))],
         ['Meaning', h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'What this means for you' }), paras(L.means))]];
@@ -15010,7 +15188,32 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         h('div', { class: 'arAccList arRsList arAnimRise arD20' }, panels));
     }
 
-    /* ----- step 7: That's your debrief ----- */
+    /* ----- step 1: the insights, each a card ("create a 2nd screen that intros all slides in card list items"): its number, its headline, its markers' standing as the dots of Everything else; then Everything else; a card goes to its step ----- */
+    function buildList() {
+      var dots = function (ms) {
+        var c = ['Optimal', 'Suboptimal', 'Out of range'].map(function (st) { return ms.filter(function (m) { return m.status === st; }).length; });
+        return h('span', { class: 'arIlDots', role: 'img', 'aria-label': c[0] + ' optimal, ' + c[1] + ' suboptimal, ' + c[2] + ' out of range' },
+          ['arRsO', 'arRsS', 'arRsX'].map(function (k, i) { return c[i] ? h('span', { class: 'arIlDot' }, h('i', { class: k }), String(c[i])) : null; }));
+      };
+      var card = function (k, title, meta, to, i) {
+        var b = h('button', { type: 'button', class: 'arIlItem arAnimRise', style: { 'animation-delay': (.1 + i * .05).toFixed(2) + 's' } },
+          h('span', { class: 'arIlNum', 'aria-hidden': 'true', text: String(k) }),
+          h('span', { class: 'arIlTx' }, h('span', { class: 'arIlT', text: title }), meta),
+          h('span', { class: 'arIlGo', 'aria-hidden': 'true' }, strokeIcon(16, 16, 1.6, [P.next])));
+        on(b, 'click', function () { go(to); });
+        return h('li', null, b);
+      };
+      var n = NEWI.length, W = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+      return h('div', { class: 'arStack arGap20' },
+        h('div', { class: 'arIntroBlock arAnimRise' },
+          h('h2', { class: 'arH700', text: 'Your insights' }),
+          h('div', { class: 'arLede', text: (W[n] || n) + ' insight' + (n === 1 ? '' : 's') + ' from your results, then everything else we checked.' })),
+        h('ul', { class: 'arIl' },
+          NEWI.map(function (L, i) { return card(i + 1, L.headline, dots(L.markers), 1 + LIST + i, i); }),
+          card(n + 1, REST_H[0], h('span', { class: 'arIlSub', text: REST_H[1] }), REST, n)));
+    }
+
+    /* ----- the last step: That's your debrief ----- */
     function buildNext() {
       var q = function (avatar, name, desc) {
         return h('div', { class: 'arQRow' }, avatar,
@@ -15030,7 +15233,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 
     function build(st) {
       if (st === 0) return buildWelcome();
-      if (st >= 1 && st <= NEWI.length) return buildLife(NEWI[st - 1]);
+      if (LIST && st === 1) return buildList();
+      if (st >= 1 + LIST && st <= NEWI.length + LIST) return buildLife(NEWI[st - 1 - LIST]);
       if (st === REST) return buildRest();
       return buildNext();
     }
@@ -15069,6 +15273,15 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       el: root,
       go: go,
       reset: function () { go(0); },
+      /* where it stands, and back there in a new mount ("when I change a tweak don't reload the experience from the beginning, stay on the current screen"): the step by what it is (the list, the nth insight...), so the list on or off still lands on the same screen; its scroll kept when the screen is the same, and its entrance not played again */
+      where: function () { return { t: step === 0 ? 'w' : LIST && step === 1 ? 'l' : step <= NEWI.length + LIST ? 'i' + (step - 1 - LIST) : step === REST ? 'r' : 'n', y: body.scrollTop }; },
+      at: function (w, keepY) {
+        if (!w || !alive) return;
+        var t = w.t, i = t.charAt(0) === 'i' ? Math.min(NEWI.length - 1, +t.slice(1) || 0) : 0;
+        go(t === 'w' ? 0 : t === 'l' ? 1 : t === 'r' ? REST : t === 'n' ? NEXT : 1 + LIST + i);
+        try { root.getAnimations({ subtree: true }).forEach(function (a) { var e = a.effect && a.effect.getComputedTiming && a.effect.getComputedTiming(); if (e && isFinite(e.endTime)) a.finish(); }); } catch (e) {}
+        if (keepY && !(t === 'l' && !LIST)) body.scrollTop = w.y;
+      },
       destroy: function () {
         if (!alive) return;
         while (timers.length) clearTimeout(timers.pop());
@@ -15126,7 +15339,25 @@ window.BioDetail = (function () {
     'high-sensitivity crp (hs-crp)': 'High-sensitivity CRP is a protein your liver makes when there is inflammation in your body. Low-grade inflammation, over years, adds strain to artery walls.',
     'crp : albumin ratio (car)': 'The CRP to albumin ratio sets inflammation against your nutrition and liver health. A falling ratio means less strain on your body.',
     'protein': 'How much protein you eat helps keep your muscles strong as you age and steadies your blood sugar.',
-    'omega 3': 'Omega-3 fats, from oily fish, nuts and seeds, help keep inflammation low and support your heart and brain.'
+    'omega 3': 'Omega-3 fats, from oily fish, nuts and seeds, help keep inflammation low and support your heart and brain.',
+    'hba1c (glycated haemoglobin)': 'HbA1c shows how much sugar has stuck to your red blood cells, an average of your blood sugar over the last three months. It is how type 2 diabetes, and the stage before it, are found.',
+    'fasting insulin': 'Insulin is the hormone that moves sugar from your blood into your cells. A high fasting level means your body needs more of it to do the same work, an early sign of insulin resistance.',
+    'fasting glucose': 'Fasting glucose is the sugar in your blood after a night without food. It rises late, once insulin can no longer hold it down.',
+    'triglycerides': 'Triglycerides are fats your liver makes from surplus sugar and alcohol, and that you take in from food. High levels travel with insulin resistance and a fatty liver.',
+    'visceral fat (dexa)': 'Visceral fat is the fat packed around your organs, measured on your body composition scan. It drives insulin resistance and inflammation more than the fat under your skin.',
+    'alt (alanine aminotransferase)': 'ALT is an enzyme found mostly in your liver. It leaks into your blood when liver cells are inflamed or strained, often by fat or alcohol.',
+    'ggt (gamma-glutamyl transferase)': 'GGT is a liver enzyme that rises with alcohol, fat in the liver and some medicines.',
+    'ast (aspartate aminotransferase)': 'AST is an enzyme in your liver and muscles. Read with ALT, it shows how your liver is coping.',
+    'ferritin': 'Ferritin shows how much iron your body has stored. It is low when iron runs short, and rises when stores are high or with inflammation, in the liver among other places.',
+    'platelets': 'Platelets are the blood cells that help your blood clot. Read with your liver enzymes, a normal count makes liver scarring less likely.',
+    'total testosterone': 'Testosterone is the main male sex hormone. It keeps muscle, bone, energy and sex drive up, and is highest in the morning.',
+    'free testosterone (calculated)': 'Free testosterone is the share not bound to proteins in your blood, the part your body can use, worked out from total testosterone, SHBG and albumin.',
+    'shbg (sex hormone-binding globulin)': 'SHBG is the protein that carries testosterone in your blood. It runs low with insulin resistance and weight around the middle.',
+    'luteinising hormone (lh)': 'LH is the signal from your pituitary gland that tells the testes to make testosterone.',
+    'prolactin': 'Prolactin is a hormone from the pituitary gland. A high level can lower testosterone, so it is checked when testosterone is low.',
+    'uric acid': 'Uric acid is a waste product your body makes from purines and clears through your kidneys. Too much can form crystals in the joints and cause gout.',
+    'creatinine': 'Creatinine is a waste product from your muscles that your kidneys clear. A steady, normal level means they are filtering well.',
+    'egfr (kidney filtration)': 'eGFR estimates how much blood your kidneys filter each minute, worked out from creatinine, age and sex. Above 90 is normal.'
   };
   var MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 }, MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var ST = { 'Optimal': 'o', 'Suboptimal': 's', 'Out of range': 'x' }, WORD = { o: 'Optimal', s: 'Suboptimal', x: 'Out of range', n: 'Unclassified' };
@@ -15140,7 +15371,7 @@ window.BioDetail = (function () {
     var r = rng(hash(m.name || '')), st = ST[m.status] || 'n';
     var mv = /^\s*(-?\d+(?:\.\d+)?)\s*(.*)$/.exec(String(m.value || ''));
     var d = { name: m.name || '', value: String(m.value || ''), date: m.date || '', st: st, desc: DESC[(m.name || '').toLowerCase()] || ((m.name || 'This marker') + ' is one of the markers in your results. Your doctor reads it with your other results and your history; the range below shows where your latest reading sits.') };
-    if (!mv || mv[2].length > 12 || /\s\S+\s/.test(mv[2])) { d.text = true; return d; }   // a questionnaire's answer ("2 serves per day from eggs..."): its words, no range, no chart
+    if (!mv || mv[2].length > 16 || /\s\S+\s/.test(mv[2])) { d.text = true; return d; }   // a questionnaire's answer ("2 serves per day from eggs..."): its words, no range, no chart
     d.num = +mv[1]; d.numStr = mv[1]; d.unit = mv[2].trim();
     var seg = { hi: 'osx', lo: 'xso', both: 'xsosx' }[m.bar] || (/^[osx]{2,6}$/.test(m.bar || '') ? m.bar : st === 'n' ? '' : 'sos');
     d.zones = seg;
@@ -22020,7 +22251,7 @@ hairline({
     inGroup.forEach(([v, i]) => {
       const o = document.createElement('option');
       o.value = String(i);
-      o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : g === 'Async report' && v.name === 'Desktop' ? 'Async report' : v.name;   /* the page's name, not the shell's ("Desktop --> Overview"; "rename Desktop by Async report") */
+      o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : g === 'Async report' && v.name === 'Desktop' ? 'Persona #1' : v.name;   /* the page's name, not the shell's ("Desktop --> Overview"; "rename Desktop by Async report") */
       og.appendChild(o);
     });
     // Mobile (viewport): the mobile design filling the browser's viewport with
@@ -22052,7 +22283,7 @@ hairline({
       versionSel.appendChild(tg);
       return;
     }
-    if (g === 'Async report'){ const o = document.createElement('option'); o.value = 'ar2'; o.textContent = 'Async report V2'; og.appendChild(o); }   // the same report, Behind this insight in one card grouped by pill ("create a V2 Async")
+    if (g === 'Async report'){ const o = document.createElement('option'); o.value = 'arp2'; o.textContent = 'Persona #2'; og.appendChild(o); }   // the same report, another member's results ("create a duplicate of the Async to create a different persona"); V2 is the Version tweak
     if (g === ARC_GROUP && ARCHIVED.length){
       const o = document.createElement('option');
       o.value = ARCHIVE_VAL;
@@ -22070,8 +22301,8 @@ hairline({
     // archive select is already showing, so stepping out and back returns to
     // the one you were reading rather than to the top of the list.
     const v = versionSel.value;
-    { const v2 = v === 'ar2'; if (v2 !== !!window._arV2){ window._arV2 = v2; document.dispatchEvent(new Event('everlab:arv')); } }   // Async report V2: the report remounted in its dress
-    if (v === 'ar2'){ if (window._doc) window._doc.hide(); if (window._hl) window._hl.hide(); if (window._ig) window._ig.hide(); if (window._rv) window._rv.hide(); if (window._home) window._home.hide(); CARD_STATE.fullscr = false; CARD_STATE.showBar = false; setMode(26); resize(); versionSel.value = 'ar2'; try { history.replaceState(null, '', '#ar2'); } catch (e){} return; }   // Async report's page, the entry named in the menu and the link
+    if (v === '26' || v === 'arp2'){ const ps = document.getElementById('stArPer'), want = v === 'arp2' ? 'p2' : 'p1'; if (ps && ps.value !== want){ ps.value = want; ps.dispatchEvent(new Event('change', { bubbles: true })); } }   // the menu's Persona #1 / #2: the Persona tweak
+    if (v === 'arp2'){ if (window._doc) window._doc.hide(); if (window._hl) window._hl.hide(); if (window._ig) window._ig.hide(); if (window._rv) window._rv.hide(); if (window._home) window._home.hide(); CARD_STATE.fullscr = false; CARD_STATE.showBar = false; setMode(26); resize(); versionSel.value = 'arp2'; try { history.replaceState(null, '', '#arp2'); } catch (e){} return; }   // Async report's page, the entry named in the menu and the link
     if (v === 'doc'){ if (window._doc) window._doc.show(); return; }
     if (window._doc) window._doc.hide();
     if (v === 'hl'){ if (window._ig) window._ig.hide(); if (window._hl) window._hl.show(); return; }
@@ -29198,23 +29429,27 @@ hairline({
     let inst = null;
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
-    const mount = () => { if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: window._arV2 ? 'v2' : 'v1', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+    let per = '';
+    const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
+      if (inst) inst.destroy(); frame.textContent = '';
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArVer') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', list: opt('stArList') !== 'off', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
-      if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor; };   // the frame in the debrief's own paper, for the full screen's margins
+      if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
+      if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
     const raise = () => { wrap.classList.remove('on', 'shut'); requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on'))); };
     wrap.querySelector('.aqAgain').addEventListener('click', () => { if (inst) inst.reset(); raise(); });
     vary(); mount(); raise();
-    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(); raise(); }, vary: () => { vary(); raise(); } };
+    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(true); }, vary: () => { vary(); raise(); } };   // a tweak: remounted where it was, the sheet not risen again
   }
   {
     const arD = asyncReport(document.body, true), arM = asyncReport(document.getElementById('phone2'), false);
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
+    { const ps = document.getElementById('stArPer'), vs = document.getElementById('versionSel');   // the Persona tweak and the menu's Persona #1 / #2 say the same thing
+      if (ps && vs) ps.addEventListener('change', () => { if (version !== 26 || !['26', 'arp2'].includes(vs.value)) return; const p2 = ps.value === 'p2'; vs.value = p2 ? 'arp2' : '26'; try { history.replaceState(null, '', p2 ? '#arp2' : '#m26'); } catch (e){} }); }
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
-    document.addEventListener('everlab:arv', () => { if (arD) arD.remount(); if (arM) arM.remount(); });   // Async report V2 picked, or left
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArVer', 'stArList', 'stArMore'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
@@ -35953,7 +36188,8 @@ hairline({
     else if (!location.hash && versionSel){   // no hash: the Async report is the first page, in Dark mode, in the XS phone, its welcome the Cards ("Async default setup"; before, the Service detail page); #home still opens the gallery, a page's hash that page
       const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
       put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', '26'); }
-    else if (location.hash === '#ar2' && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } }; put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', 'ar2'); }   // Async report V2's own link, in the report's default setup
+    else if ((location.hash === '#ar2' || location.hash === '#arp2') && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } }; put('themeSel', 'dark'); put('stBp', 'xs');
+      if (location.hash === '#ar2'){ put('stArVer', 'v2'); put('versionSel', '26'); } else put('versionSel', 'arp2'); }   // the report's own links, in its default setup: #ar2 V2 (the Version tweak), #arp2 Persona #2
     addEventListener('hashchange', () => { if (want()) show(); else hide(); });
   })();
 
