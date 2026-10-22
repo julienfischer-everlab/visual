@@ -14207,9 +14207,17 @@
 .arSheet .arRsName { flex: 1 1 auto; min-width: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink)); text-wrap: pretty; }
 .arSheet .arRsDots { flex: none; display: flex; align-items: center; gap: 14px; }
 .arSheet .arRsDot { display: inline-flex; align-items: center; gap: 6px; font-family: var(--ar-font); font-size: 16px; line-height: 20px; color: oklch(var(--ar-ink) / .45); font-variant-numeric: tabular-nums; }
-.arSheet .arRsDot i { width: 10px; height: 10px; border-radius: 50%; } .arSheet .arRsO { background: var(--ar-opt-bg); } .arSheet .arRsS { background: var(--ar-sub-bg); } .arSheet .arRsX { background: var(--ar-out-bg); }
+.arSheet .arRsDot i { width: 10px; height: 10px; border-radius: 50%; } .arSheet .arRsO { background: var(--mbO); } .arSheet .arRsS { background: var(--mbS); } .arSheet .arRsX { background: var(--mbX); }   /* the biomarker rows' range colours ("colour marker range use same as prev pages") */
 .arSheet .arRsRow .arAccHead { cursor: default; }
 .arSheet .arRsList { display: flex; flex-direction: column; gap: 12px; } .arSheet .arRsList > .arAcc { border: 0; border-radius: 16px; padding: 0 20px; background: var(--ar-card-bg); } .arSheet .arRsList .arAccHead { gap: 16px; padding: 22px 0; } .arSheet .arRsList .arAccBody { padding-bottom: 12px; }   /* each panel a grey card, 12 apart */
+/* two to a row ("use a grid 2x per row"): each panel a tile, its name over its counts, the chevron in its corner; an opened panel across the row, its markers under it */
+.arSheet .arRsList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.arSheet .arRsList > .arAcc { padding: 0 16px; }
+.arSheet .arRsList > .arAcc > .arAccHead { position: relative; flex: 1 1 auto; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 16px 0; }
+.arSheet .arRsList .arRsName { flex: none; padding-right: 22px; font-size: 15px; line-height: 19px; }
+.arSheet .arRsList .arAccHead > .arChev { position: absolute; top: 15px; right: -2px; }
+.arSheet .arRsList .arRsDots { gap: 10px; } .arSheet .arRsList .arRsDot { gap: 5px; font-size: 14px; line-height: 18px; } .arSheet .arRsList .arRsDot i { width: 8px; height: 8px; }
+.arSheet .arRsList > .arAcc:has(> .arAccBody:not([hidden])) { grid-column: 1 / -1; }
 .arSheet .arLfBar { display: block; overflow: visible; }
 .arSheet .arLfBarLine { stroke: oklch(var(--ar-ink)); }
 .arSheet .arLfPill { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 400; white-space: nowrap; }
@@ -14309,7 +14317,7 @@
 .arSheet.arHtw.arIsSphere { --ar-ink: 0% 0 0; --ar-paper: #e9e4da; --ar-fg: oklch(0% 0 0); --ar-br3: oklch(0% 0 0 / .1); --ar-card-bg: oklch(0% 0 0 / .04); --ar-badge-bg: oklch(0% 0 0 / .08); --ar-btn-bg: oklch(0% 0 0); --ar-btn-bg-hover: oklch(0% 0 0 / .64); --ar-btn-bg-active: oklch(0% 0 0 / .48); --ar-btn-fg: oklch(100% 0 263.28); --ar-sph-bg: #e9e4da; color-scheme: light; }
 .arSheet .arHtwBg canvas { top: auto; bottom: 0; height: 28%; image-rendering: pixelated; -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgba(0, 0, 0, .25) 30%, #000 75%); mask-image: linear-gradient(to bottom, transparent 0, rgba(0, 0, 0, .25) 30%, #000 75%); }
 .aqWrap:has(.arSheet.arHtw.arIsSphere) .aqFrame { background: #e9e4da !important; }
-.aqWrap.aqDev:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome.arHtw.arIsSphere) .aqStat { color: #141413; }
+.aqWrap.aqDev:is(.aqFull, .aqPhone).on:has(.arSheet.arHtw.arIsSphere) .aqStat { color: #141413; }
 .arSheet.arSheet.arIsSphere :is(.arHead, .arBody, .arFoot) { background: transparent; } .arSheet.arIsSphere :is(.arGround, .arFootGround) { display: none; }
 .arSheet.arSheet.arSheet.arSheet.arIsSphere.arIsWelcome .arIconBtn { background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink) / .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .arSheet.arIsSphere .arRvCard { background: oklch(var(--ar-ink) / .05); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
@@ -14393,6 +14401,9 @@
 .arSheet .arQTitle { font-size: 17px; line-height: 22px; font-weight: 500; }
 .arSheet .arQList { display: flex; flex-direction: column; gap: 8px; }
 .arSheet .arQRow { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 16px; background: var(--ar-card-bg); cursor: pointer; }
+.arSheet .arRvQList { gap: 0; margin: -2px -4px 0; } .arSheet .arRvCard .arQRow.arRvQ { padding: 14px 4px; border-radius: 0; background: transparent; animation: arRvLi .5s var(--ar-ease) both; } .arSheet .arRvCard .arQRow.arRvQ + .arQRow.arRvQ { box-shadow: inset 0 1px 0 oklch(var(--ar-ink) / .1); }   /* the last page's two rows in its card, a rule between */
+.arSheet.arIsEnd .arNavT { visibility: hidden; }   /* the last page: no progress, no report name over it */
+@media (prefers-reduced-motion: reduce) { .arSheet .arRvCard .arQRow.arRvQ { animation: none; } }
 .arSheet .arEvaAv { width: 40px; height: 40px; border-radius: 9999px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(225deg, #A2C9FF 0%, #FFCBAB 34%, #E0905E 62%, #F27937 100%); }
 .arSheet .arQAv { width: 40px; height: 40px; max-width: none; border-radius: 9999px; object-fit: cover; flex-shrink: 0; }
 .arSheet .arQText { flex: 1; display: flex; flex-direction: column; min-width: 0; }
@@ -14936,7 +14947,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var stage = h('div', { class: 'arStage' }, head, body, foot);   // the page, pushed back under a sheet
     var REVEAL = LIST && o.intro === 'reveal', RVW = o.welcome === 'reveal';   // the reveal as the 2nd screen, or as the welcome
     var sphL = o.welcome === 'sphere' ? sphereLayer() : o.welcome === 'halftone' ? ditherLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball; the Halftone's creme and its dithered picture
-    if (REVEAL || RVW) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the full-bg intro's picture, under the head, the flow and the foot
+    if (REVEAL || RVW || !sphL) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the picture also for the last page, unless the Sphere or Halftone ground is its own   // the full-bg intro's picture, under the head, the flow and the foot
     var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
@@ -15531,21 +15542,18 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     }
 
     /* ----- the last step: That's your debrief ----- */
-    function buildNext() {
-      var q = function (avatar, name, desc) {
-        return h('div', { class: 'arQRow' }, avatar,
+    function buildNext() {   /* the Full bg layout ("go with a Full bg layout"): the title word by word over the ground, then the card, Have questions? and its two ways on, one after the other */
+      var q = function (avatar, name, desc, at) {
+        return h('div', { class: 'arQRow arRvQ', style: { 'animation-delay': at.toFixed(2) + 's' } }, avatar,
           h('div', { class: 'arQText' }, h('div', { class: 'arQName', text: name }), h('div', { class: 'arQSub', text: desc })),
           h('div', { class: 'arQChev', 'aria-hidden': 'true', text: '\u203a' }));
       };
-      return h('div', { class: 'arStack arGap20' },
-        h('div', { class: 'arIntroBlock arAnimRise' },
-          h('h2', { class: 'arH700', text: 'That\'s your debrief.' })),
-        h('div', { class: 'arHair' }),
-        h('div', { class: 'arQBlock arAnimRise arD24' },
-          h('div', { class: 'arQTitle', text: 'Have questions?' }),
-          h('div', { class: 'arQList' },
-            q(h('div', { class: 'arEvaAv' }, sparkIcon('currentColor')), 'Ask Eva', 'Get instant answers about this report and submit questions or requests to our clinical team.'),
-            q(h('img', { class: 'arQAv', src: 'assets/async/avatar.webp', alt: '', decoding: 'async' }), 'Book a doctor consult', 'Pick a time to talk through your results.'))));
+      return revealOf('That\u2019s your debrief.', function (tc) {
+        return [h('span', { class: 'arRvH', text: 'Have questions?' }),
+          h('div', { class: 'arQList arRvQList' },
+            q(h('div', { class: 'arEvaAv' }, sparkIcon('currentColor')), 'Ask Eva', 'Get instant answers about this report and submit questions or requests to our clinical team.', tc + .3),
+            q(h('img', { class: 'arQAv', src: 'assets/async/avatar.webp', alt: '', decoding: 'async' }), 'Book a doctor consult', 'Pick a time to talk through your results.', tc + .42))];
+      });
     }
 
     function build(st) {
@@ -15595,14 +15603,14 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       dropFigs();
       qaClose(true);   // a step change closes the questionnaire's sheet
       spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled'); if (fitG) later(fitG, 0);
-      var welcome = step === 0;
-      root.classList.toggle('arIsWelcome', welcome); root.classList.toggle('arIsIntro', (REVEAL && step === 1) || (RVW && welcome)); root.classList.toggle('arIsSphere', !!sphL && welcome);
+      var welcome = step === 0, end = step === NEXT;   // end: That's your debrief, in the Full bg layout ("go with a Full bg layout; no progress nav at the top"), on the welcome's ground (the Sphere's or the Halftone's, else the picture)
+      root.classList.toggle('arIsWelcome', welcome); root.classList.toggle('arIsIntro', (REVEAL && step === 1) || (RVW && welcome) || (end && !sphL)); root.classList.toggle('arIsSphere', !!sphL && (welcome || end)); root.classList.toggle('arIsEnd', end);
       root.setAttribute('data-ar-step', String(step));
       backBtn.hidden = step === 0;
-      stepWrap.hidden = welcome;
+      stepWrap.hidden = welcome || end;
       steps.set(step);
       ctaLabel.textContent = welcome ? 'See results' : step === NEXT ? 'Done' : 'Next';   // the welcome's ("Start --> See results")
-      if (sphL && welcome) sphL.run();
+      if (sphL && (welcome || end)) sphL.run();
       if (gone && gone.el.parentNode === body) body.removeChild(gone.el);
       body.textContent = '';
       body.appendChild(build(step));
