@@ -14333,6 +14333,7 @@
 .arSheet.arSheet.arIsSphere :is(.arHead, .arBody, .arFoot) { background: transparent; } .arSheet.arIsSphere :is(.arGround, .arFootGround) { display: none; }
 .arSheet.arSheet.arSheet.arSheet.arIsSphere.arIsWelcome .arIconBtn { background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink) / .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
 .arSheet.arIsSphere .arRvCard { background: oklch(var(--ar-ink) / .05); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+.arSheet.arIsSphere:not(.arHtw) .arRvCard { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }   /* the Sphere's card without its ground ("remove card bg"); the Halftone's keeps its own */
 .arSheet.arIsSphere .arRvH { color: oklch(var(--ar-ink) / .56); }
 /* the push between the flow's pages: the leaving page in a layer where the body stood, clipped, under the head; the coming one over it going forward, under it going back; the foot over both */
 .arSheet .arPushOut { position: absolute; box-sizing: border-box; overflow: hidden; pointer-events: none; will-change: transform, opacity; }
@@ -15124,7 +15125,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
         x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
         flow((now - t0) / 1000);
-        var R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * 1.2, cx = w / 2, cy = hh - R * .1 + 64, a = (now - t0) / 360000 * 6.2832 + nudAt(now),   /* a turn every 360 s (was 180, "2x slower") */   /* the ball 1.2x ("scale up 1.2x, should cover more of the bottom of the screen") */ ca = Math.cos(a), sa = Math.sin(a), tl = .38, ct = Math.cos(tl), st = Math.sin(tl);
+        var R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * .96, cx = w / 2, cy = hh - R * .1 + 104,   /* .8 of the 1.2x and 40 lower ("push down the sphere by 40px; reduce sphere by .8x") */ a = (now - t0) / 360000 * 6.2832 + nudAt(now),   /* a turn every 360 s (was 180, "2x slower") */   /* the ball 1.2x ("scale up 1.2x, should cover more of the bottom of the screen") */ ca = Math.cos(a), sa = Math.sin(a), tl = .38, ct = Math.cos(tl), st = Math.sin(tl);
         if (anchor && anchor.isConnected && root.classList.contains('arIsWelcome')) { var ab = anchor.getBoundingClientRect(), cb = cv.getBoundingClientRect(); if (ab.height) { R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * 1.4; cy = ab.bottom - cb.top + 48 + 64 + R * .95; } }   /* Sphere hero ("make the sphere larger and position it directly below the H1 with a 48px gap"; then "push down by 64px"): its shell's top 112 under the title */
         var ink = dark() ? INK.d : INK.l, lift = dark() ? 2.4 : 2.7, sx, sy, zz;   // brought up to the engine's own presence: the ball reads as a body, not a dusting
         var proj = function (q) { var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st; zz = Y * st + z1 * ct; sx = cx + x1 * R; sy = cy - y1 * R; };
