@@ -15088,3 +15088,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ### Carousel sparkline: thinner line, ringed markers
 - "less .5px thickness line": the trend line 2px (was 2.5).
 - "marker with border 1px same as bg colour": each marker drawn over a disc 2px wider in the card's own colour (--arBmcBg: the paper under the card's 4% fill, solid; the paper when cards are outlined), so a 1px ring cuts the line and the grid where they meet it, dark and light.
+
+### Sphere: flies up with the page; dither variants removed; Label badge
+- "If we click on the CTA, everything moves up, and the visual goes up as well and scales" (2x): on See my results the ball rises half the screen and grows to twice its size over 960ms (eased in and out), its particles still moving, its ground held a moment then fading; Back brings it down and in the same way. Sphere and Sphere hero. The leaving copy of the welcome keeps the Sphere's bare card (no card ground flashing in as it goes).
+- "Remove all of this sphere's different style; just keep the sphere and the sphere hero": the Sphere tweak (Particles / Bayer / Dots / Diffuse) and the dither code are gone; the particles only.
+- "a variant for the label: a badge, yes or no; yes, a black background under the square and the label, 4px padding, sharp": Label badge (No default / Yes), shown for Sphere hero. Yes: #000 under the square and the words, 4 round them, square corners, the words white in either mode. Each label's lines are measured before it types (cursor included, in the sheet's own px), so the badge hugs its longest line and the words break where they will end from the first letter.
