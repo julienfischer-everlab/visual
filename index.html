@@ -14257,6 +14257,7 @@
 @keyframes arEvIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .arSheet .arLfEv .arEvPane > .arMbList:has(+ .arEvSrc) > .arMb:last-child { margin-bottom: 0; }   /* the sources under it: the last row's own foot */
 .arSheet .arEvSrc { margin-top: 16px; padding-top: 16px; border-top: 1px solid oklch(var(--ar-ink) / .08); }
+.arSheet .arEvNoTab > .arEvPane + .arEvPane { margin-top: 20px; padding-top: 20px; border-top: 1px solid oklch(var(--ar-ink) / .08); animation: none; } .arSheet .arEvNoTab > .arEvPane { animation: none; } .arSheet .arEvNoTab .arEvGh { margin: 0 4px; }   /* Carousel, no pills: the questions under the biomarkers' sources, a rule between, their count as the heading */
 .arSheet .arLfEv .arEvPane > .arEvAns { gap: 12px; padding-top: 12px; }   /* the questions as the biomarkers' rows sit: 12 under the pills, a rule between */
 .arSheet .arEvAns .arEvMore { margin-top: 4px; }
 .arSheet .arEvAns > .arLfAnsL, .arSheet .arEvSrc > .arSrcRow { margin-left: 4px; margin-right: 4px; }   /* their words on the biomarkers' line, 4 in as the rows' (the rules still the card's width) */
@@ -15332,6 +15333,11 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           var qMore = null, left = n - o.mb;
           if (left > 0) qMore = moreBtn(left, function (b) { qaOpen(L, b); }, function () { return L.answers.slice(o.mb).map(ansRow); }, 'arEvMore');
           groups.push(['Questionnaire', h('div', { class: 'arLfGroup arEvAns' }, L.answers.slice(0, o.mb).map(ansRow), qMore), src.filter(qn)]);
+        }
+        if (bmc) {   /* Biomarkers: Carousel, no pills ("for carousel version remove tab"): the carousel and its sources, then the questions under a rule with their count, all in the one card */
+          return h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
+            h('div', { class: 'arLfSec arSrcSec' }, h('span', { class: 'arLfH', text: 'Behind this insight' }),
+              h('div', { class: 'arLfCard arEvCard arEvNoTab' }, groups.map(function (g, i) { return h('div', { class: 'arEvPane' }, i ? h('span', { class: 'arT600 arEvGh', text: nAns(n) }) : null, g[1], srcs(g[2])); }))));
         }
         var tabs = [], panes = [];
         groups.forEach(function (g, i) {
