@@ -77,6 +77,7 @@
   .topbar .tkVw{font-size:12px;color:#a1a1aa;white-space:nowrap;font-variant-numeric:tabular-nums;}
   body.archived .topbar .tkGrp#arcGrp{display:contents;}
   .topbar a.tkBtn{display:inline-block;text-decoration:none;}
+  .topbar .tkPreCtl{display:inline-flex;align-items:center;gap:6px;} .topbar .tkPreBtn{padding:5px 10px;font-size:11.5px;} .topbar .tkPreBtn[data-dirty]{color:#fff;border-color:#52525b;} .topbar .tkPreBtn[data-dirty]::after{content:"";display:inline-block;width:5px;height:5px;margin:0 0 1px 6px;border-radius:50%;background:#f59e0b;vertical-align:middle;}   /* the preset row: V1 / V2, Save (a dot while the tweaks differ from the preset), Reset */
   .topbar .tkBtn:hover{border-color:#3f3f46;}
   .topbar .tkBtn:active{background:#1c1c20;}
   /* The tweaks dropdown: a summary that wears the selects' shell, chevron
@@ -12092,11 +12093,13 @@
         </div>
         <div class="tkGroup" data-pages="ar">
         <div class="tkSub">Async report</div>
+        <!-- V1 and V2 as presets ("V1 and V2 should be presets that I can save"): each holds every design tweak of the report, here and in Intro (not the Mode, not the Persona); picking one sets them, Save keeps the current ones in it, Reset gives it back its own. Kept in this browser -->
+        <div class="tkRow tkPreRow"><span class="lbl">Preset</span><span class="tkPreCtl"><select id="stArPre" class="tkSegSel" aria-label="The report's preset"><option value="v1" selected>V1</option><option value="v2">V2</option></select><button class="tkBtn tkPreBtn" id="stArPreSave" type="button" title="Keep the current tweaks in this preset">Save</button><button class="tkBtn tkPreBtn" id="stArPreReset" type="button" title="Give this preset back its own tweaks">Reset</button></span></div>
         <div class="tkRow" id="stArVarRow"><span class="lbl">Variation</span><select id="stArVar" class="tkSegSel" aria-label="The desktop debrief's format"><option value="full" selected>Full modal</option><option value="modal">Modal</option></select></div>
         <!-- whose report: Persona #1, or Persona #2, another member's results ("create a duplicate of the Async to create a different persona"); a tweak only, the menu the one Async report ("Persona 1 and 2 must be a tweak inside the page") -->
         <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
-        <!-- Behind this insight: V1, From your data's card and a card each; V2, one card, a pill each for Biomarkers and Questionnaire ("create a V2 Async"; then "where is the tweak version of this") -->
-        <div class="tkRow"><span class="lbl">Version</span><select id="stArVer" class="tkSegSel" aria-label="Behind this insight's layout"><option value="v1" selected>V1</option><option value="v2">V2</option></select></div>
+        <!-- Behind this insight: From your data's card and a card each (V1's), or one card, a pill each for Biomarkers and Questionnaire (V2's) ("create a V2 Async"); the preset V1 or V2 sets it -->
+        <div class="tkRow"><span class="lbl">Evidence</span><select id="stArEv" class="tkSegSel" aria-label="Behind this insight's layout"><option value="v1" selected>Cards</option><option value="v2">One card</option></select></div>
         <!-- See N more: the bottom sheet with them all, or the rest opened in place ("tweak See more by collapsing vs bottom sheet") -->
         <div class="tkRow"><span class="lbl">See more</span><select id="stArMore" class="tkSegSel" aria-label="What See more does"><option value="sheet" selected>Bottom sheet</option><option value="fold">Collapse</option></select></div>
         <!-- the report's theme is the bar's Mode (Dark mode: dark; Light and Colour: light), not a tweak here ("theme shouldn't be handled here but on the mode controller") -->
@@ -12117,10 +12120,10 @@
         <!-- the report's opening, its own card ("group Intro screen and Welcome: add this inside this Intro group"): the welcome, its header, then the screen introducing the insights -->
         <div class="tkGroup" data-pages="ar">
         <div class="tkSub">Intro</div>
-        <div class="tkRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option><option value="reveal">Full bg</option></select></div>
+        <div class="tkRow" id="stArWelRow"><span class="lbl">Welcome</span><select id="stArWel" class="tkSegSel" aria-label="The debrief's welcome step"><option value="cards" selected>Cards</option><option value="includes">Includes</option></select></div>
         <!-- the welcome's header: the picture with the title on it, or Halftone, the title over a one-bit dithered visual with a mono date tag ("try a tweak on the top header intro with this style of visual", the MRI debrief's) -->
-        <div class="tkRow"><span class="lbl">Header visual</span><select id="stArWelVis" class="tkSegSel" aria-label="The welcome's header visual"><option value="photo" selected>Photo</option><option value="halftone">Halftone</option></select></div>
-        <!-- the 2nd screen, introducing the insights: none, the list ("create a 2nd screen that intros all slides in card list items"), or Full bg, the title word by word over the picture, then a card of what is covered ("tweak intro screen with a full bg...") -->
+        <div class="tkRow" id="stArWelVisRow"><span class="lbl">Header visual</span><select id="stArWelVis" class="tkSegSel" aria-label="The welcome's header visual"><option value="photo" selected>Photo</option><option value="halftone">Halftone</option></select></div>
+        <!-- the screen introducing the insights: none, the list after the welcome ("create a 2nd screen that intros all slides in card list items"), or Full bg, which is the welcome itself: the title word by word over the picture, then the card of what is covered ("the full bg should replace the intro, not an additional screen after that intro"); the Welcome and Header visual rows away while it is on -->
         <div class="tkRow"><span class="lbl">Intro screen</span><select id="stArList" class="tkSegSel" aria-label="The screen introducing the insights"><option value="off">Off</option><option value="on" selected>List</option><option value="reveal">Full bg</option></select></div>
         </div>
         <div class="tkGroup" data-pages="lp">
@@ -29565,7 +29568,7 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArVer') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', list: opt('stArList') !== 'off', intro: opt('stArList') === 'reveal' ? 'reveal' : 'list', wvis: opt('stArWelVis') === 'halftone' ? 'halftone' : 'photo', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArWel') === 'includes' ? 'includes' : opt('stArWel') === 'reveal' ? 'reveal' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', list: opt('stArList') === 'on', wvis: opt('stArWelVis') === 'halftone' ? 'halftone' : 'photo', theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
@@ -29580,7 +29583,29 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArVer', 'stArList', 'stArMore', 'stArWelVis'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    { const l = document.getElementById('stArList'), rows = ['stArWelRow', 'stArWelVisRow'].map(id => document.getElementById(id)).filter(Boolean);   // Full bg is the welcome: its own rows away while it is on
+      const hide = () => rows.forEach(r => { r.hidden = !!l && l.value === 'reveal'; }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
+    /* the presets, V1 and V2 ("V1 and V2 should be presets that I can save"): each every design tweak of the report; V1's own the page's defaults, V2's the same with one card for the evidence. Picking one sets its tweaks (one remount); Save keeps the current tweaks in it, Reset its own back; the one picked and what was saved kept in this browser. Save marked while the tweaks differ from the preset */
+    { const KEYS = ['stArVar', 'stArEv', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
+      const el = id => document.getElementById(id), pre = el('stArPre'), sv = el('stArPreSave'), rs = el('stArPreReset');
+      const now = () => { const o = {}; KEYS.forEach(k => { if (el(k)) o[k] = el(k).value; }); return o; };
+      if (pre && sv && rs){
+        const BASE = now(), OWN = { v1: Object.assign({}, BASE, { stArEv: 'v1' }), v2: Object.assign({}, BASE, { stArEv: 'v2' }) };
+        let store = {}; try { store = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e){ store = {}; }
+        const keep = () => { try { localStorage.setItem(STORE, JSON.stringify(store)); } catch (e){} };
+        const of = p => Object.assign({}, OWN[p] || OWN.v1, store[p] || {});
+        const mark = () => { const v = of(pre.value), c = now(); sv.toggleAttribute('data-dirty', KEYS.some(k => k in c && c[k] !== v[k])); };
+        const apply = p => { const v = of(p); let any = false, va = false;
+          KEYS.forEach(k => { const e = el(k); if (!e || v[k] == null || e.value === v[k] || ![...e.options].some(o => o.value === v[k])) return; e.value = v[k]; any = true; if (k === 'stArVar') va = true; });
+          if (va && arD) arD.vary(); if (any){ if (arD) arD.remount(); if (arM) arM.remount(); } mark(); };
+        pre.addEventListener('change', () => { store.cur = pre.value; keep(); apply(pre.value); });
+        sv.addEventListener('click', () => { store[pre.value] = now(); keep(); mark(); sv.textContent = 'Saved'; setTimeout(() => { sv.textContent = 'Save'; }, 1200); });
+        rs.addEventListener('click', () => { delete store[pre.value]; keep(); apply(pre.value); });
+        KEYS.forEach(k => { const e = el(k); if (e) e.addEventListener('change', mark); });
+        if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
+        apply(pre.value); }   // the one last picked, with what was saved in it
+    }
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArList', 'stArMore', 'stArWelVis'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
@@ -36320,7 +36345,7 @@ hairline({
       const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
       put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', '26'); }
     else if ((location.hash === '#ar2' || location.hash === '#arp2') && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } }; put('themeSel', 'dark'); put('stBp', 'xs');
-      if (location.hash === '#ar2') put('stArVer', 'v2'); else put('stArPer', 'p2'); put('versionSel', '26'); }   // the report's own links, in its default setup: #ar2 V2 (the Version tweak), #arp2 Persona #2 (the Persona tweak); the menu has the one Async report
+      if (location.hash === '#ar2') put('stArPre', 'v2'); else put('stArPer', 'p2'); put('versionSel', '26'); }   // the report's own links, in its default setup: #ar2 V2 (the Version tweak), #arp2 Persona #2 (the Persona tweak); the menu has the one Async report
     addEventListener('hashchange', () => { if (want()) show(); else hide(); });
   })();
 
