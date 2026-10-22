@@ -15111,3 +15111,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The baseline draws out first (.42s), each bar grows up from a 2px line (.76s, 110ms apart), then its number rolls up like an odometer (the ones two turns, the tens one) with its name, centred under it. Written at once on a remount or with reduced motion.
   - The lede counts them: "61 markers across 13 areas."
   - Under it every area, its marker count in a badge and a chevron; a tap opens a bottom sheet as tall as its list: the area, "N biomarkers", its markers out of range first, each with its status pill. Each area now carries its markers by status in the data (both personas, lists checked against the counts).
+- "When transitioning the visual should move up by 32px only": the Sphere's and Sphere hero's ball rises 32px as it fades with the welcome (was half the screen), and comes back down 32 on Back.
