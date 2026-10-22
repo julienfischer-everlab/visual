@@ -15121,3 +15121,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "+12px margin bottom" (See my results): the pill intros' foot (Sphere, Sphere hero, Halftone) 12 deeper at its foot, so the pill, and the note under it, sit 12 higher.
 - "footer bg gradient opacity 50%": the Sphere's foot gradient at half.
 - "more rounded" (Sphere hero): the ball 1.1x the base (was 1.4x, about twice the screen's width, so only a flat cap showed), its top where it was: its curve reads as a ball.
+- "When I click See my results the visual should go up with the content above, with fade out; and inverse when coming back from the next screen": the ball now moves as the welcome's content does: up 72px eased in (.4, 0, .9, .6) over .38s, gone by .7 of it; on Back it comes down from where the page comes in (a third of the screen above) after the same .3s delay, eased out over .66s, fading in with it.
+- Back to the welcome: the ball comes down the same 72px (after .3s, over .66s) as it fades in, not from a third of the screen; the pill fades up with the page instead of showing over the page leaving.
+- "push group down by 32px" (Sphere hero): the badge, title and chips 32 lower (64 under the head again); the ball stays where it was.
+- The hero's ball keeps its place through the transitions: leaving, it stays as it stood under its title (was falling back to the Sphere's size and place as the title left); coming back, it reads the title where it sits, not where its page is sliding in from.
+- "safe space above the CTA: 64px above must be safe": a label's spot is now at least 64 clear of the button (a label reaching 50 below its square).
+- Label badge: "+4px padding right": 8 after the words.
+- "opacity bg footer 75%": the Sphere's foot gradient at 75%.
+- Sphere: "sphere up by 24px; remove the marker that appears on this version": the ball 24 higher; the blinking orange squares (one every 3s on a point) gone from the code.
+- "content card border fff 12%" (Sphere): the card of what we cover outlined 1px in the ink at 12% (#fff on the dark, #000 on the light), no ground.
+- "12px copy sub, +12px gap": the note under the button stays 12px (16 line), now 24 under it (was 12).
+- Leaving the Sphere's welcome: the next page's solid foot fades in (.52s after .16s) instead of showing at once as a band over the fading ball.
