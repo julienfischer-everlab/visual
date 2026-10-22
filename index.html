@@ -14375,7 +14375,8 @@
 .arSheet .arRvCur { display: inline-block; width: .62em; height: 1.05em; margin-left: 2px; vertical-align: -.16em; background: oklch(var(--ar-ink) / .88); animation: arRvBlink 1.05s steps(1, end) infinite; }
 @keyframes arRvBlink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .arSheet .arRvCur { animation: none; } }
-.arSheet .arRvWel .arRv.arOrb { min-height: 100%; }   /* Sphere hero: the page's height, its reassurance at the foot */
+.arSheet .arRvWel .arRv.arOrb { min-height: 100%; }
+.arSheet .arOrbChips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; padding-bottom: 0; animation: arRvWord .8s var(--ar-ease) both; }   /* the doctor and the date, centred under the title */   /* Sphere hero: the page's height, its reassurance at the foot */
 .arSheet .arOrbLab { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; will-change: transform, opacity; } .arSheet:not(.arIsWelcome) .arOrbLab { display: none; }   /* Sphere hero: a label at its point of the ball, following it */
 .arSheet .arOrbBox { opacity: 0; transition: opacity .35s ease; } .arSheet .arOrbBox.arOrbOn { opacity: 1; } .arSheet .arOrbBox.arOrbGone { opacity: 0; filter: blur(3px); transition: opacity .42s ease, filter .42s ease; }
 .arSheet .arOrbSq { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; background: #ff7a1a; }   /* the square on the point, 8 ("increase orange square by 2px") */
@@ -15126,7 +15127,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
         flow((now - t0) / 1000);
         var R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * .96, cx = w / 2, cy = hh - R * .1 + 40,   /* .8 of the 1.2x and 40 lower ("push down the sphere by 40px; reduce sphere by .8x"), then 32 back up twice ("push up sphere by 32px", "push up visual by 32px") */ a = (now - t0) / 360000 * 6.2832 + nudAt(now),   /* a turn every 360 s (was 180, "2x slower") */   /* the ball 1.2x ("scale up 1.2x, should cover more of the bottom of the screen") */ ca = Math.cos(a), sa = Math.sin(a), tl = .38, ct = Math.cos(tl), st = Math.sin(tl);
-        if (anchor && anchor.isConnected && root.classList.contains('arIsWelcome')) { var ab = anchor.getBoundingClientRect(), cb = cv.getBoundingClientRect(); if (ab.height) { R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * 1.4; cy = ab.bottom - cb.top + 48 + 64 + R * .95; } }   /* Sphere hero ("make the sphere larger and position it directly below the H1 with a 48px gap"; then "push down by 64px"): its shell's top 112 under the title */
+        if (anchor && anchor.isConnected && root.classList.contains('arIsWelcome')) { var ab = anchor.getBoundingClientRect(), cb = cv.getBoundingClientRect(); if (ab.height) { R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * 1.4; cy = ab.bottom - cb.top + 48 + 64 + 64 + R * .95; } }   /* then 64 lower again ("push down visual by 64px"): its shell 176 under the title, under the doctor and date chips */   /* Sphere hero ("make the sphere larger and position it directly below the H1 with a 48px gap"; then "push down by 64px"): its shell's top 112 under the title */
         var ink = dark() ? INK.d : INK.l, lift = dark() ? 2.4 : 2.7, sx, sy, zz;   // brought up to the engine's own presence: the ball reads as a body, not a dusting
         var proj = function (q) { var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st; zz = Y * st + z1 * ct; sx = cx + x1 * R; sy = cy - y1 * R; };
         lastF = { R: R, cx: cx, cy: cy, a: a, ct: ct, st: st, w: w, hh: hh, top: anchor && anchor.isConnected ? cy - R * .95 : null };   // this frame's ball, for a label's point to be chosen and followed
@@ -15661,6 +15662,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       later(show, Math.round(tIn * 1000));
       return h('div', { class: 'arWelcome arRvWel arOrbWel' }, h('div', { class: 'arRvScroll' }, h('div', { class: 'arRv arOrb' },
         WEL.count ? h('span', { class: 'arRvBadge', style: { 'animation-delay': '.1s' }, text: WEL.count }) : null, title,
+        h('div', { class: 'arOrbChips arChipsP', style: { 'animation-delay': (tIn - .15).toFixed(2) + 's' } },   /* who reviewed it and when, under the title ("add doctor and date chips below h1"), the welcome's own chips */
+          h('div', { class: 'arChip arChipDoc' }, h('img', { class: 'arChipAv', src: o.avatar, alt: '', decoding: 'async' }), WEL.dr),
+          h('div', { class: 'arChip' }, s('svg', { class: 'arIco', width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' }, s('rect', { x: 2, y: 3, width: 12, height: 11, rx: 2 }), s('path', { d: P.cal })), WEL.date)),
         h('ul', { class: 'arOrbSr', 'aria-label': 'What we’ll cover' }, items.map(function (x) { return h('li', { text: x }); })),
         note)));
     }

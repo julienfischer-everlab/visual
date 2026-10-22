@@ -15069,3 +15069,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Sphere (the intro option, not the hero): its card without a ground ("remove card bg": no fill, no blur; Halftone's card keeps its own); the ball .8 of its size (.96 of the base, was 1.2) and 40 lower ("push down the sphere by 40px; reduce sphere by .8x"), a dome behind the button. The last page on the Sphere ground follows.
 - Sphere intro: the ball 32 back up ("push up sphere by 32px"), so 8 lower than before the last change.
 - Sphere intro: the ball another 32 up ("push up visual by 32px"), its dome now rising behind the reassurance.
+- Sphere hero: the doctor and date chips under the title ("add doctor and date chips below h1"), the welcome's own (avatar and name; calendar and date), centred, 16 under it, coming in as the title's last word lands; the ball 64 lower ("push down visual by 64px"), its shell 176 under the title; the labels' band follows it.
+- (The two "push up 32px" before were applied to the Sphere intro's ball, not the hero's.)
