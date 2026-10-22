@@ -5609,7 +5609,7 @@
   .aqWrap.shut .aqAgain{display:inline-flex;}
   @media (prefers-reduced-motion: reduce){ .aqFrame, .aqDim{transition:none;} }
   /* Full modal (Tweaks -> Async report -> Variation, the desktop; the default), after the design system's Full modal, "Type: Full (edge to edge modal), content only": the surface edge to edge under the bar, square, rising the same way, in the debrief's own paper; the content in a column 560 wide in its middle -- the back and close at the column's corners, the step titles centred, the button the column's width at its foot ("async desktop full modal following this system") */
-  #stArVarRow[hidden]{display:none !important;}
+  #stArVarRow[hidden], #stArSrcRow[hidden]{display:none !important;}
   .aqWrap.aqDesk.aqFull .aqFrame{left:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:translateY(104%);}
   .aqWrap.aqDesk.aqFull.on .aqFrame{transform:none;} .aqWrap.aqDesk.aqFull.shut .aqFrame{transform:translateY(104%);}
   .aqWrap.aqFull .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:560px;margin:0 auto;}
@@ -12116,6 +12116,8 @@
         <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
         <!-- Behind this insight: From your data's card and a card each (V1's), or one card, a pill each for Biomarkers and Questionnaire (V2's) ("create a V2 Async"); the preset V1 or V2 sets it -->
         <div class="tkRow"><span class="lbl">Evidence</span><select id="stArEv" class="tkSegSel" aria-label="Behind this insight's layout"><option value="v1" selected>Cards</option><option value="v2">One card</option></select></div>
+        <!-- the evidence's sources (One card): their bullets in the card, under its biomarkers; or outside it, two pill buttons, Records and Questionnaire, each opening its sheet ("add variant Sources: in card; outside card, 2 rounded full CTA secondary 28px height: Records, Questionnaire") -->
+        <div class="tkRow" id="stArSrcRow"><span class="lbl">Sources</span><select id="stArSrc" class="tkSegSel" aria-label="Where the evidence's sources sit"><option value="in" selected>In card</option><option value="out">Outside card</option></select></div>
         <!-- Behind this insight's biomarkers: the list, or a carousel, a slide each as the Overview's insight card ("biomarker section tweak: static, carousel") -->
         <div class="tkRow"><span class="lbl">Biomarkers</span><select id="stArBm" class="tkSegSel" aria-label="How the biomarkers show"><option value="static" selected>Static</option><option value="carousel">Carousel</option></select></div>
         <!-- See N more: the bottom sheet with them all, or the rest opened in place ("tweak See more by collapsing vs bottom sheet") -->
@@ -14272,7 +14274,11 @@
 @keyframes arEvIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .arSheet .arLfEv .arEvPane > .arMbList:has(+ .arEvSrc) > .arMb:last-child { margin-bottom: 0; }   /* the sources under it: the last row's own foot */
 .arSheet .arEvSrc { margin-top: 16px; padding-top: 16px; border-top: 1px solid oklch(var(--ar-ink) / .08); }
-.arSheet .arLfCard.arEvNoTab { margin-top: 8px; padding-top: 8px; }   /* 8 more above the card, 12 less inside its top ("+8px margin top above card; reduce top padding by 12px") */
+.arSheet .arLfCard.arEvNoTab { margin-top: 8px; padding-top: 8px; }
+.arSheet .arSrcBtns { display: flex; gap: 8px; margin-top: 4px; }   /* Sources: Outside card ("2 rounded full CTA, secondary, 28px height"), the card's width between them */
+.arSheet .arSrcBtn { appearance: none; -webkit-appearance: none; flex: 1 1 0; min-width: 0; height: 28px; margin: 0; padding: 0 12px; border: 0; border-radius: 9999px; background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink)); font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; transition: background .2s ease; }
+@media (hover: hover) { .arSheet .arSrcBtn:hover { background: oklch(var(--ar-ink) / .14); } }
+.arSheet .arSrcBtn:active { background: oklch(var(--ar-ink) / .18); } .arSheet .arSrcBtn:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }   /* 8 more above the card, 12 less inside its top ("+8px margin top above card; reduce top padding by 12px") */
 .arSheet .arEvNoTab > .arEvPane + .arEvPane { margin-top: 20px; padding-top: 20px; border-top: 1px solid oklch(var(--ar-ink) / .08); animation: none; } .arSheet .arEvNoTab > .arEvPane { animation: none; } .arSheet .arEvNoTab .arEvGh { margin: 0 4px; }   /* Carousel, no pills: the questions under the biomarkers' sources, a rule between, their count as the heading */
 .arSheet .arLfEv .arEvPane > .arEvAns { gap: 12px; padding-top: 12px; }   /* the questions as the biomarkers' rows sit: 12 under the pills, a rule between */
 .arSheet .arEvAns .arEvMore { margin-top: 4px; }
@@ -14497,6 +14503,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *     cards: 'fill' | 'outline',       // default 'fill': Behind this insight's cards filled #fff 4% (light #000 4%), or outlined
  *     mb: 3 | 2,                       // default 3: the biomarkers Behind this insight shows before See N more, the next one partly shown
  *     srcVis: 'hairline' | 'image',    // default 'hairline': From your data's visual, the Hairline report file or the Overview's report render
+ *     src: 'in' | 'out',               // default 'in': V2's sources as bullets in its card, or outside it as two pill buttons (Records, Questionnaire), each opening its sheet
  *     ev: 'v1' | 'v2',                 // default 'v1': Behind this insight as From your data's card, then a card each; 'v2' (Async report V2) one card, a pill each for Biomarkers and Questionnaire, its sources under its list
  *     persona: 'p1' | 'p2',            // default 'p1': whose report, Persona #1 or Persona #2 (each its welcome, insights and everything else)
  *     more: 'sheet' | 'fold',          // default 'sheet': See N more opens the bottom sheet, or the rest in place (Collapse)
@@ -14908,6 +14915,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       tabs: opts.tabs === false || opts.tabs === 'off' ? 'off' : opts.tabs === 'seg' ? 'seg' : 'pills',   // an insight's three sections anchored by pills (default) or a segmented control, or stacked with no tabs
       cards: opts.cards === 'outline' ? 'outline' : 'fill',   // Behind this insight's cards filled (default, "Filled should be the default style") or outlined
       mb: opts.mb === 2 ? 2 : 3,   // the biomarkers shown before See N more (default 3), the next one partly shown
+      src: opts.src === 'out' ? 'out' : 'in',   // V2's sources: bullets in the card (default), or outside it, Records and Questionnaire as two pill buttons opening their sheets
       srcVis: opts.srcVis === 'image' ? 'image' : 'hairline',   // From your data's visual: the Hairline report file (default) or the Overview's report render
       ev: opts.ev === 'v2' ? 'v2' : 'v1',   // Behind this insight: From your data's card and a card each (V1), or one card grouped by pill (Async report V2)
       more: opts.more === 'fold' ? 'fold' : 'sheet',   // See N more: the bottom sheet with them all (default), or the rest opened in place
@@ -15012,6 +15020,12 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     function qaOpen(L, from) {   // Title: X answered questions; every question with its answer
       sheetOpen(nAns(L.answers.length), '', 'Questions and answers', '', L.answers.map(function (r) {
         return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: r.q }), h('span', { class: 'arLfA', text: r.a }));
+      }), from);
+    }
+    var REC_K = { blood: 'Blood test', tests: 'Test results', scan: 'Scan' };
+    function recOpen(list, from) {   // Title: X records; each report behind the insight, its kind over its name
+      sheetOpen(list.length + (list.length === 1 ? ' record' : ' records'), '', 'Records', '', list.map(function (r) {
+        return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: REC_K[r[0]] || 'Record' }), h('span', { class: 'arLfA', text: r[1] }));
       }), from);
     }
     function mbOpen(L, from) {   // Title: X biomarkers; the list of all the biomarkers behind this insight
@@ -15386,9 +15400,18 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           groups.push(['Questionnaire', h('div', { class: 'arLfGroup arEvAns' }, L.answers.slice(0, o.mb).map(ansRow), qMore), src.filter(qn)]);
         }
         /* no pills, static or carousel ("for carousel version remove tab"; then "remove tab" on the static list too): one card, the biomarkers and their sources (an answers-only insight, its questions), no questions section ("remove the Question section") */
-        return groups.length ? h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
+        if (!groups.length) return null;
+        var out = o.src === 'out', recs = src.filter(function (x) { return !qn(x); }), btns = null;
+        if (out) {   /* Sources: Outside card: Records (the reports behind it) and Questionnaire (its answers), each its sheet; only those it has */
+          var bRec = recs.length ? h('button', { type: 'button', class: 'arSrcBtn', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', text: 'Records' }) : null;
+          var bQn = n ? h('button', { type: 'button', class: 'arSrcBtn', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', text: 'Questionnaire' }) : null;
+          if (bRec) on(bRec, 'click', function () { recOpen(recs, bRec); });
+          if (bQn) on(bQn, 'click', function () { qaOpen(L, bQn); });
+          if (bRec || bQn) btns = h('div', { class: 'arSrcBtns' }, bRec, bQn);
+        }
+        return h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
           h('div', { class: 'arLfSec arSrcSec' },   /* V2: no Behind this insight heading ("remove Behind this insight") */
-            h('div', { class: 'arLfCard arEvCard arEvNoTab' }, h('div', { class: 'arEvPane' }, groups[0][1], srcs(groups[0][2]))))) : null;
+            h('div', { class: 'arLfCard arEvCard arEvNoTab' + (out ? ' arEvOut' : '') }, h('div', { class: 'arEvPane' }, groups[0][1], out ? null : srcs(groups[0][2]))), btns));
       };
       var card = o.ev === 'v2' ? evV2() : h('div', { class: 'arLfEv arAnimRise arD12' },
           /* its sources on a folder card, the debrief's highlight card ("this style without imagery right side, keep hairline"): From your data on the tab, Behind this insight inside, a square bullet a source; the Hairline report file at its foot, right, running past it and cut there */
@@ -30374,7 +30397,7 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', src: opt('stArSrc') === 'out' ? 'out' : 'in', list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
@@ -30389,10 +30412,11 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
+    { const e = document.getElementById('stArEv'), r = document.getElementById('stArSrcRow'); const sh = () => { if (r && e) r.hidden = e.value !== 'v2'; }; if (e){ e.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Sources is One card's (V2)
     { const l = document.getElementById('stArList'), rows = ['stArWelRow', 'stArWelVisRow'].map(id => document.getElementById(id)).filter(Boolean);   // Full bg is the welcome: its own rows away while it is on
       const hide = () => rows.forEach(r => { r.hidden = !!l && (l.value === 'reveal' || l.value === 'sphere'); }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
     /* the presets, V1 and V2 ("V1 and V2 should be presets that I can save"): each every design tweak of the report; V1's own the page's defaults, V2's the same with one card for the evidence. Picking one sets its tweaks (one remount); Save keeps the current tweaks in it, Reset its own back; the one picked and what was saved kept in this browser. Save marked while the tweaks differ from the preset */
-    { const KEYS = ['stArVar', 'stArEv', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
+    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
       const el = id => document.getElementById(id), pre = el('stArPre'), sv = el('stArPreSave'), rs = el('stArPreReset');
       const now = () => { const o = {}; KEYS.forEach(k => { if (el(k)) o[k] = el(k).value; }); return o; };
       if (pre && sv && rs){
@@ -30411,7 +30435,7 @@ hairline({
         if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
         apply(pre.value); }   // the one last picked, with what was saved in it
     }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
