@@ -12120,6 +12120,8 @@
         <div class="tkRow" id="stArSrcRow"><span class="lbl">Sources</span><select id="stArSrc" class="tkSegSel" aria-label="Where the evidence's sources sit"><option value="in" selected>In card</option><option value="out">Outside card</option></select></div>
         <!-- Behind this insight's biomarkers: the list, or a carousel, a slide each as the Overview's insight card ("biomarker section tweak: static, carousel") -->
         <div class="tkRow"><span class="lbl">Biomarkers</span><select id="stArBm" class="tkSegSel" aria-label="How the biomarkers show"><option value="static" selected>Static</option><option value="carousel">Carousel</option></select></div>
+        <!-- What this means for you: its key words in the accent card (Key takeaway, the default), or as the page's own text; Copy in both ("tweak What this means for you: accent card, default text (not Key takeaway); keep Copy for both") -->
+        <div class="tkRow"><span class="lbl">Meaning</span><select id="stArMean" class="tkSegSel" aria-label="What this means for you"><option value="card" selected>Accent card</option><option value="text">Default text</option></select></div>
         <!-- See N more: the bottom sheet with them all, or the rest opened in place ("tweak See more by collapsing vs bottom sheet") -->
         <div class="tkRow"><span class="lbl">See more</span><select id="stArMore" class="tkSegSel" aria-label="What See more does"><option value="sheet" selected>Bottom sheet</option><option value="fold">Collapse</option></select></div>
         <!-- the report's theme is the bar's Mode (Dark mode: dark; Light and Colour: light), not a tweak here ("theme shouldn't be handled here but on the mode controller") -->
@@ -14457,6 +14459,7 @@
 .arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
 .arSheet .arLfA { font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink)); }
 .arSheet .arLfSec { display: flex; flex-direction: column; gap: 10px; }
+.arSheet .arLfSec:has(> .arKeyPlain) { position: relative; } .arSheet .arKeyPlain, .arSheet .arKeyPlainD { display: contents; } .arSheet .arKeyPlain > .arAskCopy { position: absolute; top: -4px; right: 0; margin: 0; background: oklch(var(--ar-ink) / .08); }   /* Meaning: Default text: the takeaway as the section's own paragraphs, Copy level with its heading at the right */
 .arSheet .arLfSec .arPara + .arPara { margin-top: 2px; }   /* 12 between paragraphs ("paragraph margin -8px") */
 .arSheet .arLfH { font-family: var(--ar-font); font-size: 20px; line-height: 24px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
 .arSheet .arLfUse { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 16px; border: 1px solid var(--ar-br3); border-radius: calc(var(--ar-radius-card) + 4px); }   /* an outlined card ("use outlined card for that"), as round as the page's cards, 16 ("rounded same as the page cards") */
@@ -15007,6 +15010,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       srcVis: opts.srcVis === 'image' ? 'image' : 'hairline',   // From your data's visual: the Hairline report file (default) or the Overview's report render
       ev: opts.ev === 'v2' ? 'v2' : 'v1',   // Behind this insight: From your data's card and a card each (V1), or one card grouped by pill (Async report V2)
       more: opts.more === 'fold' ? 'fold' : 'sheet',   // See N more: the bottom sheet with them all (default), or the rest opened in place
+      mean: opts.mean === 'text' ? 'text' : 'card',   // What this means for you: the Key takeaway card (default), or plain text with Copy by the heading
       bm: opts.bm === 'carousel' ? 'carousel' : 'static',   // Behind this insight's biomarkers: the list (default), or a carousel, a slide each, the Overview's insight card
       list: opts.list !== false,   // the 2nd screen: every insight as a card, before the first (default on)
       intro: opts.intro === 'reveal' ? 'reveal' : 'list',
@@ -15480,7 +15484,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       return items.filter(function (x, i) { return !(x.ask || i === last); }).map(function (x) { return h('p', { class: 'arPara' }, rich(x.run)); }).concat(key.length ? [keyCard(key)] : []);
     }
     function keyCard(parts) {
-      var ps = parts.map(function (x) { return h('p', { class: 'arKeyP' }, x.ask ? x.ask : rich(x.run)); }), desc = h('div', { class: 'arKeyD' }, ps);   // a paragraph each, 12 apart as the page's ("consider paragraph margin")
+      var plain = o.mean === 'text', ps = parts.map(function (x) { return h('p', { class: plain ? 'arPara' : 'arKeyP' }, x.ask ? x.ask : rich(x.run)); }), desc = h('div', { class: plain ? 'arKeyPlainD' : 'arKeyD' }, ps);   // Default text: the page's own paragraphs   // a paragraph each, 12 apart as the page's ("consider paragraph margin")
       var lab = h('span', { text: 'Copy' }), t0 = 0;
       var btn = h('button', { type: 'button', class: 'arAskCopy', 'aria-label': 'Copy the key takeaway' }, strokeIcon(14, 16, 1.5, [P.copy1, P.copy2]), lab);
       var done = function () { lab.textContent = 'Copied'; cancel(t0); t0 = later(function () { lab.textContent = 'Copy'; }, 1600); };
@@ -15489,6 +15493,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var pick = function () { try { var r = document.createRange(); r.selectNodeContents(desc); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); } catch (e) {} };   // no clipboard: the words selected, to copy by hand
         try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, pick); else pick(); } catch (e) { pick(); }
       });
+      if (plain) return h('div', { class: 'arKeyPlain' }, btn, desc);   // no card, no Key takeaway: the words as the rest, Copy at the section's top right, by its heading
       return h('div', { class: 'arKey' }, h('div', { class: 'arKeyHd' }, strokeIcon(18, 24, 1.8, [P.bulb1, P.bulb2, P.bulb3]), h('span', { class: 'arKeyT', text: 'Key takeaway' }), btn), desc);
     }
     function thumbIcon(up) {
@@ -15839,7 +15844,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       if (sphL){ (sphL.labs || []).forEach(function (l) { if (l.el.parentNode) l.el.parentNode.removeChild(l.el); }); sphL.labs = labs; sphL.track(-1); labs.forEach(function (l) { sphL.el.appendChild(l.el); }); }   // a welcome built again (back to it) replaces the last's
       var RM = reducedMotion(), TURN = 30 * Math.PI / 180, TDUR = 1800, TY = 34, TEXT_AT = 520;   // each change a 30 degree turn, eased over 1.8 s; the words at .52 s in
       var bounds = function () { var cb = sphL.el.getBoundingClientRect(), F = sphL.frame(), w = cb.width, low = (note && note.isConnected ? note.getBoundingClientRect().top - 56 : cta.getBoundingClientRect().top - 64 - 50) - cb.top;   // 64 clear above the button ("safe space above the CTA: 64px"), a label reaching 50 below its point
-        return { l: 28, r: w - 28 - 164, t: (F && F.top != null ? F.top : title.getBoundingClientRect().bottom - cb.top + 112) + 44, b: low }; };   // over the ball, under its rim, above the reassurance (or the button)
+        var ct = cta.getBoundingClientRect().top - cb.top;   /* the active square's area ("active marker position must be on this area"): the ball's middle, from 23% in to the middle of the width (its words room to the right), 250 to 114 above the button */
+        return { l: Math.round(w * .23), r: Math.min(Math.round(w * .77), w - 28 - 164), t: ct - 250, b: Math.min(low, ct - 114) }; };
       var pin = function (L, i, sp) { L.k = sp.k; L.el.style.opacity = '1'; sphL.track(sp.k, function (x, y) { L.el.style.transform = 'translate(' + x.toFixed(1) + 'px, ' + y.toFixed(1) + 'px)'; }, i); };   // its square always shown, wherever its point turns ("orange square should be visible always")
       var start = function () {   // every square on a clump of its own round the ball's upper band, growing in one after another
         if (!sphL || !sphL.markers || !sphL.frame()) { later(start, 400); return; } var mk = sphL.markers(bounds());
@@ -30771,7 +30777,7 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArSvis') === 'stream' ? 'stream' : 'sphere', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', mean: opt('stArMean') === 'text' ? 'text' : 'card', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArSvis') === 'stream' ? 'stream' : 'sphere', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
@@ -30792,7 +30798,7 @@ hairline({
     { const l = document.getElementById('stArList'), rows = ['stArWelRow', 'stArWelVisRow'].map(id => document.getElementById(id)).filter(Boolean);   // Full bg is the welcome: its own rows away while it is on
       const hide = () => rows.forEach(r => { r.hidden = !!l && (l.value === 'reveal' || l.value === 'sphere'); }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
     /* the presets, V1 and V2 ("V1 and V2 should be presets that I can save"): each every design tweak of the report; V1's own the page's defaults, V2's the same with one card for the evidence. Picking one sets its tweaks (one remount); Save keeps the current tweaks in it, Reset its own back; the one picked and what was saved kept in this browser. Save marked while the tweaks differ from the preset */
-    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArAmt', 'stArSvis', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
+    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArAmt', 'stArSvis', 'stArMean', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
       const el = id => document.getElementById(id), pre = el('stArPre'), sv = el('stArPreSave'), rs = el('stArPreReset');
       const now = () => { const o = {}; KEYS.forEach(k => { if (el(k)) o[k] = el(k).value; }); return o; };
       if (pre && sv && rs){
@@ -30811,7 +30817,7 @@ hairline({
         if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
         apply(pre.value); }   // the one last picked, with what was saved in it
     }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArAmt', 'stArSvis', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArAmt', 'stArSvis', 'stArMean', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
