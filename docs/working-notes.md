@@ -15015,3 +15015,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Full bg / Sphere: the sides 16 in** ("container padding -16px"): the reveal's side padding 16 less, the card 24 from the screen's edges on the phone (was 40).
 - **Full bg / Sphere: the sides 8 out again** ("+8px container padding"): the card 32 from the screen's edges on the phone.
 - **Insights' Layout: V2.5 named Final** ("Layout final"): the Layout tweak reads V1, V2, Final, V3, V4; Final (value v25, the default) is the layout V2.5 was.
+- **Insights' Layout: the others archived** ("push the other versions in a group: Layout (archives)"): Final first, then a group, Layout (archives), holding V1, V2, V3, V4.
