@@ -14305,6 +14305,7 @@
 .arSheet .arLfAnsFold { gap: 12px; } .arSheet .arLfAnsFold > .arLfAnsL:first-child { margin-top: 16px; }
 @media (prefers-reduced-motion: reduce) { .arSheet .arFold, .arSheet .arMb.arMbFade, .arSheet .arMbMore .arIco, .arSheet .arLfDetail .arIco { transition: none; } }
 /* Biomarkers, Carousel: the card's width, edge to edge inside it, a slide each (the Overview's insight card): status, name, value and date, See detail; the sparkline at the right in the range colours, its value in a chip; the dots under */
+.arSheet .arBmc { --arBmcBg: var(--ar-paper); } .arSheet.arCardsFill .arLfEv .arBmc { --arBmcBg: color-mix(in srgb, var(--ar-paper) 96%, #000); } .arSheet.arDark.arCardsFill .arLfEv .arBmc { --arBmcBg: color-mix(in srgb, var(--ar-paper) 96%, #fff); }   /* the card's colour as drawn, solid (its fill is the paper under 4% black or white): the sparkline's markers ringed in it */
 .arSheet .arBmc { margin: 4px -20px 0; border-radius: 0 0 calc(var(--ar-radius-card) + 4px) calc(var(--ar-radius-card) + 4px); overflow: hidden; } .arSheet .arBmc:last-child { margin-bottom: -20px; }
 .arSheet .arBmcTrack { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; cursor: grab; } .arSheet .arBmcTrack::-webkit-scrollbar { display: none; }
 .arSheet .arBmcTrack.arBmcDrag { scroll-snap-type: none; cursor: grabbing; user-select: none; -webkit-user-select: none; }
@@ -15413,13 +15414,13 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           var v0 = vs[i - 1], v1 = vs[i], ts = [0];
           cuts.forEach(function (c) { if ((c - v0) * (c - v1) < 0) ts.push((c - v0) / (v1 - v0)); }); ts.push(1); ts.sort(function (p, q) { return p - q; });
           for (var j = 1; j < ts.length; j++) { var ta = ts[j - 1], tb = ts[j], xa = X(i - 1) + (X(i) - X(i - 1)) * ta, xb = X(i - 1) + (X(i) - X(i - 1)) * tb, va = v0 + (v1 - v0) * ta, vb = v0 + (v1 - v0) * tb;
-            segs.push(ln('M' + xa.toFixed(1) + ' ' + Y(va).toFixed(1) + 'L' + xb.toFixed(1) + ' ' + Y(vb).toFixed(1), 2.5, zc((va + vb) / 2))); }
+            segs.push(ln('M' + xa.toFixed(1) + ' ' + Y(va).toFixed(1) + 'L' + xb.toFixed(1) + ' ' + Y(vb).toFixed(1), 2, zc((va + vb) / 2))); }   // 2px, .5 thinner ("less .5px thickness line")
         }
         /* a dot wherever the line changes direction ("line change of direction should have a marker"): the first and the last, and every reading where its slope turns by more than 14 degrees as drawn (the box about .58 wide and .9 tall of its 240 by 100) */
         var ang = function (i) { return Math.atan2(-(Y(vs[i]) - Y(vs[i - 1])) * .9, (X(i) - X(i - 1)) * .58); };
         for (var mI = 0; mI <= k; mI++) {
           var turn = mI === 0 || mI === k || Math.abs(ang(mI + 1) - ang(mI)) > 14 * Math.PI / 180;
-          if (turn) segs.push(ln('M' + X(mI).toFixed(1) + ' ' + Y(vs[mI]).toFixed(1) + 'h0.01', mI === k ? 9 : 7, zc(vs[mI])));
+          if (turn) { var dP = 'M' + X(mI).toFixed(1) + ' ' + Y(vs[mI]).toFixed(1) + 'h0.01', dW = mI === k ? 9 : 7; segs.push(ln(dP, dW + 2, 'var(--arBmcBg)'), ln(dP, dW, zc(vs[mI]))); }   // a 1px ring in the card's own colour round each, cutting the line ("marker with border 1px same as bg colour")
         }
         return h('div', { class: 'arBmcVis', 'aria-hidden': 'true' },
           s('svg', { viewBox: '0 0 240 100', preserveAspectRatio: 'none' }, ln('M0 22h240M0 55h240M0 88h240', 1, 'oklch(var(--ar-ink) / .08)'), segs));   // no value chip over the trend ("remove chip"): the value is in the slide's own line

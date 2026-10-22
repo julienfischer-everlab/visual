@@ -15084,3 +15084,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "try instead of sphere particles, a dither sphere pattern (normal and hero), create variations": a Sphere tweak (shown for Sphere and Sphere hero): Particles (as before), Bayer (ordered 8x8 in 3px squares), Dots (a halftone screen, a dot every 6px sized by tone), Diffuse (Atkinson error diffusion). Same ball (turn, tilt, place, the hero's label turns); a 1-bit render on or off over the ground: lit upper left, shadow side thinning out, rim kept, nine soft patches turning with it. The particles' inks: brick most, lights in the ink, patches in the blue. The words over it (each line of the Rest assured note, each line and square of a hero label) clear the dither under them, feathered over 14px, weighted by how much they show.
 - "same here, See my results, hug full rounded": the Sphere intro's button is the Sphere hero's pill (See my results, fully rounded, hugging), leaving with its page on Next.
 - "eyebrow to mention X biomarkers": Sources Outside card, the heading over the card reads the count ("5 biomarkers"), Behind this insight only for an answers-only insight.
+
+### Carousel sparkline: thinner line, ringed markers
+- "less .5px thickness line": the trend line 2px (was 2.5).
+- "marker with border 1px same as bg colour": each marker drawn over a disc 2px wider in the card's own colour (--arBmcBg: the paper under the card's 4% fill, solid; the paper when cards are outlined), so a 1px ring cuts the line and the grid where they meet it, dark and light.
