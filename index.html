@@ -14423,6 +14423,7 @@
 .arSheet .arRvWel .arRv.arOrb { min-height: 100%; } .arSheet .arOrbWel .arRvScroll { padding-top: calc(var(--ar-head-top, 16px) + 64px); }   /* Sphere hero: its content 32 higher ("move up content by 32px"), then back down 32 ("push group down by 32px") */
 .arSheet.arSheet.arPill.arIsWelcome .arFoot { align-items: center; padding-bottom: calc(var(--ar-foot-bottom) + 12px); }   /* the pill 12 higher off the foot ("+12px margin bottom") */ .arSheet.arSheet.arPill.arIsWelcome .arFoot > .arBtnLg { width: auto; max-width: none; padding: 0 36px; border-radius: 9999px; }   /* Sphere hero and Sphere: See my results, fully rounded, hugging its words, centred ("See my results; full rounded hug"; "same here") */
 .arSheet .arOrbChips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; padding-bottom: 0; animation: arRvWord .8s var(--ar-ease) both; }   /* the doctor and the date, centred under the title */   /* Sphere hero: the page's height, its reassurance at the foot */
+.arSheet .arOrbLab.arOrbTop { z-index: 3; }   /* the open label over the other squares */
 .arSheet .arOrbLab { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; will-change: transform, opacity; } .arSheet:not(.arIsWelcome) .arOrbLab { display: none; }   /* Sphere hero: a label at its point of the ball, following it */
 .arSheet .arOrbBox { opacity: 0; transition: opacity .35s ease; } .arSheet .arOrbBox.arOrbOn { opacity: 1; } .arSheet .arOrbBox.arOrbGone { opacity: 0; transition: opacity .42s ease; } .arSheet .arOrbGone :is(.arOrbSq, .arOrbGd) { transform: none; }   /* the whole group fades out, square, ground and words together ("disappear: whole group fade out") */
 .arSheet .arOrbSq { position: absolute; z-index: 1; left: -3px; top: -3px; width: 6px; height: 6px; background: #ff7a1a; transform: scale(.1667); transition: transform .34s cubic-bezier(.2, .8, .2, 1); } .arSheet .arOrbOn .arOrbSq { transform: none; }   /* 1px growing to 6 as it comes round ("orange dot 1px scale up to 6px") */   /* the square on the point, 8 ("increase orange square by 2px") */
@@ -15860,7 +15861,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         L.tx.style.maxWidth = ''; L.tx.appendChild(document.createTextNode(txt)); L.tx.appendChild(h('span', { class: 'arRvCur', 'aria-hidden': 'true' }));   /* its lines measured as they will end, cursor and all, and the box held to the longest: the badge hugs its words, and the words break as they will from the first letter */
         var mr = document.createRange(); mr.selectNodeContents(L.tx); var ml = 1e9, mx = -1e9; [].forEach.call(mr.getClientRects(), function (r) { if (r.width) { ml = Math.min(ml, r.left); mx = Math.max(mx, r.right); } }); var mk = L.tx.offsetWidth ? L.tx.getBoundingClientRect().width / L.tx.offsetWidth : 1; L.tx.textContent = ''; if (mx > ml && mk > 0) L.tx.style.maxWidth = Math.ceil((mx - ml) / mk + 1) + 'px';   // as wide at most as it will end: it grows with its words and breaks where it will
         L.gd.style.transition = 'none'; fitGd(L); void L.box.offsetWidth; L.gd.style.transition = '';   // its badge from round its square
-        L.box.classList.remove('arOrbDot');
+        L.box.classList.remove('arOrbDot'); L.el.classList.add('arOrbTop');   // over every other square ("active always above everything")
         later(function () {
           if (RM) { L.tx.textContent = txt; fitGd(L); done(4200); return; }
           var cr = h('span', { class: 'arRvCur', 'aria-hidden': 'true' }), tn = document.createTextNode(''), k = 0; L.tx.appendChild(tn); L.tx.appendChild(cr);
@@ -15868,7 +15869,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           tick();
         }, RM ? 0 : wait);
       };
-      var closeLab = function (L) { L.box.classList.add('arOrbDot'); later(function () { if (L.box.classList.contains('arOrbDot')) { L.tx.textContent = ''; L.tx.style.maxWidth = ''; } }, 360); };   // back to its square, its words and badge fading
+      var closeLab = function (L) { L.box.classList.add('arOrbDot'); later(function () { if (L.box.classList.contains('arOrbDot')) { L.tx.textContent = ''; L.tx.style.maxWidth = ''; L.el.classList.remove('arOrbTop'); } }, 360); };   // back to its square, its words and badge fading
       /* on the Blood stream: a label on each orange point of the vessel, its square riding it in and out of view; each time, one of those in the box (and staying in it while it is read) opens with the next words */
       var sl = [], sAct = -1, ib = [], lastI = -1;
       var nextItem = function () { if (!ib.length) { ib = items.map(function (x, i) { return i; }); for (var i = ib.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = ib[i]; ib[i] = ib[j]; ib[j] = t; } if (ib[0] === lastI && ib.length > 1) ib.push(ib.shift()); } return (lastI = ib.shift()); };
