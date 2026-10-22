@@ -14329,6 +14329,23 @@
 /* the Sphere welcome: black in the dark, white in the light, the head and the foot clear on it; the ball's canvas under the page; the card a quiet wash of the ink, the close on the ground's own ink */
 .arSheet { --ar-sph-bg: #fff; } .arSheet.arDark { --ar-sph-bg: #000; }
 .arSheet .arSphBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .64s ease; background: var(--ar-sph-bg); } .arSheet.arIsSphere .arSphBg { opacity: 1; }
+/* Everything else: three bars, a range each, from a line; under each its number rolling up and its name, centred; then the areas, a count each */
+.arSheet .arRsChart { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 12px; padding-top: 12px; }
+.arSheet .arRsBase { position: absolute; left: 0; right: 0; top: calc(12px + 168px); height: 1px; background: oklch(var(--ar-ink) / .18); transform-origin: 50% 50%; }
+.arSheet .arRsCol { display: flex; flex-direction: column; align-items: center; min-width: 0; text-align: center; }
+.arSheet .arRsBarW { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 168px; }
+.arSheet .arRsBar { display: block; width: 64px; max-width: 100%; border-radius: 6px 6px 0 0; transform-origin: 50% 100%; }
+.arSheet .arRsNum { display: inline-flex; margin-top: 16px; font-size: 40px; line-height: 1; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: oklch(var(--ar-ink)); }
+.arSheet .arRsDig { display: inline-block; height: 1em; overflow: hidden; } .arSheet .arRsStrip { display: flex; flex-direction: column; } .arSheet .arRsStrip > span { display: block; height: 1em; line-height: 1em; }
+.arSheet .arRsLbl { margin-top: 6px; font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .64); }
+.arSheet .arRsAreas { display: flex; flex-direction: column; margin-top: 12px; }
+.arSheet .arRsArea { appearance: none; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin: 0; padding: 12px 0; border: 0; border-top: 1px solid oklch(var(--ar-ink) / .08); background: none; color: oklch(var(--ar-ink)); font: inherit; text-align: left; cursor: pointer; }
+.arSheet .arRsArea:last-child { border-bottom: 1px solid oklch(var(--ar-ink) / .08); } .arSheet .arRsArea:focus-visible { outline: 2px solid oklch(var(--ar-ink)); outline-offset: 2px; }
+.arSheet .arRsAreaN { flex: 1; min-width: 0; font-size: 16px; line-height: 22px; }
+.arSheet .arRsCount { flex: none; min-width: 28px; height: 24px; padding: 0 8px; box-sizing: border-box; border-radius: 8px; background: oklch(var(--ar-ink) / .08); font-size: 13px; font-weight: 500; line-height: 24px; text-align: center; font-variant-numeric: tabular-nums; }
+.arSheet .arRsArea .arChev { flex: none; color: oklch(var(--ar-ink) / .4); } .arSheet .arRsArea .arChev svg { transform: rotate(-90deg); }   /* pointing on, to its sheet, not down */
+.arSheet .arRsSheet .arRsMk { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 10px 0; border-top: 1px solid oklch(var(--ar-ink) / .08); } .arSheet .arRsSheet .arRsMk:first-child { border-top: 0; }
+.arSheet .arRsSheet .arRsMkN { min-width: 0; font-size: 15px; line-height: 20px; }
 /* Halftone welcome: the Report visuals' image card, its sizes theirs */
 .arSheet .arHtCard { display: flex; flex-direction: column; gap: 24px; text-align: left; color: oklch(var(--ar-ink)); }
 .arSheet .arHtT { margin: 0; max-width: 16ch; font-size: 34px; line-height: calc(1.08em - 4px); font-weight: 500; letter-spacing: -.025em; text-wrap: balance; color: inherit; }
@@ -14737,12 +14754,21 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   };
   var NEWI = [CHOL, CORT, B12, VITD, VASC];   // the insights, straight after the welcome, in order (steps 2 to 6)
 
-  // Everything else ("step 7"): each panel its counts, optimal / suboptimal / out of range; its markers, where given, open under it
+  // Everything else ("step 7"): each area its counts, optimal / suboptimal / out of range, and its markers by status (m: optimal | suboptimal | out of range, each a '|' list as long as its count), for its sheet
   var PANELS = [
-    { name: 'Advanced Heart Markers', n: [1, 0, 0] }, { name: 'Heart Health', n: [2, 2, 3] }, { name: 'Metabolic Health', n: [6, 2, 0] }, { name: 'Liver Health', n: [8, 3, 0] },
-    { name: 'Hormonal Function', n: [5, 1, 1] }, { name: 'Tumour Markers', n: [1, 0, 0] }, { name: 'White Blood Cells', n: [9, 0, 0] }, { name: 'Environmental Allergens', n: [2, 1, 1] },
-    { name: 'Blood Clotting', n: [1, 0, 0] }, { name: 'Blood Electrolytes', n: [5, 1, 0] }, { name: 'Kidney Function', n: [4, 0, 0] }, { name: 'Vitamins and Micronutrients', n: [0, 1, 0] },
-    { name: 'Harmful Metals', n: [1, 0, 0] }
+    { name: 'Advanced Heart Markers', n: [1, 0, 0], m: ['Lp-PLA2', '', ''] },
+    { name: 'Heart Health', n: [2, 2, 3], m: ['HDL cholesterol|Triglycerides', 'Total cholesterol|Non-HDL cholesterol', 'LDL cholesterol|Apolipoprotein B|Lipoprotein(a)'] },
+    { name: 'Metabolic Health', n: [6, 2, 0], m: ['Fasting glucose|Fasting insulin|HOMA-IR|Uric acid|Adiponectin|Fructosamine', 'HbA1c|C-peptide', ''] },
+    { name: 'Liver Health', n: [8, 3, 0], m: ['ALT|AST|ALP|Albumin|Total protein|Direct bilirubin|LDH|Albumin : globulin ratio', 'GGT|Total bilirubin|Globulin', ''] },
+    { name: 'Hormonal Function', n: [5, 1, 1], m: ['TSH|Free T4|Free T3|DHEA-S|Total testosterone', 'SHBG', 'Thyroid peroxidase antibodies'] },
+    { name: 'Tumour Markers', n: [1, 0, 0], m: ['CEA', '', ''] },
+    { name: 'White Blood Cells', n: [9, 0, 0], m: ['White cell count|Neutrophils|Lymphocytes|Monocytes|Eosinophils|Basophils|Neutrophil : lymphocyte ratio|Immature granulocytes|Atypical lymphocytes', '', ''] },
+    { name: 'Environmental Allergens', n: [2, 1, 1], m: ['Cat dander IgE|Dog dander IgE', 'Grass pollen IgE', 'House dust mite IgE'] },
+    { name: 'Blood Clotting', n: [1, 0, 0], m: ['INR', '', ''] },
+    { name: 'Blood Electrolytes', n: [5, 1, 0], m: ['Sodium|Potassium|Chloride|Bicarbonate|Calcium', 'Magnesium', ''] },
+    { name: 'Kidney Function', n: [4, 0, 0], m: ['Creatinine|eGFR|Urea|Cystatin C', '', ''] },
+    { name: 'Vitamins and Micronutrients', n: [0, 1, 0], m: ['', 'Folate', ''] },
+    { name: 'Harmful Metals', n: [1, 0, 0], m: ['Blood lead', '', ''] }
   ];
   var REST_H = ['Everything else we checked', '77 markers across 15 panels.'];
 
@@ -14856,10 +14882,19 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     ]
   };
   var PANELS2 = [
-    { name: 'Advanced Heart Markers', n: [2, 0, 0] }, { name: 'Heart Health', n: [4, 1, 1] }, { name: 'Metabolic Health', n: [3, 2, 3] }, { name: 'Liver Health', n: [6, 2, 2] },
-    { name: 'Hormonal Function', n: [4, 2, 0] }, { name: 'Tumour Markers', n: [1, 0, 0] }, { name: 'White Blood Cells', n: [9, 0, 0] }, { name: 'Iron Studies', n: [3, 1, 0] },
-    { name: 'Blood Clotting', n: [1, 0, 0] }, { name: 'Blood Electrolytes', n: [6, 0, 0] }, { name: 'Kidney Function', n: [4, 0, 1] }, { name: 'Vitamins and Micronutrients', n: [2, 0, 0] },
-    { name: 'Harmful Metals', n: [1, 0, 0] }
+    { name: 'Advanced Heart Markers', n: [2, 0, 0], m: ['Lp-PLA2|Myeloperoxidase', '', ''] },
+    { name: 'Heart Health', n: [4, 1, 1], m: ['LDL cholesterol|Apolipoprotein B|Lipoprotein(a)|Total cholesterol', 'Non-HDL cholesterol', 'Total : HDL ratio'] },
+    { name: 'Metabolic Health', n: [3, 2, 3], m: ['Fructosamine|Adiponectin|Lactate', 'C-peptide|Leptin', 'Fasting insulin|HOMA-IR|Triglyceride-glucose index'] },
+    { name: 'Liver Health', n: [6, 2, 2], m: ['AST|ALP|Albumin|Total protein|Total bilirubin|LDH', 'GGT|Globulin', 'ALT|Fatty liver index'] },
+    { name: 'Hormonal Function', n: [4, 2, 0], m: ['TSH|Free T4|Free T3|Prolactin', 'Oestradiol|DHEA-S', ''] },
+    { name: 'Tumour Markers', n: [1, 0, 0], m: ['PSA', '', ''] },
+    { name: 'White Blood Cells', n: [9, 0, 0], m: ['White cell count|Neutrophils|Lymphocytes|Monocytes|Eosinophils|Basophils|Neutrophil : lymphocyte ratio|Immature granulocytes|Atypical lymphocytes', '', ''] },
+    { name: 'Iron Studies', n: [3, 1, 0], m: ['Iron|Transferrin|Transferrin saturation', 'Ferritin', ''] },
+    { name: 'Blood Clotting', n: [1, 0, 0], m: ['INR', '', ''] },
+    { name: 'Blood Electrolytes', n: [6, 0, 0], m: ['Sodium|Potassium|Chloride|Bicarbonate|Calcium|Magnesium', '', ''] },
+    { name: 'Kidney Function', n: [4, 0, 1], m: ['Creatinine|eGFR|Urea|Cystatin C', '', 'Urine albumin : creatinine ratio'] },
+    { name: 'Vitamins and Micronutrients', n: [2, 0, 0], m: ['Vitamin D|Vitamin B12', '', ''] },
+    { name: 'Harmful Metals', n: [1, 0, 0], m: ['Blood lead', '', ''] }
   ];
   // each persona: its report, welcome, insights in order, everything else
   var PERSONA = {
@@ -15571,46 +15606,51 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       return h('div', { class: 'arStack arLfStack arLfChipped' }, hl, bar, secs.map(function (x) { return x[1]; }), ask, use);   // the anchors after the headline ("tab should be after the h1")
     }
 
-    /* ----- step 6: Everything else ----- */
-    // each panel its counts as dots, optimal / suboptimal / out of range; with its markers given, it opens to them
+    /* ----- step 6: Everything else ("three vertical bars for the three ranges of all the biomarkers, a rolling number under each, animated: a line first, then the bars go up, then the numbers roll up; text centred;
+       below, every area with its count as a badge; a tap shows its markers in a bottom sheet") ----- */
     function buildRest() {
-      var openIdx = -1, panelSet = [];
-      var dots = function (n) { return h('div', { class: 'arRsDots', 'aria-label': n[0] + ' optimal, ' + n[1] + ' suboptimal, ' + n[2] + ' out of range' },
-        ['arRsO', 'arRsS', 'arRsX'].map(function (c, i) { return h('span', { class: 'arRsDot', 'aria-hidden': 'true' }, h('i', { class: c }), h('span', { text: String(n[i]) })); })); };
-      var panels = PANELS.map(function (p, i) {
-        var n = p.markers ? ['Optimal', 'Suboptimal', 'Out of range'].map(function (st) { return p.markers.filter(function (m) { return m.status === st; }).length; }) : p.n;
-        if (!p.markers) return h('div', { class: 'arAcc arRsRow' }, h('div', { class: 'arAccHead' }, h('div', { class: 'arRsName', text: p.name }), dots(n)));
-        var chev = h('div', { class: 'arChev' }, chevIcon());
-        var bodyEl = h('div', { class: 'arAccBody', hidden: true },
-          p.markers.map(function (m, j) {
-            return h('div', { class: 'arMk' },
-              j > 0 ? h('div', { class: 'arDivider' }) : null,
-              h('div', { class: 'arLfMk' },
-                h('div', { class: 'arLfMkL' }, h('span', { class: 'arLfName', text: m.name }),
-                  h('div', { class: 'arRowMeta' }, h('span', { class: 'arT200r arInk60', text: m.value }), h('span', { class: 'arT200r arInk30', text: '|' }), h('span', { class: 'arT200r arInk60', text: m.date }))),
-                h('div', { class: 'arLfMkR' }, m.pos != null ? lifeBar(m.pos, m.bar) : null, h('span', { class: 'arLfPill ' + (m.status === 'Optimal' ? 'arLfOpt' : m.status === 'Out of range' ? 'arLfOut' : 'arLfSub'), text: m.status }))));
-          }));
-        var headEl = h('div', { class: 'arAccHead', role: 'button', tabindex: '0', 'aria-expanded': 'false' }, h('div', { class: 'arRsName', text: p.name }), dots(n), chev);
-        panelSet[i] = function (open) {
-          bodyEl.hidden = !open;
-          chev.classList.toggle('arChevOpen', open);
-          headEl.setAttribute('aria-expanded', String(open));
-        };
-        var toggle = function () {
-          var was = openIdx === i;
-          if (openIdx >= 0) panelSet[openIdx](false);
-          openIdx = was ? -1 : i;
-          if (!was) panelSet[i](true);
-        };
-        on(headEl, 'click', toggle);
-        on(headEl, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
-        return h('div', { class: 'arAcc' }, headEl, bodyEl);
+      var ST3 = [['Optimal', 'var(--mbO)', 'arLfOpt'], ['Suboptimal', 'var(--mbS)', 'arLfSub'], ['Out of range', 'var(--mbX)', 'arLfOut']];
+      var tot = PANELS.reduce(function (t, p) { return [t[0] + p.n[0], t[1] + p.n[1], t[2] + p.n[2]]; }, [0, 0, 0]), all = tot[0] + tot[1] + tot[2], top = Math.max.apply(null, tot) || 1;
+      var calm = still || reducedMotion(), T0 = 260, BH = 168;   // T0: once the page has faded in
+      /* a number that rolls up to its value, an odometer: each digit a strip of figures turning to its own, the ones most (two turns), the tens once */
+      var roll = function (v, at) {
+        var sv = String(v), el = h('span', { class: 'arRsNum', 'aria-hidden': 'true' });
+        sv.split('').forEach(function (d, i) {
+          var k = sv.length - 1 - i, n = (calm ? 0 : Math.min(2, k === 0 ? 2 : k === 1 ? 1 : 0) * 10) + (+d), strip = h('span', { class: 'arRsStrip' });
+          for (var j = 0; j <= n; j++) strip.appendChild(h('span', { text: String(j % 10) }));
+          el.appendChild(h('span', { class: 'arRsDig' }, strip));
+          if (calm) strip.style.transform = 'translateY(' + (-n) + 'em)';
+          else strip.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(' + (-n) + 'em)' }], { duration: 1300 - i * 160, delay: at + i * 80, easing: 'cubic-bezier(.16, .84, .3, 1)', fill: 'both' });
+        });
+        return el;
+      };
+      var base = h('i', { class: 'arRsBase', 'aria-hidden': 'true' });
+      var cols = ST3.map(function (c, i) {
+        var v = tot[i], hp = Math.max(4, Math.round(v / top * BH)), bar = h('i', { class: 'arRsBar', style: { height: hp + 'px', background: c[1] } });
+        if (!calm) bar.animate([{ transform: 'scaleY(' + (2 / hp).toFixed(4) + ')' }, { transform: 'none' }], { duration: 760, delay: T0 + 380 + i * 110, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'backwards' });   // from a line, up
+        var num = roll(v, T0 + 900 + i * 110), lbl = h('span', { class: 'arRsLbl', text: c[0] });
+        if (!calm) [num, lbl].forEach(function (e) { e.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 420, delay: T0 + 880 + i * 110, easing: 'ease-out', fill: 'backwards' }); });
+        return h('div', { class: 'arRsCol' }, h('div', { class: 'arRsBarW' }, bar), num, lbl);
       });
-      return h('div', { class: 'arStack arGap18' },
+      if (!calm) base.animate([{ transform: 'scaleX(0)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 420, delay: T0, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'backwards' });   // the line first
+      var chart = h('div', { class: 'arRsChart', role: 'img', 'aria-label': tot[0] + ' optimal, ' + tot[1] + ' suboptimal, ' + tot[2] + ' out of range, of ' + all + ' markers' }, base, cols);
+      /* the areas, each its count in a badge; its sheet: its markers, out of range first, each its status */
+      var areas = PANELS.map(function (p, i) {
+        var n = p.n[0] + p.n[1] + p.n[2], row = h('button', { type: 'button', class: 'arRsArea' + (calm ? '' : ' arAnimRise'), style: calm ? {} : { 'animation-delay': ((T0 + 1300) / 1000 + i * .04).toFixed(2) + 's' }, 'aria-haspopup': 'dialog', 'aria-expanded': 'false', 'aria-label': p.name + ', ' + nMb(n) },
+          h('span', { class: 'arRsAreaN', text: p.name }), h('span', { class: 'arRsCount', 'aria-hidden': 'true', text: String(n) }), h('span', { class: 'arChev', 'aria-hidden': 'true' }, chevIcon()));
+        on(row, 'click', function () {
+          var ms = (p.m || ['', '', '']).map(function (x) { return x ? x.split('|') : []; }), rows = [];
+          [2, 1, 0].forEach(function (k) { ms[k].forEach(function (nm) { rows.push(h('div', { class: 'arRsMk' }, h('span', { class: 'arRsMkN', text: nm }), h('span', { class: 'arLfPill ' + ST3[k][2], text: ST3[k][0] }))); }); });
+          sheetOpen(p.name, nMb(n), p.name + ' markers', ' arRsSheet', rows, row, false, true);   // as tall as its list
+        });
+        return row;
+      });
+      return h('div', { class: 'arStack arGap20' },
         h('div', { class: 'arIntroBlock arAnimRise' },
           h('h2', { class: 'arH700', text: REST_H[0] }),
-          h('div', { class: 'arLede', text: REST_H[1] })),
-        h('div', { class: 'arAccList arRsList arAnimRise arD20' }, panels));
+          h('div', { class: 'arLede', text: all + ' markers across ' + PANELS.length + ' areas.' })),
+        chart,
+        h('div', { class: 'arRsAreas' }, areas));
     }
 
     /* ----- step 1: the insights, each a card ("create a 2nd screen that intros all slides in card list items"): its number, its name in short, and at its right its markers' standing, a count in each status's pill, the biomarker rows' colours ("more concise, marker on right side; use marker colour system same as biomarker item");
